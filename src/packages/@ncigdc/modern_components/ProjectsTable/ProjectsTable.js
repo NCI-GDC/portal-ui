@@ -46,6 +46,7 @@ export default compose(
           </div>
           <TableActions
             type="project"
+            scope="repository"
             arrangeColumnKey={entityType}
             total={hits.total}
             endpoint={entityType}

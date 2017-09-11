@@ -9,6 +9,8 @@ export const RepositoryCaseCount = repositoryCase(Count);
 export const GeneCount = exploreGene(Count);
 export const SsmCount = exploreSsm(Count);
 
+export { default as withCount } from './withCount';
+
 export default {
   case: ExploreCaseCount,
   gene: GeneCount,

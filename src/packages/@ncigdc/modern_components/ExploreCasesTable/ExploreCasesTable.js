@@ -76,6 +76,7 @@ export default compose(
           />
           <TableActions
             type="case"
+            scope="explore"
             arrangeColumnKey="exploreCases"
             total={cases.hits.total}
             endpoint="case_ssms"

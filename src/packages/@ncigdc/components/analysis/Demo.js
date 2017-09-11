@@ -72,7 +72,7 @@ class Demo extends React.Component {
                 this.setState({ setStates });
               }}
             >
-              {() => {}}
+              {() => null}
             </CountComponent>
           );
         })}

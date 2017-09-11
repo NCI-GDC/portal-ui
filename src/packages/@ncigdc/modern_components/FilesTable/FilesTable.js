@@ -81,6 +81,7 @@ export default compose(
           />
           <TableActions
             type="file"
+            scope="repository"
             total={hits.total}
             endpoint="files"
             downloadable={downloadable}

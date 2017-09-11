@@ -267,7 +267,13 @@ const enhance = compose(
   withSize(),
   lifecycle({
     shouldComponentUpdate(nextProps: TProps): void {
-      const props = ['xDomain', 'size', 'rawData', 'survivalPlotloading'];
+      const props = [
+        'xDomain',
+        'size',
+        'rawData',
+        'survivalPlotloading',
+        'survivalContainer',
+      ];
       return !_.isEqual(_.pick(this.props, props), _.pick(nextProps, props));
     },
 

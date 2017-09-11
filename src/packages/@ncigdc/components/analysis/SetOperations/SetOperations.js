@@ -55,9 +55,10 @@ export default compose(
     dispatch,
     CreateSetButton = CreateSetButtonMap[type],
   }) => {
-    const setData = Object.entries(sets[type]).filter(([setId]) =>
-      setIds.map(x => x.split(':')[1]).includes(setId),
-    );
+    const setData = setIds.map(setId => [
+      setId,
+      sets[type][setId] || 'deleted set',
+    ]);
 
     const toggle = op => {
       selected[selected.has(op) ? 'delete' : 'add'](op);

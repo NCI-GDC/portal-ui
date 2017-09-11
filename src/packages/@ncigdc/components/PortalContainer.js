@@ -32,8 +32,16 @@ const enhance = compose(
   lifecycle({
     componentDidMount(): void {
       if (!Cookies.get(FIRST_TIME_KEY)) {
-        this.props.dispatch(setModal(<FirstTimeModal />));
-        Cookies.set(FIRST_TIME_KEY, true);
+        this.props.dispatch(
+          setModal(
+            <FirstTimeModal
+              onClose={() => {
+                Cookies.set(FIRST_TIME_KEY, true);
+              }}
+            />,
+            false,
+          ),
+        );
       }
 
       let lastPathname = this.props.location.pathname;

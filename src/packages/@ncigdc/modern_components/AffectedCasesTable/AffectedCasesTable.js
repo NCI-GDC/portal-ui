@@ -219,6 +219,7 @@ const Component = compose(
           <Row style={{ alignItems: 'flex-end' }}>
             <TableActions
               type="case"
+              scope="explore"
               currentFilters={defaultFilters}
               style={{ marginLeft: '2rem' }}
               total={totalCases}

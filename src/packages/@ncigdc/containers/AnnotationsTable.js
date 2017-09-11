@@ -54,6 +54,7 @@ export const SearchTable = compose(
           />
           <TableActions
             type="annotation"
+            scope="repository"
             arrangeColumnKey={entityType}
             total={hits.total}
             endpoint="annotations"

@@ -58,6 +58,7 @@ export default compose(
           />
           <TableActions
             type="case"
+            scope="repository"
             arrangeColumnKey={entityType}
             total={hits.total}
             endpoint="cases"

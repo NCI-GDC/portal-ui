@@ -147,7 +147,7 @@ const SuggestionFacet = compose(
             <Container style={style} className="test-suggestion-facet">
               {!collapsed && (
                 <Column>
-                  {currentValues.content.value.map(v => (
+                  {[].concat(currentValues.content.value || []).map(v => (
                     <CheckedRow key={v}>
                       <CheckedLink
                         merge="toggle"

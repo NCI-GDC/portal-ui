@@ -126,6 +126,7 @@ export default compose(
           <Row style={{ alignItems: 'flex-end' }}>
             <TableActions
               type="ssm"
+              scope="explore"
               displayType="mutation"
               currentFilters={query.ssmsTable_filters || filters}
               style={{ marginLeft: '2rem' }}

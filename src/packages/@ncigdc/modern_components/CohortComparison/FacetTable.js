@@ -29,7 +29,7 @@ export default compose(
       data2[field].buckets.map(b => b.key),
     ),
   }) =>
-    <div key={field}>
+    <div>
       <Row>
         <h2>{mapping[field]}</h2>
         {/* <Row style={{ marginLeft: 'auto', alignItems: 'center' }}>

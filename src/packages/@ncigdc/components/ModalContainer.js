@@ -6,7 +6,7 @@ import { setModal } from '@ncigdc/dux/modal';
 import Modal from '@ncigdc/uikit/Modal';
 
 const ModalContainer = connect(
-  state => state.modal,
+  state => state.modal || {},
 )(({ component, autoClose, dispatch }) =>
   <Modal
     isOpen={!!component}

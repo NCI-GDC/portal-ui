@@ -8,21 +8,19 @@ import { compose } from 'recompose';
 import withRouter from '@ncigdc/utils/withRouter';
 import { fetchApi } from '@ncigdc/utils/ajax/index';
 import { parseFilterParam, stringifyJSONParam } from '@ncigdc/utils/uri';
+import loadScript from '@ncigdc/utils/loadScript';
 
 import getColumns from './columns';
 import prepareData from './prepareData';
 
 import './style.css';
 
-// TODO: require d3-tip instead. Currently appends d3-tip for githut. Appending here to avoid issues in load order.
-const d3TipUrl =
-  'https://cdnjs.cloudflare.com/ajax/libs/d3-tip/0.7.1/d3-tip.min.js';
-const existingScript = document.querySelector(`script[src="${d3TipUrl}"]`);
-if (!existingScript) {
-  const script = document.createElement('script');
-  script.src = d3TipUrl;
-  document.body && document.body.appendChild(script);
-}
+// TODO: switch to d3v4 and require d3-tip instead.
+loadScript('https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.js').then(() =>
+  loadScript(
+    'https://cdnjs.cloudflare.com/ajax/libs/d3-tip/0.7.1/d3-tip.min.js',
+  ),
+);
 
 const FIELDS = [
   'disease_type',

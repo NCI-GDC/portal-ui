@@ -25,47 +25,31 @@ const Alias = ({ i, style = { fontWeight: 'bold' } }) =>
 
 export default compose(
   connect(({ sets }) => ({ sets })),
-  withState('defaultSurvivalData', 'setDefaultSurvivalData', {}),
-  withState('selectedSurvivalData', 'setSelectedSurvivalData', {}),
+  withState('survivalData', 'setSurvivalData', {}),
   withState('state', 'setState', initialState),
-  withProps(
-    ({
-      set1,
-      set2,
-      selectedSurvivalData,
-      defaultSurvivalData,
-      setDefaultSurvivalData,
-      setSelectedSurvivalData,
-      setState,
-    }) => ({
-      survivalData: {
-        legend: selectedSurvivalData.legend || defaultSurvivalData.legend,
-        rawData: selectedSurvivalData.rawData || defaultSurvivalData.rawData,
-      },
-      updateData: async () => {
-        const survivalData = await getDefaultCurve({
-          currentFilters: [
-            {
-              op: 'in',
-              content: { field: 'cases.case_id', value: `set_id:${set1}` },
-            },
-            {
-              op: 'in',
-              content: { field: 'cases.case_id', value: `set_id:${set2}` },
-            },
-          ],
-        });
+  withProps(({ set1, set2, setSurvivalData, setState }) => ({
+    updateData: async () => {
+      const survivalData = await getDefaultCurve({
+        currentFilters: [
+          {
+            op: 'in',
+            content: { field: 'cases.case_id', value: `set_id:${set1}` },
+          },
+          {
+            op: 'in',
+            content: { field: 'cases.case_id', value: `set_id:${set2}` },
+          },
+        ],
+      });
 
-        setDefaultSurvivalData(survivalData);
-        setSelectedSurvivalData({});
+      setSurvivalData(survivalData);
 
-        setState(s => ({
-          ...s,
-          loading: false,
-        }));
-      },
-    }),
-  ),
+      setState(s => ({
+        ...s,
+        loading: false,
+      }));
+    },
+  })),
   withPropsOnChange(['set1', 'set2'], ({ updateData }) => {
     updateData();
   }),

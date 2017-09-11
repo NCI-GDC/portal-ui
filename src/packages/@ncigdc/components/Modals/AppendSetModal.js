@@ -16,11 +16,12 @@ import onSaveComplete from './onSaveComplete';
 
 const enhance = compose(
   withState('selected', 'setSelected', ''),
-  withState('inputTotal', 'setInputTotal', ({ total }) =>
-    Math.min(MAX_SET_SIZE, total),
-  ),
   connect(({ sets }) => ({ sets })),
-  withProps(({ sets, type }) => ({ sets: sets[type] || {} })),
+  withProps(({ sets, type, total }) => ({
+    sets: sets[type] || {},
+    max: Math.min(MAX_SET_SIZE, total),
+  })),
+  withState('inputTotal', 'setInputTotal', ({ max }) => max),
   withRouter,
 );
 
@@ -42,6 +43,7 @@ const AppendSetModal = ({
   location,
   inputTotal,
   setInputTotal,
+  max,
 }) => {
   return (
     <BaseModal
@@ -81,18 +83,17 @@ const AppendSetModal = ({
         Save top:<br />
         <input
           type="number"
-          max={MAX_SET_SIZE}
+          max={max}
           value={inputTotal}
           onChange={e => setInputTotal(e.target.value)}
         />
         <div style={{ fontSize: '0.8em' }}>
-          You can append up to the top{' '}
-          {pluralize(displayType, MAX_SET_SIZE, true)}
+          You can append up to the top {pluralize(displayType, max, true)}
         </div>
       </label>
-      {inputTotal > MAX_SET_SIZE &&
+      {inputTotal > max &&
         <WarningBox>
-          Above maximum of {pluralize(displayType, MAX_SET_SIZE, true)}
+          Above maximum of {pluralize(displayType, max, true)}
         </WarningBox>}
 
       <SetTable

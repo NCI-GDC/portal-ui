@@ -114,17 +114,25 @@ const SurvivalPlotWrapper = ({
                       },
                     },
                   })}
-                data={results}
+                data={results.map((set, i) => ({
+                  ...set,
+                  meta: {
+                    ...set.meta,
+                    label: set.meta.label || `S${i + 1}`,
+                  },
+                }))}
                 stylePrefix={`.${CLASS_NAME}`}
                 slug="survival-plot"
                 noText
                 tooltipHTML="Download SurvivalPlot data or image"
-                tsvData={results.reduce((data, set) => {
+                tsvData={results.reduce((data, set, i) => {
                   const mapData = set.donors.map(d => toMap(d));
                   return [
                     ...data,
                     ...(results.length > 1
-                      ? mapData.map(m => m.set('label', set.meta.label))
+                      ? mapData.map(m =>
+                          m.set('label', set.meta.label || `S${i + 1}`),
+                        )
                       : mapData),
                   ];
                 }, [])}

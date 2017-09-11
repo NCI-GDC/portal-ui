@@ -1,6 +1,6 @@
 import React from 'react';
 import { compose } from 'recompose';
-import { union, find } from 'lodash';
+import { union, find, truncate } from 'lodash';
 import Table, { Tr, Td, Th } from '@ncigdc/uikit/Table';
 import { Row } from '@ncigdc/uikit/Flex';
 import ExploreLink from '@ncigdc/components/Links/ExploreLink';
@@ -42,7 +42,7 @@ export default compose(
           const bucket = find(data1[field].buckets, b => b.key === k) || {};
 
           return {
-            label: k,
+            label: truncate(k, { length: 15 }),
             value: bucket.doc_count || 0,
           };
         })}
@@ -50,7 +50,7 @@ export default compose(
           const bucket = find(data2[field].buckets, b => b.key === k) || {};
 
           return {
-            label: k,
+            label: truncate(k, { length: 15 }),
             value: bucket.doc_count || 0,
           };
         })}

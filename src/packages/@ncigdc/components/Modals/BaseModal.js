@@ -11,6 +11,7 @@ const BaseModal = ({
   title,
   children,
   closeText = 'Accept',
+  onClose,
   extraButtons,
   style,
   contentStyle,
@@ -20,6 +21,7 @@ const BaseModal = ({
   title: any,
   children: any,
   closeText: any,
+  onClose?: Function,
   extraButtons: any,
   style: Object,
   contentStyle: Object,
@@ -46,7 +48,12 @@ const BaseModal = ({
       }}
       spacing={10}
     >
-      <Button onClick={() => dispatch(setModal(null))}>
+      <Button
+        onClick={() => {
+          onClose && onClose();
+          dispatch(setModal(null));
+        }}
+      >
         {closeText}
       </Button>
       {extraButtons && <span style={{ marginRight: 10 }}>{extraButtons}</span>}

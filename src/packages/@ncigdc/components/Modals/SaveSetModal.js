@@ -37,6 +37,7 @@ const SaveSetModal = ({
   score,
   dispatch,
   type,
+  displayType,
   sets,
   shouldCallCreateSet,
   setShouldCallCreateSet,
@@ -88,13 +89,14 @@ const SaveSetModal = ({
           onChange={e => setInputTotal(e.target.value)}
         />
         <div style={{ fontSize: '0.8em' }}>
-          You can save up to the top {pluralize(type, MAX_SET_SIZE, true)}
+          You can save up to the top{' '}
+          {pluralize(displayType, MAX_SET_SIZE, true)}
         </div>
       </label>
 
       {inputTotal > MAX_SET_SIZE &&
         <WarningBox>
-          Above maximum of {pluralize(type, MAX_SET_SIZE, true)}
+          Above maximum of {pluralize(displayType, MAX_SET_SIZE, true)}
         </WarningBox>}
 
       <label style={{ marginTop: 10 }}>
@@ -113,7 +115,6 @@ const SaveSetModal = ({
         <WarningBox>
           Warning: A set with the same name exists,
           this will overwrite it.
-
         </WarningBox>}
     </BaseModal>
   );

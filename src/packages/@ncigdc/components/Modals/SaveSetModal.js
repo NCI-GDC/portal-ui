@@ -8,7 +8,7 @@ import { addSet, replaceSet } from '@ncigdc/dux/sets';
 import filtersToName from '@ncigdc/utils/filtersToName';
 import WarningBox from '@ncigdc/uikit/WarningBox';
 import pluralize from '@ncigdc/utils/pluralize';
-import { MAX_SET_SIZE } from '@ncigdc/utils/constants';
+import { MAX_SET_SIZE, MAX_SET_NAME_LENGTH } from '@ncigdc/utils/constants';
 
 import onSaveComplete from './onSaveComplete';
 
@@ -18,7 +18,9 @@ const enhance = compose(
     'inputName',
     'setInputName',
     ({ filters, displayType, sets, setName }) =>
-      setName || filtersToName({ filters, sets }) || `All ${displayType}s`,
+      setName ||
+      filtersToName({ filters, sets, length: MAX_SET_NAME_LENGTH }) ||
+      `All ${displayType}s`,
   ),
   withState('inputTotal', 'setInputTotal', ({ total }) =>
     Math.min(MAX_SET_SIZE, total),
@@ -53,7 +55,11 @@ const SaveSetModal = ({
       extraButtons={
         <CreateSetButton
           forceCreate
-          disabled={!inputName || inputTotal > MAX_SET_SIZE}
+          disabled={
+            !inputName ||
+            inputTotal > MAX_SET_SIZE ||
+            inputName.length > MAX_SET_NAME_LENGTH
+          }
           filters={filters}
           size={inputTotal}
           sort={sort}
@@ -107,13 +113,13 @@ const SaveSetModal = ({
           id="save-set-modal-name"
           type="text"
         />
+        {inputName.length > MAX_SET_NAME_LENGTH &&
+          <WarningBox>Maximum name length is {MAX_SET_NAME_LENGTH}</WarningBox>}
       </label>
-
       {existingSet &&
         <WarningBox>
           Warning: A set with the same name exists,
           this will overwrite it.
-
         </WarningBox>}
     </BaseModal>
   );

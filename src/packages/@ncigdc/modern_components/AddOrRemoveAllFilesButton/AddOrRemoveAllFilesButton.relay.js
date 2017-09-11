@@ -53,7 +53,7 @@ export default (Component: ReactClass<*>) =>
                         file_id,
                         file_size,
                         cases {
-                          hits {
+                          hits(first: 1) {
                             edges {
                               node {
                                 project {

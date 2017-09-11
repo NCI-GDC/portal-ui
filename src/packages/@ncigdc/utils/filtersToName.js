@@ -19,7 +19,12 @@ function getValues(filters, sets) {
 }
 
 const MAX_VALUES = 6;
-export default function({ filters, max = MAX_VALUES, sets, length = 100 }) {
+export default function({
+  filters,
+  max = MAX_VALUES,
+  sets,
+  length = Infinity,
+}) {
   if (!filters) return '';
   const values = getValues(
     filters,

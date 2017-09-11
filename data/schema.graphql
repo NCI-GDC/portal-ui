@@ -87,6 +87,7 @@ type Aliquots {
 
 type Analysis {
   protein_mutations: ProteinMutations
+  top_cases_count_by_genes: TopCasesCountByGenes
 }
 
 type Analyte implements Node {
@@ -349,6 +350,9 @@ type AppendSet {
 
 input AppendSetInput {
   filters: FiltersArgument
+  size: Int
+  sort: [Sort]
+  score: String
   set_id: String
 }
 
@@ -1797,6 +1801,9 @@ type CreateSet {
 
 input CreateSetInput {
   filters: FiltersArgument
+  size: Int
+  sort: [Sort]
+  score: String
 }
 
 type CreateSsmSet {
@@ -6448,6 +6455,10 @@ type TissueSourceSite {
   # Name of the source site.
   name: String
   id: String
+}
+
+type TopCasesCountByGenes {
+  data(first: Int, gene_ids: [String], filters: FiltersArgument): JSONString
 }
 
 type Transcript implements Node {

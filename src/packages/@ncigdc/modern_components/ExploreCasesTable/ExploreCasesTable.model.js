@@ -8,12 +8,12 @@ import {
 import { Tooltip } from '@ncigdc/uikit/Tooltip';
 import ProjectLink from '@ncigdc/components/Links/ProjectLink';
 import CaseLink from '@ncigdc/components/Links/CaseLink';
-import { Th, Td } from '@ncigdc/uikit/Table';
+import { Th, Td, TdNum, ThNum } from '@ncigdc/uikit/Table';
 import { makeFilter, replaceFilters } from '@ncigdc/utils/filters';
 import ExploreLink from '@ncigdc/components/Links/ExploreLink';
 import ageDisplay from '@ncigdc/utils/ageDisplay';
 import withRouter from '@ncigdc/utils/withRouter';
-import styled from '@ncigdc/theme/styled';
+
 import {
   createDataCategoryColumns,
   createSelectColumn,
@@ -39,9 +39,6 @@ const dataCategoryColumns = createDataCategoryColumns({
   ],
   getTotalLinkFilters: hits => [],
 });
-
-const NumTh = styled(Th, { textAlign: 'right' });
-const NumTd = styled(Td, { textAlign: 'right' });
 
 const FilesLink = ({ node, fields = [], children }) =>
   children === '0'
@@ -136,15 +133,15 @@ const casesTableModel = [
     id: 'summary.file_count',
     sortable: true,
     downloadable: true,
-    th: () => <NumTh key="summary.file_count" rowSpan="2">Files</NumTh>,
+    th: () => <ThNum key="summary.file_count" rowSpan="2">Files</ThNum>,
     td: ({ node }) =>
-      <NumTd key="summary.file_count">
+      <TdNum key="summary.file_count">
         <FilesLink node={node}>
           {(node.summary.file_count || 0).toLocaleString()}
         </FilesLink>
-      </NumTd>,
+      </TdNum>,
     total: withRouter(({ hits, query }) =>
-      <NumTd>
+      <TdNum>
         <RepositoryCasesLink
           query={{
             filters: query.filters ? getProjectIdFilter(hits) : null,
@@ -154,7 +151,7 @@ const casesTableModel = [
             .reduce((acc, val) => acc + val.node.summary.case_count, 0)
             .toLocaleString()}
         </RepositoryCasesLink>
-      </NumTd>,
+      </TdNum>,
     ),
   },
   ...dataCategoryColumns,
@@ -163,14 +160,14 @@ const casesTableModel = [
     id: 'mutation_count',
     sortable: false,
     th: () =>
-      <NumTh rowSpan="2">
+      <ThNum rowSpan="2">
         <Tooltip
           Component="# Simple Somatic Mutations Filtered by current criteria"
           style={tableToolTipHint()}
         >
           # Mutations
         </Tooltip>
-      </NumTh>,
+      </ThNum>,
     td: ({ ssmCountsLoading, ssmCount, node, filters }) =>
       <Td style={{ textAlign: 'right' }}>
         <MutationsCount
@@ -188,14 +185,14 @@ const casesTableModel = [
     id: 'gene_count',
     sortable: false,
     th: () =>
-      <NumTh rowSpan="2">
+      <ThNum rowSpan="2">
         <Tooltip
           Component="# Genes with Simple Somatic Mutations Filtered by current criteria"
           style={tableToolTipHint()}
         >
           # Genes
         </Tooltip>
-      </NumTh>,
+      </ThNum>,
     td: ({ node }) =>
       <Td style={{ textAlign: 'right' }}>
         {node.score > 0

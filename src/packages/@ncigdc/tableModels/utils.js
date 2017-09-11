@@ -4,13 +4,9 @@ import _ from 'lodash';
 import Tooltip from '@ncigdc/uikit/Tooltip/Tooltip';
 import { tableToolTipHint } from '@ncigdc/theme/mixins';
 import { DATA_CATEGORIES } from '@ncigdc/utils/constants';
-import styled from '@ncigdc/theme/styled';
-import { Th, Td } from '@ncigdc/uikit/Table';
+import { Th, Td, ThNum, TdNum } from '@ncigdc/uikit/Table';
 import { makeFilter } from '@ncigdc/utils/filters';
 import { findDataCategory } from '@ncigdc/utils/data';
-
-const NumTh = styled(Th, { textAlign: 'right' });
-const NumTd = styled(Td, { textAlign: 'right' });
 
 export const createDataCategoryColumns = ({
   title,
@@ -41,20 +37,20 @@ export const createDataCategoryColumns = ({
       subHeading: true,
       parent: 'data_category',
       th: () =>
-        <NumTh>
+        <ThNum>
           <abbr>
             <Tooltip Component={category.full} style={tableToolTipHint()}>
               {category.abbr}
             </Tooltip>
           </abbr>
-        </NumTh>,
+        </ThNum>,
       td: ({ node }) => {
         const count = findDataCategory(
           category.abbr,
           node.summary.data_categories,
         )[countKey];
         return (
-          <NumTd>
+          <TdNum>
             {count === 0
               ? '0'
               : <Link
@@ -67,11 +63,11 @@ export const createDataCategoryColumns = ({
                 >
                   {count.toLocaleString()}
                 </Link>}
-          </NumTd>
+          </TdNum>
         );
       },
       total: ({ hits }) =>
-        <NumTd>
+        <TdNum>
           <Link
             query={{
               filters: makeFilter([
@@ -88,7 +84,7 @@ export const createDataCategoryColumns = ({
                 ],
             ).toLocaleString()}
           </Link>
-        </NumTd>,
+        </TdNum>,
     })),
   ];
 };

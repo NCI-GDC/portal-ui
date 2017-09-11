@@ -70,6 +70,7 @@ export const EXPERIMENTAL_STRATEGIES = [
   'Total RNA-Seq',
   'VALIDATION',
   'OTHER',
+  'Targeted Sequencing',
 ].map(n => n.toLowerCase());
 
 export const MUTATION_SUBTYPE_MAP = {

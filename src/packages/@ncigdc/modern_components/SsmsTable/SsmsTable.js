@@ -15,6 +15,7 @@ import type { TGroupFilter } from '@ncigdc/utils/filters/types';
 import TableActions from '@ncigdc/components/TableActions';
 import Table, { Tr } from '@ncigdc/uikit/Table';
 import CreateExploreSsmSetButton from '@ncigdc/modern_components/setButtons/CreateExploreSsmSetButton';
+import AppendExploreSsmSetButton from '@ncigdc/modern_components/setButtons/AppendExploreSsmSetButton';
 import RemoveFromExploreSsmSetButton from '@ncigdc/modern_components/setButtons/RemoveFromExploreSsmSetButton';
 import withSelectIds from '@ncigdc/utils/withSelectIds';
 import tableModel from './SsmsTable.model';
@@ -146,6 +147,7 @@ export default compose(
               tsvSelector="#ssms-table"
               tsvFilename="frequent-mutations.tsv"
               CreateSetButton={CreateExploreSsmSetButton}
+              AppendSetButton={AppendExploreSsmSetButton}
               RemoveFromSetButton={RemoveFromExploreSsmSetButton}
               idField="ssms.ssm_id"
               selectedIds={selectedIds}

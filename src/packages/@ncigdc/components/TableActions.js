@@ -106,6 +106,7 @@ const TableActions = ({
 
       {CreateSetButton &&
         RemoveFromSetButton &&
+        AppendSetButton &&
         idField &&
         <SetActions
           total={total}

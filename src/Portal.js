@@ -18,9 +18,9 @@ export const store = setupStore({
 });
 
 store.dispatch(fetchApiVersionInfo());
-store.dispatch(fetchNotifications());
 
 if (process.env.NODE_ENV !== 'development') {
+  store.dispatch(fetchNotifications());
   store.dispatch(fetchUser());
 }
 

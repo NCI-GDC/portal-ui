@@ -38,3 +38,4 @@ build
 
 # OS
 .DS_Store
+__generated__

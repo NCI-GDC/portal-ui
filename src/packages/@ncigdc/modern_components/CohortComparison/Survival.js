@@ -2,6 +2,8 @@ import React from 'react';
 import SurvivalPlotWrapper from '@ncigdc/components/SurvivalPlotWrapper';
 import Table, { Tr, Td, Th } from '@ncigdc/uikit/Table';
 import { Row } from '@ncigdc/uikit/Flex';
+import Tooltip from '@ncigdc/uikit/Tooltip/Tooltip';
+import { tableToolTipHint } from '@ncigdc/theme/mixins';
 
 export default ({ survivalData, result1, result2, Set1, Set2, palette }) =>
   <span style={{ marginTop: 10 }}>
@@ -13,7 +15,22 @@ export default ({ survivalData, result1, result2, Set1, Set2, palette }) =>
       {survivalData.rawData &&
         <Table
           headings={[
-            <Th key="1">Cases included in Analysis</Th>,
+            <Th key="1">
+              <Tooltip
+                style={tableToolTipHint()}
+                Component={
+                  <span>
+                    Criteria to include Case from your sets in the survival
+                    analysis:<br />
+                    - Case does not overlap between your selected sets<br />
+                    - Case has complete data for the purpose of the analysis
+                    (event and time-to-event)
+                  </span>
+                }
+              >
+                Cases included in Analysis
+              </Tooltip>
+            </Th>,
             <Th key="2" style={{ textAlign: 'right' }}>
               # Cases
             </Th>,

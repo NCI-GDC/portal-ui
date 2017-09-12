@@ -41,6 +41,7 @@ export default (Component: React$Element<*>) =>
   )((props: Object) => {
     return (
       <Query
+        minHeight={500}
         parentProps={props}
         variables={props.variables}
         Component={Component}

@@ -158,14 +158,16 @@ export default compose(
             }
           />
 
-          {Survival({
-            survivalData,
-            result1,
-            result2,
-            Set1,
-            Set2,
-            palette: [set1_colour, set2_colour],
-          })}
+          <Survival
+            survivalData={survivalData}
+            result1={result1}
+            result2={result2}
+            Set1={Set1}
+            Set2={Set2}
+            set1id={set1}
+            set2id={set2}
+            palette={[set1_colour, set2_colour]}
+          />
 
           {facets.map(field =>
             FacetTable({

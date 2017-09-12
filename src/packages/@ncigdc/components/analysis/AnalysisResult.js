@@ -5,8 +5,13 @@ import { omit } from 'lodash';
 
 import withRouter from '@ncigdc/utils/withRouter';
 import UnstyledButton from '@ncigdc/uikit/UnstyledButton';
-import { removeAnalysis, removeAllAnalysis } from '@ncigdc/dux/analysis';
-import { Row } from '@ncigdc/uikit/Flex';
+import {
+  addAnalysis,
+  removeAnalysis,
+  removeAllAnalysis,
+} from '@ncigdc/dux/analysis';
+import { notify, closeNotification } from '@ncigdc/dux/notification';
+import { Row, Column } from '@ncigdc/uikit/Flex';
 import Button from '@ncigdc/uikit/Button';
 import { TrashIcon } from '@ncigdc/theme/icons';
 import TabbedLinks from '@ncigdc/components/TabbedLinks';
@@ -17,6 +22,49 @@ const enhance = compose(
   connect(state => ({ analysis: state.analysis.saved })),
   withRouter,
 );
+
+function undoNotification(dispatch, analysis) {
+  dispatch(
+    notify({
+      id: `${new Date().getTime()}`,
+      component: (
+        <Column>
+          Deleted
+          {analysis.length === 1
+            ? <span>
+                {' '}Analysis{' '}
+                <strong>
+                  {
+                    availableAnalysis.find(a => analysis[0].type === a.type)
+                      .label
+                  }
+                </strong>
+              </span>
+            : <span>
+                <strong>{analysis.length}</strong> Analyses
+              </span>}
+          <strong>
+            <i
+              className="fa fa-undo"
+              style={{
+                marginRight: '0.3rem',
+              }}
+            />
+            <UnstyledButton
+              style={{ textDecoration: 'underline' }}
+              onClick={() => {
+                analysis.map(set => dispatch(addAnalysis(set)));
+                dispatch(closeNotification(true));
+              }}
+            >
+              Undo
+            </UnstyledButton>
+          </strong>
+        </Column>
+      ),
+    }),
+  );
+}
 
 const AnalysisResult = ({ analysis, query, dispatch, push }) => {
   const analysisId = query.analysisId || '';
@@ -39,6 +87,7 @@ const AnalysisResult = ({ analysis, query, dispatch, push }) => {
             push({
               query: omit(query, 'analysisId'),
             });
+            undoNotification(dispatch, analysis);
           }}
         >
           <TrashIcon /> Delete All
@@ -65,6 +114,7 @@ const AnalysisResult = ({ analysis, query, dispatch, push }) => {
           onClose: e => {
             e.preventDefault();
             dispatch(removeAnalysis(savedAnalysis));
+            undoNotification(dispatch, [savedAnalysis]);
           },
           ...savedAnalysis,
         })),

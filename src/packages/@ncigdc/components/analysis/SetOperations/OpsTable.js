@@ -279,6 +279,7 @@ export default ({
                                         type={type}
                                         displayType={type}
                                         CreateSetButton={CreateSetButton}
+                                        setName="My Set"
                                       />,
                                     ),
                                   );

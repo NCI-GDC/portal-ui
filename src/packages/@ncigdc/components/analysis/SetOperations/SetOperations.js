@@ -39,8 +39,8 @@ const colors = [
 
 export default compose(
   connect(s => ({ sets: s.sets })),
-  withState('selected', 'setSelected', new Set()),
-  withState('hovering', 'setHovering', new Set()),
+  withState('selected', 'setSelected', () => new Set()),
+  withState('hovering', 'setHovering', () => new Set()),
   withRouter,
 )(
   ({

@@ -20,7 +20,7 @@ jobs:
     - stage: deploy
       script:
         - NODE_ENV=production REACT_APP_COMMIT_HASH=$TRAVIS_COMMIT npm run build
-        - docker login -e="$DOCKER_EMAIL" -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD" quay.io
+        - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD" quay.io
         - bash docker.sh
 notifications:
   email: false

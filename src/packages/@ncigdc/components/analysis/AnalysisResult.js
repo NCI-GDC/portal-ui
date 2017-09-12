@@ -34,7 +34,10 @@ function undoNotification(dispatch, analysis) {
             ? <span>
                 {' '}Analysis{' '}
                 <strong>
-                  {availableAnalysis.find(a => a.type === a.type).label}
+                  {
+                    availableAnalysis.find(a => analysis[0].type === a.type)
+                      .label
+                  }
                 </strong>
               </span>
             : <span>

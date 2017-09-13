@@ -36,6 +36,7 @@ import CreateExploreSsmSetButton from '@ncigdc/modern_components/setButtons/Crea
 import { UploadAndSaveSetModal } from '@ncigdc/components/Modals/SaveSetModal';
 import Dropdown from '@ncigdc/uikit/Dropdown';
 import DropdownItem from '@ncigdc/uikit/DropdownItem';
+import DownCaretIcon from 'react-icons/lib/fa/caret-down';
 
 const fields = {
   case: 'cases.case_id',
@@ -131,7 +132,7 @@ const ManageSetsPage = ({
 
       <Row>
         <Dropdown
-          button={<Button>Upload Set</Button>}
+          button={<Button rightIcon={<DownCaretIcon />}>Upload Set</Button>}
           dropdownStyle={{
             marginTop: 5,
             whiteSpace: 'nowrap',

@@ -7,6 +7,7 @@ import { withTheme } from '@ncigdc/theme';
 import { Row } from '@ncigdc/uikit/Flex';
 import withPropsOnChange from '@ncigdc/utils/withPropsOnChange';
 import { getDefaultCurve } from '@ncigdc/utils/survivalplot';
+import ExploreLink from '@ncigdc/components/Links/ExploreLink';
 import FacetTable from './FacetTable';
 import Survival from './Survival';
 
@@ -106,7 +107,25 @@ export default compose(
                     <Alias i={1} /> : {Set1}
                   </Td>
                   <Td style={{ textAlign: 'right' }}>
-                    {result1.hits.total.toLocaleString()}
+                    <ExploreLink
+                      query={{
+                        searchTableTab: 'cases',
+                        filters: {
+                          op: 'AND',
+                          content: [
+                            {
+                              op: 'IN',
+                              content: {
+                                field: `cases.case_id`,
+                                value: [`set_id:${set1}`],
+                              },
+                            },
+                          ],
+                        },
+                      }}
+                    >
+                      {result1.hits.total.toLocaleString()}
+                    </ExploreLink>
                   </Td>
                 </Tr>
                 <Tr>
@@ -114,21 +133,41 @@ export default compose(
                     <Alias i={2} /> : {Set2}
                   </Td>
                   <Td style={{ textAlign: 'right' }}>
-                    {result2.hits.total.toLocaleString()}
+                    <ExploreLink
+                      query={{
+                        searchTableTab: 'cases',
+                        filters: {
+                          op: 'AND',
+                          content: [
+                            {
+                              op: 'IN',
+                              content: {
+                                field: `cases.case_id`,
+                                value: [`set_id:${set2}`],
+                              },
+                            },
+                          ],
+                        },
+                      }}
+                    >
+                      {result2.hits.total.toLocaleString()}
+                    </ExploreLink>
                   </Td>
                 </Tr>
               </tbody>
             }
           />
 
-          {Survival({
-            survivalData,
-            result1,
-            result2,
-            Set1,
-            Set2,
-            palette: [set1_colour, set2_colour],
-          })}
+          <Survival
+            survivalData={survivalData}
+            result1={result1}
+            result2={result2}
+            Set1={Set1}
+            Set2={Set2}
+            set1id={set1}
+            set2id={set2}
+            palette={[set1_colour, set2_colour]}
+          />
 
           {facets.map(field =>
             FacetTable({

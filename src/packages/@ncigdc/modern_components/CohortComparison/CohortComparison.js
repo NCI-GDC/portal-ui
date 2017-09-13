@@ -10,6 +10,7 @@ import { getDefaultCurve } from '@ncigdc/utils/survivalplot';
 import ExploreLink from '@ncigdc/components/Links/ExploreLink';
 import Venn, { buildOps } from '@ncigdc/components/Charts/Venn';
 import withSize from '@ncigdc/utils/withSize';
+import CreateOrOpenAnalysis from '@ncigdc/components/CreateOrOpenAnalysis';
 import FacetTable from './FacetTable';
 import Survival from './Survival';
 
@@ -171,15 +172,25 @@ export default compose(
             palette={[set1_colour, set2_colour]}
             style={{ flex: 1, width: 100 }}
           />
-          <div style={{ marginLeft: 50, flex: 1, width: 100 }}>
+          <div
+            style={{ marginLeft: 50, flex: 1, width: 100, textAlign: 'center' }}
+          >
             <h2>Cohorts Venn Diagram</h2>
+
             <Venn
               type="case"
-              width={width / 2}
+              width={width / 2 - 50}
               data={[set1, set2]}
               ops={ops}
               getFillColor={d => 'rgb(237, 237, 237)'}
             />
+
+            <CreateOrOpenAnalysis
+              type="set_operations"
+              sets={{ case: [set1, set2] }}
+            >
+              Open in new tab
+            </CreateOrOpenAnalysis>
           </div>
         </Row>
 

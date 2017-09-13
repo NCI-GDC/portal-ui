@@ -6,6 +6,7 @@ import { Row } from '@ncigdc/uikit/Flex';
 import ExploreLink from '@ncigdc/components/Links/ExploreLink';
 import BarChart from '@ncigdc/components/Charts/TwoBarChart';
 import { withTheme } from '@ncigdc/theme';
+import Pvalue from '@ncigdc/modern_components/Pvalue';
 
 export default compose(
   withTheme,
@@ -24,10 +25,9 @@ export default compose(
     set2,
     Alias,
     palette,
-    data = union(
-      data1[field].buckets.map(b => b.key),
-      data2[field].buckets.map(b => b.key),
-    ),
+    buckets1 = data1[field].buckets.filter(x => x.key !== '_missing'),
+    buckets2 = data2[field].buckets.filter(x => x.key !== '_missing'),
+    data = union(buckets1.map(b => b.key), buckets2.map(b => b.key)),
   }) =>
     <div>
       <Row>
@@ -39,7 +39,7 @@ export default compose(
       </Row>
       <BarChart
         data1={data.map(k => {
-          const bucket = find(data1[field].buckets, b => b.key === k) || {};
+          const bucket = find(buckets1, b => b.key === k) || {};
 
           return {
             label: truncate(k, { length: 15 }),
@@ -47,7 +47,7 @@ export default compose(
           };
         })}
         data2={data.map(k => {
-          const bucket = find(data2[field].buckets, b => b.key === k) || {};
+          const bucket = find(buckets2, b => b.key === k) || {};
 
           return {
             label: truncate(k, { length: 15 }),
@@ -89,10 +89,8 @@ export default compose(
         body={
           <tbody>
             {data.map((k, i) => {
-              const set1_bucket =
-                find(data1[field].buckets, b => b.key === k) || {};
-              const set2_bucket =
-                find(data2[field].buckets, b => b.key === k) || {};
+              const set1_bucket = find(buckets1, b => b.key === k) || {};
+              const set2_bucket = find(buckets2, b => b.key === k) || {};
 
               return (
                 <Tr key={k} index={i}>
@@ -173,5 +171,14 @@ export default compose(
           </tbody>
         }
       />
+      <div style={{ textAlign: 'right' }}>
+        {buckets1.length === 2 &&
+          <Pvalue
+            data={[
+              buckets1.map(x => x.doc_count),
+              buckets2.map(x => x.doc_count),
+            ]}
+          />}
+      </div>
     </div>,
 );

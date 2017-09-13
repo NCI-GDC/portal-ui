@@ -30,9 +30,9 @@ import Base from './Base.js';
 
 const caseValidateHits = debounce(validateCases, 200);
 
-export const UploadCaseSet = withProps(() => ({
+export const UploadCaseSet = withProps(({ CreateButton }) => ({
   CreateSetButton: withProps(() => ({
-    CreateButton: CreateRepositoryCaseSetButton,
+    CreateButton: CreateButton || CreateRepositoryCaseSetButton,
     idMap: caseMap,
     idKey: 'case_id',
     mainField: 'cases.case_id',
@@ -63,9 +63,9 @@ export const UploadCaseSet = withProps(() => ({
 
 const geneValidateHits = debounce(validateGenes, 200);
 
-export const UploadGeneSet = withProps(() => ({
+export const UploadGeneSet = withProps(({ CreateButton }) => ({
   CreateSetButton: withProps(() => ({
-    CreateButton: CreateExploreGeneSetButton,
+    CreateButton: CreateButton || CreateExploreGeneSetButton,
     idMap: geneMap,
     idKey: 'gene_id',
     mainField: 'genes.gene_id',
@@ -96,9 +96,9 @@ export const UploadGeneSet = withProps(() => ({
 
 const ssmValidateHits = debounce(validateSsms, 200);
 
-export const UploadSsmSet = withProps(() => ({
+export const UploadSsmSet = withProps(({ CreateButton }) => ({
   CreateSetButton: withProps(() => ({
-    CreateButton: CreateExploreSsmSetButton,
+    CreateButton: CreateButton || CreateExploreSsmSetButton,
     idMap: ssmMap,
     idKey: 'ssm_id',
     mainField: 'ssms.ssm_id',

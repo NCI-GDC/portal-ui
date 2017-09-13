@@ -14,8 +14,9 @@ export default compose(
     maxLength,
     showWarning,
     warningMessage,
+    style,
   }) =>
-    <div>
+    <div style={style}>
       <label style={{ marginTop: 10 }}>
         {labelText}<br />
         <input

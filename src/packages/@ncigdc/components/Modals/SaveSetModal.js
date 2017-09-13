@@ -156,6 +156,7 @@ export const UploadAndSaveSetModal = compose(
           showWarning={existingSet}
           warningMessage="Warning: A set with the same name exists, this will overwrite it."
           maxLength={MAX_SET_NAME_LENGTH}
+          style={{ marginBottom: '1rem' }}
         />
       }
       CreateButton={withProps(() => ({
@@ -166,6 +167,7 @@ export const UploadAndSaveSetModal = compose(
           });
           addOrReplace({ dispatch, existingSet, setName, setId, type });
         },
+        disabled: !setName || setName.length > MAX_SET_NAME_LENGTH,
       }))(CreateSetButton)}
     />,
 );

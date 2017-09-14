@@ -206,7 +206,6 @@ export default compose(
             />
           </div>
         </Row>
-
         {facets.map(field =>
           FacetTable({
             key: field,

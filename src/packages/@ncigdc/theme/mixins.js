@@ -47,6 +47,7 @@ export const visualizingButton = {
   borderColor: '#ccc',
   minWidth: 40,
   minHeight: 28,
+  lineHeight: '28px',
   height: 0, // require for IE to vertically centre.
   display: 'inline-flex',
   outline: 'none',

@@ -17,7 +17,6 @@ export default compose(
 )(
   ({
     theme,
-    mapping,
     field,
     data1,
     data2,
@@ -26,6 +25,7 @@ export default compose(
     set1,
     set2,
     palette,
+    heading,
   }) => {
     const buckets1 = data1[field].buckets.filter(x => x.key !== '_missing');
     const buckets2 = data2[field].buckets.filter(x => x.key !== '_missing');
@@ -40,7 +40,7 @@ export default compose(
       const casesS2 = bucket2.doc_count || 0;
 
       return {
-        value: k,
+        term: k,
         casesS1,
         percentS1: (casesS1 / result1.hits.total * 100).toFixed(0),
         filters1: bucket1.filters,
@@ -52,20 +52,19 @@ export default compose(
 
     return (
       <div>
-        <h2>{mapping[field]}</h2>
-
+        <h2>{heading}</h2>
         <div
           style={{
             maxWidth: tableData.length * 140 + 150, // TODO: use same logic used in TwoBarCharts
           }}
         >
           <BarChart
-            data1={tableData.map(({ value, casesS1 }) => ({
-              label: truncate(value, { length: 15 }),
+            data1={tableData.map(({ term, casesS1 }) => ({
+              label: truncate(term, { length: 15 }),
               value: casesS1,
             }))}
-            data2={tableData.map(({ value, casesS2 }) => ({
-              label: truncate(value, { length: 15 }),
+            data2={tableData.map(({ term, casesS2 }) => ({
+              label: truncate(term, { length: 15 }),
               value: casesS2,
             }))}
             yAxis={{ title: '# Cases' }}
@@ -97,14 +96,14 @@ export default compose(
                 saveFile(
                   toTsvString(tableData),
                   'TSV',
-                  `${mapping[field]}-comparison.tsv`,
+                  `${heading}-comparison.tsv`,
                 )}
             >
               TSV
             </Button>
           }
           headings={[
-            { key: 'value', title: mapping[field], tdStyle: { maxWidth: 250 } },
+            { key: 'term', title: heading, tdStyle: { maxWidth: 250 } },
             {
               key: 'casesS1',
               title: (
@@ -160,7 +159,7 @@ export default compose(
                                 op: 'in',
                                 content: {
                                   field: `cases.${field}`,
-                                  value: [row.value],
+                                  value: [row.term],
                                 },
                               },
                             ]),
@@ -196,7 +195,7 @@ export default compose(
                                 op: 'in',
                                 content: {
                                   field: `cases.${field}`,
-                                  value: [row.value],
+                                  value: [row.term],
                                 },
                               },
                             ]),

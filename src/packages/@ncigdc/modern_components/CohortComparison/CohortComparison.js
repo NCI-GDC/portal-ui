@@ -16,13 +16,6 @@ import FacetTable from './FacetTable';
 import Survival from './Survival';
 import { getLowerAgeYears, getUpperAgeYears } from '@ncigdc/utils/ageDisplay';
 
-const mapping = {
-  'demographic.gender': 'Gender',
-  'diagnoses.vital_status': 'Vital Status',
-  'demographic.race': 'Race',
-  'diagnoses.age_at_diagnosis': 'Age at Diagnosis',
-};
-
 const initialState = {
   loading: true,
 };
@@ -281,10 +274,11 @@ export default compose(
           palette={[SET1_COLOUR, SET2_COLOUR]}
           style={{ marginTop: 10 }}
         />
-        {facets.map(field =>
+        {Object.entries(facets).map(([field, heading]) =>
           FacetTable({
             key: field,
-            mapping,
+            heading,
+            Alias,
             field,
             data1: {
               ...JSON.parse(result1.facets),

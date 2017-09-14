@@ -46,26 +46,26 @@ const EntityPageHorizontalTable = ({
       ...style,
     }}
   >
-    {title && (
-      <h3
-        style={{
-          color: theme.greyScale7,
-          width: '100%',
-          fontSize: '24px',
-          lineHeight: '1.4em',
-          fontWeight: 'normal',
-          marginTop: 0,
-          marginBottom: 0,
-          padding: '1rem',
-          backgroundColor: '#fff',
-          display: 'flex',
-          justifyContent: 'space-between',
-          ...titleStyle,
-        }}
-      >
-        {title} {rightComponent}
-      </h3>
-    )}
+    {(title || rightComponent) && (
+        <h3
+          style={{
+            color: theme.greyScale7,
+            width: '100%',
+            fontSize: '24px',
+            lineHeight: '1.4em',
+            fontWeight: 'normal',
+            marginTop: 0,
+            marginBottom: 0,
+            padding: '1rem',
+            backgroundColor: '#fff',
+            display: 'flex',
+            justifyContent: 'space-between',
+            ...titleStyle,
+          }}
+        >
+          {title || <span />} {rightComponent}
+        </h3>
+      )}
     {!!data.length && (
       <Table
         id={tableId}

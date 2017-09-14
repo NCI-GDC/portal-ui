@@ -16,7 +16,6 @@ export default compose(
 )(
   ({
     theme,
-    mapping,
     field,
     data1,
     data2,
@@ -26,6 +25,7 @@ export default compose(
     set2,
     Alias,
     palette,
+    heading,
   }) => {
     const buckets1 = data1[field].buckets.filter(x => x.key !== '_missing');
     const buckets2 = data2[field].buckets.filter(x => x.key !== '_missing');
@@ -47,7 +47,7 @@ export default compose(
 
     return (
       <div>
-        <h2>{mapping[field]}</h2>
+        <h2>{heading}</h2>
         <BarChart
           data1={tableData.map(({ value, casesS1 }) => ({
             label: truncate(value, { length: 15 }),
@@ -85,14 +85,14 @@ export default compose(
                 saveFile(
                   toTsvString(tableData),
                   'TSV',
-                  `${mapping[field]}-comparison.tsv`,
+                  `${heading}-comparison.tsv`,
                 )}
             >
               TSV
             </Button>
           }
           headings={[
-            { key: 'value', title: mapping[field], tdStyle: { maxWidth: 250 } },
+            { key: 'value', title: heading, tdStyle: { maxWidth: 250 } },
             {
               key: 'casesS1',
               title: (

@@ -14,12 +14,6 @@ import CreateOrOpenAnalysis from '@ncigdc/components/CreateOrOpenAnalysis';
 import FacetTable from './FacetTable';
 import Survival from './Survival';
 
-const mapping = {
-  'demographic.gender': 'Gender',
-  'diagnoses.vital_status': 'Vital Status',
-  'demographic.race': 'Race',
-};
-
 const initialState = {
   loading: true,
 };
@@ -206,11 +200,11 @@ export default compose(
             />
           </div>
         </Row>
-        {facets.map(field =>
+        {Object.entries(facets).map(([field, heading]) =>
           FacetTable({
             key: field,
+            heading,
             Alias,
-            mapping,
             field,
             data1: JSON.parse(result1.facets),
             data2: JSON.parse(result2.facets),

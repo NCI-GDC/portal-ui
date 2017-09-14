@@ -244,11 +244,12 @@ const availableAnalysis: Array<TAnalysis> = [
     ResultComponent: ({ sets }) => {
       return (
         <CohortComparison
-          facets={[
-            'demographic.gender',
-            'diagnoses.vital_status',
-            'demographic.race',
-          ]}
+          facets={{
+            'demographic.ethnicity': 'Ethnicity',
+            'demographic.gender': 'Gender',
+            'diagnoses.vital_status': 'Vital Status',
+            'demographic.race': 'Race',
+          }}
           sets={sets}
         />
       );

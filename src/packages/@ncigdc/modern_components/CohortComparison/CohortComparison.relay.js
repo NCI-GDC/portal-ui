@@ -18,7 +18,7 @@ export default (Component: React$Element<*>) =>
         setName1,
         setName2,
         variables: {
-          facets,
+          facets: Object.keys(facets),
           filter1: {
             op: 'and',
             content: [

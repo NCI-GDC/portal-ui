@@ -37,7 +37,7 @@ export default compose(
       const casesS2 = (find(buckets2, b => b.key === k) || {}).doc_count || 0;
 
       return {
-        value: k,
+        term: k,
         casesS1,
         percentS1: (casesS1 / result1.hits.total * 100).toFixed(0),
         casesS2,
@@ -49,12 +49,12 @@ export default compose(
       <div>
         <h2>{heading}</h2>
         <BarChart
-          data1={tableData.map(({ value, casesS1 }) => ({
-            label: truncate(value, { length: 15 }),
+          data1={tableData.map(({ term, casesS1 }) => ({
+            label: truncate(term, { length: 15 }),
             value: casesS1,
           }))}
-          data2={tableData.map(({ value, casesS2 }) => ({
-            label: truncate(value, { length: 15 }),
+          data2={tableData.map(({ term, casesS2 }) => ({
+            label: truncate(term, { length: 15 }),
             value: casesS2,
           }))}
           yAxis={{ title: '# Cases' }}
@@ -92,7 +92,7 @@ export default compose(
             </Button>
           }
           headings={[
-            { key: 'value', title: heading, tdStyle: { maxWidth: 250 } },
+            { key: 'term', title: heading, tdStyle: { maxWidth: 250 } },
             {
               key: 'casesS1',
               title: (
@@ -145,7 +145,7 @@ export default compose(
                           op: 'in',
                           content: {
                             field,
-                            value: [row.value],
+                            value: [row.term],
                           },
                         },
                       ],
@@ -177,7 +177,7 @@ export default compose(
                           op: 'in',
                           content: {
                             field,
-                            value: [row.value],
+                            value: [row.term],
                           },
                         },
                       ],

@@ -54,6 +54,7 @@ class UploadSet extends React.Component {
       MappingTable,
       heading,
       validatingMessage,
+      content,
     } = this.props;
 
     return (
@@ -80,6 +81,7 @@ class UploadSet extends React.Component {
             maxHeight: 'calc(100vh - 160px)',
           }}
         >
+          {content}
           <SetInput
             {...inputProps}
             onUpdate={setHits}

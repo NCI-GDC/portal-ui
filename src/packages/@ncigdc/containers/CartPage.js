@@ -287,7 +287,7 @@ const CartPage: TCartPage = ({ viewer, files, user, theme } = {}) => {
               }}
             />
           </Row>
-          <Row style={{ marginBottom: '2rem' }}>
+          <Row style={{ marginBottom: '6rem' }}>
             <Row style={{ marginLeft: 'auto' }} spacing="1rem">
               <MetadataDownloadButton files={{ files }} />
               <CartDownloadDropdown files={files} user={user} />

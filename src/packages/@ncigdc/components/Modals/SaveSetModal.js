@@ -1,6 +1,6 @@
 // @flow
 import React from 'react';
-import { compose, withState, withProps } from 'recompose';
+import { compose, withState, withProps, withPropsOnChange } from 'recompose';
 import { connect } from 'react-redux';
 
 import BaseModal from '@ncigdc/components/Modals/BaseModal';
@@ -8,9 +8,18 @@ import { addSet, replaceSet } from '@ncigdc/dux/sets';
 import filtersToName from '@ncigdc/utils/filtersToName';
 import WarningBox from '@ncigdc/uikit/WarningBox';
 import pluralize from '@ncigdc/utils/pluralize';
+import InputWithWarning from '@ncigdc/uikit/InputWithWarning';
 import { MAX_SET_SIZE, MAX_SET_NAME_LENGTH } from '@ncigdc/utils/constants';
 
 import onSaveComplete from './onSaveComplete';
+
+const addOrReplace = ({ dispatch, existingSet, setName, setId, type }) => {
+  if (existingSet) {
+    dispatch(replaceSet({ type, oldId: existingSet[0], newId: setId }));
+  } else {
+    dispatch(addSet({ type, label: setName, id: setId }));
+  }
+};
 
 const enhance = compose(
   connect(({ sets }) => ({ sets })),
@@ -74,13 +83,13 @@ const SaveSetModal = ({
               label: inputName,
             });
 
-            if (existingSet) {
-              dispatch(
-                replaceSet({ type, oldId: existingSet[0], newId: setId }),
-              );
-            } else {
-              dispatch(addSet({ type, label: inputName, id: setId }));
-            }
+            addOrReplace({
+              dispatch,
+              existingSet,
+              setName: inputName,
+              setId,
+              type,
+            });
           }}
         >
           Save
@@ -106,27 +115,59 @@ const SaveSetModal = ({
           Above maximum of {pluralize(displayType, max, true)}
         </WarningBox>}
 
-      <label style={{ marginTop: 10 }}>
-        Name:<br />
-        <input
-          style={{ width: '100%' }}
-          autoFocus
-          onFocus={e => e.target.select()}
-          value={inputName}
-          onChange={e => setInputName(e.target.value)}
-          id="save-set-modal-name"
-          type="text"
-        />
-        {inputName.length > MAX_SET_NAME_LENGTH &&
-          <WarningBox>Maximum name length is {MAX_SET_NAME_LENGTH}</WarningBox>}
-      </label>
-      {existingSet &&
-        <WarningBox>
-          Warning: A set with the same name exists,
-          this will overwrite it.
-        </WarningBox>}
+      <InputWithWarning
+        labelText="Name:"
+        showWarning={existingSet}
+        handleOnChange={e => setInputName(e.target.value)}
+        warningMessage="Warning: A set with the same name exists, this will overwrite it."
+        maxLength={MAX_SET_NAME_LENGTH}
+      />
     </BaseModal>
   );
 };
 
 export default enhance(SaveSetModal);
+
+export const UploadAndSaveSetModal = compose(
+  connect(({ sets }) => ({ sets })),
+  withState('setName', 'setSetName', ''),
+  withProps(({ sets, type }) => ({
+    sets: sets[type] || {},
+  })),
+  withPropsOnChange(['setName', 'sets'], ({ sets, setName }) => ({
+    existingSet: Object.entries(sets).find(([, label]) => label === setName),
+  })),
+)(
+  ({
+    dispatch,
+    sets,
+    setName,
+    setSetName,
+    existingSet,
+    CreateSetButton,
+    type,
+    UploadSet,
+  }) =>
+    <UploadSet
+      content={
+        <InputWithWarning
+          labelText="Name:"
+          handleOnChange={e => setSetName(e.target.value)}
+          showWarning={existingSet}
+          warningMessage="Warning: A set with the same name exists, this will overwrite it."
+          maxLength={MAX_SET_NAME_LENGTH}
+          style={{ marginBottom: '1rem' }}
+        />
+      }
+      CreateButton={withProps(() => ({
+        onComplete: setId => {
+          onSaveComplete({
+            dispatch,
+            label: setName,
+          });
+          addOrReplace({ dispatch, existingSet, setName, setId, type });
+        },
+        disabled: !setName || setName.length > MAX_SET_NAME_LENGTH,
+      }))(CreateSetButton)}
+    />,
+);

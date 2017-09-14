@@ -24,6 +24,19 @@ import UnstyledButton from '@ncigdc/uikit/UnstyledButton';
 import { SET_DOWNLOAD_FIELDS as downloadFields } from '@ncigdc/utils/constants';
 import DownloadButton from '@ncigdc/components/DownloadButton';
 import { iconButton, iconLink } from '@ncigdc/theme/mixins';
+import {
+  UploadCaseSet,
+  UploadGeneSet,
+  UploadSsmSet,
+} from '@ncigdc/components/Modals/UploadSet';
+import { setModal } from '@ncigdc/dux/modal';
+import CreateRepositoryCaseSetButton from '@ncigdc/modern_components/setButtons/CreateRepositoryCaseSetButton';
+import CreateExploreGeneSetButton from '@ncigdc/modern_components/setButtons/CreateExploreGeneSetButton';
+import CreateExploreSsmSetButton from '@ncigdc/modern_components/setButtons/CreateExploreSsmSetButton';
+import { UploadAndSaveSetModal } from '@ncigdc/components/Modals/SaveSetModal';
+import Dropdown from '@ncigdc/uikit/Dropdown';
+import DropdownItem from '@ncigdc/uikit/DropdownItem';
+import DownCaretIcon from 'react-icons/lib/fa/caret-down';
 
 const fields = {
   case: 'cases.case_id',
@@ -116,90 +129,150 @@ const ManageSetsPage = ({
         the{' '}
         <ExploreLink>Exploration Page</ExploreLink>.
       </p>
-      {flattenedSets.length === 0
-        ? <div>No sets</div>
-        : <Column>
-            <Row>
+
+      <Row>
+        <Dropdown
+          button={<Button rightIcon={<DownCaretIcon />}>Upload Set</Button>}
+          dropdownStyle={{
+            marginTop: 5,
+            whiteSpace: 'nowrap',
+            right: 'auto',
+          }}
+        >
+          <DropdownItem
+            style={{ cursor: 'pointer' }}
+            onClick={() =>
+              dispatch(
+                setModal(
+                  <UploadAndSaveSetModal
+                    type="case"
+                    CreateSetButton={CreateRepositoryCaseSetButton}
+                    UploadSet={UploadCaseSet}
+                  />,
+                ),
+              )}
+          >
+            Case
+          </DropdownItem>
+          <DropdownItem
+            style={{ cursor: 'pointer' }}
+            onClick={() =>
+              dispatch(
+                setModal(
+                  <UploadAndSaveSetModal
+                    type="gene"
+                    CreateSetButton={CreateExploreGeneSetButton}
+                    UploadSet={UploadGeneSet}
+                  />,
+                ),
+              )}
+          >
+            Gene
+          </DropdownItem>
+          <DropdownItem
+            style={{ cursor: 'pointer' }}
+            onClick={() =>
+              dispatch(
+                setModal(
+                  <UploadAndSaveSetModal
+                    type="ssm"
+                    CreateSetButton={CreateExploreSsmSetButton}
+                    UploadSet={UploadSsmSet}
+                  />,
+                ),
+              )}
+          >
+            Mutation
+          </DropdownItem>
+        </Dropdown>
+
+        {flattenedSets.length !== 0 &&
+          <span>
+            <Button
+              onClick={() => {
+                const setsToRemove = selectedIds.map(currentSetId => {
+                  const set = find(
+                    flattenedSets,
+                    ({ id }) => id === currentSetId,
+                  );
+                  const { type, id, label } = set;
+                  return {
+                    type,
+                    id,
+                    label,
+                  };
+                });
+                setsToRemove.map(set => dispatch(removeSet(set)));
+                dispatch(
+                  notify({
+                    id: `${new Date().getTime()}`,
+                    component: (
+                      <Column>
+                        Deleted
+                        {selectedIds.length === 1
+                          ? <span>
+                              {' '}set{' '}
+                              <strong>{setsToRemove[0].label}</strong>
+                            </span>
+                          : <span>
+                              <strong>{setsToRemove.length}</strong> sets
+                            </span>}
+                        <strong>
+                          <i
+                            className="fa fa-undo"
+                            style={{
+                              marginRight: '0.3rem',
+                            }}
+                          />
+                          <UnstyledButton
+                            style={{
+                              textDecoration: 'underline',
+                            }}
+                            onClick={() => {
+                              setsToRemove.map(set => dispatch(addSet(set)));
+                              dispatch(closeNotification(true));
+                            }}
+                          >
+                            Undo
+                          </UnstyledButton>
+                        </strong>
+                      </Column>
+                    ),
+                  }),
+                );
+              }}
+              style={{ marginBottom: '1rem', marginLeft: '1rem' }}
+              disabled={selectedIds.length === 0}
+            >
+              Delete Selected
+            </Button>
+            {doneFetchingSetSizes &&
+              emptyOrDeprecatedSets.length > 0 &&
               <Button
                 onClick={() => {
-                  const setsToRemove = selectedIds.map(currentSetId => {
-                    const set = find(
-                      flattenedSets,
-                      ({ id }) => id === currentSetId,
-                    );
-                    const { type, id, label } = set;
-                    return {
-                      type,
-                      id,
-                      label,
-                    };
-                  });
-                  setsToRemove.map(set => dispatch(removeSet(set)));
-                  dispatch(
-                    notify({
-                      id: `${new Date().getTime()}`,
-                      component: (
-                        <Column>
-                          Deleted
-                          {selectedIds.length === 1
-                            ? <span>
-                                {' '}set{' '}
-                                <strong>{setsToRemove[0].label}</strong>
-                              </span>
-                            : <span>
-                                <strong>{setsToRemove.length}</strong> sets
-                              </span>}
-                          <strong>
-                            <i
-                              className="fa fa-undo"
-                              style={{
-                                marginRight: '0.3rem',
-                              }}
-                            />
-                            <UnstyledButton
-                              style={{
-                                textDecoration: 'underline',
-                              }}
-                              onClick={() => {
-                                setsToRemove.map(set => dispatch(addSet(set)));
-                                dispatch(closeNotification(true));
-                              }}
-                            >
-                              Undo
-                            </UnstyledButton>
-                          </strong>
-                        </Column>
-                      ),
-                    }),
+                  emptyOrDeprecatedSets.map(currentSetId =>
+                    dispatch(
+                      removeSet({
+                        type: find(
+                          flattenedSets,
+                          ({ id }) => currentSetId === id,
+                        ).type,
+                        id: currentSetId,
+                      }),
+                    ),
                   );
+                  setSetSizes(omit(setSizes, emptyOrDeprecatedSets));
                 }}
-                style={{ marginBottom: '1rem' }}
-                disabled={selectedIds.length === 0}
+                style={{ marginBottom: '1rem', marginLeft: '1rem' }}
               >
-                Delete Selected
-              </Button>
-              {doneFetchingSetSizes &&
-                emptyOrDeprecatedSets.length > 0 &&
-                <Button
-                  onClick={() => {
-                    emptyOrDeprecatedSets.map(currentSetId =>
-                      dispatch(
-                        removeSet({
-                          type: find(
-                            flattenedSets,
-                            ({ id }) => currentSetId === id,
-                          ).type,
-                          id: currentSetId,
-                        }),
-                      ),
-                    );
-                    setSetSizes(omit(setSizes, emptyOrDeprecatedSets));
-                  }}
-                  style={{ marginBottom: '1rem', marginLeft: '1rem' }}
-                >
-                  Delete Empty or Deprecated
-                </Button>}
-            </Row>
+                Delete Empty or Deprecated
+              </Button>}
+          </span>}
+      </Row>
+
+      {flattenedSets.length === 0
+        ? <Row style={{ marginTop: '1rem' }}>No sets</Row>
+        : <span>
             <Table
               id="manage-sets-table"
               style={{
@@ -335,15 +408,11 @@ const ManageSetsPage = ({
                   color: '#8a6d3b',
                 }}
               />
-              Please be aware that your custom sets are not persisted through
-              GDC data
-              releases.<br />
-              You can export them from here, re-upload them in{' '}
-              <ExploreLink>Exploration</ExploreLink> and save them again at the
-              next
-              GDC data release.
+              Please be aware that your custom sets are deleted during each new
+              GDC data release.<br />
+              You can export them and re-upload them on this page.
             </p>
-          </Column>}
+          </span>}
     </Column>
   );
 };

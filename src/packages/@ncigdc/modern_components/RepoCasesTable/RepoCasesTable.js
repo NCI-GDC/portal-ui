@@ -113,6 +113,7 @@ export default compose(
                           node={e.node}
                           index={i}
                           total={hits.total}
+                          edges={hits.edges}
                           selectedIds={selectedIds}
                           setSelectedIds={setSelectedIds}
                         />,

@@ -10,7 +10,11 @@ export default (Component: ReactClass<*>) =>
   compose(
     branch(
       ({ ssmId }) => !ssmId,
-      renderComponent(() => <div><pre>ssmId</pre> must be provided</div>),
+      renderComponent(() => (
+        <div>
+          <pre>ssmId</pre> must be provided
+        </div>
+      )),
     ),
     withPropsOnChange(['ssmId'], ({ ssmId }) => {
       return {
@@ -52,12 +56,12 @@ export default (Component: ReactClass<*>) =>
             viewer {
               explore {
                 ssms {
-                  hits(first: 1 filters: $filters) {
+                  hits(first: 1, filters: $filters) {
                     edges {
                       node {
                         cosmic_id
                         consequence {
-                          hits(first: 1 filters: $withDbsnp_rs) {
+                          hits(first: 1, filters: $withDbsnp_rs) {
                             edges {
                               node {
                                 transcript {

@@ -32,14 +32,16 @@ const styles = {
     backgroundColor: theme.success,
     color: 'white',
     ':hover': {
-      backgroundColor: Color(theme.success).darken(0.3).rgbString(),
+      backgroundColor: Color(theme.success)
+        .darken(0.3)
+        .rgbString(),
     },
   }),
 };
 
 const fileInCart = (files, file) => files.some(f => f.file_id === file.file_id);
 
-const AddToCartButtonSingle = ({ dispatch, file, files, theme }) =>
+const AddToCartButtonSingle = ({ dispatch, file, files, theme }) => (
   <Button
     className="test-add-to-cart"
     style={{
@@ -51,8 +53,10 @@ const AddToCartButtonSingle = ({ dispatch, file, files, theme }) =>
     onClick={() => dispatch(toggleFilesInCart(file))}
     aria-label="Add to cart"
   >
-    <ShoppingCartIcon /><Hidden>Add to cart</Hidden>
-  </Button>;
+    <ShoppingCartIcon />
+    <Hidden>Add to cart</Hidden>
+  </Button>
+);
 
 AddToCartButtonSingle.propTypes = {
   files: PropTypes.array,

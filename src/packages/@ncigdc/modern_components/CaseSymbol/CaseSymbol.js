@@ -13,8 +13,8 @@ export default compose(
     ...p,
     node: head(p.viewer.repository.cases.hits.edges).node,
   })),
-)(({ node }) =>
+)(({ node }) => (
   <span>
     {node.project.project_id} / {node.submitter_id}
-  </span>,
-);
+  </span>
+));

@@ -8,16 +8,19 @@ import { makeFilter, addInFilters } from '@ncigdc/utils/filters';
 import Toggle from '@ncigdc/uikit/Toggle';
 import ExploreLink from '@ncigdc/components/Links/ExploreLink';
 
-const createRenderer = (Route, Container) => (props: mixed) =>
+const createRenderer = (Route, Container) => (props: mixed) => (
   <Relay.Renderer
     environment={Relay.Store}
     queryConfig={new Route(props)}
     Container={Container}
     render={({ props: relayProps }) =>
-      relayProps
-        ? <Container {...relayProps} {...props} />
-        : <i className="fa fa-spinner fa-spin" />}
-  />;
+      relayProps ? (
+        <Container {...relayProps} {...props} />
+      ) : (
+        <i className="fa fa-spinner fa-spin" />
+      )}
+  />
+);
 
 class Route extends Relay.Route {
   static routeName = 'ProjectBreakdownRoute';
@@ -92,7 +95,7 @@ const Component = ({ viewer: { explore: { cases = {} } }, filters, relay }) => {
       {Object.entries(filteredAggs)
         // $FlowIgnore
         .sort(([ak, av], [bk, bv]) => bv / allAggs[bk] - av / allAggs[ak])
-        .map(([k, v]) =>
+        .map(([k, v]) => (
           <div key={k}>
             <span>{k}: </span>
             <ExploreLink
@@ -124,14 +127,13 @@ const Component = ({ viewer: { explore: { cases = {} } }, filters, relay }) => {
               {allAggs[k]}
             </ExploreLink>
             <span>
-              &nbsp;
-              (
+              &nbsp; (
               {// $FlowIgnore
               (v / allAggs[k] * 100).toFixed(2)}
               %)
             </span>
-          </div>,
-        )}
+          </div>
+        ))}
     </div>
   );
 };
@@ -144,7 +146,7 @@ type TProps = {|
   filters: Object,
 |};
 
-export default ({ caseTotal, gdcCaseTotal, filters }: TProps = {}) =>
+export default ({ caseTotal, gdcCaseTotal, filters }: TProps = {}) => (
   <Toggle
     title={
       <span key="total">
@@ -171,4 +173,5 @@ export default ({ caseTotal, gdcCaseTotal, filters }: TProps = {}) =>
     }
   >
     <Renderer filters={filters} />
-  </Toggle>;
+  </Toggle>
+);

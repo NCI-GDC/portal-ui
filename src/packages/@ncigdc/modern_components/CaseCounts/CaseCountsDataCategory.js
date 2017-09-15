@@ -40,18 +40,22 @@ export default compose(
     return acc.concat({
       ...type,
       id: type.data_category,
-      file_count: type.file_count > 0
-        ? <RepositoryFilesLink query={linkQuery}>
+      file_count:
+        type.file_count > 0 ? (
+          <RepositoryFilesLink query={linkQuery}>
             {type.file_count}
           </RepositoryFilesLink>
-        : '0',
+        ) : (
+          '0'
+        ),
       file_count_meter: (
         <SparkMeterWithTooltip part={type.file_count} whole={totalFiles} />
       ),
       file_count_value: type.file_count,
       tooltip: (
         <span>
-          <b>{type.data_category}</b><br />
+          <b>{type.data_category}</b>
+          <br />
           {type.file_count} file{type.file_count > 1 ? 's' : ''}
         </span>
       ),

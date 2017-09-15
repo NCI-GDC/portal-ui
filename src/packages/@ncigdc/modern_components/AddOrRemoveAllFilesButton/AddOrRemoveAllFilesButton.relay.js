@@ -39,15 +39,15 @@ export default (Component: ReactClass<*>) =>
         variables={props.variables}
         Component={Component}
         customLoader={({ loading }) =>
-          !loading
-            ? null
-            : <Button>
-                <i className="fa fa-spinner fa-spin" />&nbsp;<span
-                  style={{ color: 'rgb(154, 176, 189)' }}
-                >
-                  Add all files to the cart
-                </span>
-              </Button>}
+          !loading ? null : (
+            <Button>
+              <i className="fa fa-spinner fa-spin" />&nbsp;<span
+                style={{ color: 'rgb(154, 176, 189)' }}
+              >
+                Add all files to the cart
+              </span>
+            </Button>
+          )}
         query={graphql`
           query AddOrRemoveAllFilesButton_relayQuery(
             $filters: FiltersArgument

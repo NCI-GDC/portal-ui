@@ -10,7 +10,11 @@ export default (Component: ReactClass<*>) =>
   compose(
     branch(
       ({ projectId }) => !projectId,
-      renderComponent(() => <div><pre>projectId</pre> must be provided</div>),
+      renderComponent(() => (
+        <div>
+          <pre>projectId</pre> must be provided
+        </div>
+      )),
     ),
     withPropsOnChange(['projectId'], ({ projectId }) => {
       return {
@@ -33,12 +37,10 @@ export default (Component: ReactClass<*>) =>
         variables={props.variables}
         Component={Component}
         query={graphql`
-          query ProjectCounts_relayQuery(
-            $filters: FiltersArgument
-          ) {
+          query ProjectCounts_relayQuery($filters: FiltersArgument) {
             viewer {
               projects {
-                hits(first: 1 filters: $filters) {
+                hits(first: 1, filters: $filters) {
                   edges {
                     node {
                       project_id

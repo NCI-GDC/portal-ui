@@ -39,7 +39,10 @@ const PieChart = compose(
     .value(d => getNestedValue(d, path.split('.')))
     .padAngle(HALF_DEGREE_IN_RAD);
 
-  const arc = d3.arc().padRadius(outerRadius).innerRadius(0);
+  const arc = d3
+    .arc()
+    .padRadius(outerRadius)
+    .innerRadius(0);
 
   const svg = d3
     .select(node)

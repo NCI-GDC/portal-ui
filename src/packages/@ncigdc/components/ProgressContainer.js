@@ -14,7 +14,7 @@ const ProgressBar = styled(Progress, {
 const ProgressContainer = compose(
   connect(state => ({ percent: state.relayProgress.percent })),
   withTheme,
-)(({ percent, theme }) =>
+)(({ percent, theme }) => (
   <ProgressBar
     className="test-progress-bar"
     percent={percent}
@@ -22,7 +22,7 @@ const ProgressContainer = compose(
     height={3}
     speed={2}
     hideDelay={0.1}
-  />,
-);
+  />
+));
 
 export default ProgressContainer;

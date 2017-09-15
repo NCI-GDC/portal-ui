@@ -6,5 +6,6 @@ type TProps = {
   className?: string,
 };
 
-export default ({ className = '', ...props }: TProps = {}) =>
-  <i className={`${className} fa fa-caret-down`} {...validAttributes(props)} />;
+export default ({ className = '', ...props }: TProps = {}) => (
+  <i className={`${className} fa fa-caret-down`} {...validAttributes(props)} />
+);

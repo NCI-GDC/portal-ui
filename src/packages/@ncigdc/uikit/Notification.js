@@ -69,7 +69,7 @@ const styles = {
   },
 };
 
-const Notification = ({ style, visible, action, close, children }) =>
+const Notification = ({ style, visible, action, close, children }) => (
   <div
     style={{
       ...styles.container,
@@ -82,7 +82,8 @@ const Notification = ({ style, visible, action, close, children }) =>
       <CloseIcon style={styles.closeIcon} onClick={close} />
       {children}
     </div>
-  </div>;
+  </div>
+);
 
 Notification.propTypes = {
   style: PropTypes.object,

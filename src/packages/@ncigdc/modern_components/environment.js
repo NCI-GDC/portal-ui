@@ -10,9 +10,10 @@ const store = new Store(source);
 const handlerProvider = null;
 
 function fetchQuery(operation, variables, cacheConfig, uploadables) {
-  const reduxStore = process.env.NODE_ENV === 'test'
-    ? { dispatch: x => x }
-    : require('../../../Portal').store;
+  const reduxStore =
+    process.env.NODE_ENV === 'test'
+      ? { dispatch: x => x }
+      : require('../../../Portal').store;
 
   const body = JSON.stringify({
     query: operation.text, // GraphQL text from input

@@ -61,7 +61,8 @@ const SortTableButton = compose(
         button={
           <Tooltip Component={<span>Sort Table</span>}>
             <Button style={style} disabled={isDisabled}>
-              <SortIcon /><Hidden>Sort Table</Hidden>
+              <SortIcon />
+              <Hidden>Sort Table</Hidden>
             </Button>
           </Tooltip>
         }
@@ -123,7 +124,6 @@ const SortTableButton = compose(
                     checked={!!sameField && sameField.order === 'asc'}
                     style={{ pointerEvents: 'none' }}
                   />
-
                 </Link>
                 <Link
                   style={{ width: '100%' }}

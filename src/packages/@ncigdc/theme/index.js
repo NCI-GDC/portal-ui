@@ -25,8 +25,9 @@ export const setTheme: TSetTheme = (version, custom = {}) => {
 export const getTheme = (): TTheme => theme;
 
 type TWithTheme = (Wrapped: ReactClass<{}>) => ReactClass<{}>;
-export const withTheme: TWithTheme = Wrapped => props =>
-  <Wrapped theme={getTheme()} {...props} />;
+export const withTheme: TWithTheme = Wrapped => props => (
+  <Wrapped theme={getTheme()} {...props} />
+);
 
 setTheme('active');
 

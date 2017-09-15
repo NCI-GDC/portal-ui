@@ -10,7 +10,11 @@ export default (Component: ReactClass<*>) =>
   compose(
     branch(
       ({ geneId }) => !geneId,
-      renderComponent(() => <div><pre>geneId</pre> must be provided</div>),
+      renderComponent(() => (
+        <div>
+          <pre>geneId</pre> must be provided
+        </div>
+      )),
     ),
     withPropsOnChange(['geneId'], ({ geneId }) => {
       return {
@@ -32,24 +36,22 @@ export default (Component: ReactClass<*>) =>
         variables={props.variables}
         Component={Component}
         query={graphql`
-        query GeneSymbol_relayQuery(
-          $filters: FiltersArgument
-        ) {
-          viewer {
-            explore {
-              genes {
-                hits(filters: $filters first: 1) {
-                  edges {
-                    node {
-                      symbol
+          query GeneSymbol_relayQuery($filters: FiltersArgument) {
+            viewer {
+              explore {
+                genes {
+                  hits(filters: $filters, first: 1) {
+                    edges {
+                      node {
+                        symbol
+                      }
                     }
                   }
                 }
               }
             }
           }
-        }
-      `}
+        `}
       />
     );
   });

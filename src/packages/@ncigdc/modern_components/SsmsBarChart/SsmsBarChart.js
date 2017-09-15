@@ -24,7 +24,7 @@ const CHART_HEIGHT = 285;
 const COMPONENT_NAME = 'SsmsBarChart';
 
 const createRenderer = (Route, Container) =>
-  compose(withRouter, connect())((props: mixed) =>
+  compose(withRouter, connect())((props: mixed) => (
     <div style={{ position: 'relative', minHeight: `${CHART_HEIGHT}px` }}>
       <Relay.Renderer
         environment={Relay.Store}
@@ -36,8 +36,8 @@ const createRenderer = (Route, Container) =>
         }
       />
       <ConnectedLoader name={COMPONENT_NAME} />
-    </div>,
-  );
+    </div>
+  ));
 
 class Route extends Relay.Route {
   static routeName = COMPONENT_NAME;
@@ -126,12 +126,13 @@ const Component = compose(
       value: score,
       tooltip: (
         <span>
-          <b>{ssmId}</b><br />
+          <b>{ssmId}</b>
+          <br />
           <div>
             {score.toLocaleString()} Case{score > 1 ? 's' : ''}
             &nbsp;affected in {context}
           </div>
-          {!!filteredCases.hits.total &&
+          {!!filteredCases.hits.total && (
             <div>
               <span>{score.toLocaleString()}</span>
               <span> / </span>
@@ -139,7 +140,8 @@ const Component = compose(
               <span>
                 &nbsp;({(score / filteredCases.hits.total * 100).toFixed(2)}%)
               </span>
-            </div>}
+            </div>
+          )}
         </span>
       ),
       onClick: () => handleClickMutation({ ssm_id: ssmId }, chartData),
@@ -148,41 +150,45 @@ const Component = compose(
     return (
       <div style={style}>
         {ssms &&
-          !!ssms.hits.edges.length &&
-          <Column style={{ paddingLeft: '2rem' }}>
-            <VisualizationHeader
-              title={TITLE}
-              buttons={[
-                <DownloadVisualizationButton
-                  key="download"
-                  svg={() =>
-                    wrapSvg({ selector: '#mutation-chart svg', title: TITLE })}
-                  data={chartData.map(d => ({
-                    label: d.fullLabel,
-                    value: d.value,
-                  }))}
-                  slug="most-frequent-mutations-bar-chart"
-                  noText
-                  tooltipHTML="Download image or data"
-                />,
-              ]}
-            />
-            <Row id="mutation-chart" style={{ paddingTop: '2rem' }}>
-              <BarChart
-                data={chartData}
-                height={CHART_HEIGHT}
-                yAxis={{ title: '# Affected Cases' }}
-                styles={{
-                  bars: { fill: theme.secondary },
-                  tooltips: {
-                    fill: '#fff',
-                    stroke: theme.greyScale4,
-                    textFill: theme.greyScale3,
-                  },
-                }}
+          !!ssms.hits.edges.length && (
+            <Column style={{ paddingLeft: '2rem' }}>
+              <VisualizationHeader
+                title={TITLE}
+                buttons={[
+                  <DownloadVisualizationButton
+                    key="download"
+                    svg={() =>
+                      wrapSvg({
+                        selector: '#mutation-chart svg',
+                        title: TITLE,
+                      })}
+                    data={chartData.map(d => ({
+                      label: d.fullLabel,
+                      value: d.value,
+                    }))}
+                    slug="most-frequent-mutations-bar-chart"
+                    noText
+                    tooltipHTML="Download image or data"
+                  />,
+                ]}
               />
-            </Row>
-          </Column>}
+              <Row id="mutation-chart" style={{ paddingTop: '2rem' }}>
+                <BarChart
+                  data={chartData}
+                  height={CHART_HEIGHT}
+                  yAxis={{ title: '# Affected Cases' }}
+                  styles={{
+                    bars: { fill: theme.secondary },
+                    tooltips: {
+                      fill: '#fff',
+                      stroke: theme.greyScale4,
+                      textFill: theme.greyScale3,
+                    },
+                  }}
+                />
+              </Row>
+            </Column>
+          )}
       </div>
     );
   },

@@ -41,17 +41,16 @@ const styles = {
   },
 };
 
-const FullWidthLayout = props =>
+const FullWidthLayout = props => (
   <Row className={props.className || ''}>
     <Column flex="1" style={styles.wrapper}>
       <Row style={styles.title(props.theme)}>
         <span style={styles.type(props.theme)}>{props.entityType}</span>
         {props.title}
       </Row>
-      <Column style={styles.body}>
-        {props.children}
-      </Column>
+      <Column style={styles.body}>{props.children}</Column>
     </Column>
-  </Row>;
+  </Row>
+);
 
 export default withTheme(FullWidthLayout);

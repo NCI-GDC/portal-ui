@@ -62,14 +62,18 @@ export default (Component: ReactClass<*>) =>
           ) {
             genesTableViewer: viewer {
               explore {
-                cases { hits(first: 0 filters: $ssmTested) { total }}
+                cases {
+                  hits(first: 0, filters: $ssmTested) {
+                    total
+                  }
+                }
                 filteredCases: cases {
-                  hits(first: 0 filters: $geneCaseFilter) {
+                  hits(first: 0, filters: $geneCaseFilter) {
                     total
                   }
                 }
                 genes {
-                  hits (
+                  hits(
                     first: $genesTable_size
                     offset: $genesTable_offset
                     filters: $genesTable_filters
@@ -87,7 +91,7 @@ export default (Component: ReactClass<*>) =>
                         gene_id
                         is_cancer_gene_census
                         case {
-                          hits(first: 0 filters: $ssmTested) {
+                          hits(first: 0, filters: $ssmTested) {
                             total
                           }
                         }

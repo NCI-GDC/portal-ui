@@ -3,7 +3,7 @@ import _ from 'lodash';
 import { ExternalLink } from '@ncigdc/uikit/Links';
 import Wrapper from './LinkWrapper';
 
-export default ({ width }) =>
+export default ({ width }) => (
   <Wrapper>
     <ExternalLink
       hasExternalIcon={false}
@@ -19,5 +19,5 @@ export default ({ width }) =>
       </span>
       <p>Documentation</p>
     </ExternalLink>
-
-  </Wrapper>;
+  </Wrapper>
+);

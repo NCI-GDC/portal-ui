@@ -35,14 +35,15 @@ let searchInput;
 const ArrangeColumnsButton = compose(
   connect(),
   withState('searchTerm', 'setState', ''),
-)(({ searchTerm, setState, dispatch, entityType, style = {} }) =>
+)(({ searchTerm, setState, dispatch, entityType, style = {} }) => (
   <Dropdown
     className="test-arrange-columns-button"
     autoclose={false}
     button={
       <Tooltip Component={<span>Arrange Columns</span>}>
         <Button style={style}>
-          <ArrangeIcon /><Hidden>Sort Table</Hidden>
+          <ArrangeIcon />
+          <Hidden>Sort Table</Hidden>
         </Button>
       </Tooltip>
     }
@@ -78,7 +79,7 @@ const ArrangeColumnsButton = compose(
       </RestoreDefaults>
       <ArrangeColumns entityType={entityType} searchTerm={searchTerm} />
     </Column>
-  </Dropdown>,
-);
+  </Dropdown>
+));
 
 export default ArrangeColumnsButton;

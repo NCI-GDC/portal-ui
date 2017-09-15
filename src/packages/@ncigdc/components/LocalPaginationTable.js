@@ -38,26 +38,29 @@ const LocalPaginationTable = ({
           alignItems: 'flex-end',
         }}
       >
-        {enablePagination
-          ? <Showing
-              docType={entityName}
-              prefix={prefix}
-              params={params}
-              total={data.length}
-            />
-          : <span />}
+        {enablePagination ? (
+          <Showing
+            docType={entityName}
+            prefix={prefix}
+            params={params}
+            total={data.length}
+          />
+        ) : (
+          <span />
+        )}
         {buttons}
       </Row>
       {React.Children.map(children, child =>
         React.cloneElement(child, { data: tableData }),
       )}
-      {enablePagination &&
+      {enablePagination && (
         <Pagination
           prefix={prefix}
           params={params}
           total={data.length}
           sizes={sizes}
-        />}
+        />
+      )}
     </div>
   );
 };

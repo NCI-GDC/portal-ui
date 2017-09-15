@@ -29,7 +29,7 @@ const SsmsTable = createCaseSummary(
     node = viewer.repository.cases.hits.edges[0].node,
     projectId = node.project.project_id,
     ...props
-  }) =>
+  }) => (
     <ST
       {...props}
       contextFilters={makeFilter([
@@ -37,7 +37,8 @@ const SsmsTable = createCaseSummary(
       ])}
       context={projectId}
       hideSurvival
-    />,
+    />
+  ),
 );
 
 const styles = {

@@ -61,20 +61,23 @@ type TLoginButtonProps = {
   children: mixed,
   dispatch: Function,
 };
-const LoginButton = ({ children, dispatch }: TLoginButtonProps) =>
+const LoginButton = ({ children, dispatch }: TLoginButtonProps) => (
   <LocationSubscriber>
-    {({ pathname }) =>
+    {({ pathname }) => (
       <Link
         className="test-login-button"
         onClick={() => openAuthWindow({ pathname, dispatch })}
       >
-        {children ||
+        {children || (
           <span>
             <LoginIcon />
             <span style={styles.marginLeft}>Login</span>
-          </span>}
-      </Link>}
-  </LocationSubscriber>;
+          </span>
+        )}
+      </Link>
+    )}
+  </LocationSubscriber>
+);
 
 /*----------------------------------------------------------------------------*/
 

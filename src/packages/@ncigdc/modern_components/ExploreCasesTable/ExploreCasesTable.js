@@ -26,7 +26,7 @@ import {
 const COMPONENT_NAME = 'ExploreCasesTable';
 
 const createRenderer = (Route, Container) =>
-  compose(connect(), withRouter)((props: mixed) =>
+  compose(connect(), withRouter)((props: mixed) => (
     <div style={{ position: 'relative', minHeight: '387px' }}>
       <Relay.Renderer
         environment={Relay.Store}
@@ -38,8 +38,8 @@ const createRenderer = (Route, Container) =>
         }
       />
       <ConnectedLoader name={COMPONENT_NAME} />
-    </div>,
-  );
+    </div>
+  ));
 
 class Route extends Relay.Route {
   static routeName = COMPONENT_NAME;
@@ -242,11 +242,11 @@ const Component = compose(
             .map(x => <x.th key={x.id} />)}
           body={
             <tbody>
-              {props.viewer.explore.cases.hits.edges.map((e, i) =>
+              {props.viewer.explore.cases.hits.edges.map((e, i) => (
                 <Tr key={e.node.id} index={i}>
                   {tableInfo
                     .filter(x => x.td)
-                    .map(x =>
+                    .map(x => (
                       <x.td
                         key={x.id}
                         node={e.node}
@@ -256,10 +256,10 @@ const Component = compose(
                         ssmCount={ssmCounts[e.node.case_id]}
                         ssmCountsLoading={ssmCountsLoading}
                         filters={props.filters}
-                      />,
-                    )}
-                </Tr>,
-              )}
+                      />
+                    ))}
+                </Tr>
+              ))}
             </tbody>
           }
         />

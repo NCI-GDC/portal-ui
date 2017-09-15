@@ -52,13 +52,14 @@ export const SearchTable = compose(
 
     return (
       <div className="test-files-table">
-        {tableHeader &&
+        {tableHeader && (
           <h3
             className="panel-title"
             style={{ padding: '1rem', marginTop: '-6rem' }}
           >
             {tableHeader}
-          </h3>}
+          </h3>
+        )}
         <Row
           style={{
             backgroundColor: 'white',
@@ -92,25 +93,27 @@ export const SearchTable = compose(
             id="repository-files-table"
             headings={[
               <Th key="add_to_cart">
-                {canAddToCart &&
+                {canAddToCart && (
                   <AddToCartButtonAll
                     edges={hits.edges.map(e => e.node)}
                     total={hits.total}
-                  />}
+                  />
+                )}
               </Th>,
-              ...tableInfo.map(x =>
-                <x.th key={x.id} hits={hits} canAddToCart={canAddToCart} />,
-              ),
+              ...tableInfo.map(x => (
+                <x.th key={x.id} hits={hits} canAddToCart={canAddToCart} />
+              )),
             ]}
             body={
               <tbody>
-                {hits.edges.map((e, i) =>
+                {hits.edges.map((e, i) => (
                   <Tr key={e.node.id} index={i}>
                     {[
                       <Td key="add_to_cart">
-                        {canAddToCart &&
-                          <AddToCartButtonSingle file={e.node} />}
-                        {!canAddToCart &&
+                        {canAddToCart && (
+                          <AddToCartButtonSingle file={e.node} />
+                        )}
+                        {!canAddToCart && (
                           <RemoveButton
                             onClick={() => dispatch(toggleFilesInCart(e.node))}
                             aria-label="Remove"
@@ -118,22 +121,23 @@ export const SearchTable = compose(
                             <Tooltip Component={'Remove'}>
                               <i className="fa fa-trash-o" />
                             </Tooltip>
-                          </RemoveButton>}
+                          </RemoveButton>
+                        )}
                       </Td>,
                       ...tableInfo
                         .filter(x => x.td)
-                        .map(x =>
+                        .map(x => (
                           <x.td
                             key={x.id}
                             node={e.node}
                             relay={relay}
                             index={i}
                             total={hits.total}
-                          />,
-                        ),
+                          />
+                        )),
                     ]}
-                  </Tr>,
-                )}
+                  </Tr>
+                ))}
               </tbody>
             }
           />

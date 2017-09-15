@@ -85,13 +85,11 @@ export default (Component: ReactClass<*>) =>
         variables={props.variables}
         Component={Component}
         query={graphql`
-          query DownloadClinicalButton_relayQuery(
-            $filters: FiltersArgument
-          ) {
+          query DownloadClinicalButton_relayQuery($filters: FiltersArgument) {
             viewer {
               repository {
                 cases {
-                  hits(first: 0, filters: $filters){
+                  hits(first: 0, filters: $filters) {
                     total
                   }
                 }

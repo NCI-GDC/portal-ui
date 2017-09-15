@@ -41,7 +41,7 @@ export type TProps = {
 const COMPONENT_NAME = 'ExploreCasesPies';
 
 const createRenderer = (Route, Container) =>
-  compose(connect(), withRouter)((props: mixed) =>
+  compose(connect(), withRouter)((props: mixed) => (
     <div style={{ position: 'relative', minHeight: '161px' }}>
       <Relay.Renderer
         environment={Relay.Store}
@@ -53,8 +53,8 @@ const createRenderer = (Route, Container) =>
         }
       />
       <ConnectedLoader name={COMPONENT_NAME} />
-    </div>,
-  );
+    </div>
+  ));
 
 class Route extends Relay.Route {
   static routeName = COMPONENT_NAME;

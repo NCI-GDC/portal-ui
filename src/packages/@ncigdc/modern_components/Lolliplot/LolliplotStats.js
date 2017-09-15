@@ -17,7 +17,7 @@ export default ({
   toggleBlacklistItem,
   mutationColors,
   state,
-}) =>
+}) => (
   <div id="mutation-stats" style={{ marginLeft: '20px', width: '250px' }}>
     <div
       style={{
@@ -27,8 +27,7 @@ export default ({
     >
       <div>
         <span>
-          Viewing
-          {' '}
+          Viewing{' '}
           {mutations
             .filter(d => d.x >= min && d.x <= max)
             .filter(filterByType(blacklist))
@@ -36,19 +35,16 @@ export default ({
         </span>
         <span> / </span>
         <span>{mutations.length.toLocaleString()} Mutations</span>
-        {outsideSsms.length > 0 &&
+        {outsideSsms.length > 0 && (
           <span style={{ float: 'right' }}>
             <Tooltip
               Component={
                 <div>
                   <div>
-                    {outsideSsms.length.toLocaleString()}
-                    {' '}
-                    mutation
+                    {outsideSsms.length.toLocaleString()} mutation
                     {outsideSsms.length > 1
                       ? 's amino acid changes occur '
-                      : "'s amino acid change occurs "}
-                    {' '}
+                      : "'s amino acid change occurs "}{' '}
                     outside of the annotated transcript's length.
                   </div>
                   <div style={{ marginTop: 5 }}>
@@ -57,21 +53,17 @@ export default ({
                         <tr>
                           <th>AA Change</th>
                           <th>Position</th>
-                          <th style={{ textAlign: 'right' }}>
-                            # Cases
-                          </th>
+                          <th style={{ textAlign: 'right' }}># Cases</th>
                         </tr>
                       </thead>
                       <tbody>
-                        {outsideSsms.map(d =>
+                        {outsideSsms.map(d => (
                           <tr key={d.aa_change}>
                             <td>{d.aa_change}</td>
                             <td>{d.x}</td>
-                            <td style={{ textAlign: 'right' }}>
-                              {d.y}
-                            </td>
-                          </tr>,
-                        )}
+                            <td style={{ textAlign: 'right' }}>{d.y}</td>
+                          </tr>
+                        ))}
                       </tbody>
                     </table>
                   </div>
@@ -86,7 +78,8 @@ export default ({
                 }}
               />
             </Tooltip>
-          </span>}
+          </span>
+        )}
       </div>
       <div style={{ marginTop: '6px' }}>
         <select
@@ -136,7 +129,7 @@ export default ({
         </div>
         {Object.entries(
           groupByType(blacklist, mutations),
-        ).map(([variant, xs]) =>
+        ).map(([variant, xs]) => (
           <div
             key={variant}
             style={{
@@ -157,9 +150,11 @@ export default ({
                   marginRight: '6px',
                 }}
               >
-                {state[`${blacklist}Blacklist`].has(variant)
-                  ? <span>&nbsp;</span>
-                  : '✓'}
+                {state[`${blacklist}Blacklist`].has(variant) ? (
+                  <span>&nbsp;</span>
+                ) : (
+                  '✓'
+                )}
               </span>
               <span>{startCase(variant)}:</span>
               <span style={{ float: 'right' }}>
@@ -174,8 +169,9 @@ export default ({
                 &nbsp;/ <b>{xs.length.toLocaleString()}</b>
               </span>
             </div>
-          </div>,
-        )}
+          </div>
+        ))}
       </div>
     </div>
-  </div>;
+  </div>
+);

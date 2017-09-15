@@ -68,7 +68,7 @@ export const GeneAggregationsComponent = compose(
   withState('idCollapsed', 'setIdCollapsed', false),
   connect(),
   withTheme,
-)((props: TProps) =>
+)((props: TProps) => (
   <div className="test-gene-aggregations">
     <FacetHeader
       title="Gene"
@@ -88,12 +88,14 @@ export const GeneAggregationsComponent = compose(
       placeholder="e.g. BRAF, ENSG00000157764"
       hits={props.suggestions}
       setAutocomplete={props.setAutocomplete}
-      dropdownItem={x =>
+      dropdownItem={x => (
         <div>
           <div style={{ fontWeight: 'bold' }}>{x.symbol}</div>
-          {x.gene_id}<br />
+          {x.gene_id}
+          <br />
           {x.name}
-        </div>}
+        </div>
+      )}
     />
     <div
       style={{
@@ -113,7 +115,7 @@ export const GeneAggregationsComponent = compose(
         Upload Gene Set
       </Button>
     </div>
-    {_.reject(presetFacets, { full: 'genes.gene_id' }).map(facet =>
+    {_.reject(presetFacets, { full: 'genes.gene_id' }).map(facet => (
       <FacetWrapper
         key={facet.full}
         facet={facet}
@@ -122,10 +124,10 @@ export const GeneAggregationsComponent = compose(
         relay={props.relay}
         additionalProps={facet.additionalProps}
         style={{ borderBottom: `1px solid ${props.theme.greyScale5}` }}
-      />,
-    )}
-  </div>,
-);
+      />
+    ))}
+  </div>
+));
 
 export const GeneAggregationsQuery = {
   fragments: {

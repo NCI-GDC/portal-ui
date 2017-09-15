@@ -19,14 +19,15 @@ const InternalLinkWithContext = ({
   mergeQuery,
   whitelist,
   ...rest
-}: TLinkProps) =>
+}: TLinkProps) => (
   <LocationSubscriber>
     {(ctx: {| pathname: string, query: TRawQuery |}) => {
       const pn = pathname || ctx.pathname;
 
-      const mergedQuery = merge && mergeQuery
-        ? mergeQuery(query, ctx.query, merge, whitelist)
-        : query;
+      const mergedQuery =
+        merge && mergeQuery
+          ? mergeQuery(query, ctx.query, merge, whitelist)
+          : query;
 
       const hasFilterChanged = _.some([
         // Note: empty {} passed in b/c
@@ -53,7 +54,8 @@ const InternalLinkWithContext = ({
         <InternalLink pathname={pn} query={queryWithOffsetsReset} {...rest} />
       );
     }}
-  </LocationSubscriber>;
+  </LocationSubscriber>
+);
 
 InternalLinkWithContext.defaultProps = {
   mergeQuery: mq,

@@ -33,13 +33,14 @@ export const SearchTable = compose(
 
     return (
       <div className="test-annotations-table">
-        {tableHeader &&
+        {tableHeader && (
           <h3
             className="panel-title"
             style={{ padding: '1rem', marginTop: '-6rem' }}
           >
             {tableHeader}
-          </h3>}
+          </h3>
+        )}
         <Row
           style={{
             backgroundColor: 'white',
@@ -71,26 +72,26 @@ export const SearchTable = compose(
         <div style={{ overflowX: 'auto' }}>
           <Table
             id="repository-annotations-table"
-            headings={tableInfo.map(x =>
-              <x.th key={x.id} hits={hits} canAddToCart={canAddToCart} />,
-            )}
+            headings={tableInfo.map(x => (
+              <x.th key={x.id} hits={hits} canAddToCart={canAddToCart} />
+            ))}
             body={
               <tbody>
-                {hits.edges.map((e, i) =>
+                {hits.edges.map((e, i) => (
                   <Tr key={e.node.id} index={i}>
                     {tableInfo
                       .filter(x => x.td)
-                      .map(x =>
+                      .map(x => (
                         <x.td
                           key={x.id}
                           node={e.node}
                           relay={relay}
                           index={i}
                           total={hits.total}
-                        />,
-                      )}
-                  </Tr>,
-                )}
+                        />
+                      ))}
+                  </Tr>
+                ))}
               </tbody>
             }
           />

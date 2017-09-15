@@ -11,7 +11,7 @@ export default (Component: ReactClass<*>) => (props: Object) => {
       variables={{ id: btoa(`${props.type}:${props.id}`) }}
       Component={Component}
       query={graphql`
-        query exists_relayQuery( $id: ID ) {
+        query exists_relayQuery($id: ID) {
           node(id: $id) {
             id
           }

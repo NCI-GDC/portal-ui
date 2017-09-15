@@ -56,11 +56,15 @@ export default compose(
       };
     },
   ),
-)(({ node, functionalImpact, functionalImpactTranscript, theme } = {}) =>
+)(({ node, functionalImpact, functionalImpactTranscript, theme } = {}) => (
   <EntityPageVerticalTable
     data-test="ssm-summary"
     id="Summary"
-    title={<span><TableIcon style={{ marginRight: '1rem' }} />Summary</span>}
+    title={
+      <span>
+        <TableIcon style={{ marginRight: '1rem' }} />Summary
+      </span>
+    }
     thToTd={[
       { th: 'UUID', td: node.ssm_id },
       {
@@ -79,39 +83,39 @@ export default compose(
       },
       {
         th: 'Functional Impact (VEP)',
-        td:
-          functionalImpact &&
-            <div>
-              <BubbleIcon
-                data-test="functional-impact-bubble"
-                toolTipText={functionalImpact}
-                text={functionalImpact.slice(
-                  0,
-                  functionalImpact === 'MODIFIER' ? 2 : 1,
-                )}
-                backgroundColor={theme.impacts[functionalImpact]}
-              />
-              <span
-                style={{
-                  display: 'inline-block',
-                  textTransform: 'capitalize',
-                  marginLeft: '0.4em',
-                  marginRight: '0.4em',
-                }}
-              >
-                {functionalImpact.toLowerCase()}
-              </span>
-              <ExternalLink
-                data-test="function-impact-transcript-link"
-                key={functionalImpactTranscript.transcript_id}
-                style={{ paddingRight: '0.5em' }}
-                href={externalReferenceLinks.ensembl(
-                  functionalImpactTranscript.transcript_id,
-                )}
-              >
-                {functionalImpactTranscript.transcript_id}
-              </ExternalLink>
-            </div>,
+        td: functionalImpact && (
+          <div>
+            <BubbleIcon
+              data-test="functional-impact-bubble"
+              toolTipText={functionalImpact}
+              text={functionalImpact.slice(
+                0,
+                functionalImpact === 'MODIFIER' ? 2 : 1,
+              )}
+              backgroundColor={theme.impacts[functionalImpact]}
+            />
+            <span
+              style={{
+                display: 'inline-block',
+                textTransform: 'capitalize',
+                marginLeft: '0.4em',
+                marginRight: '0.4em',
+              }}
+            >
+              {functionalImpact.toLowerCase()}
+            </span>
+            <ExternalLink
+              data-test="function-impact-transcript-link"
+              key={functionalImpactTranscript.transcript_id}
+              style={{ paddingRight: '0.5em' }}
+              href={externalReferenceLinks.ensembl(
+                functionalImpactTranscript.transcript_id,
+              )}
+            >
+              {functionalImpactTranscript.transcript_id}
+            </ExternalLink>
+          </div>
+        ),
         style: { textTransform: 'capitalize' },
       },
     ]}
@@ -120,5 +124,5 @@ export default compose(
       ...styles.column,
       alignSelf: 'flex-start',
     }}
-  />,
-);
+  />
+));

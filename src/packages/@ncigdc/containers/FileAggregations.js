@@ -99,7 +99,7 @@ export type TProps = {
   facetExclusionTest: Function,
 };
 
-export const FileAggregationsComponent = (props: TProps) =>
+export const FileAggregationsComponent = (props: TProps) => (
   <div className="test-file-aggregations">
     <div
       className="text-right"
@@ -108,20 +108,20 @@ export const FileAggregationsComponent = (props: TProps) =>
         borderBottom: `1px solid ${props.theme.greyScale5}`,
       }}
     >
-      {!!props.userSelectedFacets.length &&
+      {!!props.userSelectedFacets.length && (
         <span>
           <a onClick={props.handleResetFacets} style={styles.link}>
             Reset
           </a>{' '}
           &nbsp;|&nbsp;
-        </span>}
+        </span>
+      )}
       <a
         onClick={() => props.setShouldShowFacetSelection(true)}
         style={styles.link}
       >
         Add a File Filter
       </a>
-
     </div>
     <Modal
       isOpen={props.shouldShowFacetSelection}
@@ -137,7 +137,7 @@ export const FileAggregationsComponent = (props: TProps) =>
       />
     </Modal>
 
-    {props.userSelectedFacets.map(facet =>
+    {props.userSelectedFacets.map(facet => (
       <FacetWrapper
         isRemovable
         key={facet.full}
@@ -146,8 +146,8 @@ export const FileAggregationsComponent = (props: TProps) =>
         relay={props.relay}
         onRequestRemove={() => props.handleRequestRemoveFacet(facet)}
         style={{ borderBottom: `1px solid ${props.theme.greyScale5}` }}
-      />,
-    )}
+      />
+    ))}
     <FacetHeader
       title="File"
       field="files.file_id"
@@ -164,7 +164,7 @@ export const FileAggregationsComponent = (props: TProps) =>
       hits={props.suggestions}
       setAutocomplete={props.setAutocomplete}
       style={{ borderBottom: `1px solid ${props.theme.greyScale5}` }}
-      dropdownItem={x =>
+      dropdownItem={x => (
         <Row>
           <FileIcon style={{ paddingRight: '1rem', paddingTop: '1rem' }} />
           <div>
@@ -172,9 +172,10 @@ export const FileAggregationsComponent = (props: TProps) =>
             <div style={{ fontSize: '80%' }}>{x.submitter_id}</div>
             {x.file_name}
           </div>
-        </Row>}
+        </Row>
+      )}
     />
-    {_.reject(presetFacets, { full: 'files.file_id' }).map(facet =>
+    {_.reject(presetFacets, { full: 'files.file_id' }).map(facet => (
       <FacetWrapper
         key={facet.full}
         facet={facet}
@@ -183,10 +184,10 @@ export const FileAggregationsComponent = (props: TProps) =>
         relay={props.relay}
         style={{ borderBottom: `1px solid ${props.theme.greyScale5}` }}
         additionalProps={facet.additionalProps}
-      />,
-    )}
-
-  </div>;
+      />
+    ))}
+  </div>
+);
 
 export const FileAggregationsQuery = {
   initialVariables: Object.assign(
@@ -212,8 +213,9 @@ export const FileAggregationsQuery = {
         prevVariables.shouldRequestAllAggregations ||
         initialFileAggregationsVariables[key] ||
         _.includes(
-          (tryParseJSON(window.localStorage.getItem(storageKey)) || [])
-            .map(x => escapeForRelay(x.field)),
+          (tryParseJSON(window.localStorage.getItem(storageKey)) || []).map(x =>
+            escapeForRelay(x.field),
+          ),
           key.replace(/^shouldShow_/, ''),
         ) ||
         value,

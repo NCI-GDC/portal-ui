@@ -19,7 +19,7 @@ const styles = {
   },
 };
 
-const Info = ({ style, children, theme, ...props }) =>
+const Info = ({ style, children, theme, ...props }) => (
   <Row
     style={{
       backgroundColor: theme.alertInfo,
@@ -29,7 +29,8 @@ const Info = ({ style, children, theme, ...props }) =>
     {...props}
   >
     {children}
-  </Row>;
+  </Row>
+);
 
 Info.propTypes = {
   children: PropTypes.node,

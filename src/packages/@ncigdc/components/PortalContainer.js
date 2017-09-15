@@ -74,7 +74,7 @@ const PortalContainer = ({
   notifications,
 }: {
   notifications: Array<{ dismissed: string }>,
-}) =>
+}) => (
   <div style={{ position: 'relative', minHeight: '100vh', minWidth: 1024 }}>
     <SkipLink href="#skip">Skip to Main Content</SkipLink>
     <ProgressContainer />
@@ -88,7 +88,6 @@ const PortalContainer = ({
         transition: 'padding 0.25s ease',
       }}
     >
-
       <Route
         children={p => <Head title={p.location.pathname.split('/')[1]} />}
       />
@@ -110,9 +109,11 @@ const PortalContainer = ({
           path="/components/:component"
           component={({ match, ...props }) => {
             const Component = ModernComponents[match.params.component];
-            return Component
-              ? <Component />
-              : <h1>No matching component found.</h1>;
+            return Component ? (
+              <Component />
+            ) : (
+              <h1>No matching component found.</h1>
+            );
           }}
         />
         <Route component={NotFound} />
@@ -124,6 +125,7 @@ const PortalContainer = ({
     <NotificationContainer />
     <ModalContainer />
     <GlobalTooltip />
-  </div>;
+  </div>
+);
 
 export default enhance(PortalContainer);

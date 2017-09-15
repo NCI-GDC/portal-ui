@@ -58,17 +58,11 @@ const getNotificationComponent = (
     <Column>
       <span>
         {notification.action}
-        <strong>
-          {' '}{notification.file}{' '}
-        </strong>
+        <strong> {notification.file} </strong>
         {notification.fileText}
-        {notification.prepositon}
-        {' '}
-        the cart.
-        {' '}
-        {notification.extraText}
+        {notification.prepositon} the cart. {notification.extraText}
       </span>
-      {notification.undo &&
+      {notification.undo && (
         <span style={center}>
           <strong>
             <i
@@ -87,7 +81,8 @@ const getNotificationComponent = (
               Undo
             </UnstyledButton>
           </strong>
-        </span>}
+        </span>
+      )}
     </Column>
   ),
 });
@@ -103,9 +98,7 @@ const messageNotificationDispatcher = (
       id: `${new Date().getTime()}`,
       component: (
         <Column>
-          <span>
-            {message}
-          </span>
+          <span>{message}</span>
         </Column>
       ),
     }),
@@ -245,11 +238,9 @@ function addAllFilesInCart(
               fileText: nextFiles.length > 1 ? 'files ' : 'file ',
               extraText: (
                 <span>
-                  <strong>{filesInCart}</strong>
-                  {' '}
-                  {filesInCart > 1 ? 'files' : 'file'}
-                  {' '}
-                  already in cart, not added.
+                  <strong>{filesInCart}</strong>{' '}
+                  {filesInCart > 1 ? 'files' : 'file'} already in cart, not
+                  added.
                 </span>
               ),
               prepositon: 'to',
@@ -295,7 +286,9 @@ function fetchFilesAndAdd(currentFilters: ?Object, total: number): Function {
     if (total <= MAX_CART_SIZE) {
       messageNotificationDispatcher(
         'info',
-        <span>Adding <b>{total}</b> files to cart</span>,
+        <span>
+          Adding <b>{total}</b> files to cart
+        </span>,
         dispatch,
       );
 
@@ -345,23 +338,24 @@ function fetchFilesAndRemove(currentFilters: ?Object, size: number): Function {
       dispatch,
     );
 
-    const filters = size > MAX_CART_SIZE
-      ? replaceFilters(
-          {
-            op: 'and',
-            content: [
-              {
-                op: 'in',
-                content: {
-                  field: 'files.file_id',
-                  value: existingFiles.map(f => f.file_id),
+    const filters =
+      size > MAX_CART_SIZE
+        ? replaceFilters(
+            {
+              op: 'and',
+              content: [
+                {
+                  op: 'in',
+                  content: {
+                    field: 'files.file_id',
+                    value: existingFiles.map(f => f.file_id),
+                  },
                 },
-              },
-            ],
-          },
-          currentFilters,
-        )
-      : currentFilters;
+              ],
+            },
+            currentFilters,
+          )
+        : currentFilters;
 
     const search = {
       headers: { 'Content-Type': 'application/json' },

@@ -151,7 +151,6 @@ class SmartSearchComponent extends React.Component {
             },
           ]}
         />
-
       </div>
     );
   }

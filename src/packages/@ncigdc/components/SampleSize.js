@@ -16,7 +16,7 @@ export default ({
   style,
   formatter = x => x.toLocaleString(),
   symbol = 'n',
-}) =>
+}) => (
   <span
     {...css({ ...styles.deemphasizedHeading, ...style })}
     className="test-sample-size"
@@ -24,4 +24,5 @@ export default ({
     <small>( </small> {symbol}=
     {n ? formatter(n) : `--`}
     <small> )</small>
-  </span>;
+  </span>
+);

@@ -4,17 +4,19 @@ import { connect } from 'react-redux';
 import Notification from '@ncigdc/uikit/Notification';
 import { Row } from '@ncigdc/uikit/Flex';
 
-const NotificationContainer = ({ notification }) =>
+const NotificationContainer = ({ notification }) => (
   <Row className="test-notification-wrapper">
-    {notification &&
+    {notification && (
       <Notification
         id={notification.id}
         action={notification.action}
         {...notification}
       >
         {notification.component}
-      </Notification>}
-  </Row>;
+      </Notification>
+    )}
+  </Row>
+);
 
 export default connect(state => ({ notification: state.notification }))(
   NotificationContainer,

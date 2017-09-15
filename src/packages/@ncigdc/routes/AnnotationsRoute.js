@@ -33,11 +33,11 @@ class AnnotationsRoute extends Relay.Route {
   };
 }
 
-export default connect()((props: mixed) =>
+export default connect()((props: mixed) => (
   <Relay.Renderer
     Container={AnnotationsPage}
     queryConfig={new AnnotationsRoute(props)}
     environment={Relay.Store}
     onReadyStateChange={handleStateChange(props)}
-  />,
-);
+  />
+));

@@ -20,7 +20,7 @@ const CHART_HEIGHT = 285;
 const COMPONENT_NAME = 'AffectedCasesBarChart';
 
 const createRenderer = (Route, Container) =>
-  compose(withRouter, connect())((props: mixed) =>
+  compose(withRouter, connect())((props: mixed) => (
     <div style={{ position: 'relative', minHeight: `${CHART_HEIGHT}px` }}>
       <Relay.Renderer
         environment={Relay.Store}
@@ -32,8 +32,8 @@ const createRenderer = (Route, Container) =>
         }
       />
       <ConnectedLoader name={COMPONENT_NAME} />
-    </div>,
-  );
+    </div>
+  ));
 
 class Route extends Relay.Route {
   static routeName = COMPONENT_NAME;
@@ -100,8 +100,10 @@ const Component = compose(
       value: c.score,
       tooltip: (
         <span>
-          <b>{c.submitter_id}</b><br />
-          Project: {c.project.project_id}<br />
+          <b>{c.submitter_id}</b>
+          <br />
+          Project: {c.project.project_id}
+          <br />
           {c.score.toLocaleString()} Genes Affected
         </span>
       ),
@@ -112,50 +114,52 @@ const Component = compose(
       <div style={style}>
         <Column style={{ padding: '0 0 0 2rem' }}>
           {cases &&
-            !!cases.hits.edges.length &&
-            <Row style={{ justifyContent: 'flex-end' }}>
-              <DownloadVisualizationButton
-                svg={() =>
-                  wrapSvg({
-                    selector: '#most-affected-cases svg',
-                    title: 'Most Affected Cases',
-                  })}
-                data={chartData.map(d => ({
-                  label: d.fullLabel,
-                  value: d.value,
-                }))}
-                slug="most-affected-cases-bar-chart"
-                noText
-                tooltipHTML="Download image or data"
-                style={{ marginRight: '2rem' }}
-              />
-            </Row>}
+            !!cases.hits.edges.length && (
+              <Row style={{ justifyContent: 'flex-end' }}>
+                <DownloadVisualizationButton
+                  svg={() =>
+                    wrapSvg({
+                      selector: '#most-affected-cases svg',
+                      title: 'Most Affected Cases',
+                    })}
+                  data={chartData.map(d => ({
+                    label: d.fullLabel,
+                    value: d.value,
+                  }))}
+                  slug="most-affected-cases-bar-chart"
+                  noText
+                  tooltipHTML="Download image or data"
+                  style={{ marginRight: '2rem' }}
+                />
+              </Row>
+            )}
           {cases &&
-            !!cases.hits.edges.length &&
-            <Row id="most-affected-cases">
-              <BarChart
-                data={chartData}
-                height={CHART_HEIGHT}
-                margin={{ top: 20, right: 50, bottom: 85, left: 55 }}
-                yAxis={{ title: '# Affected Genes' }}
-                styles={{
-                  xAxis: {
-                    stroke: theme.greyScale4,
-                    textFill: theme.greyScale3,
-                  },
-                  yAxis: {
-                    stroke: theme.greyScale4,
-                    textFill: theme.greyScale3,
-                  },
-                  bars: { fill: theme.secondary },
-                  tooltips: {
-                    fill: '#fff',
-                    stroke: theme.greyScale4,
-                    textFill: theme.greyScale3,
-                  },
-                }}
-              />
-            </Row>}
+            !!cases.hits.edges.length && (
+              <Row id="most-affected-cases">
+                <BarChart
+                  data={chartData}
+                  height={CHART_HEIGHT}
+                  margin={{ top: 20, right: 50, bottom: 85, left: 55 }}
+                  yAxis={{ title: '# Affected Genes' }}
+                  styles={{
+                    xAxis: {
+                      stroke: theme.greyScale4,
+                      textFill: theme.greyScale3,
+                    },
+                    yAxis: {
+                      stroke: theme.greyScale4,
+                      textFill: theme.greyScale3,
+                    },
+                    bars: { fill: theme.secondary },
+                    tooltips: {
+                      fill: '#fff',
+                      stroke: theme.greyScale4,
+                      textFill: theme.greyScale3,
+                    },
+                  }}
+                />
+              </Row>
+            )}
         </Column>
       </div>
     );

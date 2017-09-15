@@ -18,8 +18,9 @@ export default function ExternalLink({
       title={title}
       className={props.className + ' test-external-link'}
     >
-      {hasExternalIcon &&
-        <ExternalLinkIcon style={{ marginRight: '0.5rem' }} />}
+      {hasExternalIcon && (
+        <ExternalLinkIcon style={{ marginRight: '0.5rem' }} />
+      )}
       {children}
     </a>
   );

@@ -59,7 +59,8 @@ export default compose(
             file_count_value: strat.file_count,
             tooltip: (
               <span>
-                <b>{strat.experimental_strategy}</b><br />
+                <b>{strat.experimental_strategy}</b>
+                <br />
                 {strat.file_count} file{strat.file_count > 1 ? 's' : ''}
               </span>
             ),

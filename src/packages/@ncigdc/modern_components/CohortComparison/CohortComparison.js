@@ -8,6 +8,9 @@ import { Row } from '@ncigdc/uikit/Flex';
 import withPropsOnChange from '@ncigdc/utils/withPropsOnChange';
 import { getDefaultCurve } from '@ncigdc/utils/survivalplot';
 import ExploreLink from '@ncigdc/components/Links/ExploreLink';
+import Venn, { buildOps } from '@ncigdc/components/Charts/Venn';
+import withSize from '@ncigdc/utils/withSize';
+import CreateOrOpenAnalysis from '@ncigdc/components/CreateOrOpenAnalysis';
 import FacetTable from './FacetTable';
 import Survival from './Survival';
 
@@ -55,6 +58,7 @@ export default compose(
     updateData();
   }),
   withTheme,
+  withSize(),
 )(
   ({
     facets,
@@ -64,6 +68,7 @@ export default compose(
     theme,
     survivalData,
     viewer: { repository: { result1, result2 } },
+    size: { width },
   }) => {
     const data1 = JSON.parse(result1.facets);
     const data2 = JSON.parse(result2.facets);
@@ -82,113 +87,131 @@ export default compose(
         {set2_name}
       </span>
     );
+    const ops = buildOps({ setIds: [set1, set2], type: 'case' });
 
     return (
-      <Row style={{ margin: '0 3rem', paddingBottom: 20 }}>
-        <div style={{ flex: 5 }}>
-          <h1>Cohort Comparison</h1>
-          <Table
-            style={{ width: '400px' }}
-            headings={[
-              <Th key="1" style={{ backgroundColor: 'white' }}>
-                Selected Cohorts
-              </Th>,
-              <Th
-                key="2"
-                style={{ textAlign: 'right', backgroundColor: 'white' }}
-              >
-                # Cases
-              </Th>,
-            ]}
-            body={
-              <tbody>
-                <Tr>
-                  <Td style={{ width: '150px', color: set1_colour }}>
-                    <Alias i={1} /> : {Set1}
-                  </Td>
-                  <Td style={{ textAlign: 'right' }}>
-                    <ExploreLink
-                      query={{
-                        searchTableTab: 'cases',
-                        filters: {
-                          op: 'AND',
-                          content: [
-                            {
-                              op: 'IN',
-                              content: {
-                                field: `cases.case_id`,
-                                value: [`set_id:${set1}`],
-                              },
+      <div style={{ width: '90%', padding: '0 3rem 2rem' }}>
+        <h1>Cohort Comparison</h1>
+        <Table
+          style={{ width: '400px' }}
+          headings={[
+            <Th key="1" style={{ backgroundColor: 'white' }}>
+              Selected Cohorts
+            </Th>,
+            <Th
+              key="2"
+              style={{ textAlign: 'right', backgroundColor: 'white' }}
+            >
+              # Cases
+            </Th>,
+          ]}
+          body={
+            <tbody>
+              <Tr>
+                <Td style={{ width: '150px', color: set1_colour }}>
+                  <Alias i={1} /> : {Set1}
+                </Td>
+                <Td style={{ textAlign: 'right' }}>
+                  <ExploreLink
+                    query={{
+                      searchTableTab: 'cases',
+                      filters: {
+                        op: 'AND',
+                        content: [
+                          {
+                            op: 'IN',
+                            content: {
+                              field: `cases.case_id`,
+                              value: [`set_id:${set1}`],
                             },
-                          ],
-                        },
-                      }}
-                    >
-                      {result1.hits.total.toLocaleString()}
-                    </ExploreLink>
-                  </Td>
-                </Tr>
-                <Tr>
-                  <Td style={{ width: '150px', color: set2_colour }}>
-                    <Alias i={2} /> : {Set2}
-                  </Td>
-                  <Td style={{ textAlign: 'right' }}>
-                    <ExploreLink
-                      query={{
-                        searchTableTab: 'cases',
-                        filters: {
-                          op: 'AND',
-                          content: [
-                            {
-                              op: 'IN',
-                              content: {
-                                field: `cases.case_id`,
-                                value: [`set_id:${set2}`],
-                              },
+                          },
+                        ],
+                      },
+                    }}
+                  >
+                    {result1.hits.total.toLocaleString()}
+                  </ExploreLink>
+                </Td>
+              </Tr>
+              <Tr>
+                <Td style={{ width: '150px', color: set2_colour }}>
+                  <Alias i={2} /> : {Set2}
+                </Td>
+                <Td style={{ textAlign: 'right' }}>
+                  <ExploreLink
+                    query={{
+                      searchTableTab: 'cases',
+                      filters: {
+                        op: 'AND',
+                        content: [
+                          {
+                            op: 'IN',
+                            content: {
+                              field: `cases.case_id`,
+                              value: [`set_id:${set2}`],
                             },
-                          ],
-                        },
-                      }}
-                    >
-                      {result2.hits.total.toLocaleString()}
-                    </ExploreLink>
-                  </Td>
-                </Tr>
-              </tbody>
-            }
-          />
-
+                          },
+                        ],
+                      },
+                    }}
+                  >
+                    {result2.hits.total.toLocaleString()}
+                  </ExploreLink>
+                </Td>
+              </Tr>
+            </tbody>
+          }
+        />
+        <Row>
           <Survival
             survivalData={survivalData}
             result1={result1}
             result2={result2}
-            Set1={Set1}
-            Set2={Set2}
             set1id={set1}
             set2id={set2}
             palette={[set1_colour, set2_colour]}
+            style={{ flex: 1, width: 100 }}
           />
+          <div
+            style={{ marginLeft: 50, flex: 1, width: 100, textAlign: 'center' }}
+          >
+            <h2>Cohorts Venn Diagram</h2>
 
-          {facets.map(field =>
-            FacetTable({
-              key: field,
-              Alias,
-              mapping,
-              field,
-              data1,
-              data2,
-              result1,
-              result2,
-              Set1,
-              Set2,
-              set1,
-              set2,
-              palette: [set1_colour, set2_colour],
-            }),
-          )}
-        </div>
-        <div style={{ flex: 7 }} />
-      </Row>
+            <Venn
+              type="case"
+              width={width / 2 - 50}
+              data={[set1, set2]}
+              ops={ops}
+              getFillColor={d => 'rgb(237, 237, 237)'}
+            />
+
+            <CreateOrOpenAnalysis
+              type="set_operations"
+              sets={{ case: [set1, set2] }}
+            >
+              Open in new tab
+            </CreateOrOpenAnalysis>
+          </div>
+        </Row>
+
+        {facets.map(field =>
+          FacetTable({
+            key: field,
+            Alias,
+            mapping,
+            field,
+            data1,
+            data2,
+            result1,
+            result2,
+            Set1,
+            Set2,
+            set1,
+            set2,
+            palette: [set1_colour, set2_colour],
+          }),
+        )}
+      </div>
     );
   },
 );

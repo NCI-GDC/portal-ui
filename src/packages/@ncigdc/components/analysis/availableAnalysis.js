@@ -1,5 +1,5 @@
 import React from 'react';
-import Venn from '@ncigdc/components/Charts/Venn';
+import { VennSvg } from '@ncigdc/components/Charts/Venn';
 import SetOperations from './SetOperations';
 import CohortComparison from '@ncigdc/modern_components/CohortComparison';
 import CCIcon from '@ncigdc/theme/icons/CohortComparisonIcon';
@@ -32,7 +32,7 @@ const availableAnalysis: Array<TAnalysis> = [
     type: 'set_operations',
     label: 'Set Operations',
     Icon: p =>
-      <Venn
+      <VennSvg
         {...p}
         data={[1, 2, 3]}
         ops={[
@@ -79,12 +79,7 @@ const availableAnalysis: Array<TAnalysis> = [
     },
     ResultComponent: ({ sets }) => {
       const type = ['case', 'gene', 'ssm'].find(t => sets[t]);
-      return (
-        <SetOperations
-          type={type}
-          setIds={sets[type].map(id => `set_id:${id}`)}
-        />
-      );
+      return <SetOperations type={type} setIds={sets[type]} />;
     },
   },
   {

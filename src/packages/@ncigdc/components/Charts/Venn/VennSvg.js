@@ -32,11 +32,14 @@ export default compose(
     hoverColour = '#daf2fb',
     radius = 85,
     factor = 0.6,
-    getFillColor = (x, µ) => {},
-    onClick = _ => {},
-    onMouseOver = _ => {},
-    onMouseOut = _ => {},
+    getFillColor = _.noop,
+    onMouseOver = _.noop,
+    onMouseOut = _.noop,
+    ...props
   }) => {
+    const onClick = props.onClick || _.noop;
+    const cursor = props.onClick ? 'pointer' : 'default';
+
     const cy = 0.3 * height;
     const cx = 0.5 * width;
 
@@ -107,7 +110,7 @@ export default compose(
             .attr('class', 'inner')
             .attr('width', width)
             .attr('height', height)
-            .style('cursor', 'pointer')
+            .style('cursor', cursor)
             .style('fill', () => getFillColor(d, 0) || colors[0])
             .on('click', () => onClick(d.op))
             .on('mouseover', () => onMouseOver(d.op))
@@ -137,7 +140,7 @@ export default compose(
             .attr('class', 'inner')
             .attr('width', width)
             .attr('height', height)
-            .style('cursor', 'pointer')
+            .style('cursor', cursor)
             .style('fill', () => getFillColor(d, 0) || colors[0])
             .on('click', () => onClick(d.op))
             .on('mouseover', () => onMouseOver(d.op))
@@ -168,7 +171,7 @@ export default compose(
             .attr('clip-path', `url(#circle_${(i + 1) % data.length})`)
             .attr('width', width)
             .attr('height', height)
-            .style('cursor', 'pointer')
+            .style('cursor', cursor)
             .style('fill', () => getFillColor(d, 1) || colors[1])
             .style('stroke', 'black')
             .style('stroke-width', 2)
@@ -211,7 +214,7 @@ export default compose(
       .attr('clip-path', `url(#circle_${0})`)
       .attr('width', width)
       .attr('height', height)
-      .style('cursor', 'pointer')
+      .style('cursor', cursor)
       .style('fill', () => getFillColor(ops[0], 2) || colors[2])
       .on('click', () => onClick(ops[0].op))
       .on('mouseover', () => onMouseOver(ops[0].op))

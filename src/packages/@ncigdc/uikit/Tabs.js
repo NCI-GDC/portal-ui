@@ -120,7 +120,12 @@ const Tabs = ({
           {tabToolbar}
         </Column>
         <Column
-          style={{ ...styles.content(theme), flex: 1, ...(contentStyle || {}) }}
+          style={{
+            ...styles.content(theme),
+            flex: 1,
+            width: 1,
+            ...(contentStyle || {}),
+          }}
         >
           {children}
         </Column>

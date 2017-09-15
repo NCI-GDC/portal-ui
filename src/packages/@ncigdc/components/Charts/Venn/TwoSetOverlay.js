@@ -10,7 +10,7 @@ export default ({
   xoffset = width - 500,
   friction = 2,
 }) =>
-  <div style={{ position: 'absolute', width, pointerEvents: 'none' }}>
+  <div style={{ position: 'absolute', width, pointerEvents: 'none', top: 0 }}>
     <TL x={120 + xoffset / friction} y={80}>
       <Alias i={1} />
     </TL>

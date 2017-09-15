@@ -65,7 +65,7 @@ const casesTableModel = [
     name: 'Cart',
     id: 'cart',
     th: () => <Th key="cart" rowSpan="2">Cart</Th>,
-    td: ({ node, total, index }) =>
+    td: ({ node, edges, index }) =>
       <Td>
         <AddCaseFilesToCartButton
           caseId={node.case_id}
@@ -78,7 +78,7 @@ const casesTableModel = [
           }
           fileCount={node.summary.file_count}
           dropdownStyle={
-            total - 1 === index ? { top: 'auto', bottom: '100%' } : {}
+            index > edges.length - 3 ? { top: 'auto', bottom: '100%' } : {}
           }
         />
       </Td>,

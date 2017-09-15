@@ -27,12 +27,11 @@ export default compose(
     survivalData,
     result1,
     result2,
-    Set1,
-    Set2,
     palette,
     set1id,
     set2id,
     push,
+    style,
     CaseSetButton = props =>
       <CreateExploreCaseSetButton
         filters={{
@@ -81,7 +80,7 @@ export default compose(
           </span>}
       />,
   }) =>
-    <span style={{ marginTop: 10 }}>
+    <span style={{ marginTop: 10, ...style }}>
       <Row>
         <h2>Survival Analysis</h2>
       </Row>

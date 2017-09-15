@@ -3,7 +3,7 @@ import React from 'react';
 import _ from 'lodash';
 import { connect } from 'react-redux';
 import { compose, withState } from 'recompose';
-import { xor, omit } from 'lodash';
+import { omit } from 'lodash';
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import EntityPageHorizontalTable from '@ncigdc/components/EntityPageHorizontalTable';
 import countComponents from '@ncigdc/modern_components/Counts';
@@ -12,9 +12,11 @@ import Button from '@ncigdc/uikit/Button';
 import ExploreLink from '@ncigdc/components/Links/ExploreLink';
 import { theme } from '@ncigdc/theme/index';
 
+import type { TSetTypes } from '../../dux/sets';
+
 type TProps = {
-  sets: {},
-  selectedSets: {},
+  sets: { [TSetTypes]: string },
+  selectedSets: { [TSetTypes]: string },
   setSelectedSets: Function,
   setDisabledMessage: Function,
   label: string,
@@ -56,12 +58,12 @@ const SetTable = ({
   ];
   const setData = Object.entries(sets)
     .filter(([type]) => setTypes.includes(type))
-    .map(([type, sets]: [string, any]) => {
+    .map(([type, sets]) => {
       const CountComponent = countComponents[type];
 
       return Object.entries(sets).map(([setId, label]: [string, any]) => {
         const id = `set-table-${type}-${setId}-select`;
-        const checked = (selectedSets[type] || []).includes(setId);
+        const checked = Boolean((selectedSets[type] || {})[setId]);
 
         const msg =
           !checked && setDisabledMessage({ sets: selectedSets, type });
@@ -84,14 +86,20 @@ const SetTable = ({
                 value={setId}
                 disabled={msg}
                 onChange={e => {
-                  const ids = xor(selectedSets[type], [e.target.value]);
-                  const sets = ids.length
-                    ? {
-                        ...selectedSets,
-                        [type]: ids,
-                      }
-                    : omit(selectedSets, type);
-                  setSelectedSets(sets);
+                  const typeSets = selectedSets[type] || {};
+                  const setId = e.target.value;
+                  const newTypeSet = typeSets[setId]
+                    ? omit(typeSets, setId)
+                    : { ...typeSets, [setId]: sets[setId] };
+
+                  setSelectedSets(
+                    Object.keys(newTypeSet).length
+                      ? {
+                          ...selectedSets,
+                          [type]: newTypeSet,
+                        }
+                      : omit(selectedSets, type),
+                  );
                 }}
                 checked={checked}
               />

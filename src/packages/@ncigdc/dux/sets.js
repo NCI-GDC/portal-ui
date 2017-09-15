@@ -3,8 +3,11 @@ import { omit } from 'lodash';
 import { REHYDRATE } from 'redux-persist/constants';
 
 import { namespaceActions } from './utils';
+
+export type TSetTypes = 'case' | 'ssm' | 'gene';
+
 type TState = {
-  [String]: String,
+  [TSetTypes]: String,
 };
 type TPayload = {
   sets?: TState,

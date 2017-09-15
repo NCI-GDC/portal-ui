@@ -4,9 +4,10 @@ import SetOperations from './SetOperations';
 import CohortComparison from '@ncigdc/modern_components/CohortComparison';
 import CCIcon from '@ncigdc/theme/icons/CohortComparisonIcon';
 import { withTheme } from '@ncigdc/theme';
+import type { TSetTypes } from '@ncigdc/dux/sets';
 
 type TSelectedSets = {
-  [string]: Array<string>,
+  [TSetTypes]: {},
 };
 
 type TAnalysis = {|
@@ -64,7 +65,7 @@ const availableAnalysis: Array<TAnalysis> = [
     setDisabledMessage: ({ sets, type }) =>
       ['case', 'gene', 'ssm'].filter(t => t !== type).some(t => sets[t])
         ? 'Please choose only one type'
-        : (sets[type] || []).length >= 3
+        : Object.keys(sets[type] || {}).length >= 3
           ? `Please select two or three ${type === 'ssm'
               ? 'mutation'
               : type} sets`
@@ -75,12 +76,14 @@ const availableAnalysis: Array<TAnalysis> = [
       return (
         entries.length === 1 && // can only have one type
         // must have 2 or 3 sets selected
-        (entries[0][1].length === 2 || entries[0][1].length === 3)
+        (Object.keys(entries[0][1]).length === 2 ||
+          Object.keys(entries[0][1]).length === 3)
       );
     },
     ResultComponent: ({ sets }) => {
       const type = ['case', 'gene', 'ssm'].find(t => sets[t]);
-      return <SetOperations type={type} setIds={sets[type]} />;
+
+      return <SetOperations type={type} sets={sets[type]} />;
     },
   },
   {
@@ -106,12 +109,12 @@ const availableAnalysis: Array<TAnalysis> = [
     setDisabledMessage: ({ sets, type }) =>
       !['case'].includes(type)
         ? "This analysis can't be run with this type"
-        : (sets[type] || []).length >= 2
+        : Object.keys(sets[type] || {}).length >= 2
           ? `You can only select two ${type === 'ssm' ? 'mutation' : type} set`
           : null,
     setTypes: ['case'],
     validateSets: sets =>
-      ['case'].every((t: any) => (sets[t] || []).length === 2),
+      ['case'].every((t: any) => Object.keys(sets[t] || {}).length === 2),
     ResultComponent: ({ sets }) => {
       return (
         <CohortComparison
@@ -120,8 +123,7 @@ const availableAnalysis: Array<TAnalysis> = [
             'diagnoses.vital_status',
             'demographic.race',
           ]}
-          set1={sets.case[0]}
-          set2={sets.case[1]}
+          sets={sets}
         />
       );
     },

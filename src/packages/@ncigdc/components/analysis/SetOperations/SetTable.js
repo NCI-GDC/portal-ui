@@ -1,6 +1,5 @@
 import React from 'react';
 import _ from 'lodash';
-import { connect } from 'react-redux';
 import { compose } from 'recompose';
 import ExploreLink from '@ncigdc/components/Links/ExploreLink';
 import EntityPageHorizontalTable from '@ncigdc/components/EntityPageHorizontalTable';
@@ -11,23 +10,16 @@ const Alias = ({ i }) => (
     <sub>{i}</sub>
   </span>
 );
-
-const enhance = compose(
-  connect((state, props) => ({ sets: state.sets[props.type] })),
-);
+const enhance = compose(); // left to minimize diff
 export default enhance(
-  ({ push, setIds, type, CountComponent, CreateSetButton, sets }) => (
+  ({ push, type, CountComponent, CreateSetButton, sets }) => (
     <EntityPageHorizontalTable
-      data={setIds.map((setId, i) => {
+      data={Object.entries(sets).map(([setId, label], i) => {
         const id = `set-table-${type}-${setId}-select`;
         return {
           id,
           alias: <Alias i={i + 1} />,
-          name: (
-            <label htmlFor={id}>
-              {_.truncate(sets[setId] || 'deleted set', { length: 70 })}
-            </label>
-          ),
+          name: <label htmlFor={id}>{_.truncate(label, { length: 70 })}</label>,
           type: _.capitalize(type === 'ssm' ? 'Mutation' : type) + 's',
           count: (
             <CountComponent

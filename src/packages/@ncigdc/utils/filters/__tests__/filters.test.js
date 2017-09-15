@@ -1,7 +1,6 @@
 /* @flow */
-
+import { stringifyJSONParam } from '@ncigdc/utils/uri/index';
 import { addInFilters, toggleFilters, mergeQuery } from '../';
-import jsurl from 'jsurl';
 
 const baseFilter = {
   op: 'and',
@@ -182,7 +181,7 @@ describe('mergeQuery', () => {
     };
 
     const c = {
-      filters: jsurl.stringify({
+      filters: stringifyJSONParam({
         op: 'and',
         content: [rangeFromFilter, rangeToFilter, primarySiteFilter],
       }),

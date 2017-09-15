@@ -14,6 +14,13 @@ import type {
   TRemoveFilter,
 } from './types';
 
+function compareTerms(a, b) {
+  return (
+    a.content.field === b.content.field &&
+    a.op.toLowerCase() === b.op.toLowerCase()
+  );
+}
+
 const sortFilters: TSortFilters = (a, b) => {
   if (a.content.field && b.content.field) {
     return a.content.field.localeCompare(b.content.field);
@@ -25,19 +32,22 @@ const sortFilters: TSortFilters = (a, b) => {
 };
 
 export const combineValues: TCombineValues = (x, y) => {
-  if (x.content.value.length === 0 && y.content.value.length === 0) return null;
-  if (x.content.value.length === 0) return y;
-  if (y.content.value.length === 0) return x;
+  const xValue = [].concat(x.content.value || []);
+  const yValue = [].concat(y.content.value || []);
+
+  if (xValue.length === 0 && yValue.length === 0) return null;
+  if (xValue.length === 0) return y;
+  if (yValue.length === 0) return x;
 
   const merged = {
     op: 'in',
     content: {
       field: x.content.field,
-      value: x.content.value
+      value: xValue
         .reduce((acc, v) => {
           if (acc.includes(v)) return acc.filter(f => f !== v);
           return [...acc, v];
-        }, y.content.value)
+        }, yValue)
         .sort(),
     },
   };
@@ -46,19 +56,22 @@ export const combineValues: TCombineValues = (x, y) => {
 };
 
 export const addInValue: TCombineValues = (x, y) => {
-  if (x.content.value.length === 0 && y.content.value.length === 0) return null;
-  if (x.content.value.length === 0) return y;
-  if (y.content.value.length === 0) return x;
+  const xValue = [].concat(x.content.value || []);
+  const yValue = [].concat(y.content.value || []);
+
+  if (xValue.length === 0 && yValue.length === 0) return null;
+  if (xValue.length === 0) return y;
+  if (yValue.length === 0) return x;
 
   const merged = {
     op: 'in',
     content: {
       field: x.content.field,
-      value: x.content.value
+      value: xValue
         .reduce((acc, v) => {
           if (acc.includes(v)) return acc;
           return [...acc, v];
-        }, y.content.value)
+        }, yValue)
         .sort(),
     },
   };
@@ -75,9 +88,7 @@ export const toggleFilters: TMergeFilters = (q, ctxq) => {
     op: 'and',
     content: ctxq.content
       .reduce((acc, ctx) => {
-        const found = acc.find(
-          a => a.content.field === ctx.content.field && a.op === ctx.op,
-        );
+        const found = acc.find(a => compareTerms(a, ctx));
         if (!found) return [...acc, ctx];
         return [
           ...acc.filter(y => y.content.field !== found.content.field),
@@ -99,9 +110,7 @@ export const replaceFilters: TMergeFilters = (q, ctxq) => {
     op: 'and',
     content: ctxq.content
       .reduce((acc, ctx) => {
-        const found = acc.find(
-          a => a.content.field === ctx.content.field && a.op === ctx.op,
-        );
+        const found = acc.find(a => compareTerms(a, ctx));
         if (!found) return [...acc, ctx];
         return acc;
       }, q.content)
@@ -120,9 +129,7 @@ export const addInFilters: TMergeFilters = (q, ctxq) => {
     op: 'and',
     content: ctxq.content
       .reduce((acc, ctx) => {
-        const found = acc.find(
-          a => a.content.field === ctx.content.field && a.op === ctx.op,
-        );
+        const found = acc.find(a => compareTerms(a, ctx));
         if (!found) return [...acc, ctx];
         return [
           ...acc.filter(y => y.content.field !== found.content.field),

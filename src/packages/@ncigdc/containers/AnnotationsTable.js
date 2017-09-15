@@ -29,8 +29,6 @@ export const SearchTable = compose(
       .sort((a, b) => tableColumns.indexOf(a.id) - tableColumns.indexOf(b.id))
       .filter(x => tableColumns.includes(x.id));
 
-    const prefix = 'annotations';
-
     return (
       <div className="test-annotations-table">
         {tableHeader &&
@@ -49,14 +47,14 @@ export const SearchTable = compose(
         >
           <Showing
             docType="annotations"
-            prefix={prefix}
+            prefix={entityType}
             params={relay.route.params}
             total={hits.total}
           />
           <TableActions
-            prefix={prefix}
+            type="annotation"
+            arrangeColumnKey={entityType}
             total={hits.total}
-            sortKey="annotations_sort"
             endpoint="annotations"
             downloadable={downloadable}
             entityType={entityType}
@@ -96,7 +94,7 @@ export const SearchTable = compose(
           />
         </div>
         <Pagination
-          prefix={prefix}
+          prefix={entityType}
           params={relay.route.params}
           total={hits.total}
         />

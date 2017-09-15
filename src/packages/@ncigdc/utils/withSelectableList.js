@@ -1,12 +1,7 @@
 // @flow
 import _ from 'lodash';
-import {
-  compose,
-  withState,
-  withHandlers,
-  withProps,
-  withPropsOnChange,
-} from 'recompose';
+import { compose, withState, withHandlers, withProps } from 'recompose';
+import withPropsOnChange from '@ncigdc/utils/withPropsOnChange';
 
 const getPreviousItem = (items, reference) =>
   reference ? _.nth(items, items.indexOf(reference) - 1) : _.last(items);

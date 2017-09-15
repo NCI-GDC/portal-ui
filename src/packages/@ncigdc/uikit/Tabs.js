@@ -14,13 +14,14 @@ import { Row, Column } from './Flex';
 
 const borderStyle = theme => `1px solid ${theme.greyScale4}`;
 
-const tabBorder = theme => ({
+const tabBorder = (theme, side) => ({
   borderLeft: borderStyle(theme),
-  borderRight: borderStyle(theme),
+  borderRight: !side && borderStyle(theme),
   borderTop: borderStyle(theme),
+  borderBottom: side && borderStyle(theme),
 });
 
-const baseTabStyle = theme =>
+const baseTabStyle = (theme, side) =>
   css({
     padding: '1.2rem 1.8rem',
     fontSize: '1.5rem',
@@ -31,45 +32,56 @@ const baseTabStyle = theme =>
     borderBottom: '1px solid transparent',
     borderRight: '1px solid transparent',
     backgroundColor: theme.greyScale6,
-    marginBottom: '-1px',
+    marginBottom: !side && '-1px',
+    marginRight: side && '-1px',
     transition: 'background-color 0.2s ease',
-    borderRadius: '4px 4px 0 0',
+    borderRadius: side ? '4px 0 0 4px' : '4px 4px 0 0',
     cursor: 'pointer',
   });
 
 const styles = {
-  active: theme =>
+  active: (theme, side) =>
     css({
       backgroundColor: '#fff',
       zIndex: 2,
-      ...tabBorder(theme),
+      ...tabBorder(theme, side),
       ':hover': {
         backgroundColor: 'white',
       },
     }),
-  inactive: theme =>
+  inactive: (theme, side) =>
     css({
       ':hover': {
         textDecoration: 'none',
         color: '#000',
         backgroundColor: Color(theme.greyScale6).darken(0.05).rgbString(),
-        ...tabBorder(theme),
+        ...tabBorder(theme, side),
       },
     }),
-  margin: css({
-    marginLeft: '0.4rem',
-  }),
+  margin: side =>
+    css({
+      marginLeft: !side && '0.4rem',
+      marginTop: side && '0.4rem',
+    }),
   content: theme => ({
     border: borderStyle(theme),
     backgroundColor: '#fff',
   }),
 };
 
-const Tab = ({ active, sibling, children, theme, tabStyle = {}, ...props }) =>
+const Tab = ({
+  active,
+  sibling,
+  children,
+  theme,
+  tabStyle = {},
+  side,
+  ...props
+}) =>
   <div
-    {...baseTabStyle(theme)}
-    {...(active ? styles.active(theme) : styles.inactive(theme))}
-    {...(sibling ? styles.margin : {})}
+    {...baseTabStyle(theme, side)}
+    {...(active ? styles.active(theme, side) : styles.inactive(theme, side))}
+    {...(sibling ? styles.margin(side) : {})}
     style={tabStyle}
     {...props}
   >
@@ -90,7 +102,7 @@ const Tabs = ({
   ...props
 }) =>
   side
-    ? <Row style={style} flex="1" {...props} className="test-tabs">
+    ? <Row style={style} {...props} className="test-tabs">
         <Column>
           {Children.map(tabs, (child, i) =>
             <Tab
@@ -100,13 +112,20 @@ const Tabs = ({
               sibling={i}
               theme={theme}
               tabStyle={tabStyle}
+              side
             >
               {child}
             </Tab>,
           )}
+          {tabToolbar}
         </Column>
         <Column
-          style={{ ...styles.content(theme), flex: 1, ...(contentStyle || {}) }}
+          style={{
+            ...styles.content(theme),
+            flex: 1,
+            width: 1,
+            ...(contentStyle || {}),
+          }}
         >
           {children}
         </Column>
@@ -121,6 +140,7 @@ const Tabs = ({
               sibling={i}
               theme={theme}
               tabStyle={tabStyle}
+              side={false}
             >
               {child}
             </Tab>,

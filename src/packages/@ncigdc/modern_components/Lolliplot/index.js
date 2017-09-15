@@ -1,11 +1,13 @@
 import { compose, withPropsOnChange } from 'recompose';
-import Component from './LolliplotWrapper';
 import createRendererSsm from './SsmLolliplot.relay';
 import createRendererGene from './GeneLolliplot.relay';
+import LoadableWithLoading from '@ncigdc/components/LoadableWithLoading';
 
 // This is the component used for the gene entity page
 
-const GeneLolliplot = createRendererGene(Component);
+const GeneLolliplot = createRendererGene(
+  LoadableWithLoading({ loader: () => import('./LolliplotWrapper') }),
+);
 
 // This is the above component which first receives a single ssm and finds
 // the canonical transcript's geneId to pass to it

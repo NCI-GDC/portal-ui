@@ -3,7 +3,7 @@
 import React from 'react';
 import Relay from 'react-relay/classic';
 import { connect } from 'react-redux';
-import { compose } from 'recompose';
+import { compose, setDisplayName } from 'recompose';
 
 import { Row } from '@ncigdc/uikit/Flex';
 import Button from '@ncigdc/uikit/Button';
@@ -14,9 +14,9 @@ import AnnotationsLink from '@ncigdc/components/Links/AnnotationsLink';
 import NoResultsMessage from '@ncigdc/components/NoResultsMessage';
 import DownloadManifestButton from '@ncigdc/components/DownloadManifestButton';
 
-import CasesTable from '@ncigdc/containers/CasesTable';
+import RepoCasesTable from '@ncigdc/modern_components/RepoCasesTable';
 import CaseAggregations from '@ncigdc/containers/CaseAggregations';
-import FilesTable from '@ncigdc/containers/FilesTable';
+import FilesTable from '@ncigdc/modern_components/FilesTable';
 import FileAggregations from '@ncigdc/containers/FileAggregations';
 import { fetchFilesAndAdd } from '@ncigdc/dux/cart';
 import { ShoppingCartIcon, SaveIcon } from '@ncigdc/theme/icons';
@@ -24,12 +24,16 @@ import withFilters from '@ncigdc/utils/withFilters';
 import formatFileSize from '@ncigdc/utils/formatFileSize';
 import RepoCasesPies from '@ncigdc/components/TabPieCharts/RepoCasesPies';
 import RepoFilesPies from '@ncigdc/components/TabPieCharts/RepoFilesPies';
-import CreateRepositoryCaseSetButton from '@ncigdc/modern_components/CreateSetButton/CreateRepositoryCaseSetButton';
+import CreateRepositoryCaseSetButton from '@ncigdc/modern_components/setButtons/CreateRepositoryCaseSetButton';
+import withRouter from '@ncigdc/utils/withRouter';
+import { stringifyJSONParam } from '@ncigdc/utils/uri';
 
 export type TProps = {
+  push: Function,
   relay: Object,
   dispatch: Function,
   filters: any,
+  cases_sort: any,
   viewer: {
     autocomplete_case: {
       hits: Array<Object>,
@@ -45,6 +49,16 @@ export type TProps = {
       },
     },
     repository: {
+      customCaseFacets: {
+        facets: {
+          facets: string,
+        },
+      },
+      customFileFacets: {
+        facets: {
+          facets: string,
+        },
+      },
       cases: {
         aggregations: {},
         pies: {},
@@ -65,7 +79,12 @@ export type TProps = {
   setShowFacets: Function,
 };
 
-const enhance = compose(connect(), withFilters());
+const enhance = compose(
+  setDisplayName('RepositoryPage'),
+  connect(),
+  withFilters(),
+  withRouter,
+);
 
 export const RepositoryPageComponent = (props: TProps) => {
   const setAutocompleteCases = (value, onReadyStateChange) =>
@@ -104,7 +123,9 @@ export const RepositoryPageComponent = (props: TProps) => {
             text: 'Files',
             component: (
               <FileAggregations
+                facets={props.viewer.repository.customFileFacets}
                 aggregations={props.viewer.repository.files.aggregations}
+                filters={props.filters}
                 suggestions={
                   (props.viewer.autocomplete_file || { hits: [] }).hits
                 }
@@ -117,6 +138,8 @@ export const RepositoryPageComponent = (props: TProps) => {
             text: 'Cases',
             component: (
               <CaseAggregations
+                facets={props.viewer.repository.customCaseFacets}
+                filters={props.filters}
                 aggregations={props.viewer.repository.cases.aggregations}
                 hits={(props.viewer.repository.cases || {}).hits || {}}
                 suggestions={
@@ -150,9 +173,32 @@ export const RepositoryPageComponent = (props: TProps) => {
                 />
                 <CreateRepositoryCaseSetButton
                   filters={props.filters}
-                  setSize={caseCount}
+                  disabled={!caseCount}
                   style={{ paddingLeft: '5px' }}
-                />
+                  onComplete={setId => {
+                    props.push({
+                      pathname: '/exploration',
+                      query: {
+                        filters: stringifyJSONParam({
+                          op: 'AND',
+                          content: [
+                            {
+                              op: 'IN',
+                              content: {
+                                field: 'cases.case_id',
+                                value: [`set_id:${setId}`],
+                              },
+                            },
+                          ],
+                        }),
+                      },
+                    });
+                  }}
+                >
+                  View {caseCount.toLocaleString()}{' '}
+                  {caseCount === 1 ? ' Case' : ' Cases'} in
+                  Exploration
+                </CreateRepositoryCaseSetButton>
               </Row>
               <AnnotationsLink>
                 <i className="fa fa-edit" /> Browse Annotations
@@ -185,7 +231,7 @@ export const RepositoryPageComponent = (props: TProps) => {
                         <RepoFilesPies
                           aggregations={props.viewer.repository.files.pies}
                         />
-                        <FilesTable hits={props.viewer.repository.files.hits} />
+                        <FilesTable />
                       </div>
                     : <NoResultsMessage>
                         No results found using those filters.
@@ -199,7 +245,7 @@ export const RepositoryPageComponent = (props: TProps) => {
                         <RepoCasesPies
                           aggregations={props.viewer.repository.cases.pies}
                         />
-                        <CasesTable hits={props.viewer.repository.cases.hits} />
+                        <RepoCasesTable />
                       </div>
                     : <NoResultsMessage>
                         No results found using those filters.
@@ -261,6 +307,12 @@ export const RepositoryPageQuery = {
           }
         }
         repository {
+          customCaseFacets: cases {
+            ${CaseAggregations.getFragment('facets')}
+          }
+          customFileFacets: files {
+            ${FileAggregations.getFragment('facets')}
+          }
           cases {
             aggregations(filters: $filters aggregations_filter_themselves: false) {
               ${CaseAggregations.getFragment('aggregations')}
@@ -269,7 +321,6 @@ export const RepositoryPageQuery = {
               ${RepoCasesPies.getFragment('aggregations')}
             }
             hits(score: "annotations.annotation_id" first: $cases_size offset: $cases_offset, filters: $filters, sort: $cases_sort) {
-              ${CasesTable.getFragment('hits')}
               total
             }
           }
@@ -281,7 +332,6 @@ export const RepositoryPageQuery = {
               ${RepoFilesPies.getFragment('aggregations')}
             }
             hits(first: $files_size offset: $files_offset, filters: $filters, sort: $files_sort) {
-              ${FilesTable.getFragment('hits')}
               total
             }
           }

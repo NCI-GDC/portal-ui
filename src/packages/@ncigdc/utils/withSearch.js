@@ -2,13 +2,8 @@
 import _ from 'lodash';
 import withRouter from '@ncigdc/utils/withRouter';
 import { fetchApi } from '@ncigdc/utils/ajax';
-import {
-  compose,
-  withState,
-  withHandlers,
-  withProps,
-  withPropsOnChange,
-} from 'recompose';
+import { compose, withState, withHandlers, withProps } from 'recompose';
+import withPropsOnChange from '@ncigdc/utils/withPropsOnChange';
 import type { TSearchHit } from '@ncigdc/components/QuickSearch/types';
 
 const throttledInvoker = _.throttle(fn => fn(), 300, { leading: false });
@@ -75,6 +70,8 @@ export const withSearch = passedInState => {
           fetchResults(query, timeOfMostRecentRequest);
         } else if (results && results.length) {
           setState(s => ({ ...s, results: [] }));
+        } else {
+          setState(s => ({ ...s, isLoading: false }));
         }
       },
     ),

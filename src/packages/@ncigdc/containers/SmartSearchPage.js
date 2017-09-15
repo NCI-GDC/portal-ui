@@ -2,7 +2,6 @@
 
 import React from 'react';
 import Relay from 'react-relay/classic';
-import JSURL from 'jsurl';
 import queryString from 'query-string';
 import PropTypes from 'prop-types';
 
@@ -11,10 +10,10 @@ import Button from '@ncigdc/uikit/Button';
 import withRouter from '@ncigdc/utils/withRouter';
 import TabbedLinks from '@ncigdc/components/TabbedLinks';
 import AnnotationsLink from '@ncigdc/components/Links/AnnotationsLink';
-
-import CasesTable from './CasesTable';
-import FilesTable from './FilesTable';
+import FilesTable from '@ncigdc/modern_components/FilesTable';
+import RepoCasesTable from '@ncigdc/modern_components/RepoCasesTable';
 import { API } from '@ncigdc/utils/constants';
+import { stringifyJSONParam, parseJSONParam } from '@ncigdc/utils/uri';
 
 require('lodash-backports').register();
 
@@ -69,7 +68,8 @@ class SmartSearchComponent extends React.Component {
               );
               const currentQuery =
                 query ||
-                (filters && LocationService.filter2query(JSURL.parse(filters)));
+                (filters &&
+                  LocationService.filter2query(parseJSONParam(filters)));
 
               if (typeof currentQuery === 'string') {
                 this.query = currentQuery;
@@ -81,7 +81,7 @@ class SmartSearchComponent extends React.Component {
 
               const data = {
                 query: this.query,
-                filters: gql.filters && JSURL.stringify(filters),
+                filters: gql.filters && stringifyJSONParam(filters),
               };
 
               push(
@@ -138,16 +138,12 @@ class SmartSearchComponent extends React.Component {
             {
               id: 'files',
               text: `Files (${this.props.viewer.repository.files.hits.total.toLocaleString()})`,
-              component: (
-                <FilesTable hits={this.props.viewer.repository.files.hits} />
-              ),
+              component: <FilesTable />,
             },
             {
               id: 'cases',
               text: `Cases (${this.props.viewer.repository.cases.hits.total.toLocaleString()})`,
-              component: (
-                <CasesTable hits={this.props.viewer.repository.cases.hits} />
-              ),
+              component: <RepoCasesTable />,
             },
           ]}
         />
@@ -173,13 +169,11 @@ export const SmartSearchQuery = {
         repository {
           cases {
             hits(first: $cases_size offset: $cases_offset, filters: $filters) {
-              ${CasesTable.getFragment('hits')}
               total
             }
           }
           files {
             hits(first: $files_size offset: $files_offset, filters: $filters) {
-              ${FilesTable.getFragment('hits')}
               total
             }
           }

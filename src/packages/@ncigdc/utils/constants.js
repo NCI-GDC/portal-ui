@@ -1,8 +1,21 @@
 // @flow
 
-export const AUTH = process.env.REACT_APP_GDC_AUTH || '';
-export const AUTH_API = `${AUTH}/api`;
-export const API = process.env.REACT_APP_API;
+const localStorage = window.localStorage || {};
+
+export const AUTH =
+  localStorage.REACT_APP_GDC_AUTH || process.env.REACT_APP_GDC_AUTH || '';
+export const AUTH_API = localStorage.REACT_APP_GDC_AUTH_API || `${AUTH}/api`;
+export const API = localStorage.REACT_APP_API || process.env.REACT_APP_API;
+
+export const API_OVERRIDE_KEYS = [
+  'REACT_APP_API',
+  'REACT_APP_GDC_AUTH',
+  'REACT_APP_GDC_AUTH_API',
+];
+
+export const LOCAL_STORAGE_API_OVERRIDE = API_OVERRIDE_KEYS.some(
+  k => localStorage[k],
+);
 
 export const DATA_CATEGORIES = {
   SEQ: { full: 'Raw Sequencing Data', abbr: 'Seq' },
@@ -148,3 +161,12 @@ export const HUMAN_BODY_ALL_ALLOWED_SITES = [
   'Thyroid',
   'Uterus',
 ];
+export const MAX_SET_SIZE = 50000;
+
+export const SET_DOWNLOAD_FIELDS = {
+  case: ['submitter_id', 'project.project_id', 'case_id'],
+  gene: ['symbol', 'gene_id'],
+  ssm: ['genomic_dna_change', 'ssm_id'],
+};
+
+export const MAX_SET_NAME_LENGTH = 100;

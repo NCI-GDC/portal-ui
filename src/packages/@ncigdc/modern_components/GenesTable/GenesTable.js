@@ -1,22 +1,27 @@
 /* @flow */
-/* eslint fp/no-class:0 */
-
 import React from 'react';
 import { connect } from 'react-redux';
 import { compose, withState, withPropsOnChange } from 'recompose';
 import withSize from '@ncigdc/utils/withSize';
-import withBetterRouter from '@ncigdc/utils/withRouter';
+import withRouter from '@ncigdc/utils/withRouter';
 import Showing from '@ncigdc/components/Pagination/Showing';
 import { Row } from '@ncigdc/uikit/Flex';
 import Pagination from '@ncigdc/components/Pagination';
 import TableActions from '@ncigdc/components/TableActions';
 import Table, { Tr } from '@ncigdc/uikit/Table';
+import CreateExploreGeneSetButton from '@ncigdc/modern_components/setButtons/CreateExploreGeneSetButton';
+import AppendExploreGeneSetButton from '@ncigdc/modern_components/setButtons/AppendExploreGeneSetButton';
+import RemoveFromExploreGeneSetButton from '@ncigdc/modern_components/setButtons/RemoveFromExploreGeneSetButton';
+
 import tableModel from './GenesTable.model';
+import { theme } from '@ncigdc/theme';
+import withSelectIds from '@ncigdc/utils/withSelectIds';
 
 export default compose(
-  withBetterRouter,
+  withRouter,
   withState('survivalLoadingId', 'setSurvivalLoadingId', ''),
   withState('ssmCountsLoading', 'setSsmCountsLoading', true),
+  withSelectIds,
   withPropsOnChange(
     ['ssmsAggregationsViewer'],
     ({ ssmsAggregationsViewer: { explore } }) => {
@@ -33,7 +38,7 @@ export default compose(
 )(
   ({
     genesTableViewer: { explore } = {},
-    defaultFilters,
+    filters,
     relay = { route: { params: {} } },
     setSurvivalLoadingId,
     survivalLoadingId,
@@ -46,6 +51,11 @@ export default compose(
     ssmCountsLoading,
     parentVariables,
     tableColumns,
+    dispatch,
+    selectedIds,
+    setSelectedIds,
+    sort,
+    score,
   }) => {
     const { genes, filteredCases, cases } = explore || {};
 
@@ -78,12 +88,14 @@ export default compose(
           />
           <Row>
             <TableActions
-              prefix="genes"
-              entityType="genes"
+              type="gene"
+              arrangeColumnKey="genes"
               total={totalGenes}
               endpoint="genes"
               downloadTooltip="Export All Except #Cases and #Mutations"
-              currentFilters={defaultFilters}
+              currentFilters={filters}
+              score={score}
+              sort={sort}
               downloadFields={[
                 'symbol',
                 'name',
@@ -94,17 +106,38 @@ export default compose(
               ]}
               tsvSelector="#genes-table"
               tsvFilename="frequently-mutated-genes.tsv"
+              CreateSetButton={CreateExploreGeneSetButton}
+              AppendSetButton={AppendExploreGeneSetButton}
+              RemoveFromSetButton={RemoveFromExploreGeneSetButton}
+              idField="genes.gene_id"
+              selectedIds={selectedIds}
             />
           </Row>
         </Row>
         <div style={{ overflowX: 'auto' }}>
           <Table
             id="genes-table"
-            headings={tableInfo.map(x => <x.th key={x.id} context={context} />)}
+            headings={tableInfo.map(x =>
+              <x.th
+                key={x.id}
+                context={context}
+                nodes={data.map(e => e.node)}
+                selectedIds={selectedIds}
+                setSelectedIds={setSelectedIds}
+              />,
+            )}
             body={
               <tbody>
                 {data.map((e, i) =>
-                  <Tr key={e.node.id} index={i}>
+                  <Tr
+                    key={e.node.id}
+                    index={i}
+                    style={{
+                      ...(selectedIds.includes(e.node.gene_id) && {
+                        backgroundColor: theme.tableHighlight,
+                      }),
+                    }}
+                  >
                     {tableInfo
                       .filter(x => x.td)
                       .map(x =>
@@ -114,7 +147,7 @@ export default compose(
                           context={context}
                           ssmCounts={ssmCounts}
                           cases={cases}
-                          defaultFilters={defaultFilters}
+                          defaultFilters={filters}
                           filteredCases={filteredCases}
                           query={query}
                           setSurvivalLoadingId={setSurvivalLoadingId}
@@ -124,6 +157,8 @@ export default compose(
                           hasEnoughSurvivalDataOnPrimaryCurve={
                             hasEnoughSurvivalDataOnPrimaryCurve
                           }
+                          selectedIds={selectedIds}
+                          setSelectedIds={setSelectedIds}
                         />,
                       )}
                   </Tr>,

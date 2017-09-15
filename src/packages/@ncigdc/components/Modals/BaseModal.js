@@ -11,32 +11,48 @@ const BaseModal = ({
   title,
   children,
   closeText = 'Accept',
+  onClose,
   extraButtons,
   style,
+  contentStyle,
+  ...props
 }: {
   dispatch: Function,
   title: any,
   children: any,
   closeText: any,
+  onClose?: Function,
   extraButtons: any,
   style: Object,
+  contentStyle: Object,
 }) =>
-  <Column style={style}>
+  <Column style={style} {...props}>
     <h2 style={{ paddingLeft: 15 }}>{title}</h2>
     <Column
       style={{
         borderBottom: '1px solid #e5e5e5',
         borderTop: '1px solid #e5e5e5',
-        padding: 15,
-        marginBottom: 15,
+        padding: '15px',
+        ...contentStyle,
       }}
     >
       {children}
     </Column>
-    <Row style={{ marginBottom: 15, marginRight: 15 }} spacing={10}>
+    <Row
+      style={{
+        justifyContent: 'flex-end',
+        paddingRight: 15,
+        paddingLeft: 15,
+        paddingTop: 10,
+        paddingBottom: 15,
+      }}
+      spacing={10}
+    >
       <Button
-        style={{ margin: '0 0 0 auto' }}
-        onClick={() => dispatch(setModal(null))}
+        onClick={() => {
+          onClose && onClose();
+          dispatch(setModal(null));
+        }}
       >
         {closeText}
       </Button>

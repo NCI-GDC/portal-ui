@@ -61,7 +61,6 @@ const SVG_MARGINS = {
 };
 
 const colors = scaleOrdinal(schemeCategory10);
-const palette = [colors(0), colors(1)];
 
 const styles = {
   pValue: {
@@ -80,6 +79,7 @@ const SurvivalPlotWrapper = ({
   setSurvivalContainer,
   survivalPlotloading = false,
   uniqueClass,
+  palette = [colors(0), colors(1)],
 }: TProps) => {
   const { results = [], overallStats = {} } = rawData || {};
   const pValue = overallStats.pValue;
@@ -114,17 +114,25 @@ const SurvivalPlotWrapper = ({
                       },
                     },
                   })}
-                data={results}
+                data={results.map((set, i) => ({
+                  ...set,
+                  meta: {
+                    ...set.meta,
+                    label: set.meta.label || `S${i + 1}`,
+                  },
+                }))}
                 stylePrefix={`.${CLASS_NAME}`}
                 slug="survival-plot"
                 noText
                 tooltipHTML="Download SurvivalPlot data or image"
-                tsvData={results.reduce((data, set) => {
+                tsvData={results.reduce((data, set, i) => {
                   const mapData = set.donors.map(d => toMap(d));
                   return [
                     ...data,
                     ...(results.length > 1
-                      ? mapData.map(m => m.set('label', set.meta.label))
+                      ? mapData.map(m =>
+                          m.set('label', set.meta.label || `S${i + 1}`),
+                        )
                       : mapData),
                   ];
                 }, [])}
@@ -212,6 +220,7 @@ function renderSurvivalPlot(props: TProps): void {
     setXDomain,
     setTooltip,
     push,
+    palette = [colors(0), colors(1)],
   } = props;
   const { results = [] } = rawData;
   if (survivalContainer) {
@@ -266,7 +275,13 @@ const enhance = compose(
   withSize(),
   lifecycle({
     shouldComponentUpdate(nextProps: TProps): void {
-      const props = ['xDomain', 'size', 'rawData', 'survivalPlotloading'];
+      const props = [
+        'xDomain',
+        'size',
+        'rawData',
+        'survivalPlotloading',
+        'survivalContainer',
+      ];
       return !_.isEqual(_.pick(this.props, props), _.pick(nextProps, props));
     },
 

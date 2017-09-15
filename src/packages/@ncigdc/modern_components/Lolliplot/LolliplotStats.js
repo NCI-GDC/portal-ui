@@ -17,8 +17,9 @@ export default ({
   toggleBlacklistItem,
   mutationColors,
   state,
+  style,
 }) =>
-  <div id="mutation-stats" style={{ marginLeft: '20px', width: '250px' }}>
+  <div id="mutation-stats" style={{ marginLeft: '20px', ...style }}>
     <div
       style={{
         border: '1px solid rgb(186, 186, 186)',

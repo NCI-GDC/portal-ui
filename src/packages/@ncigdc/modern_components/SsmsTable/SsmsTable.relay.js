@@ -9,7 +9,7 @@ import { parse } from 'query-string';
 import {
   parseIntParam,
   parseFilterParam,
-  parseJSURLParam,
+  parseJSONParam,
 } from '@ncigdc/utils/uri';
 import { makeFilter, addInFilters } from '@ncigdc/utils/filters';
 import Query from '@ncigdc/modern_components/Query';
@@ -27,6 +27,7 @@ export default (Component: ReactClass<*>) =>
       }) => {
         const q = parse(location.search);
         return {
+          filters: defaultFilters,
           variables: {
             ssmsTable_filters: parseFilterParam(
               q.ssmsTable_filters,
@@ -34,7 +35,7 @@ export default (Component: ReactClass<*>) =>
             ),
             ssmsTable_offset: parseIntParam(q.ssmsTable_offset, 0),
             ssmsTable_size: parseIntParam(q.ssmsTable_size, defaultSize),
-            ssmsTable_sort: parseJSURLParam(q.ssmsTable_sort, null),
+            ssmsTable_sort: parseJSONParam(q.ssmsTable_sort, null),
             ssmCaseFilter: addInFilters(
               q.ssmsTable_filters || contextFilters || defaultFilters,
               makeFilter([
@@ -70,7 +71,6 @@ export default (Component: ReactClass<*>) =>
     return (
       <Query
         parentProps={props}
-        name="SsmsTable"
         minHeight={387}
         variables={props.variables}
         Component={Component}

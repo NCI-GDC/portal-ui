@@ -11,8 +11,10 @@ import versionInfo from './versionInfo';
 import bannerNotification from './bannerNotification';
 import relayProgress from './relayProgress';
 import error from './error';
-import loaders from './loaders';
 import tableColumns from './tableColumns';
+import customFacets from './customFacets';
+import sets from './sets';
+import analysis from './analysis';
 
 /*----------------------------------------------------------------------------*/
 
@@ -27,6 +29,8 @@ export default {
   bannerNotification,
   relayProgress,
   error,
-  loaders,
   tableColumns,
+  customFacets,
+  sets,
+  analysis,
 };

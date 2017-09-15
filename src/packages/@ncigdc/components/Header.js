@@ -1,14 +1,13 @@
 // @flow
 
 import React from 'react';
-import { compose, pure, lifecycle, withHandlers } from 'recompose';
+import { compose, pure, lifecycle, withHandlers, withState } from 'recompose';
 import { connect } from 'react-redux';
 
 import { dismissNotification } from '@ncigdc/dux/bannerNotification';
-
 import nciGdcLogo from '@ncigdc/theme/images/NHI_GDC_DataPortal-logo.svg';
-
 import HomeLink from '@ncigdc/components/Links/HomeLink';
+import AnalysisLink from '@ncigdc/components/Links/AnalysisLink';
 import RepositoryLink from '@ncigdc/components/Links/RepositoryLink';
 import CartLink from '@ncigdc/components/Links/CartLink';
 import ExploreLink from '@ncigdc/components/Links/ExploreLink';
@@ -24,6 +23,11 @@ import SessionExpiredModal from '@ncigdc/components/Modals/SessionExpiredModal';
 import withRouter from '@ncigdc/utils/withRouter';
 import Banner from '@ncigdc/uikit/Banner';
 import { withTheme } from '@ncigdc/theme';
+import { AnalysisIcon } from '@ncigdc/theme/icons';
+import DatabaseIcon from '@ncigdc/theme/icons/Database';
+import ManageSetsLink from '@ncigdc/components/Links/ManageSetsLink';
+
+import './Header.css';
 
 const styles = {
   iconPadding: {
@@ -36,6 +40,7 @@ const styles = {
 };
 
 const Header = compose(
+  withState('isCollapsed', 'setIsCollapsed', true),
   withRouter,
   connect(state => ({
     notifications: state.bannerNotification,
@@ -67,14 +72,12 @@ const Header = compose(
   }),
   withTheme,
   pure,
-)(({ user, notifications, dispatch, theme }) =>
+)(({ user, notifications, dispatch, theme, isCollapsed, setIsCollapsed }) =>
   <header
     id="header"
     className="navbar navbar-default navbar-static-top"
-    // data-ng-class="{ blue: hc.bannerDismissed }"
     role="banner"
   >
-
     {notifications.map(n =>
       <Banner
         {...n}
@@ -82,117 +85,72 @@ const Header = compose(
         handleOnDismiss={() => dispatch(dismissNotification(n.id))}
       />,
     )}
-
     <div className="container-fluid">
       <div className="navbar-header">
         <button
           type="button"
           className="navbar-toggle"
-          data-ng-click="hc.toggleCollapsed()"
+          onClick={() => setIsCollapsed(!isCollapsed)}
         >
-          <span className="sr-only test-toggle-navigation" data-translate>
+          <span className="sr-only test-toggle-navigation">
             Toggle navigation
           </span>
           <span className="icon-bar" />
           <span className="icon-bar" />
           <span className="icon-bar" />
         </button>
-        <HomeLink
-          id="gdc-logo"
-          className="navbar-brand"
-          tabIndex="0"
-          style={{ padding: 0 }}
-        >
+        <HomeLink className="navbar-brand" tabIndex="0" style={{ padding: 0 }}>
           <img src={nciGdcLogo} alt="gdc-logo" /><Hidden>Home</Hidden>
         </HomeLink>
       </div>
       <nav
         style={{ outline: 'none' }}
-        className="navbar-collapse collapse navbar-responsive-collapse"
+        className={`navbar-collapse ${isCollapsed ? 'collapse' : ''}`}
         data-uib-collapse="hc.isCollapsed"
-        data-ng-click="hc.collapse($event)"
         tabIndex="-1"
-        data-ng-keypress="hc.collapse($event)"
-        aria-label="{{ 'Site Navigation' | translate }}"
+        aria-label="Site Navigation"
+        onClick={() => setIsCollapsed(true)}
       >
         <ul className="nav navbar-nav">
-          <li
-            data-ng-class="{ active: hc.$state.includes('home') }"
-            id="header-home"
-          >
-            {/* tabindexes */}
-            <HomeLink
-              exact
-              activeStyle={styles.activeNavLink(theme)}
-              className="HomeLink"
-            >
+          <li>
+            <HomeLink exact activeStyle={styles.activeNavLink(theme)}>
               <i className="fa fa-home" style={styles.iconPadding} />
-              <span className="hidden-sm" data-translate>Home</span>
+              <span className="header-hidden-sm">Home</span>
             </HomeLink>
           </li>
-          <li
-            data-ng-class="{ active: hc.$state.includes('projects') }"
-            id="header-projects"
-          >
-            <ProjectsLink
-              exact
-              activeStyle={styles.activeNavLink(theme)}
-              className="ProjectsLink"
-            >
+          <li>
+            <ProjectsLink exact activeStyle={styles.activeNavLink(theme)}>
               <i className="icon-gdc-projects" style={styles.iconPadding} />
-              <span className="hidden-sm" data-translate>Projects</span>
+              <span className="header-hidden-sm">Projects</span>
             </ProjectsLink>
           </li>
           <li>
-            <ExploreLink
-              exact
-              activeStyle={styles.activeNavLink(theme)}
-              className="ExploreLink"
-            >
+            <ExploreLink exact activeStyle={styles.activeNavLink(theme)}>
               <i className="icon-gdc-data" style={styles.iconPadding} />
-              <span className="hidden-sm" data-translate>Exploration</span>
+              <span className="header-hidden-sm">Exploration</span>
             </ExploreLink>
           </li>
-          <li
-            data-ng-class="{ active: hc.$state.includes('search') || hc.$state.includes('query') }"
-            id="header-repository"
-          >
-            <RepositoryLink
-              exact
-              activeStyle={styles.activeNavLink(theme)}
-              className="RepositoryLink"
-            >
-              <i className="fa fa-database" style={styles.iconPadding} />
-              <span className="hidden-sm" data-translate>Repository</span>
+          <li>
+            <AnalysisLink exact activeStyle={styles.activeNavLink(theme)}>
+              <AnalysisIcon style={styles.iconPadding} />
+              <span className="header-hidden-sm">Analysis</span>
+            </AnalysisLink>
+          </li>
+          <li>
+            <RepositoryLink exact activeStyle={styles.activeNavLink(theme)}>
+              <DatabaseIcon style={styles.iconPadding} />
+              <span className="header-hidden-sm">Repository</span>
             </RepositoryLink>
           </li>
-          {!!process.env.SHOW_ANALYSIS_MENU &&
-            <li id="header-analysis">
-              <a
-                href="https://gdc.cancer.gov/access-data/analytical-tools"
-                tabIndex="0"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <i className="fa fa-bar-chart" style={styles.iconPadding} />
-                <span className="hidden-sm" data-translate>Analysis</span>
-              </a>
-            </li>}
         </ul>
         <ul className="nav navbar-nav navbar-right">
+          <li><QuickSearch tabIndex="0" /></li>
           <li>
-            <QuickSearch tabIndex="0" />
+            <ManageSetsLink activeStyle={styles.activeNavLink(theme)} />
           </li>
-          {!user &&
-            <li id="header-login">
-              <LoginButton />
-            </li>}
-          {user &&
-            <li className="hidden-xs">
-              <UserDropdown />
-            </li>}
-          {/* if hc.cookieEnabled */}
-          <li className="nav-cart">
+          {!user && <li><LoginButton /></li>}
+          {user && <li className="header-hidden-xs"><UserDropdown /></li>}
+          <li>
             <CartLink>
               {count =>
                 <span>
@@ -201,7 +159,7 @@ const Header = compose(
                     style={styles.iconPadding}
                   />
                   <span
-                    className="hidden-md hidden-sm"
+                    className="header-hidden-sm header-hidden-md"
                     style={styles.iconPadding}
                   >
                     Cart
@@ -212,9 +170,7 @@ const Header = compose(
                 </span>}
             </CartLink>
           </li>
-          <li className="nav-GDCApps">
-            <GDCAppsDropdown />
-          </li>
+          <li><GDCAppsDropdown /></li>
         </ul>
       </nav>
     </div>

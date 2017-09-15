@@ -1,8 +1,11 @@
 // @flow
 
-export const setModal = component => ({
+export const setModal = (component, autoClose) => ({
   type: 'TOGGLE_MODAL',
-  payload: component,
+  payload: {
+    component,
+    autoClose: typeof autoClose === 'boolean' ? autoClose : true,
+  },
 });
 
 function modal(state = null, action) {

@@ -2,7 +2,6 @@
 
 import React from 'react';
 import { compose, branch, renderComponent } from 'recompose';
-import JSURL from 'jsurl';
 import { makeFilter, mergeQuery } from '@ncigdc/utils/filters';
 import SummaryCard from '@ncigdc/components/SummaryCard';
 import Link from '@ncigdc/components/Links/Link';
@@ -10,7 +9,7 @@ import SampleSize from '@ncigdc/components/SampleSize';
 import { DATA_CATEGORIES } from '@ncigdc/utils/constants';
 import { RepositoryFilesLink } from '@ncigdc/components/Links/RepositoryLink';
 import SparkMeterWithTooltip from '@ncigdc/components/SparkMeterWithTooltip';
-import { removeEmptyKeys } from '@ncigdc/utils/uri';
+import { removeEmptyKeys, stringifyJSONParam } from '@ncigdc/utils/uri';
 import withRouter from '@ncigdc/utils/withRouter';
 
 export default compose(
@@ -59,7 +58,7 @@ export default compose(
         const newQuery = mergeQuery(linkQuery, query, 'replace');
         const q = removeEmptyKeys({
           ...newQuery,
-          filters: newQuery.filters && JSURL.stringify(newQuery.filters),
+          filters: newQuery.filters && stringifyJSONParam(newQuery.filters),
         });
         push({ pathname: '/repository', query: q });
       },

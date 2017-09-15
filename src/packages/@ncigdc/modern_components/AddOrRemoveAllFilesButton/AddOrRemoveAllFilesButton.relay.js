@@ -4,8 +4,7 @@ import React from 'react';
 import { graphql } from 'react-relay';
 import { makeFilter } from '@ncigdc/utils/filters';
 import { compose, withPropsOnChange, branch, renderComponent } from 'recompose';
-import Query from '@ncigdc/modern_components/Query';
-import Button from '@ncigdc/uikit/Button';
+import { BaseQuery } from '@ncigdc/modern_components/Query';
 
 export default (Component: ReactClass<*>) =>
   compose(
@@ -32,22 +31,10 @@ export default (Component: ReactClass<*>) =>
     ),
   )((props: Object) => {
     return (
-      <Query
+      <BaseQuery
         parentProps={props}
-        name="AddOrRemoveAllFilesButton"
-        minHeight={50}
         variables={props.variables}
         Component={Component}
-        customLoader={({ loading }) =>
-          !loading
-            ? null
-            : <Button>
-                <i className="fa fa-spinner fa-spin" />&nbsp;<span
-                  style={{ color: 'rgb(154, 176, 189)' }}
-                >
-                  Add all files to the cart
-                </span>
-              </Button>}
         query={graphql`
           query AddOrRemoveAllFilesButton_relayQuery(
             $filters: FiltersArgument
@@ -59,7 +46,23 @@ export default (Component: ReactClass<*>) =>
                   hits(first: $first, filters: $filters) {
                     edges {
                       node {
-                        file_id
+                        acl,
+                        state,
+                        file_state,
+                        access,
+                        file_id,
+                        file_size,
+                        cases {
+                          hits(first: 1) {
+                            edges {
+                              node {
+                                project {
+                                  project_id
+                                }
+                              }
+                            }
+                          }
+                        }
                       }
                     }
                   }

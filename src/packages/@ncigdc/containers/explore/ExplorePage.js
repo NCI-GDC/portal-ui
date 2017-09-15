@@ -4,6 +4,7 @@ import React from 'react';
 import Relay from 'react-relay/classic';
 import { get, isEqual } from 'lodash';
 import { compose, lifecycle } from 'recompose';
+
 import SearchPage from '@ncigdc/components/SearchPage';
 import TabbedLinks from '@ncigdc/components/TabbedLinks';
 import GenesTab from '@ncigdc/components/Explore/GenesTab';
@@ -14,10 +15,13 @@ import NoResultsMessage from '@ncigdc/components/NoResultsMessage';
 import CaseAggregations from '@ncigdc/containers/explore/CaseAggregations';
 import GeneAggregations from '@ncigdc/containers/explore/GeneAggregations';
 import SSMAggregations from '@ncigdc/containers/explore/SSMAggregations';
-import CreateExploreCaseSetButton from '@ncigdc/modern_components/CreateSetButton/CreateExploreCaseSetButton';
+import CreateExploreCaseSetButton from '@ncigdc/modern_components/setButtons/CreateExploreCaseSetButton';
 import { replaceFilters } from '@ncigdc/utils/filters';
+import withRouter from '@ncigdc/utils/withRouter';
+import { stringifyJSONParam } from '@ncigdc/utils/uri';
 
 export type TProps = {
+  filters: {},
   autocomplete: {
     cases: {
       hits: Array<Object>,
@@ -30,8 +34,19 @@ export type TProps = {
     },
   },
   relay: Object,
+  filters: Object,
   viewer: {
     explore: {
+      customCaseFacets: {
+        facets: {
+          facets: string,
+        },
+      },
+      customFileFacets: {
+        facets: {
+          facets: string,
+        },
+      },
       cases: {
         aggregations: string,
         hits: {
@@ -86,6 +101,7 @@ function setVariables({ relay, filters }) {
 }
 
 const enhance = compose(
+  withRouter,
   lifecycle({
     componentDidMount() {
       setVariables(this.props);
@@ -106,6 +122,7 @@ export const ExplorePageComponent = (props: TProps) =>
         text: 'Cases',
         component: (
           <CaseAggregations
+            facets={props.viewer.explore.customCaseFacets}
             aggregations={props.viewer.explore.cases.aggregations}
             suggestions={get(props, 'viewer.autocomplete_cases.hits', [])}
             setAutocomplete={(value, onReadyStateChange) =>
@@ -153,9 +170,30 @@ export const ExplorePageComponent = (props: TProps) =>
       <span>
         <CreateExploreCaseSetButton
           filters={props.filters}
-          setSize={props.viewer.explore.cases.hits.total}
+          disabled={!props.viewer.explore.cases.hits.total}
           style={{ marginBottom: '2rem' }}
-        />
+          onComplete={setId => {
+            props.push({
+              pathname: '/repository',
+              query: {
+                filters: stringifyJSONParam({
+                  op: 'AND',
+                  content: [
+                    {
+                      op: 'IN',
+                      content: {
+                        field: 'cases.case_id',
+                        value: [`set_id:${setId}`],
+                      },
+                    },
+                  ],
+                }),
+              },
+            });
+          }}
+        >
+          View Files in Repository
+        </CreateExploreCaseSetButton>
         <TabbedLinks
           queryParam="searchTableTab"
           defaultIndex={0}
@@ -251,6 +289,9 @@ export const ExplorePageQuery = {
           }
         }
         explore {
+          customCaseFacets: cases {
+            ${CaseAggregations.getFragment('facets')}
+          }
           cases {
             aggregations(filters: $filters aggregations_filter_themselves: false) {
               ${CaseAggregations.getFragment('aggregations')}

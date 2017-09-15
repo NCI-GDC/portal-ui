@@ -13,7 +13,6 @@ import {
   withPropsOnChange,
   withProps,
 } from 'recompose';
-import JSURL from 'jsurl';
 
 import { humanify } from '@ncigdc/utils/string';
 import withRouter from '@ncigdc/utils/withRouter';
@@ -29,6 +28,8 @@ import Link from '@ncigdc/components/Links/Link';
 
 import { facetFieldDisplayMapper } from '@ncigdc/components/Aggregations';
 import GeneSymbol from '@ncigdc/modern_components/GeneSymbol';
+import SetId from '@ncigdc/components/SetId';
+import { parseJSONParam } from '@ncigdc/utils/uri/index';
 
 /*----------------------------------------------------------------------------*/
 
@@ -97,7 +98,7 @@ export const getDisplayOp = (op: string, value: Array<string>) => {
 const enhance = compose(
   withRouter,
   withPropsOnChange(['query'], ({ query: { filters } }) => ({
-    filters: JSURL.parse(filters),
+    filters: parseJSONParam(filters),
   })),
   withPropsOnChange(['filters'], ({ filters }) => ({
     currentFilters: (filters && filters.content) || [],
@@ -111,7 +112,7 @@ const enhance = compose(
       switch (typeof value) {
         case 'string':
           if (value.includes('set_id:')) {
-            return 'input set';
+            return <SetId set={value} />;
           }
           if (field === 'genes.gene_id') {
             return <GeneSymbol geneId={value} />;
@@ -197,84 +198,83 @@ const CurrentFilters = (
             <Button leftIcon={<UndoIcon />}>Clear</Button>
           </NotUnderlinedLink>
 
-          {currentFilters.map((filter, i) =>
-            <Row
-              key={`${filter.content
-                .field}.${filter.op}.${filter.content.value.map(v => v)}`}
-              spacing="0.3rem"
-              style={styles.groupPadding}
-            >
-              <NotUnderlinedLink
-                className="test-field-name"
-                merge="toggle"
-                query={{
-                  offset: 0,
-                  filters: {
-                    op: 'and',
-                    content: [filter],
-                  },
-                }}
+          {currentFilters.map((filter, i) => {
+            const value = [].concat(filter.content.value || []);
+
+            return (
+              <Row
+                key={`${filter.content.field}.${filter.op}.${value.join()}`}
+                spacing="0.3rem"
+                style={styles.groupPadding}
               >
-                <Field>
-                  {humanify({
-                    term: facetFieldDisplayMapper(filter.content.field),
-                  })}
-                </Field>
-              </NotUnderlinedLink>
-              <Op>
-                {getDisplayOp(filter.op, filter.content.value)}
-              </Op>
-              {filter.content.value.length > 1 &&
-                <span style={styles.leftParen}>(</span>}
-              {(isFilterExpanded(filter)
-                ? filter.content.value
-                : take(filter.content.value, 2)).map(value =>
                 <NotUnderlinedLink
-                  className="test-field-value"
-                  key={value}
+                  className="test-field-name"
                   merge="toggle"
                   query={{
                     offset: 0,
                     filters: {
                       op: 'and',
-                      content: [
-                        {
-                          op: filter.op,
-                          content: {
-                            field: filter.content.field,
-                            value: [value],
-                          },
-                        },
-                      ],
+                      content: [filter],
                     },
                   }}
                 >
-                  <Value>
-                    {getDisplayValue(filter.content.field, value)}
-                  </Value>
-                </NotUnderlinedLink>,
-              )}
-              {filter.content.value.length > 2 &&
-                <UnstyledButton
-                  className="test-toggle"
-                  style={styles.rightParen}
-                  onClick={() => onLessClicked(filter)}
-                >
-                  …
-                </UnstyledButton>}
-              {isFilterExpanded(filter) &&
-                <UnstyledButton
-                  className="test-toggle"
-                  style={{ display: 'flex', alignItems: 'center' }}
-                  onClick={() => onLessClicked(filter)}
-                >
-                  Less
-                </UnstyledButton>}
-              {filter.content.value.length > 1 &&
-                <span style={styles.rightParen}>)</span>}
-              {i < currentFilters.length - 1 && <Op>AND</Op>}
-            </Row>,
-          )}
+                  <Field>
+                    {humanify({
+                      term: facetFieldDisplayMapper(filter.content.field),
+                    })}
+                  </Field>
+                </NotUnderlinedLink>
+                <Op>{getDisplayOp(filter.op, value)}</Op>
+                {value.length > 1 && <span style={styles.leftParen}>(</span>}
+                {(isFilterExpanded(filter)
+                  ? value
+                  : take(value, 2)).map(value =>
+                  <NotUnderlinedLink
+                    className="test-field-value"
+                    key={value}
+                    merge="toggle"
+                    query={{
+                      offset: 0,
+                      filters: {
+                        op: 'and',
+                        content: [
+                          {
+                            op: filter.op,
+                            content: {
+                              field: filter.content.field,
+                              value: [value],
+                            },
+                          },
+                        ],
+                      },
+                    }}
+                  >
+                    <Value>
+                      {getDisplayValue(filter.content.field, value)}
+                    </Value>
+                  </NotUnderlinedLink>,
+                )}
+                {value.length > 2 &&
+                  <UnstyledButton
+                    className="test-toggle"
+                    style={styles.rightParen}
+                    onClick={() => onLessClicked(filter)}
+                  >
+                    …
+                  </UnstyledButton>}
+                {isFilterExpanded(filter) &&
+                  <UnstyledButton
+                    className="test-toggle"
+                    style={{ display: 'flex', alignItems: 'center' }}
+                    onClick={() => onLessClicked(filter)}
+                  >
+                    Less
+                  </UnstyledButton>}
+                {value.length > 1 && <span style={styles.rightParen}>)</span>}
+                {i < currentFilters.length - 1 && <Op>AND</Op>}
+              </Row>
+            );
+          })}
         </Row>
       </Row>}
     {linkPathname &&
@@ -282,7 +282,7 @@ const CurrentFilters = (
       <LinkButton
         pathname={linkPathname}
         disabled={currentFilters
-          .reduce((acc, f) => [...acc, ...f.content.value], [])
+          .reduce((acc, f) => acc.concat(f.content.value || []), [])
           .some(v => v.toString().includes('set_id:'))}
         query={
           currentFilters.length && {

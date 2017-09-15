@@ -6,6 +6,10 @@ import Link from './Link';
 type TProps = {|
   children?: mixed,
   style?: Object,
+  activeStyle?: Object,
+  exact?: boolean,
+  className?: string,
+  tabIndex?: string,
 |};
 
 const HomeLink = ({ children, ...props }: TProps) =>

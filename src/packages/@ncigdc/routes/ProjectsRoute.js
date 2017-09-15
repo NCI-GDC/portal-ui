@@ -11,7 +11,7 @@ import ProjectsPage from '@ncigdc/containers/ProjectsPage';
 import {
   parseIntParam,
   parseFilterParam,
-  parseJSURLParam,
+  parseJSONParam,
 } from '@ncigdc/utils/uri';
 
 import { viewerQuery } from './queries';
@@ -30,7 +30,7 @@ class ProjectsRoute extends Relay.Route {
       offset: parseIntParam(q.offset, 0),
       size: 1000,
       filters: parseFilterParam(q.filters, null),
-      projects_sort: parseJSURLParam(q.projects_sort, DEFAULT_PROJECT_SORT),
+      projects_sort: parseJSONParam(q.projects_sort, DEFAULT_PROJECT_SORT),
     };
   };
 }

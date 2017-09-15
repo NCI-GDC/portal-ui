@@ -11,7 +11,7 @@ import SmartSearchPage from '@ncigdc/containers/SmartSearchPage';
 import {
   parseIntParam,
   parseFilterParam,
-  parseJSURLParam,
+  parseJSONParam,
 } from '@ncigdc/utils/uri';
 
 import { viewerQuery } from './queries';
@@ -25,10 +25,10 @@ class SmartSearchRoute extends Relay.Route {
     return {
       cases_offset: parseIntParam(q.cases_offset, 0),
       cases_size: parseIntParam(q.cases_size, 20),
-      cases_sort: parseJSURLParam(q.cases_sort, null),
+      cases_sort: parseJSONParam(q.cases_sort, null),
       files_offset: parseIntParam(q.files_offset, 0),
       files_size: parseIntParam(q.files_size, 20),
-      files_sort: parseJSURLParam(q.files_sort, null),
+      files_sort: parseJSONParam(q.files_sort, null),
       filters: parseFilterParam(q.filters, null),
     };
   };

@@ -1,7 +1,6 @@
 // @flow
 
 import React from 'react';
-import { connect } from 'react-redux';
 import Overlay from '@ncigdc/uikit/Overlay';
 import Spinner from './Material';
 
@@ -28,11 +27,34 @@ export default (
     {children}
   </div>;
 
-export const ConnectedLoader = connect(s => ({
-  loaders: s.loaders,
-}))(
-  ({ loaders, name, customLoader: CL }) =>
-    CL
-      ? <CL loading={loaders.includes(name)} />
-      : <OverlayLoader loading={loaders.includes(name)} />,
-);
+type TWithLoader = {
+  Loader: any,
+  minHeight?: number,
+  style: Object,
+  loading: boolean,
+  firstLoad: boolean,
+};
+export const withLoader = (Component: ReactClass<*>) => {
+  return ({
+    Loader = OverlayLoader,
+    minHeight,
+    style = { position: 'relative', width: '100%' },
+    loading,
+    firstLoad,
+    ...props
+  }: TWithLoader) => {
+    return (
+      <div
+        style={{
+          position: 'relative',
+          width: '100%',
+          ...(minHeight ? { minHeight } : {}),
+          ...style,
+        }}
+      >
+        {!firstLoad && <Component {...props} />}
+        <Loader loading={loading} />
+      </div>
+    );
+  };
+};

@@ -117,7 +117,6 @@ export default compose(
     state: {
       activeTranscript,
       notEnoughData = false,
-      width,
       min,
       max,
       blacklist,
@@ -163,7 +162,6 @@ export default compose(
         <div style={{ padding: '0 3rem 2rem' }}>
           <Lolliplot
             activeTranscript={activeTranscript}
-            width={width}
             setState={setState}
             mutationId={mutationId}
             min={min}

@@ -5,9 +5,11 @@ import { insertRule } from 'glamor';
 
 export type TTheme = {
   impacts: {},
+  tableHighlight: string,
+  greyScale5: string,
 };
 
-let theme = {};
+let theme: TTheme = {};
 
 type TSetTheme = (version: string, custom?: Object) => void;
 export const setTheme: TSetTheme = (version, custom = {}) => {

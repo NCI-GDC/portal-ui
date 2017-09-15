@@ -1,7 +1,7 @@
 import React from 'react';
-import { connect } from 'react-redux';
 import { compose, withState } from 'recompose';
-import Venn from '@ncigdc/components/Charts/Venn';
+
+import Venn, { buildOps } from '@ncigdc/components/Charts/Venn';
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import {
   ExploreCaseCount,
@@ -15,9 +15,6 @@ import CreateExploreGeneSetButton from '@ncigdc/modern_components/setButtons/Cre
 import CreateExploreSsmSetButton from '@ncigdc/modern_components/setButtons/CreateExploreSsmSetButton';
 import OpsTable from './OpsTable';
 import SetTable from './SetTable';
-import buildOps from './buildOps';
-import TwoSetOverlay from './TwoSetOverlay';
-import ThreeSetOverlay from './ThreeSetOverlay';
 
 const countComponents = {
   case: ExploreCaseCount,
@@ -38,14 +35,12 @@ const colors = [
 ];
 
 export default compose(
-  connect(s => ({ sets: s.sets })),
   withState('selected', 'setSelected', () => new Set()),
   withState('hovering', 'setHovering', () => new Set()),
   withRouter,
 )(
   ({
     setIds,
-    sets,
     type,
     selected,
     setSelected,
@@ -55,11 +50,6 @@ export default compose(
     dispatch,
     CreateSetButton = CreateSetButtonMap[type],
   }) => {
-    const setData = setIds.map(setId => [
-      setId,
-      sets[type][setId] || 'deleted set',
-    ]);
-
     const toggle = op => {
       selected[selected.has(op) ? 'delete' : 'add'](op);
       setSelected(selected);
@@ -67,7 +57,7 @@ export default compose(
 
     const CountComponent = countComponents[type];
 
-    const ops = buildOps({ setData, type });
+    const ops = buildOps({ setIds, type });
 
     const selectedFilters = {
       op: 'or',
@@ -88,6 +78,7 @@ export default compose(
                 <div style={{ position: 'relative', width: '40%' }}>
                   <div style={{ position: 'absolute' }}>
                     <Venn
+                      type={type}
                       width={width}
                       data={setIds}
                       ops={ops}
@@ -104,27 +95,16 @@ export default compose(
                       }}
                     />
                   </div>
-                  {ops.length === 3
-                    ? <TwoSetOverlay
-                        width={width}
-                        ops={ops}
-                        CountComponent={CountComponent}
-                      />
-                    : <ThreeSetOverlay
-                        width={width}
-                        ops={ops}
-                        CountComponent={CountComponent}
-                      />}
                 </div>}
             </Measure>
             <Column style={{ width: '60%' }}>
-              {SetTable({
-                push,
-                setData,
-                type,
-                CountComponent,
-                CreateSetButton,
-              })}
+              <SetTable
+                push={push}
+                setIds={setIds}
+                type={type}
+                CountComponent={CountComponent}
+                CreateSetButton={CreateSetButton}
+              />
               <hr />
               {OpsTable({
                 type,

@@ -31,24 +31,20 @@ const SsmsTableModel = [
     sortable: true,
     hidden: true,
     downloadable: true,
-    th: () =>
-      <Th>
-        Mutation ID
-      </Th>,
-    td: ({ node }) =>
+    th: () => <Th>Mutation ID</Th>,
+    td: ({ node }) => (
       <Td>
         {node.ssm_id}
-        <ForTsvExport>
-          {node.ssm_id}
-        </ForTsvExport>
-      </Td>,
+        <ForTsvExport>{node.ssm_id}</ForTsvExport>
+      </Td>
+    ),
   },
   {
     name: 'DNA Change',
     id: 'genomic_dna_change',
     sortable: true,
     downloadable: true,
-    th: () =>
+    th: () => (
       <Th>
         <Tooltip
           Component={
@@ -61,8 +57,9 @@ const SsmsTableModel = [
         >
           DNA Change
         </Tooltip>
-      </Th>,
-    td: ({ node }) =>
+      </Th>
+    ),
+    td: ({ node }) => (
       <Td>
         <Tooltip
           Component={
@@ -79,7 +76,8 @@ const SsmsTableModel = [
             )}
           </MutationLink>
         </Tooltip>
-      </Td>,
+      </Td>
+    ),
   },
   {
     name: 'Type',
@@ -87,10 +85,7 @@ const SsmsTableModel = [
     sortable: true,
     downloadable: true,
     th: () => <Th>Type</Th>,
-    td: ({ node }) =>
-      <Td>
-        {node.mutation_subtype}
-      </Td>,
+    td: ({ node }) => <Td>{node.mutation_subtype}</Td>,
   },
   {
     name: 'Consequences',
@@ -98,7 +93,7 @@ const SsmsTableModel = [
     sortable: true,
     downloadable: true,
     th: () => <Th>Consequences</Th>,
-    td: ({ node, theme }) =>
+    td: ({ node, theme }) => (
       <Td>
         <span>
           <b>{startCase(node.consequenceType.replace('variant', ''))}</b>&nbsp;
@@ -126,28 +121,30 @@ const SsmsTableModel = [
             {truncate(node.aaChange, { length: 12 })}
           </Tooltip>
         </span>
-      </Td>,
+      </Td>
+    ),
   },
   {
     name: '# Affected Cases in Cohort',
     id: 'filteredCases',
     sortable: true,
     downloadable: true,
-    th: ({ context }) =>
+    th: ({ context }) => (
       <Th>
         <Tooltip
           Component={
             <span>
               # of Cases where Mutation is observed in {context}
-              <br /> / # of Cases tested
-              for Simple Somatic Mutations in {context}
+              <br /> / # of Cases tested for Simple Somatic Mutations in{' '}
+              {context}
             </span>
           }
           style={tableToolTipHint()}
         >
           # Affected Cases<br />in {context}
         </Tooltip>
-      </Th>,
+      </Th>
+    ),
     td: ({
       node,
       query,
@@ -155,7 +152,7 @@ const SsmsTableModel = [
       defaultFilters,
       filteredCases,
       location,
-    }) =>
+    }) => (
       <Td>
         <span>
           <ExploreLink
@@ -174,17 +171,20 @@ const SsmsTableModel = [
           <ExploreLink
             query={{
               searchTableTab: 'cases',
-              filters: location.pathname.split('/')[1] === 'genes'
-                ? query.ssmsTable_filters || contextFilters || defaultFilters
-                : addInFilters(
-                    query.ssmsTable_filters || contextFilters || defaultFilters,
-                    makeFilter([
-                      {
-                        field: 'cases.available_variation_data',
-                        value: ['ssm'],
-                      },
-                    ]),
-                  ),
+              filters:
+                location.pathname.split('/')[1] === 'genes'
+                  ? query.ssmsTable_filters || contextFilters || defaultFilters
+                  : addInFilters(
+                      query.ssmsTable_filters ||
+                        contextFilters ||
+                        defaultFilters,
+                      makeFilter([
+                        {
+                          field: 'cases.available_variation_data',
+                          value: ['ssm'],
+                        },
+                      ]),
+                    ),
             }}
           >
             {(filteredCases.hits.total || 0).toLocaleString()}
@@ -200,14 +200,15 @@ const SsmsTableModel = [
             {(node.score / filteredCases.hits.total * 100).toFixed(2)}%
           </span>
         </span>
-      </Td>,
+      </Td>
+    ),
   },
   {
     name: '	# Affected Cases Across the GDC',
     id: 'projectBreakdown',
     sortable: true,
     downloadable: true,
-    th: () =>
+    th: () => (
       <Th>
         <Tooltip
           Component={
@@ -222,37 +223,44 @@ const SsmsTableModel = [
         >
           # Affected Cases<br /> Across the GDC
         </Tooltip>
-      </Th>,
-    td: ({ node, cases }) =>
+      </Th>
+    ),
+    td: ({ node, cases }) => (
       <Td>
         <ProjectBreakdown
           filters={makeFilter([{ field: 'ssms.ssm_id', value: node.ssm_id }])}
           caseTotal={node.occurrence.hits.total}
           gdcCaseTotal={cases.hits.total}
         />
-      </Td>,
+      </Td>
+    ),
   },
   {
     name: 'Impact',
     id: 'impact',
     sortable: true,
     downloadable: true,
-    th: () => <Th>Impact<br />(VEP)</Th>,
-    td: ({ node, theme }) =>
+    th: () => (
+      <Th>
+        Impact<br />(VEP)
+      </Th>
+    ),
+    td: ({ node, theme }) => (
       <Td>
-        {!['LOW', 'MODERATE', 'HIGH', 'MODIFIER'].includes(node.impact)
-          ? null
-          : <span>
-              <BubbleIcon
-                toolTipText={node.impact}
-                text={node.impact.slice(0, node.impact === 'MODIFIER' ? 2 : 1)}
-                backgroundColor={theme.impacts[node.impact]}
-              />
-              <ForTsvExport>
-                {node.impact}
-              </ForTsvExport>
-            </span>}
-      </Td>,
+        {!['LOW', 'MODERATE', 'HIGH', 'MODIFIER'].includes(
+          node.impact,
+        ) ? null : (
+          <span>
+            <BubbleIcon
+              toolTipText={node.impact}
+              text={node.impact.slice(0, node.impact === 'MODIFIER' ? 2 : 1)}
+              backgroundColor={theme.impacts[node.impact]}
+            />
+            <ForTsvExport>{node.impact}</ForTsvExport>
+          </span>
+        )}
+      </Td>
+    ),
   },
   {
     name: 'Survival',
@@ -266,7 +274,7 @@ const SsmsTableModel = [
       setSelectedSurvivalData,
       survivalLoadingId,
       defaultFilters,
-    }) =>
+    }) => (
       <Td>
         <Tooltip
           Component={
@@ -308,13 +316,16 @@ const SsmsTableModel = [
               }
             }}
           >
-            {survivalLoadingId === node.ssm_id
-              ? <SpinnerIcon />
-              : <SurvivalIcon />}
+            {survivalLoadingId === node.ssm_id ? (
+              <SpinnerIcon />
+            ) : (
+              <SurvivalIcon />
+            )}
             <Hidden>add to survival plot</Hidden>
           </Button>
         </Tooltip>
-      </Td>,
+      </Td>
+    ),
   },
 ];
 

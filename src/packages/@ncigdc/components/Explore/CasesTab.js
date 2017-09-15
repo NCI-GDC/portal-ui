@@ -4,10 +4,11 @@ import React from 'react';
 import ExploreCasesTable from '@ncigdc/modern_components/ExploreCasesTable/ExploreCasesTable';
 import ExploreCasesPies from '@ncigdc/modern_components/ExploreCasesPies/ExploreCasesPies';
 
-const CasesTab = () =>
+const CasesTab = () => (
   <div>
     <ExploreCasesPies />
     <ExploreCasesTable />
-  </div>;
+  </div>
+);
 
 export default CasesTab;

@@ -33,7 +33,8 @@ const CreateSetButton = ({
     dispatch(
       setModal(
         <div style={{ padding: '15px' }}>
-          <h3>Error creating set</h3>{`${err}`}
+          <h3>Error creating set</h3>
+          {`${err}`}
         </div>,
       ),
     );
@@ -47,9 +48,9 @@ const CreateSetButton = ({
   const content = get(filters, 'content[0].content');
   const setOnlyInCurrentFilters = filters
     ? filters.content.length === 1 &&
-        content.value.length === 1 &&
-        content.value[0].toString().includes('set_id:') &&
-        content.field === field
+      content.value.length === 1 &&
+      content.value[0].toString().includes('set_id:') &&
+      content.field === field
     : false;
 
   const variables = { input: { filters: filters ? filters : {} } };

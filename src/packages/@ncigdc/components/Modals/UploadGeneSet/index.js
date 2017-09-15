@@ -81,8 +81,12 @@ class UploadGeneSet extends React.Component {
           }}
         >
           <GeneInput onUpdate={setGenes} ref={n => (this.geneInput = n)} />
-          {validating && <span><SpinnerIcon /> validating genes</span>}
-          {!!genes.length &&
+          {validating && (
+            <span>
+              <SpinnerIcon /> validating genes
+            </span>
+          )}
+          {!!genes.length && (
             <div style={{ marginTop: '2rem' }}>
               <UnstyledButton
                 onClick={e => setShowTable(s => !s)}
@@ -91,13 +95,15 @@ class UploadGeneSet extends React.Component {
                 Summary Table ({matched.length} matched, {unmatched.length}{' '}
                 unmatched) <CaretIcon direction={showTable ? 'down' : 'left'} />
               </UnstyledButton>
-              {showTable &&
+              {showTable && (
                 <MappingTable
                   matched={matched}
                   unmatched={unmatched}
                   style={{ marginTop: '0.5rem' }}
-                />}
-            </div>}
+                />
+              )}
+            </div>
+          )}
         </div>
         <Row
           style={{
@@ -109,7 +115,9 @@ class UploadGeneSet extends React.Component {
           spacing="1rem"
         >
           <Button onClick={() => onClose()}>Cancel</Button>
-          <Button onClick={this.clear} disabled={!genes.length}>Clear</Button>
+          <Button onClick={this.clear} disabled={!genes.length}>
+            Clear
+          </Button>
           <CreateSetButton genes={matched} onClose={onClose} />
         </Row>
       </div>

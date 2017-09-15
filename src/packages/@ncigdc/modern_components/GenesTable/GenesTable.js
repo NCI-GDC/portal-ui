@@ -23,8 +23,10 @@ export default compose(
       const { ssms: { aggregations } } = explore;
       const ssmCounts = (aggregations || {
         consequence__transcript__gene__gene_id: { buckets: [] },
-      }).consequence__transcript__gene__gene_id.buckets
-        .reduce((acc, b) => ({ ...acc, [b.key]: b.doc_count }), {});
+      }).consequence__transcript__gene__gene_id.buckets.reduce(
+        (acc, b) => ({ ...acc, [b.key]: b.doc_count }),
+        {},
+      );
       return { ssmCounts };
     },
   ),
@@ -103,11 +105,11 @@ export default compose(
             headings={tableInfo.map(x => <x.th key={x.id} context={context} />)}
             body={
               <tbody>
-                {data.map((e, i) =>
+                {data.map((e, i) => (
                   <Tr key={e.node.id} index={i}>
                     {tableInfo
                       .filter(x => x.td)
-                      .map(x =>
+                      .map(x => (
                         <x.td
                           key={x.id}
                           node={e.node}
@@ -124,10 +126,10 @@ export default compose(
                           hasEnoughSurvivalDataOnPrimaryCurve={
                             hasEnoughSurvivalDataOnPrimaryCurve
                           }
-                        />,
-                      )}
-                  </Tr>,
-                )}
+                        />
+                      ))}
+                  </Tr>
+                ))}
               </tbody>
             }
           />

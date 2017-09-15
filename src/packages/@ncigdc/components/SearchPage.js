@@ -57,9 +57,9 @@ const SearchPage = (
     filtersLinkProps,
     ...props
   }: TProps = {},
-) =>
+) => (
   <Container className={props.className + ' test-search-page'}>
-    {showFacets &&
+    {showFacets && (
       <FacetsPanel>
         <TabbedLinks
           queryParam="facetTab"
@@ -78,17 +78,20 @@ const SearchPage = (
           hideTabs={facetTabs.length <= 1}
           links={facetTabs}
         />
-      </FacetsPanel>}
+      </FacetsPanel>
+    )}
     <Content>
       <Row style={{ marginBottom: '2rem' }}>
-        {!showFacets &&
+        {!showFacets && (
           <ShowFacetsButton onClick={() => setShowFacets(!showFacets)}>
             <DoubleArrowRightIcon />
-          </ShowFacetsButton>}
+          </ShowFacetsButton>
+        )}
         <CurrentFilters style={{ flex: 1 }} {...filtersLinkProps} />
       </Row>
       {results}
     </Content>
-  </Container>;
+  </Container>
+);
 
 export default enhance(SearchPage);

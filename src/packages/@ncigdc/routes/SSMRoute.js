@@ -25,19 +25,15 @@ const DnaChange = createSsmSummary(
   ({
     viewer,
     dnaChange = viewer.explore.ssms.hits.edges[0].node.genomic_dna_change,
-  }) =>
-    <span>
-      {truncate(dnaChange, 12)}
-    </span>,
+  }) => <span>{truncate(dnaChange, 12)}</span>,
 );
 
-const CancerDistributionTitle = ({ cases = 0, projects = [], filters }) =>
+const CancerDistributionTitle = ({ cases = 0, projects = [], filters }) => (
   <h5 style={{ textTransform: 'uppercase', padding: '0 2rem' }}>
     THIS MUTATION AFFECTS&nbsp;
     <ExploreLink query={{ searchTableTab: 'cases', filters }}>
       {cases.toLocaleString()}
-    </ExploreLink>&nbsp;
-    CASES ACROSS&nbsp;
+    </ExploreLink>&nbsp; CASES ACROSS&nbsp;
     <ProjectsLink
       query={{
         filters: {
@@ -55,9 +51,9 @@ const CancerDistributionTitle = ({ cases = 0, projects = [], filters }) =>
       }}
     >
       {projects.length.toLocaleString()}
-    </ProjectsLink>&nbsp;
-    PROJECTS
-  </h5>;
+    </ProjectsLink>&nbsp; PROJECTS
+  </h5>
+);
 
 export default (
   <Route
@@ -75,8 +71,12 @@ export default (
             entityType="MU"
           >
             <Row spacing="2rem" id="summary">
-              <Row flex="1"><SsmSummary ssmId={ssmId} /></Row>
-              <Row flex="1"><SsmExternalReferences ssmId={ssmId} /></Row>
+              <Row flex="1">
+                <SsmSummary ssmId={ssmId} />
+              </Row>
+              <Row flex="1">
+                <SsmExternalReferences ssmId={ssmId} />
+              </Row>
             </Row>
             <Column style={{ backgroundColor: 'white' }}>
               <Heading id="consequences" style={{ padding: '1rem' }}>

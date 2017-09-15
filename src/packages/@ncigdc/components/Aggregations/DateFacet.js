@@ -68,7 +68,7 @@ const DateFacet = (props: TProps) => {
 
   return (
     <Container style={{ ...props.style }} className="test-date-facet">
-      {!props.collapsed &&
+      {!props.collapsed && (
         <Row>
           <Label
             style={{
@@ -94,7 +94,8 @@ const DateFacet = (props: TProps) => {
           <GoLink merge="merge" query={query} dark={props.state.date}>
             Go!
           </GoLink>
-        </Row>}
+        </Row>
+      )}
     </Container>
   );
 };

@@ -65,7 +65,7 @@ export default (Component: ReactClass<*>) =>
             viewer {
               repository {
                 cases {
-                  hits(first: 0, filters: $filters){
+                  hits(first: 0, filters: $filters) {
                     total
                   }
                 }

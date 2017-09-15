@@ -24,14 +24,15 @@ export const createDataCategoryColumns = ({
       name: 'Data Categories',
       id: 'data_category',
       field: `summary.data_categories.data_category,summary.data_categories.${countKey}`,
-      th: () =>
+      th: () => (
         <Th
           key="data_category"
           colSpan={Object.keys(DATA_CATEGORIES).length}
           style={{ textAlign: 'center' }}
         >
           {title}
-        </Th>,
+        </Th>
+      ),
       downloadable: true,
       subHeadingIds: _.map(DATA_CATEGORIES, category => category.abbr),
     },
@@ -40,14 +41,15 @@ export const createDataCategoryColumns = ({
       id: category.abbr,
       subHeading: true,
       parent: 'data_category',
-      th: () =>
+      th: () => (
         <NumTh>
           <abbr>
             <Tooltip Component={category.full} style={tableToolTipHint()}>
               {category.abbr}
             </Tooltip>
           </abbr>
-        </NumTh>,
+        </NumTh>
+      ),
       td: ({ node }) => {
         const count = findDataCategory(
           category.abbr,
@@ -55,22 +57,24 @@ export const createDataCategoryColumns = ({
         )[countKey];
         return (
           <NumTd>
-            {count === 0
-              ? '0'
-              : <Link
-                  query={{
-                    filters: makeFilter([
-                      ...getCellLinkFilters(node),
-                      { field: 'files.data_category', value: category.full },
-                    ]),
-                  }}
-                >
-                  {count.toLocaleString()}
-                </Link>}
+            {count === 0 ? (
+              '0'
+            ) : (
+              <Link
+                query={{
+                  filters: makeFilter([
+                    ...getCellLinkFilters(node),
+                    { field: 'files.data_category', value: category.full },
+                  ]),
+                }}
+              >
+                {count.toLocaleString()}
+              </Link>
+            )}
           </NumTd>
         );
       },
-      total: ({ hits }) =>
+      total: ({ hits }) => (
         <NumTd>
           <Link
             query={{
@@ -88,7 +92,8 @@ export const createDataCategoryColumns = ({
                 ],
             ).toLocaleString()}
           </Link>
-        </NumTd>,
+        </NumTd>
+      ),
     })),
   ];
 };

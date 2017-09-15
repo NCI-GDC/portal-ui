@@ -59,21 +59,21 @@ export const SearchTable = compose(
             .map(x => <x.th key={x.id} />)}
           body={
             <tbody>
-              {hits.edges.map((e, i) =>
+              {hits.edges.map((e, i) => (
                 <Tr key={e.node.id} index={i}>
                   {tableInfo
                     .filter(x => x.td)
-                    .map(x =>
+                    .map(x => (
                       <x.td
                         key={x.id}
                         node={e.node}
                         relay={relay}
                         index={i}
                         total={hits.total}
-                      />,
-                    )}
-                </Tr>,
-              )}
+                      />
+                    ))}
+                </Tr>
+              ))}
             </tbody>
           }
         />

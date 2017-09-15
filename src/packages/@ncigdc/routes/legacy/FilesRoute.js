@@ -29,9 +29,10 @@ class FilesRoute extends Relay.Route {
   };
 }
 
-export default (props: mixed) =>
+export default (props: mixed) => (
   <Relay.Renderer
     Container={FilesPage}
     queryConfig={new FilesRoute(props)}
     environment={Relay.Store}
-  />;
+  />
+);

@@ -19,11 +19,12 @@ type TProps = {|
   |},
 |};
 
-const FileSize = (props: TProps) =>
+const FileSize = (props: TProps) => (
   <span className={props.className + ' test-file-size'}>
     {formatFileSize(props.bytes, {
       ...props.options,
     })}
-  </span>;
+  </span>
+);
 
 export default FileSize;

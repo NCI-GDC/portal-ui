@@ -8,7 +8,10 @@ type TProps = {|
   style?: Object,
 |};
 
-const HomeLink = ({ children, ...props }: TProps) =>
-  <Link pathname="/" {...props}>{children || 'home'}</Link>;
+const HomeLink = ({ children, ...props }: TProps) => (
+  <Link pathname="/" {...props}>
+    {children || 'home'}
+  </Link>
+);
 
 export default HomeLink;

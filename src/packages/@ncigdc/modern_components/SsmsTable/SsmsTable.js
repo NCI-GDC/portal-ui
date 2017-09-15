@@ -158,7 +158,7 @@ export default compose(
               .map(x => <x.th key={x.id} context={context} theme={theme} />)}
             body={
               <tbody>
-                {data.map((node, i) =>
+                {data.map((node, i) => (
                   <Tr key={node.id} index={i}>
                     {tableInfo
                       .filter(x => x.td)
@@ -168,7 +168,7 @@ export default compose(
                       .filter(
                         x => (hideSurvival ? x.id !== 'survival_plot' : true),
                       )
-                      .map(x =>
+                      .map(x => (
                         <x.td
                           key={x.id}
                           location={location}
@@ -187,10 +187,10 @@ export default compose(
                           hasEnoughSurvivalDataOnPrimaryCurve={
                             hasEnoughSurvivalDataOnPrimaryCurve
                           }
-                        />,
-                      )}
-                  </Tr>,
-                )}
+                        />
+                      ))}
+                  </Tr>
+                ))}
               </tbody>
             }
           />

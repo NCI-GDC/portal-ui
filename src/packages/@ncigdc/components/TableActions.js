@@ -46,25 +46,27 @@ const TableActions = (
     currentFilters,
     downloadTooltip = 'Export All',
   }: TProps = {},
-) =>
+) => (
   <LocationSubscriber>
-    {({ query }: {| query: TRawQuery |}) =>
+    {({ query }: {| query: TRawQuery |}) => (
       <Row style={style} spacing="0.2rem" className="test-table-actions">
-        {entityType &&
+        {entityType && (
           <ArrangeColumnsButton
             entityType={entityType}
             style={visualizingButton}
-          />}
+          />
+        )}
         {sortOptions &&
-          sortKey &&
-          <SortTableButton
-            isDisabled={!sortOptions.length}
-            options={sortOptions}
-            query={query || {}}
-            sortKey={sortKey}
-            style={visualizingButton}
-          />}
-        {downloadable &&
+          sortKey && (
+            <SortTableButton
+              isDisabled={!sortOptions.length}
+              options={sortOptions}
+              query={query || {}}
+              sortKey={sortKey}
+              style={visualizingButton}
+            />
+          )}
+        {downloadable && (
           <Tooltip Component={downloadTooltip}>
             <DownloadButton
               filters={
@@ -80,14 +82,18 @@ const TableActions = (
               activeText="JSON"
               showIcon={false}
             />
-          </Tooltip>}
+          </Tooltip>
+        )}
         {tsvSelector &&
-          tsvFilename &&
-          <DownloadTableToTsvButton
-            selector={tsvSelector}
-            filename={tsvFilename}
-          />}
-      </Row>}
-  </LocationSubscriber>;
+          tsvFilename && (
+            <DownloadTableToTsvButton
+              selector={tsvSelector}
+              filename={tsvFilename}
+            />
+          )}
+      </Row>
+    )}
+  </LocationSubscriber>
+);
 
 export default TableActions;

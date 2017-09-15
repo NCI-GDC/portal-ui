@@ -9,8 +9,9 @@ const isUserProject = ({ user, file }) => {
   const projectIds = Array.from(
     new Set([
       ...(file.projects || []).map(p => p.project_id || p),
-      ...(file.cases || { hits: { edges: [] } }).hits.edges
-        .map(e => e.node.project.project_id),
+      ...(file.cases || { hits: { edges: [] } }).hits.edges.map(
+        e => e.node.project.project_id,
+      ),
     ]),
   );
 

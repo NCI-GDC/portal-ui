@@ -34,11 +34,11 @@ class SmartSearchRoute extends Relay.Route {
   };
 }
 
-export default connect()((props: mixed) =>
+export default connect()((props: mixed) => (
   <Relay.Renderer
     Container={SmartSearchPage}
     queryConfig={new SmartSearchRoute(props)}
     environment={Relay.Store}
     onReadyStateChange={handleStateChange(props)}
-  />,
-);
+  />
+));

@@ -90,7 +90,7 @@ const SurvivalPlotWrapper = ({
       height={height}
       className={uniqueClass}
     >
-      {!survivalPlotloading &&
+      {!survivalPlotloading && (
         <Column className="test-survival-plot-meta">
           <VisualizationHeader
             title={TITLE}
@@ -131,7 +131,8 @@ const SurvivalPlotWrapper = ({
               />,
               <Tooltip Component="Reset SurvivalPlot Zoom" key="reset">
                 <Button style={visualizingButton} onClick={() => setXDomain()}>
-                  <i className="fa fa-undo" /><Hidden>Reset</Hidden>
+                  <i className="fa fa-undo" />
+                  <Hidden>Reset</Hidden>
                 </Button>
               </Tooltip>,
             ]}
@@ -145,7 +146,7 @@ const SurvivalPlotWrapper = ({
               }}
             >
               {legend &&
-                legend.map((l, i) =>
+                legend.map((l, i) => (
                   <div className={`legend-${i}`} key={l.key}>
                     <div
                       style={{
@@ -157,18 +158,19 @@ const SurvivalPlotWrapper = ({
                     >
                       {l.value}
                     </div>
-                  </div>,
-                )}
+                  </div>
+                ))}
             </Row>
           </div>
           {
             <Tooltip
               Component={
-                pValue === 0 &&
-                <div>
-                  Value shows 0.00e+0 because the<br />P-Value is extremely low
-                  and goes beyond<br />the precision inherent in the code
-                </div>
+                pValue === 0 && (
+                  <div>
+                    Value shows 0.00e+0 because the<br />P-Value is extremely
+                    low and goes beyond<br />the precision inherent in the code
+                  </div>
+                )
               }
             >
               <div className="p-value">
@@ -189,7 +191,8 @@ const SurvivalPlotWrapper = ({
           >
             drag to zoom
           </div>
-        </Column>}
+        </Column>
+      )}
       <div
         className={CLASS_NAME + ' test-survival-plot-container'}
         ref={setSurvivalContainer}
@@ -236,7 +239,8 @@ function renderSurvivalPlot(props: TProps): void {
       ) => {
         setTooltip(
           <span>
-            Case ID: {project_id} / {submitter_id}<br />
+            Case ID: {project_id} / {submitter_id}
+            <br />
             Survival Rate: {Math.round(survivalEstimate * 100)}%<br />
             {censored
               ? `Interval of last follow-up: ${time.toLocaleString()} days`

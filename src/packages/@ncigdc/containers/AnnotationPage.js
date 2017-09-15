@@ -26,14 +26,15 @@ export type TProps = {
   },
 };
 
-export const AnnotationPageComponent = ({ node }: TProps) =>
+export const AnnotationPageComponent = ({ node }: TProps) => (
   <FullWidthLayout
     title={node.entity_id}
     entityType="AN"
     className="test-annotation-page"
   >
     <Annotation node={node} />
-  </FullWidthLayout>;
+  </FullWidthLayout>
+);
 
 export const AnnotationPageQuery = {
   fragments: {

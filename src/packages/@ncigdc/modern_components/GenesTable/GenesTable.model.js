@@ -34,10 +34,7 @@ const GenesTableModel = [
     downloadable: true,
     hidden: true,
     th: () => <Th>Gene ID</Th>,
-    td: ({ node }) =>
-      <Td>
-        {node.gene_id}
-      </Td>,
+    td: ({ node }) => <Td>{node.gene_id}</Td>,
   },
   {
     name: 'Symbol',
@@ -72,12 +69,13 @@ const GenesTableModel = [
     sortable: true,
     downloadable: true,
     th: () => <Th>Name</Th>,
-    td: ({ node }) =>
+    td: ({ node }) => (
       <Td>
         <div style={{ maxWidth: '230px', whiteSpace: 'normal' }}>
           {node.name}
         </div>
-      </Td>,
+      </Td>
+    ),
   },
   {
     name: 'Cytoband',
@@ -85,10 +83,7 @@ const GenesTableModel = [
     sortable: true,
     downloadable: true,
     th: () => <Th>Cytoband</Th>,
-    td: ({ node }) =>
-      <Td>
-        {(node.cytoband || []).join(', ')}
-      </Td>,
+    td: ({ node }) => <Td>{(node.cytoband || []).join(', ')}</Td>,
   },
   {
     name: 'Type',
@@ -96,17 +91,14 @@ const GenesTableModel = [
     sortable: true,
     downloadable: true,
     th: () => <Th>Type</Th>,
-    td: ({ node }) =>
-      <Td>
-        {node.biotype}
-      </Td>,
+    td: ({ node }) => <Td>{node.biotype}</Td>,
   },
   {
     name: '# Affected Cases in Cohort',
     id: 'filteredCases',
     sortable: true,
     downloadable: true,
-    th: ({ context }) =>
+    th: ({ context }) => (
       <Th>
         <Tooltip
           Component={
@@ -120,8 +112,9 @@ const GenesTableModel = [
         >
           # Affected Cases<br />in {context}
         </Tooltip>
-      </Th>,
-    td: ({ node, query, defaultFilters, filteredCases }) =>
+      </Th>
+    ),
+    td: ({ node, query, defaultFilters, filteredCases }) => (
       <Td>
         <span>
           <ExploreLink
@@ -155,16 +148,18 @@ const GenesTableModel = [
           </ExploreLink>
           <span>{` (${((node.numCases || 0) /
             filteredCases.hits.total *
-            100).toFixed(2)}%)`}</span>
+            100
+          ).toFixed(2)}%)`}</span>
         </span>
-      </Td>,
+      </Td>
+    ),
   },
   {
     name: '	# Affected Cases Across the GDC',
     id: 'projectBreakdown',
     sortable: true,
     downloadable: true,
-    th: () =>
+    th: () => (
       <Th>
         <Tooltip
           Component={
@@ -180,8 +175,9 @@ const GenesTableModel = [
         >
           # Affected Cases<br /> Across the GDC
         </Tooltip>
-      </Th>,
-    td: ({ node, cases }) =>
+      </Th>
+    ),
+    td: ({ node, cases }) => (
       <Td>
         <ProjectBreakdown
           filters={makeFilter([
@@ -190,14 +186,15 @@ const GenesTableModel = [
           caseTotal={node.case.hits.total}
           gdcCaseTotal={cases.hits.total}
         />
-      </Td>,
+      </Td>
+    ),
   },
   {
     name: '# Mutations',
     id: 'mutations',
     sortable: true,
     downloadable: true,
-    th: ({ context }) =>
+    th: ({ context }) => (
       <NumTh>
         <Tooltip
           style={tableToolTipHint()}
@@ -210,8 +207,9 @@ const GenesTableModel = [
         >
           # Mutations
         </Tooltip>
-      </NumTh>,
-    td: ({ node, ssmCounts, defaultFilters }) =>
+      </NumTh>
+    ),
+    td: ({ node, ssmCounts, defaultFilters }) => (
       <NumTd>
         <MutationsCount
           ssmCount={ssmCounts[node.gene_id]}
@@ -220,7 +218,8 @@ const GenesTableModel = [
             makeFilter([{ field: 'genes.gene_id', value: [node.gene_id] }]),
           )}
         />
-      </NumTd>,
+      </NumTd>
+    ),
   },
   {
     name: 'Annotations',
@@ -228,18 +227,18 @@ const GenesTableModel = [
     sortable: true,
     downloadable: true,
     th: () => <Th style={{ textAlign: 'center' }}>Annotations</Th>,
-    td: ({ node }) =>
+    td: ({ node }) => (
       <Td style={{ textAlign: 'center' }}>
-        {node.is_cancer_gene_census &&
+        {node.is_cancer_gene_census && (
           <span>
             <Tooltip Component="Cancer Gene Census">
               <CosmicIcon width={'20px'} height={'16px'} />
             </Tooltip>
-            <ForTsvExport>
-              Cancer Gene Census
-            </ForTsvExport>
-          </span>}
-      </Td>,
+            <ForTsvExport>Cancer Gene Census</ForTsvExport>
+          </span>
+        )}
+      </Td>
+    ),
   },
   {
     name: 'Survival',
@@ -253,7 +252,7 @@ const GenesTableModel = [
       setSelectedSurvivalData,
       survivalLoadingId,
       defaultFilters,
-    }) =>
+    }) => (
       <Td>
         <Tooltip
           Component={
@@ -288,13 +287,16 @@ const GenesTableModel = [
               }
             }}
           >
-            {survivalLoadingId === node.symbol
-              ? <SpinnerIcon />
-              : <SurvivalIcon />}
+            {survivalLoadingId === node.symbol ? (
+              <SpinnerIcon />
+            ) : (
+              <SurvivalIcon />
+            )}
             <Hidden>add to survival plot</Hidden>
           </Button>
         </Tooltip>
-      </Td>,
+      </Td>
+    ),
   },
 ];
 

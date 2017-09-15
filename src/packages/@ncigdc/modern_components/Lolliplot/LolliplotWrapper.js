@@ -53,7 +53,8 @@ export default compose(
   withState('state', 'setState', props => {
     const activeTranscript = (props.gene.transcripts.hits.edges.find(
       x => x.node.is_canonical,
-    ) || {}).node;
+    ) || {}
+    ).node;
 
     return {
       lolliplotData: null,
@@ -71,7 +72,8 @@ export default compose(
       if (this.props.gene.gene_id !== nextProps.gene.gene_id) {
         const activeTranscript = (nextProps.gene.transcripts.hits.edges.find(
           x => x.node.is_canonical,
-        ) || {}).node;
+        ) || {}
+        ).node;
 
         this.props.setState(s => ({
           ...s,
@@ -134,18 +136,16 @@ export default compose(
     filterByType,
     transcripts,
     transcriptBuckets,
-  }) =>
+  }) => (
     <Column style={{ backgroundColor: 'white' }}>
       <Row>
         <h1 style={{ ...styles.heading, padding: '1rem' }} id="protein">
           <DoubleHelix width={12} />
-          <span style={{ marginLeft: '1rem' }}>
-            {gene.symbol} - Protein
-          </span>
+          <span style={{ marginLeft: '1rem' }}>{gene.symbol} - Protein</span>
         </h1>
       </Row>
       <div>
-        {lolliplotData &&
+        {lolliplotData && (
           <LolliplotToolbar
             activeTranscript={activeTranscript}
             gene={gene}
@@ -155,11 +155,13 @@ export default compose(
             setState={setState}
             selector={selector}
             lolliplotData={lolliplotData}
-          />}
-        {notEnoughData &&
+          />
+        )}
+        {notEnoughData && (
           <Column style={{ alignItems: 'center', padding: '20px' }}>
             Not enough data
-          </Column>}
+          </Column>
+        )}
         <div style={{ padding: '0 3rem 2rem' }}>
           <Lolliplot
             activeTranscript={activeTranscript}
@@ -178,5 +180,6 @@ export default compose(
           />
         </div>
       </div>
-    </Column>,
+    </Column>
+  ),
 );

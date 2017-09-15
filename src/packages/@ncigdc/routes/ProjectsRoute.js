@@ -35,11 +35,11 @@ class ProjectsRoute extends Relay.Route {
   };
 }
 
-export default connect()((props: mixed) =>
+export default connect()((props: mixed) => (
   <Relay.Renderer
     Container={ProjectsPage}
     queryConfig={new ProjectsRoute(props)}
     environment={Relay.Store}
     onReadyStateChange={handleStateChange(props)}
-  />,
-);
+  />
+));

@@ -38,8 +38,9 @@ const enhance = compose(
     const submittedHeaders = [];
     const matchedGenes = Object.entries(
       matched.reduce((acc, gene) => {
-        acc[geneMap[gene].gene_id] = (acc[geneMap[gene].gene_id] || [])
-          .concat(gene);
+        acc[geneMap[gene].gene_id] = (acc[geneMap[gene].gene_id] || []).concat(
+          gene,
+        );
         return acc;
       }, {}),
     )
@@ -100,9 +101,8 @@ export default enhance(
                   }}
                 >
                   <div>
-                    {from} submitted gene identifier{from > 1 ? 's' : ''}{' '}
-                    mapped to{' '}
-                    {to} unique GDC gene{to > 1 ? 's' : ''}
+                    {from} submitted gene identifier{from > 1 ? 's' : ''} mapped
+                    to {to} unique GDC gene{to > 1 ? 's' : ''}
                   </div>
                   <Button
                     style={{ ...visualizingButton }}

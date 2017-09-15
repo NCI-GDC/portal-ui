@@ -62,7 +62,7 @@ const Banner = ({
   dismissible,
   handleOnDismiss,
   dismissed,
-}: BannerProps) =>
+}: BannerProps) => (
   <Row
     style={{
       ...style.headerBanner,
@@ -72,17 +72,17 @@ const Banner = ({
     className="header-banner"
   >
     {levelToIcon[level.toLowerCase()] || levelToIcon.info}
-    <span style={style.message}>
-      {message}
-    </span>
-    {dismissible &&
+    <span style={style.message}>{message}</span>
+    {dismissible && (
       <span
         className="header-banner-dismiss"
         style={style.dismiss}
         onClick={handleOnDismiss}
       >
         Dismiss <i className="fa fa-times" />
-      </span>}
-  </Row>;
+      </span>
+    )}
+  </Row>
+);
 
 export default Banner;

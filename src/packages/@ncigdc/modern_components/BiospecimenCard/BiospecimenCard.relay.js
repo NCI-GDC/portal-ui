@@ -10,7 +10,11 @@ export default (Component: ReactClass<*>) =>
   compose(
     branch(
       ({ caseId }) => !caseId,
-      renderComponent(() => <div><pre>caseId</pre> must be provided</div>),
+      renderComponent(() => (
+        <div>
+          <pre>caseId</pre> must be provided
+        </div>
+      )),
     ),
     withPropsOnChange(['caseId'], ({ caseId }) => {
       return {
@@ -33,9 +37,7 @@ export default (Component: ReactClass<*>) =>
         variables={props.variables}
         Component={Component}
         query={graphql`
-          query BiospecimenCard_relayQuery(
-            $filters: FiltersArgument
-          ) {
+          query BiospecimenCard_relayQuery($filters: FiltersArgument) {
             viewer {
               repository {
                 cases {

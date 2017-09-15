@@ -133,7 +133,7 @@ const FacetWrapper = compose(
     };
 
     const facetComponent = {
-      exact: () =>
+      exact: () => (
         <ExactMatchFacet
           {...commonProps}
           fieldNoDoctype={facet.field}
@@ -142,10 +142,12 @@ const FacetWrapper = compose(
             facet.placeholder ? facet.placeholder : `Enter ${commonProps.title}`
           }
           {...additionalProps}
-        />,
-      datetime: () =>
-        <DateFacet field={facet.full} {...commonProps} {...additionalProps} />,
-      range: () =>
+        />
+      ),
+      datetime: () => (
+        <DateFacet field={facet.full} {...commonProps} {...additionalProps} />
+      ),
+      range: () => (
         <RangeFacet
           field={facet.full}
           convertDays={false}
@@ -153,15 +155,17 @@ const FacetWrapper = compose(
           min={aggregation.min}
           {...commonProps}
           {...additionalProps}
-        />,
-      terms: () =>
+        />
+      ),
+      terms: () => (
         <TermAggregation
           field={facet.full}
           {...commonProps}
           buckets={(aggregation || { buckets: [] }).buckets}
           showingValueSearch={showingValueSearch}
           {...additionalProps}
-        />,
+        />
+      ),
     }[facetType]();
     const hasValueSearch =
       facetType === 'terms' &&

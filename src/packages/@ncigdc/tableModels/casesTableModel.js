@@ -39,18 +39,20 @@ const NumTh = styled(Th, { textAlign: 'right' });
 const NumTd = styled(Td, { textAlign: 'right' });
 
 const FilesLink = ({ node, fields = [], children }) =>
-  children === '0'
-    ? <span>0</span>
-    : <RepositoryFilesLink
-        query={{
-          filters: makeFilter([
-            { field: 'cases.case_id', value: [node.case_id] },
-            ...fields,
-          ]),
-        }}
-      >
-        {children}
-      </RepositoryFilesLink>;
+  children === '0' ? (
+    <span>0</span>
+  ) : (
+    <RepositoryFilesLink
+      query={{
+        filters: makeFilter([
+          { field: 'cases.case_id', value: [node.case_id] },
+          ...fields,
+        ]),
+      }}
+    >
+      {children}
+    </RepositoryFilesLink>
+  );
 
 const getProjectIdFilter = projects =>
   makeFilter([
@@ -64,8 +66,12 @@ const casesTableModel = [
   {
     name: 'Cart',
     id: 'cart',
-    th: () => <Th key="cart" rowSpan="2">Cart</Th>,
-    td: ({ node, relay, total, index }) =>
+    th: () => (
+      <Th key="cart" rowSpan="2">
+        Cart
+      </Th>
+    ),
+    td: ({ node, relay, total, index }) => (
       <Td>
         <AddCaseFilesToCartButton
           caseId={node.case_id}
@@ -81,25 +87,31 @@ const casesTableModel = [
             total - 1 === index ? { top: 'auto', bottom: '100%' } : {}
           }
         />
-      </Td>,
+      </Td>
+    ),
   },
   {
     name: 'Case UUID',
     id: 'case_id',
     hidden: true,
     downloadable: true,
-    th: () => <Th key="case_id" rowSpan="2">Case UUID</Th>,
-    td: ({ node }) =>
-      <Td>
-        {node.case_id}
-      </Td>,
+    th: () => (
+      <Th key="case_id" rowSpan="2">
+        Case UUID
+      </Th>
+    ),
+    td: ({ node }) => <Td>{node.case_id}</Td>,
   },
   {
     name: 'Case ID',
     id: 'submitter_id',
     downloadable: true,
-    th: () => <Th key="submitter_id" rowSpan="2">Case ID</Th>,
-    td: ({ node, index }) =>
+    th: () => (
+      <Th key="submitter_id" rowSpan="2">
+        Case ID
+      </Th>
+    ),
+    td: ({ node, index }) => (
       <Td>
         <CaseLink
           uuid={node.case_id}
@@ -109,28 +121,38 @@ const casesTableModel = [
         >
           {node.submitter_id}
         </CaseLink>
-      </Td>,
+      </Td>
+    ),
   },
   {
     name: 'Project',
     id: 'project.project_id',
     downloadable: true,
     sortable: true,
-    th: () => <Th key="project_id" rowSpan="2">Project</Th>,
-    td: ({ node, index }) =>
+    th: () => (
+      <Th key="project_id" rowSpan="2">
+        Project
+      </Th>
+    ),
+    td: ({ node, index }) => (
       <Td>
         <ProjectLink
           uuid={node.project.project_id}
           id={`row-${index}-project-link`}
         />
-      </Td>,
+      </Td>
+    ),
   },
   {
     name: 'Primary Site',
     id: 'primary_site',
     sortable: true,
     downloadable: true,
-    th: () => <Th key="primary_site" rowSpan="2">Primary Site</Th>,
+    th: () => (
+      <Th key="primary_site" rowSpan="2">
+        Primary Site
+      </Th>
+    ),
     td: ({ node }) => <Td key="primary_site">{node.primary_site}</Td>,
   },
   {
@@ -138,25 +160,35 @@ const casesTableModel = [
     id: 'demographic.gender',
     sortable: true,
     downloadable: true,
-    th: () => <Th key="demographic.gender" rowSpan="2">Gender</Th>,
-    td: ({ node }) =>
+    th: () => (
+      <Th key="demographic.gender" rowSpan="2">
+        Gender
+      </Th>
+    ),
+    td: ({ node }) => (
       <Td key="demographic.gender">
         {_.capitalize(node.demographic.gender) || '--'}
-      </Td>,
+      </Td>
+    ),
   },
   {
     name: 'Files',
     id: 'summary.file_count',
     sortable: true,
     downloadable: true,
-    th: () => <NumTh key="summary.file_count" rowSpan="2">Files</NumTh>,
-    td: ({ node }) =>
+    th: () => (
+      <NumTh key="summary.file_count" rowSpan="2">
+        Files
+      </NumTh>
+    ),
+    td: ({ node }) => (
       <NumTd key="summary.file_count">
         <FilesLink node={node}>
           {node.summary.file_count.toLocaleString()}
         </FilesLink>
-      </NumTd>,
-    total: withRouter(({ hits, query }) =>
+      </NumTd>
+    ),
+    total: withRouter(({ hits, query }) => (
       <NumTd>
         <RepositoryCasesLink
           query={{
@@ -167,16 +199,20 @@ const casesTableModel = [
             .reduce((acc, val) => acc + val.node.summary.case_count, 0)
             .toLocaleString()}
         </RepositoryCasesLink>
-      </NumTd>,
-    ),
+      </NumTd>
+    )),
   },
   ...dataCategoryColumns,
   {
     name: 'Annotations',
     id: 'score',
     sortable: true,
-    th: () => <NumTh key="score" rowSpan="2">Annotations</NumTh>,
-    td: ({ node }) =>
+    th: () => (
+      <NumTh key="score" rowSpan="2">
+        Annotations
+      </NumTh>
+    ),
+    td: ({ node }) => (
       <NumTd key="score">
         <AnnotationCountLink
           hits={node.annotations.hits}
@@ -184,7 +220,8 @@ const casesTableModel = [
             { field: 'annotations.case_id', value: node.case_id },
           ])}
         />
-      </NumTd>,
+      </NumTd>
+    ),
   },
   {
     name: 'Program',
@@ -193,10 +230,7 @@ const casesTableModel = [
     downloadable: true,
     hidden: true,
     th: () => <Th rowSpan="2">Program</Th>,
-    td: ({ node }) =>
-      <Td>
-        {node.project.program.name}
-      </Td>,
+    td: ({ node }) => <Td>{node.project.program.name}</Td>,
   },
   {
     name: 'Disease Type',
@@ -205,10 +239,7 @@ const casesTableModel = [
     downloadable: true,
     hidden: true,
     th: () => <Th rowSpan="2">Disease Type</Th>,
-    td: ({ node }) =>
-      <Td>
-        {node.disease_type}
-      </Td>,
+    td: ({ node }) => <Td>{node.disease_type}</Td>,
   },
   {
     name: 'Age at diagnosis',
@@ -288,8 +319,9 @@ const casesTableModel = [
     downloadable: true,
     hidden: true,
     th: () => <Th rowSpan="2">Ethnicity</Th>,
-    td: ({ node }) =>
-      <Td>{(node.demographic && node.demographic.ethnicity) || '--'}</Td>,
+    td: ({ node }) => (
+      <Td>{(node.demographic && node.demographic.ethnicity) || '--'}</Td>
+    ),
   },
   {
     name: 'Race',
@@ -298,10 +330,9 @@ const casesTableModel = [
     downloadable: true,
     hidden: true,
     th: () => <Th rowSpan="2">Race</Th>,
-    td: ({ node }) =>
-      <Td>
-        {(node.demographic && node.demographic.race) || '--'}
-      </Td>,
+    td: ({ node }) => (
+      <Td>{(node.demographic && node.demographic.race) || '--'}</Td>
+    ),
   },
 ];
 

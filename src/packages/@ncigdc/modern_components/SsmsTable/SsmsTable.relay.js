@@ -87,14 +87,24 @@ export default (Component: ReactClass<*>) =>
           ) {
             viewer {
               explore {
-                cases { hits(first: 0 filters: $ssmTested) { total }}
+                cases {
+                  hits(first: 0, filters: $ssmTested) {
+                    total
+                  }
+                }
                 filteredCases: cases {
-                  hits(first: 0 filters: $ssmCaseFilter) {
+                  hits(first: 0, filters: $ssmCaseFilter) {
                     total
                   }
                 }
                 ssms {
-                  hits(first: $ssmsTable_size offset: $ssmsTable_offset filters: $ssmsTable_filters, score: $score, sort: $sort) {
+                  hits(
+                    first: $ssmsTable_size
+                    offset: $ssmsTable_offset
+                    filters: $ssmsTable_filters
+                    score: $score
+                    sort: $sort
+                  ) {
                     total
                     edges {
                       node {
@@ -104,7 +114,7 @@ export default (Component: ReactClass<*>) =>
                         mutation_subtype
                         ssm_id
                         consequence {
-                          hits(first: 1 filters: $consequenceFilters) {
+                          hits(first: 1, filters: $consequenceFilters) {
                             edges {
                               node {
                                 transcript {
@@ -124,12 +134,12 @@ export default (Component: ReactClass<*>) =>
                           }
                         }
                         filteredOccurences: occurrence {
-                          hits(first: 0 filters: $ssmCaseFilter) {
+                          hits(first: 0, filters: $ssmCaseFilter) {
                             total
                           }
                         }
                         occurrence {
-                          hits(first: 0 filters: $ssmTested) {
+                          hits(first: 0, filters: $ssmTested) {
                             total
                           }
                         }

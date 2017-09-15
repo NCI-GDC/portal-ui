@@ -10,11 +10,15 @@ import ProjectLink from '@ncigdc/components/Links/ProjectLink';
 
 import { withTheme } from '@ncigdc/theme';
 
-const Annotation = ({ node, theme }: { node: Object, theme: Object }) =>
+const Annotation = ({ node, theme }: { node: Object, theme: Object }) => (
   <Column spacing={theme.spacing} className="test-annotation">
     <EntityPageVerticalTable
       id="summary"
-      title={<span><i className="fa fa-table" /> Summary</span>}
+      title={
+        <span>
+          <i className="fa fa-table" /> Summary
+        </span>
+      }
       thToTd={[
         { th: 'Annotation UUID', td: node.annotation_id },
         {
@@ -54,10 +58,9 @@ const Annotation = ({ node, theme }: { node: Object, theme: Object }) =>
       style={{ flex: 1 }}
     />
     <Card title="NOTES">
-      <div style={{ padding: 10 }}>
-        {node.notes}
-      </div>
+      <div style={{ padding: 10 }}>{node.notes}</div>
     </Card>
-  </Column>;
+  </Column>
+);
 
 export default withTheme(Annotation);

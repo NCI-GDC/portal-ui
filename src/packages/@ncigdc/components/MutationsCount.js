@@ -7,18 +7,20 @@ const MutationsCount = ({ ssmCount, filters, isLoading = false }) => {
   if (isLoading) {
     return <GreyBox />;
   }
-  return ssmCount
-    ? <ExploreLink
-        merge
-        query={{
-          searchTableTab: 'mutations',
-          filters,
-        }}
-        className="test-mutations-count"
-      >
-        {ssmCount.toLocaleString()}
-      </ExploreLink>
-    : <span className="test-mutations-count">0</span>;
+  return ssmCount ? (
+    <ExploreLink
+      merge
+      query={{
+        searchTableTab: 'mutations',
+        filters,
+      }}
+      className="test-mutations-count"
+    >
+      {ssmCount.toLocaleString()}
+    </ExploreLink>
+  ) : (
+    <span className="test-mutations-count">0</span>
+  );
 };
 
 export default MutationsCount;

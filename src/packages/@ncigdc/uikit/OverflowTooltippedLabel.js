@@ -16,7 +16,7 @@ const OverflowTooltippedLabel = compose(
     htmlFor,
     props,
     setTooltip,
-  }) =>
+  }) => (
     <label
       style={{
         whiteSpace: 'nowrap',
@@ -39,7 +39,8 @@ const OverflowTooltippedLabel = compose(
       {...props}
     >
       {children}
-    </label>,
+    </label>
+  ),
 );
 
 export default OverflowTooltippedLabel;

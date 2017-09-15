@@ -79,221 +79,225 @@ const CartPage: TCartPage = ({ viewer, files, user, theme } = {}) => {
     <Column style={styles.container} className="test-cart-page">
       {!files.length && <h1>Your cart is empty.</h1>}
       {!!files.length &&
-        !!viewer.repository.files.hits &&
-        <Column>
-          <Row style={{ marginBottom: '2rem', flexWrap: 'wrap' }}>
-            <Column spacing="0.8rem" style={{ marginRight: '1rem' }}>
-              <CountCard
-                title="FILES"
-                count={files.length}
-                icon={<FileIcon style={{ width: '4rem', height: '4rem' }} />}
-                style={{ backgroundColor: 'transparent' }}
+        !!viewer.repository.files.hits && (
+          <Column>
+            <Row style={{ marginBottom: '2rem', flexWrap: 'wrap' }}>
+              <Column spacing="0.8rem" style={{ marginRight: '1rem' }}>
+                <CountCard
+                  title="FILES"
+                  count={files.length}
+                  icon={<FileIcon style={{ width: '4rem', height: '4rem' }} />}
+                  style={{ backgroundColor: 'transparent' }}
+                />
+                <CountCard
+                  title="CASES"
+                  count={caseCount}
+                  icon={<CaseIcon style={{ width: '4rem', height: '4rem' }} />}
+                  style={{ backgroundColor: 'transparent' }}
+                />
+                <CountCard
+                  title="FILE SIZE"
+                  count={formatFileSize(fileSize)}
+                  icon={
+                    <FileSizeIcon style={{ width: '4rem', height: '4rem' }} />
+                  }
+                  style={{ backgroundColor: 'transparent' }}
+                />
+              </Column>
+              <SummaryCard
+                style={{
+                  flex: 1,
+                  backgroundColor: 'transparent',
+                  height: '19em',
+                  overflow: 'auto',
+                  minWidth: '30em',
+                  flexShrink: 0,
+                  marginLeft: '1rem',
+                  marginRight: '1rem',
+                }}
+                tableTitle="File Counts by Project"
+                pieChartTitle="File Counts by Project"
+                data={viewer.summary.aggregations.project__project_id.buckets.map(
+                  item => ({
+                    project: item.key,
+                    case_count: item.case_count,
+                    case_count_meter: (
+                      <SparkMeterWithTooltip
+                        part={item.case_count}
+                        whole={caseCount}
+                      />
+                    ),
+                    file_count: item.doc_count.toLocaleString(),
+                    file_count_meter: (
+                      <SparkMeterWithTooltip
+                        part={item.doc_count}
+                        whole={files.length}
+                      />
+                    ),
+                    file_size: formatFileSize(item.file_size),
+                    file_size_meter: (
+                      <SparkMeterWithTooltip
+                        part={item.file_size}
+                        whole={fileSize}
+                      />
+                    ),
+                    tooltip: `${item.key}: ${item.doc_count.toLocaleString()}`,
+                  }),
+                )}
+                footer={`${viewer.summary.aggregations.project__project_id
+                  .buckets.length} Projects `}
+                path="file_count"
+                headings={[
+                  { key: 'project', title: 'Project', color: true },
+                  {
+                    key: 'case_count',
+                    title: 'Cases',
+                    style: { textAlign: 'right' },
+                  },
+                  {
+                    key: 'case_count_meter',
+                    title: <SampleSize n={caseCount} />,
+                    thStyle: {
+                      width: 1,
+                      textAlign: 'center',
+                    },
+                    style: { textAlign: 'left' },
+                  },
+                  {
+                    key: 'file_count',
+                    title: 'Files',
+                    style: { textAlign: 'right' },
+                  },
+                  {
+                    key: 'file_count_meter',
+                    title: <SampleSize n={files.length} />,
+                    thStyle: {
+                      width: 1,
+                      textAlign: 'center',
+                    },
+                    style: { textAlign: 'left' },
+                  },
+                  {
+                    key: 'file_size',
+                    title: 'File Size',
+                    style: { textAlign: 'right' },
+                  },
+                  {
+                    key: 'file_size_meter',
+                    title: (
+                      <SampleSize
+                        n={fileSize}
+                        formatter={formatFileSize}
+                        symbol="∑"
+                      />
+                    ),
+                    thStyle: {
+                      width: 1,
+                      textAlign: 'center',
+                    },
+                    style: { textAlign: 'left' },
+                  },
+                ]}
               />
-              <CountCard
-                title="CASES"
-                count={caseCount}
-                icon={<CaseIcon style={{ width: '4rem', height: '4rem' }} />}
-                style={{ backgroundColor: 'transparent' }}
-              />
-              <CountCard
-                title="FILE SIZE"
-                count={formatFileSize(fileSize)}
-                icon={
-                  <FileSizeIcon style={{ width: '4rem', height: '4rem' }} />
-                }
-                style={{ backgroundColor: 'transparent' }}
-              />
-            </Column>
-            <SummaryCard
-              style={{
-                flex: 1,
-                backgroundColor: 'transparent',
-                height: '19em',
-                overflow: 'auto',
-                minWidth: '30em',
-                flexShrink: 0,
-                marginLeft: '1rem',
-                marginRight: '1rem',
-              }}
-              tableTitle="File Counts by Project"
-              pieChartTitle="File Counts by Project"
-              data={viewer.summary.aggregations.project__project_id.buckets.map(
-                item => ({
-                  project: item.key,
-                  case_count: item.case_count,
-                  case_count_meter: (
-                    <SparkMeterWithTooltip
-                      part={item.case_count}
-                      whole={caseCount}
-                    />
-                  ),
-                  file_count: item.doc_count.toLocaleString(),
+              <SummaryCard
+                style={{
+                  flex: 1,
+                  backgroundColor: 'transparent',
+                  height: '19em',
+                  overflow: 'auto',
+                  minWidth: '23em',
+                  flexShrink: 0,
+                  marginLeft: '1rem',
+                  marginRight: '1rem',
+                }}
+                tableTitle="File Counts by Authorization Level"
+                pieChartTitle="File Counts by Authorization Level"
+                data={authCounts.map(x => ({
+                  ...x,
                   file_count_meter: (
                     <SparkMeterWithTooltip
-                      part={item.doc_count}
+                      part={x.doc_count}
                       whole={files.length}
                     />
                   ),
-                  file_size: formatFileSize(item.file_size),
+                  file_size: formatFileSize(x.file_size),
                   file_size_meter: (
                     <SparkMeterWithTooltip
-                      part={item.file_size}
+                      part={x.file_size}
                       whole={fileSize}
                     />
                   ),
-                  tooltip: `${item.key}: ${item.doc_count.toLocaleString()}`,
-                }),
-              )}
-              footer={`${viewer.summary.aggregations.project__project_id.buckets
-                .length} Projects `}
-              path="file_count"
-              headings={[
-                { key: 'project', title: 'Project', color: true },
-                {
-                  key: 'case_count',
-                  title: 'Cases',
-                  style: { textAlign: 'right' },
-                },
-                {
-                  key: 'case_count_meter',
-                  title: <SampleSize n={caseCount} />,
-                  thStyle: {
-                    width: 1,
-                    textAlign: 'center',
+                  tooltip: `${x.key}: ${formatFileSize(x.file_size)}`,
+                }))}
+                footer={`${authCounts.length} Authorization Levels`}
+                path="doc_count"
+                headings={[
+                  {
+                    key: 'key',
+                    title: 'Level',
+                    color: true,
+                    tdStyle: { textTransform: 'capitalize' },
                   },
-                  style: { textAlign: 'left' },
-                },
-                {
-                  key: 'file_count',
-                  title: 'Files',
-                  style: { textAlign: 'right' },
-                },
-                {
-                  key: 'file_count_meter',
-                  title: <SampleSize n={files.length} />,
-                  thStyle: {
-                    width: 1,
-                    textAlign: 'center',
+                  {
+                    key: 'doc_count',
+                    title: 'Files',
+                    style: { textAlign: 'right' },
                   },
-                  style: { textAlign: 'left' },
-                },
-                {
-                  key: 'file_size',
-                  title: 'File Size',
-                  style: { textAlign: 'right' },
-                },
-                {
-                  key: 'file_size_meter',
-                  title: (
-                    <SampleSize
-                      n={fileSize}
-                      formatter={formatFileSize}
-                      symbol="∑"
-                    />
-                  ),
-                  thStyle: {
-                    width: 1,
-                    textAlign: 'center',
+                  {
+                    key: 'file_count_meter',
+                    title: <SampleSize n={files.length} />,
+                    thStyle: {
+                      width: 1,
+                      textAlign: 'center',
+                    },
+                    style: { textAlign: 'left' },
                   },
-                  style: { textAlign: 'left' },
-                },
-              ]}
-            />
-            <SummaryCard
-              style={{
-                flex: 1,
-                backgroundColor: 'transparent',
-                height: '19em',
-                overflow: 'auto',
-                minWidth: '23em',
-                flexShrink: 0,
-                marginLeft: '1rem',
-                marginRight: '1rem',
-              }}
-              tableTitle="File Counts by Authorization Level"
-              pieChartTitle="File Counts by Authorization Level"
-              data={authCounts.map(x => ({
-                ...x,
-                file_count_meter: (
-                  <SparkMeterWithTooltip
-                    part={x.doc_count}
-                    whole={files.length}
-                  />
-                ),
-                file_size: formatFileSize(x.file_size),
-                file_size_meter: (
-                  <SparkMeterWithTooltip part={x.file_size} whole={fileSize} />
-                ),
-                tooltip: `${x.key}: ${formatFileSize(x.file_size)}`,
-              }))}
-              footer={`${authCounts.length} Authorization Levels`}
-              path="doc_count"
-              headings={[
-                {
-                  key: 'key',
-                  title: 'Level',
-                  color: true,
-                  tdStyle: { textTransform: 'capitalize' },
-                },
-                {
-                  key: 'doc_count',
-                  title: 'Files',
-                  style: { textAlign: 'right' },
-                },
-                {
-                  key: 'file_count_meter',
-                  title: <SampleSize n={files.length} />,
-                  thStyle: {
-                    width: 1,
-                    textAlign: 'center',
+                  {
+                    key: 'file_size',
+                    title: 'File Size',
+                    style: { textAlign: 'right' },
                   },
-                  style: { textAlign: 'left' },
-                },
-                {
-                  key: 'file_size',
-                  title: 'File Size',
-                  style: { textAlign: 'right' },
-                },
-                {
-                  key: 'file_size_meter',
-                  title: (
-                    <SampleSize
-                      n={fileSize}
-                      formatter={formatFileSize}
-                      symbol="∑"
-                    />
-                  ),
-                  thStyle: {
-                    width: 1,
-                    textAlign: 'center',
+                  {
+                    key: 'file_size_meter',
+                    title: (
+                      <SampleSize
+                        n={fileSize}
+                        formatter={formatFileSize}
+                        symbol="∑"
+                      />
+                    ),
+                    thStyle: {
+                      width: 1,
+                      textAlign: 'center',
+                    },
+                    style: { textAlign: 'left' },
                   },
-                  style: { textAlign: 'left' },
-                },
-              ]}
-            />
-            <HowToDownload
-              style={{
-                flex: 1,
-                backgroundColor: 'transparent',
-                minWidth: '18em',
-                flexShrink: 0,
-              }}
-            />
-          </Row>
-          <Row style={{ marginBottom: '2rem' }}>
-            <Row style={{ marginLeft: 'auto' }} spacing="1rem">
-              <MetadataDownloadButton files={{ files }} />
-              <CartDownloadDropdown files={files} user={user} />
-              <RemoveFromCartButton user={user} />
+                ]}
+              />
+              <HowToDownload
+                style={{
+                  flex: 1,
+                  backgroundColor: 'transparent',
+                  minWidth: '18em',
+                  flexShrink: 0,
+                }}
+              />
             </Row>
-          </Row>
-          <FilesTable
-            hits={viewer.repository.files.hits}
-            downloadable={false}
-            canAddToCart={false}
-            tableHeader={'Cart Items'}
-          />
-        </Column>}
+            <Row style={{ marginBottom: '2rem' }}>
+              <Row style={{ marginLeft: 'auto' }} spacing="1rem">
+                <MetadataDownloadButton files={{ files }} />
+                <CartDownloadDropdown files={files} user={user} />
+                <RemoveFromCartButton user={user} />
+              </Row>
+            </Row>
+            <FilesTable
+              hits={viewer.repository.files.hits}
+              downloadable={false}
+              canAddToCart={false}
+              tableHeader={'Cart Items'}
+            />
+          </Column>
+        )}
     </Column>
   );
 };
@@ -318,28 +322,35 @@ export default createFragmentContainer(
   }
   */
     viewer: graphql`
-    fragment CartPage_viewer on Root {
-      summary: cart_summary {
-        aggregations(filters: $filters) {
-          project__project_id {
-            buckets {
-              case_count
-              doc_count
-              file_size
-              key
+      fragment CartPage_viewer on Root {
+        summary: cart_summary {
+          aggregations(filters: $filters) {
+            project__project_id {
+              buckets {
+                case_count
+                doc_count
+                file_size
+                key
+              }
+            }
+            fs {
+              value
             }
           }
-          fs { value }
         }
-      }
-      repository {
-        files {
-          hits(first: $files_size offset: $files_offset, sort: $files_sort filters: $filters) {
-            ...FilesTable_hits
+        repository {
+          files {
+            hits(
+              first: $files_size
+              offset: $files_offset
+              sort: $files_sort
+              filters: $filters
+            ) {
+              ...FilesTable_hits
+            }
           }
         }
       }
-    }
-  `,
+    `,
   },
 );

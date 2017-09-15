@@ -66,7 +66,9 @@ export default (
             <Column spacing="2rem">
               {filters && <CurrentFilters />}
               <Row spacing="2rem">
-                <Row flex="1"><GeneSummary geneId={geneId} /></Row>
+                <Row flex="1">
+                  <GeneSummary geneId={geneId} />
+                </Row>
                 <Row flex="1">
                   <GeneExternalReferences geneId={geneId} />
                 </Row>

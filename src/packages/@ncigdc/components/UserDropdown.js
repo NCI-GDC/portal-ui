@@ -40,7 +40,7 @@ const logout = () => {
 const UserDropdown = connect(state => ({
   token: state.auth.token,
   user: state.auth.user,
-}))(({ user, dispatch }) =>
+}))(({ user, dispatch }) => (
   <Row style={{ alignSelf: 'stretch' }} className="test-user-dropdown">
     <Dropdown
       button={
@@ -61,15 +61,11 @@ const UserDropdown = connect(state => ({
                 id: `${new Date().getTime()}`,
                 component: (
                   <span>
-                    {user.username}
-                    {' '}
-                    does not have access to any protected data within the GDC.
-                    Click
-                    {' '}
+                    {user.username} does not have access to any protected data
+                    within the GDC. Click{' '}
                     <a href="https://gdc.cancer.gov/access-data/obtaining-access-controlled-data">
                       here
-                    </a>
-                    {' '}
+                    </a>{' '}
                     to learn more about obtaining access to protected data.
                   </span>
                 ),
@@ -90,7 +86,7 @@ const UserDropdown = connect(state => ({
         Logout
       </DropdownItem>
     </Dropdown>
-  </Row>,
-);
+  </Row>
+));
 
 export default UserDropdown;

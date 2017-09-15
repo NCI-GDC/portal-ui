@@ -120,7 +120,7 @@ export default compose(
     toggleBlacklistItem,
     filterByType,
     setTooltip,
-  }) =>
+  }) => (
     <Row>
       <div
         id={id}
@@ -135,7 +135,7 @@ export default compose(
           }
         }}
       >
-        {width &&
+        {width && (
           <div style={{ position: 'relative' }}>
             <span
               style={{
@@ -166,7 +166,9 @@ export default compose(
               onPointMouseover={({ y: cases = 0, ...d }) => {
                 setTooltip(
                   <span>
-                    <div><b>DNA Change: {d.genomic_dna_change}</b></div>
+                    <div>
+                      <b>DNA Change: {d.genomic_dna_change}</b>
+                    </div>
                     <div>ID: {d.id}</div>
                     <div>AA Change: {d.aa_change}</div>
                     <div># of Cases: {cases.toLocaleString()}</div>
@@ -197,9 +199,13 @@ export default compose(
                     setState(s => ({ ...s, min: d.start, max: d.end }));
                     setTooltip(
                       <span>
-                        <div><b>{d.id}</b></div>
+                        <div>
+                          <b>{d.id}</b>
+                        </div>
                         <div>{d.description}</div>
-                        <div><b>Click to reset zoom</b></div>
+                        <div>
+                          <b>Click to reset zoom</b>
+                        </div>
                       </span>,
                     );
                   }
@@ -207,13 +213,21 @@ export default compose(
                 onProteinMouseover={d => {
                   setTooltip(
                     <span>
-                      <div><b>{d.id}</b></div>
+                      <div>
+                        <b>{d.id}</b>
+                      </div>
                       <div>{d.description}</div>
                       {min === d.start &&
-                        max === d.end &&
-                        <div><b>Click to reset zoom</b></div>}
-                      {(min !== d.start || max !== d.end) &&
-                        <div><b>Click to zoom</b></div>}
+                        max === d.end && (
+                          <div>
+                            <b>Click to reset zoom</b>
+                          </div>
+                        )}
+                      {(min !== d.start || max !== d.end) && (
+                          <div>
+                            <b>Click to zoom</b>
+                          </div>
+                        )}
                     </span>,
                   );
                 }}
@@ -234,7 +248,8 @@ export default compose(
                 }}
               />
             </div>
-          </div>}
+          </div>
+        )}
       </div>
       <LolliplotStats
         mutations={lolliplotData.mutations}
@@ -251,5 +266,6 @@ export default compose(
         mutationColors={mutationColors}
         state={state}
       />
-    </Row>,
+    </Row>
+  ),
 );

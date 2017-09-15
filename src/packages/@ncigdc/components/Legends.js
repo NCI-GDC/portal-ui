@@ -31,27 +31,28 @@ export const StepLegend = ({
   color = '#D33682',
   leftLabel = 'Less',
   rightLabel = 'More',
-}) =>
+}) => (
   <Row style={styles.table}>
     <Column style={styles.td}>{leftLabel}</Column>
     <Row style={styles.td}>
-      {steps.map(opacity =>
+      {steps.map(opacity => (
         <div
           style={{ ...styles.color, background: color, opacity }}
           key={opacity}
-        />,
-      )}
+        />
+      ))}
     </Row>
     <Column style={styles.td}>{rightLabel}</Column>
-  </Row>;
+  </Row>
+);
 
 export const SwatchLegend = ({ colorMap }) => {
-  const labels = _.map(colorMap, (color, key) =>
+  const labels = _.map(colorMap, (color, key) => (
     <div style={styles.cell} key={key}>
       <div style={{ ...styles.color, background: color }} />
       <span>{key.replace(/_/g, ' ')}</span>
-    </div>,
-  );
+    </div>
+  ));
 
   return (
     <Row style={styles.table} className="test-legends">

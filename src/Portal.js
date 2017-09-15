@@ -24,12 +24,13 @@ if (process.env.NODE_ENV !== 'development') {
   store.dispatch(fetchUser());
 }
 
-const PortalComponent = () =>
+const PortalComponent = () => (
   <Provider store={store}>
     <Router>
       <PortalContainer />
     </Router>
-  </Provider>;
+  </Provider>
+);
 
 const PortalQuery = {
   fragments: {

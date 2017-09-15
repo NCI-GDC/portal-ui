@@ -24,7 +24,11 @@ export default compose(
   return (
     <EntityPageVerticalTable
       id="summary"
-      title={<span><TableIcon style={{ marginRight: '1rem' }} />Summary</span>}
+      title={
+        <span>
+          <TableIcon style={{ marginRight: '1rem' }} />Summary
+        </span>
+      }
       thToTd={[
         { th: 'Symbol', td: gene.symbol },
         { th: 'Name', td: gene.name },
@@ -32,7 +36,7 @@ export default compose(
           th: 'Synonyms',
           td:
             gene.synonyms.length &&
-              gene.synonyms.map(s => <div key={s}>{s}</div>),
+            gene.synonyms.map(s => <div key={s}>{s}</div>),
           style: {
             whiteSpace: 'pre-wrap',
             wordBreak: 'breakWord',
@@ -58,22 +62,24 @@ export default compose(
         },
         {
           th: 'Annotation',
-          td: gene.is_cancer_gene_census
-            ? <ExploreLink
-                merge
-                query={{
-                  searchTableTab: 'genes',
-                  filters: makeFilter([
-                    {
-                      field: 'genes.is_cancer_gene_census',
-                      value: [gene.is_cancer_gene_census],
-                    },
-                  ]),
-                }}
-              >
-                Cancer Gene Census
-              </ExploreLink>
-            : '--',
+          td: gene.is_cancer_gene_census ? (
+            <ExploreLink
+              merge
+              query={{
+                searchTableTab: 'genes',
+                filters: makeFilter([
+                  {
+                    field: 'genes.is_cancer_gene_census',
+                    value: [gene.is_cancer_gene_census],
+                  },
+                ]),
+              }}
+            >
+              Cancer Gene Census
+            </ExploreLink>
+          ) : (
+            '--'
+          ),
         },
       ]}
       style={{

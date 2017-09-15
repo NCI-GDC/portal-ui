@@ -67,21 +67,20 @@ const Header = compose(
   }),
   withTheme,
   pure,
-)(({ user, notifications, dispatch, theme }) =>
+)(({ user, notifications, dispatch, theme }) => (
   <header
     id="header"
     className="navbar navbar-default navbar-static-top"
     // data-ng-class="{ blue: hc.bannerDismissed }"
     role="banner"
   >
-
-    {notifications.map(n =>
+    {notifications.map(n => (
       <Banner
         {...n}
         key={n.id}
         handleOnDismiss={() => dispatch(dismissNotification(n.id))}
-      />,
-    )}
+      />
+    ))}
 
     <div className="container-fluid">
       <div className="navbar-header">
@@ -103,7 +102,8 @@ const Header = compose(
           tabIndex="0"
           style={{ padding: 0 }}
         >
-          <img src={nciGdcLogo} alt="gdc-logo" /><Hidden>Home</Hidden>
+          <img src={nciGdcLogo} alt="gdc-logo" />
+          <Hidden>Home</Hidden>
         </HomeLink>
       </div>
       <nav
@@ -127,7 +127,9 @@ const Header = compose(
               className="HomeLink"
             >
               <i className="fa fa-home" style={styles.iconPadding} />
-              <span className="hidden-sm" data-translate>Home</span>
+              <span className="hidden-sm" data-translate>
+                Home
+              </span>
             </HomeLink>
           </li>
           <li
@@ -140,7 +142,9 @@ const Header = compose(
               className="ProjectsLink"
             >
               <i className="icon-gdc-projects" style={styles.iconPadding} />
-              <span className="hidden-sm" data-translate>Projects</span>
+              <span className="hidden-sm" data-translate>
+                Projects
+              </span>
             </ProjectsLink>
           </li>
           <li>
@@ -150,7 +154,9 @@ const Header = compose(
               className="ExploreLink"
             >
               <i className="icon-gdc-data" style={styles.iconPadding} />
-              <span className="hidden-sm" data-translate>Exploration</span>
+              <span className="hidden-sm" data-translate>
+                Exploration
+              </span>
             </ExploreLink>
           </li>
           <li
@@ -163,10 +169,12 @@ const Header = compose(
               className="RepositoryLink"
             >
               <i className="fa fa-database" style={styles.iconPadding} />
-              <span className="hidden-sm" data-translate>Repository</span>
+              <span className="hidden-sm" data-translate>
+                Repository
+              </span>
             </RepositoryLink>
           </li>
-          {!!process.env.SHOW_ANALYSIS_MENU &&
+          {!!process.env.SHOW_ANALYSIS_MENU && (
             <li id="header-analysis">
               <a
                 href="https://gdc.cancer.gov/access-data/analytical-tools"
@@ -175,26 +183,31 @@ const Header = compose(
                 rel="noopener noreferrer"
               >
                 <i className="fa fa-bar-chart" style={styles.iconPadding} />
-                <span className="hidden-sm" data-translate>Analysis</span>
+                <span className="hidden-sm" data-translate>
+                  Analysis
+                </span>
               </a>
-            </li>}
+            </li>
+          )}
         </ul>
         <ul className="nav navbar-nav navbar-right">
           <li>
             <QuickSearch tabIndex="0" />
           </li>
-          {!user &&
+          {!user && (
             <li id="header-login">
               <LoginButton />
-            </li>}
-          {user &&
+            </li>
+          )}
+          {user && (
             <li className="hidden-xs">
               <UserDropdown />
-            </li>}
+            </li>
+          )}
           {/* if hc.cookieEnabled */}
           <li className="nav-cart">
             <CartLink>
-              {count =>
+              {count => (
                 <span>
                   <i
                     className="fa fa-shopping-cart"
@@ -209,7 +222,8 @@ const Header = compose(
                   <span className="label label-primary">
                     {count.toLocaleString()}
                   </span>
-                </span>}
+                </span>
+              )}
             </CartLink>
           </li>
           <li className="nav-GDCApps">
@@ -218,7 +232,7 @@ const Header = compose(
         </ul>
       </nav>
     </div>
-  </header>,
-);
+  </header>
+));
 
 export default Header;

@@ -87,7 +87,7 @@ export default compose(
           ]}
           activeIndex={activeTab}
         >
-          {activeTab === 0 &&
+          {activeTab === 0 && (
             <EntityPageVerticalTable
               thToTd={[
                 { th: 'UUID', td: demographic.demographic_id },
@@ -98,16 +98,17 @@ export default compose(
                 { th: 'Year of Death', td: demographic.year_of_death },
               ]}
               style={{ flex: '1 1 auto' }}
-            />}
-          {activeTab === 1 &&
+            />
+          )}
+          {activeTab === 1 && (
             <div>
-              {!!diagnoses.length &&
+              {!!diagnoses.length && (
                 <SideTabs
                   contentStyle={{ border: 'none' }}
-                  tabs={diagnoses.map(x =>
-                    <p key={x.node.diagnosis_id}>{x.node.diagnosis_id}</p>,
-                  )}
-                  tabContent={diagnoses.map(d => d.node).map(x =>
+                  tabs={diagnoses.map(x => (
+                    <p key={x.node.diagnosis_id}>{x.node.diagnosis_id}</p>
+                  ))}
+                  tabContent={diagnoses.map(d => d.node).map(x => (
                     <span key={x.diagnosis_id}>
                       <EntityPageVerticalTable
                         thToTd={[
@@ -173,50 +174,55 @@ export default compose(
                         )
                       </div>
                       {x.treatments &&
-                        !!x.treatments.hits.edges.length &&
-                        <Table
-                          headings={[
-                            <Th key="id">UUID</Th>,
-                            <Th key="agents">Therapeutic Agents</Th>,
-                            <Th key="intent_type">Treatment Intent Type</Th>,
-                            <Th key="therapy">Treatment or Therapy</Th>,
-                            <Th key="days">Days to Treatment</Th>,
-                          ]}
-                          body={
-                            <tbody>
-                              {x.treatments.hits.edges.map(({ node }) =>
-                                <Tr key={node.treatment_id}>
-                                  <Td>{node.treatment_id || '--'}</Td>
-                                  <Td>{node.therapeutic_agents || '--'}</Td>
-                                  <Td>{node.treatment_intent_type || '--'}</Td>
-                                  <Td>{node.treatment_or_therapy || '--'}</Td>
-                                  <Td>{node.days_to_treatment || '--'}</Td>
-                                </Tr>,
-                              )}
-                            </tbody>
-                          }
-                        />}
-                      {(!x.treatments || !x.treatments.hits.edges.length) &&
-                        <div style={{ paddingLeft: '2rem' }}>
-                          No Treatments Found.
-                        </div>}
-                    </span>,
-                  )}
-                />}
-              {!diagnoses.length &&
-                <h3 style={{ paddingLeft: '2rem' }}>
-                  No Diagnoses Found.
-                </h3>}
-            </div>}
-          {activeTab === 2 &&
+                        !!x.treatments.hits.edges.length && (
+                          <Table
+                            headings={[
+                              <Th key="id">UUID</Th>,
+                              <Th key="agents">Therapeutic Agents</Th>,
+                              <Th key="intent_type">Treatment Intent Type</Th>,
+                              <Th key="therapy">Treatment or Therapy</Th>,
+                              <Th key="days">Days to Treatment</Th>,
+                            ]}
+                            body={
+                              <tbody>
+                                {x.treatments.hits.edges.map(({ node }) => (
+                                  <Tr key={node.treatment_id}>
+                                    <Td>{node.treatment_id || '--'}</Td>
+                                    <Td>{node.therapeutic_agents || '--'}</Td>
+                                    <Td>
+                                      {node.treatment_intent_type || '--'}
+                                    </Td>
+                                    <Td>{node.treatment_or_therapy || '--'}</Td>
+                                    <Td>{node.days_to_treatment || '--'}</Td>
+                                  </Tr>
+                                ))}
+                              </tbody>
+                            }
+                          />
+                        )}
+                      {(!x.treatments || !x.treatments.hits.edges.length) && (
+                          <div style={{ paddingLeft: '2rem' }}>
+                            No Treatments Found.
+                          </div>
+                        )}
+                    </span>
+                  ))}
+                />
+              )}
+              {!diagnoses.length && (
+                <h3 style={{ paddingLeft: '2rem' }}>No Diagnoses Found.</h3>
+              )}
+            </div>
+          )}
+          {activeTab === 2 && (
             <div>
-              {!!familyHistory.length &&
+              {!!familyHistory.length && (
                 <SideTabs
                   contentStyle={{ border: 'none' }}
-                  tabs={familyHistory.map(x =>
-                    <p key={x.family_history_id}>{x.family_history_id}</p>,
-                  )}
-                  tabContent={familyHistory.map(x =>
+                  tabs={familyHistory.map(x => (
+                    <p key={x.family_history_id}>{x.family_history_id}</p>
+                  ))}
+                  tabContent={familyHistory.map(x => (
                     <EntityPageVerticalTable
                       key={x.family_history_id}
                       thToTd={[
@@ -239,23 +245,26 @@ export default compose(
                           td: x.relative_with_cancer_history,
                         },
                       ]}
-                    />,
-                  )}
-                />}
-              {!familyHistory.length &&
+                    />
+                  ))}
+                />
+              )}
+              {!familyHistory.length && (
                 <h3 style={{ paddingLeft: '2rem' }}>
                   No Family Histories Found.
-                </h3>}
-            </div>}
-          {activeTab === 3 &&
+                </h3>
+              )}
+            </div>
+          )}
+          {activeTab === 3 && (
             <div>
-              {!!totalExposures &&
+              {!!totalExposures && (
                 <SideTabs
                   contentStyle={{ border: 'none' }}
-                  tabs={exposures.map(x =>
-                    <p key={x.node.exposure_id}>{x.node.exposure_id}</p>,
-                  )}
-                  tabContent={exposures.map(x =>
+                  tabs={exposures.map(x => (
+                    <p key={x.node.exposure_id}>{x.node.exposure_id}</p>
+                  ))}
+                  tabContent={exposures.map(x => (
                     <EntityPageVerticalTable
                       key={x.node.exposure_id}
                       thToTd={[
@@ -270,14 +279,15 @@ export default compose(
                         { th: 'Weight', td: x.node.weight },
                         { th: 'Years Smoked', td: x.node.years_smoked },
                       ]}
-                    />,
-                  )}
-                />}
-              {!totalExposures &&
-                <h3 style={{ paddingLeft: '2rem' }}>
-                  No Exposures Found.
-                </h3>}
-            </div>}
+                    />
+                  ))}
+                />
+              )}
+              {!totalExposures && (
+                <h3 style={{ paddingLeft: '2rem' }}>No Exposures Found.</h3>
+              )}
+            </div>
+          )}
         </Tabs>
       </Card>
     );

@@ -182,7 +182,7 @@ export default compose(
         }
       />
       <div style={{ textAlign: 'right' }}>
-        {buckets1.length === 2 && (
+        {[buckets1.length, buckets2.length].every(l => l === 2) && (
           <Pvalue
             data={[
               buckets1.map(x => x.doc_count),

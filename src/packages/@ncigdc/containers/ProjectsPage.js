@@ -26,7 +26,7 @@ export type TProps = {
   setShowFacets: Function,
 };
 
-export const ProjectsPageComponent = (props: TProps) =>
+export const ProjectsPageComponent = (props: TProps) => (
   <SearchPage
     className="test-projects-page"
     filtersLinkProps={{
@@ -85,7 +85,8 @@ export const ProjectsPageComponent = (props: TProps) =>
         />
       </Column>
     }
-  />;
+  />
+);
 
 export const ProjectsPageQuery = {
   initialVariables: {

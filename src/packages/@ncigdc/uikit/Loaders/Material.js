@@ -7,7 +7,7 @@ type TProps = {
   style?: Object,
 };
 
-const Spinner = ({ style = {} }: TProps = {}) =>
+const Spinner = ({ style = {} }: TProps = {}) => (
   <div
     style={{
       transition: 'opacity 0.35s ease',
@@ -71,6 +71,7 @@ const Spinner = ({ style = {} }: TProps = {}) =>
         <div className="mdl-spinner__circle" />
       </div>
     </div>
-  </div>;
+  </div>
+);
 
 export default Spinner;

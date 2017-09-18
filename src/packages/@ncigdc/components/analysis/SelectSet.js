@@ -154,36 +154,35 @@ const SetTable = ({
           </Row>
         </Column>
 
-        {setData.length
-          ? <div style={{ flex: 1 }}>
-              <div style={{ margin: '2rem 0' }}>
-                <div>
-                  <strong>{setInstructions}</strong>
-                </div>
-                <div style={{ fontStyle: 'italic' }}>
-                  You can create and save case, gene and mutation sets of
-                  interest
-                  from
-                  the{' '}
-                  <ExploreLink>Exploration Page</ExploreLink>
-                </div>
+        {setData.length ? (
+          <div style={{ flex: 1 }}>
+            <div style={{ margin: '2rem 0' }}>
+              <div>
+                <strong>{setInstructions}</strong>
               </div>
-              <EntityPageHorizontalTable data={setData} headings={headings} />
+              <div style={{ fontStyle: 'italic' }}>
+                You can create and save case, gene and mutation sets of interest
+                from the <ExploreLink>Exploration Page</ExploreLink>
+              </div>
             </div>
-          : <EntityPageHorizontalTable
-              data={[{ select: 'No saved set' }]}
-              headings={[
-                {
-                  ...headings[0],
-                  tdProps: { colSpan: 4 },
-                  tdStyle: { textAlign: 'center' },
-                },
-                ...headings.slice(1).map(h => ({
-                  ...h,
-                  tdStyle: { display: 'none' },
-                })),
-              ]}
-            />}
+            <EntityPageHorizontalTable data={setData} headings={headings} />
+          </div>
+        ) : (
+          <EntityPageHorizontalTable
+            data={[{ select: 'No saved set' }]}
+            headings={[
+              {
+                ...headings[0],
+                tdProps: { colSpan: 4 },
+                tdStyle: { textAlign: 'center' },
+              },
+              ...headings.slice(1).map(h => ({
+                ...h,
+                tdStyle: { display: 'none' },
+              })),
+            ]}
+          />
+        )}
       </Row>
     </div>
   );

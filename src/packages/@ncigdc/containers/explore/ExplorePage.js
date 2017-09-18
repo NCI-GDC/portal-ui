@@ -113,7 +113,7 @@ const enhance = compose(
     },
   }),
 );
-export const ExplorePageComponent = (props: TProps) =>
+export const ExplorePageComponent = (props: TProps) => (
   <SearchPage
     className="test-explore-page"
     facetTabs={[
@@ -201,26 +201,32 @@ export const ExplorePageComponent = (props: TProps) =>
             {
               id: 'cases',
               text: `Cases (${props.viewer.explore.cases.hits.total.toLocaleString()})`,
-              component: !!props.viewer.explore.cases.hits.total
-                ? <CasesTab />
-                : <NoResultsMessage>No Cases Found.</NoResultsMessage>,
+              component: !!props.viewer.explore.cases.hits.total ? (
+                <CasesTab />
+              ) : (
+                <NoResultsMessage>No Cases Found.</NoResultsMessage>
+              ),
             },
             {
               id: 'genes',
               text: `Genes (${props.viewer.explore.genes.hits.total.toLocaleString()})`,
-              component: props.viewer.explore.genes.hits.total
-                ? <GenesTab viewer={props.viewer} />
-                : <NoResultsMessage>No Genes Found.</NoResultsMessage>,
+              component: props.viewer.explore.genes.hits.total ? (
+                <GenesTab viewer={props.viewer} />
+              ) : (
+                <NoResultsMessage>No Genes Found.</NoResultsMessage>
+              ),
             },
             {
               id: 'mutations',
               text: `Mutations (${props.viewer.explore.ssms.hits.total.toLocaleString()})`,
-              component: props.viewer.explore.ssms.hits.total
-                ? <MutationsTab
-                    totalNumCases={props.viewer.explore.cases.hits.total}
-                    viewer={props.viewer}
-                  />
-                : <NoResultsMessage>No Mutations Found.</NoResultsMessage>,
+              component: props.viewer.explore.ssms.hits.total ? (
+                <MutationsTab
+                  totalNumCases={props.viewer.explore.cases.hits.total}
+                  viewer={props.viewer}
+                />
+              ) : (
+                <NoResultsMessage>No Mutations Found.</NoResultsMessage>
+              ),
             },
             {
               id: 'oncogrid',
@@ -231,7 +237,8 @@ export const ExplorePageComponent = (props: TProps) =>
         />
       </span>
     }
-  />;
+  />
+);
 
 export const ExplorePageQuery = {
   initialVariables: {

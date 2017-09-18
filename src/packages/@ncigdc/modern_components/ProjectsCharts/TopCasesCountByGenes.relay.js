@@ -10,8 +10,9 @@ export default (Component: ReactClass<*>) =>
     withPropsOnChange(
       ['viewer', 'fmgChartFilters'],
       ({ viewer, fmgChartFilters }) => {
-        const topGenesSource = (viewer.explore.genes.hits.edges || [])
-          .map(g => g.node);
+        const topGenesSource = (viewer.explore.genes.hits.edges || []).map(
+          g => g.node,
+        );
 
         return {
           topGenesSource,
@@ -40,11 +41,7 @@ export default (Component: ReactClass<*>) =>
             analysisViewer: viewer {
               analysis {
                 top_cases_count_by_genes {
-                  data(
-                    first: $first
-                    gene_ids: $geneIds
-                    filters: $filters
-                  )
+                  data(first: $first, gene_ids: $geneIds, filters: $filters)
                 }
               }
             }

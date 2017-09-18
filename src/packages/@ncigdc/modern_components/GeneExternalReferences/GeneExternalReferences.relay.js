@@ -10,7 +10,11 @@ export default (Component: ReactClass<*>) =>
   compose(
     branch(
       ({ geneId }) => !geneId,
-      renderComponent(() => <div><pre>geneId</pre> must be provided</div>),
+      renderComponent(() => (
+        <div>
+          <pre>geneId</pre> must be provided
+        </div>
+      )),
     ),
     withPropsOnChange(['geneId'], ({ geneId }) => {
       return {
@@ -32,21 +36,20 @@ export default (Component: ReactClass<*>) =>
         variables={props.variables}
         Component={Component}
         query={graphql`
-        query GeneExternalReferences_relayQuery(
-          $filters: FiltersArgument
-        ) {
-          viewer {
-            explore {
-              genes {
-                hits(first: 1 filters: $filters) {
-                  edges {
-                    node {
-                      gene_id
-                      external_db_ids {
-                        entrez_gene
-                        uniprotkb_swissprot
-                        hgnc
-                        omim_gene
+          query GeneExternalReferences_relayQuery($filters: FiltersArgument) {
+            viewer {
+              explore {
+                genes {
+                  hits(first: 1, filters: $filters) {
+                    edges {
+                      node {
+                        gene_id
+                        external_db_ids {
+                          entrez_gene
+                          uniprotkb_swissprot
+                          hgnc
+                          omim_gene
+                        }
                       }
                     }
                   }
@@ -54,8 +57,7 @@ export default (Component: ReactClass<*>) =>
               }
             }
           }
-        }
-      `}
+        `}
       />
     );
   });

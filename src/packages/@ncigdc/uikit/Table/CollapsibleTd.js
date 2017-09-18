@@ -21,18 +21,20 @@ const Toggle = styled.div({
 
 const enhance = withState('expanded', 'toggleExpand', false);
 const CollapsibleTd = enhance(
-  ({ style, text, expanded, toggleExpand, ...props }) =>
+  ({ style, text, expanded, toggleExpand, ...props }) => (
     <Td style={style || {}} {...props}>
       <div>
         {expanded || text.length <= 250
           ? text
           : `${text.substring(0, 250)}\u2026`}
       </div>
-      {text.length > 250 &&
+      {text.length > 250 && (
         <Toggle onClick={() => toggleExpand(v => !v)}>
           {expanded ? '\u25B4 less' : '\u25BE more'}
-        </Toggle>}
-    </Td>,
+        </Toggle>
+      )}
+    </Td>
+  ),
 );
 
 /*----------------------------------------------------------------------------*/

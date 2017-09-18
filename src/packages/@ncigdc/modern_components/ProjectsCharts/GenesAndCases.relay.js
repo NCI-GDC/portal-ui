@@ -81,9 +81,13 @@ export default (Component: ReactClass<*>) =>
           ) {
             viewer {
               explore {
-                cases { hits(first: 0 filters: $caseCount_filters) { total } }
+                cases {
+                  hits(first: 0, filters: $caseCount_filters) {
+                    total
+                  }
+                }
                 genes {
-                  hits (first: 20 filters: $gene_filters, score: $score) {
+                  hits(first: 20, filters: $gene_filters, score: $score) {
                     total
                     edges {
                       node {
@@ -91,7 +95,7 @@ export default (Component: ReactClass<*>) =>
                         symbol
                         gene_id
                         filteredCases: case {
-                          hits(first: 0 filters: $gene_filters) {
+                          hits(first: 0, filters: $gene_filters) {
                             total
                           }
                         }

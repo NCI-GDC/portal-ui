@@ -33,41 +33,43 @@ const CreateOrOpenAnalysis = ({
       );
     });
 
-  return existing
-    ? <Link
-        {...props}
-        query={{
-          analysisTableTab: 'result',
-          analysisId: existing.id,
-        }}
-      >
-        {children}
-      </Link>
-    : <UnstyledButton
-        {...props}
-        onClick={() => {
-          const created = new Date().toISOString();
-          const id = created;
+  return existing ? (
+    <Link
+      {...props}
+      query={{
+        analysisTableTab: 'result',
+        analysisId: existing.id,
+      }}
+    >
+      {children}
+    </Link>
+  ) : (
+    <UnstyledButton
+      {...props}
+      onClick={() => {
+        const created = new Date().toISOString();
+        const id = created;
 
-          dispatch(
-            addAnalysis({
-              id,
-              sets,
-              type,
-              created,
-            }),
-          ).then(() => {
-            push({
-              query: {
-                analysisTableTab: 'result',
-                analysisId: id,
-              },
-            });
+        dispatch(
+          addAnalysis({
+            id,
+            sets,
+            type,
+            created,
+          }),
+        ).then(() => {
+          push({
+            query: {
+              analysisTableTab: 'result',
+              analysisId: id,
+            },
           });
-        }}
-      >
-        {children}
-      </UnstyledButton>;
+        });
+      }}
+    >
+      {children}
+    </UnstyledButton>
+  );
 };
 
 export default enhance(CreateOrOpenAnalysis);

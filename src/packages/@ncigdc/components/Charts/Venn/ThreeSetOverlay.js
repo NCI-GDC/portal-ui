@@ -1,7 +1,12 @@
 import React from 'react';
 import TL from './Translate';
 
-const Alias = ({ i }) => <span><em>S</em><sub>{i}</sub></span>;
+const Alias = ({ i }) => (
+  <span>
+    <em>S</em>
+    <sub>{i}</sub>
+  </span>
+);
 
 export default ({
   ops,
@@ -9,7 +14,7 @@ export default ({
   width,
   offset = width - 500,
   friction = 2,
-}) =>
+}) => (
   <div
     style={{
       position: 'absolute',
@@ -48,4 +53,5 @@ export default ({
     <TL x={241 + offset / friction} y={285}>
       <CountComponent filters={ops[6].filters} />
     </TL>
-  </div>;
+  </div>
+);

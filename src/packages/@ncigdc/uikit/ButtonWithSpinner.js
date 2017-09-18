@@ -15,8 +15,8 @@ export default compose(
       setSpinning(false);
     },
   }),
-)(({ spinning, setSpinning, children, ...props }) =>
+)(({ spinning, setSpinning, children, ...props }) => (
   <Button leftIcon={spinning ? <Spinner /> : <DownloadIcon />} {...props}>
     {children}
-  </Button>,
-);
+  </Button>
+));

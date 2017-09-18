@@ -32,7 +32,7 @@ export default compose(
     set2id,
     push,
     style,
-    CaseSetButton = props =>
+    CaseSetButton = props => (
       <CreateExploreCaseSetButton
         filters={{
           op: 'AND',
@@ -67,7 +67,7 @@ export default compose(
             },
           });
         }}
-        Component={p =>
+        Component={p => (
           <span
             {...p}
             style={{
@@ -77,16 +77,18 @@ export default compose(
             }}
           >
             {props.count}
-          </span>}
-      />,
-  }) =>
+          </span>
+        )}
+      />
+    ),
+  }) => (
     <span style={{ marginTop: 10, ...style }}>
       <Row>
         <h2>Survival Analysis</h2>
       </Row>
       <div>
         <SurvivalPlotWrapper {...survivalData} palette={palette} height={240} />
-        {survivalData.rawData &&
+        {survivalData.rawData && (
           <Table
             headings={[
               <Th key="1">
@@ -108,11 +110,15 @@ export default compose(
               <Th key="2" style={{ textAlign: 'right' }}>
                 # Cases
               </Th>,
-              <Th key="3" style={{ textAlign: 'right' }}>%</Th>,
+              <Th key="3" style={{ textAlign: 'right' }}>
+                %
+              </Th>,
               <Th key="4" style={{ textAlign: 'right' }}>
                 # Cases
               </Th>,
-              <Th key="5" style={{ textAlign: 'right' }}>%</Th>,
+              <Th key="5" style={{ textAlign: 'right' }}>
+                %
+              </Th>,
             ]}
             body={
               <tbody>
@@ -120,38 +126,46 @@ export default compose(
                   <Td width={250}>Overall Survival Analysis</Td>
                   <Td style={{ textAlign: 'right' }}>
                     {survivalData.rawData.results[0] &&
-                      !survivalData.rawData.results[0].donors.length > 0
-                      ? 0
-                      : <CaseSetButton
-                          setId={set1id}
-                          count={survivalData.rawData.results[0].donors.length.toLocaleString()}
-                        />}
+                    !survivalData.rawData.results[0].donors.length > 0 ? (
+                      0
+                    ) : (
+                      <CaseSetButton
+                        setId={set1id}
+                        count={survivalData.rawData.results[0].donors.length.toLocaleString()}
+                      />
+                    )}
                   </Td>
                   <Td style={{ textAlign: 'right' }}>
                     {survivalData.rawData.results[0] &&
                       (survivalData.rawData.results[0].donors.length /
                         result1.hits.total *
-                        100).toFixed(0)}%
+                        100
+                      ).toFixed(0)}%
                   </Td>
                   <Td style={{ textAlign: 'right' }}>
                     {survivalData.rawData.results[1] &&
-                      !survivalData.rawData.results[1].donors.length > 0
-                      ? 0
-                      : <CaseSetButton
-                          setId={set2id}
-                          count={survivalData.rawData.results[1].donors.length.toLocaleString()}
-                        />}
+                    !survivalData.rawData.results[1].donors.length > 0 ? (
+                      0
+                    ) : (
+                      <CaseSetButton
+                        setId={set2id}
+                        count={survivalData.rawData.results[1].donors.length.toLocaleString()}
+                      />
+                    )}
                   </Td>
                   <Td style={{ textAlign: 'right' }}>
                     {survivalData.rawData.results[1] &&
                       (survivalData.rawData.results[1].donors.length /
                         result2.hits.total *
-                        100).toFixed(0)}%
+                        100
+                      ).toFixed(0)}%
                   </Td>
                 </Tr>
               </tbody>
             }
-          />}
+          />
+        )}
       </div>
-    </span>,
+    </span>
+  ),
 );

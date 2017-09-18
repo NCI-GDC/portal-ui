@@ -136,20 +136,12 @@ const Component = compose(
         case 'project': {
           return (
             <span>
-              <b>{symbol}</b><br />
-              {score.toLocaleString()}
-              {' '}
-              Case
-              {score > 1 ? 's' : ''}
-              {' '}
-              affected in
-              {' '}
-              {projectId}
+              <b>{symbol}</b>
               <br />
-              {score.toLocaleString()}
-              {' '}
-              /
-              {' '}
+              {score.toLocaleString()} Case
+              {score > 1 ? 's' : ''} affected in {projectId}
+              <br />
+              {score.toLocaleString()} /{' '}
               {(numCasesAggByProject[projectId] || 0).toLocaleString()}
               &nbsp;(
               {(score / numCasesAggByProject[projectId] * 100).toFixed(2)}
@@ -160,18 +152,12 @@ const Component = compose(
         case 'explore': {
           return (
             <span>
-              <b>{symbol}</b><br />
-              {score.toLocaleString()}
-              {' '}
-              Case
-              {score > 1 ? 's' : ''}
-              {' '}
-              affected in explore
+              <b>{symbol}</b>
               <br />
-              {score.toLocaleString()}
-              {' '}
-              /
-              {' '}
+              {score.toLocaleString()} Case
+              {score > 1 ? 's' : ''} affected in explore
+              <br />
+              {score.toLocaleString()} /{' '}
               {(filteredCases.hits.total || 0).toLocaleString()}
               &nbsp;({(score / filteredCases.hits.total * 100).toFixed(2)}%)
             </span>
@@ -187,16 +173,17 @@ const Component = compose(
       .sort((a, b) => b.score - a.score)
       .map(g => ({
         label: g.symbol,
-        value: context === 'project' && projectId
-          ? g.score / numCasesAggByProject[projectId] * 100
-          : g.score / filteredCases.hits.total * 100,
+        value:
+          context === 'project' && projectId
+            ? g.score / numCasesAggByProject[projectId] * 100
+            : g.score / filteredCases.hits.total * 100,
         tooltip: tooltipContext(context, g),
         onClick: () => handleClickGene(g, mutatedGenesChartData),
       }));
 
     return (
       <div style={style}>
-        {!!mutatedGenesChartData &&
+        {!!mutatedGenesChartData && (
           <Column style={{ paddingLeft: '2rem' }}>
             <VisualizationHeader
               title={TITLE}
@@ -219,7 +206,7 @@ const Component = compose(
                 />,
               ]}
             />
-            {!!mutatedGenesChartData.length &&
+            {!!mutatedGenesChartData.length && (
               <div id="mutated-genes-chart">
                 <Row style={{ paddingTop: '2rem' }}>
                   <BarChart
@@ -244,8 +231,10 @@ const Component = compose(
                     }}
                   />
                 </Row>
-              </div>}
-          </Column>}
+              </div>
+            )}
+          </Column>
+        )}
       </div>
     );
   },

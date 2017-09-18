@@ -35,7 +35,7 @@ const NotMissingFacet = (props: TProps) => {
           [];
         return (
           <Container style={props.style} className="test-not-missing-facet">
-            {!props.collapsed &&
+            {!props.collapsed && (
               <Column>
                 <BucketRow>
                   <BucketLink
@@ -81,7 +81,8 @@ const NotMissingFacet = (props: TProps) => {
                     {props.notMissingDocCount.toLocaleString()}
                   </CountBubble>
                 </BucketRow>
-              </Column>}
+              </Column>
+            )}
           </Container>
         );
       }}

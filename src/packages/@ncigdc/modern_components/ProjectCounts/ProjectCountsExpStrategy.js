@@ -93,7 +93,8 @@ export default compose(
           file_count_value: item.file_count,
           tooltip: (
             <span>
-              <b>{item.experimental_strategy}</b><br />
+              <b>{item.experimental_strategy}</b>
+              <br />
               {item.file_count} file{item.file_count > 1 ? 's' : ''}
             </span>
           ),

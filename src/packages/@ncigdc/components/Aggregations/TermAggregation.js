@@ -68,40 +68,42 @@ const TermAggregation = (props: TProps) => {
         return (
           <Container style={props.style} className="test-term-aggregation">
             {!props.collapsed &&
-              props.showingValueSearch &&
-              <Row>
-                <Input
-                  getNode={node => {
-                    input = node;
-                  }}
-                  style={{ borderRadius: '4px', marginBottom: '6px' }}
-                  onChange={() => props.setFilter(input.value)}
-                  placeholder={'Search...'}
-                  aria-label="Search..."
-                  autoFocus
-                />
-                {input &&
-                  input.value &&
-                  <CloseIcon
-                    style={{
-                      position: 'absolute',
-                      right: 0,
-                      padding: '10px',
-                      transition: 'all 0.3s ease',
-                      outline: 0,
+              props.showingValueSearch && (
+                <Row>
+                  <Input
+                    getNode={node => {
+                      input = node;
                     }}
-                    onClick={() => {
-                      props.setFilter('');
-                      input.value = '';
-                    }}
-                  />}
-              </Row>}
-            {!props.collapsed &&
+                    style={{ borderRadius: '4px', marginBottom: '6px' }}
+                    onChange={() => props.setFilter(input.value)}
+                    placeholder={'Search...'}
+                    aria-label="Search..."
+                    autoFocus
+                  />
+                  {input &&
+                    input.value && (
+                      <CloseIcon
+                        style={{
+                          position: 'absolute',
+                          right: 0,
+                          padding: '10px',
+                          transition: 'all 0.3s ease',
+                          outline: 0,
+                        }}
+                        onClick={() => {
+                          props.setFilter('');
+                          input.value = '';
+                        }}
+                      />
+                    )}
+                </Row>
+              )}
+            {!props.collapsed && (
               <Column>
                 {_.orderBy(filteredBuckets, 'doc_count', 'desc')
                   .slice(0, props.showingMore ? Infinity : 5)
                   .map(b => ({ ...b, name: b.key_as_string || b.key }))
-                  .map(bucket =>
+                  .map(bucket => (
                     <BucketRow key={bucket.name}>
                       <BucketLink
                         className="bucket-link"
@@ -161,9 +163,9 @@ const TermAggregation = (props: TProps) => {
                       <CountBubble className="bucket-count">
                         {bucket.doc_count.toLocaleString()}
                       </CountBubble>
-                    </BucketRow>,
-                  )}
-                {filteredBuckets.length > 5 &&
+                    </BucketRow>
+                  ))}
+                {filteredBuckets.length > 5 && (
                   <BottomRow>
                     <ToggleMoreLink
                       onClick={() => props.setShowingMore(!props.showingMore)}
@@ -171,17 +173,20 @@ const TermAggregation = (props: TProps) => {
                       {props.showingMore
                         ? 'Less...'
                         : filteredBuckets.length - 5 &&
-                            `${filteredBuckets.length - 5} More...`}
+                          `${filteredBuckets.length - 5} More...`}
                     </ToggleMoreLink>
-                  </BottomRow>}
+                  </BottomRow>
+                )}
 
-                {filteredBuckets.length === 0 &&
+                {filteredBuckets.length === 0 && (
                   <span>
                     {(input || { value: '' }).value
                       ? 'No matching values'
                       : 'No data for this field'}
-                  </span>}
-              </Column>}
+                  </span>
+                )}
+              </Column>
+            )}
           </Container>
         );
       }}

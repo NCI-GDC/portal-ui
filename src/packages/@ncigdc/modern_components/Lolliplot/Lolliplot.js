@@ -131,10 +131,10 @@ export default compose(
     setTooltip,
     expandDomains,
     toggleExpandedDomains,
-  }) =>
+  }) => (
     <Row>
       <div id={id} style={{ flex: 1, userSelect: 'none' }}>
-        {graphWidth &&
+        {graphWidth && (
           <div style={{ position: 'relative' }}>
             <span
               style={{
@@ -165,7 +165,9 @@ export default compose(
               onPointMouseover={({ y: cases = 0, ...d }) => {
                 setTooltip(
                   <span>
-                    <div><b>DNA Change: {d.genomic_dna_change}</b></div>
+                    <div>
+                      <b>DNA Change: {d.genomic_dna_change}</b>
+                    </div>
                     <div>ID: {d.id}</div>
                     <div>AA Change: {d.aa_change}</div>
                     <div># of Cases: {cases.toLocaleString()}</div>
@@ -176,7 +178,7 @@ export default compose(
               onPointMouseout={() => setTooltip(null)}
             />
             <div style={{ marginTop: '-20px' }}>
-              {proteinTracks.length > 1 &&
+              {proteinTracks.length > 1 && (
                 <Row style={{ margin: '15px 0 0 15px' }} spacing="5px">
                   <i
                     className="fa fa-warning"
@@ -192,10 +194,11 @@ export default compose(
                       Click here to show / hide them.
                     </LinkSpan>
                   </span>
-                </Row>}
+                </Row>
+              )}
               {proteinTracks
                 .slice(0, expandDomains ? Infinity : 1)
-                .map((trackData, i) =>
+                .map((trackData, i) => (
                   <Backbone
                     key={i}
                     min={min}
@@ -217,9 +220,13 @@ export default compose(
                         setState(s => ({ ...s, min: d.start, max: d.end }));
                         setTooltip(
                           <span>
-                            <div><b>{d.id}</b></div>
+                            <div>
+                              <b>{d.id}</b>
+                            </div>
                             <div>{d.description}</div>
-                            <div><b>Click to reset zoom</b></div>
+                            <div>
+                              <b>Click to reset zoom</b>
+                            </div>
                           </span>,
                         );
                       }
@@ -227,19 +234,27 @@ export default compose(
                     onProteinMouseover={d => {
                       setTooltip(
                         <span>
-                          <div><b>{d.id}</b></div>
+                          <div>
+                            <b>{d.id}</b>
+                          </div>
                           <div>{d.description}</div>
                           {min === d.start &&
-                            max === d.end &&
-                            <div><b>Click to reset zoom</b></div>}
-                          {(min !== d.start || max !== d.end) &&
-                            <div><b>Click to zoom</b></div>}
+                            max === d.end && (
+                              <div>
+                                <b>Click to reset zoom</b>
+                              </div>
+                            )}
+                          {(min !== d.start || max !== d.end) && (
+                              <div>
+                                <b>Click to zoom</b>
+                              </div>
+                            )}
                         </span>,
                       );
                     }}
                     onProteinMouseout={() => setTooltip(null)}
-                  />,
-                )}
+                  />
+                ))}
               <Minimap
                 min={min}
                 max={max}
@@ -255,7 +270,8 @@ export default compose(
                 }}
               />
             </div>
-          </div>}
+          </div>
+        )}
       </div>
       <LolliplotStats
         style={{ width: STATS_WIDTH, flex: 'none' }}
@@ -273,5 +289,6 @@ export default compose(
         mutationColors={mutationColors}
         state={state}
       />
-    </Row>,
+    </Row>
+  ),
 );

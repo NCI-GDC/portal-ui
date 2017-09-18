@@ -48,7 +48,12 @@ export default (Component: ReactClass<*>) =>
             viewer {
               repository {
                 files {
-                  hits(first: $files_size offset: $files_offset, sort: $files_sort filters: $filters) {
+                  hits(
+                    first: $files_size
+                    offset: $files_offset
+                    sort: $files_sort
+                    filters: $filters
+                  ) {
                     total
                     edges {
                       node {
@@ -79,7 +84,7 @@ export default (Component: ReactClass<*>) =>
                           }
                         }
                         annotations {
-                          hits(first:0) {
+                          hits(first: 0) {
                             total
                           }
                         }

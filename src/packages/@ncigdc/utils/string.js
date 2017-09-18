@@ -30,7 +30,10 @@ export const humanify = ({
     // Splits on capital letters followed by lowercase letters to find
     // words squished together in a string.
     original = term.split(/(?=[A-Z][a-z])/).join(' ');
-    humanified = term.replace(/\./g, ' ').replace(/_/g, ' ').trim();
+    humanified = term
+      .replace(/\./g, ' ')
+      .replace(/_/g, ' ')
+      .trim();
   } else {
     const split = (original || term).split('.');
     humanified = split[split.length - 1].replace(/_/g, ' ').trim();

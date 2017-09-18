@@ -41,10 +41,10 @@ const enhance = compose(
 
       const setOnlyInCurrentFilters = filters
         ? filters.content.length === 1 &&
-            content.value &&
-            content.value.length === 1 &&
-            content.value[0].toString().includes('set_id:') &&
-            content.field === field
+          content.value &&
+          content.value.length === 1 &&
+          content.value[0].toString().includes('set_id:') &&
+          content.field === field
         : false;
 
       if (
@@ -76,7 +76,8 @@ const enhance = compose(
             dispatch(
               setModal(
                 <div style={{ padding: '15px' }}>
-                  <h3>Error creating set</h3>{`${err}`}
+                  <h3>Error creating set</h3>
+                  {`${err}`}
                 </div>,
               ),
             );

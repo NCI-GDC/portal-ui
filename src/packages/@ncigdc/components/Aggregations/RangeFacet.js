@@ -262,40 +262,41 @@ const RangeFacet = (props: TProps) => {
   return (
     <Container style={{ ...props.style }} className="test-range-facet">
       {!props.collapsed &&
-        props.convertDays &&
-        <Row style={{ marginBottom: '0.5rem' }}>
-          <form name={`${dotField}-radio`}>
-            <label
-              htmlFor={`${dotField}-years-radio`}
-              style={{ paddingRight: '10px' }}
-            >
-              <input
-                type="radio"
-                value="years"
-                onChange={props.handleUnitChanged}
-                checked={props.state.selectedUnit === 'years'}
-                id={`${dotField}-years-radio`}
-                style={{ marginRight: '5px' }}
-              />
-              Years
-            </label>
-            <label
-              htmlFor={`${dotField}-days-radio`}
-              style={{ paddingRight: '10px' }}
-            >
-              <input
-                type="radio"
-                value="days"
-                onChange={props.handleUnitChanged}
-                checked={props.state.selectedUnit === 'days'}
-                id={`${dotField}-days-radio`}
-                style={{ marginRight: '5px' }}
-              />
-              Days
-            </label>
-          </form>
-        </Row>}
-      {!props.collapsed &&
+        props.convertDays && (
+          <Row style={{ marginBottom: '0.5rem' }}>
+            <form name={`${dotField}-radio`}>
+              <label
+                htmlFor={`${dotField}-years-radio`}
+                style={{ paddingRight: '10px' }}
+              >
+                <input
+                  type="radio"
+                  value="years"
+                  onChange={props.handleUnitChanged}
+                  checked={props.state.selectedUnit === 'years'}
+                  id={`${dotField}-years-radio`}
+                  style={{ marginRight: '5px' }}
+                />
+                Years
+              </label>
+              <label
+                htmlFor={`${dotField}-days-radio`}
+                style={{ paddingRight: '10px' }}
+              >
+                <input
+                  type="radio"
+                  value="days"
+                  onChange={props.handleUnitChanged}
+                  checked={props.state.selectedUnit === 'days'}
+                  id={`${dotField}-days-radio`}
+                  style={{ marginRight: '5px' }}
+                />
+                Days
+              </label>
+            </form>
+          </Row>
+        )}
+      {!props.collapsed && (
         <Column>
           <Row>
             <InputLabel
@@ -348,25 +349,25 @@ const RangeFacet = (props: TProps) => {
           </Row>
           {props.title === 'Age at Diagnosis' &&
             (props.state.from >= warningDays ||
-              props.state.to >= warningDays) &&
-            <WarningRow>
-              <span>
-                <ExclamationTriangle style={{ paddingRight: '5px' }} />
-                For health information privacy concerns, individuals over 89
-                will all appear as 90 years old. For more information,
-                click
-                {' '}
-                <a
-                  href="https://gdc.cancer.gov/about-gdc/gdc-faqs#collapsible-item-618-question"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  here
-                </a>
-                .
-              </span>
-            </WarningRow>}
-        </Column>}
+              props.state.to >= warningDays) && (
+              <WarningRow>
+                <span>
+                  <ExclamationTriangle style={{ paddingRight: '5px' }} />
+                  For health information privacy concerns, individuals over 89
+                  will all appear as 90 years old. For more information, click{' '}
+                  <a
+                    href="https://gdc.cancer.gov/about-gdc/gdc-faqs#collapsible-item-618-question"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    here
+                  </a>
+                  .
+                </span>
+              </WarningRow>
+            )}
+        </Column>
+      )}
     </Container>
   );
 };

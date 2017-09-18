@@ -11,13 +11,11 @@ export default (Component: ReactClass<*>) => (props: Object) => {
       variables={{ filters: props.filters }}
       Component={Component}
       query={graphql`
-        query repositoryCase_relayQuery(
-          $filters: FiltersArgument
-        ) {
+        query repositoryCase_relayQuery($filters: FiltersArgument) {
           viewer {
             repository {
               cases {
-                hits(filters: $filters first: 0) {
+                hits(filters: $filters, first: 0) {
                   total
                 }
               }

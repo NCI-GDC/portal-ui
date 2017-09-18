@@ -30,8 +30,10 @@ export default compose(
     }) => {
       const ssmCounts = (aggregations || {
         occurrence__case__project__project_id: { buckets: [] },
-      }).occurrence__case__project__project_id.buckets
-        .reduce((acc, b) => ({ ...acc, [b.key]: b.doc_count }), {});
+      }).occurrence__case__project__project_id.buckets.reduce(
+        (acc, b) => ({ ...acc, [b.key]: b.doc_count }),
+        {},
+      );
 
       const casesByProjectMap = get(
         cases.total,
@@ -147,8 +149,8 @@ export default compose(
             <Tooltip
               Component={
                 <span>
-                  # Unique Simple Somatic Mutations observed in{' '}
-                  {entityName} in Project
+                  # Unique Simple Somatic Mutations observed in {entityName} in
+                  Project
                 </span>
               }
               style={tableToolTipHint()}
@@ -210,8 +212,8 @@ export default compose(
                     <span>
                       # Cases tested for Simple Somatic Mutations in Project
                       affected by&nbsp;
-                      {entityName}&nbsp;
-                      / # Cases tested for Simple Somatic Mutations in Project
+                      {entityName}&nbsp; / # Cases tested for Simple Somatic
+                      Mutations in Project
                     </span>
                   }
                   style={tableToolTipHint()}

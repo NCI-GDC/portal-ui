@@ -17,7 +17,9 @@ const styles = {
     zIndex: 100,
     height: 'auto',
     backgroundColor: theme.greyScale1,
-    borderTop: `6px solid ${Color(theme.greyScale1).lighten(2).rgbString()}`,
+    borderTop: `6px solid ${Color(theme.greyScale1)
+      .lighten(2)
+      .rgbString()}`,
     borderBottom: 'none',
     display: 'flex',
     justifyContent: 'center',
@@ -38,14 +40,20 @@ const styles = {
   },
 };
 
-const ExternalLink = ({ children, hasExternalIcon = false, style, ...props }) =>
+const ExternalLink = ({
+  children,
+  hasExternalIcon = false,
+  style,
+  ...props
+}) => (
   <ELink
     hasExternalIcon={hasExternalIcon}
     style={{ ...styles.link, ...style }}
     {...props}
   >
     {children}
-  </ELink>;
+  </ELink>
+);
 
 export default compose(
   connect(state => state.versionInfo),
@@ -58,7 +66,7 @@ export default compose(
     apiVersion,
     apiCommitHash,
     dataRelease,
-  }) =>
+  }) => (
     <footer style={styles.footer(theme)} className="test-footer">
       <div style={styles.outerContainer} role="contentinfo">
         <div style={styles.innerContainer}>
@@ -101,13 +109,13 @@ export default compose(
           {apiCommitHash && <span> @ {apiCommitHash.slice(0, 7)}</span>}
 
           <span>
-            ,
-            {' '}
+            ,{' '}
             <ExternalLink href="https://docs.gdc.cancer.gov/Data/Release_Notes/Data_Release_Notes/">
               {dataRelease}
             </ExternalLink>
           </span>
         </div>
       </div>
-    </footer>,
+    </footer>
+  ),
 );

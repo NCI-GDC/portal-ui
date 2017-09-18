@@ -41,9 +41,9 @@ const ExactMatchFacet = compose(
           }) || { content: { value: [] } };
           return (
             <Container style={style} className="test-exact-match-facet">
-              {!collapsed &&
+              {!collapsed && (
                 <Column>
-                  {currentValues.content.value.map(v =>
+                  {currentValues.content.value.map(v => (
                     <CheckedRow key={v}>
                       <CheckedLink
                         merge="toggle"
@@ -59,8 +59,8 @@ const ExactMatchFacet = compose(
                         <CheckCircleOIcon style={{ paddingRight: '0.5rem' }} />
                         {v}
                       </CheckedLink>
-                    </CheckedRow>,
-                  )}
+                    </CheckedRow>
+                  ))}
                   <Row>
                     <label htmlFor={fieldNoDoctype}>
                       <Hidden>{title}</Hidden>
@@ -93,7 +93,8 @@ const ExactMatchFacet = compose(
                       Go!
                     </GoLink>
                   </Row>
-                </Column>}
+                </Column>
+              )}
             </Container>
           );
         }}

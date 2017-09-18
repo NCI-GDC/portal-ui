@@ -35,7 +35,7 @@ export default (Component: ReactClass<*>) =>
           ) {
             projectsViewer: viewer {
               projects {
-                hits(first: $numProjects filters: $projectsFilter) {
+                hits(first: $numProjects, filters: $projectsFilter) {
                   edges {
                     node {
                       primary_site

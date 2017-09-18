@@ -10,9 +10,11 @@ export default (Component: ReactClass<*>) =>
   compose(
     branch(
       ({ annotationId }) => !annotationId,
-      renderComponent(() =>
-        <div><pre>annotationId</pre> must be provided</div>,
-      ),
+      renderComponent(() => (
+        <div>
+          <pre>annotationId</pre> must be provided
+        </div>
+      )),
     ),
     withPropsOnChange(['annotationId'], ({ annotationId }) => {
       return {
@@ -35,12 +37,10 @@ export default (Component: ReactClass<*>) =>
         variables={props.variables}
         Component={Component}
         query={graphql`
-          query AnnotationSummary_relayQuery(
-            $filters: FiltersArgument
-          ) {
+          query AnnotationSummary_relayQuery($filters: FiltersArgument) {
             viewer {
               annotations {
-                hits(first: 1 filters: $filters) {
+                hits(first: 1, filters: $filters) {
                   edges {
                     node {
                       annotation_id

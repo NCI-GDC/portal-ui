@@ -110,10 +110,11 @@ const SaveSetModal = ({
         </div>
       </label>
 
-      {inputTotal > max &&
+      {inputTotal > max && (
         <WarningBox>
           Above maximum of {pluralize(displayType, max, true)}
-        </WarningBox>}
+        </WarningBox>
+      )}
 
       <InputWithWarning
         labelText="Name:"
@@ -147,7 +148,7 @@ export const UploadAndSaveSetModal = compose(
     CreateSetButton,
     type,
     UploadSet,
-  }) =>
+  }) => (
     <UploadSet
       content={
         <InputWithWarning
@@ -169,5 +170,6 @@ export const UploadAndSaveSetModal = compose(
         },
         disabled: !setName || setName.length > MAX_SET_NAME_LENGTH,
       }))(CreateSetButton)}
-    />,
+    />
+  ),
 );

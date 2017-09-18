@@ -55,7 +55,10 @@ const BarChart = (() => ({
     .paddingOuter(outerPadding);
 
   const maxY = d3.max([...data1, ...data2], d => d.value);
-  const y = d3.scaleLinear().range([height, 0]).domain([0, maxY]);
+  const y = d3
+    .scaleLinear()
+    .range([height, 0])
+    .domain([0, maxY]);
 
   const svg = d3
     .select(el)
@@ -77,15 +80,13 @@ const BarChart = (() => ({
     .attr('fill', yAxisStyle.textFill)
     .text(title);
 
-  const yG = svg
-    .append('g')
-    .call(
-      d3
-        .axisLeft(y)
-        .ticks(Math.min(4, maxY))
-        .tickSize(-chartWidth)
-        .tickSizeOuter(0),
-    );
+  const yG = svg.append('g').call(
+    d3
+      .axisLeft(y)
+      .ticks(Math.min(4, maxY))
+      .tickSize(-chartWidth)
+      .tickSizeOuter(0),
+  );
 
   yG.selectAll('path').style('stroke', 'none');
   yG.selectAll('line').style('stroke', yAxisStyle.stroke);

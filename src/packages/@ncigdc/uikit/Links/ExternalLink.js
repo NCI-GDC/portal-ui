@@ -14,8 +14,9 @@ export default function ExternalLink({
       rel="noopener noreferrer"
       className={className + ' test-external-link'}
     >
-      {hasExternalIcon &&
-        <ExternalLinkIcon style={{ marginRight: '0.5rem' }} />}
+      {hasExternalIcon && (
+        <ExternalLinkIcon style={{ marginRight: '0.5rem' }} />
+      )}
       {children}
     </a>
   );

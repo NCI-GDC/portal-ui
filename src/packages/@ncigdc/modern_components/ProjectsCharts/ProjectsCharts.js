@@ -1,6 +1,5 @@
 /* @flow */
 import React from 'react';
-import Measure from 'react-measure';
 import QuestionIcon from 'react-icons/lib/fa/question-circle';
 import * as d3 from 'd3';
 import { compose, withState, withProps } from 'recompose';
@@ -10,6 +9,7 @@ import Column from '@ncigdc/uikit/Flex/Column';
 import Row from '@ncigdc/uikit/Flex/Row';
 import { Tooltip } from '@ncigdc/uikit/Tooltip';
 import withRouter from '@ncigdc/utils/withRouter';
+import { WithSize } from '@ncigdc/utils/withSize';
 import { setFilter, mergeQuery, removeFilter } from '@ncigdc/utils/filters';
 import { removeEmptyKeys } from '@ncigdc/utils/uri';
 import StackedBarChart from '@ncigdc/components/Charts/StackedBarChart';
@@ -390,7 +390,7 @@ export default compose(
                   # of Cases Affected
                 </label>
               </form>
-              <Measure key="bar-chart">
+              <WithSize>
                 {({ width }) => (
                   <div style={{ transform: 'scale(0.9)' }}>
                     <StackedBarChart
@@ -422,7 +422,7 @@ export default compose(
                     />
                   </div>
                 )}
-              </Measure>
+              </WithSize>
             </span>,
           ]}
         </Column>

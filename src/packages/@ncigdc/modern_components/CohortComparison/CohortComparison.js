@@ -170,16 +170,29 @@ export default compose(
           <Survival
             survivalData={survivalData}
             result1={result1}
+            Alias={Alias}
             result2={result2}
             set1id={set1}
             set2id={set2}
             palette={[set1_colour, set2_colour]}
             style={{ flex: 1, width: 100 }}
           />
-          <div
-            style={{ marginLeft: 50, flex: 1, width: 100, textAlign: 'center' }}
-          >
-            <h2>Cohorts Venn Diagram</h2>
+          <div style={{ marginLeft: 50, flex: 1, width: 100 }}>
+            <h2>
+              <span style={{ marginRight: 10 }}>Cohorts Venn Diagram</span>
+              <CreateOrOpenAnalysis
+                type="set_operations"
+                sets={{ case: [set1, set2] }}
+                style={{
+                  color: 'rgb(43, 118, 154)',
+                  fontSize: '0.6em',
+                  textDecoration: 'underline',
+                  display: 'inline-block',
+                }}
+              >
+                Open in new tab
+              </CreateOrOpenAnalysis>
+            </h2>
 
             <Venn
               type="case"
@@ -188,13 +201,6 @@ export default compose(
               ops={ops}
               getFillColor={d => 'rgb(237, 237, 237)'}
             />
-
-            <CreateOrOpenAnalysis
-              type="set_operations"
-              sets={{ case: [set1, set2] }}
-            >
-              Open in new tab
-            </CreateOrOpenAnalysis>
           </div>
         </Row>
 

@@ -242,17 +242,7 @@ const availableAnalysis: Array<TAnalysis> = [
     validateSets: sets =>
       ['case'].every((t: any) => Object.keys(sets[t] || {}).length === 2),
     ResultComponent: ({ sets }) => {
-      return (
-        <CohortComparison
-          facets={{
-            'demographic.ethnicity': 'Ethnicity',
-            'demographic.gender': 'Gender',
-            'diagnoses.vital_status': 'Vital Status',
-            'demographic.race': 'Race',
-          }}
-          sets={sets}
-        />
-      );
+      return <CohortComparison sets={sets} />;
     },
   },
 ];

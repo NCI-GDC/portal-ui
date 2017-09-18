@@ -8,9 +8,16 @@ import { Row } from '@ncigdc/uikit/Flex';
 import withPropsOnChange from '@ncigdc/utils/withPropsOnChange';
 import { getDefaultCurve } from '@ncigdc/utils/survivalplot';
 import ExploreLink from '@ncigdc/components/Links/ExploreLink';
+import Link from '@ncigdc/components/Links/Link';
 import Venn, { buildOps } from '@ncigdc/components/Charts/Venn';
 import withSize from '@ncigdc/utils/withSize';
+import { stringifyJSONParam } from '@ncigdc/utils/uri';
+import { COHORT_COMPARISON_FACETS } from '@ncigdc/utils/constants';
 import CreateOrOpenAnalysis from '@ncigdc/components/CreateOrOpenAnalysis';
+import Dropdown from '@ncigdc/uikit/Dropdown';
+import Button from '@ncigdc/uikit/Button';
+import { CaretIcon } from '@ncigdc/theme/icons';
+import DropdownItem from '@ncigdc/uikit/DropdownItem';
 import FacetTable from './FacetTable';
 import Survival from './Survival';
 
@@ -62,7 +69,7 @@ export default compose(
   withSize(),
 )(
   ({
-    facets,
+    activeFacets,
     sets,
     setId1,
     setId2,
@@ -90,9 +97,52 @@ export default compose(
       type: 'case',
     });
 
+    const availableFacets = Object.entries(COHORT_COMPARISON_FACETS);
     return (
       <div style={{ width: '90%', padding: '0 3rem 2rem' }}>
-        <h1>Cohort Comparison</h1>
+        <Row
+          style={{
+            alignItems: 'center',
+            margin: '20px 0 10px',
+            justifyContent: 'space-between',
+          }}
+        >
+          <h1 style={{ margin: 0 }}>Cohort Comparison</h1>
+          <Dropdown
+            autoclose={false}
+            button={
+              <Button>
+                Choose Clinical Fields{' '}
+                <CaretIcon style={{ marginLeft: 5 }} direction="down" />
+              </Button>
+            }
+          >
+            {availableFacets.map(([field, label]) => {
+              return (
+                <DropdownItem key={field} style={{ padding: 5 }}>
+                  <Link
+                    merge
+                    query={{
+                      activeFacets: stringifyJSONParam(
+                        _.xor(activeFacets, [field]),
+                      ),
+                    }}
+                  >
+                    <label>
+                      <input
+                        readOnly
+                        style={{ marginRight: 5, pointerEvents: 'none' }}
+                        type="checkbox"
+                        checked={activeFacets.includes(field)}
+                      />
+                      {label}
+                    </label>
+                  </Link>
+                </DropdownItem>
+              );
+            })}
+          </Dropdown>
+        </Row>
         <Table
           style={{ width: '400px' }}
           headings={[
@@ -200,23 +250,23 @@ export default compose(
             />
           </div>
         </Row>
-        {Object.entries(facets).map(([field, heading]) =>
-          FacetTable({
-            key: field,
-            heading,
-            Alias,
-            field,
-            data1: JSON.parse(result1.facets),
-            data2: JSON.parse(result2.facets),
-            result1,
-            result2,
-            Set1,
-            Set2,
-            set1: setId1,
-            set2: setId2,
-            palette: [SET1_COLOUR, SET2_COLOUR],
-          }),
-        )}
+        {availableFacets
+          .filter(([field]) => activeFacets.includes(field))
+          .map(([field, heading]) =>
+            FacetTable({
+              key: field,
+              heading,
+              Alias,
+              field,
+              data1: JSON.parse(result1.facets),
+              data2: JSON.parse(result2.facets),
+              result1,
+              result2,
+              set1: setId1,
+              set2: setId2,
+              palette: [SET1_COLOUR, SET2_COLOUR],
+            }),
+          )}
       </div>
     );
   },

@@ -1,5 +1,5 @@
 import React from 'react';
-import { compose } from 'recompose';
+import { compose, branch, renderNothing } from 'recompose';
 import SurvivalPlotWrapper from '@ncigdc/components/SurvivalPlotWrapper';
 import Table, { Tr, Td, Th } from '@ncigdc/uikit/Table';
 import { Row } from '@ncigdc/uikit/Flex';
@@ -22,8 +22,16 @@ const survivalFilters = [
 
 export default compose(
   withRouter,
+  branch(
+    ({ survivalData }) =>
+      !survivalData ||
+      !survivalData.rawData ||
+      !survivalData.rawData.results.some(Boolean),
+    renderNothing,
+  ),
 )(
   ({
+    Alias,
     survivalData,
     result1,
     result2,
@@ -108,13 +116,13 @@ export default compose(
                 </Tooltip>
               </Th>,
               <Th key="2" style={{ textAlign: 'right' }}>
-                # Cases
+                # Cases <Alias i={1} />
               </Th>,
               <Th key="3" style={{ textAlign: 'right' }}>
                 %
               </Th>,
               <Th key="4" style={{ textAlign: 'right' }}>
-                # Cases
+                # Cases <Alias i={2} />
               </Th>,
               <Th key="5" style={{ textAlign: 'right' }}>
                 %

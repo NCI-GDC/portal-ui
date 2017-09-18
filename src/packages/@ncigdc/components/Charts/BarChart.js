@@ -12,7 +12,7 @@ import { withTooltip } from '@ncigdc/uikit/Tooltip';
 import withSize from '@ncigdc/utils/withSize';
 import './style.css';
 
-const BarChart = (() => ({
+const BarChart = ({
   data,
   title,
   yAxis = {},
@@ -159,7 +159,7 @@ const BarChart = (() => ({
   });
 
   return el.toReact();
-})();
+};
 
 export default compose(
   withTheme,

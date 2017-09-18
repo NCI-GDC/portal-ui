@@ -9,7 +9,7 @@ import {
   SsmCount,
 } from '@ncigdc/modern_components/Counts';
 import withRouter from '@ncigdc/utils/withRouter';
-import Measure from 'react-measure';
+import { WithSize } from '@ncigdc/utils/withSize';
 import CreateExploreCaseSetButton from '@ncigdc/modern_components/setButtons/CreateExploreCaseSetButton';
 import CreateExploreGeneSetButton from '@ncigdc/modern_components/setButtons/CreateExploreGeneSetButton';
 import CreateExploreSsmSetButton from '@ncigdc/modern_components/setButtons/CreateExploreSsmSetButton';
@@ -73,7 +73,7 @@ export default compose(
         </div>
         <Column style={{ marginTop: 10 }}>
           <Row>
-            <Measure key="bar-chart">
+            <WithSize>
               {({ width }) => (
                 <div style={{ position: 'relative', width: '40%' }}>
                   <div style={{ position: 'absolute' }}>
@@ -97,7 +97,7 @@ export default compose(
                   </div>
                 </div>
               )}
-            </Measure>
+            </WithSize>
             <Column style={{ width: '60%' }}>
               <SetTable
                 push={push}

@@ -54,7 +54,9 @@ const styles = {
       ':hover': {
         textDecoration: 'none',
         color: '#000',
-        backgroundColor: Color(theme.greyScale6).darken(0.05).rgbString(),
+        backgroundColor: Color(theme.greyScale6)
+          .darken(0.05)
+          .rgbString(),
         ...tabBorder(theme, side),
       },
     }),
@@ -77,7 +79,7 @@ const Tab = ({
   tabStyle = {},
   side,
   ...props
-}) =>
+}) => (
   <div
     {...baseTabStyle(theme, side)}
     {...(active ? styles.active(theme, side) : styles.inactive(theme, side))}
@@ -86,7 +88,8 @@ const Tab = ({
     {...props}
   >
     {children}
-  </div>;
+  </div>
+);
 
 const Tabs = ({
   style,
@@ -101,59 +104,58 @@ const Tabs = ({
   tabToolbar,
   ...props
 }) =>
-  side
-    ? <Row style={style} {...props} className="test-tabs">
-        <Column>
-          {Children.map(tabs, (child, i) =>
-            <Tab
-              className="test-tab"
-              onClick={() => (onTabClick ? onTabClick(i) : () => {})}
-              active={i === activeIndex}
-              sibling={i}
-              theme={theme}
-              tabStyle={tabStyle}
-              side
-            >
-              {child}
-            </Tab>,
-          )}
-          {tabToolbar}
-        </Column>
-        <Column
-          style={{
-            ...styles.content(theme),
-            flex: 1,
-            width: 1,
-            ...(contentStyle || {}),
-          }}
-        >
-          {children}
-        </Column>
+  side ? (
+    <Row style={style} {...props} className="test-tabs">
+      <Column>
+        {Children.map(tabs, (child, i) => (
+          <Tab
+            className="test-tab"
+            onClick={() => (onTabClick ? onTabClick(i) : () => {})}
+            active={i === activeIndex}
+            sibling={i}
+            theme={theme}
+            tabStyle={tabStyle}
+            side
+          >
+            {child}
+          </Tab>
+        ))}
+        {tabToolbar}
+      </Column>
+      <Column
+        style={{
+          ...styles.content(theme),
+          flex: 1,
+          width: 1,
+          ...(contentStyle || {}),
+        }}
+      >
+        {children}
+      </Column>
+    </Row>
+  ) : (
+    <Column style={style} className="test-tabs" {...props}>
+      <Row style={{ alignItems: 'center' }}>
+        {Children.map(tabs, (child, i) => (
+          <Tab
+            className="test-tab"
+            onClick={() => (onTabClick ? onTabClick(i) : () => {})}
+            active={i === activeIndex}
+            sibling={i}
+            theme={theme}
+            tabStyle={tabStyle}
+            side={false}
+          >
+            {child}
+          </Tab>
+        ))}
+        {tabToolbar && <span style={{ marginLeft: 'auto' }}>{tabToolbar}</span>}
       </Row>
-    : <Column style={style} className="test-tabs" {...props}>
-        <Row style={{ alignItems: 'center' }}>
-          {Children.map(tabs, (child, i) =>
-            <Tab
-              className="test-tab"
-              onClick={() => (onTabClick ? onTabClick(i) : () => {})}
-              active={i === activeIndex}
-              sibling={i}
-              theme={theme}
-              tabStyle={tabStyle}
-              side={false}
-            >
-              {child}
-            </Tab>,
-          )}
-          {tabToolbar &&
-            <span style={{ marginLeft: 'auto' }}>
-              {tabToolbar}
-            </span>}
-        </Row>
-        <Column style={{ ...styles.content(theme), ...(contentStyle || {}) }}>
-          {children}
-        </Column>
-      </Column>;
+      <Column style={{ ...styles.content(theme), ...(contentStyle || {}) }}>
+        {children}
+      </Column>
+    </Column>
+  );
 
 Tabs.propTypes = {
   children: PropTypes.node,

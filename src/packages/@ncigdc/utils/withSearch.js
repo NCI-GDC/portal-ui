@@ -54,9 +54,9 @@ export const withSearch = passedInState => {
     withHandlers({
       selectItem: ({ push, reset }) => (item: TSearchHit) => {
         push(
-          `/${atob(item.id).split(':')[0].toLocaleLowerCase()}s/${atob(
-            item.id,
-          ).split(':')[1]}`,
+          `/${atob(item.id)
+            .split(':')[0]
+            .toLocaleLowerCase()}s/${atob(item.id).split(':')[1]}`,
         );
         setTimeout(reset, 100);
       },

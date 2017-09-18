@@ -35,7 +35,7 @@ const BAMSlicingButton = ({
   dispatch,
   setActive,
   active,
-}: TProps) =>
+}: TProps) => (
   <BAMButton
     className="test-bam-button"
     style={{ marginLeft: '0.5rem' }}
@@ -44,19 +44,22 @@ const BAMSlicingButton = ({
     onClick={() =>
       dispatch(
         setModal(
-          user && userCanDownloadFile({ user, file })
-            ? <BAMModal
-                className="test-bam-modal"
-                file={file}
-                closeModal={() => dispatch(setModal(null))}
-                setActive={setActive}
-              />
-            : <NoAccessModal />,
+          user && userCanDownloadFile({ user, file }) ? (
+            <BAMModal
+              className="test-bam-modal"
+              file={file}
+              closeModal={() => dispatch(setModal(null))}
+              setActive={setActive}
+            />
+          ) : (
+            <NoAccessModal />
+          ),
         ),
       )}
   >
     {active ? 'Slicing' : 'BAM Slicing'}
-  </BAMButton>;
+  </BAMButton>
+);
 
 export default enhance(
   connect(state => ({

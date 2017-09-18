@@ -3,7 +3,7 @@ import { ExternalLink } from '@ncigdc/uikit/Links';
 import websiteImg from '@ncigdc/theme/images/GDC-App-website-blue.svg';
 import Wrapper from './LinkWrapper';
 
-export default ({ width }) =>
+export default ({ width }) => (
   <Wrapper>
     <ExternalLink
       hasExternalIcon={false}
@@ -19,4 +19,5 @@ export default ({ width }) =>
       />
       <p>Website</p>
     </ExternalLink>
-  </Wrapper>;
+  </Wrapper>
+);

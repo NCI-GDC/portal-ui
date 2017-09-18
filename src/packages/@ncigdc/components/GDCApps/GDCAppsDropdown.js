@@ -36,7 +36,7 @@ const DropdownContent = styled(Row, {
 
 const BUTTON_WIDTH = 26;
 
-const GDCAppsDropdown = () =>
+const GDCAppsDropdown = () => (
   <Dropdown
     dropdownClassName="gdc-apps-menu-container"
     style={{
@@ -72,6 +72,7 @@ const GDCAppsDropdown = () =>
         <SubmissionUILink width={BUTTON_WIDTH} />
       </Column>
     </DropdownContent>
-  </Dropdown>;
+  </Dropdown>
+);
 
 export default GDCAppsDropdown;

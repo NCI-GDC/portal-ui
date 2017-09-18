@@ -1,7 +1,7 @@
 // @flow
 import React from 'react';
 
-export default ({ style, ...props }) =>
+export default ({ style, ...props }) => (
   <svg
     viewBox="0 0 163 171"
     style={{
@@ -87,6 +87,6 @@ export default ({ style, ...props }) =>
         r="20.086"
         transform="matrix(0.606962,0,0,0.606962,44.9703,-37.9085)"
       />
-
     </g>
-  </svg>;
+  </svg>
+);

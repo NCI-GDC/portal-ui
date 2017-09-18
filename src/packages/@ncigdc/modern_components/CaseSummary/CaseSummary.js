@@ -55,7 +55,11 @@ export default compose(
     <Row spacing={theme.spacing}>
       <EntityPageVerticalTable
         id="summary"
-        title={<span><i className="fa fa-table" /> Summary</span>}
+        title={
+          <span>
+            <i className="fa fa-table" /> Summary
+          </span>
+        }
         thToTd={[
           { th: 'Case UUID', td: p.case_id },
           { th: 'Case ID', td: p.submitter_id },

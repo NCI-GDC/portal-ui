@@ -38,20 +38,20 @@ const BioTreeItem = ({
   selectedEntity,
   query,
   expanded,
-}) =>
+}) => (
   <div
     className="biospecimen-row document tree-item"
     style={{ padding: '2px 0 2px 5px' }}
   >
     {entity[`${type.s}_id`] &&
-      entity.submitter_id &&
-      <div
-        className="biospecimen-row-entity"
-        style={{ marginBottom: '0.4rem' }}
-      >
-        <i className="fa fa-flask tree-flask" />
-        <span
-          className={`
+      entity.submitter_id && (
+        <div
+          className="biospecimen-row-entity"
+          style={{ marginBottom: '0.4rem' }}
+        >
+          <i className="fa fa-flask tree-flask" />
+          <span
+            className={`
               biospecimen-id
               ${pointer}
               ${hoverUnderline}
@@ -59,28 +59,28 @@ const BioTreeItem = ({
                 ? underline
                 : ''}
               ${query &&
-                (search(query, { node: entity }) || [])
-                  .map(e => e.node)
-                  .some(e => e[`${type.s}_id`] === entity[`${type.s}_id`])
+              (search(query, { node: entity }) || [])
+                .map(e => e.node)
+                .some(e => e[`${type.s}_id`] === entity[`${type.s}_id`])
                 ? highlight
                 : ''}
             `}
-          onClick={e => {
-            selectEntity(entity, type);
-            e.stopPropagation();
-          }}
-        >
-          <Highlight search={query}>
-            {entity.submitter_id}
-          </Highlight>
-        </span>
+            onClick={e => {
+              selectEntity(entity, type);
+              e.stopPropagation();
+            }}
+          >
+            <Highlight search={query}>{entity.submitter_id}</Highlight>
+          </span>
 
-        {selectedEntity[`${type.s}_id`] === entity[`${type.s}_id`] &&
-          <i style={{ marginLeft: '0.3rem' }} className="fa fa-caret-right" />}
-      </div>}
+          {selectedEntity[`${type.s}_id`] === entity[`${type.s}_id`] && (
+            <i style={{ marginLeft: '0.3rem' }} className="fa fa-caret-right" />
+          )}
+        </div>
+      )}
     {entityTypes
       .filter(childType => entity[childType.p])
-      .map(childType =>
+      .map(childType => (
         <BioTreeView
           key={childType.p}
           entities={entity[childType.p]}
@@ -89,8 +89,9 @@ const BioTreeItem = ({
           selectEntity={selectEntity}
           selectedEntity={selectedEntity}
           defaultExpanded={expanded}
-        />,
-      )}
-  </div>;
+        />
+      ))}
+  </div>
+);
 
 export default BioTreeItem;

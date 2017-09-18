@@ -67,20 +67,22 @@ const TableActions = ({
 }: TProps) => {
   return (
     <Row style={style} spacing="0.2rem" className="test-table-actions">
-      {arrangeColumnKey &&
+      {arrangeColumnKey && (
         <ArrangeColumnsButton
           entityType={arrangeColumnKey}
           style={visualizingButton}
-        />}
-      {sortOptions &&
+        />
+      )}
+      {sortOptions && (
         <SortTableButton
           isDisabled={!sortOptions.length}
           options={sortOptions}
           query={query || {}}
           sortKey={`${type}s_sort`}
           style={visualizingButton}
-        />}
-      {downloadable &&
+        />
+      )}
+      {downloadable && (
         <Tooltip Component={downloadTooltip}>
           <DownloadButton
             filters={
@@ -96,31 +98,34 @@ const TableActions = ({
             activeText="JSON"
             showIcon={false}
           />
-        </Tooltip>}
+        </Tooltip>
+      )}
       {tsvSelector &&
-        tsvFilename &&
-        <DownloadTableToTsvButton
-          selector={tsvSelector}
-          filename={tsvFilename}
-        />}
+        tsvFilename && (
+          <DownloadTableToTsvButton
+            selector={tsvSelector}
+            filename={tsvFilename}
+          />
+        )}
 
       {CreateSetButton &&
         RemoveFromSetButton &&
         AppendSetButton &&
-        idField &&
-        <SetActions
-          total={total}
-          filters={currentFilters}
-          score={score}
-          sort={sort}
-          CreateSetButton={CreateSetButton}
-          AppendSetButton={AppendSetButton}
-          RemoveFromSetButton={RemoveFromSetButton}
-          field={idField}
-          type={type}
-          displayType={displayType}
-          selectedIds={selectedIds || []}
-        />}
+        idField && (
+          <SetActions
+            total={total}
+            filters={currentFilters}
+            score={score}
+            sort={sort}
+            CreateSetButton={CreateSetButton}
+            AppendSetButton={AppendSetButton}
+            RemoveFromSetButton={RemoveFromSetButton}
+            field={idField}
+            type={type}
+            displayType={displayType}
+            selectedIds={selectedIds || []}
+          />
+        )}
     </Row>
   );
 };

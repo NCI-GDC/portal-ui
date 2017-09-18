@@ -43,7 +43,7 @@ const Icon = styled.i({
   fontSize: '1.5rem',
 });
 
-const ExploringLinks = () =>
+const ExploringLinks = () => (
   <Row spacing="2rem" className="test-explore-links">
     <Projects backgroundColor="#1c7960">
       <Icon className="icon-gdc-projects" />
@@ -57,6 +57,7 @@ const ExploringLinks = () =>
       <Icon className="fa fa-database" />
       &nbsp; <span>Repository</span>
     </Repository>
-  </Row>;
+  </Row>
+);
 
 export default ExploringLinks;

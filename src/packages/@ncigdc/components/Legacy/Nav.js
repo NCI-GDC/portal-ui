@@ -32,7 +32,9 @@ const styles = {
       textDecoration: 'none !important',
       transition: 'background-color 0.2s ease',
       ':hover': {
-        backgroundColor: Color(theme.greyScale2).darken(0.5).rgbString(),
+        backgroundColor: Color(theme.greyScale2)
+          .darken(0.5)
+          .rgbString(),
       },
       ...center,
     }),
@@ -50,7 +52,7 @@ const styles = {
   },
 };
 
-const Nav = ({ theme }) =>
+const Nav = ({ theme }) => (
   <Row style={styles.nav(theme)}>
     <Row flex="1" />
     <Row flex="1">
@@ -66,15 +68,17 @@ const Nav = ({ theme }) =>
     <Row>
       <LoginButton />
       <CartLink className={`${styles.link(theme)}`}>
-        {count =>
+        {count => (
           <span>
             <ShoppingCartIcon style={styles.faded} />
             <span style={{ marginLeft: '0.7rem' }}>Cart</span>
             <span style={styles.fileLength}>{count}</span>
-          </span>}
+          </span>
+        )}
       </CartLink>
     </Row>
-  </Row>;
+  </Row>
+);
 
 /*----------------------------------------------------------------------------*/
 

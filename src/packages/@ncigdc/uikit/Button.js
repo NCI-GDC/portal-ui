@@ -30,7 +30,9 @@ export const buttonBaseStyles = {
     backgroundColor: ({ theme, disabled }) =>
       disabled
         ? theme.greyScale4
-        : Color(theme.primary).lighten(0.7).rgbString(),
+        : Color(theme.primary)
+            .lighten(0.7)
+            .rgbString(),
     color: 'white',
   },
 };

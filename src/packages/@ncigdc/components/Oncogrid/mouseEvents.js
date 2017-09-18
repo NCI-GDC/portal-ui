@@ -7,13 +7,14 @@ import SelectModal from '@ncigdc/components/Modals/SelectModal';
 export default function({ grid, setTooltip, trackLegends, push, dispatch }) {
   grid.on('gridMouseOver', data => {
     setTooltip(
-      data.observation &&
+      data.observation && (
         <div style={{ maxWidth: 800 }}>
           <div>Case: {data.donor.displayId}</div>
           <div>Gene: {data.observation.geneSymbol}</div>
           <div>Mutation: {data.observation.id}</div>
           <div>Consequence: {data.observation.consequence}</div>
-        </div>,
+        </div>
+      ),
     );
   });
   grid.on('gridMouseOut', () => setTooltip());
@@ -33,7 +34,8 @@ export default function({ grid, setTooltip, trackLegends, push, dispatch }) {
     setTooltip(
       <div style={{ maxWidth: 800 }}>
         {data.domain.symbol ? data.domain.symbol : data.domain.displayId}
-        <br /> Count: {data.domain.count}<br />
+        <br /> Count: {data.domain.count}
+        <br />
       </div>,
     );
   });

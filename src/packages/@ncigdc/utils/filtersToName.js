@@ -38,7 +38,7 @@ export default function({
       total += value.length;
       return acc.concat(
         `${joined}${total > MAX_VALUES ||
-          (total === MAX_VALUES && i < arr.length - 1)
+        (total === MAX_VALUES && i < arr.length - 1)
           ? '...'
           : ''}`,
       );

@@ -36,11 +36,11 @@ class ExploreRoute extends Relay.Route {
   };
 }
 
-export default connect()((props: mixed) =>
+export default connect()((props: mixed) => (
   <Relay.Renderer
     Container={ExplorePage}
     queryConfig={new ExploreRoute(props)}
     environment={Relay.Store}
     onReadyStateChange={handleStateChange(props)}
-  />,
-);
+  />
+));

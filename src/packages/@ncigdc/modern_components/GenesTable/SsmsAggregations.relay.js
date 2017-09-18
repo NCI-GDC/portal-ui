@@ -43,7 +43,10 @@ export default (Component: ReactClass<*>) =>
             ssmsAggregationsViewer: viewer {
               explore {
                 ssms {
-                  aggregations(filters: $ssmCountsfilters aggregations_filter_themselves: true) {
+                  aggregations(
+                    filters: $ssmCountsfilters
+                    aggregations_filter_themselves: true
+                  ) {
                     consequence__transcript__gene__gene_id {
                       buckets {
                         key

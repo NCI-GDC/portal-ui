@@ -27,9 +27,9 @@ const enhance = compose(
       sets: sets[type] || {},
       currentFilters:
         currentFilters &&
-          (Array.isArray(currentFilters.content)
-            ? currentFilters
-            : { op: 'and', content: [currentFilters] }),
+        (Array.isArray(currentFilters.content)
+          ? currentFilters
+          : { op: 'and', content: [currentFilters] }),
     };
   }),
 );
@@ -90,7 +90,6 @@ export default enhance(
             </Button>
           }
         >
-
           {Object.entries(sets).map(([setId, label]: [string, string]) => {
             const value = `set_id:${setId}`;
             return (
@@ -114,15 +113,15 @@ export default enhance(
                 >
                   <Tooltip
                     Component={
-                      label.length > MAX_LABEL_LENGTH &&
-                      <div style={{ maxWidth: 400 }}>{label}</div>
+                      label.length > MAX_LABEL_LENGTH && (
+                        <div style={{ maxWidth: 400 }}>{label}</div>
+                      )
                     }
                   >
                     <Row
                       style={{ alignItems: 'center', whiteSpace: 'nowrap' }}
                       spacing="0.5rem"
                     >
-
                       <input
                         readOnly
                         style={{ pointerEvents: 'none' }}
@@ -151,7 +150,6 @@ export default enhance(
                     </Row>
                   </Tooltip>
                 </Link>
-
               </DropdownItem>
             );
           })}

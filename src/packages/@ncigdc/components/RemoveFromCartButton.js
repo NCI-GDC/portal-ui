@@ -32,7 +32,7 @@ const styles = {
   },
 };
 
-const RemoveFromCartButton = ({ style, files, theme, dispatch, user }) =>
+const RemoveFromCartButton = ({ style, files, theme, dispatch, user }) => (
   <Row className="test-remove-from-cart-button-container">
     <Dropdown
       dropdownStyle={{
@@ -65,9 +65,7 @@ const RemoveFromCartButton = ({ style, files, theme, dispatch, user }) =>
           onClick={() => dispatch(toggleFilesInCart(files))}
           leftIcon={<XIcon />}
         >
-          <span>
-            All Files ({files.length})
-          </span>
+          <span>All Files ({files.length})</span>
         </Button>
         <Button
           className="test-remove-unauthorized-files"
@@ -86,7 +84,8 @@ const RemoveFromCartButton = ({ style, files, theme, dispatch, user }) =>
         </Button>
       </Column>
     </Dropdown>
-  </Row>;
+  </Row>
+);
 
 /*----------------------------------------------------------------------------*/
 

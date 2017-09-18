@@ -35,7 +35,7 @@ const SelectOverlay = ({
   onClose,
   selectedOptions,
   setSelectedOptions,
-}: TProps) =>
+}: TProps) => (
   <Column
     style={{
       padding: '15px',
@@ -55,7 +55,7 @@ const SelectOverlay = ({
         paddingTop: 10,
       }}
     >
-      {options.map((track, i) =>
+      {options.map((track, i) => (
         <Row key={track.name} style={{ alignItems: 'center' }}>
           <input
             value={i}
@@ -68,8 +68,8 @@ const SelectOverlay = ({
           <label htmlFor={track.name} style={{ marginLeft: 5 }}>
             {track.name}
           </label>
-        </Row>,
-      )}
+        </Row>
+      ))}
       <Row style={{ justifyContent: 'center', marginTop: 10 }} spacing="1rem">
         <Button
           style={styles.button}
@@ -77,10 +77,13 @@ const SelectOverlay = ({
         >
           Add Tracks
         </Button>
-        <Button style={styles.button} onClick={() => onClose()}>Cancel</Button>
+        <Button style={styles.button} onClick={() => onClose()}>
+          Cancel
+        </Button>
       </Row>
     </div>
-  </Column>;
+  </Column>
+);
 
 const enhance = compose(withState('selectedOptions', 'setSelectedOptions', []));
 

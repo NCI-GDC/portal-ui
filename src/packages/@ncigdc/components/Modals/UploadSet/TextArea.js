@@ -8,9 +8,7 @@ export default ({ input, setInput, helpText, displayType, placeholder }) => {
   return (
     <label style={{ display: 'block' }}>
       <Row style={{ justifyContent: 'space-between' }}>
-        <div>
-          Type or copy-and-paste a list of {displayType} identifiers
-        </div>
+        <div>Type or copy-and-paste a list of {displayType} identifiers</div>
         <Tooltip
           Component={<div style={{ whiteSpace: 'nowrap' }}>{helpText}</div>}
         >

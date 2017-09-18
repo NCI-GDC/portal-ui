@@ -25,7 +25,7 @@ type TProps = {
 // the first item in items is used as the toggle
 const TogglableUl = (
   { active, toggleActive, children, title, onToggle = () => {} }: TProps = {},
-) =>
+) => (
   <span>
     <div>
       <span>
@@ -40,6 +40,7 @@ const TogglableUl = (
       </span>
     </div>
     {active && children}
-  </span>;
+  </span>
+);
 
 export default withToggle(TogglableUl);

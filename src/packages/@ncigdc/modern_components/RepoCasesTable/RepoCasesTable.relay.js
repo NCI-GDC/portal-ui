@@ -50,7 +50,13 @@ export default (Component: React.Class<*>) =>
             viewer {
               repository {
                 cases {
-                  hits(score: $score first: $cases_size offset: $cases_offset, sort: $cases_sort filters: $filters) {
+                  hits(
+                    score: $score
+                    first: $cases_size
+                    offset: $cases_offset
+                    sort: $cases_sort
+                    filters: $filters
+                  ) {
                     total
                     edges {
                       node {

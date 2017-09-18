@@ -5,7 +5,7 @@ import { withState } from 'recompose';
 import { Row } from './Flex';
 import Tabs from './Tabs';
 
-const SideTabs = ({ setTab, activeTab, tabs, tabContent, ...props }) =>
+const SideTabs = ({ setTab, activeTab, tabs, tabContent, ...props }) => (
   <Row flex="1">
     <Tabs
       onTabClick={i => setTab(() => i)}
@@ -16,7 +16,8 @@ const SideTabs = ({ setTab, activeTab, tabs, tabContent, ...props }) =>
     >
       {tabContent.filter((x, i) => i === activeTab)}
     </Tabs>
-  </Row>;
+  </Row>
+);
 
 export default withState('activeTab', 'setTab', props => props.defaultTab || 0)(
   SideTabs,

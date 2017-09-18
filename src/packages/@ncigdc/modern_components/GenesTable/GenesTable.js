@@ -28,8 +28,10 @@ export default compose(
       const { ssms: { aggregations } } = explore;
       const ssmCounts = (aggregations || {
         consequence__transcript__gene__gene_id: { buckets: [] },
-      }).consequence__transcript__gene__gene_id.buckets
-        .reduce((acc, b) => ({ ...acc, [b.key]: b.doc_count }), {});
+      }).consequence__transcript__gene__gene_id.buckets.reduce(
+        (acc, b) => ({ ...acc, [b.key]: b.doc_count }),
+        {},
+      );
       return { ssmCounts };
     },
   ),
@@ -117,18 +119,18 @@ export default compose(
         <div style={{ overflowX: 'auto' }}>
           <Table
             id="genes-table"
-            headings={tableInfo.map(x =>
+            headings={tableInfo.map(x => (
               <x.th
                 key={x.id}
                 context={context}
                 nodes={data.map(e => e.node)}
                 selectedIds={selectedIds}
                 setSelectedIds={setSelectedIds}
-              />,
-            )}
+              />
+            ))}
             body={
               <tbody>
-                {data.map((e, i) =>
+                {data.map((e, i) => (
                   <Tr
                     key={e.node.id}
                     index={i}
@@ -140,7 +142,7 @@ export default compose(
                   >
                     {tableInfo
                       .filter(x => x.td)
-                      .map(x =>
+                      .map(x => (
                         <x.td
                           key={x.id}
                           node={e.node}
@@ -159,10 +161,10 @@ export default compose(
                           }
                           selectedIds={selectedIds}
                           setSelectedIds={setSelectedIds}
-                        />,
-                      )}
-                  </Tr>,
-                )}
+                        />
+                      ))}
+                  </Tr>
+                ))}
               </tbody>
             }
           />

@@ -25,24 +25,36 @@ const SummaryCard = compose(
   withPropsOnChange(['size'], ({ size }) => ({
     pieDiameter: Math.max(Math.min(size.width, size.height - 100), 120),
   })),
-)(({ data, title, tableTitle, style = {}, footer, path, headings, ...props }) =>
-  <Card style={style} className={props.className + ' test-summary-card'}>
-    <Column>
-      <Header>
-        <span style={{ flexGrow: 1, fontSize: '1.7rem' }}>
-          {tableTitle || title}
-        </span>
-      </Header>
-      {!data.length && <NoResultsMessage style={{ textAlign: 'center' }} />}
+)(
+  ({
+    data,
+    title,
+    tableTitle,
+    style = {},
+    footer,
+    path,
+    headings,
+    ...props
+  }) => (
+    <Card style={style} className={props.className + ' test-summary-card'}>
+      <Column>
+        <Header>
+          <span style={{ flexGrow: 1, fontSize: '1.7rem' }}>
+            {tableTitle || title}
+          </span>
+        </Header>
+        {!data.length && <NoResultsMessage style={{ textAlign: 'center' }} />}
 
-      {!!data.length &&
-        <EntityPageHorizontalTable
-          headings={headings}
-          data={data}
-          style={{ overflow: 'hidden', borderLeft: 0, borderTop: 0 }}
-        />}
-    </Column>
-  </Card>,
+        {!!data.length && (
+          <EntityPageHorizontalTable
+            headings={headings}
+            data={data}
+            style={{ overflow: 'hidden', borderLeft: 0, borderTop: 0 }}
+          />
+        )}
+      </Column>
+    </Card>
+  ),
 );
 
 SummaryCard.propTypes = {

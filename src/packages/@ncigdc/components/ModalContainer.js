@@ -7,12 +7,12 @@ import Modal from '@ncigdc/uikit/Modal';
 
 const ModalContainer = connect(
   state => state.modal || {},
-)(({ component, autoClose, dispatch }) =>
+)(({ component, autoClose, dispatch }) => (
   <Modal
     isOpen={!!component}
     onRequestClose={() => autoClose && dispatch(setModal(null))}
   >
     {component}
-  </Modal>,
-);
+  </Modal>
+));
 export default ModalContainer;

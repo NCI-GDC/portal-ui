@@ -15,7 +15,7 @@ const filesTableModel = [
     name: 'File UUID',
     id: 'file_id',
     th: () => <Th>File UUID</Th>,
-    td: ({ node }) =>
+    td: ({ node }) => (
       <Td>
         <FileLink
           uuid={node.file_id}
@@ -23,7 +23,8 @@ const filesTableModel = [
         >
           {node.file_id}
         </FileLink>
-      </Td>,
+      </Td>
+    ),
     sortable: true,
     downloadable: true,
     hidden: true,
@@ -34,7 +35,7 @@ const filesTableModel = [
     sortable: true,
     downloadable: true,
     th: () => <Th>Access</Th>,
-    td: ({ node }) =>
+    td: ({ node }) => (
       <Td>
         {node.access === 'open' && <i className="fa fa-unlock-alt" />}
         {node.access === 'controlled' && <i className="fa fa-lock" />}
@@ -45,7 +46,8 @@ const filesTableModel = [
         >
           {node.access}
         </span>
-      </Td>,
+      </Td>
+    ),
   },
   {
     name: 'File Name',
@@ -53,7 +55,7 @@ const filesTableModel = [
     sortable: true,
     downloadable: true,
     th: () => <Th>File Name</Th>,
-    td: ({ node }) =>
+    td: ({ node }) => (
       <Td>
         <FileLink
           uuid={node.file_id}
@@ -61,7 +63,8 @@ const filesTableModel = [
         >
           {node.file_name}
         </FileLink>
-      </Td>,
+      </Td>
+    ),
   },
   {
     name: 'Cases',
@@ -69,9 +72,9 @@ const filesTableModel = [
     th: () => <ThNum>Cases</ThNum>,
     td: ({
       node: { cases: { hits: { total = 0, edges: cases } }, file_id: fileId },
-    }) =>
+    }) => (
       <TdNum>
-        {total > 1 &&
+        {total > 1 && (
           <RepositoryCasesLink
             query={{
               filters: makeFilter(
@@ -81,24 +84,32 @@ const filesTableModel = [
             }}
           >
             {total.toLocaleString()}
-          </RepositoryCasesLink>}
-        {total === 1 &&
-          <CaseLink uuid={cases[0].node.case_id}>{total}</CaseLink>}
+          </RepositoryCasesLink>
+        )}
+        {total === 1 && (
+          <CaseLink uuid={cases[0].node.case_id}>{total}</CaseLink>
+        )}
 
         {total === 0 && 0}
-      </TdNum>,
+      </TdNum>
+    ),
     downloadable: true,
   },
   {
     name: 'Project',
     id: 'cases.project.project_id',
     th: () => <Th>Project</Th>,
-    td: ({ node }) =>
+    td: ({ node }) => (
       <Td>
         {uniq(
           node.cases.hits.edges.map(e => e.node.project.project_id),
-        ).map(pId => <ProjectLink key={pId} uuid={pId}>{pId}</ProjectLink>)}
-      </Td>,
+        ).map(pId => (
+          <ProjectLink key={pId} uuid={pId}>
+            {pId}
+          </ProjectLink>
+        ))}
+      </Td>
+    ),
     sortable: true,
     downloadable: true,
   },
@@ -122,7 +133,11 @@ const filesTableModel = [
     name: 'Size',
     id: 'file_size',
     th: () => <ThNum>File Size</ThNum>,
-    td: ({ node }) => <TdNum><FileSize bytes={node.file_size} /></TdNum>,
+    td: ({ node }) => (
+      <TdNum>
+        <FileSize bytes={node.file_size} />
+      </TdNum>
+    ),
     sortable: true,
     downloadable: true,
   },
@@ -130,13 +145,14 @@ const filesTableModel = [
     name: 'Annotations',
     id: 'annotations.annotation_id',
     th: () => <ThNum>Annotations</ThNum>,
-    td: ({ node }) =>
+    td: ({ node }) => (
       <TdNum>
         {
           // leaving link off until we have a proper way to filter the annotation page by file
           node.annotations.hits.total
         }
-      </TdNum>,
+      </TdNum>
+    ),
     downloadable: true,
   },
   {
@@ -152,10 +168,7 @@ const filesTableModel = [
     name: 'Experimental Strategy',
     id: 'experimental_strategy',
     th: () => <Th>Experimental Strategy</Th>,
-    td: ({ node }) =>
-      <Td>
-        {node.experimental_strategy || '--'}
-      </Td>,
+    td: ({ node }) => <Td>{node.experimental_strategy || '--'}</Td>,
     sortable: false,
     downloadable: true,
     hidden: true,

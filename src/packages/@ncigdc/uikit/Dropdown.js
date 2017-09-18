@@ -18,26 +18,29 @@ const Dropdown = ({
   isDisabled = false,
   autoclose = true,
   className,
-}) =>
+}) => (
   <span
     style={{ position: 'relative', ...style }}
     className={className + ' dropdown'}
   >
     <span onClick={e => !isDisabled && setActive(!active)}>
-      {button ||
+      {button || (
         <Row style={styles.dropdownButton}>
           <span>{selected}</span>
           <DownCaretIcon style={{ marginLeft: 'auto' }} />
-        </Row>}
+        </Row>
+      )}
     </span>
-    {active &&
+    {active && (
       <Column
         className={dropdownClassName}
         style={{ ...styles.dropdown, ...dropdownStyle }}
         onClick={e => !autoclose && e.stopPropagation()}
       >
         {children}
-      </Column>}
-  </span>;
+      </Column>
+    )}
+  </span>
+);
 
 export default withDropdown(Dropdown);

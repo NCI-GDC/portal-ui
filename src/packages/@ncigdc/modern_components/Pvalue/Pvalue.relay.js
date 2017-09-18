@@ -21,9 +21,7 @@ export default (Component: React$Element<*>) =>
         variables={props.variables}
         Component={Component}
         query={graphql`
-          query Pvalue_relayQuery(
-            $data: [[Int]]!
-          ) {
+          query Pvalue_relayQuery($data: [[Int]]!) {
             analysis {
               pvalue(data: $data)
             }

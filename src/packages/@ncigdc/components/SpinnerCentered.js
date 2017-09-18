@@ -8,7 +8,7 @@ type TProps = {
   style: Object,
 };
 
-const SpinnerCentered = ({ style, ...props }: TProps) =>
+const SpinnerCentered = ({ style, ...props }: TProps) => (
   <Column
     className="test-spinner"
     style={{
@@ -21,6 +21,7 @@ const SpinnerCentered = ({ style, ...props }: TProps) =>
     {...props}
   >
     <Particle />
-  </Column>;
+  </Column>
+);
 
 export default SpinnerCentered;

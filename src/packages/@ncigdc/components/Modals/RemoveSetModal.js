@@ -30,7 +30,7 @@ const RemoveSetModal = ({
   sets,
   history,
   query,
-}) =>
+}) => (
   <BaseModal
     title={title}
     extraButtons={
@@ -69,6 +69,7 @@ const RemoveSetModal = ({
       type={type}
       field={field}
     />
-  </BaseModal>;
+  </BaseModal>
+);
 
 export default enhance(RemoveSetModal);

@@ -47,7 +47,7 @@ const HomeSearch = compose(
   ({
     search: { state, setQuery, focusItem, reset },
     selectableList: { handleKeyDown, focusedItem, setFocusedItem, selectItem },
-  }) =>
+  }) => (
     <Container
       className="test-home-search"
       onBlur={event => {
@@ -97,7 +97,8 @@ const HomeSearch = compose(
           },
         }}
       />
-    </Container>,
+    </Container>
+  ),
 );
 
 export default HomeSearch;

@@ -29,7 +29,7 @@ const BioTreeView = ({
     ex || (query && entities.hits.edges.some(e => search(query, e).length));
   return (
     <div className="test-biotree-view">
-      {entities.hits.total > 0 &&
+      {entities.hits.total > 0 && (
         <div
           onClick={e => {
             setExpanded(state => !state);
@@ -53,7 +53,7 @@ const BioTreeView = ({
           </div>
 
           {expanded &&
-            entities.hits.edges.map((entity, i) =>
+            entities.hits.edges.map((entity, i) => (
               <BioTreeItem
                 key={i}
                 entity={entity.node}
@@ -62,9 +62,10 @@ const BioTreeView = ({
                 selectedEntity={selectedEntity}
                 query={query}
                 expanded={childrenExpanded}
-              />,
-            )}
-        </div>}
+              />
+            ))}
+        </div>
+      )}
     </div>
   );
 };

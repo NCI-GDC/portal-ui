@@ -164,7 +164,6 @@ export default compose(
                 defaultExpanded={allExpanded}
               />
             </Column>
-
           </Column>
           <Column flex="4">
             <EntityPageVerticalTable

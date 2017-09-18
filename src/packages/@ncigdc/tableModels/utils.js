@@ -20,14 +20,15 @@ export const createDataCategoryColumns = ({
       name: 'Data Categories',
       id: 'data_category',
       field: `summary.data_categories.data_category,summary.data_categories.${countKey}`,
-      th: () =>
+      th: () => (
         <Th
           key="data_category"
           colSpan={Object.keys(DATA_CATEGORIES).length}
           style={{ textAlign: 'center' }}
         >
           {title}
-        </Th>,
+        </Th>
+      ),
       downloadable: true,
       subHeadingIds: _.map(DATA_CATEGORIES, category => category.abbr),
     },
@@ -36,14 +37,15 @@ export const createDataCategoryColumns = ({
       id: category.abbr,
       subHeading: true,
       parent: 'data_category',
-      th: () =>
+      th: () => (
         <ThNum>
           <abbr>
             <Tooltip Component={category.full} style={tableToolTipHint()}>
               {category.abbr}
             </Tooltip>
           </abbr>
-        </ThNum>,
+        </ThNum>
+      ),
       td: ({ node }) => {
         const count = findDataCategory(
           category.abbr,
@@ -51,22 +53,24 @@ export const createDataCategoryColumns = ({
         )[countKey];
         return (
           <TdNum>
-            {count === 0
-              ? '0'
-              : <Link
-                  query={{
-                    filters: makeFilter([
-                      ...getCellLinkFilters(node),
-                      { field: 'files.data_category', value: category.full },
-                    ]),
-                  }}
-                >
-                  {count.toLocaleString()}
-                </Link>}
+            {count === 0 ? (
+              '0'
+            ) : (
+              <Link
+                query={{
+                  filters: makeFilter([
+                    ...getCellLinkFilters(node),
+                    { field: 'files.data_category', value: category.full },
+                  ]),
+                }}
+              >
+                {count.toLocaleString()}
+              </Link>
+            )}
           </TdNum>
         );
       },
-      total: ({ hits }) =>
+      total: ({ hits }) => (
         <TdNum>
           <Link
             query={{
@@ -84,7 +88,8 @@ export const createDataCategoryColumns = ({
                 ],
             ).toLocaleString()}
           </Link>
-        </TdNum>,
+        </TdNum>
+      ),
     })),
   ];
 };
@@ -123,7 +128,7 @@ export const createSelectColumn: TCreateSelectColumn = ({
         </Th>
       );
     },
-    td: ({ node, selectedIds, setSelectedIds }) =>
+    td: ({ node, selectedIds, setSelectedIds }) => (
       <Td>
         <input
           type="checkbox"
@@ -133,6 +138,7 @@ export const createSelectColumn: TCreateSelectColumn = ({
             setSelectedIds(_.xor(selectedIds, [node[idField]]));
           }}
         />
-      </Td>,
+      </Td>
+    ),
   };
 };

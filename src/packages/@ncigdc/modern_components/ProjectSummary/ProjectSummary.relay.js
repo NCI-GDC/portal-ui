@@ -10,7 +10,11 @@ export default (Component: ReactClass<*>) =>
   compose(
     branch(
       ({ projectId }) => !projectId,
-      renderComponent(() => <div><pre>projectId</pre> must be provided</div>),
+      renderComponent(() => (
+        <div>
+          <pre>projectId</pre> must be provided
+        </div>
+      )),
     ),
     withPropsOnChange(['projectId'], ({ projectId }) => {
       return {
@@ -44,7 +48,7 @@ export default (Component: ReactClass<*>) =>
           ) {
             viewer {
               projects {
-                hits(first: 1 filters: $filters) {
+                hits(first: 1, filters: $filters) {
                   edges {
                     node {
                       project_id
@@ -55,15 +59,15 @@ export default (Component: ReactClass<*>) =>
                         name
                       }
                       summary {
-                       case_count
-                       file_count
-                     }
+                        case_count
+                        file_count
+                      }
                     }
                   }
                 }
               }
               annotations {
-                hits(first: 1 filters: $annotationsFilters) {
+                hits(first: 1, filters: $annotationsFilters) {
                   total
                   edges {
                     node {

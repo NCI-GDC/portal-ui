@@ -9,5 +9,8 @@ type TProps = {|
   onClick?: Function,
 |};
 
-export default ({ children, ...props }: TProps) =>
-  <Link pathname="/manage-sets" {...props}>{children || 'Manage Sets'}</Link>;
+export default ({ children, ...props }: TProps) => (
+  <Link pathname="/manage-sets" {...props}>
+    {children || 'Manage Sets'}
+  </Link>
+);

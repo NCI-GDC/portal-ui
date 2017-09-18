@@ -65,8 +65,9 @@ export default compose(
               {item.data_category}
             </span>
           ),
-          case_count: item.case_count > 0
-            ? <Link
+          case_count:
+            item.case_count > 0 ? (
+              <Link
                 merge="replace"
                 pathname="/repository"
                 query={{
@@ -77,24 +78,29 @@ export default compose(
               >
                 {item.case_count.toLocaleString()}
               </Link>
-            : '0',
-          file_count: item.file_count
-            ? <Link
-                merge="replace"
-                pathname="/repository"
-                query={{
-                  filters,
-                  facetTab: 'files',
-                  searchTableTab: 'files',
-                }}
-              >
-                {item.file_count.toLocaleString()}
-              </Link>
-            : '0',
+            ) : (
+              '0'
+            ),
+          file_count: item.file_count ? (
+            <Link
+              merge="replace"
+              pathname="/repository"
+              query={{
+                filters,
+                facetTab: 'files',
+                searchTableTab: 'files',
+              }}
+            >
+              {item.file_count.toLocaleString()}
+            </Link>
+          ) : (
+            '0'
+          ),
           file_count_value: item.file_count,
           tooltip: (
             <span>
-              <b>{item.data_category}</b><br />
+              <b>{item.data_category}</b>
+              <br />
               {item.file_count} file{item.file_count > 1 ? 's' : ''}
             </span>
           ),

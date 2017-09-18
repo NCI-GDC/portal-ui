@@ -86,7 +86,7 @@ const CartPage: TCartPage = ({ viewer, files, user, theme } = {}) => {
   return (
     <Column style={styles.container} className="test-cart-page">
       {!files.length && <h1>Your cart is empty.</h1>}
-      {!!files.length &&
+      {!!files.length && (
         <Column>
           <Row style={{ marginBottom: '2rem', flexWrap: 'wrap' }}>
             <Column spacing="0.8rem" style={{ marginRight: '1rem' }}>
@@ -300,7 +300,8 @@ const CartPage: TCartPage = ({ viewer, files, user, theme } = {}) => {
             tableHeader={'Cart Items'}
             filters={filters}
           />
-        </Column>}
+        </Column>
+      )}
     </Column>
   );
 };
@@ -325,21 +326,23 @@ export default createFragmentContainer(
   }
   */
     viewer: graphql`
-    fragment CartPage_viewer on Root {
-      summary: cart_summary {
-        aggregations(filters: $filters) {
-          project__project_id {
-            buckets {
-              case_count
-              doc_count
-              file_size
-              key
+      fragment CartPage_viewer on Root {
+        summary: cart_summary {
+          aggregations(filters: $filters) {
+            project__project_id {
+              buckets {
+                case_count
+                doc_count
+                file_size
+                key
+              }
+            }
+            fs {
+              value
             }
           }
-          fs { value }
         }
       }
-    }
-  `,
+    `,
   },
 );

@@ -93,7 +93,7 @@ const annotationFacets = [
 
 export const AnnotationAggregationsComponent = compose(
   withState('annotationIdCollapsed', 'setAnnotationIdCollapsed', false),
-)((props: TProps) =>
+)((props: TProps) => (
   <div className="test-annotation-aggregations">
     <FacetHeader
       title="Annotation UUID"
@@ -110,13 +110,14 @@ export const AnnotationAggregationsComponent = compose(
       doctype="annotations"
       fieldNoDoctype="annotation_id"
       style={{ borderBottom: `1px solid ${props.theme.greyScale5}` }}
-      dropdownItem={x =>
+      dropdownItem={x => (
         <Row>
           <AnnotationIcon style={{ paddingRight: '1rem' }} />
           {x.annotation_id}
-        </Row>}
+        </Row>
+      )}
     />
-    {annotationFacets.map(facet =>
+    {annotationFacets.map(facet => (
       <FacetWrapper
         key={facet.full}
         facet={facet}
@@ -125,10 +126,10 @@ export const AnnotationAggregationsComponent = compose(
         relay={props.relay}
         additionalProps={facet.additionalProps}
         style={{ borderBottom: `1px solid ${props.theme.greyScale5}` }}
-      />,
-    )}
-  </div>,
-);
+      />
+    ))}
+  </div>
+));
 
 export const AnnotationAggregationsQuery = {
   fragments: {

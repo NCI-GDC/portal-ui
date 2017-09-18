@@ -33,11 +33,11 @@ class CartRoute extends Relay.Route {
   };
 }
 
-export default connect(state => state.cart)((props: mixed) =>
+export default connect(state => state.cart)((props: mixed) => (
   <Relay.Renderer
     Container={CartPage}
     queryConfig={new CartRoute(props)}
     environment={Relay.Store}
     onReadyStateChange={handleStateChange(props)}
-  />,
-);
+  />
+));

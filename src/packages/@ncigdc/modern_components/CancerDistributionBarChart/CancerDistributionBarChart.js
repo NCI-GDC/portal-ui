@@ -59,16 +59,14 @@ const DefaultChartTitle = ({
   projects = [],
   ssms = 0,
   filters,
-}: TChartTitleProps) =>
+}: TChartTitleProps) => (
   <h5 style={{ textTransform: 'uppercase', padding: '0 2rem' }}>
     <ExploreLink query={{ searchTableTab: 'cases', filters }}>
       {cases.toLocaleString()}
-    </ExploreLink>&nbsp;
-    cases affected by&nbsp;
+    </ExploreLink>&nbsp; cases affected by&nbsp;
     <ExploreLink query={{ searchTableTab: 'mutations', filters }}>
       {ssms.toLocaleString()}
-    </ExploreLink>&nbsp;
-    mutations across&nbsp;
+    </ExploreLink>&nbsp; mutations across&nbsp;
     <ProjectsLink
       query={{
         filters: {
@@ -86,9 +84,9 @@ const DefaultChartTitle = ({
       }}
     >
       {projects.length.toLocaleString()}
-    </ProjectsLink>&nbsp;
-    projects
-  </h5>;
+    </ProjectsLink>&nbsp; projects
+  </h5>
+);
 
 export default compose(
   withRouter,
@@ -106,26 +104,24 @@ export default compose(
   ) => {
     const casesByProjectMap = (cases.total || {
       project__project_id: [],
-    }).project__project_id.buckets
-      .reduce(
-        (acc, bucket) => ({ ...acc, [bucket.key]: bucket.doc_count }),
-        {},
-      );
+    }).project__project_id.buckets.reduce(
+      (acc, bucket) => ({ ...acc, [bucket.key]: bucket.doc_count }),
+      {},
+    );
 
     const cancerDistData = (cases.filtered || {
       project__project_id: { buckets: [] },
-    }).project__project_id.buckets
-      .map(b => {
-        const totalCasesByProject = casesByProjectMap[b.key];
-        const freq = b.doc_count / totalCasesByProject;
+    }).project__project_id.buckets.map(b => {
+      const totalCasesByProject = casesByProjectMap[b.key];
+      const freq = b.doc_count / totalCasesByProject;
 
-        return {
-          freq,
-          project_id: b.key,
-          num_affected_cases: b.doc_count,
-          num_cases_total: totalCasesByProject,
-        };
-      });
+      return {
+        freq,
+        project_id: b.key,
+        num_affected_cases: b.doc_count,
+        num_cases_total: totalCasesByProject,
+      };
+    });
 
     const chartData = sortBy(cancerDistData, d => -d.freq)
       .slice(0, 20)
@@ -137,18 +133,18 @@ export default compose(
           <span>
             {d.num_affected_cases.toLocaleString()}&nbsp;Case
             {d.num_affected_cases > 1 ? 's ' : ' '}
-            Affected in <b>{d.project_id}</b><br />
+            Affected in <b>{d.project_id}</b>
+            <br />
             {d.num_affected_cases.toLocaleString()}
             &nbsp;/&nbsp;
-            {d.num_cases_total.toLocaleString()}&nbsp;
-            ({(d.freq * 100).toFixed(2)}%)
+            {d.num_cases_total.toLocaleString()}&nbsp; ({(d.freq * 100).toFixed(2)}%)
           </span>
         ),
       }));
 
     return (
       <div style={style}>
-        {chartData.length >= 5 &&
+        {chartData.length >= 5 && (
           <span>
             <Column style={{ padding: '0 0 0 2rem' }}>
               <Row
@@ -205,7 +201,8 @@ export default compose(
                 />
               </Row>
             </Column>
-          </span>}
+          </span>
+        )}
       </div>
     );
   },

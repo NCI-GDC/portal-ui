@@ -15,20 +15,22 @@ const styles = {
   },
 };
 
-const Table = ({ style, body, headings = [], subheadings = [], ...props }) =>
+const Table = ({ style, body, headings = [], subheadings = [], ...props }) => (
   <table style={{ ...styles.table, ...style }} {...props}>
     <thead>
       <Tr>
         {headings.map(x => (typeof x === 'string' ? <Th key={x}>{x}</Th> : x))}
       </Tr>
-      {!!subheadings.length &&
+      {!!subheadings.length && (
         <Tr>
           {subheadings.map(
             x => (typeof x === 'string' ? <Th key={x}>{x}</Th> : x),
           )}
-        </Tr>}
+        </Tr>
+      )}
     </thead>
     {body}
-  </table>;
+  </table>
+);
 
 export default Table;

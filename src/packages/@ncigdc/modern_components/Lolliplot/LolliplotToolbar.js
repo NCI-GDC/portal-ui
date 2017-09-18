@@ -15,7 +15,7 @@ export default ({
   setState,
   lolliplotData,
   selector,
-}) =>
+}) => (
   <Row
     style={{
       marginBottom: '2rem',
@@ -25,31 +25,25 @@ export default ({
     }}
     spacing="1rem"
   >
-    <span style={{ alignSelf: 'center' }}>
-      Transcript:
-    </span>
+    <span style={{ alignSelf: 'center' }}>Transcript:</span>
     <Dropdown
       selected={
         <span
           style={{
-            fontWeight: activeTranscript.transcript_id ===
-              gene.canonical_transcript_id
-              ? 'bold'
-              : 'initial',
+            fontWeight:
+              activeTranscript.transcript_id === gene.canonical_transcript_id
+                ? 'bold'
+                : 'initial',
           }}
         >
-          {activeTranscript.transcript_id}
-          {' '}
-          (
-          {activeTranscript.length_amino_acid}
-          {' '}
-          aa)
+          {activeTranscript.transcript_id} (
+          {activeTranscript.length_amino_acid} aa)
         </span>
       }
     >
       {transcripts
         .filter(t => t.transcript_id === gene.canonical_transcript_id)
-        .map(t =>
+        .map(t => (
           <DropdownItem
             key={t.transcript_id}
             style={{
@@ -71,15 +65,15 @@ export default ({
               }))}
           >
             {t.transcript_id} ({t.length_amino_acid} aa)
-          </DropdownItem>,
-        )}
+          </DropdownItem>
+        ))}
       {transcripts
         .filter(
           t =>
             t.length_amino_acid &&
             t.transcript_id !== gene.canonical_transcript_id,
         )
-        .map(t =>
+        .map(t => (
           <DropdownItem
             key={t.transcript_id}
             style={{
@@ -100,8 +94,8 @@ export default ({
               }))}
           >
             {t.transcript_id} ({t.length_amino_acid} aa)
-          </DropdownItem>,
-        )}
+          </DropdownItem>
+        ))}
     </Dropdown>
     <Button
       style={visualizingButton}
@@ -135,4 +129,5 @@ export default ({
       stylePrefix="#protein-viewer-root"
       slug={`protein_viewer-${gene.symbol}-${moment().format('YYYY-MM-DD')}`}
     />
-  </Row>;
+  </Row>
+);

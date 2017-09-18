@@ -33,7 +33,7 @@ const styles = {
   },
 };
 
-const Overlay = ({ children, style, show, ...props }) =>
+const Overlay = ({ children, style, show, ...props }) => (
   <div
     style={{
       ...styles.container,
@@ -43,7 +43,8 @@ const Overlay = ({ children, style, show, ...props }) =>
     {...props}
   >
     {children}
-  </div>;
+  </div>
+);
 
 Overlay.propTypes = {
   ...uikit,

@@ -52,21 +52,21 @@ export default (Component: ReactClass<*>) =>
           ) {
             analysis {
               protein_mutations {
-                data (
+                data(
                   first: $first
                   score: $score
                   filters: $filters
                   fields: [
-                    "ssm_id",
-                    "genomic_dna_change",
-                    "consequence.transcript.aa_change",
-                    "consequence.transcript.aa_start",
-                    "consequence.transcript.consequence_type",
-                    "consequence.transcript.is_canonical",
-                    "consequence.transcript.transcript_id",
-                    "consequence.transcript.annotation.impact",
-                    "consequence.transcript.gene.gene_id",
-                    "consequence.transcript.gene.symbol",
+                    "ssm_id"
+                    "genomic_dna_change"
+                    "consequence.transcript.aa_change"
+                    "consequence.transcript.aa_start"
+                    "consequence.transcript.consequence_type"
+                    "consequence.transcript.is_canonical"
+                    "consequence.transcript.transcript_id"
+                    "consequence.transcript.annotation.impact"
+                    "consequence.transcript.gene.gene_id"
+                    "consequence.transcript.gene.symbol"
                   ]
                 )
               }

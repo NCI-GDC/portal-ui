@@ -5,7 +5,7 @@ export default ({
   height = '100%',
   color1 = 'black',
   color2 = 'red',
-}) =>
+}) => (
   <svg x="0px" y="0px" viewBox="0 0 90 60.4" width={width} height={height}>
     <g>
       <g className="person-bg">
@@ -33,4 +33,5 @@ export default ({
         />
       </g>
     </g>
-  </svg>;
+  </svg>
+);

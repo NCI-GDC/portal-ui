@@ -26,9 +26,7 @@ export default (Component: ReactClass<*>) =>
         variables={props.variables}
         Component={Component}
         query={graphql`
-          query HasSsms_relayQuery(
-            $filters: FiltersArgument
-          ) {
+          query HasSsms_relayQuery($filters: FiltersArgument) {
             viewer {
               explore {
                 ssms {

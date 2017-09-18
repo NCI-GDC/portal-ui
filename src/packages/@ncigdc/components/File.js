@@ -110,9 +110,12 @@ const File = ({
   const associatedEntities = node.associated_entities.hits.edges;
   const filteredAE = (searchTerm
     ? associatedEntities.filter(({ node: ae }) =>
-        Object.keys(ae).map(k => ae[k].includes(searchTerm)).includes(true),
+        Object.keys(ae)
+          .map(k => ae[k].includes(searchTerm))
+          .includes(true),
       )
-    : associatedEntities).map(({ node: ae }) => ({
+    : associatedEntities
+  ).map(({ node: ae }) => ({
     ...ae,
     case_id: <CaseLink uuid={ae.case_id}>{ae.case_id}</CaseLink>,
     entity_submitter_id: (
@@ -127,43 +130,47 @@ const File = ({
     annotation_count: getAnnotationsCount(node.annotations, ae),
   }));
 
-  const archiveComponent = node.archive.archive_id
-    ? <span>
-        {node.archive.submitter_id || '--'} - rev {node.archive.revision} &nbsp;
-        (<RepositoryFilesLink
-          query={{
-            filters: makeFilter([
-              {
-                field: 'files.archive.archive_id',
-                value: node.archive.archive_id,
-              },
-            ]),
-          }}
-        >
-          view files
-        </RepositoryFilesLink>)
-      </span>
-    : '--';
-
-  const projectIds = uniq(
-    (node.cases.hits.edges || [])
-      .map(({ node: { project: { project_id: pId } } }) => pId),
-  );
-
-  const sourceFilesRepoLink = node.analysis.input_files.hits.total
-    ? <RepositoryFilesLink
+  const archiveComponent = node.archive.archive_id ? (
+    <span>
+      {node.archive.submitter_id || '--'} - rev {node.archive.revision} &nbsp; (<RepositoryFilesLink
         query={{
           filters: makeFilter([
             {
-              field: 'files.downstream_analyses.output_files.file_id',
-              value: node.file_id,
+              field: 'files.archive.archive_id',
+              value: node.archive.archive_id,
             },
           ]),
         }}
       >
-        {node.analysis.input_files.hits.total}
-      </RepositoryFilesLink>
-    : <span>0</span>;
+        view files
+      </RepositoryFilesLink>)
+    </span>
+  ) : (
+    '--'
+  );
+
+  const projectIds = uniq(
+    (node.cases.hits.edges || []).map(
+      ({ node: { project: { project_id: pId } } }) => pId,
+    ),
+  );
+
+  const sourceFilesRepoLink = node.analysis.input_files.hits.total ? (
+    <RepositoryFilesLink
+      query={{
+        filters: makeFilter([
+          {
+            field: 'files.downstream_analyses.output_files.file_id',
+            value: node.file_id,
+          },
+        ]),
+      }}
+    >
+      {node.analysis.input_files.hits.total}
+    </RepositoryFilesLink>
+  ) : (
+    <span>0</span>
+  );
   return (
     <Column className="test-file">
       <Row
@@ -179,8 +186,7 @@ const File = ({
         </Button>
         {node.data_type === 'Aligned Reads' &&
           node.data_format === 'BAM' &&
-          node.index_files.hits.total &&
-          <BAMSlicingButton file={node} />}
+          node.index_files.hits.total && <BAMSlicingButton file={node} />}
         <DownloadFile
           file={node}
           activeText={'Processing'}
@@ -208,7 +214,11 @@ const File = ({
               th: 'Project',
               td: projectIds.map(
                 pId =>
-                  pId && <ProjectLink key={pId} uuid={pId}>{pId}</ProjectLink>,
+                  pId && (
+                    <ProjectLink key={pId} uuid={pId}>
+                      {pId}
+                    </ProjectLink>
+                  ),
               ),
             },
           ]}
@@ -293,7 +303,7 @@ const File = ({
         />
       </LocalPaginationTable>
 
-      {displaySection('analysis', node.data_category) &&
+      {displaySection('analysis', node.data_category) && (
         <Row style={{ paddingTop: '2rem', alignItems: 'flex-start' }}>
           <EntityPageVerticalTable
             className="test-analysis"
@@ -306,19 +316,22 @@ const File = ({
                 th: 'Workflow Completion Date',
                 td:
                   node.analysis.updated_datetime &&
-                    moment(node.analysis.updated_datetime).format('YYYY-MM-DD'),
+                  moment(node.analysis.updated_datetime).format('YYYY-MM-DD'),
               },
               {
                 th: 'Source Files',
-                td: node.analysis.input_files.hits.total === 1
-                  ? <FileLink
+                td:
+                  node.analysis.input_files.hits.total === 1 ? (
+                    <FileLink
                       uuid={
                         node.analysis.input_files.hits.edges[0].node.file_id
                       }
                     >
                       1
                     </FileLink>
-                  : sourceFilesRepoLink,
+                  ) : (
+                    sourceFilesRepoLink
+                  ),
               },
             ]}
           />
@@ -331,30 +344,32 @@ const File = ({
               { th: 'Genome Name', td: 'GRCh38.d1.vd1' },
             ]}
           />
-        </Row>}
+        </Row>
+      )}
       {node.analysis.metadata &&
-        displaySection('readGroup', node.data_category) &&
-        <Row style={{ paddingTop: '2rem' }}>
-          <Column style={{ flexGrow: 1 }}>
-            <EntityPageHorizontalTable
-              className="test-read-groups"
-              title="Read Groups"
-              emptyMessage="No read group files found."
-              headings={[
-                { key: 'read_group_id', title: 'Read Group ID' },
-                { key: 'is_paired_end', title: 'Is Paired End' },
-                { key: 'read_length', title: 'Read Length' },
-                { key: 'library_name', title: 'Library Name' },
-                { key: 'sequencing_center', title: 'Sequencing Center' },
-                { key: 'sequencing_date', title: 'Sequencing Date' },
-              ]}
-              data={node.analysis.metadata.read_groups.hits.edges.map(
-                readGroup => readGroup.node,
-              )}
-            />
-          </Column>
-        </Row>}
-      {!!node.metadata_files.hits.edges.length &&
+        displaySection('readGroup', node.data_category) && (
+          <Row style={{ paddingTop: '2rem' }}>
+            <Column style={{ flexGrow: 1 }}>
+              <EntityPageHorizontalTable
+                className="test-read-groups"
+                title="Read Groups"
+                emptyMessage="No read group files found."
+                headings={[
+                  { key: 'read_group_id', title: 'Read Group ID' },
+                  { key: 'is_paired_end', title: 'Is Paired End' },
+                  { key: 'read_length', title: 'Read Length' },
+                  { key: 'library_name', title: 'Library Name' },
+                  { key: 'sequencing_center', title: 'Sequencing Center' },
+                  { key: 'sequencing_date', title: 'Sequencing Date' },
+                ]}
+                data={node.analysis.metadata.read_groups.hits.edges.map(
+                  readGroup => readGroup.node,
+                )}
+              />
+            </Column>
+          </Row>
+        )}
+      {!!node.metadata_files.hits.edges.length && (
         <Row style={{ paddingTop: '2rem' }}>
           <Column style={{ flexGrow: 1 }}>
             <EntityPageHorizontalTable
@@ -396,8 +411,9 @@ const File = ({
               }))}
             />
           </Column>
-        </Row>}
-      {displaySection('downstreamAnalysis', node.data_category) &&
+        </Row>
+      )}
+      {displaySection('downstreamAnalysis', node.data_category) && (
         <Row style={{ paddingTop: '2rem' }}>
           <Column style={{ flexGrow: 1 }}>
             <EntityPageHorizontalTable
@@ -463,7 +479,8 @@ const File = ({
               )}
             />
           </Column>
-        </Row>}
+        </Row>
+      )}
     </Column>
   );
 };

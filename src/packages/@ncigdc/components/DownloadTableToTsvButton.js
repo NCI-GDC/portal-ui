@@ -23,7 +23,11 @@ const getSingleHeader = (headThs: Array<NodeList>) =>
     [],
   );
 
-const DownloadTableToTsvButton = ({ filename, selector, style = {} }: TProps) =>
+const DownloadTableToTsvButton = ({
+  filename,
+  selector,
+  style = {},
+}: TProps) => (
   <Tooltip Component={<span>Export current view</span>}>
     <Button
       style={{ ...visualizingButton, ...style }}
@@ -31,9 +35,10 @@ const DownloadTableToTsvButton = ({ filename, selector, style = {} }: TProps) =>
         const tableEl = document.querySelector(selector);
         const headTrs = tableEl.querySelector('thead').querySelectorAll('tr');
         const headThs = map(headTrs, h => h.querySelectorAll('th'));
-        const thEls = headThs.length === 2
-          ? getSingleHeader(headThs)
-          : tableEl.querySelectorAll('th');
+        const thEls =
+          headThs.length === 2
+            ? getSingleHeader(headThs)
+            : tableEl.querySelectorAll('th');
         const thText = map(thEls, el => el.innerText).map(t =>
           t.replace(/\s+/g, ' '),
         );
@@ -67,10 +72,12 @@ const DownloadTableToTsvButton = ({ filename, selector, style = {} }: TProps) =>
     >
       TSV
     </Button>
-  </Tooltip>;
+  </Tooltip>
+);
 export default DownloadTableToTsvButton;
 
-export const ForTsvExport = ({ children }: { children: Object }) =>
+export const ForTsvExport = ({ children }: { children: Object }) => (
   <span className="for-tsv-export" style={{ display: 'none' }}>
     {children}
-  </span>;
+  </span>
+);

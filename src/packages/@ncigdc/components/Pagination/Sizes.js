@@ -31,7 +31,7 @@ const Sizes = ({
           zIndex: 99999,
         }}
       >
-        {sizes.map(x =>
+        {sizes.map(x => (
           <DropdownItem
             className="test-page-size-option"
             key={x}
@@ -41,11 +41,15 @@ const Sizes = ({
               alignItems: 'center',
             }}
           >
-            {x === size
-              ? x
-              : <Link merge query={{ [prfSize]: x, [prfOff]: 0 }}>{x}</Link>}
-          </DropdownItem>,
-        )}
+            {x === size ? (
+              x
+            ) : (
+              <Link merge query={{ [prfSize]: x, [prfOff]: 0 }}>
+                {x}
+              </Link>
+            )}
+          </DropdownItem>
+        ))}
       </Dropdown>
     </span>
   );

@@ -40,11 +40,10 @@ export default compose(
             alignItems: 'center',
           }}
         >
-          {tableHeader &&
-            <h3 className="panel-title">
-              {tableHeader}
-            </h3>}
-          <div><b>{hits.total}</b> Projects</div>
+          {tableHeader && <h3 className="panel-title">{tableHeader}</h3>}
+          <div>
+            <b>{hits.total}</b> Projects
+          </div>
           <TableActions
             type="project"
             arrangeColumnKey={entityType}
@@ -70,21 +69,23 @@ export default compose(
               .map(x => <x.th key={x.id} />)}
             body={
               <tbody>
-                {hits.edges.map((e, i) =>
+                {hits.edges.map((e, i) => (
                   <Tr key={e.node.id} index={i}>
                     {tableInfo
                       .filter(x => x.td)
                       .map(x => <x.td key={x.id} node={e.node} />)}
-                  </Tr>,
-                )}
+                  </Tr>
+                ))}
                 <Tr>
                   {tableInfo
                     .filter(x => x.td)
                     .map(
                       x =>
-                        x.total
-                          ? <x.total key={x.id} hits={hits} />
-                          : <Td key={x.id} />,
+                        x.total ? (
+                          <x.total key={x.id} hits={hits} />
+                        ) : (
+                          <Td key={x.id} />
+                        ),
                     )}
                 </Tr>
               </tbody>

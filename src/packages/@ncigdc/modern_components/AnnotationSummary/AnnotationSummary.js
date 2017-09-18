@@ -22,7 +22,7 @@ export default compose(
     theme,
     viewer: { annotations: { hits: { edges } } },
     node = edges[0].node,
-  }) =>
+  }) => (
     <FullWidthLayout
       title={node.entity_id}
       entityType="AN"
@@ -31,7 +31,11 @@ export default compose(
       <Column spacing={theme.spacing} className="test-annotation">
         <EntityPageVerticalTable
           id="summary"
-          title={<span><i className="fa fa-table" /> Summary</span>}
+          title={
+            <span>
+              <i className="fa fa-table" /> Summary
+            </span>
+          }
           thToTd={[
             { th: 'Annotation UUID', td: node.annotation_id },
             {
@@ -73,10 +77,9 @@ export default compose(
           style={{ flex: 1 }}
         />
         <Card title="NOTES">
-          <div style={{ padding: 10 }}>
-            {node.notes}
-          </div>
+          <div style={{ padding: 10 }}>{node.notes}</div>
         </Card>
       </Column>
-    </FullWidthLayout>,
+    </FullWidthLayout>
+  ),
 );

@@ -5,7 +5,12 @@ import TextArea from './TextArea';
 import FileUpload from './FileUpload';
 
 const onUpdate = debounce((str, callback) => {
-  callback(str.split(/[\s,]+/).filter(Boolean).map(g => g.toUpperCase()));
+  callback(
+    str
+      .split(/[\s,]+/)
+      .filter(Boolean)
+      .map(g => g.toUpperCase()),
+  );
 }, 500);
 
 const initState = { input: '', inputFiles: '' };

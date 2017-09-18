@@ -17,7 +17,7 @@ type TProps = {
   backgroundColor: string,
 };
 
-export default ({ text, toolTipText, backgroundColor, ...props }: TProps) =>
+export default ({ text, toolTipText, backgroundColor, ...props }: TProps) => (
   <Tooltip Component={toolTipText} className={props.className + ' bubble-icon'}>
     <span
       style={{
@@ -27,4 +27,5 @@ export default ({ text, toolTipText, backgroundColor, ...props }: TProps) =>
     >
       {text}
     </span>
-  </Tooltip>;
+  </Tooltip>
+);

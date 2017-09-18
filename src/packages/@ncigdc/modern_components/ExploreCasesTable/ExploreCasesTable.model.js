@@ -41,18 +41,20 @@ const dataCategoryColumns = createDataCategoryColumns({
 });
 
 const FilesLink = ({ node, fields = [], children }) =>
-  children === '0'
-    ? <span>0</span>
-    : <RepositoryFilesLink
-        query={{
-          filters: makeFilter(
-            [{ field: 'cases.case_id', value: [node.case_id] }, ...fields],
-            false,
-          ),
-        }}
-      >
-        {children}
-      </RepositoryFilesLink>;
+  children === '0' ? (
+    <span>0</span>
+  ) : (
+    <RepositoryFilesLink
+      query={{
+        filters: makeFilter(
+          [{ field: 'cases.case_id', value: [node.case_id] }, ...fields],
+          false,
+        ),
+      }}
+    >
+      {children}
+    </RepositoryFilesLink>
+  );
 
 const getProjectIdFilter = projects =>
   makeFilter(
@@ -72,18 +74,23 @@ const casesTableModel = [
     id: 'case_id',
     downloadable: true,
     hidden: true,
-    th: () => <Th key="case_id" rowSpan="2">Case UUID</Th>,
-    td: ({ node }) =>
-      <Td>
-        {node.case_id}
-      </Td>,
+    th: () => (
+      <Th key="case_id" rowSpan="2">
+        Case UUID
+      </Th>
+    ),
+    td: ({ node }) => <Td>{node.case_id}</Td>,
   },
   {
     name: 'Case ID',
     id: 'submitter_id',
     downloadable: true,
-    th: () => <Th key="submitter_id" rowSpan="2">Case ID</Th>,
-    td: ({ node, index }) =>
+    th: () => (
+      <Th key="submitter_id" rowSpan="2">
+        Case ID
+      </Th>
+    ),
+    td: ({ node, index }) => (
       <Td>
         <CaseLink
           uuid={node.case_id}
@@ -93,28 +100,38 @@ const casesTableModel = [
         >
           {node.submitter_id}
         </CaseLink>
-      </Td>,
+      </Td>
+    ),
   },
   {
     name: 'Project',
     id: 'project.project_id',
     downloadable: true,
     sortable: true,
-    th: () => <Th key="project_id" rowSpan="2">Project</Th>,
-    td: ({ node, index }) =>
+    th: () => (
+      <Th key="project_id" rowSpan="2">
+        Project
+      </Th>
+    ),
+    td: ({ node, index }) => (
       <Td>
         <ProjectLink
           uuid={node.project.project_id}
           id={`row-${index}-project-link`}
         />
-      </Td>,
+      </Td>
+    ),
   },
   {
     name: 'Primary Site',
     id: 'primary_site',
     sortable: true,
     downloadable: true,
-    th: () => <Th key="primary_site" rowSpan="2">Primary Site</Th>,
+    th: () => (
+      <Th key="primary_site" rowSpan="2">
+        Primary Site
+      </Th>
+    ),
     td: ({ node }) => <Td key="primary_site">{node.primary_site}</Td>,
   },
   {
@@ -122,25 +139,35 @@ const casesTableModel = [
     id: 'demographic.gender',
     sortable: true,
     downloadable: true,
-    th: () => <Th key="demographic.gender" rowSpan="2">Gender</Th>,
-    td: ({ node }) =>
+    th: () => (
+      <Th key="demographic.gender" rowSpan="2">
+        Gender
+      </Th>
+    ),
+    td: ({ node }) => (
       <Td key="demographic.gender">
         {_.capitalize(node.demographic.gender) || '--'}
-      </Td>,
+      </Td>
+    ),
   },
   {
     name: 'Files',
     id: 'summary.file_count',
     sortable: true,
     downloadable: true,
-    th: () => <ThNum key="summary.file_count" rowSpan="2">Files</ThNum>,
-    td: ({ node }) =>
+    th: () => (
+      <ThNum key="summary.file_count" rowSpan="2">
+        Files
+      </ThNum>
+    ),
+    td: ({ node }) => (
       <TdNum key="summary.file_count">
         <FilesLink node={node}>
           {(node.summary.file_count || 0).toLocaleString()}
         </FilesLink>
-      </TdNum>,
-    total: withRouter(({ hits, query }) =>
+      </TdNum>
+    ),
+    total: withRouter(({ hits, query }) => (
       <TdNum>
         <RepositoryCasesLink
           query={{
@@ -151,15 +178,15 @@ const casesTableModel = [
             .reduce((acc, val) => acc + val.node.summary.case_count, 0)
             .toLocaleString()}
         </RepositoryCasesLink>
-      </TdNum>,
-    ),
+      </TdNum>
+    )),
   },
   ...dataCategoryColumns,
   {
     name: 'Mutation Count',
     id: 'mutation_count',
     sortable: false,
-    th: () =>
+    th: () => (
       <ThNum rowSpan="2">
         <Tooltip
           Component="# Simple Somatic Mutations Filtered by current criteria"
@@ -167,8 +194,9 @@ const casesTableModel = [
         >
           # Mutations
         </Tooltip>
-      </ThNum>,
-    td: ({ ssmCountsLoading, ssmCount, node, filters }) =>
+      </ThNum>
+    ),
+    td: ({ ssmCountsLoading, ssmCount, node, filters }) => (
       <Td style={{ textAlign: 'right' }}>
         <MutationsCount
           isLoading={ssmCountsLoading}
@@ -178,13 +206,14 @@ const casesTableModel = [
             filters,
           )}
         />
-      </Td>,
+      </Td>
+    ),
   },
   {
     name: 'Gene Count',
     id: 'gene_count',
     sortable: false,
-    th: () =>
+    th: () => (
       <ThNum rowSpan="2">
         <Tooltip
           Component="# Genes with Simple Somatic Mutations Filtered by current criteria"
@@ -192,24 +221,28 @@ const casesTableModel = [
         >
           # Genes
         </Tooltip>
-      </ThNum>,
-    td: ({ node }) =>
+      </ThNum>
+    ),
+    td: ({ node }) => (
       <Td style={{ textAlign: 'right' }}>
-        {node.score > 0
-          ? <ExploreLink
-              merge
-              query={{
-                searchTableTab: 'genes',
-                filters: makeFilter(
-                  [{ field: 'cases.case_id', value: [node.case_id] }],
-                  false,
-                ),
-              }}
-            >
-              {(node.score || 0).toLocaleString()}
-            </ExploreLink>
-          : 0}
-      </Td>,
+        {node.score > 0 ? (
+          <ExploreLink
+            merge
+            query={{
+              searchTableTab: 'genes',
+              filters: makeFilter(
+                [{ field: 'cases.case_id', value: [node.case_id] }],
+                false,
+              ),
+            }}
+          >
+            {(node.score || 0).toLocaleString()}
+          </ExploreLink>
+        ) : (
+          0
+        )}
+      </Td>
+    ),
   },
   {
     name: 'Program',
@@ -218,10 +251,7 @@ const casesTableModel = [
     downloadable: true,
     hidden: true,
     th: () => <Th rowSpan="2">Program</Th>,
-    td: ({ node }) =>
-      <Td>
-        {node.project.program.name}
-      </Td>,
+    td: ({ node }) => <Td>{node.project.program.name}</Td>,
   },
   {
     name: 'Disease Type',
@@ -230,10 +260,7 @@ const casesTableModel = [
     downloadable: true,
     hidden: true,
     th: () => <Th rowSpan="2">Disease Type</Th>,
-    td: ({ node }) =>
-      <Td>
-        {node.disease_type}
-      </Td>,
+    td: ({ node }) => <Td>{node.disease_type}</Td>,
   },
   {
     name: 'Age at diagnosis',
@@ -313,8 +340,9 @@ const casesTableModel = [
     downloadable: true,
     hidden: true,
     th: () => <Th rowSpan="2">Ethnicity</Th>,
-    td: ({ node }) =>
-      <Td>{(node.demographic && node.demographic.ethnicity) || '--'}</Td>,
+    td: ({ node }) => (
+      <Td>{(node.demographic && node.demographic.ethnicity) || '--'}</Td>
+    ),
   },
   {
     name: 'Race',
@@ -323,10 +351,9 @@ const casesTableModel = [
     downloadable: true,
     hidden: true,
     th: () => <Th rowSpan="2">Race</Th>,
-    td: ({ node }) =>
-      <Td>
-        {(node.demographic && node.demographic.race) || '--'}
-      </Td>,
+    td: ({ node }) => (
+      <Td>{(node.demographic && node.demographic.race) || '--'}</Td>
+    ),
   },
 ];
 

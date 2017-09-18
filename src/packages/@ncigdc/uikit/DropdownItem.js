@@ -13,5 +13,8 @@ const itemStyle = {
   },
 };
 
-export default ({ children, style, ...props }) =>
-  <Row {...css(itemStyle, style)} {...props}>{children}</Row>;
+export default ({ children, style, ...props }) => (
+  <Row {...css(itemStyle, style)} {...props}>
+    {children}
+  </Row>
+);

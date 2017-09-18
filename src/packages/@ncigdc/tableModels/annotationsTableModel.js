@@ -28,8 +28,12 @@ const annotationsTableModel = [
     id: 'annotation_id',
     downloadable: true,
     sortable: true,
-    th: () => <Th key="annotation_id" rowSpan="2">UUID</Th>,
-    td: ({ node, index }) =>
+    th: () => (
+      <Th key="annotation_id" rowSpan="2">
+        UUID
+      </Th>
+    ),
+    td: ({ node, index }) => (
       <Td>
         <AnnotationLink
           uuid={node.annotation_id}
@@ -39,29 +43,33 @@ const annotationsTableModel = [
         >
           {node.annotation_id.substr(0, 8)}
         </AnnotationLink>
-        <ForTsvExport>
-          {node.annotation_id}
-        </ForTsvExport>
-      </Td>,
+        <ForTsvExport>{node.annotation_id}</ForTsvExport>
+      </Td>
+    ),
   },
   {
     name: 'Case UUID',
     id: 'case_id',
     downloadable: true,
     hidden: true,
-    th: () => <Th key="case_id" rowSpan="2">Case UUID</Th>,
-    td: ({ node, index }) =>
-      <Td>
-        {node.case_id}
-      </Td>,
+    th: () => (
+      <Th key="case_id" rowSpan="2">
+        Case UUID
+      </Th>
+    ),
+    td: ({ node, index }) => <Td>{node.case_id}</Td>,
   },
   {
     name: 'Case ID',
     id: 'case_submitter_id',
     downloadable: true,
     sortable: true,
-    th: () => <Th key="case_submitter_id" rowSpan="2">Case ID</Th>,
-    td: ({ node, index }) =>
+    th: () => (
+      <Th key="case_submitter_id" rowSpan="2">
+        Case ID
+      </Th>
+    ),
+    td: ({ node, index }) => (
       <Td>
         <CaseLink
           uuid={node.case_id}
@@ -71,53 +79,59 @@ const annotationsTableModel = [
         >
           {node.case_submitter_id}
         </CaseLink>
-        <ForTsvExport>
-          {node.case_submitter_id}
-        </ForTsvExport>
-      </Td>,
+        <ForTsvExport>{node.case_submitter_id}</ForTsvExport>
+      </Td>
+    ),
   },
   {
     name: 'Program',
     id: 'project.program.name',
     downloadable: true,
     hidden: true,
-    th: () => <Th key="project.program.name" rowSpan="2">Program</Th>,
-    td: ({ node, index }) =>
+    th: () => (
+      <Th key="project.program.name" rowSpan="2">
+        Program
+      </Th>
+    ),
+    td: ({ node, index }) => (
       <Td>
         <ProjectLink uuid={node.project.project_id}>
           {node.project.program.name}
         </ProjectLink>
-        <ForTsvExport>
-          {node.project.program.name}
-        </ForTsvExport>
-      </Td>,
+        <ForTsvExport>{node.project.program.name}</ForTsvExport>
+      </Td>
+    ),
   },
   {
     name: 'Project',
     id: 'project.project_id',
     sortable: true,
     downloadable: true,
-    th: () => <Th key="project.project_id" rowSpan="2">Project</Th>,
-    td: ({ node, index }) =>
+    th: () => (
+      <Th key="project.project_id" rowSpan="2">
+        Project
+      </Th>
+    ),
+    td: ({ node, index }) => (
       <Td>
         <ProjectLink uuid={node.project.project_id}>
           {node.project.project_id}
         </ProjectLink>
-        <ForTsvExport>
-          {node.project.project_id}
-        </ForTsvExport>
-      </Td>,
+        <ForTsvExport>{node.project.project_id}</ForTsvExport>
+      </Td>
+    ),
   },
   {
     name: 'Entity Type',
     id: 'entity_type',
     sortable: true,
     downloadable: true,
-    th: () => <Th key="entity_type" rowSpan="2">Entity Type</Th>,
-    td: ({ node, index }) =>
-      <Td>
-        {node.entity_type}
-      </Td>,
+    th: () => (
+      <Th key="entity_type" rowSpan="2">
+        Entity Type
+      </Th>
+    ),
+    td: ({ node, index }) => <Td>{node.entity_type}</Td>,
   },
   {
     name: 'Entity UUID',
@@ -125,19 +139,24 @@ const annotationsTableModel = [
     sortable: true,
     downloadable: true,
     hidden: true,
-    th: () => <Th key="entity_id" rowSpan="2">Entity UUID</Th>,
-    td: ({ node, index }) =>
-      <Td>
-        {node.entity_id}
-      </Td>,
+    th: () => (
+      <Th key="entity_id" rowSpan="2">
+        Entity UUID
+      </Th>
+    ),
+    td: ({ node, index }) => <Td>{node.entity_id}</Td>,
   },
   {
     name: 'Entity ID',
     id: 'entity_submitter_id',
     sortable: true,
     downloadable: true,
-    th: () => <Th key="entity_submitter_id" rowSpan="2">Entity ID</Th>,
-    td: ({ node, index }) =>
+    th: () => (
+      <Th key="entity_submitter_id" rowSpan="2">
+        Entity ID
+      </Th>
+    ),
+    td: ({ node, index }) => (
       <Td>
         <CaseLink
           uuid={node.case_id}
@@ -146,64 +165,68 @@ const annotationsTableModel = [
         >
           {node.entity_submitter_id}
         </CaseLink>
-        <ForTsvExport>
-          {node.entity_submitter_id}
-        </ForTsvExport>
-      </Td>,
+        <ForTsvExport>{node.entity_submitter_id}</ForTsvExport>
+      </Td>
+    ),
   },
   {
     name: 'Category',
     id: 'category',
     downloadable: true,
     sortable: true,
-    th: () => <Th key="category" rowSpan="2">Category</Th>,
-    td: ({ node, index }) =>
-      <Td>
-        {node.category}
-      </Td>,
+    th: () => (
+      <Th key="category" rowSpan="2">
+        Category
+      </Th>
+    ),
+    td: ({ node, index }) => <Td>{node.category}</Td>,
   },
   {
     name: 'Classification',
     id: 'classification',
     sortable: true,
     downloadable: true,
-    th: () => <Th key="classification" rowSpan="2">Classification</Th>,
-    td: ({ node, index }) =>
-      <Td>
-        {node.classification}
-      </Td>,
+    th: () => (
+      <Th key="classification" rowSpan="2">
+        Classification
+      </Th>
+    ),
+    td: ({ node, index }) => <Td>{node.classification}</Td>,
   },
   {
     name: 'Created Date',
     id: 'created_datetime',
     downloadable: true,
-    th: () => <Th key="created_datetime" rowSpan="2">Created Date</Th>,
-    td: ({ node, index }) =>
-      <Td>
-        {node.created_datetime}
-      </Td>,
+    th: () => (
+      <Th key="created_datetime" rowSpan="2">
+        Created Date
+      </Th>
+    ),
+    td: ({ node, index }) => <Td>{node.created_datetime}</Td>,
   },
   {
     name: 'Status',
     id: 'status',
     downloadable: true,
     hidden: true,
-    th: () => <Th key="status" rowSpan="2">Status</Th>,
-    td: ({ node, index }) =>
-      <Td>
-        {node.status}
-      </Td>,
+    th: () => (
+      <Th key="status" rowSpan="2">
+        Status
+      </Th>
+    ),
+    td: ({ node, index }) => <Td>{node.status}</Td>,
   },
   {
     name: 'Notes',
     id: 'notes',
     downloadable: true,
     hidden: true,
-    th: () => <Th key="notes" rowSpan="2">Notes</Th>,
-    td: ({ node, index }) =>
-      <Td>
-        {node.notes}
-      </Td>,
+    th: () => (
+      <Th key="notes" rowSpan="2">
+        Notes
+      </Th>
+    ),
+    td: ({ node, index }) => <Td>{node.notes}</Td>,
   },
 ];
 

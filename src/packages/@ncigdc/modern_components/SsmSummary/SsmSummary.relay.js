@@ -10,7 +10,11 @@ export default (Component: ReactClass<*>) =>
   compose(
     branch(
       ({ ssmId }) => !ssmId,
-      renderComponent(() => <div><pre>ssmId</pre> must be provided</div>),
+      renderComponent(() => (
+        <div>
+          <pre>ssmId</pre> must be provided
+        </div>
+      )),
     ),
     withPropsOnChange(['ssmId'], ({ ssmId }) => {
       return {
@@ -32,13 +36,11 @@ export default (Component: ReactClass<*>) =>
         variables={props.variables}
         Component={Component}
         query={graphql`
-          query SsmSummary_relayQuery(
-            $filters: FiltersArgument
-          ) {
+          query SsmSummary_relayQuery($filters: FiltersArgument) {
             viewer {
               explore {
                 ssms {
-                  hits(first: 1 filters: $filters) {
+                  hits(first: 1, filters: $filters) {
                     edges {
                       node {
                         ssm_id

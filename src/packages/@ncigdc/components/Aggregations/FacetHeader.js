@@ -70,7 +70,7 @@ const FacetHeader = compose(
     showingValueSearch,
     setShowingValueSearch,
     hasValueSearch,
-  }) =>
+  }) => (
     <LocationSubscriber>
       {(ctx: {| pathname: string, query: TRawQuery |}) => {
         const currentFilters =
@@ -90,19 +90,21 @@ const FacetHeader = compose(
               {title}
             </span>
             <IconsRow>
-              {description &&
+              {description && (
                 <Tooltip
                   Component={description}
                   {...css({ ':not(:last-child)': { marginRight: 8 } })}
                 >
                   <QuestionIcon />
-                </Tooltip>}
-              {hasValueSearch &&
+                </Tooltip>
+              )}
+              {hasValueSearch && (
                 <MagnifyingGlass
                   onClick={() => setShowingValueSearch(!showingValueSearch)}
-                />}
+                />
+              )}
               <FacetResetButton field={field} currentFilters={currentFilters} />
-              {isRemovable &&
+              {isRemovable && (
                 <RemoveIcon
                   onClick={handleRequestRemove}
                   onKeyPress={event =>
@@ -110,11 +112,13 @@ const FacetHeader = compose(
                   role="button"
                   tabIndex="0"
                   aria-label="Close"
-                />}
+                />
+              )}
             </IconsRow>
           </Header>
         );
       }}
-    </LocationSubscriber>,
+    </LocationSubscriber>
+  ),
 );
 export default FacetHeader;

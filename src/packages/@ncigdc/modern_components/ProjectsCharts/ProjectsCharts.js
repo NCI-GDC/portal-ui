@@ -150,8 +150,8 @@ export default compose(
             projectId,
             percent:
               topGenesWithCasesPerProject[geneId][projectId] /
-                numUniqueCases *
-                100,
+              numUniqueCases *
+              100,
             count: topGenesWithCasesPerProject[geneId][projectId],
           })),
         },
@@ -199,9 +199,10 @@ export default compose(
           }),
           {},
         ),
-        total: yAxisUnit === 'number'
-          ? stackedBarCalculations[geneId].countTotal
-          : stackedBarCalculations[geneId].countTotal / numUniqueCases * 100,
+        total:
+          yAxisUnit === 'number'
+            ? stackedBarCalculations[geneId].countTotal
+            : stackedBarCalculations[geneId].countTotal / numUniqueCases * 100,
       }))
       .sort((a, b) => b.total - a.total); // relay score sorting isn't returned in reliable order
 
@@ -216,10 +217,9 @@ export default compose(
           value: primarySiteCasesCount,
           tooltip: (
             <span>
-              <b>{p.primary_site}</b><br />
-              {primarySiteCasesCount.toLocaleString()}
-              {' '}
-              case
+              <b>{p.primary_site}</b>
+              <br />
+              {primarySiteCasesCount.toLocaleString()} case
               {primarySiteCasesCount > 1 ? 's' : ''}
             </span>
           ),
@@ -249,10 +249,9 @@ export default compose(
               value: p.summary.case_count,
               tooltip: (
                 <span>
-                  <b>{p.name}</b><br />
-                  {p.summary.case_count.toLocaleString()}
-                  {' '}
-                  case
+                  <b>{p.name}</b>
+                  <br />
+                  {p.summary.case_count.toLocaleString()} case
                   {p.summary.case_count > 1 ? 's' : ''}
                 </span>
               ),
@@ -430,7 +429,7 @@ export default compose(
                 </label>
               </form>
               <Measure key="bar-chart">
-                {({ width }) =>
+                {({ width }) => (
                   <div style={{ transform: 'scale(0.9)' }}>
                     <StackedBarChart
                       width={width}
@@ -459,7 +458,8 @@ export default compose(
                         },
                       }}
                     />
-                  </div>}
+                  </div>
+                )}
               </Measure>
             </span>,
           ]}

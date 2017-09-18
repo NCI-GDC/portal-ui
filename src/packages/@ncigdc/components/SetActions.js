@@ -94,7 +94,7 @@ export default enhance(
           >
             Save as new {displayType} set
           </DropdownItem>
-          {hasSets &&
+          {hasSets && (
             <DropdownItem
               style={{ lineHeight: '1.5', cursor: 'pointer' }}
               onClick={() => {
@@ -115,8 +115,9 @@ export default enhance(
               }}
             >
               Add to existing {displayType} set
-            </DropdownItem>}
-          {hasSets &&
+            </DropdownItem>
+          )}
+          {hasSets && (
             <DropdownItem
               style={{ lineHeight: '1.5', cursor: 'pointer' }}
               onClick={() => {
@@ -134,7 +135,8 @@ export default enhance(
               }}
             >
               Remove from existing {displayType} set
-            </DropdownItem>}
+            </DropdownItem>
+          )}
         </Column>
       </Dropdown>
     );

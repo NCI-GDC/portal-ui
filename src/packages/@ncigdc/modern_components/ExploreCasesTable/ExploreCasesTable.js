@@ -101,20 +101,20 @@ export default compose(
             id="explore-case-table"
             headings={tableInfo
               .filter(x => !x.subHeading)
-              .map(x =>
+              .map(x => (
                 <x.th
                   key={x.id}
                   nodes={cases.hits.edges.map(e => e.node)}
                   selectedIds={selectedIds}
                   setSelectedIds={setSelectedIds}
-                />,
-              )}
+                />
+              ))}
             subheadings={tableInfo
               .filter(x => x.subHeading)
               .map(x => <x.th key={x.id} />)}
             body={
               <tbody>
-                {cases.hits.edges.map((e, i) =>
+                {cases.hits.edges.map((e, i) => (
                   <Tr
                     key={e.node.id}
                     index={i}
@@ -126,7 +126,7 @@ export default compose(
                   >
                     {tableInfo
                       .filter(x => x.td)
-                      .map(x =>
+                      .map(x => (
                         <x.td
                           key={x.id}
                           node={e.node}
@@ -137,10 +137,10 @@ export default compose(
                           filters={filters}
                           selectedIds={selectedIds}
                           setSelectedIds={setSelectedIds}
-                        />,
-                      )}
-                  </Tr>,
-                )}
+                        />
+                      ))}
+                  </Tr>
+                ))}
               </tbody>
             }
           />

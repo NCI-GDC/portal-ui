@@ -19,7 +19,7 @@ const styles = {
   },
 };
 
-export default props =>
+export default props => (
   <Column style={{ ...styles.card, position: 'static' }}>
     <h1 style={{ ...styles.heading, padding: '1rem' }} id="oncogrid">
       <i className="fa fa-th" style={{ paddingRight: '10px' }} />
@@ -38,4 +38,5 @@ export default props =>
         );
       }}
     </LocationSubscriber>
-  </Column>;
+  </Column>
+);

@@ -68,13 +68,13 @@ export default compose(
       <div style={{ padding: 20 }}>
         <div style={{ fontSize: 20 }}>Set Operations</div>
         <div>
-          Click on the areas of the Venn diagram to include them in your
-          result set.
+          Click on the areas of the Venn diagram to include them in your result
+          set.
         </div>
         <Column style={{ marginTop: 10 }}>
           <Row>
             <Measure key="bar-chart">
-              {({ width }) =>
+              {({ width }) => (
                 <div style={{ position: 'relative', width: '40%' }}>
                   <div style={{ position: 'absolute' }}>
                     <Venn
@@ -95,7 +95,8 @@ export default compose(
                       }}
                     />
                   </div>
-                </div>}
+                </div>
+              )}
             </Measure>
             <Column style={{ width: '60%' }}>
               <SetTable

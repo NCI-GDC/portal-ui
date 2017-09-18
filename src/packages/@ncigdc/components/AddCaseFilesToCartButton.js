@@ -105,38 +105,39 @@ const AddCaseFilesToCartButton = compose(
     filesInCart,
     filteredFilesInCart,
     dropdownStyle = {},
-  }) =>
+  }) => (
     <Dropdown
       className="test-add-case-files-to-cart-dropdown"
       dropdownStyle={{ ...styles.dropdownContainer, ...dropdownStyle }}
       dropdownClassName={isLoading ? 'hidden' : 'dropdown-menu'}
       isDisabled={!hasFiles}
       button={
-        hasFiles
-          ? <button
-              className="btn btn-default dropdown-toggle fa fa-shopping-cart"
-              style={{ padding: '0 4px' }}
-            >
-              <span
-                className={isLoading ? 'fa fa-spinner fa-spin' : 'caret'}
-                style={{ marginLeft: '0.5rem' }}
-              />
-              <span className="icon-btn-label">Case Actions</span>
-            </button>
-          : <Tooltip Component={<span>This case has no files.</span>}>
-              <button
-                className="btn disabled fa fa-shopping-cart"
-                style={{ padding: '0px 17px 0 4px' }}
-                aria-label="This case has no files"
-              />
-            </Tooltip>
+        hasFiles ? (
+          <button
+            className="btn btn-default dropdown-toggle fa fa-shopping-cart"
+            style={{ padding: '0 4px' }}
+          >
+            <span
+              className={isLoading ? 'fa fa-spinner fa-spin' : 'caret'}
+              style={{ marginLeft: '0.5rem' }}
+            />
+            <span className="icon-btn-label">Case Actions</span>
+          </button>
+        ) : (
+          <Tooltip Component={<span>This case has no files.</span>}>
+            <button
+              className="btn disabled fa fa-shopping-cart"
+              style={{ padding: '0px 17px 0 4px' }}
+              aria-label="This case has no files"
+            />
+          </Tooltip>
+        )
       }
       onActivate={handleDropdownActivate}
     >
-
       {isLoading && <DropdownItem> Loading case files... </DropdownItem>}
       {!isLoading && [
-        !!(fetchedFiles.length && fetchedFiles.length > filesInCart.length) &&
+        !!(fetchedFiles.length && fetchedFiles.length > filesInCart.length) && (
           <DropdownItem
             className="test-add-all-files"
             onClick={() => dispatch(addAllFilesInCart(fetchedFiles))}
@@ -148,9 +149,10 @@ const AddCaseFilesToCartButton = compose(
             Add all Case files to the Cart (
             {fetchedFiles.length}
             )
-          </DropdownItem>,
+          </DropdownItem>
+        ),
 
-        !!(fetchedFiles.length && filesInCart.length) &&
+        !!(fetchedFiles.length && filesInCart.length) && (
           <DropdownItem
             className="test-remove-all-files"
             onClick={() => dispatch(removeFilesFromCart(fetchedFiles))}
@@ -162,13 +164,14 @@ const AddCaseFilesToCartButton = compose(
             Remove all Case files from the Cart (
             {filesInCart.length}
             )
-          </DropdownItem>,
+          </DropdownItem>
+        ),
 
         _.every([
           fetchedFilteredFiles.length,
           fetchedFilteredFiles.length > filteredFilesInCart.length,
           fetchedFilteredFiles.length < fetchedFiles.length,
-        ]) &&
+        ]) && (
           <DropdownItem
             className="test-add-filtered-files"
             onClick={() => dispatch(addAllFilesInCart(fetchedFilteredFiles))}
@@ -180,9 +183,10 @@ const AddCaseFilesToCartButton = compose(
             Add filtered Case files to the Cart (
             {fetchedFilteredFiles.length}
             )
-          </DropdownItem>,
+          </DropdownItem>
+        ),
 
-        !!(fetchedFilteredFiles.length && filteredFilesInCart.length) &&
+        !!(fetchedFilteredFiles.length && filteredFilesInCart.length) && (
           <DropdownItem
             className="test-remove-filtered-files"
             onClick={() => dispatch(removeFilesFromCart(fetchedFilteredFiles))}
@@ -192,9 +196,11 @@ const AddCaseFilesToCartButton = compose(
           >
             <TrashIcon style={styles.icon} />
             Remove filtered Case files from Cart ({filteredFilesInCart.length})
-          </DropdownItem>,
+          </DropdownItem>
+        ),
       ]}
-    </Dropdown>,
+    </Dropdown>
+  ),
 );
 
 export default AddCaseFilesToCartButton;

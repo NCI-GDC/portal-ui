@@ -58,7 +58,11 @@ export const UploadCaseSet = withProps(({ CreateButton }) => ({
   validateHits: caseValidateHits,
   idMap: caseMap,
   heading: 'Upload Case Set',
-  validatingMessage: <span><SpinnerIcon /> validating cases</span>,
+  validatingMessage: (
+    <span>
+      <SpinnerIcon /> validating cases
+    </span>
+  ),
 }))(Base);
 
 const geneValidateHits = debounce(validateGenes, 200);
@@ -81,8 +85,7 @@ export const UploadGeneSet = withProps(({ CreateButton }) => ({
         </div>
         - Delimiters between gene identifiers: comma, space, tab or 1 gene
         identifier per line<br />
-        - If you upload a file, format file is text file (.txt, .csv,
-        .tsv)
+        - If you upload a file, format file is text file (.txt, .csv, .tsv)
       </div>
     ),
   },
@@ -91,7 +94,11 @@ export const UploadGeneSet = withProps(({ CreateButton }) => ({
   validateHits: geneValidateHits,
   idMap: geneMap,
   heading: 'Upload Gene Set',
-  validatingMessage: <span><SpinnerIcon /> validating genes</span>,
+  validatingMessage: (
+    <span>
+      <SpinnerIcon /> validating genes
+    </span>
+  ),
 }))(Base);
 
 const ssmValidateHits = debounce(validateSsms, 200);
@@ -115,8 +122,7 @@ export const UploadSsmSet = withProps(({ CreateButton }) => ({
         </div>
         - Delimiters between mutation identifiers: comma, space, tab or 1
         mutation identifier per line<br />
-        - If you upload a file, format file is text file (.txt, .csv,
-        .tsv)
+        - If you upload a file, format file is text file (.txt, .csv, .tsv)
       </div>
     ),
   },
@@ -124,5 +130,9 @@ export const UploadSsmSet = withProps(({ CreateButton }) => ({
   validateHits: ssmValidateHits,
   idMap: ssmMap,
   heading: 'Upload Mutation Set',
-  validatingMessage: <span><SpinnerIcon /> validating mutations</span>,
+  validatingMessage: (
+    <span>
+      <SpinnerIcon /> validating mutations
+    </span>
+  ),
 }))(Base);

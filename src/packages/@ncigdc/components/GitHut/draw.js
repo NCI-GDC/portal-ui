@@ -126,7 +126,10 @@ export default function(params) {
         var indices = primary_sites.map(function(d, i) {
           return i * innerHeight / primary_sites.length;
         });
-        column.yScale = d3.scale.ordinal().domain(sites).range(indices);
+        column.yScale = d3.scale
+          .ordinal()
+          .domain(sites)
+          .range(indices);
       }
 
       column.widthScale = d3.scale
@@ -221,11 +224,17 @@ export default function(params) {
       .attr('y1', tickHeight / 2)
       .attr('y2', tickHeight / 2);
 
-    axis.append('line').attr('y1', 0).attr('y2', tickHeight);
+    axis
+      .append('line')
+      .attr('y1', 0)
+      .attr('y2', tickHeight);
 
-    axis.append('text').attr('y', tickHeight + fontHeight).text(function(d) {
-      return d3.format('s')(d.widthScale.domain()[1]);
-    });
+    axis
+      .append('text')
+      .attr('y', tickHeight + fontHeight)
+      .text(function(d) {
+        return d3.format('s')(d.widthScale.domain()[1]);
+      });
   }
 
   function createLanguages(languages) {
@@ -250,9 +259,13 @@ export default function(params) {
       .attr('y', -9)
       .attr('height', 16);
 
-    languageLabel.append('text').attr('x', -10).attr('y', 3).text(function(d) {
-      return d[titleColumn];
-    });
+    languageLabel
+      .append('text')
+      .attr('x', -10)
+      .attr('y', 3)
+      .text(function(d) {
+        return d[titleColumn];
+      });
   }
 
   function updateConnections(duration) {
@@ -274,9 +287,10 @@ export default function(params) {
 
               if (typeof y === 'number') {
                 val.x -= i === 0 ? 0 : column.widthScale(y) / 2 + delta;
-                val2.x += i === params.columns.length - 1
-                  ? 0
-                  : column.widthScale(y) / 2 + delta;
+                val2.x +=
+                  i === params.columns.length - 1
+                    ? 0
+                    : column.widthScale(y) / 2 + delta;
               } else {
                 val.x -= delta;
                 val2.x += delta;
@@ -435,7 +449,10 @@ export default function(params) {
       return d.columnId !== 'primary_site' && d.columnId !== titleColumn;
     });
     newLabelDataColumns.append('path');
-    newLabelDataColumns.append('text').attr('x', 0).attr('y', 4);
+    newLabelDataColumns
+      .append('text')
+      .attr('x', 0)
+      .attr('y', 4);
 
     newLabels
       .filter(function(d) {
@@ -459,7 +476,10 @@ export default function(params) {
 
     labels.selectAll('path.label').attr('d', 'M0,0L0,0');
 
-    labels.selectAll('rect.ix').attr('width', 0).attr('x', 0);
+    labels
+      .selectAll('rect.ix')
+      .attr('width', 0)
+      .attr('x', 0);
 
     labels
       .select('text')

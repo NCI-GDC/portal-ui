@@ -121,13 +121,10 @@ const ManageSetsPage = ({
 
   return (
     <Column style={{ padding: '2rem 2.5rem 13rem' }}>
-      <Heading>
-        Manage Your Saved Sets
-      </Heading>
+      <Heading>Manage Your Saved Sets</Heading>
       <p>
         You can create and save case, gene and mutation sets of interest from
-        the{' '}
-        <ExploreLink>Exploration Page</ExploreLink>.
+        the <ExploreLink>Exploration Page</ExploreLink>.
       </p>
 
       <Row>
@@ -186,7 +183,7 @@ const ManageSetsPage = ({
           </DropdownItem>
         </Dropdown>
 
-        {flattenedSets.length !== 0 &&
+        {flattenedSets.length !== 0 && (
           <span>
             <Button
               onClick={() => {
@@ -209,14 +206,16 @@ const ManageSetsPage = ({
                     component: (
                       <Column>
                         Deleted
-                        {selectedIds.length === 1
-                          ? <span>
-                              {' '}set{' '}
-                              <strong>{setsToRemove[0].label}</strong>
-                            </span>
-                          : <span>
-                              <strong>{setsToRemove.length}</strong> sets
-                            </span>}
+                        {selectedIds.length === 1 ? (
+                          <span>
+                            {' '}
+                            set <strong>{setsToRemove[0].label}</strong>
+                          </span>
+                        ) : (
+                          <span>
+                            <strong>{setsToRemove.length}</strong> sets
+                          </span>
+                        )}
                         <strong>
                           <i
                             className="fa fa-undo"
@@ -247,122 +246,127 @@ const ManageSetsPage = ({
               Delete Selected
             </Button>
             {doneFetchingSetSizes &&
-              emptyOrDeprecatedSets.length > 0 &&
-              <Button
-                onClick={() => {
-                  emptyOrDeprecatedSets.map(currentSetId =>
-                    dispatch(
-                      removeSet({
-                        type: find(
-                          flattenedSets,
-                          ({ id }) => currentSetId === id,
-                        ).type,
-                        id: currentSetId,
-                      }),
-                    ),
-                  );
-                  setSetSizes(omit(setSizes, emptyOrDeprecatedSets));
-                }}
-                style={{ marginBottom: '1rem', marginLeft: '1rem' }}
-              >
-                Delete Empty or Deprecated
-              </Button>}
-          </span>}
+              emptyOrDeprecatedSets.length > 0 && (
+                <Button
+                  onClick={() => {
+                    emptyOrDeprecatedSets.map(currentSetId =>
+                      dispatch(
+                        removeSet({
+                          type: find(
+                            flattenedSets,
+                            ({ id }) => currentSetId === id,
+                          ).type,
+                          id: currentSetId,
+                        }),
+                      ),
+                    );
+                    setSetSizes(omit(setSizes, emptyOrDeprecatedSets));
+                  }}
+                  style={{ marginBottom: '1rem', marginLeft: '1rem' }}
+                >
+                  Delete Empty or Deprecated
+                </Button>
+              )}
+          </span>
+        )}
       </Row>
 
-      {flattenedSets.length === 0
-        ? <Row style={{ marginTop: '1rem' }}>No sets</Row>
-        : <span>
-            <Table
-              id="manage-sets-table"
-              style={{
-                maxWidth: '880px',
-                paddingLeft: '20px',
-                paddingRight: '20px',
-              }}
-              headings={[
-                <Th key="all-checkbox">
-                  <input
-                    type="checkbox"
-                    checked={allSelected}
-                    onChange={e =>
-                      setSelectedIds(
-                        allSelected ? [] : flattenedSets.map(({ id }) => id),
-                      )}
-                  />
-                </Th>,
-                'Entity Type',
-                'Name',
-                '# Items',
-                '',
-              ]}
-              body={
-                <tbody>
-                  {flattenedSets.map(
-                    (
-                      { id, label, type, filters, linkFilters, countComponent },
-                      i,
-                    ) =>
-                      <Tr key={id} index={i}>
-                        <Td key={`checkbox${i}`} style={{ width: '50px' }}>
-                          <input
-                            type="checkbox"
-                            checked={selectedIds.includes(id)}
-                            onChange={e =>
-                              setSelectedIds(xor(selectedIds, [id]))}
-                          />
-                          {doneFetchingSetSizes &&
-                            !get(setSizes, id) &&
+      {flattenedSets.length === 0 ? (
+        <Row style={{ marginTop: '1rem' }}>No sets</Row>
+      ) : (
+        <span>
+          <Table
+            id="manage-sets-table"
+            style={{
+              maxWidth: '880px',
+              paddingLeft: '20px',
+              paddingRight: '20px',
+            }}
+            headings={[
+              <Th key="all-checkbox">
+                <input
+                  type="checkbox"
+                  checked={allSelected}
+                  onChange={e =>
+                    setSelectedIds(
+                      allSelected ? [] : flattenedSets.map(({ id }) => id),
+                    )}
+                />
+              </Th>,
+              'Entity Type',
+              'Name',
+              '# Items',
+              '',
+            ]}
+            body={
+              <tbody>
+                {flattenedSets.map(
+                  (
+                    { id, label, type, filters, linkFilters, countComponent },
+                    i,
+                  ) => (
+                    <Tr key={id} index={i}>
+                      <Td key={`checkbox${i}`} style={{ width: '50px' }}>
+                        <input
+                          type="checkbox"
+                          checked={selectedIds.includes(id)}
+                          onChange={e => setSelectedIds(xor(selectedIds, [id]))}
+                        />
+                        {doneFetchingSetSizes &&
+                          !get(setSizes, id) && (
                             <Tooltip Component="Set is either empty or deprecated.">
                               <ExclamationTriangleIcon
                                 style={{ paddingLeft: '5px', color: '#8a6d3b' }}
                               />
-                            </Tooltip>}
-                        </Td>
-                        <Td
-                          key={`type${i}`}
-                          style={{
-                            width: '100px',
-                            textTransform: 'capitalize',
-                          }}
-                        >
-                          {type === 'ssm' ? 'mutations' : type + 's'}
-                        </Td>
-                        <Td
-                          key={`label${i}`}
-                          style={{
-                            width: '450px',
-                            whiteSpace: 'normal',
-                          }}
-                        >
-                          <EditableLabel
-                            text={label}
-                            handleSave={value =>
-                              dispatch(
-                                updateSet({
-                                  type,
-                                  label: value,
-                                  id: id,
-                                }),
-                              )}
-                          />
-                        </Td>
-                        <Td key={`count${i}`}>
-                          {get(setSizes, id) > 0
-                            ? <ExploreLink
-                                query={{
-                                  searchTableTab:
-                                    (type === 'ssm' ? 'mutation' : type) + 's',
-                                  filters: linkFilters,
-                                }}
-                              >
-                                {countComponent}
-                              </ExploreLink>
-                            : <span>{countComponent}</span>}
-                        </Td>
-                        <Td>
-                          {doneFetchingSetSizes &&
-                            get(setSizes, id) > 0 &&
+                            </Tooltip>
+                          )}
+                      </Td>
+                      <Td
+                        key={`type${i}`}
+                        style={{
+                          width: '100px',
+                          textTransform: 'capitalize',
+                        }}
+                      >
+                        {type === 'ssm' ? 'mutations' : type + 's'}
+                      </Td>
+                      <Td
+                        key={`label${i}`}
+                        style={{
+                          width: '450px',
+                          whiteSpace: 'normal',
+                        }}
+                      >
+                        <EditableLabel
+                          text={label}
+                          handleSave={value =>
+                            dispatch(
+                              updateSet({
+                                type,
+                                label: value,
+                                id: id,
+                              }),
+                            )}
+                        />
+                      </Td>
+                      <Td key={`count${i}`}>
+                        {get(setSizes, id) > 0 ? (
+                          <ExploreLink
+                            query={{
+                              searchTableTab:
+                                (type === 'ssm' ? 'mutation' : type) + 's',
+                              filters: linkFilters,
+                            }}
+                          >
+                            {countComponent}
+                          </ExploreLink>
+                        ) : (
+                          <span>{countComponent}</span>
+                        )}
+                      </Td>
+                      <Td>
+                        {doneFetchingSetSizes &&
+                          get(setSizes, id) > 0 && (
                             <Row>
                               <Tooltip Component="Export as TSV">
                                 <DownloadButton
@@ -380,7 +384,7 @@ const ManageSetsPage = ({
                                   filename={`set-${label}-ids`}
                                 />
                               </Tooltip>
-                              {type === 'case' &&
+                              {type === 'case' && (
                                 <Tooltip Component="View Files in Repository">
                                   <StyledRepoLink
                                     query={{
@@ -390,29 +394,33 @@ const ManageSetsPage = ({
                                   >
                                     <DatabaseIcon />
                                   </StyledRepoLink>
-                                </Tooltip>}
-                            </Row>}
-                        </Td>
-                      </Tr>,
-                  )}
-                </tbody>
-              }
-            />
+                                </Tooltip>
+                              )}
+                            </Row>
+                          )}
+                      </Td>
+                    </Tr>
+                  ),
+                )}
+              </tbody>
+            }
+          />
 
-            <p>
-              <ExclamationTriangleIcon
-                style={{
-                  paddingLeft: '5px',
-                  paddingRight: '5px',
-                  marginTop: '10px',
-                  color: '#8a6d3b',
-                }}
-              />
-              Please be aware that your custom sets are deleted during each new
-              GDC data release.<br />
-              You can export them and re-upload them on this page.
-            </p>
-          </span>}
+          <p>
+            <ExclamationTriangleIcon
+              style={{
+                paddingLeft: '5px',
+                paddingRight: '5px',
+                marginTop: '10px',
+                color: '#8a6d3b',
+              }}
+            />
+            Please be aware that your custom sets are deleted during each new
+            GDC data release.<br />
+            You can export them and re-upload them on this page.
+          </p>
+        </span>
+      )}
     </Column>
   );
 };

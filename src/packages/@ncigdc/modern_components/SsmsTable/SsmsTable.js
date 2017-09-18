@@ -160,7 +160,7 @@ export default compose(
             headings={tableInfo
               .filter(x => (hideContext ? x.id !== 'filteredCases' : true))
               .filter(x => (hideSurvival ? x.id !== 'survival_plot' : true))
-              .map(x =>
+              .map(x => (
                 <x.th
                   key={x.id}
                   context={context}
@@ -168,11 +168,11 @@ export default compose(
                   nodes={data}
                   selectedIds={selectedIds}
                   setSelectedIds={setSelectedIds}
-                />,
-              )}
+                />
+              ))}
             body={
               <tbody>
-                {data.map((node, i) =>
+                {data.map((node, i) => (
                   <Tr
                     key={node.id}
                     index={i}
@@ -190,7 +190,7 @@ export default compose(
                       .filter(
                         x => (hideSurvival ? x.id !== 'survival_plot' : true),
                       )
-                      .map(x =>
+                      .map(x => (
                         <x.td
                           key={x.id}
                           location={location}
@@ -211,10 +211,10 @@ export default compose(
                           }
                           selectedIds={selectedIds}
                           setSelectedIds={setSelectedIds}
-                        />,
-                      )}
-                  </Tr>,
-                )}
+                        />
+                      ))}
+                  </Tr>
+                ))}
               </tbody>
             }
           />

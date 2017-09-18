@@ -80,7 +80,7 @@ const Notification = ({
   closed,
   children,
   className,
-}) =>
+}) => (
   <div style={styles.wrapper} className={className}>
     <div
       style={{
@@ -95,7 +95,8 @@ const Notification = ({
         {children}
       </div>
     </div>
-  </div>;
+  </div>
+);
 
 Notification.propTypes = {
   style: PropTypes.object,

@@ -71,7 +71,7 @@ const projectFacets = [
 
 export const ProjectAggregationsComponent = compose(
   withState('projectIdCollapsed', 'setProjectIdCollapsed', false),
-)((props: TProps) =>
+)((props: TProps) => (
   <div className="test-project-aggregations">
     <FacetHeader
       title="Project"
@@ -88,17 +88,19 @@ export const ProjectAggregationsComponent = compose(
       setAutocomplete={props.setAutocomplete}
       doctype="projects"
       fieldNoDoctype="project_id"
-      dropdownItem={x =>
+      dropdownItem={x => (
         <Row>
           <FolderIcon style={{ paddingRight: '1rem', paddingTop: '1rem' }} />
           <div>
             <div style={{ fontWeight: 'bold' }}>{x.name}</div>
-            {x.project_id}<br />
+            {x.project_id}
+            <br />
             {x.primary_site}
           </div>
-        </Row>}
+        </Row>
+      )}
     />
-    {projectFacets.map(facet =>
+    {projectFacets.map(facet => (
       <FacetWrapper
         key={facet.full}
         facet={facet}
@@ -107,10 +109,10 @@ export const ProjectAggregationsComponent = compose(
         relay={props.relay}
         additionalProps={facet.additionalProps}
         style={{ borderBottom: `1px solid ${props.theme.greyScale5}` }}
-      />,
-    )}
-  </div>,
-);
+      />
+    ))}
+  </div>
+));
 
 export const ProjectAggregationsQuery = {
   fragments: {

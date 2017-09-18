@@ -22,7 +22,7 @@ export type TProps = {
   },
 };
 
-export const AnnotationsPageComponent = (props: TProps) =>
+export const AnnotationsPageComponent = (props: TProps) => (
   <SearchPage
     className="test-annotations-page"
     facetTabs={[
@@ -43,7 +43,8 @@ export const AnnotationsPageComponent = (props: TProps) =>
       },
     ]}
     results={<AnnotationsTable hits={props.viewer.annotations.hits} />}
-  />;
+  />
+);
 
 export const AnnotationsPageQuery = {
   initialVariables: {

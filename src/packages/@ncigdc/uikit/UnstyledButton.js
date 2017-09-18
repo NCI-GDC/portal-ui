@@ -13,5 +13,8 @@ const base = {
   padding: 0,
 };
 
-export default ({ children, style, ...props }) =>
-  <button {...props} style={{ ...base, ...style }}>{children}</button>;
+export default ({ children, style, ...props }) => (
+  <button {...props} style={{ ...base, ...style }}>
+    {children}
+  </button>
+);

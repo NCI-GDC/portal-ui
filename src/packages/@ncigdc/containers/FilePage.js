@@ -23,14 +23,15 @@ export type TProps = {
   },
 };
 
-export const FilePageComponent = (props: TProps) =>
+export const FilePageComponent = (props: TProps) => (
   <FullWidthLayout
     title={props.node.file_name}
     entityType="FL"
     className="test-file-page"
   >
     <File node={props.node} />
-  </FullWidthLayout>;
+  </FullWidthLayout>
+);
 
 export const FilePageQuery = {
   fragments: {

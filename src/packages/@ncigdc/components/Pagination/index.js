@@ -124,7 +124,7 @@ const Pagination = (props: TProps) => {
             {'‹'}
           </PaginationButton>
         </PaginationLink>
-        {getPaginationRange(pageOffset, totalPages).map(x =>
+        {getPaginationRange(pageOffset, totalPages).map(x => (
           <PaginationLink key={x} prfOff={prfOff} offset={(x - 1) * size} pred>
             <PaginationButton
               active={currentPage === x}
@@ -132,8 +132,8 @@ const Pagination = (props: TProps) => {
             >
               {x}
             </PaginationButton>
-          </PaginationLink>,
-        )}
+          </PaginationLink>
+        ))}
         <PaginationLink pred={nextPred} prfOff={prfOff} offset={next}>
           <PaginationButton style={styles.middleBtn(props.theme)}>
             {'›'}

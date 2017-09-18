@@ -46,7 +46,9 @@ const styles = {
       ':hover': {
         color: '#fff',
         textDecoration: 'none',
-        backgroundColor: Color(theme.primary).lighten(0.5).rgbString(),
+        backgroundColor: Color(theme.primary)
+          .lighten(0.5)
+          .rgbString(),
       },
     }),
   activePortalLogo: {
@@ -58,7 +60,7 @@ const styles = {
   },
 };
 
-const Header = ({ theme }) =>
+const Header = ({ theme }) => (
   <Column style={styles.header(theme)}>
     <Row style={styles.top}>
       <Row flex="9">
@@ -67,12 +69,11 @@ const Header = ({ theme }) =>
         </Link>
         <span style={styles.copy}>
           The legacy data is the original data that uses the old genome build
-          hg19
-          as produced by the original submitter. The legacy data is not actively
-          being updated in any way. Users should migrate to the harmonized data.
+          hg19 as produced by the original submitter. The legacy data is not
+          actively being updated in any way. Users should migrate to the
+          harmonized data.
           <br />
-          Please visit the
-          {' '}
+          Please visit the{' '}
           <a href="https://portal.gdc.cancer.gov/">GDC Data Portal</a>
           .
         </span>
@@ -89,13 +90,16 @@ const Header = ({ theme }) =>
           />
           <Column>
             <Row>Launch the</Row>
-            <Row><strong>GDC Data Portal</strong></Row>
+            <Row>
+              <strong>GDC Data Portal</strong>
+            </Row>
           </Column>
         </a>
       </Row>
     </Row>
     <Nav />
-  </Column>;
+  </Column>
+);
 
 /*----------------------------------------------------------------------------*/
 

@@ -1,7 +1,7 @@
 import React from 'react';
 import { ExclamationTriangleIcon } from '@ncigdc/theme/icons';
 
-export default ({ children, style, ...props }) =>
+export default ({ children, style, ...props }) => (
   <div
     style={{
       marginTop: 10,
@@ -17,4 +17,5 @@ export default ({ children, style, ...props }) =>
     {...props}
   >
     <ExclamationTriangleIcon /> {children}
-  </div>;
+  </div>
+);

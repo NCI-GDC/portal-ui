@@ -25,7 +25,7 @@ const BaseModal = ({
   extraButtons: any,
   style: Object,
   contentStyle: Object,
-}) =>
+}) => (
   <Column style={style} {...props}>
     <h2 style={{ paddingLeft: 15 }}>{title}</h2>
     <Column
@@ -58,6 +58,7 @@ const BaseModal = ({
       </Button>
       {extraButtons && <span style={{ marginRight: 10 }}>{extraButtons}</span>}
     </Row>
-  </Column>;
+  </Column>
+);
 
 export default connect()(BaseModal);

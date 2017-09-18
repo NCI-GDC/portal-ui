@@ -196,8 +196,7 @@ export const RepositoryPageComponent = (props: TProps) => {
                   }}
                 >
                   View {caseCount.toLocaleString()}{' '}
-                  {caseCount === 1 ? ' Case' : ' Cases'} in
-                  Exploration
+                  {caseCount === 1 ? ' Case' : ' Cases'} in Exploration
                 </CreateRepositoryCaseSetButton>
               </Row>
               <AnnotationsLink>
@@ -216,8 +215,7 @@ export const RepositoryPageComponent = (props: TProps) => {
                     <FileIcon text style={{ marginRight: 5 }} /> <strong>{fileCount.toLocaleString()}</strong> files
                   </span>*/}
                   <span style={{ flex: 'none' }}>
-                    <SaveIcon style={{ marginRight: 5 }} />
-                    {' '}
+                    <SaveIcon style={{ marginRight: 5 }} />{' '}
                     <strong>{formatFileSize(fileSize)}</strong>
                   </span>
                 </Row>
@@ -226,30 +224,34 @@ export const RepositoryPageComponent = (props: TProps) => {
                 {
                   id: 'files',
                   text: `Files (${fileCount.toLocaleString()})`,
-                  component: !!props.viewer.repository.files.hits.total
-                    ? <div>
-                        <RepoFilesPies
-                          aggregations={props.viewer.repository.files.pies}
-                        />
-                        <FilesTable />
-                      </div>
-                    : <NoResultsMessage>
-                        No results found using those filters.
-                      </NoResultsMessage>,
+                  component: !!props.viewer.repository.files.hits.total ? (
+                    <div>
+                      <RepoFilesPies
+                        aggregations={props.viewer.repository.files.pies}
+                      />
+                      <FilesTable />
+                    </div>
+                  ) : (
+                    <NoResultsMessage>
+                      No results found using those filters.
+                    </NoResultsMessage>
+                  ),
                 },
                 {
                   id: 'cases',
                   text: `Cases (${caseCount.toLocaleString()})`,
-                  component: !!props.viewer.repository.cases.hits.total
-                    ? <div>
-                        <RepoCasesPies
-                          aggregations={props.viewer.repository.cases.pies}
-                        />
-                        <RepoCasesTable />
-                      </div>
-                    : <NoResultsMessage>
-                        No results found using those filters.
-                      </NoResultsMessage>,
+                  component: !!props.viewer.repository.cases.hits.total ? (
+                    <div>
+                      <RepoCasesPies
+                        aggregations={props.viewer.repository.cases.pies}
+                      />
+                      <RepoCasesTable />
+                    </div>
+                  ) : (
+                    <NoResultsMessage>
+                      No results found using those filters.
+                    </NoResultsMessage>
+                  ),
                 },
               ]}
             />

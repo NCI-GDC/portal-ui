@@ -117,12 +117,8 @@ export default compose(
                   {d._key}
                 </div>
                 <div style={{ fontSize: '12px', color: 'rgb(20, 20, 20)' }}>
-                  {d._count.toLocaleString()}
-                  {' '}
-                  cases (
-                  {d.fileCount.toLocaleString()}
-                  {' '}
-                  files)
+                  {d._count.toLocaleString()} cases (
+                  {d.fileCount.toLocaleString()} files)
                 </div>
               </span>,
             );
@@ -142,8 +138,8 @@ export default compose(
       });
     },
   }),
-)(() =>
+)(() => (
   <Column className="test-home">
     <InsideContainer id="human-body-root" />
-  </Column>,
-);
+  </Column>
+));

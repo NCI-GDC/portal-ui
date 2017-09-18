@@ -15,10 +15,11 @@ export default compose(
     showWarning,
     warningMessage,
     style,
-  }) =>
+  }) => (
     <div style={style}>
       <label style={{ marginTop: 10 }}>
-        {labelText}<br />
+        {labelText}
+        <br />
         <input
           style={{ width: '100%' }}
           autoFocus
@@ -31,11 +32,11 @@ export default compose(
           id="save-set-modal-name"
           type="text"
         />
-        {inputName.length > maxLength &&
-          <WarningBox>
-            Maximum name length is {maxLength}
-          </WarningBox>}
+        {inputName.length > maxLength && (
+          <WarningBox>Maximum name length is {maxLength}</WarningBox>
+        )}
       </label>
       {showWarning && <WarningBox>{warningMessage}</WarningBox>}
-    </div>,
+    </div>
+  ),
 );

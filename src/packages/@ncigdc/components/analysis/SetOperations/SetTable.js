@@ -7,13 +7,18 @@ import { stringifyJSONParam } from '@ncigdc/utils/uri';
 import EntityPageHorizontalTable from '@ncigdc/components/EntityPageHorizontalTable';
 import { Tooltip } from '@ncigdc/uikit/Tooltip';
 
-const Alias = ({ i }) => <span><em>S</em><sub>{i}</sub></span>;
+const Alias = ({ i }) => (
+  <span>
+    <em>S</em>
+    <sub>{i}</sub>
+  </span>
+);
 
 const enhance = compose(
   connect((state, props) => ({ sets: state.sets[props.type] })),
 );
 export default enhance(
-  ({ push, setIds, type, CountComponent, CreateSetButton, sets }) =>
+  ({ push, setIds, type, CountComponent, CreateSetButton, sets }) => (
     <EntityPageHorizontalTable
       data={setIds.map((setId, i) => {
         const id = `set-table-${type}-${setId}-select`;
@@ -37,51 +42,54 @@ export default enhance(
               }}
             >
               {count =>
-                count === 0
-                  ? 0
-                  : <CreateSetButton
-                      filters={{
-                        op: '=',
-                        content: {
-                          field: `${type}s.${type}_id`,
-                          value: `set_id:${setId}`,
-                        },
-                      }}
-                      onComplete={setId => {
-                        push({
-                          pathname: '/exploration',
-                          query: {
-                            searchTableTab:
-                              (type === 'ssm' ? 'mutation' : type) + 's',
-                            filters: stringifyJSONParam({
-                              op: 'AND',
-                              content: [
-                                {
-                                  op: 'IN',
-                                  content: {
-                                    field: `${type}s.${type}_id`,
-                                    value: [`set_id:${setId}`],
-                                  },
+                count === 0 ? (
+                  0
+                ) : (
+                  <CreateSetButton
+                    filters={{
+                      op: '=',
+                      content: {
+                        field: `${type}s.${type}_id`,
+                        value: `set_id:${setId}`,
+                      },
+                    }}
+                    onComplete={setId => {
+                      push({
+                        pathname: '/exploration',
+                        query: {
+                          searchTableTab:
+                            (type === 'ssm' ? 'mutation' : type) + 's',
+                          filters: stringifyJSONParam({
+                            op: 'AND',
+                            content: [
+                              {
+                                op: 'IN',
+                                content: {
+                                  field: `${type}s.${type}_id`,
+                                  value: [`set_id:${setId}`],
                                 },
-                              ],
-                            }),
-                          },
-                        });
-                      }}
-                      Component={p =>
-                        <Tooltip Component={`View ${type} set in exploration`}>
-                          <span
-                            {...p}
-                            style={{
-                              cursor: 'pointer',
-                              color: 'rgb(43, 118, 154)',
-                              textDecoration: 'underline',
-                            }}
-                          >
-                            {count.toLocaleString()}
-                          </span>
-                        </Tooltip>}
-                    />}
+                              },
+                            ],
+                          }),
+                        },
+                      });
+                    }}
+                    Component={p => (
+                      <Tooltip Component={`View ${type} set in exploration`}>
+                        <span
+                          {...p}
+                          style={{
+                            cursor: 'pointer',
+                            color: 'rgb(43, 118, 154)',
+                            textDecoration: 'underline',
+                          }}
+                        >
+                          {count.toLocaleString()}
+                        </span>
+                      </Tooltip>
+                    )}
+                  />
+                )}
             </CountComponent>
           ),
         };
@@ -96,5 +104,6 @@ export default enhance(
           style: { textAlign: 'right' },
         },
       ]}
-    />,
+    />
+  ),
 );

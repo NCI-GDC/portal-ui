@@ -6,5 +6,6 @@ type TProps = {
   direction: string,
 };
 
-export default ({ className = '', direction = 'down', ...props }: TProps) =>
-  <i className={`${className} fa fa-caret-${direction}`} {...props} />;
+export default ({ className = '', direction = 'down', ...props }: TProps) => (
+  <i className={`${className} fa fa-caret-${direction}`} {...props} />
+);

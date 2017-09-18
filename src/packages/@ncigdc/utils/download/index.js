@@ -33,9 +33,7 @@ const showErrorModal = error => {
       >
         {warning}
         <Row style={{ paddingTop: '0.5rem', justifyContent: 'flex-end' }}>
-          <Button onClick={() => store.dispatch(setModal(null))}>
-            OK
-          </Button>
+          <Button onClick={() => store.dispatch(setModal(null))}>OK</Button>
         </Row>
       </Column>,
     ),
@@ -109,7 +107,8 @@ const progressChecker = (
           target="_blank"
           rel="noopener noreferrer"
         >
-          {' '}GDC Data Transfer Tool
+          {' '}
+          GDC Data Transfer Tool
         </a>{' '}
         or cancel the download and try again later.
       </div>

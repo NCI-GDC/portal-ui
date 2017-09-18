@@ -6,7 +6,9 @@ export default (xs: Array<Object>): string => {
   if (xs) {
     result = `${Object.keys(xs[0]).join('\t')}\n`;
     xs.forEach(x => {
-      result += `${Object.keys(x).map(key => x[key]).join('\t')}\n`;
+      result += `${Object.keys(x)
+        .map(key => x[key])
+        .join('\t')}\n`;
     });
   }
   return result;

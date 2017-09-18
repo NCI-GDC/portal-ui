@@ -28,7 +28,7 @@ export default compose(
     buckets1 = data1[field].buckets.filter(x => x.key !== '_missing'),
     buckets2 = data2[field].buckets.filter(x => x.key !== '_missing'),
     data = union(buckets1.map(b => b.key), buckets2.map(b => b.key)),
-  }) =>
+  }) => (
     <div>
       <Row>
         <h2>{mapping[field]}</h2>
@@ -80,11 +80,15 @@ export default compose(
           <Th key="2" style={{ textAlign: 'right' }}>
             # Cases <Alias i={1} />
           </Th>,
-          <Th key="3" style={{ textAlign: 'right' }}>%</Th>,
+          <Th key="3" style={{ textAlign: 'right' }}>
+            %
+          </Th>,
           <Th key="4" style={{ textAlign: 'right' }}>
             # Cases <Alias i={2} />
           </Th>,
-          <Th key="5" style={{ textAlign: 'right' }}>%</Th>,
+          <Th key="5" style={{ textAlign: 'right' }}>
+            %
+          </Th>,
         ]}
         body={
           <tbody>
@@ -96,74 +100,80 @@ export default compose(
                 <Tr key={k} index={i}>
                   <Td width={250}>{k}</Td>
                   <Td style={{ textAlign: 'right' }}>
-                    {(set1_bucket.doc_count || 0) === 0
-                      ? 0
-                      : <ExploreLink
-                          query={{
-                            searchTableTab: 'cases',
-                            filters: {
-                              op: 'and',
-                              content: [
-                                {
-                                  op: 'in',
-                                  content: {
-                                    field: 'cases.case_id',
-                                    value: [`set_id:${set1}`],
-                                  },
+                    {(set1_bucket.doc_count || 0) === 0 ? (
+                      0
+                    ) : (
+                      <ExploreLink
+                        query={{
+                          searchTableTab: 'cases',
+                          filters: {
+                            op: 'and',
+                            content: [
+                              {
+                                op: 'in',
+                                content: {
+                                  field: 'cases.case_id',
+                                  value: [`set_id:${set1}`],
                                 },
-                                {
-                                  op: 'in',
-                                  content: {
-                                    field,
-                                    value: [set1_bucket.key],
-                                  },
+                              },
+                              {
+                                op: 'in',
+                                content: {
+                                  field,
+                                  value: [set1_bucket.key],
                                 },
-                              ],
-                            },
-                          }}
-                        >
-                          {(set1_bucket.doc_count || 0).toLocaleString()}
-                        </ExploreLink>}
+                              },
+                            ],
+                          },
+                        }}
+                      >
+                        {(set1_bucket.doc_count || 0).toLocaleString()}
+                      </ExploreLink>
+                    )}
                   </Td>
                   <Td style={{ textAlign: 'right' }}>
                     {((set1_bucket.doc_count || 0) /
                       result1.hits.total *
-                      100).toFixed(0)}%
+                      100
+                    ).toFixed(0)}%
                   </Td>
                   <Td style={{ textAlign: 'right' }}>
-                    {(set2_bucket.doc_count || 0) === 0
-                      ? 0
-                      : <ExploreLink
-                          query={{
-                            searchTableTab: 'cases',
-                            filters: {
-                              op: 'and',
-                              content: [
-                                {
-                                  op: 'in',
-                                  content: {
-                                    field: 'cases.case_id',
-                                    value: [`set_id:${set2}`],
-                                  },
+                    {(set2_bucket.doc_count || 0) === 0 ? (
+                      0
+                    ) : (
+                      <ExploreLink
+                        query={{
+                          searchTableTab: 'cases',
+                          filters: {
+                            op: 'and',
+                            content: [
+                              {
+                                op: 'in',
+                                content: {
+                                  field: 'cases.case_id',
+                                  value: [`set_id:${set2}`],
                                 },
-                                {
-                                  op: 'in',
-                                  content: {
-                                    field,
-                                    value: [set2_bucket.key],
-                                  },
+                              },
+                              {
+                                op: 'in',
+                                content: {
+                                  field,
+                                  value: [set2_bucket.key],
                                 },
-                              ],
-                            },
-                          }}
-                        >
-                          {(set2_bucket.doc_count || 0).toLocaleString()}
-                        </ExploreLink>}
+                              },
+                            ],
+                          },
+                        }}
+                      >
+                        {(set2_bucket.doc_count || 0).toLocaleString()}
+                      </ExploreLink>
+                    )}
                   </Td>
                   <Td style={{ textAlign: 'right' }}>
                     {((set2_bucket.doc_count || 0) /
                       result2.hits.total *
-                      100).toFixed(0)}%
+                      100
+                    ).toFixed(0)}%
                   </Td>
                 </Tr>
               );
@@ -172,13 +182,15 @@ export default compose(
         }
       />
       <div style={{ textAlign: 'right' }}>
-        {buckets1.length === 2 &&
+        {buckets1.length === 2 && (
           <Pvalue
             data={[
               buckets1.map(x => x.doc_count),
               buckets2.map(x => x.doc_count),
             ]}
-          />}
+          />
+        )}
       </div>
-    </div>,
+    </div>
+  ),
 );

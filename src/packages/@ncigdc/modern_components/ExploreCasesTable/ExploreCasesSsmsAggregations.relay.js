@@ -46,7 +46,10 @@ export default (Component: ReactClass<*>) =>
             ssmsAggregationsViewer: viewer {
               explore {
                 ssms {
-                  aggregations(filters: $ssmCountsfilters aggregations_filter_themselves: true) {
+                  aggregations(
+                    filters: $ssmCountsfilters
+                    aggregations_filter_themselves: true
+                  ) {
                     occurrence__case__case_id {
                       buckets {
                         key

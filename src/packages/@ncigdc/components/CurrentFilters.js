@@ -37,7 +37,9 @@ const Field = styled(Button, {
   backgroundColor: ({ theme }) => theme.greyScale2,
   ':hover': {
     backgroundColor: ({ theme }) =>
-      Color(theme.greyScale2).lighten(0.7).rgbString(),
+      Color(theme.greyScale2)
+        .lighten(0.7)
+        .rgbString(),
   },
 });
 
@@ -45,7 +47,9 @@ const Value = styled(Button, {
   backgroundColor: ({ theme }) => theme.success,
   ':hover': {
     backgroundColor: ({ theme }) =>
-      Color(theme.success).lighten(0.7).rgbString(),
+      Color(theme.success)
+        .lighten(0.7)
+        .rgbString(),
   },
 });
 
@@ -166,9 +170,9 @@ const CurrentFilters = (
     hideLinkOnEmpty = true,
     getDisplayValue,
   }: TProps = {},
-) =>
+) => (
   <Info style={style} className="test-current-filters">
-    {!currentFilters.length &&
+    {!currentFilters.length && (
       <span
         style={{
           display: 'flex',
@@ -181,8 +185,9 @@ const CurrentFilters = (
         <span style={{ marginLeft: '0.6rem' }}>
           Start searching by selecting a facet
         </span>
-      </span>}
-    {!!currentFilters.length &&
+      </span>
+    )}
+    {!!currentFilters.length && (
       <Row
         style={{
           width: '100%',
@@ -228,7 +233,8 @@ const CurrentFilters = (
                 {value.length > 1 && <span style={styles.leftParen}>(</span>}
                 {(isFilterExpanded(filter)
                   ? value
-                  : take(value, 2)).map(value =>
+                  : take(value, 2)
+                ).map(value => (
                   <NotUnderlinedLink
                     className="test-field-value"
                     key={value}
@@ -252,55 +258,61 @@ const CurrentFilters = (
                     <Value>
                       {getDisplayValue(filter.content.field, value)}
                     </Value>
-                  </NotUnderlinedLink>,
-                )}
-                {value.length > 2 &&
+                  </NotUnderlinedLink>
+                ))}
+                {value.length > 2 && (
                   <UnstyledButton
                     className="test-toggle"
                     style={styles.rightParen}
                     onClick={() => onLessClicked(filter)}
                   >
                     …
-                  </UnstyledButton>}
-                {isFilterExpanded(filter) &&
+                  </UnstyledButton>
+                )}
+                {isFilterExpanded(filter) && (
                   <UnstyledButton
                     className="test-toggle"
                     style={{ display: 'flex', alignItems: 'center' }}
                     onClick={() => onLessClicked(filter)}
                   >
                     Less
-                  </UnstyledButton>}
+                  </UnstyledButton>
+                )}
                 {value.length > 1 && <span style={styles.rightParen}>)</span>}
                 {i < currentFilters.length - 1 && <Op>AND</Op>}
               </Row>
             );
           })}
         </Row>
-      </Row>}
+      </Row>
+    )}
     {linkPathname &&
-      (!hideLinkOnEmpty || !!currentFilters.length) &&
-      <LinkButton
-        pathname={linkPathname}
-        disabled={currentFilters
-          .reduce((acc, f) => acc.concat(f.content.value || []), [])
-          .some(v => v.toString().includes('set_id:'))}
-        query={
-          currentFilters.length && {
-            filters: {
-              op: 'AND',
-              content: currentFilters.map(
-                ({ content: { field, value }, op }) => ({
-                  op,
-                  content: { field: linkFieldMap(field), value },
-                }),
-              ),
-            },
+      (!hideLinkOnEmpty || !!currentFilters.length) && (
+        <LinkButton
+          pathname={linkPathname}
+          disabled={currentFilters
+            .reduce((acc, f) => acc.concat(f.content.value || []), [])
+            .some(v => v.toString().includes('set_id:'))}
+          query={
+            currentFilters.length && {
+              filters: {
+                op: 'AND',
+                content: currentFilters.map(
+                  ({ content: { field, value }, op }) => ({
+                    op,
+                    content: { field: linkFieldMap(field), value },
+                  }),
+                ),
+              },
+            }
           }
-        }
-      >
-        <Cogs style={{ marginRight: 5 }} />{linkText}
-      </LinkButton>}
-  </Info>;
+        >
+          <Cogs style={{ marginRight: 5 }} />
+          {linkText}
+        </LinkButton>
+      )}
+  </Info>
+);
 /*----------------------------------------------------------------------------*/
 
 export default enhance(CurrentFilters);

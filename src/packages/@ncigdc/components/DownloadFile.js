@@ -53,10 +53,12 @@ function DownloadFile({
         )}
       leftIcon={inactiveText && <i className={'fa fa-download'} />}
     >
-      {inactiveText ||
+      {inactiveText || (
         <span>
-          <i className={'fa fa-download'} /><Hidden>Download</Hidden>
-        </span>}
+          <i className={'fa fa-download'} />
+          <Hidden>Download</Hidden>
+        </span>
+      )}
     </Button>
   );
 }

@@ -83,7 +83,7 @@ export default compose(
     selectableList: { handleKeyDown, focusedItem, setFocusedItem, selectItem },
     tabIndex,
     style,
-  }) =>
+  }) => (
     <a
       className="quick-search-toggle"
       tabIndex={tabIndex}
@@ -128,12 +128,13 @@ export default compose(
           )}
         />
       </span>
-      {!state.isInSearchMode &&
+      {!state.isInSearchMode && (
         <span className="header-hidden-sm header-hidden-md" data-translate>
           Quick Search
-        </span>}
+        </span>
+      )}
 
-      {state.isInSearchMode &&
+      {state.isInSearchMode && (
         <SearchInput
           autoFocus
           className="quick-search-input"
@@ -142,8 +143,9 @@ export default compose(
           onChange={event => setQuery(event.target.value)}
           onKeyDown={handleKeyDown}
           aria-label="Quick Search Input"
-        />}
-      {!!(state.results && state.results.length) &&
+        />
+      )}
+      {!!(state.results && state.results.length) && (
         <QuickSearchResults
           results={_.map(
             state.results,
@@ -154,10 +156,13 @@ export default compose(
           onSelectItem={setFocusedItem}
           onActivateItem={selectItem}
           isLoading={state.isLoading}
-        />}
+        />
+      )}
       {!state.isLoading &&
         state.query &&
-        (state.results || []).length === 0 &&
-        <div style={styles.noResults}>No results found</div>}
-    </a>,
+        (state.results || []).length === 0 && (
+          <div style={styles.noResults}>No results found</div>
+        )}
+    </a>
+  ),
 );

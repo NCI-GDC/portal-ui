@@ -48,7 +48,7 @@ const ArrangeColumns = compose(
 
   return (
     <div className="test-arrange-columns">
-      {filteredColumns.map((column, i) =>
+      {filteredColumns.map((column, i) => (
         <SortableItem
           className="test-column"
           key={column.id}
@@ -111,9 +111,10 @@ const ArrangeColumns = compose(
                     entityType,
                     id: column.id,
                     // if after subheading col include number of subheadings to place inbetween
-                    index: afterSubheadingCol && !column.subHeadingIds
-                      ? i + subHeadingCol.subHeadingIds.length
-                      : i,
+                    index:
+                      afterSubheadingCol && !column.subHeadingIds
+                        ? i + subHeadingCol.subHeadingIds.length
+                        : i,
                   }),
                 );
               }}
@@ -129,8 +130,8 @@ const ArrangeColumns = compose(
             </Row>
             <ArrangeIcon style={{ marginLeft: 'auto', cursor: 'row-resize' }} />
           </SortRow>
-        </SortableItem>,
-      )}
+        </SortableItem>
+      ))}
     </div>
   );
 });

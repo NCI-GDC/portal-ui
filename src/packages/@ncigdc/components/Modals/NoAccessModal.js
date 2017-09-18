@@ -13,14 +13,17 @@ const LoginModal = (
     primaryButton?: any,
     closeText?: string,
   } = {},
-) =>
+) => (
   <BaseModal
     title="Access Error"
     extraButtons={primaryButton}
     closeText={closeText}
   >
     {message}
-    <p>Please <LoginButton /></p>
-  </BaseModal>;
+    <p>
+      Please <LoginButton />
+    </p>
+  </BaseModal>
+);
 
 export default LoginModal;

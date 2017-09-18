@@ -12,7 +12,11 @@ export default (Component: Object) =>
   compose(
     branch(
       ({ geneId }) => !geneId,
-      renderComponent(() => <div><pre>geneId</pre> must be provided</div>),
+      renderComponent(() => (
+        <div>
+          <pre>geneId</pre> must be provided
+        </div>
+      )),
     ),
     withFilters(),
     withPropsOnChange(['geneId', 'filters'], ({ geneId, filters }) => {
@@ -56,7 +60,7 @@ export default (Component: Object) =>
             viewer {
               explore {
                 genes {
-                  hits(first: 1 filters: $filters) {
+                  hits(first: 1, filters: $filters) {
                     edges {
                       node {
                         gene_id

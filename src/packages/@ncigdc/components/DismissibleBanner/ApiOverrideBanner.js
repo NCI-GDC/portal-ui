@@ -3,7 +3,7 @@ import React from 'react';
 import UnstyledButton from '@ncigdc/uikit/UnstyledButton';
 import { API_OVERRIDE_KEYS } from '@ncigdc/utils/constants';
 
-export default () =>
+export default () => (
   <div>
     Local Storage is Overriding the API.{' '}
     <UnstyledButton
@@ -15,4 +15,5 @@ export default () =>
     >
       Remove Override and Reload
     </UnstyledButton>
-  </div>;
+  </div>
+);

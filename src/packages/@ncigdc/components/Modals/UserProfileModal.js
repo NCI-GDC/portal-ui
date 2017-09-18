@@ -41,9 +41,14 @@ const UserProfileModal = ({
     ...allValues.reduce(
       (acc, v) => ({
         ...acc,
-        [v]: flattenedProjects[projectId].includes(v)
-          ? <span><Check /><Hidden>True</Hidden></span>
-          : <Hidden>False</Hidden>,
+        [v]: flattenedProjects[projectId].includes(v) ? (
+          <span>
+            <Check />
+            <Hidden>True</Hidden>
+          </span>
+        ) : (
+          <Hidden>False</Hidden>
+        ),
       }),
       {},
     ),

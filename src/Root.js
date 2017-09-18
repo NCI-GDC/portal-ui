@@ -51,11 +51,12 @@ class Route extends Relay.Route {
   static queries = viewerQuery;
 }
 
-const Root = (props: mixed) =>
+const Root = (props: mixed) => (
   <Relay.Renderer
     Container={Container}
     queryConfig={new Route(props)}
     environment={Relay.Store}
-  />;
+  />
+);
 
 export default Root;

@@ -82,20 +82,20 @@ export default compose(
             id="repository-cases-table"
             headings={tableInfo
               .filter(x => !x.subHeading)
-              .map(x =>
+              .map(x => (
                 <x.th
                   key={x.id}
                   nodes={hits.edges}
                   selectedIds={selectedIds}
                   setSelectedIds={setSelectedIds}
-                />,
-              )}
+                />
+              ))}
             subheadings={tableInfo
               .filter(x => x.subHeading)
               .map(x => <x.th key={x.id} />)}
             body={
               <tbody>
-                {hits.edges.map((e, i) =>
+                {hits.edges.map((e, i) => (
                   <Tr
                     key={e.node.id}
                     index={i}
@@ -107,7 +107,7 @@ export default compose(
                   >
                     {tableInfo
                       .filter(x => x.td)
-                      .map(x =>
+                      .map(x => (
                         <x.td
                           key={x.id}
                           node={e.node}
@@ -116,10 +116,10 @@ export default compose(
                           edges={hits.edges}
                           selectedIds={selectedIds}
                           setSelectedIds={setSelectedIds}
-                        />,
-                      )}
-                  </Tr>,
-                )}
+                        />
+                      ))}
+                  </Tr>
+                ))}
               </tbody>
             }
           />

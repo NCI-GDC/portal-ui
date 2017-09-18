@@ -108,9 +108,11 @@ const styles = {
 
 // Highlighting is frustratingly slow with > 100 items
 const ConditionalHighlight = ({ condition, search, children }) =>
-  condition
-    ? <Highlight search={search}>{children}</Highlight>
-    : <span>{children}</span>;
+  condition ? (
+    <Highlight search={search}>{children}</Highlight>
+  ) : (
+    <span>{children}</span>
+  );
 
 export default compose(
   withState('facetMapping', 'setFacetMapping', {}),
@@ -253,7 +255,7 @@ export default compose(
       this.props.fetchData();
     },
   }),
-)(props =>
+)(props => (
   <div className="test-facet-selection">
     <div {...css(styles.header)}>
       <h2
@@ -303,7 +305,6 @@ export default compose(
         />
         Only show fields with values
       </label>
-
     </div>
     <ul {...css(styles.facetList)} className="test-search-result-list">
       {!props.isLoading &&
@@ -347,7 +348,7 @@ export default compose(
                   </ConditionalHighlight>
                   <span {...css(styles.facetType)}>{facet.type}</span>
                 </span>
-                {facet.description &&
+                {facet.description && (
                   <p
                     {...css(
                       styles.facetDescription,
@@ -360,11 +361,12 @@ export default compose(
                     >
                       {facet.description}
                     </ConditionalHighlight>
-                  </p>}
+                  </p>
+                )}
               </div>
             </li>
           );
         })}
     </ul>
-  </div>,
-);
+  </div>
+));

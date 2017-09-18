@@ -178,8 +178,10 @@ const Component = compose(
     const { ssms: { aggregations } } = explore;
     const ssmCounts = (aggregations || {
       occurrence__case__case_id: { buckets: [] },
-    }).occurrence__case__case_id.buckets
-      .reduce((acc, b) => ({ ...acc, [b.key]: b.doc_count }), {});
+    }).occurrence__case__case_id.buckets.reduce(
+      (acc, b) => ({ ...acc, [b.key]: b.doc_count }),
+      {},
+    );
     return { ssmCounts };
   }),
 )(
@@ -250,7 +252,11 @@ const Component = compose(
             { key: 'gender', title: 'Gender' },
             {
               key: 'age_at_diagnosis',
-              title: <span>Age at<br />Diagnosis</span>,
+              title: (
+                <span>
+                  Age at<br />Diagnosis
+                </span>
+              ),
             },
             { key: 'tumor_stage', title: 'Stage' },
             {
@@ -278,7 +284,7 @@ const Component = compose(
                 </div>
               ),
               style: { textAlign: 'right' },
-              subheadings: Object.keys(DATA_CATEGORIES).map(k =>
+              subheadings: Object.keys(DATA_CATEGORIES).map(k => (
                 <abbr
                   key={DATA_CATEGORIES[k].abbr}
                   style={{ fontSize: '1rem' }}
@@ -289,8 +295,8 @@ const Component = compose(
                   >
                     {DATA_CATEGORIES[k].abbr}
                   </Tooltip>
-                </abbr>,
-              ),
+                </abbr>
+              )),
             },
             {
               key: 'num_mutations',
@@ -336,9 +342,7 @@ const Component = compose(
                     ...c,
                     id: <ForTsvExport>{c.case_id}</ForTsvExport>,
                     submitter_id: (
-                      <CaseLink uuid={c.case_id}>
-                        {c.submitter_id}
-                      </CaseLink>
+                      <CaseLink uuid={c.case_id}>{c.submitter_id}</CaseLink>
                     ),
                     project_id: c.project.project_id,
                     primary_site: c.primary_site,
@@ -349,10 +353,12 @@ const Component = compose(
                       diagnosis.days_to_last_follow_up,
                     )
                       ? diagnosis.days_to_last_follow_up
-                      : '--').toLocaleString(),
+                      : '--'
+                    ).toLocaleString(),
                     days_to_death: (!_.isNil(diagnosis.days_to_death)
                       ? diagnosis.days_to_death
-                      : '--').toLocaleString(),
+                      : '--'
+                    ).toLocaleString(),
                     num_mutations: (
                       <MutationsCount
                         isLoading={ssmCountsLoading}
@@ -376,24 +382,26 @@ const Component = compose(
                     ),
                     data_types: Object.keys(DATA_CATEGORIES).map(
                       k =>
-                        dataCategorySummary[DATA_CATEGORIES[k].full]
-                          ? <RepositoryFilesLink
-                              query={{
-                                filters: makeFilter([
-                                  {
-                                    field: 'cases.case_id',
-                                    value: c.case_id,
-                                  },
-                                  {
-                                    field: 'files.data_category',
-                                    value: DATA_CATEGORIES[k].full,
-                                  },
-                                ]),
-                              }}
-                            >
-                              {dataCategorySummary[DATA_CATEGORIES[k].full]}
-                            </RepositoryFilesLink>
-                          : '--',
+                        dataCategorySummary[DATA_CATEGORIES[k].full] ? (
+                          <RepositoryFilesLink
+                            query={{
+                              filters: makeFilter([
+                                {
+                                  field: 'cases.case_id',
+                                  value: c.case_id,
+                                },
+                                {
+                                  field: 'files.data_category',
+                                  value: DATA_CATEGORIES[k].full,
+                                },
+                              ]),
+                            }}
+                          >
+                            {dataCategorySummary[DATA_CATEGORIES[k].full]}
+                          </RepositoryFilesLink>
+                        ) : (
+                          '--'
+                        ),
                     ),
                   };
                 })

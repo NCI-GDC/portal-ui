@@ -91,10 +91,11 @@ const AppendSetModal = ({
           You can append up to the top {pluralize(displayType, max, true)}
         </div>
       </label>
-      {inputTotal > max &&
+      {inputTotal > max && (
         <WarningBox>
           Above maximum of {pluralize(displayType, max, true)}
-        </WarningBox>}
+        </WarningBox>
+      )}
 
       <SetTable
         style={{ marginTop: 10 }}

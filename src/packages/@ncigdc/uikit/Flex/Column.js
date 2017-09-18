@@ -7,7 +7,7 @@ import Row from './Row';
 
 /*----------------------------------------------------------------------------*/
 
-const Column = ({ style, children, spacing, ...props }) =>
+const Column = ({ style, children, spacing, ...props }) => (
   <Row style={{ ...style, flexDirection: 'column' }} {...props}>
     {!spacing && children}
     {spacing &&
@@ -23,7 +23,8 @@ const Column = ({ style, children, spacing, ...props }) =>
             },
           }),
       )}
-  </Row>;
+  </Row>
+);
 
 Column.propTypes = {
   children: PropTypes.node,

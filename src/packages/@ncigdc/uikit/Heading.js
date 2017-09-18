@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default ({ children, style = {}, ...props }) =>
+export default ({ children, style = {}, ...props }) => (
   <h1
     style={{
       flexGrow: 1,
@@ -14,4 +14,5 @@ export default ({ children, style = {}, ...props }) =>
     {...props}
   >
     {children}
-  </h1>;
+  </h1>
+);

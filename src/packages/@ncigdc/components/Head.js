@@ -5,7 +5,7 @@ import { capitalize } from 'lodash';
 import { Helmet } from 'react-helmet';
 import Favicon from '@ncigdc/theme/images/favicon.ico';
 
-export default ({ title }) =>
+export default ({ title }) => (
   <Helmet>
     <meta
       name="description"
@@ -13,4 +13,5 @@ export default ({ title }) =>
     />
     <title>{capitalize(title) || 'GDC'}</title>
     <link rel="icon" href={Favicon} />
-  </Helmet>;
+  </Helmet>
+);

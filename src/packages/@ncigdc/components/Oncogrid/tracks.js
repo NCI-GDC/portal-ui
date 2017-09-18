@@ -25,7 +25,9 @@ export const getColorValue = (track: { color: any, value?: mixed }) => {
 
 function getSquare(track: Object): string {
   const opacity = typeof track.opacity === 'number' ? track.opacity : 1;
-  const color = Color(getColorValue(track)).lighten(1 - opacity).rgbString();
+  const color = Color(getColorValue(track))
+    .lighten(1 - opacity)
+    .rgbString();
   return `<div class="onco-track-legend" style="background: ${color}"></div>`;
 }
 
@@ -40,9 +42,8 @@ function legendGradient(track): string {
 
 function legendMulti(track): string {
   const joinCharacter = track.joinCharacter || '<div></div>&nbsp;&nbsp;';
-  const values = typeof track.color === 'object'
-    ? Object.keys(track.color)
-    : track.values;
+  const values =
+    typeof track.color === 'object' ? Object.keys(track.color) : track.values;
 
   return `
     <b>${track.name}:</b>${joinCharacter}${values

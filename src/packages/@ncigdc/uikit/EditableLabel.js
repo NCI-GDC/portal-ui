@@ -48,66 +48,67 @@ export default compose(
     setValue,
     setIsEditing,
     handleCancel,
-  }) =>
+  }) => (
     <div>
-      {isEditing
-        ? <Row
-            style={{ justifyContent: 'space-between', alignItems: 'center' }}
-          >
-            <Input
-              style={{
-                width: '300px',
-                borderRadius: '4px',
-                transition: 'all 0.2s ease',
-              }}
-              value={value}
-              onChange={e => setValue(e.target.value)}
-              onKeyDown={e => {
-                if (e.key === 'Enter') {
-                  toggleEditingAndSave();
-                } else if (e.key === 'Escape') {
-                  handleCancel();
-                }
-              }}
-              type="text"
-              autoFocus
-              onFocus={e => e.target.select()}
-            />
-            <Tooltip
-              Component={
-                value.length === 0
-                  ? 'Name must not be empty'
-                  : value.length > MAX_SET_NAME_LENGTH
-                    ? `Maximum name length ${MAX_SET_NAME_LENGTH}`
-                    : null
+      {isEditing ? (
+        <Row style={{ justifyContent: 'space-between', alignItems: 'center' }}>
+          <Input
+            style={{
+              width: '300px',
+              borderRadius: '4px',
+              transition: 'all 0.2s ease',
+            }}
+            value={value}
+            onChange={e => setValue(e.target.value)}
+            onKeyDown={e => {
+              if (e.key === 'Enter') {
+                toggleEditingAndSave();
+              } else if (e.key === 'Escape') {
+                handleCancel();
               }
-            >
-              <Button
-                onClick={toggleEditingAndSave}
-                disabled={
-                  value.length === 0 || value.length > MAX_SET_NAME_LENGTH
-                }
-                style={{
-                  ...visualizingButton,
-                }}
-              >
-                Save
-              </Button>
-            </Tooltip>
-            <Button onClick={handleCancel} style={visualizingButton}>
-              Cancel
-            </Button>
-          </Row>
-        : <Row onClick={toggleEditingAndSave} style={{ cursor: 'text' }}>
-            <span>{value}</span>
-            <Pencil
+            }}
+            type="text"
+            autoFocus
+            onFocus={e => e.target.select()}
+          />
+          <Tooltip
+            Component={
+              value.length === 0
+                ? 'Name must not be empty'
+                : value.length > MAX_SET_NAME_LENGTH
+                  ? `Maximum name length ${MAX_SET_NAME_LENGTH}`
+                  : null
+            }
+          >
+            <Button
+              onClick={toggleEditingAndSave}
+              disabled={
+                value.length === 0 || value.length > MAX_SET_NAME_LENGTH
+              }
               style={{
-                fontSize: '0.9em',
-                paddingLeft: '5px',
-                alignSelf: 'center',
-                color: 'rgb(96, 111, 81)',
+                ...visualizingButton,
               }}
-            />
-          </Row>}
-    </div>,
+            >
+              Save
+            </Button>
+          </Tooltip>
+          <Button onClick={handleCancel} style={visualizingButton}>
+            Cancel
+          </Button>
+        </Row>
+      ) : (
+        <Row onClick={toggleEditingAndSave} style={{ cursor: 'text' }}>
+          <span>{value}</span>
+          <Pencil
+            style={{
+              fontSize: '0.9em',
+              paddingLeft: '5px',
+              alignSelf: 'center',
+              color: 'rgb(96, 111, 81)',
+            }}
+          />
+        </Row>
+      )}
+    </div>
+  ),
 );

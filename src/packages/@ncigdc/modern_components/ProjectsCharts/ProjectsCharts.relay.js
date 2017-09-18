@@ -46,7 +46,12 @@ export default (Component: ReactClass<*>) =>
           ) {
             projectsViewer: viewer {
               projects {
-                hits(first: $size offset: $offset, sort: $projects_sort, filters: $filters) {
+                hits(
+                  first: $size
+                  offset: $offset
+                  sort: $projects_sort
+                  filters: $filters
+                ) {
                   total
                   edges {
                     node {

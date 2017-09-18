@@ -44,7 +44,7 @@ const EntityPageVerticalTable = ({
         ...style,
       }}
     >
-      {title &&
+      {title && (
         <h1
           style={{
             color: theme.greyScale7,
@@ -60,12 +60,13 @@ const EntityPageVerticalTable = ({
           }}
         >
           {title}
-        </h1>}
+        </h1>
+      )}
       <Table
         style={styles.table}
         body={
           <tbody>
-            {thToTd.map((d, i) =>
+            {thToTd.map((d, i) => (
               <Tr key={d.th}>
                 <Th
                   style={{
@@ -77,7 +78,7 @@ const EntityPageVerticalTable = ({
                 >
                   {d.th}
                 </Th>
-                {!!d.collapsibleTd &&
+                {!!d.collapsibleTd && (
                   <CollapsibleTd
                     style={{
                       ...styles.td,
@@ -85,8 +86,9 @@ const EntityPageVerticalTable = ({
                       ...d.style,
                     }}
                     text={d.collapsibleTd}
-                  />}
-                {!!d.td &&
+                  />
+                )}
+                {!!d.td && (
                   <Td
                     style={{
                       ...styles.td,
@@ -95,20 +97,23 @@ const EntityPageVerticalTable = ({
                     }}
                   >
                     {d.td}
-                  </Td>}
+                  </Td>
+                )}
                 {!d.td &&
-                  !d.collapsibleTd &&
-                  <Td
-                    style={{
-                      ...styles.td,
-                      backgroundColor: i % 2 === 0 ? theme.tableStripe : '#fff',
-                      ...d.style,
-                    }}
-                  >
-                    --
-                  </Td>}
-              </Tr>,
-            )}
+                  !d.collapsibleTd && (
+                    <Td
+                      style={{
+                        ...styles.td,
+                        backgroundColor:
+                          i % 2 === 0 ? theme.tableStripe : '#fff',
+                        ...d.style,
+                      }}
+                    >
+                      --
+                    </Td>
+                  )}
+              </Tr>
+            ))}
           </tbody>
         }
       />

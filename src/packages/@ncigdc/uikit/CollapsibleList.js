@@ -31,17 +31,19 @@ const CollapsibleList = ({
   expanded,
   toggleExpand,
   ...props
-}) =>
+}) => (
   <List style={style || {}} {...props}>
     {data
       .slice(0, expanded ? data.length : limit)
       .map((d, i) => <li key={i}>{d}</li>)}
-    {data.length > limit &&
+    {data.length > limit && (
       <Toggle>
         <NotUnderlinedLink onClick={() => toggleExpand(v => !v)}>
           {expanded ? '\u25B4 less' : `\u25BE ${data.length - limit} more`}
         </NotUnderlinedLink>
-      </Toggle>}
-  </List>;
+      </Toggle>
+    )}
+  </List>
+);
 
 export default withState('expanded', 'toggleExpand', false)(CollapsibleList);

@@ -87,9 +87,8 @@ export default enhance(
                   }}
                 >
                   <div>
-                    {from} submitted case identifier{from > 1 ? 's' : ''}{' '}
-                    mapped to{' '}
-                    {to} unique GDC case{to > 1 ? 's' : ''}
+                    {from} submitted case identifier{from > 1 ? 's' : ''} mapped
+                    to {to} unique GDC case{to > 1 ? 's' : ''}
                   </div>
                   <Button
                     style={{ ...visualizingButton }}

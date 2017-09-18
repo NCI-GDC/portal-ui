@@ -171,21 +171,23 @@ const StackedBarChart: TStackedBarChart = (
     setTooltip,
   } = {},
 ) =>
-  Object.keys(data).length
-    ? drawChart({
-        data,
-        yAxis,
-        xAxis,
-        styles,
-        colors,
-        projectsIdtoName,
-        width,
-        height,
-        setTooltip,
-        theme,
-      })
-    : <Row style={{ color: xAxis.style.textFill, justifyContent: 'center' }}>
-        No data
-      </Row>;
+  Object.keys(data).length ? (
+    drawChart({
+      data,
+      yAxis,
+      xAxis,
+      styles,
+      colors,
+      projectsIdtoName,
+      width,
+      height,
+      setTooltip,
+      theme,
+    })
+  ) : (
+    <Row style={{ color: xAxis.style.textFill, justifyContent: 'center' }}>
+      No data
+    </Row>
+  );
 
 export default withTheme(withTooltip(StackedBarChart));

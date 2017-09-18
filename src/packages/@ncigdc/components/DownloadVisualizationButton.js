@@ -64,21 +64,26 @@ const DownloadVisualizationButton = ({
   theme,
   tooltipHTML,
   ...props
-}: TProps) =>
+}: TProps) => (
   <DropDown
     className={props.className || 'test-download-viz-button'}
     button={
       <Tooltip Component={tooltipHTML}>
         <Button leftIcon={!noText && <Download />} style={visualizingButton}>
-          {noText
-            ? <span><Download /><Hidden>Download</Hidden></span>
-            : 'Download'}
+          {noText ? (
+            <span>
+              <Download />
+              <Hidden>Download</Hidden>
+            </span>
+          ) : (
+            'Download'
+          )}
         </Button>
       </Tooltip>
     }
     {...props}
   >
-    {svg &&
+    {svg && (
       <DropdownItem
         key="svg"
         className="test-download-svg"
@@ -93,8 +98,9 @@ const DownloadVisualizationButton = ({
         }}
       >
         SVG
-      </DropdownItem>}
-    {svg &&
+      </DropdownItem>
+    )}
+    {svg && (
       <DropdownItem
         key="png"
         className="test-download-png"
@@ -117,18 +123,21 @@ const DownloadVisualizationButton = ({
           track('download-viz', { type: 'png' });
         }}
       >
-        {supportsSvgToPng()
-          ? 'PNG'
-          : <Tooltip
-              Component={`
+        {supportsSvgToPng() ? (
+          'PNG'
+        ) : (
+          <Tooltip
+            Component={`
                   Download as PNG is currently unavaialable in your browser.
                   Please use the latest version of Chrome or Firefox
                 `}
-            >
-              PNG
-            </Tooltip>}
-      </DropdownItem>}
-    {data &&
+          >
+            PNG
+          </Tooltip>
+        )}
+      </DropdownItem>
+    )}
+    {data && (
       <DropdownItem
         key="JSON"
         style={styles.row(theme)}
@@ -138,8 +147,9 @@ const DownloadVisualizationButton = ({
         }}
       >
         JSON
-      </DropdownItem>}
-    {tsvData &&
+      </DropdownItem>
+    )}
+    {tsvData && (
       <DropdownItem
         key="TSV"
         style={styles.row(theme)}
@@ -157,7 +167,9 @@ const DownloadVisualizationButton = ({
         }}
       >
         TSV
-      </DropdownItem>}
-  </DropDown>;
+      </DropdownItem>
+    )}
+  </DropDown>
+);
 
 export default enhance(DownloadVisualizationButton);

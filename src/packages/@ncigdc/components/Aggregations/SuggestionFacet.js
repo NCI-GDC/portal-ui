@@ -145,9 +145,9 @@ const SuggestionFacet = compose(
           }) || { content: { value: [] } };
           return (
             <Container style={style} className="test-suggestion-facet">
-              {!collapsed &&
+              {!collapsed && (
                 <Column>
-                  {currentValues.content.value.map(v =>
+                  {currentValues.content.value.map(v => (
                     <CheckedRow key={v}>
                       <CheckedLink
                         merge="toggle"
@@ -170,11 +170,12 @@ const SuggestionFacet = compose(
                         <CheckCircleOIcon style={{ paddingRight: '0.5rem' }} />
                         {getCheckedValue(v)}
                       </CheckedLink>
-                    </CheckedRow>,
-                  )}
+                    </CheckedRow>
+                  ))}
                   <Row>
                     <label htmlFor={fieldNoDoctype}>
-                      <MagnifyingGlass /><Hidden>{title}</Hidden>
+                      <MagnifyingGlass />
+                      <Hidden>{title}</Hidden>
                     </label>
                     <Input
                       style={{ borderRadius: '0 4px 4px 0' }}
@@ -212,7 +213,7 @@ const SuggestionFacet = compose(
                         'aria-owns': `${fieldNoDoctype}-options`,
                       }}
                     />
-                    {active &&
+                    {active && (
                       <Column
                         id={`${fieldNoDoctype}-options`}
                         style={{
@@ -224,7 +225,7 @@ const SuggestionFacet = compose(
                         }}
                         onClick={e => e.stopPropagation()}
                       >
-                        {(results || []).map(x =>
+                        {(results || []).map(x => (
                           <Row
                             key={x.id}
                             style={{ alignItems: 'center' }}
@@ -243,15 +244,18 @@ const SuggestionFacet = compose(
                             >
                               {dropdownItem(x)}
                             </StyledDropdownLink>
-                          </Row>,
-                        )}
-                        {(results || []).length === 0 &&
+                          </Row>
+                        ))}
+                        {(results || []).length === 0 && (
                           <StyledDropdownRow>
                             {isLoading ? 'Loading' : 'No matching items found'}
-                          </StyledDropdownRow>}
-                      </Column>}
+                          </StyledDropdownRow>
+                        )}
+                      </Column>
+                    )}
                   </Row>
-                </Column>}
+                </Column>
+              )}
             </Container>
           );
         }}

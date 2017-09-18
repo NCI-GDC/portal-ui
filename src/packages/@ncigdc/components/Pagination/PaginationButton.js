@@ -27,7 +27,7 @@ const styles = {
 };
 
 const PaginationButton = withTheme(
-  ({ className, children, theme, active = false, ...props }) =>
+  ({ className, children, theme, active = false, ...props }) => (
     <button
       className={`
       ${styles.tableActionButtons(theme)}
@@ -36,7 +36,8 @@ const PaginationButton = withTheme(
       {...props}
     >
       {children}
-    </button>,
+    </button>
+  ),
 );
 
 export default PaginationButton;

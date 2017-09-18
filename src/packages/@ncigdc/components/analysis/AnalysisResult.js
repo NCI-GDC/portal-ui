@@ -30,19 +30,19 @@ function undoNotification(dispatch, analysis) {
       component: (
         <Column>
           Deleted
-          {analysis.length === 1
-            ? <span>
-                {' '}Analysis{' '}
-                <strong>
-                  {
-                    availableAnalysis.find(a => analysis[0].type === a.type)
-                      .label
-                  }
-                </strong>
-              </span>
-            : <span>
-                <strong>{analysis.length}</strong> Analyses
-              </span>}
+          {analysis.length === 1 ? (
+            <span>
+              {' '}
+              Analysis{' '}
+              <strong>
+                {availableAnalysis.find(a => analysis[0].type === a.type).label}
+              </strong>
+            </span>
+          ) : (
+            <span>
+              <strong>{analysis.length}</strong> Analyses
+            </span>
+          )}
           <strong>
             <i
               className="fa fa-undo"

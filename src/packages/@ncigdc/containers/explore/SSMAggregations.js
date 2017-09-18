@@ -112,7 +112,7 @@ export const SSMAggregationsComponent = compose(
   withState('idCollapsed', 'setIdCollapsed', false),
   withState('cosmicIdCollapsed', 'setCosmicIdCollapsed', false),
   withState('dbSNPCollapsed', 'setDbSNPCollapsed', false),
-)((props: TProps) =>
+)((props: TProps) => (
   <div className="test-ssm-aggregations">
     <FacetHeader
       title="Mutation"
@@ -157,7 +157,7 @@ export const SSMAggregationsComponent = compose(
             'ssms.consequence.transcript.annotation.dbsnp_rs',
           ].includes(full),
       )
-      .map(facet =>
+      .map(facet => (
         <FacetWrapper
           key={facet.full}
           facet={facet}
@@ -166,8 +166,8 @@ export const SSMAggregationsComponent = compose(
           relay={props.relay}
           additionalProps={facet.additionalProps}
           style={{ borderBottom: `1px solid ${props.theme.greyScale5}` }}
-        />,
-      )}
+        />
+      ))}
     <FacetHeader
       title="COSMIC ID"
       field="ssms.cosmic_id"
@@ -194,8 +194,8 @@ export const SSMAggregationsComponent = compose(
       notMissingDocCount={props.ssms.dbsnp_rs_not_missing.total}
       style={{ borderBottom: `1px solid ${props.theme.greyScale5}` }}
     />
-  </div>,
-);
+  </div>
+));
 
 export const SSMAggregationsQuery = {
   fragments: {

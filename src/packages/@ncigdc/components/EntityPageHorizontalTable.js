@@ -37,7 +37,7 @@ const EntityPageHorizontalTable = ({
   idKey,
   dividerStyle,
   ...props
-}) =>
+}) => (
   <Column
     className={props.className || 'test-entity-table-wrapper'}
     style={{
@@ -46,7 +46,7 @@ const EntityPageHorizontalTable = ({
       ...style,
     }}
   >
-    {title &&
+    {title && (
       <h3
         style={{
           color: theme.greyScale7,
@@ -64,12 +64,13 @@ const EntityPageHorizontalTable = ({
         }}
       >
         {title} {rightComponent}
-      </h3>}
-    {!!data.length &&
+      </h3>
+    )}
+    {!!data.length && (
       <Table
         id={tableId}
         style={styles.table}
-        headings={headings.map((h, i) =>
+        headings={headings.map((h, i) => (
           <Th
             rowSpan={h.subheadings ? 1 : 2}
             colSpan={h.subheadings ? h.subheadings.length : 1}
@@ -80,12 +81,12 @@ const EntityPageHorizontalTable = ({
             }}
           >
             {h.title}
-          </Th>,
-        )}
+          </Th>
+        ))}
         subheadings={headings.map(
           (h, i) =>
             h.subheadings &&
-            h.subheadings.map((s, j) =>
+            h.subheadings.map((s, j) => (
               <Th
                 key={`subheading-${j}`}
                 style={{
@@ -93,12 +94,12 @@ const EntityPageHorizontalTable = ({
                 }}
               >
                 {s}
-              </Th>,
-            ),
+              </Th>
+            )),
         )}
         body={
           <tbody>
-            {data.map((d, i) =>
+            {data.map((d, i) => (
               <Tr
                 style={{
                   ...styles.tr,
@@ -107,7 +108,7 @@ const EntityPageHorizontalTable = ({
                 key={d[idKey] || i}
               >
                 {headings.map((h, i) =>
-                  [].concat(d[h.key]).map((v, j) =>
+                  [].concat(d[h.key]).map((v, j) => (
                     <Td
                       {...h.tdProps}
                       key={`${h.key}-${j}`}
@@ -117,28 +118,32 @@ const EntityPageHorizontalTable = ({
                       }}
                       className={h.className || ''}
                     >
-                      {h.color &&
+                      {h.color && (
                         <div
                           className="h-color"
                           style={{ backgroundColor: colors(i) }}
-                        />}
+                        />
+                      )}
                       {v || '--'}
-                    </Td>,
-                  ),
+                    </Td>
+                  )),
                 )}
-              </Tr>,
-            )}
+              </Tr>
+            ))}
           </tbody>
         }
-      />}
-    {!data.length &&
+      />
+    )}
+    {!data.length && (
       <Row
         style={{
           borderBottom: `1px solid ${theme.greyScale5}`,
         }}
       >
         {emptyMessage && <h4 style={{ padding: '1rem' }}>{emptyMessage}</h4>}
-      </Row>}
-  </Column>;
+      </Row>
+    )}
+  </Column>
+);
 
 export default withTheme(EntityPageHorizontalTable);

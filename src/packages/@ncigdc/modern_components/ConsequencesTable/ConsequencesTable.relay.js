@@ -10,7 +10,11 @@ export default (Component: ReactClass<*>) =>
   compose(
     branch(
       ({ ssmId }) => !ssmId,
-      renderComponent(() => <div><pre>ssmId</pre> must be provided</div>),
+      renderComponent(() => (
+        <div>
+          <pre>ssmId</pre> must be provided
+        </div>
+      )),
     ),
     withPropsOnChange(['ssmId'], ({ ssmId }) => {
       return {
@@ -32,13 +36,11 @@ export default (Component: ReactClass<*>) =>
         variables={props.variables}
         Component={Component}
         query={graphql`
-          query ConsequencesTable_relayQuery(
-            $filters: FiltersArgument
-          ) {
+          query ConsequencesTable_relayQuery($filters: FiltersArgument) {
             viewer {
               explore {
                 ssms {
-                  hits(first: 1 filters: $filters) {
+                  hits(first: 1, filters: $filters) {
                     edges {
                       node {
                         cosmic_id
@@ -63,7 +65,6 @@ export default (Component: ReactClass<*>) =>
                                 }
                               }
                             }
-
                           }
                         }
                       }

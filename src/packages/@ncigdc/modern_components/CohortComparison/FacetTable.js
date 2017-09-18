@@ -1,6 +1,6 @@
 import React from 'react';
 import { compose } from 'recompose';
-import { union, find, truncate } from 'lodash';
+import { union, find, truncate, get } from 'lodash';
 import ExploreLink from '@ncigdc/components/Links/ExploreLink';
 import BarChart from '@ncigdc/components/Charts/TwoBarChart';
 import { withTheme } from '@ncigdc/theme';
@@ -27,8 +27,12 @@ export default compose(
     palette,
     heading,
   }) => {
-    const buckets1 = data1[field].buckets.filter(x => x.key !== '_missing');
-    const buckets2 = data2[field].buckets.filter(x => x.key !== '_missing');
+    const buckets1 = get(data1, `['${field}'].buckets`, []).filter(
+      x => x.key !== '_missing',
+    );
+    const buckets2 = get(data2, `['${field}'].buckets`, []).filter(
+      x => x.key !== '_missing',
+    );
     const tableData = union(
       buckets1.map(b => b.key),
       buckets2.map(b => b.key),

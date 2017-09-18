@@ -1,5 +1,5 @@
 import React from 'react';
-import { union, truncate } from 'lodash';
+import { union, truncate, xor } from 'lodash';
 import { connect } from 'react-redux';
 import { compose, withState, withProps } from 'recompose';
 import Table, { Tr, Td, Th } from '@ncigdc/uikit/Table';
@@ -8,10 +8,17 @@ import { Row } from '@ncigdc/uikit/Flex';
 import withPropsOnChange from '@ncigdc/utils/withPropsOnChange';
 import { getDefaultCurve } from '@ncigdc/utils/survivalplot';
 import ExploreLink from '@ncigdc/components/Links/ExploreLink';
+import Link from '@ncigdc/components/Links/Link';
 import Venn, { buildOps } from '@ncigdc/components/Charts/Venn';
 import withSize from '@ncigdc/utils/withSize';
+import { stringifyJSONParam } from '@ncigdc/utils/uri';
+import { COHORT_COMPARISON_FACETS } from '@ncigdc/utils/constants';
 import CreateOrOpenAnalysis from '@ncigdc/components/CreateOrOpenAnalysis';
 import Alias from '@ncigdc/components/Alias';
+import Dropdown from '@ncigdc/uikit/Dropdown';
+import Button from '@ncigdc/uikit/Button';
+import { CaretIcon } from '@ncigdc/theme/icons';
+import DropdownItem from '@ncigdc/uikit/DropdownItem';
 import FacetTable from './FacetTable';
 import Survival from './Survival';
 import { getLowerAgeYears, getUpperAgeYears } from '@ncigdc/utils/ageDisplay';
@@ -121,7 +128,7 @@ export default compose(
   withSize(),
 )(
   ({
-    facets,
+    activeFacets,
     sets,
     setId1,
     setId2,
@@ -150,11 +157,57 @@ export default compose(
       type: 'case',
     });
 
+    const availableFacets = Object.entries(COHORT_COMPARISON_FACETS);
     return (
       <div style={{ maxWidth: 1000, padding: '2rem 3rem' }}>
-        <h1 style={{ marginTop: 0 }}>Cohort Comparison</h1>
-        {message && <div style={{ fontStyle: 'italic' }}>{message}</div>}
-        <Row style={{ justifyContent: 'space-between' }}>
+        <Row
+          style={{
+            alignItems: 'center',
+            margin: '20px 0 10px',
+            justifyContent: 'space-between',
+          }}
+        >
+          <div>
+            <h1 style={{ margin: 0 }}>Cohort Comparison</h1>
+            {message && <div style={{ fontStyle: 'italic' }}>{message}</div>}
+          </div>
+          <Dropdown
+            style={{ flex: 'none' }}
+            autoclose={false}
+            button={
+              <Button>
+                Choose Clinical Fields{' '}
+                <CaretIcon style={{ marginLeft: 5 }} direction="down" />
+              </Button>
+            }
+          >
+            {availableFacets.map(([field, label]) => {
+              return (
+                <DropdownItem key={field} style={{ padding: 5 }}>
+                  <Link
+                    merge
+                    query={{
+                      activeFacets: stringifyJSONParam(
+                        xor(activeFacets, [field]),
+                      ),
+                    }}
+                  >
+                    <label>
+                      <input
+                        readOnly
+                        style={{ marginRight: 5, pointerEvents: 'none' }}
+                        type="checkbox"
+                        checked={activeFacets.includes(field)}
+                      />
+                      {label}
+                    </label>
+                  </Link>
+                </DropdownItem>
+              );
+            })}
+          </Dropdown>
+        </Row>
+        <Row style={{ justifyContent: 'space-between', alignItems: 'center' }}>
           <div>
             <Table
               style={{ width: '400px' }}
@@ -274,39 +327,39 @@ export default compose(
           palette={[SET1_COLOUR, SET2_COLOUR]}
           style={{ marginTop: 10 }}
         />
-        {Object.entries(facets).map(([field, heading]) =>
-          FacetTable({
-            key: field,
-            heading,
-            Alias,
-            field,
-            data1: {
-              ...JSON.parse(result1.facets),
-              'diagnoses.age_at_diagnosis': transformAgeAtDiagnosis(
-                result1.aggregations.diagnoses__age_at_diagnosis.histogram
-                  .buckets,
-                result2.aggregations.diagnoses__age_at_diagnosis.histogram
-                  .buckets,
-              ),
-            },
-            data2: {
-              ...JSON.parse(result2.facets),
-              'diagnoses.age_at_diagnosis': transformAgeAtDiagnosis(
-                result2.aggregations.diagnoses__age_at_diagnosis.histogram
-                  .buckets,
-                result1.aggregations.diagnoses__age_at_diagnosis.histogram
-                  .buckets,
-              ),
-            },
-            result1,
-            result2,
-            Set1,
-            Set2,
-            set1: setId1,
-            set2: setId2,
-            palette: [SET1_COLOUR, SET2_COLOUR],
-          }),
-        )}
+        {availableFacets
+          .filter(([field]) => activeFacets.includes(field))
+          .map(([field, heading]) =>
+            FacetTable({
+              key: field,
+              heading,
+              Alias,
+              field,
+              data1: {
+                ...JSON.parse(result1.facets),
+                'diagnoses.age_at_diagnosis': transformAgeAtDiagnosis(
+                  result1.aggregations.diagnoses__age_at_diagnosis.histogram
+                    .buckets,
+                  result2.aggregations.diagnoses__age_at_diagnosis.histogram
+                    .buckets,
+                ),
+              },
+              data2: {
+                ...JSON.parse(result2.facets),
+                'diagnoses.age_at_diagnosis': transformAgeAtDiagnosis(
+                  result2.aggregations.diagnoses__age_at_diagnosis.histogram
+                    .buckets,
+                  result1.aggregations.diagnoses__age_at_diagnosis.histogram
+                    .buckets,
+                ),
+              },
+              result1,
+              result2,
+              set1: setId1,
+              set2: setId2,
+              palette: [SET1_COLOUR, SET2_COLOUR],
+            }),
+          )}
       </div>
     );
   },

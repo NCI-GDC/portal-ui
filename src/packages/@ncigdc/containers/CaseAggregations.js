@@ -209,7 +209,7 @@ const styles = {
   },
 };
 
-export const CaseAggregationsComponent = (props: TProps) =>
+export const CaseAggregationsComponent = (props: TProps) => (
   <div className="test-case-aggregations">
     <div
       className="text-right"
@@ -218,13 +218,14 @@ export const CaseAggregationsComponent = (props: TProps) =>
         borderBottom: `1px solid ${props.theme.greyScale5}`,
       }}
     >
-      {!!props.userSelectedFacets.length &&
+      {!!props.userSelectedFacets.length && (
         <span>
           <a onClick={props.handleResetFacets} style={styles.link}>
             Reset
           </a>{' '}
           &nbsp;|&nbsp;
-        </span>}
+        </span>
+      )}
       <a
         onClick={() => props.setShouldShowFacetSelection(true)}
         style={styles.link}
@@ -248,7 +249,7 @@ export const CaseAggregationsComponent = (props: TProps) =>
       />
     </Modal>
 
-    {props.userSelectedFacets.map(facet =>
+    {props.userSelectedFacets.map(facet => (
       <FacetWrapper
         isRemovable
         key={facet.full}
@@ -257,8 +258,8 @@ export const CaseAggregationsComponent = (props: TProps) =>
         relay={props.relay}
         onRequestRemove={() => props.handleRequestRemoveFacet(facet)}
         style={{ borderBottom: `1px solid ${props.theme.greyScale5}` }}
-      />,
-    )}
+      />
+    ))}
 
     <FacetHeader
       title="Case"
@@ -278,7 +279,7 @@ export const CaseAggregationsComponent = (props: TProps) =>
       placeholder="e.g. TCGA-A5-A0G2, 432fe4a9-2..."
       hits={props.suggestions}
       setAutocomplete={props.setAutocomplete}
-      dropdownItem={x =>
+      dropdownItem={x => (
         <Row>
           <CaseIcon style={{ paddingRight: '1rem', paddingTop: '1rem' }} />
           <div>
@@ -286,7 +287,8 @@ export const CaseAggregationsComponent = (props: TProps) =>
             <div style={{ fontSize: '80%' }}>{x.submitter_id}</div>
             {x.project.project_id}
           </div>
-        </Row>}
+        </Row>
+      )}
     />
     <UploadSetButton
       type="case"
@@ -304,7 +306,7 @@ export const CaseAggregationsComponent = (props: TProps) =>
     >
       Upload Case Set
     </UploadSetButton>
-    {_.reject(presetFacets, { full: 'cases.case_id' }).map(facet =>
+    {_.reject(presetFacets, { full: 'cases.case_id' }).map(facet => (
       <FacetWrapper
         key={facet.full}
         facet={facet}
@@ -313,9 +315,10 @@ export const CaseAggregationsComponent = (props: TProps) =>
         relay={props.relay}
         additionalProps={facet.additionalProps}
         style={{ borderBottom: `1px solid ${props.theme.greyScale5}` }}
-      />,
-    )}
-  </div>;
+      />
+    ))}
+  </div>
+);
 
 export const CaseAggregationsQuery = {
   initialVariables: {

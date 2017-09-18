@@ -3,7 +3,7 @@ import React from 'react';
 
 import DownloadButton from '@ncigdc/components/DownloadButton';
 
-const MetadataDropdownButton = ({ files }) =>
+const MetadataDropdownButton = ({ files }) => (
   <DownloadButton
     endpoint="files"
     size={files.files.length}
@@ -100,6 +100,7 @@ const MetadataDropdownButton = ({ files }) =>
       ],
       op: 'and',
     }}
-  />;
+  />
+);
 
 export default MetadataDropdownButton;

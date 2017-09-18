@@ -7,7 +7,8 @@ import AnnotationSummary from '@ncigdc/modern_components/AnnotationSummary';
 export default (
   <Route
     path="/annotations/:id"
-    component={({ match, annotationId = match.params.id }) =>
-      <AnnotationSummary annotationId={annotationId} />}
+    component={({ match, annotationId = match.params.id }) => (
+      <AnnotationSummary annotationId={annotationId} />
+    )}
   />
 );

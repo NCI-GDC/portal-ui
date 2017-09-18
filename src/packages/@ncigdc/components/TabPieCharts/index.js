@@ -16,10 +16,9 @@ const toPieData = (clickHandler, docTypeSingular) => bucket => ({
   clickHandler,
   tooltip: (
     <span>
-      <b>{bucket.key}</b><br />
-      {bucket.doc_count.toLocaleString()}
-      {' '}
-      {docTypeSingular}
+      <b>{bucket.key}</b>
+      <br />
+      {bucket.doc_count.toLocaleString()} {docTypeSingular}
       {bucket.doc_count > 1 ? 's' : ''}
     </span>
   ),
@@ -90,7 +89,7 @@ export const SelfFilteringPie = ({
   currentFieldNames,
   currentFilters,
   ...props
-}) =>
+}) => (
   <PieChart
     data={(buckets || [])
       .filter(bucket => bucket.key !== '_missing')
@@ -111,4 +110,5 @@ export const SelfFilteringPie = ({
         ),
       )}
     {...props}
-  />;
+  />
+);

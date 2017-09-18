@@ -45,7 +45,7 @@ export default (
     const colors = (transcript.domains || []).reduce(
       (acc, protein, i) => ({
         ...acc,
-        [protein.hit_name]: `hsl(${i * 100 % 360}, 60%, 60%)`,
+        [protein.hit_name]: `hsl(${(i * 100) % 360}, 60%, 60%)`,
       }),
       {},
     );

@@ -54,7 +54,11 @@ export default compose(
       <span style={{ ...styles.column, ...styles.margin }}>
         <EntityPageVerticalTable
           id="summary"
-          title={<span><i className="fa fa-table" /> Summary</span>}
+          title={
+            <span>
+              <i className="fa fa-table" /> Summary
+            </span>
+          }
           thToTd={[
             { th: 'Project ID', td: project.project_id },
             { th: 'Project Name', td: project.name },
@@ -155,18 +159,18 @@ export default compose(
               ? {
                   merge: 'replace',
                   pathname: `/annotations${annotations.hits.total.toLocaleString() ===
-                    1
+                  1
                     ? `/${annotations.hits.edges[0].node.annotation_id}`
                     : ''}`,
                   query: {
                     filters:
                       annotations.hits.total > 1 &&
-                        makeFilter([
-                          {
-                            field: 'annotations.project.project_id',
-                            value: project.project_id,
-                          },
-                        ]),
+                      makeFilter([
+                        {
+                          field: 'annotations.project.project_id',
+                          value: project.project_id,
+                        },
+                      ]),
                   },
                 }
               : null

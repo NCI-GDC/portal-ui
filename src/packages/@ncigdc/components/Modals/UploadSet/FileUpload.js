@@ -56,7 +56,11 @@ export default enhance(
           </BrowseButton>
           {inputFiles}
         </Row>
-        {uploading && <span><SpinnerIcon /> uploading files</span>}
+        {uploading && (
+          <span>
+            <SpinnerIcon /> uploading files
+          </span>
+        )}
       </div>
     );
   },

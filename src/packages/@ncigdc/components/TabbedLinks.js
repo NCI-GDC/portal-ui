@@ -27,7 +27,7 @@ const TabbedLinks: TTabbedLinks = (
     side,
     linkStyle = {},
   } = {},
-) =>
+) => (
   <LocationSubscriber>
     {(ctx: {| pathname: string, query: TRawQuery |}) => {
       const foundIndex = links.findIndex(
@@ -45,7 +45,7 @@ const TabbedLinks: TTabbedLinks = (
           tabs={
             hideTabs
               ? []
-              : links.map(x =>
+              : links.map(x => (
                   <Link
                     style={{
                       padding: '1.2rem 1.8rem',
@@ -59,8 +59,8 @@ const TabbedLinks: TTabbedLinks = (
                     className={'test-' + x.id}
                   >
                     {x.text}
-                  </Link>,
-                )
+                  </Link>
+                ))
           }
           activeIndex={activeIndex}
         >
@@ -68,6 +68,7 @@ const TabbedLinks: TTabbedLinks = (
         </Tabs>
       );
     }}
-  </LocationSubscriber>;
+  </LocationSubscriber>
+);
 
 export default TabbedLinks;

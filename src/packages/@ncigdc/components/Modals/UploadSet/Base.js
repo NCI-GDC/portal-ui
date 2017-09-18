@@ -100,7 +100,9 @@ class UploadSet extends React.Component {
           spacing="1rem"
         >
           <Button onClick={() => dispatch(setModal(null))}>Cancel</Button>
-          <Button onClick={this.clear} disabled={!hits.length}>Clear</Button>
+          <Button onClick={this.clear} disabled={!hits.length}>
+            Clear
+          </Button>
 
           <CreateSetButton
             hits={matched}

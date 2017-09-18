@@ -1,5 +1,5 @@
 import React from 'react';
-export default ({ value, width = 30, max = 30, style, ...props }) =>
+export default ({ value, width = 30, max = 30, style, ...props }) => (
   <div
     style={{
       width,
@@ -23,4 +23,5 @@ export default ({ value, width = 30, max = 30, style, ...props }) =>
         borderRadius: 2,
       }}
     />
-  </div>;
+  </div>
+);

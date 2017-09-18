@@ -10,11 +10,14 @@ export type TProps = {
   },
 };
 
-const PrimarySitesCount = (props: TProps) =>
+const PrimarySitesCount = (props: TProps) => (
   <span className="test-primary-sites-count">
-    {props.aggregations.primary_site.buckets.length > 0
-      ? props.aggregations.primary_site.buckets.length.toLocaleString()
-      : <span className="fa fa-spinner fa-spin" />}
-  </span>;
+    {props.aggregations.primary_site.buckets.length > 0 ? (
+      props.aggregations.primary_site.buckets.length.toLocaleString()
+    ) : (
+      <span className="fa fa-spinner fa-spin" />
+    )}
+  </span>
+);
 
 export default PrimarySitesCount;

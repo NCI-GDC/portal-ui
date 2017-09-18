@@ -41,9 +41,10 @@ const DoubleRingChart = ({
     outerRadius: centerRadius - 5,
     clickHandler: d.clickHandler,
   }));
-  const innerPie = d3.pie().padAngle(HALF_DEGREE_IN_RAD * 2).value(d => d.v)(
-    innerPieData,
-  );
+  const innerPie = d3
+    .pie()
+    .padAngle(HALF_DEGREE_IN_RAD * 2)
+    .value(d => d.v)(innerPieData);
   const outerPieData = data.map((d, i) => ({
     items: d.outer.map(p => ({
       v: p.value,
@@ -84,7 +85,11 @@ const DoubleRingChart = ({
       [],
     ),
   ];
-  const g = svg.selectAll('.g').data(dataWithPie).enter().append('g');
+  const g = svg
+    .selectAll('.g')
+    .data(dataWithPie)
+    .enter()
+    .append('g');
 
   const fill = g
     .selectAll('path')
@@ -92,7 +97,10 @@ const DoubleRingChart = ({
     .enter()
     .append('path')
     .attr('d', d =>
-      d3.arc().outerRadius(d.outerRadius).innerRadius(d.innerRadius)(d.pie),
+      d3
+        .arc()
+        .outerRadius(d.outerRadius)
+        .innerRadius(d.innerRadius)(d.pie),
     )
     .style('fill', (d, i) => d.color);
 

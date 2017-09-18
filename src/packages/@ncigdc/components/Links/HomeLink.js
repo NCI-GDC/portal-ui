@@ -12,7 +12,10 @@ type TProps = {|
   tabIndex?: string,
 |};
 
-const HomeLink = ({ children, ...props }: TProps) =>
-  <Link pathname="/" {...props}>{children || 'home'}</Link>;
+const HomeLink = ({ children, ...props }: TProps) => (
+  <Link pathname="/" {...props}>
+    {children || 'home'}
+  </Link>
+);
 
 export default HomeLink;

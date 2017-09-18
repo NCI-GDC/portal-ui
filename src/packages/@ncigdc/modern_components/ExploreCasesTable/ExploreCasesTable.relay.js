@@ -52,7 +52,13 @@ export default (Component: ReactClass<*>) =>
             exploreCasesTableViewer: viewer {
               explore {
                 cases {
-                  hits(first: $cases_size offset: $cases_offset filters: $filters score: $cases_score sort: $cases_sort) {
+                  hits(
+                    first: $cases_size
+                    offset: $cases_offset
+                    filters: $filters
+                    score: $cases_score
+                    sort: $cases_sort
+                  ) {
                     total
                     edges {
                       node {

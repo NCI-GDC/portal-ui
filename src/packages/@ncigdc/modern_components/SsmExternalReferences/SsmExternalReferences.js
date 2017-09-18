@@ -40,7 +40,7 @@ export default compose(
       };
     },
   ),
-)(({ node, dbSNP } = {}) =>
+)(({ node, dbSNP } = {}) => (
   <EntityPageVerticalTable
     title={
       <span>
@@ -50,30 +50,35 @@ export default compose(
     thToTd={[
       {
         th: <span style={{ textTransform: 'none' }}>dbSNP</span>,
-        td: dbSNP && /rs(\d+)$/g.test(dbSNP)
-          ? <ExternalLink href={externalReferenceLinks.dbsnp(dbSNP)}>
+        td:
+          dbSNP && /rs(\d+)$/g.test(dbSNP) ? (
+            <ExternalLink href={externalReferenceLinks.dbsnp(dbSNP)}>
               {dbSNP}
             </ExternalLink>
-          : '--',
+          ) : (
+            '--'
+          ),
       },
       {
         th: 'COSMIC',
-        td: (node.cosmic_id || []).length
-          ? <CollapsibleList
-              style={{ minWidth: '300px' }}
-              data={(node.cosmic_id || []).map(c =>
-                <ExternalLink
-                  href={externalReferenceLinks[c.substring(0, 4).toLowerCase()](
-                    c.match(/(\d+)$/g),
-                  )}
-                >
-                  {c}
-                </ExternalLink>,
-              )}
-            />
-          : '--',
+        td: (node.cosmic_id || []).length ? (
+          <CollapsibleList
+            style={{ minWidth: '300px' }}
+            data={(node.cosmic_id || []).map(c => (
+              <ExternalLink
+                href={externalReferenceLinks[c.substring(0, 4).toLowerCase()](
+                  c.match(/(\d+)$/g),
+                )}
+              >
+                {c}
+              </ExternalLink>
+            ))}
+          />
+        ) : (
+          '--'
+        ),
       },
     ]}
     style={{ ...styles.summary, ...styles.column, alignSelf: 'flex-start' }}
-  />,
-);
+  />
+));

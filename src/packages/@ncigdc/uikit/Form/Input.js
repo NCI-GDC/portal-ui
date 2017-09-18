@@ -21,13 +21,14 @@ const styles = {
   },
 };
 
-const Input = ({ style, getNode, ...props }) =>
+const Input = ({ style, getNode, ...props }) => (
   <input
     ref={getNode}
     style={{ ...styles.input, ...style }}
     type="text"
     {...props}
-  />;
+  />
+);
 
 Input.propTypes = {
   style: PropTypes.object,

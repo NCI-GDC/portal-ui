@@ -55,10 +55,10 @@ const styles = {
   },
 };
 
-const SideNavLayout = props =>
+const SideNavLayout = props => (
   <Row>
     <Column style={styles.nav(props.theme)}>
-      {props.links.map(x =>
+      {props.links.map(x => (
         <Row
           onClick={() => scrollToId(x.id)}
           key={x.title}
@@ -66,23 +66,24 @@ const SideNavLayout = props =>
           className="side-nav-link"
         >
           <a style={styles.link(props.theme)}>
-            {typeof x.icon === 'string'
-              ? <i className={`fa fa-${x.icon}`} />
-              : x.icon}
+            {typeof x.icon === 'string' ? (
+              <i className={`fa fa-${x.icon}`} />
+            ) : (
+              x.icon
+            )}
             <span style={{ marginLeft: '1rem' }}>{x.title}</span>
           </a>
-        </Row>,
-      )}
+        </Row>
+      ))}
     </Column>
     <Column flex="1">
       <Row style={styles.title(props.theme)}>
         <span style={styles.type(props.theme)}>{props.entityType}</span>
         {props.title}
       </Row>
-      <Column style={styles.body}>
-        {props.children}
-      </Column>
+      <Column style={styles.body}>{props.children}</Column>
     </Column>
-  </Row>;
+  </Row>
+);
 
 export default withTheme(SideNavLayout);

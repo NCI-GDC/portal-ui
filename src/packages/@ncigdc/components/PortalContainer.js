@@ -61,7 +61,7 @@ const PortalContainer = ({
   notifications,
 }: {
   notifications: Array<{ dismissed: string }>,
-}) =>
+}) => (
   <div
     style={{
       position: 'relative',
@@ -89,6 +89,7 @@ const PortalContainer = ({
     <NotificationContainer />
     <ModalContainer />
     <GlobalTooltip />
-  </div>;
+  </div>
+);
 
 export default enhance(PortalContainer);

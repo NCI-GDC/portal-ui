@@ -5,7 +5,9 @@ import { orderBy, groupBy, get, find } from 'lodash';
 import externalReferenceLinks from '@ncigdc/utils/externalReferenceLinks';
 import EntityPageHorizontalTable from '@ncigdc/components/EntityPageHorizontalTable';
 import LocalPaginationTable from '@ncigdc/components/LocalPaginationTable';
-import DownloadTableToTsvButton, { ForTsvExport } from '@ncigdc/components/DownloadTableToTsvButton';
+import DownloadTableToTsvButton, {
+  ForTsvExport,
+} from '@ncigdc/components/DownloadTableToTsvButton';
 import { Row } from '@ncigdc/uikit/Flex';
 import { Tooltip } from '@ncigdc/uikit/Tooltip';
 import saveFile from '@ncigdc/utils/filesaver';
@@ -78,24 +80,27 @@ export default compose(
             aa_change: transcript.aa_change,
             consequence: transcript.consequence_type,
             coding_dna_change: transcript.annotation.hgvsc,
-            strand: transcript.gene.gene_strand
-              ? <span>
-                  {strandIconMap[transcript.gene.gene_strand.toString(10)]}
-                  <ForTsvExport>
-                    {transcript.gene.gene_strand.toString(10)}
-                  </ForTsvExport>
-                </span>
-              : '--',
+            strand: transcript.gene.gene_strand ? (
+              <span>
+                {strandIconMap[transcript.gene.gene_strand.toString(10)]}
+                <ForTsvExport>
+                  {transcript.gene.gene_strand.toString(10)}
+                </ForTsvExport>
+              </span>
+            ) : (
+              '--'
+            ),
             transcripts: (
               <span>
                 <ExternalLink
                   key={transcript.transcript_id}
                   style={{
                     paddingRight: '0.5em',
-                    fontWeight: transcript.transcript_id ===
+                    fontWeight:
+                      transcript.transcript_id ===
                       functionalImpactTranscript.transcript_id
-                      ? 'bold'
-                      : 'normal',
+                        ? 'bold'
+                        : 'normal',
                   }}
                   href={externalReferenceLinks.ensembl(
                     transcript.transcript_id,
@@ -103,12 +108,13 @@ export default compose(
                 >
                   {transcript.transcript_id}
                 </ExternalLink>
-                {transcript.transcript_id === canonicalTranscriptId &&
+                {transcript.transcript_id === canonicalTranscriptId && (
                   <BubbleIcon
                     text="C"
                     toolTipText="Canonical"
                     backgroundColor={theme.primary}
-                  />}
+                  />
+                )}
               </span>
             ),
           };
@@ -136,7 +142,7 @@ export default compose(
       functionalImpactTranscript,
       theme,
     }: TProps = {},
-  ) =>
+  ) => (
     <LocalPaginationTable
       className="test-consequences-table"
       style={{ width: '100%', minWidth: 450 }}
@@ -198,5 +204,6 @@ export default compose(
           { key: 'transcripts', title: 'Transcript(s)' },
         ]}
       />
-    </LocalPaginationTable>,
+    </LocalPaginationTable>
+  ),
 );

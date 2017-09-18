@@ -18,7 +18,7 @@ const Container = styled(Row, {
   padding: '0 14rem',
 });
 
-const GDCAppsRow = () =>
+const GDCAppsRow = () => (
   <Container>
     <PortalLink width={35} />
     <WebsiteLink width={35} />
@@ -27,6 +27,7 @@ const GDCAppsRow = () =>
     <SubmissionUILink width={29} />
     <DocsLink width={29} />
     <LegacyLink width={29} />
-  </Container>;
+  </Container>
+);
 
 export default GDCAppsRow;

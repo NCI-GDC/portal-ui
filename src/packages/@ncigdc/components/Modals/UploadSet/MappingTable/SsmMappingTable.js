@@ -32,8 +32,8 @@ const enhance = compose(
       matched.reduce((acc, ssm) => {
         acc[ssmMap[ssm.toUpperCase()].ssm_id] = (acc[
           ssmMap[ssm.toUpperCase()].ssm_id
-        ] || [])
-          .concat(ssm);
+        ] || []
+        ).concat(ssm);
         return acc;
       }, {}),
     )

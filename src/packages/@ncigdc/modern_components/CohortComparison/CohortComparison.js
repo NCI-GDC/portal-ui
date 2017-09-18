@@ -24,8 +24,12 @@ const initialState = {
   loading: true,
 };
 
-const Alias = ({ i, style = { fontWeight: 'bold' } }) =>
-  <span style={style}><em>S</em><sub>{i}</sub></span>;
+const Alias = ({ i, style = { fontWeight: 'bold' } }) => (
+  <span style={style}>
+    <em>S</em>
+    <sub>{i}</sub>
+  </span>
+);
 
 export default compose(
   connect(({ sets }) => ({ sets })),

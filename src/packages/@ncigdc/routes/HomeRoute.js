@@ -41,7 +41,7 @@ const Container = styled(Column, {
 
 const InsideContainer = styled.div(containerStyle);
 
-const Home = () =>
+const Home = () => (
   <Column className="test-home">
     <GradientContainer>
       <InsideContainer flex="1">
@@ -72,6 +72,7 @@ const Home = () =>
       </Row>
       <GDCAppsRow />
     </Column>
-  </Column>;
+  </Column>
+);
 
 export default Home;

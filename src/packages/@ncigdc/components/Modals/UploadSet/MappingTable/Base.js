@@ -21,18 +21,18 @@ const enhance = compose(
 export default () => Component =>
   enhance(props => {
     return (
-      !!(props.matched.length || props.unmatched.length) &&
-      <div style={{ marginTop: '2rem' }}>
-        <UnstyledButton
-          onClick={e => props.setShowTable(s => !s)}
-          style={{ textDecoration: 'underline' }}
-        >
-          Summary Table ({props.matched.length} matched,{' '}
-          {props.unmatched.length}{' '}
-          unmatched){' '}
-          <CaretIcon direction={props.showTable ? 'down' : 'left'} />
-        </UnstyledButton>
-        {props.showTable && <Component {...props} />}
-      </div>
+      !!(props.matched.length || props.unmatched.length) && (
+        <div style={{ marginTop: '2rem' }}>
+          <UnstyledButton
+            onClick={e => props.setShowTable(s => !s)}
+            style={{ textDecoration: 'underline' }}
+          >
+            Summary Table ({props.matched.length} matched,{' '}
+            {props.unmatched.length} unmatched){' '}
+            <CaretIcon direction={props.showTable ? 'down' : 'left'} />
+          </UnstyledButton>
+          {props.showTable && <Component {...props} />}
+        </div>
+      )
     );
   });

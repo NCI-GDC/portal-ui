@@ -32,7 +32,7 @@ const mapData: TMapData = (data, theme) =>
       impact,
       mutation_subtype:
         mutationSubTypeMap[(hit.mutation_subtype || '').toLowerCase()] ||
-          hit.mutation_subtype,
+        hit.mutation_subtype,
       geneId,
       geneSymbol,
       consequenceType,

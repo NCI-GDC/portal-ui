@@ -38,7 +38,7 @@ const AnnotationsRoute = LoadableWithLoading({
   loader: () => import('@ncigdc/routes/AnnotationsRoute'),
 });
 
-export default () =>
+export default () => (
   <span>
     <Route children={p => <Head title={p.location.pathname.split('/')[1]} />} />
     <Switch>
@@ -60,4 +60,5 @@ export default () =>
       <Route path="/components/:component" component={ComponentsRoute} />
       <Route component={NotFound} />
     </Switch>
-  </span>;
+  </span>
+);

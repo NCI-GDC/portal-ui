@@ -71,7 +71,7 @@ const filesInCart = (edges, files) => {
   return edges.every(edge => files.some(file => file.file_id === edge.file_id));
 };
 
-const AddToCartButtonAll = ({ edges, files, total, dispatch }: TProps) =>
+const AddToCartButtonAll = ({ edges, files, total, dispatch }: TProps) => (
   <LocationSubscriber>
     {ctx => {
       const { filters } = ctx.query || {};
@@ -111,9 +111,8 @@ const AddToCartButtonAll = ({ edges, files, total, dispatch }: TProps) =>
               aria-label="Add all files to cart"
               style={DropDownItemStyle}
             >
-              <ShoppingCartIcon style={{ marginRight: '1em' }} />
-              {' '}
-              Add all files to the Cart
+              <ShoppingCartIcon style={{ marginRight: '1em' }} /> Add all files
+              to the Cart
             </DropdownItem>
             <DropdownItem
               className="test-remove-all-files"
@@ -122,14 +121,14 @@ const AddToCartButtonAll = ({ edges, files, total, dispatch }: TProps) =>
               aria-label="Remove all files from cart"
               style={DropDownItemStyle}
             >
-              <TrashIcon style={{ marginRight: '1em' }} />
-              {' '}
-              Remove all from the Cart
+              <TrashIcon style={{ marginRight: '1em' }} /> Remove all from the
+              Cart
             </DropdownItem>
           </Dropdown>
         </Row>
       );
     }}
-  </LocationSubscriber>;
+  </LocationSubscriber>
+);
 
 export default connect(state => state.cart)(AddToCartButtonAll);

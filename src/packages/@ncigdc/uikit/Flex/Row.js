@@ -14,7 +14,7 @@ const baseStyle = {
   outline: 'none',
 };
 
-const Row = ({ flex, wrap, style, spacing, children, ...props }) =>
+const Row = ({ flex, wrap, style, spacing, children, ...props }) => (
   <div
     style={{
       ...baseStyle,
@@ -38,7 +38,8 @@ const Row = ({ flex, wrap, style, spacing, children, ...props }) =>
             },
           }),
       )}
-  </div>;
+  </div>
+);
 
 Row.propTypes = {
   children: PropTypes.node,

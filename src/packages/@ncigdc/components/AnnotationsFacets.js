@@ -10,7 +10,7 @@ import Tabs from '@ncigdc/uikit/Tabs';
 
 /*----------------------------------------------------------------------------*/
 
-const AnnotationsFacets = ({ location, Aggregations: { Cases, Files } }) =>
+const AnnotationsFacets = ({ location, Aggregations: { Cases, Files } }) => (
   <Tabs
     tabs={[
       <Link
@@ -35,7 +35,8 @@ const AnnotationsFacets = ({ location, Aggregations: { Cases, Files } }) =>
     activeIndex={location.query.facetTab === 'cases' ? 0 : 1}
   >
     {location.query.facetTab === 'cases' ? Cases : Files}
-  </Tabs>;
+  </Tabs>
+);
 
 AnnotationsFacets.propTypes = {
   location: PropTypes.object,

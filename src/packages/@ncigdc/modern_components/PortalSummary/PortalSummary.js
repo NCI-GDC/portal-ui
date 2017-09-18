@@ -37,7 +37,7 @@ const PortalSummary = compose(
   connect(state => ({
     dataRelease: state.versionInfo.dataRelease,
   })),
-)(props =>
+)(props => (
   <span>
     <Row style={{ padding: '2rem', alignItems: 'baseline' }}>
       <div style={{ fontSize: '2.3rem', color: 'rgb(70, 70, 70)' }}>
@@ -140,7 +140,7 @@ const PortalSummary = compose(
         </CountBox>
       </Row>
     </Column>
-  </span>,
-);
+  </span>
+));
 
 export default PortalSummary;

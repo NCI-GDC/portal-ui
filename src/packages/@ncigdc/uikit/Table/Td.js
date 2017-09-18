@@ -11,8 +11,11 @@ const styles = {
   },
 };
 
-const Td = ({ style, children, ...props }) =>
-  <td style={{ ...styles.td, ...style }} {...props}>{children}</td>;
+const Td = ({ style, children, ...props }) => (
+  <td style={{ ...styles.td, ...style }} {...props}>
+    {children}
+  </td>
+);
 
 Td.propTypes = {
   children: PropTypes.node,

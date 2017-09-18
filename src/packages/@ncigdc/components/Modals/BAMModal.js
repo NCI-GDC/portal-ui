@@ -66,7 +66,7 @@ const allowTab = (event: any, setValue) => {
 
 const enhance = compose(withState('value', 'setValue', ''), pure);
 
-const BAMModal = ({ file, closeModal, value, setValue, setActive }: TProps) =>
+const BAMModal = ({ file, closeModal, value, setValue, setActive }: TProps) => (
   <Column
     style={{
       padding: '15px',
@@ -119,6 +119,7 @@ const BAMModal = ({ file, closeModal, value, setValue, setActive }: TProps) =>
         Download
       </Button>
     </Row>
-  </Column>;
+  </Column>
+);
 
 export default enhance(BAMModal);

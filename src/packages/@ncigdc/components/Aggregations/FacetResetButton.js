@@ -45,15 +45,16 @@ const FacetResetButton = ({
     field,
   });
   return (
-    inCurrent &&
-    <StyledLink
-      className="test-facet-reset-button"
-      style={{ display: inCurrent ? 'inline' : 'none', ...style }}
-      query={newQuery}
-      aria-label="reset"
-    >
-      <ShadowedUndoIcon />
-    </StyledLink>
+    inCurrent && (
+      <StyledLink
+        className="test-facet-reset-button"
+        style={{ display: inCurrent ? 'inline' : 'none', ...style }}
+        query={newQuery}
+        aria-label="reset"
+      >
+        <ShadowedUndoIcon />
+      </StyledLink>
+    )
   );
 };
 

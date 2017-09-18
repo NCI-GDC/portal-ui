@@ -8,13 +8,14 @@ type TNoResultsProps = {
 };
 
 const NoResultsMessage = withTheme(
-  ({ children, style, theme }: TNoResultsProps) =>
+  ({ children, style, theme }: TNoResultsProps) => (
     <span
       className="test-no-results-message"
       style={Object.assign({ padding: 10, color: theme.greyScale7 }, style)}
     >
       {children || 'No results found'}
-    </span>,
+    </span>
+  ),
 );
 
 export default NoResultsMessage;

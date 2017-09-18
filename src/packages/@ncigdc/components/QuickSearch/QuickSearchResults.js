@@ -71,8 +71,9 @@ const styles = {
   },
 };
 
-const ResultIcon = ({ type, style }) =>
-  <span style={style}>{entityShortnameMapping[type] || type}</span>;
+const ResultIcon = ({ type, style }) => (
+  <span style={style}>{entityShortnameMapping[type] || type}</span>
+);
 
 export const findMatchingToken = (item, lq, value = '') => {
   const ks = Object.keys(item);
@@ -102,7 +103,10 @@ export const findMatchingToken = (item, lq, value = '') => {
       }
 
       if (
-        (term || '').toLocaleLowerCase().replace(/[()]/g, '').indexOf(lq) !== -1
+        (term || '')
+          .toLocaleLowerCase()
+          .replace(/[()]/g, '')
+          .indexOf(lq) !== -1
       ) {
         value = term;
       }
@@ -120,7 +124,13 @@ const internalHighlight = (query, foundText) => {
     const seg1 = foundText.substring(0, index);
     const foundQuery = foundText.substring(index, index + query.length);
     const seg2 = foundText.substring(index + query.length);
-    return <span>{seg1}<b>{foundQuery}</b>{seg2}</span>;
+    return (
+      <span>
+        {seg1}
+        <b>{foundQuery}</b>
+        {seg2}
+      </span>
+    );
   }
   return <span>{foundText}</span>;
 };
@@ -156,12 +166,12 @@ export default ({
   onSelectItem,
   onActivateItem,
   style = {},
-}: TProps) =>
+}: TProps) => (
   <ul
     style={{ ...styles.container, ...style.container }}
     className="test-quick-search-results"
   >
-    {results.map((item, i) =>
+    {results.map((item, i) => (
       <li
         key={item.id}
         style={{
@@ -191,6 +201,7 @@ export default ({
             }}
           />
         </div>
-      </li>,
-    )}
-  </ul>;
+      </li>
+    ))}
+  </ul>
+);

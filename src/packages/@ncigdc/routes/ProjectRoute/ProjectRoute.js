@@ -139,10 +139,10 @@ export default enhance(
     const frequentMutationsSurvivalData = {
       legend:
         selectedFrequentMutationsSurvivalData.legend ||
-          defaultSurvivalData.legend,
+        defaultSurvivalData.legend,
       rawData:
         selectedFrequentMutationsSurvivalData.rawData ||
-          defaultSurvivalData.rawData,
+        defaultSurvivalData.rawData,
     };
     const projectFilter = makeFilter([
       { field: 'cases.project.project_id', value: projectId },
@@ -264,20 +264,22 @@ export default enhance(
                 </Column>
                 <Column flex="1" />
               </Row>
-              {loadingAggregation
-                ? <SpinnerCentered />
-                : <SsmsTable
-                    defaultFilters={projectFilter}
-                    selectedSurvivalData={selectedFrequentMutationsSurvivalData}
-                    setSelectedSurvivalData={
-                      setSelectedFrequentMutationsSurvivalData
-                    }
-                    hasEnoughSurvivalDataOnPrimaryCurve={enoughData(
-                      defaultSurvivalData.rawData,
-                    )}
-                    showSurvivalPlot
-                    context={projectId}
-                  />}
+              {loadingAggregation ? (
+                <SpinnerCentered />
+              ) : (
+                <SsmsTable
+                  defaultFilters={projectFilter}
+                  selectedSurvivalData={selectedFrequentMutationsSurvivalData}
+                  setSelectedSurvivalData={
+                    setSelectedFrequentMutationsSurvivalData
+                  }
+                  hasEnoughSurvivalDataOnPrimaryCurve={enoughData(
+                    defaultSurvivalData.rawData,
+                  )}
+                  showSurvivalPlot
+                  context={projectId}
+                />
+              )}
             </Column>
           </Column>
           <Column style={{ ...styles.card, marginTop: '2rem' }}>

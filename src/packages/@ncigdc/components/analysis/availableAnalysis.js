@@ -31,7 +31,7 @@ const availableAnalysis: Array<TAnalysis> = [
   {
     type: 'set_operations',
     label: 'Set Operations',
-    Icon: p =>
+    Icon: p => (
       <VennSvg
         {...p}
         data={[1, 2, 3]}
@@ -55,7 +55,8 @@ const availableAnalysis: Array<TAnalysis> = [
           if (d.op === 7) return 'rgba(175, 58, 215, 0.8)';
           return 'rgba(0,0,0,0)';
         }}
-      />,
+      />
+    ),
     description:
       'Display Venn diagram and find intersection or union, etc. of your sets of the same type.',
     demoData: null,
@@ -85,14 +86,14 @@ const availableAnalysis: Array<TAnalysis> = [
   {
     type: 'comparison',
     label: 'Cohort Comparison',
-    Icon: withTheme(({ theme }) =>
+    Icon: withTheme(({ theme }) => (
       <CCIcon
         width="80px"
         height="80px"
         color1="rgb(105, 16, 48)"
         color2={theme.primary}
-      />,
-    ),
+      />
+    )),
     description: `Display the survival analysis of your case sets and compare
     characteristics such as gender, vital status and age at diagnosis.`,
     demoData: {

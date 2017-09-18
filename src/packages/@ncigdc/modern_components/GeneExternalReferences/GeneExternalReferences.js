@@ -25,7 +25,7 @@ export default compose(
       },
     };
   }),
-)(({ externalLinks }: TProps = {}) =>
+)(({ externalLinks }: TProps = {}) => (
   <EntityPageVerticalTable
     title={
       <span>
@@ -34,12 +34,14 @@ export default compose(
     }
     thToTd={Object.keys(externalLinks).map(db => ({
       th: db.replace(/_/g, ' '),
-      td: externalLinks[db].length
-        ? <ExternalLink href={externalReferenceLinks[db](externalLinks[db][0])}>
-            {externalLinks[db]}
-          </ExternalLink>
-        : '--',
+      td: externalLinks[db].length ? (
+        <ExternalLink href={externalReferenceLinks[db](externalLinks[db][0])}>
+          {externalLinks[db]}
+        </ExternalLink>
+      ) : (
+        '--'
+      ),
     }))}
     style={{ flex: 1 }}
-  />,
-);
+  />
+));

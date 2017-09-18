@@ -72,19 +72,19 @@ const Header = compose(
   }),
   withTheme,
   pure,
-)(({ user, notifications, dispatch, theme, isCollapsed, setIsCollapsed }) =>
+)(({ user, notifications, dispatch, theme, isCollapsed, setIsCollapsed }) => (
   <header
     id="header"
     className="navbar navbar-default navbar-static-top"
     role="banner"
   >
-    {notifications.map(n =>
+    {notifications.map(n => (
       <Banner
         {...n}
         key={n.id}
         handleOnDismiss={() => dispatch(dismissNotification(n.id))}
-      />,
-    )}
+      />
+    ))}
     <div className="container-fluid">
       <div className="navbar-header">
         <button
@@ -100,7 +100,8 @@ const Header = compose(
           <span className="icon-bar" />
         </button>
         <HomeLink className="navbar-brand" tabIndex="0" style={{ padding: 0 }}>
-          <img src={nciGdcLogo} alt="gdc-logo" /><Hidden>Home</Hidden>
+          <img src={nciGdcLogo} alt="gdc-logo" />
+          <Hidden>Home</Hidden>
         </HomeLink>
       </div>
       <nav
@@ -144,15 +145,25 @@ const Header = compose(
           </li>
         </ul>
         <ul className="nav navbar-nav navbar-right">
-          <li><QuickSearch tabIndex="0" /></li>
+          <li>
+            <QuickSearch tabIndex="0" />
+          </li>
           <li>
             <ManageSetsLink activeStyle={styles.activeNavLink(theme)} />
           </li>
-          {!user && <li><LoginButton /></li>}
-          {user && <li className="header-hidden-xs"><UserDropdown /></li>}
+          {!user && (
+            <li>
+              <LoginButton />
+            </li>
+          )}
+          {user && (
+            <li className="header-hidden-xs">
+              <UserDropdown />
+            </li>
+          )}
           <li>
             <CartLink>
-              {count =>
+              {count => (
                 <span>
                   <i
                     className="fa fa-shopping-cart"
@@ -167,14 +178,17 @@ const Header = compose(
                   <span className="label label-primary">
                     {count.toLocaleString()}
                   </span>
-                </span>}
+                </span>
+              )}
             </CartLink>
           </li>
-          <li><GDCAppsDropdown /></li>
+          <li>
+            <GDCAppsDropdown />
+          </li>
         </ul>
       </nav>
     </div>
-  </header>,
-);
+  </header>
+));
 
 export default Header;

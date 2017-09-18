@@ -145,7 +145,7 @@ const CartDownloadDropdown = ({
   state,
   setState,
   dispatch,
-}) =>
+}) => (
   <Row>
     <Dropdown
       className="test-cart-download-dropdown"
@@ -158,9 +158,11 @@ const CartDownloadDropdown = ({
         <Button
           style={{ marginLeft: '10px' }}
           leftIcon={
-            state.manifestDownloading || state.cartDownloading
-              ? <Spinner />
-              : <DownloadIcon />
+            state.manifestDownloading || state.cartDownloading ? (
+              <Spinner />
+            ) : (
+              <DownloadIcon />
+            )
           }
           rightIcon={<DownCaretIcon />}
         >
@@ -195,7 +197,8 @@ const CartDownloadDropdown = ({
         </Button>
       </Column>
     </Dropdown>
-  </Row>;
+  </Row>
+);
 
 export default compose(
   connect(),

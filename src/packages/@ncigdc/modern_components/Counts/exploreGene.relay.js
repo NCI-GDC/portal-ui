@@ -11,13 +11,11 @@ export default (Component: ReactClass<*>) => (props: Object) => {
       variables={{ filters: props.filters }}
       Component={Component}
       query={graphql`
-        query exploreGene_relayQuery(
-          $filters: FiltersArgument
-        ) {
+        query exploreGene_relayQuery($filters: FiltersArgument) {
           viewer {
             explore {
               genes {
-                hits(filters: $filters first: 0) {
+                hits(filters: $filters, first: 0) {
                   total
                 }
               }

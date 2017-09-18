@@ -15,9 +15,10 @@ const mapValues: TMapValues = (style, props) =>
   Object.entries(style).reduce(
     (acc, [k, v]) => ({
       ...acc,
-      [k]: typeof v === 'object'
-        ? mapValues(v, props)
-        : addPropsToFunction(v, props),
+      [k]:
+        typeof v === 'object'
+          ? mapValues(v, props)
+          : addPropsToFunction(v, props),
     }),
     {},
   );
@@ -27,9 +28,8 @@ type TCreateStyledComponent = (
 ) => (style: Object) => ReactClass<*>;
 const createStyledComponent: TCreateStyledComponent = el => style =>
   withTheme(({ ref, children, theme, ...props }) => {
-    const validAttrProps = typeof el === 'string'
-      ? validAttributes(props)
-      : props;
+    const validAttrProps =
+      typeof el === 'string' ? validAttributes(props) : props;
 
     return createElement(
       el,

@@ -225,16 +225,7 @@ const availableAnalysis: Array<TAnalysis> = [
     },
     DemoComponent: props => (
       <Demo {...props}>
-        <CohortComparison
-          facets={[
-            'demographic.gender',
-            'diagnoses.vital_status',
-            'demographic.race',
-            'diagnoses.age_at_diagnosis',
-          ]}
-          sets={props.sets}
-          message={props.message}
-        />
+        <CohortComparison sets={props.sets} message={props.message} />
       </Demo>
     ),
     setInstructions: 'Select 2 case sets',
@@ -248,18 +239,7 @@ const availableAnalysis: Array<TAnalysis> = [
     validateSets: sets =>
       ['case'].every((t: any) => Object.keys(sets[t] || {}).length === 2),
     ResultComponent: ({ sets }) => {
-      return (
-        <CohortComparison
-          facets={{
-            'demographic.ethnicity': 'Ethnicity',
-            'demographic.gender': 'Gender',
-            'diagnoses.vital_status': 'Vital Status',
-            'demographic.race': 'Race',
-            'diagnoses.age_at_diagnosis': 'Age at Diagnosis',
-          }}
-          sets={sets}
-        />
-      );
+      return <CohortComparison sets={sets} />;
     },
   },
 ];

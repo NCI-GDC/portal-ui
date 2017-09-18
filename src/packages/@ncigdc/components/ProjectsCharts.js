@@ -14,7 +14,7 @@ import {
   withPropsOnChange,
 } from 'recompose';
 import JSURL from 'jsurl';
-import { isEqual, sortBy } from 'lodash';
+import { isEqual, sortBy, flatMap, groupBy } from 'lodash';
 
 // Custom
 import Column from '@ncigdc/uikit/Flex/Column';
@@ -36,6 +36,11 @@ import { withTheme } from '@ncigdc/theme';
 import caseHasMutation from '@ncigdc/utils/filters/prepared/caseHasMutation';
 import significantConsequences from '@ncigdc/utils/filters/prepared/significantConsequences';
 import type { TGroupContent, TGroupFilter } from '@ncigdc/utils/filters/types';
+
+import {
+  HUMAN_BODY_SITES_MAP,
+  HUMAN_BODY_ALL_ALLOWED_SITES,
+} from '@ncigdc/utils/constants';
 
 const color = d3.scaleOrdinal([
   ...d3.schemeCategory20,
@@ -316,30 +321,86 @@ const ProjectsChartsComponent = compose(
       }))
       .sort((a, b) => b.total - a.total); // relay score sorting isn't returned in reliable order
 
-    const doubleRingData = projects.reduce((acc, p) => {
-      const primarySiteCasesCount = acc[p.primary_site]
-        ? acc[p.primary_site].value + p.summary.case_count
-        : p.summary.case_count;
+    const allPrimarySites = groupBy(
+      flatMap(
+        projects.map(p =>
+          p.primary_site.map(ps => ({
+            projectId: p.project_id,
+            name: p.name,
+            primarySite: ps,
+            caseCount: p.summary.case_count,
+          })),
+        ),
+      ),
+      p => HUMAN_BODY_SITES_MAP[p.primarySite],
+    );
+
+    const doubleRingData = Object.entries(
+      allPrimarySites,
+    ).map(([primarySite, projects: Array<Object>]) => {
+      const primarySiteCasesCount = projects.reduce(
+        (acc, val) => acc + val.caseCount,
+        0,
+      );
+
+      console.log(primarySite);
+      console.log(projects);
 
       return {
-        ...acc,
-        [p.primary_site]: {
-          value: primarySiteCasesCount,
+        key: primarySite,
+        value: primarySiteCasesCount,
+        tooltip: (
+          <span>
+            <b>{primarySite}</b>
+            <br />
+            {primarySiteCasesCount.toLocaleString()} case
+            {primarySiteCasesCount > 1 ? 's' : ''}
+          </span>
+        ),
+        clickHandler: () => {
+          const newQuery = mergeQuery(
+            {
+              filters: setFilter({
+                field: 'projects.primary_site',
+                value: [].concat(primarySite || []),
+              }),
+            },
+            query,
+            'toggle',
+          );
+
+          const q = removeEmptyKeys({
+            ...newQuery,
+            filters: newQuery.filters && JSURL.stringify(newQuery.filters),
+          });
+
+          push({ pathname, query: q });
+        },
+        outer: projects.map(p => ({
+          key: p.projectId,
+          value: p.caseCount,
           tooltip: (
             <span>
+<<<<<<< HEAD
               <b>{p.primary_site}</b><br />
               {primarySiteCasesCount.toLocaleString()}
               {' '}
               case
               {primarySiteCasesCount > 1 ? 's' : ''}
+=======
+              <b>{p.name}</b>
+              <br />
+              {p.caseCount.toLocaleString()} case
+              {p.caseCount > 1 ? 's' : ''}
+>>>>>>> 6123e73e... .
             </span>
           ),
           clickHandler: () => {
             const newQuery = mergeQuery(
               {
                 filters: setFilter({
-                  field: 'projects.primary_site',
-                  value: [].concat(p.primary_site || []),
+                  field: 'projects.project_id',
+                  value: [].concat(p.projectId || []),
                 }),
               },
               query,
@@ -353,6 +414,7 @@ const ProjectsChartsComponent = compose(
 
             push({ pathname, query: q });
           },
+<<<<<<< HEAD
           outer: [
             ...(acc[p.primary_site] || { outer: [] }).outer,
             {
@@ -390,8 +452,11 @@ const ProjectsChartsComponent = compose(
             },
           ],
         },
+=======
+        })),
+>>>>>>> 6123e73e... .
       };
-    }, {});
+    });
 
     const totalCases = projects.reduce(
       (sum, p) => sum + p.summary.case_count,
@@ -632,6 +697,7 @@ const ProjectsChartsComponent = compose(
                   </ExploreLink>
                   {` Case${totalCases === 0 || totalCases > 1 ? 's' : ''}
               across ${projects.length.toLocaleString()} Project${projects.length ===
+<<<<<<< HEAD
                     0 || projects.length > 1
                     ? 's'
                     : ''}`}
@@ -658,6 +724,33 @@ const ProjectsChartsComponent = compose(
               >
                 <SpinnerParticle />
               </Row>}
+=======
+                  0 || projects.length > 1
+                  ? 's'
+                  : ''}`}
+              </div>,
+              <span style={{ transform: 'scale(0.75)' }} key="circle-wrapper">
+                <DoubleRingChart
+                  key="pie-chart"
+                  colors={primarySiteToColor}
+                  data={doubleRingData}
+                  height={200}
+                  width={200}
+                />
+              </span>,
+            ]
+          ) : (
+            <Row
+              style={{
+                justifyContent: 'center',
+                paddingTop: '2em',
+                paddingBottom: '2em',
+              }}
+            >
+              <SpinnerParticle />
+            </Row>
+          )}
+>>>>>>> 6123e73e... .
         </Column>
       </Container>
     );

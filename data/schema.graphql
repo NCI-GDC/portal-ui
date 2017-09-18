@@ -87,6 +87,8 @@ type Aliquots {
 
 type Analysis {
   protein_mutations: ProteinMutations
+  top_cases_count_by_genes: TopCasesCountByGenes
+  pvalue(data: [[Int]]!): Float
 }
 
 type Analyte implements Node {
@@ -305,6 +307,60 @@ type Annotations {
     aggregations_filter_themselves: Boolean = true
   ): AnnotationAggregations
   hits(score: String, query: String, offset: Int, sort: [Sort], filters: FiltersArgument, before: String, after: String, first: Int, last: Int): AnnotationConnection
+}
+
+type AppendCaseSet {
+  set_id: String
+  size: Int
+  time: Float
+}
+
+type AppendExploreSet {
+  case(input: AppendSetInput): AppendCaseSet
+  gene(input: AppendSetInput): AppendGeneSet
+  ssm(input: AppendSetInput): AppendSsmSet
+}
+
+type AppendGeneSet {
+  set_id: String
+  size: Int
+  time: Float
+}
+
+type AppendRepositoryCaseSet {
+  set_id: String
+  size: Int
+  time: Float
+}
+
+type AppendRepositoryFileSet {
+  set_id: String
+  size: Int
+  time: Float
+}
+
+type AppendRepositorySet {
+  case(input: AppendSetInput): AppendRepositoryCaseSet
+  file(input: AppendSetInput): AppendRepositoryFileSet
+}
+
+type AppendSet {
+  explore: AppendExploreSet
+  repository: AppendRepositorySet
+}
+
+input AppendSetInput {
+  filters: FiltersArgument
+  size: Int
+  sort: [Sort]
+  score: String
+  set_id: String
+}
+
+type AppendSsmSet {
+  set_id: String
+  size: Int
+  time: Float
 }
 
 type Archive {
@@ -1707,6 +1763,9 @@ type CreateSet {
 
 input CreateSetInput {
   filters: FiltersArgument
+  size: Int
+  sort: [Sort]
+  score: String
 }
 
 type CreateSsmSet {
@@ -5508,6 +5567,57 @@ input RelayIsDumb {
   relay_is_dumb: FiltersArgument
 }
 
+type RemoveFromCaseSet {
+  set_id: String
+  size: Int
+  time: Float
+}
+
+type RemoveFromExploreSet {
+  case(input: RemoveFromSetInput): RemoveFromCaseSet
+  gene(input: RemoveFromSetInput): RemoveFromGeneSet
+  ssm(input: RemoveFromSetInput): RemoveFromSsmSet
+}
+
+type RemoveFromGeneSet {
+  set_id: String
+  size: Int
+  time: Float
+}
+
+type RemoveFromRepositoryCaseSet {
+  set_id: String
+  size: Int
+  time: Float
+}
+
+type RemoveFromRepositoryFileSet {
+  set_id: String
+  size: Int
+  time: Float
+}
+
+type RemoveFromRepositorySet {
+  case(input: RemoveFromSetInput): RemoveFromRepositoryCaseSet
+  file(input: RemoveFromSetInput): RemoveFromRepositoryFileSet
+}
+
+type RemoveFromSet {
+  explore: RemoveFromExploreSet
+  repository: RemoveFromRepositorySet
+}
+
+input RemoveFromSetInput {
+  filters: FiltersArgument
+  set_id: String
+}
+
+type RemoveFromSsmSet {
+  set_id: String
+  size: Int
+  time: Float
+}
+
 type Repository {
   cases: RepositoryCases
   files: Files
@@ -5683,6 +5793,8 @@ type Samples {
 
 type Sets {
   create: CreateSet
+  append: AppendSet
+  remove_from: RemoveFromSet
 }
 
 type Slide implements Node {
@@ -6234,6 +6346,10 @@ type TissueSourceSite {
   # Name of the source site.
   name: String
   id: String
+}
+
+type TopCasesCountByGenes {
+  data(first: Int, gene_ids: [String], filters: FiltersArgument): JSONString
 }
 
 type Transcript implements Node {

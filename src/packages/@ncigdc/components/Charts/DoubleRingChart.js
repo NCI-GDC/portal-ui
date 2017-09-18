@@ -66,7 +66,7 @@ const DoubleRingChart = ({
     innerPieData.map((p, i) => ({
       ...p,
       pie: innerPie[i],
-      color: colors[innerPieData[i].key].color,
+      color: (colors[innerPieData[i].key] || { color: 'red' }).color,
     })),
     outerPieData.reduce(
       (acc, p, i) => [
@@ -77,7 +77,10 @@ const DoubleRingChart = ({
           v: item.v,
           key: item.key,
           tooltip: item.tooltip,
-          color: colors[innerPieData[i].key].projects[item.key],
+          color:
+            (colors[innerPieData[i].key] || { projects: {} }).projects[
+              item.key
+            ] || 'green',
           clickHandler: item.clickHandler,
         })),
       ],

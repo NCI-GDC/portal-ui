@@ -4,13 +4,13 @@ import { compose, withState } from 'recompose';
 import WarningBox from '@ncigdc/uikit/WarningBox';
 
 export default compose(
-  withState('inputName', 'setInputName', ''),
+  withState('value', 'setValue', ({ value = '' }) => value),
 )(
   ({
     labelText,
     handleOnChange,
-    inputName,
-    setInputName,
+    value,
+    setValue,
     maxLength,
     showWarning,
     warningMessage,
@@ -24,15 +24,15 @@ export default compose(
           style={{ width: '100%' }}
           autoFocus
           onFocus={e => e.target.select()}
-          value={inputName}
+          value={value}
           onChange={e => {
-            setInputName(e.target.value);
+            setValue(e.target.value);
             handleOnChange(e);
           }}
           id="save-set-modal-name"
           type="text"
         />
-        {inputName.length > maxLength && (
+        {value.length > maxLength && (
           <WarningBox>Maximum name length is {maxLength}</WarningBox>
         )}
       </label>

@@ -122,6 +122,7 @@ const SaveSetModal = ({
         handleOnChange={e => setInputName(e.target.value)}
         warningMessage="Warning: A set with the same name exists, this will overwrite it."
         maxLength={MAX_SET_NAME_LENGTH}
+        value={inputName}
       />
     </BaseModal>
   );

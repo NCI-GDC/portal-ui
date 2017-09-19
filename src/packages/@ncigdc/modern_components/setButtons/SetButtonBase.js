@@ -1,13 +1,7 @@
 // @flow
 import React from 'react';
 import { connect } from 'react-redux';
-import {
-  compose,
-  withState,
-  defaultProps,
-  withHandlers,
-  withPropsOnChange,
-} from 'recompose';
+import { compose, withState, defaultProps, withHandlers } from 'recompose';
 import { get } from 'lodash';
 import { commitMutation } from 'react-relay';
 
@@ -16,6 +10,7 @@ import Button from '@ncigdc/uikit/Button';
 import { setModal } from '@ncigdc/dux/modal';
 import Overlay from '@ncigdc/uikit/Overlay';
 import Spinner from '@ncigdc/uikit/Loaders/Material';
+import withPropsOnChange from '@ncigdc/utils/withPropsOnChange';
 
 const enhance = compose(
   withState('isCreating', 'setIsCreating', false),

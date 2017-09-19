@@ -1,7 +1,8 @@
 // @flow
 import React from 'react';
 import { get } from 'lodash';
-import { compose, withProps, withPropsOnChange } from 'recompose';
+import { compose, withProps } from 'recompose';
+import withPropsOnChange from '@ncigdc/utils/withPropsOnChange';
 
 export default compose(
   withProps(({ viewer, path }) => {

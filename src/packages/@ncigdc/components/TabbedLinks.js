@@ -1,6 +1,7 @@
 // @flow
 
 import React from 'react';
+import { get } from 'lodash';
 import LocationSubscriber from '@ncigdc/components/LocationSubscriber';
 import Tabs from '@ncigdc/uikit/Tabs';
 import Link from '@ncigdc/components/Links/Link';
@@ -14,6 +15,8 @@ type TTabbedLinksProps = {
   hideTabs?: boolean,
   style?: Object,
   side?: Boolean,
+  linkStyle?: Object,
+  defaultContent?: React.Element<{}>,
 };
 type TTabbedLinks = (props: TTabbedLinksProps) => React.Element<{}>;
 const TabbedLinks: TTabbedLinks = (
@@ -26,6 +29,7 @@ const TabbedLinks: TTabbedLinks = (
     style,
     side,
     linkStyle = {},
+    defaultContent,
   } = {},
 ) => (
   <LocationSubscriber>
@@ -33,7 +37,9 @@ const TabbedLinks: TTabbedLinks = (
       const foundIndex = links.findIndex(
         x => x.id === (ctx.query || {})[queryParam],
       );
-      const activeIndex = foundIndex > -1 ? foundIndex : defaultIndex;
+      const activeIndex = defaultContent
+        ? foundIndex
+        : foundIndex < 0 ? defaultIndex : foundIndex;
 
       return (
         <Tabs
@@ -64,7 +70,7 @@ const TabbedLinks: TTabbedLinks = (
           }
           activeIndex={activeIndex}
         >
-          {links[activeIndex].component}
+          {get(links, [activeIndex, 'component'], defaultContent)}
         </Tabs>
       );
     }}

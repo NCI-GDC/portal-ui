@@ -5,6 +5,7 @@ import CohortComparison from '@ncigdc/modern_components/CohortComparison';
 import CCIcon from '@ncigdc/theme/icons/CohortComparisonIcon';
 import { withTheme } from '@ncigdc/theme';
 import type { TSetTypes } from '@ncigdc/dux/sets';
+import Demo from './Demo';
 
 type TSelectedSets = {
   [TSetTypes]: {},
@@ -16,10 +17,9 @@ type TAnalysis = {|
   Icon: ReactComponent<*>,
   description: string,
   demoData: {|
-    id: string,
     sets: TSelectedSets,
+    filters: {},
     type: string,
-    created: string,
   |},
   setInstructions: string,
   setDisabledMessage: ({ sets: TSelectedSets, type: string }) => ?string,
@@ -60,7 +60,98 @@ const availableAnalysis: Array<TAnalysis> = [
     ),
     description:
       'Display Venn diagram and find intersection or union, etc. of your sets of the same type.',
-    demoData: null,
+    demoData: {
+      sets: {
+        case: {
+          'demo-bladder-high-mutect': 'Bladder, High impact, Mutect',
+          'demo-bladder-high-varscan': 'Bladder, High impact, Varscan',
+          'demo-bladder-high-muse': 'Bladder, High impact, Muse',
+        },
+      },
+      filters: {
+        'demo-bladder-high-mutect': {
+          op: 'and',
+          content: [
+            {
+              op: 'in',
+              content: { field: 'cases.primary_site', value: ['Bladder'] },
+            },
+            {
+              op: 'in',
+              content: {
+                field: 'ssms.consequence.transcript.annotation.impact',
+                value: ['HIGH'],
+              },
+            },
+            {
+              op: 'in',
+              content: {
+                field:
+                  'ssms.occurrence.case.observation.variant_calling.variant_caller',
+                value: ['mutect'],
+              },
+            },
+          ],
+        },
+        'demo-bladder-high-varscan': {
+          op: 'and',
+          content: [
+            {
+              op: 'in',
+              content: { field: 'cases.primary_site', value: ['Bladder'] },
+            },
+            {
+              op: 'in',
+              content: {
+                field: 'ssms.consequence.transcript.annotation.impact',
+                value: ['HIGH'],
+              },
+            },
+            {
+              op: 'in',
+              content: {
+                field:
+                  'ssms.occurrence.case.observation.variant_calling.variant_caller',
+                value: ['varscan'],
+              },
+            },
+          ],
+        },
+        'demo-bladder-high-muse': {
+          op: 'and',
+          content: [
+            {
+              op: 'in',
+              content: { field: 'cases.primary_site', value: ['Bladder'] },
+            },
+            {
+              op: 'in',
+              content: {
+                field: 'ssms.consequence.transcript.annotation.impact',
+                value: ['HIGH'],
+              },
+            },
+            {
+              op: 'in',
+              content: {
+                field:
+                  'ssms.occurrence.case.observation.variant_calling.variant_caller',
+                value: ['muse'],
+              },
+            },
+          ],
+        },
+      },
+      type: 'set_operations',
+    },
+    DemoComponent: props => {
+      const type = ['case', 'gene', 'ssm'].find(t => props.sets[t]);
+      return (
+        <Demo {...props}>
+          <SetOperations type={type} sets={props.sets[type]} />;
+        </Demo>
+      );
+    },
     setInstructions: 'Select 2 or 3 of the same set type',
     setDisabledMessage: ({ sets, type }) =>
       ['case', 'gene', 'ssm'].filter(t => t !== type).some(t => sets[t])
@@ -100,11 +191,46 @@ const availableAnalysis: Array<TAnalysis> = [
     description: `Display the survival analysis of your case sets and compare
     characteristics such as gender, vital status and age at diagnosis.`,
     demoData: {
-      id: 'demo-comparison',
-      sets: { case: ['AV4vM4A6k-Uw42heedhg', 'AV4vM8MJk-Uw42heedhh'] }, // TODO: setIds will change, need way to generate or store these.
+      sets: {
+        case: {
+          'demo-kras': 'Pancreas - KRAS mutated',
+          'demo-no-kras': 'Pancreas - KRAS not mutated',
+        },
+      },
+      filters: {
+        'demo-kras': {
+          op: 'and',
+          content: [
+            {
+              op: 'in',
+              content: { field: 'genes.symbol', value: ['KRAS'] },
+            },
+          ],
+        },
+        'demo-no-kras': {
+          op: 'and',
+          content: [
+            {
+              op: 'excludeifany',
+              content: { field: 'genes.symbol', value: 'KRAS' },
+            },
+          ],
+        },
+      },
       type: 'comparison',
-      created: new Date().toISOString(),
     },
+    DemoComponent: props => (
+      <Demo {...props}>
+        <CohortComparison
+          facets={[
+            'demographic.gender',
+            'diagnoses.vital_status',
+            'demographic.race',
+          ]}
+          sets={props.sets}
+        />
+      </Demo>
+    ),
     setInstructions: 'Select 2 case sets',
     setDisabledMessage: ({ sets, type }) =>
       !['case'].includes(type)

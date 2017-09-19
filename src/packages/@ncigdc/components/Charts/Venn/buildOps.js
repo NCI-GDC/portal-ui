@@ -35,13 +35,13 @@ export default ({ setIds, type }) => {
           in: setIds.slice(0, 2),
           exclude: [setIds[2]],
         }),
-        mapOp('( S1 ∩ S3 ) − ( S2 )', {
-          in: [setIds[0], setIds[2]],
-          exclude: [setIds[1]],
-        }),
         mapOp('( S2 ∩ S3 ) − ( S1 )', {
           in: [setIds[1], setIds[2]],
           exclude: [setIds[0]],
+        }),
+        mapOp('( S1 ∩ S3 ) − ( S2 )', {
+          in: [setIds[0], setIds[2]],
+          exclude: [setIds[1]],
         }),
         mapOp('( S1 ) − ( S2 ∪ S3 )', {
           in: [setIds[0]],

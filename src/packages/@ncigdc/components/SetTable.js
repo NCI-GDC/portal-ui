@@ -2,7 +2,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { withProps, compose } from 'recompose';
-
 import EntityPageHorizontalTable from '@ncigdc/components/EntityPageHorizontalTable';
 import countComponents from '@ncigdc/modern_components/Counts';
 import withPropsOnChange from '@ncigdc/utils/withPropsOnChange';

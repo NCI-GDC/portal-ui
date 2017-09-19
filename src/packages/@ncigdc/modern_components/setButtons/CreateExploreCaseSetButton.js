@@ -26,17 +26,19 @@ const exploreMutation = graphql`
 type TProps = {
   children: any,
   filters: TGroupFilter,
+  set_id?: string,
 };
 
 const CreateExploreCaseSetButton = ({
   children,
   filters,
+  set_id,
   ...props
 }: TProps) => {
   return (
     <SetButtonBase
       {...props}
-      input={{ filters }}
+      input={{ filters, set_id }}
       field="cases.case_id"
       setIdExtractor={response => response.sets.create.explore.case.set_id}
       mutation={exploreMutation}

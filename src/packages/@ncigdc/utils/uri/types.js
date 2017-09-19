@@ -21,4 +21,6 @@ export type TParseIntParam = (s: ?string, d: number) => number;
 
 export type TParseJSURLParam = (s: ?string, d: any) => any;
 
+export type TParseJSONParam = (s: ?string, d: any) => any;
+
 export type TParseFilterParam = (s: ?string, d: ?TGroupFilter) => ?TGroupFilter;

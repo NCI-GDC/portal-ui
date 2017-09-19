@@ -4,7 +4,7 @@ import QuestionIcon from 'react-icons/lib/fa/question-circle';
 import * as d3 from 'd3';
 import { compose, withState, withProps } from 'recompose';
 import JSURL from 'jsurl';
-import { sortBy } from 'lodash';
+import { sortBy, groupBy, flatMap } from 'lodash';
 import Column from '@ncigdc/uikit/Flex/Column';
 import Row from '@ncigdc/uikit/Flex/Row';
 import { Tooltip } from '@ncigdc/uikit/Tooltip';
@@ -18,6 +18,11 @@ import ExploreLink from '@ncigdc/components/Links/ExploreLink';
 import styled from '@ncigdc/theme/styled';
 import { withTheme } from '@ncigdc/theme';
 import type { TGroupContent, TGroupFilter } from '@ncigdc/utils/filters/types';
+
+import {
+  HUMAN_BODY_SITES_MAP,
+  HUMAN_BODY_ALL_ALLOWED_SITES,
+} from '@ncigdc/utils/constants';
 
 const color = d3.scaleOrdinal([
   ...d3.schemeCategory20,
@@ -205,6 +210,20 @@ export default compose(
             : stackedBarCalculations[geneId].countTotal / numUniqueCases * 100,
       }))
       .sort((a, b) => b.total - a.total); // relay score sorting isn't returned in reliable order
+
+    const allPrimarySites = groupBy(
+      flatMap(
+        projects.map(p =>
+          p.primary_site.map(ps => ({
+            projectId: p.project_id,
+            name: p.name,
+            primarySite: ps,
+            caseCount: p.summary.case_count,
+          })),
+        ),
+      ),
+      p => HUMAN_BODY_SITES_MAP[p.primarySite],
+    );
 
     const doubleRingData = projects.reduce((acc, p) => {
       const primarySiteCasesCount = acc[p.primary_site]

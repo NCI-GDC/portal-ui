@@ -7,6 +7,7 @@ import SearchPage from '@ncigdc/components/SearchPage';
 import ProjectsCharts from '@ncigdc/modern_components/ProjectsCharts';
 import TabbedLinks from '@ncigdc/components/TabbedLinks';
 import GitHut from '@ncigdc/components/GitHut';
+import { Column } from '@ncigdc/uikit/Flex';
 
 import ProjectsTable from './ProjectsTable';
 import ProjectAggregations from './ProjectAggregations';
@@ -65,7 +66,7 @@ export const ProjectsPageComponent = (props: TProps) => (
       },
     ]}
     results={
-      <span>
+      <Column spacing="2rem">
         <ProjectsCharts />
         <TabbedLinks
           queryParam="projectsTableTab"
@@ -88,7 +89,7 @@ export const ProjectsPageComponent = (props: TProps) => (
             },
           ]}
         />
-      </span>
+      </Column>
     }
   />
 );
@@ -106,9 +107,6 @@ export const ProjectsPageQuery = {
   fragments: {
     viewer: () => Relay.QL`
       fragment on Root {
-        explore {
-          ${ProjectsCharts.getFragment('explore')}
-        }
         autocomplete: query(query: $idAutocomplete types: ["project"]) @include(if: $runAutocomplete) {
           hits {
             id

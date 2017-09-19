@@ -3,12 +3,13 @@
 import PropTypes from 'prop-types';
 import * as d3 from 'd3';
 import ReactFauxDOM from 'react-faux-dom';
+import { noop } from 'lodash';
 
 import { withTooltip } from '@ncigdc/uikit/Tooltip';
 
 const DoubleRingChart = ({
   data,
-  colors,
+  getFillColor = noop,
   height = 160,
   width = 160,
   outerRingWidth = 30,
@@ -41,9 +42,10 @@ const DoubleRingChart = ({
     outerRadius: centerRadius - 5,
     clickHandler: d.clickHandler,
   }));
-  const innerPie = d3.pie().padAngle(HALF_DEGREE_IN_RAD * 2).value(d => d.v)(
-    innerPieData,
-  );
+  const innerPie = d3
+    .pie()
+    .padAngle(HALF_DEGREE_IN_RAD * 2)
+    .value(d => d.v)(innerPieData);
   const outerPieData = data.map((d, i) => ({
     items: d.outer.map(p => ({
       v: p.value,
@@ -66,7 +68,7 @@ const DoubleRingChart = ({
     innerPieData.map((p, i) => ({
       ...p,
       pie: innerPie[i],
-      color: (colors[innerPieData[i].key] || { color: 'red' }).color,
+      color: getFillColor(innerPieData[i]),
     })),
     outerPieData.reduce(
       (acc, p, i) => [
@@ -77,17 +79,18 @@ const DoubleRingChart = ({
           v: item.v,
           key: item.key,
           tooltip: item.tooltip,
-          color:
-            (colors[innerPieData[i].key] || { projects: {} }).projects[
-              item.key
-            ] || 'green',
+          color: getFillColor(innerPieData[i]),
           clickHandler: item.clickHandler,
         })),
       ],
       [],
     ),
   ];
-  const g = svg.selectAll('.g').data(dataWithPie).enter().append('g');
+  const g = svg
+    .selectAll('.g')
+    .data(dataWithPie)
+    .enter()
+    .append('g');
 
   const fill = g
     .selectAll('path')
@@ -95,7 +98,10 @@ const DoubleRingChart = ({
     .enter()
     .append('path')
     .attr('d', d =>
-      d3.arc().outerRadius(d.outerRadius).innerRadius(d.innerRadius)(d.pie),
+      d3
+        .arc()
+        .outerRadius(d.outerRadius)
+        .innerRadius(d.innerRadius)(d.pie),
     )
     .style('fill', (d, i) => d.color);
 

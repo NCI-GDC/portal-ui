@@ -6,7 +6,7 @@ import { compose, withProps, withPropsOnChange } from 'recompose';
 export default compose(
   withProps(({ viewer, path }) => {
     return {
-      count: get(viewer, path, 0),
+      count: get(viewer, path, ''),
     };
   }),
   withPropsOnChange(['viewer'], ({ count, handleCountChange, loading }) => {

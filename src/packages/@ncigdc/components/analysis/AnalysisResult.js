@@ -96,56 +96,40 @@ const AnalysisResult = ({ analysis, query, dispatch, push }) => {
       linkStyle={{
         width: '100%',
       }}
-      links={[
-        ...(demoAnalysis
-          ? [
-              {
-                onClose: e => {
-                  e.preventDefault();
-                  push({
-                    query: omit(query, 'analysisId'),
-                  });
-                },
-                ...demoAnalysis.demoData,
-              },
-            ]
-          : []),
-        ...analysis.map(savedAnalysis => ({
-          onClose: e => {
-            e.preventDefault();
-            dispatch(removeAnalysis(savedAnalysis));
-            undoNotification(dispatch, [savedAnalysis]);
-          },
-          ...savedAnalysis,
-        })),
-      ]
+      defaultContent={
+        demoAnalysis && (
+          <demoAnalysis.DemoComponent {...demoAnalysis.demoData} />
+        )
+      }
+      links={analysis
         .map(savedAnalysis => {
           const analysis = availableAnalysis.find(
             a => a.type === savedAnalysis.type,
           );
-
-          return (
-            analysis && {
-              id: savedAnalysis.id,
-              text: (
-                <Row>
-                  <div style={{ marginRight: 15 }}>
-                    {analysis.label}
-                    <div style={{ fontSize: '1rem' }}>
-                      {new Date(savedAnalysis.created).toLocaleDateString()}
-                    </div>
+          return {
+            id: savedAnalysis.id,
+            text: (
+              <Row>
+                <div style={{ marginRight: 15 }}>
+                  {analysis.label}
+                  <div style={{ fontSize: '1rem' }}>
+                    {new Date(savedAnalysis.created).toLocaleDateString()}
                   </div>
-                  <UnstyledButton
-                    style={{ marginLeft: 'auto' }}
-                    onClick={savedAnalysis.onClose}
-                  >
-                    x
-                  </UnstyledButton>
-                </Row>
-              ),
-              component: <analysis.ResultComponent {...savedAnalysis} />,
-            }
-          );
+                </div>
+                <UnstyledButton
+                  style={{ marginLeft: 'auto' }}
+                  onClick={e => {
+                    e.preventDefault();
+                    dispatch(removeAnalysis(savedAnalysis));
+                    undoNotification(dispatch, [savedAnalysis]);
+                  }}
+                >
+                  x
+                </UnstyledButton>
+              </Row>
+            ),
+            component: <analysis.ResultComponent {...savedAnalysis} />,
+          };
         })
         .filter(Boolean)}
     />

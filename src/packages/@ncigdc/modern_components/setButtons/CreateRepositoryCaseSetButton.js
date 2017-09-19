@@ -26,17 +26,19 @@ const repositoryMutation = graphql`
 type TProps = {
   children: any,
   filters: TGroupFilter,
+  set_id?: string,
 };
 
 const CreateRepositoryCaseSetButton = ({
   children,
   filters,
+  set_id,
   ...props
 }: TProps) => {
   return (
     <SetButtonBase
       {...props}
-      input={{ filters }}
+      input={{ filters, set_id }}
       field="cases.case_id"
       setIdExtractor={response => response.sets.create.repository.case.set_id}
       mutation={repositoryMutation}

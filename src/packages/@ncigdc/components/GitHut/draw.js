@@ -1,8 +1,8 @@
-import { isNumber } from 'lodash';
+import { isNumber, uniq } from 'lodash';
 
 declare var d3: Object; // requires d3 v3
 
-const padding = { left: 100, right: 145, top: 60, bottom: 30 };
+const padding = { left: 100, right: 300, top: 60, bottom: 30 };
 
 export default function(params) {
   const defaultDuration = params.duration || 1000;
@@ -15,7 +15,13 @@ export default function(params) {
   var totalWidth = params.container.offsetWidth;
   var innerWidth = totalWidth - padding.left - padding.right;
 
-  var totalHeight = 80 + data.length * 15;
+  const primary_sites = uniq(
+    data.reduce((sites, project) => {
+      return [...sites, ...project.primary_site];
+    }, []),
+  );
+
+  var totalHeight = 80 + Math.max(data.length, primary_sites.length) * 15;
   var innerHeight = totalHeight - padding.top - padding.bottom;
 
   var markerMaxWidth = innerWidth / params.columns.length;
@@ -43,9 +49,20 @@ export default function(params) {
 
   labelsGroup
     .selectAll('g.labels')
-    .data(data, function(d) {
-      return d[titleColumn];
-    })
+    .data(
+      data.reduce((acc, project) => {
+        return [
+          ...acc,
+          ...project.primary_site.map(p => ({
+            ...project,
+            primary_site: [p],
+          })),
+        ];
+      }, []),
+      function(d) {
+        return `${d[titleColumn]}${d.primary_site[0]}`;
+      },
+    )
     .enter()
     .append('g')
     .attr('class', 'labels')
@@ -93,12 +110,7 @@ export default function(params) {
   var drawn_primary_sites = [];
 
   function updateScales() {
-    var primary_sites = data.reduce((sites, project) => {
-      project.primary_site.forEach(site => {
-        if (!sites.includes(site)) sites.push(site);
-      });
-      return sites;
-    }, []);
+    const sites = primary_sites.slice();
 
     params.columns.forEach(function(column) {
       var id = column.id;
@@ -122,9 +134,9 @@ export default function(params) {
           .domain(domain)
           .rangePoints([innerHeight, 0]);
       } else if (column.scale === 'linear') {
-        var sites = primary_sites.sort(column.sorting || d3.ascending);
-        var indices = primary_sites.map(function(d, i) {
-          return i * innerHeight / primary_sites.length;
+        sites.sort(column.sorting || d3.ascending);
+        var indices = sites.map(function(d, i) {
+          return i * innerHeight / sites.length;
         });
         column.yScale = d3.scale.ordinal().domain(sites).range(indices);
       }
@@ -262,41 +274,46 @@ export default function(params) {
       .selectAll('g.connection')
       .data(
         function(d) {
-          var flattened = params.columns
-            .map(function(column, i) {
-              var key = column.id;
-              var y = d[key];
+          return d.primary_site.map((site, i) => {
+            const flattened = params.columns
+              .slice(i && -2) // for primary sites after the first, we only need to render the last 2 segments.
+              .map(function(column, i) {
+                var key = column.id;
+                var y = key === 'primary_site' ? [site] : d[key];
 
-              var val = { x: xScale(key), col: key, y: y, test: 'true' };
-              var val2 = { x: xScale(key), col: key, y: y, test: 'true1' };
+                var val = { x: xScale(key), col: key, y: y, test: 'true' };
+                var val2 = {
+                  x: xScale(key),
+                  col: key,
+                  y: y,
+                  test: 'true1',
+                };
 
-              var delta = 5;
+                var delta = 5;
 
-              if (typeof y === 'number') {
-                val.x -= i === 0 ? 0 : column.widthScale(y) / 2 + delta;
-                val2.x += i === params.columns.length - 1
-                  ? 0
-                  : column.widthScale(y) / 2 + delta;
-              } else {
-                val.x -= delta;
-                val2.x += delta;
-              }
+                if (typeof y === 'number') {
+                  val.x -= i === 0 ? 0 : column.widthScale(y) / 2 + delta;
+                  val2.x += i === params.columns.length - 1
+                    ? 0
+                    : column.widthScale(y) / 2 + delta;
+                } else {
+                  val.x -= delta;
+                  val2.x += delta;
+                }
 
-              return [val, val2];
-            })
-            .reduce(function(a, b) {
-              return a.concat(b);
-            });
-
-          return [
-            {
-              projectId: d[titleColumn],
+                return [val, val2];
+              })
+              .reduce(function(a, b) {
+                return a.concat(b);
+              });
+            return {
+              key: `${d[titleColumn]}${site}`,
               path: flattened,
-            },
-          ];
+            };
+          });
         },
         function(d) {
-          return d.projectId;
+          return d.key;
         },
       );
 
@@ -307,13 +324,10 @@ export default function(params) {
       .append('g')
       .attr('class', 'connection');
 
-    new_connection.append('path').attr('class', 'hover');
-
-    new_connection.append('path').attr('class', 'line');
-
     var paths = ['line', 'hover'];
 
     paths.forEach(function(p) {
+      new_connection.append('path').attr('class', p);
       connection
         .select('path.' + p)
         .transition()

@@ -4,25 +4,27 @@ import QuestionIcon from 'react-icons/lib/fa/question-circle';
 import * as d3 from 'd3';
 import { compose, withState, withProps } from 'recompose';
 import JSURL from 'jsurl';
-import { sortBy, groupBy, flatMap } from 'lodash';
+import { sortBy, flatMap, groupBy } from 'lodash';
 import Column from '@ncigdc/uikit/Flex/Column';
 import Row from '@ncigdc/uikit/Flex/Row';
 import { Tooltip } from '@ncigdc/uikit/Tooltip';
 import withRouter from '@ncigdc/utils/withRouter';
 import { WithSize } from '@ncigdc/utils/withSize';
-import { setFilter, mergeQuery, removeFilter } from '@ncigdc/utils/filters';
-import { removeEmptyKeys } from '@ncigdc/utils/uri';
-import DoubleRingChart from '@ncigdc/components/Charts/DoubleRingChart';
+import { removeFilter } from '@ncigdc/utils/filters';
 import StackedBarChart from '@ncigdc/components/Charts/StackedBarChart';
 import ExploreLink from '@ncigdc/components/Links/ExploreLink';
 import styled from '@ncigdc/theme/styled';
 import { withTheme } from '@ncigdc/theme';
 import type { TGroupContent, TGroupFilter } from '@ncigdc/utils/filters/types';
+import withPrimarySiteData from './PrimarySitesRing.relay';
+import PSR from './PrimarySitesRing';
 
 import {
   HUMAN_BODY_SITES_MAP,
   HUMAN_BODY_ALL_ALLOWED_SITES,
 } from '@ncigdc/utils/constants';
+
+const PrimarySitesRing = withPrimarySiteData(PSR);
 
 const color = d3.scaleOrdinal([
   ...d3.schemeCategory20,
@@ -84,8 +86,8 @@ const Container = styled(Row, {
 });
 
 export default compose(
-  withState('yAxisUnit', 'setYAxisUnit', 'percent'),
   withRouter,
+  withState('yAxisUnit', 'setYAxisUnit', 'percent'),
   withProps(props => {
     const { aggregations } = JSON.parse(
       props.analysisViewer.analysis.top_cases_count_by_genes.data,
@@ -211,95 +213,6 @@ export default compose(
       }))
       .sort((a, b) => b.total - a.total); // relay score sorting isn't returned in reliable order
 
-    const allPrimarySites = groupBy(
-      flatMap(
-        projects.map(p =>
-          p.primary_site.map(ps => ({
-            projectId: p.project_id,
-            name: p.name,
-            primarySite: ps,
-            caseCount: p.summary.case_count,
-          })),
-        ),
-      ),
-      p => HUMAN_BODY_SITES_MAP[p.primarySite],
-    );
-
-    const doubleRingData = projects.reduce((acc, p) => {
-      const primarySiteCasesCount = acc[p.primary_site]
-        ? acc[p.primary_site].value + p.summary.case_count
-        : p.summary.case_count;
-
-      return {
-        ...acc,
-        [p.primary_site]: {
-          value: primarySiteCasesCount,
-          tooltip: (
-            <span>
-              <b>{p.primary_site}</b>
-              <br />
-              {primarySiteCasesCount.toLocaleString()} case
-              {primarySiteCasesCount > 1 ? 's' : ''}
-            </span>
-          ),
-          clickHandler: () => {
-            const newQuery = mergeQuery(
-              {
-                filters: setFilter({
-                  field: 'projects.primary_site',
-                  value: [].concat(p.primary_site || []),
-                }),
-              },
-              query,
-              'toggle',
-            );
-
-            const q = removeEmptyKeys({
-              ...newQuery,
-              filters: newQuery.filters && JSURL.stringify(newQuery.filters),
-            });
-
-            push({ pathname, query: q });
-          },
-          outer: [
-            ...(acc[p.primary_site] || { outer: [] }).outer,
-            {
-              key: p.project_id,
-              value: p.summary.case_count,
-              tooltip: (
-                <span>
-                  <b>{p.name}</b>
-                  <br />
-                  {p.summary.case_count.toLocaleString()} case
-                  {p.summary.case_count > 1 ? 's' : ''}
-                </span>
-              ),
-              clickHandler: () => {
-                const newQuery = mergeQuery(
-                  {
-                    filters: setFilter({
-                      field: 'projects.project_id',
-                      value: [].concat(p.project_id || []),
-                    }),
-                  },
-                  query,
-                  'toggle',
-                );
-
-                const q = removeEmptyKeys({
-                  ...newQuery,
-                  filters:
-                    newQuery.filters && JSURL.stringify(newQuery.filters),
-                });
-
-                push({ pathname, query: q });
-              },
-            },
-          ],
-        },
-      };
-    }, {});
-
     const totalCases = projects.reduce(
       (sum, p) => sum + p.summary.case_count,
       0,
@@ -326,6 +239,23 @@ export default compose(
       }),
       {},
     );
+
+    const primarySitesFromProjects = groupBy(
+      flatMap(
+        projects.map(p =>
+          p.primary_site.map(ps => ({
+            projectId: p.project_id,
+            name: p.name,
+            primarySite: ps,
+            caseCount: p.summary.case_count,
+          })),
+        ),
+      ),
+      p => HUMAN_BODY_SITES_MAP[p.primarySite] || p.primarySite,
+    );
+
+    console.log(12, primarySiteProjects);
+    console.log(34, primarySitesFromProjects);
 
     // brighten project colors by a multiplier that's based on projects number, so the slices don't get too light
     // and if there's only two slices the colors are different enough
@@ -534,15 +464,10 @@ export default compose(
                 : ''}`}
             </div>,
             <span style={{ transform: 'scale(0.75)' }} key="circle-wrapper">
-              <DoubleRingChart
-                key="pie-chart"
-                colors={primarySiteToColor}
-                data={Object.keys(doubleRingData).map(primarySite => ({
-                  key: primarySite,
-                  ...doubleRingData[primarySite],
-                }))}
-                height={200}
-                width={200}
+              <PrimarySitesRing
+                projects={projects}
+                primarySiteToColor={primarySiteToColor}
+                primarySitesFromProjects={primarySitesFromProjects}
               />
             </span>,
           ]}

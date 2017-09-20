@@ -34,6 +34,7 @@ const DoubleRingChart = ({
     .attr('transform', `translate(${width / 2}, ${height / 2})`);
 
   const HALF_DEGREE_IN_RAD = 0.00872665;
+
   const innerPieData = data.map(d => ({
     v: d.value,
     key: d.key,
@@ -42,10 +43,12 @@ const DoubleRingChart = ({
     outerRadius: centerRadius - 5,
     clickHandler: d.clickHandler,
   }));
+
   const innerPie = d3
     .pie()
     .padAngle(HALF_DEGREE_IN_RAD * 2)
     .value(d => d.v)(innerPieData);
+
   const outerPieData = data.map((d, i) => ({
     items: d.outer.map(p => ({
       v: p.value,
@@ -56,6 +59,7 @@ const DoubleRingChart = ({
     innerRadius: centerRadius,
     outerRadius: radius,
   }));
+
   const outerPie = outerPieData.map((p, i) =>
     d3
       .pie()

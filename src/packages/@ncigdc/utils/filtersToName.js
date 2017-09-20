@@ -10,7 +10,7 @@ function getValues(filters, sets) {
         .concat(content.value || [])
         .map(
           v =>
-            v.includes('set_id:')
+            typeof v === 'string' && v.includes('set_id:')
               ? sets[v.replace('set_id:', '')] || 'input set'
               : v,
         ),

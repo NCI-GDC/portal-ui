@@ -8,7 +8,8 @@ import withFilters from '@ncigdc/utils/withFilters';
 import { makeFilter, toggleFilters } from '@ncigdc/utils/filters';
 import SsmsTable from '@ncigdc/modern_components/SsmsTable';
 import SurvivalPlotWrapper from '@ncigdc/components/SurvivalPlotWrapper';
-import { removeEmptyKeys, stringifyJSONParam } from '@ncigdc/utils/uri';
+import { stringifyJSONParam } from '@ncigdc/utils/uri';
+import removeEmptyKeys from '@ncigdc/utils/removeEmptyKeys';
 import withPropsOnChange from '@ncigdc/utils/withPropsOnChange';
 
 const styles = {

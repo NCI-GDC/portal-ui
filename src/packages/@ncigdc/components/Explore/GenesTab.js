@@ -13,8 +13,9 @@ import {
   toggleFilters,
   getFilterValue,
 } from '@ncigdc/utils/filters';
-import { removeEmptyKeys, stringifyJSONParam } from '@ncigdc/utils/uri';
+import { stringifyJSONParam } from '@ncigdc/utils/uri';
 import withPropsOnChange from '@ncigdc/utils/withPropsOnChange';
+import removeEmptyKeys from '@ncigdc/utils/removeEmptyKeys';
 
 const styles = {
   heading: {

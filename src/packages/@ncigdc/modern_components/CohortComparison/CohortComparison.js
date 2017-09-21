@@ -24,6 +24,9 @@ const initialState = {
   loading: true,
 };
 
+const SET1_COLOUR = 'rgb(158, 124, 36)';
+const SET2_COLOUR = 'rgb(29, 97, 135)';
+
 const Alias = ({ i, style = { fontWeight: 'bold' } }) => (
   <span style={style}>
     <em>S</em>
@@ -32,20 +35,20 @@ const Alias = ({ i, style = { fontWeight: 'bold' } }) => (
 );
 
 export default compose(
-  connect(({ sets }) => ({ sets })),
+  connect(),
   withState('survivalData', 'setSurvivalData', {}),
   withState('state', 'setState', initialState),
-  withProps(({ set1, set2, setSurvivalData, setState }) => ({
+  withProps(({ setId1, setId2, setSurvivalData, setState }) => ({
     updateData: async () => {
       const survivalData = await getDefaultCurve({
         currentFilters: [
           {
             op: 'in',
-            content: { field: 'cases.case_id', value: `set_id:${set1}` },
+            content: { field: 'cases.case_id', value: `set_id:${setId1}` },
           },
           {
             op: 'in',
-            content: { field: 'cases.case_id', value: `set_id:${set2}` },
+            content: { field: 'cases.case_id', value: `set_id:${setId2}` },
           },
         ],
       });
@@ -67,31 +70,31 @@ export default compose(
   ({
     facets,
     sets,
-    set1,
-    set2,
+    setId1,
+    setId2,
+    setName1,
+    setName2,
     theme,
     survivalData,
     viewer: { repository: { result1, result2 } },
     size: { width },
   }) => {
-    const data1 = JSON.parse(result1.facets);
-    const data2 = JSON.parse(result2.facets);
-
-    const set1_name = _.truncate(sets.case[set1], { length: 50 });
-    const set1_colour = 'rgb(158, 124, 36)';
-    const set2_name = _.truncate(sets.case[set2], { length: 50 });
-    const set2_colour = 'rgb(29, 97, 135)';
     const Set1 = (
-      <span style={{ color: set1_colour, fontWeight: 'bold' }}>
-        {set1_name}
+      <span style={{ color: SET1_COLOUR, fontWeight: 'bold' }}>
+        {_.truncate(setName1, { length: 50 })}
       </span>
     );
+
     const Set2 = (
-      <span style={{ color: set2_colour, fontWeight: 'bold' }}>
-        {set2_name}
+      <span style={{ color: SET2_COLOUR, fontWeight: 'bold' }}>
+        {_.truncate(setName2, { length: 50 })}
       </span>
     );
-    const ops = buildOps({ setIds: [set1, set2], type: 'case' });
+
+    const ops = buildOps({
+      setIds: [setId1, setId2],
+      type: 'case',
+    });
 
     return (
       <div style={{ width: '90%', padding: '0 3rem 2rem' }}>
@@ -112,7 +115,7 @@ export default compose(
           body={
             <tbody>
               <Tr>
-                <Td style={{ width: '150px', color: set1_colour }}>
+                <Td style={{ width: '150px', color: SET1_COLOUR }}>
                   <Alias i={1} /> : {Set1}
                 </Td>
                 <Td style={{ textAlign: 'right' }}>
@@ -126,7 +129,7 @@ export default compose(
                             op: 'IN',
                             content: {
                               field: `cases.case_id`,
-                              value: [`set_id:${set1}`],
+                              value: [`set_id:${setId1}`],
                             },
                           },
                         ],
@@ -138,7 +141,7 @@ export default compose(
                 </Td>
               </Tr>
               <Tr>
-                <Td style={{ width: '150px', color: set2_colour }}>
+                <Td style={{ width: '150px', color: SET2_COLOUR }}>
                   <Alias i={2} /> : {Set2}
                 </Td>
                 <Td style={{ textAlign: 'right' }}>
@@ -152,7 +155,7 @@ export default compose(
                             op: 'IN',
                             content: {
                               field: `cases.case_id`,
-                              value: [`set_id:${set2}`],
+                              value: [`set_id:${setId2}`],
                             },
                           },
                         ],
@@ -172,9 +175,9 @@ export default compose(
             result1={result1}
             Alias={Alias}
             result2={result2}
-            set1id={set1}
-            set2id={set2}
-            palette={[set1_colour, set2_colour]}
+            set1id={setId1}
+            set2id={setId2}
+            palette={[SET1_COLOUR, SET2_COLOUR]}
             style={{ flex: 1, width: 100 }}
           />
           <div style={{ marginLeft: 50, flex: 1, width: 100 }}>
@@ -182,7 +185,7 @@ export default compose(
               <span style={{ marginRight: 10 }}>Cohorts Venn Diagram</span>
               <CreateOrOpenAnalysis
                 type="set_operations"
-                sets={{ case: [set1, set2] }}
+                sets={sets}
                 style={{
                   color: 'rgb(43, 118, 154)',
                   fontSize: '0.6em',
@@ -197,7 +200,7 @@ export default compose(
             <Venn
               type="case"
               width={width / 2 - 50}
-              data={[set1, set2]}
+              data={[setId1, setId2]}
               ops={ops}
               getFillColor={d => 'rgb(237, 237, 237)'}
             />
@@ -210,15 +213,15 @@ export default compose(
             Alias,
             mapping,
             field,
-            data1,
-            data2,
+            data1: JSON.parse(result1.facets),
+            data2: JSON.parse(result2.facets),
             result1,
             result2,
             Set1,
             Set2,
-            set1,
-            set2,
-            palette: [set1_colour, set2_colour],
+            set1: setId1,
+            set2: setId2,
+            palette: [SET1_COLOUR, SET2_COLOUR],
           }),
         )}
       </div>

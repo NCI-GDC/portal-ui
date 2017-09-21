@@ -40,7 +40,7 @@ export default compose(
   withRouter,
 )(
   ({
-    setIds,
+    sets,
     type,
     selected,
     setSelected,
@@ -56,7 +56,7 @@ export default compose(
     };
 
     const CountComponent = countComponents[type];
-
+    const setIds = Object.keys(sets);
     const ops = buildOps({ setIds, type });
 
     const selectedFilters = {
@@ -101,7 +101,7 @@ export default compose(
             <Column style={{ width: '60%' }}>
               <SetTable
                 push={push}
-                setIds={setIds}
+                sets={sets}
                 type={type}
                 CountComponent={CountComponent}
                 CreateSetButton={CreateSetButton}

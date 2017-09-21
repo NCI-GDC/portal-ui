@@ -4,7 +4,7 @@ import { compose, branch, renderComponent } from 'recompose';
 import SummaryCard from '@ncigdc/components/SummaryCard';
 import { makeFilter, mergeQuery } from '@ncigdc/utils/filters';
 import Link from '@ncigdc/components/Links/Link';
-import { removeEmptyKeys } from '@ncigdc/utils/uri';
+import removeEmptyKeys from '@ncigdc/utils/removeEmptyKeys';
 import { stringifyJSONParam } from '@ncigdc/utils/uri';
 import { EXPERIMENTAL_STRATEGIES } from '@ncigdc/utils/constants';
 

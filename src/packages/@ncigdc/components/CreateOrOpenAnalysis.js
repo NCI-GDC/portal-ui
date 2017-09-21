@@ -1,6 +1,7 @@
 import React from 'react';
 import { compose } from 'recompose';
 import { connect } from 'react-redux';
+import { isEqual } from 'lodash';
 import withRouter from '../utils/withRouter';
 import Link from './Links/Link';
 import UnstyledButton from '../uikit/UnstyledButton';
@@ -20,22 +21,11 @@ const CreateOrOpenAnalysis = ({
   const existing = (analysis.saved || [])
     .filter(s => s.type === type)
     .find(saved => {
-      return (
-        saved.type === type &&
-        Object.keys(saved.sets).length === Object.keys(sets).length &&
-        Object.entries(sets).every(([key, ids]) => {
-          const savedIds = saved.sets[key] || [];
-          return (
-            savedIds.length === ids.length &&
-            ids.every(s => savedIds.includes(s))
-          );
-        })
-      );
+      return saved.type === type && isEqual(saved.sets, sets);
     });
 
   return existing ? (
     <Link
-      {...props}
       query={{
         analysisTableTab: 'result',
         analysisId: existing.id,
@@ -45,7 +35,6 @@ const CreateOrOpenAnalysis = ({
     </Link>
   ) : (
     <UnstyledButton
-      {...props}
       onClick={() => {
         const created = new Date().toISOString();
         const id = created;

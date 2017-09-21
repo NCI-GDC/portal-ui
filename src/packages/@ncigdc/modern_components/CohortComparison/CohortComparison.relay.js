@@ -7,8 +7,16 @@ import Query from '@ncigdc/modern_components/Query';
 
 export default (Component: React$Element<*>) =>
   compose(
-    withPropsOnChange(['set1', 'set2', 'facets'], ({ set1, set2, facets }) => {
+    withPropsOnChange(['sets', 'facets'], ({ sets, facets }) => {
+      const [[setId1, setName1], [setId2, setName2]] = Object.entries(
+        sets.case,
+      );
+
       return {
+        setId1,
+        setId2,
+        setName1,
+        setName2,
         variables: {
           facets,
           filter1: {
@@ -18,7 +26,7 @@ export default (Component: React$Element<*>) =>
                 op: 'in',
                 content: {
                   field: 'cases.case_id',
-                  value: [`set_id:${set1}`],
+                  value: [`set_id:${setId1}`],
                 },
               },
             ],
@@ -30,7 +38,7 @@ export default (Component: React$Element<*>) =>
                 op: 'in',
                 content: {
                   field: 'cases.case_id',
-                  value: [`set_id:${set2}`],
+                  value: [`set_id:${setId2}`],
                 },
               },
             ],

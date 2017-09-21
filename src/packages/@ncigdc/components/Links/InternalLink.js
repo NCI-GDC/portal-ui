@@ -4,7 +4,8 @@ import React from 'react';
 import _ from 'lodash';
 import { NavLink as Link } from 'react-router-dom';
 import { stringify } from 'query-string';
-import { removeEmptyKeys as rek, stringifyJSONParam } from '@ncigdc/utils/uri';
+import { stringifyJSONParam } from '@ncigdc/utils/uri';
+import removeEmptyKeys from '@ncigdc/utils/removeEmptyKeys';
 import validAttributes from '@ncigdc/theme/utils/validAttributes';
 import { scrollToId } from '@ncigdc/components/Links/deepLink';
 
@@ -20,13 +21,7 @@ const reactRouterLinkProps = [
   'isActive',
 ];
 
-const InternalLink = ({
-  pathname,
-  query,
-  removeEmptyKeys,
-  deepLink,
-  ...rest
-}: TLinkProps) => {
+const InternalLink = ({ pathname, query, deepLink, ...rest }: TLinkProps) => {
   const q0 = query || {};
   const f0 = q0.filters ? stringifyJSONParam(q0.filters) : null;
 
@@ -35,7 +30,7 @@ const InternalLink = ({
     filters: f0,
   };
 
-  const q = removeEmptyKeys ? removeEmptyKeys(q1) : q1;
+  const q = removeEmptyKeys(q1);
 
   const validAttrProps = validAttributes(rest);
   const validLinkProps = _.pick(rest, reactRouterLinkProps);
@@ -60,10 +55,6 @@ const InternalLink = ({
       }}
     />
   );
-};
-
-InternalLink.defaultProps = {
-  removeEmptyKeys: rek,
 };
 
 export default InternalLink;

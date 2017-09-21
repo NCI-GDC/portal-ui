@@ -1,5 +1,6 @@
 // @flow
 import React from 'react';
+import { sortBy } from 'lodash';
 import {
   RepositoryCasesLink,
   RepositoryFilesLink,
@@ -68,9 +69,7 @@ const projectsTableModel = [
     th: () => <Th rowSpan="2">Project</Th>,
     td: ({ node }) =>
       <Td>
-        <ProjectLink uuid={node.project_id}>
-          {node.project_id}
-        </ProjectLink>
+        <ProjectLink uuid={node.project_id}>{node.project_id}</ProjectLink>
       </Td>,
   },
   {
@@ -81,7 +80,20 @@ const projectsTableModel = [
     th: () => <Th rowSpan="2">Disease Type</Th>,
     td: ({ node }) =>
       <Td key={node.disease_type} style={{ whiteSpace: 'normal' }}>
-        <CollapsibleList data={node.disease_type} />
+        <CollapsibleList
+          data={sortBy(node.disease_type)}
+          limit={node.disease_type.length > 1 ? 0 : 1}
+          {...(node.disease_type.length === 1
+            ? {}
+            : {
+                AlternateText: () => <span>Multiple Diseases</span>,
+                ToggleText: ({ expanded }) =>
+                  expanded
+                    ? <span>{`\u25B4 less`}</span>
+                    : <span>{`\u25BE Show ${node.disease_type
+                        .length} items`}</span>,
+              })}
+        />
       </Td>,
   },
   {
@@ -91,7 +103,22 @@ const projectsTableModel = [
     downloadable: true,
     th: () => <Th rowSpan="2">Primary Site</Th>,
     td: ({ node }) =>
-      <Td key="primary_site"><CollapsibleList data={node.primary_site} /></Td>,
+      <Td key="primary_site">
+        <CollapsibleList
+          data={sortBy(node.primary_site)}
+          limit={node.primary_site.length > 1 ? 0 : 1}
+          {...(node.primary_site.length === 1
+            ? {}
+            : {
+                AlternateText: () => <span>Multiple Primary Sites</span>,
+                ToggleText: ({ expanded }) =>
+                  expanded
+                    ? <span>{`\u25B4 less`}</span>
+                    : <span>{`\u25BE Show ${node.primary_site
+                        .length} items`}</span>,
+              })}
+        />
+      </Td>,
   },
   {
     name: 'Program',
@@ -167,10 +194,7 @@ const projectsTableModel = [
     hidden: true,
     downloadable: true,
     th: () => <NumTh rowSpan="2">File Size</NumTh>,
-    td: ({ node }) =>
-      <NumTd>
-        {formatFileSize(node.summary.file_size)}
-      </NumTd>,
+    td: ({ node }) => <NumTd>{formatFileSize(node.summary.file_size)}</NumTd>,
     total: ({ hits }) =>
       <NumTd>
         {formatFileSize(

@@ -6,8 +6,8 @@ import { withState, withProps, withHandlers, compose } from 'recompose';
 import { add, remove, reset } from '@ncigdc/dux/customFacets';
 import withRouter from '@ncigdc/utils/withRouter';
 import { removeFilter } from '@ncigdc/utils/filters/index';
-import { removeEmptyKeys, parseFilterParam } from '@ncigdc/utils/uri/index';
-import { stringifyJSONParam } from '@ncigdc/utils/uri';
+import { parseFilterParam, stringifyJSONParam } from '@ncigdc/utils/uri';
+import removeEmptyKeys from '@ncigdc/utils/removeEmptyKeys';
 
 type TProps = {
   entityType: string,

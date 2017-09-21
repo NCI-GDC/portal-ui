@@ -8,7 +8,8 @@ import {
 } from '@ncigdc/utils/filters';
 import PieChart from '@ncigdc/components/Charts/PieChart';
 import { Row, Column } from '@ncigdc/uikit/Flex';
-import { stringifyJSONParam, removeEmptyKeys } from '@ncigdc/utils/uri';
+import { stringifyJSONParam } from '@ncigdc/utils/uri';
+import removeEmptyKeys from '@ncigdc/utils/removeEmptyKeys';
 
 const toPieData = (clickHandler, docTypeSingular) => bucket => ({
   id: bucket.key,

@@ -100,17 +100,15 @@ export default compose(
       };
     }),
   })),
-)(
-  ({ doubleRingData = [], getColor = noop, primarySiteToColor }) => (
-    console.log(primarySiteToColor),
-    (
-      <DoubleRingChart
-        key="pie-chart"
-        getFillColor={getColor}
-        data={doubleRingData}
-        height={200}
-        width={200}
-      />
-    )
-  ),
+)(({ doubleRingData = [], getColor = noop, primarySiteToColor }) =>
+  <DoubleRingChart
+    key="pie-chart"
+    getFillColor={(d, i, j) => {
+      console.log(d, i, j, primarySiteToColor);
+      return primarySiteToColor[d.key];
+    }}
+    data={doubleRingData}
+    height={200}
+    width={200}
+  />,
 );

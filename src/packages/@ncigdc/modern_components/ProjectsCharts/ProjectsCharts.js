@@ -4,7 +4,7 @@ import QuestionIcon from 'react-icons/lib/fa/question-circle';
 import * as d3 from 'd3';
 import { compose, withState, withProps } from 'recompose';
 import JSURL from 'jsurl';
-import { sortBy, flatMap, groupBy } from 'lodash';
+import { flatMap, groupBy } from 'lodash';
 import Column from '@ncigdc/uikit/Flex/Column';
 import Row from '@ncigdc/uikit/Flex/Row';
 import { Tooltip } from '@ncigdc/uikit/Tooltip';
@@ -19,10 +19,7 @@ import type { TGroupContent, TGroupFilter } from '@ncigdc/utils/filters/types';
 import withPrimarySiteData from './PrimarySitesRing.relay';
 import PSR from './PrimarySitesRing';
 
-import {
-  HUMAN_BODY_SITES_MAP,
-  HUMAN_BODY_ALL_ALLOWED_SITES,
-} from '@ncigdc/utils/constants';
+import { HUMAN_BODY_SITES_MAP } from '@ncigdc/utils/constants';
 
 const PrimarySitesRing = withPrimarySiteData(PSR);
 
@@ -157,8 +154,8 @@ export default compose(
             projectId,
             percent:
               topGenesWithCasesPerProject[geneId][projectId] /
-              numUniqueCases *
-              100,
+                numUniqueCases *
+                100,
             count: topGenesWithCasesPerProject[geneId][projectId],
           })),
         },
@@ -206,38 +203,15 @@ export default compose(
           }),
           {},
         ),
-        total:
-          yAxisUnit === 'number'
-            ? stackedBarCalculations[geneId].countTotal
-            : stackedBarCalculations[geneId].countTotal / numUniqueCases * 100,
+        total: yAxisUnit === 'number'
+          ? stackedBarCalculations[geneId].countTotal
+          : stackedBarCalculations[geneId].countTotal / numUniqueCases * 100,
       }))
       .sort((a, b) => b.total - a.total); // relay score sorting isn't returned in reliable order
 
     const totalCases = projects.reduce(
       (sum, p) => sum + p.summary.case_count,
       0,
-    );
-
-    const projectsInTopGenes = Object.keys(topGenesWithCasesPerProject).reduce(
-      (acc, g) => [...acc, ...Object.keys(topGenesWithCasesPerProject[g])],
-      [],
-    );
-
-    const primarySiteProjects = sortBy(projects, [
-      p => projectsInTopGenes.includes(p),
-      p => p.project_id,
-    ]).reduce(
-      (acc, p, i) => ({
-        ...acc,
-        [p.primary_site]: {
-          color: acc[p.primary_site] ? acc[p.primary_site].color : color(i),
-          projects: [
-            ...(acc[p.primary_site] || { projects: [] }).projects,
-            p.project_id,
-          ],
-        },
-      }),
-      {},
     );
 
     const primarySitesFromProjects = groupBy(
@@ -254,24 +228,17 @@ export default compose(
       p => HUMAN_BODY_SITES_MAP[p.primarySite] || p.primarySite,
     );
 
-    console.log(12, primarySiteProjects);
-    console.log(34, primarySitesFromProjects);
-
     // brighten project colors by a multiplier that's based on projects number, so the slices don't get too light
     // and if there's only two slices the colors are different enough
-    const primarySiteToColor = Object.keys(primarySiteProjects).reduce(
-      (primarySiteAcc, primarySite) => ({
-        ...primarySiteAcc,
+    const primarySiteToColor = Object.entries(primarySitesFromProjects).reduce(
+      (acc, [primarySite, projects], i) => ({
+        ...acc,
         [primarySite]: {
-          ...primarySiteProjects[primarySite],
-          projects: primarySiteProjects[primarySite].projects.reduce(
-            (acc, projectId, i) => ({
+          color: color(i),
+          projects: projects.reduce(
+            (acc, project, j) => ({
               ...acc,
-              [projectId]: d3
-                .color(primarySiteProjects[primarySite].color)
-                .darker(
-                  1 / primarySiteProjects[primarySite].projects.length * i,
-                ),
+              [project.projectId]: d3.color(color(i)).darker(1 / projects.length * j),
             }),
             {},
           ),
@@ -466,7 +433,14 @@ export default compose(
             <span style={{ transform: 'scale(0.75)' }} key="circle-wrapper">
               <PrimarySitesRing
                 projects={projects}
-                primarySiteToColor={primarySiteToColor}
+                primarySiteToColor={Object.entries(primarySiteToColor).reduce(
+                  (acc, [key, val]) => ({
+                    ...acc,
+                  [key]: val.color,
+                    ...val.projects,
+                  }),
+                  {},
+                )}
                 primarySitesFromProjects={primarySitesFromProjects}
               />
             </span>,

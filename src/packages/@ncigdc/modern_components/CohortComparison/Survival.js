@@ -6,7 +6,7 @@ import { Row } from '@ncigdc/uikit/Flex';
 import Tooltip from '@ncigdc/uikit/Tooltip/Tooltip';
 import { tableToolTipHint } from '@ncigdc/theme/mixins';
 import { stringifyJSONParam } from '@ncigdc/utils/uri';
-import CreateExploreCaseSetButton from '@ncigdc/modern_components/setButtons/CreateExploreCaseSetButton';
+import { CreateExploreCaseSetButton } from '@ncigdc/modern_components/withSetAction';
 import withRouter from '@ncigdc/utils/withRouter';
 
 const survivalFilters = [

@@ -1,21 +1,13 @@
 import React from 'react';
-
-import countComponents from '@ncigdc/modern_components/Counts/index';
-import CreateExploreCaseSetButton from '@ncigdc/modern_components/setButtons/CreateExploreCaseSetButton';
-import CreateExploreGeneSetButton from '@ncigdc/modern_components/setButtons/CreateExploreGeneSetButton';
-import CreateExploreSsmSetButton from '@ncigdc/modern_components/setButtons/CreateExploreSsmSetButton';
-
-const CREATE = {
-  case: CreateExploreCaseSetButton,
-  gene: CreateExploreGeneSetButton,
-  ssm: CreateExploreSsmSetButton,
-};
+import countComponents from '@ncigdc/modern_components/Counts';
+import withSetAction from '@ncigdc/modern_components/withSetAction';
+import Loader from '@ncigdc/uikit/Loaders/Loader';
 
 class Demo extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      states: Object.entries(props.sets).reduce((acc, [type, sets]) => {
+      setStates: Object.entries(props.sets).reduce((acc, [type, sets]) => {
         return Object.keys(sets).reduce((acc, id) => {
           acc.push({
             id,
@@ -28,62 +20,65 @@ class Demo extends React.Component {
       }, []),
     };
   }
+  componentWillUpdate(nextProps, nextState) {
+    nextState.setStates.forEach(({ count, id, type }, i) => {
+      if (count === 0 && this.state.setStates[i].count !== 0) {
+        nextProps.createSet({
+          type,
+          scope: 'explore',
+          action: 'create',
+          size: 10000,
+          set_id: id,
+          filters: nextProps.filters[id],
+          onComplete: () => {
+            const setStates = [...this.state.setStates];
+            setStates[i] = { ...setStates[i], created: true };
+            this.setState({ setStates });
+          },
+        });
+      }
+    });
+  }
   render() {
-    const { filters, children } = this.props;
-    return this.state.states.every(
+    const { children } = this.props;
+    const setsReady = this.state.setStates.every(
       state => state.count > 0 || state.created,
-    ) ? (
+    );
+    return setsReady ? (
       <div>{children}</div>
     ) : (
-      <div>
-        {this.state.states.map(({ count, id, type }, i) => {
+      <Loader>
+        {this.state.setStates.map(({ count, id, type }, i) => {
           const CountComponent = countComponents[type];
-          const CreateComponent = CREATE[type];
 
           return (
-            <div key={id}>
-              <CountComponent
-                filters={{
-                  op: 'and',
-                  content: [
-                    {
-                      op: 'in',
-                      content: {
-                        field: `${type}s.${type}_id`,
-                        value: [`set_id:${id}`],
-                      },
+            <CountComponent
+              key={id}
+              filters={{
+                op: 'and',
+                content: [
+                  {
+                    op: 'in',
+                    content: {
+                      field: `${type}s.${type}_id`,
+                      value: [`set_id:${id}`],
                     },
-                  ],
-                }}
-                handleCountChange={count => {
-                  const states = [...this.state.states];
-                  states[i] = { ...states[i], count };
-                  this.setState({ states });
-                }}
-              >
-                {() => {}}
-              </CountComponent>
-
-              {count === 0 && (
-                <CreateComponent
-                  style={{ display: 'none' }}
-                  size={10000}
-                  shouldCallCreateSet
-                  set_id={id}
-                  filters={filters[id]}
-                  onComplete={() => {
-                    const states = [...this.state.states];
-                    states[i] = { ...states[i], created: true };
-                    this.setState({ states });
-                  }}
-                />
-              )}
-            </div>
+                  },
+                ],
+              }}
+              handleCountChange={count => {
+                const setStates = [...this.state.setStates];
+                setStates[i] = { ...setStates[i], count };
+                this.setState({ setStates });
+              }}
+            >
+              {() => {}}
+            </CountComponent>
           );
         })}
-      </div>
+      </Loader>
     );
   }
 }
 
-export default Demo;
+export default withSetAction(Demo);

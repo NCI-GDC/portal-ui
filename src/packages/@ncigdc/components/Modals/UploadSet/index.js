@@ -14,9 +14,9 @@ import {
   SSM_ID_FIELD_DISPLAY,
 } from '@ncigdc/utils/validateIds';
 
-import CreateRepositoryCaseSetButton from '@ncigdc/modern_components/setButtons/CreateRepositoryCaseSetButton';
-import CreateExploreGeneSetButton from '@ncigdc/modern_components/setButtons/CreateExploreGeneSetButton';
-import CreateExploreSsmSetButton from '@ncigdc/modern_components/setButtons/CreateExploreSsmSetButton';
+import { CreateRepositoryCaseSetButton } from '@ncigdc/modern_components/withSetAction';
+import { CreateExploreGeneSetButton } from '@ncigdc/modern_components/withSetAction';
+import { CreateExploreSsmSetButton } from '@ncigdc/modern_components/withSetAction';
 
 import { SpinnerIcon } from '@ncigdc/theme/icons';
 

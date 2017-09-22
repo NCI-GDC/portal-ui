@@ -30,9 +30,9 @@ import {
   UploadSsmSet,
 } from '@ncigdc/components/Modals/UploadSet';
 import { setModal } from '@ncigdc/dux/modal';
-import CreateRepositoryCaseSetButton from '@ncigdc/modern_components/setButtons/CreateRepositoryCaseSetButton';
-import CreateExploreGeneSetButton from '@ncigdc/modern_components/setButtons/CreateExploreGeneSetButton';
-import CreateExploreSsmSetButton from '@ncigdc/modern_components/setButtons/CreateExploreSsmSetButton';
+import { CreateRepositoryCaseSetButton } from '@ncigdc/modern_components/withSetAction';
+import { CreateExploreGeneSetButton } from '@ncigdc/modern_components/withSetAction';
+import { CreateExploreSsmSetButton } from '@ncigdc/modern_components/withSetAction';
 import { UploadAndSaveSetModal } from '@ncigdc/components/Modals/SaveSetModal';
 import Dropdown from '@ncigdc/uikit/Dropdown';
 import DropdownItem from '@ncigdc/uikit/DropdownItem';

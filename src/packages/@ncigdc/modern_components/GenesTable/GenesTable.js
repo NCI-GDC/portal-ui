@@ -9,9 +9,9 @@ import { Row } from '@ncigdc/uikit/Flex';
 import Pagination from '@ncigdc/components/Pagination';
 import TableActions from '@ncigdc/components/TableActions';
 import Table, { Tr } from '@ncigdc/uikit/Table';
-import CreateExploreGeneSetButton from '@ncigdc/modern_components/setButtons/CreateExploreGeneSetButton';
-import AppendExploreGeneSetButton from '@ncigdc/modern_components/setButtons/AppendExploreGeneSetButton';
-import RemoveFromExploreGeneSetButton from '@ncigdc/modern_components/setButtons/RemoveFromExploreGeneSetButton';
+import { CreateExploreGeneSetButton } from '@ncigdc/modern_components/withSetAction';
+import { AppendExploreGeneSetButton } from '@ncigdc/modern_components/withSetAction';
+import { RemoveFromExploreGeneSetButton } from '@ncigdc/modern_components/withSetAction';
 
 import tableModel from './GenesTable.model';
 import { theme } from '@ncigdc/theme';

@@ -36,7 +36,7 @@ const RemoveSetModal = ({
     extraButtons={
       <RemoveFromSetButton
         disabled={!selected}
-        setId={`set_id:${selected}`}
+        set_id={`set_id:${selected}`}
         filters={filters}
         action="remove"
         onComplete={setId => {

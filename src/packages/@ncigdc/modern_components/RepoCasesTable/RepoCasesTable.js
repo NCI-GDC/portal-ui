@@ -9,9 +9,9 @@ import { Row } from '@ncigdc/uikit/Flex';
 import TableActions from '@ncigdc/components/TableActions';
 import tableModels from '@ncigdc/tableModels';
 import Table, { Tr } from '@ncigdc/uikit/Table';
-import CreateRepositoryCaseSetButton from '@ncigdc/modern_components/setButtons/CreateRepositoryCaseSetButton';
-import AppendRepositoryCaseSetButton from '@ncigdc/modern_components/setButtons/AppendRepositoryCaseSetButton';
-import RemoveFromRepositoryCaseSetButton from '@ncigdc/modern_components/setButtons/RemoveFromRepositoryCaseSetButton';
+import { CreateRepositoryCaseSetButton } from '@ncigdc/modern_components/withSetAction';
+import { AppendRepositoryCaseSetButton } from '@ncigdc/modern_components/withSetAction';
+import { RemoveFromRepositoryCaseSetButton } from '@ncigdc/modern_components/withSetAction';
 import { theme } from '@ncigdc/theme';
 import withSelectIds from '@ncigdc/utils/withSelectIds';
 

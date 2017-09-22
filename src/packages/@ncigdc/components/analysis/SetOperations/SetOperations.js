@@ -10,9 +10,9 @@ import {
 } from '@ncigdc/modern_components/Counts';
 import withRouter from '@ncigdc/utils/withRouter';
 import { WithSize } from '@ncigdc/utils/withSize';
-import CreateExploreCaseSetButton from '@ncigdc/modern_components/setButtons/CreateExploreCaseSetButton';
-import CreateExploreGeneSetButton from '@ncigdc/modern_components/setButtons/CreateExploreGeneSetButton';
-import CreateExploreSsmSetButton from '@ncigdc/modern_components/setButtons/CreateExploreSsmSetButton';
+import { CreateExploreCaseSetButton } from '@ncigdc/modern_components/withSetAction';
+import { CreateExploreGeneSetButton } from '@ncigdc/modern_components/withSetAction';
+import { CreateExploreSsmSetButton } from '@ncigdc/modern_components/withSetAction';
 import OpsTable from './OpsTable';
 import SetTable from './SetTable';
 

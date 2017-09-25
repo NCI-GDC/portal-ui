@@ -17,7 +17,7 @@ export default compose(
     style,
   }) => (
     <div style={style}>
-      <label style={{ marginTop: 10 }}>
+      <label style={{ marginTop: 10, width: '100%' }}>
         {labelText}
         <br />
         <input

@@ -30,16 +30,22 @@ const CollapsibleList = ({
   limit = 2,
   expanded,
   toggleExpand,
+  AlternateText = () => null,
+  ToggleText = ({ expanded }) =>
+    expanded
+      ? <span>{`\u25B4 less`}</span>
+      : <span>{`\u25BE ${data.length - limit} more`}</span>,
   ...props
 }) =>
   <List style={style || {}} {...props}>
+    {!expanded && <AlternateText />}
     {data
       .slice(0, expanded ? data.length : limit)
       .map((d, i) => <li key={i}>{d}</li>)}
     {data.length > limit &&
       <Toggle>
         <NotUnderlinedLink onClick={() => toggleExpand(v => !v)}>
-          {expanded ? '\u25B4 less' : `\u25BE ${data.length - limit} more`}
+          <ToggleText expanded={expanded} />
         </NotUnderlinedLink>
       </Toggle>}
   </List>;

@@ -42,8 +42,8 @@ export default (Component: any) => {
 
         if (
           !forceCreate &&
-          ((setOnlyInCurrentFilters && !set_id) ||
-            set_id === get(content, 'value[0]', ''))
+          (setOnlyInCurrentFilters &&
+            (!set_id || set_id === get(content, 'value[0]', '')))
         ) {
           const setId = get(content, 'value[0]', '').substring(
             'set_id:'.length,

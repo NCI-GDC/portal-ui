@@ -68,7 +68,7 @@ export const MUTATION_SUBTYPE_MAP = {
 
 export const DNA_CHANGE_MARKERS = ['del', 'ins', '>'];
 
-export const HUMAN_BODY_SITES_MAP = {
+export const PRIMARY_SITES_MAP = {
   Bladder: 'Bladder',
   Breast: 'Breast',
   Esophagus: 'Esophagus',

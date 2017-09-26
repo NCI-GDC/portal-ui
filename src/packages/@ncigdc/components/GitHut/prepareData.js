@@ -1,5 +1,5 @@
 import { uniq } from 'lodash';
-import { DATA_CATEGORIES, HUMAN_BODY_SITES_MAP } from '@ncigdc/utils/constants';
+import { DATA_CATEGORIES, PRIMARY_SITES_MAP } from '@ncigdc/utils/constants';
 
 const normalize = str => str.toLowerCase().replace(/\s+/g, '');
 const DEFAULT_UNKNOWN_VAL = 'Unknown';
@@ -21,7 +21,7 @@ export default function(data) {
           name: project.name || DEFAULT_UNKNOWN_VAL,
           primary_site: uniq(
             (project.primary_site || [DEFAULT_UNKNOWN_VAL])
-              .map(p => HUMAN_BODY_SITES_MAP[p] || p),
+              .map(p => PRIMARY_SITES_MAP[p] || p),
           ),
           file_count: project.summary.file_count,
           file_size: project.summary.file_size,

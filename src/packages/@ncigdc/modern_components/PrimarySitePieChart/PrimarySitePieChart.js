@@ -27,7 +27,13 @@ const PrimarySitePieChart = ({
       if (!bucket) return acc;
       const existing = acc[primarySite] || {};
       const primarySiteCasesCount = (existing.value || 0) + bucket.doc_count;
-
+      const allPrimarySites = uniq(
+        [primarySite].concat(
+          Object.entries(PRIMARY_SITES_MAP)
+            .filter(([, v]) => v === primarySite)
+            .map(([k]) => k),
+        ),
+      );
       return {
         ...acc,
         [primarySite]: {
@@ -35,7 +41,7 @@ const PrimarySitePieChart = ({
           value: primarySiteCasesCount,
           tooltip: (
             <span>
-              <b>{primarySite}</b><br />
+              <b>{allPrimarySites.map(p => <span key={p}>{p}<br /></span>)}</b>
               {primarySiteCasesCount.toLocaleString()}
               {' '}
               case
@@ -47,12 +53,7 @@ const PrimarySitePieChart = ({
               {
                 filters: setFilter({
                   field: 'projects.primary_site',
-                  value: uniq(
-                    Object.entries(PRIMARY_SITES_MAP)
-                      .filter(([, v]) => v === primarySite)
-                      .map(([k]) => k)
-                      .concat(primarySite),
-                  ),
+                  value: allPrimarySites,
                 }),
               },
               query,
@@ -73,7 +74,7 @@ const PrimarySitePieChart = ({
               value: bucket.doc_count,
               tooltip: (
                 <span>
-                  <b>{project.name}</b><br />
+                  <b>{project.project_id}: {project.name}</b><br />
                   {bucket.doc_count.toLocaleString()}
                   {' '}
                   case

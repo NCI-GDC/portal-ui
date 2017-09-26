@@ -1,5 +1,5 @@
 import React from 'react';
-import _ from 'lodash';
+import { union, truncate } from 'lodash';
 import { connect } from 'react-redux';
 import { compose, withState, withProps } from 'recompose';
 import Table, { Tr, Td, Th } from '@ncigdc/uikit/Table';
@@ -14,11 +14,13 @@ import CreateOrOpenAnalysis from '@ncigdc/components/CreateOrOpenAnalysis';
 import Alias from '@ncigdc/components/Alias';
 import FacetTable from './FacetTable';
 import Survival from './Survival';
+import { getLowerAgeYears, getUpperAgeYears } from '@ncigdc/utils/ageDisplay';
 
 const mapping = {
   'demographic.gender': 'Gender',
   'diagnoses.vital_status': 'Vital Status',
   'demographic.race': 'Race',
+  'diagnoses.age_at_diagnosis': 'Age at Diagnosis',
 };
 
 const initialState = {
@@ -27,6 +29,70 @@ const initialState = {
 
 const SET1_COLOUR = 'rgb(158, 124, 36)';
 const SET2_COLOUR = 'rgb(29, 97, 135)';
+
+const transformAgeAtDiagnosis = (buckets, compareBuckets) => {
+  const unionWithCompareAndFillEmpties = () => {
+    return union(
+      buckets.map(({ key }) => key),
+      compareBuckets.map(({ key }) => key),
+    )
+      .map(key => {
+        const bucket = buckets.find(b => b.key === key);
+        if (bucket) {
+          return bucket;
+        }
+        return {
+          key,
+          doc_count: 0,
+        };
+      })
+      .map(({ doc_count, key }) => ({
+        doc_count,
+        key: parseInt(key, 10),
+      }));
+  };
+
+  const buildDisplayKeyAndFilters = (acc, { doc_count, key }) => {
+    const displayRange = `${getLowerAgeYears(key)}${acc.nextAge === 0
+      ? '+'
+      : ' - ' + getUpperAgeYears(acc.nextAge)}`;
+    return {
+      nextAge: key,
+      data: [
+        ...acc.data,
+        {
+          doc_count,
+          key: `${displayRange} years`,
+          filters: [
+            {
+              op: '>=',
+              content: {
+                field: 'cases.diagnoses.age_at_diagnosis',
+                value: [key],
+              },
+            },
+            ...(acc.nextAge !== 0 && [
+              {
+                op: '<=',
+                content: {
+                  field: 'cases.diagnoses.age_at_diagnosis',
+                  value: [acc.nextAge],
+                },
+              },
+            ]),
+          ],
+        },
+      ],
+    };
+  };
+  return {
+    buckets: unionWithCompareAndFillEmpties()
+      .sort((a, b) => b.key - a.key) // iterate descending to populate nextAge
+      .reduce(buildDisplayKeyAndFilters, { nextAge: 0, data: [] })
+      .data.slice(0)
+      .reverse(), // but display ascending
+  };
+};
 
 export default compose(
   connect(),
@@ -75,13 +141,13 @@ export default compose(
   }) => {
     const Set1 = (
       <span style={{ color: SET1_COLOUR, fontWeight: 'bold' }}>
-        {_.truncate(setName1, { length: 50 })}
+        {truncate(setName1, { length: 50 })}
       </span>
     );
 
     const Set2 = (
       <span style={{ color: SET2_COLOUR, fontWeight: 'bold' }}>
-        {_.truncate(setName2, { length: 50 })}
+        {truncate(setName2, { length: 50 })}
       </span>
     );
 
@@ -218,8 +284,24 @@ export default compose(
             key: field,
             mapping,
             field,
-            data1: JSON.parse(result1.facets),
-            data2: JSON.parse(result2.facets),
+            data1: {
+              ...JSON.parse(result1.facets),
+              'diagnoses.age_at_diagnosis': transformAgeAtDiagnosis(
+                result1.aggregations.diagnoses__age_at_diagnosis.histogram
+                  .buckets,
+                result2.aggregations.diagnoses__age_at_diagnosis.histogram
+                  .buckets,
+              ),
+            },
+            data2: {
+              ...JSON.parse(result2.facets),
+              'diagnoses.age_at_diagnosis': transformAgeAtDiagnosis(
+                result2.aggregations.diagnoses__age_at_diagnosis.histogram
+                  .buckets,
+                result1.aggregations.diagnoses__age_at_diagnosis.histogram
+                  .buckets,
+              ),
+            },
             result1,
             result2,
             Set1,

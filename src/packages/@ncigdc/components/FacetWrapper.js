@@ -118,8 +118,8 @@ const FacetWrapper = compose(
         <RangeFacet
           field={facet.full}
           convertDays={false}
-          max={aggregation.max}
-          min={aggregation.min}
+          max={(aggregation.stats || { max: 0 }).max}
+          min={(aggregation.stats || { min: 0 }).min}
           {...commonProps}
           {...additionalProps}
         />

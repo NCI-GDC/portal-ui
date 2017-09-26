@@ -10,6 +10,11 @@ import { parseFilterParam } from '@ncigdc/utils/uri';
 import Input from '@ncigdc/uikit/Form/Input';
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import ExclamationTriangle from '@ncigdc/theme/icons/ExclamationTriangle';
+import {
+  DAYS_IN_YEAR,
+  getLowerAgeYears,
+  getUpperAgeYears,
+} from '@ncigdc/utils/ageDisplay';
 
 import { Container, InputLabel, GoLink } from './';
 
@@ -26,14 +31,13 @@ const getCurrentFromAndTo = ({ field, query }) => {
   );
 };
 
-const conversionFactor = 365.25;
-const warningDays = Math.floor(90 * conversionFactor);
+const warningDays = Math.floor(90 * DAYS_IN_YEAR);
 const convertMaxMin = ({ max, min, convertDays, selectedUnit, setState }) => {
   if (convertDays && selectedUnit === 'years') {
     setState(s => ({
       ...s,
-      minDisplayed: Math.floor(min / conversionFactor),
-      maxDisplayed: Math.ceil((max + 1 - conversionFactor) / conversionFactor),
+      minDisplayed: Math.floor(min / DAYS_IN_YEAR),
+      maxDisplayed: Math.ceil((max + 1 - DAYS_IN_YEAR) / DAYS_IN_YEAR),
     }));
   } else {
     setState(s => ({ ...s, maxDisplayed: max || 0, minDisplayed: min || 0 }));
@@ -52,10 +56,8 @@ const inputChanged = ({ from, to, convertDays, selectedUnit, setState }) => {
   } else if (selectedUnit === 'years') {
     setState(s => ({
       ...s,
-      from: from ? Math.floor(from * conversionFactor) : undefined,
-      to: to
-        ? Math.floor(to * conversionFactor + conversionFactor - 1)
-        : undefined,
+      from: from ? Math.floor(from * DAYS_IN_YEAR) : undefined,
+      to: to ? Math.floor(to * DAYS_IN_YEAR + DAYS_IN_YEAR - 1) : undefined,
       fromDisplayed: from ? from : '',
       toDisplayed: to ? to : '',
     }));
@@ -76,8 +78,8 @@ const convertInputs = ({ from, to, selectedUnit, setState }) => {
       ...s,
       from,
       to,
-      fromDisplayed: Math.ceil(from / conversionFactor),
-      toDisplayed: Math.ceil((to + 1 - conversionFactor) / conversionFactor),
+      fromDisplayed: getLowerAgeYears(parseInt(from, 10)),
+      toDisplayed: getUpperAgeYears(parseInt(to, 10)),
     }));
   }
 };

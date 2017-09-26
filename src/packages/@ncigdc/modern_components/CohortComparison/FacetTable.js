@@ -122,13 +122,17 @@ export default compose(
                                   value: [`set_id:${set1}`],
                                 },
                               },
-                              {
-                                op: 'in',
-                                content: {
-                                  field,
-                                  value: [set1_bucket.key],
-                                },
-                              },
+                              ...(set1_bucket.filters
+                                ? set1_bucket.filters
+                                : [
+                                    {
+                                      op: 'in',
+                                      content: {
+                                        field,
+                                        value: [set1_bucket.key],
+                                      },
+                                    },
+                                  ]),
                             ],
                           },
                         }}
@@ -160,13 +164,17 @@ export default compose(
                                   value: [`set_id:${set2}`],
                                 },
                               },
-                              {
-                                op: 'in',
-                                content: {
-                                  field,
-                                  value: [set2_bucket.key],
-                                },
-                              },
+                              ...(set2_bucket.filters
+                                ? set2_bucket.filters
+                                : [
+                                    {
+                                      op: 'in',
+                                      content: {
+                                        field,
+                                        value: [set2_bucket.key],
+                                      },
+                                    },
+                                  ]),
                             ],
                           },
                         }}

@@ -18,7 +18,7 @@ import { makeFilter } from '@ncigdc/utils/filters';
 import styled from '@ncigdc/theme/styled';
 import './humanbody.css';
 import {
-  HUMAN_BODY_SITES_MAP,
+  PRIMARY_SITES_MAP,
   HUMAN_BODY_ALL_ALLOWED_SITES,
 } from '@ncigdc/utils/constants';
 import { groupBy, map } from 'lodash';
@@ -44,7 +44,7 @@ export default compose(
     groupedData: map(
       groupBy(
         viewer.repository.cases.aggregations.primary_site.buckets,
-        b => HUMAN_BODY_SITES_MAP[b.key] || b.key,
+        b => PRIMARY_SITES_MAP[b.key] || b.key,
       ),
       (group, majorPrimarySite) => ({
         key: majorPrimarySite,

@@ -14,7 +14,7 @@ import {
   withPropsOnChange,
 } from 'recompose';
 import JSURL from 'jsurl';
-import { isEqual, sortBy } from 'lodash';
+import { isEqual, sortBy, uniq } from 'lodash';
 
 // Custom
 import Column from '@ncigdc/uikit/Flex/Column';
@@ -24,10 +24,8 @@ import { Tooltip } from '@ncigdc/uikit/Tooltip';
 
 import withRouter from '@ncigdc/utils/withRouter';
 import { fetchApi } from '@ncigdc/utils/ajax';
-import { setFilter, mergeQuery, removeFilter } from '@ncigdc/utils/filters';
-import { removeEmptyKeys } from '@ncigdc/utils/uri';
-
-import DoubleRingChart from '@ncigdc/components/Charts/DoubleRingChart';
+import { removeFilter } from '@ncigdc/utils/filters';
+import PrimarySitePieChart from '@ncigdc/modern_components/PrimarySitePieChart';
 import StackedBarChart from '@ncigdc/components/Charts/StackedBarChart';
 import ExploreLink from '@ncigdc/components/Links/ExploreLink';
 
@@ -35,6 +33,7 @@ import styled from '@ncigdc/theme/styled';
 import { withTheme } from '@ncigdc/theme';
 import caseHasMutation from '@ncigdc/utils/filters/prepared/caseHasMutation';
 import significantConsequences from '@ncigdc/utils/filters/prepared/significantConsequences';
+import { PRIMARY_SITES_MAP } from '@ncigdc/utils/constants';
 import type { TGroupContent, TGroupFilter } from '@ncigdc/utils/filters/types';
 
 const color = d3.scaleOrdinal([
@@ -71,8 +70,6 @@ type TProps = {
   setYAxisUnit?: Function,
   hits: { edges: Array<Object> },
   theme: Object,
-  query: Object,
-  pathname: string,
   push: Function,
   explore: {
     cases: {
@@ -117,6 +114,51 @@ function getGenes({ relay, caseCountFilters, fmgChartFilters }: TProps): void {
       : null,
     fmgChart_filters: fmgChartFilters,
   });
+}
+
+function createPrimarySiteColorMap({ projects, topGenesWithCasesPerProject }) {
+  const projectsInTopGenes = Object.values(topGenesWithCasesPerProject)
+    .map((projects: any) => Object.keys(projects))
+    .reduce((a, b) => a.concat(b), []);
+
+  let i = 0;
+  const primarySiteProjects = sortBy(projects, [
+    p => projectsInTopGenes.includes(p),
+    p => p.project_id,
+  ]).reduce((acc, project) => {
+    return project.primary_site.reduce((acc, primarySite) => {
+      const existing = acc[primarySite] || {};
+
+      return {
+        ...acc,
+        [primarySite]: {
+          color: existing.color || color(i++),
+          projects: [...(existing.projects || []), project.project_id],
+        },
+      };
+    }, acc);
+  }, {});
+
+  // brighten project colors by a multiplier that's based on projects number, so the slices don't get too light
+  // and if there's only two slices the colors are different enough
+  return Object.entries(primarySiteProjects).reduce(
+    (primarySiteAcc, [primarySite, value]: [any, any]) => ({
+      ...primarySiteAcc,
+      [primarySite]: {
+        ...value,
+        projects: value.projects.reduce(
+          (acc, projectId, i) => ({
+            ...acc,
+            [projectId]: d3
+              .color(value.color)
+              .darker(1 / value.projects.length * i),
+          }),
+          {},
+        ),
+      },
+    }),
+    {},
+  );
 }
 
 const ProjectsChartsComponent = compose(
@@ -240,13 +282,19 @@ const ProjectsChartsComponent = compose(
     setYAxisUnit,
     hits,
     theme,
-    query,
-    pathname,
     push,
     caseCountFilters,
     fmgChartFilters,
   }: TProps) => {
-    const projects = hits.edges.map(x => x.node);
+    const projects = hits.edges.map(({ node }) => ({
+      ...node,
+      primary_site: uniq(
+        node.primary_site.map(
+          primarySite => PRIMARY_SITES_MAP[primarySite] || primarySite,
+        ),
+      ),
+    }));
+
     const stackedBarCalculations = topGenesSource.reduce(
       (acc, { gene_id: geneId }) => ({
         ...acc,
@@ -316,132 +364,15 @@ const ProjectsChartsComponent = compose(
       }))
       .sort((a, b) => b.total - a.total); // relay score sorting isn't returned in reliable order
 
-    const doubleRingData = projects.reduce((acc, p) => {
-      const primarySiteCasesCount = acc[p.primary_site]
-        ? acc[p.primary_site].value + p.summary.case_count
-        : p.summary.case_count;
-
-      return {
-        ...acc,
-        [p.primary_site]: {
-          value: primarySiteCasesCount,
-          tooltip: (
-            <span>
-              <b>{p.primary_site}</b><br />
-              {primarySiteCasesCount.toLocaleString()}
-              {' '}
-              case
-              {primarySiteCasesCount > 1 ? 's' : ''}
-            </span>
-          ),
-          clickHandler: () => {
-            const newQuery = mergeQuery(
-              {
-                filters: setFilter({
-                  field: 'projects.primary_site',
-                  value: [].concat(p.primary_site || []),
-                }),
-              },
-              query,
-              'toggle',
-            );
-
-            const q = removeEmptyKeys({
-              ...newQuery,
-              filters: newQuery.filters && JSURL.stringify(newQuery.filters),
-            });
-
-            push({ pathname, query: q });
-          },
-          outer: [
-            ...(acc[p.primary_site] || { outer: [] }).outer,
-            {
-              key: p.project_id,
-              value: p.summary.case_count,
-              tooltip: (
-                <span>
-                  <b>{p.name}</b><br />
-                  {p.summary.case_count.toLocaleString()}
-                  {' '}
-                  case
-                  {p.summary.case_count > 1 ? 's' : ''}
-                </span>
-              ),
-              clickHandler: () => {
-                const newQuery = mergeQuery(
-                  {
-                    filters: setFilter({
-                      field: 'projects.project_id',
-                      value: [].concat(p.project_id || []),
-                    }),
-                  },
-                  query,
-                  'toggle',
-                );
-
-                const q = removeEmptyKeys({
-                  ...newQuery,
-                  filters:
-                    newQuery.filters && JSURL.stringify(newQuery.filters),
-                });
-
-                push({ pathname, query: q });
-              },
-            },
-          ],
-        },
-      };
-    }, {});
-
     const totalCases = projects.reduce(
       (sum, p) => sum + p.summary.case_count,
       0,
     );
 
-    const projectsInTopGenes = Object.keys(topGenesWithCasesPerProject).reduce(
-      (acc, g) => [...acc, ...Object.keys(topGenesWithCasesPerProject[g])],
-      [],
-    );
-
-    const primarySiteProjects = sortBy(projects, [
-      p => projectsInTopGenes.includes(p),
-      p => p.project_id,
-    ]).reduce(
-      (acc, p, i) => ({
-        ...acc,
-        [p.primary_site]: {
-          color: acc[p.primary_site] ? acc[p.primary_site].color : color(i),
-          projects: [
-            ...(acc[p.primary_site] || { projects: [] }).projects,
-            p.project_id,
-          ],
-        },
-      }),
-      {},
-    );
-
-    // brighten project colors by a multiplier that's based on projects number, so the slices don't get too light
-    // and if there's only two slices the colors are different enough
-    const primarySiteToColor = Object.keys(primarySiteProjects).reduce(
-      (primarySiteAcc, primarySite) => ({
-        ...primarySiteAcc,
-        [primarySite]: {
-          ...primarySiteProjects[primarySite],
-          projects: primarySiteProjects[primarySite].projects.reduce(
-            (acc, projectId, i) => ({
-              ...acc,
-              [projectId]: d3
-                .color(primarySiteProjects[primarySite].color)
-                .darker(
-                  1 / primarySiteProjects[primarySite].projects.length * i,
-                ),
-            }),
-            {},
-          ),
-        },
-      }),
-      {},
-    );
+    const primarySiteToColor = createPrimarySiteColorMap({
+      projects,
+      topGenesWithCasesPerProject,
+    });
 
     return (
       <Container className="test-projects-charts">
@@ -637,15 +568,9 @@ const ProjectsChartsComponent = compose(
                     : ''}`}
                 </div>,
                 <span style={{ transform: 'scale(0.75)' }} key="circle-wrapper">
-                  <DoubleRingChart
-                    key="pie-chart"
-                    colors={primarySiteToColor}
-                    data={Object.keys(doubleRingData).map(primarySite => ({
-                      key: primarySite,
-                      ...doubleRingData[primarySite],
-                    }))}
-                    height={200}
-                    width={200}
+                  <PrimarySitePieChart
+                    primarySiteToColor={primarySiteToColor}
+                    projects={projects}
                   />
                 </span>,
               ]

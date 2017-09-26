@@ -4,6 +4,7 @@ import urlJoin from 'url-join';
 import { Environment, Network, RecordSource, Store } from 'relay-runtime';
 import md5 from 'blueimp-md5';
 import { setLoader, removeLoader } from '@ncigdc/dux/loaders';
+import { API } from '@ncigdc/utils/constants';
 
 const source = new RecordSource();
 const store = new Store(source);
@@ -25,20 +26,17 @@ function fetchQuery(operation, variables, cacheConfig, uploadables) {
 
   setTimeout(() => reduxStore.dispatch(setLoader(componentName)));
 
-  return fetch(
-    urlJoin(process.env.REACT_APP_API, `graphql/${componentName}?hash=${hash}`),
-    {
-      method: 'POST',
-      headers: {
-        // Add authentication and other headers here
-        'content-type': 'application/json',
-      },
-      body: JSON.stringify({
-        query: operation.text, // GraphQL text from input
-        variables,
-      }),
+  return fetch(urlJoin(API, `graphql/${componentName}?hash=${hash}`), {
+    method: 'POST',
+    headers: {
+      // Add authentication and other headers here
+      'content-type': 'application/json',
     },
-  ).then(response => {
+    body: JSON.stringify({
+      query: operation.text, // GraphQL text from input
+      variables,
+    }),
+  }).then(response => {
     setTimeout(() => reduxStore.dispatch(removeLoader(componentName)));
     return response.json();
   });

@@ -60,11 +60,47 @@ export default compose(
             { th: 'Project Name', td: project.name },
             {
               th: 'Disease Type',
-              td: <CollapsibleList data={project.disease_type} />,
+              td: (
+                <span>
+                  {project.disease_type.length > 1 &&
+                    <CollapsibleList
+                      data={project.disease_type}
+                      limit={0}
+                      toggleStyle={{ fontStyle: 'normal' }}
+                      liStyle={{
+                        whiteSpace: 'normal',
+                        listStyleType: 'disc',
+                        listStylePosition: 'inside',
+                      }}
+                      expandText={`${project.disease_type
+                        .length} Disease Types`}
+                      collapseText="collapse"
+                    />}
+                  {project.disease_type.length <= 1 && project.disease_type}
+                </span>
+              ),
             },
             {
               th: 'Primary Site',
-              td: <CollapsibleList data={project.primary_site} />,
+              td: (
+                <span>
+                  {project.primary_site.length > 1 &&
+                    <CollapsibleList
+                      data={project.primary_site}
+                      limit={0}
+                      toggleStyle={{ fontStyle: 'normal' }}
+                      liStyle={{
+                        whiteSpace: 'normal',
+                        listStyleType: 'disc',
+                        listStylePosition: 'inside',
+                      }}
+                      expandText={`${project.primary_site
+                        .length} Primary Sites`}
+                      collapseText="collapse"
+                    />}
+                  {project.primary_site.length <= 1 && project.primary_site}
+                </span>
+              ),
             },
             { th: 'Program', td: project.program.name },
           ]}

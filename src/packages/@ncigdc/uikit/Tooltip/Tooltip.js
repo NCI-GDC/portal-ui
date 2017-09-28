@@ -9,13 +9,15 @@ type TProps = {|
   setTooltip: Function,
 |};
 
-const Tooltip = ({ Component, children, setTooltip, ...props }: TProps) =>
-  <span
-    onMouseOver={() => setTooltip(Component)}
-    onMouseOut={() => setTooltip()}
-    {...props}
-  >
-    {children}
-  </span>;
+type TWrapped = Class<React$Component<*, *, *>> | string;
 
-export default withTooltip(Tooltip);
+export const tooltip = (Wrapped: TWrapped) =>
+  withTooltip(({ Component, children, setTooltip, ...props }: TProps) =>
+    <Wrapped
+      onMouseOver={() => setTooltip(Component)}
+      onMouseOut={() => setTooltip()}
+      {...props}
+    />,
+  );
+
+export default tooltip('span');

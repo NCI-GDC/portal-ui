@@ -4,9 +4,10 @@ import React from 'react';
 import Relay from 'react-relay/classic';
 
 import SearchPage from '@ncigdc/components/SearchPage';
-import ProjectsCharts from '@ncigdc/components/ProjectsCharts';
+import ProjectsCharts from '@ncigdc/modern_components/ProjectsCharts';
 import TabbedLinks from '@ncigdc/components/TabbedLinks';
 import GitHut from '@ncigdc/components/GitHut';
+import { Column } from '@ncigdc/uikit/Flex';
 
 import ProjectsTable from './ProjectsTable';
 import ProjectAggregations from './ProjectAggregations';
@@ -26,7 +27,7 @@ export type TProps = {
   setShowFacets: Function,
 };
 
-export const ProjectsPageComponent = (props: TProps) =>
+export const ProjectsPageComponent = (props: TProps) => (
   <SearchPage
     className="test-projects-page"
     filtersLinkProps={{
@@ -65,11 +66,8 @@ export const ProjectsPageComponent = (props: TProps) =>
       },
     ]}
     results={
-      <span>
-        <ProjectsCharts
-          hits={props.viewer.projects.hits}
-          explore={props.viewer.explore}
-        />
+      <Column spacing="2rem">
+        <ProjectsCharts />
         <TabbedLinks
           queryParam="projectsTableTab"
           defaultIndex={0}
@@ -91,9 +89,10 @@ export const ProjectsPageComponent = (props: TProps) =>
             },
           ]}
         />
-      </span>
+      </Column>
     }
-  />;
+  />
+);
 
 export const ProjectsPageQuery = {
   initialVariables: {
@@ -108,9 +107,6 @@ export const ProjectsPageQuery = {
   fragments: {
     viewer: () => Relay.QL`
       fragment on Root {
-        explore {
-          ${ProjectsCharts.getFragment('explore')}
-        }
         autocomplete: query(query: $idAutocomplete types: ["project"]) @include(if: $runAutocomplete) {
           hits {
             id
@@ -127,7 +123,6 @@ export const ProjectsPageQuery = {
           }
           hits(first: $size offset: $offset, sort: $projects_sort, filters: $filters) {
             ${ProjectsTable.getFragment('hits')}
-            ${ProjectsCharts.getFragment('hits')}
           }
         }
       }

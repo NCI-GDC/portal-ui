@@ -58,7 +58,7 @@ export default function columns(params) {
     },
     {
       id: 'primary_site',
-      displayName: ['Primary', 'Site'],
+      displayName: ['Major', 'Primary', 'Sites'],
       scale: 'linear',
     },
   ]);

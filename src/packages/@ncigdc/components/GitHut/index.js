@@ -150,7 +150,7 @@ class GitHutWrapper extends React.Component {
     return (
       <div className="githut">
         <div style={{ textAlign: 'center', fontSize: 20, marginTop: 20 }}>
-          Major Primary Sites
+          Case count per Data Category
         </div>
         <div
           style={{ width: '100%' }}

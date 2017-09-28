@@ -27,7 +27,6 @@ import { fetchApi } from '@ncigdc/utils/ajax';
 import { setFilter, mergeQuery, removeFilter } from '@ncigdc/utils/filters';
 import { removeEmptyKeys } from '@ncigdc/utils/uri';
 
-import DoubleRingChart from '@ncigdc/components/Charts/DoubleRingChart';
 import StackedBarChart from '@ncigdc/components/Charts/StackedBarChart';
 import ExploreLink from '@ncigdc/components/Links/ExploreLink';
 
@@ -36,6 +35,7 @@ import { withTheme } from '@ncigdc/theme';
 import caseHasMutation from '@ncigdc/utils/filters/prepared/caseHasMutation';
 import significantConsequences from '@ncigdc/utils/filters/prepared/significantConsequences';
 import type { TGroupContent, TGroupFilter } from '@ncigdc/utils/filters/types';
+import PieChart from '@ncigdc/components/Charts/PieChart';
 
 const color = d3.scaleOrdinal([
   ...d3.schemeCategory20,
@@ -315,83 +315,41 @@ const ProjectsChartsComponent = compose(
           : stackedBarCalculations[geneId].countTotal / numUniqueCases * 100,
       }))
       .sort((a, b) => b.total - a.total); // relay score sorting isn't returned in reliable order
-
-    const doubleRingData = projects.reduce((acc, p) => {
-      const primarySiteCasesCount = acc[p.primary_site]
-        ? acc[p.primary_site].value + p.summary.case_count
-        : p.summary.case_count;
-
+    const pieChartData = projects.map(project => {
+      const count = project.summary.case_count;
       return {
-        ...acc,
-        [p.primary_site]: {
-          value: primarySiteCasesCount,
-          tooltip: (
-            <span>
-              <b>{p.primary_site}</b><br />
-              {primarySiteCasesCount.toLocaleString()}
-              {' '}
-              case
-              {primarySiteCasesCount > 1 ? 's' : ''}
-            </span>
-          ),
-          clickHandler: () => {
-            const newQuery = mergeQuery(
-              {
-                filters: setFilter({
-                  field: 'projects.primary_site',
-                  value: [].concat(p.primary_site || []),
-                }),
-              },
-              query,
-              'toggle',
-            );
-
-            const q = removeEmptyKeys({
-              ...newQuery,
-              filters: newQuery.filters && JSURL.stringify(newQuery.filters),
-            });
-
-            push({ pathname, query: q });
-          },
-          outer: [
-            ...(acc[p.primary_site] || { outer: [] }).outer,
+        id: project.project_id,
+        count,
+        clickHandler: () => {
+          const newQuery = mergeQuery(
             {
-              key: p.project_id,
-              value: p.summary.case_count,
-              tooltip: (
-                <span>
-                  <b>{p.name}</b><br />
-                  {p.summary.case_count.toLocaleString()}
-                  {' '}
-                  case
-                  {p.summary.case_count > 1 ? 's' : ''}
-                </span>
-              ),
-              clickHandler: () => {
-                const newQuery = mergeQuery(
-                  {
-                    filters: setFilter({
-                      field: 'projects.project_id',
-                      value: [].concat(p.project_id || []),
-                    }),
-                  },
-                  query,
-                  'toggle',
-                );
-
-                const q = removeEmptyKeys({
-                  ...newQuery,
-                  filters:
-                    newQuery.filters && JSURL.stringify(newQuery.filters),
-                });
-
-                push({ pathname, query: q });
-              },
+              filters: setFilter({
+                field: 'projects.project_id',
+                value: [].concat(project.project_id || []),
+              }),
             },
-          ],
+            query,
+            'toggle',
+          );
+
+          const q = removeEmptyKeys({
+            ...newQuery,
+            filters: newQuery.filters && JSURL.stringify(newQuery.filters),
+          });
+
+          push({ pathname, query: q });
         },
+        tooltip: (
+          <span>
+            <b>
+              {project.project_id}: {project.name}
+            </b>
+            <br />
+            {count.toLocaleString()} case{count > 1 ? 's' : ''}
+          </span>
+        ),
       };
-    }, {});
+    });
 
     const totalCases = projects.reduce(
       (sum, p) => sum + p.summary.case_count,
@@ -636,18 +594,14 @@ const ProjectsChartsComponent = compose(
                     ? 's'
                     : ''}`}
                 </div>,
-                <span style={{ transform: 'scale(0.75)' }} key="circle-wrapper">
-                  <DoubleRingChart
-                    key="pie-chart"
-                    colors={primarySiteToColor}
-                    data={Object.keys(doubleRingData).map(primarySite => ({
-                      key: primarySite,
-                      ...doubleRingData[primarySite],
-                    }))}
-                    height={200}
-                    width={200}
-                  />
-                </span>,
+                <PieChart
+                  key="pie-chart"
+                  path="count"
+                  data={pieChartData}
+                  height={150}
+                  width={150}
+                  marginTop={25}
+                />,
               ]
             : <Row
                 style={{

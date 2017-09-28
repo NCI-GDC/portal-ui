@@ -1,6 +1,5 @@
 // @flow
 import React from 'react';
-import { sortBy } from 'lodash';
 import {
   RepositoryCasesLink,
   RepositoryFilesLink,
@@ -82,7 +81,7 @@ const projectsTableModel = [
       <Td
         key={node.disease_type}
         style={{
-          width: '200px',
+          maxWidth: '200px',
           padding: '3px 15px 3px 3px',
         }}
       >
@@ -107,7 +106,7 @@ const projectsTableModel = [
     td: ({ node }) =>
       <Td
         key="primary_site"
-        style={{ width: '200px', padding: '3px 15px 3px 3px' }}
+        style={{ maxWidth: '200px', padding: '3px 15px 3px 3px' }}
       >
         {node.primary_site.length > 1 &&
           <CollapsibleList

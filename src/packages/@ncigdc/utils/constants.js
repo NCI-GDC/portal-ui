@@ -101,6 +101,7 @@ export const HUMAN_BODY_SITES_MAP = {
   'Retroperitoneum And Peritoneum': 'Other And Ill-Defined Sites',
   Stomach: 'Stomach',
   Uterus: 'Uterus',
+  'Uterus, NOS': 'Uterus',
   'Liver And Intrahepatic Bile Ducts': 'Liver',
   Trachea: 'Head and Neck',
   'Other Endocrine Glands And Related Structures':

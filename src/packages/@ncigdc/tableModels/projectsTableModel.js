@@ -38,18 +38,20 @@ const dataCategoryColumns = createDataCategoryColumns({
 });
 
 const CasesLink: TLink = ({ node, fields = [], children }) =>
-  children === '0'
-    ? <span>0</span>
-    : <RepositoryCasesLink
-        query={{
-          filters: makeFilter([
-            { field: 'cases.project.project_id', value: [node.project_id] },
-            ...fields,
-          ]),
-        }}
-      >
-        {children}
-      </RepositoryCasesLink>;
+  children === '0' ? (
+    <span>0</span>
+  ) : (
+    <RepositoryCasesLink
+      query={{
+        filters: makeFilter([
+          { field: 'cases.project.project_id', value: [node.project_id] },
+          ...fields,
+        ]),
+      }}
+    >
+      {children}
+    </RepositoryCasesLink>
+  );
 
 const getProjectIdFilter = projects =>
   makeFilter([
@@ -66,10 +68,11 @@ const projectsTableModel = [
     sortable: true,
     downloadable: true,
     th: () => <Th rowSpan="2">Project</Th>,
-    td: ({ node }) =>
+    td: ({ node }) => (
       <Td>
         <ProjectLink uuid={node.project_id}>{node.project_id}</ProjectLink>
-      </Td>,
+      </Td>
+    ),
   },
   {
     name: 'Disease Type',
@@ -77,15 +80,16 @@ const projectsTableModel = [
     sortable: true,
     downloadable: true,
     th: () => <Th rowSpan="2">Disease Type</Th>,
-    td: ({ node }) =>
+    td: ({ node }) => (
       <Td
         key={node.disease_type}
         style={{
           maxWidth: '200px',
           padding: '3px 15px 3px 3px',
+          whiteSpace: 'normal',
         }}
       >
-        {node.disease_type.length > 1 &&
+        {node.disease_type.length > 1 && (
           <CollapsibleList
             liStyle={{ whiteSpace: 'normal', listStyleType: 'disc' }}
             toggleStyle={{ fontStyle: 'normal' }}
@@ -93,9 +97,11 @@ const projectsTableModel = [
             limit={0}
             expandText={`${node.disease_type.length} Disease Types`}
             collapseText="collapse"
-          />}
+          />
+        )}
         {node.disease_type.length <= 1 && node.disease_type}
-      </Td>,
+      </Td>
+    ),
   },
   {
     name: 'Primary Site',
@@ -103,12 +109,16 @@ const projectsTableModel = [
     sortable: true,
     downloadable: true,
     th: () => <Th rowSpan="2">Primary Site</Th>,
-    td: ({ node }) =>
+    td: ({ node }) => (
       <Td
         key="primary_site"
-        style={{ maxWidth: '200px', padding: '3px 15px 3px 3px' }}
+        style={{
+          maxWidth: '200px',
+          padding: '3px 15px 3px 3px',
+          whiteSpace: 'normal',
+        }}
       >
-        {node.primary_site.length > 1 &&
+        {node.primary_site.length > 1 && (
           <CollapsibleList
             liStyle={{ whiteSpace: 'normal', listStyleType: 'disc' }}
             toggleStyle={{ fontStyle: 'normal' }}
@@ -116,9 +126,11 @@ const projectsTableModel = [
             limit={0}
             expandText={`${node.primary_site.length} Primary Sites`}
             collapseText="collapse"
-          />}
+          />
+        )}
         {node.primary_site.length <= 1 && node.primary_site}
-      </Td>,
+      </Td>
+    ),
   },
   {
     name: 'Program',
@@ -134,13 +146,14 @@ const projectsTableModel = [
     sortable: true,
     downloadable: true,
     th: () => <NumTh rowSpan="2">Cases</NumTh>,
-    td: ({ node }) =>
+    td: ({ node }) => (
       <NumTd>
         <CasesLink node={node}>
           {node.summary.case_count.toLocaleString()}
         </CasesLink>
-      </NumTd>,
-    total: withRouter(({ hits, query }) =>
+      </NumTd>
+    ),
+    total: withRouter(({ hits, query }) => (
       <NumTd>
         <RepositoryCasesLink
           query={{
@@ -151,8 +164,8 @@ const projectsTableModel = [
             .reduce((acc, val) => acc + val.node.summary.case_count, 0)
             .toLocaleString()}
         </RepositoryCasesLink>
-      </NumTd>,
-    ),
+      </NumTd>
+    )),
   },
   ...dataCategoryColumns,
   {
@@ -161,7 +174,7 @@ const projectsTableModel = [
     sortable: true,
     downloadable: true,
     th: () => <NumTh rowSpan="2">Files</NumTh>,
-    td: ({ node }) =>
+    td: ({ node }) => (
       <NumTd>
         <RepositoryFilesLink
           query={{
@@ -172,8 +185,9 @@ const projectsTableModel = [
         >
           {node.summary.file_count.toLocaleString()}
         </RepositoryFilesLink>
-      </NumTd>,
-    total: withRouter(({ hits, query }) =>
+      </NumTd>
+    ),
+    total: withRouter(({ hits, query }) => (
       <NumTd>
         <RepositoryFilesLink
           query={{
@@ -184,8 +198,8 @@ const projectsTableModel = [
             .reduce((acc, val) => acc + val.node.summary.file_count, 0)
             .toLocaleString()}
         </RepositoryFilesLink>
-      </NumTd>,
-    ),
+      </NumTd>
+    )),
   },
   {
     name: 'File size',
@@ -195,12 +209,13 @@ const projectsTableModel = [
     downloadable: true,
     th: () => <NumTh rowSpan="2">File Size</NumTh>,
     td: ({ node }) => <NumTd>{formatFileSize(node.summary.file_size)}</NumTd>,
-    total: ({ hits }) =>
+    total: ({ hits }) => (
       <NumTd>
         {formatFileSize(
           hits.edges.reduce((acc, val) => acc + val.node.summary.file_size, 0),
         )}
-      </NumTd>,
+      </NumTd>
+    ),
   },
 ];
 

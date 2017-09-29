@@ -1,57 +1,66 @@
 import React from 'react';
-import TL from './Translate';
 
-const Alias = ({ i }) => (
-  <span>
-    <em>S</em>
-    <sub>{i}</sub>
-  </span>
-);
+import Alias from '@ncigdc/components/Alias';
+import { absoluteCenter } from '@ncigdc/theme/mixins';
 
-export default ({
-  ops,
-  CountComponent,
-  width,
-  offset = width - 500,
-  friction = 2,
-}) => (
-  <div
-    style={{
-      position: 'absolute',
-      width,
-      pointerEvents: 'none',
-      top: 0,
-    }}
-  >
-    <TL x={100 + offset / friction} y={100}>
-      <Alias i={1} />
-    </TL>
-    <TL x={380 + offset / friction} y={100}>
-      <Alias i={2} />
-    </TL>
-    <TL x={240 + offset / friction} y={340}>
-      <Alias i={3} />
-    </TL>
-    <TL x={241 + offset / friction} y={185}>
-      <CountComponent filters={ops[0].filters} />
-    </TL>
-    <TL x={241 + offset / friction} y={125}>
-      <CountComponent filters={ops[1].filters} />
-    </TL>
-    <TL x={295 + offset / friction} y={209}>
-      <CountComponent filters={ops[2].filters} />
-    </TL>
-    <TL x={185 + offset / friction} y={209}>
-      <CountComponent filters={ops[3].filters} />
-    </TL>
-    <TL x={165 + offset / friction} y={130}>
-      <CountComponent filters={ops[4].filters} />
-    </TL>
-    <TL x={320 + offset / friction} y={130}>
-      <CountComponent filters={ops[5].filters} />
-    </TL>
-    <TL x={241 + offset / friction} y={285}>
-      <CountComponent filters={ops[6].filters} />
-    </TL>
-  </div>
-);
+export default ({ ops, CountComponent, style }) => {
+  return (
+    <div
+      style={{
+        ...style,
+        position: 'absolute',
+        pointerEvents: 'none',
+        top: 0,
+        bottom: 0,
+        left: 0,
+        right: 0,
+      }}
+    >
+      <Alias
+        i={1}
+        style={{ position: 'absolute', bottom: '91%', right: '91%' }}
+      />
+      <Alias
+        i={2}
+        style={{ position: 'absolute', bottom: '91%', left: '91%' }}
+      />
+      <Alias
+        i={3}
+        style={{
+          position: 'absolute',
+          top: '101%',
+          left: '50%',
+          transform: 'translateX(-50%)',
+        }}
+      />
+      <CountComponent
+        filters={ops[4].filters}
+        style={{ ...absoluteCenter, left: '18.5%', top: '28%' }}
+      />
+      <CountComponent
+        filters={ops[3].filters}
+        style={{ ...absoluteCenter, left: '30%', top: '57%' }}
+      />
+      <CountComponent
+        filters={ops[1].filters}
+        style={{ ...absoluteCenter, top: '23%' }}
+      />
+      <CountComponent
+        filters={ops[0].filters}
+        style={{ ...absoluteCenter, top: '45%' }}
+      />
+      <CountComponent
+        filters={ops[6].filters}
+        style={{ ...absoluteCenter, top: '82%' }}
+      />
+      <CountComponent
+        filters={ops[2].filters}
+        style={{ ...absoluteCenter, left: '70%', top: '57%' }}
+      />
+      <CountComponent
+        filters={ops[5].filters}
+        style={{ ...absoluteCenter, left: '81.5%', top: '28%' }}
+      />
+    </div>
+  );
+};

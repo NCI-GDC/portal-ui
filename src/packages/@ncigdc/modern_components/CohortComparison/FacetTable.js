@@ -7,6 +7,7 @@ import ExploreLink from '@ncigdc/components/Links/ExploreLink';
 import BarChart from '@ncigdc/components/Charts/TwoBarChart';
 import { withTheme } from '@ncigdc/theme';
 import Pvalue from '@ncigdc/modern_components/Pvalue';
+import Alias from '@ncigdc/components/Alias';
 
 export default compose(
   withTheme,
@@ -23,7 +24,6 @@ export default compose(
     Set2,
     set1,
     set2,
-    Alias,
     palette,
     buckets1 = data1[field].buckets.filter(x => x.key !== '_missing'),
     buckets2 = data2[field].buckets.filter(x => x.key !== '_missing'),

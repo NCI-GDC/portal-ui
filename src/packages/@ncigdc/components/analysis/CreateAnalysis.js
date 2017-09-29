@@ -65,15 +65,9 @@ const CreateAnalysis = ({ analysis, setAnalysis, dispatch, push }) => {
       {availableAnalysis.map(analysis => {
         return (
           <Row key={analysis.type}>
-            <Row
-              style={{
-                width: 120,
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}
-            >
-              <analysis.Icon style={{ fontSize: 40, marginRight: 25 }} />
-            </Row>
+            <div style={{ width: 80, margin: 20 }}>
+              <analysis.Icon />
+            </div>
             <div>
               <h1 style={{ fontSize: '2rem' }}>{analysis.label}</h1>
               <div style={{ marginBottom: 10 }}>{analysis.description}</div>

@@ -7,17 +7,17 @@ import buildOps from './buildOps';
 
 export { VennSvg, buildOps };
 
-export default ({ style, width, ops, type, data, ...props }) => {
-  const OverlayComponent = data.length === 2 ? TwoSetOverlay : ThreeSetOverlay;
-
+export default ({ style, ops, type, ...props }) => {
+  const numCircles = ops.length === 3 ? 2 : 3;
+  const OverlayComponent = numCircles === 2 ? TwoSetOverlay : ThreeSetOverlay;
   return (
-    <div style={{ ...style, position: 'relative' }}>
-      <VennSvg {...props} width={width} ops={ops} data={data} />
-      <OverlayComponent
-        width={width}
-        ops={ops}
-        CountComponent={countComponents[type]}
-      />
+    <div style={{ padding: '0 20px', ...style }}>
+      <div
+        style={{ display: 'inline-block', position: 'relative', width: '100%' }}
+      >
+        <VennSvg {...props} ops={ops} numCircles={numCircles} />
+        <OverlayComponent ops={ops} CountComponent={countComponents[type]} />
+      </div>
     </div>
   );
 };

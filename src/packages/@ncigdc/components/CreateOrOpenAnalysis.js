@@ -16,6 +16,7 @@ const CreateOrOpenAnalysis = ({
   sets,
   type,
   children,
+  style,
   ...props
 }) => {
   const existing = (analysis.saved || [])
@@ -26,6 +27,7 @@ const CreateOrOpenAnalysis = ({
 
   return existing ? (
     <Link
+      style={style}
       query={{
         analysisTableTab: 'result',
         analysisId: existing.id,
@@ -35,6 +37,7 @@ const CreateOrOpenAnalysis = ({
     </Link>
   ) : (
     <UnstyledButton
+      style={style}
       onClick={() => {
         const created = new Date().toISOString();
         const id = created;

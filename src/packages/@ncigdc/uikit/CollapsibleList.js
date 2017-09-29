@@ -26,26 +26,26 @@ const Toggle = styled.li({
 
 const CollapsibleList = ({
   style,
+  liStyle,
+  toggleStyle,
   data,
   limit = 2,
+  expandText = `${data.length - limit} more`,
+  collapseText = 'less',
   expanded,
   toggleExpand,
-  AlternateText = () => null,
-  ToggleText = ({ expanded }) =>
-    expanded
-      ? <span>{`\u25B4 less`}</span>
-      : <span>{`\u25BE ${data.length - limit} more`}</span>,
   ...props
 }) =>
   <List style={style || {}} {...props}>
-    {!expanded && <AlternateText />}
-    {data
-      .slice(0, expanded ? data.length : limit)
-      .map((d, i) => <li key={i}>{d}</li>)}
+    {data.slice(0, expanded ? data.length : limit).map((d, i) =>
+      <li key={i} style={liStyle}>
+        {d}
+      </li>,
+    )}
     {data.length > limit &&
-      <Toggle>
+      <Toggle style={toggleStyle}>
         <NotUnderlinedLink onClick={() => toggleExpand(v => !v)}>
-          <ToggleText expanded={expanded} />
+          {expanded ? `\u25B4 ${collapseText}` : `\u25BE ${expandText}`}
         </NotUnderlinedLink>
       </Toggle>}
   </List>;

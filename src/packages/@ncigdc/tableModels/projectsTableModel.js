@@ -1,6 +1,5 @@
 // @flow
 import React from 'react';
-import { sortBy } from 'lodash';
 import {
   RepositoryCasesLink,
   RepositoryFilesLink,
@@ -79,21 +78,24 @@ const projectsTableModel = [
     downloadable: true,
     th: () => <Th rowSpan="2">Disease Type</Th>,
     td: ({ node }) =>
-      <Td key={node.disease_type} style={{ whiteSpace: 'normal' }}>
-        <CollapsibleList
-          data={sortBy(node.disease_type)}
-          limit={node.disease_type.length > 1 ? 0 : 1}
-          {...(node.disease_type.length === 1
-            ? {}
-            : {
-                AlternateText: () => <span>Multiple Diseases</span>,
-                ToggleText: ({ expanded }) =>
-                  expanded
-                    ? <span>{`\u25B4 less`}</span>
-                    : <span>{`\u25BE Show ${node.disease_type
-                        .length} items`}</span>,
-              })}
-        />
+      <Td
+        key={node.disease_type}
+        style={{
+          maxWidth: '200px',
+          padding: '3px 15px 3px 3px',
+          whiteSpace: 'normal',
+        }}
+      >
+        {node.disease_type.length > 1 &&
+          <CollapsibleList
+            liStyle={{ whiteSpace: 'normal', listStyleType: 'disc' }}
+            toggleStyle={{ fontStyle: 'normal' }}
+            data={node.disease_type}
+            limit={0}
+            expandText={`${node.disease_type.length} Disease Types`}
+            collapseText="collapse"
+          />}
+        {node.disease_type.length <= 1 && node.disease_type}
       </Td>,
   },
   {
@@ -103,21 +105,24 @@ const projectsTableModel = [
     downloadable: true,
     th: () => <Th rowSpan="2">Primary Site</Th>,
     td: ({ node }) =>
-      <Td key="primary_site">
-        <CollapsibleList
-          data={sortBy(node.primary_site)}
-          limit={node.primary_site.length > 1 ? 0 : 1}
-          {...(node.primary_site.length === 1
-            ? {}
-            : {
-                AlternateText: () => <span>Multiple Primary Sites</span>,
-                ToggleText: ({ expanded }) =>
-                  expanded
-                    ? <span>{`\u25B4 less`}</span>
-                    : <span>{`\u25BE Show ${node.primary_site
-                        .length} items`}</span>,
-              })}
-        />
+      <Td
+        key="primary_site"
+        style={{
+          maxWidth: '200px',
+          padding: '3px 15px 3px 3px',
+          whiteSpace: 'normal',
+        }}
+      >
+        {node.primary_site.length > 1 &&
+          <CollapsibleList
+            liStyle={{ whiteSpace: 'normal', listStyleType: 'disc' }}
+            toggleStyle={{ fontStyle: 'normal' }}
+            data={node.primary_site}
+            limit={0}
+            expandText={`${node.primary_site.length} Primary Sites`}
+            collapseText="collapse"
+          />}
+        {node.primary_site.length <= 1 && node.primary_site}
       </Td>,
   },
   {

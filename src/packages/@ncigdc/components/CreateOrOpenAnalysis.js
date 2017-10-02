@@ -6,6 +6,7 @@ import withRouter from '../utils/withRouter';
 import Link from './Links/Link';
 import UnstyledButton from '../uikit/UnstyledButton';
 import { addAnalysis } from '../dux/analysis';
+import queryString from 'query-string';
 
 const enhance = compose(connect(({ analysis }) => ({ analysis })), withRouter);
 
@@ -28,6 +29,7 @@ const CreateOrOpenAnalysis = ({
   return existing ? (
     <Link
       style={style}
+      target="_BLANK"
       query={{
         analysisTableTab: 'result',
         analysisId: existing.id,
@@ -50,12 +52,12 @@ const CreateOrOpenAnalysis = ({
             created,
           }),
         ).then(() => {
-          push({
-            query: {
+          window.open(
+            `analysis?${queryString.stringify({
               analysisTableTab: 'result',
               analysisId: id,
-            },
-          });
+            })}`,
+          );
         });
       }}
     >

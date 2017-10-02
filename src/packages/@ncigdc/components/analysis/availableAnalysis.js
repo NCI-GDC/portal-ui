@@ -62,7 +62,7 @@ const availableAnalysis: Array<TAnalysis> = [
       'Display Venn diagram and find intersection or union, etc. of your sets of the same type.',
     demoData: {
       sets: {
-        case: {
+        ssm: {
           'demo-bladder-high-mutect': 'Bladder, High impact, Mutect',
           'demo-bladder-high-varscan': 'Bladder, High impact, Varscan',
           'demo-bladder-high-muse': 'Bladder, High impact, Muse',

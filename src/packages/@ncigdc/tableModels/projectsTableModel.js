@@ -90,7 +90,7 @@ const projectsTableModel = [
           <CollapsibleList
             liStyle={{ whiteSpace: 'normal', listStyleType: 'disc' }}
             toggleStyle={{ fontStyle: 'normal' }}
-            data={node.disease_type}
+            data={node.disease_type.slice(0).sort()}
             limit={0}
             expandText={`${node.disease_type.length} Disease Types`}
             collapseText="collapse"
@@ -117,7 +117,7 @@ const projectsTableModel = [
           <CollapsibleList
             liStyle={{ whiteSpace: 'normal', listStyleType: 'disc' }}
             toggleStyle={{ fontStyle: 'normal' }}
-            data={node.primary_site}
+            data={node.primary_site.slice(0).sort()}
             limit={0}
             expandText={`${node.primary_site.length} Primary Sites`}
             collapseText="collapse"

@@ -64,7 +64,7 @@ export default compose(
                 <span>
                   {project.disease_type.length > 1 &&
                     <CollapsibleList
-                      data={project.disease_type}
+                      data={project.disease_type.slice(0).sort()}
                       limit={0}
                       toggleStyle={{ fontStyle: 'normal' }}
                       liStyle={{
@@ -86,7 +86,7 @@ export default compose(
                 <span>
                   {project.primary_site.length > 1 &&
                     <CollapsibleList
-                      data={project.primary_site}
+                      data={project.primary_site.slice(0).sort()}
                       limit={0}
                       toggleStyle={{ fontStyle: 'normal' }}
                       liStyle={{

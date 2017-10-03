@@ -66,7 +66,7 @@ export default compose(
               th: 'Disease Type',
               td: (
                 <span>
-                  {project.disease_type.length > 1 &&
+                  {project.disease_type.length > 1 && (
                     <CollapsibleList
                       data={project.disease_type.slice(0).sort()}
                       limit={0}
@@ -79,7 +79,8 @@ export default compose(
                       expandText={`${project.disease_type
                         .length} Disease Types`}
                       collapseText="collapse"
-                    />}
+                    />
+                  )}
                   {project.disease_type.length <= 1 && project.disease_type}
                 </span>
               ),
@@ -88,7 +89,7 @@ export default compose(
               th: 'Primary Site',
               td: (
                 <span>
-                  {project.primary_site.length > 1 &&
+                  {project.primary_site.length > 1 && (
                     <CollapsibleList
                       data={project.primary_site.slice(0).sort()}
                       limit={0}
@@ -101,7 +102,8 @@ export default compose(
                       expandText={`${project.primary_site
                         .length} Primary Sites`}
                       collapseText="collapse"
-                    />}
+                    />
+                  )}
                   {project.primary_site.length <= 1 && project.primary_site}
                 </span>
               ),

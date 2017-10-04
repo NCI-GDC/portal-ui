@@ -1,4 +1,6 @@
 // @flow
+export const UI_VERSION = process.env.REACT_APP_COMMIT_TAG;
+export const UI_COMMIT_HASH = process.env.REACT_APP_COMMIT_HASH;
 
 const localStorage = window.localStorage || {};
 

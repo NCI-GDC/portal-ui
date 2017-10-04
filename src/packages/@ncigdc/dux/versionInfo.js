@@ -1,6 +1,7 @@
 // @flow
 import { fetchApi } from '@ncigdc/utils/ajax';
 import { handleActions } from 'redux-actions';
+import { UI_VERSION, UI_COMMIT_HASH } from '@ncigdc/utils/constants';
 
 const API_BASE_URL = 'https://github.com/NCI-GDC/gdcapi';
 const UI_BASE_URL = 'https://github.com/NCI-GDC/portal-ui';
@@ -84,8 +85,8 @@ export function fetchApiVersionInfo(): Function {
 
 // Reducer
 const initialState = {
-  uiVersion: process.env.REACT_APP_COMMIT_TAG,
-  uiCommitHash: process.env.REACT_APP_COMMIT_HASH,
+  uiVersion: UI_VERSION,
+  uiCommitHash: UI_COMMIT_HASH,
   apiVersion: '',
   apiCommitHash: '',
   dataRelease: '',

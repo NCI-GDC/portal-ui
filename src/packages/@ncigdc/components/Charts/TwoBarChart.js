@@ -12,7 +12,7 @@ import { withTooltip } from '@ncigdc/uikit/Tooltip';
 import withSize from '@ncigdc/utils/withSize';
 import './style.css';
 
-const BarChart = (() => ({
+const BarChart = ({
   data1,
   data2,
   title,
@@ -24,6 +24,7 @@ const BarChart = (() => ({
   setTooltip,
   theme,
   size: { width },
+  minBarHeight = 0,
 }) => {
   const el = ReactFauxDOM.createElement('div');
   el.style.width = '100%';
@@ -126,76 +127,59 @@ const BarChart = (() => ({
 
   xG.selectAll('line').style('stroke', xAxisStyle.stroke);
 
-  const barGs = svg
+  const drawBar = (barG, styles, xOffset = 0) => {
+    barG
+      .append('rect')
+      .attr('class', 'bar')
+      .attr('fill', (styles || { fill: 'steelblue' }).fill)
+      .attr('width', x1.bandwidth() / 2)
+      .attr('y', d => {
+        const barOffset = y(d.value);
+        return barOffset === height
+          ? barOffset
+          : Math.min(barOffset, height - minBarHeight);
+      })
+      .attr('x', d => x1(d.label) + xOffset)
+      .attr('height', d => {
+        const barHeight = height - y(d.value);
+        return barHeight && Math.max(barHeight, minBarHeight);
+      })
+      .on('click', d => {
+        if (d.onClick) {
+          d.onClick();
+        }
+      })
+      .classed('pointer', d => d.onClick)
+      .on('mouseenter', d => {
+        setTooltip(d.tooltip);
+      })
+      .on('mouseleave', () => {
+        setTooltip();
+      });
+  };
+
+  svg
     .selectAll('g.chart')
     .data(data1)
     .enter()
     .append('g')
-    .attr('class', 'bar-g');
+    .attr('class', 'bar-g')
+    .each(function() {
+      drawBar(d3.select(this), styles.bars1);
+    });
 
-  const barG2s = svg
+  svg
     .selectAll('g.chart')
     .data(data2)
     .enter()
     .append('g')
-    .attr('class', 'bar-g');
-
-  const drawBar = barG => {
-    barG
-      .append('rect')
-      .attr('class', 'bar')
-      .attr('fill', (styles.bars1 || { fill: 'steelblue' }).fill)
-      .attr('width', x1.bandwidth() / 2)
-      .attr('y', d => y(d.value))
-      .attr('x', d => x1(d.label))
-      .attr('height', d => height - y(d.value))
-      .on('click', d => {
-        if (d.onClick) {
-          d.onClick();
-        }
-      })
-      .classed('pointer', d => d.onClick)
-      .on('mouseenter', d => {
-        setTooltip(d.tooltip);
-      })
-      .on('mouseleave', () => {
-        setTooltip();
-      });
-  };
-
-  const drawBar2 = barG => {
-    barG
-      .append('rect')
-      .attr('class', 'bar')
-      .attr('fill', (styles.bars2 || { fill: 'steelblue' }).fill)
-      .attr('width', x1.bandwidth() / 2)
-      .attr('y', d => y(d.value))
-      .attr('x', d => x1(d.label) + x1.bandwidth() / 2 + 4)
-      .attr('height', d => height - y(d.value))
-      .on('click', d => {
-        if (d.onClick) {
-          d.onClick();
-        }
-      })
-      .classed('pointer', d => d.onClick)
-      .on('mouseenter', d => {
-        setTooltip(d.tooltip);
-      })
-      .on('mouseleave', () => {
-        setTooltip();
-      });
-  };
-
-  barGs.each(function selectAndDraw() {
-    drawBar(d3.select(this));
-  });
-
-  barG2s.each(function selectAndDraw() {
-    drawBar2(d3.select(this));
-  });
+    .attr('class', 'bar-g')
+    .each(function() {
+      drawBar(d3.select(this), styles.bars2, x1.bandwidth() / 2 + 4);
+    });
 
   return el.toReact();
-})();
+};
 
 export default compose(
   withTheme,

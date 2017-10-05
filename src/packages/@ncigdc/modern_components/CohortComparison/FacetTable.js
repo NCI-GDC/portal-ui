@@ -76,6 +76,7 @@ export default compose(
       <div>
         <h2>{heading}</h2>
         <BarChart
+          minBarHeight={1}
           data1={tableData.map(({ term, casesS1: value, percentS1: percent }) =>
             barChartData({ term, value, name: setName1, percent }),
           )}

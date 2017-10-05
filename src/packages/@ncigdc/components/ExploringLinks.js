@@ -4,12 +4,13 @@ import Color from 'color';
 
 import styled from '@ncigdc/theme/styled';
 import { Row } from '@ncigdc/uikit/Flex';
+import { AnalysisIcon } from '@ncigdc/theme/icons';
+import { Tooltip } from '@ncigdc/uikit/Tooltip';
 
 import ProjectsLink from './Links/ProjectsLink';
 import RepositoryLink from './Links/RepositoryLink';
 import ExploreLink from './Links/ExploreLink';
 import AnalysisLink from './Links/AnalysisLink';
-import { AnalysisIcon } from '../theme/icons/index';
 
 const linkStyle = {
   textDecoration: 'none !important',
@@ -52,30 +53,38 @@ const Background = styled.span({
 
 const ExploringLinks = () => (
   <Row spacing="2rem" className="test-explore-links">
-    <Projects backgroundColor="#1c7960">
-      <Background>
-        <i className="icon-gdc-projects" />
-      </Background>
-      &nbsp; <span style={{ verticalAlign: 'middle' }}>Projects</span>
-    </Projects>
-    <Cohort backgroundColor="#753685">
-      <Background>
-        <i className="icon-gdc-data" />
-      </Background>
-      &nbsp; <span style={{ verticalAlign: 'middle' }}>Exploration</span>
-    </Cohort>
-    <Analysis backgroundColor="#6668c3">
-      <Background>
-        <AnalysisIcon />
-      </Background>
-      &nbsp; <span style={{ verticalAlign: 'middle' }}>Analysis</span>
-    </Analysis>
-    <Repository backgroundColor="rgb(20, 137, 204)">
-      <Background>
-        <i className="fa fa-database" />
-      </Background>
-      &nbsp; <span style={{ verticalAlign: 'middle' }}>Repository</span>
-    </Repository>
+    <Tooltip Component="View project data">
+      <Projects backgroundColor="#1c7960">
+        <Background>
+          <i className="icon-gdc-projects" />
+        </Background>
+        &nbsp; <span style={{ verticalAlign: 'middle' }}>Projects</span>
+      </Projects>
+    </Tooltip>
+    <Tooltip Component="Discover cases, genes and mutations">
+      <Cohort backgroundColor="#753685">
+        <Background>
+          <i className="icon-gdc-data" />
+        </Background>
+        &nbsp; <span style={{ verticalAlign: 'middle' }}>Exploration</span>
+      </Cohort>
+    </Tooltip>
+    <Tooltip Component="Launch various analyses using custom sets">
+      <Analysis backgroundColor="#6668c3">
+        <Background>
+          <AnalysisIcon />
+        </Background>
+        &nbsp; <span style={{ verticalAlign: 'middle' }}>Analysis</span>
+      </Analysis>
+    </Tooltip>
+    <Tooltip Component="Browse and download data">
+      <Repository backgroundColor="rgb(20, 137, 204)">
+        <Background>
+          <i className="fa fa-database" />
+        </Background>
+        &nbsp; <span style={{ verticalAlign: 'middle' }}>Repository</span>
+      </Repository>
+    </Tooltip>
   </Row>
 );
 

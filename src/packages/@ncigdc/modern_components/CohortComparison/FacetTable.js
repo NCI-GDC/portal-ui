@@ -13,6 +13,19 @@ import saveFile from '@ncigdc/utils/filesaver';
 import EntityPageHorizontalTable from '@ncigdc/components/EntityPageHorizontalTable';
 import { Tooltip } from '../../uikit/Tooltip/index';
 
+function barChartData({ term, value, name, percent }) {
+  return {
+    label: truncate(term, { length: 15 }),
+    value,
+    tooltip: (
+      <div>
+        <strong>{name}</strong>
+        <br />
+        {percent}% Cases ({value.toLocaleString()})
+      </div>
+    ),
+  };
+}
 export default compose(
   withTheme,
 )(
@@ -25,6 +38,8 @@ export default compose(
     result2,
     set1,
     set2,
+    setName1,
+    setName2,
     palette,
     heading,
   }) => {
@@ -71,14 +86,14 @@ export default compose(
           }}
         >
           <BarChart
-            data1={tableData.map(({ term, casesS1 }) => ({
-              label: truncate(term, { length: 15 }),
-              value: casesS1,
-            }))}
-            data2={tableData.map(({ term, casesS2 }) => ({
-              label: truncate(term, { length: 15 }),
-              value: casesS2,
-            }))}
+            data1={tableData.map(
+              ({ term, casesS1: value, percentS1: percent }) =>
+                barChartData({ term, value, name: setName1, percent }),
+            )}
+            data2={tableData.map(
+              ({ term, casesS2: value, percentS2: percent }) =>
+                barChartData({ term, value, name: setName2, percent }),
+            )}
             yAxis={{ title: '# Cases' }}
             height={200}
             styles={{

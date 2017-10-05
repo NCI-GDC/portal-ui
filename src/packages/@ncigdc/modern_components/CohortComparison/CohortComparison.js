@@ -163,7 +163,7 @@ export default compose(
         <Row
           style={{
             alignItems: 'center',
-            margin: '20px 0 10px',
+            margin: '20px 0',
             justifyContent: 'space-between',
           }}
         >
@@ -357,6 +357,8 @@ export default compose(
               result2,
               set1: setId1,
               set2: setId2,
+              setName1,
+              setName2,
               palette: [SET1_COLOUR, SET2_COLOUR],
             }),
           )}

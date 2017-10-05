@@ -10,6 +10,7 @@ import Button from '@ncigdc/uikit/Button';
 import toTsvString from '@ncigdc/utils/toTsvString';
 import saveFile from '@ncigdc/utils/filesaver';
 import EntityPageHorizontalTable from '@ncigdc/components/EntityPageHorizontalTable';
+import { Tooltip } from '../../uikit/Tooltip/index';
 
 function barChartData({ term, value, name, percent }) {
   return {
@@ -216,9 +217,16 @@ export default compose(
         />
         <div style={{ textAlign: 'right' }}>
           {pValueBuckets.every(b => b.length === 2) && (
-            <Pvalue
-              data={pValueBuckets.map(buckets => buckets.map(x => x.doc_count))}
-            />
+            <Tooltip
+              Component={`P-Value for ${pValueBuckets[0][0]
+                .key} and ${pValueBuckets[0][1].key}`}
+            >
+              <Pvalue
+                data={pValueBuckets.map(buckets =>
+                  buckets.map(x => x.doc_count),
+                )}
+              />
+            </Tooltip>
           )}
         </div>
       </div>

@@ -11,6 +11,7 @@ import Button from '@ncigdc/uikit/Button';
 import toTsvString from '@ncigdc/utils/toTsvString';
 import saveFile from '@ncigdc/utils/filesaver';
 import EntityPageHorizontalTable from '@ncigdc/components/EntityPageHorizontalTable';
+import { Tooltip } from '../../uikit/Tooltip/index';
 
 export default compose(
   withTheme,
@@ -33,6 +34,7 @@ export default compose(
     const buckets2 = get(data2, `['${field}'].buckets`, []).filter(
       x => x.key !== '_missing',
     );
+
     const tableData = union(
       buckets1.map(b => b.key),
       buckets2.map(b => b.key),
@@ -53,6 +55,12 @@ export default compose(
         filters2: bucket2.filters,
       };
     });
+
+    const noDataKeys = ['_missing', 'not reported', 'unknown'];
+    const pValueBuckets = [
+      buckets1.filter(({ key }) => !noDataKeys.includes(key)),
+      buckets2.filter(({ key }) => !noDataKeys.includes(key)),
+    ];
 
     return (
       <div>
@@ -214,13 +222,17 @@ export default compose(
           }))}
         />
         <div style={{ textAlign: 'right' }}>
-          {[buckets1.length, buckets2.length].every(l => l === 2) && (
-            <Pvalue
-              data={[
-                buckets1.map(x => x.doc_count),
-                buckets2.map(x => x.doc_count),
-              ]}
-            />
+          {pValueBuckets.every(b => b.length === 2) && (
+            <Tooltip
+              Component={`P-Value for ${pValueBuckets[0][0]
+                .key} and ${pValueBuckets[0][1].key}`}
+            >
+              <Pvalue
+                data={pValueBuckets.map(buckets =>
+                  buckets.map(x => x.doc_count),
+                )}
+              />
+            </Tooltip>
           )}
         </div>
       </div>

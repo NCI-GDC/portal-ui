@@ -8,17 +8,19 @@ import { Row } from '@ncigdc/uikit/Flex';
 import ProjectsLink from './Links/ProjectsLink';
 import RepositoryLink from './Links/RepositoryLink';
 import ExploreLink from './Links/ExploreLink';
+import AnalysisLink from './Links/AnalysisLink';
+import { AnalysisIcon } from '../theme/icons/index';
 
 const linkStyle = {
   textDecoration: 'none !important',
   color: 'white !important',
   display: 'inline-block',
-  width: '17.75rem',
-  padding: '0.5rem 0.5rem',
+  whiteSpace: 'nowrap',
+  padding: '0.5rem 1rem 0.5rem 0.5rem',
   textAlign: 'left',
   fontSize: '1.5rem',
-  margin: '0rem 0rem',
-  marginTop: '1rem',
+  minWidth: '13.5rem',
+  margin: 0,
   height: '4rem',
   borderRadius: '6px',
   transition: '0.25s ease all',
@@ -34,28 +36,45 @@ const linkStyle = {
 const Projects = styled(ProjectsLink, linkStyle);
 const Cohort = styled(ExploreLink, linkStyle);
 const Repository = styled(RepositoryLink, linkStyle);
+const Analysis = styled(AnalysisLink, linkStyle);
 
-const Icon = styled.i({
-  display: 'inline-block',
+const Background = styled.span({
   backgroundColor: 'rgba(255, 255, 255, 0.35)',
   borderRadius: '0.5rem',
-  padding: '0.8rem 1.2rem',
+  width: '3.6rem',
+  height: '3.1rem',
+  verticalAlign: 'middle',
   fontSize: '1.5rem',
+  display: 'inline-flex',
+  alignItems: 'center',
+  justifyContent: 'center',
 });
 
 const ExploringLinks = () => (
   <Row spacing="2rem" className="test-explore-links">
     <Projects backgroundColor="#1c7960">
-      <Icon className="icon-gdc-projects" />
-      &nbsp; <span>Projects</span>
+      <Background>
+        <i className="icon-gdc-projects" />
+      </Background>
+      &nbsp; <span style={{ verticalAlign: 'middle' }}>Projects</span>
     </Projects>
     <Cohort backgroundColor="#753685">
-      <Icon className="icon-gdc-data" />
-      &nbsp; <span>Exploration</span>
+      <Background>
+        <i className="icon-gdc-data" />
+      </Background>
+      &nbsp; <span style={{ verticalAlign: 'middle' }}>Exploration</span>
     </Cohort>
-    <Repository backgroundColor="#6668c3">
-      <Icon className="fa fa-database" />
-      &nbsp; <span>Repository</span>
+    <Analysis backgroundColor="#6668c3">
+      <Background>
+        <AnalysisIcon />
+      </Background>
+      &nbsp; <span style={{ verticalAlign: 'middle' }}>Analysis</span>
+    </Analysis>
+    <Repository backgroundColor="rgb(20, 137, 204)">
+      <Background>
+        <i className="fa fa-database" />
+      </Background>
+      &nbsp; <span style={{ verticalAlign: 'middle' }}>Repository</span>
     </Repository>
   </Row>
 );

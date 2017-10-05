@@ -33,6 +33,7 @@ export default compose(
     const buckets2 = get(data2, `['${field}'].buckets`, []).filter(
       x => x.key !== '_missing',
     );
+
     const tableData = union(
       buckets1.map(b => b.key),
       buckets2.map(b => b.key),
@@ -48,6 +49,12 @@ export default compose(
         percentS2: (casesS2 / result2.hits.total * 100).toFixed(0),
       };
     });
+
+    const noDataKeys = ['_missing', 'not reported', 'unknown'];
+    const pValueBuckets = [
+      buckets1.filter(({ key }) => !noDataKeys.includes(key)),
+      buckets2.filter(({ key }) => !noDataKeys.includes(key)),
+    ];
 
     return (
       <div>
@@ -195,12 +202,9 @@ export default compose(
           }))}
         />
         <div style={{ textAlign: 'right' }}>
-          {[buckets1.length, buckets2.length].every(l => l === 2) && (
+          {pValueBuckets.every(b => b.length === 2) && (
             <Pvalue
-              data={[
-                buckets1.map(x => x.doc_count),
-                buckets2.map(x => x.doc_count),
-              ]}
+              data={pValueBuckets.map(buckets => buckets.map(x => x.doc_count))}
             />
           )}
         </div>

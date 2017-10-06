@@ -184,91 +184,88 @@ const ManageSetsPage = ({
         </Dropdown>
 
         {flattenedSets.length !== 0 && (
-          <span>
+          <Button
+            onClick={() => {
+              const setsToRemove = selectedIds.map(currentSetId => {
+                const set = find(
+                  flattenedSets,
+                  ({ id }) => id === currentSetId,
+                );
+                const { type, id, label } = set;
+                return {
+                  type,
+                  id,
+                  label,
+                };
+              });
+              setsToRemove.map(set => dispatch(removeSet(set)));
+              dispatch(
+                notify({
+                  id: `${new Date().getTime()}`,
+                  component: (
+                    <Column>
+                      Deleted
+                      {selectedIds.length === 1 ? (
+                        <span>
+                          {' '}
+                          set <strong>{setsToRemove[0].label}</strong>
+                        </span>
+                      ) : (
+                        <span>
+                          <strong>{setsToRemove.length}</strong> sets
+                        </span>
+                      )}
+                      <strong>
+                        <i
+                          className="fa fa-undo"
+                          style={{
+                            marginRight: '0.3rem',
+                          }}
+                        />
+                        <UnstyledButton
+                          style={{
+                            textDecoration: 'underline',
+                          }}
+                          onClick={() => {
+                            setsToRemove.map(set => dispatch(addSet(set)));
+                            dispatch(closeNotification(true));
+                          }}
+                        >
+                          Undo
+                        </UnstyledButton>
+                      </strong>
+                    </Column>
+                  ),
+                }),
+              );
+            }}
+            style={{ marginBottom: '1rem', marginLeft: '1rem' }}
+            disabled={selectedIds.length === 0}
+          >
+            Delete Selected
+          </Button>
+        )}
+        {flattenedSets.length !== 0 &&
+          doneFetchingSetSizes &&
+          emptyOrDeprecatedSets.length > 0 && (
             <Button
               onClick={() => {
-                const setsToRemove = selectedIds.map(currentSetId => {
-                  const set = find(
-                    flattenedSets,
-                    ({ id }) => id === currentSetId,
-                  );
-                  const { type, id, label } = set;
-                  return {
-                    type,
-                    id,
-                    label,
-                  };
-                });
-                setsToRemove.map(set => dispatch(removeSet(set)));
-                dispatch(
-                  notify({
-                    id: `${new Date().getTime()}`,
-                    component: (
-                      <Column>
-                        Deleted
-                        {selectedIds.length === 1 ? (
-                          <span>
-                            {' '}
-                            set <strong>{setsToRemove[0].label}</strong>
-                          </span>
-                        ) : (
-                          <span>
-                            <strong>{setsToRemove.length}</strong> sets
-                          </span>
-                        )}
-                        <strong>
-                          <i
-                            className="fa fa-undo"
-                            style={{
-                              marginRight: '0.3rem',
-                            }}
-                          />
-                          <UnstyledButton
-                            style={{
-                              textDecoration: 'underline',
-                            }}
-                            onClick={() => {
-                              setsToRemove.map(set => dispatch(addSet(set)));
-                              dispatch(closeNotification(true));
-                            }}
-                          >
-                            Undo
-                          </UnstyledButton>
-                        </strong>
-                      </Column>
-                    ),
-                  }),
+                emptyOrDeprecatedSets.map(currentSetId =>
+                  dispatch(
+                    removeSet({
+                      type: find(flattenedSets, ({ id }) => currentSetId === id)
+                        .type,
+                      id: currentSetId,
+                    }),
+                  ),
                 );
+                setSetSizes(omit(setSizes, emptyOrDeprecatedSets));
               }}
               style={{ marginBottom: '1rem', marginLeft: '1rem' }}
-              disabled={selectedIds.length === 0}
             >
-              Delete Selected
+              Delete Empty or Deprecated
             </Button>
-            {doneFetchingSetSizes &&
-              emptyOrDeprecatedSets.length > 0 && (
-                <Button
-                  onClick={() => {
-                    emptyOrDeprecatedSets.map(currentSetId =>
-                      dispatch(
-                        removeSet({
-                          type: find(
-                            flattenedSets,
-                            ({ id }) => currentSetId === id,
-                          ).type,
-                          id: currentSetId,
-                        }),
-                      ),
-                    );
-                    setSetSizes(omit(setSizes, emptyOrDeprecatedSets));
-                  }}
-                  style={{ marginBottom: '1rem', marginLeft: '1rem' }}
-                >
-                  Delete Empty or Deprecated
-                </Button>
-              )}
-          </span>
-        )}
+          )}
       </Row>
 
       {flattenedSets.length === 0 ? (

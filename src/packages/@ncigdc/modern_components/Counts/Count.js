@@ -3,11 +3,12 @@ import React from 'react';
 import { get } from 'lodash';
 import { compose, withProps } from 'recompose';
 import withPropsOnChange from '@ncigdc/utils/withPropsOnChange';
+import GreyBox from '@ncigdc/uikit/GreyBox';
 
 export default compose(
-  withProps(({ viewer, path }) => {
+  withProps(({ viewer, path, loading }) => {
     return {
-      count: get(viewer, path, ''),
+      count: loading ? '' : get(viewer, path, ''),
     };
   }),
   withPropsOnChange(['viewer'], ({ count, handleCountChange, loading }) => {
@@ -15,7 +16,12 @@ export default compose(
       handleCountChange(count);
     }
   }),
-)(
-  ({ count, children }) =>
-    children ? children(count) : <span>{count.toLocaleString()}</span>,
-);
+)(({ count, children, loading }) => {
+  return children ? (
+    children(count)
+  ) : count === '' ? (
+    <GreyBox />
+  ) : (
+    <span>{count.toLocaleString()}</span>
+  );
+});

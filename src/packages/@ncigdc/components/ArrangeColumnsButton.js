@@ -34,8 +34,8 @@ let searchInput;
 
 const ArrangeColumnsButton = compose(
   connect(),
-  withState('searchTerm', 'setState', ''),
-)(({ searchTerm, setState, dispatch, entityType, style = {} }) => (
+  withState('searchTerm', 'setSearchTerm', ''),
+)(({ searchTerm, setSearchTerm, dispatch, entityType, style = {} }) => (
   <Dropdown
     className="test-arrange-columns-button"
     autoclose={false}
@@ -64,14 +64,14 @@ const ArrangeColumnsButton = compose(
           ref={node => {
             searchInput = node;
           }}
-          onChange={() => setState(() => searchInput.value)}
+          onChange={() => setSearchTerm(() => searchInput.value)}
         />
       </Row>
       <RestoreDefaults
         className="test-restore-defaults"
         onClick={() => {
           dispatch(restoreColumns(entityType));
-          setState(() => '');
+          setSearchTerm(() => '');
           searchInput.value = '';
         }}
       >

@@ -41,14 +41,10 @@ const ArrangeColumns = compose(
   }),
   pure,
 )(({ dispatch, tableColumns, setState, state, searchTerm, entityType }) => {
-  const filteredColumns = state.columns.filter(
-    x =>
-      x.name.toLowerCase().includes(searchTerm.toLowerCase()) && !x.subHeading,
-  );
-
+  const columns = state.columns.filter(column => !column.subHeading);
   return (
     <div className="test-arrange-columns">
-      {filteredColumns.map((column, i) => (
+      {columns.map((column, i) => (
         <SortableItem
           className="test-column"
           key={column.id}
@@ -77,14 +73,20 @@ const ArrangeColumns = compose(
                   }),
                 );
               }
-              return { columns: filteredColumns, ...nextState };
+              return { columns, ...nextState };
             })}
           draggingIndex={state.draggingIndex}
-          items={filteredColumns}
+          items={columns}
           sortId={i}
           outline="list"
         >
-          <SortRow>
+          <SortRow
+            style={
+              column.name.toLowerCase().includes(searchTerm.toLowerCase())
+                ? {}
+                : { display: 'none' }
+            }
+          >
             <Row
               style={{ width: '100%', cursor: 'pointer', alignItems: 'center' }}
               onClick={() => {

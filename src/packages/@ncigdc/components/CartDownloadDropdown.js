@@ -85,6 +85,7 @@ const downloadCart = (user, files, dispatch, setState) => {
           }
           primaryButton={
             <Button
+              disabled={!authorized.doc_count}
               onClick={() =>
                 downloadCart(
                   user,
@@ -94,10 +95,7 @@ const downloadCart = (user, files, dispatch, setState) => {
                 )}
               style={{ margin: '0 10px' }}
             >
-              <span>
-                Download &nbsp;
-                {authorized.doc_count} authorized files
-              </span>
+              Download {authorized.doc_count} Authorized Files
             </Button>
           }
           closeText="Cancel"

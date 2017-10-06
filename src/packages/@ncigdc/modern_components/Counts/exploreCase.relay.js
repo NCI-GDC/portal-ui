@@ -7,7 +7,6 @@ export default (Component: ReactClass<*>) => (props: Object) => {
   return (
     <BaseQuery
       parentProps={{ path: 'explore.cases.hits.total', ...props }}
-      name="ExploreCaseCount"
       variables={{ filters: props.filters }}
       Component={Component}
       query={graphql`

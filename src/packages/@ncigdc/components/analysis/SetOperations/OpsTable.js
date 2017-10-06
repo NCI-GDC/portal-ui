@@ -8,6 +8,7 @@ import { Tooltip } from '@ncigdc/uikit/Tooltip';
 import { setModal } from '@ncigdc/dux/modal';
 import SaveSetModal from '@ncigdc/components/Modals/SaveSetModal';
 import { SET_DOWNLOAD_FIELDS as downloadFields } from '@ncigdc/utils/constants';
+import GreyBox from '@ncigdc/uikit/GreyBox';
 import DownloadButton from '@ncigdc/components/DownloadButton';
 import { iconButton } from '@ncigdc/theme/mixins';
 import { MAX_SET_SIZE } from '@ncigdc/utils/constants';
@@ -158,6 +159,8 @@ export default ({
                 <TdNum>
                   {count === 0 ? (
                     0
+                  ) : count === '' ? (
+                    <GreyBox />
                   ) : (
                     <CreateSetButton
                       filters={op.filters}
@@ -225,6 +228,8 @@ export default ({
               <TdNum>
                 {selected.size === 0 || count === 0 ? (
                   0
+                ) : count === '' ? (
+                  <GreyBox />
                 ) : (
                   <CreateSetButton
                     filters={selectedFilters}

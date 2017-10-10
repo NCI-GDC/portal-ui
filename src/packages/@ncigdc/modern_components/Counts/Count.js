@@ -6,9 +6,12 @@ import withPropsOnChange from '@ncigdc/utils/withPropsOnChange';
 import GreyBox from '@ncigdc/uikit/GreyBox';
 
 export default compose(
-  withProps(({ viewer, path, loading }) => {
+  withProps(({ getter, path }) => ({
+    getCount: getter ? getter : v => get(v, path, ''),
+  })),
+  withProps(({ viewer, path, loading, getCount }) => {
     return {
-      count: loading ? '' : get(viewer, path, ''),
+      count: loading ? '' : getCount(viewer),
     };
   }),
   withPropsOnChange(['viewer'], ({ count, handleCountChange, loading }) => {

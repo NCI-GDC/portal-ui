@@ -8,6 +8,15 @@ import CountCard from '@ncigdc/components/CountCard';
 import FileIcon from '@ncigdc/theme/icons/File';
 import AnnotationIcon from '@ncigdc/theme/icons/Edit';
 import { withTheme } from '@ncigdc/theme';
+import ImageViewerLink from '@ncigdc/components/Links/ImageViewerLink';
+import ShoppingCartIcon from '@ncigdc/theme/icons/ShoppingCart';
+import { Tooltip } from '@ncigdc/uikit/Tooltip';
+import Button from '@ncigdc/uikit/Button';
+import { RepositorySlideCount } from '@ncigdc/modern_components/Counts';
+import { withRouter } from 'react-router-dom';
+import { stringifyJSONParam } from '@ncigdc/utils/uri';
+import { MicroscopeIcon } from '@ncigdc/theme/icons';
+import { iconButton } from '@ncigdc/theme/mixins';
 
 const styles = {
   icon: {
@@ -47,69 +56,117 @@ export default compose(
     renderComponent(() => <div>No case found.</div>),
   ),
   withTheme,
-)(({ theme, viewer: { repository: { cases: { hits: { edges } } } } }) => {
-  const p = edges[0].node;
-  const totalFiles = p.files.hits.total;
+  withRouter,
+)(
+  ({
+    history,
+    theme,
+    viewer: { repository: { cases: { hits: { edges } } } },
+  }) => {
+    const p = edges[0].node;
+    const totalFiles = p.files.hits.total;
 
-  return (
-    <Row spacing={theme.spacing}>
-      <EntityPageVerticalTable
-        id="summary"
-        title={
-          <span>
-            <i className="fa fa-table" /> Summary
-          </span>
-        }
-        thToTd={[
-          { th: 'Case UUID', td: p.case_id },
-          { th: 'Case ID', td: p.submitter_id },
-          {
-            th: 'Project',
-            td: (
-              <ProjectLink uuid={p.project.project_id}>
-                {p.project.project_id}
-              </ProjectLink>
-            ),
-          },
-          { th: 'Project Name', td: p.project.name },
-          { th: 'Disease Type', td: p.disease_type },
-          { th: 'Program', td: p.project.program.name },
-          { th: 'Primary Site', td: p.primary_site },
-        ]}
-        style={{ flex: 1 }}
-      />
-
-      <Column style={{ width: '200px' }} spacing={theme.spacing}>
-        <CountCard
-          className="test-files-count"
-          style={{ width: 'auto' }}
-          title="FILES"
-          count={totalFiles.toLocaleString()}
-          icon={<FileIcon style={styles.icon} className="fa-3x" />}
-          linkParams={
-            totalFiles
-              ? {
-                  pathname: '/repository',
-                  query: {
-                    filters: makeFilter([
-                      { field: 'cases.case_id', value: p.case_id },
-                    ]),
-                    facetTab: 'files',
-                    searchTableTab: 'files',
-                  },
-                }
-              : null
+    return (
+      <Row spacing={theme.spacing}>
+        <EntityPageVerticalTable
+          id="summary"
+          title={
+            <span>
+              <i className="fa fa-table" /> Summary
+            </span>
           }
+          thToTd={[
+            { th: 'Case UUID', td: p.case_id },
+            { th: 'Case ID', td: p.submitter_id },
+            {
+              th: 'Project',
+              td: (
+                <ProjectLink uuid={p.project.project_id}>
+                  {p.project.project_id}
+                </ProjectLink>
+              ),
+            },
+            { th: 'Project Name', td: p.project.name },
+            { th: 'Disease Type', td: p.disease_type },
+            { th: 'Program', td: p.project.program.name },
+            { th: 'Primary Site', td: p.primary_site },
+            {
+              th: 'Images',
+              td: (
+                <RepositorySlideCount
+                  filters={makeFilter([
+                    { field: 'cases.case_id', value: p.case_id },
+                  ])}
+                >
+                  {count =>
+                    count ? (
+                      <span>
+                        <Tooltip Component="View Slide Image">
+                          <ImageViewerLink
+                            isIcon
+                            query={{
+                              filters: makeFilter([
+                                { field: 'cases.case_id', value: p.case_id },
+                              ]),
+                              backLocation: stringifyJSONParam(
+                                history.location,
+                              ),
+                            }}
+                          >
+                            <MicroscopeIcon /> ({count})
+                          </ImageViewerLink>
+                        </Tooltip>
+                        <Tooltip Component="Add to cart">
+                          <Button
+                            className="test-toggle-cart"
+                            leftIcon={<ShoppingCartIcon />}
+                            style={{ ...iconButton, marginLeft: '0.5rem' }}
+                            disabled
+                          />
+                        </Tooltip>
+                      </span>
+                    ) : (
+                      <span>--</span>
+                    )}
+                </RepositorySlideCount>
+              ),
+            },
+          ]}
+          style={{ flex: 1 }}
         />
-        <CountCard
-          className="test-annotations-count"
-          style={{ width: 'auto' }}
-          title="ANNOTATIONS"
-          count={p.annotations.hits.total.toLocaleString()}
-          icon={<AnnotationIcon style={styles.icon} className="fa-3x" />}
-          linkParams={getAnnotationsLinkParams(p.annotations.hits)}
-        />
-      </Column>
-    </Row>
-  );
-});
+
+        <Column style={{ width: '200px' }} spacing={theme.spacing}>
+          <CountCard
+            className="test-files-count"
+            style={{ width: 'auto' }}
+            title="FILES"
+            count={totalFiles.toLocaleString()}
+            icon={<FileIcon style={styles.icon} className="fa-3x" />}
+            linkParams={
+              totalFiles
+                ? {
+                    pathname: '/repository',
+                    query: {
+                      filters: makeFilter([
+                        { field: 'cases.case_id', value: p.case_id },
+                      ]),
+                      facetTab: 'files',
+                      searchTableTab: 'files',
+                    },
+                  }
+                : null
+            }
+          />
+          <CountCard
+            className="test-annotations-count"
+            style={{ width: 'auto' }}
+            title="ANNOTATIONS"
+            count={p.annotations.hits.total.toLocaleString()}
+            icon={<AnnotationIcon style={styles.icon} className="fa-3x" />}
+            linkParams={getAnnotationsLinkParams(p.annotations.hits)}
+          />
+        </Column>
+      </Row>
+    );
+  },
+);

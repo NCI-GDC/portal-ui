@@ -2,6 +2,7 @@
 
 import React from 'react';
 import _ from 'lodash';
+
 import SearchIcon from 'react-icons/lib/fa/search';
 import { compose, withState, branch, renderComponent } from 'recompose';
 import { humanify } from '@ncigdc/utils/string';
@@ -18,6 +19,16 @@ import Button from '@ncigdc/uikit/Button';
 import Emitter from '@ncigdc/utils/emitter';
 import BioTreeView from './BioTreeView';
 import { search, idFields, formatValue } from './utils';
+import ImageViewerLink from '@ncigdc/components/Links/ImageViewerLink';
+import ShoppingCartIcon from '@ncigdc/theme/icons/ShoppingCart';
+import DownloadIcon from '@ncigdc/theme/icons/Download';
+import { iconButton } from '@ncigdc/theme/mixins';
+import { Tooltip } from '@ncigdc/uikit/Tooltip';
+import { withRouter } from 'react-router-dom';
+import { stringifyJSONParam } from '@ncigdc/utils/uri';
+import { MicroscopeIcon } from '@ncigdc/theme/icons';
+import { stringify, parse } from 'query-string';
+import { entityTypes } from './';
 
 const styles = {
   button: {
@@ -41,7 +52,10 @@ const styles = {
   }),
 };
 
+const getType = node => entityTypes.find(type => node[`${type.s}_id`]).s;
+
 export default compose(
+  withRouter,
   branch(
     ({ viewer }) => !viewer.repository.cases.hits.edges[0],
     renderComponent(() => <div>No case found.</div>),
@@ -53,9 +67,10 @@ export default compose(
     'setState',
     ({ viewer: { repository: { cases: { hits: { edges } } } }, bioId }) => {
       const p = edges[0].node;
+      const selectedEntity = p.samples.hits.edges[0].node;
       return {
-        selectedEntity: p.samples.hits.edges[0].node,
-        type: 'sample',
+        selectedEntity,
+        type: getType(selectedEntity),
         query: bioId || '',
       };
     },
@@ -71,6 +86,7 @@ export default compose(
     allExpanded,
     expandAllFirstClick,
     setExpandAllFirstClick,
+    history,
   }) => {
     const p = edges[0].node;
 
@@ -78,6 +94,7 @@ export default compose(
     const flattened = _.flatten(founds);
     const foundNode = ((flattened || [])[0] || { node: {} }).node;
     const selectedNode = (query && foundNode) || se;
+    const foundType = (query && getType(foundNode)) || type;
     const selectedEntity = Object.keys(selectedNode).length
       ? selectedNode
       : p.samples.hits.edges[0].node;
@@ -168,9 +185,9 @@ export default compose(
           <Column flex="4">
             <EntityPageVerticalTable
               thToTd={[
-                { th: `${type} ID`, td: selectedEntity.submitter_id },
+                { th: `${foundType} ID`, td: selectedEntity.submitter_id },
                 {
-                  th: `${type} UUID`,
+                  th: `${foundType} UUID`,
                   td: selectedEntity[idFields.find(id => selectedEntity[id])],
                 },
                 ...Object.entries(selectedEntity)
@@ -179,7 +196,7 @@ export default compose(
                       ![
                         'submitter_id',
                         'expanded',
-                        `${type}_id`,
+                        `${foundType}_id`,
                         '__dataID__',
                       ].includes(key),
                   )
@@ -199,6 +216,53 @@ export default compose(
                       td: formatValue(val),
                     };
                   }),
+                ...(foundType === 'slide' && [
+                  {
+                    th: 'Slide Image',
+                    td: (
+                      <Row>
+                        {console.log(selectedEntity.slide_id)}
+                        {console.log(history.location)}
+                        <Tooltip Component="View Slide Image">
+                          <ImageViewerLink
+                            isIcon
+                            query={{
+                              filters: makeFilter([
+                                { field: 'cases.case_id', value: p.case_id },
+                              ]),
+                              selectedId: `${selectedEntity.submitter_id}.${selectedEntity.slide_id}`,
+                              backLocation: stringifyJSONParam({
+                                ...history.location,
+                                search: stringify({
+                                  ...parse(history.location.search),
+                                  bioId: selectedEntity.slide_id,
+                                }),
+                              }),
+                            }}
+                          >
+                            <MicroscopeIcon />
+                          </ImageViewerLink>{' '}
+                        </Tooltip>
+                        <Tooltip Component="Add to cart">
+                          <Button
+                            className="test-toggle-cart"
+                            leftIcon={<ShoppingCartIcon />}
+                            style={{ ...iconButton, marginLeft: '0.5rem' }}
+                            disabled
+                          />
+                        </Tooltip>
+                        <Tooltip Component="Download">
+                          <Button
+                            className="test-toggle-cart"
+                            style={{ ...iconButton, marginLeft: '0.5rem' }}
+                            leftIcon={<DownloadIcon />}
+                            disabled
+                          />
+                        </Tooltip>
+                      </Row>
+                    ),
+                  },
+                ]),
               ]}
               style={{ flex: '1 1 auto' }}
             />

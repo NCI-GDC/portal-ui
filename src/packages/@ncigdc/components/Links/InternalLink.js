@@ -21,7 +21,13 @@ const reactRouterLinkProps = [
   'isActive',
 ];
 
-const InternalLink = ({ pathname, query, deepLink, ...rest }: TLinkProps) => {
+const InternalLink = ({
+  pathname,
+  query,
+  deepLink,
+  search,
+  ...rest
+}: TLinkProps) => {
   const q0 = query || {};
   const f0 = q0.filters ? stringifyJSONParam(q0.filters) : null;
 
@@ -35,13 +41,11 @@ const InternalLink = ({ pathname, query, deepLink, ...rest }: TLinkProps) => {
   const validAttrProps = validAttributes(rest);
   const validLinkProps = _.pick(rest, reactRouterLinkProps);
 
-  const search = stringify(q);
-
   return (
     <Link
       to={{
         pathname,
-        search,
+        search: search || stringify(q),
       }}
       {...validAttrProps}
       {...validLinkProps}

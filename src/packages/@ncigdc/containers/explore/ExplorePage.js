@@ -19,6 +19,18 @@ import { CreateExploreCaseSetButton } from '@ncigdc/modern_components/withSetAct
 import { replaceFilters } from '@ncigdc/utils/filters';
 import withRouter from '@ncigdc/utils/withRouter';
 import { stringifyJSONParam } from '@ncigdc/utils/uri';
+import ImageViewerLink from '@ncigdc/components/Links/ImageViewerLink';
+import { Row } from '@ncigdc/uikit/Flex';
+
+import styled from '@ncigdc/theme/styled';
+import { linkButton } from '@ncigdc/theme/mixins';
+
+const ImageViewerLinkAsButton = styled(ImageViewerLink, {
+  padding: '6px 12px',
+  marginLeft: '0.2rem',
+  marginBottom: '20px',
+  ...linkButton,
+});
 
 export type TProps = {
   filters: {},
@@ -168,32 +180,42 @@ export const ExplorePageComponent = (props: TProps) => (
     ]}
     results={
       <span>
-        <CreateExploreCaseSetButton
-          filters={props.filters}
-          disabled={!props.viewer.explore.cases.hits.total}
-          style={{ marginBottom: '2rem' }}
-          onComplete={setId => {
-            props.push({
-              pathname: '/repository',
-              query: {
-                filters: stringifyJSONParam({
-                  op: 'AND',
-                  content: [
-                    {
-                      op: 'IN',
-                      content: {
-                        field: 'cases.case_id',
-                        value: [`set_id:${setId}`],
+        <Row>
+          <CreateExploreCaseSetButton
+            filters={props.filters}
+            disabled={!props.viewer.explore.cases.hits.total}
+            style={{ marginBottom: '2rem' }}
+            onComplete={setId => {
+              props.push({
+                pathname: '/repository',
+                query: {
+                  filters: stringifyJSONParam({
+                    op: 'AND',
+                    content: [
+                      {
+                        op: 'IN',
+                        content: {
+                          field: 'cases.case_id',
+                          value: [`set_id:${setId}`],
+                        },
                       },
-                    },
-                  ],
-                }),
-              },
-            });
-          }}
-        >
-          View Files in Repository
-        </CreateExploreCaseSetButton>
+                    ],
+                  }),
+                },
+              });
+            }}
+          >
+            View Files in Repository
+          </CreateExploreCaseSetButton>
+          <ImageViewerLinkAsButton
+            query={{
+              filters: props.filters,
+              backLocation: stringifyJSONParam(props.history.location),
+            }}
+          >
+            View Images
+          </ImageViewerLinkAsButton>{' '}
+        </Row>
         <TabbedLinks
           queryParam="searchTableTab"
           defaultIndex={0}

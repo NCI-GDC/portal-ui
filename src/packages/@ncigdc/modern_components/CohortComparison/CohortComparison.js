@@ -197,7 +197,7 @@ export default compose(
               getFillColor={d => 'rgb(237, 237, 237)'}
               style={{
                 fontSize: 10,
-                width: 150,
+                width: 180,
                 margin: 'auto',
                 paddingTop: 5,
               }}

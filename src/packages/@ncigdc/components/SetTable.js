@@ -16,7 +16,7 @@ type TProps = {
   style: {},
   counts: {},
   setCounts: Function,
-  getDisabled: Function,
+  getDisabledMessage: Function,
 };
 
 const enhance = compose(
@@ -30,13 +30,13 @@ const enhance = compose(
   ),
   withPropsOnChange(
     ['sets', 'counts'],
-    ({ sets, selected, setSelected, counts, getDisabled }) => {
+    ({ sets, selected, setSelected, counts, getDisabledMessage }) => {
       const setKeys = Object.keys(sets);
       if (
         !selected &&
         setKeys.length === 1 &&
         counts[setKeys[0]] !== '' &&
-        !getDisabled({ count: counts[setKeys[0]] })
+        !getDisabledMessage({ count: counts[setKeys[0]] })
       ) {
         setSelected(setKeys[0]);
       }
@@ -53,7 +53,7 @@ const SetTable = ({
   style,
   counts,
   setCounts,
-  getDisabled = () => null,
+  getDisabledMessage = () => null,
 }: TProps) => {
   const CountComponent = countComponents[type];
 
@@ -62,7 +62,7 @@ const SetTable = ({
       style={style}
       data={Object.keys(sets).map((key, i) => {
         const id = `set-table-${key}-select`;
-        const disabledMessage = getDisabled({ count: counts[key] });
+        const disabledMessage = getDisabledMessage({ count: counts[key] });
 
         return {
           select: (

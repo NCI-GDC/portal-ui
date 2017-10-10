@@ -129,7 +129,7 @@ const AppendSetModal = ({
         selected={selected}
         type={type}
         field={field}
-        getDisabled={({ count }) =>
+        getDisabledMessage={({ count }) =>
           count >= MAX_SET_SIZE
             ? `The set cannot exceed ${pluralize(
                 displayType,

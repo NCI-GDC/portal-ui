@@ -3,6 +3,7 @@
 import { css } from 'glamor';
 
 import { getTheme } from './index';
+import Color from 'color';
 
 export const center = {
   display: 'flex',
@@ -104,4 +105,30 @@ export const absoluteCenter = {
   transform: 'translate(-50%, -50%)',
   top: '50%',
   left: '50%',
+};
+
+export const linkButton = {
+  fontSize: '14px',
+  borderRadius: '4px',
+  backgroundColor: ({ theme }: Object) => theme.primary,
+  color: 'white',
+  ':link': {
+    textDecoration: 'none',
+    color: 'white',
+  },
+  ':visited': {
+    textDecoration: 'none',
+    color: 'white',
+  },
+  ':active': {
+    textDecoration: 'none',
+    color: 'white',
+  },
+  ':hover': {
+    backgroundColor: ({ theme }: Object) =>
+      Color(theme.primary)
+        .lighten(0.7)
+        .rgbString(),
+    color: 'white',
+  },
 };

@@ -8,6 +8,12 @@ export const AUTH =
   localStorage.REACT_APP_GDC_AUTH || process.env.REACT_APP_GDC_AUTH || '';
 export const AUTH_API = localStorage.REACT_APP_GDC_AUTH_API || `${AUTH}/api`;
 export const API = localStorage.REACT_APP_API || process.env.REACT_APP_API;
+export const SLIDE_IMAGE_ENDPOINT =
+  localStorage.REACT_APP_SLIDE_IMAGE_ENDPOINT ||
+  process.env.REACT_APP_SLIDE_IMAGE_ENDPOINT ||
+  'https://image.gdc.cancercollaboratory.org:8888/';
+export const DISPLAY_SLIDES =
+  localStorage.REACT_APP_GDC_DISPLAY_SLIDES || false;
 
 export const API_OVERRIDE_KEYS = [
   'REACT_APP_API',

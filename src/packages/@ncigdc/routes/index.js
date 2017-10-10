@@ -13,6 +13,7 @@ import AnalysisRoute from '@ncigdc/routes/AnalysisRoute';
 import SSMRoute from '@ncigdc/routes/SSMRoute';
 import ManageSetsRoute from '@ncigdc/routes/ManageSetsRoute';
 import SmartSearchRoute from '@ncigdc/routes/SmartSearchRoute';
+import ImageViewerRoute from '@ncigdc/routes/ImageViewerRoute';
 
 const HomeRoute = LoadableWithLoading({
   loader: () => import('@ncigdc/routes/HomeRoute'),
@@ -57,6 +58,7 @@ export default () => (
       {ManageSetsRoute}
       {AnalysisRoute}
       {SSMRoute}
+      {ImageViewerRoute}
       <Route path="/components/:component" component={ComponentsRoute} />
       <Route component={NotFound} />
     </Switch>

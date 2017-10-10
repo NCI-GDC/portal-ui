@@ -15,9 +15,11 @@ import { RemoveFromExploreCaseSetButton } from '@ncigdc/modern_components/withSe
 import { theme } from '@ncigdc/theme';
 import withSelectIds from '@ncigdc/utils/withSelectIds';
 import withPropsOnChange from '@ncigdc/utils/withPropsOnChange';
+import { withRouter } from 'react-router-dom';
 
 export default compose(
   withSelectIds,
+  withRouter,
   withPropsOnChange(
     ['ssmsAggregationsViewer'],
     ({ ssmsAggregationsViewer: { explore } }) => {
@@ -45,6 +47,7 @@ export default compose(
     setSelectedIds,
     score,
     sort,
+    history,
   }) => {
     const prefix = 'cases';
 
@@ -125,21 +128,22 @@ export default compose(
                       }),
                     }}
                   >
-                    {tableInfo
-                      .filter(x => x.td)
-                      .map(x => (
-                        <x.td
-                          key={x.id}
-                          node={e.node}
-                          index={i}
-                          total={cases.hits.total}
-                          ssmCount={ssmCounts[e.node.case_id]}
-                          ssmCountsLoading={ssmCountsLoading}
-                          filters={filters}
-                          selectedIds={selectedIds}
-                          setSelectedIds={setSelectedIds}
-                        />
-                      ))}
+                    {tableInfo.filter(x => x.td).map(x => (
+                      <x.td
+                        key={x.id}
+                        node={{
+                          ...e.node,
+                          history,
+                        }}
+                        index={i}
+                        total={cases.hits.total}
+                        ssmCount={ssmCounts[e.node.case_id]}
+                        ssmCountsLoading={ssmCountsLoading}
+                        filters={filters}
+                        selectedIds={selectedIds}
+                        setSelectedIds={setSelectedIds}
+                      />
+                    ))}
                   </Tr>
                 ))}
               </tbody>

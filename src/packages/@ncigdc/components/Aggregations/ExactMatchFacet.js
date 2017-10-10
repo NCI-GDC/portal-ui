@@ -14,6 +14,7 @@ import type { TRawQuery } from '@ncigdc/utils/uri/types';
 import Hidden from '../Hidden';
 import { Container, GoLink, CheckedRow, CheckedLink } from './';
 import Input from '@ncigdc/uikit/Form/Input';
+import { Tooltip } from '@ncigdc/uikit/Tooltip';
 
 const ExactMatchFacet = compose(
   withState('inputValue', 'setInputValue', ''),
@@ -45,20 +46,24 @@ const ExactMatchFacet = compose(
                 <Column>
                   {currentValues.content.value.map(v => (
                     <CheckedRow key={v}>
-                      <CheckedLink
-                        merge="toggle"
-                        query={{
-                          filters: makeFilter([
-                            {
-                              field: `${doctype}.${fieldNoDoctype}`,
-                              value: [v],
-                            },
-                          ]),
-                        }}
-                      >
-                        <CheckCircleOIcon style={{ paddingRight: '0.5rem' }} />
-                        {v}
-                      </CheckedLink>
+                      <Tooltip Component="Click to remove">
+                        <CheckedLink
+                          merge="toggle"
+                          query={{
+                            filters: makeFilter([
+                              {
+                                field: `${doctype}.${fieldNoDoctype}`,
+                                value: [v],
+                              },
+                            ]),
+                          }}
+                        >
+                          <CheckCircleOIcon
+                            style={{ paddingRight: '0.5rem' }}
+                          />
+                          {v}
+                        </CheckedLink>
+                      </Tooltip>
                     </CheckedRow>
                   ))}
                   <Row>

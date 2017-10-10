@@ -17,6 +17,7 @@ import QuestionIcon from './Question';
 import ExclamationTriangleIcon from './ExclamationTriangle';
 import TrashIcon from './Trash';
 import AnalysisIcon from './Analysis';
+import MicroscopeIcon from './Microscope';
 
 export {
   DownloadIcon,
@@ -36,4 +37,5 @@ export {
   ExclamationTriangleIcon,
   TrashIcon,
   AnalysisIcon,
+  MicroscopeIcon,
 };

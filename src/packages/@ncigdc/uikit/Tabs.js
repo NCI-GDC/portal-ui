@@ -107,19 +107,27 @@ const Tabs = ({
   side ? (
     <Row style={style} {...props} className="test-tabs">
       <Column>
-        {Children.map(tabs, (child, i) => (
-          <Tab
-            className="test-tab"
-            onClick={() => (onTabClick ? onTabClick(i) : () => {})}
-            active={i === activeIndex}
-            sibling={i}
-            theme={theme}
-            tabStyle={tabStyle}
-            side
-          >
-            {child}
-          </Tab>
-        ))}
+        <div
+          style={{
+            maxHeight: '550px',
+            overflow: 'auto',
+            backgroundColor: 'white',
+          }}
+        >
+          {Children.map(tabs, (child, i) => (
+            <Tab
+              className="test-tab"
+              onClick={() => (onTabClick ? onTabClick(i) : () => {})}
+              active={i === activeIndex}
+              sibling={i}
+              theme={theme}
+              tabStyle={tabStyle}
+              side
+            >
+              {child}
+            </Tab>
+          ))}
+        </div>
         {tabToolbar}
       </Column>
       <Column

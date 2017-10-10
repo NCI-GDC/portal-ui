@@ -2,7 +2,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { compose, withState } from 'recompose';
-import { map, reduce, xor, find, get, omit } from 'lodash';
+import { map, reduce, xor, find } from 'lodash';
 
 import { notify } from '@ncigdc/dux/notification';
 import { closeNotification } from '@ncigdc/dux/notification';
@@ -11,7 +11,7 @@ import styled from '@ncigdc/theme/styled';
 import { addSet, removeSet, updateSet } from '@ncigdc/dux/sets';
 import ExploreLink from '@ncigdc/components/Links/ExploreLink';
 import RepositoryLink from '@ncigdc/components/Links/RepositoryLink';
-import countComponents from '@ncigdc/modern_components/Counts';
+import { withCounts } from '@ncigdc/modern_components/Counts';
 import { Column, Row } from '@ncigdc/uikit/Flex';
 import Heading from '@ncigdc/uikit/Heading';
 import Table, { Tr, Td, Th } from '@ncigdc/uikit/Table';
@@ -45,10 +45,44 @@ const fields = {
 };
 
 const enhance = compose(
-  connect(({ sets }) => ({ sets })),
+  connect(({ sets }) => ({
+    flattenedSets: reduce(
+      sets,
+      (acc, setsOfType, type) => [
+        ...acc,
+        ...map(setsOfType, (label, id) => ({
+          type,
+          label,
+          id,
+          filters: {
+            op: '=',
+            content: { field: fields[type], value: `set_id:${id}` },
+          },
+          linkFilters: {
+            op: 'and',
+            content: [
+              {
+                op: 'in',
+                content: { field: fields[type], value: [`set_id:${id}`] },
+              },
+            ],
+          },
+        })),
+      ],
+      [],
+    ),
+  })),
+  withCounts('counts', ({ flattenedSets }) =>
+    flattenedSets.map(({ type, filters }) => ({
+      type: type,
+      scope: 'explore',
+      filters: filters,
+    })),
+  ),
   withState('selectedIds', 'setSelectedIds', []),
-  withState('setSizes', 'setSetSizes', {}),
-  withPropsOnChange(['sets'], ({ setSelectedIds }) => setSelectedIds([])),
+  withPropsOnChange(['flattenedSets'], ({ setSelectedIds }) =>
+    setSelectedIds([]),
+  ),
 );
 
 const StyledRepoLink = styled(RepositoryLink, {
@@ -57,67 +91,19 @@ const StyledRepoLink = styled(RepositoryLink, {
 });
 
 const ManageSetsPage = ({
-  sets,
+  flattenedSets,
   selectedIds,
   setSelectedIds,
   dispatch,
-  setSizes,
-  setSetSizes,
+  counts,
 }) => {
-  const flattenedSets = reduce(
-    sets,
-    (acc, setsOfType, type) => [
-      ...acc,
-      ...map(setsOfType, (label, id) => ({
-        type,
-        label,
-        id,
-        filters: {
-          op: '=',
-          content: {
-            field: fields[type],
-            value: `set_id:${id}`,
-          },
-        },
-        linkFilters: {
-          op: 'and',
-          content: [
-            {
-              op: 'in',
-              content: {
-                field: fields[type],
-                value: [`set_id:${id}`],
-              },
-            },
-          ],
-        },
-      })),
-    ],
-    [],
-  ).map(({ filters, type, id, ...rest }) => ({
-    filters,
-    type,
-    id,
-    ...rest,
-    countComponent: countComponents[type]({
-      filters,
-      handleCountChange: count =>
-        setSetSizes({
-          ...setSizes,
-          [id]: count,
-        }),
-    }),
-  }));
-
   const allSelected =
     selectedIds.length !== 0 && flattenedSets.length === selectedIds.length;
-  const emptyOrDeprecatedSets = Object.keys(setSizes).filter(
-    id => get(setSizes, id) === 0,
-  );
+  const emptyOrDeprecatedSets = flattenedSets.filter((s, i) => counts[i] === 0);
 
   const doneFetchingSetSizes =
     flattenedSets.length !== 0 &&
-    flattenedSets.every(({ id }) => typeof setSizes[id] === 'number');
+    flattenedSets.every((s, i) => typeof counts[i] === 'number');
 
   return (
     <Column style={{ padding: '2rem 2.5rem 13rem' }}>
@@ -250,16 +236,9 @@ const ManageSetsPage = ({
           emptyOrDeprecatedSets.length > 0 && (
             <Button
               onClick={() => {
-                emptyOrDeprecatedSets.map(currentSetId =>
-                  dispatch(
-                    removeSet({
-                      type: find(flattenedSets, ({ id }) => currentSetId === id)
-                        .type,
-                      id: currentSetId,
-                    }),
-                  ),
+                emptyOrDeprecatedSets.map(({ id, type }) =>
+                  dispatch(removeSet({ id, type })),
                 );
-                setSetSizes(omit(setSizes, emptyOrDeprecatedSets));
               }}
               style={{ marginBottom: '1rem', marginLeft: '1rem' }}
             >
@@ -298,10 +277,7 @@ const ManageSetsPage = ({
             body={
               <tbody>
                 {flattenedSets.map(
-                  (
-                    { id, label, type, filters, linkFilters, countComponent },
-                    i,
-                  ) => (
+                  ({ id, label, type, filters, linkFilters }, i) => (
                     <Tr key={id} index={i}>
                       <Td key={`checkbox${i}`} style={{ width: '50px' }}>
                         <input
@@ -310,7 +286,7 @@ const ManageSetsPage = ({
                           onChange={e => setSelectedIds(xor(selectedIds, [id]))}
                         />
                         {doneFetchingSetSizes &&
-                          !get(setSizes, id) && (
+                          !counts[i] && (
                             <Tooltip Component="Set is either empty or deprecated.">
                               <ExclamationTriangleIcon
                                 style={{ paddingLeft: '5px', color: '#8a6d3b' }}
@@ -347,7 +323,7 @@ const ManageSetsPage = ({
                         />
                       </Td>
                       <Td key={`count${i}`}>
-                        {get(setSizes, id) > 0 ? (
+                        {counts[i] > 0 ? (
                           <ExploreLink
                             query={{
                               searchTableTab:
@@ -355,15 +331,15 @@ const ManageSetsPage = ({
                               filters: linkFilters,
                             }}
                           >
-                            {countComponent}
+                            {counts[i]}
                           </ExploreLink>
                         ) : (
-                          <span>{countComponent}</span>
+                          <span>{counts[i]}</span>
                         )}
                       </Td>
                       <Td>
                         {doneFetchingSetSizes &&
-                          get(setSizes, id) > 0 && (
+                          counts[i] > 0 && (
                             <Row>
                               <Tooltip Component="Export as TSV">
                                 <DownloadButton

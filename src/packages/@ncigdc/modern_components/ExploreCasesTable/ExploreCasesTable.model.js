@@ -13,6 +13,10 @@ import { makeFilter, replaceFilters } from '@ncigdc/utils/filters';
 import ExploreLink from '@ncigdc/components/Links/ExploreLink';
 import ageDisplay from '@ncigdc/utils/ageDisplay';
 import withRouter from '@ncigdc/utils/withRouter';
+import ImageViewerLink from '@ncigdc/components/Links/ImageViewerLink';
+import { RepositorySlideCount } from '@ncigdc/modern_components/Counts';
+import { MicroscopeIcon } from '@ncigdc/theme/icons';
+import { DISPLAY_SLIDES } from '@ncigdc/utils/constants';
 
 import {
   createDataCategoryColumns,
@@ -355,6 +359,45 @@ const casesTableModel = [
       <Td>{(node.demographic && node.demographic.race) || '--'}</Td>
     ),
   },
+  ...(DISPLAY_SLIDES && [
+    {
+      name: 'Slides',
+      id: 'slides',
+      sortable: false,
+      downloadable: false,
+      hidden: false,
+      th: () => <Th rowSpan="2">Slide Images</Th>,
+      td: ({ node }) => (
+        <Td style={{ textAlign: 'center' }}>
+          <RepositorySlideCount
+            filters={makeFilter([
+              { field: 'cases.case_id', value: node.case_id },
+            ])}
+          >
+            {count =>
+              count ? (
+                <Tooltip Component="View Slide Image">
+                  <ImageViewerLink
+                    isIcon
+                    query={{
+                      filters: makeFilter([
+                        { field: 'cases.case_id', value: node.case_id },
+                      ]),
+                    }}
+                  >
+                    <MicroscopeIcon /> ({count})
+                  </ImageViewerLink>
+                </Tooltip>
+              ) : (
+                <Tooltip Component="No slide images to view. Note: this demo only includes TCGA-BRCA.">
+                  --
+                </Tooltip>
+              )}
+          </RepositorySlideCount>
+        </Td>
+      ),
+    },
+  ]),
 ];
 
 export default casesTableModel;

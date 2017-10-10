@@ -84,6 +84,9 @@ type TProps = {
   linkText?: string,
   linkFieldMap?: Function,
   hideLinkOnEmpty: boolean,
+  getDisplayValue: Function,
+  hideHelpText?: boolean,
+  hideClearButton?: boolean,
 };
 
 export const getDisplayOp = (op: string, value: Array<string>) => {
@@ -169,24 +172,27 @@ const CurrentFilters = (
     linkFieldMap = f => f,
     hideLinkOnEmpty = true,
     getDisplayValue,
+    hideHelpText = false,
+    hideClearButton = false,
   }: TProps = {},
 ) => (
   <Info style={style} className="test-current-filters">
-    {!currentFilters.length && (
-      <span
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          lineHeight: '44px',
-          width: '100%',
-        }}
-      >
-        <LeftArrow />
-        <span style={{ marginLeft: '0.6rem' }}>
-          Start searching by selecting a facet
+    {!currentFilters.length &&
+      !hideHelpText && (
+        <span
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            lineHeight: '44px',
+            width: '100%',
+          }}
+        >
+          <LeftArrow />
+          <span style={{ marginLeft: '0.6rem' }}>
+            Start searching by selecting a facet
+          </span>
         </span>
-      </span>
-    )}
+      )}
     {!!currentFilters.length && (
       <Row
         style={{
@@ -195,13 +201,15 @@ const CurrentFilters = (
         }}
       >
         <Row wrap spacing="0.3rem">
-          <NotUnderlinedLink
-            className="test-clear"
-            style={styles.groupPadding}
-            query={omit(query, 'filters')}
-          >
-            <Button leftIcon={<UndoIcon />}>Clear</Button>
-          </NotUnderlinedLink>
+          {!hideClearButton && (
+            <NotUnderlinedLink
+              className="test-clear"
+              style={styles.groupPadding}
+              query={omit(query, 'filters')}
+            >
+              <Button leftIcon={<UndoIcon />}>Clear</Button>
+            </NotUnderlinedLink>
+          )}
 
           {currentFilters.map((filter, i) => {
             const value = [].concat(filter.content.value || []);

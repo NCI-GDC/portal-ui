@@ -61,7 +61,7 @@ const TabbedLinks: TTabbedLinks = (
                     }}
                     key={x.id}
                     query={{ [queryParam]: x.id }}
-                    merge
+                    merge={x.merge || true}
                     className={'test-' + x.id}
                   >
                     {x.text}

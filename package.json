@@ -47,6 +47,7 @@
     "lodash-backports": "1.0.1",
     "memoizee": "0.4.5",
     "moment": "2.17.1",
+    "namespace-hoc": "1.0.3",
     "oncogrid": "2.0.1",
     "pluralize": "7.0.0",
     "prop-types": "15.5.10",

@@ -11,7 +11,7 @@ import withRouter from '@ncigdc/utils/withRouter';
 import { MAX_SET_SIZE } from '@ncigdc/utils/constants';
 import WarningBox from '@ncigdc/uikit/WarningBox';
 import pluralize from '@ncigdc/utils/pluralize';
-import { withCount } from '@ncigdc/modern_components/Counts';
+import { withCounts } from '@ncigdc/modern_components/Counts';
 import Spinner from '@ncigdc/theme/icons/Spinner';
 import Button from '@ncigdc/uikit/Button';
 
@@ -22,25 +22,25 @@ const enhance = compose(
   connect(({ sets }) => ({ sets })),
   withProps(({ sets, type, total }) => ({ sets: sets[type] || {} })),
   withRouter,
-  withCount(({ field, type, scope, selected, filters }) => ({
-    key: 'countInBoth',
-    type,
-    scope,
-    filters: {
-      op: 'and',
-      content: [
-        { op: '=', content: { field, value: `set_id:${selected}` } },
-        filters,
-      ].filter(Boolean),
+  withCounts('counts', ({ field, type, scope, selected, filters }) => ({
+    countInBoth: {
+      type,
+      scope,
+      filters: {
+        op: 'and',
+        content: [
+          { op: '=', content: { field, value: `set_id:${selected}` } },
+          filters,
+        ].filter(Boolean),
+      },
     },
-  })),
-  withCount(({ field, type, scope, selected, filters }) => ({
-    key: 'countExisting',
-    type,
-    scope,
-    filters: {
-      op: 'and',
-      content: [{ op: '=', content: { field, value: `set_id:${selected}` } }],
+    countExisting: {
+      type,
+      scope,
+      filters: {
+        op: 'and',
+        content: [{ op: '=', content: { field, value: `set_id:${selected}` } }],
+      },
     },
   })),
 );
@@ -63,10 +63,9 @@ const AppendSetModal = ({
   history,
   location,
   setInputTotal,
-  countInBoth,
-  countExisting,
+  counts: { countInBoth, countExisting },
 }) => {
-  const validating = selected && (countInBoth === -1 || countExisting === -1);
+  const validating = selected && (countInBoth === '' || countExisting === '');
   const nothingToAdd = !validating && total === countInBoth;
 
   return (

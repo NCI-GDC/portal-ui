@@ -6,6 +6,7 @@ import _ from 'lodash';
 import { compose, pure, withState, withHandlers, renameProp } from 'recompose';
 import SearchIcon from 'react-icons/lib/fa/search';
 import LocationSubscriber from '@ncigdc/components/LocationSubscriber';
+import namespace from 'namespace-hoc';
 
 // Custom
 import { parseFilterParam } from '@ncigdc/utils/uri';
@@ -18,7 +19,6 @@ import Link from '@ncigdc/components/Links/Link';
 import CheckCircleOIcon from '@ncigdc/theme/icons/CheckCircleOIcon';
 import type { TRawQuery } from '@ncigdc/utils/uri/types';
 import withSelectableList from '@ncigdc/utils/withSelectableList';
-import namespace from '@ncigdc/utils/namespace';
 import GeneSymbol from '@ncigdc/modern_components/GeneSymbol';
 import Input from '@ncigdc/uikit/Form/Input';
 import SetId from '@ncigdc/components/SetId';
@@ -74,7 +74,7 @@ const SuggestionFacet = compose(
       document.querySelector(`[data-link-id="${item.id}"]`).click(),
   }),
   namespace(
-    'selectableList',
+    { namespace: 'selectableList', propMap: ['results', 'handleSelectItem'] },
     withSelectableList(
       {
         keyHandlerName: 'handleKeyEvent',

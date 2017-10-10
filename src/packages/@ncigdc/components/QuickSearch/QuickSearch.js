@@ -3,10 +3,11 @@
 import React from 'react';
 import _ from 'lodash';
 import { compose } from 'recompose';
+import namespace from 'namespace-hoc';
+
 import styled from '@ncigdc/theme/styled';
 import QuickSearchResults from './QuickSearchResults';
 import { withSearch } from '@ncigdc/utils/withSearch';
-import namespace from '@ncigdc/utils/namespace';
 import withSelectableList from '@ncigdc/utils/withSelectableList';
 
 const styles = {
@@ -64,9 +65,9 @@ const SearchInput = styled.input({
 });
 
 export default compose(
-  namespace('search', withSearch()),
+  namespace({ namespace: 'search' }, withSearch()),
   namespace(
-    'selectableList',
+    { namespace: 'selectableList', propMap: ['search'] },
     withSelectableList(
       {
         keyHandlerName: 'handleKeyDown',

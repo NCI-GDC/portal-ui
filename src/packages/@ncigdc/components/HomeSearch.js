@@ -1,11 +1,11 @@
 // @flow
 import React from 'react';
 import { compose } from 'recompose';
+import namespace from 'namespace-hoc';
 
 import SearchIcon from 'react-icons/lib/fa/search';
 import styled from '@ncigdc/theme/styled';
 import { withSearch } from '@ncigdc/utils/withSearch';
-import namespace from '@ncigdc/utils/namespace';
 import withSelectableList from '@ncigdc/utils/withSelectableList';
 
 import QuickSearchResults from './QuickSearch/QuickSearchResults';
@@ -30,9 +30,9 @@ const Input = styled.input({
 });
 
 const HomeSearch = compose(
-  namespace('search', withSearch()),
+  namespace({ namespace: 'search' }, withSearch()),
   namespace(
-    'selectableList',
+    { namespace: 'selectableList', propMap: ['search'] },
     withSelectableList(
       {
         keyHandlerName: 'handleKeyDown',

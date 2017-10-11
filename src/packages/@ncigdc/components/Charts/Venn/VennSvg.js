@@ -12,35 +12,55 @@ const colors = [
   'rgb(165, 218, 235)',
 ];
 
+const RADIUS = 85;
+const FACTOR = 0.6;
+
 export default compose(
   setDisplayName('Venn'),
   withTooltip,
 )(
   ({
-    data = [],
     ops = [],
-    width = 500,
-    height = ops.length === 3 ? 280 : 350,
-    margin = 5,
-    paddingTop = 10,
-    paddingBottom = 10,
-    paddingLeft = 10,
-    paddingRight = 10,
+    numCircles,
     outlineColour = '#999',
-    outlineWidth = 1.5,
-    selectColour = '#A4DEF4',
-    hoverColour = '#daf2fb',
-    radius = 85,
-    factor = 0.6,
     getFillColor = _.noop,
     onMouseOver = _.noop,
     onMouseOut = _.noop,
     ...props
   }) => {
+    const margin = 1;
+    if (numCircles === 2 && ops.length !== 3) {
+      console.warn(`expected 3 operations, received ${ops.length}`);
+    } else if (numCircles === 3 && ops.length !== 7) {
+      console.warn(`expected 7 operations, received ${ops.length}`);
+    }
+
+    const outerRadius = RADIUS + 1.5;
+    const angle = 360 / numCircles;
+    const getAngle = i => angle * i - (numCircles === 2 ? 90 : 60) % 360;
+
+    const offsets = Array(numCircles)
+      .fill()
+      .map((d, i) => {
+        const angle = Math.PI * getAngle(i) / 180;
+
+        return {
+          x: Math.sin(angle) * RADIUS * FACTOR,
+          y: Math.cos(angle) * RADIUS * FACTOR,
+        };
+      });
+
+    const height =
+      Math.abs(offsets[0].y - offsets[offsets.length - 1].y) +
+      (margin + outerRadius) * 2;
+
+    const width =
+      Math.abs(offsets[0].x - offsets[1].x) + (margin + outerRadius) * 2;
+
     const onClick = props.onClick || _.noop;
     const cursor = props.onClick ? 'pointer' : 'default';
 
-    const cy = 0.3 * height;
+    const cy = (numCircles === 2 ? 0.5 : 0.45) * height;
     const cx = 0.5 * width;
 
     const root = ReactFauxDOM.createElement('div');
@@ -48,47 +68,31 @@ export default compose(
     const svg = d3
       .select(root)
       .append(`svg`)
-      .attr('width', width)
-      .attr('height', height);
+      .style('display', 'block')
+      .attr('viewBox', `0 0 ${width} ${height}`);
 
     const defs = svg.append('svg:defs');
 
-    const angle = 360 / data.length;
-    const getAngle = i => angle * i - (ops.length === 3 ? 90 : 60) % 360;
-
     // circle clip paths
-
-    data.forEach((d, i) => {
+    offsets.forEach((offset, i) => {
       defs
         .append('svg:clipPath')
         .attr('id', `circle_${i}`)
         .append('svg:circle')
-        .attr(
-          'cx',
-          cx + Math.sin(Math.PI * getAngle(i) / 180) * radius * factor,
-        )
-        .attr(
-          'cy',
-          cy - Math.cos(Math.PI * getAngle(i) / 180) * radius * factor + radius,
-        )
-        .attr('r', radius);
+        .attr('cx', cx + offset.x)
+        .attr('cy', cy - offset.y)
+        .attr('r', RADIUS);
 
       defs
         .append('svg:clipPath')
         .attr('id', `circle_${i}_outline`)
         .append('svg:circle')
-        .attr(
-          'cx',
-          cx + Math.sin(Math.PI * getAngle(i) / 180) * radius * factor,
-        )
-        .attr(
-          'cy',
-          cy - Math.cos(Math.PI * getAngle(i) / 180) * radius * factor + radius,
-        )
-        .attr('r', radius + outlineWidth);
+        .attr('cx', cx + offset.x)
+        .attr('cy', cy - offset.y)
+        .attr('r', outerRadius);
     });
 
-    if (ops.length === 3) {
+    if (numCircles === 2) {
       ops.slice(1).forEach((d, i) =>
         svg
           .append('svg:rect')
@@ -112,9 +116,7 @@ export default compose(
           .on('mouseover', () => onMouseOver(d.op))
           .on('mouseout', onMouseOut),
       );
-    }
-
-    if (ops.length > 3) {
+    } else {
       ops.slice(4).forEach((d, i) =>
         svg
           .append('svg:rect')
@@ -144,7 +146,7 @@ export default compose(
           .append('svg:g')
           .attr('clip-path', `url(#circle_${i}_outline)`)
           .append('svg:rect')
-          .attr('clip-path', `url(#circle_${(i + 1) % data.length}_outline)`)
+          .attr('clip-path', `url(#circle_${(i + 1) % numCircles}_outline)`)
           .attr('width', width)
           .attr('height', height)
           .style('fill', outlineColour),
@@ -156,7 +158,7 @@ export default compose(
           .attr('clip-path', `url(#circle_${i})`)
           .append('svg:rect')
           .attr('class', 'inner')
-          .attr('clip-path', `url(#circle_${(i + 1) % data.length})`)
+          .attr('clip-path', `url(#circle_${(i + 1) % numCircles})`)
           .attr('width', width)
           .attr('height', height)
           .style('cursor', cursor)
@@ -171,9 +173,9 @@ export default compose(
 
     let innerOutline = svg
       .append('svg:g')
-      .attr('clip-path', `url(#circle_${data.length - 1}_outline)`);
+      .attr('clip-path', `url(#circle_${numCircles - 1}_outline)`);
 
-    _.range(data.length - 1, 0).forEach(
+    _.range(numCircles - 1, 0).forEach(
       x =>
         (innerOutline = innerOutline
           .append('svg:g')
@@ -189,9 +191,9 @@ export default compose(
 
     let inner = svg
       .append('svg:g')
-      .attr('clip-path', `url(#circle_${data.length - 1})`);
+      .attr('clip-path', `url(#circle_${numCircles - 1})`);
 
-    _.range(data.length - 1, 0).forEach(
+    _.range(numCircles - 1, 0).forEach(
       x =>
         (inner = inner.append('svg:g').attr('clip-path', `url(#circle_${x})`)),
     );

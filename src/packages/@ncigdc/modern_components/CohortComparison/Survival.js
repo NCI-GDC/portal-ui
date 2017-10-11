@@ -8,6 +8,7 @@ import { tableToolTipHint } from '@ncigdc/theme/mixins';
 import { stringifyJSONParam } from '@ncigdc/utils/uri';
 import { CreateExploreCaseSetButton } from '@ncigdc/modern_components/withSetAction';
 import withRouter from '@ncigdc/utils/withRouter';
+import Alias from '@ncigdc/components/Alias';
 
 const survivalFilters = [
   {
@@ -31,7 +32,6 @@ export default compose(
   ),
 )(
   ({
-    Alias,
     survivalData,
     result1,
     result2,
@@ -90,7 +90,7 @@ export default compose(
       />
     ),
   }) => (
-    <span style={{ marginTop: 10, ...style }}>
+    <div style={style}>
       <Row>
         <h2>Survival Analysis</h2>
       </Row>
@@ -174,6 +174,6 @@ export default compose(
           />
         )}
       </div>
-    </span>
+    </div>
   ),
 );

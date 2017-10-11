@@ -35,7 +35,7 @@ const availableAnalysis: Array<TAnalysis> = [
     Icon: p => (
       <VennSvg
         {...p}
-        data={[1, 2, 3]}
+        numCircles={3}
         ops={[
           { op: 1 },
           { op: 2 },
@@ -45,10 +45,6 @@ const availableAnalysis: Array<TAnalysis> = [
           { op: 6 },
           { op: 7 },
         ]}
-        width={85}
-        height={100}
-        radius={25}
-        outlineWidth={1}
         outlineColour="rgba(46, 90, 164, 0.62)"
         getFillColor={(d, i) => {
           if (d.op === 5) return 'rgba(38, 166, 166, 0.65)';

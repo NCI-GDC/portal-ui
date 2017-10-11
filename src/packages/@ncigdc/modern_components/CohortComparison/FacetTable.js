@@ -128,7 +128,7 @@ export default compose(
                                     {
                                       op: 'in',
                                       content: {
-                                        field,
+                                        field: `cases.${field}`,
                                         value: [set1_bucket.key],
                                       },
                                     },
@@ -170,7 +170,7 @@ export default compose(
                                     {
                                       op: 'in',
                                       content: {
-                                        field,
+                                        field: `cases.${field}`,
                                         value: [set2_bucket.key],
                                       },
                                     },

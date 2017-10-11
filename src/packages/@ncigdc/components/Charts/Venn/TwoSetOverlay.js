@@ -1,35 +1,48 @@
 import React from 'react';
-import TL from './Translate';
 
-const Alias = ({ i }) => (
-  <span>
-    <em>S</em>
-    <sub>{i}</sub>
-  </span>
-);
+import Alias from '@ncigdc/components/Alias';
+import { absoluteCenter } from '@ncigdc/theme/mixins';
 
-export default ({
-  ops,
-  CountComponent,
-  width,
-  xoffset = width - 500,
-  friction = 2,
-}) => (
-  <div style={{ position: 'absolute', width, pointerEvents: 'none', top: 0 }}>
-    <TL x={120 + xoffset / friction} y={80}>
-      <Alias i={1} />
-    </TL>
-    <TL x={350 + xoffset / friction} y={80}>
-      <Alias i={2} />
-    </TL>
-    <TL x={241 + xoffset / friction} y={160}>
-      <CountComponent filters={ops[0].filters} />
-    </TL>
-    <TL x={165 + xoffset / friction} y={160}>
-      <CountComponent filters={ops[1].filters} />
-    </TL>
-    <TL x={320 + xoffset / friction} y={160}>
-      <CountComponent filters={ops[2].filters} />
-    </TL>
-  </div>
-);
+export default ({ ops, CountComponent, style }) => {
+  return (
+    <div
+      style={{
+        ...style,
+        position: 'absolute',
+        pointerEvents: 'none',
+        top: 0,
+        bottom: 0,
+        left: 0,
+        right: 0,
+      }}
+    >
+      <Alias
+        i={1}
+        style={{
+          position: 'absolute',
+          top: '50%',
+          right: '102%',
+          transform: 'translateY(-50%)',
+        }}
+      />
+      <Alias
+        i={2}
+        style={{
+          position: 'absolute',
+          top: '50%',
+          left: '102%',
+          transform: 'translateY(-50%)',
+        }}
+      />
+      <CountComponent
+        filters={ops[1].filters}
+        style={{ ...absoluteCenter, left: '20%' }}
+      />
+      <CountComponent filters={ops[0].filters} style={absoluteCenter} />
+      <CountComponent
+        filters={ops[2].filters}
+        style={{ ...absoluteCenter, left: '80%' }}
+      />
+    </div>
+  );
+};

@@ -3,13 +3,8 @@ import _ from 'lodash';
 import { compose } from 'recompose';
 import ExploreLink from '@ncigdc/components/Links/ExploreLink';
 import EntityPageHorizontalTable from '@ncigdc/components/EntityPageHorizontalTable';
+import Alias from '@ncigdc/components/Alias';
 
-const Alias = ({ i }) => (
-  <span>
-    <em>S</em>
-    <sub>{i}</sub>
-  </span>
-);
 const enhance = compose(); // left to minimize diff
 export default enhance(
   ({ push, type, CountComponent, CreateSetButton, sets }) => (

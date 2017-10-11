@@ -16,12 +16,12 @@ export default compose(
       handleCountChange(count);
     }
   }),
-)(({ count, children, loading }) => {
+)(({ count, children, loading, style }) => {
   return children ? (
     children(count)
   ) : count === '' ? (
-    <GreyBox />
+    <GreyBox style={style} />
   ) : (
-    <span>{count.toLocaleString()}</span>
+    <span style={style}>{count.toLocaleString()}</span>
   );
 });

@@ -2,10 +2,9 @@ import React from 'react';
 import { compose, withState } from 'recompose';
 
 import Venn, { buildOps } from '@ncigdc/components/Charts/Venn';
-import { Row, Column } from '@ncigdc/uikit/Flex';
+import { Row } from '@ncigdc/uikit/Flex';
 import countComponents from '@ncigdc/modern_components/Counts';
 import withRouter from '@ncigdc/utils/withRouter';
-import { WithSize } from '@ncigdc/utils/withSize';
 import { CreateExploreCaseSetButton } from '@ncigdc/modern_components/withSetAction';
 import { CreateExploreGeneSetButton } from '@ncigdc/modern_components/withSetAction';
 import { CreateExploreSsmSetButton } from '@ncigdc/modern_components/withSetAction';
@@ -45,8 +44,7 @@ export default compose(
     };
 
     const CountComponent = countComponents[type];
-    const setIds = Object.keys(sets);
-    const ops = buildOps({ setIds, type });
+    const ops = buildOps({ setIds: Object.keys(sets), type });
 
     const selectedFilters = {
       op: 'or',
@@ -60,55 +58,45 @@ export default compose(
           Click on the areas of the Venn diagram to include them in your result
           set.
         </div>
-        <Column style={{ marginTop: 10 }}>
-          <Row>
-            <WithSize>
-              {({ width }) => (
-                <div style={{ position: 'relative', width: '40%' }}>
-                  <div style={{ position: 'absolute' }}>
-                    <Venn
-                      type={type}
-                      width={width}
-                      data={setIds}
-                      ops={ops}
-                      onClick={toggle}
-                      onMouseOver={op => {
-                        hovering.add(op);
-                        setHovering(hovering);
-                      }}
-                      onMouseOut={() => setHovering(new Set())}
-                      getFillColor={(d, i) => {
-                        return hovering.has(d.op)
-                          ? colors[1]
-                          : selected.has(d.op) ? colors[2] : colors[0];
-                      }}
-                    />
-                  </div>
-                </div>
-              )}
-            </WithSize>
-            <Column style={{ width: '60%' }}>
-              <SetTable
-                push={push}
-                sets={sets}
-                type={type}
-                CountComponent={CountComponent}
-                CreateSetButton={CreateSetButton}
-              />
-              <hr />
-              {OpsTable({
-                type,
-                selected,
-                toggle,
-                push,
-                ops,
-                CountComponent,
-                selectedFilters,
-                CreateSetButton,
-              })}
-            </Column>
-          </Row>
-        </Column>
+
+        <Row style={{ alignItems: 'center', marginTop: 10 }}>
+          <Venn
+            style={{ width: '30%', maxWidth: 300, margin: '0 5%' }}
+            type={type}
+            ops={ops}
+            onClick={toggle}
+            onMouseOver={op => {
+              hovering.add(op);
+              setHovering(hovering);
+            }}
+            onMouseOut={() => setHovering(new Set())}
+            getFillColor={(d, i) => {
+              return hovering.has(d.op)
+                ? colors[1]
+                : selected.has(d.op) ? colors[2] : colors[0];
+            }}
+          />
+          <div style={{ flexGrow: 1 }}>
+            <SetTable
+              push={push}
+              sets={sets}
+              type={type}
+              CountComponent={CountComponent}
+              CreateSetButton={CreateSetButton}
+            />
+            <hr />
+            {OpsTable({
+              type,
+              selected,
+              toggle,
+              push,
+              ops,
+              CountComponent,
+              selectedFilters,
+              CreateSetButton,
+            })}
+          </div>
+        </Row>
       </div>
     );
   },

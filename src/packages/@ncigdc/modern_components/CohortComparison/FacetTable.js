@@ -7,6 +7,7 @@ import ExploreLink from '@ncigdc/components/Links/ExploreLink';
 import BarChart from '@ncigdc/components/Charts/TwoBarChart';
 import { withTheme } from '@ncigdc/theme';
 import Pvalue from '@ncigdc/modern_components/Pvalue';
+import Alias from '@ncigdc/components/Alias';
 
 export default compose(
   withTheme,
@@ -23,7 +24,6 @@ export default compose(
     Set2,
     set1,
     set2,
-    Alias,
     palette,
     buckets1 = data1[field].buckets.filter(x => x.key !== '_missing'),
     buckets2 = data2[field].buckets.filter(x => x.key !== '_missing'),
@@ -37,43 +37,49 @@ export default compose(
         <div style={{ margin: '0 10px' }}>{Set2}</div>
       </Row> */}
       </Row>
-      <BarChart
-        data1={data.map(k => {
-          const bucket = find(buckets1, b => b.key === k) || {};
-
-          return {
-            label: truncate(k, { length: 15 }),
-            value: bucket.doc_count || 0,
-          };
-        })}
-        data2={data.map(k => {
-          const bucket = find(buckets2, b => b.key === k) || {};
-
-          return {
-            label: truncate(k, { length: 15 }),
-            value: bucket.doc_count || 0,
-          };
-        })}
-        yAxis={{ title: '# Cases' }}
-        height={200}
-        styles={{
-          xAxis: {
-            stroke: theme.greyScale4,
-            textFill: theme.greyScale3,
-          },
-          yAxis: {
-            stroke: theme.greyScale4,
-            textFill: theme.greyScale3,
-          },
-          bars1: { fill: palette[0] },
-          bars2: { fill: palette[1] },
-          tooltips: {
-            fill: '#fff',
-            stroke: theme.greyScale4,
-            textFill: theme.greyScale3,
-          },
+      <div
+        style={{
+          maxWidth: data.length * 140 + 150, // TODO: use same logic used in TwoBarCharts
         }}
-      />
+      >
+        <BarChart
+          data1={data.map(k => {
+            const bucket = find(buckets1, b => b.key === k) || {};
+
+            return {
+              label: truncate(k, { length: 15 }),
+              value: bucket.doc_count || 0,
+            };
+          })}
+          data2={data.map(k => {
+            const bucket = find(buckets2, b => b.key === k) || {};
+
+            return {
+              label: truncate(k, { length: 15 }),
+              value: bucket.doc_count || 0,
+            };
+          })}
+          yAxis={{ title: '# Cases' }}
+          height={200}
+          styles={{
+            xAxis: {
+              stroke: theme.greyScale4,
+              textFill: theme.greyScale3,
+            },
+            yAxis: {
+              stroke: theme.greyScale4,
+              textFill: theme.greyScale3,
+            },
+            bars1: { fill: palette[0] },
+            bars2: { fill: palette[1] },
+            tooltips: {
+              fill: '#fff',
+              stroke: theme.greyScale4,
+              textFill: theme.greyScale3,
+            },
+          }}
+        />
+      </div>
       <Table
         headings={[
           <Th key="1">{mapping[field]}</Th>,

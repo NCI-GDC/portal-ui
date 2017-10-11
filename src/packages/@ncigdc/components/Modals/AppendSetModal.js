@@ -129,6 +129,14 @@ const AppendSetModal = ({
         selected={selected}
         type={type}
         field={field}
+        getDisabledMessage={({ count }) =>
+          count >= MAX_SET_SIZE
+            ? `The set cannot exceed ${pluralize(
+                displayType,
+                MAX_SET_SIZE,
+                true,
+              )}`
+            : ''}
       />
       {selected &&
         !validating && [

@@ -112,7 +112,6 @@ export function sortable(Component) {
     updateState: PropTypes.func.isRequired,
     sortId: PropTypes.number,
     outline: PropTypes.string.isRequired, // list | grid
-    draggingIndex: PropTypes.number,
     childProps: PropTypes.object,
   };
 

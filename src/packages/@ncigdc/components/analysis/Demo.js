@@ -1,84 +1,72 @@
 import React from 'react';
-import countComponents from '@ncigdc/modern_components/Counts';
+import { compose, withState } from 'recompose';
+
 import withSetAction from '@ncigdc/modern_components/withSetAction';
 import Loader from '@ncigdc/uikit/Loaders/Loader';
+import { withCounts } from '@ncigdc/modern_components/Counts';
+import { MAX_SET_SIZE } from '@ncigdc/utils/constants';
+
+const enhance = compose(
+  withState('setStates', 'setSetStates', props =>
+    Object.entries(props.sets).reduce((acc, [type, sets]) => {
+      return Object.keys(sets).reduce((acc, id) => {
+        acc.push({ id, type, created: false });
+        return acc;
+      }, acc);
+    }, []),
+  ),
+  withCounts('counts', ({ setStates }) =>
+    setStates.map(({ id, type }) => {
+      return {
+        type,
+        scope: 'explore',
+        filters: {
+          op: 'and',
+          content: [
+            {
+              op: 'in',
+              content: {
+                field: `${type}s.${type}_id`,
+                value: [`set_id:${id}`],
+              },
+            },
+          ],
+        },
+      };
+    }),
+  ),
+  withSetAction,
+);
 
 class Demo extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      setStates: Object.entries(props.sets).reduce((acc, [type, sets]) => {
-        return Object.keys(sets).reduce((acc, id) => {
-          acc.push({
-            id,
-            type,
-            count: null,
-            created: false,
-          });
-          return acc;
-        }, acc);
-      }, []),
-    };
-  }
-  componentWillUpdate(nextProps, nextState) {
-    nextState.setStates.forEach(({ count, id, type }, i) => {
-      if (count === 0 && this.state.setStates[i].count !== 0) {
+  componentWillReceiveProps(nextProps) {
+    nextProps.setStates.forEach(({ id, type }, i) => {
+      if (nextProps.counts[i] === 0 && this.props.counts[i] !== 0) {
         nextProps.createSet({
           type,
           scope: 'explore',
           action: 'create',
-          size: 10000,
+          size: MAX_SET_SIZE,
           set_id: id,
           filters: nextProps.filters[id],
           onComplete: () => {
-            const setStates = [...this.state.setStates];
-            setStates[i] = { ...setStates[i], created: true };
-            this.setState({ setStates });
+            nextProps.setSetStates(state => {
+              const setStates = [...state];
+              setStates[i] = { ...setStates[i], created: true };
+              return setStates;
+            });
           },
         });
       }
     });
   }
   render() {
-    const { children } = this.props;
-    const setsReady = this.state.setStates.every(
-      state => state.count > 0 || state.created,
+    const { children, setStates, counts } = this.props;
+    const setsReady = setStates.every(
+      (state, i) => counts[i] > 0 || state.created,
     );
-    return setsReady ? (
-      <div>{children}</div>
-    ) : (
-      <Loader>
-        {this.state.setStates.map(({ count, id, type }, i) => {
-          const CountComponent = countComponents[type];
-
-          return (
-            <CountComponent
-              key={id}
-              filters={{
-                op: 'and',
-                content: [
-                  {
-                    op: 'in',
-                    content: {
-                      field: `${type}s.${type}_id`,
-                      value: [`set_id:${id}`],
-                    },
-                  },
-                ],
-              }}
-              handleCountChange={count => {
-                const setStates = [...this.state.setStates];
-                setStates[i] = { ...setStates[i], count };
-                this.setState({ setStates });
-              }}
-            >
-              {() => null}
-            </CountComponent>
-          );
-        })}
-      </Loader>
-    );
+    return setsReady ? <div>{children}</div> : <Loader />;
   }
 }
 
-export default withSetAction(Demo);
+export default enhance(Demo);

@@ -40,7 +40,6 @@ const EntityPageVerticalTable = ({
       className={className + ' test-entity-table-wrapper'}
       style={{
         flexWrap: 'wrap',
-        overflow: 'auto',
         ...style,
       }}
     >

@@ -230,6 +230,7 @@ const availableAnalysis: Array<TAnalysis> = [
             'demographic.gender',
             'diagnoses.vital_status',
             'demographic.race',
+            'diagnoses.age_at_diagnosis',
           ]}
           sets={props.sets}
           message={props.message}
@@ -253,6 +254,7 @@ const availableAnalysis: Array<TAnalysis> = [
             'demographic.gender',
             'diagnoses.vital_status',
             'demographic.race',
+            'diagnoses.age_at_diagnosis',
           ]}
           sets={sets}
         />

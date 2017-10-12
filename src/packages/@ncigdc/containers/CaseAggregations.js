@@ -38,8 +38,8 @@ export type TProps = {
     demographic__gender: { buckets: [TBucket] },
     demographic__race: { buckets: [TBucket] },
     diagnoses__vital_status: { buckets: [TBucket] },
-    diagnoses__days_to_death: { max: number, min: number },
-    diagnoses__age_at_diagnosis: { max: number, min: number },
+    diagnoses__days_to_death: { stats: { max: number, min: number } },
+    diagnoses__age_at_diagnosis: { stats: { max: number, min: number } },
     disease_type: { buckets: [TBucket] },
     primary_site: { buckets: [TBucket] },
     project__program__name: { buckets: [TBucket] },
@@ -364,9 +364,11 @@ export const CaseAggregationsQuery = {
           }
         }
         diagnoses__age_at_diagnosis {
-          max
-          min
-          count
+          stats {
+            max
+            min
+            count
+          }
         }
         diagnoses__vital_status {
           buckets {
@@ -375,9 +377,11 @@ export const CaseAggregationsQuery = {
           }
         }
         diagnoses__days_to_death {
-          max
-          min
-          count
+          stats {
+            max
+            min
+            count
+          }
         }
         demographic__race {
           buckets {

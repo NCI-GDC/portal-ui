@@ -374,9 +374,11 @@ export const CaseAggregationsQuery = {
           }
         }
         diagnoses__age_at_diagnosis {
-          max
-          min
-          count
+          stats {
+            max
+            min
+            count
+          }
         }
         diagnoses__vital_status {
           buckets {
@@ -385,9 +387,11 @@ export const CaseAggregationsQuery = {
           }
         }
         diagnoses__days_to_death {
-          max
-          min
-          count
+          stats {
+            max
+            min
+            count
+          }
         }
         demographic__race {
           buckets {

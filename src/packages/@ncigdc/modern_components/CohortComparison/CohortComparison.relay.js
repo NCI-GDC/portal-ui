@@ -66,12 +66,40 @@ export default (Component: React$Element<*>) =>
                     total
                   }
                   facets(filters: $filter1, facets: $facets)
+                  aggregations(filters: $filter1) {
+                    diagnoses__age_at_diagnosis {
+                      stats {
+                        min
+                        max
+                      }
+                      histogram(interval: 3652.4444444444) {
+                        buckets {
+                          doc_count
+                          key
+                        }
+                      }
+                    }
+                  }
                 }
                 result2: cases {
                   hits(filters: $filter2) {
                     total
                   }
                   facets(filters: $filter2, facets: $facets)
+                  aggregations(filters: $filter2) {
+                    diagnoses__age_at_diagnosis {
+                      stats {
+                        min
+                        max
+                      }
+                      histogram(interval: 3652.4444444444) {
+                        buckets {
+                          doc_count
+                          key
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }

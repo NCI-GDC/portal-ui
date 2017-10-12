@@ -37,6 +37,7 @@ export default compose(
     hovering,
     setHovering,
     CreateSetButton = CreateSetButtonMap[type],
+    message,
   }) => {
     const toggle = op => {
       selected[selected.has(op) ? 'delete' : 'add'](op);
@@ -54,6 +55,7 @@ export default compose(
     return (
       <div style={{ padding: 20 }}>
         <div style={{ fontSize: 20 }}>Set Operations</div>
+        {message && <div style={{ fontStyle: 'italic' }}>{message}</div>}
         <div>
           Click on the areas of the Venn diagram to include them in your result
           set.

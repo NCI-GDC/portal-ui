@@ -57,6 +57,8 @@ const availableAnalysis: Array<TAnalysis> = [
     description:
       'Display Venn diagram and find intersection or union, etc. of your sets of the same type.',
     demoData: {
+      message:
+        'Demo showing high impact mutations overlap in Bladder between Mutect, Varscan and Muse pipelines',
       sets: {
         ssm: {
           'demo-bladder-high-mutect': 'Bladder, High impact, Mutect',
@@ -144,7 +146,11 @@ const availableAnalysis: Array<TAnalysis> = [
       const type = ['case', 'gene', 'ssm'].find(t => props.sets[t]);
       return (
         <Demo {...props}>
-          <SetOperations type={type} sets={props.sets[type]} />;
+          <SetOperations
+            type={type}
+            sets={props.sets[type]}
+            message={props.message}
+          />;
         </Demo>
       );
     },
@@ -187,6 +193,8 @@ const availableAnalysis: Array<TAnalysis> = [
     description: `Display the survival analysis of your case sets and compare
     characteristics such as gender, vital status and age at diagnosis.`,
     demoData: {
+      message:
+        'Demo showing cases with pancreatic cancer with and without mutations in the gene KRAS.',
       sets: {
         case: {
           'demo-kras': 'Pancreas - KRAS mutated',
@@ -224,6 +232,7 @@ const availableAnalysis: Array<TAnalysis> = [
             'demographic.race',
           ]}
           sets={props.sets}
+          message={props.message}
         />
       </Demo>
     ),

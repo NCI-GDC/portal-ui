@@ -13,6 +13,7 @@ import { theme } from '@ncigdc/theme/index';
 import removeEmptyKeys from '@ncigdc/utils/removeEmptyKeys';
 
 import type { TSetTypes } from '../../dux/sets';
+import DemoButton from './DemoButton';
 
 type TProps = {
   sets: { [TSetTypes]: string },
@@ -22,12 +23,13 @@ type TProps = {
   label: string,
   setInstructions: string,
   onCancel: Function,
-  onDemo: Function,
   onRun: Function,
   validateSets: Function,
   description: string,
   Icon: Function,
   setTypes: Array<string>,
+  type: string,
+  demoData: {},
 };
 
 const enhance = compose(
@@ -43,12 +45,13 @@ const SetTable = ({
   label,
   setInstructions,
   onCancel,
-  onDemo,
   onRun,
   validateSets,
   Icon,
   description,
   setTypes,
+  type,
+  demoData,
 }: TProps) => {
   const headings = [
     { key: 'select', title: ' ' },
@@ -145,7 +148,7 @@ const SetTable = ({
             }}
           >
             <Button onClick={onCancel}>Cancel</Button>
-            <Button onClick={onDemo}>Demo</Button>
+            <DemoButton demoData={demoData} type={type} />
             <Button
               disabled={!validateSets(selectedSets)}
               onClick={() => onRun(selectedSets)}

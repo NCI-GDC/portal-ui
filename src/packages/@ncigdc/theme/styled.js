@@ -35,13 +35,13 @@ const createStyledComponent: TCreateStyledComponent = el => style =>
       el,
       {
         ...validAttrProps,
-        ref: node => (ref ? ref(node) : () => {}),
         className: `${props.className || ''} ${css(
           mapValues(style, {
             theme,
             ...props,
           }),
         )}`,
+        ...(ref ? { ref: node => ref(node) } : {}),
       },
       children,
     );

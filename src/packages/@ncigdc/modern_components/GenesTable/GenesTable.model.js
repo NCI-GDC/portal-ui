@@ -3,7 +3,12 @@
 import React from 'react';
 import { scaleOrdinal, schemeCategory10 } from 'd3';
 import { Th, Td, ThNum, TdNum } from '@ncigdc/uikit/Table';
-import { makeFilter, addInFilters, removeFilter } from '@ncigdc/utils/filters';
+import {
+  makeFilter,
+  addInFilters,
+  removeFilter,
+  replaceFilters,
+} from '@ncigdc/utils/filters';
 import GeneLink from '@ncigdc/components/Links/GeneLink';
 import { tableToolTipHint } from '@ncigdc/theme/mixins';
 import SurvivalIcon from '@ncigdc/theme/icons/SurvivalIcon';
@@ -120,9 +125,9 @@ const GenesTableModel = [
             merge
             query={{
               searchTableTab: 'cases',
-              filters: addInFilters(
-                query.genesTable_filters || defaultFilters,
+              filters: replaceFilters(
                 makeFilter([{ field: 'genes.gene_id', value: [node.gene_id] }]),
+                query.genesTable_filters || defaultFilters,
               ),
             }}
           >

@@ -72,6 +72,7 @@ export default compose(
     survivalData,
     viewer: { repository: { result1, result2 } },
     size: { width },
+    message,
   }) => {
     const Set1 = (
       <span style={{ color: SET1_COLOUR, fontWeight: 'bold' }}>
@@ -93,6 +94,7 @@ export default compose(
     return (
       <div style={{ maxWidth: 1000, padding: '2rem 3rem' }}>
         <h1 style={{ marginTop: 0 }}>Cohort Comparison</h1>
+        {message && <div style={{ fontStyle: 'italic' }}>{message}</div>}
         <Row style={{ justifyContent: 'space-between' }}>
           <div>
             <Table

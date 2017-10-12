@@ -10,6 +10,8 @@ import { Row } from '@ncigdc/uikit/Flex';
 import availableAnalysis from './availableAnalysis';
 import SelectSet from './SelectSet';
 
+import DemoButton from './DemoButton';
+
 const enhance = compose(
   branch(
     () => !availableAnalysis.length,
@@ -25,19 +27,9 @@ const enhance = compose(
 );
 
 const CreateAnalysis = ({ analysis, setAnalysis, dispatch, push }) => {
-  const onDemo = type => {
-    push({
-      query: {
-        analysisTableTab: 'result',
-        analysisId: `demo-${type}`,
-      },
-    });
-  };
-
   return analysis ? (
     <SelectSet
       {...analysis}
-      onDemo={() => onDemo(analysis.type)}
       onCancel={() => setAnalysis(null)}
       onRun={sets => {
         const created = new Date().toISOString();
@@ -73,11 +65,7 @@ const CreateAnalysis = ({ analysis, setAnalysis, dispatch, push }) => {
               <div style={{ marginBottom: 10 }}>{analysis.description}</div>
               <Row spacing={5}>
                 <Button onClick={() => setAnalysis(analysis)}>Select</Button>
-                <Button
-                  onClick={() => analysis.demoData && onDemo(analysis.type)}
-                >
-                  Demo
-                </Button>
+                <DemoButton demoData={analysis.demoData} type={analysis.type} />
               </Row>
             </div>
           </Row>

@@ -71,6 +71,22 @@ const styles = {
   },
 };
 
+class Container extends React.Component {
+  render() {
+    return (
+      <div
+        className={CLASS_NAME + ' test-survival-plot-container'}
+        ref={this.props.setSurvivalContainer}
+        style={{
+          overflow: 'hidden',
+          height: this.props.survivalPlotloading ? '0px' : this.props.height,
+          position: 'relative',
+        }}
+      />
+    );
+  }
+}
+
 const SurvivalPlotWrapper = ({
   height = 0,
   legend,
@@ -201,14 +217,9 @@ const SurvivalPlotWrapper = ({
           </div>
         </Column>
       )}
-      <div
-        className={CLASS_NAME + ' test-survival-plot-container'}
-        ref={setSurvivalContainer}
-        style={{
-          overflow: 'hidden',
-          height: survivalPlotloading ? '0px' : height,
-          position: 'relative',
-        }}
+      <Container
+        setSurvivalContainer={setSurvivalContainer}
+        survivalPlotloading={survivalPlotloading}
       />
     </Loader>
   );

@@ -14,8 +14,21 @@ const survivalFilters = [
   {
     op: 'or',
     content: [
-      { op: 'not', content: { field: 'diagnoses.days_to_death' } },
-      { op: 'not', content: { field: 'diagnoses.days_to_last_follow_up' } },
+      {
+        op: 'and',
+        content: [
+          { op: '>', content: { field: 'diagnoses.days_to_death', value: 0 } },
+        ],
+      },
+      {
+        op: 'and',
+        content: [
+          {
+            op: '>',
+            content: { field: 'diagnoses.days_to_last_follow_up', value: 0 },
+          },
+        ],
+      },
     ],
   },
   { op: 'not', content: { field: 'diagnoses.vital_status' } },

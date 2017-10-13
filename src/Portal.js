@@ -17,6 +17,8 @@ export const store = setupStore({
   },
 });
 
+window.store = store;
+
 store.dispatch(fetchApiVersionInfo());
 
 if (process.env.NODE_ENV !== 'development') {

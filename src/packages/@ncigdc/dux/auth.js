@@ -15,6 +15,7 @@ const TOKEN_REQUEST = 'gdc/TOKEN_REQUEST';
 const TOKEN_SUCCESS = 'gdc/TOKEN_SUCCESS';
 const TOKEN_FAILURE = 'gdc/TOKEN_FAILURE';
 const TOKEN_CLEAR = 'gdc/TOKEN_CLEAR';
+const TOGGLE_LOGIN_REQUIRED = 'gdc/TOGGLE_LOGIN_REQUIRED';
 
 export function fetchUser() {
   return fetchAuth({
@@ -72,6 +73,7 @@ export function fetchToken() {
 }
 
 const initialState: State = {
+  loginRequired: process.env.REACT_APP_LOGIN_REQUIRED || false,
   firstLoad: true,
   isFetching: false,
   user: null,
@@ -82,6 +84,10 @@ const initialState: State = {
 
 export default handleActions(
   {
+    [TOGGLE_LOGIN_REQUIRED]: state => ({
+      ...state,
+      loginRequired: !state.loginRequired,
+    }),
     [USER_REQUEST]: state => ({
       ...state,
       isFetching: true,

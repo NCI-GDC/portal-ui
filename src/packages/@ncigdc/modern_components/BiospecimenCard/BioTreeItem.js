@@ -71,7 +71,7 @@ const BioTreeItem = ({
           }}
         >
           <Highlight search={query}>
-            {entity[`${type.s}_id`]}
+            {entity.submitter_id}
           </Highlight>
         </span>
 

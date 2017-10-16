@@ -31,6 +31,7 @@ type TDownloadButton = {
   extraParams: Object,
   setParentState: () => {},
   showIcon?: boolean,
+  sets: Array<{ id: string, filename: string, type: string }>,
 };
 
 const DownloadButton = ({
@@ -51,6 +52,7 @@ const DownloadButton = ({
   style = {},
   extraParams = {},
   showIcon = true,
+  sets,
   ...props
 }: TDownloadButton) => {
   const text = active ? activeText : inactiveText;
@@ -72,8 +74,9 @@ const DownloadButton = ({
           format,
           fields: fields.join(),
           filters,
-          expand: dataExportExpands ? dataExportExpands.join() : undefined,
           pretty: true,
+          ...(sets ? { sets } : {}),
+          ...(dataExportExpands ? { expand: dataExportExpands.join() } : {}),
           ...(returnType ? { return_type: returnType } : {}),
           ...(filename ? { filename } : {}),
           ...extraParams,

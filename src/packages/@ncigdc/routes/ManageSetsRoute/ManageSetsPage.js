@@ -3,6 +3,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { compose, withState } from 'recompose';
 import { map, reduce, xor, find, get, omit } from 'lodash';
+import moment from 'moment';
 
 import { notify } from '@ncigdc/dux/notification';
 import { closeNotification } from '@ncigdc/dux/notification';
@@ -71,6 +72,7 @@ const ManageSetsPage = ({
       ...map(setsOfType, (label, id) => ({
         type,
         label,
+        filenameSafeLabel: label.replace(/[^A-Za-z0-9_.]/g, '_'),
         id,
         filters: {
           op: '=',
@@ -182,6 +184,39 @@ const ManageSetsPage = ({
             Mutation
           </DropdownItem>
         </Dropdown>
+
+        {flattenedSets.length !== 0 && (
+          <DownloadButton
+            className="test-download-set-all-tar"
+            endpoint="/tar_sets"
+            inactiveText="Export selected"
+            activeText="Exporting selected"
+            altMessage={false}
+            setParentState={() => {}}
+            active={false}
+            style={{ marginBottom: '1rem', marginLeft: '1rem' }}
+            disabled={selectedIds.length === 0}
+            sets={flattenedSets.reduce(
+              (acc, { type, filters, label, filenameSafeLabel, id }) => {
+                if (selectedIds.includes(id)) {
+                  return [
+                    ...acc,
+                    {
+                      id,
+                      type,
+                      filename: `${type}_${filenameSafeLabel}.tsv`,
+                    },
+                  ];
+                }
+                return acc;
+              },
+              [],
+            )}
+            filename={`gdc_sets_${moment().format(
+              'YYYY-MM-DD-hh-mm-ss',
+            )}.tar.gz`}
+          />
+        )}
 
         {flattenedSets.length !== 0 && (
           <Button
@@ -299,7 +334,15 @@ const ManageSetsPage = ({
               <tbody>
                 {flattenedSets.map(
                   (
-                    { id, label, type, filters, linkFilters, countComponent },
+                    {
+                      id,
+                      label,
+                      type,
+                      filters,
+                      linkFilters,
+                      countComponent,
+                      filenameSafeLabel,
+                    },
                     i,
                   ) => (
                     <Tr key={id} index={i}>
@@ -378,7 +421,9 @@ const ManageSetsPage = ({
                                   filters={filters}
                                   extraParams={{ format: 'tsv' }}
                                   fields={downloadFields[type]}
-                                  filename={`set-${label}-ids`}
+                                  filename={`${type}_set_${filenameSafeLabel}_${moment().format(
+                                    'YYYY-MM-DD:hh:mm:ss',
+                                  )}`}
                                 />
                               </Tooltip>
                               {type === 'case' && (

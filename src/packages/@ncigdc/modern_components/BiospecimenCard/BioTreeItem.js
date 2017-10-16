@@ -44,6 +44,7 @@ const BioTreeItem = ({
     style={{ padding: '2px 0 2px 5px' }}
   >
     {entity[`${type.s}_id`] &&
+      entity.submitter_id &&
       <div
         className="biospecimen-row-entity"
         style={{ marginBottom: '0.4rem' }}
@@ -70,7 +71,7 @@ const BioTreeItem = ({
           }}
         >
           <Highlight search={query}>
-            {entity.submitter_id || entity[`${type.s}_id`]}
+            {entity[`${type.s}_id`]}
           </Highlight>
         </span>
 

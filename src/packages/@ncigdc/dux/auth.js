@@ -80,6 +80,8 @@ const initialState: State = {
   error: {},
   isFetchingToken: false,
   token: undefined,
+  // for demo purposes
+  project_ids: [],
 };
 
 export default handleActions(

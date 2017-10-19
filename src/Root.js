@@ -41,6 +41,18 @@ Relay.injectNetworkLayer(
           ].join(':'),
         );
 
+      // for demo purposes
+      const { store } = require('./Portal');
+
+      const { auth } = store.getState();
+
+      const body = JSON.parse(req.body);
+
+      req.body = JSON.stringify({
+        ...body,
+        project_ids: auth.project_ids,
+      });
+
       req.url = `${url}?hash=${hash}`;
       return next(req);
     },

@@ -11,7 +11,13 @@ const simpleCache = {};
 const handlerProvider = null;
 
 function fetchQuery(operation, variables, cacheConfig) {
+  // for demo purposes
+  const { store } = require('../../../Portal');
+
+  const { auth } = store.getState();
+
   const body = JSON.stringify({
+    project_ids: auth.project_ids,
     query: operation.text, // GraphQL text from input
     variables,
   });

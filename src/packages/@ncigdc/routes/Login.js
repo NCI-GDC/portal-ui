@@ -4,8 +4,22 @@ export default class extends React.Component {
   state = { loaded: false };
   componentDidMount() {
     window.gapi.signin2.render('g-signin2', {
-      onsuccess: e => {
-        console.log(123, e);
+      onsuccess: user => {
+        const { id_token } = user.getAuthResponse();
+        console.log(id_token);
+        fetch(
+          'https://ec2-54-234-114-228.compute-1.amazonaws.com:8081/oauth/google/token',
+          {
+            headers: {
+              'content-type': 'application/json',
+              id_token,
+            },
+          },
+        )
+          .then(r => r.json())
+          .then(json => {
+            console.log('yay', json);
+          });
       },
     });
   }

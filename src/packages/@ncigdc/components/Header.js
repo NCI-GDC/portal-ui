@@ -14,8 +14,8 @@ import ExploreLink from '@ncigdc/components/Links/ExploreLink';
 import ProjectsLink from '@ncigdc/components/Links/ProjectsLink';
 import GDCAppsDropdown from '@ncigdc/components/GDCApps/GDCAppsDropdown';
 import QuickSearch from '@ncigdc/components/QuickSearch/QuickSearch';
-import LoginButton from '@ncigdc/components/LoginButton';
-import UserDropdown from '@ncigdc/components/UserDropdown';
+import Dropdown from '@ncigdc/uikit/Dropdown';
+import DropdownItem from '@ncigdc/uikit/DropdownItem';
 import Hidden from '@ncigdc/components/Hidden';
 import { setModal } from '@ncigdc/dux/modal';
 import { forceLogout } from '@ncigdc/dux/auth';
@@ -23,11 +23,17 @@ import SessionExpiredModal from '@ncigdc/components/Modals/SessionExpiredModal';
 import withRouter from '@ncigdc/utils/withRouter';
 import Banner from '@ncigdc/uikit/Banner';
 import { withTheme } from '@ncigdc/theme';
+import styled from '@ncigdc/theme/styled';
 import { AnalysisIcon } from '@ncigdc/theme/icons';
 import DatabaseIcon from '@ncigdc/theme/icons/Database';
 import ManageSetsLink from '@ncigdc/components/Links/ManageSetsLink';
+import DownCaretIcon from 'react-icons/lib/fa/caret-down';
 
 import './Header.css';
+
+const DropdownItemStyled = styled(DropdownItem, {
+  cursor: 'pointer',
+});
 
 const styles = {
   iconPadding: {
@@ -38,6 +44,14 @@ const styles = {
     color: theme.white,
   }),
 };
+
+const NavLink = styled.a({
+  padding: '15px 13px',
+  display: 'inline-block',
+  ':hover': {
+    backgroundColor: '#dedddd',
+  },
+});
 
 const Header = compose(
   withState('isCollapsed', 'setIsCollapsed', true),
@@ -151,7 +165,58 @@ const Header = compose(
           <li>
             <ManageSetsLink activeStyle={styles.activeNavLink(theme)} />
           </li>
-          {!user && (
+          {/* for demo purposes */}
+          <li>
+            <Dropdown
+              dropdownStyle={{ width: '300px' }}
+              button={
+                <NavLink>
+                  <span>{user ? user.username : 'LOGIN'}</span>
+                  <DownCaretIcon style={{ marginLeft: 'auto' }} />
+                </NavLink>
+              }
+            >
+              <DropdownItemStyled
+                onClick={() => {
+                  dispatch({
+                    type: 'gdc/USER_SUCCESS',
+                    payload: {
+                      username: 'TCGA USER',
+                    },
+                    project_ids: ['TCGA-BRCA'],
+                  });
+                }}
+              >
+                User with TCGA controlled access
+              </DropdownItemStyled>
+              <DropdownItemStyled
+                onClick={() => {
+                  dispatch({
+                    type: 'gdc/USER_SUCCESS',
+                    payload: {
+                      username: 'TARGET USER',
+                    },
+                    project_ids: ['TARGET-NBL'],
+                  });
+                }}
+              >
+                User with TARGET controlled access
+              </DropdownItemStyled>
+              <DropdownItemStyled
+                onClick={() => {
+                  dispatch({
+                    type: 'gdc/USER_SUCCESS',
+                    payload: null,
+                    project_ids: [],
+                  });
+                }}
+              >
+                Logout
+              </DropdownItemStyled>
+            </Dropdown>
+          </li>
+          {/* for demo purposes
+            {!user && (
             <li>
               <LoginButton />
             </li>
@@ -160,7 +225,7 @@ const Header = compose(
             <li className="header-hidden-xs">
               <UserDropdown />
             </li>
-          )}
+          )} */}
           <li>
             <CartLink>
               {count => (

@@ -102,6 +102,7 @@ export default handleActions(
       user: action.error ? null : action.payload,
       error: action.error ? action.payload : {},
       firstLoad: false,
+      project_ids: action.project_ids,
     }),
     [USER_FAILURE]: (state, action) => ({
       ...state,

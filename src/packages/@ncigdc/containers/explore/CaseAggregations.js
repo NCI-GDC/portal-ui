@@ -5,7 +5,14 @@ import React from 'react';
 import Relay from 'react-relay/classic';
 
 import _ from 'lodash';
-import { compose, withState } from 'recompose';
+import { connect } from 'react-redux';
+import {
+  compose,
+  withState,
+  setDisplayName,
+  lifecycle,
+  withPropsOnChange,
+} from 'recompose';
 
 import Modal from '@ncigdc/uikit/Modal';
 import SuggestionFacet from '@ncigdc/components/Aggregations/SuggestionFacet';
@@ -17,10 +24,6 @@ import type { TBucket } from '@ncigdc/components/Aggregations/types';
 
 import { withTheme } from '@ncigdc/theme';
 import CaseIcon from '@ncigdc/theme/icons/Case';
-import {
-  initialECaseAggregationsVariables,
-  exploreCaseAggregationsFragment,
-} from '@ncigdc/utils/generated-relay-query-parts';
 import withFacetSelection from '@ncigdc/utils/withFacetSelection';
 import escapeForRelay from '@ncigdc/utils/escapeForRelay';
 import tryParseJSON from '@ncigdc/utils/tryParseJSON';
@@ -30,6 +33,8 @@ export type TProps = {
   caseIdCollapsed: boolean,
   setCaseIdCollapsed: Function,
   relay: Object,
+  facets: { facets: string },
+  parsedFacets: Object,
   aggregations: {
     demographic__ethnicity: { buckets: [TBucket] },
     demographic__gender: { buckets: [TBucket] },
@@ -51,6 +56,7 @@ export type TProps = {
   },
   setAutocomplete: Function,
   theme: Object,
+  filters: Object,
   suggestions: Array<Object>,
 
   userSelectedFacets: Array<{|
@@ -62,12 +68,12 @@ export type TProps = {
   |}>,
   handleSelectFacet: Function,
   handleResetFacets: Function,
+  handleRequestRemoveFacet: Function,
   presetFacetFields: Array<String>,
   shouldShowFacetSelection: Boolean,
   facetExclusionTest: Function,
+  setShouldShowFacetSelection: Function,
 };
-
-const storageKey = 'ExploreCaseAggregations.userSelectedFacets';
 
 const presetFacets = [
   {
@@ -158,11 +164,13 @@ const presetFacets = [
   },
 ];
 
+const entityType = 'ExploreCases';
 const presetFacetFields = presetFacets.map(x => x.field);
 
 const enhance = compose(
+  setDisplayName('ExploreCaseAggregations'),
   withFacetSelection({
-    storageKey,
+    entityType,
     presetFacetFields,
     validFacetDocTypes: ['cases'],
     validFacetPrefixes: [
@@ -175,6 +183,33 @@ const enhance = compose(
     ],
   }),
   withState('caseIdCollapsed', 'setCaseIdCollapsed', false),
+  connect((state, props) => ({
+    userSelectedFacets: state.customFacets[entityType],
+  })),
+  withPropsOnChange(
+    ['filters', 'userSelectedFacets'],
+    ({ filters, relay, userSelectedFacets }) =>
+      relay.setVariables({
+        filters,
+        exploreCaseCustomFacetFields: userSelectedFacets
+          .map(({ field }) => field)
+          .join(','),
+      }),
+  ),
+  withPropsOnChange(['facets'], ({ facets }) => ({
+    parsedFacets: facets.facets ? tryParseJSON(facets.facets, {}) : {},
+  })),
+  lifecycle({
+    componentDidMount(): void {
+      const { relay, filters, userSelectedFacets } = this.props;
+      relay.setVariables({
+        filters: filters,
+        exploreCaseCustomFacetFields: userSelectedFacets
+          .map(({ field }) => field)
+          .join(','),
+      });
+    },
+  }),
 );
 
 const styles = {
@@ -184,7 +219,7 @@ const styles = {
   },
 };
 
-export const CaseAggregationsComponent = (props: TProps) =>
+export const CaseAggregationsComponent = (props: TProps) => (
   <div className="test-case-aggregations">
     <div
       className="text-right"
@@ -193,13 +228,14 @@ export const CaseAggregationsComponent = (props: TProps) =>
         borderBottom: `1px solid ${props.theme.greyScale5}`,
       }}
     >
-      {!!props.userSelectedFacets.length &&
+      {!!props.userSelectedFacets.length && (
         <span>
           <a onClick={props.handleResetFacets} style={styles.link}>
             Reset
           </a>{' '}
           &nbsp;|&nbsp;
-        </span>}
+        </span>
+      )}
       <a
         onClick={() => props.setShouldShowFacetSelection(true)}
         style={styles.link}
@@ -213,25 +249,28 @@ export const CaseAggregationsComponent = (props: TProps) =>
     >
       <FacetSelection
         title="Add a Case Filter"
+        relayVarName="exploreCaseCustomFacetFields"
+        docType="cases"
         onSelect={props.handleSelectFacet}
         onRequestClose={() => props.setShouldShowFacetSelection(false)}
         excludeFacetsBy={props.facetExclusionTest}
-        additionalFacetData={props.aggregations}
+        additionalFacetData={props.parsedFacets}
         relay={props.relay}
       />
     </Modal>
 
-    {props.userSelectedFacets.map(facet =>
+    {props.userSelectedFacets.map(facet => (
       <FacetWrapper
         isRemovable
+        relayVarName="exploreCaseCustomFacetFields"
         key={facet.full}
         facet={facet}
-        aggregation={props.aggregations[escapeForRelay(facet.field)]}
+        aggregation={props.parsedFacets[facet.field]}
         relay={props.relay}
         onRequestRemove={() => props.handleRequestRemoveFacet(facet)}
         style={{ borderBottom: `1px solid ${props.theme.greyScale5}` }}
-      />,
-    )}
+      />
+    ))}
     <FacetHeader
       title="Case"
       field="cases.case_id"
@@ -249,7 +288,7 @@ export const CaseAggregationsComponent = (props: TProps) =>
       placeholder="e.g. TCGA-A5-A0G2, 432fe4a9-2..."
       hits={props.suggestions}
       setAutocomplete={props.setAutocomplete}
-      dropdownItem={x =>
+      dropdownItem={x => (
         <Row>
           <CaseIcon style={{ paddingRight: '1rem', paddingTop: '1rem' }} />
           <div>
@@ -257,13 +296,14 @@ export const CaseAggregationsComponent = (props: TProps) =>
             <div style={{ fontSize: '80%' }}>{x.submitter_id}</div>
             {x.project.project_id}
           </div>
-        </Row>}
+        </Row>
+      )}
       style={{ borderBottom: `1px solid ${props.theme.greyScale5}` }}
     />
 
     {_.reject(presetFacets, { full: 'cases.case_id' })
       .filter(facet => props.aggregations[escapeForRelay(facet.field)])
-      .map(facet =>
+      .map(facet => (
         <FacetWrapper
           key={facet.full}
           facet={facet}
@@ -272,42 +312,84 @@ export const CaseAggregationsComponent = (props: TProps) =>
           relay={props.relay}
           additionalProps={facet.additionalProps}
           style={{ borderBottom: `1px solid ${props.theme.greyScale5}` }}
-        />,
-      )}
-  </div>;
+        />
+      ))}
+  </div>
+);
 
 export const CaseAggregationsQuery = {
-  initialVariables: Object.assign(
-    {},
-    _.mapValues(initialECaseAggregationsVariables, (value, key) => {
-      const userSelectedFacetsFromStorage =
-        tryParseJSON(window.localStorage.getItem(storageKey)) || [];
-      const escapedFieldsToShow = presetFacetFields
-        .concat(userSelectedFacetsFromStorage.map(x => x.field))
-        .filter(Boolean)
-        .map(escapeForRelay);
-      return (
-        value ||
-        _.includes(escapedFieldsToShow, key.replace(/^shouldShow_/, ''))
-      );
-    }),
-    { shouldRequestAllAggregations: false },
-  ),
-  prepareVariables: prevVariables =>
-    _.mapValues(
-      prevVariables,
-      (value, key) =>
-        prevVariables.shouldRequestAllAggregations ||
-        initialECaseAggregationsVariables[key] ||
-        _.includes(
-          (tryParseJSON(window.localStorage.getItem(storageKey)) || [])
-            .map(x => escapeForRelay(x.field)),
-          key.replace(/^shouldShow_/, ''),
-        ) ||
-        value,
-    ),
+  initialVariables: {
+    exploreCaseCustomFacetFields: '',
+    filters: null,
+  },
   fragments: {
-    aggregations: exploreCaseAggregationsFragment,
+    facets: () => Relay.QL`
+      fragment on ExploreCases {
+        facets(facets: $exploreCaseCustomFacetFields filters: $filters)
+      }
+    `,
+    aggregations: () => Relay.QL`
+      fragment on ECaseAggregations {
+        primary_site {
+          buckets {
+            doc_count
+            key
+          }
+        }
+        project__program__name {
+          buckets {
+            doc_count
+            key
+          }
+        }
+        project__project_id {
+          buckets {
+            doc_count
+            key
+          }
+        }
+        disease_type {
+          buckets {
+            doc_count
+            key
+          }
+        }
+        demographic__gender {
+          buckets {
+            doc_count
+            key
+          }
+        }
+        diagnoses__age_at_diagnosis {
+          max
+          min
+          count
+        }
+        diagnoses__vital_status {
+          buckets {
+            doc_count
+            key
+          }
+        }
+        diagnoses__days_to_death {
+          max
+          min
+          count
+        }
+        demographic__race {
+          buckets {
+            doc_count
+            key
+          }
+        }
+        demographic__ethnicity {
+          buckets {
+            doc_count
+            key
+          }
+        }
+      }
+    `,
   },
 };
 

@@ -6,9 +6,8 @@ export default class extends React.Component {
     window.gapi.signin2.render('g-signin2', {
       onsuccess: user => {
         const { id_token } = user.getAuthResponse();
-        console.log(id_token);
         fetch(
-          'https://ec2-54-234-114-228.compute-1.amazonaws.com:8081/oauth/google/token',
+          'https://ec2-54-234-114-228.compute-1.amazonaws.com:8081/login/google',
           {
             headers: {
               'content-type': 'application/json',
@@ -35,6 +34,7 @@ export default class extends React.Component {
           height: '100vh',
           zIndex: 1000,
           display: 'flex',
+          flexDirection: 'column',
           justifyContent: 'center',
           alignItems: 'center',
         }}

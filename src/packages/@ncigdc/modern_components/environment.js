@@ -25,9 +25,10 @@ function fetchQuery(operation, variables, cacheConfig) {
   const hash = md5(body);
   const [componentName] = operation.name.split('_relayQuery');
 
-  if (simpleCache[hash]) {
-    return Promise.resolve(simpleCache[hash]);
-  }
+  /* disable cache for demo */
+  // if (simpleCache[hash]) {
+  //   return Promise.resolve(simpleCache[hash]);
+  // }
 
   return fetch(urlJoin(API, `graphql/${componentName}?hash=${hash}`), {
     method: 'POST',

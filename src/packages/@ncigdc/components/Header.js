@@ -3,7 +3,7 @@
 import React from 'react';
 import { compose, pure, lifecycle, withHandlers, withState } from 'recompose';
 import { connect } from 'react-redux';
-
+import { Column } from '@ncigdc/uikit/Flex';
 import { dismissNotification } from '@ncigdc/dux/bannerNotification';
 import nciGdcLogo from '@ncigdc/theme/images/NHI_GDC_DataPortal-logo.svg';
 import HomeLink from '@ncigdc/components/Links/HomeLink';
@@ -168,7 +168,7 @@ const Header = compose(
           {/* for demo purposes */}
           <li>
             <Dropdown
-              dropdownStyle={{ width: '300px' }}
+              dropdownStyle={{ width: '400px' }}
               button={
                 <NavLink>
                   <span>{user ? user.username : 'LOGIN'}</span>
@@ -181,27 +181,63 @@ const Header = compose(
                   dispatch({
                     type: 'gdc/USER_SUCCESS',
                     payload: {
-                      username: 'TCGA USER',
+                      username: 'John',
                     },
-                    project_ids: ['TCGA-BRCA'],
+                    project_ids: ['TCGA-LGG', 'TCGA-BLCA', 'TCGA-UCS'],
                   });
+                  setTimeout(() => {
+                    window.location.href = '/';
+                  }, 500);
                 }}
               >
-                User with TCGA controlled access
+                <Column>
+                  <span>John: Access to TCGA-LGG, TCGA-BLCA, TCGA-UCS</span>
+                  <b>(Only controlled access mutations)</b>
+                </Column>
               </DropdownItemStyled>
+              <hr
+                style={{
+                  width: '80%',
+                  border: '1px solid',
+                  margin: '5px auto',
+                }}
+              />
               <DropdownItemStyled
                 onClick={() => {
                   dispatch({
                     type: 'gdc/USER_SUCCESS',
                     payload: {
-                      username: 'TARGET USER',
+                      username: 'Eva',
                     },
-                    project_ids: ['TARGET-NBL'],
+                    project_ids: [
+                      'TCGA-BRCA',
+                      'TCGA-CHOL',
+                      'TCGA-ACC',
+                      'TCGA-KIRP',
+                      'TCGA-GBM',
+                      'TCGA-OV',
+                    ],
                   });
+                  setTimeout(() => {
+                    window.location.href = '/';
+                  }, 500);
                 }}
               >
-                User with TARGET controlled access
+                <Column>
+                  <span>
+                    Eva: Access to TCGA-BRCA, TCGA-CHOL, TCGA-ACC, TCGA-KIRP,
+                    TCGA-GBM, TCGA-OV
+                  </span>
+                  <b>(A mix of open and controlled access mutations)</b>
+                </Column>
               </DropdownItemStyled>
+              <hr
+                style={{
+                  width: '80%',
+                  border: '1px solid',
+                  margin: '5px auto',
+                }}
+              />
               <DropdownItemStyled
                 onClick={() => {
                   dispatch({
@@ -209,6 +245,9 @@ const Header = compose(
                     payload: null,
                     project_ids: [],
                   });
+                  setTimeout(() => {
+                    window.location.href = '/';
+                  }, 500);
                 }}
               >
                 Logout

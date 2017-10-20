@@ -4,6 +4,7 @@ import { saveAs } from 'filesaver.js';
 import { handleActions } from 'redux-actions';
 import { fetchAuth } from '@ncigdc/utils/ajax';
 
+import { REHYDRATE } from 'redux-persist/constants';
 export type State = { isFetching: boolean, user: ?Object, error?: Object };
 export type Action = { type: string, payload: any };
 
@@ -86,6 +87,11 @@ const initialState: State = {
 
 export default handleActions(
   {
+    [REHYDRATE]: (state, action) => {
+      const incoming = action.payload.auth;
+      if (incoming) return { ...state, ...incoming };
+      return state;
+    },
     [TOGGLE_LOGIN_REQUIRED]: state => ({
       ...state,
       loginRequired: !state.loginRequired,

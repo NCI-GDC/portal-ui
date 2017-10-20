@@ -1,13 +1,13 @@
 /* @flow */
 
-import React from 'react';
+// import React from 'react';
 
-import {
-  FindDataBanner,
-  ApiOverrideBanner,
-} from '@ncigdc/components/DismissibleBanner';
+// import {
+//   FindDataBanner,
+//   ApiOverrideBanner,
+// } from '@ncigdc/components/DismissibleBanner';
 import { fetchApi } from '@ncigdc/utils/ajax';
-import { LOCAL_STORAGE_API_OVERRIDE } from '@ncigdc/utils/constants';
+// import { LOCAL_STORAGE_API_OVERRIDE } from '@ncigdc/utils/constants';
 
 const NOTIFICATION_SUCCESS = 'NOTIFICATION_SUCCESS';
 const NOTIFICATION_DISMISS = 'NOTIFICATION_DISMISS';
@@ -49,6 +49,7 @@ export function dismissNotification(notificationID: string) {
 }
 
 let initialState = [
+  /* remove for demo
   {
     components: ['PORTAL'],
     level: 'INFO',
@@ -56,17 +57,18 @@ let initialState = [
     dismissible: true,
     message: <FindDataBanner />,
   },
+  */
 ];
 
-if (LOCAL_STORAGE_API_OVERRIDE) {
-  initialState.push({
-    components: ['PORTAL'],
-    level: 'INFO',
-    id: 'api_override',
-    dismissible: true,
-    message: <ApiOverrideBanner />,
-  });
-}
+// if (LOCAL_STORAGE_API_OVERRIDE) {
+//   initialState.push({
+//     components: ['PORTAL'],
+//     level: 'INFO',
+//     id: 'api_override',
+//     dismissible: true,
+//     message: <ApiOverrideBanner />,
+//   });
+// }
 
 const reducer = (state: TState = initialState, action: TAction) => {
   switch (action.type) {

@@ -7,7 +7,7 @@ import { Provider } from 'react-redux';
 import setupStore from '@ncigdc/dux';
 import { fetchApiVersionInfo } from '@ncigdc/dux/versionInfo';
 import { fetchNotifications } from '@ncigdc/dux/bannerNotification';
-import { fetchUser } from '@ncigdc/dux/auth';
+// import { fetchUser } from '@ncigdc/dux/auth';
 import PortalContainer from '@ncigdc/components/PortalContainer';
 import { BrowserRouter as Router } from 'react-router-dom';
 
@@ -23,7 +23,8 @@ store.dispatch(fetchApiVersionInfo());
 
 if (process.env.NODE_ENV !== 'development') {
   store.dispatch(fetchNotifications());
-  store.dispatch(fetchUser());
+  /* for demo */
+  // store.dispatch(fetchUser());
 }
 
 const PortalComponent = () => (

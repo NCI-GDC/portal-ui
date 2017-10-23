@@ -507,8 +507,8 @@ type Case implements Node {
   # keyword
   analyte_ids: String
 
-  # keyword
-  submitter_id: String
+  # long
+  days_to_lost_to_followup: Float
 
   # keyword
   sample_ids: String
@@ -529,6 +529,9 @@ type Case implements Node {
   days_to_index: Float
 
   # keyword
+  lost_to_followup: String
+
+  # keyword
   state: String
 
   # keyword
@@ -538,7 +541,13 @@ type Case implements Node {
   submitter_sample_ids: String
 
   # keyword
+  index_date: String
+
+  # keyword
   case_autocomplete: String
+
+  # keyword
+  submitter_id: String
 
   # keyword
   disease_type: String
@@ -571,13 +580,14 @@ type CaseAggregations {
   updated_datetime: Aggregations
   submitter_analyte_ids: Aggregations
   analyte_ids: Aggregations
-  submitter_id: Aggregations
+  days_to_lost_to_followup: NumericAggergations
   sample_ids: Aggregations
   portion_ids: Aggregations
   submitter_portion_ids: Aggregations
   created_datetime: Aggregations
   slide_ids: Aggregations
   days_to_index: NumericAggergations
+  demographic__cause_of_death: Aggregations
   demographic__updated_datetime: Aggregations
   demographic__created_datetime: Aggregations
   demographic__gender: Aggregations
@@ -585,68 +595,53 @@ type CaseAggregations {
   demographic__demographic_id: Aggregations
   demographic__state: Aggregations
   demographic__race: Aggregations
+  demographic__days_to_birth: NumericAggergations
+  demographic__vital_status: Aggregations
+  demographic__days_to_death: NumericAggergations
   demographic__submitter_id: Aggregations
   demographic__ethnicity: Aggregations
   demographic__year_of_death: NumericAggergations
+  lost_to_followup: Aggregations
   state: Aggregations
   case_id: Aggregations
   samples__sample_type_id: Aggregations
   samples__updated_datetime: Aggregations
-  samples__time_between_excision_and_freezing: Aggregations
+  samples__biospecimen_anatomic_site: Aggregations
   samples__oct_embedded: Aggregations
   samples__tumor_code_id: Aggregations
   samples__submitter_id: Aggregations
   samples__intermediate_dimension: Aggregations
   samples__sample_id: Aggregations
-  samples__time_between_clamping_and_freezing: Aggregations
+  samples__is_ffpe: Aggregations
   samples__pathology_report_uuid: Aggregations
   samples__created_datetime: Aggregations
   samples__tumor_descriptor: Aggregations
   samples__sample_type: Aggregations
-  samples__biospecimen_anatomic_site: Aggregations
+  samples__time_between_excision_and_freezing: Aggregations
   samples__state: Aggregations
   samples__diagnosis_pathologically_confirmed: Aggregations
   samples__current_weight: NumericAggergations
-  samples__composition: Aggregations
-  samples__is_ffpe: Aggregations
+  samples__annotations__status: Aggregations
+  samples__annotations__legacy_updated_datetime: Aggregations
+  samples__annotations__entity_id: Aggregations
+  samples__annotations__classification: Aggregations
+  samples__annotations__creator: Aggregations
+  samples__annotations__created_datetime: Aggregations
+  samples__annotations__entity_submitter_id: Aggregations
+  samples__annotations__notes: Aggregations
+  samples__annotations__entity_type: Aggregations
+  samples__annotations__updated_datetime: Aggregations
+  samples__annotations__legacy_created_datetime: Aggregations
+  samples__annotations__state: Aggregations
+  samples__annotations__case_id: Aggregations
+  samples__annotations__submitter_id: Aggregations
+  samples__annotations__annotation_id: Aggregations
+  samples__annotations__case_submitter_id: Aggregations
+  samples__annotations__category: Aggregations
+  samples__time_between_clamping_and_freezing: Aggregations
   samples__shortest_dimension: Aggregations
-  samples__tumor_code: Aggregations
   samples__method_of_sample_procurement: Aggregations
-  samples__slides__percent_tumor_nuclei: NumericAggergations
-  samples__slides__percent_eosinophil_infiltration: NumericAggergations
-  samples__slides__percent_normal_cells: NumericAggergations
-  samples__slides__percent_stromal_cells: NumericAggergations
-  samples__slides__updated_datetime: Aggregations
-  samples__slides__created_datetime: Aggregations
-  samples__slides__percent_monocyte_infiltration: NumericAggergations
-  samples__slides__annotations__status: Aggregations
-  samples__slides__annotations__legacy_updated_datetime: Aggregations
-  samples__slides__annotations__entity_id: Aggregations
-  samples__slides__annotations__classification: Aggregations
-  samples__slides__annotations__creator: Aggregations
-  samples__slides__annotations__created_datetime: Aggregations
-  samples__slides__annotations__entity_submitter_id: Aggregations
-  samples__slides__annotations__notes: Aggregations
-  samples__slides__annotations__entity_type: Aggregations
-  samples__slides__annotations__updated_datetime: Aggregations
-  samples__slides__annotations__legacy_created_datetime: Aggregations
-  samples__slides__annotations__state: Aggregations
-  samples__slides__annotations__case_id: Aggregations
-  samples__slides__annotations__submitter_id: Aggregations
-  samples__slides__annotations__annotation_id: Aggregations
-  samples__slides__annotations__case_submitter_id: Aggregations
-  samples__slides__annotations__category: Aggregations
-  samples__slides__percent_lymphocyte_infiltration: NumericAggergations
-  samples__slides__percent_neutrophil_infiltration: NumericAggergations
-  samples__slides__state: Aggregations
-  samples__slides__section_location: Aggregations
-  samples__slides__slide_id: Aggregations
-  samples__slides__percent_necrosis: NumericAggergations
-  samples__slides__percent_granulocyte_infiltration: NumericAggergations
-  samples__slides__percent_inflam_infiltration: NumericAggergations
-  samples__slides__submitter_id: Aggregations
-  samples__slides__number_proliferating_cells: NumericAggergations
-  samples__slides__percent_tumor_cells: NumericAggergations
+  samples__tumor_code: Aggregations
   samples__tissue_type: Aggregations
   samples__days_to_sample_procurement: NumericAggergations
   samples__freezing_method: Aggregations
@@ -786,23 +781,7 @@ type CaseAggregations {
   samples__portions__annotations__category: Aggregations
   samples__portions__is_ffpe: Aggregations
   samples__preservation_method: Aggregations
-  samples__annotations__status: Aggregations
-  samples__annotations__legacy_updated_datetime: Aggregations
-  samples__annotations__entity_id: Aggregations
-  samples__annotations__classification: Aggregations
-  samples__annotations__creator: Aggregations
-  samples__annotations__created_datetime: Aggregations
-  samples__annotations__entity_submitter_id: Aggregations
-  samples__annotations__notes: Aggregations
-  samples__annotations__entity_type: Aggregations
-  samples__annotations__updated_datetime: Aggregations
-  samples__annotations__legacy_created_datetime: Aggregations
-  samples__annotations__state: Aggregations
-  samples__annotations__case_id: Aggregations
-  samples__annotations__submitter_id: Aggregations
-  samples__annotations__annotation_id: Aggregations
-  samples__annotations__case_submitter_id: Aggregations
-  samples__annotations__category: Aggregations
+  samples__composition: Aggregations
   samples__days_to_collection: NumericAggergations
   samples__initial_weight: NumericAggergations
   samples__longest_dimension: Aggregations
@@ -936,13 +915,14 @@ type CaseAggregations {
   files__cases__updated_datetime: Aggregations
   files__cases__submitter_analyte_ids: Aggregations
   files__cases__analyte_ids: Aggregations
-  files__cases__submitter_id: Aggregations
+  files__cases__days_to_lost_to_followup: NumericAggergations
   files__cases__sample_ids: Aggregations
   files__cases__portion_ids: Aggregations
   files__cases__submitter_portion_ids: Aggregations
   files__cases__created_datetime: Aggregations
   files__cases__slide_ids: Aggregations
   files__cases__days_to_index: NumericAggergations
+  files__cases__demographic__cause_of_death: Aggregations
   files__cases__demographic__updated_datetime: Aggregations
   files__cases__demographic__created_datetime: Aggregations
   files__cases__demographic__gender: Aggregations
@@ -950,9 +930,13 @@ type CaseAggregations {
   files__cases__demographic__demographic_id: Aggregations
   files__cases__demographic__state: Aggregations
   files__cases__demographic__race: Aggregations
+  files__cases__demographic__days_to_birth: NumericAggergations
+  files__cases__demographic__vital_status: Aggregations
+  files__cases__demographic__days_to_death: NumericAggergations
   files__cases__demographic__submitter_id: Aggregations
   files__cases__demographic__ethnicity: Aggregations
   files__cases__demographic__year_of_death: NumericAggergations
+  files__cases__lost_to_followup: Aggregations
   files__cases__state: Aggregations
   files__cases__case_id: Aggregations
   files__cases__samples__sample_type_id: Aggregations
@@ -1170,6 +1154,7 @@ type CaseAggregations {
   files__cases__exposures__exposure_id: Aggregations
   files__cases__exposures__submitter_id: Aggregations
   files__cases__exposures__pack_years_smoked: NumericAggergations
+  files__cases__index_date: Aggregations
   files__cases__family_histories__relationship_gender: Aggregations
   files__cases__family_histories__updated_datetime: Aggregations
   files__cases__family_histories__created_datetime: Aggregations
@@ -1180,10 +1165,12 @@ type CaseAggregations {
   files__cases__family_histories__relationship_type: Aggregations
   files__cases__family_histories__submitter_id: Aggregations
   files__cases__family_histories__relationship_age_at_diagnosis: NumericAggergations
+  files__cases__submitter_id: Aggregations
   files__cases__diagnoses__ann_arbor_b_symptoms: Aggregations
   files__cases__diagnoses__year_of_diagnosis: NumericAggergations
   files__cases__diagnoses__classification_of_tumor: Aggregations
   files__cases__diagnoses__last_known_disease_status: Aggregations
+  files__cases__diagnoses__progression_free_survival: NumericAggergations
   files__cases__diagnoses__updated_datetime: Aggregations
   files__cases__diagnoses__method_of_diagnosis: Aggregations
   files__cases__diagnoses__laterality: Aggregations
@@ -1196,27 +1183,6 @@ type CaseAggregations {
   files__cases__diagnoses__vital_status: Aggregations
   files__cases__diagnoses__morphology: Aggregations
   files__cases__diagnoses__days_to_death: NumericAggergations
-  files__cases__diagnoses__new_event_anatomic_site: Aggregations
-  files__cases__diagnoses__days_to_last_known_disease_status: NumericAggergations
-  files__cases__diagnoses__perineural_invasion_present: Aggregations
-  files__cases__diagnoses__days_to_hiv_diagnosis: NumericAggergations
-  files__cases__diagnoses__ajcc_clinical_n: Aggregations
-  files__cases__diagnoses__ajcc_pathologic_t: Aggregations
-  files__cases__diagnoses__prior_treatment: Aggregations
-  files__cases__diagnoses__ajcc_clinical_t: Aggregations
-  files__cases__diagnoses__colon_polyps_history: Aggregations
-  files__cases__diagnoses__ajcc_clinical_m: Aggregations
-  files__cases__diagnoses__ajcc_pathologic_m: Aggregations
-  files__cases__diagnoses__ajcc_pathologic_n: Aggregations
-  files__cases__diagnoses__vascular_invasion_present: Aggregations
-  files__cases__diagnoses__ldh_level_at_diagnosis: NumericAggergations
-  files__cases__diagnoses__days_to_last_follow_up: NumericAggergations
-  files__cases__diagnoses__residual_disease: Aggregations
-  files__cases__diagnoses__days_to_recurrence: NumericAggergations
-  files__cases__diagnoses__diagnosis_id: Aggregations
-  files__cases__diagnoses__tumor_grade: Aggregations
-  files__cases__diagnoses__state: Aggregations
-  files__cases__diagnoses__figo_stage: Aggregations
   files__cases__diagnoses__treatments__days_to_treatment_start: NumericAggergations
   files__cases__diagnoses__treatments__updated_datetime: Aggregations
   files__cases__diagnoses__treatments__created_datetime: Aggregations
@@ -1226,28 +1192,56 @@ type CaseAggregations {
   files__cases__diagnoses__treatments__treatment_id: Aggregations
   files__cases__diagnoses__treatments__state: Aggregations
   files__cases__diagnoses__treatments__therapeutic_agents: Aggregations
+  files__cases__diagnoses__treatments__regimen_or_line_of_therapy: Aggregations
   files__cases__diagnoses__treatments__treatment_intent_type: Aggregations
   files__cases__diagnoses__treatments__treatment_anatomic_site: Aggregations
   files__cases__diagnoses__treatments__treatment_outcome: Aggregations
   files__cases__diagnoses__treatments__days_to_treatment_end: NumericAggergations
   files__cases__diagnoses__treatments__treatment_or_therapy: Aggregations
-  files__cases__diagnoses__lymphatic_invasion_present: Aggregations
-  files__cases__diagnoses__tissue_or_organ_of_origin: Aggregations
+  files__cases__diagnoses__new_event_anatomic_site: Aggregations
+  files__cases__diagnoses__days_to_last_known_disease_status: NumericAggergations
+  files__cases__diagnoses__perineural_invasion_present: Aggregations
+  files__cases__diagnoses__days_to_hiv_diagnosis: NumericAggergations
+  files__cases__diagnoses__ajcc_pathologic_m: Aggregations
+  files__cases__diagnoses__ajcc_pathologic_t: Aggregations
+  files__cases__diagnoses__prior_treatment: Aggregations
+  files__cases__diagnoses__ajcc_clinical_t: Aggregations
+  files__cases__diagnoses__colon_polyps_history: Aggregations
+  files__cases__diagnoses__ajcc_clinical_m: Aggregations
+  files__cases__diagnoses__ajcc_clinical_n: Aggregations
+  files__cases__diagnoses__ajcc_pathologic_n: Aggregations
+  files__cases__diagnoses__ldh_level_at_diagnosis: NumericAggergations
+  files__cases__diagnoses__days_to_last_follow_up: NumericAggergations
+  files__cases__diagnoses__progression_free_survival_event: Aggregations
+  files__cases__diagnoses__best_overall_response: Aggregations
+  files__cases__diagnoses__residual_disease: Aggregations
+  files__cases__diagnoses__days_to_recurrence: NumericAggergations
+  files__cases__diagnoses__diagnosis_id: Aggregations
+  files__cases__diagnoses__tumor_grade: Aggregations
+  files__cases__diagnoses__state: Aggregations
+  files__cases__diagnoses__figo_stage: Aggregations
   files__cases__diagnoses__days_to_birth: NumericAggergations
+  files__cases__diagnoses__cause_of_death: Aggregations
+  files__cases__diagnoses__lymphatic_invasion_present: Aggregations
+  files__cases__diagnoses__days_to_diagnosis: NumericAggergations
+  files__cases__diagnoses__tissue_or_organ_of_origin: Aggregations
+  files__cases__diagnoses__days_to_best_overall_response: NumericAggergations
   files__cases__diagnoses__progression_or_recurrence: Aggregations
   files__cases__diagnoses__hpv_status: Aggregations
   files__cases__diagnoses__prior_malignancy: Aggregations
-  files__cases__diagnoses__circumferential_resection_margin: NumericAggergations
+  files__cases__diagnoses__vascular_invasion_present: Aggregations
   files__cases__diagnoses__new_event_type: Aggregations
   files__cases__diagnoses__ajcc_pathologic_stage: Aggregations
   files__cases__diagnoses__burkitt_lymphoma_clinical_variant: Aggregations
-  files__cases__diagnoses__cause_of_death: Aggregations
+  files__cases__diagnoses__iss_stage: Aggregations
   files__cases__diagnoses__ldh_normal_range_upper: NumericAggergations
   files__cases__diagnoses__ann_arbor_extranodal_involvement: Aggregations
   files__cases__diagnoses__lymph_nodes_positive: NumericAggergations
   files__cases__diagnoses__ann_arbor_clinical_stage: Aggregations
   files__cases__diagnoses__site_of_resection_or_biopsy: Aggregations
   files__cases__diagnoses__created_datetime: Aggregations
+  files__cases__diagnoses__circumferential_resection_margin: NumericAggergations
+  files__cases__diagnoses__overall_survival: NumericAggergations
   files__cases__diagnoses__ajcc_clinical_stage: Aggregations
   files__cases__diagnoses__days_to_new_event: NumericAggergations
   files__cases__diagnoses__hiv_positive: Aggregations
@@ -1384,6 +1378,7 @@ type CaseAggregations {
   files__acl: Aggregations
   files__data_category: Aggregations
   files__experimental_strategy: Aggregations
+  index_date: Aggregations
   case_autocomplete: Aggregations
   family_histories__relationship_gender: Aggregations
   family_histories__updated_datetime: Aggregations
@@ -1395,10 +1390,12 @@ type CaseAggregations {
   family_histories__relationship_type: Aggregations
   family_histories__submitter_id: Aggregations
   family_histories__relationship_age_at_diagnosis: NumericAggergations
+  submitter_id: Aggregations
   diagnoses__ann_arbor_b_symptoms: Aggregations
   diagnoses__year_of_diagnosis: NumericAggergations
   diagnoses__classification_of_tumor: Aggregations
   diagnoses__last_known_disease_status: Aggregations
+  diagnoses__progression_free_survival: NumericAggergations
   diagnoses__updated_datetime: Aggregations
   diagnoses__method_of_diagnosis: Aggregations
   diagnoses__laterality: Aggregations
@@ -1411,27 +1408,6 @@ type CaseAggregations {
   diagnoses__vital_status: Aggregations
   diagnoses__morphology: Aggregations
   diagnoses__days_to_death: NumericAggergations
-  diagnoses__new_event_anatomic_site: Aggregations
-  diagnoses__days_to_last_known_disease_status: NumericAggergations
-  diagnoses__perineural_invasion_present: Aggregations
-  diagnoses__days_to_hiv_diagnosis: NumericAggergations
-  diagnoses__ajcc_clinical_n: Aggregations
-  diagnoses__ajcc_pathologic_t: Aggregations
-  diagnoses__prior_treatment: Aggregations
-  diagnoses__ajcc_clinical_t: Aggregations
-  diagnoses__colon_polyps_history: Aggregations
-  diagnoses__ajcc_clinical_m: Aggregations
-  diagnoses__ajcc_pathologic_m: Aggregations
-  diagnoses__ajcc_pathologic_n: Aggregations
-  diagnoses__vascular_invasion_present: Aggregations
-  diagnoses__ldh_level_at_diagnosis: NumericAggergations
-  diagnoses__days_to_last_follow_up: NumericAggergations
-  diagnoses__residual_disease: Aggregations
-  diagnoses__days_to_recurrence: NumericAggergations
-  diagnoses__diagnosis_id: Aggregations
-  diagnoses__tumor_grade: Aggregations
-  diagnoses__state: Aggregations
-  diagnoses__figo_stage: Aggregations
   diagnoses__treatments__days_to_treatment_start: NumericAggergations
   diagnoses__treatments__updated_datetime: Aggregations
   diagnoses__treatments__created_datetime: Aggregations
@@ -1441,28 +1417,56 @@ type CaseAggregations {
   diagnoses__treatments__treatment_id: Aggregations
   diagnoses__treatments__state: Aggregations
   diagnoses__treatments__therapeutic_agents: Aggregations
+  diagnoses__treatments__regimen_or_line_of_therapy: Aggregations
   diagnoses__treatments__treatment_intent_type: Aggregations
   diagnoses__treatments__treatment_anatomic_site: Aggregations
   diagnoses__treatments__treatment_outcome: Aggregations
   diagnoses__treatments__days_to_treatment_end: NumericAggergations
   diagnoses__treatments__treatment_or_therapy: Aggregations
-  diagnoses__lymphatic_invasion_present: Aggregations
-  diagnoses__tissue_or_organ_of_origin: Aggregations
+  diagnoses__new_event_anatomic_site: Aggregations
+  diagnoses__days_to_last_known_disease_status: NumericAggergations
+  diagnoses__perineural_invasion_present: Aggregations
+  diagnoses__days_to_hiv_diagnosis: NumericAggergations
+  diagnoses__ajcc_pathologic_m: Aggregations
+  diagnoses__ajcc_pathologic_t: Aggregations
+  diagnoses__prior_treatment: Aggregations
+  diagnoses__ajcc_clinical_t: Aggregations
+  diagnoses__colon_polyps_history: Aggregations
+  diagnoses__ajcc_clinical_m: Aggregations
+  diagnoses__ajcc_clinical_n: Aggregations
+  diagnoses__ajcc_pathologic_n: Aggregations
+  diagnoses__ldh_level_at_diagnosis: NumericAggergations
+  diagnoses__days_to_last_follow_up: NumericAggergations
+  diagnoses__progression_free_survival_event: Aggregations
+  diagnoses__best_overall_response: Aggregations
+  diagnoses__residual_disease: Aggregations
+  diagnoses__days_to_recurrence: NumericAggergations
+  diagnoses__diagnosis_id: Aggregations
+  diagnoses__tumor_grade: Aggregations
+  diagnoses__state: Aggregations
+  diagnoses__figo_stage: Aggregations
   diagnoses__days_to_birth: NumericAggergations
+  diagnoses__cause_of_death: Aggregations
+  diagnoses__lymphatic_invasion_present: Aggregations
+  diagnoses__days_to_diagnosis: NumericAggergations
+  diagnoses__tissue_or_organ_of_origin: Aggregations
+  diagnoses__days_to_best_overall_response: NumericAggergations
   diagnoses__progression_or_recurrence: Aggregations
   diagnoses__hpv_status: Aggregations
   diagnoses__prior_malignancy: Aggregations
-  diagnoses__circumferential_resection_margin: NumericAggergations
+  diagnoses__vascular_invasion_present: Aggregations
   diagnoses__new_event_type: Aggregations
   diagnoses__ajcc_pathologic_stage: Aggregations
   diagnoses__burkitt_lymphoma_clinical_variant: Aggregations
-  diagnoses__cause_of_death: Aggregations
+  diagnoses__iss_stage: Aggregations
   diagnoses__ldh_normal_range_upper: NumericAggergations
   diagnoses__ann_arbor_extranodal_involvement: Aggregations
   diagnoses__lymph_nodes_positive: NumericAggergations
   diagnoses__ann_arbor_clinical_stage: Aggregations
   diagnoses__site_of_resection_or_biopsy: Aggregations
   diagnoses__created_datetime: Aggregations
+  diagnoses__circumferential_resection_margin: NumericAggergations
+  diagnoses__overall_survival: NumericAggergations
   diagnoses__ajcc_clinical_stage: Aggregations
   diagnoses__days_to_new_event: NumericAggergations
   diagnoses__hiv_positive: Aggregations
@@ -1823,6 +1827,10 @@ type DataCategories {
 }
 
 type Demographic {
+  # Text term to identify the cause of death for a patient.
+  #
+  cause_of_death: String
+
   # A combination of date and time of day in the form [-]CCYY-MM-DDThh:mm:ss[Z|(+|-)hh:mm]
   #
   updated_datetime: String
@@ -1857,6 +1865,20 @@ type Demographic {
   # defined by the U.S. Office of Management and Business and used by the U.S. Census Bureau.
   #
   race: String
+
+  # Time interval from a person's date of birth to the date of initial pathologic
+  # diagnosis, represented as a calculated negative number of days.
+  #
+  days_to_birth: Float
+
+  # The survival state of the person registered on the protocol.
+  #
+  vital_status: String
+
+  # Time interval from a person's date of death to the date of initial pathologic
+  # diagnosis, represented as a calculated number of days.
+  #
+  days_to_death: Float
   submitter_id: String
 
   # An individual's self-described social and cultural grouping, specifically
@@ -1895,6 +1917,10 @@ type Diagnosis implements Node {
   # Text term that describes the last known state or condition of an individual's neoplasm.
   #
   last_known_disease_status: String
+
+  # Number of days between the date used for index and the first date the patient is known to be free of disease progression.
+  #
+  progression_free_survival: Float
 
   # A combination of date and time of day in the form [-]CCYY-MM-DDThh:mm:ss[Z|(+|-)hh:mm]
   #
@@ -1972,10 +1998,12 @@ type Diagnosis implements Node {
   #
   days_to_hiv_diagnosis: Float
 
-  # Extent of the regional lymph node involvement for the cancer based on evidence
-  # obtained from clinical assessment parameters determined prior to treatment.
+  # Code to represent the defined absence or presence of distant spread or
+  # metastases (M) to locations via vascular channels or lymphatics beyond the
+  # regional lymph nodes, using criteria established by the American Joint
+  # Committee on Cancer (AJCC).
   #
-  ajcc_clinical_n: String
+  ajcc_pathologic_m: String
 
   # Code of pathological T (primary tumor) to define the size or contiguous
   # extension of the primary tumor (T), using staging criteria from the American
@@ -2002,22 +2030,16 @@ type Diagnosis implements Node {
   #
   ajcc_clinical_m: String
 
-  # Code to represent the defined absence or presence of distant spread or
-  # metastases (M) to locations via vascular channels or lymphatics beyond the
-  # regional lymph nodes, using criteria established by the American Joint
-  # Committee on Cancer (AJCC).
+  # Extent of the regional lymph node involvement for the cancer based on evidence
+  # obtained from clinical assessment parameters determined prior to treatment.
   #
-  ajcc_pathologic_m: String
+  ajcc_clinical_n: String
 
   # The codes that represent the stage of cancer based on the nodes present (N
   # stage) according to criteria based on multiple editions of the AJCC's Cancer
   # Staging Manual.
   #
   ajcc_pathologic_n: String
-
-  # The yes/no indicator to ask if large vessel or venous invasion was detected by surgery or presence in a tumor specimen.
-  #
-  vascular_invasion_present: String
 
   # The 2 decimal place numeric laboratory value measured, assigned or computed
   # related to the assessment of lactate dehydrogenase in a specimen.
@@ -2028,6 +2050,14 @@ type Diagnosis implements Node {
   # pathologic diagnosis, represented as a calculated number of days.
   #
   days_to_last_follow_up: Float
+
+  # The event used to define the patient's disease progression.
+  #
+  progression_free_survival_event: String
+
+  # The best improvement achieved throughout the entire course of protocol treatment.
+  #
+  best_overall_response: String
 
   # Text terms to describe the status of a tissue margin following surgical resection.
   #
@@ -2055,18 +2085,30 @@ type Diagnosis implements Node {
   #
   figo_stage: String
 
+  # Time interval from a person's date of birth to the date of initial pathologic
+  # diagnosis, represented as a calculated negative number of days.
+  #
+  days_to_birth: Float
+
+  # Text term to identify the cause of death for a patient.
+  #
+  cause_of_death: String
+
   # A yes/no indicator to ask if small or thin-walled vessel invasion is present, indicating lymphatic involvement
   #
   lymphatic_invasion_present: String
+
+  # Number of days between the date used for index and the date of diagnosis.
+  #
+  days_to_diagnosis: Float
 
   # Text term that describes the anatomic site of the tumor or disease.
   #
   tissue_or_organ_of_origin: String
 
-  # Time interval from a person's date of birth to the date of initial pathologic
-  # diagnosis, represented as a calculated negative number of days.
+  # Number of days between the date used for index and the date of the patient's best overall response.
   #
-  days_to_birth: Float
+  days_to_best_overall_response: Float
 
   # Yes/No/Unknown indicator to identify whether a patient has had a new tumor event after initial treatment.
   #
@@ -2081,11 +2123,9 @@ type Diagnosis implements Node {
   #
   prior_malignancy: String
 
-  # A value in millimeters indicating the measured length between a malignant
-  # lesion of the colon or rectum and the nearest radial (or circumferential)
-  # border of tissue removed during cancer surgery.
+  # The yes/no indicator to ask if large vessel or venous invasion was detected by surgery or presence in a tumor specimen.
   #
-  circumferential_resection_margin: Float
+  vascular_invasion_present: String
 
   # Text term to identify a new tumor event.
   #
@@ -2100,9 +2140,9 @@ type Diagnosis implements Node {
   #
   burkitt_lymphoma_clinical_variant: String
 
-  # Text term to identify the cause of death for a patient.
+  # The multiple myeloma disease stage at diagnosis.
   #
-  cause_of_death: String
+  iss_stage: String
 
   # The top value of the range of statistical characteristics that are supposed to
   # represent accepted standard, non-pathological pattern for lactate
@@ -2134,6 +2174,17 @@ type Diagnosis implements Node {
   # A combination of date and time of day in the form [-]CCYY-MM-DDThh:mm:ss[Z|(+|-)hh:mm]
   #
   created_datetime: String
+
+  # A value in millimeters indicating the measured length between a malignant
+  # lesion of the colon or rectum and the nearest radial (or circumferential)
+  # border of tissue removed during cancer surgery.
+  #
+  circumferential_resection_margin: Float
+
+  # Number of days between the date used for index and the patient's date of death
+  # or the date the patient was last known to be alive.
+  #
+  overall_survival: Float
 
   # Stage group determined from clinical information on the tumor (T), regional
   # node (N) and metastases (M) and by grouping cases with similar prognosis for cancer.
@@ -2258,9 +2309,6 @@ type ECase implements Node {
   id: ID!
 
   # keyword
-  sample_ids: String
-
-  # keyword
   disease_type: String
 
   # date
@@ -2268,9 +2316,6 @@ type ECase implements Node {
 
   # date
   created_datetime: String
-
-  # keyword
-  slide_ids: String
 
   # long
   days_to_index: Float
@@ -2372,265 +2417,6 @@ type ECaseAggregations {
   diagnoses__ajcc_clinical_stage: Aggregations
   diagnoses__days_to_new_event: NumericAggergations
   diagnoses__hiv_positive: Aggregations
-  sample_ids: Aggregations
-  disease_type: Aggregations
-  updated_datetime: Aggregations
-  created_datetime: Aggregations
-  slide_ids: Aggregations
-  days_to_index: NumericAggergations
-  demographic__updated_datetime: Aggregations
-  demographic__created_datetime: Aggregations
-  demographic__gender: Aggregations
-  demographic__year_of_birth: NumericAggergations
-  demographic__demographic_id: Aggregations
-  demographic__state: Aggregations
-  demographic__race: Aggregations
-  demographic__submitter_id: Aggregations
-  demographic__ethnicity: Aggregations
-  demographic__year_of_death: NumericAggergations
-  state: Aggregations
-  submitter_id: Aggregations
-  project__project_id: Aggregations
-  project__disease_type: Aggregations
-  project__intended_release_date: Aggregations
-  project__releasable: Aggregations
-  project__released: Aggregations
-  project__state: Aggregations
-  project__program__dbgap_accession_number: Aggregations
-  project__program__name: Aggregations
-  project__program__program_id: Aggregations
-  project__primary_site: Aggregations
-  project__dbgap_accession_number: Aggregations
-  project__name: Aggregations
-  case_autocomplete: Aggregations
-  case_id: Aggregations
-  primary_site: Aggregations
-  family_histories__relationship_gender: Aggregations
-  family_histories__updated_datetime: Aggregations
-  family_histories__created_datetime: Aggregations
-  family_histories__relative_with_cancer_history: Aggregations
-  family_histories__relationship_primary_diagnosis: Aggregations
-  family_histories__state: Aggregations
-  family_histories__family_history_id: Aggregations
-  family_histories__relationship_type: Aggregations
-  family_histories__submitter_id: Aggregations
-  family_histories__relationship_age_at_diagnosis: NumericAggergations
-  samples__sample_type_id: Aggregations
-  samples__updated_datetime: Aggregations
-  samples__time_between_excision_and_freezing: Aggregations
-  samples__oct_embedded: Aggregations
-  samples__tumor_code_id: Aggregations
-  samples__submitter_id: Aggregations
-  samples__intermediate_dimension: Aggregations
-  samples__sample_id: Aggregations
-  samples__time_between_clamping_and_freezing: Aggregations
-  samples__pathology_report_uuid: Aggregations
-  samples__created_datetime: Aggregations
-  samples__tumor_descriptor: Aggregations
-  samples__sample_type: Aggregations
-  samples__biospecimen_anatomic_site: Aggregations
-  samples__state: Aggregations
-  samples__diagnosis_pathologically_confirmed: Aggregations
-  samples__current_weight: NumericAggergations
-  samples__composition: Aggregations
-  samples__is_ffpe: Aggregations
-  samples__shortest_dimension: Aggregations
-  samples__tumor_code: Aggregations
-  samples__method_of_sample_procurement: Aggregations
-  samples__slides__percent_tumor_nuclei: NumericAggergations
-  samples__slides__percent_eosinophil_infiltration: NumericAggergations
-  samples__slides__percent_normal_cells: NumericAggergations
-  samples__slides__percent_stromal_cells: NumericAggergations
-  samples__slides__updated_datetime: Aggregations
-  samples__slides__created_datetime: Aggregations
-  samples__slides__percent_monocyte_infiltration: NumericAggergations
-  samples__slides__annotations__status: Aggregations
-  samples__slides__annotations__legacy_updated_datetime: Aggregations
-  samples__slides__annotations__entity_id: Aggregations
-  samples__slides__annotations__classification: Aggregations
-  samples__slides__annotations__creator: Aggregations
-  samples__slides__annotations__created_datetime: Aggregations
-  samples__slides__annotations__entity_submitter_id: Aggregations
-  samples__slides__annotations__notes: Aggregations
-  samples__slides__annotations__entity_type: Aggregations
-  samples__slides__annotations__updated_datetime: Aggregations
-  samples__slides__annotations__legacy_created_datetime: Aggregations
-  samples__slides__annotations__state: Aggregations
-  samples__slides__annotations__case_id: Aggregations
-  samples__slides__annotations__submitter_id: Aggregations
-  samples__slides__annotations__annotation_id: Aggregations
-  samples__slides__annotations__case_submitter_id: Aggregations
-  samples__slides__annotations__category: Aggregations
-  samples__slides__percent_lymphocyte_infiltration: NumericAggergations
-  samples__slides__percent_neutrophil_infiltration: NumericAggergations
-  samples__slides__state: Aggregations
-  samples__slides__section_location: Aggregations
-  samples__slides__slide_id: Aggregations
-  samples__slides__percent_necrosis: NumericAggergations
-  samples__slides__percent_granulocyte_infiltration: NumericAggergations
-  samples__slides__percent_inflam_infiltration: NumericAggergations
-  samples__slides__submitter_id: Aggregations
-  samples__slides__number_proliferating_cells: NumericAggergations
-  samples__slides__percent_tumor_cells: NumericAggergations
-  samples__tissue_type: Aggregations
-  samples__days_to_sample_procurement: NumericAggergations
-  samples__freezing_method: Aggregations
-  samples__portions__creation_datetime: NumericAggergations
-  samples__portions__center__code: Aggregations
-  samples__portions__center__name: Aggregations
-  samples__portions__center__short_name: Aggregations
-  samples__portions__center__namespace: Aggregations
-  samples__portions__center__center_id: Aggregations
-  samples__portions__center__center_type: Aggregations
-  samples__portions__weight: NumericAggergations
-  samples__portions__updated_datetime: Aggregations
-  samples__portions__created_datetime: Aggregations
-  samples__portions__analytes__updated_datetime: Aggregations
-  samples__portions__analytes__created_datetime: Aggregations
-  samples__portions__analytes__analyte_volume: NumericAggergations
-  samples__portions__analytes__well_number: Aggregations
-  samples__portions__analytes__analyte_type: Aggregations
-  samples__portions__analytes__analyte_quantity: NumericAggergations
-  samples__portions__analytes__submitter_id: Aggregations
-  samples__portions__analytes__normal_tumor_genotype_snp_match: Aggregations
-  samples__portions__analytes__ribosomal_rna_28s_16s_ratio: NumericAggergations
-  samples__portions__analytes__amount: NumericAggergations
-  samples__portions__analytes__state: Aggregations
-  samples__portions__analytes__aliquots__aliquot_id: Aggregations
-  samples__portions__analytes__aliquots__aliquot_quantity: NumericAggergations
-  samples__portions__analytes__aliquots__aliquot_volume: NumericAggergations
-  samples__portions__analytes__aliquots__updated_datetime: Aggregations
-  samples__portions__analytes__aliquots__created_datetime: Aggregations
-  samples__portions__analytes__aliquots__source_center: Aggregations
-  samples__portions__analytes__aliquots__analyte_type: Aggregations
-  samples__portions__analytes__aliquots__submitter_id: Aggregations
-  samples__portions__analytes__aliquots__amount: NumericAggergations
-  samples__portions__analytes__aliquots__state: Aggregations
-  samples__portions__analytes__aliquots__concentration: NumericAggergations
-  samples__portions__analytes__aliquots__analyte_type_id: Aggregations
-  samples__portions__analytes__aliquots__annotations__status: Aggregations
-  samples__portions__analytes__aliquots__annotations__legacy_updated_datetime: Aggregations
-  samples__portions__analytes__aliquots__annotations__entity_id: Aggregations
-  samples__portions__analytes__aliquots__annotations__classification: Aggregations
-  samples__portions__analytes__aliquots__annotations__creator: Aggregations
-  samples__portions__analytes__aliquots__annotations__created_datetime: Aggregations
-  samples__portions__analytes__aliquots__annotations__entity_submitter_id: Aggregations
-  samples__portions__analytes__aliquots__annotations__notes: Aggregations
-  samples__portions__analytes__aliquots__annotations__entity_type: Aggregations
-  samples__portions__analytes__aliquots__annotations__updated_datetime: Aggregations
-  samples__portions__analytes__aliquots__annotations__legacy_created_datetime: Aggregations
-  samples__portions__analytes__aliquots__annotations__state: Aggregations
-  samples__portions__analytes__aliquots__annotations__case_id: Aggregations
-  samples__portions__analytes__aliquots__annotations__submitter_id: Aggregations
-  samples__portions__analytes__aliquots__annotations__annotation_id: Aggregations
-  samples__portions__analytes__aliquots__annotations__case_submitter_id: Aggregations
-  samples__portions__analytes__aliquots__annotations__category: Aggregations
-  samples__portions__analytes__aliquots__center__code: Aggregations
-  samples__portions__analytes__aliquots__center__name: Aggregations
-  samples__portions__analytes__aliquots__center__short_name: Aggregations
-  samples__portions__analytes__aliquots__center__namespace: Aggregations
-  samples__portions__analytes__aliquots__center__center_id: Aggregations
-  samples__portions__analytes__aliquots__center__center_type: Aggregations
-  samples__portions__analytes__analyte_id: Aggregations
-  samples__portions__analytes__concentration: NumericAggergations
-  samples__portions__analytes__spectrophotometer_method: Aggregations
-  samples__portions__analytes__analyte_type_id: Aggregations
-  samples__portions__analytes__annotations__status: Aggregations
-  samples__portions__analytes__annotations__legacy_updated_datetime: Aggregations
-  samples__portions__analytes__annotations__entity_id: Aggregations
-  samples__portions__analytes__annotations__classification: Aggregations
-  samples__portions__analytes__annotations__creator: Aggregations
-  samples__portions__analytes__annotations__created_datetime: Aggregations
-  samples__portions__analytes__annotations__entity_submitter_id: Aggregations
-  samples__portions__analytes__annotations__notes: Aggregations
-  samples__portions__analytes__annotations__entity_type: Aggregations
-  samples__portions__analytes__annotations__updated_datetime: Aggregations
-  samples__portions__analytes__annotations__legacy_created_datetime: Aggregations
-  samples__portions__analytes__annotations__state: Aggregations
-  samples__portions__analytes__annotations__case_id: Aggregations
-  samples__portions__analytes__annotations__submitter_id: Aggregations
-  samples__portions__analytes__annotations__annotation_id: Aggregations
-  samples__portions__analytes__annotations__case_submitter_id: Aggregations
-  samples__portions__analytes__annotations__category: Aggregations
-  samples__portions__analytes__a260_a280_ratio: NumericAggergations
-  samples__portions__submitter_id: Aggregations
-  samples__portions__slides__percent_tumor_nuclei: NumericAggergations
-  samples__portions__slides__percent_eosinophil_infiltration: NumericAggergations
-  samples__portions__slides__percent_normal_cells: NumericAggergations
-  samples__portions__slides__percent_stromal_cells: NumericAggergations
-  samples__portions__slides__updated_datetime: Aggregations
-  samples__portions__slides__created_datetime: Aggregations
-  samples__portions__slides__percent_monocyte_infiltration: NumericAggergations
-  samples__portions__slides__annotations__status: Aggregations
-  samples__portions__slides__annotations__legacy_updated_datetime: Aggregations
-  samples__portions__slides__annotations__entity_id: Aggregations
-  samples__portions__slides__annotations__classification: Aggregations
-  samples__portions__slides__annotations__creator: Aggregations
-  samples__portions__slides__annotations__created_datetime: Aggregations
-  samples__portions__slides__annotations__entity_submitter_id: Aggregations
-  samples__portions__slides__annotations__notes: Aggregations
-  samples__portions__slides__annotations__entity_type: Aggregations
-  samples__portions__slides__annotations__updated_datetime: Aggregations
-  samples__portions__slides__annotations__legacy_created_datetime: Aggregations
-  samples__portions__slides__annotations__state: Aggregations
-  samples__portions__slides__annotations__case_id: Aggregations
-  samples__portions__slides__annotations__submitter_id: Aggregations
-  samples__portions__slides__annotations__annotation_id: Aggregations
-  samples__portions__slides__annotations__case_submitter_id: Aggregations
-  samples__portions__slides__annotations__category: Aggregations
-  samples__portions__slides__percent_lymphocyte_infiltration: NumericAggergations
-  samples__portions__slides__percent_neutrophil_infiltration: NumericAggergations
-  samples__portions__slides__state: Aggregations
-  samples__portions__slides__section_location: Aggregations
-  samples__portions__slides__slide_id: Aggregations
-  samples__portions__slides__percent_necrosis: NumericAggergations
-  samples__portions__slides__percent_granulocyte_infiltration: NumericAggergations
-  samples__portions__slides__percent_inflam_infiltration: NumericAggergations
-  samples__portions__slides__submitter_id: Aggregations
-  samples__portions__slides__number_proliferating_cells: NumericAggergations
-  samples__portions__slides__percent_tumor_cells: NumericAggergations
-  samples__portions__state: Aggregations
-  samples__portions__portion_id: Aggregations
-  samples__portions__portion_number: Aggregations
-  samples__portions__annotations__status: Aggregations
-  samples__portions__annotations__legacy_updated_datetime: Aggregations
-  samples__portions__annotations__entity_id: Aggregations
-  samples__portions__annotations__classification: Aggregations
-  samples__portions__annotations__creator: Aggregations
-  samples__portions__annotations__created_datetime: Aggregations
-  samples__portions__annotations__entity_submitter_id: Aggregations
-  samples__portions__annotations__notes: Aggregations
-  samples__portions__annotations__entity_type: Aggregations
-  samples__portions__annotations__updated_datetime: Aggregations
-  samples__portions__annotations__legacy_created_datetime: Aggregations
-  samples__portions__annotations__state: Aggregations
-  samples__portions__annotations__case_id: Aggregations
-  samples__portions__annotations__submitter_id: Aggregations
-  samples__portions__annotations__annotation_id: Aggregations
-  samples__portions__annotations__case_submitter_id: Aggregations
-  samples__portions__annotations__category: Aggregations
-  samples__portions__is_ffpe: Aggregations
-  samples__preservation_method: Aggregations
-  samples__annotations__status: Aggregations
-  samples__annotations__legacy_updated_datetime: Aggregations
-  samples__annotations__entity_id: Aggregations
-  samples__annotations__classification: Aggregations
-  samples__annotations__creator: Aggregations
-  samples__annotations__created_datetime: Aggregations
-  samples__annotations__entity_submitter_id: Aggregations
-  samples__annotations__notes: Aggregations
-  samples__annotations__entity_type: Aggregations
-  samples__annotations__updated_datetime: Aggregations
-  samples__annotations__legacy_created_datetime: Aggregations
-  samples__annotations__state: Aggregations
-  samples__annotations__case_id: Aggregations
-  samples__annotations__submitter_id: Aggregations
-  samples__annotations__annotation_id: Aggregations
-  samples__annotations__case_submitter_id: Aggregations
-  samples__annotations__category: Aggregations
-  samples__days_to_collection: NumericAggergations
-  samples__initial_weight: NumericAggergations
-  samples__longest_dimension: Aggregations
   gene__ssm__ncbi_build: Aggregations
   gene__ssm__observation__src_vcf_id: Aggregations
   gene__ssm__observation__mutation_status: Aggregations
@@ -2700,6 +2486,47 @@ type ECaseAggregations {
   gene__is_cancer_gene_census: Aggregations
   gene__biotype: Aggregations
   gene__gene_id: Aggregations
+  disease_type: Aggregations
+  updated_datetime: Aggregations
+  created_datetime: Aggregations
+  days_to_index: NumericAggergations
+  demographic__updated_datetime: Aggregations
+  demographic__created_datetime: Aggregations
+  demographic__gender: Aggregations
+  demographic__year_of_birth: NumericAggergations
+  demographic__demographic_id: Aggregations
+  demographic__state: Aggregations
+  demographic__race: Aggregations
+  demographic__submitter_id: Aggregations
+  demographic__ethnicity: Aggregations
+  demographic__year_of_death: NumericAggergations
+  state: Aggregations
+  submitter_id: Aggregations
+  project__project_id: Aggregations
+  project__disease_type: Aggregations
+  project__intended_release_date: Aggregations
+  project__releasable: Aggregations
+  project__released: Aggregations
+  project__state: Aggregations
+  project__program__dbgap_accession_number: Aggregations
+  project__program__name: Aggregations
+  project__program__program_id: Aggregations
+  project__primary_site: Aggregations
+  project__dbgap_accession_number: Aggregations
+  project__name: Aggregations
+  case_autocomplete: Aggregations
+  case_id: Aggregations
+  primary_site: Aggregations
+  family_histories__relationship_gender: Aggregations
+  family_histories__updated_datetime: Aggregations
+  family_histories__created_datetime: Aggregations
+  family_histories__relative_with_cancer_history: Aggregations
+  family_histories__relationship_primary_diagnosis: Aggregations
+  family_histories__state: Aggregations
+  family_histories__family_history_id: Aggregations
+  family_histories__relationship_type: Aggregations
+  family_histories__submitter_id: Aggregations
+  family_histories__relationship_age_at_diagnosis: NumericAggergations
   summary__data_categories__file_count: NumericAggergations
   summary__data_categories__data_category: Aggregations
   summary__file_count: NumericAggergations
@@ -3781,13 +3608,14 @@ type FileAggregations {
   cases__updated_datetime: Aggregations
   cases__submitter_analyte_ids: Aggregations
   cases__analyte_ids: Aggregations
-  cases__submitter_id: Aggregations
+  cases__days_to_lost_to_followup: NumericAggergations
   cases__sample_ids: Aggregations
   cases__portion_ids: Aggregations
   cases__submitter_portion_ids: Aggregations
   cases__created_datetime: Aggregations
   cases__slide_ids: Aggregations
   cases__days_to_index: NumericAggergations
+  cases__demographic__cause_of_death: Aggregations
   cases__demographic__updated_datetime: Aggregations
   cases__demographic__created_datetime: Aggregations
   cases__demographic__gender: Aggregations
@@ -3795,9 +3623,13 @@ type FileAggregations {
   cases__demographic__demographic_id: Aggregations
   cases__demographic__state: Aggregations
   cases__demographic__race: Aggregations
+  cases__demographic__days_to_birth: NumericAggergations
+  cases__demographic__vital_status: Aggregations
+  cases__demographic__days_to_death: NumericAggergations
   cases__demographic__submitter_id: Aggregations
   cases__demographic__ethnicity: Aggregations
   cases__demographic__year_of_death: NumericAggergations
+  cases__lost_to_followup: Aggregations
   cases__state: Aggregations
   cases__case_id: Aggregations
   cases__samples__sample_type_id: Aggregations
@@ -4015,6 +3847,7 @@ type FileAggregations {
   cases__exposures__exposure_id: Aggregations
   cases__exposures__submitter_id: Aggregations
   cases__exposures__pack_years_smoked: NumericAggergations
+  cases__index_date: Aggregations
   cases__family_histories__relationship_gender: Aggregations
   cases__family_histories__updated_datetime: Aggregations
   cases__family_histories__created_datetime: Aggregations
@@ -4025,10 +3858,12 @@ type FileAggregations {
   cases__family_histories__relationship_type: Aggregations
   cases__family_histories__submitter_id: Aggregations
   cases__family_histories__relationship_age_at_diagnosis: NumericAggergations
+  cases__submitter_id: Aggregations
   cases__diagnoses__ann_arbor_b_symptoms: Aggregations
   cases__diagnoses__year_of_diagnosis: NumericAggergations
   cases__diagnoses__classification_of_tumor: Aggregations
   cases__diagnoses__last_known_disease_status: Aggregations
+  cases__diagnoses__progression_free_survival: NumericAggergations
   cases__diagnoses__updated_datetime: Aggregations
   cases__diagnoses__method_of_diagnosis: Aggregations
   cases__diagnoses__laterality: Aggregations
@@ -4041,27 +3876,6 @@ type FileAggregations {
   cases__diagnoses__vital_status: Aggregations
   cases__diagnoses__morphology: Aggregations
   cases__diagnoses__days_to_death: NumericAggergations
-  cases__diagnoses__new_event_anatomic_site: Aggregations
-  cases__diagnoses__days_to_last_known_disease_status: NumericAggergations
-  cases__diagnoses__perineural_invasion_present: Aggregations
-  cases__diagnoses__days_to_hiv_diagnosis: NumericAggergations
-  cases__diagnoses__ajcc_clinical_n: Aggregations
-  cases__diagnoses__ajcc_pathologic_t: Aggregations
-  cases__diagnoses__prior_treatment: Aggregations
-  cases__diagnoses__ajcc_clinical_t: Aggregations
-  cases__diagnoses__colon_polyps_history: Aggregations
-  cases__diagnoses__ajcc_clinical_m: Aggregations
-  cases__diagnoses__ajcc_pathologic_m: Aggregations
-  cases__diagnoses__ajcc_pathologic_n: Aggregations
-  cases__diagnoses__vascular_invasion_present: Aggregations
-  cases__diagnoses__ldh_level_at_diagnosis: NumericAggergations
-  cases__diagnoses__days_to_last_follow_up: NumericAggergations
-  cases__diagnoses__residual_disease: Aggregations
-  cases__diagnoses__days_to_recurrence: NumericAggergations
-  cases__diagnoses__diagnosis_id: Aggregations
-  cases__diagnoses__tumor_grade: Aggregations
-  cases__diagnoses__state: Aggregations
-  cases__diagnoses__figo_stage: Aggregations
   cases__diagnoses__treatments__days_to_treatment_start: NumericAggergations
   cases__diagnoses__treatments__updated_datetime: Aggregations
   cases__diagnoses__treatments__created_datetime: Aggregations
@@ -4071,28 +3885,56 @@ type FileAggregations {
   cases__diagnoses__treatments__treatment_id: Aggregations
   cases__diagnoses__treatments__state: Aggregations
   cases__diagnoses__treatments__therapeutic_agents: Aggregations
+  cases__diagnoses__treatments__regimen_or_line_of_therapy: Aggregations
   cases__diagnoses__treatments__treatment_intent_type: Aggregations
   cases__diagnoses__treatments__treatment_anatomic_site: Aggregations
   cases__diagnoses__treatments__treatment_outcome: Aggregations
   cases__diagnoses__treatments__days_to_treatment_end: NumericAggergations
   cases__diagnoses__treatments__treatment_or_therapy: Aggregations
-  cases__diagnoses__lymphatic_invasion_present: Aggregations
-  cases__diagnoses__tissue_or_organ_of_origin: Aggregations
+  cases__diagnoses__new_event_anatomic_site: Aggregations
+  cases__diagnoses__days_to_last_known_disease_status: NumericAggergations
+  cases__diagnoses__perineural_invasion_present: Aggregations
+  cases__diagnoses__days_to_hiv_diagnosis: NumericAggergations
+  cases__diagnoses__ajcc_pathologic_m: Aggregations
+  cases__diagnoses__ajcc_pathologic_t: Aggregations
+  cases__diagnoses__prior_treatment: Aggregations
+  cases__diagnoses__ajcc_clinical_t: Aggregations
+  cases__diagnoses__colon_polyps_history: Aggregations
+  cases__diagnoses__ajcc_clinical_m: Aggregations
+  cases__diagnoses__ajcc_clinical_n: Aggregations
+  cases__diagnoses__ajcc_pathologic_n: Aggregations
+  cases__diagnoses__ldh_level_at_diagnosis: NumericAggergations
+  cases__diagnoses__days_to_last_follow_up: NumericAggergations
+  cases__diagnoses__progression_free_survival_event: Aggregations
+  cases__diagnoses__best_overall_response: Aggregations
+  cases__diagnoses__residual_disease: Aggregations
+  cases__diagnoses__days_to_recurrence: NumericAggergations
+  cases__diagnoses__diagnosis_id: Aggregations
+  cases__diagnoses__tumor_grade: Aggregations
+  cases__diagnoses__state: Aggregations
+  cases__diagnoses__figo_stage: Aggregations
   cases__diagnoses__days_to_birth: NumericAggergations
+  cases__diagnoses__cause_of_death: Aggregations
+  cases__diagnoses__lymphatic_invasion_present: Aggregations
+  cases__diagnoses__days_to_diagnosis: NumericAggergations
+  cases__diagnoses__tissue_or_organ_of_origin: Aggregations
+  cases__diagnoses__days_to_best_overall_response: NumericAggergations
   cases__diagnoses__progression_or_recurrence: Aggregations
   cases__diagnoses__hpv_status: Aggregations
   cases__diagnoses__prior_malignancy: Aggregations
-  cases__diagnoses__circumferential_resection_margin: NumericAggergations
+  cases__diagnoses__vascular_invasion_present: Aggregations
   cases__diagnoses__new_event_type: Aggregations
   cases__diagnoses__ajcc_pathologic_stage: Aggregations
   cases__diagnoses__burkitt_lymphoma_clinical_variant: Aggregations
-  cases__diagnoses__cause_of_death: Aggregations
+  cases__diagnoses__iss_stage: Aggregations
   cases__diagnoses__ldh_normal_range_upper: NumericAggergations
   cases__diagnoses__ann_arbor_extranodal_involvement: Aggregations
   cases__diagnoses__lymph_nodes_positive: NumericAggergations
   cases__diagnoses__ann_arbor_clinical_stage: Aggregations
   cases__diagnoses__site_of_resection_or_biopsy: Aggregations
   cases__diagnoses__created_datetime: Aggregations
+  cases__diagnoses__circumferential_resection_margin: NumericAggergations
+  cases__diagnoses__overall_survival: NumericAggergations
   cases__diagnoses__ajcc_clinical_stage: Aggregations
   cases__diagnoses__days_to_new_event: NumericAggergations
   cases__diagnoses__hiv_positive: Aggregations
@@ -4370,7 +4212,10 @@ type FileCase implements Node {
 
   # keyword
   analyte_ids: String
-  submitter_id: String
+
+  # The number of days between the date used for index and to the date the patient was lost to follow-up.
+  #
+  days_to_lost_to_followup: Float
 
   # keyword
   sample_ids: String
@@ -4391,6 +4236,10 @@ type FileCase implements Node {
   # long
   days_to_index: Float
 
+  # A yes/no indicator related to whether a patient was unable to be contacted for follow-up.
+  #
+  lost_to_followup: String
+
   # The current state of the object.
   #
   state: String
@@ -4400,6 +4249,12 @@ type FileCase implements Node {
 
   # keyword
   submitter_sample_ids: String
+
+  # The reference or anchor date used during date obfuscation, where a single date
+  # is obscurred by creating one or more date ranges in relation to this date.
+  #
+  index_date: String
+  submitter_id: String
 
   # Full name for the project.
   #
@@ -5198,6 +5053,8 @@ type Observation implements Node {
   tumor_genotype: TumorGenotype
   validation: Validation
   variant_calling: VariantCalling
+  project_id: String
+  access: String
 
   # keyword
   src_vcf_id: String
@@ -5927,9 +5784,9 @@ type Sample implements Node {
   #
   updated_datetime: String
 
-  # Numeric representation of the elapsed time between the excision and freezing of the sample, measured in minutes.
+  # Text term that represents the name of the primary disease site of the submitted tumor sample.
   #
-  time_between_excision_and_freezing: String
+  biospecimen_anatomic_site: String
 
   # Indicator of whether or not the sample was embedded in Optimal Cutting Temperature (OCT) compound.
   #
@@ -5947,10 +5804,9 @@ type Sample implements Node {
   # keyword
   sample_id: String
 
-  # Numeric representation of the elapsed time between the surgical clamping of
-  # blood supply and freezing of the sample, measured in minutes.
+  # Indicator to signify whether or not the tissue sample was fixed in formalin and embedded in paraffin (FFPE).
   #
-  time_between_clamping_and_freezing: String
+  is_ffpe: String
 
   # UUID of the related pathology report.
   pathology_report_uuid: String
@@ -5967,9 +5823,9 @@ type Sample implements Node {
   #
   sample_type: String
 
-  # Text term that represents the name of the primary disease site of the submitted tumor sample.
+  # Numeric representation of the elapsed time between the excision and freezing of the sample, measured in minutes.
   #
-  biospecimen_anatomic_site: String
+  time_between_excision_and_freezing: String
 
   # The current state of the object.
   #
@@ -5980,25 +5836,22 @@ type Sample implements Node {
   #
   current_weight: Float
 
-  # Text term that represents the cellular composition of the sample.
+  # Numeric representation of the elapsed time between the surgical clamping of
+  # blood supply and freezing of the sample, measured in minutes.
   #
-  composition: String
-
-  # Indicator to signify whether or not the tissue sample was fixed in formalin and embedded in paraffin (FFPE).
-  #
-  is_ffpe: String
+  time_between_clamping_and_freezing: String
 
   # Numeric value that represents the shortest dimension of the sample, measured in millimeters.
   #
   shortest_dimension: String
 
-  # Diagnostic tumor code of the tissue sample source.
-  #
-  tumor_code: String
-
   # The method used to procure the sample used to extract analyte(s).
   #
   method_of_sample_procurement: String
+
+  # Diagnostic tumor code of the tissue sample source.
+  #
+  tumor_code: String
 
   # Text term that represents a description of the kind of tissue collected with
   # respect to disease status or proximity to tumor tissue.
@@ -6016,6 +5869,10 @@ type Sample implements Node {
   # Text term that represents the method used to preserve the sample.
   #
   preservation_method: String
+
+  # Text term that represents the cellular composition of the sample.
+  #
+  composition: String
 
   # Time interval from the date of biospecimen collection to the date of initial
   # pathologic diagnosis, represented as a calculated number of days.
@@ -6439,6 +6296,8 @@ type SsmAggregations {
   gene_aa_change: Aggregations
   chromosome: Aggregations
   genomic_dna_change: Aggregations
+  occurrence__case__observation__project_id: Aggregations
+  occurrence__case__observation__access: Aggregations
 }
 
 type SsmConnection {
@@ -6817,6 +6676,10 @@ type Treatment implements Node {
   # Text identification of the individual agent(s) used as part of a prior treatment regimen.
   #
   therapeutic_agents: String
+
+  # The name of a regimen or line of therapy assigned to the patient.
+  #
+  regimen_or_line_of_therapy: String
 
   # Text term to identify the reason for the administration of a treatment regimen. [Manually-curated]
   #

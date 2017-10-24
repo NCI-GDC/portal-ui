@@ -6,7 +6,7 @@ import { compose, branch, renderComponent, mapProps } from 'recompose';
 
 export default compose(
   branch(
-    ({ viewer }) => !get(viewer, 'viewer.repository.cases.hits.edges[0]'),
+    ({ viewer }) => !get(viewer, 'repository.cases.hits.edges[0]'),
     renderComponent(() => <div>No case found.</div>),
   ),
   mapProps(p => ({

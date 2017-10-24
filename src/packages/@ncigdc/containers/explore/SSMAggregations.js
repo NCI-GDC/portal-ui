@@ -25,20 +25,6 @@ const presetFacets: Array<{
   additionalProps?: {},
 }> = [
   {
-    title: 'SSM Access',
-    field: 'occurrence.case.observation.access',
-    full: 'ssms.occurrence.case.observation.access',
-    doc_type: 'ssms',
-    type: 'terms',
-  },
-  {
-    title: 'SSM Project',
-    field: 'occurrence.case.observation.project_id',
-    full: 'ssms.occurrence.case.observation.project_id',
-    doc_type: 'ssms',
-    type: 'terms',
-  },
-  {
     title: 'SSM ID',
     field: 'ssm_id',
     full: 'ssms.ssm_id',

@@ -1,9 +1,13 @@
 import React from 'react';
+import { flatMap } from 'lodash';
 import { connect } from 'react-redux';
 import decode from 'jwt-decode';
 import Aux from '@ncigdc/utils/Aux';
 
-export default connect()(
+export default connect(state => ({
+  user: state.auth.user,
+  project_ids: state.auth.project_ids,
+}))(
   class extends React.Component {
     state = { loggingIn: false };
     showGoogleLogin = () => {
@@ -31,12 +35,18 @@ export default connect()(
                 AWG_Brain: ['TCGA-LGG', 'TCGA-GBM'],
               };
 
+              let project_ids = flatMap(
+                decoded.context.user.groups
+                  .map(group => projectMap[group])
+                  .filter(Boolean),
+              );
+
               this.props.dispatch({
                 type: 'gdc/USER_SUCCESS',
                 payload: {
-                  username: decoded.username,
+                  username: decoded.context.user.email,
                 },
-                project_ids: ['TCGA-LGG', 'TCGA-BLCA', 'TCGA-UCS'],
+                project_ids,
               });
             });
         },
@@ -68,7 +78,7 @@ export default connect()(
               textAlign: 'center',
             }}
           >
-            <h1>Welcome to the AWG Portal</h1>
+            <h1>Welcome to the GDC - AWG Portal</h1>
             {!this.state.loggingIn && (
               <Aux>
                 <img
@@ -99,6 +109,14 @@ export default connect()(
                 />
               </Aux>
             )}
+
+            {this.props.user &&
+              !this.props.project_ids.length && (
+                <div>
+                  <br />
+                  <br />You don't have access to any projects
+                </div>
+              )}
 
             <br />
             <div

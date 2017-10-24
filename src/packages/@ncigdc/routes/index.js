@@ -45,10 +45,12 @@ export default withRouter(
   connect(state => ({
     loginRequired: state.auth.loginRequired,
     user: state.auth.user,
-  }))(({ loginRequired, user }) => (
+    project_ids: state.auth.project_ids,
+  }))(({ loginRequired, user, project_ids }) => (
     <span>
-      {loginRequired && !user && <Route children={p => <Login />} />}
-      {(!loginRequired || !!user) && (
+      {(!user || !project_ids.length) && <Route children={p => <Login />} />}
+      {(!loginRequired || !!user) &&
+        project_ids.length && (
           <Aux>
             <Route
               children={p => <Head title={p.location.pathname.split('/')[1]} />}

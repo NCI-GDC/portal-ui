@@ -18,6 +18,7 @@ import Button from '@ncigdc/uikit/Button';
 import Emitter from '@ncigdc/utils/emitter';
 import BioTreeView from './BioTreeView';
 import { search, idFields, formatValue } from './utils';
+import { entityTypes } from './';
 
 const styles = {
   button: {
@@ -41,6 +42,8 @@ const styles = {
   }),
 };
 
+const getType = node => entityTypes.find(type => node[`${type.s}_id`]).s;
+
 export default compose(
   branch(
     ({ viewer }) => !viewer.repository.cases.hits.edges[0],
@@ -53,9 +56,10 @@ export default compose(
     'setState',
     ({ viewer: { repository: { cases: { hits: { edges } } } }, bioId }) => {
       const p = edges[0].node;
+      const selectedEntity = p.samples.hits.edges[0].node;
       return {
-        selectedEntity: p.samples.hits.edges[0].node,
-        type: 'sample',
+        selectedEntity,
+        type: getType(selectedEntity),
         query: bioId || '',
       };
     },
@@ -78,6 +82,7 @@ export default compose(
     const flattened = _.flatten(founds);
     const foundNode = ((flattened || [])[0] || { node: {} }).node;
     const selectedNode = (query && foundNode) || se;
+    const foundType = (query && getType(foundNode)) || type;
     const selectedEntity = Object.keys(selectedNode).length
       ? selectedNode
       : p.samples.hits.edges[0].node;
@@ -168,9 +173,9 @@ export default compose(
           <Column flex="4">
             <EntityPageVerticalTable
               thToTd={[
-                { th: `${type} ID`, td: selectedEntity.submitter_id },
+                { th: `${foundType} ID`, td: selectedEntity.submitter_id },
                 {
-                  th: `${type} UUID`,
+                  th: `${foundType} UUID`,
                   td: selectedEntity[idFields.find(id => selectedEntity[id])],
                 },
                 ...Object.entries(selectedEntity)
@@ -179,7 +184,7 @@ export default compose(
                       ![
                         'submitter_id',
                         'expanded',
-                        `${type}_id`,
+                        `${foundType}_id`,
                         '__dataID__',
                       ].includes(key),
                   )

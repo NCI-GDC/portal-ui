@@ -5,13 +5,7 @@ import { css } from 'glamor';
 import Highlight from 'react-highlighter';
 import { search } from './utils';
 import BioTreeView from './BioTreeView';
-
-const entityTypes = [
-  { s: 'portion', p: 'portions' },
-  { s: 'aliquot', p: 'aliquots' },
-  { s: 'analyte', p: 'analytes' },
-  { s: 'slide', p: 'slides' },
-];
+import { entityTypes } from './';
 
 const pointer = css({
   cursor: 'pointer',

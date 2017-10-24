@@ -23,6 +23,14 @@ export default connect()(
             .then(r => r.text())
             .then(token => {
               const decoded = decode(token);
+
+              console.log(decoded);
+
+              const projectMap = {
+                AWG_Kidney: ['TCGA-KIRC', 'TCGA-KIRP', 'TCGA-KICH'],
+                AWG_Brain: ['TCGA-LGG', 'TCGA-GBM'],
+              };
+
               this.props.dispatch({
                 type: 'gdc/USER_SUCCESS',
                 payload: {

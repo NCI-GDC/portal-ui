@@ -245,9 +245,6 @@ const Header = compose(
                     payload: null,
                     project_ids: [],
                   });
-                  setTimeout(() => {
-                    window.location.href = '/';
-                  }, 500);
                 }}
               >
                 Logout

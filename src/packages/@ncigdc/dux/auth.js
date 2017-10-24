@@ -74,7 +74,7 @@ export function fetchToken() {
 }
 
 const initialState: State = {
-  loginRequired: process.env.REACT_APP_LOGIN_REQUIRED || false,
+  loginRequired: true,
   firstLoad: true,
   isFetching: false,
   user: null,

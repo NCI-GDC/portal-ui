@@ -186,7 +186,7 @@ const Header = compose(
                     project_ids: ['TCGA-LGG', 'TCGA-BLCA', 'TCGA-UCS'],
                   });
                   setTimeout(() => {
-                    window.location.href = '/';
+                    window.location.href = window.location.href;
                   }, 500);
                 }}
               >
@@ -206,47 +206,11 @@ const Header = compose(
                 onClick={() => {
                   dispatch({
                     type: 'gdc/USER_SUCCESS',
-                    payload: {
-                      username: 'Eva',
-                    },
-                    project_ids: [
-                      'TCGA-BRCA',
-                      'TCGA-CHOL',
-                      'TCGA-ACC',
-                      'TCGA-KIRP',
-                      'TCGA-GBM',
-                      'TCGA-OV',
-                    ],
-                  });
-                  setTimeout(() => {
-                    window.location.href = '/';
-                  }, 500);
-                }}
-              >
-                <Column>
-                  <span>
-                    Eva: Access to TCGA-BRCA, TCGA-CHOL, TCGA-ACC, TCGA-KIRP,
-                    TCGA-GBM, TCGA-OV
-                  </span>
-                  <b>(A mix of open and controlled access mutations)</b>
-                </Column>
-              </DropdownItemStyled>
-              <hr
-                style={{
-                  width: '80%',
-                  border: '1px solid',
-                  margin: '5px auto',
-                }}
-              />
-              <DropdownItemStyled
-                onClick={() => {
-                  dispatch({
-                    type: 'gdc/USER_SUCCESS',
                     payload: null,
                     project_ids: [],
                   });
                   setTimeout(() => {
-                    window.location.href = '/';
+                    window.location.href = window.location.href;
                   }, 500);
                 }}
               >

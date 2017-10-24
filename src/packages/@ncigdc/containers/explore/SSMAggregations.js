@@ -25,20 +25,6 @@ const presetFacets: Array<{
   additionalProps?: {},
 }> = [
   {
-    title: 'SSM Access',
-    field: 'occurrence.case.observation.access',
-    full: 'ssms.occurrence.case.observation.access',
-    doc_type: 'ssms',
-    type: 'terms',
-  },
-  {
-    title: 'SSM Project',
-    field: 'occurrence.case.observation.project_id',
-    full: 'ssms.occurrence.case.observation.project_id',
-    doc_type: 'ssms',
-    type: 'terms',
-  },
-  {
     title: 'SSM ID',
     field: 'ssm_id',
     full: 'ssms.ssm_id',
@@ -234,18 +220,6 @@ export const SSMAggregationsQuery = {
           }
         }
         occurrence__case__observation__variant_calling__variant_caller {
-          buckets {
-            doc_count
-            key
-          }
-        }
-        occurrence__case__observation__project_id {
-          buckets {
-            doc_count
-            key
-          }
-        }
-        occurrence__case__observation__access {
           buckets {
             doc_count
             key

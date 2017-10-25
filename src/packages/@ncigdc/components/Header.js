@@ -178,11 +178,16 @@ const Header = compose(
             >
               <DropdownItemStyled
                 onClick={() => {
-                  dispatch({
-                    type: 'gdc/USER_SUCCESS',
-                    payload: null,
-                    project_ids: [],
-                  });
+                  const authInstance = window.gapi.auth2.getAuthInstance();
+                  if (authInstance) {
+                    authInstance.signOut().then(() => {
+                      dispatch({
+                        type: 'gdc/USER_SUCCESS',
+                        payload: null,
+                        project_ids: [],
+                      });
+                    });
+                  }
                 }}
               >
                 Logout

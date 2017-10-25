@@ -10,6 +10,10 @@ export default connect(state => ({
 }))(
   class extends React.Component {
     state = { loggingIn: false };
+    componentDidMount() {
+      console.log('wat');
+      this.showGoogleLogin();
+    }
     showGoogleLogin = () => {
       this.setState({ loggingIn: true });
       window.gapi.signin2.render('g-signin2', {
@@ -79,23 +83,28 @@ export default connect(state => ({
             }}
           >
             <h1>Welcome to the GDC - AWG Portal</h1>
-            {!this.state.loggingIn && (
+
+            {this.props.user &&
+              !this.props.project_ids.length && (
+                <div>
+                  <br />
+                  <br />You don't have access to any projects
+                </div>
+              )}
+
+            <br />
+            <div style={{ display: 'flex', justifyContent: 'center' }}>
+              <div
+                id="g-signin2"
+                style={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                }}
+              />{' '}
               <Aux>
                 <img
                   style={{
-                    cursor: 'pointer',
-                    boxShadow:
-                      '0 4px 5px 0 rgba(0,0,0,0.14), 0 1px 10px 0 rgba(0,0,0,0.12), 0 2px 4px -1px rgba(0,0,0,0.3)',
-                    width: '50px',
-                    height: '50px',
-                    padding: '10px',
-                    borderRadius: '100%',
-                  }}
-                  src="https://images.google.com/images/branding/googleg/1x/googleg_standard_color_128dp.png"
-                  onClick={this.showGoogleLogin}
-                />
-                <img
-                  style={{
+                    marginTop: '-7px',
                     marginLeft: '20px',
                     cursor: 'pointer',
                     boxShadow:
@@ -108,24 +117,7 @@ export default connect(state => ({
                   src="https://blog.addthiscdn.com/wp-content/uploads/2015/11/logo-facebook.png"
                 />
               </Aux>
-            )}
-
-            {this.props.user &&
-              !this.props.project_ids.length && (
-                <div>
-                  <br />
-                  <br />You don't have access to any projects
-                </div>
-              )}
-
-            <br />
-            <div
-              id="g-signin2"
-              style={{
-                display: 'flex',
-                justifyContent: 'center',
-              }}
-            />
+            </div>
           </div>
         </div>
       );

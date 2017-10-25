@@ -16,14 +16,7 @@ const setupStore: TSetupStore = ({ persistConfig = {} } = {}) => {
   );
 
   persistStore(store, {
-    whitelist: [
-      'auth',
-      'cart',
-      'tableColumns',
-      'customFacets',
-      'sets',
-      'analysis',
-    ],
+    whitelist: ['cart', 'tableColumns', 'customFacets', 'sets', 'analysis'],
     ...persistConfig,
   });
 

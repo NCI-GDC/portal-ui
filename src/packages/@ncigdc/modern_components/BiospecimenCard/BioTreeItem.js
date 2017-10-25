@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { css } from 'glamor';
-import Highlight from 'react-highlighter';
+import { internalHighlight } from '@ncigdc/components/QuickSearch/QuickSearchResults';
 import { search } from './utils';
 import BioTreeView from './BioTreeView';
 import { entityTypes } from './';
@@ -64,7 +64,12 @@ const BioTreeItem = ({
               e.stopPropagation();
             }}
           >
-            <Highlight search={query}>{entity.submitter_id}</Highlight>
+            <span>
+              {internalHighlight(
+                query,
+                entity.submitter_id || entity[`${type.s}_id`],
+              )}
+            </span>
           </span>
 
           {selectedEntity[`${type.s}_id`] === entity[`${type.s}_id`] && (

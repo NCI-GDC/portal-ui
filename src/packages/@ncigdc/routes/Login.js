@@ -11,7 +11,6 @@ export default connect(state => ({
   class extends React.Component {
     state = { loggingIn: false };
     componentDidMount() {
-      console.log('wat');
       this.showGoogleLogin();
     }
     showGoogleLogin = () => {

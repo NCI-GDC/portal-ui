@@ -47,7 +47,8 @@ export default connect(state => ({
               this.props.dispatch({
                 type: 'gdc/USER_SUCCESS',
                 payload: {
-                  username: decoded.context.user.email,
+                  username: `${decoded.context.user.first_name} ${decoded
+                    .context.user.last_name}`,
                 },
                 project_ids,
               });

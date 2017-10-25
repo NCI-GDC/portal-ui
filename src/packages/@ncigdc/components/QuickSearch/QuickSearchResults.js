@@ -116,7 +116,7 @@ export const findMatchingToken = (item, lq, value = '') => {
   return value;
 };
 
-const internalHighlight = (query, foundText) => {
+export const internalHighlight = (query, foundText) => {
   const index = (foundText || '')
     .toLocaleLowerCase()
     .indexOf(query.toLocaleLowerCase());

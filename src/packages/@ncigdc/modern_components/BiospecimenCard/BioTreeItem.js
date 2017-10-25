@@ -2,16 +2,10 @@
 
 import React from 'react';
 import { css } from 'glamor';
-import Highlight from 'react-highlighter';
+import { internalHighlight } from '@ncigdc/components/QuickSearch/QuickSearchResults';
 import { search } from './utils';
 import BioTreeView from './BioTreeView';
-
-const entityTypes = [
-  { s: 'portion', p: 'portions' },
-  { s: 'aliquot', p: 'aliquots' },
-  { s: 'analyte', p: 'analytes' },
-  { s: 'slide', p: 'slides' },
-];
+import { entityTypes } from './';
 
 const pointer = css({
   cursor: 'pointer',
@@ -70,7 +64,12 @@ const BioTreeItem = ({
               e.stopPropagation();
             }}
           >
-            <Highlight search={query}>{entity.submitter_id}</Highlight>
+            <span>
+              {internalHighlight(
+                query,
+                entity.submitter_id || entity[`${type.s}_id`],
+              )}
+            </span>
           </span>
 
           {selectedEntity[`${type.s}_id`] === entity[`${type.s}_id`] && (

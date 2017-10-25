@@ -76,7 +76,7 @@ const FacetWrapper = compose(
     onRequestRemove: 'handleRequestRemove',
   }),
   withState('showingValueSearch', 'setShowingValueSearch', false),
-  withState('collapsed', 'setCollapsed', false),
+  withState('collapsed', 'setCollapsed', p => p.collapsed),
 )(
   ({
     setShowingValueSearch,

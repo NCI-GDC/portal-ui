@@ -104,6 +104,14 @@ const presetFacets = [
     type: 'keyword',
   },
   {
+    title: 'Project',
+    field: 'project.project_id',
+    full: 'cases.project.project_id',
+    doc_type: 'cases',
+    type: 'terms',
+    collapsed: true,
+  },
+  {
     title: 'Disease Type',
     field: 'disease_type',
     full: 'cases.disease_type',
@@ -311,6 +319,7 @@ export const CaseAggregationsComponent = (props: TProps) => (
       .filter(facet => props.aggregations[escapeForRelay(facet.field)])
       .map(facet => (
         <FacetWrapper
+          {...facet}
           key={facet.full}
           facet={facet}
           title={facet.title}

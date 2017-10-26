@@ -105,10 +105,17 @@ export default compose(
       return {
         term: k,
         casesS1,
+<<<<<<< HEAD
+        percentS1: (casesS1 / result1.hits.total * 100).toFixed(2),
+        filters1: bucket1.filters,
+        casesS2,
+        percentS2: (casesS2 / result2.hits.total * 100).toFixed(2),
+=======
         percentS1: casesS1 / result1.hits.total * 100,
         filters1: bucket1.filters,
         casesS2,
         percentS2: casesS2 / result2.hits.total * 100,
+>>>>>>> d6310d1... PRTL-1756 cohort yaxises as percents
         filters2: bucket2.filters,
       };
     });

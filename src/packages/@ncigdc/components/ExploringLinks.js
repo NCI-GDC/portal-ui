@@ -78,7 +78,7 @@ const ExploringLinks = () => (
       </Analysis>
     </Tooltip>
     <Tooltip Component="Browse and download data">
-      <Repository backgroundColor="rgb(20, 137, 204)">
+      <Repository backgroundColor="rgb(3, 111, 173)">
         <Background>
           <i className="fa fa-database" />
         </Background>

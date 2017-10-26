@@ -16,6 +16,7 @@ import countComponents from '@ncigdc/modern_components/Counts';
 import { Tooltip } from '@ncigdc/uikit/Tooltip';
 import pluralize from '@ncigdc/utils/pluralize';
 import { capitalize } from '@ncigdc/utils/string';
+import Hidden from '@ncigdc/components/Hidden';
 
 const MAX_LABEL_LENGTH = 30;
 const enhance = compose(
@@ -89,6 +90,7 @@ export default enhance(
               }}
             >
               <CaretIcon direction="down" />
+              <Hidden>See existing sets</Hidden>
             </Button>
           }
         >

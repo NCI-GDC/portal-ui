@@ -9,6 +9,7 @@ import { stringifyJSONParam } from '@ncigdc/utils/uri';
 import { CreateExploreCaseSetButton } from '@ncigdc/modern_components/withSetAction';
 import withRouter from '@ncigdc/utils/withRouter';
 import Alias from '@ncigdc/components/Alias';
+import { withTheme } from '@ncigdc/theme';
 
 const survivalFilters = [
   {
@@ -35,6 +36,7 @@ const survivalFilters = [
 ];
 
 export default compose(
+  withTheme,
   withRouter,
   branch(
     ({ survivalData }) =>
@@ -53,6 +55,7 @@ export default compose(
     set2id,
     push,
     style,
+    theme,
     CaseSetButton = props => (
       <CreateExploreCaseSetButton
         filters={{
@@ -93,7 +96,7 @@ export default compose(
             {...p}
             style={{
               cursor: 'pointer',
-              color: 'rgb(43, 118, 154)',
+              color: theme.primary1,
               textDecoration: 'underline',
             }}
           >

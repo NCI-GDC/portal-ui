@@ -12,9 +12,15 @@ import GreyBox from '@ncigdc/uikit/GreyBox';
 import DownloadButton from '@ncigdc/components/DownloadButton';
 import { iconButton } from '@ncigdc/theme/mixins';
 import { MAX_SET_SIZE } from '@ncigdc/utils/constants';
+import { withTheme } from '@ncigdc/theme';
+import { compose } from 'recompose';
 
-const ActionsTd = connect()(
+const ActionsTd = compose(
+  connect(),
+  withTheme,
+)(
   ({
+    theme,
     hide,
     count,
     dispatch,
@@ -151,6 +157,7 @@ export default ({
                 <Td>
                   <input
                     type="checkbox"
+                    aria-label={`Select ${op.op}`}
                     checked={selected.has(op.op)}
                     onChange={e => toggle(op.op)}
                   />
@@ -191,7 +198,7 @@ export default ({
                           Component={`View ${type} set in exploration`}
                           style={{
                             cursor: 'pointer',
-                            color: 'rgb(43, 118, 154)',
+                            color: theme.primary1,
                             textDecoration: 'underline',
                           }}
                         >
@@ -260,7 +267,7 @@ export default ({
                           {...p}
                           style={{
                             cursor: 'pointer',
-                            color: 'rgb(43, 118, 154)',
+                            color: theme.primary1,
                             textDecoration: 'underline',
                           }}
                         >

@@ -22,6 +22,12 @@ const SkipLink = styled.a({
   left: '-999px',
   backgroundColor: '#fff',
   zIndex: 1000,
+  ':focus': ({ theme }) => ({
+    left: 0,
+    padding: '0.5rem',
+    textDecoration: 'none',
+    color: theme.primary,
+  }),
 });
 
 const FIRST_TIME_KEY = 'NCI-Warning';

@@ -127,7 +127,6 @@ export default compose(
             maxWidth: tableData.length * 140 + 150, // TODO: use same logic used in TwoBarCharts
           }}
         >
-          {console.log(tableData)}
           <BarChart
             minBarHeight={1}
             data1={tableData.map(
@@ -263,7 +262,7 @@ export default compose(
                   {row.casesS1.toLocaleString()}
                 </ExploreLink>
               ),
-            percentS1: `${row.percentS1.toFixed(10)}%`,
+            percentS1: `${row.percentS1.toFixed(2)}%`,
             casesS2:
               row.casesS2 === 0 ? (
                 0
@@ -299,7 +298,7 @@ export default compose(
                   {row.casesS2}
                 </ExploreLink>
               ),
-            percentS2: `${row.percentS2.toFixed(10)}%`,
+            percentS2: `${row.percentS2.toFixed(2)}%`,
           }))}
         />
         <div style={{ textAlign: 'right' }}>

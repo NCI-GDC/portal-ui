@@ -124,15 +124,9 @@ const SetTable = ({
       <Row>
         <Column style={{ padding: '2rem 2.5rem 0', flex: 1 }}>
           <Row>
-            <Row
-              style={{
-                width: 120,
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}
-            >
-              <Icon style={{ fontSize: 40, marginRight: 25 }} />
-            </Row>
+            <div style={{ width: 80, margin: 20 }}>
+              <Icon />
+            </div>
             <div>
               <h1 style={{ fontSize: '2rem' }}>{label}</h1>
               <div style={{ marginBottom: 10 }}>{description}</div>

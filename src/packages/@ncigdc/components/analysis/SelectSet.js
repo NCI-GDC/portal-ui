@@ -11,7 +11,6 @@ import Button from '@ncigdc/uikit/Button';
 import ExploreLink from '@ncigdc/components/Links/ExploreLink';
 import { theme } from '@ncigdc/theme/index';
 import removeEmptyKeys from '@ncigdc/utils/removeEmptyKeys';
-
 import type { TSetTypes } from '../../dux/sets';
 import DemoButton from './DemoButton';
 
@@ -152,35 +151,24 @@ const SetTable = ({
           </Row>
         </Column>
 
-        {setData.length ? (
-          <div style={{ flex: 1 }}>
-            <div style={{ margin: '2rem 0' }}>
-              <div>
-                <strong>{setInstructions}</strong>
-              </div>
-              <div style={{ fontStyle: 'italic' }}>
-                You can create and save case, gene and mutation sets of interest
-                from the <ExploreLink>Exploration Page</ExploreLink>
-              </div>
+        <div style={{ flex: 1 }}>
+          <div style={{ margin: '2rem 0' }}>
+            <div>
+              <strong>
+                {setData.length > 0
+                  ? setInstructions
+                  : 'You have not saved any sets yet.'}
+              </strong>
             </div>
-            <EntityPageHorizontalTable data={setData} headings={headings} />
+            <div style={{ fontStyle: 'italic' }}>
+              You can create and save case, gene and mutation sets of interest
+              from the <ExploreLink>Exploration Page</ExploreLink>
+            </div>
           </div>
-        ) : (
-          <EntityPageHorizontalTable
-            data={[{ select: 'No saved set' }]}
-            headings={[
-              {
-                ...headings[0],
-                tdProps: { colSpan: 4 },
-                tdStyle: { textAlign: 'center' },
-              },
-              ...headings.slice(1).map(h => ({
-                ...h,
-                tdStyle: { display: 'none' },
-              })),
-            ]}
-          />
-        )}
+          {setData.length > 0 && (
+            <EntityPageHorizontalTable data={setData} headings={headings} />
+          )}
+        </div>
       </Row>
     </div>
   );

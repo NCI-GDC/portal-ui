@@ -53,25 +53,34 @@ const CreateAnalysis = ({ analysis, setAnalysis, dispatch, push }) => {
       }}
     />
   ) : (
-    <div style={{ padding: '2rem 2.5rem' }}>
-      {availableAnalysis.map(analysis => {
-        return (
-          <Row key={analysis.type}>
-            <div style={{ width: 80, margin: 20 }}>
-              <analysis.Icon />
-            </div>
-            <div>
-              <h1 style={{ fontSize: '2rem' }}>{analysis.label}</h1>
-              <div style={{ marginBottom: 10 }}>{analysis.description}</div>
-              <Row spacing={5}>
-                <Button onClick={() => setAnalysis(analysis)}>Select</Button>
-                <DemoButton demoData={analysis.demoData} type={analysis.type} />
-              </Row>
-            </div>
-          </Row>
-        );
-      })}
-    </div>
+    <Row>
+      <div style={{ padding: '2rem 2.5rem', flex: 1 }}>
+        {availableAnalysis.map(analysis => {
+          return (
+            <Row key={analysis.type}>
+              <div style={{ width: 80, margin: 20 }}>
+                <analysis.Icon />
+              </div>
+              <div>
+                <h1 style={{ fontSize: '2rem' }}>{analysis.label}</h1>
+                <div style={{ marginBottom: 10 }}>{analysis.description}</div>
+                <Row spacing={5}>
+                  <Button onClick={() => setAnalysis(analysis)}>Select</Button>
+                  <DemoButton
+                    demoData={analysis.demoData}
+                    type={analysis.type}
+                  />
+                </Row>
+              </div>
+            </Row>
+          );
+        })}
+      </div>
+      <div
+        // for a second column of analysis when the time comes
+        style={{ flex: 1 }}
+      />
+    </Row>
   );
 };
 

@@ -3,6 +3,14 @@ import React from 'react';
 import Alias from '@ncigdc/components/Alias';
 import { absoluteCenter } from '@ncigdc/theme/mixins';
 
+const floatingNumber = {
+  ...absoluteCenter,
+  fontSize: '0.8em',
+  backgroundColor: 'white',
+  borderRadius: 15,
+  padding: '1px 3px',
+};
+
 export default ({ ops, CountComponent, style }) => {
   return (
     <div
@@ -35,31 +43,31 @@ export default ({ ops, CountComponent, style }) => {
       />
       <CountComponent
         filters={ops[4].filters}
-        style={{ ...absoluteCenter, left: '18.5%', top: '28%' }}
+        style={{ ...floatingNumber, left: '18.5%', top: '28%' }}
       />
       <CountComponent
         filters={ops[3].filters}
-        style={{ ...absoluteCenter, left: '30%', top: '57%' }}
+        style={{ ...floatingNumber, left: '30%', top: '57%' }}
       />
       <CountComponent
         filters={ops[1].filters}
-        style={{ ...absoluteCenter, top: '23%' }}
+        style={{ ...floatingNumber, top: '23%' }}
       />
       <CountComponent
         filters={ops[0].filters}
-        style={{ ...absoluteCenter, top: '45%' }}
+        style={{ ...floatingNumber, top: '45%' }}
       />
       <CountComponent
         filters={ops[6].filters}
-        style={{ ...absoluteCenter, top: '82%' }}
+        style={{ ...floatingNumber, top: '82%' }}
       />
       <CountComponent
         filters={ops[2].filters}
-        style={{ ...absoluteCenter, left: '70%', top: '57%' }}
+        style={{ ...floatingNumber, left: '70%', top: '57%' }}
       />
       <CountComponent
         filters={ops[5].filters}
-        style={{ ...absoluteCenter, left: '81.5%', top: '28%' }}
+        style={{ ...floatingNumber, left: '81.5%', top: '28%' }}
       />
     </div>
   );

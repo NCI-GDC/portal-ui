@@ -1,7 +1,7 @@
 // @flow
 import { omit } from 'lodash';
 import { REHYDRATE } from 'redux-persist/constants';
-
+import { trim } from 'lodash';
 import { namespaceActions } from './utils';
 
 export type TSetTypes = 'case' | 'ssm' | 'gene';
@@ -50,6 +50,8 @@ const updateSet: TActionCreator = payload => ({
 
 const initialState = {};
 
+const trimAll = s => trim(s).replace(/\s+/g, ' ');
+
 const reducer = (state: TState = initialState, action: TAction) => {
   const payload = action.payload;
   switch (action.type) {
@@ -63,7 +65,7 @@ const reducer = (state: TState = initialState, action: TAction) => {
         ...state,
         [payload.type]: {
           ...state[payload.type],
-          [payload.id]: payload.label || '',
+          [payload.id]: trimAll(payload.label) || '',
         },
       };
 
@@ -87,7 +89,7 @@ const reducer = (state: TState = initialState, action: TAction) => {
         ...state,
         [payload.type]: {
           ...state[payload.type],
-          [payload.id]: payload.label,
+          [payload.id]: trimAll(payload.label),
         },
       };
 

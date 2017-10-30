@@ -26,6 +26,7 @@ import { withTheme } from '@ncigdc/theme';
 import { AnalysisIcon } from '@ncigdc/theme/icons';
 import DatabaseIcon from '@ncigdc/theme/icons/Database';
 import ManageSetsLink from '@ncigdc/components/Links/ManageSetsLink';
+import { Row } from '@ncigdc/uikit/Flex';
 
 import './Header.css';
 
@@ -133,8 +134,13 @@ const Header = compose(
           </li>
           <li>
             <AnalysisLink exact activeStyle={styles.activeNavLink(theme)}>
-              <AnalysisIcon style={styles.iconPadding} />
-              <span className="header-hidden-sm">Analysis</span>
+              <Row
+                // needed for handling IE default svg style
+                style={{ alignItems: 'center' }}
+              >
+                <AnalysisIcon style={styles.iconPadding} />
+                <span className="header-hidden-sm">Analysis</span>
+              </Row>
             </AnalysisLink>
           </li>
           <li>

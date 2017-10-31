@@ -30,6 +30,8 @@ import Base from './Base.js';
 
 const caseValidateHits = debounce(validateCases, 200);
 
+const FileFormats = () => '- File formats accepted: .txt, .csv, .tsv';
+
 export const UploadCaseSet = withProps(({ CreateButton }) => ({
   CreateSetButton: withProps(() => ({
     CreateButton: CreateButton || CreateRepositoryCaseSetButton,
@@ -49,7 +51,7 @@ export const UploadCaseSet = withProps(({ CreateButton }) => ({
         </div>
         - Delimiters between case identifiers: comma, space, tab or 1 case
         identifier per line<br />
-        - If you upload a file, format file is text file (.txt, .csv, .tsv)
+        <FileFormats />
       </div>
     ),
   },
@@ -84,7 +86,7 @@ export const UploadGeneSet = withProps(({ CreateButton }) => ({
         </div>
         - Delimiters between gene identifiers: comma, space, tab or 1 gene
         identifier per line<br />
-        - If you upload a file, format file is text file (.txt, .csv, .tsv)
+        <FileFormats />
       </div>
     ),
   },
@@ -120,7 +122,7 @@ export const UploadSsmSet = withProps(({ CreateButton }) => ({
         </div>
         - Delimiters between mutation identifiers: comma, space, tab or 1
         mutation identifier per line<br />
-        - If you upload a file, format file is text file (.txt, .csv, .tsv)
+        <FileFormats />
       </div>
     ),
   },

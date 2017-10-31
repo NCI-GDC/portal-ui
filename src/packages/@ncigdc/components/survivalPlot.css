@@ -9,9 +9,9 @@
   font-size: 1.5ex;
 }
 .survival-plot .axis .axis-label {
-  color: rgb(144,144,144);
+  color: rgb(107,98,98);
   font-size: 1.2rem;
-  fill: rgb(144,144,144);
+  fill: rgb(107,98,98);
   font-weight: 500;
 }
 .survival-plot .line {

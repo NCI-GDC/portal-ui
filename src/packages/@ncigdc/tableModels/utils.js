@@ -116,6 +116,7 @@ export const createSelectColumn: TCreateSelectColumn = ({
         <Th rowSpan={headerRowSpan}>
           <input
             type="checkbox"
+            aria-label="Select column"
             checked={allSelected}
             onChange={e => {
               setSelectedIds(
@@ -132,6 +133,7 @@ export const createSelectColumn: TCreateSelectColumn = ({
       <Td>
         <input
           type="checkbox"
+          aria-label={`Select ${node[idField]}`}
           value={node[idField]}
           checked={selectedIds.includes(node[idField])}
           onChange={e => {

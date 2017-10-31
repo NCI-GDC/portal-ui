@@ -27,7 +27,7 @@ const initialState = {
   loading: true,
 };
 
-const SET1_COLOUR = 'rgb(158, 124, 36)';
+const SET1_COLOUR = 'rgb(145, 114, 33)';
 const SET2_COLOUR = 'rgb(29, 97, 135)';
 
 const transformAgeAtDiagnosis = (buckets, compareBuckets) => {
@@ -197,6 +197,7 @@ export default compose(
                         readOnly
                         style={{ marginRight: 5, pointerEvents: 'none' }}
                         type="checkbox"
+                        aira-label={`Select ${field}`}
                         checked={activeFacets.includes(field)}
                       />
                       {label}
@@ -295,7 +296,7 @@ export default compose(
                 type="set_operations"
                 sets={sets}
                 style={{
-                  color: 'rgb(43, 118, 154)',
+                  color: theme.primary1,
                   fontSize: '0.8em',
                   textDecoration: 'underline',
                   display: 'inline-block',

@@ -318,6 +318,7 @@ const ManageSetsPage = ({
               <Th key="all-checkbox">
                 <input
                   type="checkbox"
+                  aria-label="Select all"
                   checked={allSelected}
                   onChange={e =>
                     setSelectedIds(
@@ -349,6 +350,7 @@ const ManageSetsPage = ({
                       <Td key={`checkbox${i}`} style={{ width: '50px' }}>
                         <input
                           type="checkbox"
+                          aria-label={`Select ${id}`}
                           checked={selectedIds.includes(id)}
                           onChange={e => setSelectedIds(xor(selectedIds, [id]))}
                         />

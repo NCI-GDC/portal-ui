@@ -1,7 +1,7 @@
 // @flow
 import React from 'react';
 import { connect } from 'react-redux';
-import { withProps, compose, withState } from 'recompose';
+import { withProps, compose, withState, defaultProps } from 'recompose';
 import EntityPageHorizontalTable from '@ncigdc/components/EntityPageHorizontalTable';
 import countComponents from '@ncigdc/modern_components/Counts';
 import withPropsOnChange from '@ncigdc/utils/withPropsOnChange';
@@ -22,6 +22,9 @@ type TProps = {
 const enhance = compose(
   connect(({ sets }) => ({ sets })),
   withProps(({ sets, type }) => ({ sets: sets[type] || {} })),
+  defaultProps({
+    getDisabledMessage: () => null,
+  }),
   withState('counts', 'setCounts', ({ sets }) =>
     Object.keys(sets).reduce(
       (acc, key) => Object.assign(acc, { [key]: '' }),
@@ -53,7 +56,7 @@ const SetTable = ({
   style,
   counts,
   setCounts,
-  getDisabledMessage = () => null,
+  getDisabledMessage,
 }: TProps) => {
   const CountComponent = countComponents[type];
 

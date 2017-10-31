@@ -1,6 +1,6 @@
 import React from 'react';
 import { compose } from 'recompose';
-import { union, find, truncate, get } from 'lodash';
+import { union, find, truncate, get, omit } from 'lodash';
 import ExploreLink from '@ncigdc/components/Links/ExploreLink';
 import BarChart from '@ncigdc/components/Charts/TwoBarChart';
 import { withTheme } from '@ncigdc/theme';
@@ -122,7 +122,29 @@ export default compose(
               style={{ ...visualizingButton }}
               onClick={() =>
                 saveFile(
-                  toTsvString(tableData),
+                  toTsvString(
+                    tableData.map(d =>
+                      omit(
+                        {
+                          ...d,
+                          [heading]: d.term,
+                          '# Cases S1': d.casesS1,
+                          '% Cases S1': d.percentS1,
+                          '# Cases S2': d.casesS2,
+                          '% Cases S2': d.percentS2,
+                        },
+                        [
+                          'term',
+                          'casesS1',
+                          'casesS2',
+                          'percentS1',
+                          'percentS2',
+                          'filters1',
+                          'filters2',
+                        ],
+                      ),
+                    ),
+                  ),
                   'TSV',
                   `${heading}-comparison.tsv`,
                 )}

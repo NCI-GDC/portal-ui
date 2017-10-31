@@ -35,10 +35,8 @@ export default enhance(
         onComplete={setId => {
           onClose();
           push({
-            pathname: '/exploration',
             query: {
               ...query,
-              searchTableTab: `${type}s`,
               filters: stringifyJSONParam(
                 replaceFilters(
                   {

@@ -12,7 +12,7 @@ export default ({ input, setInput, helpText, displayType, placeholder }) => {
         <Tooltip
           Component={<div style={{ whiteSpace: 'nowrap' }}>{helpText}</div>}
         >
-          <QuestionIcon />
+          <QuestionIcon style={{ fontSize: '20px' }} />
         </Tooltip>
       </Row>
       <textarea

@@ -27,8 +27,8 @@ export default (Component: React$Element<*>) =>
             ? parseJSONParam(query.activeFacets)
             : [
                 'demographic.gender',
+                'diagnoses.age_at_diagnosis',
                 'diagnoses.vital_status',
-                'demographic.race',
               ];
 
         return {

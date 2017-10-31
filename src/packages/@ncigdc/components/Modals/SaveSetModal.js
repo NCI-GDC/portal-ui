@@ -37,6 +37,7 @@ const enhance = compose(
   })),
   withState('inputTotal', 'setInputTotal', ({ max }) => max),
   withState('shouldCallCreateSet', 'setShouldCallCreateSet', false),
+  withState('submitted', 'submit', false),
 );
 
 const SaveSetModal = ({
@@ -56,6 +57,8 @@ const SaveSetModal = ({
   inputTotal,
   setInputTotal,
   max,
+  submitted,
+  submit,
 }) => {
   const existingSet = Object.entries(sets).find(
     ([, label]) => label === inputName,
@@ -67,6 +70,7 @@ const SaveSetModal = ({
       extraButtons={
         <CreateSetButton
           forceCreate
+          forceClick={submitted}
           disabled={
             !inputName ||
             inputTotal > max ||
@@ -119,6 +123,11 @@ const SaveSetModal = ({
       <InputWithWarning
         labelText="Name:"
         showWarning={existingSet}
+        handleOnKeyPress={e => {
+          if (e.key === 'Enter') {
+            submit(() => true);
+          }
+        }}
         handleOnChange={e => setInputName(e.target.value)}
         warningMessage="Warning: A set with the same name exists, this will overwrite it."
         maxLength={MAX_SET_NAME_LENGTH}

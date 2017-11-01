@@ -11,6 +11,10 @@ const sets = namespaceActions('sets', [
 type TState = {
   saved: Array<{
     id: string,
+    sets: Object,
+    type: string,
+    created: string,
+    message?: string,
   }>,
 };
 type TPayload = {

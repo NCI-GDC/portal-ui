@@ -69,9 +69,6 @@ function undoNotification(dispatch, analysis) {
 const AnalysisResult = ({ analysis, query, dispatch, push }) => {
   const analysisId = query.analysisId || '';
   const currentIndex = analysis.findIndex(a => a.id === analysisId);
-  const demoType =
-    currentIndex === -1 && (analysisId.match(/^demo-(.*)/) || [])[1];
-  const demoAnalysis = availableAnalysis.find(a => a.type === demoType);
 
   return (
     <TabbedLinks
@@ -96,11 +93,6 @@ const AnalysisResult = ({ analysis, query, dispatch, push }) => {
       linkStyle={{
         width: '100%',
       }}
-      defaultContent={
-        demoAnalysis && (
-          <demoAnalysis.DemoComponent {...demoAnalysis.demoData} />
-        )
-      }
       links={analysis
         .map(savedAnalysis => {
           const analysis = availableAnalysis.find(

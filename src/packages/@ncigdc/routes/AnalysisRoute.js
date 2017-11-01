@@ -16,8 +16,6 @@ const enhance = compose(
 );
 
 const AnalysisRoute = enhance(({ hasAnalysis, query }) => {
-  const isDemo = ((query.analysisId || '').match(/^demo-(.*)/) || [])[1];
-
   return (
     <TabbedLinks
       style={{ padding: '2rem 2.5rem' }}
@@ -28,7 +26,7 @@ const AnalysisRoute = enhance(({ hasAnalysis, query }) => {
           text: 'Launch Analysis',
           component: <CreateAnalysis />,
         },
-        ...(hasAnalysis || isDemo
+        ...(hasAnalysis
           ? [
               {
                 id: 'result',

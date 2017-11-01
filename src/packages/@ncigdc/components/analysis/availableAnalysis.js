@@ -142,18 +142,6 @@ const availableAnalysis: Array<TAnalysis> = [
       },
       type: 'set_operations',
     },
-    DemoComponent: props => {
-      const type = ['case', 'gene', 'ssm'].find(t => props.sets[t]);
-      return (
-        <Demo {...props}>
-          <SetOperations
-            type={type}
-            sets={props.sets[type]}
-            message={props.message}
-          />;
-        </Demo>
-      );
-    },
     setInstructions: 'Select 2 or 3 of the same set type',
     setDisabledMessage: ({ sets, type }) =>
       ['case', 'gene', 'ssm'].filter(t => t !== type).some(t => sets[t])
@@ -173,10 +161,24 @@ const availableAnalysis: Array<TAnalysis> = [
           Object.keys(entries[0][1]).length === 3)
       );
     },
-    ResultComponent: ({ sets }) => {
-      const type = ['case', 'gene', 'ssm'].find(t => sets[t]);
+    ResultComponent: props => {
+      const type = ['case', 'gene', 'ssm'].find(t => props.sets[t]);
 
-      return <SetOperations type={type} sets={sets[type]} />;
+      return props.id.includes('demo-') ? (
+        <Demo {...props}>
+          <SetOperations
+            type={type}
+            sets={props.sets[type]}
+            message={props.message}
+          />
+        </Demo>
+      ) : (
+        <SetOperations
+          type={type}
+          sets={props.sets[type]}
+          message={props.message}
+        />
+      );
     },
   },
   {
@@ -223,11 +225,6 @@ const availableAnalysis: Array<TAnalysis> = [
       },
       type: 'comparison',
     },
-    DemoComponent: props => (
-      <Demo {...props}>
-        <CohortComparison sets={props.sets} message={props.message} />
-      </Demo>
-    ),
     setInstructions: 'Select 2 case sets',
     setDisabledMessage: ({ sets, type }) =>
       !['case'].includes(type)
@@ -238,9 +235,14 @@ const availableAnalysis: Array<TAnalysis> = [
     setTypes: ['case'],
     validateSets: sets =>
       ['case'].every((t: any) => Object.keys(sets[t] || {}).length === 2),
-    ResultComponent: ({ sets }) => {
-      return <CohortComparison sets={sets} />;
-    },
+    ResultComponent: props =>
+      props.id.includes('demo-') ? (
+        <Demo {...props}>
+          <CohortComparison sets={props.sets} message={props.message} />
+        </Demo>
+      ) : (
+        <CohortComparison sets={props.sets} message={props.message} />
+      ),
   },
 ];
 

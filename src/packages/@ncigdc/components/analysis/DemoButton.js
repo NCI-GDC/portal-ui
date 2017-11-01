@@ -1,19 +1,43 @@
 import React from 'react';
 import { compose } from 'recompose';
+import { connect } from 'react-redux';
+
+import { addAnalysis } from '@ncigdc/dux/analysis';
 import { Tooltip } from '@ncigdc/uikit/Tooltip/index';
 import Button from '@ncigdc/uikit/Button';
 import withRouter from '@ncigdc/utils/withRouter';
 
-const enhance = compose(withRouter);
+const enhance = compose(
+  withRouter,
+  connect(state => ({ analysis: state.analysis.saved })),
+);
 
-const DemoButton = ({ demoData, type, push, style }) => {
-  const onDemo = type => {
+const DemoButton = ({ demoData, type, push, dispatch, analysis, style }) => {
+  const pushToResultTab = id =>
     push({
       query: {
         analysisTableTab: 'result',
-        analysisId: `demo-${type}`,
+        analysisId: id,
       },
     });
+  const onDemo = type => {
+    const id = `demo-${type}`;
+    const existingDemo = analysis.find(a => a.id === id);
+    if (existingDemo) {
+      pushToResultTab(id);
+    } else {
+      dispatch(
+        addAnalysis({
+          id,
+          sets: demoData.sets,
+          type: type,
+          created: new Date().toISOString(),
+          message: demoData.message,
+        }),
+      ).then(() => {
+        pushToResultTab(id);
+      });
+    }
   };
 
   return (

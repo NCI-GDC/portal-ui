@@ -26,12 +26,13 @@ export default enhance(
     CreateButton,
     idMap,
     idKey,
+    disabled = false,
     ...props
   }: TProps) => {
     return (
       <CreateButton
         {...props}
-        disabled={!hits.length}
+        disabled={disabled || !hits.length}
         onComplete={setId => {
           onClose();
           push({

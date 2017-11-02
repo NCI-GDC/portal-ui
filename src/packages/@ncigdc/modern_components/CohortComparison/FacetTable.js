@@ -43,13 +43,8 @@ export default compose(
     palette,
     heading,
   }) => {
-    const buckets1 = get(data1, `['${field}'].buckets`, []).filter(
-      x => x.key !== '_missing',
-    );
-    const buckets2 = get(data2, `['${field}'].buckets`, []).filter(
-      x => x.key !== '_missing',
-    );
-
+    const buckets1 = get(data1, `['${field}'].buckets`, []);
+    const buckets2 = get(data2, `['${field}'].buckets`, []);
     const tableData = union(
       buckets1.map(b => b.key),
       buckets2.map(b => b.key),
@@ -206,7 +201,7 @@ export default compose(
                           ? row.filters1
                           : [
                               {
-                                op: 'in',
+                                op: row.term === '_missing' ? 'is' : 'in',
                                 content: {
                                   field: `cases.${field}`,
                                   value: [row.term],
@@ -242,7 +237,7 @@ export default compose(
                           ? row.filters2
                           : [
                               {
-                                op: 'in',
+                                op: row.term === '_missing' ? 'is' : 'in',
                                 content: {
                                   field: `cases.${field}`,
                                   value: [row.term],

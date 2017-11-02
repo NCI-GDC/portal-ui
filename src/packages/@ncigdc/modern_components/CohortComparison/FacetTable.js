@@ -63,10 +63,10 @@ export default compose(
       return {
         term: k,
         casesS1,
-        percentS1: (casesS1 / result1.hits.total * 100).toFixed(0),
+        percentS1: (casesS1 / result1.hits.total * 100).toFixed(2),
         filters1: bucket1.filters,
         casesS2,
-        percentS2: (casesS2 / result2.hits.total * 100).toFixed(0),
+        percentS2: (casesS2 / result2.hits.total * 100).toFixed(2),
         filters2: bucket2.filters,
       };
     });
@@ -202,8 +202,8 @@ export default compose(
                             value: [`set_id:${set1}`],
                           },
                         },
-                        ...(row.filters
-                          ? row.filters
+                        ...(row.filters1
+                          ? row.filters1
                           : [
                               {
                                 op: 'in',
@@ -238,8 +238,8 @@ export default compose(
                             value: [`set_id:${set2}`],
                           },
                         },
-                        ...(row.filters
-                          ? row.filters
+                        ...(row.filters2
+                          ? row.filters2
                           : [
                               {
                                 op: 'in',

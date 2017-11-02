@@ -55,7 +55,7 @@ const transformAgeAtDiagnosis = (buckets, compareBuckets) => {
   const buildDisplayKeyAndFilters = (acc, { doc_count, key }) => {
     const displayRange = `${getLowerAgeYears(key)}${acc.nextAge === 0
       ? '+'
-      : ' - ' + getUpperAgeYears(acc.nextAge)}`;
+      : ' - ' + getUpperAgeYears(acc.nextAge - 1)}`;
     return {
       nextAge: key,
       data: [
@@ -76,7 +76,7 @@ const transformAgeAtDiagnosis = (buckets, compareBuckets) => {
                 op: '<=',
                 content: {
                   field: 'cases.diagnoses.age_at_diagnosis',
-                  value: [acc.nextAge],
+                  value: [acc.nextAge - 1],
                 },
               },
             ]),

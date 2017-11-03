@@ -290,16 +290,13 @@ const CurrentFilters = (
       (!hideLinkOnEmpty || !!currentFilters.length) && (
         <LinkButton
           pathname={linkPathname}
-          disabled={currentFilters
-            .reduce((acc, f) => acc.concat(f.content.value || []), [])
-            .some(v => v.toString().includes('set_id:'))}
           query={
             currentFilters.length && {
               filters: {
-                op: 'AND',
+                op: 'and',
                 content: currentFilters.map(
                   ({ content: { field, value }, op }) => ({
-                    op,
+                    op: op.toLowerCase(),
                     content: { field: linkFieldMap(field), value },
                   }),
                 ),

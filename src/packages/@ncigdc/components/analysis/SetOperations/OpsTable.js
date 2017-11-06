@@ -281,7 +281,7 @@ export default ({
               <ActionsTd
                 hide={!selected.size || !count}
                 count={count}
-                filter={selectedFilters}
+                filters={selectedFilters}
                 fileName="union-of-set-ids"
                 type={type}
                 CreateSetButton={CreateSetButton}

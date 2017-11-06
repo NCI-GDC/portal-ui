@@ -22,6 +22,7 @@ import DropdownItem from '@ncigdc/uikit/DropdownItem';
 import FacetTable from './FacetTable';
 import Survival from './Survival';
 import { getLowerAgeYears, getUpperAgeYears } from '@ncigdc/utils/ageDisplay';
+import withRouter from '@ncigdc/utils/withRouter';
 
 const initialState = {
   loading: true,
@@ -98,8 +99,8 @@ export default compose(
   connect(),
   withState('survivalData', 'setSurvivalData', {}),
   withState('state', 'setState', initialState),
-  withProps(({ setId1, setId2, setSurvivalData, setState }) => ({
-    updateData: async () => {
+  withProps({
+    updateData: async ({ setId1, setId2, setSurvivalData, setState }) => {
       const survivalData = await getDefaultCurve({
         currentFilters: [
           {
@@ -120,10 +121,14 @@ export default compose(
         loading: false,
       }));
     },
-  })),
-  withPropsOnChange(['set1', 'set2'], ({ updateData }) => {
-    updateData();
   }),
+  withRouter,
+  withPropsOnChange(
+    ['set1', 'set2', 'location'],
+    ({ updateData, ...props }) => {
+      updateData(props);
+    },
+  ),
   withTheme,
   withSize(),
 )(

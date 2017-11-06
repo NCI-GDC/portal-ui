@@ -5,6 +5,7 @@ import React from 'react';
 import _ from 'lodash';
 import entityShortnameMapping from '@ncigdc/utils/entityShortnameMapping';
 import type { TSearchHit } from './types';
+import { internalHighlight } from '@ncigdc/uikit/Highlight';
 
 const styles = {
   container: {
@@ -114,25 +115,6 @@ export const findMatchingToken = (item, lq, value = '') => {
   }
 
   return value;
-};
-
-const internalHighlight = (query, foundText) => {
-  const index = (foundText || '')
-    .toLocaleLowerCase()
-    .indexOf(query.toLocaleLowerCase());
-  if (foundText && index !== -1) {
-    const seg1 = foundText.substring(0, index);
-    const foundQuery = foundText.substring(index, index + query.length);
-    const seg2 = foundText.substring(index + query.length);
-    return (
-      <span>
-        {seg1}
-        <b>{foundQuery}</b>
-        {seg2}
-      </span>
-    );
-  }
-  return <span>{foundText}</span>;
 };
 
 const ResultHighlights = ({

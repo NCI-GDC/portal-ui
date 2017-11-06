@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { css } from 'glamor';
-import Highlight from 'react-highlighter';
+import Highlight from '@ncigdc/uikit/Highlight';
 import { search } from './utils';
 import BioTreeView from './BioTreeView';
 

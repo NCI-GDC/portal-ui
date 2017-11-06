@@ -167,9 +167,9 @@ export const HUMAN_BODY_ALL_ALLOWED_SITES = [
 export const MAX_SET_SIZE = 50000;
 
 export const SET_DOWNLOAD_FIELDS = {
-  case: ['submitter_id', 'project.project_id', 'case_id'],
-  gene: ['symbol', 'gene_id'],
-  ssm: ['genomic_dna_change', 'ssm_id'],
+  case: ['case_id'],
+  gene: ['gene_id'],
+  ssm: ['ssm_id'],
 };
 
 export const MAX_SET_NAME_LENGTH = 100;

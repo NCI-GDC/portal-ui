@@ -18,6 +18,7 @@ import BiospecimenCard from '@ncigdc/modern_components/BiospecimenCard';
 import FullWidthLayout from '@ncigdc/components/Layouts/FullWidthLayout';
 import createCaseSummary from '@ncigdc/modern_components/CaseSummary/CaseSummary.relay';
 import Exists from '@ncigdc/modern_components/Exists';
+import CaseSymbol from '@ncigdc/modern_components/CaseSymbol';
 
 const SsmsTable = createCaseSummary(
   ({
@@ -67,7 +68,7 @@ export default ({
 
   return (
     <Exists type="Case" id={caseId}>
-      <FullWidthLayout title={caseId} entityType="CA">
+      <FullWidthLayout title={<CaseSymbol caseId={caseId} />} entityType="CA">
         <Column spacing="2rem" className="test-case">
           <Row style={{ justifyContent: 'flex-end' }}>
             <AddOrRemoveAllFilesButton

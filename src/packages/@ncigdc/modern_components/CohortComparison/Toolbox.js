@@ -3,7 +3,6 @@ import { xor } from 'lodash';
 import Link from '@ncigdc/components/Links/Link';
 import Venn from '@ncigdc/components/Charts/Venn';
 import { stringifyJSONParam } from '@ncigdc/utils/uri';
-import Table, { Tr, Td, Th } from '@ncigdc/uikit/Table';
 import Alias from '@ncigdc/components/Alias';
 import CreateOrOpenAnalysis from '@ncigdc/components/CreateOrOpenAnalysis';
 import { withTheme } from '@ncigdc/theme';
@@ -44,7 +43,7 @@ export default withTheme(
       style={{
         padding: 20,
         marginTop: 20,
-        width: '13%',
+        width: '20%',
         position: 'fixed',
         backgroundColor: 'white',
         zIndex: 1000,
@@ -53,78 +52,77 @@ export default withTheme(
       }}
     >
       <Row style={{ justifyContent: 'space-between', alignItems: 'center' }}>
-        <div>
-          <Table
-            style={{ width: '100%' }}
-            headings={[
-              <Th key="1" style={{ backgroundColor: 'white' }}>
-                Cohorts
-              </Th>,
-              <Th
-                key="2"
-                style={{ textAlign: 'right', backgroundColor: 'white' }}
+        <Column flex={1}>
+          <Row style={{ alignItems: 'center', flex: 1 }}>
+            <Row style={{ flex: 3, fontWeight: 'bold', fontSize: 16 }}>
+              Cohort
+            </Row>
+            <Row
+              style={{
+                flex: 2,
+                fontWeight: 'bold',
+                fontSize: 16,
+                justifyContent: 'flex-end',
+              }}
+            >
+              # Cases
+            </Row>
+          </Row>
+          <Row style={{ alignItems: 'center', marginTop: 10 }}>
+            <Row style={{ flex: 3, color: SET1_COLOUR }}>
+              <Alias i={1} style={{ fontWeight: 'bold' }} />&nbsp;:&nbsp;{Set1}
+            </Row>
+            <Column flex={1} style={{ alignItems: 'center' }}>
+              <ExploreLink
+                style={{ fontSize: 16 }}
+                query={{
+                  searchTableTab: 'cases',
+                  filters: {
+                    op: 'AND',
+                    content: [
+                      {
+                        op: 'IN',
+                        content: {
+                          field: `cases.case_id`,
+                          value: [`set_id:${setId1}`],
+                        },
+                      },
+                    ],
+                  },
+                }}
               >
-                # Cases
-              </Th>,
-            ]}
-            body={
-              <tbody>
-                <Tr>
-                  <Td style={{ width: '150px', color: SET1_COLOUR }}>
-                    <Alias i={1} style={{ fontWeight: 'bold' }} /> : {Set1}
-                  </Td>
-                  <Td style={{ textAlign: 'right' }}>
-                    <ExploreLink
-                      query={{
-                        searchTableTab: 'cases',
-                        filters: {
-                          op: 'AND',
-                          content: [
-                            {
-                              op: 'IN',
-                              content: {
-                                field: `cases.case_id`,
-                                value: [`set_id:${setId1}`],
-                              },
-                            },
-                          ],
+                {result1.hits.total.toLocaleString()}
+              </ExploreLink>
+            </Column>
+          </Row>
+          <Row style={{ alignItems: 'center', marginTop: 10 }}>
+            <Row style={{ flex: 3, color: SET2_COLOUR }}>
+              <Alias i={2} style={{ fontWeight: 'bold' }} />&nbsp;:&nbsp;{Set2}
+            </Row>
+            <Column flex={1} style={{ alignItems: 'center' }}>
+              <ExploreLink
+                style={{ fontSize: 16 }}
+                query={{
+                  searchTableTab: 'cases',
+                  filters: {
+                    op: 'AND',
+                    content: [
+                      {
+                        op: 'IN',
+                        content: {
+                          field: `cases.case_id`,
+                          value: [`set_id:${setId2}`],
                         },
-                      }}
-                    >
-                      {result1.hits.total.toLocaleString()}
-                    </ExploreLink>
-                  </Td>
-                </Tr>
-                <Tr>
-                  <Td style={{ width: '150px', color: SET2_COLOUR }}>
-                    <Alias i={2} style={{ fontWeight: 'bold' }} /> : {Set2}
-                  </Td>
-                  <Td style={{ textAlign: 'right' }}>
-                    <ExploreLink
-                      query={{
-                        searchTableTab: 'cases',
-                        filters: {
-                          op: 'AND',
-                          content: [
-                            {
-                              op: 'IN',
-                              content: {
-                                field: `cases.case_id`,
-                                value: [`set_id:${setId2}`],
-                              },
-                            },
-                          ],
-                        },
-                      }}
-                    >
-                      {result2.hits.total.toLocaleString()}
-                    </ExploreLink>
-                  </Td>
-                </Tr>
-              </tbody>
-            }
-          />
-        </div>
+                      },
+                    ],
+                  },
+                }}
+              >
+                {result2.hits.total.toLocaleString()}
+              </ExploreLink>
+            </Column>
+          </Row>
+        </Column>
       </Row>
       <hr style={{ borderWidth: '1px' }} />
       <div>
@@ -156,7 +154,7 @@ export default withTheme(
           ops={ops}
           getFillColor={d => 'rgb(237, 237, 237)'}
           style={{
-            fontSize: 10,
+            fontSize: 12,
             width: '100%',
             margin: 'auto',
             paddingTop: 5,

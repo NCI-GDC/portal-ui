@@ -80,7 +80,9 @@ const ActionsTd = compose(
             filters={filters}
             extraParams={{ format: 'tsv' }}
             fields={downloadFields[type]}
-            filename={fileName}
+            filename={fileName
+              .replace(/∩/g, 'intersection')
+              .replace(/∪/g, 'union')}
           />
         </Tooltip>
         {type === 'case' && (

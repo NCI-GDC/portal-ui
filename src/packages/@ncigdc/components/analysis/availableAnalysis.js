@@ -86,7 +86,7 @@ const availableAnalysis: Array<TAnalysis> = [
               content: {
                 field:
                   'ssms.occurrence.case.observation.variant_calling.variant_caller',
-                value: ['mutect'],
+                value: ['mutect2'],
               },
             },
           ],
@@ -211,6 +211,10 @@ const availableAnalysis: Array<TAnalysis> = [
               op: 'in',
               content: { field: 'genes.symbol', value: ['KRAS'] },
             },
+            {
+              op: 'in',
+              content: { field: 'cases.primary_site', value: ['Pancreas'] },
+            },
           ],
         },
         'demo-no-kras': {
@@ -219,6 +223,10 @@ const availableAnalysis: Array<TAnalysis> = [
             {
               op: 'excludeifany',
               content: { field: 'genes.symbol', value: 'KRAS' },
+            },
+            {
+              op: 'in',
+              content: { field: 'cases.primary_site', value: ['Pancreas'] },
             },
           ],
         },

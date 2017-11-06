@@ -1,6 +1,8 @@
 import React from 'react';
 import { compose } from 'recompose';
 import { union, find, truncate, get, omit } from 'lodash';
+
+import type { TBucket } from './types';
 import ExploreLink from '@ncigdc/components/Links/ExploreLink';
 import BarChart from '@ncigdc/components/Charts/TwoBarChart';
 import { withTheme } from '@ncigdc/theme';
@@ -26,6 +28,22 @@ function barChartData({ term, value, name, percent }) {
     ),
   };
 }
+
+const addMissing = ({
+  buckets,
+  total,
+}: {
+  buckets: Array<TBucket>,
+  total: number,
+}) => [
+  ...buckets,
+  {
+    key: '_missing',
+    doc_count:
+      total - buckets.reduce((acc, { doc_count }) => acc + doc_count, 0),
+  },
+];
+
 export default compose(
   withTheme,
 )(
@@ -42,9 +60,38 @@ export default compose(
     setName2,
     palette,
     heading,
+  }: {
+    theme: Object,
+    field: string,
+    data1: { buckets: Array<TBucket> },
+    data2: { buckets: Array<TBucket> },
+    result1: { hits: { total: number }, facets: string, aggregations: any },
+    result2: { hits: { total: number }, facets: string, aggregations: any },
+    set1: string,
+    set2: string,
+    setName1: string,
+    setName2: string,
+    palette: Array<any>,
+    heading: string,
   }) => {
-    const buckets1 = get(data1, `['${field}'].buckets`, []);
-    const buckets2 = get(data2, `['${field}'].buckets`, []);
+    const buckets1Raw = get(data1, `['${field}'].buckets`, []);
+    const buckets2Raw = get(data2, `['${field}'].buckets`, []);
+
+    // can't get _missing back from es aggs if field is nested or agg type histogram
+    // so calculate missing from the total if no _missing key
+    const buckets1 = buckets1Raw.includes(({ key }) => key === '_missing')
+      ? buckets1Raw
+      : addMissing({
+          buckets: buckets1Raw,
+          total: result1.hits.total,
+        });
+    const buckets2 = buckets2Raw.includes(({ key }) => key === '_missing')
+      ? buckets2Raw
+      : addMissing({
+          buckets: buckets2Raw,
+          total: result2.hits.total,
+        });
+
     const tableData = union(
       buckets1.map(b => b.key),
       buckets2.map(b => b.key),

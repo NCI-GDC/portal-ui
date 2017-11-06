@@ -84,28 +84,11 @@ const transformAgeAtDiagnosis = (buckets, compareBuckets, total) => {
     };
   };
   return {
-    buckets: [
-      ...unionAndParsed
-        .sort((a, b) => b.key - a.key) // iterate descending to populate nextAge
-        .reduce(buildDisplayKeyAndFilters, { nextAge: 0, data: [] })
-        .data.slice(0)
-        .reverse(), // but display ascending
-      {
-        key: '_missing',
-        doc_count:
-          total -
-          unionAndParsed.reduce((acc, { doc_count }) => acc + doc_count, 0),
-        filters: [
-          {
-            op: 'is',
-            content: {
-              field: 'cases.diagnoses.age_at_diagnosis',
-              value: ['_missing'],
-            },
-          },
-        ],
-      },
-    ],
+    buckets: unionAndParsed
+      .sort((a, b) => b.key - a.key) // iterate descending to populate nextAge
+      .reduce(buildDisplayKeyAndFilters, { nextAge: 0, data: [] })
+      .data.slice(0)
+      .reverse(), // but display ascending
   };
 };
 

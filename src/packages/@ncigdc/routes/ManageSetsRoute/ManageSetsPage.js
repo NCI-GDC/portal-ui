@@ -431,6 +431,7 @@ const ManageSetsPage = ({
                               {type === 'case' && (
                                 <Tooltip Component="View Files in Repository">
                                   <StyledRepoLink
+                                    aria-label="View Files in Repository"
                                     query={{
                                       searchTableTab: 'files',
                                       filters: linkFilters,

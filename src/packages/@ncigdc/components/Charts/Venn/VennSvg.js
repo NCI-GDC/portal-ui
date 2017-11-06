@@ -26,6 +26,7 @@ export default compose(
     getFillColor = _.noop,
     onMouseOver = _.noop,
     onMouseOut = _.noop,
+    style = {},
     ...props
   }) => {
     const margin = 1;
@@ -70,6 +71,9 @@ export default compose(
       .append(`svg`)
       .style('display', 'block')
       .attr('viewBox', `0 0 ${width} ${height}`);
+
+    // fix weird flex error in CreateAnalysis
+    if (style.width) svg.attr('width', style.width);
 
     const defs = svg.append('svg:defs');
 

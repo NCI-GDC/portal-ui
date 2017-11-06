@@ -59,7 +59,7 @@ const CreateAnalysis = ({ analysis, setAnalysis, dispatch, push }) => {
           return (
             <Row key={analysis.type}>
               <div style={{ width: 80, margin: 20 }}>
-                <analysis.Icon />
+                <analysis.Icon style={{ width: 80, margin: 20 }} />
               </div>
               <div>
                 <h1 style={{ fontSize: '2rem' }}>{analysis.label}</h1>

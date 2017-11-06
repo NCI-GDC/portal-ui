@@ -2,12 +2,10 @@ import React from 'react';
 import { union, truncate } from 'lodash';
 import { connect } from 'react-redux';
 import { compose, withState, withProps } from 'recompose';
-import Table, { Tr, Td, Th } from '@ncigdc/uikit/Table';
 import { withTheme } from '@ncigdc/theme';
 import { Row } from '@ncigdc/uikit/Flex';
 import withPropsOnChange from '@ncigdc/utils/withPropsOnChange';
 import { getDefaultCurve } from '@ncigdc/utils/survivalplot';
-import ExploreLink from '@ncigdc/components/Links/ExploreLink';
 import { buildOps } from '@ncigdc/components/Charts/Venn';
 import withSize from '@ncigdc/utils/withSize';
 import { COHORT_COMPARISON_FACETS } from '@ncigdc/utils/constants';
@@ -17,6 +15,7 @@ import Survival, { makeSurvivalCurveFilter } from './Survival';
 import { getLowerAgeYears, getUpperAgeYears } from '@ncigdc/utils/ageDisplay';
 import withRouter from '@ncigdc/utils/withRouter';
 import Toolbox from './Toolbox';
+import './facet.css';
 
 const initialState = {
   loading: true,
@@ -154,7 +153,7 @@ export default compose(
     const availableFacets = Object.entries(COHORT_COMPARISON_FACETS);
     return (
       <Row>
-        <div style={{ maxWidth: 1000, padding: '2rem 3rem', width: '80%' }}>
+        <div style={{ maxWidth: 1000, padding: '2rem 3rem', width: '70%' }}>
           <Row
             style={{
               alignItems: 'center',
@@ -167,83 +166,10 @@ export default compose(
               {message && <div style={{ fontStyle: 'italic' }}>{message}</div>}
             </div>
           </Row>
-          <Row
-            style={{ justifyContent: 'space-between', alignItems: 'center' }}
+          <div
+            className="facet-container"
+            style={{ display: showSurvival ? 'block' : 'none' }}
           >
-            <div>
-              <Table
-                style={{ width: '400px' }}
-                headings={[
-                  <Th key="1" style={{ backgroundColor: 'white' }}>
-                    Selected Cohorts
-                  </Th>,
-                  <Th
-                    key="2"
-                    style={{ textAlign: 'right', backgroundColor: 'white' }}
-                  >
-                    # Cases
-                  </Th>,
-                ]}
-                body={
-                  <tbody>
-                    <Tr>
-                      <Td style={{ width: '150px', color: SET1_COLOUR }}>
-                        <Alias i={1} style={{ fontWeight: 'bold' }} /> : {Set1}
-                      </Td>
-                      <Td style={{ textAlign: 'right' }}>
-                        <ExploreLink
-                          query={{
-                            searchTableTab: 'cases',
-                            filters: {
-                              op: 'AND',
-                              content: [
-                                {
-                                  op: 'IN',
-                                  content: {
-                                    field: `cases.case_id`,
-                                    value: [`set_id:${setId1}`],
-                                  },
-                                },
-                              ],
-                            },
-                          }}
-                        >
-                          {result1.hits.total.toLocaleString()}
-                        </ExploreLink>
-                      </Td>
-                    </Tr>
-                    <Tr>
-                      <Td style={{ width: '150px', color: SET2_COLOUR }}>
-                        <Alias i={2} style={{ fontWeight: 'bold' }} /> : {Set2}
-                      </Td>
-                      <Td style={{ textAlign: 'right' }}>
-                        <ExploreLink
-                          query={{
-                            searchTableTab: 'cases',
-                            filters: {
-                              op: 'AND',
-                              content: [
-                                {
-                                  op: 'IN',
-                                  content: {
-                                    field: `cases.case_id`,
-                                    value: [`set_id:${setId2}`],
-                                  },
-                                },
-                              ],
-                            },
-                          }}
-                        >
-                          {result2.hits.total.toLocaleString()}
-                        </ExploreLink>
-                      </Td>
-                    </Tr>
-                  </tbody>
-                }
-              />
-            </div>
-          </Row>
-          <div style={{ display: showSurvival ? 'block' : 'none' }}>
             <Survival
               survivalData={survivalData}
               result1={result1}
@@ -302,6 +228,12 @@ export default compose(
               activeFacets,
               showSurvival,
               toggleSurvival,
+              Set1,
+              Set2,
+              setId1,
+              setId2,
+              result1,
+              result2,
             }}
           />
         </div>

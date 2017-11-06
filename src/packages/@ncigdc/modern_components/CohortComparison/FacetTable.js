@@ -120,7 +120,7 @@ export default compose(
     ];
 
     return (
-      <div>
+      <div className="facet-container">
         <h2>{heading}</h2>
         <div
           style={{

@@ -48,7 +48,17 @@ const styles = {
   },
 };
 
-const downloadCart = (user, files, dispatch, setState) => {
+const downloadCart = ({
+  user,
+  files,
+  dispatch,
+  setState,
+}: {
+  user: Object,
+  files: Array<Object>,
+  dispatch: Function,
+  setState: Function,
+}) => {
   const { authorized, unauthorized } = authPartitionFiles({ user, files });
   if (unauthorized.doc_count > 0) {
     dispatch(
@@ -78,7 +88,12 @@ const downloadCart = (user, files, dispatch, setState) => {
             <Button
               disabled={!authorized.doc_count}
               onClick={() =>
-                downloadCart(user, authorized.files, dispatch, setState)}
+                downloadCart({
+                  user,
+                  files: authorized.files,
+                  dispatch,
+                  setState,
+                })}
               style={{ margin: '0 10px' }}
             >
               Download {authorized.doc_count} Authorized Files
@@ -174,7 +189,7 @@ const CartDownloadDropdown = ({
           className="test-download-cart"
           style={styles.button(theme)}
           disabled={state.cartDownloading}
-          onClick={() => downloadCart(user, files, dispatch, setState)}
+          onClick={() => downloadCart({ user, files, dispatch, setState })}
           leftIcon={state.cartDownloading ? <Spinner /> : <DownloadIcon />}
         >
           Cart

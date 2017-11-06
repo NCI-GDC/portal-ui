@@ -186,12 +186,14 @@ const availableAnalysis: Array<TAnalysis> = [
     type: 'comparison',
     label: 'Cohort Comparison',
     Icon: withTheme(({ theme }) => (
-      <CCIcon
-        width="80px"
-        height="80px"
-        color1="rgb(105, 16, 48)"
-        color2={theme.primary}
-      />
+      <div>
+        <CCIcon
+          width="80px"
+          height="80px"
+          color1="rgb(105, 16, 48)"
+          color2={theme.primary}
+        />
+      </div>
     )),
     description: `Display the survival analysis of your case sets and compare
     characteristics such as gender, vital status and age at diagnosis.`,

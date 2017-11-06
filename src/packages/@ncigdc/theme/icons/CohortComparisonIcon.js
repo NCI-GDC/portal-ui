@@ -6,7 +6,14 @@ export default ({
   color1 = 'black',
   color2 = 'red',
 }) => (
-  <svg x="0px" y="0px" viewBox="0 0 90 60.4" width={width} height={height}>
+  <svg
+    x="0px"
+    y="0px"
+    viewBox="0 0 90 60.4"
+    width={width}
+    height={height}
+    style={{ display: 'block' }}
+  >
     <g>
       <g className="person-bg">
         <path

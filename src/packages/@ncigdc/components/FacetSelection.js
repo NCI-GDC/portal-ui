@@ -14,7 +14,7 @@ import {
 } from 'recompose';
 import { fetchApi } from '@ncigdc/utils/ajax';
 import entityShortnameMapping from '@ncigdc/utils/entityShortnameMapping';
-import Highlight from 'react-highlighter';
+import Highlight from '@ncigdc/uikit/Highlight';
 import withSelectableList from '@ncigdc/utils/withSelectableList';
 import withPropsOnChange from '@ncigdc/utils/withPropsOnChange';
 

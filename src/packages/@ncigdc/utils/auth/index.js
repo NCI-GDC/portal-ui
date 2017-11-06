@@ -51,34 +51,59 @@ const userCanDownloadFiles = ({ user, files }) =>
     return false;
   });
 
-const userCanDownloadFile = ({ user, file }) =>
+const userCanDownloadFile = ({ user, file }: { user: Object, file: Object }) =>
   userCanDownloadFiles({ user, files: [file] });
 
-const getAuthCounts = ({ user, files }) => {
+type TFilesAuthData = {
+  key?: string,
+  doc_count: number,
+  file_size: number,
+  files: Array<Object>,
+};
+
+const authPartitionFiles = ({
+  user,
+  files,
+}: {
+  user: Object,
+  files: Array<Object>,
+}): { authorized: TFilesAuthData, unauthorized: TFilesAuthData } => {
   const defaultData = {
-    authorized: { count: 0, file_size: 0 },
-    unauthorized: { count: 0, file_size: 0 },
+    authorized: { doc_count: 0, file_size: 0, files: [] },
+    unauthorized: { doc_count: 0, file_size: 0, files: [] },
   };
 
-  const authCountAndFileSizes = files.reduce((result, file) => {
+  return files.reduce((result, file) => {
     const canDownloadKey = userCanDownloadFile({ user, file })
       ? 'authorized'
       : 'unauthorized';
-    result[canDownloadKey].count += 1;
+    result[canDownloadKey].doc_count += 1;
     result[canDownloadKey].file_size += file.file_size;
+    result[canDownloadKey].files = [...result[canDownloadKey].files, file];
     return result;
   }, defaultData);
+};
 
+const getAuthCounts = ({
+  user,
+  files,
+}: {
+  user: Object,
+  files: Array<Object>,
+}): Array<TFilesAuthData> => {
+  const authCountAndFileSizes = authPartitionFiles({ user, files });
   return [
     {
       key: 'authorized',
-      doc_count: authCountAndFileSizes.authorized.count || 0,
+      doc_count: authCountAndFileSizes.authorized.doc_count || 0,
       file_size: authCountAndFileSizes.authorized.file_size,
+      files: authCountAndFileSizes.authorized.files,
     },
     {
       key: 'unauthorized',
-      doc_count: authCountAndFileSizes.unauthorized.count || 0,
+      doc_count: authCountAndFileSizes.unauthorized.doc_count || 0,
       file_size: authCountAndFileSizes.unauthorized.file_size,
+      files: authCountAndFileSizes.unauthorized.files,
     },
   ].filter(i => i.doc_count);
 };
@@ -99,4 +124,5 @@ export {
   fileInCorrectState,
   getAuthCounts,
   userProjectsCount,
+  authPartitionFiles,
 };

@@ -6,7 +6,7 @@ import { compose, withState } from 'recompose';
 import { connect } from 'react-redux';
 import urlJoin from 'url-join';
 
-import { getAuthCounts } from '@ncigdc/utils/auth';
+import { authPartitionFiles } from '@ncigdc/utils/auth';
 import DownloadButton from '@ncigdc/components/DownloadButton';
 import NoAccessModal from '@ncigdc/components/Modals/NoAccessModal';
 import BaseModal from '@ncigdc/components/Modals/BaseModal';
@@ -48,17 +48,18 @@ const styles = {
   },
 };
 
-const downloadCart = (user, files, dispatch, setState) => {
-  const { authorized, unauthorized } = getAuthCounts({ user, files }).reduce(
-    (acc, c) => ({
-      ...acc,
-      [c.key]: { doc_count: c.doc_count, file_size: c.file_size },
-    }),
-    {
-      authorized: { doc_count: 0, file_size: 0 },
-      unauthorized: { doc_count: 0, file_size: 0 },
-    },
-  );
+const downloadCart = ({
+  user,
+  files,
+  dispatch,
+  setState,
+}: {
+  user: Object,
+  files: Array<Object>,
+  dispatch: Function,
+  setState: Function,
+}) => {
+  const { authorized, unauthorized } = authPartitionFiles({ user, files });
   if (unauthorized.doc_count > 0) {
     dispatch(
       setModal(
@@ -87,12 +88,12 @@ const downloadCart = (user, files, dispatch, setState) => {
             <Button
               disabled={!authorized.doc_count}
               onClick={() =>
-                downloadCart(
+                downloadCart({
                   user,
-                  files.filter(file => file.access === 'open'),
+                  files: authorized.files,
                   dispatch,
                   setState,
-                )}
+                })}
               style={{ margin: '0 10px' }}
             >
               Download {authorized.doc_count} Authorized Files
@@ -188,7 +189,7 @@ const CartDownloadDropdown = ({
           className="test-download-cart"
           style={styles.button(theme)}
           disabled={state.cartDownloading}
-          onClick={() => downloadCart(user, files, dispatch, setState)}
+          onClick={() => downloadCart({ user, files, dispatch, setState })}
           leftIcon={state.cartDownloading ? <Spinner /> : <DownloadIcon />}
         >
           Cart

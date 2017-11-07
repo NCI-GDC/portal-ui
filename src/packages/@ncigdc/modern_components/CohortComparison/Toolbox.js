@@ -139,7 +139,7 @@ export default withTheme(
             type="set_operations"
             sets={sets}
             style={{
-              color: theme.primary1,
+              color: theme.primary,
               fontSize: '0.9em',
               textDecoration: 'underline',
               display: 'inline-block',

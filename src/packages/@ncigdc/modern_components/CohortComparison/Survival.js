@@ -108,7 +108,7 @@ export default compose(
             {...p}
             style={{
               cursor: 'pointer',
-              color: theme.primary1,
+              color: theme.primary,
               textDecoration: 'underline',
             }}
           >

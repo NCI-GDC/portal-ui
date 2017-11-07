@@ -1,7 +1,6 @@
 import React from 'react';
-
 import Alias from '@ncigdc/components/Alias';
-import { absoluteCenter } from '@ncigdc/theme/mixins';
+import { floatingNumber } from './style';
 
 export default ({ ops, CountComponent, style }) => {
   return (
@@ -36,12 +35,12 @@ export default ({ ops, CountComponent, style }) => {
       />
       <CountComponent
         filters={ops[1].filters}
-        style={{ ...absoluteCenter, left: '20%' }}
+        style={{ ...floatingNumber, left: '20%' }}
       />
-      <CountComponent filters={ops[0].filters} style={absoluteCenter} />
+      <CountComponent filters={ops[0].filters} style={floatingNumber} />
       <CountComponent
         filters={ops[2].filters}
-        style={{ ...absoluteCenter, left: '80%' }}
+        style={{ ...floatingNumber, left: '80%' }}
       />
     </div>
   );

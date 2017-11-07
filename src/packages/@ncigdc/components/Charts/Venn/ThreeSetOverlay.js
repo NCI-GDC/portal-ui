@@ -1,15 +1,6 @@
 import React from 'react';
-
 import Alias from '@ncigdc/components/Alias';
-import { absoluteCenter } from '@ncigdc/theme/mixins';
-
-const floatingNumber = {
-  ...absoluteCenter,
-  fontSize: '0.8em',
-  backgroundColor: 'white',
-  borderRadius: 15,
-  padding: '1px 3px',
-};
+import { floatingNumber } from './style';
 
 export default ({ ops, CountComponent, style }) => {
   return (

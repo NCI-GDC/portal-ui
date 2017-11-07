@@ -20,7 +20,7 @@ import Button from '@ncigdc/uikit/Button';
 import { CaretIcon } from '@ncigdc/theme/icons';
 import DropdownItem from '@ncigdc/uikit/DropdownItem';
 import FacetTable from './FacetTable';
-import Survival from './Survival';
+import Survival, { makeSurvivalCurveFilter } from './Survival';
 import { getLowerAgeYears, getUpperAgeYears } from '@ncigdc/utils/ageDisplay';
 import withRouter from '@ncigdc/utils/withRouter';
 
@@ -101,14 +101,8 @@ export default compose(
     updateData: async ({ setId1, setId2, setSurvivalData, setState }) => {
       const survivalData = await getDefaultCurve({
         currentFilters: [
-          {
-            op: 'in',
-            content: { field: 'cases.case_id', value: `set_id:${setId1}` },
-          },
-          {
-            op: 'in',
-            content: { field: 'cases.case_id', value: `set_id:${setId2}` },
-          },
+          makeSurvivalCurveFilter(setId1, setId2),
+          makeSurvivalCurveFilter(setId2, setId1),
         ],
       });
 

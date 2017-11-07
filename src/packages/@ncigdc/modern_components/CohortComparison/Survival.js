@@ -10,8 +10,9 @@ import { CreateExploreCaseSetButton } from '@ncigdc/modern_components/withSetAct
 import withRouter from '@ncigdc/utils/withRouter';
 import Alias from '@ncigdc/components/Alias';
 import { withTheme } from '@ncigdc/theme';
+import { get } from 'lodash';
 
-const survivalFilters = [
+const survivalDataCompletenessFilters = [
   {
     op: 'or',
     content: [
@@ -34,6 +35,29 @@ const survivalFilters = [
   },
   { op: 'not', content: { field: 'diagnoses.vital_status' } },
 ];
+
+export const makeSurvivalCurveFilter = (setId, otherSetId) => ({
+  op: 'and',
+  content: [
+    ...survivalDataCompletenessFilters,
+    {
+      op: 'and',
+      content: [
+        {
+          op: 'in',
+          content: { field: 'cases.case_id', value: `set_id:${setId}` },
+        },
+        {
+          op: 'excludeifany',
+          content: {
+            field: 'cases.case_id',
+            value: `set_id:${otherSetId}`,
+          },
+        },
+      ],
+    },
+  ],
+});
 
 export default compose(
   withTheme,
@@ -58,19 +82,7 @@ export default compose(
     theme,
     CaseSetButton = props => (
       <CreateExploreCaseSetButton
-        filters={{
-          op: 'AND',
-          content: [
-            ...survivalFilters,
-            {
-              op: 'IN',
-              content: {
-                field: `cases.case_id`,
-                value: [`set_id:${props.setId}`],
-              },
-            },
-          ],
-        }}
+        filters={makeSurvivalCurveFilter(props.setId, props.otherSetId)}
         onComplete={setId => {
           push({
             pathname: '/exploration',
@@ -149,14 +161,15 @@ export default compose(
                 <Tr index={0}>
                   <Td width={250}>Overall Survival Analysis</Td>
                   <Td style={{ textAlign: 'right' }}>
-                    {survivalData.rawData.results[0] &&
-                    !survivalData.rawData.results[0].donors.length > 0 ? (
-                      0
-                    ) : (
+                    {get(survivalData, 'rawData.results[0].donors.length', 0) >
+                    0 ? (
                       <CaseSetButton
                         setId={set1id}
+                        otherSetId={set2id}
                         count={survivalData.rawData.results[0].donors.length.toLocaleString()}
                       />
+                    ) : (
+                      0
                     )}
                   </Td>
                   <Td style={{ textAlign: 'right' }}>
@@ -167,14 +180,15 @@ export default compose(
                       ).toFixed(0)}%
                   </Td>
                   <Td style={{ textAlign: 'right' }}>
-                    {survivalData.rawData.results[1] &&
-                    !survivalData.rawData.results[1].donors.length > 0 ? (
-                      0
-                    ) : (
+                    {get(survivalData, 'rawData.results[1].donors.length', 0) >
+                    0 ? (
                       <CaseSetButton
                         setId={set2id}
+                        otherSetId={set1id}
                         count={survivalData.rawData.results[1].donors.length.toLocaleString()}
                       />
+                    ) : (
+                      0
                     )}
                   </Td>
                   <Td style={{ textAlign: 'right' }}>

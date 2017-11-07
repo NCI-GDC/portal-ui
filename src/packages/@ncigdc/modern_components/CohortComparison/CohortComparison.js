@@ -104,6 +104,10 @@ export default compose(
       setState(s => ({
         ...s,
         loadingSurvival: false,
+        survivalHasData:
+          survivalData &&
+          survivalData.rawData &&
+          survivalData.rawData.results.some(Boolean),
       }));
     },
   }),
@@ -132,7 +136,7 @@ export default compose(
     message,
     showSurvival,
     toggleSurvival,
-    state: { loadingSurvival },
+    state: { loadingSurvival, survivalHasData },
   }) => {
     const Set1 = (
       <span style={{ color: SET1_COLOUR, fontWeight: 'bold' }}>
@@ -169,7 +173,12 @@ export default compose(
           </Row>
           <div
             className="facet-container"
-            style={{ display: showSurvival ? 'block' : 'none' }}
+            style={{
+              display:
+                showSurvival && (loadingSurvival || survivalHasData)
+                  ? 'block'
+                  : 'none',
+            }}
           >
             <Survival
               loading={loadingSurvival}
@@ -229,6 +238,7 @@ export default compose(
               availableFacets,
               activeFacets,
               showSurvival,
+              survivalHasData: loadingSurvival || survivalHasData,
               toggleSurvival,
               Set1,
               Set2,

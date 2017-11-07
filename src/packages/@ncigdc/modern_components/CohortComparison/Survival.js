@@ -125,7 +125,6 @@ export default compose(
         <h2>Survival Analysis</h2>
       </Row>
       <div>
-        {console.log(loading)}
         <SurvivalPlotWrapper
           survivalPlotloading={loading}
           {...survivalData}

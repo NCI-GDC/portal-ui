@@ -10,6 +10,7 @@ import ExploreLink from '@ncigdc/components/Links/ExploreLink';
 import styled from '@ncigdc/theme/styled';
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import { zDepth1 } from '@ncigdc/theme/mixins';
+import { Tooltip } from '@ncigdc/uikit/Tooltip';
 
 const SET1_COLOUR = 'rgb(145, 114, 33)';
 const SET2_COLOUR = 'rgb(29, 97, 135)';
@@ -23,6 +24,16 @@ let Item = styled.div({
   },
 });
 
+const LinkAsText = styled(Link, {
+  color: ({ theme }) => theme.greyScale1,
+  ':link': ({ theme }) => ({
+    color: theme.greyScale1,
+  }),
+  ':visited': ({ theme }) => ({
+    color: theme.greyScale1,
+  }),
+});
+
 export default withTheme(
   ({
     theme,
@@ -32,6 +43,7 @@ export default withTheme(
     activeFacets,
     showSurvival,
     toggleSurvival,
+    survivalHasData,
     Set1,
     Set2,
     setId1,
@@ -164,21 +176,37 @@ export default withTheme(
       <hr style={{ borderWidth: '1px' }} />
       <Column>
         <Item
-          onClick={() => toggleSurvival(survivalShowing => !survivalShowing)}
+          onClick={
+            survivalHasData
+              ? () => toggleSurvival(survivalShowing => !survivalShowing)
+              : () => {}
+          }
         >
           <input
             readOnly
             style={{ marginRight: 5, pointerEvents: 'none', cursor: 'pointer' }}
             type="checkbox"
             aira-label={`Select survival`}
-            checked={showSurvival}
+            checked={showSurvival && survivalHasData}
+            disabled={!survivalHasData}
           />
-          <label style={{ cursor: 'pointer' }}>Survival</label>
+          <Tooltip
+            Component={!survivalHasData && 'Not enough data to plot survival'}
+          >
+            <label
+              style={{
+                cursor: 'pointer',
+                ...(!survivalHasData && { color: theme.greyScale7 }),
+              }}
+            >
+              Survival
+            </label>
+          </Tooltip>
         </Item>
         {availableFacets.map(([field, label]) => {
           return (
             <Item key={field + label}>
-              <Link
+              <LinkAsText
                 merge
                 query={{
                   activeFacets: stringifyJSONParam(xor(activeFacets, [field])),
@@ -194,7 +222,7 @@ export default withTheme(
                   />
                   {label}
                 </label>
-              </Link>
+              </LinkAsText>
             </Item>
           );
         })}

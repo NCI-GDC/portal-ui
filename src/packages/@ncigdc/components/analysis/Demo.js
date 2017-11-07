@@ -22,7 +22,11 @@ class Demo extends React.Component {
   }
   componentWillUpdate(nextProps, nextState) {
     nextState.setStates.forEach(({ count, id, type }, i) => {
-      if (count === 0 && this.state.setStates[i].count !== 0) {
+      if (
+        nextProps.filters &&
+        count === 0 &&
+        this.state.setStates[i].count !== 0
+      ) {
         nextProps.createSet({
           type,
           scope: 'explore',

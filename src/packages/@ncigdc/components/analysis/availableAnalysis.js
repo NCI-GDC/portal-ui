@@ -61,13 +61,13 @@ const availableAnalysis: Array<TAnalysis> = [
         'Demo showing high impact mutations overlap in Bladder between Mutect, Varscan and Muse pipelines',
       sets: {
         ssm: {
-          'demo-bladder-high-mutect': 'Bladder, High impact, Mutect',
+          'demo-bladder-high-mutect2': 'Bladder, High impact, Mutect2',
           'demo-bladder-high-varscan': 'Bladder, High impact, Varscan',
           'demo-bladder-high-muse': 'Bladder, High impact, Muse',
         },
       },
       filters: {
-        'demo-bladder-high-mutect': {
+        'demo-bladder-high-mutect2': {
           op: 'and',
           content: [
             {
@@ -199,12 +199,12 @@ const availableAnalysis: Array<TAnalysis> = [
         'Demo showing cases with pancreatic cancer with and without mutations in the gene KRAS.',
       sets: {
         case: {
-          'demo-kras': 'Pancreas - KRAS mutated',
-          'demo-no-kras': 'Pancreas - KRAS not mutated',
+          'demo-pancreas-kras': 'Pancreas - KRAS mutated',
+          'demo-pancreas-no-kras': 'Pancreas - KRAS not mutated',
         },
       },
       filters: {
-        'demo-kras': {
+        'demo-pancreas-kras': {
           op: 'and',
           content: [
             {
@@ -217,7 +217,7 @@ const availableAnalysis: Array<TAnalysis> = [
             },
           ],
         },
-        'demo-no-kras': {
+        'demo-pancreas-no-kras': {
           op: 'and',
           content: [
             {

@@ -35,6 +35,7 @@ const availableAnalysis: Array<TAnalysis> = [
     Icon: p => (
       <VennSvg
         {...p}
+        style={{ width: 80 }}
         numCircles={3}
         ops={[
           { op: 1 },

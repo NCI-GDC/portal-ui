@@ -18,7 +18,7 @@ import Toolbox from './Toolbox';
 import './facet.css';
 
 const initialState = {
-  loading: true,
+  loadingSurvival: true,
 };
 
 const SET1_COLOUR = 'rgb(145, 114, 33)';
@@ -103,7 +103,7 @@ export default compose(
 
       setState(s => ({
         ...s,
-        loading: false,
+        loadingSurvival: false,
       }));
     },
   }),
@@ -132,6 +132,7 @@ export default compose(
     message,
     showSurvival,
     toggleSurvival,
+    state: { loadingSurvival },
   }) => {
     const Set1 = (
       <span style={{ color: SET1_COLOUR, fontWeight: 'bold' }}>
@@ -171,6 +172,7 @@ export default compose(
             style={{ display: showSurvival ? 'block' : 'none' }}
           >
             <Survival
+              loading={loadingSurvival}
               survivalData={survivalData}
               result1={result1}
               result2={result2}

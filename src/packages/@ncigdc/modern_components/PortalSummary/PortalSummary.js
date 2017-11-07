@@ -63,7 +63,7 @@ const PortalSummary = compose(
     <Column>
       <Row>
         <CountBox>
-          <Title>Projects</Title>
+          <Title className="test-projects-label">Projects</Title>
           <Row>
             <i
               style={{ color: '#01b987', fontSize: '3rem' }}
@@ -75,7 +75,7 @@ const PortalSummary = compose(
           </Row>
         </CountBox>
         <CountBox>
-          <Title>Primary Sites</Title>
+          <Title className="test-primary-sites-label">Primary Sites</Title>
           <Row>
             <i
               style={{ color: '#01b987', fontSize: '3rem' }}
@@ -89,7 +89,7 @@ const PortalSummary = compose(
           </Row>
         </CountBox>
         <CountBox>
-          <Title>Cases</Title>
+          <Title className="test-cases-label">Cases</Title>
           <Row>
             <i
               style={{ color: '#01b987', fontSize: '3rem' }}
@@ -103,7 +103,7 @@ const PortalSummary = compose(
       </Row>
       <Row>
         <CountBox>
-          <Title>Files</Title>
+          <Title className="test-files-label">Files</Title>
           <Row>
             <i
               style={{ color: '#01b987', fontSize: '3rem' }}
@@ -115,7 +115,7 @@ const PortalSummary = compose(
           </Row>
         </CountBox>
         <CountBox>
-          <Title>Genes</Title>
+          <Title className="test-genes-label">Genes</Title>
           <Row>
             <DoubleHelix color="#01b987" width={20} height={35} />
             <span style={{ fontSize: '2.5rem', marginLeft: '0.5rem' }}>
@@ -127,7 +127,7 @@ const PortalSummary = compose(
           </Row>
         </CountBox>
         <CountBox>
-          <Title>Mutations</Title>
+          <Title className="test-mutations-label">Mutations</Title>
           <Row>
             <MutationIcon color="#01b987" width="32px" height="39px" />
             <span style={{ fontSize: '2.5rem', marginLeft: '0.5rem' }}>

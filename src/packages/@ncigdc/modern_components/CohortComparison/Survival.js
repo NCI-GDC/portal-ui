@@ -63,14 +63,16 @@ export default compose(
   withTheme,
   withRouter,
   branch(
-    ({ survivalData }) =>
-      !survivalData ||
-      !survivalData.rawData ||
-      !survivalData.rawData.results.some(Boolean),
+    ({ survivalData, loading }) =>
+      !loading &&
+      (!survivalData ||
+        !survivalData.rawData ||
+        !survivalData.rawData.results.some(Boolean)),
     renderNothing,
   ),
 )(
   ({
+    loading,
     survivalData,
     result1,
     result2,
@@ -108,7 +110,7 @@ export default compose(
             {...p}
             style={{
               cursor: 'pointer',
-              color: theme.primary1,
+              color: theme.primary,
               textDecoration: 'underline',
             }}
           >
@@ -123,7 +125,12 @@ export default compose(
         <h2>Survival Analysis</h2>
       </Row>
       <div>
-        <SurvivalPlotWrapper {...survivalData} palette={palette} height={240} />
+        <SurvivalPlotWrapper
+          survivalPlotloading={loading}
+          {...survivalData}
+          palette={palette}
+          height={240}
+        />
         {survivalData.rawData && (
           <Table
             headings={[

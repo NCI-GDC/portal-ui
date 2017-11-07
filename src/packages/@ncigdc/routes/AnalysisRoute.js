@@ -30,7 +30,7 @@ const AnalysisRoute = enhance(({ hasAnalysis, query }) => {
           ? [
               {
                 id: 'result',
-                text: 'Result',
+                text: 'Results',
                 component: <AnalysisResult />,
               },
             ]

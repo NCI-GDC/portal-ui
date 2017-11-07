@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 
 import Table, { Tr, Td, TdNum, ThNum } from '@ncigdc/uikit/Table';
 import { stringifyJSONParam } from '@ncigdc/utils/uri';
-import { theme } from '@ncigdc/theme';
 import { Tooltip } from '@ncigdc/uikit/Tooltip';
 import { setModal } from '@ncigdc/dux/modal';
 import SaveSetModal from '@ncigdc/components/Modals/SaveSetModal';
@@ -126,53 +125,126 @@ const ActionsTd = compose(
   },
 );
 
-export default ({
-  selected,
-  toggle,
-  push,
-  ops,
-  CountComponent,
-  selectedFilters,
-  type,
-  CreateSetButton,
-}) => (
-  <Table
-    headings={[
-      'Select',
-      'Set Operation',
-      <ThNum key="# Items"># Items</ThNum>,
-      '',
-    ]}
-    body={
-      <tbody>
-        {ops.map((op, i) => (
-          <CountComponent filters={op.filters} key={op.op}>
+export default compose(
+  withTheme,
+)(
+  ({
+    selected,
+    toggle,
+    push,
+    ops,
+    CountComponent,
+    selectedFilters,
+    type,
+    CreateSetButton,
+    theme,
+  }) => (
+    <Table
+      headings={[
+        'Select',
+        'Set Operation',
+        <ThNum key="# Items"># Items</ThNum>,
+        '',
+      ]}
+      body={
+        <tbody>
+          {ops.map((op, i) => (
+            <CountComponent filters={op.filters} key={op.op}>
+              {count => (
+                <Tr
+                  index={i}
+                  style={{
+                    ...(selected.has(op.op) && {
+                      backgroundColor: theme.tableHighlight,
+                    }),
+                  }}
+                >
+                  <Td>
+                    <input
+                      type="checkbox"
+                      aria-label={`Select ${op.op}`}
+                      checked={selected.has(op.op)}
+                      onChange={e => toggle(op.op)}
+                    />
+                  </Td>
+                  <Td>{op.op}</Td>
+                  <TdNum>
+                    {count === 0 ? (
+                      0
+                    ) : count === '' ? (
+                      <GreyBox />
+                    ) : (
+                      <CreateSetButton
+                        filters={op.filters}
+                        onComplete={setId => {
+                          push({
+                            pathname: '/exploration',
+                            query: {
+                              searchTableTab:
+                                (type === 'ssm' ? 'mutation' : type) + 's',
+                              filters: stringifyJSONParam({
+                                op: 'AND',
+                                content: [
+                                  {
+                                    op: 'IN',
+                                    content: {
+                                      field: `${type}s.${type}_id`,
+                                      value: [`set_id:${setId}`],
+                                    },
+                                  },
+                                ],
+                              }),
+                            },
+                          });
+                        }}
+                        Component={props => (
+                          <Tooltip
+                            {...props}
+                            Component={`View ${type} set in exploration`}
+                            style={{
+                              cursor: 'pointer',
+                              color: theme.primary,
+                              textDecoration: 'underline',
+                            }}
+                          >
+                            {count.toLocaleString()}
+                          </Tooltip>
+                        )}
+                      />
+                    )}
+                  </TdNum>
+                  <ActionsTd
+                    hide={!count}
+                    count={count}
+                    filters={op.filters}
+                    fileName={`${op.op}-set-ids`}
+                    type={type}
+                    CreateSetButton={CreateSetButton}
+                    push={push}
+                  />
+                </Tr>
+              )}
+            </CountComponent>
+          ))}
+          <CountComponent filters={selectedFilters}>
             {count => (
               <Tr
-                index={i}
                 style={{
-                  ...(selected.has(op.op) && {
-                    backgroundColor: theme.tableHighlight,
-                  }),
+                  borderTop: '1px solid black',
+                  borderBottom: '1px solid black',
                 }}
               >
-                <Td>
-                  <input
-                    type="checkbox"
-                    aria-label={`Select ${op.op}`}
-                    checked={selected.has(op.op)}
-                    onChange={e => toggle(op.op)}
-                  />
+                <Td colSpan="2">
+                  <b>Union of selected sets</b>
                 </Td>
-                <Td>{op.op}</Td>
                 <TdNum>
-                  {count === 0 ? (
+                  {selected.size === 0 || count === 0 ? (
                     0
                   ) : count === '' ? (
                     <GreyBox />
                   ) : (
                     <CreateSetButton
-                      filters={op.filters}
+                      filters={selectedFilters}
                       onComplete={setId => {
                         push({
                           pathname: '/exploration',
@@ -194,27 +266,28 @@ export default ({
                           },
                         });
                       }}
-                      Component={props => (
-                        <Tooltip
-                          {...props}
-                          Component={`View ${type} set in exploration`}
-                          style={{
-                            cursor: 'pointer',
-                            color: theme.primary1,
-                            textDecoration: 'underline',
-                          }}
-                        >
-                          {count}
+                      Component={p => (
+                        <Tooltip Component={`View ${type} set in exploration`}>
+                          <span
+                            {...p}
+                            style={{
+                              cursor: 'pointer',
+                              color: theme.primary,
+                              textDecoration: 'underline',
+                            }}
+                          >
+                            {count.toLocaleString()}
+                          </span>
                         </Tooltip>
                       )}
                     />
                   )}
                 </TdNum>
                 <ActionsTd
-                  hide={!count}
+                  hide={!selected.size || !count}
                   count={count}
-                  filters={op.filters}
-                  fileName={`${op.op}-set-ids`}
+                  filters={selectedFilters}
+                  fileName="union-of-set-ids"
                   type={type}
                   CreateSetButton={CreateSetButton}
                   push={push}
@@ -222,77 +295,8 @@ export default ({
               </Tr>
             )}
           </CountComponent>
-        ))}
-        <CountComponent filters={selectedFilters}>
-          {count => (
-            <Tr
-              style={{
-                borderTop: '1px solid black',
-                borderBottom: '1px solid black',
-              }}
-            >
-              <Td colSpan="2">
-                <b>Union of selected sets</b>
-              </Td>
-              <TdNum>
-                {selected.size === 0 || count === 0 ? (
-                  0
-                ) : count === '' ? (
-                  <GreyBox />
-                ) : (
-                  <CreateSetButton
-                    filters={selectedFilters}
-                    onComplete={setId => {
-                      push({
-                        pathname: '/exploration',
-                        query: {
-                          searchTableTab:
-                            (type === 'ssm' ? 'mutation' : type) + 's',
-                          filters: stringifyJSONParam({
-                            op: 'AND',
-                            content: [
-                              {
-                                op: 'IN',
-                                content: {
-                                  field: `${type}s.${type}_id`,
-                                  value: [`set_id:${setId}`],
-                                },
-                              },
-                            ],
-                          }),
-                        },
-                      });
-                    }}
-                    Component={p => (
-                      <Tooltip Component={`View ${type} set in exploration`}>
-                        <span
-                          {...p}
-                          style={{
-                            cursor: 'pointer',
-                            color: theme.primary1,
-                            textDecoration: 'underline',
-                          }}
-                        >
-                          {count}
-                        </span>
-                      </Tooltip>
-                    )}
-                  />
-                )}
-              </TdNum>
-              <ActionsTd
-                hide={!selected.size || !count}
-                count={count}
-                filters={selectedFilters}
-                fileName="union-of-set-ids"
-                type={type}
-                CreateSetButton={CreateSetButton}
-                push={push}
-              />
-            </Tr>
-          )}
-        </CountComponent>
-      </tbody>
-    }
-  />
+        </tbody>
+      }
+    />
+  ),
 );

@@ -1,7 +1,13 @@
 /* @flow */
 import React from 'react';
 import { connect } from 'react-redux';
-import { compose, withState } from 'recompose';
+import {
+  compose,
+  withState,
+  withProps,
+  branch,
+  renderComponent,
+} from 'recompose';
 import { map, reduce, xor, find, get, omit } from 'lodash';
 import moment from 'moment';
 
@@ -38,6 +44,8 @@ import { UploadAndSaveSetModal } from '@ncigdc/components/Modals/SaveSetModal';
 import Dropdown from '@ncigdc/uikit/Dropdown';
 import DropdownItem from '@ncigdc/uikit/DropdownItem';
 import DownCaretIcon from 'react-icons/lib/fa/caret-down';
+import { zDepth1 } from '@ncigdc/theme/mixins';
+import Aux from '@ncigdc/utils/Aux';
 
 const fields = {
   case: 'cases.case_id',
@@ -45,11 +53,161 @@ const fields = {
   ssm: 'ssms.ssm_id',
 };
 
+const Info = () => (
+  <span>
+    <Heading>Manage Your Saved Sets</Heading>
+    <p>
+      You can create and save case, gene and mutation sets of interest from the{' '}
+      <ExploreLink>Exploration Page</ExploreLink>.
+    </p>
+  </span>
+);
+
+const UploadSet = connect()(({ dispatch }) => (
+  <Aux>
+    <Dropdown
+      button={<Button rightIcon={<DownCaretIcon />}>Upload Set</Button>}
+      dropdownStyle={{
+        marginTop: 5,
+        whiteSpace: 'nowrap',
+        right: 'auto',
+      }}
+    >
+      <DropdownItem
+        style={{ cursor: 'pointer' }}
+        onClick={() =>
+          dispatch(
+            setModal(
+              <UploadAndSaveSetModal
+                type="case"
+                CreateSetButton={CreateRepositoryCaseSetButton}
+                UploadSet={UploadCaseSet}
+              />,
+            ),
+          )}
+      >
+        Case
+      </DropdownItem>
+      <DropdownItem
+        style={{ cursor: 'pointer' }}
+        onClick={() =>
+          dispatch(
+            setModal(
+              <UploadAndSaveSetModal
+                type="gene"
+                CreateSetButton={CreateExploreGeneSetButton}
+                UploadSet={UploadGeneSet}
+              />,
+            ),
+          )}
+      >
+        Gene
+      </DropdownItem>
+      <DropdownItem
+        style={{ cursor: 'pointer' }}
+        onClick={() =>
+          dispatch(
+            setModal(
+              <UploadAndSaveSetModal
+                type="ssm"
+                CreateSetButton={CreateExploreSsmSetButton}
+                UploadSet={UploadSsmSet}
+              />,
+            ),
+          )}
+      >
+        Mutation
+      </DropdownItem>
+    </Dropdown>
+  </Aux>
+));
+
 const enhance = compose(
   connect(({ sets }) => ({ sets })),
   withState('selectedIds', 'setSelectedIds', []),
   withState('setSizes', 'setSetSizes', {}),
   withPropsOnChange(['sets'], ({ setSelectedIds }) => setSelectedIds([])),
+  withProps(
+    ({
+      sets,
+      selectedIds,
+      setSelectedIds,
+      dispatch,
+      setSizes,
+      setSetSizes,
+      flattenedSets,
+    }) => ({
+      flattenedSets: reduce(
+        sets,
+        (acc, setsOfType, type) => [
+          ...acc,
+          ...map(setsOfType, (label, id) => ({
+            type,
+            label,
+            filenameSafeLabel: label.replace(/[^A-Za-z0-9_.]/g, '_'),
+            id,
+            filters: {
+              op: '=',
+              content: {
+                field: fields[type],
+                value: `set_id:${id}`,
+              },
+            },
+            linkFilters: {
+              op: 'and',
+              content: [
+                {
+                  op: 'in',
+                  content: {
+                    field: fields[type],
+                    value: [`set_id:${id}`],
+                  },
+                },
+              ],
+            },
+          })),
+        ],
+        [],
+      ).map(({ filters, type, id, ...rest }) => ({
+        filters,
+        type,
+        id,
+        ...rest,
+        countComponent: countComponents[type]({
+          filters,
+          handleCountChange: count =>
+            setSetSizes({
+              ...setSizes,
+              [id]: count,
+            }),
+        }),
+      })),
+    }),
+  ),
+  branch(
+    p => p.flattenedSets.length === 0,
+    renderComponent(({ dispatch }) => (
+      <Row
+        style={{
+          alignItems: 'center',
+          justifyContent: 'center',
+          height: 200,
+        }}
+      >
+        <Column
+          style={{
+            alignItems: 'center',
+            backgroundColor: 'white',
+            padding: '20px',
+            ...zDepth1,
+          }}
+        >
+          <Info />
+          <UploadSet />
+        </Column>
+      </Row>
+    )),
+  ),
 );
 
 const StyledRepoLink = styled(RepositoryLink, {
@@ -64,53 +222,8 @@ const ManageSetsPage = ({
   dispatch,
   setSizes,
   setSetSizes,
+  flattenedSets,
 }) => {
-  const flattenedSets = reduce(
-    sets,
-    (acc, setsOfType, type) => [
-      ...acc,
-      ...map(setsOfType, (label, id) => ({
-        type,
-        label,
-        filenameSafeLabel: label.replace(/[^A-Za-z0-9_.]/g, '_'),
-        id,
-        filters: {
-          op: '=',
-          content: {
-            field: fields[type],
-            value: `set_id:${id}`,
-          },
-        },
-        linkFilters: {
-          op: 'and',
-          content: [
-            {
-              op: 'in',
-              content: {
-                field: fields[type],
-                value: [`set_id:${id}`],
-              },
-            },
-          ],
-        },
-      })),
-    ],
-    [],
-  ).map(({ filters, type, id, ...rest }) => ({
-    filters,
-    type,
-    id,
-    ...rest,
-    countComponent: countComponents[type]({
-      filters,
-      handleCountChange: count =>
-        setSetSizes({
-          ...setSizes,
-          [id]: count,
-        }),
-    }),
-  }));
-
   const allSelected =
     selectedIds.length !== 0 && flattenedSets.length === selectedIds.length;
   const emptyOrDeprecatedSets = Object.keys(setSizes).filter(
@@ -123,67 +236,10 @@ const ManageSetsPage = ({
 
   return (
     <Column style={{ padding: '2rem 2.5rem 13rem' }}>
-      <Heading>Manage Your Saved Sets</Heading>
-      <p>
-        You can create and save case, gene and mutation sets of interest from
-        the <ExploreLink>Exploration Page</ExploreLink>.
-      </p>
+      <Info />
 
       <Row>
-        <Dropdown
-          button={<Button rightIcon={<DownCaretIcon />}>Upload Set</Button>}
-          dropdownStyle={{
-            marginTop: 5,
-            whiteSpace: 'nowrap',
-            right: 'auto',
-          }}
-        >
-          <DropdownItem
-            style={{ cursor: 'pointer' }}
-            onClick={() =>
-              dispatch(
-                setModal(
-                  <UploadAndSaveSetModal
-                    type="case"
-                    CreateSetButton={CreateRepositoryCaseSetButton}
-                    UploadSet={UploadCaseSet}
-                  />,
-                ),
-              )}
-          >
-            Case
-          </DropdownItem>
-          <DropdownItem
-            style={{ cursor: 'pointer' }}
-            onClick={() =>
-              dispatch(
-                setModal(
-                  <UploadAndSaveSetModal
-                    type="gene"
-                    CreateSetButton={CreateExploreGeneSetButton}
-                    UploadSet={UploadGeneSet}
-                  />,
-                ),
-              )}
-          >
-            Gene
-          </DropdownItem>
-          <DropdownItem
-            style={{ cursor: 'pointer' }}
-            onClick={() =>
-              dispatch(
-                setModal(
-                  <UploadAndSaveSetModal
-                    type="ssm"
-                    CreateSetButton={CreateExploreSsmSetButton}
-                    UploadSet={UploadSsmSet}
-                  />,
-                ),
-              )}
-          >
-            Mutation
-          </DropdownItem>
-        </Dropdown>
+        <UploadSet />
 
         {flattenedSets.length !== 0 && (
           <DownloadButton
@@ -303,9 +359,7 @@ const ManageSetsPage = ({
           )}
       </Row>
 
-      {flattenedSets.length === 0 ? (
-        <Row style={{ marginTop: '1rem' }}>No sets</Row>
-      ) : (
+      {flattenedSets.length > 0 && (
         <span>
           <Table
             id="manage-sets-table"

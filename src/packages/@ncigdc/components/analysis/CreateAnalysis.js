@@ -58,7 +58,7 @@ const CreateAnalysis = ({ analysis, setAnalysis, dispatch, push }) => {
         {availableAnalysis.map(analysis => {
           return (
             <Row key={analysis.type}>
-              <div style={{ width: 80, margin: 20 }}>
+              <div style={{ margin: 20 }}>
                 <analysis.Icon />
               </div>
               <div>

@@ -109,7 +109,7 @@ const AnalysisResult = ({ analysis, query, dispatch, push }) => {
                   </div>
                 </div>
                 <UnstyledButton
-                  style={{ marginLeft: 'auto' }}
+                  style={{ marginLeft: 'auto', backgroundColor: 'transparent' }}
                   onClick={e => {
                     e.preventDefault();
                     dispatch(removeAnalysis(savedAnalysis));

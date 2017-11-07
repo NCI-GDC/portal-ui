@@ -29,10 +29,9 @@ const DemoButton = ({ demoData, type, push, dispatch, analysis, style }) => {
       dispatch(
         addAnalysis({
           id,
-          sets: demoData.sets,
           type: type,
           created: new Date().toISOString(),
-          message: demoData.message,
+          ...demoData,
         }),
       ).then(() => {
         pushToResultTab(id);

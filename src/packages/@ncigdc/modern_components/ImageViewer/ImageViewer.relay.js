@@ -5,29 +5,51 @@ import { graphql } from 'react-relay';
 import { parse } from 'query-string';
 import { withRouter } from 'react-router-dom';
 import { parseIntParam, parseFilterParam } from '@ncigdc/utils/uri';
-import { compose, withPropsOnChange } from 'recompose';
+import { compose, withPropsOnChange, withProps, withState } from 'recompose';
 import Query from '@ncigdc/modern_components/Query';
 import { makeFilter, addInFilters } from '@ncigdc/utils/filters';
 
 export default (Component: ReactClass<*>) =>
   compose(
     withRouter,
+    withProps(({ location: { search } }) => ({
+      query: parse(search),
+      defaultSize: 10,
+    })),
+    withProps(({ query, defaultSize }) => ({
+      offset: parseIntParam(query.cases_offset, 0),
+      size: parseIntParam(query.cases_size, defaultSize),
+      filters: parseFilterParam(query.filters, null),
+    })),
+    withProps(({ offset, size }) => ({
+      firstLoadSize: offset > 0 ? offset + size : size,
+    })),
+    withState('firstLoad', 'setFirstLoad', true),
     withPropsOnChange(
-      ['location'],
-      ({ location: { search }, match: { params }, defaultSize = 10 }) => {
-        const q = parse(search);
-        return {
+      ['query'],
+      ({
+        filters,
+        offset,
+        size,
+        defaultSize,
+        firstLoad,
+        setFirstLoad,
+        firstLoadSize,
+      }) => {
+        const newProps = {
           variables: {
             filters: addInFilters(
-              parseFilterParam(q.filters, null),
+              filters,
               makeFilter([
                 { field: 'cases.project.project_id', value: ['TCGA-BRCA'] }, //TODO remove this when other projects slides processed
               ]),
             ),
-            cases_offset: parseIntParam(q.cases_offset, 0),
-            cases_size: parseIntParam(q.cases_size, defaultSize),
+            cases_offset: offset,
+            cases_size: firstLoad ? firstLoadSize : size,
           },
         };
+        setFirstLoad(false);
+        return newProps;
       },
     ),
   )((props: Object) => {

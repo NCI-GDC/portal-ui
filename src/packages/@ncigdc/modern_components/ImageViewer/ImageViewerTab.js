@@ -62,7 +62,6 @@ export default compose(
     ({ submitter_id, slide_id }) =>
       `${submitter_id}.${slide_id}` === selectedOrFirstId,
   );
-  console.log(selectedOrFirstSlide);
   return (
     <Row>
       <Column

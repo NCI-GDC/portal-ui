@@ -9,8 +9,10 @@ import { withTheme } from '@ncigdc/theme';
 import ExactMatchFacet from '@ncigdc/components/Aggregations/ExactMatchFacet';
 import withRouter from '@ncigdc/utils/withRouter';
 import { parseJSONParam } from '@ncigdc/utils/uri';
-import { isEqual } from 'lodash';
-import Link from '@ncigdc/components/Links/Link';
+import {
+  ShowMoreLink,
+  withShowMore,
+} from '@ncigdc/components/Pagination/ShowMore';
 import InternalLink from '@ncigdc/components/Links/InternalLink';
 import styled from '@ncigdc/theme/styled';
 import { linkButton } from '@ncigdc/theme/mixins';
@@ -32,7 +34,7 @@ export const getSlides = caseNode => {
   return slides;
 };
 
-const LinkAsButton = styled(Link, {
+const ShowMoreLinkAsButton = styled(ShowMoreLink, {
   padding: '6px 6px',
   textAlign: 'center',
   ...linkButton,
@@ -58,13 +60,9 @@ const caseExtractor = repo =>
 export default compose(
   withRouter,
   withTheme,
-  withState('loadedCases', 'setLoadedCases', []),
-  withState('shouldLoadCases', 'setShouldLoadCases', false),
   withState('showSearchInput', 'setShowSearchInput', false),
   lifecycle({
     componentDidMount(): void {
-      const cases = caseExtractor(this.props.viewer.repository);
-      this.props.setLoadedCases(cases);
       if (
         JSON.stringify(this.props.query.filters || {}).includes(
           'cases.submitter_id',
@@ -73,32 +71,16 @@ export default compose(
         this.props.setShowSearchInput(true);
       }
     },
-    componentWillReceiveProps(nextProps): void {
-      if (
-        this.props.shouldLoadCases &&
-        !isEqual(nextProps.viewer, this.props.viewer)
-      ) {
-        const cases = caseExtractor(nextProps.viewer.repository);
-        this.props.setLoadedCases([...this.props.loadedCases, ...cases]);
-        this.props.setShouldLoadCases(false);
-      } else if (
-        !isEqual(
-          nextProps.variables.cases_offset,
-          this.props.variables.cases_offset,
-        ) &&
-        isEqual(nextProps.variables.filters, this.props.variables.filters)
-      ) {
-        this.props.setShouldLoadCases(true);
-      } else if (!isEqual(this.props.query.filters, nextProps.query.filters)) {
-        this.props.setShouldLoadCases(true);
-        this.props.setLoadedCases([]);
-      }
-    },
+  }),
+  withShowMore({
+    pathToData: 'viewer.repository',
+    itemExtractor: caseExtractor,
+    offsetPrefix: 'cases',
   }),
 )(
   ({
+    loadedItems,
     query,
-    loadedCases,
     viewer: { repository },
     history,
     variables,
@@ -106,7 +88,7 @@ export default compose(
     setShowSearchInput,
     showSearchInput,
   }) => {
-    const cases = loadedCases;
+    const cases = loadedItems;
     const caseId = query.caseId || '';
     const currentIndex = cases.findIndex(c => c.case_id === caseId);
     const backLocation = parseJSONParam(query.backLocation);
@@ -191,19 +173,15 @@ export default compose(
               }))}
               tabToolbar={
                 <Column style={{ alignSelf: 'center', paddingTop: '1rem' }}>
-                  {loadedCases.length < repository.cases.hits.total && (
-                    <LinkAsButton
-                      query={{
-                        cases_offset: variables.cases_offset + 10,
-                        cases_size: 10,
-                      }}
-                      merge
-                    >
-                      Show more
-                    </LinkAsButton>
+                  {loadedItems.length < repository.cases.hits.total && (
+                    <ShowMoreLinkAsButton
+                      prefix="cases"
+                      offset={variables.cases_offset}
+                      size={10}
+                    />
                   )}
                   <div>
-                    Showing <b>{loadedCases.length}</b> of{' '}
+                    Showing <b>{loadedItems.length}</b> of{' '}
                     <b>{repository.cases.hits.total}</b>
                   </div>
                 </Column>

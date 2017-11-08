@@ -35,14 +35,21 @@ const addMissing = ({
 }: {
   buckets: Array<TBucket>,
   total: number,
-}) => [
-  ...buckets,
-  {
-    key: '_missing',
-    doc_count:
-      total - buckets.reduce((acc, { doc_count }) => acc + doc_count, 0),
-  },
-];
+}) => {
+  const totalInBuckets = buckets.reduce(
+    (acc, { doc_count }) => acc + doc_count,
+    0,
+  );
+  return [
+    ...buckets,
+    ...(totalInBuckets < total && [
+      {
+        key: '_missing',
+        doc_count: total - totalInBuckets,
+      },
+    ]),
+  ];
+};
 
 export default compose(
   withTheme,

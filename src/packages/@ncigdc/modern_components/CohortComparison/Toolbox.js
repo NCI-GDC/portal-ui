@@ -53,6 +53,9 @@ export default withTheme(
   }) => (
     <div
       style={{
+        top: 180,
+        bottom: 20,
+        overflowY: 'auto',
         padding: 20,
         marginTop: 20,
         width: '20%',

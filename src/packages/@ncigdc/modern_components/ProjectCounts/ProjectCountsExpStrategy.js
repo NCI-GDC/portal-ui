@@ -151,14 +151,14 @@ export default compose(
               query={{
                 filters: makeFilter([
                   {
-                    field: 'project.project_id',
+                    field: 'cases.project.project_id',
                     value: project.project_id,
                   },
                 ]),
-                facetTab: 'files',
-                searchTableTab: 'files',
+                facetTab: 'cases',
+                searchTableTab: 'cases',
               }}
-              title="Browse files"
+              title="Browse cases"
             >
               <SampleSize n={totalCases} />
             </Link>
@@ -182,7 +182,7 @@ export default compose(
               query={{
                 filters: makeFilter([
                   {
-                    field: 'project.project_id',
+                    field: 'cases.project.project_id',
                     value: project.project_id,
                   },
                 ]),

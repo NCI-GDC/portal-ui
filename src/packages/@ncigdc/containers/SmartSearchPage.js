@@ -15,6 +15,11 @@ import RepoCasesTable from '@ncigdc/modern_components/RepoCasesTable';
 import { API } from '@ncigdc/utils/constants';
 import { stringifyJSONParam, parseJSONParam } from '@ncigdc/utils/uri';
 
+import { CreateRepositoryCaseSetButton } from '@ncigdc/modern_components/withSetAction';
+import { fetchFilesAndAdd } from '@ncigdc/dux/cart';
+import { ShoppingCartIcon } from '@ncigdc/theme/icons';
+import DownloadManifestButton from '@ncigdc/components/DownloadManifestButton';
+
 require('lodash-backports').register();
 
 declare var _: Object;
@@ -121,7 +126,63 @@ class SmartSearchComponent extends React.Component {
           }}
           dangerouslySetInnerHTML={{ __html: angularBootstrapHtml }}
         />
-
+        <Row
+          style={{
+            justifyContent: 'space-between',
+            padding: '0 0 2rem',
+            alignItems: 'center',
+          }}
+        >
+          <Row spacing="0.2rem">
+            <Button
+              onClick={() =>
+                this.props.dispatch(
+                  fetchFilesAndAdd(
+                    this.props.filters,
+                    this.props.viewer.repository.files.hits.total,
+                  ),
+                )}
+              leftIcon={<ShoppingCartIcon />}
+            >
+              Add All Files to Cart
+            </Button>
+            <DownloadManifestButton
+              fileCount={this.props.viewer.repository.files.hits.total}
+              filters={this.props.filters}
+            />
+            <CreateRepositoryCaseSetButton
+              filters={this.props.filters}
+              disabled={!this.props.viewer.repository.cases.hits.total}
+              style={{ paddingLeft: '5px' }}
+              onComplete={setId => {
+                this.props.push({
+                  pathname: '/exploration',
+                  query: {
+                    filters: stringifyJSONParam({
+                      op: 'AND',
+                      content: [
+                        {
+                          op: 'IN',
+                          content: {
+                            field: 'cases.case_id',
+                            value: [`set_id:${setId}`],
+                          },
+                        },
+                      ],
+                    }),
+                  },
+                });
+              }}
+            >
+              {'View '}
+              {this.props.viewer.repository.cases.hits.total.toLocaleString()}{' '}
+              {this.props.viewer.repository.cases.hits.total === 1
+                ? ' Case'
+                : ' Cases '}
+              in Exploration
+            </CreateRepositoryCaseSetButton>
+          </Row>
+        </Row>
         <TabbedLinks
           queryParam="searchTableTab"
           defaultIndex={0}

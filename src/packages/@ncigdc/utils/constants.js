@@ -12,8 +12,8 @@ export const SLIDE_IMAGE_ENDPOINT =
   localStorage.REACT_APP_SLIDE_IMAGE_ENDPOINT ||
   process.env.REACT_APP_SLIDE_IMAGE_ENDPOINT ||
   'https://image.gdc.cancercollaboratory.org:8888/';
-export const REACT_APP_GDC_WITH_SLIDES =
-  localStorage.REACT_APP_GDC_WITH_SLIDES || false;
+export const DISPLAY_SLIDES =
+  localStorage.REACT_APP_GDC_DISPLAY_SLIDES || false;
 
 export const API_OVERRIDE_KEYS = [
   'REACT_APP_API',

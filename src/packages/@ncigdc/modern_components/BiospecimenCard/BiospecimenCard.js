@@ -27,6 +27,7 @@ import { Tooltip } from '@ncigdc/uikit/Tooltip';
 import { MicroscopeIcon } from '@ncigdc/theme/icons';
 import { entityTypes } from './';
 import withRouter from '@ncigdc/utils/withRouter';
+import { DISPLAY_SLIDES } from '@ncigdc/utils/constants';
 
 const styles = {
   button: {
@@ -223,44 +224,45 @@ export default compose(
                       td: formatValue(val),
                     };
                   }),
-                ...(foundType === 'slide' && [
-                  {
-                    th: 'Slide Image',
-                    td: (
-                      <Row>
-                        <Tooltip Component="View Slide Image">
-                          <ImageViewerLink
-                            isIcon
-                            query={{
-                              filters: makeFilter([
-                                { field: 'cases.case_id', value: p.case_id },
-                              ]),
-                              selectedId: `${selectedEntity.submitter_id}.${selectedEntity.slide_id}`,
-                            }}
-                          >
-                            <MicroscopeIcon />
-                          </ImageViewerLink>{' '}
-                        </Tooltip>
-                        <Tooltip Component="Add to cart">
-                          <Button
-                            className="test-toggle-cart"
-                            leftIcon={<ShoppingCartIcon />}
-                            style={{ ...iconButton, marginLeft: '0.5rem' }}
-                            disabled
-                          />
-                        </Tooltip>
-                        <Tooltip Component="Download">
-                          <Button
-                            className="test-toggle-cart"
-                            style={{ ...iconButton, marginLeft: '0.5rem' }}
-                            leftIcon={<DownloadIcon />}
-                            disabled
-                          />
-                        </Tooltip>
-                      </Row>
-                    ),
-                  },
-                ]),
+                ...(DISPLAY_SLIDES &&
+                  foundType === 'slide' && [
+                    {
+                      th: 'Slide Image',
+                      td: (
+                        <Row>
+                          <Tooltip Component="View Slide Image">
+                            <ImageViewerLink
+                              isIcon
+                              query={{
+                                filters: makeFilter([
+                                  { field: 'cases.case_id', value: p.case_id },
+                                ]),
+                                selectedId: `${selectedEntity.submitter_id}.${selectedEntity.slide_id}`,
+                              }}
+                            >
+                              <MicroscopeIcon />
+                            </ImageViewerLink>{' '}
+                          </Tooltip>
+                          <Tooltip Component="Add to cart">
+                            <Button
+                              className="test-toggle-cart"
+                              leftIcon={<ShoppingCartIcon />}
+                              style={{ ...iconButton, marginLeft: '0.5rem' }}
+                              disabled
+                            />
+                          </Tooltip>
+                          <Tooltip Component="Download">
+                            <Button
+                              className="test-toggle-cart"
+                              style={{ ...iconButton, marginLeft: '0.5rem' }}
+                              leftIcon={<DownloadIcon />}
+                              disabled
+                            />
+                          </Tooltip>
+                        </Row>
+                      ),
+                    },
+                  ]),
               ]}
               style={{ flex: '1 1 auto' }}
             />

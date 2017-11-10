@@ -20,9 +20,9 @@ import { replaceFilters } from '@ncigdc/utils/filters';
 import { stringifyJSONParam } from '@ncigdc/utils/uri';
 import ImageViewerLink from '@ncigdc/components/Links/ImageViewerLink';
 import { Row } from '@ncigdc/uikit/Flex';
-
 import styled from '@ncigdc/theme/styled';
 import { linkButton } from '@ncigdc/theme/mixins';
+import { DISPLAY_SLIDES } from '@ncigdc/utils/constants';
 
 const ImageViewerLinkAsButton = styled(ImageViewerLink, {
   padding: '6px 12px',
@@ -205,13 +205,15 @@ export const ExplorePageComponent = (props: TProps) => (
           >
             View Files in Repository
           </CreateExploreCaseSetButton>
-          <ImageViewerLinkAsButton
-            query={{
-              filters: props.filters,
-            }}
-          >
-            View Images
-          </ImageViewerLinkAsButton>{' '}
+          {DISPLAY_SLIDES && (
+            <ImageViewerLinkAsButton
+              query={{
+                filters: props.filters,
+              }}
+            >
+              View Images
+            </ImageViewerLinkAsButton>
+          )}
         </Row>
         <TabbedLinks
           queryParam="searchTableTab"

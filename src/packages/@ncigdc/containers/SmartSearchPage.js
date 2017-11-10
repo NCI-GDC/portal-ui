@@ -5,6 +5,9 @@ import Relay from 'react-relay/classic';
 import queryString from 'query-string';
 import PropTypes from 'prop-types';
 
+import { connect } from 'react-redux';
+import { compose } from 'recompose';
+
 import { Row } from '@ncigdc/uikit/Flex';
 import Button from '@ncigdc/uikit/Button';
 import withRouter from '@ncigdc/utils/withRouter';
@@ -26,7 +29,7 @@ declare var _: Object;
 declare var angular: Object;
 
 _.pluck = _.map;
-
+const enhance = compose(connect(), withRouter);
 const angularBootstrapHtml = `
   <smart-search-wrapper></smart-search-wrapper>
 `;
@@ -150,6 +153,7 @@ class SmartSearchComponent extends React.Component {
               fileCount={this.props.viewer.repository.files.hits.total}
               filters={this.props.filters}
             />
+            {console.log(this.props)}
             <CreateRepositoryCaseSetButton
               filters={this.props.filters}
               disabled={!this.props.viewer.repository.cases.hits.total}
@@ -244,7 +248,7 @@ export const SmartSearchQuery = {
 };
 
 const SmartSearchPage = Relay.createContainer(
-  withRouter(SmartSearchComponent),
+  enhance(SmartSearchComponent),
   SmartSearchQuery,
 );
 

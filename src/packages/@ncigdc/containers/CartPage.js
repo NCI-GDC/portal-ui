@@ -17,6 +17,7 @@ import { Row, Column } from '@ncigdc/uikit/Flex';
 import { withTheme } from '@ncigdc/theme';
 import FilesTable from '@ncigdc/modern_components/FilesTable';
 import MetadataDownloadButton from '@ncigdc/components/MetadataDownloadButton';
+import SampleSheetDownloadButton from '@ncigdc/components/SampleSheetDownloadButton';
 import SummaryCard from '@ncigdc/components/SummaryCard';
 import HowToDownload from '@ncigdc/components/HowToDownload';
 import CountCard from '@ncigdc/components/CountCard';
@@ -289,6 +290,7 @@ const CartPage: TCartPage = ({ viewer, files, user, theme } = {}) => {
           </Row>
           <Row style={{ marginBottom: '6rem' }}>
             <Row style={{ marginLeft: 'auto' }} spacing="1rem">
+              <SampleSheetDownloadButton files={{ files }} />
               <MetadataDownloadButton files={{ files }} />
               <CartDownloadDropdown files={files} user={user} />
               <RemoveFromCartButton user={user} />

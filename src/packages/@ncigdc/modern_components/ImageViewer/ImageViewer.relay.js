@@ -12,21 +12,27 @@ import { makeFilter, addInFilters } from '@ncigdc/utils/filters';
 export default (Component: ReactClass<*>) =>
   compose(
     withRouter,
-    withProps(({ location: { search } }) => ({
-      query: parse(search),
-      defaultSize: 10,
-    })),
-    withProps(({ query, defaultSize }) => ({
-      offset: parseIntParam(query.cases_offset, 0),
-      size: parseIntParam(query.cases_size, defaultSize),
-      filters: parseFilterParam(query.filters, null),
-    })),
+    //withProps(({ location: { search } }) => ({
+    //query: parse(search),
+    //defaultSize: 10,
+    //})),
+    withPropsOnChange(
+      ['location'],
+      ({ location: { search }, defaultSize = 10 }) => {
+        const query = parse(search);
+        return {
+          offset: parseIntParam(query.cases_offset, 0),
+          size: parseIntParam(query.cases_size, defaultSize),
+          filters: query.filters,
+        };
+      },
+    ),
     withProps(({ offset, size }) => ({
       firstLoadSize: offset > 0 ? offset + size : size,
     })),
     withState('firstLoad', 'setFirstLoad', true),
     withPropsOnChange(
-      ['query'],
+      ['offset', 'size', 'filters'],
       ({
         filters,
         offset,
@@ -36,10 +42,11 @@ export default (Component: ReactClass<*>) =>
         setFirstLoad,
         firstLoadSize,
       }) => {
+        const parsedFilters = parseFilterParam(filters, null);
         const newProps = {
           variables: {
             filters: addInFilters(
-              filters,
+              parsedFilters,
               makeFilter([
                 { field: 'cases.project.project_id', value: ['TCGA-BRCA'] }, //TODO remove this when other projects slides processed
               ]),

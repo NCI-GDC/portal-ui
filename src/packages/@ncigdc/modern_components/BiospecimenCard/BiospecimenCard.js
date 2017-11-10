@@ -24,11 +24,9 @@ import ShoppingCartIcon from '@ncigdc/theme/icons/ShoppingCart';
 import DownloadIcon from '@ncigdc/theme/icons/Download';
 import { iconButton } from '@ncigdc/theme/mixins';
 import { Tooltip } from '@ncigdc/uikit/Tooltip';
-import { withRouter } from 'react-router-dom';
-import { stringifyJSONParam } from '@ncigdc/utils/uri';
 import { MicroscopeIcon } from '@ncigdc/theme/icons';
-import { stringify, parse } from 'query-string';
 import { entityTypes } from './';
+import withRouter from '@ncigdc/utils/withRouter';
 
 const styles = {
   button: {
@@ -78,6 +76,8 @@ export default compose(
   withTheme,
 )(
   ({
+    history,
+    push,
     theme,
     viewer: { repository: { cases: { hits: { edges } } } },
     state: { selectedEntity: se, type, query },
@@ -86,7 +86,6 @@ export default compose(
     allExpanded,
     expandAllFirstClick,
     setExpandAllFirstClick,
-    history,
   }) => {
     const p = edges[0].node;
 
@@ -171,13 +170,21 @@ export default compose(
                 type={{ s: 'sample', p: 'samples' }}
                 query={query}
                 selectedEntity={selectedEntity}
-                selectEntity={(selectedEntity, type) =>
+                selectEntity={(selectedEntity, type) => {
                   setState(s => ({
                     ...s,
                     selectedEntity,
                     type: type.s,
                     query: '',
-                  }))}
+                  }));
+                  push({
+                    ...history.location,
+                    query: {
+                      ...history.location.query,
+                      bioId: selectedEntity[`${type.s}_id`],
+                    },
+                  });
+                }}
                 defaultExpanded={allExpanded}
               />
             </Column>
@@ -221,8 +228,6 @@ export default compose(
                     th: 'Slide Image',
                     td: (
                       <Row>
-                        {console.log(selectedEntity.slide_id)}
-                        {console.log(history.location)}
                         <Tooltip Component="View Slide Image">
                           <ImageViewerLink
                             isIcon
@@ -231,13 +236,6 @@ export default compose(
                                 { field: 'cases.case_id', value: p.case_id },
                               ]),
                               selectedId: `${selectedEntity.submitter_id}.${selectedEntity.slide_id}`,
-                              backLocation: stringifyJSONParam({
-                                ...history.location,
-                                search: stringify({
-                                  ...parse(history.location.search),
-                                  bioId: selectedEntity.slide_id,
-                                }),
-                              }),
                             }}
                           >
                             <MicroscopeIcon />

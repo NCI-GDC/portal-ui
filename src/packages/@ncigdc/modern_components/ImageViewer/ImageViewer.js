@@ -1,5 +1,6 @@
 import React from 'react';
 import { compose, lifecycle, withState } from 'recompose';
+import { connect } from 'react-redux';
 
 import Heading from '@ncigdc/uikit/Heading';
 import TabbedLinks from '@ncigdc/components/TabbedLinks';
@@ -7,8 +8,6 @@ import CurrentFilters from '@ncigdc/components/CurrentFilters';
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import { withTheme } from '@ncigdc/theme';
 import ExactMatchFacet from '@ncigdc/components/Aggregations/ExactMatchFacet';
-import withRouter from '@ncigdc/utils/withRouter';
-import { parseJSONParam } from '@ncigdc/utils/uri';
 import {
   ShowMoreLink,
   withShowMore,
@@ -58,7 +57,7 @@ const caseExtractor = repo =>
   }).edges.map(({ node }) => node);
 
 export default compose(
-  withRouter,
+  connect(({ backLocation }) => ({ backLocation })),
   withTheme,
   withState('showSearchInput', 'setShowSearchInput', false),
   lifecycle({
@@ -82,7 +81,7 @@ export default compose(
     loadedItems,
     query,
     viewer: { repository },
-    history,
+    backLocation,
     variables,
     theme,
     setShowSearchInput,
@@ -91,7 +90,7 @@ export default compose(
     const cases = loadedItems;
     const caseId = query.caseId || '';
     const currentIndex = cases.findIndex(c => c.case_id === caseId);
-    const backLocation = parseJSONParam(query.backLocation);
+    console.log(backLocation);
     return (
       <div style={{ padding: '0 1rem' }}>
         <Heading
@@ -108,7 +107,9 @@ export default compose(
               pathname={backLocation.pathname}
               search={backLocation.search}
               deepLink={
-                backLocation.search.includes('bioId') ? 'biospecimen' : null
+                backLocation.search && backLocation.search.includes('bioId')
+                  ? 'biospecimen'
+                  : null
               }
             >
               Back

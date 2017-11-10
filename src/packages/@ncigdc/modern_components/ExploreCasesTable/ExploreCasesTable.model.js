@@ -16,7 +16,6 @@ import withRouter from '@ncigdc/utils/withRouter';
 import ImageViewerLink from '@ncigdc/components/Links/ImageViewerLink';
 import { RepositorySlideCount } from '@ncigdc/modern_components/Counts';
 import { MicroscopeIcon } from '@ncigdc/theme/icons';
-import { stringifyJSONParam } from '@ncigdc/utils/uri';
 
 import {
   createDataCategoryColumns,
@@ -382,7 +381,6 @@ const casesTableModel = [
                     filters: makeFilter([
                       { field: 'cases.case_id', value: node.case_id },
                     ]),
-                    backLocation: stringifyJSONParam(node.history.location),
                   }}
                 >
                   <MicroscopeIcon /> ({count})

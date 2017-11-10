@@ -6,7 +6,7 @@ type TState = {
   search?: string,
   hash?: string,
   key?: string,
-  state: any,
+  state?: any,
 };
 
 type TPayload = {

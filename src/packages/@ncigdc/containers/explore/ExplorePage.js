@@ -17,7 +17,6 @@ import GeneAggregations from '@ncigdc/containers/explore/GeneAggregations';
 import SSMAggregations from '@ncigdc/containers/explore/SSMAggregations';
 import { CreateExploreCaseSetButton } from '@ncigdc/modern_components/withSetAction';
 import { replaceFilters } from '@ncigdc/utils/filters';
-import withRouter from '@ncigdc/utils/withRouter';
 import { stringifyJSONParam } from '@ncigdc/utils/uri';
 import ImageViewerLink from '@ncigdc/components/Links/ImageViewerLink';
 import { Row } from '@ncigdc/uikit/Flex';
@@ -113,7 +112,6 @@ function setVariables({ relay, filters }) {
 }
 
 const enhance = compose(
-  withRouter,
   lifecycle({
     componentDidMount() {
       setVariables(this.props);
@@ -210,7 +208,6 @@ export const ExplorePageComponent = (props: TProps) => (
           <ImageViewerLinkAsButton
             query={{
               filters: props.filters,
-              backLocation: stringifyJSONParam(props.history.location),
             }}
           >
             View Images

@@ -1,58 +1,54 @@
 /* @flow */
 import React from 'react';
 import { connect } from 'react-redux';
-import { compose, withProps } from 'recompose';
+import { compose } from 'recompose';
 
 import withRouter from '@ncigdc/utils/withRouter';
+import namespace from '@ncigdc/utils/namespace';
 import Link from './Link';
 import { iconLink } from '@ncigdc/theme/mixins';
-import styled from '@ncigdc/theme/styled';
 import { updateBackLocation } from '@ncigdc/dux/backLocation';
 
 type TProps = {
+  dispatch: Function,
   children?: mixed,
   style?: Object,
   isIcon?: boolean,
   onClick?: Function,
+  router: Object,
 };
 
-const StyledImageViewerLink = styled(Link, {
-  ...iconLink,
-});
-
-const enhance = compose(
-  withRouter,
+const ImageViewerLink = compose(
+  namespace('router', withRouter),
   connect(),
-  withProps(({ onClick, dispatch, location }) => ({
-    onClick: () => {
-      console.log('boop');
-      console.log(location);
-      //dispatch(updateBackLocation(history.location));
-      if (onClick) {
-        onClick();
-      }
-    },
-  })),
-);
-
-const ImageViewerLink = ({
-  children,
-  onClick,
-  isIcon = false,
-  ...props
-}: TProps) =>
-  isIcon ? (
-    <StyledImageViewerLink
+)(
+  ({
+    dispatch,
+    children,
+    router,
+    style,
+    onClick = () => {},
+    isIcon = false,
+    ...props
+  }: TProps) => (
+    <Link
       pathname="/image-viewer"
-      onClick={onClick}
+      onClick={() => {
+        // saving back location to redux because
+        // image viewer updates the url to switch between slides & cases
+        // but user would like to go back to non-image viewer location
+        dispatch(updateBackLocation(router.location));
+        onClick();
+      }}
+      style={{
+        ...(isIcon && iconLink),
+        ...style,
+      }}
       {...props}
     >
       {children || 'View Image'}
-    </StyledImageViewerLink>
-  ) : (
-    <Link pathname="/image-viewer" onClick={onClick} {...props}>
-      {children || 'View Image'}
     </Link>
-  );
+  ),
+);
 
-export default enhance(ImageViewerLink);
+export default ImageViewerLink;

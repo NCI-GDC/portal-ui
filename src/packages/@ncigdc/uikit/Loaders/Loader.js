@@ -36,13 +36,13 @@ type TWithLoader = {
   loading: boolean,
   firstLoad: boolean,
 };
-export const withLoader = (Component: ReactClass<*>) => {
+export const withLoader = ({ minHeight, Loader = OverlayLoader }) => (
+  Component: ReactClass<*>,
+) => {
   return ({
-    Loader = OverlayLoader,
-    minHeight,
     style = { position: 'relative', width: '100%' },
     loading,
-    firstLoad,
+    loadedOnce,
     ...props
   }: TWithLoader) => {
     return (
@@ -54,7 +54,7 @@ export const withLoader = (Component: ReactClass<*>) => {
           ...style,
         }}
       >
-        {!firstLoad && <Component {...props} />}
+        {loadedOnce && <Component {...props} />}
         <Loader loading={loading} />
       </div>
     );

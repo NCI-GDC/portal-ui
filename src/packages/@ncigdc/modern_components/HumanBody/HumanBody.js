@@ -34,16 +34,16 @@ const InsideContainer = styled.div(containerStyle);
 
 export default compose(
   branch(
-    ({ viewer }) => !viewer.repository.cases.aggregations,
+    ({ cases }) => !cases.aggregations,
     renderComponent(() => <div>No data found.</div>),
   ),
   withTooltip,
   connect(state => ({ config: state.versionInfo })),
   withRouter,
-  withProps(({ viewer }) => ({
+  withProps(({ cases, files }) => ({
     groupedData: map(
       groupBy(
-        viewer.repository.cases.aggregations.primary_site.buckets,
+        cases.aggregations.primary_site.buckets,
         b => HUMAN_BODY_SITES_MAP[b.key] || b.key,
       ),
       (group, majorPrimarySite) => ({
@@ -51,7 +51,7 @@ export default compose(
         docCount: group.reduce((sum, { doc_count }) => sum + doc_count, 0),
         fileCount: group.reduce(
           (sumFiles, { key }) =>
-            (viewer.repository.files.aggregations.cases__primary_site.buckets.find(
+            (files.aggregations.cases__primary_site.buckets.find(
               f => f.key === key,
             ) || { doc_count: 0 }).doc_count + sumFiles,
           0,

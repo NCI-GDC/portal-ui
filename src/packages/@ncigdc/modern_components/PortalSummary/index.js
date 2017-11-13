@@ -1,3 +1,4 @@
+import ApolloQuery from '@ncigdc/modern_components/ApolloQuery';
 import Component from './PortalSummary';
-import createRenderer from './PortalSummary.query';
-export default createRenderer(Component);
+import query from './PortalSummary.query';
+export default ApolloQuery({ query, Component, minHeight: 259 });

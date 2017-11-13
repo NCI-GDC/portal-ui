@@ -1,13 +1,8 @@
-// @flow
-
-import { compose } from 'recompose';
-import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
-import { withLoader } from '@ncigdc/uikit/Loaders/Loader';
 
-let PortalSummaryQuery = gql`
+export default gql`
   query PortalSummaryQuery {
-    project {
+    projects {
       aggregations {
         primary_site {
           buckets {
@@ -19,12 +14,12 @@ let PortalSummaryQuery = gql`
         total
       }
     }
-    case {
+    cases {
       hits(first: 0) {
         total
       }
     }
-    file {
+    files {
       hits(first: 0) {
         total
       }
@@ -41,21 +36,3 @@ let PortalSummaryQuery = gql`
     }
   }
 `;
-
-let firstLoad = true;
-
-export default Component =>
-  compose(
-    graphql(PortalSummaryQuery, {
-      props: ({ ownProps, data }) => {
-        const props = {
-          ...data,
-          firstLoad,
-        };
-        firstLoad = false;
-        console.log(123, props);
-        return props;
-      },
-    }),
-    withLoader,
-  )(Component);

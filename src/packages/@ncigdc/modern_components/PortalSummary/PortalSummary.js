@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react';
-import { compose, branch, renderComponent } from 'recompose';
+import { compose, branch, renderComponent, setDisplayName } from 'recompose';
 import { connect } from 'react-redux';
 import styled from '@ncigdc/theme/styled';
 import DoubleHelix from '@ncigdc/theme/icons/DoubleHelix';
@@ -27,9 +27,10 @@ const Title = styled(Row, {
 });
 
 const PortalSummary = compose(
+  setDisplayName('PortalSummary'),
   branch(
-    ({ project, case: cases, file }) =>
-      !project.hits || !cases.hits || !file.hits,
+    ({ projects, cases, files }) =>
+      !projects.hits || !cases.hits || !files.hits,
     renderComponent(() => <div>No data found.</div>),
   ),
   connect(state => ({
@@ -68,7 +69,7 @@ const PortalSummary = compose(
               className="icon-gdc-projects project-icon"
             />
             <span style={{ fontSize: '2.5rem', marginLeft: '0.5rem' }}>
-              <ProjectsCount hits={props.project.hits} />
+              <ProjectsCount hits={props.projects.hits} />
             </span>
           </Row>
         </CountBox>
@@ -80,7 +81,7 @@ const PortalSummary = compose(
               className="icon-gdc-cases data-icon"
             />
             <span style={{ fontSize: '2.5rem', marginLeft: '0.5rem' }}>
-              <PrimarySitesCount aggregations={props.project.aggregations} />
+              <PrimarySitesCount aggregations={props.projects.aggregations} />
             </span>
           </Row>
         </CountBox>
@@ -92,7 +93,7 @@ const PortalSummary = compose(
               className="icon-gdc-cases data-icon"
             />
             <span style={{ fontSize: '2.5rem', marginLeft: '0.5rem' }}>
-              <CasesCount hits={props.case.hits} />
+              <CasesCount hits={props.cases.hits} />
             </span>
           </Row>
         </CountBox>
@@ -106,7 +107,7 @@ const PortalSummary = compose(
               className="fa fa-file-o data-icon"
             />
             <span style={{ fontSize: '2.5rem', marginLeft: '0.5rem' }}>
-              <FilesCount hits={props.file.hits} />
+              <FilesCount hits={props.files.hits} />
             </span>
           </Row>
         </CountBox>

@@ -13,60 +13,76 @@ import { CreateRepositoryCaseSetButton } from '@ncigdc/modern_components/withSet
 import { fetchFilesAndAdd } from '@ncigdc/dux/cart';
 import { ShoppingCartIcon } from '@ncigdc/theme/icons';
 import DownloadManifestButton from '@ncigdc/components/DownloadManifestButton';
+import type { TGroupFilter } from '@ncigdc/utils/filters/types';
+
+import pluralize from '@ncigdc/utils/pluralize';
 
 export default compose(
   connect(),
   withRouter,
-)(({ filters, totalCases, dispatch, totalFiles, push }) => {
-  return (
-    <Row
-      style={{
-        justifyContent: 'space-between',
-        padding: '0 0 2rem',
-        alignItems: 'center',
-      }}
-    >
-      <Row spacing="0.2rem">
-        <Button
-          onClick={() => dispatch(fetchFilesAndAdd(filters, totalFiles))}
-          leftIcon={<ShoppingCartIcon />}
-        >
-          Add All Files to Cart
-        </Button>
-        <DownloadManifestButton fileCount={totalFiles} filters={filters} />
-        <CreateRepositoryCaseSetButton
-          filters={filters}
-          disabled={!totalCases}
-          style={{ paddingLeft: '5px' }}
-          onComplete={setId => {
-            push({
-              pathname: '/exploration',
-              query: {
-                filters: stringifyJSONParam({
-                  op: 'AND',
-                  content: [
-                    {
-                      op: 'IN',
-                      content: {
-                        field: 'cases.case_id',
-                        value: [`set_id:${setId}`],
+)(
+  ({
+    filters,
+    totalCases,
+    dispatch,
+    totalFiles,
+    push,
+  }: {
+    filters: TGroupFilter,
+    totalCases: number,
+    totalFiles: number,
+    dispatch: Function,
+    push: Function,
+  }) => {
+    return (
+      <Row
+        style={{
+          justifyContent: 'space-between',
+          padding: '0 0 2rem',
+          alignItems: 'center',
+        }}
+      >
+        <Row spacing="0.2rem">
+          <Button
+            onClick={() => dispatch(fetchFilesAndAdd(filters, totalFiles))}
+            leftIcon={<ShoppingCartIcon />}
+          >
+            Add All Files to Cart
+          </Button>
+          <DownloadManifestButton fileCount={totalFiles} filters={filters} />
+          <CreateRepositoryCaseSetButton
+            filters={filters}
+            disabled={!totalCases}
+            style={{ paddingLeft: '5px' }}
+            onComplete={setId => {
+              push({
+                pathname: '/exploration',
+                query: {
+                  filters: stringifyJSONParam({
+                    op: 'AND',
+                    content: [
+                      {
+                        op: 'IN',
+                        content: {
+                          field: 'cases.case_id',
+                          value: [`set_id:${setId}`],
+                        },
                       },
-                    },
-                  ],
-                }),
-              },
-            });
-          }}
-        >
-          {'View '}
-          {totalCases.toLocaleString()}{' '}
-          {totalCases === 1 ? ' Case ' : ' Cases '}
-          in Exploration
-        </CreateRepositoryCaseSetButton>
+                    ],
+                  }),
+                },
+              });
+            }}
+          >
+            {'View '}
+            {totalCases.toLocaleString()} {pluralize(' Case', totalCases)}
+            {' in Exploration'}
+          </CreateRepositoryCaseSetButton>
+        </Row>
+        <AnnotationsLink>
+          <i className="fa fa-edit" /> Browse Annotations
+        </AnnotationsLink>
       </Row>
-      <AnnotationsLink>
-        <i className="fa fa-edit" /> Browse Annotations
-      </AnnotationsLink>
-    </Row>
-  );
-});
+    );
+  },
+);

@@ -22,6 +22,7 @@ export default compose(
 )(({ push, query, viewer: { repository: { cases: { hits: { edges } } } } }) => {
   const p = edges[0].node;
   const totalFiles = p.files.hits.total;
+
   const dataCategories = Object.keys(DATA_CATEGORIES).reduce((acc, key) => {
     const type = p.summary.data_categories.find(
       item => item.data_category === DATA_CATEGORIES[key].full,

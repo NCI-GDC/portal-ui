@@ -3,10 +3,20 @@ const NOTIFY = 'NOTIFY';
 const CLOSE_NOTIFICATION = 'CLOSE_NOTIFICATION';
 
 export type TAction = { type: string, payload: any };
-export type TState = { id: number, component: Object, action: string };
+type TNotification = {
+  id: string | null,
+  component: Object | null,
+  action: string | null,
+};
+export type TState = TNotification & {
+  closed: boolean,
+};
 
-const notify = payload => ({ type: NOTIFY, payload });
-const closeNotification = payload => ({ type: CLOSE_NOTIFICATION, payload });
+const notify = (payload: TNotification) => ({ type: NOTIFY, payload });
+const closeNotification = (closed: boolean) => ({
+  type: CLOSE_NOTIFICATION,
+  payload: closed,
+});
 const initialState = {
   id: null,
   component: null,

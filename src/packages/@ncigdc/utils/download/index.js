@@ -7,12 +7,11 @@ import { store } from '../../../../Portal';
 import _ from 'lodash';
 import Cookies from 'js-cookie';
 
-import { notify } from '@ncigdc/dux/notification';
 import { setModal } from '@ncigdc/dux/modal';
 
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import Button from '@ncigdc/uikit/Button';
-import { closeNotification } from '@ncigdc/dux/notification';
+import { notify, closeNotification } from '@ncigdc/dux/notification';
 
 const getBody = iframe => {
   const document = iframe.contentWindow || iframe.contentDocument;

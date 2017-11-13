@@ -8,20 +8,13 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { compose } from 'recompose';
 
-import { Row } from '@ncigdc/uikit/Flex';
-import Button from '@ncigdc/uikit/Button';
+import ActionsRow from '@ncigdc/components/ActionsRow';
 import withRouter from '@ncigdc/utils/withRouter';
 import TabbedLinks from '@ncigdc/components/TabbedLinks';
-import AnnotationsLink from '@ncigdc/components/Links/AnnotationsLink';
 import FilesTable from '@ncigdc/modern_components/FilesTable';
 import RepoCasesTable from '@ncigdc/modern_components/RepoCasesTable';
 import { API } from '@ncigdc/utils/constants';
 import { stringifyJSONParam, parseJSONParam } from '@ncigdc/utils/uri';
-
-import { CreateRepositoryCaseSetButton } from '@ncigdc/modern_components/withSetAction';
-import { fetchFilesAndAdd } from '@ncigdc/dux/cart';
-import { ShoppingCartIcon } from '@ncigdc/theme/icons';
-import DownloadManifestButton from '@ncigdc/components/DownloadManifestButton';
 
 require('lodash-backports').register();
 
@@ -129,75 +122,14 @@ class SmartSearchComponent extends React.Component {
           }}
           dangerouslySetInnerHTML={{ __html: angularBootstrapHtml }}
         />
-        <Row
-          style={{
-            justifyContent: 'space-between',
-            padding: '0 0 2rem',
-            alignItems: 'center',
-          }}
-        >
-          <Row spacing="0.2rem">
-            <Button
-              onClick={() =>
-                this.props.dispatch(
-                  fetchFilesAndAdd(
-                    this.props.filters,
-                    this.props.viewer.repository.files.hits.total,
-                  ),
-                )}
-              leftIcon={<ShoppingCartIcon />}
-            >
-              Add All Files to Cart
-            </Button>
-            <DownloadManifestButton
-              fileCount={this.props.viewer.repository.files.hits.total}
-              filters={this.props.filters}
-            />
-            <CreateRepositoryCaseSetButton
-              filters={this.props.filters}
-              disabled={!this.props.viewer.repository.cases.hits.total}
-              style={{ paddingLeft: '5px' }}
-              onComplete={setId => {
-                this.props.push({
-                  pathname: '/exploration',
-                  query: {
-                    filters: stringifyJSONParam({
-                      op: 'AND',
-                      content: [
-                        {
-                          op: 'IN',
-                          content: {
-                            field: 'cases.case_id',
-                            value: [`set_id:${setId}`],
-                          },
-                        },
-                      ],
-                    }),
-                  },
-                });
-              }}
-            >
-              {'View '}
-              {this.props.viewer.repository.cases.hits.total.toLocaleString()}{' '}
-              {this.props.viewer.repository.cases.hits.total === 1
-                ? ' Case'
-                : ' Cases '}
-              in Exploration
-            </CreateRepositoryCaseSetButton>
-          </Row>
-        </Row>
+        <ActionsRow
+          totalCases={this.props.viewer.repository.cases.hits.total}
+          totalFiles={this.props.viewer.repository.files.hits.total}
+          filters={this.props.filters}
+        />
         <TabbedLinks
           queryParam="searchTableTab"
           defaultIndex={0}
-          tabToolbar={
-            <Row spacing="2rem" style={{ alignItems: 'center' }}>
-              <AnnotationsLink className="test-annotations-link">
-                <Button leftIcon={<i className="fa fa-edit" />}>
-                  Browse Annotations
-                </Button>
-              </AnnotationsLink>
-            </Row>
-          }
           links={[
             {
               id: 'files',

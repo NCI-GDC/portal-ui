@@ -11,12 +11,12 @@ import retryMiddleware from '@ncigdc/utils/retryMiddleware';
 
 import { viewerQuery } from '@ncigdc/routes/queries';
 import Container from './Portal';
-import { API } from '@ncigdc/utils/constants';
+import { REACT_APP_GRAPHQL } from '@ncigdc/utils/constants';
 
 Relay.injectNetworkLayer(
   new RelayNetworkLayer([
     urlMiddleware({
-      url: req => urlJoin(API, 'graphql'),
+      url: req => urlJoin(REACT_APP_GRAPHQL),
     }),
     retryMiddleware({
       fetchTimeout: 15000,

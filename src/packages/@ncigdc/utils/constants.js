@@ -8,6 +8,8 @@ export const AUTH =
   localStorage.REACT_APP_GDC_AUTH || process.env.REACT_APP_GDC_AUTH || '';
 export const AUTH_API = localStorage.REACT_APP_GDC_AUTH_API || `${AUTH}/api`;
 export const API = localStorage.REACT_APP_API || process.env.REACT_APP_API;
+export const REACT_APP_GRAPHQL =
+  localStorage.REACT_APP_GRAPHQL || process.env.REACT_APP_GRAPHQL;
 
 export const API_OVERRIDE_KEYS = [
   'REACT_APP_API',

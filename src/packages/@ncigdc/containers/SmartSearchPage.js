@@ -153,7 +153,6 @@ class SmartSearchComponent extends React.Component {
               fileCount={this.props.viewer.repository.files.hits.total}
               filters={this.props.filters}
             />
-            {console.log(this.props)}
             <CreateRepositoryCaseSetButton
               filters={this.props.filters}
               disabled={!this.props.viewer.repository.cases.hits.total}

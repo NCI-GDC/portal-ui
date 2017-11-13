@@ -31,6 +31,7 @@
     "@oncojs/survivalplot": "0.6.5",
     "apollo-cache-inmemory": "1.1.0",
     "apollo-client": "2.0.2",
+    "apollo-link": "1.0.0",
     "apollo-link-http": "1.1.0",
     "babel-polyfill": "6.23.0",
     "blueimp-md5": "2.7.0",

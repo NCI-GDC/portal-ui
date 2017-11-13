@@ -12,6 +12,7 @@ import { setModal } from '@ncigdc/dux/modal';
 
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import Button from '@ncigdc/uikit/Button';
+import { closeNotification } from '@ncigdc/dux/notification';
 
 const getBody = iframe => {
   const document = iframe.contentWindow || iframe.contentDocument;
@@ -43,11 +44,11 @@ const showErrorModal = error => {
 
 const progressChecker = (
   iFrame,
-  cookieKey,
-  downloadToken,
-  altMessage,
-  inProgress,
-  done,
+  cookieKey: string,
+  downloadToken: string,
+  altMessage: boolean,
+  inProgress: Function,
+  done: Function,
 ) => {
   inProgress();
   const waitTime = 1000;
@@ -72,8 +73,8 @@ const progressChecker = (
   const finished = () => {
     //console.info('Download check count & wait interval (in milliseconds):', attempts, waitTime);
     timeoutPromise = null;
+    store.dispatch(closeNotification(true));
     iFrame.parentNode.removeChild(iFrame);
-    store.dispatch(notify(null));
     done();
   };
 
@@ -223,7 +224,17 @@ const arrayToStringFields = ['expand', 'fields', 'facets'];
 const arrayToStringOnFields = (key, value, fields) =>
   _.includes(fields, key) ? [].concat(value).join() : value;
 
-const download = ({ url, params, method = 'GET', altMessage = false }) => {
+const download = ({
+  url,
+  params,
+  method = 'GET',
+  altMessage = false,
+}: {
+  url: string,
+  params: any,
+  method: string,
+  altMessage?: boolean,
+}) => {
   const downloadToken = _.uniqueId(`${+new Date()}-`);
   // a cookie value that the server will remove as a download-ready indicator
   const cookieKey = navigator.cookieEnabled

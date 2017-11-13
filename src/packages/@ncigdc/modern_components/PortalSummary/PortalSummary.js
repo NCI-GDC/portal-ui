@@ -28,10 +28,8 @@ const Title = styled(Row, {
 
 const PortalSummary = compose(
   branch(
-    ({ viewer }) =>
-      !viewer.projects.hits ||
-      !viewer.repository.cases.hits ||
-      !viewer.repository.files.hits,
+    ({ project, case: cases, file }) =>
+      !project.hits || !cases.hits || !file.hits,
     renderComponent(() => <div>No data found.</div>),
   ),
   connect(state => ({
@@ -70,7 +68,7 @@ const PortalSummary = compose(
               className="icon-gdc-projects project-icon"
             />
             <span style={{ fontSize: '2.5rem', marginLeft: '0.5rem' }}>
-              <ProjectsCount hits={props.viewer.projects.hits} />
+              <ProjectsCount hits={props.project.hits} />
             </span>
           </Row>
         </CountBox>
@@ -82,9 +80,7 @@ const PortalSummary = compose(
               className="icon-gdc-cases data-icon"
             />
             <span style={{ fontSize: '2.5rem', marginLeft: '0.5rem' }}>
-              <PrimarySitesCount
-                aggregations={props.viewer.projects.aggregations}
-              />
+              <PrimarySitesCount aggregations={props.project.aggregations} />
             </span>
           </Row>
         </CountBox>
@@ -96,7 +92,7 @@ const PortalSummary = compose(
               className="icon-gdc-cases data-icon"
             />
             <span style={{ fontSize: '2.5rem', marginLeft: '0.5rem' }}>
-              <CasesCount hits={props.viewer.repository.cases.hits} />
+              <CasesCount hits={props.case.hits} />
             </span>
           </Row>
         </CountBox>
@@ -110,7 +106,7 @@ const PortalSummary = compose(
               className="fa fa-file-o data-icon"
             />
             <span style={{ fontSize: '2.5rem', marginLeft: '0.5rem' }}>
-              <FilesCount hits={props.viewer.repository.files.hits} />
+              <FilesCount hits={props.file.hits} />
             </span>
           </Row>
         </CountBox>
@@ -121,7 +117,7 @@ const PortalSummary = compose(
             <span style={{ fontSize: '2.5rem', marginLeft: '0.5rem' }}>
               <CasesCount
                 className="test-genes-count"
-                hits={props.viewer.explore.genes.hits}
+                hits={props.gene_centric.hits}
               />
             </span>
           </Row>
@@ -133,7 +129,7 @@ const PortalSummary = compose(
             <span style={{ fontSize: '2.5rem', marginLeft: '0.5rem' }}>
               <FilesCount
                 className="test-mutations-count"
-                hits={props.viewer.explore.ssms.hits}
+                hits={props.ssm_centric.hits}
               />
             </span>
           </Row>

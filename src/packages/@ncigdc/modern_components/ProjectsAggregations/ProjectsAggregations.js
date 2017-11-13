@@ -1,8 +1,7 @@
 /* @flow */
 
 import React from 'react';
-import Relay from 'react-relay/classic';
-import { compose, withState } from 'recompose';
+import { compose, withState, setDisplayName } from 'recompose';
 
 import SuggestionFacet from '@ncigdc/components/Aggregations/SuggestionFacet';
 import FacetHeader from '@ncigdc/components/Aggregations/FacetHeader';
@@ -69,7 +68,9 @@ const projectFacets = [
   },
 ];
 
-export const ProjectAggregationsComponent = compose(
+export default compose(
+  setDisplayName('ProjectsAggregations'),
+  withTheme,
   withState('projectIdCollapsed', 'setProjectIdCollapsed', false),
 )((props: TProps) => (
   <div className="test-project-aggregations">
@@ -105,7 +106,7 @@ export const ProjectAggregationsComponent = compose(
         key={facet.full}
         facet={facet}
         title={facet.title}
-        aggregation={props.aggregations[escapeForRelay(facet.field)]}
+        aggregation={props.projects.aggregations[escapeForRelay(facet.field)]}
         relay={props.relay}
         additionalProps={facet.additionalProps}
         style={{ borderBottom: `1px solid ${props.theme.greyScale5}` }}
@@ -113,55 +114,3 @@ export const ProjectAggregationsComponent = compose(
     ))}
   </div>
 ));
-
-export const ProjectAggregationsQuery = {
-  fragments: {
-    aggregations: () => Relay.QL`
-      fragment on ProjectAggregations {
-        primary_site {
-          buckets {
-            doc_count
-            key
-          }
-        }
-        program__name {
-          buckets {
-            doc_count
-            key
-          }
-        }
-        disease_type {
-          buckets {
-            doc_count
-            key
-          }
-        }
-        project_id {
-          buckets {
-            doc_count
-            key
-          }
-        }
-        summary__experimental_strategies__experimental_strategy {
-          buckets {
-            doc_count
-            key
-          }
-        }
-        summary__data_categories__data_category {
-          buckets {
-            doc_count
-            key
-          }
-        }
-      }
-    `,
-  },
-};
-
-const ProjectAggregations = Relay.createContainer(
-  withTheme(ProjectAggregationsComponent),
-  ProjectAggregationsQuery,
-);
-
-export default ProjectAggregations;

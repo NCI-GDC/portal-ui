@@ -9,7 +9,7 @@ import TabbedLinks from '@ncigdc/components/TabbedLinks';
 import GitHut from '@ncigdc/components/GitHut';
 import { Column } from '@ncigdc/uikit/Flex';
 import ProjectsTable from '@ncigdc/modern_components/ProjectsTable';
-import ProjectAggregations from './ProjectAggregations';
+import ProjectsAggregations from '@ncigdc/modern_components/ProjectsAggregations';
 
 export type TProps = {
   relay: Object,
@@ -52,8 +52,7 @@ export const ProjectsPageComponent = (props: TProps) => (
         id: 'projects',
         text: 'Projects',
         component: (
-          <ProjectAggregations
-            aggregations={props.viewer.projects.aggregations}
+          <ProjectsAggregations
             suggestions={(props.viewer.autocomplete || { hits: [] }).hits}
             setAutocomplete={(value, onReadyStateChange) =>
               props.relay.setVariables(
@@ -66,7 +65,7 @@ export const ProjectsPageComponent = (props: TProps) => (
     ]}
     results={
       <Column spacing="2rem">
-        <ProjectsCharts />
+        {/* <ProjectsCharts />
         <TabbedLinks
           queryParam="projectsTableTab"
           defaultIndex={0}
@@ -82,7 +81,7 @@ export const ProjectsPageComponent = (props: TProps) => (
               component: <GitHut params={props.relay.route.params} />,
             },
           ]}
-        />
+        /> */}
       </Column>
     }
   />
@@ -109,11 +108,6 @@ export const ProjectsPageQuery = {
               name
               primary_site
             }
-          }
-        }
-        projects {
-          aggregations(filters: $filters aggregations_filter_themselves: false) {
-            ${ProjectAggregations.getFragment('aggregations')}
           }
         }
       }

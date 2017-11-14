@@ -65,7 +65,7 @@ export const ProjectsPageComponent = (props: TProps) => (
     ]}
     results={
       <Column spacing="2rem">
-        {/* <ProjectsCharts />
+        {/* <ProjectsCharts /> */}
         <TabbedLinks
           queryParam="projectsTableTab"
           defaultIndex={0}
@@ -75,13 +75,13 @@ export const ProjectsPageComponent = (props: TProps) => (
               text: 'Table',
               component: <ProjectsTable />,
             },
-            {
-              id: 'graph',
-              text: 'Graph',
-              component: <GitHut params={props.relay.route.params} />,
-            },
+            // {
+            //   id: 'graph',
+            //   text: 'Graph',
+            //   component: <GitHut params={props.relay.route.params} />,
+            // },
           ]}
-        /> */}
+        />
       </Column>
     }
   />

@@ -14,7 +14,7 @@ export default compose(
   connect(state => ({ tableColumns: state.tableColumns.projects.ids })),
   mapProps(props => ({
     ...props,
-    hits: props.viewer.projects.hits,
+    hits: props.projects.hits,
   })),
 )(
   ({

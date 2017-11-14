@@ -6,6 +6,9 @@ let loaded = {};
 export default ({ query, Component, minHeight, Loader }) =>
   compose(
     graphql(query, {
+      options: ({ variables = {} }) => {
+        return { variables };
+      },
       props: ({ ownProps, data }) => {
         const props = {
           ...data,

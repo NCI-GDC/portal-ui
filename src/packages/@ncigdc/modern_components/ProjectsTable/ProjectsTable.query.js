@@ -31,7 +31,7 @@ export default gql`
     $size: Int
     $offset: Int
     $projects_sort: [Sort]
-    $filters: FiltersArgument
+    $filters: JSON
   ) {
     projects {
       hits(

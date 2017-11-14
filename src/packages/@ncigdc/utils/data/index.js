@@ -14,7 +14,7 @@ export const CATEGORY_MAP: TCategoryMap = _.fromPairs(
 );
 
 export const findDataCategory: TFindDataCategory = (category, categories) =>
-  categories.find(x => x.data_category === CATEGORY_MAP[category]) || {
+  (categories || []).find(x => x.data_category === CATEGORY_MAP[category]) || {
     data_category: CATEGORY_MAP[category],
     file_count: 0,
     case_count: 0,

@@ -10,12 +10,12 @@ export default gql`
             key
           }
         }
-        # program__name {
-        #   buckets {
-        #     doc_count
-        #     key
-        #   }
-        # }
+        program__name {
+          buckets {
+            doc_count
+            key
+          }
+        }
         disease_type {
           buckets {
             doc_count

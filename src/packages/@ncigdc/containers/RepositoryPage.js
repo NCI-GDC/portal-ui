@@ -6,27 +6,22 @@ import { connect } from 'react-redux';
 import { compose, setDisplayName } from 'recompose';
 
 import { Row } from '@ncigdc/uikit/Flex';
-import Button from '@ncigdc/uikit/Button';
 
 import SearchPage from '@ncigdc/components/SearchPage';
 import TabbedLinks from '@ncigdc/components/TabbedLinks';
-import AnnotationsLink from '@ncigdc/components/Links/AnnotationsLink';
 import NoResultsMessage from '@ncigdc/components/NoResultsMessage';
-import DownloadManifestButton from '@ncigdc/components/DownloadManifestButton';
 
 import RepoCasesTable from '@ncigdc/modern_components/RepoCasesTable';
 import CaseAggregations from '@ncigdc/containers/CaseAggregations';
 import FilesTable from '@ncigdc/modern_components/FilesTable';
 import FileAggregations from '@ncigdc/containers/FileAggregations';
-import { fetchFilesAndAdd } from '@ncigdc/dux/cart';
-import { ShoppingCartIcon, SaveIcon } from '@ncigdc/theme/icons';
+import { SaveIcon } from '@ncigdc/theme/icons';
 import withFilters from '@ncigdc/utils/withFilters';
 import formatFileSize from '@ncigdc/utils/formatFileSize';
 import RepoCasesPies from '@ncigdc/components/TabPieCharts/RepoCasesPies';
 import RepoFilesPies from '@ncigdc/components/TabPieCharts/RepoFilesPies';
-import { CreateRepositoryCaseSetButton } from '@ncigdc/modern_components/withSetAction';
 import withRouter from '@ncigdc/utils/withRouter';
-import { stringifyJSONParam } from '@ncigdc/utils/uri';
+import ActionsRow from '@ncigdc/components/ActionsRow';
 
 export type TProps = {
   push: Function,
@@ -152,57 +147,11 @@ export const RepositoryPageComponent = (props: TProps) => {
         ]}
         results={
           <span>
-            <Row
-              style={{
-                justifyContent: 'space-between',
-                padding: '0 0 2rem',
-                alignItems: 'center',
-              }}
-            >
-              <Row spacing="0.2rem">
-                <Button
-                  onClick={() =>
-                    props.dispatch(fetchFilesAndAdd(props.filters, fileCount))}
-                  leftIcon={<ShoppingCartIcon />}
-                >
-                  Add All Files to Cart
-                </Button>
-                <DownloadManifestButton
-                  fileCount={fileCount}
-                  filters={props.filters}
-                />
-                <CreateRepositoryCaseSetButton
-                  filters={props.filters}
-                  disabled={!caseCount}
-                  style={{ paddingLeft: '5px' }}
-                  onComplete={setId => {
-                    props.push({
-                      pathname: '/exploration',
-                      query: {
-                        filters: stringifyJSONParam({
-                          op: 'AND',
-                          content: [
-                            {
-                              op: 'IN',
-                              content: {
-                                field: 'cases.case_id',
-                                value: [`set_id:${setId}`],
-                              },
-                            },
-                          ],
-                        }),
-                      },
-                    });
-                  }}
-                >
-                  View {caseCount.toLocaleString()}{' '}
-                  {caseCount === 1 ? ' Case' : ' Cases'} in Exploration
-                </CreateRepositoryCaseSetButton>
-              </Row>
-              <AnnotationsLink>
-                <i className="fa fa-edit" /> Browse Annotations
-              </AnnotationsLink>
-            </Row>
+            <ActionsRow
+              totalCases={caseCount}
+              totalFiles={fileCount}
+              filters={props.filters}
+            />
             <TabbedLinks
               queryParam="searchTableTab"
               defaultIndex={0}

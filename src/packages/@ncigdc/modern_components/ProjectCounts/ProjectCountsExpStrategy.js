@@ -7,6 +7,8 @@ import Link from '@ncigdc/components/Links/Link';
 import removeEmptyKeys from '@ncigdc/utils/removeEmptyKeys';
 import { stringifyJSONParam } from '@ncigdc/utils/uri';
 import { EXPERIMENTAL_STRATEGIES } from '@ncigdc/utils/constants';
+import SparkMeterWithTooltip from '@ncigdc/components/SparkMeterWithTooltip';
+import SampleSize from '@ncigdc/components/SampleSize';
 
 const colors20 = scaleOrdinal(schemeCategory20);
 
@@ -26,12 +28,23 @@ export default compose(
   ),
 )(({ viewer: { projects: { hits: { edges } } }, query, push }) => {
   const project = edges[0].node;
+  const totalFiles = project.summary.file_count;
+  const totalCases = project.summary.case_count;
+
   const experimentalStrategies = EXPERIMENTAL_STRATEGIES.reduce(
     (acc, name) => [
       ...acc,
-      ...project.summary.experimental_strategies.filter(
-        item => item.experimental_strategy.toLowerCase() === name,
-      ),
+      ...project.summary.experimental_strategies
+        .filter(item => item.experimental_strategy.toLowerCase() === name)
+        .map(item => ({
+          ...item,
+          file_count_meter: (
+            <SparkMeterWithTooltip part={item.file_count} whole={totalFiles} />
+          ),
+          case_count_meter: (
+            <SparkMeterWithTooltip part={item.case_count} whole={totalCases} />
+          ),
+        })),
     ],
     [],
   );
@@ -52,6 +65,7 @@ export default compose(
         ]);
 
         return {
+          ...item,
           id: item.experimental_strategy,
           experimental_strategy: (
             <span>
@@ -130,9 +144,61 @@ export default compose(
           style: { textAlign: 'right' },
         },
         {
+          key: 'case_count_meter',
+          title: (
+            <Link
+              pathname="/repository"
+              query={{
+                filters: makeFilter([
+                  {
+                    field: 'cases.project.project_id',
+                    value: project.project_id,
+                  },
+                ]),
+                facetTab: 'cases',
+                searchTableTab: 'cases',
+              }}
+              title="Browse cases"
+            >
+              <SampleSize n={totalCases} />
+            </Link>
+          ),
+          thStyle: {
+            width: 1,
+            textAlign: 'center',
+          },
+          style: { textAlign: 'left' },
+        },
+        {
           key: 'file_count',
           title: 'Files',
           style: { textAlign: 'right' },
+        },
+        {
+          key: 'file_count_meter',
+          title: (
+            <Link
+              pathname="/repository"
+              query={{
+                filters: makeFilter([
+                  {
+                    field: 'cases.project.project_id',
+                    value: project.project_id,
+                  },
+                ]),
+                facetTab: 'files',
+                searchTableTab: 'files',
+              }}
+              title="Browse files"
+            >
+              <SampleSize n={totalFiles} />
+            </Link>
+          ),
+          thStyle: {
+            width: 1,
+            textAlign: 'center',
+          },
+          style: { textAlign: 'left' },
         },
       ]}
     />

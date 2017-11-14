@@ -41,12 +41,13 @@ async function fetchCurves(
   const url = `analysis/survival?${queryString.stringify(params)}`;
   performanceTracker.begin('survival:fetch');
   const rawData = await fetchApi(url);
+  const data = enoughData(rawData) ? rawData : { results: [] };
   performanceTracker.end('survival:fetch', {
     filters: params.filters,
-    data_sets: rawData.results.length,
-    donors: _.sum(rawData.results.map(x => x.donors.length)),
+    data_sets: data.results.length,
+    donors: _.sum(data.results.map(x => x.donors.length)),
   });
-  return enoughData(rawData) ? rawData : { results: [] };
+  return data;
 }
 
 export const getDefaultCurve = memoize(

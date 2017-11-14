@@ -5,11 +5,12 @@ import Relay from 'react-relay/classic';
 import queryString from 'query-string';
 import PropTypes from 'prop-types';
 
-import { Row } from '@ncigdc/uikit/Flex';
-import Button from '@ncigdc/uikit/Button';
+import { connect } from 'react-redux';
+import { compose } from 'recompose';
+
+import ActionsRow from '@ncigdc/components/ActionsRow';
 import withRouter from '@ncigdc/utils/withRouter';
 import TabbedLinks from '@ncigdc/components/TabbedLinks';
-import AnnotationsLink from '@ncigdc/components/Links/AnnotationsLink';
 import FilesTable from '@ncigdc/modern_components/FilesTable';
 import RepoCasesTable from '@ncigdc/modern_components/RepoCasesTable';
 import { API } from '@ncigdc/utils/constants';
@@ -21,7 +22,7 @@ declare var _: Object;
 declare var angular: Object;
 
 _.pluck = _.map;
-
+const enhance = compose(connect(), withRouter);
 const angularBootstrapHtml = `
   <smart-search-wrapper></smart-search-wrapper>
 `;
@@ -121,19 +122,14 @@ class SmartSearchComponent extends React.Component {
           }}
           dangerouslySetInnerHTML={{ __html: angularBootstrapHtml }}
         />
-
+        <ActionsRow
+          totalCases={this.props.viewer.repository.cases.hits.total}
+          totalFiles={this.props.viewer.repository.files.hits.total}
+          filters={this.props.filters}
+        />
         <TabbedLinks
           queryParam="searchTableTab"
           defaultIndex={0}
-          tabToolbar={
-            <Row spacing="2rem" style={{ alignItems: 'center' }}>
-              <AnnotationsLink className="test-annotations-link">
-                <Button leftIcon={<i className="fa fa-edit" />}>
-                  Browse Annotations
-                </Button>
-              </AnnotationsLink>
-            </Row>
-          }
           links={[
             {
               id: 'files',
@@ -183,7 +179,7 @@ export const SmartSearchQuery = {
 };
 
 const SmartSearchPage = Relay.createContainer(
-  withRouter(SmartSearchComponent),
+  enhance(SmartSearchComponent),
   SmartSearchQuery,
 );
 

@@ -228,6 +228,10 @@ export default compose(
                 palette: [SET1_COLOUR, SET2_COLOUR],
               }),
             )}
+          <div
+            // padding on bottom of page for toolbox
+            style={{ height: '200px' }}
+          />
         </div>
         <div style={{ flex: 1 }}>
           <Toolbox

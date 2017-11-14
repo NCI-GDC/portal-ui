@@ -14,7 +14,7 @@ export default ({ dispatch, label }) => {
         <span>
           {label} Saved<br />
           View in{' '}
-          <ManageSetsLink onClick={() => dispatch(closeNotification(true))} />
+          <ManageSetsLink onClick={() => dispatch(closeNotification())} />
         </span>
       ),
     }),

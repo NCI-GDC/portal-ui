@@ -72,7 +72,7 @@ const progressChecker = (
   const finished = () => {
     //console.info('Download check count & wait interval (in milliseconds):', attempts, waitTime);
     timeoutPromise = null;
-    store.dispatch(closeNotification(true));
+    store.dispatch(closeNotification());
     iFrame.parentNode.removeChild(iFrame);
     done();
   };

@@ -13,15 +13,15 @@ export type TState = TNotification & {
 };
 
 const notify = (payload: TNotification) => ({ type: NOTIFY, payload });
-const closeNotification = (closed: boolean) => ({
+const closeNotification = () => ({
   type: CLOSE_NOTIFICATION,
-  payload: closed,
+  payload: true,
 });
 const initialState = {
   id: null,
   component: null,
   action: null,
-  closed: false,
+  closed: true,
 };
 
 function reducer(state: TState = initialState, action: TAction): TState {

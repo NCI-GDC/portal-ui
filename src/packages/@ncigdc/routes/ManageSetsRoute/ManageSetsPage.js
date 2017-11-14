@@ -319,7 +319,7 @@ const ManageSetsPage = ({
                           }}
                           onClick={() => {
                             setsToRemove.map(set => dispatch(addSet(set)));
-                            dispatch(closeNotification(true));
+                            dispatch(closeNotification());
                           }}
                         >
                           Undo

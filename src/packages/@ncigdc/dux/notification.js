@@ -3,15 +3,25 @@ const NOTIFY = 'NOTIFY';
 const CLOSE_NOTIFICATION = 'CLOSE_NOTIFICATION';
 
 export type TAction = { type: string, payload: any };
-export type TState = { id: number, component: Object, action: string };
+type TNotification = {
+  id: string | null,
+  component: Object | null,
+  action: string | null,
+};
+export type TState = TNotification & {
+  closed: boolean,
+};
 
-const notify = payload => ({ type: NOTIFY, payload });
-const closeNotification = payload => ({ type: CLOSE_NOTIFICATION, payload });
+const notify = (payload: TNotification) => ({ type: NOTIFY, payload });
+const closeNotification = () => ({
+  type: CLOSE_NOTIFICATION,
+  payload: true,
+});
 const initialState = {
   id: null,
   component: null,
   action: null,
-  closed: false,
+  closed: true,
 };
 
 function reducer(state: TState = initialState, action: TAction): TState {

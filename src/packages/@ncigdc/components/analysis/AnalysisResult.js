@@ -54,7 +54,7 @@ function undoNotification(dispatch, analysis) {
               style={{ textDecoration: 'underline' }}
               onClick={() => {
                 analysis.map(set => dispatch(addAnalysis(set)));
-                dispatch(closeNotification(true));
+                dispatch(closeNotification());
               }}
             >
               Undo

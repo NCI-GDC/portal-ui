@@ -65,7 +65,7 @@ export const ProjectsPageComponent = (props: TProps) => (
     ]}
     results={
       <Column spacing="2rem">
-        {/* <ProjectsCharts /> */}
+        <ProjectsCharts />
         <TabbedLinks
           queryParam="projectsTableTab"
           defaultIndex={0}

@@ -1,5 +1,5 @@
 import Component from './ProjectsCharts';
-import withProjects from './ProjectsCharts.relay';
-import withGenesAndCases from './GenesAndCases.relay';
-import withTopCasesCounts from './TopCasesCountByGenes.relay';
+import withProjects from './ProjectsCharts.query';
+import withGenesAndCases from './GenesAndCases.query';
+import withTopCasesCounts from './TopCasesCountByGenes.query';
 export default withProjects(withGenesAndCases(withTopCasesCounts(Component)));

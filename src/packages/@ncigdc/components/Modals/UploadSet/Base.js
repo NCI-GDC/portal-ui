@@ -25,10 +25,13 @@ const enhance = compose(
   withPropsOnChange(
     ['hits', 'validating'],
     ({ hits, setValidating, validating, validateHits, idMap }) => {
-      const {
-        true: noSpecialCharHits = [],
-        false: specialCharHits = [],
-      } = groupBy(hits, id => /^[a-zA-Z0-9\->:]*$/.test(id));
+      const { noSpecialCharHits = [], specialCharHits = [] } = groupBy(
+        hits,
+        id =>
+          /^[a-zA-Z0-9\->:]*$/.test(id)
+            ? 'noSpecialCharHits'
+            : 'specialCharHits',
+      );
 
       if (!validating) {
         validateHits(noSpecialCharHits, setValidating);

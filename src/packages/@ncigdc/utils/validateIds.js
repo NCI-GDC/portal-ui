@@ -75,26 +75,24 @@ export const validateCases = validate(
 function validate(idFields, map, field, endpoint, extraFields = []) {
   return async (ids = [], onValidatingStateChange) => {
     const notValidatedIds = ids.filter(g => typeof map[g] === 'undefined');
-    const filteredUnvalidatedIds = notValidatedIds.filter(x =>
-      /^[a-zA-Z0-9\->:]*$/.test(x),
-    );
-    if (filteredUnvalidatedIds.length <= 0) return;
+
+    if (notValidatedIds.length <= 0) return;
     onValidatingStateChange(true);
     const response = await fetchApiChunked(endpoint, {
       headers: { 'Content-Type': 'application/json' },
       body: {
-        size: filteredUnvalidatedIds.length,
+        size: notValidatedIds.length,
         fields: idFields.concat(extraFields).join(','),
         filters: {
           op: 'IN',
           content: {
             field: `${field}_autocomplete.lowercase`,
-            value: filteredUnvalidatedIds.map(s => s.toLowerCase()),
+            value: notValidatedIds.map(s => s.toLowerCase()),
           },
         },
       },
     });
-    filteredUnvalidatedIds.forEach(g => (map[g] = map[g] || null));
+    notValidatedIds.forEach(g => (map[g] = map[g] || null));
     updateMap(map, idFields, response.data.hits);
 
     onValidatingStateChange(false);

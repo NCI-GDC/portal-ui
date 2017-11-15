@@ -174,10 +174,7 @@ export default compose(
           <div
             className="facet-container"
             style={{
-              display:
-                showSurvival && (loadingSurvival || survivalHasData)
-                  ? 'block'
-                  : 'none',
+              display: 'block',
             }}
           >
             <Survival

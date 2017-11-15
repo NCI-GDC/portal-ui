@@ -62,14 +62,6 @@ export const makeSurvivalCurveFilter = (setId, otherSetId) => ({
 export default compose(
   withTheme,
   withRouter,
-  branch(
-    ({ survivalData, loading }) =>
-      !loading &&
-      (!survivalData ||
-        !survivalData.rawData ||
-        !survivalData.rawData.results.some(Boolean)),
-    renderNothing,
-  ),
 )(
   ({
     loading,

@@ -24,13 +24,26 @@ const enhance = compose(
   withPropsOnChange(
     ['hits', 'validating'],
     ({ hits, setValidating, validating, validateHits, idMap }) => {
+      const { noSpecialCharHits, specialCharHits } = hits.reduce(
+        (acc, id) => ({
+          ...acc,
+          ...(/^[a-zA-Z0-9\->:]*$/.test(id)
+            ? { noSpecialCharHits: [...acc.noSpecialCharHits, id] }
+            : { specialCharHits: [...acc.specialCharHits, id] }),
+        }),
+        { noSpecialCharHits: [], specialCharHits: [] },
+      );
+
       if (!validating) {
-        validateHits(hits, setValidating);
+        validateHits(noSpecialCharHits, setValidating);
       }
 
       return {
-        matched: hits.filter(g => idMap[g]),
-        unmatched: hits.filter(g => idMap[g] === null),
+        matched: noSpecialCharHits.filter(g => idMap[g]),
+        unmatched: [
+          ...noSpecialCharHits.filter(g => idMap[g] === null),
+          ...specialCharHits,
+        ],
       };
     },
   ),

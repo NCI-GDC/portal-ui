@@ -2,6 +2,7 @@
 import React from 'react';
 import { compose, withState } from 'recompose';
 import { connect } from 'react-redux';
+import { groupBy } from 'lodash';
 
 import { Row } from '@ncigdc/uikit/Flex';
 import Button from '@ncigdc/uikit/Button';
@@ -24,15 +25,10 @@ const enhance = compose(
   withPropsOnChange(
     ['hits', 'validating'],
     ({ hits, setValidating, validating, validateHits, idMap }) => {
-      const { noSpecialCharHits, specialCharHits } = hits.reduce(
-        (acc, id) => ({
-          ...acc,
-          ...(/^[a-zA-Z0-9\->:]*$/.test(id)
-            ? { noSpecialCharHits: [...acc.noSpecialCharHits, id] }
-            : { specialCharHits: [...acc.specialCharHits, id] }),
-        }),
-        { noSpecialCharHits: [], specialCharHits: [] },
-      );
+      const {
+        true: noSpecialCharHits = [],
+        false: specialCharHits = [],
+      } = groupBy(hits, id => /^[a-zA-Z0-9\->:]*$/.test(id));
 
       if (!validating) {
         validateHits(noSpecialCharHits, setValidating);

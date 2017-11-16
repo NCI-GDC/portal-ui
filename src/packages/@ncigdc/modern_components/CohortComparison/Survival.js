@@ -1,5 +1,5 @@
 import React from 'react';
-import { compose, branch, renderNothing } from 'recompose';
+import { compose } from 'recompose';
 import SurvivalPlotWrapper from '@ncigdc/components/SurvivalPlotWrapper';
 import Table, { Tr, Td, Th } from '@ncigdc/uikit/Table';
 import { Row } from '@ncigdc/uikit/Flex';
@@ -116,7 +116,8 @@ export default compose(
       <Row>
         <h2>Survival Analysis</h2>
       </Row>
-      {get(survivalData, 'rawData.results[0].donors.length', 0) ||
+      {loading ||
+      get(survivalData, 'rawData.results[0].donors.length', 0) ||
       get(survivalData, 'rawData.results[1].donors.length', 0) ? (
         <div>
           <SurvivalPlotWrapper

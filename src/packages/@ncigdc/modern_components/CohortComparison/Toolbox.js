@@ -160,7 +160,7 @@ export default withTheme(
               display: 'inline-block',
             }}
           >
-            Open venn diagram in new tab
+            Open Venn diagram in new tab
           </CreateOrOpenAnalysis>
         </h2>
 

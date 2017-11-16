@@ -28,7 +28,7 @@ const enhance = compose(
       const { noSpecialCharHits = [], specialCharHits = [] } = groupBy(
         hits,
         id =>
-          /^[a-zA-Z0-9\->:]*$/.test(id)
+          /^[a-zA-Z0-9\->:.]*$/.test(id)
             ? 'noSpecialCharHits'
             : 'specialCharHits',
       );

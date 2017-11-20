@@ -23,7 +23,7 @@ export default (Component: ReactClass<*>) =>
           filters: makeFilter([
             {
               field: fieldMap[ae.entity_type],
-              value: ae.case_id,
+              value: ae.entity_id,
             },
           ]),
         },
@@ -34,19 +34,17 @@ export default (Component: ReactClass<*>) =>
       <Query
         name="SampleType"
         parentProps={props}
-        minHeight={387}
         variables={props.variables}
         Component={Component}
         query={graphql`
           query SampleType_relayQuery($filters: FiltersArgument) {
             repository {
               cases {
-                hits(first: 99, filters: $filters) {
+                hits(first: 1, filters: $filters) {
                   edges {
                     node {
-                      case_id
                       samples {
-                        hits(first: 99, filters: $filters) {
+                        hits(first: 1, filters: $filters) {
                           edges {
                             node {
                               sample_type

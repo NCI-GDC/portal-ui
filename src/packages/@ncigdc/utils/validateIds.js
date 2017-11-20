@@ -75,9 +75,9 @@ export const validateCases = validate(
 function validate(idFields, map, field, endpoint, extraFields = []) {
   return async (ids = [], onValidatingStateChange) => {
     const notValidatedIds = ids.filter(g => typeof map[g] === 'undefined');
+
     if (notValidatedIds.length <= 0) return;
     onValidatingStateChange(true);
-
     const response = await fetchApiChunked(endpoint, {
       headers: { 'Content-Type': 'application/json' },
       body: {

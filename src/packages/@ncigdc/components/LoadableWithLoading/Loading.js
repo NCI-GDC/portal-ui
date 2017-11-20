@@ -1,8 +1,20 @@
+/* @flow */
+
 import React from 'react';
 import Overlay from '@ncigdc/uikit/Overlay';
 import Spinner from '@ncigdc/uikit/Loaders/Material';
 
-const Loading = ({ isLoading, timedOut, pastDelay, error }) => {
+const Loading = ({
+  isLoading,
+  timedOut,
+  pastDelay,
+  error,
+}: {
+  isLoading: boolean,
+  timedOut: boolean,
+  pastDelay: boolean,
+  error: boolean,
+}) => {
   if (isLoading) {
     // While our other component is loading...
     if (timedOut) {

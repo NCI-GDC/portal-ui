@@ -85,6 +85,7 @@
     "jailbreak-react-scripts": "0.0.2",
     "prettier": "1.7.0",
     "react-scripts": "1.0.7",
-    "relay-compiler": "1.3.0"
+    "relay-compiler": "1.3.0",
+    "react-test-renderer": "16.1.1"
   }
 }

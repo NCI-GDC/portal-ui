@@ -78,16 +78,20 @@ export default compose(
                   </Tr>
                 ))}
                 <Tr>
-                  {tableInfo
-                    .filter(x => x.td)
-                    .map(
-                      x =>
-                        x.total ? (
-                          <x.total key={x.id} hits={hits} />
-                        ) : (
-                          <Td key={x.id} />
-                        ),
-                    )}
+                  {hits.total > 1 &&
+                    tableInfo.filter(x => x.td).map(x => {
+                      if (x.total) {
+                        return <x.total key={x.id} hits={hits} />;
+                      }
+                      if (x.id === 'project_id') {
+                        return (
+                          <Td key="project_id" style={{ fontWeight: 'bold' }}>
+                            Total
+                          </Td>
+                        );
+                      }
+                      return <Td key={x.id} />;
+                    })}
                 </Tr>
               </tbody>
             }

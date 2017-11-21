@@ -90,7 +90,6 @@ export default compose(
     const cases = loadedItems;
     const caseId = query.caseId || '';
     const currentIndex = cases.findIndex(c => c.case_id === caseId);
-    console.log(backLocation);
     return (
       <div style={{ padding: '0 1rem' }}>
         <Heading

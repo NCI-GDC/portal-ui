@@ -54,7 +54,7 @@ export const withLoader = (Component: ReactClass<*>) => {
           ...style,
         }}
       >
-        {!firstLoad && <Component {...props} />}
+        {!firstLoad && <Component loading={loading} {...props} />}
         <Loader loading={loading} />
       </div>
     );

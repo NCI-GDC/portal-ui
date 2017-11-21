@@ -26,7 +26,7 @@ import AddToCartButtonSingle from '@ncigdc/components/AddToCartButtonSingle';
 import DownloadFile from '@ncigdc/components/DownloadFile';
 import { visualizingButton } from '@ncigdc/theme/mixins';
 import { RepositoryFilesLink } from '@ncigdc/components/Links/RepositoryLink';
-
+import SampleType from '@ncigdc/modern_components/SampleType';
 import { makeFilter } from '@ncigdc/utils/filters';
 import LocalPaginationTable from '@ncigdc/components/LocalPaginationTable';
 import withRouter from '@ncigdc/utils/withRouter';
@@ -126,6 +126,13 @@ const File = ({
       >
         {ae.entity_submitter_id}
       </CaseLink>
+    ),
+    sample_type: ['sample', 'portion', 'analyte', 'slide', 'aliquot'].some(
+      x => x === ae.entity_type,
+    ) ? (
+      <SampleType entityType={ae.entity_type} entityId={ae.entity_id} />
+    ) : (
+      '--'
     ),
     annotation_count: getAnnotationsCount(node.annotations, ae),
   }));
@@ -297,6 +304,7 @@ const File = ({
           headings={[
             { key: 'entity_submitter_id', title: 'Entity ID' },
             { key: 'entity_type', title: 'Entity Type' },
+            { key: 'sample_type', title: 'Sample Type' },
             { key: 'case_id', title: 'Case UUID' },
             { key: 'annotation_count', title: 'Annotations' },
           ]}

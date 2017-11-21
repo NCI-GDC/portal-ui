@@ -9,6 +9,6 @@ const Box = styled.span({
   display: 'inline-block',
 });
 
-const GreyBox = () => <Box />;
+const GreyBox = ({ style }: { style: Object }) => <Box style={{ ...style }} />;
 
 export default GreyBox;

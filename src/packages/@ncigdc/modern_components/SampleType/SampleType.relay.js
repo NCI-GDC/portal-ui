@@ -1,9 +1,10 @@
 import React from 'react';
 import { graphql } from 'react-relay';
 import { compose, withPropsOnChange } from 'recompose';
-import Query from '@ncigdc/modern_components/Query';
+
 import { makeFilter } from '@ncigdc/utils/filters';
 import { withRouter } from 'react-router-dom';
+import { BaseQuery } from '@ncigdc/modern_components/Query';
 
 const fieldMap = {
   sample: 'cases.samples.sample_id',
@@ -16,14 +17,13 @@ const fieldMap = {
 export default (Component: ReactClass<*>) =>
   compose(
     withRouter,
-    withPropsOnChange(['ae'], ({ ae }) => {
-      console.log(ae, fieldMap[ae.entity_type]);
+    withPropsOnChange(['entityType, entityId'], ({ entityType, entityId }) => {
       return {
         variables: {
           filters: makeFilter([
             {
-              field: fieldMap[ae.entity_type],
-              value: ae.entity_id,
+              field: fieldMap[entityType],
+              value: entityId,
             },
           ]),
         },
@@ -31,7 +31,7 @@ export default (Component: ReactClass<*>) =>
     }),
   )((props: Object) => {
     return (
-      <Query
+      <BaseQuery
         name="SampleType"
         parentProps={props}
         variables={props.variables}

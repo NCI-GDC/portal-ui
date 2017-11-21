@@ -130,7 +130,7 @@ const File = ({
     sample_type: ['sample', 'portion', 'analyte', 'slide', 'aliquot'].some(
       x => x === ae.entity_type,
     ) ? (
-      <SampleType ae={ae} />
+      <SampleType entityType={ae.entity_type} entityId={ae.entity_id} />
     ) : (
       '--'
     ),

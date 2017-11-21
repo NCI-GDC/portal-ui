@@ -20,7 +20,7 @@ export default compose(
   return children ? (
     children(count)
   ) : count === '' ? (
-    <GreyBox style={style} />
+    <GreyBox />
   ) : (
     <span style={style}>{count.toLocaleString()}</span>
   );

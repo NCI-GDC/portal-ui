@@ -1,18 +1,19 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { compose } from 'recompose';
+import urlJoin from 'url-join';
+import { AUTH_API } from '@ncigdc/utils/constants';
 
 import Table, { Tr, Td, TdNum, ThNum } from '@ncigdc/uikit/Table';
 import { stringifyJSONParam } from '@ncigdc/utils/uri';
 import { Tooltip } from '@ncigdc/uikit/Tooltip';
 import { setModal } from '@ncigdc/dux/modal';
 import SaveSetModal from '@ncigdc/components/Modals/SaveSetModal';
-import { SET_DOWNLOAD_FIELDS as downloadFields } from '@ncigdc/utils/constants';
 import GreyBox from '@ncigdc/uikit/GreyBox';
-import DownloadButton from '@ncigdc/components/DownloadButton';
-import { iconButton } from '@ncigdc/theme/mixins';
 import { MAX_SET_SIZE } from '@ncigdc/utils/constants';
 import { withTheme } from '@ncigdc/theme';
-import { compose } from 'recompose';
+import download from '@ncigdc/utils/download';
+import DownloadIcon from '@ncigdc/theme/icons/Download';
 
 const ActionsTd = compose(
   connect(),
@@ -32,93 +33,117 @@ const ActionsTd = compose(
     const saveSetDisabled = count > MAX_SET_SIZE;
 
     return (
-      <Td style={{ textAlign: 'right', opacity: hide ? 0 : 1 }}>
-        <Tooltip
-          Component={
-            saveSetDisabled
-              ? `Set Operation can not be saved because it is over the limit of ${MAX_SET_SIZE}`
-              : 'Save selection as new set'
-          }
-          style={{ marginRight: 5 }}
-        >
-          <i
-            style={
-              saveSetDisabled
-                ? { color: theme.greyScale4 }
-                : { cursor: 'pointer', color: 'rgb(37, 94, 153)' }
-            }
-            className="fa fa-save"
-            onClick={() => {
-              if (saveSetDisabled) return;
-              dispatch(
-                setModal(
-                  <SaveSetModal
-                    title={`Save selection as new set`}
-                    total={count}
-                    filters={filters}
-                    type={type}
-                    displayType={type}
-                    CreateSetButton={CreateSetButton}
-                    setName="My Set"
-                  />,
-                ),
-              );
-            }}
-          />
-        </Tooltip>
-        <Tooltip Component="Export as TSV" style={{ marginRight: 5 }}>
-          <DownloadButton
-            className="test-download-set-tsv"
-            style={iconButton}
-            endpoint={`${type}s`}
-            activeText="" //intentionally blank
-            inactiveText="" //intentionally blank
-            altMessage={false}
-            setParentState={() => {}}
-            active={false}
-            filters={filters}
-            extraParams={{ format: 'tsv' }}
-            fields={downloadFields[type]}
-            filename={fileName
-              .replace(/∩/g, 'intersection')
-              .replace(/∪/g, 'union')}
-          />
-        </Tooltip>
-        {type === 'case' && (
-          <CreateSetButton
-            filters={filters}
-            onComplete={setId => {
-              push({
-                pathname: '/repository',
-                query: {
-                  filters: stringifyJSONParam({
-                    op: 'AND',
-                    content: [
+      <Td style={{ textAlign: 'right' }}>
+        {hide ? (
+          ''
+        ) : (
+          <span>
+            <Tooltip
+              Component={
+                saveSetDisabled
+                  ? `Set Operation can not be saved because it is over the limit of ${MAX_SET_SIZE}`
+                  : 'Save selection as new set'
+              }
+              style={{ marginRight: 5 }}
+            >
+              <i
+                style={
+                  saveSetDisabled
+                    ? { color: theme.greyScale4 }
+                    : { cursor: 'pointer', color: 'rgb(37, 94, 153)' }
+                }
+                className="fa fa-save"
+                onClick={() => {
+                  if (saveSetDisabled) return;
+                  dispatch(
+                    setModal(
+                      <SaveSetModal
+                        title={`Save selection as new set`}
+                        total={count}
+                        filters={filters}
+                        type={type}
+                        displayType={type}
+                        CreateSetButton={CreateSetButton}
+                        setName="My Set"
+                      />,
+                    ),
+                  );
+                }}
+              />
+            </Tooltip>
+            <CreateSetButton
+              filters={filters}
+              onComplete={setId => {
+                download({
+                  params: {
+                    attachment: true,
+                    format: 'tsv',
+                    sets: [
                       {
-                        op: 'IN',
-                        content: {
-                          field: `${type}s.${type}_id`,
-                          value: [`set_id:${setId}`],
-                        },
+                        id: setId,
+                        type,
+                        filename: `${fileName
+                          .replace(/∩/g, 'intersection')
+                          .replace(/∪/g, 'union')}.tsv`,
                       },
                     ],
-                  }),
-                },
-              });
-            }}
-            Component={p => (
-              <Tooltip Component="View files in repository">
-                <i
-                  className="fa fa-database"
-                  {...p}
+                  },
+                  url: urlJoin(AUTH_API, '/tar_sets'),
+                  method: 'POST',
+                  altMessage: false,
+                })(() => {}, () => {});
+              }}
+              Component={props => (
+                <Tooltip
+                  {...props}
+                  Component={'Export as TSV'}
                   style={{
                     cursor: 'pointer',
-                    color: 'rgb(37, 94, 153)',
+                    color: theme.primary,
+                    textDecoration: 'underline',
                   }}
-                />
-              </Tooltip>
+                >
+                  <DownloadIcon key="icon" style={{ marginRight: '5px' }} />
+                </Tooltip>
+              )}
+            />
+            {type === 'case' && (
+              <CreateSetButton
+                filters={filters}
+                onComplete={setId => {
+                  push({
+                    pathname: '/repository',
+                    query: {
+                      filters: stringifyJSONParam({
+                        op: 'AND',
+                        content: [
+                          {
+                            op: 'IN',
+                            content: {
+                              field: `${type}s.${type}_id`,
+                              value: [`set_id:${setId}`],
+                            },
+                          },
+                        ],
+                      }),
+                    },
+                  });
+                }}
+                Component={p => (
+                  <Tooltip Component="View files in repository">
+                    <i
+                      className="fa fa-database"
+                      {...p}
+                      style={{
+                        cursor: 'pointer',
+                        color: 'rgb(37, 94, 153)',
+                      }}
+                    />
+                  </Tooltip>
+                )}
+              />
             )}
-          />
+          </span>
         )}
       </Td>
     );

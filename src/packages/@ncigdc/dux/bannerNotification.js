@@ -2,10 +2,7 @@
 
 import React from 'react';
 
-import {
-  FindDataBanner,
-  ApiOverrideBanner,
-} from '@ncigdc/components/DismissibleBanner';
+import { ApiOverrideBanner } from '@ncigdc/components/DismissibleBanner';
 import { fetchApi } from '@ncigdc/utils/ajax';
 import { LOCAL_STORAGE_API_OVERRIDE } from '@ncigdc/utils/constants';
 
@@ -48,15 +45,7 @@ export function dismissNotification(notificationID: string) {
   };
 }
 
-let initialState = [
-  {
-    components: ['PORTAL'],
-    level: 'INFO',
-    id: 'initial_banner',
-    dismissible: true,
-    message: <FindDataBanner />,
-  },
-];
+let initialState = [];
 
 if (LOCAL_STORAGE_API_OVERRIDE) {
   initialState.push({
@@ -64,6 +53,7 @@ if (LOCAL_STORAGE_API_OVERRIDE) {
     level: 'INFO',
     id: 'api_override',
     dismissible: true,
+    reactElement: true,
     message: <ApiOverrideBanner />,
   });
 }

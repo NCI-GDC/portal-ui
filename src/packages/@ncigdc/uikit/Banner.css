@@ -1,0 +1,8 @@
+.header-banner a, .header-banner a:visited {
+  color: white;
+  text-decoration: underline;
+}
+
+.header-banner p {
+  margin: 0;
+}

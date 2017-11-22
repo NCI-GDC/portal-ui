@@ -3,6 +3,8 @@
 import React from 'react';
 
 import Row from '@ncigdc/uikit/Flex/Row';
+import Markdown from 'react-markdown';
+import './Banner.css';
 
 const style = {
   headerBanner: {
@@ -54,6 +56,7 @@ type BannerProps = {
   dismissible: boolean,
   handleOnDismiss: () => {},
   dismissed: boolean,
+  reactElement: boolean,
 };
 
 const Banner = ({
@@ -62,6 +65,7 @@ const Banner = ({
   dismissible,
   handleOnDismiss,
   dismissed,
+  reactElement,
 }: BannerProps) => (
   <Row
     style={{
@@ -72,7 +76,9 @@ const Banner = ({
     className="header-banner"
   >
     {levelToIcon[level.toLowerCase()] || levelToIcon.info}
-    <span style={style.message}>{message}</span>
+    <span style={style.message}>
+      {!reactElement ? <Markdown source={message} /> : message}
+    </span>
     {dismissible && (
       <span
         className="header-banner-dismiss"

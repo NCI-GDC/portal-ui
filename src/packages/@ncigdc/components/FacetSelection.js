@@ -202,6 +202,7 @@ export default compose(
               .length === 0,
           aggregation.count === 0,
           aggregation.count === null,
+          aggregation.stats && aggregation.stats.count === 0,
         ]),
     ),
   })),

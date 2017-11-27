@@ -78,16 +78,17 @@ export default compose(
                   </Tr>
                 ))}
                 <Tr>
-                  {tableInfo
-                    .filter(x => x.td)
-                    .map(
-                      x =>
-                        x.total ? (
-                          <x.total key={x.id} hits={hits} />
-                        ) : (
-                          <Td key={x.id} />
-                        ),
-                    )}
+                  {hits.total > 1 &&
+                    tableInfo
+                      .filter(x => x.td)
+                      .map(
+                        x =>
+                          x.total ? (
+                            <x.total key={x.id} hits={hits} />
+                          ) : (
+                            <Td key={x.id} />
+                          ),
+                      )}
                 </Tr>
               </tbody>
             }

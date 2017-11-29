@@ -19,6 +19,10 @@ import PlusIcon from '@ncigdc/theme/icons/Plus';
 import { ExternalLink } from '@ncigdc/uikit/Links';
 import Button from '@ncigdc/uikit/Button';
 import { withTheme } from '@ncigdc/theme';
+import {
+  ImpactThContents,
+  ImpactTdContents,
+} from '@ncigdc/modern_components/SsmsTable/SsmsTable.model.js';
 
 const paginationPrefix = 'consequencesTable';
 
@@ -53,11 +57,11 @@ export default compose(
         {},
       );
 
-      const canonicalTranscriptId = (find(
+      const canonicalTranscript = (find(
         node.consequence.hits.edges,
         'node.transcript.is_canonical',
-      ) || { node: { transcript: { transcript_id: '' } } }).node.transcript
-        .transcript_id;
+      ) || { node: { transcript: { transcript_id: '' } } }).node.transcript;
+      const canonicalTranscriptId = canonicalTranscript.transcript_id;
 
       const consequenceDataGrouped = groupBy(node.consequence.hits.edges, c => {
         const { transcript: t } = c.node;
@@ -80,13 +84,23 @@ export default compose(
             aa_change: transcript.aa_change,
             consequence: transcript.consequence_type,
             coding_dna_change: transcript.annotation.hgvsc,
+            impact: ImpactTdContents({
+              node: {
+                polyphen_score: transcript.annotation.polyphen_score,
+                polyphen_impact: transcript.annotation.polyphen_impact,
+                sift_score: transcript.annotation.sift_score,
+                sift_impact: transcript.annotation.sift_impact,
+                impact: transcript.annotation.impact,
+              },
+              theme,
+            }),
             strand: transcript.gene.gene_strand ? (
-              <span>
+              <Row style={{ justifyContent: 'space-around' }}>
                 {strandIconMap[transcript.gene.gene_strand.toString(10)]}
                 <ForTsvExport>
                   {transcript.gene.gene_strand.toString(10)}
                 </ForTsvExport>
-              </span>
+              </Row>
             ) : (
               '--'
             ),
@@ -200,7 +214,8 @@ export default compose(
             title: 'Coding DNA Change',
             tdStyle: { wordBreak: 'break-all', whiteSpace: 'pre-line' },
           },
-          { key: 'strand', title: 'Strand' },
+          { key: 'impact', title: ImpactThContents({ theme }) },
+          { key: 'strand', title: 'Gene Strand' },
           { key: 'transcripts', title: 'Transcript(s)' },
         ]}
       />

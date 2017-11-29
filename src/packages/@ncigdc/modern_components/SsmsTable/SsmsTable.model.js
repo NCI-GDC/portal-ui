@@ -2,7 +2,10 @@
 
 import React from 'react';
 import { scaleOrdinal, schemeCategory10 } from 'd3';
+import Color from 'color';
 import { startCase, truncate, get } from 'lodash';
+
+import styled from '@ncigdc/theme/styled';
 import { Th, Td } from '@ncigdc/uikit/Table';
 import { makeFilter, addInFilters } from '@ncigdc/utils/filters';
 import { DNA_CHANGE_MARKERS } from '@ncigdc/utils/constants';
@@ -22,8 +25,116 @@ import Button from '@ncigdc/uikit/Button';
 import { truncateAfterMarker } from '@ncigdc/utils/string';
 import { ForTsvExport } from '@ncigdc/components/DownloadTableToTsvButton';
 import { createSelectColumn } from '@ncigdc/tableModels/utils';
+import { Row, Column } from '@ncigdc/uikit/Flex';
 
 const colors = scaleOrdinal(schemeCategory10);
+const Box = styled.div({
+  padding: '5px 5px',
+  borderRadius: '2px',
+  display: 'inline-block',
+  border: ({ theme }) => `1px solid ${theme.greyScale7}`,
+});
+
+export const ImpactThContents = ({ theme }: { theme: Object }) => (
+  <Tooltip
+    style={tableToolTipHint()}
+    Component={
+      <Column>
+        <Row>
+          <b>VEP</b>:{' '}
+          {Object.entries(theme.impacts).map(([key, value]) => (
+            <div style={{ marginRight: '2px' }} key={key}>
+              {key} <Box key={key} style={{ backgroundColor: value }} />
+            </div>
+          ))}
+        </Row>
+        {['polyphen', 'sift'].map(impactType => (
+          <Row style={{ paddingTop: '5px' }} key={impactType}>
+            <b style={{ textTransform: 'capitalize' }}>{impactType}</b>: score 0{' '}
+            {' '}
+            <Row
+              style={{
+                justifyContent: 'space-between',
+                width: '75px',
+                paddingRight: '5px',
+                paddingLeft: '5px',
+              }}
+            >
+              {[0, 0.25, 0.5, 0.75, 1].map(s => (
+                <Box
+                  style={{
+                    backgroundColor: Color(theme[impactType])
+                      .darken(s)
+                      .rgbString(),
+                  }}
+                  key={s}
+                />
+              ))}
+            </Row>
+            1
+          </Row>
+        ))}
+      </Column>
+    }
+  >
+    Impact
+  </Tooltip>
+);
+
+export const ImpactTdContents = ({
+  node,
+  theme,
+}: {
+  node: {
+    impact: string,
+    polyphen_score: number,
+    polyphen_impact: string,
+    sift_impact: string,
+    sift_score: number,
+  },
+  theme: Object,
+}) => (
+  <Row
+    style={{
+      display: 'flex',
+      justifyContent: 'space-between',
+    }}
+  >
+    {!['LOW', 'MODERATE', 'HIGH', 'MODIFIER'].includes(node.impact) ? null : (
+      <BubbleIcon
+        toolTipText={`VEP Impact: ${node.impact}`}
+        text={node.impact.slice(0, node.impact === 'MODIFIER' ? 2 : 1)}
+        backgroundColor={theme.impacts[node.impact]}
+      />
+    )}
+    <BubbleIcon
+      style={{ opacity: (node.polyphen_impact || '').length === 0 ? 0 : 1 }}
+      toolTipText={
+        (node.polyphen_impact || '').length !== 0 &&
+        `PolyPhen Impact: ${node.polyphen_impact} / PolyPhen score: ${node.polyphen_score}`
+      }
+      text="P"
+      backgroundColor={Color(theme.polyphen)
+        .darken(node.polyphen_score)
+        .rgbString()}
+    />
+    <BubbleIcon
+      style={{ opacity: (node.sift_impact || '').length === 0 ? 0 : 1 }}
+      toolTipText={
+        (node.polyphen_impact || '').length !== 0 &&
+        `Sift Impact: ${node.sift_impact} / Sift score: ${node.sift_score}`
+      }
+      text="S"
+      backgroundColor={Color(theme.sift)
+        .darken(node.sift_score)
+        .rgbString()}
+    />
+    <ForTsvExport>
+      VEP: {node.impact} Polyphen: {node.polyphen_impact} score{' '}
+      {node.polyphen_score} Sift: {node.sift_impact} score {node.sift_score}
+    </ForTsvExport>
+  </Row>
+);
 
 const SsmsTableModel = [
   createSelectColumn({ idField: 'ssm_id' }),
@@ -242,27 +353,9 @@ const SsmsTableModel = [
     id: 'impact',
     sortable: true,
     downloadable: true,
-    th: () => (
-      <Th>
-        Impact<br />(VEP)
-      </Th>
-    ),
-    td: ({ node, theme }) => (
-      <Td>
-        {!['LOW', 'MODERATE', 'HIGH', 'MODIFIER'].includes(
-          node.impact,
-        ) ? null : (
-          <span>
-            <BubbleIcon
-              toolTipText={node.impact}
-              text={node.impact.slice(0, node.impact === 'MODIFIER' ? 2 : 1)}
-              backgroundColor={theme.impacts[node.impact]}
-            />
-            <ForTsvExport>{node.impact}</ForTsvExport>
-          </span>
-        )}
-      </Td>
-    ),
+    th: ({ theme }) => <Th>{ImpactThContents({ theme })}</Th>,
+    //th: ({ theme }) => <Th>test</Th>,
+    td: ({ node, theme }) => <Td>{ImpactTdContents({ node, theme })}</Td>,
   },
   {
     name: 'Survival',

@@ -34,6 +34,9 @@ const theme = {
     LOW: '#015c0a',
     MODIFIER: '#c94d18',
   },
+  polyphen: '#8292ff',
+  sift: '#98eae5',
+
   //
   // alerts
 

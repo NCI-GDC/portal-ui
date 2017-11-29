@@ -2,7 +2,7 @@
 import React from 'react';
 import { Tooltip } from '@ncigdc/uikit/Tooltip';
 
-const bubbleStyle = {
+export const bubbleStyle = {
   color: 'white',
   padding: '2px 5px',
   borderRadius: '8px',
@@ -17,13 +17,21 @@ type TProps = {
   backgroundColor: string,
 };
 
-export default ({ text, toolTipText, backgroundColor, ...props }: TProps) => (
+export default ({
+  text,
+  toolTipText,
+  backgroundColor,
+  style,
+  ...props
+}: TProps) => (
   <Tooltip Component={toolTipText} className={props.className + ' bubble-icon'}>
     <span
       style={{
         ...bubbleStyle,
+        ...style,
         backgroundColor,
       }}
+      {...props}
     >
       {text}
     </span>

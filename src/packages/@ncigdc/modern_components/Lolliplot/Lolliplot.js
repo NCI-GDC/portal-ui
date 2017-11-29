@@ -43,14 +43,8 @@ const collisionDataBoxStyle = {
   marginBottom: '4px',
   marginLeft: '20px',
   fontSize: '10px',
-  padding: '20px',
+  padding: '20px 20px 20px 10px',
 };
-const DatumBox = styled.div({
-  padding: '10px 0px 10px 0px',
-  ':hover': {
-    cursor: 'pointer',
-  },
-});
 const LinkSpan = styled.span({
   textDecoration: 'underline',
   color: ({ theme }) => theme.primary,
@@ -133,8 +127,7 @@ export default compose(
     },
   ),
   withState('expandDomains', 'toggleExpandedDomains', false),
-  withState('showCollisionsDataBox', 'setShowCollisionsDataBox', false),
-  withState('collidedDataList', 'populateCollisionsDataList', []),
+  withState('selectedCollisions', 'selectCollisions', []),
 )(
   ({
     activeTranscript,
@@ -159,10 +152,8 @@ export default compose(
     expandDomains,
     toggleExpandedDomains,
     lolliplotCollisions,
-    showCollisionsDataBox,
-    setShowCollisionsDataBox,
-    collidedDataList,
-    populateCollisionsDataList,
+    selectedCollisions,
+    selectCollisions,
   }) => (
     <Row>
       <div id={id} style={{ flex: 1, userSelect: 'none' }}>
@@ -194,19 +185,15 @@ export default compose(
               lolliplotCollisions={lolliplotCollisions}
               onPointClick={d => {
                 if (lolliplotCollisions[`${d.x},${d.y}`]) {
-                  setShowCollisionsDataBox(true);
-                  populateCollisionsDataList(
-                    lolliplotCollisions[`${d.x},${d.y}`],
-                  );
+                  selectCollisions(lolliplotCollisions[`${d.x},${d.y}`]);
                 } else {
-                  setShowCollisionsDataBox(false);
                   push(`/ssms/${d.id}`);
                 }
               }}
               onPointMouseover={({ y: cases = 0, ...d }) => {
                 lolliplotCollisions[`${d.x},${cases}`]
                   ? setTooltip(
-                      'Click to display more mutations at this coordinate',
+                      'There are multiple mutations at this coordinate. Click to view.',
                     )
                   : setTooltip(
                       <span>
@@ -330,21 +317,51 @@ export default compose(
         )}
       </div>
       <div>
-        {showCollisionsDataBox && (
+        {selectedCollisions.filter(
+          d => !state[`${blacklist}Blacklist`].has(d[blacklist]),
+        ).length > 1 && (
           <div style={collisionDataBoxStyle}>
-            <h6 style={{ margin: '0px' }}>{`Mutations at ${collidedDataList[0]
-              .x},${collidedDataList[0].y}`}</h6>
-            {collidedDataList.map((d, i) => {
+            <h6 style={{ margin: '0px' }}>
+              {`Mutations at ${selectedCollisions[0].x}, ${selectedCollisions[0]
+                .y}`}
+              <a onClick={() => selectCollisions([])}>
+                <i style={{ float: 'right' }} className="fa fa-close" />
+              </a>
+            </h6>
+
+            {selectedCollisions.map((d, i) => {
               return (
-                <DatumBox onClick={() => push(`/ssms/${d.id}`)} key={d.id}>
+                <span
+                  style={{
+                    padding: '10px 0px 5px 0px',
+                    display: 'flex',
+                    flexDirection: 'row',
+                  }}
+                  key={d.id}
+                >
                   <div>
-                    <b>DNA Change: {d.genomic_dna_change}</b>
+                    <svg height="8" width="8" style={{ marginRight: '5px' }}>
+                      <circle
+                        cx="4"
+                        cy="4"
+                        r="4"
+                        fill={mutationColors[blacklist][d[blacklist]]}
+                      />
+                    </svg>
                   </div>
-                  <div>ID: {d.id}</div>
-                  <div>AA Change: {d.aa_change}</div>
-                  <div># of Cases: {d.y.toLocaleString()}</div>
-                  <div>Functional Impact: {d.impact}</div>
-                </DatumBox>
+                  <div>
+                    <div>
+                      <b>DNA Change: {d.genomic_dna_change}</b>
+                    </div>
+                    <div>ID: {d.id}</div>
+                    <div>AA Change: {d.aa_change}</div>
+                    <div># of Cases: {d.y.toLocaleString()}</div>
+                    <div>Functional Impact: {d.impact}</div>
+                    <LinkSpan onClick={() => push(`/ssms/${d.id}`)}>
+                      View Mutation
+                    </LinkSpan>
+                  </div>
+                </span>
               );
             })}
           </div>

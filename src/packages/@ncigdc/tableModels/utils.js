@@ -109,9 +109,9 @@ export const createSelectColumn: TCreateSelectColumn = ({
     downloadable: false,
     hidden: false,
     th: ({ nodes, selectedIds, setSelectedIds }) => {
-      const ids = nodes.map(node => node[idField]);
+      //TODO: make it easier to understand the structure of nodes obj
+      const ids = nodes.map(node => node.node[idField]);
       const allSelected = ids.every(id => selectedIds.includes(id));
-
       return (
         <Th rowSpan={headerRowSpan}>
           <input

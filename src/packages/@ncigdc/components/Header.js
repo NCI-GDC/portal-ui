@@ -42,6 +42,7 @@ const styles = {
 
 const Header = compose(
   withState('isCollapsed', 'setIsCollapsed', true),
+  withState('isInSearchMode', 'setIsInSearchMode', false),
   withRouter,
   connect(state => ({
     notifications: state.bannerNotification,
@@ -73,128 +74,155 @@ const Header = compose(
   }),
   withTheme,
   pure,
-)(({ user, notifications, dispatch, theme, isCollapsed, setIsCollapsed }) => (
-  <header
-    id="header"
-    className="navbar navbar-default navbar-static-top"
-    role="banner"
-  >
-    {notifications.map(n => (
-      <Banner
-        {...n}
-        key={n.id}
-        handleOnDismiss={() => dispatch(dismissNotification(n.id))}
-      />
-    ))}
-    <div className="container-fluid">
-      <div className="navbar-header">
-        <button
-          type="button"
-          className="navbar-toggle"
-          onClick={() => setIsCollapsed(!isCollapsed)}
+)(
+  ({
+    user,
+    notifications,
+    dispatch,
+    theme,
+    isCollapsed,
+    setIsCollapsed,
+    isInSearchMode,
+    setIsInSearchMode,
+  }) => (
+    <header
+      id="header"
+      className="navbar navbar-default navbar-static-top"
+      role="banner"
+    >
+      {notifications.map(n => (
+        <Banner
+          {...n}
+          key={n.id}
+          handleOnDismiss={() => dispatch(dismissNotification(n.id))}
+        />
+      ))}
+      <div className="container-fluid">
+        <div className="navbar-header">
+          <button
+            type="button"
+            className="navbar-toggle"
+            onClick={() => setIsCollapsed(!isCollapsed)}
+          >
+            <span className="sr-only test-toggle-navigation">
+              Toggle navigation
+            </span>
+            <span className="icon-bar" />
+            <span className="icon-bar" />
+            <span className="icon-bar" />
+          </button>
+          <HomeLink
+            className="navbar-brand"
+            tabIndex="0"
+            style={{ padding: 0 }}
+          >
+            <img src={nciGdcLogo} alt="gdc-logo" />
+            <Hidden>Home</Hidden>
+          </HomeLink>
+        </div>
+        <nav
+          style={{ outline: 'none' }}
+          className={`navbar-collapse ${isCollapsed ? 'collapse' : ''}`}
+          data-uib-collapse="hc.isCollapsed"
+          tabIndex="-1"
+          aria-label="Site Navigation"
+          onClick={() => setIsCollapsed(true)}
         >
-          <span className="sr-only test-toggle-navigation">
-            Toggle navigation
-          </span>
-          <span className="icon-bar" />
-          <span className="icon-bar" />
-          <span className="icon-bar" />
-        </button>
-        <HomeLink className="navbar-brand" tabIndex="0" style={{ padding: 0 }}>
-          <img src={nciGdcLogo} alt="gdc-logo" />
-          <Hidden>Home</Hidden>
-        </HomeLink>
-      </div>
-      <nav
-        style={{ outline: 'none' }}
-        className={`navbar-collapse ${isCollapsed ? 'collapse' : ''}`}
-        data-uib-collapse="hc.isCollapsed"
-        tabIndex="-1"
-        aria-label="Site Navigation"
-        onClick={() => setIsCollapsed(true)}
-      >
-        <ul className="nav navbar-nav">
-          <li>
-            <HomeLink exact activeStyle={styles.activeNavLink(theme)}>
-              <i className="fa fa-home" style={styles.iconPadding} />
-              <span className="header-hidden-sm">Home</span>
-            </HomeLink>
-          </li>
-          <li>
-            <ProjectsLink exact activeStyle={styles.activeNavLink(theme)}>
-              <i className="icon-gdc-projects" style={styles.iconPadding} />
-              <span className="header-hidden-sm">Projects</span>
-            </ProjectsLink>
-          </li>
-          <li>
-            <ExploreLink exact activeStyle={styles.activeNavLink(theme)}>
-              <i className="icon-gdc-data" style={styles.iconPadding} />
-              <span className="header-hidden-sm">Exploration</span>
-            </ExploreLink>
-          </li>
-          <li>
-            <AnalysisLink exact activeStyle={styles.activeNavLink(theme)}>
-              <Row
-                // needed for handling IE default svg style
-                style={{ alignItems: 'center' }}
-              >
-                <AnalysisIcon style={styles.iconPadding} />
-                <span className="header-hidden-sm">Analysis</span>
-              </Row>
-            </AnalysisLink>
-          </li>
-          <li>
-            <RepositoryLink exact activeStyle={styles.activeNavLink(theme)}>
-              <DatabaseIcon style={styles.iconPadding} />
-              <span className="header-hidden-sm">Repository</span>
-            </RepositoryLink>
-          </li>
-        </ul>
-        <ul className="nav navbar-nav navbar-right">
-          <li>
-            <QuickSearch tabIndex="0" />
-          </li>
-          <li>
-            <ManageSetsLink activeStyle={styles.activeNavLink(theme)} />
-          </li>
-          {!user && (
+          <ul className="nav navbar-nav">
             <li>
-              <LoginButton />
+              <HomeLink exact activeStyle={styles.activeNavLink(theme)}>
+                <i className="fa fa-home" style={styles.iconPadding} />
+                <span className="header-hidden-sm">Home</span>
+              </HomeLink>
             </li>
-          )}
-          {user && (
-            <li className="header-hidden-xs">
-              <UserDropdown />
+            <li>
+              <ProjectsLink exact activeStyle={styles.activeNavLink(theme)}>
+                <i className="icon-gdc-projects" style={styles.iconPadding} />
+                <span className="header-hidden-sm">Projects</span>
+              </ProjectsLink>
             </li>
-          )}
-          <li>
-            <CartLink>
-              {count => (
-                <span>
-                  <i
-                    className="fa fa-shopping-cart"
-                    style={styles.iconPadding}
-                  />
-                  <span
-                    className="header-hidden-sm header-hidden-md"
-                    style={styles.iconPadding}
-                  >
-                    Cart
-                  </span>
-                  <span className="label label-primary">
-                    {count.toLocaleString()}
-                  </span>
-                </span>
+            <li>
+              <ExploreLink exact activeStyle={styles.activeNavLink(theme)}>
+                <i className="icon-gdc-data" style={styles.iconPadding} />
+                <span className="header-hidden-sm">Exploration</span>
+              </ExploreLink>
+            </li>
+            <li>
+              <AnalysisLink exact activeStyle={styles.activeNavLink(theme)}>
+                <Row
+                  // needed for handling IE default svg style
+                  style={{ alignItems: 'center' }}
+                >
+                  <AnalysisIcon style={styles.iconPadding} />
+                  <span className="header-hidden-sm">Analysis</span>
+                </Row>
+              </AnalysisLink>
+            </li>
+            <li>
+              <RepositoryLink exact activeStyle={styles.activeNavLink(theme)}>
+                <DatabaseIcon style={styles.iconPadding} />
+                <span className="header-hidden-sm">Repository</span>
+              </RepositoryLink>
+            </li>
+          </ul>
+          <ul className="nav navbar-nav navbar-right">
+            <li>
+              <QuickSearch
+                isInSearchMode={isInSearchMode}
+                setIsInSearchMode={setIsInSearchMode}
+                tabIndex="0"
+              />
+            </li>
+            {!isInSearchMode && (
+              <li>
+                <ManageSetsLink activeStyle={styles.activeNavLink(theme)} />
+              </li>
+            )}
+            {!user &&
+              !isInSearchMode && (
+                <li>
+                  <LoginButton />
+                </li>
               )}
-            </CartLink>
-          </li>
-          <li>
-            <GDCAppsDropdown />
-          </li>
-        </ul>
-      </nav>
-    </div>
-  </header>
-));
+            {user &&
+              !isInSearchMode && (
+                <li className="header-hidden-xs">
+                  <UserDropdown />
+                </li>
+              )}
+            {!isInSearchMode && (
+              <li>
+                <CartLink>
+                  {count => (
+                    <span>
+                      <i
+                        className="fa fa-shopping-cart"
+                        style={styles.iconPadding}
+                      />
+                      <span
+                        className="header-hidden-sm header-hidden-md"
+                        style={styles.iconPadding}
+                      >
+                        Cart
+                      </span>
+                      <span className="label label-primary">
+                        {count.toLocaleString()}
+                      </span>
+                    </span>
+                  )}
+                </CartLink>
+              </li>
+            )}
+            {!isInSearchMode && (
+              <li>
+                <GDCAppsDropdown />
+              </li>
+            )}
+          </ul>
+        </nav>
+      </div>
+    </header>
+  ),
+);
 
 export default Header;

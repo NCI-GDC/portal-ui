@@ -111,7 +111,6 @@ export default compose(
         ...styles.container,
       }}
     >
-      {console.log(state)}
       <span style={styles.searchIconWrapper}>
         <i
           className="fa fa-search stock-icon"

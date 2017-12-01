@@ -72,9 +72,10 @@ const SaveSetModal = ({
           forceCreate
           forceClick={submitted}
           disabled={
-            !inputName ||
-            inputTotal > max ||
-            inputName.length > MAX_SET_NAME_LENGTH
+            inputTotal.toString() === '' ||
+            (!inputName ||
+              inputTotal > max ||
+              inputName.length > MAX_SET_NAME_LENGTH)
           }
           filters={filters}
           size={inputTotal}

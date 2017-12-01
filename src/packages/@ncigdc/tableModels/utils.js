@@ -110,7 +110,8 @@ export const createSelectColumn: TCreateSelectColumn = ({
     hidden: false,
     th: ({ nodes, selectedIds, setSelectedIds }) => {
       // NOTE: "nodes" is really "edges" in the graphql schema
-      const ids = nodes.map(node => node.node[idField]);
+      console.log(nodes);
+      const ids = nodes.map(node => node[idField] || node.node[idField]);
       const allSelected = ids.every(id => selectedIds.includes(id));
       return (
         <Th rowSpan={headerRowSpan}>

@@ -48,7 +48,7 @@ export const ImpactThContents = ({ theme }: { theme: Object }) => (
             </div>
           ))}
         </Row>
-        {['polyphen', 'sift'].map(impactType => (
+        {['SIFT', 'PolyPhen'].map((impactType: string) => (
           <Row style={{ paddingTop: '5px' }} key={impactType}>
             <b style={{ textTransform: 'capitalize' }}>{impactType}</b>: score 0{' '}
             {' '}
@@ -63,7 +63,7 @@ export const ImpactThContents = ({ theme }: { theme: Object }) => (
               {[0, 0.25, 0.5, 0.75, 1].map(s => (
                 <Box
                   style={{
-                    backgroundColor: Color(theme[impactType])
+                    backgroundColor: Color(theme[impactType.toLowerCase()])
                       .darken(s)
                       .rgbString(),
                   }}
@@ -87,10 +87,10 @@ export const ImpactTdContents = ({
 }: {
   node: {
     impact: string,
-    polyphen_score: number,
-    polyphen_impact: string,
     sift_impact: string,
     sift_score: number,
+    polyphen_score: number,
+    polyphen_impact: string,
   },
   theme: Object,
 }) => (
@@ -108,6 +108,17 @@ export const ImpactTdContents = ({
       />
     )}
     <BubbleIcon
+      style={{ opacity: (node.sift_impact || '').length === 0 ? 0 : 1 }}
+      toolTipText={
+        (node.polyphen_impact || '').length !== 0 &&
+        `SIFT Impact: ${node.sift_impact} / SIFT score: ${node.sift_score}`
+      }
+      text="S"
+      backgroundColor={Color(theme.sift)
+        .darken(node.sift_score)
+        .rgbString()}
+    />
+    <BubbleIcon
       style={{ opacity: (node.polyphen_impact || '').length === 0 ? 0 : 1 }}
       toolTipText={
         (node.polyphen_impact || '').length !== 0 &&
@@ -116,17 +127,6 @@ export const ImpactTdContents = ({
       text="P"
       backgroundColor={Color(theme.polyphen)
         .darken(node.polyphen_score)
-        .rgbString()}
-    />
-    <BubbleIcon
-      style={{ opacity: (node.sift_impact || '').length === 0 ? 0 : 1 }}
-      toolTipText={
-        (node.polyphen_impact || '').length !== 0 &&
-        `Sift Impact: ${node.sift_impact} / Sift score: ${node.sift_score}`
-      }
-      text="S"
-      backgroundColor={Color(theme.sift)
-        .darken(node.sift_score)
         .rgbString()}
     />
     <ForTsvExport>
@@ -354,8 +354,11 @@ const SsmsTableModel = [
     sortable: true,
     downloadable: true,
     th: ({ theme }) => <Th>{ImpactThContents({ theme })}</Th>,
-    //th: ({ theme }) => <Th>test</Th>,
-    td: ({ node, theme }) => <Td>{ImpactTdContents({ node, theme })}</Td>,
+    td: ({ node, theme }) => (
+      <Td style={{ width: '70px', paddingRight: '5px' }}>
+        {ImpactTdContents({ node, theme })}
+      </Td>
+    ),
   },
   {
     name: 'Survival',

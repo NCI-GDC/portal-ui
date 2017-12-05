@@ -11,7 +11,7 @@ type TMapData = (data: Array<Object>, theme: Object) => Array<Object>;
 
 const mapData: TMapData = (data, theme) =>
   data.map(hit => {
-    const { transcript } = get(hit, 'consequence.hits.edges[0].node');
+    const { transcript } = get(hit, 'consequence.hits.edges[0].node', {});
     const {
       annotation = {},
       consequence_type: consequenceType = '',

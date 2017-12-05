@@ -32,7 +32,12 @@ export default compose(
     ({ viewer: { explore: { ssms: { hits: { edges } } } } }) => {
       const node = edges[0].node;
 
-      const { transcript } = get(node, 'consequence.hits.edges[0].node');
+      const { transcript } = get(node, 'consequence.hits.edges[0].node', {
+        transcript: {
+          transcript_id: '',
+          annotation: {},
+        },
+      });
 
       return {
         canonicalTranscript: transcript,
@@ -85,32 +90,37 @@ export default compose(
           th: 'Functional Impact',
           td: (
             <div>
-              <ExternalLink
-                data-test="function-impact-transcript-link"
-                key={transcript_id}
-                style={{ paddingRight: '0.5em' }}
-                href={externalReferenceLinks.ensembl(transcript_id)}
-              >
-                {transcript_id}
-              </ExternalLink>
-              <Row>
-                VEP:{' '}
-                <span
-                  style={{
-                    display: 'inline-block',
-                    marginLeft: '0.4em',
-                    marginRight: '0.4em',
-                  }}
-                >
-                  {impact && impact.toLowerCase()}
+              {!transcript_id && 'No canonical transcript'}
+              {transcript_id && (
+                <span>
+                  <ExternalLink
+                    data-test="function-impact-transcript-link"
+                    key={transcript_id}
+                    style={{ paddingRight: '0.5em' }}
+                    href={externalReferenceLinks.ensembl(transcript_id)}
+                  >
+                    {transcript_id}
+                  </ExternalLink>
+                  <Row>
+                    VEP:{' '}
+                    <span
+                      style={{
+                        display: 'inline-block',
+                        marginLeft: '0.4em',
+                        marginRight: '0.4em',
+                      }}
+                    >
+                      {impact && impact.toLowerCase()}
+                    </span>
+                  </Row>
+                  <Row>
+                    SIFT: {sift_impact}, score: {sift_score}
+                  </Row>
+                  <Row>
+                    PolyPhen: {polyphen_impact}, score: {polyphen_score}
+                  </Row>
                 </span>
-              </Row>
-              <Row>
-                Polyphen: {polyphen_impact}, score: {polyphen_score}
-              </Row>
-              <Row>
-                Sift: {sift_impact}, score: {sift_score}
-              </Row>
+              )}
             </div>
           ),
         },

@@ -35,7 +35,6 @@ const strandIconMap = {
 type TProps = {
   consequenceDataGrouped: Object,
   theme: Object,
-  functionalImpactTranscript: Object,
   canonicalTranscriptId: string,
   dataRows: Array<Object>,
   consequences: Array<Object>,
@@ -47,15 +46,6 @@ export default compose(
     ['viewer'],
     ({ viewer: { explore: { ssms: { hits: { edges } } } }, theme }) => {
       const node = edges[0].node;
-      const consequenceOfInterest = node.consequence.hits.edges.find(
-        consequence => get(consequence, 'node.transcript.annotation.impact'),
-        {},
-      );
-      const functionalImpactTranscript = get(
-        consequenceOfInterest,
-        'node.transcript',
-        {},
-      );
 
       const canonicalTranscript = (find(
         node.consequence.hits.edges,
@@ -110,11 +100,6 @@ export default compose(
                   key={transcript.transcript_id}
                   style={{
                     paddingRight: '0.5em',
-                    fontWeight:
-                      transcript.transcript_id ===
-                      functionalImpactTranscript.transcript_id
-                        ? 'bold'
-                        : 'normal',
                   }}
                   href={externalReferenceLinks.ensembl(
                     transcript.transcript_id,
@@ -138,7 +123,6 @@ export default compose(
       );
 
       return {
-        functionalImpactTranscript,
         canonicalTranscriptId,
         consequenceDataGrouped,
         consequences,
@@ -153,7 +137,6 @@ export default compose(
       consequences,
       consequenceDataGrouped,
       canonicalTranscriptId,
-      functionalImpactTranscript,
       theme,
     }: TProps = {},
   ) => (
@@ -214,7 +197,11 @@ export default compose(
             title: 'Coding DNA Change',
             tdStyle: { wordBreak: 'break-all', whiteSpace: 'pre-line' },
           },
-          { key: 'impact', title: ImpactThContents({ theme }) },
+          {
+            key: 'impact',
+            title: ImpactThContents({ theme }),
+            tdStyle: { width: '70px', paddingRight: '5px' },
+          },
           { key: 'strand', title: 'Gene Strand' },
           { key: 'transcripts', title: 'Transcript(s)' },
         ]}

@@ -5,6 +5,7 @@ import Relay from 'react-relay/classic';
 import { get, isEqual } from 'lodash';
 import { compose, lifecycle } from 'recompose';
 
+import withRouter from '@ncigdc/utils/withRouter';
 import SearchPage from '@ncigdc/components/SearchPage';
 import TabbedLinks from '@ncigdc/components/TabbedLinks';
 import GenesTab from '@ncigdc/components/Explore/GenesTab';
@@ -33,20 +34,11 @@ const ImageViewerLinkAsButton = styled(ImageViewerLink, {
 
 export type TProps = {
   filters: {},
-  autocomplete: {
-    cases: {
-      hits: Array<Object>,
-    },
-    genes: {
-      hits: Array<Object>,
-    },
-    ssms: {
-      hits: Array<Object>,
-    },
-  },
   relay: Object,
-  filters: Object,
   viewer: {
+    autocomplete_cases: { hits: Array<Object> },
+    autocomplete_genes: { hits: Array<Object> },
+    autocomplete_ssms: { hits: Array<Object> },
     explore: {
       customCaseFacets: {
         facets: {
@@ -80,6 +72,7 @@ export type TProps = {
   },
   showFacets: boolean,
   setShowFacets: Function,
+  push: Function,
 };
 
 function setVariables({ relay, filters }) {
@@ -112,6 +105,7 @@ function setVariables({ relay, filters }) {
 }
 
 const enhance = compose(
+  withRouter,
   lifecycle({
     componentDidMount() {
       setVariables(this.props);
@@ -123,7 +117,12 @@ const enhance = compose(
     },
   }),
 );
-export const ExplorePageComponent = (props: TProps) => (
+export const ExplorePageComponent = ({
+  viewer,
+  filters,
+  relay,
+  push,
+}: TProps) => (
   <SearchPage
     className="test-explore-page"
     facetTabs={[
@@ -132,11 +131,11 @@ export const ExplorePageComponent = (props: TProps) => (
         text: 'Cases',
         component: (
           <CaseAggregations
-            facets={props.viewer.explore.customCaseFacets}
-            aggregations={props.viewer.explore.cases.aggregations}
-            suggestions={get(props, 'viewer.autocomplete_cases.hits', [])}
+            facets={viewer.explore.customCaseFacets}
+            aggregations={viewer.explore.cases.aggregations}
+            suggestions={get(viewer, 'autocomplete_cases.hits', [])}
             setAutocomplete={(value, onReadyStateChange) =>
-              props.relay.setVariables(
+              relay.setVariables(
                 { idAutocompleteCases: value, runAutocompleteCases: !!value },
                 onReadyStateChange,
               )}
@@ -148,10 +147,10 @@ export const ExplorePageComponent = (props: TProps) => (
         text: 'Genes',
         component: (
           <GeneAggregations
-            aggregations={props.viewer.explore.genes.aggregations}
-            suggestions={get(props, 'viewer.autocomplete_genes.hits', [])}
+            aggregations={viewer.explore.genes.aggregations}
+            suggestions={get(viewer, 'autocomplete_genes.hits', [])}
             setAutocomplete={(value, onReadyStateChange) =>
-              props.relay.setVariables(
+              relay.setVariables(
                 { idAutocompleteGenes: value, runAutocompleteGenes: !!value },
                 onReadyStateChange,
               )}
@@ -163,12 +162,12 @@ export const ExplorePageComponent = (props: TProps) => (
         text: 'Mutations',
         component: (
           <SSMAggregations
-            defaultFilters={props.filters}
-            aggregations={props.viewer.explore.ssms.aggregations}
-            ssms={props.viewer.explore.ssms}
-            suggestions={get(props, 'viewer.autocomplete_ssms.hits', [])}
+            defaultFilters={filters}
+            aggregations={viewer.explore.ssms.aggregations}
+            ssms={viewer.explore.ssms}
+            suggestions={get(viewer, 'autocomplete_ssms.hits', [])}
             setAutocomplete={(value, onReadyStateChange) =>
-              props.relay.setVariables(
+              relay.setVariables(
                 { idAutocompleteSsms: value, runAutocompleteSsms: !!value },
                 onReadyStateChange,
               )}
@@ -180,11 +179,11 @@ export const ExplorePageComponent = (props: TProps) => (
       <span>
         <Row>
           <CreateExploreCaseSetButton
-            filters={props.filters}
-            disabled={!props.viewer.explore.cases.hits.total}
+            filters={filters}
+            disabled={!viewer.explore.cases.hits.total}
             style={{ marginBottom: '2rem' }}
             onComplete={setId => {
-              props.push({
+              push({
                 pathname: '/repository',
                 query: {
                   filters: stringifyJSONParam({
@@ -208,7 +207,7 @@ export const ExplorePageComponent = (props: TProps) => (
           {DISPLAY_SLIDES && (
             <ImageViewerLinkAsButton
               query={{
-                filters: props.filters,
+                filters: filters,
               }}
             >
               View Images
@@ -221,8 +220,8 @@ export const ExplorePageComponent = (props: TProps) => (
           links={[
             {
               id: 'cases',
-              text: `Cases (${props.viewer.explore.cases.hits.total.toLocaleString()})`,
-              component: !!props.viewer.explore.cases.hits.total ? (
+              text: `Cases (${viewer.explore.cases.hits.total.toLocaleString()})`,
+              component: !!viewer.explore.cases.hits.total ? (
                 <CasesTab />
               ) : (
                 <NoResultsMessage>No Cases Found.</NoResultsMessage>
@@ -230,20 +229,20 @@ export const ExplorePageComponent = (props: TProps) => (
             },
             {
               id: 'genes',
-              text: `Genes (${props.viewer.explore.genes.hits.total.toLocaleString()})`,
-              component: props.viewer.explore.genes.hits.total ? (
-                <GenesTab viewer={props.viewer} />
+              text: `Genes (${viewer.explore.genes.hits.total.toLocaleString()})`,
+              component: viewer.explore.genes.hits.total ? (
+                <GenesTab viewer={viewer} />
               ) : (
                 <NoResultsMessage>No Genes Found.</NoResultsMessage>
               ),
             },
             {
               id: 'mutations',
-              text: `Mutations (${props.viewer.explore.ssms.hits.total.toLocaleString()})`,
-              component: props.viewer.explore.ssms.hits.total ? (
+              text: `Mutations (${viewer.explore.ssms.hits.total.toLocaleString()})`,
+              component: viewer.explore.ssms.hits.total ? (
                 <MutationsTab
-                  totalNumCases={props.viewer.explore.cases.hits.total}
-                  viewer={props.viewer}
+                  totalNumCases={viewer.explore.cases.hits.total}
+                  viewer={viewer}
                 />
               ) : (
                 <NoResultsMessage>No Mutations Found.</NoResultsMessage>

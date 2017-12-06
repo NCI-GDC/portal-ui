@@ -34,10 +34,25 @@ const theme = {
     LOW: '#015c0a',
     MODIFIER: '#c94d18',
   },
-  polyphen: '#8292ff',
-  sift: '#98eae5',
+  vep: {
+    high: 'rgb(185, 36, 36)',
+    moderate: '#634d0c',
+    low: '#015c0a',
+    modifier: '#c94d18',
+  },
+  polyphen: {
+    benign: '#015c0a',
+    probably_damaging: 'rgb(185, 36, 36)',
+    possibly_damaging: 'rgb(185, 36, 36)',
+    unknown: 'rgb(107,98,98)',
+  },
+  sift: {
+    deleterious: 'rgb(185, 36, 36)',
+    deleterious_low_confidence: 'rgb(185, 36, 36)',
+    tolerated: '#9B8158',
+    tolerated_low_confidence: '#9B8158',
+  },
 
-  //
   // alerts
 
   alertInfo: 'rgb(237, 248, 251)',

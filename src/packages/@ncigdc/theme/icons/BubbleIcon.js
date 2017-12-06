@@ -2,7 +2,7 @@
 import React from 'react';
 import { Tooltip } from '@ncigdc/uikit/Tooltip';
 
-const bubbleStyle = {
+export const bubbleStyle = {
   color: 'white',
   padding: '2px 5px',
   borderRadius: '8px',

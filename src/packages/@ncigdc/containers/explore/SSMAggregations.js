@@ -37,6 +37,12 @@ const presetFacets: Array<{
     full: 'ssms.consequence.transcript.annotation.impact',
     doc_type: 'ssms',
     type: 'terms',
+    //additionalProps: {
+    //hiddenFilter: {
+    //field: 'ssms.consequence.transcript.is_canonical',
+    //value: ['true'],
+    //},
+    //},
   },
   {
     title: 'SIFT Impact',
@@ -44,13 +50,25 @@ const presetFacets: Array<{
     full: 'ssms.consequence.transcript.annotation.sift_impact',
     doc_type: 'ssms',
     type: 'terms',
+    //additionalProps: {
+    //hiddenFilter: {
+    //field: 'ssms.consequence.transcript.is_canonical',
+    //value: ['true'],
+    //},
+    //},
   },
   {
-    title: 'Polyphen Impact',
+    title: 'PolyPhen Impact',
     field: 'consequence.transcript.annotation.polyphen_impact',
     full: 'ssms.consequence.transcript.annotation.polyphen_impact',
     doc_type: 'ssms',
     type: 'terms',
+    //additionalProps: {
+    //hiddenFilter: {
+    //field: 'ssms.consequence.transcript.is_canonical',
+    //value: ['true'],
+    //},
+    //},
   },
   {
     title: 'Consequence Type',

@@ -8,7 +8,7 @@ import { compose, withState, withPropsOnChange, pure } from 'recompose';
 import CloseIcon from '@ncigdc/theme/icons/CloseIcon';
 import type { TRawQuery } from '@ncigdc/utils/uri/types';
 import { parseFilterParam } from '@ncigdc/utils/uri';
-import { inCurrentFilters } from '@ncigdc/utils/filters';
+import { inCurrentFilters, makeFilter } from '@ncigdc/utils/filters';
 
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import CountBubble from '@ncigdc/uikit/CountBubble';
@@ -19,6 +19,7 @@ import OverflowTooltippedLabel from '@ncigdc/uikit/OverflowTooltippedLabel';
 import { Container, BucketLink } from './';
 
 import type { TBucket } from './types';
+import type { TValueFilter } from '@ncigdc/utils/filters/types';
 
 type TProps = {
   buckets: [TBucket],
@@ -30,6 +31,7 @@ type TProps = {
   collapsed: boolean,
   setShowingMore: Function,
   showingMore: boolean,
+  hiddenFilter?: TValueFilter,
 };
 
 const ToggleMoreLink = styled.div({
@@ -110,18 +112,13 @@ const TermAggregation = (props: TProps) => {
                         merge="toggle"
                         query={{
                           offset: 0,
-                          filters: {
-                            op: 'and',
-                            content: [
-                              {
-                                op: 'in',
-                                content: {
-                                  field: dotField,
-                                  value: [bucket.name],
-                                },
-                              },
-                            ],
-                          },
+                          filters: makeFilter([
+                            {
+                              field: dotField,
+                              value: [bucket.name],
+                            },
+                            ...(props.hiddenFilter ? [props.hiddenFilter] : []),
+                          ]),
                         }}
                       >
                         <input

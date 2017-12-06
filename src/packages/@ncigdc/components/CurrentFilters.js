@@ -1,6 +1,6 @@
 // @flow
 import React from 'react';
-import { take, xor, omit } from 'lodash';
+import { take, xor, omit, some } from 'lodash';
 import UndoIcon from 'react-icons/lib/md/undo';
 import LeftArrow from 'react-icons/lib/fa/long-arrow-left';
 import Cogs from 'react-icons/lib/fa/cogs';
@@ -30,6 +30,12 @@ import { facetFieldDisplayMapper } from '@ncigdc/components/Aggregations';
 import GeneSymbol from '@ncigdc/modern_components/GeneSymbol';
 import SetId from '@ncigdc/components/SetId';
 import { parseJSONParam } from '@ncigdc/utils/uri/index';
+import {
+  addInFilters,
+  makeFilter,
+  fieldInCurrentFilters,
+} from '@ncigdc/utils/filters';
+import { stringifyJSONParam, parseFilterParam } from '@ncigdc/utils/uri';
 
 /*----------------------------------------------------------------------------*/
 
@@ -110,6 +116,40 @@ const enhance = compose(
   withPropsOnChange(['filters'], ({ filters }) => ({
     currentFilters: (filters && filters.content) || [],
   })),
+  //if there are any impact fields in filters, automatically add is_canonical
+  withPropsOnChange(['currentFilters'], ({ query, currentFilters, push }) => {
+    const addCanonicalFilterFields = [
+      'ssms.consequence.transcript.annotation.polyphen_impact',
+      'ssms.consequence.transcript.annotation.sift_impact',
+      'ssms.consequence.transcript.annotation.impact',
+    ];
+    if (
+      some(addCanonicalFilterFields, field =>
+        fieldInCurrentFilters({ currentFilters, field }),
+      ) &&
+      !fieldInCurrentFilters({
+        currentFilters,
+        field: 'ssms.consequence.transcript.is_canonical',
+      })
+    ) {
+      push({
+        query: {
+          ...query,
+          filters: stringifyJSONParam(
+            addInFilters(
+              parseFilterParam(query.filters),
+              makeFilter([
+                {
+                  field: 'ssms.consequence.transcript.is_canonical',
+                  value: ['true'],
+                },
+              ]),
+            ),
+          ),
+        },
+      });
+    }
+  }),
   withState('expandedFilters', 'setExpandedFilters', []),
   withProps(({ expandedFilters }) => ({
     isFilterExpanded: filter => expandedFilters.includes(filter),

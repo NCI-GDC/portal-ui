@@ -16,7 +16,11 @@ import CaseAggregations from '@ncigdc/containers/explore/CaseAggregations';
 import GeneAggregations from '@ncigdc/containers/explore/GeneAggregations';
 import SSMAggregations from '@ncigdc/containers/explore/SSMAggregations';
 import { CreateExploreCaseSetButton } from '@ncigdc/modern_components/withSetAction';
-import { replaceFilters } from '@ncigdc/utils/filters';
+import {
+  replaceFilters,
+  addInFilters,
+  makeFilter,
+} from '@ncigdc/utils/filters';
 import { stringifyJSONParam } from '@ncigdc/utils/uri';
 import ImageViewerLink from '@ncigdc/components/Links/ImageViewerLink';
 import { Row } from '@ncigdc/uikit/Flex';
@@ -107,6 +111,15 @@ function setVariables({ relay, filters }) {
         ],
       },
       filters,
+    ),
+    ssmAggFilters: addInFilters(
+      filters,
+      makeFilter([
+        {
+          field: 'ssms.consequence.transcript.is_canonical',
+          value: ['true'],
+        },
+      ]),
     ),
   });
 }
@@ -282,6 +295,7 @@ export const ExplorePageQuery = {
     runAutocompleteSsms: false,
     dbsnpRsFilters: null,
     cosmicFilters: null,
+    ssmAggFilters: null,
   },
   fragments: {
     viewer: () => Relay.QL`
@@ -337,7 +351,7 @@ export const ExplorePageQuery = {
             }
           }
           ssms {
-            aggregations(filters: $filters aggregations_filter_themselves: false) {
+            aggregations(filters: $ssmAggFilters aggregations_filter_themselves: false) {
               ${SSMAggregations.getFragment('aggregations')}
             }
             hits(first: $ssms_size offset: $ssms_offset, filters: $filters) {

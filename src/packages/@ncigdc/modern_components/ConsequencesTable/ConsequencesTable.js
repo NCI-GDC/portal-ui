@@ -200,7 +200,7 @@ export default compose(
           {
             key: 'impact',
             title: ImpactThContents({ theme }),
-            tdStyle: { width: '70px', paddingRight: '5px' },
+            tdStyle: { width: '90px', paddingRight: '5px' },
           },
           { key: 'strand', title: 'Gene Strand' },
           { key: 'transcripts', title: 'Transcript(s)' },

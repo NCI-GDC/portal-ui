@@ -17,7 +17,7 @@ import ExploreLink from '@ncigdc/components/Links/ExploreLink';
 import { Tooltip } from '@ncigdc/uikit/Tooltip';
 import { SpinnerIcon } from '@ncigdc/theme/icons';
 import ProjectBreakdown from '@ncigdc/modern_components/ProjectBreakdown';
-import BubbleIcon from '@ncigdc/theme/icons/BubbleIcon';
+import BubbleIcon, { bubbleStyle } from '@ncigdc/theme/icons/BubbleIcon';
 import MutationLink from '@ncigdc/components/Links/MutationLink';
 import Hidden from '@ncigdc/components/Hidden';
 import { getSurvivalCurves } from '@ncigdc/utils/survivalplot';
@@ -26,52 +26,33 @@ import { truncateAfterMarker } from '@ncigdc/utils/string';
 import { ForTsvExport } from '@ncigdc/components/DownloadTableToTsvButton';
 import { createSelectColumn } from '@ncigdc/tableModels/utils';
 import { Row, Column } from '@ncigdc/uikit/Flex';
+import { IMPACT_SHORT_FORMS } from '@ncigdc/utils/constants';
 
 const colors = scaleOrdinal(schemeCategory10);
-const Box = styled.div({
-  padding: '5px 5px',
-  borderRadius: '2px',
-  display: 'inline-block',
-  border: ({ theme }) => `1px solid ${theme.greyScale7}`,
-});
+const Box = styled.div(bubbleStyle);
 
 export const ImpactThContents = ({ theme }: { theme: Object }) => (
   <Tooltip
     style={tableToolTipHint()}
     Component={
       <Column>
-        <Row>
-          <b>VEP</b>:{' '}
-          {Object.entries(theme.impacts).map(([key, value]) => (
-            <div style={{ marginRight: '2px' }} key={key}>
-              {key} <Box key={key} style={{ backgroundColor: value }} />
-            </div>
-          ))}
-        </Row>
-        {['SIFT', 'PolyPhen'].map((impactType: string) => (
+        {['VEP', 'SIFT', 'PolyPhen'].map((impactType: string) => (
           <Row style={{ paddingTop: '5px' }} key={impactType}>
-            <b style={{ textTransform: 'capitalize' }}>{impactType}</b>: score 0{' '}
-            {' '}
-            <Row
-              style={{
-                justifyContent: 'space-between',
-                width: '75px',
-                paddingRight: '5px',
-                paddingLeft: '5px',
-              }}
-            >
-              {[0, 0.25, 0.5, 0.75, 1].map(s => (
+            <b style={{ textTransform: 'capitalize' }}>{impactType}</b>:{' '}
+            {Object.entries(
+              IMPACT_SHORT_FORMS[impactType.toLowerCase()],
+            ).map(([full, short]) => (
+              <div style={{ marginRight: '2px' }} key={full}>
                 <Box
                   style={{
-                    backgroundColor: Color(theme[impactType.toLowerCase()])
-                      .darken(s)
-                      .rgbString(),
+                    backgroundColor: theme[impactType.toLowerCase()][full],
                   }}
-                  key={s}
-                />
-              ))}
-            </Row>
-            1
+                >
+                  {short}
+                </Box>{' '}
+                {full}
+              </div>
+            ))}
           </Row>
         ))}
       </Column>
@@ -100,38 +81,43 @@ export const ImpactTdContents = ({
       justifyContent: 'space-between',
     }}
   >
-    {!['LOW', 'MODERATE', 'HIGH', 'MODIFIER'].includes(node.impact) ? null : (
-      <BubbleIcon
-        toolTipText={`VEP Impact: ${node.impact}`}
-        text={node.impact.slice(0, node.impact === 'MODIFIER' ? 2 : 1)}
-        backgroundColor={theme.impacts[node.impact]}
-      />
-    )}
     <BubbleIcon
-      style={{ opacity: (node.sift_impact || '').length === 0 ? 0 : 1 }}
-      toolTipText={
-        (node.polyphen_impact || '').length !== 0 &&
-        `SIFT Impact: ${node.sift_impact} / SIFT score: ${node.sift_score}`
-      }
-      text="S"
-      backgroundColor={Color(theme.sift)
-        .darken(node.sift_score)
-        .rgbString()}
+      toolTipText={`VEP Impact: ${node.impact}`}
+      text={IMPACT_SHORT_FORMS.vep[(node.impact || '').toLowerCase()] || ''}
+      backgroundColor={theme.impacts[node.impact]}
     />
     <BubbleIcon
-      style={{ opacity: (node.polyphen_impact || '').length === 0 ? 0 : 1 }}
+      toolTipText={
+        (node.sift_impact || '').length !== 0 &&
+        `SIFT Impact: ${node.sift_impact} / SIFT score: ${node.sift_score}`
+      }
+      text={
+        IMPACT_SHORT_FORMS.sift[(node.sift_impact || '').toLowerCase()] || ''
+      }
+      backgroundColor={theme.sift[node.sift_impact]}
+    />
+    <BubbleIcon
       toolTipText={
         (node.polyphen_impact || '').length !== 0 &&
         `PolyPhen Impact: ${node.polyphen_impact} / PolyPhen score: ${node.polyphen_score}`
       }
-      text="P"
-      backgroundColor={Color(theme.polyphen)
-        .darken(node.polyphen_score)
-        .rgbString()}
+      text={
+        IMPACT_SHORT_FORMS.polyphen[
+          (node.polyphen_impact || '').toLowerCase()
+        ] || ''
+      }
+      backgroundColor={theme.polyphen[node.polyphen_impact]}
     />
     <ForTsvExport>
-      VEP: {node.impact} Polyphen: {node.polyphen_impact} score{' '}
-      {node.polyphen_score} Sift: {node.sift_impact} score {node.sift_score}
+      {[
+        `VEP: ${node.impact}`,
+        ...(node.sift_impact
+          ? [`Sift: ${node.sift_impact} - score ${node.sift_score}`]
+          : []),
+        ...(node.polyphen_impact
+          ? [`Polyphen: ${node.polyphen_impact} - score ${node.polyphen_score}`]
+          : []),
+      ].join(', ')}
     </ForTsvExport>
   </Row>
 );
@@ -355,7 +341,7 @@ const SsmsTableModel = [
     downloadable: true,
     th: ({ theme }) => <Th>{ImpactThContents({ theme })}</Th>,
     td: ({ node, theme }) => (
-      <Td style={{ width: '70px', paddingRight: '5px' }}>
+      <Td style={{ width: '90px', paddingRight: '5px' }}>
         {ImpactTdContents({ node, theme })}
       </Td>
     ),

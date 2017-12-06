@@ -2,7 +2,6 @@
 
 import React from 'react';
 import { scaleOrdinal, schemeCategory10 } from 'd3';
-import Color from 'color';
 import { startCase, truncate, get } from 'lodash';
 
 import styled from '@ncigdc/theme/styled';

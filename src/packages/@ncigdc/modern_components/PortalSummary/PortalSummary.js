@@ -14,7 +14,7 @@ import FilesCount from '@ncigdc/components/FilesCount';
 import { Row, Column } from '@ncigdc/uikit/Flex';
 
 const CountBox = styled(Column, {
-  padding: '1.5rem',
+  padding: '2.5rem',
   flex: 1,
   justifyContent: 'center',
   alignItems: 'center',

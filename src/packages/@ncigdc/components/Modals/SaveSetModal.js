@@ -72,7 +72,7 @@ const SaveSetModal = ({
           forceCreate
           forceClick={submitted}
           disabled={
-            inputTotal === '0' ||
+            !inputTotal ||
             (!inputName ||
               inputTotal > max ||
               inputName.length > MAX_SET_NAME_LENGTH)
@@ -109,9 +109,7 @@ const SaveSetModal = ({
           max={max}
           min="1"
           value={inputTotal}
-          onChange={e => {
-            e.target.value !== '' && setInputTotal(e.target.value);
-          }}
+          onChange={e => setInputTotal(parseInt(e.target.value, 10))}
         />
         <div style={{ fontSize: '0.8em' }}>
           You can save up to the top {pluralize(displayType, max, true)}

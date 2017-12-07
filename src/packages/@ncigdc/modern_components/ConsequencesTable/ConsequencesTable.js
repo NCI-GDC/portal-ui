@@ -1,7 +1,7 @@
 // @flow
 import React from 'react';
 import { compose, withPropsOnChange } from 'recompose';
-import { orderBy, groupBy, get, find } from 'lodash';
+import { orderBy, groupBy, find } from 'lodash';
 import externalReferenceLinks from '@ncigdc/utils/externalReferenceLinks';
 import EntityPageHorizontalTable from '@ncigdc/components/EntityPageHorizontalTable';
 import LocalPaginationTable from '@ncigdc/components/LocalPaginationTable';

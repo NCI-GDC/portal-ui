@@ -2,7 +2,6 @@
 
 import React from 'react';
 import { scaleOrdinal, schemeCategory10 } from 'd3';
-import Color from 'color';
 import { startCase, truncate, get } from 'lodash';
 
 import styled from '@ncigdc/theme/styled';
@@ -81,33 +80,45 @@ export const ImpactTdContents = ({
       justifyContent: 'space-between',
     }}
   >
-    <BubbleIcon
-      toolTipText={`VEP Impact: ${node.impact}`}
-      text={IMPACT_SHORT_FORMS.vep[(node.impact || '').toLowerCase()] || ''}
-      backgroundColor={theme.impacts[node.impact]}
-    />
-    <BubbleIcon
-      toolTipText={
-        (node.sift_impact || '').length !== 0 &&
-        `SIFT Impact: ${node.sift_impact} / SIFT score: ${node.sift_score}`
-      }
-      text={
-        IMPACT_SHORT_FORMS.sift[(node.sift_impact || '').toLowerCase()] || ''
-      }
-      backgroundColor={theme.sift[node.sift_impact]}
-    />
-    <BubbleIcon
-      toolTipText={
-        (node.polyphen_impact || '').length !== 0 &&
-        `PolyPhen Impact: ${node.polyphen_impact} / PolyPhen score: ${node.polyphen_score}`
-      }
-      text={
-        IMPACT_SHORT_FORMS.polyphen[
-          (node.polyphen_impact || '').toLowerCase()
-        ] || ''
-      }
-      backgroundColor={theme.polyphen[node.polyphen_impact]}
-    />
+    {node.impact ? (
+      <BubbleIcon
+        toolTipText={`VEP Impact: ${node.impact}`}
+        text={IMPACT_SHORT_FORMS.vep[(node.impact || '').toLowerCase()] || ''}
+        backgroundColor={theme.impacts[node.impact]}
+      />
+    ) : (
+      <span>--</span>
+    )}
+    {node.sift_impact ? (
+      <BubbleIcon
+        toolTipText={
+          (node.sift_impact || '').length !== 0 &&
+          `SIFT Impact: ${node.sift_impact} / SIFT score: ${node.sift_score}`
+        }
+        text={
+          IMPACT_SHORT_FORMS.sift[(node.sift_impact || '').toLowerCase()] || ''
+        }
+        backgroundColor={theme.sift[node.sift_impact]}
+      />
+    ) : (
+      <span>--</span>
+    )}
+    {node.polyphen_impact ? (
+      <BubbleIcon
+        toolTipText={
+          (node.polyphen_impact || '').length !== 0 &&
+          `PolyPhen Impact: ${node.polyphen_impact} / PolyPhen score: ${node.polyphen_score}`
+        }
+        text={
+          IMPACT_SHORT_FORMS.polyphen[
+            (node.polyphen_impact || '').toLowerCase()
+          ] || ''
+        }
+        backgroundColor={theme.polyphen[node.polyphen_impact]}
+      />
+    ) : (
+      <span>--</span>
+    )}
     <ForTsvExport>
       {[
         `VEP: ${node.impact}`,

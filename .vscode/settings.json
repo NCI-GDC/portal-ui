@@ -5,5 +5,6 @@
     "flow.enabled": true,
     "flow.useNPMPackagedFlow": true,
     "flow.showStatus": true,
-    "flow.runOnEdit": true
+    "flow.runOnEdit": true,
+    "javascript.validate.enable": false
 }

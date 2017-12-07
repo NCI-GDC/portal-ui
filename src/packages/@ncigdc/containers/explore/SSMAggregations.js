@@ -46,7 +46,7 @@ const presetFacets: Array<{
     type: 'terms',
   },
   {
-    title: 'Polyphen Impact',
+    title: 'PolyPhen Impact',
     field: 'consequence.transcript.annotation.polyphen_impact',
     full: 'ssms.consequence.transcript.annotation.polyphen_impact',
     doc_type: 'ssms',

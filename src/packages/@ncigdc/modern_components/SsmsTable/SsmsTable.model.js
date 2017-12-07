@@ -16,7 +16,8 @@ import ExploreLink from '@ncigdc/components/Links/ExploreLink';
 import { Tooltip } from '@ncigdc/uikit/Tooltip';
 import { SpinnerIcon } from '@ncigdc/theme/icons';
 import ProjectBreakdown from '@ncigdc/modern_components/ProjectBreakdown';
-import BubbleIcon, { bubbleStyle } from '@ncigdc/theme/icons/BubbleIcon';
+import Impacts from '@ncigdc/modern_components/Impacts';
+import { bubbleStyle } from '@ncigdc/theme/icons/BubbleIcon';
 import MutationLink from '@ncigdc/components/Links/MutationLink';
 import Hidden from '@ncigdc/components/Hidden';
 import { getSurvivalCurves } from '@ncigdc/utils/survivalplot';
@@ -80,45 +81,7 @@ export const ImpactTdContents = ({
       justifyContent: 'space-between',
     }}
   >
-    {node.impact ? (
-      <BubbleIcon
-        toolTipText={`VEP Impact: ${node.impact}`}
-        text={IMPACT_SHORT_FORMS.vep[(node.impact || '').toLowerCase()] || ''}
-        backgroundColor={theme.impacts[node.impact]}
-      />
-    ) : (
-      <span>--</span>
-    )}
-    {node.sift_impact ? (
-      <BubbleIcon
-        toolTipText={
-          (node.sift_impact || '').length !== 0 &&
-          `SIFT Impact: ${node.sift_impact} / SIFT score: ${node.sift_score}`
-        }
-        text={
-          IMPACT_SHORT_FORMS.sift[(node.sift_impact || '').toLowerCase()] || ''
-        }
-        backgroundColor={theme.sift[node.sift_impact]}
-      />
-    ) : (
-      <span>--</span>
-    )}
-    {node.polyphen_impact ? (
-      <BubbleIcon
-        toolTipText={
-          (node.polyphen_impact || '').length !== 0 &&
-          `PolyPhen Impact: ${node.polyphen_impact} / PolyPhen score: ${node.polyphen_score}`
-        }
-        text={
-          IMPACT_SHORT_FORMS.polyphen[
-            (node.polyphen_impact || '').toLowerCase()
-          ] || ''
-        }
-        backgroundColor={theme.polyphen[node.polyphen_impact]}
-      />
-    ) : (
-      <span>--</span>
-    )}
+    <Impacts ssmId={node.ssm_id} total={node.totalConsequences.hits.total} />
     <ForTsvExport>
       {[
         `VEP: ${node.impact}`,
@@ -352,7 +315,7 @@ const SsmsTableModel = [
     downloadable: true,
     th: ({ theme }) => <Th>{ImpactThContents({ theme })}</Th>,
     td: ({ node, theme }) => (
-      <Td style={{ width: '90px', paddingRight: '5px' }}>
+      <Td style={{ width: '110px', paddingRight: '5px' }}>
         {ImpactTdContents({ node, theme })}
       </Td>
     ),

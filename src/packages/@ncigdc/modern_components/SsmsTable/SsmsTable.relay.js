@@ -112,6 +112,11 @@ export default (Component: ReactClass<*>) =>
                         genomic_dna_change
                         mutation_subtype
                         ssm_id
+                        totalConsequences: consequence {
+                          hits(first: 1) {
+                            total
+                          }
+                        }
                         consequence {
                           hits(first: 1, filters: $consequenceFilters) {
                             edges {

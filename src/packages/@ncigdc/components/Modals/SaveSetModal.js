@@ -72,7 +72,8 @@ const SaveSetModal = ({
           forceCreate
           forceClick={submitted}
           disabled={
-            inputTotal.toString() === '' ||
+            inputTotal === '' ||
+            inputTotal === '0' ||
             (!inputName ||
               inputTotal > max ||
               inputName.length > MAX_SET_NAME_LENGTH)
@@ -107,6 +108,7 @@ const SaveSetModal = ({
         <input
           type="number"
           max={max}
+          min="1"
           value={inputTotal}
           onChange={e => setInputTotal(e.target.value)}
         />

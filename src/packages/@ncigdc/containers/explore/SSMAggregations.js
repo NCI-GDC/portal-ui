@@ -32,11 +32,43 @@ const presetFacets: Array<{
     type: 'id',
   },
   {
-    title: 'Impact (VEP)',
+    title: 'VEP Impact',
     field: 'consequence.transcript.annotation.impact',
     full: 'ssms.consequence.transcript.annotation.impact',
     doc_type: 'ssms',
     type: 'terms',
+    //additionalProps: {
+    //hiddenFilter: {
+    //field: 'ssms.consequence.transcript.is_canonical',
+    //value: ['true'],
+    //},
+    //},
+  },
+  {
+    title: 'SIFT Impact',
+    field: 'consequence.transcript.annotation.sift_impact',
+    full: 'ssms.consequence.transcript.annotation.sift_impact',
+    doc_type: 'ssms',
+    type: 'terms',
+    //additionalProps: {
+    //hiddenFilter: {
+    //field: 'ssms.consequence.transcript.is_canonical',
+    //value: ['true'],
+    //},
+    //},
+  },
+  {
+    title: 'PolyPhen Impact',
+    field: 'consequence.transcript.annotation.polyphen_impact',
+    full: 'ssms.consequence.transcript.annotation.polyphen_impact',
+    doc_type: 'ssms',
+    type: 'terms',
+    //additionalProps: {
+    //hiddenFilter: {
+    //field: 'ssms.consequence.transcript.is_canonical',
+    //value: ['true'],
+    //},
+    //},
   },
   {
     title: 'Consequence Type',
@@ -202,6 +234,18 @@ export const SSMAggregationsQuery = {
     aggregations: () => Relay.QL`
       fragment on SsmAggregations {
         consequence__transcript__annotation__impact {
+          buckets {
+            doc_count
+            key
+          }
+        }
+        consequence__transcript__annotation__polyphen_impact {
+          buckets {
+            doc_count
+            key
+          }
+        }
+        consequence__transcript__annotation__sift_impact {
           buckets {
             doc_count
             key

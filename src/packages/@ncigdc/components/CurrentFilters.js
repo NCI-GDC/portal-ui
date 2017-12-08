@@ -1,6 +1,6 @@
 // @flow
 import React from 'react';
-import { take, xor, omit } from 'lodash';
+import { take, xor, omit, some } from 'lodash';
 import UndoIcon from 'react-icons/lib/md/undo';
 import LeftArrow from 'react-icons/lib/fa/long-arrow-left';
 import Cogs from 'react-icons/lib/fa/cogs';
@@ -12,6 +12,7 @@ import {
   withHandlers,
   withPropsOnChange,
   withProps,
+  lifecycle,
 } from 'recompose';
 
 import { humanify } from '@ncigdc/utils/string';
@@ -30,6 +31,13 @@ import { facetFieldDisplayMapper } from '@ncigdc/components/Aggregations';
 import GeneSymbol from '@ncigdc/modern_components/GeneSymbol';
 import SetId from '@ncigdc/components/SetId';
 import { parseJSONParam } from '@ncigdc/utils/uri/index';
+import {
+  addInFilters,
+  makeFilter,
+  fieldInCurrentFilters,
+  removeFilter,
+} from '@ncigdc/utils/filters';
+import { stringifyJSONParam, parseFilterParam } from '@ncigdc/utils/uri';
 
 /*----------------------------------------------------------------------------*/
 
@@ -76,7 +84,7 @@ const LinkButton = styled(Link, {
 
 type TProps = {
   query: Object,
-  currentFilters: Array<Object>,
+  displayedFilters: Array<Object>,
   onLessClicked: Function,
   isFilterExpanded: Function,
   style: Object,
@@ -102,6 +110,12 @@ export const getDisplayOp = (op: string, value: Array<string>) => {
   return op;
 };
 
+const addCanonicalFilterFields = [
+  'ssms.consequence.transcript.annotation.polyphen_impact',
+  'ssms.consequence.transcript.annotation.sift_impact',
+  'ssms.consequence.transcript.annotation.impact',
+];
+
 const enhance = compose(
   withRouter,
   withPropsOnChange(['query'], ({ query: { filters } }) => ({
@@ -109,6 +123,71 @@ const enhance = compose(
   })),
   withPropsOnChange(['filters'], ({ filters }) => ({
     currentFilters: (filters && filters.content) || [],
+  })),
+  //if there are any impact fields in filters, automatically add is_canonical
+  withPropsOnChange(['currentFilters'], ({ query, currentFilters, push }) => {
+    if (
+      some(addCanonicalFilterFields, field =>
+        fieldInCurrentFilters({ currentFilters, field }),
+      ) &&
+      !fieldInCurrentFilters({
+        currentFilters,
+        field: 'ssms.consequence.transcript.is_canonical',
+      })
+    ) {
+      push({
+        query: {
+          ...query,
+          filters: stringifyJSONParam(
+            addInFilters(
+              parseFilterParam(query.filters),
+              makeFilter([
+                {
+                  field: 'ssms.consequence.transcript.is_canonical',
+                  value: ['true'],
+                },
+              ]),
+            ),
+          ),
+        },
+      });
+    }
+  }),
+  // if any impact fields removed, automatically remove is_canonical
+  lifecycle({
+    componentWillReceiveProps(nextProps: Object): void {
+      const nextFilters = nextProps.currentFilters;
+      const { currentFilters, query, push } = this.props;
+      if (
+        some(
+          addCanonicalFilterFields,
+          field =>
+            fieldInCurrentFilters({ currentFilters, field }) &&
+            !fieldInCurrentFilters({ currentFilters: nextFilters, field }),
+        )
+      ) {
+        push({
+          query: {
+            ...query,
+            filters: stringifyJSONParam(
+              removeFilter(
+                'ssms.consequence.transcript.is_canonical',
+                nextProps.filters,
+              ),
+            ),
+          },
+        });
+      }
+    },
+  }),
+  //hide is_canonical
+  withPropsOnChange(['currentFilters'], ({ filters }) => ({
+    displayedFilters:
+      (filters &&
+        filters.content &&
+        (removeFilter('ssms.consequence.transcript.is_canonical', filters) || {}
+        ).content) ||
+      [],
   })),
   withState('expandedFilters', 'setExpandedFilters', []),
   withProps(({ expandedFilters }) => ({
@@ -163,7 +242,7 @@ const styles = {
 const CurrentFilters = (
   {
     query,
-    currentFilters,
+    displayedFilters,
     onLessClicked,
     isFilterExpanded,
     style,
@@ -177,7 +256,7 @@ const CurrentFilters = (
   }: TProps = {},
 ) => (
   <Info style={style} className="test-current-filters">
-    {!currentFilters.length &&
+    {!displayedFilters.length &&
       !hideHelpText && (
         <span
           style={{
@@ -193,7 +272,7 @@ const CurrentFilters = (
           </span>
         </span>
       )}
-    {!!currentFilters.length && (
+    {!!displayedFilters.length && (
       <Row
         style={{
           width: '100%',
@@ -211,7 +290,7 @@ const CurrentFilters = (
             </NotUnderlinedLink>
           )}
 
-          {currentFilters.map((filter, i) => {
+          {displayedFilters.map((filter, i) => {
             const value = [].concat(filter.content.value || []);
 
             return (
@@ -287,7 +366,7 @@ const CurrentFilters = (
                   </UnstyledButton>
                 )}
                 {value.length > 1 && <span style={styles.rightParen}>)</span>}
-                {i < currentFilters.length - 1 && <Op>AND</Op>}
+                {i < displayedFilters.length - 1 && <Op>AND</Op>}
               </Row>
             );
           })}
@@ -295,14 +374,14 @@ const CurrentFilters = (
       </Row>
     )}
     {linkPathname &&
-      (!hideLinkOnEmpty || !!currentFilters.length) && (
+      (!hideLinkOnEmpty || !!displayedFilters.length) && (
         <LinkButton
           pathname={linkPathname}
           query={
-            currentFilters.length && {
+            displayedFilters.length && {
               filters: {
                 op: 'and',
-                content: currentFilters.map(
+                content: displayedFilters.map(
                   ({ content: { field, value }, op }) => ({
                     op: op.toLowerCase(),
                     content: { field: linkFieldMap(field), value },

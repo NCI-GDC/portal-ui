@@ -8,6 +8,7 @@ import { addSet, replaceSet } from '@ncigdc/dux/sets';
 import WarningBox from '@ncigdc/uikit/WarningBox';
 import pluralize from '@ncigdc/utils/pluralize';
 import filtersToName from '@ncigdc/utils/filtersToName';
+import setCustomSelectionName from '@ncigdc/utils/setCustomSelectionName';
 import InputWithWarning from '@ncigdc/uikit/InputWithWarning';
 import { MAX_SET_SIZE, MAX_SET_NAME_LENGTH } from '@ncigdc/utils/constants';
 
@@ -28,12 +29,11 @@ const enhance = compose(
     'setInputName',
     ({ filters, displayType, sets, setName, selectedIds }) =>
       setName ||
+      setCustomSelectionName({ displayType, selectedIds }) ||
       filtersToName({
         filters,
         sets,
         length: MAX_SET_NAME_LENGTH,
-        displayType,
-        selectedIds,
       }) ||
       `All ${displayType}s`,
   ),

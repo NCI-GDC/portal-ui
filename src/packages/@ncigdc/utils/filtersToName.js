@@ -1,5 +1,3 @@
-import _ from 'lodash';
-
 function getValues(filters, sets) {
   const content = filters.content;
   if (!content) {
@@ -26,14 +24,8 @@ export default function({
   max = MAX_VALUES,
   sets,
   length = Infinity,
-  displayType,
-  selectedIds,
 }) {
   if (!filters) return '';
-  // if filters are items selected from table, return default custom selection name
-  if (selectedIds.length) {
-    return `Custom ${_.capitalize(displayType)} Selection`;
-  }
   const values = getValues(
     filters,
     Object.values(sets).reduce((a, b) => ({ ...a, ...b }), {}),

@@ -81,10 +81,10 @@ async function getQueries({
       op: 'and',
       content: [
         {
-          op: 'NOT',
+          op: 'in',
           content: {
-            field: 'ssms.consequence.transcript.annotation.impact',
-            value: 'missing',
+            field: 'transcripts.is_canonical',
+            value: ['true'],
           },
         },
       ],
@@ -98,18 +98,15 @@ async function getQueries({
   if (!genes.length) return NO_RESULT;
 
   const geneIds = genes.map(gene => gene.gene_id);
-  const caseFilters = replaceFilters(
-    {
-      op: 'and',
-      content: [
-        {
-          op: 'in',
-          content: { field: 'genes.gene_id', value: geneIds },
-        },
-      ],
-    },
-    geneFilters,
-  );
+  const caseFilters = replaceFilters({
+    op: 'and',
+    content: [
+      {
+        op: 'in',
+        content: { field: 'genes.gene_id', value: geneIds },
+      },
+    ],
+  });
   const {
     data: { hits: cases, pagination: { total: totalCases } },
   } = await getCases({

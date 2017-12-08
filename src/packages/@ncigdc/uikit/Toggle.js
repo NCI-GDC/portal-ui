@@ -22,25 +22,26 @@ type TProps = {
   children: mixed,
 };
 
-// the first item in items is used as the toggle
-const TogglableUl = (
+const Toggle = (
   { active, toggleActive, children, title, onToggle = () => {} }: TProps = {},
 ) => (
   <span>
     <div>
       <span>
         {title}
-        <DownIcon
-          onClick={() => {
-            toggleActive();
-            onToggle();
-          }}
-          isDown={active}
-        />
+        {children && (
+          <DownIcon
+            onClick={() => {
+              toggleActive();
+              onToggle();
+            }}
+            isDown={active}
+          />
+        )}
       </span>
     </div>
     {active && children}
   </span>
 );
 
-export default withToggle(TogglableUl);
+export default withToggle(Toggle);

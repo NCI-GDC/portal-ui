@@ -76,7 +76,7 @@ const DownloadTableToTsvButton = ({
 );
 export default DownloadTableToTsvButton;
 
-export const ForTsvExport = ({ children }: { children: Object }) => (
+export const ForTsvExport = ({ children }: { children: string }) => (
   <span className="for-tsv-export" style={{ display: 'none' }}>
     {children}
   </span>

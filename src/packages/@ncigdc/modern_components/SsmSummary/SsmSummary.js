@@ -5,10 +5,10 @@ import { compose, withPropsOnChange, branch, renderComponent } from 'recompose';
 import { get } from 'lodash';
 import EntityPageVerticalTable from '@ncigdc/components/EntityPageVerticalTable';
 import TableIcon from '@ncigdc/theme/icons/Table';
-import BubbleIcon from '@ncigdc/theme/icons/BubbleIcon';
 import { withTheme } from '@ncigdc/theme';
 import externalReferenceLinks from '@ncigdc/utils/externalReferenceLinks';
 import { ExternalLink } from '@ncigdc/uikit/Links';
+import { Row } from '@ncigdc/uikit/Flex';
 
 const styles = {
   summary: {
@@ -31,98 +31,105 @@ export default compose(
     ['viewer'],
     ({ viewer: { explore: { ssms: { hits: { edges } } } } }) => {
       const node = edges[0].node;
-      const consequences = node.consequence.hits.edges;
 
-      const consequenceOfInterest = consequences.find(
-        consequence => get(consequence, 'node.transcript.annotation.impact'),
-        {},
-      );
-
-      const functionalImpactTranscript = get(
-        consequenceOfInterest,
-        'node.transcript',
-        {},
-      );
-
-      const functionalImpact = get(
-        functionalImpactTranscript,
-        'annotation.impact',
-      );
+      const { transcript } = get(node, 'consequence.hits.edges[0].node', {
+        transcript: {
+          transcript_id: '',
+          annotation: {},
+        },
+      });
 
       return {
-        functionalImpact,
-        functionalImpactTranscript,
+        canonicalTranscript: transcript,
         node,
       };
     },
   ),
-)(({ node, functionalImpact, functionalImpactTranscript, theme } = {}) => (
-  <EntityPageVerticalTable
-    data-test="ssm-summary"
-    id="Summary"
-    title={
-      <span>
-        <TableIcon style={{ marginRight: '1rem' }} />Summary
-      </span>
-    }
-    thToTd={[
-      { th: 'UUID', td: node.ssm_id },
-      {
-        th: 'DNA change',
-        td: (
-          <span style={{ whiteSpace: 'pre-line', wordBreak: 'break-all' }}>
-            {node.genomic_dna_change}
-          </span>
-        ),
+)(
+  (
+    {
+      node,
+      canonicalTranscript: {
+        transcript_id,
+        annotation: {
+          polyphen_impact,
+          polyphen_score,
+          sift_score,
+          sift_impact,
+          impact,
+        },
       },
-      { th: 'Type', td: node.mutation_subtype },
-      { th: 'Reference genome assembly', td: node.ncbi_build || '' },
-      {
-        th: 'Allele in the reference assembly',
-        td: node.reference_allele || '',
-      },
-      {
-        th: 'Functional Impact (VEP)',
-        td: functionalImpact && (
-          <div>
-            <BubbleIcon
-              data-test="functional-impact-bubble"
-              toolTipText={functionalImpact}
-              text={functionalImpact.slice(
-                0,
-                functionalImpact === 'MODIFIER' ? 2 : 1,
-              )}
-              backgroundColor={theme.impacts[functionalImpact]}
-            />
-            <span
-              style={{
-                display: 'inline-block',
-                textTransform: 'capitalize',
-                marginLeft: '0.4em',
-                marginRight: '0.4em',
-              }}
-            >
-              {functionalImpact.toLowerCase()}
+      theme,
+    } = {},
+  ) => (
+    <EntityPageVerticalTable
+      data-test="ssm-summary"
+      id="Summary"
+      title={
+        <span>
+          <TableIcon style={{ marginRight: '1rem' }} />Summary
+        </span>
+      }
+      thToTd={[
+        { th: 'UUID', td: node.ssm_id },
+        {
+          th: 'DNA change',
+          td: (
+            <span style={{ whiteSpace: 'pre-line', wordBreak: 'break-all' }}>
+              {node.genomic_dna_change}
             </span>
-            <ExternalLink
-              data-test="function-impact-transcript-link"
-              key={functionalImpactTranscript.transcript_id}
-              style={{ paddingRight: '0.5em' }}
-              href={externalReferenceLinks.ensembl(
-                functionalImpactTranscript.transcript_id,
+          ),
+        },
+        { th: 'Type', td: node.mutation_subtype },
+        { th: 'Reference genome assembly', td: node.ncbi_build || '' },
+        {
+          th: 'Allele in the reference assembly',
+          td: node.reference_allele || '',
+        },
+        {
+          th: 'Functional Impact',
+          td: (
+            <div>
+              {!transcript_id && 'No canonical transcript'}
+              {transcript_id && (
+                <span>
+                  <ExternalLink
+                    data-test="function-impact-transcript-link"
+                    key={transcript_id}
+                    style={{ paddingRight: '0.5em' }}
+                    href={externalReferenceLinks.ensembl(transcript_id)}
+                  >
+                    {transcript_id}
+                  </ExternalLink>
+                  <Row>
+                    VEP:{' '}
+                    <span
+                      style={{
+                        display: 'inline-block',
+                        marginLeft: '0.4em',
+                        marginRight: '0.4em',
+                      }}
+                    >
+                      {impact && impact.toLowerCase()}
+                    </span>
+                  </Row>
+                  <Row>
+                    SIFT: {sift_impact}, score: {sift_score}
+                  </Row>
+                  <Row>
+                    PolyPhen: {polyphen_impact}, score: {polyphen_score}
+                  </Row>
+                </span>
               )}
-            >
-              {functionalImpactTranscript.transcript_id}
-            </ExternalLink>
-          </div>
-        ),
-        style: { textTransform: 'capitalize' },
-      },
-    ]}
-    style={{
-      ...styles.summary,
-      ...styles.column,
-      alignSelf: 'flex-start',
-    }}
-  />
-));
+            </div>
+          ),
+        },
+      ]}
+      style={{
+        ...styles.summary,
+        ...styles.column,
+        alignSelf: 'flex-start',
+      }}
+    />
+  ),
+);

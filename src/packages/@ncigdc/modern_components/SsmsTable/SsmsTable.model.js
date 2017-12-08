@@ -3,6 +3,8 @@
 import React from 'react';
 import { scaleOrdinal, schemeCategory10 } from 'd3';
 import { startCase, truncate, get } from 'lodash';
+
+import styled from '@ncigdc/theme/styled';
 import { Th, Td } from '@ncigdc/uikit/Table';
 import { makeFilter, addInFilters } from '@ncigdc/utils/filters';
 import { DNA_CHANGE_MARKERS } from '@ncigdc/utils/constants';
@@ -14,7 +16,8 @@ import ExploreLink from '@ncigdc/components/Links/ExploreLink';
 import { Tooltip } from '@ncigdc/uikit/Tooltip';
 import { SpinnerIcon } from '@ncigdc/theme/icons';
 import ProjectBreakdown from '@ncigdc/modern_components/ProjectBreakdown';
-import BubbleIcon from '@ncigdc/theme/icons/BubbleIcon';
+import Impacts from '@ncigdc/modern_components/Impacts';
+import { bubbleStyle } from '@ncigdc/theme/icons/BubbleIcon';
 import MutationLink from '@ncigdc/components/Links/MutationLink';
 import Hidden from '@ncigdc/components/Hidden';
 import { getSurvivalCurves } from '@ncigdc/utils/survivalplot';
@@ -22,8 +25,76 @@ import Button from '@ncigdc/uikit/Button';
 import { truncateAfterMarker } from '@ncigdc/utils/string';
 import { ForTsvExport } from '@ncigdc/components/DownloadTableToTsvButton';
 import { createSelectColumn } from '@ncigdc/tableModels/utils';
+import { Row, Column } from '@ncigdc/uikit/Flex';
+import { IMPACT_SHORT_FORMS } from '@ncigdc/utils/constants';
 
 const colors = scaleOrdinal(schemeCategory10);
+const Box = styled.div(bubbleStyle);
+
+export const ImpactThContents = ({ theme }: { theme: Object }) => (
+  <Tooltip
+    style={tableToolTipHint()}
+    Component={
+      <Column>
+        {['VEP', 'SIFT', 'PolyPhen'].map((impactType: string) => (
+          <Row style={{ paddingTop: '5px' }} key={impactType}>
+            <b style={{ textTransform: 'capitalize' }}>{impactType}</b>:{' '}
+            {Object.entries(
+              IMPACT_SHORT_FORMS[impactType.toLowerCase()],
+            ).map(([full, short]) => (
+              <div style={{ marginRight: '2px' }} key={full}>
+                <Box
+                  style={{
+                    backgroundColor: theme[impactType.toLowerCase()][full],
+                  }}
+                >
+                  {short}
+                </Box>{' '}
+                {full}
+              </div>
+            ))}
+          </Row>
+        ))}
+      </Column>
+    }
+  >
+    Impact
+  </Tooltip>
+);
+
+export const ImpactTdContents = ({
+  node,
+  theme,
+}: {
+  node: {
+    impact: string,
+    sift_impact: string,
+    sift_score: number,
+    polyphen_score: number,
+    polyphen_impact: string,
+  },
+  theme: Object,
+}) => (
+  <Row
+    style={{
+      display: 'flex',
+      justifyContent: 'space-between',
+    }}
+  >
+    <Impacts ssmId={node.ssm_id} total={node.totalConsequences.hits.total} />
+    <ForTsvExport>
+      {[
+        `VEP: ${node.impact}`,
+        ...(node.sift_impact
+          ? [`Sift: ${node.sift_impact} - score ${node.sift_score}`]
+          : []),
+        ...(node.polyphen_impact
+          ? [`Polyphen: ${node.polyphen_impact} - score ${node.polyphen_score}`]
+          : []),
+      ].join(', ')}
+    </ForTsvExport>
+  </Row>
+);
 
 const SsmsTableModel = [
   createSelectColumn({ idField: 'ssm_id' }),
@@ -242,25 +313,10 @@ const SsmsTableModel = [
     id: 'impact',
     sortable: true,
     downloadable: true,
-    th: () => (
-      <Th>
-        Impact<br />(VEP)
-      </Th>
-    ),
+    th: ({ theme }) => <Th>{ImpactThContents({ theme })}</Th>,
     td: ({ node, theme }) => (
-      <Td>
-        {!['LOW', 'MODERATE', 'HIGH', 'MODIFIER'].includes(
-          node.impact,
-        ) ? null : (
-          <span>
-            <BubbleIcon
-              toolTipText={node.impact}
-              text={node.impact.slice(0, node.impact === 'MODIFIER' ? 2 : 1)}
-              backgroundColor={theme.impacts[node.impact]}
-            />
-            <ForTsvExport>{node.impact}</ForTsvExport>
-          </span>
-        )}
+      <Td style={{ width: '110px', paddingRight: '5px' }}>
+        {ImpactTdContents({ node, theme })}
       </Td>
     ),
   },

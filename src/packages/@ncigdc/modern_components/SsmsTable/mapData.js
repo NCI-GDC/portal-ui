@@ -11,12 +11,7 @@ type TMapData = (data: Array<Object>, theme: Object) => Array<Object>;
 
 const mapData: TMapData = (data, theme) =>
   data.map(hit => {
-    const consequenceOfInterest =
-      hit.consequence.hits.edges.find(
-        consequence => get(consequence, 'node.transcript.annotation.impact'),
-        {},
-      ) || {};
-    const { transcript } = consequenceOfInterest.node || {};
+    const { transcript } = get(hit, 'consequence.hits.edges[0].node', {});
     const {
       annotation = {},
       consequence_type: consequenceType = '',
@@ -25,11 +20,14 @@ const mapData: TMapData = (data, theme) =>
     } =
       transcript || {};
     const { symbol: geneSymbol, gene_id: geneId } = gene;
-    const impact = annotation.impact;
 
     return {
       ...hit,
-      impact,
+      impact: annotation.impact,
+      polyphen_impact: annotation.polyphen_impact,
+      polyphen_score: annotation.polyphen_score,
+      sift_impact: annotation.sift_impact,
+      sift_score: annotation.sift_score,
       mutation_subtype:
         mutationSubTypeMap[(hit.mutation_subtype || '').toLowerCase()] ||
         hit.mutation_subtype,

@@ -55,6 +55,10 @@ export default (Component: ReactClass<*>) =>
                                   consequence_type
                                   annotation {
                                     hgvsc
+                                    polyphen_impact
+                                    polyphen_score
+                                    sift_score
+                                    sift_impact
                                     impact
                                   }
                                   gene {

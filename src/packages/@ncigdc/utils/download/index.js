@@ -223,6 +223,8 @@ const arrayToStringFields = ['expand', 'fields', 'facets'];
 const arrayToStringOnFields = (key, value, fields) =>
   _.includes(fields, key) ? [].concat(value).join() : value;
 
+type TDownloadCallbacks = (inProgress: Function, done: Function) => {};
+
 const download = ({
   url,
   params,
@@ -233,7 +235,7 @@ const download = ({
   params: any,
   method: string,
   altMessage?: boolean,
-}) => {
+}): TDownloadCallbacks => {
   const downloadToken = _.uniqueId(`${+new Date()}-`);
   // a cookie value that the server will remove as a download-ready indicator
   const cookieKey = navigator.cookieEnabled

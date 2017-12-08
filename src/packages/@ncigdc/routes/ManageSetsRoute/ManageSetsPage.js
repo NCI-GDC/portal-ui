@@ -28,7 +28,6 @@ import { Tooltip } from '@ncigdc/uikit/Tooltip';
 import { ExclamationTriangleIcon } from '@ncigdc/theme/icons';
 import DatabaseIcon from '@ncigdc/theme/icons/Database';
 import UnstyledButton from '@ncigdc/uikit/UnstyledButton';
-import { SET_DOWNLOAD_FIELDS as downloadFields } from '@ncigdc/utils/constants';
 import DownloadButton from '@ncigdc/components/DownloadButton';
 import { iconButton, iconLink } from '@ncigdc/theme/mixins';
 import {
@@ -260,7 +259,12 @@ const ManageSetsPage = ({
                     {
                       id,
                       type,
-                      filename: `${type}_${filenameSafeLabel}.tsv`,
+                      filename:
+                        flattenedSets.length === 1
+                          ? `${type}_set_${filenameSafeLabel}_${moment().format(
+                              'YYYY-MM-DD:hh:mm:ss',
+                            )}.tsv`
+                          : `${type}_${filenameSafeLabel}.tsv`,
                     },
                   ];
                 }
@@ -468,18 +472,21 @@ const ManageSetsPage = ({
                                 <DownloadButton
                                   className="test-download-set-tsv"
                                   style={iconButton}
-                                  endpoint={`${type}s`}
+                                  endpoint="/tar_sets"
                                   activeText="" //intentionally blank
                                   inactiveText="" //intentionally blank
                                   altMessage={false}
                                   setParentState={() => {}}
                                   active={false}
-                                  filters={filters}
-                                  extraParams={{ format: 'tsv' }}
-                                  fields={downloadFields[type]}
-                                  filename={`${type}_set_${filenameSafeLabel}_${moment().format(
-                                    'YYYY-MM-DD:hh:mm:ss',
-                                  )}`}
+                                  sets={[
+                                    {
+                                      id,
+                                      type,
+                                      filename: `${type}_set_${filenameSafeLabel}_${moment().format(
+                                        'YYYY-MM-DD:hh:mm:ss',
+                                      )}.tsv`,
+                                    },
+                                  ]}
                                 />
                               </Tooltip>
                               {type === 'case' && (

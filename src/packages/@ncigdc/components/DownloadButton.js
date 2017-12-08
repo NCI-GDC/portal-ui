@@ -18,7 +18,7 @@ type TDownloadButton = {
   disabled: boolean,
   filename: string,
   dataExportExpands: Array<string>,
-  setActive: () => {},
+  setActive: (active: boolean) => {},
   activeText: string,
   inactiveText: string,
   returnType: string,

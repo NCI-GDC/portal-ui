@@ -2,12 +2,12 @@
 import React from 'react';
 import { compose, withState, withProps, withPropsOnChange } from 'recompose';
 import { connect } from 'react-redux';
-import _ from 'lodash';
 
 import BaseModal from '@ncigdc/components/Modals/BaseModal';
 import { addSet, replaceSet } from '@ncigdc/dux/sets';
 import WarningBox from '@ncigdc/uikit/WarningBox';
 import pluralize from '@ncigdc/utils/pluralize';
+import filtersToName from '@ncigdc/utils/filtersToName';
 import InputWithWarning from '@ncigdc/uikit/InputWithWarning';
 import { MAX_SET_SIZE, MAX_SET_NAME_LENGTH } from '@ncigdc/utils/constants';
 
@@ -27,9 +27,14 @@ const enhance = compose(
     'inputName',
     'setInputName',
     ({ filters, displayType, sets, setName }) =>
-      setName || filters
-        ? `Custom ${_.capitalize(displayType)} Selection`
-        : null || `All ${displayType}s`,
+      setName ||
+      filtersToName({
+        filters,
+        sets,
+        length: MAX_SET_NAME_LENGTH,
+        displayType,
+      }) ||
+      `All ${displayType}s`,
   ),
   withProps(({ sets, type, total }) => ({
     sets: sets[type] || {},

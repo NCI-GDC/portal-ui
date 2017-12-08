@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 function getValues(filters, sets) {
   const content = filters.content;
   if (!content) {
@@ -18,18 +20,38 @@ function getValues(filters, sets) {
   }
 }
 
+const TABLE_VALUES = ['genes.gene_id', 'ssms.ssm_id', 'cases.case_id'];
+
+function hasTypeID(filters) {
+  const content = filters.content;
+  if (!content) {
+    return [];
+  } else if (Array.isArray(content)) {
+    return content.find(c => {
+      const field = c.content.field;
+      return field && TABLE_VALUES.includes(field);
+    });
+  }
+}
+
 const MAX_VALUES = 6;
 export default function({
   filters,
   max = MAX_VALUES,
   sets,
   length = Infinity,
+  displayType,
 }) {
   if (!filters) return '';
+  // if filters are items selected from table, return default custom selection name
+  if (hasTypeID(filters)) {
+    return `Custom ${_.capitalize(displayType)} Selection`;
+  }
   const values = getValues(
     filters,
     Object.values(sets).reduce((a, b) => ({ ...a, ...b }), {}),
   );
+
   let total = 0;
   const name = values
     .reduce((acc, value, i, arr) => {

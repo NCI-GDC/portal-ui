@@ -6,7 +6,6 @@ import _ from 'lodash';
 
 import BaseModal from '@ncigdc/components/Modals/BaseModal';
 import { addSet, replaceSet } from '@ncigdc/dux/sets';
-import filtersToName from '@ncigdc/utils/filtersToName';
 import WarningBox from '@ncigdc/uikit/WarningBox';
 import pluralize from '@ncigdc/utils/pluralize';
 import InputWithWarning from '@ncigdc/uikit/InputWithWarning';

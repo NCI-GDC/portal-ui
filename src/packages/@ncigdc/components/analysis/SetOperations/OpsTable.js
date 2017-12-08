@@ -34,9 +34,7 @@ const ActionsTd = compose(
 
     return (
       <Td style={{ textAlign: 'right' }}>
-        {hide ? (
-          ''
-        ) : (
+        {!hide && (
           <span>
             <Tooltip
               Component={

@@ -2,6 +2,7 @@
 import React from 'react';
 import { compose, withState, withProps, withPropsOnChange } from 'recompose';
 import { connect } from 'react-redux';
+import _ from 'lodash';
 
 import BaseModal from '@ncigdc/components/Modals/BaseModal';
 import { addSet, replaceSet } from '@ncigdc/dux/sets';
@@ -27,9 +28,9 @@ const enhance = compose(
     'inputName',
     'setInputName',
     ({ filters, displayType, sets, setName }) =>
-      setName ||
-      filtersToName({ filters, sets, length: MAX_SET_NAME_LENGTH }) ||
-      `All ${displayType}s`,
+      setName || filters
+        ? `Custom ${_.capitalize(displayType)} Selection`
+        : null || `All ${displayType}s`,
   ),
   withProps(({ sets, type, total }) => ({
     sets: sets[type] || {},

@@ -26,13 +26,14 @@ const enhance = compose(
   withState(
     'inputName',
     'setInputName',
-    ({ filters, displayType, sets, setName }) =>
+    ({ filters, displayType, sets, setName, selectedIds }) =>
       setName ||
       filtersToName({
         filters,
         sets,
         length: MAX_SET_NAME_LENGTH,
         displayType,
+        selectedIds,
       }) ||
       `All ${displayType}s`,
   ),

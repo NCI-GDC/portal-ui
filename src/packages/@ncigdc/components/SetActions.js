@@ -88,6 +88,7 @@ export default enhance(
                     type={type}
                     displayType={displayType}
                     CreateSetButton={CreateSetButton}
+                    selectedIds={selectedIds}
                   />,
                 ),
               );

@@ -20,22 +20,6 @@ function getValues(filters, sets) {
   }
 }
 
-const EXPLORE_TABLE_VALUES = ['genes.gene_id', 'ssms.ssm_id', 'cases.case_id'];
-
-function filterIsID(filters) {
-  const content = filters.content;
-  if (!content) {
-    return [];
-  } else if (Array.isArray(content)) {
-    return content.find(c => {
-      const field = c.content.field;
-      return field && EXPLORE_TABLE_VALUES.includes(field);
-    });
-  } else {
-    return false;
-  }
-}
-
 const MAX_VALUES = 6;
 export default function({
   filters,
@@ -43,10 +27,11 @@ export default function({
   sets,
   length = Infinity,
   displayType,
+  selectedIds,
 }) {
   if (!filters) return '';
   // if filters are items selected from table, return default custom selection name
-  if (filterIsID(filters)) {
+  if (selectedIds.length) {
     return `Custom ${_.capitalize(displayType)} Selection`;
   }
   const values = getValues(

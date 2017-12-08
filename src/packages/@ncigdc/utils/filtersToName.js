@@ -20,17 +20,19 @@ function getValues(filters, sets) {
   }
 }
 
-const TABLE_VALUES = ['genes.gene_id', 'ssms.ssm_id', 'cases.case_id'];
+const EXPLORE_TABLE_VALUES = ['genes.gene_id', 'ssms.ssm_id', 'cases.case_id'];
 
-function hasTypeID(filters) {
+function filterIsID(filters) {
   const content = filters.content;
   if (!content) {
     return [];
   } else if (Array.isArray(content)) {
     return content.find(c => {
       const field = c.content.field;
-      return field && TABLE_VALUES.includes(field);
+      return field && EXPLORE_TABLE_VALUES.includes(field);
     });
+  } else {
+    return false;
   }
 }
 
@@ -44,7 +46,7 @@ export default function({
 }) {
   if (!filters) return '';
   // if filters are items selected from table, return default custom selection name
-  if (hasTypeID(filters)) {
+  if (filterIsID(filters)) {
     return `Custom ${_.capitalize(displayType)} Selection`;
   }
   const values = getValues(

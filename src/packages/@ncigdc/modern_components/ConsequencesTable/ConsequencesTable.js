@@ -19,10 +19,8 @@ import PlusIcon from '@ncigdc/theme/icons/Plus';
 import { ExternalLink } from '@ncigdc/uikit/Links';
 import Button from '@ncigdc/uikit/Button';
 import { withTheme } from '@ncigdc/theme';
-import {
-  ImpactThContents,
-  ImpactTdContents,
-} from '@ncigdc/modern_components/SsmsTable/SsmsTable.model.js';
+import { ImpactThContents } from '@ncigdc/modern_components/SsmsTable/SsmsTable.model.js';
+import { makeBubbles } from '@ncigdc/modern_components/Impacts/Impacts.js';
 
 const paginationPrefix = 'consequencesTable';
 
@@ -74,16 +72,20 @@ export default compose(
             aa_change: transcript.aa_change,
             consequence: transcript.consequence_type,
             coding_dna_change: transcript.annotation.hgvsc,
-            impact: ImpactTdContents({
-              node: {
-                polyphen_score: transcript.annotation.polyphen_score,
-                polyphen_impact: transcript.annotation.polyphen_impact,
-                sift_score: transcript.annotation.sift_score,
-                sift_impact: transcript.annotation.sift_impact,
-                impact: transcript.annotation.impact,
-              },
-              theme,
-            }),
+            impact: (
+              <Row style={{ justifyContent: 'space-between' }}>
+                {makeBubbles(
+                  {
+                    polyphen_score: transcript.annotation.polyphen_score,
+                    polyphen_impact: transcript.annotation.polyphen_impact,
+                    sift_score: transcript.annotation.sift_score,
+                    sift_impact: transcript.annotation.sift_impact,
+                    impact: transcript.annotation.impact,
+                  },
+                  theme,
+                )}
+              </Row>
+            ),
             strand: transcript.gene.gene_strand ? (
               <Row style={{ justifyContent: 'space-around' }}>
                 {strandIconMap[transcript.gene.gene_strand.toString(10)]}
@@ -200,7 +202,7 @@ export default compose(
           {
             key: 'impact',
             title: ImpactThContents({ theme }),
-            tdStyle: { width: '90px', paddingRight: '5px' },
+            tdStyle: { width: '95px', paddingRight: '5px' },
           },
           { key: 'strand', title: 'Gene Strand' },
           { key: 'transcripts', title: 'Transcript(s)' },

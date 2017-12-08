@@ -11,7 +11,6 @@ import BubbleIcon from '@ncigdc/theme/icons/BubbleIcon';
 import { Row, Column } from '@ncigdc/uikit/Flex';
 
 type TImpacts = {
-  transcript_id: string,
   polyphen_impact: string,
   polyphen_score: number,
   sift_impact: string,
@@ -19,7 +18,7 @@ type TImpacts = {
   impact: string,
 };
 
-const makeBubbles = (impacts: TImpacts, theme) =>
+export const makeBubbles = (impacts: TImpacts, theme) =>
   ['VEP', 'SIFT', 'PolyPhen'].map(impactType => {
     const impact = impacts[`${impactType.toLowerCase()}_impact`];
     const impactScore = impacts[`${impactType.toLowerCase()}_score`];
@@ -56,7 +55,6 @@ export default compose(withRouter, withTheme)(({ explore, loading, theme }) => {
     [],
   ).map(({ node }) => ({
     is_canonical: node.transcript.is_canonical,
-    transcript_id: node.transcript.id,
     ...node.transcript.annotation,
     vep_impact: node.transcript.annotation.impact,
   }));

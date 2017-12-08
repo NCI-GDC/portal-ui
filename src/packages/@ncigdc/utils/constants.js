@@ -205,6 +205,6 @@ export const IMPACT_SHORT_FORMS = {
     benign: 'BE',
     probably_damaging: 'DA',
     possibly_damaging: 'DA',
-    unknown: 'Un',
+    unknown: 'UN',
   },
 };

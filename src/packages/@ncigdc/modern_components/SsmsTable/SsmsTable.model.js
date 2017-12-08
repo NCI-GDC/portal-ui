@@ -27,14 +27,29 @@ import { createSelectColumn } from '@ncigdc/tableModels/utils';
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import { IMPACT_SHORT_FORMS } from '@ncigdc/utils/constants';
 
+type TImpacts = {
+  polyphen_impact: string,
+  polyphen_score: number,
+  sift_impact: string,
+  sift_score: number,
+  vep_impact: string,
+};
+
 const colors = scaleOrdinal(schemeCategory10);
 const Box = styled.div(bubbleStyle);
 
-export const ImpactThContents = ({ theme }: { theme: Object }) => (
+export const ImpactThContents = ({
+  extraText,
+  theme,
+}: {
+  extraText: string,
+  theme: Object,
+}) => (
   <Tooltip
     style={tableToolTipHint()}
     Component={
       <Column>
+        {extraText}
         {['VEP', 'SIFT', 'PolyPhen'].map((impactType: string) => (
           <Row style={{ paddingTop: '5px' }} key={impactType}>
             <b style={{ textTransform: 'capitalize' }}>{impactType}</b>:{' '}
@@ -61,17 +76,41 @@ export const ImpactThContents = ({ theme }: { theme: Object }) => (
   </Tooltip>
 );
 
+const makeBubbles = (impacts: TImpacts, theme) =>
+  ['VEP', 'SIFT', 'PolyPhen'].map(impactType => {
+    const impact = impacts[`${impactType.toLowerCase()}_impact`];
+    const impactScore = impacts[`${impactType.toLowerCase()}_score`];
+    const tipTextImpact = `${impactType} Impact: ${impact}`;
+    const tipTextScore = `${impactType} score: ${impactScore}`;
+    const tipText = [
+      tipTextImpact,
+      ...(impactScore >= 0 && impactType !== 'VEP' ? [tipTextScore] : []),
+    ].join(' / ');
+    return impact ? (
+      <BubbleIcon
+        key={tipText}
+        toolTipText={tipText}
+        text={
+          IMPACT_SHORT_FORMS[impactType.toLowerCase()][impact.toLowerCase()] ||
+          ''
+        }
+        backgroundColor={theme[impactType.toLowerCase()][impact.toLowerCase()]}
+      />
+    ) : (
+      <BubbleIcon
+        key={tipText}
+        toolTipText=""
+        text="--"
+        style={{ color: theme.greyScale1, width: '27px' }}
+      />
+    );
+  });
+
 export const ImpactTdContents = ({
   node,
   theme,
 }: {
-  node: {
-    impact: string,
-    sift_impact: string,
-    sift_score: number,
-    polyphen_score: number,
-    polyphen_impact: string,
-  },
+  node: TImpacts,
   theme: Object,
 }) => (
   <Row
@@ -80,53 +119,15 @@ export const ImpactTdContents = ({
       justifyContent: 'space-between',
     }}
   >
-    {node.impact ? (
-      <BubbleIcon
-        toolTipText={`VEP Impact: ${node.impact}`}
-        text={IMPACT_SHORT_FORMS.vep[(node.impact || '').toLowerCase()] || ''}
-        backgroundColor={theme.impacts[node.impact]}
-      />
-    ) : (
-      <span>--</span>
-    )}
-    {node.sift_impact ? (
-      <BubbleIcon
-        toolTipText={
-          (node.sift_impact || '').length !== 0 &&
-          `SIFT Impact: ${node.sift_impact} / SIFT score: ${node.sift_score}`
-        }
-        text={
-          IMPACT_SHORT_FORMS.sift[(node.sift_impact || '').toLowerCase()] || ''
-        }
-        backgroundColor={theme.sift[node.sift_impact]}
-      />
-    ) : (
-      <span>--</span>
-    )}
-    {node.polyphen_impact ? (
-      <BubbleIcon
-        toolTipText={
-          (node.polyphen_impact || '').length !== 0 &&
-          `PolyPhen Impact: ${node.polyphen_impact} / PolyPhen score: ${node.polyphen_score}`
-        }
-        text={
-          IMPACT_SHORT_FORMS.polyphen[
-            (node.polyphen_impact || '').toLowerCase()
-          ] || ''
-        }
-        backgroundColor={theme.polyphen[node.polyphen_impact]}
-      />
-    ) : (
-      <span>--</span>
-    )}
+    {makeBubbles(node, theme)}
     <ForTsvExport>
       {[
-        `VEP: ${node.impact}`,
+        `VEP: ${node.vep_impact}`,
         ...(node.sift_impact
-          ? [`Sift: ${node.sift_impact} - score ${node.sift_score}`]
+          ? [`SIFT: ${node.sift_impact} - score ${node.sift_score}`]
           : []),
         ...(node.polyphen_impact
-          ? [`Polyphen: ${node.polyphen_impact} - score ${node.polyphen_score}`]
+          ? [`PolyPhen: ${node.polyphen_impact} - score ${node.polyphen_score}`]
           : []),
       ].join(', ')}
     </ForTsvExport>
@@ -202,7 +203,16 @@ const SsmsTableModel = [
     id: 'consequence_type',
     sortable: true,
     downloadable: true,
-    th: () => <Th>Consequences</Th>,
+    th: () => (
+      <Th>
+        <Tooltip
+          style={tableToolTipHint()}
+          Component="Consequences for canonical transcript"
+        >
+          Consequences
+        </Tooltip>
+      </Th>
+    ),
     td: ({ node, theme }) => (
       <Td>
         <span>
@@ -350,10 +360,20 @@ const SsmsTableModel = [
     id: 'impact',
     sortable: true,
     downloadable: true,
-    th: ({ theme }) => <Th>{ImpactThContents({ theme })}</Th>,
+    th: ({ theme }) => (
+      <Th>
+        {ImpactThContents({
+          extraText: 'Impact for canonical transcript',
+          theme,
+        })}
+      </Th>
+    ),
     td: ({ node, theme }) => (
       <Td style={{ width: '90px', paddingRight: '5px' }}>
-        {ImpactTdContents({ node, theme })}
+        {ImpactTdContents({
+          node: { ...node, vep_impact: node.impact },
+          theme,
+        })}
       </Td>
     ),
   },

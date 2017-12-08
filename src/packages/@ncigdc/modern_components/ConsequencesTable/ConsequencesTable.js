@@ -80,7 +80,7 @@ export default compose(
                 polyphen_impact: transcript.annotation.polyphen_impact,
                 sift_score: transcript.annotation.sift_score,
                 sift_impact: transcript.annotation.sift_impact,
-                impact: transcript.annotation.impact,
+                vep_impact: transcript.annotation.impact,
               },
               theme,
             }),

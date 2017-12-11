@@ -1,5 +1,5 @@
 /* @flow */
-import { replaceFilters } from '@ncigdc/utils/filters';
+import { replaceFilters, addInFilters } from '@ncigdc/utils/filters';
 import memoize from 'memoizee';
 import { fetchApi, fetchApiChunked } from '@ncigdc/utils/ajax';
 
@@ -117,17 +117,31 @@ async function getQueries({
   if (!totalCases) return NO_RESULT;
 
   const caseIds = cases.map(c => c.case_id);
-  const occurrenceFilters = replaceFilters(
+  const occurrenceFilters = addInFilters(
+    replaceFilters(
+      {
+        op: 'and',
+        content: [
+          {
+            op: 'in',
+            content: { field: 'cases.case_id', value: caseIds },
+          },
+        ],
+      },
+      caseFilters,
+    ),
     {
       op: 'and',
       content: [
         {
           op: 'in',
-          content: { field: 'cases.case_id', value: caseIds },
+          content: {
+            field: 'ssm.consequence.transcript.is_canonical',
+            value: ['true'],
+          },
         },
       ],
     },
-    caseFilters,
   );
   const { data: { hits: occurrences } } = await getOccurrences({
     filters: occurrenceFilters,

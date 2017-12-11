@@ -76,21 +76,19 @@ async function getQueries({
   maxGenes: number,
   maxCases: number,
 }): Promise<Object> {
-  const geneFilters = replaceFilters(
-    {
-      op: 'and',
-      content: [
-        {
-          op: 'in',
-          content: {
-            field: 'transcripts.is_canonical',
-            value: ['true'],
-          },
+  const isCanonicalFilter = {
+    op: 'and',
+    content: [
+      {
+        op: 'in',
+        content: {
+          field: 'transcripts.is_canonical',
+          value: ['true'],
         },
-      ],
-    },
-    currentFilters,
-  );
+      },
+    ],
+  };
+  const geneFilters = replaceFilters(isCanonicalFilter, currentFilters);
   const { data: { hits: genes } } = await getGenes({
     filters: geneFilters,
     size: maxGenes,
@@ -98,15 +96,18 @@ async function getQueries({
   if (!genes.length) return NO_RESULT;
 
   const geneIds = genes.map(gene => gene.gene_id);
-  const caseFilters = replaceFilters({
-    op: 'and',
-    content: [
-      {
-        op: 'in',
-        content: { field: 'genes.gene_id', value: geneIds },
-      },
-    ],
-  });
+  const caseFilters = replaceFilters(
+    {
+      op: 'and',
+      content: [
+        {
+          op: 'in',
+          content: { field: 'genes.gene_id', value: geneIds },
+        },
+      ],
+    },
+    currentFilters,
+  );
   const {
     data: { hits: cases, pagination: { total: totalCases } },
   } = await getCases({

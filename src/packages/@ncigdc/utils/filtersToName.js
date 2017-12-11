@@ -1,9 +1,12 @@
-function getValues(filters, sets) {
-  const content = filters.content;
+function getValues(filters: Object, sets: Object) {
+  const content: ?Array<Object> = filters.content;
   if (!content) {
     return [];
   } else if (Array.isArray(content)) {
-    return content.reduce((acc, c) => [...acc, ...getValues(c, sets)], []);
+    return content.reduce(
+      (acc: Array<?string>, c: Object) => [...acc, ...getValues(c, sets)],
+      [],
+    );
   } else {
     return [
       []
@@ -18,7 +21,7 @@ function getValues(filters, sets) {
   }
 }
 
-const MAX_VALUES = 6;
+const MAX_VALUES: number = 6;
 export default function({
   filters,
   max = MAX_VALUES,
@@ -26,24 +29,32 @@ export default function({
   length = Infinity,
 }) {
   if (!filters) return '';
-  const values = getValues(
+  const values: Array<string> = getValues(
     filters,
     Object.values(sets).reduce((a, b) => ({ ...a, ...b }), {}),
   );
 
-  let total = 0;
-  const name = values
-    .reduce((acc, value, i, arr) => {
-      if (total >= MAX_VALUES) return acc;
-      const joined = value.slice(0, MAX_VALUES - total).join(' / ');
-      total += value.length;
-      return acc.concat(
-        `${joined}${total > MAX_VALUES ||
-        (total === MAX_VALUES && i < arr.length - 1)
-          ? '...'
-          : ''}`,
-      );
-    }, [])
+  let total: number = 0;
+  const name: string = values
+    .reduce(
+      (
+        acc: Array<?string>,
+        value: Array<string>,
+        i: number,
+        arr: Array<Array<string>>,
+      ) => {
+        if (total >= MAX_VALUES) return acc;
+        const joined: string = value.slice(0, MAX_VALUES - total).join(' / ');
+        total += value.length;
+        return acc.concat(
+          `${joined}${total > MAX_VALUES ||
+          (total === MAX_VALUES && i < arr.length - 1)
+            ? '...'
+            : ''}`,
+        );
+      },
+      [],
+    )
     .join(', ');
   return name.length <= length
     ? name

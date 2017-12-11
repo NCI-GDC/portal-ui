@@ -51,7 +51,7 @@ const SearchInput = styled.input({
   height: '3rem',
   padding: '0.7rem 1rem',
   border: ({ theme }) => `1px solid ${theme.greyScale5}`,
-  width: '17rem',
+  width: '25.375rem',
   borderRadius: '4px',
   outline: 'none',
   transition: 'all 0.2s ease',
@@ -79,16 +79,17 @@ export default compose(
   ),
 )(
   ({
-    search: { state, setState, setQuery, reset },
+    search: { state, setQuery, reset },
     selectableList: { handleKeyDown, focusedItem, setFocusedItem, selectItem },
     tabIndex,
+    isInSearchMode,
+    setIsInSearchMode,
     style,
   }) => (
     <a
       className="quick-search-toggle"
       tabIndex={tabIndex}
-      onClick={() =>
-        !state.isInSearchMode && setState({ isInSearchMode: true })}
+      onClick={() => !isInSearchMode && setIsInSearchMode(true)}
       onBlur={event => {
         const currentTarget = event.currentTarget;
         const relatedTarget = event.relatedTarget;
@@ -101,7 +102,7 @@ export default compose(
               currentTarget === triggerElement
             )
           ) {
-            setTimeout(reset, 500);
+            setTimeout(() => setIsInSearchMode(false), 500);
           }
         });
       }}
@@ -128,13 +129,13 @@ export default compose(
           )}
         />
       </span>
-      {!state.isInSearchMode && (
+      {!isInSearchMode && (
         <span className="header-hidden-sm header-hidden-md" data-translate>
           Quick Search
         </span>
       )}
 
-      {state.isInSearchMode && (
+      {isInSearchMode && (
         <SearchInput
           autoFocus
           className="quick-search-input"

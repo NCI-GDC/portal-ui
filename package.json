@@ -69,7 +69,7 @@
     "react-relay-network-layer": "2.0.1",
     "react-router-dom": "4.2.2",
     "react-sizeme": "2.3.4",
-    "recompose": "0.23.1",
+    "recompose": "0.26.0",
     "redux": "3.6.0",
     "redux-actions": "1.2.2",
     "redux-api-middleware": "2.0.0-beta.2",

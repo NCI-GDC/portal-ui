@@ -32,6 +32,7 @@ const EntityPageHorizontalTable = ({
   headings,
   data,
   emptyMessage,
+  emptyMessageStyle,
   theme,
   tableId,
   idKey,
@@ -138,6 +139,7 @@ const EntityPageHorizontalTable = ({
       <Row
         style={{
           borderBottom: `1px solid ${theme.greyScale5}`,
+          ...emptyMessageStyle,
         }}
       >
         {emptyMessage && <h4 style={{ padding: '1rem' }}>{emptyMessage}</h4>}

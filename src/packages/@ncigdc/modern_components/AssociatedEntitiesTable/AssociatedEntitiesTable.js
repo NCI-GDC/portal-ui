@@ -199,6 +199,7 @@ export default compose(
                       marginBottom: '-1px',
                       width: '90px',
                       justifyContent: 'space-around',
+                      cursor: 'pointer',
                     }}
                   >
                     {fieldToDisplay[searchField].name}
@@ -210,6 +211,9 @@ export default compose(
               >
                 {Object.keys(fieldToDisplay).map(field => (
                   <DropdownItem
+                    style={{
+                      cursor: 'pointer',
+                    }}
                     key={field}
                     onClick={() => {
                       setSearchField(field);
@@ -259,6 +263,7 @@ export default compose(
                       fontSize: '14px',
                       transition: 'all 0.3s ease',
                       outline: 0,
+                      cursor: 'pointer',
                     }}
                     onClick={() => {
                       setSearchValue('');

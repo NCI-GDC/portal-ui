@@ -187,3 +187,24 @@ export const COHORT_COMPARISON_FACETS = {
   'demographic.race': 'Race',
   'diagnoses.age_at_diagnosis': 'Age at Diagnosis',
 };
+
+export const IMPACT_SHORT_FORMS = {
+  vep: {
+    high: 'HI',
+    moderate: 'MO',
+    modifier: 'MR',
+    low: 'LO',
+  },
+  sift: {
+    deleterious: 'DE',
+    deleterious_low_confidence: 'DE',
+    tolerated: 'TO',
+    tolerated_low_confidence: 'TO',
+  },
+  polyphen: {
+    benign: 'BE',
+    probably_damaging: 'DA',
+    possibly_damaging: 'DA',
+    unknown: 'UN',
+  },
+};

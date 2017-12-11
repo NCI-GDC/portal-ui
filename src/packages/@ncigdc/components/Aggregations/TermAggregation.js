@@ -201,6 +201,7 @@ const enhance = compose(
     filteredBuckets: buckets.filter(
       b =>
         b.key !== '_missing' &&
+        (b.key || '').length &&
         b.key.toLowerCase().includes(filter.toLowerCase()),
     ),
   })),

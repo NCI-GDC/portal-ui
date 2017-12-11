@@ -3,6 +3,7 @@
 import React from 'react';
 import { scaleOrdinal, schemeCategory10 } from 'd3';
 import { startCase, truncate, get } from 'lodash';
+
 import { Th, Td } from '@ncigdc/uikit/Table';
 import { makeFilter, addInFilters } from '@ncigdc/utils/filters';
 import { DNA_CHANGE_MARKERS } from '@ncigdc/utils/constants';
@@ -14,7 +15,6 @@ import ExploreLink from '@ncigdc/components/Links/ExploreLink';
 import { Tooltip } from '@ncigdc/uikit/Tooltip';
 import { SpinnerIcon } from '@ncigdc/theme/icons';
 import ProjectBreakdown from '@ncigdc/modern_components/ProjectBreakdown';
-import BubbleIcon from '@ncigdc/theme/icons/BubbleIcon';
 import MutationLink from '@ncigdc/components/Links/MutationLink';
 import Hidden from '@ncigdc/components/Hidden';
 import { getSurvivalCurves } from '@ncigdc/utils/survivalplot';
@@ -22,6 +22,7 @@ import Button from '@ncigdc/uikit/Button';
 import { truncateAfterMarker } from '@ncigdc/utils/string';
 import { ForTsvExport } from '@ncigdc/components/DownloadTableToTsvButton';
 import { createSelectColumn } from '@ncigdc/tableModels/utils';
+import { ImpactTdContents, ImpactThContents } from '@ncigdc/components/Impacts';
 
 const colors = scaleOrdinal(schemeCategory10);
 
@@ -94,7 +95,16 @@ const SsmsTableModel = [
     id: 'consequence_type',
     sortable: true,
     downloadable: true,
-    th: () => <Th>Consequences</Th>,
+    th: () => (
+      <Th>
+        <Tooltip
+          style={tableToolTipHint()}
+          Component="Consequences for canonical transcript"
+        >
+          Consequences
+        </Tooltip>
+      </Th>
+    ),
     td: ({ node, theme }) => (
       <Td>
         <span>
@@ -242,25 +252,14 @@ const SsmsTableModel = [
     id: 'impact',
     sortable: true,
     downloadable: true,
-    th: () => (
+    th: ({ theme }) => (
       <Th>
-        Impact<br />(VEP)
+        <ImpactThContents extraText="Impact for canonical transcript" />
       </Th>
     ),
     td: ({ node, theme }) => (
-      <Td>
-        {!['LOW', 'MODERATE', 'HIGH', 'MODIFIER'].includes(
-          node.impact,
-        ) ? null : (
-          <span>
-            <BubbleIcon
-              toolTipText={node.impact}
-              text={node.impact.slice(0, node.impact === 'MODIFIER' ? 2 : 1)}
-              backgroundColor={theme.impacts[node.impact]}
-            />
-            <ForTsvExport>{node.impact}</ForTsvExport>
-          </span>
-        )}
+      <Td style={{ width: '90px', paddingRight: '5px' }}>
+        <ImpactTdContents node={{ ...node, vep_impact: node.impact }} />
       </Td>
     ),
   },

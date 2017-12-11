@@ -19,10 +19,7 @@ import PlusIcon from '@ncigdc/theme/icons/Plus';
 import { ExternalLink } from '@ncigdc/uikit/Links';
 import Button from '@ncigdc/uikit/Button';
 import { withTheme } from '@ncigdc/theme';
-import {
-  ImpactThContents,
-  ImpactTdContents,
-} from '@ncigdc/modern_components/SsmsTable/SsmsTable.model.js';
+import { ImpactThContents, ImpactTdContents } from '@ncigdc/components/Impacts';
 
 const paginationPrefix = 'consequencesTable';
 
@@ -74,16 +71,17 @@ export default compose(
             aa_change: transcript.aa_change,
             consequence: transcript.consequence_type,
             coding_dna_change: transcript.annotation.hgvsc,
-            impact: ImpactTdContents({
-              node: {
-                polyphen_score: transcript.annotation.polyphen_score,
-                polyphen_impact: transcript.annotation.polyphen_impact,
-                sift_score: transcript.annotation.sift_score,
-                sift_impact: transcript.annotation.sift_impact,
-                vep_impact: transcript.annotation.impact,
-              },
-              theme,
-            }),
+            impact: (
+              <ImpactTdContents
+                node={{
+                  polyphen_score: transcript.annotation.polyphen_score,
+                  polyphen_impact: transcript.annotation.polyphen_impact,
+                  sift_score: transcript.annotation.sift_score,
+                  sift_impact: transcript.annotation.sift_impact,
+                  vep_impact: transcript.annotation.impact,
+                }}
+              />
+            ),
             strand: transcript.gene.gene_strand ? (
               <Row style={{ justifyContent: 'space-around' }}>
                 {strandIconMap[transcript.gene.gene_strand.toString(10)]}
@@ -199,7 +197,7 @@ export default compose(
           },
           {
             key: 'impact',
-            title: ImpactThContents({ theme }),
+            title: <ImpactThContents />,
             tdStyle: { width: '90px', paddingRight: '5px' },
           },
           { key: 'strand', title: 'Gene Strand' },

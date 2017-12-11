@@ -4,7 +4,6 @@ import React from 'react';
 import { scaleOrdinal, schemeCategory10 } from 'd3';
 import { startCase, truncate, get } from 'lodash';
 
-import styled from '@ncigdc/theme/styled';
 import { Th, Td } from '@ncigdc/uikit/Table';
 import { makeFilter, addInFilters } from '@ncigdc/utils/filters';
 import { DNA_CHANGE_MARKERS } from '@ncigdc/utils/constants';
@@ -16,7 +15,6 @@ import ExploreLink from '@ncigdc/components/Links/ExploreLink';
 import { Tooltip } from '@ncigdc/uikit/Tooltip';
 import { SpinnerIcon } from '@ncigdc/theme/icons';
 import ProjectBreakdown from '@ncigdc/modern_components/ProjectBreakdown';
-import BubbleIcon, { bubbleStyle } from '@ncigdc/theme/icons/BubbleIcon';
 import MutationLink from '@ncigdc/components/Links/MutationLink';
 import Hidden from '@ncigdc/components/Hidden';
 import { getSurvivalCurves } from '@ncigdc/utils/survivalplot';
@@ -24,115 +22,9 @@ import Button from '@ncigdc/uikit/Button';
 import { truncateAfterMarker } from '@ncigdc/utils/string';
 import { ForTsvExport } from '@ncigdc/components/DownloadTableToTsvButton';
 import { createSelectColumn } from '@ncigdc/tableModels/utils';
-import { Row, Column } from '@ncigdc/uikit/Flex';
-import { IMPACT_SHORT_FORMS } from '@ncigdc/utils/constants';
-
-type TImpacts = {
-  polyphen_impact: string,
-  polyphen_score: number,
-  sift_impact: string,
-  sift_score: number,
-  vep_impact: string,
-};
+import { ImpactTdContents, ImpactThContents } from '@ncigdc/components/Impacts';
 
 const colors = scaleOrdinal(schemeCategory10);
-const Box = styled.div(bubbleStyle);
-
-export const ImpactThContents = ({
-  extraText,
-  theme,
-}: {
-  extraText: string,
-  theme: Object,
-}) => (
-  <Tooltip
-    style={tableToolTipHint()}
-    Component={
-      <Column>
-        {extraText}
-        {['VEP', 'SIFT', 'PolyPhen'].map((impactType: string) => (
-          <Row style={{ paddingTop: '5px' }} key={impactType}>
-            <b style={{ textTransform: 'capitalize' }}>{impactType}</b>:{' '}
-            {Object.entries(
-              IMPACT_SHORT_FORMS[impactType.toLowerCase()],
-            ).map(([full, short]) => (
-              <div style={{ marginRight: '2px' }} key={full}>
-                <Box
-                  style={{
-                    backgroundColor: theme[impactType.toLowerCase()][full],
-                  }}
-                >
-                  {short}
-                </Box>{' '}
-                {full}
-              </div>
-            ))}
-          </Row>
-        ))}
-      </Column>
-    }
-  >
-    Impact
-  </Tooltip>
-);
-
-const makeBubbles = (impacts: TImpacts, theme) =>
-  ['VEP', 'SIFT', 'PolyPhen'].map(impactType => {
-    const impact = impacts[`${impactType.toLowerCase()}_impact`];
-    const impactScore = impacts[`${impactType.toLowerCase()}_score`];
-    const tipTextImpact = `${impactType} Impact: ${impact}`;
-    const tipTextScore = `${impactType} score: ${impactScore}`;
-    const tipText = [
-      tipTextImpact,
-      ...(impactScore >= 0 && impactType !== 'VEP' ? [tipTextScore] : []),
-    ].join(' / ');
-    return impact ? (
-      <BubbleIcon
-        key={tipText}
-        toolTipText={tipText}
-        text={
-          IMPACT_SHORT_FORMS[impactType.toLowerCase()][impact.toLowerCase()] ||
-          ''
-        }
-        backgroundColor={theme[impactType.toLowerCase()][impact.toLowerCase()]}
-      />
-    ) : (
-      <BubbleIcon
-        key={tipText}
-        toolTipText=""
-        text="--"
-        style={{ color: theme.greyScale1, width: '27px' }}
-      />
-    );
-  });
-
-export const ImpactTdContents = ({
-  node,
-  theme,
-}: {
-  node: TImpacts,
-  theme: Object,
-}) => (
-  <Row
-    style={{
-      display: 'flex',
-      justifyContent: 'space-between',
-    }}
-  >
-    {makeBubbles(node, theme)}
-    <ForTsvExport>
-      {[
-        `VEP: ${node.vep_impact}`,
-        ...(node.sift_impact
-          ? [`SIFT: ${node.sift_impact} - score ${node.sift_score}`]
-          : []),
-        ...(node.polyphen_impact
-          ? [`PolyPhen: ${node.polyphen_impact} - score ${node.polyphen_score}`]
-          : []),
-      ].join(', ')}
-    </ForTsvExport>
-  </Row>
-);
 
 const SsmsTableModel = [
   createSelectColumn({ idField: 'ssm_id' }),
@@ -362,18 +254,12 @@ const SsmsTableModel = [
     downloadable: true,
     th: ({ theme }) => (
       <Th>
-        {ImpactThContents({
-          extraText: 'Impact for canonical transcript',
-          theme,
-        })}
+        <ImpactThContents extraText="Impact for canonical transcript" />
       </Th>
     ),
     td: ({ node, theme }) => (
       <Td style={{ width: '90px', paddingRight: '5px' }}>
-        {ImpactTdContents({
-          node: { ...node, vep_impact: node.impact },
-          theme,
-        })}
+        <ImpactTdContents node={{ ...node, vep_impact: node.impact }} />
       </Td>
     ),
   },

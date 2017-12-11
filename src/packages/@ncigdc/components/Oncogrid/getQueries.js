@@ -76,19 +76,30 @@ async function getQueries({
   maxGenes: number,
   maxCases: number,
 }): Promise<Object> {
-  const isCanonicalFilter = {
-    op: 'and',
-    content: [
-      {
-        op: 'in',
-        content: {
-          field: 'transcripts.is_canonical',
-          value: ['true'],
-        },
-      },
-    ],
+  const noMissingImpact = {
+    op: 'NOT',
+    content: {
+      field: 'ssms.consequence.transcript.annotation.impact',
+      value: 'missing',
+    },
   };
-  const geneFilters = replaceFilters(isCanonicalFilter, currentFilters);
+
+  const geneFilters = replaceFilters(
+    {
+      op: 'and',
+      content: [
+        {
+          op: 'in',
+          content: {
+            field: 'transcripts.is_canonical',
+            value: ['true'],
+          },
+        },
+        noMissingImpact,
+      ],
+    },
+    currentFilters,
+  );
   const { data: { hits: genes } } = await getGenes({
     filters: geneFilters,
     size: maxGenes,
@@ -111,7 +122,7 @@ async function getQueries({
   const {
     data: { hits: cases, pagination: { total: totalCases } },
   } = await getCases({
-    filters: caseFilters,
+    filters: caseFilters, //note: do not pass sssm.consequence.transcript.is_canonical here, field does not exist under case_centric
     size: maxCases,
   });
   if (!totalCases) return NO_RESULT;
@@ -140,6 +151,7 @@ async function getQueries({
             value: ['true'],
           },
         },
+        noMissingImpact,
       ],
     },
   );

@@ -4,34 +4,26 @@ import React from 'react';
 import { compose } from 'recompose';
 import { connect } from 'react-redux';
 import ShoppingCartIcon from '@ncigdc/theme/icons/ShoppingCart';
-import { uniq, omit } from 'lodash';
+import { uniq } from 'lodash';
 import moment from 'moment';
 
 import { withTheme } from '@ncigdc/theme';
-import SearchIcon from 'react-icons/lib/fa/search';
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import formatFileSize from '@ncigdc/utils/formatFileSize';
 import EntityPageVerticalTable from '@ncigdc/components/EntityPageVerticalTable';
 import EntityPageHorizontalTable from '@ncigdc/components/EntityPageHorizontalTable';
 import BAMSlicingButton from '@ncigdc/components/BAMSlicingButton';
-import AnnotationLink from '@ncigdc/components/Links/AnnotationLink';
-import AnnotationsLink from '@ncigdc/components/Links/AnnotationsLink';
 import ProjectLink from '@ncigdc/components/Links/ProjectLink';
-import CaseLink from '@ncigdc/components/Links/CaseLink';
 import FileLink from '@ncigdc/components/Links/FileLink';
-import Hidden from '@ncigdc/components/Hidden';
 import { toggleFilesInCart } from '@ncigdc/dux/cart';
 import Button from '@ncigdc/uikit/Button';
 import AddToCartButtonSingle from '@ncigdc/components/AddToCartButtonSingle';
 import DownloadFile from '@ncigdc/components/DownloadFile';
 import { visualizingButton } from '@ncigdc/theme/mixins';
 import { RepositoryFilesLink } from '@ncigdc/components/Links/RepositoryLink';
-import SampleType from '@ncigdc/modern_components/SampleType';
+import AssociatedEntitiesTable from '@ncigdc/modern_components/AssociatedEntitiesTable';
 import { makeFilter } from '@ncigdc/utils/filters';
-import LocalPaginationTable from '@ncigdc/components/LocalPaginationTable';
 import withRouter from '@ncigdc/utils/withRouter';
-
-const paginationPrefix = 'assocTable';
 
 // value of data_category mapped to sections to display
 const DISPLAY_MAPPING = {
@@ -57,37 +49,7 @@ function displaySection(section: string, dataCategory: string): boolean {
   return (DISPLAY_MAPPING[dataCategory] || []).includes(section);
 }
 
-let searchInput;
-
 const fileInCart = (files, file) => files.some(f => f.file_id === file.file_id);
-
-const getAnnotationsCount = (annotations, entity) => {
-  const filteredAnnotations = annotations.hits.edges.filter(
-    ({ node: a }) => a.entity_id === entity.entity_id,
-  );
-
-  if (filteredAnnotations.length === 1) {
-    return (
-      <AnnotationLink uuid={filteredAnnotations[0].node.annotation_id}>
-        {filteredAnnotations.length}
-      </AnnotationLink>
-    );
-  } else if (filteredAnnotations.length > 1) {
-    return (
-      <AnnotationsLink
-        query={{
-          filters: makeFilter([
-            { field: 'annotations.entity_id', value: entity.entity_id },
-          ]),
-        }}
-      >
-        {filteredAnnotations.length}
-      </AnnotationsLink>
-    );
-  }
-
-  return filteredAnnotations.length.toLocaleString();
-};
 
 const File = ({
   node,
@@ -106,37 +68,6 @@ const File = ({
   query: {},
   push: Function,
 }) => {
-  const searchTerm = query[`${paginationPrefix}_search`];
-  const associatedEntities = node.associated_entities.hits.edges;
-  const filteredAE = (searchTerm
-    ? associatedEntities.filter(({ node: ae }) =>
-        Object.keys(ae)
-          .map(k => ae[k].includes(searchTerm))
-          .includes(true),
-      )
-    : associatedEntities
-  ).map(({ node: ae }) => ({
-    ...ae,
-    case_id: <CaseLink uuid={ae.case_id}>{ae.case_id}</CaseLink>,
-    entity_submitter_id: (
-      <CaseLink
-        uuid={ae.case_id}
-        query={ae.entity_type !== 'case' ? { bioId: ae.entity_id } : {}}
-        deepLink={ae.entity_type !== 'case' ? 'biospecimen' : undefined}
-      >
-        {ae.entity_submitter_id}
-      </CaseLink>
-    ),
-    sample_type: ['sample', 'portion', 'analyte', 'slide', 'aliquot'].some(
-      x => x === ae.entity_type,
-    ) ? (
-      <SampleType entityType={ae.entity_type} entityId={ae.entity_id} />
-    ) : (
-      '--'
-    ),
-    annotation_count: getAnnotationsCount(node.annotations, ae),
-  }));
-
   const archiveComponent = node.archive.archive_id ? (
     <span>
       {node.archive.submitter_id || '--'} - rev {node.archive.revision} &nbsp; (<RepositoryFilesLink
@@ -242,74 +173,10 @@ const File = ({
           ]}
         />
       </Row>
-      <LocalPaginationTable
-        className="test-associated-cases"
-        data={filteredAE}
-        prefix={paginationPrefix}
-        style={{ flexGrow: 1, backgroundColor: 'white', marginTop: '2rem' }}
-        entityName="associated cases/biospecimen"
-      >
-        <EntityPageHorizontalTable
-          rightComponent={
-            <Row>
-              <label htmlFor="filter-cases">
-                <div
-                  style={{
-                    borderTop: `1px solid ${theme.greyScale5}`,
-                    borderLeft: `1px solid ${theme.greyScale5}`,
-                    borderBottom: `1px solid ${theme.greyScale5}`,
-                    borderRight: 0,
-                    borderRadius: '4px 0 0 4px',
-                    backgroundColor: `${theme.greyScale4}`,
-                    width: '38px',
-                    height: '100%',
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                  }}
-                >
-                  <SearchIcon size={14} />
-                </div>
-                <Hidden>filter cases</Hidden>
-              </label>
-              <input
-                id="filter-cases"
-                name="filter-cases"
-                placeholder="Type to filter associated cases/biospecimen"
-                type="text"
-                ref={n => {
-                  searchInput = n;
-                }}
-                onChange={() => {
-                  push({
-                    query: {
-                      ...omit(query, `${paginationPrefix}_offset`),
-                      [`${paginationPrefix}_search`]: searchInput.value,
-                    },
-                  });
-                }}
-                value={searchTerm}
-                style={{
-                  fontSize: '14px',
-                  paddingLeft: '1rem',
-                  border: `1px solid ${theme.greyScale5}`,
-                  width: '28rem',
-                  borderRadius: '0 4px 4px 0',
-                }}
-              />
-            </Row>
-          }
-          title="Associated Cases/Biospecimen"
-          emptyMessage="No cases or biospecimen found."
-          headings={[
-            { key: 'entity_submitter_id', title: 'Entity ID' },
-            { key: 'entity_type', title: 'Entity Type' },
-            { key: 'sample_type', title: 'Sample Type' },
-            { key: 'case_id', title: 'Case UUID' },
-            { key: 'annotation_count', title: 'Annotations' },
-          ]}
-        />
-      </LocalPaginationTable>
+
+      <Row style={{ paddingTop: '2rem', alignItems: 'flex-start' }}>
+        <AssociatedEntitiesTable fileId={node.file_id} />
+      </Row>
 
       {displaySection('analysis', node.data_category) && (
         <Row style={{ paddingTop: '2rem', alignItems: 'flex-start' }}>

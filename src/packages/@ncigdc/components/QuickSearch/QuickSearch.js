@@ -102,7 +102,10 @@ export default compose(
               currentTarget === triggerElement
             )
           ) {
-            setTimeout(() => setIsInSearchMode(false), 500);
+            setTimeout(() => {
+              setIsInSearchMode(false);
+              reset();
+            }, 500);
           }
         });
       }}

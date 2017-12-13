@@ -50,8 +50,7 @@ const filtersToName: TFiltersToName = ({
       const joined: string = value.slice(0, max - total).join(' / ');
       total += value.length;
       return acc.concat(
-        `${joined}${total > max ||
-        (total === max && i < arr.length - 1)
+        `${joined}${total > max || (total === max && i < arr.length - 1)
           ? '...'
           : ''}`,
       );

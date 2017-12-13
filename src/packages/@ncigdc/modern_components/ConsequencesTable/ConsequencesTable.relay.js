@@ -59,7 +59,7 @@ export default (Component: ReactClass<*>) =>
                                     polyphen_score
                                     sift_score
                                     sift_impact
-                                    impact
+                                    vep_impact
                                   }
                                   gene {
                                     gene_id

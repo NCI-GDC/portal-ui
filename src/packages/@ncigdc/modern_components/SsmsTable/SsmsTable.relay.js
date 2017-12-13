@@ -119,7 +119,7 @@ export default (Component: ReactClass<*>) =>
                                 transcript {
                                   is_canonical
                                   annotation {
-                                    impact
+                                    vep_impact
                                     polyphen_impact
                                     polyphen_score
                                     sift_score

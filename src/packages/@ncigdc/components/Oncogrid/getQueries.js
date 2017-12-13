@@ -27,7 +27,7 @@ async function getOccurrences({ filters }): Promise<Object> {
       filters,
       fields: [
         'ssm.consequence.transcript.consequence_type',
-        'ssm.consequence.transcript.annotation.impact',
+        'ssm.consequence.transcript.annotation.vep_impact',
         'ssm.consequence.transcript.gene.gene_id',
         'ssm.ssm_id',
         'case.case_id',
@@ -79,7 +79,7 @@ async function getQueries({
   const noMissingImpact = {
     op: 'NOT',
     content: {
-      field: 'ssms.consequence.transcript.annotation.impact',
+      field: 'ssms.consequence.transcript.annotation.vep_impact',
       value: 'missing',
     },
   };

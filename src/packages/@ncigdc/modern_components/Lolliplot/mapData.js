@@ -36,7 +36,8 @@ export default (
           '_variant',
           '',
         ),
-        impact: (consequence.transcript.annotation || {}).impact || 'UNKNOWN',
+        impact:
+          (consequence.transcript.annotation || {}).vep_impact || 'UNKNOWN',
         aa_change: consequence.transcript.aa_change,
       };
     }),

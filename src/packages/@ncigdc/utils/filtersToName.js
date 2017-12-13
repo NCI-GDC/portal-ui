@@ -1,11 +1,13 @@
+/* @flow */
+
 type TGetValues = (filters: Object, sets: Object) => string;
 
-type TFiltersToName = (
+type TFiltersToName = ({
   filters: ?Object,
-  max: number,
+  max?: number,
   sets: Object,
-  length: number,
-) => string;
+  length?: number,
+}) => string;
 
 const getValues: TGetValues = (filters, sets) => {
   const content: ?Array<Object> = filters.content;

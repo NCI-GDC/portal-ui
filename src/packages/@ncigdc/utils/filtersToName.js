@@ -46,12 +46,12 @@ const filtersToName: TFiltersToName = ({
   let total = 0;
   const name: string = values
     .reduce((acc, value, i, arr) => {
-      if (total >= MAX_VALUES) return acc;
-      const joined: string = value.slice(0, MAX_VALUES - total).join(' / ');
+      if (total >= max) return acc;
+      const joined: string = value.slice(0, max - total).join(' / ');
       total += value.length;
       return acc.concat(
-        `${joined}${total > MAX_VALUES ||
-        (total === MAX_VALUES && i < arr.length - 1)
+        `${joined}${total > max ||
+        (total === max && i < arr.length - 1)
           ? '...'
           : ''}`,
       );

@@ -78,7 +78,7 @@ const availableAnalysis: Array<TAnalysis> = [
             {
               op: 'in',
               content: {
-                field: 'ssms.consequence.transcript.annotation.impact',
+                field: 'ssms.consequence.transcript.annotation.vep_impact',
                 value: ['HIGH'],
               },
             },
@@ -102,7 +102,7 @@ const availableAnalysis: Array<TAnalysis> = [
             {
               op: 'in',
               content: {
-                field: 'ssms.consequence.transcript.annotation.impact',
+                field: 'ssms.consequence.transcript.annotation.vep_impact',
                 value: ['HIGH'],
               },
             },
@@ -126,7 +126,7 @@ const availableAnalysis: Array<TAnalysis> = [
             {
               op: 'in',
               content: {
-                field: 'ssms.consequence.transcript.annotation.impact',
+                field: 'ssms.consequence.transcript.annotation.vep_impact',
                 value: ['HIGH'],
               },
             },

@@ -23,7 +23,7 @@ const mapData: TMapData = (data, theme) =>
 
     return {
       ...hit,
-      impact: annotation.impact,
+      vep_impact: annotation.vep_impact,
       polyphen_impact: annotation.polyphen_impact,
       polyphen_score: annotation.polyphen_score,
       sift_impact: annotation.sift_impact,

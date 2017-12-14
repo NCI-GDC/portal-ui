@@ -33,8 +33,8 @@ const presetFacets: Array<{
   },
   {
     title: 'VEP Impact',
-    field: 'consequence.transcript.annotation.impact',
-    full: 'ssms.consequence.transcript.annotation.impact',
+    field: 'consequence.transcript.annotation.vep_impact',
+    full: 'ssms.consequence.transcript.annotation.vep_impact',
     doc_type: 'ssms',
     type: 'terms',
   },
@@ -91,7 +91,7 @@ const presetFacets: Array<{
 
 export type TProps = {
   aggregations: {
-    consequence__transcript__annotation__impact: { buckets: [TBucket] },
+    consequence__transcript__annotation__vep_impact: { buckets: [TBucket] },
     consequence__transcript__consequence_type: { buckets: [TBucket] },
     mutation_type: { buckets: [TBucket] },
   },
@@ -215,7 +215,7 @@ export const SSMAggregationsQuery = {
   fragments: {
     aggregations: () => Relay.QL`
       fragment on SsmAggregations {
-        consequence__transcript__annotation__impact {
+        consequence__transcript__annotation__vep_impact {
           buckets {
             doc_count
             key

@@ -9,6 +9,7 @@ import { withTheme } from '@ncigdc/theme';
 import externalReferenceLinks from '@ncigdc/utils/externalReferenceLinks';
 import { ExternalLink } from '@ncigdc/uikit/Links';
 import { Row } from '@ncigdc/uikit/Flex';
+import BubbleIcon from '@ncigdc/theme/icons/BubbleIcon';
 
 const styles = {
   summary: {
@@ -56,7 +57,7 @@ export default compose(
           polyphen_score,
           sift_score,
           sift_impact,
-          impact,
+          vep_impact,
         },
       },
       theme,
@@ -93,14 +94,21 @@ export default compose(
               {!transcript_id && 'No canonical transcript'}
               {transcript_id && (
                 <span>
-                  <ExternalLink
-                    data-test="function-impact-transcript-link"
-                    key={transcript_id}
-                    style={{ paddingRight: '0.5em' }}
-                    href={externalReferenceLinks.ensembl(transcript_id)}
-                  >
-                    {transcript_id}
-                  </ExternalLink>
+                  <span>
+                    <ExternalLink
+                      data-test="function-impact-transcript-link"
+                      key={transcript_id}
+                      style={{ paddingRight: '0.5em' }}
+                      href={externalReferenceLinks.ensembl(transcript_id)}
+                    >
+                      {transcript_id}
+                    </ExternalLink>
+                    <BubbleIcon
+                      text="C"
+                      toolTipText="Canonical"
+                      backgroundColor={theme.primary}
+                    />
+                  </span>
                   <Row>
                     VEP:{' '}
                     <span
@@ -110,15 +118,19 @@ export default compose(
                         marginRight: '0.4em',
                       }}
                     >
-                      {impact && impact.toLowerCase()}
+                      {vep_impact}
                     </span>
                   </Row>
-                  <Row>
-                    SIFT: {sift_impact}, score: {sift_score}
-                  </Row>
-                  <Row>
-                    PolyPhen: {polyphen_impact}, score: {polyphen_score}
-                  </Row>
+                  {sift_impact && (
+                    <Row>
+                      SIFT: {sift_impact}, score: {sift_score}
+                    </Row>
+                  )}
+                  {polyphen_impact && (
+                    <Row>
+                      PolyPhen: {polyphen_impact}, score: {polyphen_score}
+                    </Row>
+                  )}
                 </span>
               )}
             </div>

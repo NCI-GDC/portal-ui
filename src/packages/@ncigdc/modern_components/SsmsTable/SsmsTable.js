@@ -138,7 +138,7 @@ export default compose(
                 'genomic_dna_change',
                 'mutation_subtype',
                 'consequence.transcript.consequence_type',
-                'consequence.transcript.annotation.impact',
+                'consequence.transcript.annotation.vep_impact',
                 'consequence.transcript.is_canonical',
                 'consequence.transcript.gene.gene_id',
                 'consequence.transcript.gene.symbol',

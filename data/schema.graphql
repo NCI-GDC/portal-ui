@@ -2094,6 +2094,7 @@ type ECaseAggregations {
   gene__ssm__consequence__transcript__annotation__pubmed: Aggregations
   gene__ssm__consequence__transcript__annotation__dbsnp_val_status: Aggregations
   gene__ssm__consequence__transcript__annotation__ccds: Aggregations
+  gene__ssm__consequence__transcript__annotation__vep_impact: Aggregations
   gene__ssm__consequence__transcript__annotation__cdna_position: Aggregations
   gene__ssm__consequence__transcript__annotation__cds_start: NumericAggergations
   gene__ssm__consequence__transcript__annotation__polyphen_impact: Aggregations
@@ -2107,7 +2108,6 @@ type ECaseAggregations {
   gene__ssm__consequence__transcript__annotation__protein_position: Aggregations
   gene__ssm__consequence__transcript__annotation__polyphen_score: NumericAggergations
   gene__ssm__consequence__transcript__annotation__cds_end: NumericAggergations
-  gene__ssm__consequence__transcript__annotation__impact: Aggregations
   gene__ssm__consequence__transcript__annotation__amino_acids: Aggregations
   gene__ssm__consequence__transcript__annotation__transcript_id: Aggregations
   gene__ssm__consequence__transcript__annotation__hgvsp: Aggregations
@@ -4093,6 +4093,7 @@ type GeneAggregations {
   case__ssm__consequence__transcript__annotation__pubmed: Aggregations
   case__ssm__consequence__transcript__annotation__dbsnp_val_status: Aggregations
   case__ssm__consequence__transcript__annotation__ccds: Aggregations
+  case__ssm__consequence__transcript__annotation__vep_impact: Aggregations
   case__ssm__consequence__transcript__annotation__cdna_position: Aggregations
   case__ssm__consequence__transcript__annotation__cds_start: NumericAggergations
   case__ssm__consequence__transcript__annotation__polyphen_impact: Aggregations
@@ -4106,7 +4107,6 @@ type GeneAggregations {
   case__ssm__consequence__transcript__annotation__protein_position: Aggregations
   case__ssm__consequence__transcript__annotation__polyphen_score: NumericAggergations
   case__ssm__consequence__transcript__annotation__cds_end: NumericAggergations
-  case__ssm__consequence__transcript__annotation__impact: Aggregations
   case__ssm__consequence__transcript__annotation__amino_acids: Aggregations
   case__ssm__consequence__transcript__annotation__transcript_id: Aggregations
   case__ssm__consequence__transcript__annotation__hgvsp: Aggregations
@@ -5911,6 +5911,7 @@ type SsmAggregations {
   consequence__transcript__annotation__pubmed: Aggregations
   consequence__transcript__annotation__dbsnp_val_status: Aggregations
   consequence__transcript__annotation__ccds: Aggregations
+  consequence__transcript__annotation__vep_impact: Aggregations
   consequence__transcript__annotation__cdna_position: Aggregations
   consequence__transcript__annotation__cds_start: NumericAggergations
   consequence__transcript__annotation__polyphen_impact: Aggregations
@@ -5924,7 +5925,6 @@ type SsmAggregations {
   consequence__transcript__annotation__protein_position: Aggregations
   consequence__transcript__annotation__polyphen_score: NumericAggergations
   consequence__transcript__annotation__cds_end: NumericAggergations
-  consequence__transcript__annotation__impact: Aggregations
   consequence__transcript__annotation__amino_acids: Aggregations
   consequence__transcript__annotation__transcript_id: Aggregations
   consequence__transcript__annotation__hgvsp: Aggregations
@@ -6195,6 +6195,9 @@ type TranscriptAnnotation {
   ccds: String
 
   # keyword
+  vep_impact: String
+
+  # keyword
   cdna_position: String
 
   # long
@@ -6232,9 +6235,6 @@ type TranscriptAnnotation {
 
   # long
   cds_end: Float
-
-  # keyword
-  impact: String
 
   # keyword
   amino_acids: String

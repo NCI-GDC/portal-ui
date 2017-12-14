@@ -151,7 +151,7 @@ export default compose(
               state.query &&
               state.results &&
               focusedItem &&
-              event.key == 'Enter'
+              event.key === 'Enter'
             ) {
               reset();
               setIsInSearchMode(false);

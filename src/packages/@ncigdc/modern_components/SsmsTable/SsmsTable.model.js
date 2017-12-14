@@ -254,7 +254,7 @@ const SsmsTableModel = [
     downloadable: true,
     th: ({ theme }) => (
       <Th>
-        <ImpactThContents extraText="Impact for canonical transcript" />
+        <ImpactThContents />
       </Th>
     ),
     td: ({ node, theme }) => (

@@ -147,7 +147,12 @@ export default compose(
           onChange={event => setQuery(event.target.value)}
           onKeyDown={event => {
             handleKeyDown(event);
-            if (event.key == 'Enter') {
+            if (
+              state.query &&
+              state.results &&
+              focusedItem &&
+              event.key == 'Enter'
+            ) {
               reset();
               setIsInSearchMode(false);
             }

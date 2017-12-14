@@ -105,7 +105,7 @@ export default compose(
             setTimeout(() => {
               setIsInSearchMode(false);
               reset();
-            }, 500);
+            }, 300);
           }
         });
       }}
@@ -145,7 +145,13 @@ export default compose(
           placeholder="Quick Search"
           type="text"
           onChange={event => setQuery(event.target.value)}
-          onKeyDown={handleKeyDown}
+          onKeyDown={event => {
+            handleKeyDown(event);
+            if (event.key == 'Enter') {
+              reset();
+              setIsInSearchMode(false);
+            }
+          }}
           aria-label="Quick Search Input"
         />
       )}
@@ -158,7 +164,11 @@ export default compose(
           )}
           query={state.query}
           onSelectItem={setFocusedItem}
-          onActivateItem={selectItem}
+          onActivateItem={item => {
+            selectItem(item);
+            reset();
+            setIsInSearchMode(false);
+          }}
           isLoading={state.isLoading}
         />
       )}

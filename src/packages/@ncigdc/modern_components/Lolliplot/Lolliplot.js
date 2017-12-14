@@ -171,7 +171,18 @@ export default compose(
                     <div>ID: {d.id}</div>
                     <div>AA Change: {d.aa_change}</div>
                     <div># of Cases: {cases.toLocaleString()}</div>
-                    <div>Functional Impact: {d.impact}</div>
+                    <div>VEP Impact: {d.impact}</div>
+                    {d.sift_impact && (
+                      <div>
+                        SIFT Impact: {d.sift_impact}, score: {d.sift_score}
+                      </div>
+                    )}
+                    {d.polyphen_impact && (
+                      <div>
+                        PolyPhen Impact: {d.polyphen_impact}, score:{' '}
+                        {d.polyphen_score}
+                      </div>
+                    )}
                   </span>,
                 );
               }}

@@ -29198,6 +29198,18 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
+              "name": "gene__ssm__consequence__transcript__annotation__vep_impact",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
               "name": "gene__ssm__consequence__transcript__annotation__cdna_position",
               "type": {
                 "kind": "OBJECT",
@@ -29346,18 +29358,6 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "NumericAggergations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "gene__ssm__consequence__transcript__annotation__impact",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
                 "ofType": null
               }
             },
@@ -33798,6 +33798,18 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
+              "name": "case__ssm__consequence__transcript__annotation__vep_impact",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
               "name": "case__ssm__consequence__transcript__annotation__cdna_position",
               "type": {
                 "kind": "OBJECT",
@@ -33946,18 +33958,6 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "NumericAggergations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "case__ssm__consequence__transcript__annotation__impact",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
                 "ofType": null
               }
             },
@@ -40595,6 +40595,18 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
+              "name": "consequence__transcript__annotation__vep_impact",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
               "name": "consequence__transcript__annotation__cdna_position",
               "type": {
                 "kind": "OBJECT",
@@ -40743,18 +40755,6 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "NumericAggergations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "consequence__transcript__annotation__impact",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
                 "ofType": null
               }
             },
@@ -41852,6 +41852,18 @@
               "deprecationReason": null,
               "description": "keyword",
               "isDeprecated": false,
+              "name": "vep_impact",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "keyword",
+              "isDeprecated": false,
               "name": "cdna_position",
               "type": {
                 "kind": "SCALAR",
@@ -42000,18 +42012,6 @@
               "type": {
                 "kind": "SCALAR",
                 "name": "Float",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "keyword",
-              "isDeprecated": false,
-              "name": "impact",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
                 "ofType": null
               }
             },

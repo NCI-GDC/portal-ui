@@ -259,7 +259,7 @@ const SsmsTableModel = [
     ),
     td: ({ node, theme }) => (
       <Td style={{ width: '90px', paddingRight: '5px' }}>
-        <ImpactTdContents node={{ ...node, vep_impact: node.impact }} />
+        <ImpactTdContents node={node} />
       </Td>
     ),
   },

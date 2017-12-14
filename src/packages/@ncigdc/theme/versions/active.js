@@ -37,20 +37,20 @@ const theme = {
   vep: {
     high: 'rgb(185, 36, 36)',
     moderate: '#634d0c',
+    modifier: '#634d0c',
     low: '#015c0a',
-    modifier: '#c94d18',
-  },
-  polyphen: {
-    benign: '#015c0a',
-    probably_damaging: 'rgb(185, 36, 36)',
-    possibly_damaging: 'rgb(185, 36, 36)',
-    unknown: 'rgb(107,98,98)',
   },
   sift: {
     deleterious: 'rgb(185, 36, 36)',
-    deleterious_low_confidence: 'rgb(185, 36, 36)',
-    tolerated: '#9B8158',
-    tolerated_low_confidence: '#9B8158',
+    deleterious_low_confidence: '#634d0c',
+    tolerated: '#634d0c',
+    tolerated_low_confidence: '#015c0a',
+  },
+  polyphen: {
+    benign: '#015c0a',
+    possibly_damaging: '#634d0c',
+    probably_damaging: 'rgb(185, 36, 36)',
+    unknown: 'rgb(107,98,98)',
   },
 
   // alerts

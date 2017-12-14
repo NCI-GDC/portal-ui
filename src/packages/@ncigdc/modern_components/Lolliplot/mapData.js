@@ -38,6 +38,12 @@ export default (
         ),
         impact:
           (consequence.transcript.annotation || {}).vep_impact || 'UNKNOWN',
+        sift_impact: (consequence.transcript.annotation || {}).sift_impact,
+        polyphen_impact: (consequence.transcript.annotation || {})
+          .polyphen_impact,
+        sift_score: (consequence.transcript.annotation || {}).sift_score,
+        polyphen_score: (consequence.transcript.annotation || {})
+          .polyphen_score,
         aa_change: consequence.transcript.aa_change,
       };
     }),

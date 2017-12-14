@@ -65,6 +65,10 @@ export default (Component: ReactClass<*>) =>
                     "consequence.transcript.is_canonical"
                     "consequence.transcript.transcript_id"
                     "consequence.transcript.annotation.vep_impact"
+                    "consequence.transcript.annotation.polyphen_impact"
+                    "consequence.transcript.annotation.polyphen_score"
+                    "consequence.transcript.annotation.sift_impact"
+                    "consequence.transcript.annotation.sift_score"
                     "consequence.transcript.gene.gene_id"
                     "consequence.transcript.gene.symbol"
                   ]

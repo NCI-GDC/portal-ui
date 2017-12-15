@@ -109,11 +109,6 @@ export default compose(
                   key={transcript.transcript_id}
                   style={{
                     paddingRight: '0.5em',
-                    fontWeight:
-                      transcript.transcript_id ===
-                      functionalImpactTranscript.transcript_id
-                        ? 'bold'
-                        : 'normal',
                   }}
                   href={externalReferenceLinks.ensembl(
                     transcript.transcript_id,

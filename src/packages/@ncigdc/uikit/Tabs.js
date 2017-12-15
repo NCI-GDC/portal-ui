@@ -37,14 +37,17 @@ const baseTabStyle = (theme, side) =>
     transition: 'background-color 0.2s ease',
     borderRadius: side ? '4px 0 0 4px' : '4px 4px 0 0',
     cursor: 'pointer',
+    overflow: 'visible',
   });
 
 const styles = {
   active: (theme, side) =>
     css({
       backgroundColor: '#fff',
-      zIndex: 2,
       ...tabBorder(theme, side),
+      position: 'relative',
+      left: '0px',
+      zIndex: 2,
       ':hover': {
         backgroundColor: 'white',
       },
@@ -110,8 +113,10 @@ const Tabs = ({
         <div
           style={{
             maxHeight: '550px',
-            overflow: 'auto',
+            overflowY: 'scroll',
             backgroundColor: 'white',
+            position: 'relative',
+            left: '1px',
           }}
         >
           {Children.map(tabs, (child, i) => (

@@ -105,6 +105,7 @@ export default compose(
               {!!diagnoses.length && (
                 <SideTabs
                   contentStyle={{ border: 'none' }}
+                  containerStyle={{ display: 'block' }}
                   tabs={diagnoses.map(x => (
                     <p key={x.node.diagnosis_id}>{x.node.diagnosis_id}</p>
                   ))}
@@ -219,6 +220,7 @@ export default compose(
               {!!familyHistory.length && (
                 <SideTabs
                   contentStyle={{ border: 'none' }}
+                  containerStyle={{ display: 'block' }}
                   tabs={familyHistory.map(x => (
                     <p key={x.family_history_id}>{x.family_history_id}</p>
                   ))}
@@ -261,6 +263,7 @@ export default compose(
               {!!totalExposures && (
                 <SideTabs
                   contentStyle={{ border: 'none' }}
+                  containerStyle={{ display: 'block' }}
                   tabs={exposures.map(x => (
                     <p key={x.node.exposure_id}>{x.node.exposure_id}</p>
                   ))}

@@ -171,9 +171,7 @@ export default compose(
                     <div>ID: {d.id}</div>
                     <div>AA Change: {d.aa_change}</div>
                     <div># of Cases: {cases.toLocaleString()}</div>
-                    {d.impact !== 'UNKNOWN' && (
-                      <div>VEP Impact: {d.impact}</div>
-                    )}
+                    <div>VEP Impact: {d.impact}</div>
                     {d.sift_impact && (
                       <div>
                         SIFT Impact: {d.sift_impact}, score: {d.sift_score}

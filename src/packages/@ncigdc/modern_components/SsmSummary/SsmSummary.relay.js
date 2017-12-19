@@ -25,6 +25,12 @@ export default (Component: ReactClass<*>) =>
               value: [ssmId],
             },
           ]),
+          consequenceFilters: makeFilter([
+            {
+              field: 'consequence.transcript.is_canonical',
+              value: 'true',
+            },
+          ]),
         },
       };
     }),
@@ -36,7 +42,10 @@ export default (Component: ReactClass<*>) =>
         variables={props.variables}
         Component={Component}
         query={graphql`
-          query SsmSummary_relayQuery($filters: FiltersArgument) {
+          query SsmSummary_relayQuery(
+            $filters: FiltersArgument
+            $consequenceFilters: FiltersArgument
+          ) {
             viewer {
               explore {
                 ssms {
@@ -49,10 +58,11 @@ export default (Component: ReactClass<*>) =>
                         ncbi_build
                         genomic_dna_change
                         consequence {
-                          hits(first: 99) {
+                          hits(first: 1, filters: $consequenceFilters) {
                             edges {
                               node {
                                 transcript {
+                                  is_canonical
                                   transcript_id
                                   annotation {
                                     polyphen_impact

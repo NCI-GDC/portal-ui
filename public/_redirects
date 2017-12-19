@@ -1,3 +1,3 @@
 # API requests for static hosts
-/api/*    http://142.1.177.27:5001/:splat    200
-/*        /index.html                        200 
+/api/*    http://142.1.177.119:5000/:splat    200
+/*        /index.html                        200

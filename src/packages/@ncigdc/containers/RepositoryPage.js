@@ -12,7 +12,8 @@ import TabbedLinks from '@ncigdc/components/TabbedLinks';
 import NoResultsMessage from '@ncigdc/components/NoResultsMessage';
 
 import RepoCasesTable from '@ncigdc/modern_components/RepoCasesTable';
-import CaseAggregations from '@ncigdc/containers/CaseAggregations';
+// import CaseAggregations from '@ncigdc/containers/CaseAggregations';
+import CaseAggregations from '@ncigdc/modern_components/CaseAggregations';
 import FilesTable from '@ncigdc/modern_components/FilesTable';
 import FileAggregations from '@ncigdc/containers/FileAggregations';
 import { SaveIcon } from '@ncigdc/theme/icons';
@@ -103,7 +104,6 @@ export const RepositoryPageComponent = (props: TProps) => {
   const fileCount = props.viewer.repository.files.hits.total;
   const caseCount = props.viewer.repository.cases.hits.total;
   const fileSize = props.viewer.cart_summary.aggregations.fs.value;
-
   return (
     <div className="test-repository-page">
       <SearchPage
@@ -133,14 +133,11 @@ export const RepositoryPageComponent = (props: TProps) => {
             text: 'Cases',
             component: (
               <CaseAggregations
-                facets={props.viewer.repository.customCaseFacets}
-                filters={props.filters}
-                aggregations={props.viewer.repository.cases.aggregations}
-                hits={(props.viewer.repository.cases || {}).hits || {}}
                 suggestions={
                   (props.viewer.autocomplete_case || { hits: [] }).hits
                 }
                 setAutocomplete={setAutocompleteCases}
+                relay={props.relay}
               />
             ),
           },
@@ -258,16 +255,10 @@ export const RepositoryPageQuery = {
           }
         }
         repository {
-          customCaseFacets: cases {
-            ${CaseAggregations.getFragment('facets')}
-          }
           customFileFacets: files {
             ${FileAggregations.getFragment('facets')}
           }
           cases {
-            aggregations(filters: $filters aggregations_filter_themselves: false) {
-              ${CaseAggregations.getFragment('aggregations')}
-            }
             pies: aggregations(filters: $filters aggregations_filter_themselves: true) {
               ${RepoCasesPies.getFragment('aggregations')}
             }

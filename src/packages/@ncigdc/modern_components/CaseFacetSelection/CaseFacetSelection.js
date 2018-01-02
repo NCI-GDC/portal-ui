@@ -115,77 +115,29 @@ const ConditionalHighlight = ({ condition, search, children }) =>
   );
 
 export default compose(
-  withState('facetMapping', 'setFacetMapping', {}),
+  // withState('facetMapping', 'setFacetMapping', {}),
   withState('query', 'setQuery', ''),
   withState('focusedFacet', 'setFocusedFacet', null),
-  withState('isLoadingFacetMapping', 'setIsLoadingFacetMapping', false),
-  withState(
-    'isLoadingAdditionalFacetData',
-    'setIsLoadingAdditionalFacetData',
-    false,
-  ),
-  withPropsOnChange(
-    ['isLoadingFacetMapping', 'isLoadingAdditionalFacetData'],
-    ({ isLoadingFacetMapping, isLoadingAdditionalFacetData }) => ({
-      isLoading: _.some([isLoadingFacetMapping, isLoadingAdditionalFacetData]),
-    }),
-  ),
-  withState('shouldHideUselessFacets', 'setShouldHideUselessFacets', false),
-  withProps(
-    ({
-      relay,
-      setIsLoadingAdditionalFacetData,
-      setShouldHideUselessFacets,
-      facetMapping,
-      relayVarName,
-      docType,
-    }) => ({
-      setUselessFacetVisibility: shouldHideUselessFacets => {
-        setShouldHideUselessFacets(shouldHideUselessFacets);
-        localStorage.setItem(
-          'shouldHideUselessFacets',
-          JSON.stringify(shouldHideUselessFacets),
-        );
-        const byDocType = _.groupBy(facetMapping, o => o.doc_type);
-        if (shouldHideUselessFacets && byDocType[docType]) {
-          setIsLoadingAdditionalFacetData(shouldHideUselessFacets);
-          //   relay.setVariables(
-          // {
-          //   [relayVarName]: byDocType[docType]
-          //     .map(({ field }) => field)
-          //     .join(','),
-          // },
-          // readyState => {
-          //   if (
-          //     _.some([readyState.ready, readyState.aborted, readyState.error])
-          //   ) {
-          //     setIsLoadingAdditionalFacetData(false);
-          //   }
-          // },
-          //   );
-        }
-      },
-    }),
-  ),
-  withPropsOnChange(
-    ['isLoadingFacetMapping'],
-    ({ isLoadingFacetMapping, setUselessFacetVisibility }) =>
-      !isLoadingFacetMapping &&
-      JSON.parse(localStorage.getItem('shouldHideUselessFacets') || 'null') &&
-      setUselessFacetVisibility(true),
-  ),
-  withHandlers({
-    fetchData: ({ setFacetMapping, setIsLoadingFacetMapping }) => async () => {
-      setIsLoadingFacetMapping(true);
-      const mapping = await fetchApi('gql/_mapping', {
-        headers: { 'Content-Type': 'application/json' },
-      });
-      setFacetMapping(mapping);
-      setIsLoadingFacetMapping(false);
-    },
-    handleQueryInputChange: ({ setQuery }) => event =>
-      setQuery(event.target.value),
-  }),
+  // withState('isLoadingFacetMapping', 'setIsLoadingFacetMapping', false),
+  // withState(
+  //   'isLoadingAdditionalFacetData',
+  //   'setIsLoadingAdditionalFacetData',
+  //   false,
+  // ),
+  // withPropsOnChange(
+  //   ['isLoadingFacetMapping', 'isLoadingAdditionalFacetData'],
+  //   ({ isLoadingFacetMapping, isLoadingAdditionalFacetData }) => ({
+  //     isLoading: _.some([isLoadingFacetMapping, isLoadingAdditionalFacetData]),
+  //   }),
+  // ),
+  // withState('shouldHideUselessFacets', 'setShouldHideUselessFacets', false),
+  // withPropsOnChange(
+  //   ['isLoadingFacetMapping'],
+  //   ({ isLoadingFacetMapping, setUselessFacetVisibility }) =>
+  //     !isLoadingFacetMapping &&
+  //     JSON.parse(localStorage.getItem('shouldHideUselessFacets') || 'null') &&
+  //     setUselessFacetVisibility(true),
+  // ),
   defaultProps({
     excludeFacetsBy: _.noop,
     onSelect: _.noop,
@@ -251,11 +203,6 @@ export default compose(
       onCancel: ({ handleClose }) => handleClose(),
     },
   ),
-  lifecycle({
-    componentDidMount(): void {
-      this.props.fetchData();
-    },
-  }),
 )(props => (
   <div className="test-facet-selection">
     <div {...css(styles.header)}>

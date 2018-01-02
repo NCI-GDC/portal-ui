@@ -13,7 +13,7 @@ import {
 import Modal from '@ncigdc/uikit/Modal';
 import SuggestionFacet from '@ncigdc/components/Aggregations/SuggestionFacet';
 import { Row } from '@ncigdc/uikit/Flex';
-import CasesFacetSelection from '@ncigdc/components/FacetSelection';
+import CaseFacetSelection from '@ncigdc/modern_components/CaseFacetSelection';
 import FacetWrapper from '@ncigdc/components/FacetWrapper';
 import UploadSetButton from '@ncigdc/components/UploadSetButton';
 import { withTheme } from '@ncigdc/theme';
@@ -23,6 +23,7 @@ import escapeForRelay from '@ncigdc/utils/escapeForRelay';
 import tryParseJSON from '@ncigdc/utils/tryParseJSON';
 import FacetHeader from '@ncigdc/components/Aggregations/FacetHeader';
 import { UploadCaseSet } from '@ncigdc/components/Modals/UploadSet';
+import FacetSelection from '../../components/FacetSelection';
 
 import type { TBucket } from '@ncigdc/components/Aggregations/types';
 
@@ -218,7 +219,7 @@ const CaseAggregationsComponent = (props: TProps) => (
       isOpen={props.shouldShowFacetSelection}
       style={{ content: { border: 0, padding: '15px' } }}
     >
-      <CasesFacetSelection
+      <CaseFacetSelection
         title="Add a Case/Biospecimen Filter"
         relayVarName="repoCaseCustomFacetFields"
         docType="cases"

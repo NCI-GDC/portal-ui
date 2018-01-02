@@ -58,7 +58,10 @@ export default (Component: ReactClass<*>) =>
               repository {
                 cases {
                   facets(facets: $repoCaseCustomFacetFields)
-                  aggregations(filters: $filters) {
+                  aggregations(
+                    filters: $filters
+                    aggregations_filter_themselves: false
+                  ) {
                     primary_site {
                       buckets {
                         doc_count

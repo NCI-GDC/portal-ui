@@ -102,7 +102,10 @@ export default compose(
               currentTarget === triggerElement
             )
           ) {
-            setTimeout(() => setIsInSearchMode(false), 500);
+            setTimeout(() => {
+              setIsInSearchMode(false);
+              reset();
+            }, 300);
           }
         });
       }}
@@ -142,7 +145,18 @@ export default compose(
           placeholder="Quick Search"
           type="text"
           onChange={event => setQuery(event.target.value)}
-          onKeyDown={handleKeyDown}
+          onKeyDown={event => {
+            handleKeyDown(event);
+            if (
+              state.query &&
+              state.results &&
+              focusedItem &&
+              event.key === 'Enter'
+            ) {
+              reset();
+              setIsInSearchMode(false);
+            }
+          }}
           aria-label="Quick Search Input"
         />
       )}
@@ -155,7 +169,11 @@ export default compose(
           )}
           query={state.query}
           onSelectItem={setFocusedItem}
-          onActivateItem={selectItem}
+          onActivateItem={item => {
+            selectItem(item);
+            reset();
+            setIsInSearchMode(false);
+          }}
           isLoading={state.isLoading}
         />
       )}

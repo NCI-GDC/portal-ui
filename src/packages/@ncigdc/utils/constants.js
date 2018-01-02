@@ -204,15 +204,15 @@ export const IMPACT_SHORT_FORMS = {
     low: 'LO',
   },
   sift: {
-    deleterious: 'DE',
-    deleterious_low_confidence: 'DE',
+    deleterious: 'DH',
+    deleterious_low_confidence: 'DL',
     tolerated: 'TO',
-    tolerated_low_confidence: 'TO',
+    tolerated_low_confidence: 'TL',
   },
   polyphen: {
+    probably_damaging: 'PR',
+    possibly_damaging: 'PO',
     benign: 'BE',
-    probably_damaging: 'DA',
-    possibly_damaging: 'DA',
     unknown: 'UN',
   },
 };

@@ -1,7 +1,7 @@
 // @flow
 import React from 'react';
 import { compose, withPropsOnChange } from 'recompose';
-import { orderBy, groupBy, find } from 'lodash';
+import { orderBy, groupBy, get, find } from 'lodash';
 import externalReferenceLinks from '@ncigdc/utils/externalReferenceLinks';
 import EntityPageHorizontalTable from '@ncigdc/components/EntityPageHorizontalTable';
 import LocalPaginationTable from '@ncigdc/components/LocalPaginationTable';
@@ -32,6 +32,7 @@ const strandIconMap = {
 type TProps = {
   consequenceDataGrouped: Object,
   theme: Object,
+  functionalImpactTranscript: Object,
   canonicalTranscriptId: string,
   dataRows: Array<Object>,
   consequences: Array<Object>,
@@ -43,12 +44,22 @@ export default compose(
     ['viewer'],
     ({ viewer: { explore: { ssms: { hits: { edges } } } }, theme }) => {
       const node = edges[0].node;
+      const consequenceOfInterest = node.consequence.hits.edges.find(
+        consequence =>
+          get(consequence, 'node.transcript.annotation.vep_impact'),
+        {},
+      );
+      const functionalImpactTranscript = get(
+        consequenceOfInterest,
+        'node.transcript',
+        {},
+      );
 
-      const canonicalTranscript = (find(
+      const canonicalTranscriptId = (find(
         node.consequence.hits.edges,
         'node.transcript.is_canonical',
-      ) || { node: { transcript: { transcript_id: '' } } }).node.transcript;
-      const canonicalTranscriptId = canonicalTranscript.transcript_id;
+      ) || { node: { transcript: { transcript_id: '' } } }).node.transcript
+        .transcript_id;
 
       const consequenceDataGrouped = groupBy(node.consequence.hits.edges, c => {
         const { transcript: t } = c.node;
@@ -78,7 +89,7 @@ export default compose(
                   polyphen_impact: transcript.annotation.polyphen_impact,
                   sift_score: transcript.annotation.sift_score,
                   sift_impact: transcript.annotation.sift_impact,
-                  vep_impact: transcript.annotation.impact,
+                  vep_impact: transcript.annotation.vep_impact,
                 }}
               />
             ),
@@ -121,6 +132,7 @@ export default compose(
       );
 
       return {
+        functionalImpactTranscript,
         canonicalTranscriptId,
         consequenceDataGrouped,
         consequences,
@@ -135,6 +147,7 @@ export default compose(
       consequences,
       consequenceDataGrouped,
       canonicalTranscriptId,
+      functionalImpactTranscript,
       theme,
     }: TProps = {},
   ) => (

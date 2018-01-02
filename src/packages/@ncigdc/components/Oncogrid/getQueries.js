@@ -1,5 +1,5 @@
 /* @flow */
-import { replaceFilters, addInFilters } from '@ncigdc/utils/filters';
+import { replaceFilters } from '@ncigdc/utils/filters';
 import memoize from 'memoizee';
 import { fetchApi, fetchApiChunked } from '@ncigdc/utils/ajax';
 
@@ -27,7 +27,7 @@ async function getOccurrences({ filters }): Promise<Object> {
       filters,
       fields: [
         'ssm.consequence.transcript.consequence_type',
-        'ssm.consequence.transcript.annotation.impact',
+        'ssm.consequence.transcript.annotation.vep_impact',
         'ssm.consequence.transcript.gene.gene_id',
         'ssm.ssm_id',
         'case.case_id',
@@ -76,26 +76,17 @@ async function getQueries({
   maxGenes: number,
   maxCases: number,
 }): Promise<Object> {
-  const noMissingImpact = {
-    op: 'NOT',
-    content: {
-      field: 'ssms.consequence.transcript.annotation.impact',
-      value: 'missing',
-    },
-  };
-
   const geneFilters = replaceFilters(
     {
       op: 'and',
       content: [
         {
-          op: 'in',
+          op: 'NOT',
           content: {
-            field: 'transcripts.is_canonical',
-            value: ['true'],
+            field: 'ssms.consequence.transcript.annotation.vep_impact',
+            value: 'missing',
           },
         },
-        noMissingImpact,
       ],
     },
     currentFilters,
@@ -117,43 +108,28 @@ async function getQueries({
         },
       ],
     },
-    currentFilters,
+    geneFilters,
   );
   const {
     data: { hits: cases, pagination: { total: totalCases } },
   } = await getCases({
-    filters: caseFilters, //note: do not pass sssm.consequence.transcript.is_canonical here, field does not exist under case_centric
+    filters: caseFilters,
     size: maxCases,
   });
   if (!totalCases) return NO_RESULT;
 
   const caseIds = cases.map(c => c.case_id);
-  const occurrenceFilters = addInFilters(
-    replaceFilters(
-      {
-        op: 'and',
-        content: [
-          {
-            op: 'in',
-            content: { field: 'cases.case_id', value: caseIds },
-          },
-        ],
-      },
-      caseFilters,
-    ),
+  const occurrenceFilters = replaceFilters(
     {
       op: 'and',
       content: [
         {
           op: 'in',
-          content: {
-            field: 'ssm.consequence.transcript.is_canonical',
-            value: ['true'],
-          },
+          content: { field: 'cases.case_id', value: caseIds },
         },
-        noMissingImpact,
       ],
     },
+    caseFilters,
   );
   const { data: { hits: occurrences } } = await getOccurrences({
     filters: occurrenceFilters,

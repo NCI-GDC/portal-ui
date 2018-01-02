@@ -28,29 +28,23 @@ const theme = {
   greyScale1: 'rgb(36,36,36)',
 
   // impacts
-  impacts: {
-    HIGH: 'rgb(185, 36, 36)',
-    MODERATE: '#634d0c',
-    LOW: '#015c0a',
-    MODIFIER: '#c94d18',
-  },
   vep: {
     high: 'rgb(185, 36, 36)',
-    moderate: '#634d0c',
+    moderate: '#87500D',
+    modifier: '#87500D',
     low: '#015c0a',
-    modifier: '#c94d18',
-  },
-  polyphen: {
-    benign: '#015c0a',
-    probably_damaging: 'rgb(185, 36, 36)',
-    possibly_damaging: 'rgb(185, 36, 36)',
-    unknown: 'rgb(107,98,98)',
   },
   sift: {
     deleterious: 'rgb(185, 36, 36)',
-    deleterious_low_confidence: 'rgb(185, 36, 36)',
-    tolerated: '#9B8158',
-    tolerated_low_confidence: '#9B8158',
+    deleterious_low_confidence: '#87500D',
+    tolerated: '#87500D',
+    tolerated_low_confidence: '#015c0a',
+  },
+  polyphen: {
+    benign: '#015c0a',
+    possibly_damaging: '#634d0c',
+    probably_damaging: 'rgb(185, 36, 36)',
+    unknown: '#737373',
   },
 
   // alerts

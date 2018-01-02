@@ -95,16 +95,7 @@ const SsmsTableModel = [
     id: 'consequence_type',
     sortable: true,
     downloadable: true,
-    th: () => (
-      <Th>
-        <Tooltip
-          style={tableToolTipHint()}
-          Component="Consequences for canonical transcript"
-        >
-          Consequences
-        </Tooltip>
-      </Th>
-    ),
+    th: () => <Th>Consequences</Th>,
     td: ({ node, theme }) => (
       <Td>
         <span>
@@ -126,7 +117,8 @@ const SsmsTableModel = [
               </div>
             }
             style={{
-              color: theme.impacts[node.impact] || 'inherit',
+              color:
+                theme.vep[(node.vep_impact || '').toLowerCase()] || 'inherit',
             }}
           >
             &nbsp;
@@ -254,12 +246,12 @@ const SsmsTableModel = [
     downloadable: true,
     th: ({ theme }) => (
       <Th>
-        <ImpactThContents extraText="Impact for canonical transcript" />
+        <ImpactThContents />
       </Th>
     ),
     td: ({ node, theme }) => (
       <Td style={{ width: '90px', paddingRight: '5px' }}>
-        <ImpactTdContents node={{ ...node, vep_impact: node.impact }} />
+        <ImpactTdContents node={node} />
       </Td>
     ),
   },

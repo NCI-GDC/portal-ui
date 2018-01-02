@@ -189,7 +189,7 @@ export default withTheme(
             readOnly
             style={{ marginRight: 5, pointerEvents: 'none', cursor: 'pointer' }}
             type="checkbox"
-            aira-label={`Select survival`}
+            aria-label={`Select survival`}
             checked={showSurvival && survivalHasData}
             disabled={!survivalHasData}
           />
@@ -220,7 +220,7 @@ export default withTheme(
                     readOnly
                     style={{ marginRight: 5, pointerEvents: 'none' }}
                     type="checkbox"
-                    aira-label={`Select ${field}`}
+                    aria-label={`Select ${field}`}
                     checked={activeFacets.includes(field)}
                   />
                   {label}

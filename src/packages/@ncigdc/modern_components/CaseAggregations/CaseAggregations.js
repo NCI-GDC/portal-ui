@@ -22,7 +22,6 @@ import escapeForRelay from '@ncigdc/utils/escapeForRelay';
 import tryParseJSON from '@ncigdc/utils/tryParseJSON';
 import FacetHeader from '@ncigdc/components/Aggregations/FacetHeader';
 import { UploadCaseSet } from '@ncigdc/components/Modals/UploadSet';
-import FacetSelection from '../../components/FacetSelection';
 
 import type { TBucket } from '@ncigdc/components/Aggregations/types';
 
@@ -176,7 +175,7 @@ const enhance = compose(
   connect((state, props) => ({
     userSelectedFacets: state.customFacets[entityType],
   })),
-  withPropsOnChange(['facets'], ({ viewer }) => ({
+  withPropsOnChange(['viewer'], ({ viewer }) => ({
     parsedFacets: viewer.repository.cases.facets
       ? tryParseJSON(viewer.repository.cases.facets, {})
       : {},

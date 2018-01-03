@@ -10,7 +10,7 @@ const SideTabs = ({
   activeTab,
   tabs,
   tabContent,
-  containerStyle,
+  containerStyle = {},
   ...props
 }) => (
   <Row flex="1" style={containerStyle}>

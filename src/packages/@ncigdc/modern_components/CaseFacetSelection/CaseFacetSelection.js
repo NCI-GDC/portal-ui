@@ -15,6 +15,7 @@ import entityShortnameMapping from '@ncigdc/utils/entityShortnameMapping';
 import Highlight from '@ncigdc/uikit/Highlight';
 import withSelectableList from '@ncigdc/utils/withSelectableList';
 import withPropsOnChange from '@ncigdc/utils/withPropsOnChange';
+import tryParseJSON from '@ncigdc/utils/tryParseJSON';
 
 const facetMatchesQuery = (facet, query) =>
   _.some([facet.field, facet.description].map(_.toLower), searchTarget =>
@@ -113,37 +114,21 @@ const ConditionalHighlight = ({ condition, search, children }) =>
   );
 
 export default compose(
-  // withState('facetMapping', 'setFacetMapping', {}),
   withState('query', 'setQuery', ''),
   withState('focusedFacet', 'setFocusedFacet', null),
-  // withState('isLoadingFacetMapping', 'setIsLoadingFacetMapping', false),
-  // withState(
-  //   'isLoadingAdditionalFacetData',
-  //   'setIsLoadingAdditionalFacetData',
-  //   false,
-  // ),
-  // withPropsOnChange(
-  //   ['isLoadingFacetMapping', 'isLoadingAdditionalFacetData'],
-  //   ({ isLoadingFacetMapping, isLoadingAdditionalFacetData }) => ({
-  //     isLoading: _.some([isLoadingFacetMapping, isLoadingAdditionalFacetData]),
-  //   }),
-  // ),
-  // withState('shouldHideUselessFacets', 'setShouldHideUselessFacets', false),
-  // withPropsOnChange(
-  //   ['isLoadingFacetMapping'],
-  //   ({ isLoadingFacetMapping, setUselessFacetVisibility }) =>
-  //     !isLoadingFacetMapping &&
-  //     JSON.parse(localStorage.getItem('shouldHideUselessFacets') || 'null') &&
-  //     setUselessFacetVisibility(true),
-  // ),
   defaultProps({
     excludeFacetsBy: _.noop,
     onSelect: _.noop,
     onRequestClose: _.noop,
   }),
-  withPropsOnChange(['additionalFacetData'], ({ additionalFacetData }) => ({
+  withPropsOnChange(['viewer'], ({ viewer }) => ({
+    parsedFacets: viewer.repository.cases.facets
+      ? tryParseJSON(viewer.repository.cases.facets, {})
+      : {},
+  })),
+  withPropsOnChange(['parsedFacets'], ({ parsedFacets }) => ({
     usefulFacets: _.omitBy(
-      additionalFacetData,
+      parsedFacets,
       aggregation =>
         !aggregation ||
         _.some([
@@ -201,6 +186,10 @@ export default compose(
       onCancel: ({ handleClose }) => handleClose(),
     },
   ),
+  withHandlers({
+    handleQueryInputChange: ({ setQuery }) => event =>
+      setQuery(event.target.value),
+  }),
 )(props => (
   <div className="test-facet-selection">
     <div {...css(styles.header)}>

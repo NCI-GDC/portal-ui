@@ -11,7 +11,13 @@ type TMapData = (data: Array<Object>, theme: Object) => Array<Object>;
 
 const mapData: TMapData = (data, theme) =>
   data.map(hit => {
-    const { transcript } = get(hit, 'consequence.hits.edges[0].node', {});
+    const consequenceOfInterest =
+      hit.consequence.hits.edges.find(
+        consequence =>
+          get(consequence, 'node.transcript.annotation.vep_impact'),
+        {},
+      ) || {};
+    const { transcript } = consequenceOfInterest.node || {};
     const {
       annotation = {},
       consequence_type: consequenceType = '',
@@ -23,7 +29,7 @@ const mapData: TMapData = (data, theme) =>
 
     return {
       ...hit,
-      impact: annotation.impact,
+      vep_impact: annotation.vep_impact,
       polyphen_impact: annotation.polyphen_impact,
       polyphen_score: annotation.polyphen_score,
       sift_impact: annotation.sift_impact,

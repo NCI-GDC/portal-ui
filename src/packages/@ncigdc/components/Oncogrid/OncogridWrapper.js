@@ -139,7 +139,7 @@ const OncoGridWrapper = compose(
 
     const currentImpacts = getFilterValue({
       currentFilters: props.currentFilters.content,
-      dotField: 'ssms.consequence.transcript.annotation.impact',
+      dotField: 'ssms.consequence.transcript.annotation.vep_impact',
     });
 
     const currentConsequenceTypes = get(

@@ -143,7 +143,7 @@ export type TOccurrenceInput = {
           gene_id: string,
         },
         annotation: {
-          impact: string,
+          vep_impact: string,
         },
       },
     }>,
@@ -204,17 +204,17 @@ export const buildOccurrences: TBuildOccurrences = (
       for (let j = 0; j < consequence.length; j += 1) {
         const { transcript } = consequence[j];
         const {
-          annotation: { impact } = {},
+          annotation: { vep_impact } = {},
           gene: { gene_id } = {},
           consequence_type,
         } = transcript;
         const geneSymbol = geneIdToSymbol[gene_id];
 
         if (
-          impact &&
+          vep_impact &&
           geneSymbol &&
           consequenceTypes.includes(consequence_type) &&
-          (!impacts.length || impacts.includes(impact))
+          (!impacts.length || impacts.includes(vep_impact))
         ) {
           donorIds.add(case_id);
           geneIds.add(gene_id);
@@ -228,7 +228,7 @@ export const buildOccurrences: TBuildOccurrences = (
 
             // optional
             geneSymbol,
-            functionalImpact: impact,
+            functionalImpact: vep_impact,
           });
         }
       }

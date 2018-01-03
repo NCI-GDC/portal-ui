@@ -6,7 +6,6 @@ import {
   compose,
   withState,
   setDisplayName,
-  lifecycle,
   withPropsOnChange,
 } from 'recompose';
 

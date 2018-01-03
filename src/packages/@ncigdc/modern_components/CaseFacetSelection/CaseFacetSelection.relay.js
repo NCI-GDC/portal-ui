@@ -2,7 +2,6 @@
 
 import React from 'react';
 import { graphql } from 'react-relay';
-import { makeFilter } from '@ncigdc/utils/filters';
 import {
   compose,
   withPropsOnChange,
@@ -61,49 +60,33 @@ export default (Component: ReactClass<*>) =>
         };
       },
     ),
-    // withState('shouldHideUselessFacets', 'setShouldHideUselessFacets', false),
-
+    // withPropsOnChange(
+    //   ['isLoadingFacetMapping'],
+    //   ({ isLoadingFacetMapping, setUselessFacetVisibility }) =>
+    //     !isLoadingFacetMapping &&
+    //     JSON.parse(localStorage.getItem('shouldHideUselessFacets') || 'null') &&
+    //     setUselessFacetVisibility(true),
+    // ),
+    // need to filter by useless facets
     // withProps(
     //   ({
-    //     setIsLoadingAdditionalFacetData,
-    //     setShouldHideUselessFacets,
     //     facetMapping,
-    //     docType,
+    //     excludeFacetsBy,
+    //     query,
+    //     shouldHideUselessFacets,
+    //     usefulFacets,
     //   }) => ({
-    //     setUselessFacetVisibility: shouldHideUselessFacets => {
-    //       setShouldHideUselessFacets(shouldHideUselessFacets);
-    //       localStorage.setItem(
-    //         'shouldHideUselessFacets',
-    //         JSON.stringify(shouldHideUselessFacets),
-    //       );
-    //       const byDocType = _.groupBy(facetMapping, o => o.doc_type);
-    //       if (shouldHideUselessFacets && byDocType[docType]) {
-    //         setIsLoadingAdditionalFacetData(shouldHideUselessFacets);
-    //         return {
-    //           variables: {
-    //             repoCaseCustomFacetFields: byDocType[docType]
-    //               .map(({ field }) => field)
-    //               .join(','),
-    //           },
-    //         };
-    //         // relay.setVariables(
-    //         //   {
-    //         //     [relayVarName]: byDocType[docType]
-    //         //       .map(({ field }) => field)
-    //         //       .join(','),
-    //         //   },
-    //         //   readyState => {
-    //         //     if (
-    //         //       _.some([readyState.ready, readyState.aborted, readyState.error])
-    //         //     ) {
-    //         //       setIsLoadingAdditionalFacetData(false);
-    //         //     }
-    //         //   },
-    //         // );
-    //       }
-    //     },
+    //     filteredFacets: _.filter(_.values(facetMapping), facet =>
+    //       _.every([
+    //         facetMatchesQuery(facet, query),
+    //         !excludeFacetsBy(facet),
+    //         !shouldHideUselessFacets ||
+    //           Object.keys(usefulFacets).includes(facet.field),
+    //       ]),
+    //     ),
     //   }),
     // ),
+    // withState('shouldHideUselessFacets', 'setShouldHideUselessFacets', false),
   )((props: Object) => {
     return (
       <Query

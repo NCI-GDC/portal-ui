@@ -6,13 +6,11 @@ import { css } from 'glamor';
 import {
   compose,
   withState,
-  lifecycle,
   withProps,
   renameProps,
   defaultProps,
   withHandlers,
 } from 'recompose';
-import { fetchApi } from '@ncigdc/utils/ajax';
 import entityShortnameMapping from '@ncigdc/utils/entityShortnameMapping';
 import Highlight from '@ncigdc/uikit/Highlight';
 import withSelectableList from '@ncigdc/utils/withSelectableList';

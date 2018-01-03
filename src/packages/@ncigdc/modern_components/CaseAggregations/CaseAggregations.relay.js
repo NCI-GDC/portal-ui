@@ -2,13 +2,10 @@
 
 import React from 'react';
 import { graphql } from 'react-relay';
-import { makeFilter } from '@ncigdc/utils/filters';
 import { compose, withPropsOnChange } from 'recompose';
 import { connect } from 'react-redux';
 import Query from '@ncigdc/modern_components/Query';
-import escapeForRelay from '@ncigdc/utils/escapeForRelay';
-import tryParseJSON from '@ncigdc/utils/tryParseJSON';
-import { parseFilterParam, parseJSONParam } from '@ncigdc/utils/uri';
+import { parseFilterParam } from '@ncigdc/utils/uri';
 import withRouter from '@ncigdc/utils/withRouter';
 import { parse } from 'query-string';
 

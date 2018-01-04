@@ -12,7 +12,7 @@ import DownloadButton from '@ncigdc/components/DownloadButton';
 import { visualizingButton } from '@ncigdc/theme/mixins';
 import EntityPageVerticalTable from '@ncigdc/components/EntityPageVerticalTable';
 import ageDisplay from '@ncigdc/utils/ageDisplay';
-import _ from 'lodash/string';
+import { truncate } from 'lodash/string';
 
 export default compose(
   branch(
@@ -117,10 +117,7 @@ export default compose(
                     diagnoses.length > 1
                       ? diagnoses.map(x => (
                           <p key={x.node.diagnosis_id}>
-                            {_.truncate(x.node.diagnosis_id, {
-                              length: 9,
-                              omission: '…',
-                            })}
+                            {truncate(x.node.diagnosis_id, { length: 11 })}
                           </p>
                         ))
                       : null
@@ -247,10 +244,7 @@ export default compose(
                     familyHistory.length > 1
                       ? familyHistory.map(x => (
                           <p key={x.family_history_id}>
-                            {_.truncate(x.family_history_id, {
-                              length: 9,
-                              omission: '…',
-                            })}
+                            {truncate(x.family_history_id, { length: 11 })}
                           </p>
                         ))
                       : null
@@ -299,10 +293,7 @@ export default compose(
                     exposures.length > 1
                       ? exposures.map(x => (
                           <p key={x.node.exposure_id}>
-                            {_.truncate(x.node.exposure_id, {
-                              length: 9,
-                              omission: '…',
-                            })}
+                            {truncate(x.node.exposure_id, { length: 11 })}
                           </p>
                         ))
                       : null

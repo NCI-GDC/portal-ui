@@ -68,14 +68,3 @@ describe('truncateDNAChange', () => {
     ).toEqual('chr1:g.76576946_76576947A>C');
   });
 });
-
-describe('truncate', () => {
-  it('add … if longer than length', () => {
-    expect(truncate('baaaaaab-baab-baab-abcd-111111111111', 8)).toEqual(
-      'baaaaaab…',
-    );
-  });
-  it('doesnt add … if shorter than length', () => {
-    expect(truncate('aaaa', 8)).toEqual('aaaa');
-  });
-});

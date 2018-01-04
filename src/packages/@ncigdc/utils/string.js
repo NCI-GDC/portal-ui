@@ -69,14 +69,3 @@ export const truncateAfterMarker = (
   }
   return term;
 };
-
-export const truncate = (
-  term: string,
-  length: number,
-  omission: string = '…',
-): string => {
-  if (term.length <= length) {
-    return term;
-  }
-  return `${term.substring(0, length)}${omission}`;
-};

@@ -5,8 +5,15 @@ import { withState } from 'recompose';
 import { Row } from './Flex';
 import Tabs from './Tabs';
 
-const SideTabs = ({ setTab, activeTab, tabs, tabContent, ...props }) => (
-  <Row flex="1">
+const SideTabs = ({
+  setTab,
+  activeTab,
+  tabs,
+  tabContent,
+  containerStyle = {},
+  ...props
+}) => (
+  <Row flex="1" style={containerStyle}>
     <Tabs
       onTabClick={i => setTab(() => i)}
       tabs={tabs}

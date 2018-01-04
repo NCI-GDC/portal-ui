@@ -114,6 +114,7 @@ const Tabs = ({
           style={{
             maxHeight: '550px',
             overflowY: 'scroll',
+            msOverflowStyle: 'none',
             backgroundColor: 'white',
             position: 'relative',
             left: '1px',

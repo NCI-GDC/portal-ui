@@ -12,6 +12,7 @@ import DownloadButton from '@ncigdc/components/DownloadButton';
 import { visualizingButton } from '@ncigdc/theme/mixins';
 import EntityPageVerticalTable from '@ncigdc/components/EntityPageVerticalTable';
 import ageDisplay from '@ncigdc/utils/ageDisplay';
+import { truncate } from 'lodash/string';
 
 export default compose(
   branch(
@@ -34,7 +35,6 @@ export default compose(
       demographic = {},
       exposures: { hits: { edges: exposures = [], total: totalExposures } },
     } = edges[0].node;
-
     return (
       <Card
         className="test-clinical-card"
@@ -88,26 +88,40 @@ export default compose(
           activeIndex={activeTab}
         >
           {activeTab === 0 && (
-            <EntityPageVerticalTable
-              thToTd={[
-                { th: 'UUID', td: demographic.demographic_id },
-                { th: 'Ethnicity', td: demographic.ethnicity },
-                { th: 'Gender', td: demographic.gender },
-                { th: 'Race', td: demographic.race },
-                { th: 'Year of Birth', td: demographic.year_of_birth },
-                { th: 'Year of Death', td: demographic.year_of_death },
-              ]}
-              style={{ flex: '1 1 auto' }}
-            />
+            <div>
+              {!!demographic.demographic_id && (
+                <EntityPageVerticalTable
+                  thToTd={[
+                    { th: 'UUID', td: demographic.demographic_id },
+                    { th: 'Ethnicity', td: demographic.ethnicity },
+                    { th: 'Gender', td: demographic.gender },
+                    { th: 'Race', td: demographic.race },
+                    { th: 'Year of Birth', td: demographic.year_of_birth },
+                    { th: 'Year of Death', td: demographic.year_of_death },
+                  ]}
+                  style={{ flex: '1 1 auto' }}
+                />
+              )}
+              {!demographic.demographic_id && (
+                <h3 style={{ paddingLeft: '2rem' }}>No Demographic Found.</h3>
+              )}
+            </div>
           )}
           {activeTab === 1 && (
             <div>
               {!!diagnoses.length && (
                 <SideTabs
                   contentStyle={{ border: 'none' }}
-                  tabs={diagnoses.map(x => (
-                    <p key={x.node.diagnosis_id}>{x.node.diagnosis_id}</p>
-                  ))}
+                  containerStyle={{ display: 'block' }}
+                  tabs={
+                    diagnoses.length > 1
+                      ? diagnoses.map(x => (
+                          <p key={x.node.diagnosis_id}>
+                            {truncate(x.node.diagnosis_id, { length: 11 })}
+                          </p>
+                        ))
+                      : null
+                  }
                   tabContent={diagnoses.map(d => d.node).map(x => (
                     <span key={x.diagnosis_id}>
                       <EntityPageVerticalTable
@@ -117,7 +131,10 @@ export default compose(
                             th: 'Classification of Tumor',
                             td: x.classification_of_tumor,
                           },
-                          { th: 'Alcohol Intensity', td: x.alcohol_intensity },
+                          {
+                            th: 'Alcohol Intensity',
+                            td: x.alcohol_intensity,
+                          },
                           {
                             th: 'Age at Diagnosis',
                             td: ageDisplay(x.age_at_diagnosis),
@@ -141,7 +158,10 @@ export default compose(
                             td: x.last_known_disease_status,
                           },
                           { th: 'Morphology', td: x.morphology },
-                          { th: 'Primary Diagnosis', td: x.primary_diagnosis },
+                          {
+                            th: 'Primary Diagnosis',
+                            td: x.primary_diagnosis,
+                          },
                           { th: 'Prior Malignancy', td: x.prior_malignancy },
                           {
                             th: 'Progression or Recurrence',
@@ -219,9 +239,16 @@ export default compose(
               {!!familyHistory.length && (
                 <SideTabs
                   contentStyle={{ border: 'none' }}
-                  tabs={familyHistory.map(x => (
-                    <p key={x.family_history_id}>{x.family_history_id}</p>
-                  ))}
+                  containerStyle={{ display: 'block' }}
+                  tabs={
+                    familyHistory.length > 1
+                      ? familyHistory.map(x => (
+                          <p key={x.family_history_id}>
+                            {truncate(x.family_history_id, { length: 11 })}
+                          </p>
+                        ))
+                      : null
+                  }
                   tabContent={familyHistory.map(x => (
                     <EntityPageVerticalTable
                       key={x.family_history_id}
@@ -261,9 +288,16 @@ export default compose(
               {!!totalExposures && (
                 <SideTabs
                   contentStyle={{ border: 'none' }}
-                  tabs={exposures.map(x => (
-                    <p key={x.node.exposure_id}>{x.node.exposure_id}</p>
-                  ))}
+                  containerStyle={{ display: 'block' }}
+                  tabs={
+                    exposures.length > 1
+                      ? exposures.map(x => (
+                          <p key={x.node.exposure_id}>
+                            {truncate(x.node.exposure_id, { length: 11 })}
+                          </p>
+                        ))
+                      : null
+                  }
                   tabContent={exposures.map(x => (
                     <EntityPageVerticalTable
                       key={x.node.exposure_id}

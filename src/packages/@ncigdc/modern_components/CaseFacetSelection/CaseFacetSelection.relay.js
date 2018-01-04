@@ -14,6 +14,19 @@ import {
 import Query from '@ncigdc/modern_components/Query';
 import _ from 'lodash';
 import { fetchApi } from '../../utils/ajax/index';
+import { Row, Column } from '@ncigdc/uikit/Flex';
+import { css } from 'glamor';
+
+const styles = {
+  resultsCount: {
+    color: '#bb0e3d',
+    display: 'inline',
+  },
+  loadContainer: {
+    display: 'flex',
+    alignItems: 'center',
+  },
+};
 
 export default (Component: ReactClass<*>) =>
   compose(
@@ -58,6 +71,12 @@ export default (Component: ReactClass<*>) =>
     return (
       <Query
         parentProps={props}
+        Loader={({ loading }) =>
+          !loading ? null : (
+            <Column {...css(styles.loadContainer)}>
+              <h3 {...css(styles.resultsCount)}>Loading...</h3>
+            </Column>
+          )}
         variables={props.variables}
         Component={Component}
         query={graphql`

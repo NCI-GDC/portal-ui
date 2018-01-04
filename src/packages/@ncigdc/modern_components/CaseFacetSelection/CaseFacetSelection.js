@@ -122,9 +122,10 @@ export default compose(
     onRequestClose: _.noop,
   }),
   withPropsOnChange(['viewer'], ({ viewer }) => ({
-    parsedFacets: viewer.repository.cases.facets
-      ? tryParseJSON(viewer.repository.cases.facets, {})
-      : {},
+    parsedFacets:
+      viewer && viewer.repository.cases.facets
+        ? tryParseJSON(viewer.repository.cases.facets, {})
+        : {},
   })),
   withPropsOnChange(['parsedFacets'], ({ parsedFacets }) => ({
     usefulFacets: _.omitBy(
@@ -224,11 +225,8 @@ export default compose(
         />
       </div>
       <h3 {...css(styles.resultsCount)}>
-        {props.isLoading
-          ? 'Loading...'
-          : `${props.filteredFacets.length} ${props.docType} fields`}
+        {`${props.filteredFacets.length} ${props.docType} fields`}
       </h3>
-
       <label tabIndex={0} role="button" className="pull-right">
         <input
           className="test-filter-useful-facet"

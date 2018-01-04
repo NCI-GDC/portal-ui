@@ -1,6 +1,7 @@
 import React from 'react';
 import { compose, withProps } from 'recompose';
 import { connect } from 'react-redux';
+import { capitalize } from 'lodash/string';
 
 import Dropdown from '@ncigdc/uikit/Dropdown';
 import Button from '@ncigdc/uikit/Button';
@@ -88,6 +89,11 @@ export default enhance(
                     type={type}
                     displayType={displayType}
                     CreateSetButton={CreateSetButton}
+                    setName={
+                      (selectedIds || []).length
+                        ? `Custom ${capitalize(displayType)} Selection`
+                        : ''
+                    }
                   />,
                 ),
               );

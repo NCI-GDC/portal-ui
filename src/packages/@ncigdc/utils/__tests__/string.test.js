@@ -1,6 +1,6 @@
 /* @flow */
 
-import { capitalize, truncateAfterMarker } from '../string';
+import { capitalize, truncateAfterMarker, truncate } from '../string';
 import { DNA_CHANGE_MARKERS } from '@ncigdc/utils/constants';
 
 describe('capitalize', () => {
@@ -66,5 +66,16 @@ describe('truncateDNAChange', () => {
     expect(
       truncateAfterMarker('chr1:g.76576946_76576947A>C', DNA_CHANGE_MARKERS, 1),
     ).toEqual('chr1:g.76576946_76576947A>C');
+  });
+});
+
+describe('truncate', () => {
+  it('add … if longer than length', () => {
+    expect(truncate('baaaaaab-baab-baab-abcd-111111111111', 8)).toEqual(
+      'baaaaaab…',
+    );
+  });
+  it('doesnt add … if shorter than length', () => {
+    expect(truncate('aaaa', 8)).toEqual('aaaa');
   });
 });

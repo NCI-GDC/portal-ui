@@ -12,6 +12,7 @@ import DownloadButton from '@ncigdc/components/DownloadButton';
 import { visualizingButton } from '@ncigdc/theme/mixins';
 import EntityPageVerticalTable from '@ncigdc/components/EntityPageVerticalTable';
 import ageDisplay from '@ncigdc/utils/ageDisplay';
+import { truncate } from '../../utils/string';
 
 export default compose(
   branch(
@@ -115,9 +116,9 @@ export default compose(
                   tabs={
                     diagnoses.length > 1
                       ? diagnoses.map(x => (
-                          <p
-                            key={x.node.diagnosis_id}
-                          >{`${x.node.diagnosis_id.substring(0, 8)}...`}</p>
+                          <p key={x.node.diagnosis_id}>
+                            {truncate(x.node.diagnosis_id, 8)}
+                          </p>
                         ))
                       : null
                   }
@@ -239,9 +240,15 @@ export default compose(
                 <SideTabs
                   contentStyle={{ border: 'none' }}
                   containerStyle={{ display: 'block' }}
-                  tabs={familyHistory.map(x => (
-                    <p key={x.family_history_id}>{x.family_history_id}</p>
-                  ))}
+                  tabs={
+                    familyHistory.length > 1
+                      ? familyHistory.map(x => (
+                          <p key={x.family_history_id}>
+                            {truncate(x.family_history_id, 8)}
+                          </p>
+                        ))
+                      : null
+                  }
                   tabContent={familyHistory.map(x => (
                     <EntityPageVerticalTable
                       key={x.family_history_id}
@@ -282,9 +289,15 @@ export default compose(
                 <SideTabs
                   contentStyle={{ border: 'none' }}
                   containerStyle={{ display: 'block' }}
-                  tabs={exposures.map(x => (
-                    <p key={x.node.exposure_id}>{x.node.exposure_id}</p>
-                  ))}
+                  tabs={
+                    exposures.length > 1
+                      ? exposures.map(x => (
+                          <p key={x.node.exposure_id}>
+                            {truncate(x.node.exposure_id, 8)}
+                          </p>
+                        ))
+                      : null
+                  }
                   tabContent={exposures.map(x => (
                     <EntityPageVerticalTable
                       key={x.node.exposure_id}

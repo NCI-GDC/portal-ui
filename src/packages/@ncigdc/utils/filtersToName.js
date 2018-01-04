@@ -38,16 +38,16 @@ const filtersToName: TFiltersToName = ({
   length = Infinity,
 }) => {
   if (!filters) return '';
-  const values: Array<string> = getValues(
+  const values = getValues(
     filters,
     Object.values(sets).reduce((a, b) => ({ ...a, ...b }), {}),
   );
 
   let total = 0;
-  const name: string = values
+  const name = values
     .reduce((acc, value, i, arr) => {
       if (total >= max) return acc;
-      const joined: string = value.slice(0, max - total).join(' / ');
+      const joined = value.slice(0, max - total).join(' / ');
       total += value.length;
       return acc.concat(
         `${joined}${total > max || (total === max && i < arr.length - 1)

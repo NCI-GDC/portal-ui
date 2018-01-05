@@ -48,69 +48,84 @@ export default compose(
       value: project.project_id,
     },
   ];
-
   return (
     <Row style={{ flexWrap: 'wrap' }} spacing={SPACING}>
       <span style={{ ...styles.column, ...styles.margin }}>
-        <EntityPageVerticalTable
-          id="summary"
-          title={
-            <span>
-              <i className="fa fa-table" /> Summary
-            </span>
-          }
-          thToTd={[
-            { th: 'Project ID', td: project.project_id },
-            { th: 'Project Name', td: project.name },
-            {
-              th: 'Disease Type',
-              td: (
-                <span>
-                  {project.disease_type.length > 1 && (
-                    <CollapsibleList
-                      data={project.disease_type.slice(0).sort()}
-                      limit={0}
-                      toggleStyle={{ fontStyle: 'normal' }}
-                      liStyle={{
-                        whiteSpace: 'normal',
-                        listStyleType: 'disc',
-                        listStylePosition: 'inside',
-                      }}
-                      expandText={`${project.disease_type
-                        .length} Disease Types`}
-                      collapseText="collapse"
-                    />
-                  )}
-                  {project.disease_type.length <= 1 && project.disease_type}
-                </span>
-              ),
-            },
-            {
-              th: 'Primary Site',
-              td: (
-                <span>
-                  {project.primary_site.length > 1 && (
-                    <CollapsibleList
-                      data={project.primary_site.slice(0).sort()}
-                      limit={0}
-                      toggleStyle={{ fontStyle: 'normal' }}
-                      liStyle={{
-                        whiteSpace: 'normal',
-                        listStyleType: 'disc',
-                        listStylePosition: 'inside',
-                      }}
-                      expandText={`${project.primary_site
-                        .length} Primary Sites`}
-                      collapseText="collapse"
-                    />
-                  )}
-                  {project.primary_site.length <= 1 && project.primary_site}
-                </span>
-              ),
-            },
-            { th: 'Program', td: project.program.name },
-          ]}
-        />
+        {project.primary_site.length <= 1 ? (
+          <EntityPageVerticalTable
+            id="summary"
+            title={
+              <span>
+                <i className="fa fa-table" /> Summary
+              </span>
+            }
+            thToTd={[
+              { th: 'Project ID', td: project.project_id },
+              { th: 'Project Name', td: project.name },
+              {
+                th: 'Disease Type',
+                td: (
+                  <span>
+                    {project.disease_type.length > 1 && (
+                      <CollapsibleList
+                        data={project.disease_type.slice(0).sort()}
+                        limit={0}
+                        toggleStyle={{ fontStyle: 'normal' }}
+                        liStyle={{
+                          whiteSpace: 'normal',
+                          listStyleType: 'disc',
+                          listStylePosition: 'inside',
+                        }}
+                        expandText={`${project.disease_type
+                          .length} Disease Types`}
+                        collapseText="collapse"
+                      />
+                    )}
+                    {project.disease_type.length <= 1 && project.disease_type}
+                  </span>
+                ),
+              },
+              {
+                th: 'Primary Site',
+                td: (
+                  <span>
+                    {project.primary_site.length > 1 && (
+                      <CollapsibleList
+                        data={project.primary_site.slice(0).sort()}
+                        limit={0}
+                        toggleStyle={{ fontStyle: 'normal' }}
+                        liStyle={{
+                          whiteSpace: 'normal',
+                          listStyleType: 'disc',
+                          listStylePosition: 'inside',
+                        }}
+                        expandText={`${project.primary_site
+                          .length} Primary Sites`}
+                        collapseText="collapse"
+                      />
+                    )}
+                    {project.primary_site.length <= 1 && project.primary_site}
+                  </span>
+                ),
+              },
+              { th: 'Program', td: project.program.name },
+            ]}
+          />
+        ) : (
+          <EntityPageVerticalTable
+            id="summary"
+            title={
+              <span>
+                <i className="fa fa-table" /> Summary
+              </span>
+            }
+            thToTd={[
+              { th: 'Project ID', td: project.project_id },
+              { th: 'Project Name', td: project.name },
+              { th: 'Program', td: project.program.name },
+            ]}
+          />
+        )}
       </span>
 
       <Column style={{ ...styles.margin, width: '200px' }}>

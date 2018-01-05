@@ -28,6 +28,9 @@ import SurvivalPlotWrapper from '@ncigdc/components/SurvivalPlotWrapper';
 import withPropsOnChange from '@ncigdc/utils/withPropsOnChange';
 import HasCases from '@ncigdc/modern_components/HasCases';
 import { withExists } from '@ncigdc/modern_components/Exists/index';
+import Button from '@ncigdc/uikit/Button';
+import withRouter from '@ncigdc/utils/withRouter';
+import { stringifyJSONParam } from '@ncigdc/utils/uri';
 
 const styles = {
   column: {
@@ -55,6 +58,7 @@ const initialState = {
 const enhance = compose(
   withProps(({ match }) => ({ type: 'Project', id: get(match, 'params.id') })),
   withExists,
+  withRouter,
   withState(
     'selectedMutatedGenesSurvivalData',
     'setSelectedMutatedGenesSurvivalData',
@@ -128,6 +132,7 @@ export default enhance(
     setSelectedMutatedGenesSurvivalData,
     selectedFrequentMutationsSurvivalData,
     setSelectedFrequentMutationsSurvivalData,
+    push,
   }) => {
     const mutatedGenesSurvivalData = {
       legend:
@@ -153,6 +158,20 @@ export default enhance(
           style={{ marginBottom: '2rem', marginLeft: 'auto' }}
           spacing="0.2rem"
         >
+          <span>
+            <Button
+              onClick={projectId => {
+                push({
+                  pathname: '/exploration',
+                  query: {
+                    filters: stringifyJSONParam(projectFilter),
+                  },
+                });
+              }}
+            >
+              Explore Project Data
+            </Button>
+          </span>
           <span>
             <DownloadBiospecimenButton projectId={projectId} />
           </span>

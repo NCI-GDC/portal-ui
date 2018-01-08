@@ -11,6 +11,77 @@ import formatFileSize from '@ncigdc/utils/formatFileSize';
 import withRouter from '@ncigdc/utils/withRouter';
 import { createDataCategoryColumns } from '@ncigdc/tableModels/utils';
 import CollapsibleList from '@ncigdc/uikit/CollapsibleList';
+import withData from '@ncigdc/modern_components/CasesByPrimarySite/CasesByPrimarySite.relay';
+import Button from '@ncigdc/uikit/Button';
+import { stringifyJSONParam } from '@ncigdc/utils/uri';
+
+let DiseaseList = withData(props => {
+  const { buckets } = props.repository.cases.aggregations.disease_type;
+  const diseasesByName = buckets.map(type => type.key);
+  return (
+    <span>
+      {buckets.length > 1 && (
+        <CollapsibleList
+          liStyle={{ whiteSpace: 'normal', listStyleType: 'disc' }}
+          toggleStyle={{ fontStyle: 'normal' }}
+          data={diseasesByName.slice(0).sort()}
+          limit={0}
+          expandText={`${buckets.length} Disease Types`}
+          collapseText="collapse"
+        />
+      )}
+      {buckets.length <= 1 && buckets[0].key}
+    </span>
+  );
+});
+
+let FilesByPrimarySite = withData(props => {
+  return (
+    <TdNum>
+      <RepositoryFilesLink
+        query={{
+          // needs primary site as filter too
+          filters: makeFilter([
+            {
+              field: 'cases.project.project_id',
+              value: props.projectId,
+            },
+          ]),
+        }}
+      >
+        {props.repository.cases.aggregations.disease_type.buckets[0].doc_count}
+      </RepositoryFilesLink>
+    </TdNum>
+  );
+});
+
+let ExploreByPrimarySiteButton = withRouter(props => {
+  return (
+    <Button
+      onClick={() => {
+        props.push({
+          pathname: '/exploration',
+          query: {
+            filters: stringifyJSONParam(
+              makeFilter([
+                {
+                  field: 'cases.project.project_id',
+                  value: props.projectId,
+                },
+                {
+                  field: 'cases.primary_site',
+                  value: props.primarySite,
+                },
+              ]),
+            ),
+          },
+        });
+      }}
+    >
+      Explore
+    </Button>
+  );
+});
 
 type TLinkProps = { node: Object, fields?: Array<Object>, children?: mixed };
 type TLink = (props: TLinkProps) => any;
@@ -64,7 +135,7 @@ const projectPrimarySitesTableModel = [
     sortable: false,
     downloadable: false,
     th: () => <Th rowSpan="2">Primary Site</Th>,
-    td: ({ node }) => (
+    td: ({ primarySite }) => (
       <Td
         key="primary_site"
         style={{
@@ -73,17 +144,7 @@ const projectPrimarySitesTableModel = [
           whiteSpace: 'normal',
         }}
       >
-        {node.primary_site.length > 1 && (
-          <CollapsibleList
-            liStyle={{ whiteSpace: 'normal', listStyleType: 'disc' }}
-            toggleStyle={{ fontStyle: 'normal' }}
-            data={node.primary_site.slice(0).sort()}
-            limit={0}
-            expandText={`${node.primary_site.length} Primary Sites`}
-            collapseText="collapse"
-          />
-        )}
-        {node.primary_site.length <= 1 && node.primary_site}
+        {primarySite}
       </Td>
     ),
   },
@@ -93,80 +154,90 @@ const projectPrimarySitesTableModel = [
     sortable: false,
     downloadable: false,
     th: () => <Th rowSpan="2">Disease Type</Th>,
-    td: ({ node }) => (
+    td: ({ primarySite }) => (
       <Td
-        key={node.disease_type}
+        key={primarySite}
         style={{
           maxWidth: '200px',
           padding: '3px 15px 3px 3px',
           whiteSpace: 'normal',
         }}
       >
-        {node.disease_type.length > 1 && (
-          <CollapsibleList
-            liStyle={{ whiteSpace: 'normal', listStyleType: 'disc' }}
-            toggleStyle={{ fontStyle: 'normal' }}
-            data={node.disease_type.slice(0).sort()}
-            limit={0}
-            expandText={`${node.disease_type.length} Disease Types`}
-            collapseText="collapse"
-          />
-        )}
-        {node.disease_type.length <= 1 && node.disease_type}
+        <DiseaseList primarySite={primarySite} />
       </Td>
     ),
   },
-
-  ...dataCategoryColumns,
+  // ...dataCategoryColumns,
   {
     name: 'Files',
-    id: 'summary.file_count',
+    id: 'file_count',
     sortable: false,
     downloadable: false,
     th: () => <ThNum rowSpan="2">Files</ThNum>,
-    td: ({ node }) => (
-      <TdNum>
-        <RepositoryFilesLink
-          query={{
-            filters: makeFilter([
-              { field: 'cases.project.project_id', value: node.project_id },
-            ]),
-          }}
-        >
-          {node.summary.file_count.toLocaleString()}
-        </RepositoryFilesLink>
-      </TdNum>
+    td: ({ primarySite, projectId }) => (
+      <Td
+        key="file_count"
+        style={{
+          maxWidth: '200px',
+          padding: '3px 15px 3px 3px',
+          whiteSpace: 'normal',
+        }}
+      >
+        <FilesByPrimarySite primarySite={primarySite} projectId={projectId} />
+      </Td>
     ),
-    total: withRouter(({ hits, query }) => (
-      <TdNum>
-        <RepositoryFilesLink
-          query={{
-            filters: query.filters ? getProjectIdFilter(hits) : null,
-          }}
-        >
-          {hits.edges
-            .reduce((acc, val) => acc + val.node.summary.file_count, 0)
-            .toLocaleString()}
-        </RepositoryFilesLink>
-      </TdNum>
-    )),
+    // total: withRouter(({ hits, query }) => (
+    //   <TdNum>
+    //     <RepositoryFilesLink
+    //       query={{
+    //         filters: query.filters ? getProjectIdFilter(hits) : null,
+    //       }}
+    //     >
+    //       {hits.edges
+    //         .reduce((acc, val) => acc + val.node.summary.file_count, 0)
+    //         .toLocaleString()}
+    //     </RepositoryFilesLink>
+    //   </TdNum>
+    // )),
   },
   {
-    name: 'File size',
-    id: 'summary.file_size',
+    name: 'Explore',
+    id: 'explore',
     sortable: false,
-    hidden: true,
     downloadable: false,
-    th: () => <ThNum rowSpan="2">File Size</ThNum>,
-    td: ({ node }) => <TdNum>{formatFileSize(node.summary.file_size)}</TdNum>,
-    total: ({ hits }) => (
-      <TdNum>
-        {formatFileSize(
-          hits.edges.reduce((acc, val) => acc + val.node.summary.file_size, 0),
-        )}
-      </TdNum>
+    th: () => <ThNum rowSpan="2" />,
+    td: ({ primarySite, projectId }) => (
+      <Td
+        key="explore"
+        style={{
+          maxWidth: '200px',
+          padding: '3px 15px 3px 3px',
+          whiteSpace: 'normal',
+        }}
+      >
+        <ExploreByPrimarySiteButton
+          primarySite={primarySite}
+          projectId={projectId}
+        />
+      </Td>
     ),
   },
+  // {
+  //   name: 'File size',
+  //   id: 'summary.file_size',
+  //   sortable: false,
+  //   hidden: true,
+  //   downloadable: false,
+  //   th: () => <ThNum rowSpan="2">File Size</ThNum>,
+  //   td: ({ node }) => <TdNum>{formatFileSize(node.summary.file_size)}</TdNum>,
+  //   total: ({ hits }) => (
+  //     <TdNum>
+  //       {formatFileSize(
+  //         hits.edges.reduce((acc, val) => acc + val.node.summary.file_size, 0),
+  //       )}
+  //     </TdNum>
+  //   ),
+  // },
 ];
 
 export default projectPrimarySitesTableModel;

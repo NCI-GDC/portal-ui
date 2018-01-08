@@ -1,3 +1,5 @@
+/* @flow */
+
 import React from 'react';
 import {
   compose,
@@ -75,7 +77,6 @@ export default compose(
     downloadable,
     tableColumns,
     tableHeader = 'Primary Sites',
-    hits,
   }) => {
     const project = edges[0].node;
     // if (project.primary_site.length >= 1) {
@@ -87,9 +88,6 @@ export default compose(
         value: project.project_id,
       },
     ];
-
-    const totalFiles = project.summary.file_count;
-    const totalCases = project.summary.case_count;
     // const dataCategories = Object.keys(DATA_CATEGORIES).reduce(
     //   (acc, name) => [
     //     ...acc,
@@ -112,65 +110,58 @@ export default compose(
       // .sort((a, b) => tableColumns.indexOf(a.id) - tableColumns.indexOf(b.id))
       .filter(x => tableColumns.includes(x.id));
 
-    const dataCategories = Object.keys(DATA_CATEGORIES).reduce((acc, key) => {
-      const type = project.summary.data_categories.find(
-        item => item.data_category === DATA_CATEGORIES[key].full,
-      ) || {
-        data_category: DATA_CATEGORIES[key].full,
-        file_count: 0,
-      };
-
-      const linkQuery = {
-        filters: makeFilter([
-          { field: 'cases.project.project_id', value: project.project_id },
-          { field: 'files.data_category', value: [type.data_category] },
-        ]),
-      };
-      return acc.concat({
-        ...type,
-        id: type.data_category,
-        file_count:
-          type.file_count > 0 ? (
-            <RepositoryFilesLink query={linkQuery}>
-              {type.file_count}
-            </RepositoryFilesLink>
-          ) : (
-            '0'
-          ),
-        file_count_meter: (
-          <SparkMeterWithTooltip part={type.file_count} whole={totalFiles} />
-        ),
-        file_count_value: type.file_count,
-        tooltip: (
-          <span>
-            <b>{type.data_category}</b>
-            <br />
-            {type.file_count} file{type.file_count > 1 ? 's' : ''}
-          </span>
-        ),
-        // clickHandler: () => {
-        //   const newQuery = mergeQuery(linkQuery, query, 'replace');
-        //   const q = removeEmptyKeys({
-        //     ...newQuery,
-        //     filters: newQuery.filters && stringifyJSONParam(newQuery.filters),
-        //   });
-        //   push({ pathname: '/repository', query: q });
-        // },
-      });
-    }, []);
+    // const dataCategories = Object.keys(DATA_CATEGORIES).reduce((acc, key) => {
+    //   const type = project.summary.data_categories.find(
+    //     item => item.data_category === DATA_CATEGORIES[key].full,
+    //   ) || {
+    //     data_category: DATA_CATEGORIES[key].full,
+    //     file_count: 0,
+    //   };
+    //
+    //   const linkQuery = {
+    //     filters: makeFilter([
+    //       { field: 'cases.project.project_id', value: project.project_id },
+    //       { field: 'files.data_category', value: [type.data_category] },
+    //     ]),
+    //   };
+    //   return acc.concat({
+    //     ...type,
+    //     id: type.data_category,
+    //     file_count:
+    //       type.file_count > 0 ? (
+    //         <RepositoryFilesLink query={linkQuery}>
+    //           {type.file_count}
+    //         </RepositoryFilesLink>
+    //       ) : (
+    //         '0'
+    //       ),
+    //     file_count_meter: (
+    //       <SparkMeterWithTooltip part={type.file_count} whole={totalFiles} />
+    //     ),
+    //     file_count_value: type.file_count,
+    //     tooltip: (
+    //       <span>
+    //         <b>{type.data_category}</b>
+    //         <br />
+    //         {type.file_count} file{type.file_count > 1 ? 's' : ''}
+    //       </span>
+    //     ),
+    //     clickHandler: () => {
+    //       const newQuery = mergeQuery(linkQuery, query, 'replace');
+    //       const q = removeEmptyKeys({
+    //         ...newQuery,
+    //         filters: newQuery.filters && stringifyJSONParam(newQuery.filters),
+    //       });
+    //       push({ pathname: '/repository', query: q });
+    //     },
+    //   });
+    // }, []);
     return (
       <div>
         <Row>
           <Row>{tableHeader && <Header>{tableHeader}</Header>}</Row>
-          {/* <TableActions
-            type="project"
-            scope="explore"
-            // arrangeColumnKey={entityType}
-            // total={hits.total}
-            endpoint={entityType}
-            downloadable={downloadable}
-          /> */}
         </Row>
+
         <div style={{ overflowX: 'auto' }}>
           <Table
             id="project-primary-site-table"
@@ -182,71 +173,23 @@ export default compose(
               .map(x => <x.th key={x.id} />)}
             body={
               <tbody>
-                {/* {hits.edges.map((e, i) => (
-                  <Tr key={e.node.id} index={i}>
+                {project.primary_site.map((primarySite, i) => (
+                  <Tr key={i} index={i}>
                     {tableInfo
                       .filter(x => x.td)
-                      .map(x => <x.td key={x.id} node={e.node} />)}
+                      .map(x => (
+                        <x.td
+                          key={x.id}
+                          primarySite={primarySite}
+                          projectId={project.project_id}
+                        />
+                      ))}
                   </Tr>
-                ))} */}
-                {/* <Tr>
-                  {hits.total > 1 &&
-                    tableInfo
-                      .filter(x => x.td)
-                      .map(
-                        x =>
-                          x.total ? (
-                            <x.total key={x.id} hits={hits} />
-                          ) : (
-                            <Td key={x.id} />
-                          ),
-                      )}
-                </Tr> */}
+                ))}
               </tbody>
             }
           />
         </div>
-        {/* <SummaryCard
-        className="test-data-category-summary"
-        tableTitle="Available Cases per Data Category"
-        data={dataCategories}
-        // footer={`${(dataCategories || []).length} Experimental Strategies`}
-        // path="file_count_value"
-        headings={[
-          { key: 'data_category', title: 'Data Category', color: true },
-          {
-            key: 'file_count',
-            title: 'Files',
-            style: { textAlign: 'right' },
-          },
-          {
-            key: 'file_count_meter',
-            title: (
-              <Link
-                pathname="/repository"
-                query={{
-                  filters: makeFilter([
-                    {
-                      field: 'cases.project.project_id',
-                      value: project.project_id,
-                    },
-                  ]),
-                  facetTab: 'files',
-                  searchTableTab: 'files',
-                }}
-                title="Browse files"
-              >
-                <SampleSize n={totalFiles} />
-              </Link>
-            ),
-            thStyle: {
-              width: 1,
-              textAlign: 'center',
-            },
-            style: { textAlign: 'left' },
-          },
-        ]}
-      /> */}
       </div>
     );
   },

@@ -79,7 +79,7 @@ const createContainer = Component =>
                     symbol
                     gene_id
                     case {
-                      hits(first: 1) {
+                      hits(first: 0) {
                         total
                       }
                     }

@@ -3,15 +3,14 @@
  * Prevents setState warning.
  */
 
-import { Component } from 'react';
+import { createFactory, Component } from 'react';
 import pick from 'recompose/utils/pick';
 import shallowEqual from 'recompose/shallowEqual';
 import setDisplayName from 'recompose/setDisplayName';
 import wrapDisplayName from 'recompose/wrapDisplayName';
-import createEagerFactory from 'recompose/createEagerFactory';
 
 const withPropsOnChange = (shouldMapOrKeys, propsMapper) => BaseComponent => {
-  const factory = createEagerFactory(BaseComponent);
+  const factory = createFactory(BaseComponent);
   const shouldMap =
     typeof shouldMapOrKeys === 'function'
       ? shouldMapOrKeys

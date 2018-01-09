@@ -98,14 +98,16 @@ export default compose(
           <Table
             id="repository-files-table"
             headings={[
-              <Th key="add_to_cart">
-                {canAddToCart && (
+              canAddToCart ? (
+                <Th key="add_to_cart">
                   <AddToCartButtonAll
                     edges={hits.edges.map(e => e.node)}
                     total={hits.total}
                   />
-                )}
-              </Th>,
+                </Th>
+              ) : (
+                <Td key="remove_from_cart" />
+              ),
               ...tableInfo.map(x => (
                 <x.th key={x.id} hits={hits} canAddToCart={canAddToCart} />
               )),

@@ -1,7 +1,7 @@
 // @flow
 import React from 'react';
 import { compose, withPropsOnChange } from 'recompose';
-import { orderBy, groupBy, get, find } from 'lodash';
+import { orderBy, groupBy, find } from 'lodash';
 import externalReferenceLinks from '@ncigdc/utils/externalReferenceLinks';
 import EntityPageHorizontalTable from '@ncigdc/components/EntityPageHorizontalTable';
 import LocalPaginationTable from '@ncigdc/components/LocalPaginationTable';
@@ -32,7 +32,6 @@ const strandIconMap = {
 type TProps = {
   consequenceDataGrouped: Object,
   theme: Object,
-  functionalImpactTranscript: Object,
   canonicalTranscriptId: string,
   dataRows: Array<Object>,
   consequences: Array<Object>,
@@ -44,22 +43,12 @@ export default compose(
     ['viewer'],
     ({ viewer: { explore: { ssms: { hits: { edges } } } }, theme }) => {
       const node = edges[0].node;
-      const consequenceOfInterest = node.consequence.hits.edges.find(
-        consequence =>
-          get(consequence, 'node.transcript.annotation.vep_impact'),
-        {},
-      );
-      const functionalImpactTranscript = get(
-        consequenceOfInterest,
-        'node.transcript',
-        {},
-      );
 
-      const canonicalTranscriptId = (find(
+      const canonicalTranscript = (find(
         node.consequence.hits.edges,
         'node.transcript.is_canonical',
-      ) || { node: { transcript: { transcript_id: '' } } }).node.transcript
-        .transcript_id;
+      ) || { node: { transcript: { transcript_id: '' } } }).node.transcript;
+      const canonicalTranscriptId = canonicalTranscript.transcript_id;
 
       const consequenceDataGrouped = groupBy(node.consequence.hits.edges, c => {
         const { transcript: t } = c.node;
@@ -132,7 +121,6 @@ export default compose(
       );
 
       return {
-        functionalImpactTranscript,
         canonicalTranscriptId,
         consequenceDataGrouped,
         consequences,
@@ -147,7 +135,6 @@ export default compose(
       consequences,
       consequenceDataGrouped,
       canonicalTranscriptId,
-      functionalImpactTranscript,
       theme,
     }: TProps = {},
   ) => (

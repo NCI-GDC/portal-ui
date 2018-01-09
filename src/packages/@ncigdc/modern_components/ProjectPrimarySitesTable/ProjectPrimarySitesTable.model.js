@@ -98,6 +98,10 @@ let FilesByPrimarySite = withData(props => {
               field: 'cases.project.project_id',
               value: props.projectId,
             },
+            {
+              field: 'cases.primary_site',
+              value: props.primarySite,
+            },
           ]),
         }}
       >
@@ -149,30 +153,6 @@ let ExploreByPrimarySiteButton = withRouter(props => {
 
 type TLinkProps = { node: Object, fields?: Array<Object>, children?: mixed };
 type TLink = (props: TLinkProps) => any;
-
-const CasesLink: TLink = ({ node, fields = [], children }) =>
-  children === '0' ? (
-    <span>0</span>
-  ) : (
-    <RepositoryCasesLink
-      query={{
-        filters: makeFilter([
-          { field: 'cases.project.project_id', value: [node.project_id] },
-          ...fields,
-        ]),
-      }}
-    >
-      {children}
-    </RepositoryCasesLink>
-  );
-
-const getProjectIdFilter = projects =>
-  makeFilter([
-    {
-      field: 'cases.project.project_id',
-      value: projects.edges.map(({ node: p }) => p.project_id),
-    },
-  ]);
 
 const projectPrimarySitesTableModel = [
   {

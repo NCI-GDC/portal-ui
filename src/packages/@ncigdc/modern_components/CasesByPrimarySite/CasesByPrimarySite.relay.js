@@ -12,14 +12,14 @@ import { parse } from 'query-string';
 export default (Component: ReactClass<*>) =>
   compose(
     withRouter,
-    // branch(
-    //   ({ primarySite }) => !primarySite,
-    //   renderComponent(() => (
-    //     <div>
-    //       <pre>primarySite</pre> must be provided
-    //     </div>
-    //   )),
-    // ),
+    branch(
+      ({ primarySite }) => !primarySite,
+      renderComponent(() => (
+        <div>
+          <pre>Primary site</pre> must be provided
+        </div>
+      )),
+    ),
     withPropsOnChange(
       ['location'],
       ({ location: { search }, defaultFilters = null }) => {
@@ -30,6 +30,20 @@ export default (Component: ReactClass<*>) =>
         };
       },
     ),
+    // withPropsOnChange(
+    //   ['location'],
+    //   ({ location: { search }, defaultFilters = null }) => {
+    //     const q = parse(search);
+    //     const filters = parseFilterParam(q.filters, defaultFilters);
+    //     const psFilters = parseFilterParam(q.psFilters, defaultFilters);
+    //     return {
+    //       filters: {
+    //         ...filters,
+    //         psFilters,
+    //       },
+    //     };
+    //   },
+    // ),
     withPropsOnChange(
       ['primarySite', 'filters'],
       ({ primarySite, filters }) => {

@@ -1,11 +1,7 @@
 // @flow
 import React from 'react';
-import {
-  RepositoryCasesLink,
-  RepositoryFilesLink,
-} from '@ncigdc/components/Links/RepositoryLink';
-import ProjectLink from '@ncigdc/components/Links/ProjectLink';
-import Table, { Tr, Th, Td, ThNum, TdNum } from '@ncigdc/uikit/Table';
+import { RepositoryFilesLink } from '@ncigdc/components/Links/RepositoryLink';
+import { Th, Td, ThNum, TdNum } from '@ncigdc/uikit/Table';
 import { makeFilter } from '@ncigdc/utils/filters';
 import withRouter from '@ncigdc/utils/withRouter';
 import CollapsibleList from '@ncigdc/uikit/CollapsibleList';
@@ -13,10 +9,9 @@ import withData from '@ncigdc/modern_components/CasesByPrimarySite/CasesByPrimar
 import Button from '@ncigdc/uikit/Button';
 import { stringifyJSONParam } from '@ncigdc/utils/uri';
 import { DATA_CATEGORIES } from '@ncigdc/utils/constants';
-import _ from 'lodash';
 
 let DataCategoryColumns = withData(props => {
-  var foo = Object.keys(DATA_CATEGORIES).reduce((acc, k) => {
+  var dataColumns = Object.keys(DATA_CATEGORIES).reduce((acc, k) => {
     const type = props.repository.cases.aggregations.files__data_category.buckets.find(
       item => item.key === DATA_CATEGORIES[k].full,
     );
@@ -50,15 +45,15 @@ let DataCategoryColumns = withData(props => {
     );
   }, []);
   return (
-    <span
+    <div
       style={{
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'space-between',
       }}
     >
-      {foo}
-    </span>
+      {dataColumns}
+    </div>
   );
 });
 
@@ -150,9 +145,6 @@ let ExploreByPrimarySiteButton = withRouter(props => {
     </span>
   );
 });
-
-type TLinkProps = { node: Object, fields?: Array<Object>, children?: mixed };
-type TLink = (props: TLinkProps) => any;
 
 const projectPrimarySitesTableModel = [
   {

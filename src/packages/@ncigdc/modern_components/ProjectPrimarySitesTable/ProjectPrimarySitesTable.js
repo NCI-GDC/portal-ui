@@ -4,49 +4,66 @@ import React from 'react';
 import {
   compose,
   branch,
-  renderComponent,
   mapProps,
-  setDisplayName,
+  // withState,
+  // withPropsOnChange,
+  renderNothing,
 } from 'recompose';
 import { connect } from 'react-redux';
-import { Row, Column } from '@ncigdc/uikit/Flex';
-import { makeFilter } from '@ncigdc/utils/filters';
-import SparkMeterWithTooltip from '@ncigdc/components/SparkMeterWithTooltip';
-import { DATA_CATEGORIES } from '@ncigdc/utils/constants';
-import { RepositoryFilesLink } from '@ncigdc/components/Links/RepositoryLink';
-import SummaryCard from '@ncigdc/components/SummaryCard';
-import Link from '@ncigdc/components/Links/Link';
-import SampleSize from '@ncigdc/components/SampleSize';
-import TableActions from '@ncigdc/components/TableActions';
+import { Row } from '@ncigdc/uikit/Flex';
+// import {
+//   makeFilter,
+//   replaceFilters,
+//   removeFilter,
+// } from '@ncigdc/utils/filters';
 import tableModels from '@ncigdc/tableModels';
-import Table, { Tr, Td } from '@ncigdc/uikit/Table';
+import Table, { Tr } from '@ncigdc/uikit/Table';
 import styled from '@ncigdc/theme/styled';
+// import SearchIcon from 'react-icons/lib/fa/search';
+// import Input from '@ncigdc/uikit/Form/Input';
+// import CloseIcon from '@ncigdc/theme/icons/CloseIcon';
+// import { parseFilterParam, stringifyJSONParam } from '@ncigdc/utils/uri';
+// import { get, debounce, trim } from 'lodash';
+// import { withTheme } from '@ncigdc/theme';
+// import withRouter from '@ncigdc/utils/withRouter';
+// import { parse } from 'query-string';
+// import Hidden from '@ncigdc/components/Hidden';
 
-const SPACING = '2rem';
+// const fieldToDisplay = {
+//   'cases.project.project_id': {
+//     name: 'Project Id',
+//     placeholder: 'eg. TCGA-13*, *13*, *09',
+//   },
+//   'files.associated_entities.case_id': {
+//     name: 'Case UUID',
+//     placeholder: 'eg. 635f5335-b008-428e-b005-615776a6643f',
+//   },
+// };
 
-const styles = {
-  countCard: {
-    width: 'auto',
-    marginBottom: SPACING,
-  },
-  column: {
-    flexGrow: 1,
-  },
-  margin: {
-    marginBottom: SPACING,
-  },
-  icon: {
-    width: '4rem',
-    height: '4rem',
-    color: '#888',
-  },
-  coloredSquare: {
-    display: 'inline-block',
-    width: 10,
-    height: 10,
-    marginRight: 5,
-  },
-};
+// const debouncedPush = debounce((field, value, filters, push) => {
+//   const newFilters = value
+//     ? replaceFilters(
+//         {
+//           op: 'and',
+//           content: [
+//             {
+//               op: 'in',
+//               content: {
+//                 field: field,
+//                 value: [value],
+//               },
+//             },
+//           ],
+//         },
+//         filters,
+//       )
+//     : removeFilter(field, filters);
+//   push({
+//     query: {
+//       psFilters: stringifyJSONParam(newFilters),
+//     },
+//   });
+// }, 1000);
 
 const Header = styled(Row, {
   padding: '1rem',
@@ -54,14 +71,41 @@ const Header = styled(Row, {
 });
 
 export default compose(
-  setDisplayName('ProjectPrimarySitesTablePresentation'),
+  // setDisplayName('ProjectPrimarySitesTablePresentation'),
   branch(
-    ({ viewer }) => !viewer.projects.hits.edges[0],
-    renderComponent(() => <div>No project found.</div>),
+    ({ viewer }) =>
+      !viewer.projects.hits.edges ||
+      viewer.projects.hits.edges[0].node.primary_site.length <= 1,
+    () => renderNothing(),
   ),
-  //   ({ viewer }) =>
-  //     viewer.projects.hits.edges[0].node.primary_site.length === 1,
-  //   renderComponent(() => <div>No project found.</div>),
+  // withRouter,
+  // withTheme,
+  // withState('searchValue', 'setSearchValue', ''),
+  // withState('searchField', 'setSearchField', 'cases.project.project_id'),
+  // withPropsOnChange(
+  //   ['location'],
+  //   ({ location: { search }, searchValue, setSearchValue, setSearchField }) => {
+  //     const q = parse(search);
+  //     const psFilters = parseFilterParam(q.psFilters, { content: [] });
+  //     const psTableFilters = psFilters.content;
+  //     const fieldsToValues = psTableFilters.reduce(
+  //       (acc, f) => ({
+  //         ...acc,
+  //         [f.content.field]: f.content.value,
+  //       }),
+  //       {},
+  //     );
+  //     if (Object.keys(fieldsToValues).length) {
+  //       const currentField = Object.keys(fieldsToValues)[0];
+  //       const currentValue = fieldsToValues[currentField];
+  //       setSearchField(currentField);
+  //       setSearchValue(currentValue);
+  //     }
+  //
+  //     return {
+  //       psFilters,
+  //     };
+  //   },
   // ),
   connect(state => ({
     tableColumns: state.tableColumns.projectPrimarySites.ids,
@@ -77,89 +121,95 @@ export default compose(
     downloadable,
     tableColumns,
     tableHeader = 'Primary Sites',
+    // searchValue,
+    // searchField,
+    // setSearchField,
+    // setSearchValue,
+    // push,
+    // psFilters,
+    // theme,
+    // loading,
   }) => {
     const project = edges[0].node;
-    // if (project.primary_site.length >= 1) {
-    //   return null;
-    // }
-    const projectFilter = [
-      {
-        field: 'cases.project.project_id',
-        value: project.project_id,
-      },
-    ];
-    // const dataCategories = Object.keys(DATA_CATEGORIES).reduce(
-    //   (acc, name) => [
-    //     ...acc,
-    //     ...project.summary.data_categories
-    //       .filter(item => item.data_category.toLowerCase() === name)
-    //       .map(item => ({
-    //         ...item,
-    //         file_count_meter: (
-    //           <SparkMeterWithTooltip part={item.file_count} whole={totalFiles} />
-    //         ),
-    //         case_count_meter: (
-    //           <SparkMeterWithTooltip part={item.case_count} whole={totalCases} />
-    //         ),
-    //       })),
-    //   ],
-    //   [],
-    // );
+
     const tableInfo = tableModels[entityType]
       .slice()
       // .sort((a, b) => tableColumns.indexOf(a.id) - tableColumns.indexOf(b.id))
       .filter(x => tableColumns.includes(x.id));
 
-    // const dataCategories = Object.keys(DATA_CATEGORIES).reduce((acc, key) => {
-    //   const type = project.summary.data_categories.find(
-    //     item => item.data_category === DATA_CATEGORIES[key].full,
-    //   ) || {
-    //     data_category: DATA_CATEGORIES[key].full,
-    //     file_count: 0,
-    //   };
-    //
-    //   const linkQuery = {
-    //     filters: makeFilter([
-    //       { field: 'cases.project.project_id', value: project.project_id },
-    //       { field: 'files.data_category', value: [type.data_category] },
-    //     ]),
-    //   };
-    //   return acc.concat({
-    //     ...type,
-    //     id: type.data_category,
-    //     file_count:
-    //       type.file_count > 0 ? (
-    //         <RepositoryFilesLink query={linkQuery}>
-    //           {type.file_count}
-    //         </RepositoryFilesLink>
-    //       ) : (
-    //         '0'
-    //       ),
-    //     file_count_meter: (
-    //       <SparkMeterWithTooltip part={type.file_count} whole={totalFiles} />
-    //     ),
-    //     file_count_value: type.file_count,
-    //     tooltip: (
-    //       <span>
-    //         <b>{type.data_category}</b>
-    //         <br />
-    //         {type.file_count} file{type.file_count > 1 ? 's' : ''}
-    //       </span>
-    //     ),
-    //     clickHandler: () => {
-    //       const newQuery = mergeQuery(linkQuery, query, 'replace');
-    //       const q = removeEmptyKeys({
-    //         ...newQuery,
-    //         filters: newQuery.filters && stringifyJSONParam(newQuery.filters),
-    //       });
-    //       push({ pathname: '/repository', query: q });
-    //     },
-    //   });
-    // }, []);
     return (
       <div>
         <Row>
+          {/* <div
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              width: '100%',
+            }}
+          > */}
           <Row>{tableHeader && <Header>{tableHeader}</Header>}</Row>
+          {/* <div>
+              <label htmlFor="filter-input">
+                <div
+                  style={{
+                    borderTop: `1px solid ${theme.greyScale5}`,
+                    borderLeft: `1px solid ${theme.greyScale5}`,
+                    borderBottom: `1px solid ${theme.greyScale5}`,
+                    borderRight: 0,
+                    borderRadius: '4px 0 0 4px',
+                    backgroundColor: `${theme.greyScale4}`,
+                    width: '38px',
+                    height: '100%',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}
+                >
+                  <SearchIcon size={14} />
+                </div>
+                <Hidden>Filter</Hidden>
+              </label>
+              <Input
+                disabled={loading}
+                id="filter-input"
+                value={searchValue}
+                style={{
+                  fontSize: '14px',
+                  paddingLeft: '1rem',
+                  border: `1px solid ${theme.greyScale5}`,
+                  width: '31rem',
+                  borderRadius: '0 4px 4px 0',
+                }}
+                placeholder={'eg. Bronchus*, *Kidney*'}
+                onChange={e => {
+                  const trimmed = trim(e.target.value);
+                  setSearchValue(trimmed);
+                  debouncedPush(searchField, trimmed, psFilters, push);
+                }}
+                type="text"
+              />
+              {!!searchValue.length && (
+                <CloseIcon
+                  style={{
+                    position: 'absolute',
+                    right: 0,
+                    padding: '10px',
+                    fontSize: '14px',
+                    transition: 'all 0.3s ease',
+                    outline: 0,
+                    cursor: 'pointer',
+                  }}
+                  onClick={() => {
+                    setSearchValue('');
+                    push({
+                      query: removeFilter(searchField, psFilters),
+                    });
+                  }}
+                />
+              )}
+            </div> */}
+          {/* </div> */}
         </Row>
 
         <div style={{ overflowX: 'auto' }}>

@@ -32,9 +32,4 @@ export default compose(
         aggregations.disease_type.buckets[0].key}
     </span>
   );
-  // return (
-  //   <span>
-  //     {aggregations.disease_type.buckets.map(type => <span>{type.key}</span>)}
-  //   </span>
-  // );
 });

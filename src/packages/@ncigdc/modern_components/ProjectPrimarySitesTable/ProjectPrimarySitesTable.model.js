@@ -1,4 +1,4 @@
-// @flow
+/* @flow */
 import React from 'react';
 import { RepositoryFilesLink } from '@ncigdc/components/Links/RepositoryLink';
 import { Th, Td, ThNum, TdNum } from '@ncigdc/uikit/Table';
@@ -26,26 +26,26 @@ let DataCategoryColumns = withData(props => {
     };
     return acc.concat(
       type ? (
-        <Td>
+        <span key={k}>
           <RepositoryFilesLink query={linkQuery}>
             {type.doc_count}{' '}
           </RepositoryFilesLink>
           <span style={{ fontSize: '1rem', fontVariantPosition: 'super' }}>
             {DATA_CATEGORIES[k].abbr}
           </span>
-        </Td>
+        </span>
       ) : (
-        <Td>
+        <span key={k}>
           <span>0 </span>
           <span style={{ fontSize: '1rem', fontVariantPosition: 'super' }}>
             {DATA_CATEGORIES[k].abbr}
           </span>
-        </Td>
+        </span>
       ),
     );
   }, []);
   return (
-    <div
+    <span
       style={{
         display: 'flex',
         flexDirection: 'row',
@@ -53,7 +53,7 @@ let DataCategoryColumns = withData(props => {
       }}
     >
       {dataColumns}
-    </div>
+    </span>
   );
 });
 
@@ -87,7 +87,6 @@ let FilesByPrimarySite = withData(props => {
     >
       <RepositoryFilesLink
         query={{
-          // needs primary site as filter too
           filters: makeFilter([
             {
               field: 'cases.project.project_id',
@@ -100,12 +99,7 @@ let FilesByPrimarySite = withData(props => {
           ]),
         }}
       >
-        <span>
-          {
-            props.repository.cases.aggregations.disease_type.buckets[0]
-              .doc_count
-          }
-        </span>
+        {props.repository.cases.aggregations.disease_type.buckets[0].doc_count}
       </RepositoryFilesLink>
     </TdNum>
   );
@@ -113,36 +107,29 @@ let FilesByPrimarySite = withData(props => {
 
 let ExploreByPrimarySiteButton = withRouter(props => {
   return (
-    <span
-      style={{
-        display: 'flex',
-        justifyContent: 'flex-end',
+    <Button
+      onClick={() => {
+        props.push({
+          pathname: '/exploration',
+          query: {
+            filters: stringifyJSONParam(
+              makeFilter([
+                {
+                  field: 'cases.project.project_id',
+                  value: props.projectId,
+                },
+                {
+                  field: 'cases.primary_site',
+                  value: props.primarySite,
+                },
+              ]),
+            ),
+          },
+        });
       }}
     >
-      <Button
-        onClick={() => {
-          props.push({
-            pathname: '/exploration',
-            query: {
-              filters: stringifyJSONParam(
-                makeFilter([
-                  {
-                    field: 'cases.project.project_id',
-                    value: props.projectId,
-                  },
-                  {
-                    field: 'cases.primary_site',
-                    value: props.primarySite,
-                  },
-                ]),
-              ),
-            },
-          });
-        }}
-      >
-        Explore
-      </Button>
-    </span>
+      Explore
+    </Button>
   );
 });
 
@@ -192,7 +179,7 @@ const projectPrimarySitesTableModel = [
     downloadable: false,
     th: ({ primarySite, projectId }) => (
       <Th rowSpan="2">
-        <span>Available Cases per Data Category</span>
+        Available Cases per Data Category
         {/* <span
           style={{
             display: 'flex',
@@ -205,7 +192,9 @@ const projectPrimarySitesTableModel = [
       </Th>
     ),
     td: ({ primarySite, projectId }) => (
-      <DataCategoryColumns primarySite={primarySite} projectId={projectId} />
+      <Td>
+        <DataCategoryColumns primarySite={primarySite} projectId={projectId} />
+      </Td>
     ),
   },
   {
@@ -227,19 +216,6 @@ const projectPrimarySitesTableModel = [
       </Td>
     ),
   },
-  // total: withRouter(({ hits, query }) => (
-  //   <TdNum>
-  //     <RepositoryFilesLink
-  //       query={{
-  //         filters: query.filters ? getProjectIdFilter(hits) : null,
-  //       }}
-  //     >
-  //       {hits.edges
-  //         .reduce((acc, val) => acc + val.node.summary.file_count, 0)
-  //         .toLocaleString()}
-  //     </RepositoryFilesLink>
-  //   </TdNum>
-  // )),
   {
     name: 'Explore',
     id: 'explore',

@@ -1,3 +1,5 @@
+/* @flow */
+
 import React from 'react';
 import { compose, branch, renderComponent, mapProps } from 'recompose';
 import CollapsibleList from '@ncigdc/uikit/CollapsibleList';

@@ -26,7 +26,7 @@
     }
   },
   "dependencies": {
-    "@oncojs/react-lolliplot": "0.10.6",
+    "@oncojs/react-lolliplot": "0.11.0",
     "@oncojs/sapien": "0.5.2",
     "@oncojs/survivalplot": "0.6.5",
     "babel-polyfill": "6.23.0",

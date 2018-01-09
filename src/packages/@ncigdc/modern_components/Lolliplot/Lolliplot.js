@@ -182,7 +182,7 @@ export default compose(
               data={lolliplotData.mutations
                 .filter(d => d.x > min && d.x < max)
                 .filter(filterByType(blacklist))}
-              lolliplotCollisions={lolliplotCollisions}
+              collisions={lolliplotCollisions}
               onPointClick={d => {
                 if (lolliplotCollisions[`${d.x},${d.y}`]) {
                   selectCollisions(lolliplotCollisions[`${d.x},${d.y}`]);

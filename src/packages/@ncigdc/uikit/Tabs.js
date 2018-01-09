@@ -37,7 +37,7 @@ const baseTabStyle = (theme, side) =>
     transition: 'background-color 0.2s ease',
     borderRadius: side ? '4px 0 0 4px' : '4px 4px 0 0',
     cursor: 'pointer',
-    overflow: 'visible',
+    overflow: 'hidden',
   });
 
 const styles = {
@@ -113,7 +113,9 @@ const Tabs = ({
         <div
           style={{
             maxHeight: '550px',
+            minWidth: '190px',
             overflowY: 'scroll',
+            overflowX: 'hidden',
             msOverflowStyle: 'none',
             backgroundColor: 'white',
             position: 'relative',

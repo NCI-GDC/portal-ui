@@ -45,8 +45,8 @@ export default (Component: ReactClass<*>) =>
     //   },
     // ),
     withPropsOnChange(
-      ['primarySite', 'filters'],
-      ({ primarySite, filters }) => {
+      ['primarySite', 'filters', 'projectId'],
+      ({ primarySite, filters, projectId }) => {
         return {
           variables: {
             ...filters,
@@ -55,6 +55,7 @@ export default (Component: ReactClass<*>) =>
                 field: 'cases.primary_site',
                 value: [primarySite],
               },
+              { field: 'cases.project.project_id', value: projectId },
             ]),
           },
         };

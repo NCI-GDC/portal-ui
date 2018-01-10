@@ -121,6 +121,7 @@ export default compose(
     downloadable,
     tableColumns,
     tableHeader = 'Primary Sites',
+    projectId,
     // searchValue,
     // searchField,
     // setSearchField,
@@ -131,7 +132,6 @@ export default compose(
     // loading,
   }) => {
     const project = edges[0].node;
-
     const tableInfo = tableModels[entityType]
       .slice()
       // .sort((a, b) => tableColumns.indexOf(a.id) - tableColumns.indexOf(b.id))
@@ -231,7 +231,7 @@ export default compose(
                         <x.td
                           key={x.id}
                           primarySite={primarySite}
-                          projectId={project.project_id}
+                          projectId={projectId}
                         />
                       ))}
                   </Tr>

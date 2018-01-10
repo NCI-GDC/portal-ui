@@ -22,6 +22,10 @@ let DataCategoryColumns = withData(props => {
           value: props.projectId,
         },
         { field: 'files.data_category', value: DATA_CATEGORIES[k].full },
+        {
+          field: 'cases.primary_site',
+          value: props.primarySite,
+        },
       ]),
     };
     return acc.concat(
@@ -36,7 +40,7 @@ let DataCategoryColumns = withData(props => {
         </span>
       ) : (
         <span key={k}>
-          <span>0 </span>
+          <span>0 -- </span>
           <span style={{ fontSize: '1rem', fontVariantPosition: 'super' }}>
             {DATA_CATEGORIES[k].abbr}
           </span>
@@ -72,7 +76,7 @@ let DiseaseList = withData(props => {
           collapseText="collapse"
         />
       )}
-      {buckets.length <= 1 && buckets[0].key}
+      {buckets.length && buckets.length <= 1 && buckets[0].key}
     </span>
   );
 });
@@ -99,7 +103,10 @@ let FilesByPrimarySite = withData(props => {
           ]),
         }}
       >
-        {props.repository.cases.aggregations.disease_type.buckets[0].doc_count}
+        {props.repository.cases.aggregations.disease_type.buckets.length
+          ? props.repository.cases.aggregations.disease_type.buckets[0]
+              .doc_count
+          : '0 --'}
       </RepositoryFilesLink>
     </span>
   );
@@ -140,7 +147,7 @@ const projectPrimarySitesTableModel = [
     sortable: false,
     downloadable: false,
     th: () => <Th rowSpan="2">Primary Site</Th>,
-    td: ({ primarySite }) => (
+    td: ({ primarySite, projectId }) => (
       <Td
         key="primary_site"
         style={{
@@ -159,7 +166,7 @@ const projectPrimarySitesTableModel = [
     sortable: false,
     downloadable: false,
     th: () => <Th rowSpan="2">Disease Type</Th>,
-    td: ({ primarySite }) => (
+    td: ({ primarySite, projectId }) => (
       <Td
         key="disease_type"
         style={{
@@ -168,7 +175,7 @@ const projectPrimarySitesTableModel = [
           whiteSpace: 'normal',
         }}
       >
-        <DiseaseList primarySite={primarySite} />
+        <DiseaseList projectId={projectId} primarySite={primarySite} />
       </Td>
     ),
   },

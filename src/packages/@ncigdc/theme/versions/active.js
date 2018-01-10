@@ -72,10 +72,6 @@ const theme = {
   spacing: '2rem',
 };
 
-export const globalRules = `
-  a:link {
-    color: ${theme.primary};
-  }
-`;
+export const globalRules = ``;
 
 export default theme;

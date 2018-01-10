@@ -43,13 +43,6 @@ export type TProps = {
     project__program__name: { buckets: [TBucket] },
     project__project_id: { buckets: [TBucket] },
   },
-  // hits: {
-  //   edges: Array<{|
-  //     node: {|
-  //       id: string,
-  //     |},
-  //   |}>,
-  // },
   setAutocomplete: Function,
   theme: Object,
   filters: Object,

@@ -17,7 +17,7 @@ import { Row } from '@ncigdc/uikit/Flex';
 //   removeFilter,
 // } from '@ncigdc/utils/filters';
 import tableModels from '@ncigdc/tableModels';
-import Table, { Tr, Td } from '@ncigdc/uikit/Table';
+import Table, { Tr } from '@ncigdc/uikit/Table';
 import styled from '@ncigdc/theme/styled';
 // import SearchIcon from 'react-icons/lib/fa/search';
 // import Input from '@ncigdc/uikit/Form/Input';

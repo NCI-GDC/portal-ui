@@ -1,7 +1,7 @@
 /* @flow */
 import React from 'react';
 import { RepositoryFilesLink } from '@ncigdc/components/Links/RepositoryLink';
-import { Th, Td, ThNum, TdNum } from '@ncigdc/uikit/Table';
+import { Th, Td, ThNum } from '@ncigdc/uikit/Table';
 import { makeFilter } from '@ncigdc/utils/filters';
 import withRouter from '@ncigdc/utils/withRouter';
 import CollapsibleList from '@ncigdc/uikit/CollapsibleList';
@@ -79,7 +79,7 @@ let DiseaseList = withData(props => {
 
 let FilesByPrimarySite = withData(props => {
   return (
-    <TdNum
+    <span
       style={{
         display: 'flex',
         justifyContent: 'flex-end',
@@ -101,7 +101,7 @@ let FilesByPrimarySite = withData(props => {
       >
         {props.repository.cases.aggregations.disease_type.buckets[0].doc_count}
       </RepositoryFilesLink>
-    </TdNum>
+    </span>
   );
 });
 
@@ -227,7 +227,7 @@ const projectPrimarySitesTableModel = [
         key="explore"
         style={{
           maxWidth: '200px',
-          padding: '3px 15px 3px 3px',
+          padding: '3px 15px 3px 15px',
           whiteSpace: 'normal',
         }}
       >

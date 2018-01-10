@@ -11,11 +11,11 @@ import {
   lifecycle,
   renderComponent,
 } from 'recompose';
-import Query from '@ncigdc/modern_components/Query';
 import _ from 'lodash';
-import { fetchApi } from '../../utils/ajax/index';
-import { Column } from '@ncigdc/uikit/Flex';
 import { css } from 'glamor';
+import Query from '@ncigdc/modern_components/Query';
+import { fetchApi } from '@ncigdc/utils/ajax';
+import { Column } from '@ncigdc/uikit/Flex';
 
 const styles = {
   resultsCount: {
@@ -42,7 +42,7 @@ export default (Component: ReactClass<*>) =>
       },
     })),
     lifecycle({
-      async componentDidMount(): void {
+      async componentDidMount() {
         let { setFacetMapping, setUselessFacetVisibility } = this.props;
         const mapping = await fetchApi('gql/_mapping', {
           headers: { 'Content-Type': 'application/json' },

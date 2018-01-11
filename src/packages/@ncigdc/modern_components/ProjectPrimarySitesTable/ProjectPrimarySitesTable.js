@@ -78,18 +78,6 @@ export default compose(
   ),
   withTheme,
   withState('searchValue', 'setSearchValue', ''),
-  withState('searchField', 'setSearchField', 'cases.project.project_id'),
-  withState('offset', 'setOffset', 0),
-  withState('size', 'setSize', 10),
-  withPropsOnChange(['location'], ({ location: { search } }) => {
-    const q = parse(search);
-    const psOffset = parseFilterParam(q.ps_offset, { content: [] });
-    const psSize = parseFilterParam(q.ps_size, { content: [] });
-    return {
-      psOffset,
-      psSize,
-    };
-  }),
   connect(state => ({
     tableColumns: state.tableColumns.projectPrimarySites.ids,
   })),
@@ -109,10 +97,6 @@ export default compose(
     setSearchValue,
     theme,
     loading,
-    psOff,
-    setOffset,
-    size,
-    setSize,
   }) => {
     const project = edges[0].node;
     const tableInfo = tableModels[entityType]
@@ -129,7 +113,6 @@ export default compose(
         <Row
           style={{
             backgroundColor: 'white',
-            padding: '1rem',
             justifyContent: 'space-between',
             alignItems: 'flex-end',
           }}
@@ -143,7 +126,7 @@ export default compose(
               alignItems: 'center',
               width: '100%',
               backgroundColor: 'white',
-              padding: '10px',
+              padding: '1rem 1rem 0 1rem',
             }}
           >
             <Row>{tableHeader && <Header>{tableHeader}</Header>}</Row>
@@ -175,10 +158,10 @@ export default compose(
                   fontSize: '14px',
                   paddingLeft: '1rem',
                   border: `1px solid ${theme.greyScale5}`,
-                  width: '31rem',
+                  width: '25rem',
                   borderRadius: '0 4px 4px 0',
                 }}
-                placeholder={'eg. Bronchus*, *Kidney*'}
+                placeholder={'Search'}
                 onChange={e => {
                   const trimmed = trim(e.target.value);
                   setSearchValue(trimmed);

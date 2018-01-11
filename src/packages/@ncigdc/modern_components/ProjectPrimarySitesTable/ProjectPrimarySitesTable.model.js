@@ -31,16 +31,30 @@ let DataCategoryColumns = withData(props => {
       ]),
     };
     return acc.concat(
-      <span key={k}>
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'flex-end',
+          alignItems: 'center',
+          minWidth: '80px',
+        }}
+        key={k}
+      >
         {type ? (
           <RepositoryFilesLink query={linkQuery}>
             {type.doc_count}{' '}
           </RepositoryFilesLink>
         ) : (
-          <span>0 -- </span>
+          <span>-- </span>
         )}
 
-        <abbr style={{ fontSize: '1rem', fontVariantPosition: 'super' }}>
+        <abbr
+          style={{
+            fontSize: '1rem',
+            fontVariantPosition: 'super',
+            paddingLeft: '5px',
+          }}
+        >
           <Tooltip
             Component={DATA_CATEGORIES[k].full}
             style={tableToolTipHint()}
@@ -48,7 +62,7 @@ let DataCategoryColumns = withData(props => {
             {DATA_CATEGORIES[k].abbr}
           </Tooltip>
         </abbr>
-      </span>,
+      </div>,
     );
   }, []);
   return (
@@ -90,6 +104,7 @@ let FilesByPrimarySite = withData(props => {
       style={{
         display: 'flex',
         justifyContent: 'flex-end',
+        minWidth: '60px',
       }}
     >
       <RepositoryFilesLink

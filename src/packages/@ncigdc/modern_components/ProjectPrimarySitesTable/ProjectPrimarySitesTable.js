@@ -1,14 +1,7 @@
 /* @flow */
 
 import React from 'react';
-import {
-  compose,
-  branch,
-  mapProps,
-  withState,
-  withPropsOnChange,
-  renderNothing,
-} from 'recompose';
+import { compose, branch, mapProps, withState, renderNothing } from 'recompose';
 import { connect } from 'react-redux';
 import { Row } from '@ncigdc/uikit/Flex';
 import LocalPaginationTable from '@ncigdc/components/LocalPaginationTable';
@@ -18,10 +11,8 @@ import styled from '@ncigdc/theme/styled';
 import SearchIcon from 'react-icons/lib/fa/search';
 import Input from '@ncigdc/uikit/Form/Input';
 import CloseIcon from '@ncigdc/theme/icons/CloseIcon';
-import { parseFilterParam } from '@ncigdc/utils/uri';
 import { trim } from 'lodash';
 import { withTheme } from '@ncigdc/theme';
-import { parse } from 'query-string';
 
 const Header = styled(Row, {
   padding: '1rem',

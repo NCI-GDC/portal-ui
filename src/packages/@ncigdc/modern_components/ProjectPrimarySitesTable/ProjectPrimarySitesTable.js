@@ -5,70 +5,68 @@ import {
   compose,
   branch,
   mapProps,
-  // withState,
-  // withPropsOnChange,
+  withState,
+  withPropsOnChange,
   renderNothing,
 } from 'recompose';
 import { connect } from 'react-redux';
 import { Row } from '@ncigdc/uikit/Flex';
-// import {
-//   makeFilter,
-//   replaceFilters,
-//   removeFilter,
-// } from '@ncigdc/utils/filters';
+import LocalPaginationTable from '@ncigdc/components/LocalPaginationTable';
 import tableModels from '@ncigdc/tableModels';
-import Table, { Tr } from '@ncigdc/uikit/Table';
+import Table, { Tr, Td } from '@ncigdc/uikit/Table';
 import styled from '@ncigdc/theme/styled';
-// import SearchIcon from 'react-icons/lib/fa/search';
-// import Input from '@ncigdc/uikit/Form/Input';
-// import CloseIcon from '@ncigdc/theme/icons/CloseIcon';
-// import { parseFilterParam, stringifyJSONParam } from '@ncigdc/utils/uri';
-// import { get, debounce, trim } from 'lodash';
-// import { withTheme } from '@ncigdc/theme';
-// import withRouter from '@ncigdc/utils/withRouter';
-// import { parse } from 'query-string';
-// import Hidden from '@ncigdc/components/Hidden';
-
-// const fieldToDisplay = {
-//   'cases.project.project_id': {
-//     name: 'Project Id',
-//     placeholder: 'eg. TCGA-13*, *13*, *09',
-//   },
-//   'files.associated_entities.case_id': {
-//     name: 'Case UUID',
-//     placeholder: 'eg. 635f5335-b008-428e-b005-615776a6643f',
-//   },
-// };
-
-// const debouncedPush = debounce((field, value, filters, push) => {
-//   const newFilters = value
-//     ? replaceFilters(
-//         {
-//           op: 'and',
-//           content: [
-//             {
-//               op: 'in',
-//               content: {
-//                 field: field,
-//                 value: [value],
-//               },
-//             },
-//           ],
-//         },
-//         filters,
-//       )
-//     : removeFilter(field, filters);
-//   push({
-//     query: {
-//       psFilters: stringifyJSONParam(newFilters),
-//     },
-//   });
-// }, 1000);
+import SearchIcon from 'react-icons/lib/fa/search';
+import Input from '@ncigdc/uikit/Form/Input';
+import CloseIcon from '@ncigdc/theme/icons/CloseIcon';
+import { parseFilterParam } from '@ncigdc/utils/uri';
+import { trim } from 'lodash';
+import { withTheme } from '@ncigdc/theme';
+import { parse } from 'query-string';
 
 const Header = styled(Row, {
   padding: '1rem',
   color: ({ theme }) => theme.greyScale7 || 'silver',
+  fontSize: '1.7rem',
 });
+
+const PrimarySitesTable = ({ data, tableInfo, projectId }) => (
+  <Table
+    id="project-primary-site-table"
+    headings={tableInfo
+      .filter(x => !x.subHeading)
+      .map(x => <x.th key={x.id} />)}
+    subheadings={tableInfo
+      .filter(x => x.subHeading)
+      .map(x => <x.th key={x.id} />)}
+    body={
+      <tbody>
+        {data.length >= 1 ? (
+          data.map((primarySite, i) => {
+            return (
+              <Tr key={i} index={i}>
+                {tableInfo
+                  .filter(x => x.td)
+                  .map(x => (
+                    <x.td
+                      key={x.id}
+                      primarySite={primarySite}
+                      projectId={projectId}
+                    />
+                  ))}
+              </Tr>
+            );
+          })
+        ) : (
+          <Tr>
+            <Td style={{ padding: '10px' }}>
+              There are no results for that query
+            </Td>
+          </Tr>
+        )}
+      </tbody>
+    }
+  />
+);
 
 export default compose(
   // setDisplayName('ProjectPrimarySitesTablePresentation'),
@@ -78,35 +76,20 @@ export default compose(
       viewer.projects.hits.edges[0].node.primary_site.length <= 1,
     () => renderNothing(),
   ),
-  // withRouter,
-  // withTheme,
-  // withState('searchValue', 'setSearchValue', ''),
-  // withState('searchField', 'setSearchField', 'cases.project.project_id'),
-  // withPropsOnChange(
-  //   ['location'],
-  //   ({ location: { search }, searchValue, setSearchValue, setSearchField }) => {
-  //     const q = parse(search);
-  //     const psFilters = parseFilterParam(q.psFilters, { content: [] });
-  //     const psTableFilters = psFilters.content;
-  //     const fieldsToValues = psTableFilters.reduce(
-  //       (acc, f) => ({
-  //         ...acc,
-  //         [f.content.field]: f.content.value,
-  //       }),
-  //       {},
-  //     );
-  //     if (Object.keys(fieldsToValues).length) {
-  //       const currentField = Object.keys(fieldsToValues)[0];
-  //       const currentValue = fieldsToValues[currentField];
-  //       setSearchField(currentField);
-  //       setSearchValue(currentValue);
-  //     }
-  //
-  //     return {
-  //       psFilters,
-  //     };
-  //   },
-  // ),
+  withTheme,
+  withState('searchValue', 'setSearchValue', ''),
+  withState('searchField', 'setSearchField', 'cases.project.project_id'),
+  withState('offset', 'setOffset', 0),
+  withState('size', 'setSize', 10),
+  withPropsOnChange(['location'], ({ location: { search } }) => {
+    const q = parse(search);
+    const psOffset = parseFilterParam(q.ps_offset, { content: [] });
+    const psSize = parseFilterParam(q.ps_size, { content: [] });
+    return {
+      psOffset,
+      psSize,
+    };
+  }),
   connect(state => ({
     tableColumns: state.tableColumns.projectPrimarySites.ids,
   })),
@@ -122,34 +105,49 @@ export default compose(
     tableColumns,
     tableHeader = 'Primary Sites',
     projectId,
-    // searchValue,
-    // searchField,
-    // setSearchField,
-    // setSearchValue,
-    // push,
-    // psFilters,
-    // theme,
-    // loading,
+    searchValue,
+    setSearchValue,
+    theme,
+    loading,
+    psOff,
+    setOffset,
+    size,
+    setSize,
   }) => {
     const project = edges[0].node;
     const tableInfo = tableModels[entityType]
-      .slice()
       // .sort((a, b) => tableColumns.indexOf(a.id) - tableColumns.indexOf(b.id))
       .filter(x => tableColumns.includes(x.id));
 
+    const primarySiteData = project.primary_site
+      .filter(site => site.toLowerCase().includes(searchValue.toLowerCase()))
+      .sort();
+
+    const paginationPrefix = 'ps';
     return (
       <div>
+        <Row
+          style={{
+            backgroundColor: 'white',
+            padding: '1rem',
+            justifyContent: 'space-between',
+            alignItems: 'flex-end',
+          }}
+        />
         <Row>
-          {/* <div
+          <div
             style={{
               display: 'flex',
               flexDirection: 'row',
               justifyContent: 'space-between',
+              alignItems: 'center',
               width: '100%',
+              backgroundColor: 'white',
+              padding: '10px',
             }}
-          > */}
-          <Row>{tableHeader && <Header>{tableHeader}</Header>}</Row>
-          {/* <div>
+          >
+            <Row>{tableHeader && <Header>{tableHeader}</Header>}</Row>
+            <Row>
               <label htmlFor="filter-input">
                 <div
                   style={{
@@ -168,7 +166,6 @@ export default compose(
                 >
                   <SearchIcon size={14} />
                 </div>
-                <Hidden>Filter</Hidden>
               </label>
               <Input
                 disabled={loading}
@@ -185,7 +182,6 @@ export default compose(
                 onChange={e => {
                   const trimmed = trim(e.target.value);
                   setSearchValue(trimmed);
-                  debouncedPush(searchField, trimmed, psFilters, push);
                 }}
                 type="text"
               />
@@ -202,43 +198,20 @@ export default compose(
                   }}
                   onClick={() => {
                     setSearchValue('');
-                    push({
-                      query: removeFilter(searchField, psFilters),
-                    });
                   }}
                 />
               )}
-            </div> */}
-          {/* </div> */}
+            </Row>
+          </div>
         </Row>
 
         <div style={{ overflowX: 'auto' }}>
-          <Table
-            id="project-primary-site-table"
-            headings={tableInfo
-              .filter(x => !x.subHeading)
-              .map(x => <x.th key={x.id} />)}
-            subheadings={tableInfo
-              .filter(x => x.subHeading)
-              .map(x => <x.th key={x.id} />)}
-            body={
-              <tbody>
-                {project.primary_site.map((primarySite, i) => (
-                  <Tr key={i} index={i}>
-                    {tableInfo
-                      .filter(x => x.td)
-                      .map(x => (
-                        <x.td
-                          key={x.id}
-                          primarySite={primarySite}
-                          projectId={projectId}
-                        />
-                      ))}
-                  </Tr>
-                ))}
-              </tbody>
-            }
-          />
+          <LocalPaginationTable
+            data={primarySiteData}
+            prefix={paginationPrefix}
+          >
+            <PrimarySitesTable tableInfo={tableInfo} projectId={projectId} />
+          </LocalPaginationTable>
         </div>
       </div>
     );

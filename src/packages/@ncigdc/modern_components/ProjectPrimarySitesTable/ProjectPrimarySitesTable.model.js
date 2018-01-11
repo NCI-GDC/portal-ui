@@ -9,6 +9,8 @@ import withData from '@ncigdc/modern_components/CasesByPrimarySite/CasesByPrimar
 import Button from '@ncigdc/uikit/Button';
 import { stringifyJSONParam } from '@ncigdc/utils/uri';
 import { DATA_CATEGORIES } from '@ncigdc/utils/constants';
+import { tableToolTipHint } from '@ncigdc/theme/mixins';
+import Tooltip from '@ncigdc/uikit/Tooltip/Tooltip';
 
 let DataCategoryColumns = withData(props => {
   var dataColumns = Object.keys(DATA_CATEGORIES).reduce((acc, k) => {
@@ -29,23 +31,24 @@ let DataCategoryColumns = withData(props => {
       ]),
     };
     return acc.concat(
-      type ? (
-        <span key={k}>
+      <span key={k}>
+        {type ? (
           <RepositoryFilesLink query={linkQuery}>
             {type.doc_count}{' '}
           </RepositoryFilesLink>
-          <span style={{ fontSize: '1rem', fontVariantPosition: 'super' }}>
-            {DATA_CATEGORIES[k].abbr}
-          </span>
-        </span>
-      ) : (
-        <span key={k}>
+        ) : (
           <span>0 -- </span>
-          <span style={{ fontSize: '1rem', fontVariantPosition: 'super' }}>
+        )}
+
+        <abbr style={{ fontSize: '1rem', fontVariantPosition: 'super' }}>
+          <Tooltip
+            Component={DATA_CATEGORIES[k].full}
+            style={tableToolTipHint()}
+          >
             {DATA_CATEGORIES[k].abbr}
-          </span>
-        </span>
-      ),
+          </Tooltip>
+        </abbr>
+      </span>,
     );
   }, []);
   return (
@@ -63,20 +66,20 @@ let DataCategoryColumns = withData(props => {
 
 let DiseaseList = withData(props => {
   const { buckets } = props.repository.cases.aggregations.disease_type;
-  const diseasesByName = buckets.map(type => type.key);
+  const diseasesByName = buckets.map(type => type.key).sort();
   return (
     <span>
-      {buckets.length > 1 && (
+      {diseasesByName.length > 1 && (
         <CollapsibleList
           liStyle={{ whiteSpace: 'normal', listStyleType: 'disc' }}
           toggleStyle={{ fontStyle: 'normal' }}
           data={diseasesByName.slice(0).sort()}
           limit={0}
-          expandText={`${buckets.length} Disease Types`}
+          expandText={`${diseasesByName.length} Disease Types`}
           collapseText="collapse"
         />
       )}
-      {buckets.length && buckets.length <= 1 && buckets[0].key}
+      {diseasesByName.length <= 1 && diseasesByName[0]}
     </span>
   );
 });
@@ -147,7 +150,7 @@ const projectPrimarySitesTableModel = [
     sortable: false,
     downloadable: false,
     th: () => <Th rowSpan="2">Primary Site</Th>,
-    td: ({ primarySite, projectId }) => (
+    td: ({ primarySite, projectId, searchValue }) => (
       <Td
         key="primary_site"
         style={{
@@ -166,18 +169,20 @@ const projectPrimarySitesTableModel = [
     sortable: false,
     downloadable: false,
     th: () => <Th rowSpan="2">Disease Type</Th>,
-    td: ({ primarySite, projectId }) => (
-      <Td
-        key="disease_type"
-        style={{
-          maxWidth: '200px',
-          padding: '3px 15px 3px 3px',
-          whiteSpace: 'normal',
-        }}
-      >
-        <DiseaseList projectId={projectId} primarySite={primarySite} />
-      </Td>
-    ),
+    td: ({ primarySite, projectId }) => {
+      return (
+        <Td
+          key="disease_type"
+          style={{
+            maxWidth: '200px',
+            padding: '3px 15px 3px 3px',
+            whiteSpace: 'normal',
+          }}
+        >
+          <DiseaseList projectId={projectId} primarySite={primarySite} />
+        </Td>
+      );
+    },
   },
   {
     name: 'Data Categories',

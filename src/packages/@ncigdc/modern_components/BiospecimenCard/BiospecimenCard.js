@@ -59,6 +59,11 @@ export default compose(
     ({ viewer }) => !viewer.repository.cases.hits.edges[0],
     renderComponent(() => <div>No case found.</div>),
   ),
+  branch(
+    ({ viewer }) =>
+      !viewer.repository.cases.hits.edges[0].node.samples.hits.edges.length,
+    renderComponent(() => <div>No biospecimen data found.</div>),
+  ),
   withState('allExpanded', 'setAllExpanded', false),
   withState('expandAllFirstClick', 'setExpandAllFirstClick', true),
   withState(

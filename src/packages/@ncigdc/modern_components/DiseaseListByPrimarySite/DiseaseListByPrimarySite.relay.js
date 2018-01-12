@@ -30,20 +30,6 @@ export default (Component: ReactClass<*>) =>
         };
       },
     ),
-    // withPropsOnChange(
-    //   ['location'],
-    //   ({ location: { search }, defaultFilters = null }) => {
-    //     const q = parse(search);
-    //     const filters = parseFilterParam(q.filters, defaultFilters);
-    //     const psFilters = parseFilterParam(q.psFilters, defaultFilters);
-    //     return {
-    //       filters: {
-    //         ...filters,
-    //         psFilters,
-    //       },
-    //     };
-    //   },
-    // ),
     withPropsOnChange(
       ['primarySite', 'filters', 'projectId'],
       ({ primarySite, filters, projectId }) => {
@@ -64,13 +50,13 @@ export default (Component: ReactClass<*>) =>
   )((props: Object) => {
     return (
       <Query
-        name="CasesByPrimarySite"
+        name="DiseaseListByPrimarySite"
         parentProps={props}
-        // minHeight={249}
+        minHeight={20}
         variables={props.variables}
         Component={Component}
         query={graphql`
-          query CasesByPrimarySite_relayQuery($filters: FiltersArgument) {
+          query DiseaseListByPrimarySite_relayQuery($filters: FiltersArgument) {
             repository {
               cases {
                 aggregations(filters: $filters) {

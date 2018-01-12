@@ -35,7 +35,6 @@ export default (Component: ReactClass<*>) =>
       <Query
         name="ProjectPrimarySitesTable"
         parentProps={props}
-        minHeight={249}
         variables={props.variables}
         Component={Component}
         query={graphql`

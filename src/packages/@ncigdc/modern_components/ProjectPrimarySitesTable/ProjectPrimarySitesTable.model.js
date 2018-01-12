@@ -5,7 +5,7 @@ import { Th, Td, ThNum } from '@ncigdc/uikit/Table';
 import { makeFilter } from '@ncigdc/utils/filters';
 import withRouter from '@ncigdc/utils/withRouter';
 import CollapsibleList from '@ncigdc/uikit/CollapsibleList';
-import withData from '@ncigdc/modern_components/CasesByPrimarySite/CasesByPrimarySite.relay';
+import withData from '@ncigdc/modern_components/DiseaseListByPrimarySite/DiseaseListByPrimarySite.relay.js';
 import Button from '@ncigdc/uikit/Button';
 import { stringifyJSONParam } from '@ncigdc/utils/uri';
 import { DATA_CATEGORIES } from '@ncigdc/utils/constants';
@@ -45,7 +45,7 @@ let DataCategoryColumns = withData(props => {
             {type.doc_count}{' '}
           </RepositoryFilesLink>
         ) : (
-          <span>-- </span>
+          <span>0 </span>
         )}
 
         <abbr
@@ -107,25 +107,30 @@ let FilesByPrimarySite = withData(props => {
         minWidth: '60px',
       }}
     >
-      <RepositoryFilesLink
-        query={{
-          filters: makeFilter([
-            {
-              field: 'cases.project.project_id',
-              value: props.projectId,
-            },
-            {
-              field: 'cases.primary_site',
-              value: props.primarySite,
-            },
-          ]),
-        }}
-      >
-        {props.repository.cases.aggregations.disease_type.buckets.length
-          ? props.repository.cases.aggregations.disease_type.buckets[0]
-              .doc_count
-          : '0 --'}
-      </RepositoryFilesLink>
+      {props.repository.cases.aggregations.disease_type.buckets &&
+      props.repository.cases.aggregations.disease_type.buckets.length ? (
+        <RepositoryFilesLink
+          query={{
+            filters: makeFilter([
+              {
+                field: 'cases.project.project_id',
+                value: props.projectId,
+              },
+              {
+                field: 'cases.primary_site',
+                value: props.primarySite,
+              },
+            ]),
+          }}
+        >
+          {props.repository.cases.aggregations.disease_type.buckets.reduce(
+            (acc, { doc_count }) => acc + doc_count,
+            0,
+          )}
+        </RepositoryFilesLink>
+      ) : (
+        0
+      )}
     </span>
   );
 });
@@ -205,17 +210,8 @@ const projectPrimarySitesTableModel = [
     sortable: false,
     downloadable: false,
     th: ({ primarySite, projectId }) => (
-      <Th rowSpan="2">
+      <Th rowSpan="2" style={{ textAlign: 'center' }}>
         Available Cases per Data Category
-        {/* <span
-          style={{
-            display: 'flex',
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-          }}
-        >
-          {_.map(DATA_CATEGORIES, category => <span>{category.abbr}</span>)}
-        </span> */}
       </Th>
     ),
     td: ({ primarySite, projectId }) => (

@@ -1,7 +1,14 @@
 /* @flow */
 
 import React from 'react';
-import { compose, branch, mapProps, withState, renderNothing } from 'recompose';
+import {
+  compose,
+  branch,
+  mapProps,
+  withState,
+  renderNothing,
+  setDisplayName,
+} from 'recompose';
 import { connect } from 'react-redux';
 import { Row } from '@ncigdc/uikit/Flex';
 import LocalPaginationTable from '@ncigdc/components/LocalPaginationTable';
@@ -60,11 +67,11 @@ const PrimarySitesTable = ({ data, tableInfo, projectId }) => (
 );
 
 export default compose(
-  // setDisplayName('ProjectPrimarySitesTablePresentation'),
+  setDisplayName('ProjectPrimarySitesTablePresentation'),
   branch(
     ({ viewer }) =>
       !viewer.projects.hits.edges ||
-      viewer.projects.hits.edges[0].node.primary_site.length <= 1,
+      viewer.projects.hits.edges[0].node.primary_site.length < 2,
     () => renderNothing(),
   ),
   withTheme,
@@ -74,13 +81,12 @@ export default compose(
   })),
   mapProps(props => ({
     ...props,
-    hits: props.viewer.projects.hits,
+    edges: props.viewer.projects.hits.edges,
   })),
 )(
   ({
-    viewer: { projects: { hits: { edges } } },
+    edges,
     entityType = 'projectPrimarySites',
-    downloadable,
     tableColumns,
     tableHeader = 'Primary Sites',
     projectId,
@@ -90,15 +96,14 @@ export default compose(
     loading,
   }) => {
     const project = edges[0].node;
-    const tableInfo = tableModels[entityType]
-      // .sort((a, b) => tableColumns.indexOf(a.id) - tableColumns.indexOf(b.id))
-      .filter(x => tableColumns.includes(x.id));
-
+    const tableInfo = tableModels[entityType].filter(x =>
+      tableColumns.includes(x.id),
+    );
     const primarySiteData = project.primary_site
       .filter(site => site.toLowerCase().includes(searchValue.toLowerCase()))
       .sort();
 
-    const paginationPrefix = 'ps';
+    const paginationPrefix = 'primarySites';
     return (
       <div>
         <Row

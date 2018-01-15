@@ -12,7 +12,7 @@ import {
 import Modal from '@ncigdc/uikit/Modal';
 import SuggestionFacet from '@ncigdc/components/Aggregations/SuggestionFacet';
 import { Row } from '@ncigdc/uikit/Flex';
-import CaseFacetSelection from '@ncigdc/modern_components/CaseFacetSelection';
+import FacetSelection from '@ncigdc/modern_components/FacetSelection';
 import FacetWrapper from '@ncigdc/components/FacetWrapper';
 import UploadSetButton from '@ncigdc/components/UploadSetButton';
 import { withTheme } from '@ncigdc/theme';
@@ -154,8 +154,8 @@ const presetFacets = [
 ];
 
 const presetFacetFields = presetFacets.map(x => x.field);
-
 const entityType = 'RepositoryCases';
+
 const enhance = compose(
   setDisplayName('RepoCaseAggregations'),
   withFacetSelection({
@@ -165,9 +165,6 @@ const enhance = compose(
   }),
   withTheme,
   withState('caseIdCollapsed', 'setCaseIdCollapsed', false),
-  connect((state, props) => ({
-    userSelectedFacets: state.customFacets[entityType],
-  })),
   withPropsOnChange(['viewer'], ({ viewer }) => ({
     parsedFacets: viewer.repository.cases.facets
       ? tryParseJSON(viewer.repository.cases.facets, {})
@@ -210,15 +207,13 @@ const CaseAggregationsComponent = (props: TProps) => (
       isOpen={props.shouldShowFacetSelection}
       style={{ content: { border: 0, padding: '15px' } }}
     >
-      <CaseFacetSelection
+      <FacetSelection
         title="Add a Case/Biospecimen Filter"
-        relayVarName="repoCaseCustomFacetFields"
         docType="cases"
         onSelect={props.handleSelectFacet}
         onRequestClose={() => props.setShouldShowFacetSelection(false)}
         excludeFacetsBy={props.facetExclusionTest}
         additionalFacetData={props.parsedFacets}
-        relay={props.relay}
       />
     </Modal>
 

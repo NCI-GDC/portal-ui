@@ -14,7 +14,7 @@ import { connect } from 'react-redux';
 
 import Modal from '@ncigdc/uikit/Modal';
 import SuggestionFacet from '@ncigdc/components/Aggregations/SuggestionFacet';
-import FacetSelection from '@ncigdc/components/FacetSelection';
+import FacetSelection from '@ncigdc/modern_components/FacetSelection';
 import FacetWrapper from '@ncigdc/components/FacetWrapper';
 import FacetHeader from '@ncigdc/components/Aggregations/FacetHeader';
 
@@ -49,7 +49,7 @@ const presetFacets = [
 ];
 
 const presetFacetFields = presetFacets.map(x => x.field);
-const entityType = 'RepositoryFiles';
+const entityType = 'Files';
 
 const enhance = compose(
   setDisplayName('RepoFileAggregations'),
@@ -59,39 +59,12 @@ const enhance = compose(
     presetFacetFields,
     validFacetDocTypes: ['files'],
   }),
-  connect((state, props) => ({
-    userSelectedFacets: state.customFacets[entityType],
-  })),
   withState('fileIdCollapsed', 'setFileIdCollapsed', false),
-  // withPropsOnChange(
-  //   ['filters', 'userSelectedFacets'],
-  //   ({ filters, relay, userSelectedFacets }) =>
-  //     relay.setVariables({
-  //       filters,
-  //       filesCustomFacetFields: userSelectedFacets
-  //         .map(({ field }) => field)
-  //         .join(','),
-  //     }),
-  // ),
   withPropsOnChange(['viewer'], ({ viewer }) => ({
     parsedFacets: viewer.repository.files.facets
       ? tryParseJSON(viewer.repository.files.facets, {})
       : {},
   })),
-  // withPropsOnChange(['facets'], ({ facets }) => ({
-  //   parsedFacets: facets.facets ? tryParseJSON(facets.facets, {}) : {},
-  // })),
-  // lifecycle({
-  //   componentDidMount(): void {
-  //     const { filters, relay, userSelectedFacets } = this.props;
-  //     relay.setVariables({
-  //       filters,
-  //       filesCustomFacetFields: userSelectedFacets
-  //         .map(({ field }) => field)
-  //         .join(','),
-  //     });
-  //   },
-  // }),
 );
 
 const styles = {
@@ -219,7 +192,11 @@ const FileAggregations = (props: TProps) => (
         key={facet.full}
         facet={facet}
         title={facet.title}
-        aggregation={props.aggregations[escapeForRelay(facet.field)]}
+        aggregation={
+          props.viewer.repository.files.aggregations[
+            escapeForRelay(facet.field)
+          ]
+        }
         relay={props.relay}
         style={{ borderBottom: `1px solid ${props.theme.greyScale5}` }}
         additionalProps={facet.additionalProps}

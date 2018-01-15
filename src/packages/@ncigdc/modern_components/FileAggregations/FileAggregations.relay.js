@@ -9,7 +9,8 @@ import { parseFilterParam } from '@ncigdc/utils/uri';
 import withRouter from '@ncigdc/utils/withRouter';
 import { parse } from 'query-string';
 
-const entityType = 'RepositoryFiles';
+const entityType = 'Files';
+
 export default (Component: ReactClass<*>) =>
   compose(
     withRouter,
@@ -43,7 +44,7 @@ export default (Component: ReactClass<*>) =>
     return (
       <Query
         parentProps={props}
-        // minHeight={278}
+        minHeight={578}
         variables={props.variables}
         Component={Component}
         query={graphql`

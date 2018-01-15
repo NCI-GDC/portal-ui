@@ -116,15 +116,12 @@ export const RepositoryPageComponent = (props: TProps) => {
             text: 'Files',
             component: (
               <FileAggregations
-                facets={props.viewer.repository.customFileFacets}
-                aggregations={props.viewer.repository.files.aggregations}
-                filters={props.filters}
-                relay={props.relay}
                 suggestions={
                   (props.viewer.autocomplete_file || { hits: [] }).hits
                 }
                 setAutocomplete={setAutocompleteFiles}
-
+                relay={props.relay}
+              />
             ),
           },
           {
@@ -248,9 +245,7 @@ export const RepositoryPageQuery = {
           }
         }
         repository {
-          customFileFacets: files {
-            ${FileAggregations.getFragment('facets')}
-          }
+
           cases {
             pies: aggregations(filters: $filters aggregations_filter_themselves: true) {
               ${RepoCasesPies.getFragment('aggregations')}
@@ -260,9 +255,7 @@ export const RepositoryPageQuery = {
             }
           }
           files {
-            aggregations(filters: $filters aggregations_filter_themselves: false) {
-              ${FileAggregations.getFragment('aggregations')}
-            }
+
             pies: aggregations(filters: $filters aggregations_filter_themselves: true) {
               ${RepoFilesPies.getFragment('aggregations')}
             }

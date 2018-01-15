@@ -163,13 +163,11 @@ export const FileAggregationsComponent = (props: TProps) => (
     >
       <FacetSelection
         title="Add a File Filter"
-        relayVarName="filesCustomFacetFields"
         docType="files"
         onSelect={props.handleSelectFacet}
         onRequestClose={() => props.setShouldShowFacetSelection(false)}
         excludeFacetsBy={props.facetExclusionTest}
         additionalFacetData={props.parsedFacets}
-        relay={props.relay}
       />
     </Modal>
 

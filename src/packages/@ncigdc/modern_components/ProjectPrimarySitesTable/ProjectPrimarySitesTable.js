@@ -183,15 +183,9 @@ export default compose(
             </Row>
           </div>
         </Row>
-
-        <div style={{ overflowX: 'auto' }}>
-          <LocalPaginationTable
-            data={primarySiteData}
-            prefix={paginationPrefix}
-          >
-            <PrimarySitesTable tableInfo={tableInfo} projectId={projectId} />
-          </LocalPaginationTable>
-        </div>
+        <LocalPaginationTable data={primarySiteData} prefix={paginationPrefix}>
+          <PrimarySitesTable tableInfo={tableInfo} projectId={projectId} />
+        </LocalPaginationTable>
       </div>
     );
   },

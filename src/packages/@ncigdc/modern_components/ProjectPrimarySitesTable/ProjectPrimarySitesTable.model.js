@@ -18,6 +18,7 @@ let DataCategoryColumns = withData(props => {
       item => item.key === DATA_CATEGORIES[k].full,
     );
     const linkQuery = {
+      searchTableTab: 'cases',
       filters: makeFilter([
         {
           field: 'cases.project.project_id',

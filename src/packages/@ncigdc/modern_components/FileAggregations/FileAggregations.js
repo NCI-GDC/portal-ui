@@ -10,7 +10,6 @@ import {
   setDisplayName,
   withPropsOnChange,
 } from 'recompose';
-import { connect } from 'react-redux';
 
 import Modal from '@ncigdc/uikit/Modal';
 import SuggestionFacet from '@ncigdc/components/Aggregations/SuggestionFacet';

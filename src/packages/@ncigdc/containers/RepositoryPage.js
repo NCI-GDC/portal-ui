@@ -12,10 +12,11 @@ import TabbedLinks from '@ncigdc/components/TabbedLinks';
 import NoResultsMessage from '@ncigdc/components/NoResultsMessage';
 
 import RepoCasesTable from '@ncigdc/modern_components/RepoCasesTable';
-// import CaseAggregations from '@ncigdc/containers/CaseAggregations';
 import CaseAggregations from '@ncigdc/modern_components/CaseAggregations';
+import FileAggregations from '@ncigdc/modern_components/FileAggregations';
+
 import FilesTable from '@ncigdc/modern_components/FilesTable';
-import FileAggregations from '@ncigdc/containers/FileAggregations';
+// import FileAggregations from '@ncigdc/containers/FileAggregations';
 import { SaveIcon } from '@ncigdc/theme/icons';
 import withFilters from '@ncigdc/utils/withFilters';
 import formatFileSize from '@ncigdc/utils/formatFileSize';
@@ -121,11 +122,12 @@ export const RepositoryPageComponent = (props: TProps) => {
                 facets={props.viewer.repository.customFileFacets}
                 aggregations={props.viewer.repository.files.aggregations}
                 filters={props.filters}
+                relay={props.relay}
                 suggestions={
                   (props.viewer.autocomplete_file || { hits: [] }).hits
                 }
                 setAutocomplete={setAutocompleteFiles}
-              />
+
             ),
           },
           {

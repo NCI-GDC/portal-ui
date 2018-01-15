@@ -218,7 +218,7 @@ const CaseAggregationsComponent = (props: TProps) => (
     >
       <FacetSelection
         title="Add a Case/Biospecimen Filter"
-        relayVarName="repoCaseCustomFacetFields"
+        relayVarName="repoCustomFacetFields"
         docType="cases"
         onSelect={props.handleSelectFacet}
         onRequestClose={() => props.setShouldShowFacetSelection(false)}

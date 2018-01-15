@@ -12,7 +12,7 @@ import {
 import Modal from '@ncigdc/uikit/Modal';
 import SuggestionFacet from '@ncigdc/components/Aggregations/SuggestionFacet';
 import { Row } from '@ncigdc/uikit/Flex';
-import CaseFacetSelection from '@ncigdc/modern_components/CaseFacetSelection';
+import FacetSelection from '@ncigdc/modern_components/FacetSelection';
 import FacetWrapper from '@ncigdc/components/FacetWrapper';
 import UploadSetButton from '@ncigdc/components/UploadSetButton';
 import { withTheme } from '@ncigdc/theme';
@@ -52,7 +52,6 @@ export type TProps = {
   // },
   setAutocomplete: Function,
   theme: Object,
-  filters: Object,
   suggestions: Array<Object>,
 
   userSelectedFacets: Array<{|
@@ -217,7 +216,7 @@ const CaseAggregationsComponent = (props: TProps) => (
       isOpen={props.shouldShowFacetSelection}
       style={{ content: { border: 0, padding: '15px' } }}
     >
-      <CaseFacetSelection
+      <FacetSelection
         title="Add a Case/Biospecimen Filter"
         relayVarName="repoCaseCustomFacetFields"
         docType="cases"
@@ -225,7 +224,6 @@ const CaseAggregationsComponent = (props: TProps) => (
         onRequestClose={() => props.setShouldShowFacetSelection(false)}
         excludeFacetsBy={props.facetExclusionTest}
         additionalFacetData={props.parsedFacets}
-        relay={props.relay}
       />
     </Modal>
 

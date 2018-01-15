@@ -28,6 +28,7 @@ async function getOccurrences({ filters }): Promise<Object> {
       fields: [
         'ssm.consequence.transcript.consequence_type',
         'ssm.consequence.transcript.annotation.vep_impact',
+        'ssm.consequence.transcript.is_canonical',
         'ssm.consequence.transcript.gene.gene_id',
         'ssm.ssm_id',
         'case.case_id',
@@ -135,9 +136,22 @@ async function getQueries({
     filters: occurrenceFilters,
   });
 
+  // front end filter is_canonical on REST endpoint instead of
+  // graphql endpoint with inner hits query because
+  // that is very slow for large size (might be because inner hits causes ES to fire secondary queries)
+  const isCanonicalOccurrences = occurrences.map(occurrence => ({
+    ...occurrence,
+    ssm: {
+      ...occurrence.ssm,
+      consequence: ((occurrence.ssm || {}).consequence || []).filter(
+        ({ transcript: { is_canonical } }) => is_canonical,
+      ),
+    },
+  }));
+
   return {
     genes,
-    occurrences,
+    occurrences: isCanonicalOccurrences,
     cases,
     totalCases,
   };

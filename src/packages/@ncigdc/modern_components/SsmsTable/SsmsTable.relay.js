@@ -46,13 +46,12 @@ export default (Component: ReactClass<*>) =>
               ]),
             ),
             score: 'occurrence.case.project.project_id',
-            consequenceFilters: {
-              op: 'NOT',
-              content: {
-                field: 'consequence.transcript.annotation.vep_impact',
-                value: 'missing',
+            consequenceFilters: makeFilter([
+              {
+                field: 'consequence.transcript.is_canonical',
+                value: 'true',
               },
-            },
+            ]),
             ssmTested: makeFilter([
               {
                 field: 'cases.available_variation_data',

@@ -4,13 +4,10 @@ import React from 'react';
 import Relay from 'react-relay/classic';
 import { connect } from 'react-redux';
 import { compose, setDisplayName } from 'recompose';
-
 import { Row } from '@ncigdc/uikit/Flex';
-
 import SearchPage from '@ncigdc/components/SearchPage';
 import TabbedLinks from '@ncigdc/components/TabbedLinks';
 import NoResultsMessage from '@ncigdc/components/NoResultsMessage';
-
 import RepoCasesTable from '@ncigdc/modern_components/RepoCasesTable';
 import CaseAggregations from '@ncigdc/modern_components/CaseAggregations';
 import FileAggregations from '@ncigdc/modern_components/FileAggregations';
@@ -156,12 +153,6 @@ export const RepositoryPageComponent = (props: TProps) => {
               defaultIndex={0}
               tabToolbar={
                 <Row spacing="2rem" style={{ alignItems: 'center' }}>
-                  {/*<span style={{ flex: 'none' }}>
-                    <CaseIcon outline style={{ marginRight: 5 }} /> <strong>{caseCount.toLocaleString()}</strong> cases
-                  </span>
-                  <span style={{ flex: 'none' }}>
-                    <FileIcon text style={{ marginRight: 5 }} /> <strong>{fileCount.toLocaleString()}</strong> files
-                  </span>*/}
                   <span style={{ flex: 'none' }}>
                     <SaveIcon style={{ marginRight: 5 }} />{' '}
                     <strong>{formatFileSize(fileSize)}</strong>

@@ -4,10 +4,10 @@ import React from 'react';
 import { graphql } from 'react-relay';
 import { compose, withPropsOnChange } from 'recompose';
 import { connect } from 'react-redux';
+import { parse } from 'query-string';
 import Query from '@ncigdc/modern_components/Query';
 import { parseFilterParam } from '@ncigdc/utils/uri';
 import withRouter from '@ncigdc/utils/withRouter';
-import { parse } from 'query-string';
 
 const entityType = 'RepositoryCases';
 export default (Component: ReactClass<*>) =>
@@ -43,7 +43,7 @@ export default (Component: ReactClass<*>) =>
     return (
       <Query
         parentProps={props}
-        // minHeight={278}
+        minHeight={578}
         variables={props.variables}
         Component={Component}
         query={graphql`

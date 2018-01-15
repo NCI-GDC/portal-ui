@@ -12,7 +12,7 @@ import {
 import Modal from '@ncigdc/uikit/Modal';
 import SuggestionFacet from '@ncigdc/components/Aggregations/SuggestionFacet';
 import { Row } from '@ncigdc/uikit/Flex';
-import FacetSelection from '@ncigdc/modern_components/FacetSelection';
+import CaseFacetSelection from '@ncigdc/modern_components/CaseFacetSelection';
 import FacetWrapper from '@ncigdc/components/FacetWrapper';
 import UploadSetButton from '@ncigdc/components/UploadSetButton';
 import { withTheme } from '@ncigdc/theme';
@@ -43,15 +43,9 @@ export type TProps = {
     project__program__name: { buckets: [TBucket] },
     project__project_id: { buckets: [TBucket] },
   },
-  // hits: {
-  //   edges: Array<{|
-  //     node: {|
-  //       id: string,
-  //     |},
-  //   |}>,
-  // },
   setAutocomplete: Function,
   theme: Object,
+  filters: Object,
   suggestions: Array<Object>,
 
   userSelectedFacets: Array<{|
@@ -216,20 +210,22 @@ const CaseAggregationsComponent = (props: TProps) => (
       isOpen={props.shouldShowFacetSelection}
       style={{ content: { border: 0, padding: '15px' } }}
     >
-      <FacetSelection
+      <CaseFacetSelection
         title="Add a Case/Biospecimen Filter"
-        relayVarName="repoCustomFacetFields"
+        relayVarName="repoCaseCustomFacetFields"
         docType="cases"
         onSelect={props.handleSelectFacet}
         onRequestClose={() => props.setShouldShowFacetSelection(false)}
         excludeFacetsBy={props.facetExclusionTest}
         additionalFacetData={props.parsedFacets}
+        relay={props.relay}
       />
     </Modal>
 
     {props.userSelectedFacets.map(facet => (
       <FacetWrapper
         isRemovable
+        relayVarName="repoCaseCustomFacetFields"
         key={facet.full}
         facet={facet}
         aggregation={props.parsedFacets[facet.field]}

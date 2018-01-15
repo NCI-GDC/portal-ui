@@ -70,7 +70,7 @@ export default compose(
                 filters: makeFilter([
                   {
                     field: 'genes.is_cancer_gene_census',
-                    value: [gene.is_cancer_gene_census],
+                    value: [gene.is_cancer_gene_census ? 'true' : 'false'],
                   },
                 ]),
               }}

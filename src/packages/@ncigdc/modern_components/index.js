@@ -9,7 +9,6 @@ import SsmLolliplot from './Lolliplot/SsmLolliplot.fixture';
 import ProjectBreakdown from './ProjectBreakdown';
 import SsmsBarChart from './SsmsBarChart';
 import SsmsTable from './SsmsTable';
-import CaseFacetSelection from './CaseFacetSelection';
 
 export {
   AffectedCasesBarChart,
@@ -23,5 +22,4 @@ export {
   ProjectBreakdown,
   SsmsBarChart,
   SsmsTable,
-  CaseFacetSelection,
 };

@@ -27,10 +27,11 @@ let DataCategoryColumns = withData(props => {
         { field: 'files.data_category', value: DATA_CATEGORIES[k].full },
         {
           field: 'cases.primary_site',
-          value: props.primarySite,
+          value: [props.primarySite],
         },
       ]),
     };
+
     return acc.concat(
       <div
         style={{
@@ -104,7 +105,7 @@ let FilesByPrimarySite = withData(props => {
               },
               {
                 field: 'cases.primary_site',
-                value: props.primarySite,
+                value: [props.primarySite],
               },
             ]),
           }}
@@ -136,7 +137,7 @@ let ExploreByPrimarySiteButton = withRouter(props => {
                 },
                 {
                   field: 'cases.primary_site',
-                  value: props.primarySite,
+                  value: [props.primarySite],
                 },
               ]),
             ),
@@ -149,34 +150,36 @@ let ExploreByPrimarySiteButton = withRouter(props => {
   );
 });
 
-let CasesByPrimarySite = withData(props => (
-  <span
-    style={{
-      display: 'flex',
-      justifyContent: 'flex-end',
-      minWidth: '60px',
-    }}
-  >
-    {props.repository.cases.hits && (
-      <RepositoryFilesLink
-        query={{
-          filters: makeFilter([
-            {
-              field: 'cases.project.project_id',
-              value: props.projectId,
-            },
-            {
-              field: 'cases.primary_site',
-              value: props.primarySite,
-            },
-          ]),
-        }}
-      >
-        {props.repository.cases.hits.total}
-      </RepositoryFilesLink>
-    )}
-  </span>
-));
+let CasesByPrimarySite = withData(props => {
+  const linkQuery = {
+    searchTableTab: 'cases',
+    filters: makeFilter([
+      {
+        field: 'cases.project.project_id',
+        value: props.projectId,
+      },
+      {
+        field: 'cases.primary_site',
+        value: [props.primarySite],
+      },
+    ]),
+  };
+  return (
+    <span
+      style={{
+        display: 'flex',
+        justifyContent: 'flex-end',
+        minWidth: '60px',
+      }}
+    >
+      {props.repository.cases.hits && (
+        <RepositoryFilesLink query={linkQuery}>
+          {props.repository.cases.hits.total}
+        </RepositoryFilesLink>
+      )}
+    </span>
+  );
+});
 
 const projectPrimarySitesTableModel = [
   {

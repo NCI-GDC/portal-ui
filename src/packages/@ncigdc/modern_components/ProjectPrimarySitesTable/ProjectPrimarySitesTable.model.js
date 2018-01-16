@@ -37,7 +37,7 @@ let DataCategoryColumns = withData(props => {
           display: 'flex',
           justifyContent: 'flex-end',
           alignItems: 'center',
-          minWidth: '80px',
+          minWidth: '40px',
         }}
         key={k}
       >
@@ -48,21 +48,6 @@ let DataCategoryColumns = withData(props => {
         ) : (
           <span>0 </span>
         )}
-
-        <abbr
-          style={{
-            fontSize: '1rem',
-            fontVariantPosition: 'super',
-            paddingLeft: '5px',
-          }}
-        >
-          <Tooltip
-            Component={DATA_CATEGORIES[k].full}
-            style={tableToolTipHint()}
-          >
-            {DATA_CATEGORIES[k].abbr}
-          </Tooltip>
-        </abbr>
       </div>,
     );
   }, []);
@@ -164,6 +149,35 @@ let ExploreByPrimarySiteButton = withRouter(props => {
   );
 });
 
+let CasesByPrimarySite = withData(props => (
+  <span
+    style={{
+      display: 'flex',
+      justifyContent: 'flex-end',
+      minWidth: '60px',
+    }}
+  >
+    {props.repository.cases.hits && (
+      <RepositoryFilesLink
+        query={{
+          filters: makeFilter([
+            {
+              field: 'cases.project.project_id',
+              value: props.projectId,
+            },
+            {
+              field: 'cases.primary_site',
+              value: props.primarySite,
+            },
+          ]),
+        }}
+      >
+        {props.repository.cases.hits.total}
+      </RepositoryFilesLink>
+    )}
+  </span>
+));
+
 const projectPrimarySitesTableModel = [
   {
     name: 'Primary Site',
@@ -212,7 +226,38 @@ const projectPrimarySitesTableModel = [
     downloadable: false,
     th: ({ primarySite, projectId }) => (
       <Th rowSpan="2" style={{ textAlign: 'center' }}>
-        Available Cases per Data Category
+        <div>Available Cases per Data Category</div>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+          }}
+        >
+          {Object.keys(DATA_CATEGORIES).map(category => (
+            <span
+              key={category}
+              style={{
+                width: '50px',
+                textAlign: 'right',
+              }}
+            >
+              <abbr
+                key={DATA_CATEGORIES[category].abbr}
+                style={{
+                  fontSize: '1rem',
+                  fontVariantPosition: 'super',
+                }}
+              >
+                <Tooltip
+                  Component={DATA_CATEGORIES[category].full}
+                  style={tableToolTipHint()}
+                >
+                  {DATA_CATEGORIES[category].abbr}
+                </Tooltip>
+              </abbr>
+            </span>
+          ))}
+        </div>
       </Th>
     ),
     td: ({ primarySite, projectId }) => (
@@ -237,6 +282,25 @@ const projectPrimarySitesTableModel = [
         }}
       >
         <FilesByPrimarySite primarySite={primarySite} projectId={projectId} />
+      </Td>
+    ),
+  },
+  {
+    name: 'Cases',
+    id: 'case_count',
+    sortable: false,
+    downloadable: false,
+    th: () => <ThNum rowSpan="2">Cases</ThNum>,
+    td: ({ primarySite, projectId }) => (
+      <Td
+        key="file_count"
+        style={{
+          maxWidth: '200px',
+          padding: '3px 15px 3px 3px',
+          whiteSpace: 'normal',
+        }}
+      >
+        <CasesByPrimarySite primarySite={primarySite} projectId={projectId} />
       </Td>
     ),
   },

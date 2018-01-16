@@ -59,6 +59,9 @@ export default (Component: ReactClass<*>) =>
           query DiseaseListByPrimarySite_relayQuery($filters: FiltersArgument) {
             repository {
               cases {
+                hits(filters: $filters) {
+                  total
+                }
                 aggregations(filters: $filters) {
                   files__data_category {
                     buckets {

@@ -42,7 +42,7 @@ export default (Component: ReactClass<*>) =>
       },
     })),
     lifecycle({
-      async componentDidMount(): void {
+      async componentDidMount() {
         let { setFacetMapping, setUselessFacetVisibility } = this.props;
         const mapping = await fetchApi('gql/_mapping', {
           headers: { 'Content-Type': 'application/json' },

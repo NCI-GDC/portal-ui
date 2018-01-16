@@ -44,7 +44,6 @@ export type TProps = {
   },
   setAutocomplete: Function,
   theme: Object,
-  filters: Object,
   suggestions: Array<Object>,
 
   userSelectedFacets: Array<{|

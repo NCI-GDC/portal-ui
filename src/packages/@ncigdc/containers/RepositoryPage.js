@@ -13,7 +13,6 @@ import CaseAggregations from '@ncigdc/modern_components/CaseAggregations';
 import FileAggregations from '@ncigdc/modern_components/FileAggregations';
 
 import FilesTable from '@ncigdc/modern_components/FilesTable';
-// import FileAggregations from '@ncigdc/containers/FileAggregations';
 import { SaveIcon } from '@ncigdc/theme/icons';
 import withFilters from '@ncigdc/utils/withFilters';
 import formatFileSize from '@ncigdc/utils/formatFileSize';

@@ -79,7 +79,7 @@ const DownloadButton = ({
           fields: fields.join(),
           filters,
           pretty: true,
-          ...(requests ? [requests] : []),
+          ...(requests ? { requests } : {}),
           ...(sets ? { sets } : {}),
           ...(dataExportExpands ? { expand: dataExportExpands.join() } : {}),
           ...(returnType ? { return_type: returnType } : {}),

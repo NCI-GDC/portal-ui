@@ -87,7 +87,7 @@ export default compose(
       return {
         requests: [
           {
-            endpoint: '/cases',
+            endpoint: 'cases',
             params: {
               filters: {
                 op: 'and',
@@ -113,10 +113,10 @@ export default compose(
                 'demographic.days_to_death',
                 'demographic.year_of_death',
                 'demographic.cause_of_death',
-              ],
+              ].join(),
               // f => !f.includes('submitter_id'),
               // ),
-              dataExportExpands: ['diagnoses'],
+              expands: ['diagnoses'].join(),
             },
             filename: `clinical.case-${caseId}_${moment().format(
               'YYYY-MM-DD',

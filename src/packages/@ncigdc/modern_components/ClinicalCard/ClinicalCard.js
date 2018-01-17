@@ -1,18 +1,68 @@
 // @flow
 
 import React from 'react';
-import { compose, withState, branch, renderComponent } from 'recompose';
+import {
+  compose,
+  withState,
+  branch,
+  renderComponent,
+  withProps,
+} from 'recompose';
 import Card from '@ncigdc/uikit/Card';
 import Tabs from '@ncigdc/uikit/Tabs';
 import SideTabs from '@ncigdc/uikit/SideTabs';
 import Table, { Tr, Td, Th } from '@ncigdc/uikit/Table';
-import { withTheme } from '@ncigdc/theme';
-import Row from '@ncigdc/uikit/Flex/Row';
+import { withTheme, theme } from '@ncigdc/theme';
+import { Row, Column } from '@ncigdc/uikit/Flex/';
 import DownloadButton from '@ncigdc/components/DownloadButton';
-import { visualizingButton } from '@ncigdc/theme/mixins';
 import EntityPageVerticalTable from '@ncigdc/components/EntityPageVerticalTable';
 import ageDisplay from '@ncigdc/utils/ageDisplay';
 import { truncate } from 'lodash/string';
+import Dropdown from '@ncigdc/uikit/Dropdown';
+import DownloadIcon from '@ncigdc/theme/icons/Download';
+import { visualizingButton } from '@ncigdc/theme/mixins';
+import Spinner from '@ncigdc/theme/icons/Spinner';
+import Button from '@ncigdc/uikit/Button';
+import moment from 'moment';
+import _ from 'lodash';
+
+const styles = {
+  dropdownContainer: {
+    top: '100%',
+    whiteSpace: 'nowrap',
+    marginTop: '2px',
+    minWidth: '100px',
+  },
+  icon: {
+    marginRight: '1em',
+  },
+  dropdownItem: {
+    color: theme.greyScale3,
+    ':hover': {
+      color: theme.greyScale3,
+      background: theme.greyScale6,
+    },
+    display: 'flex',
+    alignItems: 'center',
+  },
+  common: theme => ({
+    backgroundColor: 'transparent',
+    color: theme.greyScale2,
+    justifyContent: 'flex-start',
+    ':hover': {
+      backgroundColor: theme.greyScale6,
+    },
+  }),
+  button: theme => ({
+    borderRadius: '0px',
+    marginLeft: '0px',
+    ...styles.common(theme),
+    '[disabled]': styles.common(theme),
+  }),
+  iconSpacing: {
+    marginRight: '0.6rem',
+  },
+};
 
 export default compose(
   branch(
@@ -20,13 +70,104 @@ export default compose(
     renderComponent(() => <div>No case found.</div>),
   ),
   withState('activeTab', 'setTab', 0),
+  withState('state', 'setState', {
+    tsvDownloading: false,
+    jsonDownloading: false,
+  }),
   withTheme,
+  withProps(
+    ({ requests, viewer: { repository: { cases: { hits: { edges } } } } }) => {
+      const {
+        case_id: caseId,
+        diagnoses: { hits: { edges: diagnoses = [] } },
+        family_histories: { hits: { edges: familyHistory = [] } },
+        demographic = {},
+        exposures: { hits: { edges: exposures = [], total: totalExposures } },
+      } = edges[0].node;
+      return {
+        requests: [
+          {
+            endpoint: '/cases',
+            params: {
+              filters: {
+                op: 'and',
+                content: [
+                  {
+                    op: 'in',
+                    content: {
+                      field: 'cases.case_id',
+                      value: [caseId],
+                    },
+                  },
+                ],
+              },
+              // fields: _.filter(
+              fields: [
+                'case_id',
+                'demographic.ethnicity',
+                'demographic.gender',
+                'demographic.year_of_birth',
+                'demographic.race',
+                'demographic.days_to_birth',
+                'demographic.vital_status',
+                'demographic.days_to_death',
+                'demographic.year_of_death',
+                'demographic.cause_of_death',
+              ],
+              // f => !f.includes('submitter_id'),
+              // ),
+              dataExportExpands: ['diagnoses'],
+            },
+            filename: `clinical.case-${caseId}_${moment().format(
+              'YYYY-MM-DD',
+            )}.tsv`,
+          },
+          // {
+          //   filters: {
+          //     op: 'and',
+          //     content: [
+          //       {
+          //         op: 'in',
+          //         content: {
+          //           field: 'cases.case_id',
+          //           value: [caseId],
+          //         },
+          //       },
+          //     ],
+          //   },
+          //   fields: [],
+          // },
+          // {
+          //   filters: {
+          //     op: 'and',
+          //     content: [
+          //       {
+          //         op: 'in',
+          //         content: {
+          //           field: 'cases.case_id',
+          //           value: [caseId],
+          //         },
+          //       },
+          //     ],
+          //   },
+          //   fields: [],
+          // },
+        ],
+      };
+    },
+  ),
 )(
   ({
     activeTab,
     setTab,
     theme,
     viewer: { repository: { cases: { hits: { edges } } } },
+    isLoading,
+    dropdownStyle,
+    active,
+    state,
+    setState,
+    requests,
   }) => {
     const {
       case_id: caseId,
@@ -42,33 +183,89 @@ export default compose(
         title={
           <Row style={{ justifyContent: 'space-between' }}>
             <span>Clinical</span>
-            <DownloadButton
-              style={visualizingButton}
-              filename={`clinical.case-${caseId}`}
-              endpoint="cases"
-              activeText="Processing"
-              inactiveText="Export"
-              filters={{
-                op: 'and',
-                content: [
-                  {
-                    op: 'in',
-                    content: {
-                      field: 'cases.case_id',
-                      value: [caseId],
-                    },
-                  },
-                ],
-              }}
-              fields={['case_id']}
-              dataExportExpands={[
-                'demographic',
-                'diagnoses',
-                'diagnoses.treatments',
-                'family_histories',
-                'exposures',
-              ]}
-            />
+            <Dropdown
+              button={
+                <Button
+                  style={visualizingButton}
+                  leftIcon={isLoading ? <Spinner /> : <DownloadIcon />}
+                >
+                  {state.jsonDownloading || state.tsvDownloading
+                    ? 'Processing'
+                    : 'Export'}
+                </Button>
+              }
+              dropdownStyle={styles.dropdownContainer}
+            >
+              <Column>
+                <Column>
+                  <DownloadButton
+                    className="data-download-clinical-tsv"
+                    style={styles.button(theme)}
+                    endpoint="/batch_tar"
+                    format={'TSV'}
+                    activeText="Processing"
+                    inactiveText="TSV"
+                    altMessage={false}
+                    setParentState={currentState =>
+                      setState(s => ({
+                        ...s,
+                        tsvDownloading: currentState,
+                      }))}
+                    active={state.tsvDownloading}
+                    requests={requests}
+                    filename={`clinical.case-${caseId}_${moment().format(
+                      'YYYY-MM-DD',
+                    )}.tar.gz`}
+                    // extraParams={{
+                    //   ids: files.map(file => file.file_id),
+                    // }}
+                  />
+                </Column>
+                <Column>
+                  <DownloadButton
+                    // size={files.length}
+                    className="data-download-clinical-json"
+                    style={styles.button(theme)}
+                    endpoint="/cases"
+                    activeText="Processing"
+                    inactiveText="JSON"
+                    altMessage={false}
+                    setParentState={currentState =>
+                      setState(s => ({
+                        ...s,
+                        jsonDownloading: currentState,
+                      }))}
+                    active={state.jsonDownloading}
+                    filters={{
+                      op: 'and',
+                      content: [
+                        {
+                          op: 'in',
+                          content: {
+                            field: 'cases.case_id',
+                            value: [caseId],
+                          },
+                        },
+                      ],
+                    }}
+                    fields={['case_id']}
+                    dataExportExpands={[
+                      'demographic',
+                      'diagnoses',
+                      'diagnoses.treatments',
+                      'family_histories',
+                      'exposures',
+                    ]}
+                    filename={`clinical.case-${caseId}_${moment().format(
+                      'YYYY-MM-DD',
+                    )}.json`}
+                    // extraParams={{
+                    //   ids: files.map(file => file.file_id),
+                    // }}
+                  />
+                </Column>
+              </Column>
+            </Dropdown>
           </Row>
         }
       >

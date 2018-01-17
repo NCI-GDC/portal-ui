@@ -11,6 +11,7 @@ import DownloadIcon from '@ncigdc/theme/icons/Download';
 import Spinner from '@ncigdc/theme/icons/Spinner';
 import Hidden from '@ncigdc/components/Hidden';
 import { AUTH_API } from '@ncigdc/utils/constants';
+import _ from 'lodash';
 
 type TDownloadButton = {
   endpoint: string,
@@ -32,6 +33,7 @@ type TDownloadButton = {
   setParentState: () => {},
   showIcon?: boolean,
   sets: Array<{ id: string, filename: string, type: string }>,
+  requests: Array<{ endpoint: string, filename: string, params: Object }>,
 };
 
 const DownloadButton = ({
@@ -53,12 +55,14 @@ const DownloadButton = ({
   extraParams = {},
   showIcon = true,
   sets,
+  requests,
   ...props
 }: TDownloadButton) => {
   const text = active ? activeText : inactiveText;
   const icon =
     showIcon && (active ? <Spinner key="icon" /> : <DownloadIcon key="icon" />);
-
+  console.log(requests);
+  console.log('filters: ,', filters);
   return (
     <Button
       className={props.className || 'test-download-button'}
@@ -75,6 +79,7 @@ const DownloadButton = ({
           fields: fields.join(),
           filters,
           pretty: true,
+          ...(requests ? [requests] : []),
           ...(sets ? { sets } : {}),
           ...(dataExportExpands ? { expand: dataExportExpands.join() } : {}),
           ...(returnType ? { return_type: returnType } : {}),

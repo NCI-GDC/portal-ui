@@ -24,7 +24,11 @@ import { visualizingButton } from '@ncigdc/theme/mixins';
 import Spinner from '@ncigdc/theme/icons/Spinner';
 import Button from '@ncigdc/uikit/Button';
 import moment from 'moment';
-import _ from 'lodash';
+import {
+  DEMOGRAPHIC_AND_DIAGNOSES_FIELDS,
+  EXPOSURES_FIELDS,
+  FAMILY_HISTORIES_FIELDS,
+} from '@ncigdc/utils/constants';
 
 const styles = {
   dropdownContainer: {
@@ -82,77 +86,49 @@ export default compose(
         diagnoses: { hits: { edges: diagnoses = [] } },
         family_histories: { hits: { edges: familyHistory = [] } },
         demographic = {},
-        exposures: { hits: { edges: exposures = [], total: totalExposures } },
+        exposures: { hits: { edges: exposures = [] } },
       } = edges[0].node;
-      return {
-        requests: [
-          {
-            endpoint: 'cases',
-            params: {
-              filters: {
-                op: 'and',
-                content: [
-                  {
-                    op: 'in',
-                    content: {
-                      field: 'cases.case_id',
-                      value: [caseId],
-                    },
-                  },
-                ],
+
+      const buildRequest = (filename, fields) => ({
+        endpoint: '/cases',
+        filename,
+        params: {
+          filters: {
+            op: 'and',
+            content: [
+              {
+                op: 'in',
+                content: {
+                  field: 'cases.case_id',
+                  value: [caseId],
+                },
               },
-              // fields: _.filter(
-              fields: [
-                'case_id',
-                'demographic.ethnicity',
-                'demographic.gender',
-                'demographic.year_of_birth',
-                'demographic.race',
-                'demographic.days_to_birth',
-                'demographic.vital_status',
-                'demographic.days_to_death',
-                'demographic.year_of_death',
-                'demographic.cause_of_death',
-              ].join(),
-              // f => !f.includes('submitter_id'),
-              // ),
-              expands: ['diagnoses'].join(),
-            },
-            filename: `case_clinical.tsv`,
+            ],
           },
-          {
-            filters: {
-              op: 'and',
-              content: [
-                {
-                  op: 'in',
-                  content: {
-                    field: 'cases.case_id',
-                    value: [caseId],
-                  },
-                },
-              ],
-            },
-            fields: ['case_id', 'family_histories'],
-            filename: 'family_history.tsv',
-          },
-          {
-            filters: {
-              op: 'and',
-              content: [
-                {
-                  op: 'in',
-                  content: {
-                    field: 'cases.case_id',
-                    value: [caseId],
-                  },
-                },
-              ],
-            },
-            fields: ['case_id', 'exposures'],
-            filename: 'exposure.tsv',
-          },
-        ],
+          fields: fields.join(),
+        },
+      });
+      let validRequests = [];
+      if (!!demographic || (diagnoses[0] && diagnoses[0].node.length)) {
+        validRequests = [
+          ...validRequests,
+          buildRequest('case_clinical.tsv', DEMOGRAPHIC_AND_DIAGNOSES_FIELDS),
+        ];
+      }
+      if (familyHistory && familyHistory.length) {
+        validRequests = [
+          ...validRequests,
+          buildRequest('family_history.tsv', FAMILY_HISTORIES_FIELDS),
+        ];
+      }
+      if (exposures && exposures.length) {
+        validRequests = [
+          ...validRequests,
+          buildRequest('exposure.tsv', EXPOSURES_FIELDS),
+        ];
+      }
+      return {
+        requests: validRequests,
       };
     },
   ),

@@ -11,7 +11,6 @@ import DownloadIcon from '@ncigdc/theme/icons/Download';
 import Spinner from '@ncigdc/theme/icons/Spinner';
 import Hidden from '@ncigdc/components/Hidden';
 import { AUTH_API } from '@ncigdc/utils/constants';
-import _ from 'lodash';
 
 type TDownloadButton = {
   endpoint: string,

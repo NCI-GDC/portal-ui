@@ -2,21 +2,18 @@
 /* eslint jsx-a11y/no-static-element-interactions: 0, max-len: 1 */
 
 import React from 'react';
-import Relay from 'react-relay/classic';
 
 import _ from 'lodash';
 import {
   compose,
   withState,
   setDisplayName,
-  lifecycle,
   withPropsOnChange,
 } from 'recompose';
-import { connect } from 'react-redux';
 
 import Modal from '@ncigdc/uikit/Modal';
 import SuggestionFacet from '@ncigdc/components/Aggregations/SuggestionFacet';
-import FacetSelection from '@ncigdc/components/FacetSelection';
+import FacetSelection from '@ncigdc/modern_components/FacetSelection';
 import FacetWrapper from '@ncigdc/components/FacetWrapper';
 import FacetHeader from '@ncigdc/components/Aggregations/FacetHeader';
 
@@ -55,39 +52,18 @@ const entityType = 'Files';
 
 const enhance = compose(
   setDisplayName('RepoFileAggregations'),
+  withTheme,
   withFacetSelection({
     entityType,
     presetFacetFields,
     validFacetDocTypes: ['files'],
   }),
-  connect((state, props) => ({
-    userSelectedFacets: state.customFacets[entityType],
-  })),
   withState('fileIdCollapsed', 'setFileIdCollapsed', false),
-  withPropsOnChange(
-    ['filters', 'userSelectedFacets'],
-    ({ filters, relay, userSelectedFacets }) =>
-      relay.setVariables({
-        filters,
-        filesCustomFacetFields: userSelectedFacets
-          .map(({ field }) => field)
-          .join(','),
-      }),
-  ),
-  withPropsOnChange(['facets'], ({ facets }) => ({
-    parsedFacets: facets.facets ? tryParseJSON(facets.facets, {}) : {},
+  withPropsOnChange(['viewer'], ({ viewer }) => ({
+    parsedFacets: viewer.repository.files.facets
+      ? tryParseJSON(viewer.repository.files.facets, {})
+      : {},
   })),
-  lifecycle({
-    componentDidMount(): void {
-      const { filters, relay, userSelectedFacets } = this.props;
-      relay.setVariables({
-        filters,
-        filesCustomFacetFields: userSelectedFacets
-          .map(({ field }) => field)
-          .join(','),
-      });
-    },
-  }),
 );
 
 const styles = {
@@ -113,7 +89,6 @@ export type TProps = {
     analysis__workflow_type: { buckets: [TBucket] },
   },
   theme: Object,
-  filters: Object,
   suggestions: Array<Object>,
   setAutocomplete: Function,
 
@@ -133,7 +108,7 @@ export type TProps = {
   setShouldShowFacetSelection: Function,
 };
 
-export const FileAggregationsComponent = (props: TProps) => (
+const FileAggregations = (props: TProps) => (
   <div className="test-file-aggregations">
     <div
       className="text-right"
@@ -163,22 +138,23 @@ export const FileAggregationsComponent = (props: TProps) => (
     >
       <FacetSelection
         title="Add a File Filter"
+        relayVarName="repoCustomFacetFields"
         docType="files"
         onSelect={props.handleSelectFacet}
         onRequestClose={() => props.setShouldShowFacetSelection(false)}
         excludeFacetsBy={props.facetExclusionTest}
         additionalFacetData={props.parsedFacets}
+        relay={props.relay}
       />
     </Modal>
 
     {props.userSelectedFacets.map(facet => (
       <FacetWrapper
         isRemovable
-        relayVarName="filesCustomFacetFields"
+        relayVarName="repoFileCustomFacetFields"
         key={facet.full}
         facet={facet}
         aggregation={props.parsedFacets[facet.field]}
-        relay={props.relay}
         onRequestRemove={() => props.handleRequestRemoveFacet(facet)}
         style={{ borderBottom: `1px solid ${props.theme.greyScale5}` }}
       />
@@ -215,7 +191,11 @@ export const FileAggregationsComponent = (props: TProps) => (
         key={facet.full}
         facet={facet}
         title={facet.title}
-        aggregation={props.aggregations[escapeForRelay(facet.field)]}
+        aggregation={
+          props.viewer.repository.files.aggregations[
+            escapeForRelay(facet.field)
+          ]
+        }
         relay={props.relay}
         style={{ borderBottom: `1px solid ${props.theme.greyScale5}` }}
         additionalProps={facet.additionalProps}
@@ -224,69 +204,4 @@ export const FileAggregationsComponent = (props: TProps) => (
   </div>
 );
 
-export const FileAggregationsQuery = {
-  initialVariables: {
-    filesCustomFacetFields: '',
-    filters: null,
-  },
-  fragments: {
-    facets: () => Relay.QL`
-      fragment on Files {
-        facets(facets: $filesCustomFacetFields filters: $filters)
-      }
-    `,
-    aggregations: () => Relay.QL`
-      fragment on FileAggregations {
-        data_category {
-          buckets {
-            doc_count
-            key
-          }
-        }
-        data_type {
-          buckets {
-            doc_count
-            key
-          }
-        }
-        experimental_strategy {
-          buckets {
-            doc_count
-            key
-          }
-        }
-        analysis__workflow_type {
-          buckets {
-            doc_count
-            key
-          }
-        }
-        data_format {
-          buckets {
-            doc_count
-            key
-          }
-        }
-        platform {
-          buckets {
-            doc_count
-            key
-          }
-        }
-        access {
-          buckets {
-            doc_count
-            key
-          }
-        }
-      }
-    `,
-  },
-};
-
-const FileAggregations = Relay.createContainer(
-  enhance(withTheme(FileAggregationsComponent)),
-  FileAggregationsQuery,
-);
-
-export default FileAggregations;
+export default enhance(FileAggregations);

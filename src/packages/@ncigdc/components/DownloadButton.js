@@ -61,8 +61,6 @@ const DownloadButton = ({
   const text = active ? activeText : inactiveText;
   const icon =
     showIcon && (active ? <Spinner key="icon" /> : <DownloadIcon key="icon" />);
-  console.log(requests);
-  console.log('filters: ,', filters);
   return (
     <Button
       className={props.className || 'test-download-button'}
@@ -79,7 +77,6 @@ const DownloadButton = ({
           fields: fields.join(),
           filters,
           pretty: true,
-          ...(requests ? [requests] : []),
           ...(sets ? { sets } : {}),
           ...(dataExportExpands ? { expand: dataExportExpands.join() } : {}),
           ...(returnType ? { return_type: returnType } : {}),

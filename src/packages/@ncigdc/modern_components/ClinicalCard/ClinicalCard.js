@@ -87,7 +87,7 @@ export default compose(
       return {
         requests: [
           {
-            endpoint: '/cases',
+            endpoint: 'cases',
             params: {
               filters: {
                 op: 'and',
@@ -113,45 +113,45 @@ export default compose(
                 'demographic.days_to_death',
                 'demographic.year_of_death',
                 'demographic.cause_of_death',
-              ],
+              ].join(),
               // f => !f.includes('submitter_id'),
               // ),
-              dataExportExpands: ['diagnoses'],
+              expands: ['diagnoses'].join(),
             },
-            filename: `clinical.case-${caseId}_${moment().format(
-              'YYYY-MM-DD',
-            )}.tsv`,
+            filename: `case_clinical.tsv`,
           },
-          // {
-          //   filters: {
-          //     op: 'and',
-          //     content: [
-          //       {
-          //         op: 'in',
-          //         content: {
-          //           field: 'cases.case_id',
-          //           value: [caseId],
-          //         },
-          //       },
-          //     ],
-          //   },
-          //   fields: [],
-          // },
-          // {
-          //   filters: {
-          //     op: 'and',
-          //     content: [
-          //       {
-          //         op: 'in',
-          //         content: {
-          //           field: 'cases.case_id',
-          //           value: [caseId],
-          //         },
-          //       },
-          //     ],
-          //   },
-          //   fields: [],
-          // },
+          {
+            filters: {
+              op: 'and',
+              content: [
+                {
+                  op: 'in',
+                  content: {
+                    field: 'cases.case_id',
+                    value: [caseId],
+                  },
+                },
+              ],
+            },
+            fields: ['case_id', 'family_histories'],
+            filename: 'family_history.tsv',
+          },
+          {
+            filters: {
+              op: 'and',
+              content: [
+                {
+                  op: 'in',
+                  content: {
+                    field: 'cases.case_id',
+                    value: [caseId],
+                  },
+                },
+              ],
+            },
+            fields: ['case_id', 'exposures'],
+            filename: 'exposure.tsv',
+          },
         ],
       };
     },
@@ -223,7 +223,6 @@ export default compose(
                 </Column>
                 <Column>
                   <DownloadButton
-                    // size={files.length}
                     className="data-download-clinical-json"
                     style={styles.button(theme)}
                     endpoint="/cases"

@@ -1,20 +1,17 @@
 /* @flow */
 import React from 'react';
-import Relay from 'react-relay/classic';
 import _ from 'lodash';
-import { connect } from 'react-redux';
 import {
   compose,
   withState,
   setDisplayName,
-  lifecycle,
   withPropsOnChange,
 } from 'recompose';
 
 import Modal from '@ncigdc/uikit/Modal';
 import SuggestionFacet from '@ncigdc/components/Aggregations/SuggestionFacet';
 import { Row } from '@ncigdc/uikit/Flex';
-import FacetSelection from '@ncigdc/components/FacetSelection';
+import FacetSelection from '@ncigdc/modern_components/FacetSelection';
 import FacetWrapper from '@ncigdc/components/FacetWrapper';
 import UploadSetButton from '@ncigdc/components/UploadSetButton';
 import { withTheme } from '@ncigdc/theme';
@@ -45,16 +42,8 @@ export type TProps = {
     project__program__name: { buckets: [TBucket] },
     project__project_id: { buckets: [TBucket] },
   },
-  hits: {
-    edges: Array<{|
-      node: {|
-        id: string,
-      |},
-    |}>,
-  },
   setAutocomplete: Function,
   theme: Object,
-  filters: Object,
   suggestions: Array<Object>,
 
   userSelectedFacets: Array<{|
@@ -163,8 +152,8 @@ const presetFacets = [
 ];
 
 const presetFacetFields = presetFacets.map(x => x.field);
-
 const entityType = 'RepositoryCases';
+
 const enhance = compose(
   setDisplayName('RepoCaseAggregations'),
   withFacetSelection({
@@ -172,34 +161,13 @@ const enhance = compose(
     presetFacetFields,
     validFacetDocTypes: ['cases'],
   }),
+  withTheme,
   withState('caseIdCollapsed', 'setCaseIdCollapsed', false),
-  connect((state, props) => ({
-    userSelectedFacets: state.customFacets[entityType],
+  withPropsOnChange(['viewer'], ({ viewer }) => ({
+    parsedFacets: viewer.repository.cases.facets
+      ? tryParseJSON(viewer.repository.cases.facets, {})
+      : {},
   })),
-  withPropsOnChange(
-    ['filters', 'userSelectedFacets'],
-    ({ filters, relay, userSelectedFacets }) =>
-      relay.setVariables({
-        filters,
-        repoCaseCustomFacetFields: userSelectedFacets
-          .map(({ field }) => field)
-          .join(','),
-      }),
-  ),
-  withPropsOnChange(['facets'], ({ facets }) => ({
-    parsedFacets: facets.facets ? tryParseJSON(facets.facets, {}) : {},
-  })),
-  lifecycle({
-    componentDidMount(): void {
-      const { filters, userSelectedFacets } = this.props;
-      this.props.relay.setVariables({
-        filters: filters,
-        repoCaseCustomFacetFields: userSelectedFacets
-          .map(({ field }) => field)
-          .join(','),
-      });
-    },
-  }),
 );
 
 const styles = {
@@ -209,7 +177,7 @@ const styles = {
   },
 };
 
-export const CaseAggregationsComponent = (props: TProps) => (
+const CaseAggregationsComponent = (props: TProps) => (
   <div className="test-case-aggregations">
     <div
       className="text-right"
@@ -239,23 +207,21 @@ export const CaseAggregationsComponent = (props: TProps) => (
     >
       <FacetSelection
         title="Add a Case/Biospecimen Filter"
-        relayVarName="repoCaseCustomFacetFields"
         docType="cases"
         onSelect={props.handleSelectFacet}
         onRequestClose={() => props.setShouldShowFacetSelection(false)}
         excludeFacetsBy={props.facetExclusionTest}
         additionalFacetData={props.parsedFacets}
-        relay={props.relay}
       />
     </Modal>
 
     {props.userSelectedFacets.map(facet => (
       <FacetWrapper
         isRemovable
+        relayVarName="repoCaseCustomFacetFields"
         key={facet.full}
         facet={facet}
         aggregation={props.parsedFacets[facet.field]}
-        relay={props.relay}
         onRequestRemove={() => props.handleRequestRemoveFacet(facet)}
         style={{ borderBottom: `1px solid ${props.theme.greyScale5}` }}
       />
@@ -311,7 +277,11 @@ export const CaseAggregationsComponent = (props: TProps) => (
         key={facet.full}
         facet={facet}
         title={facet.title}
-        aggregation={props.aggregations[escapeForRelay(facet.field)]}
+        aggregation={
+          props.viewer.repository.cases.aggregations[
+            escapeForRelay(facet.field)
+          ]
+        }
         relay={props.relay}
         additionalProps={facet.additionalProps}
         style={{ borderBottom: `1px solid ${props.theme.greyScale5}` }}
@@ -320,89 +290,4 @@ export const CaseAggregationsComponent = (props: TProps) => (
   </div>
 );
 
-export const CaseAggregationsQuery = {
-  initialVariables: {
-    repoCaseCustomFacetFields: '',
-    filters: null,
-  },
-  fragments: {
-    facets: () => Relay.QL`
-      fragment on RepositoryCases {
-        facets(facets: $repoCaseCustomFacetFields filters: $filters)
-      }
-    `,
-    aggregations: () => Relay.QL`
-      fragment on CaseAggregations {
-        primary_site {
-          buckets {
-            doc_count
-            key
-          }
-        }
-        project__program__name {
-          buckets {
-            doc_count
-            key
-          }
-        }
-        project__project_id {
-          buckets {
-            doc_count
-            key
-          }
-        }
-        disease_type {
-          buckets {
-            doc_count
-            key
-          }
-        }
-        demographic__gender {
-          buckets {
-            doc_count
-            key
-          }
-        }
-        diagnoses__age_at_diagnosis {
-          stats {
-            max
-            min
-            count
-          }
-        }
-        diagnoses__vital_status {
-          buckets {
-            doc_count
-            key
-          }
-        }
-        diagnoses__days_to_death {
-          stats {
-            max
-            min
-            count
-          }
-        }
-        demographic__race {
-          buckets {
-            doc_count
-            key
-          }
-        }
-        demographic__ethnicity {
-          buckets {
-            doc_count
-            key
-          }
-        }
-      }
-    `,
-  },
-};
-
-const CaseAggregations = Relay.createContainer(
-  enhance(withTheme(CaseAggregationsComponent)),
-  CaseAggregationsQuery,
-);
-
-export default CaseAggregations;
+export default enhance(CaseAggregationsComponent);

@@ -183,11 +183,7 @@ export default compose(
             </Row>
           </div>
         </Row>
-        <LocalPaginationTable
-          data={primarySiteData}
-          prefix={paginationPrefix}
-          customDefaultSize={60}
-        >
+        <LocalPaginationTable data={primarySiteData} prefix={paginationPrefix}>
           <PrimarySitesTable tableInfo={tableInfo} projectId={projectId} />
         </LocalPaginationTable>
       </div>

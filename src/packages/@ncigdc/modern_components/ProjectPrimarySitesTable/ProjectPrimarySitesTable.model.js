@@ -5,7 +5,7 @@ import { Th, Td, ThNum } from '@ncigdc/uikit/Table';
 import { makeFilter } from '@ncigdc/utils/filters';
 import withRouter from '@ncigdc/utils/withRouter';
 import CollapsibleList from '@ncigdc/uikit/CollapsibleList';
-import withData from '@ncigdc/modern_components/DiseaseListByPrimarySite/DiseaseListByPrimarySite.relay.js';
+import withData from '@ncigdc/modern_components/PrimarySiteSummary/PrimarySiteSummary.relay.js';
 import Button from '@ncigdc/uikit/Button';
 import { stringifyJSONParam } from '@ncigdc/utils/uri';
 import { DATA_CATEGORIES } from '@ncigdc/utils/constants';
@@ -94,8 +94,7 @@ let FilesByPrimarySite = withData(props => {
         minWidth: '60px',
       }}
     >
-      {props.repository.cases.aggregations.disease_type.buckets &&
-      props.repository.cases.aggregations.disease_type.buckets.length ? (
+      {props.repository.files.hits ? (
         <RepositoryFilesLink
           query={{
             filters: makeFilter([
@@ -110,10 +109,7 @@ let FilesByPrimarySite = withData(props => {
             ]),
           }}
         >
-          {props.repository.cases.aggregations.disease_type.buckets.reduce(
-            (acc, { doc_count }) => acc + doc_count,
-            0,
-          )}
+          {props.repository.files.hits.total}
         </RepositoryFilesLink>
       ) : (
         0

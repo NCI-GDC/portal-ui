@@ -56,8 +56,13 @@ export default (Component: ReactClass<*>) =>
         variables={props.variables}
         Component={Component}
         query={graphql`
-          query DiseaseListByPrimarySite_relayQuery($filters: FiltersArgument) {
+          query PrimarySiteSummary_relayQuery($filters: FiltersArgument) {
             repository {
+              files {
+                hits(filters: $filters) {
+                  total
+                }
+              }
               cases {
                 hits(filters: $filters) {
                   total

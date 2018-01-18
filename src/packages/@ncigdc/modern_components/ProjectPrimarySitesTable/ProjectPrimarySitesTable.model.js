@@ -44,10 +44,10 @@ let DataCategoryColumns = withData(props => {
       >
         {type ? (
           <RepositoryFilesLink query={linkQuery}>
-            {type.doc_count}{' '}
+            {type.doc_count.toLocaleString()}{' '}
           </RepositoryFilesLink>
         ) : (
-          <span>0 </span>
+          <span>{'0 '.toLocaleString()} </span>
         )}
       </div>,
     );
@@ -109,7 +109,7 @@ let FilesByPrimarySite = withData(props => {
             ]),
           }}
         >
-          {props.repository.files.hits.total}
+          {props.repository.files.hits.total.toLocaleString()}
         </RepositoryFilesLink>
       ) : (
         0
@@ -170,7 +170,7 @@ let CasesByPrimarySite = withData(props => {
     >
       {props.repository.cases.hits && (
         <RepositoryFilesLink query={linkQuery}>
-          {props.repository.cases.hits.total}
+          {props.repository.cases.hits.total.toLocaleString()}
         </RepositoryFilesLink>
       )}
     </span>

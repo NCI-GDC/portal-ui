@@ -29,7 +29,6 @@ export default compose(
       .slice()
       .sort((a, b) => tableColumns.indexOf(a.id) - tableColumns.indexOf(b.id))
       .filter(x => tableColumns.includes(x.id));
-
     return (
       <div className="test-projects-table">
         <Row

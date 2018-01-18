@@ -7,6 +7,7 @@ import ssms from '@ncigdc/modern_components/SsmsTable/SsmsTable.model';
 import files from '@ncigdc/modern_components/FilesTable/FilesTable.model';
 import cases from '@ncigdc/modern_components/RepoCasesTable/RepoCasesTable.model';
 import annotations from './annotationsTableModel';
+import projectPrimarySites from '@ncigdc/modern_components/ProjectPrimarySitesTable/ProjectPrimarySitesTable.model';
 
 export default {
   projects,
@@ -16,4 +17,5 @@ export default {
   annotations,
   genes,
   ssms,
+  projectPrimarySites,
 };

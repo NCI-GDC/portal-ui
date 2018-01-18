@@ -15,9 +15,10 @@ const LocalPaginationTable = ({
   style,
   entityName,
   sizes,
+  customDefaultSize,
   ...props
 }) => {
-  const defaultSize = (sizes && sizes[0]) || 10;
+  const defaultSize = (sizes && sizes[0]) || customDefaultSize || 10;
   const size = parseInt(query[`${prefix}_size`] || defaultSize, 10);
   const offset = parseInt(query[`${prefix}_offset`] || 0, 10);
   const enablePagination = data.length > defaultSize;
@@ -27,7 +28,6 @@ const LocalPaginationTable = ({
     [`${prefix}_offset`]: enablePagination ? offset : 0,
   };
   const tableData = enablePagination ? data.slice(offset, offset + size) : data;
-
   return (
     <div style={style} className={props.className}>
       <Row

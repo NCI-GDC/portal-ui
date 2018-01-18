@@ -50,7 +50,7 @@ export default (Component: ReactClass<*>) =>
   )((props: Object) => {
     return (
       <Query
-        name="DiseaseListByPrimarySite"
+        name="PrimarySiteSummary"
         parentProps={props}
         minHeight={20}
         variables={props.variables}

@@ -54,7 +54,6 @@ const DownloadButton = ({
   extraParams = {},
   showIcon = true,
   sets,
-  requests,
   ...props
 }: TDownloadButton) => {
   const text = active ? activeText : inactiveText;
@@ -76,7 +75,6 @@ const DownloadButton = ({
           fields: fields.join(),
           filters,
           pretty: true,
-          ...(requests ? { requests } : {}),
           ...(sets ? { sets } : {}),
           ...(dataExportExpands ? { expand: dataExportExpands.join() } : {}),
           ...(returnType ? { return_type: returnType } : {}),

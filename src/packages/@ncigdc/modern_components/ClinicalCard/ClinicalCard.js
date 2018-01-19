@@ -1,13 +1,7 @@
 // @flow
 
 import React from 'react';
-import {
-  compose,
-  withState,
-  branch,
-  renderComponent,
-  withProps,
-} from 'recompose';
+import { compose, withState, branch, renderComponent } from 'recompose';
 import Card from '@ncigdc/uikit/Card';
 import Tabs from '@ncigdc/uikit/Tabs';
 import SideTabs from '@ncigdc/uikit/SideTabs';
@@ -24,11 +18,6 @@ import { visualizingButton } from '@ncigdc/theme/mixins';
 import Spinner from '@ncigdc/theme/icons/Spinner';
 import Button from '@ncigdc/uikit/Button';
 import moment from 'moment';
-import {
-  DEMOGRAPHIC_AND_DIAGNOSES_FIELDS,
-  EXPOSURES_FIELDS,
-  FAMILY_HISTORIES_FIELDS,
-} from '@ncigdc/utils/constants';
 
 const styles = {
   dropdownContainer: {
@@ -79,59 +68,59 @@ export default compose(
     jsonDownloading: false,
   }),
   withTheme,
-  withProps(
-    ({ requests, viewer: { repository: { cases: { hits: { edges } } } } }) => {
-      const {
-        case_id: caseId,
-        diagnoses: { hits: { edges: diagnoses = [] } },
-        family_histories: { hits: { edges: familyHistory = [] } },
-        demographic = {},
-        exposures: { hits: { edges: exposures = [] } },
-      } = edges[0].node;
-
-      const buildRequest = (filename, fields) => ({
-        endpoint: '/cases',
-        filename,
-        params: {
-          filters: {
-            op: 'and',
-            content: [
-              {
-                op: 'in',
-                content: {
-                  field: 'cases.case_id',
-                  value: [caseId],
-                },
-              },
-            ],
-          },
-          fields: fields.join(),
-        },
-      });
-      let validRequests = [];
-      if (!!demographic || (diagnoses[0] && diagnoses[0].node.length)) {
-        validRequests = [
-          ...validRequests,
-          buildRequest('case_clinical.tsv', DEMOGRAPHIC_AND_DIAGNOSES_FIELDS),
-        ];
-      }
-      if (familyHistory && familyHistory.length) {
-        validRequests = [
-          ...validRequests,
-          buildRequest('family_history.tsv', FAMILY_HISTORIES_FIELDS),
-        ];
-      }
-      if (exposures && exposures.length) {
-        validRequests = [
-          ...validRequests,
-          buildRequest('exposure.tsv', EXPOSURES_FIELDS),
-        ];
-      }
-      return {
-        requests: validRequests,
-      };
-    },
-  ),
+  // withProps(
+  //   ({ requests, viewer: { repository: { cases: { hits: { edges } } } } }) => {
+  //     const {
+  //       case_id: caseId,
+  //       diagnoses: { hits: { edges: diagnoses = [] } },
+  //       family_histories: { hits: { edges: familyHistory = [] } },
+  //       demographic = {},
+  //       exposures: { hits: { edges: exposures = [] } },
+  //     } = edges[0].node;
+  //
+  //     const buildRequest = (filename, fields) => ({
+  //       endpoint: '/cases',
+  //       filename,
+  //       params: {
+  //         filters: {
+  //           op: 'and',
+  //           content: [
+  //             {
+  //               op: 'in',
+  //               content: {
+  //                 field: 'cases.case_id',
+  //                 value: [caseId],
+  //               },
+  //             },
+  //           ],
+  //         },
+  //         fields: fields.join(),
+  //       },
+  //     });
+  //     let validRequests = [];
+  //     if (!!demographic || (diagnoses[0] && diagnoses[0].node.length)) {
+  //       validRequests = [
+  //         ...validRequests,
+  //         buildRequest('case_clinical.tsv', DEMOGRAPHIC_AND_DIAGNOSES_FIELDS),
+  //       ];
+  //     }
+  //     if (familyHistory && familyHistory.length) {
+  //       validRequests = [
+  //         ...validRequests,
+  //         buildRequest('family_history.tsv', FAMILY_HISTORIES_FIELDS),
+  //       ];
+  //     }
+  //     if (exposures && exposures.length) {
+  //       validRequests = [
+  //         ...validRequests,
+  //         buildRequest('exposure.tsv', EXPOSURES_FIELDS),
+  //       ];
+  //     }
+  //     return {
+  //       requests: validRequests,
+  //     };
+  //   },
+  // ),
 )(
   ({
     activeTab,
@@ -173,72 +162,81 @@ export default compose(
               dropdownStyle={styles.dropdownContainer}
             >
               <Column>
-                <Column>
-                  <DownloadButton
-                    className="data-download-clinical-tsv"
-                    style={styles.button(theme)}
-                    endpoint="/batch_tar"
-                    format={'TSV'}
-                    activeText="Processing"
-                    inactiveText="TSV"
-                    altMessage={false}
-                    setParentState={currentState =>
-                      setState(s => ({
-                        ...s,
-                        tsvDownloading: currentState,
-                      }))}
-                    active={state.tsvDownloading}
-                    requests={requests}
-                    filename={`clinical.case-${caseId}_${moment().format(
-                      'YYYY-MM-DD',
-                    )}.tar.gz`}
-                    // extraParams={{
-                    //   ids: files.map(file => file.file_id),
-                    // }}
-                  />
-                </Column>
-                <Column>
-                  <DownloadButton
-                    className="data-download-clinical-json"
-                    style={styles.button(theme)}
-                    endpoint="/cases"
-                    activeText="Processing"
-                    inactiveText="JSON"
-                    altMessage={false}
-                    setParentState={currentState =>
-                      setState(s => ({
-                        ...s,
-                        jsonDownloading: currentState,
-                      }))}
-                    active={state.jsonDownloading}
-                    filters={{
-                      op: 'and',
-                      content: [
-                        {
-                          op: 'in',
-                          content: {
-                            field: 'cases.case_id',
-                            value: [caseId],
-                          },
+                <DownloadButton
+                  className="data-download-clinical-tsv"
+                  style={styles.button(theme)}
+                  endpoint="/clinical_tar"
+                  format={'TSV'}
+                  activeText="Processing"
+                  inactiveText="TSV"
+                  altMessage={false}
+                  setParentState={currentState =>
+                    setState(s => ({
+                      ...s,
+                      tsvDownloading: currentState,
+                    }))}
+                  active={state.tsvDownloading}
+                  filters={{
+                    op: 'and',
+                    content: [
+                      {
+                        op: 'in',
+                        content: {
+                          field: 'cases.case_id',
+                          value: [caseId],
                         },
-                      ],
-                    }}
-                    fields={['case_id']}
-                    dataExportExpands={[
-                      'demographic',
-                      'diagnoses',
-                      'diagnoses.treatments',
-                      'family_histories',
-                      'exposures',
-                    ]}
-                    filename={`clinical.case-${caseId}_${moment().format(
-                      'YYYY-MM-DD',
-                    )}.json`}
-                    // extraParams={{
-                    //   ids: files.map(file => file.file_id),
-                    // }}
-                  />
-                </Column>
+                      },
+                    ],
+                  }}
+                  filename={`clinical.case-${caseId}_${moment().format(
+                    'YYYY-MM-DD',
+                  )}.tar.gz`}
+                  // extraParams={{
+                  //   ids: files.map(file => file.file_id),
+                  // }}
+                />
+              </Column>
+              <Column>
+                <DownloadButton
+                  className="data-download-clinical-json"
+                  style={styles.button(theme)}
+                  endpoint="/cases"
+                  activeText="Processing"
+                  inactiveText="JSON"
+                  altMessage={false}
+                  setParentState={currentState =>
+                    setState(s => ({
+                      ...s,
+                      jsonDownloading: currentState,
+                    }))}
+                  active={state.jsonDownloading}
+                  filters={{
+                    op: 'and',
+                    content: [
+                      {
+                        op: 'in',
+                        content: {
+                          field: 'cases.case_id',
+                          value: [caseId],
+                        },
+                      },
+                    ],
+                  }}
+                  fields={['case_id']}
+                  dataExportExpands={[
+                    'demographic',
+                    'diagnoses',
+                    'diagnoses.treatments',
+                    'family_histories',
+                    'exposures',
+                  ]}
+                  filename={`clinical.case-${caseId}_${moment().format(
+                    'YYYY-MM-DD',
+                  )}.json`}
+                  // extraParams={{
+                  //   ids: files.map(file => file.file_id),
+                  // }}
+                />
               </Column>
             </Dropdown>
           </Row>

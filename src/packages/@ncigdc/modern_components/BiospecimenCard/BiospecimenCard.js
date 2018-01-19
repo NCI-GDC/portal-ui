@@ -51,7 +51,8 @@ const styles = {
   }),
 };
 
-const getType = node => entityTypes.find(type => node[`${type.s}_id`]).s;
+const getType = node =>
+  (entityTypes.find(type => node[`${type.s}_id`]) || { s: null }).s;
 
 export default compose(
   withRouter,

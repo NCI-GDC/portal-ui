@@ -46,18 +46,6 @@ const styles = {
     marginTop: '2px',
     minWidth: '100px',
   },
-  icon: {
-    marginRight: '1em',
-  },
-  dropdownItem: {
-    color: theme.greyScale3,
-    ':hover': {
-      color: theme.greyScale3,
-      background: theme.greyScale6,
-    },
-    display: 'flex',
-    alignItems: 'center',
-  },
   common: theme => ({
     backgroundColor: 'transparent',
     color: theme.greyScale2,
@@ -72,9 +60,11 @@ const styles = {
     ...styles.common(theme),
     '[disabled]': styles.common(theme),
   }),
-  iconSpacing: {
-    marginRight: '0.6rem',
-  },
+  downloadButton: theme => ({
+    ...styles.common(theme),
+    padding: '3px 5px',
+    border: `1px solid ${theme.greyScale4}`,
+  }),
 };
 
 export default compose(
@@ -465,7 +455,11 @@ export default compose(
           )}
         </Tabs>
         {clinicalFiles.length > 0 && (
-          <div>
+          <div
+            style={{
+              padding: '10px',
+            }}
+          >
             <EntityPageHorizontalTable
               title={'Clinical Supplement File'}
               titleStyle={{ fontSize: '1em' }}
@@ -494,10 +488,9 @@ export default compose(
                       style={{
                         display: 'flex',
                         flexDirection: 'row',
-                        justifyContent: 'space-between',
                       }}
                     >
-                      <span key="add_to_cart">
+                      <span key="add_to_cart" style={{ paddingRight: '10px' }}>
                         {canAddToCart && (
                           <AddToCartButtonSingle file={fileData} />
                         )}
@@ -512,8 +505,12 @@ export default compose(
                           </RemoveButton>
                         )}
                       </span>
-                      <span>
+                      <span style={{ paddingRight: '10px' }}>
                         <DownloadFile
+                          style={{
+                            ...styles.downloadButton(theme),
+                            backgroundColor: 'white',
+                          }}
                           file={f.node}
                           activeText={''}
                           inactiveText={''}

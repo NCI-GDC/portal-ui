@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { compose, withState, branch, renderComponent } from 'recompose';
+import { connect } from 'react-redux';
 import Card from '@ncigdc/uikit/Card';
 import Tabs from '@ncigdc/uikit/Tabs';
 import SideTabs from '@ncigdc/uikit/SideTabs';
@@ -18,6 +19,25 @@ import { visualizingButton } from '@ncigdc/theme/mixins';
 import Spinner from '@ncigdc/theme/icons/Spinner';
 import Button from '@ncigdc/uikit/Button';
 import moment from 'moment';
+import EntityPageHorizontalTable from '@ncigdc/components/EntityPageHorizontalTable';
+import AddToCartButtonSingle from '@ncigdc/components/AddToCartButtonSingle';
+import { toggleFilesInCart } from '@ncigdc/dux/cart';
+import { Tooltip } from '@ncigdc/uikit/Tooltip';
+import styled from '@ncigdc/theme/styled';
+import DownloadFile from '@ncigdc/components/DownloadFile';
+
+const RemoveButton = styled(Button, {
+  backgroundColor: '#FFF',
+  borderColor: '#CCC',
+  color: '#333',
+  margin: '0 auto',
+  padding: '0px 5px',
+  ':hover': {
+    background:
+      'linear-gradient(to bottom, #ffffff 50%, #e6e6e6 100%) repeat scroll 0 0 #E6E6E6',
+    borderColor: '#ADADAD',
+  },
+});
 
 const styles = {
   dropdownContainer: {
@@ -62,77 +82,26 @@ export default compose(
     ({ viewer }) => !viewer.repository.cases.hits.edges[0],
     renderComponent(() => <div>No case found.</div>),
   ),
+  connect(state => state.cart),
   withState('activeTab', 'setTab', 0),
   withState('state', 'setState', {
     tsvDownloading: false,
     jsonDownloading: false,
   }),
   withTheme,
-  // withProps(
-  //   ({ requests, viewer: { repository: { cases: { hits: { edges } } } } }) => {
-  //     const {
-  //       case_id: caseId,
-  //       diagnoses: { hits: { edges: diagnoses = [] } },
-  //       family_histories: { hits: { edges: familyHistory = [] } },
-  //       demographic = {},
-  //       exposures: { hits: { edges: exposures = [] } },
-  //     } = edges[0].node;
-  //
-  //     const buildRequest = (filename, fields) => ({
-  //       endpoint: '/cases',
-  //       filename,
-  //       params: {
-  //         filters: {
-  //           op: 'and',
-  //           content: [
-  //             {
-  //               op: 'in',
-  //               content: {
-  //                 field: 'cases.case_id',
-  //                 value: [caseId],
-  //               },
-  //             },
-  //           ],
-  //         },
-  //         fields: fields.join(),
-  //       },
-  //     });
-  //     let validRequests = [];
-  //     if (!!demographic || (diagnoses[0] && diagnoses[0].node.length)) {
-  //       validRequests = [
-  //         ...validRequests,
-  //         buildRequest('case_clinical.tsv', DEMOGRAPHIC_AND_DIAGNOSES_FIELDS),
-  //       ];
-  //     }
-  //     if (familyHistory && familyHistory.length) {
-  //       validRequests = [
-  //         ...validRequests,
-  //         buildRequest('family_history.tsv', FAMILY_HISTORIES_FIELDS),
-  //       ];
-  //     }
-  //     if (exposures && exposures.length) {
-  //       validRequests = [
-  //         ...validRequests,
-  //         buildRequest('exposure.tsv', EXPOSURES_FIELDS),
-  //       ];
-  //     }
-  //     return {
-  //       requests: validRequests,
-  //     };
-  //   },
-  // ),
 )(
   ({
     activeTab,
     setTab,
     theme,
     viewer: { repository: { cases: { hits: { edges } } } },
-    isLoading,
     dropdownStyle,
     active,
     state,
     setState,
     requests,
+    canAddToCart = true,
+    dispatch,
   }) => {
     const {
       case_id: caseId,
@@ -140,6 +109,8 @@ export default compose(
       family_histories: { hits: { edges: familyHistory = [] } },
       demographic = {},
       exposures: { hits: { edges: exposures = [], total: totalExposures } },
+      files: { hits: { edges: clinicalFiles = [] } },
+      project: { project_id: projectId = {} },
     } = edges[0].node;
     return (
       <Card
@@ -152,7 +123,13 @@ export default compose(
               button={
                 <Button
                   style={visualizingButton}
-                  leftIcon={isLoading ? <Spinner /> : <DownloadIcon />}
+                  leftIcon={
+                    state.jsonDownloading || state.tsvDownloading ? (
+                      <Spinner />
+                    ) : (
+                      <DownloadIcon />
+                    )
+                  }
                 >
                   {state.jsonDownloading || state.tsvDownloading
                     ? 'Processing'
@@ -191,9 +168,6 @@ export default compose(
                   filename={`clinical.case-${caseId}_${moment().format(
                     'YYYY-MM-DD',
                   )}.tar.gz`}
-                  // extraParams={{
-                  //   ids: files.map(file => file.file_id),
-                  // }}
                 />
               </Column>
               <Column>
@@ -233,9 +207,6 @@ export default compose(
                   filename={`clinical.case-${caseId}_${moment().format(
                     'YYYY-MM-DD',
                   )}.json`}
-                  // extraParams={{
-                  //   ids: files.map(file => file.file_id),
-                  // }}
                 />
               </Column>
             </Dropdown>
@@ -493,6 +464,74 @@ export default compose(
             </div>
           )}
         </Tabs>
+        {clinicalFiles.length > 0 && (
+          <div>
+            <EntityPageHorizontalTable
+              title={'Clinical Supplement File'}
+              titleStyle={{ fontSize: '1em' }}
+              className="clinical-supplement-file-table"
+              data={clinicalFiles.map((f, i) => {
+                const fileData = {
+                  ...f.node,
+                  projects: [projectId],
+                };
+                return {
+                  file_name: (
+                    <span key="filename">
+                      {f.node.access === 'open' && (
+                        <i className="fa fa-unlock-alt" />
+                      )}
+                      {f.node.access === 'controlled' && (
+                        <i className="fa fa-lock" />
+                      )}{' '}
+                      {f.node.file_name}
+                    </span>
+                  ),
+                  data_format: f.node.data_format,
+                  file_size: f.node.file_size,
+                  action: (
+                    <div
+                      style={{
+                        display: 'flex',
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
+                      }}
+                    >
+                      <span key="add_to_cart">
+                        {canAddToCart && (
+                          <AddToCartButtonSingle file={fileData} />
+                        )}
+                        {!canAddToCart && (
+                          <RemoveButton
+                            onClick={() => dispatch(toggleFilesInCart(f))}
+                            aria-label="Remove"
+                          >
+                            <Tooltip Component={'Remove'}>
+                              <i className="fa fa-trash-o" />
+                            </Tooltip>
+                          </RemoveButton>
+                        )}
+                      </span>
+                      <span>
+                        <DownloadFile
+                          file={f.node}
+                          activeText={''}
+                          inactiveText={''}
+                        />
+                      </span>
+                    </div>
+                  ),
+                };
+              })}
+              headings={[
+                { key: 'file_name', title: 'Filename' },
+                { key: 'data_format', title: 'Data format' },
+                { key: 'file_size', title: 'Size' },
+                { key: 'action', title: 'Action' },
+              ]}
+            />
+          </div>
+        )}
       </Card>
     );
   },

@@ -70,6 +70,14 @@ const CartPage: TCartPage = ({ viewer, files, user, theme } = {}) => {
       borderBottom: `1px solid ${theme.greyScale4}`,
       color: theme.primary,
     },
+    dropdown: {
+      top: '100%',
+      whiteSpace: 'nowrap',
+      marginTop: '5px',
+      width: '90px',
+      left: '-75px',
+      borderRadius: '5px',
+    },
   };
 
   const caseCount = viewer.summary.aggregations.project__project_id.buckets.reduce(
@@ -293,7 +301,7 @@ const CartPage: TCartPage = ({ viewer, files, user, theme } = {}) => {
           <Row style={{ marginBottom: '6rem' }}>
             <Row style={{ marginLeft: 'auto' }} spacing="1rem">
               <DownloadClinicalDropdown
-                // disabled={!files.length}
+                dropdownStyles={styles.dropdown}
                 size={files.length}
                 filters={filters}
                 tsvFilename={`clinical.cart.${moment().format(

@@ -23,8 +23,6 @@ const MetadataDropdownButton = ({ files }) => (
       'platform',
       'experimental_strategy',
       'center.short_name',
-      'cases.case_id',
-      'cases.project.project_id',
       'annotations.annotation_id',
       'annotations.entity_id',
       'tags',

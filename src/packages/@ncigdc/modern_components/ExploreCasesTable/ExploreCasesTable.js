@@ -99,6 +99,7 @@ export default compose(
             idField="cases.case_id"
             selectedIds={selectedIds}
             downloadClinical
+            downloadBiospecimen
           />
         </Row>
         <div style={{ overflowX: 'auto' }}>

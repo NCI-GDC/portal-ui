@@ -1,7 +1,13 @@
+/* @flow */
+
 import React from 'react';
+import { compose } from 'recompose';
 import DownloadButton from '@ncigdc/components/DownloadButton';
 import { makeFilter } from '@ncigdc/utils/filters';
-export default ({ projectId, viewer }) => {
+import { withTheme, theme } from '@ncigdc/theme';
+import { Column } from '@ncigdc/uikit/Flex/';
+
+export default compose(withTheme)(({ isLoading, projectId, viewer }) => {
   const projectFilter = [
     {
       field: 'cases.project.project_id',
@@ -38,4 +44,4 @@ export default ({ projectId, viewer }) => {
       filters={dataExportFilters}
     />
   );
-};
+});

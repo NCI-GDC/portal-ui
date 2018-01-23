@@ -25,6 +25,8 @@ import { toggleFilesInCart } from '@ncigdc/dux/cart';
 import { Tooltip } from '@ncigdc/uikit/Tooltip';
 import styled from '@ncigdc/theme/styled';
 import DownloadFile from '@ncigdc/components/DownloadFile';
+import DownloadClinicalDropdown from '@ncigdc/modern_components/DownloadClinicalDropdown/';
+import { makeFilter } from '@ncigdc/utils/filters';
 
 const RemoveButton = styled(Button, {
   backgroundColor: '#FFF',
@@ -53,12 +55,6 @@ const styles = {
     ':hover': {
       backgroundColor: theme.greyScale6,
     },
-  }),
-  button: theme => ({
-    borderRadius: '0px',
-    marginLeft: '0px',
-    ...styles.common(theme),
-    '[disabled]': styles.common(theme),
   }),
   downloadButton: theme => ({
     ...styles.common(theme),
@@ -102,6 +98,9 @@ export default compose(
       files: { hits: { edges: clinicalFiles = [] } },
       project: { project_id: projectId = {} },
     } = edges[0].node;
+    const caseFilter = makeFilter([
+      { field: 'cases.case_id', value: [caseId] },
+    ]);
     return (
       <Card
         className="test-clinical-card"
@@ -109,97 +108,18 @@ export default compose(
         title={
           <Row style={{ justifyContent: 'space-between' }}>
             <span>Clinical</span>
-            <Dropdown
-              button={
-                <Button
-                  style={visualizingButton}
-                  leftIcon={
-                    state.jsonDownloading || state.tsvDownloading ? (
-                      <Spinner />
-                    ) : (
-                      <DownloadIcon />
-                    )
-                  }
-                >
-                  {state.jsonDownloading || state.tsvDownloading
-                    ? 'Processing'
-                    : 'Export'}
-                </Button>
-              }
-              dropdownStyle={styles.dropdownContainer}
-            >
-              <Column>
-                <DownloadButton
-                  className="data-download-clinical-tsv"
-                  style={styles.button(theme)}
-                  endpoint="/clinical_tar"
-                  format={'TSV'}
-                  activeText="Processing"
-                  inactiveText="TSV"
-                  altMessage={false}
-                  setParentState={currentState =>
-                    setState(s => ({
-                      ...s,
-                      tsvDownloading: currentState,
-                    }))}
-                  active={state.tsvDownloading}
-                  filters={{
-                    op: 'and',
-                    content: [
-                      {
-                        op: 'in',
-                        content: {
-                          field: 'cases.case_id',
-                          value: [caseId],
-                        },
-                      },
-                    ],
-                  }}
-                  filename={`clinical.case-${caseId}_${moment().format(
-                    'YYYY-MM-DD',
-                  )}.tar.gz`}
-                />
-              </Column>
-              <Column>
-                <DownloadButton
-                  className="data-download-clinical-json"
-                  style={styles.button(theme)}
-                  endpoint="/cases"
-                  activeText="Processing"
-                  inactiveText="JSON"
-                  altMessage={false}
-                  setParentState={currentState =>
-                    setState(s => ({
-                      ...s,
-                      jsonDownloading: currentState,
-                    }))}
-                  active={state.jsonDownloading}
-                  filters={{
-                    op: 'and',
-                    content: [
-                      {
-                        op: 'in',
-                        content: {
-                          field: 'cases.case_id',
-                          value: [caseId],
-                        },
-                      },
-                    ],
-                  }}
-                  fields={['case_id']}
-                  dataExportExpands={[
-                    'demographic',
-                    'diagnoses',
-                    'diagnoses.treatments',
-                    'family_histories',
-                    'exposures',
-                  ]}
-                  filename={`clinical.case-${caseId}_${moment().format(
-                    'YYYY-MM-DD',
-                  )}.json`}
-                />
-              </Column>
-            </Dropdown>
+            <DownloadClinicalDropdown
+              dropdownStyles={styles.dropdown}
+              buttonStyles={visualizingButton}
+              inactiveText={'Export'}
+              filters={caseFilter}
+              tsvFilename={`clinical.project-${caseId}_${moment().format(
+                'YYYY-MM-DD',
+              )}.tar.gz`}
+              jsonFilename={`clinical.project-${caseId}_${moment().format(
+                'YYYY-MM-DD',
+              )}.json`}
+            />
           </Row>
         }
       >

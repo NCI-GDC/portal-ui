@@ -13,6 +13,7 @@ import DownloadIcon from '@ncigdc/theme/icons/Download';
 import Spinner from '@ncigdc/theme/icons/Spinner';
 import Button from '@ncigdc/uikit/Button';
 import DownloadClinicalDropdown from '@ncigdc/modern_components/DownloadClinicalDropdown';
+import DownloadBiospecimenDropdown from '@ncigdc/modern_components/DownloadBiospecimenDropdown/';
 
 import { visualizingButton } from '@ncigdc/theme/mixins';
 import DownloadTableToTsvButton from '@ncigdc/components/DownloadTableToTsvButton';
@@ -31,7 +32,8 @@ const styles = {
     top: '100%',
     whiteSpace: 'nowrap',
     marginTop: '5px',
-    minWidth: '120px',
+    width: '100px',
+    left: '-75px',
   },
 };
 
@@ -90,8 +92,8 @@ const TableActions = ({
   scope,
   downloadClinical,
   downloadBiospecimen,
-  state,
-  setState,
+  // state,
+  // setState,
   theme,
   totalCases,
 }: TProps) => {
@@ -112,6 +114,22 @@ const TableActions = ({
           style={visualizingButton}
         />
       )}
+      {downloadBiospecimen && (
+        <DownloadBiospecimenDropdown
+          jsonFilename={`biospecimen.cases_selection.${moment().format(
+            'YYYY-MM-DD',
+          )}.json`}
+          tsvFilename={`biospecimen.cases_selection.${moment().format(
+            'YYYY-MM-DD',
+          )}.tar.gz`}
+          filters={
+            currentFilters || parseFilterParam((query || {}).filters, {})
+          }
+          dropdownStyles={styles.dropdown}
+          buttonStyles={visualizingButton}
+          inactiveText={'Biospecimen'}
+        />
+      )}
       {downloadClinical && (
         <DownloadClinicalDropdown
           dropdownStyles={styles.dropdown}
@@ -124,22 +142,8 @@ const TableActions = ({
           filters={
             currentFilters || parseFilterParam((query || {}).filters, {})
           }
-          button={
-            <Button
-              style={visualizingButton}
-              leftIcon={
-                state.jsonDownloading || state.tsvDownloading ? (
-                  <Spinner />
-                ) : (
-                  <DownloadIcon />
-                )
-              }
-            >
-              {state.jsonDownloading || state.tsvDownloading
-                ? 'Processing'
-                : 'Clinical'}
-            </Button>
-          }
+          buttonStyles={visualizingButton}
+          inactiveText={'Clinical'}
         />
       )}
       {downloadable && (

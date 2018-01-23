@@ -29,6 +29,7 @@ import HasCases from '@ncigdc/modern_components/HasCases';
 import { withExists } from '@ncigdc/modern_components/Exists/index';
 import DownloadClinicalDropdown from '@ncigdc/modern_components/DownloadClinicalDropdown/';
 import moment from 'moment';
+import DownloadBiospecimenDropdown from '@ncigdc/modern_components/DownloadBiospecimenDropdown/';
 
 const styles = {
   column: {
@@ -42,6 +43,13 @@ const styles = {
   },
   card: {
     backgroundColor: 'white',
+  },
+  dropdown: {
+    top: '100%',
+    whiteSpace: 'nowrap',
+    marginTop: '2px',
+    width: '90px',
+    left: '-40px',
   },
 };
 
@@ -155,7 +163,17 @@ export default enhance(
           spacing="0.2rem"
         >
           <span>
-            <DownloadBiospecimenButton projectId={projectId} />
+            <DownloadBiospecimenDropdown
+              jsonFilename={`biospecimen.project-${projectId}_${moment().format(
+                'YYYY-MM-DD',
+              )}.json`}
+              tsvFilename={`biospecimen.project-${projectId}_${moment().format(
+                'YYYY-MM-DD',
+              )}.tar.gz`}
+              filters={projectFilter}
+              dropdownStyles={styles.dropdown}
+              inactiveText={'Biospecimen'}
+            />
           </span>
           <span>
             <DownloadClinicalDropdown
@@ -167,6 +185,7 @@ export default enhance(
               jsonFilename={`clinical.project-${projectId}_${moment().format(
                 'YYYY-MM-DD',
               )}.json`}
+              inactiveText={'Clinical'}
             />
           </span>
           <span>

@@ -17,7 +17,7 @@ const styles = {
     whiteSpace: 'nowrap',
     marginTop: '2px',
     width: '90px',
-    left: '-100px',
+    left: '0',
   },
   common: theme => ({
     backgroundColor: 'transparent',
@@ -60,15 +60,15 @@ export default compose(
     dropdownStyles = {},
     buttonStyles = {},
   }) => {
-    const clinicalCount = viewer.repository.cases.hits.total;
+    const biospecimenCount = viewer.repository.cases.hits.total;
     return (
       // <span style={{ marginLeft: '0.2rem' }}>
       <Dropdown
-        className="data-download-clinical"
+        className="data-download-biospecimen"
         button={
           <Button
-            className="data-download-clinical-button"
-            style={{ ...styles.common, ...buttonStyles }}
+            className="data-download-biospecimen-button"
+            style={buttonStyles}
             leftIcon={
               state.jsonDownloading || state.tsvDownloading ? (
                 <Spinner />
@@ -85,11 +85,11 @@ export default compose(
         dropdownStyle={{ ...styles.dropdownContainer, ...dropdownStyles }}
       >
         <DownloadButton
-          className="data-download-clinical-tsv"
+          className="data-download-biospecimen-tsv"
           disabled={disabled}
-          size={clinicalCount}
+          size={biospecimenCount}
           style={styles.button(theme)}
-          endpoint="/clinical_tar"
+          endpoint="/biospecimen_tar"
           format={'TSV'}
           activeText="Processing"
           inactiveText="TSV"
@@ -104,9 +104,9 @@ export default compose(
           filename={tsvFilename}
         />
         <DownloadButton
-          className="data-download-clinical"
-          // disabled={!clinicalCount}
-          size={clinicalCount}
+          className="data-download-biospecimen"
+          disabled={disabled}
+          size={biospecimenCount}
           style={styles.button(theme)}
           endpoint="/cases"
           activeText="Processing"
@@ -121,11 +121,16 @@ export default compose(
           filters={filters}
           fields={['case_id']}
           dataExportExpands={[
-            'demographic',
-            'diagnoses',
-            'diagnoses.treatments',
-            'family_histories',
-            'exposures',
+            'samples',
+            'samples.portions',
+            'samples.portions.analytes',
+            'samples.portions.analytes.aliquots',
+            'samples.portions.analytes.aliquots.annotations',
+            'samples.portions.analytes.annotations',
+            'samples.portions.submitter_id',
+            'samples.portions.slides',
+            'samples.portions.annotations',
+            'samples.portions.center',
           ]}
           filename={jsonFilename}
         />

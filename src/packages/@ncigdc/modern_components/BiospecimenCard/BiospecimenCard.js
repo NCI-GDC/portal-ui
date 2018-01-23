@@ -5,6 +5,7 @@ import _ from 'lodash';
 
 import SearchIcon from 'react-icons/lib/fa/search';
 import { compose, withState, branch, renderComponent } from 'recompose';
+import { connect } from 'react-redux';
 import { humanify } from '@ncigdc/utils/string';
 import { makeFilter } from '@ncigdc/utils/filters';
 import Card from '@ncigdc/uikit/Card';
@@ -28,17 +29,15 @@ import { MicroscopeIcon } from '@ncigdc/theme/icons';
 import { entityTypes } from './';
 import withRouter from '@ncigdc/utils/withRouter';
 import { DISPLAY_SLIDES } from '@ncigdc/utils/constants';
+import DownloadBiospecimenDropdown from '@ncigdc/modern_components/DownloadBiospecimenDropdown/';
+import moment from 'moment';
+import EntityPageHorizontalTable from '@ncigdc/components/EntityPageHorizontalTable';
+import AddToCartButtonSingle from '@ncigdc/components/AddToCartButtonSingle';
+import { toggleFilesInCart } from '@ncigdc/dux/cart';
+import styled from '@ncigdc/theme/styled';
+import DownloadFile from '@ncigdc/components/DownloadFile';
 
 const styles = {
-  button: {
-    color: '#333',
-    backgroundColor: '#fff',
-    borderColor: '#ccc',
-    minWidth: '115px',
-    minHeight: '34px',
-    display: 'inline-flex',
-    outline: 'none',
-  },
   searchIcon: theme => ({
     backgroundColor: theme.greyScale5,
     color: theme.greyScale2,
@@ -49,7 +48,33 @@ const styles = {
     border: `1px solid ${theme.greyScale4}`,
     borderRight: 'none',
   }),
+  common: theme => ({
+    backgroundColor: 'transparent',
+    color: theme.greyScale2,
+    justifyContent: 'flex-start',
+    ':hover': {
+      backgroundColor: theme.greyScale6,
+    },
+  }),
+  downloadButton: theme => ({
+    ...styles.common(theme),
+    padding: '3px 5px',
+    border: `1px solid ${theme.greyScale4}`,
+  }),
 };
+
+const RemoveButton = styled(Button, {
+  backgroundColor: '#FFF',
+  borderColor: '#CCC',
+  color: '#333',
+  margin: '0 auto',
+  padding: '0px 5px',
+  ':hover': {
+    background:
+      'linear-gradient(to bottom, #ffffff 50%, #e6e6e6 100%) repeat scroll 0 0 #E6E6E6',
+    borderColor: '#ADADAD',
+  },
+});
 
 const getType = node => entityTypes.find(type => node[`${type.s}_id`]).s;
 
@@ -59,6 +84,7 @@ export default compose(
     ({ viewer }) => !viewer.repository.cases.hits.edges[0],
     renderComponent(() => <div>No case found.</div>),
   ),
+  connect(state => state.cart),
   withState('allExpanded', 'setAllExpanded', false),
   withState('expandAllFirstClick', 'setExpandAllFirstClick', true),
   withState(
@@ -87,8 +113,14 @@ export default compose(
     allExpanded,
     expandAllFirstClick,
     setExpandAllFirstClick,
+    inactiveText,
+    canAddToCart = true,
+    dispatch,
   }) => {
     const p = edges[0].node;
+    const caseFilter = makeFilter([
+      { field: 'cases.case_id', value: [p.case_id] },
+    ]);
 
     const founds = p.samples.hits.edges.map(e => search(query, e));
     const flattened = _.flatten(founds);
@@ -99,6 +131,10 @@ export default compose(
       ? selectedNode
       : p.samples.hits.edges[0].node;
 
+    const {
+      files: { hits: { edges: supplementalFiles = [] } },
+    } = edges[0].node;
+    console.log(supplementalFiles);
     return (
       <Card
         className="test-biospecimen-card"
@@ -106,7 +142,19 @@ export default compose(
         title={
           <Row style={{ justifyContent: 'space-between' }}>
             <span>Biospecimen</span>
-            <DownloadButton
+            <DownloadBiospecimenDropdown
+              jsonFilename={`biospecimen.case-${p.case_id}.${moment().format(
+                'YYYY-MM-DD',
+              )}.json`}
+              tsvFilename={`biospecimen.case-${p.case_id}.${moment().format(
+                'YYYY-MM-DD',
+              )}.tar.gz`}
+              filters={caseFilter}
+              dropdownStyles={styles.dropdown}
+              buttonStyles={visualizingButton}
+              inactiveText={'Export'}
+            />
+            {/* <DownloadButton
               className="test-download-biospecimen"
               style={visualizingButton}
               filename={`biospecimen.case-${p.case_id}`}
@@ -129,7 +177,7 @@ export default compose(
                 'samples.portions.annotations',
                 'samples.portions.center',
               ]}
-            />
+            /> */}
           </Row>
         }
       >
@@ -268,6 +316,81 @@ export default compose(
             />
           </Column>
         </Row>
+        {supplementalFiles.length > 0 && (
+          <div
+            style={{
+              padding: '10px',
+            }}
+          >
+            <EntityPageHorizontalTable
+              title={'Biospecimen Supplement File'}
+              titleStyle={{ fontSize: '1em' }}
+              className="biospecimen-supplement-file-table"
+              headings={[
+                { key: 'file_name', title: 'Filename' },
+                { key: 'data_format', title: 'Data format' },
+                { key: 'file_size', title: 'Size' },
+                { key: 'action', title: 'Action' },
+              ]}
+              data={supplementalFiles.map((f, i) => {
+                const fileData = {
+                  ...f.node,
+                  projects: [p.projectId],
+                };
+                return {
+                  file_name: (
+                    <span key="filename">
+                      {f.node.access === 'open' && (
+                        <i className="fa fa-unlock-alt" />
+                      )}
+                      {f.node.access === 'controlled' && (
+                        <i className="fa fa-lock" />
+                      )}{' '}
+                      {f.node.file_name}
+                    </span>
+                  ),
+                  data_format: f.node.data_format,
+                  file_size: f.node.file_size,
+                  action: (
+                    <div
+                      style={{
+                        display: 'flex',
+                        flexDirection: 'row',
+                      }}
+                    >
+                      <span key="add_to_cart" style={{ paddingRight: '10px' }}>
+                        {canAddToCart && (
+                          <AddToCartButtonSingle file={fileData} />
+                        )}
+                        {!canAddToCart && (
+                          <RemoveButton
+                            onClick={() => dispatch(toggleFilesInCart(f))}
+                            aria-label="Remove"
+                          >
+                            <Tooltip Component={'Remove'}>
+                              <i className="fa fa-trash-o" />
+                            </Tooltip>
+                          </RemoveButton>
+                        )}
+                      </span>
+                      <span style={{ paddingRight: '10px' }}>
+                        <DownloadFile
+                          style={{
+                            ...styles.downloadButton(theme),
+                            backgroundColor: 'white',
+                          }}
+                          file={f.node}
+                          activeText={''}
+                          inactiveText={''}
+                        />
+                      </span>
+                    </div>
+                  ),
+                };
+              })}
+            />
+          </div>
+        )}
       </Card>
     );
   },

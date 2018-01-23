@@ -302,7 +302,6 @@ const CartPage: TCartPage = ({ viewer, files, user, theme } = {}) => {
             <Row style={{ marginLeft: 'auto' }} spacing="1rem">
               <DownloadClinicalDropdown
                 dropdownStyles={styles.dropdown}
-                size={files.length}
                 filters={filters}
                 tsvFilename={`clinical.cart.${moment().format(
                   'YYYY-MM-DD',

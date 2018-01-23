@@ -10,7 +10,6 @@ import Spinner from '@ncigdc/theme/icons/Spinner';
 import Button from '@ncigdc/uikit/Button';
 import moment from 'moment';
 import { withTheme, theme } from '@ncigdc/theme';
-import { Column } from '@ncigdc/uikit/Flex/';
 
 const styles = {
   dropdownContainer: {
@@ -19,9 +18,6 @@ const styles = {
     marginTop: '2px',
     minWidth: '90px',
     left: '0',
-  },
-  icon: {
-    marginRight: '1em',
   },
   common: theme => ({
     backgroundColor: 'transparent',
@@ -37,9 +33,6 @@ const styles = {
     ...styles.common(theme),
     '[disabled]': styles.common(theme),
   }),
-  iconSpacing: {
-    marginRight: '0.6rem',
-  },
 };
 
 export default compose(
@@ -58,7 +51,6 @@ export default compose(
     active,
     state,
     setState,
-    requests,
     projectId,
     viewer,
     button,
@@ -82,59 +74,55 @@ export default compose(
         }
         dropdownStyle={styles.dropdownContainer}
       >
-        <Column>
-          <DownloadButton
-            className="data-download-clinical-tsv"
-            disabled={!clinicalCount}
-            style={styles.button(theme)}
-            endpoint="/clinical_tar"
-            format={'TSV'}
-            activeText="Processing"
-            inactiveText="TSV"
-            altMessage={false}
-            setParentState={currentState =>
-              setState(s => ({
-                ...s,
-                tsvDownloading: currentState,
-              }))}
-            active={state.tsvDownloading}
-            size={clinicalCount}
-            filters={dataExportFilters}
-            filename={`clinical.project-${projectId}_${moment().format(
-              'YYYY-MM-DD',
-            )}.tar.gz`}
-          />
-        </Column>
-        <Column>
-          <DownloadButton
-            className="data-download-clinical"
-            disabled={!clinicalCount}
-            style={styles.button(theme)}
-            endpoint="/cases"
-            size={clinicalCount}
-            activeText="Processing"
-            inactiveText="JSON"
-            altMessage={false}
-            setParentState={currentState =>
-              setState(s => ({
-                ...s,
-                jsonDownloading: currentState,
-              }))}
-            active={state.jsonDownloading}
-            filters={dataExportFilters}
-            fields={['case_id']}
-            dataExportExpands={[
-              'demographic',
-              'diagnoses',
-              'diagnoses.treatments',
-              'family_histories',
-              'exposures',
-            ]}
-            filename={`clinical.project-${projectId}_${moment().format(
-              'YYYY-MM-DD',
-            )}.json`}
-          />
-        </Column>
+        <DownloadButton
+          className="data-download-clinical-tsv"
+          disabled={!clinicalCount}
+          size={clinicalCount}
+          style={styles.button(theme)}
+          endpoint="/clinical_tar"
+          format={'TSV'}
+          activeText="Processing"
+          inactiveText="TSV"
+          altMessage={false}
+          setParentState={currentState =>
+            setState(s => ({
+              ...s,
+              tsvDownloading: currentState,
+            }))}
+          active={state.tsvDownloading}
+          filters={dataExportFilters}
+          filename={`clinical.project-${projectId}_${moment().format(
+            'YYYY-MM-DD',
+          )}.tar.gz`}
+        />
+        <DownloadButton
+          className="data-download-clinical"
+          disabled={!clinicalCount}
+          size={clinicalCount}
+          style={styles.button(theme)}
+          endpoint="/cases"
+          activeText="Processing"
+          inactiveText="JSON"
+          altMessage={false}
+          setParentState={currentState =>
+            setState(s => ({
+              ...s,
+              jsonDownloading: currentState,
+            }))}
+          active={state.jsonDownloading}
+          filters={dataExportFilters}
+          fields={['case_id']}
+          dataExportExpands={[
+            'demographic',
+            'diagnoses',
+            'diagnoses.treatments',
+            'family_histories',
+            'exposures',
+          ]}
+          filename={`clinical.project-${projectId}_${moment().format(
+            'YYYY-MM-DD',
+          )}.json`}
+        />
       </Dropdown>
     );
   },

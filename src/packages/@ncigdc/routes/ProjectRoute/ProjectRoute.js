@@ -20,7 +20,6 @@ import SsmsTable from '@ncigdc/modern_components/SsmsTable';
 import AffectedCasesBarChart from '@ncigdc/modern_components/AffectedCasesBarChart';
 import AffectedCasesTable from '@ncigdc/modern_components/AffectedCasesTable';
 import DownloadBiospecimenButton from '@ncigdc/modern_components/DownloadBiospecimenButton';
-import DownloadClinicalButton from '@ncigdc/modern_components/DownloadClinicalButton';
 import DownloadManifestButton from '@ncigdc/modern_components/DownloadManifestButton';
 import GenesBarChart from '@ncigdc/modern_components/GenesBarChart';
 import GenesTable from '@ncigdc/modern_components/GenesTable';
@@ -28,6 +27,8 @@ import SurvivalPlotWrapper from '@ncigdc/components/SurvivalPlotWrapper';
 import withPropsOnChange from '@ncigdc/utils/withPropsOnChange';
 import HasCases from '@ncigdc/modern_components/HasCases';
 import { withExists } from '@ncigdc/modern_components/Exists/index';
+import DownloadClinicalDropdown from '@ncigdc/modern_components/DownloadClinicalDropdown/';
+import moment from 'moment';
 
 const styles = {
   column: {
@@ -157,7 +158,16 @@ export default enhance(
             <DownloadBiospecimenButton projectId={projectId} />
           </span>
           <span>
-            <DownloadClinicalButton projectId={projectId} />
+            <DownloadClinicalDropdown
+              dropdownStyles={styles.dropdown}
+              filters={projectFilter}
+              tsvFilename={`clinical.project-${projectId}_${moment().format(
+                'YYYY-MM-DD',
+              )}.tar.gz`}
+              jsonFilename={`clinical.project-${projectId}_${moment().format(
+                'YYYY-MM-DD',
+              )}.json`}
+            />
           </span>
           <span>
             <DownloadManifestButton projectId={projectId} />

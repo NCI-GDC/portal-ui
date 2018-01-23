@@ -46,15 +46,12 @@ export default compose(
   ({
     activeTab,
     setTab,
-    isLoading,
-    dropdownStyle,
     active,
     state,
     setState,
     projectId,
     viewer,
     button,
-    size,
     filters,
     tsvFilename,
     jsonFilename,
@@ -114,7 +111,7 @@ export default compose(
         <DownloadButton
           className="data-download-clinical"
           // disabled={!clinicalCount}
-          size={size}
+          size={clinicalCount}
           style={styles.button(theme)}
           endpoint="/cases"
           activeText="Processing"

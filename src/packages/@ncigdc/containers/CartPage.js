@@ -8,6 +8,7 @@ import { connect } from 'react-redux';
 import FileIcon from 'react-icons/lib/fa/file-o';
 import CaseIcon from 'react-icons/lib/fa/user';
 import FileSizeIcon from 'react-icons/lib/fa/floppy-o';
+import moment from 'moment';
 
 // Custom
 import { setFilter } from '@ncigdc/utils/filters';
@@ -25,6 +26,7 @@ import CartDownloadDropdown from '@ncigdc/components/CartDownloadDropdown';
 import RemoveFromCartButton from '@ncigdc/components/RemoveFromCartButton';
 import SparkMeterWithTooltip from '@ncigdc/components/SparkMeterWithTooltip';
 import SampleSize from '@ncigdc/components/SampleSize';
+import DownloadClinicalDropdown from '@ncigdc/modern_components/DownloadClinicalDropdown';
 
 /*----------------------------------------------------------------------------*/
 
@@ -290,6 +292,38 @@ const CartPage: TCartPage = ({ viewer, files, user, theme } = {}) => {
           </Row>
           <Row style={{ marginBottom: '6rem' }}>
             <Row style={{ marginLeft: 'auto' }} spacing="1rem">
+              <DownloadClinicalDropdown
+                // disabled={!files.length}
+                size={files.length}
+                filters={filters}
+                tsvFilename={`clinical.cart.${moment().format(
+                  'YYYY-MM-DD',
+                )}.tar.gz`}
+                jsonfilename={`clinical.cart.${moment().format(
+                  'YYYY-MM-DD',
+                )}.json`}
+              />
+              {/* <DownloadButton
+                className="data-download-clinical-tsv"
+                disabled={!files.length}
+                size={files.length}
+                // style={styles.button(theme)}
+                endpoint="/clinical_tar"
+                format={'TSV'}
+                activeText="Processing"
+                inactiveText="TSV"
+                altMessage={false}
+                setParentState={currentState =>
+                  setState(s => ({
+                    ...s,
+                    tsvDownloading: currentState,
+                  }))}
+                active={state.tsvDownloading}
+                filters={filters}
+                filename={`clinical.cart.${moment().format(
+                  'YYYY-MM-DD',
+                )}.tar.gz`}
+              /> */}
               <SampleSheetDownloadButton files={{ files }} />
               <MetadataDownloadButton files={{ files }} />
               <CartDownloadDropdown files={files} user={user} />

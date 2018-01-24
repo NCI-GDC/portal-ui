@@ -32,9 +32,8 @@ import DownloadBiospecimenDropdown from '@ncigdc/modern_components/DownloadBiosp
 import moment from 'moment';
 import EntityPageHorizontalTable from '@ncigdc/components/EntityPageHorizontalTable';
 import AddToCartButtonSingle from '@ncigdc/components/AddToCartButtonSingle';
-import { toggleFilesInCart } from '@ncigdc/dux/cart';
-import styled from '@ncigdc/theme/styled';
 import DownloadFile from '@ncigdc/components/DownloadFile';
+import RemoveFromCartSingle from '@ncigdc/components/RemoveFromCartSingle';
 
 const styles = {
   searchIcon: theme => ({
@@ -61,19 +60,6 @@ const styles = {
     border: `1px solid ${theme.greyScale4}`,
   }),
 };
-
-const RemoveButton = styled(Button, {
-  backgroundColor: '#FFF',
-  borderColor: '#CCC',
-  color: '#333',
-  margin: '0 auto',
-  padding: '0px 5px',
-  ':hover': {
-    background:
-      'linear-gradient(to bottom, #ffffff 50%, #e6e6e6 100%) repeat scroll 0 0 #E6E6E6',
-    borderColor: '#ADADAD',
-  },
-});
 
 const getType = node =>
   (entityTypes.find(type => node[`${type.s}_id`]) || { s: null }).s;
@@ -120,7 +106,6 @@ export default compose(
     setExpandAllFirstClick,
     inactiveText,
     canAddToCart = true,
-    dispatch,
   }) => {
     const p = edges[0].node;
     const caseFilter = makeFilter([
@@ -342,14 +327,7 @@ export default compose(
                           <AddToCartButtonSingle file={fileData} />
                         )}
                         {!canAddToCart && (
-                          <RemoveButton
-                            onClick={() => dispatch(toggleFilesInCart(f))}
-                            aria-label="Remove"
-                          >
-                            <Tooltip Component={'Remove'}>
-                              <i className="fa fa-trash-o" />
-                            </Tooltip>
-                          </RemoveButton>
+                          <RemoveFromCartSingle file={fileData} />
                         )}
                       </span>
                       <span style={{ paddingRight: '10px' }}>

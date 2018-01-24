@@ -78,8 +78,6 @@ const TableActions = ({
   scope,
   downloadClinical,
   downloadBiospecimen,
-  // state,
-  // setState,
   theme,
   totalCases,
 }: TProps) => {

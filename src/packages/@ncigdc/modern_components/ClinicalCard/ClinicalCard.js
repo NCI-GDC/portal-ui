@@ -17,25 +17,11 @@ import Button from '@ncigdc/uikit/Button';
 import moment from 'moment';
 import EntityPageHorizontalTable from '@ncigdc/components/EntityPageHorizontalTable';
 import AddToCartButtonSingle from '@ncigdc/components/AddToCartButtonSingle';
-import { toggleFilesInCart } from '@ncigdc/dux/cart';
 import { Tooltip } from '@ncigdc/uikit/Tooltip';
-import styled from '@ncigdc/theme/styled';
 import DownloadFile from '@ncigdc/components/DownloadFile';
 import DownloadClinicalDropdown from '@ncigdc/modern_components/DownloadClinicalDropdown/';
 import { makeFilter } from '@ncigdc/utils/filters';
-
-const RemoveButton = styled(Button, {
-  backgroundColor: '#FFF',
-  borderColor: '#CCC',
-  color: '#333',
-  margin: '0 auto',
-  padding: '0px 5px',
-  ':hover': {
-    background:
-      'linear-gradient(to bottom, #ffffff 50%, #e6e6e6 100%) repeat scroll 0 0 #E6E6E6',
-    borderColor: '#ADADAD',
-  },
-});
+import RemoveFromCartSingle from '@ncigdc/components/RemoveFromCartSingle';
 
 const styles = {
   common: theme => ({
@@ -77,7 +63,6 @@ export default compose(
     setState,
     requests,
     canAddToCart = true,
-    dispatch,
   }) => {
     const {
       case_id: caseId,
@@ -404,14 +389,7 @@ export default compose(
                           <AddToCartButtonSingle file={fileData} />
                         )}
                         {!canAddToCart && (
-                          <RemoveButton
-                            onClick={() => dispatch(toggleFilesInCart(f))}
-                            aria-label="Remove"
-                          >
-                            <Tooltip Component={'Remove'}>
-                              <i className="fa fa-trash-o" />
-                            </Tooltip>
-                          </RemoveButton>
+                          <RemoveFromCartSingle file={fileData} />
                         )}
                       </span>
                       <span style={{ paddingRight: '10px' }}>

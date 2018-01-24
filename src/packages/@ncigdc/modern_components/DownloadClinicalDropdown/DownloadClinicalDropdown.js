@@ -108,7 +108,7 @@ export default compose(
           filename={tsvFilename}
         />
         <DownloadButton
-          className="data-download-clinical"
+          className="data-download-clinical-json"
           size={clinicalCount}
           style={styles.button(theme)}
           endpoint="/cases"

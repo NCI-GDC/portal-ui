@@ -4,17 +4,15 @@ import React from 'react';
 import Relay from 'react-relay/classic';
 import { connect } from 'react-redux';
 import { compose, setDisplayName } from 'recompose';
-
 import { Row } from '@ncigdc/uikit/Flex';
-
 import SearchPage from '@ncigdc/components/SearchPage';
 import TabbedLinks from '@ncigdc/components/TabbedLinks';
 import NoResultsMessage from '@ncigdc/components/NoResultsMessage';
-
 import RepoCasesTable from '@ncigdc/modern_components/RepoCasesTable';
-import CaseAggregations from '@ncigdc/containers/CaseAggregations';
+import CaseAggregations from '@ncigdc/modern_components/CaseAggregations';
+import FileAggregations from '@ncigdc/modern_components/FileAggregations';
+
 import FilesTable from '@ncigdc/modern_components/FilesTable';
-import FileAggregations from '@ncigdc/containers/FileAggregations';
 import { SaveIcon } from '@ncigdc/theme/icons';
 import withFilters from '@ncigdc/utils/withFilters';
 import formatFileSize from '@ncigdc/utils/formatFileSize';
@@ -103,7 +101,6 @@ export const RepositoryPageComponent = (props: TProps) => {
   const fileCount = props.viewer.repository.files.hits.total;
   const caseCount = props.viewer.repository.cases.hits.total;
   const fileSize = props.viewer.cart_summary.aggregations.fs.value;
-
   return (
     <div className="test-repository-page">
       <SearchPage
@@ -118,13 +115,11 @@ export const RepositoryPageComponent = (props: TProps) => {
             text: 'Files',
             component: (
               <FileAggregations
-                facets={props.viewer.repository.customFileFacets}
-                aggregations={props.viewer.repository.files.aggregations}
-                filters={props.filters}
                 suggestions={
                   (props.viewer.autocomplete_file || { hits: [] }).hits
                 }
                 setAutocomplete={setAutocompleteFiles}
+                relay={props.relay}
               />
             ),
           },
@@ -133,14 +128,11 @@ export const RepositoryPageComponent = (props: TProps) => {
             text: 'Cases',
             component: (
               <CaseAggregations
-                facets={props.viewer.repository.customCaseFacets}
-                filters={props.filters}
-                aggregations={props.viewer.repository.cases.aggregations}
-                hits={(props.viewer.repository.cases || {}).hits || {}}
                 suggestions={
                   (props.viewer.autocomplete_case || { hits: [] }).hits
                 }
                 setAutocomplete={setAutocompleteCases}
+                relay={props.relay}
               />
             ),
           },
@@ -157,12 +149,6 @@ export const RepositoryPageComponent = (props: TProps) => {
               defaultIndex={0}
               tabToolbar={
                 <Row spacing="2rem" style={{ alignItems: 'center' }}>
-                  {/*<span style={{ flex: 'none' }}>
-                    <CaseIcon outline style={{ marginRight: 5 }} /> <strong>{caseCount.toLocaleString()}</strong> cases
-                  </span>
-                  <span style={{ flex: 'none' }}>
-                    <FileIcon text style={{ marginRight: 5 }} /> <strong>{fileCount.toLocaleString()}</strong> files
-                  </span>*/}
                   <span style={{ flex: 'none' }}>
                     <SaveIcon style={{ marginRight: 5 }} />{' '}
                     <strong>{formatFileSize(fileSize)}</strong>
@@ -258,16 +244,8 @@ export const RepositoryPageQuery = {
           }
         }
         repository {
-          customCaseFacets: cases {
-            ${CaseAggregations.getFragment('facets')}
-          }
-          customFileFacets: files {
-            ${FileAggregations.getFragment('facets')}
-          }
+
           cases {
-            aggregations(filters: $filters aggregations_filter_themselves: false) {
-              ${CaseAggregations.getFragment('aggregations')}
-            }
             pies: aggregations(filters: $filters aggregations_filter_themselves: true) {
               ${RepoCasesPies.getFragment('aggregations')}
             }
@@ -276,9 +254,7 @@ export const RepositoryPageQuery = {
             }
           }
           files {
-            aggregations(filters: $filters aggregations_filter_themselves: false) {
-              ${FileAggregations.getFragment('aggregations')}
-            }
+
             pies: aggregations(filters: $filters aggregations_filter_themselves: true) {
               ${RepoFilesPies.getFragment('aggregations')}
             }

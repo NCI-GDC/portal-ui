@@ -3,7 +3,7 @@
 import React from 'react';
 import { compose, withState, lifecycle, withProps } from 'recompose';
 import { get } from 'lodash';
-import { getDefaultCurve, enoughData } from '@ncigdc/utils/survivalplot';
+import { getDefaultCurve } from '@ncigdc/utils/survivalplot';
 import FullWidthLayout from '@ncigdc/components/Layouts/FullWidthLayout';
 import ProjectSummary from '@ncigdc/modern_components/ProjectSummary';
 import {
@@ -11,21 +11,15 @@ import {
   ProjectCountsExpStrategy,
 } from '@ncigdc/modern_components/ProjectCounts';
 import { fetchApi } from '@ncigdc/utils/ajax';
-import SpinnerCentered from '@ncigdc/components/SpinnerCentered';
 import { makeFilter } from '@ncigdc/utils/filters';
-import { Row, Column } from '@ncigdc/uikit/Flex';
-import ExploreLink from '@ncigdc/components/Links/ExploreLink';
-import { GdcDataIcon, GridIcon } from '@ncigdc/theme/icons';
-import SsmsTable from '@ncigdc/modern_components/SsmsTable';
-import AffectedCasesBarChart from '@ncigdc/modern_components/AffectedCasesBarChart';
-import AffectedCasesTable from '@ncigdc/modern_components/AffectedCasesTable';
 import DownloadManifestButton from '@ncigdc/modern_components/DownloadManifestButton';
-import GenesBarChart from '@ncigdc/modern_components/GenesBarChart';
-import GenesTable from '@ncigdc/modern_components/GenesTable';
-import SurvivalPlotWrapper from '@ncigdc/components/SurvivalPlotWrapper';
 import withPropsOnChange from '@ncigdc/utils/withPropsOnChange';
-import HasCases from '@ncigdc/modern_components/HasCases';
 import { withExists } from '@ncigdc/modern_components/Exists/index';
+import Button from '@ncigdc/uikit/Button';
+import withRouter from '@ncigdc/utils/withRouter';
+import { stringifyJSONParam } from '@ncigdc/utils/uri';
+import ProjectPrimarySitesTable from '@ncigdc/modern_components/ProjectPrimarySitesTable/index';
+import { Row } from '@ncigdc/uikit/Flex';
 import DownloadClinicalDropdown from '@ncigdc/modern_components/DownloadClinicalDropdown/';
 import moment from 'moment';
 import DownloadBiospecimenDropdown from '@ncigdc/modern_components/DownloadBiospecimenDropdown/';
@@ -56,6 +50,7 @@ const initialState = {
 const enhance = compose(
   withProps(({ match }) => ({ type: 'Project', id: get(match, 'params.id') })),
   withExists,
+  withRouter,
   withState(
     'selectedMutatedGenesSurvivalData',
     'setSelectedMutatedGenesSurvivalData',
@@ -129,22 +124,8 @@ export default enhance(
     setSelectedMutatedGenesSurvivalData,
     selectedFrequentMutationsSurvivalData,
     setSelectedFrequentMutationsSurvivalData,
+    push,
   }) => {
-    const mutatedGenesSurvivalData = {
-      legend:
-        selectedMutatedGenesSurvivalData.legend || defaultSurvivalData.legend,
-      rawData:
-        selectedMutatedGenesSurvivalData.rawData || defaultSurvivalData.rawData,
-    };
-
-    const frequentMutationsSurvivalData = {
-      legend:
-        selectedFrequentMutationsSurvivalData.legend ||
-        defaultSurvivalData.legend,
-      rawData:
-        selectedFrequentMutationsSurvivalData.rawData ||
-        defaultSurvivalData.rawData,
-    };
     const projectFilter = makeFilter([
       { field: 'cases.project.project_id', value: projectId },
     ]);
@@ -155,7 +136,26 @@ export default enhance(
           spacing="0.2rem"
         >
           <span>
+            <Button
+              onClick={projectId => {
+                push({
+                  pathname: '/exploration',
+                  query: {
+                    filters: stringifyJSONParam(projectFilter),
+                  },
+                });
+              }}
+            >
+              Explore Project Data
+            </Button>
+          </span>
+          <span>
             <DownloadBiospecimenDropdown
+              dropdownStyles={{
+                width: '126px',
+                left: '2px',
+                marginTop: '2px',
+              }}
               jsonFilename={`biospecimen.project-${projectId}_${moment().format(
                 'YYYY-MM-DD',
               )}.json`}
@@ -168,6 +168,11 @@ export default enhance(
           </span>
           <span>
             <DownloadClinicalDropdown
+              dropdownStyles={{
+                width: '90px',
+                left: '2px',
+                marginTop: '2px',
+              }}
               filters={projectFilter}
               tsvFilename={`clinical.project-${projectId}_${moment().format(
                 'YYYY-MM-DD',
@@ -191,138 +196,11 @@ export default enhance(
             <ProjectCountsExpStrategy projectId={projectId} />
           </span>
         </Row>
-
-        <HasCases projectId={projectId} mutated>
-          <Column style={styles.card}>
-            <Row style={{ padding: '1rem 1rem 2rem' }}>
-              <h1 style={styles.heading} id="mutated-genes">
-                <i
-                  className="fa fa-bar-chart-o"
-                  style={{ paddingRight: '10px' }}
-                />
-                Most Frequently Mutated Genes
-              </h1>
-              <Row style={{ alignItems: 'center' }}>
-                <ExploreLink
-                  query={{
-                    searchTableTab: 'oncogrid',
-                    filters: projectFilter,
-                  }}
-                  style={{ marginRight: '1.5rem' }}
-                >
-                  <GridIcon /> OncoGrid
-                </ExploreLink>
-                <ExploreLink
-                  query={{
-                    searchTableTab: 'genes',
-                    filters: projectFilter,
-                  }}
-                >
-                  <GdcDataIcon /> Open in Exploration
-                </ExploreLink>
-              </Row>
-            </Row>
-            <Column>
-              <Row>
-                <Column flex="none" style={{ width: '50%' }}>
-                  <GenesBarChart
-                    defaultFilters={projectFilter}
-                    projectId={projectId}
-                    context="project"
-                  />
-                </Column>
-                <Column flex="none" style={{ width: '50%' }}>
-                  <SurvivalPlotWrapper
-                    {...mutatedGenesSurvivalData}
-                    onReset={() => setSelectedMutatedGenesSurvivalData({})}
-                    height={240}
-                    survivalPlotloading={loadingSurvival}
-                  />
-                </Column>
-              </Row>
-              <GenesTable
-                survivalData={mutatedGenesSurvivalData}
-                setSelectedSurvivalData={setSelectedMutatedGenesSurvivalData}
-                selectedSurvivalData={selectedMutatedGenesSurvivalData}
-                hasEnoughSurvivalDataOnPrimaryCurve={enoughData(
-                  defaultSurvivalData.rawData,
-                )}
-                defaultFilters={projectFilter}
-                defaultSize={10}
-                context={projectId}
-              />
-            </Column>
-          </Column>
-          <Column style={{ ...styles.card, marginTop: '2rem' }}>
-            <Row style={{ padding: '1rem 1rem 2rem', alignItems: 'center' }}>
-              <h1 style={{ ...styles.heading }} id="frequent-mutations">
-                <i
-                  className="fa fa-bar-chart-o"
-                  style={{ paddingRight: '10px' }}
-                />
-                Most Frequent Somatic Mutations
-              </h1>
-              <ExploreLink
-                query={{
-                  searchTableTab: 'mutations',
-                  filters: projectFilter,
-                }}
-              >
-                <GdcDataIcon /> Open in Exploration
-              </ExploreLink>
-            </Row>
-            <Column>
-              <Row>
-                <Column flex="1">
-                  <SurvivalPlotWrapper
-                    {...frequentMutationsSurvivalData}
-                    onReset={() => setSelectedFrequentMutationsSurvivalData({})}
-                    height={240}
-                    survivalPlotloading={loadingSurvival}
-                  />
-                </Column>
-                <Column flex="1" />
-              </Row>
-              {loadingAggregation ? (
-                <SpinnerCentered />
-              ) : (
-                <SsmsTable
-                  defaultFilters={projectFilter}
-                  selectedSurvivalData={selectedFrequentMutationsSurvivalData}
-                  setSelectedSurvivalData={
-                    setSelectedFrequentMutationsSurvivalData
-                  }
-                  hasEnoughSurvivalDataOnPrimaryCurve={enoughData(
-                    defaultSurvivalData.rawData,
-                  )}
-                  showSurvivalPlot
-                  context={projectId}
-                />
-              )}
-            </Column>
-          </Column>
-          <Column style={{ ...styles.card, marginTop: '2rem' }}>
-            <Row style={{ padding: '1rem 1rem 2rem', alignItems: 'center' }}>
-              <h1 style={{ ...styles.heading }}>
-                <i
-                  className="fa fa-bar-chart-o"
-                  style={{ paddingRight: '10px' }}
-                />
-                Most Affected Cases
-              </h1>
-              <ExploreLink
-                query={{ searchTableTab: 'cases', filters: projectFilter }}
-              >
-                <GdcDataIcon /> Open in Exploration
-              </ExploreLink>
-            </Row>
-            <AffectedCasesBarChart
-              defaultFilters={projectFilter}
-              style={{ width: '50%', flexGrow: 0 }}
-            />
-            <AffectedCasesTable defaultFilters={projectFilter} />
-          </Column>
-        </HasCases>
+        <Row>
+          <span style={{ ...styles.column, marginBottom: '2rem', flex: 1 }}>
+            <ProjectPrimarySitesTable projectId={projectId} />
+          </span>
+        </Row>
       </FullWidthLayout>
     );
   },

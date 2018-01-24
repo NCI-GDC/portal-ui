@@ -75,13 +75,19 @@ const RemoveButton = styled(Button, {
   },
 });
 
-const getType = node => entityTypes.find(type => node[`${type.s}_id`]).s;
+const getType = node =>
+  (entityTypes.find(type => node[`${type.s}_id`]) || { s: null }).s;
 
 export default compose(
   withRouter,
   branch(
     ({ viewer }) => !viewer.repository.cases.hits.edges[0],
     renderComponent(() => <div>No case found.</div>),
+  ),
+  branch(
+    ({ viewer }) =>
+      !viewer.repository.cases.hits.edges[0].node.samples.hits.edges.length,
+    renderComponent(() => <div>No biospecimen data found.</div>),
   ),
   connect(state => state.cart),
   withState('allExpanded', 'setAllExpanded', false),

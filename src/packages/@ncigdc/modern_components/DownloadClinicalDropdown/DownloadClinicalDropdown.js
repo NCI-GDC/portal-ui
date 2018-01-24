@@ -64,7 +64,6 @@ export default compose(
   }) => {
     const clinicalCount = viewer.repository.cases.hits.total;
     return (
-      // <span style={{ marginLeft: '0.2rem' }}>
       <Dropdown
         className="data-download-clinical"
         button={
@@ -134,7 +133,6 @@ export default compose(
           filename={jsonFilename}
         />
       </Dropdown>
-      // </span>
     );
   },
 );

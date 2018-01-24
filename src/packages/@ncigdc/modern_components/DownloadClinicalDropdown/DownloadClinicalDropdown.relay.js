@@ -2,10 +2,7 @@
 
 import React from 'react';
 import { graphql } from 'react-relay';
-import { parse } from 'query-string';
 import { withRouter } from 'react-router-dom';
-import { parseFilterParam } from '@ncigdc/utils/uri';
-import { replaceFilters } from '@ncigdc/utils/filters';
 import { compose, withPropsOnChange } from 'recompose';
 import Query from '@ncigdc/modern_components/Query';
 

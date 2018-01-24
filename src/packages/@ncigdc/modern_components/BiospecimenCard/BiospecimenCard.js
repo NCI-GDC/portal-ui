@@ -13,7 +13,6 @@ import { Row, Column } from '@ncigdc/uikit/Flex';
 import Input from '@ncigdc/uikit/Form/Input';
 import EntityPageVerticalTable from '@ncigdc/components/EntityPageVerticalTable';
 import Hidden from '@ncigdc/components/Hidden';
-import DownloadButton from '@ncigdc/components/DownloadButton';
 import { withTheme } from '@ncigdc/theme';
 import { visualizingButton } from '@ncigdc/theme/mixins';
 import Button from '@ncigdc/uikit/Button';

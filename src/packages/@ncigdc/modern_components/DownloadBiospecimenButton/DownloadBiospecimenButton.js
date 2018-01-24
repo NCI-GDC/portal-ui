@@ -4,8 +4,7 @@ import React from 'react';
 import { compose } from 'recompose';
 import DownloadButton from '@ncigdc/components/DownloadButton';
 import { makeFilter } from '@ncigdc/utils/filters';
-import { withTheme, theme } from '@ncigdc/theme';
-import { Column } from '@ncigdc/uikit/Flex/';
+import { withTheme } from '@ncigdc/theme';
 
 export default compose(withTheme)(({ isLoading, projectId, viewer }) => {
   const projectFilter = [

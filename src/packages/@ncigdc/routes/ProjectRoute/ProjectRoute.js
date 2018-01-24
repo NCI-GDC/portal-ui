@@ -19,7 +19,6 @@ import { GdcDataIcon, GridIcon } from '@ncigdc/theme/icons';
 import SsmsTable from '@ncigdc/modern_components/SsmsTable';
 import AffectedCasesBarChart from '@ncigdc/modern_components/AffectedCasesBarChart';
 import AffectedCasesTable from '@ncigdc/modern_components/AffectedCasesTable';
-import DownloadBiospecimenButton from '@ncigdc/modern_components/DownloadBiospecimenButton';
 import DownloadManifestButton from '@ncigdc/modern_components/DownloadManifestButton';
 import GenesBarChart from '@ncigdc/modern_components/GenesBarChart';
 import GenesTable from '@ncigdc/modern_components/GenesTable';

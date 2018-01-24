@@ -3,12 +3,10 @@
 import React from 'react';
 import { compose, withState } from 'recompose';
 import DownloadButton from '@ncigdc/components/DownloadButton';
-import { makeFilter } from '@ncigdc/utils/filters';
 import Dropdown from '@ncigdc/uikit/Dropdown';
 import DownloadIcon from '@ncigdc/theme/icons/Download';
 import Spinner from '@ncigdc/theme/icons/Spinner';
 import Button from '@ncigdc/uikit/Button';
-import moment from 'moment';
 import { withTheme, theme } from '@ncigdc/theme';
 
 const styles = {

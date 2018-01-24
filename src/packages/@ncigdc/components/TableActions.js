@@ -8,10 +8,6 @@ import { parseFilterParam } from '@ncigdc/utils/uri';
 import DownloadButton from '@ncigdc/components/DownloadButton';
 import ArrangeColumnsButton from '@ncigdc/components/ArrangeColumnsButton';
 import SortTableButton from '@ncigdc/components/SortTableButton';
-import Dropdown from '@ncigdc/uikit/Dropdown';
-import DownloadIcon from '@ncigdc/theme/icons/Download';
-import Spinner from '@ncigdc/theme/icons/Spinner';
-import Button from '@ncigdc/uikit/Button';
 import DownloadClinicalDropdown from '@ncigdc/modern_components/DownloadClinicalDropdown';
 import DownloadBiospecimenDropdown from '@ncigdc/modern_components/DownloadBiospecimenDropdown/';
 

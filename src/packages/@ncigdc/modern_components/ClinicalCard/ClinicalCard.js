@@ -13,11 +13,9 @@ import EntityPageVerticalTable from '@ncigdc/components/EntityPageVerticalTable'
 import ageDisplay from '@ncigdc/utils/ageDisplay';
 import { truncate } from 'lodash/string';
 import { visualizingButton } from '@ncigdc/theme/mixins';
-import Button from '@ncigdc/uikit/Button';
 import moment from 'moment';
 import EntityPageHorizontalTable from '@ncigdc/components/EntityPageHorizontalTable';
 import AddToCartButtonSingle from '@ncigdc/components/AddToCartButtonSingle';
-import { Tooltip } from '@ncigdc/uikit/Tooltip';
 import DownloadFile from '@ncigdc/components/DownloadFile';
 import DownloadClinicalDropdown from '@ncigdc/modern_components/DownloadClinicalDropdown/';
 import { makeFilter } from '@ncigdc/utils/filters';

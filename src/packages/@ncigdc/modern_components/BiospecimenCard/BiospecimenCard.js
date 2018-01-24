@@ -134,7 +134,6 @@ export default compose(
     const {
       files: { hits: { edges: supplementalFiles = [] } },
     } = edges[0].node;
-    console.log(supplementalFiles);
     return (
       <Card
         className="test-biospecimen-card"
@@ -150,34 +149,9 @@ export default compose(
                 'YYYY-MM-DD',
               )}.tar.gz`}
               filters={caseFilter}
-              dropdownStyles={styles.dropdown}
               buttonStyles={visualizingButton}
               inactiveText={'Export'}
             />
-            {/* <DownloadButton
-              className="test-download-biospecimen"
-              style={visualizingButton}
-              filename={`biospecimen.case-${p.case_id}`}
-              endpoint="cases"
-              activeText="Processing"
-              inactiveText="Export"
-              filters={makeFilter([
-                { field: 'cases.case_id', value: p.case_id },
-              ])}
-              fields={['case_id']}
-              dataExportExpands={[
-                'samples',
-                'samples.portions',
-                'samples.portions.analytes',
-                'samples.portions.analytes.aliquots',
-                'samples.portions.analytes.aliquots.annotations',
-                'samples.portions.analytes.annotations',
-                'samples.portions.submitter_id',
-                'samples.portions.slides',
-                'samples.portions.annotations',
-                'samples.portions.center',
-              ]}
-            /> */}
           </Row>
         }
       >

@@ -27,16 +27,6 @@ import { withTheme } from '@ncigdc/theme';
 
 import type { TRawQuery } from '@ncigdc/utils/uri/types';
 
-const styles = {
-  dropdown: {
-    top: '100%',
-    whiteSpace: 'nowrap',
-    marginTop: '5px',
-    width: '100px',
-    left: '-75px',
-  },
-};
-
 type TProps = {
   type: string,
   displayType?: string,
@@ -125,14 +115,13 @@ const TableActions = ({
           filters={
             currentFilters || parseFilterParam((query || {}).filters, {})
           }
-          dropdownStyles={styles.dropdown}
           buttonStyles={visualizingButton}
           inactiveText={'Biospecimen'}
         />
       )}
       {downloadClinical && (
         <DownloadClinicalDropdown
-          dropdownStyles={styles.dropdown}
+          buttonStyles={visualizingButton}
           tsvFilename={`clinical.cases_selection.${moment().format(
             'YYYY-MM-DD',
           )}.tar.gz`}
@@ -142,7 +131,6 @@ const TableActions = ({
           filters={
             currentFilters || parseFilterParam((query || {}).filters, {})
           }
-          buttonStyles={visualizingButton}
           inactiveText={'Clinical'}
         />
       )}

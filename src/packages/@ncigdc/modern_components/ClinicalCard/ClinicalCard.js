@@ -42,12 +42,6 @@ const RemoveButton = styled(Button, {
 });
 
 const styles = {
-  dropdownContainer: {
-    top: '100%',
-    whiteSpace: 'nowrap',
-    marginTop: '2px',
-    minWidth: '100px',
-  },
   common: theme => ({
     backgroundColor: 'transparent',
     color: theme.greyScale2,
@@ -109,14 +103,13 @@ export default compose(
           <Row style={{ justifyContent: 'space-between' }}>
             <span>Clinical</span>
             <DownloadClinicalDropdown
-              dropdownStyles={styles.dropdown}
               buttonStyles={visualizingButton}
               inactiveText={'Export'}
               filters={caseFilter}
-              tsvFilename={`clinical.project-${caseId}_${moment().format(
+              tsvFilename={`clinical.case-${caseId}_${moment().format(
                 'YYYY-MM-DD',
               )}.tar.gz`}
-              jsonFilename={`clinical.project-${caseId}_${moment().format(
+              jsonFilename={`clinical.case-${caseId}_${moment().format(
                 'YYYY-MM-DD',
               )}.json`}
             />

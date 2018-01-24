@@ -27,6 +27,7 @@ import RemoveFromCartButton from '@ncigdc/components/RemoveFromCartButton';
 import SparkMeterWithTooltip from '@ncigdc/components/SparkMeterWithTooltip';
 import SampleSize from '@ncigdc/components/SampleSize';
 import DownloadClinicalDropdown from '@ncigdc/modern_components/DownloadClinicalDropdown';
+import DownloadBiospecimenDropdown from '@ncigdc/modern_components/DownloadBiospecimenDropdown/';
 
 /*----------------------------------------------------------------------------*/
 
@@ -69,14 +70,6 @@ const CartPage: TCartPage = ({ viewer, files, user, theme } = {}) => {
       padding: '1rem',
       borderBottom: `1px solid ${theme.greyScale4}`,
       color: theme.primary,
-    },
-    dropdown: {
-      top: '100%',
-      whiteSpace: 'nowrap',
-      marginTop: '5px',
-      width: '90px',
-      left: '-75px',
-      borderRadius: '5px',
     },
   };
 
@@ -300,8 +293,29 @@ const CartPage: TCartPage = ({ viewer, files, user, theme } = {}) => {
           </Row>
           <Row style={{ marginBottom: '6rem' }}>
             <Row style={{ marginLeft: 'auto' }} spacing="1rem">
+              <DownloadBiospecimenDropdown
+                buttonStyles={{ marginLeft: '1em' }}
+                dropdownStyles={{
+                  width: '126px',
+                  left: '14px',
+                  marginTop: '2px',
+                }}
+                filters={filters}
+                tsvFilename={`biospecimen.cart.${moment().format(
+                  'YYYY-MM-DD',
+                )}.tar.gz`}
+                jsonfilename={`biospecimen.cart.${moment().format(
+                  'YYYY-MM-DD',
+                )}.json`}
+                inactiveText={'Biospecimen'}
+              />
               <DownloadClinicalDropdown
-                dropdownStyles={styles.dropdown}
+                dropdownStyles={{
+                  width: '90px',
+                  left: '13px',
+                  marginTop: '2px',
+                }}
+                buttonStyles={{ margin: '0 1em' }}
                 filters={filters}
                 tsvFilename={`clinical.cart.${moment().format(
                   'YYYY-MM-DD',
@@ -309,28 +323,8 @@ const CartPage: TCartPage = ({ viewer, files, user, theme } = {}) => {
                 jsonfilename={`clinical.cart.${moment().format(
                   'YYYY-MM-DD',
                 )}.json`}
+                inactiveText={'Clinical'}
               />
-              {/* <DownloadButton
-                className="data-download-clinical-tsv"
-                disabled={!files.length}
-                size={files.length}
-                // style={styles.button(theme)}
-                endpoint="/clinical_tar"
-                format={'TSV'}
-                activeText="Processing"
-                inactiveText="TSV"
-                altMessage={false}
-                setParentState={currentState =>
-                  setState(s => ({
-                    ...s,
-                    tsvDownloading: currentState,
-                  }))}
-                active={state.tsvDownloading}
-                filters={filters}
-                filename={`clinical.cart.${moment().format(
-                  'YYYY-MM-DD',
-                )}.tar.gz`}
-              /> */}
               <SampleSheetDownloadButton files={{ files }} />
               <MetadataDownloadButton files={{ files }} />
               <CartDownloadDropdown files={files} user={user} />

@@ -15,9 +15,14 @@ const styles = {
   dropdownContainer: {
     top: '100%',
     whiteSpace: 'nowrap',
-    marginTop: '2px',
-    width: '90px',
-    left: '-100px',
+    marginTop: '5px',
+    minWidth: '100%',
+    width: '100%',
+    left: '1px',
+    borderRadius: '5px',
+  },
+  dropdownButton: {
+    marginLeft: '0.2rem',
   },
   common: theme => ({
     backgroundColor: 'transparent',
@@ -55,7 +60,6 @@ export default compose(
     filters,
     tsvFilename,
     jsonFilename,
-    disabled,
     inactiveText,
     dropdownStyles = {},
     buttonStyles = {},
@@ -68,7 +72,11 @@ export default compose(
         button={
           <Button
             className="data-download-clinical-button"
-            style={{ ...styles.common, ...buttonStyles }}
+            style={{
+              ...styles.common,
+              ...styles.dropdownButton,
+              ...buttonStyles,
+            }}
             leftIcon={
               state.jsonDownloading || state.tsvDownloading ? (
                 <Spinner />
@@ -86,7 +94,6 @@ export default compose(
       >
         <DownloadButton
           className="data-download-clinical-tsv"
-          disabled={disabled}
           size={clinicalCount}
           style={styles.button(theme)}
           endpoint="/clinical_tar"
@@ -105,7 +112,6 @@ export default compose(
         />
         <DownloadButton
           className="data-download-clinical"
-          // disabled={!clinicalCount}
           size={clinicalCount}
           style={styles.button(theme)}
           endpoint="/cases"

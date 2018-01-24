@@ -15,9 +15,14 @@ const styles = {
   dropdownContainer: {
     top: '100%',
     whiteSpace: 'nowrap',
-    marginTop: '2px',
-    width: '90px',
-    left: '0',
+    marginTop: '5px',
+    minWidth: '100%',
+    width: '100%',
+    left: '1px',
+    borderRadius: '5px',
+  },
+  dropdownButton: {
+    marginLeft: '0.2rem',
   },
   common: theme => ({
     backgroundColor: 'transparent',
@@ -55,20 +60,18 @@ export default compose(
     filters,
     tsvFilename,
     jsonFilename,
-    disabled,
     inactiveText,
     dropdownStyles = {},
     buttonStyles = {},
   }) => {
     const biospecimenCount = viewer.repository.cases.hits.total;
     return (
-      // <span style={{ marginLeft: '0.2rem' }}>
       <Dropdown
         className="data-download-biospecimen"
         button={
           <Button
             className="data-download-biospecimen-button"
-            style={buttonStyles}
+            style={{ ...styles.dropdownButton, ...buttonStyles }}
             leftIcon={
               state.jsonDownloading || state.tsvDownloading ? (
                 <Spinner />
@@ -86,7 +89,6 @@ export default compose(
       >
         <DownloadButton
           className="data-download-biospecimen-tsv"
-          disabled={disabled}
           size={biospecimenCount}
           style={styles.button(theme)}
           endpoint="/biospecimen_tar"
@@ -105,7 +107,6 @@ export default compose(
         />
         <DownloadButton
           className="data-download-biospecimen"
-          disabled={disabled}
           size={biospecimenCount}
           style={styles.button(theme)}
           endpoint="/cases"
@@ -135,7 +136,6 @@ export default compose(
           filename={jsonFilename}
         />
       </Dropdown>
-      // </span>
     );
   },
 );

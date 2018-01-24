@@ -21,7 +21,6 @@ export default (Component: ReactClass<*>) =>
     return (
       <Query
         parentProps={props}
-        minHeight={53}
         style={{ width: 'auto' }}
         variables={props.variables}
         Component={Component}

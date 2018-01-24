@@ -44,13 +44,6 @@ const styles = {
   card: {
     backgroundColor: 'white',
   },
-  dropdown: {
-    top: '100%',
-    whiteSpace: 'nowrap',
-    marginTop: '2px',
-    width: '90px',
-    left: '-40px',
-  },
 };
 
 const initialState = {
@@ -171,13 +164,11 @@ export default enhance(
                 'YYYY-MM-DD',
               )}.tar.gz`}
               filters={projectFilter}
-              dropdownStyles={styles.dropdown}
               inactiveText={'Biospecimen'}
             />
           </span>
           <span>
             <DownloadClinicalDropdown
-              dropdownStyles={styles.dropdown}
               filters={projectFilter}
               tsvFilename={`clinical.project-${projectId}_${moment().format(
                 'YYYY-MM-DD',

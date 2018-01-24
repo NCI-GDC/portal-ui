@@ -16,44 +16,44 @@ export default (Component: ReactClass<*>) =>
       ['location'],
       ({ location: { search }, match: { params } }) => {
         const q = parse(search);
-        // const clinicalFilters = {
-        //   op: 'AND',
-        //   content: [
-        //     {
-        //       op: 'OR',
-        //       content: [
-        //         {
-        //           op: 'NOT',
-        //           content: {
-        //             field: 'cases.demographic.demographic_id',
-        //             value: 'MISSING',
-        //           },
-        //         },
-        //         {
-        //           op: 'NOT',
-        //           content: {
-        //             field: 'cases.diagnoses.diagnosis_id',
-        //             value: 'MISSING',
-        //           },
-        //         },
-        //         {
-        //           op: 'NOT',
-        //           content: {
-        //             field: 'cases.family_histories.family_history_id',
-        //             value: 'MISSING',
-        //           },
-        //         },
-        //         {
-        //           op: 'NOT',
-        //           content: {
-        //             field: 'cases.exposures.exposure_id',
-        //             value: 'MISSING',
-        //           },
-        //         },
-        //       ],
-        //     },
-        //   ],
-        // };
+        const clinicalFilters = {
+          op: 'AND',
+          content: [
+            {
+              op: 'OR',
+              content: [
+                {
+                  op: 'NOT',
+                  content: {
+                    field: 'cases.demographic.demographic_id',
+                    value: 'MISSING',
+                  },
+                },
+                {
+                  op: 'NOT',
+                  content: {
+                    field: 'cases.diagnoses.diagnosis_id',
+                    value: 'MISSING',
+                  },
+                },
+                {
+                  op: 'NOT',
+                  content: {
+                    field: 'cases.family_histories.family_history_id',
+                    value: 'MISSING',
+                  },
+                },
+                {
+                  op: 'NOT',
+                  content: {
+                    field: 'cases.exposures.exposure_id',
+                    value: 'MISSING',
+                  },
+                },
+              ],
+            },
+          ],
+        };
         const projectFilter = {
           op: 'AND',
           content: [

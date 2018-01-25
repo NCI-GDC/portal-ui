@@ -9,7 +9,7 @@ import DownloadButton from '@ncigdc/components/DownloadButton';
 import ArrangeColumnsButton from '@ncigdc/components/ArrangeColumnsButton';
 import SortTableButton from '@ncigdc/components/SortTableButton';
 import DownloadClinicalDropdown from '@ncigdc/modern_components/DownloadClinicalDropdown';
-import DownloadBiospecimenDropdown from '@ncigdc/modern_components/DownloadBiospecimenDropdown/';
+import DownloadBiospecimenDropdown from '@ncigdc/modern_components/DownloadBiospecimenDropdown';
 
 import { visualizingButton } from '@ncigdc/theme/mixins';
 import DownloadTableToTsvButton from '@ncigdc/components/DownloadTableToTsvButton';

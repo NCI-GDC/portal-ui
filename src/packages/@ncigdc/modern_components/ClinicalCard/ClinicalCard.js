@@ -85,8 +85,8 @@ export default compose(
               buttonStyles={visualizingButton}
               inactiveText={'Export'}
               filters={caseFilter}
-              tsvFilename={`clinical.case-${caseId}_${timestamp()}.tar.gz`}
-              jsonFilename={`clinical.case-${caseId}_${timestamp()}.json`}
+              tsvFilename={`clinical.case-${caseId}.${timestamp()}.tar.gz`}
+              jsonFilename={`clinical.case-${caseId}.${timestamp()}.json`}
             />
           </Row>
         }

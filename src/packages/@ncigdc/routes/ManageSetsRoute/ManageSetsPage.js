@@ -261,7 +261,7 @@ const ManageSetsPage = ({
                       type,
                       filename:
                         flattenedSets.length === 1
-                          ? `${type}_set_${filenameSafeLabel}_${timestamp()}.tsv`
+                          ? `${type}_set_${filenameSafeLabel}.${timestamp()}.tsv`
                           : `${type}_${filenameSafeLabel}.tsv`,
                     },
                   ];
@@ -270,7 +270,7 @@ const ManageSetsPage = ({
               },
               [],
             )}
-            filename={`gdc_sets_${timestamp()}.tar.gz`}
+            filename={`gdc_sets.${timestamp()}.tar.gz`}
           />
         )}
 
@@ -478,7 +478,7 @@ const ManageSetsPage = ({
                                     {
                                       id,
                                       type,
-                                      filename: `${type}_set_${filenameSafeLabel}_${timestamp()}.tsv`,
+                                      filename: `${type}_set_${filenameSafeLabel}.${timestamp()}.tsv`,
                                     },
                                   ]}
                                 />

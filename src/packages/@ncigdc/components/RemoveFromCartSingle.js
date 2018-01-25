@@ -1,11 +1,12 @@
 /* @flow */
 
 import React from 'react';
-import Button from '@ncigdc/uikit/Button';
-import { Tooltip } from '@ncigdc/uikit/Tooltip';
 import { compose } from 'recompose';
 import { connect } from 'react-redux';
+
 import { toggleFilesInCart } from '@ncigdc/dux/cart';
+import Button from '@ncigdc/uikit/Button';
+import { Tooltip } from '@ncigdc/uikit/Tooltip';
 
 const styles = {
   backgroundColor: '#FFF',
@@ -20,7 +21,9 @@ const styles = {
   },
 };
 
-export default compose(connect(state => state.cart))(({ dispatch, file }) => (
+export default compose(
+  connect(state => state.cart),
+)(({ dispatch, file, style = {}, ...props }) => (
   <Button
     style={styles}
     onClick={() => dispatch(toggleFilesInCart(file))}

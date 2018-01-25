@@ -62,7 +62,7 @@ export default compose(
     dropdownStyles = {},
     buttonStyles = {},
   }) => {
-    const clinicalCount = viewer.repository.cases.hits.total;
+    const clinicalCount = viewer ? viewer.repository.cases.hits.total : null;
     return (
       <Dropdown
         className="data-download-clinical"

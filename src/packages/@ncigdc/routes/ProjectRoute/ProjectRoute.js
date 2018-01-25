@@ -156,8 +156,8 @@ export default enhance(
                 left: '2px',
                 marginTop: '2px',
               }}
-              jsonFilename={`biospecimen.project-${projectId}_${timestamp()}.json`}
-              tsvFilename={`biospecimen.project-${projectId}_${timestamp()}.tar.gz`}
+              jsonFilename={`biospecimen.project-${projectId}.${timestamp()}.json`}
+              tsvFilename={`biospecimen.project-${projectId}.${timestamp()}.tar.gz`}
               filters={projectFilter}
               inactiveText={'Biospecimen'}
             />
@@ -170,8 +170,8 @@ export default enhance(
                 marginTop: '2px',
               }}
               filters={projectFilter}
-              tsvFilename={`clinical.project-${projectId}_${timestamp()}.tar.gz`}
-              jsonFilename={`clinical.project-${projectId}_${timestamp()}.json`}
+              tsvFilename={`clinical.project-${projectId}.${timestamp()}.tar.gz`}
+              jsonFilename={`clinical.project-${projectId}.${timestamp()}.json`}
               inactiveText={'Clinical'}
             />
           </span>

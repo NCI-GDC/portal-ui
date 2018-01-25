@@ -48,7 +48,6 @@ export default enhance(
           content: [{ op: 'in', content: { field, value: selectedIds } }],
         }
       : props.filters;
-
     return (
       <Dropdown
         button={

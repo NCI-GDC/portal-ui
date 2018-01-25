@@ -68,7 +68,7 @@ export default compose(
               .map(x => x.field || x.id)}
             sortOptions={tableInfo.filter(x => x.sortable)}
             tsvSelector="#repository-cases-table"
-            tsvFilename={`repository-cases-table.${timestamp()}.tsv')`}
+            tsvFilename={`repository-cases-table.${timestamp()}.tsv`}
             score={variables.score}
             sort={variables.cases_sort}
             currentFilters={variables.filters}

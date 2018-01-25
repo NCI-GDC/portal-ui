@@ -28,7 +28,7 @@ import { MicroscopeIcon } from '@ncigdc/theme/icons';
 import { entityTypes } from './';
 import withRouter from '@ncigdc/utils/withRouter';
 import { DISPLAY_SLIDES } from '@ncigdc/utils/constants';
-import DownloadBiospecimenDropdown from '@ncigdc/modern_components/DownloadBiospecimenDropdown/';
+import DownloadBiospecimenDropdown from '@ncigdc/modern_components/DownloadBiospecimenDropdown';
 import timestamp from '@ncigdc/utils/timestamp';
 import EntityPageHorizontalTable from '@ncigdc/components/EntityPageHorizontalTable';
 import AddToCartButtonSingle from '@ncigdc/components/AddToCartButtonSingle';
@@ -120,7 +120,6 @@ export default compose(
     const selectedEntity = Object.keys(selectedNode).length
       ? selectedNode
       : p.samples.hits.edges[0].node;
-
     const {
       files: { hits: { edges: supplementalFiles = [] } },
     } = edges[0].node;
@@ -137,6 +136,7 @@ export default compose(
               filters={caseFilter}
               buttonStyles={visualizingButton}
               inactiveText={'Export'}
+              total={edges.length}
             />
           </Row>
         }

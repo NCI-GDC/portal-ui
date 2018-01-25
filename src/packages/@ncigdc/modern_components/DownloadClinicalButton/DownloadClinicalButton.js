@@ -36,7 +36,6 @@ const styles = {
 };
 
 export default compose(
-  withState('activeTab', 'setTab', 0),
   withState('state', 'setState', {
     tsvDownloading: false,
     jsonDownloading: false,
@@ -44,8 +43,6 @@ export default compose(
   withTheme,
 )(
   ({
-    activeTab,
-    setTab,
     isLoading,
     dropdownStyle,
     active,
@@ -91,7 +88,7 @@ export default compose(
             }))}
           active={state.tsvDownloading}
           filters={dataExportFilters}
-          filename={`clinical.project-${projectId}_${timestamp()}.tar.gz`}
+          filename={`clinical.project-${projectId}.${timestamp()}.tar.gz`}
         />
         <DownloadButton
           className="data-download-clinical"
@@ -117,7 +114,7 @@ export default compose(
             'family_histories',
             'exposures',
           ]}
-          filename={`clinical.project-${projectId}_${timestamp()}.json`}
+          filename={`clinical.project-${projectId}.${timestamp()}.json`}
         />
       </Dropdown>
     );

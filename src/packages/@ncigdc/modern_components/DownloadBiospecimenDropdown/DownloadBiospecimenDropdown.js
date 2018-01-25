@@ -39,7 +39,6 @@ const styles = {
 };
 
 export default compose(
-  withState('activeTab', 'setTab', 0),
   withState('state', 'setState', {
     tsvDownloading: false,
     jsonDownloading: false,
@@ -47,8 +46,6 @@ export default compose(
   withTheme,
 )(
   ({
-    activeTab,
-    setTab,
     active,
     state,
     setState,
@@ -62,7 +59,7 @@ export default compose(
     dropdownStyles = {},
     buttonStyles = {},
   }) => {
-    const biospecimenCount = viewer.repository.cases.hits.total;
+    const biospecimenCount = viewer ? viewer.repository.cases.hits.total : null;
     return (
       <Dropdown
         className="data-download-biospecimen"

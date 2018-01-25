@@ -22,7 +22,9 @@ export default compose(withTheme)(({ isLoading, projectId, viewer }) => {
     <DownloadButton
       className="test-download-biospecimen"
       disabled={!biospecimenCount}
-      filename={`biospecimen.project-${projectId}.${moment().format('YYYY-MM-DD')}.json`}
+      filename={`biospecimen.project-${projectId}.${moment().format(
+        'YYYY-MM-DD',
+      )}.json`}
       endpoint="cases"
       activeText="Processing"
       inactiveText={

@@ -69,7 +69,7 @@ export default (Component: ReactClass<*>) =>
         return {
           variables: {
             filters: replaceFilters(
-              replaceFilters(projectFilter),
+              replaceFilters(projectFilter, clinicalFilters),
               parseFilterParam(q.filters, null),
             ),
           },

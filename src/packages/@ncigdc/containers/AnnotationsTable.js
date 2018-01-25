@@ -10,6 +10,7 @@ import { Row } from '@ncigdc/uikit/Flex';
 import TableActions from '@ncigdc/components/TableActions';
 import tableModels from '@ncigdc/tableModels';
 import Table, { Tr } from '@ncigdc/uikit/Table';
+import moment from 'moment';
 
 export const SearchTable = compose(
   connect(state => ({ tableColumns: state.tableColumns.annotations.ids })),
@@ -65,7 +66,9 @@ export const SearchTable = compose(
               .map(x => x.field || x.id)}
             sortOptions={tableInfo.filter(x => x.sortable)}
             tsvSelector="#repository-annotations-table"
-            tsvFilename="repository-annotations-table.tsv"
+            tsvFilename={`repository-annotations-table.${moment().format(
+              'YYYY-MM-DD',
+            )}.tsv`}
           />
         </Row>
         <div style={{ overflowX: 'auto' }}>

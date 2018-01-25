@@ -15,7 +15,7 @@ import DownloadTableToTsvButton from '@ncigdc/components/DownloadTableToTsvButto
 import { Row } from '@ncigdc/uikit/Flex';
 import GreyBox from '@ncigdc/uikit/GreyBox';
 import MutationsCount from '@ncigdc/components/MutationsCount';
-
+import moment from 'moment';
 const paginationPrefix = 'canDistTable';
 
 export default compose(
@@ -191,7 +191,9 @@ export default compose(
             </Tooltip>
             <DownloadTableToTsvButton
               selector="#cancer-distribution-table"
-              filename="cancer-distribution-table.tsv"
+              filename={`cancer-distribution-table${moment().format(
+                'YYYY-MM-DD',
+              )}.tsv`}
               style={{ marginLeft: '0.5rem' }}
             />
           </Row>

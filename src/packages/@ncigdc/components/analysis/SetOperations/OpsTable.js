@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { compose } from 'recompose';
 import urlJoin from 'url-join';
 import { AUTH_API } from '@ncigdc/utils/constants';
+import moment from 'moment';
 
 import Table, { Tr, Td, TdNum, ThNum } from '@ncigdc/uikit/Table';
 import { stringifyJSONParam } from '@ncigdc/utils/uri';
@@ -240,7 +241,9 @@ export default compose(
                     hide={!count}
                     count={count}
                     filters={op.filters}
-                    fileName={`${op.op}-set-ids`}
+                    fileName={`${op.op}-set-ids.${moment().format(
+                      'YYYY-MM-DD',
+                    )}.json`}
                     type={type}
                     CreateSetButton={CreateSetButton}
                     push={push}
@@ -310,7 +313,9 @@ export default compose(
                   hide={!selected.size || !count}
                   count={count}
                   filters={selectedFilters}
-                  fileName="union-of-set-ids"
+                  fileName={`union-of-set-ids.${moment().format(
+                    'YYYY-MM-DD',
+                  )}.json`}
                   type={type}
                   CreateSetButton={CreateSetButton}
                   push={push}

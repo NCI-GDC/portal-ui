@@ -6,6 +6,7 @@ import { compose, setDisplayName, mapProps } from 'recompose';
 import { Row } from '@ncigdc/uikit/Flex';
 import TableActions from '@ncigdc/components/TableActions';
 import tableModels from '@ncigdc/tableModels';
+import moment from 'moment';
 
 import Table, { Tr, Td } from '@ncigdc/uikit/Table';
 
@@ -55,7 +56,7 @@ export default compose(
               .map(x => x.field || x.id)}
             sortOptions={tableInfo.filter(x => x.sortable)}
             tsvSelector="#projects-table"
-            tsvFilename="projects-table.tsv"
+            tsvFilename={`projects-table.${moment().format('YYYY-MM-DD')}.tsv`}
           />
         </Row>
         <div style={{ overflowX: 'auto' }}>

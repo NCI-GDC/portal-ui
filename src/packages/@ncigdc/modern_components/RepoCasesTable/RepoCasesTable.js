@@ -14,6 +14,7 @@ import { AppendRepositoryCaseSetButton } from '@ncigdc/modern_components/withSet
 import { RemoveFromRepositoryCaseSetButton } from '@ncigdc/modern_components/withSetAction';
 import { theme } from '@ncigdc/theme';
 import withSelectIds from '@ncigdc/utils/withSelectIds';
+import moment from 'moment';
 
 export default compose(
   setDisplayName('RepoCasesTablePresentation'),
@@ -67,7 +68,9 @@ export default compose(
               .map(x => x.field || x.id)}
             sortOptions={tableInfo.filter(x => x.sortable)}
             tsvSelector="#repository-cases-table"
-            tsvFilename="repository-cases-table.tsv"
+            tsvFilename={`repository-cases-table.${moment().format(
+              'YYYY-MM-DD',
+            )}.tsv')`}
             score={variables.score}
             sort={variables.cases_sort}
             currentFilters={variables.filters}

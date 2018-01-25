@@ -5,6 +5,7 @@ import { compose } from 'recompose';
 import DownloadButton from '@ncigdc/components/DownloadButton';
 import { makeFilter } from '@ncigdc/utils/filters';
 import { withTheme } from '@ncigdc/theme';
+import moment from 'moment';
 
 export default compose(withTheme)(({ isLoading, projectId, viewer }) => {
   const projectFilter = [
@@ -21,7 +22,7 @@ export default compose(withTheme)(({ isLoading, projectId, viewer }) => {
     <DownloadButton
       className="test-download-biospecimen"
       disabled={!biospecimenCount}
-      filename={`biospecimen.project-${projectId}`}
+      filename={`biospecimen.project-${projectId}.${moment().format('YYYY-MM-DD')}.json`}
       endpoint="cases"
       activeText="Processing"
       inactiveText={

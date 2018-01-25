@@ -16,6 +16,7 @@ import { theme } from '@ncigdc/theme';
 import withSelectIds from '@ncigdc/utils/withSelectIds';
 import withPropsOnChange from '@ncigdc/utils/withPropsOnChange';
 import { withRouter } from 'react-router-dom';
+import moment from 'moment';
 
 export default compose(
   withSelectIds,
@@ -92,7 +93,9 @@ export default compose(
               .map(x => x.field || x.id)}
             sortOptions={tableInfo.filter(x => x.sortable)}
             tsvSelector="#explore-case-table"
-            tsvFilename="explore-case-table.tsv"
+            tsvFilename={`explore-case-table.${moment().format(
+              'YYYY-MM-DD',
+            )}.tsv`}
             CreateSetButton={CreateExploreCaseSetButton}
             AppendSetButton={AppendExploreCaseSetButton}
             RemoveFromSetButton={RemoveFromExploreCaseSetButton}

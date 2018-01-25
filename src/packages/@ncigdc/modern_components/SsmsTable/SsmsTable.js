@@ -20,6 +20,7 @@ import { RemoveFromExploreSsmSetButton } from '@ncigdc/modern_components/withSet
 import withSelectIds from '@ncigdc/utils/withSelectIds';
 import tableModel from './SsmsTable.model';
 import mapData from './mapData';
+import moment from 'moment';
 
 type TProps = {
   showSurvivalPlot: boolean,
@@ -146,7 +147,9 @@ export default compose(
                 'ssm_id',
               ]}
               tsvSelector="#ssms-table"
-              tsvFilename="frequent-mutations.tsv"
+              tsvFilename={`frequent-mutations.${moment().format(
+                'YYYY-MM-DD',
+              )}.tsv`}
               CreateSetButton={CreateExploreSsmSetButton}
               AppendSetButton={AppendExploreSsmSetButton}
               RemoveFromSetButton={RemoveFromExploreSsmSetButton}

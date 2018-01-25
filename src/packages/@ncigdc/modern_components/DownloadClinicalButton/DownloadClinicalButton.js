@@ -8,7 +8,7 @@ import Dropdown from '@ncigdc/uikit/Dropdown';
 import DownloadIcon from '@ncigdc/theme/icons/Download';
 import Spinner from '@ncigdc/theme/icons/Spinner';
 import Button from '@ncigdc/uikit/Button';
-import moment from 'moment';
+import timestamp from '@ncigdc/utils/timestamp';
 import { withTheme, theme } from '@ncigdc/theme';
 
 const styles = {
@@ -91,9 +91,7 @@ export default compose(
             }))}
           active={state.tsvDownloading}
           filters={dataExportFilters}
-          filename={`clinical.project-${projectId}_${moment().format(
-            'YYYY-MM-DD',
-          )}.tar.gz`}
+          filename={`clinical.project-${projectId}_${timestamp()}.tar.gz`}
         />
         <DownloadButton
           className="data-download-clinical"
@@ -119,9 +117,7 @@ export default compose(
             'family_histories',
             'exposures',
           ]}
-          filename={`clinical.project-${projectId}_${moment().format(
-            'YYYY-MM-DD',
-          )}.json`}
+          filename={`clinical.project-${projectId}_${timestamp()}.json`}
         />
       </Dropdown>
     );

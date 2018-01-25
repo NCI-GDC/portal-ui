@@ -8,7 +8,6 @@ import { connect } from 'react-redux';
 import FileIcon from 'react-icons/lib/fa/file-o';
 import CaseIcon from 'react-icons/lib/fa/user';
 import FileSizeIcon from 'react-icons/lib/fa/floppy-o';
-import moment from 'moment';
 
 // Custom
 import { setFilter } from '@ncigdc/utils/filters';
@@ -28,6 +27,7 @@ import SparkMeterWithTooltip from '@ncigdc/components/SparkMeterWithTooltip';
 import SampleSize from '@ncigdc/components/SampleSize';
 import DownloadClinicalDropdown from '@ncigdc/modern_components/DownloadClinicalDropdown';
 import DownloadBiospecimenDropdown from '@ncigdc/modern_components/DownloadBiospecimenDropdown/';
+import timestamp from '@ncigdc/utils/timestamp';
 
 /*----------------------------------------------------------------------------*/
 
@@ -301,12 +301,8 @@ const CartPage: TCartPage = ({ viewer, files, user, theme } = {}) => {
                   marginTop: '2px',
                 }}
                 filters={filters}
-                tsvFilename={`biospecimen.cart.${moment().format(
-                  'YYYY-MM-DD',
-                )}.tar.gz`}
-                jsonfilename={`biospecimen.cart.${moment().format(
-                  'YYYY-MM-DD',
-                )}.json`}
+                tsvFilename={`biospecimen.cart.${timestamp()}.tar.gz`}
+                jsonfilename={`biospecimen.cart.${timestamp()}.json`}
                 inactiveText={'Biospecimen'}
               />
               <DownloadClinicalDropdown
@@ -317,12 +313,8 @@ const CartPage: TCartPage = ({ viewer, files, user, theme } = {}) => {
                 }}
                 buttonStyles={{ margin: '0 1em' }}
                 filters={filters}
-                tsvFilename={`clinical.cart.${moment().format(
-                  'YYYY-MM-DD',
-                )}.tar.gz`}
-                jsonfilename={`clinical.cart.${moment().format(
-                  'YYYY-MM-DD',
-                )}.json`}
+                tsvFilename={`clinical.cart.${timestamp()}.tar.gz`}
+                jsonfilename={`clinical.cart.${timestamp()}.json`}
                 inactiveText={'Clinical'}
               />
               <SampleSheetDownloadButton files={{ files }} />

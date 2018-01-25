@@ -29,7 +29,7 @@ import { entityTypes } from './';
 import withRouter from '@ncigdc/utils/withRouter';
 import { DISPLAY_SLIDES } from '@ncigdc/utils/constants';
 import DownloadBiospecimenDropdown from '@ncigdc/modern_components/DownloadBiospecimenDropdown/';
-import moment from 'moment';
+import timestamp from '@ncigdc/utils/timestamp';
 import EntityPageHorizontalTable from '@ncigdc/components/EntityPageHorizontalTable';
 import AddToCartButtonSingle from '@ncigdc/components/AddToCartButtonSingle';
 import DownloadFile from '@ncigdc/components/DownloadFile';
@@ -132,12 +132,8 @@ export default compose(
           <Row style={{ justifyContent: 'space-between' }}>
             <span>Biospecimen</span>
             <DownloadBiospecimenDropdown
-              jsonFilename={`biospecimen.case-${p.case_id}.${moment().format(
-                'YYYY-MM-DD',
-              )}.json`}
-              tsvFilename={`biospecimen.case-${p.case_id}.${moment().format(
-                'YYYY-MM-DD',
-              )}.tar.gz`}
+              jsonFilename={`biospecimen.case-${p.case_id}.${timestamp()}.json`}
+              tsvFilename={`biospecimen.case-${p.case_id}.${timestamp()}.tar.gz`}
               filters={caseFilter}
               buttonStyles={visualizingButton}
               inactiveText={'Export'}

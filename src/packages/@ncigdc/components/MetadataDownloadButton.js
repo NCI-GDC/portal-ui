@@ -1,13 +1,13 @@
 // @flow
 import React from 'react';
-import moment from 'moment';
+import timestamp from '@ncigdc/utils/timestamp';
 import DownloadButton from '@ncigdc/components/DownloadButton';
 
 const MetadataDropdownButton = ({ files }) => (
   <DownloadButton
     endpoint="files"
     size={files.files.length}
-    filename={`metadata.cart.${moment().format('YYYY-MM-DD')}.json`}
+    filename={`metadata.cart.${timestamp()}.json`}
     activeText="Downloading"
     inactiveText="Metadata"
     fields={[

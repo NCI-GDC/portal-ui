@@ -18,8 +18,8 @@ import SetActions from '@ncigdc/components/SetActions';
 import { compose, withState } from 'recompose';
 import withRouter from '@ncigdc/utils/withRouter';
 import pluralize from '@ncigdc/utils/pluralize';
-import moment from 'moment';
 import { withTheme } from '@ncigdc/theme';
+import timestamp from '@ncigdc/utils/timestamp';
 
 import type { TRawQuery } from '@ncigdc/utils/uri/types';
 
@@ -100,12 +100,8 @@ const TableActions = ({
       )}
       {downloadBiospecimen && (
         <DownloadBiospecimenDropdown
-          jsonFilename={`biospecimen.cases_selection.${moment().format(
-            'YYYY-MM-DD',
-          )}.json`}
-          tsvFilename={`biospecimen.cases_selection.${moment().format(
-            'YYYY-MM-DD',
-          )}.tar.gz`}
+          jsonFilename={`biospecimen.cases_selection.${timestamp()}.json`}
+          tsvFilename={`biospecimen.cases_selection.${timestamp()}.tar.gz`}
           filters={
             currentFilters || parseFilterParam((query || {}).filters, {})
           }
@@ -116,12 +112,8 @@ const TableActions = ({
       {downloadClinical && (
         <DownloadClinicalDropdown
           buttonStyles={visualizingButton}
-          tsvFilename={`clinical.cases_selection.${moment().format(
-            'YYYY-MM-DD',
-          )}.tar.gz`}
-          jsonFilename={`clinical.cases_selection.${moment().format(
-            'YYYY-MM-DD',
-          )}.json`}
+          tsvFilename={`clinical.cases_selection.${timestamp()}.tar.gz`}
+          jsonFilename={`clinical.cases_selection.${timestamp()}.json`}
           filters={
             currentFilters || parseFilterParam((query || {}).filters, {})
           }
@@ -135,7 +127,7 @@ const TableActions = ({
               currentFilters || parseFilterParam((query || {}).filters, {})
             }
             disabled={!total}
-            filename={pluralize(displayType, total)}
+            filename={`${pluralize(displayType, total)}.${timestamp()}.json`}
             endpoint={endpoint}
             fields={downloadFields}
             style={visualizingButton}

@@ -20,7 +20,7 @@ import { ExternalLink } from '@ncigdc/uikit/Links';
 import Button from '@ncigdc/uikit/Button';
 import { withTheme } from '@ncigdc/theme';
 import { ImpactThContents, ImpactTdContents } from '@ncigdc/components/Impacts';
-import moment from 'moment';
+import timestamp from '@ncigdc/utils/timestamp';
 
 const paginationPrefix = 'consequencesTable';
 
@@ -164,7 +164,7 @@ export default compose(
           </Tooltip>
           <DownloadTableToTsvButton
             selector="#consequences-table"
-            filename={`consequences-table.${moment().format('YYYY-MM-DD')}.tsv`}
+            filename={`consequences-table.${timestamp()}.tsv`}
             style={{ marginLeft: '0.5rem' }}
           />
         </Row>

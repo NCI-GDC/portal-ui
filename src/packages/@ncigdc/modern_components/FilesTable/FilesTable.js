@@ -15,7 +15,7 @@ import Button from '@ncigdc/uikit/Button';
 import AddToCartButtonSingle from '@ncigdc/components/AddToCartButtonSingle';
 import { toggleFilesInCart } from '@ncigdc/dux/cart';
 import { Tooltip } from '@ncigdc/uikit/Tooltip';
-import moment from 'moment';
+import timestamp from '@ncigdc/utils/timestamp';
 
 const RemoveButton = styled(Button, {
   backgroundColor: '#FFF',
@@ -92,9 +92,7 @@ export default compose(
               .map(x => x.field || x.id)}
             sortOptions={tableInfo.filter(x => x.sortable)}
             tsvSelector="#repository-files-table"
-            tsvFilename={`repository-files-table.${moment().format(
-              'YYYY-MM-DD',
-            )}.tsv`}
+            tsvFilename={`repository-files-table.${timestamp()}.tsv`}
           />
         </Row>
         <div style={{ overflowX: 'auto' }}>

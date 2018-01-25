@@ -13,7 +13,7 @@ import EntityPageVerticalTable from '@ncigdc/components/EntityPageVerticalTable'
 import ageDisplay from '@ncigdc/utils/ageDisplay';
 import { truncate } from 'lodash/string';
 import { visualizingButton } from '@ncigdc/theme/mixins';
-import moment from 'moment';
+import timestamp from '@ncigdc/utils/timestamp';
 import EntityPageHorizontalTable from '@ncigdc/components/EntityPageHorizontalTable';
 import AddToCartButtonSingle from '@ncigdc/components/AddToCartButtonSingle';
 import DownloadFile from '@ncigdc/components/DownloadFile';
@@ -85,12 +85,8 @@ export default compose(
               buttonStyles={visualizingButton}
               inactiveText={'Export'}
               filters={caseFilter}
-              tsvFilename={`clinical.case-${caseId}_${moment().format(
-                'YYYY-MM-DD',
-              )}.tar.gz`}
-              jsonFilename={`clinical.case-${caseId}_${moment().format(
-                'YYYY-MM-DD',
-              )}.json`}
+              tsvFilename={`clinical.case-${caseId}_${timestamp()}.tar.gz`}
+              jsonFilename={`clinical.case-${caseId}_${timestamp()}.json`}
             />
           </Row>
         }

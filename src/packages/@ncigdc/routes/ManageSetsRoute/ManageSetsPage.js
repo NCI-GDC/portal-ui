@@ -9,7 +9,6 @@ import {
   renderComponent,
 } from 'recompose';
 import { map, reduce, xor, find, get, omit } from 'lodash';
-import moment from 'moment';
 
 import { notify } from '@ncigdc/dux/notification';
 import { closeNotification } from '@ncigdc/dux/notification';
@@ -45,6 +44,7 @@ import DropdownItem from '@ncigdc/uikit/DropdownItem';
 import DownCaretIcon from 'react-icons/lib/fa/caret-down';
 import { zDepth1 } from '@ncigdc/theme/mixins';
 import Aux from '@ncigdc/utils/Aux';
+import timestamp from '@ncigdc/utils/timestamp';
 
 const fields = {
   case: 'cases.case_id',
@@ -261,9 +261,7 @@ const ManageSetsPage = ({
                       type,
                       filename:
                         flattenedSets.length === 1
-                          ? `${type}_set_${filenameSafeLabel}_${moment().format(
-                              'YYYY-MM-DD:hh:mm:ss',
-                            )}.tsv`
+                          ? `${type}_set_${filenameSafeLabel}_${timestamp()}.tsv`
                           : `${type}_${filenameSafeLabel}.tsv`,
                     },
                   ];
@@ -272,9 +270,7 @@ const ManageSetsPage = ({
               },
               [],
             )}
-            filename={`gdc_sets_${moment().format(
-              'YYYY-MM-DD-hh-mm-ss',
-            )}.tar.gz`}
+            filename={`gdc_sets_${timestamp()}.tar.gz`}
           />
         )}
 
@@ -482,9 +478,7 @@ const ManageSetsPage = ({
                                     {
                                       id,
                                       type,
-                                      filename: `${type}_set_${filenameSafeLabel}_${moment().format(
-                                        'YYYY-MM-DD:hh:mm:ss',
-                                      )}.tsv`,
+                                      filename: `${type}_set_${filenameSafeLabel}_${timestamp()}.tsv`,
                                     },
                                   ]}
                                 />

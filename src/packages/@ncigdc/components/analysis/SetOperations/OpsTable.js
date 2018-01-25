@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { compose } from 'recompose';
 import urlJoin from 'url-join';
 import { AUTH_API } from '@ncigdc/utils/constants';
-import moment from 'moment';
 
 import Table, { Tr, Td, TdNum, ThNum } from '@ncigdc/uikit/Table';
 import { stringifyJSONParam } from '@ncigdc/utils/uri';
@@ -15,6 +14,7 @@ import { MAX_SET_SIZE } from '@ncigdc/utils/constants';
 import { withTheme } from '@ncigdc/theme';
 import download from '@ncigdc/utils/download';
 import DownloadIcon from '@ncigdc/theme/icons/Download';
+import timestamp from '@ncigdc/utils/timestamp';
 
 const ActionsTd = compose(
   connect(),
@@ -241,9 +241,7 @@ export default compose(
                     hide={!count}
                     count={count}
                     filters={op.filters}
-                    fileName={`${op.op}-set-ids.${moment().format(
-                      'YYYY-MM-DD',
-                    )}.json`}
+                    fileName={`${op.op}-set-ids.${timestamp()}.json`}
                     type={type}
                     CreateSetButton={CreateSetButton}
                     push={push}
@@ -313,9 +311,7 @@ export default compose(
                   hide={!selected.size || !count}
                   count={count}
                   filters={selectedFilters}
-                  fileName={`union-of-set-ids.${moment().format(
-                    'YYYY-MM-DD',
-                  )}.json`}
+                  fileName={`union-of-set-ids.${timestamp()}.json`}
                   type={type}
                   CreateSetButton={CreateSetButton}
                   push={push}

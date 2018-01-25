@@ -1,7 +1,7 @@
 // @flow
 import React from 'react';
-import moment from 'moment';
 
+import timestamp from '@ncigdc/utils/timestamp';
 import DownloadButton from '@ncigdc/components/DownloadButton';
 import type { TCartFile } from '@ncigdc/dux/cart';
 
@@ -14,7 +14,7 @@ const SampleSheetDownloadButton = ({
     endpoint="files"
     style={{ marginRight: '1em' }}
     size={files.files.length}
-    filename={`gdc_sample_sheet_${moment().format('YYYY-MM-DD-hh-mm-ss')}.tsv`}
+    filename={`gdc_sample_sheet_${timestamp()}.tsv`}
     activeText="Downloading"
     inactiveText="Sample Sheet"
     format="tsv"

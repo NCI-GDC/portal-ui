@@ -32,7 +32,7 @@ import MutationsCount from '@ncigdc/components/MutationsCount';
 import { ForTsvExport } from '@ncigdc/components/DownloadTableToTsvButton';
 import withPropsOnChange from '@ncigdc/utils/withPropsOnChange';
 import { createClassicRenderer } from '@ncigdc/modern_components/Query';
-import moment from 'moment';
+import timestamp from '@ncigdc/utils/timestamp';
 
 class Route extends Relay.Route {
   static routeName = 'AffectedCasesTableRoute';
@@ -239,9 +239,7 @@ const Component = compose(
                 'diagnoses.days_to_death',
               ]}
               tsvSelector="#most-affected-cases-table"
-              tsvFilename={`most-affected-cases-table.${moment().format(
-                'YYYY-MM-DD',
-              )}.tsv`}
+              tsvFilename={`most-affected-cases-table.${timestamp()}.tsv`}
             />
           </Row>
         </Row>

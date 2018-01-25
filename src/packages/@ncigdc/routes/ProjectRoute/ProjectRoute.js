@@ -21,7 +21,7 @@ import { stringifyJSONParam } from '@ncigdc/utils/uri';
 import ProjectPrimarySitesTable from '@ncigdc/modern_components/ProjectPrimarySitesTable/index';
 import { Row } from '@ncigdc/uikit/Flex';
 import DownloadClinicalDropdown from '@ncigdc/modern_components/DownloadClinicalDropdown/';
-import moment from 'moment';
+import timestamp from '@ncigdc/utils/timestamp';
 import DownloadBiospecimenDropdown from '@ncigdc/modern_components/DownloadBiospecimenDropdown/';
 
 const styles = {
@@ -156,12 +156,8 @@ export default enhance(
                 left: '2px',
                 marginTop: '2px',
               }}
-              jsonFilename={`biospecimen.project-${projectId}_${moment().format(
-                'YYYY-MM-DD',
-              )}.json`}
-              tsvFilename={`biospecimen.project-${projectId}_${moment().format(
-                'YYYY-MM-DD',
-              )}.tar.gz`}
+              jsonFilename={`biospecimen.project-${projectId}_${timestamp()}.json`}
+              tsvFilename={`biospecimen.project-${projectId}_${timestamp()}.tar.gz`}
               filters={projectFilter}
               inactiveText={'Biospecimen'}
             />
@@ -174,12 +170,8 @@ export default enhance(
                 marginTop: '2px',
               }}
               filters={projectFilter}
-              tsvFilename={`clinical.project-${projectId}_${moment().format(
-                'YYYY-MM-DD',
-              )}.tar.gz`}
-              jsonFilename={`clinical.project-${projectId}_${moment().format(
-                'YYYY-MM-DD',
-              )}.json`}
+              tsvFilename={`clinical.project-${projectId}_${timestamp()}.tar.gz`}
+              jsonFilename={`clinical.project-${projectId}_${timestamp()}.json`}
               inactiveText={'Clinical'}
             />
           </span>

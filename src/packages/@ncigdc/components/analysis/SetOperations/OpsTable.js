@@ -14,6 +14,7 @@ import { MAX_SET_SIZE } from '@ncigdc/utils/constants';
 import { withTheme } from '@ncigdc/theme';
 import download from '@ncigdc/utils/download';
 import DownloadIcon from '@ncigdc/theme/icons/Download';
+import timestamp from '@ncigdc/utils/timestamp';
 
 const ActionsTd = compose(
   connect(),
@@ -240,7 +241,7 @@ export default compose(
                     hide={!count}
                     count={count}
                     filters={op.filters}
-                    fileName={`${op.op}-set-ids`}
+                    fileName={`${op.op}-set-ids.${timestamp()}.json`}
                     type={type}
                     CreateSetButton={CreateSetButton}
                     push={push}
@@ -310,7 +311,7 @@ export default compose(
                   hide={!selected.size || !count}
                   count={count}
                   filters={selectedFilters}
-                  fileName="union-of-set-ids"
+                  fileName={`union-of-set-ids.${timestamp()}.json`}
                   type={type}
                   CreateSetButton={CreateSetButton}
                   push={push}

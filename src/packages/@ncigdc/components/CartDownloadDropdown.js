@@ -155,7 +155,7 @@ const CartDownloadDropdown = ({
       dropdownItemClass={false}
       button={
         <Button
-          style={{ marginLeft: '10px' }}
+          style={{ marginLeft: '1em' }}
           leftIcon={
             state.manifestDownloading || state.cartDownloading ? (
               <Spinner />

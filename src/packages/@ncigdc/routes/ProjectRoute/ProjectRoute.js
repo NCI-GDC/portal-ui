@@ -12,9 +12,6 @@ import {
 } from '@ncigdc/modern_components/ProjectCounts';
 import { fetchApi } from '@ncigdc/utils/ajax';
 import { makeFilter } from '@ncigdc/utils/filters';
-import { Row } from '@ncigdc/uikit/Flex';
-import DownloadBiospecimenButton from '@ncigdc/modern_components/DownloadBiospecimenButton';
-import DownloadClinicalButton from '@ncigdc/modern_components/DownloadClinicalButton';
 import DownloadManifestButton from '@ncigdc/modern_components/DownloadManifestButton';
 import withPropsOnChange from '@ncigdc/utils/withPropsOnChange';
 import { withExists } from '@ncigdc/modern_components/Exists/index';
@@ -22,6 +19,10 @@ import Button from '@ncigdc/uikit/Button';
 import withRouter from '@ncigdc/utils/withRouter';
 import { stringifyJSONParam } from '@ncigdc/utils/uri';
 import ProjectPrimarySitesTable from '@ncigdc/modern_components/ProjectPrimarySitesTable/index';
+import { Row } from '@ncigdc/uikit/Flex';
+import DownloadClinicalDropdown from '@ncigdc/modern_components/DownloadClinicalDropdown/';
+import timestamp from '@ncigdc/utils/timestamp';
+import DownloadBiospecimenDropdown from '@ncigdc/modern_components/DownloadBiospecimenDropdown/';
 
 const styles = {
   column: {
@@ -149,10 +150,30 @@ export default enhance(
             </Button>
           </span>
           <span>
-            <DownloadBiospecimenButton projectId={projectId} />
+            <DownloadBiospecimenDropdown
+              dropdownStyles={{
+                width: '126px',
+                left: '2px',
+                marginTop: '2px',
+              }}
+              jsonFilename={`biospecimen.project-${projectId}.${timestamp()}.json`}
+              tsvFilename={`biospecimen.project-${projectId}.${timestamp()}.tar.gz`}
+              filters={projectFilter}
+              inactiveText={'Biospecimen'}
+            />
           </span>
           <span>
-            <DownloadClinicalButton projectId={projectId} />
+            <DownloadClinicalDropdown
+              dropdownStyles={{
+                width: '90px',
+                left: '2px',
+                marginTop: '2px',
+              }}
+              filters={projectFilter}
+              tsvFilename={`clinical.project-${projectId}.${timestamp()}.tar.gz`}
+              jsonFilename={`clinical.project-${projectId}.${timestamp()}.json`}
+              inactiveText={'Clinical'}
+            />
           </span>
           <span>
             <DownloadManifestButton projectId={projectId} />

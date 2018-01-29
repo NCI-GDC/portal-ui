@@ -25,6 +25,10 @@ export default (Component: ReactClass<*>) =>
               value: [caseId],
             },
           ]),
+          fileFilters: makeFilter([
+            { field: 'cases.case_id', value: [caseId] },
+            { field: 'files.data_type', value: ['Biospecimen Supplement'] },
+          ]),
         },
       };
     }),
@@ -36,7 +40,10 @@ export default (Component: ReactClass<*>) =>
         variables={props.variables}
         Component={Component}
         query={graphql`
-          query BiospecimenCard_relayQuery($filters: FiltersArgument) {
+          query BiospecimenCard_relayQuery(
+            $filters: FiltersArgument
+            $fileFilters: FiltersArgument
+          ) {
             viewer {
               repository {
                 cases {
@@ -44,6 +51,26 @@ export default (Component: ReactClass<*>) =>
                     edges {
                       node {
                         case_id
+                        project {
+                          project_id
+                        }
+                        files {
+                          hits(first: 99, filters: $fileFilters) {
+                            edges {
+                              node {
+                                file_name
+                                file_size
+                                data_format
+                                file_id
+                                md5sum
+                                acl
+                                state
+                                file_state
+                                access
+                              }
+                            }
+                          }
+                        }
                         samples {
                           hits(first: 99) {
                             total

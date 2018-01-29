@@ -3,21 +3,24 @@
 import React from 'react';
 import { compose, withState } from 'recompose';
 import DownloadButton from '@ncigdc/components/DownloadButton';
-import { makeFilter } from '@ncigdc/utils/filters';
 import Dropdown from '@ncigdc/uikit/Dropdown';
 import DownloadIcon from '@ncigdc/theme/icons/Download';
 import Spinner from '@ncigdc/theme/icons/Spinner';
 import Button from '@ncigdc/uikit/Button';
-import timestamp from '@ncigdc/utils/timestamp';
 import { withTheme, theme } from '@ncigdc/theme';
 
 const styles = {
   dropdownContainer: {
     top: '100%',
     whiteSpace: 'nowrap',
-    marginTop: '2px',
-    minWidth: '90px',
-    left: '0',
+    marginTop: '5px',
+    minWidth: '100%',
+    width: '100%',
+    left: '1px',
+    borderRadius: '5px',
+  },
+  dropdownButton: {
+    marginLeft: '0.2rem',
   },
   common: theme => ({
     backgroundColor: 'transparent',
@@ -36,6 +39,7 @@ const styles = {
 };
 
 export default compose(
+  withState('activeTab', 'setTab', 0),
   withState('state', 'setState', {
     tsvDownloading: false,
     jsonDownloading: false,
@@ -43,37 +47,50 @@ export default compose(
   withTheme,
 )(
   ({
-    isLoading,
-    dropdownStyle,
+    activeTab,
+    setTab,
     active,
     state,
     setState,
     projectId,
     viewer,
     button,
+    filters,
+    tsvFilename,
+    jsonFilename,
+    inactiveText,
+    dropdownStyles = {},
+    buttonStyles = {},
   }) => {
-    const projectFilter = [
-      {
-        field: 'cases.project.project_id',
-        value: projectId,
-      },
-    ];
-    const dataExportFilters = makeFilter(projectFilter);
-    const clinicalCount = viewer.repository.cases.hits.total;
+    const clinicalCount = viewer ? viewer.repository.cases.hits.total : null;
     return (
       <Dropdown
+        className="data-download-clinical"
         button={
-          <Button leftIcon={isLoading ? <Spinner /> : <DownloadIcon />}>
+          <Button
+            className="data-download-clinical-button"
+            style={{
+              ...styles.common,
+              ...styles.dropdownButton,
+              ...buttonStyles,
+            }}
+            leftIcon={
+              state.jsonDownloading || state.tsvDownloading ? (
+                <Spinner />
+              ) : (
+                <DownloadIcon />
+              )
+            }
+          >
             {state.jsonDownloading || state.tsvDownloading
               ? 'Processing'
-              : 'Clinical'}
+              : inactiveText}
           </Button>
         }
-        dropdownStyle={styles.dropdownContainer}
+        dropdownStyle={{ ...styles.dropdownContainer, ...dropdownStyles }}
       >
         <DownloadButton
           className="data-download-clinical-tsv"
-          disabled={!clinicalCount}
           size={clinicalCount}
           style={styles.button(theme)}
           endpoint="/clinical_tar"
@@ -87,12 +104,11 @@ export default compose(
               tsvDownloading: currentState,
             }))}
           active={state.tsvDownloading}
-          filters={dataExportFilters}
-          filename={`clinical.project-${projectId}.${timestamp()}.tar.gz`}
+          filters={filters}
+          filename={tsvFilename}
         />
         <DownloadButton
-          className="data-download-clinical"
-          disabled={!clinicalCount}
+          className="data-download-clinical-json"
           size={clinicalCount}
           style={styles.button(theme)}
           endpoint="/cases"
@@ -105,7 +121,7 @@ export default compose(
               jsonDownloading: currentState,
             }))}
           active={state.jsonDownloading}
-          filters={dataExportFilters}
+          filters={filters}
           fields={['case_id']}
           dataExportExpands={[
             'demographic',
@@ -114,7 +130,7 @@ export default compose(
             'family_histories',
             'exposures',
           ]}
-          filename={`clinical.project-${projectId}.${timestamp()}.json`}
+          filename={jsonFilename}
         />
       </Dropdown>
     );

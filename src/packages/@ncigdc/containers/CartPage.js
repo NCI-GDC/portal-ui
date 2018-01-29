@@ -25,6 +25,9 @@ import CartDownloadDropdown from '@ncigdc/components/CartDownloadDropdown';
 import RemoveFromCartButton from '@ncigdc/components/RemoveFromCartButton';
 import SparkMeterWithTooltip from '@ncigdc/components/SparkMeterWithTooltip';
 import SampleSize from '@ncigdc/components/SampleSize';
+import DownloadClinicalDropdown from '@ncigdc/modern_components/DownloadClinicalDropdown';
+import DownloadBiospecimenDropdown from '@ncigdc/modern_components/DownloadBiospecimenDropdown/';
+import timestamp from '@ncigdc/utils/timestamp';
 
 /*----------------------------------------------------------------------------*/
 
@@ -290,6 +293,30 @@ const CartPage: TCartPage = ({ viewer, files, user, theme } = {}) => {
           </Row>
           <Row style={{ marginBottom: '6rem' }}>
             <Row style={{ marginLeft: 'auto' }} spacing="1rem">
+              <DownloadBiospecimenDropdown
+                buttonStyles={{ marginLeft: '1em' }}
+                dropdownStyles={{
+                  width: '126px',
+                  left: '14px',
+                  marginTop: '2px',
+                }}
+                filters={filters}
+                tsvFilename={`biospecimen.cart.${timestamp()}.tar.gz`}
+                jsonfilename={`biospecimen.cart.${timestamp()}.json`}
+                inactiveText={'Biospecimen'}
+              />
+              <DownloadClinicalDropdown
+                dropdownStyles={{
+                  width: '90px',
+                  left: '13px',
+                  marginTop: '2px',
+                }}
+                buttonStyles={{ margin: '0 1em' }}
+                filters={filters}
+                tsvFilename={`clinical.cart.${timestamp()}.tar.gz`}
+                jsonfilename={`clinical.cart.${timestamp()}.json`}
+                inactiveText={'Clinical'}
+              />
               <SampleSheetDownloadButton files={{ files }} />
               <MetadataDownloadButton files={{ files }} />
               <CartDownloadDropdown files={files} user={user} />

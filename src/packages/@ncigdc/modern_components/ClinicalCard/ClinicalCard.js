@@ -2,24 +2,52 @@
 
 import React from 'react';
 import { compose, withState, branch, renderComponent } from 'recompose';
+import { connect } from 'react-redux';
 import Card from '@ncigdc/uikit/Card';
 import Tabs from '@ncigdc/uikit/Tabs';
 import SideTabs from '@ncigdc/uikit/SideTabs';
 import Table, { Tr, Td, Th } from '@ncigdc/uikit/Table';
 import { withTheme } from '@ncigdc/theme';
-import Row from '@ncigdc/uikit/Flex/Row';
-import DownloadButton from '@ncigdc/components/DownloadButton';
-import { visualizingButton } from '@ncigdc/theme/mixins';
+import { Row } from '@ncigdc/uikit/Flex/';
 import EntityPageVerticalTable from '@ncigdc/components/EntityPageVerticalTable';
 import ageDisplay from '@ncigdc/utils/ageDisplay';
 import { truncate } from 'lodash/string';
+import { visualizingButton } from '@ncigdc/theme/mixins';
+import timestamp from '@ncigdc/utils/timestamp';
+import EntityPageHorizontalTable from '@ncigdc/components/EntityPageHorizontalTable';
+import AddToCartButtonSingle from '@ncigdc/components/AddToCartButtonSingle';
+import DownloadFile from '@ncigdc/components/DownloadFile';
+import DownloadClinicalDropdown from '@ncigdc/modern_components/DownloadClinicalDropdown/';
+import { makeFilter } from '@ncigdc/utils/filters';
+import RemoveFromCartSingle from '@ncigdc/components/RemoveFromCartSingle';
+
+const styles = {
+  common: theme => ({
+    backgroundColor: 'transparent',
+    color: theme.greyScale2,
+    justifyContent: 'flex-start',
+    ':hover': {
+      backgroundColor: theme.greyScale6,
+    },
+  }),
+  downloadButton: theme => ({
+    ...styles.common(theme),
+    padding: '3px 5px',
+    border: `1px solid ${theme.greyScale4}`,
+  }),
+};
 
 export default compose(
   branch(
     ({ viewer }) => !viewer.repository.cases.hits.edges[0],
     renderComponent(() => <div>No case found.</div>),
   ),
+  connect(state => state.cart),
   withState('activeTab', 'setTab', 0),
+  withState('state', 'setState', {
+    tsvDownloading: false,
+    jsonDownloading: false,
+  }),
   withTheme,
 )(
   ({
@@ -27,6 +55,12 @@ export default compose(
     setTab,
     theme,
     viewer: { repository: { cases: { hits: { edges } } } },
+    dropdownStyle,
+    active,
+    state,
+    setState,
+    requests,
+    canAddToCart = true,
   }) => {
     const {
       case_id: caseId,
@@ -34,7 +68,12 @@ export default compose(
       family_histories: { hits: { edges: familyHistory = [] } },
       demographic = {},
       exposures: { hits: { edges: exposures = [], total: totalExposures } },
+      files: { hits: { edges: clinicalFiles = [] } },
+      project: { project_id: projectId = {} },
     } = edges[0].node;
+    const caseFilter = makeFilter([
+      { field: 'cases.case_id', value: [caseId] },
+    ]);
     return (
       <Card
         className="test-clinical-card"
@@ -42,32 +81,12 @@ export default compose(
         title={
           <Row style={{ justifyContent: 'space-between' }}>
             <span>Clinical</span>
-            <DownloadButton
-              style={visualizingButton}
-              filename={`clinical.case-${caseId}`}
-              endpoint="cases"
-              activeText="Processing"
-              inactiveText="Export"
-              filters={{
-                op: 'and',
-                content: [
-                  {
-                    op: 'in',
-                    content: {
-                      field: 'cases.case_id',
-                      value: [caseId],
-                    },
-                  },
-                ],
-              }}
-              fields={['case_id']}
-              dataExportExpands={[
-                'demographic',
-                'diagnoses',
-                'diagnoses.treatments',
-                'family_histories',
-                'exposures',
-              ]}
+            <DownloadClinicalDropdown
+              buttonStyles={visualizingButton}
+              inactiveText={'Export'}
+              filters={caseFilter}
+              tsvFilename={`clinical.case-${caseId}.${timestamp()}.tar.gz`}
+              jsonFilename={`clinical.case-${caseId}.${timestamp()}.json`}
             />
           </Row>
         }
@@ -323,6 +342,74 @@ export default compose(
             </div>
           )}
         </Tabs>
+        {clinicalFiles.length > 0 && (
+          <div
+            style={{
+              padding: '10px',
+            }}
+          >
+            <EntityPageHorizontalTable
+              title={'Clinical Supplement File'}
+              titleStyle={{ fontSize: '1em' }}
+              className="clinical-supplement-file-table"
+              data={clinicalFiles.map((f, i) => {
+                const fileData = {
+                  ...f.node,
+                  projects: [projectId],
+                };
+                return {
+                  file_name: (
+                    <span key="filename">
+                      {f.node.access === 'open' && (
+                        <i className="fa fa-unlock-alt" />
+                      )}
+                      {f.node.access === 'controlled' && (
+                        <i className="fa fa-lock" />
+                      )}{' '}
+                      {f.node.file_name}
+                    </span>
+                  ),
+                  data_format: f.node.data_format,
+                  file_size: f.node.file_size,
+                  action: (
+                    <div
+                      style={{
+                        display: 'flex',
+                        flexDirection: 'row',
+                      }}
+                    >
+                      <span key="add_to_cart" style={{ paddingRight: '10px' }}>
+                        {canAddToCart && (
+                          <AddToCartButtonSingle file={fileData} />
+                        )}
+                        {!canAddToCart && (
+                          <RemoveFromCartSingle file={fileData} />
+                        )}
+                      </span>
+                      <span style={{ paddingRight: '10px' }}>
+                        <DownloadFile
+                          style={{
+                            ...styles.downloadButton(theme),
+                            backgroundColor: 'white',
+                          }}
+                          file={f.node}
+                          activeText={''}
+                          inactiveText={''}
+                        />
+                      </span>
+                    </div>
+                  ),
+                };
+              })}
+              headings={[
+                { key: 'file_name', title: 'Filename' },
+                { key: 'data_format', title: 'Data format' },
+                { key: 'file_size', title: 'Size' },
+                { key: 'action', title: 'Action' },
+              ]}
+            />
+          </div>
+        )}
       </Card>
     );
   },

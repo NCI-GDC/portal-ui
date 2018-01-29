@@ -5,6 +5,7 @@ import _ from 'lodash';
 
 import SearchIcon from 'react-icons/lib/fa/search';
 import { compose, withState, branch, renderComponent } from 'recompose';
+import { connect } from 'react-redux';
 import { humanify } from '@ncigdc/utils/string';
 import { makeFilter } from '@ncigdc/utils/filters';
 import Card from '@ncigdc/uikit/Card';
@@ -12,7 +13,6 @@ import { Row, Column } from '@ncigdc/uikit/Flex';
 import Input from '@ncigdc/uikit/Form/Input';
 import EntityPageVerticalTable from '@ncigdc/components/EntityPageVerticalTable';
 import Hidden from '@ncigdc/components/Hidden';
-import DownloadButton from '@ncigdc/components/DownloadButton';
 import { withTheme } from '@ncigdc/theme';
 import { visualizingButton } from '@ncigdc/theme/mixins';
 import Button from '@ncigdc/uikit/Button';
@@ -28,17 +28,14 @@ import { MicroscopeIcon } from '@ncigdc/theme/icons';
 import { entityTypes } from './';
 import withRouter from '@ncigdc/utils/withRouter';
 import { DISPLAY_SLIDES } from '@ncigdc/utils/constants';
+import DownloadBiospecimenDropdown from '@ncigdc/modern_components/DownloadBiospecimenDropdown';
+import timestamp from '@ncigdc/utils/timestamp';
+import EntityPageHorizontalTable from '@ncigdc/components/EntityPageHorizontalTable';
+import AddToCartButtonSingle from '@ncigdc/components/AddToCartButtonSingle';
+import DownloadFile from '@ncigdc/components/DownloadFile';
+import RemoveFromCartSingle from '@ncigdc/components/RemoveFromCartSingle';
 
 const styles = {
-  button: {
-    color: '#333',
-    backgroundColor: '#fff',
-    borderColor: '#ccc',
-    minWidth: '115px',
-    minHeight: '34px',
-    display: 'inline-flex',
-    outline: 'none',
-  },
   searchIcon: theme => ({
     backgroundColor: theme.greyScale5,
     color: theme.greyScale2,
@@ -48,6 +45,19 @@ const styles = {
     borderRadius: '4px 0 0 4px',
     border: `1px solid ${theme.greyScale4}`,
     borderRight: 'none',
+  }),
+  common: theme => ({
+    backgroundColor: 'transparent',
+    color: theme.greyScale2,
+    justifyContent: 'flex-start',
+    ':hover': {
+      backgroundColor: theme.greyScale6,
+    },
+  }),
+  downloadButton: theme => ({
+    ...styles.common(theme),
+    padding: '3px 5px',
+    border: `1px solid ${theme.greyScale4}`,
   }),
 };
 
@@ -65,6 +75,7 @@ export default compose(
       !viewer.repository.cases.hits.edges[0].node.samples.hits.edges.length,
     renderComponent(() => <div>No biospecimen data found.</div>),
   ),
+  connect(state => state.cart),
   withState('allExpanded', 'setAllExpanded', false),
   withState('expandAllFirstClick', 'setExpandAllFirstClick', true),
   withState(
@@ -93,8 +104,13 @@ export default compose(
     allExpanded,
     expandAllFirstClick,
     setExpandAllFirstClick,
+    inactiveText,
+    canAddToCart = true,
   }) => {
     const p = edges[0].node;
+    const caseFilter = makeFilter([
+      { field: 'cases.case_id', value: [p.case_id] },
+    ]);
 
     const founds = p.samples.hits.edges.map(e => search(query, e));
     const flattened = _.flatten(founds);
@@ -104,7 +120,9 @@ export default compose(
     const selectedEntity = Object.keys(selectedNode).length
       ? selectedNode
       : p.samples.hits.edges[0].node;
-
+    const {
+      files: { hits: { edges: supplementalFiles = [] } },
+    } = edges[0].node;
     return (
       <Card
         className="test-biospecimen-card"
@@ -112,29 +130,13 @@ export default compose(
         title={
           <Row style={{ justifyContent: 'space-between' }}>
             <span>Biospecimen</span>
-            <DownloadButton
-              className="test-download-biospecimen"
-              style={visualizingButton}
-              filename={`biospecimen.case-${p.case_id}`}
-              endpoint="cases"
-              activeText="Processing"
-              inactiveText="Export"
-              filters={makeFilter([
-                { field: 'cases.case_id', value: p.case_id },
-              ])}
-              fields={['case_id']}
-              dataExportExpands={[
-                'samples',
-                'samples.portions',
-                'samples.portions.analytes',
-                'samples.portions.analytes.aliquots',
-                'samples.portions.analytes.aliquots.annotations',
-                'samples.portions.analytes.annotations',
-                'samples.portions.submitter_id',
-                'samples.portions.slides',
-                'samples.portions.annotations',
-                'samples.portions.center',
-              ]}
+            <DownloadBiospecimenDropdown
+              jsonFilename={`biospecimen.case-${p.case_id}.${timestamp()}.json`}
+              tsvFilename={`biospecimen.case-${p.case_id}.${timestamp()}.tar.gz`}
+              filters={caseFilter}
+              buttonStyles={visualizingButton}
+              inactiveText={'Export'}
+              total={edges.length}
             />
           </Row>
         }
@@ -274,6 +276,74 @@ export default compose(
             />
           </Column>
         </Row>
+        {supplementalFiles.length > 0 && (
+          <div
+            style={{
+              padding: '10px',
+            }}
+          >
+            <EntityPageHorizontalTable
+              title={'Biospecimen Supplement File'}
+              titleStyle={{ fontSize: '1em' }}
+              className="biospecimen-supplement-file-table"
+              headings={[
+                { key: 'file_name', title: 'Filename' },
+                { key: 'data_format', title: 'Data format' },
+                { key: 'file_size', title: 'Size' },
+                { key: 'action', title: 'Action' },
+              ]}
+              data={supplementalFiles.map((f, i) => {
+                const fileData = {
+                  ...f.node,
+                  projects: [p.projectId],
+                };
+                return {
+                  file_name: (
+                    <span key="filename">
+                      {f.node.access === 'open' && (
+                        <i className="fa fa-unlock-alt" />
+                      )}
+                      {f.node.access === 'controlled' && (
+                        <i className="fa fa-lock" />
+                      )}{' '}
+                      {f.node.file_name}
+                    </span>
+                  ),
+                  data_format: f.node.data_format,
+                  file_size: f.node.file_size,
+                  action: (
+                    <div
+                      style={{
+                        display: 'flex',
+                        flexDirection: 'row',
+                      }}
+                    >
+                      <span key="add_to_cart" style={{ paddingRight: '10px' }}>
+                        {canAddToCart && (
+                          <AddToCartButtonSingle file={fileData} />
+                        )}
+                        {!canAddToCart && (
+                          <RemoveFromCartSingle file={fileData} />
+                        )}
+                      </span>
+                      <span style={{ paddingRight: '10px' }}>
+                        <DownloadFile
+                          style={{
+                            ...styles.downloadButton(theme),
+                            backgroundColor: 'white',
+                          }}
+                          file={f.node}
+                          activeText={''}
+                          inactiveText={''}
+                        />
+                      </span>
+                    </div>
+                  ),
+                };
+              })}
+            />
+          </div>
+        )}
       </Card>
     );
   },

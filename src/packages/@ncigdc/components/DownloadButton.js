@@ -32,6 +32,7 @@ type TDownloadButton = {
   setParentState: () => {},
   showIcon?: boolean,
   sets: Array<{ id: string, filename: string, type: string }>,
+  requests: Array<{ endpoint: string, filename: string, params: Object }>,
 };
 
 const DownloadButton = ({
@@ -58,7 +59,6 @@ const DownloadButton = ({
   const text = active ? activeText : inactiveText;
   const icon =
     showIcon && (active ? <Spinner key="icon" /> : <DownloadIcon key="icon" />);
-
   return (
     <Button
       className={props.className || 'test-download-button'}

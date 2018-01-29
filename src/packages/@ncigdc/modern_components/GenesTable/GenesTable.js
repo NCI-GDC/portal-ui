@@ -12,6 +12,7 @@ import Table, { Tr } from '@ncigdc/uikit/Table';
 import { CreateExploreGeneSetButton } from '@ncigdc/modern_components/withSetAction';
 import { AppendExploreGeneSetButton } from '@ncigdc/modern_components/withSetAction';
 import { RemoveFromExploreGeneSetButton } from '@ncigdc/modern_components/withSetAction';
+import timestamp from '@ncigdc/utils/timestamp';
 
 import tableModel from './GenesTable.model';
 import { theme } from '@ncigdc/theme';
@@ -108,7 +109,7 @@ export default compose(
                 'is_cancer_gene_census',
               ]}
               tsvSelector="#genes-table"
-              tsvFilename="frequently-mutated-genes.tsv"
+              tsvFilename={`frequently-mutated-genes.${timestamp()}.tsv`}
               CreateSetButton={CreateExploreGeneSetButton}
               AppendSetButton={AppendExploreGeneSetButton}
               RemoveFromSetButton={RemoveFromExploreGeneSetButton}

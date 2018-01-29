@@ -1,7 +1,13 @@
+/* @flow */
+
 import React from 'react';
+import { compose } from 'recompose';
 import DownloadButton from '@ncigdc/components/DownloadButton';
 import { makeFilter } from '@ncigdc/utils/filters';
-export default ({ projectId, viewer }) => {
+import { withTheme } from '@ncigdc/theme';
+import timestamp from '@ncigdc/utils/timestamp';
+
+export default compose(withTheme)(({ isLoading, projectId, viewer }) => {
   const projectFilter = [
     {
       field: 'cases.project.project_id',
@@ -16,7 +22,7 @@ export default ({ projectId, viewer }) => {
     <DownloadButton
       className="test-download-biospecimen"
       disabled={!biospecimenCount}
-      filename={`biospecimen.project-${projectId}`}
+      filename={`biospecimen.project-${projectId}.${timestamp()}.json`}
       endpoint="cases"
       activeText="Processing"
       inactiveText={
@@ -38,4 +44,4 @@ export default ({ projectId, viewer }) => {
       filters={dataExportFilters}
     />
   );
-};
+});

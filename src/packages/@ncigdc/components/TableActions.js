@@ -8,14 +8,18 @@ import { parseFilterParam } from '@ncigdc/utils/uri';
 import DownloadButton from '@ncigdc/components/DownloadButton';
 import ArrangeColumnsButton from '@ncigdc/components/ArrangeColumnsButton';
 import SortTableButton from '@ncigdc/components/SortTableButton';
+import DownloadClinicalDropdown from '@ncigdc/modern_components/DownloadClinicalDropdown';
+import DownloadBiospecimenDropdown from '@ncigdc/modern_components/DownloadBiospecimenDropdown';
 
 import { visualizingButton } from '@ncigdc/theme/mixins';
 import DownloadTableToTsvButton from '@ncigdc/components/DownloadTableToTsvButton';
 import type { TGroupFilter } from '@ncigdc/utils/filters/types';
 import SetActions from '@ncigdc/components/SetActions';
-import { compose } from 'recompose';
+import { compose, withState } from 'recompose';
 import withRouter from '@ncigdc/utils/withRouter';
 import pluralize from '@ncigdc/utils/pluralize';
+import { withTheme } from '@ncigdc/theme';
+import timestamp from '@ncigdc/utils/timestamp';
 
 import type { TRawQuery } from '@ncigdc/utils/uri/types';
 
@@ -40,7 +44,14 @@ type TProps = {
   selectedIds?: Array<string>,
 };
 
-const enhance = compose(withRouter);
+const enhance = compose(
+  withRouter,
+  withState('state', 'setState', {
+    tsvDownloading: false,
+    jsonDownloading: false,
+  }),
+  withTheme,
+);
 
 const TableActions = ({
   type,
@@ -65,6 +76,10 @@ const TableActions = ({
   query,
   selectedIds,
   scope,
+  downloadClinical,
+  downloadBiospecimen,
+  theme,
+  totalCases,
 }: TProps) => {
   return (
     <Row style={style} spacing="0.2rem" className="test-table-actions">
@@ -83,6 +98,28 @@ const TableActions = ({
           style={visualizingButton}
         />
       )}
+      {downloadBiospecimen && (
+        <DownloadBiospecimenDropdown
+          jsonFilename={`biospecimen.cases_selection.${timestamp()}.json`}
+          tsvFilename={`biospecimen.cases_selection.${timestamp()}.tar.gz`}
+          filters={
+            currentFilters || parseFilterParam((query || {}).filters, {})
+          }
+          buttonStyles={visualizingButton}
+          inactiveText={'Biospecimen'}
+        />
+      )}
+      {downloadClinical && (
+        <DownloadClinicalDropdown
+          buttonStyles={visualizingButton}
+          tsvFilename={`clinical.cases_selection.${timestamp()}.tar.gz`}
+          jsonFilename={`clinical.cases_selection.${timestamp()}.json`}
+          filters={
+            currentFilters || parseFilterParam((query || {}).filters, {})
+          }
+          inactiveText={'Clinical'}
+        />
+      )}
       {downloadable && (
         <Tooltip Component={downloadTooltip}>
           <DownloadButton
@@ -90,7 +127,7 @@ const TableActions = ({
               currentFilters || parseFilterParam((query || {}).filters, {})
             }
             disabled={!total}
-            filename={pluralize(displayType, total)}
+            filename={`${pluralize(displayType, total)}.${timestamp()}.json`}
             endpoint={endpoint}
             fields={downloadFields}
             style={visualizingButton}

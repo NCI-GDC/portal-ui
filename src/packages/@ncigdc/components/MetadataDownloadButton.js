@@ -1,13 +1,13 @@
 // @flow
 import React from 'react';
-
+import timestamp from '@ncigdc/utils/timestamp';
 import DownloadButton from '@ncigdc/components/DownloadButton';
 
 const MetadataDropdownButton = ({ files }) => (
   <DownloadButton
     endpoint="files"
     size={files.files.length}
-    filename="metadata.cart"
+    filename={`metadata.cart.${timestamp()}.json`}
     activeText="Downloading"
     inactiveText="Metadata"
     fields={[
@@ -23,8 +23,6 @@ const MetadataDropdownButton = ({ files }) => (
       'platform',
       'experimental_strategy',
       'center.short_name',
-      'cases.case_id',
-      'cases.project.project_id',
       'annotations.annotation_id',
       'annotations.entity_id',
       'tags',
@@ -70,22 +68,6 @@ const MetadataDropdownButton = ({ files }) => (
         'analysis.downstream_analyses.output_files',
         'reference_genome',
         'index_file',
-        'cases',
-        'cases.demographic',
-        'cases.diagnoses',
-        'cases.diagnoses.treatments',
-        'cases.family_histories',
-        'cases.exposures',
-        'cases.samples',
-        'cases.samples.portions',
-        'cases.samples.portions.analytes',
-        'cases.samples.portions.analytes.aliquots',
-        'cases.samples.portions.analytes.aliquots.annotations',
-        'cases.samples.portions.analytes.annotations',
-        'cases.samples.portions.submitter_id',
-        'cases.samples.portions.slides',
-        'cases.samples.portions.annotations',
-        'cases.samples.portions.center',
       ],
     }}
     filters={{

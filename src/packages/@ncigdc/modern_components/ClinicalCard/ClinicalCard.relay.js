@@ -51,6 +51,7 @@ export default (Component: ReactClass<*>) =>
                     edges {
                       node {
                         case_id
+                        submitter_id
                         project {
                           project_id
                         }

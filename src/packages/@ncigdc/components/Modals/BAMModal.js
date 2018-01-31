@@ -20,7 +20,7 @@ type TProps = {
 
 export const processBAMSliceInput = (userInput: string): Object => {
   if (userInput) {
-    const lines = userInput.split('\n');
+    const lines = userInput.split('\n').filter(v => v.length);
     return {
       regions: lines.map(line => {
         const region = line.split('\t');

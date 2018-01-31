@@ -64,6 +64,7 @@ export default compose(
   }) => {
     const {
       case_id: caseId,
+      submitter_id: submitterId,
       diagnoses: { hits: { edges: diagnoses = [] } },
       family_histories: { hits: { edges: familyHistory = [] } },
       demographic = {},
@@ -83,10 +84,10 @@ export default compose(
             <span>Clinical</span>
             <DownloadClinicalDropdown
               buttonStyles={visualizingButton}
-              inactiveText={'Export'}
+              inactiveText={'Download'}
               filters={caseFilter}
-              tsvFilename={`clinical.case-${caseId}.${timestamp()}.tar.gz`}
-              jsonFilename={`clinical.case-${caseId}.${timestamp()}.json`}
+              tsvFilename={`clinical.case-${submitterId}-${projectId}.${timestamp()}.tar.gz`}
+              jsonFilename={`clinical.case-${submitterId}-${projectId}.${timestamp()}.json`}
             />
           </Row>
         }
@@ -345,7 +346,9 @@ export default compose(
         {clinicalFiles.length > 0 && (
           <div
             style={{
-              padding: '10px',
+              padding: '2px 10px 10px 10px',
+              borderTop: `1px solid ${theme.greyScale5}`,
+              marginTop: '10px',
             }}
           >
             <EntityPageHorizontalTable

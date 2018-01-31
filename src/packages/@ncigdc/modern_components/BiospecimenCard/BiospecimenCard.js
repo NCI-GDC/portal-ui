@@ -131,11 +131,13 @@ export default compose(
           <Row style={{ justifyContent: 'space-between' }}>
             <span>Biospecimen</span>
             <DownloadBiospecimenDropdown
-              jsonFilename={`biospecimen.case-${p.case_id}.${timestamp()}.json`}
-              tsvFilename={`biospecimen.case-${p.case_id}.${timestamp()}.tar.gz`}
+              jsonFilename={`biospecimen.case-${p.submitter_id}-${p.project
+                .project_id}.${timestamp()}.json`}
+              tsvFilename={`biospecimen.case-${p.submitter_id}-${p.project
+                .project_id}.${timestamp()}.tar.gz`}
               filters={caseFilter}
               buttonStyles={visualizingButton}
-              inactiveText={'Export'}
+              inactiveText={'Download'}
               total={edges.length}
             />
           </Row>
@@ -279,7 +281,9 @@ export default compose(
         {supplementalFiles.length > 0 && (
           <div
             style={{
-              padding: '10px',
+              padding: '2px 10px 10px 10px',
+              borderTop: `1px solid ${theme.greyScale5}`,
+              marginTop: '10px',
             }}
           >
             <EntityPageHorizontalTable

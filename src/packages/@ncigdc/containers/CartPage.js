@@ -296,6 +296,7 @@ const CartPage: TCartPage = ({ viewer, files, user, theme } = {}) => {
               <DownloadBiospecimenDropdown
                 buttonStyles={{ marginLeft: '1em' }}
                 dropdownStyles={{
+                  minWidth: '126px',
                   width: '126px',
                   left: '14px',
                   marginTop: '2px',

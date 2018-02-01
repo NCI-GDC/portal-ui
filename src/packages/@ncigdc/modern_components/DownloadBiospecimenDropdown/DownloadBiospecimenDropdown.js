@@ -13,7 +13,7 @@ const styles = {
   dropdownContainer: {
     top: '100%',
     whiteSpace: 'nowrap',
-    marginTop: '5px',
+    marginTop: '3px',
     minWidth: '100%',
     width: '100%',
     left: '1px',

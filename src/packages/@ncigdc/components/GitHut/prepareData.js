@@ -34,4 +34,3 @@ export default function(data) {
       return b < a ? -1 : b > a ? 1 : b >= a ? 0 : NaN;
     });
 }
-:

@@ -133,7 +133,7 @@ export const HUMAN_BODY_SITES_MAP = {
   'liver and intrahepatic bile ducts': 'Liver',
   trachea: 'Head and Neck',
   'other endocrine glands and related structures':
-    'other and ill-defined sites',
+    'Other And Ill-Defined Sites',
   'adrenal gland': 'Adrenal Gland',
   'eye and adnexa': 'Eye',
   'other and ill-defined digestive organs': 'Other And Ill-Defined Sites',
@@ -142,7 +142,7 @@ export const HUMAN_BODY_SITES_MAP = {
   'spinal cord, cranial nerves, and other parts of central nervous system':
     'Nervous System',
   'peripheral nerves and autonomic nervous system':
-    'other and ill-defined sites',
+    'Other And Ill-Defined Sites',
   'other and unspecified urinary organs': 'Other And Ill-Defined Sites',
 };
 

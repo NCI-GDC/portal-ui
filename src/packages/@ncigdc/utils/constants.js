@@ -124,7 +124,7 @@ export const HUMAN_BODY_SITES_MAP = {
   'other and unspecified parts of biliary tract': 'Bile Duct',
   hypopharynx: 'Head and Neck',
   'small intestine': 'Other And Ill-Defined Sites',
-  'other an unspecified female genital organs': 'Other And Ill-Defined Sites',
+  'other and unspecified female genital organs': 'Other And Ill-Defined Sites',
   gallbladder: 'Other And Ill-Defined Sites',
   'retroperitoneum and peritoneum': 'Other And Ill-Defined Sites',
   stomach: 'Stomach',

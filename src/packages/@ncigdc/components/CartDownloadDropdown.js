@@ -129,6 +129,8 @@ const downloadCart = ({
       url: urlJoin(AUTH_API, 'data'),
       params: {
         ids: files.map(file => file.file_id),
+        annotations: true,
+        related_files: true,
       },
       method: 'POST',
       altMessage: true,

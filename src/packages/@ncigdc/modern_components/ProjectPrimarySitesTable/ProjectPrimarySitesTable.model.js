@@ -6,11 +6,10 @@ import { makeFilter } from '@ncigdc/utils/filters';
 import withRouter from '@ncigdc/utils/withRouter';
 import CollapsibleList from '@ncigdc/uikit/CollapsibleList';
 import withData from '@ncigdc/modern_components/PrimarySiteSummary/PrimarySiteSummary.relay.js';
-import Button from '@ncigdc/uikit/Button';
-import { stringifyJSONParam } from '@ncigdc/utils/uri';
 import { DATA_CATEGORIES } from '@ncigdc/utils/constants';
 import { tableToolTipHint } from '@ncigdc/theme/mixins';
 import Tooltip from '@ncigdc/uikit/Tooltip/Tooltip';
+import ExploreLink from '@ncigdc/components/Links/ExploreLink';
 
 let DataCategoryColumns = withData(props => {
   var dataColumns = Object.keys(DATA_CATEGORIES).reduce((acc, k) => {
@@ -120,29 +119,32 @@ let FilesByPrimarySite = withData(props => {
 
 let ExploreByPrimarySiteButton = withRouter(props => {
   return (
-    <Button
-      onClick={() => {
-        props.push({
-          pathname: '/exploration',
-          query: {
-            filters: stringifyJSONParam(
-              makeFilter([
-                {
-                  field: 'cases.project.project_id',
-                  value: props.projectId,
-                },
-                {
-                  field: 'cases.primary_site',
-                  value: [props.primarySite],
-                },
-              ]),
-            ),
-          },
-        });
+    <ExploreLink
+      query={{
+        searchTableTab: 'cases',
+        filters: {
+          op: 'AND',
+          content: [
+            {
+              op: 'IN',
+              content: {
+                field: 'cases.project.project_id',
+                value: props.projectId,
+              },
+            },
+            {
+              op: 'IN',
+              content: {
+                field: 'cases.primary_site',
+                value: [props.primarySite],
+              },
+            },
+          ],
+        },
       }}
     >
       Explore
-    </Button>
+    </ExploreLink>
   );
 });
 
@@ -314,7 +316,7 @@ const projectPrimarySitesTableModel = [
         key="explore"
         style={{
           maxWidth: '200px',
-          padding: '3px 3px 3px 15px',
+          padding: '3px 15px',
           whiteSpace: 'normal',
         }}
       >

@@ -219,6 +219,25 @@ const projectPrimarySitesTableModel = [
     },
   },
   {
+    name: 'Cases',
+    id: 'case_count',
+    sortable: false,
+    downloadable: false,
+    th: () => <ThNum rowSpan="2">Cases</ThNum>,
+    td: ({ primarySite, projectId }) => (
+      <Td
+        key="file_count"
+        style={{
+          maxWidth: '200px',
+          padding: '3px',
+          whiteSpace: 'normal',
+        }}
+      >
+        <CasesByPrimarySite primarySite={primarySite} projectId={projectId} />
+      </Td>
+    ),
+  },
+  {
     name: 'Data Categories',
     id: 'data_categories',
     sortable: false,
@@ -276,30 +295,11 @@ const projectPrimarySitesTableModel = [
         key="file_count"
         style={{
           maxWidth: '200px',
-          padding: '3px 15px 3px 3px',
+          padding: '3px',
           whiteSpace: 'normal',
         }}
       >
         <FilesByPrimarySite primarySite={primarySite} projectId={projectId} />
-      </Td>
-    ),
-  },
-  {
-    name: 'Cases',
-    id: 'case_count',
-    sortable: false,
-    downloadable: false,
-    th: () => <ThNum rowSpan="2">Cases</ThNum>,
-    td: ({ primarySite, projectId }) => (
-      <Td
-        key="file_count"
-        style={{
-          maxWidth: '200px',
-          padding: '3px 15px 3px 3px',
-          whiteSpace: 'normal',
-        }}
-      >
-        <CasesByPrimarySite primarySite={primarySite} projectId={projectId} />
       </Td>
     ),
   },
@@ -314,7 +314,7 @@ const projectPrimarySitesTableModel = [
         key="explore"
         style={{
           maxWidth: '200px',
-          padding: '3px 15px 3px 15px',
+          padding: '3px 3px 3px 15px',
           whiteSpace: 'normal',
         }}
       >

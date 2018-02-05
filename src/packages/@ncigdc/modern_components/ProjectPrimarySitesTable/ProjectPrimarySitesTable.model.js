@@ -3,7 +3,6 @@ import React from 'react';
 import { RepositoryFilesLink } from '@ncigdc/components/Links/RepositoryLink';
 import { Th, Td, ThNum } from '@ncigdc/uikit/Table';
 import { makeFilter } from '@ncigdc/utils/filters';
-import withRouter from '@ncigdc/utils/withRouter';
 import CollapsibleList from '@ncigdc/uikit/CollapsibleList';
 import withData from '@ncigdc/modern_components/PrimarySiteSummary/PrimarySiteSummary.relay.js';
 import { DATA_CATEGORIES } from '@ncigdc/utils/constants';
@@ -117,7 +116,7 @@ let FilesByPrimarySite = withData(props => {
   );
 });
 
-let ExploreByPrimarySiteButton = withRouter(props => {
+let ExploreByPrimarySiteButton = props => {
   return (
     <ExploreLink
       query={{
@@ -146,7 +145,7 @@ let ExploreByPrimarySiteButton = withRouter(props => {
       Explore
     </ExploreLink>
   );
-});
+};
 
 let CasesByPrimarySite = withData(props => {
   const linkQuery = {

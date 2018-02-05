@@ -133,6 +133,7 @@ export default compose(
                 <SideTabs
                   contentStyle={{ border: 'none' }}
                   containerStyle={{ display: 'block' }}
+                  hideTabs={diagnoses.length < 2}
                   tabs={
                     diagnoses.length > 1
                       ? diagnoses.map(x => (
@@ -260,6 +261,7 @@ export default compose(
                 <SideTabs
                   contentStyle={{ border: 'none' }}
                   containerStyle={{ display: 'block' }}
+                  hideTabs={familyHistory.length < 2}
                   tabs={
                     familyHistory.length > 1
                       ? familyHistory.map(x => (
@@ -309,6 +311,7 @@ export default compose(
                 <SideTabs
                   contentStyle={{ border: 'none' }}
                   containerStyle={{ display: 'block' }}
+                  hideTabs={exposures.length < 2}
                   tabs={
                     exposures.length > 1
                       ? exposures.map(x => (

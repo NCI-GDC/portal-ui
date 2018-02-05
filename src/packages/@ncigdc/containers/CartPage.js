@@ -303,7 +303,7 @@ const CartPage: TCartPage = ({ viewer, files, user, theme } = {}) => {
                 }}
                 filters={filters}
                 tsvFilename={`biospecimen.cart.${timestamp()}.tar.gz`}
-                jsonfilename={`biospecimen.cart.${timestamp()}.json`}
+                jsonFilename={`biospecimen.cart.${timestamp()}.json`}
                 inactiveText={'Biospecimen'}
               />
               <DownloadClinicalDropdown
@@ -315,7 +315,7 @@ const CartPage: TCartPage = ({ viewer, files, user, theme } = {}) => {
                 buttonStyles={{ margin: '0 1em' }}
                 filters={filters}
                 tsvFilename={`clinical.cart.${timestamp()}.tar.gz`}
-                jsonfilename={`clinical.cart.${timestamp()}.json`}
+                jsonFilename={`clinical.cart.${timestamp()}.json`}
                 inactiveText={'Clinical'}
               />
               <SampleSheetDownloadButton files={{ files }} />

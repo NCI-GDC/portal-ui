@@ -140,7 +140,7 @@ export default compose(
                             {truncate(x.node.diagnosis_id, { length: 11 })}
                           </p>
                         ))
-                      : null
+                      : []
                   }
                   tabContent={diagnoses.map(d => d.node).map(x => (
                     <span key={x.diagnosis_id}>
@@ -267,7 +267,7 @@ export default compose(
                             {truncate(x.family_history_id, { length: 11 })}
                           </p>
                         ))
-                      : null
+                      : []
                   }
                   tabContent={familyHistory.map(x => (
                     <EntityPageVerticalTable
@@ -316,7 +316,7 @@ export default compose(
                             {truncate(x.node.exposure_id, { length: 11 })}
                           </p>
                         ))
-                      : null
+                      : []
                   }
                   tabContent={exposures.map(x => (
                     <EntityPageVerticalTable

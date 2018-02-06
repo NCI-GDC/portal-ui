@@ -109,7 +109,7 @@ const Tabs = ({
 }) =>
   side ? (
     <Row style={style} {...props} className="test-tabs">
-      <Column>
+      <Column style={tabs.length ? {} : { display: 'none' }}>
         <div
           style={{
             maxHeight: '550px',

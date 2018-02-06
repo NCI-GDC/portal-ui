@@ -44,7 +44,7 @@ export default compose(
     groupedData: map(
       groupBy(
         viewer.repository.cases.aggregations.primary_site.buckets,
-        b => HUMAN_BODY_SITES_MAP[b.key] || b.key,
+        b => HUMAN_BODY_SITES_MAP[b.key.toLowerCase()] || b.key,
       ),
       (group, majorPrimarySite) => ({
         key: majorPrimarySite,

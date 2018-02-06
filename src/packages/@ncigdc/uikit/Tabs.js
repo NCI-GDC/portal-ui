@@ -105,12 +105,11 @@ const Tabs = ({
   theme,
   tabStyle,
   tabToolbar,
-  hideTabs = false,
   ...props
 }) =>
   side ? (
     <Row style={style} {...props} className="test-tabs">
-      <Column style={hideTabs ? { display: 'none' } : {}}>
+      <Column style={tabs.length ? {} : { display: 'none' }}>
         <div
           style={{
             maxHeight: '550px',

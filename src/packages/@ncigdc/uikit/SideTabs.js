@@ -10,13 +10,11 @@ const SideTabs = ({
   activeTab,
   tabs,
   tabContent,
-  hideTabs,
   containerStyle = {},
   ...props
 }) => (
   <Row flex="1" style={containerStyle}>
     <Tabs
-      hideTabs={hideTabs}
       onTabClick={i => setTab(() => i)}
       tabs={tabs}
       activeIndex={activeTab}

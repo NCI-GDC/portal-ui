@@ -21,7 +21,7 @@ export default function(data) {
           name: project.name || DEFAULT_UNKNOWN_VAL,
           primary_site: uniq(
             (project.primary_site || [DEFAULT_UNKNOWN_VAL]).map(
-              p => HUMAN_BODY_SITES_MAP[p] || p,
+              p => HUMAN_BODY_SITES_MAP[p.toLowerCase()] || p,
             ),
           ),
           file_count: project.summary.file_count,

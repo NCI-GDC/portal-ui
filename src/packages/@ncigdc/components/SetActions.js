@@ -65,9 +65,9 @@ export default enhance(
           <DropdownItem
             style={{
               fontSize: '0.9em',
-              color: theme.greyScale3,
+              color: theme.greyScale2,
               ':hover': {
-                color: theme.greyScale3,
+                color: theme.greyScale2,
                 background: 'none',
               },
             }}

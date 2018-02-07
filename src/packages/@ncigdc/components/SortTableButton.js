@@ -99,6 +99,7 @@ const SortTableButton = compose(
                     type="checkbox"
                     checked={!!sameField}
                     name={x.name}
+                    aria-label={x.name}
                   />
                   <label htmlFor={x.name} style={{ marginLeft: '0.3rem' }}>
                     {x.name}
@@ -122,6 +123,7 @@ const SortTableButton = compose(
                     type="radio"
                     checked={!!sameField && sameField.order === 'asc'}
                     style={{ pointerEvents: 'none' }}
+                    aria-label={'sort-ascending'}
                   />
                 </Link>
                 <Link
@@ -140,6 +142,7 @@ const SortTableButton = compose(
                     type="radio"
                     checked={!!sameField && sameField.order === 'desc'}
                     style={{ pointerEvents: 'none' }}
+                    aria-label={'sort-descending'}
                   />
                 </Link>
               </RadioRow>

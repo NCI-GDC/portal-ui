@@ -22,7 +22,7 @@ const SearchIcon = styled(SI, {
 });
 
 const RestoreDefaults = styled(Row, {
-  color: ({ theme }) => theme.secondary,
+  color: ({ theme }) => theme.secondaryHighContrast,
   padding: '0.3rem 0.6rem',
   cursor: 'pointer',
   ':hover': {

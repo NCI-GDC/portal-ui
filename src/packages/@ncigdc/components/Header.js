@@ -130,58 +130,43 @@ const Header = compose(
         >
           <ul className="nav navbar-nav">
             <li>
-              <HomeLink
-                ariaLabel={'Home'}
-                exact
-                activeStyle={styles.activeNavLink(theme)}
-              >
+              <HomeLink exact activeStyle={styles.activeNavLink(theme)}>
                 <i className="fa fa-home" style={styles.iconPadding} />
                 <span className="header-hidden-sm">Home</span>
+                <Hidden>Home</Hidden>
               </HomeLink>
             </li>
             <li>
-              <ProjectsLink
-                ariaLabel={'Projects'}
-                exact
-                activeStyle={styles.activeNavLink(theme)}
-              >
+              <ProjectsLink exact activeStyle={styles.activeNavLink(theme)}>
                 <i className="icon-gdc-projects" style={styles.iconPadding} />
                 <span className="header-hidden-sm">Projects</span>
+                <Hidden>Projects</Hidden>
               </ProjectsLink>
             </li>
             <li>
-              <ExploreLink
-                ariaLabel={'Exploration'}
-                exact
-                activeStyle={styles.activeNavLink(theme)}
-              >
+              <ExploreLink exact activeStyle={styles.activeNavLink(theme)}>
                 <i className="icon-gdc-data" style={styles.iconPadding} />
                 <span className="header-hidden-sm">Exploration</span>
+                <Hidden>Exploration</Hidden>
               </ExploreLink>
             </li>
             <li>
-              <AnalysisLink
-                ariaLabel={'Analysis'}
-                exact
-                activeStyle={styles.activeNavLink(theme)}
-              >
+              <AnalysisLink exact activeStyle={styles.activeNavLink(theme)}>
                 <Row
                   // needed for handling IE default svg style
                   style={{ alignItems: 'center' }}
                 >
                   <AnalysisIcon style={styles.iconPadding} />
                   <span className="header-hidden-sm">Analysis</span>
+                  <Hidden>Analysis</Hidden>
                 </Row>
               </AnalysisLink>
             </li>
             <li>
-              <RepositoryLink
-                ariaLabel={'Repository'}
-                exact
-                activeStyle={styles.activeNavLink(theme)}
-              >
+              <RepositoryLink exact activeStyle={styles.activeNavLink(theme)}>
                 <DatabaseIcon style={styles.iconPadding} />
                 <span className="header-hidden-sm">Repository</span>
+                <Hidden>Repository</Hidden>
               </RepositoryLink>
             </li>
           </ul>

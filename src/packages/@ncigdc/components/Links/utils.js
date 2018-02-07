@@ -17,9 +17,7 @@ type TListLinkConfig = {|
 |};
 
 type TMakeLinkBase = (p: TLinkProps) => React.Element<>;
-const makeLinkBase: TMakeLinkBase = props => (
-  <Link aria-label={props.ariaLabel} {...props} />
-);
+const makeLinkBase: TMakeLinkBase = props => <Link {...props} />;
 
 type TMakeIdLink = (c: TIdLinkConfig) => (p: TIdLinkProps) => React.Element<>;
 export const makeIDLink: TMakeIdLink = config => props => {

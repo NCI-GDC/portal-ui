@@ -10,11 +10,10 @@ type TProps = {|
   exact?: boolean,
   className?: string,
   tabIndex?: string,
-  ariaLabel: string,
 |};
 
 const HomeLink = ({ children, ...props }: TProps) => (
-  <Link aria-label={props.ariaLabel} pathname="/" {...props}>
+  <Link pathname="/" {...props}>
     {children || 'home'}
   </Link>
 );

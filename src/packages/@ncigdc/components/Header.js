@@ -130,25 +130,41 @@ const Header = compose(
         >
           <ul className="nav navbar-nav">
             <li>
-              <HomeLink exact activeStyle={styles.activeNavLink(theme)}>
+              <HomeLink
+                ariaLabel={'Home'}
+                exact
+                activeStyle={styles.activeNavLink(theme)}
+              >
                 <i className="fa fa-home" style={styles.iconPadding} />
                 <span className="header-hidden-sm">Home</span>
               </HomeLink>
             </li>
             <li>
-              <ProjectsLink exact activeStyle={styles.activeNavLink(theme)}>
+              <ProjectsLink
+                ariaLabel={'Projects'}
+                exact
+                activeStyle={styles.activeNavLink(theme)}
+              >
                 <i className="icon-gdc-projects" style={styles.iconPadding} />
                 <span className="header-hidden-sm">Projects</span>
               </ProjectsLink>
             </li>
             <li>
-              <ExploreLink exact activeStyle={styles.activeNavLink(theme)}>
+              <ExploreLink
+                ariaLabel={'Exploration'}
+                exact
+                activeStyle={styles.activeNavLink(theme)}
+              >
                 <i className="icon-gdc-data" style={styles.iconPadding} />
                 <span className="header-hidden-sm">Exploration</span>
               </ExploreLink>
             </li>
             <li>
-              <AnalysisLink exact activeStyle={styles.activeNavLink(theme)}>
+              <AnalysisLink
+                ariaLabel={'Analysis'}
+                exact
+                activeStyle={styles.activeNavLink(theme)}
+              >
                 <Row
                   // needed for handling IE default svg style
                   style={{ alignItems: 'center' }}
@@ -159,7 +175,11 @@ const Header = compose(
               </AnalysisLink>
             </li>
             <li>
-              <RepositoryLink exact activeStyle={styles.activeNavLink(theme)}>
+              <RepositoryLink
+                ariaLabel={'Repository'}
+                exact
+                activeStyle={styles.activeNavLink(theme)}
+              >
                 <DatabaseIcon style={styles.iconPadding} />
                 <span className="header-hidden-sm">Repository</span>
               </RepositoryLink>

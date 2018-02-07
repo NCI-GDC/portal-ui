@@ -5,10 +5,11 @@ import Link from './Link';
 type TProps = {
   children?: mixed,
   style?: Object,
+  ariaLabel: string,
 };
 
 const AnalysisLink = ({ children, ...props }: TProps) => (
-  <Link pathname="/analysis" {...props}>
+  <Link aria-label={props.ariaLabel} pathname="/analysis" {...props}>
     {children || 'analysis'}
   </Link>
 );

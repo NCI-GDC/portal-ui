@@ -133,18 +133,21 @@ const Header = compose(
               <HomeLink exact activeStyle={styles.activeNavLink(theme)}>
                 <i className="fa fa-home" style={styles.iconPadding} />
                 <span className="header-hidden-sm">Home</span>
+                <Hidden>Home</Hidden>
               </HomeLink>
             </li>
             <li>
               <ProjectsLink exact activeStyle={styles.activeNavLink(theme)}>
                 <i className="icon-gdc-projects" style={styles.iconPadding} />
                 <span className="header-hidden-sm">Projects</span>
+                <Hidden>Projects</Hidden>
               </ProjectsLink>
             </li>
             <li>
               <ExploreLink exact activeStyle={styles.activeNavLink(theme)}>
                 <i className="icon-gdc-data" style={styles.iconPadding} />
                 <span className="header-hidden-sm">Exploration</span>
+                <Hidden>Exploration</Hidden>
               </ExploreLink>
             </li>
             <li>
@@ -155,6 +158,7 @@ const Header = compose(
                 >
                   <AnalysisIcon style={styles.iconPadding} />
                   <span className="header-hidden-sm">Analysis</span>
+                  <Hidden>Analysis</Hidden>
                 </Row>
               </AnalysisLink>
             </li>
@@ -162,6 +166,7 @@ const Header = compose(
               <RepositoryLink exact activeStyle={styles.activeNavLink(theme)}>
                 <DatabaseIcon style={styles.iconPadding} />
                 <span className="header-hidden-sm">Repository</span>
+                <Hidden>Repository</Hidden>
               </RepositoryLink>
             </li>
           </ul>

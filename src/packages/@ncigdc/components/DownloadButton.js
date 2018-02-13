@@ -53,6 +53,7 @@ const DownloadButton = ({
   style = {},
   extraParams = {},
   showIcon = true,
+  scope = 'repository',
   sets,
   ...props
 }: TDownloadButton) => {
@@ -75,6 +76,7 @@ const DownloadButton = ({
           fields: fields.join(),
           filters,
           pretty: true,
+          scope,
           ...(sets ? { sets } : {}),
           ...(dataExportExpands ? { expand: dataExportExpands.join() } : {}),
           ...(returnType ? { return_type: returnType } : {}),

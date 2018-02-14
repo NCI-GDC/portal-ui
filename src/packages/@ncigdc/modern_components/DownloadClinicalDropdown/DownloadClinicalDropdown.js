@@ -61,8 +61,9 @@ export default compose(
     inactiveText,
     dropdownStyles = {},
     buttonStyles = {},
+    scope = 'repository',
   }) => {
-    const clinicalCount = viewer ? viewer.repository.cases.hits.total : null;
+    const clinicalCount = viewer ? viewer[scope].cases.hits.total : null;
     return (
       <Dropdown
         className="data-download-clinical"
@@ -106,6 +107,7 @@ export default compose(
           active={state.tsvDownloading}
           filters={filters}
           filename={tsvFilename}
+          scope={scope}
         />
         <DownloadButton
           className="data-download-clinical-json"

@@ -114,7 +114,8 @@ const TableActions = ({
           inactiveText={'Biospecimen'}
           scope={scope}
           onClick={
-            fieldContains({ currentFilters, field: 'gene' }) ||
+            (scope === 'explore' &&
+              fieldContains({ currentFilters, field: 'gene' })) ||
             fieldContains({ currentFilters, field: 'ssms' })
           }
         />

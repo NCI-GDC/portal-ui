@@ -102,6 +102,7 @@ export default compose(
                                 push({
                                   pathname: '/repository',
                                   query: {
+                                    searchTableTab: 'cases',
                                     filters: stringifyJSONParam({
                                       op: 'AND',
                                       content: [

@@ -81,6 +81,11 @@ const TableActions = ({
   theme,
   totalCases,
 }: TProps) => {
+  const fieldContains = ({ currentFilters, field }) => {
+    return ((currentFilters || {}).content || []).some(f =>
+      f.content.field.includes(field),
+    );
+  };
   return (
     <Row style={style} spacing="0.2rem" className="test-table-actions">
       {arrangeColumnKey && (
@@ -107,6 +112,12 @@ const TableActions = ({
           }
           buttonStyles={visualizingButton}
           inactiveText={'Biospecimen'}
+          scope={scope}
+          onClick={
+            (scope === 'explore' &&
+              fieldContains({ currentFilters, field: 'gene' })) ||
+            fieldContains({ currentFilters, field: 'ssms' })
+          }
         />
       )}
       {downloadClinical && (
@@ -118,6 +129,7 @@ const TableActions = ({
             currentFilters || parseFilterParam((query || {}).filters, {})
           }
           inactiveText={'Clinical'}
+          scope={scope}
         />
       )}
       {downloadable && (

@@ -1,5 +1,5 @@
 {
-  "version": "0.0.0",
+  "version": "1.12.0",
   "repository": "NCI-GDC/portal-ui",
   "name": "portal-ui",
   "author": {
@@ -8,7 +8,8 @@
   },
   "homepage": "https://portal.gdc.cancer.gov/",
   "scripts": {
-    "start": "concurrently --kill-others 'npm run start-ui' 'npm run relay -- --watch'",
+    "start":
+      "concurrently --kill-others 'npm run start-ui' 'npm run relay -- --watch'",
     "start-ui": "BROWSER=none jailbreak-react-scripts start",
     "build": "npm run relay && jailbreak-react-scripts build",
     "test": "react-scripts test --env=jsdom",

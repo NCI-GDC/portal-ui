@@ -8,6 +8,12 @@ import DownloadIcon from '@ncigdc/theme/icons/Download';
 import Spinner from '@ncigdc/theme/icons/Spinner';
 import Button from '@ncigdc/uikit/Button';
 import { withTheme, theme } from '@ncigdc/theme';
+import { connect } from 'react-redux';
+import { notify } from '@ncigdc/dux/notification';
+import { Column } from '@ncigdc/uikit/Flex/index';
+import { CreateExploreCaseSetButton } from '@ncigdc/modern_components/withSetAction';
+import { stringifyJSONParam } from '@ncigdc/utils/uri';
+import withRouter from '@ncigdc/utils/withRouter';
 
 const styles = {
   dropdownContainer: {
@@ -39,6 +45,8 @@ const styles = {
 };
 
 export default compose(
+  connect(),
+  withRouter,
   withState('state', 'setState', {
     tsvDownloading: false,
     jsonDownloading: false,
@@ -58,8 +66,12 @@ export default compose(
     inactiveText,
     dropdownStyles = {},
     buttonStyles = {},
+    scope = 'repository',
+    onClick,
+    dispatch,
+    push,
   }) => {
-    const biospecimenCount = viewer ? viewer.repository.cases.hits.total : null;
+    const biospecimenCount = viewer ? viewer[scope].cases.hits.total : null;
     return (
       <Dropdown
         className="data-download-biospecimen"
@@ -67,6 +79,55 @@ export default compose(
           <Button
             className="data-download-biospecimen-button"
             style={{ ...styles.dropdownButton, ...buttonStyles }}
+            onClick={
+              onClick
+                ? () =>
+                    dispatch(
+                      notify({
+                        action: 'warning',
+                        id: `${new Date().getTime()}`,
+                        component: (
+                          <Column style={{ alignItems: 'center' }}>
+                            <span>
+                              Biospecimen data not available with these filters.
+                            </span>
+                            <CreateExploreCaseSetButton
+                              filters={filters}
+                              disabled={!viewer.explore.cases.hits.total}
+                              style={{
+                                marginBottom: '1rem',
+                                marginTop: '1rem',
+                              }}
+                              onComplete={setId => {
+                                push({
+                                  pathname: '/repository',
+                                  query: {
+                                    searchTableTab: 'cases',
+                                    filters: stringifyJSONParam({
+                                      op: 'AND',
+                                      content: [
+                                        {
+                                          op: 'IN',
+                                          content: {
+                                            field: 'cases.case_id',
+                                            value: [`set_id:${setId}`],
+                                          },
+                                        },
+                                      ],
+                                    }),
+                                  },
+                                });
+                              }}
+                            >
+                              View Cases in Repository
+                            </CreateExploreCaseSetButton>
+                            <span>to download biospecimen data.</span>
+                          </Column>
+                        ),
+                      }),
+                    )
+                : () => null
+            }
             leftIcon={
               state.jsonDownloading || state.tsvDownloading ? (
                 <Spinner />
@@ -83,6 +144,7 @@ export default compose(
         dropdownStyle={{ ...styles.dropdownContainer, ...dropdownStyles }}
       >
         <DownloadButton
+          disabled={onClick}
           className="data-download-biospecimen-tsv"
           size={biospecimenCount}
           style={styles.button(theme)}
@@ -99,8 +161,10 @@ export default compose(
           active={state.tsvDownloading}
           filters={filters}
           filename={tsvFilename}
+          scope={scope}
         />
         <DownloadButton
+          disabled={onClick}
           className="data-download-biospecimen"
           size={biospecimenCount}
           style={styles.button(theme)}

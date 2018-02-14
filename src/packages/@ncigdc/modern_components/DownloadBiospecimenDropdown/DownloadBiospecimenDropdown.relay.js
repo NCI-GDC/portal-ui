@@ -20,7 +20,7 @@ export default (Component: ReactClass<*>) =>
     const caseQuery =
       props.scope === 'explore'
         ? graphql`
-            query DownloadClinicalDropdownExplore_relayQuery(
+            query DownloadBiospecimenDropdownExplore_relayQuery(
               $filters: FiltersArgument
             ) {
               viewer {
@@ -35,7 +35,7 @@ export default (Component: ReactClass<*>) =>
             }
           `
         : graphql`
-            query DownloadClinicalDropdownRepository_relayQuery(
+            query DownloadBiospecimenDropdownRepository_relayQuery(
               $filters: FiltersArgument
             ) {
               viewer {
@@ -49,6 +49,7 @@ export default (Component: ReactClass<*>) =>
               }
             }
           `;
+
     return (
       <Query
         parentProps={props}

@@ -93,7 +93,6 @@ export default compose(
                             </span>
                             <CreateExploreCaseSetButton
                               filters={filters}
-                              disabled={!viewer.explore.cases.hits.total}
                               style={{
                                 marginBottom: '1rem',
                                 marginTop: '1rem',

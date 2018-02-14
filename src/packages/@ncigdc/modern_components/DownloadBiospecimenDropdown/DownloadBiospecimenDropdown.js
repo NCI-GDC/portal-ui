@@ -119,7 +119,7 @@ export default compose(
                                 });
                               }}
                             >
-                              View Files in Repository
+                              View Cases in Repository
                             </CreateExploreCaseSetButton>
                             <span>to download biospecimen data.</span>
                           </Column>

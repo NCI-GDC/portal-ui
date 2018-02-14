@@ -66,7 +66,7 @@ export default compose(
     inactiveText,
     dropdownStyles = {},
     buttonStyles = {},
-    scope,
+    scope = 'repository',
     onClick,
     dispatch,
     push,

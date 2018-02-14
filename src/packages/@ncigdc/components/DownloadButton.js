@@ -53,7 +53,7 @@ const DownloadButton = ({
   style = {},
   extraParams = {},
   showIcon = true,
-  scope = 'repository',
+  scope,
   sets,
   ...props
 }: TDownloadButton) => {

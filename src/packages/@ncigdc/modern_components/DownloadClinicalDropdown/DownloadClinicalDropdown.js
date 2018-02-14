@@ -61,7 +61,7 @@ export default compose(
     inactiveText,
     dropdownStyles = {},
     buttonStyles = {},
-    scope,
+    scope = 'repository',
   }) => {
     const clinicalCount = viewer ? viewer[scope].cases.hits.total : null;
     return (

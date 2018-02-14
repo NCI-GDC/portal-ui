@@ -112,7 +112,6 @@ const TableActions = ({
           }
           buttonStyles={visualizingButton}
           inactiveText={'Biospecimen'}
-          scope={scope}
           onClick={
             (scope === 'explore' &&
               fieldContains({ currentFilters, field: 'gene' })) ||

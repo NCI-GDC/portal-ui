@@ -1,5 +1,5 @@
 import React from 'react';
-import { Route, Switch } from 'react-router-dom';
+import { Route, Switch, Redirect } from 'react-router-dom';
 import Head from '@ncigdc/components/Head';
 import NotFound from '@ncigdc/components/NotFound';
 import LoadableWithLoading from '@ncigdc/components/LoadableWithLoading';
@@ -8,6 +8,7 @@ import FileRoute from '@ncigdc/routes/FileRoute';
 import CaseRoute from '@ncigdc/routes/CaseRoute';
 import AnnotationRoute from '@ncigdc/routes/AnnotationRoute';
 import ComponentsRoute from '@ncigdc/routes/ComponentsRoute';
+import Login from '@ncigdc/routes/Login';
 
 const CartRoute = LoadableWithLoading({
   loader: () => import('@ncigdc/routes/CartRoute'),
@@ -29,7 +30,15 @@ export default () => (
   <span>
     <Route children={p => <Head title={p.location.pathname.split('/')[1]} />} />
     <Switch>
-      <Route exact path="/" component={() => 'login page'} />}
+      <Route
+        exact
+        path="/"
+        component={() => (
+          // TODO: actual login
+          <Redirect to={window.loggedIn ? '/repository' : '/login'} />
+        )}
+      />
+      <Route exact path="/login" component={Login} />
       <Route exact path="/cart" component={CartRoute} />
       <Route exact path="/repository" component={RepositoryRoute} />
       <Route exact path="/projects" component={ProjectsRoute} />

@@ -19,6 +19,8 @@ export const SLIDE_IMAGE_ENDPOINT =
   process.env.REACT_APP_SLIDE_IMAGE_ENDPOINT ||
   'https://image.gdc.cancercollaboratory.org:8888/';
 
+export const AWG = localStorage.REACT_APP_AWG || process.env.REACT_APP_AWG;
+
 export const DISPLAY_SLIDES =
   localStorage.REACT_APP_GDC_DISPLAY_SLIDES || false;
 

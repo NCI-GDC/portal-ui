@@ -7,10 +7,8 @@ import { connect } from 'react-redux';
 import { dismissNotification } from '@ncigdc/dux/bannerNotification';
 import nciGdcLogo from '@ncigdc/theme/images/NHI_GDC_DataPortal-logo.svg';
 import HomeLink from '@ncigdc/components/Links/HomeLink';
-import AnalysisLink from '@ncigdc/components/Links/AnalysisLink';
 import RepositoryLink from '@ncigdc/components/Links/RepositoryLink';
 import CartLink from '@ncigdc/components/Links/CartLink';
-import ExploreLink from '@ncigdc/components/Links/ExploreLink';
 import ProjectsLink from '@ncigdc/components/Links/ProjectsLink';
 import GDCAppsDropdown from '@ncigdc/components/GDCApps/GDCAppsDropdown';
 import QuickSearch from '@ncigdc/components/QuickSearch/QuickSearch';
@@ -23,10 +21,7 @@ import SessionExpiredModal from '@ncigdc/components/Modals/SessionExpiredModal';
 import withRouter from '@ncigdc/utils/withRouter';
 import Banner from '@ncigdc/uikit/Banner';
 import { withTheme } from '@ncigdc/theme';
-import { AnalysisIcon } from '@ncigdc/theme/icons';
 import DatabaseIcon from '@ncigdc/theme/icons/Database';
-import ManageSetsLink from '@ncigdc/components/Links/ManageSetsLink';
-import { Row } from '@ncigdc/uikit/Flex';
 
 import './Header.css';
 
@@ -116,7 +111,11 @@ const Header = compose(
             tabIndex="0"
             style={{ padding: 0 }}
           >
-            <img src="https://i.imgur.com/O33FmeE.png" alt="gdc-logo" />
+            <img
+              style={{ width: 260 }}
+              src="https://i.imgur.com/O33FmeE.png"
+              alt="gdc-logo"
+            />
             <Hidden>Home</Hidden>
           </HomeLink>
         </div>
@@ -130,37 +129,11 @@ const Header = compose(
         >
           <ul className="nav navbar-nav">
             <li>
-              <HomeLink exact activeStyle={styles.activeNavLink(theme)}>
-                <i className="fa fa-home" style={styles.iconPadding} />
-                <span className="header-hidden-sm">Home</span>
-                <Hidden>Home</Hidden>
-              </HomeLink>
-            </li>
-            <li>
               <ProjectsLink exact activeStyle={styles.activeNavLink(theme)}>
                 <i className="icon-gdc-projects" style={styles.iconPadding} />
                 <span className="header-hidden-sm">Projects</span>
                 <Hidden>Projects</Hidden>
               </ProjectsLink>
-            </li>
-            <li>
-              <ExploreLink exact activeStyle={styles.activeNavLink(theme)}>
-                <i className="icon-gdc-data" style={styles.iconPadding} />
-                <span className="header-hidden-sm">Exploration</span>
-                <Hidden>Exploration</Hidden>
-              </ExploreLink>
-            </li>
-            <li>
-              <AnalysisLink exact activeStyle={styles.activeNavLink(theme)}>
-                <Row
-                  // needed for handling IE default svg style
-                  style={{ alignItems: 'center' }}
-                >
-                  <AnalysisIcon style={styles.iconPadding} />
-                  <span className="header-hidden-sm">Analysis</span>
-                  <Hidden>Analysis</Hidden>
-                </Row>
-              </AnalysisLink>
             </li>
             <li>
               <RepositoryLink exact activeStyle={styles.activeNavLink(theme)}>
@@ -178,11 +151,6 @@ const Header = compose(
                 tabIndex="0"
               />
             </li>
-            {!isInSearchMode && (
-              <li>
-                <ManageSetsLink activeStyle={styles.activeNavLink(theme)} />
-              </li>
-            )}
             {!user &&
               !isInSearchMode && (
                 <li>

@@ -52,6 +52,7 @@ function fetchQuery(operation, variables, cacheConfig) {
 
   return fetch(urlJoin(API, `graphql/${componentName}?hash=${hash}`), {
     method: 'POST',
+    credentials: 'include',
     headers: {
       'content-type': 'application/json',
     },

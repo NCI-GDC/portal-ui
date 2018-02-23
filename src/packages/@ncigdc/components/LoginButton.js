@@ -4,6 +4,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import LoginIcon from 'react-icons/lib/fa/sign-in';
+import { withRouter } from '@ncigdc/utils/withRouter';
 import { fetchUser } from '@ncigdc/dux/auth';
 import LocationSubscriber from '@ncigdc/components/LocationSubscriber';
 import styled from '@ncigdc/theme/styled';
@@ -11,9 +12,15 @@ import { AUTH } from '@ncigdc/utils/constants';
 
 /*----------------------------------------------------------------------------*/
 
-const openAuthWindow = ({ pathname, dispatch }) => {
+const openAuthWindow = ({ pathname, dispatch, push }) => {
   if (navigator.cookieEnabled) {
-    const win = open(AUTH, 'Auth', 'width=800, height=600');
+    const win = open(
+      `https://portal.gdc.cancer.gov/auth/login/shib?redirect=${location.origin}`,
+      'Auth',
+      'width=800, height=600',
+    );
+
+    window.loginPopup = win;
 
     const interval = setInterval(() => {
       try {
@@ -25,14 +32,15 @@ const openAuthWindow = ({ pathname, dispatch }) => {
           clearInterval(interval);
         } else if (
           win.document.URL.includes(location.origin) &&
-          !win.document.URL.includes(location.origin + '/auth')
+          !win.document.URL.includes('shib')
         ) {
           win.close();
 
           setTimeout(() => {
             clearInterval(interval);
             setTimeout(() => {
-              dispatch(fetchUser());
+              // dispatch(fetchUser());
+              push('/repository');
             }, 1000);
           }, 1000);
         }
@@ -63,10 +71,10 @@ type TLoginButtonProps = {
 };
 const LoginButton = ({ children, dispatch }: TLoginButtonProps) => (
   <LocationSubscriber>
-    {({ pathname }) => (
+    {({ pathname, push }) => (
       <Link
         className="test-login-button"
-        onClick={() => openAuthWindow({ pathname, dispatch })}
+        onClick={() => openAuthWindow({ pathname, dispatch, push })}
       >
         {children || (
           <span>

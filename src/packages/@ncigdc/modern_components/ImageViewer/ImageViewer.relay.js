@@ -45,12 +45,13 @@ export default (Component: ReactClass<*>) =>
         const parsedFilters = parseFilterParam(filters, null);
         const newProps = {
           variables: {
-            filters: addInFilters(
-              parsedFilters,
-              makeFilter([
-                { field: 'cases.project.project_id', value: ['TCGA-BRCA'] }, //TODO remove this when other projects slides processed
-              ]),
-            ),
+            filters: addInFilters(parsedFilters),
+            slideFilter: makeFilter([
+              {
+                field: 'files.data_type',
+                value: ['Slide Image'],
+              },
+            ]),
             cases_offset: offset,
             cases_size: firstLoad ? firstLoadSize : size,
           },
@@ -69,6 +70,7 @@ export default (Component: ReactClass<*>) =>
         query={graphql`
           query ImageViewer_relayQuery(
             $filters: FiltersArgument
+            $slideFilter: FiltersArgument
             $cases_size: Int
             $cases_offset: Int
           ) {
@@ -89,6 +91,16 @@ export default (Component: ReactClass<*>) =>
                         submitter_id
                         project {
                           project_id
+                        }
+                        files {
+                          hits(filters: $slideFilter, first: 99) {
+                            edges {
+                              node {
+                                file_id
+                                submitter_id
+                              }
+                            }
+                          }
                         }
                         samples {
                           hits(first: 99) {

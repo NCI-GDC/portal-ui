@@ -15,56 +15,57 @@ export default (Component: ReactClass<*>) => (props: Object) => {
             'node',
             {},
           );
-          const portions = (caseNode.samples || {
-            hits: { edges: [] },
-          }).hits.edges.reduce(
-            (acc, { node }) => [
-              ...acc,
-              ...node.portions.hits.edges.map(p => p.node),
-            ],
-            [],
-          );
-          return portions.reduce(
-            (acc, { slides }) => acc + slides.hits.total,
-            0,
-          );
+          return caseNode.files.hits.total;
+          // const portions = (caseNode.samples || {
+          //   hits: { edges: [] },
+          // }).hits.edges.reduce(
+          //   (acc, { node }) => [
+          //     ...acc,
+          //     ...node.portions.hits.edges.map(p => p.node),
+          //   ],
+          //   [],
+          // );
+          // return portions.reduce(
+          //   (acc, { slides }) =>
+          //     slides.hits.edges[0]
+          //       ? acc.concat(slides.hits.edges[0].node.slide_id)
+          //       : acc,
+          //   [],
+          // );
+          // return portions.reduce(
+          //   (acc, { slides }) => acc + slides.hits.total,
+          //   0,
+          // );
         },
         ...props,
       }}
       variables={{
-        filters: addInFilters(
-          props.filters,
-          makeFilter([
-            { field: 'cases.project.project_id', value: ['TCGA-BRCA'] }, //TODO remove this when other projects slides processed
-          ]),
-        ),
+        filters: addInFilters(props.filters),
+        slideFilter: makeFilter([
+          {
+            field: 'files.data_type',
+            value: ['Slide Image'],
+          },
+        ]),
       }}
       Component={Component}
       query={graphql`
-        query repositoryCaseSlides_relayQuery($filters: FiltersArgument) {
+        query repositoryCaseSlides_relayQuery(
+          $filters: FiltersArgument
+          $slideFilter: FiltersArgument
+        ) {
           viewer {
             repository {
               cases {
                 hits(filters: $filters, first: 1) {
                   edges {
                     node {
-                      samples {
-                        hits(first: 99) {
+                      files {
+                        hits(filters: $slideFilter, first: 99) {
+                          total
                           edges {
                             node {
-                              portions {
-                                hits(first: 99) {
-                                  edges {
-                                    node {
-                                      slides {
-                                        hits(first: 0) {
-                                          total
-                                        }
-                                      }
-                                    }
-                                  }
-                                }
-                              }
+                              file_id
                             }
                           }
                         }

@@ -389,9 +389,7 @@ const casesTableModel = [
                   </ImageViewerLink>
                 </Tooltip>
               ) : (
-                <Tooltip Component="No slide images to view. Note: this demo only includes TCGA-BRCA.">
-                  --
-                </Tooltip>
+                <Tooltip Component="No slide images to view.">--</Tooltip>
               )}
           </RepositorySlideCount>
         </Td>

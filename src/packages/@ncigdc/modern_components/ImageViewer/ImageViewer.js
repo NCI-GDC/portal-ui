@@ -1,6 +1,7 @@
 import React from 'react';
 import { compose, lifecycle, withState } from 'recompose';
 import { connect } from 'react-redux';
+import _ from 'lodash';
 
 import Heading from '@ncigdc/uikit/Heading';
 import TabbedLinks from '@ncigdc/components/TabbedLinks';
@@ -16,6 +17,7 @@ import InternalLink from '@ncigdc/components/Links/InternalLink';
 import styled from '@ncigdc/theme/styled';
 import { linkButton } from '@ncigdc/theme/mixins';
 import SearchIcon from '@ncigdc/theme/icons/SearchIcon';
+import withRouter from '@ncigdc/utils/withRouter';
 
 import ImageViewerTab from './ImageViewerTab';
 
@@ -26,11 +28,18 @@ export const getSlides = caseNode => {
     (acc, { node }) => [...acc, ...node.portions.hits.edges.map(p => p.node)],
     [],
   );
-  const slides = portions.reduce(
+  const slideImageIds = caseNode.files.hits.edges.map(({ node }) => ({
+    file_id: node.file_id,
+    submitter_id: _.trimEnd(node.submitter_id, '_slide_image'),
+  }));
+  let slides = portions.reduce(
     (acc, { slides }) => [...acc, ...slides.hits.edges.map(p => p.node)],
     [],
   );
-  return slides;
+  return slideImageIds.map(id => {
+    const matchBySubmitter = _.find(slides, { submitter_id: id.submitter_id });
+    return { ...id, ...matchBySubmitter };
+  });
 };
 
 const ShowMoreLinkAsButton = styled(ShowMoreLink, {
@@ -59,6 +68,7 @@ const caseExtractor = repo =>
 export default compose(
   connect(({ backLocation }) => ({ backLocation })),
   withTheme,
+  withRouter,
   withState('showSearchInput', 'setShowSearchInput', false),
   lifecycle({
     componentDidMount(): void {
@@ -191,8 +201,7 @@ export default compose(
         ) : (
           <Row style={{ padding: '1rem' }}>
             {' '}
-            No cases with slides for this filter (note: only TCGA-BRCA cases
-            have images in this demo)
+            No cases with slides for this filter
           </Row>
         )}
       </div>

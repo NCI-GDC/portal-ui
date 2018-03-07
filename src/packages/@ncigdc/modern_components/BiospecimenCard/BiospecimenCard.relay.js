@@ -27,7 +27,10 @@ export default (Component: ReactClass<*>) =>
           ]),
           fileFilters: makeFilter([
             { field: 'cases.case_id', value: [caseId] },
-            { field: 'files.data_type', value: ['Biospecimen Supplement'] },
+            {
+              field: 'files.data_type',
+              value: ['Biospecimen Supplement', 'Slide Image'],
+            },
           ]),
         },
       };
@@ -68,6 +71,7 @@ export default (Component: ReactClass<*>) =>
                                 state
                                 file_state
                                 access
+                                submitter_id
                               }
                             }
                           }

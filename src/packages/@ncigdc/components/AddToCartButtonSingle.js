@@ -41,14 +41,14 @@ const styles = {
 
 const fileInCart = (files, file) => files.some(f => f.file_id === file.file_id);
 
-const AddToCartButtonSingle = ({ dispatch, file, files, theme }) => (
+const AddToCartButtonSingle = ({ dispatch, file, files, theme, style }) => (
   <Button
     className="test-add-to-cart"
     style={{
       ...styles.button(theme),
       ...(fileInCart(files, file)
-        ? styles.active(theme)
-        : styles.inactive(theme)),
+        ? style || styles.active(theme)
+        : style || styles.inactive(theme)),
     }}
     onClick={() => dispatch(toggleFilesInCart(file))}
     aria-label="Add to cart"

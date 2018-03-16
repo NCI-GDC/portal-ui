@@ -23,25 +23,23 @@ const UserProfileModal = ({
   push,
   query,
 }) => {
-  const flattenedProjects = Object.keys(projects).reduce(
-    (acc, k) => ({ ...acc, ...projects[k] }),
-    {},
-  );
+  const { gdc_ids } = projects;
+
   const allValues = [
     ...new Set(
-      Object.keys(flattenedProjects).reduce(
-        (acc, projectId) => [...acc, ...flattenedProjects[projectId]],
+      Object.keys(gdc_ids).reduce(
+        (acc, projectId) => [...acc, ...gdc_ids[projectId]],
         [],
       ),
     ),
   ];
 
-  const data = Object.keys(flattenedProjects).map((projectId, i) => ({
+  const data = Object.keys(gdc_ids).map((projectId, i) => ({
     projectId,
     ...allValues.reduce(
       (acc, v) => ({
         ...acc,
-        [v]: flattenedProjects[projectId].includes(v) ? (
+        [v]: gdc_ids[projectId].includes(v) ? (
           <span>
             <Check />
             <Hidden>True</Hidden>

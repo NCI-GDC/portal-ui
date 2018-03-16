@@ -2,7 +2,9 @@ import React from 'react';
 import { compose, withProps, branch, renderComponent } from 'recompose';
 import { omit } from 'lodash';
 import EntityPageVerticalTable from '@ncigdc/components/EntityPageVerticalTable';
-import externalReferenceLinks from '@ncigdc/utils/externalReferenceLinks';
+import externalReferenceLinks, {
+  externalLinkNames,
+} from '@ncigdc/utils/externalReferenceLinks';
 import { ExternalLink } from '@ncigdc/uikit/Links';
 import BookIcon from '@ncigdc/theme/icons/Book';
 
@@ -18,6 +20,7 @@ export default compose(
   ),
   withProps(({ viewer: { explore: { genes: { hits: { edges } } } } } = {}) => {
     const gene = edges[0].node;
+
     return {
       externalLinks: {
         ...omit(gene.external_db_ids, '__dataID__'),
@@ -33,7 +36,7 @@ export default compose(
       </span>
     }
     thToTd={Object.keys(externalLinks).map(db => ({
-      th: db.replace(/_/g, ' '),
+      th: externalLinkNames[db] || db.replace(/_/, ' '),
       td: externalLinks[db].length ? (
         <ExternalLink href={externalReferenceLinks[db](externalLinks[db][0])}>
           {externalLinks[db]}

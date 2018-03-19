@@ -242,7 +242,7 @@ const SuggestionFacet = compose(
                               data-link-id={x.id}
                               linkIsActive={selectableList.focusedItem === x}
                             >
-                              {dropdownItem(x)}
+                              {dropdownItem(x, inputValue)}
                             </StyledDropdownLink>
                           </Row>
                         ))}

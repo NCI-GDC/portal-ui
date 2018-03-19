@@ -312,6 +312,8 @@ export const ExplorePageQuery = {
             id
             ...on Ssm {
               ssm_id
+              gene_aa_change
+              cosmic_id
             }
           }
         }

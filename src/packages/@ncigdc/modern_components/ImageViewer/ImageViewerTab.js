@@ -42,9 +42,7 @@ export default compose(
     )),
   ),
   mapProps(({ slides, ...rest }) => ({
-    fullSlideIds: slides.map(
-      ({ submitter_id, slide_id }) => `${submitter_id}.${slide_id}`,
-    ),
+    fullSlideIds: slides.map(slide => slide.file_id),
     slides,
     ...rest,
   })),
@@ -56,11 +54,9 @@ export default compose(
     ...rest,
   })),
 )(({ slides, query, selectedId, theme }) => {
-  const selectedOrFirstId =
-    selectedId || `${head(slides).submitter_id}.${head(slides).slide_id}`;
+  const selectedOrFirstId = selectedId || head(slides).file_id;
   const selectedOrFirstSlide = slides.find(
-    ({ submitter_id, slide_id }) =>
-      `${submitter_id}.${slide_id}` === selectedOrFirstId,
+    ({ file_id }) => file_id === selectedOrFirstId,
   );
   return (
     <Row>
@@ -70,22 +66,25 @@ export default compose(
           padding: '1rem 1rem 1rem 1rem',
         }}
       >
-        {slides.map(({ submitter_id, slide_id }) => (
-          <Column key={`${submitter_id}.${slide_id}`}>
+        {slides.map(({ file_id }) => (
+          <Column key={file_id}>
             <ThumbnailLink
               merge
-              query={{ selectedId: `${submitter_id}.${slide_id}` }}
+              query={{ selectedId: file_id }}
               style={{
                 ...{ marginBottom: '1.5rem' },
-                ...(selectedOrFirstId === `${submitter_id}.${slide_id}`
-                  ? { backgroundColor: theme.secondary, color: theme.white }
+                ...(selectedOrFirstId === file_id
+                  ? {
+                      backgroundColor: theme.secondary,
+                      color: theme.white,
+                    }
                   : {}),
               }}
             >
-              {submitter_id}
+              <Row>{file_id}</Row>
               <img
-                alt={`thumbnail of ${submitter_id}`}
-                src={`${SLIDE_IMAGE_ENDPOINT}/${submitter_id}.${slide_id}_files/8/0_0.png`}
+                alt={`thumbnail of ${file_id}`}
+                src={`${SLIDE_IMAGE_ENDPOINT}${file_id}?level=7&x=0&y=0`}
                 style={{ maxWidth: '200px' }}
               />
             </ThumbnailLink>
@@ -94,9 +93,7 @@ export default compose(
       </Column>
       <Column style={{ width: '100%' }}>
         <Row>
-          <ZoomableImage
-            imageUrl={`${SLIDE_IMAGE_ENDPOINT}/${selectedOrFirstId}.dzi`}
-          />
+          <ZoomableImage imageId={selectedOrFirstId} />
         </Row>
         <Row style={{ justifyContent: 'flex-end', padding: '1rem' }}>
           <Tooltip

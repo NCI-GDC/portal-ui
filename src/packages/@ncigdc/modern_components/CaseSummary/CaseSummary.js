@@ -9,13 +9,11 @@ import FileIcon from '@ncigdc/theme/icons/File';
 import AnnotationIcon from '@ncigdc/theme/icons/Edit';
 import { withTheme } from '@ncigdc/theme';
 import ImageViewerLink from '@ncigdc/components/Links/ImageViewerLink';
-import ShoppingCartIcon from '@ncigdc/theme/icons/ShoppingCart';
 import { Tooltip } from '@ncigdc/uikit/Tooltip';
-import Button from '@ncigdc/uikit/Button';
 import { RepositorySlideCount } from '@ncigdc/modern_components/Counts';
 import { MicroscopeIcon } from '@ncigdc/theme/icons';
-import { iconButton } from '@ncigdc/theme/mixins';
 import { DISPLAY_SLIDES } from '@ncigdc/utils/constants';
+import AddToCartButtonAll from '@ncigdc/components/AddToCartButtonAll';
 
 const styles = {
   icon: {
@@ -58,7 +56,9 @@ export default compose(
 )(({ theme, viewer: { repository: { cases: { hits: { edges } } } } }) => {
   const p = edges[0].node;
   const totalFiles = p.files.hits.total;
-
+  const imageFiles = p.files.hits.edges.filter(
+    ({ node }) => node.data_type === 'Slide Image',
+  );
   return (
     <Row spacing={theme.spacing}>
       <EntityPageVerticalTable
@@ -92,8 +92,8 @@ export default compose(
                     { field: 'cases.case_id', value: p.case_id },
                   ])}
                 >
-                  {count =>
-                    count ? (
+                  {count => {
+                    return count ? (
                       <span>
                         <Tooltip Component="View Slide Image">
                           <ImageViewerLink
@@ -108,17 +108,16 @@ export default compose(
                           </ImageViewerLink>
                         </Tooltip>
                         <Tooltip Component="Add to cart">
-                          <Button
-                            className="test-toggle-cart"
-                            leftIcon={<ShoppingCartIcon />}
-                            style={{ ...iconButton, marginLeft: '0.5rem' }}
-                            disabled
+                          <AddToCartButtonAll
+                            edges={imageFiles.map(f => f.node)}
+                            total={count}
                           />
                         </Tooltip>
                       </span>
                     ) : (
                       <span>--</span>
-                    )}
+                    );
+                  }}
                 </RepositorySlideCount>
               ),
             },

@@ -20,8 +20,6 @@ import Emitter from '@ncigdc/utils/emitter';
 import BioTreeView from './BioTreeView';
 import { search, idFields, formatValue } from './utils';
 import ImageViewerLink from '@ncigdc/components/Links/ImageViewerLink';
-import ShoppingCartIcon from '@ncigdc/theme/icons/ShoppingCart';
-import DownloadIcon from '@ncigdc/theme/icons/Download';
 import { iconButton } from '@ncigdc/theme/mixins';
 import { Tooltip } from '@ncigdc/uikit/Tooltip';
 import { MicroscopeIcon } from '@ncigdc/theme/icons';
@@ -123,6 +121,13 @@ export default compose(
     const {
       files: { hits: { edges: supplementalFiles = [] } },
     } = edges[0].node;
+    const withTrimmedSubIds = supplementalFiles.map(({ node }) => ({
+      ...node,
+      submitter_id: _.trimEnd(node.submitter_id, '_slide_image'),
+    }));
+    const selectedSlide = _.find(withTrimmedSubIds, {
+      submitter_id: selectedEntity.submitter_id,
+    });
     return (
       <Card
         className="test-biospecimen-card"
@@ -235,7 +240,8 @@ export default compose(
                     };
                   }),
                 ...(DISPLAY_SLIDES &&
-                  foundType === 'slide' && [
+                  foundType === 'slide' &&
+                  !!selectedSlide && [
                     {
                       th: 'Slide Image',
                       td: (
@@ -247,26 +253,43 @@ export default compose(
                                 filters: makeFilter([
                                   { field: 'cases.case_id', value: p.case_id },
                                 ]),
-                                selectedId: `${selectedEntity.submitter_id}.${selectedEntity.slide_id}`,
+                                selectedId: selectedSlide.file_id,
                               }}
                             >
                               <MicroscopeIcon />
                             </ImageViewerLink>{' '}
                           </Tooltip>
                           <Tooltip Component="Add to cart">
-                            <Button
-                              className="test-toggle-cart"
-                              leftIcon={<ShoppingCartIcon />}
-                              style={{ ...iconButton, marginLeft: '0.5rem' }}
-                              disabled
-                            />
+                            {canAddToCart && (
+                              <AddToCartButtonSingle
+                                style={{
+                                  ...iconButton,
+                                  marginLeft: '0.5rem',
+                                  marginRight: '0.5rem',
+                                  border: 'none',
+                                }}
+                                file={selectedSlide}
+                              />
+                            )}
+                            {/* need state to differentiate already added to cart */}
+                            {!canAddToCart && (
+                              <RemoveFromCartSingle
+                                style={{
+                                  ...iconButton,
+                                  marginLeft: '0.5rem',
+                                  marginRight: '0.5rem',
+                                  padding: '0.2rem',
+                                }}
+                                file={selectedSlide}
+                              />
+                            )}
                           </Tooltip>
                           <Tooltip Component="Download">
-                            <Button
-                              className="test-toggle-cart"
+                            <DownloadFile
                               style={{ ...iconButton, marginLeft: '0.5rem' }}
-                              leftIcon={<DownloadIcon />}
-                              disabled
+                              file={selectedSlide}
+                              activeText={''}
+                              inactiveText={''}
                             />
                           </Tooltip>
                         </Row>

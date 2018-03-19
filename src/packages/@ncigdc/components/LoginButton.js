@@ -15,7 +15,7 @@ import { AUTH } from '@ncigdc/utils/constants';
 const openAuthWindow = ({ pathname, dispatch, push }) => {
   if (navigator.cookieEnabled) {
     const win = open(
-      `https://portal.gdc.cancer.gov/auth/login/shib?redirect=${location.origin}`,
+      `https://portal.gdc.cancer.gov/auth/login/shib?next=${location.origin}`,
       'Auth',
       'width=800, height=600',
     );

@@ -32,7 +32,7 @@ export default (Component: ReactClass<*>) =>
     })),
     withState('firstLoad', 'setFirstLoad', true),
     withPropsOnChange(
-      ['offset', 'size', 'filters'],
+      ['offset', 'size', 'filters', 'fileId'],
       ({
         filters,
         offset,
@@ -41,11 +41,20 @@ export default (Component: ReactClass<*>) =>
         firstLoad,
         setFirstLoad,
         firstLoadSize,
+        fileId,
       }) => {
         const parsedFilters = parseFilterParam(filters, null);
         const newProps = {
           variables: {
-            filters: addInFilters(parsedFilters),
+            filters: {
+              ...makeFilter([
+                {
+                  field: 'files.file_id',
+                  value: fileId || '',
+                },
+              ]),
+              ...addInFilters(parsedFilters),
+            },
             slideFilter: makeFilter([
               {
                 field: 'files.data_type',
@@ -56,6 +65,7 @@ export default (Component: ReactClass<*>) =>
             cases_size: firstLoad ? firstLoadSize : size,
           },
         };
+
         setFirstLoad(false);
         return newProps;
       },

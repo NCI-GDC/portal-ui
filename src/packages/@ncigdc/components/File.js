@@ -24,6 +24,7 @@ import { RepositoryFilesLink } from '@ncigdc/components/Links/RepositoryLink';
 import AssociatedEntitiesTable from '@ncigdc/modern_components/AssociatedEntitiesTable';
 import { makeFilter } from '@ncigdc/utils/filters';
 import withRouter from '@ncigdc/utils/withRouter';
+import ImageViewer from '../modern_components/ImageViewer';
 
 // value of data_category mapped to sections to display
 const DISPLAY_MAPPING = {
@@ -173,7 +174,11 @@ const File = ({
           ]}
         />
       </Row>
-
+      {node.data_format.toLowerCase() === 'svs' && (
+        <Row style={{ marginTop: '2rem' }}>
+          <ImageViewer fileId={node.file_id} />
+        </Row>
+      )}
       <Row style={{ paddingTop: '2rem', alignItems: 'flex-start' }}>
         <AssociatedEntitiesTable fileId={node.file_id} />
       </Row>

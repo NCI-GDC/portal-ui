@@ -16,26 +16,6 @@ export default (Component: ReactClass<*>) => (props: Object) => {
             {},
           );
           return caseNode.files.hits.total;
-          // const portions = (caseNode.samples || {
-          //   hits: { edges: [] },
-          // }).hits.edges.reduce(
-          //   (acc, { node }) => [
-          //     ...acc,
-          //     ...node.portions.hits.edges.map(p => p.node),
-          //   ],
-          //   [],
-          // );
-          // return portions.reduce(
-          //   (acc, { slides }) =>
-          //     slides.hits.edges[0]
-          //       ? acc.concat(slides.hits.edges[0].node.slide_id)
-          //       : acc,
-          //   [],
-          // );
-          // return portions.reduce(
-          //   (acc, { slides }) => acc + slides.hits.total,
-          //   0,
-          // );
         },
         ...props,
       }}

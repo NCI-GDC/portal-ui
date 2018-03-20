@@ -44,6 +44,16 @@ export default (Component: ReactClass<*>) =>
         fileId,
       }) => {
         const parsedFilters = parseFilterParam(filters, null);
+        let slideFilters = [
+          {
+            field: 'files.data_type',
+            value: ['Slide Image'],
+          },
+          {
+            field: 'files.access',
+            value: ['open'],
+          },
+        ];
         const newProps = {
           variables: {
             filters: {
@@ -55,12 +65,15 @@ export default (Component: ReactClass<*>) =>
               ]),
               ...addInFilters(parsedFilters),
             },
-            slideFilter: makeFilter([
-              {
-                field: 'files.data_type',
-                value: ['Slide Image'],
-              },
-            ]),
+            slideFilter: fileId
+              ? makeFilter([
+                  ...slideFilters,
+                  {
+                    field: 'files.file_id',
+                    value: fileId || '',
+                  },
+                ])
+              : makeFilter(slideFilters),
             cases_offset: offset,
             cases_size: firstLoad ? firstLoadSize : size,
           },

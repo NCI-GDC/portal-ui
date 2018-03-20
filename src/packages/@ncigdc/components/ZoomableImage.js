@@ -48,11 +48,12 @@ const enhance = compose(
                 id: 'osd1',
                 prefixUrl:
                   'https://cdn.jsdelivr.net/npm/openseadragon@2.3/build/openseadragon/images/',
-                defaultZoomLevel: 1,
+                defaultZoomLevel: 0.9,
                 visibilityRatio: 1,
                 minLevel: 0,
                 maxLevel: 14,
                 maxZoomLevel: 14,
+                minZoomLevel: 0.9,
                 showNavigator: true,
                 tileSources: {
                   height: Number(data.Height),

@@ -39,7 +39,7 @@ const openAuthWindow = ({ pathname, dispatch, push }) => {
           setTimeout(() => {
             clearInterval(interval);
             setTimeout(() => {
-              // dispatch(fetchUser());
+              dispatch(fetchUser());
               push('/repository');
             }, 1000);
           }, 1000);

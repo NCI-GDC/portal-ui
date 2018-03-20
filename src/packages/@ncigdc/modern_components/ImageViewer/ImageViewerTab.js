@@ -66,7 +66,7 @@ export default compose(
           padding: '1rem 1rem 1rem 1rem',
         }}
       >
-        {slides.map(({ file_id }) => (
+        {slides.map(({ file_id, submitter_id }) => (
           <Column key={file_id}>
             <ThumbnailLink
               merge
@@ -81,9 +81,9 @@ export default compose(
                   : {}),
               }}
             >
-              <Row>{file_id}</Row>
+              <Row>{submitter_id}</Row>
               <img
-                alt={`thumbnail of ${file_id}`}
+                alt={`thumbnail of ${submitter_id}`}
                 src={`${SLIDE_IMAGE_ENDPOINT}${file_id}?level=7&x=0&y=0`}
                 style={{ maxWidth: '200px' }}
               />

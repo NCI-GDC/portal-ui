@@ -15,7 +15,7 @@ import { AUTH } from '@ncigdc/utils/constants';
 const openAuthWindow = ({ pathname, dispatch, push }) => {
   if (navigator.cookieEnabled) {
     const win = open(
-      `https://admin.awg.gdc.cancer.gov/auth/login/shib?next=${location.origin}`,
+      `https://portal.gdc.cancer.gov/auth?next=${location.origin}`,
       'Auth',
       'width=800, height=600',
     );
@@ -32,7 +32,7 @@ const openAuthWindow = ({ pathname, dispatch, push }) => {
           clearInterval(interval);
         } else if (
           win.document.URL.includes(location.origin) &&
-          !win.document.URL.includes('shib')
+          !win.document.URL.includes('auth')
         ) {
           win.close();
 

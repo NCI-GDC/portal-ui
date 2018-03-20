@@ -314,6 +314,21 @@ export const ExplorePageQuery = {
               ssm_id
               gene_aa_change
               cosmic_id
+            consequence {
+              hits(first: 99) {
+                edges {
+                  node {
+                    transcript {
+                    aa_change
+                    is_canonical
+                      annotation {
+                        dbsnp_rs
+                      }
+                    }
+                  }
+                }
+              }
+            }
             }
           }
         }

@@ -15,6 +15,7 @@ import escapeForRelay from '@ncigdc/utils/escapeForRelay';
 import NotMissingFacet from '@ncigdc/components/Aggregations/NotMissingFacet';
 import UploadSetButton from '@ncigdc/components/UploadSetButton';
 import { UploadSsmSet } from '@ncigdc/components/Modals/UploadSet';
+import { internalHighlight } from '@ncigdc/uikit/Highlight';
 
 const presetFacets: Array<{
   title: string,
@@ -144,13 +145,28 @@ export const SSMAggregationsComponent = compose(
       hits={props.suggestions}
       setAutocomplete={props.setAutocomplete}
       dropdownItem={(x, inputValue) => (
-        <div style={{ fontWeight: 'bold' }}>
+        <div style={{ fontWeight: 'normal' }}>
           {x.ssm_id}
-          <br />
           {console.log(x)}
-          {[...x.gene_aa_change, x.cosmic_id]
-            .filter(Boolean)
-            .filter(term => term.includes(inputValue))}
+          <br />
+          <ul style={{}}>
+            {[
+              ...new Set([
+                ...x.gene_aa_change,
+                ...x.cosmic_id,
+                ...x.consequence.hits.edges.map(
+                  ({ node }) => node.transcript.annotation.dbsnp_rs,
+                ),
+              ]),
+            ]
+              .filter(Boolean)
+              .filter(term => term.includes(inputValue))
+              .map(term => (
+                <li key={term} style={{ padding: 0, margin: 0 }}>
+                  {internalHighlight(inputValue, term)}
+                </li>
+              ))}
+          </ul>
         </div>
       )}
     />

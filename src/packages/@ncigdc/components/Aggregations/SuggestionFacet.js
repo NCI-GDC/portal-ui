@@ -63,6 +63,21 @@ const StyledDropdownLink = styled(Link, {
   textDecoration: 'none',
 });
 
+const debouncedOnChange = _.debounce(
+  (value, setInputValue, setActive, setIsLoading, setAutocomplete) => {
+    if (!!value) {
+      setIsLoading(true);
+      setAutocomplete(
+        value,
+        readyState =>
+          _.some([readyState.ready, readyState.aborted, readyState.error]) &&
+          setIsLoading(false),
+      );
+    }
+  },
+  300,
+);
+
 const SuggestionFacet = compose(
   withDropdown,
   withState('inputValue', 'setInputValue', ''),
@@ -185,18 +200,13 @@ const SuggestionFacet = compose(
                         const value = e.target.value;
                         setInputValue(value);
                         setActive(!!value);
-                        if (!!value) {
-                          setIsLoading(true);
-                          setAutocomplete(
-                            value,
-                            readyState =>
-                              _.some([
-                                readyState.ready,
-                                readyState.aborted,
-                                readyState.error,
-                              ]) && setIsLoading(false),
-                          );
-                        }
+                        debouncedOnChange(
+                          value,
+                          setInputValue,
+                          setActive,
+                          setIsLoading,
+                          setAutocomplete,
+                        );
                       }}
                       onKeyDown={selectableList.handleKeyEvent}
                       placeholder={placeholder}

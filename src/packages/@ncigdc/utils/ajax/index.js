@@ -20,10 +20,7 @@ export function fetchAuth(options: { endpoint: string }): Object {
     [CALL_API]: {
       ...DEFAULTS,
       ...options,
-      endpoint: urlJoin(
-        'https://portal.gdc.cancer.gov/auth/user',
-        options.endpoint,
-      ),
+      endpoint: urlJoin('https://portal.gdc.cancer.gov/auth', options.endpoint),
     },
   };
 }

@@ -11,9 +11,10 @@ import { Row, Column } from '@ncigdc/uikit/Flex';
 import ZoomableImage from '@ncigdc/components/ZoomableImage';
 import Link from '@ncigdc/components/Links/Link';
 import { withTheme } from '@ncigdc/theme';
-import Button from '@ncigdc/uikit/Button';
-import { Tooltip } from '@ncigdc/uikit/Tooltip';
 import EntityPageVerticalTable from '@ncigdc/components/EntityPageVerticalTable';
+import Dropdown from '@ncigdc/uikit/Dropdown';
+
+import './styles.css';
 
 const ThumbnailLink = styled(Link, {
   color: ({ theme }) => theme.greyScale1,
@@ -66,7 +67,7 @@ export default compose(
           padding: '1rem 1rem 1rem 1rem',
         }}
       >
-        {slides.map(({ file_id }) => (
+        {slides.map(({ file_id, submitter_id }) => (
           <Column key={file_id}>
             <ThumbnailLink
               merge
@@ -81,9 +82,9 @@ export default compose(
                   : {}),
               }}
             >
-              <Row>{file_id}</Row>
+              <Row>{submitter_id}</Row>
               <img
-                alt={`thumbnail of ${file_id}`}
+                alt={`thumbnail of ${submitter_id}`}
                 src={`${SLIDE_IMAGE_ENDPOINT}${file_id}?level=7&x=0&y=0`}
                 style={{ maxWidth: '200px' }}
               />
@@ -96,22 +97,54 @@ export default compose(
           <ZoomableImage imageId={selectedOrFirstId} />
         </Row>
         <Row style={{ justifyContent: 'flex-end', padding: '1rem' }}>
-          <Tooltip
-            Component={
-              <EntityPageVerticalTable
-                thToTd={[
-                  ...Object.entries(
-                    selectedOrFirstSlide,
-                  ).map(([key, value]) => ({
-                    th: key,
-                    td: value,
-                  })),
-                ]}
-              />
-            }
-          >
-            <Button>Details</Button>
-          </Tooltip>
+          <div id="details-button">
+            <Dropdown
+              style={{
+                margin: 0,
+                border: 'none',
+                display: 'block',
+              }}
+              dropdownStyle={{
+                marginTop: '15px',
+                borderBottomLeftRadius: '5px',
+                borderBottomRightRadius: '5px',
+              }}
+              button={
+                <div
+                  style={{
+                    background: theme.primary,
+                    color: 'white',
+                    padding: '3px',
+                    borderRadius: '5px',
+                    cursor: 'pointer',
+                  }}
+                >
+                  Details
+                </div>
+              }
+            >
+              <div
+                className="details-container"
+                style={{
+                  position: 'absolute',
+                  padding: '5px',
+                  background: 'white',
+                  border: `1px solid ${theme.greyScale4}`,
+                }}
+              >
+                <EntityPageVerticalTable
+                  thToTd={[
+                    ...Object.entries(
+                      selectedOrFirstSlide,
+                    ).map(([key, value]) => ({
+                      th: key,
+                      td: value,
+                    })),
+                  ]}
+                />
+              </div>
+            </Dropdown>
+          </div>
         </Row>
       </Column>
     </Row>

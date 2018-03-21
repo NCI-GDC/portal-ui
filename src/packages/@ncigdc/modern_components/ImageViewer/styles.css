@@ -1,0 +1,22 @@
+.details-container:after, .details-container:before {
+  bottom: 100%;
+  left: 140px;
+  border: solid transparent;
+  content: " ";
+  height: 0;
+  width: 0;
+  position: absolute;
+  pointer-events: none;
+}
+.details-container:after {
+  border-color: rgba(255, 255, 255, 0);
+  border-bottom-color: #ffffff;
+  border-width: 6px;
+  margin-left: -6px;
+}
+.details-container:before {
+  border-color: rgba(0, 0, 0, 0);
+  border-bottom-color: #bbb;
+  border-width: 7px;
+  margin-left: -7px;
+}

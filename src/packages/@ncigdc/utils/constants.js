@@ -84,6 +84,7 @@ export const EXPERIMENTAL_STRATEGIES = [
   'VALIDATION',
   'OTHER',
   'Targeted Sequencing',
+  'Tissue Slide',
 ].map(n => n.toLowerCase());
 
 export const MUTATION_SUBTYPE_MAP = {

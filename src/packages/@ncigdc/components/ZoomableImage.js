@@ -48,12 +48,12 @@ const enhance = compose(
                 id: 'osd1',
                 prefixUrl:
                   'https://cdn.jsdelivr.net/npm/openseadragon@2.3/build/openseadragon/images/',
-                defaultZoomLevel: 0.9,
+                defaultZoomLevel: 0.9, // so default zoom will be slightly less than full width of viewport
                 visibilityRatio: 1,
                 minLevel: 0,
                 maxLevel: 14,
                 maxZoomLevel: 14,
-                minZoomLevel: 0.9,
+                minZoomLevel: 0.9, // to match default zoom level
                 showNavigator: true,
                 tileSources: {
                   height: Number(data.Height),

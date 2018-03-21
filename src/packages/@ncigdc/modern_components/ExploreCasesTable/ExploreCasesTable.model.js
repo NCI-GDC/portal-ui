@@ -366,7 +366,7 @@ const casesTableModel = [
       sortable: false,
       downloadable: false,
       hidden: false,
-      th: () => <Th rowSpan="2">Slide Images</Th>,
+      th: () => <Th rowSpan="2">Slides</Th>,
       td: ({ node }) => (
         <Td style={{ textAlign: 'center' }}>
           <RepositorySlideCount

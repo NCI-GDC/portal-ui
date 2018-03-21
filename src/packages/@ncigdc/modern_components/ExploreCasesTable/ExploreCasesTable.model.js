@@ -248,6 +248,43 @@ const casesTableModel = [
       </Td>
     ),
   },
+  ...(DISPLAY_SLIDES && [
+    {
+      name: 'Slides',
+      id: 'slides',
+      sortable: false,
+      downloadable: false,
+      hidden: false,
+      th: () => <Th rowSpan="2">Slides</Th>,
+      td: ({ node }) => (
+        <Td style={{ textAlign: 'center' }}>
+          <RepositorySlideCount
+            filters={makeFilter([
+              { field: 'cases.case_id', value: node.case_id },
+            ])}
+          >
+            {count =>
+              count ? (
+                <Tooltip Component="View Slide Image">
+                  <ImageViewerLink
+                    isIcon
+                    query={{
+                      filters: makeFilter([
+                        { field: 'cases.case_id', value: node.case_id },
+                      ]),
+                    }}
+                  >
+                    <MicroscopeIcon /> ({count})
+                  </ImageViewerLink>
+                </Tooltip>
+              ) : (
+                <Tooltip Component="No slide images to view.">--</Tooltip>
+              )}
+          </RepositorySlideCount>
+        </Td>
+      ),
+    },
+  ]),
   {
     name: 'Program',
     id: 'project.program.name',
@@ -359,43 +396,6 @@ const casesTableModel = [
       <Td>{(node.demographic && node.demographic.race) || '--'}</Td>
     ),
   },
-  ...(DISPLAY_SLIDES && [
-    {
-      name: 'Slides',
-      id: 'slides',
-      sortable: false,
-      downloadable: false,
-      hidden: false,
-      th: () => <Th rowSpan="2">Slides</Th>,
-      td: ({ node }) => (
-        <Td style={{ textAlign: 'center' }}>
-          <RepositorySlideCount
-            filters={makeFilter([
-              { field: 'cases.case_id', value: node.case_id },
-            ])}
-          >
-            {count =>
-              count ? (
-                <Tooltip Component="View Slide Image">
-                  <ImageViewerLink
-                    isIcon
-                    query={{
-                      filters: makeFilter([
-                        { field: 'cases.case_id', value: node.case_id },
-                      ]),
-                    }}
-                  >
-                    <MicroscopeIcon /> ({count})
-                  </ImageViewerLink>
-                </Tooltip>
-              ) : (
-                <Tooltip Component="No slide images to view.">--</Tooltip>
-              )}
-          </RepositorySlideCount>
-        </Td>
-      ),
-    },
-  ]),
 ];
 
 export default casesTableModel;

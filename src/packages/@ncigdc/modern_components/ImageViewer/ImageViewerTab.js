@@ -11,8 +11,6 @@ import { Row, Column } from '@ncigdc/uikit/Flex';
 import ZoomableImage from '@ncigdc/components/ZoomableImage';
 import Link from '@ncigdc/components/Links/Link';
 import { withTheme } from '@ncigdc/theme';
-import EntityPageVerticalTable from '@ncigdc/components/EntityPageVerticalTable';
-import Dropdown from '@ncigdc/uikit/Dropdown';
 import SlideDetailsButton from '@ncigdc/components/SlideDetailsButton';
 
 import './styles.css';

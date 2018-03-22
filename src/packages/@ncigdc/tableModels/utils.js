@@ -2,6 +2,7 @@
 import React from 'react';
 import _ from 'lodash';
 import Tooltip from '@ncigdc/uikit/Tooltip/Tooltip';
+import Hidden from '@ncigdc/components/Hidden';
 import { tableToolTipHint } from '@ncigdc/theme/mixins';
 import { DATA_CATEGORIES } from '@ncigdc/utils/constants';
 import { Th, Td, ThNum, TdNum } from '@ncigdc/uikit/Table';
@@ -114,6 +115,7 @@ export const createSelectColumn: TCreateSelectColumn = ({
       const allSelected = ids.every(id => selectedIds.includes(id));
       return (
         <Th rowSpan={headerRowSpan}>
+          <Hidden>Select column</Hidden>
           <input
             type="checkbox"
             aria-label="Select column"

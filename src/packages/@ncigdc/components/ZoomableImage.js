@@ -38,6 +38,7 @@ const enhance = compose(
             });
             const viewer = OpenSeadragon({
               id: 'osd1',
+              group: {},
               prefixUrl:
                 'https://cdn.jsdelivr.net/npm/openseadragon@2.3/build/openseadragon/images/',
               defaultZoomLevel: 0.9, // so default zoom will be slightly less than full width of viewport
@@ -62,6 +63,8 @@ const enhance = compose(
             viewer.addControl(document.querySelector('#details-button'), {
               anchor: OpenSeadragon.ControlAnchor.TOP_LEFT,
             });
+            // an empty label that 508 scan doesnt like
+            document.querySelector('.openseadragon-container label').remove();
             setViewer(viewer);
           }
         });

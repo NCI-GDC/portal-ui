@@ -93,10 +93,7 @@ let ZoomableImageWithData = withImageViewerData(
             </div>
           </h2>
           <span style={{ marginTop: '15px', marginRight: '1rem' }}>
-            <SlideDetailsButton
-              slide={slide}
-              dropdownPosition={{ position: 'relative' }}
-            />
+            <SlideDetailsButton slide={slide} />
           </span>
         </Row>
         <Row>

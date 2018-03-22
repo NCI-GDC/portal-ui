@@ -6,7 +6,7 @@ import EntityPageVerticalTable from '@ncigdc/components/EntityPageVerticalTable'
 import Dropdown from '@ncigdc/uikit/Dropdown';
 import { compose } from 'recompose';
 
-export default compose(withTheme)(({ theme, slide, dropdownPosition = {} }) => {
+export default compose(withTheme)(({ theme, slide }) => {
   return (
     <div id="details-button">
       <Dropdown
@@ -28,7 +28,7 @@ export default compose(withTheme)(({ theme, slide, dropdownPosition = {} }) => {
               borderRadius: '5px',
               cursor: 'pointer',
               maxWidth: '70px',
-              padding: '5px 10px',
+              padding: '3px 10px',
               textAlign: 'center',
             }}
           >
@@ -43,7 +43,6 @@ export default compose(withTheme)(({ theme, slide, dropdownPosition = {} }) => {
             padding: '5px',
             background: 'white',
             border: `1px solid ${theme.greyScale4}`,
-            ...dropdownPosition,
           }}
         >
           <EntityPageVerticalTable

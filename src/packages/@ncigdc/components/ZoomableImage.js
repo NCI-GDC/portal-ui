@@ -25,52 +25,43 @@ const enhance = compose(
       fetch(`${SLIDE_IMAGE_ENDPOINT}metadata/${this.props.imageId}`)
         .then(res => res.json())
         .then(data => {
+          const { imageId, setViewer, setImageParams } = this.props;
           if (!data.Format) {
             this.props.setLoadError(true);
           } else {
             this.props.setLoadError(false);
-            this.props.setImageParams({
+            setImageParams({
               height: data.Height,
               width: data.Width,
               overlap: data.Overlap,
               tileSize: data.TileSize,
             });
-            this.props.setViewer(
-              OpenSeadragon({
-                id: 'osd1',
-                prefixUrl:
-                  'https://cdn.jsdelivr.net/npm/openseadragon@2.3/build/openseadragon/images/',
-                defaultZoomLevel: 1,
-                visibilityRatio: 1,
-                minLevel: 0,
-                maxLevel: 14,
-                maxZoomLevel: 14,
-                minZoomLevel: 1,
-                showNavigator: true,
-                tileSources: {
-                  width: Number(data.Width),
-                  height: Number(data.Height),
-                  tileSize: Number(data.TileSize),
-                  overlap: Number(data.Overlap),
-                  getTileUrl: (level, x, y) => {
-                    return `${SLIDE_IMAGE_ENDPOINT}${this.props
-                      .imageId}?level=${level}&x=${x}&y=${y}`;
-                  },
+            const viewer = OpenSeadragon({
+              id: 'osd1',
+              prefixUrl:
+                'https://cdn.jsdelivr.net/npm/openseadragon@2.3/build/openseadragon/images/',
+              defaultZoomLevel: 1,
+              visibilityRatio: 1,
+              minLevel: 0,
+              maxLevel: 14,
+              maxZoomLevel: 14,
+              showNavigator: true,
+              tileSources: {
+                height: Number(data.Height),
+                width: Number(data.Width),
+                tileSize: Number(data.TileSize),
+                overlap: Number(data.Overlap),
+                getTileUrl: (level, x, y) => {
+                  return `${SLIDE_IMAGE_ENDPOINT}${imageId}?level=${level}&x=${x}&y=${y}`;
                 },
-              }),
-            );
-            reAddFullScreenHandler(this.props.viewer);
-            this.props.setBoundsByImage({
-              ...this.props.boundsByImage,
-              [this.props.imageId]: this.props.viewer.viewport.getBounds(),
+              },
             });
-            this.props.viewer.addHandler('open', () => {
-              this.props.boundsByImage[this.props.imageId] &&
-                this.props.viewer.viewport.fitBoundsWithConstraints(
-                  this.props.boundsByImage[this.props.imageId],
-                  true,
-                );
+            reAddFullScreenHandler(viewer);
+
+            viewer.addControl(document.querySelector('#details-button'), {
+              anchor: OpenSeadragon.ControlAnchor.TOP_LEFT,
             });
+            setViewer(viewer);
           }
         });
     },
@@ -128,8 +119,15 @@ const enhance = compose(
       imageParams: { height, width, overlap, tileSize },
       viewer,
       imageId,
+      setBoundsByImage,
+      boundsByImage,
     }) => {
       if (viewer) {
+        reAddFullScreenHandler(viewer);
+        viewer.addHandler('open', () => {
+          boundsByImage[imageId] &&
+            viewer.viewport.fitBounds(boundsByImage[imageId], true);
+        });
         viewer.open({
           height: Number(height),
           width: Number(width),

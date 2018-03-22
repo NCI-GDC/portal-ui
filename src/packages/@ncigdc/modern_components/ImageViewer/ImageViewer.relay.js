@@ -56,15 +56,34 @@ export default (Component: ReactClass<*>) =>
         ];
         const newProps = {
           variables: {
-            filters: {
+            filters: addInFilters(
+              parsedFilters,
               ...makeFilter([
                 {
                   field: 'files.file_id',
                   value: fileId || '',
                 },
               ]),
-              ...addInFilters(parsedFilters),
-            },
+              {
+                op: 'and',
+                content: [
+                  {
+                    op: 'not',
+                    content: {
+                      field: 'cases.slide_ids',
+                      value: ['MISSING'],
+                    },
+                  },
+                  {
+                    op: 'in',
+                    content: {
+                      field: 'files.data_type',
+                      value: ['Slide Image'],
+                    },
+                  },
+                ],
+              },
+            ),
             slideFilter: fileId
               ? makeFilter([
                   ...slideFilters,

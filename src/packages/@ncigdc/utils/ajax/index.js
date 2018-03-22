@@ -8,16 +8,12 @@ import md5 from 'blueimp-md5';
 const DEFAULTS = {
   method: 'get',
   credentials: 'include',
-  headers: {
-    'Content-Type': 'application/json',
-    'Access-Control-Allow-Origin': true,
-    'X-Auth-Token': 'secret admin token',
-  },
 };
 
 export function fetchAuth(options: { endpoint: string }): Object {
   return {
     [CALL_API]: {
+      ...DEFAULTS,
       ...options,
       endpoint: urlJoin(
         localStorage.REACT_APP_GDC_AUTH || 'https://portal.gdc.cancer.gov/auth',

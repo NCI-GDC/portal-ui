@@ -11,8 +11,7 @@ import { Row, Column } from '@ncigdc/uikit/Flex';
 import ZoomableImage from '@ncigdc/components/ZoomableImage';
 import Link from '@ncigdc/components/Links/Link';
 import { withTheme } from '@ncigdc/theme';
-import EntityPageVerticalTable from '@ncigdc/components/EntityPageVerticalTable';
-import Dropdown from '@ncigdc/uikit/Dropdown';
+import SlideDetailsButton from '@ncigdc/components/SlideDetailsButton';
 
 import './styles.css';
 
@@ -97,54 +96,7 @@ export default compose(
           <ZoomableImage imageId={selectedOrFirstId} />
         </Row>
         <Row style={{ justifyContent: 'flex-end', padding: '1rem' }}>
-          <div id="details-button">
-            <Dropdown
-              style={{
-                margin: 0,
-                border: 'none',
-                display: 'block',
-              }}
-              dropdownStyle={{
-                marginTop: '15px',
-                borderBottomLeftRadius: '5px',
-                borderBottomRightRadius: '5px',
-              }}
-              button={
-                <div
-                  style={{
-                    background: theme.primary,
-                    color: 'white',
-                    padding: '3px',
-                    borderRadius: '5px',
-                    cursor: 'pointer',
-                  }}
-                >
-                  Details
-                </div>
-              }
-            >
-              <div
-                className="details-container"
-                style={{
-                  position: 'absolute',
-                  padding: '5px',
-                  background: 'white',
-                  border: `1px solid ${theme.greyScale4}`,
-                }}
-              >
-                <EntityPageVerticalTable
-                  thToTd={[
-                    ...Object.entries(
-                      selectedOrFirstSlide,
-                    ).map(([key, value]) => ({
-                      th: key,
-                      td: value,
-                    })),
-                  ]}
-                />
-              </div>
-            </Dropdown>
-          </div>
+          <SlideDetailsButton slide={selectedOrFirstSlide} />
         </Row>
       </Column>
     </Row>

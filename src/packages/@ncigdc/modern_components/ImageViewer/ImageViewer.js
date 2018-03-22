@@ -201,7 +201,7 @@ export default compose(
         ) : (
           <Row style={{ padding: '1rem' }}>
             {' '}
-            No cases with slides for this filter
+            No cases with slide images for this filter
           </Row>
         )}
       </div>

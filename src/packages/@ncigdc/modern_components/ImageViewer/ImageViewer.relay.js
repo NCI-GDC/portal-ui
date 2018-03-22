@@ -32,7 +32,7 @@ export default (Component: ReactClass<*>) =>
     })),
     withState('firstLoad', 'setFirstLoad', true),
     withPropsOnChange(
-      ['offset', 'size', 'filters'],
+      ['offset', 'size', 'filters', 'fileId'],
       ({
         filters,
         offset,
@@ -41,21 +41,70 @@ export default (Component: ReactClass<*>) =>
         firstLoad,
         setFirstLoad,
         firstLoadSize,
+        fileId,
       }) => {
         const parsedFilters = parseFilterParam(filters, null);
-        const newProps = {
-          variables: {
-            filters: addInFilters(parsedFilters),
-            slideFilter: makeFilter([
-              {
+        let slideFilters = [
+          {
+            field: 'files.data_type',
+            value: ['Slide Image'],
+          },
+          {
+            field: 'files.access',
+            value: ['open'],
+          },
+        ];
+        let caseFilters = {
+          op: 'and',
+          content: [
+            {
+              op: 'not',
+              content: {
+                field: 'cases.slide_ids',
+                value: ['MISSING'],
+              },
+            },
+            {
+              op: 'in',
+              content: {
                 field: 'files.data_type',
                 value: ['Slide Image'],
               },
-            ]),
+            },
+          ],
+        };
+
+        if (fileId) {
+          caseFilters = {
+            ...caseFilters,
+            content: [
+              ...caseFilters.content,
+              {
+                op: 'in',
+                content: {
+                  field: 'files.file_id',
+                  value: fileId,
+                },
+              },
+            ],
+          };
+          slideFilters = [
+            ...slideFilters,
+            {
+              field: 'files.file_id',
+              value: fileId,
+            },
+          ];
+        }
+        const newProps = {
+          variables: {
+            filters: addInFilters(parsedFilters, caseFilters),
+            slideFilter: makeFilter(slideFilters),
             cases_offset: offset,
             cases_size: firstLoad ? firstLoadSize : size,
           },
         };
+
         setFirstLoad(false);
         return newProps;
       },

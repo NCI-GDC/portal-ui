@@ -21,7 +21,7 @@ export default compose(
   }),
 )(({ count, children, loading, style }) => {
   return children ? (
-    children(count)
+    children(count, loading)
   ) : count === '' ? (
     <GreyBox />
   ) : (

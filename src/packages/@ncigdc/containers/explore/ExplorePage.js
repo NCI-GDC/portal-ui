@@ -1,5 +1,4 @@
 /* @flow */
-
 import React from 'react';
 import Relay from 'react-relay/classic';
 import { get, isEqual } from 'lodash';
@@ -24,11 +23,14 @@ import { Row } from '@ncigdc/uikit/Flex';
 import styled from '@ncigdc/theme/styled';
 import { linkButton } from '@ncigdc/theme/mixins';
 import { DISPLAY_SLIDES } from '@ncigdc/utils/constants';
+import { RepositorySlideCount } from '@ncigdc/modern_components/Counts';
+import { Tooltip } from '@ncigdc/uikit/Tooltip';
+import Spinner from '@ncigdc/theme/icons/Spinner';
+import { withTheme } from '@ncigdc/theme';
 
 const ImageViewerLinkAsButton = styled(ImageViewerLink, {
-  padding: '6px 12px',
-  marginLeft: '0.2rem',
-  marginBottom: '20px',
+  padding: '9px 12px',
+  marginLeft: '5px',
   ...linkButton,
 });
 
@@ -106,6 +108,7 @@ function setVariables({ relay, filters }) {
 
 const enhance = compose(
   withRouter,
+  withTheme,
   lifecycle({
     componentDidMount() {
       setVariables(this.props);
@@ -122,6 +125,7 @@ export const ExplorePageComponent = ({
   filters,
   relay,
   push,
+  theme,
 }: TProps) => (
   <SearchPage
     className="test-explore-page"
@@ -205,13 +209,32 @@ export const ExplorePageComponent = ({
             View Files in Repository
           </CreateExploreCaseSetButton>
           {DISPLAY_SLIDES && (
-            <ImageViewerLinkAsButton
-              query={{
-                filters: filters,
-              }}
-            >
-              View Images
-            </ImageViewerLinkAsButton>
+            <RepositorySlideCount filters={filters}>
+              {(count, loading) => (
+                <span style={{ marginTop: '7px' }}>
+                  <Tooltip
+                    Component={count === 0 ? 'No images available' : null}
+                  >
+                    <ImageViewerLinkAsButton
+                      query={{
+                        filters,
+                      }}
+                      style={
+                        loading || count === 0
+                          ? {
+                              cursor: 'not-allowed',
+                              backgroundColor: theme.greyScale4,
+                            }
+                          : { cursor: 'pointer' }
+                      }
+                    >
+                      {loading && <Spinner style={{ marginRight: '5px' }} />}
+                      View Images
+                    </ImageViewerLinkAsButton>
+                  </Tooltip>
+                </span>
+              )}
+            </RepositorySlideCount>
           )}
         </Row>
         <TabbedLinks

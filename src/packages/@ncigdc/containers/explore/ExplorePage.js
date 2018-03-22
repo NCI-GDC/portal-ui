@@ -222,8 +222,8 @@ export const ExplorePageComponent = ({
                       style={
                         loading || count === 0
                           ? {
-                              cursor: 'not-allowed',
                               backgroundColor: theme.greyScale4,
+                              pointerEvents: 'none',
                             }
                           : { cursor: 'pointer' }
                       }

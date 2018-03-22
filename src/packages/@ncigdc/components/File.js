@@ -87,10 +87,7 @@ let ZoomableImageWithData = withImageViewerData(
               marginTop: '10px',
             }}
           >
-            Slide View{' '}
-            <div>
-              {caseNode.project.project_id} - {caseNode.submitter_id}
-            </div>
+            Slide Image Viewer
           </h2>
           <span style={{ marginTop: '15px', marginRight: '1rem' }}>
             <SlideDetailsButton slide={slide} />

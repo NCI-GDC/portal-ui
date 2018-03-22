@@ -2,7 +2,7 @@
 import React from 'react';
 import { BaseQuery } from '@ncigdc/modern_components/Query';
 import { graphql } from 'react-relay';
-import { get, head } from 'lodash';
+import { get } from 'lodash';
 import { makeFilter, addInFilters } from '@ncigdc/utils/filters';
 
 export default (Component: ReactClass<*>) => (props: Object) => {
@@ -10,17 +10,33 @@ export default (Component: ReactClass<*>) => (props: Object) => {
     <BaseQuery
       parentProps={{
         getter: (viewer: Object) => {
-          const caseNode = get(
-            head(get(viewer, 'repository.cases.hits.edges', [])),
-            'node',
-            {},
+          return get(viewer, 'repository.cases.hits.edges', []).reduce(
+            (sum, { node }) => sum + node.files.hits.total,
+            0,
           );
-          return caseNode.files.hits.total;
         },
         ...props,
       }}
       variables={{
-        filters: addInFilters(props.filters),
+        filters: addInFilters(props.filters, {
+          op: 'and',
+          content: [
+            {
+              op: 'not',
+              content: {
+                field: 'cases.slide_ids',
+                value: ['MISSING'],
+              },
+            },
+            {
+              op: 'in',
+              content: {
+                field: 'files.data_type',
+                value: ['Slide Image'],
+              },
+            },
+          ],
+        }),
         slideFilter: makeFilter([
           {
             field: 'files.data_type',
@@ -37,17 +53,16 @@ export default (Component: ReactClass<*>) => (props: Object) => {
           viewer {
             repository {
               cases {
-                hits(filters: $filters, first: 1) {
+                # only counts file ids for the first 99 cases instead of all
+                # becase passing in all with a parent query (10903) caused timeout
+                # it's fine because mostly used for one case or disable if 0
+                hits(filters: $filters, first: 99) {
+                  total
                   edges {
                     node {
                       files {
-                        hits(filters: $slideFilter, first: 99) {
+                        hits(filters: $slideFilter, first: 0) {
                           total
-                          edges {
-                            node {
-                              file_id
-                            }
-                          }
                         }
                       }
                     }

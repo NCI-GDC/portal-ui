@@ -54,43 +54,52 @@ export default (Component: ReactClass<*>) =>
             value: ['open'],
           },
         ];
+        let caseFilters = {
+          op: 'and',
+          content: [
+            {
+              op: 'not',
+              content: {
+                field: 'cases.slide_ids',
+                value: ['MISSING'],
+              },
+            },
+            {
+              op: 'in',
+              content: {
+                field: 'files.data_type',
+                value: ['Slide Image'],
+              },
+            },
+          ],
+        };
+
+        if (fileId) {
+          caseFilters = {
+            ...caseFilters,
+            content: [
+              ...caseFilters.content,
+              {
+                op: 'in',
+                content: {
+                  field: 'files.file_id',
+                  value: fileId,
+                },
+              },
+            ],
+          };
+          slideFilters = [
+            ...slideFilters,
+            {
+              field: 'files.file_id',
+              value: fileId,
+            },
+          ];
+        }
         const newProps = {
           variables: {
-            filters: addInFilters(parsedFilters, {
-              op: 'and',
-              content: [
-                {
-                  op: 'not',
-                  content: {
-                    field: 'cases.slide_ids',
-                    value: ['MISSING'],
-                  },
-                },
-                {
-                  op: 'in',
-                  content: {
-                    field: 'files.data_type',
-                    value: ['Slide Image'],
-                  },
-                },
-                {
-                  op: 'in',
-                  content: {
-                    field: 'files.file_id',
-                    value: fileId || '',
-                  },
-                },
-              ],
-            }),
-            slideFilter: fileId
-              ? makeFilter([
-                  ...slideFilters,
-                  {
-                    field: 'files.file_id',
-                    value: fileId || '',
-                  },
-                ])
-              : makeFilter(slideFilters),
+            filters: addInFilters(parsedFilters, caseFilters),
+            slideFilter: makeFilter(slideFilters),
             cases_offset: offset,
             cases_size: firstLoad ? firstLoadSize : size,
           },

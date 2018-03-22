@@ -49,26 +49,35 @@ const styles = {
   },
 };
 
-export const getSlideData = caseNode => {
+export const getSlides = caseNode => {
   const portions = (caseNode.samples || {
     hits: { edges: [] },
   }).hits.edges.reduce(
     (acc, { node }) => [...acc, ...node.portions.hits.edges.map(p => p.node)],
     [],
   );
-
+  const slideImageIds = caseNode.files.hits.edges.map(({ node }) => ({
+    file_id: node.file_id,
+    submitter_id: _.trimEnd(node.submitter_id, '_slide_image'),
+  }));
+  let slides = portions.reduce(
+    (acc, { slides }) => [...acc, ...slides.hits.edges.map(p => p.node)],
+    [],
+  );
   return _.head(
-    portions.reduce(
-      (acc, { slides }) => [...acc, ...slides.hits.edges.map(p => p.node)],
-      [],
-    ),
+    slideImageIds.map(id => {
+      const matchBySubmitter = _.find(slides, {
+        submitter_id: id.submitter_id,
+      });
+      return { ...id, ...matchBySubmitter };
+    }),
   );
 };
 
 let ZoomableImageWithData = withImageViewerData(
   ({ fileId, viewer: { repository: { cases: { hits: { edges } } } } }) => {
     let caseNode = edges[0].node;
-    const slide = getSlideData(caseNode);
+    const slide = getSlides(caseNode);
     return (
       <Column style={{ margin: '20px 0' }}>
         <Row

@@ -49,7 +49,7 @@ const styles = {
   },
 };
 
-export const getSlides = caseNode => {
+export const getSlide = caseNode => {
   const portions = (caseNode.samples || {
     hits: { edges: [] },
   }).hits.edges.reduce(
@@ -77,7 +77,7 @@ export const getSlides = caseNode => {
 let ZoomableImageWithData = withImageViewerData(
   ({ fileId, viewer: { repository: { cases: { hits: { edges } } } } }) => {
     let caseNode = edges[0].node;
-    const slide = getSlides(caseNode);
+    const slide = getSlide(caseNode);
     return (
       <Column style={{ margin: '20px 0' }}>
         <Row

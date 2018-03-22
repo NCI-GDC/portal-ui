@@ -18,7 +18,6 @@ const DEFAULTS = {
 export function fetchAuth(options: { endpoint: string }): Object {
   return {
     [CALL_API]: {
-      ...DEFAULTS,
       ...options,
       endpoint: urlJoin(
         localStorage.REACT_APP_GDC_AUTH || 'https://portal.gdc.cancer.gov/auth',

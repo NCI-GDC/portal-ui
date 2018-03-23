@@ -4,7 +4,6 @@ import LoginButton from '@ncigdc/components/LoginButton';
 
 export default connect(state => ({
   user: state.auth.user,
-  project_ids: state.auth.project_ids,
 }))(
   class extends React.Component {
     state = { loggingIn: false };
@@ -43,7 +42,7 @@ export default connect(state => ({
             </div>
 
             {this.props.user &&
-              !this.props.project_ids.length && (
+              window.location.search.includes('error=no_projects') && (
                 <div>
                   <br />
                   <br />You don't have access to any projects

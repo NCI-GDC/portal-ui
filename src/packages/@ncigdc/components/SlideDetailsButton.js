@@ -10,6 +10,7 @@ export default compose(withTheme)(({ theme, slide }) => {
   return (
     <div id="details-button">
       <Dropdown
+        autoclose={false}
         style={{
           margin: 0,
           border: 'none',

@@ -104,7 +104,7 @@ export default compose(
                               ]),
                             }}
                           >
-                            <MicroscopeIcon /> ({count})
+                            <MicroscopeIcon style={{ maxWidth: '20px' }} /> ({count})
                           </ImageViewerLink>
                         </Tooltip>
                         <Tooltip Component="Add to cart">

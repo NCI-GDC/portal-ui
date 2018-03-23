@@ -256,8 +256,11 @@ export default compose(
                                 selectedId: selectedSlide.file_id,
                               }}
                             >
-                              <MicroscopeIcon />
-                            </ImageViewerLink>{' '}
+                              <MicroscopeIcon
+                                aria-label={'View slide image'}
+                                style={{ maxWidth: '20px' }}
+                              />
+                            </ImageViewerLink>
                           </Tooltip>
                           <Tooltip Component="Add to cart">
                             {canAddToCart && (
@@ -271,7 +274,6 @@ export default compose(
                                 file={selectedSlide}
                               />
                             )}
-                            {/* need state to differentiate already added to cart */}
                             {!canAddToCart && (
                               <RemoveFromCartSingle
                                 style={{

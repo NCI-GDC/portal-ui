@@ -274,7 +274,7 @@ const casesTableModel = [
                       ]),
                     }}
                   >
-                    <MicroscopeIcon /> ({count})
+                    <MicroscopeIcon style={{ maxWidth: '20px' }} /> ({count})
                   </ImageViewerLink>
                 </Tooltip>
               ) : (

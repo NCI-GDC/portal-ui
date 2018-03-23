@@ -81,7 +81,7 @@ export default compose(
                   : {}),
               }}
             >
-              <Row>{submitter_id}</Row>
+              <Row style={{ color: '#000' }}>{submitter_id}</Row>
               <img
                 alt={`thumbnail of ${submitter_id}`}
                 src={`${SLIDE_IMAGE_ENDPOINT}${file_id}?level=7&x=0&y=0`}

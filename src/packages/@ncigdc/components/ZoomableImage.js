@@ -62,6 +62,8 @@ const enhance = compose(
             viewer.addControl(document.querySelector('#details-button'), {
               anchor: OpenSeadragon.ControlAnchor.TOP_LEFT,
             });
+            // an empty label that 508 scan doesnt like
+            document.querySelector('.openseadragon-container label').remove();
             setViewer(viewer);
           }
         });

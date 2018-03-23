@@ -8,7 +8,6 @@ import ProjectRoute from '@ncigdc/routes/ProjectRoute';
 import FileRoute from '@ncigdc/routes/FileRoute';
 import CaseRoute from '@ncigdc/routes/CaseRoute';
 import AnnotationRoute from '@ncigdc/routes/AnnotationRoute';
-import ComponentsRoute from '@ncigdc/routes/ComponentsRoute';
 import Login from '@ncigdc/routes/Login';
 
 const CartRoute = LoadableWithLoading({
@@ -30,18 +29,16 @@ const AnnotationsRoute = LoadableWithLoading({
 const AuthRoute = connect(s => s.auth)(
   class extends React.Component {
     render() {
-      let { component: Component, user } = this.props;
-
-      console.log(123, this.props);
+      let { component: Component, user, ...props } = this.props;
 
       return (
         <Route
-          {...this.props}
+          {...props}
           render={matchProps => {
             return !user ? (
-              <Login {...this.props} {...matchProps} />
+              <Login {...props} {...matchProps} />
             ) : (
-              <Component {...this.props} {...matchProps} />
+              <Component {...props} {...matchProps} />
             );
           }}
         />

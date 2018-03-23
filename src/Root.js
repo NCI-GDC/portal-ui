@@ -43,6 +43,12 @@ Relay.injectNetworkLayer(
 
       req.credentials = 'include';
 
+      let { user } = window.store.getState().auth;
+
+      let parsedBody = JSON.parse(req.body);
+      let body = { ...parsedBody, user };
+      req.body = JSON.stringify(body);
+
       req.url = `${url}?hash=${hash}`;
       return next(req);
     },

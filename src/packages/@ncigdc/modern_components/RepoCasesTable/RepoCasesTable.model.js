@@ -18,6 +18,12 @@ import {
 } from '@ncigdc/tableModels/utils';
 import { AnnotationCountLink } from '@ncigdc/components/Links/AnnotationCountLink';
 
+import ImageViewerLink from '@ncigdc/components/Links/ImageViewerLink';
+import { RepositorySlideCount } from '@ncigdc/modern_components/Counts';
+import { MicroscopeIcon } from '@ncigdc/theme/icons';
+import { DISPLAY_SLIDES } from '@ncigdc/utils/constants';
+import { Tooltip } from '@ncigdc/uikit/Tooltip';
+
 const youngestDiagnosis = (
   p: { age_at_diagnosis: number },
   c: { age_at_diagnosis: number },
@@ -223,6 +229,43 @@ const casesTableModel = [
       </TdNum>
     ),
   },
+  ...(DISPLAY_SLIDES && [
+    {
+      name: 'Slides',
+      id: 'slides',
+      sortable: false,
+      downloadable: false,
+      hidden: false,
+      th: () => <Th rowSpan="2">Slides</Th>,
+      td: ({ node }) => (
+        <Td style={{ textAlign: 'center' }}>
+          <RepositorySlideCount
+            filters={makeFilter([
+              { field: 'cases.case_id', value: node.case_id },
+            ])}
+          >
+            {count =>
+              count ? (
+                <Tooltip Component="View Slide Image">
+                  <ImageViewerLink
+                    isIcon
+                    query={{
+                      filters: makeFilter([
+                        { field: 'cases.case_id', value: node.case_id },
+                      ]),
+                    }}
+                  >
+                    <MicroscopeIcon style={{ maxWidth: '20px' }} /> ({count})
+                  </ImageViewerLink>
+                </Tooltip>
+              ) : (
+                <Tooltip Component="No slide images to view.">--</Tooltip>
+              )}
+          </RepositorySlideCount>
+        </Td>
+      ),
+    },
+  ]),
   {
     name: 'Program',
     id: 'project.program.name',

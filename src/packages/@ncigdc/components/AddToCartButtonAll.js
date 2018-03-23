@@ -86,21 +86,22 @@ const AddToCartButtonAll = ({
       const inCart = filesInCart(edges, files);
 
       return asIcon ? (
-        <Button
-          className="test-toggle-all-files-in-cart"
-          active={inCart}
-          onClick={() =>
-            inCart
-              ? dispatch(toggleFilesInCart(edges))
-              : dispatch(addAllFilesInCart(edges))}
-          aria-label="Add files to cart"
-          style={iconButton}
-        >
-          <ShoppingCartIcon />
+        <span style={{ marginLeft: '0.5rem' }}>
+          <ShoppingCartIcon
+            className="test-toggle-all-files-in-cart"
+            active={inCart}
+            onClick={() =>
+              inCart
+                ? dispatch(toggleFilesInCart(edges))
+                : dispatch(addAllFilesInCart(edges))}
+            aria-label="Add files to cart"
+            role="button"
+            style={iconButton}
+          />
           <Hidden>
             {inCart ? 'Remove all files from cart' : 'Add all files to cart'}
           </Hidden>
-        </Button>
+        </span>
       ) : (
         <Row>
           <CartButton

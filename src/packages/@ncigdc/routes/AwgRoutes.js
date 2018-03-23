@@ -28,10 +28,22 @@ const AnnotationsRoute = LoadableWithLoading({
 });
 
 const AuthRoute = connect(s => s.auth)(
-  class AuthRoute extends React.Component {
+  class extends React.Component {
     render() {
-      console.log('authroute', this.props);
-      return <Route {...this.props} />;
+      return (
+        <Route
+          {...this.props}
+          render={matchProps => {
+            if (!this.props.user) {
+              return <Login {...this.props} {...matchProps} />;
+            }
+
+            let Component = this.props.component;
+
+            return <Component {...this.props} {...matchProps} />;
+          }}
+        />
+      );
     }
   },
 );
@@ -40,24 +52,20 @@ export default () => (
   <span>
     <Route children={p => <Head title={p.location.pathname.split('/')[1]} />} />
     <Switch>
-      <Route
+      <AuthRoute
         exact
         path="/"
-        component={() => (
-          // TODO: actual login
-          <Redirect to={window.loggedIn ? '/repository' : '/login'} />
-        )}
+        component={() => <Redirect to={'/repository'} />}
       />
       <Route exact path="/login" component={Login} />
-      <Route exact path="/cart" component={CartRoute} />
+      <AuthRoute exact path="/cart" component={CartRoute} />
       <AuthRoute exact path="/repository" component={RepositoryRoute} />
-      <Route exact path="/projects" component={ProjectsRoute} />
-      <Route exact path="/annotations" component={AnnotationsRoute} />
+      <AuthRoute exact path="/projects" component={ProjectsRoute} />
+      <AuthRoute exact path="/annotations" component={AnnotationsRoute} />
       {ProjectRoute}
-      <Route path="/files/:id" component={FileRoute} />
+      <AuthRoute path="/files/:id" component={FileRoute} />
       {CaseRoute}
       {AnnotationRoute}
-      <Route path="/components/:component" component={ComponentsRoute} />
       <Route component={NotFound} />
     </Switch>
   </span>

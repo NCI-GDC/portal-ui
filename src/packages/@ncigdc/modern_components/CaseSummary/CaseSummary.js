@@ -111,6 +111,7 @@ export default compose(
                           <AddToCartButtonAll
                             edges={imageFiles.map(f => f.node)}
                             total={count}
+                            asIcon
                           />
                         </Tooltip>
                       </span>

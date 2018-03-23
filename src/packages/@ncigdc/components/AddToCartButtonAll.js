@@ -21,6 +21,7 @@ import Dropdown from '@ncigdc/uikit/Dropdown';
 import DropdownItem from '@ncigdc/uikit/DropdownItem';
 import Button from '@ncigdc/uikit/Button';
 import ShoppingCartIcon from '@ncigdc/theme/icons/ShoppingCart';
+import { iconButton } from '@ncigdc/theme/mixins';
 
 import styled from '@ncigdc/theme/styled';
 
@@ -71,14 +72,36 @@ const filesInCart = (edges, files) => {
   return edges.every(edge => files.some(file => file.file_id === edge.file_id));
 };
 
-const AddToCartButtonAll = ({ edges, files, total, dispatch }: TProps) => (
+const AddToCartButtonAll = ({
+  edges,
+  files,
+  total,
+  dispatch,
+  asIcon = false,
+}: TProps) => (
   <LocationSubscriber>
     {ctx => {
       const { filters } = ctx.query || {};
       const currentFilters = parseFilterParam(filters, null);
       const inCart = filesInCart(edges, files);
 
-      return (
+      return asIcon ? (
+        <Button
+          className="test-toggle-all-files-in-cart"
+          active={inCart}
+          onClick={() =>
+            inCart
+              ? dispatch(toggleFilesInCart(edges))
+              : dispatch(addAllFilesInCart(edges))}
+          aria-label="Add files to cart"
+          style={iconButton}
+        >
+          <ShoppingCartIcon />
+          <Hidden>
+            {inCart ? 'Remove all files from cart' : 'Add all files to cart'}
+          </Hidden>
+        </Button>
+      ) : (
         <Row>
           <CartButton
             className="test-toggle-all-files-in-cart"
@@ -125,6 +148,7 @@ const AddToCartButtonAll = ({ edges, files, total, dispatch }: TProps) => (
               Cart
             </DropdownItem>
           </Dropdown>
+          )
         </Row>
       );
     }}

@@ -30,17 +30,17 @@ const AnnotationsRoute = LoadableWithLoading({
 const AuthRoute = connect(s => s.auth)(
   class extends React.Component {
     render() {
+      let { component: Component, user } = this.props;
+
       return (
         <Route
           {...this.props}
           render={matchProps => {
-            if (!this.props.user) {
-              return <Login {...this.props} {...matchProps} />;
-            }
-
-            let Component = this.props.component;
-
-            return <Component {...this.props} {...matchProps} />;
+            return !user ? (
+              <Login {...this.props} {...matchProps} />
+            ) : (
+              <Component {...this.props} {...matchProps} />
+            );
           }}
         />
       );

@@ -1,5 +1,6 @@
 import React from 'react';
 import { Route, Switch, Redirect } from 'react-router-dom';
+import { connect } from 'react-redux';
 import Head from '@ncigdc/components/Head';
 import NotFound from '@ncigdc/components/NotFound';
 import LoadableWithLoading from '@ncigdc/components/LoadableWithLoading';
@@ -26,6 +27,15 @@ const AnnotationsRoute = LoadableWithLoading({
   loader: () => import('@ncigdc/routes/AnnotationsRoute'),
 });
 
+const AuthRoute = connect(s => s.auth)(
+  class AuthRoute extends React.Component {
+    render() {
+      console.log('authroute', this.props);
+      return <Route {...this.props} />;
+    }
+  },
+);
+
 export default () => (
   <span>
     <Route children={p => <Head title={p.location.pathname.split('/')[1]} />} />
@@ -40,7 +50,7 @@ export default () => (
       />
       <Route exact path="/login" component={Login} />
       <Route exact path="/cart" component={CartRoute} />
-      <Route exact path="/repository" component={RepositoryRoute} />
+      <AuthRoute exact path="/repository" component={RepositoryRoute} />
       <Route exact path="/projects" component={ProjectsRoute} />
       <Route exact path="/annotations" component={AnnotationsRoute} />
       {ProjectRoute}

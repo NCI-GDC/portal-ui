@@ -15,10 +15,7 @@ export function fetchAuth(options: { endpoint: string }): Object {
     [CALL_API]: {
       ...DEFAULTS,
       ...options,
-      endpoint: urlJoin(
-        localStorage.REACT_APP_GDC_AUTH || 'https://portal.gdc.cancer.gov/auth',
-        options.endpoint,
-      ),
+      endpoint: urlJoin(AUTH, options.endpoint),
     },
   };
 }

@@ -32,6 +32,8 @@ const AuthRoute = connect(s => s.auth)(
     render() {
       let { component: Component, user } = this.props;
 
+      console.log(123, this.props);
+
       return (
         <Route
           {...this.props}

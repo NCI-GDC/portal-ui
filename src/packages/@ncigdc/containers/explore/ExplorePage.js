@@ -18,21 +18,7 @@ import SSMAggregations from '@ncigdc/containers/explore/SSMAggregations';
 import { CreateExploreCaseSetButton } from '@ncigdc/modern_components/withSetAction';
 import { replaceFilters } from '@ncigdc/utils/filters';
 import { stringifyJSONParam } from '@ncigdc/utils/uri';
-import ImageViewerLink from '@ncigdc/components/Links/ImageViewerLink';
 import { Row } from '@ncigdc/uikit/Flex';
-import styled from '@ncigdc/theme/styled';
-import { linkButton } from '@ncigdc/theme/mixins';
-import { DISPLAY_SLIDES } from '@ncigdc/utils/constants';
-import { RepositorySlideCount } from '@ncigdc/modern_components/Counts';
-import { Tooltip } from '@ncigdc/uikit/Tooltip';
-import Spinner from '@ncigdc/theme/icons/Spinner';
-import { withTheme } from '@ncigdc/theme';
-
-const ImageViewerLinkAsButton = styled(ImageViewerLink, {
-  padding: '9px 12px',
-  marginLeft: '5px',
-  ...linkButton,
-});
 
 export type TProps = {
   filters: {},
@@ -108,7 +94,6 @@ function setVariables({ relay, filters }) {
 
 const enhance = compose(
   withRouter,
-  withTheme,
   lifecycle({
     componentDidMount() {
       setVariables(this.props);
@@ -208,34 +193,6 @@ export const ExplorePageComponent = ({
           >
             View Files in Repository
           </CreateExploreCaseSetButton>
-          {DISPLAY_SLIDES && (
-            <RepositorySlideCount filters={filters}>
-              {(count, loading) => (
-                <span style={{ marginTop: '7px' }}>
-                  <Tooltip
-                    Component={count === 0 ? 'No images available' : null}
-                  >
-                    <ImageViewerLinkAsButton
-                      query={{
-                        filters,
-                      }}
-                      style={
-                        loading || count === 0
-                          ? {
-                              backgroundColor: theme.greyScale4,
-                              pointerEvents: 'none',
-                            }
-                          : { cursor: 'pointer' }
-                      }
-                    >
-                      {loading && <Spinner style={{ marginRight: '5px' }} />}
-                      View Images
-                    </ImageViewerLinkAsButton>
-                  </Tooltip>
-                </span>
-              )}
-            </RepositorySlideCount>
-          )}
         </Row>
         <TabbedLinks
           queryParam="searchTableTab"

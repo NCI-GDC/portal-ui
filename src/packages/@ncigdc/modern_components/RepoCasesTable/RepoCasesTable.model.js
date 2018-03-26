@@ -23,6 +23,7 @@ import { RepositorySlideCount } from '@ncigdc/modern_components/Counts';
 import { MicroscopeIcon } from '@ncigdc/theme/icons';
 import { DISPLAY_SLIDES } from '@ncigdc/utils/constants';
 import { Tooltip } from '@ncigdc/uikit/Tooltip';
+import { ForTsvExport } from '@ncigdc/components/DownloadTableToTsvButton';
 
 const youngestDiagnosis = (
   p: { age_at_diagnosis: number },
@@ -244,7 +245,8 @@ const casesTableModel = [
               { field: 'cases.case_id', value: node.case_id },
             ])}
           >
-            {count =>
+            {count => [
+              <ForTsvExport>{count}</ForTsvExport>,
               count ? (
                 <Tooltip Component="View Slide Image">
                   <ImageViewerLink
@@ -260,7 +262,8 @@ const casesTableModel = [
                 </Tooltip>
               ) : (
                 <Tooltip Component="No slide images to view.">--</Tooltip>
-              )}
+              ),
+            ]}
           </RepositorySlideCount>
         </Td>
       ),

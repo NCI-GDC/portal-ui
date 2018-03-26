@@ -58,17 +58,10 @@ export default (Component: ReactClass<*>) =>
           op: 'and',
           content: [
             {
-              op: 'not',
-              content: {
-                field: 'cases.slide_ids',
-                value: ['MISSING'],
-              },
-            },
-            {
               op: 'in',
               content: {
-                field: 'files.data_type',
-                value: ['Slide Image'],
+                field: 'summary.experimental_strategies.experimental_strategy',
+                value: ['Tissue Slide'],
               },
             },
           ],

@@ -149,7 +149,6 @@ const AddToCartButtonAll = ({
               Cart
             </DropdownItem>
           </Dropdown>
-          )
         </Row>
       );
     }}

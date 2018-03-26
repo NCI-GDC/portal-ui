@@ -39,13 +39,14 @@ const initialState = Object.keys(tableModels).reduce(
       order: tableModels[key].map(c => c.id),
     },
   }),
-  { version: 1 },
+  { version: 2 },
 );
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case REHYDRATE: {
-      const { version, ...tableColumns } = action.payload.tableColumns;
+      const { version, ...tableColumns } = action.payload.tableColumns || {};
+
       if (version !== state.version) {
         return state;
       }

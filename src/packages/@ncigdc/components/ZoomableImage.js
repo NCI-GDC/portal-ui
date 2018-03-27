@@ -43,8 +43,6 @@ const enhance = compose(
               visibilityRatio: 1,
               minLevel: 0,
               maxLevel: 14,
-              maxZoomLevel: 14,
-              minZoomLevel: 0,
               showNavigator: true,
               tileSources: {
                 height: Number(data.Height),

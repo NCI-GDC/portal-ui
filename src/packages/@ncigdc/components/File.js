@@ -8,6 +8,7 @@ import { uniq } from 'lodash';
 import moment from 'moment';
 import _ from 'lodash';
 
+import { DISPLAY_SLIDES } from '@ncigdc/utils/constants';
 import { withTheme } from '@ncigdc/theme';
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import formatFileSize from '@ncigdc/utils/formatFileSize';
@@ -238,11 +239,12 @@ const File = ({
           ]}
         />
       </Row>
-      {node.data_format.toLowerCase() === 'svs' && (
-        <Row style={{ marginTop: '2rem' }}>
-          <ZoomableImageWithData fileId={node.file_id} />
-        </Row>
-      )}
+      {DISPLAY_SLIDES &&
+        node.data_format.toLowerCase() === 'svs' && (
+          <Row style={{ marginTop: '2rem' }}>
+            <ZoomableImageWithData fileId={node.file_id} />
+          </Row>
+        )}
       <Row style={{ paddingTop: '2rem', alignItems: 'flex-start' }}>
         <AssociatedEntitiesTable fileId={node.file_id} />
       </Row>

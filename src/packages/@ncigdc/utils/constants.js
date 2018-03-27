@@ -18,7 +18,10 @@ export const SLIDE_IMAGE_ENDPOINT =
   localStorage.REACT_APP_SLIDE_IMAGE_ENDPOINT ||
   process.env.REACT_APP_SLIDE_IMAGE_ENDPOINT;
 
-export const DISPLAY_SLIDES = localStorage.REACT_APP_GDC_DISPLAY_SLIDES || true;
+export const DISPLAY_SLIDES =
+  localStorage.REACT_APP_GDC_DISPLAY_SLIDES ||
+  process.env.REACT_APP_GDC_DISPLAY_SLIDES ||
+  false;
 
 export const API_OVERRIDE_KEYS = [
   'REACT_APP_API',

@@ -7,7 +7,7 @@ import Alias from '@ncigdc/components/Alias';
 
 const enhance = compose(); // left to minimize diff
 export default enhance(
-  ({ push, type, CountComponent, CreateSetButton, sets }) => (
+  ({ push, type, CountComponent, CreateSetButton, sets, setSetSize }) => (
     <EntityPageHorizontalTable
       data={Object.entries(sets).map(([setId, label], i) => {
         const id = `set-table-${type}-${setId}-select`;
@@ -18,6 +18,7 @@ export default enhance(
           type: _.capitalize(type === 'ssm' ? 'Mutation' : type) + 's',
           count: (
             <CountComponent
+              handleCountChange={count => setSetSize({ setId, size: count })}
               filters={{
                 op: '=',
                 content: {

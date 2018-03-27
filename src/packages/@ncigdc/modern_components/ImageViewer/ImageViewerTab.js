@@ -60,10 +60,12 @@ export default compose(
   );
   return (
     <Row>
-      <Column
+      <div
         style={{
           width: '250px',
           padding: '1rem 1rem 1rem 1rem',
+          maxHeight: '550px',
+          overflow: 'auto',
         }}
       >
         {slides.map(({ file_id, submitter_id }) => (
@@ -90,7 +92,7 @@ export default compose(
             </ThumbnailLink>
           </Column>
         ))}
-      </Column>
+      </div>
       <Column style={{ width: '100%' }}>
         <Row>
           <ZoomableImage imageId={selectedOrFirstId} />

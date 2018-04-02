@@ -98,6 +98,10 @@ export const RepositoryPageComponent = (props: TProps) => {
       onReadyStateChange,
     );
 
+  console.log(props);
+
+  if (!props.viewer) return null;
+
   const fileCount = props.viewer.repository.files.hits.total;
   const caseCount = props.viewer.repository.cases.hits.total;
   const fileSize = props.viewer.cart_summary.aggregations.fs.value;

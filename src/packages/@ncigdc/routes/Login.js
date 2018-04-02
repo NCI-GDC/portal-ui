@@ -9,6 +9,17 @@ export default connect(state => ({
     state = { loggingIn: false };
     componentDidMount() {}
     render() {
+      let NihWarning = () => (
+        <div>
+          <br />
+          <br />You do not have access to any AWG projects in dbGaP. More
+          information about obtaining access to controlled-access data can be
+          found{' '}
+          <a href="https://gdc.cancer.gov/access-data/obtaining-access-controlled-data">
+            here
+          </a>.
+        </div>
+      );
       return (
         <div
           style={{
@@ -43,11 +54,21 @@ export default connect(state => ({
             </div>
 
             {this.props.user &&
-              window.location.search.includes('error=no_projects') && (
+              window.location.search.includes('error=no_fence_projects') && (
                 <div>
                   <br />
-                  <br />You don't have access to any projects
+                  <br />You have not been granted access to any AWG projects by
+                  the AWG Admin. Please contact the AWG administrator to request
+                  access.
                 </div>
+              )}
+            {this.props.user &&
+              window.location.search.includes('error=no_nih_projects') && (
+                <NihWarning />
+              )}
+            {this.props.user &&
+              window.location.search.includes('error=no_intersection') && (
+                <NihWarning />
               )}
             <br />
             <div style={{ display: 'flex', justifyContent: 'center' }}>

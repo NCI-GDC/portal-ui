@@ -12,6 +12,8 @@ import { AUTH, FENCE } from '@ncigdc/utils/constants';
 
 /*----------------------------------------------------------------------------*/
 
+let first = true;
+
 const openAuthWindow = ({
   pathname,
   dispatch,
@@ -44,8 +46,8 @@ const openAuthWindow = ({
             clearInterval(interval);
             setTimeout(() => {
               // fetch authpublic user
-              if (!user) {
-                console.log(user);
+              if (first) {
+                first = false;
                 dispatch(fetchUser());
                 // login with fence
                 openAuthWindow({

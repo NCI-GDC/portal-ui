@@ -8,17 +8,21 @@ import { withRouter } from '@ncigdc/utils/withRouter';
 import { fetchUser } from '@ncigdc/dux/auth';
 import LocationSubscriber from '@ncigdc/components/LocationSubscriber';
 import styled from '@ncigdc/theme/styled';
-import { AUTH } from '@ncigdc/utils/constants';
+import { AUTH, FENCE } from '@ncigdc/utils/constants';
 
 /*----------------------------------------------------------------------------*/
 
-const openAuthWindow = ({ pathname, dispatch, push }) => {
+const openAuthWindow = ({
+  pathname,
+  dispatch,
+  push,
+  user,
+  pollInterval = 600,
+  winUrl = `${AUTH}?next=${location.origin}`,
+  winStyle = 'width=800, height=600',
+}) => {
   if (navigator.cookieEnabled) {
-    const win = open(
-      `${AUTH}?next=${location.origin}`,
-      'Auth',
-      'width=800, height=600',
-    );
+    const win = open(winUrl, 'Auth', winStyle);
 
     window.loginPopup = win;
 
@@ -39,10 +43,23 @@ const openAuthWindow = ({ pathname, dispatch, push }) => {
           setTimeout(() => {
             clearInterval(interval);
             setTimeout(() => {
-              dispatch(fetchUser());
-              push('/repository');
-            }, 1000);
-          }, 1000);
+              // fetch authpublic user
+              if (!user) {
+                console.log(user);
+                dispatch(fetchUser());
+                // login with fence
+                openAuthWindow({
+                  pathname,
+                  dispatch,
+                  user,
+                  push,
+                  winUrl: `${FENCE}/login/shib?redirect=${location.origin}`,
+                });
+              } else {
+                push('/repository');
+              }
+            }, pollInterval);
+          }, pollInterval);
         }
       } catch (err) {
         console.log('Error while monitoring the Login window: ', err);
@@ -65,16 +82,12 @@ const styles = {
   },
 };
 
-type TLoginButtonProps = {
-  children: mixed,
-  dispatch: Function,
-};
-const LoginButton = ({ children, dispatch }: TLoginButtonProps) => (
+const LoginButton = ({ children, dispatch, user }) => (
   <LocationSubscriber>
     {({ pathname, push }) => (
       <Link
         className="test-login-button"
-        onClick={() => openAuthWindow({ pathname, dispatch, push })}
+        onClick={() => openAuthWindow({ pathname, dispatch, push, user })}
       >
         {children || (
           <span>
@@ -94,4 +107,4 @@ const LoginButton = ({ children, dispatch }: TLoginButtonProps) => (
 
 /*----------------------------------------------------------------------------*/
 
-export default connect()(LoginButton);
+export default connect(state => state.auth)(LoginButton);

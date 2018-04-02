@@ -10,6 +10,9 @@ const localStorage = window.localStorage || {};
 export const AUTH =
   localStorage.REACT_APP_GDC_AUTH || process.env.REACT_APP_GDC_AUTH || '';
 
+export const FENCE =
+  localStorage.REACT_APP_FENCE || process.env.REACT_APP_FENCE || '';
+
 export const AUTH_API = localStorage.REACT_APP_GDC_AUTH_API || `${AUTH}/api`;
 
 export const API = localStorage.REACT_APP_API || process.env.REACT_APP_API;

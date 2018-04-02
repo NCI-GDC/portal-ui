@@ -36,6 +36,7 @@ export default connect(state => ({
           >
             <div>
               <img
+                alt="NCI GDC AWG Portal"
                 style={{ width: 525 }}
                 src="https://i.imgur.com/O33FmeE.png"
               />

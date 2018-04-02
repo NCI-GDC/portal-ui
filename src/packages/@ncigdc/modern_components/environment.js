@@ -64,12 +64,14 @@ function fetchQuery(operation, variables, cacheConfig) {
     response.json().then(json => {
       if (response.status === 200) {
         // if the response is ok, and the result to the simpleCache and delete it from the pendingCache
-        if (!json.projects.length) {
-          window.location.href = '/login?error=no_projects';
-        }
+        // if (!json.projects.length) {
+        //   window.location.href = '/login?error=no_projects';
+        // }
         simpleCache[hash] = json;
         delete pendingCache[hash];
       }
+
+      console.log(componentName, json);
 
       return json;
     }),

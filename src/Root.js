@@ -50,8 +50,25 @@ Relay.injectNetworkLayer(
       req.body = JSON.stringify(body);
 
       req.url = `${url}?hash=${hash}`;
-      return next(req).then(r => {
-        console.log(123, r);
+
+      return next(req).then(async r => {
+        let json = await r.json();
+
+        if (!json.fence_projects.length) {
+          window.location.href = '/login?error=no_fence_projects';
+          return;
+        }
+
+        if (!json.nih_projects.length) {
+          window.location.href = '/login?error=no_nih_projects';
+          return;
+        }
+
+        if (!json.intersection.length) {
+          window.location.href = '/login?error=no_intersection';
+          return;
+        }
+
         return r;
       });
     },

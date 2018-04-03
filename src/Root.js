@@ -54,20 +54,22 @@ Relay.injectNetworkLayer(
       return next(req).then(async r => {
         let json = await r.json();
 
-        if (!json.fence_projects.length) {
-          window.location.href = '/login?error=no_fence_projects';
-          return;
-        }
+        console.log(123, json);
 
-        if (!json.nih_projects.length) {
-          window.location.href = '/login?error=no_nih_projects';
-          return;
-        }
-
-        if (!json.intersection.length) {
-          window.location.href = '/login?error=no_intersection';
-          return;
-        }
+        // if (!json.fence_projects.length) {
+        //   window.location.href = '/login?error=no_fence_projects';
+        //   return;
+        // }
+        //
+        // if (!json.nih_projects.length) {
+        //   window.location.href = '/login?error=no_nih_projects';
+        //   return;
+        // }
+        //
+        // if (!json.intersection.length) {
+        //   window.location.href = '/login?error=no_intersection';
+        //   return;
+        // }
 
         return r;
       });

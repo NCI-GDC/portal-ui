@@ -51,10 +51,12 @@ Relay.injectNetworkLayer(
 
       req.url = `${url}?hash=${hash}`;
 
-      return next(req).then(async r => {
-        let json = await r.json();
+      return next(req).then(r => {
+        return r.json().then(json => {
+          console.log(123, json);
 
-        console.log(123, json);
+          return json;
+        });
 
         // if (!json.fence_projects.length) {
         //   window.location.href = '/login?error=no_fence_projects';
@@ -70,8 +72,6 @@ Relay.injectNetworkLayer(
         //   window.location.href = '/login?error=no_intersection';
         //   return;
         // }
-
-        return r;
       });
     },
   ]),

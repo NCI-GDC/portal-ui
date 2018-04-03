@@ -186,11 +186,6 @@ const Header = compose(
                 </CartLink>
               </li>
             )}
-            {!isInSearchMode && (
-              <li>
-                <GDCAppsDropdown />
-              </li>
-            )}
           </ul>
         </nav>
       </div>

@@ -50,7 +50,10 @@ Relay.injectNetworkLayer(
       req.body = JSON.stringify(body);
 
       req.url = `${url}?hash=${hash}`;
-      return next(req);
+      return next(req).then(r => {
+        console.log(123, r);
+        return r;
+      });
     },
   ]),
 );

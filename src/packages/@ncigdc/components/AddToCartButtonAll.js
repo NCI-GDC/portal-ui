@@ -98,7 +98,8 @@ const AddToCartButtonAll = ({
             role="button"
             style={iconButton}
           />
-          <Hidden>
+          {/* added display: 'none' because Hidden component was getting added to row height ?? */}
+          <Hidden style={{ display: 'none' }}>
             {inCart ? 'Remove all files from cart' : 'Add all files to cart'}
           </Hidden>
         </span>

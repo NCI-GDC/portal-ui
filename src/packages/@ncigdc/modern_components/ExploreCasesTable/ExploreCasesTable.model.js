@@ -14,7 +14,6 @@ import ExploreLink from '@ncigdc/components/Links/ExploreLink';
 import ageDisplay from '@ncigdc/utils/ageDisplay';
 import withRouter from '@ncigdc/utils/withRouter';
 import ImageViewerLink from '@ncigdc/components/Links/ImageViewerLink';
-import { RepositorySlideCount } from '@ncigdc/modern_components/Counts';
 import { MicroscopeIcon } from '@ncigdc/theme/icons';
 import { DISPLAY_SLIDES } from '@ncigdc/utils/constants';
 import { ForTsvExport } from '@ncigdc/components/DownloadTableToTsvButton';
@@ -257,17 +256,21 @@ const casesTableModel = [
       downloadable: false,
       hidden: false,
       th: () => <Th rowSpan="2">Slides</Th>,
-      td: ({ node }) => (
-        <Td style={{ textAlign: 'center' }}>
-          <RepositorySlideCount
-            filters={makeFilter([
-              { field: 'cases.case_id', value: node.case_id },
-            ])}
-          >
-            {count => [
-              <ForTsvExport>{count}</ForTsvExport>,
-              count ? (
-                <Tooltip Component="View Slide Image">
+      td: ({ node }) => {
+        const slideCount = node.summary.experimental_strategies.find(
+          s => s.experimental_strategy === 'Tissue Slide',
+        );
+        return (
+          <Td style={{ textAlign: 'center' }}>
+            {[
+              <ForTsvExport key={`tsv-export-${node.case_id}`}>
+                {!!slideCount ? slideCount.file_count : 0}
+              </ForTsvExport>,
+              !!slideCount ? (
+                <Tooltip
+                  key={`view-image-${node.case_id}`}
+                  Component="View Slide Image"
+                >
                   <ImageViewerLink
                     isIcon
                     query={{
@@ -276,16 +279,16 @@ const casesTableModel = [
                       ]),
                     }}
                   >
-                    <MicroscopeIcon style={{ maxWidth: '20px' }} /> ({count})
+                    <MicroscopeIcon style={{ maxWidth: '20px' }} /> ({slideCount.file_count})
                   </ImageViewerLink>
                 </Tooltip>
               ) : (
                 <Tooltip Component="No slide images to view.">--</Tooltip>
               ),
             ]}
-          </RepositorySlideCount>
-        </Td>
-      ),
+          </Td>
+        );
+      },
     },
   ]),
   {

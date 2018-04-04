@@ -84,7 +84,7 @@ export default compose(
             arrangeColumnKey="exploreCases"
             total={cases.hits.total}
             endpoint="case_ssms"
-            downloadTooltip="Export All Except #Mutations and #Genes"
+            downloadTooltip="Export All Except #Mutations, #Genes and Slides"
             currentFilters={filters}
             score={score}
             sort={sort}

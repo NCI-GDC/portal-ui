@@ -57,6 +57,12 @@ export default (Component: ReactClass<*>) =>
                             }
                           }
                         }
+                        summary {
+                          experimental_strategies {
+                            experimental_strategy
+                            file_count
+                          }
+                        }
                         files {
                           hits(first: 99) {
                             total

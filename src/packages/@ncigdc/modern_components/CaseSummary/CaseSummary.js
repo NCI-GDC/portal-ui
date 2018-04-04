@@ -10,7 +10,6 @@ import AnnotationIcon from '@ncigdc/theme/icons/Edit';
 import { withTheme } from '@ncigdc/theme';
 import ImageViewerLink from '@ncigdc/components/Links/ImageViewerLink';
 import { Tooltip } from '@ncigdc/uikit/Tooltip';
-import { RepositorySlideCount } from '@ncigdc/modern_components/Counts';
 import { MicroscopeIcon } from '@ncigdc/theme/icons';
 import { DISPLAY_SLIDES } from '@ncigdc/utils/constants';
 import AddToCartButtonAll from '@ncigdc/components/AddToCartButtonAll';
@@ -59,6 +58,9 @@ export default compose(
   const imageFiles = p.files.hits.edges.filter(
     ({ node }) => node.data_type === 'Slide Image',
   );
+  const slideCount = p.summary.experimental_strategies.find(
+    es => es.experimental_strategy === 'Tissue Slide',
+  );
   return (
     <Row spacing={theme.spacing}>
       <EntityPageVerticalTable
@@ -86,40 +88,30 @@ export default compose(
           ...(DISPLAY_SLIDES && [
             {
               th: 'Images',
-              td: (
-                <RepositorySlideCount
-                  filters={makeFilter([
-                    { field: 'cases.case_id', value: p.case_id },
-                  ])}
-                >
-                  {count => {
-                    return count ? (
-                      <span>
-                        <Tooltip Component="View Slide Image">
-                          <ImageViewerLink
-                            isIcon
-                            query={{
-                              filters: makeFilter([
-                                { field: 'cases.case_id', value: p.case_id },
-                              ]),
-                            }}
-                          >
-                            <MicroscopeIcon style={{ maxWidth: '20px' }} /> ({count})
-                          </ImageViewerLink>
-                        </Tooltip>
-                        <Tooltip Component="Add to cart">
-                          <AddToCartButtonAll
-                            edges={imageFiles.map(f => f.node)}
-                            total={count}
-                            asIcon
-                          />
-                        </Tooltip>
-                      </span>
-                    ) : (
-                      <span>--</span>
-                    );
-                  }}
-                </RepositorySlideCount>
+              td: slideCount ? (
+                <span>
+                  <Tooltip Component="View Slide Image">
+                    <ImageViewerLink
+                      isIcon
+                      query={{
+                        filters: makeFilter([
+                          { field: 'cases.case_id', value: p.case_id },
+                        ]),
+                      }}
+                    >
+                      <MicroscopeIcon style={{ maxWidth: '20px' }} /> ({slideCount.file_count})
+                    </ImageViewerLink>
+                  </Tooltip>
+                  <Tooltip Component="Add to cart">
+                    <AddToCartButtonAll
+                      edges={imageFiles.map(f => f.node)}
+                      total={slideCount.file_count}
+                      asIcon
+                    />
+                  </Tooltip>
+                </span>
+              ) : (
+                <span>--</span>
               ),
             },
           ]),

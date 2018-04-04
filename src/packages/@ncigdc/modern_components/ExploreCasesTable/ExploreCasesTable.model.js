@@ -264,9 +264,9 @@ const casesTableModel = [
           <Td style={{ textAlign: 'center' }}>
             {[
               <ForTsvExport key={`tsv-export-${node.case_id}`}>
-                {slideCount ? slideCount.file_count : 0}
+                {!!slideCount ? slideCount.file_count : 0}
               </ForTsvExport>,
-              slideCount ? (
+              !!slideCount ? (
                 <Tooltip
                   key={`view-image-${node.case_id}`}
                   Component="View Slide Image"

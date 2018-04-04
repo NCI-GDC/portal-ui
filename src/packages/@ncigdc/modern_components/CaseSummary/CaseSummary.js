@@ -85,36 +85,36 @@ export default compose(
           { th: 'Disease Type', td: p.disease_type },
           { th: 'Program', td: p.project.program.name },
           { th: 'Primary Site', td: p.primary_site },
-          ...(DISPLAY_SLIDES && [
-            {
-              th: 'Images',
-              td: slideCount ? (
-                <span>
-                  <Tooltip Component="View Slide Image">
-                    <ImageViewerLink
-                      isIcon
-                      query={{
-                        filters: makeFilter([
-                          { field: 'cases.case_id', value: p.case_id },
-                        ]),
-                      }}
-                    >
-                      <MicroscopeIcon style={{ maxWidth: '20px' }} /> ({slideCount.file_count})
-                    </ImageViewerLink>
-                  </Tooltip>
-                  <Tooltip Component="Add to cart">
-                    <AddToCartButtonAll
-                      edges={imageFiles.map(f => f.node)}
-                      total={slideCount.file_count}
-                      asIcon
-                    />
-                  </Tooltip>
-                </span>
-              ) : (
-                <span>--</span>
-              ),
-            },
-          ]),
+          ...(DISPLAY_SLIDES &&
+            !!slideCount && [
+              {
+                th: 'Images',
+                td: (
+                  <span>
+                    <Tooltip Component="View Slide Image">
+                      <ImageViewerLink
+                        isIcon
+                        query={{
+                          filters: makeFilter([
+                            { field: 'cases.case_id', value: p.case_id },
+                          ]),
+                        }}
+                      >
+                        <MicroscopeIcon style={{ maxWidth: '20px' }} /> ({slideCount.file_count})
+                      </ImageViewerLink>
+                    </Tooltip>
+                    <Tooltip Component="Add to cart">
+                      <AddToCartButtonAll
+                        edges={imageFiles.map(f => f.node)}
+                        total={slideCount.file_count}
+                        asIcon
+                        style={{ display: 'none' }}
+                      />
+                    </Tooltip>
+                  </span>
+                ),
+              },
+            ]),
         ]}
         style={{ flex: 1 }}
       />

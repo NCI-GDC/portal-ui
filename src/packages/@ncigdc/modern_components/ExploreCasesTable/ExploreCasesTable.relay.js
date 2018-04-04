@@ -96,6 +96,10 @@ export default (Component: ReactClass<*>) =>
                             file_count
                             data_category
                           }
+                          experimental_strategies {
+                            experimental_strategy
+                            file_count
+                          }
                           file_count
                         }
                       }

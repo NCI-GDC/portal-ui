@@ -12,6 +12,7 @@ import retryMiddleware from '@ncigdc/utils/retryMiddleware';
 import { viewerQuery } from '@ncigdc/routes/queries';
 import Container from './Portal';
 import { API } from '@ncigdc/utils/constants';
+import { clear } from '@ncigdc/utils/cookies';
 
 Relay.injectNetworkLayer(
   new RelayNetworkLayer([
@@ -58,20 +59,21 @@ Relay.injectNetworkLayer(
         let id = setInterval(() => {
           let { user } = window.store.getState().auth;
 
-          console.log(tries, user);
-
           if (user) {
             if (!json.fence_projects.length) {
+              clear();
               window.location.href = '/login?error=no_fence_projects';
               return;
             }
 
             if (!json.nih_projects.length) {
+              clear();
               window.location.href = '/login?error=no_nih_projects';
               return;
             }
 
             if (!json.intersection.length) {
+              clear();
               window.location.href = '/login?error=no_intersection';
               return;
             }

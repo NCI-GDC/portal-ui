@@ -53,23 +53,20 @@ export default connect(state => ({
               />
             </div>
 
-            {this.props.user &&
-              window.location.search.includes('error=no_fence_projects') && (
-                <div>
-                  <br />
-                  <br />You have not been granted access to any AWG projects by
-                  the AWG Admin. Please contact the AWG administrator to request
-                  access.
-                </div>
-              )}
-            {this.props.user &&
-              window.location.search.includes('error=no_nih_projects') && (
-                <NihWarning />
-              )}
-            {this.props.user &&
-              window.location.search.includes('error=no_intersection') && (
-                <NihWarning />
-              )}
+            {window.location.search.includes('error=no_fence_projects') && (
+              <div>
+                <br />
+                <br />You have not been granted access to any AWG projects by
+                the AWG Admin. Please contact the AWG administrator to request
+                access.
+              </div>
+            )}
+            {window.location.search.includes('error=no_nih_projects') && (
+              <NihWarning />
+            )}
+            {window.location.search.includes('error=no_intersection') && (
+              <NihWarning />
+            )}
             <br />
             <div style={{ display: 'flex', justifyContent: 'center' }}>
               <LoginButton />

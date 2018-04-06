@@ -4,6 +4,7 @@ import urlJoin from 'url-join';
 import { Environment, Network, RecordSource, Store } from 'relay-runtime';
 import md5 from 'blueimp-md5';
 import { API } from '@ncigdc/utils/constants';
+import { clear } from '@ncigdc/utils/cookies';
 
 const source = new RecordSource();
 const store = new Store(source);
@@ -70,16 +71,19 @@ function fetchQuery(operation, variables, cacheConfig) {
       }
 
       if (!json.fence_projects.length) {
+        clear();
         window.location.href = '/login?error=no_fence_projects';
         return;
       }
 
       if (!json.nih_projects.length) {
+        clear();
         window.location.href = '/login?error=no_nih_projects';
         return;
       }
 
       if (!json.intersection.length) {
+        clear();
         window.location.href = '/login?error=no_intersection';
         return;
       }

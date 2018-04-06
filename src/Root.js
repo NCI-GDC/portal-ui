@@ -51,29 +51,27 @@ Relay.injectNetworkLayer(
 
       req.url = `${url}?hash=${hash}`;
 
-      return next(req).then(r => {
-        console.log(r);
-        return r;
-        // return r.json().then(json => {
-        //   console.log(123, json);
-        //
-        //   return json;
-        // });
+      return next(req).then(res => {
+        let { json } = res;
 
-        // if (!json.fence_projects.length) {
-        //   window.location.href = '/login?error=no_fence_projects';
-        //   return;
-        // }
-        //
-        // if (!json.nih_projects.length) {
-        //   window.location.href = '/login?error=no_nih_projects';
-        //   return;
-        // }
-        //
-        // if (!json.intersection.length) {
-        //   window.location.href = '/login?error=no_intersection';
-        //   return;
-        // }
+        if (user) {
+          if (!json.fence_projects.length) {
+            window.location.href = '/login?error=no_fence_projects';
+            return;
+          }
+
+          if (!json.nih_projects.length) {
+            window.location.href = '/login?error=no_nih_projects';
+            return;
+          }
+
+          if (!json.intersection.length) {
+            window.location.href = '/login?error=no_intersection';
+            return;
+          }
+        }
+
+        return res;
       });
     },
   ]),

@@ -9,7 +9,6 @@ import { fetchApiVersionInfo } from '@ncigdc/dux/versionInfo';
 import { fetchNotifications } from '@ncigdc/dux/bannerNotification';
 import { fetchUser } from '@ncigdc/dux/auth';
 import PortalContainer from '@ncigdc/components/PortalContainer';
-import { BrowserRouter as Router } from 'react-router-dom';
 
 export const store = setupStore({
   persistConfig: {
@@ -28,9 +27,7 @@ if (process.env.NODE_ENV !== 'development') {
 
 const PortalComponent = () => (
   <Provider store={store}>
-    <Router>
-      <PortalContainer />
-    </Router>
+    <PortalContainer />
   </Provider>
 );
 

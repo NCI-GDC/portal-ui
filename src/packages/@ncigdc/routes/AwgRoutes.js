@@ -8,7 +8,6 @@ import ProjectRoute from '@ncigdc/routes/ProjectRoute';
 import FileRoute from '@ncigdc/routes/FileRoute';
 import CaseRoute from '@ncigdc/routes/CaseRoute';
 import AnnotationRoute from '@ncigdc/routes/AnnotationRoute';
-import Login from '@ncigdc/routes/Login';
 
 const CartRoute = LoadableWithLoading({
   loader: () => import('@ncigdc/routes/CartRoute'),
@@ -56,7 +55,6 @@ export default () => (
         path="/"
         component={() => <Redirect to={'/repository'} />}
       />
-      <Route exact path="/login" component={Login} />
       <AuthRoute exact path="/cart" component={CartRoute} />
       <AuthRoute exact path="/repository" component={RepositoryRoute} />
       <AuthRoute exact path="/projects" component={ProjectsRoute} />

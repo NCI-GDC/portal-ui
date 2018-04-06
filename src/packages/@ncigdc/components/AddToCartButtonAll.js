@@ -89,14 +89,15 @@ const AddToCartButtonAll = ({
         <span style={{ marginLeft: '0.5rem' }}>
           <ShoppingCartIcon
             className="test-toggle-all-files-in-cart"
-            active={inCart}
             onClick={() =>
               inCart
                 ? dispatch(toggleFilesInCart(edges))
                 : dispatch(addAllFilesInCart(edges))}
             aria-label="Add files to cart"
             role="button"
-            style={iconButton}
+            style={
+              (iconButton, { color: inCart ? '#3c763d' : 'rgb(0, 80, 131)' })
+            }
           />
           <Hidden>
             {inCart ? 'Remove all files from cart' : 'Add all files to cart'}

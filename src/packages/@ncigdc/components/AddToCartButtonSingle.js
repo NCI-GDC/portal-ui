@@ -53,7 +53,9 @@ const AddToCartButtonSingle = ({ dispatch, file, files, theme, style }) => (
     onClick={() => dispatch(toggleFilesInCart(file))}
     aria-label="Add to cart"
   >
-    <ShoppingCartIcon />
+    <ShoppingCartIcon
+      style={{ color: fileInCart(files, file) ? '#3c763d' : 'rgb(0, 80, 131)' }}
+    />
     <Hidden>Add to cart</Hidden>
   </Button>
 );

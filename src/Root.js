@@ -52,11 +52,13 @@ Relay.injectNetworkLayer(
       req.url = `${url}?hash=${hash}`;
 
       return next(req).then(r => {
-        return r.json().then(json => {
-          console.log(123, json);
-
-          return json;
-        });
+        console.log(r);
+        return r;
+        // return r.json().then(json => {
+        //   console.log(123, json);
+        //
+        //   return json;
+        // });
 
         // if (!json.fence_projects.length) {
         //   window.location.href = '/login?error=no_fence_projects';

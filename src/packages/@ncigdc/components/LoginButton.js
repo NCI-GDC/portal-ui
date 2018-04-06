@@ -55,6 +55,7 @@ const openAuthWindow = ({
                   dispatch,
                   user,
                   push,
+                  pollInterval: 500,
                   winUrl: `${FENCE}/login/shib?redirect=${location.origin}`,
                 });
               } else {
@@ -66,7 +67,7 @@ const openAuthWindow = ({
       } catch (err) {
         console.log('Error while monitoring the Login window: ', err);
       }
-    }, 500);
+    }, pollInterval);
   } else {
     // show cookie needs to be enabled message
   }
@@ -89,7 +90,8 @@ const LoginButton = ({ children, dispatch, user }) => (
     {({ pathname, push }) => (
       <Link
         className="test-login-button"
-        onClick={() => openAuthWindow({ pathname, dispatch, push, user })}
+        onClick={() =>
+          openAuthWindow({ pathname, dispatch, push, user, pollInterval: 200 })}
       >
         {children || (
           <span>

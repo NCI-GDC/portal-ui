@@ -51,11 +51,14 @@ Relay.injectNetworkLayer(
 
       req.url = `${url}?hash=${hash}`;
 
-      return next(req)
-        .then(res => {
-          let { json } = res;
+      return next(req).then(res => {
+        let { json } = res;
 
-          console.log('then', res, user);
+        let tries = 20;
+        let id = setInterval(() => {
+          let { user } = window.store.getState().auth;
+
+          console.log(tries, user);
 
           if (user) {
             if (!json.fence_projects.length) {
@@ -74,11 +77,13 @@ Relay.injectNetworkLayer(
             }
           }
 
-          return res;
-        })
-        .catch(err => {
-          console.log('catch', err);
-        });
+          tries--;
+
+          if (!tries) clearInterval(id);
+        }, 500);
+
+        return res;
+      });
     },
   ]),
 );

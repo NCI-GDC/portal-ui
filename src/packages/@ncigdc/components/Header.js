@@ -85,11 +85,7 @@ const Header = compose(
     isInSearchMode,
     setIsInSearchMode,
   }) => (
-    <header
-      id="header"
-      className="navbar navbar-default navbar-static-top"
-      role="banner"
-    >
+    <div id="header" className="navbar navbar-default navbar-static-top">
       {notifications.map(n => (
         <Banner
           {...n}
@@ -226,7 +222,7 @@ const Header = compose(
           </ul>
         </nav>
       </div>
-    </header>
+    </div>
   ),
 );
 

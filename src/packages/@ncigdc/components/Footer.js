@@ -67,8 +67,8 @@ export default compose(
     apiCommitHash,
     dataRelease,
   }) => (
-    <footer style={styles.footer(theme)} className="test-footer">
-      <div style={styles.outerContainer} role="contentinfo">
+    <div style={styles.footer(theme)} className="test-footer">
+      <div style={styles.outerContainer}>
         <div style={styles.innerContainer}>
           <HomeLink style={styles.link}>Site Home</HomeLink>
           <span> | </span>
@@ -116,6 +116,6 @@ export default compose(
           </span>
         </div>
       </div>
-    </footer>
+    </div>
   ),
 );

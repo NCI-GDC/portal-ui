@@ -7,7 +7,7 @@
   min-height: 51px;
   background-color: white;
   -webkit-transform: translateY(0%);
-          transform: translateY(0%);
+  transform: translateY(0%);
   transition: -webkit-transform 0.3s ease;
   transition: transform 0.3s ease;
 }

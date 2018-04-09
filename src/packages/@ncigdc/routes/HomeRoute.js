@@ -10,9 +10,10 @@ import PortalSummary from '@ncigdc/modern_components/PortalSummary';
 import HumanBody from '@ncigdc/modern_components/HumanBody';
 import { zDepth1 } from '@ncigdc/theme/mixins';
 
-const Title = styled.div({
+const Title = styled.h1({
   color: 'white',
   fontSize: '3rem',
+  marginTop: '0.7rem',
 });
 
 const SubTitle = styled.div({

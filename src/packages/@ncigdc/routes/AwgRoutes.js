@@ -35,7 +35,7 @@ const AuthRoute = connect(s => s.auth)(
           {...props}
           render={matchProps => {
             return !user ? (
-              <Login {...props} {...matchProps} />
+              <Redirect to={'/login'} />
             ) : (
               <Component {...props} {...matchProps} />
             );

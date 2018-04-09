@@ -1,35 +1,8 @@
 /* @flow */
 
 import '@ncigdc/theme/global.css';
-import React from 'react';
 import Relay from 'react-relay/classic';
-import { Provider } from 'react-redux';
-import setupStore from '@ncigdc/dux';
-import { fetchApiVersionInfo } from '@ncigdc/dux/versionInfo';
-import { fetchNotifications } from '@ncigdc/dux/bannerNotification';
-import { fetchUser } from '@ncigdc/dux/auth';
 import PortalContainer from '@ncigdc/components/PortalContainer';
-
-export const store = setupStore({
-  persistConfig: {
-    keyPrefix: 'ncigdcActive',
-  },
-});
-
-window.store = store;
-
-store.dispatch(fetchApiVersionInfo());
-
-if (process.env.NODE_ENV !== 'development') {
-  // store.dispatch(fetchNotifications());
-  store.dispatch(fetchUser());
-}
-
-const PortalComponent = () => (
-  <Provider store={store}>
-    <PortalContainer />
-  </Provider>
-);
 
 const PortalQuery = {
   fragments: {
@@ -43,6 +16,6 @@ const PortalQuery = {
   },
 };
 
-const Portal = Relay.createContainer(PortalComponent, PortalQuery);
+const Portal = Relay.createContainer(PortalContainer, PortalQuery);
 
 export default Portal;

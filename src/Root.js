@@ -8,12 +8,16 @@ import md5 from 'blueimp-md5';
 import urlJoin from 'url-join';
 import { RelayNetworkLayer, urlMiddleware } from 'react-relay-network-layer';
 import retryMiddleware from '@ncigdc/utils/retryMiddleware';
-import { BrowserRouter as Router } from 'react-router-dom';
+import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { viewerQuery } from '@ncigdc/routes/queries';
 import Login from '@ncigdc/routes/Login';
 import Container from './Portal';
 import { API } from '@ncigdc/utils/constants';
 import { clear } from '@ncigdc/utils/cookies';
+import { Provider } from 'react-redux';
+import setupStore from '@ncigdc/dux';
+import { fetchApiVersionInfo } from '@ncigdc/dux/versionInfo';
+import { fetchUser } from '@ncigdc/dux/auth';
 
 Relay.injectNetworkLayer(
   new RelayNetworkLayer([
@@ -91,23 +95,39 @@ Relay.injectNetworkLayer(
   ]),
 );
 
-class Route extends Relay.Route {
+export const store = setupStore({
+  persistConfig: {
+    keyPrefix: 'ncigdcActive',
+  },
+});
+
+window.store = store;
+
+store.dispatch(fetchApiVersionInfo());
+
+if (process.env.NODE_ENV !== 'development') {
+  store.dispatch(fetchUser());
+}
+
+class RelayRoute extends Relay.Route {
   static routeName = 'RootRoute';
   static queries = viewerQuery;
 }
 
 const Root = (props: mixed) => (
   <Router>
-    <span>
-      <Route exact path="/login" component={Login} />
-      {!window.location.pathname.includes('/login') && (
-        <Relay.Renderer
-          Container={Container}
-          queryConfig={new Route(props)}
-          environment={Relay.Store}
-        />
-      )}
-    </span>
+    <Provider store={store}>
+      <React.Fragment>
+        <Route exact path="/login" component={Login} />
+        {!window.location.pathname.includes('/login') && (
+          <Relay.Renderer
+            Container={Container}
+            queryConfig={new RelayRoute(props)}
+            environment={Relay.Store}
+          />
+        )}
+      </React.Fragment>
+    </Provider>
   </Router>
 );
 

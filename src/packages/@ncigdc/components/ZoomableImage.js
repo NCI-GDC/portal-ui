@@ -42,7 +42,6 @@ const enhance = compose(
                 'https://cdn.jsdelivr.net/npm/openseadragon@2.3/build/openseadragon/images/',
               visibilityRatio: 1,
               minLevel: 0,
-              maxLevel: 14,
               showNavigator: true,
               tileSources: {
                 height: Number(data.Height),

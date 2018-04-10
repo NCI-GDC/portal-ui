@@ -302,6 +302,7 @@ const OncoGridWrapper = compose(
       } else {
         if (oncoGrid.toggleGridLines) oncoGrid.destroy();
         setOncoGridData(null);
+        setIsLoading(false);
       }
 
       if (gridParams) {

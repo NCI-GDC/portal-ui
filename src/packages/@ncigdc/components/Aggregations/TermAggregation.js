@@ -104,8 +104,7 @@ const TermAggregation = (props: TProps) => {
                   .slice(0, props.showingMore ? Infinity : 5)
                   .map(b => ({ ...b, name: b.key_as_string || b.key }))
                   .filter(b => {
-                    console.log(111, props.field, b.name);
-                    if (props.field === 'project__project_id') {
+                    if (props.field.includes('project.project_id')) {
                       return window.intersection.includes(b.name);
                     }
                     return true;

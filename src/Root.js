@@ -69,25 +69,25 @@ Relay.injectNetworkLayer(
           console.log('tries', tries);
           console.log('/graphql', user, json);
 
-          // if (user) {
-          //   if (!json.fence_projects.length) {
-          //     clear();
-          //     window.location.href = '/login?error=no_fence_projects';
-          //     return;
-          //   }
-          //
-          //   if (!json.nih_projects.length) {
-          //     clear();
-          //     window.location.href = '/login?error=no_nih_projects';
-          //     return;
-          //   }
-          //
-          //   if (!json.intersection.length) {
-          //     clear();
-          //     window.location.href = '/login?error=no_intersection';
-          //     return;
-          //   }
-          // }
+          if (user) {
+            if (!json.fence_projects.length) {
+              clear();
+              window.location.href = '/login?error=no_fence_projects';
+              return;
+            }
+
+            if (!json.nih_projects.length) {
+              clear();
+              window.location.href = '/login?error=no_nih_projects';
+              return;
+            }
+
+            if (!json.intersection.length) {
+              clear();
+              window.location.href = '/login?error=no_intersection';
+              return;
+            }
+          }
 
           tries--;
 
@@ -126,7 +126,6 @@ const Root = (props: mixed) => (
     <Provider store={store}>
       <React.Fragment>
         <Route exact path="/login" component={Login} />
-
         <Route
           render={props => {
             return (

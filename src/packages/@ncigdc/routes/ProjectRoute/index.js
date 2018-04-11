@@ -1,9 +1,10 @@
 import React from 'react';
-import { Route } from 'react-router-dom';
 import LoadableWithLoading from '@ncigdc/components/LoadableWithLoading';
+import AuthRoute from '@ncigdc/routes/AuthRoute';
 
 export default (
-  <Route
+  <AuthRoute
+    exact
     path="/projects/:id"
     component={LoadableWithLoading({ loader: () => import('./ProjectRoute') })}
   />

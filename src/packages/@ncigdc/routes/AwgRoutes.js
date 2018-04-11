@@ -8,6 +8,7 @@ import ProjectRoute from '@ncigdc/routes/ProjectRoute';
 import FileRoute from '@ncigdc/routes/FileRoute';
 import CaseRoute from '@ncigdc/routes/CaseRoute';
 import AnnotationRoute from '@ncigdc/routes/AnnotationRoute';
+import AuthRoute from '@ncigdc/routes/AuthRoute';
 
 const CartRoute = LoadableWithLoading({
   loader: () => import('@ncigdc/routes/CartRoute'),
@@ -24,27 +25,6 @@ const ProjectsRoute = LoadableWithLoading({
 const AnnotationsRoute = LoadableWithLoading({
   loader: () => import('@ncigdc/routes/AnnotationsRoute'),
 });
-
-const AuthRoute = connect(s => s.auth)(
-  class extends React.Component {
-    render() {
-      let { component: Component, user, ...props } = this.props;
-
-      return (
-        <Route
-          {...props}
-          render={matchProps => {
-            return !user ? (
-              <Redirect to={'/login'} />
-            ) : (
-              <Component {...props} {...matchProps} />
-            );
-          }}
-        />
-      );
-    }
-  },
-);
 
 export default () => (
   <span>

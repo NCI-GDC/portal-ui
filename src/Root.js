@@ -14,7 +14,7 @@ import Login from '@ncigdc/routes/Login';
 import Container from './Portal';
 import { API } from '@ncigdc/utils/constants';
 import { clear } from '@ncigdc/utils/cookies';
-import { Provider } from 'react-redux';
+import { Provider, connect } from 'react-redux';
 import setupStore from '@ncigdc/dux';
 import { fetchApiVersionInfo } from '@ncigdc/dux/versionInfo';
 import { fetchUser } from '@ncigdc/dux/auth';
@@ -119,6 +119,8 @@ class RelayRoute extends Relay.Route {
   static queries = viewerQuery;
 }
 
+let HasUser = connect(state => state.auth)(props => props.children(props.user));
+
 const Root = (props: mixed) => (
   <Router>
     <Provider store={store}>
@@ -129,11 +131,16 @@ const Root = (props: mixed) => (
           render={props => {
             return (
               !window.location.pathname.includes('/login') && (
-                <Relay.Renderer
-                  Container={Container}
-                  queryConfig={new RelayRoute(props)}
-                  environment={Relay.Store}
-                />
+                <HasUser>
+                  {user =>
+                    user && (
+                      <Relay.Renderer
+                        Container={Container}
+                        queryConfig={new RelayRoute(props)}
+                        environment={Relay.Store}
+                      />
+                    )}
+                </HasUser>
               )
             );
           }}

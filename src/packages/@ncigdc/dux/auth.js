@@ -78,6 +78,7 @@ const initialState: State = {
   error: {},
   isFetchingToken: false,
   token: undefined,
+  failed: false,
 };
 
 export default handleActions(
@@ -94,6 +95,7 @@ export default handleActions(
       user: action.error ? null : action.payload,
       error: action.error ? action.payload : {},
       firstLoad: false,
+      failed: false,
     }),
     [USER_FAILURE]: (state, action) => ({
       ...state,
@@ -101,6 +103,7 @@ export default handleActions(
       error: action.payload,
       user: null,
       firstLoad: false,
+      failed: true,
     }),
     [TOKEN_REQUEST]: state => ({
       ...state,

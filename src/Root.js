@@ -8,7 +8,7 @@ import md5 from 'blueimp-md5';
 import urlJoin from 'url-join';
 import { RelayNetworkLayer, urlMiddleware } from 'react-relay-network-layer';
 import retryMiddleware from '@ncigdc/utils/retryMiddleware';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Redirect } from 'react-router-dom';
 import { viewerQuery } from '@ncigdc/routes/queries';
 import Login from '@ncigdc/routes/Login';
 import Container from './Portal';
@@ -119,7 +119,13 @@ class RelayRoute extends Relay.Route {
   static queries = viewerQuery;
 }
 
-let HasUser = connect(state => state.auth)(props => props.children(props.user));
+let HasUser = connect(state => state.auth)(props => {
+  return props.children({
+    user: props.user,
+    failed: props.failed,
+    error: props.error,
+  });
+});
 
 const Root = (props: mixed) => (
   <Router>
@@ -131,14 +137,22 @@ const Root = (props: mixed) => (
             return (
               !window.location.pathname.includes('/login') && (
                 <HasUser>
-                  {user =>
-                    user && (
-                      <Relay.Renderer
-                        Container={Container}
-                        queryConfig={new RelayRoute(props)}
-                        environment={Relay.Store}
-                      />
-                    )}
+                  {({ user, failed, error }) => {
+                    if (
+                      error &&
+                      error.message === 'Session timed out or not authorized'
+                    )
+                      return <Redirect to="/login" />;
+                    if (failed) return <Redirect to="/login" />;
+                    if (user)
+                      return (
+                        <Relay.Renderer
+                          Container={Container}
+                          queryConfig={new RelayRoute(props)}
+                          environment={Relay.Store}
+                        />
+                      );
+                  }}
                 </HasUser>
               )
             );

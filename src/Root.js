@@ -125,13 +125,19 @@ const Root = (props: mixed) => (
       <React.Fragment>
         <Route exact path="/login" component={Login} />
 
-        {!window.location.pathname.includes('/login') && (
-          <Relay.Renderer
-            Container={Container}
-            queryConfig={new RelayRoute(props)}
-            environment={Relay.Store}
-          />
-        )}
+        <Route
+          render={props => {
+            return (
+              !window.location.pathname.includes('/login') && (
+                <Relay.Renderer
+                  Container={Container}
+                  queryConfig={new RelayRoute(props)}
+                  environment={Relay.Store}
+                />
+              )
+            );
+          }}
+        />
       </React.Fragment>
     </Provider>
   </Router>

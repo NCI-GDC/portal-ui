@@ -294,28 +294,6 @@ const CurrentFilters = (
         </Row>
       </Row>
     )}
-    {linkPathname &&
-      (!hideLinkOnEmpty || !!currentFilters.length) && (
-        <LinkButton
-          pathname={linkPathname}
-          query={
-            currentFilters.length && {
-              filters: {
-                op: 'and',
-                content: currentFilters.map(
-                  ({ content: { field, value }, op }) => ({
-                    op: op.toLowerCase(),
-                    content: { field: linkFieldMap(field), value },
-                  }),
-                ),
-              },
-            }
-          }
-        >
-          <Cogs style={{ marginRight: 5 }} />
-          {linkText}
-        </LinkButton>
-      )}
   </Info>
 );
 /*----------------------------------------------------------------------------*/

@@ -103,6 +103,12 @@ const TermAggregation = (props: TProps) => {
                 {_.orderBy(filteredBuckets, 'doc_count', 'desc')
                   .slice(0, props.showingMore ? Infinity : 5)
                   .map(b => ({ ...b, name: b.key_as_string || b.key }))
+                  .filter(b => {
+                    if (props.field === 'project__project_id') {
+                      return window.intersection.includes(b.name);
+                    }
+                    return true;
+                  })
                   .map(bucket => (
                     <BucketRow key={bucket.name}>
                       <BucketLink

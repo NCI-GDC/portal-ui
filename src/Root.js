@@ -60,6 +60,8 @@ Relay.injectNetworkLayer(
       return next(req).then(res => {
         let { json } = res;
 
+        window.intersection = json.intersection;
+
         let tries = 20;
         let id = setInterval(() => {
           let { user } = window.store.getState().auth;

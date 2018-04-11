@@ -94,27 +94,6 @@ export default ({
           <Row id="biospecimen" style={{ flexWrap: 'wrap' }} spacing="2rem">
             <BiospecimenCard caseId={caseId} bioId={query.bioId} />
           </Row>
-          <HasSsms caseId={caseId}>
-            <Column style={{ ...styles.card, marginTop: '2rem' }}>
-              <Row style={{ padding: '1rem 1rem 2rem', alignItems: 'center' }}>
-                <h1 style={{ ...styles.heading }} id="frequent-mutations">
-                  <i
-                    className="fa fa-bar-chart-o"
-                    style={{ paddingRight: '10px' }}
-                  />
-                  Most Frequent Somatic Mutations
-                </h1>
-                <ExploreLink
-                  query={{ searchTableTab: 'mutations', filters: fmFilters }}
-                >
-                  <GdcDataIcon /> Open in Exploration
-                </ExploreLink>
-              </Row>
-              <Column>
-                <SsmsTable caseId={caseId} defaultFilters={fmFilters} />
-              </Column>
-            </Column>
-          </HasSsms>
         </Column>
       </FullWidthLayout>
     </Exists>

@@ -64,14 +64,6 @@ const UserDropdown = connect(state => ({
       }
     >
       <DropdownItemStyled
-        onClick={() => dispatch(setModal(<UserProfileModal />))}
-      >
-        <UserIcon
-          style={{ ...iconStyle, fontSize: '1.8rem', marginRight: '0.6rem' }}
-        />{' '}
-        User Profile
-      </DropdownItemStyled>
-      <DropdownItemStyled
         onClick={() => {
           if (userProjectsCount(user)) {
             dispatch(fetchToken());

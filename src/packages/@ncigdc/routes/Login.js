@@ -61,6 +61,12 @@ export default connect(state => ({
                 access.
               </div>
             )}
+            {window.location.search.includes('error=timeout') && (
+              <div>
+                <br />
+                <br />Session timed out or not authorized.
+              </div>
+            )}
             {window.location.search.includes('error=no_nih_projects') && (
               <NihWarning />
             )}

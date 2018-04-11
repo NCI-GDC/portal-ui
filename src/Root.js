@@ -142,8 +142,9 @@ const Root = (props: mixed) => (
                       error &&
                       error.message === 'Session timed out or not authorized'
                     )
-                      return <Redirect to="/login" />;
-                    if (failed) return <Redirect to="/login" />;
+                      return <Redirect to="/login?error=timeout" />;
+                    if (failed)
+                      return <Redirect to="/login?error=no_nih_projects" />;
                     if (user)
                       return (
                         <Relay.Renderer

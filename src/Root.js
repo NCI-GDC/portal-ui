@@ -152,6 +152,7 @@ const Root = (props: mixed) => (
                           environment={Relay.Store}
                         />
                       );
+                    return null;
                   }}
                 </HasUser>
               )

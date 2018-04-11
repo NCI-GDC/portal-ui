@@ -4,16 +4,29 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import LoginIcon from 'react-icons/lib/fa/sign-in';
+import { withRouter } from '@ncigdc/utils/withRouter';
 import { fetchUser } from '@ncigdc/dux/auth';
 import LocationSubscriber from '@ncigdc/components/LocationSubscriber';
 import styled from '@ncigdc/theme/styled';
-import { AUTH } from '@ncigdc/utils/constants';
+import { AUTH, FENCE } from '@ncigdc/utils/constants';
 
 /*----------------------------------------------------------------------------*/
 
-const openAuthWindow = ({ pathname, dispatch }) => {
+let first = true;
+
+const openAuthWindow = ({
+  pathname,
+  dispatch,
+  push,
+  user,
+  pollInterval = 600,
+  winUrl = `${AUTH}?next=${location.origin}`,
+  winStyle = 'width=800, height=600',
+}) => {
   if (navigator.cookieEnabled) {
-    const win = open(AUTH, 'Auth', 'width=800, height=600');
+    const win = open(winUrl, 'Auth', winStyle);
+
+    window.loginPopup = win;
 
     const interval = setInterval(() => {
       try {
@@ -25,21 +38,36 @@ const openAuthWindow = ({ pathname, dispatch }) => {
           clearInterval(interval);
         } else if (
           win.document.URL.includes(location.origin) &&
-          !win.document.URL.includes(location.origin + '/auth')
+          !win.document.URL.includes('auth')
         ) {
           win.close();
 
           setTimeout(() => {
             clearInterval(interval);
             setTimeout(() => {
-              dispatch(fetchUser());
-            }, 1000);
-          }, 1000);
+              // fetch authpublic user
+              if (first) {
+                first = false;
+                dispatch(fetchUser());
+                // login with fence
+                openAuthWindow({
+                  pathname,
+                  dispatch,
+                  user,
+                  push,
+                  pollInterval: 500,
+                  winUrl: `${FENCE}/login/shib?redirect=${location.origin}`,
+                });
+              } else {
+                push('/repository');
+              }
+            }, pollInterval);
+          }, pollInterval);
         }
       } catch (err) {
         console.log('Error while monitoring the Login window: ', err);
       }
-    }, 500);
+    }, pollInterval);
   } else {
     // show cookie needs to be enabled message
   }
@@ -57,16 +85,13 @@ const styles = {
   },
 };
 
-type TLoginButtonProps = {
-  children: mixed,
-  dispatch: Function,
-};
-const LoginButton = ({ children, dispatch }: TLoginButtonProps) => (
+const LoginButton = ({ children, dispatch, user }) => (
   <LocationSubscriber>
-    {({ pathname }) => (
+    {({ pathname, push }) => (
       <Link
         className="test-login-button"
-        onClick={() => openAuthWindow({ pathname, dispatch })}
+        onClick={() =>
+          openAuthWindow({ pathname, dispatch, push, user, pollInterval: 200 })}
       >
         {children || (
           <span>
@@ -86,4 +111,4 @@ const LoginButton = ({ children, dispatch }: TLoginButtonProps) => (
 
 /*----------------------------------------------------------------------------*/
 
-export default connect()(LoginButton);
+export default connect(state => state.auth)(LoginButton);

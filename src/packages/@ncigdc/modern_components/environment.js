@@ -4,6 +4,7 @@ import urlJoin from 'url-join';
 import { Environment, Network, RecordSource, Store } from 'relay-runtime';
 import md5 from 'blueimp-md5';
 import { API } from '@ncigdc/utils/constants';
+import { clear } from '@ncigdc/utils/cookies';
 
 const source = new RecordSource();
 const store = new Store(source);
@@ -12,9 +13,12 @@ const pendingCache = {};
 const handlerProvider = null;
 
 function fetchQuery(operation, variables, cacheConfig) {
+  let { user } = window.store.getState().auth;
+
   const body = JSON.stringify({
     query: operation.text, // GraphQL text from input
     variables,
+    user,
   });
   const hash = md5(body);
   const [componentName] = operation.name.split('_relayQuery');
@@ -52,6 +56,7 @@ function fetchQuery(operation, variables, cacheConfig) {
 
   return fetch(urlJoin(API, `graphql/${componentName}?hash=${hash}`), {
     method: 'POST',
+    credentials: 'include',
     headers: {
       'content-type': 'application/json',
     },
@@ -60,9 +65,39 @@ function fetchQuery(operation, variables, cacheConfig) {
     response.json().then(json => {
       if (response.status === 200) {
         // if the response is ok, and the result to the simpleCache and delete it from the pendingCache
+
         simpleCache[hash] = json;
         delete pendingCache[hash];
       }
+
+      let tries = 20;
+      let id = setInterval(() => {
+        let { user } = window.store.getState().auth;
+
+        if (user) {
+          if (!json.fence_projects.length) {
+            clear();
+            window.location.href = '/login?error=no_fence_projects';
+            return;
+          }
+
+          if (!json.nih_projects.length) {
+            clear();
+            window.location.href = '/login?error=no_nih_projects';
+            return;
+          }
+
+          if (!json.intersection.length) {
+            clear();
+            window.location.href = '/login?error=no_intersection';
+            return;
+          }
+        }
+
+        tries--;
+
+        if (!tries) clearInterval(id);
+      }, 500);
 
       return json;
     }),

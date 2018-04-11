@@ -50,7 +50,7 @@ export default compose(
             Add All Files to Cart
           </Button>
           <DownloadManifestButton fileCount={totalFiles} filters={filters} />
-          <CreateRepositoryCaseSetButton
+          {/* <CreateRepositoryCaseSetButton
             filters={filters}
             disabled={!totalCases}
             style={{ paddingLeft: '5px' }}
@@ -77,7 +77,7 @@ export default compose(
             {'View '}
             {totalCases.toLocaleString()} {pluralize(' Case', totalCases)}
             {' in Exploration'}
-          </CreateRepositoryCaseSetButton>
+          </CreateRepositoryCaseSetButton> */}
         </Row>
         <AnnotationsLink>
           <i className="fa fa-edit" /> Browse Annotations

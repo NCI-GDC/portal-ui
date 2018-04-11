@@ -8,10 +8,16 @@ import md5 from 'blueimp-md5';
 import urlJoin from 'url-join';
 import { RelayNetworkLayer, urlMiddleware } from 'react-relay-network-layer';
 import retryMiddleware from '@ncigdc/utils/retryMiddleware';
-
+import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { viewerQuery } from '@ncigdc/routes/queries';
+import Login from '@ncigdc/routes/Login';
 import Container from './Portal';
 import { API } from '@ncigdc/utils/constants';
+import { clear } from '@ncigdc/utils/cookies';
+import { Provider } from 'react-redux';
+import setupStore from '@ncigdc/dux';
+import { fetchApiVersionInfo } from '@ncigdc/dux/versionInfo';
+import { fetchUser } from '@ncigdc/dux/auth';
 
 Relay.injectNetworkLayer(
   new RelayNetworkLayer([
@@ -41,23 +47,88 @@ Relay.injectNetworkLayer(
           ].join(':'),
         );
 
+      req.credentials = 'include';
+
+      let { user } = window.store.getState().auth;
+
+      let parsedBody = JSON.parse(req.body);
+      let body = { ...parsedBody, user };
+      req.body = JSON.stringify(body);
+
       req.url = `${url}?hash=${hash}`;
-      return next(req);
+
+      return next(req).then(res => {
+        let { json } = res;
+
+        let tries = 20;
+        let id = setInterval(() => {
+          let { user } = window.store.getState().auth;
+
+          if (user) {
+            if (!json.fence_projects.length) {
+              clear();
+              window.location.href = '/login?error=no_fence_projects';
+              return;
+            }
+
+            if (!json.nih_projects.length) {
+              clear();
+              window.location.href = '/login?error=no_nih_projects';
+              return;
+            }
+
+            if (!json.intersection.length) {
+              clear();
+              window.location.href = '/login?error=no_intersection';
+              return;
+            }
+          }
+
+          tries--;
+
+          if (!tries) clearInterval(id);
+        }, 500);
+
+        return res;
+      });
     },
   ]),
 );
 
-class Route extends Relay.Route {
+export const store = setupStore({
+  persistConfig: {
+    keyPrefix: 'ncigdcActive',
+  },
+});
+
+window.store = store;
+
+store.dispatch(fetchApiVersionInfo());
+
+if (process.env.NODE_ENV !== 'development') {
+  store.dispatch(fetchUser());
+}
+
+class RelayRoute extends Relay.Route {
   static routeName = 'RootRoute';
   static queries = viewerQuery;
 }
 
 const Root = (props: mixed) => (
-  <Relay.Renderer
-    Container={Container}
-    queryConfig={new Route(props)}
-    environment={Relay.Store}
-  />
+  <Router>
+    <Provider store={store}>
+      <React.Fragment>
+        <Route exact path="/login" component={Login} />
+        {!window.location.pathname.includes('/login') && (
+          <Relay.Renderer
+            Container={Container}
+            queryConfig={new RelayRoute(props)}
+            environment={Relay.Store}
+          />
+        )}
+      </React.Fragment>
+    </Provider>
+  </Router>
 );
 
 export default Root;

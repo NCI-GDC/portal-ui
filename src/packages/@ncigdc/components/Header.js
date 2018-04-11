@@ -116,7 +116,7 @@ const Header = compose(
             tabIndex="0"
             style={{ padding: 0 }}
           >
-            <img src={nciGdcLogo} alt="gdc-logo" />
+            <img src="https://i.imgur.com/O33FmeE.png" alt="gdc-logo" />
             <Hidden>Home</Hidden>
           </HomeLink>
         </div>

@@ -7,12 +7,7 @@ import md5 from 'blueimp-md5';
 
 const DEFAULTS = {
   method: 'get',
-  credentials: 'same-origin',
-  headers: {
-    'Content-Type': 'application/json',
-    'Access-Control-Allow-Origin': true,
-    'X-Auth-Token': 'secret admin token',
-  },
+  credentials: 'include',
 };
 
 export function fetchAuth(options: { endpoint: string }): Object {

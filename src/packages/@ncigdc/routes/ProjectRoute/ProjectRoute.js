@@ -136,20 +136,6 @@ export default enhance(
           spacing="0.2rem"
         >
           <span>
-            <Button
-              onClick={projectId => {
-                push({
-                  pathname: '/exploration',
-                  query: {
-                    filters: stringifyJSONParam(projectFilter),
-                  },
-                });
-              }}
-            >
-              Explore Project Data
-            </Button>
-          </span>
-          <span>
             <DownloadBiospecimenDropdown
               dropdownStyles={{
                 width: '126px',

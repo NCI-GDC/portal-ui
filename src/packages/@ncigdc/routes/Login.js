@@ -11,6 +11,7 @@ const styles = {
     fontSize: 22,
   },
 };
+``;
 
 export default connect(state => ({
   user: state.auth.user,
@@ -92,7 +93,7 @@ export default connect(state => ({
               }}
             >
               <h1 style={styles.title}>Analysis Working Group</h1>
-              <h1 style={(styles.title, { margin: '0 0 20px' })}>
+              <h1 style={{ ...styles.title, margin: '0 0 20px' }}>
                 Data Portal
               </h1>
               <div style={{ fontSize: '3em', color: 'rgb(38, 89, 134)' }}>

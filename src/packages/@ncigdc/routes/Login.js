@@ -2,6 +2,16 @@ import React from 'react';
 import { connect } from 'react-redux';
 import LoginButton from '@ncigdc/components/LoginButton';
 
+const styles = {
+  title: {
+    color: 'rgb(38, 89, 134)',
+    fontWeight: 400,
+    textTransform: 'uppercase',
+    letterSpacing: 4,
+    fontSize: 22,
+  },
+};
+
 export default connect(state => ({
   user: state.auth.user,
 }))(
@@ -75,7 +85,32 @@ export default connect(state => ({
             )}
             <br />
             <div style={{ display: 'flex', justifyContent: 'center' }}>
-              <LoginButton />
+              <h1 style={styles.title}>Analysis Working Group</h1>
+              <h1 style={(styles.title, { margin: '0 0 20px' })}>
+                Data Portal
+              </h1>
+              <div style={{ fontSize: '3em', color: 'rgb(38, 89, 134)' }}>
+                <i className="fa fa-users" />
+              </div>
+              <LoginButton>
+                <button
+                  style={{
+                    marginTop: '1.2em',
+                    backgroundColor: 'rgb(38, 89, 134)',
+                    color: 'white',
+                    fontSize: 16,
+                    border: 'none',
+                    borderRadius: 4,
+                    padding: '12px 30px',
+                    cursor: 'pointer',
+                    fontWeight: 200,
+                    textTransform: 'uppercase',
+                    letterSpacing: 2,
+                  }}
+                >
+                  Login
+                </button>
+              </LoginButton>
             </div>
           </div>
         </div>

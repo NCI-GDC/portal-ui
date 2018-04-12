@@ -1,5 +1,4 @@
 // @flow
-
 import React from 'react';
 import { compose, pure, withState } from 'recompose';
 import { connect } from 'react-redux';

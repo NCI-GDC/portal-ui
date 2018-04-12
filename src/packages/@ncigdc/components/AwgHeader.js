@@ -1,23 +1,17 @@
 // @flow
 
 import React from 'react';
-import { compose, pure, lifecycle, withHandlers, withState } from 'recompose';
+import { compose, pure, withState } from 'recompose';
 import { connect } from 'react-redux';
-
 import { dismissNotification } from '@ncigdc/dux/bannerNotification';
-import nciGdcLogo from '@ncigdc/theme/images/NHI_GDC_DataPortal-logo.svg';
 import HomeLink from '@ncigdc/components/Links/HomeLink';
 import RepositoryLink from '@ncigdc/components/Links/RepositoryLink';
 import CartLink from '@ncigdc/components/Links/CartLink';
 import ProjectsLink from '@ncigdc/components/Links/ProjectsLink';
-import GDCAppsDropdown from '@ncigdc/components/GDCApps/GDCAppsDropdown';
 import QuickSearch from '@ncigdc/components/QuickSearch/QuickSearch';
 import LoginButton from '@ncigdc/components/LoginButton';
 import UserDropdown from '@ncigdc/components/UserDropdown';
 import Hidden from '@ncigdc/components/Hidden';
-import { setModal } from '@ncigdc/dux/modal';
-import { forceLogout } from '@ncigdc/dux/auth';
-import SessionExpiredModal from '@ncigdc/components/Modals/SessionExpiredModal';
 import withRouter from '@ncigdc/utils/withRouter';
 import Banner from '@ncigdc/uikit/Banner';
 import { withTheme } from '@ncigdc/theme';
@@ -44,21 +38,6 @@ const Header = compose(
     user: state.auth.user,
     error: state.error,
   })),
-  lifecycle({
-    componentDidMount(): void {
-      if (this.props.error) {
-        this.props.handleApiError({
-          ...this.props.error,
-          user: this.props.user,
-        });
-      }
-    },
-    componentWillReceiveProps(nextProps: Object): void {
-      if (nextProps.error !== this.props.error) {
-        this.props.handleApiError({ ...nextProps.error, user: nextProps.user });
-      }
-    },
-  }),
   withTheme,
   pure,
 )(

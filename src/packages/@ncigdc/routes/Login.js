@@ -84,7 +84,13 @@ export default connect(state => ({
               <NihWarning />
             )}
             <br />
-            <div style={{ display: 'flex', justifyContent: 'center' }}>
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'center',
+                flexDirection: 'column',
+              }}
+            >
               <h1 style={styles.title}>Analysis Working Group</h1>
               <h1 style={(styles.title, { margin: '0 0 20px' })}>
                 Data Portal

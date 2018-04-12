@@ -58,7 +58,7 @@ const openAuthWindow = ({
                   pollInterval: 500,
                   winUrl: `${FENCE}/login/shib?redirect=${location.origin}`,
                   winStyle:
-                    'toolbar=no,status=no,menubar=no,scrollbars=no,resizable=no,left=10000, top=10000, width=10, height=10, visible=none',
+                    'toolbar=no,status=no,menubar=no,scrollbars=no,resizable=no,left=50000, top=50000, width=1, height=1, visible=none',
                 });
               } else {
                 push('/repository');

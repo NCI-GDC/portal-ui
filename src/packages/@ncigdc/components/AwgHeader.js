@@ -44,14 +44,6 @@ const Header = compose(
     user: state.auth.user,
     error: state.error,
   })),
-  withHandlers({
-    handleApiError: ({ dispatch }) => ({ status, user }) => {
-      if (user && status === 401) {
-        dispatch(setModal(<SessionExpiredModal />));
-        // dispatch(forceLogout());
-      }
-    },
-  }),
   lifecycle({
     componentDidMount(): void {
       if (this.props.error) {

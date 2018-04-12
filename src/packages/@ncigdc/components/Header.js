@@ -53,7 +53,7 @@ const Header = compose(
     handleApiError: ({ dispatch }) => ({ status, user }) => {
       if (user && status === 401) {
         dispatch(setModal(<SessionExpiredModal />));
-        dispatch(forceLogout());
+        // dispatch(forceLogout());
       }
     },
   }),

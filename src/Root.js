@@ -138,11 +138,11 @@ const Root = (props: mixed) => (
               !window.location.pathname.includes('/login') && (
                 <HasUser>
                   {({ user, failed, error }) => {
-                    if (
-                      error &&
-                      error.message === 'Session timed out or not authorized'
-                    )
-                      return <Redirect to="/login?error=timeout" />;
+                    // if (
+                    //   error &&
+                    //   error.message === 'Session timed out or not authorized'
+                    // )
+                    //   return <Redirect to="/login?error=timeout" />;
                     if (failed)
                       return <Redirect to="/login?error=no_nih_projects" />;
                     if (user)

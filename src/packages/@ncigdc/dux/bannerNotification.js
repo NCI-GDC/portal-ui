@@ -5,6 +5,8 @@ import React from 'react';
 import { ApiOverrideBanner } from '@ncigdc/components/DismissibleBanner';
 import { fetchApi } from '@ncigdc/utils/ajax';
 import { LOCAL_STORAGE_API_OVERRIDE } from '@ncigdc/utils/constants';
+import { REHYDRATE } from 'redux-persist/constants';
+import { uniqBy } from 'lodash';
 
 const NOTIFICATION_SUCCESS = 'NOTIFICATION_SUCCESS';
 const NOTIFICATION_DISMISS = 'NOTIFICATION_DISMISS';
@@ -60,16 +62,24 @@ if (LOCAL_STORAGE_API_OVERRIDE) {
 
 const reducer = (state: TState = initialState, action: TAction) => {
   switch (action.type) {
+    case REHYDRATE: {
+      const incoming = action.payload.bannerNotification;
+      if (incoming) return [...state, ...incoming];
+      return state;
+    }
     case NOTIFICATION_SUCCESS:
-      return [
-        ...(Array.isArray(action.payload) ? action.payload : [])
-          .filter(
-            n =>
-              n.components.includes('PORTAL') || n.components.includes('API'),
-          )
-          .map(n => ({ ...n, dismissed: false })),
-        ...state,
-      ];
+      return uniqBy(
+        [
+          ...state,
+          ...(Array.isArray(action.payload) ? action.payload : [])
+            .filter(
+              n =>
+                n.components.includes('PORTAL') || n.components.includes('API'),
+            )
+            .map(n => ({ ...n, dismissed: false })),
+        ],
+        ({ id }) => id,
+      );
     case NOTIFICATION_DISMISS:
       const ids = action.payload.map(p => p.id);
       return state.map(n => ({

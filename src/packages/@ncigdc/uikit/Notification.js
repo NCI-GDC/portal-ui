@@ -89,6 +89,7 @@ const Notification = ({
         ...style,
       }}
       className="test-notification"
+      role="complementary"
     >
       <div style={{ ...styles.toast, ...(styles[action] || styles.add) }}>
         <CloseIcon style={styles.closeIcon} onClick={close} />

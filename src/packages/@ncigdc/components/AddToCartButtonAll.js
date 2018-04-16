@@ -95,9 +95,7 @@ const AddToCartButtonAll = ({
                 : dispatch(addAllFilesInCart(edges))}
             aria-label="Add files to cart"
             role="button"
-            style={
-              (iconButton, { color: inCart ? '#3c763d' : 'rgb(0, 80, 131)' })
-            }
+            style={{ color: inCart ? '#3c763d' : 'rgb(0, 80, 131)' }}
           />
           <Hidden>
             {inCart ? 'Remove all files from cart' : 'Add all files to cart'}

@@ -32,12 +32,14 @@ const BioTreeView = ({
   childrenExpanded,
 }) => {
   const entityTypes = ['portions', 'analytes', 'aliquots', 'slides'];
+
+  const lCaseQuery = query.toLowerCase();
   const expanded =
     ex ||
     (query &&
-      (entities.hits.edges.some(e => search(query, e).length) ||
-        entityTypes.find(t => t.includes(query)) ||
-        type.p.includes(query)));
+      (entities.hits.edges.some(e => search(lCaseQuery, e).length) ||
+        entityTypes.find(t => t.includes(lCaseQuery)) ||
+        type.p.includes(lCaseQuery)));
   return (
     <div className="test-biotree-view">
       {entities.hits.total > 0 && (
@@ -59,11 +61,11 @@ const BioTreeView = ({
               `}
             />
             <span
-              className={`h5 type ${query && type.p.includes(query)
+              className={`h5 type ${query && type.p.includes(lCaseQuery)
                 ? highlight
                 : ''}`}
             >
-              <Highlight search={query}>{capitalize(type.p)}</Highlight>
+              <Highlight search={lCaseQuery}>{capitalize(type.p)}</Highlight>
             </span>
           </div>
 
@@ -75,7 +77,7 @@ const BioTreeView = ({
                 type={type}
                 selectEntity={selectEntity}
                 selectedEntity={selectedEntity}
-                query={query}
+                query={lCaseQuery}
                 expanded={childrenExpanded}
               />
             ))}

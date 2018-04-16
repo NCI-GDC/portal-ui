@@ -246,9 +246,9 @@ const casesTableModel = [
             ])}
           >
             {count => [
-              <ForTsvExport>{count}</ForTsvExport>,
+              <ForTsvExport key="slide-count-tsv-export">{count}</ForTsvExport>,
               count ? (
-                <Tooltip Component="View Slide Image">
+                <Tooltip Component="View Slide Image" key="slide-count">
                   <ImageViewerLink
                     isIcon
                     query={{
@@ -261,7 +261,9 @@ const casesTableModel = [
                   </ImageViewerLink>
                 </Tooltip>
               ) : (
-                <Tooltip Component="No slide images to view.">--</Tooltip>
+                <Tooltip Component="No slide images to view." key="slide-count">
+                  --
+                </Tooltip>
               ),
             ]}
           </RepositorySlideCount>

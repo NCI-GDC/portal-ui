@@ -11,7 +11,6 @@ const styles = {
     fontSize: 22,
   },
 };
-``;
 
 export default connect(state => ({
   user: state.auth.user,

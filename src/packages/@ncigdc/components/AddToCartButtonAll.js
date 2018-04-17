@@ -21,7 +21,6 @@ import Dropdown from '@ncigdc/uikit/Dropdown';
 import DropdownItem from '@ncigdc/uikit/DropdownItem';
 import Button from '@ncigdc/uikit/Button';
 import ShoppingCartIcon from '@ncigdc/theme/icons/ShoppingCart';
-import { iconButton } from '@ncigdc/theme/mixins';
 
 import styled from '@ncigdc/theme/styled';
 

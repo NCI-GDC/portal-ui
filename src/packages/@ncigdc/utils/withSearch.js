@@ -45,7 +45,14 @@ export const withSearch = passedInState => {
       fetchResults: ({ handleResults }) => (query, timeOfRequest) =>
         throttledInvoker(() =>
           fetchApi(
-            `/all?query=${window.encodeURIComponent(query)}&size=5`,
+            `/quick_search?query=${window.encodeURIComponent(query)}&size=5`,
+            {
+              credentials: 'include',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: { projects: window.intersection },
+            },
           ).then(response =>
             handleResults(response.data.query.hits, timeOfRequest),
           ),

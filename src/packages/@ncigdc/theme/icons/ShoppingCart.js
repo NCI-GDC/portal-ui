@@ -1,6 +1,6 @@
 // @flow
 import React from 'react';
 
-export default ({ className = '', ...props }) => (
-  <i className={`${className} fa fa-shopping-cart`} {...props} />
+export default ({ className = '', style = {}, ...props }) => (
+  <i style={style} className={`${className} fa fa-shopping-cart`} {...props} />
 );

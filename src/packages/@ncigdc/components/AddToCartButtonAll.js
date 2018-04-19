@@ -21,7 +21,6 @@ import Dropdown from '@ncigdc/uikit/Dropdown';
 import DropdownItem from '@ncigdc/uikit/DropdownItem';
 import Button from '@ncigdc/uikit/Button';
 import ShoppingCartIcon from '@ncigdc/theme/icons/ShoppingCart';
-import { iconButton } from '@ncigdc/theme/mixins';
 
 import styled from '@ncigdc/theme/styled';
 
@@ -89,14 +88,13 @@ const AddToCartButtonAll = ({
         <span style={{ marginLeft: '0.5rem' }}>
           <ShoppingCartIcon
             className="test-toggle-all-files-in-cart"
-            active={inCart}
             onClick={() =>
               inCart
                 ? dispatch(toggleFilesInCart(edges))
                 : dispatch(addAllFilesInCart(edges))}
             aria-label="Add files to cart"
             role="button"
-            style={iconButton}
+            style={{ color: inCart ? '#3c763d' : 'rgb(0, 80, 131)' }}
           />
           {/* added display: 'none' because Hidden component was getting added to row height ?? */}
           <Hidden style={{ display: 'none' }}>

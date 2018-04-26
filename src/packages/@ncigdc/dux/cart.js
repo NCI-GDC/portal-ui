@@ -282,6 +282,77 @@ function addAllFilesInCart(
   };
 }
 
+export const fetchCartFiles = async (filters, size) => {
+  const body = JSON.stringify({
+    query: `query cart_relayQuery(
+            $size: Int
+            $offset: Int
+            $sort: [Sort]
+            $filters: FiltersArgument
+          ) {
+            viewer {
+              repository {
+                files {
+                  hits(first: $size, offset: $offset, sort: $sort, filters: $filters) {
+                    edges {
+                      node {
+                        acl
+                        state
+                        file_state
+                        access
+                        file_id
+                        file_size
+                        cases {
+                          hits(first: 1) {
+                            edges {
+                              node {
+                                project {
+                                  project_id
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+          `,
+    variables: {
+      filters,
+      size,
+      offset: 0,
+      sort: null,
+    },
+  });
+  const hash = md5(body);
+
+  return await fetch(urlJoin(API, `graphql/cart?hash=${hash}`), {
+    method: 'POST',
+    credentials: 'include',
+    headers: {
+      'content-type': 'application/json',
+    },
+    body,
+  })
+    .then(response =>
+      response.json().then(json => {
+        return json;
+      }),
+    )
+    .then(json => {
+      return json.data.viewer.repository.files.hits.edges.map(({ node }) => ({
+        ...node,
+        projects: node.cases.hits.edges.map(
+          ({ node: { project: { project_id } } }) => project_id,
+        ),
+      }));
+    });
+};
+
 function fetchFilesAndAdd(currentFilters: ?Object, total: number): Function {
   let { user } = window.store.getState().auth;
   return async dispatch => {
@@ -295,79 +366,8 @@ function fetchFilesAndAdd(currentFilters: ?Object, total: number): Function {
         </span>,
         dispatch,
       );
-
-      const body = JSON.stringify({
-        query: `query cart_relayQuery(
-          $size: Int
-          $offset: Int
-          $sort: [Sort]
-          $filters: FiltersArgument
-        ) {
-          viewer {
-            repository {
-              files {
-                hits(first: $size, offset: $offset, sort: $sort, filters: $filters) {
-                  edges {
-                    node {
-                      acl
-                      state
-                      file_state
-                      access
-                      file_id
-                      file_size
-                      cases {
-                        hits(first: 1) {
-                          edges {
-                            node {
-                              project {
-                                project_id
-                              }
-                            }
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-        `,
-        variables: {
-          filters: currentFilters,
-          size: total,
-          offset: 0,
-          sort: null,
-        },
-        user,
-      });
-      const hash = md5(body);
-
-      return fetch(urlJoin(API, `graphql/cart?hash=${hash}`), {
-        method: 'POST',
-        credentials: 'include',
-        headers: {
-          'content-type': 'application/json',
-        },
-        body,
-      })
-        .then(response =>
-          response.json().then(json => {
-            return json;
-          }),
-        )
-        .then(json => {
-          const files = json.data.viewer.repository.files.hits.edges.map(
-            ({ node }) => ({
-              ...node,
-              projects: node.cases.hits.edges.map(
-                ({ node: { project: { project_id } } }) => project_id,
-              ),
-            }),
-          );
-          dispatch(addAllFilesInCart(files));
-        });
+      const files = await fetchCartFiles(currentFilters, total);
+      dispatch(addAllFilesInCart(files));
     } else {
       dispatch({
         type: CART_FULL,

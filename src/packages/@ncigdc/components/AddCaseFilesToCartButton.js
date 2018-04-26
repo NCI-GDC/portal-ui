@@ -11,7 +11,11 @@ import DropdownItem from '@ncigdc/uikit/DropdownItem';
 import ShoppingCartIcon from '@ncigdc/theme/icons/ShoppingCart';
 import TrashIcon from 'react-icons/lib/fa/trash';
 import { Tooltip } from '@ncigdc/uikit/Tooltip';
-import { addAllFilesInCart, removeFilesFromCart } from '@ncigdc/dux/cart';
+import {
+  addAllFilesInCart,
+  removeFilesFromCart,
+  fetchCartFiles,
+} from '@ncigdc/dux/cart';
 import withFilters from '@ncigdc/utils/withFilters';
 import { fetchApi } from '@ncigdc/utils/ajax';
 import { makeFilter, addInFilters } from '@ncigdc/utils/filters';
@@ -27,32 +31,19 @@ const styles = {
 };
 
 const fetchFiles = async (caseId: string, size, filters?: Object) => {
-  const search = stringify({
-    filters: JSON.stringify(
-      addInFilters(
-        filters,
-        makeFilter(
-          [
-            {
-              field: 'cases.case_id',
-              value: [caseId],
-            },
-          ],
-          false,
-        ),
-      ),
-    ),
-    size,
-    fields:
-      'acl,state,file_state,access,file_id,file_size,cases.project.project_id',
-  });
-
-  const { data } = await fetchApi(`files?${search}`);
-  const files = data.hits.map(({ cases, ...rest }) => ({
-    ...rest,
-    projects: cases.map(({ project: { project_id } }) => project_id),
-  }));
-  return files;
+  let caseFilters = makeFilter(
+    [
+      {
+        field: 'cases.case_id',
+        value: [caseId],
+      },
+    ],
+    false,
+  );
+  if (!!filters) {
+    caseFilters = addInFilters(filters, caseFilters);
+  }
+  return await fetchCartFiles(caseFilters, size);
 };
 
 const AddCaseFilesToCartButton = compose(

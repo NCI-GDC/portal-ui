@@ -283,6 +283,7 @@ function addAllFilesInCart(
 }
 
 export const fetchCartFiles = async (filters, size) => {
+  let { user } = window.store.getState().auth;
   const body = JSON.stringify({
     query: `query cart_relayQuery(
             $size: Int
@@ -327,6 +328,7 @@ export const fetchCartFiles = async (filters, size) => {
       offset: 0,
       sort: null,
     },
+    user,
   });
   const hash = md5(body);
 
@@ -354,7 +356,6 @@ export const fetchCartFiles = async (filters, size) => {
 };
 
 function fetchFilesAndAdd(currentFilters: ?Object, total: number): Function {
-  let { user } = window.store.getState().auth;
   return async dispatch => {
     // if the total requested in filters is larger than max cart then don't bother fetching
     // otherwise need the IDs to tell if they are already in the cart

@@ -283,6 +283,7 @@ function addAllFilesInCart(
 }
 
 function fetchFilesAndAdd(currentFilters: ?Object, total: number): Function {
+  let { user } = window.store.getState().auth;
   return async dispatch => {
     // if the total requested in filters is larger than max cart then don't bother fetching
     // otherwise need the IDs to tell if they are already in the cart
@@ -339,6 +340,7 @@ function fetchFilesAndAdd(currentFilters: ?Object, total: number): Function {
           offset: 0,
           sort: null,
         },
+        user,
       });
       const hash = md5(body);
 

@@ -55,6 +55,7 @@ const progressChecker = (
   let timeoutPromise = null;
 
   const cookieStillThere = () => downloadToken === Cookies.get(cookieKey); // TODO: not $
+  console.log('cookie still there: ', cookieStillThere());
   const handleError = () => {
     const error = _.flow(
       _.attempt,
@@ -70,6 +71,7 @@ const progressChecker = (
   };
 
   const finished = () => {
+    console.log('finished');
     //console.info('Download check count & wait interval (in milliseconds):', attempts, waitTime);
     timeoutPromise = null;
     window.store.dispatch(closeNotification());
@@ -248,8 +250,8 @@ const download = ({
       downloadCookieKey: cookieKey,
       downloadCookiePath: cookiePath,
     });
+    console.log('cookie key exists: ', Cookies.get(cookieKey));
   }
-
   const fields = _.reduce(
     params,
     (result, value, key) => {
@@ -282,7 +284,7 @@ const download = ({
   getBody(iFrame).appendChild(form);
 
   form.submit();
-
+  console.log('cookie key: ', cookieKey);
   return cookieKey
     ? _.partial(progressChecker, iFrame, cookieKey, downloadToken, altMessage)
     : _.partial(cookielessChecker, iFrame);

@@ -346,6 +346,7 @@ function fetchFilesAndAdd(currentFilters: ?Object, total: number): Function {
 
       return fetch(urlJoin(API, `graphql/cart?hash=${hash}`), {
         method: 'POST',
+        credentials: 'include',
         headers: {
           'content-type': 'application/json',
         },

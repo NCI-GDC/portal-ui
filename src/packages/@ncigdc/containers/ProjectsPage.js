@@ -76,11 +76,6 @@ export const ProjectsPageComponent = (props: TProps) => (
               text: 'Table',
               component: <ProjectsTable />,
             },
-            {
-              id: 'graph',
-              text: 'Graph',
-              component: <GitHut params={props.relay.route.params} />,
-            },
           ]}
         />
       </Column>

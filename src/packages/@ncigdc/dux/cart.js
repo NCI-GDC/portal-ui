@@ -4,6 +4,8 @@
 import React from 'react';
 import { REHYDRATE } from 'redux-persist/constants';
 import _ from 'lodash';
+import md5 from 'blueimp-md5';
+import urlJoin from 'url-join';
 
 import { stringify } from 'query-string';
 import { fetchApi } from '@ncigdc/utils/ajax';
@@ -12,6 +14,7 @@ import { Column } from '@ncigdc/uikit/Flex';
 import { center } from '@ncigdc/theme/mixins';
 import { replaceFilters } from '@ncigdc/utils/filters';
 import UnstyledButton from '@ncigdc/uikit/UnstyledButton';
+import { API } from '@ncigdc/utils/constants';
 
 /*----------------------------------------------------------------------------*/
 
@@ -292,18 +295,76 @@ function fetchFilesAndAdd(currentFilters: ?Object, total: number): Function {
         dispatch,
       );
 
-      const search = stringify({
-        filters: currentFilters && JSON.stringify(currentFilters),
-        size: total,
-        fields:
-          'acl,state,file_state,access,file_id,file_size,cases.project.project_id',
+      const body = JSON.stringify({
+        query: `query cart_relayQuery(
+          $size: Int
+          $offset: Int
+          $sort: [Sort]
+          $filters: FiltersArgument
+        ) {
+          viewer {
+            repository {
+              files {
+                hits(first: $size, offset: $offset, sort: $sort, filters: $filters) {
+                  edges {
+                    node {
+                      acl
+                      state
+                      file_state
+                      access
+                      file_id
+                      file_size
+                      cases {
+                        hits(first: 1) {
+                          edges {
+                            node {
+                              project {
+                                project_id
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+        `,
+        variables: {
+          filters: currentFilters,
+          size: total,
+          offset: 0,
+          sort: null,
+        },
       });
-      const { data } = await fetchApi(`files?${search}`);
-      const files = data.hits.map(({ cases, ...rest }) => ({
-        ...rest,
-        projects: cases.map(({ project: { project_id } }) => project_id),
-      }));
-      dispatch(addAllFilesInCart(files));
+      const hash = md5(body);
+
+      return fetch(urlJoin(API, `graphql/cart?hash=${hash}`), {
+        method: 'POST',
+        headers: {
+          'content-type': 'application/json',
+        },
+        body,
+      })
+        .then(response =>
+          response.json().then(json => {
+            return json;
+          }),
+        )
+        .then(json => {
+          const files = json.data.viewer.repository.files.hits.edges.map(
+            ({ node }) => ({
+              ...node,
+              projects: node.cases.hits.edges.map(
+                ({ node: { project: { project_id } } }) => project_id,
+              ),
+            }),
+          );
+          dispatch(addAllFilesInCart(files));
+        });
     } else {
       dispatch({
         type: CART_FULL,

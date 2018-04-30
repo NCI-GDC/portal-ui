@@ -238,6 +238,9 @@ const download = ({
   method: string,
   altMessage?: boolean,
 }): TDownloadCallbacks => {
+  console.log('download url: ', url);
+  console.log('download params: ', params);
+  console.log('download method: ', method);
   const downloadToken = _.uniqueId(`${+new Date()}-`);
   // a cookie value that the server will remove as a download-ready indicator
   const cookieKey = navigator.cookieEnabled

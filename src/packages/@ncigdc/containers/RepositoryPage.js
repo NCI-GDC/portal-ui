@@ -73,10 +73,10 @@ export type TProps = {
 };
 
 const enhance = compose(
+  withRouter,
   setDisplayName('RepositoryPage'),
   connect(),
   withFilters(),
-  withRouter,
 );
 
 export const RepositoryPageComponent = (props: TProps) => {

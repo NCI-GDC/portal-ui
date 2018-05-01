@@ -248,7 +248,7 @@ const download = ({
     : null;
 
   if (cookieKey) {
-    Cookies.set(cookieKey, downloadToken, { domain: '.gdc.cancer.gov' });
+    Cookies.set(cookieKey, downloadToken);
     _.assign(params, {
       downloadCookieKey: cookieKey,
       downloadCookiePath: cookiePath,

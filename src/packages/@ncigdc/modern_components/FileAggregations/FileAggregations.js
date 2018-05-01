@@ -109,99 +109,102 @@ export type TProps = {
 };
 
 const FileAggregations = (props: TProps) => (
-  <div className="test-file-aggregations">
-    <div
-      className="text-right"
-      style={{
-        padding: '10px 15px',
-        borderBottom: `1px solid ${props.theme.greyScale5}`,
-      }}
-    >
-      {!!props.userSelectedFacets.length && (
-        <span>
-          <a onClick={props.handleResetFacets} style={styles.link}>
-            Reset
-          </a>{' '}
-          &nbsp;|&nbsp;
-        </span>
-      )}
-      <a
-        onClick={() => props.setShouldShowFacetSelection(true)}
-        style={styles.link}
+  console.log('file suggestions: ', props.suggestions),
+  (
+    <div className="test-file-aggregations">
+      <div
+        className="text-right"
+        style={{
+          padding: '10px 15px',
+          borderBottom: `1px solid ${props.theme.greyScale5}`,
+        }}
       >
-        Add a File Filter
-      </a>
-    </div>
-    <Modal
-      isOpen={props.shouldShowFacetSelection}
-      style={{ content: { border: 0, padding: '15px' } }}
-    >
-      <FacetSelection
-        title="Add a File Filter"
-        relayVarName="repoCustomFacetFields"
-        docType="files"
-        onSelect={props.handleSelectFacet}
-        onRequestClose={() => props.setShouldShowFacetSelection(false)}
-        excludeFacetsBy={props.facetExclusionTest}
-        additionalFacetData={props.parsedFacets}
-        relay={props.relay}
-      />
-    </Modal>
+        {!!props.userSelectedFacets.length && (
+          <span>
+            <a onClick={props.handleResetFacets} style={styles.link}>
+              Reset
+            </a>{' '}
+            &nbsp;|&nbsp;
+          </span>
+        )}
+        <a
+          onClick={() => props.setShouldShowFacetSelection(true)}
+          style={styles.link}
+        >
+          Add a File Filter
+        </a>
+      </div>
+      <Modal
+        isOpen={props.shouldShowFacetSelection}
+        style={{ content: { border: 0, padding: '15px' } }}
+      >
+        <FacetSelection
+          title="Add a File Filter"
+          relayVarName="repoCustomFacetFields"
+          docType="files"
+          onSelect={props.handleSelectFacet}
+          onRequestClose={() => props.setShouldShowFacetSelection(false)}
+          excludeFacetsBy={props.facetExclusionTest}
+          additionalFacetData={props.parsedFacets}
+          relay={props.relay}
+        />
+      </Modal>
 
-    {props.userSelectedFacets.map(facet => (
-      <FacetWrapper
-        isRemovable
-        relayVarName="repoFileCustomFacetFields"
-        key={facet.full}
-        facet={facet}
-        aggregation={props.parsedFacets[facet.field]}
-        onRequestRemove={() => props.handleRequestRemoveFacet(facet)}
-        style={{ borderBottom: `1px solid ${props.theme.greyScale5}` }}
+      {props.userSelectedFacets.map(facet => (
+        <FacetWrapper
+          isRemovable
+          relayVarName="repoFileCustomFacetFields"
+          key={facet.full}
+          facet={facet}
+          aggregation={props.parsedFacets[facet.field]}
+          onRequestRemove={() => props.handleRequestRemoveFacet(facet)}
+          style={{ borderBottom: `1px solid ${props.theme.greyScale5}` }}
+        />
+      ))}
+      <FacetHeader
+        title="File"
+        field="files.file_id"
+        collapsed={props.fileIdCollapsed}
+        setCollapsed={props.setFileIdCollapsed}
+        description="Enter File UUID or name"
       />
-    ))}
-    <FacetHeader
-      title="File"
-      field="files.file_id"
-      collapsed={props.fileIdCollapsed}
-      setCollapsed={props.setFileIdCollapsed}
-      description="Enter File UUID or name"
-    />
-    <SuggestionFacet
-      title="File"
-      collapsed={props.fileIdCollapsed}
-      doctype="files"
-      fieldNoDoctype="file_id"
-      placeholder="e.g. 142682.bam, 4f6e2e7a-b..."
-      hits={props.suggestions}
-      setAutocomplete={props.setAutocomplete}
-      style={{ borderBottom: `1px solid ${props.theme.greyScale5}` }}
-      dropdownItem={x => (
-        <Row>
-          <FileIcon style={{ paddingRight: '1rem', paddingTop: '1rem' }} />
-          <div>
-            <div style={{ fontWeight: 'bold' }}>{x.file_id}</div>
-            <div style={{ fontSize: '80%' }}>{x.submitter_id}</div>
-            {x.file_name}
-          </div>
-        </Row>
-      )}
-    />
-    {_.reject(presetFacets, { full: 'files.file_id' }).map(facet => (
-      <FacetWrapper
-        key={facet.full}
-        facet={facet}
-        title={facet.title}
-        aggregation={
-          props.viewer.repository.files.aggregations[
-            escapeForRelay(facet.field)
-          ]
-        }
-        relay={props.relay}
+      <SuggestionFacet
+        title="File"
+        collapsed={props.fileIdCollapsed}
+        doctype="files"
+        fieldNoDoctype="file_id"
+        placeholder="e.g. 142682.bam, 4f6e2e7a-b..."
+        hits={props.suggestions}
+        setAutocomplete={props.setAutocomplete}
         style={{ borderBottom: `1px solid ${props.theme.greyScale5}` }}
-        additionalProps={facet.additionalProps}
+        dropdownItem={x => (
+          <Row>
+            <FileIcon style={{ paddingRight: '1rem', paddingTop: '1rem' }} />
+            <div>
+              <div style={{ fontWeight: 'bold' }}>{x.file_id}</div>
+              <div style={{ fontSize: '80%' }}>{x.submitter_id}</div>
+              {x.file_name}
+            </div>
+          </Row>
+        )}
       />
-    ))}
-  </div>
+      {_.reject(presetFacets, { full: 'files.file_id' }).map(facet => (
+        <FacetWrapper
+          key={facet.full}
+          facet={facet}
+          title={facet.title}
+          aggregation={
+            props.viewer.repository.files.aggregations[
+              escapeForRelay(facet.field)
+            ]
+          }
+          relay={props.relay}
+          style={{ borderBottom: `1px solid ${props.theme.greyScale5}` }}
+          additionalProps={facet.additionalProps}
+        />
+      ))}
+    </div>
+  )
 );
 
 export default enhance(FileAggregations);

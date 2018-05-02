@@ -23,7 +23,7 @@ class RepositoryRoute extends Relay.Route {
 
   static prepareParams = ({ location: { search } }) => {
     const q = parse(search);
-
+    console.log('repo route: ', q);
     return {
       cases_offset: parseIntParam(q.cases_offset, 0),
       cases_size: parseIntParam(q.cases_size, 20),

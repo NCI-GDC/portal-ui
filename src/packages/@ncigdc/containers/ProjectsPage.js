@@ -27,60 +27,66 @@ export type TProps = {
 };
 
 export const ProjectsPageComponent = (props: TProps) => (
-  <SearchPage
-    className="test-projects-page"
-    filtersLinkProps={{
-      linkPathname: '/repository',
-      linkText: 'Open Query in Repository',
-      linkFieldMap: (field: string) => {
-        if (field.indexOf('projects.summary') > -1) {
-          return `files.${field.split('.').pop()}`;
-        }
+  console.log(
+    'projects page autocomplete ',
+    (props.viewer.autocomplete || { hits: [] }).hits,
+  ),
+  (
+    <SearchPage
+      className="test-projects-page"
+      filtersLinkProps={{
+        linkPathname: '/repository',
+        linkText: 'Open Query in Repository',
+        linkFieldMap: (field: string) => {
+          if (field.indexOf('projects.summary') > -1) {
+            return `files.${field.split('.').pop()}`;
+          }
 
-        if (
-          field.indexOf('projects.primary_site') > -1 ||
-          field.indexOf('projects.disease_type') > -1
-        ) {
-          return field.replace('projects', 'cases');
-        }
+          if (
+            field.indexOf('projects.primary_site') > -1 ||
+            field.indexOf('projects.disease_type') > -1
+          ) {
+            return field.replace('projects', 'cases');
+          }
 
-        return field.replace(/^projects/, 'cases.project');
-      },
-    }}
-    facetTabs={[
-      {
-        id: 'projects',
-        text: 'Projects',
-        component: (
-          <ProjectAggregations
-            aggregations={props.viewer.projects.aggregations}
-            suggestions={(props.viewer.autocomplete || { hits: [] }).hits}
-            setAutocomplete={(value, onReadyStateChange) =>
-              props.relay.setVariables(
-                { idAutocomplete: value, runAutocomplete: !!value },
-                onReadyStateChange,
-              )}
+          return field.replace(/^projects/, 'cases.project');
+        },
+      }}
+      facetTabs={[
+        {
+          id: 'projects',
+          text: 'Projects',
+          component: (
+            <ProjectAggregations
+              aggregations={props.viewer.projects.aggregations}
+              suggestions={(props.viewer.autocomplete || { hits: [] }).hits}
+              setAutocomplete={(value, onReadyStateChange) =>
+                props.relay.setVariables(
+                  { idAutocomplete: value, runAutocomplete: !!value },
+                  onReadyStateChange,
+                )}
+            />
+          ),
+        },
+      ]}
+      results={
+        <Column spacing="2rem">
+          {/* <ProjectsCharts /> */}
+          <TabbedLinks
+            queryParam="projectsTableTab"
+            defaultIndex={0}
+            links={[
+              {
+                id: 'table',
+                text: 'Table',
+                component: <ProjectsTable />,
+              },
+            ]}
           />
-        ),
-      },
-    ]}
-    results={
-      <Column spacing="2rem">
-        {/* <ProjectsCharts /> */}
-        <TabbedLinks
-          queryParam="projectsTableTab"
-          defaultIndex={0}
-          links={[
-            {
-              id: 'table',
-              text: 'Table',
-              component: <ProjectsTable />,
-            },
-          ]}
-        />
-      </Column>
-    }
-  />
+        </Column>
+      }
+    />
+  )
 );
 
 export const ProjectsPageQuery = {

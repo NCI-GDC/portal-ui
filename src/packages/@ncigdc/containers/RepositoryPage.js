@@ -100,8 +100,14 @@ export const RepositoryPageComponent = (props: TProps) => {
     );
   };
 
-  console.log((props.viewer.autocomplete_file || { hits: [] }).hits);
-
+  console.log(
+    'repo page autocomplete file: ',
+    (props.viewer.autocomplete_file || { hits: [] }).hits,
+  );
+  console.log(
+    'repo page autocomplete case: ',
+    (props.viewer.autocomplete_case || { hits: [] }).hits,
+  );
   const fileCount = props.viewer.repository.files.hits.total;
   const caseCount = props.viewer.repository.cases.hits.total;
   const fileSize = props.viewer.cart_summary.aggregations.fs.value;

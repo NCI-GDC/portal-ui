@@ -25,7 +25,7 @@ class ProjectsRoute extends Relay.Route {
 
   static prepareParams = ({ location: { search } }) => {
     const q = parse(search);
-
+    console.log('projects route: ', q);
     return {
       offset: parseIntParam(q.offset, 0),
       size: 1000,

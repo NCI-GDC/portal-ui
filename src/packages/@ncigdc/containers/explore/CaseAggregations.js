@@ -283,7 +283,6 @@ export const CaseAggregationsComponent = (props: TProps) => (
       collapsed={props.caseIdCollapsed}
       doctype="cases"
       fieldNoDoctype="case_id"
-      queryType="case"
       placeholder="e.g. TCGA-A5-A0G2, 432fe4a9-2..."
       hits={props.suggestions}
       setAutocomplete={props.setAutocomplete}

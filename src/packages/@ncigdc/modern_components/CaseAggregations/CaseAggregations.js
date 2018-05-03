@@ -240,8 +240,9 @@ const CaseAggregationsComponent = (props: TProps) => (
     <SuggestionFacet
       title="Case"
       collapsed={props.caseIdCollapsed}
-      doctype="case"
+      doctype="cases"
       fieldNoDoctype="case_id"
+      queryType="case"
       placeholder="e.g. TCGA-A5-A0G2, 432fe4a9-2..."
       dropdownItem={x => (
         <Row>

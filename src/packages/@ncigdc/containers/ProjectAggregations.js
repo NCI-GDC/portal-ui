@@ -71,53 +71,46 @@ const projectFacets = [
 
 export const ProjectAggregationsComponent = compose(
   withState('projectIdCollapsed', 'setProjectIdCollapsed', false),
-)(
-  (props: TProps) => (
-    console.log('proj agg suggestions: ', props.suggestions),
-    (
-      <div className="test-project-aggregations">
-        <FacetHeader
-          title="Project"
-          field="projects.project_id"
-          collapsed={props.projectIdCollapsed}
-          setCollapsed={props.setProjectIdCollapsed}
-          description="Enter Project ID, Project name, Disease Type or Primary Site"
-        />
-        <SuggestionFacet
-          title="Project"
-          collapsed={props.projectIdCollapsed}
-          placeholder="e.g. TCGA-GBM, Brain"
-          doctype="project"
-          fieldNoDoctype="project_id"
-          dropdownItem={x => (
-            <Row>
-              <FolderIcon
-                style={{ paddingRight: '1rem', paddingTop: '1rem' }}
-              />
-              <div>
-                <div style={{ fontWeight: 'bold' }}>{x.name}</div>
-                {x.project_id}
-                <br />
-                {x.primary_site}
-              </div>
-            </Row>
-          )}
-        />
-        {projectFacets.map(facet => (
-          <FacetWrapper
-            key={facet.full}
-            facet={facet}
-            title={facet.title}
-            aggregation={props.aggregations[escapeForRelay(facet.field)]}
-            relay={props.relay}
-            additionalProps={facet.additionalProps}
-            style={{ borderBottom: `1px solid ${props.theme.greyScale5}` }}
-          />
-        ))}
-      </div>
-    )
-  ),
-);
+)((props: TProps) => (
+  <div className="test-project-aggregations">
+    <FacetHeader
+      title="Project"
+      field="projects.project_id"
+      collapsed={props.projectIdCollapsed}
+      setCollapsed={props.setProjectIdCollapsed}
+      description="Enter Project ID, Project name, Disease Type or Primary Site"
+    />
+    <SuggestionFacet
+      title="Project"
+      collapsed={props.projectIdCollapsed}
+      placeholder="e.g. TCGA-GBM, Brain"
+      doctype="project"
+      fieldNoDoctype="project_id"
+      dropdownItem={x => (
+        <Row>
+          <FolderIcon style={{ paddingRight: '1rem', paddingTop: '1rem' }} />
+          <div>
+            <div style={{ fontWeight: 'bold' }}>{x.name}</div>
+            {x.project_id}
+            <br />
+            {x.primary_site}
+          </div>
+        </Row>
+      )}
+    />
+    {projectFacets.map(facet => (
+      <FacetWrapper
+        key={facet.full}
+        facet={facet}
+        title={facet.title}
+        aggregation={props.aggregations[escapeForRelay(facet.field)]}
+        relay={props.relay}
+        additionalProps={facet.additionalProps}
+        style={{ borderBottom: `1px solid ${props.theme.greyScale5}` }}
+      />
+    ))}
+  </div>
+));
 
 export const ProjectAggregationsQuery = {
   fragments: {

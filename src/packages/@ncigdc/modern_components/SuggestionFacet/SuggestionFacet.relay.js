@@ -61,12 +61,18 @@ export default (Component: ReactClass<*>) =>
                 id
                 ... on Case {
                   case_id
+                  project {
+                    project_id
+                  }
+                  submitter_id
                 }
               }
               projects: hits @include(if: $showProjects) {
                 id
                 ... on Project {
                   project_id
+                  name
+                  primary_site
                 }
               }
             }
@@ -75,14 +81,3 @@ export default (Component: ReactClass<*>) =>
       />
     );
   });
-
-// autocomplete_file: query (query: $idAutocompleteFile types: ["file"]) @include(if: $runAutocompleteFile) {
-//   hits {
-//     id
-//     ... on File {
-//       file_id
-//       file_name
-//       submitter_id
-//     }
-//   }
-// }

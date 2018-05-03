@@ -9,7 +9,7 @@ import {
 } from 'recompose';
 
 import Modal from '@ncigdc/uikit/Modal';
-import SuggestionFacet from '@ncigdc/components/Aggregations/SuggestionFacet';
+import SuggestionFacet from '@ncigdc/modern_components/SuggestionFacet';
 import { Row } from '@ncigdc/uikit/Flex';
 import FacetSelection from '@ncigdc/modern_components/FacetSelection';
 import FacetWrapper from '@ncigdc/components/FacetWrapper';
@@ -240,11 +240,9 @@ const CaseAggregationsComponent = (props: TProps) => (
     <SuggestionFacet
       title="Case"
       collapsed={props.caseIdCollapsed}
-      doctype="cases"
+      doctype="case"
       fieldNoDoctype="case_id"
       placeholder="e.g. TCGA-A5-A0G2, 432fe4a9-2..."
-      hits={props.suggestions}
-      setAutocomplete={props.setAutocomplete}
       dropdownItem={x => (
         <Row>
           <CaseIcon style={{ paddingRight: '1rem', paddingTop: '1rem' }} />

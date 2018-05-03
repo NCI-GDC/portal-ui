@@ -109,15 +109,7 @@ export const RepositoryPageComponent = (props: TProps) => {
           {
             id: 'cases',
             text: 'Cases',
-            component: (
-              <CaseAggregations
-                suggestions={
-                  (props.viewer.autocomplete_case || { hits: [] }).hits
-                }
-                setAutocomplete={setAutocompleteCases}
-                relay={props.relay}
-              />
-            ),
+            component: <CaseAggregations relay={props.relay} />,
           },
         ]}
         results={
@@ -189,26 +181,10 @@ export const RepositoryPageQuery = {
     files_size: null,
     files_sort: null,
     filters: null,
-    idAutocompleteCase: null,
-    idAutocompleteFile: null,
-    runAutocompleteCase: false,
-    runAutocompleteFile: false,
   },
   fragments: {
     viewer: () => Relay.QL`
       fragment on Root {
-        autocomplete_case: query (query: $idAutocompleteCase types: ["case"]) @include(if: $runAutocompleteCase) {
-          hits {
-            id
-            ...on Case {
-              case_id
-              project {
-                project_id
-              }
-              submitter_id
-            }
-          }
-        }
         cart_summary {
           aggregations(filters: $filters) {
             fs {

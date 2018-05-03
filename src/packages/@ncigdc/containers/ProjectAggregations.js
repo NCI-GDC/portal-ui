@@ -4,7 +4,7 @@ import React from 'react';
 import Relay from 'react-relay/classic';
 import { compose, withState } from 'recompose';
 
-import SuggestionFacet from '@ncigdc/components/Aggregations/SuggestionFacet';
+import SuggestionFacet from '@ncigdc/modern_components/SuggestionFacet';
 import FacetHeader from '@ncigdc/components/Aggregations/FacetHeader';
 import FacetWrapper from '@ncigdc/components/FacetWrapper';
 import escapeForRelay from '@ncigdc/utils/escapeForRelay';
@@ -87,9 +87,7 @@ export const ProjectAggregationsComponent = compose(
           title="Project"
           collapsed={props.projectIdCollapsed}
           placeholder="e.g. TCGA-GBM, Brain"
-          hits={props.suggestions}
-          setAutocomplete={props.setAutocomplete}
-          doctype="projects"
+          doctype="project"
           fieldNoDoctype="project_id"
           dropdownItem={x => (
             <Row>

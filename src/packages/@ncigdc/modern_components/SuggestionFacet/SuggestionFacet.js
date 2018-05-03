@@ -80,7 +80,6 @@ const SuggestionFacet = compose(
   // branch(({ facetSearchHits }) => facetSearchHits && !facetSearchHits.length, renderComponent(() => null)),
   withDropdown,
   withState('inputValue', 'setInputValue', ''),
-  withState('isLoading', 'setIsLoading', false),
   withPropsOnChange(
     ['facetSearchHits'],
     ({ facetSearchHits }) => facetSearchHits,
@@ -106,8 +105,6 @@ const SuggestionFacet = compose(
   pure,
 )(
   ({
-    isLoading,
-    setIsLoading,
     selectableList,
     dropdownItem,
     title,
@@ -115,7 +112,6 @@ const SuggestionFacet = compose(
     fieldNoDoctype,
     placeholder,
     results,
-    setAutocomplete,
     setActive,
     active,
     mouseDownHandler,
@@ -125,6 +121,7 @@ const SuggestionFacet = compose(
     inputValue,
     setInputValue,
     setFacetSearch,
+    loading,
     ...props
   }) => {
     const query = v => ({
@@ -206,8 +203,7 @@ const SuggestionFacet = compose(
                         setInputValue(value);
                         setActive(!!value);
                         if (!!value) {
-                          setIsLoading(true);
-                          setFacetSearch(value, () => setIsLoading(false));
+                          setFacetSearch(value);
                         }
                       }}
                       onKeyDown={selectableList.handleKeyEvent}
@@ -237,7 +233,7 @@ const SuggestionFacet = compose(
                         }}
                         onClick={e => e.stopPropagation()}
                       >
-                        {((results && results[`${doctype}s`]) || []).map(x => (
+                        {((results && results[doctype]) || []).map(x => (
                           <Row
                             key={x.id}
                             style={{ alignItems: 'center' }}
@@ -258,10 +254,9 @@ const SuggestionFacet = compose(
                             </StyledDropdownLink>
                           </Row>
                         ))}
-                        {((results && results[`${doctype}s`]) || []).length ===
-                          0 && (
+                        {((results && results[doctype]) || []).length === 0 && (
                           <StyledDropdownRow>
-                            {isLoading ? 'Loading' : 'No matching items found'}
+                            {loading ? 'Loading' : 'No matching items found'}
                           </StyledDropdownRow>
                         )}
                       </Column>

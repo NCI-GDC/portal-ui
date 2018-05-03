@@ -16,17 +16,17 @@ export default (Component: ReactClass<*>) =>
   compose(
     withState('facetSearch', 'setFacetSearch', ''),
     withPropsOnChange(
-      ['doctype', 'facetSearch'],
-      ({ doctype, facetSearch }) => {
-        const showCases = doctype === 'case';
-        const showFiles = doctype === 'file';
-        const showProjects = doctype === 'project';
+      ['queryType', 'facetSearch'],
+      ({ queryType, facetSearch }) => {
+        const showCases = queryType === 'case';
+        const showFiles = queryType === 'file';
+        const showProjects = queryType === 'project';
         return {
           variables: {
             showCases,
             showFiles,
             showProjects,
-            doctype: [doctype],
+            queryType: [queryType],
             query: facetSearch,
           },
         };
@@ -39,16 +39,15 @@ export default (Component: ReactClass<*>) =>
         variables={props.variables}
         Component={Component}
         setFacetSearch={props.setFacetSearch}
-        docType={props.doctype}
         query={graphql`
           query SuggestionFacet_relayQuery(
             $query: String
             $showFiles: Boolean!
             $showCases: Boolean!
             $showProjects: Boolean!
-            $doctype: [String]
+            $queryType: [String]
           ) {
-            facetSearchHits: query(query: $query, types: $doctype) {
+            facetSearchHits: query(query: $query, types: $queryType) {
               files: hits @include(if: $showFiles) {
                 id
                 ... on File {

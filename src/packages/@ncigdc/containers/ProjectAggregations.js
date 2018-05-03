@@ -84,8 +84,9 @@ export const ProjectAggregationsComponent = compose(
       title="Project"
       collapsed={props.projectIdCollapsed}
       placeholder="e.g. TCGA-GBM, Brain"
-      doctype="project"
+      doctype="projects"
       fieldNoDoctype="project_id"
+      queryType="project"
       dropdownItem={x => (
         <Row>
           <FolderIcon style={{ paddingRight: '1rem', paddingTop: '1rem' }} />

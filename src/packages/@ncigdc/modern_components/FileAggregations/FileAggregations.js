@@ -171,7 +171,7 @@ const FileAggregations = (props: TProps) => (
       <SuggestionFacet
         title="File"
         collapsed={props.fileIdCollapsed}
-        doctype="files"
+        doctype="file"
         fieldNoDoctype="file_id"
         placeholder="e.g. 142682.bam, 4f6e2e7a-b..."
         setAutocomplete={props.setAutocomplete}

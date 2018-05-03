@@ -18,9 +18,9 @@ export default (Component: ReactClass<*>) =>
     withPropsOnChange(
       ['doctype', 'facetSearch'],
       ({ doctype, facetSearch }) => {
-        const showCases = doctype === 'cases';
-        const showFiles = doctype === 'files';
-        const showProjects = doctype === 'projects';
+        const showCases = doctype === 'case';
+        const showFiles = doctype === 'file';
+        const showProjects = doctype === 'project';
         return {
           variables: {
             showCases,

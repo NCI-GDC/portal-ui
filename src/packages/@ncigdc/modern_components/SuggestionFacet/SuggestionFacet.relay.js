@@ -19,7 +19,7 @@ export default (Component: ReactClass<*>) =>
       ['doctype', 'facetSearch'],
       ({ doctype, facetSearch }) => {
         const showCases = doctype === 'cases';
-        const showFiles = doctype === 'file';
+        const showFiles = doctype === 'files';
         const showProjects = doctype === 'projects';
         return {
           variables: {

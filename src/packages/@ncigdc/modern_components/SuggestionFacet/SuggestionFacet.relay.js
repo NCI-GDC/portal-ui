@@ -46,7 +46,7 @@ export default (Component: ReactClass<*>) =>
             $showFiles: Boolean!
             $showCases: Boolean!
             $showProjects: Boolean!
-            $doctype: [String]!
+            $doctype: String
           ) {
             facetSearchHits: query(query: $query, types: [$doctype]) {
               files: hits @include(if: $showFiles) {

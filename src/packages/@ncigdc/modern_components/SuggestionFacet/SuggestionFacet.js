@@ -207,16 +207,7 @@ const SuggestionFacet = compose(
                         setActive(!!value);
                         if (!!value) {
                           setIsLoading(true);
-                          setFacetSearch(value);
-                          // setAutocomplete(
-                          //   value,
-                          //   readyState =>
-                          //     _.some([
-                          //       readyState.ready,
-                          //       readyState.aborted,
-                          //       readyState.error,
-                          //     ]) && setIsLoading(false),
-                          // );
+                          setFacetSearch(value, () => setIsLoading(false));
                         }
                       }}
                       onKeyDown={selectableList.handleKeyEvent}

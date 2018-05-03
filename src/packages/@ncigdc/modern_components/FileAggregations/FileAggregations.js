@@ -12,7 +12,7 @@ import {
 } from 'recompose';
 
 import Modal from '@ncigdc/uikit/Modal';
-import SuggestionFacet from '@ncigdc/components/Aggregations/SuggestionFacet';
+import SuggestionFacet from '@ncigdc/modern_components/SuggestionFacet';
 import FacetSelection from '@ncigdc/modern_components/FacetSelection';
 import FacetWrapper from '@ncigdc/components/FacetWrapper';
 import FacetHeader from '@ncigdc/components/Aggregations/FacetHeader';
@@ -174,7 +174,6 @@ const FileAggregations = (props: TProps) => (
         doctype="files"
         fieldNoDoctype="file_id"
         placeholder="e.g. 142682.bam, 4f6e2e7a-b..."
-        hits={props.suggestions}
         setAutocomplete={props.setAutocomplete}
         style={{ borderBottom: `1px solid ${props.theme.greyScale5}` }}
         dropdownItem={x => (

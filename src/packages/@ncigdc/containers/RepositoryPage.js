@@ -73,10 +73,10 @@ export type TProps = {
 };
 
 const enhance = compose(
-  withRouter,
   setDisplayName('RepositoryPage'),
   connect(),
   withFilters(),
+  withRouter,
 );
 
 export const RepositoryPageComponent = (props: TProps) => {
@@ -89,25 +89,6 @@ export const RepositoryPageComponent = (props: TProps) => {
       onReadyStateChange,
     );
 
-  const setAutocompleteFiles = (value, onReadyStateChange) => {
-    console.log('set autocomplete_file value: ', value);
-    return props.relay.setVariables(
-      {
-        idAutocompleteFile: value,
-        runAutocompleteFile: !!value,
-      },
-      onReadyStateChange,
-    );
-  };
-
-  console.log(
-    'repo page autocomplete file: ',
-    (props.viewer.autocomplete_file || { hits: [] }).hits,
-  );
-  console.log(
-    'repo page autocomplete case: ',
-    (props.viewer.autocomplete_case || { hits: [] }).hits,
-  );
   const fileCount = props.viewer.repository.files.hits.total;
   const caseCount = props.viewer.repository.cases.hits.total;
   const fileSize = props.viewer.cart_summary.aggregations.fs.value;
@@ -123,15 +104,7 @@ export const RepositoryPageComponent = (props: TProps) => {
           {
             id: 'files',
             text: 'Files',
-            component: (
-              <FileAggregations
-                suggestions={
-                  (props.viewer.autocomplete_file || { hits: [] }).hits
-                }
-                setAutocomplete={setAutocompleteFiles}
-                relay={props.relay}
-              />
-            ),
+            component: <FileAggregations relay={props.relay} />,
           },
           {
             id: 'cases',
@@ -232,16 +205,6 @@ export const RepositoryPageQuery = {
               project {
                 project_id
               }
-              submitter_id
-            }
-          }
-        }
-        autocomplete_file: query (query: $idAutocompleteFile types: ["file"]) @include(if: $runAutocompleteFile) {
-          hits {
-            id
-            ... on File {
-              file_id
-              file_name
               submitter_id
             }
           }

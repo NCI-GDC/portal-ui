@@ -60,12 +60,12 @@ export default compose(
     return (
       <div className="test-files-table">
         {tableHeader && (
-          <h3
+          <h1
             className="panel-title"
             style={{ padding: '1rem', marginTop: '-6rem' }}
           >
             {tableHeader}
-          </h3>
+          </h1>
         )}
         <Row
           style={{

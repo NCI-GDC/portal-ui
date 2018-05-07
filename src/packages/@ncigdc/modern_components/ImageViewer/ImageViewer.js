@@ -142,14 +142,14 @@ export default compose(
             }}
           >
             <Row style={{ padding: '0 1rem' }}>
-              <h3 style={{ width: '180px', margin: '0.5rem 0' }}>
+              <h2 style={{ width: '180px', margin: '0.5rem 0' }}>
                 Cases
                 <MagnifyingGlass
                   onClick={() => setShowSearchInput(!showSearchInput)}
                 />
-              </h3>
-              <h3 style={{ width: '240px', margin: '0.5rem 0' }}>Slides</h3>
-              <h3 style={{ margin: '0.5rem 0' }}>Image</h3>
+              </h2>
+              <h2 style={{ width: '240px', margin: '0.5rem 0' }}>Slides</h2>
+              <h2 style={{ margin: '0.5rem 0' }}>Image</h2>
             </Row>
             {showSearchInput && (
               <Row style={{ width: '200px' }}>

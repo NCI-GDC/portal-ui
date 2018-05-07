@@ -19,6 +19,7 @@ import Hidden from '@ncigdc/components/Hidden';
 const styles = {
   button: theme => ({
     padding: '3px 5px',
+    height: '22px',
     border: `1px solid ${theme.greyScale4}`,
   }),
   inactive: theme => ({

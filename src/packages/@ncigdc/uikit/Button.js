@@ -18,9 +18,7 @@ export const buttonBaseStyles = {
   padding: '6px 12px',
   fontSize: '14px',
   borderRadius: '4px',
-  borderColor: 'transparent',
-  borderWidth: 1,
-  borderStyle: 'solid',
+  border: '1px solid transparent',
   backgroundColor: ({ theme, disabled }) =>
     disabled ? theme.greyScale4 : theme.primary,
   color: 'white',

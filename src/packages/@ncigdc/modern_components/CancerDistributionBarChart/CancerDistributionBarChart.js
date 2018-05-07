@@ -60,7 +60,7 @@ const DefaultChartTitle = ({
   ssms = 0,
   filters,
 }: TChartTitleProps) => (
-  <h5 style={{ textTransform: 'uppercase', padding: '0 2rem' }}>
+  <div style={{ textTransform: 'uppercase', padding: '0 2rem' }}>
     <ExploreLink query={{ searchTableTab: 'cases', filters }}>
       {cases.toLocaleString()}
     </ExploreLink>&nbsp; cases affected by&nbsp;
@@ -85,7 +85,7 @@ const DefaultChartTitle = ({
     >
       {projects.length.toLocaleString()}
     </ProjectsLink>&nbsp; projects
-  </h5>
+  </div>
 );
 
 export default compose(

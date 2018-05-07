@@ -48,11 +48,11 @@ const EntityPageHorizontalTable = ({
     }}
   >
     {(title || rightComponent) && (
-        <h3
+        <h1
           style={{
             color: theme.greyScale7,
             width: '100%',
-            fontSize: '24px',
+            fontSize: '2rem',
             lineHeight: '1.4em',
             fontWeight: 'normal',
             marginTop: 0,
@@ -65,7 +65,7 @@ const EntityPageHorizontalTable = ({
           }}
         >
           {title || <span />} {rightComponent}
-        </h3>
+        </h1>
       )}
     {!!data.length && (
       <Table

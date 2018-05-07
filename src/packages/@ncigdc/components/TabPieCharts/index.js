@@ -56,8 +56,9 @@ export const BottomBorderedBox = styled(Row, {
   justifyContent: 'center',
 });
 
-export const PieTitle = styled.h4({
+export const PieTitle = styled.div({
   color: ({ theme }) => theme.primary || 'inherit',
+  paddingTop: '1rem',
 });
 
 function addFilter(query: Object, push: Function): Function {

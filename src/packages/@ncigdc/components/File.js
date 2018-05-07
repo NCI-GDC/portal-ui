@@ -21,7 +21,6 @@ import { toggleFilesInCart } from '@ncigdc/dux/cart';
 import Button from '@ncigdc/uikit/Button';
 import AddToCartButtonSingle from '@ncigdc/components/AddToCartButtonSingle';
 import DownloadFile from '@ncigdc/components/DownloadFile';
-import { visualizingButton } from '@ncigdc/theme/mixins';
 import { RepositoryFilesLink } from '@ncigdc/components/Links/RepositoryLink';
 import AssociatedEntitiesTable from '@ncigdc/modern_components/AssociatedEntitiesTable';
 import { makeFilter } from '@ncigdc/utils/filters';
@@ -41,13 +40,17 @@ const DISPLAY_MAPPING = {
 };
 
 const styles = {
-  tableDownloadAction: {
-    ...visualizingButton,
+  tableDownloadAction: theme => ({
+    color: theme.greyScale2,
+    justifyContent: 'flex-start',
+    ':hover': {
+      backgroundColor: theme.greyScale6,
+    },
     padding: '3px 5px',
-    minWidth: 'initial',
-    minHeight: 'initial',
-    height: 'initial',
-  },
+    border: `1px solid ${theme.greyScale4}`,
+    height: '22px',
+    backgroundColor: 'white',
+  }),
 };
 
 export const getSlide = caseNode => {
@@ -350,7 +353,7 @@ const File = ({
                     />
                     <DownloadFile
                       file={{ ...md, cases: node.cases }}
-                      style={styles.tableDownloadAction}
+                      style={styles.tableDownloadAction(theme)}
                     />
                   </Row>
                 ),
@@ -394,7 +397,13 @@ const File = ({
                     ),
                     workflow_type,
                     action: (
-                      <Row>
+                      <Row
+                        style={{
+                          width: '70px',
+                          justifyContent: 'space-between',
+                          padding: '0 5px',
+                        }}
+                      >
                         <AddToCartButtonSingle
                           file={{
                             ...file,
@@ -404,7 +413,6 @@ const File = ({
                             ],
                             acl: node.acl,
                           }}
-                          style={{ padding: '3px 5px' }}
                         />
                         <DownloadFile
                           file={{
@@ -415,7 +423,7 @@ const File = ({
                             ],
                             acl: node.acl,
                           }}
-                          style={styles.tableDownloadAction}
+                          style={styles.tableDownloadAction(theme)}
                         />
                       </Row>
                     ),

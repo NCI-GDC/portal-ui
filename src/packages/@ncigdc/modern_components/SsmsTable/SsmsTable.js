@@ -140,6 +140,8 @@ export default compose(
                 'mutation_subtype',
                 'consequence.transcript.consequence_type',
                 'consequence.transcript.annotation.vep_impact',
+                'consequence.transcript.annotation.sift_impact',
+                'consequence.transcript.annotation.polyphen_impact',
                 'consequence.transcript.is_canonical',
                 'consequence.transcript.gene.gene_id',
                 'consequence.transcript.gene.symbol',

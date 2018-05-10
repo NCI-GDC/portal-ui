@@ -53,7 +53,7 @@ if (LOCAL_STORAGE_API_OVERRIDE) {
   initialState.push({
     components: ['PORTAL'],
     level: 'INFO',
-    id: 'api_override',
+    id: `api_override`,
     dismissible: true,
     reactElement: true,
     message: <ApiOverrideBanner />,
@@ -63,7 +63,10 @@ if (LOCAL_STORAGE_API_OVERRIDE) {
 const reducer = (state: TState = initialState, action: TAction) => {
   switch (action.type) {
     case REHYDRATE: {
-      const incoming = action.payload.bannerNotification;
+      const incoming = uniqBy(
+        action.payload.bannerNotification || [],
+        ({ id }) => id,
+      ).filter(({ id }) => id !== 'api_overide');
       if (incoming) return [...state, ...incoming];
       return state;
     }

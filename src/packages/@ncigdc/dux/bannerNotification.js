@@ -66,7 +66,7 @@ const reducer = (state: TState = initialState, action: TAction) => {
       const incoming = uniqBy(
         action.payload.bannerNotification || [],
         ({ id }) => id,
-      ).filter(({ id }) => id !== 'api_overide');
+      ).filter(({ id }) => id !== 'api_override');
       if (incoming) return [...state, ...incoming];
       return state;
     }

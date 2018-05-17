@@ -70,6 +70,15 @@ Relay.injectNetworkLayer(
           console.log('/graphql', user, json);
 
           if (user) {
+            if (
+              !json.fence_projects.length &&
+              !json.nih_projects.length &&
+              !json.intersection.length
+            ) {
+              clear();
+              window.location.href = '/login?error=timeout';
+              return;
+            }
             if (!json.fence_projects.length) {
               clear();
               window.location.href = '/login?error=no_fence_projects';

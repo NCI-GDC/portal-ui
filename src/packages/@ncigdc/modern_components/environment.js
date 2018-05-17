@@ -75,8 +75,7 @@ function fetchQuery(operation, variables, cacheConfig) {
       let tries = 20;
       let id = setInterval(() => {
         let { user } = window.store.getState().auth;
-        console.log('env json: ', json);
-        console.log('env user: ', user);
+
         if (user) {
           if (
             !json.fence_projects.length &&

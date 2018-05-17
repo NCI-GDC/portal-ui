@@ -10,6 +10,10 @@ const styles = {
     letterSpacing: 4,
     fontSize: 22,
   },
+  errorMessage: {
+    color: 'rgb(191, 34, 58)',
+    fontSize: 16,
+  },
 };
 
 export default connect(state => ({
@@ -62,27 +66,6 @@ export default connect(state => ({
                 src="https://i.imgur.com/O33FmeE.png"
               />
             </div>
-
-            {window.location.search.includes('error=no_fence_projects') && (
-              <div>
-                <br />
-                <br />You have not been granted access to any AWG projects by
-                the AWG Admin. Please contact the AWG administrator to request
-                access.
-              </div>
-            )}
-            {window.location.search.includes('error=timeout') && (
-              <div>
-                <br />
-                <br />Session timed out or not authorized.
-              </div>
-            )}
-            {window.location.search.includes('error=no_nih_projects') && (
-              <NihWarning />
-            )}
-            {window.location.search.includes('error=no_intersection') && (
-              <NihWarning />
-            )}
             <br />
             <div
               style={{
@@ -98,6 +81,32 @@ export default connect(state => ({
               <div style={{ fontSize: '3em', color: 'rgb(38, 89, 134)' }}>
                 <i className="fa fa-users" />
               </div>
+              {window.location.search.includes('error=no_fence_projects') && (
+                <div>
+                  <br />
+                  <br />
+                  <span style={styles.errorMessage}>
+                    You have not been granted access to any AWG projects by the
+                    AWG Admin. Please contact the AWG administrator to request
+                    access.
+                  </span>
+                </div>
+              )}
+              {window.location.search.includes('error=timeout') && (
+                <div>
+                  <br />
+                  <br />
+                  <span style={styles.errorMessage}>
+                    Session timed out or not authorized.
+                  </span>
+                </div>
+              )}
+              {window.location.search.includes('error=no_nih_projects') && (
+                <NihWarning />
+              )}
+              {window.location.search.includes('error=no_intersection') && (
+                <NihWarning />
+              )}
               <LoginButton>
                 <button
                   style={{

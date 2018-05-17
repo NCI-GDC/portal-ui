@@ -75,8 +75,18 @@ function fetchQuery(operation, variables, cacheConfig) {
       let tries = 20;
       let id = setInterval(() => {
         let { user } = window.store.getState().auth;
-
+        console.log('env json: ', json);
+        console.log('env user: ', user);
         if (user) {
+          if (
+            !json.fence_projects.length &&
+            !json.nih_projects.length &&
+            !json.intersection.length
+          ) {
+            clear();
+            window.location.href = '/login?error=timeout';
+            return;
+          }
           if (!json.fence_projects.length) {
             clear();
             window.location.href = '/login?error=no_fence_projects';

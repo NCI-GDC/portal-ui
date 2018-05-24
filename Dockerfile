@@ -18,7 +18,8 @@ FROM nginx:stable-alpine
 WORKDIR /portal-ui
 COPY --from=0 /build/build /portal-ui
 COPY infra/nginx.conf /etc/nginx/conf.d/portal-ui.conf
-RUN ln -sf /dev/stdout /var/log/nginx/access.log \
+RUN rm /etc/nginx/conf.d/default.conf \
+      && ln -sf /dev/stdout /var/log/nginx/access.log \
       && ln -sf /dev/stderr /var/log/nginx/error.log
 
 CMD ["nginx", "-g", "daemon off;"]

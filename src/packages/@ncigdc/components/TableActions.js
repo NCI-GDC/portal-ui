@@ -117,6 +117,7 @@ const TableActions = ({
               fieldContains({ currentFilters, field: 'gene' })) ||
             fieldContains({ currentFilters, field: 'ssms' })
           }
+          selectedIds={selectedIds}
         />
       )}
       {downloadClinical && (
@@ -129,6 +130,7 @@ const TableActions = ({
           }
           inactiveText={'Clinical'}
           scope={scope}
+          selectedIds={selectedIds}
         />
       )}
       {downloadable && (

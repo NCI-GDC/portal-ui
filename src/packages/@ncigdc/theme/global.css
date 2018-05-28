@@ -7923,6 +7923,7 @@ td {
 .panel-default .panel-footer {
   background: #fff;
 }
+h1.panel-title,
 h3.panel-title {
   line-height: 1.4em;
 }

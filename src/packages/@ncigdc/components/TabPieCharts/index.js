@@ -58,6 +58,7 @@ export const BottomBorderedBox = styled(Row, {
 
 export const PieTitle = styled.h4({
   color: ({ theme }) => theme.primary || 'inherit',
+  paddingTop: '1rem',
 });
 
 function addFilter(query: Object, push: Function): Function {

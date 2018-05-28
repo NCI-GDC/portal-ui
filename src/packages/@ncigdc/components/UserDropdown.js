@@ -12,7 +12,7 @@ import styled from '@ncigdc/theme/styled';
 import DownloadIcon from '@ncigdc/theme/icons/Download';
 import { fetchToken } from '@ncigdc/dux/auth';
 import { notify } from '@ncigdc/dux/notification';
-import { AUTH } from '@ncigdc/utils/constants';
+import { AUTH, FENCE } from '@ncigdc/utils/constants';
 import UserIcon from '@ncigdc/theme/icons/User';
 import SignOutIcon from '@ncigdc/theme/icons/SignOut';
 import UserProfileModal from '@ncigdc/components/Modals/UserProfileModal';
@@ -35,19 +35,9 @@ const DropdownItemStyled = styled(DropdownItem, {
   cursor: 'pointer',
 });
 
-const logout = () => {
-  if (window.location.port) {
-    window.location.assign(
-      urlJoin(
-        AUTH,
-        `logout?next=:${window.location.port}${window.location.pathname}`,
-      ),
-    );
-  } else {
-    window.location.assign(
-      urlJoin(AUTH, `logout?next=${window.location.pathname}`),
-    );
-  }
+const logout = async () => {
+  await fetch(urlJoin(FENCE, 'logout'));
+  window.location.assign(urlJoin(AUTH, `logout?next=${window.location.href}`));
 };
 
 const UserDropdown = connect(state => ({

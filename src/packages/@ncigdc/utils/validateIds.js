@@ -1,4 +1,5 @@
 import { fetchApiChunked } from '@ncigdc/utils/ajax';
+import { makeFilter } from '@ncigdc/utils/filters';
 
 function _getIds(obj, path) {
   const [segment] = path;
@@ -83,13 +84,13 @@ function validate(idFields, map, field, endpoint, extraFields = []) {
       body: {
         size: notValidatedIds.length,
         fields: idFields.concat(extraFields).join(','),
-        filters: {
-          op: 'IN',
-          content: {
+        filters: makeFilter([
+          {
             field: `${field}_autocomplete.lowercase`,
             value: notValidatedIds.map(s => s.toLowerCase()),
           },
-        },
+        ]),
+        projects: window.intersection,
       },
     });
     notValidatedIds.forEach(g => (map[g] = map[g] || null));

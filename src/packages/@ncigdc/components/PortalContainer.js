@@ -84,6 +84,7 @@ const PortalContainer = ({
     {AWG ? <AwgHeader /> : <Header />}
     <div
       id="skip"
+      role="main"
       style={{
         paddingTop: `calc(51px + ${notifications.filter(n => !n.dismissed)
           .length * 40}px)`,

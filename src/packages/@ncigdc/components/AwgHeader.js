@@ -86,7 +86,9 @@ const Header = compose(
               src="https://i.imgur.com/O33FmeE.png"
               alt="gdc-logo"
             />
-            <Hidden>Home</Hidden>
+            <Hidden>
+              <h1>Home</h1>
+            </Hidden>
           </HomeLink>
         </div>
         <nav

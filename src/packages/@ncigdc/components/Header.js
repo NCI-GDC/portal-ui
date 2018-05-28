@@ -117,7 +117,9 @@ const Header = compose(
             style={{ padding: 0 }}
           >
             <img src="https://i.imgur.com/O33FmeE.png" alt="gdc-logo" />
-            <Hidden>Home</Hidden>
+            <Hidden>
+              <h1>GDC Home</h1>
+            </Hidden>
           </HomeLink>
         </div>
         <nav

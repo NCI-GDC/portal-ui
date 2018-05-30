@@ -48,7 +48,7 @@ export const DATA_TYPES = {
 };
 
 export const EXPERIMENTAL_STRATEGIES = [
-  'Diagnostic Image',
+  'Diagnostic Slide',
   'Tissue Slide',
   'Cell Culture',
   'WGS',

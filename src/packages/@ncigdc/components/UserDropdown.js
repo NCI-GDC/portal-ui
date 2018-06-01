@@ -35,13 +35,9 @@ const DropdownItemStyled = styled(DropdownItem, {
   cursor: 'pointer',
 });
 
-const logout = async () => {
+const logout = () => {
   console.log('logging out');
-  // window.location.assign(urlJoin(AUTH, `logout?next=${window.location.href}`));
-  const fetchLogout = await fetch(urlJoin(FENCE, 'logout'));
-  if (fetchLogout) {
-    console.log('logout response: ', fetchLogout);
-  }
+  window.location.assign(urlJoin(FENCE, `logout?next=${window.location.href}`));
 };
 
 const UserDropdown = connect(state => ({

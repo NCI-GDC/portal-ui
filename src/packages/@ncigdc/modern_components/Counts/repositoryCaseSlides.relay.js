@@ -25,7 +25,7 @@ export default (Component: ReactClass<*>) => (props: Object) => {
               op: 'in',
               content: {
                 field: 'summary.experimental_strategies.experimental_strategy',
-                value: ['Tissue Slide'],
+                value: ['Tissue Slide', 'Diagnostic Slide'],
               },
             },
           ],

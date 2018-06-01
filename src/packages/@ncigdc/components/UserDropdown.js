@@ -36,13 +36,11 @@ const DropdownItemStyled = styled(DropdownItem, {
 });
 
 const logout = async () => {
-  const fenceResponse = await fetch(urlJoin(FENCE, 'logout'));
-  console.log('fence resp: ', fenceResponse);
-  if (fenceResponse) {
-    console.log('changing location');
-    window.location.assign(
-      urlJoin(AUTH, `logout?next=${window.location.href}`),
-    );
+  console.log('logging out');
+  window.location.assign(urlJoin(AUTH, `logout?next=${window.location.href}`));
+  const fetchLogout = await fetch(urlJoin(FENCE, 'logout'));
+  if (fetchLogout) {
+    console.log('logout response: ', fetchLogout);
   }
 };
 

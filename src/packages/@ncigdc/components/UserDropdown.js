@@ -37,7 +37,7 @@ const DropdownItemStyled = styled(DropdownItem, {
 
 const logout = async () => {
   console.log('logging out');
-  window.location.assign(urlJoin(AUTH, `logout?next=${window.location.href}`));
+  // window.location.assign(urlJoin(AUTH, `logout?next=${window.location.href}`));
   const fetchLogout = await fetch(urlJoin(FENCE, 'logout'));
   if (fetchLogout) {
     console.log('logout response: ', fetchLogout);

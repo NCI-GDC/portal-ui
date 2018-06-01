@@ -36,8 +36,9 @@ const DropdownItemStyled = styled(DropdownItem, {
 });
 
 const logout = () => {
-  console.log('logging out');
-  window.location.assign(urlJoin(FENCE, `logout?next=${window.location.href}`));
+  window.location.assign(
+    urlJoin(FENCE, `logout?next=https://portal.awg.gdc.cancer.gov/login`),
+  );
 };
 
 const UserDropdown = connect(state => ({

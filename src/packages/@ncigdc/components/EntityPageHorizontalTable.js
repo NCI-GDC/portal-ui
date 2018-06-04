@@ -142,7 +142,9 @@ const EntityPageHorizontalTable = ({
           ...emptyMessageStyle,
         }}
       >
-        {emptyMessage && <h4 style={{ padding: '1rem' }}>{emptyMessage}</h4>}
+        {emptyMessage && (
+          <h2 style={{ padding: '1rem', fontSize: '18px' }}>{emptyMessage}</h2>
+        )}
       </Row>
     )}
   </Column>

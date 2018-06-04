@@ -37,7 +37,6 @@ const openAuthWindow = ({
         // Must check this block (if the login window has been closed) first!
         if (win.closed) {
           console.log('login window already closed');
-          console.log('login window already closed user: ', user);
           clearInterval(interval);
         } else if (
           win.document.URL.includes(location.origin) &&
@@ -47,7 +46,6 @@ const openAuthWindow = ({
             'window url includes location origin: ',
             win.document.URL,
           );
-          console.log('window url includes location origin user: ', user);
           win.close();
 
           setTimeout(() => {

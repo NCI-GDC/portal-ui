@@ -67,7 +67,7 @@ Relay.injectNetworkLayer(
           let { user } = window.store.getState().auth;
 
           // console.log('tries', tries);
-          // console.log('/graphql', user, json);
+          console.log('/graphql', user, json);
 
           if (user) {
             if (

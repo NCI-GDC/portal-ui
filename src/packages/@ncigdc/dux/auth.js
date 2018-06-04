@@ -17,6 +17,7 @@ const TOKEN_FAILURE = 'gdc/TOKEN_FAILURE';
 const TOKEN_CLEAR = 'gdc/TOKEN_CLEAR';
 
 export function fetchUser() {
+  console.log('dispatch fetchUser');
   return fetchAuth({
     types: [
       USER_REQUEST,

@@ -35,7 +35,7 @@ const DropdownItemStyled = styled(DropdownItem, {
   cursor: 'pointer',
 });
 
-const logout = ({ dispatch }) => {
+const logout = dispatch => {
   dispatch(forceLogout());
   window.location.assign(
     urlJoin(FENCE, `logout?next=https://portal.awg.gdc.cancer.gov/login`),
@@ -82,7 +82,7 @@ const UserDropdown = connect(state => ({
         <DownloadIcon style={iconStyle} />
         Download Token
       </DropdownItemStyled>
-      <DropdownItemStyled onClick={props => logout(props)}>
+      <DropdownItemStyled onClick={() => logout(dispatch)}>
         <SignOutIcon aria-hidden="true" style={iconStyle} />
         Logout
       </DropdownItemStyled>

@@ -10,7 +10,7 @@ import Dropdown from '@ncigdc/uikit/Dropdown';
 import DropdownItem from '@ncigdc/uikit/DropdownItem';
 import styled from '@ncigdc/theme/styled';
 import DownloadIcon from '@ncigdc/theme/icons/Download';
-import { fetchToken } from '@ncigdc/dux/auth';
+import { fetchToken, forceLogout } from '@ncigdc/dux/auth';
 import { notify } from '@ncigdc/dux/notification';
 import { AUTH, FENCE } from '@ncigdc/utils/constants';
 import UserIcon from '@ncigdc/theme/icons/User';
@@ -35,7 +35,8 @@ const DropdownItemStyled = styled(DropdownItem, {
   cursor: 'pointer',
 });
 
-const logout = () => {
+const logout = ({ dispatch }) => {
+  dispatch(forceLogout());
   window.location.assign(
     urlJoin(FENCE, `logout?next=https://portal.awg.gdc.cancer.gov/login`),
   );
@@ -81,7 +82,7 @@ const UserDropdown = connect(state => ({
         <DownloadIcon style={iconStyle} />
         Download Token
       </DropdownItemStyled>
-      <DropdownItemStyled onClick={logout}>
+      <DropdownItemStyled onClick={props => logout(props)}>
         <SignOutIcon aria-hidden="true" style={iconStyle} />
         Logout
       </DropdownItemStyled>

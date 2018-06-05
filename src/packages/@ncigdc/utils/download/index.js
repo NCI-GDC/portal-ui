@@ -55,7 +55,6 @@ const progressChecker = (
   let timeoutPromise = null;
 
   const cookieStillThere = () => downloadToken === Cookies.get(cookieKey); // TODO: not $
-  console.log('cookie still there: ', cookieStillThere());
   const handleError = () => {
     const error = _.flow(
       _.attempt,
@@ -71,7 +70,6 @@ const progressChecker = (
   };
 
   const finished = () => {
-    console.log('finished');
     //console.info('Download check count & wait interval (in milliseconds):', attempts, waitTime);
     timeoutPromise = null;
     window.store.dispatch(closeNotification());
@@ -238,9 +236,6 @@ const download = ({
   method: string,
   altMessage?: boolean,
 }): TDownloadCallbacks => {
-  console.log('download url: ', url);
-  console.log('download params: ', params);
-  console.log('download method: ', method);
   const downloadToken = _.uniqueId(`${+new Date()}-`);
   // a cookie value that the server will remove as a download-ready indicator
   const cookieKey = navigator.cookieEnabled
@@ -253,7 +248,6 @@ const download = ({
       downloadCookieKey: cookieKey,
       downloadCookiePath: cookiePath,
     });
-    console.log('cookie key exists: ', Cookies.get(cookieKey));
   }
   const fields = _.reduce(
     params,

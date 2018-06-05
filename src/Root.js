@@ -50,7 +50,6 @@ Relay.injectNetworkLayer(
       req.credentials = 'include';
 
       let { user } = window.store.getState().auth;
-      console.log('root user: ', user);
       let parsedBody = JSON.parse(req.body);
       let body = { ...parsedBody, user };
       req.body = JSON.stringify(body);
@@ -65,9 +64,6 @@ Relay.injectNetworkLayer(
         let tries = 20;
         let id = setInterval(() => {
           let { user } = window.store.getState().auth;
-
-          // console.log('tries', tries);
-          console.log('/graphql', user, json);
 
           if (user) {
             if (

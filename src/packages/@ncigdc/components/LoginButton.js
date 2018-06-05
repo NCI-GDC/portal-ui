@@ -25,8 +25,6 @@ const openAuthWindow = ({
 }) => {
   if (navigator.cookieEnabled) {
     const win = open(winUrl, 'Auth', winStyle);
-    console.log('login window url: ', winUrl);
-    console.log('login window user: ', user);
     window.loginPopup = win;
 
     const interval = setInterval(() => {
@@ -36,16 +34,11 @@ const openAuthWindow = ({
         // #clearInterval from ever getting called in this block.
         // Must check this block (if the login window has been closed) first!
         if (win.closed) {
-          console.log('login window already closed');
           clearInterval(interval);
         } else if (
           win.document.URL.includes(location.origin) &&
           !win.document.URL.includes('auth')
         ) {
-          console.log(
-            'window url includes location origin: ',
-            win.document.URL,
-          );
           win.close();
 
           setTimeout(() => {
@@ -53,7 +46,6 @@ const openAuthWindow = ({
             setTimeout(() => {
               // fetch authpublic user
               if (first) {
-                console.log('is first');
                 first = false;
                 dispatch(fetchUser());
                 // login with fence

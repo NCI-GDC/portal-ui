@@ -1,14 +1,24 @@
 // @flow
 import { CALL_API } from 'redux-api-middleware';
 import urlJoin from 'url-join';
-import { API, AUTH } from '@ncigdc/utils/constants';
+import { API, AUTH, AWG } from '@ncigdc/utils/constants';
 import Queue from 'queue';
 import md5 from 'blueimp-md5';
 
-const DEFAULTS = {
-  method: 'get',
-  credentials: 'include',
-};
+const DEFAULTS = AWG
+  ? {
+      method: 'get',
+      credentials: 'include',
+    }
+  : {
+      method: 'get',
+      credentials: 'same-origin',
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': true,
+        'X-Auth-Token': 'secret admin token',
+      },
+    };
 
 export function fetchAuth(options: { endpoint: string }): Object {
   return {

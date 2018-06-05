@@ -35,7 +35,8 @@ const DropdownItemStyled = styled(DropdownItem, {
   cursor: 'pointer',
 });
 
-const logout = () => {
+const logout = async () => {
+  await fetch(urlJoin(FENCE, 'logout'), { withCredentials: true });
   window.location.assign(
     urlJoin(AUTH, `logout?next=https://portal.awg.gdc.cancer.gov/login`),
   );

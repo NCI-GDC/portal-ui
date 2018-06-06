@@ -32,7 +32,7 @@ export default (Component: ReactClass<*>) =>
     })),
     withState('firstLoad', 'setFirstLoad', true),
     withPropsOnChange(
-      ['offset', 'size', 'filters'],
+      ['offset', 'size', 'filters', 'fileId'],
       ({
         filters,
         offset,
@@ -41,20 +41,63 @@ export default (Component: ReactClass<*>) =>
         firstLoad,
         setFirstLoad,
         firstLoadSize,
+        fileId,
       }) => {
         const parsedFilters = parseFilterParam(filters, null);
+        let slideFilters = [
+          {
+            field: 'files.data_type',
+            value: ['Slide Image'],
+          },
+          {
+            field: 'files.access',
+            value: ['open'],
+          },
+        ];
+        let caseFilters = {
+          op: 'and',
+          content: [
+            {
+              op: 'in',
+              content: {
+                field: 'summary.experimental_strategies.experimental_strategy',
+                value: ['Tissue Slide', 'Diagnostic Slide'],
+              },
+            },
+          ],
+        };
+
+        if (fileId) {
+          caseFilters = {
+            ...caseFilters,
+            content: [
+              ...caseFilters.content,
+              {
+                op: 'in',
+                content: {
+                  field: 'files.file_id',
+                  value: fileId,
+                },
+              },
+            ],
+          };
+          slideFilters = [
+            ...slideFilters,
+            {
+              field: 'files.file_id',
+              value: fileId,
+            },
+          ];
+        }
         const newProps = {
           variables: {
-            filters: addInFilters(
-              parsedFilters,
-              makeFilter([
-                { field: 'cases.project.project_id', value: ['TCGA-BRCA'] }, //TODO remove this when other projects slides processed
-              ]),
-            ),
+            filters: addInFilters(parsedFilters, caseFilters),
+            slideFilter: makeFilter(slideFilters),
             cases_offset: offset,
             cases_size: firstLoad ? firstLoadSize : size,
           },
         };
+
         setFirstLoad(false);
         return newProps;
       },
@@ -69,6 +112,7 @@ export default (Component: ReactClass<*>) =>
         query={graphql`
           query ImageViewer_relayQuery(
             $filters: FiltersArgument
+            $slideFilter: FiltersArgument
             $cases_size: Int
             $cases_offset: Int
           ) {
@@ -89,6 +133,16 @@ export default (Component: ReactClass<*>) =>
                         submitter_id
                         project {
                           project_id
+                        }
+                        files {
+                          hits(filters: $slideFilter, first: 99) {
+                            edges {
+                              node {
+                                file_id
+                                submitter_id
+                              }
+                            }
+                          }
                         }
                         samples {
                           hits(first: 99) {

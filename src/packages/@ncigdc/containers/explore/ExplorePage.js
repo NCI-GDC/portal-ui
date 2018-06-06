@@ -1,5 +1,4 @@
 /* @flow */
-
 import React from 'react';
 import Relay from 'react-relay/classic';
 import { get, isEqual } from 'lodash';
@@ -19,18 +18,7 @@ import SSMAggregations from '@ncigdc/containers/explore/SSMAggregations';
 import { CreateExploreCaseSetButton } from '@ncigdc/modern_components/withSetAction';
 import { replaceFilters } from '@ncigdc/utils/filters';
 import { stringifyJSONParam } from '@ncigdc/utils/uri';
-import ImageViewerLink from '@ncigdc/components/Links/ImageViewerLink';
 import { Row } from '@ncigdc/uikit/Flex';
-import styled from '@ncigdc/theme/styled';
-import { linkButton } from '@ncigdc/theme/mixins';
-import { DISPLAY_SLIDES } from '@ncigdc/utils/constants';
-
-const ImageViewerLinkAsButton = styled(ImageViewerLink, {
-  padding: '6px 12px',
-  marginLeft: '0.2rem',
-  marginBottom: '20px',
-  ...linkButton,
-});
 
 export type TProps = {
   filters: {},
@@ -122,6 +110,7 @@ export const ExplorePageComponent = ({
   filters,
   relay,
   push,
+  theme,
 }: TProps) => (
   <SearchPage
     className="test-explore-page"
@@ -204,15 +193,6 @@ export const ExplorePageComponent = ({
           >
             View Files in Repository
           </CreateExploreCaseSetButton>
-          {DISPLAY_SLIDES && (
-            <ImageViewerLinkAsButton
-              query={{
-                filters: filters,
-              }}
-            >
-              View Images
-            </ImageViewerLinkAsButton>
-          )}
         </Row>
         <TabbedLinks
           queryParam="searchTableTab"

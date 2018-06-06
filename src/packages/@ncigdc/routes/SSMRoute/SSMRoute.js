@@ -28,7 +28,7 @@ const DnaChange = createSsmSummary(
 );
 
 const CancerDistributionTitle = ({ cases = 0, projects = [], filters }) => (
-  <h5 style={{ textTransform: 'uppercase', padding: '0 2rem' }}>
+  <div style={{ textTransform: 'uppercase', padding: '0 2rem' }}>
     THIS MUTATION AFFECTS&nbsp;
     <ExploreLink query={{ searchTableTab: 'cases', filters }}>
       {cases.toLocaleString()}
@@ -51,7 +51,7 @@ const CancerDistributionTitle = ({ cases = 0, projects = [], filters }) => (
     >
       {projects.length.toLocaleString()}
     </ProjectsLink>&nbsp; PROJECTS
-  </h5>
+  </div>
 );
 
 export default ({ match, ssmId = match.params.id, filters }) => {

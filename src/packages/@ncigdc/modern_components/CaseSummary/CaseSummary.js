@@ -9,13 +9,10 @@ import FileIcon from '@ncigdc/theme/icons/File';
 import AnnotationIcon from '@ncigdc/theme/icons/Edit';
 import { withTheme } from '@ncigdc/theme';
 import ImageViewerLink from '@ncigdc/components/Links/ImageViewerLink';
-import ShoppingCartIcon from '@ncigdc/theme/icons/ShoppingCart';
 import { Tooltip } from '@ncigdc/uikit/Tooltip';
-import Button from '@ncigdc/uikit/Button';
-import { RepositorySlideCount } from '@ncigdc/modern_components/Counts';
 import { MicroscopeIcon } from '@ncigdc/theme/icons';
-import { iconButton } from '@ncigdc/theme/mixins';
 import { DISPLAY_SLIDES } from '@ncigdc/utils/constants';
+import AddToCartButtonAll from '@ncigdc/components/AddToCartButtonAll';
 
 const styles = {
   icon: {
@@ -58,7 +55,12 @@ export default compose(
 )(({ theme, viewer: { repository: { cases: { hits: { edges } } } } }) => {
   const p = edges[0].node;
   const totalFiles = p.files.hits.total;
-
+  const imageFiles = p.files.hits.edges.filter(
+    ({ node }) => node.data_type === 'Slide Image',
+  );
+  const slideCount = p.summary.experimental_strategies.find(
+    es => es.experimental_strategy === 'Tissue Slide',
+  );
   return (
     <Row spacing={theme.spacing}>
       <EntityPageVerticalTable
@@ -83,46 +85,36 @@ export default compose(
           { th: 'Disease Type', td: p.disease_type },
           { th: 'Program', td: p.project.program.name },
           { th: 'Primary Site', td: p.primary_site },
-          ...(DISPLAY_SLIDES && [
-            {
-              th: 'Images',
-              td: (
-                <RepositorySlideCount
-                  filters={makeFilter([
-                    { field: 'cases.case_id', value: p.case_id },
-                  ])}
-                >
-                  {count =>
-                    count ? (
-                      <span>
-                        <Tooltip Component="View Slide Image">
-                          <ImageViewerLink
-                            isIcon
-                            query={{
-                              filters: makeFilter([
-                                { field: 'cases.case_id', value: p.case_id },
-                              ]),
-                            }}
-                          >
-                            <MicroscopeIcon /> ({count})
-                          </ImageViewerLink>
-                        </Tooltip>
-                        <Tooltip Component="Add to cart">
-                          <Button
-                            className="test-toggle-cart"
-                            leftIcon={<ShoppingCartIcon />}
-                            style={{ ...iconButton, marginLeft: '0.5rem' }}
-                            disabled
-                          />
-                        </Tooltip>
-                      </span>
-                    ) : (
-                      <span>--</span>
-                    )}
-                </RepositorySlideCount>
-              ),
-            },
-          ]),
+          ...(DISPLAY_SLIDES &&
+            !!slideCount && [
+              {
+                th: 'Images',
+                td: (
+                  <span>
+                    <Tooltip Component="View Slide Image">
+                      <ImageViewerLink
+                        isIcon
+                        query={{
+                          filters: makeFilter([
+                            { field: 'cases.case_id', value: p.case_id },
+                          ]),
+                        }}
+                      >
+                        <MicroscopeIcon style={{ maxWidth: '20px' }} /> ({slideCount.file_count})
+                      </ImageViewerLink>
+                    </Tooltip>
+                    <Tooltip Component="Add to cart">
+                      <AddToCartButtonAll
+                        edges={imageFiles.map(f => f.node)}
+                        total={slideCount.file_count}
+                        asIcon
+                        style={{ display: 'none' }}
+                      />
+                    </Tooltip>
+                  </span>
+                ),
+              },
+            ]),
         ]}
         style={{ flex: 1 }}
       />

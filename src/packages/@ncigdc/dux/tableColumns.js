@@ -39,16 +39,21 @@ const initialState = Object.keys(tableModels).reduce(
       order: tableModels[key].map(c => c.id),
     },
   }),
-  {},
+  { version: 2 },
 );
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case REHYDRATE: {
+      const { version, ...tableColumns } = action.payload.tableColumns || {};
+
+      if (version !== state.version) {
+        return state;
+      }
       return {
         ...state,
         ...Object.entries(
-          action.payload.tableColumns || {},
+          tableColumns || {},
         ).reduce((acc, [key, val]: [string, any]) => {
           const order = Array.isArray(val) ? state[key].order : val.order;
           const newColumns = state[key].order.filter(c => !order.includes(c));

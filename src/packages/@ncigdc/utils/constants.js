@@ -22,13 +22,14 @@ export const API = localStorage.REACT_APP_API || process.env.REACT_APP_API;
 
 export const SLIDE_IMAGE_ENDPOINT =
   localStorage.REACT_APP_SLIDE_IMAGE_ENDPOINT ||
-  process.env.REACT_APP_SLIDE_IMAGE_ENDPOINT ||
-  'https://image.gdc.cancercollaboratory.org:8888/';
+  process.env.REACT_APP_SLIDE_IMAGE_ENDPOINT;
 
 export const AWG = localStorage.REACT_APP_AWG || process.env.REACT_APP_AWG;
 
 export const DISPLAY_SLIDES =
-  localStorage.REACT_APP_GDC_DISPLAY_SLIDES || false;
+  localStorage.REACT_APP_GDC_DISPLAY_SLIDES ||
+  process.env.REACT_APP_GDC_DISPLAY_SLIDES ||
+  false;
 
 export const API_OVERRIDE_KEYS = [
   'REACT_APP_API',
@@ -55,18 +56,26 @@ export const DATA_TYPES = {
 };
 
 export const EXPERIMENTAL_STRATEGIES = [
-  'Genotyping Array',
-  'Gene Expression Array',
-  'Exon Array',
-  'miRNA Expression Array',
-  'Methylation Array',
-  'CGH Array',
-  'MSI-Mono-Dinucleotide Assay',
+  'Diagnostic Slide',
+  'Tissue Slide',
+  'Cell Culture',
   'WGS',
-  'WGA',
+  'Low Pass WGS',
   'WXS',
   'RNA-Seq',
   'miRNA-Seq',
+  'Bisulfite-Seq',
+  'ChIP-Seq',
+  'ATAC-Seq',
+  'Genotyping Array',
+  'Methylation Array',
+  'Targeted Sequencing',
+  'Gene Expression Array',
+  'Exon Array',
+  'miRNA Expression Array',
+  'CGH Array',
+  'MSI-Mono-Dinucleotide Assay',
+  'WGA',
   'ncRNA-Seq',
   'WCS',
   'CLONE',
@@ -74,10 +83,8 @@ export const EXPERIMENTAL_STRATEGIES = [
   'AMPLICON',
   'CLONEEND',
   'FINISHING',
-  'ChIP-Seq',
   'MNase-Seq',
   'DNase-Hypersensitivity',
-  'Bisulfite-Seq',
   'EST',
   'FL-cDNA',
   'CTS',
@@ -93,7 +100,6 @@ export const EXPERIMENTAL_STRATEGIES = [
   'Total RNA-Seq',
   'VALIDATION',
   'OTHER',
-  'Targeted Sequencing',
 ].map(n => n.toLowerCase());
 
 export const MUTATION_SUBTYPE_MAP = {

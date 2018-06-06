@@ -53,7 +53,7 @@ const Header = compose(
     handleApiError: ({ dispatch }) => ({ status, user }) => {
       if (user && status === 401) {
         dispatch(setModal(<SessionExpiredModal />));
-        // dispatch(forceLogout());
+        dispatch(forceLogout());
       }
     },
   }),
@@ -116,7 +116,7 @@ const Header = compose(
             tabIndex="0"
             style={{ padding: 0 }}
           >
-            <img src="https://i.imgur.com/O33FmeE.png" alt="gdc-logo" />
+            <img src={nciGdcLogo} alt="gdc-logo" />
             <Hidden>
               <h1>GDC Home</h1>
             </Hidden>

@@ -6,7 +6,9 @@ import { connect } from 'react-redux';
 import ShoppingCartIcon from '@ncigdc/theme/icons/ShoppingCart';
 import { uniq } from 'lodash';
 import moment from 'moment';
+import _ from 'lodash';
 
+import { DISPLAY_SLIDES } from '@ncigdc/utils/constants';
 import { withTheme } from '@ncigdc/theme';
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import formatFileSize from '@ncigdc/utils/formatFileSize';
@@ -19,11 +21,13 @@ import { toggleFilesInCart } from '@ncigdc/dux/cart';
 import Button from '@ncigdc/uikit/Button';
 import AddToCartButtonSingle from '@ncigdc/components/AddToCartButtonSingle';
 import DownloadFile from '@ncigdc/components/DownloadFile';
-import { visualizingButton } from '@ncigdc/theme/mixins';
 import { RepositoryFilesLink } from '@ncigdc/components/Links/RepositoryLink';
 import AssociatedEntitiesTable from '@ncigdc/modern_components/AssociatedEntitiesTable';
 import { makeFilter } from '@ncigdc/utils/filters';
 import withRouter from '@ncigdc/utils/withRouter';
+import withImageViewerData from '@ncigdc/modern_components/ImageViewer/ImageViewer.relay';
+import ZoomableImage from '@ncigdc/components/ZoomableImage';
+import SlideDetailsButton from '@ncigdc/components/SlideDetailsButton';
 
 // value of data_category mapped to sections to display
 const DISPLAY_MAPPING = {
@@ -36,14 +40,79 @@ const DISPLAY_MAPPING = {
 };
 
 const styles = {
-  tableDownloadAction: {
-    ...visualizingButton,
+  tableDownloadAction: theme => ({
+    color: theme.greyScale2,
+    justifyContent: 'flex-start',
+    ':hover': {
+      backgroundColor: theme.greyScale6,
+    },
     padding: '3px 5px',
-    minWidth: 'initial',
-    minHeight: 'initial',
-    height: 'initial',
-  },
+    border: `1px solid ${theme.greyScale4}`,
+    height: '22px',
+    backgroundColor: 'white',
+  }),
 };
+
+export const getSlide = caseNode => {
+  const portions = (caseNode.samples || {
+    hits: { edges: [] },
+  }).hits.edges.reduce(
+    (acc, { node }) => [...acc, ...node.portions.hits.edges.map(p => p.node)],
+    [],
+  );
+  const slideImageIds = caseNode.files.hits.edges.map(({ node }) => ({
+    file_id: node.file_id,
+    submitter_id: _.trimEnd(node.submitter_id, '_slide_image'),
+  }));
+  let slides = portions.reduce(
+    (acc, { slides }) => [...acc, ...slides.hits.edges.map(p => p.node)],
+    [],
+  );
+  return _.head(
+    slideImageIds.map(id => {
+      const matchBySubmitter = _.find(slides, {
+        submitter_id: id.submitter_id,
+      });
+      return { ...id, ...matchBySubmitter };
+    }),
+  );
+};
+
+let ZoomableImageWithData = withImageViewerData(
+  ({ fileId, viewer: { repository: { cases: { hits: { edges } } } } }) => {
+    let caseNode = edges[0].node;
+    const slide = getSlide(caseNode);
+    return (
+      <Column style={{ margin: '20px 0' }}>
+        <Row
+          style={{
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            backgroundColor: '#fff',
+          }}
+        >
+          <h2
+            style={{
+              fontSize: '2rem',
+              paddingLeft: '1rem',
+              color: '#6b6262',
+              marginTop: '10px',
+            }}
+          >
+            Slide Image Viewer
+          </h2>
+          <span style={{ marginTop: '15px', marginRight: '1rem' }}>
+            <SlideDetailsButton slide={slide || {}} />
+          </span>
+        </Row>
+        <Row>
+          <ZoomableImage imageId={fileId} />
+        </Row>
+      </Column>
+    );
+  },
+);
 
 function displaySection(section: string, dataCategory: string): boolean {
   return (DISPLAY_MAPPING[dataCategory] || []).includes(section);
@@ -173,7 +242,12 @@ const File = ({
           ]}
         />
       </Row>
-
+      {DISPLAY_SLIDES &&
+        node.data_format.toLowerCase() === 'svs' && (
+          <Row style={{ marginTop: '2rem' }}>
+            <ZoomableImageWithData fileId={node.file_id} />
+          </Row>
+        )}
       <Row style={{ paddingTop: '2rem', alignItems: 'flex-start' }}>
         <AssociatedEntitiesTable fileId={node.file_id} />
       </Row>
@@ -279,7 +353,7 @@ const File = ({
                     />
                     <DownloadFile
                       file={{ ...md, cases: node.cases }}
-                      style={styles.tableDownloadAction}
+                      style={styles.tableDownloadAction(theme)}
                     />
                   </Row>
                 ),
@@ -323,7 +397,13 @@ const File = ({
                     ),
                     workflow_type,
                     action: (
-                      <Row>
+                      <Row
+                        style={{
+                          width: '70px',
+                          justifyContent: 'space-between',
+                          padding: '0 5px',
+                        }}
+                      >
                         <AddToCartButtonSingle
                           file={{
                             ...file,
@@ -333,7 +413,6 @@ const File = ({
                             ],
                             acl: node.acl,
                           }}
-                          style={{ padding: '3px 5px' }}
                         />
                         <DownloadFile
                           file={{
@@ -344,7 +423,7 @@ const File = ({
                             ],
                             acl: node.acl,
                           }}
-                          style={styles.tableDownloadAction}
+                          style={styles.tableDownloadAction(theme)}
                         />
                       </Row>
                     ),

@@ -1,5 +1,12 @@
 // @flow
 
+export const externalLinkNames = {
+  entrez_gene: 'NCBI Gene',
+  hgnc: 'HGNC',
+  omim_gene: 'OMIM',
+  uniprotkb_swissprot: 'UniProtKB Swiss-Prot',
+};
+
 export default {
   hgnc: id => `http://www.genenames.org/data/hgnc_data.php?hgnc_id=${id}`,
   ensembl: id =>

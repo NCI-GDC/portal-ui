@@ -71,14 +71,37 @@ const filesInCart = (edges, files) => {
   return edges.every(edge => files.some(file => file.file_id === edge.file_id));
 };
 
-const AddToCartButtonAll = ({ edges, files, total, dispatch }: TProps) => (
+const AddToCartButtonAll = ({
+  edges,
+  files,
+  total,
+  dispatch,
+  asIcon = false,
+}: TProps) => (
   <LocationSubscriber>
     {ctx => {
       const { filters } = ctx.query || {};
       const currentFilters = parseFilterParam(filters, null);
       const inCart = filesInCart(edges, files);
 
-      return (
+      return asIcon ? (
+        <span style={{ marginLeft: '0.5rem' }}>
+          <ShoppingCartIcon
+            className="test-toggle-all-files-in-cart"
+            onClick={() =>
+              inCart
+                ? dispatch(toggleFilesInCart(edges))
+                : dispatch(addAllFilesInCart(edges))}
+            aria-label="Add files to cart"
+            role="button"
+            style={{ color: inCart ? '#3c763d' : 'rgb(0, 80, 131)' }}
+          />
+          {/* added display: 'none' because Hidden component was getting added to row height ?? */}
+          <Hidden style={{ display: 'none' }}>
+            {inCart ? 'Remove all files from cart' : 'Add all files to cart'}
+          </Hidden>
+        </span>
+      ) : (
         <Row>
           <CartButton
             className="test-toggle-all-files-in-cart"

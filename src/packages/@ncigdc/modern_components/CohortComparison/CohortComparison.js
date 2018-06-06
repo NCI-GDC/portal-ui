@@ -168,88 +168,102 @@ export default compose(
           >
             <div>
               <h1 style={{ margin: 0 }}>Cohort Comparison</h1>
+
+              {(result1.hits.total === 0 || result2.hits.total === 0) &&
+                `Analysis is deprecated because it contains one or more deprecated sets (${[
+                  ...(result1.hits.total === 0 ? [setName1] : []),
+                  ...(result2.hits.total === 0 ? [setName2] : []),
+                ].join(', ')})`}
               {message && <div style={{ fontStyle: 'italic' }}>{message}</div>}
             </div>
           </Row>
-          <div
-            className="facet-container"
-            style={{
-              display: 'block',
-            }}
-          >
-            <Survival
-              loading={loadingSurvival}
-              survivalData={survivalData}
-              result1={result1}
-              result2={result2}
-              set1id={setId1}
-              set2id={setId2}
-              palette={[SET1_COLOUR, SET2_COLOUR]}
-              style={{ marginTop: 10 }}
-            />
-          </div>
-          {availableFacets
-            .filter(([field]) => activeFacets.includes(field))
-            .map(([field, heading]) =>
-              FacetTable({
-                key: field,
-                heading,
-                Alias,
-                field,
-                data1: {
-                  ...JSON.parse(result1.facets),
-                  'diagnoses.age_at_diagnosis': transformAgeAtDiagnosis(
-                    result1.aggregations.diagnoses__age_at_diagnosis.histogram
-                      .buckets,
-                    result2.aggregations.diagnoses__age_at_diagnosis.histogram
-                      .buckets,
-                    result1.hits.total,
-                  ),
-                },
-                data2: {
-                  ...JSON.parse(result2.facets),
-                  'diagnoses.age_at_diagnosis': transformAgeAtDiagnosis(
-                    result2.aggregations.diagnoses__age_at_diagnosis.histogram
-                      .buckets,
-                    result1.aggregations.diagnoses__age_at_diagnosis.histogram
-                      .buckets,
-                    result2.hits.total,
-                  ),
-                },
-                result1,
-                result2,
-                set1: setId1,
-                set2: setId2,
-                setName1,
-                setName2,
-                palette: [SET1_COLOUR, SET2_COLOUR],
-              }),
+          {result1.hits.total !== 0 &&
+            result2.hits.total !== 0 && (
+              <span>
+                <div
+                  className="facet-container"
+                  style={{
+                    display: 'block',
+                  }}
+                >
+                  <Survival
+                    loading={loadingSurvival}
+                    survivalData={survivalData}
+                    result1={result1}
+                    result2={result2}
+                    set1id={setId1}
+                    set2id={setId2}
+                    palette={[SET1_COLOUR, SET2_COLOUR]}
+                    style={{ marginTop: 10 }}
+                  />
+                </div>
+                {availableFacets
+                  .filter(([field]) => activeFacets.includes(field))
+                  .map(([field, heading]) =>
+                    FacetTable({
+                      key: field,
+                      heading,
+                      Alias,
+                      field,
+                      data1: {
+                        ...JSON.parse(result1.facets),
+                        'diagnoses.age_at_diagnosis': transformAgeAtDiagnosis(
+                          result1.aggregations.diagnoses__age_at_diagnosis
+                            .histogram.buckets,
+                          result2.aggregations.diagnoses__age_at_diagnosis
+                            .histogram.buckets,
+                          result1.hits.total,
+                        ),
+                      },
+                      data2: {
+                        ...JSON.parse(result2.facets),
+                        'diagnoses.age_at_diagnosis': transformAgeAtDiagnosis(
+                          result2.aggregations.diagnoses__age_at_diagnosis
+                            .histogram.buckets,
+                          result1.aggregations.diagnoses__age_at_diagnosis
+                            .histogram.buckets,
+                          result2.hits.total,
+                        ),
+                      },
+                      result1,
+                      result2,
+                      set1: setId1,
+                      set2: setId2,
+                      setName1,
+                      setName2,
+                      palette: [SET1_COLOUR, SET2_COLOUR],
+                    }),
+                  )}
+                <div
+                  // padding on bottom of page for toolbox
+                  style={{ height: '200px' }}
+                />
+              </span>
             )}
-          <div
-            // padding on bottom of page for toolbox
-            style={{ height: '200px' }}
-          />
         </div>
-        <div style={{ flex: 1 }}>
-          <Toolbox
-            {...{
-              theme,
-              ops,
-              sets,
-              availableFacets,
-              activeFacets,
-              showSurvival,
-              survivalHasData: loadingSurvival || survivalHasData,
-              toggleSurvival,
-              Set1,
-              Set2,
-              setId1,
-              setId2,
-              result1,
-              result2,
-            }}
-          />
-        </div>
+        {result1.hits.total !== 0 &&
+          result2.hits.total !== 0 && (
+            <div style={{ flex: 1 }}>
+              <Toolbox
+                {...{
+                  theme,
+                  ops,
+                  sets,
+                  availableFacets,
+                  activeFacets,
+                  showSurvival,
+                  survivalHasData: loadingSurvival || survivalHasData,
+                  toggleSurvival,
+                  Set1,
+                  Set2,
+                  setId1,
+                  setId2,
+                  result1,
+                  result2,
+                }}
+              />
+            </div>
+          )}
       </Row>
     );
   },

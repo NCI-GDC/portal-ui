@@ -6,6 +6,8 @@ import { style } from 'glamor';
 import Emitter from '@ncigdc/utils/emitter';
 import BioTreeItem from './BioTreeItem';
 import { search } from './utils';
+import Highlight from '@ncigdc/uikit/Highlight';
+import { capitalize } from 'lodash';
 
 const expandedColor = style({
   color: '#267c2a',
@@ -13,6 +15,10 @@ const expandedColor = style({
 
 const collapsedColor = style({
   color: '#2f487e',
+});
+
+const highlight = style({
+  backgroundColor: '#f3fc39',
 });
 
 const BioTreeView = ({
@@ -25,8 +31,15 @@ const BioTreeView = ({
   query,
   childrenExpanded,
 }) => {
+  const entityTypes = ['portions', 'analytes', 'aliquots', 'slides'];
+
+  const lCaseQuery = query.toLowerCase();
   const expanded =
-    ex || (query && entities.hits.edges.some(e => search(query, e).length));
+    ex ||
+    (query &&
+      (entities.hits.edges.some(e => search(lCaseQuery, e).length) ||
+        entityTypes.find(t => t.includes(lCaseQuery)) ||
+        type.p.includes(lCaseQuery)));
   return (
     <div className="test-biotree-view">
       {entities.hits.total > 0 && (
@@ -47,8 +60,12 @@ const BioTreeView = ({
                   : `fa-plus-square ${collapsedColor}`}
               `}
             />
-            <span className="h5 type" style={{ textTransform: 'capitalize' }}>
-              {type.p}
+            <span
+              className={`h5 type ${query && type.p.includes(lCaseQuery)
+                ? highlight
+                : ''}`}
+            >
+              <Highlight search={lCaseQuery}>{capitalize(type.p)}</Highlight>
             </span>
           </div>
 
@@ -60,7 +77,7 @@ const BioTreeView = ({
                 type={type}
                 selectEntity={selectEntity}
                 selectedEntity={selectedEntity}
-                query={query}
+                query={lCaseQuery}
                 expanded={childrenExpanded}
               />
             ))}

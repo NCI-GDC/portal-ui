@@ -57,9 +57,27 @@ export default (Component: ReactClass<*>) =>
                             }
                           }
                         }
+                        summary {
+                          experimental_strategies {
+                            experimental_strategy
+                            file_count
+                          }
+                        }
                         files {
-                          hits(first: 0) {
+                          hits(first: 99) {
                             total
+                            edges {
+                              node {
+                                file_id
+                                data_type
+                                acl
+                                state
+                                file_state
+                                access
+                                file_id
+                                file_size
+                              }
+                            }
                           }
                         }
                         project {

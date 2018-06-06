@@ -4,7 +4,6 @@ import React from 'react';
 import _ from 'lodash';
 import { connect } from 'react-redux';
 import { compose, withState, withProps, withHandlers } from 'recompose';
-import { stringify } from 'query-string';
 
 import Dropdown from '@ncigdc/uikit/Dropdown';
 import DropdownItem from '@ncigdc/uikit/DropdownItem';
@@ -17,7 +16,6 @@ import {
   fetchCartFiles,
 } from '@ncigdc/dux/cart';
 import withFilters from '@ncigdc/utils/withFilters';
-import { fetchApi } from '@ncigdc/utils/ajax';
 import { makeFilter, addInFilters } from '@ncigdc/utils/filters';
 
 const styles = {

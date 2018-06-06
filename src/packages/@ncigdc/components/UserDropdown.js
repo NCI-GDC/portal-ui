@@ -12,7 +12,7 @@ import styled from '@ncigdc/theme/styled';
 import DownloadIcon from '@ncigdc/theme/icons/Download';
 import { fetchToken } from '@ncigdc/dux/auth';
 import { notify } from '@ncigdc/dux/notification';
-import { AUTH, FENCE } from '@ncigdc/utils/constants';
+import { AUTH, FENCE, AWG } from '@ncigdc/utils/constants';
 import UserIcon from '@ncigdc/theme/icons/User';
 import SignOutIcon from '@ncigdc/theme/icons/SignOut';
 import UserProfileModal from '@ncigdc/components/Modals/UserProfileModal';
@@ -36,14 +36,29 @@ const DropdownItemStyled = styled(DropdownItem, {
 });
 
 const logout = async () => {
-  try {
-    await fetch(urlJoin(FENCE, 'logout'), { credentials: 'include' });
-  } catch (err) {
-    console.warn('There was an error: ', err);
+  if (AWG) {
+    try {
+      await fetch(urlJoin(FENCE, 'logout'), { credentials: 'include' });
+    } catch (err) {
+      console.warn('There was an error: ', err);
+    }
+    return window.location.assign(
+      urlJoin(AUTH, `logout?next=https://portal.awg.gdc.cancer.gov/login`),
+    );
   }
-  window.location.assign(
-    urlJoin(AUTH, `logout?next=https://portal.awg.gdc.cancer.gov/login`),
-  );
+  // open portal logout
+  if (window.location.port) {
+    window.location.assign(
+      urlJoin(
+        AUTH,
+        `logout?next=:${window.location.port}${window.location.pathname}`,
+      ),
+    );
+  } else {
+    window.location.assign(
+      urlJoin(AUTH, `logout?next=${window.location.pathname}`),
+    );
+  }
 };
 
 const UserDropdown = connect(state => ({
@@ -59,6 +74,16 @@ const UserDropdown = connect(state => ({
         </NavLink>
       }
     >
+      {AWG && (
+        <DropdownItemStyled
+          onClick={() => dispatch(setModal(<UserProfileModal />))}
+        >
+          <UserIcon
+            style={{ ...iconStyle, fontSize: '1.8rem', marginRight: '0.6rem' }}
+          />{' '}
+          User Profile
+        </DropdownItemStyled>
+      )}
       <DropdownItemStyled
         onClick={() => {
           if (userProjectsCount(user)) {

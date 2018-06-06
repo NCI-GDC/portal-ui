@@ -67,69 +67,64 @@ export default compose(
             Add All Files to Cart
           </Button>
           <DownloadManifestButton fileCount={totalFiles} filters={filters} />
-          {/* <CreateRepositoryCaseSetButton
-            filters={filters}
-            disabled={!totalCases}
-            style={{ paddingLeft: '5px' }}
-            onComplete={setId => {
-              push({
-                pathname: '/exploration',
-                query: {
-                  filters: stringifyJSONParam({
-                    op: 'AND',
-                    content: [
-                      {
-                        op: 'IN',
-                        content: {
-                          field: 'cases.case_id',
-                          value: [`set_id:${setId}`],
-                        },
-                      },
-                    ],
-                  }),
-                },
-              });
-            }}
-          >
-            {'View '}
-            {totalCases.toLocaleString()} {pluralize(' Case', totalCases)}
-            {' in Exploration'}
-
-          </CreateRepositoryCaseSetButton> */}
-
           {!AWG && (
-            <CreateRepositoryCaseSetButton>
-              {DISPLAY_SLIDES && (
-                <RepositorySlideCount filters={filters}>
-                  {(count, loading) => (
-                    <span style={{ marginTop: '7px' }}>
-                      <Tooltip
-                        Component={count === 0 ? 'No images available' : null}
-                      >
-                        <ImageViewerLinkAsButton
-                          query={{
-                            filters,
-                          }}
-                          style={
-                            loading || count === 0
-                              ? {
-                                  backgroundColor: theme.greyScale4,
-                                  pointerEvents: 'none',
-                                }
-                              : { cursor: 'pointer' }
-                          }
-                        >
-                          {loading && (
-                            <Spinner style={{ marginRight: '5px' }} />
-                          )}
-                          View Images
-                        </ImageViewerLinkAsButton>
-                      </Tooltip>
-                    </span>
-                  )}
-                </RepositorySlideCount>
-              )}
+            <CreateRepositoryCaseSetButton
+              filters={filters}
+              disabled={!totalCases}
+              style={{ paddingLeft: '5px' }}
+              onComplete={setId => {
+                push({
+                  pathname: '/exploration',
+                  query: {
+                    filters: stringifyJSONParam({
+                      op: 'AND',
+                      content: [
+                        {
+                          op: 'IN',
+                          content: {
+                            field: 'cases.case_id',
+                            value: [`set_id:${setId}`],
+                          },
+                        },
+                      ],
+                    }),
+                  },
+                });
+              }}
+            >
+              {'View '}
+              {totalCases.toLocaleString()} {pluralize(' Case', totalCases)}
+              {' in Exploration'}
             </CreateRepositoryCaseSetButton>
+          )}
+
+          {DISPLAY_SLIDES && (
+            <RepositorySlideCount filters={filters}>
+              {(count, loading) => (
+                <span style={{ marginTop: '7px' }}>
+                  <Tooltip
+                    Component={count === 0 ? 'No images available' : null}
+                  >
+                    <ImageViewerLinkAsButton
+                      query={{
+                        filters,
+                      }}
+                      style={
+                        loading || count === 0
+                          ? {
+                              backgroundColor: theme.greyScale4,
+                              pointerEvents: 'none',
+                            }
+                          : { cursor: 'pointer' }
+                      }
+                    >
+                      {loading && <Spinner style={{ marginRight: '5px' }} />}
+                      View Images
+                    </ImageViewerLinkAsButton>
+                  </Tooltip>
+                </span>
+              )}
+            </RepositorySlideCount>
           )}
         </Row>
         <AnnotationsLink>

@@ -80,15 +80,6 @@ const enhance = compose(
 );
 
 export const RepositoryPageComponent = (props: TProps) => {
-  const setAutocompleteCases = (value, onReadyStateChange) =>
-    props.relay.setVariables(
-      {
-        idAutocompleteCase: value,
-        runAutocompleteCase: !!value,
-      },
-      onReadyStateChange,
-    );
-
   const fileCount = props.viewer.repository.files.hits.total;
   const caseCount = props.viewer.repository.cases.hits.total;
   const fileSize = props.viewer.cart_summary.aggregations.fs.value;

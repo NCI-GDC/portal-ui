@@ -15,6 +15,7 @@ import CountBubble from '@ncigdc/uikit/CountBubble';
 import styled from '@ncigdc/theme/styled';
 import Input from '@ncigdc/uikit/Form/Input';
 import OverflowTooltippedLabel from '@ncigdc/uikit/OverflowTooltippedLabel';
+import { AWG } from '@ncigdc/utils/constants';
 
 import { Container, BucketLink } from './';
 
@@ -104,7 +105,7 @@ const TermAggregation = (props: TProps) => {
                   .slice(0, props.showingMore ? Infinity : 5)
                   .map(b => ({ ...b, name: b.key_as_string || b.key }))
                   .filter(b => {
-                    if (props.field.includes('project.project_id')) {
+                    if (AWG && props.field.includes('project.project_id')) {
                       return window.intersection.includes(b.name);
                     }
                     return true;

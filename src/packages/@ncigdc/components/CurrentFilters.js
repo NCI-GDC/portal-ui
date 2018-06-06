@@ -30,7 +30,7 @@ import { facetFieldDisplayMapper } from '@ncigdc/components/Aggregations';
 import GeneSymbol from '@ncigdc/modern_components/GeneSymbol';
 import SetId from '@ncigdc/components/SetId';
 import { parseJSONParam } from '@ncigdc/utils/uri/index';
-
+import { AWG } from '@ncigdc/utils/constants';
 /*----------------------------------------------------------------------------*/
 
 const Field = styled(Button, {
@@ -294,6 +294,29 @@ const CurrentFilters = (
         </Row>
       </Row>
     )}
+    {!AWG &&
+      linkPathname &&
+      (!hideLinkOnEmpty || !!currentFilters.length) && (
+        <LinkButton
+          pathname={linkPathname}
+          query={
+            currentFilters.length && {
+              filters: {
+                op: 'and',
+                content: currentFilters.map(
+                  ({ content: { field, value }, op }) => ({
+                    op: op.toLowerCase(),
+                    content: { field: linkFieldMap(field), value },
+                  }),
+                ),
+              },
+            }
+          }
+        >
+          <Cogs style={{ marginRight: 5 }} />
+          {linkText}
+        </LinkButton>
+      )}
   </Info>
 );
 /*----------------------------------------------------------------------------*/

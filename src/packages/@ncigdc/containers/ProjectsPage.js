@@ -10,6 +10,7 @@ import GitHut from '@ncigdc/components/GitHut';
 import { Column } from '@ncigdc/uikit/Flex';
 import ProjectsTable from '@ncigdc/modern_components/ProjectsTable';
 import ProjectAggregations from './ProjectAggregations';
+import { AWG } from '@ncigdc/utils/constants';
 
 export type TProps = {
   relay: Object,
@@ -60,7 +61,7 @@ export const ProjectsPageComponent = (props: TProps) => (
     ]}
     results={
       <Column spacing="2rem">
-        {/* <ProjectsCharts /> */}
+        {!AWG && <ProjectsCharts />}
         <TabbedLinks
           queryParam="projectsTableTab"
           defaultIndex={0}
@@ -69,6 +70,11 @@ export const ProjectsPageComponent = (props: TProps) => (
               id: 'table',
               text: 'Table',
               component: <ProjectsTable />,
+            },
+            !AWG && {
+              id: 'graph',
+              text: 'Graph',
+              component: <GitHut params={props.relay.route.params} />,
             },
           ]}
         />

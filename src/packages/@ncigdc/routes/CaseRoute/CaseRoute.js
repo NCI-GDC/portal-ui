@@ -20,6 +20,7 @@ import createCaseSummary from '@ncigdc/modern_components/CaseSummary/CaseSummary
 import Exists from '@ncigdc/modern_components/Exists';
 import CaseSymbol from '@ncigdc/modern_components/CaseSymbol';
 import HasSsms from '@ncigdc/modern_components/HasSsms';
+import { AWG } from '@ncigdc/utils/constants';
 
 const SsmsTable = createCaseSummary(
   ({
@@ -94,6 +95,31 @@ export default ({
           <Row id="biospecimen" style={{ flexWrap: 'wrap' }} spacing="2rem">
             <BiospecimenCard caseId={caseId} bioId={query.bioId} />
           </Row>
+          {!AWG && (
+            <HasSsms caseId={caseId}>
+              <Column style={{ ...styles.card, marginTop: '2rem' }}>
+                <Row
+                  style={{ padding: '1rem 1rem 2rem', alignItems: 'center' }}
+                >
+                  <h1 style={{ ...styles.heading }} id="frequent-mutations">
+                    <i
+                      className="fa fa-bar-chart-o"
+                      style={{ paddingRight: '10px' }}
+                    />
+                    Most Frequent Somatic Mutations
+                  </h1>
+                  <ExploreLink
+                    query={{ searchTableTab: 'mutations', filters: fmFilters }}
+                  >
+                    <GdcDataIcon /> Open in Exploration
+                  </ExploreLink>
+                </Row>
+                <Column>
+                  <SsmsTable caseId={caseId} defaultFilters={fmFilters} />
+                </Column>
+              </Column>
+            </HasSsms>
+          )}
         </Column>
       </FullWidthLayout>
     </Exists>

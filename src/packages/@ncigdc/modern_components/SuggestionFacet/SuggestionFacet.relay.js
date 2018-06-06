@@ -2,14 +2,7 @@
 
 import React from 'react';
 import { graphql } from 'react-relay';
-import { makeFilter } from '@ncigdc/utils/filters';
-import {
-  compose,
-  withPropsOnChange,
-  branch,
-  renderComponent,
-  withState,
-} from 'recompose';
+import { compose, withPropsOnChange, withState } from 'recompose';
 import Query from '@ncigdc/modern_components/Query';
 
 export default (Component: ReactClass<*>) =>

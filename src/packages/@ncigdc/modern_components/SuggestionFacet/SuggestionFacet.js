@@ -9,9 +9,7 @@ import {
   withState,
   withHandlers,
   renameProp,
-  branch,
   withPropsOnChange,
-  renderComponent,
 } from 'recompose';
 import SearchIcon from 'react-icons/lib/fa/search';
 import LocationSubscriber from '@ncigdc/components/LocationSubscriber';

@@ -7,7 +7,6 @@ import _ from 'lodash';
 import md5 from 'blueimp-md5';
 import urlJoin from 'url-join';
 
-import { stringify } from 'query-string';
 import { fetchApi } from '@ncigdc/utils/ajax';
 import { notify } from '@ncigdc/dux/notification';
 import { Column } from '@ncigdc/uikit/Flex';

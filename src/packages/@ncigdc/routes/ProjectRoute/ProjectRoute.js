@@ -23,6 +23,7 @@ import { Row } from '@ncigdc/uikit/Flex';
 import DownloadClinicalDropdown from '@ncigdc/modern_components/DownloadClinicalDropdown/';
 import timestamp from '@ncigdc/utils/timestamp';
 import DownloadBiospecimenDropdown from '@ncigdc/modern_components/DownloadBiospecimenDropdown/';
+import { AWG } from '@ncigdc/utils/constants';
 
 const styles = {
   column: {
@@ -135,6 +136,22 @@ export default enhance(
           style={{ marginBottom: '2rem', marginLeft: 'auto' }}
           spacing="0.2rem"
         >
+          {!AWG && (
+            <span>
+              <Button
+                onClick={projectId => {
+                  push({
+                    pathname: '/exploration',
+                    query: {
+                      filters: stringifyJSONParam(projectFilter),
+                    },
+                  });
+                }}
+              >
+                Explore Project Data
+              </Button>
+            </span>
+          )}
           <span>
             <DownloadBiospecimenDropdown
               dropdownStyles={{

@@ -12,7 +12,7 @@ import { BrowserRouter as Router, Route, Redirect } from 'react-router-dom';
 import { viewerQuery } from '@ncigdc/routes/queries';
 import Login from '@ncigdc/routes/Login';
 import Container from './Portal';
-import { API } from '@ncigdc/utils/constants';
+import { AUTH_API } from '@ncigdc/utils/constants';
 import { clear } from '@ncigdc/utils/cookies';
 import { Provider, connect } from 'react-redux';
 import setupStore from '@ncigdc/dux';
@@ -22,7 +22,7 @@ import { fetchUser } from '@ncigdc/dux/auth';
 Relay.injectNetworkLayer(
   new RelayNetworkLayer([
     urlMiddleware({
-      url: req => urlJoin(API, 'graphql'),
+      url: req => urlJoin(AUTH_API, 'graphql'),
     }),
     retryMiddleware({
       fetchTimeout: 15000,

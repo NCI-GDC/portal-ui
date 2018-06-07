@@ -14,7 +14,7 @@ import { Column } from '@ncigdc/uikit/Flex';
 import { center } from '@ncigdc/theme/mixins';
 import { replaceFilters } from '@ncigdc/utils/filters';
 import UnstyledButton from '@ncigdc/uikit/UnstyledButton';
-import { API } from '@ncigdc/utils/constants';
+import { AUTH_API } from '@ncigdc/utils/constants';
 
 /*----------------------------------------------------------------------------*/
 
@@ -332,7 +332,7 @@ export const fetchCartFiles = async (filters, size) => {
   });
   const hash = md5(body);
 
-  return await fetch(urlJoin(API, `graphql/cart?hash=${hash}`), {
+  return await fetch(urlJoin(AUTH_API, `graphql/cart?hash=${hash}`), {
     method: 'POST',
     credentials: 'include',
     headers: {

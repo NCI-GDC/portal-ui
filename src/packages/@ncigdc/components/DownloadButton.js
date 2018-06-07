@@ -11,7 +11,6 @@ import DownloadIcon from '@ncigdc/theme/icons/Download';
 import Spinner from '@ncigdc/theme/icons/Spinner';
 import Hidden from '@ncigdc/components/Hidden';
 import { AUTH_API } from '@ncigdc/utils/constants';
-import { store } from '../../../Root';
 
 type TDownloadButton = {
   endpoint: string,
@@ -59,7 +58,6 @@ const DownloadButton = ({
   ...props
 }: TDownloadButton) => {
   const text = active ? activeText : inactiveText;
-  const { user } = store.getState().auth;
   const icon =
     showIcon && (active ? <Spinner key="icon" /> : <DownloadIcon key="icon" />);
   return (
@@ -77,7 +75,6 @@ const DownloadButton = ({
           format,
           fields: fields.join(),
           filters,
-          user,
           pretty: true,
           scope,
           ...(sets ? { sets } : {}),

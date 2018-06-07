@@ -3,7 +3,7 @@
 import urlJoin from 'url-join';
 import { Environment, Network, RecordSource, Store } from 'relay-runtime';
 import md5 from 'blueimp-md5';
-import { API } from '@ncigdc/utils/constants';
+import { AUTH_API } from '@ncigdc/utils/constants';
 import { clear } from '@ncigdc/utils/cookies';
 
 const source = new RecordSource();
@@ -54,7 +54,7 @@ function fetchQuery(operation, variables, cacheConfig) {
   // if the request is not in the simpleCache yet, put it in the pendingCache and proceed to fetch
   pendingCache[hash] = true;
 
-  return fetch(urlJoin(API, `graphql/${componentName}?hash=${hash}`), {
+  return fetch(urlJoin(AUTH_API, `graphql/${componentName}?hash=${hash}`), {
     method: 'POST',
     credentials: 'include',
     headers: {

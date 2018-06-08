@@ -11,6 +11,7 @@ import DownloadIcon from '@ncigdc/theme/icons/Download';
 import Spinner from '@ncigdc/theme/icons/Spinner';
 import Hidden from '@ncigdc/components/Hidden';
 import { AUTH_API } from '@ncigdc/utils/constants';
+import { store } from '../../../Root';
 
 type TDownloadButton = {
   endpoint: string,
@@ -60,6 +61,7 @@ const DownloadButton = ({
   const text = active ? activeText : inactiveText;
   const icon =
     showIcon && (active ? <Spinner key="icon" /> : <DownloadIcon key="icon" />);
+  const { user } = store.getState().auth;
   return (
     <Button
       className={props.className || 'test-download-button'}
@@ -73,6 +75,7 @@ const DownloadButton = ({
           size,
           attachment: true,
           format,
+          user,
           fields: fields.join(),
           filters,
           pretty: true,

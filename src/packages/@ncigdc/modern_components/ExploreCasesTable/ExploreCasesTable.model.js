@@ -17,6 +17,7 @@ import ImageViewerLink from '@ncigdc/components/Links/ImageViewerLink';
 import { MicroscopeIcon } from '@ncigdc/theme/icons';
 import { DISPLAY_SLIDES } from '@ncigdc/utils/constants';
 import { ForTsvExport } from '@ncigdc/components/DownloadTableToTsvButton';
+import { slideCountFromCaseSummary } from '@ncigdc/modern_components/CaseSummary/CaseSummary';
 
 import {
   createDataCategoryColumns,
@@ -257,9 +258,7 @@ const casesTableModel = [
       hidden: false,
       th: () => <Th rowSpan="2">Slides</Th>,
       td: ({ node }) => {
-        const slideCount = node.summary.experimental_strategies.find(
-          s => s.experimental_strategy === 'Tissue Slide',
-        );
+        const slideCount = slideCountFromCaseSummary(node.summary);
         return (
           <Td style={{ textAlign: 'center' }}>
             {[
@@ -279,7 +278,7 @@ const casesTableModel = [
                       ]),
                     }}
                   >
-                    <MicroscopeIcon style={{ maxWidth: '20px' }} /> ({slideCount.file_count})
+                    <MicroscopeIcon style={{ maxWidth: '20px' }} /> ({slideCount})
                   </ImageViewerLink>
                 </Tooltip>
               ) : (

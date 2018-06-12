@@ -12,12 +12,26 @@ import { BrowserRouter as Router, Route, Redirect } from 'react-router-dom';
 import { viewerQuery } from '@ncigdc/routes/queries';
 import Login from '@ncigdc/routes/Login';
 import Container from './Portal';
-import { API } from '@ncigdc/utils/constants';
+import { API, IS_AUTH_PORTAL } from '@ncigdc/utils/constants';
 import { clear } from '@ncigdc/utils/cookies';
 import { Provider, connect } from 'react-redux';
 import setupStore from '@ncigdc/dux';
 import { fetchApiVersionInfo } from '@ncigdc/dux/versionInfo';
 import { fetchUser } from '@ncigdc/dux/auth';
+
+export const store = setupStore({
+  persistConfig: {
+    keyPrefix: 'ncigdcActive',
+  },
+});
+
+window.store = store;
+
+store.dispatch(fetchApiVersionInfo());
+
+if (process.env.NODE_ENV !== 'development') {
+  store.dispatch(fetchUser());
+}
 
 Relay.injectNetworkLayer(
   new RelayNetworkLayer([
@@ -47,77 +61,67 @@ Relay.injectNetworkLayer(
           ].join(':'),
         );
 
-      req.credentials = 'include';
+      req.url = `${url}?hash=${hash}`;
 
+      if (IS_AUTH_PORTAL) {
+        req.credentials = 'include';
+      }
+      // when api auth is fixed, don't pass this here
       let { user } = window.store.getState().auth;
       let parsedBody = JSON.parse(req.body);
       let body = { ...parsedBody, user };
       req.body = JSON.stringify(body);
 
-      req.url = `${url}?hash=${hash}`;
-
       return next(req).then(res => {
         let { json } = res;
 
-        window.intersection = json.intersection;
+        if (IS_AUTH_PORTAL) {
+          window.intersection = json.intersection;
 
-        let tries = 20;
-        let id = setInterval(() => {
-          let { user } = window.store.getState().auth;
+          let tries = 20;
+          let id = setInterval(() => {
+            let { user } = window.store.getState().auth;
 
-          if (user) {
-            if (
-              !json.fence_projects.length &&
-              !json.nih_projects.length &&
-              !json.intersection.length
-            ) {
-              clear();
-              window.location.href = '/login?error=timeout';
-              return;
+            if (user) {
+              if (
+                !json.fence_projects.length &&
+                !json.nih_projects.length &&
+                !json.intersection.length
+              ) {
+                clear();
+                window.location.href = '/login?error=timeout';
+                return;
+              }
+              if (!json.fence_projects.length) {
+                clear();
+                window.location.href = '/login?error=no_fence_projects';
+                return;
+              }
+
+              if (!json.nih_projects.length) {
+                clear();
+                window.location.href = '/login?error=no_nih_projects';
+                return;
+              }
+
+              if (!json.intersection.length) {
+                clear();
+                window.location.href = '/login?error=no_intersection';
+                return;
+              }
             }
-            if (!json.fence_projects.length) {
-              clear();
-              window.location.href = '/login?error=no_fence_projects';
-              return;
-            }
 
-            if (!json.nih_projects.length) {
-              clear();
-              window.location.href = '/login?error=no_nih_projects';
-              return;
-            }
+            tries--;
 
-            if (!json.intersection.length) {
-              clear();
-              window.location.href = '/login?error=no_intersection';
-              return;
-            }
-          }
-
-          tries--;
-
-          if (!tries) clearInterval(id);
-        }, 500);
+            if (!tries) clearInterval(id);
+          }, 500);
+        }
 
         return res;
       });
     },
   ]),
 );
-
-export const store = setupStore({
-  persistConfig: {
-    keyPrefix: 'ncigdcActive',
-  },
-});
-
-window.store = store;
-
-store.dispatch(fetchApiVersionInfo());
-
-if (process.env.NODE_ENV !== 'development') {
-  store.dispatch(fetchUser());
-}
 
 class RelayRoute extends Relay.Route {
   static routeName = 'RootRoute';
@@ -136,26 +140,31 @@ const Root = (props: mixed) => (
   <Router>
     <Provider store={store}>
       <React.Fragment>
-        <Route exact path="/login" component={Login} />
+        {IS_AUTH_PORTAL && <Route exact path="/login" component={Login} />}
         <Route
           render={props => {
-            return (
-              !window.location.pathname.includes('/login') && (
-                <HasUser>
-                  {({ user, failed, error }) => {
-                    if (failed) return <Redirect to="/login" />;
-                    if (user)
-                      return (
-                        <Relay.Renderer
-                          Container={Container}
-                          queryConfig={new RelayRoute(props)}
-                          environment={Relay.Store}
-                        />
-                      );
-                    return null;
-                  }}
-                </HasUser>
-              )
+            return IS_AUTH_PORTAL &&
+              !window.location.pathname.includes('/login') ? (
+              <HasUser>
+                {({ user, failed, error }) => {
+                  if (failed) return <Redirect to="/login" />;
+                  if (user)
+                    return (
+                      <Relay.Renderer
+                        Container={Container}
+                        queryConfig={new RelayRoute(props)}
+                        environment={Relay.Store}
+                      />
+                    );
+                  return null;
+                }}
+              </HasUser>
+            ) : (
+              <Relay.Renderer
+                Container={Container}
+                queryConfig={new RelayRoute(props)}
+                environment={Relay.Store}
+              />
             );
           }}
         />

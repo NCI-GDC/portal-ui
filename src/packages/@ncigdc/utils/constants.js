@@ -26,6 +26,9 @@ export const SLIDE_IMAGE_ENDPOINT =
 
 export const AWG = localStorage.REACT_APP_AWG || process.env.REACT_APP_AWG;
 
+export const IS_AUTH_PORTAL =
+  localStorage.IS_AUTH_PORTAL || process.env.IS_AUTH_PORTAL || AWG || false;
+
 export const DISPLAY_SLIDES =
   localStorage.REACT_APP_GDC_DISPLAY_SLIDES ||
   process.env.REACT_APP_GDC_DISPLAY_SLIDES ||
@@ -35,6 +38,7 @@ export const API_OVERRIDE_KEYS = [
   'REACT_APP_API',
   'REACT_APP_GDC_AUTH',
   'REACT_APP_GDC_AUTH_API',
+  'REACT_APP_AWG',
 ];
 
 export const LOCAL_STORAGE_API_OVERRIDE = API_OVERRIDE_KEYS.some(

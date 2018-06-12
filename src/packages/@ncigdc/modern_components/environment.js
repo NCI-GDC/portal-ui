@@ -3,7 +3,7 @@
 import urlJoin from 'url-join';
 import { Environment, Network, RecordSource, Store } from 'relay-runtime';
 import md5 from 'blueimp-md5';
-import { API } from '@ncigdc/utils/constants';
+import { API, AWG } from '@ncigdc/utils/constants';
 import { clear } from '@ncigdc/utils/cookies';
 
 const source = new RecordSource();
@@ -14,7 +14,7 @@ const handlerProvider = null;
 
 function fetchQuery(operation, variables, cacheConfig) {
   let { user } = window.store.getState().auth;
-
+  console.log('is AWG: ', AWG);
   const body = JSON.stringify({
     query: operation.text, // GraphQL text from input
     variables,

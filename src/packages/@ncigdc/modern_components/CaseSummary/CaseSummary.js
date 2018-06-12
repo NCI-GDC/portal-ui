@@ -46,6 +46,21 @@ const getAnnotationsLinkParams = annotations => {
   return null;
 };
 
+export const slideCountFromCaseSummary = (summary: {
+  experimental_strategies: Array<{
+    experimental_strategy: string,
+    file_count: number,
+  }>,
+}): number => {
+  const slideTypes = ['Diagnostic Slide', 'Tissue Slide'];
+  return (summary.experimental_strategies || []).reduce(
+    (slideCount, { file_count, experimental_strategy }) =>
+      slideTypes.includes(experimental_strategy)
+        ? slideCount + file_count
+        : slideCount,
+    0,
+  );
+};
 export default compose(
   branch(
     ({ viewer }) => !viewer.repository.cases.hits.edges[0],
@@ -58,9 +73,7 @@ export default compose(
   const imageFiles = p.files.hits.edges.filter(
     ({ node }) => node.data_type === 'Slide Image',
   );
-  const slideCount = p.summary.experimental_strategies.find(
-    es => es.experimental_strategy === 'Tissue Slide',
-  );
+  const slideCount = slideCountFromCaseSummary(p.summary);
   return (
     <Row spacing={theme.spacing}>
       <EntityPageVerticalTable
@@ -100,7 +113,7 @@ export default compose(
                           ]),
                         }}
                       >
-                        <MicroscopeIcon style={{ maxWidth: '20px' }} /> ({slideCount.file_count})
+                        <MicroscopeIcon style={{ maxWidth: '20px' }} /> ({slideCount})
                       </ImageViewerLink>
                     </Tooltip>
                     <Tooltip Component="Add to cart">

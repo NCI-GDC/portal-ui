@@ -67,7 +67,7 @@ export default compose(
             Add All Files to Cart
           </Button>
           <DownloadManifestButton fileCount={totalFiles} filters={filters} />
-          {!AWG && (
+          {AWG === 'false' && (
             <CreateRepositoryCaseSetButton
               filters={filters}
               disabled={!totalCases}

@@ -95,7 +95,7 @@ export default ({
           <Row id="biospecimen" style={{ flexWrap: 'wrap' }} spacing="2rem">
             <BiospecimenCard caseId={caseId} bioId={query.bioId} />
           </Row>
-          {!AWG && (
+          {AWG === 'false' && (
             <HasSsms caseId={caseId}>
               <Column style={{ ...styles.card, marginTop: '2rem' }}>
                 <Row

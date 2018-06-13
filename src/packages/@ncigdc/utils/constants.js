@@ -29,7 +29,7 @@ export const AWG = localStorage.REACT_APP_AWG || process.env.REACT_APP_AWG;
 export const IS_AUTH_PORTAL =
   localStorage.REACT_APP_IS_AUTH_PORTAL ||
   process.env.REACT_APP_IS_AUTH_PORTAL ||
-  //  AWG ||
+  AWG ||
   false;
 
 export const DISPLAY_SLIDES =

@@ -294,7 +294,7 @@ const CurrentFilters = (
         </Row>
       </Row>
     )}
-    {!AWG &&
+    {AWG === 'false' &&
       linkPathname &&
       (!hideLinkOnEmpty || !!currentFilters.length) && (
         <LinkButton

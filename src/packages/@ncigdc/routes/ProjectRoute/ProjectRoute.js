@@ -136,7 +136,7 @@ export default enhance(
           style={{ marginBottom: '2rem', marginLeft: 'auto' }}
           spacing="0.2rem"
         >
-          {!AWG && (
+          {AWG === 'false' && (
             <span>
               <Button
                 onClick={projectId => {

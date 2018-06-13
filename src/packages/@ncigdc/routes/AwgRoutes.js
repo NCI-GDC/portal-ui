@@ -3,10 +3,7 @@ import { Route, Switch, Redirect } from 'react-router-dom';
 import Head from '@ncigdc/components/Head';
 import NotFound from '@ncigdc/components/NotFound';
 import LoadableWithLoading from '@ncigdc/components/LoadableWithLoading';
-import ProjectRoute from '@ncigdc/routes/ProjectRoute';
 import FileRoute from '@ncigdc/routes/FileRoute';
-import CaseRoute from '@ncigdc/routes/CaseRoute';
-import AnnotationRoute from '@ncigdc/routes/AnnotationRoute';
 import AuthRoute from '@ncigdc/routes/AuthRoute';
 
 const CartRoute = LoadableWithLoading({
@@ -25,6 +22,18 @@ const AnnotationsRoute = LoadableWithLoading({
   loader: () => import('@ncigdc/routes/AnnotationsRoute'),
 });
 
+const ProjectRoute = LoadableWithLoading({
+  loader: () => import('@ncigdc/routes/ProjectRoute/ProjectRoute'),
+});
+
+const CaseRoute = LoadableWithLoading({
+  loader: () => import('@ncigdc/routes/CaseRoute/CaseRoute'),
+});
+
+const AnnotationRoute = LoadableWithLoading({
+  loader: () => import('@ncigdc/routes/AnnotationRoute'),
+});
+
 export default () => (
   <span>
     <Route children={p => <Head title={p.location.pathname.split('/')[1]} />} />
@@ -38,10 +47,10 @@ export default () => (
       <AuthRoute exact path="/repository" component={RepositoryRoute} />
       <AuthRoute exact path="/projects" component={ProjectsRoute} />
       <AuthRoute exact path="/annotations" component={AnnotationsRoute} />
-      {ProjectRoute}
+      <AuthRoute path="/projects/:id" component={ProjectRoute} />
       <AuthRoute path="/files/:id" component={FileRoute} />
-      {CaseRoute}
-      {AnnotationRoute}
+      <AuthRoute path="/cases/:id" component={CaseRoute} />
+      <AuthRoute path="/annotations/:id" component={AnnotationRoute} />
       <Route component={NotFound} />
     </Switch>
   </span>

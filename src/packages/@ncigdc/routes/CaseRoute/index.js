@@ -1,10 +1,9 @@
 import React from 'react';
+import { Route } from 'react-router-dom';
 import LoadableWithLoading from '@ncigdc/components/LoadableWithLoading';
-import AuthRoute from '@ncigdc/routes/AuthRoute';
 
 export default (
-  <AuthRoute
-    exact
+  <Route
     path="/cases/:id"
     component={LoadableWithLoading({ loader: () => import('./CaseRoute') })}
   />

@@ -3,7 +3,7 @@
 import urlJoin from 'url-join';
 import { Environment, Network, RecordSource, Store } from 'relay-runtime';
 import md5 from 'blueimp-md5';
-import { API, AWG } from '@ncigdc/utils/constants';
+import { API, IS_AUTH_PORTAL } from '@ncigdc/utils/constants';
 import { clear } from '@ncigdc/utils/cookies';
 
 const source = new RecordSource();
@@ -54,10 +54,10 @@ function fetchQuery(operation, variables, cacheConfig) {
   pendingCache[hash] = true;
 
   return fetch(urlJoin(API, `graphql/${componentName}?hash=${hash}`), {
+    ...(IS_AUTH_PORTAL ? { credentials: 'include' } : {}),
     method: 'POST',
-    credentials: AWG === 'false' ? 'same-origin' : 'include',
     headers: {
-      'content-type': 'application/json',
+      'Content-Type': 'application/json',
     },
     body,
   }).then(response =>
@@ -69,7 +69,7 @@ function fetchQuery(operation, variables, cacheConfig) {
         delete pendingCache[hash];
       }
 
-      if (AWG !== 'false') {
+      if (IS_AUTH_PORTAL) {
         window.intersection = json.intersection;
 
         let tries = 20;

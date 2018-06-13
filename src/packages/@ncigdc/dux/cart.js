@@ -13,7 +13,7 @@ import { Column } from '@ncigdc/uikit/Flex';
 import { center } from '@ncigdc/theme/mixins';
 import { replaceFilters } from '@ncigdc/utils/filters';
 import UnstyledButton from '@ncigdc/uikit/UnstyledButton';
-import { API } from '@ncigdc/utils/constants';
+import { API, IS_AUTH_PORTAL } from '@ncigdc/utils/constants';
 
 /*----------------------------------------------------------------------------*/
 
@@ -48,6 +48,12 @@ export const MAX_CART_SIZE = 10000;
 const MAX_CART_WARNING = `The cart is limited to ${MAX_CART_SIZE.toLocaleString()} files.
   Please narrow the search criteria or remove some files from the cart to add more.`;
 
+const DEFAULTS = {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+};
 const getNotificationComponent = (
   action,
   id,
@@ -332,11 +338,8 @@ export const fetchCartFiles = async (filters, size) => {
   const hash = md5(body);
 
   return await fetch(urlJoin(API, `graphql/cart?hash=${hash}`), {
-    method: 'POST',
-    credentials: 'include',
-    headers: {
-      'content-type': 'application/json',
-    },
+    ...DEFAULTS,
+    ...(IS_AUTH_PORTAL ? { credentials: 'include' } : {}),
     body,
   })
     .then(response =>
@@ -421,6 +424,7 @@ function fetchFilesAndRemove(currentFilters: ?Object, size: number): Function {
           )
         : currentFilters;
 
+    //// TODO: update to graphql
     const search = {
       headers: { 'Content-Type': 'application/json' },
       body: {

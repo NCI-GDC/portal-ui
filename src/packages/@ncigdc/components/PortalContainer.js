@@ -92,7 +92,7 @@ const PortalContainer = ({
         transition: 'padding 0.25s ease',
       }}
     >
-      {AWG !== 'false' ? <AwgRoutes /> : <Routes />}
+      {AWG ? <AwgRoutes /> : <Routes />}
     </div>
     <Footer />
     <RelayLoadingContainer />

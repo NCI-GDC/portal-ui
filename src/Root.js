@@ -63,7 +63,7 @@ Relay.injectNetworkLayer(
 
       req.url = `${url}?hash=${hash}`;
 
-      if (IS_AUTH_PORTAL !== 'false') {
+      if (IS_AUTH_PORTAL) {
         req.credentials = 'include';
       }
       // when api auth is fixed, don't pass this here
@@ -75,7 +75,7 @@ Relay.injectNetworkLayer(
       return next(req).then(res => {
         let { json } = res;
 
-        if (IS_AUTH_PORTAL !== 'false') {
+        if (IS_AUTH_PORTAL) {
           window.intersection = json.intersection;
 
           let tries = 20;
@@ -140,12 +140,10 @@ const Root = (props: mixed) => (
   <Router>
     <Provider store={store}>
       <React.Fragment>
-        {IS_AUTH_PORTAL !== 'false' && (
-          <Route exact path="/login" component={Login} />
-        )}
+        {IS_AUTH_PORTAL && <Route exact path="/login" component={Login} />}
         <Route
           render={props => {
-            return IS_AUTH_PORTAL !== 'false' &&
+            return IS_AUTH_PORTAL &&
               !window.location.pathname.includes('/login') ? (
               <HasUser>
                 {({ user, failed, error }) => {

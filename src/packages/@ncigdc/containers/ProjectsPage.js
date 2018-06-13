@@ -61,7 +61,7 @@ export const ProjectsPageComponent = (props: TProps) => (
     ]}
     results={
       <Column spacing="2rem">
-        {AWG === 'false' && <ProjectsCharts />}
+        {!AWG && <ProjectsCharts />}
         <TabbedLinks
           queryParam="projectsTableTab"
           defaultIndex={0}
@@ -71,7 +71,7 @@ export const ProjectsPageComponent = (props: TProps) => (
               text: 'Table',
               component: <ProjectsTable />,
             },
-            ...(AWG === 'false'
+            ...(!AWG
               ? [
                   {
                     id: 'graph',

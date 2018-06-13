@@ -14,7 +14,6 @@ const handlerProvider = null;
 
 function fetchQuery(operation, variables, cacheConfig) {
   let { user } = window.store.getState().auth;
-  console.log('is AWG: ', AWG);
   const body = JSON.stringify({
     query: operation.text, // GraphQL text from input
     variables,

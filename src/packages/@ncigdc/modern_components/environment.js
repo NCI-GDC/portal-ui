@@ -55,7 +55,7 @@ function fetchQuery(operation, variables, cacheConfig) {
 
   return fetch(urlJoin(API, `graphql/${componentName}?hash=${hash}`), {
     method: 'POST',
-    credentials: 'include',
+    credentials: AWG === 'false' ? 'same-origin' : 'include',
     headers: {
       'content-type': 'application/json',
     },
@@ -69,45 +69,47 @@ function fetchQuery(operation, variables, cacheConfig) {
         delete pendingCache[hash];
       }
 
-      window.intersection = json.intersection;
+      if (AWG !== 'false') {
+        window.intersection = json.intersection;
 
-      let tries = 20;
-      let id = setInterval(() => {
-        let { user } = window.store.getState().auth;
+        let tries = 20;
+        let id = setInterval(() => {
+          let { user } = window.store.getState().auth;
 
-        if (user) {
-          if (
-            !json.fence_projects.length &&
-            !json.nih_projects.length &&
-            !json.intersection.length
-          ) {
-            clear();
-            window.location.href = '/login?error=timeout';
-            return;
+          if (user) {
+            if (
+              !json.fence_projects.length &&
+              !json.nih_projects.length &&
+              !json.intersection.length
+            ) {
+              clear();
+              window.location.href = '/login?error=timeout';
+              return;
+            }
+            if (!json.fence_projects.length) {
+              clear();
+              window.location.href = '/login?error=no_fence_projects';
+              return;
+            }
+
+            if (!json.nih_projects.length) {
+              clear();
+              window.location.href = '/login?error=no_nih_projects';
+              return;
+            }
+
+            if (!json.intersection.length) {
+              clear();
+              window.location.href = '/login?error=no_intersection';
+              return;
+            }
           }
-          if (!json.fence_projects.length) {
-            clear();
-            window.location.href = '/login?error=no_fence_projects';
-            return;
-          }
 
-          if (!json.nih_projects.length) {
-            clear();
-            window.location.href = '/login?error=no_nih_projects';
-            return;
-          }
+          tries--;
 
-          if (!json.intersection.length) {
-            clear();
-            window.location.href = '/login?error=no_intersection';
-            return;
-          }
-        }
-
-        tries--;
-
-        if (!tries) clearInterval(id);
-      }, 500);
+          if (!tries) clearInterval(id);
+        }, 500);
+      }
 
       return json;
     }),

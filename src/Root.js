@@ -19,20 +19,6 @@ import setupStore from '@ncigdc/dux';
 import { fetchApiVersionInfo } from '@ncigdc/dux/versionInfo';
 import { fetchUser } from '@ncigdc/dux/auth';
 
-export const store = setupStore({
-  persistConfig: {
-    keyPrefix: 'ncigdcActive',
-  },
-});
-
-window.store = store;
-
-store.dispatch(fetchApiVersionInfo());
-
-if (process.env.NODE_ENV !== 'development') {
-  store.dispatch(fetchUser());
-}
-
 Relay.injectNetworkLayer(
   new RelayNetworkLayer([
     urlMiddleware({
@@ -122,6 +108,20 @@ Relay.injectNetworkLayer(
     },
   ]),
 );
+
+export const store = setupStore({
+  persistConfig: {
+    keyPrefix: 'ncigdcActive',
+  },
+});
+
+window.store = store;
+
+store.dispatch(fetchApiVersionInfo());
+
+if (process.env.NODE_ENV !== 'development') {
+  store.dispatch(fetchUser());
+}
 
 class RelayRoute extends Relay.Route {
   static routeName = 'RootRoute';

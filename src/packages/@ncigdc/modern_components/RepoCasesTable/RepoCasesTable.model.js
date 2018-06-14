@@ -232,8 +232,8 @@ const casesTableModel = [
   },
   ...(DISPLAY_SLIDES && [
     {
-      name: 'Slides',
       id: 'slides',
+      name: 'Slides',
       sortable: false,
       downloadable: false,
       hidden: false,

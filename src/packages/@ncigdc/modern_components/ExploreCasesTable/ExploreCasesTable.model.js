@@ -263,7 +263,7 @@ const casesTableModel = [
           <Td style={{ textAlign: 'center' }}>
             {[
               <ForTsvExport key={`tsv-export-${node.case_id}`}>
-                {!!slideCount ? slideCount.file_count : 0}
+                {slideCount}
               </ForTsvExport>,
               !!slideCount ? (
                 <Tooltip

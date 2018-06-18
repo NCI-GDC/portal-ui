@@ -22,7 +22,7 @@ export function fetchAuth(options: { endpoint: string }): Object {
       ...(IS_AUTH_PORTAL
         ? {
             credentials: 'include',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {},
           }
         : {}),
       ...options,

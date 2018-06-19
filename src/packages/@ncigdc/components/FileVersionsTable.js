@@ -11,7 +11,7 @@ import moment from 'moment';
 import BubbleIcon from '@ncigdc/theme/icons/BubbleIcon';
 import DownloadIcon from '@ncigdc/theme/icons/Download';
 import { withTheme } from '@ncigdc/theme';
-//import { fetchApi } from '@ncigdc/utils/ajax';
+import { fetchApi } from '@ncigdc/utils/ajax';
 import EntityPageHorizontalTable from '@ncigdc/components/EntityPageHorizontalTable';
 import Button from '@ncigdc/uikit/Button';
 import { visualizingButton } from '@ncigdc/theme/mixins';
@@ -24,14 +24,13 @@ export default compose(
   withState('data', 'setData', []),
   lifecycle({
     async componentDidMount(): Promise<*> {
-      const data = await fetch('http://localhost:5001/history', {
+      const data = await fetchApi(`/history/${this.props.fileId}`, {
         method: 'get',
         headers: {
           'Content-Type': 'application/json',
           'Access-Control-Allow-Origin': true,
-          'X-Auth-Token': 'secret admin token',
         },
-      }).then(r => r.json());
+      });
       this.props.setData(
         data.map(d => ({
           ...d,

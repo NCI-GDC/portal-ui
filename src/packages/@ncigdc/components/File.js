@@ -28,6 +28,7 @@ import withRouter from '@ncigdc/utils/withRouter';
 import withImageViewerData from '@ncigdc/modern_components/ImageViewer/ImageViewer.relay';
 import ZoomableImage from '@ncigdc/components/ZoomableImage';
 import SlideDetailsButton from '@ncigdc/components/SlideDetailsButton';
+import FileVersionsTable from '@ncigdc/components/FileVersionsTable';
 
 // value of data_category mapped to sections to display
 const DISPLAY_MAPPING = {
@@ -248,6 +249,9 @@ const File = ({
             <ZoomableImageWithData fileId={node.file_id} />
           </Row>
         )}
+      <Row style={{ paddingTop: '2rem', alignItems: 'flex-start' }}>
+        <FileVersionsTable fileId={node.file_id} />
+      </Row>
       <Row style={{ paddingTop: '2rem', alignItems: 'flex-start' }}>
         <AssociatedEntitiesTable fileId={node.file_id} />
       </Row>

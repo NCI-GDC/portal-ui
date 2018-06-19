@@ -13,11 +13,9 @@ const pendingCache = {};
 const handlerProvider = null;
 
 function fetchQuery(operation, variables, cacheConfig) {
-  let { user } = window.store.getState().auth;
   const body = JSON.stringify({
     query: operation.text, // GraphQL text from input
     variables,
-    user,
   });
   const hash = md5(body);
   const [componentName] = operation.name.split('_relayQuery');

@@ -90,7 +90,6 @@ function validate(idFields, map, field, endpoint, extraFields = []) {
             value: notValidatedIds.map(s => s.toLowerCase()),
           },
         ]),
-        projects: window.intersection,
       },
     });
     notValidatedIds.forEach(g => (map[g] = map[g] || null));

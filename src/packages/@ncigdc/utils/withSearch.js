@@ -52,7 +52,6 @@ export const withSearch = passedInState => {
               headers: {
                 'Content-Type': 'application/json',
               },
-              body: { projects: window.intersection },
             },
           ).then(response =>
             handleResults(response.data.query.hits, timeOfRequest),

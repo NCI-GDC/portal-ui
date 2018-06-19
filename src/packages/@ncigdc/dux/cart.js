@@ -288,7 +288,6 @@ function addAllFilesInCart(
 }
 
 export const fetchCartFiles = async (filters, size) => {
-  let { user } = window.store.getState().auth;
   const body = JSON.stringify({
     query: `query cart_relayQuery(
             $size: Int
@@ -333,7 +332,6 @@ export const fetchCartFiles = async (filters, size) => {
       offset: 0,
       sort: null,
     },
-    user,
   });
   const hash = md5(body);
 

@@ -19,6 +19,7 @@ import { CreateExploreCaseSetButton } from '@ncigdc/modern_components/withSetAct
 import { replaceFilters } from '@ncigdc/utils/filters';
 import { stringifyJSONParam } from '@ncigdc/utils/uri';
 import { Row } from '@ncigdc/uikit/Flex';
+import Button from '@ncigdc/uikit/Button';
 
 export type TProps = {
   filters: {},
@@ -167,32 +168,45 @@ export const ExplorePageComponent = ({
     results={
       <span>
         <Row>
-          <CreateExploreCaseSetButton
-            filters={filters}
-            disabled={!viewer.explore.cases.hits.total}
-            style={{ marginBottom: '2rem' }}
-            onComplete={setId => {
-              push({
-                pathname: '/repository',
-                query: {
-                  filters: stringifyJSONParam({
-                    op: 'AND',
-                    content: [
-                      {
-                        op: 'IN',
-                        content: {
-                          field: 'cases.case_id',
-                          value: [`set_id:${setId}`],
+          {filters ? (
+            <CreateExploreCaseSetButton
+              filters={filters}
+              disabled={!viewer.explore.cases.hits.total}
+              style={{ marginBottom: '2rem' }}
+              onComplete={setId => {
+                push({
+                  pathname: '/repository',
+                  query: {
+                    filters: stringifyJSONParam({
+                      op: 'AND',
+                      content: [
+                        {
+                          op: 'IN',
+                          content: {
+                            field: 'cases.case_id',
+                            value: [`set_id:${setId}`],
+                          },
                         },
-                      },
-                    ],
-                  }),
-                },
-              });
-            }}
-          >
-            View Files in Repository
-          </CreateExploreCaseSetButton>
+                      ],
+                    }),
+                  },
+                });
+              }}
+            >
+              View Files in Repository
+            </CreateExploreCaseSetButton>
+          ) : (
+            <Button
+              disabled={!viewer.explore.cases.hits.total}
+              style={{ marginBottom: '2rem' }}
+              onClick={() =>
+                push({
+                  pathname: '/repository',
+                })}
+            >
+              View Files in Repository
+            </Button>
+          )}
         </Row>
         <TabbedLinks
           queryParam="searchTableTab"

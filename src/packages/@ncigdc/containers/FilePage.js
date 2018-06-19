@@ -48,7 +48,6 @@ export const FilePageQuery = {
         experimental_strategy
         md5sum
         state
-        file_state
         acl
         analysis {
           analysis_id

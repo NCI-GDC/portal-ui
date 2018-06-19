@@ -69,7 +69,6 @@ export default (Component: ReactClass<*>) =>
                                 md5sum
                                 acl
                                 state
-                                file_state
                                 access
                                 submitter_id
                               }

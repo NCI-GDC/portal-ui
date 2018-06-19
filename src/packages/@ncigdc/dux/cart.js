@@ -20,7 +20,6 @@ export type TCartFile = {
   file_id: string,
   acl: Array<string>,
   state: string,
-  file_state: string,
   access: string,
   file_size: number,
   projects: Array<string>,
@@ -295,8 +294,7 @@ function fetchFilesAndAdd(currentFilters: ?Object, total: number): Function {
       const search = stringify({
         filters: currentFilters && JSON.stringify(currentFilters),
         size: total,
-        fields:
-          'acl,state,file_state,access,file_id,file_size,cases.project.project_id',
+        fields: 'acl,state,access,file_id,file_size,cases.project.project_id',
       });
       const { data } = await fetchApi(`files?${search}`);
       const files = data.hits.map(({ cases, ...rest }) => ({
@@ -430,7 +428,6 @@ export function reducer(state: Object = initialState, action: Object): Object {
           action.payload.map(file => ({
             acl: file.acl,
             state: file.state,
-            file_state: file.file_state,
             access: file.access,
             file_id: file.file_id,
             file_size: file.file_size,
@@ -452,7 +449,6 @@ export function reducer(state: Object = initialState, action: Object): Object {
         files: action.payload.map(file => ({
           acl: file.acl,
           state: file.state,
-          file_state: file.file_state,
           access: file.access,
           file_id: file.file_id,
           file_size: file.file_size,

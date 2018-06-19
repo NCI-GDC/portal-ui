@@ -15,9 +15,9 @@ import { withTheme } from '@ncigdc/theme';
 import EntityPageHorizontalTable from '@ncigdc/components/EntityPageHorizontalTable';
 import Button from '@ncigdc/uikit/Button';
 import { visualizingButton } from '@ncigdc/theme/mixins';
-import saveFile from '@ncigdc/utils/filesaver';
+import DownloadButton from '@ncigdc/components/DownloadButton';
 import DropDown from '@ncigdc/uikit/Dropdown';
-import DropdownItem from '@ncigdc/uikit/DropdownItem';
+import { styles } from '@ncigdc/modern_components/DownloadClinicalDropdown/DownloadClinicalDropdown';
 
 export default compose(
   withTheme,
@@ -54,45 +54,43 @@ export default compose(
     },
   }),
   branch(({ data }) => !data.length, renderComponent(() => <span />)),
-)(({ data }) => (
+)(({ data, theme }) => (
   <EntityPageHorizontalTable
     rightComponent={
       <DropDown
         className={'test-download-file-versions'}
         button={
-          <Button leftIcon={<DownloadIcon />} style={visualizingButton}>
+          <Button
+            leftIcon={<DownloadIcon />}
+            style={{
+              ...styles.common,
+              ...styles.dropdownButton,
+              ...visualizingButton,
+            }}
+          >
             Download
           </Button>
         }
+        dropdownStyle={{ ...styles.dropdownContainer }}
       >
-        <DropdownItem
-          key="file-version-tsv"
-          className="test-file-version-tsv"
-          style={{
-            cursor: 'pointer',
-            padding: '0.6rem 1rem',
-            fontSize: '14px',
-          }}
-          onClick={() => {
-            console.log('tsv');
-          }}
-        >
-          TSV
-        </DropdownItem>
-        <DropdownItem
-          key="file-version-json"
-          className="test-file-version-json"
-          style={{
-            cursor: 'pointer',
-            padding: '0.6rem 1rem',
-            fontSize: '14px',
-          }}
-          onClick={() => {
-            console.log('json');
-          }}
-        >
-          JSON
-        </DropdownItem>
+        <DownloadButton
+          className="data-download-clinical-tsv"
+          style={styles.button(theme)}
+          endpoint="/history"
+          format={'TSV'}
+          activeText="Processing"
+          inactiveText="TSV"
+          altMessage={false}
+        />
+        <DownloadButton
+          className="data-download-clinical-tsv"
+          endpoint="/history"
+          style={styles.button(theme)}
+          format={'JSON'}
+          activeText="Processing"
+          inactiveText="JSON"
+          altMessage={false}
+        />
       </DropDown>
     }
     data={data}

@@ -108,7 +108,6 @@ Relay.injectNetworkLayer(
         })
         .catch(error => {
           console.log('catch error: ', error);
-          window.location.href = '/login?error=timeout';
         });
     },
   ]),

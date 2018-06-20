@@ -17,7 +17,7 @@ import { clear } from '@ncigdc/utils/cookies';
 import { Provider, connect } from 'react-redux';
 import setupStore from '@ncigdc/dux';
 import { fetchApiVersionInfo } from '@ncigdc/dux/versionInfo';
-import { fetchUser } from '@ncigdc/dux/auth';
+import { fetchUser, forceLogout } from '@ncigdc/dux/auth';
 
 Relay.injectNetworkLayer(
   new RelayNetworkLayer([
@@ -103,12 +103,16 @@ Relay.injectNetworkLayer(
               if (!tries) clearInterval(id);
             }, 500);
           }
-          console.log('res: ', res);
           return res;
         })
         .catch(error => {
           console.log('Root catch error: ', error);
           console.log('Root catch user: ', user);
+          if (user) {
+            console.log('status: ', error.status);
+            store.dispatch(forceLogout());
+            window.location.href = '/login?error=timeout';
+          }
         });
     },
   ]),

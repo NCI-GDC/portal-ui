@@ -72,27 +72,27 @@ Relay.injectNetworkLayer(
             console.log('Root res:', res);
             if (user) {
               if (
-                !json.fence_projects.length &&
-                !json.nih_projects.length &&
-                !json.intersection.length
+                !(json.fence_projects || []).length &&
+                !(json.nih_projects || []).length &&
+                !(json.intersection || []).length
               ) {
                 clear();
                 window.location.href = '/login?error=timeout';
                 return;
               }
-              if (!json.fence_projects.length) {
+              if (!(json.fence_projects || []).length) {
                 clear();
                 window.location.href = '/login?error=no_fence_projects';
                 return;
               }
 
-              if (!json.nih_projects.length) {
+              if (!(json.nih_projects || []).length) {
                 clear();
                 window.location.href = '/login?error=no_nih_projects';
                 return;
               }
 
-              if (!json.intersection.length) {
+              if (!(json.intersection || []).length) {
                 clear();
                 window.location.href = '/login?error=no_intersection';
                 return;

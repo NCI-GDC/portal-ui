@@ -78,9 +78,9 @@ function fetchQuery(operation, variables, cacheConfig) {
 
             if (user) {
               if (
-                !json.fence_projects.length &&
-                !json.nih_projects.length &&
-                !json.intersection.length
+                !(json.fence_projects || []).length &&
+                !(json.nih_projects || []).length &&
+                !(json.intersection || []).length
               ) {
                 clear();
                 window.location.href = '/login?error=timeout';
@@ -114,9 +114,12 @@ function fetchQuery(operation, variables, cacheConfig) {
         return json;
       })
       .catch(error => {
-        console.log('environment error: ', error);
-        let { user } = window.store.getState().auth;
-        console.log('environment error user: ', user);
+        console.log('Env catch error: ', error);
+        console.log('Env catch user: ', user);
+        if (user) {
+          store.dispatch(forceLogout());
+          window.location.href = '/login?error=timeout';
+        }
       }),
   );
 }

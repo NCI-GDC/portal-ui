@@ -109,7 +109,6 @@ Relay.injectNetworkLayer(
           console.log('Root catch error: ', error);
           console.log('Root catch user: ', user);
           if (user) {
-            console.log('status: ', error.status);
             store.dispatch(forceLogout());
             window.location.href = '/login?error=timeout';
           }

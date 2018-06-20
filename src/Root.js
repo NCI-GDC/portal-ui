@@ -61,7 +61,7 @@ Relay.injectNetworkLayer(
       return next(req)
         .then(res => {
           let { json } = res;
-
+          console.log('Root then res: ', res);
           if (IS_AUTH_PORTAL) {
             window.intersection = json.intersection;
 
@@ -107,7 +107,8 @@ Relay.injectNetworkLayer(
           return res;
         })
         .catch(error => {
-          console.log('catch error: ', error);
+          console.log('Root catch error: ', error);
+          console.log('Root catch user: ', user);
         });
     },
   ]),

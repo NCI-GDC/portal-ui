@@ -67,7 +67,9 @@ Relay.injectNetworkLayer(
           let tries = 20;
           let id = setInterval(() => {
             let { user } = window.store.getState().auth;
-
+            console.log('Root user: ', user);
+            console.log('Root json: ', json);
+            console.log('Root res:', res);
             if (user) {
               if (
                 !json.fence_projects.length &&

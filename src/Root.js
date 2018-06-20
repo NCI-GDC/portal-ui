@@ -58,55 +58,58 @@ Relay.injectNetworkLayer(
       let body = { ...parsedBody, user };
       req.body = JSON.stringify(body);
 
-      return next(req).then(res => {
-        let { json } = res;
+      return next(req)
+        .then(res => {
+          let { json } = res;
 
-        if (IS_AUTH_PORTAL) {
-          window.intersection = json.intersection;
+          if (IS_AUTH_PORTAL) {
+            window.intersection = json.intersection;
 
-          let tries = 20;
-          let id = setInterval(() => {
-            let { user } = window.store.getState().auth;
-            console.log('Root user: ', user);
-            console.log('Root json: ', json);
-            console.log('Root res:', res);
-            if (user) {
-              if (
-                !(json.fence_projects || []).length &&
-                !(json.nih_projects || []).length &&
-                !(json.intersection || []).length
-              ) {
-                clear();
-                window.location.href = '/login?error=timeout';
-                return;
+            let tries = 20;
+            let id = setInterval(() => {
+              let { user } = window.store.getState().auth;
+
+              if (user) {
+                if (
+                  !(json.fence_projects || []).length &&
+                  !(json.nih_projects || []).length &&
+                  !(json.intersection || []).length
+                ) {
+                  clear();
+                  window.location.href = '/login?error=timeout';
+                  return;
+                }
+                if (!(json.fence_projects || []).length) {
+                  clear();
+                  window.location.href = '/login?error=no_fence_projects';
+                  return;
+                }
+
+                if (!(json.nih_projects || []).length) {
+                  clear();
+                  window.location.href = '/login?error=no_nih_projects';
+                  return;
+                }
+
+                if (!(json.intersection || []).length) {
+                  clear();
+                  window.location.href = '/login?error=no_intersection';
+                  return;
+                }
               }
-              if (!(json.fence_projects || []).length) {
-                clear();
-                window.location.href = '/login?error=no_fence_projects';
-                return;
-              }
 
-              if (!(json.nih_projects || []).length) {
-                clear();
-                window.location.href = '/login?error=no_nih_projects';
-                return;
-              }
+              tries--;
 
-              if (!(json.intersection || []).length) {
-                clear();
-                window.location.href = '/login?error=no_intersection';
-                return;
-              }
-            }
-
-            tries--;
-
-            if (!tries) clearInterval(id);
-          }, 500);
-        }
-
-        return res;
-      });
+              if (!tries) clearInterval(id);
+            }, 500);
+          }
+          console.log('res: ', res);
+          return res;
+        })
+        .catch(error => {
+          console.log('catch error: ', error);
+          window.location.href = '/login?error=timeout';
+        });
     },
   ]),
 );

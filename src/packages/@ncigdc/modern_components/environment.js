@@ -5,6 +5,7 @@ import { Environment, Network, RecordSource, Store } from 'relay-runtime';
 import md5 from 'blueimp-md5';
 import { API, IS_AUTH_PORTAL } from '@ncigdc/utils/constants';
 import { clear } from '@ncigdc/utils/cookies';
+import { forceLogout } from '@ncigdc/dux/auth';
 
 const source = new RecordSource();
 const store = new Store(source);
@@ -114,6 +115,7 @@ function fetchQuery(operation, variables, cacheConfig) {
         return json;
       })
       .catch(error => {
+        let { user } = window.store.getState().auth;
         console.log('Env catch error: ', error);
         console.log('Env catch user: ', user);
         if (user) {

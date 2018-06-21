@@ -6,11 +6,7 @@ import Relay from 'react-relay/classic';
 import { parse } from 'query-string';
 import md5 from 'blueimp-md5';
 import urlJoin from 'url-join';
-import {
-  RelayNetworkLayer,
-  urlMiddleware,
-  gqErrorsMiddleware,
-} from 'react-relay-network-layer';
+import { RelayNetworkLayer, urlMiddleware } from 'react-relay-network-layer';
 import retryMiddleware from '@ncigdc/utils/retryMiddleware';
 
 import { BrowserRouter as Router, Route, Redirect } from 'react-router-dom';
@@ -40,7 +36,6 @@ Relay.injectNetworkLayer(
       },
       statusCodes: [500, 503, 504],
     }),
-    gqErrorsMiddleware(),
     // Add hash id to request
     next => req => {
       const [url, search = ''] = req.url.split('?');
@@ -67,7 +62,6 @@ Relay.injectNetworkLayer(
       return next(req)
         .then(res => {
           let { json } = res;
-          console.log('response: ', res);
           if (IS_AUTH_PORTAL) {
             window.intersection = json.intersection;
 
@@ -116,19 +110,11 @@ Relay.injectNetworkLayer(
           if (err.fetchResponse.status === 403) {
             console.log('not authorized');
             if (user) {
-              store.dispatch(forceLogout());
               window.location.href = '/login?error=timeout';
+              store.dispatch(forceLogout());
             }
           }
         });
-      // .catch(error => {
-      //   console.log('Root catch error: ', error);
-      //   console.log('Root catch user: ', user);
-      //   // if (user) {
-      //   //   store.dispatch(forceLogout());
-      //   //   window.location.href = '/login?error=timeout';
-      //   // }
-      // });
     },
   ]),
 );

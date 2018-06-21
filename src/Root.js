@@ -9,7 +9,6 @@ import urlJoin from 'url-join';
 import {
   RelayNetworkLayer,
   urlMiddleware,
-  authMiddleware,
   gqErrorsMiddleware,
 } from 'react-relay-network-layer';
 import retryMiddleware from '@ncigdc/utils/retryMiddleware';
@@ -65,52 +64,63 @@ Relay.injectNetworkLayer(
       let body = { ...parsedBody, user };
       req.body = JSON.stringify(body);
 
-      return next(req).then(res => {
-        let { json } = res;
-        console.log('Root then res: ', res);
-        if (IS_AUTH_PORTAL) {
-          window.intersection = json.intersection;
+      return next(req)
+        .then(res => {
+          let { json } = res;
+          console.log('response: ', res);
+          if (IS_AUTH_PORTAL) {
+            window.intersection = json.intersection;
 
-          let tries = 20;
-          let id = setInterval(() => {
-            let { user } = window.store.getState().auth;
+            let tries = 20;
+            let id = setInterval(() => {
+              let { user } = window.store.getState().auth;
 
+              if (user) {
+                if (
+                  !(json.fence_projects || []).length &&
+                  !(json.nih_projects || []).length &&
+                  !(json.intersection || []).length
+                ) {
+                  clear();
+                  window.location.href = '/login?error=timeout';
+                  return;
+                }
+                if (!(json.fence_projects || []).length) {
+                  clear();
+                  window.location.href = '/login?error=no_fence_projects';
+                  return;
+                }
+
+                if (!(json.nih_projects || []).length) {
+                  clear();
+                  window.location.href = '/login?error=no_nih_projects';
+                  return;
+                }
+
+                if (!(json.intersection || []).length) {
+                  clear();
+                  window.location.href = '/login?error=no_intersection';
+                  return;
+                }
+              }
+
+              tries--;
+
+              if (!tries) clearInterval(id);
+            }, 500);
+          }
+          return res;
+        })
+        .catch(err => {
+          console.log('err error: ', err.fetchResponse);
+          if (err.fetchResponse.status === 403) {
+            console.log('not authorized');
             if (user) {
-              if (
-                !(json.fence_projects || []).length &&
-                !(json.nih_projects || []).length &&
-                !(json.intersection || []).length
-              ) {
-                clear();
-                window.location.href = '/login?error=timeout';
-                return;
-              }
-              if (!(json.fence_projects || []).length) {
-                clear();
-                window.location.href = '/login?error=no_fence_projects';
-                return;
-              }
-
-              if (!(json.nih_projects || []).length) {
-                clear();
-                window.location.href = '/login?error=no_nih_projects';
-                return;
-              }
-
-              if (!(json.intersection || []).length) {
-                clear();
-                window.location.href = '/login?error=no_intersection';
-                return;
-              }
+              store.dispatch(forceLogout());
+              window.location.href = '/login?error=timeout';
             }
-
-            tries--;
-
-            if (!tries) clearInterval(id);
-          }, 500);
-        }
-        return res;
-      });
+          }
+        });
       // .catch(error => {
       //   console.log('Root catch error: ', error);
       //   console.log('Root catch user: ', user);

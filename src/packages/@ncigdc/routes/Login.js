@@ -18,6 +18,7 @@ const styles = {
 
 export default connect(state => ({
   user: state.auth.user,
+  error: state.auth.error,
 }))(
   class extends React.Component {
     state = { loggingIn: false };
@@ -92,15 +93,16 @@ export default connect(state => ({
                   </span>
                 </div>
               )}
-              {window.location.search.includes('error=timeout') && (
-                <div>
-                  <br />
-                  <br />
-                  <span style={styles.errorMessage}>
-                    Session timed out or not authorized.
-                  </span>
-                </div>
-              )}
+              {(window.location.search.includes('error=timeout') ||
+                this.props.error.message) && (
+                  <div>
+                    <br />
+                    <br />
+                    <span style={styles.errorMessage}>
+                      Session timed out or not authorized.
+                    </span>
+                  </div>
+                )}
               {window.location.search.includes('error=no_nih_projects') && (
                 <NihWarning />
               )}

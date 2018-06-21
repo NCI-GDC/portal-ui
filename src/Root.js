@@ -110,7 +110,6 @@ Relay.injectNetworkLayer(
           if (err.fetchResponse.status === 403) {
             console.log('not authorized');
             if (user) {
-              window.location.href = '/login?error=timeout';
               store.dispatch(forceLogout());
             }
           }

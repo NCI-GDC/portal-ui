@@ -10,6 +10,7 @@ import {
   RelayNetworkLayer,
   urlMiddleware,
   authMiddleware,
+  gqErrorsMiddleware,
 } from 'react-relay-network-layer';
 import retryMiddleware from '@ncigdc/utils/retryMiddleware';
 
@@ -40,20 +41,7 @@ Relay.injectNetworkLayer(
       },
       statusCodes: [500, 503, 504],
     }),
-    authMiddleware({
-      header: 'Cookie',
-      tokenRefreshPromise: req => {
-        console.log('in refresh token promise');
-        console.log('req: ', req);
-        let { user } = window.store.getState().auth;
-        if (user) {
-          console.log('user has auth error, redirecting');
-          store.dispatch(forceLogout());
-          window.location.href = '/login?error=timeout';
-        }
-        return Promise.reject('Auth failed');
-      },
-    }),
+    gqErrorsMiddleware(),
     // Add hash id to request
     next => req => {
       const [url, search = ''] = req.url.split('?');

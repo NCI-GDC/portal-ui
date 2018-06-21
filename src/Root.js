@@ -157,6 +157,9 @@ const Root = (props: mixed) => (
               !window.location.pathname.includes('/login') ? (
               <HasUser>
                 {({ user, failed, error }) => {
+                  console.log('has user: ', user);
+                  console.log('has user failed?', failed);
+                  console.log('has user error? ', error);
                   if (failed) return <Redirect to="/login" />;
                   if (user)
                     return (

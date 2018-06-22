@@ -53,7 +53,7 @@ Relay.injectNetworkLayer(
       if (IS_AUTH_PORTAL) {
         req.credentials = 'include';
       }
-      // when api auth is fixed, don't pass this here
+
       let { user } = window.store.getState().auth;
       let parsedBody = JSON.parse(req.body);
       let body = { ...parsedBody, user };
@@ -106,7 +106,6 @@ Relay.injectNetworkLayer(
           return res;
         })
         .catch(err => {
-          console.log('err error: ', err.fetchResponse);
           if (err.fetchResponse.status === 403) {
             console.log('not authorized');
             if (user) {
@@ -160,6 +159,11 @@ const Root = (props: mixed) => (
                   console.log('has user: ', user);
                   console.log('has user failed?', failed);
                   console.log('has user error? ', error);
+                  if (
+                    failed &&
+                    error.message === 'Session timed out or not authorized'
+                  )
+                    return <Redirect to="/login?error=timeout" />;
                   if (failed) return <Redirect to="/login" />;
                   if (user)
                     return (

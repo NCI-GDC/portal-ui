@@ -25,7 +25,7 @@ const openAuthWindow = ({
   if (navigator.cookieEnabled) {
     const win = open(winUrl, 'Auth', winStyle);
     window.loginPopup = win;
-
+    console.log('login button: ', user);
     const interval = setInterval(() => {
       try {
         // Because the login window redirects to a different domain, checking

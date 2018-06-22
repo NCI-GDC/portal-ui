@@ -15,7 +15,7 @@ import CountBubble from '@ncigdc/uikit/CountBubble';
 import styled from '@ncigdc/theme/styled';
 import Input from '@ncigdc/uikit/Form/Input';
 import OverflowTooltippedLabel from '@ncigdc/uikit/OverflowTooltippedLabel';
-import { AWG } from '@ncigdc/utils/constants';
+// import { AWG } from '@ncigdc/utils/constants';
 
 import { Container, BucketLink } from './';
 

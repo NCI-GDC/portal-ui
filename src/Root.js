@@ -104,9 +104,7 @@ Relay.injectNetworkLayer(
         })
         .catch(err => {
           if (err.fetchResponse.status === 403) {
-            console.log('not authorized');
             if (user) {
-              console.log('catch user: ', user);
               store.dispatch(forceLogout());
             }
           }
@@ -153,18 +151,13 @@ const Root = (props: mixed) => (
               !window.location.pathname.includes('/login') ? (
               <HasUser>
                 {({ user, failed, error }) => {
-                  console.log('has user: ', user);
-                  console.log('has user failed?', failed);
-                  console.log('has user error? ', error);
                   if (
                     failed &&
                     error.message === 'Session timed out or not authorized'
                   ) {
-                    console.log('error timeout redirect');
                     return (window.location.href = '/login?error=timeout');
                   }
                   if (failed) {
-                    console.log('login redirect');
                     return <Redirect to="/login" />;
                   }
                   if (user)

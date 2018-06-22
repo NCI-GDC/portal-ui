@@ -24,7 +24,6 @@ export default connect(state => ({
     state = { loggingIn: false };
     componentDidMount() {}
     render() {
-      console.log('error? ', this.props.error);
       let NihWarning = () => (
         <div>
           <br />

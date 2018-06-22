@@ -67,8 +67,6 @@ function fetchQuery(operation, variables, cacheConfig) {
         delete pendingCache[hash];
       }
       if (IS_AUTH_PORTAL) {
-        window.intersection = json.intersection;
-
         let tries = 20;
         let id = setInterval(() => {
           let { user } = window.store.getState().auth;

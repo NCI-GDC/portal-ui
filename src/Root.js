@@ -56,15 +56,12 @@ Relay.injectNetworkLayer(
 
       let { user } = window.store.getState().auth;
       let parsedBody = JSON.parse(req.body);
-      let body = { ...parsedBody, user };
-      req.body = JSON.stringify(body);
+      req.body = JSON.stringify(parsedBody);
 
       return next(req)
         .then(res => {
           let { json } = res;
           if (IS_AUTH_PORTAL) {
-            window.intersection = json.intersection;
-
             let tries = 20;
             let id = setInterval(() => {
               let { user } = window.store.getState().auth;

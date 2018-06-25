@@ -5,7 +5,6 @@ import NotFound from '@ncigdc/components/NotFound';
 import LoadableWithLoading from '@ncigdc/components/LoadableWithLoading';
 import FileRoute from '@ncigdc/routes/FileRoute';
 import AuthRoute from '@ncigdc/routes/AuthRoute';
-// import AnnotationRoute from '@ncigdc/routes/AnnotationRoute';
 import AnnotationSummary from '@ncigdc/modern_components/AnnotationSummary';
 
 const CartRoute = LoadableWithLoading({
@@ -31,10 +30,6 @@ const ProjectRoute = LoadableWithLoading({
 const CaseRoute = LoadableWithLoading({
   loader: () => import('@ncigdc/routes/CaseRoute/CaseRoute'),
 });
-
-// const AnnotationRoute = LoadableWithLoading({
-//   loader: () => import('@ncigdc/routes/AnnotationRoute'),
-// });
 
 export default () => (
   <span>

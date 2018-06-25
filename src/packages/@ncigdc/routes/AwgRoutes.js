@@ -5,6 +5,7 @@ import NotFound from '@ncigdc/components/NotFound';
 import LoadableWithLoading from '@ncigdc/components/LoadableWithLoading';
 import FileRoute from '@ncigdc/routes/FileRoute';
 import AuthRoute from '@ncigdc/routes/AuthRoute';
+import AnnotationSummary from '@ncigdc/modern_components/AnnotationSummary';
 
 const CartRoute = LoadableWithLoading({
   loader: () => import('@ncigdc/routes/CartRoute'),
@@ -30,10 +31,6 @@ const CaseRoute = LoadableWithLoading({
   loader: () => import('@ncigdc/routes/CaseRoute/CaseRoute'),
 });
 
-const AnnotationRoute = LoadableWithLoading({
-  loader: () => import('@ncigdc/routes/AnnotationRoute'),
-});
-
 export default () => (
   <span>
     <Route children={p => <Head title={p.location.pathname.split('/')[1]} />} />
@@ -50,7 +47,12 @@ export default () => (
       <AuthRoute path="/projects/:id" component={ProjectRoute} />
       <AuthRoute path="/files/:id" component={FileRoute} />
       <AuthRoute path="/cases/:id" component={CaseRoute} />
-      <AuthRoute path="/annotations/:id" component={AnnotationRoute} />
+      <AuthRoute
+        path="/annotations/:id"
+        component={({ match, annotationId = match.params.id }) => (
+          <AnnotationSummary annotationId={annotationId} />
+        )}
+      />
       <Route component={NotFound} />
     </Switch>
   </span>

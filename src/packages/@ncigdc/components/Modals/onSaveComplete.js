@@ -2,8 +2,6 @@ import React from 'react';
 
 import { setModal } from '@ncigdc/dux/modal';
 import { notify } from '@ncigdc/dux/notification';
-import ManageSetsLink from '@ncigdc/components/Links/ManageSetsLink';
-import { closeNotification } from '../../dux/notification';
 
 export default ({ dispatch, label }) => {
   dispatch(setModal(null));
@@ -13,8 +11,6 @@ export default ({ dispatch, label }) => {
       component: (
         <span>
           {label} Saved<br />
-          View in{' '}
-          <ManageSetsLink onClick={() => dispatch(closeNotification())} />
         </span>
       ),
     }),

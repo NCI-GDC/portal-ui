@@ -2,6 +2,9 @@ import React from 'react';
 
 import { setModal } from '@ncigdc/dux/modal';
 import { notify } from '@ncigdc/dux/notification';
+import ManageSetsLink from '@ncigdc/components/Links/ManageSetsLink';
+import { closeNotification } from '../../dux/notification';
+import { AWG } from '@ncigdc/utils/constants';
 
 export default ({ dispatch, label }) => {
   dispatch(setModal(null));
@@ -11,6 +14,10 @@ export default ({ dispatch, label }) => {
       component: (
         <span>
           {label} Saved<br />
+          {!AWG && 'View in '}
+          {!AWG && (
+            <ManageSetsLink onClick={() => dispatch(closeNotification())} />
+          )}
         </span>
       ),
     }),

@@ -3,6 +3,7 @@
 import { saveAs } from 'filesaver.js';
 import { handleActions } from 'redux-actions';
 import { fetchAuth } from '@ncigdc/utils/ajax';
+import { AWG } from '@ncigdc/utils/constants';
 
 export type State = { isFetching: boolean, user: ?Object, error?: Object };
 export type Action = { type: string, payload: any };
@@ -67,7 +68,7 @@ export function fetchToken() {
       },
       TOKEN_FAILURE,
     ],
-    endpoint: 'token/refresh',
+    endpoint: AWG ? 'token/refresh/awg' : 'token/refresh',
   });
 }
 

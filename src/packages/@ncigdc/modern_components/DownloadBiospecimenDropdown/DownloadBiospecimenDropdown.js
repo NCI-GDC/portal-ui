@@ -4,9 +4,11 @@ import React from 'react';
 import { compose, withState } from 'recompose';
 import DownloadButton from '@ncigdc/components/DownloadButton';
 import Dropdown from '@ncigdc/uikit/Dropdown';
-import DownloadIcon from '@ncigdc/theme/icons/Download';
-import Spinner from '@ncigdc/theme/icons/Spinner';
-import Button from '@ncigdc/uikit/Button';
+// import DownloadIcon from '@ncigdc/theme/icons/Download';
+import download from '@ncigdc/utils/download';
+
+// import Spinner from '@ncigdc/theme/icons/Spinner';
+// import Button from '@ncigdc/uikit/Button';
 import { withTheme, theme } from '@ncigdc/theme';
 import { connect } from 'react-redux';
 import { notify } from '@ncigdc/dux/notification';
@@ -50,100 +52,65 @@ export default compose(
   withState('state', 'setState', {
     tsvDownloading: false,
     jsonDownloading: false,
+    setId: '',
   }),
   withTheme,
 )(
   ({
-    active,
-    state,
-    setState,
-    projectId,
-    viewer,
-    button,
-    filters,
-    tsvFilename,
-    jsonFilename,
-    inactiveText,
-    dropdownStyles = {},
-    buttonStyles = {},
-    scope = 'repository',
-    onClick,
-    dispatch,
-    push,
-  }) => {
+     active,
+     state,
+     setState,
+     projectId,
+     viewer,
+     button,
+     filters,
+     tsvFilename,
+     jsonFilename,
+     inactiveText,
+     dropdownStyles = {},
+     buttonStyles = {},
+     scope = 'repository',
+     onClick,
+     dispatch,
+     push,
+   }) => {
     const biospecimenCount = viewer ? viewer[scope].cases.hits.total : null;
     return (
       <Dropdown
         className="data-download-biospecimen"
         button={
-          <Button
+          <CreateExploreCaseSetButton
             className="data-download-biospecimen-button"
+            filters={filters}
+            isCreating={true}
             style={{ ...styles.dropdownButton, ...buttonStyles }}
-            onClick={
-              onClick
-                ? () =>
-                    dispatch(
-                      notify({
-                        action: 'warning',
-                        id: `${new Date().getTime()}`,
-                        component: (
-                          <Column style={{ alignItems: 'center' }}>
-                            <span>
-                              Biospecimen data not available with these filters.
-                            </span>
-                            <CreateExploreCaseSetButton
-                              filters={filters}
-                              style={{
-                                marginBottom: '1rem',
-                                marginTop: '1rem',
-                              }}
-                              onComplete={setId => {
-                                push({
-                                  pathname: '/repository',
-                                  query: {
-                                    searchTableTab: 'cases',
-                                    filters: stringifyJSONParam({
-                                      op: 'AND',
-                                      content: [
-                                        {
-                                          op: 'IN',
-                                          content: {
-                                            field: 'cases.case_id',
-                                            value: [`set_id:${setId}`],
-                                          },
-                                        },
-                                      ],
-                                    }),
-                                  },
-                                });
-                              }}
-                            >
-                              View Cases in Repository
-                            </CreateExploreCaseSetButton>
-                            <span>to download biospecimen data.</span>
-                          </Column>
-                        ),
-                      }),
-                    )
-                : () => null
-            }
-            leftIcon={
-              state.jsonDownloading || state.tsvDownloading ? (
-                <Spinner />
-              ) : (
-                <DownloadIcon />
-              )
-            }
+            onComplete={setId => {
+              setState({setId: setId});
+              // download({
+              //   pathname: '/explore',
+              //   query: {
+              //     searchTableTab: 'cases',
+              //     filters: stringifyJSONParam({
+              //       op: 'IN',
+              //       content: [
+              //         {
+              //           field: 'cases.case_id',
+              //           value: [`set_id:${setId}`],
+              //         },
+              //       ],
+              //     }),
+              //   },
+              // });
+            }}
           >
             {state.jsonDownloading || state.tsvDownloading
               ? 'Processing'
               : inactiveText}
-          </Button>
+          </CreateExploreCaseSetButton>
         }
         dropdownStyle={{ ...styles.dropdownContainer, ...dropdownStyles }}
       >
         <DownloadButton
-          disabled={onClick}
           className="data-download-biospecimen-tsv"
           size={biospecimenCount}
           style={styles.button(theme)}
@@ -158,12 +125,18 @@ export default compose(
               tsvDownloading: currentState,
             }))}
           active={state.tsvDownloading}
-          filters={filters}
+          filters={{
+            op:"IN",
+            content:[
+              {
+                field:"cases.case_id",
+                value:[`set_id:${state.setId}`],
+              },
+            ]}}
           filename={tsvFilename}
           scope={scope}
         />
         <DownloadButton
-          disabled={onClick}
           className="data-download-biospecimen"
           size={biospecimenCount}
           style={styles.button(theme)}
@@ -177,7 +150,14 @@ export default compose(
               jsonDownloading: currentState,
             }))}
           active={state.jsonDownloading}
-          filters={filters}
+          filters={{
+            op:"IN",
+            content:[
+              {
+                field:"cases.case_id",
+                value:[`set_id:${state.setId}`],
+              },
+            ]}}
           fields={['case_id']}
           dataExportExpands={[
             'samples',

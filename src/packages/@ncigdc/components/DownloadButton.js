@@ -83,7 +83,7 @@ const DownloadButton = ({
           ...(filename ? { filename } : {}),
           ...extraParams,
         };
-        console.log("DButton", filters);
+        console.log('DButton', filters);
         setActive(true);
 
         download({

@@ -65,8 +65,10 @@ export default (Component: any) => {
             },
             onCompleted: response => {
               setIsCreating(false);
+              console.log(response);
               onComplete(
                 get(response, ['sets', action, scope, type, 'set_id']),
+                get(response, ['sets', action, scope, type, 'size']),
               );
             },
             onError: err => {

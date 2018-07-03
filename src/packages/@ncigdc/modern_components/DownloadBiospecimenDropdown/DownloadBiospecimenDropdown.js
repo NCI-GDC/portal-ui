@@ -53,27 +53,28 @@ export default compose(
     tsvDownloading: false,
     jsonDownloading: false,
     setId: '',
+    size: 0,
   }),
   withTheme,
 )(
   ({
-     active,
-     state,
-     setState,
-     projectId,
-     viewer,
-     button,
-     filters,
-     tsvFilename,
-     jsonFilename,
-     inactiveText,
-     dropdownStyles = {},
-     buttonStyles = {},
-     scope = 'repository',
-     onClick,
-     dispatch,
-     push,
-   }) => {
+    active,
+    state,
+    setState,
+    projectId,
+    viewer,
+    button,
+    filters,
+    tsvFilename,
+    jsonFilename,
+    inactiveText,
+    dropdownStyles = {},
+    buttonStyles = {},
+    scope = 'repository',
+    onClick,
+    dispatch,
+    push,
+  }) => {
     const biospecimenCount = viewer ? viewer[scope].cases.hits.total : null;
     return (
       <Dropdown
@@ -84,8 +85,8 @@ export default compose(
             filters={filters}
             isCreating={true}
             style={{ ...styles.dropdownButton, ...buttonStyles }}
-            onComplete={setId => {
-              setState({setId: setId});
+            onComplete={(setId, size) => {
+              setState({ ...state, setId, size });
               // download({
               //   pathname: '/explore',
               //   query: {
@@ -115,7 +116,7 @@ export default compose(
           size={biospecimenCount}
           style={styles.button(theme)}
           endpoint="/biospecimen_tar"
-          format={'TSV'}
+          format="tsv"
           activeText="Processing"
           inactiveText="TSV"
           altMessage={false}
@@ -125,16 +126,20 @@ export default compose(
               tsvDownloading: currentState,
             }))}
           active={state.tsvDownloading}
+          size={state.size}
           filters={{
-            op:"IN",
-            content:[
+            op: 'and',
+            content: [
               {
-                field:"cases.case_id",
-                value:[`set_id:${state.setId}`],
+                op: 'in',
+                content: {
+                  field: 'cases.case_id',
+                  value: [`set_id:${state.setId}`],
+                },
               },
-            ]}}
+            ],
+          }}
           filename={tsvFilename}
-          scope={scope}
         />
         <DownloadButton
           className="data-download-biospecimen"
@@ -151,13 +156,17 @@ export default compose(
             }))}
           active={state.jsonDownloading}
           filters={{
-            op:"IN",
-            content:[
+            op: 'and',
+            content: [
               {
-                field:"cases.case_id",
-                value:[`set_id:${state.setId}`],
+                op: 'in',
+                content: {
+                  field: 'cases.case_id',
+                  value: [`set_id:${state.setId}`],
+                },
               },
-            ]}}
+            ],
+          }}
           fields={['case_id']}
           dataExportExpands={[
             'samples',

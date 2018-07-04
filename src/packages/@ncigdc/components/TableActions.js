@@ -112,7 +112,7 @@ const TableActions = ({
           }
           buttonStyles={visualizingButton}
           inactiveText={'Biospecimen'}
-          onClick={
+          shouldCreateSet={
             (scope === 'explore' &&
               fieldContains({ currentFilters, field: 'gene' })) ||
             fieldContains({ currentFilters, field: 'ssms' })

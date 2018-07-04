@@ -17,11 +17,11 @@ export default class extends React.Component {
       children,
       disabled,
       createSet,
+      leftIcon,
       Component = Button,
       id,
       ...props
     } = this.props;
-
     return (
       <span>
         <Overlay show={props.isCreating}>
@@ -31,6 +31,7 @@ export default class extends React.Component {
           disabled={disabled}
           style={style}
           onClick={() => createSet(props)}
+          leftIcon={leftIcon}
         >
           {children}
         </Component>

@@ -3,18 +3,13 @@
 import React from 'react';
 import { compose, withState } from 'recompose';
 import DownloadButton from '@ncigdc/components/DownloadButton';
+import DownloadIcon from '@ncigdc/theme/icons/Download';
+import Spinner from '@ncigdc/theme/icons/Spinner';
 import Dropdown from '@ncigdc/uikit/Dropdown';
-// import DownloadIcon from '@ncigdc/theme/icons/Download';
-import download from '@ncigdc/utils/download';
-
-// import Spinner from '@ncigdc/theme/icons/Spinner';
-// import Button from '@ncigdc/uikit/Button';
+import Button from '@ncigdc/uikit/Button';
 import { withTheme, theme } from '@ncigdc/theme';
 import { connect } from 'react-redux';
-import { notify } from '@ncigdc/dux/notification';
-import { Column } from '@ncigdc/uikit/Flex/index';
 import { CreateExploreCaseSetButton } from '@ncigdc/modern_components/withSetAction';
-import { stringifyJSONParam } from '@ncigdc/utils/uri';
 import withRouter from '@ncigdc/utils/withRouter';
 
 const styles = {
@@ -53,69 +48,69 @@ export default compose(
     tsvDownloading: false,
     jsonDownloading: false,
     setId: '',
+    size: 0,
   }),
   withTheme,
 )(
   ({
-     active,
-     state,
-     setState,
-     projectId,
-     viewer,
-     button,
-     filters,
-     tsvFilename,
-     jsonFilename,
-     inactiveText,
-     dropdownStyles = {},
-     buttonStyles = {},
-     scope = 'repository',
-     onClick,
-     dispatch,
-     push,
-   }) => {
+    active,
+    state,
+    setState,
+    projectId,
+    viewer,
+    button,
+    filters,
+    tsvFilename,
+    jsonFilename,
+    inactiveText,
+    dropdownStyles = {},
+    buttonStyles = {},
+    scope = 'repository',
+    shouldCreateSet,
+  }) => {
     const biospecimenCount = viewer ? viewer[scope].cases.hits.total : null;
+    const buttonProps = {
+      className: 'data-download-biospecimen',
+      style: { ...styles.dropdownButton, ...buttonStyles },
+      leftIcon:
+        state.jsonDownloading || state.tsvDownloading ? (
+          <Spinner />
+        ) : (
+          <DownloadIcon />
+        ),
+    };
     return (
       <Dropdown
         className="data-download-biospecimen"
         button={
-          <CreateExploreCaseSetButton
-            className="data-download-biospecimen-button"
-            filters={filters}
-            isCreating={true}
-            style={{ ...styles.dropdownButton, ...buttonStyles }}
-            onComplete={setId => {
-              setState({setId: setId});
-              // download({
-              //   pathname: '/explore',
-              //   query: {
-              //     searchTableTab: 'cases',
-              //     filters: stringifyJSONParam({
-              //       op: 'IN',
-              //       content: [
-              //         {
-              //           field: 'cases.case_id',
-              //           value: [`set_id:${setId}`],
-              //         },
-              //       ],
-              //     }),
-              //   },
-              // });
-            }}
-          >
-            {state.jsonDownloading || state.tsvDownloading
-              ? 'Processing'
-              : inactiveText}
-          </CreateExploreCaseSetButton>
+          shouldCreateSet ? (
+            <CreateExploreCaseSetButton
+              {...buttonProps}
+              filters={filters}
+              isCreating={false}
+              onComplete={(setId, size) => {
+                setState({ ...state, setId, size });
+              }}
+            >
+              {state.jsonDownloading || state.tsvDownloading
+                ? 'Processing'
+                : inactiveText}
+            </CreateExploreCaseSetButton>
+          ) : (
+            <Button {...buttonProps}>
+              {state.jsonDownloading || state.tsvDownloading
+                ? 'Processing'
+                : inactiveText}
+            </Button>
+          )
         }
         dropdownStyle={{ ...styles.dropdownContainer, ...dropdownStyles }}
       >
         <DownloadButton
           className="data-download-biospecimen-tsv"
-          size={biospecimenCount}
           style={styles.button(theme)}
           endpoint="/biospecimen_tar"
-          format={'TSV'}
+          format="tsv"
           activeText="Processing"
           inactiveText="TSV"
           altMessage={false}
@@ -125,20 +120,27 @@ export default compose(
               tsvDownloading: currentState,
             }))}
           active={state.tsvDownloading}
-          filters={{
-            op:"IN",
-            content:[
-              {
-                field:"cases.case_id",
-                value:[`set_id:${state.setId}`],
-              },
-            ]}}
+          size={biospecimenCount ? biospecimenCount : state.size}
+          filters={
+            shouldCreateSet
+              ? {
+                  op: 'and',
+                  content: [
+                    {
+                      op: 'in',
+                      content: {
+                        field: 'cases.case_id',
+                        value: [`set_id:${state.setId}`],
+                      },
+                    },
+                  ],
+                }
+              : filters
+          }
           filename={tsvFilename}
-          scope={scope}
         />
         <DownloadButton
           className="data-download-biospecimen"
-          size={biospecimenCount}
           style={styles.button(theme)}
           endpoint="/cases"
           activeText="Processing"
@@ -150,14 +152,23 @@ export default compose(
               jsonDownloading: currentState,
             }))}
           active={state.jsonDownloading}
-          filters={{
-            op:"IN",
-            content:[
-              {
-                field:"cases.case_id",
-                value:[`set_id:${state.setId}`],
-              },
-            ]}}
+          filters={
+            shouldCreateSet
+              ? {
+                  op: 'and',
+                  content: [
+                    {
+                      op: 'in',
+                      content: {
+                        field: 'cases.case_id',
+                        value: [`set_id:${state.setId}`],
+                      },
+                    },
+                  ],
+                }
+              : filters
+          }
+          size={biospecimenCount ? biospecimenCount : state.size}
           fields={['case_id']}
           dataExportExpands={[
             'samples',

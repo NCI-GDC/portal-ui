@@ -13,6 +13,7 @@ export default {
               repository {
                 case(input: $input) {
                   set_id
+                  size
                 }
               }
             }
@@ -29,6 +30,7 @@ export default {
               repository {
                 case(input: $input) {
                   set_id
+                  size
                 }
               }
             }
@@ -45,6 +47,7 @@ export default {
               repository {
                 case(input: $input) {
                   set_id
+                  size
                 }
               }
             }
@@ -65,6 +68,7 @@ export default {
               explore {
                 case(input: $input) {
                   set_id
+                  size
                 }
               }
             }
@@ -81,6 +85,7 @@ export default {
               explore {
                 case(input: $input) {
                   set_id
+                  size
                 }
               }
             }
@@ -97,6 +102,7 @@ export default {
               explore {
                 case(input: $input) {
                   set_id
+                  size
                 }
               }
             }
@@ -115,6 +121,7 @@ export default {
               explore {
                 ssm(input: $input) {
                   set_id
+                  size
                 }
               }
             }
@@ -131,6 +138,7 @@ export default {
               explore {
                 ssm(input: $input) {
                   set_id
+                  size
                 }
               }
             }
@@ -147,6 +155,7 @@ export default {
               explore {
                 ssm(input: $input) {
                   set_id
+                  size
                 }
               }
             }
@@ -165,6 +174,7 @@ export default {
               explore {
                 gene(input: $input) {
                   set_id
+                  size
                 }
               }
             }
@@ -181,6 +191,7 @@ export default {
               explore {
                 gene(input: $input) {
                   set_id
+                  size
                 }
               }
             }
@@ -197,6 +208,7 @@ export default {
               explore {
                 gene(input: $input) {
                   set_id
+                  size
                 }
               }
             }

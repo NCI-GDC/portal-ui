@@ -18,19 +18,24 @@ export default class extends React.Component {
       disabled,
       createSet,
       leftIcon,
-      Component = Button,
       id,
+      onClick = () => {},
+      Component = Button,
+      displaySpinnerOverlay = true,
       ...props
     } = this.props;
     return (
       <span>
-        <Overlay show={props.isCreating}>
+        <Overlay show={displaySpinnerOverlay && props.isCreating}>
           <Spinner />
         </Overlay>
         <Component
           disabled={disabled}
           style={style}
-          onClick={() => createSet(props)}
+          onClick={() => {
+            onClick();
+            createSet(props);
+          }}
           leftIcon={leftIcon}
         >
           {children}

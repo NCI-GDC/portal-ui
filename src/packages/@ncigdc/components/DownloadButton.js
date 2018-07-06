@@ -83,7 +83,6 @@ const DownloadButton = ({
           ...(filename ? { filename } : {}),
           ...extraParams,
         };
-
         setActive(true);
 
         download({

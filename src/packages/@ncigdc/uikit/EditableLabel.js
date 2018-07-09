@@ -73,7 +73,7 @@ export default compose(
           />
           <Tooltip
             Component={
-              value.length === 0
+              value.split(' ').join('').length === 0
                 ? 'Name must not be empty'
                 : value.length > MAX_SET_NAME_LENGTH
                   ? `Maximum name length ${MAX_SET_NAME_LENGTH}`
@@ -83,7 +83,7 @@ export default compose(
             <Button
               onClick={toggleEditingAndSave}
               disabled={
-                value.length === 0 || value.length > MAX_SET_NAME_LENGTH
+                value.split(' ').join('').length === 0 || value.length > MAX_SET_NAME_LENGTH
               }
               style={{
                 ...visualizingButton,

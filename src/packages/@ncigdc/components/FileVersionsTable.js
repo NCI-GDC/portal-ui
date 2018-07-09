@@ -28,7 +28,6 @@ export default compose(
         method: 'get',
         headers: {
           'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': true,
         },
       });
       this.props.setData(
@@ -93,7 +92,7 @@ export default compose(
       </DropDown>
     }
     data={data}
-    style={{ width: '100%' }}
+    style={{ width: '100%', overflow: 'visible' }}
     title="Previous File Versions"
     emptyMessage="No Previous File Versions"
     emptyMessageStyle={{ background: '#fff' }}

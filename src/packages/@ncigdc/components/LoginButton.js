@@ -25,7 +25,9 @@ const openAuthWindow = ({
   if (navigator.cookieEnabled) {
     const win = open(winUrl, 'Auth', winStyle);
     window.loginPopup = win;
-
+    console.log('is first window open? ', first);
+    console.log('win url: ', winUrl);
+    console.log('user? ', user);
     const interval = setInterval(() => {
       try {
         // Because the login window redirects to a different domain, checking
@@ -33,21 +35,28 @@ const openAuthWindow = ({
         // #clearInterval from ever getting called in this block.
         // Must check this block (if the login window has been closed) first!
         if (win.closed) {
+          console.log('window closed? ', win.closed);
           clearInterval(interval);
         } else if (
           win.document.URL.includes(location.origin) &&
           !win.document.URL.includes('auth')
         ) {
           win.close();
-
           setTimeout(() => {
             clearInterval(interval);
             setTimeout(() => {
               // fetch authpublic user
               if (first) {
+                console.log('setting first to false');
                 first = false;
+                console.log('fetching user');
                 dispatch(fetchUser());
                 // login with fence
+                console.log('will log in with fence');
+                console.log(
+                  'fence popup url should be: ',
+                  `${FENCE}/login/shib?redirect=${location.origin}`,
+                );
                 openAuthWindow({
                   pathname,
                   dispatch,
@@ -59,6 +68,7 @@ const openAuthWindow = ({
                     'toolbar=no,status=no,menubar=no,scrollbars=no,resizable=no,left=50000, top=50000, width=1, height=1, visible=none',
                 });
               } else {
+                console.log('redirecting to repository page');
                 push('/repository');
               }
             }, pollInterval);

@@ -23,8 +23,8 @@ store.dispatch(fetchApiVersionInfo());
 
 if (process.env.NODE_ENV !== 'development') {
   store.dispatch(fetchNotifications());
-  store.dispatch(fetchUser());
 }
+store.dispatch(fetchUser());
 
 const PortalComponent = () => (
   <Provider store={store}>

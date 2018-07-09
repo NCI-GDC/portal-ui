@@ -60,31 +60,24 @@ const downloadCart = ({
   setState: Function,
 }) => {
   const { authorized, unauthorized } = authPartitionFiles({ user, files });
-  if (unauthorized.doc_count > 0) {
+  if (!user) {
     dispatch(
       setModal(
         <NoAccessModal
           message={
             <div>
-              <p>
-                You are attempting to download files that you are not authorized
-                to access.
-              </p>
-              <p>
-                <span className="label label-success">
-                  {authorized.doc_count}
-                </span>{' '}
-                files that you are authorized to download.
-              </p>
-              <p>
-                <span className="label label-danger">
-                  {unauthorized.doc_count}
-                </span>{' '}
-                files that you are not authorized to download.
-              </p>
+              <p>You don't have access to the file(s).</p>
             </div>
           }
-          primaryButton={
+        />,
+      ),
+    );
+  } else if (user && unauthorized.doc_count > 0) {
+    dispatch(
+      setModal(
+        <BaseModal
+          title="Access Error"
+          extraButtons={
             <Button
               disabled={!authorized.doc_count}
               onClick={() =>
@@ -100,7 +93,31 @@ const downloadCart = ({
             </Button>
           }
           closeText="Cancel"
-        />,
+        >
+          <div>
+            <p>
+              You are attempting to download files that you are not authorized
+              to access.
+            </p>
+            <p>
+              <span className="label label-success">
+                {authorized.doc_count}
+              </span>{' '}
+              files that you are authorized to download.
+            </p>
+            <p>
+              <span className="label label-danger">
+                {unauthorized.doc_count}
+              </span>{' '}
+              files that you are not authorized to download.
+            </p>
+          </div>
+          <p>
+            Please request dbGaP Access to the project (<a href="https://wiki.oicr.on.ca/pages/viewpage.action?spaceKey=GDCSPECS&title=User+messages">
+              click here for more information
+            </a>).
+          </p>
+        </BaseModal>,
       ),
     );
   } else if (files.reduce((sum, x) => sum + x.file_size, 0) > 5 * 10e8) {

@@ -36,16 +36,23 @@ const DropdownItemStyled = styled(DropdownItem, {
 });
 
 const logout = () => {
+  const isDev = process.env.NODE_ENV === 'development';
+  if (isDev) {
+    localStorage.setItem('ALLOW_FAKE_USER', '');
+  }
+
   if (window.location.port) {
     window.location.assign(
-      urlJoin(
-        AUTH,
-        `logout?next=:${window.location.port}${window.location.pathname}`,
-      ),
+      isDev
+        ? ``
+        : urlJoin(
+            AUTH,
+            `logout?next=:${window.location.port}${window.location.pathname}`,
+          ),
     );
   } else {
     window.location.assign(
-      urlJoin(AUTH, `logout?next=${window.location.pathname}`),
+      isDev ? `` : urlJoin(AUTH, `logout?next=${window.location.pathname}`),
     );
   }
 };

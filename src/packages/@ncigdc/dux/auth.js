@@ -3,7 +3,7 @@
 import { saveAs } from 'filesaver.js';
 import { handleActions } from 'redux-actions';
 import { fetchAuth } from '@ncigdc/utils/ajax';
-
+import { FAKE_USER } from '@ncigdc/utils/constants';
 export type State = { isFetching: boolean, user: ?Object, error?: Object };
 export type Action = { type: string, payload: any };
 
@@ -15,8 +15,16 @@ const TOKEN_REQUEST = 'gdc/TOKEN_REQUEST';
 const TOKEN_SUCCESS = 'gdc/TOKEN_SUCCESS';
 const TOKEN_FAILURE = 'gdc/TOKEN_FAILURE';
 const TOKEN_CLEAR = 'gdc/TOKEN_CLEAR';
+const isDev = process.env.NODE_ENV === 'development';
 
 export function fetchUser() {
+  if (isDev) {
+    return {
+      type: USER_SUCCESS,
+      payload: FAKE_USER,
+    };
+  }
+
   return fetchAuth({
     types: [
       USER_REQUEST,

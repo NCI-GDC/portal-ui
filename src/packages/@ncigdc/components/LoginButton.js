@@ -25,6 +25,7 @@ const openAuthWindow = ({
   if (navigator.cookieEnabled) {
     const win = open(winUrl, 'Auth', winStyle);
     window.loginPopup = win;
+    console.log('location origin: ', location.origin);
     console.log('is first window open? ', first);
     console.log('win url: ', winUrl);
     console.log('user? ', user);
@@ -42,6 +43,7 @@ const openAuthWindow = ({
           !win.document.URL.includes('auth')
         ) {
           win.close();
+          console.log('location is not auth: ', location.origin);
           setTimeout(() => {
             clearInterval(interval);
             setTimeout(() => {

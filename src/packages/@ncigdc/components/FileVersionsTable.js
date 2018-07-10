@@ -52,7 +52,7 @@ export default compose(
     },
   }),
   branch(({ data }) => !data.length, renderComponent(() => <span />)),
-)(({ data, theme }) => (
+)(({ data, fileId, theme }) => (
   <EntityPageHorizontalTable
     rightComponent={
       <DropDown
@@ -74,19 +74,21 @@ export default compose(
         <DownloadButton
           className="data-download-clinical-tsv"
           style={styles.button(theme)}
-          endpoint="/history"
+          endpoint={`/history/${fileId}`}
           format={'TSV'}
           activeText="Processing"
           inactiveText="TSV"
+          method="GET"
           altMessage={false}
         />
         <DownloadButton
           className="data-download-clinical-tsv"
-          endpoint="/history"
+          endpoint={`/history/${fileId}`}
           style={styles.button(theme)}
           format={'JSON'}
           activeText="Processing"
           inactiveText="JSON"
+          method="GET"
           altMessage={false}
         />
       </DropDown>

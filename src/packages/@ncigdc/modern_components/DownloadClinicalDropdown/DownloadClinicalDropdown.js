@@ -9,7 +9,7 @@ import Spinner from '@ncigdc/theme/icons/Spinner';
 import Button from '@ncigdc/uikit/Button';
 import { withTheme, theme } from '@ncigdc/theme';
 
-const styles = {
+export const styles = {
   dropdownContainer: {
     top: '100%',
     whiteSpace: 'nowrap',

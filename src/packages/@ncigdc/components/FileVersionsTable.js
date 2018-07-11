@@ -30,25 +30,31 @@ export default compose(
           'Content-Type': 'application/json',
         },
       });
-      this.props.setData(
-        data.map(d => ({
-          ...d,
-          uuid:
-            d.uuid === this.props.fileId ? (
-              <div>
-                {d.uuid}{' '}
-                <BubbleIcon
-                  text="Current Version"
-                  backgroundColor={this.props.theme['secondary']}
-                  style={{ marginLeft: '1em' }}
-                />
-              </div>
-            ) : (
-              <div>{d.uuid}</div>
-            ),
-          release_date: moment(d.release_date).format('YYYY-MM-DD'),
-        })),
-      );
+      try {
+        this.props.setData(
+          data.map(d => ({
+            ...d,
+            uuid:
+              d.uuid === this.props.fileId ? (
+                <div>
+                  {d.uuid}{' '}
+                  <BubbleIcon
+                    text="Current Version"
+                    backgroundColor={this.props.theme['secondary']}
+                    style={{ marginLeft: '1em' }}
+                  />
+                </div>
+              ) : (
+                <div>{d.uuid}</div>
+              ),
+            release_date: d.release_date
+              ? moment(d.release_date).format('YYYY-MM-DD')
+              : '--',
+          })),
+        );
+      } catch (e) {
+        //means no history for the file, just display nothing
+      }
     },
   }),
   branch(({ data }) => !data.length, renderComponent(() => <span />)),

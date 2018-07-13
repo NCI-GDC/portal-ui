@@ -83,7 +83,8 @@ export default compose(
             <Button
               onClick={toggleEditingAndSave}
               disabled={
-                value.split(' ').join('').length === 0 || value.length > MAX_SET_NAME_LENGTH
+                value.split(' ').join('').length === 0 ||
+                value.length > MAX_SET_NAME_LENGTH
               }
               style={{
                 ...visualizingButton,

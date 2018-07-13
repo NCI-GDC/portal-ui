@@ -184,7 +184,8 @@ export const UploadAndSaveSetModal = compose(
           });
           addOrReplace({ dispatch, existingSet, setName, setId, type });
         },
-        disabled: !setName.split(' ').join('') || setName.length > MAX_SET_NAME_LENGTH,
+        disabled:
+          !setName.split(' ').join('') || setName.length > MAX_SET_NAME_LENGTH,
       }))(CreateSetButton)}
     />
   ),

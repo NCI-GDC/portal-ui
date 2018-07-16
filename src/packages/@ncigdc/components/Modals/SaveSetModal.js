@@ -127,7 +127,7 @@ const SaveSetModal = ({
       {!inputTotal &&
         inputTotal !== 0 && (
           <WarningBox>
-            should have at least {pluralize(displayType, 0, true)}
+            Save at least {pluralize(displayType, 0, true)}.
           </WarningBox>
         )}
       <InputWithWarning

@@ -60,7 +60,7 @@ const downloadCart = ({
   setState: Function,
 }) => {
   const { authorized, unauthorized } = authPartitionFiles({ user, files });
-  if (!user) {
+  if (!user && unauthorized.doc_count > 0) {
     dispatch(
       setModal(
         <NoAccessModal

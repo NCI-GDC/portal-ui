@@ -223,7 +223,7 @@ export const IMPACT_SHORT_FORMS = {
   },
 };
 
-export const FAKE_USER = localStorage.ALLOW_FAKE_USER
+export const FAKE_USER = process.env.ALLOW_FAKE_USER
   ? {
       username: 'DEV_USER',
       projects: {
@@ -238,3 +238,5 @@ export const FAKE_USER = localStorage.ALLOW_FAKE_USER
       },
     }
   : null;
+
+export const IS_DEV = process.env.NODE_ENV === 'development';

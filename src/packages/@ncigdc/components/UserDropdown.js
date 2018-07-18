@@ -37,10 +37,6 @@ const DropdownItemStyled = styled(DropdownItem, {
 });
 
 const logout = () => {
-  if (IS_DEV) {
-    localStorage.setItem('ALLOW_FAKE_USER', '');
-  }
-
   if (window.location.port) {
     window.location.assign(
       IS_DEV

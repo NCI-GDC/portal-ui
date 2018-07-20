@@ -101,7 +101,7 @@ export default compose(
     }
     data={data}
     style={{ width: '100%', overflow: 'visible' }}
-    title="Previous File Versions"
+    title="File Versions"
     emptyMessage="No Previous File Versions"
     emptyMessageStyle={{ background: '#fff' }}
     headings={[

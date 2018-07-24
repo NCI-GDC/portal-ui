@@ -8,8 +8,8 @@ import urlJoin from 'url-join';
 
 import { authPartitionFiles } from '@ncigdc/utils/auth';
 import DownloadButton from '@ncigdc/components/DownloadButton';
-import NoAccessModal from '@ncigdc/components/Modals/NoAccessModal';
 import BaseModal from '@ncigdc/components/Modals/BaseModal';
+import LoginButton from '@ncigdc/components/LoginButton';
 
 import DownCaretIcon from 'react-icons/lib/fa/caret-down';
 
@@ -60,19 +60,7 @@ const downloadCart = ({
   setState: Function,
 }) => {
   const { authorized, unauthorized } = authPartitionFiles({ user, files });
-  if (!user && unauthorized.doc_count > 0) {
-    dispatch(
-      setModal(
-        <NoAccessModal
-          message={
-            <div>
-              <p>You don't have access to the file(s).</p>
-            </div>
-          }
-        />,
-      ),
-    );
-  } else if (user && unauthorized.doc_count > 0) {
+  if (unauthorized.doc_count > 0) {
     dispatch(
       setModal(
         <BaseModal
@@ -112,11 +100,17 @@ const downloadCart = ({
               files that you are not authorized to download.
             </p>
           </div>
-          <p>
-            Please request dbGaP Access to the project (<a href="https://wiki.oicr.on.ca/pages/viewpage.action?spaceKey=GDCSPECS&title=User+messages">
-              click here for more information
-            </a>).
-          </p>
+          {user ? (
+            <p>
+              Please request dbGaP Access to the project (<a href="https://wiki.oicr.on.ca/pages/viewpage.action?spaceKey=GDCSPECS&title=User+messages">
+                click here for more information
+              </a>).
+            </p>
+          ) : (
+            <p>
+              Please <LoginButton />
+            </p>
+          )}
         </BaseModal>,
       ),
     );

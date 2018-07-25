@@ -221,7 +221,7 @@ export default compose(
                               <Th key="agents">Therapeutic Agents</Th>,
                               <Th key="intent_type">Treatment Intent Type</Th>,
                               <Th key="therapy">Treatment or Therapy</Th>,
-                              <Th key="days">Days to Treatment</Th>,
+                              <Th key="days">Days to Treatment Start</Th>,
                             ]}
                             body={
                               <tbody>

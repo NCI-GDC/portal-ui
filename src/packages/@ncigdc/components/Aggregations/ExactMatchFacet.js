@@ -99,7 +99,7 @@ const ExactMatchFacet = compose(
                       style={
                         inputValue
                           ? null
-                          : { color: 'grey', cursor: 'not-allowed' }
+                          : { color: '#6F6F6F', cursor: 'not-allowed' }
                       }
                     >
                       Go!

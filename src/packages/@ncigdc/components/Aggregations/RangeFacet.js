@@ -344,7 +344,7 @@ const RangeFacet = (props: TProps) => {
               dark={!!innerContent.length}
               merge="replace"
               query={innerContent.length ? query : null}
-              style={innerContent.length ? null : { color: 'grey' }}
+              style={innerContent.length ? null : { color: '#6F6F6F' }}
             >
               Go!
             </GoLink>

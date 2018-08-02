@@ -222,3 +222,21 @@ export const IMPACT_SHORT_FORMS = {
     unknown: 'UN',
   },
 };
+
+export const FAKE_USER = process.env.REACT_APP_ALLOW_FAKE_USER
+  ? {
+      username: 'DEV_USER',
+      projects: {
+        phs_ids: {
+          phs000178: ['_member_', 'read', 'delete'],
+        },
+        gdc_ids: {
+          'TCGA-LIHC': ['read', 'delete', 'create', 'update', 'read_report'],
+          'CGCI-BLGSP': ['create', 'update', 'release', 'read_report'],
+          'TCGA-DEV3': ['read', 'create', 'update', 'release', 'delete'],
+        },
+      },
+    }
+  : null;
+
+export const IS_DEV = process.env.NODE_ENV === 'development';

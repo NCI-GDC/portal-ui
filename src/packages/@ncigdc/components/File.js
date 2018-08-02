@@ -250,9 +250,6 @@ const File = ({
           </Row>
         )}
       <Row style={{ paddingTop: '2rem', alignItems: 'flex-start' }}>
-        <FileVersionsTable fileId={node.file_id} />
-      </Row>
-      <Row style={{ paddingTop: '2rem', alignItems: 'flex-start' }}>
         <AssociatedEntitiesTable fileId={node.file_id} />
       </Row>
 
@@ -439,6 +436,9 @@ const File = ({
           </Column>
         </Row>
       )}
+      <Row style={{ paddingTop: '2rem', alignItems: 'flex-start' }}>
+        <FileVersionsTable fileId={node.file_id} />
+      </Row>
     </Column>
   );
 };

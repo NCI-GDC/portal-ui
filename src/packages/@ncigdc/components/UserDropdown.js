@@ -17,6 +17,7 @@ import UserIcon from '@ncigdc/theme/icons/User';
 import SignOutIcon from '@ncigdc/theme/icons/SignOut';
 import UserProfileModal from '@ncigdc/components/Modals/UserProfileModal';
 import { setModal } from '@ncigdc/dux/modal';
+import { IS_DEV } from '@ncigdc/utils/constants';
 
 const NavLink = styled.a({
   padding: '15px 13px',
@@ -38,14 +39,16 @@ const DropdownItemStyled = styled(DropdownItem, {
 const logout = () => {
   if (window.location.port) {
     window.location.assign(
-      urlJoin(
-        AUTH,
-        `logout?next=:${window.location.port}${window.location.pathname}`,
-      ),
+      IS_DEV
+        ? ``
+        : urlJoin(
+            AUTH,
+            `logout?next=:${window.location.port}${window.location.pathname}`,
+          ),
     );
   } else {
     window.location.assign(
-      urlJoin(AUTH, `logout?next=${window.location.pathname}`),
+      IS_DEV ? `` : urlJoin(AUTH, `logout?next=${window.location.pathname}`),
     );
   }
 };

@@ -8,6 +8,7 @@ import {
 } from 'recompose';
 import moment from 'moment';
 
+import DownloadTableToTsvButton from '@ncigdc/components/DownloadTableToTsvButton';
 import BubbleIcon from '@ncigdc/theme/icons/BubbleIcon';
 import DownloadIcon from '@ncigdc/theme/icons/Download';
 import { withTheme } from '@ncigdc/theme';
@@ -60,9 +61,10 @@ export default compose(
   branch(({ data }) => !data.length, renderComponent(() => <span />)),
 )(({ data, fileId, theme }) => (
   <EntityPageHorizontalTable
+    tableId="file-history-table"
     rightComponent={
       <DropDown
-        className={'test-download-file-versions'}
+        className="test-download-file-versions"
         button={
           <Button
             leftIcon={<DownloadIcon />}
@@ -77,18 +79,16 @@ export default compose(
         }
         dropdownStyle={{ ...styles.dropdownContainer }}
       >
-        <DownloadButton
-          className="data-download-clinical-tsv"
-          style={styles.button(theme)}
-          endpoint={`/history/${fileId}`}
-          format={'TSV'}
-          activeText="Processing"
-          inactiveText="TSV"
-          method="GET"
-          altMessage={false}
+        <DownloadTableToTsvButton
+          className="test-download-file-versions-tsv"
+          leftIcon={<DownloadIcon />}
+          selector="#file-history-table"
+          filename={`file-history-${fileId}.tsv`}
+          style={{ ...styles.button(theme), borderColor: 'transparent' }}
+          displayTooltip={false}
         />
         <DownloadButton
-          className="data-download-clinical-tsv"
+          className="test-download-file-versions-json"
           endpoint={`/history/${fileId}`}
           style={styles.button(theme)}
           format={'JSON'}
@@ -101,7 +101,7 @@ export default compose(
     }
     data={data}
     style={{ width: '100%', overflow: 'visible' }}
-    title="Previous File Versions"
+    title="File Versions"
     emptyMessage="No Previous File Versions"
     emptyMessageStyle={{ background: '#fff' }}
     headings={[

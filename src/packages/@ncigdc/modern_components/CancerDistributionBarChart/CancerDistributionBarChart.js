@@ -188,7 +188,7 @@ export default compose(
     const checkers = [
       { key: 'gain2', name: 'High Level Amplification', color: '#c8190d' },
       { key: 'gain1', name: 'Gain', color: '#f97dd7' },
-      { key: 'loss1', name: 'Shallow Loss', color: '#71cdf4' },
+      { key: 'loss1', name: 'Shallow Loss', color: '#45c1f5' },
       { key: 'loss2', name: 'Deep Loss', color: '#2b6ca0' },
     ];
     const mutationCancerDistData = (cases.filtered || {
@@ -266,7 +266,7 @@ export default compose(
                 <br />
                 {d[f.key].toLocaleString()}
                 &nbsp;/&nbsp;
-                {d.num_cases_total.toLocaleString()}&nbsp; ({(d[f.key] * 100).toFixed(2)}%)
+                {d.num_cases_total.toLocaleString()}&nbsp; ({(d[f.key] / d.num_cases_total * 100).toFixed(2)}%)
               </span>
             ),
           }),
@@ -406,6 +406,7 @@ export default compose(
                           marginRight: '6px',
                           marginTop: '3px',
                           verticalAlign: 'middle',
+                          lineHeight: '16px',
                         }}
                       >
                         {cna[f.key] ? '✓' : <span>&nbsp;</span>}

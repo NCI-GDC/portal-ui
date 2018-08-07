@@ -186,10 +186,10 @@ export default compose(
     };
 
     const checkers = [
-      { key: 'gain2', name: 'High Level Amplification', color: '#c8190d' },
-      { key: 'gain1', name: 'Gain', color: '#f97dd7' },
-      { key: 'loss1', name: 'Shallow Loss', color: '#45c1f5' },
-      { key: 'loss2', name: 'Deep Loss', color: '#2b6ca0' },
+      { key: 'gain2', name: 'High Level Amplification', color: '#900000' },
+      { key: 'gain1', name: 'Gain', color: '#d33737' },
+      { key: 'loss1', name: 'Shallow Loss', color: '#0d71e8' },
+      { key: 'loss2', name: 'Deep Loss', color: '#00457c' },
     ];
     const mutationCancerDistData = (cases.filtered || {
       project__project_id: { buckets: [] },

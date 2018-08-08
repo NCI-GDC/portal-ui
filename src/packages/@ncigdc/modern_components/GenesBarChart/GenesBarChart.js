@@ -14,6 +14,7 @@ import { withTheme } from '@ncigdc/theme';
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import DownloadVisualizationButton from '@ncigdc/components/DownloadVisualizationButton';
 import BarChart from '@ncigdc/components/Charts/BarChart';
+import FilteredStackedBarChart from '@ncigdc/components/Charts/FilteredStackedBarChart';
 import wrapSvg from '@ncigdc/utils/wrapSvg';
 import VisualizationHeader from '@ncigdc/components/VisualizationHeader';
 import { createClassicRenderer } from '@ncigdc/modern_components/Query';
@@ -120,6 +121,7 @@ const Component = compose(
       explore: { genes = { hits: { edges: [] } }, cases, filteredCases },
     },
     context = 'explore',
+    showingMore,
     handleClickGene,
     style,
   }) => {
@@ -130,7 +132,6 @@ const Component = compose(
       }),
       {},
     );
-
     const tooltipContext = (ctx, { symbol, score = 0 }) => {
       switch (ctx) {
         case 'project': {
@@ -180,7 +181,156 @@ const Component = compose(
         tooltip: tooltipContext(context, g),
         onClick: () => handleClickGene(g, mutatedGenesChartData),
       }));
-
+      const checkers = [
+        { key: 'loss2', color: '#00457c' },
+        { key: 'loss1', color: '#0d71e8' },
+        { key: 'gain1', color: '#d33737' },
+        { key: 'gain2', color: '#900000' },
+      ];
+      const cnaNodes = [{  
+          symbol:"TP53",
+          gain2:2000,
+          gain1:1500,
+          loss1:2200,
+          loss2:1700,
+        },{  
+          symbol:"TTN",
+          gain2:200,
+          gain1:150,
+          loss1:220,
+          loss2:170,
+        },{  
+          symbol:"MUC16",
+          gain2:200,
+          gain1:150,
+          loss1:220,
+          loss2:170,
+        },{
+          symbol:"CSMD3",
+          gain2:200,
+          gain1:150,
+          loss1:220,
+          loss2:170,
+        },{  
+          symbol:"SYNE1",
+          gain2:200,
+          gain1:150,
+          loss1:220,
+          loss2:170,
+        },{  
+          symbol:"RYR2",
+          gain2:200,
+          gain1:150,
+          loss1:220,
+          loss2:170,
+        },{
+          symbol:"LRP1B",
+          gain2:200,
+          gain1:150,
+          loss1:220,
+          loss2:170,
+        },{  
+          symbol:"FLG",
+          gain2:200,
+          gain1:150,
+          loss1:220,
+          loss2:170,
+        },{  
+          symbol:"PIK3CA",
+          gain2:200,
+          gain1:150,
+          loss1:220,
+          loss2:170,
+        },{  
+          symbol:"USH2A",
+          gain2:200,
+          gain1:150,
+          loss1:220,
+          loss2:170,
+        },{  
+          symbol:"PCLO",
+          gain2:200,
+          gain1:150,
+          loss1:220,
+          loss2:170,
+        },{  
+          symbol:"OBSCN",
+          gain2:200,
+          gain1:150,
+          loss1:220,
+          loss2:170,
+        },{  
+          symbol:"MUC4",
+          gain2:200,
+          gain1:150,
+          loss1:220,
+          loss2:170,
+        },{  
+          symbol:"ZFHX4",
+          gain2:200,
+          gain1:150,
+          loss1:220,
+          loss2:170,
+        },{  
+          symbol:"DNAH5",
+          gain2:200,
+          gain1:150,
+          loss1:220,
+          loss2:170,
+        },{  
+          symbol:"CSMD1",
+          gain2:200,
+          gain1:150,
+          loss1:220,
+          loss2:170,
+        },{  
+          symbol:"XIRP2",
+          gain2:200,
+          gain1:150,
+          loss1:220,
+          loss2:170,
+        },{  
+          symbol:"DST",
+          gain2:200,
+          gain1:150,
+          loss1:220,
+          loss2:170,
+        },{  
+          symbol:"FAT3",
+          gain2:200,
+          gain1:150,
+          loss1:220,
+          loss2:170,
+        },{  
+          symbol:"FAT4",
+          gain2:200,
+          gain1:150,
+          loss1:220,
+          loss2:170,
+        }]
+      const cnaGenesChartData = cnaNodes
+        .sort((a, b) => checkers.reduce((acc, c) => b[c.key] - a[c.key] + acc, 0))
+        .map(g => ({
+          symbol: g.symbol,
+          loss2:
+            context === 'project' && projectId
+              ? g.loss2 / numCasesAggByProject[projectId] * 100
+              : g.loss2 / filteredCases.hits.total * 100,
+          loss1:
+            context === 'project' && projectId
+              ? g.loss1 / numCasesAggByProject[projectId] * 100
+              : g.loss1 / filteredCases.hits.total * 100,
+          gain1:
+            context === 'project' && projectId
+              ? g.gain1 / numCasesAggByProject[projectId] * 100
+              : g.gain1 / filteredCases.hits.total * 100,
+          gain2:
+            context === 'project' && projectId
+              ? g.gain2 / numCasesAggByProject[projectId] * 100
+              : g.gain2 / filteredCases.hits.total * 100,
+          tooltips: checkers.reduce((acc, checker) => ({...acc, [checker.key]: tooltipContext(context, { symbol: g.symbol, score: g[checker.key] })}),0),
+          onClick: () => handleClickGene(g, cnaGenesChartData),
+        }));
     return (
       <div style={style}>
         {!!mutatedGenesChartData && (
@@ -223,7 +373,64 @@ const Component = compose(
                         textFill: theme.greyScale3,
                       },
                       bars: { fill: theme.secondary },
-                      tooltips: {
+                    tooltips:{
+                        fill: '#fff',
+                        stroke: theme.greyScale4,
+                        textFill: theme.greyScale3,
+                      },
+                    }}
+                  />
+                </Row>
+              </div>
+            )}
+
+            {showingMore && (<VisualizationHeader
+              title={TITLE}
+              buttons={[
+                <DownloadVisualizationButton
+                  key="download"
+                  disabled={!mutatedGenesChartData.length}
+                  svg={() =>
+                    wrapSvg({
+                      selector: '#mutated-genes-chart svg',
+                      title: TITLE,
+                    })}
+                  data={mutatedGenesChartData.map(d => ({
+                    label: d.label,
+                    value: d.value,
+                  }))}
+                  slug="most-frequently-mutated-genes-bar-chart"
+                  tooltipHTML="Download image or data"
+                  noText
+                />,
+              ]}
+            />)}
+            {!!mutatedGenesChartData.length && showingMore && (
+              <div id="mutated-genes-chart">
+                <Row style={{ paddingTop: '2rem' }}>
+                  <FilteredStackedBarChart
+                    data={cnaGenesChartData}
+                    yAxis={{ title: '% of Cases Affected' }}
+                    height={CHART_HEIGHT}
+                    colors={checkers.reduce(
+                      (acc, f) => ({ ...acc, [f.key]: f.color }),
+                      0,
+                    )}
+                    displayFilters={checkers.reduce(
+                      (acc, f) => ({ ...acc, [f.key]: true }),
+                      0,
+                    )}
+                    styles={{
+                      xAxis: {
+                        stroke: theme.greyScale4,
+                        textFill: theme.greyScale3,
+                      },
+                      yAxis: {
+                        stroke: theme.greyScale4,
+                        textFill: theme.greyScale3,
+                      },
+                      bars: { fill: theme.secondary },
+                    tooltips:{
                         fill: '#fff',
                         stroke: theme.greyScale4,
                         textFill: theme.greyScale3,

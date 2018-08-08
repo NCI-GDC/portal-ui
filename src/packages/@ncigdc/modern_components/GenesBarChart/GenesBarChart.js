@@ -14,13 +14,12 @@ import { withTheme } from '@ncigdc/theme';
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import DownloadVisualizationButton from '@ncigdc/components/DownloadVisualizationButton';
 import BarChart from '@ncigdc/components/Charts/BarChart';
-import FilteredStackedBarChart from '@ncigdc/components/Charts/FilteredStackedBarChart';
 import wrapSvg from '@ncigdc/utils/wrapSvg';
 import VisualizationHeader from '@ncigdc/components/VisualizationHeader';
 import { createClassicRenderer } from '@ncigdc/modern_components/Query';
 
 const MUTATED_TITLE = 'Distribution of Most Frequently Mutated Genes';
-const CNA_TITLE = 'Distribution of Most Frequently Mutated Genes';
+const CNA_TITLE = 'Distribution of Most Frequently Copy Number Altered Genes';
 const CHART_HEIGHT = 285;
 const COMPONENT_NAME = 'GenesBarChart';
 
@@ -183,10 +182,10 @@ const Component = compose(
         onClick: () => handleClickGene(g, mutatedGenesChartData),
       }));
       const checkers = [
-        { key: 'loss2', color: '#00457c' },
-        { key: 'loss1', color: '#0d71e8' },
-        { key: 'gain1', color: '#d33737' },
-        { key: 'gain2', color: '#900000' },
+        { key: 'loss2',},
+        { key: 'loss1',},
+        { key: 'gain1',},
+        { key: 'gain2',},
       ];
       const cnaNodes = [{  
           symbol:"TP53",
@@ -311,27 +310,16 @@ const Component = compose(
         }]
       const cnaGenesChartData = cnaNodes
         .sort((a, b) => checkers.reduce((acc, c) => b[c.key] - a[c.key] + acc, 0))
-        .map(g => ({
-          symbol: g.symbol,
-          loss2:
-            context === 'project' && projectId
-              ? g.loss2 / numCasesAggByProject[projectId] * 100
-              : g.loss2 / filteredCases.hits.total * 100,
-          loss1:
-            context === 'project' && projectId
-              ? g.loss1 / numCasesAggByProject[projectId] * 100
-              : g.loss1 / filteredCases.hits.total * 100,
-          gain1:
-            context === 'project' && projectId
-              ? g.gain1 / numCasesAggByProject[projectId] * 100
-              : g.gain1 / filteredCases.hits.total * 100,
-          gain2:
-            context === 'project' && projectId
-              ? g.gain2 / numCasesAggByProject[projectId] * 100
-              : g.gain2 / filteredCases.hits.total * 100,
-          tooltips: checkers.reduce((acc, checker) => ({...acc, [checker.key]: tooltipContext(context, { symbol: g.symbol, score: g[checker.key] })}),0),
-          onClick: () => handleClickGene(g, cnaGenesChartData),
-        }));
+        .map(g => {
+          const score = checkers.reduce((acc, c) => g[c.key] + acc, 0);
+          return {
+            label: g.symbol,
+            value: context === 'project' && projectId
+              ? score / numCasesAggByProject[projectId] * 100
+              : score / filteredCases.hits.total * 100,
+              tooltip: tooltipContext(context, {symbol: g.symbol, score: score}),
+              onClick: () => handleClickGene(g, cnaGenesChartData),
+          }});
     return (
       <div style={style}>
         {!!mutatedGenesChartData && (
@@ -406,16 +394,12 @@ const Component = compose(
             {!!mutatedGenesChartData.length && showingMore && (
               <div id="cna-genes-chart">
                 <Row style={{ paddingTop: '2rem' }}>
-                  <FilteredStackedBarChart
+                  <BarChart
                     data={cnaGenesChartData}
                     yAxis={{ title: '% of Cases Affected' }}
                     height={CHART_HEIGHT}
                     colors={checkers.reduce(
                       (acc, f) => ({ ...acc, [f.key]: f.color }),
-                      0,
-                    )}
-                    displayFilters={checkers.reduce(
-                      (acc, f) => ({ ...acc, [f.key]: true }),
                       0,
                     )}
                     styles={{

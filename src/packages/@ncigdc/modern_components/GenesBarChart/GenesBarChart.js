@@ -19,7 +19,8 @@ import wrapSvg from '@ncigdc/utils/wrapSvg';
 import VisualizationHeader from '@ncigdc/components/VisualizationHeader';
 import { createClassicRenderer } from '@ncigdc/modern_components/Query';
 
-const TITLE = 'Distribution of Most Frequently Mutated Genes';
+const MUTATED_TITLE = 'Distribution of Most Frequently Mutated Genes';
+const CNA_TITLE = 'Distribution of Most Frequently Mutated Genes';
 const CHART_HEIGHT = 285;
 const COMPONENT_NAME = 'GenesBarChart';
 
@@ -336,7 +337,7 @@ const Component = compose(
         {!!mutatedGenesChartData && (
           <Column style={{ paddingLeft: '2rem' }}>
             <VisualizationHeader
-              title={TITLE}
+              title={MUTATED_TITLE}
               buttons={[
                 <DownloadVisualizationButton
                   key="download"
@@ -344,7 +345,7 @@ const Component = compose(
                   svg={() =>
                     wrapSvg({
                       selector: '#mutated-genes-chart svg',
-                      title: TITLE,
+                      title: MUTATED_TITLE,
                     })}
                   data={mutatedGenesChartData.map(d => ({
                     label: d.label,
@@ -385,28 +386,25 @@ const Component = compose(
             )}
 
             {showingMore && (<VisualizationHeader
-              title={TITLE}
+              title={CNA_TITLE}
               buttons={[
                 <DownloadVisualizationButton
                   key="download"
-                  disabled={!mutatedGenesChartData.length}
+                  disabled={!cnaGenesChartData.length}
                   svg={() =>
                     wrapSvg({
-                      selector: '#mutated-genes-chart svg',
-                      title: TITLE,
+                      selector: '#cna-genes-chart svg',
+                      title: CNA_TITLE,
                     })}
-                  data={mutatedGenesChartData.map(d => ({
-                    label: d.label,
-                    value: d.value,
-                  }))}
-                  slug="most-frequently-mutated-genes-bar-chart"
+                  data={cnaGenesChartData.map(d => d)}
+                  slug="most-frequently-cna-genes-bar-chart"
                   tooltipHTML="Download image or data"
                   noText
                 />,
               ]}
             />)}
             {!!mutatedGenesChartData.length && showingMore && (
-              <div id="mutated-genes-chart">
+              <div id="cna-genes-chart">
                 <Row style={{ paddingTop: '2rem' }}>
                   <FilteredStackedBarChart
                     data={cnaGenesChartData}

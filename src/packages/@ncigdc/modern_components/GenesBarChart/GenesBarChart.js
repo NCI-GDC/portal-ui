@@ -19,7 +19,7 @@ import VisualizationHeader from '@ncigdc/components/VisualizationHeader';
 import { createClassicRenderer } from '@ncigdc/modern_components/Query';
 
 const MUTATED_TITLE = 'Distribution of Most Frequently Mutated Genes';
-const CNA_TITLE = 'Distribution of Most Frequently Copy Number Altered Genes';
+const CNA_TITLE = 'Distribution of Most Frequently Copy Number Variation Genes';
 const CHART_HEIGHT = 285;
 const COMPONENT_NAME = 'GenesBarChart';
 
@@ -197,38 +197,38 @@ const Component = compose(
         loss2:1700,
       },{  
         symbol:"TTN",
-        gain2:200,
+        gain2:2000,
         gain1:150,
         loss1:220,
         loss2:170,
       },{  
         symbol:"MUC16",
         gain2:200,
-        gain1:150,
+        gain1:1500,
         loss1:220,
         loss2:170,
       },{
         symbol:"CSMD3",
         gain2:200,
         gain1:150,
-        loss1:220,
+        loss1:2200,
         loss2:170,
       },{  
         symbol:"SYNE1",
         gain2:200,
         gain1:150,
         loss1:220,
-        loss2:170,
+        loss2:1700,
       },{  
         symbol:"RYR2",
-        gain2:200,
+        gain2:1000,
         gain1:150,
         loss1:220,
         loss2:170,
       },{
         symbol:"LRP1B",
         gain2:200,
-        gain1:150,
+        gain1:1150,
         loss1:220,
         loss2:170,
       },{  
@@ -236,42 +236,42 @@ const Component = compose(
         gain2:200,
         gain1:150,
         loss1:220,
-        loss2:170,
+        loss2:1170,
       },{  
         symbol:"PIK3CA",
         gain2:200,
-        gain1:150,
+        gain1:1990,
         loss1:220,
         loss2:170,
       },{  
         symbol:"USH2A",
         gain2:200,
         gain1:150,
-        loss1:220,
+        loss1:2000,
         loss2:170,
       },{  
         symbol:"PCLO",
         gain2:200,
         gain1:150,
         loss1:220,
-        loss2:170,
+        loss2:1700,
       },{  
         symbol:"OBSCN",
         gain2:200,
-        gain1:150,
+        gain1:1500,
         loss1:220,
         loss2:170,
       },{  
         symbol:"MUC4",
-        gain2:200,
-        gain1:150,
+        gain2:2000,
+        gain1:1500,
         loss1:220,
         loss2:170,
       },{  
         symbol:"ZFHX4",
-        gain2:200,
+        gain2:2000,
         gain1:150,
-        loss1:220,
+        loss1:2200,
         loss2:170,
       },{  
         symbol:"DNAH5",

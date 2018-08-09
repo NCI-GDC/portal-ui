@@ -37,7 +37,7 @@ export default compose(
   withFilters(),
   withState('defaultSurvivalData', 'setDefaultSurvivalData', {}),
   withState('selectedSurvivalData', 'setSelectedSurvivalData', {}),
-  withState('showingMore','setShowingMore', false),
+  withState('showingMore', 'setShowingMore', false),
   withState('state', 'setState', initialState),
   withProps(
     ({
@@ -127,7 +127,7 @@ export default compose(
               onClickGene={handleClickGene}
               showingMore={showingMore}
             />
-          </Column> 
+          </Column>
           <Column flex="none" style={{ width: '50%' }}>
             <SurvivalPlotWrapper
               {...survivalData}
@@ -138,18 +138,18 @@ export default compose(
           </Column>
         </Row>
         <Row style={{ margin: 'auto' }}>
-            <div 
-              onClick={() => setShowingMore(!showingMore)}
-              style = {{
-                padding: '0.5rem 1rem',
-                cursor: 'pointer',
-                borderStyle: 'solid',
-                borderWidth: '1px',
-              }}
-            >
-              Show {showingMore ? 'Less' : 'More'}
-            </div>
-          </Row>
+          <div
+            onClick={() => setShowingMore(!showingMore)}
+            style={{
+              padding: '0.5rem 1rem',
+              cursor: 'pointer',
+              borderStyle: 'solid',
+              borderWidth: '1px',
+            }}
+          >
+            Show {showingMore ? 'Less' : 'More'}
+          </div>
+        </Row>
         <GenesTable
           defaultFilters={filters}
           survivalData={survivalData}

@@ -13,6 +13,7 @@ import wrapSvg from '@ncigdc/utils/wrapSvg';
 import ExploreLink from '@ncigdc/components/Links/ExploreLink';
 import ProjectsLink from '@ncigdc/components/Links/ProjectsLink';
 import { TGroupFilter } from '@ncigdc/utils/filters/types';
+import AngleIcon from '@ncigdc/theme/icons/AngleIcon';
 
 type TProps = {
   style: Object,
@@ -99,6 +100,7 @@ export default compose(
   withRouter,
   withTheme,
   withState('cna', 'setCna', initalCna),
+  withState('co', 'setCo', false),
 )(
   (
     {
@@ -110,6 +112,8 @@ export default compose(
       style,
       cna,
       setCna,
+      co,
+      setCo,
       type, //mutation or CNA
     }: TProps = {},
   ) => {
@@ -370,50 +374,67 @@ export default compose(
                     zIndex: 1,
                   }}
                 >
-                  <Row>
-                    <span
-                      onClick={() => setCna(initalCna)}
+                  <span
+                    style={{ cursor: 'pointer', width: '175px' }}
+                    onClick={() => setCo(!co)}
+                  >
+                    <AngleIcon
                       style={{
-                        color: 'rgb(27, 103, 145)',
-                        cursor: 'pointer',
+                        paddingRight: '0.25rem',
+                        transform: `rotate(${co ? 270 : 0}deg)`,
                       }}
-                    >
-                      Select All
-                    </span>
-                    <span>&nbsp;|&nbsp;</span>
-                    <span
-                      onClick={() => setCna(mapValues(initalCna, () => false))}
-                      style={{
-                        color: 'rgb(27, 103, 145)',
-                        cursor: 'pointer',
-                      }}
-                    >
-                      Deselect All
-                    </span>
-                  </Row>
-                  {checkers.map(f => (
-                    <label key={f.key}>
+                    />
+                    Legend
+                  </span>
+                  {!co && (
+                    <Row>
                       <span
-                        onClick={() => setCna({ ...cna, [f.key]: !cna[f.key] })}
+                        onClick={() => setCna(initalCna)}
                         style={{
-                          color: f.color,
-                          textAlign: 'center',
-                          border: '2px solid',
-                          height: '18px',
-                          width: '18px',
+                          color: 'rgb(27, 103, 145)',
                           cursor: 'pointer',
-                          display: 'inline-block',
-                          marginRight: '6px',
-                          marginTop: '3px',
-                          verticalAlign: 'middle',
-                          lineHeight: '16px',
                         }}
                       >
-                        {cna[f.key] ? '✓' : <span>&nbsp;</span>}
+                        Select All
                       </span>
-                      {f.name}
-                    </label>
-                  ))}
+                      <span>&nbsp;|&nbsp;</span>
+                      <span
+                        onClick={() =>
+                          setCna(mapValues(initalCna, () => false))}
+                        style={{
+                          color: 'rgb(27, 103, 145)',
+                          cursor: 'pointer',
+                        }}
+                      >
+                        Deselect All
+                      </span>
+                    </Row>
+                  )}
+                  {!co &&
+                    checkers.map(f => (
+                      <label key={f.key}>
+                        <span
+                          onClick={() =>
+                            setCna({ ...cna, [f.key]: !cna[f.key] })}
+                          style={{
+                            color: f.color,
+                            textAlign: 'center',
+                            border: '2px solid',
+                            height: '18px',
+                            width: '18px',
+                            cursor: 'pointer',
+                            display: 'inline-block',
+                            marginRight: '6px',
+                            marginTop: '3px',
+                            verticalAlign: 'middle',
+                            lineHeight: '16px',
+                          }}
+                        >
+                          {cna[f.key] ? '✓' : <span>&nbsp;</span>}
+                        </span>
+                        {f.name}
+                      </label>
+                    ))}
                 </Column>
                 <FilteredStackedBarChart
                   margin={CHART_MARGINS}

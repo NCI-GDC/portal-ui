@@ -8,6 +8,10 @@ export const colorMap = {
   stop_lost: '#d3ec00',
   initiator_codon_variant: '#5abaff',
   stop_gained: '#af57db',
+  deep_loss: '#00457c',
+  shallow_loss: '#0d71e8',
+  amplification: '#d33737',
+  gain: '#900000',
 };
 
 export const consequenceTypes = Object.keys(colorMap);

@@ -179,6 +179,7 @@ export const buildOccurrences: TBuildOccurrences = (
   genes,
   consequenceTypes = [],
   impacts,
+  cnv_occurrences,
 ) => {
   const allowedCaseIds = new Set();
   for (let i = 0; i < donors.length; i += 1) {
@@ -191,9 +192,10 @@ export const buildOccurrences: TBuildOccurrences = (
     geneIdToSymbol[gene.gene_id] = gene.symbol;
   }
 
-  const observations = [];
+  let observations = [];
   const donorIds = new Set();
   const geneIds = new Set();
+  let cnvObservations = [];
   for (let i = 0; i < occurrences.length; i += 1) {
     const {
       ssm: { consequence, ssm_id },
@@ -225,6 +227,7 @@ export const buildOccurrences: TBuildOccurrences = (
             donorId: case_id,
             geneId: gene_id,
             consequence: consequence_type,
+            type: 'mutation',
 
             // optional
             geneSymbol,
@@ -235,10 +238,29 @@ export const buildOccurrences: TBuildOccurrences = (
     }
   }
 
+  for (let i = 0; i < cnv_occurrences.length; i += 1) {
+    const { cnv_id, cnv_change, score, gene_id, case_id } = cnv_occurrences[i];
+    if (allowedCaseIds.has(case_id)) {
+      if (score !== 0 && gene_id) {
+        donorIds.add(case_id);
+        geneIds.add(gene_id);
+        cnvObservations.push({
+          id: cnv_id,
+          donorId: case_id,
+          geneId: gene_id,
+          geneSymbol: geneIdToSymbol[gene_id],
+          cnv_change,
+          type: 'cnv',
+        });
+      }
+    }
+  }
+
   return {
     observations,
     donorIds,
     geneIds,
+    cnvObservations,
   };
 };
 

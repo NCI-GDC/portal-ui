@@ -259,6 +259,7 @@ const OncoGridWrapper = compose(
         trackPadding: 30,
         impacts,
         consequenceTypes: filteredConsequenceTypes,
+        cnvOccurrencesData: responses.cnv_occurrences,
       });
 
       performanceTracker.end('oncogrid:process', performanceContext);
@@ -268,6 +269,7 @@ const OncoGridWrapper = compose(
 
         performanceTracker.begin('oncogrid:init');
         const grid = new OncoGrid(gridParams);
+
         performanceTracker.end('oncogrid:init', performanceContext);
         grid.resize = debounce(grid.resize.bind(grid), 200);
 

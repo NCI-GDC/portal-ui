@@ -59,6 +59,7 @@ export default function({
   consequenceTypes,
   impacts,
   grid = true,
+  cnvOccurrencesData = [],
 }: {
   donorData: Array<TDonorInput>,
   geneData: Array<TGeneInput>,
@@ -71,15 +72,18 @@ export default function({
   consequenceTypes: Array<string>,
   impacts: Array<string>,
   grid?: boolean,
+  cnvOccurrencesData?: Array<Object>,
 }): ?Object {
-  const { observations, donorIds, geneIds } = buildOccurrences(
+  const { observations, donorIds, geneIds, cnvObservations } = buildOccurrences(
     occurrencesData,
     donorData,
     geneData,
     consequenceTypes,
     impacts,
+    cnvOccurrencesData,
   );
-  if (observations.length === 0) return null;
+
+  if (!observations.length && !cnvObservations.length) return null;
   const donors = mapDonors(donorData, donorIds);
   const genes = mapGenes(geneData, geneIds);
 
@@ -127,6 +131,7 @@ export default function({
   };
 
   return {
+    cnvObservations,
     donors,
     genes,
     observations,

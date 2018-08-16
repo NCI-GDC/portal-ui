@@ -1,5 +1,6 @@
 /* @flow */
 import { dataTypeTracks } from './tracks';
+import _ from 'lodash';
 
 const dataTypesInitial = dataTypeTracks.reduce(
   (acc, d) => ({ ...acc, [d.fieldName]: 0 }),
@@ -221,18 +222,30 @@ export const buildOccurrences: TBuildOccurrences = (
           donorIds.add(case_id);
           geneIds.add(gene_id);
 
-          observations.push({
-            // required
-            id: ssm_id,
-            donorId: case_id,
-            geneId: gene_id,
-            consequence: consequence_type,
-            type: 'mutation',
+          // find index in observations
+          let match = _.findIndex(
+            observations,
+            o =>
+              o.donorId === case_id &&
+              o.geneId === gene_id &&
+              o.consequence === consequence_type,
+          );
+          if (match > -1) {
+            observations[match].ids.push(ssm_id);
+          } else {
+            observations.push({
+              // required
+              ids: [ssm_id],
+              donorId: case_id,
+              geneId: gene_id,
+              consequence: consequence_type,
+              type: 'mutation',
 
-            // optional
-            geneSymbol,
-            functionalImpact: vep_impact,
-          });
+              // optional
+              geneSymbol,
+              functionalImpact: vep_impact,
+            });
+          }
         }
       }
     }

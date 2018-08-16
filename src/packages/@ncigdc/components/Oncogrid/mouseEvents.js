@@ -15,8 +15,7 @@ export default function({ grid, setTooltip, trackLegends, push, dispatch }) {
           {data.observation.type === 'mutation' && (
             <div>
               <div>Mutation Type: {data.observation.consequence}</div>
-              {/* replace with proper count once there is grouping by consequence type */}
-              <div>Mutations: 1</div>
+              <div>Mutations: {data.observation.ids.length}</div>
             </div>
           )}
           {data.observation.type === 'cnv' && (

@@ -33,9 +33,8 @@ export default function({ grid, setTooltip, trackLegends, push, dispatch }) {
       <div style={{ maxWidth: 800 }}>
         {data.donor && <div>Case: {data.donor.displayId}</div>}
         {data.gene && <div>Gene: {data.gene.symbol}</div>}
-        {/* check for toggle state for displaying obs here */}
-        {data.obs && <div>Mutations: {data.obs}</div>}
-        {data.obs && <div>CNV Change: {data.obs}</div>}
+        {/* {data.obs && data.obs.mutation.length && <div>Mutations: {data.obs.mutation}</div>} */}
+        {/* {data.obs && data.obs.cnv.length && <div>CNV Change: {data.obs.cnv}</div>} */}
       </div>,
     );
   });
@@ -109,7 +108,7 @@ export default function({ grid, setTooltip, trackLegends, push, dispatch }) {
 
   grid.on(
     'gridClick',
-    ({ observation: { donorId, consequence, type, cnv_change } }) => {
+    ({ observation: { donorId, consequence, type, cnv_change, geneId } }) => {
       let facetTab = 'mutations';
       let searchTableTab = 'mutations';
       let typeField = 'ssms.consequence.transcript.consequence_type';
@@ -140,6 +139,13 @@ export default function({ grid, setTooltip, trackLegends, push, dispatch }) {
                 content: {
                   field: typeField,
                   value: [typeValue],
+                },
+              },
+              {
+                op: 'IN',
+                content: {
+                  field: 'genes.gene_id',
+                  value: [geneId],
                 },
               },
             ],

@@ -5,7 +5,7 @@ no-restricted-globals: 0
 import React from 'react';
 import { lifecycle, compose, withState, withProps, mapProps } from 'recompose';
 import OncoGrid from 'oncogrid';
-import { uniqueId, get, mapKeys, debounce } from 'lodash';
+import _, { uniqueId, get, mapKeys, debounce } from 'lodash';
 import { connect } from 'react-redux';
 import withSize from '@ncigdc/utils/withSize';
 import FullScreenIcon from 'react-icons/lib/md/fullscreen';
@@ -144,66 +144,77 @@ const OncoGridWrapper = compose(
     () => GRID_CLASS + uniqueId(),
   ),
   withState('trackLegends', 'setTrackLegends', []),
-  withState('oncoGridDataMode', 'setOncoGridDataMode', 'both'),
+  withState('variationDataTypes', 'setVariationDataTypes', ['cnv', 'ssm']),
   withState('toggledConsequences', 'setToggledConsequences', consequenceTypes),
-  mapProps(({ title, impacts, toggledConsequences, ...props }) => {
-    const cases = props.oncoGridData
-      ? props.oncoGridData.cases.length
-      : MAX_CASES;
-    const genes = props.oncoGridData
-      ? props.oncoGridData.genes.length
-      : MAX_GENES;
+  mapProps(
+    ({ title, impacts, toggledConsequences, variationDataTypes, ...props }) => {
+      const cases = props.oncoGridData
+        ? props.oncoGridData.cases.length
+        : MAX_CASES;
+      const genes = props.oncoGridData
+        ? props.oncoGridData.genes.length
+        : MAX_GENES;
 
-    const currentImpacts = getFilterValue({
-      currentFilters: props.currentFilters.content,
-      dotField: 'ssms.consequence.transcript.annotation.vep_impact',
-    });
-
-    const currentConsequenceTypes = get(
-      getFilterValue({
+      const currentImpacts = getFilterValue({
         currentFilters: props.currentFilters.content,
-        dotField: 'ssms.consequence.transcript.consequence_type',
-      }),
-      'content.value',
-      consequenceTypes,
-    );
-    // const filteredConsequenceTypes = consequenceTypes.filter((c: any) =>
-    //   currentConsequenceTypes.includes(c),
-    // );
+        dotField: 'ssms.consequence.transcript.annotation.vep_impact',
+      });
 
-    const filteredConsequenceTypes = toggledConsequences.filter((c: any) =>
-      currentConsequenceTypes.includes(c),
-    );
-    const currentFilters = replaceFilters(
-      {
-        op: 'and',
-        content: [
-          {
-            op: 'in',
-            content: {
-              field: 'ssms.consequence.transcript.consequence_type',
-              value: filteredConsequenceTypes,
+      const currentConsequenceTypes = get(
+        getFilterValue({
+          currentFilters: props.currentFilters.content,
+          dotField: 'ssms.consequence.transcript.consequence_type',
+        }),
+        'content.value',
+        consequenceTypes,
+      );
+      // const filteredConsequenceTypes = consequenceTypes.filter((c: any) =>
+      //   currentConsequenceTypes.includes(c),
+      // );
+
+      const filteredConsequenceTypes = toggledConsequences.filter((c: any) =>
+        currentConsequenceTypes.includes(c),
+      );
+
+      const currentFilters = replaceFilters(
+        {
+          op: 'and',
+          content: [
+            {
+              op: 'in',
+              content: {
+                field: 'ssms.consequence.transcript.consequence_type',
+                value: filteredConsequenceTypes,
+              },
             },
-          },
-        ],
-      },
-      props.currentFilters,
-    );
+            {
+              op: 'in',
+              content: {
+                field: 'cases.available_variation_data',
+                value: variationDataTypes,
+              },
+            },
+          ],
+        },
+        props.currentFilters,
+      );
 
-    return {
-      ...props,
-      title:
-        title ||
-        `${cases}${cases < props.caseCount
-          ? ' Most'
-          : ''} Mutated Cases and Top ${genes} Mutated Genes`,
-      impacts:
-        impacts || (currentImpacts && currentImpacts.content.value) || [],
-      filteredConsequenceTypes,
-      currentFilters,
-      toggledConsequences,
-    };
-  }),
+      return {
+        ...props,
+        title:
+          title ||
+          `${cases}${cases < props.caseCount
+            ? ' Most'
+            : ''} Mutated Cases and Top ${genes} Mutated Genes`,
+        impacts:
+          impacts || (currentImpacts && currentImpacts.content.value) || [],
+        filteredConsequenceTypes,
+        currentFilters,
+        toggledConsequences,
+        variationDataTypes,
+      };
+    },
+  ),
   withTooltip,
   withProps({
     oncoGridHeight: 150,
@@ -233,8 +244,8 @@ const OncoGridWrapper = compose(
         lastRequest,
         setLastRequest,
         setTooltip,
-        oncoGridDataMode,
-        setOncoGridDataMode,
+        variationDataTypes,
+        setVariationDataTypes,
       }: TProps = {},
       previousResponses: Object,
     ): Promise<*> {
@@ -323,7 +334,6 @@ const OncoGridWrapper = compose(
           setShowGridLines,
           setCrosshairMode,
           setIsLoading,
-          setOncoGridDataMode,
         });
       } else {
         if (oncoGrid.toggleGridLines) oncoGrid.destroy();
@@ -407,8 +417,8 @@ const OncoGridWrapper = compose(
     uniqueGridClass,
     trackLegends,
     title,
-    oncoGridDataMode,
-    setOncoGridDataMode,
+    variationDataTypes,
+    setVariationDataTypes,
     toggledConsequences,
     setToggledConsequences,
   }) => (
@@ -478,24 +488,27 @@ const OncoGridWrapper = compose(
                     <Row>
                       <input
                         readOnly
-                        checked={oncoGridDataMode === 'both'}
+                        checked={_.includes(variationDataTypes, 'cnv', 'ssm')}
                         aria-label={'both'}
                         type="radio"
                         name="both"
                         id="both"
-                        onChange={() => setOncoGridDataMode('both')}
+                        onChange={() => setVariationDataTypes('both')}
                       />
                       <RadioLabel name={'Both'} htmlFor="both" />
                     </Row>
                     <Row>
                       <input
                         readOnly
-                        checked={oncoGridDataMode === 'mutation'}
+                        checked={
+                          _.includes(variationDataTypes, 'ssm') &&
+                          !_.includes(variationDataTypes, 'cnv')
+                        }
                         aria-label={'mutation-only'}
                         type="radio"
                         name="mutation-only"
                         id="mutation-only"
-                        onChange={() => setOncoGridDataMode('mutation')}
+                        onChange={() => setVariationDataTypes(['ssm'])}
                       />
                       <RadioLabel
                         name="Mutation only"
@@ -505,12 +518,15 @@ const OncoGridWrapper = compose(
                     <Row>
                       <input
                         readOnly
-                        checked={oncoGridDataMode === 'cnv'}
+                        checked={
+                          _.includes(variationDataTypes, 'cnv') &&
+                          !_.includes(variationDataTypes, 'ssm')
+                        }
                         aria-label={'cnv-only'}
                         type="radio"
                         name="cnv-only"
                         id="cnv-only"
-                        onChange={() => setOncoGridDataMode('cnv')}
+                        onChange={() => setVariationDataTypes(['cnv'])}
                       />
                       <RadioLabel name="CNV only" htmlFor="cnv-only" />
                     </Row>
@@ -578,7 +594,6 @@ const OncoGridWrapper = compose(
                           setShowGridLines,
                           setCrosshairMode,
                           setIsLoading,
-                          setOncoGridDataMode,
                         });
                       }}
                     >
@@ -648,7 +663,6 @@ const OncoGridWrapper = compose(
                             setShowGridLines,
                             setCrosshairMode,
                             setIsLoading,
-                            setOncoGridDataMode,
                           });
                         } else {
                           enterFullScreen(containerRefs[uniqueGridClass]);

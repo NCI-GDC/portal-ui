@@ -222,7 +222,6 @@ export const buildOccurrences: TBuildOccurrences = (
           donorIds.add(case_id);
           geneIds.add(gene_id);
 
-          // find index in observations
           let match = _.findIndex(
             observations,
             o =>

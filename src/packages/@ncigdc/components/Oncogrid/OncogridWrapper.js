@@ -27,7 +27,11 @@ import Button from '@ncigdc/uikit/Button';
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import { Tooltip } from '@ncigdc/uikit/Tooltip';
 
-import { StepLegend, SwatchLegend } from '@ncigdc/components/Legends';
+import {
+  StepLegend,
+  SwatchLegend,
+  ToggleSwatchLegend,
+} from '@ncigdc/components/Legends';
 import DownloadVisualizationButton from '@ncigdc/components/DownloadVisualizationButton';
 import Hidden from '@ncigdc/components/Hidden';
 
@@ -90,6 +94,17 @@ const styles = {
   },
 };
 
+const RadioLabel = props => (
+  <label
+    style={{
+      paddingLeft: 5,
+    }}
+    {...props}
+  >
+    {props.name}
+  </label>
+);
+
 const containerRefs = {};
 const wrapperRefs = {};
 
@@ -129,7 +144,9 @@ const OncoGridWrapper = compose(
     () => GRID_CLASS + uniqueId(),
   ),
   withState('trackLegends', 'setTrackLegends', []),
-  mapProps(({ title, impacts, ...props }) => {
+  withState('oncoGridDataMode', 'setOncoGridDataMode', 'both'),
+  withState('toggledConsequences', 'setToggledConsequences', consequenceTypes),
+  mapProps(({ title, impacts, toggledConsequences, ...props }) => {
     const cases = props.oncoGridData
       ? props.oncoGridData.cases.length
       : MAX_CASES;
@@ -150,10 +167,13 @@ const OncoGridWrapper = compose(
       'content.value',
       consequenceTypes,
     );
-    const filteredConsequenceTypes = consequenceTypes.filter((c: any) =>
+    // const filteredConsequenceTypes = consequenceTypes.filter((c: any) =>
+    //   currentConsequenceTypes.includes(c),
+    // );
+
+    const filteredConsequenceTypes = toggledConsequences.filter((c: any) =>
       currentConsequenceTypes.includes(c),
     );
-
     const currentFilters = replaceFilters(
       {
         op: 'and',
@@ -181,6 +201,7 @@ const OncoGridWrapper = compose(
         impacts || (currentImpacts && currentImpacts.content.value) || [],
       filteredConsequenceTypes,
       currentFilters,
+      toggledConsequences,
     };
   }),
   withTooltip,
@@ -212,6 +233,8 @@ const OncoGridWrapper = compose(
         lastRequest,
         setLastRequest,
         setTooltip,
+        oncoGridDataMode,
+        setOncoGridDataMode,
       }: TProps = {},
       previousResponses: Object,
     ): Promise<*> {
@@ -300,6 +323,7 @@ const OncoGridWrapper = compose(
           setShowGridLines,
           setCrosshairMode,
           setIsLoading,
+          setOncoGridDataMode,
         });
       } else {
         if (oncoGrid.toggleGridLines) oncoGrid.destroy();
@@ -383,6 +407,10 @@ const OncoGridWrapper = compose(
     uniqueGridClass,
     trackLegends,
     title,
+    oncoGridDataMode,
+    setOncoGridDataMode,
+    toggledConsequences,
+    setToggledConsequences,
   }) => (
     <Loader loading={isLoading} height="800px">
       <div
@@ -407,16 +435,86 @@ const OncoGridWrapper = compose(
               <h4 style={{ textAlign: 'center' }}>{title}</h4>
 
               <Row style={{ marginLeft: 0, minHeight: '70px' }}>
-                <div style={{ flexGrow: 1 }} className="oncogrid-legend">
+                <div
+                  style={{ flexGrow: 1 }}
+                  className="oncogrid-mutation-legend"
+                >
+                  <h5>Mutations</h5>
                   {heatMapMode ? (
                     <StepLegend rightLabel="More Mutations" />
                   ) : (
+                    <ToggleSwatchLegend
+                      toggledConsequences={toggledConsequences}
+                      toggleConsequence={key => {
+                        if (toggledConsequences.includes(key)) {
+                          setToggledConsequences(
+                            toggledConsequences.filter(c => c !== key),
+                          );
+                        } else {
+                          setToggledConsequences([...toggledConsequences, key]);
+                        }
+                      }}
+                      colorMap={colorMap.mutation}
+                    />
+                  )}
+                </div>
+                <div style={{ flexGrow: 1 }} className="oncogrid-cnv-legend">
+                  <h5>CNV Changes</h5>
+                  {heatMapMode ? (
+                    <div />
+                  ) : (
                     <SwatchLegend
-                      colorMap={mapKeys(colorMap, (val, key) =>
+                      colorMap={mapKeys(colorMap.cnv, (val, key) =>
                         key.replace('_variant', ''),
                       )}
                     />
                   )}
+                </div>
+                <div
+                  style={{ flexGrow: 1, marginTop: 10 }}
+                  className="oncogrid-mode-selection"
+                >
+                  <Column>
+                    <Row>
+                      <input
+                        readOnly
+                        checked={oncoGridDataMode === 'both'}
+                        aria-label={'both'}
+                        type="radio"
+                        name="both"
+                        id="both"
+                        onChange={() => setOncoGridDataMode('both')}
+                      />
+                      <RadioLabel name={'Both'} htmlFor="both" />
+                    </Row>
+                    <Row>
+                      <input
+                        readOnly
+                        checked={oncoGridDataMode === 'mutation'}
+                        aria-label={'mutation-only'}
+                        type="radio"
+                        name="mutation-only"
+                        id="mutation-only"
+                        onChange={() => setOncoGridDataMode('mutation')}
+                      />
+                      <RadioLabel
+                        name="Mutation only"
+                        htmlFor="mutation-only"
+                      />
+                    </Row>
+                    <Row>
+                      <input
+                        readOnly
+                        checked={oncoGridDataMode === 'cnv'}
+                        aria-label={'cnv-only'}
+                        type="radio"
+                        name="cnv-only"
+                        id="cnv-only"
+                        onChange={() => setOncoGridDataMode('cnv')}
+                      />
+                      <RadioLabel name="CNV only" htmlFor="cnv-only" />
+                    </Row>
+                  </Column>
                 </div>
                 <Row
                   style={{
@@ -480,6 +578,7 @@ const OncoGridWrapper = compose(
                           setShowGridLines,
                           setCrosshairMode,
                           setIsLoading,
+                          setOncoGridDataMode,
                         });
                       }}
                     >
@@ -549,6 +648,7 @@ const OncoGridWrapper = compose(
                             setShowGridLines,
                             setCrosshairMode,
                             setIsLoading,
+                            setOncoGridDataMode,
                           });
                         } else {
                           enterFullScreen(containerRefs[uniqueGridClass]);

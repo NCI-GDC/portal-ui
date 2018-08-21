@@ -19,6 +19,7 @@ import { getFilterValue, replaceFilters } from '@ncigdc/utils/filters';
 import {
   consequenceTypes,
   colorMap,
+  cnvChangeTypes,
 } from '@ncigdc/utils/filters/prepared/significantConsequences';
 import withRouter from '@ncigdc/utils/withRouter';
 
@@ -145,9 +146,17 @@ const OncoGridWrapper = compose(
   ),
   withState('trackLegends', 'setTrackLegends', []),
   withState('variationDataTypes', 'setVariationDataTypes', ['cnv', 'ssm']),
+  withState('toggledCnvChanges', 'setToggledCnvChanges', cnvChangeTypes),
   withState('toggledConsequences', 'setToggledConsequences', consequenceTypes),
   mapProps(
-    ({ title, impacts, toggledConsequences, variationDataTypes, ...props }) => {
+    ({
+      title,
+      impacts,
+      toggledConsequences,
+      variationDataTypes,
+      toggledCnvChanges,
+      ...props
+    }) => {
       const cases = props.oncoGridData
         ? props.oncoGridData.cases.length
         : MAX_CASES;
@@ -176,6 +185,8 @@ const OncoGridWrapper = compose(
         currentConsequenceTypes.includes(c),
       );
 
+      // will need to add in current CNV filters from facets when they exist, and combine
+      // with toggled cnv change types
       const currentFilters = replaceFilters(
         {
           op: 'and',
@@ -417,10 +428,12 @@ const OncoGridWrapper = compose(
     uniqueGridClass,
     trackLegends,
     title,
-    variationDataTypes,
-    setVariationDataTypes,
+    toggledCnvChanges,
+    setToggledCnvChanges,
     toggledConsequences,
     setToggledConsequences,
+    variationDataTypes,
+    setVariationDataTypes,
   }) => (
     <Loader loading={isLoading} height="800px">
       <div
@@ -433,6 +446,111 @@ const OncoGridWrapper = compose(
           containerRefs[uniqueGridClass] = r;
         }}
       >
+          <h4 style={{ textAlign: 'center' }}>{title}</h4>
+          <Row style={{ width: '80%', alignItems: 'center' }}>
+          <div
+            style={{ flexGrow: 1 }}
+            className="oncogrid-mutation-legend"
+          >
+            <h5>Mutations</h5>
+            {heatMapMode ? (
+              <StepLegend rightLabel="More Mutations" />
+            ) : (
+              <ToggleSwatchLegend
+                toggledConsequences={toggledConsequences}
+                toggleConsequence={key => {
+                  if (toggledConsequences.includes(key)) {
+                    setToggledConsequences(
+                      toggledConsequences.filter(c => c !== key),
+                    );
+                  } else {
+                    setToggledConsequences([...toggledConsequences, key]);
+                  }
+                }}
+                colorMap={colorMap.mutation}
+              />
+            )}
+          </div>
+          <div style={{ flexGrow: 1 }} className="oncogrid-cnv-legend">
+            <h5>CNV Changes</h5>
+            {heatMapMode ? (
+              <div />
+            ) : (
+              <SwatchLegend
+                colorMap={mapKeys(colorMap.cnv, (val, key) =>
+                  key.replace('_variant', ''),
+                )}
+              />
+            )}
+          </div>
+          <div
+            style={{ flexGrow: 1, marginTop: 10 }}
+            className="oncogrid-mode-selection"
+          >
+            <Column>
+              <Row>
+                <input
+                  readOnly
+                  checked={
+                    _.includes(variationDataTypes, 'ssm') &&
+                    _.includes(variationDataTypes, 'cnv')
+                  }
+                  aria-label={'both'}
+                  type="radio"
+                  name="both"
+                  id="both"
+                  onChange={() => {
+                    setVariationDataTypes(['ssm', 'cnv']);
+                    setToggledConsequences(consequenceTypes);
+                    setToggledCnvChanges(cnvChangeTypes);
+                  }}
+                />
+                <RadioLabel name={'Both'} htmlFor="both" />
+              </Row>
+              <Row>
+                <input
+                  readOnly
+                  checked={
+                    variationDataTypes.length < 2 &&
+                    _.includes(variationDataTypes, 'ssm')
+                  }
+                  aria-label={'mutation-only'}
+                  type="radio"
+                  name="mutation-only"
+                  id="mutation-only"
+                  onChange={() => {
+                    setVariationDataTypes(['ssm']);
+                    setToggledConsequences(consequenceTypes);
+                    setToggledCnvChanges([]);
+                  }}
+                />
+                <RadioLabel
+                  name="Mutation only"
+                  htmlFor="mutation-only"
+                />
+              </Row>
+              <Row>
+                <input
+                  readOnly
+                  checked={
+                    variationDataTypes.length < 2 &&
+                    _.includes(variationDataTypes, 'cnv')
+                  }
+                  aria-label={'cnv-only'}
+                  type="radio"
+                  name="cnv-only"
+                  id="cnv-only"
+                  onChange={() => {
+                    setVariationDataTypes(['cnv']);
+                    setToggledCnvChanges(cnvChangeTypes);
+                    setToggledConsequences([]);
+                  }}
+                />
+                <RadioLabel name="CNV only" htmlFor="cnv-only" />
+              </Row>
+            </Column>
+          </div>
+        </Row>
         {!oncoGridData &&
           !isLoading && (
             <Column style={{ padding: '2rem 0' }}>
@@ -442,101 +560,15 @@ const OncoGridWrapper = compose(
         {oncoGridData &&
           !isLoading && (
             <div>
-              <h4 style={{ textAlign: 'center' }}>{title}</h4>
-
-              <Row style={{ marginLeft: 0, minHeight: '70px' }}>
-                <div
-                  style={{ flexGrow: 1 }}
-                  className="oncogrid-mutation-legend"
-                >
-                  <h5>Mutations</h5>
-                  {heatMapMode ? (
-                    <StepLegend rightLabel="More Mutations" />
-                  ) : (
-                    <ToggleSwatchLegend
-                      toggledConsequences={toggledConsequences}
-                      toggleConsequence={key => {
-                        if (toggledConsequences.includes(key)) {
-                          setToggledConsequences(
-                            toggledConsequences.filter(c => c !== key),
-                          );
-                        } else {
-                          setToggledConsequences([...toggledConsequences, key]);
-                        }
-                      }}
-                      colorMap={colorMap.mutation}
-                    />
-                  )}
-                </div>
-                <div style={{ flexGrow: 1 }} className="oncogrid-cnv-legend">
-                  <h5>CNV Changes</h5>
-                  {heatMapMode ? (
-                    <div />
-                  ) : (
-                    <SwatchLegend
-                      colorMap={mapKeys(colorMap.cnv, (val, key) =>
-                        key.replace('_variant', ''),
-                      )}
-                    />
-                  )}
-                </div>
-                <div
-                  style={{ flexGrow: 1, marginTop: 10 }}
-                  className="oncogrid-mode-selection"
-                >
-                  <Column>
-                    <Row>
-                      <input
-                        readOnly
-                        checked={_.includes(variationDataTypes, 'cnv', 'ssm')}
-                        aria-label={'both'}
-                        type="radio"
-                        name="both"
-                        id="both"
-                        onChange={() => setVariationDataTypes('both')}
-                      />
-                      <RadioLabel name={'Both'} htmlFor="both" />
-                    </Row>
-                    <Row>
-                      <input
-                        readOnly
-                        checked={
-                          _.includes(variationDataTypes, 'ssm') &&
-                          !_.includes(variationDataTypes, 'cnv')
-                        }
-                        aria-label={'mutation-only'}
-                        type="radio"
-                        name="mutation-only"
-                        id="mutation-only"
-                        onChange={() => setVariationDataTypes(['ssm'])}
-                      />
-                      <RadioLabel
-                        name="Mutation only"
-                        htmlFor="mutation-only"
-                      />
-                    </Row>
-                    <Row>
-                      <input
-                        readOnly
-                        checked={
-                          _.includes(variationDataTypes, 'cnv') &&
-                          !_.includes(variationDataTypes, 'ssm')
-                        }
-                        aria-label={'cnv-only'}
-                        type="radio"
-                        name="cnv-only"
-                        id="cnv-only"
-                        onChange={() => setVariationDataTypes(['cnv'])}
-                      />
-                      <RadioLabel name="CNV only" htmlFor="cnv-only" />
-                    </Row>
-                  </Column>
-                </div>
+              {/* <Row style={{ marginLeft: 0, minHeight: '70px' }}> */}
                 <Row
                   style={{
                     justifyContent: 'flex-end',
                     marginRight: '12px',
                     flexWrap: 'wrap',
+                    borderBottom: '1px solid lightgray',
+                    marginTop: 20,
+                    paddingBottom: 15
                   }}
                   spacing="1rem"
                 >
@@ -693,7 +725,7 @@ const OncoGridWrapper = compose(
                     </div>
                   )}
                 </Row>
-              </Row>
+              {/* </Row> */}
             </div>
           )}
 
@@ -705,6 +737,7 @@ const OncoGridWrapper = compose(
           style={{
             cursor: crosshairMode ? 'crosshair' : 'pointer',
             visibility: isLoading ? 'hidden' : 'visible',
+            paddingTop: 15,
           }}
         />
       </div>

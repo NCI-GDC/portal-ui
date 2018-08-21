@@ -129,7 +129,55 @@ export default function({
         return 1;
     }
   };
+  const cnvColors = [
+    "#900000", "#d33737", "#0d71e8", "#00457c",];
+  // const cnvDonors
+  // for (var i = 0; i<donors.length; i++){
 
+  // }
+  const cnvDonors = donors.map( 
+    donor => ({
+      symbol: donor.displayId,
+        gain2: cnvObservations.filter(
+          cnv => 
+            donor.id === cnv.donorId &&
+            cnv.cnv_change === "amplification").length,
+        gain1: cnvObservations.filter(
+          cnv => 
+            donor.id === cnv.donorId &&
+            cnv.cnv_change === "gain").length,
+        loss1:  cnvObservations.filter(
+          cnv => 
+            donor.id === cnv.donorId &&
+            cnv.cnv_change === "shallow_loss").length,
+        loss2:  cnvObservations.filter(
+          cnv => 
+            donor.id === cnv.donorId &&
+            cnv.cnv_change === "deep_loss").length,
+    }));
+
+  const cnvGenes = genes.map(
+    gene => ({
+      symbol: gene.symbol,
+      gain2: cnvObservations.filter(
+        cnv => 
+          gene.id === cnv.geneId &&
+          cnv.cnv_change === "amplification").length,
+      gain1: cnvObservations.filter(
+        cnv => 
+          gene.id === cnv.geneId &&
+          cnv.cnv_change === "gain").length,
+      loss1:  cnvObservations.filter(
+        cnv => 
+          gene.id === cnv.geneId &&
+          cnv.cnv_change === "shallow_loss").length,
+      loss2:  cnvObservations.filter(
+        cnv => 
+          gene.id === cnv.geneId &&
+          cnv.cnv_change === "deep_loss").length,
+    })
+  )
+      
   return {
     cnvObservations,
     donors,
@@ -139,6 +187,8 @@ export default function({
     width,
     element,
     colorMap,
+    cnvDonors,
+    cnvGenes,
     scaleToFit: true,
     heatMap: false,
     grid,

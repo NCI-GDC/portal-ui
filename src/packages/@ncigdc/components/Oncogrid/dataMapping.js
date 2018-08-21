@@ -257,7 +257,7 @@ export const buildOccurrences: TBuildOccurrences = (
         donorIds.add(case_id);
         geneIds.add(gene_id);
         cnvObservations.push({
-          id: cnv_id,
+          ids: [cnv_id],
           donorId: case_id,
           geneId: gene_id,
           geneSymbol: geneIdToSymbol[gene_id],

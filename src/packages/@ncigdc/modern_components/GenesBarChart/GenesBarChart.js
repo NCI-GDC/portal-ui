@@ -187,9 +187,8 @@ const Component = compose(
       { key: 'gain1' },
       { key: 'gain2' },
     ];
-    // console.log("gene", explore);
     /* prettier-ignore */
-    
+
     const cnaNodes = [
       {
         symbol:'TP53',
@@ -346,7 +345,7 @@ const Component = compose(
           onClick: () => handleClickGene(g, cnaGenesChartData),
         };
       });
-    
+
     return (
       <div style={style}>
         {!!mutatedGenesChartData && (

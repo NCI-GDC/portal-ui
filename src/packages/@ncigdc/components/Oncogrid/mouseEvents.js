@@ -49,6 +49,17 @@ export default function({ grid, setTooltip, trackLegends, push, dispatch }) {
       </div>,
     );
   });
+
+  grid.on('cnvHistogramMouseOver', data => {
+    setTooltip(
+      <div style={{ maxWidth: 800 }}>
+        {data.domain.symbol ? data.domain.symbol : data.domain.displayId}
+        <br /> {data.domain.cnv}: {data.domain.y}
+        <br />
+      </div>,
+    );
+  });
+
   grid.on('histogramMouseOut', () => setTooltip());
 
   grid.on(

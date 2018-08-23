@@ -84,9 +84,56 @@ export default function({
   );
 
   if (!observations.length && !cnvObservations.length) return null;
-  const donors = mapDonors(donorData, donorIds);
-  const genes = mapGenes(geneData, geneIds);
+  let donors = mapDonors(donorData, donorIds);
+  let genes = mapGenes(geneData, geneIds);
 
+  donors = donors.map( 
+    donor => ({
+      ...donor,
+      cnv: {
+        amplification: cnvObservations.filter(
+            cnv => 
+              donor.id === cnv.donorId &&
+              cnv.cnv_change === "amplification").length,
+          gain: cnvObservations.filter(
+            cnv => 
+              donor.id === cnv.donorId &&
+              cnv.cnv_change === "gain").length,
+          shallow_loss:  cnvObservations.filter(
+            cnv => 
+              donor.id === cnv.donorId &&
+              cnv.cnv_change === "shallow_loss").length,
+          deep_loss:  cnvObservations.filter(
+            cnv => 
+              donor.id === cnv.donorId &&
+              cnv.cnv_change === "deep_loss").length,
+      },
+    })
+  );
+
+  genes = genes.map(
+    gene => ({
+      ...gene,
+      cnv: {
+        amplification: cnvObservations.filter(
+          cnv => 
+            gene.id === cnv.geneId &&
+            cnv.cnv_change === "amplification").length,
+        gain: cnvObservations.filter(
+          cnv => 
+            gene.id === cnv.geneId &&
+            cnv.cnv_change === "gain").length,
+        shallow_loss:  cnvObservations.filter(
+          cnv => 
+            gene.id === cnv.geneId &&
+            cnv.cnv_change === "shallow_loss").length,
+        deep_loss:  cnvObservations.filter(
+          cnv => 
+            gene.id === cnv.geneId &&
+            cnv.cnv_change === "deep_loss").length,
+      }
+    })
+  )
   const maxDaysToDeath = Math.max(...donors.map(d => d.daysToDeath));
   const maxAgeAtDiagnosis = Math.max(...donors.map(d => d.age));
   const maxDonorsAffected = Math.max(...genes.map(g => g.totalDonors));
@@ -135,48 +182,7 @@ export default function({
   // for (var i = 0; i<donors.length; i++){
 
   // }
-  const cnvDonors = donors.map( 
-    donor => ({
-      symbol: donor.displayId,
-        gain2: cnvObservations.filter(
-          cnv => 
-            donor.id === cnv.donorId &&
-            cnv.cnv_change === "amplification").length,
-        gain1: cnvObservations.filter(
-          cnv => 
-            donor.id === cnv.donorId &&
-            cnv.cnv_change === "gain").length,
-        loss1:  cnvObservations.filter(
-          cnv => 
-            donor.id === cnv.donorId &&
-            cnv.cnv_change === "shallow_loss").length,
-        loss2:  cnvObservations.filter(
-          cnv => 
-            donor.id === cnv.donorId &&
-            cnv.cnv_change === "deep_loss").length,
-    }));
 
-  const cnvGenes = genes.map(
-    gene => ({
-      symbol: gene.symbol,
-      gain2: cnvObservations.filter(
-        cnv => 
-          gene.id === cnv.geneId &&
-          cnv.cnv_change === "amplification").length,
-      gain1: cnvObservations.filter(
-        cnv => 
-          gene.id === cnv.geneId &&
-          cnv.cnv_change === "gain").length,
-      loss1:  cnvObservations.filter(
-        cnv => 
-          gene.id === cnv.geneId &&
-          cnv.cnv_change === "shallow_loss").length,
-      loss2:  cnvObservations.filter(
-        cnv => 
-          gene.id === cnv.geneId &&
-          cnv.cnv_change === "deep_loss").length,
-    })
-  )
       
   return {
     cnvObservations,
@@ -187,8 +193,6 @@ export default function({
     width,
     element,
     colorMap,
-    cnvDonors,
-    cnvGenes,
     scaleToFit: true,
     heatMap: false,
     grid,

@@ -446,12 +446,9 @@ const OncoGridWrapper = compose(
           containerRefs[uniqueGridClass] = r;
         }}
       >
-          <h4 style={{ textAlign: 'center' }}>{title}</h4>
-          <Row style={{ width: '80%', alignItems: 'center' }}>
-          <div
-            style={{ flexGrow: 1 }}
-            className="oncogrid-mutation-legend"
-          >
+        <h4 style={{ textAlign: 'center' }}>{title}</h4>
+        <Row style={{ width: '80%', alignItems: 'center' }}>
+          <div style={{ flexGrow: 1 }} className="oncogrid-mutation-legend">
             <h5>Mutations</h5>
             {heatMapMode ? (
               <StepLegend rightLabel="More Mutations" />
@@ -524,10 +521,7 @@ const OncoGridWrapper = compose(
                     setToggledCnvChanges([]);
                   }}
                 />
-                <RadioLabel
-                  name="Mutation only"
-                  htmlFor="mutation-only"
-                />
+                <RadioLabel name="Mutation only" htmlFor="mutation-only" />
               </Row>
               <Row>
                 <input
@@ -561,64 +555,130 @@ const OncoGridWrapper = compose(
           !isLoading && (
             <div>
               {/* <Row style={{ marginLeft: 0, minHeight: '70px' }}> */}
-                <Row
-                  style={{
-                    justifyContent: 'flex-end',
-                    marginRight: '12px',
-                    flexWrap: 'wrap',
-                    borderBottom: '1px solid lightgray',
-                    marginTop: 20,
-                    paddingBottom: 15
-                  }}
-                  spacing="1rem"
-                >
-                  <DownloadVisualizationButton
-                    svg={() => {
-                      const elementsAfter = trackLegends.map(html => {
-                        const div = document.createElement('div');
-                        div.innerHTML = html;
-                        div.style.position = 'absolute';
-                        div.style.left = '-99999px';
-                        document.body.appendChild(div);
-                        return div;
-                      });
+              <Row
+                style={{
+                  justifyContent: 'flex-end',
+                  marginRight: '12px',
+                  flexWrap: 'wrap',
+                  borderBottom: '1px solid lightgray',
+                  marginTop: 20,
+                  paddingBottom: 15,
+                }}
+                spacing="1rem"
+              >
+                <DownloadVisualizationButton
+                  svg={() => {
+                    const elementsAfter = trackLegends.map(html => {
+                      const div = document.createElement('div');
+                      div.innerHTML = html;
+                      div.style.position = 'absolute';
+                      div.style.left = '-99999px';
+                      document.body.appendChild(div);
+                      return div;
+                    });
 
-                      const wrappedSvg = wrapSvg({
-                        selector: `.${uniqueGridClass} svg`,
-                        title,
-                        className: GRID_CLASS,
-                        embed: {
-                          top: {
-                            elements: [
-                              containerRefs[uniqueGridClass].querySelector(
-                                '.oncogrid-legend',
-                              ),
-                            ],
-                          },
-                          bottom: {
-                            elements: elementsAfter,
-                            styles:
-                              'display: inline-block; width: 200px; vertical-align: top; ',
-                          },
+                    const wrappedSvg = wrapSvg({
+                      selector: `.${uniqueGridClass} svg`,
+                      title,
+                      className: GRID_CLASS,
+                      embed: {
+                        top: {
+                          elements: [
+                            containerRefs[uniqueGridClass].querySelector(
+                              '.oncogrid-legend',
+                            ),
+                          ],
                         },
+                        bottom: {
+                          elements: elementsAfter,
+                          styles:
+                            'display: inline-block; width: 200px; vertical-align: top; ',
+                        },
+                      },
+                    });
+
+                    elementsAfter.forEach(el => document.body.removeChild(el));
+                    return wrappedSvg;
+                  }}
+                  data={oncoGridData}
+                  stylePrefix={`.${GRID_CLASS}`}
+                  slug="oncogrid"
+                  noText
+                  tooltipHTML="Download"
+                />
+                <Tooltip Component="Reload Grid">
+                  <Button
+                    style={styles.button}
+                    onClick={() => {
+                      oncoGrid.reload();
+                      refreshGridState({
+                        oncoGrid,
+                        setHeatMapMode,
+                        setShowGridLines,
+                        setCrosshairMode,
+                        setIsLoading,
                       });
-
-                      elementsAfter.forEach(el =>
-                        document.body.removeChild(el),
-                      );
-
-                      return wrappedSvg;
                     }}
-                    data={oncoGridData}
-                    stylePrefix={`.${GRID_CLASS}`}
-                    slug="oncogrid"
-                    noText
-                    tooltipHTML="Download"
-                  />
-                  <Tooltip Component="Reload Grid">
-                    <Button
-                      style={styles.button}
-                      onClick={() => {
+                  >
+                    <i className="fa fa-undo" />
+                    <Hidden>Reload</Hidden>
+                  </Button>
+                </Tooltip>
+                <Tooltip Component="Cluster Data">
+                  <Button
+                    style={styles.button}
+                    onClick={() => oncoGrid.cluster()}
+                  >
+                    <i className="fa fa-sort-amount-desc" />
+                    <Hidden>Cluster</Hidden>
+                  </Button>
+                </Tooltip>
+                <Tooltip Component="Toggle Heatmap View">
+                  <Button
+                    style={{
+                      ...styles.button,
+                      ...(heatMapMode && styles.buttonActive),
+                    }}
+                    onClick={() => setHeatMapMode(!heatMapMode)}
+                  >
+                    <i className="fa fa-fire" />
+                    <Hidden>Heatmap</Hidden>
+                  </Button>
+                </Tooltip>
+                <Tooltip Component="Toggle Gridlines">
+                  <Button
+                    style={{
+                      ...styles.button,
+                      ...(showGridLines && styles.buttonActive),
+                    }}
+                    onClick={() => setShowGridLines(!showGridLines)}
+                  >
+                    <i className="fa fa-th" />
+                    <Hidden>Lines</Hidden>
+                  </Button>
+                </Tooltip>
+                <Tooltip Component="Toggle Crosshairs">
+                  <Button
+                    style={{
+                      ...styles.button,
+                      ...(crosshairMode && styles.buttonActive),
+                    }}
+                    onClick={() => setCrosshairMode(!crosshairMode)}
+                  >
+                    <i className="fa fa-crosshairs" />
+                    <Hidden>Crosshair</Hidden>
+                  </Button>
+                </Tooltip>
+                <Tooltip Component="Fullscreen">
+                  <Button
+                    style={{
+                      ...styles.button,
+                      ...(isFullScreen() && styles.buttonActive),
+                      marginRight: 0,
+                    }}
+                    onClick={() => {
+                      if (isFullScreen()) {
+                        exitFullScreen();
                         oncoGrid.reload();
                         refreshGridState({
                           oncoGrid,
@@ -627,104 +687,35 @@ const OncoGridWrapper = compose(
                           setCrosshairMode,
                           setIsLoading,
                         });
-                      }}
-                    >
-                      <i className="fa fa-undo" />
-                      <Hidden>Reload</Hidden>
-                    </Button>
-                  </Tooltip>
-                  <Tooltip Component="Cluster Data">
-                    <Button
-                      style={styles.button}
-                      onClick={() => oncoGrid.cluster()}
-                    >
-                      <i className="fa fa-sort-amount-desc" />
-                      <Hidden>Cluster</Hidden>
-                    </Button>
-                  </Tooltip>
-                  <Tooltip Component="Toggle Heatmap View">
-                    <Button
-                      style={{
-                        ...styles.button,
-                        ...(heatMapMode && styles.buttonActive),
-                      }}
-                      onClick={() => setHeatMapMode(!heatMapMode)}
-                    >
-                      <i className="fa fa-fire" />
-                      <Hidden>Heatmap</Hidden>
-                    </Button>
-                  </Tooltip>
-                  <Tooltip Component="Toggle Gridlines">
-                    <Button
-                      style={{
-                        ...styles.button,
-                        ...(showGridLines && styles.buttonActive),
-                      }}
-                      onClick={() => setShowGridLines(!showGridLines)}
-                    >
-                      <i className="fa fa-th" />
-                      <Hidden>Lines</Hidden>
-                    </Button>
-                  </Tooltip>
-                  <Tooltip Component="Toggle Crosshairs">
-                    <Button
-                      style={{
-                        ...styles.button,
-                        ...(crosshairMode && styles.buttonActive),
-                      }}
-                      onClick={() => setCrosshairMode(!crosshairMode)}
-                    >
-                      <i className="fa fa-crosshairs" />
-                      <Hidden>Crosshair</Hidden>
-                    </Button>
-                  </Tooltip>
-                  <Tooltip Component="Fullscreen">
-                    <Button
-                      style={{
-                        ...styles.button,
-                        ...(isFullScreen() && styles.buttonActive),
-                        marginRight: 0,
-                      }}
-                      onClick={() => {
-                        if (isFullScreen()) {
-                          exitFullScreen();
-                          oncoGrid.reload();
-                          refreshGridState({
-                            oncoGrid,
-                            setHeatMapMode,
-                            setShowGridLines,
-                            setCrosshairMode,
-                            setIsLoading,
-                          });
-                        } else {
-                          enterFullScreen(containerRefs[uniqueGridClass]);
-                          oncoGrid.resize(
-                            screen.width - 400,
-                            screen.height - 400,
-                            true,
-                          );
-                        }
-                      }}
-                    >
-                      <FullScreenIcon />
-                      <Hidden>Fullscreen</Hidden>
-                    </Button>
-                  </Tooltip>
+                      } else {
+                        enterFullScreen(containerRefs[uniqueGridClass]);
+                        oncoGrid.resize(
+                          screen.width - 400,
+                          screen.height - 400,
+                          true,
+                        );
+                      }
+                    }}
+                  >
+                    <FullScreenIcon />
+                    <Hidden>Fullscreen</Hidden>
+                  </Button>
+                </Tooltip>
 
-                  {crosshairMode && (
-                    <div
-                      style={{
-                        fontSize: '1.1rem',
-                        verticalAlign: 'top',
-                        width: '100%',
-                        textAlign: 'right',
-                      }}
-                    >
-                      Click and drag to select a region on the OncoGrid to zoom
-                      in.
-                    </div>
-                  )}
-                </Row>
+                {crosshairMode && (
+                  <div
+                    style={{
+                      fontSize: '1.1rem',
+                      verticalAlign: 'top',
+                      width: '100%',
+                      textAlign: 'right',
+                    }}
+                  >
+                    Click and drag to select a region on the OncoGrid to zoom
+                    in.
+                  </div>
+                )}
+              </Row>
               {/* </Row> */}
             </div>
           )}

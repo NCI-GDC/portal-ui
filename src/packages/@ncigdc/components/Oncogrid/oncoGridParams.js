@@ -82,58 +82,17 @@ export default function({
     impacts,
     cnvOccurrencesData,
   );
-
   if (!observations.length && !cnvObservations.length) return null;
   let donors = mapDonors(donorData, donorIds);
   let genes = mapGenes(geneData, geneIds);
-
-  donors = donors.map( 
-    donor => ({
-      ...donor,
-      cnv: {
-        amplification: cnvObservations.filter(
-            cnv => 
-              donor.id === cnv.donorId &&
-              cnv.cnv_change === "amplification").length,
-          gain: cnvObservations.filter(
-            cnv => 
-              donor.id === cnv.donorId &&
-              cnv.cnv_change === "gain").length,
-          shallow_loss:  cnvObservations.filter(
-            cnv => 
-              donor.id === cnv.donorId &&
-              cnv.cnv_change === "shallow_loss").length,
-          deep_loss:  cnvObservations.filter(
-            cnv => 
-              donor.id === cnv.donorId &&
-              cnv.cnv_change === "deep_loss").length,
-      },
-    })
-  );
-
-  genes = genes.map(
-    gene => ({
-      ...gene,
-      cnv: {
-        amplification: cnvObservations.filter(
-          cnv => 
-            gene.id === cnv.geneId &&
-            cnv.cnv_change === "amplification").length,
-        gain: cnvObservations.filter(
-          cnv => 
-            gene.id === cnv.geneId &&
-            cnv.cnv_change === "gain").length,
-        shallow_loss:  cnvObservations.filter(
-          cnv => 
-            gene.id === cnv.geneId &&
-            cnv.cnv_change === "shallow_loss").length,
-        deep_loss:  cnvObservations.filter(
-          cnv => 
-            gene.id === cnv.geneId &&
-            cnv.cnv_change === "deep_loss").length,
-      }
-    })
-  )
+  donors = donors.map(donor => ({
+    ...donor,
+    cnv: cnvObservations.filter(cnv => donor.id === cnv.donorId).length,
+  }));
+  genes = genes.map(gene => ({
+    ...gene,
+    cnv: cnvObservations.filter(cnv => gene.id === cnv.geneId).length,
+  }));
   const maxDaysToDeath = Math.max(...donors.map(d => d.daysToDeath));
   const maxAgeAtDiagnosis = Math.max(...donors.map(d => d.age));
   const maxDonorsAffected = Math.max(...genes.map(g => g.totalDonors));
@@ -176,14 +135,7 @@ export default function({
         return 1;
     }
   };
-  const cnvColors = [
-    "#900000", "#d33737", "#0d71e8", "#00457c",];
-  // const cnvDonors
-  // for (var i = 0; i<donors.length; i++){
 
-  // }
-
-      
   return {
     cnvObservations,
     donors,

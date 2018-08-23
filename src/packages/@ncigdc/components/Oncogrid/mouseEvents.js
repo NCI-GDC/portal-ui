@@ -54,7 +54,7 @@ export default function({ grid, setTooltip, trackLegends, push, dispatch }) {
     setTooltip(
       <div style={{ maxWidth: 800 }}>
         {data.domain.symbol ? data.domain.symbol : data.domain.displayId}
-        <br /> {data.domain.cnv}: {data.domain.y}
+        <br /> cnv: {data.domain.cnv}
         <br />
       </div>,
     );

@@ -5,7 +5,7 @@ no-restricted-globals: 0
 import React from 'react';
 import { lifecycle, compose, withState, withProps, mapProps } from 'recompose';
 import OncoGrid from 'oncogrid';
-import { uniqueId, get, mapKeys, debounce } from 'lodash';
+import _, { uniqueId, get, mapKeys, debounce } from 'lodash';
 import { connect } from 'react-redux';
 import withSize from '@ncigdc/utils/withSize';
 import FullScreenIcon from 'react-icons/lib/md/fullscreen';
@@ -27,7 +27,11 @@ import Button from '@ncigdc/uikit/Button';
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import { Tooltip } from '@ncigdc/uikit/Tooltip';
 
-import { StepLegend, SwatchLegend } from '@ncigdc/components/Legends';
+import {
+  StepLegend,
+  SwatchLegend,
+  ToggleSwatchLegend,
+} from '@ncigdc/components/Legends';
 import DownloadVisualizationButton from '@ncigdc/components/DownloadVisualizationButton';
 import Hidden from '@ncigdc/components/Hidden';
 
@@ -90,6 +94,17 @@ const styles = {
   },
 };
 
+const RadioLabel = props => (
+  <label
+    style={{
+      paddingLeft: 5,
+    }}
+    {...props}
+  >
+    {props.name}
+  </label>
+);
+
 const containerRefs = {};
 const wrapperRefs = {};
 
@@ -129,60 +144,77 @@ const OncoGridWrapper = compose(
     () => GRID_CLASS + uniqueId(),
   ),
   withState('trackLegends', 'setTrackLegends', []),
-  mapProps(({ title, impacts, ...props }) => {
-    const cases = props.oncoGridData
-      ? props.oncoGridData.cases.length
-      : MAX_CASES;
-    const genes = props.oncoGridData
-      ? props.oncoGridData.genes.length
-      : MAX_GENES;
+  withState('variationDataTypes', 'setVariationDataTypes', ['cnv', 'ssm']),
+  withState('toggledConsequences', 'setToggledConsequences', consequenceTypes),
+  mapProps(
+    ({ title, impacts, toggledConsequences, variationDataTypes, ...props }) => {
+      const cases = props.oncoGridData
+        ? props.oncoGridData.cases.length
+        : MAX_CASES;
+      const genes = props.oncoGridData
+        ? props.oncoGridData.genes.length
+        : MAX_GENES;
 
-    const currentImpacts = getFilterValue({
-      currentFilters: props.currentFilters.content,
-      dotField: 'ssms.consequence.transcript.annotation.vep_impact',
-    });
-
-    const currentConsequenceTypes = get(
-      getFilterValue({
+      const currentImpacts = getFilterValue({
         currentFilters: props.currentFilters.content,
-        dotField: 'ssms.consequence.transcript.consequence_type',
-      }),
-      'content.value',
-      consequenceTypes,
-    );
-    const filteredConsequenceTypes = consequenceTypes.filter((c: any) =>
-      currentConsequenceTypes.includes(c),
-    );
+        dotField: 'ssms.consequence.transcript.annotation.vep_impact',
+      });
 
-    const currentFilters = replaceFilters(
-      {
-        op: 'and',
-        content: [
-          {
-            op: 'in',
-            content: {
-              field: 'ssms.consequence.transcript.consequence_type',
-              value: filteredConsequenceTypes,
+      const currentConsequenceTypes = get(
+        getFilterValue({
+          currentFilters: props.currentFilters.content,
+          dotField: 'ssms.consequence.transcript.consequence_type',
+        }),
+        'content.value',
+        consequenceTypes,
+      );
+      // const filteredConsequenceTypes = consequenceTypes.filter((c: any) =>
+      //   currentConsequenceTypes.includes(c),
+      // );
+
+      const filteredConsequenceTypes = toggledConsequences.filter((c: any) =>
+        currentConsequenceTypes.includes(c),
+      );
+
+      const currentFilters = replaceFilters(
+        {
+          op: 'and',
+          content: [
+            {
+              op: 'in',
+              content: {
+                field: 'ssms.consequence.transcript.consequence_type',
+                value: filteredConsequenceTypes,
+              },
             },
-          },
-        ],
-      },
-      props.currentFilters,
-    );
+            {
+              op: 'in',
+              content: {
+                field: 'cases.available_variation_data',
+                value: variationDataTypes,
+              },
+            },
+          ],
+        },
+        props.currentFilters,
+      );
 
-    return {
-      ...props,
-      title:
-        title ||
-        `${cases}${cases < props.caseCount
-          ? ' Most'
-          : ''} Mutated Cases and Top ${genes} Mutated Genes`,
-      impacts:
-        impacts || (currentImpacts && currentImpacts.content.value) || [],
-      filteredConsequenceTypes,
-      currentFilters,
-    };
-  }),
+      return {
+        ...props,
+        title:
+          title ||
+          `${cases}${cases < props.caseCount
+            ? ' Most'
+            : ''} Mutated Cases and Top ${genes} Mutated Genes`,
+        impacts:
+          impacts || (currentImpacts && currentImpacts.content.value) || [],
+        filteredConsequenceTypes,
+        currentFilters,
+        toggledConsequences,
+        variationDataTypes,
+      };
+    },
+  ),
   withTooltip,
   withProps({
     oncoGridHeight: 150,
@@ -212,6 +244,8 @@ const OncoGridWrapper = compose(
         lastRequest,
         setLastRequest,
         setTooltip,
+        variationDataTypes,
+        setVariationDataTypes,
       }: TProps = {},
       previousResponses: Object,
     ): Promise<*> {
@@ -259,6 +293,7 @@ const OncoGridWrapper = compose(
         trackPadding: 30,
         impacts,
         consequenceTypes: filteredConsequenceTypes,
+        cnvOccurrencesData: responses.cnv_occurrences,
       });
 
       performanceTracker.end('oncogrid:process', performanceContext);
@@ -268,6 +303,7 @@ const OncoGridWrapper = compose(
 
         performanceTracker.begin('oncogrid:init');
         const grid = new OncoGrid(gridParams);
+
         performanceTracker.end('oncogrid:init', performanceContext);
         grid.resize = debounce(grid.resize.bind(grid), 200);
 
@@ -381,6 +417,10 @@ const OncoGridWrapper = compose(
     uniqueGridClass,
     trackLegends,
     title,
+    variationDataTypes,
+    setVariationDataTypes,
+    toggledConsequences,
+    setToggledConsequences,
   }) => (
     <Loader loading={isLoading} height="800px">
       <div
@@ -405,16 +445,92 @@ const OncoGridWrapper = compose(
               <h4 style={{ textAlign: 'center' }}>{title}</h4>
 
               <Row style={{ marginLeft: 0, minHeight: '70px' }}>
-                <div style={{ flexGrow: 1 }} className="oncogrid-legend">
+                <div
+                  style={{ flexGrow: 1 }}
+                  className="oncogrid-mutation-legend"
+                >
+                  <h5>Mutations</h5>
                   {heatMapMode ? (
                     <StepLegend rightLabel="More Mutations" />
                   ) : (
+                    <ToggleSwatchLegend
+                      toggledConsequences={toggledConsequences}
+                      toggleConsequence={key => {
+                        if (toggledConsequences.includes(key)) {
+                          setToggledConsequences(
+                            toggledConsequences.filter(c => c !== key),
+                          );
+                        } else {
+                          setToggledConsequences([...toggledConsequences, key]);
+                        }
+                      }}
+                      colorMap={colorMap.mutation}
+                    />
+                  )}
+                </div>
+                <div style={{ flexGrow: 1 }} className="oncogrid-cnv-legend">
+                  <h5>CNV Changes</h5>
+                  {heatMapMode ? (
+                    <div />
+                  ) : (
                     <SwatchLegend
-                      colorMap={mapKeys(colorMap, (val, key) =>
+                      colorMap={mapKeys(colorMap.cnv, (val, key) =>
                         key.replace('_variant', ''),
                       )}
                     />
                   )}
+                </div>
+                <div
+                  style={{ flexGrow: 1, marginTop: 10 }}
+                  className="oncogrid-mode-selection"
+                >
+                  <Column>
+                    <Row>
+                      <input
+                        readOnly
+                        checked={_.includes(variationDataTypes, 'cnv', 'ssm')}
+                        aria-label={'both'}
+                        type="radio"
+                        name="both"
+                        id="both"
+                        onChange={() => setVariationDataTypes('both')}
+                      />
+                      <RadioLabel name={'Both'} htmlFor="both" />
+                    </Row>
+                    <Row>
+                      <input
+                        readOnly
+                        checked={
+                          _.includes(variationDataTypes, 'ssm') &&
+                          !_.includes(variationDataTypes, 'cnv')
+                        }
+                        aria-label={'mutation-only'}
+                        type="radio"
+                        name="mutation-only"
+                        id="mutation-only"
+                        onChange={() => setVariationDataTypes(['ssm'])}
+                      />
+                      <RadioLabel
+                        name="Mutation only"
+                        htmlFor="mutation-only"
+                      />
+                    </Row>
+                    <Row>
+                      <input
+                        readOnly
+                        checked={
+                          _.includes(variationDataTypes, 'cnv') &&
+                          !_.includes(variationDataTypes, 'ssm')
+                        }
+                        aria-label={'cnv-only'}
+                        type="radio"
+                        name="cnv-only"
+                        id="cnv-only"
+                        onChange={() => setVariationDataTypes(['cnv'])}
+                      />
+                      <RadioLabel name="CNV only" htmlFor="cnv-only" />
+                    </Row>
+                  </Column>
                 </div>
                 <Row
                   style={{

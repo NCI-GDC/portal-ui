@@ -63,7 +63,63 @@ export const SwatchLegend = ({ colorMap }) => {
   );
 };
 
+const BoxButton = ({ label, color, onChange, checked }) => {
+  return (
+    <div
+      onClick={onChange}
+      style={{ flexDirection: 'row', justifyContent: 'space-between' }}
+    >
+      <div
+        style={{
+          height: 15,
+          width: 15,
+          backgroundColor: checked ? color : 'white',
+          border: '1px solid darkgray',
+          cursor: 'pointer',
+        }}
+      />
+      <label>{label}</label>
+    </div>
+  );
+};
+
+export const ToggleSwatchLegend = ({
+  colorMap,
+  toggledConsequences,
+  toggleConsequence,
+}) => {
+  const labels = _.map(colorMap, (color, key) => (
+    <div style={styles.cell} key={key}>
+      <BoxButton
+        label={key.replace(/_/g, ' ').replace(/variant/g, '')}
+        onChange={() => toggleConsequence(key)}
+        checked={toggledConsequences.includes(key)}
+        aria-label={key}
+        color={color}
+      />
+      {/* <input
+        type="checkbox"
+        id={key}
+        name={key}
+        aria-label={key}
+        checked={toggledConsequences.includes(key)}
+        onChange={() => toggleConsequence(key)}
+      />
+      <span>{key.replace(/_/g, ' ').replace(/variant/g, '')}</span> */}
+    </div>
+  ));
+
+  return (
+    <Row style={styles.table} className="test-legends">
+      <Column style={styles.td}>{labels.slice(0, 2)}</Column>
+      <Column style={styles.td}>{labels.slice(2, 4)}</Column>
+      <Column style={styles.td}>{labels.slice(4, 6)}</Column>
+    </Row>
+  );
+};
+
 export default {
   StepLegend,
   SwatchLegend,
+  ToggleSwatchLegend,
 };

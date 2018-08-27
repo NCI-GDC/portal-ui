@@ -9,14 +9,23 @@ export default function({ grid, setTooltip, trackLegends, push, dispatch }) {
     setTooltip(
       data.observation && (
         <div style={{ maxWidth: 800 }}>
-          <div>Case: {data.donor.displayId}</div>
+          {/* <div>Case: {data.donor.displayId}</div> */}
+          {data.donor && <div>Case: {data.donor.displayId}</div>}
           <div>Gene: {data.observation.geneSymbol}</div>
-          <div>Mutation: {data.observation.id}</div>
-          <div>Consequence: {data.observation.consequence}</div>
+          {data.observation.type === 'mutation' && (
+            <div>
+              <div>Mutation Type: {data.observation.consequence}</div>
+              <div>Mutations: {data.observation.ids.length}</div>
+            </div>
+          )}
+          {data.observation.type === 'cnv' && (
+            <div>CNV Change: {data.observation.cnv_change}</div>
+          )}
         </div>
       ),
     );
   });
+
   grid.on('gridMouseOut', () => setTooltip());
 
   grid.on('gridCrosshairMouseOver', data => {
@@ -24,7 +33,8 @@ export default function({ grid, setTooltip, trackLegends, push, dispatch }) {
       <div style={{ maxWidth: 800 }}>
         {data.donor && <div>Case: {data.donor.displayId}</div>}
         {data.gene && <div>Gene: {data.gene.symbol}</div>}
-        {data.obs && <div>Mutations: {data.obs}</div>}
+        {/* {data.obs && data.obs.mutation.length && <div>Mutations: {data.obs.mutation}</div>} */}
+        {/* {data.obs && data.obs.cnv.length && <div>CNV Change: {data.obs.cnv}</div>} */}
       </div>,
     );
   });
@@ -95,27 +105,57 @@ export default function({ grid, setTooltip, trackLegends, push, dispatch }) {
       },
     });
   });
-  grid.on('gridClick', ({ observation: { id } }) => {
-    push({
-      pathname: '/exploration',
-      query: {
-        filters: stringifyJSONParam({
-          op: 'AND',
-          content: [
-            {
-              op: 'IN',
-              content: {
-                field: 'ssms.ssm_id',
-                value: [id],
+
+  grid.on(
+    'gridClick',
+    ({ observation: { donorId, consequence, type, cnv_change, geneId } }) => {
+      let facetTab = 'mutations';
+      let searchTableTab = 'mutations';
+      let typeField = 'ssms.consequence.transcript.consequence_type';
+      let typeValue = consequence;
+
+      if (type === 'cnv') {
+        facetTab = 'genes';
+        searchTableTab = 'genes';
+        typeField = ''; // tbd
+        typeValue = cnv_change;
+      }
+
+      push({
+        pathname: '/exploration',
+        query: {
+          filters: stringifyJSONParam({
+            op: 'AND',
+            content: [
+              {
+                op: 'IN',
+                content: {
+                  field: 'cases.case_id',
+                  value: [donorId],
+                },
               },
-            },
-          ],
-        }),
-        facetTab: 'mutations',
-        searchTableTab: 'mutations',
-      },
-    });
-  });
+              {
+                op: 'IN',
+                content: {
+                  field: typeField,
+                  value: [typeValue],
+                },
+              },
+              {
+                op: 'IN',
+                content: {
+                  field: 'genes.gene_id',
+                  value: [geneId],
+                },
+              },
+            ],
+          }),
+          facetTab,
+          searchTableTab,
+        },
+      });
+    },
+  );
 
   grid.on('addTrackClick', ({ hiddenTracks, addTrack }) => {
     dispatch(

@@ -4,8 +4,14 @@ import { stringifyJSONParam } from '@ncigdc/utils/uri';
 import { setModal } from '@ncigdc/dux/modal';
 import SelectModal from '@ncigdc/components/Modals/SelectModal';
 
-export default function({ grid, setTooltip, trackLegends, push, dispatch, currentFilters }) {
-  console.log(currentFilters)
+export default function({
+  grid,
+  setTooltip,
+  trackLegends,
+  push,
+  dispatch,
+  currentFilters,
+}) {
   grid.on('gridMouseOver', data => {
     setTooltip(
       data.observation && (

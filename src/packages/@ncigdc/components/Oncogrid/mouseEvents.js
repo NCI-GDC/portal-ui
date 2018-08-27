@@ -4,7 +4,8 @@ import { stringifyJSONParam } from '@ncigdc/utils/uri';
 import { setModal } from '@ncigdc/dux/modal';
 import SelectModal from '@ncigdc/components/Modals/SelectModal';
 
-export default function({ grid, setTooltip, trackLegends, push, dispatch }) {
+export default function({ grid, setTooltip, trackLegends, push, dispatch, currentFilters }) {
+  console.log(currentFilters)
   grid.on('gridMouseOver', data => {
     setTooltip(
       data.observation && (
@@ -109,6 +110,7 @@ export default function({ grid, setTooltip, trackLegends, push, dispatch }) {
               op: 'IN',
               content: { field: `${gdcType}s.${gdcType}_id`, value: [id] },
             },
+            ...currentFilters.content,
           ],
         }),
         facetTab: `${gdcType}s`,

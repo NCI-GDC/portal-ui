@@ -334,6 +334,7 @@ const OncoGridWrapper = compose(
           trackLegends: gridParams.trackLegends,
           push,
           dispatch,
+          currentFilters,
         });
 
         setCaseCount(responses.totalCases);

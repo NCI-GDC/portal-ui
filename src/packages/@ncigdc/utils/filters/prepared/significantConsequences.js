@@ -19,6 +19,7 @@ export const colorMap = {
 };
 
 export const consequenceTypes = Object.keys(colorMap.mutation);
+export const cnvChangeTypes = Object.keys(colorMap.cnv);
 
 const filter: TValueFilter = {
   op: 'in',

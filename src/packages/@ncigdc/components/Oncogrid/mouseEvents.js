@@ -4,7 +4,14 @@ import { stringifyJSONParam } from '@ncigdc/utils/uri';
 import { setModal } from '@ncigdc/dux/modal';
 import SelectModal from '@ncigdc/components/Modals/SelectModal';
 
-export default function({ grid, setTooltip, trackLegends, push, dispatch }) {
+export default function({
+  grid,
+  setTooltip,
+  trackLegends,
+  push,
+  dispatch,
+  currentFilters,
+}) {
   grid.on('gridMouseOver', data => {
     setTooltip(
       data.observation && (
@@ -49,6 +56,17 @@ export default function({ grid, setTooltip, trackLegends, push, dispatch }) {
       </div>,
     );
   });
+
+  grid.on('cnvHistogramMouseOver', data => {
+    setTooltip(
+      <div style={{ maxWidth: 800 }}>
+        {data.domain.symbol ? data.domain.symbol : data.domain.displayId}
+        <br /> cnv: {data.domain.cnv}
+        <br />
+      </div>,
+    );
+  });
+
   grid.on('histogramMouseOut', () => setTooltip());
 
   grid.on(
@@ -98,6 +116,7 @@ export default function({ grid, setTooltip, trackLegends, push, dispatch }) {
               op: 'IN',
               content: { field: `${gdcType}s.${gdcType}_id`, value: [id] },
             },
+            ...currentFilters.content,
           ],
         }),
         facetTab: `${gdcType}s`,

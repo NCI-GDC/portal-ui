@@ -14,6 +14,7 @@ import { withTheme } from '@ncigdc/theme';
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import DownloadVisualizationButton from '@ncigdc/components/DownloadVisualizationButton';
 import BarChart from '@ncigdc/components/Charts/BarChart';
+import FilteredStackedBarChart from '@ncigdc/components/Charts/FilteredStackedBarChart';
 import wrapSvg from '@ncigdc/utils/wrapSvg';
 import VisualizationHeader from '@ncigdc/components/VisualizationHeader';
 import { createClassicRenderer } from '@ncigdc/modern_components/Query';
@@ -119,11 +120,13 @@ const Component = compose(
     theme,
     viewer: {
       explore: { genes = { hits: { edges: [] } }, cases, filteredCases },
+      
     },
     context = 'explore',
     showingMore,
     handleClickGene,
     style,
+    push,
   }) => {
     const numCasesAggByProject = cases.aggregations.project__project_id.buckets.reduce(
       (acc, b) => ({
@@ -182,10 +185,10 @@ const Component = compose(
         onClick: () => handleClickGene(g, mutatedGenesChartData),
       }));
     const checkers = [
-      { key: 'loss2' },
-      { key: 'loss1' },
-      { key: 'gain1' },
-      { key: 'gain2' },
+      { key: 'loss2', color: '#900000' },
+      { key: 'loss1', color: '#d33737' },
+      { key: 'gain1', color: '#0d71e8' },
+      { key: 'gain2', color: '#00457c' },
     ];
     /* prettier-ignore */
 
@@ -336,13 +339,13 @@ const Component = compose(
       .map(g => {
         const score = checkers.reduce((acc, c) => g[c.key] + acc, 0);
         return {
-          label: g.symbol,
+          ...g,
           value:
             context === 'project' && projectId
               ? score / numCasesAggByProject[projectId] * 100
               : score / filteredCases.hits.total * 100,
-          tooltip: tooltipContext(context, { symbol: g.symbol, score: score }),
-          onClick: () => handleClickGene(g, cnaGenesChartData),
+          tooltips: tooltipContext(context, { symbol: g.symbol, score: g.gain1 + g.gain2 + g.loss1 + g.loss2 }),
+          onClick: () => push({pathname: '/genes/' + g.gene_id})//handleClickGene(g, cnaGenesChartData),
         };
       });
 
@@ -423,7 +426,39 @@ const Component = compose(
               showingMore && (
                 <div id="cna-genes-chart">
                   <Row style={{ paddingTop: '2rem' }}>
-                    <BarChart
+                    <FilteredStackedBarChart
+                      // margin={CHART_MARGINS}
+                      height={CHART_HEIGHT}
+                      data={cnaGenesChartData}
+                      displayFilters={{
+                        gain1: true,
+                        gain2: true,
+                        loss1: true,
+                        loss2: true,
+                      }}
+                      colors={checkers.reduce(
+                        (acc, f) => ({ ...acc, [f.key]: f.color }),
+                        0,
+                      )}
+                      yAxis={{ title: '% of Cases Affected' }}
+                      styles={{
+                        xAxis: {
+                          stroke: theme.greyScale4,
+                          textFill: theme.greyScale3,
+                        },
+                        yAxis: {
+                          stroke: theme.greyScale4,
+                          textFill: theme.greyScale3,
+                        },
+                        bars: { fill: theme.secondary },
+                        tooltips: {
+                          fill: '#fff',
+                          stroke: theme.greyScale4,
+                          textFill: theme.greyScale3,
+                        },
+                      }}
+                    />
+                    {/* <BarChart
                       data={cnaGenesChartData}
                       yAxis={{ title: '% of Cases Affected' }}
                       height={CHART_HEIGHT}
@@ -447,7 +482,7 @@ const Component = compose(
                           textFill: theme.greyScale3,
                         },
                       }}
-                    />
+                    /> */}
                   </Row>
                 </div>
               )}

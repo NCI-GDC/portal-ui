@@ -13,6 +13,7 @@ import {
   toggleFilters,
   getFilterValue,
 } from '@ncigdc/utils/filters';
+import { ShowToggleBox } from '@ncigdc/components/TabPieCharts';
 import { stringifyJSONParam } from '@ncigdc/utils/uri';
 import withPropsOnChange from '@ncigdc/utils/withPropsOnChange';
 import removeEmptyKeys from '@ncigdc/utils/removeEmptyKeys';
@@ -120,7 +121,9 @@ export default compose(
         Genes
       </h1>
       <Column>
-        <Row>
+        <Row
+          style={{ paddingBottom: '1.5rem', borderBottom: '1px solid #c8c8c8' }}
+        >
           <Column flex="none" style={{ width: '50%' }}>
             <GenesBarChart
               defaultFilters={filters}
@@ -137,18 +140,10 @@ export default compose(
             />
           </Column>
         </Row>
-        <Row style={{ margin: 'auto' }}>
-          <div
-            onClick={() => setShowingMore(!showingMore)}
-            style={{
-              padding: '0.5rem 1rem',
-              cursor: 'pointer',
-              borderStyle: 'solid',
-              borderWidth: '1px',
-            }}
-          >
+        <Row style={{ margin: 'auto', marginTop: '-1.5rem' }}>
+          <ShowToggleBox onClick={() => setShowingMore(!showingMore)}>
             Show {showingMore ? 'Less' : 'More'}
-          </div>
+          </ShowToggleBox>
         </Row>
         <GenesTable
           defaultFilters={filters}

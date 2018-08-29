@@ -14,7 +14,6 @@ import { withTheme } from '@ncigdc/theme';
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import DownloadVisualizationButton from '@ncigdc/components/DownloadVisualizationButton';
 import BarChart from '@ncigdc/components/Charts/BarChart';
-import FilteredStackedBarChart from '@ncigdc/components/Charts/FilteredStackedBarChart';
 import wrapSvg from '@ncigdc/utils/wrapSvg';
 import VisualizationHeader from '@ncigdc/components/VisualizationHeader';
 import { createClassicRenderer } from '@ncigdc/modern_components/Query';
@@ -120,7 +119,6 @@ const Component = compose(
     theme,
     viewer: {
       explore: { genes = { hits: { edges: [] } }, cases, filteredCases },
-      
     },
     context = 'explore',
     showingMore,
@@ -339,13 +337,13 @@ const Component = compose(
       .map(g => {
         const score = checkers.reduce((acc, c) => g[c.key] + acc, 0);
         return {
-          ...g,
+          label: g.symbol,
           value:
             context === 'project' && projectId
               ? score / numCasesAggByProject[projectId] * 100
               : score / filteredCases.hits.total * 100,
-          tooltips: tooltipContext(context, { symbol: g.symbol, score: g.gain1 + g.gain2 + g.loss1 + g.loss2 }),
-          onClick: () => push({pathname: '/genes/' + g.gene_id})//handleClickGene(g, cnaGenesChartData),
+          tooltip: tooltipContext(context, { symbol: g.symbol, score: score }),
+          onClick: () => handleClickGene(g, cnaGenesChartData),
         };
       });
 
@@ -426,21 +424,14 @@ const Component = compose(
               showingMore && (
                 <div id="cna-genes-chart">
                   <Row style={{ paddingTop: '2rem' }}>
-                    <FilteredStackedBarChart
-                      // margin={CHART_MARGINS}
-                      height={CHART_HEIGHT}
+                    <BarChart
                       data={cnaGenesChartData}
-                      displayFilters={{
-                        gain1: true,
-                        gain2: true,
-                        loss1: true,
-                        loss2: true,
-                      }}
+                      yAxis={{ title: '% of Cases Affected' }}
+                      height={CHART_HEIGHT}
                       colors={checkers.reduce(
                         (acc, f) => ({ ...acc, [f.key]: f.color }),
                         0,
                       )}
-                      yAxis={{ title: '% of Cases Affected' }}
                       styles={{
                         xAxis: {
                           stroke: theme.greyScale4,
@@ -458,31 +449,6 @@ const Component = compose(
                         },
                       }}
                     />
-                    {/* <BarChart
-                      data={cnaGenesChartData}
-                      yAxis={{ title: '% of Cases Affected' }}
-                      height={CHART_HEIGHT}
-                      colors={checkers.reduce(
-                        (acc, f) => ({ ...acc, [f.key]: f.color }),
-                        0,
-                      )}
-                      styles={{
-                        xAxis: {
-                          stroke: theme.greyScale4,
-                          textFill: theme.greyScale3,
-                        },
-                        yAxis: {
-                          stroke: theme.greyScale4,
-                          textFill: theme.greyScale3,
-                        },
-                        bars: { fill: theme.secondary },
-                        tooltips: {
-                          fill: '#fff',
-                          stroke: theme.greyScale4,
-                          textFill: theme.greyScale3,
-                        },
-                      }}
-                    /> */}
                   </Row>
                 </div>
               )}

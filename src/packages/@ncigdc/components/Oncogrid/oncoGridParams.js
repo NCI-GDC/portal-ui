@@ -58,7 +58,7 @@ export default function({
   trackPadding,
   consequenceTypes,
   impacts,
-  grid = true,
+  grid = false,
   cnvOccurrencesData = [],
 }: {
   donorData: Array<TDonorInput>,

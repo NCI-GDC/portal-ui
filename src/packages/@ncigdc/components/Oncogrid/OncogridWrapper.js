@@ -68,7 +68,7 @@ function refreshGridState({
 }
 
 const GRID_CLASS = 'oncogrid-wrapper';
-const MAX_CASES = 500;
+const MAX_CASES = 200;
 const MAX_GENES = 50;
 
 const styles = {
@@ -465,6 +465,7 @@ const OncoGridWrapper = compose(
                   }
                 }}
                 colorMap={colorMap.mutation}
+                type={'mutations'}
               />
             )}
           </div>

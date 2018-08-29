@@ -63,9 +63,9 @@ export const SwatchLegend = ({ colorMap }) => {
   );
 };
 
-const Checkbox = ({ label, color, onChange, checked }) => {
+const Checkbox = ({ label, color, onChange, checked, boxStyle }) => {
   return (
-    <div style={{ paddingBottom: 10 }}>
+    <div style={{ paddingBottom: 10, display: 'flex', alignItems: 'center' }}>
       <div
         onClick={onChange}
         style={{
@@ -75,8 +75,11 @@ const Checkbox = ({ label, color, onChange, checked }) => {
           border: `2px solid ${color || 'gray'}`,
           cursor: 'pointer',
           textAlign: 'center',
-          verticalAlign: 'middle',
-          display: 'inline-block',
+          verticalAlign: 'center',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          ...boxStyle,
         }}
       >
         {checked ? <span>{'✓'}</span> : null}
@@ -88,17 +91,17 @@ const Checkbox = ({ label, color, onChange, checked }) => {
 
 export const ToggleSwatchLegend = ({
   colorMap,
-  toggledConsequences,
-  toggleConsequence,
+  toggledValues,
+  toggle,
   type,
 }) => {
   const labels = _.map(colorMap, (color, key) => (
     <Checkbox
-      style={styles.cell}
+      boxStyle={{ alignItems: 'flex-start' }}
       key={key}
       label={key.replace(/_/g, ' ').replace(/variant/g, '')}
-      onChange={() => toggleConsequence(key)}
-      checked={toggledConsequences.includes(key)}
+      onChange={() => toggle(key)}
+      checked={toggledValues && toggledValues.includes(key)}
       aria-label={key}
       color={color}
     />
@@ -117,7 +120,10 @@ export const ToggleSwatchLegend = ({
         <Column>
           <Checkbox
             label={`Show ${type}`}
-            onChange={() => toggleConsequence([])}
+            onChange={() => toggle([])}
+            checked={true}
+            aria-label={type}
+            color={type === 'mutations' ? '#2E7D32' : '#64b5f6'}
           />
         </Column>
       </Row>

@@ -134,7 +134,7 @@ const OncoGridWrapper = compose(
   withState('oncoGrid', 'setOncoGrid', {}),
   withState('oncoGridData', 'setOncoGridData', null),
   withState('crosshairMode', 'setCrosshairMode', false),
-  withState('showGridLines', 'setShowGridLines', true),
+  withState('showGridLines', 'setShowGridLines', false),
   withState('heatMapMode', 'setHeatMapMode', false),
   withState('isLoading', 'setIsLoading', true),
   withState('caseCount', 'setCaseCount', 0),
@@ -223,6 +223,7 @@ const OncoGridWrapper = compose(
         currentFilters,
         toggledConsequences,
         variationDataTypes,
+        toggledCnvChanges,
       };
     },
   ),
@@ -455,8 +456,8 @@ const OncoGridWrapper = compose(
               <StepLegend rightLabel="More Mutations" />
             ) : (
               <ToggleSwatchLegend
-                toggledConsequences={toggledConsequences}
-                toggleConsequence={key => {
+                toggledValues={toggledConsequences}
+                toggle={key => {
                   if (toggledConsequences.includes(key)) {
                     setToggledConsequences(
                       toggledConsequences.filter(c => c !== key),
@@ -475,76 +476,21 @@ const OncoGridWrapper = compose(
             {heatMapMode ? (
               <div />
             ) : (
-              <SwatchLegend
-                colorMap={mapKeys(colorMap.cnv, (val, key) =>
-                  key.replace('_variant', ''),
-                )}
+              <ToggleSwatchLegend
+                toggledValues={toggledCnvChanges}
+                toggle={key => {
+                  if (toggledCnvChanges.includes(key)) {
+                    setToggledCnvChanges(
+                      toggledCnvChanges.filter(c => c !== key),
+                    );
+                  } else {
+                    setToggledCnvChanges([...toggledCnvChanges, key]);
+                  }
+                }}
+                colorMap={colorMap.cnv}
+                type={'copy number variations'}
               />
             )}
-          </div>
-          <div
-            style={{ flexGrow: 1, marginTop: 10 }}
-            className="oncogrid-mode-selection"
-          >
-            <Column>
-              <Row>
-                <input
-                  readOnly
-                  checked={
-                    _.includes(variationDataTypes, 'ssm') &&
-                    _.includes(variationDataTypes, 'cnv')
-                  }
-                  aria-label={'both'}
-                  type="radio"
-                  name="both"
-                  id="both"
-                  onChange={() => {
-                    setVariationDataTypes(['ssm', 'cnv']);
-                    setToggledConsequences(consequenceTypes);
-                    setToggledCnvChanges(cnvChangeTypes);
-                  }}
-                />
-                <RadioLabel name={'Both'} htmlFor="both" />
-              </Row>
-              <Row>
-                <input
-                  readOnly
-                  checked={
-                    variationDataTypes.length < 2 &&
-                    _.includes(variationDataTypes, 'ssm')
-                  }
-                  aria-label={'mutation-only'}
-                  type="radio"
-                  name="mutation-only"
-                  id="mutation-only"
-                  onChange={() => {
-                    setVariationDataTypes(['ssm']);
-                    setToggledConsequences(consequenceTypes);
-                    setToggledCnvChanges([]);
-                  }}
-                />
-                <RadioLabel name="Mutation only" htmlFor="mutation-only" />
-              </Row>
-              <Row>
-                <input
-                  readOnly
-                  checked={
-                    variationDataTypes.length < 2 &&
-                    _.includes(variationDataTypes, 'cnv')
-                  }
-                  aria-label={'cnv-only'}
-                  type="radio"
-                  name="cnv-only"
-                  id="cnv-only"
-                  onChange={() => {
-                    setVariationDataTypes(['cnv']);
-                    setToggledCnvChanges(cnvChangeTypes);
-                    setToggledConsequences([]);
-                  }}
-                />
-                <RadioLabel name="CNV only" htmlFor="cnv-only" />
-              </Row>
-            </Column>
           </div>
         </Row>
         {!oncoGridData &&

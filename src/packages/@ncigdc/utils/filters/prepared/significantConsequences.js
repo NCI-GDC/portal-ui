@@ -3,18 +3,18 @@ import type { TValueFilter } from '@ncigdc/utils/filters/types';
 
 export const colorMap = {
   mutation: {
-    missense_variant: '#ff9b6c',
-    frameshift_variant: '#57dba4',
-    start_lost: '#ff2323',
-    stop_lost: '#d3ec00',
-    initiator_codon_variant: '#5abaff',
-    stop_gained: '#af57db',
+    missense_variant: '#2E7D32',
+    frameshift_variant: '#2E7D32',
+    start_lost: '#2E7D32',
+    stop_lost: '#2E7D32',
+    initiator_codon_variant: '#2E7D32',
+    stop_gained: '#2E7D32',
   },
   cnv: {
-    deep_loss: '#00457c',
-    shallow_loss: '#0d71e8',
-    amplification: '#d33737',
-    gain: '#900000',
+    deep_loss: '#64b5f6',
+    shallow_loss: '#64b5f6',
+    gain: '#e76a6a',
+    amplification: '#e76a6a',
   },
 };
 

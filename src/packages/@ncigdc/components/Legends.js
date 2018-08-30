@@ -63,58 +63,76 @@ export const SwatchLegend = ({ colorMap }) => {
   );
 };
 
-const BoxButton = ({ label, color, onChange, checked }) => {
+const Checkbox = ({ label, color, onChange, checked, boxStyle }) => {
   return (
-    <div
-      onClick={onChange}
-      style={{ flexDirection: 'row', justifyContent: 'space-between' }}
-    >
+    <div style={{ paddingBottom: 10, display: 'flex', alignItems: 'center' }}>
       <div
+        onClick={onChange}
         style={{
-          height: 15,
-          width: 15,
-          backgroundColor: checked ? color : 'white',
-          border: '1px solid darkgray',
+          height: 20,
+          width: 20,
+          color: color || 'gray',
+          border: `2px solid ${color || 'gray'}`,
           cursor: 'pointer',
+          textAlign: 'center',
+          verticalAlign: 'center',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          ...boxStyle,
         }}
-      />
-      <label>{label}</label>
+      >
+        {checked ? <span>{'✓'}</span> : null}
+      </div>
+      <label style={{ marginLeft: 5 }}>{label}</label>
     </div>
   );
 };
 
 export const ToggleSwatchLegend = ({
   colorMap,
-  toggledConsequences,
-  toggleConsequence,
+  toggledValues,
+  toggle,
+  type,
 }) => {
   const labels = _.map(colorMap, (color, key) => (
-    <div style={styles.cell} key={key}>
-      <BoxButton
-        label={key.replace(/_/g, ' ').replace(/variant/g, '')}
-        onChange={() => toggleConsequence(key)}
-        checked={toggledConsequences.includes(key)}
-        aria-label={key}
-        color={color}
-      />
-      {/* <input
-        type="checkbox"
-        id={key}
-        name={key}
-        aria-label={key}
-        checked={toggledConsequences.includes(key)}
-        onChange={() => toggleConsequence(key)}
-      />
-      <span>{key.replace(/_/g, ' ').replace(/variant/g, '')}</span> */}
-    </div>
+    <Checkbox
+      boxStyle={{ alignItems: 'flex-start' }}
+      key={key}
+      label={key.replace(/_/g, ' ').replace(/variant/g, '')}
+      onChange={() => toggle(key)}
+      checked={toggledValues && toggledValues.includes(key)}
+      aria-label={key}
+      color={color}
+    />
   ));
 
   return (
-    <Row style={styles.table} className="test-legends">
-      <Column style={styles.td}>{labels.slice(0, 2)}</Column>
-      <Column style={styles.td}>{labels.slice(2, 4)}</Column>
-      <Column style={styles.td}>{labels.slice(4, 6)}</Column>
-    </Row>
+    <Column
+      style={{
+        width: 350,
+        border: '1px solid lightgray',
+        borderRadius: '8px',
+        padding: 10,
+      }}
+    >
+      <Row style={{ borderBottom: '1px solid lightgray' }}>
+        <Column>
+          <Checkbox
+            label={`Show ${type}`}
+            onChange={() => toggle([])}
+            checked={true}
+            aria-label={type}
+            color={type === 'mutations' ? '#2E7D32' : '#64b5f6'}
+          />
+        </Column>
+      </Row>
+      <Row style={styles.table} className="test-legends">
+        <Column style={styles.td}>{labels.slice(0, 2)}</Column>
+        <Column style={styles.td}>{labels.slice(2, 4)}</Column>
+        <Column style={styles.td}>{labels.slice(4, 6)}</Column>
+      </Row>
+    </Column>
   );
 };
 
@@ -123,3 +141,13 @@ export default {
   SwatchLegend,
   ToggleSwatchLegend,
 };
+
+/* <input
+  type="checkbox"
+  id={key}
+  name={key}
+  aria-label={key}
+  checked={toggledConsequences.includes(key)}
+  onChange={() => toggleConsequence(key)}
+/>
+<span>{key.replace(/_/g, ' ').replace(/variant/g, '')}</span> */

@@ -47,7 +47,7 @@
     "lodash-backports": "1.0.1",
     "memoizee": "0.4.5",
     "moment": "2.19.3",
-    "oncogrid": "git+https://github.com/oncojs/oncogrid.git#b2028f88335a64d1316f2fb9dc6e396bca74980b",
+    "oncogrid": "git+https://github.com/oncojs/oncogrid.git#new-grid-spec",
     "openseadragon": "2.3.1",
     "pluralize": "7.0.0",
     "prop-types": "15.5.10",

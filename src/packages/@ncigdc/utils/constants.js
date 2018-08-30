@@ -149,7 +149,6 @@ export const HUMAN_BODY_SITES_MAP = {
   'peripheral nerves and autonomic nervous system':
     'Other And Ill-Defined Sites',
   'other and unspecified urinary organs': 'Other And Ill-Defined Sites',
-
   'bones, joints and articular cartilage of limbs': 'Bone',
   'bones, joints and articular cartilage of other and unspecified sites':
     'Bone',

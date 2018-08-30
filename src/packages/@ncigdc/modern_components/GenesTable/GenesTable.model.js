@@ -243,7 +243,7 @@ const GenesTableModel = [
             query={{
               searchTableTab: 'cases',
               filters: addInFilters(
-                // query.genesTable_filters || defaultFilters,
+                query.genesTable_filters || defaultFilters,
                 makeFilter([
                   {
                     field: 'cases.available_variation_data',

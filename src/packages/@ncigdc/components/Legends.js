@@ -122,11 +122,10 @@ const getCheckBoxColor = ({
   type,
   heatMapMode,
   heatMapColor,
-  color = null,
+  color = '#333',
 }) => {
   if (heatMapMode) return heatMapColor;
-  if (color) return color;
-  return type === 'mutations' ? '#2E7D32' : '#64b5f6';
+  return color;
 };
 
 export const ToggleSwatchLegend = ({
@@ -151,11 +150,11 @@ export const ToggleSwatchLegend = ({
       heatMapColor={heatMapColor}
     />
   ));
-
   return (
     <Column
       style={{
-        maxWidth: labels.length * 80,
+        width: type === 'mutations' ? 400 : 300,
+        height: 165,
         border: '1px solid lightgray',
         borderRadius: '8px',
         padding: 10,
@@ -185,11 +184,19 @@ export const ToggleSwatchLegend = ({
             type === 'mutations' && <StepLegend color={heatMapColor} />}
         </Column>
       </Row>
-      <Row style={(styles.table, { marginTop: 10 })} className="test-legends">
-        <Column style={styles.td}>{labels.slice(0, 2)}</Column>
-        <Column style={styles.td}>{labels.slice(2, 4)}</Column>
-        <Column style={styles.td}>{labels.slice(4, 6)}</Column>
-      </Row>
+
+      {type === 'mutations' && (
+        <Row style={(styles.table, { marginTop: 10 })} className="test-legends">
+          <Column style={styles.td}>{labels.slice(0, 2)}</Column>
+          <Column style={styles.td}>{labels.slice(2, 4)}</Column>
+          <Column style={styles.td}>{labels.slice(4, 6)}</Column>
+        </Row>
+      )}
+      {type === 'copy number variations' && (
+        <Row style={(styles.table, { marginTop: 10 })} className="test-legends">
+          <Column style={styles.td}>{labels}</Column>
+        </Row>
+      )}
     </Column>
   );
 };

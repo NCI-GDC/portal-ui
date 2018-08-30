@@ -277,6 +277,21 @@ export const buildOccurrences: TBuildOccurrences = (
     }
   }
 
+  const consequencePriorityOrder = [
+    'missense_variant',
+    'start_lost',
+    'stop_lost',
+    'stop_gained',
+    'frameshift_variant',
+  ];
+
+  let orderedSSMObservations = ssmObservations.sort(function(a, b) {
+    return (
+      consequencePriorityOrder.indexOf(a.consequence) -
+      consequencePriorityOrder.indexOf(b.consequence)
+    );
+  });
+
   for (let i = 0; i < cnv_occurrences.length; i += 1) {
     const {
       case: { case_id },
@@ -299,7 +314,7 @@ export const buildOccurrences: TBuildOccurrences = (
   }
 
   return {
-    ssmObservations,
+    ssmObservations: orderedSSMObservations,
     donorIds,
     geneIds,
     cnvObservations,

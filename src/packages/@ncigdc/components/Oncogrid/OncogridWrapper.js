@@ -3,9 +3,16 @@
 no-restricted-globals: 0
 */
 import React from 'react';
-import { lifecycle, compose, withState, withProps, mapProps } from 'recompose';
+import {
+  lifecycle,
+  compose,
+  withState,
+  withProps,
+  mapProps,
+  withHandlers,
+} from 'recompose';
 import OncoGrid from 'oncogrid';
-import { uniqueId, get, debounce } from 'lodash';
+import { uniqueId, get, debounce, isEqual } from 'lodash';
 import { connect } from 'react-redux';
 import withSize from '@ncigdc/utils/withSize';
 import FullScreenIcon from 'react-icons/lib/md/fullscreen';
@@ -40,6 +47,10 @@ import { withTooltip } from '@ncigdc/uikit/Tooltip/index';
 import getQueries from './getQueries';
 import oncoGridParams from './oncoGridParams';
 import mouseEvents from './mouseEvents';
+import { setModal } from '@ncigdc/dux/modal';
+import ColorPickerModal from '@ncigdc/components/Modals/ColorPickerModal';
+import DropDown from '@ncigdc/uikit/Dropdown';
+import DropdownItem from '@ncigdc/uikit/DropdownItem';
 
 import './oncogrid.css';
 
@@ -91,7 +102,6 @@ const styles = {
   },
   legends: {
     width: '80%',
-    alignItems: 'center',
     marginBottom: '30px',
     marginLeft: '100px',
     flexFlow: 'row wrap',
@@ -123,6 +133,18 @@ type TProps = {
 
 const OncoGridWrapper = compose(
   withRouter,
+  withState(
+    'gridColors',
+    'setGridColors',
+    JSON.parse(localStorage.getItem('oncogridActiveTheme') || 'null') ||
+      colorMap,
+  ),
+  withHandlers({
+    resetColors: ({ setGridColors }) => () => {
+      setGridColors(colorMap);
+      localStorage.setItem('oncogridActiveTheme', JSON.stringify(colorMap));
+    },
+  }),
   withState('oncoGrid', 'setOncoGrid', {}),
   withState('oncoGridData', 'setOncoGridData', null),
   withState('crosshairMode', 'setCrosshairMode', false),
@@ -149,6 +171,7 @@ const OncoGridWrapper = compose(
       variationDataTypes,
       toggledCnvChanges,
       rankOncoGridBy,
+      gridColors,
       ...props
     }) => {
       const cases = props.oncoGridData
@@ -242,6 +265,7 @@ const OncoGridWrapper = compose(
         currentCNVFilters,
         currentSSMFilters,
         rankOncoGridBy,
+        gridColors,
       };
     },
   ),
@@ -283,6 +307,7 @@ const OncoGridWrapper = compose(
         toggledCnvChanges,
         rankOncoGridBy,
         heatMapColor,
+        gridColors,
       }: TProps = {},
       previousResponses: Object,
     ): Promise<*> {
@@ -323,7 +348,7 @@ const OncoGridWrapper = compose(
       performanceTracker.begin('oncogrid:process');
       const gridParams = oncoGridParams({
         grid: showGridLines,
-        colorMap,
+        colorMap: gridColors,
         element: wrapperRefs[uniqueGridClass],
         donorData: responses.cases,
         geneData: responses.genes,
@@ -434,6 +459,7 @@ const OncoGridWrapper = compose(
           JSON.stringify(nextProps.currentCNVFilters) ||
         JSON.stringify(this.props.currentSSMFilters) !==
           JSON.stringify(nextProps.currentSSMFilters) ||
+        !isEqual(this.props.gridColors, nextProps.gridColors) ||
         this.props.heatMapMode !== nextProps.heatMapMode
       ) {
         this.props.setIsLoading(true);
@@ -472,6 +498,10 @@ const OncoGridWrapper = compose(
     variationDataTypes,
     setVariationDataTypes,
     heatMapColor,
+    setGridColors,
+    gridColors,
+    dispatch,
+    resetColors,
   }) => (
     <Loader loading={isLoading} height="800px">
       <div
@@ -484,8 +514,13 @@ const OncoGridWrapper = compose(
           containerRefs[uniqueGridClass] = r;
         }}
       >
-        <Row style={{ display: 'flex', justifyContent: 'space-between' }}>
-          <h4 style={{ textAlign: 'center' }}>{title}</h4>
+        <Row
+          style={{
+            display: 'flex',
+            justifyContent: oncoGridData ? 'space-between' : 'flex-end',
+          }}
+        >
+          {oncoGridData && <h3 style={{ textAlign: 'center' }}>{title}</h3>}
           {!isLoading && (
             <div>
               <Row
@@ -497,6 +532,45 @@ const OncoGridWrapper = compose(
                 }}
                 spacing="1rem"
               >
+                <DropDown
+                  button={
+                    <Tooltip Component="Customize Colors">
+                      <Button
+                        style={visualizingButton}
+                        disabled={!oncoGridData}
+                      >
+                        <i className="fa fa-paint-brush" />
+                        <Hidden>Customize Colors</Hidden>
+                      </Button>
+                    </Tooltip>
+                  }
+                >
+                  <DropdownItem
+                    onClick={() => {
+                      dispatch(
+                        setModal(
+                          <ColorPickerModal
+                            onApply={colors => {
+                              setGridColors(colors);
+                              localStorage.setItem(
+                                'oncogridActiveTheme',
+                                JSON.stringify(colors),
+                              );
+                              dispatch(setModal(null));
+                            }}
+                            onClose={() => dispatch(setModal(null))}
+                            colors={gridColors}
+                          />,
+                        ),
+                      );
+                    }}
+                  >
+                    Customize Colors
+                  </DropdownItem>
+                  <DropdownItem onClick={resetColors}>
+                    Reset to Default
+                  </DropdownItem>
+                </DropDown>
                 <DownloadVisualizationButton
                   svg={() => {
                     const elementsAfter = trackLegends.map(html => {
@@ -543,6 +617,8 @@ const OncoGridWrapper = compose(
                     style={styles.button}
                     onClick={() => {
                       oncoGrid.reload();
+                      setToggledConsequences(consequenceTypes);
+                      setToggledCnvChanges(cnvChangeTypes);
                       refreshGridState({
                         oncoGrid,
                         setHeatMapMode,
@@ -665,7 +741,7 @@ const OncoGridWrapper = compose(
             }}
             className="oncogrid-mutation-legend"
           >
-            <h5>Mutations</h5>
+            <h3>Mutations</h3>
             <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
               <ToggleSwatchLegend
                 toggledValues={toggledConsequences}
@@ -685,17 +761,16 @@ const OncoGridWrapper = compose(
                     setToggledConsequences(consequenceTypes);
                   }
                 }}
-                colorMap={colorMap.mutation}
+                colorMap={gridColors.mutation}
                 type={'mutations'}
                 heatMapMode={heatMapMode}
                 heatMapColor={heatMapColor}
               />
             </div>
           </div>
-
           {!heatMapMode && (
             <div style={{ flexGrow: 1 }} className="oncogrid-cnv-legend">
-              <h5>CNV Changes</h5>
+              <h3>CNV Changes</h3>
               <ToggleSwatchLegend
                 toggledValues={toggledCnvChanges}
                 toggle={key => {
@@ -714,7 +789,7 @@ const OncoGridWrapper = compose(
                     setToggledCnvChanges(cnvChangeTypes);
                   }
                 }}
-                colorMap={colorMap.cnv}
+                colorMap={gridColors.cnv}
                 type={'copy number variations'}
               />
             </div>
@@ -723,10 +798,16 @@ const OncoGridWrapper = compose(
         {!oncoGridData &&
           !isLoading && (
             <Column style={{ padding: '2rem 0' }}>
-              <div>No result found.</div>
+              {toggledConsequences.length === 0 && (
+                <div>
+                  The selected cases have no mutations of these types - Only
+                  cases with some mutations will be shown. Please select more
+                  mutation types or reload the page to continue exploration.
+                </div>
+              )}
+              {toggledConsequences.length > 0 && <div>No result found.</div>}
             </Column>
           )}
-
         <div
           className={`${GRID_CLASS} ${uniqueGridClass}`}
           ref={n => {

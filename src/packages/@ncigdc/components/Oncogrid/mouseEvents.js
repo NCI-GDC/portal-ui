@@ -3,6 +3,7 @@ import React from 'react';
 import { stringifyJSONParam } from '@ncigdc/utils/uri';
 import { setModal } from '@ncigdc/dux/modal';
 import SelectModal from '@ncigdc/components/Modals/SelectModal';
+import { replaceFilters } from '@ncigdc/utils/filters';
 
 export default function({
   grid,
@@ -13,23 +14,43 @@ export default function({
   currentFilters,
 }) {
   grid.on('gridMouseOver', data => {
+    if (!data.observation) return;
+    const cnvData = data.observation.filter(o => o.type === 'cnv');
+    const ssmData = data.observation.filter(o => o.type === 'mutation');
     setTooltip(
-      data.observation && (
-        <div style={{ maxWidth: 800 }}>
-          {/* <div>Case: {data.donor.displayId}</div> */}
-          {data.donor && <div>Case: {data.donor.displayId}</div>}
-          <div>Gene: {data.observation.geneSymbol}</div>
-          {data.observation.type === 'mutation' && (
-            <div>
-              <div>Mutation Type: {data.observation.consequence}</div>
-              <div>Mutations: {data.observation.ids.length}</div>
+      <div style={{ maxWidth: 800 }}>
+        {data.donor && (
+          <div>
+            <span style={{ fontWeight: 'bold' }}>Case:</span>{' '}
+            {data.donor.displayId}
+          </div>
+        )}
+        {data.gene && (
+          <div style={{ marginTop: 2 }}>
+            <span style={{ fontWeight: 'bold' }}>Gene:</span> {data.gene.symbol}
+          </div>
+        )}
+        <div style={{ marginTop: 2 }}>
+          {!!cnvData.length && (
+            <span>
+              <span style={{ fontWeight: 'bold' }}>CNV change:</span>
+              <span> {cnvData[0].cnv_change}</span>
+            </span>
+          )}
+          {!!ssmData.length && (
+            <div style={{ marginTop: 2 }}>
+              <div>
+                <span style={{ fontWeight: 'bold' }}>Number of mutations:</span>
+              </div>
+              {ssmData.map((ssm, i) => (
+                <div key={i} style={{ marginLeft: 5 }}>
+                  {ssm.consequence}: <span>{ssm.ids.length}</span>
+                </div>
+              ))}
             </div>
           )}
-          {data.observation.type === 'cnv' && (
-            <div>CNV Change: {data.observation.cnv_change}</div>
-          )}
         </div>
-      ),
+      </div>,
     );
   });
 
@@ -40,8 +61,6 @@ export default function({
       <div style={{ maxWidth: 800 }}>
         {data.donor && <div>Case: {data.donor.displayId}</div>}
         {data.gene && <div>Gene: {data.gene.symbol}</div>}
-        {/* {data.obs && data.obs.mutation.length && <div>Mutations: {data.obs.mutation}</div>} */}
-        {/* {data.obs && data.obs.cnv.length && <div>CNV Change: {data.obs.cnv}</div>} */}
       </div>,
     );
   });
@@ -125,56 +144,38 @@ export default function({
     });
   });
 
-  grid.on(
-    'gridClick',
-    ({ observation: { donorId, consequence, type, cnv_change, geneId } }) => {
-      let facetTab = 'mutations';
-      let searchTableTab = 'mutations';
-      let typeField = 'ssms.consequence.transcript.consequence_type';
-      let typeValue = consequence;
-
-      if (type === 'cnv') {
-        facetTab = 'genes';
-        searchTableTab = 'genes';
-        typeField = ''; // tbd
-        typeValue = cnv_change;
-      }
-
-      push({
-        pathname: '/exploration',
-        query: {
-          filters: stringifyJSONParam({
-            op: 'AND',
-            content: [
-              {
-                op: 'IN',
-                content: {
-                  field: 'cases.case_id',
-                  value: [donorId],
-                },
-              },
-              {
-                op: 'IN',
-                content: {
-                  field: typeField,
-                  value: [typeValue],
-                },
-              },
-              {
-                op: 'IN',
-                content: {
-                  field: 'genes.gene_id',
-                  value: [geneId],
-                },
-              },
-            ],
-          }),
-          facetTab,
-          searchTableTab,
-        },
-      });
-    },
-  );
+  grid.on('gridClick', ({ donorId, geneId }) => {
+    const filters = replaceFilters(
+      {
+        op: 'AND',
+        content: [
+          {
+            op: 'IN',
+            content: {
+              field: 'cases.case_id',
+              value: [donorId],
+            },
+          },
+          {
+            op: 'IN',
+            content: {
+              field: 'genes.gene_id',
+              value: [geneId],
+            },
+          },
+        ],
+      },
+      currentFilters,
+    );
+    push({
+      pathname: '/exploration',
+      query: {
+        filters: stringifyJSONParam(filters),
+        facetTab: 'genes',
+        searchTableTab: 'genes',
+      },
+    });
+  });
 
   grid.on('addTrackClick', ({ hiddenTracks, addTrack }) => {
     dispatch(

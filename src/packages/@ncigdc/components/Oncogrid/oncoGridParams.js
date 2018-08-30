@@ -11,7 +11,12 @@ import {
   getColorValue,
 } from '@ncigdc/components/Oncogrid/tracks';
 import { mapDonors, mapGenes, buildOccurrences } from './dataMapping';
-import type { TDonorInput, TGeneInput, TOccurrenceInput } from './dataMapping';
+import type {
+  TDonorInput,
+  TGeneInput,
+  TSSMOccurrenceInput,
+  TCNVOccurrenceInput,
+} from './dataMapping';
 
 const donorTracks = [...clinicalDonorTracks, ...dataTypeTracks];
 
@@ -50,7 +55,7 @@ function geneSetLegend(): string {
 export default function({
   donorData,
   geneData,
-  occurrencesData,
+  ssmOccurrencesData,
   colorMap,
   element,
   height = 150,
@@ -60,10 +65,12 @@ export default function({
   impacts,
   grid = false,
   cnvOccurrencesData = [],
+  heatMap = false,
 }: {
   donorData: Array<TDonorInput>,
   geneData: Array<TGeneInput>,
-  occurrencesData: Array<TOccurrenceInput>,
+  ssmOccurrencesData: Array<TSSMOccurrenceInput>,
+  cnvOccurrencesData: Array<TCNVOccurrenceInput>,
   colorMap: { [key: string]: string },
   element: string,
   height: number,
@@ -72,17 +79,23 @@ export default function({
   consequenceTypes: Array<string>,
   impacts: Array<string>,
   grid?: boolean,
-  cnvOccurrencesData?: Array<Object>,
+  heatMap: boolean,
 }): ?Object {
-  const { observations, donorIds, geneIds, cnvObservations } = buildOccurrences(
-    occurrencesData,
+  const {
+    ssmObservations,
+    donorIds,
+    geneIds,
+    cnvObservations,
+  } = buildOccurrences(
+    ssmOccurrencesData,
+    cnvOccurrencesData,
     donorData,
     geneData,
     consequenceTypes,
     impacts,
-    cnvOccurrencesData,
   );
-  if (!observations.length && !cnvObservations.length) return null;
+  if (!ssmObservations.length && !cnvObservations.length) return null;
+
   let donors = mapDonors(donorData, donorIds);
   let genes = mapGenes(geneData, geneIds);
   donors = donors.map(donor => ({
@@ -140,13 +153,13 @@ export default function({
     cnvObservations,
     donors,
     genes,
-    observations,
+    ssmObservations,
     height,
     width,
     element,
     colorMap,
     scaleToFit: true,
-    heatMap: false,
+    heatMap,
     grid,
     minCellHeight: 8,
     trackHeight: 12,

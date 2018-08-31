@@ -91,10 +91,25 @@ export default compose(
             },
           ],
         };
-        // const cnvFilters = makeFilter([
-        //   { field: 'ssms.ssm_id', value: ssmId },
-        //   { field: 'cases.available_variation_data', value: 'cnv' },
-        // ]);
+        const cnvProjectFilter = {
+          op: 'and',
+          content: [
+            {
+              op: 'in',
+              content: {
+                field: 'cases.project.project_id',
+                value: [row.project_id],
+              },
+            },
+            {
+              op: 'in',
+              content: {
+                field: 'cases.available_variation_data',
+                value: ['cnv'],
+              },
+            },
+          ],
+        };
         return {
           id: row.project_id, // used for key in table
           freq: row.num_affected_cases_percent,
@@ -132,7 +147,7 @@ export default compose(
               <ExploreLink
                 query={{
                   searchTableTab: 'cases',
-                  filters: replaceFilters(projectFilter, filters),
+                  filters: replaceFilters(cnvProjectFilter, filters),
                 }}
               >
                 {row.num_affected_cases}
@@ -141,7 +156,7 @@ export default compose(
               <ExploreLink
                 query={{
                   searchTableTab: 'cases',
-                  filters: projectFilter,
+                  filters: cnvProjectFilter,
                 }}
               >
                 {row.num_affected_cases_total.toLocaleString()}
@@ -156,7 +171,7 @@ export default compose(
               <ExploreLink
                 query={{
                   searchTableTab: 'cases',
-                  filters: replaceFilters(projectFilter, filters),
+                  filters: replaceFilters(cnvProjectFilter, filters),
                 }}
               >
                 {row.num_affected_cases}
@@ -165,7 +180,7 @@ export default compose(
               <ExploreLink
                 query={{
                   searchTableTab: 'cases',
-                  filters: projectFilter,
+                  filters: cnvProjectFilter,
                 }}
               >
                 {row.num_affected_cases_total.toLocaleString()}
@@ -280,9 +295,9 @@ export default compose(
                   Component={
                     <span>
                       # of Cases tested for CNV in Project affected by CNV gain
-                      event in
-                      {entityName}
-                      / # of Cases tested for Copy Number Variation in Project
+                      event in&nbsp;
+                      {entityName}&nbsp; / # of Cases tested for Copy Number
+                      Variation in Project
                     </span>
                   }
                   style={tableToolTipHint()}
@@ -298,9 +313,9 @@ export default compose(
                   Component={
                     <span>
                       # of Cases tested for CNV in Project affected by CNV loss
-                      event in
-                      {entityName}
-                      / # of Cases tested for Copy Number Variation in Project
+                      event in&nbsp;
+                      {entityName}&nbsp; / # of Cases tested for Copy Number
+                      Variation in Project
                     </span>
                   }
                   style={tableToolTipHint()}

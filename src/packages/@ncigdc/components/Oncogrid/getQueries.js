@@ -153,7 +153,9 @@ async function getQueries({
     },
   }));
 
-  const cnv_occurrences = isCanonicalOccurrences.slice(0, 1000).map((o, i) => {
+  const cnvLength = (isCanonicalOccurrences.length >= 1000) ? 1000 : isCanonicalOccurrences.length;
+
+  const cnv_occurrences = isCanonicalOccurrences.slice(0, cnvLength).map((o, i) => {
     cnv[i]['case_id'] = o.case.case_id;
     cnv[i]['gene_id'] = o.ssm.consequence.length
       ? o.ssm.consequence[0].transcript.gene.gene_id

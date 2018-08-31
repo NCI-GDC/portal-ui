@@ -254,8 +254,8 @@ export const buildOccurrences: TBuildOccurrences = (
     const { cnv_id, cnv_change, score, gene_id, case_id } = cnv_occurrences[i];
     if (allowedCaseIds.has(case_id)) {
       if (score !== 0 && gene_id) {
-        donorIds.add(case_id);
-        geneIds.add(gene_id);
+        // donorIds.add(case_id);
+        // geneIds.add(gene_id);
         cnvObservations.push({
           ids: [cnv_id],
           donorId: case_id,

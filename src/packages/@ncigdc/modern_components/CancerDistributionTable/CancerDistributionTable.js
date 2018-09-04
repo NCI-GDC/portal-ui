@@ -150,7 +150,7 @@ export default compose(
                   filters: replaceFilters(cnvProjectFilter, filters),
                 }}
               >
-                {row.num_affected_cases}
+                {Math.round(row.num_affected_cases * 0.6 + 1)}
               </ExploreLink>
               <span> / </span>
               <ExploreLink
@@ -174,7 +174,7 @@ export default compose(
                   filters: replaceFilters(cnvProjectFilter, filters),
                 }}
               >
-                {row.num_affected_cases}
+                {Math.floor(row.num_affected_cases * 0.4 + 2)}
               </ExploreLink>
               <span> / </span>
               <ExploreLink

@@ -90,7 +90,7 @@ const DefaultChartTitle = ({
     </ProjectsLink>&nbsp; projects
   </div>
 );
-const initalCna = {
+const initalcnv = {
   gain1: true,
   gain2: true,
   loss1: true,
@@ -99,7 +99,7 @@ const initalCna = {
 export default compose(
   withRouter,
   withTheme,
-  withState('cna', 'setCna', initalCna),
+  withState('cnv', 'setCnv', initalcnv),
   withState('co', 'setCo', false),
 )(
   (
@@ -110,65 +110,34 @@ export default compose(
       ChartTitle = DefaultChartTitle,
       filters,
       style,
-      cna,
-      setCna,
+      cnv,
+      setCnv,
       co,
       setCo,
-      type, //mutation or CNA
+      type, //mutation or cnv
     }: TProps = {},
   ) => {
     /* prettier-ignore */
-    const cnaCases = { 
+    const cnvCases = { 
       filtered: {
         project__project_id: { 
-          buckets: [
-            { loss2: 20, loss1: 1, gain1: 5, gain2: 9, key: 'TCGA-UCSK',},
-            { loss2: 19, loss1: 1, gain1: 6, gain2: 7, key: 'TCGA-LUSC',},
-            { loss2: 18, loss1: 9, gain1: 8, gain2: 7, key: 'TCGA-ESCA',},
-            { loss2: 17, loss1: 4, gain1: 7, gain2: 6, key: 'TCGA-READ',},
-            { loss2: 16, loss1: 6, gain1: 9, gain2: 4, key: 'TCGA-HNSC',},
-            { loss2: 15, loss1: 6, gain1: 5, gain2: 6, key: 'TCGA-UCS1',},
-            { loss2: 14, loss1: 3, gain1: 2, gain2: 7, key: 'TCGA-LSC2',},
-            { loss2: 13, loss1: 9, gain1: 5, gain2: 3, key: 'TCGA-ESA3',},
-            { loss2: 12, loss1: 4, gain1: 7, gain2: 6, key: 'TCGA-RED4',},
-            { loss2: 11, loss1: 6, gain1: 9, gain2: 4, key: 'TCGA-HNC5',},
-            { loss2: 10, loss1: 6, gain1: 5, gain2: 6, key: 'TCGA-UCS6',},
-            { loss2: 9,  loss1: 1, gain1: 2, gain2: 7, key: 'TCGA-LSC7',},
-            { loss2: 8,  loss1: 9, gain1: 5, gain2: 3, key: 'TCGA-ECA8',},
-            { loss2: 7,  loss1: 4, gain1: 7, gain2: 6, key: 'TCGA-RED9',},
-            { loss2: 6,  loss1: 6, gain1: 9, gain2: 4, key: 'TCGA-HSC0',},
-            { loss2: 5,  loss1: 6, gain1: 5, gain2: 6, key: 'TCGA-UCSA',},
-            { loss2: 4,  loss1: 3, gain1: 2, gain2: 7, key: 'TCGA-LUSB',},
-            { loss2: 3,  loss1: 9, gain1: 5, gain2: 3, key: 'TCGA-ESAC',},
-            { loss2: 2,  loss1: 4, gain1: 7, gain2: 6, key: 'TCGA-RADD',},
-            { loss2: 1,  loss1: 6, gain1: 9, gain2: 4, key: 'TCGA-HNSE',},
-          ]
+          buckets: cases.filtered.project__project_id.buckets.map(b => {
+            console.log()
+            const loss_2 = Math.round(0.2 * (b.doc_count) + 1);
+            const gain_1 = Math.round(0.2 * (b.doc_count) + 1);
+            return {
+              loss2: loss_2, 
+              loss1: Math.floor(b.doc_count * 0.5 + 1) - loss_2, 
+              gain1: gain_1, 
+              gain2: Math.round(b.doc_count * 0.5 + 1) - gain_1, 
+              key: b.key,
+            };
+          }),
         },
       },
       total: {
         project__project_id: { 
-          buckets: [
-            { total: 325, key: 'TCGA-UCSK', },
-            { total: 621, key: 'TCGA-LUSC', },
-            { total: 356, key: 'TCGA-ESCA', },
-            { total: 777, key: 'TCGA-READ', },
-            { total: 287, key: 'TCGA-HNSC', },
-            { total: 369, key: 'TCGA-UCS1', },
-            { total: 580, key: 'TCGA-LSC2', },
-            { total: 701, key: 'TCGA-ESA3', },
-            { total: 902, key: 'TCGA-RED4', },
-            { total: 335, key: 'TCGA-HNC5', },
-            { total: 447, key: 'TCGA-UCS6', },
-            { total: 236, key: 'TCGA-LSC7', },
-            { total: 690, key: 'TCGA-ECA8', },
-            { total: 625, key: 'TCGA-RED9', },
-            { total: 763, key: 'TCGA-HSC0', },
-            { total: 273, key: 'TCGA-UCSA', },
-            { total: 828, key: 'TCGA-LUSB', },
-            { total: 178, key: 'TCGA-ESAC', },
-            { total: 445, key: 'TCGA-RADD', },
-            { total: 321, key: 'TCGA-HNSE', },
-          ]
+          buckets: cases.total.project__project_id.buckets.map(b => b)
         },
       } 
     }
@@ -190,7 +159,7 @@ export default compose(
     };
 
     const checkers = [
-      { key: 'gain2', name: 'High Level Amplification', color: '#900000' },
+      { key: 'gain2', name: 'Amplification', color: '#900000' },
       { key: 'gain1', name: 'Gain', color: '#d33737' },
       { key: 'loss1', name: 'Shallow Loss', color: '#0d71e8' },
       { key: 'loss2', name: 'Deep Loss', color: '#00457c' },
@@ -227,12 +196,12 @@ export default compose(
         ),
       }));
 
-    const cnaCancerDistData = (cnaCases.filtered || {
+    const cnvCancerDistData = (cnvCases.filtered || {
       project__project_id: { buckets: [] },
     }).project__project_id.buckets.map(b => {
-      const totalCasesByProject = cnaCases.total.project__project_id.buckets.filter(
+      const totalCasesByProject = cnvCases.total.project__project_id.buckets.filter(
         f => f.key === b.key,
-      )[0].total;
+      )[0].doc_count;
       return {
         gain2: b.gain2,
         gain1: b.gain1,
@@ -242,11 +211,11 @@ export default compose(
         num_cases_total: totalCasesByProject,
       };
     });
-    const cnaChartData = sortBy(
-      cnaCancerDistData,
+    const cnvChartData = sortBy(
+      cnvCancerDistData,
       d =>
         -checkers.reduce(
-          (acc, f) => acc + d[f.key] / d.num_cases_total * cna[f.key],
+          (acc, f) => acc + d[f.key] / d.num_cases_total * cnv[f.key],
           0,
         ),
     )
@@ -333,22 +302,22 @@ export default compose(
               >
                 <ChartTitle
                   cases={sum(
-                    cnaCancerDistData.map(
+                    cnvCancerDistData.map(
                       d => d.gain2 + d.gain1 + d.loss1 + d.loss2,
                     ),
                   )}
                   ssms={get(ssms, 'hits.total', 0)}
-                  projects={cnaCancerDistData}
+                  projects={cnvCancerDistData}
                   filters={filters}
-                  type="CNA"
+                  type="cnv"
                 />
                 <DownloadVisualizationButton
                   svg={() =>
                     wrapSvg({
                       selector: '.test-stacked-bar-chart svg',
-                      title: 'CNA Distribution',
+                      title: 'cnv Distribution',
                     })}
-                  data={cnaChartData.map(d => ({
+                  data={cnvChartData.map(d => ({
                     symbol: d.symbol,
                     gain2: d.gain2,
                     gain1: d.gain1,
@@ -381,15 +350,15 @@ export default compose(
                     <AngleIcon
                       style={{
                         paddingRight: '0.25rem',
-                        transform: `rotate(${co ? 270 : 0}deg)`,
+                        transform: `rotate(${co ? 0 : 270}deg)`,
                       }}
                     />
                     Legend
                   </span>
-                  {!co && (
+                  {co && (
                     <Row>
                       <span
-                        onClick={() => setCna(initalCna)}
+                        onClick={() => setCnv(initalcnv)}
                         style={{
                           color: 'rgb(27, 103, 145)',
                           cursor: 'pointer',
@@ -400,7 +369,7 @@ export default compose(
                       <span>&nbsp;|&nbsp;</span>
                       <span
                         onClick={() =>
-                          setCna(mapValues(initalCna, () => false))}
+                          setCnv(mapValues(initalcnv, () => false))}
                         style={{
                           color: 'rgb(27, 103, 145)',
                           cursor: 'pointer',
@@ -410,12 +379,12 @@ export default compose(
                       </span>
                     </Row>
                   )}
-                  {!co &&
+                  {co &&
                     checkers.map(f => (
                       <label key={f.key}>
                         <span
                           onClick={() =>
-                            setCna({ ...cna, [f.key]: !cna[f.key] })}
+                            setCnv({ ...cnv, [f.key]: !cnv[f.key] })}
                           style={{
                             color: f.color,
                             textAlign: 'center',
@@ -430,7 +399,7 @@ export default compose(
                             lineHeight: '16px',
                           }}
                         >
-                          {cna[f.key] ? '✓' : <span>&nbsp;</span>}
+                          {cnv[f.key] ? '✓' : <span>&nbsp;</span>}
                         </span>
                         {f.name}
                       </label>
@@ -439,8 +408,8 @@ export default compose(
                 <FilteredStackedBarChart
                   margin={CHART_MARGINS}
                   height={200}
-                  data={cnaChartData}
-                  displayFilters={cna}
+                  data={cnvChartData}
+                  displayFilters={cnv}
                   colors={checkers.reduce(
                     (acc, f) => ({ ...acc, [f.key]: f.color }),
                     0,

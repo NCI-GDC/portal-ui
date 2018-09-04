@@ -14,12 +14,13 @@ import { withTheme } from '@ncigdc/theme';
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import DownloadVisualizationButton from '@ncigdc/components/DownloadVisualizationButton';
 import BarChart from '@ncigdc/components/Charts/BarChart';
+import FilteredStackedBarChart from '@ncigdc/components/Charts/FilteredStackedBarChart';
 import wrapSvg from '@ncigdc/utils/wrapSvg';
 import VisualizationHeader from '@ncigdc/components/VisualizationHeader';
 import { createClassicRenderer } from '@ncigdc/modern_components/Query';
 
 const MUTATED_TITLE = 'Distribution of Most Frequently Mutated Genes';
-const CNA_TITLE = 'Distribution of Most Frequently Copy Number Variation Genes';
+const CNV_TITLE = 'Most Frequent Genes with CNV';
 const CHART_HEIGHT = 285;
 const COMPONENT_NAME = 'GenesBarChart';
 
@@ -190,163 +191,41 @@ const Component = compose(
     ];
     /* prettier-ignore */
 
-    const cnaNodes = [
-      {
-        symbol:'TP53',
-        gene_id: 'ENSG00000141510',
-        gain2:2000,
-        gain1:1500,
-        loss1:2200,
-        loss2:1700,
-      },{  
-        symbol: "TTN",
-        gene_id: "ENSG00000155657",
-        gain2:2000,
-        gain1:150,
-        loss1:220,
-        loss2:170,
-      },{  
-        symbol: "MUC16",
-        gene_id: "ENSG00000181143",
-        gain2:200,
-        gain1:1500,
-        loss1:220,
-        loss2:170,
-      },{
-        symbol: "CSMD3",
-        gene_id: "ENSG00000164796",
-        gain2:200,
-        gain1:150,
-        loss1:2200,
-        loss2:170,
-      },{  
-        symbol: "SYNE1",
-        gene_id: "ENSG00000131018",
-        gain2:200,
-        gain1:150,
-        loss1:220,
-        loss2:1700,
-      },{  
-        symbol: "RYR2",
-        gene_id: "ENSG00000198626",
-        gain2:1000,
-        gain1:150,
-        loss1:220,
-        loss2:170,
-      },{
-        symbol: "LRP1B",
-        gene_id: "ENSG00000168702",
-        gain2:200,
-        gain1:1150,
-        loss1:220,
-        loss2:170,
-      },{  
-        symbol: "FLG",
-        gene_id: "ENSG00000143631",
-        gain2:200,
-        gain1:150,
-        loss1:220,
-        loss2:1170,
-      },{  
-        symbol: "PIK3CA",
-        gene_id: "ENSG00000121879",
-        gain2:200,
-        gain1:1990,
-        loss1:220,
-        loss2:170,
-      },{  
-        symbol: "USH2A",
-        gene_id: "ENSG00000042781",
-        gain2:200,
-        gain1:150,
-        loss1:2000,
-        loss2:170,
-      },{  
-        symbol: "PCLO",
-        gene_id: "ENSG00000186472",
-        gain2:200,
-        gain1:150,
-        loss1:220,
-        loss2:1700,
-      },{  
-        symbol: "OBSCN",
-        gene_id: "ENSG00000154358",
-        gain2:200,
-        gain1:1500,
-        loss1:220,
-        loss2:170,
-      },{  
-        symbol: "MUC4",
-        gene_id: "ENSG00000145113",
-        gain2:2000,
-        gain1:1500,
-        loss1:220,
-        loss2:170,
-      },{  
-        symbol: "ZFHX4",
-        gene_id: "ENSG00000091656",
-        gain2:2000,
-        gain1:150,
-        loss1:2200,
-        loss2:170,
-      },{  
-        symbol: "DNAH5",
-        gene_id: "ENSG00000039139",
-        gain2:200,
-        gain1:150,
-        loss1:220,
-        loss2:170,
-      },{  
-        symbol: "CSMD1",
-        gene_id: "ENSG00000183117",
-        gain2:200,
-        gain1:150,
-        loss1:220,
-        loss2:170,
-      },{  
-        symbol: "XIRP2",
-        gene_id: "ENSG00000163092",
-        gain2:200,
-        gain1:150,
-        loss1:220,
-        loss2:170,
-      },{  
-        symbol: "DST",
-        gene_id: "ENSG00000151914",
-        gain2:200,
-        gain1:150,
-        loss1:220,
-        loss2:170,
-      },{  
-        symbol: "FAT3",
-        gene_id: "ENSG00000165323",
-        gain2:200,
-        gain1:150,
-        loss1:220,
-        loss2:170,
-      },{  
-        symbol: "FAT4",
-        gene_id: "ENSG00000196159",
-        gain2:200,
-        gain1:150,
-        loss1:220,
-        loss2:170,
-      }];
-    const cnaGenesChartData = cnaNodes
+    const cnvNodes = genes.hits.edges.map(x => ({
+      symbol: x.node.symbol,
+      gene_id: x.node.gene_id,
+      gain2: Math.round(x.node.score / 5),
+      gain1: Math.floor(x.node.score / 5),
+      loss1: Math.floor(x.node.score / 7),
+      loss2: Math.round(x.node.score / 7),
+    }));
+    const cnvGenesChartData = cnvNodes
       .sort((a, b) => checkers.reduce((acc, c) => b[c.key] - a[c.key] + acc, 0))
       .map(g => {
         const score = checkers.reduce((acc, c) => g[c.key] + acc, 0);
         return {
-          label: g.symbol,
-          value:
+          symbol: g.symbol,
+          loss2:
             context === 'project' && projectId
-              ? score / numCasesAggByProject[projectId] * 100
-              : score / filteredCases.hits.total * 100,
-          tooltip: tooltipContext(context, { symbol: g.symbol, score: score }),
-          onClick: () => handleClickGene(g, cnaGenesChartData),
+              ? g.loss2 / numCasesAggByProject[projectId] * 100
+              : g.loss2 / filteredCases.hits.total * 100,
+          loss1:
+            context === 'project' && projectId
+              ? g.loss1 / numCasesAggByProject[projectId] * 100
+              : g.loss1 / filteredCases.hits.total * 100,
+          gain1:
+            context === 'project' && projectId
+              ? g.gain1 / numCasesAggByProject[projectId] * 100
+              : g.gain1 / filteredCases.hits.total * 100,
+          gain2:
+            context === 'project' && projectId
+              ? g.gain2 / numCasesAggByProject[projectId] * 100
+              : g.gain2 / filteredCases.hits.total * 100,
+          tooltips: checkers.reduce((acc, checker) => ({...acc, [checker.key]: tooltipContext(context, { symbol: g.symbol, score: g[checker.key] })}),0),
+          onClick: () => handleClickGene(g, cnvGenesChartData),
         };
       });
-
+    console.log(cnvGenesChartData)
     return (
       <div style={style}>
         {!!mutatedGenesChartData && (
@@ -402,34 +281,38 @@ const Component = compose(
 
             {showingMore && (
               <VisualizationHeader
-                title={CNA_TITLE}
+                title={CNV_TITLE}
                 buttons={[
                   <DownloadVisualizationButton
                     key="download"
-                    disabled={!cnaGenesChartData.length}
+                    disabled={!cnvGenesChartData.length}
                     svg={() =>
                       wrapSvg({
-                        selector: '#cna-genes-chart svg',
-                        title: CNA_TITLE,
+                        selector: '#cnv-genes-chart svg',
+                        title: CNV_TITLE,
                       })}
-                    data={cnaGenesChartData.map(d => d)}
-                    slug="most-frequently-cna-genes-bar-chart"
+                    data={cnvGenesChartData.map(d => d)}
+                    slug="most-frequently-cnv-genes-bar-chart"
                     tooltipHTML="Download image or data"
                     noText
                   />,
                 ]}
               />
             )}
-            {!!mutatedGenesChartData.length &&
+            {!!cnvGenesChartData.length &&
               showingMore && (
-                <div id="cna-genes-chart">
+                <div id="cnv-genes-chart">
                   <Row style={{ paddingTop: '2rem' }}>
-                    <BarChart
-                      data={cnaGenesChartData}
+                    <FilteredStackedBarChart
+                      data={cnvGenesChartData}
                       yAxis={{ title: '% of Cases Affected' }}
                       height={CHART_HEIGHT}
                       colors={checkers.reduce(
                         (acc, f) => ({ ...acc, [f.key]: f.color }),
+                        0,
+                      )}
+                      displayFilters={checkers.reduce(
+                        (acc, f) => ({ ...acc, [f.key]: true }),
                         0,
                       )}
                       styles={{
@@ -442,7 +325,7 @@ const Component = compose(
                           textFill: theme.greyScale3,
                         },
                         bars: { fill: theme.secondary },
-                        tooltips: {
+                      tooltips:{
                           fill: '#fff',
                           stroke: theme.greyScale4,
                           textFill: theme.greyScale3,

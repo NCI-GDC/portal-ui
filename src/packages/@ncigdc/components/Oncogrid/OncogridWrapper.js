@@ -5,7 +5,7 @@ no-restricted-globals: 0
 import React from 'react';
 import { lifecycle, compose, withState, withProps, mapProps } from 'recompose';
 import OncoGrid from 'oncogrid';
-import _, { uniqueId, get, mapKeys, debounce } from 'lodash';
+import { uniqueId, get, debounce } from 'lodash';
 import { connect } from 'react-redux';
 import withSize from '@ncigdc/utils/withSize';
 import FullScreenIcon from 'react-icons/lib/md/fullscreen';
@@ -28,11 +28,7 @@ import Button from '@ncigdc/uikit/Button';
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import { Tooltip } from '@ncigdc/uikit/Tooltip';
 
-import {
-  StepLegend,
-  SwatchLegend,
-  ToggleSwatchLegend,
-} from '@ncigdc/components/Legends';
+import { StepLegend, ToggleSwatchLegend } from '@ncigdc/components/Legends';
 import DownloadVisualizationButton from '@ncigdc/components/DownloadVisualizationButton';
 import Hidden from '@ncigdc/components/Hidden';
 
@@ -94,17 +90,6 @@ const styles = {
     borderColor: '#adadad',
   },
 };
-
-const RadioLabel = props => (
-  <label
-    style={{
-      paddingLeft: 5,
-    }}
-    {...props}
-  >
-    {props.name}
-  </label>
-);
 
 const containerRefs = {};
 const wrapperRefs = {};

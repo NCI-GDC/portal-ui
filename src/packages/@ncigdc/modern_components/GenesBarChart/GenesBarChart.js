@@ -202,7 +202,6 @@ const Component = compose(
     const cnvGenesChartData = cnvNodes
       .sort((a, b) => checkers.reduce((acc, c) => b[c.key] - a[c.key] + acc, 0))
       .map(g => {
-        const score = checkers.reduce((acc, c) => g[c.key] + acc, 0);
         return {
           symbol: g.symbol,
           loss2:
@@ -221,11 +220,19 @@ const Component = compose(
             context === 'project' && projectId
               ? g.gain2 / numCasesAggByProject[projectId] * 100
               : g.gain2 / filteredCases.hits.total * 100,
-          tooltips: checkers.reduce((acc, checker) => ({...acc, [checker.key]: tooltipContext(context, { symbol: g.symbol, score: g[checker.key] })}),0),
+          tooltips: checkers.reduce(
+            (acc, checker) => ({
+              ...acc,
+              [checker.key]: tooltipContext(context, {
+                symbol: g.symbol,
+                score: g[checker.key],
+              }),
+            }),
+            0,
+          ),
           onClick: () => handleClickGene(g, cnvGenesChartData),
         };
       });
-    console.log(cnvGenesChartData)
     return (
       <div style={style}>
         {!!mutatedGenesChartData && (
@@ -325,7 +332,7 @@ const Component = compose(
                           textFill: theme.greyScale3,
                         },
                         bars: { fill: theme.secondary },
-                      tooltips:{
+                        tooltips: {
                           fill: '#fff',
                           stroke: theme.greyScale4,
                           textFill: theme.greyScale3,

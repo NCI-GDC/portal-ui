@@ -472,7 +472,7 @@ const OncoGridWrapper = compose(
             )}
           </div>
           <div style={{ flexGrow: 1 }} className="oncogrid-cnv-legend">
-            <h5>CNV Changes</h5>
+            <h5>CNVs</h5>
             {heatMapMode ? (
               <div />
             ) : (

@@ -115,7 +115,7 @@ export const ToggleSwatchLegend = ({
       color={color}
     />
   ));
-
+  console.log(type);
   return (
     <Column
       style={{

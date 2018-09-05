@@ -122,14 +122,13 @@ export default compose(
       filtered: {
         project__project_id: { 
           buckets: cases.filtered.project__project_id.buckets.map(b => {
-            console.log()
             const loss_2 = Math.round(0.2 * (b.doc_count) + 1);
             const gain_1 = Math.round(0.2 * (b.doc_count) + 1);
             return {
               loss2: loss_2, 
-              loss1: Math.floor(b.doc_count * 0.5 + 1) - loss_2, 
+              loss1: Math.floor(b.doc_count * 0.4 + 2) - loss_2, 
               gain1: gain_1, 
-              gain2: Math.round(b.doc_count * 0.5 + 1) - gain_1, 
+              gain2: Math.round(b.doc_count * 0.6 + 1) - gain_1, 
               key: b.key,
             };
           }),

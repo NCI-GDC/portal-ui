@@ -144,7 +144,7 @@ export const ToggleSwatchLegend = ({
       heatMapMode={heatMapMode}
     />
   ));
-
+  console.log(type);
   return (
     <Column
       style={{

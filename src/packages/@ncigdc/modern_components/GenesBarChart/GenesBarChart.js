@@ -337,7 +337,7 @@ const Component = compose(
                       },
                     }}
                   />
-                  <Row style={{ paddingLeft: '55px' }}>
+                  <Row style={{ display: 'flex', justifyContent: 'center' }}>
                     {checkers.map(f => (
                       <label key={f.key}>
                         <span

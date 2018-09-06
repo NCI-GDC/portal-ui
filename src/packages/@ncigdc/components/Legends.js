@@ -1,8 +1,8 @@
 // @flow
 
 import React from 'react';
-import _ from 'lodash';
-
+import _, { mapValues } from 'lodash';
+import AngleIcon from '@ncigdc/theme/icons/AngleIcon';
 import { Row, Column } from '@ncigdc/uikit/Flex';
 
 const styles = {
@@ -98,6 +98,93 @@ const Checkbox = ({ label, color = 'gray', onChange, checked, boxStyle }) => {
   );
 };
 
+export const CollapsedLegend = ({
+  checkersWithColors,
+  checkerStates,
+  collapsed,
+  setCollapsed,
+  setCheckers,
+  initalCheckers,
+}) => {
+  return (
+    <Column
+      style={{
+        backgroundColor: 'white',
+        border: '1px solid rgb(186, 186, 186)',
+        padding: '13px',
+        right: 10,
+        top: 10,
+        position: 'absolute',
+        zIndex: 1,
+      }}
+    >
+      <span
+        style={{ cursor: 'pointer', width: '175px' }}
+        onClick={setCollapsed}
+      >
+        <AngleIcon
+          style={{
+            paddingRight: '0.25rem',
+            transform: `rotate(${collapsed ? 0 : 270}deg)`,
+          }}
+        />
+        Legend
+      </span>
+      {collapsed && (
+        <Row>
+          <span
+            onClick={() => setCheckers(mapValues(initalCheckers, () => true))}
+            style={{
+              color: 'rgb(27, 103, 145)',
+              cursor: 'pointer',
+            }}
+          >
+            Select All
+          </span>
+          <span>&nbsp;|&nbsp;</span>
+          <span
+            onClick={() => setCheckers(mapValues(initalCheckers, () => false))}
+            style={{
+              color: 'rgb(27, 103, 145)',
+              cursor: 'pointer',
+            }}
+          >
+            Deselect All
+          </span>
+        </Row>
+      )}
+      {collapsed &&
+        checkersWithColors.map(f => (
+          <label key={f.key}>
+            <span
+              onClick={() =>
+                setCheckers({
+                  ...checkerStates,
+                  [f.key]: !checkerStates[f.key],
+                })}
+              style={{
+                color: f.color,
+                textAlign: 'center',
+                border: '2px solid',
+                height: '18px',
+                width: '18px',
+                cursor: 'pointer',
+                display: 'inline-block',
+                marginRight: '6px',
+                marginTop: '3px',
+                verticalAlign: 'middle',
+                lineHeight: '16px',
+              }}
+            >
+              {checkerStates[f.key] ? '✓' : <span>&nbsp;</span>}
+            </span>
+            {f.name}
+          </label>
+        ))}
+    </Column>
+  );
+};
+
 export const ToggleSwatchLegend = ({
   colorMap,
   toggledValues,
@@ -115,7 +202,7 @@ export const ToggleSwatchLegend = ({
       color={color}
     />
   ));
-  console.log(type);
+
   return (
     <Column
       style={{
@@ -149,6 +236,7 @@ export default {
   StepLegend,
   SwatchLegend,
   ToggleSwatchLegend,
+  CollapsedLegend,
 };
 
 /* <input

@@ -144,7 +144,7 @@ export const ToggleSwatchLegend = ({
       heatMapMode={heatMapMode}
     />
   ));
-  console.log(type);
+
   return (
     <Column
       style={{
@@ -189,4 +189,5 @@ export default {
   StepLegend,
   SwatchLegend,
   ToggleSwatchLegend,
+  CollapsedLegend,
 };

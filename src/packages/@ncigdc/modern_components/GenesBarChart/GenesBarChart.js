@@ -184,10 +184,10 @@ const Component = compose(
         onClick: () => handleClickGene(g, mutatedGenesChartData),
       }));
     const checkers = [
-      { key: 'loss2', color: '#900000' },
-      { key: 'loss1', color: '#d33737' },
-      { key: 'gain1', color: '#0d71e8' },
-      { key: 'gain2', color: '#00457c' },
+      { key: 'loss2', color: '#900000', name: 'deep loss' },
+      { key: 'loss1', color: '#d33737', name: 'shallow loss' },
+      { key: 'gain1', color: '#0d71e8', name: 'gain' },
+      { key: 'gain2', color: '#00457c', name: 'amplification' },
     ];
     /* prettier-ignore */
 
@@ -309,36 +309,57 @@ const Component = compose(
             {!!cnvGenesChartData.length &&
               showingMore && (
                 <div id="cnv-genes-chart">
-                  <Row style={{ paddingTop: '2rem' }}>
-                    <FilteredStackedBarChart
-                      data={cnvGenesChartData}
-                      yAxis={{ title: '% of Cases Affected' }}
-                      height={CHART_HEIGHT}
-                      colors={checkers.reduce(
-                        (acc, f) => ({ ...acc, [f.key]: f.color }),
-                        0,
-                      )}
-                      displayFilters={checkers.reduce(
-                        (acc, f) => ({ ...acc, [f.key]: true }),
-                        0,
-                      )}
-                      styles={{
-                        xAxis: {
-                          stroke: theme.greyScale4,
-                          textFill: theme.greyScale3,
-                        },
-                        yAxis: {
-                          stroke: theme.greyScale4,
-                          textFill: theme.greyScale3,
-                        },
-                        bars: { fill: theme.secondary },
-                        tooltips: {
-                          fill: '#fff',
-                          stroke: theme.greyScale4,
-                          textFill: theme.greyScale3,
-                        },
-                      }}
-                    />
+                  <FilteredStackedBarChart
+                    data={cnvGenesChartData}
+                    yAxis={{ title: '% of Cases Affected' }}
+                    colors={checkers.reduce(
+                      (acc, f) => ({ ...acc, [f.key]: f.color }),
+                      0,
+                    )}
+                    displayFilters={checkers.reduce(
+                      (acc, f) => ({ ...acc, [f.key]: true }),
+                      0,
+                    )}
+                    margin={{ top: 20, right: 50, bottom: 65, left: 55 }}
+                    styles={{
+                      xAxis: {
+                        stroke: theme.greyScale4,
+                        textFill: theme.greyScale3,
+                      },
+                      yAxis: {
+                        stroke: theme.greyScale4,
+                        textFill: theme.greyScale3,
+                      },
+                      bars: { fill: theme.secondary },
+                      tooltips: {
+                        fill: '#fff',
+                        stroke: theme.greyScale4,
+                        textFill: theme.greyScale3,
+                      },
+                    }}
+                  />
+                  <Row style={{ paddingLeft: '55px' }}>
+                    {checkers.map(f => (
+                      <label key={f.key}>
+                        <span
+                          style={{
+                            color: f.color,
+                            backgroundColor: f.color,
+                            textAlign: 'center',
+                            border: '2px solid',
+                            height: '18px',
+                            width: '18px',
+                            cursor: 'pointer',
+                            display: 'inline-block',
+                            marginRight: '6px',
+                            marginTop: '3px',
+                            verticalAlign: 'middle',
+                            lineHeight: '16px',
+                          }}
+                        />
+                        {f.name}&nbsp;&nbsp;&nbsp;
+                      </label>
+                    ))}
                   </Row>
                 </div>
               )}

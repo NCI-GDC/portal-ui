@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { compose, withState } from 'recompose';
-import { sortBy, sum, get, mapValues } from 'lodash';
+import { sortBy, sum, get } from 'lodash';
 import withRouter from '@ncigdc/utils/withRouter';
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import DownloadVisualizationButton from '@ncigdc/components/DownloadVisualizationButton';
@@ -13,7 +13,7 @@ import wrapSvg from '@ncigdc/utils/wrapSvg';
 import ExploreLink from '@ncigdc/components/Links/ExploreLink';
 import ProjectsLink from '@ncigdc/components/Links/ProjectsLink';
 import { TGroupFilter } from '@ncigdc/utils/filters/types';
-import AngleIcon from '@ncigdc/theme/icons/AngleIcon';
+import { CollapsedLegend } from '@ncigdc/components/Legends';
 
 type TProps = {
   style: Object,
@@ -100,7 +100,7 @@ export default compose(
   withRouter,
   withTheme,
   withState('cnv', 'setCnv', initalcnv),
-  withState('co', 'setCo', false),
+  withState('collapsed', 'setCollapsed', false),
 )(
   (
     {
@@ -112,8 +112,8 @@ export default compose(
       style,
       cnv,
       setCnv,
-      co,
-      setCo,
+      collapsed,
+      setCollapsed,
       type, //mutation or cnv
     }: TProps = {},
   ) => {
@@ -331,79 +331,14 @@ export default compose(
                 />
               </Row>
               <Row>
-                <Column
-                  style={{
-                    backgroundColor: 'white',
-                    border: '1px solid rgb(186, 186, 186)',
-                    padding: '13px',
-                    right: 10,
-                    top: 10,
-                    position: 'absolute',
-                    zIndex: 1,
-                  }}
-                >
-                  <span
-                    style={{ cursor: 'pointer', width: '175px' }}
-                    onClick={() => setCo(!co)}
-                  >
-                    <AngleIcon
-                      style={{
-                        paddingRight: '0.25rem',
-                        transform: `rotate(${co ? 0 : 270}deg)`,
-                      }}
-                    />
-                    Legend
-                  </span>
-                  {co && (
-                    <Row>
-                      <span
-                        onClick={() => setCnv(initalcnv)}
-                        style={{
-                          color: 'rgb(27, 103, 145)',
-                          cursor: 'pointer',
-                        }}
-                      >
-                        Select All
-                      </span>
-                      <span>&nbsp;|&nbsp;</span>
-                      <span
-                        onClick={() =>
-                          setCnv(mapValues(initalcnv, () => false))}
-                        style={{
-                          color: 'rgb(27, 103, 145)',
-                          cursor: 'pointer',
-                        }}
-                      >
-                        Deselect All
-                      </span>
-                    </Row>
-                  )}
-                  {co &&
-                    checkers.map(f => (
-                      <label key={f.key}>
-                        <span
-                          onClick={() =>
-                            setCnv({ ...cnv, [f.key]: !cnv[f.key] })}
-                          style={{
-                            color: f.color,
-                            textAlign: 'center',
-                            border: '2px solid',
-                            height: '18px',
-                            width: '18px',
-                            cursor: 'pointer',
-                            display: 'inline-block',
-                            marginRight: '6px',
-                            marginTop: '3px',
-                            verticalAlign: 'middle',
-                            lineHeight: '16px',
-                          }}
-                        >
-                          {cnv[f.key] ? '✓' : <span>&nbsp;</span>}
-                        </span>
-                        {f.name}
-                      </label>
-                    ))}
-                </Column>
+                <CollapsedLegend
+                  checkersWithColors={checkers}
+                  collapsed={collapsed}
+                  setCollapsed={() => setCollapsed(!collapsed)}
+                  initalCheckers={initalcnv}
+                  checkerStates={cnv}
+                  setCheckers={setCnv}
+                />
                 <FilteredStackedBarChart
                   margin={CHART_MARGINS}
                   height={200}

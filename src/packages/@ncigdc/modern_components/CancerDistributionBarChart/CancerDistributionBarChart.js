@@ -330,15 +330,15 @@ export default compose(
                   style={{ marginRight: '2rem' }}
                 />
               </Row>
-              <Row>
-                <CollapsedLegend
+              <Column>
+                {/* <CollapsedLegend
                   checkersWithColors={checkers}
                   collapsed={collapsed}
                   setCollapsed={() => setCollapsed(!collapsed)}
                   initalCheckers={initalcnv}
                   checkerStates={cnv}
                   setCheckers={setCnv}
-                />
+                /> */}
                 <FilteredStackedBarChart
                   margin={CHART_MARGINS}
                   height={200}
@@ -351,7 +351,36 @@ export default compose(
                   yAxis={{ title: '% of Cases Affected' }}
                   styles={chartStyles}
                 />
-              </Row>
+                <Row style={{ display: 'flex', justifyContent: 'center' }}>
+                  {checkers.map(f => (
+                    <label key={f.key}>
+                      <span
+                        onClick={() =>
+                          setCnv({
+                            ...cnv,
+                            [f.key]: !cnv[f.key],
+                          })}
+                        style={{
+                          color: f.color,
+                          textAlign: 'center',
+                          border: '2px solid',
+                          height: '18px',
+                          width: '18px',
+                          cursor: 'pointer',
+                          display: 'inline-block',
+                          marginRight: '6px',
+                          marginTop: '3px',
+                          verticalAlign: 'middle',
+                          lineHeight: '16px',
+                        }}
+                      >
+                        {cnv[f.key] ? '✓' : <span>&nbsp;</span>}
+                      </span>
+                      {f.name}&nbsp;&nbsp;&nbsp;
+                    </label>
+                  ))}
+                </Row>
+              </Column>
             </Column>
           </span>
         </Row>

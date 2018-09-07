@@ -5,8 +5,12 @@ import _ from 'lodash';
 import Color from 'color';
 
 import { Row, Column } from '@ncigdc/uikit/Flex';
+<<<<<<< HEAD
 import { capitalize } from '@ncigdc/utils/string';
 
+=======
+import './Legends.css';
+>>>>>>> 45456750... Changed the legend in gene chart.
 const styles = {
   table: {
     fontSize: '1.28rem',

@@ -4,7 +4,7 @@ import React from 'react';
 import _, { mapValues } from 'lodash';
 import AngleIcon from '@ncigdc/theme/icons/AngleIcon';
 import { Row, Column } from '@ncigdc/uikit/Flex';
-
+import './Legends.css';
 const styles = {
   table: {
     fontSize: '1.28rem',
@@ -94,6 +94,15 @@ const Checkbox = ({ label, color = 'gray', onChange, checked, boxStyle }) => {
         {checked ? <span style={{ color: checkColor }}>{'✓'}</span> : null}
       </div>
       <label style={{ marginLeft: 5 }}>{label}</label>
+    </div>
+  );
+};
+
+const CheckCircle = ({}) => {
+  return (
+    <div className="round">
+      <input type="checkbox" id="checkbox" />
+      <label for="checkbox"></label>
     </div>
   );
 };

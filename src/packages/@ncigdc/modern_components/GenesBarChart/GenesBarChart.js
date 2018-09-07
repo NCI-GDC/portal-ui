@@ -184,10 +184,10 @@ const Component = compose(
         onClick: () => handleClickGene(g, mutatedGenesChartData),
       }));
     const checkers = [
-      { key: 'loss2', color: '#00457c', name: 'deep loss' },
-      { key: 'loss1', color: '#0d71e8', name: 'shallow loss' },
-      { key: 'gain1', color: '#d33737', name: 'gain' },
-      { key: 'gain2', color: '#900000', name: 'amplification' },
+      { key: 'loss2', color: '#00457c', name: 'Deep Loss' },
+      { key: 'loss1', color: '#0d71e8', name: 'Shallow Loss' },
+      { key: 'gain1', color: '#d33737', name: 'Gain' },
+      { key: 'gain2', color: '#900000', name: 'Amplification' },
     ];
 
     const cnvNodes = genes.hits.edges.map(x => ({

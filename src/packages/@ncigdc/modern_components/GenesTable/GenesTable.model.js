@@ -228,7 +228,7 @@ const GenesTableModel = [
                     value: [node.gene_id],
                   },
                   {
-                    field: 'Copy Number Variation',
+                    field: 'cnv.cnv_change',
                     value: ['Gain', 'High Level Amplification'],
                   },
                 ]),
@@ -236,7 +236,8 @@ const GenesTableModel = [
               ),
             }}
           >
-            {(Math.round(node.numCases / 5) + Math.floor(node.numCases / 5)|| 0).toLocaleString()}
+            {node.case_with_cnv_amplification_count.hits.total +
+              node.case_with_cnv_gain_count.hits.total}
           </ExploreLink>
           <span> / </span>
           <ExploreLink
@@ -253,10 +254,11 @@ const GenesTableModel = [
               ),
             }}
           >
-            {(filteredCases.hits.total || 0).toLocaleString()}
+            {(node.cnv_case.hits.total || 0).toLocaleString()}
           </ExploreLink>
-          <span>{` (${((node.numCases / 2.5 || 0) /
-            filteredCases.hits.total *
+          <span>{` (${((node.case_with_cnv_amplification_count.hits.total +
+            node.case_with_cnv_gain_count.hits.total || 0) /
+            (node.cnv_case.hits.total || 0) *
             100
           ).toFixed(2)}%)`}</span>
         </span>
@@ -306,7 +308,8 @@ const GenesTableModel = [
               ),
             }}
           >
-            {(Math.round(node.numCases / 7) + Math.floor(node.numCases / 7) || 0).toLocaleString()}
+            {node.case_with_cnv_loss_count.hits.total +
+              node.case_with_cnv_deep_loss_count.hits.total}
           </ExploreLink>
           <span> / </span>
           <ExploreLink
@@ -323,10 +326,11 @@ const GenesTableModel = [
               ),
             }}
           >
-            {(filteredCases.hits.total || 0).toLocaleString()}
+            {(node.cnv_case.hits.total || 0).toLocaleString()}
           </ExploreLink>
-          <span>{` (${((Math.round(node.numCases / 3.5) || 0) /
-            filteredCases.hits.total *
+          <span>{` (${((node.case_with_cnv_loss_count.hits.total +
+            node.case_with_cnv_deep_loss_count.hits.total || 0) /
+            (node.cnv_case.hits.total || 0) *
             100
           ).toFixed(2)}%)`}</span>
         </span>

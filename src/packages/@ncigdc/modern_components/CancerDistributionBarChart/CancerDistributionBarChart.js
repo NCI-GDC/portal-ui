@@ -13,7 +13,6 @@ import wrapSvg from '@ncigdc/utils/wrapSvg';
 import ExploreLink from '@ncigdc/components/Links/ExploreLink';
 import ProjectsLink from '@ncigdc/components/Links/ProjectsLink';
 import { TGroupFilter } from '@ncigdc/utils/filters/types';
-import { CollapsedLegend } from '@ncigdc/components/Legends';
 
 type TProps = {
   style: Object,

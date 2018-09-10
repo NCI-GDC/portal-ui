@@ -226,18 +226,22 @@ export const buildOccurrences: TBuildOccurrences = (
             observations,
             o =>
               o.donorId === case_id &&
-              o.geneId === gene_id &&
-              o.consequence === consequence_type,
+              o.geneId === gene_id
+              // o.consequence === consequence_type,
           );
           if (match > -1) {
             observations[match].ids.push(ssm_id);
+            if (observations[match].consequence && !observations[match].consequence.includes(consequence_type)) {
+              observations[match].consequence.push(consequence_type)
+            }
           } else {
             observations.push({
               // required
               ids: [ssm_id],
               donorId: case_id,
               geneId: gene_id,
-              consequence: consequence_type,
+              // consequence: consequence_type,
+              consequence: [consequence_type],
               type: 'mutation',
 
               // optional

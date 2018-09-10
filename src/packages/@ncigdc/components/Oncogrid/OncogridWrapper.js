@@ -5,7 +5,7 @@ no-restricted-globals: 0
 import React from 'react';
 import { lifecycle, compose, withState, withProps, mapProps } from 'recompose';
 import OncoGrid from 'oncogrid';
-import _, { uniqueId, get, mapKeys, debounce } from 'lodash';
+import { uniqueId, get, debounce } from 'lodash';
 import { connect } from 'react-redux';
 import withSize from '@ncigdc/utils/withSize';
 import FullScreenIcon from 'react-icons/lib/md/fullscreen';
@@ -28,11 +28,7 @@ import Button from '@ncigdc/uikit/Button';
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import { Tooltip } from '@ncigdc/uikit/Tooltip';
 
-import {
-  StepLegend,
-  SwatchLegend,
-  ToggleSwatchLegend,
-} from '@ncigdc/components/Legends';
+import { StepLegend, ToggleSwatchLegend } from '@ncigdc/components/Legends';
 import DownloadVisualizationButton from '@ncigdc/components/DownloadVisualizationButton';
 import Hidden from '@ncigdc/components/Hidden';
 
@@ -94,17 +90,6 @@ const styles = {
     borderColor: '#adadad',
   },
 };
-
-const RadioLabel = props => (
-  <label
-    style={{
-      paddingLeft: 5,
-    }}
-    {...props}
-  >
-    {props.name}
-  </label>
-);
 
 const containerRefs = {};
 const wrapperRefs = {};
@@ -282,7 +267,8 @@ const OncoGridWrapper = compose(
       const performanceContext = {
         donors: responses.cases.length,
         genes: responses.genes.length,
-        occurrences: responses.occurrences.length,
+        ssm_occurrences: responses.ssm_occurrences.length,
+        cnv_occurrences: responses.cnv_occurrences.length,
         maxCases: MAX_CASES,
         maxGenes: MAX_GENES,
       };
@@ -297,7 +283,8 @@ const OncoGridWrapper = compose(
         element: wrapperRefs[uniqueGridClass],
         donorData: responses.cases,
         geneData: responses.genes,
-        occurrencesData: responses.occurrences,
+        ssmOccurrencesData: responses.ssm_occurrences,
+        cnvOccurrencesData: responses.cnv_occurrences,
         width:
           (containerRefs[uniqueGridClass] || { offsetWidth: 0 }).offsetWidth -
           oncoGridPadding,
@@ -305,7 +292,6 @@ const OncoGridWrapper = compose(
         trackPadding: 30,
         impacts,
         consequenceTypes: filteredConsequenceTypes,
-        cnvOccurrencesData: responses.cnv_occurrences,
       });
 
       performanceTracker.end('oncogrid:process', performanceContext);

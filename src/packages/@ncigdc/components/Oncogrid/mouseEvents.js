@@ -21,7 +21,9 @@ export default function({
           <div>Gene: {data.observation.geneSymbol}</div>
           {data.observation.type === 'mutation' && (
             <div>
-              <div>Mutation Type: {data.observation.consequence.join(', ')}</div>
+              <div>
+                Mutation Type: {data.observation.consequence.join(', ')}
+              </div>
               <div>Mutations: {data.observation.ids.length}</div>
             </div>
           )}

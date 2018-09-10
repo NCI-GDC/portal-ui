@@ -21,7 +21,7 @@ async function getGenes({
   );
 }
 
-async function getOccurrences({ filters }): Promise<Object> {
+async function getSSMOccurrences({ filters }): Promise<Object> {
   return fetchApiChunked('ssm_occurrences', {
     headers: { 'Content-Type': 'application/json' },
     body: {
@@ -37,6 +37,21 @@ async function getOccurrences({ filters }): Promise<Object> {
     },
   });
 }
+
+// async function getCNVOccurrences({ filters }): Promise<Object> {
+//   return fetchApiChunked('cnv_occurrences', {
+//     headers: { 'Content-Type': 'application/json' },
+//     body: {
+//       filters,
+//       fields: [
+//         // which fields are needed?
+//         'cnv.cnv_id',
+//         'case.case_id',
+//         'cnv.consequence.gene.gene_id',
+//       ].join(),
+//     },
+//   });
+// }
 
 async function getCases({
   filters,
@@ -68,7 +83,13 @@ async function getCases({
   });
 }
 
-const NO_RESULT = { genes: [], occurrences: [], cases: [], totalCases: 0 };
+const NO_RESULT = {
+  genes: [],
+  ssm_occurrences: [],
+  cases: [],
+  totalCases: 0,
+  cnv_occurrences: [],
+};
 async function getQueries({
   currentFilters,
   maxGenes,
@@ -134,16 +155,18 @@ async function getQueries({
     },
     caseFilters,
   );
-  const { data: { hits: occurrences } } = await getOccurrences({
+
+  const { data: { hits: ssm_occurrences } } = await getSSMOccurrences({
     filters: occurrenceFilters,
   });
 
-  // add in a getCNVOccurrences
-
+  // const { data: { hits: cnv_occurrences } } = await getCNVOccurrences({
+  //   filters: occurrenceFilters,
+  // });
   // front end filter is_canonical on REST endpoint instead of
   // graphql endpoint with inner hits query because
   // that is very slow for large size (might be because inner hits causes ES to fire secondary queries)
-  const isCanonicalOccurrences = occurrences.map(occurrence => ({
+  const isCanonicalOccurrences = ssm_occurrences.map(occurrence => ({
     ...occurrence,
     ssm: {
       ...occurrence.ssm,
@@ -153,19 +176,24 @@ async function getQueries({
     },
   }));
 
-  const cnvLength = (isCanonicalOccurrences.length >= 1000) ? 1000 : isCanonicalOccurrences.length;
+  const cnvLength =
+    isCanonicalOccurrences.length >= 1000
+      ? 1000
+      : isCanonicalOccurrences.length;
 
-  const cnv_occurrences = isCanonicalOccurrences.slice(0, cnvLength).map((o, i) => {
-    cnv[i]['case_id'] = o.case.case_id;
-    cnv[i]['gene_id'] = o.ssm.consequence.length
-      ? o.ssm.consequence[0].transcript.gene.gene_id
-      : null;
-    return cnv[i];
-  });
+  const cnv_occurrences = isCanonicalOccurrences
+    .slice(0, cnvLength)
+    .map((o, i) => {
+      cnv[i]['case_id'] = o.case.case_id;
+      cnv[i]['gene_id'] = o.ssm.consequence.length
+        ? o.ssm.consequence[0].transcript.gene.gene_id
+        : null;
+      return cnv[i];
+    });
 
   return {
     genes,
-    occurrences: isCanonicalOccurrences,
+    ssm_occurrences: isCanonicalOccurrences,
     cnv_occurrences,
     cases,
     totalCases,

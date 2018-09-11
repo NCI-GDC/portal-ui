@@ -86,7 +86,6 @@ const GenesTableModel = [
     id: 'cytoband',
     sortable: true,
     downloadable: true,
-    hidden: true,
     th: () => <Th>Cytoband</Th>,
     td: ({ node }) => <Td>{(node.cytoband || []).join(', ')}</Td>,
   },

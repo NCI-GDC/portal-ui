@@ -102,7 +102,7 @@ const downloadCart = ({
           </div>
           {user ? (
             <p>
-              Please request dbGaP Access to the project (<a href="https://wiki.oicr.on.ca/pages/viewpage.action?spaceKey=GDCSPECS&title=User+messages">
+              Please request dbGaP Access to the project (<a href="https://gdc.cancer.gov/access-data/obtaining-access-controlled-data">
                 click here for more information
               </a>).
             </p>

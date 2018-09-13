@@ -13,20 +13,26 @@ export default function({
   currentFilters,
 }) {
   grid.on('gridMouseOver', data => {
+    const cnvData = data.observation.filter(o => o.type === 'cnv');
+    const ssmData = data.observation.filter(o => o.type === 'mutation');
     setTooltip(
       data.observation && (
         <div style={{ maxWidth: 800 }}>
           {/* <div>Case: {data.donor.displayId}</div> */}
           {data.donor && <div>Case: {data.donor.displayId}</div>}
-          <div>Gene: {data.observation.geneSymbol}</div>
-          {data.observation.type === 'mutation' && (
-            <div>
-              <div>Mutation Type: {data.observation.consequence}</div>
-              <div>Mutations: {data.observation.ids.length}</div>
+          { data.gene && <div style={{ marginTop: 2 }}>Gene: {data.gene.symbol}</div> }
+          { data.observation && (
+            <div style={{ marginTop: 2 }}>
+              { !!cnvData.length && (
+                <span>CNV change: { cnvData[0].cnv_change }</span>
+              )}
+              { ssmData.length && (
+                <div style={{ marginTop: 2 }}>
+                  <div>Number of mutations:</div>
+                  { ssmData.map((ssm, i) => <div key={i} style={{ marginLeft: 5 }}>{ssm.consequence}: {ssm.ids.length}</div>)}
+                </div>
+              )}
             </div>
-          )}
-          {data.observation.type === 'cnv' && (
-            <div>CNV Change: {data.observation.cnv_change}</div>
           )}
         </div>
       ),

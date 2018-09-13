@@ -102,7 +102,7 @@ const downloadCart = ({
           </div>
           {user ? (
             <p>
-              Please request dbGaP Access to the project (<a href="https://gdc.cancer.gov/access-data/obtaining-access-controlled-data">
+              Please request dbGaP Access to the project (<a target={'_blank'} href="https://gdc.cancer.gov/access-data/obtaining-access-controlled-data">
                 click here for more information
               </a>).
             </p>

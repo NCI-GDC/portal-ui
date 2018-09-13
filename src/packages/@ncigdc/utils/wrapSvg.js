@@ -40,6 +40,7 @@ type TEmbed = {
 export type TWrapSvg = ({
   title: string,
   selector: string,
+  att: string,
   className?: string,
   margins?: TMargin,
   embed?: {
@@ -47,6 +48,7 @@ export type TWrapSvg = ({
     right?: TEmbed,
     bottom?: TEmbed,
   },
+  
 }) => ?Element;
 
 const titleHeight = 20;
@@ -94,9 +96,11 @@ function buildForeignObject({
 export const wrapSvg: TWrapSvg = ({
   selector,
   title,
+  att,
   margins = { top: 20, right: 20, bottom: 20, left: 20 },
   className = '',
   embed = {},
+  
 }) => {
   const svg = document.querySelector(selector);
   if (!svg) return svg;
@@ -150,11 +154,12 @@ export const wrapSvg: TWrapSvg = ({
 
   const wrapper = document.createElement('div');
 
+  console.log(att);
   wrapper.innerHTML = `
     <svg
       width="${width}"
-      height="${sum([height, afterObject.height])}"
-      viewBox="0 0 ${width} ${sum([height, afterObject.height])}"
+      height="${sum([height, afterObject.height, 22])}"
+      viewBox="0 0 ${width} ${sum([height, afterObject.height,22])}"
       style="font-size: 10px"
       class="${EXPORT_CLASS} ${svgClass || ''} ${className}"
     >
@@ -167,16 +172,19 @@ export const wrapSvg: TWrapSvg = ({
       ${beforeObject.html}
       ${rightObject.html}
       <g transform="translate(${margins.left || 0},${sum([
-    titleHeight,
-    margins.top,
-    beforeObject.height,
-  ])})">
+        titleHeight,
+        margins.top,
+        beforeObject.height,
+      ])})">
         ${svg.innerHTML.replace(
           /url\(['"]?https?:\/\/[^#]+(#.+)['"]?\)/g,
           'url($1)',
         )}
       </g>
       ${afterObject.html}
+      <foreignobject  class="node" x="0" y="${sum([height, afterObject.height])}" width="100" height="22">
+        ${att}          
+      </foreignobject>
     </svg>
   `;
   return wrapper.querySelector('svg');

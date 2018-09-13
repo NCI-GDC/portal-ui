@@ -14,6 +14,7 @@ import ExploreLink from '@ncigdc/components/Links/ExploreLink';
 import ProjectsLink from '@ncigdc/components/Links/ProjectsLink';
 import { TGroupFilter } from '@ncigdc/utils/filters/types';
 import { CollapsedLegend } from '@ncigdc/components/Legends';
+import { renderToString } from 'react-dom/server';
 
 type TProps = {
   style: Object,
@@ -245,6 +246,39 @@ export default compose(
           0,
         ),
       }));
+
+    const Legends = () => (
+      <Row style={{ display: 'flex', justifyContent: 'center' }}>
+        {checkers.map(f => (
+          <label key={f.key}>
+            <span
+              onClick={() =>
+                setCnv({
+                  ...cnv,
+                  [f.key]: !cnv[f.key],
+                })}
+              style={{
+                color: f.color,
+                textAlign: 'center',
+                border: '2px solid',
+                height: '18px',
+                width: '18px',
+                cursor: 'pointer',
+                display: 'inline-block',
+                marginRight: '6px',
+                marginTop: '3px',
+                verticalAlign: 'middle',
+                lineHeight: '16px',
+              }}
+            >
+              {cnv[f.key] ? '✓' : <span>&nbsp;</span>}
+            </span>
+            {f.name}&nbsp;&nbsp;&nbsp;
+          </label>
+        ))}
+      </Row>
+    );
+    const lgs = renderToString(<Legends />);
     return (
       <div>
         <Row style={{ width: '100%' }}>
@@ -270,6 +304,7 @@ export default compose(
                       wrapSvg({
                         selector: '#cancer-distribution svg',
                         title: 'Cancer Distribution',
+                        att: lgs,
                       })}
                     data={mutationChartData.map(d => ({
                       label: d.label,
@@ -351,35 +386,7 @@ export default compose(
                   yAxis={{ title: '% of Cases Affected' }}
                   styles={chartStyles}
                 />
-                <Row style={{ display: 'flex', justifyContent: 'center' }}>
-                  {checkers.map(f => (
-                    <label key={f.key}>
-                      <span
-                        onClick={() =>
-                          setCnv({
-                            ...cnv,
-                            [f.key]: !cnv[f.key],
-                          })}
-                        style={{
-                          color: f.color,
-                          textAlign: 'center',
-                          border: '2px solid',
-                          height: '18px',
-                          width: '18px',
-                          cursor: 'pointer',
-                          display: 'inline-block',
-                          marginRight: '6px',
-                          marginTop: '3px',
-                          verticalAlign: 'middle',
-                          lineHeight: '16px',
-                        }}
-                      >
-                        {cnv[f.key] ? '✓' : <span>&nbsp;</span>}
-                      </span>
-                      {f.name}&nbsp;&nbsp;&nbsp;
-                    </label>
-                  ))}
-                </Row>
+                <Legends />
               </Column>
             </Column>
           </span>

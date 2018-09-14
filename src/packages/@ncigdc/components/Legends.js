@@ -63,7 +63,17 @@ export const SwatchLegend = ({ colorMap }) => {
   );
 };
 
-const Checkbox = ({ label, color, onChange, checked, boxStyle }) => {
+const Checkbox = ({ label, color = 'gray', onChange, checked, boxStyle }) => {
+  let checkColor = color;
+
+  // TODO: extract to custom Checkbox or find css filter that works for 508 issues
+  if (label.includes('loss') || label === 'Show copy number variations') {
+    checkColor = '#3973a3';
+  }
+  if (label === 'gain' || label === 'amplification') {
+    checkColor = '#af3d3d';
+  }
+
   return (
     <div style={{ paddingBottom: 10, display: 'flex', alignItems: 'center' }}>
       <div
@@ -71,8 +81,7 @@ const Checkbox = ({ label, color, onChange, checked, boxStyle }) => {
         style={{
           height: 20,
           width: 20,
-          color: color || 'gray',
-          border: `2px solid ${color || 'gray'}`,
+          border: `2px solid ${color}`,
           cursor: 'pointer',
           textAlign: 'center',
           verticalAlign: 'center',
@@ -82,7 +91,7 @@ const Checkbox = ({ label, color, onChange, checked, boxStyle }) => {
           ...boxStyle,
         }}
       >
-        {checked ? <span>{'✓'}</span> : null}
+        {checked ? <span style={{ color: checkColor }}>{'✓'}</span> : null}
       </div>
       <label style={{ marginLeft: 5 }}>{label}</label>
     </div>

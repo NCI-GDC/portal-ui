@@ -45,7 +45,7 @@ export default ({ match, geneId = match.params.id, location }: Object) => {
           op: 'in',
           content: {
             field: 'cases.available_variation_data',
-            value: ['ssm'],
+            value: ['ssm', 'cna'],
           },
         },
       ],
@@ -84,7 +84,7 @@ export default ({ match, geneId = match.params.id, location }: Object) => {
             <Column>
               <CancerDistributionBarChart
                 filters={mutatedGeneFilter}
-                style={{ width: '50%' }}
+                style={{ width: '100%' }}
               />
               <CancerDistributionTable
                 filters={mutatedGeneFilter}

@@ -98,7 +98,7 @@ const GenesTableModel = [
     td: ({ node }) => <Td>{node.biotype}</Td>,
   },
   {
-    name: '# Affected Cases in Cohort',
+    name: '# SSM Affected Cases in Cohort',
     id: 'filteredCases',
     sortable: true,
     downloadable: true,
@@ -114,7 +114,7 @@ const GenesTableModel = [
           }
           style={tableToolTipHint()}
         >
-          # Affected Cases<br />in {context}
+          # SSM Affected Cases<br />in {context}
         </Tooltip>
       </Th>
     ),
@@ -159,7 +159,7 @@ const GenesTableModel = [
     ),
   },
   {
-    name: '	# Affected Cases Across the GDC',
+    name: '	# SSM Affected Cases Across the GDC',
     id: 'projectBreakdown',
     sortable: true,
     downloadable: true,
@@ -177,7 +177,7 @@ const GenesTableModel = [
           }
           style={tableToolTipHint()}
         >
-          # Affected Cases<br /> Across the GDC
+          # SSM Affected Cases<br /> Across the GDC
         </Tooltip>
       </Th>
     ),
@@ -190,6 +190,146 @@ const GenesTableModel = [
           caseTotal={node.case.hits.total}
           gdcCaseTotal={cases.hits.total}
         />
+      </Td>
+    ),
+  },
+  {
+    name: '# CNV Gain',
+    id: 'cnvGain',
+    sortable: true,
+    downloadable: true,
+    th: () => (
+      <Th>
+        <Tooltip
+          Component={
+            <span>
+              # of Cases where CNV gain events are observed in Gene
+              <br />
+              / # of Cases tested for Copy Number Alteration in Gene
+            </span>
+          }
+          style={tableToolTipHint()}
+        >
+          # CNV Gain
+        </Tooltip>
+      </Th>
+    ),
+    td: ({ node, query, defaultFilters, filteredCases }) => (
+      <Td>
+        <span>
+          <ExploreLink
+            merge
+            query={{
+              searchTableTab: 'cases',
+              filters: replaceFilters(
+                makeFilter([
+                  {
+                    field: 'genes.gene_id',
+                    value: [node.gene_id],
+                  },
+                  {
+                    field: 'Copy Number Variation',
+                    value: ['Gain', 'High Level Amplification'],
+                  },
+                ]),
+                query.genesTable_filters || defaultFilters,
+              ),
+            }}
+          >
+            {(Math.round(node.numCases / 2.5) || 0).toLocaleString()}
+          </ExploreLink>
+          <span> / </span>
+          <ExploreLink
+            query={{
+              searchTableTab: 'cases',
+              filters: addInFilters(
+                query.genesTable_filters || defaultFilters,
+                makeFilter([
+                  {
+                    field: 'cases.available_variation_data',
+                    value: ['cnv'],
+                  },
+                ]),
+              ),
+            }}
+          >
+            {(filteredCases.hits.total || 0).toLocaleString()}
+          </ExploreLink>
+          <span>{` (${((node.numCases / 2.5 || 0) /
+            filteredCases.hits.total *
+            100
+          ).toFixed(2)}%)`}</span>
+        </span>
+      </Td>
+    ),
+  },
+  {
+    name: '# CNV Loss',
+    id: 'cnvLoss',
+    sortable: true,
+    downloadable: true,
+    th: () => (
+      <Th>
+        <Tooltip
+          Component={
+            <span>
+              # of Cases where CNV loss events are observed in Gene
+              <br />
+              / # of Cases tested for Copy Number Alteration in Gene
+            </span>
+          }
+          style={tableToolTipHint()}
+        >
+          # CNV Loss
+        </Tooltip>
+      </Th>
+    ),
+    td: ({ node, query, defaultFilters, filteredCases }) => (
+      <Td>
+        <span>
+          <ExploreLink
+            merge
+            query={{
+              searchTableTab: 'cases',
+              filters: replaceFilters(
+                makeFilter([
+                  {
+                    field: 'genes.gene_id',
+                    value: [node.gene_id],
+                  },
+                  {
+                    field: 'Copy Number Variation',
+                    value: ['Shallow Loss', 'Deep Loss'],
+                  },
+                ]),
+                query.genesTable_filters || defaultFilters,
+              ),
+            }}
+          >
+            {(Math.round(node.numCases / 3.5) || 0).toLocaleString()}
+          </ExploreLink>
+          <span> / </span>
+          <ExploreLink
+            query={{
+              searchTableTab: 'cases',
+              filters: addInFilters(
+                query.genesTable_filters || defaultFilters,
+                makeFilter([
+                  {
+                    field: 'cases.available_variation_data',
+                    value: ['cnv'],
+                  },
+                ]),
+              ),
+            }}
+          >
+            {(filteredCases.hits.total || 0).toLocaleString()}
+          </ExploreLink>
+          <span>{` (${((Math.round(node.numCases / 3.5) || 0) /
+            filteredCases.hits.total *
+            100
+          ).toFixed(2)}%)`}</span>
+        </span>
       </Td>
     ),
   },

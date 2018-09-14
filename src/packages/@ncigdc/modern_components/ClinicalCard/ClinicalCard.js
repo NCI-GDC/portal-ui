@@ -233,7 +233,9 @@ export default compose(
                                       {node.treatment_intent_type || '--'}
                                     </Td>
                                     <Td>{node.treatment_or_therapy || '--'}</Td>
-                                    <Td>{node.days_to_treatment_start || '--'}</Td>
+                                    <Td>
+                                      {node.days_to_treatment_start || '--'}
+                                    </Td>
                                   </Tr>
                                 ))}
                               </tbody>

@@ -412,7 +412,11 @@ export default compose(
                             }),
                             {},
                           )}
-                          yAxis={{ title: (yAxisUnit === 'number' ? '# of' : '% of') + ' Cases Affected' }}
+                          yAxis={{
+                            title:
+                              (yAxisUnit === 'number' ? '# of' : '% of') +
+                              ' Cases Affected',
+                          }}
                           styles={{
                             xAxis: {
                               stroke: theme.greyScale4,

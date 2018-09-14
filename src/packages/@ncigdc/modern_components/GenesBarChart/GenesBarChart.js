@@ -18,7 +18,8 @@ import wrapSvg from '@ncigdc/utils/wrapSvg';
 import VisualizationHeader from '@ncigdc/components/VisualizationHeader';
 import { createClassicRenderer } from '@ncigdc/modern_components/Query';
 
-const TITLE = 'Distribution of Most Frequently Mutated Genes';
+const MUTATED_TITLE = 'Distribution of Most Frequently Mutated Genes';
+const CNA_TITLE = 'Distribution of Most Frequently Copy Number Variation Genes';
 const CHART_HEIGHT = 285;
 const COMPONENT_NAME = 'GenesBarChart';
 
@@ -120,8 +121,10 @@ const Component = compose(
       explore: { genes = { hits: { edges: [] } }, cases, filteredCases },
     },
     context = 'explore',
+    showingMore,
     handleClickGene,
     style,
+    push,
   }) => {
     const numCasesAggByProject = cases.aggregations.project__project_id.buckets.reduce(
       (acc, b) => ({
@@ -130,7 +133,6 @@ const Component = compose(
       }),
       {},
     );
-
     const tooltipContext = (ctx, { symbol, score = 0 }) => {
       switch (ctx) {
         case 'project': {
@@ -180,13 +182,177 @@ const Component = compose(
         tooltip: tooltipContext(context, g),
         onClick: () => handleClickGene(g, mutatedGenesChartData),
       }));
+    const checkers = [
+      { key: 'loss2', color: '#900000' },
+      { key: 'loss1', color: '#d33737' },
+      { key: 'gain1', color: '#0d71e8' },
+      { key: 'gain2', color: '#00457c' },
+    ];
+    /* prettier-ignore */
+
+    const cnaNodes = [
+      {
+        symbol:'TP53',
+        gene_id: 'ENSG00000141510',
+        gain2:2000,
+        gain1:1500,
+        loss1:2200,
+        loss2:1700,
+      },{  
+        symbol: "TTN",
+        gene_id: "ENSG00000155657",
+        gain2:2000,
+        gain1:150,
+        loss1:220,
+        loss2:170,
+      },{  
+        symbol: "MUC16",
+        gene_id: "ENSG00000181143",
+        gain2:200,
+        gain1:1500,
+        loss1:220,
+        loss2:170,
+      },{
+        symbol: "CSMD3",
+        gene_id: "ENSG00000164796",
+        gain2:200,
+        gain1:150,
+        loss1:2200,
+        loss2:170,
+      },{  
+        symbol: "SYNE1",
+        gene_id: "ENSG00000131018",
+        gain2:200,
+        gain1:150,
+        loss1:220,
+        loss2:1700,
+      },{  
+        symbol: "RYR2",
+        gene_id: "ENSG00000198626",
+        gain2:1000,
+        gain1:150,
+        loss1:220,
+        loss2:170,
+      },{
+        symbol: "LRP1B",
+        gene_id: "ENSG00000168702",
+        gain2:200,
+        gain1:1150,
+        loss1:220,
+        loss2:170,
+      },{  
+        symbol: "FLG",
+        gene_id: "ENSG00000143631",
+        gain2:200,
+        gain1:150,
+        loss1:220,
+        loss2:1170,
+      },{  
+        symbol: "PIK3CA",
+        gene_id: "ENSG00000121879",
+        gain2:200,
+        gain1:1990,
+        loss1:220,
+        loss2:170,
+      },{  
+        symbol: "USH2A",
+        gene_id: "ENSG00000042781",
+        gain2:200,
+        gain1:150,
+        loss1:2000,
+        loss2:170,
+      },{  
+        symbol: "PCLO",
+        gene_id: "ENSG00000186472",
+        gain2:200,
+        gain1:150,
+        loss1:220,
+        loss2:1700,
+      },{  
+        symbol: "OBSCN",
+        gene_id: "ENSG00000154358",
+        gain2:200,
+        gain1:1500,
+        loss1:220,
+        loss2:170,
+      },{  
+        symbol: "MUC4",
+        gene_id: "ENSG00000145113",
+        gain2:2000,
+        gain1:1500,
+        loss1:220,
+        loss2:170,
+      },{  
+        symbol: "ZFHX4",
+        gene_id: "ENSG00000091656",
+        gain2:2000,
+        gain1:150,
+        loss1:2200,
+        loss2:170,
+      },{  
+        symbol: "DNAH5",
+        gene_id: "ENSG00000039139",
+        gain2:200,
+        gain1:150,
+        loss1:220,
+        loss2:170,
+      },{  
+        symbol: "CSMD1",
+        gene_id: "ENSG00000183117",
+        gain2:200,
+        gain1:150,
+        loss1:220,
+        loss2:170,
+      },{  
+        symbol: "XIRP2",
+        gene_id: "ENSG00000163092",
+        gain2:200,
+        gain1:150,
+        loss1:220,
+        loss2:170,
+      },{  
+        symbol: "DST",
+        gene_id: "ENSG00000151914",
+        gain2:200,
+        gain1:150,
+        loss1:220,
+        loss2:170,
+      },{  
+        symbol: "FAT3",
+        gene_id: "ENSG00000165323",
+        gain2:200,
+        gain1:150,
+        loss1:220,
+        loss2:170,
+      },{  
+        symbol: "FAT4",
+        gene_id: "ENSG00000196159",
+        gain2:200,
+        gain1:150,
+        loss1:220,
+        loss2:170,
+      }];
+    const cnaGenesChartData = cnaNodes
+      .sort((a, b) => checkers.reduce((acc, c) => b[c.key] - a[c.key] + acc, 0))
+      .map(g => {
+        const score = checkers.reduce((acc, c) => g[c.key] + acc, 0);
+        return {
+          label: g.symbol,
+          value:
+            context === 'project' && projectId
+              ? score / numCasesAggByProject[projectId] * 100
+              : score / filteredCases.hits.total * 100,
+          tooltip: tooltipContext(context, { symbol: g.symbol, score: score }),
+          onClick: () => handleClickGene(g, cnaGenesChartData),
+        };
+      });
 
     return (
       <div style={style}>
         {!!mutatedGenesChartData && (
           <Column style={{ paddingLeft: '2rem' }}>
             <VisualizationHeader
-              title={TITLE}
+              title={MUTATED_TITLE}
               buttons={[
                 <DownloadVisualizationButton
                   key="download"
@@ -194,7 +360,7 @@ const Component = compose(
                   svg={() =>
                     wrapSvg({
                       selector: '#mutated-genes-chart svg',
-                      title: TITLE,
+                      title: MUTATED_TITLE,
                     })}
                   data={mutatedGenesChartData.map(d => ({
                     label: d.label,
@@ -233,6 +399,59 @@ const Component = compose(
                 </Row>
               </div>
             )}
+
+            {showingMore && (
+              <VisualizationHeader
+                title={CNA_TITLE}
+                buttons={[
+                  <DownloadVisualizationButton
+                    key="download"
+                    disabled={!cnaGenesChartData.length}
+                    svg={() =>
+                      wrapSvg({
+                        selector: '#cna-genes-chart svg',
+                        title: CNA_TITLE,
+                      })}
+                    data={cnaGenesChartData.map(d => d)}
+                    slug="most-frequently-cna-genes-bar-chart"
+                    tooltipHTML="Download image or data"
+                    noText
+                  />,
+                ]}
+              />
+            )}
+            {!!mutatedGenesChartData.length &&
+              showingMore && (
+                <div id="cna-genes-chart">
+                  <Row style={{ paddingTop: '2rem' }}>
+                    <BarChart
+                      data={cnaGenesChartData}
+                      yAxis={{ title: '% of Cases Affected' }}
+                      height={CHART_HEIGHT}
+                      colors={checkers.reduce(
+                        (acc, f) => ({ ...acc, [f.key]: f.color }),
+                        0,
+                      )}
+                      styles={{
+                        xAxis: {
+                          stroke: theme.greyScale4,
+                          textFill: theme.greyScale3,
+                        },
+                        yAxis: {
+                          stroke: theme.greyScale4,
+                          textFill: theme.greyScale3,
+                        },
+                        bars: { fill: theme.secondary },
+                        tooltips: {
+                          fill: '#fff',
+                          stroke: theme.greyScale4,
+                          textFill: theme.greyScale3,
+                        },
+                      }}
+                    />
+                  </Row>
+                </div>
+              )}
           </Column>
         )}
       </div>

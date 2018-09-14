@@ -47,7 +47,11 @@
     "lodash-backports": "1.0.1",
     "memoizee": "0.4.5",
     "moment": "2.19.3",
+<<<<<<< HEAD
     "oncogrid": "git+https://github.com/oncojs/oncogrid.git#test-remapping-lookup-table",
+=======
+    "oncogrid": "git+https://github.com/oncojs/oncogrid.git#test-merge-histogram",
+>>>>>>> be7c36bbe70fc9b1b382a3c89385e73bea8f2577
     "openseadragon": "2.3.1",
     "pluralize": "7.0.0",
     "prop-types": "15.5.10",

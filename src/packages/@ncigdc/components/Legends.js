@@ -98,15 +98,6 @@ const Checkbox = ({ label, color = 'gray', onChange, checked, boxStyle }) => {
   );
 };
 
-const CheckCircle = ({}) => {
-  return (
-    <div className="round">
-      <input type="checkbox" id="checkbox" />
-      <label for="checkbox"></label>
-    </div>
-  );
-};
-
 export const CollapsedLegend = ({
   checkersWithColors,
   checkerStates,

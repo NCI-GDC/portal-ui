@@ -13,29 +13,43 @@ export default function({
   currentFilters,
 }) {
   grid.on('gridMouseOver', data => {
+    if (!data.observation) return;
     const cnvData = data.observation.filter(o => o.type === 'cnv');
     const ssmData = data.observation.filter(o => o.type === 'mutation');
     setTooltip(
-      data.observation && (
-        <div style={{ maxWidth: 800 }}>
-          {/* <div>Case: {data.donor.displayId}</div> */}
-          {data.donor && <div>Case: {data.donor.displayId}</div>}
-          { data.gene && <div style={{ marginTop: 2 }}>Gene: {data.gene.symbol}</div> }
-          { data.observation && (
+      <div style={{ maxWidth: 800 }}>
+        {data.donor && (
+          <div>
+            <span style={{ fontWeight: 'bold' }}>Case:</span>{' '}
+            {data.donor.displayId}
+          </div>
+        )}
+        {data.gene && (
+          <div style={{ marginTop: 2 }}>
+            <span style={{ fontWeight: 'bold' }}>Gene:</span> {data.gene.symbol}
+          </div>
+        )}
+        <div style={{ marginTop: 2 }}>
+          {!!cnvData.length && (
+            <span>
+              <span style={{ fontWeight: 'bold' }}>CNV change:</span>
+              <span> {cnvData[0].cnv_change}</span>
+            </span>
+          )}
+          {!!ssmData.length && (
             <div style={{ marginTop: 2 }}>
-              { !!cnvData.length && (
-                <span>CNV change: { cnvData[0].cnv_change }</span>
-              )}
-              { ssmData.length && (
-                <div style={{ marginTop: 2 }}>
-                  <div>Number of mutations:</div>
-                  { ssmData.map((ssm, i) => <div key={i} style={{ marginLeft: 5 }}>{ssm.consequence}: {ssm.ids.length}</div>)}
+              <div>
+                <span style={{ fontWeight: 'bold' }}>Number of mutations:</span>
+              </div>
+              {ssmData.map((ssm, i) => (
+                <div key={i} style={{ marginLeft: 5 }}>
+                  {ssm.consequence}: <span>{ssm.ids.length}</span>
                 </div>
-              )}
+              ))}
             </div>
           )}
         </div>
-      ),
+      </div>,
     );
   });
 
@@ -46,8 +60,6 @@ export default function({
       <div style={{ maxWidth: 800 }}>
         {data.donor && <div>Case: {data.donor.displayId}</div>}
         {data.gene && <div>Gene: {data.gene.symbol}</div>}
-        {/* {data.obs && data.obs.mutation.length && <div>Mutations: {data.obs.mutation}</div>} */}
-        {/* {data.obs && data.obs.cnv.length && <div>CNV Change: {data.obs.cnv}</div>} */}
       </div>,
     );
   });

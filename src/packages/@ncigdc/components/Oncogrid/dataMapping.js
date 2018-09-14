@@ -231,6 +231,9 @@ export const buildOccurrences: TBuildOccurrences = (
           );
           if (match > -1) {
             observations[match].ids.push(ssm_id);
+            // if (observations[match].consequence && !observations[match].consequence.includes(consequence_type)) {
+            //   observations[match].consequence.push(consequence_type)
+            // }
           } else {
             observations.push({
               // required
@@ -238,6 +241,7 @@ export const buildOccurrences: TBuildOccurrences = (
               donorId: case_id,
               geneId: gene_id,
               consequence: consequence_type,
+              // consequence: [consequence_type],
               type: 'mutation',
 
               // optional
@@ -254,8 +258,8 @@ export const buildOccurrences: TBuildOccurrences = (
     const { cnv_id, cnv_change, score, gene_id, case_id } = cnv_occurrences[i];
     if (allowedCaseIds.has(case_id)) {
       if (score !== 0 && gene_id) {
-        donorIds.add(case_id);
-        geneIds.add(gene_id);
+        // donorIds.add(case_id);
+        // geneIds.add(gene_id);
         cnvObservations.push({
           ids: [cnv_id],
           donorId: case_id,

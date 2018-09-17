@@ -40,7 +40,7 @@ type TEmbed = {
 export type TWrapSvg = ({
   title: string,
   selector: string,
-  att: string,
+  legends: string,
   className?: string,
   margins?: TMargin,
   embed?: {
@@ -96,7 +96,7 @@ function buildForeignObject({
 export const wrapSvg: TWrapSvg = ({
   selector,
   title,
-  att,
+  legends,
   margins = { top: 20, right: 20, bottom: 20, left: 20 },
   className = '',
   embed = {},
@@ -154,7 +154,6 @@ export const wrapSvg: TWrapSvg = ({
 
   const wrapper = document.createElement('div');
 
-  console.log(att);
   wrapper.innerHTML = `
     <svg
       width="${width}"
@@ -182,8 +181,8 @@ export const wrapSvg: TWrapSvg = ({
         )}
       </g>
       ${afterObject.html}
-      <foreignobject  class="node" x="0" y="${sum([height, afterObject.height])}" width="100" height="22">
-        ${att}          
+      <foreignobject  class="node" x="0" y="${sum([height, afterObject.height])}" width="650" height="22">
+        ${legends || ''}          
       </foreignobject>
     </svg>
   `;

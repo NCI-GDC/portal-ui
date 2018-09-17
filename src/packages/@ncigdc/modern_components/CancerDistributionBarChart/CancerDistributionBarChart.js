@@ -278,7 +278,6 @@ export default compose(
         ))}
       </Row>
     );
-    const lgs = renderToString(<Legends />);
     return (
       <div>
         <Row style={{ width: '100%' }}>
@@ -304,7 +303,6 @@ export default compose(
                       wrapSvg({
                         selector: '#cancer-distribution svg',
                         title: 'Cancer Distribution',
-                        att: lgs,
                       })}
                     data={mutationChartData.map(d => ({
                       label: d.label,
@@ -350,6 +348,7 @@ export default compose(
                     wrapSvg({
                       selector: '.test-stacked-bar-chart svg',
                       title: 'cnv Distribution',
+                      legends: renderToString(<Legends />),
                     })}
                   data={cnvChartData.map(d => ({
                     symbol: d.symbol,
@@ -366,14 +365,6 @@ export default compose(
                 />
               </Row>
               <Column>
-                {/* <CollapsedLegend
-                  checkersWithColors={checkers}
-                  collapsed={collapsed}
-                  setCollapsed={() => setCollapsed(!collapsed)}
-                  initalCheckers={initalcnv}
-                  checkerStates={cnv}
-                  setCheckers={setCnv}
-                /> */}
                 <FilteredStackedBarChart
                   margin={CHART_MARGINS}
                   height={200}

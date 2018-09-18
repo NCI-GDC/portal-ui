@@ -251,25 +251,20 @@ export const buildOccurrences: TBuildOccurrences = (
 
           let match = _.findIndex(
             ssmObservations,
-            o => o.donorId === case_id && o.geneId === gene_id,
-            // o.consequence === consequence_type,
+            o =>
+              o.donorId === case_id &&
+              o.geneId === gene_id &&
+              o.consequence === consequence_type,
           );
           if (match > -1) {
             ssmObservations[match].ids.push(ssm_id);
-            if (
-              ssmObservations[match].consequence &&
-              !ssmObservations[match].consequence.includes(consequence_type)
-            ) {
-              ssmObservations[match].consequence.push(consequence_type);
-            }
           } else {
             ssmObservations.push({
               // required
               ids: [ssm_id],
               donorId: case_id,
               geneId: gene_id,
-              // consequence: consequence_type,
-              consequence: [consequence_type],
+              consequence: consequence_type,
               type: 'mutation',
 
               // optional
@@ -283,20 +278,23 @@ export const buildOccurrences: TBuildOccurrences = (
   }
 
   for (let i = 0; i < cnv_occurrences.length; i += 1) {
-    const { cnv_id, cnv_change, score, gene_id, case_id } = cnv_occurrences[i];
-    if (allowedCaseIds.has(case_id)) {
-      if (score !== 0 && gene_id) {
-        // donorIds.add(case_id);
-        // geneIds.add(gene_id);
-        cnvObservations.push({
-          ids: [cnv_id],
-          donorId: case_id,
-          geneId: gene_id,
-          geneSymbol: geneIdToSymbol[gene_id],
-          cnvChange: cnv_change,
-          type: 'cnv',
-        });
-      }
+    const {
+      case: { case_id },
+      cnv: { cnv_change, consequence },
+      cnv_occurrence_id,
+    } = cnv_occurrences[i];
+    const geneId = consequence[0].gene.gene_id;
+    const geneSymbol = geneIdToSymbol[geneId];
+
+    if (allowedCaseIds.has(case_id) && geneIds.has(geneId) && cnv_change) {
+      cnvObservations.push({
+        ids: [cnv_occurrence_id],
+        donorId: case_id,
+        geneId,
+        geneSymbol,
+        cnvChange: cnv_change,
+        type: 'cnv',
+      });
     }
   }
 

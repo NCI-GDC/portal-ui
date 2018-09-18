@@ -17,10 +17,10 @@ export const colorMap = {
     // stop_gained: '#af57db',
   },
   cnv: {
-    deep_loss: '#64b5f6',
-    shallow_loss: '#64b5f6',
-    gain: '#e76a6a',
-    amplification: '#e76a6a',
+    'Deep Loss': '#64b5f6',
+    'Shallow Loss': '#64b5f6',
+    Gain: '#e76a6a',
+    Amplification: '#e76a6a',
   },
 };
 

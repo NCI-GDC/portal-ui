@@ -1,8 +1,7 @@
 /* @flow */
-import { replaceFilters } from '@ncigdc/utils/filters';
+import { replaceFilters, makeFilter } from '@ncigdc/utils/filters';
 import memoize from 'memoizee';
 import { fetchApi, fetchApiChunked } from '@ncigdc/utils/ajax';
-import cnv from './cnv_mock_data';
 
 async function getGenes({
   filters,
@@ -38,20 +37,20 @@ async function getSSMOccurrences({ filters }): Promise<Object> {
   });
 }
 
-// async function getCNVOccurrences({ filters }): Promise<Object> {
-//   return fetchApiChunked('cnv_occurrences', {
-//     headers: { 'Content-Type': 'application/json' },
-//     body: {
-//       filters,
-//       fields: [
-//         // which fields are needed?
-//         'cnv.cnv_id',
-//         'case.case_id',
-//         'cnv.consequence.gene.gene_id',
-//       ].join(),
-//     },
-//   });
-// }
+async function getCNVOccurrences({ filters }): Promise<Object> {
+  return fetchApiChunked('cnv_occurrences', {
+    headers: { 'Content-Type': 'application/json' },
+    body: {
+      filters,
+      fields: [
+        'cnv_occurrence_id',
+        'case.case_id',
+        'cnv.consequence.gene.gene_id',
+        'cnv.cnv_change',
+      ].join(),
+    },
+  });
+}
 
 async function getCases({
   filters,
@@ -160,9 +159,17 @@ async function getQueries({
     filters: occurrenceFilters,
   });
 
-  // const { data: { hits: cnv_occurrences } } = await getCNVOccurrences({
-  //   filters: occurrenceFilters,
-  // });
+  const cnvFilters = makeFilter([
+    { field: 'cases.case_id', value: caseIds },
+    { field: 'genes.gene_id', value: geneIds },
+    {
+      field: 'cases.available_variation_data',
+      value: ['ssm', 'cnv'],
+    },
+  ]);
+  const { data: { hits: cnv_occurrences } } = await getCNVOccurrences({
+    filters: cnvFilters,
+  });
   // front end filter is_canonical on REST endpoint instead of
   // graphql endpoint with inner hits query because
   // that is very slow for large size (might be because inner hits causes ES to fire secondary queries)
@@ -175,21 +182,6 @@ async function getQueries({
       ),
     },
   }));
-
-  const cnvLength =
-    isCanonicalOccurrences.length >= 1000
-      ? 1000
-      : isCanonicalOccurrences.length;
-
-  const cnv_occurrences = isCanonicalOccurrences
-    .slice(0, cnvLength)
-    .map((o, i) => {
-      cnv[i]['case_id'] = o.case.case_id;
-      cnv[i]['gene_id'] = o.ssm.consequence.length
-        ? o.ssm.consequence[0].transcript.gene.gene_id
-        : null;
-      return cnv[i];
-    });
 
   return {
     genes,

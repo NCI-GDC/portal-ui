@@ -16,7 +16,29 @@ import { Row } from '@ncigdc/uikit/Flex';
 import GreyBox from '@ncigdc/uikit/GreyBox';
 import MutationsCount from '@ncigdc/components/MutationsCount';
 import timestamp from '@ncigdc/utils/timestamp';
+import CollapsibleList from '@ncigdc/uikit/CollapsibleList';
+
 const paginationPrefix = 'canDistTable';
+
+let DiseaseList = props => {
+  const { diseases } = props;
+  if (!diseases.length) return <GreyBox />;
+  return (
+    <span>
+      {diseases.length > 1 && (
+        <CollapsibleList
+          liStyle={{ whiteSpace: 'normal', listStyleType: 'disc' }}
+          toggleStyle={{ fontStyle: 'normal' }}
+          data={diseases.slice(0).sort()}
+          limit={0}
+          expandText={`${diseases.length} Disease Types`}
+          collapseText="collapse"
+        />
+      )}
+      {diseases.length === 1 && diseases[0]}
+    </span>
+  );
+};
 
 export default compose(
   withPropsOnChange(
@@ -57,9 +79,7 @@ export default compose(
 
           return {
             project_id: b.key,
-            disease_type: project
-              ? (project.node.disease_type || []).join(', ')
-              : null,
+            disease_type: project ? project.node.disease_type : null,
             site: project ? (project.node.primary_site || []).join(', ') : null,
             num_affected_cases: b.doc_count,
             num_affected_cases_total: totalCasesByProject,
@@ -98,7 +118,7 @@ export default compose(
           project_id: (
             <ProjectLink uuid={row.project_id}>{row.project_id}</ProjectLink>
           ),
-          disease_type: row.disease_type || <GreyBox />,
+          disease_type: <DiseaseList diseases={row.disease_type} />,
           site: row.site || <GreyBox />,
           num_affected_cases: (
             <span>

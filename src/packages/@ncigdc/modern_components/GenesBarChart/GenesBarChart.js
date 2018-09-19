@@ -51,6 +51,30 @@ const createContainer = Component =>
           value: 'ssm',
         },
       ]),
+      filters_1: makeFilter([
+        {
+          field: 'cnvs.cnv_change',
+          value: 'Amplification',
+        },
+      ]),
+      filters_2: makeFilter([
+        {
+          field: 'cnvs.cnv_change',
+          value: 'Gain',
+        },
+      ]),
+      filters_3: makeFilter([
+        {
+          field: 'cnvs.cnv_change',
+          value: 'Shallow Loss',
+        },
+      ]),
+      filters_4: makeFilter([
+        {
+          field: 'cnvs.cnv_change',
+          value: 'Deep Loss',
+        },
+      ]),
     },
     fragments: {
       viewer: () => Relay.QL`
@@ -83,6 +107,26 @@ const createContainer = Component =>
                     gene_id
                     case {
                       hits(first: 0) {
+                        total
+                      }
+                    }
+                    case_with_cnv_amplification_count: case {
+                      hits(first: 0, filters: $filters_1) {
+                        total
+                      }
+                    }
+                    case_with_cnv_gain_count: case {
+                      hits(first: 0, filters: $filters_2) {
+                        total
+                      }
+                    }
+                    case_with_cnv_loss_count: case {
+                      hits(first: 0, filters: $filters_3) {
+                        total
+                      }
+                    }
+                    case_with_cnv_deep_loss_count: case {
+                      hits(first: 0, filters: $filters_4) {
                         total
                       }
                     }

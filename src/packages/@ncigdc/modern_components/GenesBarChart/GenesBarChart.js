@@ -50,6 +50,30 @@ const createContainer = Component =>
           value: 'ssm',
         },
       ]),
+      filters_1: makeFilter([
+        {
+          field: 'cnvs.cnv_change',
+          value: 'Amplification',
+        },
+      ]),
+      filters_2: makeFilter([
+        {
+          field: 'cnvs.cnv_change',
+          value: 'Gain',
+        },
+      ]),
+      filters_3: makeFilter([
+        {
+          field: 'cnvs.cnv_change',
+          value: 'Shallow Loss',
+        },
+      ]),
+      filters_4: makeFilter([
+        {
+          field: 'cnvs.cnv_change',
+          value: 'Deep Loss',
+        },
+      ]),
     },
     fragments: {
       viewer: () => Relay.QL`
@@ -82,6 +106,26 @@ const createContainer = Component =>
                     gene_id
                     case {
                       hits(first: 0) {
+                        total
+                      }
+                    }
+                    case_with_cnv_amplification_count: case {
+                      hits(first: 0, filters: $filters_1) {
+                        total
+                      }
+                    }
+                    case_with_cnv_gain_count: case {
+                      hits(first: 0, filters: $filters_2) {
+                        total
+                      }
+                    }
+                    case_with_cnv_loss_count: case {
+                      hits(first: 0, filters: $filters_3) {
+                        total
+                      }
+                    }
+                    case_with_cnv_deep_loss_count: case {
+                      hits(first: 0, filters: $filters_4) {
                         total
                       }
                     }
@@ -189,14 +233,13 @@ const Component = compose(
       { key: 'gain1', color: '#d33737', name: 'Gain' },
       { key: 'gain2', color: '#900000', name: 'Amplification' },
     ];
-
     const cnvNodes = genes.hits.edges.map(x => ({
       symbol: x.node.symbol,
       gene_id: x.node.gene_id,
-      gain2: Math.round(x.node.score / 5),
-      gain1: Math.floor(x.node.score / 5),
-      loss1: Math.floor(x.node.score / 7),
-      loss2: Math.round(x.node.score / 7),
+      gain2: x.node.case_with_cnv_amplification_count.hits.total,
+      gain1: x.node.case_with_cnv_gain_count.hits.total,
+      loss1: x.node.case_with_cnv_loss_count.hits.total,
+      loss2: x.node.case_with_cnv_deep_loss_count.hits.total,
     }));
     const cnvGenesChartData = cnvNodes
       .sort((a, b) => checkers.reduce((acc, c) => b[c.key] - a[c.key] + acc, 0))

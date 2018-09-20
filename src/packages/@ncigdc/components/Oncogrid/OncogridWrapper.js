@@ -197,26 +197,26 @@ const OncoGridWrapper = compose(
                 value: filteredConsequenceTypes,
               },
             },
-            // {
-            //   op: 'in',
-            //   content: {
-            //     field: 'cases.available_variation_data',
-            //     value: variationDataTypes,
-            //   },
-            // },
           ],
         },
         props.currentFilters,
       );
 
-      let currentCNVFilters = filteredCnvChanges;
-      // let currentCNVFilters = {
-      //   op: 'in',
-      //   content: {
-      //     field: 'cnv.cnv_change',
-      //     value: filteredCnvChanges,
-      //   },
-      // };
+      let currentCNVFilters = replaceFilters(
+        {
+          op: 'and',
+          content: [
+            {
+              op: 'in',
+              content: {
+                field: 'cnv.cnv_change',
+                value: filteredCnvChanges,
+              },
+            },
+          ],
+        },
+        props.currentFilters,
+      );
 
       return {
         ...props,
@@ -252,6 +252,7 @@ const OncoGridWrapper = compose(
         oncoGridHeight,
         setIsLoading,
         projectId,
+        heatMapMode,
         setHeatMapMode,
         setShowGridLines,
         setCrosshairMode,
@@ -295,6 +296,7 @@ const OncoGridWrapper = compose(
         currentCNVFilters,
         currentSSMFilters,
         rankOncoGridBy,
+        heatMapMode,
       });
 
       const performanceContext = {
@@ -325,6 +327,7 @@ const OncoGridWrapper = compose(
         trackPadding: 30,
         impacts,
         consequenceTypes: filteredConsequenceTypes,
+        heatMap: heatMapMode,
       });
 
       performanceTracker.end('oncogrid:process', performanceContext);
@@ -417,11 +420,11 @@ const OncoGridWrapper = compose(
       }
 
       if (
-        // do we need to check for changes in ssmFilters?
-        JSON.stringify(this.props.currentFilters) !==
-          JSON.stringify(nextProps.currentFilters) ||
         JSON.stringify(this.props.currentCNVFilters) !==
-          JSON.stringify(nextProps.currentCNVFilters)
+          JSON.stringify(nextProps.currentCNVFilters) ||
+        JSON.stringify(this.props.currentSSMFilters) !==
+          JSON.stringify(nextProps.currentSSMFilters) ||
+        this.props.heatMapMode !== nextProps.heatMapMode
       ) {
         this.props.setIsLoading(true);
         this.props.getQueries(nextProps, this.props.oncoGridData);
@@ -470,82 +473,15 @@ const OncoGridWrapper = compose(
           containerRefs[uniqueGridClass] = r;
         }}
       >
-        <h4 style={{ textAlign: 'center' }}>{title}</h4>
-        <Row style={{ width: '80%', alignItems: 'center' }}>
-          <div style={{ flexGrow: 1 }} className="oncogrid-mutation-legend">
-            <h5>Mutations</h5>
-            {heatMapMode ? (
-              <StepLegend rightLabel="More Mutations" />
-            ) : (
-              <ToggleSwatchLegend
-                toggledValues={toggledConsequences}
-                toggle={key => {
-                  if (toggledConsequences.includes(key)) {
-                    setToggledConsequences(
-                      toggledConsequences.filter(c => c !== key),
-                    );
-                  } else {
-                    setToggledConsequences([...toggledConsequences, key]);
-                  }
-                }}
-                toggleAll={() => {
-                  if (toggledConsequences.length > 0) {
-                    setToggledConsequences([]);
-                  } else {
-                    setToggledConsequences(consequenceTypes);
-                  }
-                }}
-                colorMap={colorMap.mutation}
-                type={'mutations'}
-              />
-            )}
-          </div>
-          <div style={{ flexGrow: 1 }} className="oncogrid-cnv-legend">
-            <h5>CNV Changes</h5>
-            {heatMapMode ? (
-              <div />
-            ) : (
-              <ToggleSwatchLegend
-                toggledValues={toggledCnvChanges}
-                toggle={key => {
-                  if (toggledCnvChanges.includes(key)) {
-                    setToggledCnvChanges(
-                      toggledCnvChanges.filter(c => c !== key),
-                    );
-                  } else {
-                    setToggledCnvChanges([...toggledCnvChanges, key]);
-                  }
-                }}
-                toggleAll={() => {
-                  if (toggledCnvChanges.length > 0) {
-                    setToggledCnvChanges([]);
-                  } else {
-                    setToggledCnvChanges(cnvChangeTypes);
-                  }
-                }}
-                colorMap={colorMap.cnv}
-                type={'copy number variations'}
-              />
-            )}
-          </div>
-        </Row>
-        {!oncoGridData &&
-          !isLoading && (
-            <Column style={{ padding: '2rem 0' }}>
-              <div>No result found.</div>
-            </Column>
-          )}
-        {oncoGridData &&
-          !isLoading && (
+        <Row style={{ display: 'flex', justifyContent: 'space-between' }}>
+          <h4 style={{ textAlign: 'center' }}>{title}</h4>
+          {!isLoading && (
             <div>
-              {/* <Row style={{ marginLeft: 0, minHeight: '70px' }}> */}
               <Row
                 style={{
-                  justifyContent: 'flex-end',
+                  justifyContent: 'flex-start',
                   marginRight: '12px',
                   flexWrap: 'wrap',
-                  borderBottom: '1px solid lightgray',
-                  marginTop: 20,
                   paddingBottom: 15,
                 }}
                 spacing="1rem"
@@ -589,6 +525,7 @@ const OncoGridWrapper = compose(
                   slug="oncogrid"
                   noText
                   tooltipHTML="Download"
+                  disabled={!oncoGridData}
                 />
                 <Tooltip Component="Reload Grid">
                   <Button
@@ -603,6 +540,7 @@ const OncoGridWrapper = compose(
                         setIsLoading,
                       });
                     }}
+                    disabled={!oncoGridData}
                   >
                     <i className="fa fa-undo" />
                     <Hidden>Reload</Hidden>
@@ -612,6 +550,7 @@ const OncoGridWrapper = compose(
                   <Button
                     style={styles.button}
                     onClick={() => oncoGrid.cluster()}
+                    disabled={!oncoGridData}
                   >
                     <i className="fa fa-sort-amount-desc" />
                     <Hidden>Cluster</Hidden>
@@ -623,6 +562,7 @@ const OncoGridWrapper = compose(
                       ...styles.button,
                       ...(heatMapMode && styles.buttonActive),
                     }}
+                    disabled={toggledConsequences.length === 0 || !oncoGridData}
                     onClick={() => setHeatMapMode(!heatMapMode)}
                   >
                     <i className="fa fa-fire" />
@@ -636,6 +576,7 @@ const OncoGridWrapper = compose(
                       ...(showGridLines && styles.buttonActive),
                     }}
                     onClick={() => setShowGridLines(!showGridLines)}
+                    disabled={!oncoGridData}
                   >
                     <i className="fa fa-th" />
                     <Hidden>Lines</Hidden>
@@ -648,6 +589,7 @@ const OncoGridWrapper = compose(
                       ...(crosshairMode && styles.buttonActive),
                     }}
                     onClick={() => setCrosshairMode(!crosshairMode)}
+                    disabled={!oncoGridData}
                   >
                     <i className="fa fa-crosshairs" />
                     <Hidden>Crosshair</Hidden>
@@ -680,6 +622,7 @@ const OncoGridWrapper = compose(
                         );
                       }
                     }}
+                    disabled={!oncoGridData}
                   >
                     <FullScreenIcon />
                     <Hidden>Fullscreen</Hidden>
@@ -700,8 +643,82 @@ const OncoGridWrapper = compose(
                   </div>
                 )}
               </Row>
-              {/* </Row> */}
             </div>
+          )}
+        </Row>
+        <Row
+          style={{
+            width: '80%',
+            alignItems: 'center',
+            marginBottom: '30px',
+          }}
+        >
+          <div
+            style={{
+              flexGrow: 1,
+            }}
+            className="oncogrid-mutation-legend"
+          >
+            <h5>Mutations</h5>
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <ToggleSwatchLegend
+                toggledValues={toggledConsequences}
+                toggle={key => {
+                  if (toggledConsequences.includes(key)) {
+                    setToggledConsequences(
+                      toggledConsequences.filter(c => c !== key),
+                    );
+                  } else {
+                    setToggledConsequences([...toggledConsequences, key]);
+                  }
+                }}
+                toggleAll={() => {
+                  if (toggledConsequences.length > 0) {
+                    setToggledConsequences([]);
+                  } else {
+                    setToggledConsequences(consequenceTypes);
+                  }
+                }}
+                colorMap={colorMap.mutation}
+                type={'mutations'}
+                heatMapMode={heatMapMode}
+              />
+              {heatMapMode && <StepLegend rightLabel="More Mutations" />}
+            </div>
+          </div>
+
+          {!heatMapMode && (
+            <div style={{ flexGrow: 1 }} className="oncogrid-cnv-legend">
+              <h5>CNV Changes</h5>
+              <ToggleSwatchLegend
+                toggledValues={toggledCnvChanges}
+                toggle={key => {
+                  if (toggledCnvChanges.includes(key)) {
+                    setToggledCnvChanges(
+                      toggledCnvChanges.filter(c => c !== key),
+                    );
+                  } else {
+                    setToggledCnvChanges([...toggledCnvChanges, key]);
+                  }
+                }}
+                toggleAll={() => {
+                  if (toggledCnvChanges.length > 0) {
+                    setToggledCnvChanges([]);
+                  } else {
+                    setToggledCnvChanges(cnvChangeTypes);
+                  }
+                }}
+                colorMap={colorMap.cnv}
+                type={'copy number variations'}
+              />
+            </div>
+          )}
+        </Row>
+        {!oncoGridData &&
+          !isLoading && (
+            <Column style={{ padding: '2rem 0' }}>
+              <div>No result found.</div>
+            </Column>
           )}
 
         <div

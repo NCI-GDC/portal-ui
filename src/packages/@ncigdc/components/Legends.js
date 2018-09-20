@@ -89,12 +89,19 @@ const Checkbox = ({ label, color, onChange, checked, boxStyle }) => {
   );
 };
 
+const getCheckBoxColor = ({ type, heatMapMode, color = null }) => {
+  if (heatMapMode) return '#D33682';
+  if (color) return color;
+  return type === 'mutations' ? '#2E7D32' : '#64b5f6';
+};
+
 export const ToggleSwatchLegend = ({
   colorMap,
   toggledValues,
   toggle,
   type,
   toggleAll,
+  heatMapMode = false,
 }) => {
   const labels = _.map(colorMap, (color, key) => (
     <Checkbox
@@ -104,7 +111,7 @@ export const ToggleSwatchLegend = ({
       onChange={() => toggle(key)}
       checked={toggledValues && toggledValues.includes(key)}
       aria-label={key}
-      color={color}
+      color={getCheckBoxColor({ type, heatMapMode, color })}
     />
   ));
 
@@ -124,7 +131,7 @@ export const ToggleSwatchLegend = ({
             onChange={() => toggleAll(toggledValues.length > 0)}
             checked={toggledValues.length > 0}
             aria-label={type}
-            color={type === 'mutations' ? '#2E7D32' : '#64b5f6'}
+            color={getCheckBoxColor({ type, heatMapMode })}
           />
         </Column>
       </Row>

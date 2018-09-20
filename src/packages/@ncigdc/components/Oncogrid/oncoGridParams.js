@@ -65,6 +65,7 @@ export default function({
   impacts,
   grid = false,
   cnvOccurrencesData = [],
+  heatMap = false,
 }: {
   donorData: Array<TDonorInput>,
   geneData: Array<TGeneInput>,
@@ -78,6 +79,7 @@ export default function({
   consequenceTypes: Array<string>,
   impacts: Array<string>,
   grid?: boolean,
+  heatMap: boolean,
 }): ?Object {
   const {
     ssmObservations,
@@ -157,7 +159,7 @@ export default function({
     element,
     colorMap,
     scaleToFit: true,
-    heatMap: false,
+    heatMap,
     grid,
     minCellHeight: 8,
     trackHeight: 12,

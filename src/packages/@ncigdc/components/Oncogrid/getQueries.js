@@ -96,6 +96,7 @@ async function getQueries({
   currentCNVFilters,
   currentSSMFilters,
   rankOncoGridBy,
+  heatMapMode,
 }: {
   currentFilters: Object,
   maxGenes: number,
@@ -103,6 +104,7 @@ async function getQueries({
   currentCNVFilters: Object,
   currentSSMFilters: Object,
   rankOncoGridBy: string,
+  heatMapMode: boolean,
 }): Promise<Object> {
   const geneFilters =
     rankOncoGridBy === 'ssm'
@@ -169,19 +171,18 @@ async function getQueries({
     filters: occurrenceFilters,
   });
 
-  const cnvFilters = makeFilter([
-    { field: 'cases.case_id', value: caseIds },
-    { field: 'genes.gene_id', value: geneIds },
-    {
-      field: 'cnv.cnv_change',
-      value: currentCNVFilters,
-    },
-  ]);
+  const cnvOccurrenceFilters = replaceFilters(
+    currentCNVFilters,
+    makeFilter([
+      { field: 'cases.case_id', value: caseIds },
+      { field: 'genes.gene_id', value: geneIds },
+    ]),
+  );
 
   let cnv_occurrences = [];
-  if (currentCNVFilters.length > 0) {
+  if (cnvOccurrenceFilters.content.length > 0 && !heatMapMode) {
     let cnv_data = await getCNVOccurrences({
-      filters: cnvFilters,
+      filters: cnvOccurrenceFilters,
     });
     cnv_occurrences = cnv_data.data.hits;
   }

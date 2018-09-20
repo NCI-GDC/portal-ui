@@ -50,6 +50,7 @@ type TProps = {
   tsvData?: Array<Object>,
   theme: Object,
   tooltipHTML: any,
+  disabled: boolean,
 };
 
 const enhance = compose(withTheme);
@@ -63,13 +64,18 @@ const DownloadVisualizationButton = ({
   tsvData,
   theme,
   tooltipHTML,
+  disabled,
   ...props
 }: TProps) => (
   <DropDown
     className={props.className || 'test-download-viz-button'}
     button={
       <Tooltip Component={tooltipHTML}>
-        <Button leftIcon={!noText && <Download />} style={visualizingButton}>
+        <Button
+          disabled={disabled}
+          leftIcon={!noText && <Download />}
+          style={visualizingButton}
+        >
           {noText ? (
             <span>
               <Download />

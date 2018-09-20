@@ -17,7 +17,7 @@ export type TProps = {
   aggregations: {
     biotype: { buckets: [TBucket] },
     is_cancer_gene_census: { buckets: [TBucket] },
-    case__cnv__cnv_change: {buckets: [TBucket]},
+    case__cnv__cnv_change: { buckets: [TBucket] },
   },
   hits: {
     edges: Array<{|

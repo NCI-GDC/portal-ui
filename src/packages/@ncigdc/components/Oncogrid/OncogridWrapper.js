@@ -133,6 +133,7 @@ const OncoGridWrapper = compose(
   withState('variationDataTypes', 'setVariationDataTypes', ['cnv', 'ssm']),
   withState('toggledCnvChanges', 'setToggledCnvChanges', cnvChangeTypes),
   withState('toggledConsequences', 'setToggledConsequences', consequenceTypes),
+  withState('rankOncoGridBy', 'setRankOncoGridBy', 'ssm'),
   mapProps(
     ({
       title,
@@ -140,6 +141,7 @@ const OncoGridWrapper = compose(
       toggledConsequences,
       variationDataTypes,
       toggledCnvChanges,
+      rankOncoGridBy,
       ...props
     }) => {
       const cases = props.oncoGridData
@@ -162,6 +164,15 @@ const OncoGridWrapper = compose(
         'content.value',
         consequenceTypes,
       );
+
+      const currentCnvChanges = get(
+        getFilterValue({
+          currentFilters: props.currentFilters.content,
+          dotField: 'cnv.cnv_change',
+        }),
+        'content.value',
+        cnvChangeTypes,
+      );
       // const filteredConsequenceTypes = consequenceTypes.filter((c: any) =>
       //   currentConsequenceTypes.includes(c),
       // );
@@ -170,9 +181,12 @@ const OncoGridWrapper = compose(
         currentConsequenceTypes.includes(c),
       );
 
-      // will need to add in current CNV filters from facets when they exist, and combine
-      // with toggled cnv change types
-      const currentFilters = replaceFilters(
+      const filteredCnvChanges = toggledCnvChanges.filter((c: any) =>
+        currentCnvChanges.includes(c),
+      );
+
+      const currentFilters = props.currentFilters;
+      const currentSSMFilters = replaceFilters(
         {
           op: 'and',
           content: [
@@ -183,17 +197,26 @@ const OncoGridWrapper = compose(
                 value: filteredConsequenceTypes,
               },
             },
-            {
-              op: 'in',
-              content: {
-                field: 'cases.available_variation_data',
-                value: variationDataTypes,
-              },
-            },
+            // {
+            //   op: 'in',
+            //   content: {
+            //     field: 'cases.available_variation_data',
+            //     value: variationDataTypes,
+            //   },
+            // },
           ],
         },
         props.currentFilters,
       );
+
+      let currentCNVFilters = filteredCnvChanges;
+      // let currentCNVFilters = {
+      //   op: 'in',
+      //   content: {
+      //     field: 'cnv.cnv_change',
+      //     value: filteredCnvChanges,
+      //   },
+      // };
 
       return {
         ...props,
@@ -209,6 +232,9 @@ const OncoGridWrapper = compose(
         toggledConsequences,
         variationDataTypes,
         toggledCnvChanges,
+        currentCNVFilters,
+        currentSSMFilters,
+        rankOncoGridBy,
       };
     },
   ),
@@ -243,6 +269,10 @@ const OncoGridWrapper = compose(
         setTooltip,
         variationDataTypes,
         setVariationDataTypes,
+        currentCNVFilters,
+        currentSSMFilters,
+        toggledCnvChanges,
+        rankOncoGridBy,
       }: TProps = {},
       previousResponses: Object,
     ): Promise<*> {
@@ -262,6 +292,9 @@ const OncoGridWrapper = compose(
         currentFilters,
         maxCases: MAX_CASES,
         maxGenes: MAX_GENES,
+        currentCNVFilters,
+        currentSSMFilters,
+        rankOncoGridBy,
       });
 
       const performanceContext = {
@@ -384,8 +417,11 @@ const OncoGridWrapper = compose(
       }
 
       if (
+        // do we need to check for changes in ssmFilters?
         JSON.stringify(this.props.currentFilters) !==
-        JSON.stringify(nextProps.currentFilters)
+          JSON.stringify(nextProps.currentFilters) ||
+        JSON.stringify(this.props.currentCNVFilters) !==
+          JSON.stringify(nextProps.currentCNVFilters)
       ) {
         this.props.setIsLoading(true);
         this.props.getQueries(nextProps, this.props.oncoGridData);
@@ -452,6 +488,13 @@ const OncoGridWrapper = compose(
                     setToggledConsequences([...toggledConsequences, key]);
                   }
                 }}
+                toggleAll={() => {
+                  if (toggledConsequences.length > 0) {
+                    setToggledConsequences([]);
+                  } else {
+                    setToggledConsequences(consequenceTypes);
+                  }
+                }}
                 colorMap={colorMap.mutation}
                 type={'mutations'}
               />
@@ -471,6 +514,13 @@ const OncoGridWrapper = compose(
                     );
                   } else {
                     setToggledCnvChanges([...toggledCnvChanges, key]);
+                  }
+                }}
+                toggleAll={() => {
+                  if (toggledCnvChanges.length > 0) {
+                    setToggledCnvChanges([]);
+                  } else {
+                    setToggledCnvChanges(cnvChangeTypes);
                   }
                 }}
                 colorMap={colorMap.cnv}

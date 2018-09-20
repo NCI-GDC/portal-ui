@@ -94,6 +94,7 @@ export const ToggleSwatchLegend = ({
   toggledValues,
   toggle,
   type,
+  toggleAll,
 }) => {
   const labels = _.map(colorMap, (color, key) => (
     <Checkbox
@@ -120,8 +121,8 @@ export const ToggleSwatchLegend = ({
         <Column>
           <Checkbox
             label={`Show ${type}`}
-            onChange={() => toggle([])}
-            checked={true}
+            onChange={() => toggleAll(toggledValues.length > 0)}
+            checked={toggledValues.length > 0}
             aria-label={type}
             color={type === 'mutations' ? '#2E7D32' : '#64b5f6'}
           />

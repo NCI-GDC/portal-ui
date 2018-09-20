@@ -93,26 +93,36 @@ async function getQueries({
   currentFilters,
   maxGenes,
   maxCases,
+  currentCNVFilters,
+  currentSSMFilters,
+  rankOncoGridBy,
 }: {
   currentFilters: Object,
   maxGenes: number,
   maxCases: number,
+  currentCNVFilters: Object,
+  currentSSMFilters: Object,
+  rankOncoGridBy: string,
 }): Promise<Object> {
-  const geneFilters = replaceFilters(
-    {
-      op: 'and',
-      content: [
-        {
-          op: 'NOT',
-          content: {
-            field: 'ssms.consequence.transcript.annotation.vep_impact',
-            value: 'missing',
+  const geneFilters =
+    rankOncoGridBy === 'ssm'
+      ? replaceFilters(
+          {
+            op: 'and',
+            content: [
+              {
+                op: 'NOT',
+                content: {
+                  field: 'ssms.consequence.transcript.annotation.vep_impact',
+                  value: 'missing',
+                },
+              },
+            ],
           },
-        },
-      ],
-    },
-    currentFilters,
-  );
+          currentSSMFilters,
+        )
+      : currentCNVFilters;
+
   const { data: { hits: genes } } = await getGenes({
     filters: geneFilters,
     size: maxGenes,
@@ -163,13 +173,19 @@ async function getQueries({
     { field: 'cases.case_id', value: caseIds },
     { field: 'genes.gene_id', value: geneIds },
     {
-      field: 'cases.available_variation_data',
-      value: ['ssm', 'cnv'],
+      field: 'cnv.cnv_change',
+      value: currentCNVFilters,
     },
   ]);
-  const { data: { hits: cnv_occurrences } } = await getCNVOccurrences({
-    filters: cnvFilters,
-  });
+
+  let cnv_occurrences = [];
+  if (currentCNVFilters.length > 0) {
+    let cnv_data = await getCNVOccurrences({
+      filters: cnvFilters,
+    });
+    cnv_occurrences = cnv_data.data.hits;
+  }
+
   // front end filter is_canonical on REST endpoint instead of
   // graphql endpoint with inner hits query because
   // that is very slow for large size (might be because inner hits causes ES to fire secondary queries)

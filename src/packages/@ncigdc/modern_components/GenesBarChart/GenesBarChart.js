@@ -18,7 +18,7 @@ import FilteredStackedBarChart from '@ncigdc/components/Charts/FilteredStackedBa
 import wrapSvg from '@ncigdc/utils/wrapSvg';
 import VisualizationHeader from '@ncigdc/components/VisualizationHeader';
 import { createClassicRenderer } from '@ncigdc/modern_components/Query';
-import { cnvColors } from '@ncigdc/utils/filters/prepared/significantConsequences'
+import { cnvColors } from '@ncigdc/utils/filters/prepared/significantConsequences';
 
 const MUTATED_TITLE = 'Distribution of Most Frequently Mutated Genes';
 const CNV_TITLE = 'Most Frequent Genes with CNV';
@@ -194,7 +194,9 @@ const Component = compose(
       deep_loss: Math.round(x.node.score / 7),
     }));
     const cnvGenesChartData = cnvNodes
-      .sort((a, b) => cnvColors.reduce((acc, c) => b[c.key] - a[c.key] + acc, 0))
+      .sort((a, b) =>
+        cnvColors.reduce((acc, c) => b[c.key] - a[c.key] + acc, 0),
+      )
       .map(g => {
         return {
           symbol: g.symbol,

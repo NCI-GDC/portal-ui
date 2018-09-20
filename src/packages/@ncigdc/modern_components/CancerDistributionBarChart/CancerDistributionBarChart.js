@@ -13,7 +13,7 @@ import wrapSvg from '@ncigdc/utils/wrapSvg';
 import ExploreLink from '@ncigdc/components/Links/ExploreLink';
 import ProjectsLink from '@ncigdc/components/Links/ProjectsLink';
 import { TGroupFilter } from '@ncigdc/utils/filters/types';
-import { cnvColors } from '@ncigdc/utils/filters/prepared/significantConsequences'
+import { cnvColors } from '@ncigdc/utils/filters/prepared/significantConsequences';
 
 type TProps = {
   style: Object,
@@ -296,7 +296,8 @@ export default compose(
                 <ChartTitle
                   cases={sum(
                     cnvCancerDistData.map(
-                      d => d.amplification + d.gain + d.shallow_loss + d.deep_loss,
+                      d =>
+                        d.amplification + d.gain + d.shallow_loss + d.deep_loss,
                     ),
                   )}
                   ssms={get(ssms, 'hits.total', 0)}

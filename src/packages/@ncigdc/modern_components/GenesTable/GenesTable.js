@@ -61,7 +61,6 @@ export default compose(
     score,
   }) => {
     const { genes, filteredCases, cases } = explore || {};
-
     if (genes && !genes.hits.edges.length) {
       return <Row style={{ padding: '1rem' }}>No gene data found.</Row>;
     }
@@ -71,9 +70,7 @@ export default compose(
 
     const tableInfo = tableModel
       .slice()
-      .sort((a, b) => tableColumns.indexOf(a.id) - tableColumns.indexOf(b.id))
       .filter(x => tableColumns.includes(x.id));
-
     return (
       <span>
         <Row

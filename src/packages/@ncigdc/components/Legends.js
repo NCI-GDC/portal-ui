@@ -198,5 +198,4 @@ export default {
   StepLegend,
   SwatchLegend,
   ToggleSwatchLegend,
-  CollapsedLegend,
 };

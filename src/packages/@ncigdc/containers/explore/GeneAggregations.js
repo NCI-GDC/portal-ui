@@ -17,6 +17,7 @@ export type TProps = {
   aggregations: {
     biotype: { buckets: [TBucket] },
     is_cancer_gene_census: { buckets: [TBucket] },
+    case__cnv__cnv_change: {buckets: [TBucket]},
   },
   hits: {
     edges: Array<{|
@@ -53,6 +54,13 @@ const presetFacets = [
     title: 'Is Cancer Gene Census',
     field: 'is_cancer_gene_census',
     full: 'genes.is_cancer_gene_census',
+    doc_type: 'genes',
+    type: 'terms',
+  },
+  {
+    title: 'CNV',
+    field: 'case__cnv__cnv_change',
+    full: 'genes.case__cnv__cnv_change',
     doc_type: 'genes',
     type: 'terms',
   },
@@ -132,7 +140,14 @@ export const GeneAggregationsQuery = {
             key
           }
         }
-        is_cancer_gene_census  {
+        case__cnv__cnv_change {
+          buckets {
+            doc_count
+            key
+            key_as_string
+          }
+        }
+        is_cancer_gene_census {
           buckets {
             doc_count
             key

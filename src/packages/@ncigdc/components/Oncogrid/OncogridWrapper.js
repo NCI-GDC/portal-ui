@@ -660,7 +660,7 @@ const OncoGridWrapper = compose(
             className="oncogrid-mutation-legend"
           >
             <h5>Mutations</h5>
-            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
               <ToggleSwatchLegend
                 toggledValues={toggledConsequences}
                 toggle={key => {
@@ -683,7 +683,11 @@ const OncoGridWrapper = compose(
                 type={'mutations'}
                 heatMapMode={heatMapMode}
               />
-              {heatMapMode && <StepLegend rightLabel="More Mutations" />}
+              {/* {heatMapMode && (
+                <div style={{ marginLeft: 20 }}>
+                  <StepLegend rightLabel="More Mutations" />
+                </div>
+              )} */}
             </div>
           </div>
 

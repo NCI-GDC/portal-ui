@@ -127,13 +127,20 @@ export const ToggleSwatchLegend = ({
   return (
     <Column
       style={{
-        width: 350,
+        maxWidth: 400,
         border: '1px solid lightgray',
         borderRadius: '8px',
         padding: 10,
       }}
     >
-      <Row style={{ borderBottom: '1px solid lightgray' }}>
+      <Row
+        style={{
+          borderBottom: '1px solid lightgray',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+        }}
+      >
         <Column>
           <Checkbox
             label={`Show ${type}`}
@@ -142,6 +149,9 @@ export const ToggleSwatchLegend = ({
             aria-label={type}
             color={getCheckBoxColor({ type, heatMapMode })}
           />
+        </Column>
+        <Column style={{ marginLeft: 60 }}>
+          {heatMapMode && type === 'mutations' && <StepLegend />}
         </Column>
       </Row>
       <Row style={styles.table} className="test-legends">

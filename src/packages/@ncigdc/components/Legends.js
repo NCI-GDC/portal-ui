@@ -2,7 +2,9 @@
 
 import React from 'react';
 import _ from 'lodash';
+
 import { Row, Column } from '@ncigdc/uikit/Flex';
+
 const styles = {
   table: {
     fontSize: '1.28rem',

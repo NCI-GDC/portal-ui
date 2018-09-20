@@ -18,6 +18,7 @@ import FilteredStackedBarChart from '@ncigdc/components/Charts/FilteredStackedBa
 import wrapSvg from '@ncigdc/utils/wrapSvg';
 import VisualizationHeader from '@ncigdc/components/VisualizationHeader';
 import { createClassicRenderer } from '@ncigdc/modern_components/Query';
+import { cnvColors } from '@ncigdc/utils/filters/prepared/significantConsequences';
 
 const MUTATED_TITLE = 'Distribution of Most Frequently Mutated Genes';
 const CNV_TITLE = 'Most Frequent Genes with CNV';
@@ -183,48 +184,44 @@ const Component = compose(
         tooltip: tooltipContext(context, g),
         onClick: () => handleClickGene(g, mutatedGenesChartData),
       }));
-    const checkers = [
-      { key: 'loss2', color: '#00457c', name: 'Deep Loss' },
-      { key: 'loss1', color: '#0d71e8', name: 'Shallow Loss' },
-      { key: 'gain1', color: '#d33737', name: 'Gain' },
-      { key: 'gain2', color: '#900000', name: 'Amplification' },
-    ];
 
     const cnvNodes = genes.hits.edges.map(x => ({
       symbol: x.node.symbol,
       gene_id: x.node.gene_id,
-      gain2: Math.round(x.node.score / 5),
-      gain1: Math.floor(x.node.score / 5),
-      loss1: Math.floor(x.node.score / 7),
-      loss2: Math.round(x.node.score / 7),
+      amplification: Math.round(x.node.score / 5),
+      gain: Math.floor(x.node.score / 5),
+      shallow_loss: Math.floor(x.node.score / 7),
+      deep_loss: Math.round(x.node.score / 7),
     }));
     const cnvGenesChartData = cnvNodes
-      .sort((a, b) => checkers.reduce((acc, c) => b[c.key] - a[c.key] + acc, 0))
+      .sort((a, b) =>
+        cnvColors.reduce((acc, c) => b[c.key] - a[c.key] + acc, 0),
+      )
       .map(g => {
         return {
           symbol: g.symbol,
-          loss2:
+          deep_loss:
             context === 'project' && projectId
-              ? g.loss2 / numCasesAggByProject[projectId] * 100
-              : g.loss2 / filteredCases.hits.total * 100,
-          loss1:
+              ? g.deep_loss / numCasesAggByProject[projectId] * 100
+              : g.deep_loss / filteredCases.hits.total * 100,
+          shallow_loss:
             context === 'project' && projectId
-              ? g.loss1 / numCasesAggByProject[projectId] * 100
-              : g.loss1 / filteredCases.hits.total * 100,
-          gain1:
+              ? g.shallow_loss / numCasesAggByProject[projectId] * 100
+              : g.shallow_loss / filteredCases.hits.total * 100,
+          gain:
             context === 'project' && projectId
-              ? g.gain1 / numCasesAggByProject[projectId] * 100
-              : g.gain1 / filteredCases.hits.total * 100,
-          gain2:
+              ? g.gain / numCasesAggByProject[projectId] * 100
+              : g.gain / filteredCases.hits.total * 100,
+          amplification:
             context === 'project' && projectId
-              ? g.gain2 / numCasesAggByProject[projectId] * 100
-              : g.gain2 / filteredCases.hits.total * 100,
-          tooltips: checkers.reduce(
-            (acc, checker) => ({
+              ? g.amplification / numCasesAggByProject[projectId] * 100
+              : g.amplification / filteredCases.hits.total * 100,
+          tooltips: cnvColors.reduce(
+            (acc, color) => ({
               ...acc,
-              [checker.key]: tooltipContext(context, {
+              [color.key]: tooltipContext(context, {
                 symbol: g.symbol,
-                score: g[checker.key],
+                score: g[color.key],
               }),
             }),
             0,
@@ -311,11 +308,11 @@ const Component = compose(
                   <FilteredStackedBarChart
                     data={cnvGenesChartData}
                     yAxis={{ title: '% of Cases Affected' }}
-                    colors={checkers.reduce(
+                    colors={cnvColors.reduce(
                       (acc, f) => ({ ...acc, [f.key]: f.color }),
                       0,
                     )}
-                    displayFilters={checkers.reduce(
+                    displayFilters={cnvColors.reduce(
                       (acc, f) => ({ ...acc, [f.key]: true }),
                       0,
                     )}
@@ -338,8 +335,8 @@ const Component = compose(
                     }}
                   />
                   <Row style={{ display: 'flex', justifyContent: 'center' }}>
-                    {checkers.map(f => (
-                      <label key={f.key}>
+                    {cnvColors.map(f => (
+                      <label key={f.key} style={{ paddingRight: '10px' }}>
                         <span
                           style={{
                             color: f.color,
@@ -356,7 +353,7 @@ const Component = compose(
                             lineHeight: '16px',
                           }}
                         />
-                        {f.name}&nbsp;&nbsp;&nbsp;
+                        {f.name}
                       </label>
                     ))}
                   </Row>

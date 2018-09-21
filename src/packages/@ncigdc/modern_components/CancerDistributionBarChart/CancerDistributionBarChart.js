@@ -90,11 +90,19 @@ const DefaultChartTitle = ({
     </ProjectsLink>&nbsp; projects
   </div>
 );
+<<<<<<< HEAD
 const initalCnv = {
   gain: true,
   amplification: true,
   shallow_loss: true,
   deep_loss: true,
+=======
+const initalcnv = {
+  gain: true,
+  amplification: true,
+  shallowLoss: true,
+  deepLoss: true,
+>>>>>>> 29651f58... Nested the real data for Gene histogram.
 };
 export default compose(
   withRouter,
@@ -117,6 +125,7 @@ export default compose(
       type,
     }: TProps = {},
   ) => {
+<<<<<<< HEAD
     /* prettier-ignore */
     const cnvCases = { 
       filtered: {
@@ -140,6 +149,37 @@ export default compose(
         },
       } 
     }
+=======
+    let cnvFiltered ={};
+    ['amplification', 'gain', 'loss', 'deepLoss'].map(cnvType => 
+      cases[cnvType].project__project_id.buckets.map(b => 
+        cnvFiltered = {
+          ...cnvFiltered,
+          [b.key]: {
+            ...cnvFiltered[b.key],
+            [cnvType]: b.doc_count
+          }
+        }
+      )
+    );
+
+    const cnvCancerDistData =  Object.keys(cnvFiltered).map(p => {
+          const nums = cases.cnvTotal.project__project_id.buckets.filter(
+            f => f.key === p,
+          )[0].doc_count;
+          return {
+            deepLoss: cnvFiltered[p]['deepLoss'] || 0, 
+            shallowLoss: cnvFiltered[p]['loss'] || 0, 
+            gain: cnvFiltered[p]['gain'] || 0, 
+            amplification: cnvFiltered[p]['amplification'] || 0, 
+            project_id: p,
+            num_cases_total: cases.cnvTotal.project__project_id.buckets.filter(
+              f => f.key === p,
+            )[0].doc_count,
+          };
+        });
+
+>>>>>>> 29651f58... Nested the real data for Gene histogram.
     const chartStyles = {
       xAxis: {
         stroke: theme.greyScale4,
@@ -157,6 +197,15 @@ export default compose(
       },
     };
 
+<<<<<<< HEAD
+=======
+    const checkers = [
+      { key: 'amplification', name: 'Amplification', color: '#900000' },
+      { key: 'gain', name: 'Gain', color: '#d33737' },
+      { key: 'shallowLoss', name: 'Shallow Loss', color: '#0d71e8' },
+      { key: 'deepLoss', name: 'Deep Loss', color: '#00457c' },
+    ];
+>>>>>>> 29651f58... Nested the real data for Gene histogram.
     const mutationCancerDistData = (cases.filtered || {
       project__project_id: { buckets: [] },
     }).project__project_id.buckets.map(b => {
@@ -189,6 +238,7 @@ export default compose(
         ),
       }));
 
+<<<<<<< HEAD
     const cnvCancerDistData = (cnvCases.filtered || {
       project__project_id: { buckets: [] },
     }).project__project_id.buckets.map(b => {
@@ -204,6 +254,8 @@ export default compose(
         num_cases_total: totalCasesByProject,
       };
     });
+=======
+>>>>>>> 29651f58... Nested the real data for Gene histogram.
     const cnvChartData = sortBy(
       cnvCancerDistData,
       d =>
@@ -215,8 +267,13 @@ export default compose(
       .slice(0, 20)
       .map(d => ({
         symbol: d.project_id,
+<<<<<<< HEAD
         deep_loss: d.deep_loss / d.num_cases_total * 100,
         shallow_loss: d.shallow_loss / d.num_cases_total * 100,
+=======
+        deepLoss: d.deepLoss / d.num_cases_total * 100,
+        shallowLoss: d.shallowLoss / d.num_cases_total * 100,
+>>>>>>> 29651f58... Nested the real data for Gene histogram.
         gain: d.gain / d.num_cases_total * 100,
         amplification: d.amplification / d.num_cases_total * 100,
         total: d.num_cases_total,
@@ -296,8 +353,12 @@ export default compose(
                 <ChartTitle
                   cases={sum(
                     cnvCancerDistData.map(
+<<<<<<< HEAD
                       d =>
                         d.amplification + d.gain + d.shallow_loss + d.deep_loss,
+=======
+                      d => d.amplification + d.gain + d.shallowLoss + d.deepLoss,
+>>>>>>> 29651f58... Nested the real data for Gene histogram.
                     ),
                   )}
                   ssms={get(ssms, 'hits.total', 0)}
@@ -315,8 +376,13 @@ export default compose(
                     symbol: d.symbol,
                     amplification: d.amplification,
                     gain: d.gain,
+<<<<<<< HEAD
                     shallow_loss: d.shallow_loss,
                     deep_loss: d.deep_loss,
+=======
+                    shallowLoss: d.shallowLoss,
+                    deepLoss: d.deepLoss,
+>>>>>>> 29651f58... Nested the real data for Gene histogram.
                     total: d.total,
                   }))}
                   slug="cancer-distribution-bar-chart"

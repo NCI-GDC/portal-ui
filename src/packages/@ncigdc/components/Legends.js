@@ -2,6 +2,7 @@
 
 import React from 'react';
 import _ from 'lodash';
+import Color from 'color';
 
 import { Row, Column } from '@ncigdc/uikit/Flex';
 
@@ -63,19 +64,23 @@ export const SwatchLegend = ({ colorMap }) => {
   );
 };
 
-const Checkbox = ({ label, color = 'gray', onChange, checked, boxStyle }) => {
-  let checkColor = color;
-
-  // TODO: extract to custom Checkbox or find css filter that works for 508 issues
-  if (label.includes('loss') || label === 'Show copy number variations') {
-    checkColor = '#3973a3';
-  }
-  if (label === 'gain' || label === 'amplification') {
-    checkColor = '#af3d3d';
-  }
-
+const Checkbox = ({
+  label,
+  color = 'gray',
+  onChange,
+  checked,
+  boxStyle,
+  heatMapMode,
+}) => {
   return (
-    <div style={{ paddingBottom: 10, display: 'flex', alignItems: 'center' }}>
+    <div
+      style={{
+        paddingBottom: 10,
+        display: 'flex',
+        alignItems: 'center',
+        paddingTop: 10,
+      }}
+    >
       <div
         onClick={onChange}
         style={{
@@ -91,7 +96,21 @@ const Checkbox = ({ label, color = 'gray', onChange, checked, boxStyle }) => {
           ...boxStyle,
         }}
       >
-        {checked ? <span style={{ color: checkColor }}>{'✓'}</span> : null}
+        {checked ? (
+          <span
+            style={
+              heatMapMode
+                ? { color: color }
+                : {
+                    color: Color(color)
+                      .darken(0.4)
+                      .rgbString(),
+                  }
+            }
+          >
+            {'✓'}
+          </span>
+        ) : null}
       </div>
       <label style={{ marginLeft: 5 }}>{label}</label>
     </div>
@@ -121,13 +140,14 @@ export const ToggleSwatchLegend = ({
       checked={toggledValues && toggledValues.includes(key)}
       aria-label={key}
       color={getCheckBoxColor({ type, heatMapMode, color })}
+      heatMapMode={heatMapMode}
     />
   ));
 
   return (
     <Column
       style={{
-        maxWidth: 400,
+        maxWidth: labels.length * 80,
         border: '1px solid lightgray',
         borderRadius: '8px',
         padding: 10,
@@ -148,13 +168,14 @@ export const ToggleSwatchLegend = ({
             checked={toggledValues.length > 0}
             aria-label={type}
             color={getCheckBoxColor({ type, heatMapMode })}
+            heatMapMode={heatMapMode}
           />
         </Column>
         <Column style={{ marginLeft: 60 }}>
           {heatMapMode && type === 'mutations' && <StepLegend />}
         </Column>
       </Row>
-      <Row style={styles.table} className="test-legends">
+      <Row style={(styles.table, { marginTop: 10 })} className="test-legends">
         <Column style={styles.td}>{labels.slice(0, 2)}</Column>
         <Column style={styles.td}>{labels.slice(2, 4)}</Column>
         <Column style={styles.td}>{labels.slice(4, 6)}</Column>

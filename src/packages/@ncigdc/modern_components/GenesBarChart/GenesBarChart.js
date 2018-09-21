@@ -228,40 +228,40 @@ const Component = compose(
         onClick: () => handleClickGene(g, mutatedGenesChartData),
       }));
     const checkers = [
-      { key: 'loss2', color: '#00457c', name: 'Deep Loss' },
-      { key: 'loss1', color: '#0d71e8', name: 'Shallow Loss' },
-      { key: 'gain1', color: '#d33737', name: 'Gain' },
-      { key: 'gain2', color: '#900000', name: 'Amplification' },
+      { key: 'deepLoss', color: '#00457c', name: 'Deep Loss' },
+      { key: 'shallowLoss', color: '#0d71e8', name: 'Shallow Loss' },
+      { key: 'gain', color: '#d33737', name: 'Gain' },
+      { key: 'amplification', color: '#900000', name: 'Amplification' },
     ];
     const cnvNodes = genes.hits.edges.map(x => ({
       symbol: x.node.symbol,
       gene_id: x.node.gene_id,
-      gain2: x.node.case_with_cnv_amplification_count.hits.total,
-      gain1: x.node.case_with_cnv_gain_count.hits.total,
-      loss1: x.node.case_with_cnv_loss_count.hits.total,
-      loss2: x.node.case_with_cnv_deep_loss_count.hits.total,
+      amplification: x.node.case_with_cnv_amplification_count.hits.total,
+      gain: x.node.case_with_cnv_gain_count.hits.total,
+      shallowLoss: x.node.case_with_cnv_loss_count.hits.total,
+      deepLoss: x.node.case_with_cnv_deep_loss_count.hits.total,
     }));
     const cnvGenesChartData = cnvNodes
       .sort((a, b) => checkers.reduce((acc, c) => b[c.key] - a[c.key] + acc, 0))
       .map(g => {
         return {
           symbol: g.symbol,
-          loss2:
+          deepLoss:
             context === 'project' && projectId
-              ? g.loss2 / numCasesAggByProject[projectId] * 100
-              : g.loss2 / filteredCases.hits.total * 100,
-          loss1:
+              ? g.deepLoss / numCasesAggByProject[projectId] * 100
+              : g.deepLoss / filteredCases.hits.total * 100,
+          shallowLoss:
             context === 'project' && projectId
-              ? g.loss1 / numCasesAggByProject[projectId] * 100
-              : g.loss1 / filteredCases.hits.total * 100,
-          gain1:
+              ? g.shallowLoss / numCasesAggByProject[projectId] * 100
+              : g.shallowLoss / filteredCases.hits.total * 100,
+          gain:
             context === 'project' && projectId
-              ? g.gain1 / numCasesAggByProject[projectId] * 100
-              : g.gain1 / filteredCases.hits.total * 100,
-          gain2:
+              ? g.gain / numCasesAggByProject[projectId] * 100
+              : g.gain / filteredCases.hits.total * 100,
+          amplification:
             context === 'project' && projectId
-              ? g.gain2 / numCasesAggByProject[projectId] * 100
-              : g.gain2 / filteredCases.hits.total * 100,
+              ? g.amplification / numCasesAggByProject[projectId] * 100
+              : g.amplification / filteredCases.hits.total * 100,
           tooltips: checkers.reduce(
             (acc, checker) => ({
               ...acc,

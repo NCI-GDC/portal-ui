@@ -254,8 +254,7 @@ const GenesTableModel = [
               ),
             }}
           >
-            {(node.cnv_case.hits.total || 0
-            ).toLocaleString()}
+            {(node.cnv_case.hits.total || 0).toLocaleString()}
           </ExploreLink>
           <span>{` (${((node.case_with_cnv_amplification_count.hits.total +
             node.case_with_cnv_gain_count.hits.total || 0) /
@@ -327,8 +326,7 @@ const GenesTableModel = [
               ),
             }}
           >
-            {(node.cnv_case.hits.total || 0
-            ).toLocaleString()}
+            {(node.cnv_case.hits.total || 0).toLocaleString()}
           </ExploreLink>
           <span>{` (${((node.case_with_cnv_loss_count.hits.total +
             node.case_with_cnv_deep_loss_count.hits.total || 0) /

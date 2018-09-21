@@ -90,10 +90,10 @@ const DefaultChartTitle = ({
   </div>
 );
 const initalcnv = {
-  gain1: true,
-  gain2: true,
-  loss1: true,
-  loss2: true,
+  gain: true,
+  amplification: true,
+  shallowLoss: true,
+  deepLoss: true,
 };
 export default compose(
   withRouter,
@@ -116,29 +116,35 @@ export default compose(
       type, //mutation or cnv
     }: TProps = {},
   ) => {
-    /* prettier-ignore */
-    const cnvCases = { 
-      filtered: {
-        project__project_id: { 
-          buckets: cases.filtered.project__project_id.buckets.map(b => {
-            const loss_2 = Math.round(0.2 * (b.doc_count) + 1);
-            const gain_1 = Math.round(0.2 * (b.doc_count) + 1);
-            return {
-              loss2: loss_2, 
-              loss1: Math.floor(b.doc_count * 0.4 + 2) - loss_2, 
-              gain1: gain_1, 
-              gain2: Math.round(b.doc_count * 0.6 + 1) - gain_1, 
-              key: b.key,
-            };
-          }),
-        },
-      },
-      total: {
-        project__project_id: { 
-          buckets: cases.total.project__project_id.buckets.map(b => b)
-        },
-      } 
-    }
+    let cnvFiltered ={};
+    ['amplification', 'gain', 'loss', 'deepLoss'].map(cnvType => 
+      cases[cnvType].project__project_id.buckets.map(b => 
+        cnvFiltered = {
+          ...cnvFiltered,
+          [b.key]: {
+            ...cnvFiltered[b.key],
+            [cnvType]: b.doc_count
+          }
+        }
+      )
+    );
+
+    const cnvCancerDistData =  Object.keys(cnvFiltered).map(p => {
+          const nums = cases.cnvTotal.project__project_id.buckets.filter(
+            f => f.key === p,
+          )[0].doc_count;
+          return {
+            deepLoss: cnvFiltered[p]['deepLoss'] || 0, 
+            shallowLoss: cnvFiltered[p]['loss'] || 0, 
+            gain: cnvFiltered[p]['gain'] || 0, 
+            amplification: cnvFiltered[p]['amplification'] || 0, 
+            project_id: p,
+            num_cases_total: cases.cnvTotal.project__project_id.buckets.filter(
+              f => f.key === p,
+            )[0].doc_count,
+          };
+        });
+
     const chartStyles = {
       xAxis: {
         stroke: theme.greyScale4,
@@ -157,10 +163,10 @@ export default compose(
     };
 
     const checkers = [
-      { key: 'gain2', name: 'Amplification', color: '#900000' },
-      { key: 'gain1', name: 'Gain', color: '#d33737' },
-      { key: 'loss1', name: 'Shallow Loss', color: '#0d71e8' },
-      { key: 'loss2', name: 'Deep Loss', color: '#00457c' },
+      { key: 'amplification', name: 'Amplification', color: '#900000' },
+      { key: 'gain', name: 'Gain', color: '#d33737' },
+      { key: 'shallowLoss', name: 'Shallow Loss', color: '#0d71e8' },
+      { key: 'deepLoss', name: 'Deep Loss', color: '#00457c' },
     ];
     const mutationCancerDistData = (cases.filtered || {
       project__project_id: { buckets: [] },
@@ -194,21 +200,6 @@ export default compose(
         ),
       }));
 
-    const cnvCancerDistData = (cnvCases.filtered || {
-      project__project_id: { buckets: [] },
-    }).project__project_id.buckets.map(b => {
-      const totalCasesByProject = cnvCases.total.project__project_id.buckets.filter(
-        f => f.key === b.key,
-      )[0].doc_count;
-      return {
-        gain2: b.gain2,
-        gain1: b.gain1,
-        loss1: b.loss1,
-        loss2: b.loss2,
-        project_id: b.key,
-        num_cases_total: totalCasesByProject,
-      };
-    });
     const cnvChartData = sortBy(
       cnvCancerDistData,
       d =>
@@ -220,10 +211,10 @@ export default compose(
       .slice(0, 20)
       .map(d => ({
         symbol: d.project_id,
-        loss2: d.loss2 / d.num_cases_total * 100,
-        loss1: d.loss1 / d.num_cases_total * 100,
-        gain1: d.gain1 / d.num_cases_total * 100,
-        gain2: d.gain2 / d.num_cases_total * 100,
+        deepLoss: d.deepLoss / d.num_cases_total * 100,
+        shallowLoss: d.shallowLoss / d.num_cases_total * 100,
+        gain: d.gain / d.num_cases_total * 100,
+        amplification: d.amplification / d.num_cases_total * 100,
         total: d.num_cases_total,
         onClick: () => push(`/projects/${d.project_id}`),
         tooltips: checkers.reduce(
@@ -301,7 +292,7 @@ export default compose(
                 <ChartTitle
                   cases={sum(
                     cnvCancerDistData.map(
-                      d => d.gain2 + d.gain1 + d.loss1 + d.loss2,
+                      d => d.amplification + d.gain + d.shallowLoss + d.deepLoss,
                     ),
                   )}
                   ssms={get(ssms, 'hits.total', 0)}
@@ -317,10 +308,10 @@ export default compose(
                     })}
                   data={cnvChartData.map(d => ({
                     symbol: d.symbol,
-                    gain2: d.gain2,
-                    gain1: d.gain1,
-                    loss1: d.loss1,
-                    loss2: d.loss2,
+                    amplification: d.amplification,
+                    gain: d.gain,
+                    shallowLoss: d.shallowLoss,
+                    deepLoss: d.deepLoss,
                     total: d.total,
                   }))}
                   slug="cancer-distribution-bar-chart"
@@ -330,14 +321,6 @@ export default compose(
                 />
               </Row>
               <Column>
-                {/* <CollapsedLegend
-                  checkersWithColors={checkers}
-                  collapsed={collapsed}
-                  setCollapsed={() => setCollapsed(!collapsed)}
-                  initalCheckers={initalcnv}
-                  checkerStates={cnv}
-                  setCheckers={setCnv}
-                /> */}
                 <FilteredStackedBarChart
                   margin={CHART_MARGINS}
                   height={200}

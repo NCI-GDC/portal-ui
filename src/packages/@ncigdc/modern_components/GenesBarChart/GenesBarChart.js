@@ -51,6 +51,30 @@ const createContainer = Component =>
           value: 'ssm',
         },
       ]),
+      filters_1: makeFilter([
+        {
+          field: 'cnvs.cnv_change',
+          value: 'Amplification',
+        },
+      ]),
+      filters_2: makeFilter([
+        {
+          field: 'cnvs.cnv_change',
+          value: 'Gain',
+        },
+      ]),
+      filters_3: makeFilter([
+        {
+          field: 'cnvs.cnv_change',
+          value: 'Shallow Loss',
+        },
+      ]),
+      filters_4: makeFilter([
+        {
+          field: 'cnvs.cnv_change',
+          value: 'Deep Loss',
+        },
+      ]),
     },
     fragments: {
       viewer: () => Relay.QL`
@@ -83,6 +107,26 @@ const createContainer = Component =>
                     gene_id
                     case {
                       hits(first: 0) {
+                        total
+                      }
+                    }
+                    case_with_cnv_amplification_count: case {
+                      hits(first: 0, filters: $filters_1) {
+                        total
+                      }
+                    }
+                    case_with_cnv_gain_count: case {
+                      hits(first: 0, filters: $filters_2) {
+                        total
+                      }
+                    }
+                    case_with_cnv_loss_count: case {
+                      hits(first: 0, filters: $filters_3) {
+                        total
+                      }
+                    }
+                    case_with_cnv_deep_loss_count: case {
+                      hits(first: 0, filters: $filters_4) {
                         total
                       }
                     }
@@ -188,11 +232,15 @@ const Component = compose(
     const cnvNodes = genes.hits.edges.map(x => ({
       symbol: x.node.symbol,
       gene_id: x.node.gene_id,
-      amplification: Math.round(x.node.score / 5),
-      gain: Math.floor(x.node.score / 5),
-      shallow_loss: Math.floor(x.node.score / 7),
-      deep_loss: Math.round(x.node.score / 7),
+      amplification: x.node.case_with_cnv_amplification_count.hits.total,
+      gain: x.node.case_with_cnv_gain_count.hits.total,
+      shallow_loss: x.node.case_with_cnv_loss_count.hits.total,
+      deep_loss: x.node.case_with_cnv_deep_loss_count.hits.total,
     }));
+    const totalNum =
+      context === 'project' && projectId
+        ? numCasesAggByProject[projectId]
+        : filteredCases.hits.total;
     const cnvGenesChartData = cnvNodes
       .sort((a, b) =>
         cnvColors.reduce((acc, c) => b[c.key] - a[c.key] + acc, 0),
@@ -200,22 +248,10 @@ const Component = compose(
       .map(g => {
         return {
           symbol: g.symbol,
-          deep_loss:
-            context === 'project' && projectId
-              ? g.deep_loss / numCasesAggByProject[projectId] * 100
-              : g.deep_loss / filteredCases.hits.total * 100,
-          shallow_loss:
-            context === 'project' && projectId
-              ? g.shallow_loss / numCasesAggByProject[projectId] * 100
-              : g.shallow_loss / filteredCases.hits.total * 100,
-          gain:
-            context === 'project' && projectId
-              ? g.gain / numCasesAggByProject[projectId] * 100
-              : g.gain / filteredCases.hits.total * 100,
-          amplification:
-            context === 'project' && projectId
-              ? g.amplification / numCasesAggByProject[projectId] * 100
-              : g.amplification / filteredCases.hits.total * 100,
+          deep_loss: g.deep_loss / totalNum * 100,
+          shallow_loss: g.shallow_loss / totalNum * 100,
+          gain: g.gain / totalNum * 100,
+          amplification: g.amplification / totalNum * 100,
           tooltips: cnvColors.reduce(
             (acc, color) => ({
               ...acc,
@@ -229,6 +265,7 @@ const Component = compose(
           onClick: () => handleClickGene(g, cnvGenesChartData),
         };
       });
+      console.log("dataaaa", cnvGenesChartData);
     return (
       <div style={style}>
         {!!mutatedGenesChartData && (

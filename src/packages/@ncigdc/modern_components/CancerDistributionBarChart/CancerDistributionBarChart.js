@@ -117,29 +117,33 @@ export default compose(
       type,
     }: TProps = {},
   ) => {
-    /* prettier-ignore */
-    const cnvCases = { 
-      filtered: {
-        project__project_id: { 
-          buckets: cases.filtered.project__project_id.buckets.map(b => {
-            const loss_2 = Math.round(0.2 * (b.doc_count) + 1);
-            const gain_1 = Math.round(0.2 * (b.doc_count) + 1);
-            return {
-              deep_loss: loss_2, 
-              shallow_loss: Math.floor(b.doc_count * 0.4 + 2) - loss_2, 
-              gain: gain_1, 
-              amplification: Math.round(b.doc_count * 0.6 + 1) - gain_1, 
-              key: b.key,
-            };
+    let cnvFiltered = {};
+    ['amplification', 'gain', 'shallow_loss', 'deep_loss'].map(cnvType =>
+      cases[cnvType].project__project_id.buckets.map(
+        b =>
+          (cnvFiltered = {
+            ...cnvFiltered,
+            [b.key]: {
+              ...cnvFiltered[b.key],
+              [cnvType]: b.doc_count,
+            },
           }),
-        },
-      },
-      total: {
-        project__project_id: { 
-          buckets: cases.total.project__project_id.buckets.map(b => b)
-        },
-      } 
-    }
+      ),
+    );
+
+    const cnvCancerDistData = Object.keys(cnvFiltered).map(p => {
+      return {
+        deep_loss: cnvFiltered[p]['deep_loss'] || 0,
+        shallow_loss: cnvFiltered[p]['shallow_loss'] || 0,
+        gain: cnvFiltered[p]['gain'] || 0,
+        amplification: cnvFiltered[p]['amplification'] || 0,
+        project_id: p,
+        num_cases_total: cases.cnvTotal.project__project_id.buckets.filter(
+          f => f.key === p,
+        )[0].doc_count,
+      };
+    });
+
     const chartStyles = {
       xAxis: {
         stroke: theme.greyScale4,
@@ -189,21 +193,6 @@ export default compose(
         ),
       }));
 
-    const cnvCancerDistData = (cnvCases.filtered || {
-      project__project_id: { buckets: [] },
-    }).project__project_id.buckets.map(b => {
-      const totalCasesByProject = cnvCases.total.project__project_id.buckets.filter(
-        f => f.key === b.key,
-      )[0].doc_count;
-      return {
-        amplification: b.amplification,
-        gain: b.gain,
-        shallow_loss: b.shallow_loss,
-        deep_loss: b.deep_loss,
-        project_id: b.key,
-        num_cases_total: totalCasesByProject,
-      };
-    });
     const cnvChartData = sortBy(
       cnvCancerDistData,
       d =>

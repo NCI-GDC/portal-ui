@@ -1,6 +1,6 @@
 // @flow
 import React from 'react';
-import { groupBy, head, get } from 'lodash';
+import { groupBy, head } from 'lodash';
 import { compose, withPropsOnChange } from 'recompose';
 import { tableToolTipHint, visualizingButton } from '@ncigdc/theme/mixins';
 import { Tooltip } from '@ncigdc/uikit/Tooltip';
@@ -35,36 +35,45 @@ export default compose(
         {},
       );
 
-      const casesByProjectMap = get(
-        cases.total,
-        'project__project_id.buckets',
-        [],
-      ).reduce(
-        (acc, bucket) => ({ ...acc, [bucket.key]: bucket.doc_count }),
-        {},
-      );
       const projectsById = groupBy(
         (projects.hits || { edges: [] }).edges,
         e => e.node.project_id,
       );
+      let caseFiltered = {};
+      ['filtered', 'cnvGain', 'cnvLoss', 'total', 'cnvTotal'].map(type =>
+        cases[type].project__project_id.buckets.map(
+          b =>
+            (caseFiltered = {
+              ...caseFiltered,
+              [b.key]: {
+                ...caseFiltered[b.key],
+                [type]: b.doc_count,
+              },
+            }),
+        ),
+      );
 
-      const rawData = (cases.filtered || {
-        project__project_id: { buckets: [] },
-      }).project__project_id.buckets
+      const rawData = Object.keys(caseFiltered)
         .map(b => {
-          const totalCasesByProject = casesByProjectMap[b.key];
-          const project = head(projectsById[b.key]);
-
+          const project = head(projectsById[b]);
           return {
-            project_id: b.key,
+            project_id: b,
             disease_type: project
               ? (project.node.disease_type || []).join(', ')
               : null,
             site: project ? (project.node.primary_site || []).join(', ') : null,
-            num_affected_cases: b.doc_count,
-            num_affected_cases_total: totalCasesByProject,
-            num_affected_cases_percent: b.doc_count / totalCasesByProject,
-            mutations_counts: ssmCounts[b.key],
+            num_affected_cases: caseFiltered[b].filtered || 0,
+            num_affected_cases_total: caseFiltered[b].total || 0,
+            num_affected_cases_percent:
+              caseFiltered[b].filtered / caseFiltered[b].total || 0,
+            num_cnv_gain: caseFiltered[b].cnvGain || 0,
+            num_cnv_gain_percent:
+              caseFiltered[b].cnvGain / caseFiltered[b].cnvTotal || 0,
+            num_cnv_loss: caseFiltered[b].cnvLoss || 0,
+            num_cnv_loss_percent:
+              caseFiltered[b].cnvLoss / caseFiltered[b].cnvTotal || 0,
+            num_cnv_cases_total: caseFiltered[b].cnvTotal || 0,
+            mutations_counts: ssmCounts[b] || 0,
           };
         })
         .sort(
@@ -150,7 +159,7 @@ export default compose(
                   filters: replaceFilters(cnvProjectFilter, filters),
                 }}
               >
-                {Math.round(row.num_affected_cases * 0.6 + 1)}
+                {row.num_cnv_gain.toLocaleString()}
               </ExploreLink>
               <span> / </span>
               <ExploreLink
@@ -159,13 +168,10 @@ export default compose(
                   filters: cnvProjectFilter,
                 }}
               >
-                {row.num_affected_cases_total.toLocaleString()}
+                {row.num_cnv_cases_total.toLocaleString()}
               </ExploreLink>
               <span>
-                &nbsp;({(Math.round(row.num_affected_cases * 0.6 + 1) /
-                  row.num_affected_cases_total *
-                  100
-                ).toFixed(2)}%)
+                &nbsp;({(row.num_cnv_gain_percent * 100).toFixed(2)}%)
               </span>
             </span>
           ),
@@ -177,7 +183,7 @@ export default compose(
                   filters: replaceFilters(cnvProjectFilter, filters),
                 }}
               >
-                {Math.floor(row.num_affected_cases * 0.4 + 2)}
+                {row.num_cnv_loss.toLocaleString()}
               </ExploreLink>
               <span> / </span>
               <ExploreLink
@@ -186,13 +192,10 @@ export default compose(
                   filters: cnvProjectFilter,
                 }}
               >
-                {row.num_affected_cases_total.toLocaleString()}
+                {row.num_cnv_cases_total.toLocaleString()}
               </ExploreLink>
               <span>
-                &nbsp;({(Math.floor(row.num_affected_cases * 0.4 + 2) /
-                  row.num_affected_cases_total *
-                  100
-                ).toFixed(2)}%)
+                &nbsp;({(row.num_cnv_loss_percent * 100).toFixed(2)}%)
               </span>
             </span>
           ),

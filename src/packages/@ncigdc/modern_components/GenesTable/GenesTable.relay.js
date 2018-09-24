@@ -50,10 +50,10 @@ export default (Component: ReactClass<*>) =>
             cnvGainFilters: makeFilter([
               {
                 field: 'cnvs.cnv_change',
-                value: ['Gain','Amplification'],
+                value: ['Gain', 'Amplification'],
               },
             ]),
-            cnvLossFiltersters: makeFilter([
+            cnvLossFilters: makeFilter([
               {
                 field: 'cnvs.cnv_change',
                 value: ['Shallow Loss', 'Deep Loss'],

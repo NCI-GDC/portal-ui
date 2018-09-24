@@ -47,28 +47,16 @@ export default (Component: ReactClass<*>) =>
                 value: 'cnv',
               },
             ]),
-            filters_1: makeFilter([
+            cnvGainFilters: makeFilter([
               {
                 field: 'cnvs.cnv_change',
-                value: 'Amplification',
+                value: ['Gain','Amplification'],
               },
             ]),
-            filters_2: makeFilter([
+            cnvLossFiltersters: makeFilter([
               {
                 field: 'cnvs.cnv_change',
-                value: 'Gain',
-              },
-            ]),
-            filters_3: makeFilter([
-              {
-                field: 'cnvs.cnv_change',
-                value: 'Shallow Loss',
-              },
-            ]),
-            filters_4: makeFilter([
-              {
-                field: 'cnvs.cnv_change',
-                value: 'Deep Loss',
+                value: ['Shallow Loss', 'Deep Loss'],
               },
             ]),
           },
@@ -91,10 +79,8 @@ export default (Component: ReactClass<*>) =>
             $geneCaseFilter: FiltersArgument
             $ssmTested: FiltersArgument
             $cnvTested: FiltersArgument
-            $filters_1: FiltersArgument
-            $filters_2: FiltersArgument
-            $filters_3: FiltersArgument
-            $filters_4: FiltersArgument
+            $cnvGainFilters: FiltersArgument
+            $cnvLossFilters: FiltersArgument
           ) {
             genesTableViewer: viewer {
               explore {
@@ -136,23 +122,13 @@ export default (Component: ReactClass<*>) =>
                             total
                           }
                         }
-                        case_with_cnv_amplification_count: case {
-                          hits(first: 0, filters: $filters_1) {
+                        case_cnv_gain: case {
+                          hits(first: 0, filters: $cnvGainFilters) {
                             total
                           }
                         }
-                        case_with_cnv_gain_count: case {
-                          hits(first: 0, filters: $filters_2) {
-                            total
-                          }
-                        }
-                        case_with_cnv_loss_count: case {
-                          hits(first: 0, filters: $filters_3) {
-                            total
-                          }
-                        }
-                        case_with_cnv_deep_loss_count: case {
-                          hits(first: 0, filters: $filters_4) {
+                        case_cnv_loss: case {
+                          hits(first: 0, filters: $cnvLossFilters) {
                             total
                           }
                         }

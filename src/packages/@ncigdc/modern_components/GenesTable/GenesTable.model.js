@@ -236,8 +236,7 @@ const GenesTableModel = [
               ),
             }}
           >
-            {node.case_with_cnv_amplification_count.hits.total +
-              node.case_with_cnv_gain_count.hits.total}
+            {node.case_cnv_gain.hits.total}
           </ExploreLink>
           <span> / </span>
           <ExploreLink
@@ -256,8 +255,7 @@ const GenesTableModel = [
           >
             {(node.cnv_case.hits.total || 0).toLocaleString()}
           </ExploreLink>
-          <span>{` (${((node.case_with_cnv_amplification_count.hits.total +
-            node.case_with_cnv_gain_count.hits.total || 0) /
+          <span>{` (${((node.case_cnv_gain|| 0) /
             (node.cnv_case.hits.total || 0) *
             100
           ).toFixed(2)}%)`}</span>
@@ -308,8 +306,7 @@ const GenesTableModel = [
               ),
             }}
           >
-            {node.case_with_cnv_loss_count.hits.total +
-              node.case_with_cnv_deep_loss_count.hits.total}
+            {(node.case_cnv_loss || 0).toLocaleString()}
           </ExploreLink>
           <span> / </span>
           <ExploreLink
@@ -328,8 +325,7 @@ const GenesTableModel = [
           >
             {(node.cnv_case.hits.total || 0).toLocaleString()}
           </ExploreLink>
-          <span>{` (${((node.case_with_cnv_loss_count.hits.total +
-            node.case_with_cnv_deep_loss_count.hits.total || 0) /
+          <span>{` (${((node.case_cnv_gain || 0) /
             (node.cnv_case.hits.total || 0) *
             100
           ).toFixed(2)}%)`}</span>

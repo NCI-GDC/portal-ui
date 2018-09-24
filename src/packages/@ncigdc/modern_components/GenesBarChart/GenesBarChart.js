@@ -343,7 +343,14 @@ const Component = compose(
                         selector: '#cnv-genes-chart svg',
                         title: CNV_TITLE,
                       })}
-                    data={cnvGenesChartData.map(d => d)}
+                    data={cnvGenesChartData.map(d => ({
+                      symbol: d.symbol,
+                      amplification: d.amplification,
+                      gain: d.gain,
+                      shallow_loss: d.shallow_loss,
+                      deep_loss: d.deep_loss,
+                      total: d.total,
+                    }))}
                     slug="most-frequently-cnv-genes-bar-chart"
                     tooltipHTML="Download image or data"
                     noText

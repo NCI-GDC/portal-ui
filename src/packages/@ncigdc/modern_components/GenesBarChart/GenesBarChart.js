@@ -265,7 +265,6 @@ const Component = compose(
           onClick: () => handleClickGene(g, cnvGenesChartData),
         };
       });
-      console.log("dataaaa", cnvGenesChartData);
     return (
       <div style={style}>
         {!!mutatedGenesChartData && (

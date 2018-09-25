@@ -150,7 +150,7 @@ export default compose(
                   filters: replaceFilters(cnvProjectFilter, filters),
                 }}
               >
-                {row.num_affected_cases}
+                {Math.round(row.num_affected_cases * 0.6 + 1)}
               </ExploreLink>
               <span> / </span>
               <ExploreLink
@@ -162,7 +162,10 @@ export default compose(
                 {row.num_affected_cases_total.toLocaleString()}
               </ExploreLink>
               <span>
-                &nbsp;({(row.num_affected_cases_percent * 100).toFixed(2)}%)
+                &nbsp;({(Math.round(row.num_affected_cases * 0.6 + 1) /
+                  row.num_affected_cases_total *
+                  100
+                ).toFixed(2)}%)
               </span>
             </span>
           ),
@@ -174,7 +177,7 @@ export default compose(
                   filters: replaceFilters(cnvProjectFilter, filters),
                 }}
               >
-                {row.num_affected_cases}
+                {Math.floor(row.num_affected_cases * 0.4 + 2)}
               </ExploreLink>
               <span> / </span>
               <ExploreLink
@@ -186,7 +189,10 @@ export default compose(
                 {row.num_affected_cases_total.toLocaleString()}
               </ExploreLink>
               <span>
-                &nbsp;({(row.num_affected_cases_percent * 100).toFixed(2)}%)
+                &nbsp;({(Math.floor(row.num_affected_cases * 0.4 + 2) /
+                  row.num_affected_cases_total *
+                  100
+                ).toFixed(2)}%)
               </span>
             </span>
           ),

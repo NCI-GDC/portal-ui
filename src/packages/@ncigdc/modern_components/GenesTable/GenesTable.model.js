@@ -236,7 +236,8 @@ const GenesTableModel = [
               ),
             }}
           >
-            {(Math.round(node.numCases / 2.5) || 0).toLocaleString()}
+            {(Math.round(node.numCases / 5) + Math.floor(node.numCases / 5) || 0
+            ).toLocaleString()}
           </ExploreLink>
           <span> / </span>
           <ExploreLink
@@ -306,7 +307,8 @@ const GenesTableModel = [
               ),
             }}
           >
-            {(Math.round(node.numCases / 3.5) || 0).toLocaleString()}
+            {(Math.round(node.numCases / 7) + Math.floor(node.numCases / 7) || 0
+            ).toLocaleString()}
           </ExploreLink>
           <span> / </span>
           <ExploreLink

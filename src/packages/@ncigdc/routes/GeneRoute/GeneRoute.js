@@ -45,7 +45,7 @@ export default ({ match, geneId = match.params.id, location }: Object) => {
           op: 'in',
           content: {
             field: 'cases.available_variation_data',
-            value: ['ssm', 'cna'],
+            value: ['ssm', 'cnv'],
           },
         },
       ],

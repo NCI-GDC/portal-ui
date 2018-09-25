@@ -255,7 +255,7 @@ const GenesTableModel = [
           >
             {(cnvCases.hits.total || 0).toLocaleString()}
           </ExploreLink>
-          <span>{` (${((node.case_cnv_gain.hits.total|| 0) /
+          <span>{` (${((node.case_cnv_gain.hits.total || 0) /
             (node.cnv_case.hits.total || 0) *
             100
           ).toFixed(2)}%)`}</span>

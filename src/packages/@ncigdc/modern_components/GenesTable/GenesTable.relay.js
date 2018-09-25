@@ -30,7 +30,7 @@ export default (Component: ReactClass<*>) =>
               makeFilter([
                 {
                   field: 'cases.available_variation_data',
-                  value: 'ssm',
+                  value: ['ssm'],
                 },
               ]),
             ),
@@ -38,13 +38,13 @@ export default (Component: ReactClass<*>) =>
             ssmTested: makeFilter([
               {
                 field: 'cases.available_variation_data',
-                value: 'ssm',
+                value: ['ssm'],
               },
             ]),
             cnvTested: makeFilter([
               {
                 field: 'cases.available_variation_data',
-                value: 'cnv',
+                value: ['cnv'],
               },
             ]),
             cnvGainFilters: makeFilter([
@@ -91,6 +91,11 @@ export default (Component: ReactClass<*>) =>
                 }
                 filteredCases: cases {
                   hits(first: 0, filters: $geneCaseFilter) {
+                    total
+                  }
+                }
+                cnvCases: cases {
+                  hits(first: 0, filters: $cnvTested) {
                     total
                   }
                 }

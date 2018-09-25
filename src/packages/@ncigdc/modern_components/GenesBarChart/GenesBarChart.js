@@ -51,28 +51,44 @@ const createContainer = Component =>
           value: 'ssm',
         },
       ]),
-      filters_1: makeFilter([
+      amplificationFilters: makeFilter([
         {
           field: 'cnvs.cnv_change',
           value: 'Amplification',
         },
+        {
+          field: 'cases.available_variation_data',
+          value: 'cnv',
+        },
       ]),
-      filters_2: makeFilter([
+      gainFilters: makeFilter([
         {
           field: 'cnvs.cnv_change',
           value: 'Gain',
         },
+        {
+          field: 'cases.available_variation_data',
+          value: 'cnv',
+        },
       ]),
-      filters_3: makeFilter([
+      lossFilters: makeFilter([
         {
           field: 'cnvs.cnv_change',
           value: 'Shallow Loss',
         },
+        {
+          field: 'cases.available_variation_data',
+          value: 'cnv',
+        },
       ]),
-      filters_4: makeFilter([
+      deepLossFilters: makeFilter([
         {
           field: 'cnvs.cnv_change',
           value: 'Deep Loss',
+        },
+        {
+          field: 'cases.available_variation_data',
+          value: 'cnv',
         },
       ]),
     },
@@ -111,22 +127,22 @@ const createContainer = Component =>
                       }
                     }
                     case_with_cnv_amplification_count: case {
-                      hits(first: 0, filters: $filters_1) {
+                      hits(first: 0, filters: $amplificationFilters) {
                         total
                       }
                     }
                     case_with_cnv_gain_count: case {
-                      hits(first: 0, filters: $filters_2) {
+                      hits(first: 0, filters: $gainFilters) {
                         total
                       }
                     }
                     case_with_cnv_loss_count: case {
-                      hits(first: 0, filters: $filters_3) {
+                      hits(first: 0, filters: $lossFilters) {
                         total
                       }
                     }
                     case_with_cnv_deep_loss_count: case {
-                      hits(first: 0, filters: $filters_4) {
+                      hits(first: 0, filters: $deepLossFilters) {
                         total
                       }
                     }

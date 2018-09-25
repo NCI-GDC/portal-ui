@@ -2,6 +2,7 @@
 import React from 'react';
 import { groupBy, head } from 'lodash';
 import { compose, withPropsOnChange } from 'recompose';
+import { makeFilter } from '@ncigdc/utils/filters';
 import { tableToolTipHint, visualizingButton } from '@ncigdc/theme/mixins';
 import { Tooltip } from '@ncigdc/uikit/Tooltip';
 import saveFile from '@ncigdc/utils/filesaver';
@@ -81,44 +82,54 @@ export default compose(
         );
 
       const cancerDistData = rawData.map(row => {
-        const projectFilter = {
-          op: 'and',
-          content: [
-            {
-              op: 'in',
-              content: {
-                field: 'cases.project.project_id',
-                value: [row.project_id],
-              },
-            },
-            {
-              op: 'in',
-              content: {
-                field: 'cases.available_variation_data',
-                value: ['ssm'],
-              },
-            },
-          ],
-        };
-        const cnvProjectFilter = {
-          op: 'and',
-          content: [
-            {
-              op: 'in',
-              content: {
-                field: 'cases.project.project_id',
-                value: [row.project_id],
-              },
-            },
-            {
-              op: 'in',
-              content: {
-                field: 'cases.available_variation_data',
-                value: ['cnv'],
-              },
-            },
-          ],
-        };
+        const projectFilter = makeFilter([
+          {
+            field: 'cases.project.project_id',
+            value: [row.project_id],
+          },
+          {
+            field: 'cases.available_variation_data',
+            value: ['ssm'],
+          },
+        ]);
+        const cnvProjectFilter = makeFilter([
+          {
+            field: 'cases.project.project_id',
+            value: [row.project_id],
+          },
+          {
+            field: 'cases.available_variation_data',
+            value: ['cnv'],
+          },
+        ]);
+        const cnvGainProjectFilter = makeFilter([
+          {
+            field: 'cases.project.project_id',
+            value: [row.project_id],
+          },
+          {
+            field: 'cases.available_variation_data',
+            value: ['cnv'],
+          },
+          {
+            field: 'cnvs.cnv_change',
+            value: ['Gain', 'Amplification'],
+          },
+        ]);
+        const cnvLossProjectFilter = makeFilter([
+          {
+            field: 'cases.project.project_id',
+            value: [row.project_id],
+          },
+          {
+            field: 'cases.available_variation_data',
+            value: ['cnv'],
+          },
+          {
+            field: 'cnvs.cnv_change',
+            value: ['Shallow Loss', 'Deep Loss'],
+          },
+        ]);
         return {
           id: row.project_id, // used for key in table
           freq: row.num_affected_cases_percent,
@@ -156,7 +167,7 @@ export default compose(
               <ExploreLink
                 query={{
                   searchTableTab: 'cases',
-                  filters: replaceFilters(cnvProjectFilter, filters),
+                  filters: replaceFilters(cnvGainProjectFilter, filters),
                 }}
               >
                 {row.num_cnv_gain.toLocaleString()}
@@ -180,7 +191,7 @@ export default compose(
               <ExploreLink
                 query={{
                   searchTableTab: 'cases',
-                  filters: replaceFilters(cnvProjectFilter, filters),
+                  filters: replaceFilters(cnvLossProjectFilter, filters),
                 }}
               >
                 {row.num_cnv_loss.toLocaleString()}

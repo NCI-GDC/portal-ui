@@ -1,5 +1,10 @@
 /* @flow */
-import { replaceFilters, makeFilter } from '@ncigdc/utils/filters';
+import {
+  replaceFilters,
+  makeFilter,
+  inCurrentFilters,
+  getFilterValue,
+} from '@ncigdc/utils/filters';
 import memoize from 'memoizee';
 import { fetchApi, fetchApiChunked } from '@ncigdc/utils/ajax';
 
@@ -180,7 +185,13 @@ async function getQueries({
   );
 
   let cnv_occurrences = [];
-  if (cnvOccurrenceFilters.content.length > 0 && !heatMapMode) {
+
+  let cnvChangeFilters = getFilterValue({
+    currentFilters: cnvOccurrenceFilters.content,
+    dotField: 'cnv.cnv_change',
+  });
+
+  if (cnvChangeFilters.content.value.length > 0 && !heatMapMode) {
     let cnv_data = await getCNVOccurrences({
       filters: cnvOccurrenceFilters,
     });

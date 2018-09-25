@@ -5,6 +5,7 @@ import _ from 'lodash';
 import Color from 'color';
 
 import { Row, Column } from '@ncigdc/uikit/Flex';
+import { capitalize } from '@ncigdc/utils/string';
 
 const styles = {
   table: {
@@ -89,7 +90,7 @@ const Checkbox = ({
           border: `2px solid ${color}`,
           cursor: 'pointer',
           textAlign: 'center',
-          verticalAlign: 'center',
+          verticalAlign: 'middle',
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
@@ -100,11 +101,13 @@ const Checkbox = ({
           <span
             style={
               heatMapMode
-                ? { color: color }
+                ? { color: color, paddingBottom: 1 }
                 : {
                     color: Color(color)
                       .darken(0.4)
                       .rgbString(),
+                    paddingBottom: 1,
+                    display: 'inline-flex',
                   }
             }
           >
@@ -112,7 +115,7 @@ const Checkbox = ({
           </span>
         ) : null}
       </div>
-      <label style={{ marginLeft: 5 }}>{label}</label>
+      <label style={{ marginLeft: 5 }}>{capitalize(label)}</label>
     </div>
   );
 };

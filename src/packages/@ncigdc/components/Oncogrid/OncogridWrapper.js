@@ -5,7 +5,7 @@ no-restricted-globals: 0
 import React from 'react';
 import { lifecycle, compose, withState, withProps, mapProps } from 'recompose';
 import OncoGrid from 'oncogrid';
-import { uniqueId, get, debounce } from 'lodash';
+import { uniqueId, get, debounce, mapKeys } from 'lodash';
 import { connect } from 'react-redux';
 import withSize from '@ncigdc/utils/withSize';
 import FullScreenIcon from 'react-icons/lib/md/fullscreen';
@@ -40,6 +40,8 @@ import { withTooltip } from '@ncigdc/uikit/Tooltip/index';
 import getQueries from './getQueries';
 import oncoGridParams from './oncoGridParams';
 import mouseEvents from './mouseEvents';
+import { setModal } from '@ncigdc/dux/modal';
+import ColorPickerModal from '@ncigdc/components/Modals/ColorPickerModal';
 
 import './oncogrid.css';
 
@@ -116,6 +118,7 @@ type TProps = {
 
 const OncoGridWrapper = compose(
   withRouter,
+  withState('gridColors', 'setGridColors', colorMap),
   withState('oncoGrid', 'setOncoGrid', {}),
   withState('oncoGridData', 'setOncoGridData', null),
   withState('crosshairMode', 'setCrosshairMode', false),
@@ -274,6 +277,7 @@ const OncoGridWrapper = compose(
         currentSSMFilters,
         toggledCnvChanges,
         rankOncoGridBy,
+        gridColors,
       }: TProps = {},
       previousResponses: Object,
     ): Promise<*> {
@@ -314,7 +318,7 @@ const OncoGridWrapper = compose(
       performanceTracker.begin('oncogrid:process');
       const gridParams = oncoGridParams({
         grid: showGridLines,
-        colorMap,
+        colorMap: gridColors,
         element: wrapperRefs[uniqueGridClass],
         donorData: responses.cases,
         geneData: responses.genes,
@@ -461,6 +465,9 @@ const OncoGridWrapper = compose(
     setToggledConsequences,
     variationDataTypes,
     setVariationDataTypes,
+    setGridColors,
+    gridColors,
+    dispatch,
   }) => (
     <Loader loading={isLoading} height="800px">
       <div
@@ -486,6 +493,35 @@ const OncoGridWrapper = compose(
                 }}
                 spacing="1rem"
               >
+                <Button
+                  style={visualizingButton}
+                  onClick={() => {
+                    dispatch(
+                      setModal(
+                        <ColorPickerModal
+                          // options={['red', 'green', 'blue']}
+                          onClose={(colors = []) => {
+                            // setGridColors(colors);
+                            oncoGrid.reload();
+                            refreshGridState({
+                              oncoGrid,
+                              setHeatMapMode,
+                              setShowGridLines,
+                              setCrosshairMode,
+                              setIsLoading,
+                            });
+                            dispatch(setModal(null));
+                          }}
+                          colors={gridColors}
+                          setColors={setGridColors}
+                        />,
+                      ),
+                    );
+                  }}
+                >
+                  <i className="fa fa-paint-brush" />
+                  <Hidden>Custom Colors</Hidden>
+                </Button>
                 <DownloadVisualizationButton
                   svg={() => {
                     const elementsAfter = trackLegends.map(html => {
@@ -679,7 +715,7 @@ const OncoGridWrapper = compose(
                     setToggledConsequences(consequenceTypes);
                   }
                 }}
-                colorMap={colorMap.mutation}
+                colorMap={gridColors.mutation}
                 type={'mutations'}
                 heatMapMode={heatMapMode}
               />
@@ -712,7 +748,7 @@ const OncoGridWrapper = compose(
                     setToggledCnvChanges(cnvChangeTypes);
                   }
                 }}
-                colorMap={colorMap.cnv}
+                colorMap={gridColors.cnv}
                 type={'copy number variations'}
               />
             </div>

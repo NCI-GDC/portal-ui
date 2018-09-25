@@ -7,7 +7,6 @@ export const colorMap = {
     frameshift_variant: '#2E7D32',
     start_lost: '#2E7D32',
     stop_lost: '#2E7D32',
-    initiator_codon_variant: '#2E7D32',
     stop_gained: '#2E7D32',
   },
   cnv: {

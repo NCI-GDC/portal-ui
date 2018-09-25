@@ -94,6 +94,11 @@ export default (Component: ReactClass<*>) =>
                     total
                   }
                 }
+                cnvCases: cases {
+                  hits(first: 0, filters: $cnvTested) {
+                    total
+                  }
+                }
                 genes {
                   hits(
                     first: $genesTable_size

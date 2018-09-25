@@ -119,6 +119,58 @@ export default compose(
             },
           ],
         };
+        const cnvGainProjectFilter = {
+          op: 'and',
+          content: [
+            {
+              op: 'in',
+              content: {
+                field: 'cases.project.project_id',
+                value: [row.project_id],
+              },
+            },
+            {
+              op: 'in',
+              content: {
+                field: 'cases.available_variation_data',
+                value: ['cnv'],
+              },
+            },
+            {
+              op: 'in',
+              content: {
+                field: 'cnvs.cnv_change',
+                value: ['Gain', 'Amplification'],
+              },
+            },
+          ],
+        };
+        const cnvLossProjectFilter = {
+          op: 'and',
+          content: [
+            {
+              op: 'in',
+              content: {
+                field: 'cases.project.project_id',
+                value: [row.project_id],
+              },
+            },
+            {
+              op: 'in',
+              content: {
+                field: 'cases.available_variation_data',
+                value: ['cnv'],
+              },
+            },
+            {
+              op: 'in',
+              content: {
+                field: 'cnvs.cnv_change',
+                value: ['Shallow Loss', 'Deep Loss'],
+              },
+            },
+          ],
+        };
         return {
           id: row.project_id, // used for key in table
           freq: row.num_affected_cases_percent,
@@ -156,7 +208,7 @@ export default compose(
               <ExploreLink
                 query={{
                   searchTableTab: 'cases',
-                  filters: replaceFilters(cnvProjectFilter, filters),
+                  filters: replaceFilters(cnvGainProjectFilter, filters),
                 }}
               >
                 {row.num_cnv_gain.toLocaleString()}
@@ -180,7 +232,7 @@ export default compose(
               <ExploreLink
                 query={{
                   searchTableTab: 'cases',
-                  filters: replaceFilters(cnvProjectFilter, filters),
+                  filters: replaceFilters(cnvLossProjectFilter, filters),
                 }}
               >
                 {row.num_cnv_loss.toLocaleString()}

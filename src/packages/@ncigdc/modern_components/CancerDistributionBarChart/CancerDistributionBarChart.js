@@ -209,9 +209,11 @@ export default compose(
     const mutationCancerDistData = (cases.filtered || {
       project__project_id: { buckets: [] },
     }).project__project_id.buckets.map(b => {
-      const totalCasesByProject = cases.total.project__project_id.buckets.filter(
+      const casesByProjects = cases.total.project__project_id.buckets.filter(
         f => f.key === b.key,
-      )[0].doc_count;
+      );
+      const totalCasesByProject =
+        casesByProjects.length > 0 ? casesByProjects[0].doc_count : 0;
       return {
         freq: b.doc_count / totalCasesByProject,
         project_id: b.key,

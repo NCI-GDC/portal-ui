@@ -214,7 +214,7 @@ const GenesTableModel = [
         </Tooltip>
       </Th>
     ),
-    td: ({ node, query, defaultFilters, filteredCases }) => (
+    td: ({ node, query, defaultFilters, filteredCases, cnvCases }) => (
       <Td>
         <span>
           <ExploreLink
@@ -249,17 +249,13 @@ const GenesTableModel = [
                     field: 'cases.available_variation_data',
                     value: ['cnv'],
                   },
-                  {
-                    field: 'genes.gene_id',
-                    value: [node.gene_id],
-                  },
                 ]),
               ),
             }}
           >
-            {(node.cnv_case.hits.total || 0).toLocaleString()}
+            {(cnvCases.hits.total || 0).toLocaleString()}
           </ExploreLink>
-          <span>{` (${((node.case_cnv_gain.hits.total|| 0) /
+          <span>{` (${((node.case_cnv_gain.hits.total || 0) /
             (node.cnv_case.hits.total || 0) *
             100
           ).toFixed(2)}%)`}</span>
@@ -288,7 +284,7 @@ const GenesTableModel = [
         </Tooltip>
       </Th>
     ),
-    td: ({ node, query, defaultFilters, filteredCases }) => (
+    td: ({ node, query, defaultFilters, filteredCases, cnvCases }) => (
       <Td>
         <span>
           <ExploreLink
@@ -323,18 +319,14 @@ const GenesTableModel = [
                     field: 'cases.available_variation_data',
                     value: ['cnv'],
                   },
-                  {
-                    field: 'genes.gene_id',
-                    value: [node.gene_id],
-                  },
                 ]),
               ),
             }}
           >
-            {(node.cnv_case.hits.total || 0).toLocaleString()}
+            {(cnvCases.hits.total || 0).toLocaleString()}
           </ExploreLink>
           <span>{` (${((node.case_cnv_loss.hits.total || 0) /
-            (node.cnv_case.hits.total || 0) *
+            (cnvCases.hits.total || 0) *
             100
           ).toFixed(2)}%)`}</span>
         </span>

@@ -25,7 +25,7 @@ export default (Component: ReactClass<*>) =>
           ssmTested: makeFilter([
             {
               field: 'cases.available_variation_data',
-              value: 'ssm',
+              value: ['ssm'],
             },
           ]),
           cnvTested: makeFilter([
@@ -34,7 +34,7 @@ export default (Component: ReactClass<*>) =>
           cnvGain: makeFilter([
             {
               field: 'cnvs.cnv_change',
-              value: 'Gain',
+              value: ['Gain'],
             },
             cnvAvailableVariationDataFilter,
             geneFilter,
@@ -42,7 +42,7 @@ export default (Component: ReactClass<*>) =>
           cnvAmplification: makeFilter([
             {
               field: 'cnvs.cnv_change',
-              value: 'Amplification',
+              value: ['Amplification'],
             },
             cnvAvailableVariationDataFilter,
             geneFilter,
@@ -50,7 +50,7 @@ export default (Component: ReactClass<*>) =>
           cnvLoss: makeFilter([
             {
               field: 'cnvs.cnv_change',
-              value: 'Shallow Loss',
+              value: ['Shallow Loss'],
             },
             cnvAvailableVariationDataFilter,
             geneFilter,
@@ -58,7 +58,7 @@ export default (Component: ReactClass<*>) =>
           cnvDeepLoss: makeFilter([
             {
               field: 'cnvs.cnv_change',
-              value: 'Deep Loss',
+              value: ['Deep Loss'],
             },
             cnvAvailableVariationDataFilter,
             geneFilter,

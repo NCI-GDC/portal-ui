@@ -138,6 +138,7 @@ export const ExplorePageComponent = ({
         component: (
           <GeneAggregations
             aggregations={viewer.explore.genes.aggregations}
+            cnvAggregations={viewer.explore.cnvs.aggregations}
             suggestions={get(viewer, 'autocomplete_genes.hits', [])}
             setAutocomplete={(value, onReadyStateChange) =>
               relay.setVariables(
@@ -324,6 +325,14 @@ export const ExplorePageQuery = {
           genes {
             aggregations(filters: $filters aggregations_filter_themselves: false) {
               ${GeneAggregations.getFragment('aggregations')}
+            }
+            hits(first: $genes_size offset: $genes_offset, filters: $filters) {
+              total
+            }
+          }
+          cnvs {
+            aggregations(filters: $filters aggregations_filter_themselves: false) {
+              ${GeneAggregations.getFragment('cnvAggregations')}
             }
             hits(first: $genes_size offset: $genes_offset, filters: $filters) {
               total

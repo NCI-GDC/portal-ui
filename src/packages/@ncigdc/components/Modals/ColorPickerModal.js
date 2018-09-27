@@ -1,25 +1,17 @@
 // @flow
 import React from 'react';
 import { map } from 'lodash';
-import { compose, withState, withProps, withPropsOnChange } from 'recompose';
+import { compose, withState, withPropsOnChange } from 'recompose';
 import { SketchPicker } from 'react-color';
 
 import BaseModal from '@ncigdc/components/Modals/BaseModal';
-import { Column, Row } from '@ncigdc/uikit/Flex/index';
+import { Row } from '@ncigdc/uikit/Flex/index';
 import { colorMap } from '@ncigdc/utils/filters/prepared/significantConsequences';
 import { capitalize } from '@ncigdc/utils/string';
-import Button from '@ncigdc/uikit/Button';
 import Dropdown from '@ncigdc/uikit/Dropdown';
 import DropdownItem from '@ncigdc/uikit/DropdownItem';
 
-const Circle = ({
-  color,
-  label,
-  onSelect,
-  palette,
-  handleComplete,
-  setColors,
-}) => {
+const Circle = ({ color, label, onSelect, palette, handleComplete }) => {
   const handleChange = (color, event) => {
     onSelect({
       ...palette,
@@ -28,10 +20,6 @@ const Circle = ({
         [label]: color.hex,
       },
     });
-  };
-
-  const onHandleComplete = (color, event, palette) => {
-    setColors(palette);
   };
 
   return (
@@ -66,8 +54,6 @@ const Circle = ({
         <SketchPicker
           presetColors={presetColors}
           color={color}
-          onChangeComplete={(color, event) =>
-            onHandleComplete(color, event, palette)}
           onChange={handleChange}
         />
       </DropdownItem>
@@ -92,23 +78,6 @@ const Square = ({ color, label, onClick }) => {
   );
 };
 
-const Palette = ({ colors }) => {
-  return (
-    <div className="preset-palette">
-      <Row>
-        {colors
-          .slice(0, 5)
-          .map(color => <Square key={color} color={color} label={''} />)}
-      </Row>
-      <Row>
-        {colors
-          .slice(5, 10)
-          .map(color => <Square key={color} color={color} label={''} />)}
-      </Row>
-    </div>
-  );
-};
-
 const presetColors = [
   '#EF6C00',
   '#FFB300',
@@ -124,22 +93,10 @@ const presetColors = [
 
 export default compose(
   withState('palette', 'setPalette', colorMap),
-  // withProps(({ colorMap, setPalette }) => ({
-  //   mutations: map(colorMap.mutation, (color, type) => ({
-  //     color,
-  //     type,
-  //   })),
-  //   cnvs: map(colorMap.cnv, (color, type) => ({ color, type })),
-  // })),
   withPropsOnChange(['palette'], ({ palette, setPalette }) => {
-    console.log('palette changed');
     setPalette(palette);
   }),
-  withPropsOnChange(['colors'], ({ colors, setPalette }) => {
-    console.log('colors changed');
-    setPalette(colors);
-  }),
-)(({ onClose, mutations, cnvs, setPalette, palette, setColors }) => {
+)(({ onClose, mutations, cnvs, setPalette, palette }) => {
   return (
     <BaseModal
       title="Choose Grid Colors"
@@ -176,7 +133,6 @@ export default compose(
                 onSelect={setPalette}
                 palette={palette}
                 handleComplete={() => onClose(palette)}
-                setColors={setColors}
               />
             );
           })}

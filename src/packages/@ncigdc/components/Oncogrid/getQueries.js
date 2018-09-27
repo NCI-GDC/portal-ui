@@ -2,7 +2,6 @@
 import {
   replaceFilters,
   makeFilter,
-  inCurrentFilters,
   getFilterValue,
 } from '@ncigdc/utils/filters';
 import memoize from 'memoizee';

@@ -3,9 +3,16 @@
 no-restricted-globals: 0
 */
 import React from 'react';
-import { lifecycle, compose, withState, withProps, mapProps } from 'recompose';
+import {
+  lifecycle,
+  compose,
+  withState,
+  withProps,
+  mapProps,
+  // withHandlers,
+} from 'recompose';
 import OncoGrid from 'oncogrid';
-import { uniqueId, get, debounce, mapKeys } from 'lodash';
+import { uniqueId, get, debounce, isEqual } from 'lodash';
 import { connect } from 'react-redux';
 import withSize from '@ncigdc/utils/withSize';
 import FullScreenIcon from 'react-icons/lib/md/fullscreen';
@@ -28,7 +35,7 @@ import Button from '@ncigdc/uikit/Button';
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import { Tooltip } from '@ncigdc/uikit/Tooltip';
 
-import { StepLegend, ToggleSwatchLegend } from '@ncigdc/components/Legends';
+import { ToggleSwatchLegend } from '@ncigdc/components/Legends';
 import DownloadVisualizationButton from '@ncigdc/components/DownloadVisualizationButton';
 import Hidden from '@ncigdc/components/Hidden';
 
@@ -119,6 +126,9 @@ type TProps = {
 const OncoGridWrapper = compose(
   withRouter,
   withState('gridColors', 'setGridColors', colorMap),
+  // withHandlers({
+  //   reset: ({ setGridColors }) => () => setGridColors(colorMap),
+  // }),
   withState('oncoGrid', 'setOncoGrid', {}),
   withState('oncoGridData', 'setOncoGridData', null),
   withState('crosshairMode', 'setCrosshairMode', false),
@@ -145,6 +155,7 @@ const OncoGridWrapper = compose(
       variationDataTypes,
       toggledCnvChanges,
       rankOncoGridBy,
+      gridColors,
       ...props
     }) => {
       const cases = props.oncoGridData
@@ -238,6 +249,7 @@ const OncoGridWrapper = compose(
         currentCNVFilters,
         currentSSMFilters,
         rankOncoGridBy,
+        gridColors,
       };
     },
   ),
@@ -428,6 +440,7 @@ const OncoGridWrapper = compose(
           JSON.stringify(nextProps.currentCNVFilters) ||
         JSON.stringify(this.props.currentSSMFilters) !==
           JSON.stringify(nextProps.currentSSMFilters) ||
+        !isEqual(this.props.gridColors, nextProps.gridColors) ||
         this.props.heatMapMode !== nextProps.heatMapMode
       ) {
         this.props.setIsLoading(true);
@@ -499,21 +512,11 @@ const OncoGridWrapper = compose(
                     dispatch(
                       setModal(
                         <ColorPickerModal
-                          // options={['red', 'green', 'blue']}
-                          onClose={(colors = []) => {
-                            // setGridColors(colors);
-                            oncoGrid.reload();
-                            refreshGridState({
-                              oncoGrid,
-                              setHeatMapMode,
-                              setShowGridLines,
-                              setCrosshairMode,
-                              setIsLoading,
-                            });
+                          onClose={colors => {
+                            setGridColors(colors);
                             dispatch(setModal(null));
                           }}
                           colors={gridColors}
-                          setColors={setGridColors}
                         />,
                       ),
                     );

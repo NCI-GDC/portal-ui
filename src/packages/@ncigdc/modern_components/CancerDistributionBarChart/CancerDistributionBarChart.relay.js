@@ -14,10 +14,10 @@ export default (Component: ReactClass<*>) =>
         value: 'cnv',
       };
       let geneFilter = {};
-      filters.content.map(c => {
-        if (c.content.field === "genes.gene_id"){
+      filters.content.forEach(c => {
+        if (c.content.field === 'genes.gene_id' && c.content.value) {
           geneFilter = c.content;
-        };
+        }
       });
       return {
         variables: {
@@ -28,9 +28,7 @@ export default (Component: ReactClass<*>) =>
               value: ['ssm'],
             },
           ]),
-          cnvTested: makeFilter([
-            cnvAvailableVariationDataFilter,
-          ]),
+          cnvTested: makeFilter([cnvAvailableVariationDataFilter]),
           cnvGain: makeFilter([
             {
               field: 'cnvs.cnv_change',

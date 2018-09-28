@@ -28,6 +28,7 @@ export default compose(
       geneId,
       entityName,
       filters,
+      tableType,
     }) => {
       const ssmCounts = (aggregations || {
         occurrence__case__project__project_id: { buckets: [] },
@@ -162,54 +163,56 @@ export default compose(
               </span>
             </span>
           ),
-          cnv_gain: (
-            <span>
-              <ExploreLink
-                query={{
-                  searchTableTab: 'cases',
-                  filters: replaceFilters(cnvGainProjectFilter, filters),
-                }}
-              >
-                {row.num_cnv_gain.toLocaleString()}
-              </ExploreLink>
-              <span> / </span>
-              <ExploreLink
-                query={{
-                  searchTableTab: 'cases',
-                  filters: cnvProjectFilter,
-                }}
-              >
-                {row.num_cnv_cases_total.toLocaleString()}
-              </ExploreLink>
+          ...(tableType !== 'ssm' && {
+            cnv_gain: (
               <span>
-                &nbsp;({(row.num_cnv_gain_percent * 100).toFixed(2)}%)
+                <ExploreLink
+                  query={{
+                    searchTableTab: 'cases',
+                    filters: replaceFilters(cnvGainProjectFilter, filters),
+                  }}
+                >
+                  {row.num_cnv_gain.toLocaleString()}
+                </ExploreLink>
+                <span> / </span>
+                <ExploreLink
+                  query={{
+                    searchTableTab: 'cases',
+                    filters: cnvProjectFilter,
+                  }}
+                >
+                  {row.num_cnv_cases_total.toLocaleString()}
+                </ExploreLink>
+                <span>
+                  &nbsp;({(row.num_cnv_gain_percent * 100).toFixed(2)}%)
+                </span>
               </span>
-            </span>
-          ),
-          cnv_loss: (
-            <span>
-              <ExploreLink
-                query={{
-                  searchTableTab: 'cases',
-                  filters: replaceFilters(cnvLossProjectFilter, filters),
-                }}
-              >
-                {row.num_cnv_loss.toLocaleString()}
-              </ExploreLink>
-              <span> / </span>
-              <ExploreLink
-                query={{
-                  searchTableTab: 'cases',
-                  filters: cnvProjectFilter,
-                }}
-              >
-                {row.num_cnv_cases_total.toLocaleString()}
-              </ExploreLink>
+            ),
+            cnv_loss: (
               <span>
-                &nbsp;({(row.num_cnv_loss_percent * 100).toFixed(2)}%)
+                <ExploreLink
+                  query={{
+                    searchTableTab: 'cases',
+                    filters: replaceFilters(cnvLossProjectFilter, filters),
+                  }}
+                >
+                  {row.num_cnv_loss.toLocaleString()}
+                </ExploreLink>
+                <span> / </span>
+                <ExploreLink
+                  query={{
+                    searchTableTab: 'cases',
+                    filters: cnvProjectFilter,
+                  }}
+                >
+                  {row.num_cnv_cases_total.toLocaleString()}
+                </ExploreLink>
+                <span>
+                  &nbsp;({(row.num_cnv_loss_percent * 100).toFixed(2)}%)
+                </span>
               </span>
-            </span>
-          ),
+            ),
+          }),
           ...(geneId
             ? {
                 num_mutations: (
@@ -226,88 +229,42 @@ export default compose(
       return { rawData, cancerDistData };
     },
   ),
-)(({ entityName, geneId, cases, filters, rawData, cancerDistData } = {}) => {
-  const mutationsHeading = geneId
-    ? [
-        {
-          key: 'num_mutations',
-          title: (
-            <Tooltip
-              Component={
-                <span>
-                  # Unique Simple Somatic Mutations observed in {entityName} in
-                  Project
-                </span>
-              }
-              style={tableToolTipHint()}
-            >
-              # Mutations
-            </Tooltip>
-          ),
-          style: { textAlign: 'right' },
-        },
-      ]
-    : [];
-
-  return (
-    <span>
-      <LocalPaginationTable
-        style={{ width: '100%', minWidth: 450 }}
-        data={cancerDistData}
-        prefix={paginationPrefix}
-        buttons={
-          <Row style={{ alignItems: 'flex-end' }}>
-            <Tooltip
-              Component={
-                <span>Export All{geneId ? ' Except # Mutations' : ''}</span>
-              }
-              style={{ marginLeft: '2rem' }}
-            >
-              <Button
-                style={{ ...visualizingButton }}
-                onClick={() =>
-                  saveFile(
-                    JSON.stringify(rawData, null, 2),
-                    'JSON',
-                    'cancer-distribution-data.json',
-                  )}
+)(
+  (
+    {
+      entityName,
+      geneId,
+      cases,
+      filters,
+      rawData,
+      cancerDistData,
+      tableType,
+    } = {},
+  ) => {
+    const mutationsHeading = geneId
+      ? [
+          {
+            key: 'num_mutations',
+            title: (
+              <Tooltip
+                Component={
+                  <span>
+                    # Unique Simple Somatic Mutations observed in {entityName}
+                    in Project
+                  </span>
+                }
+                style={tableToolTipHint()}
               >
-                JSON
-              </Button>
-            </Tooltip>
-            <DownloadTableToTsvButton
-              selector="#cancer-distribution-table"
-              filename={`cancer-distribution-table${timestamp()}.tsv`}
-              style={{ marginLeft: '0.5rem' }}
-            />
-          </Row>
-        }
-      >
-        <EntityPageHorizontalTable
-          idKey="id"
-          tableId="cancer-distribution-table"
-          headings={[
-            { key: 'project_id', title: 'Project' },
-            { key: 'disease_type', title: 'Disease Type' },
-            { key: 'site', title: 'Site' },
-            {
-              key: 'num_affected_cases',
-              title: (
-                <Tooltip
-                  Component={
-                    <span>
-                      # Cases tested for Simple Somatic Mutations in Project
-                      affected by&nbsp;
-                      {entityName}&nbsp; / # Cases tested for Simple Somatic
-                      Mutations in Project
-                    </span>
-                  }
-                  style={tableToolTipHint()}
-                >
-                  # SSM Affected Cases
-                </Tooltip>
-              ),
-            },
+                # Mutations
+              </Tooltip>
+            ),
+            style: { textAlign: 'right' },
+          },
+        ]
+      : [];
+    const cnvHeadings =
+      tableType !== 'ssm'
+        ? [
             {
               key: 'cnv_gain',
               title: (
@@ -344,10 +301,73 @@ export default compose(
                 </Tooltip>
               ),
             },
-            ...mutationsHeading,
-          ]}
-        />
-      </LocalPaginationTable>
-    </span>
-  );
-});
+          ]
+        : [];
+    return (
+      <span>
+        <LocalPaginationTable
+          style={{ width: '100%', minWidth: 450 }}
+          data={cancerDistData}
+          prefix={paginationPrefix}
+          buttons={
+            <Row style={{ alignItems: 'flex-end' }}>
+              <Tooltip
+                Component={
+                  <span>Export All{geneId ? ' Except # Mutations' : ''}</span>
+                }
+                style={{ marginLeft: '2rem' }}
+              >
+                <Button
+                  style={{ ...visualizingButton }}
+                  onClick={() =>
+                    saveFile(
+                      JSON.stringify(rawData, null, 2),
+                      'JSON',
+                      'cancer-distribution-data.json',
+                    )}
+                >
+                  JSON
+                </Button>
+              </Tooltip>
+              <DownloadTableToTsvButton
+                selector="#cancer-distribution-table"
+                filename={`cancer-distribution-table${timestamp()}.tsv`}
+                style={{ marginLeft: '0.5rem' }}
+              />
+            </Row>
+          }
+        >
+          <EntityPageHorizontalTable
+            idKey="id"
+            tableId="cancer-distribution-table"
+            headings={[
+              { key: 'project_id', title: 'Project' },
+              { key: 'disease_type', title: 'Disease Type' },
+              { key: 'site', title: 'Site' },
+              {
+                key: 'num_affected_cases',
+                title: (
+                  <Tooltip
+                    Component={
+                      <span>
+                        # Cases tested for Simple Somatic Mutations in Project
+                        affected by&nbsp;
+                        {entityName}&nbsp; / # Cases tested for Simple Somatic
+                        Mutations in Project
+                      </span>
+                    }
+                    style={tableToolTipHint()}
+                  >
+                    # SSM Affected Cases
+                  </Tooltip>
+                ),
+              },
+              ...cnvHeadings,
+              ...mutationsHeading,
+            ]}
+          />
+        </LocalPaginationTable>
+      </span>
+    );
+  },
+);

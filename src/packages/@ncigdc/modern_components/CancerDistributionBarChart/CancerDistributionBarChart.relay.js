@@ -15,7 +15,7 @@ export default (Component: ReactClass<*>) =>
       };
       let geneFilter = {};
       filters.content.forEach(c => {
-        if (c.content.field === 'genes.gene_id') {
+        if (c.content.field === 'genes.gene_id' && c.content.value) {
           geneFilter = c.content;
         }
       });

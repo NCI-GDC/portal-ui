@@ -509,38 +509,38 @@ const OncoGridWrapper = compose(
                 }}
                 spacing="1rem"
               >
-                <Tooltip Component="Custom Colors">
-                  <DropDown
-                    button={
+                <DropDown
+                  button={
+                    <Tooltip Component="Custom Colors">
                       <Button style={visualizingButton}>
                         <i className="fa fa-paint-brush" />
                         <Hidden>Custom Colors</Hidden>
                       </Button>
-                    }
+                    </Tooltip>
+                  }
+                >
+                  <DropdownItem
+                    onClick={() => {
+                      dispatch(
+                        setModal(
+                          <ColorPickerModal
+                            onApply={colors => {
+                              setGridColors(colors);
+                              dispatch(setModal(null));
+                            }}
+                            onClose={() => dispatch(setModal(null))}
+                            colors={gridColors}
+                          />,
+                        ),
+                      );
+                    }}
                   >
-                    <DropdownItem
-                      onClick={() => {
-                        dispatch(
-                          setModal(
-                            <ColorPickerModal
-                              onApply={colors => {
-                                setGridColors(colors);
-                                dispatch(setModal(null));
-                              }}
-                              onClose={() => dispatch(setModal(null))}
-                              colors={gridColors}
-                            />,
-                          ),
-                        );
-                      }}
-                    >
-                      Select Colors
-                    </DropdownItem>
-                    <DropdownItem onClick={resetColors}>
-                      Reset to Default
-                    </DropdownItem>
-                  </DropDown>
-                </Tooltip>
+                    Select Colors
+                  </DropdownItem>
+                  <DropdownItem onClick={resetColors}>
+                    Reset to Default
+                  </DropdownItem>
+                </DropDown>
                 <DownloadVisualizationButton
                   svg={() => {
                     const elementsAfter = trackLegends.map(html => {

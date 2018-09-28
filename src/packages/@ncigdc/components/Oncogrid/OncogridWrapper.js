@@ -9,7 +9,7 @@ import {
   withState,
   withProps,
   mapProps,
-  // withHandlers,
+  withHandlers,
 } from 'recompose';
 import OncoGrid from 'oncogrid';
 import { uniqueId, get, debounce, isEqual } from 'lodash';
@@ -49,6 +49,8 @@ import oncoGridParams from './oncoGridParams';
 import mouseEvents from './mouseEvents';
 import { setModal } from '@ncigdc/dux/modal';
 import ColorPickerModal from '@ncigdc/components/Modals/ColorPickerModal';
+import DropDown from '@ncigdc/uikit/Dropdown';
+import DropdownItem from '@ncigdc/uikit/DropdownItem';
 
 import './oncogrid.css';
 
@@ -126,9 +128,9 @@ type TProps = {
 const OncoGridWrapper = compose(
   withRouter,
   withState('gridColors', 'setGridColors', colorMap),
-  // withHandlers({
-  //   reset: ({ setGridColors }) => () => setGridColors(colorMap),
-  // }),
+  withHandlers({
+    resetColors: ({ setGridColors }) => () => setGridColors(colorMap),
+  }),
   withState('oncoGrid', 'setOncoGrid', {}),
   withState('oncoGridData', 'setOncoGridData', null),
   withState('crosshairMode', 'setCrosshairMode', false),
@@ -481,6 +483,7 @@ const OncoGridWrapper = compose(
     setGridColors,
     gridColors,
     dispatch,
+    resetColors,
   }) => (
     <Loader loading={isLoading} height="800px">
       <div
@@ -506,25 +509,36 @@ const OncoGridWrapper = compose(
                 }}
                 spacing="1rem"
               >
-                <Button
-                  style={visualizingButton}
-                  onClick={() => {
-                    dispatch(
-                      setModal(
-                        <ColorPickerModal
-                          onClose={colors => {
-                            setGridColors(colors);
-                            dispatch(setModal(null));
-                          }}
-                          colors={gridColors}
-                        />,
-                      ),
-                    );
-                  }}
-                >
-                  <i className="fa fa-paint-brush" />
-                  <Hidden>Custom Colors</Hidden>
-                </Button>
+                <Tooltip Component="Custom Colors">
+                  <DropDown
+                    button={
+                      <Button style={visualizingButton}>
+                        <i className="fa fa-paint-brush" />
+                        <Hidden>Custom Colors</Hidden>
+                      </Button>
+                    }
+                  >
+                    <DropdownItem
+                      onClick={() => {
+                        dispatch(
+                          setModal(
+                            <ColorPickerModal
+                              onApply={colors => {
+                                setGridColors(colors);
+                                dispatch(setModal(null));
+                              }}
+                              onClose={() => dispatch(setModal(null))}
+                              colors={gridColors}
+                            />,
+                          ),
+                        );
+                      }}
+                    >
+                      Select Colors
+                    </DropdownItem>
+                    <DropdownItem onClick={resetColors}>Reset</DropdownItem>
+                  </DropDown>
+                </Tooltip>
                 <DownloadVisualizationButton
                   svg={() => {
                     const elementsAfter = trackLegends.map(html => {

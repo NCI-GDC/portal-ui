@@ -10,6 +10,7 @@ import { colorMap } from '@ncigdc/utils/filters/prepared/significantConsequences
 import { capitalize } from '@ncigdc/utils/string';
 import Dropdown from '@ncigdc/uikit/Dropdown';
 import DropdownItem from '@ncigdc/uikit/DropdownItem';
+import Button from '@ncigdc/uikit/Button';
 
 const Swatch = ({
   color,
@@ -83,16 +84,17 @@ const presetColors = [
 ];
 
 export default compose(
-  withState('palette', 'setPalette', colorMap),
-  withPropsOnChange(['palette'], ({ palette, setPalette }) => {
-    setPalette(palette);
+  withState('palette', 'setPalette', {}),
+  withPropsOnChange(['colors'], ({ colors, setPalette }) => {
+    setPalette(colors);
   }),
-)(({ onClose, mutations, cnvs, setPalette, palette }) => {
+)(({ onClose, mutations, cnvs, setPalette, palette, onApply }) => {
   return (
     <BaseModal
       title="Choose Grid Colors"
-      closeText="OK"
-      onClose={() => onClose(palette)}
+      closeText="Cancel"
+      onClose={onClose}
+      extraButtons={<Button onClick={() => onApply(palette)}>Apply</Button>}
     >
       <span>
         Select the colors to display for each element on the OncoGrid. To change

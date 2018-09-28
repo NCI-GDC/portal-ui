@@ -11,12 +11,20 @@ import { capitalize } from '@ncigdc/utils/string';
 import Dropdown from '@ncigdc/uikit/Dropdown';
 import DropdownItem from '@ncigdc/uikit/DropdownItem';
 
-const Circle = ({ color, label, onSelect, palette, handleComplete }) => {
+const Swatch = ({
+  color,
+  label,
+  onSelect,
+  palette,
+  handleComplete,
+  style,
+  type,
+}) => {
   const handleChange = (color, event) => {
     onSelect({
       ...palette,
-      mutation: {
-        ...palette.mutation,
+      [type]: {
+        ...palette[type],
         [label]: color.hex,
       },
     });
@@ -37,7 +45,7 @@ const Circle = ({ color, label, onSelect, palette, handleComplete }) => {
         >
           <div
             style={{
-              borderRadius: 10,
+              ...style,
               backgroundColor: color,
               width: 15,
               height: 15,
@@ -58,23 +66,6 @@ const Circle = ({ color, label, onSelect, palette, handleComplete }) => {
         />
       </DropdownItem>
     </Dropdown>
-  );
-};
-
-const Square = ({ color, label, onClick }) => {
-  return (
-    <div
-      style={{
-        display: 'flex',
-        flexDirection: 'row',
-        padding: 10,
-        alignItems: 'center',
-      }}
-      onClick={onClick}
-    >
-      <div style={{ backgroundColor: color, width: 15, height: 15 }} />
-      <span style={{ marginLeft: 5 }}>{label}</span>
-    </div>
   );
 };
 
@@ -126,13 +117,15 @@ export default compose(
         >
           {map(palette.mutation, (color, type) => {
             return (
-              <Circle
+              <Swatch
                 key={type}
                 color={color}
                 label={type}
                 onSelect={setPalette}
                 palette={palette}
                 handleComplete={() => onClose(palette)}
+                style={{ borderRadius: 10 }}
+                type={'mutation'}
               />
             );
           })}
@@ -148,11 +141,14 @@ export default compose(
         >
           {map(palette.cnv, (color, type) => {
             return (
-              <Square
+              <Swatch
                 key={type}
                 color={color}
                 label={type}
                 onSelect={setPalette}
+                palette={palette}
+                handleComplete={() => onClose(palette)}
+                type={'cnv'}
               />
             );
           })}

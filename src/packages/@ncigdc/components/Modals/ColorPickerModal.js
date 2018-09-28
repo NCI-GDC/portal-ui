@@ -6,7 +6,6 @@ import { SketchPicker } from 'react-color';
 
 import BaseModal from '@ncigdc/components/Modals/BaseModal';
 import { Row } from '@ncigdc/uikit/Flex/index';
-import { colorMap } from '@ncigdc/utils/filters/prepared/significantConsequences';
 import { capitalize } from '@ncigdc/utils/string';
 import Dropdown from '@ncigdc/uikit/Dropdown';
 import DropdownItem from '@ncigdc/uikit/DropdownItem';

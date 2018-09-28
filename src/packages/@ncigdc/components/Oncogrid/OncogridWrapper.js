@@ -243,6 +243,7 @@ const OncoGridWrapper = compose(
     oncoGridHeight: 150,
     oncoGridPadding: 306,
     oncoGridWrapper: null,
+    heatMapColor: '#2E7D32',
     async getQueries(
       {
         oncoGrid,
@@ -274,6 +275,7 @@ const OncoGridWrapper = compose(
         currentSSMFilters,
         toggledCnvChanges,
         rankOncoGridBy,
+        heatMapColor,
       }: TProps = {},
       previousResponses: Object,
     ): Promise<*> {
@@ -328,6 +330,7 @@ const OncoGridWrapper = compose(
         impacts,
         consequenceTypes: filteredConsequenceTypes,
         heatMap: heatMapMode,
+        heatMapColor,
       });
 
       performanceTracker.end('oncogrid:process', performanceContext);
@@ -461,6 +464,7 @@ const OncoGridWrapper = compose(
     setToggledConsequences,
     variationDataTypes,
     setVariationDataTypes,
+    heatMapColor,
   }) => (
     <Loader loading={isLoading} height="800px">
       <div
@@ -683,6 +687,7 @@ const OncoGridWrapper = compose(
                 colorMap={colorMap.mutation}
                 type={'mutations'}
                 heatMapMode={heatMapMode}
+                heatMapColor={heatMapColor}
               />
             </div>
           </div>

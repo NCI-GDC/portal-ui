@@ -536,7 +536,9 @@ const OncoGridWrapper = compose(
                     >
                       Select Colors
                     </DropdownItem>
-                    <DropdownItem onClick={resetColors}>Reset</DropdownItem>
+                    <DropdownItem onClick={resetColors}>
+                      Reset to Default
+                    </DropdownItem>
                   </DropDown>
                 </Tooltip>
                 <DownloadVisualizationButton

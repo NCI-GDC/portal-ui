@@ -102,9 +102,14 @@ export default ({ match, ssmId = match.params.id, filters }) => {
             <CancerDistributionBarChart
               filters={cdFilters}
               ChartTitle={CancerDistributionTitle}
+              chartType="ssm"
               style={{ width: '50%' }}
             />
-            <CancerDistributionTable filters={cdFilters} entityName={ssmId} />
+            <CancerDistributionTable
+              filters={cdFilters}
+              entityName={ssmId}
+              tableType="ssm"
+            />
           </Column>
         </Column>
         <Column style={{ backgroundColor: 'white', marginTop: '2rem' }}>

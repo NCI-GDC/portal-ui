@@ -90,19 +90,11 @@ const DefaultChartTitle = ({
     </ProjectsLink>&nbsp; projects
   </div>
 );
-<<<<<<< HEAD
 const initalCnv = {
   gain: true,
   amplification: true,
   shallow_loss: true,
   deep_loss: true,
-=======
-const initalcnv = {
-  gain: true,
-  amplification: true,
-  shallowLoss: true,
-  deepLoss: true,
->>>>>>> 29651f58... Nested the real data for Gene histogram.
 };
 export default compose(
   withRouter,
@@ -117,6 +109,7 @@ export default compose(
       push,
       ChartTitle = DefaultChartTitle,
       filters,
+      chartType,
       style,
       cnv,
       setCnv,
@@ -125,61 +118,36 @@ export default compose(
       type,
     }: TProps = {},
   ) => {
-<<<<<<< HEAD
-    /* prettier-ignore */
-    const cnvCases = { 
-      filtered: {
-        project__project_id: { 
-          buckets: cases.filtered.project__project_id.buckets.map(b => {
-            const loss_2 = Math.round(0.2 * (b.doc_count) + 1);
-            const gain_1 = Math.round(0.2 * (b.doc_count) + 1);
-            return {
-              deep_loss: loss_2, 
-              shallow_loss: Math.floor(b.doc_count * 0.4 + 2) - loss_2, 
-              gain: gain_1, 
-              amplification: Math.round(b.doc_count * 0.6 + 1) - gain_1, 
-              key: b.key,
-            };
+    let cnvFiltered = {};
+    ['amplification', 'gain', 'loss', 'deepLoss'].map(cnvType =>
+      cases[cnvType].project__project_id.buckets.map(
+        b =>
+          (cnvFiltered = {
+            ...cnvFiltered,
+            [b.key]: {
+              ...cnvFiltered[b.key],
+              [cnvType]: b.doc_count,
+            },
           }),
-        },
-      },
-      total: {
-        project__project_id: { 
-          buckets: cases.total.project__project_id.buckets.map(b => b)
-        },
-      } 
-    }
-=======
-    let cnvFiltered ={};
-    ['amplification', 'gain', 'loss', 'deepLoss'].map(cnvType => 
-      cases[cnvType].project__project_id.buckets.map(b => 
-        cnvFiltered = {
-          ...cnvFiltered,
-          [b.key]: {
-            ...cnvFiltered[b.key],
-            [cnvType]: b.doc_count
-          }
-        }
-      )
+      ),
     );
 
-    const cnvCancerDistData =  Object.keys(cnvFiltered).map(p => {
-          const nums = cases.cnvTotal.project__project_id.buckets.filter(
-            f => f.key === p,
-          )[0].doc_count;
-          return {
-            deepLoss: cnvFiltered[p]['deepLoss'] || 0, 
-            shallowLoss: cnvFiltered[p]['loss'] || 0, 
-            gain: cnvFiltered[p]['gain'] || 0, 
-            amplification: cnvFiltered[p]['amplification'] || 0, 
-            project_id: p,
-            num_cases_total: cases.cnvTotal.project__project_id.buckets.filter(
-              f => f.key === p,
-            )[0].doc_count,
-          };
-        });
+    const cnvCancerDistData = Object.keys(cnvFiltered).map(p => {
+      const nums = cases.cnvTotal.project__project_id.buckets.filter(
+        f => f.key === p,
+      )[0].doc_count;
+      return {
+        deepLoss: cnvFiltered[p]['deepLoss'] || 0,
+        shallowLoss: cnvFiltered[p]['loss'] || 0,
+        gain: cnvFiltered[p]['gain'] || 0,
+        amplification: cnvFiltered[p]['amplification'] || 0,
+        project_id: p,
+        num_cases_total: cases.cnvTotal.project__project_id.buckets.filter(
+          f => f.key === p,
+        )[0].doc_count,
+      };
+    });
 
->>>>>>> 29651f58... Nested the real data for Gene histogram.
     const chartStyles = {
       xAxis: {
         stroke: theme.greyScale4,
@@ -197,15 +165,6 @@ export default compose(
       },
     };
 
-<<<<<<< HEAD
-=======
-    const checkers = [
-      { key: 'amplification', name: 'Amplification', color: '#900000' },
-      { key: 'gain', name: 'Gain', color: '#d33737' },
-      { key: 'shallowLoss', name: 'Shallow Loss', color: '#0d71e8' },
-      { key: 'deepLoss', name: 'Deep Loss', color: '#00457c' },
-    ];
->>>>>>> 29651f58... Nested the real data for Gene histogram.
     const mutationCancerDistData = (cases.filtered || {
       project__project_id: { buckets: [] },
     }).project__project_id.buckets.map(b => {
@@ -240,24 +199,6 @@ export default compose(
         ),
       }));
 
-<<<<<<< HEAD
-    const cnvCancerDistData = (cnvCases.filtered || {
-      project__project_id: { buckets: [] },
-    }).project__project_id.buckets.map(b => {
-      const totalCasesByProject = cnvCases.total.project__project_id.buckets.filter(
-        f => f.key === b.key,
-      )[0].doc_count;
-      return {
-        amplification: b.amplification,
-        gain: b.gain,
-        shallow_loss: b.shallow_loss,
-        deep_loss: b.deep_loss,
-        project_id: b.key,
-        num_cases_total: totalCasesByProject,
-      };
-    });
-=======
->>>>>>> 29651f58... Nested the real data for Gene histogram.
     const cnvChartData = sortBy(
       cnvCancerDistData,
       d =>
@@ -269,13 +210,8 @@ export default compose(
       .slice(0, 20)
       .map(d => ({
         symbol: d.project_id,
-<<<<<<< HEAD
         deep_loss: d.deep_loss / d.num_cases_total * 100,
         shallow_loss: d.shallow_loss / d.num_cases_total * 100,
-=======
-        deepLoss: d.deepLoss / d.num_cases_total * 100,
-        shallowLoss: d.shallowLoss / d.num_cases_total * 100,
->>>>>>> 29651f58... Nested the real data for Gene histogram.
         gain: d.gain / d.num_cases_total * 100,
         amplification: d.amplification / d.num_cases_total * 100,
         total: d.num_cases_total,
@@ -344,100 +280,96 @@ export default compose(
               </Column>
             </span>
           )}
-          <span style={{ width: '50%' }}>
-            <Column style={{ padding: '0 0 0 2rem' }}>
-              <Row
-                style={{
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                }}
-              >
-                <ChartTitle
-                  cases={sum(
-                    cnvCancerDistData.map(
-<<<<<<< HEAD
-                      d =>
-                        d.amplification + d.gain + d.shallow_loss + d.deep_loss,
-=======
-                      d => d.amplification + d.gain + d.shallowLoss + d.deepLoss,
->>>>>>> 29651f58... Nested the real data for Gene histogram.
-                    ),
-                  )}
-                  ssms={get(ssms, 'hits.total', 0)}
-                  projects={cnvCancerDistData}
-                  filters={filters}
-                  type="cnv"
-                />
-                <DownloadVisualizationButton
-                  svg={() =>
-                    wrapSvg({
-                      selector: '.test-stacked-bar-chart svg',
-                      title: 'CNV Distribution',
-                    })}
-                  data={cnvChartData.map(d => ({
-                    symbol: d.symbol,
-                    amplification: d.amplification,
-                    gain: d.gain,
-<<<<<<< HEAD
-                    shallow_loss: d.shallow_loss,
-                    deep_loss: d.deep_loss,
-=======
-                    shallowLoss: d.shallowLoss,
-                    deepLoss: d.deepLoss,
->>>>>>> 29651f58... Nested the real data for Gene histogram.
-                    total: d.total,
-                  }))}
-                  slug="cancer-distribution-bar-chart"
-                  noText
-                  tooltipHTML="Download image or data"
-                  style={{ marginRight: '2rem' }}
-                />
-              </Row>
-              <Column>
-                <FilteredStackedBarChart
-                  margin={CHART_MARGINS}
-                  height={200}
-                  data={cnvChartData}
-                  displayFilters={cnv}
-                  colors={cnvColors.reduce(
-                    (acc, f) => ({ ...acc, [f.key]: f.color }),
-                    0,
-                  )}
-                  yAxis={{ title: '% of Cases Affected' }}
-                  styles={chartStyles}
-                />
-                <Row style={{ display: 'flex', justifyContent: 'center' }}>
-                  {cnvColors.map(f => (
-                    <label key={f.key} style={{ paddingRight: '10px' }}>
-                      <span
-                        onClick={() =>
-                          setCnv({
-                            ...cnv,
-                            [f.key]: !cnv[f.key],
-                          })}
-                        style={{
-                          color: f.color,
-                          textAlign: 'center',
-                          border: '2px solid',
-                          height: '18px',
-                          width: '18px',
-                          cursor: 'pointer',
-                          display: 'inline-block',
-                          marginRight: '6px',
-                          marginTop: '3px',
-                          verticalAlign: 'middle',
-                          lineHeight: '16px',
-                        }}
-                      >
-                        {cnv[f.key] ? '✓' : <span>&nbsp;</span>}
-                      </span>
-                      {f.name}
-                    </label>
-                  ))}
+          {chartType !== 'ssm' && (
+            <span style={{ width: '50%' }}>
+              <Column style={{ padding: '0 0 0 2rem' }}>
+                <Row
+                  style={{
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                  }}
+                >
+                  <ChartTitle
+                    cases={sum(
+                      cnvCancerDistData.map(
+                        d =>
+                          d.amplification +
+                          d.gain +
+                          d.shallow_loss +
+                          d.deep_loss,
+                      ),
+                    )}
+                    ssms={get(ssms, 'hits.total', 0)}
+                    projects={cnvCancerDistData}
+                    filters={filters}
+                    type="cnv"
+                  />
+                  <DownloadVisualizationButton
+                    svg={() =>
+                      wrapSvg({
+                        selector: '.test-stacked-bar-chart svg',
+                        title: 'CNV Distribution',
+                      })}
+                    data={cnvChartData.map(d => ({
+                      symbol: d.symbol,
+                      amplification: d.amplification,
+                      gain: d.gain,
+                      shallow_loss: d.shallow_loss,
+                      deep_loss: d.deep_loss,
+                      total: d.total,
+                    }))}
+                    slug="cancer-distribution-bar-chart"
+                    noText
+                    tooltipHTML="Download image or data"
+                    style={{ marginRight: '2rem' }}
+                  />
                 </Row>
+                <Column>
+                  <FilteredStackedBarChart
+                    margin={CHART_MARGINS}
+                    height={200}
+                    data={cnvChartData}
+                    displayFilters={cnv}
+                    colors={cnvColors.reduce(
+                      (acc, f) => ({ ...acc, [f.key]: f.color }),
+                      0,
+                    )}
+                    yAxis={{ title: '% of Cases Affected' }}
+                    styles={chartStyles}
+                  />
+                  <Row style={{ display: 'flex', justifyContent: 'center' }}>
+                    {cnvColors.map(f => (
+                      <label key={f.key} style={{ paddingRight: '10px' }}>
+                        <span
+                          onClick={() =>
+                            setCnv({
+                              ...cnv,
+                              [f.key]: !cnv[f.key],
+                            })}
+                          style={{
+                            color: f.color,
+                            textAlign: 'center',
+                            border: '2px solid',
+                            height: '18px',
+                            width: '18px',
+                            cursor: 'pointer',
+                            display: 'inline-block',
+                            marginRight: '6px',
+                            marginTop: '3px',
+                            verticalAlign: 'middle',
+                            lineHeight: '16px',
+                          }}
+                        >
+                          {cnv[f.key] ? '✓' : <span>&nbsp;</span>}
+                        </span>
+                        {f.name}
+                      </label>
+                    ))}
+                  </Row>
+                </Column>
               </Column>
-            </Column>
-          </span>
+            </span>
+          )}
         </Row>
       </div>
     );

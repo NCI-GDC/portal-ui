@@ -190,13 +190,3 @@ export default {
   SwatchLegend,
   ToggleSwatchLegend,
 };
-
-/* <input
-  type="checkbox"
-  id={key}
-  name={key}
-  aria-label={key}
-  checked={toggledConsequences.includes(key)}
-  onChange={() => toggleConsequence(key)}
-/>
-<span>{key.replace(/_/g, ' ').replace(/variant/g, '')}</span> */

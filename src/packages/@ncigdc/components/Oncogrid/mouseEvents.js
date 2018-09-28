@@ -34,7 +34,7 @@ export default function({
           {!!cnvData.length && (
             <span>
               <span style={{ fontWeight: 'bold' }}>CNV change:</span>
-              <span> {cnvData[0].cnv_change}</span>
+              <span> {cnvData[0].cnvChange}</span>
             </span>
           )}
           {!!ssmData.length && (

@@ -5,11 +5,15 @@ import { compose, withState, withPropsOnChange } from 'recompose';
 import { SketchPicker } from 'react-color';
 
 import BaseModal from '@ncigdc/components/Modals/BaseModal';
-import { Row } from '@ncigdc/uikit/Flex/index';
+import { Row, Column } from '@ncigdc/uikit/Flex/index';
 import { capitalize } from '@ncigdc/utils/string';
 import Dropdown from '@ncigdc/uikit/Dropdown';
 import DropdownItem from '@ncigdc/uikit/DropdownItem';
 import Button from '@ncigdc/uikit/Button';
+import {
+  suggestedCnvThemes,
+  suggestedMutationThemes,
+} from '@ncigdc/utils/filters/prepared/significantConsequences';
 
 const Swatch = ({
   color,
@@ -82,6 +86,37 @@ const presetColors = [
   '#AA00FF',
 ];
 
+const PresetTheme = ({ type, theme, setTheme, palette, styles = {} }) => {
+  return (
+    <div
+      onClick={() =>
+        setTheme({
+          ...palette,
+          [type]: {
+            ...palette[type],
+            ...theme,
+          },
+        })}
+      style={{ display: 'flex', flexFlow: 'row wrap', width: 50, margin: 5 }}
+    >
+      {map(theme, (val, i) => {
+        return (
+          <div
+            key={i}
+            style={{
+              backgroundColor: val,
+              width: 10,
+              height: 10,
+              margin: 3,
+              ...styles,
+            }}
+          />
+        );
+      })}
+    </div>
+  );
+};
+
 export default compose(
   withState('palette', 'setPalette', {}),
   withPropsOnChange(['colors'], ({ colors, setPalette }) => {
@@ -108,52 +143,111 @@ export default compose(
           marginTop: 10,
         }}
       >
-        <Row
-          className="mutation-color-scheme"
-          style={{
-            display: 'flex',
-            flexFlow: 'row wrap',
-            width: 350,
-          }}
-        >
-          {map(palette.mutation, (color, type) => {
-            return (
-              <Swatch
-                key={type}
-                color={color}
-                label={type}
-                onSelect={setPalette}
-                palette={palette}
-                handleComplete={() => onClose(palette)}
-                style={{ borderRadius: 10 }}
-                type={'mutation'}
-              />
-            );
-          })}
-        </Row>
-        <Row
-          className="cnv-color-scheme"
-          style={{
-            display: 'flex',
-            flexFlow: 'row wrap',
-            width: 250,
-            justifyContent: 'space-between',
-          }}
-        >
-          {map(palette.cnv, (color, type) => {
-            return (
-              <Swatch
-                key={type}
-                color={color}
-                label={type}
-                onSelect={setPalette}
-                palette={palette}
-                handleComplete={() => onClose(palette)}
-                type={'cnv'}
-              />
-            );
-          })}
-        </Row>
+        <Column>
+          <h4>Mutations</h4>
+          <Row className="mutation-color-scheme">
+            <Column>
+              <div
+                style={{
+                  display: 'flex',
+                  flexFlow: 'row wrap',
+                  width: 200,
+                  alignItems: 'center',
+                  margin: '10px 20px 10px',
+                }}
+              >
+                {map(suggestedMutationThemes, (theme, i) => {
+                  return (
+                    <PresetTheme
+                      key={i}
+                      theme={theme}
+                      styles={{ borderRadius: '50%' }}
+                      type={'mutation'}
+                      setTheme={setPalette}
+                      palette={palette}
+                    />
+                  );
+                })}
+              </div>
+            </Column>
+            <Column>
+              <Row
+                style={{
+                  display: 'flex',
+                  flexFlow: 'row wrap',
+                  width: 400,
+                }}
+              >
+                {map(palette.mutation, (color, type) => {
+                  return (
+                    <Swatch
+                      key={type}
+                      color={color}
+                      label={type}
+                      onSelect={setPalette}
+                      palette={palette}
+                      handleComplete={() => onClose(palette)}
+                      style={{ borderRadius: 10 }}
+                      type={'mutation'}
+                    />
+                  );
+                })}
+              </Row>
+            </Column>
+          </Row>
+        </Column>
+        <Column>
+          <h4>CNVs</h4>
+          <Row className="cnv-color-scheme">
+            <Column>
+              <div
+                style={{
+                  display: 'flex',
+                  flexFlow: 'row wrap',
+                  width: 200,
+                  alignItems: 'center',
+                  margin: '10px 20px 10px',
+                }}
+              >
+                {map(suggestedCnvThemes, (theme, i) => {
+                  return (
+                    <PresetTheme
+                      key={i}
+                      theme={theme}
+                      type={'cnv'}
+                      setTheme={setPalette}
+                      palette={palette}
+                    />
+                  );
+                })}
+              </div>
+            </Column>
+            <Column>
+              <Row
+                style={{
+                  display: 'flex',
+                  flexFlow: 'row wrap',
+                  width: 250,
+                  justifyContent: 'space-between',
+                }}
+              >
+                {map(palette.cnv, (color, type) => {
+                  return (
+                    <Swatch
+                      key={type}
+                      color={color}
+                      label={type}
+                      onSelect={setPalette}
+                      palette={palette}
+                      handleComplete={() => onClose(palette)}
+                      type={'cnv'}
+                    />
+                  );
+                })}
+              </Row>
+            </Column>
+          </Row>
+        </Column>
       </div>
     </BaseModal>
   );

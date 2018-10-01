@@ -127,9 +127,17 @@ type TProps = {
 
 const OncoGridWrapper = compose(
   withRouter,
-  withState('gridColors', 'setGridColors', colorMap),
+  withState(
+    'gridColors',
+    'setGridColors',
+    JSON.parse(localStorage.getItem('oncogridActiveTheme') || 'null') ||
+      colorMap,
+  ),
   withHandlers({
-    resetColors: ({ setGridColors }) => () => setGridColors(colorMap),
+    resetColors: ({ setGridColors }) => () => {
+      setGridColors(colorMap);
+      localStorage.setItem('oncogridActiveTheme', JSON.stringify(colorMap));
+    },
   }),
   withState('oncoGrid', 'setOncoGrid', {}),
   withState('oncoGridData', 'setOncoGridData', null),
@@ -526,6 +534,10 @@ const OncoGridWrapper = compose(
                           <ColorPickerModal
                             onApply={colors => {
                               setGridColors(colors);
+                              localStorage.setItem(
+                                'oncogridActiveTheme',
+                                JSON.stringify(colors),
+                              );
                               dispatch(setModal(null));
                             }}
                             onClose={() => dispatch(setModal(null))}

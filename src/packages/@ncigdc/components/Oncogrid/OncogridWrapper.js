@@ -94,6 +94,7 @@ const styles = {
     alignItems: 'center',
     marginBottom: '30px',
     marginLeft: '100px',
+    flexFlow: 'row wrap',
   },
 };
 

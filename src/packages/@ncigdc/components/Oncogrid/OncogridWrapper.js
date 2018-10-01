@@ -89,6 +89,12 @@ const styles = {
     backgroundColor: '#e6e6e6',
     borderColor: '#adadad',
   },
+  legends: {
+    width: '80%',
+    alignItems: 'center',
+    marginBottom: '30px',
+    marginLeft: '100px',
+  },
 };
 
 const containerRefs = {};
@@ -647,13 +653,7 @@ const OncoGridWrapper = compose(
             </div>
           )}
         </Row>
-        <Row
-          style={{
-            width: '80%',
-            alignItems: 'center',
-            marginBottom: '30px',
-          }}
-        >
+        <Row style={styles.legends}>
           <div
             style={{
               flexGrow: 1,

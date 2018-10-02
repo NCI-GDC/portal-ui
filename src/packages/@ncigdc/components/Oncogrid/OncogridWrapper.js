@@ -695,21 +695,22 @@ const OncoGridWrapper = compose(
                     <Hidden>Fullscreen</Hidden>
                   </Button>
                 </Tooltip>
-
-                {crosshairMode && (
-                  <div
-                    style={{
-                      fontSize: '1.1rem',
-                      verticalAlign: 'top',
-                      width: '100%',
-                      textAlign: 'right',
-                    }}
-                  >
-                    Click and drag to select a region on the OncoGrid to zoom
-                    in.
-                  </div>
-                )}
               </Row>
+              {crosshairMode && (
+                <div
+                  style={{
+                    fontSize: '1.1rem',
+                    verticalAlign: 'top',
+                    width: '100%',
+                    textAlign: 'right',
+                    position: 'absolute',
+                    top: '40px',
+                    right: '10px',
+                  }}
+                >
+                  Click and drag to select a region on the OncoGrid to zoom in.
+                </div>
+              )}
             </div>
           )}
         </Row>
@@ -746,15 +747,10 @@ const OncoGridWrapper = compose(
                     setToggledConsequences(consequenceTypes);
                   }
                 }}
-                colorMap={gridColors.mutation}
+                colorMap={colorMap.mutation}
                 type={'mutations'}
                 heatMapMode={heatMapMode}
               />
-              {/* {heatMapMode && (
-                <div style={{ marginLeft: 20 }}>
-                  <StepLegend rightLabel="More Mutations" />
-                </div>
-              )} */}
             </div>
           </div>
 

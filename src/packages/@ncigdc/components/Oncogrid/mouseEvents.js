@@ -3,6 +3,7 @@ import React from 'react';
 import { stringifyJSONParam } from '@ncigdc/utils/uri';
 import { setModal } from '@ncigdc/dux/modal';
 import SelectModal from '@ncigdc/components/Modals/SelectModal';
+import { replaceFilters } from '@ncigdc/utils/filters';
 
 export default function({
   grid,
@@ -143,56 +144,38 @@ export default function({
     });
   });
 
-  grid.on(
-    'gridClick',
-    ({ observation: { donorId, consequence, type, cnv_change, geneId } }) => {
-      let facetTab = 'mutations';
-      let searchTableTab = 'mutations';
-      let typeField = 'ssms.consequence.transcript.consequence_type';
-      let typeValue = consequence;
-
-      if (type === 'cnv') {
-        facetTab = 'genes';
-        searchTableTab = 'genes';
-        typeField = ''; // tbd
-        typeValue = cnv_change;
-      }
-
-      push({
-        pathname: '/exploration',
-        query: {
-          filters: stringifyJSONParam({
-            op: 'AND',
-            content: [
-              {
-                op: 'IN',
-                content: {
-                  field: 'cases.case_id',
-                  value: [donorId],
-                },
-              },
-              {
-                op: 'IN',
-                content: {
-                  field: typeField,
-                  value: [typeValue],
-                },
-              },
-              {
-                op: 'IN',
-                content: {
-                  field: 'genes.gene_id',
-                  value: [geneId],
-                },
-              },
-            ],
-          }),
-          facetTab,
-          searchTableTab,
-        },
-      });
-    },
-  );
+  grid.on('gridClick', ({ donorId, geneId }) => {
+    const filters = replaceFilters(
+      {
+        op: 'AND',
+        content: [
+          {
+            op: 'IN',
+            content: {
+              field: 'cases.case_id',
+              value: [donorId],
+            },
+          },
+          {
+            op: 'IN',
+            content: {
+              field: 'genes.gene_id',
+              value: [geneId],
+            },
+          },
+        ],
+      },
+      currentFilters,
+    );
+    push({
+      pathname: '/exploration',
+      query: {
+        filters: stringifyJSONParam(filters),
+        facetTab: 'genes',
+        searchTableTab: 'genes',
+      },
+    });
+  });
 
   grid.on('addTrackClick', ({ hiddenTracks, addTrack }) => {
     dispatch(

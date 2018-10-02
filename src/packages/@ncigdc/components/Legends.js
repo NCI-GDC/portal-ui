@@ -101,13 +101,11 @@ const Checkbox = ({
           <span
             style={
               heatMapMode
-                ? { color: color, paddingBottom: 1 }
+                ? { color: color }
                 : {
                     color: Color(color)
                       .darken(0.4)
                       .rgbString(),
-                    paddingBottom: 1,
-                    display: 'inline-flex',
                   }
             }
           >

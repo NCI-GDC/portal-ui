@@ -1,6 +1,5 @@
 // @flow
 import type { TValueFilter } from '@ncigdc/utils/filters/types';
-import { theme } from '@ncigdc/theme';
 
 export const colorMap = {
   mutation: {
@@ -20,57 +19,20 @@ export const colorMap = {
 
 export const suggestedMutationThemes = {
   theme1: {
-    missense_variant: '#2E7D32',
-    frameshift_variant: '#EF6C00',
-    start_lost: '#64FFDA',
-    stop_lost: '#00E676',
-    stop_gained: '#81D4FA',
-  },
-
-  theme2: {
-    missense_variant: '#AA00FF',
-    frameshift_variant: '#2E7D32',
-    start_lost: '#FF4081',
-    stop_lost: '#BDBDBD',
-    stop_gained: '#64FFDA',
-  },
-
-  theme3: {
-    missense_variant: theme.greyScale1,
-    frameshift_variant: theme.greyScale2,
-    start_lost: theme.greyScale3,
-    stop_lost: theme.greyScale4,
-    stop_gained: theme.greyScale5,
-  },
-  theme4: {
-    missense_variant: 'red',
-    frameshift_variant: 'blue',
-    start_lost: 'green',
-    stop_lost: 'purple',
-    stop_gained: 'pink',
+    missense_variant: '#00e676',
+    frameshift_variant: '#388e3c',
+    start_lost: '#fdd835',
+    stop_lost: '#a8a6a6',
+    stop_gained: '#ce93d8',
   },
 };
 
 export const suggestedCnvThemes = {
   theme1: {
-    'Deep Loss': '#64b5f6',
+    'Deep Loss': '#00457c',
     'Shallow Loss': '#64b5f6',
     Gain: '#e76a6a',
-    Amplification: '#e76a6a',
-  },
-
-  theme2: {
-    'Deep Loss': '#64b5f6',
-    'Shallow Loss': '#64b5f6',
-    Gain: '#e76a6a',
-    Amplification: '#e76a6a',
-  },
-
-  theme3: {
-    'Deep Loss': '#64b5f6',
-    'Shallow Loss': '#64b5f6',
-    Gain: '#e76a6a',
-    Amplification: '#e76a6a',
+    Amplification: '#900000',
   },
 };
 

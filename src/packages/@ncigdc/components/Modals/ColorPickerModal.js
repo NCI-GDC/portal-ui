@@ -14,6 +14,7 @@ import {
   suggestedCnvThemes,
   suggestedMutationThemes,
 } from '@ncigdc/utils/filters/prepared/significantConsequences';
+import { visualizingButton } from '@ncigdc/theme/mixins';
 
 const Swatch = ({
   color,
@@ -23,6 +24,7 @@ const Swatch = ({
   handleComplete,
   style,
   type,
+  setPalette,
 }) => {
   const handleChange = (color, event) => {
     onSelect({
@@ -62,7 +64,13 @@ const Swatch = ({
       }
       dropdownStyle={{ top: '100%', marginTop: 5, whiteSpace: 'nowrap' }}
     >
-      <DropdownItem>
+      <DropdownItem
+        style={{
+          flexDirection: 'column !important',
+          justifyContent: 'center !important',
+          alignItems: 'center !important',
+        }}
+      >
         <SketchPicker
           presetColors={presetColors}
           color={color}
@@ -89,30 +97,62 @@ const presetColors = [
 const PresetTheme = ({ type, theme, setTheme, palette, styles = {} }) => {
   return (
     <div
-      onClick={() =>
-        setTheme({
-          ...palette,
-          [type]: {
-            ...palette[type],
-            ...theme,
-          },
-        })}
-      style={{ display: 'flex', flexFlow: 'row wrap', width: 50, margin: 5 }}
+      style={{
+        margin: 5,
+        border: `1px solid lightgray`,
+        borderRadius: '5px',
+        padding: 10,
+      }}
     >
-      {map(theme, (val, i) => {
-        return (
-          <div
-            key={i}
-            style={{
-              backgroundColor: val,
-              width: 10,
-              height: 10,
-              margin: 3,
-              ...styles,
-            }}
-          />
-        );
-      })}
+      <div
+        style={{
+          display: 'flex',
+          flexFlow: 'row wrap',
+        }}
+      >
+        {map(theme, (val, key) => {
+          return (
+            <div
+              key={key}
+              style={{
+                display: 'flex',
+                flexDirection: 'row',
+                width: 100,
+                // margin: '0 10px',
+                alignItems: 'center',
+              }}
+            >
+              <div
+                style={{
+                  backgroundColor: val,
+                  width: 15,
+                  height: 15,
+                  margin: 5,
+                  ...styles,
+                }}
+              />
+              <span style={{ fontSize: '1rem' }}>
+                {key.replace(/_/g, ' ').replace(/variant/g, '')}
+              </span>
+            </div>
+          );
+        })}
+      </div>
+      <Row style={{ justifyContent: 'flex-end', marginTop: 10 }}>
+        <Button
+          style={visualizingButton}
+          onClick={() =>
+            setTheme({
+              ...palette,
+              [type]: {
+                ...palette[type],
+                ...theme,
+              },
+            })}
+        >
+          Apply
+        </Button>
+      </Row>
     </div>
   );
 };
@@ -143,17 +183,15 @@ export default compose(
           marginTop: 10,
         }}
       >
-        <Column>
-          <h4>Mutations</h4>
-          <Row className="mutation-color-scheme">
+        <Column style={{ width: '40%' }}>
+          <Row style={{ marginLeft: 30 }}>
             <Column>
-              <div
+              <h4>Suggested Themes</h4>
+              <Row
                 style={{
                   display: 'flex',
                   flexFlow: 'row wrap',
-                  width: 200,
-                  alignItems: 'center',
-                  margin: '10px 20px 10px',
+                  width: 250,
                 }}
               >
                 {map(suggestedMutationThemes, (theme, i) => {
@@ -168,45 +206,11 @@ export default compose(
                     />
                   );
                 })}
-              </div>
-            </Column>
-            <Column>
+              </Row>
               <Row
                 style={{
                   display: 'flex',
-                  flexFlow: 'row wrap',
-                  width: 400,
-                }}
-              >
-                {map(palette.mutation, (color, type) => {
-                  return (
-                    <Swatch
-                      key={type}
-                      color={color}
-                      label={type}
-                      onSelect={setPalette}
-                      palette={palette}
-                      handleComplete={() => onClose(palette)}
-                      style={{ borderRadius: 10 }}
-                      type={'mutation'}
-                    />
-                  );
-                })}
-              </Row>
-            </Column>
-          </Row>
-        </Column>
-        <Column>
-          <h4>CNVs</h4>
-          <Row className="cnv-color-scheme">
-            <Column>
-              <div
-                style={{
-                  display: 'flex',
-                  flexFlow: 'row wrap',
-                  width: 200,
-                  alignItems: 'center',
-                  margin: '10px 20px 10px',
+                  width: 250,
                 }}
               >
                 {map(suggestedCnvThemes, (theme, i) => {
@@ -220,31 +224,62 @@ export default compose(
                     />
                   );
                 })}
-              </div>
-            </Column>
-            <Column>
-              <Row
-                style={{
-                  display: 'flex',
-                  flexFlow: 'row wrap',
-                  width: 250,
-                  justifyContent: 'space-between',
-                }}
-              >
-                {map(palette.cnv, (color, type) => {
-                  return (
-                    <Swatch
-                      key={type}
-                      color={color}
-                      label={type}
-                      onSelect={setPalette}
-                      palette={palette}
-                      handleComplete={() => onClose(palette)}
-                      type={'cnv'}
-                    />
-                  );
-                })}
               </Row>
+            </Column>
+          </Row>
+        </Column>
+        <Column className="grid-color-schemes" style={{ width: '60%' }}>
+          <Row style={{ borderBottom: '1px solid lightgray' }}>
+            <h4 style={{ width: '50%' }}>Mutations</h4>
+            <h4 style={{ width: '50%' }}>CNVs</h4>
+          </Row>
+          <Row style={{ marginTop: 20 }}>
+            <Column
+              className="mutation-color-scheme"
+              style={{
+                display: 'flex',
+                flexFlow: 'row wrap',
+                width: 400,
+              }}
+            >
+              {map(palette.mutation, (color, type) => {
+                return (
+                  <Swatch
+                    key={type}
+                    color={color}
+                    label={type}
+                    onSelect={setPalette}
+                    palette={palette}
+                    handleComplete={() => onClose(palette)}
+                    style={{ borderRadius: 10 }}
+                    type={'mutation'}
+                    setPalette={setPalette}
+                  />
+                );
+              })}
+            </Column>
+            <Column
+              className="cnv-color-scheme"
+              style={{
+                display: 'flex',
+                flexFlow: 'row wrap',
+                width: 250,
+                justifyContent: 'space-between',
+              }}
+            >
+              {map(palette.cnv, (color, type) => {
+                return (
+                  <Swatch
+                    key={type}
+                    color={color}
+                    label={type}
+                    onSelect={setPalette}
+                    palette={palette}
+                    handleComplete={() => onClose(palette)}
+                    type={'cnv'}
+                  />
+                );
+              })}
             </Column>
           </Row>
         </Column>

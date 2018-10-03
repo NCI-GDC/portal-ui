@@ -159,9 +159,10 @@ const Component = compose(
               {score.toLocaleString()} Case
               {score > 1 ? 's' : ''} affected in explore
               <br />
-              {score.toLocaleString()} /{' '}
+              {/* // TODO: change back for frequencies */}
+              {/* {score.toLocaleString()} /{' '}
               {(filteredCases.hits.total || 0).toLocaleString()}
-              &nbsp;({(score / filteredCases.hits.total * 100).toFixed(2)}%)
+              &nbsp;({(score / filteredCases.hits.total * 100).toFixed(2)}%) */}
             </span>
           );
         }
@@ -175,10 +176,11 @@ const Component = compose(
       .sort((a, b) => b.score - a.score)
       .map(g => ({
         label: g.symbol,
-        value:
-          context === 'project' && projectId
-            ? g.score / numCasesAggByProject[projectId] * 100
-            : g.score / filteredCases.hits.total * 100,
+        // TODO: change back for frequencies
+        value: g.score,
+        // context === 'project' && projectId
+        // ? g.score / numCasesAggByProject[projectId] * 100
+        // : g.score / filteredCases.hits.total * 100,
         tooltip: tooltipContext(context, g),
         onClick: () => handleClickGene(g, mutatedGenesChartData),
       }));
@@ -198,14 +200,14 @@ const Component = compose(
         gain1:1500,
         loss1:2200,
         loss2:1700,
-      },{  
+      },{
         symbol: "TTN",
         gene_id: "ENSG00000155657",
         gain2:2000,
         gain1:150,
         loss1:220,
         loss2:170,
-      },{  
+      },{
         symbol: "MUC16",
         gene_id: "ENSG00000181143",
         gain2:200,
@@ -219,14 +221,14 @@ const Component = compose(
         gain1:150,
         loss1:2200,
         loss2:170,
-      },{  
+      },{
         symbol: "SYNE1",
         gene_id: "ENSG00000131018",
         gain2:200,
         gain1:150,
         loss1:220,
         loss2:1700,
-      },{  
+      },{
         symbol: "RYR2",
         gene_id: "ENSG00000198626",
         gain2:1000,
@@ -240,91 +242,91 @@ const Component = compose(
         gain1:1150,
         loss1:220,
         loss2:170,
-      },{  
+      },{
         symbol: "FLG",
         gene_id: "ENSG00000143631",
         gain2:200,
         gain1:150,
         loss1:220,
         loss2:1170,
-      },{  
+      },{
         symbol: "PIK3CA",
         gene_id: "ENSG00000121879",
         gain2:200,
         gain1:1990,
         loss1:220,
         loss2:170,
-      },{  
+      },{
         symbol: "USH2A",
         gene_id: "ENSG00000042781",
         gain2:200,
         gain1:150,
         loss1:2000,
         loss2:170,
-      },{  
+      },{
         symbol: "PCLO",
         gene_id: "ENSG00000186472",
         gain2:200,
         gain1:150,
         loss1:220,
         loss2:1700,
-      },{  
+      },{
         symbol: "OBSCN",
         gene_id: "ENSG00000154358",
         gain2:200,
         gain1:1500,
         loss1:220,
         loss2:170,
-      },{  
+      },{
         symbol: "MUC4",
         gene_id: "ENSG00000145113",
         gain2:2000,
         gain1:1500,
         loss1:220,
         loss2:170,
-      },{  
+      },{
         symbol: "ZFHX4",
         gene_id: "ENSG00000091656",
         gain2:2000,
         gain1:150,
         loss1:2200,
         loss2:170,
-      },{  
+      },{
         symbol: "DNAH5",
         gene_id: "ENSG00000039139",
         gain2:200,
         gain1:150,
         loss1:220,
         loss2:170,
-      },{  
+      },{
         symbol: "CSMD1",
         gene_id: "ENSG00000183117",
         gain2:200,
         gain1:150,
         loss1:220,
         loss2:170,
-      },{  
+      },{
         symbol: "XIRP2",
         gene_id: "ENSG00000163092",
         gain2:200,
         gain1:150,
         loss1:220,
         loss2:170,
-      },{  
+      },{
         symbol: "DST",
         gene_id: "ENSG00000151914",
         gain2:200,
         gain1:150,
         loss1:220,
         loss2:170,
-      },{  
+      },{
         symbol: "FAT3",
         gene_id: "ENSG00000165323",
         gain2:200,
         gain1:150,
         loss1:220,
         loss2:170,
-      },{  
+      },{
         symbol: "FAT4",
         gene_id: "ENSG00000196159",
         gain2:200,
@@ -377,7 +379,9 @@ const Component = compose(
                 <Row style={{ paddingTop: '2rem' }}>
                   <BarChart
                     data={mutatedGenesChartData}
-                    yAxis={{ title: '% of Cases Affected' }}
+                    // TODO: change back for frequencies
+                    // yAxis={{ title: '% of Cases Affected' }}
+                    yAxis={{ title: '# of Cases Affected' }}
                     height={CHART_HEIGHT}
                     styles={{
                       xAxis: {

@@ -79,7 +79,9 @@ const Container = styled(Row, {
 });
 
 export default compose(
-  withState('yAxisUnit', 'setYAxisUnit', 'percent'),
+  // TODO: change back for frequencies
+  withState('yAxisUnit', 'setYAxisUnit', 'number'),
+  // withState('yAxisUnit', 'setYAxisUnit', 'percent'),
   withRouter,
   withProps(props => {
     const { aggregations } = JSON.parse(
@@ -186,7 +188,8 @@ export default compose(
                 </b>
                 <br /> {count.toLocaleString()} Case{count > 1 ? 's' : ''}{' '}
                 Affected<br />
-                {count.toLocaleString()} / {numUniqueCases.toLocaleString()} ({percent.toFixed(2)}%)
+                {/* // TODO: change back for frequencies */}
+                {/* {count.toLocaleString()} / {numUniqueCases.toLocaleString()} ({percent.toFixed(2)}%) */}
               </span>
             ),
           }),
@@ -356,7 +359,8 @@ export default compose(
                   key="bar-wrapper"
                   style={{ paddingLeft: '10px', paddingRight: '10px' }}
                 >
-                  <form name="y-axis-unit-toggle" key="y-axis-unit-toggle">
+                  {/* // TODO: change back for frequencies */}
+                  {/* <form name="y-axis-unit-toggle" key="y-axis-unit-toggle">
                     <label
                       htmlFor="percentage-cases-radio"
                       style={{
@@ -393,7 +397,7 @@ export default compose(
                       />
                       # of Cases Affected
                     </label>
-                  </form>
+                  </form> */}
                   <WithSize>
                     {({ width }) => (
                       <div style={{ transform: 'scale(0.9)' }}>
@@ -412,7 +416,9 @@ export default compose(
                             }),
                             {},
                           )}
-                          yAxis={{ title: 'Cases Affected' }}
+                          // TODO: change back for frequencies
+                          yAxis={{ title: '# of Cases Affected' }}
+                          // yAxis={{ title: 'Cases Affected' }}
                           styles={{
                             xAxis: {
                               stroke: theme.greyScale4,

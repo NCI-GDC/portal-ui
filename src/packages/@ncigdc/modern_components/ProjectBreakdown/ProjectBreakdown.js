@@ -146,7 +146,10 @@ type TProps = {|
   filters: Object,
 |};
 
-export default ({ caseTotal, gdcCaseTotal, filters }: TProps = {}) => (
+export default (
+  // TODO: change back for frequencies *
+  { caseTotal, gdcCaseTotal, filters, location = {} }: TProps = {},
+) => (
   <Toggle
     title={
       <span key="total">
@@ -158,17 +161,18 @@ export default ({ caseTotal, gdcCaseTotal, filters }: TProps = {}) => (
         >
           {caseTotal.toLocaleString()}
         </ExploreLink>
-        <span> / </span>
-        <ExploreLink
-          query={{
-            searchTableTab: 'cases',
-            filters: makeFilter([
-              { field: 'cases.available_variation_data', value: ['ssm'] },
-            ]),
-          }}
-        >
-          {gdcCaseTotal.toLocaleString()}
-        </ExploreLink>
+        {/* // TODO: change back for frequencies */}
+        {/* <span> / </span>
+              <ExploreLink
+                query={{
+                  searchTableTab: 'cases',
+                  filters: makeFilter([
+                    { field: 'cases.available_variation_data', value: ['ssm'] },
+                  ]),
+                }}
+              >
+                {gdcCaseTotal.toLocaleString()}
+              </ExploreLink> */}
       </span>
     }
   >

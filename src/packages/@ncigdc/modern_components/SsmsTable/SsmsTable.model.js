@@ -147,8 +147,9 @@ const SsmsTableModel = [
           Component={
             <span>
               # of Cases where Mutation is observed in {context}
-              <br /> / # of Cases tested for Simple Somatic Mutations in{' '}
-              {context}
+              {/* // TODO: change back for frequencies */}
+              {/* <br /> / # of Cases tested for Simple Somatic Mutations in{' '}
+                  {context} */}
             </span>
           }
           style={tableToolTipHint()}
@@ -179,38 +180,46 @@ const SsmsTableModel = [
           >
             {node.filteredOccurences.hits.total.toLocaleString()}
           </ExploreLink>
-          <span> / </span>
-          <ExploreLink
-            query={{
-              searchTableTab: 'cases',
-              filters:
-                location.pathname.split('/')[1] === 'genes'
-                  ? query.ssmsTable_filters || contextFilters || defaultFilters
-                  : addInFilters(
-                      query.ssmsTable_filters ||
+          {/* // TODO: change back for frequencies */}
+          {location.pathname.includes('cases') && (
+            <span>
+              <span> / </span>
+              <ExploreLink
+                query={{
+                  searchTableTab: 'cases',
+                  filters:
+                    location.pathname.split('/')[1] === 'genes'
+                      ? query.ssmsTable_filters ||
                         contextFilters ||
-                        defaultFilters,
-                      makeFilter([
-                        {
-                          field: 'cases.available_variation_data',
-                          value: ['ssm'],
-                        },
-                      ]),
-                    ),
-            }}
-          >
-            {(filteredCases.hits.total || 0).toLocaleString()}
-          </ExploreLink>
-          <SparkMeter value={node.score / filteredCases.hits.total} />
-          <span
-            style={{
-              fontSize: '0.8em',
-              width: 40,
-              display: 'inline-block',
-            }}
-          >
-            {(node.score / filteredCases.hits.total * 100).toFixed(2)}%
-          </span>
+                        defaultFilters
+                      : addInFilters(
+                          query.ssmsTable_filters ||
+                            contextFilters ||
+                            defaultFilters,
+                          makeFilter([
+                            {
+                              field: 'cases.available_variation_data',
+                              value: ['ssm'],
+                            },
+                          ]),
+                        ),
+                }}
+              >
+                {(filteredCases.hits.total || 0).toLocaleString()}
+              </ExploreLink>
+
+              <SparkMeter value={node.score / filteredCases.hits.total} />
+              <span
+                style={{
+                  fontSize: '0.8em',
+                  width: 40,
+                  display: 'inline-block',
+                }}
+              >
+                {(node.score / filteredCases.hits.total * 100).toFixed(2)}%
+              </span>
+            </span>
+          )}
         </span>
       </Td>
     ),
@@ -226,14 +235,17 @@ const SsmsTableModel = [
           Component={
             <span>
               # of Cases where Mutation is observed<br />
-              / # Cases tested for Simple Somatic Mutations portal wide
-              <br />
-              Expand to see breakdown by project
+              {/* // TODO: change back for frequencies */}
+              {/* / # Cases tested for Simple Somatic Mutations portal wide
+                  <br />
+                  Expand to see breakdown by project */}
             </span>
           }
           style={tableToolTipHint()}
         >
-          # Affected Cases<br /> Across the GDC
+          {/* // TODO: change back for frequencies */}
+          {/* # Affected Cases<br /> Across the GDC */}
+          # Affected Cases<br /> Across All Projects
         </Tooltip>
       </Th>
     ),

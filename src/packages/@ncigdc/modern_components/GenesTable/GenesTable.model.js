@@ -107,9 +107,11 @@ const GenesTableModel = [
         <Tooltip
           Component={
             <span>
-              Breakdown of Affected Cases in {context} <br />
+              {/* // TODO: change back for frequencies */}
+              # of Cases where Gene is mutated
+              {/* Breakdown of Affected Cases in {context} <br />
               # of Cases where Gene is <br />
-              mutated /# Cases tested for Simple Somatic Mutations
+              mutated /# Cases tested for Simple Somatic Mutations */}
             </span>
           }
           style={tableToolTipHint()}
@@ -133,7 +135,8 @@ const GenesTableModel = [
           >
             {(node.numCases || 0).toLocaleString()}
           </ExploreLink>
-          <span> / </span>
+          {/* // TODO: change back for frequencies */}
+          {/* <span> / </span>
           <ExploreLink
             query={{
               searchTableTab: 'cases',
@@ -153,7 +156,7 @@ const GenesTableModel = [
           <span>{` (${((node.numCases || 0) /
             filteredCases.hits.total *
             100
-          ).toFixed(2)}%)`}</span>
+          ).toFixed(2)}%)`}</span> */}
         </span>
       </Td>
     ),
@@ -169,10 +172,11 @@ const GenesTableModel = [
           Component={
             <span>
               # of Cases where Gene contains Simple Somatic Mutations
-              <br />
+              {/* // TODO: change back for frequencies */}
+              {/* <br />
               / # Cases tested for Simple Somatic Mutations portal wide
               <br />
-              Expand to see breakdown by project
+              Expand to see breakdown by project */}
             </span>
           }
           style={tableToolTipHint()}
@@ -204,8 +208,9 @@ const GenesTableModel = [
           Component={
             <span>
               # of Cases where CNV gain events are observed in Gene
-              <br />
-              / # of Cases tested for Copy Number Alteration in Gene
+              {/* // TODO: change back for frequencies */}
+              {/* <br />
+              / # of Cases tested for Copy Number Alteration in Gene */}
             </span>
           }
           style={tableToolTipHint()}
@@ -238,7 +243,8 @@ const GenesTableModel = [
           >
             {(Math.round(node.numCases / 2.5) || 0).toLocaleString()}
           </ExploreLink>
-          <span> / </span>
+          {/* // TODO: change back for frequencies */}
+          {/* <span> / </span>
           <ExploreLink
             query={{
               searchTableTab: 'cases',
@@ -258,7 +264,7 @@ const GenesTableModel = [
           <span>{` (${((node.numCases / 2.5 || 0) /
             filteredCases.hits.total *
             100
-          ).toFixed(2)}%)`}</span>
+          ).toFixed(2)}%)`}</span> */}
         </span>
       </Td>
     ),
@@ -274,8 +280,9 @@ const GenesTableModel = [
           Component={
             <span>
               # of Cases where CNV loss events are observed in Gene
-              <br />
-              / # of Cases tested for Copy Number Alteration in Gene
+              {/* // TODO: change back for frequencies */}
+              {/* <br />
+              / # of Cases tested for Copy Number Alteration in Gene */}
             </span>
           }
           style={tableToolTipHint()}
@@ -308,7 +315,8 @@ const GenesTableModel = [
           >
             {(Math.round(node.numCases / 3.5) || 0).toLocaleString()}
           </ExploreLink>
-          <span> / </span>
+          {/* // TODO: change back for frequencies */}
+          {/* <span> / </span>
           <ExploreLink
             query={{
               searchTableTab: 'cases',
@@ -328,7 +336,7 @@ const GenesTableModel = [
           <span>{` (${((Math.round(node.numCases / 3.5) || 0) /
             filteredCases.hits.total *
             100
-          ).toFixed(2)}%)`}</span>
+          ).toFixed(2)}%)`}</span> */}
         </span>
       </Td>
     ),

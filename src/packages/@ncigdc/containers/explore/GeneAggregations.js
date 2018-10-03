@@ -17,6 +17,10 @@ export type TProps = {
   aggregations: {
     biotype: { buckets: [TBucket] },
     is_cancer_gene_census: { buckets: [TBucket] },
+    case__cnv__cnv_change: { buckets: [TBucket] },
+  },
+  cnvAggregations: {
+    cnv_change: { buckets: [TBucket] },
   },
   hits: {
     edges: Array<{|
@@ -119,6 +123,20 @@ export const GeneAggregationsComponent = compose(
         style={{ borderBottom: `1px solid ${props.theme.greyScale5}` }}
       />
     ))}
+    <FacetWrapper
+      key={'cnvs.cnv_change'}
+      facet={{
+        title: 'CNV',
+        field: 'cnv_change',
+        full: 'cnvs.cnv_change',
+        doc_type: 'cnvs',
+        type: 'terms',
+      }}
+      title={'CNV'}
+      aggregation={props.cnvAggregations[escapeForRelay('cnv_change')]}
+      relay={props.relay}
+      style={{ borderBottom: `1px solid ${props.theme.greyScale5}` }}
+    />
   </div>
 ));
 
@@ -132,7 +150,25 @@ export const GeneAggregationsQuery = {
             key
           }
         }
-        is_cancer_gene_census  {
+        case__cnv__cnv_change {
+          buckets {
+            doc_count
+            key
+            key_as_string
+          }
+        }
+        is_cancer_gene_census {
+          buckets {
+            doc_count
+            key
+            key_as_string
+          }
+        }
+      }
+    `,
+    cnvAggregations: () => Relay.QL`
+      fragment on CNVAggregations {
+        cnv_change {
           buckets {
             doc_count
             key

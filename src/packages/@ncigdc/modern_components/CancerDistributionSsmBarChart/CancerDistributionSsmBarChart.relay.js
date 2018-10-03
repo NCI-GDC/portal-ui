@@ -9,16 +9,6 @@ import Query from '@ncigdc/modern_components/Query';
 export default (Component: ReactClass<*>) =>
   compose(
     withPropsOnChange(['filters'], ({ filters = null }) => {
-      const cnvAvailableVariationDataFilter = {
-        field: 'cases.available_variation_data',
-        value: 'cnv',
-      };
-      let geneFilter = {};
-      filters.content.forEach(c => {
-        if (c.content.field === 'genes.gene_id' && c.content.value) {
-          geneFilter = c.content;
-        }
-      });
       return {
         variables: {
           caseAggsFilters: filters,
@@ -27,39 +17,6 @@ export default (Component: ReactClass<*>) =>
               field: 'cases.available_variation_data',
               value: ['ssm'],
             },
-          ]),
-          cnvTested: makeFilter([cnvAvailableVariationDataFilter]),
-          cnvGain: makeFilter([
-            {
-              field: 'cnvs.cnv_change',
-              value: ['Gain'],
-            },
-            cnvAvailableVariationDataFilter,
-            geneFilter,
-          ]),
-          cnvAmplification: makeFilter([
-            {
-              field: 'cnvs.cnv_change',
-              value: ['Amplification'],
-            },
-            cnvAvailableVariationDataFilter,
-            geneFilter,
-          ]),
-          cnvLoss: makeFilter([
-            {
-              field: 'cnvs.cnv_change',
-              value: ['Shallow Loss'],
-            },
-            cnvAvailableVariationDataFilter,
-            geneFilter,
-          ]),
-          cnvDeepLoss: makeFilter([
-            {
-              field: 'cnvs.cnv_change',
-              value: ['Deep Loss'],
-            },
-            cnvAvailableVariationDataFilter,
-            geneFilter,
           ]),
         },
       };

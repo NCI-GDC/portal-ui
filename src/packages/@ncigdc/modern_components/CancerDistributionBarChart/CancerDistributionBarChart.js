@@ -119,34 +119,69 @@ export default compose(
     }: TProps = {},
   ) => {
     let cnvFiltered = {};
-    ['amplification', 'gain', 'loss', 'deepLoss'].map(cnvType =>
-      cases[cnvType].project__project_id.buckets.map(
-        b =>
-          (cnvFiltered = {
-            ...cnvFiltered,
-            [b.key]: {
-              ...cnvFiltered[b.key],
-              [cnvType]: b.doc_count,
-            },
-          }),
-      ),
-    );
-
-    const cnvCancerDistData = Object.keys(cnvFiltered).map(p => {
-      const nums = cases.cnvTotal.project__project_id.buckets.filter(
-        f => f.key === p,
-      )[0].doc_count;
-      return {
-        deepLoss: cnvFiltered[p]['deepLoss'] || 0,
-        shallowLoss: cnvFiltered[p]['loss'] || 0,
-        gain: cnvFiltered[p]['gain'] || 0,
-        amplification: cnvFiltered[p]['amplification'] || 0,
-        project_id: p,
-        num_cases_total: cases.cnvTotal.project__project_id.buckets.filter(
-          f => f.key === p,
-        )[0].doc_count,
-      };
-    });
+    let cnvCancerDistData = [];
+    let cnvChartData = [];
+    if (chartType !== 'ssm') {
+      ['amplification', 'gain', 'shallow_loss', 'deep_loss'].map(cnvType =>
+        cases[cnvType].project__project_id.buckets.map(
+          b =>
+            (cnvFiltered = {
+              ...cnvFiltered,
+              [b.key]: {
+                ...cnvFiltered[b.key],
+                [cnvType]: b.doc_count,
+              },
+            }),
+        ),
+      );
+      cnvCancerDistData = Object.keys(cnvFiltered).map(p => {
+        return {
+          deep_loss: cnvFiltered[p]['deep_loss'] || 0,
+          shallow_loss: cnvFiltered[p]['shallow_loss'] || 0,
+          gain: cnvFiltered[p]['gain'] || 0,
+          amplification: cnvFiltered[p]['amplification'] || 0,
+          project_id: p,
+          num_cases_total: cases.cnvTotal.project__project_id.buckets.filter(
+            f => f.key === p,
+          )[0].doc_count,
+        };
+      });
+      cnvChartData = sortBy(
+        cnvCancerDistData,
+        d =>
+          -cnvColors.reduce(
+            (acc, f) => acc + d[f.key] / d.num_cases_total * cnv[f.key],
+            0,
+          ),
+      )
+        .slice(0, 20)
+        .map(d => ({
+          symbol: d.project_id,
+          deep_loss: d.deep_loss / d.num_cases_total * 100,
+          shallow_loss: d.shallow_loss / d.num_cases_total * 100,
+          gain: d.gain / d.num_cases_total * 100,
+          amplification: d.amplification / d.num_cases_total * 100,
+          total: d.num_cases_total,
+          onClick: () => push(`/projects/${d.project_id}`),
+          tooltips: cnvColors.reduce(
+            (acc, f) => ({
+              ...acc,
+              [f.key]: (
+                <span>
+                  {d[f.key].toLocaleString()}&nbsp;Case
+                  {d[f.key] > 1 ? 's ' : ' '}
+                  Affected in <b>{d.project_id}</b>
+                  <br />
+                  {d[f.key].toLocaleString()}
+                  &nbsp;/&nbsp;
+                  {d.num_cases_total.toLocaleString()}&nbsp; ({(d[f.key] / d.num_cases_total * 100).toFixed(2)}%)
+                </span>
+              ),
+            }),
+            0,
+          ),
+        }));
+    }
 
     const chartStyles = {
       xAxis: {
@@ -199,46 +234,11 @@ export default compose(
         ),
       }));
 
-    const cnvChartData = sortBy(
-      cnvCancerDistData,
-      d =>
-        -cnvColors.reduce(
-          (acc, f) => acc + d[f.key] / d.num_cases_total * cnv[f.key],
-          0,
-        ),
-    )
-      .slice(0, 20)
-      .map(d => ({
-        symbol: d.project_id,
-        deep_loss: d.deep_loss / d.num_cases_total * 100,
-        shallow_loss: d.shallow_loss / d.num_cases_total * 100,
-        gain: d.gain / d.num_cases_total * 100,
-        amplification: d.amplification / d.num_cases_total * 100,
-        total: d.num_cases_total,
-        onClick: () => push(`/projects/${d.project_id}`),
-        tooltips: cnvColors.reduce(
-          (acc, f) => ({
-            ...acc,
-            [f.key]: (
-              <span>
-                {d[f.key].toLocaleString()}&nbsp;Case
-                {d[f.key] > 1 ? 's ' : ' '}
-                Affected in <b>{d.project_id}</b>
-                <br />
-                {d[f.key].toLocaleString()}
-                &nbsp;/&nbsp;
-                {d.num_cases_total.toLocaleString()}&nbsp; ({(d[f.key] / d.num_cases_total * 100).toFixed(2)}%)
-              </span>
-            ),
-          }),
-          0,
-        ),
-      }));
     return (
       <div>
         <Row style={{ width: '100%' }}>
           {mutationChartData.length >= 5 && (
-            <span style={{ width: '50%' }}>
+            <span style={{ width: chartType !== 'ssm' ? '50%' : '100%' }}>
               <Column style={{ padding: '0 0 0 2rem' }}>
                 <Row
                   style={{

@@ -42,7 +42,11 @@ export default compose(
         e => e.node.project_id,
       );
       let caseFiltered = {};
-      ['filtered', 'cnvGain', 'cnvLoss', 'total', 'cnvTotal'].map(type =>
+      let fields = ['filtered', 'total'];
+      if (tableType !== 'ssm') {
+        fields.push('cnvGain', 'cnvLoss', 'cnvTotal');
+      }
+      fields.map(type =>
         cases[type].project__project_id.buckets.map(
           b =>
             (caseFiltered = {
@@ -54,7 +58,6 @@ export default compose(
             }),
         ),
       );
-
       const rawData = Object.keys(caseFiltered)
         .map(b => {
           const project = head(projectsById[b]);
@@ -68,13 +71,15 @@ export default compose(
             num_affected_cases_total: caseFiltered[b].total || 0,
             num_affected_cases_percent:
               caseFiltered[b].filtered / caseFiltered[b].total || 0,
-            num_cnv_gain: caseFiltered[b].cnvGain || 0,
-            num_cnv_gain_percent:
-              caseFiltered[b].cnvGain / caseFiltered[b].cnvTotal || 0,
-            num_cnv_loss: caseFiltered[b].cnvLoss || 0,
-            num_cnv_loss_percent:
-              caseFiltered[b].cnvLoss / caseFiltered[b].cnvTotal || 0,
-            num_cnv_cases_total: caseFiltered[b].cnvTotal || 0,
+            ...(tableType !== 'ssm' && {
+              num_cnv_gain: caseFiltered[b].cnvGain || 0,
+              num_cnv_gain_percent:
+                caseFiltered[b].cnvGain / caseFiltered[b].cnvTotal || 0,
+              num_cnv_loss: caseFiltered[b].cnvLoss || 0,
+              num_cnv_loss_percent:
+                caseFiltered[b].cnvLoss / caseFiltered[b].cnvTotal || 0,
+              num_cnv_cases_total: caseFiltered[b].cnvTotal || 0,
+            }),
             mutations_counts: ssmCounts[b] || 0,
           };
         })

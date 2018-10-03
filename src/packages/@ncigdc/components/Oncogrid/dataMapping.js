@@ -134,7 +134,7 @@ export const mapGenes: TMapGenes = (genes, geneIds) => {
   return arr;
 };
 
-export type TOccurrenceInput = {
+export type TSSMOccurrenceInput = {
   ssm: {
     ssm_id: string,
     consequence: Array<{
@@ -154,8 +154,23 @@ export type TOccurrenceInput = {
   },
 };
 
-export type TOccurrence = {
-  id: string,
+export type TCNVOccurrenceInput = {
+  cnv: {
+    cnv_id: string,
+    cnv_change: string,
+    consequence: Array<{
+      gene: {
+        gene_id: string,
+      },
+    }>,
+  },
+  case: {
+    case_id: string,
+  },
+};
+
+export type TSSMOccurrence = {
+  id: Array<string>,
   donorId: string,
   geneId: string,
   consequence: string,
@@ -163,24 +178,35 @@ export type TOccurrence = {
   functionalImpact: string,
 };
 
+export type TCNVOccurrence = {
+  id: Array<string>,
+  donorId: string,
+  geneId: string,
+  geneSymbol: string,
+  cnvChange: string,
+  type: string,
+};
+
 type TBuildOccurrences = (
-  occurrences: Array<TOccurrenceInput>,
+  ssm_occurrences: Array<TSSMOccurrenceInput>,
+  cnv_occurrences: Array<TCNVOccurrenceInput>,
   donors: Array<TDonorInput>,
   genes: Array<TGeneInput>,
   consequenceTypes: Array<string>,
   impacts: Array<string>,
 ) => {
-  observations: Array<TOccurrence>,
+  ssmObservations: Array<TSSMOccurrence>,
+  cnvObservations: Array<TCNVOccurrence>,
   donorIds: Set<string>,
   geneIds: Set<string>,
 };
 export const buildOccurrences: TBuildOccurrences = (
-  occurrences,
+  ssm_occurrences,
+  cnv_occurrences,
   donors,
   genes,
   consequenceTypes = [],
   impacts,
-  cnv_occurrences,
 ) => {
   const allowedCaseIds = new Set();
   for (let i = 0; i < donors.length; i += 1) {
@@ -193,15 +219,16 @@ export const buildOccurrences: TBuildOccurrences = (
     geneIdToSymbol[gene.gene_id] = gene.symbol;
   }
 
-  let observations = [];
+  let ssmObservations = [];
+  let cnvObservations = [];
   const donorIds = new Set();
   const geneIds = new Set();
-  let cnvObservations = [];
-  for (let i = 0; i < occurrences.length; i += 1) {
+
+  for (let i = 0; i < ssm_occurrences.length; i += 1) {
     const {
       ssm: { consequence, ssm_id },
       case: { case_id } = {},
-    } = occurrences[i];
+    } = ssm_occurrences[i];
 
     if (allowedCaseIds.has(case_id)) {
       for (let j = 0; j < consequence.length; j += 1) {
@@ -223,16 +250,16 @@ export const buildOccurrences: TBuildOccurrences = (
           geneIds.add(gene_id);
 
           let match = _.findIndex(
-            observations,
+            ssmObservations,
             o =>
               o.donorId === case_id &&
               o.geneId === gene_id &&
               o.consequence === consequence_type,
           );
           if (match > -1) {
-            observations[match].ids.push(ssm_id);
+            ssmObservations[match].ids.push(ssm_id);
           } else {
-            observations.push({
+            ssmObservations.push({
               // required
               ids: [ssm_id],
               donorId: case_id,
@@ -251,25 +278,28 @@ export const buildOccurrences: TBuildOccurrences = (
   }
 
   for (let i = 0; i < cnv_occurrences.length; i += 1) {
-    const { cnv_id, cnv_change, score, gene_id, case_id } = cnv_occurrences[i];
-    if (allowedCaseIds.has(case_id)) {
-      if (score !== 0 && gene_id) {
-        donorIds.add(case_id);
-        geneIds.add(gene_id);
-        cnvObservations.push({
-          ids: [cnv_id],
-          donorId: case_id,
-          geneId: gene_id,
-          geneSymbol: geneIdToSymbol[gene_id],
-          cnv_change,
-          type: 'cnv',
-        });
-      }
+    const {
+      case: { case_id },
+      cnv: { cnv_change, consequence },
+      cnv_occurrence_id,
+    } = cnv_occurrences[i];
+    const geneId = consequence[0].gene.gene_id;
+    const geneSymbol = geneIdToSymbol[geneId];
+
+    if (allowedCaseIds.has(case_id) && geneIds.has(geneId) && cnv_change) {
+      cnvObservations.push({
+        ids: [cnv_occurrence_id],
+        donorId: case_id,
+        geneId,
+        geneSymbol,
+        cnvChange: cnv_change,
+        type: 'cnv',
+      });
     }
   }
 
   return {
-    observations,
+    ssmObservations,
     donorIds,
     geneIds,
     cnvObservations,

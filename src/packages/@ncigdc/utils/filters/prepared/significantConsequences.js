@@ -7,14 +7,13 @@ export const colorMap = {
     frameshift_variant: '#2E7D32',
     start_lost: '#2E7D32',
     stop_lost: '#2E7D32',
-    initiator_codon_variant: '#2E7D32',
     stop_gained: '#2E7D32',
   },
   cnv: {
-    deep_loss: '#64b5f6',
-    shallow_loss: '#64b5f6',
-    gain: '#e76a6a',
-    amplification: '#e76a6a',
+    'Deep Loss': '#64b5f6',
+    'Shallow Loss': '#64b5f6',
+    Gain: '#e76a6a',
+    Amplification: '#e76a6a',
   },
 };
 

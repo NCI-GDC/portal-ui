@@ -20,7 +20,7 @@ export type TProps = {
     case__cnv__cnv_change: { buckets: [TBucket] },
   },
   cnvAggregations: {
-    cnv_change: {buckets: [TBucket]},
+    cnv_change: { buckets: [TBucket] },
   },
   hits: {
     edges: Array<{|
@@ -60,7 +60,6 @@ const presetFacets = [
     doc_type: 'genes',
     type: 'terms',
   },
-  
 ];
 
 export const GeneAggregationsComponent = compose(
@@ -125,19 +124,19 @@ export const GeneAggregationsComponent = compose(
       />
     ))}
     <FacetWrapper
-        key={'cnvs.cnv_change'}
-        facet={{
-          title: 'CNV',
-          field: 'cnv_change',
-          full: 'cnvs.cnv_change',
-          doc_type: 'cnvs',
-          type: 'terms',
-        }}
-        title={'CNV'}
-        aggregation={props.cnvAggregations[escapeForRelay('cnv_change')]}
-        relay={props.relay}
-        style={{ borderBottom: `1px solid ${props.theme.greyScale5}` }}
-      />
+      key={'cnvs.cnv_change'}
+      facet={{
+        title: 'CNV',
+        field: 'cnv_change',
+        full: 'cnvs.cnv_change',
+        doc_type: 'cnvs',
+        type: 'terms',
+      }}
+      title={'CNV'}
+      aggregation={props.cnvAggregations[escapeForRelay('cnv_change')]}
+      relay={props.relay}
+      style={{ borderBottom: `1px solid ${props.theme.greyScale5}` }}
+    />
   </div>
 ));
 
@@ -177,7 +176,7 @@ export const GeneAggregationsQuery = {
           }
         }
       }
-    `
+    `,
   },
 };
 

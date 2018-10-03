@@ -1,10 +1,12 @@
 // @flow
 
 import React from 'react';
-import _, { mapValues } from 'lodash';
-import AngleIcon from '@ncigdc/theme/icons/AngleIcon';
+import _ from 'lodash';
+import Color from 'color';
+
 import { Row, Column } from '@ncigdc/uikit/Flex';
-import './Legends.css';
+import { capitalize } from '@ncigdc/utils/string';
+
 const styles = {
   table: {
     fontSize: '1.28rem',
@@ -63,19 +65,23 @@ export const SwatchLegend = ({ colorMap }) => {
   );
 };
 
-const Checkbox = ({ label, color = 'gray', onChange, checked, boxStyle }) => {
-  let checkColor = color;
-
-  // TODO: extract to custom Checkbox or find css filter that works for 508 issues
-  if (label.includes('loss') || label === 'Show copy number variations') {
-    checkColor = '#3973a3';
-  }
-  if (label === 'gain' || label === 'amplification') {
-    checkColor = '#af3d3d';
-  }
-
+const Checkbox = ({
+  label,
+  color = 'gray',
+  onChange,
+  checked,
+  boxStyle,
+  heatMapMode,
+}) => {
   return (
-    <div style={{ paddingBottom: 10, display: 'flex', alignItems: 'center' }}>
+    <div
+      style={{
+        paddingBottom: 10,
+        display: 'flex',
+        alignItems: 'center',
+        paddingTop: 10,
+      }}
+    >
       <div
         onClick={onChange}
         style={{
@@ -84,105 +90,38 @@ const Checkbox = ({ label, color = 'gray', onChange, checked, boxStyle }) => {
           border: `2px solid ${color}`,
           cursor: 'pointer',
           textAlign: 'center',
-          verticalAlign: 'center',
+          verticalAlign: 'middle',
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
           ...boxStyle,
         }}
       >
-        {checked ? <span style={{ color: checkColor }}>{'✓'}</span> : null}
+        {checked ? (
+          <span
+            style={
+              heatMapMode
+                ? { color: color }
+                : {
+                    color: Color(color)
+                      .darken(0.4)
+                      .rgbString(),
+                  }
+            }
+          >
+            {'✓'}
+          </span>
+        ) : null}
       </div>
-      <label style={{ marginLeft: 5 }}>{label}</label>
+      <label style={{ marginLeft: 5 }}>{capitalize(label)}</label>
     </div>
   );
 };
 
-export const CollapsedLegend = ({
-  checkersWithColors,
-  checkerStates,
-  collapsed,
-  setCollapsed,
-  setCheckers,
-  initalCheckers,
-}) => {
-  return (
-    <Column
-      style={{
-        backgroundColor: 'white',
-        border: '1px solid rgb(186, 186, 186)',
-        padding: '13px',
-        right: 10,
-        top: 10,
-        position: 'absolute',
-        zIndex: 1,
-      }}
-    >
-      <span
-        style={{ cursor: 'pointer', width: '175px' }}
-        onClick={setCollapsed}
-      >
-        <AngleIcon
-          style={{
-            paddingRight: '0.25rem',
-            transform: `rotate(${collapsed ? 0 : 270}deg)`,
-          }}
-        />
-        Legend
-      </span>
-      {collapsed && (
-        <Row>
-          <span
-            onClick={() => setCheckers(mapValues(initalCheckers, () => true))}
-            style={{
-              color: 'rgb(27, 103, 145)',
-              cursor: 'pointer',
-            }}
-          >
-            Select All
-          </span>
-          <span>&nbsp;|&nbsp;</span>
-          <span
-            onClick={() => setCheckers(mapValues(initalCheckers, () => false))}
-            style={{
-              color: 'rgb(27, 103, 145)',
-              cursor: 'pointer',
-            }}
-          >
-            Deselect All
-          </span>
-        </Row>
-      )}
-      {collapsed &&
-        checkersWithColors.map(f => (
-          <label key={f.key}>
-            <span
-              onClick={() =>
-                setCheckers({
-                  ...checkerStates,
-                  [f.key]: !checkerStates[f.key],
-                })}
-              style={{
-                color: f.color,
-                textAlign: 'center',
-                border: '2px solid',
-                height: '18px',
-                width: '18px',
-                cursor: 'pointer',
-                display: 'inline-block',
-                marginRight: '6px',
-                marginTop: '3px',
-                verticalAlign: 'middle',
-                lineHeight: '16px',
-              }}
-            >
-              {checkerStates[f.key] ? '✓' : <span>&nbsp;</span>}
-            </span>
-            {f.name}
-          </label>
-        ))}
-    </Column>
-  );
+const getCheckBoxColor = ({ type, heatMapMode, color = null }) => {
+  if (heatMapMode) return '#D33682';
+  if (color) return color;
+  return type === 'mutations' ? '#2E7D32' : '#64b5f6';
 };
 
 export const ToggleSwatchLegend = ({
@@ -190,6 +129,8 @@ export const ToggleSwatchLegend = ({
   toggledValues,
   toggle,
   type,
+  toggleAll,
+  heatMapMode = false,
 }) => {
   const labels = _.map(colorMap, (color, key) => (
     <Checkbox
@@ -199,31 +140,43 @@ export const ToggleSwatchLegend = ({
       onChange={() => toggle(key)}
       checked={toggledValues && toggledValues.includes(key)}
       aria-label={key}
-      color={color}
+      color={getCheckBoxColor({ type, heatMapMode, color })}
+      heatMapMode={heatMapMode}
     />
   ));
 
   return (
     <Column
       style={{
-        width: 350,
+        maxWidth: labels.length * 80,
         border: '1px solid lightgray',
         borderRadius: '8px',
         padding: 10,
       }}
     >
-      <Row style={{ borderBottom: '1px solid lightgray' }}>
+      <Row
+        style={{
+          borderBottom: '1px solid lightgray',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+        }}
+      >
         <Column>
           <Checkbox
             label={`Show ${type}`}
-            onChange={() => toggle([])}
-            checked={true}
+            onChange={() => toggleAll(toggledValues.length > 0)}
+            checked={toggledValues.length > 0}
             aria-label={type}
-            color={type === 'mutations' ? '#2E7D32' : '#64b5f6'}
+            color={getCheckBoxColor({ type, heatMapMode })}
+            heatMapMode={heatMapMode}
           />
         </Column>
+        <Column style={{ marginLeft: 60 }}>
+          {heatMapMode && type === 'mutations' && <StepLegend />}
+        </Column>
       </Row>
-      <Row style={styles.table} className="test-legends">
+      <Row style={(styles.table, { marginTop: 10 })} className="test-legends">
         <Column style={styles.td}>{labels.slice(0, 2)}</Column>
         <Column style={styles.td}>{labels.slice(2, 4)}</Column>
         <Column style={styles.td}>{labels.slice(4, 6)}</Column>
@@ -236,15 +189,4 @@ export default {
   StepLegend,
   SwatchLegend,
   ToggleSwatchLegend,
-  CollapsedLegend,
 };
-
-/* <input
-  type="checkbox"
-  id={key}
-  name={key}
-  aria-label={key}
-  checked={toggledConsequences.includes(key)}
-  onChange={() => toggleConsequence(key)}
-/>
-<span>{key.replace(/_/g, ' ').replace(/variant/g, '')}</span> */

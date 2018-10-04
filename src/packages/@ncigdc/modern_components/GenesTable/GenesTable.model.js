@@ -108,7 +108,7 @@ const GenesTableModel = [
           Component={
             <span>
               {/* // TODO: change back for frequencies */}
-              # of Cases where Gene is mutated
+              # of Cases where Gene is mutated in {context}
               {/* Breakdown of Affected Cases in {context} <br />
               # of Cases where Gene is <br />
               mutated /# Cases tested for Simple Somatic Mutations */}

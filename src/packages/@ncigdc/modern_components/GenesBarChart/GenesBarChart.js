@@ -430,7 +430,9 @@ const Component = compose(
                   <Row style={{ paddingTop: '2rem' }}>
                     <BarChart
                       data={cnaGenesChartData}
-                      yAxis={{ title: '% of Cases Affected' }}
+                      // TODO: change back for frequencies
+                      // yAxis={{ title: '% of Cases Affected' }}
+                      yAxis={{ title: '# of Cases Affected' }}
                       height={CHART_HEIGHT}
                       colors={checkers.reduce(
                         (acc, f) => ({ ...acc, [f.key]: f.color }),

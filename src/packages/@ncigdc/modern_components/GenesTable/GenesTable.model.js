@@ -98,7 +98,7 @@ const GenesTableModel = [
     td: ({ node }) => <Td>{node.biotype}</Td>,
   },
   {
-    name: '# SSM Affected Cases in Cohort',
+    name: '# Affected Cases in Cohort',
     id: 'filteredCases',
     sortable: true,
     downloadable: true,
@@ -116,7 +116,7 @@ const GenesTableModel = [
           }
           style={tableToolTipHint()}
         >
-          # SSM Affected Cases<br />in {context}
+          # Affected Cases<br />in {context}
         </Tooltip>
       </Th>
     ),
@@ -162,7 +162,9 @@ const GenesTableModel = [
     ),
   },
   {
-    name: '	# SSM Affected Cases Across the GDC',
+    // TODO: change back for frequencies
+    name: ' # Affected Cases Across All Projects',
+    // name: '	# Affected Cases Across the GDC',
     id: 'projectBreakdown',
     sortable: true,
     downloadable: true,
@@ -181,7 +183,9 @@ const GenesTableModel = [
           }
           style={tableToolTipHint()}
         >
-          # SSM Affected Cases<br /> Across the GDC
+          {/* // TODO: change back for frequencies */}
+          # Affected Cases<br /> Across All Projects
+          {/* # Affected Cases<br /> Across the GDC */}
         </Tooltip>
       </Th>
     ),

@@ -225,7 +225,9 @@ const SsmsTableModel = [
     ),
   },
   {
-    name: '	# Affected Cases Across the GDC',
+    // TODO: change back for frequencies
+    name: ' # Affected Cases Across All Projects',
+    // name: '	# Affected Cases Across the GDC',
     id: 'projectBreakdown',
     sortable: true,
     downloadable: true,

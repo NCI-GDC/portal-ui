@@ -59,6 +59,7 @@ export default compose(
         ),
       );
       const rawData = Object.keys(caseFiltered)
+        .filter(b => head(projectsById[b]))
         .map(b => {
           const project = head(projectsById[b]);
           return {

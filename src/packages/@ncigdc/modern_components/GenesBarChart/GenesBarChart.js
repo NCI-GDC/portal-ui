@@ -340,10 +340,8 @@ const Component = compose(
         const score = checkers.reduce((acc, c) => g[c.key] + acc, 0);
         return {
           label: g.symbol,
-          value:
-            context === 'project' && projectId
-              ? score / numCasesAggByProject[projectId] * 100
-              : score / filteredCases.hits.total * 100,
+          // TODO: change back value to percentage for frequencies
+          value: context === 'project' && projectId ? score : score,
           tooltip: tooltipContext(context, { symbol: g.symbol, score: score }),
           onClick: () => handleClickGene(g, cnaGenesChartData),
         };

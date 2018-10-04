@@ -3,7 +3,7 @@
 import React from 'react';
 import { graphql } from 'react-relay';
 import { compose, withPropsOnChange } from 'recompose';
-import { makeFilter, addInFilters } from '@ncigdc/utils/filters';
+import { makeFilter, replaceFilters } from '@ncigdc/utils/filters';
 import Query from '@ncigdc/modern_components/Query';
 
 export default (Component: ReactClass<*>) =>
@@ -13,12 +13,6 @@ export default (Component: ReactClass<*>) =>
         field: 'cases.available_variation_data',
         value: 'cnv',
       };
-      let geneFilter = {};
-      filters.content.forEach(c => {
-        if (c.content.field === 'genes.gene_id' && c.content.value) {
-          geneFilter = c.content;
-        }
-      });
       return {
         variables: {
           caseAggsFilters: filters,
@@ -29,38 +23,46 @@ export default (Component: ReactClass<*>) =>
             },
           ]),
           cnvTested: makeFilter([cnvAvailableVariationDataFilter]),
-          cnvGain: makeFilter([
-            {
-              field: 'cnvs.cnv_change',
-              value: ['Gain'],
-            },
-            cnvAvailableVariationDataFilter,
-            geneFilter,
-          ]),
-          cnvAmplification: makeFilter([
-            {
-              field: 'cnvs.cnv_change',
-              value: ['Amplification'],
-            },
-            cnvAvailableVariationDataFilter,
-            geneFilter,
-          ]),
-          cnvLoss: makeFilter([
-            {
-              field: 'cnvs.cnv_change',
-              value: ['Shallow Loss'],
-            },
-            cnvAvailableVariationDataFilter,
-            geneFilter,
-          ]),
-          cnvDeepLoss: makeFilter([
-            {
-              field: 'cnvs.cnv_change',
-              value: ['Deep Loss'],
-            },
-            cnvAvailableVariationDataFilter,
-            geneFilter,
-          ]),
+          cnvGain: replaceFilters(
+            makeFilter([
+              {
+                field: 'cnvs.cnv_change',
+                value: ['Gain'],
+              },
+              cnvAvailableVariationDataFilter,
+            ]),
+            filters,
+          ),
+          cnvAmplification: replaceFilters(
+            makeFilter([
+              {
+                field: 'cnvs.cnv_change',
+                value: ['Amplification'],
+              },
+              cnvAvailableVariationDataFilter,
+            ]),
+            filters,
+          ),
+          cnvLoss: replaceFilters(
+            makeFilter([
+              {
+                field: 'cnvs.cnv_change',
+                value: ['Shallow Loss'],
+              },
+              cnvAvailableVariationDataFilter,
+            ]),
+            filters,
+          ),
+          cnvDeepLoss: replaceFilters(
+            makeFilter([
+              {
+                field: 'cnvs.cnv_change',
+                value: ['Deep Loss'],
+              },
+              cnvAvailableVariationDataFilter,
+            ]),
+            filters,
+          ),
         },
       };
     }),

@@ -3,7 +3,7 @@
 import React from 'react';
 import { graphql } from 'react-relay';
 import { compose, withPropsOnChange } from 'recompose';
-import { makeFilter } from '@ncigdc/utils/filters';
+import { makeFilter, replaceFilters } from '@ncigdc/utils/filters';
 import Query from '@ncigdc/modern_components/Query';
 
 export default (Component: ReactClass<*>) =>
@@ -13,12 +13,10 @@ export default (Component: ReactClass<*>) =>
         field: 'cases.available_variation_data',
         value: 'cnv',
       };
-      let geneFilter = {};
-      filters.content.forEach(c => {
-        if (c.content.field === 'genes.gene_id' && c.content.value) {
-          geneFilter = c.content;
-        }
-      });
+      const ssmAvailableVariationDataFilter = {
+        field: 'cases.available_variation_data',
+        value: 'ssm',
+      };
       return {
         variables: {
           ssmTested: makeFilter([
@@ -28,24 +26,31 @@ export default (Component: ReactClass<*>) =>
             },
           ]),
           cnvTested: makeFilter([cnvAvailableVariationDataFilter]),
-          cnvGainFilter: makeFilter([
-            cnvAvailableVariationDataFilter,
-            geneFilter,
-            {
-              field: 'cnvs.cnv_change',
-              value: ['Gain', 'Amplification'],
-            },
-          ]),
-          cnvLossFilter: makeFilter([
-            cnvAvailableVariationDataFilter,
-            geneFilter,
-            {
-              field: 'cnvs.cnv_change',
-              value: ['Shallow Loss', 'Deep Loss'],
-            },
-          ]),
+          cnvGainFilter: replaceFilters(
+            makeFilter([
+              cnvAvailableVariationDataFilter,
+              {
+                field: 'cnvs.cnv_change',
+                value: ['Gain', 'Amplification'],
+              },
+            ]),
+            filters,
+          ),
+          cnvLossFilter: replaceFilters(
+            makeFilter([
+              cnvAvailableVariationDataFilter,
+              {
+                field: 'cnvs.cnv_change',
+                value: ['Shallow Loss', 'Deep Loss'],
+              },
+            ]),
+            filters,
+          ),
           caseAggsFilter: filters,
-          ssmCountsFilters: filters,
+          ssmCountsFilters: replaceFilters(
+            makeFilter([ssmAvailableVariationDataFilter]),
+            filters,
+          ),
         },
       };
     }),

@@ -43,7 +43,7 @@ export default (Component: ReactClass<*>) =>
             ]),
             filters,
           ),
-          cnvLoss: repalceFilters(
+          cnvLoss: replaceFilters(
             makeFilter([
               {
                 field: 'cnvs.cnv_change',
@@ -53,7 +53,7 @@ export default (Component: ReactClass<*>) =>
             ]),
             filters,
           ),
-          cnvDeepLoss: repalceFilters(
+          cnvDeepLoss: replaceFilters(
             makeFilter([
               {
                 field: 'cnvs.cnv_change',

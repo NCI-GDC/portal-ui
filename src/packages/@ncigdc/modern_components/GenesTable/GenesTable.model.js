@@ -163,7 +163,7 @@ const GenesTableModel = [
   },
   {
     // TODO: change back for frequencies
-    name: ' # Affected Cases Across All Projects',
+    name: ' # SSM Affected Cases Across All Projects',
     // name: '	# Affected Cases Across the GDC',
     id: 'projectBreakdown',
     sortable: true,
@@ -184,7 +184,7 @@ const GenesTableModel = [
           style={tableToolTipHint()}
         >
           {/* // TODO: change back for frequencies */}
-          # Affected Cases<br /> Across All Projects
+          # SSM Affected Cases<br /> Across All Projects
           {/* # Affected Cases<br /> Across the GDC */}
         </Tooltip>
       </Th>

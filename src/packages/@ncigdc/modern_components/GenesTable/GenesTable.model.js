@@ -98,7 +98,7 @@ const GenesTableModel = [
     td: ({ node }) => <Td>{node.biotype}</Td>,
   },
   {
-    name: '# Affected Cases in Cohort',
+    name: '# SSM Affected Cases in Cohort',
     id: 'filteredCases',
     sortable: true,
     downloadable: true,
@@ -116,7 +116,7 @@ const GenesTableModel = [
           }
           style={tableToolTipHint()}
         >
-          # Affected Cases<br />in {context}
+          # SSM Affected Cases<br />in {context}
         </Tooltip>
       </Th>
     ),

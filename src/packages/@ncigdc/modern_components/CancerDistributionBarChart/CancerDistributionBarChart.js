@@ -280,96 +280,97 @@ export default compose(
               </Column>
             </span>
           )}
-          {chartType !== 'ssm' && (
-            <span style={{ width: '50%' }}>
-              <Column style={{ padding: '0 0 0 2rem' }}>
-                <Row
-                  style={{
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                  }}
-                >
-                  <ChartTitle
-                    cases={sum(
-                      cnvCancerDistData.map(
-                        d =>
-                          d.amplification +
-                          d.gain +
-                          d.shallow_loss +
-                          d.deep_loss,
-                      ),
-                    )}
-                    ssms={get(ssms, 'hits.total', 0)}
-                    projects={cnvCancerDistData}
-                    filters={filters}
-                    type="cnv"
-                  />
-                  <DownloadVisualizationButton
-                    svg={() =>
-                      wrapSvg({
-                        selector: '.test-stacked-bar-chart svg',
-                        title: 'CNV Distribution',
-                      })}
-                    data={cnvChartData.map(d => ({
-                      symbol: d.symbol,
-                      amplification: d.amplification,
-                      gain: d.gain,
-                      shallow_loss: d.shallow_loss,
-                      deep_loss: d.deep_loss,
-                      total: d.total,
-                    }))}
-                    slug="cancer-distribution-bar-chart"
-                    noText
-                    tooltipHTML="Download image or data"
-                    style={{ marginRight: '2rem' }}
-                  />
-                </Row>
-                <Column>
-                  <FilteredStackedBarChart
-                    margin={CHART_MARGINS}
-                    height={200}
-                    data={cnvChartData}
-                    displayFilters={cnv}
-                    colors={cnvColors.reduce(
-                      (acc, f) => ({ ...acc, [f.key]: f.color }),
-                      0,
-                    )}
-                    yAxis={{ title: '% of Cases Affected' }}
-                    styles={chartStyles}
-                  />
-                  <Row style={{ display: 'flex', justifyContent: 'center' }}>
-                    {cnvColors.map(f => (
-                      <label key={f.key} style={{ paddingRight: '10px' }}>
-                        <span
-                          onClick={() =>
-                            setCnv({
-                              ...cnv,
-                              [f.key]: !cnv[f.key],
-                            })}
-                          style={{
-                            color: f.color,
-                            textAlign: 'center',
-                            border: '2px solid',
-                            height: '18px',
-                            width: '18px',
-                            cursor: 'pointer',
-                            display: 'inline-block',
-                            marginRight: '6px',
-                            marginTop: '3px',
-                            verticalAlign: 'middle',
-                            lineHeight: '16px',
-                          }}
-                        >
-                          {cnv[f.key] ? '✓' : <span>&nbsp;</span>}
-                        </span>
-                        {f.name}
-                      </label>
-                    ))}
+          {chartType !== 'ssm' &&
+            cnvChartData.length >= 5 && (
+              <span style={{ width: '50%' }}>
+                <Column style={{ padding: '0 0 0 2rem' }}>
+                  <Row
+                    style={{
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                    }}
+                  >
+                    <ChartTitle
+                      cases={sum(
+                        cnvCancerDistData.map(
+                          d =>
+                            d.amplification +
+                            d.gain +
+                            d.shallow_loss +
+                            d.deep_loss,
+                        ),
+                      )}
+                      ssms={get(ssms, 'hits.total', 0)}
+                      projects={cnvCancerDistData}
+                      filters={filters}
+                      type="cnv"
+                    />
+                    <DownloadVisualizationButton
+                      svg={() =>
+                        wrapSvg({
+                          selector: '.test-stacked-bar-chart svg',
+                          title: 'CNV Distribution',
+                        })}
+                      data={cnvChartData.map(d => ({
+                        symbol: d.symbol,
+                        amplification: d.amplification,
+                        gain: d.gain,
+                        shallow_loss: d.shallow_loss,
+                        deep_loss: d.deep_loss,
+                        total: d.total,
+                      }))}
+                      slug="cancer-distribution-bar-chart"
+                      noText
+                      tooltipHTML="Download image or data"
+                      style={{ marginRight: '2rem' }}
+                    />
                   </Row>
+                  <Column>
+                    <FilteredStackedBarChart
+                      margin={CHART_MARGINS}
+                      height={200}
+                      data={cnvChartData}
+                      displayFilters={cnv}
+                      colors={cnvColors.reduce(
+                        (acc, f) => ({ ...acc, [f.key]: f.color }),
+                        0,
+                      )}
+                      yAxis={{ title: '% of Cases Affected' }}
+                      styles={chartStyles}
+                    />
+                    <Row style={{ display: 'flex', justifyContent: 'center' }}>
+                      {cnvColors.map(f => (
+                        <label key={f.key} style={{ paddingRight: '10px' }}>
+                          <span
+                            onClick={() =>
+                              setCnv({
+                                ...cnv,
+                                [f.key]: !cnv[f.key],
+                              })}
+                            style={{
+                              color: f.color,
+                              textAlign: 'center',
+                              border: '2px solid',
+                              height: '18px',
+                              width: '18px',
+                              cursor: 'pointer',
+                              display: 'inline-block',
+                              marginRight: '6px',
+                              marginTop: '3px',
+                              verticalAlign: 'middle',
+                              lineHeight: '16px',
+                            }}
+                          >
+                            {cnv[f.key] ? '✓' : <span>&nbsp;</span>}
+                          </span>
+                          {f.name}
+                        </label>
+                      ))}
+                    </Row>
+                  </Column>
                 </Column>
-              </Column>
-            </span>
-          )}
+              </span>
+            )}
         </Row>
       </div>
     );

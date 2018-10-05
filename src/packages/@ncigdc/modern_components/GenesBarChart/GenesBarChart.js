@@ -19,6 +19,7 @@ import wrapSvg from '@ncigdc/utils/wrapSvg';
 import VisualizationHeader from '@ncigdc/components/VisualizationHeader';
 import { createClassicRenderer } from '@ncigdc/modern_components/Query';
 import { cnvColors } from '@ncigdc/utils/filters/prepared/significantConsequences';
+import { renderToString } from 'react-dom/server';
 
 const MUTATED_TITLE = 'Distribution of Most Frequently Mutated Genes';
 const CNV_TITLE = 'Most Frequent Genes with CNV';
@@ -281,6 +282,31 @@ const Component = compose(
           onClick: () => handleClickGene(g, cnvGenesChartData),
         };
       });
+    const Legends = () => (
+      <Row style={{ display: 'flex', justifyContent: 'center' }}>
+        {cnvColors.map(f => (
+          <label key={f.key} style={{ paddingRight: '10px' }}>
+            <span
+              style={{
+                color: f.color,
+                backgroundColor: f.color,
+                textAlign: 'center',
+                border: '2px solid',
+                height: '18px',
+                width: '18px',
+                cursor: 'pointer',
+                display: 'inline-block',
+                marginRight: '6px',
+                marginTop: '3px',
+                verticalAlign: 'middle',
+                lineHeight: '16px',
+              }}
+            />
+            {f.name}
+          </label>
+        ))}
+      </Row>
+    );
     return (
       <div style={style}>
         {!!mutatedGenesChartData && (
@@ -345,6 +371,7 @@ const Component = compose(
                       wrapSvg({
                         selector: '#cnv-genes-chart svg',
                         title: CNV_TITLE,
+                        legends: renderToString(<Legends />),
                       })}
                     data={cnvGenesChartData.map(d => ({
                       symbol: d.symbol,
@@ -393,29 +420,7 @@ const Component = compose(
                       },
                     }}
                   />
-                  <Row style={{ display: 'flex', justifyContent: 'center' }}>
-                    {cnvColors.map(f => (
-                      <label key={f.key} style={{ paddingRight: '10px' }}>
-                        <span
-                          style={{
-                            color: f.color,
-                            backgroundColor: f.color,
-                            textAlign: 'center',
-                            border: '2px solid',
-                            height: '18px',
-                            width: '18px',
-                            cursor: 'pointer',
-                            display: 'inline-block',
-                            marginRight: '6px',
-                            marginTop: '3px',
-                            verticalAlign: 'middle',
-                            lineHeight: '16px',
-                          }}
-                        />
-                        {f.name}
-                      </label>
-                    ))}
-                  </Row>
+                  <Legends />
                 </div>
               )}
           </Column>

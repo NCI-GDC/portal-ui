@@ -237,7 +237,6 @@ export const makeFilter: TMakeFilter = fields => {
     op: 'and',
     content: fields.map(item => {
       const value = _.isArray(item.value) ? item.value : item.value.split(',');
-
       return {
         op: 'in',
         content: {

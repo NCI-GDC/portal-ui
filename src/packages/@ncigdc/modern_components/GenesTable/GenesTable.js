@@ -60,7 +60,7 @@ export default compose(
     sort,
     score,
   }) => {
-    const { genes, filteredCases, cases } = explore || {};
+    const { genes, filteredCases, cases, cnvCases } = explore || {};
     if (genes && !genes.hits.edges.length) {
       return <Row style={{ padding: '1rem' }}>No gene data found.</Row>;
     }
@@ -150,6 +150,7 @@ export default compose(
                           cases={cases}
                           defaultFilters={filters}
                           filteredCases={filteredCases}
+                          cnvCases={cnvCases}
                           query={query}
                           setSurvivalLoadingId={setSurvivalLoadingId}
                           survivalLoadingId={survivalLoadingId}

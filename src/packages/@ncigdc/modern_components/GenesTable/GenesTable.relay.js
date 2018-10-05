@@ -30,7 +30,7 @@ export default (Component: ReactClass<*>) =>
               makeFilter([
                 {
                   field: 'cases.available_variation_data',
-                  value: 'ssm',
+                  value: ['ssm'],
                 },
               ]),
             ),
@@ -38,7 +38,33 @@ export default (Component: ReactClass<*>) =>
             ssmTested: makeFilter([
               {
                 field: 'cases.available_variation_data',
-                value: 'ssm',
+                value: ['ssm'],
+              },
+            ]),
+            cnvTested: makeFilter([
+              {
+                field: 'cases.available_variation_data',
+                value: ['cnv'],
+              },
+            ]),
+            cnvGainFilters: makeFilter([
+              {
+                field: 'cnvs.cnv_change',
+                value: ['Gain', 'Amplification'],
+              },
+              {
+                field: 'cases.available_variation_data',
+                value: ['cnv'],
+              },
+            ]),
+            cnvLossFilters: makeFilter([
+              {
+                field: 'cnvs.cnv_change',
+                value: ['Shallow Loss', 'Deep Loss'],
+              },
+              {
+                field: 'cases.available_variation_data',
+                value: ['cnv'],
               },
             ]),
           },
@@ -60,6 +86,9 @@ export default (Component: ReactClass<*>) =>
             $score: String
             $geneCaseFilter: FiltersArgument
             $ssmTested: FiltersArgument
+            $cnvTested: FiltersArgument
+            $cnvGainFilters: FiltersArgument
+            $cnvLossFilters: FiltersArgument
           ) {
             genesTableViewer: viewer {
               explore {
@@ -70,6 +99,11 @@ export default (Component: ReactClass<*>) =>
                 }
                 filteredCases: cases {
                   hits(first: 0, filters: $geneCaseFilter) {
+                    total
+                  }
+                }
+                cnvCases: cases {
+                  hits(first: 0, filters: $cnvTested) {
                     total
                   }
                 }
@@ -93,6 +127,21 @@ export default (Component: ReactClass<*>) =>
                         is_cancer_gene_census
                         case {
                           hits(first: 0, filters: $ssmTested) {
+                            total
+                          }
+                        }
+                        cnv_case: case {
+                          hits(first: 0, filters: $cnvTested) {
+                            total
+                          }
+                        }
+                        case_cnv_gain: case {
+                          hits(first: 0, filters: $cnvGainFilters) {
+                            total
+                          }
+                        }
+                        case_cnv_loss: case {
+                          hits(first: 0, filters: $cnvLossFilters) {
                             total
                           }
                         }

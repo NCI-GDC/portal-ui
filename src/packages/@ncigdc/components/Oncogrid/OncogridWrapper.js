@@ -89,6 +89,13 @@ const styles = {
     backgroundColor: '#e6e6e6',
     borderColor: '#adadad',
   },
+  legends: {
+    width: '80%',
+    alignItems: 'center',
+    marginBottom: '30px',
+    marginLeft: '100px',
+    flexFlow: 'row wrap',
+  },
 };
 
 const containerRefs = {};
@@ -224,7 +231,7 @@ const OncoGridWrapper = compose(
           title ||
           `${cases}${cases < props.caseCount
             ? ' Most'
-            : ''} Mutated Cases and Top ${genes} Mutated Genes`,
+            : ''} Mutated Cases and Top ${genes} Mutated Genes By SSM`,
         impacts:
           impacts || (currentImpacts && currentImpacts.content.value) || [],
         filteredConsequenceTypes,
@@ -243,6 +250,7 @@ const OncoGridWrapper = compose(
     oncoGridHeight: 150,
     oncoGridPadding: 306,
     oncoGridWrapper: null,
+    heatMapColor: '#2E7D32',
     async getQueries(
       {
         oncoGrid,
@@ -274,6 +282,7 @@ const OncoGridWrapper = compose(
         currentSSMFilters,
         toggledCnvChanges,
         rankOncoGridBy,
+        heatMapColor,
       }: TProps = {},
       previousResponses: Object,
     ): Promise<*> {
@@ -328,6 +337,7 @@ const OncoGridWrapper = compose(
         impacts,
         consequenceTypes: filteredConsequenceTypes,
         heatMap: heatMapMode,
+        heatMapColor,
       });
 
       performanceTracker.end('oncogrid:process', performanceContext);
@@ -461,6 +471,7 @@ const OncoGridWrapper = compose(
     setToggledConsequences,
     variationDataTypes,
     setVariationDataTypes,
+    heatMapColor,
   }) => (
     <Loader loading={isLoading} height="800px">
       <div
@@ -647,13 +658,7 @@ const OncoGridWrapper = compose(
             </div>
           )}
         </Row>
-        <Row
-          style={{
-            width: '80%',
-            alignItems: 'center',
-            marginBottom: '30px',
-          }}
-        >
+        <Row style={styles.legends}>
           <div
             style={{
               flexGrow: 1,
@@ -683,6 +688,7 @@ const OncoGridWrapper = compose(
                 colorMap={colorMap.mutation}
                 type={'mutations'}
                 heatMapMode={heatMapMode}
+                heatMapColor={heatMapColor}
               />
             </div>
           </div>

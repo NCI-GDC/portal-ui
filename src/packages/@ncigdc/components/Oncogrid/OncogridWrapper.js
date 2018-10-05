@@ -505,7 +505,7 @@ const OncoGridWrapper = compose(
         }}
       >
         <Row style={{ display: 'flex', justifyContent: 'space-between' }}>
-          <h4 style={{ textAlign: 'center' }}>{title}</h4>
+          <h3 style={{ textAlign: 'center' }}>{title}</h3>
           {!isLoading && (
             <div>
               <Row
@@ -727,7 +727,7 @@ const OncoGridWrapper = compose(
             }}
             className="oncogrid-mutation-legend"
           >
-            <h5>Mutations</h5>
+            <h3>Mutations</h3>
             <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
               <ToggleSwatchLegend
                 toggledValues={toggledConsequences}
@@ -756,7 +756,7 @@ const OncoGridWrapper = compose(
 
           {!heatMapMode && (
             <div style={{ flexGrow: 1 }} className="oncogrid-cnv-legend">
-              <h5>CNV Changes</h5>
+              <h3>CNV Changes</h3>
               <ToggleSwatchLegend
                 toggledValues={toggledCnvChanges}
                 toggle={key => {

@@ -747,7 +747,7 @@ const OncoGridWrapper = compose(
                     setToggledConsequences(consequenceTypes);
                   }
                 }}
-                colorMap={colorMap.mutation}
+                colorMap={gridColors.mutation}
                 type={'mutations'}
                 heatMapMode={heatMapMode}
               />

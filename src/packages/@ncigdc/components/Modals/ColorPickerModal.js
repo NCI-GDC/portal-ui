@@ -10,76 +10,96 @@ import { capitalize } from '@ncigdc/utils/string';
 import Dropdown from '@ncigdc/uikit/Dropdown';
 import DropdownItem from '@ncigdc/uikit/DropdownItem';
 import Button from '@ncigdc/uikit/Button';
-import {
-  suggestedCnvThemes,
-  suggestedMutationThemes,
-} from '@ncigdc/utils/filters/prepared/significantConsequences';
-import { visualizingButton } from '@ncigdc/theme/mixins';
+import { suggestedGridThemes } from '@ncigdc/utils/filters/prepared/significantConsequences';
+import { withTheme } from '@ncigdc/theme';
 
-const Swatch = ({
-  color,
-  label,
-  onSelect,
-  palette,
-  handleComplete,
-  style,
-  type,
-  setPalette,
-}) => {
-  const handleChange = (color, event) => {
-    onSelect({
-      ...palette,
-      [type]: {
-        ...palette[type],
-        [label]: color.hex,
-      },
-    });
-  };
+const styles = {
+  common: theme => ({
+    backgroundColor: 'transparent',
+    ':hover': {
+      backgroundColor: theme.greyScale6,
+    },
+  }),
+  button: theme => ({
+    ...styles.common(theme),
+  }),
+};
 
-  return (
-    <Dropdown
-      autoclose={false}
-      button={
-        <div
+const Swatch = compose(
+  withTheme,
+)(
+  ({
+    color,
+    label,
+    onSelect,
+    palette,
+    handleComplete,
+    style,
+    type,
+    setPalette,
+    theme,
+  }) => {
+    const handleChange = (color, event) => {
+      onSelect({
+        ...palette,
+        [type]: {
+          ...palette[type],
+          [label]: color.hex,
+        },
+      });
+    };
+
+    return (
+      <Dropdown
+        autoclose={false}
+        button={
+          <Button
+            style={{
+              ...styles.button(theme),
+              display: 'flex',
+              flexDirection: 'row',
+              padding: 12,
+              margin: 10,
+              cursor: 'pointer',
+              borderRadius: 5,
+              border: `1px solid ${theme.greyScale4}`,
+              width: 130,
+              color: theme.greyScale2,
+              justifyContent: 'flex-start',
+            }}
+          >
+            <div
+              style={{
+                ...style,
+                backgroundColor: color,
+                width: 15,
+                height: 15,
+              }}
+            />
+            <span style={{ marginLeft: 5 }}>
+              {capitalize(label.replace(/_/g, ' ').replace(/variant/g, ''))}
+            </span>
+          </Button>
+        }
+        dropdownStyle={{ top: '100%', marginTop: 5, whiteSpace: 'nowrap' }}
+      >
+        <DropdownItem
           style={{
-            display: 'flex',
-            flexDirection: 'row',
-            padding: 12,
-            alignItems: 'center',
-            cursor: 'pointer',
+            flexDirection: 'column !important',
+            justifyContent: 'center !important',
+            alignItems: 'center !important',
           }}
         >
-          <div
-            style={{
-              ...style,
-              backgroundColor: color,
-              width: 15,
-              height: 15,
-            }}
+          <SketchPicker
+            presetColors={presetColors}
+            color={color}
+            onChange={handleChange}
           />
-          <span style={{ marginLeft: 5 }}>
-            {capitalize(label.replace(/_/g, ' ').replace(/variant/g, ''))}
-          </span>
-        </div>
-      }
-      dropdownStyle={{ top: '100%', marginTop: 5, whiteSpace: 'nowrap' }}
-    >
-      <DropdownItem
-        style={{
-          flexDirection: 'column !important',
-          justifyContent: 'center !important',
-          alignItems: 'center !important',
-        }}
-      >
-        <SketchPicker
-          presetColors={presetColors}
-          color={color}
-          onChange={handleChange}
-        />
-      </DropdownItem>
-    </Dropdown>
-  );
-};
+        </DropdownItem>
+      </Dropdown>
+    );
+  },
+);
 
 const presetColors = [
   '#EF6C00',
@@ -94,152 +114,115 @@ const presetColors = [
   '#AA00FF',
 ];
 
-const PresetTheme = ({ type, theme, setTheme, palette, styles = {} }) => {
-  return (
-    <div
-      style={{
-        margin: 5,
-        border: `1px solid lightgray`,
-        borderRadius: '5px',
-        padding: 10,
-      }}
-    >
-      <div
+const PresetTheme = compose(
+  withTheme,
+)(
+  ({
+    type,
+    suggestedPalette,
+    setPalette,
+    palette,
+    customStyles = {},
+    theme,
+  }) => {
+    return (
+      <Button
         style={{
+          ...styles.button(theme),
           display: 'flex',
-          flexFlow: 'row wrap',
+          margin: 10,
+          borderRadius: 5,
+          border: `1px solid ${theme.greyScale4}`,
+          color: theme.greyScale2,
+          justifyContent: 'flex-start',
+          padding: 0,
+          width: '80%',
         }}
+        onClick={() =>
+          setPalette({
+            ...palette,
+            [type]: {
+              ...palette[type],
+              ...suggestedPalette,
+            },
+          })}
       >
-        {map(theme, (val, key) => {
-          return (
-            <div
-              key={key}
-              style={{
-                display: 'flex',
-                flexDirection: 'row',
-                width: 100,
-                // margin: '0 10px',
-                alignItems: 'center',
-              }}
-            >
-              <div
-                style={{
-                  backgroundColor: val,
-                  width: 15,
-                  height: 15,
-                  margin: 5,
-                  ...styles,
-                }}
-              />
-              <span style={{ fontSize: '1rem' }}>
-                {key.replace(/_/g, ' ').replace(/variant/g, '')}
-              </span>
-            </div>
-          );
-        })}
-      </div>
-      <Row style={{ justifyContent: 'flex-end', marginTop: 10 }}>
-        <Button
-          style={visualizingButton}
-          onClick={() =>
-            setTheme({
-              ...palette,
-              [type]: {
-                ...palette[type],
-                ...theme,
-              },
-            })}
+        <Row
+          style={{
+            margin: 10,
+            flexWrap: 'wrap',
+          }}
         >
-          Apply
-        </Button>
-      </Row>
-    </div>
-  );
-};
+          {map(suggestedPalette, (color, key) => {
+            return (
+              <Row
+                key={key}
+                style={{
+                  width: 120,
+                  alignItems: 'center',
+                }}
+              >
+                <div
+                  style={{
+                    backgroundColor: color,
+                    width: 15,
+                    height: 15,
+                    margin: 5,
+                    ...customStyles.swatch,
+                  }}
+                />
+                <span style={{ fontSize: '1.2rem', paddingLeft: 10 }}>
+                  {capitalize(key.replace(/_/g, ' ').replace(/variant/g, ''))}
+                </span>
+              </Row>
+            );
+          })}
+        </Row>
+      </Button>
+    );
+  },
+);
 
 export default compose(
   withState('palette', 'setPalette', {}),
   withPropsOnChange(['colors'], ({ colors, setPalette }) => {
     setPalette(colors);
   }),
-)(({ onClose, mutations, cnvs, setPalette, palette, onApply }) => {
-  return (
-    <BaseModal
-      title="Choose Grid Colors"
-      closeText="Cancel"
-      onClose={onClose}
-      extraButtons={<Button onClick={() => onApply(palette)}>Apply</Button>}
-    >
-      <span>
-        Select the colors to display for each element on the OncoGrid. To change
-        a color, click on the square and select the color of interest.
-      </span>
-      <div className="color-picker" />
-      <div
-        style={{
-          display: 'flex',
-          flexDirection: 'row',
-          justifyContent: 'space-around',
-          marginTop: 10,
-        }}
+  withTheme,
+)(
+  ({
+    onClose,
+    mutations,
+    cnvs,
+    setPalette,
+    palette,
+    onApply,
+    theme,
+    checked = false,
+  }) => {
+    return (
+      <BaseModal
+        title="Choose Grid Colors"
+        closeText="Cancel"
+        onClose={onClose}
+        extraButtons={<Button onClick={() => onApply(palette)}>Apply</Button>}
       >
-        <Column style={{ width: '40%' }}>
-          <Row style={{ marginLeft: 30 }}>
-            <Column>
-              <h4>Suggested Themes</h4>
-              <Row
-                style={{
-                  display: 'flex',
-                  flexFlow: 'row wrap',
-                  width: 250,
-                }}
-              >
-                {map(suggestedMutationThemes, (theme, i) => {
-                  return (
-                    <PresetTheme
-                      key={i}
-                      theme={theme}
-                      styles={{ borderRadius: '50%' }}
-                      type={'mutation'}
-                      setTheme={setPalette}
-                      palette={palette}
-                    />
-                  );
-                })}
-              </Row>
-              <Row
-                style={{
-                  display: 'flex',
-                  width: 250,
-                }}
-              >
-                {map(suggestedCnvThemes, (theme, i) => {
-                  return (
-                    <PresetTheme
-                      key={i}
-                      theme={theme}
-                      type={'cnv'}
-                      setTheme={setPalette}
-                      palette={palette}
-                    />
-                  );
-                })}
-              </Row>
-            </Column>
-          </Row>
-        </Column>
-        <Column className="grid-color-schemes" style={{ width: '60%' }}>
-          <Row style={{ borderBottom: '1px solid lightgray' }}>
-            <h4 style={{ width: '50%' }}>Mutations</h4>
-            <h4 style={{ width: '50%' }}>CNVs</h4>
-          </Row>
-          <Row style={{ marginTop: 20 }}>
-            <Column
+        <span>
+          Select the colors to display for each element on the OncoGrid. To
+          change a color, click on the square and select the color of interest.
+        </span>
+        <Row style={{ marginTop: '1rem' }}>
+          <Column
+            style={{
+              width: '60%',
+              marginRight: '1rem',
+            }}
+          >
+            <h4>Mutations</h4>
+            <Row
               className="mutation-color-scheme"
               style={{
-                display: 'flex',
                 flexFlow: 'row wrap',
-                width: 400,
               }}
             >
               {map(palette.mutation, (color, type) => {
@@ -257,14 +240,24 @@ export default compose(
                   />
                 );
               })}
+            </Row>
+            <Column style={{ marginTop: '1rem' }}>
+              <h4>Suggested Theme</h4>
+              <PresetTheme
+                suggestedPalette={suggestedGridThemes.mutation}
+                setPalette={setPalette}
+                palette={palette}
+                type={'mutation'}
+                customStyles={{ swatch: { borderRadius: '50%' } }}
+              />
             </Column>
-            <Column
+          </Column>
+          <Column style={{ width: '40%' }}>
+            <h4>CNVs</h4>
+            <Row
               className="cnv-color-scheme"
               style={{
-                display: 'flex',
                 flexFlow: 'row wrap',
-                width: 250,
-                justifyContent: 'space-between',
               }}
             >
               {map(palette.cnv, (color, type) => {
@@ -280,10 +273,21 @@ export default compose(
                   />
                 );
               })}
+            </Row>
+            <Column style={{ marginTop: '1rem' }}>
+              <h4>Suggested Theme</h4>
+              <Row>
+                <PresetTheme
+                  suggestedPalette={suggestedGridThemes.cnv}
+                  setPalette={setPalette}
+                  palette={palette}
+                  type={'cnv'}
+                />
+              </Row>
             </Column>
-          </Row>
-        </Column>
-      </div>
-    </BaseModal>
-  );
-});
+          </Column>
+        </Row>
+      </BaseModal>
+    );
+  },
+);

@@ -151,7 +151,16 @@ export const wrapSvg: TWrapSvg = ({
   const svgClass = svg.getAttribute('class');
 
   const wrapper = document.createElement('div');
-
+  const simpleForeign = (element, x, y, width, height) =>
+    `<foreignobject
+      class="node"
+      x=${x}
+      y=${y}
+      width=${width}
+      height=${height}
+    >
+      ${element}
+    </foreignobject>`;
   wrapper.innerHTML = `
     <svg
       width="${width}"
@@ -179,12 +188,15 @@ export const wrapSvg: TWrapSvg = ({
         )}
       </g>
       ${afterObject.html}
-      <foreignobject  class="node" x="0" y="${sum([
-        height,
-        afterObject.height,
-      ])}" width="650" height="22">
-        ${legends || ''}          
-      </foreignobject>
+      ${legends
+        ? simpleForeign(
+            legends,
+            0,
+            sum([height, afterObject.height]),
+            '650',
+            '22',
+          )
+        : ''}
     </svg>
   `;
   return wrapper.querySelector('svg');

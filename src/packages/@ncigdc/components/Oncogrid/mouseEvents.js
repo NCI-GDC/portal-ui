@@ -80,7 +80,7 @@ export default function({
     setTooltip(
       <div style={{ maxWidth: 800 }}>
         {data.domain.symbol ? data.domain.symbol : data.domain.displayId}
-        <br /> cnv: {data.domain.cnv}
+        <br /> Count: {data.domain.cnv}
         <br />
       </div>,
     );

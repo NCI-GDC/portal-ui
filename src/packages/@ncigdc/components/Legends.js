@@ -3,7 +3,6 @@
 import React from 'react';
 import _ from 'lodash';
 import Color from 'color';
-
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import { capitalize } from '@ncigdc/utils/string';
 

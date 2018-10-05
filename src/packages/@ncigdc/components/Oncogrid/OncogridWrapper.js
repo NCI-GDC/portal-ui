@@ -127,9 +127,17 @@ type TProps = {
 
 const OncoGridWrapper = compose(
   withRouter,
-  withState('gridColors', 'setGridColors', colorMap),
+  withState(
+    'gridColors',
+    'setGridColors',
+    JSON.parse(localStorage.getItem('oncogridActiveTheme') || 'null') ||
+      colorMap,
+  ),
   withHandlers({
-    resetColors: ({ setGridColors }) => () => setGridColors(colorMap),
+    resetColors: ({ setGridColors }) => () => {
+      setGridColors(colorMap);
+      localStorage.setItem('oncogridActiveTheme', JSON.stringify(colorMap));
+    },
   }),
   withState('oncoGrid', 'setOncoGrid', {}),
   withState('oncoGridData', 'setOncoGridData', null),
@@ -497,7 +505,7 @@ const OncoGridWrapper = compose(
         }}
       >
         <Row style={{ display: 'flex', justifyContent: 'space-between' }}>
-          <h4 style={{ textAlign: 'center' }}>{title}</h4>
+          <h3 style={{ textAlign: 'center' }}>{title}</h3>
           {!isLoading && (
             <div>
               <Row
@@ -511,10 +519,10 @@ const OncoGridWrapper = compose(
               >
                 <DropDown
                   button={
-                    <Tooltip Component="Custom Colors">
+                    <Tooltip Component="Customize Colors">
                       <Button style={visualizingButton}>
                         <i className="fa fa-paint-brush" />
-                        <Hidden>Custom Colors</Hidden>
+                        <Hidden>Customize Colors</Hidden>
                       </Button>
                     </Tooltip>
                   }
@@ -526,6 +534,10 @@ const OncoGridWrapper = compose(
                           <ColorPickerModal
                             onApply={colors => {
                               setGridColors(colors);
+                              localStorage.setItem(
+                                'oncogridActiveTheme',
+                                JSON.stringify(colors),
+                              );
                               dispatch(setModal(null));
                             }}
                             onClose={() => dispatch(setModal(null))}
@@ -535,7 +547,7 @@ const OncoGridWrapper = compose(
                       );
                     }}
                   >
-                    Select Colors
+                    Customize Colors
                   </DropdownItem>
                   <DropdownItem onClick={resetColors}>
                     Reset to Default
@@ -683,21 +695,22 @@ const OncoGridWrapper = compose(
                     <Hidden>Fullscreen</Hidden>
                   </Button>
                 </Tooltip>
-
-                {crosshairMode && (
-                  <div
-                    style={{
-                      fontSize: '1.1rem',
-                      verticalAlign: 'top',
-                      width: '100%',
-                      textAlign: 'right',
-                    }}
-                  >
-                    Click and drag to select a region on the OncoGrid to zoom
-                    in.
-                  </div>
-                )}
               </Row>
+              {crosshairMode && (
+                <div
+                  style={{
+                    fontSize: '1.1rem',
+                    verticalAlign: 'top',
+                    width: '100%',
+                    textAlign: 'right',
+                    position: 'absolute',
+                    top: '40px',
+                    right: '10px',
+                  }}
+                >
+                  Click and drag to select a region on the OncoGrid to zoom in.
+                </div>
+              )}
             </div>
           )}
         </Row>
@@ -714,7 +727,7 @@ const OncoGridWrapper = compose(
             }}
             className="oncogrid-mutation-legend"
           >
-            <h5>Mutations</h5>
+            <h3>Mutations</h3>
             <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
               <ToggleSwatchLegend
                 toggledValues={toggledConsequences}
@@ -738,17 +751,12 @@ const OncoGridWrapper = compose(
                 type={'mutations'}
                 heatMapMode={heatMapMode}
               />
-              {/* {heatMapMode && (
-                <div style={{ marginLeft: 20 }}>
-                  <StepLegend rightLabel="More Mutations" />
-                </div>
-              )} */}
             </div>
           </div>
 
           {!heatMapMode && (
             <div style={{ flexGrow: 1 }} className="oncogrid-cnv-legend">
-              <h5>CNV Changes</h5>
+              <h3>CNV Changes</h3>
               <ToggleSwatchLegend
                 toggledValues={toggledCnvChanges}
                 toggle={key => {

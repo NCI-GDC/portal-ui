@@ -17,6 +17,22 @@ export const colorMap = {
   },
 };
 
+export const suggestedGridThemes = {
+  mutation: {
+    missense_variant: '#00e676',
+    frameshift_variant: '#388e3c',
+    start_lost: '#fdd835',
+    stop_lost: '#a8a6a6',
+    stop_gained: '#ce93d8',
+  },
+  cnv: {
+    'Deep Loss': '#00457c',
+    'Shallow Loss': '#64b5f6',
+    Gain: '#e76a6a',
+    Amplification: '#900000',
+  },
+};
+
 export const consequenceTypes = Object.keys(colorMap.mutation);
 export const cnvChangeTypes = Object.keys(colorMap.cnv);
 

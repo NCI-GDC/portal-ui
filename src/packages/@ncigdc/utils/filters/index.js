@@ -235,20 +235,16 @@ export const makeFilter: TMakeFilter = fields => {
   if (!fields.length) return {};
   return {
     op: 'and',
-    content: fields
-      .filter(item => item && Object.keys(item).length !== 0)
-      .map(item => {
-        const value = _.isArray(item.value)
-          ? item.value
-          : item.value.split(',');
-        return {
-          op: 'in',
-          content: {
-            field: item.field,
-            value,
-          },
-        };
-      }),
+    content: fields.map(item => {
+      const value = _.isArray(item.value) ? item.value : item.value.split(',');
+      return {
+        op: 'in',
+        content: {
+          field: item.field,
+          value,
+        },
+      };
+    }),
   };
 };
 

@@ -107,7 +107,7 @@ export default (Component: ReactClass<*>) =>
                       }
                     }
                   }
-                  loss: aggregations(filters: $cnvLoss) {
+                  shallowLoss: aggregations(filters: $cnvLoss) {
                     project__project_id {
                       buckets {
                         doc_count

@@ -200,12 +200,6 @@ export default compose(
       },
     };
 
-    const checkers = [
-      { key: 'amplification', name: 'Amplification', color: '#900000' },
-      { key: 'gain', name: 'Gain', color: '#d33737' },
-      { key: 'shallowLoss', name: 'Shallow Loss', color: '#0d71e8' },
-      { key: 'deepLoss', name: 'Deep Loss', color: '#00457c' },
-    ];
     const mutationCancerDistData = (cases.filtered || {
       project__project_id: { buckets: [] },
     }).project__project_id.buckets.map(b => {

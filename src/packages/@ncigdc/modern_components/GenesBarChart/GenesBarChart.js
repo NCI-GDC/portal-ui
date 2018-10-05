@@ -244,12 +244,7 @@ const Component = compose(
         tooltip: tooltipContext(context, g),
         onClick: () => handleClickGene(g, mutatedGenesChartData),
       }));
-    const checkers = [
-      { key: 'deepLoss', color: '#00457c', name: 'Deep Loss' },
-      { key: 'shallowLoss', color: '#0d71e8', name: 'Shallow Loss' },
-      { key: 'gain', color: '#d33737', name: 'Gain' },
-      { key: 'amplification', color: '#900000', name: 'Amplification' },
-    ];
+
     const cnvNodes = genes.hits.edges.map(x => ({
       symbol: x.node.symbol,
       gene_id: x.node.gene_id,

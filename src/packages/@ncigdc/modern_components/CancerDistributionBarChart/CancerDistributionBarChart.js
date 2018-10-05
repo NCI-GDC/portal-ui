@@ -14,6 +14,7 @@ import ExploreLink from '@ncigdc/components/Links/ExploreLink';
 import ProjectsLink from '@ncigdc/components/Links/ProjectsLink';
 import { TGroupFilter } from '@ncigdc/utils/filters/types';
 import { cnvColors } from '@ncigdc/utils/filters/prepared/significantConsequences';
+import { renderToString } from 'react-dom/server';
 
 type TProps = {
   style: Object,
@@ -233,6 +234,37 @@ export default compose(
           </span>
         ),
       }));
+    const Legends = () => (
+      <Row style={{ display: 'flex', justifyContent: 'center' }}>
+        {cnvColors.map(f => (
+          <label key={f.key} style={{ paddingRight: '10px' }}>
+            <span
+              onClick={() =>
+                setCnv({
+                  ...cnv,
+                  [f.key]: !cnv[f.key],
+                })}
+              style={{
+                color: f.color,
+                textAlign: 'center',
+                border: '2px solid',
+                height: '18px',
+                width: '18px',
+                cursor: 'pointer',
+                display: 'inline-block',
+                marginRight: '6px',
+                marginTop: '3px',
+                verticalAlign: 'middle',
+                lineHeight: '16px',
+              }}
+            >
+              {cnv[f.key] ? '✓' : <span>&nbsp;</span>}
+            </span>
+            {f.name}
+          </label>
+        ))}
+      </Row>
+    );
 
     return (
       <div>
@@ -310,6 +342,7 @@ export default compose(
                         wrapSvg({
                           selector: '.test-stacked-bar-chart svg',
                           title: 'CNV Distribution',
+                          legends: renderToString(<Legends />),
                         })}
                       data={cnvChartData.map(d => ({
                         symbol: d.symbol,
@@ -338,35 +371,7 @@ export default compose(
                       yAxis={{ title: '% of Cases Affected' }}
                       styles={chartStyles}
                     />
-                    <Row style={{ display: 'flex', justifyContent: 'center' }}>
-                      {cnvColors.map(f => (
-                        <label key={f.key} style={{ paddingRight: '10px' }}>
-                          <span
-                            onClick={() =>
-                              setCnv({
-                                ...cnv,
-                                [f.key]: !cnv[f.key],
-                              })}
-                            style={{
-                              color: f.color,
-                              textAlign: 'center',
-                              border: '2px solid',
-                              height: '18px',
-                              width: '18px',
-                              cursor: 'pointer',
-                              display: 'inline-block',
-                              marginRight: '6px',
-                              marginTop: '3px',
-                              verticalAlign: 'middle',
-                              lineHeight: '16px',
-                            }}
-                          >
-                            {cnv[f.key] ? '✓' : <span>&nbsp;</span>}
-                          </span>
-                          {f.name}
-                        </label>
-                      ))}
-                    </Row>
+                    <Legends />
                   </Column>
                 </Column>
               </span>

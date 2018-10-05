@@ -224,7 +224,7 @@ const OncoGridWrapper = compose(
           title ||
           `${cases}${cases < props.caseCount
             ? ' Most'
-            : ''} Mutated Cases and Top ${genes} Mutated Genes`,
+            : ''} Mutated Cases and Top ${genes} Mutated Genes By SSM`,
         impacts:
           impacts || (currentImpacts && currentImpacts.content.value) || [],
         filteredConsequenceTypes,

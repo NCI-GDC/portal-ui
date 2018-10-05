@@ -122,7 +122,7 @@ export default compose(
     let cnvCancerDistData = [];
     let cnvChartData = [];
     if (chartType !== 'ssm') {
-      ['amplification', 'gain', 'shallow_loss', 'deep_loss'].map(cnvType =>
+      ['amplification', 'gain', 'shallowLoss', 'deepLoss'].map(cnvType =>
         cases[cnvType].project__project_id.buckets.map(
           b =>
             (cnvFiltered = {
@@ -136,8 +136,8 @@ export default compose(
       );
       cnvCancerDistData = Object.keys(cnvFiltered).map(p => {
         return {
-          deep_loss: cnvFiltered[p]['deep_loss'] || 0,
-          shallow_loss: cnvFiltered[p]['shallow_loss'] || 0,
+          deep_loss: cnvFiltered[p]['deepLoss'] || 0,
+          shallow_loss: cnvFiltered[p]['shallowLoss'] || 0,
           gain: cnvFiltered[p]['gain'] || 0,
           amplification: cnvFiltered[p]['amplification'] || 0,
           project_id: p,

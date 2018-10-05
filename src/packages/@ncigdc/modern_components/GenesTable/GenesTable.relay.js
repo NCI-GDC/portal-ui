@@ -52,11 +52,19 @@ export default (Component: ReactClass<*>) =>
                 field: 'cnvs.cnv_change',
                 value: ['Gain', 'Amplification'],
               },
+              {
+                field: 'cases.available_variation_data',
+                value: ['cnv'],
+              },
             ]),
             cnvLossFilters: makeFilter([
               {
                 field: 'cnvs.cnv_change',
                 value: ['Shallow Loss', 'Deep Loss'],
+              },
+              {
+                field: 'cases.available_variation_data',
+                value: ['cnv'],
               },
             ]),
           },

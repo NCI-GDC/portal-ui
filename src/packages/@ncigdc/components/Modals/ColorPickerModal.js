@@ -136,7 +136,7 @@ const PresetTheme = compose(
           color: theme.greyScale2,
           justifyContent: 'flex-start',
           padding: 0,
-          width: '80%',
+          width: '70%',
         }}
         onClick={() =>
           setPalette({
@@ -223,6 +223,7 @@ export default compose(
               className="mutation-color-scheme"
               style={{
                 flexFlow: 'row wrap',
+                width: '80%',
               }}
             >
               {map(palette.mutation, (color, type) => {
@@ -258,6 +259,7 @@ export default compose(
               className="cnv-color-scheme"
               style={{
                 flexFlow: 'row wrap',
+                width: '80%',
               }}
             >
               {map(palette.cnv, (color, type) => {

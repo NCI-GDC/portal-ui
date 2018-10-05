@@ -12,6 +12,8 @@ import DropdownItem from '@ncigdc/uikit/DropdownItem';
 import Button from '@ncigdc/uikit/Button';
 import { suggestedGridThemes } from '@ncigdc/utils/filters/prepared/significantConsequences';
 import { withTheme } from '@ncigdc/theme';
+import Tooltip from '@ncigdc/uikit/Tooltip/Tooltip';
+import { visualizingButton } from '@ncigdc/theme/mixins';
 
 const styles = {
   common: theme => ({
@@ -53,33 +55,35 @@ const Swatch = compose(
       <Dropdown
         autoclose={false}
         button={
-          <Button
-            style={{
-              ...styles.button(theme),
-              display: 'flex',
-              flexDirection: 'row',
-              padding: 12,
-              margin: 10,
-              cursor: 'pointer',
-              borderRadius: 5,
-              border: `1px solid ${theme.greyScale4}`,
-              width: 130,
-              color: theme.greyScale2,
-              justifyContent: 'flex-start',
-            }}
-          >
-            <div
+          <Tooltip Component="Click to adjust color">
+            <Button
               style={{
-                ...style,
-                backgroundColor: color,
-                width: 15,
-                height: 15,
+                ...styles.button(theme),
+                display: 'flex',
+                flexDirection: 'row',
+                padding: 12,
+                margin: 10,
+                cursor: 'pointer',
+                borderRadius: 5,
+                border: `1px solid ${theme.greyScale4}`,
+                width: 130,
+                color: theme.greyScale2,
+                justifyContent: 'flex-start',
               }}
-            />
-            <span style={{ marginLeft: 5 }}>
-              {capitalize(label.replace(/_/g, ' ').replace(/variant/g, ''))}
-            </span>
-          </Button>
+            >
+              <div
+                style={{
+                  ...style,
+                  backgroundColor: color,
+                  width: 15,
+                  height: 15,
+                }}
+              />
+              <span style={{ marginLeft: 5 }}>
+                {capitalize(label.replace(/_/g, ' ').replace(/variant/g, ''))}
+              </span>
+            </Button>
+          </Tooltip>
         }
         dropdownStyle={{ top: '100%', marginTop: 5, whiteSpace: 'nowrap' }}
       >
@@ -125,60 +129,76 @@ const PresetTheme = compose(
     customStyles = {},
     theme,
   }) => {
+    const labels = map(suggestedPalette, (color, key) => {
+      return (
+        <Row
+          key={key}
+          style={{
+            width: 120,
+            alignItems: 'center',
+          }}
+        >
+          <div
+            style={{
+              backgroundColor: color,
+              width: 15,
+              height: 15,
+              margin: 5,
+              ...customStyles.swatch,
+            }}
+          />
+          <span style={{ fontSize: '1.2rem', paddingLeft: 10 }}>
+            {capitalize(key.replace(/_/g, ' ').replace(/variant/g, ''))}
+          </span>
+        </Row>
+      );
+    });
+
     return (
-      <Button
+      <div
         style={{
-          ...styles.button(theme),
           display: 'flex',
           margin: 10,
           borderRadius: 5,
           border: `1px solid ${theme.greyScale4}`,
           color: theme.greyScale2,
-          justifyContent: 'flex-start',
+          justifyContent: 'space-between',
           padding: 0,
-          width: '70%',
         }}
-        onClick={() =>
-          setPalette({
-            ...palette,
-            [type]: {
-              ...palette[type],
-              ...suggestedPalette,
-            },
-          })}
       >
+        {type === 'mutation' && (
+          <Column style={{ margin: 10 }}>
+            <Row>{labels.slice(0, 3)}</Row>
+            <Row>{labels.slice(3, 5)}</Row>
+          </Column>
+        )}
+        {type === 'cnv' && (
+          <Column style={{ margin: 10 }}>
+            <Row>{labels.slice(0, 2)}</Row>
+            <Row>{labels.slice(2, 4)}</Row>
+          </Column>
+        )}
         <Row
           style={{
-            margin: 10,
-            flexWrap: 'wrap',
+            alignItems: 'flex-end',
+            margin: '0 10px 10px 0',
           }}
         >
-          {map(suggestedPalette, (color, key) => {
-            return (
-              <Row
-                key={key}
-                style={{
-                  width: 120,
-                  alignItems: 'center',
-                }}
-              >
-                <div
-                  style={{
-                    backgroundColor: color,
-                    width: 15,
-                    height: 15,
-                    margin: 5,
-                    ...customStyles.swatch,
-                  }}
-                />
-                <span style={{ fontSize: '1.2rem', paddingLeft: 10 }}>
-                  {capitalize(key.replace(/_/g, ' ').replace(/variant/g, ''))}
-                </span>
-              </Row>
-            );
-          })}
+          <Button
+            style={visualizingButton}
+            onClick={() =>
+              setPalette({
+                ...palette,
+                [type]: {
+                  ...palette[type],
+                  ...suggestedPalette,
+                },
+              })}
+          >
+            Select
+          </Button>
         </Row>
-      </Button>
+      </div>
     );
   },
 );
@@ -200,6 +220,36 @@ export default compose(
     theme,
     checked = false,
   }) => {
+    const mutationSwatches = map(palette.mutation, (color, type) => {
+      return (
+        <Swatch
+          key={type}
+          color={color}
+          label={type}
+          onSelect={setPalette}
+          palette={palette}
+          handleComplete={() => onClose(palette)}
+          style={{ borderRadius: 10 }}
+          type={'mutation'}
+          setPalette={setPalette}
+        />
+      );
+    });
+
+    const cnvSwatches = map(palette.cnv, (color, type) => {
+      return (
+        <Swatch
+          key={type}
+          color={color}
+          label={type}
+          onSelect={setPalette}
+          palette={palette}
+          handleComplete={() => onClose(palette)}
+          type={'cnv'}
+        />
+      );
+    });
+
     return (
       <BaseModal
         title="Choose Grid Colors"
@@ -211,39 +261,19 @@ export default compose(
           Select the colors to display for each element on the OncoGrid. To
           change a color, click on the square and select the color of interest.
         </span>
-        <Row style={{ marginTop: '1rem' }}>
-          <Column
-            style={{
-              width: '60%',
-              marginRight: '1rem',
-            }}
-          >
-            <h4>Mutations</h4>
-            <Row
-              className="mutation-color-scheme"
-              style={{
-                flexFlow: 'row wrap',
-                width: '80%',
-              }}
-            >
-              {map(palette.mutation, (color, type) => {
-                return (
-                  <Swatch
-                    key={type}
-                    color={color}
-                    label={type}
-                    onSelect={setPalette}
-                    palette={palette}
-                    handleComplete={() => onClose(palette)}
-                    style={{ borderRadius: 10 }}
-                    type={'mutation'}
-                    setPalette={setPalette}
-                  />
-                );
-              })}
-            </Row>
+        <Row style={{ marginTop: '1rem', justifyContent: 'space-around' }}>
+          <Column>
+            <h4 style={{ marginLeft: 10 }}>Customize Mutation Colors</h4>
+            {
+              <Row className="mutation-color-scheme">
+                <Column>
+                  <Row>{mutationSwatches.slice(0, 3)}</Row>
+                  <Row>{mutationSwatches.slice(3, 5)}</Row>
+                </Column>
+              </Row>
+            }
             <Column style={{ marginTop: '1rem' }}>
-              <h4>Suggested Theme</h4>
+              <h4 style={{ marginLeft: 10 }}>Apply Suggested Mutation Theme</h4>
               <PresetTheme
                 suggestedPalette={suggestedGridThemes.mutation}
                 setPalette={setPalette}
@@ -253,31 +283,18 @@ export default compose(
               />
             </Column>
           </Column>
-          <Column style={{ width: '40%' }}>
-            <h4>CNVs</h4>
-            <Row
-              className="cnv-color-scheme"
-              style={{
-                flexFlow: 'row wrap',
-                width: '80%',
-              }}
-            >
-              {map(palette.cnv, (color, type) => {
-                return (
-                  <Swatch
-                    key={type}
-                    color={color}
-                    label={type}
-                    onSelect={setPalette}
-                    palette={palette}
-                    handleComplete={() => onClose(palette)}
-                    type={'cnv'}
-                  />
-                );
-              })}
-            </Row>
+          <Column>
+            <h4 style={{ marginLeft: 10 }}>Customize CNV Colors</h4>
+            {
+              <Row className="cnv-color-scheme">
+                <Column>
+                  <Row>{cnvSwatches.slice(0, 2)}</Row>
+                  <Row>{cnvSwatches.slice(2, 4)}</Row>
+                </Column>
+              </Row>
+            }
             <Column style={{ marginTop: '1rem' }}>
-              <h4>Suggested Theme</h4>
+              <h4 style={{ marginLeft: 10 }}>Apply Suggested CNV Theme</h4>
               <Row>
                 <PresetTheme
                   suggestedPalette={suggestedGridThemes.cnv}

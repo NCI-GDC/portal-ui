@@ -519,10 +519,10 @@ const OncoGridWrapper = compose(
               >
                 <DropDown
                   button={
-                    <Tooltip Component="Custom Colors">
+                    <Tooltip Component="Customize Colors">
                       <Button style={visualizingButton}>
                         <i className="fa fa-paint-brush" />
-                        <Hidden>Custom Colors</Hidden>
+                        <Hidden>Customize Colors</Hidden>
                       </Button>
                     </Tooltip>
                   }
@@ -547,7 +547,7 @@ const OncoGridWrapper = compose(
                       );
                     }}
                   >
-                    Select Colors
+                    Customize Colors
                   </DropdownItem>
                   <DropdownItem onClick={resetColors}>
                     Reset to Default

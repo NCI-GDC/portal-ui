@@ -167,10 +167,11 @@ const PresetTheme = compose(
         }}
       >
         {type === 'mutation' && (
-          <Column style={{ margin: 10 }}>
-            <Row>{labels.slice(0, 3)}</Row>
-            <Row>{labels.slice(3, 5)}</Row>
-          </Column>
+          <Row style={{ margin: 10 }}>
+            <Column>{labels.slice(0, 2)}</Column>
+            <Column>{labels.slice(2, 4)}</Column>
+            <Column>{labels.slice(4, 5)}</Column>
+          </Row>
         )}
         {type === 'cnv' && (
           <Column style={{ margin: 10 }}>
@@ -266,10 +267,9 @@ export default compose(
             <h4 style={{ marginLeft: 10 }}>Customize Mutation Colors</h4>
             {
               <Row className="mutation-color-scheme">
-                <Column>
-                  <Row>{mutationSwatches.slice(0, 3)}</Row>
-                  <Row>{mutationSwatches.slice(3, 5)}</Row>
-                </Column>
+                <Column>{mutationSwatches.slice(0, 2)}</Column>
+                <Column>{mutationSwatches.slice(2, 4)}</Column>
+                <Column>{mutationSwatches.slice(4, 5)}</Column>
               </Row>
             }
             <Column style={{ marginTop: '1rem' }}>

@@ -118,10 +118,9 @@ const Checkbox = ({
   );
 };
 
-const getCheckBoxColor = ({ type, heatMapMode, color = null }) => {
+const getCheckBoxColor = ({ type, heatMapMode, color = '#333' }) => {
   if (heatMapMode) return '#D33682';
-  if (color) return color;
-  return type === 'mutations' ? '#2E7D32' : '#64b5f6';
+  return color;
 };
 
 export const ToggleSwatchLegend = ({

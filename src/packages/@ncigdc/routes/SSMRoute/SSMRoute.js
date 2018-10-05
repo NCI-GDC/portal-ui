@@ -13,8 +13,8 @@ import { SsmLolliplot } from '@ncigdc/modern_components/Lolliplot';
 import SsmSummary from '@ncigdc/modern_components/SsmSummary';
 import SsmExternalReferences from '@ncigdc/modern_components/SsmExternalReferences';
 import ConsequencesTable from '@ncigdc/modern_components/ConsequencesTable';
-import CancerDistributionBarChart from '@ncigdc/modern_components/CancerDistributionBarChart';
-import CancerDistributionTable from '@ncigdc/modern_components/CancerDistributionTable';
+import CancerDistributionBarChart from '@ncigdc/modern_components/CancerDistributionSsmBarChart';
+import CancerDistributionTable from '@ncigdc/modern_components/CancerDistributionSsmTable';
 import ExploreLink from '@ncigdc/components/Links/ExploreLink';
 import ProjectsLink from '@ncigdc/components/Links/ProjectsLink';
 import createSsmSummary from '@ncigdc/modern_components/SsmSummary/SsmSummary.relay';
@@ -102,9 +102,14 @@ export default ({ match, ssmId = match.params.id, filters }) => {
             <CancerDistributionBarChart
               filters={cdFilters}
               ChartTitle={CancerDistributionTitle}
+              chartType="ssm"
               style={{ width: '50%' }}
             />
-            <CancerDistributionTable filters={cdFilters} entityName={ssmId} />
+            <CancerDistributionTable
+              filters={cdFilters}
+              entityName={ssmId}
+              tableType="ssm"
+            />
           </Column>
         </Column>
         <Column style={{ backgroundColor: 'white', marginTop: '2rem' }}>

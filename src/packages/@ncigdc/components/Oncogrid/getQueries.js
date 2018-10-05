@@ -185,17 +185,17 @@ async function getQueries({
 
   let cnv_occurrences = [];
 
-  let cnvChangeFilters = getFilterValue({
-    currentFilters: cnvOccurrenceFilters.content,
-    dotField: 'cnv.cnv_change',
-  });
-
-  if (cnvChangeFilters.content.value.length > 0 && !heatMapMode) {
-    let cnv_data = await getCNVOccurrences({
-      filters: cnvOccurrenceFilters,
-    });
-    cnv_occurrences = cnv_data.data.hits;
-  }
+  // let cnvChangeFilters = getFilterValue({
+  //   currentFilters: cnvOccurrenceFilters.content,
+  //   dotField: 'cnv.cnv_change',
+  // });
+  //
+  // if (cnvChangeFilters.content.value.length > 0 && !heatMapMode) {
+  //   let cnv_data = await getCNVOccurrences({
+  //     filters: cnvOccurrenceFilters,
+  //   });
+  //   cnv_occurrences = cnv_data.data.hits;
+  // }
 
   // front end filter is_canonical on REST endpoint instead of
   // graphql endpoint with inner hits query because

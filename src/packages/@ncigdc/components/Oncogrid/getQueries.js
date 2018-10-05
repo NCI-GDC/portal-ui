@@ -2,6 +2,7 @@
 import { replaceFilters } from '@ncigdc/utils/filters';
 import memoize from 'memoizee';
 import { fetchApi, fetchApiChunked } from '@ncigdc/utils/ajax';
+import cnv from './cnv_mock_data';
 
 async function getGenes({
   filters,
@@ -96,6 +97,7 @@ async function getQueries({
     filters: geneFilters,
     size: maxGenes,
   });
+
   if (!genes.length) return NO_RESULT;
 
   const geneIds = genes.map(gene => gene.gene_id);
@@ -136,6 +138,8 @@ async function getQueries({
     filters: occurrenceFilters,
   });
 
+  // add in a getCNVOccurrences
+
   // front end filter is_canonical on REST endpoint instead of
   // graphql endpoint with inner hits query because
   // that is very slow for large size (might be because inner hits causes ES to fire secondary queries)
@@ -149,9 +153,18 @@ async function getQueries({
     },
   }));
 
+  const cnv_occurrences = isCanonicalOccurrences.slice(0, 100).map((o, i) => {
+    cnv[i]['case_id'] = o.case.case_id;
+    cnv[i]['gene_id'] = o.ssm.consequence.length
+      ? o.ssm.consequence[0].transcript.gene.gene_id
+      : null;
+    return cnv[i];
+  });
+
   return {
     genes,
     occurrences: isCanonicalOccurrences,
+    cnv_occurrences,
     cases,
     totalCases,
   };

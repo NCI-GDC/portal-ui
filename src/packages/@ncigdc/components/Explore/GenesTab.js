@@ -13,6 +13,7 @@ import {
   toggleFilters,
   getFilterValue,
 } from '@ncigdc/utils/filters';
+import { ShowToggleBox } from '@ncigdc/components/TabPieCharts';
 import { stringifyJSONParam } from '@ncigdc/utils/uri';
 import withPropsOnChange from '@ncigdc/utils/withPropsOnChange';
 import removeEmptyKeys from '@ncigdc/utils/removeEmptyKeys';
@@ -37,6 +38,7 @@ export default compose(
   withFilters(),
   withState('defaultSurvivalData', 'setDefaultSurvivalData', {}),
   withState('selectedSurvivalData', 'setSelectedSurvivalData', {}),
+  withState('showingMore', 'setShowingMore', false),
   withState('state', 'setState', initialState),
   withProps(
     ({
@@ -109,6 +111,8 @@ export default compose(
     setSelectedSurvivalData,
     viewer,
     filters,
+    showingMore,
+    setShowingMore,
     handleClickGene,
   }) => (
     <Column style={styles.card}>
@@ -117,11 +121,14 @@ export default compose(
         Genes
       </h1>
       <Column>
-        <Row>
+        <Row
+          style={{ paddingBottom: '1.5rem', borderBottom: '1px solid #c8c8c8' }}
+        >
           <Column flex="none" style={{ width: '50%' }}>
             <GenesBarChart
               defaultFilters={filters}
               onClickGene={handleClickGene}
+              showingMore={showingMore}
             />
           </Column>
           <Column flex="none" style={{ width: '50%' }}>
@@ -132,6 +139,11 @@ export default compose(
               survivalPlotloading={loading}
             />
           </Column>
+        </Row>
+        <Row style={{ margin: 'auto', marginTop: '-1.5rem' }}>
+          <ShowToggleBox onClick={() => setShowingMore(!showingMore)}>
+            Show {showingMore ? 'Less' : 'More'}
+          </ShowToggleBox>
         </Row>
         <GenesTable
           defaultFilters={filters}

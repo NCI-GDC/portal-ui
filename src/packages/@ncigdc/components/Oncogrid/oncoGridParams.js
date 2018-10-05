@@ -59,6 +59,7 @@ export default function({
   consequenceTypes,
   impacts,
   grid = true,
+  cnvOccurrencesData = [],
 }: {
   donorData: Array<TDonorInput>,
   geneData: Array<TGeneInput>,
@@ -71,18 +72,27 @@ export default function({
   consequenceTypes: Array<string>,
   impacts: Array<string>,
   grid?: boolean,
+  cnvOccurrencesData?: Array<Object>,
 }): ?Object {
-  const { observations, donorIds, geneIds } = buildOccurrences(
+  const { observations, donorIds, geneIds, cnvObservations } = buildOccurrences(
     occurrencesData,
     donorData,
     geneData,
     consequenceTypes,
     impacts,
+    cnvOccurrencesData,
   );
-  if (observations.length === 0) return null;
-  const donors = mapDonors(donorData, donorIds);
-  const genes = mapGenes(geneData, geneIds);
-
+  if (!observations.length && !cnvObservations.length) return null;
+  let donors = mapDonors(donorData, donorIds);
+  let genes = mapGenes(geneData, geneIds);
+  donors = donors.map(donor => ({
+    ...donor,
+    cnv: cnvObservations.filter(cnv => donor.id === cnv.donorId).length,
+  }));
+  genes = genes.map(gene => ({
+    ...gene,
+    cnv: cnvObservations.filter(cnv => gene.id === cnv.geneId).length,
+  }));
   const maxDaysToDeath = Math.max(...donors.map(d => d.daysToDeath));
   const maxAgeAtDiagnosis = Math.max(...donors.map(d => d.age));
   const maxDonorsAffected = Math.max(...genes.map(g => g.totalDonors));
@@ -127,6 +137,7 @@ export default function({
   };
 
   return {
+    cnvObservations,
     donors,
     genes,
     observations,

@@ -30,7 +30,7 @@ const styles = {
 
 export const StepLegend = ({
   steps = [0.25, 0.5, 0.75, 1],
-  color = '#D33682',
+  color,
   leftLabel = 'Less',
   rightLabel = 'More',
 }) => (
@@ -118,9 +118,15 @@ const Checkbox = ({
   );
 };
 
-const getCheckBoxColor = ({ type, heatMapMode, color = '#333' }) => {
-  if (heatMapMode) return '#D33682';
+const getCheckBoxColor = ({
+  type,
+  heatMapMode,
+  heatMapColor,
+  color = '#333',
+}) => {
+  if (heatMapMode) return heatMapColor;
   return color;
+//   return type === 'mutations' ? '#2E7D32' : '#64b5f6';
 };
 
 export const ToggleSwatchLegend = ({
@@ -130,6 +136,7 @@ export const ToggleSwatchLegend = ({
   type,
   toggleAll,
   heatMapMode = false,
+  heatMapColor,
 }) => {
   const labels = _.map(colorMap, (color, key) => (
     <Checkbox
@@ -139,8 +146,9 @@ export const ToggleSwatchLegend = ({
       onChange={() => toggle(key)}
       checked={toggledValues && toggledValues.includes(key)}
       aria-label={key}
-      color={getCheckBoxColor({ type, heatMapMode, color })}
+      color={getCheckBoxColor({ type, heatMapMode, heatMapColor, color })}
       heatMapMode={heatMapMode}
+      heatMapColor={heatMapColor}
     />
   ));
 
@@ -167,12 +175,13 @@ export const ToggleSwatchLegend = ({
             onChange={() => toggleAll(toggledValues.length > 0)}
             checked={toggledValues.length > 0}
             aria-label={type}
-            color={getCheckBoxColor({ type, heatMapMode })}
+            color={getCheckBoxColor({ type, heatMapMode, heatMapColor })}
             heatMapMode={heatMapMode}
-          />
+            heatMapColor={heatMapColor}
         </Column>
         <Column style={{ marginLeft: 60 }}>
-          {heatMapMode && type === 'mutations' && <StepLegend />}
+          {heatMapMode &&
+            type === 'mutations' && <StepLegend color={heatMapColor} />}
         </Column>
       </Row>
       <Row style={(styles.table, { marginTop: 10 })} className="test-legends">

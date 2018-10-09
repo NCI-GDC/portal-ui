@@ -214,7 +214,7 @@ const GenesTableModel = [
         </Tooltip>
       </Th>
     ),
-    td: ({ node, query, defaultFilters, filteredCases }) => (
+    td: ({ node, query, defaultFilters, filteredCases, cnvCases }) => (
       <Td>
         <span>
           <ExploreLink
@@ -228,15 +228,15 @@ const GenesTableModel = [
                     value: [node.gene_id],
                   },
                   {
-                    field: 'Copy Number Variation',
-                    value: ['Gain', 'High Level Amplification'],
+                    field: 'cnvs.cnv_change',
+                    value: ['Gain', 'Amplification'],
                   },
                 ]),
                 query.genesTable_filters || defaultFilters,
               ),
             }}
           >
-            {(Math.round(node.numCases / 2.5) || 0).toLocaleString()}
+            {node.case_cnv_gain.hits.total}
           </ExploreLink>
           <span> / </span>
           <ExploreLink
@@ -253,10 +253,10 @@ const GenesTableModel = [
               ),
             }}
           >
-            {(filteredCases.hits.total || 0).toLocaleString()}
+            {(cnvCases.hits.total || 0).toLocaleString()}
           </ExploreLink>
-          <span>{` (${((node.numCases / 2.5 || 0) /
-            filteredCases.hits.total *
+          <span>{` (${((node.case_cnv_gain.hits.total || 0) /
+            (node.cnv_case.hits.total || 0) *
             100
           ).toFixed(2)}%)`}</span>
         </span>
@@ -284,7 +284,7 @@ const GenesTableModel = [
         </Tooltip>
       </Th>
     ),
-    td: ({ node, query, defaultFilters, filteredCases }) => (
+    td: ({ node, query, defaultFilters, filteredCases, cnvCases }) => (
       <Td>
         <span>
           <ExploreLink
@@ -298,7 +298,7 @@ const GenesTableModel = [
                     value: [node.gene_id],
                   },
                   {
-                    field: 'Copy Number Variation',
+                    field: 'cnvs.cnv_change',
                     value: ['Shallow Loss', 'Deep Loss'],
                   },
                 ]),
@@ -306,7 +306,7 @@ const GenesTableModel = [
               ),
             }}
           >
-            {(Math.round(node.numCases / 3.5) || 0).toLocaleString()}
+            {(node.case_cnv_loss.hits.total || 0).toLocaleString()}
           </ExploreLink>
           <span> / </span>
           <ExploreLink
@@ -323,10 +323,10 @@ const GenesTableModel = [
               ),
             }}
           >
-            {(filteredCases.hits.total || 0).toLocaleString()}
+            {(cnvCases.hits.total || 0).toLocaleString()}
           </ExploreLink>
-          <span>{` (${((Math.round(node.numCases / 3.5) || 0) /
-            filteredCases.hits.total *
+          <span>{` (${((node.case_cnv_loss.hits.total || 0) /
+            (cnvCases.hits.total || 0) *
             100
           ).toFixed(2)}%)`}</span>
         </span>

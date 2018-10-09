@@ -13,6 +13,7 @@ import {
 } from 'recompose';
 import OncoGrid from 'oncogrid';
 import { uniqueId, get, debounce, isEqual } from 'lodash';
+
 import { connect } from 'react-redux';
 import withSize from '@ncigdc/utils/withSize';
 import FullScreenIcon from 'react-icons/lib/md/fullscreen';
@@ -99,6 +100,13 @@ const styles = {
   buttonActive: {
     backgroundColor: '#e6e6e6',
     borderColor: '#adadad',
+  },
+  legends: {
+    width: '80%',
+    alignItems: 'center',
+    marginBottom: '30px',
+    marginLeft: '100px',
+    flexFlow: 'row wrap',
   },
 };
 
@@ -248,7 +256,7 @@ const OncoGridWrapper = compose(
           title ||
           `${cases}${cases < props.caseCount
             ? ' Most'
-            : ''} Mutated Cases and Top ${genes} Mutated Genes`,
+            : ''} Mutated Cases and Top ${genes} Mutated Genes By SSM`,
         impacts:
           impacts || (currentImpacts && currentImpacts.content.value) || [],
         filteredConsequenceTypes,
@@ -268,6 +276,7 @@ const OncoGridWrapper = compose(
     oncoGridHeight: 150,
     oncoGridPadding: 306,
     oncoGridWrapper: null,
+    heatMapColor: '#2E7D32',
     async getQueries(
       {
         oncoGrid,
@@ -300,6 +309,7 @@ const OncoGridWrapper = compose(
         toggledCnvChanges,
         rankOncoGridBy,
         gridColors,
+        heatMapColor,
       }: TProps = {},
       previousResponses: Object,
     ): Promise<*> {
@@ -354,6 +364,7 @@ const OncoGridWrapper = compose(
         impacts,
         consequenceTypes: filteredConsequenceTypes,
         heatMap: heatMapMode,
+        heatMapColor,
       });
 
       performanceTracker.end('oncogrid:process', performanceContext);
@@ -492,6 +503,7 @@ const OncoGridWrapper = compose(
     gridColors,
     dispatch,
     resetColors,
+    heatMapColor,
   }) => (
     <Loader loading={isLoading} height="800px">
       <div
@@ -714,13 +726,7 @@ const OncoGridWrapper = compose(
             </div>
           )}
         </Row>
-        <Row
-          style={{
-            width: '80%',
-            alignItems: 'center',
-            marginBottom: '30px',
-          }}
-        >
+        <Row style={styles.legends}>
           <div
             style={{
               flexGrow: 1,
@@ -750,6 +756,7 @@ const OncoGridWrapper = compose(
                 colorMap={gridColors.mutation}
                 type={'mutations'}
                 heatMapMode={heatMapMode}
+                heatMapColor={heatMapColor}
               />
             </div>
           </div>
@@ -779,6 +786,13 @@ const OncoGridWrapper = compose(
                 type={'copy number variations'}
               />
             </div>
+          </div>
+        </Row>
+        {!oncoGridData &&
+          !isLoading && (
+            <Column style={{ padding: '2rem 0' }}>
+              <div>No result found.</div>
+            </Column>
           )}
         </Row>
         {!oncoGridData &&

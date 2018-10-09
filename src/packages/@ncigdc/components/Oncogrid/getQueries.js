@@ -184,10 +184,12 @@ async function getQueries({
   );
 
   let cnv_occurrences = [];
+
   let cnvChangeFilters = getFilterValue({
     currentFilters: cnvOccurrenceFilters.content,
     dotField: 'cnv.cnv_change',
   });
+
   if (cnvChangeFilters.content.value.length > 0 && !heatMapMode) {
     let cnv_data = await getCNVOccurrences({
       filters: cnvOccurrenceFilters,

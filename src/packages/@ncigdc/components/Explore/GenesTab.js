@@ -13,7 +13,7 @@ import {
   toggleFilters,
   getFilterValue,
 } from '@ncigdc/utils/filters';
-import { ShowToggleBox } from '@ncigdc/components/TabPieCharts';
+// import { ShowToggleBox } from '@ncigdc/components/TabPieCharts'; // GenesBarChart component and related are hidding for now.
 import { stringifyJSONParam } from '@ncigdc/utils/uri';
 import withPropsOnChange from '@ncigdc/utils/withPropsOnChange';
 import removeEmptyKeys from '@ncigdc/utils/removeEmptyKeys';
@@ -128,7 +128,7 @@ export default compose(
             <GenesBarChart
               defaultFilters={filters}
               onClickGene={handleClickGene}
-              showingMore={showingMore}
+              showingMore={false} //{showingMore} // GenesBarChart component and related are hidding for now.
             />
           </Column>
           <Column flex="none" style={{ width: '50%' }}>
@@ -140,11 +140,12 @@ export default compose(
             />
           </Column>
         </Row>
-        <Row style={{ margin: 'auto', marginTop: '-1.5rem' }}>
+        {/* <Row style={{ margin: 'auto', marginTop: '-1.5rem' }}>
           <ShowToggleBox onClick={() => setShowingMore(!showingMore)}>
             Show {showingMore ? 'Less' : 'More'}
           </ShowToggleBox>
-        </Row>
+        </Row> */}
+        {/* GenesBarChart component and related are hidding for now. */}
         <GenesTable
           defaultFilters={filters}
           survivalData={survivalData}

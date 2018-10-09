@@ -126,7 +126,6 @@ const getCheckBoxColor = ({
 }) => {
   if (heatMapMode) return heatMapColor;
   return color;
-//   return type === 'mutations' ? '#2E7D32' : '#64b5f6';
 };
 
 export const ToggleSwatchLegend = ({
@@ -178,6 +177,7 @@ export const ToggleSwatchLegend = ({
             color={getCheckBoxColor({ type, heatMapMode, heatMapColor })}
             heatMapMode={heatMapMode}
             heatMapColor={heatMapColor}
+          />
         </Column>
         <Column style={{ marginLeft: 60 }}>
           {heatMapMode &&

@@ -95,7 +95,7 @@ const Swatch = compose(
           }}
         >
           <SketchPicker
-            presetColors={presetColors}
+            presetColors={[]}
             color={color}
             onChange={handleChange}
           />
@@ -104,19 +104,6 @@ const Swatch = compose(
     );
   },
 );
-
-const presetColors = [
-  '#EF6C00',
-  '#FFB300',
-  '#64FFDA',
-  '#00E676',
-  '#81D4FA',
-  '#0288D1',
-  '#BDBDBD',
-  '#FF4081',
-  '#F8BBD0',
-  '#AA00FF',
-];
 
 const PresetTheme = compose(
   withTheme,

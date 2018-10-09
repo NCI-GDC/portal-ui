@@ -611,6 +611,8 @@ const OncoGridWrapper = compose(
                     style={styles.button}
                     onClick={() => {
                       oncoGrid.reload();
+                      setToggledConsequences(consequenceTypes);
+                      setToggledCnvChanges(cnvChangeTypes);
                       refreshGridState({
                         oncoGrid,
                         setHeatMapMode,
@@ -786,13 +788,6 @@ const OncoGridWrapper = compose(
                 type={'copy number variations'}
               />
             </div>
-          </div>
-        </Row>
-        {!oncoGridData &&
-          !isLoading && (
-            <Column style={{ padding: '2rem 0' }}>
-              <div>No result found.</div>
-            </Column>
           )}
         </Row>
         {!oncoGridData &&
@@ -801,7 +796,6 @@ const OncoGridWrapper = compose(
               <div>No result found.</div>
             </Column>
           )}
-
         <div
           className={`${GRID_CLASS} ${uniqueGridClass}`}
           ref={n => {

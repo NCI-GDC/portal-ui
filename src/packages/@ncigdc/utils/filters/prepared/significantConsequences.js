@@ -21,11 +21,10 @@ export const colorMap = {
 };
 
 export const cnvColors = [
-  // { key: 'amplification', name: 'Amplification', color: '#900000' },
+  { key: 'amplification', name: 'Amplification', color: '#900000' },
   { key: 'gain', name: 'Gain', color: '#d33737' },
-  { key: 'loss', name: 'Loss', color: '#0d71e8' },
-  // { key: 'shallow_loss', name: 'Shallow Loss', color: '#0d71e8' },
-  // { key: 'deep_loss', name: 'Deep Loss', color: '#00457c' },
+  { key: 'shallow_loss', name: 'Shallow Loss', color: '#0d71e8' },
+  { key: 'deep_loss', name: 'Deep Loss', color: '#00457c' },
 ];
 
 export const suggestedGridThemes = {

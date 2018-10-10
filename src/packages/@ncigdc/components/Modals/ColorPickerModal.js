@@ -163,7 +163,8 @@ const PresetTheme = compose(
         {type === 'cnv' && (
           <Column style={{ margin: 10 }}>
             <Row>{labels.slice(0, 2)}</Row>
-            <Row>{labels.slice(2, 4)}</Row>
+            {/* // TODO: revert for all cnv values */}
+            {/* <Row>{labels.slice(2, 4)}</Row> */}
           </Column>
         )}
         <Row
@@ -249,11 +250,17 @@ export default compose(
           Select the colors to display for each element on the OncoGrid. To
           change a color, click on the square and select the color of interest.
         </span>
-        <Row style={{ marginTop: '1rem', justifyContent: 'space-around' }}>
+        <Row
+          style={{
+            marginTop: '1rem',
+            justifyContent: 'space-around',
+            flexWrap: 'wrap',
+          }}
+        >
           <Column>
             <h4 style={{ marginLeft: 10 }}>Customize Mutation Colors</h4>
             {
-              <Row className="mutation-color-scheme">
+              <Row className="mutation-color-scheme" style={{ height: 135 }}>
                 <Column>{mutationSwatches.slice(0, 2)}</Column>
                 <Column>{mutationSwatches.slice(2, 4)}</Column>
                 <Column>{mutationSwatches.slice(4, 5)}</Column>
@@ -273,7 +280,7 @@ export default compose(
           <Column>
             <h4 style={{ marginLeft: 10 }}>Customize CNV Colors</h4>
             {
-              <Row className="cnv-color-scheme">
+              <Row className="cnv-color-scheme" style={{ height: 135 }}>
                 <Column>
                   <Row>{cnvSwatches.slice(0, 2)}</Row>
                   <Row>{cnvSwatches.slice(2, 4)}</Row>

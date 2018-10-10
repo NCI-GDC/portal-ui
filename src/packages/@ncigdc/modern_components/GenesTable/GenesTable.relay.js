@@ -4,7 +4,11 @@ import { compose, withPropsOnChange } from 'recompose';
 import { parseIntParam, parseFilterParam } from '@ncigdc/utils/uri';
 import { withRouter } from 'react-router-dom';
 import { parse } from 'query-string';
-import { makeFilter, addInFilters } from '@ncigdc/utils/filters';
+import {
+  makeFilter,
+  addInFilters,
+  replaceFilters,
+} from '@ncigdc/utils/filters';
 import Query from '@ncigdc/modern_components/Query';
 
 export default (Component: ReactClass<*>) =>
@@ -47,26 +51,34 @@ export default (Component: ReactClass<*>) =>
                 value: ['cnv'],
               },
             ]),
-            cnvGainFilters: makeFilter([
-              {
-                field: 'cnvs.cnv_change',
-                value: ['Gain', 'Amplification'],
-              },
-              {
-                field: 'cases.available_variation_data',
-                value: ['cnv'],
-              },
-            ]),
-            cnvLossFilters: makeFilter([
-              {
-                field: 'cnvs.cnv_change',
-                value: ['Shallow Loss', 'Deep Loss'],
-              },
-              {
-                field: 'cases.available_variation_data',
-                value: ['cnv'],
-              },
-            ]),
+
+            cnvGainFilters: replaceFilters(
+              makeFilter([
+                {
+                  field: 'cnvs.cnv_change',
+                  value: ['Gain', 'Amplification'],
+                },
+                {
+                  field: 'cases.available_variation_data',
+                  value: ['cnv'],
+                },
+              ]),
+              q.genesTable_filters || defaultFilters,
+            ),
+
+            cnvLossFilters: replaceFilters(
+              makeFilter([
+                {
+                  field: 'cnvs.cnv_change',
+                  value: ['Shallow Loss', 'Deep Loss'],
+                },
+                {
+                  field: 'cases.available_variation_data',
+                  value: ['cnv'],
+                },
+              ]),
+              q.genesTable_filters || defaultFilters,
+            ),
           },
         };
       },

@@ -210,6 +210,35 @@ const getDisplayValue = value => {
   }
 };
 
+export const innerJoinFilters = (q, ctxq) => {
+  if (!ctxq && !q) return null;
+  if (!ctxq) return q;
+  if (!q) return ctxq;
+  const merged = {
+    op: 'and',
+    content: ctxq.content.reduce((acc, ctx) => {
+      console.log('ctx', ctx);
+      const found = acc.find(a => a.content.field === ctx.content.field);
+      if (!found) return [...acc, ctx];
+      return [
+        ...acc.filter(y => y.content.field !== found.content.field),
+        {
+          op: 'in',
+          content: {
+            field: ctx.content.field,
+            value: ctx.content.value.filter(v =>
+              found.content.value.includes(v),
+            ),
+          },
+        },
+      ].filter(Boolean);
+    }, q.content),
+    // .sort(sortFilters),
+  };
+
+  return merged.content.length ? merged : null;
+};
+
 // true if field and value in
 export const inCurrentFilters = ({ currentFilters, key, dotField }) =>
   currentFilters.some(

@@ -533,12 +533,12 @@ const OncoGridWrapper = compose(
                 spacing="1rem"
               >
                 <DropDown
-                  isDisabled={!oncoGridData}
+                  isDisabled={!oncoGridData || isFullScreen()}
                   button={
                     <Tooltip Component="Customize Colors">
                       <Button
                         style={visualizingButton}
-                        disabled={!oncoGridData}
+                        disabled={!oncoGridData || isFullScreen()}
                       >
                         <i className="fa fa-paint-brush" />
                         <Hidden>Customize Colors</Hidden>

@@ -93,9 +93,9 @@ const DefaultChartTitle = ({
 );
 const initalCnv = {
   gain: true,
-  amplification: true,
-  shallow_loss: true,
-  deep_loss: true,
+  // amplification: true,
+  loss: true, //shallow_loss: true,
+  // deep_loss: true,
 };
 export default compose(
   withRouter,
@@ -122,8 +122,9 @@ export default compose(
     let cnvFiltered = {};
     let cnvCancerDistData = [];
     let cnvChartData = [];
+    const cnvColumns = ['gain', 'loss']; //['amplification', 'gain', 'shallowLoss', 'deepLoss'];
     if (chartType !== 'ssm') {
-      ['amplification', 'gain', 'shallowLoss', 'deepLoss'].map(cnvType =>
+      cnvColumns.map(cnvType =>
         cases[cnvType].project__project_id.buckets.map(
           b =>
             (cnvFiltered = {
@@ -137,10 +138,10 @@ export default compose(
       );
       cnvCancerDistData = Object.keys(cnvFiltered).map(p => {
         return {
-          deep_loss: cnvFiltered[p]['deepLoss'] || 0,
-          shallow_loss: cnvFiltered[p]['shallowLoss'] || 0,
+          // deep_loss: cnvFiltered[p]['deepLoss'] || 0,
+          loss: cnvFiltered[p]['loss'] || 0, //shallowLoss
           gain: cnvFiltered[p]['gain'] || 0,
-          amplification: cnvFiltered[p]['amplification'] || 0,
+          // amplification: cnvFiltered[p]['amplification'] || 0,
           project_id: p,
           num_cases_total: cases.cnvTotal.project__project_id.buckets.filter(
             f => f.key === p,
@@ -158,10 +159,10 @@ export default compose(
         .slice(0, 20)
         .map(d => ({
           symbol: d.project_id,
-          deep_loss: d.deep_loss / d.num_cases_total * 100,
-          shallow_loss: d.shallow_loss / d.num_cases_total * 100,
+          // deep_loss: d.deep_loss / d.num_cases_total * 100,
+          loss: d.loss / d.num_cases_total * 100, //shallow_loss: d.shallow_loss
           gain: d.gain / d.num_cases_total * 100,
-          amplification: d.amplification / d.num_cases_total * 100,
+          // amplification: d.amplification / d.num_cases_total * 100,
           total: d.num_cases_total,
           onClick: () => push(`/projects/${d.project_id}`),
           tooltips: cnvColors.reduce(
@@ -313,7 +314,7 @@ export default compose(
             </span>
           )}
           {chartType !== 'ssm' &&
-            cnvChartData.length >= 5 && (
+            cnvChartData.length >= 1 && (
               <span style={{ width: '50%' }}>
                 <Column style={{ padding: '0 0 0 2rem' }}>
                   <Row
@@ -326,10 +327,10 @@ export default compose(
                       cases={sum(
                         cnvCancerDistData.map(
                           d =>
-                            d.amplification +
-                            d.gain +
-                            d.shallow_loss +
-                            d.deep_loss,
+                            // d.amplification +
+                            d.gain + d.loss,
+                          // d.shallow_loss +
+                          // d.deep_loss,
                         ),
                       )}
                       ssms={get(ssms, 'hits.total', 0)}
@@ -346,10 +347,10 @@ export default compose(
                         })}
                       data={cnvChartData.map(d => ({
                         symbol: d.symbol,
-                        amplification: d.amplification,
+                        // amplification: d.amplification,
                         gain: d.gain,
-                        shallow_loss: d.shallow_loss,
-                        deep_loss: d.deep_loss,
+                        loss: d.loss, //shallow_loss: d.shallow_loss
+                        // deep_loss: d.deep_loss,
                         total: d.total,
                       }))}
                       slug="cancer-distribution-bar-chart"

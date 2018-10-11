@@ -51,6 +51,7 @@ export default (Component: ReactClass<*>) =>
                 value: ['cnv'],
               },
             ]),
+<<<<<<< HEAD
 
             cnvGainFilters: replaceFilters(
               makeFilter([
@@ -79,6 +80,28 @@ export default (Component: ReactClass<*>) =>
               ]),
               q.genesTable_filters || defaultFilters,
             ),
+=======
+            cnvGainFilters: makeFilter([
+              {
+                field: 'cnvs.cnv_change',
+                value: ['Gain'],
+              },
+              {
+                field: 'cases.available_variation_data',
+                value: ['cnv'],
+              },
+            ]),
+            cnvLossFilters: makeFilter([
+              {
+                field: 'cnvs.cnv_change',
+                value: ['Loss'],
+              },
+              {
+                field: 'cases.available_variation_data',
+                value: ['cnv'],
+              },
+            ]),
+>>>>>>> Removed amplification and deep_loss related for now.
           },
         };
       },

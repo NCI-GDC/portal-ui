@@ -52,16 +52,16 @@ const createContainer = Component =>
           value: 'ssm',
         },
       ]),
-      amplificationFilters: makeFilter([
-        {
-          field: 'cnvs.cnv_change',
-          value: 'Amplification',
-        },
-        {
-          field: 'cases.available_variation_data',
-          value: 'cnv',
-        },
-      ]),
+      // amplificationFilters: makeFilter([
+      //   {
+      //     field: 'cnvs.cnv_change',
+      //     value: 'Amplification',
+      //   },
+      //   {
+      //     field: 'cases.available_variation_data',
+      //     value: 'cnv',
+      //   },
+      // ]),
       gainFilters: makeFilter([
         {
           field: 'cnvs.cnv_change',
@@ -75,23 +75,23 @@ const createContainer = Component =>
       lossFilters: makeFilter([
         {
           field: 'cnvs.cnv_change',
-          value: 'Shallow Loss',
+          value: 'Loss',
         },
         {
           field: 'cases.available_variation_data',
           value: 'cnv',
         },
       ]),
-      deepLossFilters: makeFilter([
-        {
-          field: 'cnvs.cnv_change',
-          value: 'Deep Loss',
-        },
-        {
-          field: 'cases.available_variation_data',
-          value: 'cnv',
-        },
-      ]),
+      // deepLossFilters: makeFilter([
+      //   {
+      //     field: 'cnvs.cnv_change',
+      //     value: 'Deep Loss',
+      //   },
+      //   {
+      //     field: 'cases.available_variation_data',
+      //     value: 'cnv',
+      //   },
+      // ]),
     },
     fragments: {
       viewer: () => Relay.QL`
@@ -127,11 +127,6 @@ const createContainer = Component =>
                         total
                       }
                     }
-                    case_with_cnv_amplification_count: case {
-                      hits(first: 0, filters: $amplificationFilters) {
-                        total
-                      }
-                    }
                     case_with_cnv_gain_count: case {
                       hits(first: 0, filters: $gainFilters) {
                         total
@@ -139,11 +134,6 @@ const createContainer = Component =>
                     }
                     case_with_cnv_loss_count: case {
                       hits(first: 0, filters: $lossFilters) {
-                        total
-                      }
-                    }
-                    case_with_cnv_deep_loss_count: case {
-                      hits(first: 0, filters: $deepLossFilters) {
                         total
                       }
                     }
@@ -249,10 +239,10 @@ const Component = compose(
     const cnvNodes = genes.hits.edges.map(x => ({
       symbol: x.node.symbol,
       gene_id: x.node.gene_id,
-      amplification: x.node.case_with_cnv_amplification_count.hits.total,
+      // amplification: x.node.case_with_cnv_amplification_count.hits.total,
       gain: x.node.case_with_cnv_gain_count.hits.total,
-      shallow_loss: x.node.case_with_cnv_loss_count.hits.total,
-      deep_loss: x.node.case_with_cnv_deep_loss_count.hits.total,
+      loss: x.node.case_with_cnv_loss_count.hits.total,
+      // deep_loss: x.node.case_with_cnv_deep_loss_count.hits.total,
     }));
     const totalNum =
       context === 'project' && projectId
@@ -265,10 +255,10 @@ const Component = compose(
       .map(g => {
         return {
           symbol: g.symbol,
-          deep_loss: g.deep_loss / totalNum * 100,
-          shallow_loss: g.shallow_loss / totalNum * 100,
+          // deep_loss: g.deep_loss / totalNum * 100,
+          loss: g.loss / totalNum * 100,
           gain: g.gain / totalNum * 100,
-          amplification: g.amplification / totalNum * 100,
+          // amplification: g.amplification / totalNum * 100,
           tooltips: cnvColors.reduce(
             (acc, color) => ({
               ...acc,
@@ -375,10 +365,10 @@ const Component = compose(
                       })}
                     data={cnvGenesChartData.map(d => ({
                       symbol: d.symbol,
-                      amplification: d.amplification,
+                      // amplification: d.amplification,
                       gain: d.gain,
-                      shallow_loss: d.shallow_loss,
-                      deep_loss: d.deep_loss,
+                      loss: d.loss,
+                      // deep_loss: d.deep_loss,
                       total: d.total,
                     }))}
                     slug="most-frequently-cnv-genes-bar-chart"

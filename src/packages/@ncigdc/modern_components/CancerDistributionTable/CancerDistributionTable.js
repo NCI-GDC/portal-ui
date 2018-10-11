@@ -120,7 +120,7 @@ export default compose(
           },
           {
             field: 'cnvs.cnv_change',
-            value: ['Gain', 'Amplification'],
+            value: ['Gain'],
           },
         ]);
         const cnvLossProjectFilter = makeFilter([
@@ -134,7 +134,7 @@ export default compose(
           },
           {
             field: 'cnvs.cnv_change',
-            value: ['Shallow Loss', 'Deep Loss'],
+            value: ['Loss'],
           },
         ]);
         return {

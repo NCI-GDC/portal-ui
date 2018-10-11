@@ -69,6 +69,7 @@ const DownloadVisualizationButton = ({
 }: TProps) => (
   <DropDown
     className={props.className || 'test-download-viz-button'}
+    isDisabled={disabled}
     button={
       <Tooltip Component={tooltipHTML}>
         <Button

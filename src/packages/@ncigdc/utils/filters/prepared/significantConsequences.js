@@ -1,6 +1,8 @@
 // @flow
 import type { TValueFilter } from '@ncigdc/utils/filters/types';
 
+// TODO: for first release hiding deep_loss and amplification, shallow_loss is loss
+
 export const colorMap = {
   mutation: {
     missense_variant: '#2E7D32',
@@ -10,10 +12,11 @@ export const colorMap = {
     stop_gained: '#2E7D32',
   },
   cnv: {
-    'Deep Loss': '#64b5f6',
-    'Shallow Loss': '#64b5f6',
+    // 'Deep Loss': '#64b5f6',
+    // 'Shallow Loss': '#64b5f6',
+    Loss: '#64b5f6',
     Gain: '#e76a6a',
-    Amplification: '#e76a6a',
+    // Amplification: '#e76a6a',
   },
 };
 
@@ -23,6 +26,23 @@ export const cnvColors = [
   { key: 'shallow_loss', name: 'Shallow Loss', color: '#0d71e8' },
   { key: 'deep_loss', name: 'Deep Loss', color: '#00457c' },
 ];
+
+export const suggestedGridThemes = {
+  mutation: {
+    missense_variant: '#00e676',
+    frameshift_variant: '#388e3c',
+    start_lost: '#fdd835',
+    stop_lost: '#a8a6a6',
+    stop_gained: '#ce93d8',
+  },
+  cnv: {
+    // 'Deep Loss': '#00457c',
+    // 'Shallow Loss': '#64b5f6',
+    Loss: '#64b5f6',
+    Gain: '#e76a6a',
+    // Amplification: '#900000',
+  },
+};
 
 export const consequenceTypes = Object.keys(colorMap.mutation);
 export const cnvChangeTypes = Object.keys(colorMap.cnv);

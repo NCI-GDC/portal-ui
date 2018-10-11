@@ -533,6 +533,7 @@ const OncoGridWrapper = compose(
                 spacing="1rem"
               >
                 <DropDown
+                  isDisabled={!oncoGridData}
                   button={
                     <Tooltip Component="Customize Colors">
                       <Button

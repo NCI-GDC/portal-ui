@@ -31,7 +31,7 @@ export default (Component: ReactClass<*>) =>
               cnvAvailableVariationDataFilter,
               {
                 field: 'cnvs.cnv_change',
-                value: ['Gain', 'Amplification'],
+                value: ['Gain'],
               },
             ]),
             filters,
@@ -41,7 +41,7 @@ export default (Component: ReactClass<*>) =>
               cnvAvailableVariationDataFilter,
               {
                 field: 'cnvs.cnv_change',
-                value: ['Shallow Loss', 'Deep Loss'],
+                value: ['Loss'],
               },
             ]),
             filters,

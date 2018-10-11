@@ -33,36 +33,36 @@ export default (Component: ReactClass<*>) =>
             ]),
             filters,
           ),
-          cnvAmplification: replaceFilters(
-            makeFilter([
-              {
-                field: 'cnvs.cnv_change',
-                value: ['Amplification'],
-              },
-              cnvAvailableVariationDataFilter,
-            ]),
-            filters,
-          ),
+          // cnvAmplification: replaceFilters(
+          //   makeFilter([
+          //     {
+          //       field: 'cnvs.cnv_change',
+          //       value: ['Amplification'],
+          //     },
+          //     cnvAvailableVariationDataFilter,
+          //   ]),
+          //   filters,
+          // ),
           cnvLoss: replaceFilters(
             makeFilter([
               {
                 field: 'cnvs.cnv_change',
-                value: ['Shallow Loss'],
+                value: ['Loss'],
               },
               cnvAvailableVariationDataFilter,
             ]),
             filters,
           ),
-          cnvDeepLoss: replaceFilters(
-            makeFilter([
-              {
-                field: 'cnvs.cnv_change',
-                value: ['Deep Loss'],
-              },
-              cnvAvailableVariationDataFilter,
-            ]),
-            filters,
-          ),
+          // cnvDeepLoss: replaceFilters(
+          //   makeFilter([
+          //     {
+          //       field: 'cnvs.cnv_change',
+          //       value: ['Deep Loss'],
+          //     },
+          //     cnvAvailableVariationDataFilter,
+          //   ]),
+          //   filters,
+          // ),
         },
       };
     }),
@@ -78,9 +78,7 @@ export default (Component: ReactClass<*>) =>
             $caseAggsFilters: FiltersArgument
             $ssmTested: FiltersArgument
             $cnvGain: FiltersArgument
-            $cnvAmplification: FiltersArgument
             $cnvLoss: FiltersArgument
-            $cnvDeepLoss: FiltersArgument
             $cnvTested: FiltersArgument
           ) {
             viewer {
@@ -99,23 +97,7 @@ export default (Component: ReactClass<*>) =>
                       }
                     }
                   }
-                  amplification: aggregations(filters: $cnvAmplification) {
-                    project__project_id {
-                      buckets {
-                        doc_count
-                        key
-                      }
-                    }
-                  }
-                  shallowLoss: aggregations(filters: $cnvLoss) {
-                    project__project_id {
-                      buckets {
-                        doc_count
-                        key
-                      }
-                    }
-                  }
-                  deepLoss: aggregations(filters: $cnvDeepLoss) {
+                  loss: aggregations(filters: $cnvLoss) {
                     project__project_id {
                       buckets {
                         doc_count

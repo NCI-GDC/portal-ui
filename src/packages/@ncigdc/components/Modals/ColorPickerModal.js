@@ -184,7 +184,7 @@ const PresetTheme = compose(
                 },
               })}
           >
-            Select
+            Apply
           </Button>
         </Row>
       </div>
@@ -205,7 +205,7 @@ export default compose(
     cnvs,
     setPalette,
     palette,
-    onApply,
+    onSave,
     theme,
     checked = false,
   }) => {
@@ -244,7 +244,7 @@ export default compose(
         title="Choose Grid Colors"
         closeText="Cancel"
         onClose={onClose}
-        extraButtons={<Button onClick={() => onApply(palette)}>Apply</Button>}
+        extraButtons={<Button onClick={() => onSave(palette)}>Save</Button>}
       >
         <span>
           Select the colors to display for each element on the OncoGrid. To

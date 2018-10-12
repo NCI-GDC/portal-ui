@@ -267,7 +267,7 @@ export default compose(
               </Row>
             }
             <Column style={{ marginTop: '1rem' }}>
-              <h4 style={{ marginLeft: 10 }}>Apply Suggested Mutation Theme</h4>
+              <h4 style={{ marginLeft: 10 }}>Suggested Mutation Theme</h4>
               <PresetTheme
                 suggestedPalette={suggestedGridThemes.mutation}
                 setPalette={setPalette}
@@ -288,7 +288,7 @@ export default compose(
               </Row>
             }
             <Column style={{ marginTop: '1rem' }}>
-              <h4 style={{ marginLeft: 10 }}>Apply Suggested CNV Theme</h4>
+              <h4 style={{ marginLeft: 10 }}>Suggested CNV Theme</h4>
               <Row>
                 <PresetTheme
                   suggestedPalette={suggestedGridThemes.cnv}

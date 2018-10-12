@@ -551,7 +551,7 @@ const OncoGridWrapper = compose(
                       dispatch(
                         setModal(
                           <ColorPickerModal
-                            onApply={colors => {
+                            onSave={colors => {
                               setGridColors(colors);
                               localStorage.setItem(
                                 'oncogridActiveTheme',

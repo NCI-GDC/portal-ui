@@ -123,7 +123,7 @@ export const GeneAggregationsComponent = compose(
         style={{ borderBottom: `1px solid ${props.theme.greyScale5}` }}
       />
     ))}
-    <FacetWrapper
+    {/* <FacetWrapper
       key={'cnvs.cnv_change'}
       facet={{
         title: 'CNV',
@@ -136,7 +136,7 @@ export const GeneAggregationsComponent = compose(
       aggregation={props.cnvAggregations[escapeForRelay('cnv_change')]}
       relay={props.relay}
       style={{ borderBottom: `1px solid ${props.theme.greyScale5}` }}
-    />
+    /> */}
   </div>
 ));
 

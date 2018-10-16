@@ -219,33 +219,31 @@ const GenesTableModel = [
     td: ({ node, query, defaultFilters, filteredCases, cnvCases }) => (
       <Td>
         <span>
-          {node.case_cnv_gain.hits && node.case_cnv_gain.hits.total !== 0 ? (
-            <ExploreLink
-              merge
-              query={{
-                searchTableTab: 'cases',
-                filters: replaceFilters(
-                  makeFilter([
-                    {
-                      field: 'genes.gene_id',
-                      value: [node.gene_id],
-                    },
-                    {
-                      field: 'cnvs.cnv_change',
-                      value: ['Gain'],
-                    },
-                  ]),
-                  query.genesTable_filters || defaultFilters,
-                ),
-              }}
-            >
-              {node.case_cnv_gain.hits.total}
-            </ExploreLink>
-          ) : (
-            0
-          )}
+          {node.case_cnv_gain.hits && node.case_cnv_gain.hits.total !== 0
+            ? // <ExploreLink
+              //   merge
+              //   query={{
+              //     searchTableTab: 'cases',
+              //     filters: replaceFilters(
+              //       makeFilter([
+              //         {
+              //           field: 'genes.gene_id',
+              //           value: [node.gene_id],
+              //         },
+              //         {
+              //           field: 'cnvs.cnv_change',
+              //           value: ['Gain'],
+              //         },
+              //       ]),
+              //       query.genesTable_filters || defaultFilters,
+              //     ),
+              //   }}
+              // >
+              node.case_cnv_gain.hits.total
+            : // </ExploreLink>
+              0}
           <span> / </span>
-          <ExploreLink
+          {/* <ExploreLink
             query={{
               searchTableTab: 'cases',
               filters: addInFilters(
@@ -258,9 +256,9 @@ const GenesTableModel = [
                 ]),
               ),
             }}
-          >
-            {(cnvCases.hits.total || 0).toLocaleString()}
-          </ExploreLink>
+          > */}
+          {(cnvCases.hits.total || 0).toLocaleString()}
+          {/* </ExploreLink> */}
           <span>{` (${((node.case_cnv_gain.hits
             ? node.case_cnv_gain.hits.total
             : 0) /
@@ -295,33 +293,31 @@ const GenesTableModel = [
     td: ({ node, query, defaultFilters, filteredCases, cnvCases }) => (
       <Td>
         <span>
-          {node.case_cnv_loss.hits && node.case_cnv_loss.hits.total !== 0 ? (
-            <ExploreLink
-              merge
-              query={{
-                searchTableTab: 'cases',
-                filters: replaceFilters(
-                  makeFilter([
-                    {
-                      field: 'genes.gene_id',
-                      value: [node.gene_id],
-                    },
-                    {
-                      field: 'cnvs.cnv_change',
-                      value: ['Loss'],
-                    },
-                  ]),
-                  query.genesTable_filters || defaultFilters,
-                ),
-              }}
-            >
-              {node.case_cnv_loss.hits.total.toLocaleString()}
-            </ExploreLink>
-          ) : (
-            0
-          )}
+          {node.case_cnv_loss.hits && node.case_cnv_loss.hits.total !== 0
+            ? // <ExploreLink
+              //   merge
+              //   query={{
+              //     searchTableTab: 'cases',
+              //     filters: replaceFilters(
+              //       makeFilter([
+              //         {
+              //           field: 'genes.gene_id',
+              //           value: [node.gene_id],
+              //         },
+              //         {
+              //           field: 'cnvs.cnv_change',
+              //           value: ['Loss'],
+              //         },
+              //       ]),
+              //       query.genesTable_filters || defaultFilters,
+              //     ),
+              //   }}
+              // >
+              node.case_cnv_loss.hits.total.toLocaleString()
+            : // </ExploreLink>
+              0}
           <span> / </span>
-          <ExploreLink
+          {/* <ExploreLink
             query={{
               searchTableTab: 'cases',
               filters: addInFilters(
@@ -334,9 +330,9 @@ const GenesTableModel = [
                 ]),
               ),
             }}
-          >
-            {(cnvCases.hits.total || 0).toLocaleString()}
-          </ExploreLink>
+          > */}
+          {(cnvCases.hits.total || 0).toLocaleString()}
+          {/* </ExploreLink> */}
           <span>{` (${((node.case_cnv_loss.hits
             ? node.case_cnv_loss.hits.total
             : 0) /

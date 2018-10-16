@@ -192,23 +192,23 @@ export default compose(
           ...(tableType !== 'ssm' && {
             cnv_gain: (
               <span>
-                <ExploreLink
+                {/* <ExploreLink
                   query={{
                     searchTableTab: 'cases',
                     filters: replaceFilters(cnvGainProjectFilter, filters),
                   }}
-                >
-                  {row.num_cnv_gain.toLocaleString()}
-                </ExploreLink>
+                > */}
+                {row.num_cnv_gain.toLocaleString()}
+                {/* </ExploreLink> */}
                 <span> / </span>
-                <ExploreLink
+                {/* <ExploreLink
                   query={{
                     searchTableTab: 'cases',
                     filters: cnvProjectFilter,
                   }}
-                >
-                  {row.num_cnv_cases_total.toLocaleString()}
-                </ExploreLink>
+                > */}
+                {row.num_cnv_cases_total.toLocaleString()}
+                {/* </ExploreLink> */}
                 <span>
                   &nbsp;({(row.num_cnv_gain_percent * 100).toFixed(2)}%)
                 </span>
@@ -216,23 +216,23 @@ export default compose(
             ),
             cnv_loss: (
               <span>
-                <ExploreLink
+                {/* <ExploreLink
                   query={{
                     searchTableTab: 'cases',
                     filters: replaceFilters(cnvLossProjectFilter, filters),
                   }}
-                >
-                  {row.num_cnv_loss.toLocaleString()}
-                </ExploreLink>
+                > */}
+                {row.num_cnv_loss.toLocaleString()}
+                {/* </ExploreLink> */}
                 <span> / </span>
-                <ExploreLink
+                {/* <ExploreLink
                   query={{
                     searchTableTab: 'cases',
                     filters: cnvProjectFilter,
                   }}
-                >
-                  {row.num_cnv_cases_total.toLocaleString()}
-                </ExploreLink>
+                > */}
+                {row.num_cnv_cases_total.toLocaleString()}
+                {/* </ExploreLink> */}
                 <span>
                   &nbsp;({(row.num_cnv_loss_percent * 100).toFixed(2)}%)
                 </span>

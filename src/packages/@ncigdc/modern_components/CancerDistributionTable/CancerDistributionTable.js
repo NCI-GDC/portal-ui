@@ -119,44 +119,44 @@ export default compose(
             value: ['ssm'],
           },
         ]);
-        const cnvProjectFilter = makeFilter([
-          {
-            field: 'cases.project.project_id',
-            value: [row.project_id],
-          },
-          {
-            field: 'cases.available_variation_data',
-            value: ['cnv'],
-          },
-        ]);
-        const cnvGainProjectFilter = makeFilter([
-          {
-            field: 'cases.project.project_id',
-            value: [row.project_id],
-          },
-          {
-            field: 'cases.available_variation_data',
-            value: ['cnv'],
-          },
-          {
-            field: 'cnvs.cnv_change',
-            value: ['Gain'],
-          },
-        ]);
-        const cnvLossProjectFilter = makeFilter([
-          {
-            field: 'cases.project.project_id',
-            value: [row.project_id],
-          },
-          {
-            field: 'cases.available_variation_data',
-            value: ['cnv'],
-          },
-          {
-            field: 'cnvs.cnv_change',
-            value: ['Loss'],
-          },
-        ]);
+        // const cnvProjectFilter = makeFilter([
+        //   {
+        //     field: 'cases.project.project_id',
+        //     value: [row.project_id],
+        //   },
+        //   {
+        //     field: 'cases.available_variation_data',
+        //     value: ['cnv'],
+        //   },
+        // ]);
+        // const cnvGainProjectFilter = makeFilter([
+        //   {
+        //     field: 'cases.project.project_id',
+        //     value: [row.project_id],
+        //   },
+        //   {
+        //     field: 'cases.available_variation_data',
+        //     value: ['cnv'],
+        //   },
+        //   {
+        //     field: 'cnvs.cnv_change',
+        //     value: ['Gain'],
+        //   },
+        // ]);
+        // const cnvLossProjectFilter = makeFilter([
+        //   {
+        //     field: 'cases.project.project_id',
+        //     value: [row.project_id],
+        //   },
+        //   {
+        //     field: 'cases.available_variation_data',
+        //     value: ['cnv'],
+        //   },
+        //   {
+        //     field: 'cnvs.cnv_change',
+        //     value: ['Loss'],
+        //   },
+        // ]);
         return {
           id: row.project_id, // used for key in table
           freq: row.num_affected_cases_percent,

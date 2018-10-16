@@ -3,6 +3,7 @@ import {
   replaceFilters,
   makeFilter,
   getFilterValue,
+  removeFilter,
 } from '@ncigdc/utils/filters';
 import memoize from 'memoizee';
 import { fetchApi, fetchApiChunked } from '@ncigdc/utils/ajax';
@@ -158,29 +159,37 @@ async function getQueries({
   if (!totalCases) return NO_RESULT;
 
   const caseIds = cases.map(c => c.case_id);
-  const occurrenceFilters = replaceFilters(
-    {
-      op: 'and',
-      content: [
-        {
-          op: 'in',
-          content: { field: 'cases.case_id', value: caseIds },
-        },
-      ],
-    },
-    caseFilters,
+
+  const ssmOccurrenceFilters = removeFilter(
+    f => f.match(/^cnvs\./),
+    replaceFilters(
+      {
+        op: 'and',
+        content: [
+          {
+            op: 'in',
+            content: { field: 'cases.case_id', value: caseIds },
+          },
+        ],
+      },
+      caseFilters,
+    ),
   );
 
   const { data: { hits: ssm_occurrences } } = await getSSMOccurrences({
-    filters: occurrenceFilters,
+    filters: ssmOccurrenceFilters,
   });
 
-  const cnvOccurrenceFilters = replaceFilters(
-    currentCNVFilters,
-    makeFilter([
-      { field: 'cases.case_id', value: caseIds },
-      { field: 'genes.gene_id', value: geneIds },
-    ]),
+  // remove ssm-specific filters because there is no ssm data in cnv_occurrence_centric
+  const cnvOccurrenceFilters = removeFilter(
+    f => f.match(/^ssms./),
+    replaceFilters(
+      currentCNVFilters,
+      makeFilter([
+        { field: 'cases.case_id', value: caseIds },
+        { field: 'genes.gene_id', value: geneIds },
+      ]),
+    ),
   );
 
   let cnv_occurrences = [];

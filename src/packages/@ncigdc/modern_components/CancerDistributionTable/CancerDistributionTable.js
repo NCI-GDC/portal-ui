@@ -86,10 +86,8 @@ export default compose(
           const project = head(projectsById[b]);
           return {
             project_id: b,
-            disease_type: project
-              ? (project.node.disease_type || []).join(', ')
-              : null,
-            site: project ? (project.node.primary_site || []).join(', ') : null,
+            disease_type: project ? project.node.disease_type : null,
+            site: project ? project.node.primary_site : null,
             num_affected_cases: caseFiltered[b].filtered || 0,
             num_affected_cases_total: caseFiltered[b].total || 0,
             num_affected_cases_percent:

@@ -314,7 +314,7 @@ export default compose(
             </span>
           )}
           {chartType !== 'ssm' &&
-            cnvChartData.length >= 1 && (
+            cnvChartData.length >= 5 && (
               <span style={{ width: '50%' }}>
                 <Column style={{ padding: '0 0 0 2rem' }}>
                   <Row

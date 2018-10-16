@@ -230,7 +230,7 @@ const GenesTableModel = [
                     },
                     {
                       field: 'cnvs.cnv_change',
-                      value: ['Gain', 'Amplification'],
+                      value: ['Gain'],
                     },
                   ]),
                   query.genesTable_filters || defaultFilters,
@@ -306,7 +306,7 @@ const GenesTableModel = [
                     },
                     {
                       field: 'cnvs.cnv_change',
-                      value: ['Shallow Loss', 'Deep Loss'],
+                      value: ['Loss'],
                     },
                   ]),
                   query.genesTable_filters || defaultFilters,

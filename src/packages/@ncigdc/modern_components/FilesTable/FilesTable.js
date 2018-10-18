@@ -107,7 +107,7 @@ export default compose(
                   />
                 </Th>
               ) : (
-                <Td key="remove_from_cart" />
+                <Th key="remove_from_cart" />
               ),
               ...tableInfo.map(x => (
                 <x.th key={x.id} hits={hits} canAddToCart={canAddToCart} />

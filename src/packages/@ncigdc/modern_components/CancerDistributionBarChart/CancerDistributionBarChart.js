@@ -1,17 +1,20 @@
 // @flow
 
 import React from 'react';
-import { compose } from 'recompose';
+import { compose, withState } from 'recompose';
 import { sortBy, sum, get } from 'lodash';
 import withRouter from '@ncigdc/utils/withRouter';
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import DownloadVisualizationButton from '@ncigdc/components/DownloadVisualizationButton';
 import { withTheme } from '@ncigdc/theme';
 import BarChart from '@ncigdc/components/Charts/BarChart';
+import FilteredStackedBarChart from '@ncigdc/components/Charts/FilteredStackedBarChart';
 import wrapSvg from '@ncigdc/utils/wrapSvg';
 import ExploreLink from '@ncigdc/components/Links/ExploreLink';
 import ProjectsLink from '@ncigdc/components/Links/ProjectsLink';
-import type { TGroupFilter } from '@ncigdc/utils/filters/types';
+import { TGroupFilter } from '@ncigdc/utils/filters/types';
+import { cnvColors } from '@ncigdc/utils/filters/prepared/significantConsequences';
+import { renderToString } from 'react-dom/server';
 
 type TProps = {
   style: Object,
@@ -55,6 +58,7 @@ export type TChartTitleProps = {
   filters: any,
 };
 const DefaultChartTitle = ({
+  type = 'mutations',
   cases = 0,
   projects = [],
   ssms = 0,
@@ -66,7 +70,7 @@ const DefaultChartTitle = ({
     </ExploreLink>&nbsp; cases affected by&nbsp;
     <ExploreLink query={{ searchTableTab: 'mutations', filters }}>
       {ssms.toLocaleString()}
-    </ExploreLink>&nbsp; mutations across&nbsp;
+    </ExploreLink>&nbsp; {type} across&nbsp;
     <ProjectsLink
       query={{
         filters: {
@@ -87,10 +91,17 @@ const DefaultChartTitle = ({
     </ProjectsLink>&nbsp; projects
   </div>
 );
-
+const initalCnv = {
+  gain: true,
+  // amplification: true,
+  loss: true, //shallow_loss: true,
+  // deep_loss: true,
+};
 export default compose(
   withRouter,
   withTheme,
+  withState('cnv', 'setCnv', initalCnv),
+  withState('collapsed', 'setCollapsed', false),
 )(
   (
     {
@@ -99,31 +110,114 @@ export default compose(
       push,
       ChartTitle = DefaultChartTitle,
       filters,
+      chartType,
       style,
+      cnv,
+      setCnv,
+      collapsed,
+      setCollapsed,
+      type,
     }: TProps = {},
   ) => {
-    const casesByProjectMap = (cases.total || {
-      project__project_id: [],
-    }).project__project_id.buckets.reduce(
-      (acc, bucket) => ({ ...acc, [bucket.key]: bucket.doc_count }),
-      {},
-    );
+    let cnvFiltered = {};
+    let cnvCancerDistData = [];
+    let cnvChartData = [];
+    const cnvColumns = ['gain', 'loss']; //['amplification', 'gain', 'shallowLoss', 'deepLoss'];
+    if (chartType !== 'ssm') {
+      cnvColumns.map(cnvType =>
+        cases[cnvType].project__project_id.buckets.map(
+          b =>
+            (cnvFiltered = {
+              ...cnvFiltered,
+              [b.key]: {
+                ...cnvFiltered[b.key],
+                [cnvType]: b.doc_count,
+              },
+            }),
+        ),
+      );
+      cnvCancerDistData = Object.keys(cnvFiltered).map(p => {
+        return {
+          // deep_loss: cnvFiltered[p]['deepLoss'] || 0,
+          loss: cnvFiltered[p]['loss'] || 0, //shallowLoss
+          gain: cnvFiltered[p]['gain'] || 0,
+          // amplification: cnvFiltered[p]['amplification'] || 0,
+          project_id: p,
+          num_cases_total: cases.cnvTotal.project__project_id.buckets.filter(
+            f => f.key === p,
+          )[0].doc_count,
+        };
+      });
+      cnvChartData = sortBy(
+        cnvCancerDistData,
+        d =>
+          -cnvColors.reduce(
+            (acc, f) => acc + d[f.key] / d.num_cases_total * cnv[f.key],
+            0,
+          ),
+      )
+        .slice(0, 20)
+        .map(d => ({
+          symbol: d.project_id,
+          // deep_loss: d.deep_loss / d.num_cases_total * 100,
+          loss: d.loss / d.num_cases_total * 100, //shallow_loss: d.shallow_loss
+          gain: d.gain / d.num_cases_total * 100,
+          // amplification: d.amplification / d.num_cases_total * 100,
+          total: d.num_cases_total,
+          onClick: () => push(`/projects/${d.project_id}`),
+          tooltips: cnvColors.reduce(
+            (acc, f) => ({
+              ...acc,
+              [f.key]: (
+                <span>
+                  {d[f.key].toLocaleString()}&nbsp;Case
+                  {d[f.key] > 1 ? 's ' : ' '}
+                  Affected in <b>{d.project_id}</b>
+                  <br />
+                  {d[f.key].toLocaleString()}
+                  &nbsp;/&nbsp;
+                  {d.num_cases_total.toLocaleString()}&nbsp; ({(d[f.key] / d.num_cases_total * 100).toFixed(2)}%)
+                </span>
+              ),
+            }),
+            0,
+          ),
+        }));
+    }
 
-    const cancerDistData = (cases.filtered || {
+    const chartStyles = {
+      xAxis: {
+        stroke: theme.greyScale4,
+        textFill: theme.greyScale3,
+      },
+      yAxis: {
+        stroke: theme.greyScale4,
+        textFill: theme.greyScale3,
+      },
+      bars: { fill: theme.secondary },
+      tooltips: {
+        fill: '#fff',
+        stroke: theme.greyScale4,
+        textFill: theme.greyScale3,
+      },
+    };
+
+    const mutationCancerDistData = (cases.filtered || {
       project__project_id: { buckets: [] },
     }).project__project_id.buckets.map(b => {
-      const totalCasesByProject = casesByProjectMap[b.key];
-      const freq = b.doc_count / totalCasesByProject;
-
+      const casesByProjects = cases.total.project__project_id.buckets.filter(
+        f => f.key === b.key,
+      );
+      const totalCasesByProject =
+        casesByProjects.length > 0 ? casesByProjects[0].doc_count : 0;
       return {
-        freq,
+        freq: b.doc_count / totalCasesByProject,
         project_id: b.key,
         num_affected_cases: b.doc_count,
         num_cases_total: totalCasesByProject,
       };
     });
-
-    const chartData = sortBy(cancerDistData, d => -d.freq)
+    const mutationChartData = sortBy(mutationCancerDistData, d => -d.freq)
       .slice(0, 20)
       .map(d => ({
         label: d.project_id,
@@ -141,68 +235,149 @@ export default compose(
           </span>
         ),
       }));
+    const Legends = () => (
+      <Row style={{ display: 'flex', justifyContent: 'center' }}>
+        {cnvColors.map(f => (
+          <label key={f.key} style={{ paddingRight: '10px' }}>
+            <span
+              onClick={() =>
+                setCnv({
+                  ...cnv,
+                  [f.key]: !cnv[f.key],
+                })}
+              style={{
+                color: f.color,
+                textAlign: 'center',
+                border: '2px solid',
+                height: '18px',
+                width: '18px',
+                cursor: 'pointer',
+                display: 'inline-block',
+                marginRight: '6px',
+                marginTop: '3px',
+                verticalAlign: 'middle',
+                lineHeight: '16px',
+              }}
+            >
+              {cnv[f.key] ? '✓' : <span>&nbsp;</span>}
+            </span>
+            {f.name}
+          </label>
+        ))}
+      </Row>
+    );
 
     return (
-      <div style={style}>
-        {chartData.length >= 5 && (
-          <span>
-            <Column style={{ padding: '0 0 0 2rem' }}>
-              <Row
-                style={{
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                }}
-              >
-                <ChartTitle
-                  cases={sum(cancerDistData.map(d => d.num_affected_cases))}
-                  ssms={get(ssms, 'hits.total', 0)}
-                  projects={cancerDistData}
-                  filters={filters}
-                />
-                <DownloadVisualizationButton
-                  svg={() =>
-                    wrapSvg({
-                      selector: '#cancer-distribution svg',
-                      title: 'Cancer Distribution',
-                    })}
-                  data={chartData.map(d => ({
-                    label: d.label,
-                    value: d.value,
-                  }))}
-                  slug="cancer-distribution-bar-chart"
-                  noText
-                  tooltipHTML="Download image or data"
-                  style={{ marginRight: '2rem' }}
-                />
-              </Row>
-
-              <Row style={{ justifyContent: 'space-between' }}>
+      <div>
+        <Row style={{ width: '100%' }}>
+          {mutationChartData.length >= 5 && (
+            <span style={{ width: chartType !== 'ssm' ? '50%' : '100%' }}>
+              <Column style={{ padding: '0 0 0 2rem' }}>
+                <Row
+                  style={{
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                  }}
+                >
+                  <ChartTitle
+                    cases={sum(
+                      mutationCancerDistData.map(d => d.num_affected_cases),
+                    )}
+                    ssms={get(ssms, 'hits.total', 0)}
+                    projects={mutationCancerDistData}
+                    filters={filters}
+                  />
+                  <DownloadVisualizationButton
+                    svg={() =>
+                      wrapSvg({
+                        selector: '#cancer-distribution svg',
+                        title: 'Cancer Distribution',
+                      })}
+                    data={mutationChartData.map(d => ({
+                      label: d.label,
+                      value: d.value,
+                    }))}
+                    slug="cancer-distribution-bar-chart"
+                    noText
+                    tooltipHTML="Download image or data"
+                    style={{ marginRight: '2rem' }}
+                  />
+                </Row>
                 <BarChart
                   margin={CHART_MARGINS}
-                  data={chartData}
+                  data={mutationChartData}
                   yAxis={{ title: '% of Cases Affected' }}
                   height={CHART_HEIGHT}
-                  styles={{
-                    xAxis: {
-                      stroke: theme.greyScale4,
-                      textFill: theme.greyScale3,
-                    },
-                    yAxis: {
-                      stroke: theme.greyScale4,
-                      textFill: theme.greyScale3,
-                    },
-                    bars: { fill: theme.secondary },
-                    tooltips: {
-                      fill: '#fff',
-                      stroke: theme.greyScale4,
-                      textFill: theme.greyScale3,
-                    },
-                  }}
+                  styles={chartStyles}
                 />
-              </Row>
-            </Column>
-          </span>
-        )}
+              </Column>
+            </span>
+          )}
+          {chartType !== 'ssm' &&
+            cnvChartData.length >= 5 && (
+              <span style={{ width: '50%' }}>
+                <Column style={{ padding: '0 0 0 2rem' }}>
+                  <Row
+                    style={{
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                    }}
+                  >
+                    <ChartTitle
+                      cases={sum(
+                        cnvCancerDistData.map(
+                          d =>
+                            // d.amplification +
+                            d.gain + d.loss,
+                          // d.shallow_loss +
+                          // d.deep_loss,
+                        ),
+                      )}
+                      ssms={get(ssms, 'hits.total', 0)}
+                      projects={cnvCancerDistData}
+                      filters={filters}
+                      type="cnv"
+                    />
+                    <DownloadVisualizationButton
+                      svg={() =>
+                        wrapSvg({
+                          selector: '.test-stacked-bar-chart svg',
+                          title: 'CNV Distribution',
+                          legends: renderToString(<Legends />),
+                        })}
+                      data={cnvChartData.map(d => ({
+                        symbol: d.symbol,
+                        // amplification: d.amplification,
+                        gain: d.gain,
+                        loss: d.loss, //shallow_loss: d.shallow_loss
+                        // deep_loss: d.deep_loss,
+                        total: d.total,
+                      }))}
+                      slug="cancer-distribution-bar-chart"
+                      noText
+                      tooltipHTML="Download image or data"
+                      style={{ marginRight: '2rem' }}
+                    />
+                  </Row>
+                  <Column>
+                    <FilteredStackedBarChart
+                      margin={CHART_MARGINS}
+                      height={200}
+                      data={cnvChartData}
+                      displayFilters={cnv}
+                      colors={cnvColors.reduce(
+                        (acc, f) => ({ ...acc, [f.key]: f.color }),
+                        0,
+                      )}
+                      yAxis={{ title: '% of Cases Affected' }}
+                      styles={chartStyles}
+                    />
+                    <Legends />
+                  </Column>
+                </Column>
+              </span>
+            )}
+        </Row>
       </div>
     );
   },

@@ -72,7 +72,6 @@ export default (Component: ReactClass<*>) =>
                                 data_type
                                 acl
                                 state
-                                file_state
                                 access
                                 file_id
                                 file_size

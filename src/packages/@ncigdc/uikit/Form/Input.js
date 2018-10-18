@@ -24,6 +24,7 @@ const styles = {
 const Input = ({ style, getNode, ...props }) => (
   <input
     ref={getNode}
+    aria-label="text"
     style={{ ...styles.input, ...style }}
     type="text"
     {...props}

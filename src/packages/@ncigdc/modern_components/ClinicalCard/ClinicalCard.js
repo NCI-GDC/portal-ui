@@ -66,12 +66,13 @@ export default compose(
       case_id: caseId,
       submitter_id: submitterId,
       diagnoses: { hits: { edges: diagnoses = [] } },
-      family_histories: { hits: { edges: familyHistory = [] } },
+      family_histories: { hits: { edges: familyHistories = [] } },
       demographic = {},
       exposures: { hits: { edges: exposures = [], total: totalExposures } },
       files: { hits: { edges: clinicalFiles = [] } },
       project: { project_id: projectId = {} },
     } = edges[0].node;
+    const familyHistory = familyHistories.map(x => x.node);
     const caseFilter = makeFilter([
       { field: 'cases.case_id', value: [caseId] },
     ]);
@@ -221,7 +222,7 @@ export default compose(
                               <Th key="agents">Therapeutic Agents</Th>,
                               <Th key="intent_type">Treatment Intent Type</Th>,
                               <Th key="therapy">Treatment or Therapy</Th>,
-                              <Th key="days">Days to Treatment</Th>,
+                              <Th key="days">Days to Treatment Start</Th>,
                             ]}
                             body={
                               <tbody>
@@ -233,7 +234,9 @@ export default compose(
                                       {node.treatment_intent_type || '--'}
                                     </Td>
                                     <Td>{node.treatment_or_therapy || '--'}</Td>
-                                    <Td>{node.days_to_treatment || '--'}</Td>
+                                    <Td>
+                                      {node.days_to_treatment_start || '--'}
+                                    </Td>
                                   </Tr>
                                 ))}
                               </tbody>

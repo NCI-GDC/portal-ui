@@ -84,16 +84,23 @@ const ExactMatchFacet = compose(
                     />
                     <GoLink
                       merge="toggle"
-                      query={{
-                        filters: makeFilter([
-                          {
-                            field: `${doctype}.${fieldNoDoctype}`,
-                            value: [inputValue],
-                          },
-                        ]),
-                      }}
+                      query={
+                        inputValue && {
+                          filters: makeFilter([
+                            {
+                              field: `${doctype}.${fieldNoDoctype}`,
+                              value: [inputValue],
+                            },
+                          ]),
+                        }
+                      }
                       dark={!!inputValue}
-                      onClick={() => setInputValue('')}
+                      onClick={inputValue ? () => setInputValue('') : null}
+                      style={
+                        inputValue
+                          ? null
+                          : { color: '#6F6F6F', cursor: 'not-allowed' }
+                      }
                     >
                       Go!
                     </GoLink>

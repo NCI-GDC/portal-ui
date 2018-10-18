@@ -66,7 +66,6 @@ export default (Component: ReactClass<*>) =>
                                 md5sum
                                 acl
                                 state
-                                file_state
                                 access
                               }
                             }
@@ -124,7 +123,7 @@ export default (Component: ReactClass<*>) =>
                                         therapeutic_agents
                                         treatment_intent_type
                                         treatment_or_therapy
-                                        days_to_treatment
+                                        days_to_treatment_start
                                       }
                                     }
                                   }

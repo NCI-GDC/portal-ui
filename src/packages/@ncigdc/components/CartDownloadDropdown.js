@@ -8,8 +8,8 @@ import urlJoin from 'url-join';
 
 import { authPartitionFiles } from '@ncigdc/utils/auth';
 import DownloadButton from '@ncigdc/components/DownloadButton';
-import NoAccessModal from '@ncigdc/components/Modals/NoAccessModal';
 import BaseModal from '@ncigdc/components/Modals/BaseModal';
+import LoginButton from '@ncigdc/components/LoginButton';
 
 import DownCaretIcon from 'react-icons/lib/fa/caret-down';
 
@@ -63,28 +63,9 @@ const downloadCart = ({
   if (unauthorized.doc_count > 0) {
     dispatch(
       setModal(
-        <NoAccessModal
-          message={
-            <div>
-              <p>
-                You are attempting to download files that you are not authorized
-                to access.
-              </p>
-              <p>
-                <span className="label label-success">
-                  {authorized.doc_count}
-                </span>{' '}
-                files that you are authorized to download.
-              </p>
-              <p>
-                <span className="label label-danger">
-                  {unauthorized.doc_count}
-                </span>{' '}
-                files that you are not authorized to download.
-              </p>
-            </div>
-          }
-          primaryButton={
+        <BaseModal
+          title="Access Error"
+          extraButtons={
             <Button
               disabled={!authorized.doc_count}
               onClick={() =>
@@ -100,7 +81,40 @@ const downloadCart = ({
             </Button>
           }
           closeText="Cancel"
-        />,
+        >
+          <div>
+            <p>
+              You are attempting to download files that you are not authorized
+              to access.
+            </p>
+            <p>
+              <span className="label label-success">
+                {authorized.doc_count}
+              </span>{' '}
+              files that you are authorized to download.
+            </p>
+            <p>
+              <span className="label label-danger">
+                {unauthorized.doc_count}
+              </span>{' '}
+              files that you are not authorized to download.
+            </p>
+          </div>
+          {user ? (
+            <p>
+              Please request dbGaP Access to the project (<a
+                target={'_blank'}
+                href="https://gdc.cancer.gov/access-data/obtaining-access-controlled-data"
+              >
+                click here for more information
+              </a>).
+            </p>
+          ) : (
+            <p>
+              Please <LoginButton />
+            </p>
+          )}
+        </BaseModal>,
       ),
     );
   } else if (files.reduce((sum, x) => sum + x.file_size, 0) > 5 * 10e8) {

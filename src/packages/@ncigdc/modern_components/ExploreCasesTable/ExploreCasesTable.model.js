@@ -5,6 +5,7 @@ import {
   RepositoryCasesLink,
   RepositoryFilesLink,
 } from '@ncigdc/components/Links/RepositoryLink';
+import OverflowTooltippedLabel from '@ncigdc/uikit/OverflowTooltippedLabel';
 import { Tooltip } from '@ncigdc/uikit/Tooltip';
 import ProjectLink from '@ncigdc/components/Links/ProjectLink';
 import CaseLink from '@ncigdc/components/Links/CaseLink';
@@ -137,7 +138,11 @@ const casesTableModel = [
         Primary Site
       </Th>
     ),
-    td: ({ node }) => <Td key="primary_site">{node.primary_site}</Td>,
+    td: ({ node }) => (
+      <Td key="primary_site" style={{ maxWidth: 130, overflow: 'hidden' }}>
+        <OverflowTooltippedLabel>{node.primary_site}</OverflowTooltippedLabel>
+      </Td>
+    ),
   },
   {
     name: 'Gender',
@@ -282,7 +287,12 @@ const casesTableModel = [
                   </ImageViewerLink>
                 </Tooltip>
               ) : (
-                <Tooltip Component="No slide images to view.">--</Tooltip>
+                <Tooltip
+                  key="no-slide-images"
+                  Component="No slide images to view."
+                >
+                  --
+                </Tooltip>
               ),
             ]}
           </Td>

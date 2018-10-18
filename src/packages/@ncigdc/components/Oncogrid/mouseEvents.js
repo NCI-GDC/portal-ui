@@ -3,20 +3,57 @@ import React from 'react';
 import { stringifyJSONParam } from '@ncigdc/utils/uri';
 import { setModal } from '@ncigdc/dux/modal';
 import SelectModal from '@ncigdc/components/Modals/SelectModal';
+import { replaceFilters } from '@ncigdc/utils/filters';
 
-export default function({ grid, setTooltip, trackLegends, push, dispatch }) {
+export default function({
+  grid,
+  setTooltip,
+  trackLegends,
+  push,
+  dispatch,
+  currentFilters,
+}) {
   grid.on('gridMouseOver', data => {
+    if (!data.observation) return;
+    const cnvData = data.observation.filter(o => o.type === 'cnv');
+    const ssmData = data.observation.filter(o => o.type === 'mutation');
     setTooltip(
-      data.observation && (
-        <div style={{ maxWidth: 800 }}>
-          <div>Case: {data.donor.displayId}</div>
-          <div>Gene: {data.observation.geneSymbol}</div>
-          <div>Mutation: {data.observation.id}</div>
-          <div>Consequence: {data.observation.consequence}</div>
+      <div style={{ maxWidth: 800 }}>
+        {data.donor && (
+          <div>
+            <span style={{ fontWeight: 'bold' }}>Case:</span>{' '}
+            {data.donor.displayId}
+          </div>
+        )}
+        {data.gene && (
+          <div style={{ marginTop: 2 }}>
+            <span style={{ fontWeight: 'bold' }}>Gene:</span> {data.gene.symbol}
+          </div>
+        )}
+        <div style={{ marginTop: 2 }}>
+          {!!cnvData.length && (
+            <span>
+              <span style={{ fontWeight: 'bold' }}>CNV change:</span>
+              <span> {cnvData[0].cnvChange}</span>
+            </span>
+          )}
+          {!!ssmData.length && (
+            <div style={{ marginTop: 2 }}>
+              <div>
+                <span style={{ fontWeight: 'bold' }}>Number of mutations:</span>
+              </div>
+              {ssmData.map((ssm, i) => (
+                <div key={i} style={{ marginLeft: 5 }}>
+                  {ssm.consequence}: <span>{ssm.ids.length}</span>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
-      ),
+      </div>,
     );
   });
+
   grid.on('gridMouseOut', () => setTooltip());
 
   grid.on('gridCrosshairMouseOver', data => {
@@ -24,7 +61,6 @@ export default function({ grid, setTooltip, trackLegends, push, dispatch }) {
       <div style={{ maxWidth: 800 }}>
         {data.donor && <div>Case: {data.donor.displayId}</div>}
         {data.gene && <div>Gene: {data.gene.symbol}</div>}
-        {data.obs && <div>Mutations: {data.obs}</div>}
       </div>,
     );
   });
@@ -39,6 +75,17 @@ export default function({ grid, setTooltip, trackLegends, push, dispatch }) {
       </div>,
     );
   });
+
+  grid.on('cnvHistogramMouseOver', data => {
+    setTooltip(
+      <div style={{ maxWidth: 800 }}>
+        {data.domain.symbol ? data.domain.symbol : data.domain.displayId}
+        <br /> Count: {data.domain.cnv}
+        <br />
+      </div>,
+    );
+  });
+
   grid.on('histogramMouseOut', () => setTooltip());
 
   grid.on(
@@ -88,6 +135,7 @@ export default function({ grid, setTooltip, trackLegends, push, dispatch }) {
               op: 'IN',
               content: { field: `${gdcType}s.${gdcType}_id`, value: [id] },
             },
+            ...currentFilters.content,
           ],
         }),
         facetTab: `${gdcType}s`,
@@ -95,24 +143,36 @@ export default function({ grid, setTooltip, trackLegends, push, dispatch }) {
       },
     });
   });
-  grid.on('gridClick', ({ observation: { id } }) => {
+
+  grid.on('gridClick', ({ donorId, geneId }) => {
+    const filters = replaceFilters(
+      {
+        op: 'AND',
+        content: [
+          {
+            op: 'IN',
+            content: {
+              field: 'cases.case_id',
+              value: [donorId],
+            },
+          },
+          {
+            op: 'IN',
+            content: {
+              field: 'genes.gene_id',
+              value: [geneId],
+            },
+          },
+        ],
+      },
+      currentFilters,
+    );
     push({
       pathname: '/exploration',
       query: {
-        filters: stringifyJSONParam({
-          op: 'AND',
-          content: [
-            {
-              op: 'IN',
-              content: {
-                field: 'ssms.ssm_id',
-                value: [id],
-              },
-            },
-          ],
-        }),
-        facetTab: 'mutations',
-        searchTableTab: 'mutations',
+        filters: stringifyJSONParam(filters),
+        facetTab: 'genes',
+        searchTableTab: 'genes',
       },
     });
   });

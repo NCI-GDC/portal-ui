@@ -66,34 +66,50 @@ export default compose(
             Add All Files to Cart
           </Button>
           <DownloadManifestButton fileCount={totalFiles} filters={filters} />
-          <CreateRepositoryCaseSetButton
-            filters={filters}
-            disabled={!totalCases}
-            style={{ paddingLeft: '5px' }}
-            onComplete={setId => {
-              push({
-                pathname: '/exploration',
-                query: {
-                  filters: stringifyJSONParam({
-                    op: 'AND',
-                    content: [
-                      {
-                        op: 'IN',
-                        content: {
-                          field: 'cases.case_id',
-                          value: [`set_id:${setId}`],
+          {filters ? (
+            <CreateRepositoryCaseSetButton
+              filters={filters}
+              disabled={!totalCases}
+              style={{ paddingLeft: '5px' }}
+              onComplete={setId => {
+                push({
+                  pathname: '/exploration',
+                  query: {
+                    filters: stringifyJSONParam({
+                      op: 'AND',
+                      content: [
+                        {
+                          op: 'IN',
+                          content: {
+                            field: 'cases.case_id',
+                            value: [`set_id:${setId}`],
+                          },
                         },
-                      },
-                    ],
-                  }),
-                },
-              });
-            }}
-          >
-            {'View '}
-            {totalCases.toLocaleString()} {pluralize(' Case', totalCases)}
-            {' in Exploration'}
-          </CreateRepositoryCaseSetButton>
+                      ],
+                    }),
+                  },
+                });
+              }}
+            >
+              {'View '}
+              {totalCases.toLocaleString()} {pluralize(' Case', totalCases)}
+              {' in Exploration'}
+            </CreateRepositoryCaseSetButton>
+          ) : (
+            <Button
+              disabled={!totalCases}
+              style={{ paddingLeft: '5px' }}
+              onClick={() =>
+                push({
+                  pathname: '/exploration',
+                })}
+            >
+              {'View '}
+              {totalCases.toLocaleString()} {pluralize(' Case', totalCases)}
+              {' in Exploration'}
+            </Button>
+          )}
+
           {DISPLAY_SLIDES && (
             <RepositorySlideCount filters={filters}>
               {(count, loading) => (

@@ -33,6 +33,8 @@ type TDownloadButton = {
   showIcon?: boolean,
   sets: Array<{ id: string, filename: string, type: string }>,
   requests: Array<{ endpoint: string, filename: string, params: Object }>,
+  scope: string,
+  method: string,
 };
 
 const DownloadButton = ({
@@ -55,6 +57,7 @@ const DownloadButton = ({
   showIcon = true,
   scope,
   sets,
+  method = 'POST',
   ...props
 }: TDownloadButton) => {
   const text = active ? activeText : inactiveText;
@@ -76,20 +79,19 @@ const DownloadButton = ({
           fields: fields.join(),
           filters,
           pretty: true,
-          scope,
+          ...(scope ? { scope } : {}),
           ...(sets ? { sets } : {}),
           ...(dataExportExpands ? { expand: dataExportExpands.join() } : {}),
           ...(returnType ? { return_type: returnType } : {}),
           ...(filename ? { filename } : {}),
           ...extraParams,
         };
-
         setActive(true);
 
         download({
           params,
           url: urlJoin(AUTH_API, endpoint),
-          method: 'POST',
+          method,
           altMessage,
         })(() => {}, () => setActive(false));
       }}

@@ -19,9 +19,7 @@ const isUserProject = ({ user, file }) => {
   return _.intersection(projectIds, gdcIds).length !== 0;
 };
 
-const fileInCorrectState = (file): boolean =>
-  file.state === 'submitted' &&
-  ['submitted', 'processing', 'processed'].indexOf(file.file_state) !== -1;
+const fileInCorrectState = (file): boolean => file.state === 'submitted';
 
 const intersectsWithFileAcl = ({ user, file }): boolean =>
   _.intersection(

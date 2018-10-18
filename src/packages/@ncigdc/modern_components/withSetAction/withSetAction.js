@@ -31,15 +31,15 @@ export default (Component: any) => {
         const mutation = mutations[scope][type][action];
 
         const content = get(filters, 'content[0].content');
-
-        const setOnlyInCurrentFilters = filters
-          ? filters.content.length === 1 &&
-            ['in', '='].includes(filters.content[0].op.toLowerCase()) &&
-            content.value &&
-            content.value.length === 1 &&
-            content.value[0].toString().includes('set_id:') &&
-            content.field === field
-          : false;
+        const setOnlyInCurrentFilters =
+          filters && Object.keys(filters).length !== 0
+            ? filters.content.length === 1 &&
+              ['in', '='].includes(filters.content[0].op.toLowerCase()) &&
+              content.value &&
+              content.value.length === 1 &&
+              content.value[0].toString().includes('set_id:') &&
+              content.field === field
+            : false;
 
         if (
           !forceCreate &&
@@ -65,9 +65,9 @@ export default (Component: any) => {
             },
             onCompleted: response => {
               setIsCreating(false);
-              onComplete(
-                get(response, ['sets', action, scope, type, 'set_id']),
-              );
+              const hash = get(response, ['sets', action, scope, type]);
+              const [setId, size] = [hash['set_id'], hash['size']];
+              onComplete(setId, size);
             },
             onError: err => {
               setIsCreating(false);

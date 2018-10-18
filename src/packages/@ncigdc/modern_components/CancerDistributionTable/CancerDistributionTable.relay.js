@@ -3,12 +3,20 @@
 import React from 'react';
 import { graphql } from 'react-relay';
 import { compose, withPropsOnChange } from 'recompose';
-import { makeFilter } from '@ncigdc/utils/filters';
+import { makeFilter, replaceFilters } from '@ncigdc/utils/filters';
 import Query from '@ncigdc/modern_components/Query';
 
 export default (Component: ReactClass<*>) =>
   compose(
     withPropsOnChange(['filters'], ({ filters = null }) => {
+      const cnvAvailableVariationDataFilter = {
+        field: 'cases.available_variation_data',
+        value: 'cnv',
+      };
+      const ssmAvailableVariationDataFilter = {
+        field: 'cases.available_variation_data',
+        value: 'ssm',
+      };
       return {
         variables: {
           ssmTested: makeFilter([
@@ -17,8 +25,32 @@ export default (Component: ReactClass<*>) =>
               value: 'ssm',
             },
           ]),
+          cnvTested: makeFilter([cnvAvailableVariationDataFilter]),
+          cnvGainFilter: replaceFilters(
+            makeFilter([
+              cnvAvailableVariationDataFilter,
+              {
+                field: 'cnvs.cnv_change',
+                value: ['Gain'],
+              },
+            ]),
+            filters,
+          ),
+          cnvLossFilter: replaceFilters(
+            makeFilter([
+              cnvAvailableVariationDataFilter,
+              {
+                field: 'cnvs.cnv_change',
+                value: ['Loss'],
+              },
+            ]),
+            filters,
+          ),
           caseAggsFilter: filters,
-          ssmCountsFilters: filters,
+          ssmCountsFilters: replaceFilters(
+            makeFilter([ssmAvailableVariationDataFilter]),
+            filters,
+          ),
         },
       };
     }),
@@ -34,6 +66,9 @@ export default (Component: ReactClass<*>) =>
             $ssmTested: FiltersArgument
             $ssmCountsFilters: FiltersArgument
             $caseAggsFilter: FiltersArgument
+            $cnvGainFilter: FiltersArgument
+            $cnvLossFilter: FiltersArgument
+            $cnvTested: FiltersArgument
           ) {
             viewer {
               explore {
@@ -49,6 +84,30 @@ export default (Component: ReactClass<*>) =>
                 }
                 cases {
                   filtered: aggregations(filters: $caseAggsFilter) {
+                    project__project_id {
+                      buckets {
+                        doc_count
+                        key
+                      }
+                    }
+                  }
+                  cnvGain: aggregations(filters: $cnvGainFilter) {
+                    project__project_id {
+                      buckets {
+                        doc_count
+                        key
+                      }
+                    }
+                  }
+                  cnvLoss: aggregations(filters: $cnvLossFilter) {
+                    project__project_id {
+                      buckets {
+                        doc_count
+                        key
+                      }
+                    }
+                  }
+                  cnvTotal: aggregations(filters: $cnvTested) {
                     project__project_id {
                       buckets {
                         doc_count

@@ -100,13 +100,13 @@ const EntityPageHorizontalTable = ({
         )}
         body={
           <tbody>
-            {data.map((d, i) => (
+            {data.map((d, k) => (
               <Tr
                 style={{
                   ...styles.tr,
-                  backgroundColor: i % 2 === 0 ? theme.tableStripe : '#fff',
+                  backgroundColor: k % 2 === 0 ? theme.tableStripe : '#fff',
                 }}
-                key={d[idKey] || i}
+                key={d[idKey] || k}
               >
                 {headings.map((h, i) =>
                   [].concat(d[h.key]).map((v, j) => (

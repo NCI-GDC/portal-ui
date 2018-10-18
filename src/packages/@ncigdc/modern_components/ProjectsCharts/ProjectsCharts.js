@@ -316,7 +316,7 @@ export default compose(
                 <div style={{ maxWidth: '24em' }}>
                   From COSMIC Cancer Gene Census and mutation consequence types
                   in {'{'}missense_variant, frameshift_variant, start_lost,
-                  stop_lost, initiator_codon_variant, stop_gained{'}'}
+                  stop_lost, stop_gained{'}'}
                 </div>
               }
             >
@@ -412,7 +412,11 @@ export default compose(
                             }),
                             {},
                           )}
-                          yAxis={{ title: 'Cases Affected' }}
+                          yAxis={{
+                            title:
+                              (yAxisUnit === 'number' ? '# of' : '% of') +
+                              ' Cases Affected',
+                          }}
                           styles={{
                             xAxis: {
                               stroke: theme.greyScale4,

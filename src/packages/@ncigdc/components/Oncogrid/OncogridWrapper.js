@@ -801,8 +801,7 @@ const OncoGridWrapper = compose(
             <Column style={{ padding: '2rem 0' }}>
               {toggledConsequences.length === 0 && (
                 <div>
-                  The selected cases have no mutations of these types - Only
-                  cases with some mutations will be shown. Please select more
+                  The current selection has no results. Please select more
                   mutation types or reload the page to continue exploration.
                 </div>
               )}

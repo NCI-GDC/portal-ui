@@ -41,7 +41,7 @@ export default compose(
                   {d.uuid}{' '}
                   <BubbleIcon
                     text="Current Version"
-                    backgroundColor={this.props.theme['secondary']}
+                    backgroundColor={this.props.theme.secondaryHighContrast}
                     style={{ marginLeft: '1em' }}
                   />
                 </div>

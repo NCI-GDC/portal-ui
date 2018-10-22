@@ -26,12 +26,15 @@ const RadioRow = styled(Row, {
   alignItems: 'center',
 });
 
+type TSortTableButtonSortFunc = (identifier: string, direction: string) => void;
+
 type TSortTableButtonProps = {
   style: Object,
   options: Array<Object>,
   query: Object,
   sortKey: string,
   theme: Object,
+  sortFunction: TSortTableButtonSortFunc,
   isDisabled?: boolean,
 };
 

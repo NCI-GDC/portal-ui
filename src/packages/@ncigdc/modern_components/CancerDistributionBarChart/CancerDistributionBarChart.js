@@ -63,34 +63,38 @@ const DefaultChartTitle = ({
   projects = [],
   ssms = 0,
   filters,
-}: TChartTitleProps) => (
-  <div style={{ textTransform: 'uppercase', padding: '0 2rem' }}>
-    <ExploreLink query={{ searchTableTab: 'cases', filters }}>
-      {cases.toLocaleString()}
-    </ExploreLink>&nbsp; cases affected by&nbsp;
-    <ExploreLink query={{ searchTableTab: 'mutations', filters }}>
-      {ssms.toLocaleString()}
-    </ExploreLink>&nbsp; {type} across&nbsp;
-    <ProjectsLink
-      query={{
-        filters: {
-          op: 'and',
-          content: [
-            {
-              op: 'in',
-              content: {
-                field: 'projects.project_id',
-                value: projects.map(p => p.project_id),
+}: TChartTitleProps) => {
+  // filters = replaceFilters()
+  return (
+    <div style={{ textTransform: 'uppercase', padding: '0 2rem' }}>
+      <ExploreLink query={{ searchTableTab: 'cases', filters }}>
+        {console.log('filters', filters)}
+        {cases.toLocaleString()}
+      </ExploreLink>&nbsp; cases affected by&nbsp;
+      <ExploreLink query={{ searchTableTab: 'mutations', filters }}>
+        {ssms.toLocaleString()}
+      </ExploreLink>&nbsp; {type} across&nbsp;
+      <ProjectsLink
+        query={{
+          filters: {
+            op: 'and',
+            content: [
+              {
+                op: 'in',
+                content: {
+                  field: 'projects.project_id',
+                  value: projects.map(p => p.project_id),
+                },
               },
-            },
-          ],
-        },
-      }}
-    >
-      {projects.length.toLocaleString()}
-    </ProjectsLink>&nbsp; projects
-  </div>
-);
+            ],
+          },
+        }}
+      >
+        {projects.length.toLocaleString()}
+      </ProjectsLink>&nbsp; projects
+    </div>
+  );
+};
 const initalCnv = {
   gain: true,
   // amplification: true,
@@ -313,6 +317,7 @@ export default compose(
               </Column>
             </span>
           )}
+          {console.log(cnvChartData.length)}
           {chartType !== 'ssm' &&
             cnvChartData.length >= 5 && (
               <span style={{ width: '50%' }}>

@@ -7,8 +7,7 @@
       "coverage/lcov-report/*.js",
       "__mocks__/*.js",
       "data/*.js",
-      "public/*.js",
-      "src/**/*.js"
+      "public/*.js"
     ]
   },
   "rules": {
@@ -43,6 +42,25 @@
         "typeParameter": false,
         "temporalDeadZone": false
       }
+    ]
+  },
+  "jsRules": {
+    "no-console": false,
+    "member-access": false,
+    "jsx-no-lambda": false,
+    "jsx-boolean-value": false,
+    "no-empty": false,
+    "object-literal-sort-keys": false,
+    "no-shadowed-variable": false,
+    "curly": [true, "ignore-same-line"],
+    "no-string-literal": false,
+    "no-bitwise": false,
+    "no-unused-expression": false,
+    "variable-name": [
+      true,
+      "ban-keywords",
+      "allow-leading-underscore",
+      "allow-snake-case"
     ]
   }
 }

@@ -21,7 +21,7 @@ const InternalLinkWithContext = ({
   ...rest
 }: TLinkProps) => (
   <LocationSubscriber>
-    {(ctx: {| pathname: string, query: TRawQuery |}) => {
+    {(ctx: { pathname: string, query: TRawQuery }) => {
       const pn = pathname || ctx.pathname;
 
       const mergedQuery =

@@ -1,11 +1,11 @@
 /* @flow */
 /* eslint no-use-before-define: 0 */
 
-export type TDataCategory = {|
+export type TDataCategory = {
   case_count?: number,
   data_category: TCategory,
   file_count?: number,
-|};
+};
 
 // waiting on $Values
 export type TCategory =

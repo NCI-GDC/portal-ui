@@ -2,22 +2,22 @@
 
 import { TRawQuery, TUriQuery } from '../uri/types';
 
-export type TValueContent = {|
+export type TValueContent = {
   field: string,
   value: Array<mixed>,
-|};
+};
 export type TValueOp = 'in';
-export type TValueFilter = {|
+export type TValueFilter = {
   content: TValueContent,
   op: TValueOp,
-|};
+};
 
 export type TGroupContent = Array<TValueFilter>;
 export type TGroupOp = 'and';
-export type TGroupFilter = {|
+export type TGroupFilter = {
   content: TGroupContent,
   op: TGroupOp,
-|};
+};
 
 export type TCombineValues = (
   x: TValueFilter,

@@ -135,7 +135,7 @@ const SuggestionFacet = compose(
 
     return (
       <LocationSubscriber>
-        {(ctx: {| pathname: string, query: TRawQuery |}) => {
+        {(ctx: { pathname: string, query: TRawQuery }) => {
           const { filters } = ctx.query || {};
           const currentFilters = parseFilterParam(filters, { content: [] })
             .content;

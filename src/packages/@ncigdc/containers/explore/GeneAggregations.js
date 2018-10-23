@@ -23,11 +23,11 @@ export type TProps = {
     cnv_change: { buckets: [TBucket] },
   },
   hits: {
-    edges: Array<{|
-      node: {|
+    edges: Array<{
+      node: {
         id: string,
-      |},
-    |}>,
+      },
+    }>,
   },
   setAutocomplete: Function,
   theme: Object,

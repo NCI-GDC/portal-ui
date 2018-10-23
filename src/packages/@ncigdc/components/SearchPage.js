@@ -38,13 +38,13 @@ const ShowFacetsButton = styled.button({
   borderRadius: '0 0.4rem 0.4rem 0',
 });
 
-type TProps = {|
+type TProps = {
   facetTabs?: Array<Object>,
   results?: mixed,
   showFacets: boolean,
   setShowFacets: Function,
   showRepositoryQuery: boolean,
-|};
+};
 
 const enhance = compose(withState('showFacets', 'setShowFacets', true));
 

@@ -28,7 +28,7 @@ const NotMissingFacet = (props: TProps) => {
   const dotField = props.field.replace(/__/g, '.');
   return (
     <LocationSubscriber>
-      {(ctx: {| pathname: string, query: TRawQuery |}) => {
+      {(ctx: { pathname: string, query: TRawQuery }) => {
         const currentFilters =
           (ctx.query &&
             parseFilterParam((ctx.query || {}).filters, {}).content) ||

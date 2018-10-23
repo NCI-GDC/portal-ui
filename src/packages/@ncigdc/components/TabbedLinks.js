@@ -33,7 +33,7 @@ const TabbedLinks: TTabbedLinks = (
   } = {},
 ) => (
   <LocationSubscriber>
-    {(ctx: {| pathname: string, query: TRawQuery |}) => {
+    {(ctx: { pathname: string, query: TRawQuery }) => {
       const foundIndex = links.findIndex(
         x => x.id === (ctx.query || {})[queryParam],
       );

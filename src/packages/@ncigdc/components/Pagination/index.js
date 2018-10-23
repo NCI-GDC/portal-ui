@@ -10,12 +10,12 @@ import PaginationButton from './PaginationButton';
 import PaginationLink from './PaginationLink';
 import Sizes from './Sizes';
 
-export type TProps = {|
+export type TProps = {
   params: Object,
   prefix?: string,
   total: number,
   theme: Object,
-|};
+};
 
 const styles = {
   topRow: theme => ({

@@ -92,13 +92,13 @@ export type TProps = {
   suggestions: Array<Object>,
   setAutocomplete: Function,
 
-  userSelectedFacets: Array<{|
+  userSelectedFacets: Array<{
     description: String,
     doc_type: String,
     field: String,
     full: String,
     type: 'id' | 'string' | 'long',
-  |}>,
+  }>,
   handleSelectFacet: Function,
   handleResetFacets: Function,
   handleRequestRemoveFacet: Function,

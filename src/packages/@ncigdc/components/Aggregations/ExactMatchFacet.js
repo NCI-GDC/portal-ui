@@ -10,7 +10,7 @@ import { parseFilterParam } from '@ncigdc/utils/uri';
 import { getFilterValue, makeFilter } from '@ncigdc/utils/filters';
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import CheckCircleOIcon from '@ncigdc/theme/icons/CheckCircleOIcon';
-import type { TRawQuery } from '@ncigdc/utils/uri/types';
+import { TRawQuery } from '@ncigdc/utils/uri/types';
 import Hidden from '../Hidden';
 import { Container, GoLink, CheckedRow, CheckedLink } from './';
 import Input from '@ncigdc/uikit/Form/Input';
@@ -32,7 +32,7 @@ const ExactMatchFacet = compose(
   }) => {
     return (
       <LocationSubscriber>
-        {(ctx: {| pathname: string, query: TRawQuery |}) => {
+        {(ctx: { pathname: string, query: TRawQuery }) => {
           const { filters } = ctx.query || {};
           const currentFilters = parseFilterParam(filters, { content: [] })
             .content;

@@ -13,7 +13,7 @@ import DownloadBiospecimenDropdown from '@ncigdc/modern_components/DownloadBiosp
 
 import { visualizingButton } from '@ncigdc/theme/mixins';
 import DownloadTableToTsvButton from '@ncigdc/components/DownloadTableToTsvButton';
-import type { TGroupFilter } from '@ncigdc/utils/filters/types';
+import { TGroupFilter } from '@ncigdc/utils/filters/types';
 import SetActions from '@ncigdc/components/SetActions';
 import { compose, withState } from 'recompose';
 import withRouter from '@ncigdc/utils/withRouter';
@@ -21,7 +21,7 @@ import pluralize from '@ncigdc/utils/pluralize';
 import { withTheme } from '@ncigdc/theme';
 import timestamp from '@ncigdc/utils/timestamp';
 
-import type { TRawQuery } from '@ncigdc/utils/uri/types';
+import { TRawQuery } from '@ncigdc/utils/uri/types';
 
 type TProps = {
   type: string,

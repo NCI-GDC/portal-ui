@@ -4,17 +4,17 @@ import React from 'react';
 
 import Link from './Link';
 
-import type { TListLinkProps, TIdLinkProps, TLinkProps } from './types';
+import { TListLinkProps, TIdLinkProps, TLinkProps } from './types';
 
-type TIdLinkConfig = {|
+type TIdLinkConfig = {
   pathname: string,
-|};
+};
 
-type TListLinkConfig = {|
+type TListLinkConfig = {
   children: string,
   pathname: string,
   query?: Object,
-|};
+};
 
 type TMakeLinkBase = (p: TLinkProps) => React.Element<>;
 const makeLinkBase: TMakeLinkBase = props => <Link {...props} />;

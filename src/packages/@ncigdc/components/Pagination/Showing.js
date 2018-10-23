@@ -4,12 +4,12 @@ import React from 'react';
 
 import { Row } from '@ncigdc/uikit/Flex';
 
-export type TProps = {|
+export type TProps = {
   docType: string,
   params: Object,
   prefix?: string,
   total: number,
-|};
+};
 
 const Sizes = (props: TProps) => {
   const prfOff = [props.prefix, 'offset'].filter(Boolean).join('_');

@@ -1,5 +1,5 @@
 // @flow
-import type { TValueFilter } from '@ncigdc/utils/filters/types';
+import { TValueFilter } from '@ncigdc/utils/filters/types';
 
 // TODO: for first release hiding deep_loss and amplification, shallow_loss is loss
 

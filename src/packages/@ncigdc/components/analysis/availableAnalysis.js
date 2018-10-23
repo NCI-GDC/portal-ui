@@ -4,31 +4,31 @@ import SetOperations from './SetOperations';
 import CohortComparison from '@ncigdc/modern_components/CohortComparison';
 import CCIcon from '@ncigdc/theme/icons/CohortComparisonIcon';
 import { withTheme } from '@ncigdc/theme';
-import type { TSetTypes } from '@ncigdc/dux/sets';
+import { TSetTypes } from '@ncigdc/dux/sets';
 import Demo from './Demo';
 
 type TSelectedSets = {
   [TSetTypes]: {},
 };
 
-type TAnalysis = {|
+type TAnalysis = {
   type: string,
   title: string,
   Icon: ReactComponent<*>,
   description: string,
-  demoData: {|
+  demoData: {
     sets: TSelectedSets,
     filters: {},
     type: string,
-  |},
+  },
   setInstructions: string,
-  setDisabledMessage: ({ sets: TSelectedSets, type: string }) => ?string,
+  setDisabledMessage: (opts: {sets: TSelectedSets, type: string}) => ?string,
   setTypes: Array<string>,
   validateSets: TSelectedSets => boolean,
   ResultComponent: ReactComponent<*>,
-|};
+};
 
-const availableAnalysis: Array<TAnalysis> = [
+const availableAnalysis: [TAnalysis] = [
   {
     type: 'set_operations',
     label: 'Set Operations',
@@ -48,9 +48,9 @@ const availableAnalysis: Array<TAnalysis> = [
         ]}
         outlineColour="rgba(46, 90, 164, 0.62)"
         getFillColor={(d, i) => {
-          if (d.op === 5) return 'rgba(38, 166, 166, 0.65)';
-          if (d.op === 6) return 'rgba(235, 233, 46, 0.79)';
-          if (d.op === 7) return 'rgba(175, 58, 215, 0.8)';
+          if (d.op === 5) {return 'rgba(38, 166, 166, 0.65)';}
+          if (d.op === 6) {return 'rgba(235, 233, 46, 0.79)';}
+          if (d.op === 7) {return 'rgba(175, 58, 215, 0.8)';}
           return 'rgba(0,0,0,0)';
         }}
       />

@@ -16,7 +16,7 @@ import StackedBarChart from '@ncigdc/components/Charts/StackedBarChart';
 import ExploreLink from '@ncigdc/components/Links/ExploreLink';
 import styled from '@ncigdc/theme/styled';
 import { withTheme } from '@ncigdc/theme';
-import type { TGroupContent, TGroupFilter } from '@ncigdc/utils/filters/types';
+import { TGroupContent, TGroupFilter } from '@ncigdc/utils/filters/types';
 import PieChart from '@ncigdc/components/Charts/PieChart';
 
 const color = d3.scaleOrdinal([

@@ -22,7 +22,7 @@ import tryParseJSON from '@ncigdc/utils/tryParseJSON';
 import FacetHeader from '@ncigdc/components/Aggregations/FacetHeader';
 import { UploadCaseSet } from '@ncigdc/components/Modals/UploadSet';
 
-import type { TBucket } from '@ncigdc/components/Aggregations/types';
+import { TBucket } from '@ncigdc/components/Aggregations/types';
 
 export type TProps = {
   caseIdCollapsed: boolean,

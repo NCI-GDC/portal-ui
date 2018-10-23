@@ -25,7 +25,7 @@ import Button from '@ncigdc/uikit/Button';
 import { ForTsvExport } from '@ncigdc/components/DownloadTableToTsvButton';
 import { createSelectColumn } from '@ncigdc/tableModels/utils';
 
-import type { TGroupFilter } from '@ncigdc/utils/filters/types';
+import { TGroupFilter } from '@ncigdc/utils/filters/types';
 
 const colors = scaleOrdinal(schemeCategory10);
 

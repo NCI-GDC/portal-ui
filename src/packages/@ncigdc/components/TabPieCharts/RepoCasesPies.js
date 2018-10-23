@@ -4,7 +4,7 @@ import Relay from 'react-relay/classic';
 import _ from 'lodash';
 import { compose } from 'recompose';
 
-import type { TBucket } from '@ncigdc/components/Aggregations/types';
+import { TBucket } from '@ncigdc/components/Aggregations/types';
 import withRouter from '@ncigdc/utils/withRouter';
 import { parseFilterParam } from '@ncigdc/utils/uri';
 import { ColumnCenter, RowCenter, PieTitle, SelfFilteringPie } from './';

@@ -6,11 +6,11 @@ import LocationSubscriber from '@ncigdc/components/LocationSubscriber';
 
 import { mergeQuery as mq } from '@ncigdc/utils/filters';
 
-import type { TRawQuery } from '@ncigdc/utils/uri/types';
+import { TRawQuery } from '@ncigdc/utils/uri/types';
 
 import InternalLink from './InternalLink';
 
-import type { TLinkProps } from './types';
+import { TLinkProps } from './types';
 
 const InternalLinkWithContext = ({
   pathname,

@@ -4,7 +4,7 @@ import React from 'react';
 
 import Link from './Link';
 
-import type { TListLinkProps, TIdLinkProps, TLinkProps } from './types';
+import { TListLinkProps, TIdLinkProps, TLinkProps } from './types';
 
 type TIdLinkConfig = {|
   pathname: string,

@@ -3,7 +3,7 @@
 import React from 'react';
 import LocationSubscriber from '@ncigdc/components/LocationSubscriber';
 
-import type { TRawQuery } from '@ncigdc/utils/uri/types';
+import { TRawQuery } from '@ncigdc/utils/uri/types';
 import { parseFilterParam } from '@ncigdc/utils/uri';
 
 import { Row, Column } from '@ncigdc/uikit/Flex';

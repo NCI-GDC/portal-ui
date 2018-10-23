@@ -1,6 +1,6 @@
 /* @flow */
 
-import type { TRawQuery, TUriQuery } from '../uri/types';
+import { TRawQuery, TUriQuery } from '../uri/types';
 
 export type TValueContent = {|
   field: string,

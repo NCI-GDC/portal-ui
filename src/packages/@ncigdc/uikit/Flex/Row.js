@@ -1,26 +1,39 @@
 // @flow
 
 // Vendor
-import React, { Children, cloneElement } from 'react';
-import PropTypes from 'prop-types';
+import React, { Children, cloneElement } from "react";
+import PropTypes from "prop-types";
 
 /*----------------------------------------------------------------------------*/
 
 const baseStyle = {
-  display: 'flex',
-  flexDirection: 'row',
-  boxSizing: 'border-box',
-  position: 'relative',
-  outline: 'none',
+  display: "flex",
+  flexDirection: "row",
+  boxSizing: "border-box",
+  position: "relative",
+  outline: "none"
 };
 
-const Row = ({ flex, wrap, style, spacing, children, ...props }) => (
+const Row = ({
+  flex,
+  wrap,
+  style,
+  spacing,
+  children,
+  ...props
+}: {
+  flex?: string,
+  wrap?: string,
+  style?: Object,
+  spacing?: string,
+  children: any
+}) => (
   <div
     style={{
       ...baseStyle,
       flex,
-      ...(wrap ? { flexWrap: 'wrap' } : {}),
-      ...style,
+      ...(wrap ? { flexWrap: "wrap" } : {}),
+      ...style
     }}
     {...props}
   >
@@ -34,9 +47,9 @@ const Row = ({ flex, wrap, style, spacing, children, ...props }) => (
             ...child.props,
             style: {
               ...(i ? { marginLeft: spacing } : {}),
-              ...(child.props.style ? child.props.style : {}),
-            },
-          }),
+              ...(child.props.style ? child.props.style : {})
+            }
+          })
       )}
   </div>
 );
@@ -46,7 +59,7 @@ Row.propTypes = {
   style: PropTypes.object,
   flex: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   wrap: PropTypes.bool,
-  spacing: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  spacing: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
 };
 
 /*----------------------------------------------------------------------------*/

@@ -3,7 +3,7 @@ import React from 'react';
 import Relay from 'react-relay/classic';
 import _ from 'lodash';
 import { parse } from 'query-string';
-import type { TBucket } from '@ncigdc/components/Aggregations/types';
+import { TBucket } from '@ncigdc/components/Aggregations/types';
 import { parseFilterParam } from '@ncigdc/utils/uri';
 import {
   ColumnCenter,

@@ -5,7 +5,7 @@ import { get } from 'lodash';
 import LocationSubscriber from '@ncigdc/components/LocationSubscriber';
 import Tabs from '@ncigdc/uikit/Tabs';
 import Link from '@ncigdc/components/Links/Link';
-import type { TRawQuery } from '@ncigdc/utils/uri/types';
+import { TRawQuery } from '@ncigdc/utils/uri/types';
 
 type TTabbedLinksProps = {
   defaultIndex?: number,

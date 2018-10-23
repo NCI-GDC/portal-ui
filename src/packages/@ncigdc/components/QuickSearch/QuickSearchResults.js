@@ -4,7 +4,7 @@
 import React from 'react';
 import _ from 'lodash';
 import entityShortnameMapping from '@ncigdc/utils/entityShortnameMapping';
-import type { TSearchHit } from './types';
+import { TSearchHit } from './types';
 import { internalHighlight } from '@ncigdc/uikit/Highlight';
 
 const styles = {

@@ -5,7 +5,7 @@ import LocationSubscriber from '@ncigdc/components/LocationSubscriber';
 import { Column } from '@ncigdc/uikit/Flex';
 import OncoGridWrapper from '@ncigdc/components/Oncogrid/OncogridWrapper';
 import { parseFilterParam } from '@ncigdc/utils/uri';
-import type { TRawQuery } from '@ncigdc/utils/uri/types';
+import { TRawQuery } from '@ncigdc/utils/uri/types';
 
 const styles = {
   heading: {

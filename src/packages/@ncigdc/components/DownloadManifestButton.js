@@ -1,8 +1,16 @@
-import React from 'react';
-import { Tooltip } from '@ncigdc/uikit/Tooltip';
-import DownloadButton from '@ncigdc/components/DownloadButton';
+import React from "react";
+import { Tooltip } from "@ncigdc/uikit/Tooltip";
+import DownloadButton from "@ncigdc/components/DownloadButton";
 
-export default ({ fileCount, filters, style }) => {
+export default ({
+  fileCount,
+  filters,
+  style
+}: {
+  fileCount: Number,
+  filters: Object,
+  style?: Object
+}) => {
   return (
     <Tooltip
       style={style}

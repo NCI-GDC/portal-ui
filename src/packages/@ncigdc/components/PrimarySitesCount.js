@@ -2,7 +2,7 @@
 
 import React from 'react';
 
-import type { TBucket } from '@ncigdc/components/Aggregations/types';
+import { TBucket } from '@ncigdc/components/Aggregations/types';
 
 export type TProps = {
   aggregations: {

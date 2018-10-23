@@ -1,12 +1,10 @@
-// @flow
-
 import React from 'react';
 import { graphql } from 'react-relay';
 import { makeFilter } from '@ncigdc/utils/filters';
 import { compose, withPropsOnChange, branch, renderComponent } from 'recompose';
 import Query from '@ncigdc/modern_components/Query';
 
-export default (Component: ReactClass<*>) =>
+export default (Component) =>
   compose(
     branch(
       ({ caseId }) => !caseId,
@@ -28,7 +26,7 @@ export default (Component: ReactClass<*>) =>
         },
       };
     }),
-  )((props: Object) => {
+  )((props) => {
     return (
       <Query
         parentProps={props}

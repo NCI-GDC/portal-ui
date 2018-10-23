@@ -1,7 +1,7 @@
 /* @flow */
 import jsurl from 'jsurl';
 
-import type {
+import {
   TParseFilterParam,
   TParseJSONParam,
   TParseIntParam,

@@ -11,7 +11,7 @@ import {
   getColorValue,
 } from '@ncigdc/components/Oncogrid/tracks';
 import { mapDonors, mapGenes, buildOccurrences } from './dataMapping';
-import type {
+import {
   TDonorInput,
   TGeneInput,
   TSSMOccurrenceInput,

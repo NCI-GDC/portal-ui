@@ -4,9 +4,9 @@
 import React from 'react';
 import formatFileSize from '@ncigdc/utils/formatFileSize';
 
-type TProps = {|
+type TProps = {
   bytes: number,
-  options?: {|
+  options?: {
     base?: number,
     bits?: boolean,
     exponent?: number,
@@ -16,8 +16,8 @@ type TProps = {|
     standard?: string,
     symbols?: Object,
     unix?: boolean,
-  |},
-|};
+  },
+};
 
 const FileSize = (props: TProps) => (
   <span className={props.className + ' test-file-size'}>

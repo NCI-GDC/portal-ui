@@ -7,7 +7,7 @@ import { compose, withState } from 'recompose';
 import SuggestionFacet from '@ncigdc/components/Aggregations/SuggestionFacet';
 import FacetWrapper from '@ncigdc/components/FacetWrapper';
 import FacetHeader from '@ncigdc/components/Aggregations/FacetHeader';
-import type { TBucket } from '@ncigdc/components/Aggregations/types';
+import { TBucket } from '@ncigdc/components/Aggregations/types';
 import { UploadGeneSet } from '@ncigdc/components/Modals/UploadSet';
 import UploadSetButton from '@ncigdc/components/UploadSetButton';
 import { withTheme } from '@ncigdc/theme';
@@ -23,11 +23,11 @@ export type TProps = {
     cnv_change: { buckets: [TBucket] },
   },
   hits: {
-    edges: Array<{|
-      node: {|
+    edges: Array<{
+      node: {
         id: string,
-      |},
-    |}>,
+      },
+    }>,
   },
   setAutocomplete: Function,
   theme: Object,

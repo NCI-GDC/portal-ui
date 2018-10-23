@@ -1,8 +1,8 @@
 /* @flow */
 
-import type { TUriQuery } from '@ncigdc/utils/uri/types';
-import type { TMergeQuery, TMergeEnum } from '@ncigdc/utils/filters/types';
-import type { TRemoveEmptyKeys } from '@ncigdc/utils/removeEmptyKeys';
+import { TUriQuery } from '@ncigdc/utils/uri/types';
+import { TMergeQuery, TMergeEnum } from '@ncigdc/utils/filters/types';
+import { TRemoveEmptyKeys } from '@ncigdc/utils/removeEmptyKeys';
 
 export type TListLinkProps = {
   children?: mixed,

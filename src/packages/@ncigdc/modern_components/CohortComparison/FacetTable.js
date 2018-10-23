@@ -2,7 +2,7 @@ import React from 'react';
 import { compose } from 'recompose';
 import { union, find, truncate, get, omit } from 'lodash';
 
-import type { TBucket } from './types';
+import { TBucket } from '@ncigdc/components/Aggregations/types';
 import ExploreLink from '@ncigdc/components/Links/ExploreLink';
 import BarChart from '@ncigdc/components/Charts/TwoBarChart';
 import { withTheme } from '@ncigdc/theme';

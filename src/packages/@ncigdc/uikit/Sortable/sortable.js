@@ -45,8 +45,10 @@ export function sortable(Component) {
     dragOver = e => {
       e.preventDefault();
       var mouseBeyond;
-      var positionX, positionY;
-      var height, topOffset;
+      var positionX
+      var positionY;
+      var height
+      var topOffset;
       var items = this.props.items;
       const { outline, moveInMiddle } = this.props;
       const overEl = e.currentTarget; //underlying element

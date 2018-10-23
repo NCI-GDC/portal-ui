@@ -18,7 +18,7 @@ export default function(params) {
   const primary_sites = uniq(
     data.reduce((sites, project) => {
       return [...sites, ...project.primary_site];
-    }, []),
+    }, [])
   );
 
   var totalHeight = 80 + Math.max(data.length, primary_sites.length) * 15;
@@ -31,7 +31,7 @@ export default function(params) {
     .domain(
       params.columns.map(function(c) {
         return c.id;
-      }),
+      })
     )
     .rangePoints([0, innerWidth]);
 
@@ -61,7 +61,7 @@ export default function(params) {
       }, []),
       function(d) {
         return `${d[titleColumn]}${d.primary_site[0]}`;
-      },
+      }
     )
     .enter()
     .append('g')
@@ -328,7 +328,7 @@ export default function(params) {
         },
         function(d) {
           return d.key;
-        },
+        }
       );
 
     connection.exit().remove();
@@ -374,7 +374,7 @@ export default function(params) {
         },
         function(d) {
           return d.projectId + '_' + d.columnId;
-        },
+        }
       );
 
     marker.exit().remove();
@@ -587,8 +587,8 @@ export default function(params) {
       });
 
     labels.attr('transform', function(d) {
-      var x = xScale(d.columnId),
-        y = columnMap[d.columnId].yScale(d.value);
+      var x = xScale(d.columnId);
+      var y = columnMap[d.columnId].yScale(d.value);
 
       if (d.columnId === 'primary_site') {
         return 'translate(' + (x + 20) + ',' + y + ')';

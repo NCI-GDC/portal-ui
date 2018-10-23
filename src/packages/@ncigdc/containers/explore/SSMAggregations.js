@@ -143,7 +143,14 @@ export const SSMAggregationsComponent = compose(
       placeholder="e.g. BRAF V600E, chr7:g.140753336A>T"
       hits={props.suggestions}
       setAutocomplete={props.setAutocomplete}
-      dropdownItem={x => <div style={{ fontWeight: 'bold' }}>{x.ssm_id}</div>}
+      dropdownItem={x => (
+        <div>
+          <div style={{ fontWeight: 'bold' }}>{x.ssm_id}</div>
+          {console.log('su', props.suggestions)}
+          <br />
+          {x.name}
+        </div>
+      )}
     />
     <UploadSetButton
       type="ssm"

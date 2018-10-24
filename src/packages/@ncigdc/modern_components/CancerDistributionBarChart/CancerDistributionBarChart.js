@@ -15,6 +15,7 @@ import ProjectsLink from '@ncigdc/components/Links/ProjectsLink';
 import { TGroupFilter } from '@ncigdc/utils/filters/types';
 import { cnvColors } from '@ncigdc/utils/filters/prepared/significantConsequences';
 import { renderToString } from 'react-dom/server';
+import { makeFilter, replaceFilters } from '@ncigdc/utils/filters';
 
 type TProps = {
   style: Object,
@@ -333,7 +334,15 @@ export default compose(
                       cases={cases.cnvTestedByGene.total}
                       ssms={cases.cnvAll.total}
                       projects={cnvCancerDistData}
-                      filters={filters}
+                      filters={replaceFilters(
+                        makeFilter([
+                          {
+                            field: 'cases.available_variation_data',
+                            value: 'cnv',
+                          },
+                        ]),
+                        filters,
+                      )}
                       type="cnvs"
                     />
                     <DownloadVisualizationButton

@@ -18,6 +18,13 @@
     "no-empty": false,
     "object-literal-sort-keys": false,
     "quotemark": [true, "single", "jsx-double"],
+    "ordered-imports": [
+      true,
+      {
+        "import-sources-order": "any",
+        "named-imports-order": "case-insensitive"
+      }
+    ],
     "trailing-comma": [
       true,
       {

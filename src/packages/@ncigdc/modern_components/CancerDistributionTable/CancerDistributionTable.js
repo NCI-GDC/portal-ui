@@ -1,5 +1,3 @@
-// @flow
-//@ts-check
 import React from 'react';
 import { groupBy, head } from 'lodash';
 import { compose, withPropsOnChange, withState } from 'recompose';

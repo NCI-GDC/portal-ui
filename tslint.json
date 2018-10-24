@@ -11,6 +11,7 @@
     ]
   },
   "rules": {
+    "no-debugger": false,
     "no-console": false,
     "member-access": false,
     "jsx-no-lambda": false,
@@ -18,6 +19,13 @@
     "no-empty": false,
     "object-literal-sort-keys": false,
     "quotemark": [true, "single", "jsx-double"],
+    "ordered-imports": [
+      true,
+      {
+        "import-sources-order": "any",
+        "named-imports-order": "case-insensitive"
+      }
+    ],
     "trailing-comma": [
       true,
       {
@@ -45,6 +53,7 @@
     ]
   },
   "jsRules": {
+    "no-debugger": false,
     "no-console": false,
     "member-access": false,
     "jsx-no-lambda": false,

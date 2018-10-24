@@ -1,5 +1,3 @@
-// @flow
-
 const theme = {
   /*
    *  Colors

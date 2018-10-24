@@ -77,7 +77,7 @@ const DefaultChartTitle = ({
           {ssms.toLocaleString()}
         </ExploreLink>
       )}
-      &nbsp; {type} across&nbsp;
+      &nbsp; {type === 'cnvs' ? 'CNVS events' : 'mutations'} across&nbsp;
       <ProjectsLink
         query={{
           filters: {

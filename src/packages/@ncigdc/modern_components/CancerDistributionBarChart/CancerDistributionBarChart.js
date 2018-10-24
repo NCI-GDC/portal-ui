@@ -68,12 +68,16 @@ const DefaultChartTitle = ({
   return (
     <div style={{ textTransform: 'uppercase', padding: '0 2rem' }}>
       <ExploreLink query={{ searchTableTab: 'cases', filters }}>
-        {console.log('filters', filters)}
         {cases.toLocaleString()}
       </ExploreLink>&nbsp; cases affected by&nbsp;
-      <ExploreLink query={{ searchTableTab: 'mutations', filters }}>
-        {ssms.toLocaleString()}
-      </ExploreLink>&nbsp; {type} across&nbsp;
+      {type === 'cnvs' ? (
+        ssms.toLocaleString()
+      ) : (
+        <ExploreLink query={{ searchTableTab: 'mutations', filters }}>
+          {ssms.toLocaleString()}
+        </ExploreLink>
+      )}
+      &nbsp; {type} across&nbsp;
       <ProjectsLink
         query={{
           filters: {
@@ -270,7 +274,6 @@ export default compose(
         ))}
       </Row>
     );
-
     return (
       <div>
         <Row style={{ width: '100%' }}>
@@ -317,7 +320,6 @@ export default compose(
               </Column>
             </span>
           )}
-          {console.log(cnvChartData.length)}
           {chartType !== 'ssm' &&
             cnvChartData.length >= 5 && (
               <span style={{ width: '50%' }}>
@@ -329,19 +331,11 @@ export default compose(
                     }}
                   >
                     <ChartTitle
-                      cases={sum(
-                        cnvCancerDistData.map(
-                          d =>
-                            // d.amplification +
-                            d.gain + d.loss,
-                          // d.shallow_loss +
-                          // d.deep_loss,
-                        ),
-                      )}
-                      ssms={get(ssms, 'hits.total', 0)}
+                      cases={cases.cnvTestedByGene.total}
+                      ssms={cases.cnvAll.total}
                       projects={cnvCancerDistData}
                       filters={filters}
-                      type="cnv"
+                      type="cnvs"
                     />
                     <DownloadVisualizationButton
                       svg={() =>

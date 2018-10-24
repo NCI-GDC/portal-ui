@@ -64,7 +64,6 @@ const DefaultChartTitle = ({
   ssms = 0,
   filters,
 }: TChartTitleProps) => {
-  // filters = replaceFilters()
   return (
     <div style={{ textTransform: 'uppercase', padding: '0 2rem' }}>
       <ExploreLink query={{ searchTableTab: 'cases', filters }}>

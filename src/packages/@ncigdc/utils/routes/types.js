@@ -1,14 +1,14 @@
 /* @flow */
 
-import { TGroupFilter } from '../filters/types';
+import { IGroupFilter } from '../filters/types';
 import { TRawQuery } from '../uri/types';
 
 export type TRelayRouteParamsViewer = {
-  filters: ?TGroupFilter,
+  filters: ?IGroupFilter,
 };
 
 export type TRelayRouteParamsNode = {
-  filters: ?TGroupFilter,
+  filters: ?IGroupFilter,
   id: string,
 };
 

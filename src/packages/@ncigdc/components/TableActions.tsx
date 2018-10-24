@@ -1,48 +1,51 @@
-/* @flow */
-
-import React from 'react';
-
-import { Row } from '@ncigdc/uikit/Flex';
-import { Tooltip } from '@ncigdc/uikit/Tooltip';
-import { parseFilterParam } from '@ncigdc/utils/uri';
-import DownloadButton from '@ncigdc/components/DownloadButton';
 import ArrangeColumnsButton from '@ncigdc/components/ArrangeColumnsButton';
-import SortTableButton from '@ncigdc/components/SortTableButton';
-import DownloadClinicalDropdown from '@ncigdc/modern_components/DownloadClinicalDropdown';
 import DownloadBiospecimenDropdown from '@ncigdc/modern_components/DownloadBiospecimenDropdown';
-
-import { visualizingButton } from '@ncigdc/theme/mixins';
+import DownloadButton from '@ncigdc/components/DownloadButton';
+import DownloadClinicalDropdown from '@ncigdc/modern_components/DownloadClinicalDropdown';
 import DownloadTableToTsvButton from '@ncigdc/components/DownloadTableToTsvButton';
-import { TGroupFilter } from '@ncigdc/utils/filters/types';
-import SetActions from '@ncigdc/components/SetActions';
-import { compose, withState } from 'recompose';
-import withRouter from '@ncigdc/utils/withRouter';
 import pluralize from '@ncigdc/utils/pluralize';
-import { withTheme } from '@ncigdc/theme';
+import React from 'react';
+import SetActions from '@ncigdc/components/SetActions';
+import SortTableButton from '@ncigdc/components/SortTableButton';
 import timestamp from '@ncigdc/utils/timestamp';
-
+import withRouter from '@ncigdc/utils/withRouter';
+import { compose, withState } from 'recompose';
+import { parseFilterParam } from '@ncigdc/utils/uri';
+import { Row } from '@ncigdc/uikit/Flex';
+import { IGroupFilter } from '@ncigdc/utils/filters/types';
+import { Tooltip } from '@ncigdc/uikit/Tooltip';
 import { TRawQuery } from '@ncigdc/utils/uri/types';
+import { visualizingButton } from '@ncigdc/theme/mixins';
+import { withTheme } from '@ncigdc/theme';
 
-type TProps = {
-  type: string,
-  displayType?: string,
-  arrangeColumnKey?: string,
-  total: number,
-  sortOptions?: Array<Object>,
-  endpoint: string,
-  downloadFields: Array<string>,
-  downloadable?: boolean,
-  tsvSelector?: string,
-  tsvFilename?: string,
-  style?: Object,
-  currentFilters?: TGroupFilter,
-  downloadTooltip?: any,
-  CreateSetButton?: ReactClass<{}>,
-  RemoveFromSetButton?: ReactClass<{}>,
-  idField?: string,
-  query: TRawQuery,
-  selectedIds?: Array<string>,
-};
+interface IProps {
+  type: string;
+  displayType?: string;
+  arrangeColumnKey?: string;
+  total: number;
+  sortOptions?: object[];
+  endpoint: string;
+  downloadFields: string[];
+  downloadable?: boolean;
+  tsvSelector?: string;
+  tsvFilename?: string;
+  style?: object;
+  currentFilters?: IGroupFilter;
+  downloadTooltip?: any;
+  CreateSetButton?: React.SFC;
+  RemoveFromSetButton?: React.SFC;
+  idField?: string;
+  query: TRawQuery;
+  selectedIds?: string[];
+  sort?: any;
+  score?: any;
+  AppendSetButton?: any;
+  scope?: any;
+  downloadClinical?: any;
+  downloadBiospecimen?: any;
+  theme?: object;
+  totalCases?: number;
+}
 
 const enhance = compose(
   withRouter,
@@ -50,7 +53,7 @@ const enhance = compose(
     tsvDownloading: false,
     jsonDownloading: false,
   }),
-  withTheme,
+  withTheme
 );
 
 const TableActions = ({
@@ -66,24 +69,30 @@ const TableActions = ({
   tsvFilename,
   style,
   currentFilters,
-  sort,
-  score,
   downloadTooltip = 'Export All',
   CreateSetButton,
-  AppendSetButton,
   RemoveFromSetButton,
   idField,
   query,
   selectedIds,
+  sort,
+  score,
+  AppendSetButton,
   scope,
   downloadClinical,
   downloadBiospecimen,
   theme,
   totalCases,
-}: TProps) => {
-  const fieldContains = ({ currentFilters, field }) => {
-    return ((currentFilters || {}).content || []).some(f =>
-      f.content.field.includes(field),
+}: IProps) => {
+  const fieldContains = ({
+    filters,
+    field,
+  }: {
+    filters: IGroupFilter;
+    field: string;
+  }) => {
+    return ((filters || {}).content || []).some(f =>
+      f.content.field.includes(field)
     );
   };
   return (

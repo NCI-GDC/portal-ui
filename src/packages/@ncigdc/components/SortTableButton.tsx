@@ -21,7 +21,10 @@ const RadioRow = styled(Row, {
   alignItems: 'center',
 });
 
-type TSortTableButtonSortFunc = (identifier: string, direction: string) => void;
+type TSortTableButtonSortFunc = (
+  identifier: string,
+  direction: string
+) => string;
 
 interface ISortTableButtonProps {
   style: object;
@@ -33,7 +36,7 @@ interface ISortTableButtonProps {
   isDisabled?: boolean;
 }
 
-const SortTableButton = compose<ISortTableButtonProps, {}>(
+const SortTableButton = compose<ISortTableButtonProps, ISortTableButtonProps>(
   setDisplayName('SortTableButton'),
   withRouter,
   withTheme
@@ -55,7 +58,7 @@ const SortTableButton = compose<ISortTableButtonProps, {}>(
       }
       dropdownStyle={{ top: '100%', marginTop: 5, whiteSpace: 'nowrap' }}
     >
-      {options.map(({ id, name }: { id: string, name: string }) => {
+      {options.map(({ id, name }: { id: string; name: string }) => {
         const sameField = fields.filter(
           ({ field }: { field: string }) => field === id
         )[0];

@@ -5,7 +5,7 @@ import { get } from 'lodash';
 import LocationSubscriber from '@ncigdc/components/LocationSubscriber';
 import Tabs from '@ncigdc/uikit/Tabs';
 import Link from '@ncigdc/components/Links/Link';
-import { TRawQuery } from '@ncigdc/utils/uri/types';
+import { IRawQuery } from '@ncigdc/utils/uri/types';
 
 type TTabbedLinksProps = {
   defaultIndex?: number,
@@ -33,7 +33,7 @@ const TabbedLinks: TTabbedLinks = (
   } = {},
 ) => (
   <LocationSubscriber>
-    {(ctx: { pathname: string, query: TRawQuery }) => {
+    {(ctx: { pathname: string, query: IRawQuery }) => {
       const foundIndex = links.findIndex(
         x => x.id === (ctx.query || {})[queryParam],
       );

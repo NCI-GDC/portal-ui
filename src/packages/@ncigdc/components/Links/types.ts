@@ -1,14 +1,14 @@
 import { ReactNode } from 'react';
 import { TMergeEnum, TMergeQuery } from '@ncigdc/utils/filters/types';
 import { TRemoveEmptyKeys } from '@ncigdc/utils/removeEmptyKeys';
-import { TUriQuery } from '@ncigdc/utils/uri/types';
+import { IUriQuery } from '@ncigdc/utils/uri/types';
 
 export interface IListLinkProps {
   children?: ReactNode;
   merge?: TMergeEnum;
   mergeQuery?: TMergeQuery;
   pathname?: string;
-  query?: TUriQuery;
+  query?: IUriQuery;
   removeEmptyKeys?: TRemoveEmptyKeys;
   whitelist?: string[];
 }

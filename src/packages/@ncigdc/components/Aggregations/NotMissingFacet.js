@@ -3,7 +3,7 @@
 import React from 'react';
 import LocationSubscriber from '@ncigdc/components/LocationSubscriber';
 
-import { TRawQuery } from '@ncigdc/utils/uri/types';
+import { IRawQuery } from '@ncigdc/utils/uri/types';
 import { parseFilterParam } from '@ncigdc/utils/uri';
 
 import { Row, Column } from '@ncigdc/uikit/Flex';
@@ -28,7 +28,7 @@ const NotMissingFacet = (props: TProps) => {
   const dotField = props.field.replace(/__/g, '.');
   return (
     <LocationSubscriber>
-      {(ctx: { pathname: string, query: TRawQuery }) => {
+      {(ctx: { pathname: string, query: IRawQuery }) => {
         const currentFilters =
           (ctx.query &&
             parseFilterParam((ctx.query || {}).filters, {}).content) ||

@@ -14,7 +14,7 @@ import { parseFilterParam } from '@ncigdc/utils/uri';
 import { Row } from '@ncigdc/uikit/Flex';
 import { IGroupFilter } from '@ncigdc/utils/filters/types';
 import { Tooltip } from '@ncigdc/uikit/Tooltip';
-import { TRawQuery } from '@ncigdc/utils/uri/types';
+import { IRawQuery } from '@ncigdc/utils/uri/types';
 import { visualizingButton } from '@ncigdc/theme/mixins';
 import { withTheme } from '@ncigdc/theme';
 
@@ -35,7 +35,7 @@ interface IProps {
   CreateSetButton?: React.SFC;
   RemoveFromSetButton?: React.SFC;
   idField?: string;
-  query: TRawQuery;
+  query: IRawQuery;
   selectedIds?: string[];
   sort?: any;
   score?: any;

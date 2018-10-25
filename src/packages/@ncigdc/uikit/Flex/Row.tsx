@@ -26,7 +26,7 @@ const Row = ({
   wrap?: string;
   style?: CSSProperties;
   spacing?: string;
-  className: string;
+  className?: string;
   children: any;
 }) => (
   <div

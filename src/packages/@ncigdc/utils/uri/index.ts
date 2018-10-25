@@ -1,10 +1,8 @@
-/* @flow */
 import jsurl from 'jsurl';
-
 import {
   TParseFilterParam,
-  TParseJSONParam,
   TParseIntParam,
+  TParseJSONParam,
 } from './types';
 
 export const parseIntParam: TParseIntParam = (str, defaults) =>

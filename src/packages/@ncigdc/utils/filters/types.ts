@@ -1,4 +1,4 @@
-import { TRawQuery, TUriQuery } from '../uri/types';
+import { IRawQuery, IUriQuery } from '../uri/types';
 
 export interface IValueContent {
   field: string;
@@ -33,17 +33,17 @@ export type TMergeEnum = boolean | 'toggle' | 'replace';
 export type TMergeFns = (v: TMergeEnum) => TMergeFilters;
 
 export type TMergeQuery = (
-  q: TUriQuery | null,
-  c: TRawQuery,
+  q: IUriQuery | null,
+  c: IRawQuery,
   t: TMergeEnum
-) => TUriQuery;
+) => IUriQuery;
 
 export type TSortFilters = (a: IValueFilter, b: IValueFilter) => number;
 
 export type TFilterByWhitelist = (
-  o: TRawQuery | null,
+  o: IRawQuery | null,
   w: string[] | null
-) => TRawQuery;
+) => IRawQuery;
 
 export type TRemoveFilter = (
   field: string,

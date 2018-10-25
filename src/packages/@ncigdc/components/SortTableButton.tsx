@@ -29,7 +29,7 @@ type TSortTableButtonSortFunc = (
 interface ISortTableButtonProps {
   style: object;
   options: object[];
-  query: object[];
+  query: IRawQuery;
   sortKey: string;
   theme: ITheme;
   sortFunction: TSortTableButtonSortFunc;

@@ -269,8 +269,8 @@ export default function(params) {
 
     languageLabel
       .append('rect')
-      .attr('x', -padding.left)
-      .attr('width', padding.left)
+      .attr('x', -padding.left - 25)
+      .attr('width', padding.left + 25)
       .attr('y', -9)
       .attr('height', 16);
 

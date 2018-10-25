@@ -13,7 +13,16 @@ const baseStyle: CSSProperties = {
   outline: 'none',
 };
 
-const Row = ({
+export interface IFlexDivProps {
+  children: any;
+  flex?: string;
+  wrap?: string;
+  style?: CSSProperties;
+  spacing?: string;
+  className?: string;
+}
+
+const Row: React.SFC<IFlexDivProps> = ({
   flex,
   wrap,
   style,
@@ -21,13 +30,6 @@ const Row = ({
   children,
   className,
   ...props
-}: {
-  flex?: string;
-  wrap?: string;
-  style?: CSSProperties;
-  spacing?: string;
-  className?: string;
-  children: any;
 }) => (
   <div
     style={{

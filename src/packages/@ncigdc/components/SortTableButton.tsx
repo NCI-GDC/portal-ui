@@ -9,11 +9,12 @@ import React from 'react';
 import styled from '@ncigdc/theme/styled';
 import withRouter from '@ncigdc/utils/withRouter';
 import { compose, setDisplayName } from 'recompose';
+import { IRawQuery } from '@ncigdc/utils/uri/types';
+import { ITheme, withTheme } from '@ncigdc/theme';
 import { parseJSONParam, stringifyJSONParam } from '@ncigdc/utils/uri';
 import { Row } from '@ncigdc/uikit/Flex';
 import { SortIcon } from '@ncigdc/theme/icons';
 import { Tooltip } from '@ncigdc/uikit/Tooltip';
-import { ITheme, withTheme } from '@ncigdc/theme';
 
 const RadioRow = styled(Row, {
   padding: '0.3rem 0.6rem',
@@ -27,12 +28,12 @@ type TSortTableButtonSortFunc = (
 ) => string;
 
 interface ISortTableButtonProps {
-  style: object;
-  options: object[];
-  query: IRawQuery;
-  sortKey: string;
-  theme: ITheme;
   sortFunction: TSortTableButtonSortFunc;
+  sortKey: string;
+  options: object[];
+  theme?: ITheme;
+  style?: object;
+  query?: IRawQuery;
   isDisabled?: boolean;
 }
 
@@ -76,7 +77,7 @@ const SortTableButton = compose<ISortTableButtonProps, ISortTableButtonProps>(
               lineHeight: '1.5',
               borderRight: '2px solid transparent',
               ':hover': {
-                borderRight: `2px solid ${theme.secondary}`,
+                borderRight: `2px solid ${theme ? theme.secondary : 'transparent'}`,
               },
             }}
           >

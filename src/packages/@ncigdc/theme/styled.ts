@@ -1,12 +1,10 @@
-// @flow
-
+import domElements from './utils/domElements';
+import validAttributes from './utils/validAttributes';
 import { createElement } from 'react';
 import { css } from 'glamor';
 import { withTheme } from './index';
-import validAttributes from './utils/validAttributes';
-import domElements from './utils/domElements';
 
-type TAddPropsToFunction = (value: Function | string, props: Object) => string;
+type TAddPropsToFunction = (value: (props: object) => string | string, props: object) => string;
 const addPropsToFunction: TAddPropsToFunction = (value, props) =>
   typeof value === 'function' ? value(props) : value;
 

@@ -14,8 +14,8 @@ export interface IValueFilter {
 export type TGroupContent = IValueFilter[];
 export type TGroupOp = 'and';
 export interface IGroupFilter {
-  content: TGroupContent;
-  op: TGroupOp;
+  content?: TGroupContent;
+  op?: TGroupOp;
 }
 
 export type TCombineValues = (

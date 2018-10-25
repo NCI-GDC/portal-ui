@@ -47,16 +47,7 @@ interface IProps {
   totalCases?: number;
 }
 
-const enhance = compose(
-  withRouter,
-  withState('state', 'setState', {
-    tsvDownloading: false,
-    jsonDownloading: false,
-  }),
-  withTheme
-);
-
-const TableActions = ({
+const TableActions: React.SFC<IProps> = ({
   type,
   displayType = type,
   arrangeColumnKey,
@@ -105,6 +96,7 @@ const TableActions = ({
       )}
       {sortOptions && (
         <SortTableButton
+          sortFunction={() => 'todo - make this function'}
           isDisabled={!sortOptions.length}
           options={sortOptions}
           query={query || {}}
@@ -123,8 +115,8 @@ const TableActions = ({
           inactiveText={'Biospecimen'}
           shouldCreateSet={
             (scope === 'explore' &&
-              fieldContains({ currentFilters, field: 'gene' })) ||
-            fieldContains({ currentFilters, field: 'ssms' })
+              fieldContains({ filters: {...currentFilters}, field: 'gene' })) ||
+            fieldContains({ filters: {...currentFilters}, field: 'ssms' })
           }
           selectedIds={selectedIds}
         />
@@ -191,4 +183,11 @@ const TableActions = ({
   );
 };
 
-export default enhance(TableActions);
+export default compose(
+  withRouter,
+  withState('state', 'setState', {
+    tsvDownloading: false,
+    jsonDownloading: false,
+  }),
+  withTheme
+)(TableActions);

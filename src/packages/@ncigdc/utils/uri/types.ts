@@ -8,7 +8,7 @@ export interface IUriQuery {
   filters?: IGroupFilter | null,
 };
 
-export type TParseIntParam = (s: any, d?: number) => number;
+export type TParseIntParam = (s: any, d?: number | null) => number | null;
 
 export type TParseJSONParam = (s: any, d?: any) => any;
 

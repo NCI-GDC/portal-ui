@@ -15,6 +15,20 @@ export default (Component: ReactClass<*>) =>
       };
       return {
         variables: {
+          cnvAll: replaceFilters(
+            makeFilter([
+              {
+                field: 'cnvs.cnv_change',
+                value: ['Gain', 'Loss'],
+              },
+              cnvAvailableVariationDataFilter,
+            ]),
+            filters,
+          ),
+          cnvTestedByGene: replaceFilters(
+            makeFilter([cnvAvailableVariationDataFilter]),
+            filters,
+          ),
           caseAggsFilters: filters,
           ssmTested: makeFilter([
             {
@@ -80,6 +94,8 @@ export default (Component: ReactClass<*>) =>
             $cnvGain: FiltersArgument
             $cnvLoss: FiltersArgument
             $cnvTested: FiltersArgument
+            $cnvTestedByGene: FiltersArgument
+            $cnvAll: FiltersArgument
           ) {
             viewer {
               explore {
@@ -89,6 +105,12 @@ export default (Component: ReactClass<*>) =>
                   }
                 }
                 cases {
+                  cnvAll: hits(filters: $cnvAll) {
+                    total
+                  }
+                  cnvTestedByGene: hits(filters: $cnvTestedByGene) {
+                    total
+                  }
                   gain: aggregations(filters: $cnvGain) {
                     project__project_id {
                       buckets {

@@ -17,12 +17,12 @@ export const setTheme: TSetTheme = (version, custom = {}) => {
   }
 };
 
+setTheme('active');
+
 export const getTheme = (): ITheme => theme;
 
 export const withTheme: TWithTheme = Wrapped => props => (
   <Wrapped theme={getTheme()} {...props} />
 );
-
-setTheme('active');
 
 export { theme, ITheme };

@@ -1,6 +1,7 @@
 import React, {
   Children,
   cloneElement,
+  ComponentType,
   CSSProperties,
   ReactElement,
 } from 'react';
@@ -22,7 +23,7 @@ export interface IFlexDivProps {
   className?: string;
 }
 
-const Row: React.SFC<IFlexDivProps> = ({
+const Row: ComponentType<IFlexDivProps> = ({
   flex,
   wrap,
   style,
@@ -38,6 +39,7 @@ const Row: React.SFC<IFlexDivProps> = ({
       ...wrap ? { flexWrap: 'wrap' } : {},
       ...style,
     }}
+    className={className}
     {...props}
   >
     {!spacing && children}

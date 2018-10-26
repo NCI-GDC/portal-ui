@@ -11,6 +11,7 @@
     ]
   },
   "rules": {
+    "no-debugger": false,
     "no-console": false,
     "member-access": false,
     "jsx-no-lambda": false,
@@ -52,6 +53,7 @@
     ]
   },
   "jsRules": {
+    "no-debugger": false,
     "no-console": false,
     "member-access": false,
     "jsx-no-lambda": false,

@@ -1,4 +1,3 @@
-/* @flow */
 import React from 'react';
 import QuestionIcon from 'react-icons/lib/fa/question-circle';
 import * as d3 from 'd3';

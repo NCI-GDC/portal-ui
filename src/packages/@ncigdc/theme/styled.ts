@@ -1,14 +1,22 @@
 import domElements from './utils/domElements';
 import validAttributes from './utils/validAttributes';
-import { createElement } from 'react';
 import { css } from 'glamor';
 import { withTheme } from './index';
+import {
+  ComponentType,
+  createElement,
+  CSSProperties,
+} from 'react';
 
-type TAddPropsToFunction = (value: (props: object) => string | string, props: object) => string;
+
+type TAddPropsToFunction = (
+  value: (props: object) => string | string,
+  props: object
+) => string;
 const addPropsToFunction: TAddPropsToFunction = (value, props) =>
   typeof value === 'function' ? value(props) : value;
 
-type TMapValues = (style: Object, props: Object) => Object;
+type TMapValues = (style: CSSProperties, props: object) => object;
 const mapValues: TMapValues = (style, props) =>
   Object.entries(style).reduce(
     (acc, [k, v]) => ({
@@ -18,34 +26,45 @@ const mapValues: TMapValues = (style, props) =>
           ? mapValues(v, props)
           : addPropsToFunction(v, props),
     }),
-    {},
+    {}
   );
 
 type TCreateStyledComponent = (
-  el: string | ReactClass<{}>,
-) => (style: Object) => ReactClass<*>;
+  el: string | ComponentType<object>
+) => (style: CSSProperties) => ComponentType<object>;
+
 const createStyledComponent: TCreateStyledComponent = el => style =>
-  withTheme(({ ref, children, theme, ...props }) => {
-    const validAttrProps =
-      typeof el === 'string' ? validAttributes(props) : props;
-
-    return createElement(
-      el,
-      {
-        ...validAttrProps,
-        className: `${props.className || ''} ${css(
-          mapValues(style, {
-            theme,
-            ...props,
-          }),
-        )}`,
-        ...(ref ? { ref: node => ref(node) } : {}),
-      },
+  withTheme(
+    ({
+      ref,
       children,
-    );
-  });
+      theme,
+      ...props
+    }) => {
+      const validAttrProps =
+        typeof el === 'string' ? validAttributes(props) : props;
 
-type TStyled = (el: ReactClass<{}>, style: Object) => ReactClass<{}>;
+      return createElement(
+        el,
+        {
+          ...validAttrProps,
+          className: `${props.className || ''} ${css(
+            mapValues(style, {
+              theme,
+              ...props,
+            })
+          )}`,
+          ...ref ? { ref: node => ref(node) } : {},
+        },
+        children
+      );
+    }
+  );
+
+type TStyled = (
+  el: ComponentType,
+  style: CSSProperties
+) => ComponentType;
 const styled: TStyled = (el, style) => createStyledComponent(el)(style);
 domElements.forEach(el => {
   styled[el] = createStyledComponent(el);

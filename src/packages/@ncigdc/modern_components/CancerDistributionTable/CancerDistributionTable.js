@@ -32,7 +32,7 @@ let CollapsibleRowList = props => {
           toggleStyle={{ fontStyle: 'normal' }}
           data={data.slice(0).sort()}
           limit={0}
-          expandText={`${data.length}` + label}
+          expandText={`${data.length} ` + label}
           collapseText="collapse"
         />
       )}

@@ -62,6 +62,11 @@ interface ISortTableButtonProps {
   isDisabled?: boolean;
 }
 
+interface ICSortTableButtonProps extends ISortTableButtonProps {
+  state: ISortTableButtonState
+  dispatch: (a: TSortTableButtonReducerAction, cb?: () => void) => void // TODO: possible use the cb to set the query
+}
+
 const sortTableReducer: TSortTableReducer = (state, action) => {
   switch (action.type) {
     case 'addSortKey':
@@ -81,18 +86,18 @@ const sortTableReducer: TSortTableReducer = (state, action) => {
   }
 };
 
-const SortTableButtonDD = compose<ISortTableButtonProps, ISortTableButtonProps>(
+const SortTableButtonDD = compose<ICSortTableButtonProps, ISortTableButtonProps>(
   withReducer<
     ISortTableButtonProps,
     ISortTableButtonState,
     TSortTableButtonReducerAction,
     string,
     string
-  >('state', 'dispatch', sortTableReducer, { sortSelection: [] }),
+  >('state', 'dispatch', sortTableReducer, { sortSelection: [] }), // TODO: base initial state on query if passed in
   setDisplayName('SortTableButton'),
   withRouter,
   withTheme
-)(({ style, options, query: q, sortKey, theme, isDisabled }) => {
+)(({ state, dispatch, style, options, query: q, sortKey, theme, isDisabled }) => {
   const { [sortKey]: sort } = q;
   const fields = parseJSONParam(sort, []);
 

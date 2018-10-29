@@ -6,7 +6,7 @@ import DownloadTableToTsvButton from '@ncigdc/components/DownloadTableToTsvButto
 import pluralize from '@ncigdc/utils/pluralize';
 import React from 'react';
 import SetActions from '@ncigdc/components/SetActions';
-import SortTableButton from '@ncigdc/components/SortTableButton';
+import SortTableButtonDD from '@ncigdc/components/SortTableButtonDD';
 import timestamp from '@ncigdc/utils/timestamp';
 import withRouter from '@ncigdc/utils/withRouter';
 import { compose, withState } from 'recompose';
@@ -95,7 +95,7 @@ const TableActions: React.SFC<IProps> = ({
         />
       )}
       {sortOptions && (
-        <SortTableButton
+        <SortTableButtonDD
           sortFunction={() => 'todo - make this function'}
           sortKey={`${type}s_sort`}
           query={query || {}}

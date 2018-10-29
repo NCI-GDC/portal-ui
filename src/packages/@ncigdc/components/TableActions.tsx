@@ -32,8 +32,8 @@ interface IProps {
   style?: object;
   currentFilters?: IGroupFilter;
   downloadTooltip?: any;
-  CreateSetButton?: React.SFC;
-  RemoveFromSetButton?: React.SFC;
+  CreateSetButton?: React.ComponentType;
+  RemoveFromSetButton?: React.ComponentType;
   idField?: string;
   query: IRawQuery;
   selectedIds?: string[];
@@ -97,10 +97,10 @@ const TableActions: React.SFC<IProps> = ({
       {sortOptions && (
         <SortTableButton
           sortFunction={() => 'todo - make this function'}
-          isDisabled={!sortOptions.length}
-          options={sortOptions}
-          query={query || {}}
           sortKey={`${type}s_sort`}
+          query={query || {}}
+          options={sortOptions}
+          isDisabled={!sortOptions.length}
           style={visualizingButton}
         />
       )}

@@ -31,13 +31,13 @@ export default compose(
         consequence__transcript__gene__gene_id: { buckets: [] },
       }).consequence__transcript__gene__gene_id.buckets.reduce(
         (acc, b) => ({ ...acc, [b.key]: b.doc_count }),
-        {},
+        {}
       );
       return { ssmCounts };
-    },
+    }
   ),
   withSize(),
-  connect(state => ({ tableColumns: state.tableColumns.genes.ids })),
+  connect(state => ({ tableColumns: state.tableColumns.genes.ids }))
 )(
   ({
     genesTableViewer: { explore } = {},
@@ -70,7 +70,11 @@ export default compose(
 
     const tableInfo = tableModel
       .slice()
+      .sort((a, b) => tableColumns.indexOf(a.id) - tableColumns.indexOf(b.id))
       .filter(x => tableColumns.includes(x.id));
+    // console.log('state', tableColumns);
+    // console.log('tableColumns', tableColumns);
+    // console.log('tableInfo', tableInfo);
     return (
       <span>
         <Row
@@ -176,5 +180,5 @@ export default compose(
         />
       </span>
     );
-  },
+  }
 );

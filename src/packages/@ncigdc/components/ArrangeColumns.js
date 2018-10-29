@@ -39,11 +39,12 @@ const ArrangeColumns = compose(
       }
     },
   }),
-  pure,
+  pure
 )(({ dispatch, tableColumns, setState, state, searchTerm, entityType }) => {
   const columns = state.columns.filter(column => !column.subHeading);
   return (
     <div className="test-arrange-columns">
+      {console.log('columns', columns)}
       {columns.map((column, i) => (
         <SortableItem
           className="test-column"
@@ -63,14 +64,14 @@ const ArrangeColumns = compose(
                         ]
                       : []),
                   ],
-                  [],
+                  []
                 );
                 dispatch(
                   setColumns({
                     entityType,
                     ids: nextColumnIds,
                     order: state.items.map(c => c.id),
-                  }),
+                  })
                 );
               }
               return { columns, ...nextState };
@@ -92,13 +93,13 @@ const ArrangeColumns = compose(
               onClick={() => {
                 if (column.subHeadingIds) {
                   column.subHeadingIds.forEach((id, j) =>
-                    dispatch(toggleColumn({ entityType, id, index: i + j })),
+                    dispatch(toggleColumn({ entityType, id, index: i + j }))
                   );
                 }
 
                 // brittle, assuming a single column with subheadings.
                 const subHeadingCol = tableModels[entityType].find(
-                  x => x.subHeadingIds,
+                  x => x.subHeadingIds
                 );
                 // find current index of subheading columm
                 const subHeadingColIndex = !subHeadingCol
@@ -117,7 +118,7 @@ const ArrangeColumns = compose(
                       afterSubheadingCol && !column.subHeadingIds
                         ? i + subHeadingCol.subHeadingIds.length
                         : i,
-                  }),
+                  })
                 );
               }}
             >

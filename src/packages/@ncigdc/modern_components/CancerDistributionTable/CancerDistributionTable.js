@@ -22,7 +22,7 @@ import CollapsibleList from '@ncigdc/uikit/CollapsibleList';
 const paginationPrefix = 'canDistTable';
 
 let CollapsibleRowList = props => {
-  const { data } = props;
+  const { data, label } = props;
   if (!data.length) return <GreyBox />;
   return (
     <span>
@@ -32,7 +32,7 @@ let CollapsibleRowList = props => {
           toggleStyle={{ fontStyle: 'normal' }}
           data={data.slice(0).sort()}
           limit={0}
-          expandText={`${data.length} Disease Types`}
+          expandText={`${data.length}` + label}
           collapseText="collapse"
         />
       )}
@@ -163,8 +163,13 @@ export default compose(
           project_id: (
             <ProjectLink uuid={row.project_id}>{row.project_id}</ProjectLink>
           ),
-          disease_type: <CollapsibleRowList data={row.disease_type} />,
-          site: <CollapsibleRowList data={row.site} />,
+          disease_type: (
+            <CollapsibleRowList
+              data={row.disease_type}
+              label={'Disease Types'}
+            />
+          ),
+          site: <CollapsibleRowList data={row.site} label={'Primary Sites'} />,
           num_affected_cases: (
             <span>
               <ExploreLink

@@ -19,6 +19,17 @@ export default (Component: ReactClass<*>) =>
       ({ location: { search }, defaultSize = 10, defaultFilters = null }) => {
         const q = parse(search);
         const score = 'case.project.project_id';
+
+        const cnvFilters = replaceFilters(
+          makeFilter([
+            {
+              field: 'cases.available_variation_data',
+              value: ['cnv'],
+            },
+          ]),
+          q.genesTable_filters || defaultFilters,
+        );
+
         return {
           filters: defaultFilters,
           score,
@@ -45,25 +56,15 @@ export default (Component: ReactClass<*>) =>
                 value: ['ssm'],
               },
             ]),
-            cnvTested: makeFilter([
-              {
-                field: 'cases.available_variation_data',
-                value: ['cnv'],
-              },
-            ]),
-
+            cnvTested: cnvFilters,
             cnvGainFilters: replaceFilters(
               makeFilter([
                 {
                   field: 'cnvs.cnv_change',
                   value: ['Gain'],
                 },
-                {
-                  field: 'cases.available_variation_data',
-                  value: ['cnv'],
-                },
               ]),
-              q.genesTable_filters || defaultFilters,
+              cnvFilters,
             ),
 
             cnvLossFilters: replaceFilters(
@@ -72,12 +73,8 @@ export default (Component: ReactClass<*>) =>
                   field: 'cnvs.cnv_change',
                   value: ['Loss'],
                 },
-                {
-                  field: 'cases.available_variation_data',
-                  value: ['cnv'],
-                },
               ]),
-              q.genesTable_filters || defaultFilters,
+              cnvFilters,
             ),
           },
         };

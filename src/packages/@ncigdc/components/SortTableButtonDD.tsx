@@ -10,9 +10,8 @@ import styled from '@ncigdc/theme/styled';
 import withRouter from '@ncigdc/utils/withRouter';
 import { compose, setDisplayName, withReducer } from 'recompose';
 import { IRawQuery } from '@ncigdc/utils/uri/types';
-import { isEqual } from 'lodash';
+import { isEqual, xorWith } from 'lodash';
 import { ITheme, withTheme } from '@ncigdc/theme';
-import { parseJSONParam, stringifyJSONParam } from '@ncigdc/utils/uri';
 import { Row } from '@ncigdc/uikit/Flex';
 import { SortIcon } from '@ncigdc/theme/icons';
 import { Tooltip } from '@ncigdc/uikit/Tooltip';
@@ -30,32 +29,52 @@ interface IReducerAction<T, P> {
 
 type TAddSortKey = IReducerAction<'addSortKey', ISortSelection>;
 type TRemoveSortKey = IReducerAction<'removeSortKey', ISortSelection>;
+type TToggleSortKey = IReducerAction<'toggleSortKey', ISortSelection>;
+type TChangeSortDirection = IReducerAction<
+  'changeSortDirection',
+  ISortSelection
+>;
 
-type TSortTableButtonReducerAction = TAddSortKey | TRemoveSortKey;
+type TSortTableButtonReducerAction =
+  | TAddSortKey
+  | TRemoveSortKey
+  | TToggleSortKey
+  | TChangeSortDirection;
 
 interface ISortSelection {
   sortKey: string;
   sortDirection: string;
 }
 
-interface ISortTableButtonState {
-  sortSelection: ReadonlyArray<ISortSelection>;
+interface ISortUiState {
+  [key: string]: {
+    selected: boolean;
+    asc: boolean;
+    desc: boolean;
+  };
 }
 
-type TSortTableButtonSortFunc = (
-  identifier: string,
-  direction: 'asc' | 'desc'
-) => string;
+interface ISortTableButtonState {
+  sortSelection: ReadonlyArray<ISortSelection>;
+  ui: Readonly<ISortUiState>;
+}
+
+type TSortTableButtonSortFunc = (s: ISortTableButtonState) => void;
 
 type TSortTableReducer = (
   s: ISortTableButtonState,
   a: TSortTableButtonReducerAction
 ) => ISortTableButtonState;
 
+export interface ISortTableOptions {
+  id: string;
+  name: string;
+}
+
 interface ISortTableButtonProps {
   sortFunction: TSortTableButtonSortFunc;
   sortKey: string;
-  options: object[];
+  options: ISortTableOptions[];
   theme?: ITheme;
   style?: object;
   query?: IRawQuery;
@@ -63,8 +82,11 @@ interface ISortTableButtonProps {
 }
 
 interface ICSortTableButtonProps extends ISortTableButtonProps {
-  state: ISortTableButtonState
-  dispatch: (a: TSortTableButtonReducerAction, cb?: () => void) => void // TODO: possible use the cb to set the query
+  state: ISortTableButtonState;
+  dispatch: (
+    a: TSortTableButtonReducerAction,
+    cb: TSortTableButtonSortFunc
+  ) => void;
 }
 
 const sortTableReducer: TSortTableReducer = (state, action) => {
@@ -73,6 +95,14 @@ const sortTableReducer: TSortTableReducer = (state, action) => {
       return {
         ...state,
         sortSelection: [...state.sortSelection, action.payload],
+        ui: {
+          ...state.ui,
+          [action.payload.sortKey]: {
+            ...state.ui[action.payload.sortKey],
+            selected: true,
+            [action.payload.sortDirection]: true,
+          },
+        },
       };
     case 'removeSortKey':
       return {
@@ -80,27 +110,81 @@ const sortTableReducer: TSortTableReducer = (state, action) => {
         sortSelection: state.sortSelection.filter(
           selection => !isEqual(selection, action.payload)
         ),
+        ui: {
+          ...state.ui,
+          [action.payload.sortKey]: {
+            ...state.ui[action.payload.sortKey],
+            selected: false,
+            asc: false,
+            desc: false,
+          },
+        },
+      };
+    case 'toggleSortKey':
+      return {
+        ...state,
+        sortSelection: xorWith(state.sortSelection, [action.payload], isEqual),
+        ui: {
+          ...state.ui,
+          [action.payload.sortKey]: {
+            selected: !state.ui[action.payload.sortKey].selected,
+            asc: !state.ui[action.payload.sortKey].selected === true,
+            desc: false,
+          },
+        },
+      };
+    case 'changeSortDirection':
+      return {
+        ...state,
+        sortSelection: [...state.sortSelection, action.payload],
+        ui: {
+          ...state.ui,
+          [action.payload.sortKey]: {
+            ...state.ui[action.payload.sortKey],
+            selected: true,
+            asc: false,
+            desc: false,
+            [action.payload.sortDirection]: true,
+          },
+        },
       };
     default:
       return state;
   }
 };
 
-const SortTableButtonDD = compose<ICSortTableButtonProps, ISortTableButtonProps>(
+type TGenerateInitialState = (
+  p: ICSortTableButtonProps
+) => ISortTableButtonState;
+const generateInitialState: TGenerateInitialState = props => ({
+  sortSelection: [],
+  ui: props.options.reduce((acc, { id }) => {
+    // TODO: base initial state on query if passed in
+    acc[id] = {
+      selected: false,
+      asc: false,
+      desc: false,
+    };
+
+    return acc;
+  }, {}),
+});
+
+const SortTableButtonDD = compose<
+  ICSortTableButtonProps,
+  ISortTableButtonProps
+>(
   withReducer<
     ISortTableButtonProps,
     ISortTableButtonState,
     TSortTableButtonReducerAction,
     string,
     string
-  >('state', 'dispatch', sortTableReducer, { sortSelection: [] }), // TODO: base initial state on query if passed in
+  >('state', 'dispatch', sortTableReducer, generateInitialState),
   setDisplayName('SortTableButton'),
   withRouter,
   withTheme
-)(({ state, dispatch, style, options, query: q, sortKey, theme, isDisabled }) => {
-  const { [sortKey]: sort } = q;
-  const fields = parseJSONParam(sort, []);
-
+)(({ state, dispatch, style, options, theme, isDisabled }) => {
   return (
     <Dropdown
       autoclose={false}
@@ -116,16 +200,6 @@ const SortTableButtonDD = compose<ICSortTableButtonProps, ISortTableButtonProps>
       dropdownStyle={{ top: '100%', marginTop: 5, whiteSpace: 'nowrap' }}
     >
       {options.map(({ id, name }: { id: string; name: string }) => {
-        const sameField = fields.filter(
-          ({ field }: { field: string }) => field === id
-        )[0];
-        const otherFields = fields.filter(
-          ({ field }: { field: string }) => field !== id
-        );
-        const nextSort = sameField
-          ? otherFields
-          : [...otherFields, { field: id, order: 'asc' }];
-
         return (
           <DropdownItem
             key={id}
@@ -140,61 +214,56 @@ const SortTableButtonDD = compose<ICSortTableButtonProps, ISortTableButtonProps>
             }}
           >
             <Row flex="1 1 auto" style={{ padding: '0.3rem 0.6rem' }}>
-              <Link
-                style={{ width: '100%' }}
-                merge
-                query={{
-                  [sortKey]: stringifyJSONParam(nextSort),
+              <div
+                style={{
+                  width: '100%',
+                  color: 'rgb(0, 80, 131)',
                 }}
+                onClick={() =>
+                  dispatch(
+                    {
+                      type: 'toggleSortKey',
+                      payload: {
+                        sortKey: id,
+                        sortDirection: 'asc',
+                      },
+                    },
+                    newState => {
+                      console.log('call sort function here with this state: ', newState);
+                    }
+                  )}
               >
                 <input
                   readOnly
                   style={{ pointerEvents: 'none' }}
                   type="checkbox"
-                  checked={!!sameField}
+                  checked={state.ui[id].selected}
+                  onClick={() => console.log('texzt')}
                   name={name}
                   aria-label={name}
                 />
                 <label htmlFor={name} style={{ marginLeft: '0.3rem' }}>
                   {name}
                 </label>
-              </Link>
+              </div>
             </Row>
             <RadioRow>
-              <Link
-                style={{ width: '100%' }}
-                merge
-                query={{
-                  [sortKey]: stringifyJSONParam([
-                    ...otherFields,
-                    { field: id, order: 'asc' },
-                  ]),
-                }}
-              >
+              <Link style={{ width: '100%' }}>
                 <ArrowDownIcon />
                 <input
                   readOnly
                   type="radio"
-                  checked={!!sameField && sameField.order === 'asc'}
+                  checked={state.ui[id].asc}
                   style={{ pointerEvents: 'none' }}
                   aria-label={'sort-ascending'}
                 />
               </Link>
-              <Link
-                style={{ width: '100%' }}
-                merge
-                query={{
-                  [sortKey]: stringifyJSONParam([
-                    ...otherFields,
-                    { field: id, order: 'desc' },
-                  ]),
-                }}
-              >
+              <Link style={{ width: '100%' }}>
                 <ArrowUpIcon />
                 <input
                   readOnly
                   type="radio"
-                  checked={!!sameField && sameField.order === 'desc'}
+                  checked={state.ui[id].desc}
                   style={{ pointerEvents: 'none' }}
                   aria-label={'sort-descending'}
                 />

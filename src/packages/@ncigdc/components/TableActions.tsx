@@ -6,7 +6,9 @@ import DownloadTableToTsvButton from '@ncigdc/components/DownloadTableToTsvButto
 import pluralize from '@ncigdc/utils/pluralize';
 import React from 'react';
 import SetActions from '@ncigdc/components/SetActions';
-import SortTableButtonDD from '@ncigdc/components/SortTableButtonDD';
+import SortTableButtonDD, {
+  ISortTableOptions,
+} from '@ncigdc/components/SortTableButtonDD';
 import timestamp from '@ncigdc/utils/timestamp';
 import withRouter from '@ncigdc/utils/withRouter';
 import { compose, withState } from 'recompose';
@@ -23,7 +25,7 @@ interface IProps {
   displayType?: string;
   arrangeColumnKey?: string;
   total: number;
-  sortOptions?: object[];
+  sortOptions?: ISortTableOptions[];
   endpoint: string;
   downloadFields: string[];
   downloadable?: boolean;
@@ -115,8 +117,11 @@ const TableActions: React.SFC<IProps> = ({
           inactiveText={'Biospecimen'}
           shouldCreateSet={
             (scope === 'explore' &&
-              fieldContains({ filters: {...currentFilters}, field: 'gene' })) ||
-            fieldContains({ filters: {...currentFilters}, field: 'ssms' })
+              fieldContains({
+                filters: { ...currentFilters },
+                field: 'gene',
+              })) ||
+            fieldContains({ filters: { ...currentFilters }, field: 'ssms' })
           }
           selectedIds={selectedIds}
         />

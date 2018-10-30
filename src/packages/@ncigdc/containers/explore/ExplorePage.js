@@ -307,8 +307,22 @@ export const ExplorePageQuery = {
             id
             ...on Ssm {
               ssm_id
+              cosmic_id
               gene_aa_change
               genomic_dna_change
+              consequence {
+                hits(first: 99) {
+                  edges {
+                    node {
+                      transcript {
+                          annotation {
+                            dbsnp_rs
+                          }
+                      }
+                    }
+                  }
+                }
+              }
             }
           }
         }

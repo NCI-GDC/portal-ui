@@ -15,7 +15,7 @@ import escapeForRelay from '@ncigdc/utils/escapeForRelay';
 import NotMissingFacet from '@ncigdc/components/Aggregations/NotMissingFacet';
 import UploadSetButton from '@ncigdc/components/UploadSetButton';
 import { UploadSsmSet } from '@ncigdc/components/Modals/UploadSet';
-
+import { ResultHighlights } from '@ncigdc/components/QuickSearch/QuickSearchResults';
 const presetFacets: Array<{
   title: string,
   field: string,
@@ -143,16 +143,11 @@ export const SSMAggregationsComponent = compose(
       placeholder="e.g. BRAF V600E, chr7:g.140753336A>T"
       hits={props.suggestions}
       setAutocomplete={props.setAutocomplete}
-      dropdownItem={x => (
+      dropdownItem={(x, inputValue) => (
         <div>
-          <div style={{ fontWeight: 'bold' }}>
-            {x.gene_aa_change && x.gene_aa_change.length > 0
-              ? x.gene_aa_change[0].split(' ')[0]
-              : ''}
-          </div>
-          {x.ssm_id}
-          <br />
-          {x.genomic_dna_change}
+          <div>{x.ssm_id}</div>
+          <ResultHighlights item={x} query={inputValue} />
+          <div>{x.genomic_dna_change}</div>
         </div>
       )}
     />

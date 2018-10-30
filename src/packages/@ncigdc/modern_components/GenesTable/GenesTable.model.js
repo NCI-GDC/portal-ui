@@ -189,7 +189,7 @@ const GenesTableModel = [
           filters={makeFilter([
             { field: 'genes.gene_id', value: node.gene_id },
           ])}
-          caseTotal={node.case.hits.total}
+          caseTotal={node.ssm_case.hits.total}
           gdcCaseTotal={cases.hits.total}
         />
       </Td>

@@ -6,19 +6,51 @@ import DownloadTableToTsvButton from '@ncigdc/components/DownloadTableToTsvButto
 import pluralize from '@ncigdc/utils/pluralize';
 import React from 'react';
 import SetActions from '@ncigdc/components/SetActions';
-import SortTableButtonDD, {
-  ISortTableOptions,
-} from '@ncigdc/components/SortTableButtonDD';
 import timestamp from '@ncigdc/utils/timestamp';
 import withRouter from '@ncigdc/utils/withRouter';
 import { compose, withState } from 'recompose';
+import { IGroupFilter } from '@ncigdc/utils/filters/types';
+import { IRawQuery } from '@ncigdc/utils/uri/types';
+import { mergeQuery } from '@ncigdc/utils/filters';
 import { parseFilterParam } from '@ncigdc/utils/uri';
 import { Row } from '@ncigdc/uikit/Flex';
-import { IGroupFilter } from '@ncigdc/utils/filters/types';
+import { parseJSONParam, stringifyJSONParam } from '@ncigdc/utils/uri';
 import { Tooltip } from '@ncigdc/uikit/Tooltip';
-import { IRawQuery } from '@ncigdc/utils/uri/types';
 import { visualizingButton } from '@ncigdc/theme/mixins';
 import { withTheme } from '@ncigdc/theme';
+import SortTableButtonDD, {
+  ISortTableOptions,
+  TSortTableButtonSortFunc,
+} from '@ncigdc/components/SortTableButtonDD';
+
+type TTableSortFuncCreator = (
+  q: IRawQuery,
+  sk: string,
+  p: ({}) => void
+) => TSortTableButtonSortFunc;
+const tableSortFuncCreator: TTableSortFuncCreator = (
+  query,
+  sortKey,
+  push
+) => selectedSort => {
+
+  // Construct the new query by merging existing filters/query
+  const newQuery = mergeQuery(
+    { [sortKey]: stringifyJSONParam(selectedSort) },
+    query,
+    true
+  );
+
+  // If there are filters the stringify them otherwise remove the key
+  if (Object.keys(newQuery.filters || {}).length > 0) {
+    newQuery.filters = stringifyJSONParam(newQuery.filters)
+  } else {
+    delete newQuery.filters;
+  }
+
+  // Push the new query
+  push({query: newQuery});
+};
 
 interface IProps {
   type: string;
@@ -28,6 +60,8 @@ interface IProps {
   sortOptions?: ISortTableOptions[];
   endpoint: string;
   downloadFields: string[];
+  query: IRawQuery;
+  push: ({}) => void;
   downloadable?: boolean;
   tsvSelector?: string;
   tsvFilename?: string;
@@ -37,7 +71,6 @@ interface IProps {
   CreateSetButton?: React.ComponentType;
   RemoveFromSetButton?: React.ComponentType;
   idField?: string;
-  query: IRawQuery;
   selectedIds?: string[];
   sort?: any;
   score?: any;
@@ -67,6 +100,7 @@ const TableActions: React.SFC<IProps> = ({
   RemoveFromSetButton,
   idField,
   query,
+  push,
   selectedIds,
   sort,
   score,
@@ -98,10 +132,9 @@ const TableActions: React.SFC<IProps> = ({
       )}
       {sortOptions && (
         <SortTableButtonDD
-          sortFunction={() => 'todo - make this function'}
-          sortKey={`${type}s_sort`}
-          query={query || {}}
+          sortFunction={tableSortFuncCreator(query, `${type}s_sort`, push)}
           options={sortOptions}
+          initialState={query[`${type}s_sort`] ? {sortSelection: parseJSONParam(query[`${type}s_sort`])} : {sortSelection: []}}
           isDisabled={!sortOptions.length}
           style={visualizingButton}
         />

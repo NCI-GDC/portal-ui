@@ -9,7 +9,6 @@ import styled from '@ncigdc/theme/styled';
 import withRouter from '@ncigdc/utils/withRouter';
 import { compose, setDisplayName, withReducer } from 'recompose';
 import { find, get, isEqual, xorWith } from 'lodash';
-import { IRawQuery } from '@ncigdc/utils/uri/types';
 import { ITheme, withTheme } from '@ncigdc/theme';
 import { Row } from '@ncigdc/uikit/Flex';
 import { SortIcon } from '@ncigdc/theme/icons';
@@ -27,10 +26,10 @@ interface IReducerAction<T, P> {
 }
 
 interface ISortSelection {
-  sortKey: string;
-  sortDirection: string;
+  field: string;
+  order: string;
 }
-interface ISortTableButtonState {
+export interface ISortTableButtonState {
   sortSelection: ReadonlyArray<ISortSelection>;
 }
 
@@ -51,14 +50,15 @@ export interface ISortTableOptions {
   id: string;
   name: string;
 }
-export type TSortTableButtonSortFunc = (s: ReadonlyArray<ISortSelection>) => void;
+export type TSortTableButtonSortFunc = (
+  s: ReadonlyArray<ISortSelection>
+) => void;
 interface ISortTableButtonProps {
   sortFunction: TSortTableButtonSortFunc;
-  sortKey: string;
   options: ISortTableOptions[];
+  initialState?: ISortTableButtonState;
   theme?: ITheme;
   style?: object;
-  query?: IRawQuery;
   isDisabled?: boolean;
 }
 
@@ -82,7 +82,7 @@ const sortTableReducer: TSortTableReducer = (state, action) => {
         ...state,
         sortSelection: [
           ...state.sortSelection.filter(
-            s => !isEqual(s.sortKey, action.payload.sortKey)
+            s => !isEqual(s.field, action.payload.field)
           ),
           action.payload,
         ],
@@ -107,9 +107,9 @@ const uiStateReduce: TUiStateReduce = (selectionState, selectionOptions) =>
   selectionOptions.reduce((acc, curr) => {
     const selection = find(
       selectionState,
-      (s: ISortSelection) => s.sortKey === curr.id
+      (s: ISortSelection) => s.field === curr.id
     );
-    const sortDir = get(selection, 'sortDirection', false);
+    const sortDir = get(selection, 'order', false);
     acc[curr.id] = {
       selected: selection || false,
       asc: sortDir === 'asc',
@@ -117,6 +117,12 @@ const uiStateReduce: TUiStateReduce = (selectionState, selectionOptions) =>
     };
     return acc;
   }, {});
+
+type TGenerateInitialState = (
+  p: ICSortTableButtonProps
+) => ISortTableButtonState;
+const generateInitialState: TGenerateInitialState = ({ initialState }) =>
+  initialState ? initialState : { sortSelection: [] };
 
 const SortTableButtonDD = compose<
   ICSortTableButtonProps,
@@ -128,7 +134,7 @@ const SortTableButtonDD = compose<
     TSortTableButtonReducerAction,
     string,
     string
-  >('state', 'dispatch', sortTableReducer, { sortSelection: [] }),
+  >('state', 'dispatch', sortTableReducer, generateInitialState),
   setDisplayName('SortTableButton'),
   withRouter,
   withTheme
@@ -159,17 +165,11 @@ const SortTableButtonDD = compose<
             {
               type: sType,
               payload: {
-                sortKey: sId,
-                sortDirection: sDir,
+                field: sId,
+                order: sDir,
               },
             },
-            ({ sortSelection }) => {
-              console.log(
-                'call sort function here with this state: ',
-                sortSelection
-              );
-              sortFunction(sortSelection);
-            }
+            ({ sortSelection }) => sortFunction(sortSelection)
           );
 
         return (

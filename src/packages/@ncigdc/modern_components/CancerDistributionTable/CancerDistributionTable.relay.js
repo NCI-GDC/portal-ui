@@ -3,7 +3,11 @@
 import React from 'react';
 import { graphql } from 'react-relay';
 import { compose, withPropsOnChange } from 'recompose';
-import { makeFilter, replaceFilters } from '@ncigdc/utils/filters';
+import {
+  makeFilter,
+  replaceFilters,
+  addInFilters,
+} from '@ncigdc/utils/filters';
 import Query from '@ncigdc/modern_components/Query';
 
 export default (Component: ReactClass<*>) =>
@@ -11,20 +15,15 @@ export default (Component: ReactClass<*>) =>
     withPropsOnChange(['filters'], ({ filters = null }) => {
       const cnvAvailableVariationDataFilter = {
         field: 'cases.available_variation_data',
-        value: 'cnv',
+        value: ['cnv'],
       };
       const ssmAvailableVariationDataFilter = {
         field: 'cases.available_variation_data',
-        value: 'ssm',
+        value: ['ssm'],
       };
       return {
         variables: {
-          ssmTested: makeFilter([
-            {
-              field: 'cases.available_variation_data',
-              value: 'ssm',
-            },
-          ]),
+          ssmTested: makeFilter([ssmAvailableVariationDataFilter]),
           cnvTested: makeFilter([cnvAvailableVariationDataFilter]),
           cnvGainFilter: replaceFilters(
             makeFilter([
@@ -46,7 +45,24 @@ export default (Component: ReactClass<*>) =>
             ]),
             filters,
           ),
-          caseAggsFilter: filters,
+          caseAggsFilter: addInFilters(
+            {
+              op: 'and',
+              content: [
+                {
+                  op: 'NOT',
+                  content: {
+                    field: 'cases.gene.ssm.observation.observation_id',
+                    value: 'MISSING',
+                  },
+                },
+              ],
+            },
+            replaceFilters(
+              makeFilter([ssmAvailableVariationDataFilter]),
+              filters,
+            ),
+          ),
           ssmCountsFilters: replaceFilters(
             makeFilter([ssmAvailableVariationDataFilter]),
             filters,

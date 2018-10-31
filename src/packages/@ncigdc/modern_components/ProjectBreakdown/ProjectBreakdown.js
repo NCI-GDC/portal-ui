@@ -26,7 +26,19 @@ class Route extends Relay.Route {
   static routeName = 'ProjectBreakdownRoute';
   static queries = viewerQuery;
   static prepareParams = ({ filters = null }) => ({
-    aggFilters: filters,
+    aggFilters: {
+      op: 'and',
+      content: [
+        ...filters.content,
+        {
+          op: 'NOT',
+          content: {
+            field: 'cases.gene.ssm.observation.observation_id',
+            value: 'MISSING',
+          },
+        },
+      ],
+    },
   });
 }
 

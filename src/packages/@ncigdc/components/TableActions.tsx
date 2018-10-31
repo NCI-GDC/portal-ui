@@ -18,10 +18,10 @@ import { parseJSONParam, stringifyJSONParam } from '@ncigdc/utils/uri';
 import { Tooltip } from '@ncigdc/uikit/Tooltip';
 import { visualizingButton } from '@ncigdc/theme/mixins';
 import { withTheme } from '@ncigdc/theme';
-import SortTableButtonDD, {
+import SortTableButton, {
   ISortTableOptions,
   TSortTableButtonSortFunc,
-} from '@ncigdc/components/SortTableButtonDD';
+} from '@ncigdc/components/SortTableButton';
 
 type TTableSortFuncCreator = (
   q: IRawQuery,
@@ -131,7 +131,7 @@ const TableActions: React.SFC<IProps> = ({
         />
       )}
       {sortOptions && (
-        <SortTableButtonDD
+        <SortTableButton
           sortFunction={tableSortFuncCreator(query, `${type}s_sort`, push)}
           options={sortOptions}
           initialState={query[`${type}s_sort`] ? {sortSelection: parseJSONParam(query[`${type}s_sort`])} : {sortSelection: []}}

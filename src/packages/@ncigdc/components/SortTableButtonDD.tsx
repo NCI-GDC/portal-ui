@@ -8,8 +8,8 @@ import React from 'react';
 import styled from '@ncigdc/theme/styled';
 import withRouter from '@ncigdc/utils/withRouter';
 import { compose, setDisplayName, withReducer } from 'recompose';
+import { find, get, isEqual, xorWith } from 'lodash';
 import { IRawQuery } from '@ncigdc/utils/uri/types';
-import { isEqual, xorWith } from 'lodash';
 import { ITheme, withTheme } from '@ncigdc/theme';
 import { Row } from '@ncigdc/uikit/Flex';
 import { SortIcon } from '@ncigdc/theme/icons';
@@ -26,43 +26,32 @@ interface IReducerAction<T, P> {
   payload: P;
 }
 
+interface ISortSelection {
+  sortKey: string;
+  sortDirection: string;
+}
+interface ISortTableButtonState {
+  sortSelection: ReadonlyArray<ISortSelection>;
+}
+
 type TSortActionNames = 'toggleSortKey' | 'changeSortDirection';
 type TSortTableButtonReducerAction = IReducerAction<
   TSortActionNames,
   ISortSelection
 >;
 
-interface ISortSelection {
-  sortKey: string;
-  sortDirection: string;
-}
-
-interface ISortUiState {
-  [key: string]: {
-    selected: boolean;
-    asc: boolean;
-    desc: boolean;
-  };
-}
-
-interface ISortTableButtonState {
-  sortSelection: ReadonlyArray<ISortSelection>;
-  ui: Readonly<ISortUiState>;
-}
-
-type TSortTableButtonSortFunc = (s: ReadonlyArray<ISortSelection>) => void;
-type TSortTableButtonDispatch = (s: ISortTableButtonState) => void;
-
 type TSortTableReducer = (
   s: ISortTableButtonState,
   a: TSortTableButtonReducerAction
 ) => ISortTableButtonState;
 
+type TSortTableButtonDispatch = (s: ISortTableButtonState) => void;
+
 export interface ISortTableOptions {
   id: string;
   name: string;
 }
-
+export type TSortTableButtonSortFunc = (s: ReadonlyArray<ISortSelection>) => void;
 interface ISortTableButtonProps {
   sortFunction: TSortTableButtonSortFunc;
   sortKey: string;
@@ -81,37 +70,12 @@ interface ICSortTableButtonProps extends ISortTableButtonProps {
   ) => void;
 }
 
-type TGenerateInitialState = (
-  p: ICSortTableButtonProps
-) => ISortTableButtonState;
-const generateInitialState: TGenerateInitialState = props => ({
-  sortSelection: [],
-  ui: props.options.reduce((acc, { id }) => {
-    // TODO: base initial state on query if passed in
-    acc[id] = {
-      selected: false,
-      asc: false,
-      desc: false,
-    };
-
-    return acc;
-  }, {}),
-});
-
 const sortTableReducer: TSortTableReducer = (state, action) => {
   switch (action.type) {
     case 'toggleSortKey':
       return {
         ...state,
         sortSelection: xorWith(state.sortSelection, [action.payload], isEqual),
-        ui: {
-          ...state.ui,
-          [action.payload.sortKey]: {
-            selected: !state.ui[action.payload.sortKey].selected,
-            asc: !state.ui[action.payload.sortKey].selected === true,
-            desc: false,
-          },
-        },
       };
     case 'changeSortDirection':
       return {
@@ -122,21 +86,37 @@ const sortTableReducer: TSortTableReducer = (state, action) => {
           ),
           action.payload,
         ],
-        ui: {
-          ...state.ui,
-          [action.payload.sortKey]: {
-            ...state.ui[action.payload.sortKey],
-            selected: true,
-            asc: false,
-            desc: false,
-            [action.payload.sortDirection]: true,
-          },
-        },
       };
     default:
       return state;
   }
 };
+
+interface ISortUiState {
+  [key: string]: {
+    selected: boolean;
+    asc: boolean;
+    desc: boolean;
+  };
+}
+type TUiStateReduce = (
+  s: ReadonlyArray<ISortSelection>,
+  o: ISortTableOptions[]
+) => ISortUiState;
+const uiStateReduce: TUiStateReduce = (selectionState, selectionOptions) =>
+  selectionOptions.reduce((acc, curr) => {
+    const selection = find(
+      selectionState,
+      (s: ISortSelection) => s.sortKey === curr.id
+    );
+    const sortDir = get(selection, 'sortDirection', false);
+    acc[curr.id] = {
+      selected: selection || false,
+      asc: sortDir === 'asc',
+      desc: sortDir === 'desc',
+    };
+    return acc;
+  }, {});
 
 const SortTableButtonDD = compose<
   ICSortTableButtonProps,
@@ -148,11 +128,13 @@ const SortTableButtonDD = compose<
     TSortTableButtonReducerAction,
     string,
     string
-  >('state', 'dispatch', sortTableReducer, generateInitialState),
+  >('state', 'dispatch', sortTableReducer, { sortSelection: [] }),
   setDisplayName('SortTableButton'),
   withRouter,
   withTheme
 )(({ state, dispatch, sortFunction, style, options, theme, isDisabled }) => {
+  const uiState = uiStateReduce(state.sortSelection, options);
+
   return (
     <Dropdown
       autoclose={false}
@@ -213,14 +195,14 @@ const SortTableButtonDD = compose<
                   dispatchAction(
                     'toggleSortKey',
                     id,
-                    state.ui[id].desc ? 'desc' : 'asc'
+                    uiState[id].desc ? 'desc' : 'asc'
                   )}
               >
                 <input
                   readOnly
                   style={{ pointerEvents: 'none' }}
                   type="checkbox"
-                  checked={state.ui[id].selected}
+                  checked={uiState[id].selected}
                   name={name}
                   aria-label={name}
                 />
@@ -238,7 +220,7 @@ const SortTableButtonDD = compose<
                 <input
                   readOnly
                   type="radio"
-                  checked={state.ui[id].asc}
+                  checked={uiState[id].asc}
                   style={{ pointerEvents: 'none' }}
                   aria-label={'sort-ascending'}
                 />
@@ -252,7 +234,7 @@ const SortTableButtonDD = compose<
                 <input
                   readOnly
                   type="radio"
-                  checked={state.ui[id].desc}
+                  checked={uiState[id].desc}
                   style={{ pointerEvents: 'none' }}
                   aria-label={'sort-descending'}
                 />
@@ -264,7 +246,5 @@ const SortTableButtonDD = compose<
     </Dropdown>
   );
 });
-
-/*----------------------------------------------------------------------------*/
 
 export default SortTableButtonDD;

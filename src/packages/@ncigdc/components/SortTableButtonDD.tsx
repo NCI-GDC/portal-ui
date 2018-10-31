@@ -4,7 +4,6 @@ import Button from '@ncigdc/uikit/Button';
 import Dropdown from '@ncigdc/uikit/Dropdown';
 import DropdownItem from '@ncigdc/uikit/DropdownItem';
 import Hidden from '@ncigdc/components/Hidden';
-import Link from '@ncigdc/components/Links/Link';
 import React from 'react';
 import styled from '@ncigdc/theme/styled';
 import withRouter from '@ncigdc/utils/withRouter';
@@ -27,19 +26,11 @@ interface IReducerAction<T, P> {
   payload: P;
 }
 
-type TAddSortKey = IReducerAction<'addSortKey', ISortSelection>;
-type TRemoveSortKey = IReducerAction<'removeSortKey', ISortSelection>;
-type TToggleSortKey = IReducerAction<'toggleSortKey', ISortSelection>;
-type TChangeSortDirection = IReducerAction<
-  'changeSortDirection',
+type TSortActionNames = 'toggleSortKey' | 'changeSortDirection';
+type TSortTableButtonReducerAction = IReducerAction<
+  TSortActionNames,
   ISortSelection
 >;
-
-type TSortTableButtonReducerAction =
-  | TAddSortKey
-  | TRemoveSortKey
-  | TToggleSortKey
-  | TChangeSortDirection;
 
 interface ISortSelection {
   sortKey: string;
@@ -59,7 +50,8 @@ interface ISortTableButtonState {
   ui: Readonly<ISortUiState>;
 }
 
-type TSortTableButtonSortFunc = (s: ISortTableButtonState) => void;
+type TSortTableButtonSortFunc = (s: ReadonlyArray<ISortSelection>) => void;
+type TSortTableButtonDispatch = (s: ISortTableButtonState) => void;
 
 type TSortTableReducer = (
   s: ISortTableButtonState,
@@ -85,73 +77,9 @@ interface ICSortTableButtonProps extends ISortTableButtonProps {
   state: ISortTableButtonState;
   dispatch: (
     a: TSortTableButtonReducerAction,
-    cb: TSortTableButtonSortFunc
+    cb: TSortTableButtonDispatch
   ) => void;
 }
-
-const sortTableReducer: TSortTableReducer = (state, action) => {
-  switch (action.type) {
-    case 'addSortKey':
-      return {
-        ...state,
-        sortSelection: [...state.sortSelection, action.payload],
-        ui: {
-          ...state.ui,
-          [action.payload.sortKey]: {
-            ...state.ui[action.payload.sortKey],
-            selected: true,
-            [action.payload.sortDirection]: true,
-          },
-        },
-      };
-    case 'removeSortKey':
-      return {
-        ...state,
-        sortSelection: state.sortSelection.filter(
-          selection => !isEqual(selection, action.payload)
-        ),
-        ui: {
-          ...state.ui,
-          [action.payload.sortKey]: {
-            ...state.ui[action.payload.sortKey],
-            selected: false,
-            asc: false,
-            desc: false,
-          },
-        },
-      };
-    case 'toggleSortKey':
-      return {
-        ...state,
-        sortSelection: xorWith(state.sortSelection, [action.payload], isEqual),
-        ui: {
-          ...state.ui,
-          [action.payload.sortKey]: {
-            selected: !state.ui[action.payload.sortKey].selected,
-            asc: !state.ui[action.payload.sortKey].selected === true,
-            desc: false,
-          },
-        },
-      };
-    case 'changeSortDirection':
-      return {
-        ...state,
-        sortSelection: [...state.sortSelection, action.payload],
-        ui: {
-          ...state.ui,
-          [action.payload.sortKey]: {
-            ...state.ui[action.payload.sortKey],
-            selected: true,
-            asc: false,
-            desc: false,
-            [action.payload.sortDirection]: true,
-          },
-        },
-      };
-    default:
-      return state;
-  }
-};
 
 type TGenerateInitialState = (
   p: ICSortTableButtonProps
@@ -170,6 +98,46 @@ const generateInitialState: TGenerateInitialState = props => ({
   }, {}),
 });
 
+const sortTableReducer: TSortTableReducer = (state, action) => {
+  switch (action.type) {
+    case 'toggleSortKey':
+      return {
+        ...state,
+        sortSelection: xorWith(state.sortSelection, [action.payload], isEqual),
+        ui: {
+          ...state.ui,
+          [action.payload.sortKey]: {
+            selected: !state.ui[action.payload.sortKey].selected,
+            asc: !state.ui[action.payload.sortKey].selected === true,
+            desc: false,
+          },
+        },
+      };
+    case 'changeSortDirection':
+      return {
+        ...state,
+        sortSelection: [
+          ...state.sortSelection.filter(
+            s => !isEqual(s.sortKey, action.payload.sortKey)
+          ),
+          action.payload,
+        ],
+        ui: {
+          ...state.ui,
+          [action.payload.sortKey]: {
+            ...state.ui[action.payload.sortKey],
+            selected: true,
+            asc: false,
+            desc: false,
+            [action.payload.sortDirection]: true,
+          },
+        },
+      };
+    default:
+      return state;
+  }
+};
+
 const SortTableButtonDD = compose<
   ICSortTableButtonProps,
   ISortTableButtonProps
@@ -184,7 +152,7 @@ const SortTableButtonDD = compose<
   setDisplayName('SortTableButton'),
   withRouter,
   withTheme
-)(({ state, dispatch, style, options, theme, isDisabled }) => {
+)(({ state, dispatch, sortFunction, style, options, theme, isDisabled }) => {
   return (
     <Dropdown
       autoclose={false}
@@ -200,6 +168,28 @@ const SortTableButtonDD = compose<
       dropdownStyle={{ top: '100%', marginTop: 5, whiteSpace: 'nowrap' }}
     >
       {options.map(({ id, name }: { id: string; name: string }) => {
+        const dispatchAction = (
+          sType: TSortActionNames,
+          sId: string,
+          sDir: string
+        ) =>
+          dispatch(
+            {
+              type: sType,
+              payload: {
+                sortKey: sId,
+                sortDirection: sDir,
+              },
+            },
+            ({ sortSelection }) => {
+              console.log(
+                'call sort function here with this state: ',
+                sortSelection
+              );
+              sortFunction(sortSelection);
+            }
+          );
+
         return (
           <DropdownItem
             key={id}
@@ -220,17 +210,10 @@ const SortTableButtonDD = compose<
                   color: 'rgb(0, 80, 131)',
                 }}
                 onClick={() =>
-                  dispatch(
-                    {
-                      type: 'toggleSortKey',
-                      payload: {
-                        sortKey: id,
-                        sortDirection: 'asc',
-                      },
-                    },
-                    newState => {
-                      console.log('call sort function here with this state: ', newState);
-                    }
+                  dispatchAction(
+                    'toggleSortKey',
+                    id,
+                    state.ui[id].desc ? 'desc' : 'asc'
                   )}
               >
                 <input
@@ -238,7 +221,6 @@ const SortTableButtonDD = compose<
                   style={{ pointerEvents: 'none' }}
                   type="checkbox"
                   checked={state.ui[id].selected}
-                  onClick={() => console.log('texzt')}
                   name={name}
                   aria-label={name}
                 />
@@ -248,7 +230,10 @@ const SortTableButtonDD = compose<
               </div>
             </Row>
             <RadioRow>
-              <Link style={{ width: '100%' }}>
+              <div
+                style={{ width: '100%' }}
+                onClick={() => dispatchAction('changeSortDirection', id, 'asc')}
+              >
                 <ArrowDownIcon />
                 <input
                   readOnly
@@ -257,8 +242,12 @@ const SortTableButtonDD = compose<
                   style={{ pointerEvents: 'none' }}
                   aria-label={'sort-ascending'}
                 />
-              </Link>
-              <Link style={{ width: '100%' }}>
+              </div>
+              <div
+                style={{ width: '100%' }}
+                onClick={() =>
+                  dispatchAction('changeSortDirection', id, 'desc')}
+              >
                 <ArrowUpIcon />
                 <input
                   readOnly
@@ -267,7 +256,7 @@ const SortTableButtonDD = compose<
                   style={{ pointerEvents: 'none' }}
                   aria-label={'sort-descending'}
                 />
-              </Link>
+              </div>
             </RadioRow>
           </DropdownItem>
         );

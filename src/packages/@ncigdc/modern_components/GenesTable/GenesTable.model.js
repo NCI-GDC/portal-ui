@@ -120,67 +120,70 @@ const GenesTableModel = [
         </Tooltip>
       </Th>
     ),
-    td: ({ node, query, defaultFilters, filteredCases }) => {
-      let numCasesQueryFilter = {
-        op: 'and',
-        content: [
-          {
-            op: 'NOT',
-            content: {
-              field: 'ssms.ssm_id',
-              value: 'MISSING',
-            },
-          },
-          {
-            op: 'in',
-            content: {
-              field: 'genes.gene_id',
-              value: [node.gene_id],
-            },
-          },
-        ],
-      };
-
-      return (
-        <Td>
-          <span>
-            <ExploreLink
-              merge
-              query={{
-                searchTableTab: 'cases',
-                filters: replaceFilters(
-                  numCasesQueryFilter,
-                  query.genesTable_filters || defaultFilters,
-                ),
-              }}
-            >
-              {(node.numCases || 0).toLocaleString()}
-            </ExploreLink>
-            <span> / </span>
-            <ExploreLink
-              query={{
-                searchTableTab: 'cases',
-                filters: addInFilters(
-                  query.genesTable_filters || defaultFilters,
-                  makeFilter([
+    td: ({ node, query, defaultFilters, filteredCases }) => (
+      <Td>
+        <span>
+          <ExploreLink
+            merge
+            query={{
+              searchTableTab: 'cases',
+              filters: replaceFilters(
+                {
+                  op: 'and',
+                  content: [
                     {
-                      field: 'cases.available_variation_data',
-                      value: ['ssm'],
+                      op: 'in',
+                      content: {
+                        field: 'cases.available_variation_data',
+                        value: ['ssm'],
+                      },
                     },
-                  ]),
-                ),
-              }}
-            >
-              {(filteredCases.hits.total || 0).toLocaleString()}
-            </ExploreLink>
-            <span>{` (${((node.numCases || 0) /
-              filteredCases.hits.total *
-              100
-            ).toFixed(2)}%)`}</span>
-          </span>
-        </Td>
-      );
-    },
+                    {
+                      op: 'NOT',
+                      content: {
+                        field: 'ssms.ssm_id',
+                        value: 'MISSING',
+                      },
+                    },
+                    {
+                      op: 'in',
+                      content: {
+                        field: 'genes.gene_id',
+                        value: [node.gene_id],
+                      },
+                    },
+                  ],
+                },
+                query.genesTable_filters || defaultFilters,
+              ),
+            }}
+          >
+            {(node.numCases || 0).toLocaleString()}
+          </ExploreLink>
+          <span> / </span>
+          <ExploreLink
+            query={{
+              searchTableTab: 'cases',
+              filters: addInFilters(
+                query.genesTable_filters || defaultFilters,
+                makeFilter([
+                  {
+                    field: 'cases.available_variation_data',
+                    value: ['ssm'],
+                  },
+                ]),
+              ),
+            }}
+          >
+            {(filteredCases.hits.total || 0).toLocaleString()}
+          </ExploreLink>
+          <span>{` (${((node.numCases || 0) /
+            filteredCases.hits.total *
+            100
+          ).toFixed(2)}%)`}</span>
+        </span>
+      </Td>
+    ),
   },
   {
     name: '	# SSM Affected Cases Across the GDC',

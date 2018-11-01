@@ -10,7 +10,11 @@ import { Tooltip } from '@ncigdc/uikit/Tooltip';
 import ProjectLink from '@ncigdc/components/Links/ProjectLink';
 import CaseLink from '@ncigdc/components/Links/CaseLink';
 import { Th, Td, TdNum, ThNum } from '@ncigdc/uikit/Table';
-import { makeFilter, replaceFilters } from '@ncigdc/utils/filters';
+import {
+  makeFilter,
+  replaceFilters,
+  addInFilters,
+} from '@ncigdc/utils/filters';
 import ExploreLink from '@ncigdc/components/Links/ExploreLink';
 import ageDisplay from '@ncigdc/utils/ageDisplay';
 import withRouter from '@ncigdc/utils/withRouter';
@@ -240,9 +244,23 @@ const casesTableModel = [
             merge
             query={{
               searchTableTab: 'genes',
-              filters: makeFilter(
-                [{ field: 'cases.case_id', value: [node.case_id] }],
-                false,
+              filters: addInFilters(
+                {
+                  op: 'and',
+                  content: [
+                    {
+                      op: 'NOT',
+                      content: {
+                        field: 'ssms.ssm_id',
+                        value: 'MISSING',
+                      },
+                    },
+                  ],
+                },
+                makeFilter(
+                  [{ field: 'cases.case_id', value: [node.case_id] }],
+                  false,
+                ),
               ),
             }}
           >

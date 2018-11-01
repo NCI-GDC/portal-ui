@@ -58,7 +58,7 @@ interface ISortTableButtonProps {
   options: ISortTableOptions[];
   initialState?: ISortTableButtonState;
   theme?: ITheme;
-  style?: object;
+  style?: React.CSSProperties;
   isDisabled?: boolean;
 }
 

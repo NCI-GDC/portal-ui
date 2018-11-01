@@ -2,11 +2,7 @@ import domElements from './utils/domElements';
 import validAttributes from './utils/validAttributes';
 import { css, CSSProperties } from 'glamor';
 import { withTheme } from './index';
-import {
-  ComponentType,
-  createElement,
-} from 'react';
-
+import { ComponentType, createElement, ReactHTML } from 'react';
 
 type TAddPropsToFunction = (
   value: (props: object) => string | string,
@@ -33,37 +29,30 @@ type TCreateStyledComponent = (
 ) => (style: CSSProperties) => ComponentType<any>;
 
 const createStyledComponent: TCreateStyledComponent = el => style =>
-  withTheme(
-    ({
-      ref,
-      children,
-      theme,
-      ...props
-    }) => {
-      const validAttrProps =
-        typeof el === 'string' ? validAttributes(props) : props;
+  withTheme(({ ref, children, theme, ...props }) => {
+    const validAttrProps =
+      typeof el === 'string' ? validAttributes(props) : props;
 
-      return createElement(
-        el,
-        {
-          ...validAttrProps,
-          className: `${props.className || ''} ${css(
-            mapValues(style, {
-              theme,
-              ...props,
-            })
-          )}`,
-          ...ref ? { ref: node => ref(node) } : {},
-        },
-        children
-      );
-    }
-  );
+    return createElement(
+      el,
+      {
+        ...validAttrProps,
+        className: `${props.className || ''} ${css(
+          mapValues(style, {
+            theme,
+            ...props,
+          })
+        )}`,
+        ...ref ? { ref: node => ref(node) } : {},
+      },
+      children
+    );
+  });
 
 type TStyled = (
-  el: ComponentType,
+  el: string | ComponentType,
   style: CSSProperties
-) => ComponentType;
+) => ComponentType<any> | keyof ReactHTML;
 const styled: TStyled = (el, style) => createStyledComponent(el)(style);
 domElements.forEach(el => {
   styled[el] = createStyledComponent(el);

@@ -1,30 +1,34 @@
-import React from 'react';
-import { groupBy, head } from 'lodash';
-import { compose, withPropsOnChange, withState } from 'recompose';
-import { makeFilter } from '@ncigdc/utils/filters';
-import { tableToolTipHint, visualizingButton } from '@ncigdc/theme/mixins';
-import { Tooltip } from '@ncigdc/uikit/Tooltip';
-import saveFile from '@ncigdc/utils/filesaver';
-import EntityPageHorizontalTable from '@ncigdc/components/EntityPageHorizontalTable';
-import Button from '@ncigdc/uikit/Button';
-import { replaceFilters } from '@ncigdc/utils/filters';
-import ProjectLink from '@ncigdc/components/Links/ProjectLink';
-import ExploreLink from '@ncigdc/components/Links/ExploreLink';
-import LocalPaginationTable from '@ncigdc/components/LocalPaginationTable';
-import DownloadTableToTsvButton from '@ncigdc/components/DownloadTableToTsvButton';
-import { Row } from '@ncigdc/uikit/Flex';
-import GreyBox from '@ncigdc/uikit/GreyBox';
-import MutationsCount from '@ncigdc/components/MutationsCount';
-import timestamp from '@ncigdc/utils/timestamp';
-import CollapsibleList from '@ncigdc/uikit/CollapsibleList';
 import ArrowDownIcon from 'react-icons/lib/fa/long-arrow-down';
 import ArrowUpIcon from 'react-icons/lib/fa/long-arrow-up';
+import Button from '@ncigdc/uikit/Button';
+import CollapsibleList from '@ncigdc/uikit/CollapsibleList';
+import DownloadTableToTsvButton from '@ncigdc/components/DownloadTableToTsvButton';
+import EntityPageHorizontalTable from '@ncigdc/components/EntityPageHorizontalTable';
+import ExploreLink from '@ncigdc/components/Links/ExploreLink';
+import GreyBox from '@ncigdc/uikit/GreyBox';
+import LocalPaginationTable from '@ncigdc/components/LocalPaginationTable';
+import MutationsCount from '@ncigdc/components/MutationsCount';
+import ProjectLink from '@ncigdc/components/Links/ProjectLink';
+import React from 'react';
+import saveFile from '@ncigdc/utils/filesaver';
+import timestamp from '@ncigdc/utils/timestamp';
+import { compose, withPropsOnChange, withState } from 'recompose';
+import { groupBy, head } from 'lodash';
+import { makeFilter } from '@ncigdc/utils/filters';
+import { replaceFilters } from '@ncigdc/utils/filters';
+import { Row } from '@ncigdc/uikit/Flex';
+import { tableToolTipHint, visualizingButton } from '@ncigdc/theme/mixins';
+import { Tooltip } from '@ncigdc/uikit/Tooltip';
 
 const paginationPrefix = 'canDistTable';
 
-let CollapsibleRowList = props => {
+const CollapsibleRowList: React.ComponentType<{ data: Array<{}> }> = props => {
   const { data } = props;
-  if (!data.length) return <GreyBox />;
+
+  if (!data.length) {
+    return <GreyBox />;
+  }
+
   return (
     <span>
       {data.length > 1 && (
@@ -42,7 +46,37 @@ let CollapsibleRowList = props => {
   );
 };
 
-export default compose(
+interface IBucket {
+  doc_count: number,
+  key: string
+}
+interface ICancerDistributionTableProps {
+  viewer: {
+    explore: {
+      cases: {
+        filtered: {
+          project__project_id: {
+            buckets: IBucket[]
+          }
+        }
+      },
+      ssms: {
+        aggregations: {
+          occurrence__case__project__project_id: {
+            buckets: IBucket[]
+          }
+        }
+      }
+    }
+  };
+  projectsViewer: {};
+  geneId: number;
+  entityName: string;
+  filters: {};
+  tableType: string;
+}
+
+export default compose<ICancerDistributionTableProps, ICancerDistributionTableProps>(
   withPropsOnChange(
     ['viewer', 'projectsViewer'],
     ({
@@ -56,30 +90,30 @@ export default compose(
       const ssmCounts = (aggregations || {
         occurrence__case__project__project_id: { buckets: [] },
       }).occurrence__case__project__project_id.buckets.reduce(
-        (acc, b) => ({ ...acc, [b.key]: b.doc_count }),
-        {},
+        (acc: {[key: string]: number}, b: IBucket) => ({ ...acc, [b.key]: b.doc_count }),
+        {}
       );
 
       const projectsById = groupBy(
         (projects.hits || { edges: [] }).edges,
-        e => e.node.project_id,
+        e => e.node.project_id
       );
       let caseFiltered = {};
-      let fields = ['filtered', 'total'];
+      const fields = ['filtered', 'total'];
       if (tableType !== 'ssm') {
         fields.push('cnvGain', 'cnvLoss', 'cnvTotal');
       }
       fields.map(type =>
         cases[type].project__project_id.buckets.map(
-          b =>
+          (b: IBucket) =>
             (caseFiltered = {
               ...caseFiltered,
               [b.key]: {
                 ...caseFiltered[b.key],
                 [type]: b.doc_count,
               },
-            }),
-        ),
+            })
+        )
       );
       const rawData = Object.keys(caseFiltered)
         .filter(b => head(projectsById[b]))
@@ -106,7 +140,7 @@ export default compose(
           };
         })
         .sort(
-          (a, b) => b.num_affected_cases_percent - a.num_affected_cases_percent,
+          (a, b) => b.num_affected_cases_percent - a.num_affected_cases_percent
         );
 
       const cancerDistData = rawData.map(row => {
@@ -240,7 +274,7 @@ export default compose(
               </span>
             ),
           }),
-          ...(geneId
+          ...geneId
             ? {
                 num_mutations: (
                   <MutationsCount
@@ -249,14 +283,14 @@ export default compose(
                   />
                 ),
               }
-            : null),
+            : null,
         };
       });
 
       return { rawData, cancerDistData };
-    },
+    }
   ),
-  withState('tableSort', 'setTableSort', {}),
+  withState('tableSort', 'setTableSort', {})
 )(
   (
     {
@@ -269,7 +303,7 @@ export default compose(
       tableType,
       tableSort,
       setTableSort,
-    } = {},
+    } = {}
   ) => {
     const sortButton = (type, tableSort) => {
       if (tableSort[type] === 'up') {
@@ -380,7 +414,7 @@ export default compose(
                     saveFile(
                       JSON.stringify(rawData, null, 2),
                       'JSON',
-                      'cancer-distribution-data.json',
+                      'cancer-distribution-data.json'
                     )}
                 >
                   JSON
@@ -429,5 +463,5 @@ export default compose(
         </LocalPaginationTable>
       </span>
     );
-  },
+  }
 );

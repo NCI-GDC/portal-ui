@@ -1,20 +1,17 @@
-/* @flow */
-/* eslint fp/no-mutating-methods: 0 */
-
 import _ from 'lodash';
 import { parseFilterParam } from '../uri';
-
 import {
-  TMergeFilters,
+  IValueFilter,
   TCombineValues,
+  TFilterByWhitelist,
+  TMergeFilters,
   TMergeFns,
   TMergeQuery,
-  TSortFilters,
-  TFilterByWhitelist,
   TRemoveFilter,
+  TSortFilters,
 } from './types';
 
-function compareTerms(a, b) {
+function compareTerms(a: IValueFilter, b: IValueFilter) {
   return (
     a.content.field === b.content.field &&
     a.op.toLowerCase() === b.op.toLowerCase()
@@ -32,21 +29,28 @@ const sortFilters: TSortFilters = (a, b) => {
 };
 
 export const combineValues: TCombineValues = (x, y) => {
-  const xValue = [].concat(x.content.value || []);
-  const yValue = [].concat(y.content.value || []);
+  const xValue = ([] as string[]).concat(x.content.value || []);
+  const yValue = ([] as string[]).concat(y.content.value || []);
 
-  if (xValue.length === 0 && yValue.length === 0) return null;
-  if (xValue.length === 0) return y;
-  if (yValue.length === 0) return x;
+  if (xValue.length === 0 && yValue.length === 0) {
+    return null;
+  } else if (xValue.length === 0) {
+    return y;
+  } else if (yValue.length === 0) {
+    return x;
+  }
 
-  const merged = {
+  const merged: IValueFilter = {
     op: 'in',
     content: {
       field: x.content.field,
       value: xValue
         .reduce((acc, v) => {
-          if (acc.includes(v)) return acc.filter(f => f !== v);
-          return [...acc, v];
+          if (acc.includes(v)) {
+            return acc.filter(f => f !== v);
+          } else {
+            return [...acc, v];
+          }
         }, yValue)
         .sort(),
     },
@@ -56,21 +60,27 @@ export const combineValues: TCombineValues = (x, y) => {
 };
 
 export const addInValue: TCombineValues = (x, y) => {
-  const xValue = [].concat(x.content.value || []);
-  const yValue = [].concat(y.content.value || []);
+  const xValue = ([] as string[]).concat(x.content.value || []);
+  const yValue = ([] as string[]).concat(y.content.value || []);
 
-  if (xValue.length === 0 && yValue.length === 0) return null;
-  if (xValue.length === 0) return y;
-  if (yValue.length === 0) return x;
-
+  if (xValue.length === 0 && yValue.length === 0) {
+    return null;
+  } else if (xValue.length === 0) {
+    return y;
+  } else if (yValue.length === 0) {
+    return x;
+  }
   const merged = {
     op: 'in',
     content: {
       field: x.content.field,
       value: xValue
         .reduce((acc, v) => {
-          if (acc.includes(v)) return acc;
-          return [...acc, v];
+          if (acc.includes(v)) {
+            return acc;
+          } else {
+            return [...acc, v];
+          }
         }, yValue)
         .sort(),
     },
@@ -80,39 +90,53 @@ export const addInValue: TCombineValues = (x, y) => {
 };
 
 export const toggleFilters: TMergeFilters = (q, ctxq) => {
-  if (!ctxq && !q) return null;
-  if (!ctxq) return q;
-  if (!q) return ctxq;
+  if (!ctxq && !q) {
+    return null;
+  } else if (!ctxq) {
+    return q;
+  } else if (!q) {
+    return ctxq;
+  } else {
+    const merged = {
+      op: 'and',
+      content: ctxq.content
+        .reduce((acc, ctx) => {
+          const found = acc.find(a => compareTerms(a, ctx));
+          if (!found) {
+            return [...acc, ctx];
+          } else {
+            return [
+              ...acc.filter(y => y.content.field !== found.content.field),
+              combineValues(found, ctx),
+            ].filter(Boolean);
+          }
+        }, q.content)
+        .sort(sortFilters),
+    };
 
-  const merged = {
-    op: 'and',
-    content: ctxq.content
-      .reduce((acc, ctx) => {
-        const found = acc.find(a => compareTerms(a, ctx));
-        if (!found) return [...acc, ctx];
-        return [
-          ...acc.filter(y => y.content.field !== found.content.field),
-          combineValues(found, ctx),
-        ].filter(Boolean);
-      }, q.content)
-      .sort(sortFilters),
-  };
-
-  return merged.content.length ? merged : null;
+    return merged.content.length ? merged : null;
+  }
 };
 
 export const replaceFilters: TMergeFilters = (q, ctxq) => {
-  if (!ctxq && !q) return null;
-  if (!ctxq) return q;
-  if (!q) return ctxq;
+  if (!ctxq && !q) {
+    return null;
+  } else if (!ctxq) {
+    return q;
+  } else if (!q) {
+    return ctxq;
+  }
 
   const merged = {
     op: 'and',
     content: ctxq.content
       .reduce((acc, ctx) => {
         const found = acc.find(a => compareTerms(a, ctx));
-        if (!found) return [...acc, ctx];
-        return acc;
+        if (!found) {
+          return [...acc, ctx];
+        } else {
+          return acc;
+        }
       }, q.content)
       .sort(sortFilters),
   };
@@ -121,20 +145,26 @@ export const replaceFilters: TMergeFilters = (q, ctxq) => {
 };
 
 export const addInFilters: TMergeFilters = (q, ctxq) => {
-  if (!ctxq && !q) return null;
-  if (!ctxq) return q;
-  if (!q) return ctxq;
-
+  if (!ctxq && !q) {
+    return null;
+  } else if (!ctxq) {
+    return q;
+  } else if (!q) {
+    return ctxq;
+  }
   const merged = {
     op: 'and',
     content: ctxq.content
       .reduce((acc, ctx) => {
         const found = acc.find(a => compareTerms(a, ctx));
-        if (!found) return [...acc, ctx];
-        return [
-          ...acc.filter(y => y.content.field !== found.content.field),
-          addInValue(found, ctx),
-        ].filter(Boolean);
+        if (!found) {
+          return [...acc, ctx];
+        } else {
+          return [
+            ...acc.filter(y => y.content.field !== found.content.field),
+            addInValue(found, ctx),
+          ].filter(Boolean);
+        }
       }, q.content)
       .sort(sortFilters),
   };
@@ -158,7 +188,7 @@ const filterByWhitelist: TFilterByWhitelist = (obj, wls) =>
     (acc, k) =>
       // $FlowIgnore
       wls.includes(k) ? { ...acc, [k]: obj[k] } : acc,
-    {},
+    {}
   );
 
 export const mergeQuery: TMergeQuery = (q, c, mergeType, whitelist) => {
@@ -167,7 +197,7 @@ export const mergeQuery: TMergeQuery = (q, c, mergeType, whitelist) => {
   const wlCtx = whitelist ? filterByWhitelist(ctx, whitelist) : ctx;
 
   // Flow doesn't see that filters is always replaced and complains about ctx.filter being a string
-  const mQs: Object = {
+  const mQs: {} = {
     ...wlCtx,
     ...query,
   };
@@ -176,7 +206,7 @@ export const mergeQuery: TMergeQuery = (q, c, mergeType, whitelist) => {
     ...mQs,
     filters: mergeFns(mergeType)(
       query.filters,
-      parseFilterParam(wlCtx.filters, null),
+      parseFilterParam(wlCtx.filters, null)
     ),
   };
 };
@@ -211,27 +241,35 @@ const getDisplayValue = value => {
 };
 
 export const innerJoinFilters = (q, ctxq) => {
-  if (!ctxq && !q) return null;
-  if (!ctxq) return q;
-  if (!q) return ctxq;
+  if (!ctxq && !q) {
+    return null;
+  } else if (!ctxq) {
+    return q;
+  } else if (!q) {
+    return ctxq;
+  }
+
   const merged = {
     op: 'and',
     content: ctxq.content.reduce((acc, ctx) => {
       console.log('ctx', ctx);
       const found = acc.find(a => a.content.field === ctx.content.field);
-      if (!found) return [...acc, ctx];
-      return [
-        ...acc.filter(y => y.content.field !== found.content.field),
-        {
-          op: 'in',
-          content: {
-            field: ctx.content.field,
-            value: ctx.content.value.filter(v =>
-              found.content.value.includes(v),
-            ),
+      if (!found) {
+        return [...acc, ctx];
+      } else {
+        return [
+          ...acc.filter(y => y.content.field !== found.content.field),
+          {
+            op: 'in',
+            content: {
+              field: ctx.content.field,
+              value: ctx.content.value.filter(v =>
+                found.content.value.includes(v)
+              ),
+            },
           },
-        },
-      ].filter(Boolean);
+        ].filter(Boolean);
+      }
     }, q.content),
     // .sort(sortFilters),
   };
@@ -247,7 +285,7 @@ export const inCurrentFilters = ({ currentFilters, key, dotField }) =>
       []
         .concat(f.content.value || [])
         .map(v => getDisplayValue(v))
-        .includes(key),
+        .includes(key)
   );
 
 // true if field in
@@ -257,20 +295,19 @@ export const fieldInCurrentFilters = ({ currentFilters, field }) =>
 export const getFilterValue = ({ currentFilters, dotField }) =>
   currentFilters.find(f => f.content.field === dotField);
 
-type TMakeFilter = (
-  fields: [{ field: string, value: string }],
-) => Object | string;
+type TMakeFilter = (fields: [{ field: string; value: string[] }]) => {} | string;
 export const makeFilter: TMakeFilter = fields => {
-  if (!fields.length) return {};
+  if (!fields.length) {
+    return {};
+  }
   return {
     op: 'and',
     content: fields.map(item => {
-      const value = _.isArray(item.value) ? item.value : item.value.split(',');
       return {
         op: 'in',
         content: {
           field: item.field,
-          value,
+          value: item.value,
         },
       };
     }),
@@ -278,9 +315,13 @@ export const makeFilter: TMakeFilter = fields => {
 };
 
 export const removeFilter: TRemoveFilter = (field, query) => {
-  if (!query) return null;
-  if (!field) return query;
-  if (Object.keys(query).length === 0) return query;
+  if (!query) {
+    return null;
+  } else if (!field) {
+    return query;
+  } else if (Object.keys(query).length === 0) {
+    return query;
+  }
 
   if (!Array.isArray(query.content)) {
     const fieldFilter = typeof field === 'function' ? field : f => f === field;

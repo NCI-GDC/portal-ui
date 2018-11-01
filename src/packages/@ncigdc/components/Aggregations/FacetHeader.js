@@ -72,7 +72,7 @@ const FacetHeader = compose(
     hasValueSearch,
   }) => (
     <LocationSubscriber>
-      {(ctx: { pathname: string, query: TRawQuery }) => {
+      {(ctx: { pathname: string, query: IRawQuery }) => {
         const currentFilters =
           ctx.query && parseFilterParam((ctx.query || {}).filters, {});
         return (

@@ -11,7 +11,7 @@ import { Row } from '@ncigdc/uikit/Flex';
 import Pagination from '@ncigdc/components/Pagination';
 import { withTheme } from '@ncigdc/theme';
 import { TTheme } from '@ncigdc/theme';
-import { TGroupFilter } from '@ncigdc/utils/filters/types';
+import { IGroupFilter } from '@ncigdc/utils/filters/types';
 import TableActions from '@ncigdc/components/TableActions';
 import Table, { Tr } from '@ncigdc/uikit/Table';
 import { CreateExploreSsmSetButton } from '@ncigdc/modern_components/withSetAction';
@@ -55,7 +55,7 @@ type TProps = {
     ssmsTable_size: string,
     ssmsTable_filters: string,
   },
-  filters: TGroupFilter,
+  filters: IGroupFilter,
   parentVariables: Object,
   tableColumns: Array<string>,
   hideContext: boolean,

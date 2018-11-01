@@ -25,7 +25,7 @@ import Button from '@ncigdc/uikit/Button';
 import { ForTsvExport } from '@ncigdc/components/DownloadTableToTsvButton';
 import { createSelectColumn } from '@ncigdc/tableModels/utils';
 
-import { TGroupFilter } from '@ncigdc/utils/filters/types';
+import { IGroupFilter } from '@ncigdc/utils/filters/types';
 
 const colors = scaleOrdinal(schemeCategory10);
 
@@ -51,7 +51,7 @@ const GenesTableModel = [
       defaultFilters,
     }: {
       node: Object,
-      defaultFilters: TGroupFilter,
+      defaultFilters: IGroupFilter,
     }) => {
       return (
         <Td>

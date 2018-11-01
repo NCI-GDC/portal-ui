@@ -1,4 +1,3 @@
-// @ts-check
 import React from "react";
 
 import { connect } from "react-redux";
@@ -14,7 +13,7 @@ import { CreateRepositoryCaseSetButton } from "@ncigdc/modern_components/withSet
 import { fetchFilesAndAdd } from "@ncigdc/dux/cart";
 import { ShoppingCartIcon } from "@ncigdc/theme/icons";
 import DownloadManifestButton from "@ncigdc/components/DownloadManifestButton";
-import { TGroupFilter } from "@ncigdc/utils/filters/types";
+import { IGroupFilter } from "@ncigdc/utils/filters/types";
 import { DISPLAY_SLIDES } from "@ncigdc/utils/constants";
 import { RepositorySlideCount } from "@ncigdc/modern_components/Counts";
 import { Tooltip } from "@ncigdc/uikit/Tooltip";
@@ -45,7 +44,7 @@ export default compose(
     push,
     theme
   }: {
-    filters: TGroupFilter,
+    filters: IGroupFilter,
     totalCases: number,
     totalFiles: number,
     dispatch: Function,

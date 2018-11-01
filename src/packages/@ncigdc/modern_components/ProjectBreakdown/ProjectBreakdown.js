@@ -7,6 +7,7 @@ import { viewerQuery } from '@ncigdc/routes/queries';
 import { makeFilter, addInFilters } from '@ncigdc/utils/filters';
 import Toggle from '@ncigdc/uikit/Toggle';
 import ExploreLink from '@ncigdc/components/Links/ExploreLink';
+import ExploreSSMLink from '@ncigdc/components/Links/ExploreSSMLink';
 
 const createRenderer = (Route, Container) => (props: mixed) => (
   <Relay.Renderer
@@ -110,19 +111,15 @@ const Component = ({ viewer: { explore: { cases = {} } }, filters, relay }) => {
         .map(([k, v]) => (
           <div key={k}>
             <span>{k}: </span>
-            <ExploreLink
-              query={{
-                searchTableTab: 'cases',
-                filters: addInFilters(
-                  filters,
-                  makeFilter([
-                    { field: 'cases.project.project_id', value: [k] },
-                  ]),
-                ),
-              }}
+            <ExploreSSMLink
+              searchTableTab={'cases'}
+              filters={addInFilters(
+                filters,
+                makeFilter([{ field: 'cases.project.project_id', value: [k] }]),
+              )}
             >
               {v}
-            </ExploreLink>
+            </ExploreSSMLink>
             <span> / </span>
             <ExploreLink
               query={{

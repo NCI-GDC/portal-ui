@@ -18,6 +18,7 @@ import GreyBox from '@ncigdc/uikit/GreyBox';
 import MutationsCount from '@ncigdc/components/MutationsCount';
 import timestamp from '@ncigdc/utils/timestamp';
 import CollapsibleList from '@ncigdc/uikit/CollapsibleList';
+import ExploreSSMLink from '@ncigdc/components/Links/ExploreSSMLink';
 
 const paginationPrefix = 'canDistTable';
 
@@ -172,14 +173,12 @@ export default compose(
           site: <CollapsibleRowList data={row.site} label={'Primary Sites'} />,
           num_affected_cases: (
             <span>
-              <ExploreLink
-                query={{
-                  searchTableTab: 'cases',
-                  filters: replaceFilters(projectFilter, filters),
-                }}
+              <ExploreSSMLink
+                searchTableTab={'cases'}
+                filters={replaceFilters(projectFilter, filters)}
               >
                 {row.num_affected_cases}
-              </ExploreLink>
+              </ExploreSSMLink>
               <span> / </span>
               <ExploreLink
                 query={{

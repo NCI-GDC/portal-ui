@@ -125,9 +125,10 @@ const GenesTableModel = [
         op: 'and',
         content: [
           {
-            op: 'exists',
+            op: 'NOT',
             content: {
               field: 'ssms.ssm_id',
+              value: 'MISSING',
             },
           },
           {

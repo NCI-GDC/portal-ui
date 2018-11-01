@@ -3,6 +3,7 @@ import { isNumber, uniq } from 'lodash';
 declare var d3: Object; // requires d3 v3
 
 const padding = { left: 100, right: 300, top: 60, bottom: 30 };
+const languageLabelAdjust = 25;
 
 export default function(params) {
   const defaultDuration = params.duration || 1000;
@@ -43,7 +44,11 @@ export default function(params) {
     .append('g')
     .attr(
       'transform',
-      'translate(' + (padding.left + 25) + ',' + padding.top + ')',
+      'translate(' +
+        (padding.left + languageLabelAdjust) +
+        ',' +
+        padding.top +
+        ')',
     );
 
   var languagesGroup = svg.append('g').attr('id', 'languages');
@@ -269,8 +274,8 @@ export default function(params) {
 
     languageLabel
       .append('rect')
-      .attr('x', -padding.left - 25)
-      .attr('width', padding.left + 25)
+      .attr('x', -padding.left - languageLabelAdjust)
+      .attr('width', padding.left + languageLabelAdjust)
       .attr('y', -9)
       .attr('height', 16);
 

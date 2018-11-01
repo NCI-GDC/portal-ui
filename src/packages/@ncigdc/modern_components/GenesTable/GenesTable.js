@@ -37,7 +37,7 @@ export default compose(
     }
   ),
   withSize(),
-  connect(state => ({ tableColumns: state.tableColumns.genes.ids }))
+  connect(state => ({ tableColumns: state.tableColumns.genes }))
 )(
   ({
     genesTableViewer: { explore } = {},
@@ -67,14 +67,18 @@ export default compose(
 
     const data = !genes ? [] : genes.hits.edges;
     const totalGenes = !genes ? 0 : genes.hits.total;
-
+    console.log('tableColumns', tableColumns);
     const tableInfo = tableModel
       .slice()
-      .sort((a, b) => tableColumns.indexOf(a.id) - tableColumns.indexOf(b.id))
-      .filter(x => tableColumns.includes(x.id));
-    // console.log('state', tableColumns);
+      .sort(
+        (a, b) =>
+          Object.keys(tableColumns).indexOf(a.id) -
+          Object.keys(tableColumns).indexOf(b.id)
+      )
+      .filter((x, i) => tableColumns[i][x.id]);
+    console.log('state', tableColumns);
     // console.log('tableColumns', tableColumns);
-    // console.log('tableInfo', tableInfo);
+    console.log('tableInfo', tableInfo);
     return (
       <span>
         <Row

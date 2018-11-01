@@ -18,10 +18,14 @@ const SortRow = styled(Row, {
   },
 });
 
-function updateColumns({ tableColumns: { order }, entityType }) {
+function updateColumns({ tableColumns, entityType }) {
   return tableModels[entityType]
     .slice()
-    .sort((a, b) => order.indexOf(a.id) - order.indexOf(b.id));
+    .sort(
+      (a, b) =>
+        Object.keys(tableColumns).indexOf(a.id) -
+        Object.keys(tableColumns).indexOf(b.id)
+    );
 }
 
 const ArrangeColumns = compose(
@@ -42,9 +46,9 @@ const ArrangeColumns = compose(
   pure
 )(({ dispatch, tableColumns, setState, state, searchTerm, entityType }) => {
   const columns = state.columns.filter(column => !column.subHeading);
+
   return (
     <div className="test-arrange-columns">
-      {console.log('columns', columns)}
       {columns.map((column, i) => (
         <SortableItem
           className="test-column"
@@ -55,7 +59,7 @@ const ArrangeColumns = compose(
                 const nextColumnIds = state.items.reduce(
                   (acc, x) => [
                     ...acc,
-                    ...(tableColumns.ids.includes(x.id)
+                    ...(tableColumns[i][x.id]
                       ? [
                           x.id,
                           ...tableModels[entityType]
@@ -69,12 +73,17 @@ const ArrangeColumns = compose(
                 dispatch(
                   setColumns({
                     entityType,
-                    ids: nextColumnIds,
-                    order: state.items.map(c => c.id),
+                    order: state.items.map(c => ({ [c.id]: !c.hidden })),
                   })
                 );
               }
-              return { columns, ...nextState };
+              const newColumns = columns.sort(
+                (a, b) =>
+                  Object.keys(state.items).indexOf(a.id) -
+                  Object.keys(state.items).indexOf(b.id)
+              );
+              console.log('newColumn', newColumns);
+              return { columns: newColumns, ...nextState };
             })}
           draggingIndex={state.draggingIndex}
           items={columns}
@@ -93,7 +102,7 @@ const ArrangeColumns = compose(
               onClick={() => {
                 if (column.subHeadingIds) {
                   column.subHeadingIds.forEach((id, j) =>
-                    dispatch(toggleColumn({ entityType, id, index: i + j }))
+                    dispatch(toggleColumn({ entityType, id, i }))
                   );
                 }
 
@@ -102,22 +111,18 @@ const ArrangeColumns = compose(
                   x => x.subHeadingIds
                 );
                 // find current index of subheading columm
-                const subHeadingColIndex = !subHeadingCol
-                  ? -1
-                  : tableColumns.ids.indexOf(subHeadingCol.id);
+                const subHeadingColIndex = subHeadingCol
+                  ? tableColumns.ids.indexOf(subHeadingCol.id)
+                  : -1;
                 // figure out whether to put before or after column with subheadings
                 const afterSubheadingCol =
                   subHeadingColIndex !== -1 && subHeadingColIndex < i;
-
                 dispatch(
                   toggleColumn({
                     entityType,
                     id: column.id,
+                    index: i,
                     // if after subheading col include number of subheadings to place inbetween
-                    index:
-                      afterSubheadingCol && !column.subHeadingIds
-                        ? i + subHeadingCol.subHeadingIds.length
-                        : i,
                   })
                 );
               }}
@@ -127,7 +132,7 @@ const ArrangeColumns = compose(
                 style={{ pointerEvents: 'none' }}
                 aria-label={column.name}
                 type="checkbox"
-                checked={tableColumns.ids.includes(column.id)}
+                checked={!!tableColumns[i][column.id]}
               />
               <span style={{ marginLeft: '0.3rem' }}>{column.name}</span>
             </Row>

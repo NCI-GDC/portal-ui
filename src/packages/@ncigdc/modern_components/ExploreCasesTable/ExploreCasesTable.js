@@ -30,12 +30,12 @@ export default compose(
       };
       const ssmCounts = buckets.reduce(
         (acc, b) => ({ ...acc, [b.key]: b.doc_count }),
-        {},
+        {}
       );
       return { ssmCounts };
-    },
+    }
   ),
-  connect(state => ({ tableColumns: state.tableColumns.exploreCases.ids })),
+  connect(state => ({ tableColumns: state.tableColumns.exploreCases.ids }))
 )(
   ({
     exploreCasesTableViewer: { explore } = {},
@@ -62,6 +62,7 @@ export default compose(
       .slice()
       .sort((a, b) => tableColumns.indexOf(a.id) - tableColumns.indexOf(b.id))
       .filter(x => tableColumns.includes(x.id));
+    console.log('tableInfo', tableInfo);
 
     return (
       <div>
@@ -160,5 +161,5 @@ export default compose(
         />
       </div>
     );
-  },
+  }
 );

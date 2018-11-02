@@ -6,6 +6,7 @@ import { replaceFilters } from '@ncigdc/utils/filters';
 const ExploreSSMLink = ({ children, filters, searchTableTab }) => {
   return (
     <Link
+      merge
       pathname={'/exploration'}
       query={{
         searchTableTab,

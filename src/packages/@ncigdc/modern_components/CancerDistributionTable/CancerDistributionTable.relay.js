@@ -52,12 +52,13 @@ export default (Component: ReactClass<*>) =>
                     value: 'MISSING',
                   },
                 },
+                {
+                  op: 'in',
+                  content: ssmAvailableVariationDataFilter,
+                },
               ],
             },
-            replaceFilters(
-              makeFilter([ssmAvailableVariationDataFilter]),
-              filters,
-            ),
+            filters,
           ),
           ssmCountsFilters: replaceFilters(
             makeFilter([ssmAvailableVariationDataFilter]),

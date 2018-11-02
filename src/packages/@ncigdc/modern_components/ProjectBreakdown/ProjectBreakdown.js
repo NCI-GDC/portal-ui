@@ -159,14 +159,9 @@ export default ({ caseTotal, gdcCaseTotal, filters }: TProps = {}) => (
   <Toggle
     title={
       <span key="total">
-        <ExploreLink
-          query={{
-            searchTableTab: 'cases',
-            filters,
-          }}
-        >
+        <ExploreSSMLink searchTableTab={'cases'} filters={filters}>
           {caseTotal.toLocaleString()}
-        </ExploreLink>
+        </ExploreSSMLink>
         <span> / </span>
         <ExploreLink
           query={{

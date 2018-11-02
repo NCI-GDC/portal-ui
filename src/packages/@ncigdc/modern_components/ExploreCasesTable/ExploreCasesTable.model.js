@@ -233,14 +233,17 @@ const casesTableModel = [
         </Tooltip>
       </ThNum>
     ),
-    td: ({ node }) => (
+    td: ({ node, filters }) => (
       <Td style={{ textAlign: 'right' }}>
         {node.score > 0 ? (
           <ExploreSSMLink
             searchTableTab={'genes'}
-            filters={makeFilter(
-              [{ field: 'cases.case_id', value: [node.case_id] }],
-              false,
+            filters={replaceFilters(
+              makeFilter(
+                [{ field: 'cases.case_id', value: [node.case_id] }],
+                false,
+              ),
+              filters,
             )}
           >
             {(node.score || 0).toLocaleString()}

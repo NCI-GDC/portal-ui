@@ -1,17 +1,21 @@
-import _ from 'lodash';
+import { isArray, isEqual, uniqWith } from 'lodash';
 import { parseFilterParam } from '../uri';
 import {
+  IGroupFilter,
   IValueFilter,
   TCombineValues,
   TFilterByWhitelist,
+  TFilterOperation,
+  TFilterValue,
   TMergeFilters,
+  TMergeFiltersNullable,
   TMergeFns,
   TMergeQuery,
   TRemoveFilter,
   TSortFilters,
 } from './types';
 
-function compareTerms(a: IValueFilter, b: IValueFilter) {
+function compareTerms(a: IValueFilter, b: IValueFilter): boolean {
   return (
     a.content.field === b.content.field &&
     a.op.toLowerCase() === b.op.toLowerCase()
@@ -28,9 +32,12 @@ const sortFilters: TSortFilters = (a, b) => {
   }
 };
 
-export const combineValues: TCombineValues = (x, y) => {
-  const xValue = ([] as string[]).concat(x.content.value || []);
-  const yValue = ([] as string[]).concat(y.content.value || []);
+const combineValues = (x: TFilterValue, y: TFilterValue): TFilterValue =>
+  uniqWith([...x, ...y], isEqual);
+
+const combineFilterValues: TCombineValues = (x, y) => {
+  const xValue = ([] as TFilterValue).concat(x.content.value || []);
+  const yValue = ([] as TFilterValue).concat(y.content.value || []);
 
   if (xValue.length === 0 && yValue.length === 0) {
     return null;
@@ -44,133 +51,87 @@ export const combineValues: TCombineValues = (x, y) => {
     op: 'in',
     content: {
       field: x.content.field,
-      value: xValue
-        .reduce((acc, v) => {
-          if (acc.includes(v)) {
-            return acc.filter(f => f !== v);
-          } else {
-            return [...acc, v];
-          }
-        }, yValue)
-        .sort(),
+      value: combineValues(xValue, yValue).sort(),
     },
   };
 
   return merged.content.value.length ? merged : null;
 };
 
-export const addInValue: TCombineValues = (x, y) => {
-  const xValue = ([] as string[]).concat(x.content.value || []);
-  const yValue = ([] as string[]).concat(y.content.value || []);
+const toggle: TMergeFilters = (x, y) => ({
+  op: 'and',
+  content: y.content
+    .reduce((acc, ctx) => {
+      const found = acc.find(a => compareTerms(a, ctx));
+      if (!found) {
+        return [...acc, ctx];
+      }
+      return [
+        ...acc.filter(f => f.content.field !== found.content.field),
+        // combineFilterValues(found, ctx),
+      ].filter(Boolean);
+    }, x.content)
+    .sort(sortFilters),
+});
 
-  if (xValue.length === 0 && yValue.length === 0) {
+const replace: TMergeFilters = (x, y) => ({
+  op: 'and',
+  content: y.content
+    .reduce((acc, ctx) => {
+      const found = acc.find(a => compareTerms(a, ctx));
+      if (!found) {
+        return [...acc, ctx];
+      }
+      return acc;
+    }, x.content)
+    .sort(sortFilters),
+});
+
+const addIn: TMergeFilters = (x, y) => ({
+  op: 'and',
+  content: y.content
+    .reduce((acc, ctx) => {
+      const found = acc.find(a => compareTerms(a, ctx));
+      if (!found) {
+        return [...acc, ctx];
+      }
+      return [
+        ...acc.filter(f => f.content.field !== found.content.field),
+        combineFilterValues(found, ctx),
+      ].filter(Boolean);
+    }, x.content)
+    .sort(sortFilters),
+});
+
+const filterNoContent = (f: IGroupFilter) => (f.content.length ? f : null);
+
+const filterOperation: TFilterOperation = (t, x, y) => {
+  if (!x && !y) {
     return null;
-  } else if (xValue.length === 0) {
-    return y;
-  } else if (yValue.length === 0) {
+  } else if (!y) {
     return x;
+  } else if (!x) {
+    return y;
   }
-  const merged = {
-    op: 'in',
-    content: {
-      field: x.content.field,
-      value: xValue
-        .reduce((acc, v) => {
-          if (acc.includes(v)) {
-            return acc;
-          } else {
-            return [...acc, v];
-          }
-        }, yValue)
-        .sort(),
-    },
-  };
 
-  return merged.content.value.length ? merged : null;
-};
-
-export const toggleFilters: TMergeFilters = (q, ctxq) => {
-  if (!ctxq && !q) {
-    return null;
-  } else if (!ctxq) {
-    return q;
-  } else if (!q) {
-    return ctxq;
-  } else {
-    const merged = {
-      op: 'and',
-      content: ctxq.content
-        .reduce((acc, ctx) => {
-          const found = acc.find(a => compareTerms(a, ctx));
-          if (!found) {
-            return [...acc, ctx];
-          } else {
-            return [
-              ...acc.filter(y => y.content.field !== found.content.field),
-              combineValues(found, ctx),
-            ].filter(Boolean);
-          }
-        }, q.content)
-        .sort(sortFilters),
-    };
-
-    return merged.content.length ? merged : null;
+  switch (t) {
+    case 'toggle':
+      return filterNoContent(toggle(x, y));
+    case 'replace':
+      return filterNoContent(replace(x, y));
+    case 'add':
+      return filterNoContent(addIn(x, y));
+    default:
+      return null;
   }
 };
 
-export const replaceFilters: TMergeFilters = (q, ctxq) => {
-  if (!ctxq && !q) {
-    return null;
-  } else if (!ctxq) {
-    return q;
-  } else if (!q) {
-    return ctxq;
-  }
-
-  const merged = {
-    op: 'and',
-    content: ctxq.content
-      .reduce((acc, ctx) => {
-        const found = acc.find(a => compareTerms(a, ctx));
-        if (!found) {
-          return [...acc, ctx];
-        } else {
-          return acc;
-        }
-      }, q.content)
-      .sort(sortFilters),
-  };
-
-  return merged.content.length ? merged : null;
-};
-
-export const addInFilters: TMergeFilters = (q, ctxq) => {
-  if (!ctxq && !q) {
-    return null;
-  } else if (!ctxq) {
-    return q;
-  } else if (!q) {
-    return ctxq;
-  }
-  const merged = {
-    op: 'and',
-    content: ctxq.content
-      .reduce((acc, ctx) => {
-        const found = acc.find(a => compareTerms(a, ctx));
-        if (!found) {
-          return [...acc, ctx];
-        } else {
-          return [
-            ...acc.filter(y => y.content.field !== found.content.field),
-            addInValue(found, ctx),
-          ].filter(Boolean);
-        }
-      }, q.content)
-      .sort(sortFilters),
-  };
-
-  return merged.content.length ? merged : null;
-};
+export const toggleFilters: TMergeFiltersNullable = (x, y) =>
+  filterOperation('toggle', x, y);
+export const replaceFilters: TMergeFiltersNullable = (x, y) =>
+  filterOperation('replace', x, y);
+export const addInFilters: TMergeFiltersNullable = (x, y) =>
+  filterOperation('add', x, y);
 
 const mergeFns: TMergeFns = v => {
   switch (v) {
@@ -197,7 +158,7 @@ export const mergeQuery: TMergeQuery = (q, c, mergeType, whitelist) => {
   const wlCtx = whitelist ? filterByWhitelist(ctx, whitelist) : ctx;
 
   // Flow doesn't see that filters is always replaced and complains about ctx.filter being a string
-  const mQs: {} = {
+  const mQs: Object = {
     ...wlCtx,
     ...query,
   };
@@ -241,35 +202,27 @@ const getDisplayValue = value => {
 };
 
 export const innerJoinFilters = (q, ctxq) => {
-  if (!ctxq && !q) {
-    return null;
-  } else if (!ctxq) {
-    return q;
-  } else if (!q) {
-    return ctxq;
-  }
-
+  if (!ctxq && !q) return null;
+  if (!ctxq) return q;
+  if (!q) return ctxq;
   const merged = {
     op: 'and',
     content: ctxq.content.reduce((acc, ctx) => {
       console.log('ctx', ctx);
       const found = acc.find(a => a.content.field === ctx.content.field);
-      if (!found) {
-        return [...acc, ctx];
-      } else {
-        return [
-          ...acc.filter(y => y.content.field !== found.content.field),
-          {
-            op: 'in',
-            content: {
-              field: ctx.content.field,
-              value: ctx.content.value.filter(v =>
-                found.content.value.includes(v)
-              ),
-            },
+      if (!found) return [...acc, ctx];
+      return [
+        ...acc.filter(y => y.content.field !== found.content.field),
+        {
+          op: 'in',
+          content: {
+            field: ctx.content.field,
+            value: ctx.content.value.filter(v =>
+              found.content.value.includes(v)
+            ),
           },
-        ].filter(Boolean);
-      }
+        },
+      ].filter(Boolean);
     }, q.content),
     // .sort(sortFilters),
   };
@@ -295,33 +248,33 @@ export const fieldInCurrentFilters = ({ currentFilters, field }) =>
 export const getFilterValue = ({ currentFilters, dotField }) =>
   currentFilters.find(f => f.content.field === dotField);
 
-type TMakeFilter = (fields: [{ field: string; value: string[] }]) => {} | string;
+type TMakeFilter = (
+  fields: Array<{ field: string; value: string }>
+) => IGroupFilter | {};
 export const makeFilter: TMakeFilter = fields => {
   if (!fields.length) {
     return {};
+  } else {
+    return {
+      op: 'and',
+      content: fields.map(item => {
+        const value = isArray(item.value) ? item.value : item.value.split(',');
+        return {
+          op: 'in',
+          content: {
+            field: item.field,
+            value,
+          },
+        };
+      }),
+    };
   }
-  return {
-    op: 'and',
-    content: fields.map(item => {
-      return {
-        op: 'in',
-        content: {
-          field: item.field,
-          value: item.value,
-        },
-      };
-    }),
-  };
 };
 
 export const removeFilter: TRemoveFilter = (field, query) => {
-  if (!query) {
-    return null;
-  } else if (!field) {
-    return query;
-  } else if (Object.keys(query).length === 0) {
-    return query;
-  }
+  if (!query) return null;
+  if (!field) return query;
+  if (Object.keys(query).length === 0) return query;
 
   if (!Array.isArray(query.content)) {
     const fieldFilter = typeof field === 'function' ? field : f => f === field;

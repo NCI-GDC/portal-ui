@@ -47,8 +47,8 @@ const CollapsibleRowList: React.ComponentType<{ data: Array<{}> }> = props => {
 };
 
 interface IBucket {
-  doc_count: number,
-  key: string
+  doc_count: number;
+  key: string;
 }
 interface ICancerDistributionTableProps {
   viewer: {
@@ -56,18 +56,18 @@ interface ICancerDistributionTableProps {
       cases: {
         filtered: {
           project__project_id: {
-            buckets: IBucket[]
-          }
-        }
-      },
+            buckets: IBucket[];
+          };
+        };
+      };
       ssms: {
         aggregations: {
           occurrence__case__project__project_id: {
-            buckets: IBucket[]
-          }
-        }
-      }
-    }
+            buckets: IBucket[];
+          };
+        };
+      };
+    };
   };
   projectsViewer: {};
   geneId: number;
@@ -76,7 +76,29 @@ interface ICancerDistributionTableProps {
   tableType: string;
 }
 
-export default compose<ICancerDistributionTableProps, ICancerDistributionTableProps>(
+type TRawData = Array<{
+  project_id: string;
+  disease_type?: any;
+  site?: any;
+  num_affected_cases?: any;
+  num_affected_cases_total?: any;
+  num_affected_cases_percent?: any;
+  num_cnv_gain?: any;
+  num_cnv_gain_percent?: any;
+  num_cnv_loss?: any;
+  num_cnv_loss_percent?: any;
+  num_cnv_cases_total?: any;
+}>
+
+interface ICDTWrappedProps extends ICancerDistributionTableProps {
+  cases: {};
+  rawData: TRawData;
+  cancerDistData: Array<{ rawData: TRawData, cancerDistData: any }>;
+  tableSort: any;
+  setTableSort: any;
+}
+
+export default compose<ICDTWrappedProps, ICancerDistributionTableProps>(
   withPropsOnChange(
     ['viewer', 'projectsViewer'],
     ({
@@ -90,7 +112,10 @@ export default compose<ICancerDistributionTableProps, ICancerDistributionTablePr
       const ssmCounts = (aggregations || {
         occurrence__case__project__project_id: { buckets: [] },
       }).occurrence__case__project__project_id.buckets.reduce(
-        (acc: {[key: string]: number}, b: IBucket) => ({ ...acc, [b.key]: b.doc_count }),
+        (acc: { [key: string]: number }, b: IBucket) => ({
+          ...acc,
+          [b.key]: b.doc_count,
+        }),
         {}
       );
 
@@ -98,11 +123,14 @@ export default compose<ICancerDistributionTableProps, ICancerDistributionTablePr
         (projects.hits || { edges: [] }).edges,
         e => e.node.project_id
       );
+
       let caseFiltered = {};
+
       const fields = ['filtered', 'total'];
       if (tableType !== 'ssm') {
         fields.push('cnvGain', 'cnvLoss', 'cnvTotal');
       }
+
       fields.map(type =>
         cases[type].project__project_id.buckets.map(
           (b: IBucket) =>
@@ -115,7 +143,7 @@ export default compose<ICancerDistributionTableProps, ICancerDistributionTablePr
             })
         )
       );
-      const rawData = Object.keys(caseFiltered)
+      const rawData: TRawData = Object.keys(caseFiltered)
         .filter(b => head(projectsById[b]))
         .map(b => {
           const project = head(projectsById[b]);
@@ -147,11 +175,11 @@ export default compose<ICancerDistributionTableProps, ICancerDistributionTablePr
         const projectFilter = makeFilter([
           {
             field: 'cases.project.project_id',
-            value: [row.project_id],
+            value: row.project_id,
           },
           {
             field: 'cases.available_variation_data',
-            value: ['ssm'],
+            value: 'ssm',
           },
         ]);
         // const cnvProjectFilter = makeFilter([
@@ -292,29 +320,27 @@ export default compose<ICancerDistributionTableProps, ICancerDistributionTablePr
   ),
   withState('tableSort', 'setTableSort', {})
 )(
-  (
-    {
-      entityName,
-      geneId,
-      cases,
-      filters,
-      rawData,
-      cancerDistData,
-      tableType,
-      tableSort,
-      setTableSort,
-    } = {}
-  ) => {
-    const sortButton = (type, tableSort) => {
-      if (tableSort[type] === 'up') {
+  ({
+    entityName,
+    geneId,
+    cases,
+    filters,
+    rawData,
+    cancerDistData,
+    tableType,
+    tableSort,
+    setTableSort,
+  }) => {
+    const sortButton = (type: string, sort: {key: string, type: string}) => {
+      if (sort[type] === 'up') {
         setTableSort({ [type]: 'down' });
-      } else if (tableSort[type] === 'down') {
+      } else if (sort[type] === 'down') {
         setTableSort({ [type]: '' });
       } else {
         setTableSort({ [type]: 'up' });
       }
     };
-    const arrowIcon = value => {
+    const arrowIcon = (value: string) => {
       if (value === 'up') {
         return <ArrowUpIcon />;
       } else if (value === 'down') {
@@ -363,7 +389,7 @@ export default compose<ICancerDistributionTableProps, ICancerDistributionTablePr
                     style={tableToolTipHint()}
                   >
                     # CNV Gains
-                    {arrowIcon(tableSort['cnv_gain'])}
+                    {arrowIcon(tableSort.cnv_gain)}
                   </Tooltip>
                 </Row>
               ),
@@ -384,7 +410,7 @@ export default compose<ICancerDistributionTableProps, ICancerDistributionTablePr
                     style={tableToolTipHint()}
                   >
                     # CNV Losses
-                    {arrowIcon(tableSort['cnv_loss'])}
+                    {arrowIcon(tableSort.cnv_loss)}
                   </Tooltip>
                 </Row>
               ),
@@ -451,7 +477,7 @@ export default compose<ICancerDistributionTableProps, ICancerDistributionTablePr
                       style={tableToolTipHint()}
                     >
                       # SSM Affected Cases
-                      {arrowIcon(tableSort['freq'])}
+                      {arrowIcon(tableSort.freq)}
                     </Tooltip>
                   </Row>
                 ),

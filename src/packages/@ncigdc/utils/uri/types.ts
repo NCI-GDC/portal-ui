@@ -1,12 +1,12 @@
 import { IGroupFilter } from '../filters/types';
 
 export interface IRawQuery {
-  filters?: string,
-};
+  filters?: string;
+}
 
 export interface IUriQuery {
-  filters?: IGroupFilter | null,
-};
+  filters?: IGroupFilter | null;
+}
 
 export type TParseIntParam = (s: any, d?: number | null) => number | null;
 

@@ -21,6 +21,7 @@ import CosmicIcon from '@ncigdc/theme/icons/Cosmic';
 import Hidden from '@ncigdc/components/Hidden';
 import { getSurvivalCurves } from '@ncigdc/utils/survivalplot';
 import Button from '@ncigdc/uikit/Button';
+import ExploreSSMLink from '@ncigdc/components/Links/ExploreSSMLink';
 
 import { ForTsvExport } from '@ncigdc/components/DownloadTableToTsvButton';
 import { createSelectColumn } from '@ncigdc/tableModels/utils';
@@ -123,18 +124,26 @@ const GenesTableModel = [
     td: ({ node, query, defaultFilters, filteredCases }) => (
       <Td>
         <span>
-          <ExploreLink
-            merge
-            query={{
-              searchTableTab: 'cases',
-              filters: replaceFilters(
-                makeFilter([{ field: 'genes.gene_id', value: [node.gene_id] }]),
-                query.genesTable_filters || defaultFilters,
-              ),
-            }}
+          <ExploreSSMLink
+            searchTableTab={'cases'}
+            filters={replaceFilters(
+              {
+                op: 'and',
+                content: [
+                  {
+                    op: 'in',
+                    content: {
+                      field: 'genes.gene_id',
+                      value: [node.gene_id],
+                    },
+                  },
+                ],
+              },
+              query.genesTable_filters || defaultFilters,
+            )}
           >
             {(node.numCases || 0).toLocaleString()}
-          </ExploreLink>
+          </ExploreSSMLink>
           <span> / </span>
           <ExploreLink
             query={{

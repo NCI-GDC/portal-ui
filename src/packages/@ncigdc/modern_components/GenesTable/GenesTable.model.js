@@ -125,6 +125,7 @@ const GenesTableModel = [
       <Td>
         <span>
           <ExploreSSMLink
+            merge
             searchTableTab={'cases'}
             filters={replaceFilters(
               {

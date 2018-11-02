@@ -19,13 +19,11 @@ const SortRow = styled(Row, {
 });
 
 function updateColumns({ tableColumns, entityType }) {
-  return tableModels[entityType]
-    .slice()
-    .sort(
-      (a, b) =>
-        Object.keys(tableColumns).indexOf(a.id) -
-        Object.keys(tableColumns).indexOf(b.id)
-    );
+  return tableColumns;
+  // const columns = (tableColumns || []).map(c => Object.keys(c)[0]);
+  // return tableModels[entityType]
+  //   .slice()
+  //   .sort((a, b) => columns.indexOf(a.id) - columns.indexOf(b.id));
 }
 
 const ArrangeColumns = compose(
@@ -45,48 +43,29 @@ const ArrangeColumns = compose(
   }),
   pure
 )(({ dispatch, tableColumns, setState, state, searchTerm, entityType }) => {
-  const columns = state.columns.filter(column => !column.subHeading);
+  console.log('state', state.items, tableColumns);
 
   return (
     <div className="test-arrange-columns">
-      {columns.map((column, i) => (
+      {tableColumns.map((column, i) => (
         <SortableItem
           className="test-column"
           key={column.id}
           updateState={nextState =>
             setState(state => {
               if (!nextState.items && state.items) {
-                const nextColumnIds = state.items.reduce(
-                  (acc, x) => [
-                    ...acc,
-                    ...(tableColumns[i][x.id]
-                      ? [
-                          x.id,
-                          ...tableModels[entityType]
-                            .filter(c => c.parent === x.id)
-                            .map(c => c.id),
-                        ]
-                      : []),
-                  ],
-                  []
-                );
                 dispatch(
                   setColumns({
                     entityType,
-                    order: state.items.map(c => ({ [c.id]: !c.hidden })),
+                    order: state.items,
                   })
                 );
               }
-              const newColumns = columns.sort(
-                (a, b) =>
-                  Object.keys(state.items).indexOf(a.id) -
-                  Object.keys(state.items).indexOf(b.id)
-              );
-              console.log('newColumn', newColumns);
-              return { columns: newColumns, ...nextState };
+              console.log('orderColumns', nextState.items);
+              return { tableColumns, ...nextState };
             })}
           draggingIndex={state.draggingIndex}
-          items={columns}
+          items={tableColumns}
           sortId={i}
           outline="list"
         >
@@ -132,7 +111,7 @@ const ArrangeColumns = compose(
                 style={{ pointerEvents: 'none' }}
                 aria-label={column.name}
                 type="checkbox"
-                checked={!!tableColumns[i][column.id]}
+                checked={!tableColumns[i].hidden}
               />
               <span style={{ marginLeft: '0.3rem' }}>{column.name}</span>
             </Row>

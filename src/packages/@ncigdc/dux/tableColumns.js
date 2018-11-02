@@ -23,9 +23,9 @@ const restoreColumns = entityType => ({
   payload: { entityType },
 });
 
-const setColumns = payload => ({
+const setColumns = ({ entityType, order }) => ({
   type: tableColumns.SET,
-  payload,
+  payload: { entityType, order },
 });
 
 // Store ids of table items that are not hidden by default
@@ -34,7 +34,7 @@ const setColumns = payload => ({
 const initialState = Object.keys(tableModels).reduce(
   (acc, key) => ({
     ...acc,
-    [key]: tableModels[key].map(c => ({ [c.id]: !c.hidden })),
+    [key]: tableModels[key],
     // ids: tableModels[key].reduce(reduceColumns, []),
   }),
   { version: 2 }
@@ -44,7 +44,6 @@ const reducer = (state = initialState, action) => {
   switch (action.type) {
     case REHYDRATE: {
       const { version, ...tableColumns } = action.payload.tableColumns || {};
-
       if (version !== state.version) {
         return state;
       }
@@ -53,31 +52,16 @@ const reducer = (state = initialState, action) => {
         ...Object.entries(
           tableColumns || {}
         ).reduce((acc, [key, val]: [string, any]) => {
-          const order = Array.isArray(val) ? state[key] : val.order;
-          const newColumns = state[key].filter(c => !order.includes(c));
+          const order = Array.isArray(val) ? state[key] : val;
 
-          const ids = newColumns
-            .filter(id => {
-              if (!state[key].order[id]) return false;
-              const column = tableModels[key].find(c => c.id === id);
-              if (column.subHeading) {
-                const parent = tableModels[key].find(
-                  c => c.id === column.parent
-                );
-                if (parent) {
-                  return (
-                    state[key].order[parent.id] &&
-                    newColumns.includes(parent.id)
-                  );
-                }
-              }
-              return true;
-            })
-            .concat(Array.isArray(val) ? val : val.ids);
+          if (key === 'genes') {
+            console.log('val', val);
+            console.log('val2', state[key]);
+          }
 
           return {
             ...acc,
-            [key]: [...newColumns, ...order],
+            [key]: order,
           };
         }, {}),
       };
@@ -86,33 +70,12 @@ const reducer = (state = initialState, action) => {
     case tableColumns.TOGGLE_COLUMN: {
       const { entityType, id, index } = action.payload;
       const tableInfo = state[entityType];
+      tableInfo[index].hidden = !tableInfo[index].hidden;
+      console.log('tableIfor', tableInfo);
       return {
         ...state,
-        [entityType]: [
-          ...tableInfo.slice(0, index),
-          { [id]: !tableInfo[index][id] },
-          ...tableInfo.slice(index + 1, Infinity),
-        ],
+        [entityType]: tableInfo,
       };
-      // return state[entityType].find(x => x[id] === id && x.va)
-      //   ? {
-      //       ...state,
-      //       [entityType]: {
-      //         ...state[entityType],
-      //         ids: state[entityType].ids.filter(x => x !== id),
-      //       },
-      //     }
-      //   : {
-      //       ...state,
-      //       [entityType]: {
-      //         ...state[entityType],
-      //         ids: [
-      //           ...state[entityType].ids.slice(0, index),
-      //           id,
-      //           ...state[entityType].ids.slice(index, Infinity),
-      //         ],
-      //       },
-      //     };
     }
 
     case tableColumns.RESTORE: {
@@ -125,8 +88,6 @@ const reducer = (state = initialState, action) => {
 
     case tableColumns.SET: {
       const { entityType, order } = action.payload;
-      console.log('order', order);
-
       return { ...state, [entityType]: order };
     }
 

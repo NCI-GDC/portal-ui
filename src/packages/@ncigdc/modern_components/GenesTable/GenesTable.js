@@ -19,6 +19,10 @@ import { theme } from '@ncigdc/theme';
 import withSelectIds from '@ncigdc/utils/withSelectIds';
 
 export default compose(
+  connect(state => {
+    console.log('connect', state.tableColumns.genes);
+    return { tableColumns: state.tableColumns.genes };
+  }),
   withRouter,
   withState('survivalLoadingId', 'setSurvivalLoadingId', ''),
   withState('ssmCountsLoading', 'setSsmCountsLoading', true),
@@ -36,8 +40,10 @@ export default compose(
       return { ssmCounts };
     }
   ),
-  withSize(),
-  connect(state => ({ tableColumns: state.tableColumns.genes }))
+  withPropsOnChange(['tableColumns'], ({ tableColumns }) =>
+    console.log('connect1', tableColumns)
+  ),
+  withSize()
 )(
   ({
     genesTableViewer: { explore } = {},
@@ -64,21 +70,11 @@ export default compose(
     if (genes && !genes.hits.edges.length) {
       return <Row style={{ padding: '1rem' }}>No gene data found.</Row>;
     }
-
     const data = !genes ? [] : genes.hits.edges;
     const totalGenes = !genes ? 0 : genes.hits.total;
-    console.log('tableColumns', tableColumns);
-    const tableInfo = tableModel
-      .slice()
-      .sort(
-        (a, b) =>
-          Object.keys(tableColumns).indexOf(a.id) -
-          Object.keys(tableColumns).indexOf(b.id)
-      )
-      .filter((x, i) => tableColumns[i][x.id]);
-    console.log('state', tableColumns);
-    // console.log('tableColumns', tableColumns);
-    console.log('tableInfo', tableInfo);
+    const tableInfo = tableColumns;
+
+    console.log('states', tableColumns);
     return (
       <span>
         <Row

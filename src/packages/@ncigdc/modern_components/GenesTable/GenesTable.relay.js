@@ -8,6 +8,7 @@ import {
   makeFilter,
   addInFilters,
   replaceFilters,
+  removeFilter,
 } from '@ncigdc/utils/filters';
 import Query from '@ncigdc/modern_components/Query';
 
@@ -40,14 +41,17 @@ export default (Component: ReactClass<*>) =>
             ),
             genesTable_offset: parseIntParam(q.genesTable_offset, 0),
             genesTable_size: parseIntParam(q.genesTable_size, defaultSize),
-            geneCaseFilter: addInFilters(
-              q.genesTable_filters || defaultFilters,
-              makeFilter([
-                {
-                  field: 'cases.available_variation_data',
-                  value: ['ssm'],
-                },
-              ]),
+            geneCaseFilter: removeFilter(
+              f => f.match(/^ssms.ssm_id/),
+              addInFilters(
+                q.genesTable_filters || defaultFilters,
+                makeFilter([
+                  {
+                    field: 'cases.available_variation_data',
+                    value: ['ssm'],
+                  },
+                ]),
+              ),
             ),
             score,
             ssmCase: {

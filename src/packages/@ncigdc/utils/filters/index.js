@@ -299,4 +299,25 @@ export const removeFilter: TRemoveFilter = (field, query) => {
     : null;
 };
 
+export const removeFilterWithOp = (filterFunc, query) => {
+  if (!query) return null;
+  if (!filterFunc) return query;
+  if (Object.keys(query).length === 0) return query;
+
+  if (!Array.isArray(query.content)) {
+    return filterFunc(query.op, query.content.field) ? null : query;
+  }
+
+  const filteredContent = query.content
+    .map(q => removeFilterWithOp(filterFunc, q))
+    .filter(Boolean);
+
+  return filteredContent.length
+    ? {
+        ...query,
+        content: filteredContent,
+      }
+    : null;
+};
+
 export default makeFilter;

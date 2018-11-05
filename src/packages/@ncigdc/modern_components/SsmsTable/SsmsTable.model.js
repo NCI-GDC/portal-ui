@@ -23,6 +23,7 @@ import { truncateAfterMarker } from '@ncigdc/utils/string';
 import { ForTsvExport } from '@ncigdc/components/DownloadTableToTsvButton';
 import { createSelectColumn } from '@ncigdc/tableModels/utils';
 import { ImpactTdContents, ImpactThContents } from '@ncigdc/components/Impacts';
+import ExploreSSMLink from '@ncigdc/components/Links/ExploreSSMLink';
 
 const colors = scaleOrdinal(schemeCategory10);
 
@@ -167,18 +168,16 @@ const SsmsTableModel = [
     }) => (
       <Td>
         <span>
-          <ExploreLink
+          <ExploreSSMLink
             merge
-            query={{
-              searchTableTab: 'cases',
-              filters: addInFilters(
-                query.genesTable_filters || contextFilters || defaultFilters,
-                makeFilter([{ field: 'ssms.ssm_id', value: node.ssm_id }]),
-              ),
-            }}
+            searchTableTab={'cases'}
+            filters={addInFilters(
+              query.genesTable_filters || contextFilters || defaultFilters,
+              makeFilter([{ field: 'ssms.ssm_id', value: node.ssm_id }]),
+            )}
           >
             {node.filteredOccurences.hits.total.toLocaleString()}
-          </ExploreLink>
+          </ExploreSSMLink>
           <span> / </span>
           <ExploreLink
             query={{

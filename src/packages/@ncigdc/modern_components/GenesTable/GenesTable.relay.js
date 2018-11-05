@@ -4,11 +4,12 @@ import { compose, withPropsOnChange } from 'recompose';
 import { parseIntParam, parseFilterParam } from '@ncigdc/utils/uri';
 import { withRouter } from 'react-router-dom';
 import { parse } from 'query-string';
+
 import {
   makeFilter,
   addInFilters,
   replaceFilters,
-  removeFilter,
+  removeFilterWithOp,
 } from '@ncigdc/utils/filters';
 import Query from '@ncigdc/modern_components/Query';
 
@@ -41,8 +42,8 @@ export default (Component: ReactClass<*>) =>
             ),
             genesTable_offset: parseIntParam(q.genesTable_offset, 0),
             genesTable_size: parseIntParam(q.genesTable_size, defaultSize),
-            geneCaseFilter: removeFilter(
-              f => f.match(/^ssms.ssm_id/),
+            geneCaseFilter: removeFilterWithOp(
+              (op, field) => op.match(/^NOT$/) && field.match(/^ssms.ssm_id/),
               addInFilters(
                 q.genesTable_filters || defaultFilters,
                 makeFilter([

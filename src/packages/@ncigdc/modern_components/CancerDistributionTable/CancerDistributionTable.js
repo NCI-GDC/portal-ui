@@ -174,6 +174,7 @@ export default compose(
           num_affected_cases: (
             <span>
               <ExploreSSMLink
+                merge
                 searchTableTab={'cases'}
                 filters={replaceFilters(projectFilter, filters)}
               >

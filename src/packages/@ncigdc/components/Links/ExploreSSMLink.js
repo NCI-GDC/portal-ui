@@ -3,10 +3,15 @@ import React from 'react';
 import Link from './Link';
 import { replaceFilters } from '@ncigdc/utils/filters';
 
-const ExploreSSMLink = ({ children, filters, searchTableTab }) => {
+const ExploreSSMLink = ({
+  children,
+  filters,
+  searchTableTab,
+  merge = false,
+}) => {
   return (
     <Link
-      merge
+      merge={merge}
       pathname={'/exploration'}
       query={{
         searchTableTab,

@@ -8,6 +8,7 @@ import {
   addInFilters,
   removeFilter,
   replaceFilters,
+  removeFilterWithOp,
 } from '@ncigdc/utils/filters';
 import GeneLink from '@ncigdc/components/Links/GeneLink';
 import { tableToolTipHint } from '@ncigdc/theme/mixins';
@@ -125,6 +126,7 @@ const GenesTableModel = [
       <Td>
         <span>
           <ExploreSSMLink
+            merge
             searchTableTab={'cases'}
             filters={replaceFilters(
               {
@@ -148,8 +150,8 @@ const GenesTableModel = [
           <ExploreLink
             query={{
               searchTableTab: 'cases',
-              filters: removeFilter(
-                f => f.match(/^ssms.ssm_id/),
+              filters: removeFilterWithOp(
+                (op, field) => op.match(/^NOT$/) && field.match(/^ssms.ssm_id/),
                 addInFilters(
                   query.genesTable_filters || defaultFilters,
                   makeFilter([

@@ -176,15 +176,6 @@ const SsmsTableModel = [
               makeFilter([{ field: 'ssms.ssm_id', value: node.ssm_id }]),
             )}
           >
-            {/* <ExploreLink
-            query={{
-              searchTableTab: 'cases',
-              filters: addInFilters(
-                query.genesTable_filters || contextFilters || defaultFilters,
-                makeFilter([{ field: 'ssms.ssm_id', value: node.ssm_id }]),
-              ),
-            }}
-          > */}
             {node.filteredOccurences.hits.total.toLocaleString()}
           </ExploreSSMLink>
           <span> / </span>

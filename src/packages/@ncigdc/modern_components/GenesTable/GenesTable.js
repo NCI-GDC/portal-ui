@@ -1,7 +1,7 @@
 /* @flow */
 import React from 'react';
 import { connect } from 'react-redux';
-import { compose, withState, withPropsOnChange } from 'recompose';
+import { compose, withState, withPropsOnChange, lifecycle } from 'recompose';
 import withSize from '@ncigdc/utils/withSize';
 import withRouter from '@ncigdc/utils/withRouter';
 import Showing from '@ncigdc/components/Pagination/Showing';
@@ -20,7 +20,6 @@ import withSelectIds from '@ncigdc/utils/withSelectIds';
 
 export default compose(
   connect(state => {
-    console.log('connect', state.tableColumns.genes);
     return { tableColumns: state.tableColumns.genes };
   }),
   withRouter,
@@ -40,9 +39,14 @@ export default compose(
       return { ssmCounts };
     }
   ),
-  withPropsOnChange(['tableColumns'], ({ tableColumns }) =>
-    console.log('connect1', tableColumns)
-  ),
+  lifecycle({
+    componentWillReceiveProps(nextProps) {
+      if (nextProps.tableColumns !== this.props.tableColumns) {
+        console.log('genes11', nextProps.tableColumns);
+        this.setState({ tableColumns: nextProps.tableColumns });
+      }
+    },
+  }),
   withSize()
 )(
   ({
@@ -72,7 +76,7 @@ export default compose(
     }
     const data = !genes ? [] : genes.hits.edges;
     const totalGenes = !genes ? 0 : genes.hits.total;
-    const tableInfo = tableColumns;
+    const tableInfo = tableColumns.slice().filter(x => !x.hidden);
 
     console.log('states', tableColumns);
     return (

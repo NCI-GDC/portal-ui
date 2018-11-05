@@ -35,7 +35,6 @@ const initialState = Object.keys(tableModels).reduce(
   (acc, key) => ({
     ...acc,
     [key]: tableModels[key],
-    // ids: tableModels[key].reduce(reduceColumns, []),
   }),
   { version: 2 }
 );
@@ -44,21 +43,17 @@ const reducer = (state = initialState, action) => {
   switch (action.type) {
     case REHYDRATE: {
       const { version, ...tableColumns } = action.payload.tableColumns || {};
+      console.log('reducer', tableColumns);
       if (version !== state.version) {
         return state;
       }
+      console.log('order111', tableColumns.genes);
       return {
         ...state,
         ...Object.entries(
           tableColumns || {}
         ).reduce((acc, [key, val]: [string, any]) => {
           const order = Array.isArray(val) ? state[key] : val;
-
-          if (key === 'genes') {
-            console.log('val', val);
-            console.log('val2', state[key]);
-          }
-
           return {
             ...acc,
             [key]: order,
@@ -69,12 +64,16 @@ const reducer = (state = initialState, action) => {
 
     case tableColumns.TOGGLE_COLUMN: {
       const { entityType, id, index } = action.payload;
-      const tableInfo = state[entityType];
-      tableInfo[index].hidden = !tableInfo[index].hidden;
-      console.log('tableIfor', tableInfo);
       return {
         ...state,
-        [entityType]: tableInfo,
+        [entityType]: [
+          ...state[entityType].slice(0, index),
+          {
+            ...state[entityType][index],
+            hidden: !state[entityType][index].hidden,
+          },
+          ...state[entityType].slice(index + 1, Infinity),
+        ],
       };
     }
 
@@ -88,6 +87,7 @@ const reducer = (state = initialState, action) => {
 
     case tableColumns.SET: {
       const { entityType, order } = action.payload;
+      console.log('order2', state.genes, order);
       return { ...state, [entityType]: order };
     }
 

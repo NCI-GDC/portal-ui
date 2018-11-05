@@ -151,7 +151,7 @@ const GenesTableModel = [
             query={{
               searchTableTab: 'cases',
               filters: removeFilterWithOp(
-                (op, field) => op.match(/^not$/) && field.match(/^ssms.ssm_id/),
+                (op, field) => op.match(/^NOT$/) && field.match(/^ssms.ssm_id/),
                 addInFilters(
                   query.genesTable_filters || defaultFilters,
                   makeFilter([

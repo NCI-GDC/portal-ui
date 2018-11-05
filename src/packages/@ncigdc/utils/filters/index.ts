@@ -1,4 +1,4 @@
-import { isArray, isEqual, uniqWith } from 'lodash';
+import { isArray, isEqual, uniqWith, xorWith } from 'lodash';
 import { parseFilterParam } from '../uri';
 import {
   IGroupFilter,
@@ -33,10 +33,7 @@ const sortFilters: TSortFilters = (a, b) => {
   }
 };
 
-const combineValues = (x: TFilterValue, y: TFilterValue): TFilterValue =>
-  uniqWith([...x, ...y], isEqual);
-
-const combineFilterValues: TCombineValues = (x, y) => {
+const combineFilterValues: TCombineValues = (x, y, type) => {
   const xValue = ([] as TFilterValue).concat(x.content.value || []);
   const yValue = ([] as TFilterValue).concat(y.content.value || []);
 
@@ -44,7 +41,10 @@ const combineFilterValues: TCombineValues = (x, y) => {
     op: 'in',
     content: {
       field: x.content.field,
-      value: combineValues(xValue, yValue).sort(),
+      value: (type === 'toggle'
+        ? xorWith(xValue, yValue, isEqual)
+        : uniqWith([...xValue, ...yValue], isEqual)
+      ).sort(),
     },
   };
 };
@@ -54,14 +54,14 @@ const removeNoValueFilter = (f: IValueFilter) => f.content.value.length > 0;
 const toggle: TMergeFilters = (x, y) => ({
   op: 'and',
   content: y.content
-    .reduce((acc, ctx) => {
-      const found = acc.find(a => compareTerms(a, ctx));
+    .reduce((acc, curr) => {
+      const found = acc.find(a => compareTerms(a, curr));
       if (!found) {
-        return [...acc, ctx];
+        return [...acc, curr];
       }
       return [
         ...acc.filter(f => f.content.field !== found.content.field),
-        combineFilterValues(found, ctx),
+        combineFilterValues(found, curr, 'toggle'),
       ].filter(removeNoValueFilter);
     }, x.content)
     .sort(sortFilters),
@@ -70,10 +70,10 @@ const toggle: TMergeFilters = (x, y) => ({
 const replace: TMergeFilters = (x, y) => ({
   op: 'and',
   content: y.content
-    .reduce((acc, ctx) => {
-      const found = acc.find(a => compareTerms(a, ctx));
+    .reduce((acc, curr) => {
+      const found = acc.find(a => compareTerms(a, curr));
       if (!found) {
-        return [...acc, ctx];
+        return [...acc, curr];
       }
       return acc;
     }, x.content)
@@ -83,14 +83,14 @@ const replace: TMergeFilters = (x, y) => ({
 const addIn: TMergeFilters = (x, y) => ({
   op: 'and',
   content: y.content
-    .reduce((acc, ctx) => {
-      const found = acc.find(a => compareTerms(a, ctx));
+    .reduce((acc, curr) => {
+      const found = acc.find(a => compareTerms(a, curr));
       if (!found) {
-        return [...acc, ctx];
+        return [...acc, curr];
       }
       return [
         ...acc.filter(f => f.content.field !== found.content.field),
-        combineFilterValues(found, ctx),
+        combineFilterValues(found, curr, 'add'),
       ].filter(removeNoValueFilter);
     }, x.content)
     .sort(sortFilters),
@@ -147,7 +147,8 @@ export const removeFilter: TRemoveFilter = (field, query) => {
   }
 
   if (!Array.isArray(query.content)) {
-    const fieldFilter = typeof field === 'function' ? field : (f: string) => f === field;
+    const fieldFilter =
+      typeof field === 'function' ? field : (f: string) => f === field;
     return fieldFilter(query.content.field) ? null : query;
   }
 

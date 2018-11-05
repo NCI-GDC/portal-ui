@@ -23,7 +23,7 @@ export interface IGroupFilter {
 export type TCombineValues = (
   x: IValueFilter,
   y: IValueFilter
-) => IValueFilter | null;
+) => IValueFilter;
 
 export type TMergeFilters = (
   q: IGroupFilter,
@@ -46,7 +46,7 @@ export type TFilterOperation = (
 export type TMergeFns = (v: TMergeEnum) => TMergeFiltersNullable;
 
 export type TMergeQuery = (
-  q: IUriQuery | void,
+  q: IUriQuery,
   c: IRawQuery,
   t: TMergeEnum,
   w?: string[]
@@ -55,11 +55,11 @@ export type TMergeQuery = (
 export type TSortFilters = (a: IValueFilter, b: IValueFilter) => number;
 
 export type TFilterByWhitelist = (
-  o: IRawQuery | void,
-  w: string[] | void
+  o: IRawQuery,
+  w: string[]
 ) => IRawQuery;
 
 export type TRemoveFilter = (
-  field: string,
-  query: IGroupFilter
-) => IGroupFilter | null;
+  field: string | ((x: any) => boolean) | null,
+  query: IGroupFilter | IValueFilter | null
+) => any; // todo - address this at some point

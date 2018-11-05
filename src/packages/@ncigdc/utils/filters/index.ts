@@ -7,6 +7,7 @@ import {
   TFilterByWhitelist,
   TFilterOperation,
   TFilterValue,
+  TGroupContent,
   TMergeFilters,
   TMergeFiltersNullable,
   TMergeFns,
@@ -39,24 +40,16 @@ const combineFilterValues: TCombineValues = (x, y) => {
   const xValue = ([] as TFilterValue).concat(x.content.value || []);
   const yValue = ([] as TFilterValue).concat(y.content.value || []);
 
-  if (xValue.length === 0 && yValue.length === 0) {
-    return null;
-  } else if (xValue.length === 0) {
-    return y;
-  } else if (yValue.length === 0) {
-    return x;
-  }
-
-  const merged: IValueFilter = {
+  return {
     op: 'in',
     content: {
       field: x.content.field,
       value: combineValues(xValue, yValue).sort(),
     },
   };
-
-  return merged.content.value.length ? merged : null;
 };
+
+const removeNoValueFilter = (f: IValueFilter) => f.content.value.length > 0;
 
 const toggle: TMergeFilters = (x, y) => ({
   op: 'and',
@@ -68,8 +61,8 @@ const toggle: TMergeFilters = (x, y) => ({
       }
       return [
         ...acc.filter(f => f.content.field !== found.content.field),
-        // combineFilterValues(found, ctx),
-      ].filter(Boolean);
+        combineFilterValues(found, ctx),
+      ].filter(removeNoValueFilter);
     }, x.content)
     .sort(sortFilters),
 });
@@ -98,7 +91,7 @@ const addIn: TMergeFilters = (x, y) => ({
       return [
         ...acc.filter(f => f.content.field !== found.content.field),
         combineFilterValues(found, ctx),
-      ].filter(Boolean);
+      ].filter(removeNoValueFilter);
     }, x.content)
     .sort(sortFilters),
 });
@@ -144,6 +137,32 @@ const mergeFns: TMergeFns = v => {
   }
 };
 
+export const removeFilter: TRemoveFilter = (field, query) => {
+  if (!query) {
+    return null;
+  } else if (!field) {
+    return query;
+  } else if (Object.keys(query).length === 0) {
+    return query;
+  }
+
+  if (!Array.isArray(query.content)) {
+    const fieldFilter = typeof field === 'function' ? field : (f: string) => f === field;
+    return fieldFilter(query.content.field) ? null : query;
+  }
+
+  const filteredContent = query.content
+    .map(q => removeFilter(field, q))
+    .filter(Boolean);
+
+  return filteredContent.length
+    ? {
+        op: query.op,
+        content: filteredContent,
+      }
+    : null;
+};
+
 const filterByWhitelist: TFilterByWhitelist = (obj, wls) =>
   Object.keys(obj || {}).reduce(
     (acc, k) =>
@@ -153,26 +172,29 @@ const filterByWhitelist: TFilterByWhitelist = (obj, wls) =>
   );
 
 export const mergeQuery: TMergeQuery = (q, c, mergeType, whitelist) => {
-  const ctx = c || {};
-  const query = q || {};
-  const wlCtx = whitelist ? filterByWhitelist(ctx, whitelist) : ctx;
+  const wlCtx = whitelist ? filterByWhitelist(c, whitelist) : c;
 
-  // Flow doesn't see that filters is always replaced and complains about ctx.filter being a string
-  const mQs: Object = {
+  const mQs = {
     ...wlCtx,
-    ...query,
+    ...q,
   };
 
   return {
     ...mQs,
     filters: mergeFns(mergeType)(
-      query.filters,
-      parseFilterParam(wlCtx.filters, null)
+      q.filters || null,
+      parseFilterParam(wlCtx.filters)
     ),
   };
 };
 
-export const setFilter = ({ value, field }) => ({
+export const setFilter = ({
+  value,
+  field,
+}: {
+  value: string;
+  field: string;
+}) => ({
   op: 'and',
   content: [
     {
@@ -182,13 +204,13 @@ export const setFilter = ({ value, field }) => ({
   ],
 });
 
-export const setFilters = filterContent =>
+export const setFilters = (filterContent: TGroupContent) =>
   filterContent.length && {
     op: 'and',
     content: filterContent,
   };
 
-const getDisplayValue = value => {
+const getDisplayValue = (value: string | number | boolean) => {
   switch (typeof value) {
     case 'string':
       return value;
@@ -201,52 +223,41 @@ const getDisplayValue = value => {
   }
 };
 
-export const innerJoinFilters = (q, ctxq) => {
-  if (!ctxq && !q) return null;
-  if (!ctxq) return q;
-  if (!q) return ctxq;
-  const merged = {
-    op: 'and',
-    content: ctxq.content.reduce((acc, ctx) => {
-      console.log('ctx', ctx);
-      const found = acc.find(a => a.content.field === ctx.content.field);
-      if (!found) return [...acc, ctx];
-      return [
-        ...acc.filter(y => y.content.field !== found.content.field),
-        {
-          op: 'in',
-          content: {
-            field: ctx.content.field,
-            value: ctx.content.value.filter(v =>
-              found.content.value.includes(v)
-            ),
-          },
-        },
-      ].filter(Boolean);
-    }, q.content),
-    // .sort(sortFilters),
-  };
-
-  return merged.content.length ? merged : null;
-};
-
 // true if field and value in
-export const inCurrentFilters = ({ currentFilters, key, dotField }) =>
+export const inCurrentFilters = ({
+  currentFilters,
+  key,
+  dotField,
+}: {
+  currentFilters: IValueFilter[];
+  key: string;
+  dotField: string;
+}) =>
   currentFilters.some(
     f =>
       f.content.field === dotField &&
-      []
+      ([] as TFilterValue)
         .concat(f.content.value || [])
         .map(v => getDisplayValue(v))
         .includes(key)
   );
 
 // true if field in
-export const fieldInCurrentFilters = ({ currentFilters, field }) =>
-  currentFilters.some(f => f.content.field === field);
+export const fieldInCurrentFilters = ({
+  currentFilters,
+  field,
+}: {
+  currentFilters: IValueFilter[];
+  field: string;
+}) => currentFilters.some(f => f.content.field === field);
 
-export const getFilterValue = ({ currentFilters, dotField }) =>
-  currentFilters.find(f => f.content.field === dotField);
+export const getFilterValue = ({
+  currentFilters,
+  dotField,
+}: {
+  currentFilters: IValueFilter[];
+  dotField: string;
+}) => currentFilters.find(f => f.content.field === dotField);
 
 type TMakeFilter = (
   fields: Array<{ field: string; value: string }>
@@ -269,28 +280,6 @@ export const makeFilter: TMakeFilter = fields => {
       }),
     };
   }
-};
-
-export const removeFilter: TRemoveFilter = (field, query) => {
-  if (!query) return null;
-  if (!field) return query;
-  if (Object.keys(query).length === 0) return query;
-
-  if (!Array.isArray(query.content)) {
-    const fieldFilter = typeof field === 'function' ? field : f => f === field;
-    return fieldFilter(query.content.field) ? null : query;
-  }
-
-  const filteredContent = query.content
-    .map(q => removeFilter(field, q))
-    .filter(Boolean);
-
-  return filteredContent.length
-    ? {
-        ...query,
-        content: filteredContent,
-      }
-    : null;
 };
 
 export default makeFilter;

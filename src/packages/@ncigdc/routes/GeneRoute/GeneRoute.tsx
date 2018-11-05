@@ -1,24 +1,22 @@
-/* @flow */
-
-import React from 'react';
-import { parse } from 'query-string';
-import { Row, Column } from '@ncigdc/uikit/Flex';
-import GeneSummary from '@ncigdc/modern_components/GeneSummary';
-import GeneExternalReferences from '@ncigdc/modern_components/GeneExternalReferences';
 import CancerDistributionBarChart from '@ncigdc/modern_components/CancerDistributionBarChart';
 import CancerDistributionTable from '@ncigdc/modern_components/CancerDistributionTable';
-import SsmsTable from '@ncigdc/modern_components/SsmsTable';
-import { GeneLolliplot } from '@ncigdc/modern_components/Lolliplot';
-import FullWidthLayout from '@ncigdc/components/Layouts/FullWidthLayout';
-import ExploreLink from '@ncigdc/components/Links/ExploreLink';
-import CurrentFilters from '@ncigdc/components/CurrentFilters';
 import ChartIcon from '@ncigdc/theme/icons/BarChart';
+import CurrentFilters from '@ncigdc/components/CurrentFilters';
+import Exists from '@ncigdc/modern_components/Exists';
+import ExploreLink from '@ncigdc/components/Links/ExploreLink';
+import FullWidthLayout from '@ncigdc/components/Layouts/FullWidthLayout';
 import GdcDataIcon from '@ncigdc/theme/icons/GdcData';
-import { replaceFilters } from '@ncigdc/utils/filters';
+import GeneExternalReferences from '@ncigdc/modern_components/GeneExternalReferences';
+import GeneSummary from '@ncigdc/modern_components/GeneSummary';
 import GeneSymbol from '@ncigdc/modern_components/GeneSymbol';
 import Heading from '@ncigdc/uikit/Heading';
+import React from 'react';
+import SsmsTable from '@ncigdc/modern_components/SsmsTable';
+import { Column, Row } from '@ncigdc/uikit/Flex';
+import { GeneLolliplot } from '@ncigdc/modern_components/Lolliplot';
+import { parse } from 'query-string';
 import { parseJSONParam } from '@ncigdc/utils/uri';
-import Exists from '@ncigdc/modern_components/Exists';
+import { replaceFilters } from '@ncigdc/utils/filters';
 
 export default ({ match, geneId = match.params.id, location }: Object) => {
   const { filters: f } = parse(location.search);
@@ -34,7 +32,7 @@ export default ({ match, geneId = match.params.id, location }: Object) => {
         },
       ],
     },
-    filters,
+    filters
   );
 
   const mutatedGeneFilter = replaceFilters(
@@ -50,7 +48,7 @@ export default ({ match, geneId = match.params.id, location }: Object) => {
         },
       ],
     },
-    geneFilter,
+    geneFilter
   );
 
   return (

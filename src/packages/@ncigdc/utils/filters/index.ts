@@ -176,18 +176,20 @@ const filterByWhitelist: TFilterByWhitelist = (obj, wls) =>
   );
 
 export const mergeQuery: TMergeQuery = (q, c, mergeType, whitelist) => {
-  const wlCtx = whitelist ? filterByWhitelist(c, whitelist) : c;
+  const ctx = c || {};
+  const query = q || {};
+  const wlCtx = whitelist ? filterByWhitelist(ctx, whitelist) : ctx;
 
   const mQs = {
     ...wlCtx,
-    ...q,
+    ...query,
   };
 
   return {
     ...mQs,
     filters: mergeFns(mergeType)(
-      q.filters || null,
-      parseFilterParam(wlCtx.filters)
+      query.filters || null,
+      parseFilterParam(wlCtx.filters, {})
     ),
   };
 };

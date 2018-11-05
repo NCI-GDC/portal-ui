@@ -22,7 +22,8 @@ export interface IGroupFilter {
 
 export type TCombineValues = (
   x: IValueFilter,
-  y: IValueFilter
+  y: IValueFilter,
+  t: TMergeEnum
 ) => IValueFilter;
 
 export type TMergeFilters = (

@@ -99,21 +99,24 @@ const addIn: TMergeFilters = (x, y) => ({
 const filterNoContent = (f: IGroupFilter) => (f.content.length ? f : null);
 
 const filterOperation: TFilterOperation = (t, x, y) => {
-  if (!x && !y) {
+  const noX = !x || Object.keys(x).length === 0;
+  const noY = !y || Object.keys(y).length === 0;
+
+  if (noX && noY) {
     return null;
-  } else if (!y) {
+  } else if (noY) {
     return x;
-  } else if (!x) {
+  } else if (noX) {
     return y;
   }
 
   switch (t) {
     case 'toggle':
-      return filterNoContent(toggle(x, y));
+      return filterNoContent(toggle(x as IGroupFilter, y as IGroupFilter));
     case 'replace':
-      return filterNoContent(replace(x, y));
+      return filterNoContent(replace(x as IGroupFilter, y as IGroupFilter));
     case 'add':
-      return filterNoContent(addIn(x, y));
+      return filterNoContent(addIn(x as IGroupFilter, y as IGroupFilter));
     default:
       return null;
   }
@@ -262,10 +265,10 @@ export const getFilterValue = ({
 
 type TMakeFilter = (
   fields: Array<{ field: string; value: string }>
-) => IGroupFilter | {};
+) => IGroupFilter | null;
 export const makeFilter: TMakeFilter = fields => {
   if (!fields.length) {
-    return {};
+    return null;
   } else {
     return {
       op: 'and',
@@ -277,7 +280,7 @@ export const makeFilter: TMakeFilter = fields => {
             field: item.field,
             value,
           },
-        };
+        } as IValueFilter;
       }),
     };
   }

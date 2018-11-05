@@ -12,6 +12,7 @@ import type {
   TSortFilters,
   TFilterByWhitelist,
   TRemoveFilter,
+  TRemoveFilterWithOp,
 } from './types';
 
 function compareTerms(a, b) {
@@ -299,7 +300,7 @@ export const removeFilter: TRemoveFilter = (field, query) => {
     : null;
 };
 
-export const removeFilterWithOp = (filterFunc, query) => {
+export const removeFilterWithOp: TRemoveFilterWithOp = (filterFunc, query) => {
   if (!query) return null;
   if (!filterFunc) return query;
   if (Object.keys(query).length === 0) return query;

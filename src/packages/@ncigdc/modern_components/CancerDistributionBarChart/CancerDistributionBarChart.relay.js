@@ -13,15 +13,50 @@ export default (Component: ReactClass<*>) =>
         field: 'cases.available_variation_data',
         value: 'cnv',
       };
+      const ssmAvailableVariationDataFilter = {
+        field: 'cases.available_variation_data',
+        value: ['ssm'],
+      };
       return {
         variables: {
-          caseAggsFilters: filters,
-          ssmTested: makeFilter([
+          cnvAll: replaceFilters(
+            makeFilter([
+              {
+                field: 'cnvs.cnv_change',
+                value: ['Gain', 'Loss'],
+              },
+              cnvAvailableVariationDataFilter,
+            ]),
+            filters,
+          ),
+          cnvTestedByGene: replaceFilters(
+            makeFilter([cnvAvailableVariationDataFilter]),
+            filters,
+          ),
+          ssmFilters: replaceFilters(
+            makeFilter([ssmAvailableVariationDataFilter]),
+            filters,
+          ),
+          caseAggsFilters: replaceFilters(
             {
-              field: 'cases.available_variation_data',
-              value: ['ssm'],
+              op: 'and',
+              content: [
+                {
+                  op: 'NOT',
+                  content: {
+                    field: 'cases.gene.ssm.observation.observation_id',
+                    value: 'MISSING',
+                  },
+                },
+                {
+                  op: 'in',
+                  content: ssmAvailableVariationDataFilter,
+                },
+              ],
             },
-          ]),
+            filters,
+          ),
+          ssmTested: makeFilter([ssmAvailableVariationDataFilter]),
           cnvTested: makeFilter([cnvAvailableVariationDataFilter]),
           cnvGain: replaceFilters(
             makeFilter([
@@ -80,15 +115,24 @@ export default (Component: ReactClass<*>) =>
             $cnvGain: FiltersArgument
             $cnvLoss: FiltersArgument
             $cnvTested: FiltersArgument
+            $cnvTestedByGene: FiltersArgument
+            $cnvAll: FiltersArgument
+            $ssmFilters: FiltersArgument
           ) {
             viewer {
               explore {
                 ssms {
-                  hits(first: 0, filters: $caseAggsFilters) {
+                  hits(first: 0, filters: $ssmFilters) {
                     total
                   }
                 }
                 cases {
+                  cnvAll: hits(filters: $cnvAll) {
+                    total
+                  }
+                  cnvTestedByGene: hits(filters: $cnvTestedByGene) {
+                    total
+                  }
                   gain: aggregations(filters: $cnvGain) {
                     project__project_id {
                       buckets {

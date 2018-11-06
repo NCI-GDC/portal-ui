@@ -15,6 +15,8 @@ import ProjectsLink from '@ncigdc/components/Links/ProjectsLink';
 import { TGroupFilter } from '@ncigdc/utils/filters/types';
 import { cnvColors } from '@ncigdc/utils/filters/prepared/significantConsequences';
 import { renderToString } from 'react-dom/server';
+import { makeFilter, replaceFilters } from '@ncigdc/utils/filters';
+import ExploreSSMLink from '@ncigdc/components/Links/ExploreSSMLink';
 
 type TProps = {
   style: Object,
@@ -63,34 +65,49 @@ const DefaultChartTitle = ({
   projects = [],
   ssms = 0,
   filters,
-}: TChartTitleProps) => (
-  <div style={{ textTransform: 'uppercase', padding: '0 2rem' }}>
-    <ExploreLink query={{ searchTableTab: 'cases', filters }}>
-      {cases.toLocaleString()}
-    </ExploreLink>&nbsp; cases affected by&nbsp;
-    <ExploreLink query={{ searchTableTab: 'mutations', filters }}>
-      {ssms.toLocaleString()}
-    </ExploreLink>&nbsp; {type} across&nbsp;
-    <ProjectsLink
-      query={{
-        filters: {
-          op: 'and',
-          content: [
-            {
-              op: 'in',
-              content: {
-                field: 'projects.project_id',
-                value: projects.map(p => p.project_id),
+}: TChartTitleProps) => {
+  return (
+    <div style={{ textTransform: 'uppercase', padding: '0 2rem' }}>
+      {type === 'cnvs' ? (
+        <span>
+          <ExploreLink query={{ searchTableTab: 'cases', filters }}>
+            {cases.toLocaleString()}
+          </ExploreLink>{' '}
+          cases affected by {ssms.toLocaleString()} cnv events across{' '}
+        </span>
+      ) : (
+        <span>
+          <ExploreSSMLink searchTableTab={'cases'} filters={filters}>
+            {cases.toLocaleString()}
+          </ExploreSSMLink>{' '}
+          cases affected by{' '}
+          <ExploreSSMLink searchTableTab={'mutations'} filters={filters}>
+            {ssms.toLocaleString()}
+          </ExploreSSMLink>{' '}
+          mutations across{' '}
+        </span>
+      )}
+      <ProjectsLink
+        query={{
+          filters: {
+            op: 'and',
+            content: [
+              {
+                op: 'in',
+                content: {
+                  field: 'projects.project_id',
+                  value: projects.map(p => p.project_id),
+                },
               },
-            },
-          ],
-        },
-      }}
-    >
-      {projects.length.toLocaleString()}
-    </ProjectsLink>&nbsp; projects
-  </div>
-);
+            ],
+          },
+        }}
+      >
+        {projects.length.toLocaleString()}
+      </ProjectsLink>&nbsp; projects
+    </div>
+  );
+};
 const initalCnv = {
   gain: true,
   // amplification: true,
@@ -266,7 +283,6 @@ export default compose(
         ))}
       </Row>
     );
-
     return (
       <div>
         <Row style={{ width: '100%' }}>
@@ -324,19 +340,19 @@ export default compose(
                     }}
                   >
                     <ChartTitle
-                      cases={sum(
-                        cnvCancerDistData.map(
-                          d =>
-                            // d.amplification +
-                            d.gain + d.loss,
-                          // d.shallow_loss +
-                          // d.deep_loss,
-                        ),
-                      )}
-                      ssms={get(ssms, 'hits.total', 0)}
+                      cases={cases.cnvTestedByGene.total}
+                      ssms={cases.cnvAll.total}
                       projects={cnvCancerDistData}
-                      filters={filters}
-                      type="cnv"
+                      filters={replaceFilters(
+                        makeFilter([
+                          {
+                            field: 'cases.available_variation_data',
+                            value: 'cnv',
+                          },
+                        ]),
+                        filters,
+                      )}
+                      type="cnvs"
                     />
                     <DownloadVisualizationButton
                       svg={() =>

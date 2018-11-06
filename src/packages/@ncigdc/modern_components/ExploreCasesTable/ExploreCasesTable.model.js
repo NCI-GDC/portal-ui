@@ -11,7 +11,6 @@ import ProjectLink from '@ncigdc/components/Links/ProjectLink';
 import CaseLink from '@ncigdc/components/Links/CaseLink';
 import { Th, Td, TdNum, ThNum } from '@ncigdc/uikit/Table';
 import { makeFilter, replaceFilters } from '@ncigdc/utils/filters';
-import ExploreLink from '@ncigdc/components/Links/ExploreLink';
 import ageDisplay from '@ncigdc/utils/ageDisplay';
 import withRouter from '@ncigdc/utils/withRouter';
 import ImageViewerLink from '@ncigdc/components/Links/ImageViewerLink';
@@ -19,6 +18,7 @@ import { MicroscopeIcon } from '@ncigdc/theme/icons';
 import { DISPLAY_SLIDES } from '@ncigdc/utils/constants';
 import { ForTsvExport } from '@ncigdc/components/DownloadTableToTsvButton';
 import { slideCountFromCaseSummary } from '@ncigdc/modern_components/CaseSummary/CaseSummary';
+import ExploreSSMLink from '@ncigdc/components/Links/ExploreSSMLink';
 
 import {
   createDataCategoryColumns,
@@ -233,21 +233,21 @@ const casesTableModel = [
         </Tooltip>
       </ThNum>
     ),
-    td: ({ node }) => (
+    td: ({ node, filters }) => (
       <Td style={{ textAlign: 'right' }}>
         {node.score > 0 ? (
-          <ExploreLink
-            merge
-            query={{
-              searchTableTab: 'genes',
-              filters: makeFilter(
+          <ExploreSSMLink
+            searchTableTab={'genes'}
+            filters={replaceFilters(
+              makeFilter(
                 [{ field: 'cases.case_id', value: [node.case_id] }],
                 false,
               ),
-            }}
+              filters,
+            )}
           >
             {(node.score || 0).toLocaleString()}
-          </ExploreLink>
+          </ExploreSSMLink>
         ) : (
           0
         )}

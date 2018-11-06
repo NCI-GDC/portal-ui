@@ -50,3 +50,8 @@ export type TRemoveFilter = (
   field: string,
   query: TGroupFilter,
 ) => ?TGroupFilter;
+
+export type TRemoveFilterWithOp = (
+  filterFunc: Function,
+  query: TGroupFilter,
+) => ?TGroupFilter;

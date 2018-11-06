@@ -23,7 +23,7 @@ const paginationPrefix = 'canDistTable';
 
 let CollapsibleRowList = props => {
   const { data } = props;
-  if (!data.length) return <GreyBox />;
+  if (!data || data.length === 0) return <GreyBox />;
   return (
     <span>
       {data.length > 1 && (

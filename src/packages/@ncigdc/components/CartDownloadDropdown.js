@@ -9,6 +9,7 @@ import urlJoin from 'url-join';
 import { authPartitionFiles } from '@ncigdc/utils/auth';
 import DownloadButton from '@ncigdc/components/DownloadButton';
 import BaseModal from '@ncigdc/components/Modals/BaseModal';
+import CheckBoxModal from '@ncigdc/components/Modals/CheckBoxModal';
 import LoginButton from '@ncigdc/components/LoginButton';
 
 import DownCaretIcon from 'react-icons/lib/fa/caret-down';
@@ -52,35 +53,47 @@ const downloadCart = ({
   user,
   files,
   dispatch,
+  state,
   setState,
 }: {
   user: Object,
   files: Array<Object>,
   dispatch: Function,
+  state: Object,
   setState: Function,
 }) => {
   const { authorized, unauthorized } = authPartitionFiles({ user, files });
+  const dbGapList = Array.from(
+    new Set(
+      authorized.files
+        .concat(unauthorized.files)
+        .reduce((acc, f) => acc.concat(f.acl), [])
+        .filter(f => f !== 'open'),
+    ),
+  );
+
   if (unauthorized.doc_count > 0) {
     dispatch(
       setModal(
-        <BaseModal
-          title="Access Error"
-          extraButtons={
+        <CheckBoxModal
+          dbGapList={dbGapList}
+          CustomButton={agreed => (
             <Button
-              disabled={!authorized.doc_count}
+              disabled={!authorized.doc_count || !agreed}
               onClick={() =>
                 downloadCart({
                   user,
                   files: authorized.files,
                   dispatch,
+                  state,
                   setState,
                 })}
               style={{ margin: '0 10px' }}
             >
               Download {authorized.doc_count} Authorized Files
             </Button>
-          }
-          closeText="Cancel"
+          )}
+          dispatch={dispatch}
         >
           <div>
             <p>
@@ -114,7 +127,7 @@ const downloadCart = ({
               Please <LoginButton />
             </p>
           )}
-        </BaseModal>,
+        </CheckBoxModal>,
       ),
     );
   } else if (files.reduce((sum, x) => sum + x.file_size, 0) > 5 * 10e8) {
@@ -137,18 +150,38 @@ const downloadCart = ({
       ),
     );
   } else {
-    dispatch(setModal(null));
-    setState(s => ({ ...s, cartDownloading: true }));
-    download({
-      url: urlJoin(AUTH_API, 'data'),
-      params: {
-        ids: files.map(file => file.file_id),
-        annotations: true,
-        related_files: true,
-      },
-      method: 'POST',
-      altMessage: true,
-    })(() => {}, () => setState(s => ({ ...s, cartDownloading: false })));
+    dispatch(
+      setModal(
+        <CheckBoxModal
+          dbGapList={dbGapList}
+          CustomButton={agreed => (
+            <Button
+              disabled={!agreed}
+              onClick={() => {
+                setState(s => ({ ...s, cartDownloading: true }));
+                download({
+                  url: urlJoin(AUTH_API, 'data'),
+                  params: {
+                    ids: files.map(file => file.file_id),
+                    annotations: true,
+                    related_files: true,
+                  },
+                  method: 'POST',
+                  altMessage: true,
+                })(
+                  () => {},
+                  () => setState(s => ({ ...s, cartDownloading: false })),
+                );
+              }}
+              style={{ margin: '0 10px' }}
+            >
+              Download
+            </Button>
+          )}
+          dispatch={dispatch}
+        />,
+      ),
+    );
   }
 };
 
@@ -205,7 +238,8 @@ const CartDownloadDropdown = ({
           className="test-download-cart"
           style={styles.button(theme)}
           disabled={state.cartDownloading}
-          onClick={() => downloadCart({ user, files, dispatch, setState })}
+          onClick={() =>
+            downloadCart({ user, files, dispatch, state, setState })}
           leftIcon={state.cartDownloading ? <Spinner /> : <DownloadIcon />}
         >
           Cart
@@ -221,5 +255,6 @@ export default compose(
   withState('state', 'setState', {
     manifestDownloading: false,
     cartDownloading: false,
+    agreed: false,
   }),
 )(CartDownloadDropdown);

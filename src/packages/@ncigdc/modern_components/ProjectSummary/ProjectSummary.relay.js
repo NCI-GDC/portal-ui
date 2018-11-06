@@ -52,6 +52,7 @@ export default (Component: ReactClass<*>) =>
                   edges {
                     node {
                       project_id
+                      dbgap_accession_number
                       name
                       disease_type
                       primary_site

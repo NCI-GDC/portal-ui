@@ -1,5 +1,5 @@
 // @flow
-import { createStore, combineReducers, applyMiddleware } from 'redux';
+import { createStore, combineReducers, applyMiddleware, compose } from 'redux';
 import thunk from 'redux-thunk';
 import { persistStore } from 'redux-persist';
 import { apiMiddleware } from 'redux-api-middleware';
@@ -10,9 +10,11 @@ type TSetupStoreArgs = {
 };
 type TSetupStore = (args: TSetupStoreArgs) => Object;
 const setupStore: TSetupStore = ({ persistConfig = {} } = {}) => {
+  const composeEnhancers =
+    window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
   const store = createStore(
     combineReducers(reducers),
-    applyMiddleware(thunk, apiMiddleware),
+    composeEnhancers(applyMiddleware(thunk, apiMiddleware)),
   );
 
   persistStore(store, {

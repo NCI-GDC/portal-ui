@@ -73,7 +73,7 @@ const DefaultChartTitle = ({
           <ExploreLink query={{ searchTableTab: 'cases', filters }}>
             {cases.toLocaleString()}
           </ExploreLink>{' '}
-          cases affected by {ssms.toLocaleString()}
+          cases affected by {ssms.toLocaleString()} cnv events across{' '}
         </span>
       ) : (
         <span>
@@ -83,10 +83,10 @@ const DefaultChartTitle = ({
           cases affected by{' '}
           <ExploreSSMLink searchTableTab={'mutations'} filters={filters}>
             {ssms.toLocaleString()}
-          </ExploreSSMLink>
+          </ExploreSSMLink>{' '}
+          mutations across{' '}
         </span>
-      )}{' '}
-      {type === 'cnvs' ? 'cnv events' : 'mutations'} across{' '}
+      )}
       <ProjectsLink
         query={{
           filters: {

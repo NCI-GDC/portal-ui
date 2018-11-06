@@ -13,6 +13,10 @@ export default (Component: ReactClass<*>) =>
         field: 'cases.available_variation_data',
         value: 'cnv',
       };
+      const ssmAvailableVariationDataFilter = {
+        field: 'cases.available_variation_data',
+        value: ['ssm'],
+      };
       return {
         variables: {
           cnvAll: replaceFilters(
@@ -29,13 +33,30 @@ export default (Component: ReactClass<*>) =>
             makeFilter([cnvAvailableVariationDataFilter]),
             filters,
           ),
-          caseAggsFilters: filters,
-          ssmTested: makeFilter([
+          ssmFilters: replaceFilters(
+            makeFilter([ssmAvailableVariationDataFilter]),
+            filters,
+          ),
+          caseAggsFilters: replaceFilters(
             {
-              field: 'cases.available_variation_data',
-              value: ['ssm'],
+              op: 'and',
+              content: [
+                {
+                  op: 'NOT',
+                  content: {
+                    field: 'cases.gene.ssm.observation.observation_id',
+                    value: 'MISSING',
+                  },
+                },
+                {
+                  op: 'in',
+                  content: ssmAvailableVariationDataFilter,
+                },
+              ],
             },
-          ]),
+            filters,
+          ),
+          ssmTested: makeFilter([ssmAvailableVariationDataFilter]),
           cnvTested: makeFilter([cnvAvailableVariationDataFilter]),
           cnvGain: replaceFilters(
             makeFilter([
@@ -96,11 +117,12 @@ export default (Component: ReactClass<*>) =>
             $cnvTested: FiltersArgument
             $cnvTestedByGene: FiltersArgument
             $cnvAll: FiltersArgument
+            $ssmFilters: FiltersArgument
           ) {
             viewer {
               explore {
                 ssms {
-                  hits(first: 0, filters: $caseAggsFilters) {
+                  hits(first: 0, filters: $ssmFilters) {
                     total
                   }
                 }

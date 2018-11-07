@@ -49,3 +49,9 @@ export type TRemoveFilter = (
   field: string,
   query: IGroupFilter
 ) => IGroupFilter | null;
+
+// Todo: look at filterFunc (or just this whole thing in general)
+export type TRemoveFilterWithOp = (
+  filterFunc: () => void,
+  query: IGroupFilter
+) => IGroupFilter | null;

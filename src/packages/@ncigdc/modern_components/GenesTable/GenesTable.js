@@ -70,6 +70,7 @@ export default compose(
 
     const tableInfo = tableModel
       .slice()
+      .sort((a, b) => tableColumns.indexOf(a.id) - tableColumns.indexOf(b.id))
       .filter(x => tableColumns.includes(x.id));
     return (
       <span>

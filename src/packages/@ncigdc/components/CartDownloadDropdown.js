@@ -53,13 +53,13 @@ const downloadCart = ({
   user,
   files,
   dispatch,
-  state,
+  disableAgreement = false,
   setState,
 }: {
   user: Object,
   files: Array<Object>,
   dispatch: Function,
-  state: Object,
+  disableAgreement: boolean,
   setState: Function,
 }) => {
   const { authorized, unauthorized } = authPartitionFiles({ user, files });
@@ -71,8 +71,20 @@ const downloadCart = ({
         .filter(f => f !== 'open'),
     ),
   );
-
-  if (unauthorized.doc_count > 0) {
+  if (disableAgreement) {
+    dispatch(setModal(null));
+    setState(s => ({ ...s, cartDownloading: true }));
+    download({
+      url: urlJoin(AUTH_API, 'data'),
+      params: {
+        ids: files.map(file => file.file_id),
+        annotations: true,
+        related_files: true,
+      },
+      method: 'POST',
+      altMessage: true,
+    })(() => {}, () => setState(s => ({ ...s, cartDownloading: false })));
+  } else if (unauthorized.doc_count > 0) {
     dispatch(
       setModal(
         <CheckBoxModal
@@ -84,8 +96,8 @@ const downloadCart = ({
                 downloadCart({
                   user,
                   files: authorized.files,
+                  disableAgreement: true,
                   dispatch,
-                  state,
                   setState,
                 })}
               style={{ margin: '0 10px' }}
@@ -151,18 +163,38 @@ const downloadCart = ({
       ),
     );
   } else {
-    dispatch(setModal(null));
-    setState(s => ({ ...s, cartDownloading: true }));
-    download({
-      url: urlJoin(AUTH_API, 'data'),
-      params: {
-        ids: files.map(file => file.file_id),
-        annotations: true,
-        related_files: true,
-      },
-      method: 'POST',
-      altMessage: true,
-    })(() => {}, () => setState(s => ({ ...s, cartDownloading: false })));
+    dispatch(
+      setModal(
+        <CheckBoxModal
+          dbGapList={dbGapList}
+          CustomButton={agreed => (
+            <Button
+              disabled={!agreed}
+              onClick={() => {
+                setState(s => ({ ...s, cartDownloading: true }));
+                download({
+                  url: urlJoin(AUTH_API, 'data'),
+                  params: {
+                    ids: files.map(file => file.file_id),
+                    annotations: true,
+                    related_files: true,
+                  },
+                  method: 'POST',
+                  altMessage: true,
+                })(
+                  () => {},
+                  () => setState(s => ({ ...s, cartDownloading: false })),
+                );
+              }}
+              style={{ margin: '0 10px' }}
+            >
+              Download
+            </Button>
+          )}
+          dispatch={dispatch}
+        />,
+      ),
+    );
   }
 };
 

@@ -93,6 +93,7 @@ const downloadCart = ({
               Download {authorized.doc_count} Authorized Files
             </Button>
           )}
+          closeText="Cancel"
           dispatch={dispatch}
         >
           <div>

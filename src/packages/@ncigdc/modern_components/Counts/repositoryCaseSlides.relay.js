@@ -5,7 +5,7 @@ import { graphql } from 'react-relay';
 import { get } from 'lodash';
 import { makeFilter, addInFilters } from '@ncigdc/utils/filters';
 
-export default (Component: ReactClass<*>) => (props: Object) => {
+export default (Component) => (props) => {
   return (
     <BaseQuery
       parentProps={{

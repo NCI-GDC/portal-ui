@@ -4,22 +4,22 @@ import React from 'react';
 
 import Link from './Link';
 
-import type { TListLinkProps, TIdLinkProps, TLinkProps } from './types';
+import { IListLinkProps, IIdLinkProps, TLinkProps } from './types';
 
-type TIdLinkConfig = {|
+type TIdLinkConfig = {
   pathname: string,
-|};
+};
 
-type TListLinkConfig = {|
+type TListLinkConfig = {
   children: string,
   pathname: string,
   query?: Object,
-|};
+};
 
 type TMakeLinkBase = (p: TLinkProps) => React.Element<>;
 const makeLinkBase: TMakeLinkBase = props => <Link {...props} />;
 
-type TMakeIdLink = (c: TIdLinkConfig) => (p: TIdLinkProps) => React.Element<>;
+type TMakeIdLink = (c: TIdLinkConfig) => (p: IIdLinkProps) => React.Element<>;
 export const makeIDLink: TMakeIdLink = config => props => {
   const pathname = `${config.pathname}/${props.uuid}`;
   const children = props.children || props.uuid;
@@ -33,7 +33,7 @@ export const makeIDLink: TMakeIdLink = config => props => {
 
 type TMakeListLink = (
   c: TListLinkConfig,
-) => (p: TListLinkProps) => React.Element<>;
+) => (p: IListLinkProps) => React.Element<>;
 export const makeListLink: TMakeListLink = ({
   query: configQuery,
   ...config

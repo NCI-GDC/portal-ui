@@ -1,7 +1,7 @@
 /* @flow */
 import { parse } from 'query-string';
 
-import type { TPrepareNodeParams } from './types';
+import { TPrepareNodeParams } from './types';
 
 import { parseFilterParam } from '../uri';
 

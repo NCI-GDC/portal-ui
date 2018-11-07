@@ -1,16 +1,14 @@
-/* @flow */
 import jsurl from 'jsurl';
-
-import type {
+import {
   TParseFilterParam,
-  TParseJSONParam,
   TParseIntParam,
+  TParseJSONParam,
 } from './types';
 
-export const parseIntParam: TParseIntParam = (str, defaults) =>
+export const parseIntParam: TParseIntParam = (str, defaults = null) =>
   str ? Math.max(parseInt(str, 10), 0) : defaults;
 
-export const parseJSONParam: TParseJSONParam = (str, defaults) => {
+export const parseJSONParam: TParseJSONParam = (str, defaults = {}) => {
   if (str) {
     try {
       return JSON.parse(str) || defaults;

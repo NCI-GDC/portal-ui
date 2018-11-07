@@ -6,12 +6,12 @@ import Dropdown from '@ncigdc/uikit/Dropdown';
 import DropdownItem from '@ncigdc/uikit/DropdownItem';
 import Link from '@ncigdc/components/Links/Link';
 
-export type TProps = {|
+export type TProps = {
   prfSize: string,
   prfOff: string,
   size: number,
   sizes?: Array<number>,
-|};
+};
 
 const Sizes = ({
   sizes = [10, 20, 40, 60, 80, 100],

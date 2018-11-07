@@ -149,11 +149,11 @@ const Component = ({ viewer: { explore: { cases = {} } }, filters, relay }) => {
 
 const Renderer = createRenderer(Route, createContainer(Component));
 
-type TProps = {|
+type TProps = {
   caseTotal: number,
   gdcCaseTotal: number,
   filters: Object,
-|};
+};
 
 export default ({ caseTotal, gdcCaseTotal, filters }: TProps = {}) => (
   <Toggle

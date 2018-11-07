@@ -11,7 +11,7 @@ import Button from '@ncigdc/uikit/Button';
 import ExploreLink from '@ncigdc/components/Links/ExploreLink';
 import { theme } from '@ncigdc/theme/index';
 import removeEmptyKeys from '@ncigdc/utils/removeEmptyKeys';
-import type { TSetTypes } from '../../dux/sets';
+import { TSetTypes } from '../../dux/sets';
 import DemoButton from './DemoButton';
 
 type TProps = {

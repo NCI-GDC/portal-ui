@@ -4,7 +4,7 @@
 import _ from 'lodash';
 import { parseFilterParam } from '../uri';
 
-import type {
+import {
   TMergeFilters,
   TCombineValues,
   TMergeFns,

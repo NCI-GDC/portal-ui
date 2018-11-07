@@ -3,14 +3,14 @@
 import React from 'react';
 import Link from './Link';
 
-type TProps = {|
+type TProps = {
   children?: mixed,
   style?: Object,
   activeStyle?: Object,
   exact?: boolean,
   className?: string,
   tabIndex?: string,
-|};
+};
 
 const HomeLink = ({ children, ...props }: TProps) => (
   <Link pathname="/" {...props}>

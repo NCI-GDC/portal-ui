@@ -2,7 +2,7 @@
 import _ from 'lodash';
 import { DATA_CATEGORIES } from '@ncigdc/utils/constants';
 
-import type {
+import {
   TCategoryMap,
   TFindDataCategory,
   TSumDataCategories,

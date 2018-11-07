@@ -1,7 +1,7 @@
 // @flow
 import { CALL_API } from 'redux-api-middleware';
 import urlJoin from 'url-join';
-import { API, AUTH } from '@ncigdc/utils/constants';
+import { API, AUTH, IS_AUTH_PORTAL } from '@ncigdc/utils/constants';
 import Queue from 'queue';
 import md5 from 'blueimp-md5';
 
@@ -19,6 +19,16 @@ export function fetchAuth(options: { endpoint: string }): Object {
   return {
     [CALL_API]: {
       ...DEFAULTS,
+      ...(IS_AUTH_PORTAL
+        ? {
+            credentials: 'include',
+            // need headers to override here?
+            headers: {
+              'Content-Type': 'application/json',
+              'Access-Control-Allow-Origin': true,
+            },
+          }
+        : {}),
       ...options,
       endpoint: urlJoin(AUTH, options.endpoint),
     },

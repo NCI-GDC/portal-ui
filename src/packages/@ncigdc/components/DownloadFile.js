@@ -48,7 +48,7 @@ function DownloadFile({
       onClick={() =>
         dispatch(
           setModal(
-            userCanDownloadFile({ user, file }) || true ? (
+            userCanDownloadFile({ user, file }) ? (
               <CheckBoxModal
                 dbGapList={file.acl}
                 CustomButton={agreed => (

@@ -10,6 +10,7 @@ const CheckBoxModal = ({
   dbGapList = [],
   extraButtons,
   dispatch,
+  hidden = false,
   setAgreed,
   agreed,
   children,
@@ -31,21 +32,23 @@ const CheckBoxModal = ({
       closeText="Cancel"
     >
       {children}
-      <div>
-        <input
-          type="checkbox"
-          onClick={() => {
-            setAgreed(!agreed);
-          }}
-          checked={agreed}
-        />{' '}
-        I agree to abide by the GDC{' '}
-        <a href="https://gdc.cancer.gov/about-data/data-analysis-policies">
-          Data Use Agreement
-        </a>{' '}
-        and the study-specific Data Use Certification Agreement available in{' '}
-        <a href={dbGapLink}>dbGaP</a>.
-      </div>
+      {hidden ? null : (
+        <div>
+          <input
+            type="checkbox"
+            onClick={() => {
+              setAgreed(!agreed);
+            }}
+            checked={agreed}
+          />{' '}
+          I agree to abide by the GDC{' '}
+          <a href="https://gdc.cancer.gov/about-data/data-analysis-policies">
+            Data Use Agreement
+          </a>{' '}
+          and the study-specific Data Use Certification Agreement available in{' '}
+          <a href={dbGapLink}>dbGaP</a>.
+        </div>
+      )}
     </BaseModal>
   );
 };

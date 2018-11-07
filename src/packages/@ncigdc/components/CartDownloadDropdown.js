@@ -63,6 +63,7 @@ const downloadCart = ({
   setState: Function,
 }) => {
   const { authorized, unauthorized } = authPartitionFiles({ user, files });
+  console.log('user', user);
 
   const dbGapList = Array.from(
     new Set(
@@ -106,6 +107,7 @@ const downloadCart = ({
               Download {authorized.doc_count} Authorized Files
             </Button>
           )}
+          hidden={!user}
           closeText="Cancel"
           dispatch={dispatch}
         >

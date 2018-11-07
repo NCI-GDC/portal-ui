@@ -21,6 +21,7 @@ export interface IFlexDivProps {
   style?: CSSProperties;
   spacing?: string;
   className?: string;
+  id?: string,
   onClick?: () => void;
 }
 

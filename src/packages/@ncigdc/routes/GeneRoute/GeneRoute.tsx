@@ -17,8 +17,18 @@ import { GeneLolliplot } from '@ncigdc/modern_components/Lolliplot';
 import { parse } from 'query-string';
 import { parseJSONParam } from '@ncigdc/utils/uri';
 import { replaceFilters } from '@ncigdc/utils/filters';
+import { match as IMatch } from 'react-router';
+import { Location as ILocation } from 'history';
 
-export default ({ match, geneId = match.params.id, location }: Object) => {
+export default ({
+  match,
+  geneId = match.params.id,
+  location,
+}: {
+  match: IMatch<{ id: string }>;
+  geneId: string;
+  location: ILocation;
+}) => {
   const { filters: f } = parse(location.search);
   const filters = parseJSONParam(f, f);
 

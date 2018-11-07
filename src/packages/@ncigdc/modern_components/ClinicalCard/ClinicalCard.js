@@ -19,7 +19,6 @@ import AddToCartButtonSingle from '@ncigdc/components/AddToCartButtonSingle';
 import DownloadFile from '@ncigdc/components/DownloadFile';
 import DownloadClinicalDropdown from '@ncigdc/modern_components/DownloadClinicalDropdown/';
 import { makeFilter } from '@ncigdc/utils/filters';
-import RemoveFromCartSingle from '@ncigdc/components/RemoveFromCartSingle';
 
 const styles = {
   common: theme => ({
@@ -60,7 +59,6 @@ export default compose(
     state,
     setState,
     requests,
-    canAddToCart = true,
   }) => {
     const {
       case_id: caseId,
@@ -385,12 +383,7 @@ export default compose(
                       }}
                     >
                       <span key="add_to_cart" style={{ paddingRight: '10px' }}>
-                        {canAddToCart && (
-                          <AddToCartButtonSingle file={fileData} />
-                        )}
-                        {!canAddToCart && (
-                          <RemoveFromCartSingle file={fileData} />
-                        )}
+                        <AddToCartButtonSingle file={fileData} />
                       </span>
                       <span style={{ paddingRight: '10px' }}>
                         <DownloadFile

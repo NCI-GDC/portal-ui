@@ -11,20 +11,15 @@ export default (Component: ReactClass<*>) =>
     withPropsOnChange(['filters'], ({ filters = null }) => {
       const cnvAvailableVariationDataFilter = {
         field: 'cases.available_variation_data',
-        value: 'cnv',
+        value: ['cnv'],
       };
       const ssmAvailableVariationDataFilter = {
         field: 'cases.available_variation_data',
-        value: 'ssm',
+        value: ['ssm'],
       };
       return {
         variables: {
-          ssmTested: makeFilter([
-            {
-              field: 'cases.available_variation_data',
-              value: 'ssm',
-            },
-          ]),
+          ssmTested: makeFilter([ssmAvailableVariationDataFilter]),
           cnvTested: makeFilter([cnvAvailableVariationDataFilter]),
           cnvGainFilter: replaceFilters(
             makeFilter([
@@ -46,7 +41,25 @@ export default (Component: ReactClass<*>) =>
             ]),
             filters,
           ),
-          caseAggsFilter: filters,
+          caseAggsFilter: replaceFilters(
+            {
+              op: 'and',
+              content: [
+                {
+                  op: 'NOT',
+                  content: {
+                    field: 'cases.gene.ssm.observation.observation_id',
+                    value: 'MISSING',
+                  },
+                },
+                {
+                  op: 'in',
+                  content: ssmAvailableVariationDataFilter,
+                },
+              ],
+            },
+            filters,
+          ),
           ssmCountsFilters: replaceFilters(
             makeFilter([ssmAvailableVariationDataFilter]),
             filters,

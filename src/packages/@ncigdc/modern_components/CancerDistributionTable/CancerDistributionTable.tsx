@@ -5,6 +5,7 @@ import CollapsibleList from '@ncigdc/uikit/CollapsibleList';
 import DownloadTableToTsvButton from '@ncigdc/components/DownloadTableToTsvButton';
 import EntityPageHorizontalTable from '@ncigdc/components/EntityPageHorizontalTable';
 import ExploreLink from '@ncigdc/components/Links/ExploreLink';
+import ExploreSSMLink from '@ncigdc/components/Links/ExploreSSMLink';
 import GreyBox from '@ncigdc/uikit/GreyBox';
 import LocalPaginationTable from '@ncigdc/components/LocalPaginationTable';
 import MutationsCount from '@ncigdc/components/MutationsCount';
@@ -22,8 +23,8 @@ import { Tooltip } from '@ncigdc/uikit/Tooltip';
 
 const paginationPrefix = 'canDistTable';
 
-const CollapsibleRowList: React.ComponentType<{ data: Array<{}> }> = props => {
-  const { data } = props;
+const CollapsibleRowList: React.ComponentType<{ data: Array<{}>, label: string }> = props => {
+  const { data, label } = props;
 
   if (!data.length) {
     return <GreyBox />;
@@ -37,7 +38,7 @@ const CollapsibleRowList: React.ComponentType<{ data: Array<{}> }> = props => {
           toggleStyle={{ fontStyle: 'normal' }}
           data={data.slice(0).sort()}
           limit={0}
-          expandText={`${data.length} Disease Types`}
+          expandText={`${data.length} ` + label}
           collapseText="collapse"
         />
       )}
@@ -226,18 +227,22 @@ export default compose<ICDTWrappedProps, ICancerDistributionTableProps>(
           project_id: (
             <ProjectLink uuid={row.project_id}>{row.project_id}</ProjectLink>
           ),
-          disease_type: <CollapsibleRowList data={row.disease_type} />,
-          site: <CollapsibleRowList data={row.site} />,
+          disease_type: (
+            <CollapsibleRowList
+              data={row.disease_type}
+              label={'Disease Types'}
+            />
+          ),
+          site: <CollapsibleRowList data={row.site} label={'Primary Sites'} />,
           num_affected_cases: (
             <span>
-              <ExploreLink
-                query={{
-                  searchTableTab: 'cases',
-                  filters: replaceFilters(projectFilter, filters),
-                }}
+              <ExploreSSMLink
+                merge
+                searchTableTab={'cases'}
+                filters={replaceFilters(projectFilter, filters)}
               >
                 {row.num_affected_cases}
-              </ExploreLink>
+              </ExploreSSMLink>
               <span> / </span>
               <ExploreLink
                 query={{

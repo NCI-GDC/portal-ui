@@ -42,7 +42,14 @@ const styles = {
 
 const fileInCart = (files, file) => files.some(f => f.file_id === file.file_id);
 
-const AddToCartButtonSingle = ({ dispatch, file, files, theme, style }) => (
+const AddToCartButtonSingle = ({
+  dispatch,
+  file,
+  files,
+  theme,
+  style,
+  asIcon = false,
+}) => (
   <Button
     className="test-add-to-cart"
     style={{
@@ -55,7 +62,11 @@ const AddToCartButtonSingle = ({ dispatch, file, files, theme, style }) => (
     aria-label="Add to cart"
   >
     <ShoppingCartIcon
-      style={{ color: fileInCart(files, file) ? 'white' : 'rgb(0, 80, 131)' }}
+      style={{
+        color: fileInCart(files, file)
+          ? asIcon ? '#3c763d' : 'white'
+          : 'rgb(0, 80, 131)',
+      }}
     />
     <Hidden>Add to cart</Hidden>
   </Button>

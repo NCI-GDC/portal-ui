@@ -61,6 +61,19 @@ export default compose(
             }
             thToTd={[
               { th: 'Project ID', td: project.project_id },
+              {
+                th: 'Dbgap Phs ID',
+                td: (
+                  <a
+                    href={
+                      'https://www.ncbi.nlm.nih.gov/projects/gap/cgi-bin/study.cgi?study_id=' +
+                      project.dbgap_accession_number
+                    }
+                  >
+                    {project.dbgap_accession_number}
+                  </a>
+                ),
+              },
               { th: 'Project Name', td: project.name },
               {
                 th: 'Disease Type',
@@ -121,6 +134,19 @@ export default compose(
             }
             thToTd={[
               { th: 'Project ID', td: project.project_id },
+              {
+                th: 'Dbgap Phs ID',
+                td: (
+                  <a
+                    href={
+                      'https://www.ncbi.nlm.nih.gov/projects/gap/cgi-bin/study.cgi?study_id=' +
+                      project.dbgap_accession_number
+                    }
+                  >
+                    {project.dbgap_accession_number}
+                  </a>
+                ),
+              },
               { th: 'Project Name', td: project.name },
               { th: 'Program', td: project.program.name },
             ]}

@@ -7,6 +7,7 @@ import DownloadButton from '@ncigdc/components/DownloadButton';
 import { userCanDownloadFile } from '@ncigdc/utils/auth';
 import { setModal } from '@ncigdc/dux/modal';
 import NoAccessModal from '@ncigdc/components/Modals/NoAccessModal';
+import CheckBoxModal from '@ncigdc/components/Modals/CheckBoxModal';
 import Hidden from '@ncigdc/components/Hidden';
 import Button from '@ncigdc/uikit/Button';
 
@@ -27,20 +28,6 @@ function DownloadFile({
   inactiveText,
   style = {},
 }: TProps): any {
-  if (userCanDownloadFile({ user, file })) {
-    return (
-      <DownloadButton
-        className="test-download-button"
-        extraParams={{ ids: file.file_id }}
-        filename={file.file_name}
-        endpoint="data?annotations=true&related_files=true"
-        activeText={activeText}
-        inactiveText={inactiveText}
-        style={style}
-      />
-    );
-  }
-
   return (
     <Button
       className="test-download-button"
@@ -48,7 +35,27 @@ function DownloadFile({
       onClick={() =>
         dispatch(
           setModal(
-            <NoAccessModal message="You don't have access to this file." />,
+            userCanDownloadFile({ user, file }) ? (
+              <CheckBoxModal
+                dbGapList={file.acl}
+                single={true}
+                CustomButton={agreed => (
+                  <DownloadButton
+                    disabled={!agreed}
+                    className="test-download-button"
+                    extraParams={{ ids: file.file_id }}
+                    filename={file.file_name}
+                    endpoint="data?annotations=true&related_files=true"
+                    activeText={activeText}
+                    inactiveText={inactiveText}
+                    style={style}
+                  />
+                )}
+                dispatch={dispatch}
+              />
+            ) : (
+              <NoAccessModal message="You don't have access to this file." />
+            ),
           ),
         )}
       leftIcon={inactiveText && <i className={'fa fa-download'} />}

@@ -55,6 +55,7 @@ export default (Component: ReactClass<*>) =>
                     node {
                       id
                       project_id
+                      dbgap_accession_number
                       disease_type
                       program {
                         name

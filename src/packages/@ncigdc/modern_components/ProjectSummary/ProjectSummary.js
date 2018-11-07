@@ -62,7 +62,7 @@ export default compose(
             thToTd={[
               { th: 'Project ID', td: project.project_id },
               {
-                th: 'Dbgap Phs ID',
+                th: 'dbGaP Study Accession',
                 td: (
                   <a
                     href={
@@ -132,10 +132,21 @@ export default compose(
                 <i className="fa fa-table" /> Summary
               </span>
             }
+            description={
+              <div style={{ paddingLeft: '10px', marginBottom: '20px' }}>
+                <div>
+                  The project has controlled access data which required dbGaP
+                  Access. See instructions for{' '}
+                  <a href="https://gdc.cancer.gov/access-data/obtaining-access-controlled-data">
+                    Obtaining Access to Controlled Data.
+                  </a>
+                </div>
+              </div>
+            }
             thToTd={[
               { th: 'Project ID', td: project.project_id },
               {
-                th: 'Dbgap Phs ID',
+                th: 'dbGaP Study Accession',
                 td: (
                   <a
                     href={

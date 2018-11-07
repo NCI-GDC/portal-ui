@@ -6,9 +6,8 @@ import withRouter from '@ncigdc/utils/withRouter';
 
 const enhance = compose(withState('agreed', 'setAgreed', false), withRouter);
 
-const RemoveSetModal = ({
+const CheckBoxModal = ({
   dbGapList = [],
-  single = false,
   extraButtons,
   dispatch,
   setAgreed,
@@ -16,11 +15,12 @@ const RemoveSetModal = ({
   children,
   CustomButton,
 }) => {
-  let dbGapLink = single
-    ? 'https://www.ncbi.nlm.nih.gov/projects/gap/cgi-bin/study.cgi?study_id=' +
-      dbGapList[0]
-    : 'https://www.ncbi.nlm.nih.gov/gap/?term=' +
-      dbGapList.reduce((acc, d) => acc + '(' + d + ')+OR+', '');
+  let dbGapLink =
+    dbGapList.length === 1
+      ? 'https://www.ncbi.nlm.nih.gov/projects/gap/cgi-bin/study.cgi?study_id=' +
+        dbGapList[0]
+      : 'https://www.ncbi.nlm.nih.gov/gap/?term=' +
+        dbGapList.reduce((acc, d) => acc + '(' + d + ')+OR+', '');
   if (dbGapLink.substr(dbGapLink.length - 4) === '+OR+') {
     dbGapLink = dbGapLink.slice(0, dbGapLink.length - 4);
   }
@@ -39,15 +39,15 @@ const RemoveSetModal = ({
           }}
           checked={agreed}
         />{' '}
-        You are downloading controlled access data and must abide by the
-        associated{' '}
+        I agree to abide by the GDC{' '}
         <a href="https://gdc.cancer.gov/about-data/data-analysis-policies">
           Data Use Agreement
         </a>{' '}
-        available in <a href={dbGapLink}>dbGaP</a>.
+        and the study-specific Data Use Certification Agreement available in{' '}
+        <a href={dbGapLink}>dbGaP</a>.
       </div>
     </BaseModal>
   );
 };
 
-export default enhance(RemoveSetModal);
+export default enhance(CheckBoxModal);

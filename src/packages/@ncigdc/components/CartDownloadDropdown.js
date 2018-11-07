@@ -63,6 +63,7 @@ const downloadCart = ({
   setState: Function,
 }) => {
   const { authorized, unauthorized } = authPartitionFiles({ user, files });
+
   const dbGapList = Array.from(
     new Set(
       authorized.files
@@ -71,7 +72,7 @@ const downloadCart = ({
         .filter(f => f !== 'open'),
     ),
   );
-  if (disableAgreement) {
+  if (disableAgreement || dbGapList.length === 0) {
     dispatch(setModal(null));
     setState(s => ({ ...s, cartDownloading: true }));
     download({
@@ -252,7 +253,13 @@ const CartDownloadDropdown = ({
           style={styles.button(theme)}
           disabled={state.cartDownloading}
           onClick={() =>
-            downloadCart({ user, files, dispatch, state, setState })}
+            downloadCart({
+              user,
+              files,
+              dispatch,
+              disableAgreement: false,
+              setState,
+            })}
           leftIcon={state.cartDownloading ? <Spinner /> : <DownloadIcon />}
         >
           Cart

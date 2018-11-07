@@ -28,6 +28,19 @@ function DownloadFile({
   inactiveText,
   style = {},
 }: TProps): any {
+  if (file.access === 'open') {
+    return (
+      <DownloadButton
+        className="test-download-button"
+        extraParams={{ ids: file.file_id }}
+        filename={file.file_name}
+        endpoint="data?annotations=true&related_files=true"
+        activeText={activeText}
+        inactiveText={inactiveText}
+        style={style}
+      />
+    );
+  }
   return (
     <Button
       className="test-download-button"
@@ -38,7 +51,6 @@ function DownloadFile({
             userCanDownloadFile({ user, file }) ? (
               <CheckBoxModal
                 dbGapList={file.acl}
-                single={true}
                 CustomButton={agreed => (
                   <DownloadButton
                     disabled={!agreed}

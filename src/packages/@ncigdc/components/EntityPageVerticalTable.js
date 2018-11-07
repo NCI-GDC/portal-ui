@@ -11,6 +11,7 @@ import Table, { Tr, Td, Th, CollapsibleTd } from '@ncigdc/uikit/Table';
 const EntityPageVerticalTable = ({
   style = {},
   title,
+  description = '',
   thToTd,
   className,
   titleStyle,
@@ -61,19 +62,7 @@ const EntityPageVerticalTable = ({
           {title}
         </h1>
       )}
-      {
-        <div style={{ paddingLeft: '10px', marginBottom: '20px' }}>
-          <div>
-            The project has controlled access data which required dbGAP Access.
-          </div>
-          <div>
-            See instructions for{' '}
-            <a href="https://gdc.cancer.gov/access-data/obtaining-access-controlled-data">
-              Obtaining Access to Controlled Data.
-            </a>
-          </div>
-        </div>
-      }
+      {description}
       <Table
         style={styles.table}
         body={

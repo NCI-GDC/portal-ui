@@ -16,6 +16,8 @@ const TOKEN_SUCCESS = 'gdc/TOKEN_SUCCESS';
 const TOKEN_FAILURE = 'gdc/TOKEN_FAILURE';
 const TOKEN_CLEAR = 'gdc/TOKEN_CLEAR';
 
+const SET_USER_ACCESS = 'gdc/SET_USER_ACCESS';
+
 export function fetchUser() {
   if (IS_DEV) {
     return {
@@ -78,6 +80,13 @@ export function fetchToken() {
   });
 }
 
+export function setUserAccess(access): Action {
+  return {
+    type: SET_USER_ACCESS,
+    payload: access,
+  };
+}
+
 const initialState: State = {
   firstLoad: true,
   isFetching: false,
@@ -86,6 +95,9 @@ const initialState: State = {
   isFetchingToken: false,
   token: undefined,
   failed: false,
+  intersection: null,
+  fence_projects: null,
+  nih_projects: null,
 };
 
 export default handleActions(
@@ -111,6 +123,9 @@ export default handleActions(
       user: null,
       firstLoad: false,
       failed: true,
+      intersection: null,
+      fence_projects: null,
+      nih_projects: null,
     }),
     [TOKEN_REQUEST]: state => ({
       ...state,
@@ -130,6 +145,12 @@ export default handleActions(
       ...state,
       isFetchingToken: false,
       token: undefined,
+    }),
+    [SET_USER_ACCESS]: (state, action) => ({
+      ...state,
+      intersection: action.payload.intersection,
+      fence_projects: action.payload.fence_projects,
+      nih_projects: action.payload.nih_projects,
     }),
   },
   initialState,

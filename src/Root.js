@@ -20,6 +20,8 @@ import { fetchUser, forceLogout } from '@ncigdc/dux/auth';
 import { clear } from '@ncigdc/utils/cookies';
 import Login from '@ncigdc/routes/Login';
 
+let first = true;
+
 Relay.injectNetworkLayer(
   new RelayNetworkLayer([
     urlMiddleware({
@@ -63,47 +65,21 @@ Relay.injectNetworkLayer(
       return next(req)
         .then(res => {
           let { json } = res;
-          let tries = 20;
-          let id = setInterval(() => {
-            let { user } = window.store.getState().auth;
-
-            if (user) {
-              if (
-                !(json.fence_projects[0] || []).length &&
-                !(json.nih_projects || []).length &&
-                !(json.intersection[0] || []).length
-              ) {
-                clear();
-                window.location.href = '/login?error=timeout';
-                return;
-              }
-              if (!(json.fence_projects[0] || []).length) {
-                clear();
-                window.location.href = '/login?error=no_fence_projects';
-                return;
-              }
-
-              if (!(json.nih_projects || []).length) {
-                clear();
-                window.location.href = '/login?error=no_nih_projects';
-                return;
-              }
-
-              if (!(json.intersection[0] || []).length) {
-                clear();
-                window.location.href = '/login?error=no_intersection';
-                return;
-              }
-            }
-
-            tries--;
-
-            if (!tries) clearInterval(id);
-          }, 500);
+          let { user } = window.store.getState().auth;
+          if (user && first) {
+            first = false;
+            store.dispatch(
+              setUserAccess({
+                intersection: json.intersection[0],
+                nih_projects: json.nih_projects,
+                fence_projects: json.fence_projects[0],
+              }),
+            );
+          }
           return res;
         })
         .catch(err => {
-          if (err.fetchResponse.status === 403) {
+          if (err.fetchResponse && err.fetchResponse.status === 403) {
             if (user) {
               store.dispatch(forceLogout());
             }
@@ -137,6 +113,9 @@ let HasUser = connect(state => state.auth)(props => {
     user: props.user,
     failed: props.failed,
     error: props.error,
+    intersection: props.intersection,
+    fence_projects: props.fence_projects,
+    nih_projects: props.nih_projects,
   });
 });
 
@@ -150,7 +129,14 @@ const Root = (props: mixed) => (
             return IS_AUTH_PORTAL &&
               !window.location.pathname.includes('/login') ? (
               <HasUser>
-                {({ user, failed, error }) => {
+                {({
+                  user,
+                  failed,
+                  error,
+                  intersection,
+                  nih_projects,
+                  fence_projects,
+                }) => {
                   if (
                     failed &&
                     error.message === 'Session timed out or not authorized'
@@ -161,6 +147,15 @@ const Root = (props: mixed) => (
                     return <Redirect to="/login" />;
                   }
                   if (user) {
+                    if (fence_projects && !fence_projects.length) {
+                      return <Redirect to="/login?error=no_fence_projects" />;
+                    }
+                    if (nih_projects && !nih_projects.length) {
+                      return <Redirect to="/login?error=no_nih_projects" />;
+                    }
+                    if (intersection && !intersection.length) {
+                      return <Redirect to="/login?error=no_intersection" />;
+                    }
                     return (
                       <Relay.Renderer
                         Container={Container}

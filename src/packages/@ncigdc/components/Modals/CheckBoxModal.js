@@ -1,10 +1,21 @@
 // @flow
 import React from 'react';
-import { compose, withState } from 'recompose';
+import { compose, withState, lifecycle } from 'recompose';
 import BaseModal from '@ncigdc/components/Modals/BaseModal';
 import withRouter from '@ncigdc/utils/withRouter';
+import { setModal } from '@ncigdc/dux/modal';
 
-const enhance = compose(withState('agreed', 'setAgreed', false), withRouter);
+const enhance = compose(
+  withState('agreed', 'setAgreed', false),
+  lifecycle({
+    componentWillReceiveProps(nextProps) {
+      if (nextProps.user && !this.props.user) {
+        nextProps.dispatch(setModal(null));
+      }
+    },
+  }),
+  withRouter,
+);
 
 const CheckBoxModal = ({
   dbGapList = [],
@@ -42,11 +53,17 @@ const CheckBoxModal = ({
             checked={agreed}
           />{' '}
           I agree to abide by the GDC{' '}
-          <a href="https://gdc.cancer.gov/about-data/data-analysis-policies">
+          <a
+            href="https://gdc.cancer.gov/about-data/data-analysis-policies"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             Data Use Agreement
           </a>{' '}
           and the study-specific Data Use Certification Agreement available in{' '}
-          <a href={dbGapLink}>dbGaP</a>.
+          <a href={dbGapLink} target="_blank" rel="noopener noreferrer">
+            dbGaP
+          </a>.
         </div>
       )}
     </BaseModal>

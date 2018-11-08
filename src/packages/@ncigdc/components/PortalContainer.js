@@ -81,7 +81,7 @@ const PortalContainer = ({
   >
     <SkipLink href="#skip">Skip to Main Content</SkipLink>
     <ProgressContainer />
-    {AWG ? <AwgHeader /> : <Header />}
+    {AWG ? <AWGHeader /> : <Header />}
     <div
       id="skip"
       role="main"

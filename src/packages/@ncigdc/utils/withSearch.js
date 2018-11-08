@@ -5,6 +5,7 @@ import { fetchApi } from '@ncigdc/utils/ajax';
 import { compose, withState, withHandlers, withProps } from 'recompose';
 import withPropsOnChange from '@ncigdc/utils/withPropsOnChange';
 import { TSearchHit } from '@ncigdc/components/QuickSearch/types';
+import { IS_AUTH_PORTAL } from '@ncigdc/utils/constants';
 
 const throttledInvoker = _.throttle(fn => fn(), 300, { leading: false });
 
@@ -42,14 +43,23 @@ export const withSearch = passedInState => {
           isLoading: false,
         }));
       },
-      fetchResults: ({ handleResults }) => (query, timeOfRequest) =>
-        throttledInvoker(() =>
-          fetchApi(
-            `/all?query=${window.encodeURIComponent(query)}&size=5`,
-          ).then(response =>
+      fetchResults: ({ handleResults }) => (query, timeOfRequest) => {
+        // need to use just one endpoint, switch credentials
+        const fetchConfig = IS_AUTH_PORTAL
+          ? (`/quick_search?query=${window.encodeURIComponent(query)}&size=5`,
+            {
+              credentials: 'include',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+            })
+          : `/all?query=${window.encodeURIComponent(query)}&size=5`;
+        return throttledInvoker(() =>
+          fetchApi(fetchConfig).then(response =>
             handleResults(response.data.query.hits, timeOfRequest),
           ),
-        ),
+        );
+      },
     }),
     withHandlers({
       selectItem: ({ push, reset }) => (item: TSearchHit) => {

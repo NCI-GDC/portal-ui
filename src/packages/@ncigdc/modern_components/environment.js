@@ -3,8 +3,9 @@
 import urlJoin from 'url-join';
 import { Environment, Network, RecordSource, Store } from 'relay-runtime';
 import md5 from 'blueimp-md5';
-import { API } from '@ncigdc/utils/constants';
 
+import { clear } from '@ncigdc/utils/cookies';
+import { API, IS_AUTH_PORTAL } from '@ncigdc/utils/constants';
 const source = new RecordSource();
 const store = new Store(source);
 const simpleCache = {};
@@ -51,9 +52,10 @@ function fetchQuery(operation, variables, cacheConfig) {
   pendingCache[hash] = true;
 
   return fetch(urlJoin(API, `graphql/${componentName}?hash=${hash}`), {
+    ...(IS_AUTH_PORTAL ? { credentials: 'include' } : {}),
     method: 'POST',
     headers: {
-      'content-type': 'application/json',
+      'Content-Type': 'application/json',
     },
     body,
   }).then(response =>
@@ -64,6 +66,40 @@ function fetchQuery(operation, variables, cacheConfig) {
         delete pendingCache[hash];
       }
 
+      if (IS_AUTH_PORTAL) {
+        let tries = 20;
+        let id = setInterval(() => {
+          let { user } = window.store.getState().auth;
+          if (user) {
+            if (
+              !(json.fence_projects || []).length &&
+              !(json.nih_projects || []).length &&
+              !(json.intersection || []).length
+            ) {
+              clear();
+              window.location.href = '/login?error=timeout';
+              return;
+            }
+            if (!json.fence_projects.length) {
+              clear();
+              window.location.href = '/login?error=no_fence_projects';
+              return;
+            }
+            if (!json.nih_projects.length) {
+              clear();
+              window.location.href = '/login?error=no_nih_projects';
+              return;
+            }
+            if (!json.intersection.length) {
+              clear();
+              window.location.href = '/login?error=no_intersection';
+              return;
+            }
+          }
+          tries--;
+          if (!tries) clearInterval(id);
+        }, 500);
+      }
       return json;
     }),
   );

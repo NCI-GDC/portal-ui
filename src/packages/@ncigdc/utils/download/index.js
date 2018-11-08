@@ -2,7 +2,7 @@
 
 import React from 'react';
 // TODO change this
-import { store } from '../../../../Portal';
+// import { store } from '../../../../Portal';
 
 import _ from 'lodash';
 import Cookies from 'js-cookie';
@@ -24,7 +24,7 @@ const getIframeResponse = iFrame =>
   JSON.parse(getBody(iFrame).querySelector('pre').innerText);
 const showErrorModal = error => {
   const warning = error.warning || error.message;
-  store.dispatch(
+  window.store.dispatch(
     setModal(
       <Column
         style={{
@@ -33,7 +33,9 @@ const showErrorModal = error => {
       >
         {warning}
         <Row style={{ paddingTop: '0.5rem', justifyContent: 'flex-end' }}>
-          <Button onClick={() => store.dispatch(setModal(null))}>OK</Button>
+          <Button onClick={() => window.store.dispatch(setModal(null))}>
+            OK
+          </Button>
         </Row>
       </Column>,
     ),
@@ -72,7 +74,7 @@ const progressChecker = (
   const finished = () => {
     //console.info('Download check count & wait interval (in milliseconds):', attempts, waitTime);
     timeoutPromise = null;
-    store.dispatch(closeNotification());
+    window.store.dispatch(closeNotification());
     iFrame.parentNode.removeChild(iFrame);
     done();
   };
@@ -141,7 +143,7 @@ const progressChecker = (
     } else if (cookieStillThere()) {
       if (altMessage) {
         if (attempts === 5 || attempts === 2) {
-          store.dispatch(
+          window.store.dispatch(
             notify({
               action: 'add',
               id: `download/${attempts}`,
@@ -150,7 +152,7 @@ const progressChecker = (
             }),
           );
         } else if (attempts === 6) {
-          store.dispatch(
+          window.store.dispatch(
             notify({
               action: 'add',
               id: `download/${attempts}`,
@@ -160,7 +162,7 @@ const progressChecker = (
           );
         }
       } else {
-        store.dispatch(
+        window.store.dispatch(
           notify({
             action: 'add',
             id: `download/${attempts}`,

@@ -4,14 +4,17 @@
 import React from 'react';
 import { REHYDRATE } from 'redux-persist/constants';
 import _ from 'lodash';
-
+import md5 from 'blueimp-md5';
+import urlJoin from 'url-join';
 import { stringify } from 'query-string';
+
 import { fetchApi } from '@ncigdc/utils/ajax';
 import { notify } from '@ncigdc/dux/notification';
 import { Column } from '@ncigdc/uikit/Flex';
 import { center } from '@ncigdc/theme/mixins';
 import { replaceFilters } from '@ncigdc/utils/filters';
 import UnstyledButton from '@ncigdc/uikit/UnstyledButton';
+import { API, IS_AUTH_PORTAL } from '@ncigdc/utils/constants';
 
 /*----------------------------------------------------------------------------*/
 
@@ -44,6 +47,13 @@ export const CART_FULL = 'CART_FULL';
 export const MAX_CART_SIZE = 10000;
 const MAX_CART_WARNING = `The cart is limited to ${MAX_CART_SIZE.toLocaleString()} files.
   Please narrow the search criteria or remove some files from the cart to add more.`;
+
+const DEFAULTS = {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+};
 
 const getNotificationComponent = (
   action,

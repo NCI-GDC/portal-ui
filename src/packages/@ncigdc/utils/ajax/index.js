@@ -22,11 +22,7 @@ export function fetchAuth(options: { endpoint: string }): Object {
       ...(IS_AUTH_PORTAL
         ? {
             credentials: 'include',
-            // need headers to override here?
-            headers: {
-              'Content-Type': 'application/json',
-              'Access-Control-Allow-Origin': true,
-            },
+            headers: {},
           }
         : {}),
       ...options,

@@ -69,6 +69,8 @@ export default compose(
                       'https://www.ncbi.nlm.nih.gov/projects/gap/cgi-bin/study.cgi?study_id=' +
                       project.dbgap_accession_number
                     }
+                    target="_blank"
+                    rel="noopener noreferrer"
                   >
                     {project.dbgap_accession_number}
                   </a>
@@ -137,7 +139,11 @@ export default compose(
                 <div>
                   The project has controlled access data which required dbGaP
                   Access. See instructions for{' '}
-                  <a href="https://gdc.cancer.gov/access-data/obtaining-access-controlled-data">
+                  <a
+                    href="https://gdc.cancer.gov/access-data/obtaining-access-controlled-data"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
                     Obtaining Access to Controlled Data.
                   </a>
                 </div>
@@ -153,6 +159,8 @@ export default compose(
                       'https://www.ncbi.nlm.nih.gov/projects/gap/cgi-bin/study.cgi?study_id=' +
                       project.dbgap_accession_number
                     }
+                    target="_blank"
+                    rel="noopener noreferrer"
                   >
                     {project.dbgap_accession_number}
                   </a>

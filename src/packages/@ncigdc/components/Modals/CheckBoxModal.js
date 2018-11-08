@@ -32,7 +32,7 @@ const CheckBoxModal = ({
       ? 'https://www.ncbi.nlm.nih.gov/projects/gap/cgi-bin/study.cgi?study_id=' +
         dbGapList[0]
       : 'https://www.ncbi.nlm.nih.gov/gap/?term=' +
-        dbGapList.reduce((acc, d) => acc + '(' + d + ')+OR+', '');
+        dbGapList.reduce((acc, d) => acc + '(' + d + '%5BStudy%5D)+OR+', '');
   if (dbGapLink.substr(dbGapLink.length - 4) === '+OR+') {
     dbGapLink = dbGapLink.slice(0, dbGapLink.length - 4);
   }

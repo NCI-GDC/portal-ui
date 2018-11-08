@@ -69,15 +69,15 @@ Relay.injectNetworkLayer(
 
             if (user) {
               if (
-                !(json.fence_projects || []).length &&
+                !(json.fence_projects[0] || []).length &&
                 !(json.nih_projects || []).length &&
-                !(json.intersection || []).length
+                !(json.intersection[0] || []).length
               ) {
                 clear();
                 window.location.href = '/login?error=timeout';
                 return;
               }
-              if (!(json.fence_projects || []).length) {
+              if (!(json.fence_projects[0] || []).length) {
                 clear();
                 window.location.href = '/login?error=no_fence_projects';
                 return;
@@ -89,7 +89,7 @@ Relay.injectNetworkLayer(
                 return;
               }
 
-              if (!(json.intersection || []).length) {
+              if (!(json.intersection[0] || []).length) {
                 clear();
                 window.location.href = '/login?error=no_intersection';
                 return;

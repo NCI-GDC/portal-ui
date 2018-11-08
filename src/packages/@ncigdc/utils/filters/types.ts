@@ -26,10 +26,7 @@ export type TCombineValues = (
   t: TMergeEnum
 ) => IValueFilter;
 
-export type TMergeFilters = (
-  q: IGroupFilter,
-  c: IGroupFilter
-) => IGroupFilter;
+export type TMergeFilters = (q: IGroupFilter, c: IGroupFilter) => IGroupFilter;
 
 export type TMergeFiltersNullable = (
   q: IGroupFilter | null,
@@ -55,10 +52,7 @@ export type TMergeQuery = (
 
 export type TSortFilters = (a: IValueFilter, b: IValueFilter) => number;
 
-export type TFilterByWhitelist = (
-  o: IRawQuery,
-  w: string[]
-) => IRawQuery;
+export type TFilterByWhitelist = (o: IRawQuery, w: string[]) => IRawQuery;
 
 export type TRemoveFilter = (
   field: string | ((x: any) => boolean) | null,
@@ -67,6 +61,6 @@ export type TRemoveFilter = (
 
 // Todo: look at filterFunc (or just this whole thing in general)
 export type TRemoveFilterWithOp = (
-  filterFunc: () => void,
-  query: IGroupFilter
+  filterFunc: any,
+  query: IGroupFilter | IValueFilter | null
 ) => any; // todo - address this at some point

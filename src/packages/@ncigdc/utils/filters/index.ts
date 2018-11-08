@@ -14,6 +14,7 @@ import {
   TMergeQuery,
   TRemoveFilter,
   TSortFilters,
+  TRemoveFilterWithOp,
 } from './types';
 
 function compareTerms(a: IValueFilter, b: IValueFilter): boolean {
@@ -140,6 +141,7 @@ const mergeFns: TMergeFns = v => {
   }
 };
 
+// todo: refactor the two remove filter function into one
 export const removeFilter: TRemoveFilter = (field, query) => {
   if (!query) {
     return null;
@@ -166,6 +168,32 @@ export const removeFilter: TRemoveFilter = (field, query) => {
       }
     : null;
 };
+
+export const removeFilterWithOp: TRemoveFilterWithOp = (filterFunc, query) => {
+  if (!query) {
+    return null;
+  } else if (!filterFunc) {
+    return query;
+  } else if (Object.keys(query).length === 0) {
+    return query;
+  }
+
+  if (!Array.isArray(query.content)) {
+    return filterFunc(query.op, query.content.field) ? null : query;
+  }
+
+  const filteredContent = query.content
+    .map(q => removeFilterWithOp(filterFunc, q))
+    .filter(Boolean);
+
+  return filteredContent.length
+    ? {
+        ...query,
+        content: filteredContent,
+      }
+    : null;
+};
+// end-todo: refactor the two remove filter function into one
 
 const filterByWhitelist: TFilterByWhitelist = (obj, wls) =>
   Object.keys(obj || {}).reduce(

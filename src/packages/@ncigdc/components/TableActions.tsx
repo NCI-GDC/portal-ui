@@ -19,7 +19,7 @@ import { Tooltip } from '@ncigdc/uikit/Tooltip';
 import { visualizingButton } from '@ncigdc/theme/mixins';
 import { withTheme } from '@ncigdc/theme';
 import SortTableButton, {
-  ISortTableOptions,
+  ISortTableOption,
   TSortTableButtonSortFunc,
 } from '@ncigdc/components/SortTableButton';
 
@@ -62,7 +62,7 @@ interface IProps {
   displayType?: string;
   arrangeColumnKey?: string;
   currentFilters: IGroupFilter;
-  sortOptions?: ISortTableOptions[];
+  sortOptions?: ISortTableOption[];
   downloadable?: boolean;
   tsvSelector?: string;
   tsvFilename?: string;

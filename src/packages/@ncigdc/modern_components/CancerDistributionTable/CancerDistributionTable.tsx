@@ -1,5 +1,5 @@
-import ArrowDownIcon from 'react-icons/lib/fa/long-arrow-down';
-import ArrowUpIcon from 'react-icons/lib/fa/long-arrow-up';
+// import ArrowDownIcon from 'react-icons/lib/fa/long-arrow-down';
+// import ArrowUpIcon from 'react-icons/lib/fa/long-arrow-up';
 import Button from '@ncigdc/uikit/Button';
 import CollapsibleList from '@ncigdc/uikit/CollapsibleList';
 import DownloadTableToTsvButton from '@ncigdc/components/DownloadTableToTsvButton';
@@ -19,10 +19,19 @@ import { makeFilter, replaceFilters } from '@ncigdc/utils/filters';
 import { Row } from '@ncigdc/uikit/Flex';
 import { tableToolTipHint, visualizingButton } from '@ncigdc/theme/mixins';
 import { Tooltip } from '@ncigdc/uikit/Tooltip';
+import SortTableButton, {
+  ISortTableOption,
+  TSortTableButtonSortFunc,
+  ISortSelection,
+} from '@ncigdc/components/SortTableButton';
+import multisort from 'multisort';
 
 const paginationPrefix = 'canDistTable';
 
-const CollapsibleRowList: React.ComponentType<{ data: Array<{}>, label: string }> = props => {
+const CollapsibleRowList: React.ComponentType<{
+  data: Array<{}>;
+  label: string;
+}> = props => {
   const { data, label } = props;
 
   if (!data.length) {
@@ -45,6 +54,21 @@ const CollapsibleRowList: React.ComponentType<{ data: Array<{}>, label: string }
     </span>
   );
 };
+
+const sortOptions: ISortTableOption[] = [
+  {
+    id: 'cnv_gain',
+    name: 'CNV Gain',
+  },
+  {
+    id: 'cnv_loss',
+    name: 'CNV Loss',
+  },
+  {
+    id: 'freq',
+    name: 'Frequency',
+  },
+];
 
 interface IBucket {
   doc_count: number;
@@ -88,13 +112,13 @@ type TRawData = Array<{
   num_cnv_loss?: any;
   num_cnv_loss_percent?: any;
   num_cnv_cases_total?: any;
-}>
+}>;
 
 interface ICDTWrappedProps extends ICancerDistributionTableProps {
   cases: {};
   rawData: TRawData;
-  cancerDistData: Array<{ rawData: TRawData, cancerDistData: any }>;
-  tableSort: any;
+  cancerDistData: Array<{ rawData: TRawData; cancerDistData: any }>;
+  tableSort: ReadonlyArray<ISortSelection>;
   setTableSort: any;
 }
 
@@ -322,37 +346,30 @@ export default compose<ICDTWrappedProps, ICancerDistributionTableProps>(
       return { rawData, cancerDistData };
     }
   ),
-  withState('tableSort', 'setTableSort', {})
+  withState('tableSort', 'setTableSort', [])
 )(
   ({
     entityName,
     geneId,
-    cases,
-    filters,
     rawData,
     cancerDistData,
     tableType,
     tableSort,
     setTableSort,
   }) => {
-    const sortButton = (type: string, sort: {key: string, type: string}) => {
-      if (sort[type] === 'up') {
-        setTableSort({ [type]: 'down' });
-      } else if (sort[type] === 'down') {
-        setTableSort({ [type]: '' });
-      } else {
-        setTableSort({ [type]: 'up' });
-      }
-    };
-    const arrowIcon = (value: string) => {
-      if (value === 'up') {
-        return <ArrowUpIcon />;
-      } else if (value === 'down') {
-        return <ArrowDownIcon />;
-      } else {
-        return '';
-      }
-    };
+    const sortFunction: TSortTableButtonSortFunc = s => setTableSort(s);
+
+    // TO-DO: Bring this back in a general way
+    // const arrowIcon = (value: string) => {
+    //   if (value === 'up') {
+    //     return <ArrowUpIcon />;
+    //   } else if (value === 'down') {
+    //     return <ArrowDownIcon />;
+    //   } else {
+    //     return '';
+    //   }
+    // };
+
     const mutationsHeading = geneId
       ? [
           {
@@ -380,7 +397,7 @@ export default compose<ICDTWrappedProps, ICancerDistributionTableProps>(
             {
               key: 'cnv_gain',
               title: (
-                <Row onClick={() => sortButton('cnv_gain', tableSort)}>
+                <Row>
                   <Tooltip
                     Component={
                       <span>
@@ -393,7 +410,7 @@ export default compose<ICDTWrappedProps, ICancerDistributionTableProps>(
                     style={tableToolTipHint()}
                   >
                     # CNV Gains
-                    {arrowIcon(tableSort.cnv_gain)}
+                    {/* TODO: {arrowIcon(tableSort.cnv_gain)} */}
                   </Tooltip>
                 </Row>
               ),
@@ -401,7 +418,7 @@ export default compose<ICDTWrappedProps, ICancerDistributionTableProps>(
             {
               key: 'cnv_loss',
               title: (
-                <Row onClick={() => sortButton('cnv_loss', tableSort)}>
+                <Row>
                   <Tooltip
                     Component={
                       <span>
@@ -414,7 +431,7 @@ export default compose<ICDTWrappedProps, ICancerDistributionTableProps>(
                     style={tableToolTipHint()}
                   >
                     # CNV Losses
-                    {arrowIcon(tableSort.cnv_loss)}
+                    {/*  TODO: {arrowIcon(tableSort.cnv_loss)} */}
                   </Tooltip>
                 </Row>
               ),
@@ -425,13 +442,25 @@ export default compose<ICDTWrappedProps, ICancerDistributionTableProps>(
       <span>
         <LocalPaginationTable
           style={{ width: '100%', minWidth: 450 }}
-          data={cancerDistData.sort((a, b) => {
-            const key = Object.keys(tableSort)[0];
-            return (b[key] - a[key]) * (tableSort[key] === 'up' ? 1 : -1);
-          })}
+          data={multisort(
+            cancerDistData,
+            tableSort.reduce(
+              (acc, curr) => {
+                // https://www.npmjs.com/package/multisort
+                acc.push(curr.order === 'desc' ? `~${curr.field}` : curr.field);
+                return acc;
+              },
+              [] as string[]
+            )
+          )}
           prefix={paginationPrefix}
           buttons={
             <Row style={{ alignItems: 'flex-end' }}>
+              <SortTableButton
+                sortFunction={sortFunction}
+                options={sortOptions}
+                style={visualizingButton}
+              />
               <Tooltip
                 Component={
                   <span>Export All{geneId ? ' Except # Mutations' : ''}</span>
@@ -468,7 +497,7 @@ export default compose<ICDTWrappedProps, ICancerDistributionTableProps>(
               {
                 key: 'num_affected_cases',
                 title: (
-                  <Row onClick={() => sortButton('freq', tableSort)}>
+                  <Row>
                     <Tooltip
                       Component={
                         <span>
@@ -481,7 +510,7 @@ export default compose<ICDTWrappedProps, ICancerDistributionTableProps>(
                       style={tableToolTipHint()}
                     >
                       # SSM Affected Cases
-                      {arrowIcon(tableSort.freq)}
+                      {/* TODO: {arrowIcon(tableSort.freq)} */}
                     </Tooltip>
                   </Row>
                 ),

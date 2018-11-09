@@ -81,6 +81,7 @@ export function fetchToken() {
 }
 
 export function setUserAccess(access): Action {
+  console.log('setting user access: ', access);
   return {
     type: SET_USER_ACCESS,
     payload: access,
@@ -146,12 +147,15 @@ export default handleActions(
       isFetchingToken: false,
       token: undefined,
     }),
-    [SET_USER_ACCESS]: (state, action) => ({
-      ...state,
-      intersection: action.payload.intersection,
-      fence_projects: action.payload.fence_projects,
-      nih_projects: action.payload.nih_projects,
-    }),
+    [SET_USER_ACCESS]: (state, action) => (
+      console.log('action: ', action),
+      {
+        ...state,
+        intersection: action.payload.intersection,
+        fence_projects: action.payload.fence_projects,
+        nih_projects: action.payload.nih_projects,
+      }
+    ),
   },
   initialState,
 );

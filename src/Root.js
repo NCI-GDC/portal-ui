@@ -153,6 +153,7 @@ const Root = (props: mixed) => (
                     return <Redirect to="/login" />;
                   }
                   if (user) {
+                    console.log('in user block');
                     if (!fence_projects && !nih_projects && !intersection) {
                       return <Redirect to="/login?error=timeout" />;
                     }

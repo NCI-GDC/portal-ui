@@ -72,15 +72,15 @@ function fetchQuery(operation, variables, cacheConfig) {
           let { user } = window.store.getState().auth;
           if (user) {
             if (
-              !json.fence_projects &&
+              !json.fence_projects[0] &&
               !json.nih_projects &&
-              !json.intersection
+              !json.intersection[0]
             ) {
               clear();
               window.location.href = '/login?error=timeout';
               return;
             }
-            if (!json.fence_projects) {
+            if (!json.fence_projects[0]) {
               clear();
               window.location.href = '/login?error=no_fence_projects';
               return;
@@ -90,7 +90,7 @@ function fetchQuery(operation, variables, cacheConfig) {
               window.location.href = '/login?error=no_nih_projects';
               return;
             }
-            if (!json.intersection) {
+            if (!json.intersection[0]) {
               clear();
               window.location.href = '/login?error=no_intersection';
               return;

@@ -17,7 +17,7 @@ import { viewerQuery } from '@ncigdc/routes/queries';
 import Container from './Portal';
 import { API, IS_AUTH_PORTAL } from '@ncigdc/utils/constants';
 import { fetchUser, forceLogout } from '@ncigdc/dux/auth';
-import { clear } from '@ncigdc/utils/cookies';
+// import { clear } from '@ncigdc/utils/cookies';
 import Login from '@ncigdc/routes/Login';
 
 let first = true;
@@ -70,9 +70,9 @@ Relay.injectNetworkLayer(
             first = false;
             store.dispatch(
               setUserAccess({
-                intersection: json.intersection,
+                intersection: json.intersection[0],
                 nih_projects: json.nih_projects,
-                fence_projects: json.fence_projects,
+                fence_projects: json.fence_projects[0],
               }),
             );
           }

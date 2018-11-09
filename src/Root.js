@@ -66,8 +66,10 @@ Relay.injectNetworkLayer(
         .then(res => {
           let { json } = res;
           let { user } = window.store.getState().auth;
+          console.log('json: ', json);
           if (user && first) {
             first = false;
+            console.log('user and first: ', json);
             store.dispatch(
               setUserAccess({
                 intersection: json.intersection[0],
@@ -143,6 +145,10 @@ const Root = (props: mixed) => (
                   // ) {
                   //   return (window.location.href = '/login?error=timeout');
                   // }
+                  console.log('nih: ', nih_projects);
+                  console.log('fence: ', fence_projects);
+                  console.log('intersection: ', intersection);
+                  console.log('user: ', user);
                   if (failed) {
                     return <Redirect to="/login" />;
                   }

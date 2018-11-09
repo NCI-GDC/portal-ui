@@ -65,19 +65,25 @@ Relay.injectNetworkLayer(
       return next(req)
         .then(res => {
           let { json } = res;
-          let { user } = window.store.getState().auth;
-          console.log('json: ', json);
-          if (user && first) {
-            first = false;
-            console.log('user and first: ', json);
-            store.dispatch(
-              setUserAccess({
-                intersection: json.intersection[0],
-                nih_projects: json.nih_projects,
-                fence_projects: json.fence_projects[0],
-              }),
-            );
-          }
+          let id = setInterval(() => {
+            let { user } = window.store.getState().auth;
+
+            if (user && first) {
+              first = false;
+              console.log('user and first: ', json);
+              store.dispatch(
+                setUserAccess({
+                  intersection: json.intersection[0],
+                  nih_projects: json.nih_projects,
+                  fence_projects: json.fence_projects[0],
+                }),
+              );
+            }
+            tries--;
+
+            if (!tries) clearInterval(id);
+          }, 500);
+
           return res;
         })
         .catch(err => {

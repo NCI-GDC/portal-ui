@@ -70,9 +70,9 @@ Relay.injectNetworkLayer(
             first = false;
             store.dispatch(
               setUserAccess({
-                intersection: json.intersection[0],
+                intersection: json.intersection,
                 nih_projects: json.nih_projects,
-                fence_projects: json.fence_projects[0],
+                fence_projects: json.fence_projects,
               }),
             );
           }
@@ -137,23 +137,26 @@ const Root = (props: mixed) => (
                   nih_projects,
                   fence_projects,
                 }) => {
-                  if (
-                    failed &&
-                    error.message === 'Session timed out or not authorized'
-                  ) {
-                    return (window.location.href = '/login?error=timeout');
-                  }
+                  // if (
+                  //   failed &&
+                  //   error.message === 'Session timed out or not authorized'
+                  // ) {
+                  //   return (window.location.href = '/login?error=timeout');
+                  // }
                   if (failed) {
                     return <Redirect to="/login" />;
                   }
                   if (user) {
-                    if (fence_projects && !fence_projects.length) {
+                    if (!fence_projects && !nih_projects && !intersection) {
+                      return <Redirect to="/login?error=timeout" />;
+                    }
+                    if (!fence_projects) {
                       return <Redirect to="/login?error=no_fence_projects" />;
                     }
-                    if (nih_projects && !nih_projects.length) {
+                    if (!nih_projects) {
                       return <Redirect to="/login?error=no_nih_projects" />;
                     }
-                    if (intersection && !intersection.length) {
+                    if (!intersection) {
                       return <Redirect to="/login?error=no_intersection" />;
                     }
                     return (

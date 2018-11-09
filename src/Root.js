@@ -16,7 +16,7 @@ import { fetchApiVersionInfo } from '@ncigdc/dux/versionInfo';
 import { viewerQuery } from '@ncigdc/routes/queries';
 import Container from './Portal';
 import { API, IS_AUTH_PORTAL } from '@ncigdc/utils/constants';
-import { fetchUser, forceLogout } from '@ncigdc/dux/auth';
+import { fetchUser, forceLogout, setUserAccess } from '@ncigdc/dux/auth';
 // import { clear } from '@ncigdc/utils/cookies';
 import Login from '@ncigdc/routes/Login';
 
@@ -65,6 +65,7 @@ Relay.injectNetworkLayer(
       return next(req)
         .then(res => {
           let { json } = res;
+          let tries = 20;
           let id = setInterval(() => {
             let { user } = window.store.getState().auth;
 

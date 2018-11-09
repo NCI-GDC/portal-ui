@@ -36,18 +36,16 @@ const initialState = Object.keys(tableModels).reduce(
     ...acc,
     [key]: tableModels[key],
   }),
-  { version: 2 }
+  { version: 3 }
 );
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case REHYDRATE: {
       const { version, ...tableColumns } = action.payload.tableColumns || {};
-      console.log('reducer', tableColumns);
       if (version !== state.version) {
         return state;
       }
-      console.log('order111', tableColumns.genes);
       return {
         ...state,
         ...Object.entries(
@@ -87,8 +85,7 @@ const reducer = (state = initialState, action) => {
 
     case tableColumns.SET: {
       const { entityType, order } = action.payload;
-      console.log('order2', state.genes, order);
-      return { ...state, [entityType]: order };
+      return { ...state, [entityType]: order.slice() };
     }
 
     default:

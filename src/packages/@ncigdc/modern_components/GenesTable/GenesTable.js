@@ -41,6 +41,8 @@ export default compose(
   ),
   lifecycle({
     componentWillReceiveProps(nextProps) {
+      console.log('nextProps', nextProps.tableColumns, this.props.tableColumns);
+
       if (nextProps.tableColumns !== this.props.tableColumns) {
         console.log('genes11', nextProps.tableColumns);
         this.setState({ tableColumns: nextProps.tableColumns });

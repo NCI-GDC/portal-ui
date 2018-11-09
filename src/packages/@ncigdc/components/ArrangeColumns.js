@@ -50,20 +50,15 @@ const ArrangeColumns = compose(
             className="test-column"
             key={column.id}
             updateState={nextState => {
-              console.log('statess', state, nextState);
-              setState(state => {
-                if (!nextState.items && state.items) {
-                  console.log('state1.items1', state.items);
-                  dispatch(
-                    setColumns({
-                      entityType,
-                      order: state.items,
-                    })
-                  );
-                }
-                console.log('orderColumns', nextState.items);
-                return { localTableColumns, ...nextState };
-              });
+              if (!nextState.items && state.items) {
+                dispatch(
+                  setColumns({
+                    entityType,
+                    order: state.items,
+                  })
+                );
+              }
+              setState(state => ({ localTableColumns, ...nextState }));
             }}
             draggingIndex={state.draggingIndex}
             items={localTableColumns}

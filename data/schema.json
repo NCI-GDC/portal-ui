@@ -3983,211 +3983,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "files__index_files__updated_datetime",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "files__index_files__file_name",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "files__index_files__submitter_id",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "files__index_files__read_pair_number",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "files__index_files__file_size",
-              "type": {
-                "kind": "OBJECT",
-                "name": "NumericAggergations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "files__index_files__created_datetime",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
               "name": "files__index_files__imaging_date",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "files__index_files__error_type",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "files__index_files__state",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "files__index_files__access",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "files__index_files__platform",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "files__index_files__magnification",
-              "type": {
-                "kind": "OBJECT",
-                "name": "NumericAggergations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "files__index_files__version",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "files__index_files__data_release",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "files__index_files__revision",
-              "type": {
-                "kind": "OBJECT",
-                "name": "NumericAggergations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "files__index_files__data_type",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "files__index_files__file_id",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "files__index_files__state_comment",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -4211,6 +4007,90 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
+              "name": "files__index_files__platform",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "files__index_files__data_type",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "files__index_files__updated_datetime",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "files__index_files__created_datetime",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "files__index_files__file_name",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "files__index_files__magnification",
+              "type": {
+                "kind": "OBJECT",
+                "name": "NumericAggergations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "files__index_files__error_type",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
               "name": "files__index_files__data_format",
               "type": {
                 "kind": "OBJECT",
@@ -4223,7 +4103,103 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
+              "name": "files__index_files__submitter_id",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "files__index_files__access",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "files__index_files__read_pair_number",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "files__index_files__state",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "files__index_files__file_id",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
               "name": "files__index_files__data_category",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "files__index_files__file_size",
+              "type": {
+                "kind": "OBJECT",
+                "name": "NumericAggergations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "files__index_files__revision",
+              "type": {
+                "kind": "OBJECT",
+                "name": "NumericAggergations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "files__index_files__state_comment",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -4691,18 +4667,6 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "files__archive__data_category",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
               "name": "files__archive__data_type",
               "type": {
                 "kind": "OBJECT",
@@ -4799,19 +4763,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "files__archive__version",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "files__archive__data_release",
+              "name": "files__archive__data_category",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -4943,18 +4895,6 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "files__version",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
               "name": "files__metadata_files__md5sum",
               "type": {
                 "kind": "OBJECT",
@@ -4968,18 +4908,6 @@
               "description": null,
               "isDeprecated": false,
               "name": "files__metadata_files__type",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "files__metadata_files__data_category",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -5099,18 +5027,6 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "files__metadata_files__version",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
               "name": "files__metadata_files__file_id",
               "type": {
                 "kind": "OBJECT",
@@ -5123,7 +5039,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "files__metadata_files__data_release",
+              "name": "files__metadata_files__data_category",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -5159,18 +5075,6 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "files__data_release",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
               "name": "files__type",
               "type": {
                 "kind": "OBJECT",
@@ -5183,10 +5087,10 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "files__experimental_strategy",
+              "name": "files__revision",
               "type": {
                 "kind": "OBJECT",
-                "name": "Aggregations",
+                "name": "NumericAggergations",
                 "ofType": null
               }
             },
@@ -6587,10 +6491,10 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "files__revision",
+              "name": "files__experimental_strategy",
               "type": {
                 "kind": "OBJECT",
-                "name": "NumericAggergations",
+                "name": "Aggregations",
                 "ofType": null
               }
             },
@@ -9988,7 +9892,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "Time interval from a person's date of birth to the date of initial pathologic diagnosis, represented as a calculated negative number of days.\n",
+              "description": "Number of days between the date used for index and the date from a person's date of birth represented as a calculated negative number of days.\n",
               "isDeprecated": false,
               "name": "days_to_birth",
               "type": {
@@ -10036,7 +9940,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "Time interval from a person's date of death to the date of initial pathologic diagnosis, represented as a calculated number of days.\n",
+              "description": "Number of days between the date used for index and the date from a person's date of death represented as a calculated number of days.\n",
               "isDeprecated": false,
               "name": "days_to_death",
               "type": {
@@ -10343,7 +10247,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "The method used to initially the patient's diagnosis.\n",
+              "description": "Text term used to describe the method used to confirm the patients malignant diagnosis.\n",
               "isDeprecated": false,
               "name": "method_of_diagnosis",
               "type": {
@@ -10427,7 +10331,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "Time interval from a person's date of death to the date of initial pathologic diagnosis, represented as a calculated number of days.\n",
+              "description": "Number of days between the date used for index and the date from a person's date of death represented as a calculated number of days.\n",
               "isDeprecated": false,
               "name": "days_to_death",
               "type": {
@@ -10535,7 +10439,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "The 2 decimal place numeric laboratory value measured, assigned or computed related to the assessment of lactate dehydrogenase in a specimen.\n",
+              "description": "long",
               "isDeprecated": false,
               "name": "ldh_level_at_diagnosis",
               "type": {
@@ -10751,7 +10655,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "Number of days between the date used for index and the date of the patient's best overall response.\n",
+              "description": "Number of days between the date used for index and the date of the patient was thought to have the best overall response to their disease.\n",
               "isDeprecated": false,
               "name": "days_to_best_overall_response",
               "type": {
@@ -10847,7 +10751,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "Number of days between the date used for index and the date the patient was diagnosed with a recurrent malignancy.\n",
+              "description": "Number of days between the date used for index and the date the patient's disease recurred.\n",
               "isDeprecated": false,
               "name": "days_to_recurrence",
               "type": {
@@ -10907,7 +10811,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "Text term that describes the anatomic site of the tumor or disease.\n",
+              "description": "The text term used to describe the anatomic site of origin, of the patient's malignant disease, as described by the World Health Organization's (WHO) International Classification of Diseases for Oncology (ICD-O).\n",
               "isDeprecated": false,
               "name": "tissue_or_organ_of_origin",
               "type": {
@@ -10955,7 +10859,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "A value in millimeters indicating the measured length between a malignant lesion of the colon or rectum and the nearest radial (or circumferential) border of tissue removed during cancer surgery.\n",
+              "description": "Numeric value used to describe the non-peritonealised bare area of rectum, comprising anterior and posterior segments, when submitted as a surgical specimen resulting from excision of cancer of the rectum.\n",
               "isDeprecated": false,
               "name": "circumferential_resection_margin",
               "type": {
@@ -11351,7 +11255,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "Text term for the structural pattern of cancer cells used to define a microscopic diagnosis.\n",
+              "description": "Text term used to describe the patient's histologic diagnosis, as described by the World Health Organization's (WHO) International Classification of Diseases for Oncology (ICD-O).\n",
               "isDeprecated": false,
               "name": "primary_diagnosis",
               "type": {
@@ -11435,7 +11339,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "Number of days between the date used for index and the date of diagnosis.\n",
+              "description": "Number of days between the date used for index and the date the patient was diagnosed with the malignant disease.\n",
               "isDeprecated": false,
               "name": "days_to_diagnosis",
               "type": {
@@ -11447,7 +11351,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "Time interval from a person's date of birth to the date of initial pathologic diagnosis, represented as a calculated negative number of days.\n",
+              "description": "Number of days between the date used for index and the date from a person's date of birth represented as a calculated negative number of days.\n",
               "isDeprecated": false,
               "name": "days_to_birth",
               "type": {
@@ -11555,7 +11459,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "The third edition of the International Classification of Diseases for Oncology, published in 2000, used principally in tumor and cancer registries for coding the site (topography) and the histology (morphology) of neoplasms. The description of an anatomical region or of a body part. Named locations of, or within, the body. A system of numbered categories for representation of data.\n",
+              "description": "The text term used to describe the anatomic site of origin, of the patient's malignant disease, as described by the World Health Organization's (WHO) International Classification of Diseases for Oncology (ICD-O).\n",
               "isDeprecated": false,
               "name": "site_of_resection_or_biopsy",
               "type": {
@@ -11808,7 +11712,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "Time interval from the date of the initial pathologic diagnosis to the start of treatment, represented as a calculated number of days.\n",
+              "description": "Number of days between the date used for index and the date the treatment started.\n",
               "isDeprecated": false,
               "name": "days_to_treatment_start",
               "type": {
@@ -11892,7 +11796,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "Text identification of the individual agent(s) used as part of a prior treatment regimen.\n",
+              "description": "Text identification of the individual agent(s) used as part of a treatment regimen.\n",
               "isDeprecated": false,
               "name": "therapeutic_agents",
               "type": {
@@ -11904,7 +11808,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "The name of a regimen or line of therapy assigned to the patient.\n",
+              "description": "The text term used to describe the regimen or line of therapy.\n",
               "isDeprecated": false,
               "name": "regimen_or_line_of_therapy",
               "type": {
@@ -11952,7 +11856,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "Time interval from the date of the initial pathologic diagnosis to the date of treatment end, represented as a calculated number of days.\n",
+              "description": "Number of days between the date used for index and the date the treatment ended.\n",
               "isDeprecated": false,
               "name": "days_to_treatment_end",
               "type": {
@@ -11964,7 +11868,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "A yes/no/unknown/not applicable indicator related to the administration of therapeutic agents received before the body specimen was collected.\n",
+              "description": "A yes/no/unknown/not applicable indicator related to the administration of therapeutic agents received.\n",
               "isDeprecated": false,
               "name": "treatment_or_therapy",
               "type": {
@@ -12395,30 +12299,6 @@
               "deprecationReason": null,
               "description": "keyword",
               "isDeprecated": false,
-              "name": "version",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "keyword",
-              "isDeprecated": false,
-              "name": "data_release",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "keyword",
-              "isDeprecated": false,
               "name": "type",
               "type": {
                 "kind": "SCALAR",
@@ -12429,12 +12309,12 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "long",
               "isDeprecated": false,
-              "name": "experimental_strategy",
+              "name": "revision",
               "type": {
                 "kind": "SCALAR",
-                "name": "String",
+                "name": "Float",
                 "ofType": null
               }
             },
@@ -12525,12 +12405,12 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "long",
+              "description": "keyword",
               "isDeprecated": false,
-              "name": "revision",
+              "name": "experimental_strategy",
               "type": {
                 "kind": "SCALAR",
-                "name": "Float",
+                "name": "String",
                 "ofType": null
               }
             },
@@ -13235,7 +13115,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "Text designations that identify gender. Gender is described as the assemblage of properties that distinguish people on the basis of their societal roles. [Explanatory Comment 1: Identification of gender is based upon self-report and may come from a form, questionnaire, interview, etc.]\n",
+              "description": "The text term used to describe the gender of the patient's relative with a history of cancer.\n",
               "isDeprecated": false,
               "name": "relationship_gender",
               "type": {
@@ -13271,7 +13151,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "Indicator to signify whether or not an individual's biological relative has been diagnosed with another type of cancer.\n",
+              "description": "The yes/no/unknown indicator used to describe whether any of the patient's relatives have a history of cancer.\n",
               "isDeprecated": false,
               "name": "relative_with_cancer_history",
               "type": {
@@ -13283,7 +13163,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "Text term for the structural pattern of cancer cells used to define a microscopic diagnosis.\n",
+              "description": "The text term used to describe the malignant diagnosis of the patient's relative with a history of cancer.\n",
               "isDeprecated": false,
               "name": "relationship_primary_diagnosis",
               "type": {
@@ -16746,211 +16626,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "index_files__updated_datetime",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "index_files__file_name",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "index_files__submitter_id",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "index_files__read_pair_number",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "index_files__file_size",
-              "type": {
-                "kind": "OBJECT",
-                "name": "NumericAggergations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "index_files__created_datetime",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
               "name": "index_files__imaging_date",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "index_files__error_type",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "index_files__state",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "index_files__access",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "index_files__platform",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "index_files__magnification",
-              "type": {
-                "kind": "OBJECT",
-                "name": "NumericAggergations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "index_files__version",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "index_files__data_release",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "index_files__revision",
-              "type": {
-                "kind": "OBJECT",
-                "name": "NumericAggergations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "index_files__data_type",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "index_files__file_id",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "index_files__state_comment",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -16974,6 +16650,90 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
+              "name": "index_files__platform",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "index_files__data_type",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "index_files__updated_datetime",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "index_files__created_datetime",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "index_files__file_name",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "index_files__magnification",
+              "type": {
+                "kind": "OBJECT",
+                "name": "NumericAggergations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "index_files__error_type",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
               "name": "index_files__data_format",
               "type": {
                 "kind": "OBJECT",
@@ -16986,7 +16746,103 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
+              "name": "index_files__submitter_id",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "index_files__access",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "index_files__read_pair_number",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "index_files__state",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "index_files__file_id",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
               "name": "index_files__data_category",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "index_files__file_size",
+              "type": {
+                "kind": "OBJECT",
+                "name": "NumericAggergations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "index_files__revision",
+              "type": {
+                "kind": "OBJECT",
+                "name": "NumericAggergations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "index_files__state_comment",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -17454,18 +17310,6 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "archive__data_category",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
               "name": "archive__data_type",
               "type": {
                 "kind": "OBJECT",
@@ -17562,19 +17406,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "archive__version",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "archive__data_release",
+              "name": "archive__data_category",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -17706,18 +17538,6 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "version",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
               "name": "metadata_files__md5sum",
               "type": {
                 "kind": "OBJECT",
@@ -17731,18 +17551,6 @@
               "description": null,
               "isDeprecated": false,
               "name": "metadata_files__type",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "metadata_files__data_category",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -17862,18 +17670,6 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "metadata_files__version",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
               "name": "metadata_files__file_id",
               "type": {
                 "kind": "OBJECT",
@@ -17886,7 +17682,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "metadata_files__data_release",
+              "name": "metadata_files__data_category",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -17911,18 +17707,6 @@
               "description": null,
               "isDeprecated": false,
               "name": "metadata_files__state_comment",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "data_release",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -24911,30 +24695,6 @@
               "deprecationReason": null,
               "description": "keyword",
               "isDeprecated": false,
-              "name": "version",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "keyword",
-              "isDeprecated": false,
-              "name": "data_release",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "keyword",
-              "isDeprecated": false,
               "name": "type",
               "type": {
                 "kind": "SCALAR",
@@ -27732,18 +27492,6 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "Broad categorization of the contents of the data file.\n",
-              "isDeprecated": false,
-              "name": "data_category",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
               "description": "Specific content type of the data file.\n",
               "isDeprecated": false,
               "name": "data_type",
@@ -27840,21 +27588,9 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "Broad categorization of the contents of the data file.\n",
               "isDeprecated": false,
-              "name": "version",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "keyword",
-              "isDeprecated": false,
-              "name": "data_release",
+              "name": "data_category",
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
@@ -28267,7 +28003,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "A yes/no indicator related to whether a patient was unable to be contacted for follow-up.\n",
+              "description": "The yes/no/unknown indicator used to describe whether a patient was unable to be contacted or seen for follow-up information.\n",
               "isDeprecated": false,
               "name": "lost_to_followup",
               "type": {
@@ -28315,7 +28051,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "The reference or anchor date used during date obfuscation, where a single date is obscurred by creating one or more date ranges in relation to this date.\n",
+              "description": "The text term used to describe the reference or anchor date used when for date obfuscation, where a single date is obscurred by creating one or more date ranges in relation to this date.\n",
               "isDeprecated": false,
               "name": "index_date",
               "type": {
@@ -29797,211 +29533,7 @@
               "deprecationReason": null,
               "description": "keyword",
               "isDeprecated": false,
-              "name": "updated_datetime",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "keyword",
-              "isDeprecated": false,
-              "name": "file_name",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "keyword",
-              "isDeprecated": false,
-              "name": "submitter_id",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "keyword",
-              "isDeprecated": false,
-              "name": "read_pair_number",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "long",
-              "isDeprecated": false,
-              "name": "file_size",
-              "type": {
-                "kind": "SCALAR",
-                "name": "Float",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "keyword",
-              "isDeprecated": false,
-              "name": "created_datetime",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "keyword",
-              "isDeprecated": false,
               "name": "imaging_date",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "keyword",
-              "isDeprecated": false,
-              "name": "error_type",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "keyword",
-              "isDeprecated": false,
-              "name": "state",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "keyword",
-              "isDeprecated": false,
-              "name": "access",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "keyword",
-              "isDeprecated": false,
-              "name": "platform",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "long",
-              "isDeprecated": false,
-              "name": "magnification",
-              "type": {
-                "kind": "SCALAR",
-                "name": "Float",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "keyword",
-              "isDeprecated": false,
-              "name": "version",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "keyword",
-              "isDeprecated": false,
-              "name": "data_release",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "long",
-              "isDeprecated": false,
-              "name": "revision",
-              "type": {
-                "kind": "SCALAR",
-                "name": "Float",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "keyword",
-              "isDeprecated": false,
-              "name": "data_type",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "keyword",
-              "isDeprecated": false,
-              "name": "file_id",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "keyword",
-              "isDeprecated": false,
-              "name": "state_comment",
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
@@ -30025,6 +29557,90 @@
               "deprecationReason": null,
               "description": "keyword",
               "isDeprecated": false,
+              "name": "platform",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "keyword",
+              "isDeprecated": false,
+              "name": "data_type",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "keyword",
+              "isDeprecated": false,
+              "name": "updated_datetime",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "keyword",
+              "isDeprecated": false,
+              "name": "created_datetime",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "keyword",
+              "isDeprecated": false,
+              "name": "file_name",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "long",
+              "isDeprecated": false,
+              "name": "magnification",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Float",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "keyword",
+              "isDeprecated": false,
+              "name": "error_type",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "keyword",
+              "isDeprecated": false,
               "name": "data_format",
               "type": {
                 "kind": "SCALAR",
@@ -30037,7 +29653,103 @@
               "deprecationReason": null,
               "description": "keyword",
               "isDeprecated": false,
+              "name": "submitter_id",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "keyword",
+              "isDeprecated": false,
+              "name": "access",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "keyword",
+              "isDeprecated": false,
+              "name": "read_pair_number",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "keyword",
+              "isDeprecated": false,
+              "name": "state",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "keyword",
+              "isDeprecated": false,
+              "name": "file_id",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "keyword",
+              "isDeprecated": false,
               "name": "data_category",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "long",
+              "isDeprecated": false,
+              "name": "file_size",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Float",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "long",
+              "isDeprecated": false,
+              "name": "revision",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Float",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "keyword",
+              "isDeprecated": false,
+              "name": "state_comment",
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
@@ -30326,18 +30038,6 @@
               "deprecationReason": null,
               "description": "keyword",
               "isDeprecated": false,
-              "name": "data_category",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "keyword",
-              "isDeprecated": false,
               "name": "data_type",
               "type": {
                 "kind": "SCALAR",
@@ -30446,18 +30146,6 @@
               "deprecationReason": null,
               "description": "keyword",
               "isDeprecated": false,
-              "name": "version",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "keyword",
-              "isDeprecated": false,
               "name": "file_id",
               "type": {
                 "kind": "SCALAR",
@@ -30470,7 +30158,7 @@
               "deprecationReason": null,
               "description": "keyword",
               "isDeprecated": false,
-              "name": "data_release",
+              "name": "data_category",
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
@@ -31266,6 +30954,18 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
+              "name": "diagnoses__treatments__days_to_treatment",
+              "type": {
+                "kind": "OBJECT",
+                "name": "NumericAggergations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
               "name": "diagnoses__treatments__treatment_type",
               "type": {
                 "kind": "OBJECT",
@@ -31963,6 +31663,18 @@
               "description": null,
               "isDeprecated": false,
               "name": "gene__ssm__observation__observation_id",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "gene__ssm__observation__acl",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -32818,6 +32530,42 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "demographic__days_to_birth",
+              "type": {
+                "kind": "OBJECT",
+                "name": "NumericAggergations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "demographic__vital_status",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "demographic__days_to_death",
+              "type": {
+                "kind": "OBJECT",
+                "name": "NumericAggergations",
                 "ofType": null
               }
             },
@@ -33966,6 +33714,42 @@
             {
               "args": [],
               "deprecationReason": null,
+              "description": "Number of days between the date used for index and the date from a person's date of birth represented as a calculated negative number of days.\n",
+              "isDeprecated": false,
+              "name": "days_to_birth",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Float",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "The survival state of the person registered on the protocol.\n",
+              "isDeprecated": false,
+              "name": "vital_status",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "Number of days between the date used for index and the date from a person's date of death represented as a calculated number of days.\n",
+              "isDeprecated": false,
+              "name": "days_to_death",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Float",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
               "description": "A project-specific identifier for a node. This property is the calling card/nickname/alias for a unit of submission. It can be used in place of the UUID for identifying or recalling a node.\n",
               "isDeprecated": false,
               "name": "submitter_id",
@@ -34309,7 +34093,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "The method used to initially the patient's diagnosis.\n",
+              "description": "Text term used to describe the method used to confirm the patients malignant diagnosis.\n",
               "isDeprecated": false,
               "name": "method_of_diagnosis",
               "type": {
@@ -34345,7 +34129,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "Text term for the structural pattern of cancer cells used to define a microscopic diagnosis.\n",
+              "description": "Text term used to describe the patient's histologic diagnosis, as described by the World Health Organization's (WHO) International Classification of Diseases for Oncology (ICD-O).\n",
               "isDeprecated": false,
               "name": "primary_diagnosis",
               "type": {
@@ -34429,7 +34213,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "Time interval from a person's date of death to the date of initial pathologic diagnosis, represented as a calculated number of days.\n",
+              "description": "Number of days between the date used for index and the date from a person's date of death represented as a calculated number of days.\n",
               "isDeprecated": false,
               "name": "days_to_death",
               "type": {
@@ -34597,7 +34381,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "The 2 decimal place numeric laboratory value measured, assigned or computed related to the assessment of lactate dehydrogenase in a specimen.\n",
+              "description": "long",
               "isDeprecated": false,
               "name": "ldh_level_at_diagnosis",
               "type": {
@@ -34633,7 +34417,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "Number of days between the date used for index and the date the patient was diagnosed with a recurrent malignancy.\n",
+              "description": "Number of days between the date used for index and the date the patient's disease recurred.\n",
               "isDeprecated": false,
               "name": "days_to_recurrence",
               "type": {
@@ -34705,7 +34489,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "Text term that describes the anatomic site of the tumor or disease.\n",
+              "description": "The text term used to describe the anatomic site of origin, of the patient's malignant disease, as described by the World Health Organization's (WHO) International Classification of Diseases for Oncology (ICD-O).\n",
               "isDeprecated": false,
               "name": "tissue_or_organ_of_origin",
               "type": {
@@ -34717,7 +34501,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "Time interval from a person's date of birth to the date of initial pathologic diagnosis, represented as a calculated negative number of days.\n",
+              "description": "Number of days between the date used for index and the date from a person's date of birth represented as a calculated negative number of days.\n",
               "isDeprecated": false,
               "name": "days_to_birth",
               "type": {
@@ -34765,7 +34549,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "A value in millimeters indicating the measured length between a malignant lesion of the colon or rectum and the nearest radial (or circumferential) border of tissue removed during cancer surgery.\n",
+              "description": "Numeric value used to describe the non-peritonealised bare area of rectum, comprising anterior and posterior segments, when submitted as a surgical specimen resulting from excision of cancer of the rectum.\n",
               "isDeprecated": false,
               "name": "circumferential_resection_margin",
               "type": {
@@ -34873,7 +34657,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "The third edition of the International Classification of Diseases for Oncology, published in 2000, used principally in tumor and cancer registries for coding the site (topography) and the histology (morphology) of neoplasms. The description of an anatomical region or of a body part. Named locations of, or within, the body. A system of numbered categories for representation of data.\n",
+              "description": "The text term used to describe the anatomic site of origin, of the patient's malignant disease, as described by the World Health Organization's (WHO) International Classification of Diseases for Oncology (ICD-O).\n",
               "isDeprecated": false,
               "name": "site_of_resection_or_biopsy",
               "type": {
@@ -35174,7 +34958,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "Time interval from the date of the initial pathologic diagnosis to the start of treatment, represented as a calculated number of days.\n",
+              "description": "Number of days between the date used for index and the date the treatment started.\n",
               "isDeprecated": false,
               "name": "days_to_treatment_start",
               "type": {
@@ -35204,6 +34988,18 @@
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "long",
+              "isDeprecated": false,
+              "name": "days_to_treatment",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Float",
                 "ofType": null
               }
             },
@@ -35258,7 +35054,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "Text identification of the individual agent(s) used as part of a prior treatment regimen.\n",
+              "description": "Text identification of the individual agent(s) used as part of a treatment regimen.\n",
               "isDeprecated": false,
               "name": "therapeutic_agents",
               "type": {
@@ -35306,7 +35102,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "Time interval from the date of the initial pathologic diagnosis to the date of treatment end, represented as a calculated number of days.\n",
+              "description": "Number of days between the date used for index and the date the treatment ended.\n",
               "isDeprecated": false,
               "name": "days_to_treatment_end",
               "type": {
@@ -35318,7 +35114,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "A yes/no/unknown/not applicable indicator related to the administration of therapeutic agents received before the body specimen was collected.\n",
+              "description": "A yes/no/unknown/not applicable indicator related to the administration of therapeutic agents received.\n",
               "isDeprecated": false,
               "name": "treatment_or_therapy",
               "type": {
@@ -36004,7 +35800,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "Text designations that identify gender. Gender is described as the assemblage of properties that distinguish people on the basis of their societal roles. [Explanatory Comment 1: Identification of gender is based upon self-report and may come from a form, questionnaire, interview, etc.]\n",
+              "description": "The text term used to describe the gender of the patient's relative with a history of cancer.\n",
               "isDeprecated": false,
               "name": "relationship_gender",
               "type": {
@@ -36040,7 +35836,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "Indicator to signify whether or not an individual's biological relative has been diagnosed with another type of cancer.\n",
+              "description": "The yes/no/unknown indicator used to describe whether any of the patient's relatives have a history of cancer.\n",
               "isDeprecated": false,
               "name": "relative_with_cancer_history",
               "type": {
@@ -36052,7 +35848,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "Text term for the structural pattern of cancer cells used to define a microscopic diagnosis.\n",
+              "description": "The text term used to describe the malignant diagnosis of the patient's relative with a history of cancer.\n",
               "isDeprecated": false,
               "name": "relationship_primary_diagnosis",
               "type": {
@@ -37270,6 +37066,18 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
+              "name": "case__diagnoses__treatments__days_to_treatment",
+              "type": {
+                "kind": "OBJECT",
+                "name": "NumericAggergations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
               "name": "case__diagnoses__treatments__treatment_type",
               "type": {
                 "kind": "OBJECT",
@@ -37654,6 +37462,30 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
+              "name": "case__created_datetime",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "case__days_to_index",
+              "type": {
+                "kind": "OBJECT",
+                "name": "NumericAggergations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
               "name": "case__demographic__updated_datetime",
               "type": {
                 "kind": "OBJECT",
@@ -37883,6 +37715,18 @@
               "description": null,
               "isDeprecated": false,
               "name": "case__ssm__observation__observation_id",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "case__ssm__observation__acl",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -40390,6 +40234,30 @@
             {
               "args": [],
               "deprecationReason": null,
+              "description": "date",
+              "isDeprecated": false,
+              "name": "created_datetime",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "long",
+              "isDeprecated": false,
+              "name": "days_to_index",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Float",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
               "description": "keyword",
               "isDeprecated": false,
               "name": "submitter_id",
@@ -42195,6 +42063,18 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
+              "name": "occurrence__case__diagnoses__treatments__days_to_treatment",
+              "type": {
+                "kind": "OBJECT",
+                "name": "NumericAggergations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
               "name": "occurrence__case__diagnoses__treatments__treatment_type",
               "type": {
                 "kind": "OBJECT",
@@ -42640,6 +42520,18 @@
               "description": null,
               "isDeprecated": false,
               "name": "occurrence__case__observation__observation_id",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "occurrence__case__observation__acl",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -46411,6 +46303,18 @@
               "description": "keyword",
               "isDeprecated": false,
               "name": "observation_id",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "keyword",
+              "isDeprecated": false,
+              "name": "acl",
               "type": {
                 "kind": "SCALAR",
                 "name": "String",

@@ -44,18 +44,16 @@ export const withSearch = passedInState => {
         }));
       },
       fetchResults: ({ handleResults }) => (query, timeOfRequest) => {
-        // need to use just one endpoint, switch credentials
-        const fetchConfig = IS_AUTH_PORTAL
-          ? (`/quick_search?query=${window.encodeURIComponent(query)}&size=5`,
+        return throttledInvoker(() =>
+          fetchApi(
+            `/quick_search?query=${window.encodeURIComponent(query)}&size=5`,
             {
-              credentials: 'include',
+              ...(IS_AUTH_PORTAL ? { credentials: 'include' } : {}),
               headers: {
                 'Content-Type': 'application/json',
               },
-            })
-          : `/all?query=${window.encodeURIComponent(query)}&size=5`;
-        return throttledInvoker(() =>
-          fetchApi(fetchConfig).then(response =>
+            },
+          ).then(response =>
             handleResults(response.data.query.hits, timeOfRequest),
           ),
         );

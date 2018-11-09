@@ -288,6 +288,74 @@ function addAllFilesInCart(
   };
 }
 
+export const fetchCartFiles = async (filters, size) => {
+  const body = JSON.stringify({
+    query: `query cart_relayQuery(
+            $size: Int
+            $offset: Int
+            $sort: [Sort]
+            $filters: FiltersArgument
+          ) {
+            viewer {
+              repository {
+                files {
+                  hits(first: $size, offset: $offset, sort: $sort, filters: $filters) {
+                    edges {
+                      node {
+                        acl
+                        state
+                        file_state
+                        access
+                        file_id
+                        file_size
+                        cases {
+                          hits(first: 1) {
+                            edges {
+                              node {
+                                project {
+                                  project_id
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+          `,
+    variables: {
+      filters,
+      size,
+      offset: 0,
+      sort: null,
+    },
+  });
+
+  const hash = md5(body);
+  return await fetch(urlJoin(API, `graphql/cart?hash=${hash}`), {
+    ...DEFAULTS,
+    ...(IS_AUTH_PORTAL ? { credentials: 'include' } : {}),
+    body,
+  })
+    .then(response =>
+      response.json().then(json => {
+        return json;
+      }),
+    )
+    .then(json => {
+      return json.data.viewer.repository.files.hits.edges.map(({ node }) => ({
+        ...node,
+        projects: node.cases.hits.edges.map(
+          ({ node: { project: { project_id } } }) => project_id,
+        ),
+      }));
+    });
+};
+
 function fetchFilesAndAdd(currentFilters: ?Object, total: number): Function {
   return async dispatch => {
     // if the total requested in filters is larger than max cart then don't bother fetching
@@ -301,16 +369,7 @@ function fetchFilesAndAdd(currentFilters: ?Object, total: number): Function {
         dispatch,
       );
 
-      const search = stringify({
-        filters: currentFilters && JSON.stringify(currentFilters),
-        size: total,
-        fields: 'acl,state,access,file_id,file_size,cases.project.project_id',
-      });
-      const { data } = await fetchApi(`files?${search}`);
-      const files = data.hits.map(({ cases, ...rest }) => ({
-        ...rest,
-        projects: cases.map(({ project: { project_id } }) => project_id),
-      }));
+      const files = await fetchCartFiles(currentFilters, total);
       dispatch(addAllFilesInCart(files));
     } else {
       dispatch({

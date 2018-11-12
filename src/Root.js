@@ -17,7 +17,7 @@ import { viewerQuery } from '@ncigdc/routes/queries';
 import Container from './Portal';
 import { API, IS_AUTH_PORTAL } from '@ncigdc/utils/constants';
 import { fetchUser, forceLogout, setUserAccess } from '@ncigdc/dux/auth';
-import { clear } from '@ncigdc/utils/cookies';
+// import { clear } from '@ncigdc/utils/cookies';
 import Login from '@ncigdc/routes/Login';
 
 let first = true;
@@ -75,24 +75,24 @@ Relay.injectNetworkLayer(
                 !(json.nih_projects || []).length &&
                 !(json.intersection[0] || []).length
               ) {
-                clear();
+                // clear();
                 window.location.href = '/login?error=timeout';
                 return;
               }
               if (!(json.fence_projects[0] || []).length) {
-                clear();
+                // clear();
                 window.location.href = '/login?error=no_fence_projects';
                 return;
               }
 
               if (!(json.nih_projects || []).length) {
-                clear();
+                // clear();
                 window.location.href = '/login?error=no_nih_projects';
                 return;
               }
 
               if (!(json.intersection[0] || []).length) {
-                clear();
+                // clear();
                 window.location.href = '/login?error=no_intersection';
                 return;
               }

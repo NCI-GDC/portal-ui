@@ -1,7 +1,13 @@
 /* @flow */
 
 import React from 'react';
-import { compose, setDisplayName, branch, renderComponent } from 'recompose';
+import {
+  compose,
+  setDisplayName,
+  branch,
+  renderComponent,
+  lifecycle,
+} from 'recompose';
 import { connect } from 'react-redux';
 import Pagination from '@ncigdc/components/Pagination';
 import Showing from '@ncigdc/components/Pagination/Showing';
@@ -32,13 +38,20 @@ const RemoveButton = styled(Button, {
 
 export default compose(
   setDisplayName('FilesTablePresentation'),
-  connect(state => ({ tableColumns: state.tableColumns.files.ids })),
+  connect(state => ({ tableColumns: state.tableColumns.files })),
+  lifecycle({
+    componentWillReceiveProps(nextProps) {
+      if (nextProps.tableColumns !== this.props.tableColumns) {
+        this.setState({ tableColumns: nextProps.tableColumns });
+      }
+    },
+  }),
   branch(
     ({ viewer }) =>
       !viewer.repository.files.hits ||
       !viewer.repository.files.hits.edges.length,
-    renderComponent(() => <div>No results found</div>),
-  ),
+    renderComponent(() => <div>No results found</div>)
+  )
 )(
   ({
     downloadable,
@@ -50,10 +63,7 @@ export default compose(
     dispatch,
     parentVariables,
   }) => {
-    const tableInfo = tableModels[entityType]
-      .slice()
-      .sort((a, b) => tableColumns.indexOf(a.id) - tableColumns.indexOf(b.id))
-      .filter(x => tableColumns.includes(x.id));
+    const tableInfo = tableColumns.slice().filter(x => !x.hidden);
 
     const prefix = 'files';
 
@@ -157,5 +167,5 @@ export default compose(
         />
       </div>
     );
-  },
+  }
 );

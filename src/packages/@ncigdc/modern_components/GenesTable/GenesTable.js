@@ -41,10 +41,7 @@ export default compose(
   ),
   lifecycle({
     componentWillReceiveProps(nextProps) {
-      console.log('nextProps', nextProps.tableColumns, this.props.tableColumns);
-
       if (nextProps.tableColumns !== this.props.tableColumns) {
-        console.log('genes11', nextProps.tableColumns);
         this.setState({ tableColumns: nextProps.tableColumns });
       }
     },
@@ -79,8 +76,6 @@ export default compose(
     const data = !genes ? [] : genes.hits.edges;
     const totalGenes = !genes ? 0 : genes.hits.total;
     const tableInfo = tableColumns.slice().filter(x => !x.hidden);
-
-    console.log('states', tableColumns);
     return (
       <span>
         <Row

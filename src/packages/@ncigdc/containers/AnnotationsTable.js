@@ -13,7 +13,7 @@ import Table, { Tr } from '@ncigdc/uikit/Table';
 import timestamp from '@ncigdc/utils/timestamp';
 
 export const SearchTable = compose(
-  connect(state => ({ tableColumns: state.tableColumns.annotations.ids })),
+  connect(state => ({ tableColumns: state.tableColumns.annotations }))
 )(
   ({
     downloadable,
@@ -103,7 +103,7 @@ export const SearchTable = compose(
         />
       </div>
     );
-  },
+  }
 );
 
 export const AnnotationsTableQuery = {
@@ -140,7 +140,7 @@ export const AnnotationsTableQuery = {
 
 const AnnotationsTable = Relay.createContainer(
   SearchTable,
-  AnnotationsTableQuery,
+  AnnotationsTableQuery
 );
 
 export default AnnotationsTable;

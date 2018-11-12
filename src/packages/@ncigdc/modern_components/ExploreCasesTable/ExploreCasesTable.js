@@ -1,7 +1,7 @@
 /* @flow */
 
 import React from 'react';
-import { compose } from 'recompose';
+import { compose, lifecycle } from 'recompose';
 import { connect } from 'react-redux';
 import { Row } from '@ncigdc/uikit/Flex';
 import Showing from '@ncigdc/components/Pagination/Showing';
@@ -21,6 +21,13 @@ import timestamp from '@ncigdc/utils/timestamp';
 export default compose(
   withSelectIds,
   withRouter,
+  lifecycle({
+    componentWillReceiveProps(nextProps) {
+      if (nextProps.tableColumns !== this.props.tableColumns) {
+        this.setState({ tableColumns: nextProps.tableColumns });
+      }
+    },
+  }),
   withPropsOnChange(
     ['ssmsAggregationsViewer'],
     ({ ssmsAggregationsViewer: { explore } }) => {
@@ -35,7 +42,7 @@ export default compose(
       return { ssmCounts };
     }
   ),
-  connect(state => ({ tableColumns: state.tableColumns.exploreCases.ids }))
+  connect(state => ({ tableColumns: state.tableColumns.exploreCases }))
 )(
   ({
     exploreCasesTableViewer: { explore } = {},
@@ -58,11 +65,7 @@ export default compose(
       return <Row style={{ padding: '1rem' }}>No case data found.</Row>;
     }
 
-    const tableInfo = tableModels.exploreCases
-      .slice()
-      .sort((a, b) => tableColumns.indexOf(a.id) - tableColumns.indexOf(b.id))
-      .filter(x => tableColumns.includes(x.id));
-    console.log('tableInfo', tableInfo);
+    const tableInfo = tableColumns.slice().filter(x => !x.hidden);
 
     return (
       <div>

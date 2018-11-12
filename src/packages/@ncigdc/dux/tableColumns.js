@@ -51,7 +51,17 @@ const reducer = (state = initialState, action) => {
         ...Object.entries(
           tableColumns || {}
         ).reduce((acc, [key, val]: [string, any]) => {
-          const order = Array.isArray(val) ? state[key] : val;
+          const orderArray = val.map(v => v.id);
+          let order = Array.isArray(val)
+            ? state[key]
+                .slice()
+                .sort(
+                  (a, b) => orderArray.indexOf(a.id) - orderArray.indexOf(b.id)
+                )
+            : state[key];
+          order.forEach((element, i) => {
+            order[i].hidden = val[i].hidden;
+          });
           return {
             ...acc,
             [key]: order,

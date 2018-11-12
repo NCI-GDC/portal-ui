@@ -6,105 +6,76 @@ import LoginIcon from 'react-icons/lib/fa/sign-in';
 import { fetchUser } from '@ncigdc/dux/auth';
 import LocationSubscriber from '@ncigdc/components/LocationSubscriber';
 import styled from '@ncigdc/theme/styled';
-import { AUTH, FENCE, AWG } from '@ncigdc/utils/constants';
+import { AUTH, FENCE } from '@ncigdc/utils/constants';
 
 /*----------------------------------------------------------------------------*/
-
-let first = true;
 
 const openAuthWindow = ({
   pathname,
   dispatch,
-  push,
   user,
   pollInterval = 600,
-  winUrl = AWG
-    ? `${FENCE}/login/fence?redirect=${location.origin}`
-    : `${AUTH}?next=${location.origin}`,
+  winUrl = `${AUTH}?next=${location.origin}`,
   winStyle = 'width=800, height=600',
-}) => {
-  if (navigator.cookieEnabled) {
-    const win = open(FENCE, 'Auth', 'width=800, height=600');
+}) =>
+  new Promise((resolve, reject) => {
+    if (navigator.cookieEnabled) {
+      const win = open(winUrl, 'Auth', winStyle);
+      // window.loginPopup = win;
+      console.log('location origin: ', location.origin);
+      console.log('is first window open? ', first);
+      console.log('win url: ', winUrl);
+      console.log('user? ', user);
 
-    const interval = setInterval(() => {
-      try {
-        // Because the login window redirects to a different domain, checking
-        // win.document in IE11 throws exceptions right away, which prevents
-        // #clearInterval from ever getting called in this block.
-        // Must check this block (if the login window has been closed) first!
-        if (win.closed) {
-          clearInterval(interval);
-        } else if (
-          win.document.URL.includes(location.origin) &&
-          !win.document.URL.includes(location.origin + '/auth')
-        ) {
-          win.close();
+      const interval = setInterval(loginAttempt, pollInterval);
 
-          setTimeout(() => {
+      const loginAttempt = () => {
+        try {
+          // Because the login window redirects to a different domain, checking
+          // win.document in IE11 throws exceptions right away, which prevents
+          // #clearInterval from ever getting called in this block.
+          // Must check this block (if the login window has been closed) first!
+          if (win.closed) {
+            console.log('window closed? ', win.closed);
             clearInterval(interval);
-            setTimeout(() => {
-              dispatch(fetchUser());
-            }, 1000);
-          }, 1000);
+          } else if (
+            win.document.URL.includes(location.origin) &&
+            !win.document.URL.includes('auth')
+          ) {
+            // Window is not closed yet so close
+            if (!win.closed) {
+              win.close();
+            }
+
+            // Clear the interval calling this function
+            clearInterval(interval);
+
+            // Resolve that we have something good
+            resolve();
+          }
+        } catch (err) {
+          clearInterval(interval);
+          reject('Error while monitoring the Login window: ', err);
         }
-      } catch (err) {
-        console.log('Error while monitoring the Login window: ', err);
-      }
-    }, pollInterval);
-    // const win = open(winUrl, 'Auth', winStyle);
-    // window.loginPopup = win;
-    // console.log('location origin: ', location.origin);
-    // console.log('is first window open? ', first);
-    // console.log('win url: ', winUrl);
-    // console.log('user? ', user);
-    // const interval = setInterval(() => {
-    //   try {
-    //     // Because the login window redirects to a different domain, checking
-    //     // win.document in IE11 throws exceptions right away, which prevents
-    //     // #clearInterval from ever getting called in this block.
-    //     // Must check this block (if the login window has been closed) first!
-    //     if (win.closed) {
-    //       console.log('window closed? ', win.closed);
-    //       clearInterval(interval);
-    //     } else if (
-    //       win.document.URL.includes(location.origin) &&
-    //       !win.document.URL.includes('auth')
-    //     ) {
-    //       win.close();
-    //       console.log('location is not auth: ', location.origin);
-    //       setTimeout(() => {
-    //         clearInterval(interval);
-    //         setTimeout(() => {
-    //           // fetch authpublic user
-    //           if (first) {
-    //             first = false;
-    //             dispatch(fetchUser());
-    //             // login with fence
-    //             console.log('log in with fence');
-    //             openAuthWindow({
-    //               pathname,
-    //               dispatch,
-    //               user,
-    //               push,
-    //               pollInterval: 500,
-    //               winUrl: `${FENCE}/login/fence?redirect=${location.origin}`,
-    //               winStyle:
-    //                 'toolbar=no,status=no,menubar=no,scrollbars=no,resizable=no,left=50000, top=50000, width=1, height=1, visible=none',
-    //             });
-    //           } else {
-    //             console.log('redirecting to repository page');
-    //             push('/repository');
-    //           }
-    //         }, pollInterval);
-    //       }, pollInterval);
-    //     }
-    //   } catch (err) {
-    //     console.log('Error while monitoring the Login window: ', err);
-    //   }
-    // }, pollInterval);
-  } else {
-    // show cookie needs to be enabled message
-  }
+      };
+    } else {
+      reject('Error while monitoring the Login window: ', err);
+    }
+  });
+
+const fenceLogin = ({ pathname, dispatch, user, location }) => {
+  dispatch(fetchUser());
+  // login with fence
+  console.log('log in with fence');
+  return openAuthWindow({
+    pathname,
+    dispatch,
+    user,
+    pollInterval: 500,
+    winUrl: `${FENCE}/login/fence?redirect=${location.origin}`,
+    winStyle:
+      'toolbar=no,status=no,menubar=no,scrollbars=no,resizable=no,left=50000, top=50000, width=1, height=1, visible=none',
+  });
 };
 
 const Link = styled.a({
@@ -124,8 +95,12 @@ const LoginButton = ({ children, dispatch, user }) => (
     {({ pathname, push }) => (
       <Link
         className="test-login-button"
-        onClick={() =>
-          openAuthWindow({ pathname, dispatch, push, user, pollInterval: 200 })}
+        onClick={async () => {
+          await openAuthWindow({ pathname, dispatch, user, pollInterval: 200 });
+          await fenceLogin({ pathname, dispatch, user, location });
+          console.log('redirecting to repository page');
+          push('/repository');
+        }}
       >
         {children || (
           <span>

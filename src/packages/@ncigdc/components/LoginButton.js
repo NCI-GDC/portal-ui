@@ -32,6 +32,7 @@ const openAuthWindow = ({
         console.log('interval function for: ', name);
         if (win.closed) {
           clearInterval(interval);
+          reject('Window closed manually');
         }
 
         if (
@@ -56,9 +57,10 @@ const openAuthWindow = ({
     }
   });
 
-const fenceLogin = ({ pathname, dispatch, location }) => {
+const fenceLogin = ({ pathname, dispatch, location, name }) => {
   dispatch(fetchUser());
   return openAuthWindow({
+    name,
     pathname,
     dispatch,
     pollInterval: 500,
@@ -100,7 +102,7 @@ const LoginButton = ({ children, dispatch, user }) => (
               location,
             });
             console.log('redirecting to repository page');
-            push('/repository');
+            push({ pathname: '/repository' });
           } catch (err) {
             console.log('Login flow error: ', err);
           }

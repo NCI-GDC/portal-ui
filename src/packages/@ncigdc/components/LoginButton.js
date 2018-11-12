@@ -11,49 +11,46 @@ import { AUTH, FENCE } from '@ncigdc/utils/constants';
 /*----------------------------------------------------------------------------*/
 
 const openAuthWindow = ({
+  name,
   pathname,
   dispatch,
-  user,
   pollInterval = 600,
   winUrl = `${AUTH}?next=${location.origin}`,
   winStyle = 'width=800, height=600',
 }) =>
   new Promise((resolve, reject) => {
-    if (navigator.cookieEnabled) {
-      const win = open(winUrl, 'Auth', winStyle);
-      // window.loginPopup = win;
-      console.log('location origin: ', location.origin);
-      console.log('is first window open? ', first);
-      console.log('win url: ', winUrl);
-      console.log('user? ', user);
+    console.log('Starting: ', name);
 
+    if (navigator.cookieEnabled) {
+      console.log('Open window for: ', name);
+      const win = open(winUrl, 'Auth', winStyle);
+      console.log('Window open for: ', name);
+
+      console.log('location origin: ', location.origin);
+      console.log('win url: ', winUrl);
+
+      console.log('Set interval for: ', name);
       const interval = setInterval(loginAttempt, pollInterval);
 
       const loginAttempt = () => {
         try {
-          // Because the login window redirects to a different domain, checking
-          // win.document in IE11 throws exceptions right away, which prevents
-          // #clearInterval from ever getting called in this block.
-          // Must check this block (if the login window has been closed) first!
-          if (win.closed) {
-            console.log('window closed? ', win.closed);
-            clearInterval(interval);
-          } else if (
+          if (
             win.document.URL.includes(location.origin) &&
             !win.document.URL.includes('auth')
           ) {
             // Window is not closed yet so close
-            if (!win.closed) {
-              win.close();
-            }
+            win.close();
 
             // Clear the interval calling this function
             clearInterval(interval);
 
             // Resolve that we have something good
+            console.log('Resolving: ', name);
             resolve();
           }
         } catch (err) {
+          console.log('Interval error in: ', name);
+          console.log(err);
           clearInterval(interval);
           reject('Error while monitoring the Login window: ', err);
         }
@@ -63,14 +60,11 @@ const openAuthWindow = ({
     }
   });
 
-const fenceLogin = ({ pathname, dispatch, user, location }) => {
+const fenceLogin = ({ pathname, dispatch, location }) => {
   dispatch(fetchUser());
-  // login with fence
-  console.log('log in with fence');
   return openAuthWindow({
     pathname,
     dispatch,
-    user,
     pollInterval: 500,
     winUrl: `${FENCE}/login/fence?redirect=${location.origin}`,
     winStyle:
@@ -96,10 +90,24 @@ const LoginButton = ({ children, dispatch, user }) => (
       <Link
         className="test-login-button"
         onClick={async () => {
-          await openAuthWindow({ pathname, dispatch, user, pollInterval: 200 });
-          await fenceLogin({ pathname, dispatch, user, location });
-          console.log('redirecting to repository page');
-          push('/repository');
+          try {
+            await openAuthWindow({
+              name: 'NIH Login',
+              pathname,
+              dispatch,
+              pollInterval: 200,
+            });
+            await fenceLogin({
+              name: 'Fence Login',
+              pathname,
+              dispatch,
+              location,
+            });
+            console.log('redirecting to repository page');
+            push('/repository');
+          } catch (err) {
+            console.log('Login flow error: ', err);
+          }
         }}
       >
         {children || (

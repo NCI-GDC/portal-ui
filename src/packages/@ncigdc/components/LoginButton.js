@@ -88,8 +88,6 @@ const LoginButton = ({ children, dispatch, user }) => (
       <Link
         className="test-login-button"
         onClick={async () => {
-          const redirect = () => push({ pathname: '/repository' });
-
           try {
             await openAuthWindow({
               name: 'NIH Login',
@@ -104,7 +102,8 @@ const LoginButton = ({ children, dispatch, user }) => (
               location,
             });
             console.log('redirecting to repository page');
-            redirect();
+            debugger;
+            push({ pathname: '/repository' });
           } catch (err) {
             console.log('Login flow error: ', err);
           }

@@ -201,7 +201,7 @@ const SortTableButton = compose<ICSortTableButtonProps, ISortTableButtonProps>(
                     dispatchAction(
                       'toggleSortKey',
                       id,
-                      uiState[id].desc ? 'desc' : 'asc'
+                      uiState[id].asc ? 'asc' : 'desc'
                     )}
                 >
                   <input

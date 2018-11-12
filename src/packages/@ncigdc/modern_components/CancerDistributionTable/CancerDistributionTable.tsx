@@ -472,13 +472,13 @@ export default compose<ICDTWrappedProps, ICancerDistributionTableProps>(
               <SortTableButton
                 sortFunction={sortFunction}
                 options={sortOptions}
-                style={visualizingButton}
+                style={{ ...visualizingButton }}
               />
               <Tooltip
                 Component={
                   <span>Export All{geneId ? ' Except # Mutations' : ''}</span>
                 }
-                style={{ marginLeft: '2rem' }}
+                style={{ marginLeft: '0.5rem' }}
               >
                 <Button
                   style={{ ...visualizingButton }}

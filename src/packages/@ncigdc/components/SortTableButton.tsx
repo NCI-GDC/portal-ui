@@ -24,10 +24,10 @@ interface IReducerAction<T, P> {
   type: T;
   payload: P;
 }
-
+type TSortDirection = 'desc' | 'asc';
 export interface ISortSelection {
   field: string;
-  order: string;
+  order: TSortDirection;
 }
 export interface ISortTableButtonState {
   sortSelection: ReadonlyArray<ISortSelection>;
@@ -165,7 +165,7 @@ const SortTableButton = compose<ICSortTableButtonProps, ISortTableButtonProps>(
           const dispatchAction = (
             sType: TSortActionNames,
             sId: string,
-            sDir: string
+            sDir: TSortDirection
           ) =>
             dispatch(
               {

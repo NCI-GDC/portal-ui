@@ -281,54 +281,60 @@ export default compose<ICDTWrappedProps, ICancerDistributionTableProps>(
             </span>
           ),
           ...(tableType !== 'ssm' && {
-            cnv_gain: (
-              <span>
-                {/* <ExploreLink
+            cnv_gain: {
+              data: row.num_cnv_gain_percent,
+              elem: (
+                <span>
+                  {/* <ExploreLink
                   query={{
                     searchTableTab: 'cases',
                     filters: replaceFilters(cnvGainProjectFilter, filters),
                   }}
                 > */}
-                {row.num_cnv_gain.toLocaleString()}
-                {/* </ExploreLink> */}
-                <span> / </span>
-                {/* <ExploreLink
+                  {row.num_cnv_gain.toLocaleString()}
+                  {/* </ExploreLink> */}
+                  <span> / </span>
+                  {/* <ExploreLink
                   query={{
                     searchTableTab: 'cases',
                     filters: cnvProjectFilter,
                   }}
                 > */}
-                {row.num_cnv_cases_total.toLocaleString()}
-                {/* </ExploreLink> */}
-                <span>
-                  &nbsp;({(row.num_cnv_gain_percent * 100).toFixed(2)}%)
+                  {row.num_cnv_cases_total.toLocaleString()}
+                  {/* </ExploreLink> */}
+                  <span>
+                    &nbsp;({(row.num_cnv_gain_percent * 100).toFixed(2)}%)
+                  </span>
                 </span>
-              </span>
-            ),
-            cnv_loss: (
-              <span>
-                {/* <ExploreLink
+              ),
+            },
+            cnv_loss: {
+              data: row.num_cnv_loss_percent,
+              elem: (
+                <span>
+                  {/* <ExploreLink
                   query={{
                     searchTableTab: 'cases',
                     filters: replaceFilters(cnvLossProjectFilter, filters),
                   }}
                 > */}
-                {row.num_cnv_loss.toLocaleString()}
-                {/* </ExploreLink> */}
-                <span> / </span>
-                {/* <ExploreLink
+                  {row.num_cnv_loss.toLocaleString()}
+                  {/* </ExploreLink> */}
+                  <span> / </span>
+                  {/* <ExploreLink
                   query={{
                     searchTableTab: 'cases',
                     filters: cnvProjectFilter,
                   }}
                 > */}
-                {row.num_cnv_cases_total.toLocaleString()}
-                {/* </ExploreLink> */}
-                <span>
-                  &nbsp;({(row.num_cnv_loss_percent * 100).toFixed(2)}%)
+                  {row.num_cnv_cases_total.toLocaleString()}
+                  {/* </ExploreLink> */}
+                  <span>
+                    &nbsp;({(row.num_cnv_loss_percent * 100).toFixed(2)}%)
+                  </span>
                 </span>
-              </span>
-            ),
+              ),
+            },
           }),
           ...geneId
             ? {
@@ -395,7 +401,7 @@ export default compose<ICDTWrappedProps, ICancerDistributionTableProps>(
       tableType !== 'ssm'
         ? [
             {
-              key: 'cnv_gain',
+              key: 'cnv_gain.elem',
               title: (
                 <Row>
                   <Tooltip
@@ -416,7 +422,7 @@ export default compose<ICDTWrappedProps, ICancerDistributionTableProps>(
               ),
             },
             {
-              key: 'cnv_loss',
+              key: 'cnv_loss.elem',
               title: (
                 <Row>
                   <Tooltip
@@ -438,21 +444,28 @@ export default compose<ICDTWrappedProps, ICancerDistributionTableProps>(
             },
           ]
         : [];
+
+    const multisortKey: string[] =
+      tableSort.length > 0
+        ? tableSort.reduce(
+            (acc, curr) => {
+              // https://www.npmjs.com/package/multisort
+              const field =
+                curr.field.indexOf('cnv') !== -1
+                  ? `${curr.field}.data`
+                  : curr.field;
+              acc.push(curr.order === 'desc' ? `~${field}` : field);
+              return acc;
+            },
+            [] as string[]
+          )
+        : ['~freq']; // default sort
+
     return (
       <span>
         <LocalPaginationTable
           style={{ width: '100%', minWidth: 450 }}
-          data={multisort(
-            cancerDistData,
-            tableSort.reduce(
-              (acc, curr) => {
-                // https://www.npmjs.com/package/multisort
-                acc.push(curr.order === 'desc' ? `~${curr.field}` : curr.field);
-                return acc;
-              },
-              [] as string[]
-            )
-          )}
+          data={multisort(cancerDistData, multisortKey)}
           prefix={paginationPrefix}
           buttons={
             <Row style={{ alignItems: 'flex-end' }}>

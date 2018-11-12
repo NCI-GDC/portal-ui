@@ -30,33 +30,29 @@ const openAuthWindow = ({
       console.log('win url: ', winUrl);
       const loginAttempt = () => {
         console.log('interval function for: ', name);
-
-        try {
-          if (
-            win.document.URL.includes(location.origin) &&
-            !win.document.URL.includes('auth')
-          ) {
-            // Window is not closed yet so close
-            win.close();
-
-            // Clear the interval calling this function
-            clearInterval(interval);
-
-            // Resolve that we have something good
-            console.log('Resolving: ', name);
-            resolve();
-          }
-        } catch (err) {
-          console.log('Interval error in: ', name);
-          console.log(err);
+        if (win.closed) {
           clearInterval(interval);
-          reject('Error while monitoring the Login window: ', err);
+        }
+
+        if (
+          win.document.URL.includes(location.origin) &&
+          !win.document.URL.includes('auth')
+        ) {
+          // Window is not closed yet so close
+          win.close();
+
+          // Clear the interval calling this function
+          clearInterval(interval);
+
+          // Resolve that we have something good
+          console.log('Resolving: ', name);
+          resolve();
         }
       };
       console.log('Set interval for: ', name);
       const interval = setInterval(loginAttempt, pollInterval);
     } else {
-      reject('Error while monitoring the Login window: ', err);
+      reject('No cookies enabled');
     }
   });
 

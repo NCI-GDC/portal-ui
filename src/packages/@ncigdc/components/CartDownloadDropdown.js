@@ -92,7 +92,7 @@ const downloadCart = ({
           dbGapList={dbGapList}
           CustomButton={agreed => (
             <Button
-              disabled={!authorized.doc_count || !agreed}
+              disabled={!authorized.doc_count || (!!user && !agreed)}
               onClick={() =>
                 downloadCart({
                   user,
@@ -130,7 +130,8 @@ const downloadCart = ({
           </div>
           {user ? (
             <p>
-              Please request dbGaP Access to the project (<a
+              You do not have access to download this file. Please request dbGaP
+              Access to the project (<a
                 target={'_blank'}
                 href="https://gdc.cancer.gov/access-data/obtaining-access-controlled-data"
               >

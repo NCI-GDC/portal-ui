@@ -48,6 +48,23 @@ export default compose(
       value: project.project_id,
     },
   ];
+  const Description = () => (
+    <div style={{ paddingLeft: '10px', marginBottom: '20px' }}>
+      <div>
+        The project has controlled access data which requires dbGaP Access. See
+        instructions for{' '}
+        <a
+          href="https://gdc.cancer.gov/access-data/obtaining-access-controlled-data"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Obtaining Access to Controlled Data.
+        </a>
+      </div>
+    </div>
+  );
+  console.log('project.dbgap_accession_number', project);
+
   return (
     <Row style={{ flexWrap: 'wrap' }} spacing={SPACING}>
       <span style={{ ...styles.column, ...styles.margin }}>
@@ -59,6 +76,7 @@ export default compose(
                 <i className="fa fa-table" /> Summary
               </span>
             }
+            description={Description()}
             thToTd={[
               { th: 'Project ID', td: project.project_id },
               {
@@ -134,21 +152,7 @@ export default compose(
                 <i className="fa fa-table" /> Summary
               </span>
             }
-            description={
-              <div style={{ paddingLeft: '10px', marginBottom: '20px' }}>
-                <div>
-                  The project has controlled access data which required dbGaP
-                  Access. See instructions for{' '}
-                  <a
-                    href="https://gdc.cancer.gov/access-data/obtaining-access-controlled-data"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    Obtaining Access to Controlled Data.
-                  </a>
-                </div>
-              </div>
-            }
+            description={Description()}
             thToTd={[
               { th: 'Project ID', td: project.project_id },
               {

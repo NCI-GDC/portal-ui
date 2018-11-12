@@ -38,7 +38,7 @@ const CheckBoxModal = ({
   }
   return (
     <BaseModal
-      title="Access Error"
+      title="Access Alert"
       extraButtons={CustomButton(agreed)}
       closeText="Cancel"
     >
@@ -63,7 +63,17 @@ const CheckBoxModal = ({
           and the study-specific Data Use Certification Agreement available in{' '}
           <a href={dbGapLink} target="_blank" rel="noopener noreferrer">
             dbGaP
-          </a>.
+          </a>.This means:
+          <ul style={{ marginTop: '10px' }}>
+            <li>
+              I agree not to attempt to reidentify any individual participant in
+              any study represented by GDC data, for any purpose whatever.
+            </li>
+            <li>
+              I agree to have read and understand study-specific Data Use
+              Agreements and to comply with any additional restrictions therein.
+            </li>
+          </ul>
         </div>
       )}
     </BaseModal>

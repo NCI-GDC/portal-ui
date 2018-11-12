@@ -8,6 +8,7 @@ import { userCanDownloadFile } from '@ncigdc/utils/auth';
 import { setModal } from '@ncigdc/dux/modal';
 import NoAccessModal from '@ncigdc/components/Modals/NoAccessModal';
 import CheckBoxModal from '@ncigdc/components/Modals/CheckBoxModal';
+import BaseModal from '@ncigdc/components/Modals/BaseModal';
 import Hidden from '@ncigdc/components/Hidden';
 import Button from '@ncigdc/uikit/Button';
 
@@ -48,23 +49,36 @@ function DownloadFile({
       onClick={() =>
         dispatch(
           setModal(
-            userCanDownloadFile({ user, file }) ? (
-              <CheckBoxModal
-                dbGapList={file.acl}
-                CustomButton={agreed => (
-                  <DownloadButton
-                    disabled={!agreed}
-                    className="test-download-button"
-                    extraParams={{ ids: file.file_id }}
-                    filename={file.file_name}
-                    endpoint="data?annotations=true&related_files=true"
-                    activeText={activeText}
-                    inactiveText={inactiveText}
-                    style={style}
-                  />
-                )}
-                dispatch={dispatch}
-              />
+            user ? (
+              userCanDownloadFile({ user, file }) ? (
+                <CheckBoxModal
+                  dbGapList={file.acl}
+                  CustomButton={agreed => (
+                    <DownloadButton
+                      disabled={!agreed}
+                      className="test-download-button"
+                      extraParams={{ ids: file.file_id }}
+                      filename={file.file_name}
+                      endpoint="data?annotations=true&related_files=true"
+                      activeText={activeText}
+                      inactiveText={inactiveText}
+                      style={style}
+                    />
+                  )}
+                  dispatch={dispatch}
+                />
+              ) : (
+                <BaseModal title="Access Alert" closeText={'close'}>
+                  <p>
+                    Please request dbGaP Access to the project (<a
+                      target={'_blank'}
+                      href="https://gdc.cancer.gov/access-data/obtaining-access-controlled-data"
+                    >
+                      click here for more information
+                    </a>).
+                  </p>
+                </BaseModal>
+              )
             ) : (
               <NoAccessModal message="You don't have access to this file." />
             ),

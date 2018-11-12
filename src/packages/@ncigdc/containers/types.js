@@ -7,11 +7,11 @@ export type TTableProps = {
   totalFiles: number,
   endpoint?: string,
   hits: {
-    edges: Array<{|
-      node: {|
+    edges: Array<{
+      node: {
         id: string,
-      |},
-    |}>,
+      },
+    }>,
     total: number,
   },
   relay: {

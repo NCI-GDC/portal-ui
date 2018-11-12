@@ -17,12 +17,12 @@ export default (
   const leapThenPair = (years: number, days: number): number[] =>
     days === 365 ? [years + 1, 0] : [years, days];
   const timeString = (
-    number: number,
+    num: number,
     singular: string,
     plural: string,
   ): string => {
     const pluralChecked = plural || `${singular}s`;
-    return `${number} ${number === 1 ? singular : pluralChecked}`;
+    return `${num} ${num === 1 ? singular : pluralChecked}`;
   };
   const _timeString = _.spread(timeString);
 

@@ -5,7 +5,7 @@ import _ from 'lodash';
 import { compose, withState } from 'recompose';
 
 import withSize from '@ncigdc/utils/withSize';
-import type { TBucket } from '@ncigdc/components/Aggregations/types';
+import { TBucket } from '@ncigdc/components/Aggregations/types';
 import withRouter from '@ncigdc/utils/withRouter';
 import { parseFilterParam } from '@ncigdc/utils/uri';
 import {

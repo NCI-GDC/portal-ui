@@ -9,7 +9,7 @@ import FacetHeader from '@ncigdc/components/Aggregations/FacetHeader';
 import FacetWrapper from '@ncigdc/components/FacetWrapper';
 import escapeForRelay from '@ncigdc/utils/escapeForRelay';
 
-import type { TBucket } from '@ncigdc/components/Aggregations/types';
+import { TBucket } from '@ncigdc/components/Aggregations/types';
 
 import { Row } from '@ncigdc/uikit/Flex';
 import { withTheme } from '@ncigdc/theme';

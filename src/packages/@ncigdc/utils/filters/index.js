@@ -4,7 +4,7 @@
 import _ from 'lodash';
 import { parseFilterParam } from '../uri';
 
-import type {
+import {
   TMergeFilters,
   TCombineValues,
   TMergeFns,
@@ -12,6 +12,7 @@ import type {
   TSortFilters,
   TFilterByWhitelist,
   TRemoveFilter,
+  TRemoveFilterWithOp,
 } from './types';
 
 function compareTerms(a, b) {
@@ -289,6 +290,27 @@ export const removeFilter: TRemoveFilter = (field, query) => {
 
   const filteredContent = query.content
     .map(q => removeFilter(field, q))
+    .filter(Boolean);
+
+  return filteredContent.length
+    ? {
+        ...query,
+        content: filteredContent,
+      }
+    : null;
+};
+
+export const removeFilterWithOp: TRemoveFilterWithOp = (filterFunc, query) => {
+  if (!query) return null;
+  if (!filterFunc) return query;
+  if (Object.keys(query).length === 0) return query;
+
+  if (!Array.isArray(query.content)) {
+    return filterFunc(query.op, query.content.field) ? null : query;
+  }
+
+  const filteredContent = query.content
+    .map(q => removeFilterWithOp(filterFunc, q))
     .filter(Boolean);
 
   return filteredContent.length

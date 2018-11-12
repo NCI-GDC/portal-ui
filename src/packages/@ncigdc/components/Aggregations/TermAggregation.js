@@ -6,7 +6,7 @@ import LocationSubscriber from '@ncigdc/components/LocationSubscriber';
 import { compose, withState, withPropsOnChange, pure } from 'recompose';
 
 import CloseIcon from '@ncigdc/theme/icons/CloseIcon';
-import type { TRawQuery } from '@ncigdc/utils/uri/types';
+import { IRawQuery } from '@ncigdc/utils/uri/types';
 import { parseFilterParam } from '@ncigdc/utils/uri';
 import { inCurrentFilters } from '@ncigdc/utils/filters';
 
@@ -18,7 +18,7 @@ import OverflowTooltippedLabel from '@ncigdc/uikit/OverflowTooltippedLabel';
 
 import { Container, BucketLink } from './';
 
-import type { TBucket } from './types';
+import { TBucket } from './types';
 
 type TProps = {
   buckets: [TBucket],
@@ -60,7 +60,7 @@ const TermAggregation = (props: TProps) => {
 
   return (
     <LocationSubscriber>
-      {(ctx: {| pathname: string, query: TRawQuery |}) => {
+      {(ctx: { pathname: string, query: IRawQuery }) => {
         const currentFilters =
           (ctx.query &&
             parseFilterParam((ctx.query || {}).filters, {}).content) ||

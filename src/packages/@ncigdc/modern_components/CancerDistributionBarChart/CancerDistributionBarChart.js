@@ -12,14 +12,15 @@ import FilteredStackedBarChart from '@ncigdc/components/Charts/FilteredStackedBa
 import wrapSvg from '@ncigdc/utils/wrapSvg';
 import ExploreLink from '@ncigdc/components/Links/ExploreLink';
 import ProjectsLink from '@ncigdc/components/Links/ProjectsLink';
-import { TGroupFilter } from '@ncigdc/utils/filters/types';
+import { IGroupFilter } from '@ncigdc/utils/filters/types';
 import { cnvColors } from '@ncigdc/utils/filters/prepared/significantConsequences';
 import { renderToString } from 'react-dom/server';
 import { makeFilter, replaceFilters } from '@ncigdc/utils/filters';
+import ExploreSSMLink from '@ncigdc/components/Links/ExploreSSMLink';
 
 type TProps = {
   style: Object,
-  filters: ?TGroupFilter,
+  filters: ?IGroupFilter,
   cases: {
     total: {
       project__project_id: {
@@ -67,17 +68,25 @@ const DefaultChartTitle = ({
 }: TChartTitleProps) => {
   return (
     <div style={{ textTransform: 'uppercase', padding: '0 2rem' }}>
-      <ExploreLink query={{ searchTableTab: 'cases', filters }}>
-        {cases.toLocaleString()}
-      </ExploreLink>&nbsp; cases affected by&nbsp;
       {type === 'cnvs' ? (
-        ssms.toLocaleString()
+        <span>
+          <ExploreLink query={{ searchTableTab: 'cases', filters }}>
+            {cases.toLocaleString()}
+          </ExploreLink>{' '}
+          cases affected by {ssms.toLocaleString()} cnv events across{' '}
+        </span>
       ) : (
-        <ExploreLink query={{ searchTableTab: 'mutations', filters }}>
-          {ssms.toLocaleString()}
-        </ExploreLink>
+        <span>
+          <ExploreSSMLink searchTableTab={'cases'} filters={filters}>
+            {cases.toLocaleString()}
+          </ExploreSSMLink>{' '}
+          cases affected by{' '}
+          <ExploreSSMLink searchTableTab={'mutations'} filters={filters}>
+            {ssms.toLocaleString()}
+          </ExploreSSMLink>{' '}
+          mutations across{' '}
+        </span>
       )}
-      &nbsp; {type === 'cnvs' ? 'cnv events' : 'mutations'} across&nbsp;
       <ProjectsLink
         query={{
           filters: {

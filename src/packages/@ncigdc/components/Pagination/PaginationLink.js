@@ -4,14 +4,14 @@ import React from 'react';
 
 import Link from '@ncigdc/components/Links/Link';
 
-export type TProps = {|
+export type TProps = {
   children?: string,
   offset: number,
   pred: boolean,
   prfOff: string,
   style?: Object,
   className?: Object,
-|};
+};
 
 const PaginationLink = (props: TProps) =>
   props.pred ? (

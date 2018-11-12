@@ -17,7 +17,7 @@ import { viewerQuery } from '@ncigdc/routes/queries';
 import Container from './Portal';
 import { API, IS_AUTH_PORTAL } from '@ncigdc/utils/constants';
 import { fetchUser, forceLogout, setUserAccess } from '@ncigdc/dux/auth';
-// import { clear } from '@ncigdc/utils/cookies';
+import { clear } from '@ncigdc/utils/cookies';
 import Login from '@ncigdc/routes/Login';
 
 let first = true;

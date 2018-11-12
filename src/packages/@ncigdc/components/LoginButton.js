@@ -28,11 +28,9 @@ const openAuthWindow = ({
 
       console.log('location origin: ', location.origin);
       console.log('win url: ', winUrl);
-
-      console.log('Set interval for: ', name);
-      const interval = setInterval(loginAttempt, pollInterval);
-
       const loginAttempt = () => {
+        console.log('interval function for: ', name);
+
         try {
           if (
             win.document.URL.includes(location.origin) &&
@@ -55,6 +53,8 @@ const openAuthWindow = ({
           reject('Error while monitoring the Login window: ', err);
         }
       };
+      console.log('Set interval for: ', name);
+      const interval = setInterval(loginAttempt, pollInterval);
     } else {
       reject('Error while monitoring the Login window: ', err);
     }

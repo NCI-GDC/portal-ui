@@ -15,7 +15,8 @@ const openAuthWindow = ({
   pathname,
   dispatch,
   pollInterval = 600,
-  winUrl = `${AUTH}?next=${location.origin}`,
+  // winUrl = `${AUTH}?next=${location.origin}`,
+  winUrl = `${AUTH}?next=${FENCE}&redirect=${location.origin}`,
   winStyle = 'width=800, height=600',
 }) =>
   new Promise((resolve, reject) => {
@@ -58,7 +59,6 @@ const openAuthWindow = ({
   });
 
 const fenceLogin = ({ pathname, dispatch, location, name }) => {
-  dispatch(fetchUser());
   return openAuthWindow({
     name,
     pathname,
@@ -70,7 +70,7 @@ const fenceLogin = ({ pathname, dispatch, location, name }) => {
   });
 };
 
-const Link = styled.div({
+const Link = styled.a({
   textDecoration: 'none',
   transition: 'background-color 0.2s ease',
   cursor: 'pointer',
@@ -87,26 +87,27 @@ const LoginButton = ({ children, dispatch, user }) => (
     {({ pathname, push }) => (
       <Link
         className="test-login-button"
-        onClick={async () => {
-          try {
-            await openAuthWindow({
-              name: 'NIH Login',
-              pathname,
-              dispatch,
-              pollInterval: 200,
-            });
-            await fenceLogin({
-              name: 'Fence Login',
-              pathname,
-              dispatch,
-              location,
-            });
-            setTimeout(() => push({ pathname: '/repository' }), 1000);
-            console.log('redirecting to repository page');
-          } catch (err) {
-            console.log('Login flow error: ', err);
-          }
-        }}
+        href={`${AUTH}?next=${FENCE}&redirect=${location.origin}`}
+        // onClick={async () => {
+        //   try {
+        //     await openAuthWindow({
+        //       name: 'NIH Login',
+        //       pathname,
+        //       dispatch,
+        //       pollInterval: 200,
+        //     });
+        //     // await fenceLogin({
+        //     //   name: 'Fence Login',
+        //     //   pathname,
+        //     //   dispatch,
+        //     //   location,
+        //     // });
+        //     setTimeout(() => push({ pathname: '/repository' }), 1000);
+        //     console.log('redirecting to repository page');
+        //   } catch (err) {
+        //     console.log('Login flow error: ', err);
+        //   }
+        // }}
       >
         {children || (
           <span>

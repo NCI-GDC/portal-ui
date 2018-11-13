@@ -70,7 +70,7 @@ const fenceLogin = ({ pathname, dispatch, location, name }) => {
   });
 };
 
-const Link = styled.a({
+const Link = styled.button({
   textDecoration: 'none',
   transition: 'background-color 0.2s ease',
   cursor: 'pointer',
@@ -102,7 +102,6 @@ const LoginButton = ({ children, dispatch, user }) => (
               location,
             });
             console.log('redirecting to repository page');
-            debugger;
             push({ pathname: '/repository' });
           } catch (err) {
             console.log('Login flow error: ', err);

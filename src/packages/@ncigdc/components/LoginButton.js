@@ -101,7 +101,7 @@ const LoginButton = ({ children, dispatch, user }) => (
               dispatch,
               location,
             });
-            console.log('redirecting to repository page');
+            // console.log('redirecting to repository page');
             push({ pathname: '/repository' });
           } catch (err) {
             console.log('Login flow error: ', err);

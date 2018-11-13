@@ -14,7 +14,7 @@ const enhance = compose(
       }
     },
   }),
-  withRouter,
+  withRouter
 );
 
 const CheckBoxModal = ({
@@ -63,7 +63,7 @@ const CheckBoxModal = ({
           and the study-specific Data Use Certification Agreement available in{' '}
           <a href={dbGapLink} target="_blank" rel="noopener noreferrer">
             dbGaP
-          </a>.This means:
+          </a>. This means:
           <ul style={{ marginTop: '10px' }}>
             <li>
               I agree not to attempt to reidentify any individual participant in

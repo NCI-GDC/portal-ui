@@ -12,16 +12,14 @@ import { AUTH, FENCE } from '@ncigdc/utils/constants';
 
 const openAuthWindow = ({
   name,
-  pathname,
+  // pathname,
   dispatch,
   pollInterval = 600,
-  // winUrl = `${AUTH}?next=${location.origin}`,
-  winUrl = `${AUTH}?next=${FENCE}&redirect=${location.origin}`,
+  winUrl = `${AUTH}?next=${location.origin}`,
   winStyle = 'width=800, height=600',
 }) =>
   new Promise((resolve, reject) => {
     console.log('Starting: ', name);
-
     if (navigator.cookieEnabled) {
       console.log('Open window for: ', name);
       const win = open(winUrl, 'Auth', winStyle);
@@ -70,7 +68,7 @@ const fenceLogin = ({ pathname, dispatch, location, name }) => {
   });
 };
 
-const Link = styled.a({
+const Link = styled.div({
   textDecoration: 'none',
   transition: 'background-color 0.2s ease',
   cursor: 'pointer',
@@ -87,27 +85,14 @@ const LoginButton = ({ children, dispatch, user }) => (
     {({ pathname, push }) => (
       <Link
         className="test-login-button"
-        href={`${AUTH}?next=${FENCE}/login/fence?redirect=${location.origin}`}
-        // onClick={async () => {
-        //   try {
-        //     await openAuthWindow({
-        //       name: 'NIH Login',
-        //       pathname,
-        //       dispatch,
-        //       pollInterval: 200,
-        //     });
-        //     // await fenceLogin({
-        //     //   name: 'Fence Login',
-        //     //   pathname,
-        //     //   dispatch,
-        //     //   location,
-        //     // });
-        //     setTimeout(() => push({ pathname: '/repository' }), 1000);
-        //     console.log('redirecting to repository page');
-        //   } catch (err) {
-        //     console.log('Login flow error: ', err);
-        //   }
-        // }}
+        onClick={async () => {
+          await openAuthWindow({
+            winUrl: `${AUTH}?next=${FENCE}/login/fence?redirect=${location.origin}`,
+            pollInterval: 200,
+            name: 'AWG',
+            dispatch,
+          });
+        }}
       >
         {children || (
           <span>

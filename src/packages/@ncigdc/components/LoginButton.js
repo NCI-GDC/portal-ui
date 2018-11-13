@@ -87,25 +87,41 @@ const LoginButton = ({ children, dispatch, user }) => (
     {({ pathname, push }) => (
       <Link
         className="test-login-button"
-        onClick={async () => {
-          try {
-            await openAuthWindow({
-              name: 'NIH Login',
-              pathname,
-              dispatch,
-              pollInterval: 200,
-            });
-            await fenceLogin({
-              name: 'Fence Login',
-              pathname,
-              dispatch,
-              location,
-            });
-            // console.log('redirecting to repository page');
-            push({ pathname: '/repository' });
-          } catch (err) {
-            console.log('Login flow error: ', err);
-          }
+        onClick={() => {
+          openAuthWindow({
+            name: 'NIH Login',
+            pathname,
+            dispatch,
+            pollInterval: 200,
+          })
+            .then(() =>
+              openAuthWindow({
+                name: 'NIH Login',
+                pathname,
+                dispatch,
+                pollInterval: 200,
+              }),
+            )
+            .then(() => push({ pathname: '/repository' }))
+            .catch(err => console.log('Login flow error: ', err));
+          // try {
+          //   await openAuthWindow({
+          //     name: 'NIH Login',
+          //     pathname,
+          //     dispatch,
+          //     pollInterval: 200,
+          //   });
+          //   await fenceLogin({
+          //     name: 'Fence Login',
+          //     pathname,
+          //     dispatch,
+          //     location,
+          //   });
+          //   // console.log('redirecting to repository page');
+          //   push({ pathname: '/repository' });
+          // } catch (err) {
+          //   console.log('Login flow error: ', err);
+          // }
         }}
       >
         {children || (

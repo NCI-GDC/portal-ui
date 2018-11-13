@@ -70,7 +70,7 @@ const fenceLogin = ({ pathname, dispatch, location, name }) => {
   });
 };
 
-const Link = styled.button({
+const Link = styled.div({
   textDecoration: 'none',
   transition: 'background-color 0.2s ease',
   cursor: 'pointer',
@@ -87,41 +87,25 @@ const LoginButton = ({ children, dispatch, user }) => (
     {({ pathname, push }) => (
       <Link
         className="test-login-button"
-        onClick={() => {
-          openAuthWindow({
-            name: 'NIH Login',
-            pathname,
-            dispatch,
-            pollInterval: 200,
-          })
-            .then(() =>
-              openAuthWindow({
-                name: 'NIH Login',
-                pathname,
-                dispatch,
-                pollInterval: 200,
-              }),
-            )
-            .then(() => push({ pathname: '/repository' }))
-            .catch(err => console.log('Login flow error: ', err));
-          // try {
-          //   await openAuthWindow({
-          //     name: 'NIH Login',
-          //     pathname,
-          //     dispatch,
-          //     pollInterval: 200,
-          //   });
-          //   await fenceLogin({
-          //     name: 'Fence Login',
-          //     pathname,
-          //     dispatch,
-          //     location,
-          //   });
-          //   // console.log('redirecting to repository page');
-          //   push({ pathname: '/repository' });
-          // } catch (err) {
-          //   console.log('Login flow error: ', err);
-          // }
+        onClick={async () => {
+          try {
+            await openAuthWindow({
+              name: 'NIH Login',
+              pathname,
+              dispatch,
+              pollInterval: 200,
+            });
+            await fenceLogin({
+              name: 'Fence Login',
+              pathname,
+              dispatch,
+              location,
+            });
+            setTimeout(() => push({ pathname: '/repository' }), 1000);
+            console.log('redirecting to repository page');
+          } catch (err) {
+            console.log('Login flow error: ', err);
+          }
         }}
       >
         {children || (

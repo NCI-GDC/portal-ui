@@ -63,6 +63,7 @@ function DownloadFile({
                       activeText={activeText}
                       inactiveText={inactiveText}
                       style={style}
+                      setModal={() => dispatch(setModal(null))}
                     />
                   )}
                   dispatch={dispatch}
@@ -70,7 +71,9 @@ function DownloadFile({
               ) : (
                 <BaseModal title="Access Alert" closeText={'close'}>
                   <p>
-                    Please request dbGaP Access to the project (<a
+                    You are attempting to download files that you are not
+                    authorized to access. Please request dbGaP Access to the
+                    project (<a
                       target={'_blank'}
                       href="https://gdc.cancer.gov/access-data/obtaining-access-controlled-data"
                     >
@@ -81,8 +84,8 @@ function DownloadFile({
               )
             ) : (
               <NoAccessModal message="You don't have access to this file." />
-            ),
-          ),
+            )
+          )
         )}
       leftIcon={inactiveText && <i className={'fa fa-download'} />}
     >
@@ -97,5 +100,5 @@ function DownloadFile({
 }
 
 export default compose(connect(state => ({ ...state.auth, ...state.cart })))(
-  DownloadFile,
+  DownloadFile
 );

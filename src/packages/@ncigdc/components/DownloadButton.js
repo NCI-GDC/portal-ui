@@ -35,6 +35,7 @@ type TDownloadButton = {
   requests: Array<{ endpoint: string, filename: string, params: Object }>,
   scope: string,
   method: string,
+  setModal: () => {},
 };
 
 const DownloadButton = ({
@@ -58,6 +59,7 @@ const DownloadButton = ({
   scope,
   sets,
   method = 'POST',
+  setModal = () => {},
   ...props
 }: TDownloadButton) => {
   const text = active ? activeText : inactiveText;
@@ -87,13 +89,13 @@ const DownloadButton = ({
           ...extraParams,
         };
         setActive(true);
-
         download({
           params,
           url: urlJoin(AUTH_API, endpoint),
           method,
           altMessage,
         })(() => {}, () => setActive(false));
+        setModal();
       }}
     >
       {text || [icon, <Hidden key="hidden">download</Hidden>]}
@@ -113,7 +115,7 @@ const enhance = compose(
       : active => setState(s => ({ ...s, active })),
     active: active ? active : state.active,
     ...rest,
-  })),
+  }))
 );
 
 export default enhance(DownloadButton);

@@ -87,7 +87,7 @@ const LoginButton = ({ children, dispatch, user }) => (
         className="test-login-button"
         onClick={async () => {
           await openAuthWindow({
-            winUrl: `${AUTH}?next=${FENCE}/login/fence?redirect=${location.origin}`,
+            winUrl: `${AUTH}?next=${FENCE}/login/fence?redirect=${location.origin}/repository`,
             pollInterval: 200,
             name: 'AWG',
             dispatch,

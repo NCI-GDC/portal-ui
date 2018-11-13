@@ -87,7 +87,7 @@ const LoginButton = ({ children, dispatch, user }) => (
     {({ pathname, push }) => (
       <Link
         className="test-login-button"
-        href={`${AUTH}?next=${FENCE}?redirect=${location.origin}`}
+        href={`${AUTH}?next=${FENCE}/login/fence?redirect=${location.origin}`}
         // onClick={async () => {
         //   try {
         //     await openAuthWindow({

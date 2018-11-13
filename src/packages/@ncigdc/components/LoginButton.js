@@ -46,6 +46,7 @@ const openAuthWindow = ({
 
           // Resolve that we have something good
           console.log('Resolving: ', name);
+          dispatch(fetchUser());
           resolve();
         }
       };

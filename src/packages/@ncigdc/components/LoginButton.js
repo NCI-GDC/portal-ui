@@ -87,11 +87,12 @@ const LoginButton = ({ children, dispatch, user }) => (
         className="test-login-button"
         onClick={async () => {
           await openAuthWindow({
-            winUrl: `${AUTH}?next=${FENCE}/login/fence?redirect=${location.origin}/repository`,
+            winUrl: `${AUTH}?next=${FENCE}/login/fence?redirect=${location.origin}`,
             pollInterval: 200,
             name: 'AWG',
             dispatch,
           });
+          push({ pathname: '/repository' });
         }}
       >
         {children || (

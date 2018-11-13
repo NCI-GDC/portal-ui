@@ -46,7 +46,6 @@ const openAuthWindow = ({
 
           // Resolve that we have something good
           console.log('Resolving: ', name);
-          dispatch(fetchUser());
           resolve();
         }
       };
@@ -93,6 +92,7 @@ const LoginButton = ({ children, dispatch, user }) => (
             name: 'AWG',
             dispatch,
           });
+          await dispatch(fetchUser());
           push({ pathname: '/repository' });
         }}
       >

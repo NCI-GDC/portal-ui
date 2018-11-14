@@ -35,7 +35,7 @@ const styles = {
 const AWGLoginButton = compose(
   withRouter,
   connect(state => state.auth),
-)(({ dispatch }) => (
+)(({ dispatch, push }) => (
   <Button
     style={styles.loginButton}
     onClick={async () => {
@@ -43,7 +43,6 @@ const AWGLoginButton = compose(
         winUrl: `${AUTH}?next=${FENCE}/login/fence?redirect=${location.origin}`,
         pollInterval: 200,
         name: 'AWG',
-        dispatch,
       });
       await dispatch(fetchUser());
       push({ pathname: '/repository' });

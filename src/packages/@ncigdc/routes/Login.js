@@ -1,6 +1,13 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import LoginButton from '@ncigdc/components/LoginButton';
+import { withRouter } from 'react-router-dom';
+import { compose } from 'recompose';
+
+import { AUTH, FENCE } from '@ncigdc/utils/constants';
+import { fetchUser } from '@ncigdc/dux/auth';
+import Button from '@ncigdc/uikit/Button';
+import { Row } from '@ncigdc/uikit/Flex';
+import openAuthWindow from '@ncigdc/utils/openAuthWindow';
 
 const styles = {
   title: {
@@ -14,7 +21,37 @@ const styles = {
     color: 'rgb(191, 34, 58)',
     fontSize: 16,
   },
+  loginButton: {
+    color: 'white',
+    fontSize: 16,
+    padding: '12px 30px',
+    fontWeight: 200,
+    textTransform: 'uppercase',
+    letterSpacing: 2,
+    width: 140,
+  },
 };
+
+const AWGLoginButton = compose(
+  withRouter,
+  connect(state => state.auth),
+)(({ dispatch }) => (
+  <Button
+    style={styles.loginButton}
+    onClick={async () => {
+      await openAuthWindow({
+        winUrl: `${AUTH}?next=${FENCE}/login/fence?redirect=${location.origin}`,
+        pollInterval: 200,
+        name: 'AWG',
+        dispatch,
+      });
+      await dispatch(fetchUser());
+      push({ pathname: '/repository' });
+    }}
+  >
+    Login
+  </Button>
+));
 
 export default connect(state => ({
   user: state.auth.user,
@@ -108,25 +145,9 @@ export default connect(state => ({
               {window.location.search.includes('error=no_intersection') && (
                 <NihWarning />
               )}
-              <LoginButton>
-                <button
-                  style={{
-                    marginTop: '1.2em',
-                    backgroundColor: 'rgb(38, 89, 134)',
-                    color: 'white',
-                    fontSize: 16,
-                    border: 'none',
-                    borderRadius: 4,
-                    padding: '12px 30px',
-                    cursor: 'pointer',
-                    fontWeight: 200,
-                    textTransform: 'uppercase',
-                    letterSpacing: 2,
-                  }}
-                >
-                  Login
-                </button>
-              </LoginButton>
+              <Row style={{ justifyContent: 'center', marginTop: '1.5rem' }}>
+                <AWGLoginButton />
+              </Row>
             </div>
           </div>
         </div>

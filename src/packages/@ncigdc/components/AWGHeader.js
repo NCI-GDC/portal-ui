@@ -123,12 +123,6 @@ const Header = compose(
                 tabIndex="0"
               />
             </li>
-            {!user &&
-              !isInSearchMode && (
-                <li>
-                  <LoginButton />
-                </li>
-              )}
             {user &&
               !isInSearchMode && (
                 <li className="header-hidden-xs">

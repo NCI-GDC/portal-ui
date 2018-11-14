@@ -70,32 +70,33 @@ Relay.injectNetworkLayer(
             let { user } = window.store.getState().auth;
 
             if (user) {
-              if (
-                !json.fence_projects[0] &&
-                !json.nih_projects &&
-                !json.intersection[0]
-              ) {
-                clear();
-                window.location.href = '/login?error=timeout';
-                return;
-              }
-              if (!json.fence_projects[0]) {
-                clear();
-                window.location.href = '/login?error=no_fence_projects';
-                return;
-              }
-
-              if (!json.nih_projects) {
-                clear();
-                window.location.href = '/login?error=no_nih_projects';
-                return;
-              }
-
-              if (!json.intersection[0]) {
-                clear();
-                window.location.href = '/login?error=no_intersection';
-                return;
-              }
+              console.log('json response: ', json);
+              // if (
+              //   !json.fence_projects[0] &&
+              //   !json.nih_projects &&
+              //   !json.intersection[0]
+              // ) {
+              //   clear();
+              //   window.location.href = '/login?error=timeout';
+              //   return;
+              // }
+              // if (!json.fence_projects[0]) {
+              //   clear();
+              //   window.location.href = '/login?error=no_fence_projects';
+              //   return;
+              // }
+              //
+              // if (!json.nih_projects) {
+              //   clear();
+              //   window.location.href = '/login?error=no_nih_projects';
+              //   return;
+              // }
+              //
+              // if (!json.intersection[0]) {
+              //   clear();
+              //   window.location.href = '/login?error=no_intersection';
+              //   return;
+              // }
             }
 
             tries--;
@@ -164,19 +165,19 @@ const Root = (props: mixed) => (
                   // nih_projects,
                   // fence_projects,
                 }) => {
-                  if (
-                    failed &&
-                    error.message === 'Session timed out or not authorized'
-                  ) {
-                    return (window.location.href = '/login?error=timeout');
-                  }
+                  // if (
+                  //   failed &&
+                  //   error.message === 'Session timed out or not authorized'
+                  // ) {
+                  //   return (window.location.href = '/login?error=timeout');
+                  // }
                   // console.log('nih: ', nih_projects);
                   // console.log('fence: ', fence_projects);
                   // console.log('intersection: ', intersection);
                   // console.log('user: ', user);
-                  if (failed) {
-                    return <Redirect to="/login" />;
-                  }
+                  // if (failed) {
+                  //   return <Redirect to="/login" />;
+                  // }
                   if (user) {
                     // if (!fence_projects && !nih_projects && !intersection) {
                     //   return <Redirect to="/login?error=timeout" />;

@@ -33,14 +33,15 @@ const styles = {
 };
 
 const AWGLoginButton = compose(
-  withRouter,
   connect(state => state.auth),
-)(({ location, dispatch, push }) => (
+  withRouter,
+)(({ dispatch, push }) => (
   <Button
     style={styles.loginButton}
     onClick={async () => {
       await openAuthWindow({
-        winUrl: `${AUTH}?next=${FENCE}/login/fence?redirect=${location.origin}`,
+        winUrl: `${AUTH}?next=${FENCE}/login/fence?redirect=${window.location
+          .origin}`,
         pollInterval: 200,
         name: 'AWG',
       });

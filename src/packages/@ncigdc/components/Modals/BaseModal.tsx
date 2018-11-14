@@ -1,11 +1,19 @@
-// @flow
 import React from 'react';
 import { connect } from 'react-redux';
 
 import { setModal } from '@ncigdc/dux/modal';
 import Button from '@ncigdc/uikit/Button';
 import { Column, Row } from '@ncigdc/uikit/Flex';
-
+export interface IBaseModalProps {
+  dispatch: (...args: any[]) => void,
+  title: any,
+  children: any,
+  closeText?: any,
+  onClose?: (...args: any[]) => void,
+  extraButtons?: any,
+  style: React.CSSProperties,
+  contentStyle?: React.CSSProperties,
+}
 const BaseModal = ({
   dispatch,
   title,
@@ -16,16 +24,7 @@ const BaseModal = ({
   style,
   contentStyle,
   ...props
-}: {
-  dispatch: Function,
-  title: any,
-  children: any,
-  closeText: any,
-  onClose?: Function,
-  extraButtons: any,
-  style: Object,
-  contentStyle: Object,
-}) => (
+}: IBaseModalProps) => (
   <Column style={style} {...props}>
     <h2 style={{ paddingLeft: 15 }}>{title}</h2>
     <Column
@@ -46,11 +45,13 @@ const BaseModal = ({
         paddingTop: 10,
         paddingBottom: 15,
       }}
-      spacing={10}
+      spacing={'10'}
     >
       <Button
         onClick={() => {
-          onClose && onClose();
+          if (typeof onClose === 'function') {
+            onClose();
+          }
           dispatch(setModal(null));
         }}
       >

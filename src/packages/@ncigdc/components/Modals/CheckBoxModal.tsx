@@ -1,31 +1,32 @@
-// @flow
 import React from 'react';
-import { compose, withState, lifecycle } from 'recompose';
-import BaseModal from '@ncigdc/components/Modals/BaseModal';
+import { compose, lifecycle, withState } from 'recompose';
+import BaseModal, {
+  IBaseModalProps
+} from '@ncigdc/components/Modals/BaseModal';
 import withRouter from '@ncigdc/utils/withRouter';
 import { setModal } from '@ncigdc/dux/modal';
 
-const enhance = compose(
-  withState('agreed', 'setAgreed', false),
-  lifecycle({
-    componentWillReceiveProps(nextProps) {
-      if (nextProps.user && !this.props.user) {
-        nextProps.dispatch(setModal(null));
-      }
-    },
-  }),
-  withRouter
-);
-
-const CheckBoxModal = ({
+export interface ICheckBoxModalProps {
+  dbGapList?: string[];
+  dispatch: (...args: any[]) => void;
+  hidden?: boolean;
+  setAgreed: (...args: any[]) => void;
+  agreed: boolean;
+  children: React.ComponentType;
+  CustomButton: (...args: any[]) => void;
+  user: React.ComponentType<any>;
+  style: React.CSSProperties;
+}
+const CheckBoxModal: React.ComponentClass<ICheckBoxModalProps> = ({
   dbGapList = [],
-  extraButtons,
   dispatch,
   hidden = false,
   setAgreed,
   agreed,
   children,
   CustomButton,
+  user,
+  style,
 }) => {
   let dbGapLink =
     dbGapList.length === 1
@@ -41,6 +42,7 @@ const CheckBoxModal = ({
       title="Access Alert"
       extraButtons={CustomButton(agreed)}
       closeText="Cancel"
+      style={style}
     >
       {children}
       {hidden ? null : (
@@ -80,4 +82,14 @@ const CheckBoxModal = ({
   );
 };
 
-export default enhance(CheckBoxModal);
+export default compose<ICheckBoxModalProps, IBaseModalProps>(
+  withState('agreed', 'setAgreed', false),
+  lifecycle({
+    componentWillReceiveProps(nextProps) {
+      if (nextProps.user && !this.props.user) {
+        nextProps.dispatch(setModal(null));
+      }
+    },
+  }),
+  withRouter
+)(CheckBoxModal);

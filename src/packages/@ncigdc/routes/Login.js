@@ -1,6 +1,5 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
 import { compose } from 'recompose';
 
 import { AUTH, FENCE } from '@ncigdc/utils/constants';
@@ -8,6 +7,7 @@ import { fetchUser } from '@ncigdc/dux/auth';
 import Button from '@ncigdc/uikit/Button';
 import { Row } from '@ncigdc/uikit/Flex';
 import openAuthWindow from '@ncigdc/utils/openAuthWindow';
+import withRouter from '@ncigdc/utils/withRouter';
 
 const styles = {
   title: {

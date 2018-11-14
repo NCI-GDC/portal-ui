@@ -35,7 +35,7 @@ const styles = {
 const AWGLoginButton = compose(
   withRouter,
   connect(state => state.auth),
-)(({ pathname, dispatch, push }) => (
+)(({ location, dispatch, push }) => (
   <Button
     style={styles.loginButton}
     onClick={async () => {

@@ -14,7 +14,7 @@ export default (Component: ReactClass<*>) =>
         <div>
           <pre>projectId</pre> must be provided
         </div>
-      )),
+      ))
     ),
     withPropsOnChange(['projectId'], ({ projectId }) => {
       return {
@@ -33,7 +33,7 @@ export default (Component: ReactClass<*>) =>
           ]),
         },
       };
-    }),
+    })
   )((props: Object) => {
     return (
       <Query
@@ -58,6 +58,7 @@ export default (Component: ReactClass<*>) =>
                       primary_site
                       program {
                         name
+                        dbgap_accession_number
                       }
                       summary {
                         case_count

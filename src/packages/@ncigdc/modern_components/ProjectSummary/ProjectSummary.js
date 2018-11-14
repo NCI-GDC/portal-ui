@@ -38,8 +38,8 @@ const styles = {
 export default compose(
   branch(
     ({ viewer }) => !viewer.projects.hits.edges[0],
-    renderComponent(() => <div>No project found.</div>),
-  ),
+    renderComponent(() => <div>No project found.</div>)
+  )
 )(({ viewer: { annotations, projects: { hits: { edges } } } }) => {
   const project = edges[0].node;
   const projectFilter = [
@@ -63,8 +63,8 @@ export default compose(
       </div>
     </div>
   );
-  console.log('project.dbgap_accession_number', project);
-
+  const dbgap_accession_number =
+    project.program.dbgap_accession_number || project.dbgap_accession_number;
   return (
     <Row style={{ flexWrap: 'wrap' }} spacing={SPACING}>
       <span style={{ ...styles.column, ...styles.margin }}>
@@ -85,12 +85,12 @@ export default compose(
                   <a
                     href={
                       'https://www.ncbi.nlm.nih.gov/projects/gap/cgi-bin/study.cgi?study_id=' +
-                      project.dbgap_accession_number
+                      dbgap_accession_number
                     }
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    {project.dbgap_accession_number}
+                    {dbgap_accession_number}
                   </a>
                 ),
               },

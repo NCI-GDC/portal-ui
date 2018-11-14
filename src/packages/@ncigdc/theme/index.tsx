@@ -25,4 +25,4 @@ export const withTheme: TWithTheme = Wrapped => props => (
   <Wrapped theme={getTheme()} {...props} />
 );
 
-export { theme, ITheme };
+export { theme, ITheme, TWithTheme };

@@ -1,9 +1,11 @@
 // @flow
 import { CALL_API } from 'redux-api-middleware';
 import urlJoin from 'url-join';
-import { API, AUTH, IS_AUTH_PORTAL } from '@ncigdc/utils/constants';
 import Queue from 'queue';
 import md5 from 'blueimp-md5';
+
+import { API, AUTH, IS_AUTH_PORTAL } from '@ncigdc/utils/constants';
+import { redirectToLogin } from '@ncigdc/utils/auth';
 
 const DEFAULTS = {
   method: 'get',
@@ -40,7 +42,13 @@ export const fetchApi = (endpoint, opts = {}) => {
       method: 'POST',
     }),
   };
-  return fetch(urlJoin(API, endpoint), clonedOptions).then(r => r.json());
+  return fetch(urlJoin(API, endpoint), clonedOptions).then(r => r.json()).catch(err => {
+    console.log('catch error: ', err);
+    console.log('fetch options: ', clonedOptions)
+    if (IS_AUTH_PORTAL && clonedOptions.user) {
+      redirectToLogin();
+    }
+  }),;
 };
 
 type TFetchApiChunked = (

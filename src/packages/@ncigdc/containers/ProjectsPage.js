@@ -72,11 +72,13 @@ export const ProjectsPageComponent = (props: TProps) => (
               component: <ProjectsTable />,
             },
             ...(!AWG
-              ? {
-                  id: 'graph',
-                  text: 'Graph',
-                  component: <GitHut params={props.relay.route.params} />,
-                }
+              ? [
+                  {
+                    id: 'graph',
+                    text: 'Graph',
+                    component: <GitHut params={props.relay.route.params} />,
+                  },
+                ]
               : []),
           ]}
         />

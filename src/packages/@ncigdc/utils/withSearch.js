@@ -8,8 +8,6 @@ import { fetchApi } from '@ncigdc/utils/ajax';
 import withPropsOnChange from '@ncigdc/utils/withPropsOnChange';
 import { TSearchHit } from '@ncigdc/components/QuickSearch/types';
 import { IS_AUTH_PORTAL } from '@ncigdc/utils/constants';
-import { forceLogout } from '@ncigdc/dux/auth';
-import { redirectToLogin } from '@ncigdc/utils/auth';
 
 const throttledInvoker = _.throttle(fn => fn(), 300, { leading: false });
 
@@ -57,17 +55,11 @@ export const withSearch = passedInState => {
               headers: {
                 'Content-Type': 'application/json',
               },
+              user,
             },
-          )
-            .then(response =>
-              handleResults(response.data.query.hits, timeOfRequest),
-            )
-            .catch(err => {
-              console.log('catch error: ', err);
-              if (IS_AUTH_PORTAL && user) {
-                redirectToLogin();
-              }
-            }),
+          ).then(response =>
+            handleResults(response.data.query.hits, timeOfRequest),
+          ),
         );
       },
     }),

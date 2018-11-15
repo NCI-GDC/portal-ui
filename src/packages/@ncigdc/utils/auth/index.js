@@ -2,6 +2,8 @@
 
 import _ from 'lodash';
 
+import { forceLogout } from '@ncigdc/dux/auth';
+
 const isUserProject = ({ user, file }) => {
   if (!user) {
     return false;

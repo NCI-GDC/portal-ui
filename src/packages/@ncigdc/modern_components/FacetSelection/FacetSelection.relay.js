@@ -17,6 +17,8 @@ import { css } from 'glamor';
 import Query from '@ncigdc/modern_components/Query';
 import { fetchApi } from '@ncigdc/utils/ajax/index';
 import { Column } from '@ncigdc/uikit/Flex';
+import { redirectToLogin } from '@ncigdc/utils/auth';
+import { IS_AUTH_PORTAL } from '@ncigdc/utils/constants';
 
 const styles = {
   resultsCount: {
@@ -47,7 +49,14 @@ export default (Component: ReactClass<*>) =>
         let { setFacetMapping, setUselessFacetVisibility } = this.props;
         const mapping = await fetchApi('gql/_mapping', {
           headers: { 'Content-Type': 'application/json' },
-        });
+        })
+          .then(r => r.json())
+          .catch(err => {
+            console.log('facet error: ', err);
+            if (IS_AUTH_PORTAL) {
+              return redirectToLogin();
+            }
+          });
         setFacetMapping(mapping);
         JSON.parse(localStorage.getItem('shouldHideUselessFacets') || 'null') &&
           setUselessFacetVisibility(true);

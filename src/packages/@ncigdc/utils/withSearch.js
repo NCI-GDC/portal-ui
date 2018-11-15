@@ -55,7 +55,6 @@ export const withSearch = passedInState => {
               headers: {
                 'Content-Type': 'application/json',
               },
-              body: { user },
             },
           ).then(response =>
             handleResults(response.data.query.hits, timeOfRequest),

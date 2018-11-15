@@ -42,14 +42,7 @@ export const fetchApi = (endpoint, opts = {}) => {
       method: 'POST',
     }),
   };
-  return fetch(urlJoin(API, endpoint), clonedOptions)
-    .then(r => r.json())
-    .catch(err => {
-      console.log('catching error: ', err);
-      if (IS_AUTH_PORTAL) {
-        redirectToLogin();
-      }
-    });
+  return fetch(urlJoin(API, endpoint), clonedOptions).then(r => r.json());
 };
 
 type TFetchApiChunked = (

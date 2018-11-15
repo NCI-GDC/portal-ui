@@ -9,6 +9,7 @@ import withPropsOnChange from '@ncigdc/utils/withPropsOnChange';
 import { TSearchHit } from '@ncigdc/components/QuickSearch/types';
 import { IS_AUTH_PORTAL } from '@ncigdc/utils/constants';
 import { forceLogout } from '@ncigdc/dux/auth';
+import { redirectToLogin } from '@ncigdc/utils/auth';
 
 const throttledInvoker = _.throttle(fn => fn(), 300, { leading: false });
 
@@ -63,10 +64,8 @@ export const withSearch = passedInState => {
             )
             .catch(err => {
               console.log('catch error: ', err);
-              if (user) {
-                console.log('forcing logout');
-                store.dispatch(forceLogout());
-                return (window.location.href = '/login?error=timeout');
+              if (IS_AUTH_PORTAL && user) {
+                redirectToLogin();
               }
             }),
         );

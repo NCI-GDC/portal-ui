@@ -12,6 +12,7 @@ const simpleCache = {};
 const pendingCache = {};
 const handlerProvider = null;
 import { forceLogout } from '@ncigdc/dux/auth';
+import { redirectToLogin } from '@ncigdc/utils/auth';
 
 function fetchQuery(operation, variables, cacheConfig) {
   const body = JSON.stringify({
@@ -107,10 +108,8 @@ function fetchQuery(operation, variables, cacheConfig) {
       })
       .catch(err => {
         console.log('catch error: ', err);
-        if (user) {
-          console.log('forcing logout');
-          store.dispatch(forceLogout());
-          return (window.location.href = '/login?error=timeout');
+        if (IS_AUTH_PORTAL && user) {
+          redirectToLogin();
         }
       }),
   );

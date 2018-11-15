@@ -112,6 +112,11 @@ const userProjectsCount = (user: Object) =>
     [],
   ).length;
 
+const redirectToLogin = () => {
+  console.log('forcing logout');
+  store.dispatch(forceLogout());
+  return (window.location.href = '/login?error=timeout');
+};
 /*----------------------------------------------------------------------------*/
 
 export {
@@ -123,4 +128,5 @@ export {
   getAuthCounts,
   userProjectsCount,
   authPartitionFiles,
+  redirectToLogin,
 };

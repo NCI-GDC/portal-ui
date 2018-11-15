@@ -19,8 +19,7 @@ import { API, IS_AUTH_PORTAL } from '@ncigdc/utils/constants';
 import { fetchUser, forceLogout, setUserAccess } from '@ncigdc/dux/auth';
 import { clear } from '@ncigdc/utils/cookies';
 import Login from '@ncigdc/routes/Login';
-
-let first = true;
+import { redirectToLogin } from '@ncigdc/utils/auth';
 
 Relay.injectNetworkLayer(
   new RelayNetworkLayer([
@@ -106,10 +105,8 @@ Relay.injectNetworkLayer(
         })
         .catch(err => {
           console.log('catch error: ', err);
-          if (user) {
-            console.log('forcing logout');
-            store.dispatch(forceLogout());
-            return (window.location.href = '/login?error=timeout');
+          if (IS_AUTH_PORTAL && user) {
+            redirectToLogin();
           }
         });
     },

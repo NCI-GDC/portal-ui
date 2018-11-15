@@ -105,10 +105,11 @@ Relay.injectNetworkLayer(
           return res;
         })
         .catch(err => {
-          if (err.fetchResponse && err.fetchResponse.status === 403) {
-            if (user) {
-              store.dispatch(forceLogout());
-            }
+          console.log('catch error: ', err);
+          if (user) {
+            console.log('forcing logout');
+            store.dispatch(forceLogout());
+            return (window.location.href = '/login?error=timeout');
           }
         });
     },

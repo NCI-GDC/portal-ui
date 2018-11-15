@@ -11,6 +11,7 @@ const store = new Store(source);
 const simpleCache = {};
 const pendingCache = {};
 const handlerProvider = null;
+import { forceLogout } from '@ncigdc/dux/auth';
 
 function fetchQuery(operation, variables, cacheConfig) {
   const body = JSON.stringify({
@@ -59,49 +60,59 @@ function fetchQuery(operation, variables, cacheConfig) {
     },
     body,
   }).then(response =>
-    response.json().then(json => {
-      if (response.status === 200) {
-        // if the response is ok, and the result to the simpleCache and delete it from the pendingCache
-        simpleCache[hash] = json;
-        delete pendingCache[hash];
-      }
+    response
+      .json()
+      .then(json => {
+        if (response.status === 200) {
+          // if the response is ok, and the result to the simpleCache and delete it from the pendingCache
+          simpleCache[hash] = json;
+          delete pendingCache[hash];
+        }
 
-      if (IS_AUTH_PORTAL) {
-        let tries = 20;
-        let id = setInterval(() => {
-          let { user } = window.store.getState().auth;
-          if (user) {
-            if (
-              !json.fence_projects[0] &&
-              !json.nih_projects &&
-              !json.intersection[0]
-            ) {
-              clear();
-              window.location.href = '/login?error=timeout';
-              return;
+        if (IS_AUTH_PORTAL) {
+          let tries = 20;
+          let id = setInterval(() => {
+            let { user } = window.store.getState().auth;
+            if (user) {
+              if (
+                !json.fence_projects[0] &&
+                !json.nih_projects &&
+                !json.intersection[0]
+              ) {
+                clear();
+                window.location.href = '/login?error=timeout';
+                return;
+              }
+              if (!json.fence_projects[0]) {
+                clear();
+                window.location.href = '/login?error=no_fence_projects';
+                return;
+              }
+              if (!json.nih_projects) {
+                clear();
+                window.location.href = '/login?error=no_nih_projects';
+                return;
+              }
+              if (!json.intersection[0]) {
+                clear();
+                window.location.href = '/login?error=no_intersection';
+                return;
+              }
             }
-            if (!json.fence_projects[0]) {
-              clear();
-              window.location.href = '/login?error=no_fence_projects';
-              return;
-            }
-            if (!json.nih_projects) {
-              clear();
-              window.location.href = '/login?error=no_nih_projects';
-              return;
-            }
-            if (!json.intersection[0]) {
-              clear();
-              window.location.href = '/login?error=no_intersection';
-              return;
-            }
-          }
-          tries--;
-          if (!tries) clearInterval(id);
-        }, 500);
-      }
-      return json;
-    }),
+            tries--;
+            if (!tries) clearInterval(id);
+          }, 500);
+        }
+        return json;
+      })
+      .catch(err => {
+        console.log('catch error: ', err);
+        if (user) {
+          console.log('forcing logout');
+          store.dispatch(forceLogout());
+          return (window.location.href = '/login?error=timeout');
+        }
+      }),
   );
 }
 

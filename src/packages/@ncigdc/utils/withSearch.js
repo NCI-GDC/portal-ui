@@ -1,11 +1,14 @@
 // @flow
 import _ from 'lodash';
+import { compose, withState, withHandlers, withProps } from 'recompose';
+import { connect } from 'react-redux';
+
 import withRouter from '@ncigdc/utils/withRouter';
 import { fetchApi } from '@ncigdc/utils/ajax';
-import { compose, withState, withHandlers, withProps } from 'recompose';
 import withPropsOnChange from '@ncigdc/utils/withPropsOnChange';
 import { TSearchHit } from '@ncigdc/components/QuickSearch/types';
 import { IS_AUTH_PORTAL } from '@ncigdc/utils/constants';
+import { forceLogout } from '@ncigdc/dux/auth';
 
 const throttledInvoker = _.throttle(fn => fn(), 300, { leading: false });
 
@@ -22,6 +25,7 @@ export const withSearch = passedInState => {
   let timeOfMostRecentRequest = 0;
 
   return compose(
+    connect(state => ({ user: state.auth.user })),
     withState('state', 'setState', _.defaults(passedInState, defaultState)),
     withRouter,
     withProps(({ setState }) => ({
@@ -43,7 +47,7 @@ export const withSearch = passedInState => {
           isLoading: false,
         }));
       },
-      fetchResults: ({ handleResults }) => (query, timeOfRequest) => {
+      fetchResults: ({ handleResults, user }) => (query, timeOfRequest) => {
         return throttledInvoker(() =>
           fetchApi(
             `/quick_search?query=${window.encodeURIComponent(query)}&size=5`,
@@ -53,9 +57,18 @@ export const withSearch = passedInState => {
                 'Content-Type': 'application/json',
               },
             },
-          ).then(response =>
-            handleResults(response.data.query.hits, timeOfRequest),
-          ),
+          )
+            .then(response =>
+              handleResults(response.data.query.hits, timeOfRequest),
+            )
+            .catch(err => {
+              console.log('catch error: ', err);
+              if (user) {
+                console.log('forcing logout');
+                store.dispatch(forceLogout());
+                return (window.location.href = '/login?error=timeout');
+              }
+            }),
         );
       },
     }),

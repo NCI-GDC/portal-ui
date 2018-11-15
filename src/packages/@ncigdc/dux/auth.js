@@ -81,7 +81,6 @@ export function fetchToken() {
 }
 
 export function setUserAccess(access): Action {
-  console.log('setting user access: ', access);
   return {
     type: SET_USER_ACCESS,
     payload: access,

@@ -11,11 +11,13 @@ import {
   lifecycle,
   renderComponent,
 } from 'recompose';
-import Query from '@ncigdc/modern_components/Query';
 import _ from 'lodash';
-import { fetchApi } from '../../utils/ajax/index';
-import { Column } from '@ncigdc/uikit/Flex';
+import { connect } from 'react-redux';
 import { css } from 'glamor';
+
+import Query from '@ncigdc/modern_components/Query';
+import { fetchApi } from '@ncigdc/utils/ajax/index';
+import { Column } from '@ncigdc/uikit/Flex';
 
 const styles = {
   resultsCount: {
@@ -30,6 +32,7 @@ const styles = {
 
 export default (Component: ReactClass<*>) =>
   compose(
+    connect(state => ({ user: state.auth.user })),
     withState('facetMapping', 'setFacetMapping', null),
     withState('shouldHideUselessFacets', 'setShouldHideUselessFacets', false),
     withProps(({ setShouldHideUselessFacets }) => ({
@@ -43,9 +46,10 @@ export default (Component: ReactClass<*>) =>
     })),
     lifecycle({
       async componentDidMount() {
-        let { setFacetMapping, setUselessFacetVisibility } = this.props;
+        let { setFacetMapping, setUselessFacetVisibility, user } = this.props;
         const mapping = await fetchApi('gql/_mapping', {
           headers: { 'Content-Type': 'application/json' },
+          body: { user },
         });
         setFacetMapping(mapping);
         JSON.parse(localStorage.getItem('shouldHideUselessFacets') || 'null') &&

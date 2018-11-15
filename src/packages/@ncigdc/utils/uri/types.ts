@@ -12,4 +12,4 @@ export type TParseIntParam = (s: any, d?: number | null) => number | null;
 
 export type TParseJSONParam = (s: any, d?: any) => any;
 
-export type TParseFilterParam = (s: any, d?: {}) => IGroupFilter | null;
+export type TParseFilterParam = (s: any, d?: {} | null) => IGroupFilter | null;

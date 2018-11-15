@@ -4,7 +4,7 @@ import Relay from 'react-relay/classic';
 import _ from 'lodash';
 import { compose } from 'recompose';
 
-import { TBucket } from '@ncigdc/components/Aggregations/types';
+import { IBucket } from '@ncigdc/components/Aggregations/types';
 import withRouter from '@ncigdc/utils/withRouter';
 import { parseFilterParam } from '@ncigdc/utils/uri';
 import { ColumnCenter, RowCenter, PieTitle, SelfFilteringPie } from './';
@@ -13,14 +13,14 @@ export type TProps = {
   push: Function,
   query: Object,
   aggregations: {
-    demographic__ethnicity: { buckets: [TBucket] },
-    demographic__gender: { buckets: [TBucket] },
-    demographic__race: { buckets: [TBucket] },
-    diagnoses__vital_status: { buckets: [TBucket] },
-    disease_type: { buckets: [TBucket] },
-    primary_site: { buckets: [TBucket] },
-    project__program__name: { buckets: [TBucket] },
-    project__project_id: { buckets: [TBucket] },
+    demographic__ethnicity: { buckets: [IBucket] },
+    demographic__gender: { buckets: [IBucket] },
+    demographic__race: { buckets: [IBucket] },
+    diagnoses__vital_status: { buckets: [IBucket] },
+    disease_type: { buckets: [IBucket] },
+    primary_site: { buckets: [IBucket] },
+    project__program__name: { buckets: [IBucket] },
+    project__project_id: { buckets: [IBucket] },
   },
 };
 

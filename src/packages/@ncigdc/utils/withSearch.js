@@ -49,7 +49,6 @@ export const withSearch = passedInState => {
           fetchApi(
             `/quick_search?query=${window.encodeURIComponent(query)}&size=5`,
             {
-              ...(IS_AUTH_PORTAL ? { credentials: 'include' } : {}),
               headers: {
                 'Content-Type': 'application/json',
               },

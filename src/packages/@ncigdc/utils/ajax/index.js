@@ -37,6 +37,9 @@ export function fetchAuth(options: { endpoint: string }): Object {
 export const fetchApi = (endpoint, opts = {}) => {
   const clonedOptions = {
     ...opts,
+    ...(IS_AUTH_PORTAL
+      ? { credentials: 'include', headers: opts.headers }
+      : {}),
     ...(opts.body && {
       body: JSON.stringify(opts.body),
       method: 'POST',

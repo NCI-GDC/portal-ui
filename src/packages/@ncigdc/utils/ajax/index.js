@@ -45,14 +45,30 @@ export const fetchApi = (endpoint, opts = {}) => {
   return fetch(urlJoin(API, endpoint), clonedOptions)
     .then(r => {
       if (!r.ok) {
-        throw new Error('network response not ok');
+        throw r;
       }
       return r.json();
     })
     .catch(err => {
-      console.log('fetch error: ', err);
-      if (IS_AUTH_PORTAL) {
-        return redirectToLogin();
+      if (err.status) {
+        switch (err.status) {
+          case 401:
+          case 403:
+            console.log(err.statusText);
+            if (IS_AUTH_PORTAL) {
+              return redirectToLogin();
+            }
+            break;
+          case 400:
+          case 404:
+          case 500:
+            console.log(err.statusText);
+            break;
+          default:
+            return console.log('there was an error', err.statusText);
+        }
+      } else {
+        console.log('Something went wrong');
       }
     });
 };

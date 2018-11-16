@@ -1,7 +1,6 @@
 // @flow
 import _ from 'lodash';
 import { compose, withState, withHandlers, withProps } from 'recompose';
-import { connect } from 'react-redux';
 
 import withRouter from '@ncigdc/utils/withRouter';
 import { fetchApi } from '@ncigdc/utils/ajax';
@@ -24,7 +23,6 @@ export const withSearch = passedInState => {
   let timeOfMostRecentRequest = 0;
 
   return compose(
-    connect(state => ({ user: state.auth.user })),
     withState('state', 'setState', _.defaults(passedInState, defaultState)),
     withRouter,
     withProps(({ setState }) => ({
@@ -46,7 +44,7 @@ export const withSearch = passedInState => {
           isLoading: false,
         }));
       },
-      fetchResults: ({ handleResults, user }) => (query, timeOfRequest) => {
+      fetchResults: ({ handleResults }) => (query, timeOfRequest) => {
         return throttledInvoker(() =>
           fetchApi(
             `/quick_search?query=${window.encodeURIComponent(query)}&size=5`,

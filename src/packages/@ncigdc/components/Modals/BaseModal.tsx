@@ -1,18 +1,18 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import { setModal } from '@ncigdc/dux/modal';
+import { setModal, IModalAction } from '@ncigdc/dux/modal';
 import Button from '@ncigdc/uikit/Button';
 import { Column, Row } from '@ncigdc/uikit/Flex';
 export interface IBaseModalProps {
-  dispatch: (...args: any[]) => void,
-  title: any,
-  children: any,
-  closeText?: any,
-  onClose?: (...args: any[]) => void,
-  extraButtons?: any,
-  style: React.CSSProperties,
-  contentStyle?: React.CSSProperties,
+  dispatch: (action: IModalAction) => void;
+  title: any;
+  children: any;
+  closeText?: any;
+  onClose?: (...args: any[]) => void;
+  extraButtons?: any;
+  style: React.CSSProperties;
+  contentStyle?: React.CSSProperties;
 }
 const BaseModal = ({
   dispatch,

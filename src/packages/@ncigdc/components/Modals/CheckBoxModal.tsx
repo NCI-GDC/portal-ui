@@ -4,11 +4,11 @@ import BaseModal, {
   IBaseModalProps
 } from '@ncigdc/components/Modals/BaseModal';
 import withRouter from '@ncigdc/utils/withRouter';
-import { setModal } from '@ncigdc/dux/modal';
+import { setModal, IModalAction } from '@ncigdc/dux/modal';
 
 export interface ICheckBoxModalProps {
   dbGapList?: string[];
-  dispatch: (...args: any[]) => void;
+  dispatch: (action: IModalAction) => void;
   hidden?: boolean;
   setAgreed: (...args: any[]) => void;
   agreed: boolean;
@@ -17,7 +17,7 @@ export interface ICheckBoxModalProps {
   user: React.ComponentType<any>;
   style: React.CSSProperties;
 }
-const CheckBoxModal: React.ComponentClass<ICheckBoxModalProps> = ({
+const CheckBoxModal = ({
   dbGapList = [],
   dispatch,
   hidden = false,
@@ -27,7 +27,7 @@ const CheckBoxModal: React.ComponentClass<ICheckBoxModalProps> = ({
   CustomButton,
   user,
   style,
-}) => {
+}: ICheckBoxModalProps) => {
   let dbGapLink =
     dbGapList.length === 1
       ? 'https://www.ncbi.nlm.nih.gov/projects/gap/cgi-bin/study.cgi?study_id=' +
@@ -85,7 +85,7 @@ const CheckBoxModal: React.ComponentClass<ICheckBoxModalProps> = ({
 export default compose<ICheckBoxModalProps, IBaseModalProps>(
   withState('agreed', 'setAgreed', false),
   lifecycle({
-    componentWillReceiveProps(nextProps) {
+    componentWillReceiveProps(nextProps: ICheckBoxModalProps) {
       if (nextProps.user && !this.props.user) {
         nextProps.dispatch(setModal(null));
       }

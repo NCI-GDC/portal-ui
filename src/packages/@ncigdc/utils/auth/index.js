@@ -114,10 +114,10 @@ const userProjectsCount = (user: Object) =>
     [],
   ).length;
 
-const redirectToLogin = () => {
+const redirectToLogin = error => {
   console.log('forcing logout');
   store.dispatch(forceLogout());
-  return (window.location.href = '/login?error=timeout');
+  return (window.location.href = `/login?error=${error}`);
 };
 /*----------------------------------------------------------------------------*/
 

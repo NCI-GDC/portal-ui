@@ -21,6 +21,7 @@ import { clear } from '@ncigdc/utils/cookies';
 import Login from '@ncigdc/routes/Login';
 import { redirectToLogin } from '@ncigdc/utils/auth';
 
+const retryStatusCodes = [500, 503, 504];
 Relay.injectNetworkLayer(
   new RelayNetworkLayer([
     urlMiddleware({
@@ -35,7 +36,7 @@ Relay.injectNetworkLayer(
           `call \`forceRelayRetry()\` for immediately retry! Or wait ${delay} ms.`,
         );
       },
-      statusCodes: [500, 503, 504],
+      statusCodes: retryStatusCodes,
     }),
     // Add hash id to request
     next => req => {
@@ -63,36 +64,44 @@ Relay.injectNetworkLayer(
 
       return next(req)
         .then(res => {
+          if (!res.ok && !retryStatusCodes.includes(res.status)) {
+            console.log('throwing error in Root');
+            throw res;
+          }
           let { json } = res;
           let tries = 20;
           let id = setInterval(() => {
             let { user } = window.store.getState().auth;
             if (user) {
-              if (
-                !json.fence_projects[0] &&
-                !json.nih_projects &&
-                !json.intersection[0]
-              ) {
-                clear();
-                window.location.href = '/login?error=timeout';
-                return;
-              }
+              // if (
+              //   !json.fence_projects[0] &&
+              //   !json.nih_projects &&
+              //   !json.intersection[0]
+              // ) {
+              //   clear();
+              //   window.location.href = '/login?error=timeout';
+              //   return;
+              // }
+              console.log('json response: ', json);
               if (!json.fence_projects[0]) {
-                clear();
-                window.location.href = '/login?error=no_fence_projects';
-                return;
+                return redirectToLogin('no_fence_projects');
+                // clear();
+                // window.location.href = '/login?error=no_fence_projects';
+                // return;
               }
 
               if (!json.nih_projects) {
-                clear();
-                window.location.href = '/login?error=no_nih_projects';
-                return;
+                return redirectToLogin('no_nih_projects');
+                // clear();
+                // window.location.href = '/login?error=no_nih_projects';
+                // return;
               }
 
               if (!json.intersection[0]) {
-                clear();
-                window.location.href = '/login?error=no_intersection';
-                return;
+                return redirectToLogin('no_intersection');
+                // clear();
+                // window.location.href = '/login?error=no_intersection';
+                // return;
               }
             }
 
@@ -104,9 +113,24 @@ Relay.injectNetworkLayer(
           return res;
         })
         .catch(err => {
-          console.log('catch error: ', err);
-          if (IS_AUTH_PORTAL && user) {
-            redirectToLogin();
+          if (err.status) {
+            switch (err.status) {
+              case 401:
+              case 403:
+                console.log(err.statusText);
+                if (IS_AUTH_PORTAL) {
+                  return redirectToLogin();
+                }
+                break;
+              case 400:
+              case 404:
+                console.log(err.statusText);
+                break;
+              default:
+                return console.log('there was an error', err.statusText);
+            }
+          } else {
+            console.log('Something went wrong');
           }
         });
     },

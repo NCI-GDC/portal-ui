@@ -2,7 +2,7 @@ import React from 'react';
 import { compose } from 'recompose';
 import { union, find, truncate, get, omit } from 'lodash';
 
-import { TBucket } from '@ncigdc/components/Aggregations/types';
+import { IBucket } from '@ncigdc/components/Aggregations/types';
 import ExploreLink from '@ncigdc/components/Links/ExploreLink';
 import BarChart from '@ncigdc/components/Charts/TwoBarChart';
 import { withTheme } from '@ncigdc/theme';
@@ -33,7 +33,7 @@ const addMissing = ({
   buckets,
   total,
 }: {
-  buckets: Array<TBucket>,
+  buckets: Array<IBucket>,
   total: number,
 }) => {
   const totalInBuckets = buckets.reduce(
@@ -70,8 +70,8 @@ export default compose(
   }: {
     theme: Object,
     field: string,
-    data1: { buckets: Array<TBucket> },
-    data2: { buckets: Array<TBucket> },
+    data1: { buckets: Array<IBucket> },
+    data2: { buckets: Array<IBucket> },
     result1: { hits: { total: number }, facets: string, aggregations: any },
     result2: { hits: { total: number }, facets: string, aggregations: any },
     set1: string,

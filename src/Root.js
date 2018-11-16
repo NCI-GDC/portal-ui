@@ -82,8 +82,10 @@ Relay.injectNetworkLayer(
               //   window.location.href = '/login?error=timeout';
               //   return;
               // }
-              console.log('json response: ', json);
               if (!json.fence_projects[0]) {
+                clearInterval(id);
+                tries = 0;
+                console.log('no fence projects');
                 return redirectToLogin('no_fence_projects');
                 // clear();
                 // window.location.href = '/login?error=no_fence_projects';
@@ -91,6 +93,9 @@ Relay.injectNetworkLayer(
               }
 
               if (!json.nih_projects) {
+                clearInterval(id);
+                tries = 0;
+                console.log('no nih projects');
                 return redirectToLogin('no_nih_projects');
                 // clear();
                 // window.location.href = '/login?error=no_nih_projects';
@@ -98,6 +103,9 @@ Relay.injectNetworkLayer(
               }
 
               if (!json.intersection[0]) {
+                clearInterval(id);
+                tries = 0;
+                console.log('no intersection');
                 return redirectToLogin('no_intersection');
                 // clear();
                 // window.location.href = '/login?error=no_intersection';

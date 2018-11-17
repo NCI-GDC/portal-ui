@@ -38,7 +38,7 @@ export const fetchApi = (endpoint, opts = {}) => {
   const clonedOptions = {
     ...opts,
     ...(IS_AUTH_PORTAL
-      ? { credentials: 'include', headers: opts.headers }
+      ? { credentials: opts.credentials || 'include', headers: opts.headers }
       : {}),
     ...(opts.body && {
       body: JSON.stringify(opts.body),

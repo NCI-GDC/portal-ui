@@ -64,6 +64,7 @@ Relay.injectNetworkLayer(
 
       return next(req)
         .then(res => {
+          console.log('loading Root!');
           if (!res.ok && !retryStatusCodes.includes(res.status)) {
             console.log('throwing error in Root');
             throw res;
@@ -71,13 +72,14 @@ Relay.injectNetworkLayer(
           let { json } = res;
           let tries = 20;
           let id = setInterval(() => {
+            console.log('tries: ', tries);
             let { user } = window.store.getState().auth;
             if (user) {
               store.dispatch(
                 setUserAccess({
                   fence_projects: json.fence_projects[0],
                   nih_projects: json.nih_projects,
-                  intersection: intersection[0],
+                  intersection: json.intersection[0],
                 }),
               );
               // if (!json.fence_projects[0]) {
@@ -187,69 +189,72 @@ let HasUser = connect(state => state.auth)(props => {
 //   }),
 // );
 const Root = (props: mixed) => (
-  <Router>
-    <Provider store={store}>
-      <React.Fragment>
-        {IS_AUTH_PORTAL && <Route exact path="/login" component={Login} />}
-        <Route
-          render={props => {
-            return IS_AUTH_PORTAL &&
-              !window.location.pathname.includes('/login') ? (
-              <HasUser>
-                {({
-                  user,
-                  failed,
-                  error,
-                  // intersection,
-                  // nih_projects,
-                  fence_projects,
-                }) => {
-                  // if user request fails
-                  if (
-                    failed &&
-                    error.message === 'Session timed out or not authorized'
-                  ) {
-                    return (window.location.href = '/login?error=timeout');
-                  }
-                  console.log('fence: ', fence_projects);
-                  console.log('user: ', user);
-                  if (failed) {
-                    return <Redirect to="/login" />;
-                  }
-                  if (user) {
-                    // if access is not correct
-                    if (!fence_projects) {
-                      return <Redirect to="/login?error=no_fence_projects" />;
+  console.log('Root component loading'),
+  (
+    <Router>
+      <Provider store={store}>
+        <React.Fragment>
+          {IS_AUTH_PORTAL && <Route exact path="/login" component={Login} />}
+          <Route
+            render={props => {
+              return IS_AUTH_PORTAL &&
+                !window.location.pathname.includes('/login') ? (
+                <HasUser>
+                  {({
+                    user,
+                    failed,
+                    error,
+                    // intersection,
+                    // nih_projects,
+                    fence_projects,
+                  }) => {
+                    // if user request fails
+                    if (
+                      failed &&
+                      error.message === 'Session timed out or not authorized'
+                    ) {
+                      return (window.location.href = '/login?error=timeout');
                     }
-                    // if (!nih_projects) {
-                    //   return <Redirect to="/login?error=no_nih_projects" />;
-                    // }
-                    // if (!intersection) {
-                    //   return <Redirect to="/login?error=no_intersection" />;
-                    // }
-                    return (
-                      <Relay.Renderer
-                        Container={Container}
-                        queryConfig={new RelayRoute(props)}
-                        environment={Relay.Store}
-                      />
-                    );
-                  }
-                  return null;
-                }}
-              </HasUser>
-            ) : (
-              <Relay.Renderer
-                Container={Container}
-                queryConfig={new RelayRoute(props)}
-                environment={Relay.Store}
-              />
-            );
-          }}
-        />
-      </React.Fragment>
-    </Provider>
-  </Router>
+                    console.log('fence: ', fence_projects);
+                    console.log('user: ', user);
+                    if (failed) {
+                      return <Redirect to="/login" />;
+                    }
+                    if (user) {
+                      // if access is not correct
+                      if (!fence_projects) {
+                        return <Redirect to="/login?error=no_fence_projects" />;
+                      }
+                      // if (!nih_projects) {
+                      //   return <Redirect to="/login?error=no_nih_projects" />;
+                      // }
+                      // if (!intersection) {
+                      //   return <Redirect to="/login?error=no_intersection" />;
+                      // }
+                      return (
+                        <Relay.Renderer
+                          Container={Container}
+                          queryConfig={new RelayRoute(props)}
+                          environment={Relay.Store}
+                        />
+                      );
+                    }
+                    return null;
+                  }}
+                </HasUser>
+              ) : (
+                <Relay.Renderer
+                  Container={Container}
+                  queryConfig={new RelayRoute(props)}
+                  environment={Relay.Store}
+                />
+              );
+            }}
+          />
+        </React.Fragment>
+      </Provider>
+    </Router>
+  )
 );
 
 export default Root;

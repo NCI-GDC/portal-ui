@@ -1,5 +1,6 @@
 /* @flow */
 import { handleActions } from 'redux-actions';
+import { REHYDRATE } from 'redux-persist/constants';
 
 import { saveAs } from 'filesaver.js';
 import { fetchAuth } from '@ncigdc/utils/ajax';
@@ -102,6 +103,11 @@ const initialState: State = {
 
 export default handleActions(
   {
+    [REHYDRATE]: (state, action) => {
+      const incoming = action.payload.auth;
+      if (incoming) return { ...state, ...incoming };
+      return state;
+    },
     [USER_REQUEST]: state => ({
       ...state,
       isFetching: true,
@@ -146,15 +152,12 @@ export default handleActions(
       isFetchingToken: false,
       token: undefined,
     }),
-    [SET_USER_ACCESS]: (state, action) => (
-      console.log('action: ', action),
-      {
-        ...state,
-        intersection: action.payload.intersection,
-        fence_projects: action.payload.fence_projects,
-        nih_projects: action.payload.nih_projects,
-      }
-    ),
+    [SET_USER_ACCESS]: (state, action) => ({
+      ...state,
+      intersection: action.payload.intersection,
+      fence_projects: action.payload.fence_projects,
+      nih_projects: action.payload.nih_projects,
+    }),
   },
   initialState,
 );

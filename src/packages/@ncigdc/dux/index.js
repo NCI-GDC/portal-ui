@@ -23,6 +23,7 @@ const setupStore: TSetupStore = ({ persistConfig = {} } = {}) => {
       'sets',
       'analysis',
       'bannerNotification',
+      'auth',
     ],
     ...persistConfig,
   });

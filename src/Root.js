@@ -70,7 +70,7 @@ Relay.injectNetworkLayer(
             throw res;
           }
           let { json } = res;
-          let tries = 20;
+          let tries = 5;
           let id = setInterval(() => {
             console.log('tries: ', tries);
             let { user } = window.store.getState().auth;
@@ -82,37 +82,7 @@ Relay.injectNetworkLayer(
                   intersection: json.intersection[0],
                 }),
               );
-              // if (!json.fence_projects[0]) {
-              //   clearInterval(id);
-              //   tries = 0;
-              //   console.log('no fence projects');
-              //   // return redirectToLogin('no_fence_projects');
-              //   // clear();
-              //   // window.location.href = '/login?error=no_fence_projects';
-              //   // return;
-              // }
-              //
-              // if (!json.nih_projects) {
-              //   clearInterval(id);
-              //   tries = 0;
-              //   console.log('no nih projects');
-              //   return redirectToLogin('no_nih_projects');
-              //   // clear();
-              //   // window.location.href = '/login?error=no_nih_projects';
-              //   // return;
-              // }
-              //
-              // if (!json.intersection[0]) {
-              //   clearInterval(id);
-              //   tries = 0;
-              //   console.log('no intersection');
-              //   return redirectToLogin('no_intersection');
-              //   // clear();
-              //   // window.location.href = '/login?error=no_intersection';
-              //   // return;
-              // }
             }
-
             tries--;
 
             if (!tries) clearInterval(id);
@@ -169,25 +139,12 @@ let HasUser = connect(state => state.auth)(props => {
     user: props.user,
     failed: props.failed,
     error: props.error,
-    // intersection: props.intersection,
+    intersection: props.intersection,
     fence_projects: props.fence_projects,
-    // nih_projects: props.nih_projects,
+    nih_projects: props.nih_projects,
   });
 });
 
-// const enhance = compose(
-//   lifecycle({
-//     componentDidUpdate(prevProps: Object): void {
-//       if (
-//         prevProps.intersection !== this.props.intersection ||
-//         prevProps.nih_projects !== this.props.nih_projects ||
-//         prevProps.fence_projects !== this.props.fence_projects
-//       ) {
-//         console.log('do something');
-//       }
-//     },
-//   }),
-// );
 const Root = (props: mixed) => (
   console.log('Root component loading'),
   (
@@ -204,8 +161,8 @@ const Root = (props: mixed) => (
                     user,
                     failed,
                     error,
-                    // intersection,
-                    // nih_projects,
+                    intersection,
+                    nih_projects,
                     fence_projects,
                   }) => {
                     // if user request fails
@@ -215,8 +172,6 @@ const Root = (props: mixed) => (
                     ) {
                       return (window.location.href = '/login?error=timeout');
                     }
-                    console.log('fence: ', fence_projects);
-                    console.log('user: ', user);
                     if (failed) {
                       return <Redirect to="/login" />;
                     }
@@ -225,12 +180,12 @@ const Root = (props: mixed) => (
                       if (!fence_projects) {
                         return <Redirect to="/login?error=no_fence_projects" />;
                       }
-                      // if (!nih_projects) {
-                      //   return <Redirect to="/login?error=no_nih_projects" />;
-                      // }
-                      // if (!intersection) {
-                      //   return <Redirect to="/login?error=no_intersection" />;
-                      // }
+                      if (!nih_projects) {
+                        return <Redirect to="/login?error=no_nih_projects" />;
+                      }
+                      if (!intersection) {
+                        return <Redirect to="/login?error=no_intersection" />;
+                      }
                       return (
                         <Relay.Renderer
                           Container={Container}

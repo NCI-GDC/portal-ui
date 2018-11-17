@@ -1,7 +1,7 @@
 /* @flow */
+import { handleActions } from 'redux-actions';
 
 import { saveAs } from 'filesaver.js';
-import { handleActions } from 'redux-actions';
 import { fetchAuth } from '@ncigdc/utils/ajax';
 import { FAKE_USER, IS_DEV, AWG } from '@ncigdc/utils/constants';
 export type State = { isFetching: boolean, user: ?Object, error?: Object };
@@ -43,6 +43,13 @@ export function fetchUser() {
   });
 }
 
+export function setUserAccess(access): Action {
+  return {
+    type: SET_USER_ACCESS,
+    payload: access,
+  };
+}
+
 export function forceLogout(): Action {
   return {
     type: USER_FAILURE,
@@ -78,13 +85,6 @@ export function fetchToken() {
     ],
     endpoint: AWG ? 'token/refresh/awg' : 'token/refresh',
   });
-}
-
-export function setUserAccess(access): Action {
-  return {
-    type: SET_USER_ACCESS,
-    payload: access,
-  };
 }
 
 const initialState: State = {

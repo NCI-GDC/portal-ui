@@ -9,17 +9,17 @@ export default ({
   winStyle = 'width=800, height=600',
 }) =>
   new Promise((resolve, reject) => {
-    console.log('Starting: ', name);
+    // console.log('Starting: ', name);
 
     if (navigator.cookieEnabled) {
-      console.log('Open window for: ', name);
+      // console.log('Open window for: ', name);
       const win = open(winUrl, 'Auth', winStyle);
-      console.log('Window open for: ', name);
+      // console.log('Window open for: ', name);
 
-      console.log('location origin: ', location.origin);
-      console.log('win url: ', winUrl);
+      // console.log('location origin: ', location.origin);
+      // console.log('win url: ', winUrl);
       const loginAttempt = () => {
-        console.log('interval function for: ', name);
+        // console.log('interval function for: ', name);
         if (win.closed) {
           clearInterval(interval);
           reject('Window closed manually');
@@ -36,11 +36,11 @@ export default ({
           clearInterval(interval);
 
           // Resolve that we have something good
-          console.log('Resolving: ', name);
+          // console.log('Resolving: ', name);
           resolve();
         }
       };
-      console.log('Set interval for: ', name);
+      // console.log('Set interval for: ', name);
       const interval = setInterval(loginAttempt, pollInterval);
     } else {
       reject('No cookies enabled');

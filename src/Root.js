@@ -64,33 +64,40 @@ Relay.injectNetworkLayer(
 
       return next(req)
         .then(res => {
-          console.log('loading Root!');
+          console.log('loading Root! ', res);
           if (!res.ok && !retryStatusCodes.includes(res.status)) {
             console.log('throwing error in Root');
             throw res;
           }
-          let { json } = res;
-          let tries = 5;
-          let id = setInterval(() => {
-            console.log('tries: ', tries);
-            let { user } = window.store.getState().auth;
-            if (user) {
-              store.dispatch(
-                setUserAccess({
-                  fence_projects: json.fence_projects[0],
-                  nih_projects: json.nih_projects,
-                  intersection: json.intersection[0],
-                }),
-              );
-            }
-            tries--;
-
-            if (!tries) clearInterval(id);
-          }, 500);
+          // let tries = 5;
+          // let id = setInterval(() => {
+          //   console.log('tries: ', tries);
+          //   let { user } = window.store.getState().auth;
+          //
+          //   tries--;
+          //
+          //   if (!tries) clearInterval(id);
+          // }, 500);
 
           return res;
         })
+        .then(res => {
+          let { user } = window.store.getState().auth;
+          if (user) {
+            console.log('setting user access block');
+            store.dispatch(
+              setUserAccess({
+                fence_projects: res.json().fence_projects[0],
+                nih_projects: res.json().nih_projects,
+                intersection: res.json().intersection[0],
+              }),
+            );
+          }
+          console.log('return res in user access block');
+          return res;
+        })
         .catch(err => {
+          console.log('relay network error: ', err);
           if (err.status) {
             switch (err.status) {
               case 401:

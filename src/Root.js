@@ -69,16 +69,11 @@ Relay.injectNetworkLayer(
             console.log('throwing error in Root');
             throw res;
           }
-          // let tries = 5;
-          //   console.log('tries: ', tries);
-          //   let { user } = window.store.getState().auth;
-          //
-          //   tries--;
-          //
-          //   if (!tries) clearInterval(id);
+          let tries = 5;
 
           let { user } = window.store.getState().auth;
           let id = setInterval(() => {
+            console.log('tries: ', tries);
             console.log('in set interval');
             if (user) {
               let { json } = res;
@@ -91,10 +86,9 @@ Relay.injectNetworkLayer(
                 }),
               );
             }
-            let { intersection } = window.store.getState().auth;
-            if (intersection !== null) {
-              clearInterval(id);
-            }
+            tries--;
+
+            if (!tries) clearInterval(id);
           }, 500);
 
           return res;

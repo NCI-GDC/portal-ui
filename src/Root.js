@@ -70,32 +70,33 @@ Relay.injectNetworkLayer(
             throw res;
           }
           // let tries = 5;
-          // let id = setInterval(() => {
           //   console.log('tries: ', tries);
           //   let { user } = window.store.getState().auth;
           //
           //   tries--;
           //
           //   if (!tries) clearInterval(id);
-          // }, 500);
 
-          return res;
-        })
-        .then(res => {
-          console.log('second then: ', res);
           let { user } = window.store.getState().auth;
-          if (user) {
-            let { json } = res;
-            console.log('setting user access block, ', json);
-            store.dispatch(
-              setUserAccess({
-                fence_projects: json.fence_projects[0],
-                nih_projects: json.nih_projects,
-                intersection: json.intersection[0],
-              }),
-            );
-          }
-          console.log('return res in user access block');
+          let id = setInterval(() => {
+            console.log('in set interval');
+            if (user) {
+              let { json } = res;
+              console.log('setting user access block, ', json);
+              store.dispatch(
+                setUserAccess({
+                  fence_projects: json.fence_projects[0],
+                  nih_projects: json.nih_projects,
+                  intersection: json.intersection[0],
+                }),
+              );
+            }
+            let { intersection } = window.store.getState().auth;
+            if (intersection !== null) {
+              clearInterval(id);
+            }
+          }, 500);
+
           return res;
         })
         .catch(err => {

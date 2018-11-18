@@ -168,7 +168,43 @@ const HasUser = compose(
       }
     },
   }),
-);
+)(({ user, failed, error, intersection, nih_projects, fence_projects }) => {
+  // if user request fails
+  if (failed && error.message === 'Session timed out or not authorized') {
+    return (window.location.href = '/login?error=timeout');
+  }
+  if (failed) {
+    return <Redirect to="/login" />;
+  }
+  if (user) {
+    // if access is not correct
+    console.log('fence: ', fence_projects);
+    console.log('nih: ', nih_projects);
+    console.log('intersection: ', intersection);
+    if (!fence_projects) {
+      console.log('no fence projects');
+      return <Redirect to="/login?error=no_fence_projects" />;
+    }
+    if (!nih_projects) {
+      console.log('no nih projects');
+      return <Redirect to="/login?error=no_nih_projects" />;
+    }
+    if (!intersection) {
+      console.log('no intersection');
+      return <Redirect to="/login?error=no_intersection" />;
+    }
+    return (
+      <Relay.Renderer
+        Container={Container}
+        queryConfig={new RelayRoute(props)}
+        environment={Relay.Store}
+      />
+    );
+  }
+  console.log('returning null');
+  return null;
+});
+
 const Root = (props: mixed) => (
   console.log('Root component loading'),
   (
@@ -180,53 +216,7 @@ const Root = (props: mixed) => (
             render={props => {
               return IS_AUTH_PORTAL &&
                 !window.location.pathname.includes('/login') ? (
-                <HasUser>
-                  {({
-                    user,
-                    failed,
-                    error,
-                    intersection,
-                    nih_projects,
-                    fence_projects,
-                  }) => {
-                    // if user request fails
-                    if (
-                      failed &&
-                      error.message === 'Session timed out or not authorized'
-                    ) {
-                      return (window.location.href = '/login?error=timeout');
-                    }
-                    if (failed) {
-                      return <Redirect to="/login" />;
-                    }
-                    if (user) {
-                      // if access is not correct
-                      console.log('fence: ', fence_projects);
-                      console.log('nih: ', nih_projects);
-                      console.log('intersection: ', intersection);
-                      if (!fence_projects) {
-                        console.log('no fence projects');
-                        return <Redirect to="/login?error=no_fence_projects" />;
-                      }
-                      if (!nih_projects) {
-                        console.log('no nih projects');
-                        return <Redirect to="/login?error=no_nih_projects" />;
-                      }
-                      if (!intersection) {
-                        console.log('no intersection');
-                        return <Redirect to="/login?error=no_intersection" />;
-                      }
-                      return (
-                        <Relay.Renderer
-                          Container={Container}
-                          queryConfig={new RelayRoute(props)}
-                          environment={Relay.Store}
-                        />
-                      );
-                    }
-                    return null;
-                  }}
-                </HasUser>
+                <HasUser />
               ) : (
                 <Relay.Renderer
                   Container={Container}

@@ -71,7 +71,7 @@ Relay.injectNetworkLayer(
             throw res;
           }
           let tries = 5;
-
+          let { json } = res;
           let id = setInterval(() => {
             let { user } = window.store.getState().auth;
 

@@ -82,10 +82,11 @@ Relay.injectNetworkLayer(
           return res;
         })
         .then(res => {
+          console.log('second then: ', res);
           let { user } = window.store.getState().auth;
           if (user) {
-            console.log('setting user access block');
             let { json } = res;
+            console.log('setting user access block, ', json);
             store.dispatch(
               setUserAccess({
                 fence_projects: json.fence_projects[0],
@@ -185,6 +186,9 @@ const Root = (props: mixed) => (
                     }
                     if (user) {
                       // if access is not correct
+                      console.log('fence: ', fence_projects);
+                      console.log('nih: ', nih_projects);
+                      console.log('intersection: ', intersection);
                       if (!fence_projects) {
                         console.log('no fence projects');
                         return <Redirect to="/login?error=no_fence_projects" />;

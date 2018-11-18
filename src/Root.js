@@ -10,6 +10,7 @@ import { RelayNetworkLayer, urlMiddleware } from 'react-relay-network-layer';
 import retryMiddleware from '@ncigdc/utils/retryMiddleware';
 import { Provider, connect } from 'react-redux';
 import { BrowserRouter as Router, Route, Redirect } from 'react-router-dom';
+import { compose, lifecycle, withPropsOnChange } from 'recompose';
 
 import setupStore from '@ncigdc/dux';
 import { fetchApiVersionInfo } from '@ncigdc/dux/versionInfo';
@@ -138,17 +139,36 @@ class RelayRoute extends Relay.Route {
   static queries = viewerQuery;
 }
 
-let HasUser = connect(state => state.auth)(props => {
-  return props.children({
-    user: props.user,
-    failed: props.failed,
-    error: props.error,
-    intersection: props.intersection,
-    fence_projects: props.fence_projects,
-    nih_projects: props.nih_projects,
-  });
-});
+// let HasUser = connect(state => state.auth)(props => {
+//   return props.children({
+//     user: props.user,
+//     failed: props.failed,
+//     error: props.error,
+//     intersection: props.intersection,
+//     fence_projects: props.fence_projects,
+//     nih_projects: props.nih_projects,
+//   });
+// });
 
+const HasUser = compose(
+  connect(state => ({
+    user: state.auth.user,
+    failed: state.auth.failed,
+    error: state.auth.error,
+    intersection: state.auth.intersection,
+    fence_projects: state.auth.fence_projects,
+    nih_projects: state.auth.nih_projects,
+  })),
+  lifecycle({
+    componentDidUpdate(prevProps) {
+      if (prevProps.intersection !== this.props.intersection) {
+        console.log('new intersection: ', this.props.intersection);
+        console.log('new fence projects: ', this.props.fence_projects);
+        return this.props;
+      }
+    },
+  }),
+);
 const Root = (props: mixed) => (
   console.log('Root component loading'),
   (

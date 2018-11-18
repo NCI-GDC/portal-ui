@@ -72,21 +72,29 @@ Relay.injectNetworkLayer(
           }
           let tries = 5;
 
-          let { user } = window.store.getState().auth;
           let id = setInterval(() => {
-            console.log('tries: ', tries);
-            console.log('in set interval');
+            let { user } = window.store.getState().auth;
+
             if (user) {
-              let { json } = res;
-              console.log('setting user access block, ', json);
-              store.dispatch(
-                setUserAccess({
-                  fence_projects: json.fence_projects[0],
-                  nih_projects: json.nih_projects,
-                  intersection: json.intersection[0],
-                }),
-              );
+              if (!json.fence_projects[0]) {
+                clear();
+                window.location.href = '/login?error=no_fence_projects';
+                return;
+              }
+
+              if (!json.nih_projects) {
+                clear();
+                window.location.href = '/login?error=no_nih_projects';
+                return;
+              }
+
+              if (!json.intersection[0]) {
+                clear();
+                window.location.href = '/login?error=no_intersection';
+                return;
+              }
             }
+
             tries--;
 
             if (!tries) clearInterval(id);
@@ -139,70 +147,15 @@ class RelayRoute extends Relay.Route {
   static queries = viewerQuery;
 }
 
-// let HasUser = connect(state => state.auth)(props => {
-//   return props.children({
-//     user: props.user,
-//     failed: props.failed,
-//     error: props.error,
-//     intersection: props.intersection,
-//     fence_projects: props.fence_projects,
-//     nih_projects: props.nih_projects,
-//   });
-// });
-
-const HasUser = compose(
-  connect(state => ({
-    user: state.auth.user,
-    failed: state.auth.failed,
-    error: state.auth.error,
-    intersection: state.auth.intersection,
-    fence_projects: state.auth.fence_projects,
-    nih_projects: state.auth.nih_projects,
-  })),
-  lifecycle({
-    componentDidUpdate(prevProps) {
-      if (prevProps.intersection !== this.props.intersection) {
-        console.log('new intersection: ', this.props.intersection);
-        console.log('new fence projects: ', this.props.fence_projects);
-        return this.props;
-      }
-    },
-  }),
-)(({ user, failed, error, intersection, nih_projects, fence_projects }) => {
-  // if user request fails
-  if (failed && error.message === 'Session timed out or not authorized') {
-    return (window.location.href = '/login?error=timeout');
-  }
-  if (failed) {
-    return <Redirect to="/login" />;
-  }
-  if (user) {
-    // if access is not correct
-    console.log('fence: ', fence_projects);
-    console.log('nih: ', nih_projects);
-    console.log('intersection: ', intersection);
-    if (!fence_projects) {
-      console.log('no fence projects');
-      return <Redirect to="/login?error=no_fence_projects" />;
-    }
-    if (!nih_projects) {
-      console.log('no nih projects');
-      return <Redirect to="/login?error=no_nih_projects" />;
-    }
-    if (!intersection) {
-      console.log('no intersection');
-      return <Redirect to="/login?error=no_intersection" />;
-    }
-    return (
-      <Relay.Renderer
-        Container={Container}
-        queryConfig={new RelayRoute(props)}
-        environment={Relay.Store}
-      />
-    );
-  }
-  console.log('returning null');
-  return null;
+let HasUser = connect(state => state.auth)(props => {
+  return props.children({
+    user: props.user,
+    failed: props.failed,
+    error: props.error,
+    intersection: props.intersection,
+    fence_projects: props.fence_projects,
+    nih_projects: props.nih_projects,
+  });
 });
 
 const Root = (props: mixed) => (
@@ -216,7 +169,53 @@ const Root = (props: mixed) => (
             render={props => {
               return IS_AUTH_PORTAL &&
                 !window.location.pathname.includes('/login') ? (
-                <HasUser />
+                <HasUser>
+                  {({
+                    user,
+                    failed,
+                    error,
+                    intersection,
+                    nih_projects,
+                    fence_projects,
+                  }) => {
+                    // if user request fails
+                    if (
+                      failed &&
+                      error.message === 'Session timed out or not authorized'
+                    ) {
+                      return (window.location.href = '/login?error=timeout');
+                    }
+                    if (failed) {
+                      return <Redirect to="/login" />;
+                    }
+                    if (user) {
+                      // if access is not correct
+                      // console.log('fence: ', fence_projects);
+                      // console.log('nih: ', nih_projects);
+                      // console.log('intersection: ', intersection);
+                      // if (!fence_projects) {
+                      //   console.log('no fence projects');
+                      //   return <Redirect to="/login?error=no_fence_projects" />;
+                      // }
+                      // if (!nih_projects) {
+                      //   console.log('no nih projects');
+                      //   return <Redirect to="/login?error=no_nih_projects" />;
+                      // }
+                      // if (!intersection) {
+                      //   console.log('no intersection');
+                      //   return <Redirect to="/login?error=no_intersection" />;
+                      // }
+                      return (
+                        <Relay.Renderer
+                          Container={Container}
+                          queryConfig={new RelayRoute(props)}
+                          environment={Relay.Store}
+                        />
+                      );
+                    }
+                    return null;
+                  }}
+                </HasUser>
               ) : (
                 <Relay.Renderer
                   Container={Container}

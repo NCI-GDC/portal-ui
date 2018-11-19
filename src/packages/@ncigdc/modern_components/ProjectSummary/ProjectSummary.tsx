@@ -41,24 +41,24 @@ interface IProjectProps {
       hits: {
         edges: {
           node: {
-            project_id:string;
-            dbgap_accession_number:string;
-            name:string;
-            disease_type:string;
-            primary_site:string;
+            project_id: string;
+            dbgap_accession_number: string;
+            name: string;
+            disease_type: string;
+            primary_site: string;
             program: {
-              name:string;
-              dbgap_accession_number:string;
-            }
+              name: string;
+              dbgap_accession_number: string;
+            };
             summary: {
-              case_count:number;
-              file_count:number;
-            }
-            id:string;
-          }
-        }
-      }
-    }
+              case_count: number;
+              file_count: number;
+            };
+            id: string;
+          };
+        };
+      };
+    };
     annotations: {
       hits: {
         total: number;
@@ -66,19 +66,18 @@ interface IProjectProps {
           node: {
             annotation_id: string;
             id: string;
-          }
-        }
-      }
-    }
-  }
+          };
+        };
+      };
+    };
+  };
 }
 export default compose<IProjectProps, React.Component>(
   branch(
     ({ viewer }) => !viewer.projects.hits.edges[0],
     renderComponent(() => <div>No project found.</div>)
   )
-)(({ viewer: { annotations, projects: { hits: { edges } } }}) => {
-  
+)(({ viewer: { annotations, projects: { hits: { edges } } } }) => {
   const project = edges[0].node;
 
   const projectFilter = [

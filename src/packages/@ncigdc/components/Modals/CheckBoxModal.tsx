@@ -5,16 +5,17 @@ import BaseModal, {
 } from '@ncigdc/components/Modals/BaseModal';
 import withRouter from '@ncigdc/utils/withRouter';
 import { setModal, IModalAction } from '@ncigdc/dux/modal';
+import { IUserProps } from '@ncigdc/utils/auth/types';
 
 export interface ICheckBoxModalProps {
   dbGapList?: string[];
   dispatch: (action: IModalAction) => void;
   hidden?: boolean;
-  setAgreed: (...args: any[]) => void;
+  setAgreed: (agreed: boolean) => void;
   agreed: boolean;
   children: React.ComponentType;
-  CustomButton: (...args: any[]) => void;
-  user: React.ComponentType<any>;
+  CustomButton: (agreed: boolean) => JSX.Element;
+  user?: IUserProps;
   style: React.CSSProperties;
 }
 const CheckBoxModal = ({

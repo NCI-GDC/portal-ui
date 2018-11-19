@@ -43,7 +43,7 @@ export const createClassicRenderer = (Route, Container, minHeight) => {
   );
 };
 
-export class BaseQuery extends React.Component<any, any> {
+export class BaseQuery extends React.Component {
   lastProps = null;
 
   render() {

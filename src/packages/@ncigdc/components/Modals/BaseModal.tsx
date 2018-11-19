@@ -6,11 +6,11 @@ import Button from '@ncigdc/uikit/Button';
 import { Column, Row } from '@ncigdc/uikit/Flex';
 export interface IBaseModalProps {
   dispatch: (action: IModalAction) => void,
-  title: any,
+  title: string,
   children?: any,
-  closeText?: any,
+  closeText?: string,
   onClose?: (...args: any[]) => void,
-  extraButtons?: any,
+  extraButtons?: JSX.Element | ((...args: any[]) => JSX.Element),
   style: React.CSSProperties,
   contentStyle?: React.CSSProperties,
 }

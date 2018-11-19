@@ -113,8 +113,24 @@ function fetchQuery(operation, variables, cacheConfig) {
       })
       .catch(err => {
         console.log('catch error: ', err);
-        if (IS_AUTH_PORTAL && user) {
-          redirectToLogin();
+        if (err.status) {
+          switch (err.status) {
+            case 401:
+            case 403:
+              console.log(err.statusText);
+              if (IS_AUTH_PORTAL) {
+                return redirectToLogin();
+              }
+              break;
+            case 400:
+            case 404:
+              console.log(err.statusText);
+              break;
+            default:
+              return console.log('there was an error', err.statusText);
+          }
+        } else {
+          console.log('Something went wrong');
         }
       }),
   );

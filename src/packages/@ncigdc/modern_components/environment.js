@@ -69,7 +69,12 @@ function fetchQuery(operation, variables, cacheConfig) {
           simpleCache[hash] = json;
           delete pendingCache[hash];
         }
-
+        console.log('response: ', response);
+        console.log('json: ', json);
+        if (!response.ok) {
+          console.log('throwing error in Environment');
+          throw response;
+        }
         // if (IS_AUTH_PORTAL) {
         //   let tries = 20;
         //   let id = setInterval(() => {

@@ -18,7 +18,6 @@ import { viewerQuery } from '@ncigdc/routes/queries';
 import Container from './Portal';
 import { API, IS_AUTH_PORTAL } from '@ncigdc/utils/constants';
 import { fetchUser, forceLogout, setUserAccess } from '@ncigdc/dux/auth';
-import { clear } from '@ncigdc/utils/cookies';
 import Login from '@ncigdc/routes/Login';
 import { redirectToLogin } from '@ncigdc/utils/auth';
 
@@ -70,6 +69,10 @@ Relay.injectNetworkLayer(
             console.log('throwing error in Root');
             throw res;
           }
+
+          const awgLogout = async () => {
+            await fetch(urlJoin(FENCE, 'logout'), { credentials: 'include' });
+          };
           let tries = 5;
           let { json } = res;
           let id = setInterval(() => {
@@ -77,19 +80,17 @@ Relay.injectNetworkLayer(
 
             if (user) {
               if (!json.fence_projects[0]) {
-                clear();
+                awgLogout();
                 window.location.href = '/login?error=no_fence_projects';
                 return;
               }
 
               if (!json.nih_projects) {
-                clear();
                 window.location.href = '/login?error=no_nih_projects';
                 return;
               }
 
               if (!json.intersection[0]) {
-                clear();
                 window.location.href = '/login?error=no_intersection';
                 return;
               }

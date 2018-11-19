@@ -35,11 +35,9 @@ const AccessError = message => {
 };
 
 const awgLogout = async () => {
+  console.log('awg logout');
   await fetch(urlJoin(FENCE, 'logout'), {
     credentials: 'include',
-    headers: {
-      'Access-Control-Allow-Credentials': true,
-    },
   });
 };
 
@@ -192,16 +190,20 @@ const Root = (props: mixed) => (
                   <HasUser>
                     {({ user, failed, error }) => {
                       // if user request fails
+                      console.log('HasUser component');
                       if (
                         failed &&
                         error.message === 'Session timed out or not authorized'
                       ) {
+                        console.log('user request failed with error message');
                         return redirectToLogin('timeout');
                       }
                       if (failed) {
+                        console.log('user request failed');
                         return <Redirect to="/login" />;
                       }
                       if (user) {
+                        console.log('user is set');
                         // if access is not correct
                         // console.log('fence: ', fence_projects);
                         // console.log('nih: ', nih_projects);
@@ -226,6 +228,9 @@ const Root = (props: mixed) => (
                           />
                         );
                       }
+                      console.log(
+                        'does not meet any criteria, redirecting to login',
+                      );
                       return <Redirect to="/login" />;
                     }}
                   </HasUser>

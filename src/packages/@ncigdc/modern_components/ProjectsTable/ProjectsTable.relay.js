@@ -26,7 +26,7 @@ export default (Component: ReactClass<*>) =>
           projects_sort: parseJSONParam(q.projects_sort, DEFAULT_PROJECT_SORT),
         },
       };
-    }),
+    })
   )((props: mixed) => {
     return (
       <Query
@@ -55,7 +55,6 @@ export default (Component: ReactClass<*>) =>
                     node {
                       id
                       project_id
-                      dbgap_accession_number
                       disease_type
                       program {
                         name

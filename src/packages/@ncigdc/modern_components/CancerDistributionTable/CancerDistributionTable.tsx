@@ -17,15 +17,6 @@ import { makeFilter, replaceFilters } from '@ncigdc/utils/filters';
 import { Row } from '@ncigdc/uikit/Flex';
 import { tableToolTipHint, visualizingButton } from '@ncigdc/theme/mixins';
 import { Tooltip } from '@ncigdc/uikit/Tooltip';
-<<<<<<< HEAD
-import SortTableButton, {
-  ISortTableOption,
-  TSortTableButtonSortFunc,
-  ISortSelection
-} from '@ncigdc/components/SortTableButton';
-import multisort from 'multisort';
-=======
->>>>>>> develop
 
 const paginationPrefix = 'canDistTable';
 

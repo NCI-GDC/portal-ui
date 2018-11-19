@@ -86,132 +86,113 @@ export default compose<IProjectProps, React.Component>(
       value: project.project_id,
     },
   ];
-  const Description = () => (
-    <div style={{ paddingLeft: '10px', marginBottom: '20px' }}>
-      <div>
-        The project has controlled access data which requires dbGaP Access. See
-        instructions for{' '}
+  const dbgapAccessionNumber =
+    project.program.dbgap_accession_number || project.dbgap_accession_number;
+  interface IColumnsProps {
+    th: string;
+    td: number | string | JSX.Element;
+  }
+  const basicColumns = [
+    { th: 'Project ID', td: project.project_id },
+    {
+      th: 'dbGaP Study Accession',
+      td: (
         <a
-          href="https://gdc.cancer.gov/access-data/obtaining-access-controlled-data"
+          href={
+            'https://www.ncbi.nlm.nih.gov/projects/gap/cgi-bin/study.cgi?study_id=' +
+            dbgapAccessionNumber
+          }
           target="_blank"
           rel="noopener noreferrer"
         >
-          Obtaining Access to Controlled Data.
+          {dbgapAccessionNumber}
         </a>
-      </div>
-    </div>
+      ),
+    },
+    { th: 'Project Name', td: project.name },
+    { th: 'Program', td: project.program.name },
+  ];
+  const collapsibleListColumns = [
+    ...basicColumns.slice(0, 3),
+    {
+      th: 'Disease Type',
+      td: (
+        <span>
+          {project.disease_type.length > 1 && (
+            <CollapsibleList
+              data={project.disease_type.slice(0).sort()}
+              limit={0}
+              toggleStyle={{ fontStyle: 'normal' }}
+              liStyle={{
+                whiteSpace: 'normal',
+                listStyleType: 'disc',
+                listStylePosition: 'inside',
+              }}
+              expandText={`${project.disease_type.length} Disease Types`}
+              collapseText="collapse"
+            />
+          )}
+          {project.disease_type.length <= 1 && project.disease_type}
+        </span>
+      ),
+    },
+    {
+      th: 'Primary Site',
+      td: (
+        <span>
+          {project.primary_site.length > 1 && (
+            <CollapsibleList
+              data={project.primary_site.slice(0).sort()}
+              limit={0}
+              toggleStyle={{ fontStyle: 'normal' }}
+              liStyle={{
+                whiteSpace: 'normal',
+                listStyleType: 'disc',
+                listStylePosition: 'inside',
+              }}
+              expandText={`${project.primary_site.length} Primary Sites`}
+              collapseText="collapse"
+            />
+          )}
+          {project.primary_site.length <= 1 && project.primary_site}
+        </span>
+      ),
+    },
+    basicColumns[3],
+  ];
+  const SummaryTable = (columns: IColumnsProps[]) => (
+    <EntityPageVerticalTable
+      id="summary"
+      title={
+        <span>
+          <i className="fa fa-table" /> Summary
+        </span>
+      }
+      description={
+        <div style={{ paddingLeft: '10px', marginBottom: '20px' }}>
+          <div>
+            The project has controlled access data which requires dbGaP Access.
+            See instructions for{' '}
+            <a
+              href="https://gdc.cancer.gov/access-data/obtaining-access-controlled-data"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Obtaining Access to Controlled Data.
+            </a>
+          </div>
+        </div>
+      }
+      thToTd={columns}
+    />
   );
-  const dbgapAccessionNumber =
-    project.program.dbgap_accession_number || project.dbgap_accession_number;
   return (
     <Row style={{ flexWrap: 'wrap' }} spacing={SPACING}>
       <span style={{ ...styles.column, ...styles.margin }}>
-        {project.primary_site.length <= 1 ? (
-          <EntityPageVerticalTable
-            id="summary"
-            title={
-              <span>
-                <i className="fa fa-table" /> Summary
-              </span>
-            }
-            description={Description()}
-            thToTd={[
-              { th: 'Project ID', td: project.project_id },
-              {
-                th: 'dbGaP Study Accession',
-                td: (
-                  <a
-                    href={
-                      'https://www.ncbi.nlm.nih.gov/projects/gap/cgi-bin/study.cgi?study_id=' +
-                      dbgapAccessionNumber
-                    }
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    {dbgapAccessionNumber}
-                  </a>
-                ),
-              },
-              { th: 'Project Name', td: project.name },
-              {
-                th: 'Disease Type',
-                td: (
-                  <span>
-                    {project.disease_type.length > 1 && (
-                      <CollapsibleList
-                        data={project.disease_type.slice(0).sort()}
-                        limit={0}
-                        toggleStyle={{ fontStyle: 'normal' }}
-                        liStyle={{
-                          whiteSpace: 'normal',
-                          listStyleType: 'disc',
-                          listStylePosition: 'inside',
-                        }}
-                        expandText={`${project.disease_type
-                          .length} Disease Types`}
-                        collapseText="collapse"
-                      />
-                    )}
-                    {project.disease_type.length <= 1 && project.disease_type}
-                  </span>
-                ),
-              },
-              {
-                th: 'Primary Site',
-                td: (
-                  <span>
-                    {project.primary_site.length > 1 && (
-                      <CollapsibleList
-                        data={project.primary_site.slice(0).sort()}
-                        limit={0}
-                        toggleStyle={{ fontStyle: 'normal' }}
-                        liStyle={{
-                          whiteSpace: 'normal',
-                          listStyleType: 'disc',
-                          listStylePosition: 'inside',
-                        }}
-                        expandText={`${project.primary_site
-                          .length} Primary Sites`}
-                        collapseText="collapse"
-                      />
-                    )}
-                    {project.primary_site.length <= 1 && project.primary_site}
-                  </span>
-                ),
-              },
-              { th: 'Program', td: project.program.name },
-            ]}
-          />
-        ) : (
-          <EntityPageVerticalTable
-            id="summary"
-            title={
-              <span>
-                <i className="fa fa-table" /> Summary
-              </span>
-            }
-            description={Description()}
-            thToTd={[
-              { th: 'Project ID', td: project.project_id },
-              {
-                th: 'dbGaP Study Accession',
-                td: (
-                  <a
-                    href={
-                      'https://www.ncbi.nlm.nih.gov/projects/gap/cgi-bin/study.cgi?study_id=' +
-                      dbgapAccessionNumber
-                    }
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    {dbgapAccessionNumber}
-                  </a>
-                ),
-              },
-              { th: 'Project Name', td: project.name },
-              { th: 'Program', td: project.program.name },
-            ]}
-          />
+        {SummaryTable(
+          project.primary_site.length <= 1
+            ? collapsibleListColumns
+            : basicColumns
         )}
       </span>
 

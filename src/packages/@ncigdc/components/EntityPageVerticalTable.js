@@ -72,11 +72,13 @@ const EntityPageVerticalTable = ({
                 <Th
                   style={{
                     ...styles.tr,
+                    width: '30%',
                     backgroundColor: i % 2 === 0 ? theme.tableStripe : '#fff',
                     textTransform: 'capitalize',
                     verticalAlign: 'top',
                   }}
                 >
+                  {console.log('style', d)}
                   {d.th}
                 </Th>
                 {!!d.collapsibleTd && (

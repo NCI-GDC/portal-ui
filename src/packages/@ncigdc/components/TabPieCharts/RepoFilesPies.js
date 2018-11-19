@@ -5,7 +5,7 @@ import _ from 'lodash';
 import { compose, withState } from 'recompose';
 
 import withSize from '@ncigdc/utils/withSize';
-import { TBucket } from '@ncigdc/components/Aggregations/types';
+import { IBucket } from '@ncigdc/components/Aggregations/types';
 import withRouter from '@ncigdc/utils/withRouter';
 import { parseFilterParam } from '@ncigdc/utils/uri';
 import {
@@ -22,11 +22,11 @@ export type TProps = {
   push: Function,
   query: Object,
   aggregations: {
-    data_category: { buckets: [TBucket] },
-    data_type: { buckets: [TBucket] },
-    experimental_strategy: { buckets: [TBucket] },
-    data_format: { buckets: [TBucket] },
-    access: { buckets: [TBucket] },
+    data_category: { buckets: [IBucket] },
+    data_type: { buckets: [IBucket] },
+    experimental_strategy: { buckets: [IBucket] },
+    data_format: { buckets: [IBucket] },
+    access: { buckets: [IBucket] },
   },
   setShowingMore: Function,
   showingMore: boolean,

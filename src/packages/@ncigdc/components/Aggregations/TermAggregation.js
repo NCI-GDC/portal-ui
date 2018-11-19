@@ -18,10 +18,10 @@ import OverflowTooltippedLabel from '@ncigdc/uikit/OverflowTooltippedLabel';
 
 import { Container, BucketLink } from './';
 
-import { TBucket } from './types';
+import { IBucket } from './types';
 
 type TProps = {
-  buckets: [TBucket],
+  buckets: [IBucket],
   field: string,
   filteredBuckets: Array<Object>,
   style: Object,

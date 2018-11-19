@@ -9,7 +9,7 @@ import FacetHeader from '@ncigdc/components/Aggregations/FacetHeader';
 import FacetWrapper from '@ncigdc/components/FacetWrapper';
 import escapeForRelay from '@ncigdc/utils/escapeForRelay';
 
-import { TBucket } from '@ncigdc/components/Aggregations/types';
+import { IBucket } from '@ncigdc/components/Aggregations/types';
 
 import { withTheme } from '@ncigdc/theme';
 import { Row } from '@ncigdc/uikit/Flex';
@@ -18,13 +18,13 @@ import FolderIcon from '@ncigdc/theme/icons/Folder';
 export type TProps = {
   suggestions: Array<Object>,
   aggregations: {
-    disease_type: { buckets: [TBucket] },
-    primary_site: { buckets: [TBucket] },
-    program__name: { buckets: [TBucket] },
-    project_id: { buckets: [TBucket] },
-    summary__data_categories__data_category: { buckets: [TBucket] },
+    disease_type: { buckets: [IBucket] },
+    primary_site: { buckets: [IBucket] },
+    program__name: { buckets: [IBucket] },
+    project_id: { buckets: [IBucket] },
+    summary__data_categories__data_category: { buckets: [IBucket] },
     summary__experimental_strategies__experimental_strategy: {
-      buckets: [TBucket],
+      buckets: [IBucket],
     },
   },
   setAutocomplete: Function,

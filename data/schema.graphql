@@ -419,6 +419,10 @@ type Archive {
   #
   md5sum: String
 
+  # Broad categorization of the contents of the data file.
+  #
+  data_category: String
+
   # Specific content type of the data file.
   #
   data_type: String
@@ -453,9 +457,11 @@ type Archive {
   #
   state: String
 
-  # Broad categorization of the contents of the data file.
-  #
-  data_category: String
+  # keyword
+  version: String
+
+  # keyword
+  data_release: String
 
   # The size of the data file (object) in bytes.
   #
@@ -886,25 +892,27 @@ type CaseAggregations {
   exposures__exposure_id: Aggregations
   exposures__pack_years_smoked: NumericAggergations
   files__origin: Aggregations
-  files__index_files__imaging_date: Aggregations
-  files__index_files__md5sum: Aggregations
-  files__index_files__platform: Aggregations
-  files__index_files__data_type: Aggregations
   files__index_files__updated_datetime: Aggregations
-  files__index_files__created_datetime: Aggregations
   files__index_files__file_name: Aggregations
-  files__index_files__magnification: NumericAggergations
-  files__index_files__error_type: Aggregations
-  files__index_files__data_format: Aggregations
   files__index_files__submitter_id: Aggregations
-  files__index_files__access: Aggregations
   files__index_files__read_pair_number: Aggregations
-  files__index_files__state: Aggregations
-  files__index_files__file_id: Aggregations
-  files__index_files__data_category: Aggregations
   files__index_files__file_size: NumericAggergations
+  files__index_files__created_datetime: Aggregations
+  files__index_files__imaging_date: Aggregations
+  files__index_files__error_type: Aggregations
+  files__index_files__state: Aggregations
+  files__index_files__access: Aggregations
+  files__index_files__platform: Aggregations
+  files__index_files__magnification: NumericAggergations
+  files__index_files__version: Aggregations
+  files__index_files__data_release: Aggregations
   files__index_files__revision: NumericAggergations
+  files__index_files__data_type: Aggregations
+  files__index_files__file_id: Aggregations
   files__index_files__state_comment: Aggregations
+  files__index_files__md5sum: Aggregations
+  files__index_files__data_format: Aggregations
+  files__index_files__data_category: Aggregations
   files__index_files__experimental_strategy: Aggregations
   files__file_name: Aggregations
   files__downstream_analyses__analysis_id: Aggregations
@@ -943,6 +951,7 @@ type CaseAggregations {
   files__file_size: NumericAggergations
   files__archive__archive_id: Aggregations
   files__archive__md5sum: Aggregations
+  files__archive__data_category: Aggregations
   files__archive__data_type: Aggregations
   files__archive__updated_datetime: Aggregations
   files__archive__created_datetime: Aggregations
@@ -951,7 +960,8 @@ type CaseAggregations {
   files__archive__data_format: Aggregations
   files__archive__submitter_id: Aggregations
   files__archive__state: Aggregations
-  files__archive__data_category: Aggregations
+  files__archive__version: Aggregations
+  files__archive__data_release: Aggregations
   files__archive__file_size: NumericAggergations
   files__archive__state_comment: Aggregations
   files__archive__revision: NumericAggergations
@@ -962,8 +972,10 @@ type CaseAggregations {
   files__access: Aggregations
   files__platform: Aggregations
   files__magnification: NumericAggergations
+  files__version: Aggregations
   files__metadata_files__md5sum: Aggregations
   files__metadata_files__type: Aggregations
+  files__metadata_files__data_category: Aggregations
   files__metadata_files__data_type: Aggregations
   files__metadata_files__updated_datetime: Aggregations
   files__metadata_files__created_datetime: Aggregations
@@ -973,12 +985,14 @@ type CaseAggregations {
   files__metadata_files__submitter_id: Aggregations
   files__metadata_files__access: Aggregations
   files__metadata_files__state: Aggregations
+  files__metadata_files__version: Aggregations
   files__metadata_files__file_id: Aggregations
-  files__metadata_files__data_category: Aggregations
+  files__metadata_files__data_release: Aggregations
   files__metadata_files__file_size: NumericAggergations
   files__metadata_files__state_comment: Aggregations
+  files__data_release: Aggregations
   files__type: Aggregations
-  files__revision: NumericAggergations
+  files__experimental_strategy: Aggregations
   files__data_type: Aggregations
   files__tags: Aggregations
   files__file_id: Aggregations
@@ -1095,7 +1109,7 @@ type CaseAggregations {
   files__analysis__metadata__read_groups__fragment_maximum_length: NumericAggergations
   files__acl: Aggregations
   files__data_category: Aggregations
-  files__experimental_strategy: Aggregations
+  files__revision: NumericAggergations
   index_date: Aggregations
   case_autocomplete: Aggregations
   family_histories__relationship_gender: Aggregations
@@ -1412,10 +1426,16 @@ type CaseFile implements Node {
   magnification: Float
 
   # keyword
+  version: String
+
+  # keyword
+  data_release: String
+
+  # keyword
   type: String
 
-  # long
-  revision: Float
+  # keyword
+  experimental_strategy: String
 
   # keyword
   data_type: String
@@ -1441,8 +1461,8 @@ type CaseFile implements Node {
   # keyword
   data_category: String
 
-  # keyword
-  experimental_strategy: String
+  # long
+  revision: Float
   score: Int
 }
 
@@ -2008,8 +2028,8 @@ type Demographic {
   #
   race: String
 
-  # Number of days between the date used for index and the date from a person's
-  # date of birth represented as a calculated negative number of days.
+  # Time interval from a person's date of birth to the date of initial pathologic
+  # diagnosis, represented as a calculated negative number of days.
   #
   days_to_birth: Float
 
@@ -2025,8 +2045,8 @@ type Demographic {
   #
   vital_status: String
 
-  # Number of days between the date used for index and the date from a person's
-  # date of death represented as a calculated number of days.
+  # Time interval from a person's date of death to the date of initial pathologic
+  # diagnosis, represented as a calculated number of days.
   #
   days_to_death: Float
 
@@ -2058,7 +2078,7 @@ type Diagnosis implements Node {
   #
   vascular_invasion_type: String
 
-  # Text term used to describe the method used to confirm the patients malignant diagnosis.
+  # The method used to initially the patient's diagnosis.
   #
   method_of_diagnosis: String
 
@@ -2097,8 +2117,8 @@ type Diagnosis implements Node {
   #
   morphology: String
 
-  # Number of days between the date used for index and the date from a person's
-  # date of death represented as a calculated number of days.
+  # Time interval from a person's date of death to the date of initial pathologic
+  # diagnosis, represented as a calculated number of days.
   #
   days_to_death: Float
 
@@ -2145,7 +2165,9 @@ type Diagnosis implements Node {
   #
   ajcc_pathologic_n: String
 
-  # long
+  # The 2 decimal place numeric laboratory value measured, assigned or computed
+  # related to the assessment of lactate dehydrogenase in a specimen.
+  #
   ldh_level_at_diagnosis: Float
 
   # Text term and code that represents the metastatic stage of the musculoskeletal
@@ -2225,8 +2247,7 @@ type Diagnosis implements Node {
   #
   metastasis_at_diagnosis: String
 
-  # Number of days between the date used for index and the date of the patient was
-  # thought to have the best overall response to their disease.
+  # Number of days between the date used for index and the date of the patient's best overall response.
   #
   days_to_best_overall_response: Float
 
@@ -2264,7 +2285,7 @@ type Diagnosis implements Node {
   #
   tumor_largest_dimension_diameter: Float
 
-  # Number of days between the date used for index and the date the patient's disease recurred.
+  # Number of days between the date used for index and the date the patient was diagnosed with a recurrent malignancy.
   #
   days_to_recurrence: Float
 
@@ -2288,9 +2309,7 @@ type Diagnosis implements Node {
   #
   anaplasia_present_type: String
 
-  # The text term used to describe the anatomic site of origin, of the patient's
-  # malignant disease, as described by the World Health Organization's (WHO)
-  # International Classification of Diseases for Oncology (ICD-O).
+  # Text term that describes the anatomic site of the tumor or disease.
   #
   tissue_or_organ_of_origin: String
 
@@ -2309,9 +2328,9 @@ type Diagnosis implements Node {
   #
   days_to_new_event: Float
 
-  # Numeric value used to describe the non-peritonealised bare area of rectum,
-  # comprising anterior and posterior segments, when submitted as a surgical
-  # specimen resulting from excision of cancer of the rectum.
+  # A value in millimeters indicating the measured length between a malignant
+  # lesion of the colon or rectum and the nearest radial (or circumferential)
+  # border of tissue removed during cancer surgery.
   #
   circumferential_resection_margin: Float
 
@@ -2467,9 +2486,7 @@ type Diagnosis implements Node {
   #
   last_known_disease_status: String
 
-  # Text term used to describe the patient's histologic diagnosis, as described by
-  # the World Health Organization's (WHO) International Classification of Diseases
-  # for Oncology (ICD-O).
+  # Text term for the structural pattern of cancer cells used to define a microscopic diagnosis.
   #
   primary_diagnosis: String
 
@@ -2497,12 +2514,12 @@ type Diagnosis implements Node {
   #
   tumor_grade: String
 
-  # Number of days between the date used for index and the date the patient was diagnosed with the malignant disease.
+  # Number of days between the date used for index and the date of diagnosis.
   #
   days_to_diagnosis: Float
 
-  # Number of days between the date used for index and the date from a person's
-  # date of birth represented as a calculated negative number of days.
+  # Time interval from a person's date of birth to the date of initial pathologic
+  # diagnosis, represented as a calculated negative number of days.
   #
   days_to_birth: Float
 
@@ -2548,9 +2565,11 @@ type Diagnosis implements Node {
   #
   metastasis_at_diagnosis_site: String
 
-  # The text term used to describe the anatomic site of origin, of the patient's
-  # malignant disease, as described by the World Health Organization's (WHO)
-  # International Classification of Diseases for Oncology (ICD-O).
+  # The third edition of the International Classification of Diseases for
+  # Oncology, published in 2000, used principally in tumor and cancer registries
+  # for coding the site (topography) and the histology (morphology) of neoplasms.
+  # The description of an anatomical region or of a body part. Named locations of,
+  # or within, the body. A system of numbered categories for representation of data.
   #
   site_of_resection_or_biopsy: String
   score: Int
@@ -2739,7 +2758,6 @@ type ECaseAggregations {
   diagnoses__treatments__days_to_treatment_start: NumericAggergations
   diagnoses__treatments__updated_datetime: Aggregations
   diagnoses__treatments__created_datetime: Aggregations
-  diagnoses__treatments__days_to_treatment: NumericAggergations
   diagnoses__treatments__treatment_type: Aggregations
   diagnoses__treatments__submitter_id: Aggregations
   diagnoses__treatments__treatment_id: Aggregations
@@ -2799,7 +2817,6 @@ type ECaseAggregations {
   gene__ssm__observation__normal_genotype__match_norm_seq_allele2: Aggregations
   gene__ssm__observation__normal_genotype__match_norm_seq_allele1: Aggregations
   gene__ssm__observation__observation_id: Aggregations
-  gene__ssm__observation__acl: Aggregations
   gene__ssm__observation__sample__matched_norm_sample_uuid: Aggregations
   gene__ssm__observation__sample__tumor_sample_barcode: Aggregations
   gene__ssm__observation__sample__matched_norm_sample_barcode: Aggregations
@@ -2871,9 +2888,6 @@ type ECaseAggregations {
   demographic__demographic_id: Aggregations
   demographic__state: Aggregations
   demographic__race: Aggregations
-  demographic__days_to_birth: NumericAggergations
-  demographic__vital_status: Aggregations
-  demographic__days_to_death: NumericAggergations
   demographic__submitter_id: Aggregations
   demographic__ethnicity: Aggregations
   demographic__year_of_death: NumericAggergations
@@ -2989,20 +3003,6 @@ type EDemographic {
   #
   race: String
 
-  # Number of days between the date used for index and the date from a person's
-  # date of birth represented as a calculated negative number of days.
-  #
-  days_to_birth: Float
-
-  # The survival state of the person registered on the protocol.
-  #
-  vital_status: String
-
-  # Number of days between the date used for index and the date from a person's
-  # date of death represented as a calculated number of days.
-  #
-  days_to_death: Float
-
   # A project-specific identifier for a node. This property is the calling
   # card/nickname/alias for a unit of submission. It can be used in place of the
   # UUID for identifying or recalling a node.
@@ -3050,7 +3050,7 @@ type EDiagnosis implements Node {
   #
   updated_datetime: String
 
-  # Text term used to describe the method used to confirm the patients malignant diagnosis.
+  # The method used to initially the patient's diagnosis.
   #
   method_of_diagnosis: String
 
@@ -3063,9 +3063,7 @@ type EDiagnosis implements Node {
   #
   ann_arbor_pathologic_stage: String
 
-  # Text term used to describe the patient's histologic diagnosis, as described by
-  # the World Health Organization's (WHO) International Classification of Diseases
-  # for Oncology (ICD-O).
+  # Text term for the structural pattern of cancer cells used to define a microscopic diagnosis.
   #
   primary_diagnosis: String
 
@@ -3106,8 +3104,8 @@ type EDiagnosis implements Node {
   #
   morphology: String
 
-  # Number of days between the date used for index and the date from a person's
-  # date of death represented as a calculated number of days.
+  # Time interval from a person's date of death to the date of initial pathologic
+  # diagnosis, represented as a calculated number of days.
   #
   days_to_death: Float
 
@@ -3176,7 +3174,9 @@ type EDiagnosis implements Node {
   #
   vascular_invasion_present: String
 
-  # long
+  # The 2 decimal place numeric laboratory value measured, assigned or computed
+  # related to the assessment of lactate dehydrogenase in a specimen.
+  #
   ldh_level_at_diagnosis: Float
 
   # Time interval from the date of last follow up to the date of initial
@@ -3188,7 +3188,7 @@ type EDiagnosis implements Node {
   #
   residual_disease: String
 
-  # Number of days between the date used for index and the date the patient's disease recurred.
+  # Number of days between the date used for index and the date the patient was diagnosed with a recurrent malignancy.
   #
   days_to_recurrence: Float
 
@@ -3214,14 +3214,12 @@ type EDiagnosis implements Node {
   #
   lymphatic_invasion_present: String
 
-  # The text term used to describe the anatomic site of origin, of the patient's
-  # malignant disease, as described by the World Health Organization's (WHO)
-  # International Classification of Diseases for Oncology (ICD-O).
+  # Text term that describes the anatomic site of the tumor or disease.
   #
   tissue_or_organ_of_origin: String
 
-  # Number of days between the date used for index and the date from a person's
-  # date of birth represented as a calculated negative number of days.
+  # Time interval from a person's date of birth to the date of initial pathologic
+  # diagnosis, represented as a calculated negative number of days.
   #
   days_to_birth: Float
 
@@ -3237,9 +3235,9 @@ type EDiagnosis implements Node {
   #
   prior_malignancy: String
 
-  # Numeric value used to describe the non-peritonealised bare area of rectum,
-  # comprising anterior and posterior segments, when submitted as a surgical
-  # specimen resulting from excision of cancer of the rectum.
+  # A value in millimeters indicating the measured length between a malignant
+  # lesion of the colon or rectum and the nearest radial (or circumferential)
+  # border of tissue removed during cancer surgery.
   #
   circumferential_resection_margin: Float
 
@@ -3279,9 +3277,11 @@ type EDiagnosis implements Node {
   #
   ann_arbor_clinical_stage: String
 
-  # The text term used to describe the anatomic site of origin, of the patient's
-  # malignant disease, as described by the World Health Organization's (WHO)
-  # International Classification of Diseases for Oncology (ICD-O).
+  # The third edition of the International Classification of Diseases for
+  # Oncology, published in 2000, used principally in tumor and cancer registries
+  # for coding the site (topography) and the histology (morphology) of neoplasms.
+  # The description of an anatomical region or of a body part. Named locations of,
+  # or within, the body. A system of numbered categories for representation of data.
   #
   site_of_resection_or_biopsy: String
 
@@ -3427,7 +3427,10 @@ type EFamilyHistories {
 type EFamilyHistory implements Node {
   id: ID!
 
-  # The text term used to describe the gender of the patient's relative with a history of cancer.
+  # Text designations that identify gender. Gender is described as the assemblage
+  # of properties that distinguish people on the basis of their societal roles.
+  # [Explanatory Comment 1: Identification of gender is based upon self-report and
+  # may come from a form, questionnaire, interview, etc.]
   #
   relationship_gender: String
 
@@ -3439,11 +3442,11 @@ type EFamilyHistory implements Node {
   #
   created_datetime: String
 
-  # The yes/no/unknown indicator used to describe whether any of the patient's relatives have a history of cancer.
+  # Indicator to signify whether or not an individual's biological relative has been diagnosed with another type of cancer.
   #
   relative_with_cancer_history: String
 
-  # The text term used to describe the malignant diagnosis of the patient's relative with a history of cancer.
+  # Text term for the structural pattern of cancer cells used to define a microscopic diagnosis.
   #
   relationship_primary_diagnosis: String
 
@@ -3511,7 +3514,8 @@ type ETissueSourceSite {
 type ETreatment implements Node {
   id: ID!
 
-  # Number of days between the date used for index and the date the treatment started.
+  # Time interval from the date of the initial pathologic diagnosis to the start
+  # of treatment, represented as a calculated number of days.
   #
   days_to_treatment_start: Float
 
@@ -3522,9 +3526,6 @@ type ETreatment implements Node {
   # A combination of date and time of day in the form [-]CCYY-MM-DDThh:mm:ss[Z|(+|-)hh:mm]
   #
   created_datetime: String
-
-  # long
-  days_to_treatment: Float
 
   # Text term that describes the kind of treatment administered.
   #
@@ -3543,7 +3544,7 @@ type ETreatment implements Node {
   #
   state: String
 
-  # Text identification of the individual agent(s) used as part of a treatment regimen.
+  # Text identification of the individual agent(s) used as part of a prior treatment regimen.
   #
   therapeutic_agents: String
 
@@ -3559,11 +3560,13 @@ type ETreatment implements Node {
   #
   treatment_outcome: String
 
-  # Number of days between the date used for index and the date the treatment ended.
+  # Time interval from the date of the initial pathologic diagnosis to the date of
+  # treatment end, represented as a calculated number of days.
   #
   days_to_treatment_end: Float
 
-  # A yes/no/unknown/not applicable indicator related to the administration of therapeutic agents received.
+  # A yes/no/unknown/not applicable indicator related to the administration of
+  # therapeutic agents received before the body specimen was collected.
   #
   treatment_or_therapy: String
   score: Int
@@ -3776,7 +3779,10 @@ type FamilyHistories {
 type FamilyHistory implements Node {
   id: ID!
 
-  # The text term used to describe the gender of the patient's relative with a history of cancer.
+  # Text designations that identify gender. Gender is described as the assemblage
+  # of properties that distinguish people on the basis of their societal roles.
+  # [Explanatory Comment 1: Identification of gender is based upon self-report and
+  # may come from a form, questionnaire, interview, etc.]
   #
   relationship_gender: String
 
@@ -3788,11 +3794,11 @@ type FamilyHistory implements Node {
   #
   created_datetime: String
 
-  # The yes/no/unknown indicator used to describe whether any of the patient's relatives have a history of cancer.
+  # Indicator to signify whether or not an individual's biological relative has been diagnosed with another type of cancer.
   #
   relative_with_cancer_history: String
 
-  # The text term used to describe the malignant diagnosis of the patient's relative with a history of cancer.
+  # Text term for the structural pattern of cancer cells used to define a microscopic diagnosis.
   #
   relationship_primary_diagnosis: String
 
@@ -3879,6 +3885,12 @@ type File implements Node {
   magnification: Float
 
   # keyword
+  version: String
+
+  # keyword
+  data_release: String
+
+  # keyword
   type: String
 
   # keyword
@@ -3926,25 +3938,27 @@ type File implements Node {
 
 type FileAggregations {
   origin: Aggregations
-  index_files__imaging_date: Aggregations
-  index_files__md5sum: Aggregations
-  index_files__platform: Aggregations
-  index_files__data_type: Aggregations
   index_files__updated_datetime: Aggregations
-  index_files__created_datetime: Aggregations
   index_files__file_name: Aggregations
-  index_files__magnification: NumericAggergations
-  index_files__error_type: Aggregations
-  index_files__data_format: Aggregations
   index_files__submitter_id: Aggregations
-  index_files__access: Aggregations
   index_files__read_pair_number: Aggregations
-  index_files__state: Aggregations
-  index_files__file_id: Aggregations
-  index_files__data_category: Aggregations
   index_files__file_size: NumericAggergations
+  index_files__created_datetime: Aggregations
+  index_files__imaging_date: Aggregations
+  index_files__error_type: Aggregations
+  index_files__state: Aggregations
+  index_files__access: Aggregations
+  index_files__platform: Aggregations
+  index_files__magnification: NumericAggergations
+  index_files__version: Aggregations
+  index_files__data_release: Aggregations
   index_files__revision: NumericAggergations
+  index_files__data_type: Aggregations
+  index_files__file_id: Aggregations
   index_files__state_comment: Aggregations
+  index_files__md5sum: Aggregations
+  index_files__data_format: Aggregations
+  index_files__data_category: Aggregations
   index_files__experimental_strategy: Aggregations
   file_name: Aggregations
   downstream_analyses__analysis_id: Aggregations
@@ -3983,6 +3997,7 @@ type FileAggregations {
   file_size: NumericAggergations
   archive__archive_id: Aggregations
   archive__md5sum: Aggregations
+  archive__data_category: Aggregations
   archive__data_type: Aggregations
   archive__updated_datetime: Aggregations
   archive__created_datetime: Aggregations
@@ -3991,7 +4006,8 @@ type FileAggregations {
   archive__data_format: Aggregations
   archive__submitter_id: Aggregations
   archive__state: Aggregations
-  archive__data_category: Aggregations
+  archive__version: Aggregations
+  archive__data_release: Aggregations
   archive__file_size: NumericAggergations
   archive__state_comment: Aggregations
   archive__revision: NumericAggergations
@@ -4002,8 +4018,10 @@ type FileAggregations {
   access: Aggregations
   platform: Aggregations
   magnification: NumericAggergations
+  version: Aggregations
   metadata_files__md5sum: Aggregations
   metadata_files__type: Aggregations
+  metadata_files__data_category: Aggregations
   metadata_files__data_type: Aggregations
   metadata_files__updated_datetime: Aggregations
   metadata_files__created_datetime: Aggregations
@@ -4013,10 +4031,12 @@ type FileAggregations {
   metadata_files__submitter_id: Aggregations
   metadata_files__access: Aggregations
   metadata_files__state: Aggregations
+  metadata_files__version: Aggregations
   metadata_files__file_id: Aggregations
-  metadata_files__data_category: Aggregations
+  metadata_files__data_release: Aggregations
   metadata_files__file_size: NumericAggergations
   metadata_files__state_comment: Aggregations
+  data_release: Aggregations
   type: Aggregations
   annotations__status: Aggregations
   annotations__legacy_updated_datetime: Aggregations
@@ -4741,8 +4761,7 @@ type FileCase implements Node {
   # long
   days_to_index: Float
 
-  # The yes/no/unknown indicator used to describe whether a patient was unable to
-  # be contacted or seen for follow-up information.
+  # A yes/no indicator related to whether a patient was unable to be contacted for follow-up.
   #
   lost_to_followup: String
 
@@ -4756,9 +4775,8 @@ type FileCase implements Node {
   # keyword
   submitter_sample_ids: String
 
-  # The text term used to describe the reference or anchor date used when for date
-  # obfuscation, where a single date is obscurred by creating one or more date
-  # ranges in relation to this date.
+  # The reference or anchor date used during date obfuscation, where a single date
+  # is obscurred by creating one or more date ranges in relation to this date.
   #
   index_date: String
 
@@ -5000,7 +5018,6 @@ type GeneAggregations {
   case__diagnoses__treatments__days_to_treatment_start: NumericAggergations
   case__diagnoses__treatments__updated_datetime: Aggregations
   case__diagnoses__treatments__created_datetime: Aggregations
-  case__diagnoses__treatments__days_to_treatment: NumericAggergations
   case__diagnoses__treatments__treatment_type: Aggregations
   case__diagnoses__treatments__submitter_id: Aggregations
   case__diagnoses__treatments__treatment_id: Aggregations
@@ -5033,8 +5050,6 @@ type GeneAggregations {
   case__diagnoses__hiv_positive: Aggregations
   case__disease_type: Aggregations
   case__updated_datetime: Aggregations
-  case__created_datetime: Aggregations
-  case__days_to_index: NumericAggergations
   case__demographic__updated_datetime: Aggregations
   case__demographic__created_datetime: Aggregations
   case__demographic__gender: Aggregations
@@ -5055,7 +5070,6 @@ type GeneAggregations {
   case__ssm__observation__normal_genotype__match_norm_seq_allele2: Aggregations
   case__ssm__observation__normal_genotype__match_norm_seq_allele1: Aggregations
   case__ssm__observation__observation_id: Aggregations
-  case__ssm__observation__acl: Aggregations
   case__ssm__observation__sample__matched_norm_sample_uuid: Aggregations
   case__ssm__observation__sample__tumor_sample_barcode: Aggregations
   case__ssm__observation__sample__matched_norm_sample_barcode: Aggregations
@@ -5222,12 +5236,6 @@ type GeneCase implements Node {
   # date
   updated_datetime: String
 
-  # date
-  created_datetime: String
-
-  # long
-  days_to_index: Float
-
   # keyword
   submitter_id: String
 
@@ -5305,61 +5313,67 @@ type IndexFile implements Node {
   id: ID!
 
   # keyword
-  imaging_date: String
-
-  # keyword
-  md5sum: String
-
-  # keyword
-  platform: String
-
-  # keyword
-  data_type: String
-
-  # keyword
   updated_datetime: String
 
   # keyword
-  created_datetime: String
-
-  # keyword
   file_name: String
-
-  # long
-  magnification: Float
-
-  # keyword
-  error_type: String
-
-  # keyword
-  data_format: String
 
   # keyword
   submitter_id: String
 
   # keyword
-  access: String
+  read_pair_number: String
+
+  # long
+  file_size: Float
 
   # keyword
-  read_pair_number: String
+  created_datetime: String
+
+  # keyword
+  imaging_date: String
+
+  # keyword
+  error_type: String
 
   # keyword
   state: String
 
   # keyword
-  file_id: String
+  access: String
 
   # keyword
-  data_category: String
+  platform: String
 
   # long
-  file_size: Float
+  magnification: Float
+
+  # keyword
+  version: String
+
+  # keyword
+  data_release: String
 
   # long
   revision: Float
 
   # keyword
+  data_type: String
+
+  # keyword
+  file_id: String
+
+  # keyword
   state_comment: String
+
+  # keyword
+  md5sum: String
+
+  # keyword
+  data_format: String
+
+  # keyword
+  data_category: String
 
   # keyword
   experimental_strategy: String
@@ -5505,6 +5519,9 @@ type MetadataFile implements Node {
   type: String
 
   # keyword
+  data_category: String
+
+  # keyword
   data_type: String
 
   # A combination of date and time of day in the form [-]CCYY-MM-DDThh:mm:ss[Z|(+|-)hh:mm]
@@ -5540,10 +5557,13 @@ type MetadataFile implements Node {
   state: String
 
   # keyword
+  version: String
+
+  # keyword
   file_id: String
 
   # keyword
-  data_category: String
+  data_release: String
 
   # The size of the data file (object) in bytes.
   #
@@ -6651,7 +6671,6 @@ type SsmAggregations {
   occurrence__case__diagnoses__treatments__days_to_treatment_start: NumericAggergations
   occurrence__case__diagnoses__treatments__updated_datetime: Aggregations
   occurrence__case__diagnoses__treatments__created_datetime: Aggregations
-  occurrence__case__diagnoses__treatments__days_to_treatment: NumericAggergations
   occurrence__case__diagnoses__treatments__treatment_type: Aggregations
   occurrence__case__diagnoses__treatments__submitter_id: Aggregations
   occurrence__case__diagnoses__treatments__treatment_id: Aggregations
@@ -6690,7 +6709,6 @@ type SsmAggregations {
   occurrence__case__observation__normal_genotype__match_norm_seq_allele2: Aggregations
   occurrence__case__observation__normal_genotype__match_norm_seq_allele1: Aggregations
   occurrence__case__observation__observation_id: Aggregations
-  occurrence__case__observation__acl: Aggregations
   occurrence__case__observation__sample__matched_norm_sample_uuid: Aggregations
   occurrence__case__observation__sample__tumor_sample_barcode: Aggregations
   occurrence__case__observation__sample__matched_norm_sample_barcode: Aggregations
@@ -6946,9 +6964,6 @@ type SSMObservation implements Node {
 
   # keyword
   observation_id: String
-
-  # keyword
-  acl: String
   score: Int
 }
 
@@ -7310,7 +7325,8 @@ type Transcripts {
 type Treatment implements Node {
   id: ID!
 
-  # Number of days between the date used for index and the date the treatment started.
+  # Time interval from the date of the initial pathologic diagnosis to the start
+  # of treatment, represented as a calculated number of days.
   #
   days_to_treatment_start: Float
 
@@ -7339,11 +7355,11 @@ type Treatment implements Node {
   #
   state: String
 
-  # Text identification of the individual agent(s) used as part of a treatment regimen.
+  # Text identification of the individual agent(s) used as part of a prior treatment regimen.
   #
   therapeutic_agents: String
 
-  # The text term used to describe the regimen or line of therapy.
+  # The name of a regimen or line of therapy assigned to the patient.
   #
   regimen_or_line_of_therapy: String
 
@@ -7359,11 +7375,13 @@ type Treatment implements Node {
   #
   treatment_outcome: String
 
-  # Number of days between the date used for index and the date the treatment ended.
+  # Time interval from the date of the initial pathologic diagnosis to the date of
+  # treatment end, represented as a calculated number of days.
   #
   days_to_treatment_end: Float
 
-  # A yes/no/unknown/not applicable indicator related to the administration of therapeutic agents received.
+  # A yes/no/unknown/not applicable indicator related to the administration of
+  # therapeutic agents received before the body specimen was collected.
   #
   treatment_or_therapy: String
   score: Int

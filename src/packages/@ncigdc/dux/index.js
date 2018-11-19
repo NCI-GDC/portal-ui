@@ -1,5 +1,5 @@
 // @flow
-import { createStore, combineReducers, applyMiddleware } from 'redux';
+import { createStore, combineReducers, applyMiddleware, compose } from 'redux';
 import thunk from 'redux-thunk';
 import { persistStore } from 'redux-persist';
 import { apiMiddleware } from 'redux-api-middleware';

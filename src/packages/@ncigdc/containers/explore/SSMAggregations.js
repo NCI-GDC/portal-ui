@@ -145,7 +145,9 @@ export const SSMAggregationsComponent = compose(
       setAutocomplete={props.setAutocomplete}
       dropdownItem={(x, inputValue) => (
         <div>
-          <div>{x.ssm_id}</div>
+          <div>
+            <b>{x.ssm_id}</b>
+          </div>
           <ResultHighlights item={x} query={inputValue} />
           <div>{x.genomic_dna_change}</div>
         </div>

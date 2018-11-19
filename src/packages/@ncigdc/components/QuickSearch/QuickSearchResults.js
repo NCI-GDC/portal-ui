@@ -20,14 +20,14 @@ const styles = {
     zIndex: 90,
     maxHeight: '500px',
     overflowY: 'auto',
-    width: '406px'
+    width: '406px',
   },
   item: {
     padding: '0.5rem 1rem',
     transition: 'all 0.1s ease',
     display: 'flex',
     flexDirection: 'row',
-    alignItems: 'stretch'
+    alignItems: 'stretch',
   },
   itemIconWrapper: {
     marginLeft: '-1rem',
@@ -39,7 +39,7 @@ const styles = {
     alignItems: 'flex-start',
     width: 32,
     backgroundColor: '#505556',
-    flexShrink: 0
+    flexShrink: 0,
   },
   itemIcon: {
     width: '100%',
@@ -48,28 +48,28 @@ const styles = {
     justifyContent: 'center',
     alignItems: 'center',
     color: '#fff',
-    backgroundColor: '#453D3D'
+    backgroundColor: '#453D3D',
   },
   itemTitle: {
-    fontWeight: '500'
+    fontWeight: '500',
   },
   selectedItem: {
     backgroundColor: 'rgb(0, 80, 131)',
-    color: '#fff'
+    color: '#fff',
   },
   deemphasizedItem: {
-    color: '#999'
+    color: '#999',
   },
   highlights: {
     fontSize: '1.14rem',
     fontStyle: 'italic',
-    color: '#525252'
+    color: '#525252',
   },
   loadingMessage: {
     minWidth: '11em',
     textAlign: 'left',
-    color: '#999'
-  }
+    color: '#999',
+  },
 };
 
 const ResultIcon = ({ type, style }) => (
@@ -117,11 +117,11 @@ export const findMatchingToken = (item, lq, value = '') => {
 export const ResultHighlights = ({
   item,
   query,
-  style
+  style,
 }: {
   item: Object,
   query: string,
-  style: Object
+  style: Object,
 }) => {
   const lq = query.toLocaleLowerCase();
   const value = findMatchingToken(item, lq);
@@ -135,7 +135,7 @@ type TProps = {
   onSelectItem: Function,
   onActivateItem: Function,
   isLoading: boolean,
-  style: object
+  style: object,
 };
 
 export default ({
@@ -144,7 +144,7 @@ export default ({
   isLoading,
   onSelectItem,
   onActivateItem,
-  style = {}
+  style = {},
 }: TProps) => (
   <ul
     style={{ ...styles.container, ...style.container }}
@@ -156,7 +156,7 @@ export default ({
         style={{
           ...(item.isSelected && styles.selectedItem),
           ...styles.item,
-          ...(isLoading && styles.deemphasizedItem)
+          ...(isLoading && styles.deemphasizedItem),
         }}
         onMouseEnter={() => onSelectItem(item)}
         onClick={() => onActivateItem(item)}
@@ -176,7 +176,7 @@ export default ({
             query={query}
             style={{
               ...styles.highlights,
-              ...(item.isSelected && _.pick(styles.selectedItem, 'color'))
+              ...(item.isSelected && _.pick(styles.selectedItem, 'color')),
             }}
           />
         </div>

@@ -113,13 +113,14 @@ Relay.injectNetworkLayer(
         })
         .catch(err => {
           console.log('relay network error: ', err);
+          let { user } = window.store.getState().auth;
           if (err.status) {
             switch (err.status) {
               case 401:
               case 403:
                 console.log(err.statusText);
-                if (IS_AUTH_PORTAL) {
-                  return redirectToLogin();
+                if (IS_AUTH_PORTAL && user) {
+                  return redirectToLogin('timeout');
                 }
                 break;
               case 400:
@@ -132,7 +133,8 @@ Relay.injectNetworkLayer(
           } else if (err.name === 'AccessError') {
             console.log('access error message: ', err.message);
             awgLogout();
-            return (window.location.href = `/login?error=${err.message}`);
+            return redirectToLogin(err.message);
+            // return (window.location.href = `/login?error=${err.message}`);
           } else {
             console.log('Something went wrong');
           }

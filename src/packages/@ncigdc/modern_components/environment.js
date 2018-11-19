@@ -64,17 +64,17 @@ function fetchQuery(operation, variables, cacheConfig) {
     response
       .json()
       .then(json => {
+        if (!response.ok) {
+          console.log('throwing error in Environment');
+          throw response;
+        }
+
         if (response.status === 200) {
           // if the response is ok, and the result to the simpleCache and delete it from the pendingCache
           simpleCache[hash] = json;
           delete pendingCache[hash];
         }
-        console.log('response: ', response);
-        console.log('json: ', json);
-        if (!response.ok) {
-          console.log('throwing error in Environment');
-          throw response;
-        }
+
         // if (IS_AUTH_PORTAL) {
         //   let tries = 20;
         //   let id = setInterval(() => {
@@ -119,7 +119,7 @@ function fetchQuery(operation, variables, cacheConfig) {
             case 403:
               console.log(err.statusText);
               if (IS_AUTH_PORTAL) {
-                return redirectToLogin();
+                return redirectToLogin('timeout');
               }
               break;
             case 400:

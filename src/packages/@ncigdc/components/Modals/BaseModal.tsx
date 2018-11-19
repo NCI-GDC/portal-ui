@@ -5,14 +5,14 @@ import { setModal, IModalAction } from '@ncigdc/dux/modal';
 import Button from '@ncigdc/uikit/Button';
 import { Column, Row } from '@ncigdc/uikit/Flex';
 export interface IBaseModalProps {
-  dispatch: (action: IModalAction) => void;
-  title: any;
-  children: any;
-  closeText?: any;
-  onClose?: (...args: any[]) => void;
-  extraButtons?: any;
-  style: React.CSSProperties;
-  contentStyle?: React.CSSProperties;
+  dispatch: (action: IModalAction) => void,
+  title: any,
+  children?: any,
+  closeText?: any,
+  onClose?: (...args: any[]) => void,
+  extraButtons?: any,
+  style: React.CSSProperties,
+  contentStyle?: React.CSSProperties,
 }
 const BaseModal = ({
   dispatch,

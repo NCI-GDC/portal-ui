@@ -1,7 +1,7 @@
 import React from 'react';
 import { compose, lifecycle, withState } from 'recompose';
 import BaseModal, {
-  IBaseModalProps
+  IBaseModalProps,
 } from '@ncigdc/components/Modals/BaseModal';
 import withRouter from '@ncigdc/utils/withRouter';
 import { setModal, IModalAction } from '@ncigdc/dux/modal';

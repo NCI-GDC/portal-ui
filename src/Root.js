@@ -21,7 +21,7 @@ import setupStore from '@ncigdc/dux';
 import { fetchApiVersionInfo } from '@ncigdc/dux/versionInfo';
 import { viewerQuery } from '@ncigdc/routes/queries';
 import Container from './Portal';
-import { API, IS_AUTH_PORTAL, FENCE } from '@ncigdc/utils/constants';
+import { API, IS_AUTH_PORTAL } from '@ncigdc/utils/constants';
 import { fetchUser, forceLogout, setUserAccess } from '@ncigdc/dux/auth';
 import Login from '@ncigdc/routes/Login';
 import { redirectToLogin } from '@ncigdc/utils/auth';
@@ -32,13 +32,6 @@ const AccessError = message => {
   this.message = message;
   this.name = 'AccessError';
   return this;
-};
-
-const awgLogout = async () => {
-  console.log('awg logout');
-  await fetch(urlJoin(FENCE, 'logout'), {
-    credentials: 'include',
-  });
 };
 
 Relay.injectNetworkLayer(
@@ -129,10 +122,8 @@ Relay.injectNetworkLayer(
             }
           } else if (err.name === 'AccessError') {
             console.log('access error message: ', err.message);
-            awgLogout();
-            window.store.dispatch(forceLogout());
-            // return redirectToLogin(err.message);
-            return (window.location.href = `/login?error=${err.message}`);
+            return redirectToLogin(err.message);
+            // return (window.location.href = `/login?error=${err.message}`);
           } else {
             console.log('Something went wrong');
           }
@@ -197,7 +188,8 @@ const Root = (props: mixed) => (
                         error.message === 'Session timed out or not authorized'
                       ) {
                         console.log('user request failed with error message');
-                        return redirectToLogin('timeout');
+                        return <Redirect to="/login?error=timeout" />;
+                        // return redirectToLogin('timeout');
                       }
                       if (failed) {
                         console.log('user request failed');

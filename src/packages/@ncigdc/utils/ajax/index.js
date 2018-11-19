@@ -59,7 +59,7 @@ export const fetchApi = (endpoint, opts = {}) => {
           case 403:
             console.log(err.statusText);
             if (IS_AUTH_PORTAL) {
-              return redirectToLogin();
+              return redirectToLogin('timeout');
             }
             break;
           case 400:

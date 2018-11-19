@@ -52,7 +52,6 @@ export function setUserAccess(access): Action {
 }
 
 export function forceLogout(): Action {
-  console.log('forcing logout');
   return {
     type: USER_FAILURE,
     payload: { message: 'Session timed out or not authorized' },

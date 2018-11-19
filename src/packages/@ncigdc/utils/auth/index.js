@@ -3,6 +3,7 @@
 import _ from 'lodash';
 
 import { forceLogout } from '@ncigdc/dux/auth';
+import { FENCE } from '@ncigdc/utils/constants';
 
 const isUserProject = ({ user, file }) => {
   if (!user) {
@@ -114,8 +115,16 @@ const userProjectsCount = (user: Object) =>
     [],
   ).length;
 
+const awgLogout = async () => {
+  console.log('awg logout');
+  await fetch(urlJoin(FENCE, 'logout'), {
+    credentials: 'include',
+  });
+};
+
 const redirectToLogin = error => {
-  console.log('forcing logout');
+  console.log('logout and redirect');
+  awgLogout();
   store.dispatch(forceLogout());
   return (window.location.href = `/login?error=${error}`);
 };

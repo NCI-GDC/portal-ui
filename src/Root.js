@@ -75,7 +75,6 @@ Relay.injectNetworkLayer(
       req.body = JSON.stringify(parsedBody);
       return next(req)
         .then(res => {
-          console.log('loading Root! ', res);
           if (!res.ok && !retryStatusCodes.includes(res.status)) {
             console.log('throwing error in Root');
             throw res;
@@ -101,7 +100,6 @@ Relay.injectNetworkLayer(
           return res;
         })
         .catch(err => {
-          console.log('bananas: ', err);
           let { user } = window.store.getState().auth;
           if (err.status) {
             switch (err.status) {
@@ -123,9 +121,11 @@ Relay.injectNetworkLayer(
           } else if (err.name === 'AccessError') {
             console.log('access error message: ', err.message);
             return redirectToLogin(err.message);
-            // return (window.location.href = `/login?error=${err.message}`);
           } else {
-            console.log('Something went wrong');
+            console.log('Something went wrong in Root', err);
+            if (IS_AUTH_PORTAL && user) {
+              return redirectToLogin('timeout');
+            }
           }
         });
     },
@@ -189,7 +189,6 @@ const Root = (props: mixed) => (
                       ) {
                         console.log('user request failed with error message');
                         return <Redirect to="/login?error=timeout" />;
-                        // return redirectToLogin('timeout');
                       }
                       if (failed) {
                         console.log('user request failed');
@@ -197,22 +196,6 @@ const Root = (props: mixed) => (
                       }
                       if (user) {
                         console.log('user is set');
-                        // if access is not correct
-                        // console.log('fence: ', fence_projects);
-                        // console.log('nih: ', nih_projects);
-                        // console.log('intersection: ', intersection);
-                        // if (!fence_projects) {
-                        //   console.log('no fence projects');
-                        //   return <Redirect to="/login?error=no_fence_projects" />;
-                        // }
-                        // if (!nih_projects) {
-                        //   console.log('no nih projects');
-                        //   return <Redirect to="/login?error=no_nih_projects" />;
-                        // }
-                        // if (!intersection) {
-                        //   console.log('no intersection');
-                        //   return <Redirect to="/login?error=no_intersection" />;
-                        // }
                         return (
                           <Relay.Renderer
                             Container={Container}

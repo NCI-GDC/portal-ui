@@ -96,7 +96,7 @@ function fetchQuery(operation, variables, cacheConfig) {
               return console.log('there was an error', err.statusText);
           }
         } else {
-          console.log('Something went wrong');
+          console.log('Something went wrong in environment');
         }
       }),
   );

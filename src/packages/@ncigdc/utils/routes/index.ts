@@ -1,4 +1,3 @@
-/* @flow */
 import { parse } from 'query-string';
 
 import { TPrepareNodeParams } from './types';
@@ -10,7 +9,7 @@ export const prepareNodeParams: TPrepareNodeParams = type => ({
   match: { params },
 }) => {
   const q = parse(search);
-  const qq: Object = {
+  const qq = {
     ...q,
     filters: parseFilterParam(q.filters, null),
   };

@@ -31,7 +31,6 @@ import timestamp from '@ncigdc/utils/timestamp';
 import EntityPageHorizontalTable from '@ncigdc/components/EntityPageHorizontalTable';
 import AddToCartButtonSingle from '@ncigdc/components/AddToCartButtonSingle';
 import DownloadFile from '@ncigdc/components/DownloadFile';
-import RemoveFromCartSingle from '@ncigdc/components/RemoveFromCartSingle';
 
 const styles = {
   searchIcon: theme => ({
@@ -103,7 +102,6 @@ export default compose(
     expandAllFirstClick,
     setExpandAllFirstClick,
     inactiveText,
-    canAddToCart = true,
   }) => {
     const p = edges[0].node;
     const caseFilter = makeFilter([
@@ -263,28 +261,18 @@ export default compose(
                             </ImageViewerLink>
                           </Tooltip>
                           <Tooltip Component="Add to cart">
-                            {canAddToCart && (
-                              <AddToCartButtonSingle
-                                style={{
-                                  ...iconButton,
-                                  marginLeft: '0.5rem',
-                                  marginRight: '0.5rem',
-                                  border: 'none',
-                                }}
-                                file={selectedSlide}
-                              />
-                            )}
-                            {!canAddToCart && (
-                              <RemoveFromCartSingle
-                                style={{
-                                  ...iconButton,
-                                  marginLeft: '0.5rem',
-                                  marginRight: '0.5rem',
-                                  padding: '0.2rem',
-                                }}
-                                file={selectedSlide}
-                              />
-                            )}
+                            <AddToCartButtonSingle
+                              style={{
+                                ...iconButton,
+                                marginLeft: '0.5rem',
+                                marginRight: '0.5rem',
+                                border: 'none',
+                                paddingLeft: '2px',
+                                paddingBottom: '5px',
+                              }}
+                              file={selectedSlide}
+                              asIcon
+                            />
                           </Tooltip>
                           <Tooltip Component="Download">
                             <DownloadFile
@@ -348,12 +336,7 @@ export default compose(
                       }}
                     >
                       <span key="add_to_cart" style={{ paddingRight: '10px' }}>
-                        {canAddToCart && (
-                          <AddToCartButtonSingle file={fileData} />
-                        )}
-                        {!canAddToCart && (
-                          <RemoveFromCartSingle file={fileData} />
-                        )}
+                        <AddToCartButtonSingle file={fileData} />
                       </span>
                       <span style={{ paddingRight: '10px' }}>
                         <DownloadFile

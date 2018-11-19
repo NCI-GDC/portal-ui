@@ -4,7 +4,7 @@ import withRouter from '@ncigdc/utils/withRouter';
 import { fetchApi } from '@ncigdc/utils/ajax';
 import { compose, withState, withHandlers, withProps } from 'recompose';
 import withPropsOnChange from '@ncigdc/utils/withPropsOnChange';
-import { TSearchHit } from '@ncigdc/components/QuickSearch/types';
+import { ISearchHit } from '@ncigdc/components/QuickSearch/types';
 
 const throttledInvoker = _.throttle(fn => fn(), 300, { leading: false });
 
@@ -52,7 +52,7 @@ export const withSearch = passedInState => {
         ),
     }),
     withHandlers({
-      selectItem: ({ push, reset }) => (item: TSearchHit) => {
+      selectItem: ({ push, reset }) => (item: ISearchHit) => {
         push(
           `/${atob(item.id)
             .split(':')[0]

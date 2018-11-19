@@ -19,7 +19,7 @@ import { Tooltip } from '@ncigdc/uikit/Tooltip';
 import { visualizingButton } from '@ncigdc/theme/mixins';
 import { withTheme } from '@ncigdc/theme';
 import SortTableButton, {
-  ISortTableOptions,
+  ISortTableOption,
   TSortTableButtonSortFunc,
 } from '@ncigdc/components/SortTableButton';
 
@@ -54,32 +54,33 @@ const tableSortFuncCreator: TTableSortFuncCreator = (
 
 interface IProps {
   type: string;
-  displayType?: string;
-  arrangeColumnKey?: string;
   total: number;
-  sortOptions?: ISortTableOptions[];
   endpoint: string;
   downloadFields: string[];
   query: IRawQuery;
   push: ({}) => void;
+  displayType?: string;
+  arrangeColumnKey?: string;
+  currentFilters: IGroupFilter;
+  sortOptions?: ISortTableOption[];
   downloadable?: boolean;
   tsvSelector?: string;
   tsvFilename?: string;
-  style?: object;
-  currentFilters?: IGroupFilter;
-  downloadTooltip?: any;
+  style?: React.CSSProperties;
   CreateSetButton?: React.ComponentType;
   RemoveFromSetButton?: React.ComponentType;
   idField?: string;
   selectedIds?: string[];
-  sort?: any;
-  score?: any;
-  AppendSetButton?: any;
-  scope?: any;
-  downloadClinical?: any;
-  downloadBiospecimen?: any;
   theme?: object;
   totalCases?: number;
+  // Todo: type these properly
+  downloadTooltip?: any;
+  sort?: any;
+  score?: any;
+  scope?: any;
+  AppendSetButton?: any;
+  downloadClinical?: any;
+  downloadBiospecimen?: any;
 }
 
 const TableActions: React.SFC<IProps> = ({

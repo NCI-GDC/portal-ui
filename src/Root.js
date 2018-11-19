@@ -80,9 +80,9 @@ Relay.injectNetworkLayer(
 
           if (user) {
             if (!json.fence_projects[0]) {
-              awgLogout();
-              window.location.href = '/login?error=no_fence_projects';
-              return;
+              throw new Error('no_fence_projects');
+              // window.location.href = '/login?error=no_fence_projects';
+              // return;
             }
 
             if (!json.nih_projects) {
@@ -121,6 +121,9 @@ Relay.injectNetworkLayer(
               default:
                 return console.log('there was an error', err.statusText);
             }
+          } else if (err === 'no_fence_projects') {
+            awgLogout();
+            return (window.location.href = '/login?error=no_fence_projects');
           } else {
             console.log('Something went wrong');
           }

@@ -9,10 +9,12 @@ type TSetupStoreArgs = {
   persistConfig: Object,
 };
 type TSetupStore = (args: TSetupStoreArgs) => Object;
+
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 const setupStore: TSetupStore = ({ persistConfig = {} } = {}) => {
   const store = createStore(
     combineReducers(reducers),
-    applyMiddleware(thunk, apiMiddleware),
+    composeEnhancers(applyMiddleware(thunk, apiMiddleware)),
   );
 
   persistStore(store, {
@@ -23,7 +25,6 @@ const setupStore: TSetupStore = ({ persistConfig = {} } = {}) => {
       'sets',
       'analysis',
       'bannerNotification',
-      'auth',
     ],
     ...persistConfig,
   });

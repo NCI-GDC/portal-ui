@@ -75,40 +75,6 @@ function fetchQuery(operation, variables, cacheConfig) {
           delete pendingCache[hash];
         }
 
-        // if (IS_AUTH_PORTAL) {
-        //   let tries = 20;
-        //   let id = setInterval(() => {
-        //     let { user } = window.store.getState().auth;
-        //     if (user) {
-        //       if (
-        //         !json.fence_projects[0] &&
-        //         !json.nih_projects &&
-        //         !json.intersection[0]
-        //       ) {
-        //         clear();
-        //         window.location.href = '/login?error=timeout';
-        //         return;
-        //       }
-        //       if (!json.fence_projects[0]) {
-        //         clear();
-        //         window.location.href = '/login?error=no_fence_projects';
-        //         return;
-        //       }
-        //       if (!json.nih_projects) {
-        //         clear();
-        //         window.location.href = '/login?error=no_nih_projects';
-        //         return;
-        //       }
-        //       if (!json.intersection[0]) {
-        //         clear();
-        //         window.location.href = '/login?error=no_intersection';
-        //         return;
-        //       }
-        //     }
-        //     tries--;
-        //     if (!tries) clearInterval(id);
-        //   }, 500);
-        // }
         return json;
       })
       .catch(err => {

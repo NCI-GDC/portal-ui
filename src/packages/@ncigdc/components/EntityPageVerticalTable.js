@@ -78,7 +78,6 @@ const EntityPageVerticalTable = ({
                     verticalAlign: 'top',
                   }}
                 >
-                  {console.log('style', d)}
                   {d.th}
                 </Th>
                 {!!d.collapsibleTd && (

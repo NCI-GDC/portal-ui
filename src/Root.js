@@ -22,6 +22,13 @@ import Login from '@ncigdc/routes/Login';
 import { redirectToLogin } from '@ncigdc/utils/auth';
 
 const retryStatusCodes = [500, 503, 504];
+
+const AccessError = message => {
+  this.message = message;
+  this.name = 'AccessError';
+  return this;
+};
+
 Relay.injectNetworkLayer(
   new RelayNetworkLayer([
     urlMiddleware({
@@ -80,7 +87,7 @@ Relay.injectNetworkLayer(
 
           if (user) {
             if (!json.fence_projects[0]) {
-              throw new Error('no_fence_projects');
+              throw new AccessError('no_fence_projects');
               // window.location.href = '/login?error=no_fence_projects';
               // return;
             }
@@ -121,9 +128,10 @@ Relay.injectNetworkLayer(
               default:
                 return console.log('there was an error', err.statusText);
             }
-          } else if (err === 'no_fence_projects') {
+          } else if (err.name === 'AccessError') {
+            console.log('access error message: ', err.message);
             awgLogout();
-            return (window.location.href = '/login?error=no_fence_projects');
+            return (window.location.href = `/login?error=${err.message}`);
           } else {
             console.log('Something went wrong');
           }

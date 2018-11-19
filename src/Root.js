@@ -29,6 +29,10 @@ const AccessError = message => {
   return this;
 };
 
+const awgLogout = async () => {
+  await fetch(urlJoin(FENCE, 'logout'), { credentials: 'include' });
+};
+
 Relay.injectNetworkLayer(
   new RelayNetworkLayer([
     urlMiddleware({
@@ -77,9 +81,6 @@ Relay.injectNetworkLayer(
             throw res;
           }
 
-          const awgLogout = async () => {
-            await fetch(urlJoin(FENCE, 'logout'), { credentials: 'include' });
-          };
           // let tries = 5;
           let { json } = res;
           // let id = setInterval(() => {

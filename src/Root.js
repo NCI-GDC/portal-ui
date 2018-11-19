@@ -35,7 +35,12 @@ const AccessError = message => {
 };
 
 const awgLogout = async () => {
-  await fetch(urlJoin(FENCE, 'logout'), { credentials: 'include' });
+  await fetch(urlJoin(FENCE, 'logout'), {
+    credentials: 'include',
+    headers: {
+      'Access-Control-Allow-Credentials': true,
+    },
+  });
 };
 
 Relay.injectNetworkLayer(

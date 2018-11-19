@@ -132,8 +132,8 @@ Relay.injectNetworkLayer(
           } else if (err.name === 'AccessError') {
             console.log('access error message: ', err.message);
             awgLogout();
-            return redirectToLogin(err.message);
-            // return (window.location.href = `/login?error=${err.message}`);
+            // return redirectToLogin(err.message);
+            return (window.location.href = `/login?error=${err.message}`);
           } else {
             console.log('Something went wrong');
           }

@@ -20,9 +20,9 @@ import { compose, lifecycle, withPropsOnChange } from 'recompose';
 import setupStore from '@ncigdc/dux';
 import { fetchApiVersionInfo } from '@ncigdc/dux/versionInfo';
 import { viewerQuery } from '@ncigdc/routes/queries';
-import Container from './Portal';
+import Portal from './Portal';
 import { API, IS_AUTH_PORTAL } from '@ncigdc/utils/constants';
-import { fetchUser, forceLogout, setUserAccess } from '@ncigdc/dux/auth';
+import { fetchUser, forceLogout } from '@ncigdc/dux/auth';
 import Login from '@ncigdc/routes/Login';
 import { redirectToLogin } from '@ncigdc/utils/auth';
 
@@ -156,68 +156,62 @@ let HasUser = connect(state => state.auth)(props => {
     user: props.user,
     failed: props.failed,
     error: props.error,
-    intersection: props.intersection,
-    fence_projects: props.fence_projects,
-    nih_projects: props.nih_projects,
   });
 });
 
 const Root = (props: mixed) => (
-  console.log('Root component loading'),
-  (
-    <Router>
-      <Provider store={store}>
-        <React.Fragment>
-          {!IS_AUTH_PORTAL ? (
-            <Relay.Renderer
-              Container={Container}
-              queryConfig={new RelayRoute(props)}
-              environment={Relay.Store}
-            />
-          ) : (
-            <Switch>
-              <Route exact path="/login" component={Login} />
-              <Route
-                render={props => (
-                  <HasUser>
-                    {({ user, failed, error }) => {
-                      // if user request fails
-                      console.log('HasUser component');
-                      if (
-                        failed &&
-                        error.message === 'Session timed out or not authorized'
-                      ) {
-                        console.log('user request failed with error message');
-                        return <Redirect to="/login?error=timeout" />;
-                      }
-                      if (failed) {
-                        console.log('user request failed');
-                        return <Redirect to="/login" />;
-                      }
-                      if (user) {
-                        console.log('user is set');
-                        return (
-                          <Relay.Renderer
-                            Container={Container}
-                            queryConfig={new RelayRoute(props)}
-                            environment={Relay.Store}
-                          />
-                        );
-                      }
-                      console.log(
-                        'does not meet any criteria, redirecting to login',
-                      );
+  <Router>
+    <Provider store={store}>
+      <React.Fragment>
+        {!IS_AUTH_PORTAL ? (
+          <Relay.Renderer
+            Container={Portal}
+            queryConfig={new RelayRoute(props)}
+            environment={Relay.Store}
+          />
+        ) : (
+          <Switch>
+            <Route exact path="/login" component={Login} />
+            <Route
+              render={props => (
+                <HasUser>
+                  {({ user, failed, error }) => {
+                    // if user request fails
+                    console.log('HasUser component');
+                    if (
+                      failed &&
+                      error.message === 'Session timed out or not authorized'
+                    ) {
+                      console.log('user request failed with error message');
+                      return <Redirect to="/login?error=timeout" />;
+                    }
+                    if (failed) {
+                      console.log('user request failed');
                       return <Redirect to="/login" />;
-                    }}
-                  </HasUser>
-                )}
-              />
-            </Switch>
-          )}
-        </React.Fragment>
-      </Provider>
-    </Router>
-  )
+                    }
+                    if (user) {
+                      console.log('user is set');
+                      return (
+                        <Relay.Renderer
+                          Container={Portal}
+                          queryConfig={new RelayRoute(props)}
+                          environment={Relay.Store}
+                        />
+                      );
+                    }
+                    console.log(
+                      'does not meet any criteria, redirecting to login',
+                    );
+                    return <Redirect to="/login" />;
+                  }}
+                </HasUser>
+              )}
+            />
+          </Switch>
+        )}
+      </React.Fragment>
+    </Provider>
+  </Router>
 );
 
 export default Root;

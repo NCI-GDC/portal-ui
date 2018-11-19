@@ -81,6 +81,7 @@ Relay.injectNetworkLayer(
             if (user) {
               if (!json.fence_projects[0]) {
                 awgLogout();
+                tries = 0;
                 window.location.href = '/login?error=no_fence_projects';
                 return;
               }

@@ -73,34 +73,33 @@ Relay.injectNetworkLayer(
           const awgLogout = async () => {
             await fetch(urlJoin(FENCE, 'logout'), { credentials: 'include' });
           };
-          let tries = 5;
+          // let tries = 5;
           let { json } = res;
-          let id = setInterval(() => {
-            let { user } = window.store.getState().auth;
+          // let id = setInterval(() => {
+          let { user } = window.store.getState().auth;
 
-            if (user) {
-              if (!json.fence_projects[0]) {
-                awgLogout();
-                tries = 0;
-                window.location.href = '/login?error=no_fence_projects';
-                return;
-              }
-
-              if (!json.nih_projects) {
-                window.location.href = '/login?error=no_nih_projects';
-                return;
-              }
-
-              if (!json.intersection[0]) {
-                window.location.href = '/login?error=no_intersection';
-                return;
-              }
+          if (user) {
+            if (!json.fence_projects[0]) {
+              awgLogout();
+              window.location.href = '/login?error=no_fence_projects';
+              return;
             }
 
-            tries--;
+            if (!json.nih_projects) {
+              window.location.href = '/login?error=no_nih_projects';
+              return;
+            }
 
-            if (!tries) clearInterval(id);
-          }, 500);
+            if (!json.intersection[0]) {
+              window.location.href = '/login?error=no_intersection';
+              return;
+            }
+          }
+
+          //   tries--;
+          //
+          //   if (!tries) clearInterval(id);
+          // }, 500);
 
           return res;
         })

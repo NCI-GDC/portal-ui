@@ -1,6 +1,7 @@
 // @flow
 
 import _ from 'lodash';
+import urlJoin from 'url-join';
 
 import { forceLogout } from '@ncigdc/dux/auth';
 import { FENCE } from '@ncigdc/utils/constants';

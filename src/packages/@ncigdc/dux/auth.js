@@ -96,12 +96,15 @@ export default handleActions(
       if (incoming) return { ...state, ...incoming };
       return state;
     },
-    [USER_REQUEST]: state => ({
-      ...state,
-      isFetching: true,
-      user: state.user,
-      error: {},
-    }),
+    [USER_REQUEST]: state => (
+      console.log(state.user),
+      {
+        ...state,
+        isFetching: true,
+        user: state.user,
+        error: {},
+      }
+    ),
     [USER_SUCCESS]: (state, action) => ({
       ...state,
       isFetching: false,

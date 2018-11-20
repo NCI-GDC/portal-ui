@@ -69,8 +69,8 @@ const downloadCart = ({
       authorized.files
         .concat(unauthorized.files)
         .reduce((acc, f) => acc.concat(f.acl), [])
-        .filter(f => f !== 'open'),
-    ),
+        .filter(f => f !== 'open')
+    )
   );
   if (disableAgreement || dbGapList.length === 0) {
     dispatch(setModal(null));
@@ -143,8 +143,8 @@ const downloadCart = ({
               Please <LoginButton />
             </p>
           )}
-        </CheckBoxModal>,
-      ),
+        </CheckBoxModal>
+      )
     );
   } else if (files.reduce((sum, x) => sum + x.file_size, 0) > 5 * 10e8) {
     dispatch(
@@ -162,8 +162,8 @@ const downloadCart = ({
             </ExternalLink>{' '}
             Tool to continue.
           </p>
-        </BaseModal>,
-      ),
+        </BaseModal>
+      )
     );
   } else {
     dispatch(
@@ -186,17 +186,17 @@ const downloadCart = ({
                   altMessage: true,
                 })(
                   () => {},
-                  () => setState(s => ({ ...s, cartDownloading: false })),
+                  () => setState(s => ({ ...s, cartDownloading: false }))
                 );
               }}
               style={{ margin: '0 10px' }}
             >
-              Download
+              Download {authorized.doc_count} Authorized Files
             </Button>
           )}
           dispatch={dispatch}
-        />,
-      ),
+        />
+      )
     );
   }
 };
@@ -277,5 +277,5 @@ export default compose(
   withState('state', 'setState', {
     manifestDownloading: false,
     cartDownloading: false,
-  }),
+  })
 )(CartDownloadDropdown);

@@ -29,9 +29,9 @@ import { redirectToLogin } from '@ncigdc/utils/auth';
 const retryStatusCodes = [500, 503, 504];
 
 const AccessError = message => {
-  this.message = message;
-  this.name = 'AccessError';
-  return this;
+  let instance = new Error(message);
+  instance.name = 'AccessError';
+  return instance;
 };
 
 Relay.injectNetworkLayer(
@@ -101,29 +101,18 @@ Relay.injectNetworkLayer(
         })
         .catch(err => {
           let { user } = window.store.getState().auth;
-          if (err.status) {
-            switch (err.status) {
-              case 401:
-              case 403:
-                console.log(err.statusText);
-                // need to check for user so first request to portal does not show timeout error
-                if (IS_AUTH_PORTAL && user) {
-                  return redirectToLogin('timeout');
-                }
-                break;
-              case 400:
-              case 404:
-                console.log(err.statusText);
-                break;
-              default:
-                return console.log('there was an error', err.statusText);
-            }
-          } else if (err.name === 'AccessError') {
+          if (err.name === 'AccessError') {
             console.log('access error message: ', err.message);
             return redirectToLogin(err.message);
           } else {
             console.log('Something went wrong in Root', err);
-            if (IS_AUTH_PORTAL && user) {
+            // not able to pass the response status from throw so need to exclude by error message
+            if (
+              IS_AUTH_PORTAL &&
+              user &&
+              error.message ===
+                'Your token is invalid or expired. Please get a new token from GDC Data Portal.'
+            ) {
               return redirectToLogin('timeout');
             }
           }

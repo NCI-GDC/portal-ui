@@ -1,6 +1,6 @@
 /* @flow */
 import { handleActions } from 'redux-actions';
-// import { REHYDRATE } from 'redux-persist/constants';
+import { REHYDRATE } from 'redux-persist/constants';
 
 import { saveAs } from 'filesaver.js';
 import { fetchAuth } from '@ncigdc/utils/ajax';
@@ -91,11 +91,11 @@ const initialState: State = {
 
 export default handleActions(
   {
-    // [REHYDRATE]: (state, action) => {
-    //   const incoming = action.payload.auth;
-    //   if (incoming) return { ...state, ...incoming };
-    //   return state;
-    // },
+    [REHYDRATE]: (state, action) => {
+      const incoming = action.payload.auth;
+      if (incoming) return { ...state, ...incoming };
+      return state;
+    },
     [USER_REQUEST]: state => ({
       ...state,
       isFetching: true,

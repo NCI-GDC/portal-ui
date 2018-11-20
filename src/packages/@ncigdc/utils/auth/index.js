@@ -117,14 +117,12 @@ const userProjectsCount = (user: Object) =>
   ).length;
 
 const awgLogout = async () => {
-  console.log('awg logout');
   await fetch(urlJoin(FENCE, 'logout'), {
     credentials: 'include',
   });
 };
 
 const redirectToLogin = error => {
-  console.log('logout and redirect');
   awgLogout();
   store.dispatch(forceLogout());
   return (window.location.href = `/login?error=${error}`);

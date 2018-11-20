@@ -10,7 +10,6 @@ const store = new Store(source);
 const simpleCache = {};
 const pendingCache = {};
 const handlerProvider = null;
-import { forceLogout } from '@ncigdc/dux/auth';
 import { redirectToLogin } from '@ncigdc/utils/auth';
 
 function fetchQuery(operation, variables, cacheConfig) {
@@ -77,7 +76,6 @@ function fetchQuery(operation, variables, cacheConfig) {
         return json;
       })
       .catch(err => {
-        console.log('catch error: ', err);
         if (err.status) {
           switch (err.status) {
             case 401:
@@ -95,7 +93,7 @@ function fetchQuery(operation, variables, cacheConfig) {
               return console.log('there was an error', err.statusText);
           }
         } else {
-          console.log('Something went wrong in environment');
+          console.log('Something went wrong in environment: ', err);
         }
       }),
   );

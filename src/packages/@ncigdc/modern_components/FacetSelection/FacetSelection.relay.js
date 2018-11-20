@@ -17,8 +17,6 @@ import { css } from 'glamor';
 import Query from '@ncigdc/modern_components/Query';
 import { fetchApi } from '@ncigdc/utils/ajax/index';
 import { Column } from '@ncigdc/uikit/Flex';
-import { redirectToLogin } from '@ncigdc/utils/auth';
-import { IS_AUTH_PORTAL } from '@ncigdc/utils/constants';
 
 const styles = {
   resultsCount: {

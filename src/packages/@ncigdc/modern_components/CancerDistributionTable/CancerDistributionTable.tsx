@@ -136,7 +136,8 @@ export default compose<ICDTWrappedProps, TCancerDistributionTableProps>(
       entityName,
       filters,
       geneId,
-    });
+    })
+    .filter(x => !x.hidden);
 
     // const multisortKey: string[] =
     //   tableSort.length > 0
@@ -151,14 +152,12 @@ export default compose<ICDTWrappedProps, TCancerDistributionTableProps>(
     //       )
     //     : ['~num_affected_cases']; // default sort
 
-    debugger;
-
     return (
       <span>
         <LocalPaginationTable
           style={{ width: '100%', minWidth: 450 }}
           data={rawData.map(row =>
-            tableInfo.filter(x => !x.hidden).reduce((acc, { id, td }) => {
+            tableInfo.reduce((acc, { id, td }) => {
               acc[id] = td({ node: row });
               return acc;
             }, {})
@@ -201,9 +200,10 @@ export default compose<ICDTWrappedProps, TCancerDistributionTableProps>(
           <EntityPageHorizontalTable
             idKey="id"
             tableId="cancer-distribution-table"
-            headings={tableInfo.filter(x => !x.hidden).map(({ id, th }) => ({
+            headings={tableInfo.map(({ id, th }, idx) => ({
               key: id,
               title: th(),
+              style: idx === (tableInfo.length - 1) ? { textAlign: 'right' } : {},
             }))}
           />
         </LocalPaginationTable>

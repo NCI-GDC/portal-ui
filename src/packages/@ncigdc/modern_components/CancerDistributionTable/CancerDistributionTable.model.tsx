@@ -1,5 +1,4 @@
 import React from 'react';
-import { Th } from '@ncigdc/uikit/Table';
 import { Row } from '@ncigdc/uikit/Flex';
 import { makeFilter, replaceFilters } from '@ncigdc/utils/filters';
 import { tableToolTipHint } from '@ncigdc/theme/mixins';
@@ -20,7 +19,7 @@ interface IModelEntry {
   sortable: boolean;
   downloadable: boolean;
   hidden?: boolean;
-  th: () => JSX.Element;
+  th: () => JSX.Element | string;
   td: TNode;
 }
 
@@ -41,7 +40,7 @@ const CancerDistributionTableModel: TCancerDistributionTableModel = ({
     sortable: false,
     downloadable: true,
     hidden: true,
-    th: () => <Th>Project Id</Th>,
+    th: () => 'Project Id',
     td: ({ node }) => node.project_id,
   },
   {
@@ -50,7 +49,7 @@ const CancerDistributionTableModel: TCancerDistributionTableModel = ({
     sortable: true,
     downloadable: true,
     hidden: true,
-    th: () => <Th>Affected Cases</Th>,
+    th: () => 'Affected Cases',
     td: ({ node }) => node.num_affected_cases_percent,
   },
   {
@@ -58,7 +57,7 @@ const CancerDistributionTableModel: TCancerDistributionTableModel = ({
     id: 'project_id',
     sortable: false,
     downloadable: false,
-    th: () => <Th>Project</Th>,
+    th: () => 'Project',
     td: ({ node }) => (
       <ProjectLink uuid={node.project_id}>{node.project_id}</ProjectLink>
     ),
@@ -68,7 +67,7 @@ const CancerDistributionTableModel: TCancerDistributionTableModel = ({
     id: 'disease_type',
     sortable: false,
     downloadable: true,
-    th: () => <Th>Disease Type</Th>,
+    th: () => 'Disease Type',
     td: ({ node }) => (
       <CollapsibleRowList data={node.disease_type} label={'Disease Types'} />
     ),
@@ -78,7 +77,7 @@ const CancerDistributionTableModel: TCancerDistributionTableModel = ({
     id: 'site',
     sortable: false,
     downloadable: true,
-    th: () => <Th>Site</Th>,
+    th: () => 'Site',
     td: ({ node }) => (
       <CollapsibleRowList data={node.site} label={'Primary Sites'} />
     ),
@@ -89,7 +88,7 @@ const CancerDistributionTableModel: TCancerDistributionTableModel = ({
     sortable: false,
     downloadable: true,
     th: () => (
-      <Th>
+      
         <Row>
           <Tooltip
             Component={
@@ -105,7 +104,7 @@ const CancerDistributionTableModel: TCancerDistributionTableModel = ({
             # SSM Affected Cases
           </Tooltip>
         </Row>
-      </Th>
+      
     ),
     td: ({ node }) => (
       <span>
@@ -139,7 +138,7 @@ const CancerDistributionTableModel: TCancerDistributionTableModel = ({
           sortable: true,
           downloadable: true,
           th: () => (
-            <Th>
+            
               <Row>
                 <Tooltip
                   Component={
@@ -155,7 +154,7 @@ const CancerDistributionTableModel: TCancerDistributionTableModel = ({
                   # CNV Gains
                 </Tooltip>
               </Row>
-            </Th>
+            
           ),
           td: ({ node }) => (
             <span>
@@ -174,7 +173,7 @@ const CancerDistributionTableModel: TCancerDistributionTableModel = ({
           sortable: true,
           downloadable: true,
           th: () => (
-            <Th>
+            
               <Row>
                 <Tooltip
                   Component={
@@ -190,7 +189,7 @@ const CancerDistributionTableModel: TCancerDistributionTableModel = ({
                   # CNV Losses
                 </Tooltip>
               </Row>
-            </Th>
+            
           ),
           td: ({ node }) => (
             <span>
@@ -213,7 +212,7 @@ const CancerDistributionTableModel: TCancerDistributionTableModel = ({
           sortable: false,
           downloadable: true,
           th: () => (
-            <Th>
+            
               <Tooltip
                 Component={
                   <span>
@@ -225,7 +224,7 @@ const CancerDistributionTableModel: TCancerDistributionTableModel = ({
               >
                 # Mutations
               </Tooltip>
-            </Th>
+            
           ),
           td: ({ node }) => (
             <MutationsCount
@@ -237,7 +236,7 @@ const CancerDistributionTableModel: TCancerDistributionTableModel = ({
                   [b.key]: b.doc_count,
                 }),
                 {}
-              )}
+              )[node.project_id]}
               filters={replaceFilters(
                 makeProjectFilters(node.project_id),
                 filters

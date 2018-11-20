@@ -15,7 +15,6 @@ import {
   Route,
   Redirect,
 } from 'react-router-dom';
-import { compose, lifecycle, withPropsOnChange } from 'recompose';
 
 import setupStore from '@ncigdc/dux';
 import { fetchApiVersionInfo } from '@ncigdc/dux/versionInfo';
@@ -169,7 +168,6 @@ const Root = (props: mixed) => (
                 <HasUser>
                   {({ user, failed, error }) => {
                     // if user request fails
-                    console.log('HasUser component');
                     if (
                       failed &&
                       error.message === 'Session timed out or not authorized'
@@ -182,7 +180,6 @@ const Root = (props: mixed) => (
                       return <Redirect to="/login" />;
                     }
                     if (user) {
-                      console.log('user is set');
                       return (
                         <Relay.Renderer
                           Container={Portal}
@@ -191,9 +188,6 @@ const Root = (props: mixed) => (
                         />
                       );
                     }
-                    console.log(
-                      'does not meet any criteria, redirecting to login',
-                    );
                     return <Redirect to="/login" />;
                   }}
                 </HasUser>

@@ -4,7 +4,6 @@ import urlJoin from 'url-join';
 import { Environment, Network, RecordSource, Store } from 'relay-runtime';
 import md5 from 'blueimp-md5';
 
-import { clear } from '@ncigdc/utils/cookies';
 import { API, IS_AUTH_PORTAL } from '@ncigdc/utils/constants';
 const source = new RecordSource();
 const store = new Store(source);

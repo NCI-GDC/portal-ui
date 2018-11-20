@@ -168,6 +168,7 @@ const Root = (props: mixed) => (
                 <HasUser>
                   {({ user, failed, error }) => {
                     // if user request fails
+                    console.log('root component user: ', user);
                     if (
                       failed &&
                       error.message === 'Session timed out or not authorized'
@@ -180,6 +181,7 @@ const Root = (props: mixed) => (
                       return <Redirect to="/login" />;
                     }
                     if (user) {
+                      console.log('has a user, rendering container');
                       return (
                         <Relay.Renderer
                           Container={Portal}
@@ -188,6 +190,9 @@ const Root = (props: mixed) => (
                         />
                       );
                     }
+                    console.log(
+                      'does not match any criteria, redirecting to login',
+                    );
                     return <Redirect to="/login" />;
                   }}
                 </HasUser>

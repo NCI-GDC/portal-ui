@@ -99,7 +99,7 @@ export default handleActions(
     [USER_REQUEST]: state => ({
       ...state,
       isFetching: true,
-      user: null,
+      user: state.user,
       error: {},
     }),
     [USER_SUCCESS]: (state, action) => ({

@@ -104,7 +104,7 @@ export default handleActions(
       {
         ...state,
         isFetching: true,
-        // user: state.user,
+        user: state.user,
         error: {},
       }
     ),

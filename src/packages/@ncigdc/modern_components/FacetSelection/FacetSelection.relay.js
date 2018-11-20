@@ -11,11 +11,12 @@ import {
   lifecycle,
   renderComponent,
 } from 'recompose';
-import Query from '@ncigdc/modern_components/Query';
 import _ from 'lodash';
-import { fetchApi } from '../../utils/ajax/index';
-import { Column } from '@ncigdc/uikit/Flex';
 import { css } from 'glamor';
+
+import Query from '@ncigdc/modern_components/Query';
+import { fetchApi } from '@ncigdc/utils/ajax/index';
+import { Column } from '@ncigdc/uikit/Flex';
 
 const styles = {
   resultsCount: {

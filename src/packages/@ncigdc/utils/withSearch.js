@@ -1,8 +1,9 @@
 // @flow
 import _ from 'lodash';
+import { compose, withState, withHandlers, withProps } from 'recompose';
+
 import withRouter from '@ncigdc/utils/withRouter';
 import { fetchApi } from '@ncigdc/utils/ajax';
-import { compose, withState, withHandlers, withProps } from 'recompose';
 import withPropsOnChange from '@ncigdc/utils/withPropsOnChange';
 import { TSearchHit } from '@ncigdc/components/QuickSearch/types';
 import { IS_AUTH_PORTAL } from '@ncigdc/utils/constants';
@@ -48,7 +49,6 @@ export const withSearch = passedInState => {
           fetchApi(
             `/quick_search?query=${window.encodeURIComponent(query)}&size=5`,
             {
-              ...(IS_AUTH_PORTAL ? { credentials: 'include' } : {}),
               headers: {
                 'Content-Type': 'application/json',
               },

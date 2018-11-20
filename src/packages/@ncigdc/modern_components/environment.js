@@ -4,13 +4,13 @@ import urlJoin from 'url-join';
 import { Environment, Network, RecordSource, Store } from 'relay-runtime';
 import md5 from 'blueimp-md5';
 
-import { clear } from '@ncigdc/utils/cookies';
 import { API, IS_AUTH_PORTAL } from '@ncigdc/utils/constants';
 const source = new RecordSource();
 const store = new Store(source);
 const simpleCache = {};
 const pendingCache = {};
 const handlerProvider = null;
+import { redirectToLogin } from '@ncigdc/utils/auth';
 
 function fetchQuery(operation, variables, cacheConfig) {
   const body = JSON.stringify({
@@ -59,49 +59,43 @@ function fetchQuery(operation, variables, cacheConfig) {
     },
     body,
   }).then(response =>
-    response.json().then(json => {
-      if (response.status === 200) {
-        // if the response is ok, and the result to the simpleCache and delete it from the pendingCache
-        simpleCache[hash] = json;
-        delete pendingCache[hash];
-      }
+    response
+      .json()
+      .then(json => {
+        if (!response.ok) {
+          console.log('throwing error in Environment');
+          throw response;
+        }
 
-      if (IS_AUTH_PORTAL) {
-        let tries = 20;
-        let id = setInterval(() => {
-          let { user } = window.store.getState().auth;
-          if (user) {
-            if (
-              !json.fence_projects[0] &&
-              !json.nih_projects &&
-              !json.intersection[0]
-            ) {
-              clear();
-              window.location.href = '/login?error=timeout';
-              return;
-            }
-            if (!json.fence_projects[0]) {
-              clear();
-              window.location.href = '/login?error=no_fence_projects';
-              return;
-            }
-            if (!json.nih_projects) {
-              clear();
-              window.location.href = '/login?error=no_nih_projects';
-              return;
-            }
-            if (!json.intersection[0]) {
-              clear();
-              window.location.href = '/login?error=no_intersection';
-              return;
-            }
+        if (response.status === 200) {
+          // if the response is ok, and the result to the simpleCache and delete it from the pendingCache
+          simpleCache[hash] = json;
+          delete pendingCache[hash];
+        }
+
+        return json;
+      })
+      .catch(err => {
+        if (err.status) {
+          switch (err.status) {
+            case 401:
+            case 403:
+              console.log(err.statusText);
+              if (IS_AUTH_PORTAL) {
+                return redirectToLogin('timeout');
+              }
+              break;
+            case 400:
+            case 404:
+              console.log(err.statusText);
+              break;
+            default:
+              return console.log('there was an error', err.statusText);
           }
-          tries--;
-          if (!tries) clearInterval(id);
-        }, 500);
-      }
-      return json;
-    }),
+        } else {
+          console.log('Something went wrong in environment: ', err);
+        }
+      }),
   );
 }
 

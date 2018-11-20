@@ -1,9 +1,11 @@
 // @flow
 import { CALL_API } from 'redux-api-middleware';
 import urlJoin from 'url-join';
-import { API, AUTH, IS_AUTH_PORTAL } from '@ncigdc/utils/constants';
 import Queue from 'queue';
 import md5 from 'blueimp-md5';
+
+import { API, AUTH, IS_AUTH_PORTAL } from '@ncigdc/utils/constants';
+import { redirectToLogin } from '@ncigdc/utils/auth';
 
 const DEFAULTS = {
   method: 'get',
@@ -35,12 +37,43 @@ export function fetchAuth(options: { endpoint: string }): Object {
 export const fetchApi = (endpoint, opts = {}) => {
   const clonedOptions = {
     ...opts,
+    ...(IS_AUTH_PORTAL
+      ? { credentials: opts.credentials || 'include', headers: opts.headers }
+      : {}),
     ...(opts.body && {
       body: JSON.stringify(opts.body),
       method: 'POST',
     }),
   };
-  return fetch(urlJoin(API, endpoint), clonedOptions).then(r => r.json());
+  return fetch(urlJoin(API, endpoint), clonedOptions)
+    .then(r => {
+      if (!r.ok) {
+        throw r;
+      }
+      return r.json();
+    })
+    .catch(err => {
+      if (err.status) {
+        switch (err.status) {
+          case 401:
+          case 403:
+            console.log(err.statusText);
+            if (IS_AUTH_PORTAL) {
+              return redirectToLogin('timeout');
+            }
+            break;
+          case 400:
+          case 404:
+          case 500:
+            console.log(err.statusText);
+            break;
+          default:
+            return console.log('there was an error', err.statusText);
+        }
+      } else {
+        console.log('Something went wrong');
+      }
+    });
 };
 
 type TFetchApiChunked = (

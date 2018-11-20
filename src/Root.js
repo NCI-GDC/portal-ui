@@ -107,17 +107,12 @@ Relay.injectNetworkLayer(
           } else {
             console.log('Something went wrong in Root', err);
             // not able to pass the response status from throw so need to exclude by error message
-            console.log('error message: ', err.message);
-            console.log(
-              'is true? ',
-              err.message.toLowerCase() ===
-                'your token is invalid or expired. please get a new token from gdc data portal.',
-            );
             if (
-              // IS_AUTH_PORTAL &&
-              // user &&
-              err.message.toLowerCase() ===
-              'your token is invalid or expired. please get a new token from gdc data portal.'
+              IS_AUTH_PORTAL &&
+              user &&
+              (err.message &&
+                err.message.message ===
+                  'Your token is invalid or expired. Please get a new token from GDC Data Portal.')
             ) {
               return redirectToLogin('timeout');
             }

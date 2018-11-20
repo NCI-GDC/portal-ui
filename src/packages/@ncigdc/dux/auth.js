@@ -92,9 +92,12 @@ const initialState: State = {
 export default handleActions(
   {
     [REHYDRATE]: (state, action) => {
-      const incoming = action.payload.auth;
-      if (incoming) return { ...state, ...incoming };
-      return state;
+      console.log('rehydrate state: ', state);
+      console.log('rehydrate action: ', action);
+      return {
+        ...state,
+        ...action.payload.auth,
+      };
     },
     [USER_REQUEST]: state => (
       console.log(state.user),

@@ -110,7 +110,7 @@ Relay.injectNetworkLayer(
             if (
               IS_AUTH_PORTAL &&
               user &&
-              error.message ===
+              err.message ===
                 'Your token is invalid or expired. Please get a new token from GDC Data Portal.'
             ) {
               return redirectToLogin('timeout');

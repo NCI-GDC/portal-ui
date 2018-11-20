@@ -18,9 +18,7 @@ const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 const setupStore: TSetupStore = ({ persistConfig = {} } = {}) => {
   const store = createStore(
     combineReducers(reducers),
-    composeEnhancers(
-      applyMiddleware(createActionBuffer(REHYDRATE), thunk, apiMiddleware),
-    ),
+    composeEnhancers(applyMiddleware(thunk, apiMiddleware)),
   );
 
   persistStore(store, {

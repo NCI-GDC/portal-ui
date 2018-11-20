@@ -48,6 +48,9 @@ const CheckBoxModal = ({
       {children}
       {hidden ? null : (
         <div>
+          <div>
+            You are attempting to download files that are controlled access:
+          </div>
           <input
             type="checkbox"
             onClick={() => {

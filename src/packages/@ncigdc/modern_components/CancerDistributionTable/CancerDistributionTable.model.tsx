@@ -1,5 +1,5 @@
 import React from 'react';
-import { Th, Td, TTd } from '@ncigdc/uikit/Table';
+import { Th } from '@ncigdc/uikit/Table';
 import { Row } from '@ncigdc/uikit/Flex';
 import { makeFilter, replaceFilters } from '@ncigdc/utils/filters';
 import { tableToolTipHint } from '@ncigdc/theme/mixins';
@@ -10,9 +10,9 @@ import ExploreSSMLink from '@ncigdc/components/Links/ExploreSSMLink';
 import ProjectLink from '@ncigdc/components/Links/ProjectLink';
 import CollapsibleList from '@ncigdc/uikit/CollapsibleList';
 import GreyBox from '@ncigdc/uikit/GreyBox';
-import { INode, ICancerDistributionTableProps, IBucket } from './types';
+import { INode, TCancerDistributionTableModelProps, IBucket } from './types';
 
-type TNode = ({ node }: { node: INode }) => TTd | JSX.Element;
+type TNode = ({ node }: { node: INode }) => JSX.Element | number | string;
 
 interface IModelEntry {
   name: string;
@@ -20,12 +20,12 @@ interface IModelEntry {
   sortable: boolean;
   downloadable: boolean;
   hidden?: boolean;
-  th: TNode;
+  th: () => JSX.Element;
   td: TNode;
 }
 
 type TCancerDistributionTableModel = (
-  props: ICancerDistributionTableProps
+  props: TCancerDistributionTableModelProps
 ) => IModelEntry[];
 
 const CancerDistributionTableModel: TCancerDistributionTableModel = ({
@@ -42,7 +42,7 @@ const CancerDistributionTableModel: TCancerDistributionTableModel = ({
     downloadable: true,
     hidden: true,
     th: () => <Th>Project Id</Th>,
-    td: ({ node }) => <Td>{node.project_id}</Td>,
+    td: ({ node }) => node.project_id,
   },
   {
     name: 'Nymber of Affected Cases',
@@ -51,7 +51,7 @@ const CancerDistributionTableModel: TCancerDistributionTableModel = ({
     downloadable: true,
     hidden: true,
     th: () => <Th>Affected Cases</Th>,
-    td: ({ node }) => <Td>{node.num_affected_cases_percent}</Td>,
+    td: ({ node }) => node.num_affected_cases_percent,
   },
   {
     name: 'Project Id',
@@ -60,9 +60,7 @@ const CancerDistributionTableModel: TCancerDistributionTableModel = ({
     downloadable: false,
     th: () => <Th>Project</Th>,
     td: ({ node }) => (
-      <Td>
-        <ProjectLink uuid={node.project_id}>{node.project_id}</ProjectLink>
-      </Td>
+      <ProjectLink uuid={node.project_id}>{node.project_id}</ProjectLink>
     ),
   },
   {
@@ -72,9 +70,7 @@ const CancerDistributionTableModel: TCancerDistributionTableModel = ({
     downloadable: true,
     th: () => <Th>Disease Type</Th>,
     td: ({ node }) => (
-      <Td>
-        <CollapsibleRowList data={node.disease_type} label={'Disease Types'} />
-      </Td>
+      <CollapsibleRowList data={node.disease_type} label={'Disease Types'} />
     ),
   },
   {
@@ -82,11 +78,9 @@ const CancerDistributionTableModel: TCancerDistributionTableModel = ({
     id: 'site',
     sortable: false,
     downloadable: true,
-    th: () => <Th>Disease Type</Th>,
+    th: () => <Th>Site</Th>,
     td: ({ node }) => (
-      <Td>
-        <CollapsibleRowList data={node.site} label={'Primary Sites'} />
-      </Td>
+      <CollapsibleRowList data={node.site} label={'Primary Sites'} />
     ),
   },
   {
@@ -94,34 +88,47 @@ const CancerDistributionTableModel: TCancerDistributionTableModel = ({
     id: 'num_affected_cases',
     sortable: false,
     downloadable: true,
-    th: () => <Th># SSM Affected Cases</Th>,
+    th: () => (
+      <Th>
+        <Row>
+          <Tooltip
+            Component={
+              <span>
+                # Cases tested for Simple Somatic Mutations in Project affected
+                by&nbsp;
+                {entityName}&nbsp; / # Cases tested for Simple Somatic Mutations
+                in Project
+              </span>
+            }
+            style={tableToolTipHint()}
+          >
+            # SSM Affected Cases
+          </Tooltip>
+        </Row>
+      </Th>
+    ),
     td: ({ node }) => (
-      <Td>
+      <span>
+        <ExploreSSMLink
+          merge
+          searchTableTab={'cases'}
+          filters={replaceFilters(makeProjectFilters(node.project_id), filters)}
+        >
+          {node.num_affected_cases}
+        </ExploreSSMLink>
+        <span> / </span>
+        <ExploreLink
+          query={{
+            searchTableTab: 'cases',
+            filters: makeProjectFilters(node.project_id),
+          }}
+        >
+          {node.num_affected_cases_total.toLocaleString()}
+        </ExploreLink>
         <span>
-          <ExploreSSMLink
-            merge
-            searchTableTab={'cases'}
-            filters={replaceFilters(
-              makeProjectFilters(node.project_id),
-              filters
-            )}
-          >
-            {node.num_affected_cases}
-          </ExploreSSMLink>
-          <span> / </span>
-          <ExploreLink
-            query={{
-              searchTableTab: 'cases',
-              filters: makeProjectFilters(node.project_id),
-            }}
-          >
-            {node.num_affected_cases_total.toLocaleString()}
-          </ExploreLink>
-          <span>
-            &nbsp;({(node.num_affected_cases_percent * 100).toFixed(2)}%)
-          </span>
-        </span>{' '}
-      </Td>
+          &nbsp;({(node.num_affected_cases_percent * 100).toFixed(2)}%)
+        </span>
+      </span>
     ),
   },
   ...((tableType !== 'ssm'
@@ -151,16 +158,14 @@ const CancerDistributionTableModel: TCancerDistributionTableModel = ({
             </Th>
           ),
           td: ({ node }) => (
-            <Td>
+            <span>
+              {node.num_cnv_gain.toLocaleString()}
+              <span> / </span>
+              {node.num_cnv_cases_total.toLocaleString()}
               <span>
-                {node.num_cnv_gain.toLocaleString()}
-                <span> / </span>
-                {node.num_cnv_cases_total.toLocaleString()}
-                <span>
-                  &nbsp;({(node.num_cnv_gain_percent * 100).toFixed(2)}%)
-                </span>
+                &nbsp;({(node.num_cnv_gain_percent * 100).toFixed(2)}%)
               </span>
-            </Td>
+            </span>
           ),
         },
         {
@@ -188,16 +193,14 @@ const CancerDistributionTableModel: TCancerDistributionTableModel = ({
             </Th>
           ),
           td: ({ node }) => (
-            <Td>
+            <span>
+              {node.num_cnv_loss.toLocaleString()}
+              <span> / </span>
+              {node.num_cnv_cases_total.toLocaleString()}
               <span>
-                {node.num_cnv_loss.toLocaleString()}
-                <span> / </span>
-                {node.num_cnv_cases_total.toLocaleString()}
-                <span>
-                  &nbsp;({(node.num_cnv_loss_percent * 100).toFixed(2)}%)
-                </span>
+                &nbsp;({(node.num_cnv_loss_percent * 100).toFixed(2)}%)
               </span>
-            </Td>
+            </span>
           ),
         },
       ]
@@ -225,23 +228,21 @@ const CancerDistributionTableModel: TCancerDistributionTableModel = ({
             </Th>
           ),
           td: ({ node }) => (
-            <Td>
-              <MutationsCount
-                ssmCount={(aggregations || {
-                  occurrence__case__project__project_id: { buckets: [] },
-                }).occurrence__case__project__project_id.buckets.reduce(
-                  (acc: { [key: string]: number }, b: IBucket) => ({
-                    ...acc,
-                    [b.key]: b.doc_count,
-                  }),
-                  {}
-                )}
-                filters={replaceFilters(
-                  makeProjectFilters(node.project_id),
-                  filters
-                )}
-              />
-            </Td>
+            <MutationsCount
+              ssmCount={(aggregations || {
+                occurrence__case__project__project_id: { buckets: [] },
+              }).occurrence__case__project__project_id.buckets.reduce(
+                (acc: { [key: string]: number }, b: IBucket) => ({
+                  ...acc,
+                  [b.key]: b.doc_count,
+                }),
+                {}
+              )}
+              filters={replaceFilters(
+                makeProjectFilters(node.project_id),
+                filters
+              )}
+            />
           ),
         },
       ]

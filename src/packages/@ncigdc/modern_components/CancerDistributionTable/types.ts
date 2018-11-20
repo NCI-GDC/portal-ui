@@ -17,12 +17,16 @@ export interface INode {
 
 export type TRawData = INode[];
 
-interface IBucket {
+export interface IBucket {
   doc_count: number;
   key: string;
 }
 
-export interface ICancerDistributionTableProps {
+interface ICommonProps {
+  geneId: number;
+  entityName: string;
+  filters: IGroupFilter;
+  tableType: string;
   viewer: {
     explore: {
       cases: {
@@ -41,9 +45,10 @@ export interface ICancerDistributionTableProps {
       };
     };
   };
-  projectsViewer: {};
-  geneId: number;
-  entityName: string;
-  filters: IGroupFilter;
-  tableType: string;
 }
+
+export type TCancerDistributionTableProps = {
+  projectsViewer: {};
+} & ICommonProps
+
+export type TCancerDistributionTableModelProps = {} & ICommonProps

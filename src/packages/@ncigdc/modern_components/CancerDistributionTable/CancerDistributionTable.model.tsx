@@ -9,7 +9,7 @@ import ExploreSSMLink from '@ncigdc/components/Links/ExploreSSMLink';
 import ProjectLink from '@ncigdc/components/Links/ProjectLink';
 import CollapsibleList from '@ncigdc/uikit/CollapsibleList';
 import GreyBox from '@ncigdc/uikit/GreyBox';
-import { INode, TCancerDistributionTableModelProps, IBucket } from './types';
+import { INode, TCancerDistributionTableModelProps, IBucket, IAggregations } from './types';
 
 type TNode = ({ node }: { node: INode }) => JSX.Element | number | string;
 
@@ -44,7 +44,7 @@ const CancerDistributionTableModel: TCancerDistributionTableModel = ({
     td: ({ node }) => node.project_id,
   },
   {
-    name: 'Nymber of Affected Cases',
+    name: 'Number of Affected Cases',
     id: 'num_affected_cases_percent',
     sortable: true,
     downloadable: true,
@@ -88,23 +88,21 @@ const CancerDistributionTableModel: TCancerDistributionTableModel = ({
     sortable: false,
     downloadable: true,
     th: () => (
-      
-        <Row>
-          <Tooltip
-            Component={
-              <span>
-                # Cases tested for Simple Somatic Mutations in Project affected
-                by&nbsp;
-                {entityName}&nbsp; / # Cases tested for Simple Somatic Mutations
-                in Project
-              </span>
-            }
-            style={tableToolTipHint()}
-          >
-            # SSM Affected Cases
-          </Tooltip>
-        </Row>
-      
+      <Row>
+        <Tooltip
+          Component={
+            <span>
+              # Cases tested for Simple Somatic Mutations in Project affected
+              by&nbsp;
+              {entityName}&nbsp; / # Cases tested for Simple Somatic Mutations
+              in Project
+            </span>
+          }
+          style={tableToolTipHint()}
+        >
+          # SSM Affected Cases
+        </Tooltip>
+      </Row>
     ),
     td: ({ node }) => (
       <span>
@@ -134,27 +132,25 @@ const CancerDistributionTableModel: TCancerDistributionTableModel = ({
     ? [
         {
           name: 'CNV Gain',
-          id: 'cnv_gain',
+          id: 'num_cnv_gain',
           sortable: true,
           downloadable: true,
           th: () => (
-            
-              <Row>
-                <Tooltip
-                  Component={
-                    <span>
-                      # of Cases tested for CNV in Project affected by CNV loss
-                      event in&nbsp;
-                      {entityName}&nbsp; / # of Cases tested for Copy Number
-                      Variation in Project
-                    </span>
-                  }
-                  style={tableToolTipHint()}
-                >
-                  # CNV Gains
-                </Tooltip>
-              </Row>
-            
+            <Row>
+              <Tooltip
+                Component={
+                  <span>
+                    # of Cases tested for CNV in Project affected by CNV loss
+                    event in&nbsp;
+                    {entityName}&nbsp; / # of Cases tested for Copy Number
+                    Variation in Project
+                  </span>
+                }
+                style={tableToolTipHint()}
+              >
+                # CNV Gains
+              </Tooltip>
+            </Row>
           ),
           td: ({ node }) => (
             <span>
@@ -169,27 +165,25 @@ const CancerDistributionTableModel: TCancerDistributionTableModel = ({
         },
         {
           name: 'CNV Loss',
-          id: 'cnv_loss',
+          id: 'num_cnv_loss',
           sortable: true,
           downloadable: true,
           th: () => (
-            
-              <Row>
-                <Tooltip
-                  Component={
-                    <span>
-                      # of Cases tested for CNV in Project affected by CNV loss
-                      event in&nbsp;
-                      {entityName}&nbsp; / # of Cases tested for Copy Number
-                      Variation in Project
-                    </span>
-                  }
-                  style={tableToolTipHint()}
-                >
-                  # CNV Losses
-                </Tooltip>
-              </Row>
-            
+            <Row>
+              <Tooltip
+                Component={
+                  <span>
+                    # of Cases tested for CNV in Project affected by CNV loss
+                    event in&nbsp;
+                    {entityName}&nbsp; / # of Cases tested for Copy Number
+                    Variation in Project
+                  </span>
+                }
+                style={tableToolTipHint()}
+              >
+                # CNV Losses
+              </Tooltip>
+            </Row>
           ),
           td: ({ node }) => (
             <span>
@@ -212,31 +206,21 @@ const CancerDistributionTableModel: TCancerDistributionTableModel = ({
           sortable: false,
           downloadable: true,
           th: () => (
-            
-              <Tooltip
-                Component={
-                  <span>
-                    # Unique Simple Somatic Mutations observed in {entityName}
-                    in Project
-                  </span>
-                }
-                style={tableToolTipHint()}
-              >
-                # Mutations
-              </Tooltip>
-            
+            <Tooltip
+              Component={
+                <span>
+                  # Unique Simple Somatic Mutations observed in {entityName}
+                  in Project
+                </span>
+              }
+              style={tableToolTipHint()}
+            >
+              # Mutations
+            </Tooltip>
           ),
           td: ({ node }) => (
             <MutationsCount
-              ssmCount={(aggregations || {
-                occurrence__case__project__project_id: { buckets: [] },
-              }).occurrence__case__project__project_id.buckets.reduce(
-                (acc: { [key: string]: number }, b: IBucket) => ({
-                  ...acc,
-                  [b.key]: b.doc_count,
-                }),
-                {}
-              )[node.project_id]}
+              ssmCount={ssmCount(aggregations, node.project_id)}
               filters={replaceFilters(
                 makeProjectFilters(node.project_id),
                 filters
@@ -288,3 +272,14 @@ const makeProjectFilters = (id: string) =>
       value: 'ssm',
     },
   ]);
+
+const ssmCount = (aggregations: IAggregations, id: string) =>
+  (aggregations || {
+    occurrence__case__project__project_id: { buckets: [] },
+  }).occurrence__case__project__project_id.buckets.reduce(
+    (acc: { [key: string]: number }, b: IBucket) => ({
+      ...acc,
+      [b.key]: b.doc_count,
+    }),
+    {}
+  )[id];

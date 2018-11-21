@@ -22,6 +22,12 @@ export interface IBucket {
   key: string;
 }
 
+export interface IAggregations {
+  occurrence__case__project__project_id: {
+    buckets: IBucket[];
+  };
+}
+
 interface ICommonProps {
   geneId: number;
   entityName: string;
@@ -37,11 +43,7 @@ interface ICommonProps {
         };
       };
       ssms: {
-        aggregations: {
-          occurrence__case__project__project_id: {
-            buckets: IBucket[];
-          };
-        };
+        aggregations: IAggregations;
       };
     };
   };
@@ -49,6 +51,6 @@ interface ICommonProps {
 
 export type TCancerDistributionTableProps = {
   projectsViewer: {};
-} & ICommonProps
+} & ICommonProps;
 
-export type TCancerDistributionTableModelProps = {} & ICommonProps
+export type TCancerDistributionTableModelProps = {} & ICommonProps;

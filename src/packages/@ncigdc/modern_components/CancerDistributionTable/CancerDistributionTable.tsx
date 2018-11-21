@@ -16,7 +16,7 @@ import SortTableButton, {
 } from '@ncigdc/components/SortTableButton';
 import tableModel from './CancerDistributionTable.model';
 import { TCancerDistributionTableProps, IBucket } from './types';
-// import multisort from 'multisort';
+import multisort from 'multisort';
 
 const paginationPrefix = 'canDistTable';
 
@@ -136,40 +136,44 @@ export default compose<ICDTWrappedProps, TCancerDistributionTableProps>(
       entityName,
       filters,
       geneId,
-    })
-    .filter(x => !x.hidden);
+    });
 
-    // const multisortKey: string[] =
-    //   tableSort.length > 0
-    //     ? tableSort.reduce(
-    //         (acc, curr) => {
-    //           // https://www.npmjs.com/package/multisort
-    //           const field = `${curr.field}.data`;
-    //           acc.push(curr.order === 'desc' ? `~${field}` : field);
-    //           return acc;
-    //         },
-    //         [] as string[]
-    //       )
-    //     : ['~num_affected_cases']; // default sort
+    const visibleCols = tableInfo.filter(x => !x.hidden);
+    const sortableCols = tableInfo.filter(x => x.sortable);
+
+    const multisortKey: string[] =
+      tableSort.length > 0
+        ? tableSort.reduce(
+            (acc, {order, field}) => {
+              acc.push(order === 'desc' ? `~${field}` : field);
+              return acc;
+            },
+            [] as string[]
+            )
+            : ['~num_affected_cases_percent']; // default sort
+    
+    // Sort rawdata before formatting
+    // https://www.npmjs.com/package/multisort
+    const data = multisort(rawData, multisortKey)
+    .map(row =>
+      visibleCols.reduce((acc, { id, td }) => {
+        acc[id] = td({ node: row });
+        return acc;
+      }, {})
+    );
 
     return (
       <span>
         <LocalPaginationTable
           style={{ width: '100%', minWidth: 450 }}
-          data={rawData.map(row =>
-            tableInfo.reduce((acc, { id, td }) => {
-              acc[id] = td({ node: row });
-              return acc;
-            }, {})
-          )}
+          data={data}
           prefix={paginationPrefix}
           buttons={
             <Row style={{ alignItems: 'flex-end' }}>
               <SortTableButton
                 sortFunction={sortFunction}
-                options={tableInfo
-                  .filter(x => x.sortable)
-                  .map(({ id, name }) => ({ id, name }))}
+                options={sortableCols.map(({ id, name }) => ({ id, name }))}
+                style={{ ...visualizingButton }}
               />
               <Tooltip
                 Component={
@@ -200,10 +204,11 @@ export default compose<ICDTWrappedProps, TCancerDistributionTableProps>(
           <EntityPageHorizontalTable
             idKey="id"
             tableId="cancer-distribution-table"
-            headings={tableInfo.map(({ id, th }, idx) => ({
+            headings={visibleCols.map(({ id, th }, idx) => ({
               key: id,
               title: th(),
-              style: idx === (tableInfo.length - 1) ? { textAlign: 'right' } : {},
+              style:
+                idx === visibleCols.length - 1 ? { textAlign: 'right' } : {},
             }))}
           />
         </LocalPaginationTable>

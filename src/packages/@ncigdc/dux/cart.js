@@ -304,7 +304,6 @@ export const fetchCartFiles = async (filters, size) => {
                       node {
                         acl
                         state
-                        file_state
                         access
                         file_id
                         file_size

@@ -16,6 +16,6 @@ export interface IListLinkProps {
 export interface IIdLinkProps {
   uuid?: string;
   style?: object;
-};
+}
 
 export type TLinkProps = IListLinkProps & IIdLinkProps;

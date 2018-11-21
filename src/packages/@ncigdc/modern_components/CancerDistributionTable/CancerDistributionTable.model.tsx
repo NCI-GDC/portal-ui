@@ -9,7 +9,12 @@ import ExploreSSMLink from '@ncigdc/components/Links/ExploreSSMLink';
 import ProjectLink from '@ncigdc/components/Links/ProjectLink';
 import CollapsibleList from '@ncigdc/uikit/CollapsibleList';
 import GreyBox from '@ncigdc/uikit/GreyBox';
-import { INode, TCancerDistributionTableModelProps, IBucket, IAggregations } from './types';
+import {
+  INode,
+  TCancerDistributionTableModelProps,
+  IBucket,
+  IAggregations,
+} from './types';
 
 type TNode = ({ node }: { node: INode }) => JSX.Element | number | string;
 
@@ -19,7 +24,7 @@ interface IModelEntry {
   sortable: boolean;
   downloadable: boolean;
   hidden?: boolean;
-  th: () => JSX.Element | string;
+  th: (props: { style?: React.CSSProperties }) => JSX.Element | string;
   td: TNode;
 }
 
@@ -87,8 +92,8 @@ const CancerDistributionTableModel: TCancerDistributionTableModel = ({
     id: 'num_affected_cases',
     sortable: false,
     downloadable: true,
-    th: () => (
-      <Row>
+    th: props => (
+      <Row {...props}>
         <Tooltip
           Component={
             <span>
@@ -135,8 +140,8 @@ const CancerDistributionTableModel: TCancerDistributionTableModel = ({
           id: 'num_cnv_gain',
           sortable: true,
           downloadable: true,
-          th: () => (
-            <Row>
+          th: props => (
+            <Row {...props}>
               <Tooltip
                 Component={
                   <span>
@@ -168,8 +173,8 @@ const CancerDistributionTableModel: TCancerDistributionTableModel = ({
           id: 'num_cnv_loss',
           sortable: true,
           downloadable: true,
-          th: () => (
-            <Row>
+          th: props => (
+            <Row {...props}>
               <Tooltip
                 Component={
                   <span>
@@ -205,18 +210,20 @@ const CancerDistributionTableModel: TCancerDistributionTableModel = ({
           id: 'num_mutations',
           sortable: false,
           downloadable: true,
-          th: () => (
-            <Tooltip
-              Component={
-                <span>
-                  # Unique Simple Somatic Mutations observed in {entityName}
-                  in Project
-                </span>
-              }
-              style={tableToolTipHint()}
-            >
-              # Mutations
-            </Tooltip>
+          th: props => (
+            <Row {...props}>
+              <Tooltip
+                Component={
+                  <span>
+                    # Unique Simple Somatic Mutations observed in {entityName}
+                    in Project
+                  </span>
+                }
+                style={tableToolTipHint()}
+              >
+                # Mutations
+              </Tooltip>
+            </Row>
           ),
           td: ({ node }) => (
             <MutationsCount

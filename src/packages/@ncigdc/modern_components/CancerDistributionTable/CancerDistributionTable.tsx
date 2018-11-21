@@ -144,18 +144,17 @@ export default compose<ICDTWrappedProps, TCancerDistributionTableProps>(
     const multisortKey: string[] =
       tableSort.length > 0
         ? tableSort.reduce(
-            (acc, {order, field}) => {
+            (acc, { order, field }) => {
               acc.push(order === 'desc' ? `~${field}` : field);
               return acc;
             },
             [] as string[]
-            )
-            : ['~num_affected_cases_percent']; // default sort
-    
+          )
+        : ['~num_affected_cases_percent']; // default sort
+
     // Sort rawdata before formatting
     // https://www.npmjs.com/package/multisort
-    const data = multisort(rawData, multisortKey)
-    .map(row =>
+    const data = multisort(rawData, multisortKey).map(row =>
       visibleCols.reduce((acc, { id, td }) => {
         acc[id] = td({ node: row });
         return acc;
@@ -170,11 +169,13 @@ export default compose<ICDTWrappedProps, TCancerDistributionTableProps>(
           prefix={paginationPrefix}
           buttons={
             <Row style={{ alignItems: 'flex-end' }}>
-              <SortTableButton
-                sortFunction={sortFunction}
-                options={sortableCols.map(({ id, name }) => ({ id, name }))}
-                style={{ ...visualizingButton }}
-              />
+              {sortableCols.length > 1 && (
+                <SortTableButton
+                  sortFunction={sortFunction}
+                  options={sortableCols.map(({ id, name }) => ({ id, name }))}
+                  style={{ ...visualizingButton }}
+                />
+              )}
               <Tooltip
                 Component={
                   <span>Export All{geneId ? ' Except # Mutations' : ''}</span>
@@ -206,7 +207,7 @@ export default compose<ICDTWrappedProps, TCancerDistributionTableProps>(
             tableId="cancer-distribution-table"
             headings={visibleCols.map(({ id, th }, idx) => ({
               key: id,
-              title: th(),
+              title: th({style: visibleCols.length - 1 ? { justifyContent: 'flex-end' } : {}}),
               style:
                 idx === visibleCols.length - 1 ? { textAlign: 'right' } : {},
             }))}

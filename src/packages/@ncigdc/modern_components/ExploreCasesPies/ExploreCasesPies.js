@@ -3,7 +3,7 @@ import React from 'react';
 import Relay from 'react-relay/classic';
 import _ from 'lodash';
 import { parse } from 'query-string';
-import { TBucket } from '@ncigdc/components/Aggregations/types';
+import { IBucket } from '@ncigdc/components/Aggregations/types';
 import { parseFilterParam } from '@ncigdc/utils/uri';
 import {
   ColumnCenter,
@@ -20,14 +20,14 @@ export type TProps = {
     explore: {
       cases: {
         aggregations: {
-          demographic__ethnicity: { buckets: [TBucket] },
-          demographic__gender: { buckets: [TBucket] },
-          demographic__race: { buckets: [TBucket] },
-          diagnoses__vital_status: { buckets: [TBucket] },
-          disease_type: { buckets: [TBucket] },
-          primary_site: { buckets: [TBucket] },
-          project__program__name: { buckets: [TBucket] },
-          project__project_id: { buckets: [TBucket] },
+          demographic__ethnicity: { buckets: [IBucket] },
+          demographic__gender: { buckets: [IBucket] },
+          demographic__race: { buckets: [IBucket] },
+          diagnoses__vital_status: { buckets: [IBucket] },
+          disease_type: { buckets: [IBucket] },
+          primary_site: { buckets: [IBucket] },
+          project__program__name: { buckets: [IBucket] },
+          project__project_id: { buckets: [IBucket] },
         },
       },
     },

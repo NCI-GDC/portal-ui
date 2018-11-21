@@ -60,7 +60,7 @@ export const withSearch = passedInState => {
       },
     }),
     withHandlers({
-      selectItem: ({ push, reset }) => (item: TSearchHit) => {
+      selectItem: ({ push, reset }) => (item: ISearchHit) => {
         push(
           `/${atob(item.id)
             .split(':')[0]

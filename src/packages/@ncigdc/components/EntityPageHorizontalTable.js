@@ -1,7 +1,6 @@
-// @flow
-
 import React from 'react';
 import * as d3 from 'd3';
+import { get } from 'lodash';
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import Table, { Tr, Td, Th } from '@ncigdc/uikit/Table';
 import { withTheme } from '@ncigdc/theme';
@@ -109,7 +108,7 @@ const EntityPageHorizontalTable = ({
                 key={d[idKey] || k}
               >
                 {headings.map((h, i) =>
-                  [].concat(d[h.key]).map((v, j) => (
+                  [].concat(get(d, h.key, [])).map((v, j) => (
                     <Td
                       {...h.tdProps}
                       key={`${h.key}-${j}`}

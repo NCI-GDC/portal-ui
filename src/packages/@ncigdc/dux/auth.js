@@ -1,7 +1,8 @@
 /* @flow */
+import { handleActions } from 'redux-actions';
+import { REHYDRATE } from 'redux-persist/constants';
 
 import { saveAs } from 'filesaver.js';
-import { handleActions } from 'redux-actions';
 import { fetchAuth } from '@ncigdc/utils/ajax';
 import { FAKE_USER, IS_DEV, AWG } from '@ncigdc/utils/constants';
 export type State = { isFetching: boolean, user: ?Object, error?: Object };
@@ -15,8 +16,6 @@ const TOKEN_REQUEST = 'gdc/TOKEN_REQUEST';
 const TOKEN_SUCCESS = 'gdc/TOKEN_SUCCESS';
 const TOKEN_FAILURE = 'gdc/TOKEN_FAILURE';
 const TOKEN_CLEAR = 'gdc/TOKEN_CLEAR';
-
-const SET_USER_ACCESS = 'gdc/SET_USER_ACCESS';
 
 export function fetchUser() {
   if (IS_DEV) {
@@ -80,13 +79,6 @@ export function fetchToken() {
   });
 }
 
-export function setUserAccess(access): Action {
-  return {
-    type: SET_USER_ACCESS,
-    payload: access,
-  };
-}
-
 const initialState: State = {
   firstLoad: true,
   isFetching: false,
@@ -95,19 +87,27 @@ const initialState: State = {
   isFetchingToken: false,
   token: undefined,
   failed: false,
-  intersection: null,
-  fence_projects: null,
-  nih_projects: null,
 };
 
 export default handleActions(
   {
-    [USER_REQUEST]: state => ({
-      ...state,
-      isFetching: true,
-      user: null,
-      error: {},
-    }),
+    [REHYDRATE]: (state, action) => {
+      console.log('rehydrate state: ', state);
+      console.log('rehydrate action: ', action);
+      return {
+        ...state,
+        ...action.payload.auth,
+      };
+    },
+    [USER_REQUEST]: state => (
+      console.log(state.user),
+      {
+        ...state,
+        isFetching: true,
+        user: state.user,
+        error: {},
+      }
+    ),
     [USER_SUCCESS]: (state, action) => ({
       ...state,
       isFetching: false,
@@ -123,9 +123,6 @@ export default handleActions(
       user: null,
       firstLoad: false,
       failed: true,
-      intersection: null,
-      fence_projects: null,
-      nih_projects: null,
     }),
     [TOKEN_REQUEST]: state => ({
       ...state,
@@ -146,15 +143,6 @@ export default handleActions(
       isFetchingToken: false,
       token: undefined,
     }),
-    [SET_USER_ACCESS]: (state, action) => (
-      console.log('action: ', action),
-      {
-        ...state,
-        intersection: action.payload.intersection,
-        fence_projects: action.payload.fence_projects,
-        nih_projects: action.payload.nih_projects,
-      }
-    ),
   },
   initialState,
 );

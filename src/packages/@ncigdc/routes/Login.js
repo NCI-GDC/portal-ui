@@ -58,7 +58,6 @@ export default connect(state => ({
   error: state.auth.error,
 }))(
   class extends React.Component {
-    state = { loggingIn: false };
     componentDidMount() {}
     render() {
       let NihWarning = () => (

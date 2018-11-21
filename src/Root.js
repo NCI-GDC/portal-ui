@@ -9,18 +9,29 @@ import urlJoin from 'url-join';
 import { RelayNetworkLayer, urlMiddleware } from 'react-relay-network-layer';
 import retryMiddleware from '@ncigdc/utils/retryMiddleware';
 import { Provider, connect } from 'react-redux';
-import { BrowserRouter as Router, Route, Redirect } from 'react-router-dom';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Redirect,
+} from 'react-router-dom';
 
 import setupStore from '@ncigdc/dux';
 import { fetchApiVersionInfo } from '@ncigdc/dux/versionInfo';
 import { viewerQuery } from '@ncigdc/routes/queries';
-import Container from './Portal';
+import Portal from './Portal';
 import { API, IS_AUTH_PORTAL } from '@ncigdc/utils/constants';
-import { fetchUser, forceLogout, setUserAccess } from '@ncigdc/dux/auth';
-import { clear } from '@ncigdc/utils/cookies';
+import { fetchUser, forceLogout } from '@ncigdc/dux/auth';
 import Login from '@ncigdc/routes/Login';
+import { redirectToLogin } from '@ncigdc/utils/auth';
 
-let first = true;
+const retryStatusCodes = [500, 503, 504];
+
+const AccessError = message => {
+  let instance = new Error(message);
+  instance.name = 'AccessError';
+  return instance;
+};
 
 Relay.injectNetworkLayer(
   new RelayNetworkLayer([
@@ -36,7 +47,7 @@ Relay.injectNetworkLayer(
           `call \`forceRelayRetry()\` for immediately retry! Or wait ${delay} ms.`,
         );
       },
-      statusCodes: [500, 503, 504],
+      statusCodes: retryStatusCodes,
     }),
     // Add hash id to request
     next => req => {
@@ -61,53 +72,50 @@ Relay.injectNetworkLayer(
       let { user } = window.store.getState().auth;
       let parsedBody = JSON.parse(req.body);
       req.body = JSON.stringify(parsedBody);
-
       return next(req)
         .then(res => {
+          if (!res.ok && !retryStatusCodes.includes(res.status)) {
+            console.log('throwing error in Root');
+            throw res;
+          }
+
           let { json } = res;
-          let tries = 20;
-          let id = setInterval(() => {
-            let { user } = window.store.getState().auth;
-            if (user) {
-              if (
-                !json.fence_projects[0] &&
-                !json.nih_projects &&
-                !json.intersection[0]
-              ) {
-                clear();
-                window.location.href = '/login?error=timeout';
-                return;
-              }
-              if (!json.fence_projects[0]) {
-                clear();
-                window.location.href = '/login?error=no_fence_projects';
-                return;
-              }
+          let { user } = window.store.getState().auth;
 
-              if (!json.nih_projects) {
-                clear();
-                window.location.href = '/login?error=no_nih_projects';
-                return;
-              }
-
-              if (!json.intersection[0]) {
-                clear();
-                window.location.href = '/login?error=no_intersection';
-                return;
-              }
+          if (user) {
+            if (!json.fence_projects[0]) {
+              throw new AccessError('no_fence_projects');
             }
 
-            tries--;
+            if (!json.nih_projects) {
+              throw new AccessError('no_nih_projects');
+            }
 
-            if (!tries) clearInterval(id);
-          }, 500);
+            if (!json.intersection[0]) {
+              throw new AccessError('no_intersection');
+            }
+          }
 
           return res;
         })
         .catch(err => {
-          if (err.fetchResponse && err.fetchResponse.status === 403) {
-            if (user) {
-              store.dispatch(forceLogout());
+          let { user } = window.store.getState().auth;
+          if (err.name === 'AccessError') {
+            console.log('access error message: ', err.message);
+            return redirectToLogin(err.message);
+          } else {
+            console.log('Something went wrong in Root', err);
+            // not able to pass the response status from throw so need to exclude by error message
+            let errorMessage = err.message
+              ? JSON.parse(err.message).message
+              : null;
+            if (
+              IS_AUTH_PORTAL &&
+              user &&
+              errorMessage ===
+                'Your token is invalid or expired. Please get a new token from GDC Data Portal.'
+            ) {
+              return redirectToLogin('timeout');
             }
           }
         });
@@ -139,9 +147,6 @@ let HasUser = connect(state => state.auth)(props => {
     user: props.user,
     failed: props.failed,
     error: props.error,
-    // intersection: props.intersection,
-    // fence_projects: props.fence_projects,
-    // nih_projects: props.nih_projects,
   });
 });
 
@@ -149,66 +154,52 @@ const Root = (props: mixed) => (
   <Router>
     <Provider store={store}>
       <React.Fragment>
-        {IS_AUTH_PORTAL && <Route exact path="/login" component={Login} />}
-        <Route
-          render={props => {
-            return IS_AUTH_PORTAL &&
-              !window.location.pathname.includes('/login') ? (
-              <HasUser>
-                {({
-                  user,
-                  failed,
-                  error,
-                  // intersection,
-                  // nih_projects,
-                  // fence_projects,
-                }) => {
-                  if (
-                    failed &&
-                    error.message === 'Session timed out or not authorized'
-                  ) {
-                    return (window.location.href = '/login?error=timeout');
-                  }
-                  // console.log('nih: ', nih_projects);
-                  // console.log('fence: ', fence_projects);
-                  // console.log('intersection: ', intersection);
-                  // console.log('user: ', user);
-                  if (failed) {
-                    return <Redirect to="/login" />;
-                  }
-                  if (user) {
-                    // if (!fence_projects && !nih_projects && !intersection) {
-                    //   return <Redirect to="/login?error=timeout" />;
-                    // }
-                    // if (!fence_projects) {
-                    //   return <Redirect to="/login?error=no_fence_projects" />;
-                    // }
-                    // if (!nih_projects) {
-                    //   return <Redirect to="/login?error=no_nih_projects" />;
-                    // }
-                    // if (!intersection) {
-                    //   return <Redirect to="/login?error=no_intersection" />;
-                    // }
-                    return (
-                      <Relay.Renderer
-                        Container={Container}
-                        queryConfig={new RelayRoute(props)}
-                        environment={Relay.Store}
-                      />
+        {!IS_AUTH_PORTAL ? (
+          <Relay.Renderer
+            Container={Portal}
+            queryConfig={new RelayRoute(props)}
+            environment={Relay.Store}
+          />
+        ) : (
+          <Switch>
+            <Route exact path="/login" component={Login} />
+            <Route
+              render={props => (
+                <HasUser>
+                  {({ user, failed, error }) => {
+                    // if user request fails
+                    console.log('root component user: ', user);
+                    if (
+                      failed &&
+                      error.message === 'Session timed out or not authorized'
+                    ) {
+                      console.log('user request failed with error message');
+                      return <Redirect to="/login?error=timeout" />;
+                    }
+                    if (failed) {
+                      console.log('user request failed');
+                      return <Redirect to="/login" />;
+                    }
+                    if (user) {
+                      console.log('has a user, rendering container');
+                      return (
+                        <Relay.Renderer
+                          Container={Portal}
+                          queryConfig={new RelayRoute(props)}
+                          environment={Relay.Store}
+                        />
+                      );
+                    }
+                    console.log(
+                      'does not match any criteria, redirecting to login',
                     );
-                  }
-                  return null;
-                }}
-              </HasUser>
-            ) : (
-              <Relay.Renderer
-                Container={Container}
-                queryConfig={new RelayRoute(props)}
-                environment={Relay.Store}
-              />
-            );
-          }}
-        />
+                    return <Redirect to="/login" />;
+                  }}
+                </HasUser>
+              )}
+            />
+          </Switch>
+        )}
       </React.Fragment>
     </Provider>
   </Router>

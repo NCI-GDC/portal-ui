@@ -1,7 +1,7 @@
 /* @flow */
 
 import React from 'react';
-import { compose, lifecycle } from 'recompose';
+import { compose } from 'recompose';
 import { connect } from 'react-redux';
 import { Row } from '@ncigdc/uikit/Flex';
 import Showing from '@ncigdc/components/Pagination/Showing';
@@ -21,13 +21,6 @@ import timestamp from '@ncigdc/utils/timestamp';
 export default compose(
   withSelectIds,
   withRouter,
-  lifecycle({
-    componentWillReceiveProps(nextProps) {
-      if (nextProps.tableColumns !== this.props.tableColumns) {
-        this.setState({ tableColumns: nextProps.tableColumns });
-      }
-    },
-  }),
   withPropsOnChange(
     ['ssmsAggregationsViewer'],
     ({ ssmsAggregationsViewer: { explore } }) => {

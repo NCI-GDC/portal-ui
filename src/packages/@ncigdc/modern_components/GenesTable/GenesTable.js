@@ -1,7 +1,7 @@
 /* @flow */
 import React from 'react';
 import { connect } from 'react-redux';
-import { compose, withState, withPropsOnChange, lifecycle } from 'recompose';
+import { compose, withState, withPropsOnChange } from 'recompose';
 import withSize from '@ncigdc/utils/withSize';
 import withRouter from '@ncigdc/utils/withRouter';
 import Showing from '@ncigdc/components/Pagination/Showing';
@@ -39,13 +39,6 @@ export default compose(
       return { ssmCounts };
     }
   ),
-  lifecycle({
-    componentWillReceiveProps(nextProps) {
-      if (nextProps.tableColumns !== this.props.tableColumns) {
-        this.setState({ tableColumns: nextProps.tableColumns });
-      }
-    },
-  }),
   withSize()
 )(
   ({

@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { connect } from 'react-redux';
-import { compose, setDisplayName, mapProps, lifecycle } from 'recompose';
+import { compose, setDisplayName, mapProps } from 'recompose';
 import { Row } from '@ncigdc/uikit/Flex';
 import TableActions from '@ncigdc/components/TableActions';
 import tableModels from '@ncigdc/tableModels';
@@ -13,13 +13,6 @@ import Table, { Tr, Td } from '@ncigdc/uikit/Table';
 export default compose(
   setDisplayName('ProjectsTablePresentation'),
   connect(state => ({ tableColumns: state.tableColumns.projects })),
-  lifecycle({
-    componentWillReceiveProps(nextProps) {
-      if (nextProps.tableColumns !== this.props.tableColumns) {
-        this.setState({ tableColumns: nextProps.tableColumns });
-      }
-    },
-  }),
   mapProps(props => ({
     ...props,
     hits: props.viewer.projects.hits,

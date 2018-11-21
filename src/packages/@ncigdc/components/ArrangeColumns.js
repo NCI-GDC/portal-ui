@@ -21,6 +21,9 @@ const SortRow = styled(Row, {
 const ArrangeColumns = compose(
   connect((state, props) => ({
     localTableColumns: state.tableColumns[props.entityType],
+    filteredTableColumns: state.tableColumns[props.entityType].filter(
+      t => !t.subHeading
+    ),
   })),
   withState('state', 'setState', props => ({
     draggingIndex: null,
@@ -29,7 +32,11 @@ const ArrangeColumns = compose(
   lifecycle({
     componentWillReceiveProps(nextProps) {
       if (nextProps.localTableColumns !== this.props.localTableColumns) {
-        nextProps.setState({ localTableColumns: this.props.localTableColumns });
+        nextProps.setState({
+          filteredTableColumns: this.props.localTableColumns.filter(
+            t => !t.subHeading
+          ),
+        });
       }
     },
   }),
@@ -38,30 +45,44 @@ const ArrangeColumns = compose(
   ({
     dispatch,
     localTableColumns,
+    filteredTableColumns,
     setState,
     state,
     searchTerm,
     entityType,
   }) => {
+    const subHeadings = localTableColumns.filter(t => t.subHeading) || [];
     return (
       <div className="test-arrange-columns">
-        {localTableColumns.map((column, i) => (
+        {filteredTableColumns.map((column, i) => (
           <SortableItem
             className="test-column"
             key={column.id}
             updateState={nextState => {
               if (!nextState.items && state.items) {
+                let newItems = state.items.filter(i => !i.subHeading);
+                if (subHeadings && subHeadings.length > 0) {
+                  const index = filteredTableColumns.indexOf(
+                    filteredTableColumns.find(t => t.subHeadingIds)
+                  );
+                  console.log('items', newItems, index);
+                  newItems = newItems
+                    .slice(0, index)
+                    .concat(subHeadings)
+                    .concat(newItems.slice(index));
+                }
+                console.log('newItems', newItems);
                 dispatch(
                   setColumns({
                     entityType,
-                    order: state.items,
+                    order: newItems,
                   })
                 );
               }
-              setState(state => ({ localTableColumns, ...nextState }));
+              setState(state => ({ filteredTableColumns, ...nextState }));
             }}
             draggingIndex={state.draggingIndex}
-            items={localTableColumns}
+            items={filteredTableColumns}
             sortId={i}
             outline="list"
           >
@@ -80,27 +101,18 @@ const ArrangeColumns = compose(
                 }}
                 onClick={() => {
                   if (column.subHeadingIds) {
-                    column.subHeadingIds.forEach((id, j) =>
-                      dispatch(toggleColumn({ entityType, id, i }))
-                    );
+                    localTableColumns.forEach((col, j) => {
+                      if (col.subHeading) {
+                        const index = localTableColumns.indexOf(col);
+                        dispatch(toggleColumn({ entityType, index }));
+                      }
+                    });
                   }
 
-                  // brittle, assuming a single column with subheadings.
-                  const subHeadingCol = tableModels[entityType].find(
-                    x => x.subHeadingIds
-                  );
-                  // find current index of subheading columm
-                  const subHeadingColIndex = subHeadingCol
-                    ? localTableColumns.ids.indexOf(subHeadingCol.id)
-                    : -1;
-                  // figure out whether to put before or after column with subheadings
-                  const afterSubheadingCol =
-                    subHeadingColIndex !== -1 && subHeadingColIndex < i;
                   dispatch(
                     toggleColumn({
                       entityType,
-                      id: column.id,
-                      index: i,
+                      index: localTableColumns.indexOf(column),
                       // if after subheading col include number of subheadings to place inbetween
                     })
                   );
@@ -111,7 +123,7 @@ const ArrangeColumns = compose(
                   style={{ pointerEvents: 'none' }}
                   aria-label={column.name}
                   type="checkbox"
-                  checked={!localTableColumns[i].hidden}
+                  checked={!filteredTableColumns[i].hidden}
                 />
                 <span style={{ marginLeft: '0.3rem' }}>{column.name}</span>
               </Row>

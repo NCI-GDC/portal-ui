@@ -25,10 +25,7 @@ export const SearchTable = compose(
     tableHeader,
     dispatch,
   }) => {
-    const tableInfo = tableModels[entityType]
-      .slice()
-      .sort((a, b) => tableColumns.indexOf(a.id) - tableColumns.indexOf(b.id))
-      .filter(x => tableColumns.includes(x.id));
+    const tableInfo = tableColumns.slice().filter(x => !x.hidden);
 
     return (
       <div className="test-annotations-table">

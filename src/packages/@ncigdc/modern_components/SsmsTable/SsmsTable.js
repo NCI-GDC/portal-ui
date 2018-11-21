@@ -68,7 +68,14 @@ export default compose(
   withState('survivalLoadingId', 'setSurvivalLoadingId', ''),
   withTheme,
   withSize(),
-  connect(state => ({ tableColumns: state.tableColumns.ssms.ids })),
+  // lifecycle({
+  //   componentWillReceiveProps(nextProps) {
+  //     if (nextProps.tableColumns !== this.props.tableColumns) {
+  //       this.setState({ tableColumns: nextProps.tableColumns });
+  //     }
+  //   },
+  // }),
+  connect(state => ({ tableColumns: state.tableColumns.ssms }))
 )(
   (
     {
@@ -92,7 +99,7 @@ export default compose(
       hideSurvival,
       selectedIds,
       setSelectedIds,
-    }: TProps = {},
+    }: TProps = {}
   ) => {
     if (ssms && !ssms.hits.edges.length) {
       return <Row style={{ padding: '1rem' }}>No mutation data found.</Row>;
@@ -103,10 +110,7 @@ export default compose(
 
     const totalSsms = ssms ? ssms.hits.total : 0;
 
-    const tableInfo = tableModel
-      .slice()
-      .sort((a, b) => tableColumns.indexOf(a.id) - tableColumns.indexOf(b.id))
-      .filter(x => tableColumns.includes(x.id));
+    const tableInfo = tableColumns.slice().filter(x => !x.hidden);
 
     return (
       <span>
@@ -189,10 +193,10 @@ export default compose(
                     {tableInfo
                       .filter(x => x.td)
                       .filter(
-                        x => (hideContext ? x.id !== 'filteredCases' : true),
+                        x => (hideContext ? x.id !== 'filteredCases' : true)
                       )
                       .filter(
-                        x => (hideSurvival ? x.id !== 'survival_plot' : true),
+                        x => (hideSurvival ? x.id !== 'survival_plot' : true)
                       )
                       .map(x => (
                         <x.td
@@ -230,5 +234,5 @@ export default compose(
         />
       </span>
     );
-  },
+  }
 );

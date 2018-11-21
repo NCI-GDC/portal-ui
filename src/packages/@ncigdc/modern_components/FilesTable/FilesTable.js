@@ -1,13 +1,7 @@
 /* @flow */
 
 import React from 'react';
-import {
-  compose,
-  setDisplayName,
-  branch,
-  renderComponent,
-  lifecycle,
-} from 'recompose';
+import { compose, setDisplayName, branch, renderComponent } from 'recompose';
 import { connect } from 'react-redux';
 import Pagination from '@ncigdc/components/Pagination';
 import Showing from '@ncigdc/components/Pagination/Showing';
@@ -39,13 +33,6 @@ const RemoveButton = styled(Button, {
 export default compose(
   setDisplayName('FilesTablePresentation'),
   connect(state => ({ tableColumns: state.tableColumns.files })),
-  lifecycle({
-    componentWillReceiveProps(nextProps) {
-      if (nextProps.tableColumns !== this.props.tableColumns) {
-        this.setState({ tableColumns: nextProps.tableColumns });
-      }
-    },
-  }),
   branch(
     ({ viewer }) =>
       !viewer.repository.files.hits ||

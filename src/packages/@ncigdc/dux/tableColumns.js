@@ -71,7 +71,7 @@ const reducer = (state = initialState, action) => {
     }
 
     case tableColumns.TOGGLE_COLUMN: {
-      const { entityType, id, index } = action.payload;
+      const { entityType, index } = action.payload;
       return {
         ...state,
         [entityType]: [

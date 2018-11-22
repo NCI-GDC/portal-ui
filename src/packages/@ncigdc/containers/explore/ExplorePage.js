@@ -308,7 +308,6 @@ export const ExplorePageQuery = {
             ...on Ssm {
               ssm_id
               cosmic_id
-              gene_aa_change
               genomic_dna_change
             }
           }

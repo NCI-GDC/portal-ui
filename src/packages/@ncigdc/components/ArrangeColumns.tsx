@@ -6,7 +6,7 @@ import ArrangeIcon from 'react-icons/lib/fa/bars';
 
 import { Row } from '@ncigdc/uikit/Flex';
 import SortableItem from '@ncigdc/uikit/SortableItem';
-import tableModels from '@ncigdc/tableModels';
+// import tableModels from '@ncigdc/tableModels';
 import { toggleColumn, setColumns } from '@ncigdc/dux/tableColumns';
 import styled from '@ncigdc/theme/styled';
 
@@ -60,7 +60,7 @@ const ArrangeColumns = compose(
             key={column.id}
             updateState={nextState => {
               if (!nextState.items && state.items) {
-                let newItems = state.items.filter(i => !i.subHeading);
+                let newItems = state.items.filter(item => !item.subHeading);
                 if (subHeadings && subHeadings.length > 0) {
                   const index = filteredTableColumns.indexOf(
                     filteredTableColumns.find(t => t.subHeadingIds)
@@ -79,7 +79,7 @@ const ArrangeColumns = compose(
                   })
                 );
               }
-              setState(state => ({ filteredTableColumns, ...nextState }));
+              setState(s => ({ filteredTableColumns, ...nextState }));
             }}
             draggingIndex={state.draggingIndex}
             items={filteredTableColumns}

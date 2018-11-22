@@ -1,16 +1,17 @@
-// @flow
-
-import { createElement } from 'react';
-import { css } from 'glamor';
-import { withTheme } from './index';
-import validAttributes from './utils/validAttributes';
 import domElements from './utils/domElements';
+import validAttributes from './utils/validAttributes';
+import { css, CSSProperties } from 'glamor';
+import { withTheme } from './index';
+import { ComponentType, createElement, ReactHTML } from 'react';
 
-type TAddPropsToFunction = (value: Function | string, props: Object) => string;
+type TAddPropsToFunction = (
+  value: (props: object) => string | string,
+  props: object
+) => string;
 const addPropsToFunction: TAddPropsToFunction = (value, props) =>
   typeof value === 'function' ? value(props) : value;
 
-type TMapValues = (style: Object, props: Object) => Object;
+type TMapValues = (style: CSSProperties, props: object) => object;
 const mapValues: TMapValues = (style, props) =>
   Object.entries(style).reduce(
     (acc, [k, v]) => ({
@@ -20,12 +21,13 @@ const mapValues: TMapValues = (style, props) =>
           ? mapValues(v, props)
           : addPropsToFunction(v, props),
     }),
-    {},
+    {}
   );
 
 type TCreateStyledComponent = (
-  el: string | ReactClass<{}>,
-) => (style: Object) => ReactClass<*>;
+  el: string | ComponentType<any>
+) => (style: CSSProperties) => ComponentType<any>;
+
 const createStyledComponent: TCreateStyledComponent = el => style =>
   withTheme(({ ref, children, theme, ...props }) => {
     const validAttrProps =
@@ -39,15 +41,18 @@ const createStyledComponent: TCreateStyledComponent = el => style =>
           mapValues(style, {
             theme,
             ...props,
-          }),
+          })
         )}`,
-        ...(ref ? { ref: node => ref(node) } : {}),
+        ...ref ? { ref: node => ref(node) } : {},
       },
-      children,
+      children
     );
   });
 
-type TStyled = (el: ReactClass<{}>, style: Object) => ReactClass<{}>;
+type TStyled = (
+  el: string | ComponentType,
+  style: CSSProperties
+) => ComponentType<any> | keyof ReactHTML;
 const styled: TStyled = (el, style) => createStyledComponent(el)(style);
 domElements.forEach(el => {
   styled[el] = createStyledComponent(el);

@@ -8,7 +8,7 @@ import SuggestionFacet from '@ncigdc/components/Aggregations/SuggestionFacet';
 import FacetWrapper from '@ncigdc/components/FacetWrapper';
 import FacetHeader from '@ncigdc/components/Aggregations/FacetHeader';
 
-import type { TBucket } from '@ncigdc/components/Aggregations/types';
+import { IBucket } from '@ncigdc/components/Aggregations/types';
 
 import { withTheme } from '@ncigdc/theme';
 import escapeForRelay from '@ncigdc/utils/escapeForRelay';
@@ -91,16 +91,16 @@ const presetFacets: Array<{
 
 export type TProps = {
   aggregations: {
-    consequence__transcript__annotation__vep_impact: { buckets: [TBucket] },
-    consequence__transcript__consequence_type: { buckets: [TBucket] },
-    mutation_type: { buckets: [TBucket] },
+    consequence__transcript__annotation__vep_impact: { buckets: [IBucket] },
+    consequence__transcript__consequence_type: { buckets: [IBucket] },
+    mutation_type: { buckets: [IBucket] },
   },
   hits: {
-    edges: Array<{|
-      node: {|
+    edges: Array<{
+      node: {
         id: string,
-      |},
-    |}>,
+      },
+    }>,
   },
   setAutocomplete: Function,
   theme: Object,

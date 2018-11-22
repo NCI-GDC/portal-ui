@@ -33,7 +33,7 @@ import styled from '@ncigdc/theme/styled';
 import { withTheme } from '@ncigdc/theme';
 import caseHasMutation from '@ncigdc/utils/filters/prepared/caseHasMutation';
 import significantConsequences from '@ncigdc/utils/filters/prepared/significantConsequences';
-import type { TGroupContent, TGroupFilter } from '@ncigdc/utils/filters/types';
+import { TGroupContent, IGroupFilter } from '@ncigdc/utils/filters/types';
 import PieChart from '@ncigdc/components/Charts/PieChart';
 import { stringifyJSONParam } from '@ncigdc/utils/uri';
 
@@ -51,7 +51,7 @@ type TProps = {
   setState: Function,
   projectIds: Array<string>,
   caseCountFilters: TGroupContent,
-  fmgChartFilters: TGroupFilter,
+  fmgChartFilters: IGroupFilter,
   state: {
     numUniqueCases: number,
     topGenesWithCasesPerProject: {

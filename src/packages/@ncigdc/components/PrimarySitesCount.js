@@ -2,11 +2,11 @@
 
 import React from 'react';
 
-import type { TBucket } from '@ncigdc/components/Aggregations/types';
+import { IBucket } from '@ncigdc/components/Aggregations/types';
 
 export type TProps = {
   aggregations: {
-    primary_site: { buckets: [TBucket] },
+    primary_site: { buckets: [IBucket] },
   },
 };
 

@@ -3,6 +3,7 @@ import { isNumber, uniq } from 'lodash';
 declare var d3: Object; // requires d3 v3
 
 const padding = { left: 100, right: 300, top: 60, bottom: 30 };
+const languageLabelAdjust = 25;
 
 export default function(params) {
   const defaultDuration = params.duration || 1000;
@@ -41,7 +42,14 @@ export default function(params) {
     .attr('width', totalWidth)
     .attr('height', totalHeight)
     .append('g')
-    .attr('transform', 'translate(' + padding.left + ',' + padding.top + ')');
+    .attr(
+      'transform',
+      'translate(' +
+        (padding.left + languageLabelAdjust) +
+        ',' +
+        padding.top +
+        ')',
+    );
 
   var languagesGroup = svg.append('g').attr('id', 'languages');
   var labelsGroup = svg.append('g').attr('id', 'labels');
@@ -266,8 +274,8 @@ export default function(params) {
 
     languageLabel
       .append('rect')
-      .attr('x', -padding.left)
-      .attr('width', padding.left)
+      .attr('x', -padding.left - languageLabelAdjust)
+      .attr('width', padding.left + languageLabelAdjust)
       .attr('y', -9)
       .attr('height', 16);
 
@@ -587,8 +595,8 @@ export default function(params) {
       });
 
     labels.attr('transform', function(d) {
-      var x = xScale(d.columnId),
-        y = columnMap[d.columnId].yScale(d.value);
+      var x = xScale(d.columnId);
+      var y = columnMap[d.columnId].yScale(d.value);
 
       if (d.columnId === 'primary_site') {
         return 'translate(' + (x + 20) + ',' + y + ')';

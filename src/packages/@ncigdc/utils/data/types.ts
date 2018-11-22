@@ -1,11 +1,8 @@
-/* @flow */
-/* eslint no-use-before-define: 0 */
-
-export type TDataCategory = {|
-  case_count?: number,
-  data_category: TCategory,
-  file_count?: number,
-|};
+export interface IDataCategory {
+  case_count?: number;
+  data_category: TCategory;
+  file_count?: number;
+};
 
 // waiting on $Values
 export type TCategory =
@@ -26,10 +23,10 @@ export type TCategoryAbbr =
   | 'Bio'
   | 'Meth';
 
-export type TCategoryMap = { [k: TCategoryAbbr]: TCategory };
+export type TCategoryMap = { [k in TCategoryAbbr]: TCategory };
 
 export type TFindDataCategory = (
   category: TCategoryAbbr,
-  categories: Array<TDataCategory>,
-) => TDataCategory;
-export type TSumDataCategories = (categories: Array<TDataCategory>) => number;
+  categories: IDataCategory[]
+) => IDataCategory;
+export type TSumDataCategories = (categories: IDataCategory[]) => number;

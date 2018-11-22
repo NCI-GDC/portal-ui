@@ -1,59 +1,89 @@
-/* @flow */
-
-import React from 'react';
-
-import { Row } from '@ncigdc/uikit/Flex';
-import { Tooltip } from '@ncigdc/uikit/Tooltip';
-import { parseFilterParam } from '@ncigdc/utils/uri';
-import DownloadButton from '@ncigdc/components/DownloadButton';
 import ArrangeColumnsButton from '@ncigdc/components/ArrangeColumnsButton';
-import SortTableButton from '@ncigdc/components/SortTableButton';
-import DownloadClinicalDropdown from '@ncigdc/modern_components/DownloadClinicalDropdown';
 import DownloadBiospecimenDropdown from '@ncigdc/modern_components/DownloadBiospecimenDropdown';
-
-import { visualizingButton } from '@ncigdc/theme/mixins';
+import DownloadButton from '@ncigdc/components/DownloadButton';
+import DownloadClinicalDropdown from '@ncigdc/modern_components/DownloadClinicalDropdown';
 import DownloadTableToTsvButton from '@ncigdc/components/DownloadTableToTsvButton';
-import type { TGroupFilter } from '@ncigdc/utils/filters/types';
-import SetActions from '@ncigdc/components/SetActions';
-import { compose, withState } from 'recompose';
-import withRouter from '@ncigdc/utils/withRouter';
 import pluralize from '@ncigdc/utils/pluralize';
-import { withTheme } from '@ncigdc/theme';
+import React from 'react';
+import SetActions from '@ncigdc/components/SetActions';
 import timestamp from '@ncigdc/utils/timestamp';
+import withRouter from '@ncigdc/utils/withRouter';
+import { compose, withState } from 'recompose';
+import { IGroupFilter } from '@ncigdc/utils/filters/types';
+import { IRawQuery } from '@ncigdc/utils/uri/types';
+import { mergeQuery } from '@ncigdc/utils/filters';
+import { parseFilterParam } from '@ncigdc/utils/uri';
+import { Row } from '@ncigdc/uikit/Flex';
+import { parseJSONParam, stringifyJSONParam } from '@ncigdc/utils/uri';
+import { Tooltip } from '@ncigdc/uikit/Tooltip';
+import { visualizingButton } from '@ncigdc/theme/mixins';
+import { withTheme } from '@ncigdc/theme';
+import SortTableButton, {
+  ISortTableOption,
+  TSortTableButtonSortFunc,
+} from '@ncigdc/components/SortTableButton';
 
-import type { TRawQuery } from '@ncigdc/utils/uri/types';
+type TTableSortFuncCreator = (
+  q: IRawQuery,
+  sk: string,
+  p: ({}) => void
+) => TSortTableButtonSortFunc;
+const tableSortFuncCreator: TTableSortFuncCreator = (
+  query,
+  sortKey,
+  push
+) => selectedSort => {
 
-type TProps = {
-  type: string,
-  displayType?: string,
-  arrangeColumnKey?: string,
-  total: number,
-  sortOptions?: Array<Object>,
-  endpoint: string,
-  downloadFields: Array<string>,
-  downloadable?: boolean,
-  tsvSelector?: string,
-  tsvFilename?: string,
-  style?: Object,
-  currentFilters?: TGroupFilter,
-  downloadTooltip?: any,
-  CreateSetButton?: ReactClass<{}>,
-  RemoveFromSetButton?: ReactClass<{}>,
-  idField?: string,
-  query: TRawQuery,
-  selectedIds?: Array<string>,
+  // Construct the new query by merging existing filters/query
+  const newQuery = mergeQuery(
+    { [sortKey]: stringifyJSONParam(selectedSort) },
+    query,
+    true
+  );
+
+  // If there are filters the stringify them otherwise remove the key
+  if (Object.keys(newQuery.filters || {}).length > 0) {
+    newQuery.filters = stringifyJSONParam(newQuery.filters)
+  } else {
+    delete newQuery.filters;
+  }
+
+  // Push the new query
+  push({query: newQuery});
 };
 
-const enhance = compose(
-  withRouter,
-  withState('state', 'setState', {
-    tsvDownloading: false,
-    jsonDownloading: false,
-  }),
-  withTheme,
-);
+interface IProps {
+  type: string;
+  total: number;
+  endpoint: string;
+  downloadFields: string[];
+  query: IRawQuery;
+  push: ({}) => void;
+  displayType?: string;
+  arrangeColumnKey?: string;
+  currentFilters: IGroupFilter;
+  sortOptions?: ISortTableOption[];
+  downloadable?: boolean;
+  tsvSelector?: string;
+  tsvFilename?: string;
+  style?: React.CSSProperties;
+  CreateSetButton?: React.ComponentType;
+  RemoveFromSetButton?: React.ComponentType;
+  idField?: string;
+  selectedIds?: string[];
+  theme?: object;
+  totalCases?: number;
+  // Todo: type these properly
+  downloadTooltip?: any;
+  sort?: any;
+  score?: any;
+  scope?: any;
+  AppendSetButton?: any;
+  downloadClinical?: any;
+  downloadBiospecimen?: any;
+}
 
-const TableActions = ({
+const TableActions: React.SFC<IProps> = ({
   type,
   displayType = type,
   arrangeColumnKey,
@@ -66,24 +96,31 @@ const TableActions = ({
   tsvFilename,
   style,
   currentFilters,
-  sort,
-  score,
   downloadTooltip = 'Export All',
   CreateSetButton,
-  AppendSetButton,
   RemoveFromSetButton,
   idField,
   query,
+  push,
   selectedIds,
+  sort,
+  score,
+  AppendSetButton,
   scope,
   downloadClinical,
   downloadBiospecimen,
   theme,
   totalCases,
-}: TProps) => {
-  const fieldContains = ({ currentFilters, field }) => {
-    return ((currentFilters || {}).content || []).some(f =>
-      f.content.field.includes(field),
+}: IProps) => {
+  const fieldContains = ({
+    filters,
+    field,
+  }: {
+    filters: IGroupFilter;
+    field: string;
+  }) => {
+    return ((filters || {}).content || []).some(f =>
+      f.content.field.includes(field)
     );
   };
   return (
@@ -96,10 +133,10 @@ const TableActions = ({
       )}
       {sortOptions && (
         <SortTableButton
-          isDisabled={!sortOptions.length}
+          sortFunction={tableSortFuncCreator(query, `${type}s_sort`, push)}
           options={sortOptions}
-          query={query || {}}
-          sortKey={`${type}s_sort`}
+          initialState={query[`${type}s_sort`] ? {sortSelection: parseJSONParam(query[`${type}s_sort`])} : {sortSelection: []}}
+          isDisabled={!sortOptions.length}
           style={visualizingButton}
         />
       )}
@@ -114,8 +151,11 @@ const TableActions = ({
           inactiveText={'Biospecimen'}
           shouldCreateSet={
             (scope === 'explore' &&
-              fieldContains({ currentFilters, field: 'gene' })) ||
-            fieldContains({ currentFilters, field: 'ssms' })
+              fieldContains({
+                filters: { ...currentFilters },
+                field: 'gene',
+              })) ||
+            fieldContains({ filters: { ...currentFilters }, field: 'ssms' })
           }
           selectedIds={selectedIds}
         />
@@ -182,4 +222,11 @@ const TableActions = ({
   );
 };
 
-export default enhance(TableActions);
+export default compose(
+  withRouter,
+  withState('state', 'setState', {
+    tsvDownloading: false,
+    jsonDownloading: false,
+  }),
+  withTheme
+)(TableActions);

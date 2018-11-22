@@ -4,7 +4,7 @@
 import React from 'react';
 import _ from 'lodash';
 import entityShortnameMapping from '@ncigdc/utils/entityShortnameMapping';
-import type { TSearchHit } from './types';
+import { ISearchHit } from './types';
 import { internalHighlight } from '@ncigdc/uikit/Highlight';
 
 const styles = {
@@ -130,7 +130,7 @@ export const ResultHighlights = ({
 };
 
 type TProps = {
-  results: TSearchHit[],
+  results: ISearchHit[],
   query: string,
   onSelectItem: Function,
   onActivateItem: Function,

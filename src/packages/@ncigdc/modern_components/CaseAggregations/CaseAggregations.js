@@ -22,7 +22,7 @@ import tryParseJSON from '@ncigdc/utils/tryParseJSON';
 import FacetHeader from '@ncigdc/components/Aggregations/FacetHeader';
 import { UploadCaseSet } from '@ncigdc/components/Modals/UploadSet';
 
-import type { TBucket } from '@ncigdc/components/Aggregations/types';
+import { IBucket } from '@ncigdc/components/Aggregations/types';
 
 export type TProps = {
   caseIdCollapsed: boolean,
@@ -31,28 +31,28 @@ export type TProps = {
   facets: { facets: string },
   parsedFacets: Object,
   aggregations: {
-    demographic__ethnicity: { buckets: [TBucket] },
-    demographic__gender: { buckets: [TBucket] },
-    demographic__race: { buckets: [TBucket] },
-    diagnoses__vital_status: { buckets: [TBucket] },
+    demographic__ethnicity: { buckets: [IBucket] },
+    demographic__gender: { buckets: [IBucket] },
+    demographic__race: { buckets: [IBucket] },
+    diagnoses__vital_status: { buckets: [IBucket] },
     diagnoses__days_to_death: { stats: { max: number, min: number } },
     diagnoses__age_at_diagnosis: { stats: { max: number, min: number } },
-    disease_type: { buckets: [TBucket] },
-    primary_site: { buckets: [TBucket] },
-    project__program__name: { buckets: [TBucket] },
-    project__project_id: { buckets: [TBucket] },
+    disease_type: { buckets: [IBucket] },
+    primary_site: { buckets: [IBucket] },
+    project__program__name: { buckets: [IBucket] },
+    project__project_id: { buckets: [IBucket] },
   },
   setAutocomplete: Function,
   theme: Object,
   suggestions: Array<Object>,
 
-  userSelectedFacets: Array<{|
+  userSelectedFacets: Array<{
     description: String,
     doc_type: String,
     field: String,
     full: String,
     type: 'id' | 'string' | 'long',
-  |}>,
+  }>,
   handleSelectFacet: Function,
   handleResetFacets: Function,
   handleRequestRemoveFacet: Function,

@@ -3,11 +3,11 @@ import React from 'react';
 
 import withTooltip from './withTooltip';
 
-type TProps = {|
+type TProps = {
   Component: any,
   children: any,
   setTooltip: Function,
-|};
+};
 
 const Tooltip = ({ Component, children, setTooltip, ...props }: TProps) => (
   <span

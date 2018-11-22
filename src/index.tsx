@@ -1,12 +1,7 @@
-/* @flow */
-
 import 'babel-polyfill';
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-
-global.trace = require('@ncigdc/utils/trace').default;
-
-const Root = require('./Root').default;
+import Root from './Root';
 
 ReactDOM.render(<Root />, document.getElementById('root'));

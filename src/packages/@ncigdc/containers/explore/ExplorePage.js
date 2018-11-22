@@ -73,7 +73,7 @@ function setVariables({ relay, filters }) {
           { op: 'not', content: { field: 'cosmic_id', value: ['MISSING'] } },
         ],
       },
-      filters,
+      filters
     ),
     dbsnpRsFilters: replaceFilters(
       {
@@ -88,7 +88,7 @@ function setVariables({ relay, filters }) {
           },
         ],
       },
-      filters,
+      filters
     ),
   });
 }
@@ -104,7 +104,7 @@ const enhance = compose(
         setVariables(nextProps);
       }
     },
-  }),
+  })
 );
 export const ExplorePageComponent = ({
   viewer,
@@ -127,7 +127,7 @@ export const ExplorePageComponent = ({
             setAutocomplete={(value, onReadyStateChange) =>
               relay.setVariables(
                 { idAutocompleteCases: value, runAutocompleteCases: !!value },
-                onReadyStateChange,
+                onReadyStateChange
               )}
           />
         ),
@@ -143,7 +143,7 @@ export const ExplorePageComponent = ({
             setAutocomplete={(value, onReadyStateChange) =>
               relay.setVariables(
                 { idAutocompleteGenes: value, runAutocompleteGenes: !!value },
-                onReadyStateChange,
+                onReadyStateChange
               )}
           />
         ),
@@ -160,7 +160,7 @@ export const ExplorePageComponent = ({
             setAutocomplete={(value, onReadyStateChange) =>
               relay.setVariables(
                 { idAutocompleteSsms: value, runAutocompleteSsms: !!value },
-                onReadyStateChange,
+                onReadyStateChange
               )}
           />
         ),
@@ -310,19 +310,6 @@ export const ExplorePageQuery = {
               cosmic_id
               gene_aa_change
               genomic_dna_change
-              consequence {
-                hits(first: 99) {
-                  edges {
-                    node {
-                      transcript {
-                          annotation {
-                            dbsnp_rs
-                          }
-                      }
-                    }
-                  }
-                }
-              }
             }
           }
         }
@@ -376,7 +363,7 @@ export const ExplorePageQuery = {
 
 const ExplorePage = Relay.createContainer(
   enhance(ExplorePageComponent),
-  ExplorePageQuery,
+  ExplorePageQuery
 );
 
 export default ExplorePage;

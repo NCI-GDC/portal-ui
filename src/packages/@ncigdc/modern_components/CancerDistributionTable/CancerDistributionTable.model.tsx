@@ -136,7 +136,7 @@ const CancerDistributionTableModel: TCancerDistributionTableModel = ({
   ...((tableType !== 'ssm'
     ? [
         {
-          name: 'CNV Gain',
+          name: 'CNV Gains',
           id: 'num_cnv_gain',
           sortable: true,
           downloadable: true,
@@ -169,7 +169,7 @@ const CancerDistributionTableModel: TCancerDistributionTableModel = ({
           ),
         },
         {
-          name: 'CNV Loss',
+          name: 'CNV Losses',
           id: 'num_cnv_loss',
           sortable: true,
           downloadable: true,

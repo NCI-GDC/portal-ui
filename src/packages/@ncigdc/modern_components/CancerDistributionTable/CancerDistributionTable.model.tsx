@@ -49,7 +49,7 @@ const CancerDistributionTableModel: TCancerDistributionTableModel = ({
     td: ({ node }) => node.project_id,
   },
   {
-    name: 'Affected Cases',
+    name: 'SSM Affected Cases',
     id: 'num_affected_cases_percent',
     sortable: true,
     downloadable: true,

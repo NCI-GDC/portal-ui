@@ -207,7 +207,12 @@ export default compose<ICDTWrappedProps, TCancerDistributionTableProps>(
             tableId="cancer-distribution-table"
             headings={visibleCols.map(({ id, th }, idx) => ({
               key: id,
-              title: th({style: visibleCols.length - 1 ? { justifyContent: 'flex-end' } : {}}),
+              title: th({
+                style:
+                  idx === visibleCols.length - 1
+                    ? { justifyContent: 'flex-end' }
+                    : {},
+              }),
               style:
                 idx === visibleCols.length - 1 ? { textAlign: 'right' } : {},
             }))}

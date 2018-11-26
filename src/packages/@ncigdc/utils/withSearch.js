@@ -6,7 +6,6 @@ import withRouter from '@ncigdc/utils/withRouter';
 import { fetchApi } from '@ncigdc/utils/ajax';
 import withPropsOnChange from '@ncigdc/utils/withPropsOnChange';
 import { TSearchHit } from '@ncigdc/components/QuickSearch/types';
-import { IS_AUTH_PORTAL } from '@ncigdc/utils/constants';
 
 const throttledInvoker = _.throttle(fn => fn(), 300, { leading: false });
 

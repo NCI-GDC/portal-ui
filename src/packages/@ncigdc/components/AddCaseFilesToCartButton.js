@@ -11,10 +11,7 @@ import DropdownItem from '@ncigdc/uikit/DropdownItem';
 import ShoppingCartIcon from '@ncigdc/theme/icons/ShoppingCart';
 import TrashIcon from 'react-icons/lib/fa/trash';
 import { Tooltip } from '@ncigdc/uikit/Tooltip';
-import {
-  addAllFilesInCart,
-  removeFilesFromCart,
-} from '@ncigdc/dux/cart';
+import { addAllFilesInCart, removeFilesFromCart } from '@ncigdc/dux/cart';
 import withFilters from '@ncigdc/utils/withFilters';
 import { fetchApi } from '@ncigdc/utils/ajax';
 import { makeFilter, addInFilters } from '@ncigdc/utils/filters';
@@ -28,14 +25,6 @@ const styles = {
     marginRight: '1em',
   },
 };
-
-// const fetchFiles = async (caseId: string, size, filters?: Object) => {
-//   const caseFilters = replaceFilters(
-//     makeFilter([{ field: 'cases.case_id', value: [caseId] }]),
-//     filters,
-//   );
-//   return await fetchCartFiles(caseFilters, size);
-// };
 
 const fetchFiles = async (caseId: string, size, filters?: Object) => {
   const search = stringify({

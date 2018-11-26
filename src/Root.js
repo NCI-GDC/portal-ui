@@ -24,6 +24,7 @@ import { API, IS_AUTH_PORTAL } from '@ncigdc/utils/constants';
 import { fetchUser, forceLogout } from '@ncigdc/dux/auth';
 import Login from '@ncigdc/routes/Login';
 import { redirectToLogin } from '@ncigdc/utils/auth';
+import consoleDebug from '@ncigdc/utils/consoleDebug';
 
 const retryStatusCodes = [500, 503, 504];
 
@@ -75,7 +76,7 @@ Relay.injectNetworkLayer(
       return next(req)
         .then(res => {
           if (!res.ok && !retryStatusCodes.includes(res.status)) {
-            console.log('throwing error in Root');
+            consoleDebug('Throwing error in Root');
             throw res;
           }
 
@@ -101,10 +102,10 @@ Relay.injectNetworkLayer(
         .catch(err => {
           let { user } = window.store.getState().auth;
           if (err.name === 'AccessError') {
-            console.log('access error message: ', err.message);
+            consoleDebug(`Access error message: ${err.message}`);
             return redirectToLogin(err.message);
           } else {
-            console.log('Something went wrong in Root', err);
+            consoleDebug(`Something went wrong in Root network layer: ${err}`);
             // not able to pass the response status from throw so need to exclude by error message
             let errorMessage = err.message
               ? JSON.parse(err.message).message
@@ -168,20 +169,20 @@ const Root = (props: mixed) => (
                 <HasUser>
                   {({ user, failed, error }) => {
                     // if user request fails
-                    console.log('root component user: ', user);
+                    consoleDebug('Root component user: ', user);
                     if (
                       failed &&
                       error.message === 'Session timed out or not authorized'
                     ) {
-                      console.log('user request failed with error message');
+                      consoleDebug('User request failed with error message');
                       return <Redirect to="/login?error=timeout" />;
                     }
                     if (failed) {
-                      console.log('user request failed');
+                      consoleDebug('User request failed');
                       return <Redirect to="/login" />;
                     }
                     if (user) {
-                      console.log('has a user, rendering container');
+                      consoleDebug('Has a user, rendering container');
                       return (
                         <Relay.Renderer
                           Container={Portal}
@@ -190,8 +191,8 @@ const Root = (props: mixed) => (
                         />
                       );
                     }
-                    console.log(
-                      'does not match any criteria, redirecting to login',
+                    consoleDebug(
+                      'Response does not match any criteria, redirecting to login',
                     );
                     return <Redirect to="/login" />;
                   }}

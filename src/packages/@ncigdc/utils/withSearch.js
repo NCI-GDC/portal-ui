@@ -5,7 +5,7 @@ import { compose, withState, withHandlers, withProps } from 'recompose';
 import withRouter from '@ncigdc/utils/withRouter';
 import { fetchApi } from '@ncigdc/utils/ajax';
 import withPropsOnChange from '@ncigdc/utils/withPropsOnChange';
-import { TSearchHit } from '@ncigdc/components/QuickSearch/types';
+import { ISearchHit } from '@ncigdc/components/QuickSearch/types';
 
 const throttledInvoker = _.throttle(fn => fn(), 300, { leading: false });
 

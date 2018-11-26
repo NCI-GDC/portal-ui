@@ -92,22 +92,17 @@ const initialState: State = {
 export default handleActions(
   {
     [REHYDRATE]: (state, action) => {
-      console.log('rehydrate state: ', state);
-      console.log('rehydrate action: ', action);
       return {
         ...state,
         ...action.payload.auth,
       };
     },
-    [USER_REQUEST]: state => (
-      console.log(state.user),
-      {
-        ...state,
-        isFetching: true,
-        user: state.user,
-        error: {},
-      }
-    ),
+    [USER_REQUEST]: state => ({
+      ...state,
+      isFetching: true,
+      user: state.user,
+      error: {},
+    }),
     [USER_SUCCESS]: (state, action) => ({
       ...state,
       isFetching: false,

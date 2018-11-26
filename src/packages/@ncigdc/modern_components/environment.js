@@ -11,6 +11,7 @@ const simpleCache = {};
 const pendingCache = {};
 const handlerProvider = null;
 import { redirectToLogin } from '@ncigdc/utils/auth';
+import consoleDebug from '@ncigdc/utils/consoleDebug';
 
 function fetchQuery(operation, variables, cacheConfig) {
   const body = JSON.stringify({
@@ -63,7 +64,7 @@ function fetchQuery(operation, variables, cacheConfig) {
       .json()
       .then(json => {
         if (!response.ok) {
-          console.log('throwing error in Environment');
+          consoleDebug('throwing error in Environment');
           throw response;
         }
 
@@ -80,20 +81,22 @@ function fetchQuery(operation, variables, cacheConfig) {
           switch (err.status) {
             case 401:
             case 403:
-              console.log(err.statusText);
+              consoleDebug(err.statusText);
               if (IS_AUTH_PORTAL) {
                 return redirectToLogin('timeout');
               }
               break;
             case 400:
             case 404:
-              console.log(err.statusText);
+              consoleDebug(err.statusText);
               break;
             default:
-              return console.log('there was an error', err.statusText);
+              return consoleDebug(`Default error case: ${err.statusText}`);
           }
         } else {
-          console.log('Something went wrong in environment: ', err);
+          consoleDebug(
+            `Something went wrong in environment, but no error status: ${err}`,
+          );
         }
       }),
   );

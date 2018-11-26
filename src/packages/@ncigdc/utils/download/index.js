@@ -1,9 +1,6 @@
 // @flow
 
 import React from 'react';
-// TODO change this
-// import { store } from '../../../../Portal';
-
 import _ from 'lodash';
 import Cookies from 'js-cookie';
 

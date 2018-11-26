@@ -5,17 +5,20 @@ import { connect } from 'react-redux';
 import Cookies from 'js-cookie';
 import { compose, lifecycle } from 'recompose';
 import Header from '@ncigdc/components/Header';
+import AWGHeader from '@ncigdc/components/AWGHeader';
 import Footer from '@ncigdc/components/Footer';
 import NotificationContainer from '@ncigdc/components/NotificationContainer';
 import RelayLoadingContainer from '@ncigdc/components/RelayLoadingContainer';
 import ProgressContainer from '@ncigdc/components/ProgressContainer';
 import ModalContainer from '@ncigdc/components/ModalContainer';
 import Routes from '@ncigdc/routes';
+import AWGRoutes from '@ncigdc/routes/AWGRoutes';
 import withRouter from '@ncigdc/utils/withRouter';
 import { GlobalTooltip } from '@ncigdc/uikit/Tooltip';
 import styled from '@ncigdc/theme/styled';
 import { setModal } from '@ncigdc/dux/modal';
 import FirstTimeModal from '@ncigdc/components/Modals/FirstTimeModal';
+import { AWG } from '@ncigdc/utils/constants';
 
 const SkipLink = styled.a({
   position: 'absolute',
@@ -78,7 +81,7 @@ const PortalContainer = ({
   >
     <SkipLink href="#skip">Skip to Main Content</SkipLink>
     <ProgressContainer />
-    <Header />
+    {AWG ? <AWGHeader /> : <Header />}
     <div
       id="skip"
       role="main"
@@ -89,7 +92,7 @@ const PortalContainer = ({
         transition: 'padding 0.25s ease',
       }}
     >
-      <Routes />
+      {AWG ? <AWGRoutes /> : <Routes />}
     </div>
     <Footer />
     <RelayLoadingContainer />

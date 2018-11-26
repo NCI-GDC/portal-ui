@@ -1,9 +1,10 @@
 /* @flow */
+import { handleActions } from 'redux-actions';
+import { REHYDRATE } from 'redux-persist/constants';
 
 import { saveAs } from 'filesaver.js';
-import { handleActions } from 'redux-actions';
 import { fetchAuth } from '@ncigdc/utils/ajax';
-import { FAKE_USER, IS_DEV } from '@ncigdc/utils/constants';
+import { FAKE_USER, IS_DEV, AWG } from '@ncigdc/utils/constants';
 export type State = { isFetching: boolean, user: ?Object, error?: Object };
 export type Action = { type: string, payload: any };
 
@@ -74,7 +75,7 @@ export function fetchToken() {
       },
       TOKEN_FAILURE,
     ],
-    endpoint: 'token/refresh',
+    endpoint: AWG ? 'token/refresh/awg' : 'token/refresh',
   });
 }
 
@@ -85,14 +86,21 @@ const initialState: State = {
   error: {},
   isFetchingToken: false,
   token: undefined,
+  failed: false,
 };
 
 export default handleActions(
   {
+    [REHYDRATE]: (state, action) => {
+      return {
+        ...state,
+        ...action.payload.auth,
+      };
+    },
     [USER_REQUEST]: state => ({
       ...state,
       isFetching: true,
-      user: null,
+      user: state.user,
       error: {},
     }),
     [USER_SUCCESS]: (state, action) => ({
@@ -101,6 +109,7 @@ export default handleActions(
       user: action.error ? null : action.payload,
       error: action.error ? action.payload : {},
       firstLoad: false,
+      failed: false,
     }),
     [USER_FAILURE]: (state, action) => ({
       ...state,
@@ -108,6 +117,7 @@ export default handleActions(
       error: action.payload,
       user: null,
       firstLoad: false,
+      failed: true,
     }),
     [TOKEN_REQUEST]: state => ({
       ...state,

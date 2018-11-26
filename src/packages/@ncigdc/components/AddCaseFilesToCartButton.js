@@ -14,7 +14,6 @@ import { Tooltip } from '@ncigdc/uikit/Tooltip';
 import {
   addAllFilesInCart,
   removeFilesFromCart,
-  fetchCartFiles,
 } from '@ncigdc/dux/cart';
 import withFilters from '@ncigdc/utils/withFilters';
 import { fetchApi } from '@ncigdc/utils/ajax';
@@ -30,12 +29,40 @@ const styles = {
   },
 };
 
+// const fetchFiles = async (caseId: string, size, filters?: Object) => {
+//   const caseFilters = replaceFilters(
+//     makeFilter([{ field: 'cases.case_id', value: [caseId] }]),
+//     filters,
+//   );
+//   return await fetchCartFiles(caseFilters, size);
+// };
+
 const fetchFiles = async (caseId: string, size, filters?: Object) => {
-  const caseFilters = replaceFilters(
-    makeFilter([{ field: 'cases.case_id', value: [caseId] }]),
-    filters,
-  );
-  return await fetchCartFiles(caseFilters, size);
+  const search = stringify({
+    filters: JSON.stringify(
+      addInFilters(
+        filters,
+        makeFilter(
+          [
+            {
+              field: 'cases.case_id',
+              value: [caseId],
+            },
+          ],
+          false,
+        ),
+      ),
+    ),
+    size,
+    fields: 'acl,state,access,file_id,file_size,cases.project.project_id',
+  });
+
+  const { data } = await fetchApi(`files?${search}`);
+  const files = data.hits.map(({ cases, ...rest }) => ({
+    ...rest,
+    projects: cases.map(({ project: { project_id } }) => project_id),
+  }));
+  return files;
 };
 
 const AddCaseFilesToCartButton = compose(

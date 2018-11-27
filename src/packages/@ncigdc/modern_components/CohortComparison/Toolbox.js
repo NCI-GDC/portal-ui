@@ -54,14 +54,14 @@ export default withTheme(
     <div
       style={{
         top: 180,
-        bottom: 240,
-        overflowY: 'auto',
+        // bottom: 240,
+        // overflowY: 'auto',
         padding: 20,
-        marginTop: 20,
-        width: '20%',
-        position: 'fixed',
+        // marginTop: 20,
+        width: '80%',
+        // position: 'fixed',
         backgroundColor: 'white',
-        zIndex: 1000,
+        // zIndex: 1000,
         minWidth: 220,
         ...zDepth1,
       }}

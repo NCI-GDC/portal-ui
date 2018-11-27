@@ -3,7 +3,7 @@ import { union, truncate } from 'lodash';
 import { connect } from 'react-redux';
 import { compose, withState, withProps } from 'recompose';
 import { withTheme } from '@ncigdc/theme';
-import { Row } from '@ncigdc/uikit/Flex';
+import { Row, Column } from '@ncigdc/uikit/Flex';
 import withPropsOnChange from '@ncigdc/utils/withPropsOnChange';
 import { getDefaultCurve } from '@ncigdc/utils/survivalplot';
 import { buildOps } from '@ncigdc/components/Charts/Venn';
@@ -157,33 +157,44 @@ export default compose(
 
     const availableFacets = Object.entries(COHORT_COMPARISON_FACETS);
     return (
-      <Row>
-        <div style={{ maxWidth: 1000, padding: '2rem 3rem', width: '70%' }}>
-          <Row
-            style={{
-              alignItems: 'center',
-              margin: '20px 0',
-              justifyContent: 'space-between',
-            }}
-          >
-            <div>
-              <h1 style={{ margin: 0 }}>Cohort Comparison</h1>
+      <Column style={{ marginBottom: '1rem' }}>
+        <Row
+          style={{
+            alignItems: 'center',
+            margin: '20px 0',
+            justifyContent: 'space-between',
+            padding: '2rem 3rem',
+          }}
+        >
+          <div>
+            <h1 style={{ margin: 0 }}>Cohort Comparison</h1>
 
-              {(result1.hits.total === 0 || result2.hits.total === 0) &&
-                `Analysis is deprecated because it contains one or more deprecated sets (${[
-                  ...(result1.hits.total === 0 ? [setName1] : []),
-                  ...(result2.hits.total === 0 ? [setName2] : []),
-                ].join(', ')})`}
-              {message && <div style={{ fontStyle: 'italic' }}>{message}</div>}
-            </div>
-          </Row>
-          {result1.hits.total !== 0 &&
-            result2.hits.total !== 0 && (
-              <span>
+            {(result1.hits.total === 0 || result2.hits.total === 0) &&
+              `Analysis is deprecated because it contains one or more deprecated sets (${[
+                ...(result1.hits.total === 0 ? [setName1] : []),
+                ...(result2.hits.total === 0 ? [setName2] : []),
+              ].join(', ')})`}
+            {message && <div style={{ fontStyle: 'italic' }}>{message}</div>}
+          </div>
+        </Row>
+        {result1.hits.total !== 0 &&
+          result2.hits.total !== 0 && (
+            <Row>
+              <Column
+                style={{
+                  width: '65%',
+                  // minWidth: 1000,
+                  padding: '0 3rem',
+                  height: 1000,
+                  overflow: 'scroll',
+                  marginTop: 1,
+                }}
+              >
                 <div
                   className="facet-container"
                   style={{
                     display: 'block',
+                    marginTop: 1,
                   }}
                 >
                   <Survival
@@ -234,37 +245,31 @@ export default compose(
                       palette: [SET1_COLOUR, SET2_COLOUR],
                     }),
                   )}
-                <div
-                  // padding on bottom of page for toolbox
-                  style={{ height: '200px' }}
+              </Column>
+
+              <div style={{ flex: 1, width: '25%', marginTop: 1 }}>
+                <Toolbox
+                  {...{
+                    theme,
+                    ops,
+                    sets,
+                    availableFacets,
+                    activeFacets,
+                    showSurvival,
+                    survivalHasData: loadingSurvival || survivalHasData,
+                    toggleSurvival,
+                    Set1,
+                    Set2,
+                    setId1,
+                    setId2,
+                    result1,
+                    result2,
+                  }}
                 />
-              </span>
-            )}
-        </div>
-        {result1.hits.total !== 0 &&
-          result2.hits.total !== 0 && (
-            <div style={{ flex: 1 }}>
-              <Toolbox
-                {...{
-                  theme,
-                  ops,
-                  sets,
-                  availableFacets,
-                  activeFacets,
-                  showSurvival,
-                  survivalHasData: loadingSurvival || survivalHasData,
-                  toggleSurvival,
-                  Set1,
-                  Set2,
-                  setId1,
-                  setId2,
-                  result1,
-                  result2,
-                }}
-              />
-            </div>
+              </div>
+            </Row>
           )}
-      </Row>
+      </Column>
     );
   },
 );

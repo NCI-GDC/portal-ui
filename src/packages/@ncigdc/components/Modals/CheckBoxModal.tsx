@@ -79,6 +79,16 @@ const CheckBoxModal = ({
               I agree to have read and understand study-specific Data Use
               Agreements and to comply with any additional restrictions therein.
             </li>
+            <li>
+              I agree to abide by the{' '}
+              <a
+                href="https://osp.od.nih.gov/scientific-sharing/policies/"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                NIH Genomic Data Sharing Policy (GDS)
+              </a>.
+            </li>
           </ul>
         </div>
       )}

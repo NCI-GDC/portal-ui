@@ -33,7 +33,6 @@ const tableSortFuncCreator: TTableSortFuncCreator = (
   sortKey,
   push
 ) => selectedSort => {
-
   // Construct the new query by merging existing filters/query
   const newQuery = mergeQuery(
     { [sortKey]: stringifyJSONParam(selectedSort) },
@@ -43,13 +42,13 @@ const tableSortFuncCreator: TTableSortFuncCreator = (
 
   // If there are filters the stringify them otherwise remove the key
   if (Object.keys(newQuery.filters || {}).length > 0) {
-    newQuery.filters = stringifyJSONParam(newQuery.filters)
+    newQuery.filters = stringifyJSONParam(newQuery.filters);
   } else {
     delete newQuery.filters;
   }
 
   // Push the new query
-  push({query: newQuery});
+  push({ query: newQuery });
 };
 
 interface IProps {
@@ -57,7 +56,7 @@ interface IProps {
   total: number;
   endpoint: string;
   downloadFields: string[];
-  query: IRawQuery;
+  query?: IRawQuery;
   push: ({}) => void;
   displayType?: string;
   arrangeColumnKey?: string;
@@ -100,7 +99,7 @@ const TableActions: React.SFC<IProps> = ({
   CreateSetButton,
   RemoveFromSetButton,
   idField,
-  query,
+  query = {},
   push,
   selectedIds,
   sort,
@@ -135,7 +134,11 @@ const TableActions: React.SFC<IProps> = ({
         <SortTableButton
           sortFunction={tableSortFuncCreator(query, `${type}s_sort`, push)}
           options={sortOptions}
-          initialState={query[`${type}s_sort`] ? {sortSelection: parseJSONParam(query[`${type}s_sort`])} : {sortSelection: []}}
+          initialState={
+            query[`${type}s_sort`]
+              ? { sortSelection: parseJSONParam(query[`${type}s_sort`]) }
+              : { sortSelection: [] }
+          }
           isDisabled={!sortOptions.length}
           style={visualizingButton}
         />
@@ -222,7 +225,7 @@ const TableActions: React.SFC<IProps> = ({
   );
 };
 
-export default compose(
+export default compose<any, any>(
   withRouter,
   withState('state', 'setState', {
     tsvDownloading: false,

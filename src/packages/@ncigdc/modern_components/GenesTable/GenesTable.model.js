@@ -1,5 +1,3 @@
-// @flow
-
 import React from 'react';
 import { scaleOrdinal, schemeCategory10 } from 'd3';
 import { Th, Td, ThNum, TdNum } from '@ncigdc/uikit/Table';
@@ -52,8 +50,8 @@ const GenesTableModel = [
       node,
       defaultFilters,
     }: {
-      node: Object,
-      defaultFilters: IGroupFilter,
+      node: object;
+      defaultFilters: IGroupFilter;
     }) => {
       return (
         <Td>
@@ -141,7 +139,7 @@ const GenesTableModel = [
                   },
                 ],
               },
-              query.genesTable_filters || defaultFilters,
+              query.genesTable_filters || defaultFilters
             )}
           >
             {(node.numCases || 0).toLocaleString()}
@@ -159,8 +157,8 @@ const GenesTableModel = [
                       field: 'cases.available_variation_data',
                       value: ['ssm'],
                     },
-                  ]),
-                ),
+                  ])
+                )
               ),
             }}
           >
@@ -383,7 +381,7 @@ const GenesTableModel = [
           ssmCount={ssmCounts[node.gene_id]}
           filters={addInFilters(
             defaultFilters,
-            makeFilter([{ field: 'genes.gene_id', value: [node.gene_id] }]),
+            makeFilter([{ field: 'genes.gene_id', value: [node.gene_id] }])
           )}
         />
       </TdNum>

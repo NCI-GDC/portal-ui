@@ -1,4 +1,52 @@
-const theme = {
+export interface IThemeProps {
+  primary: string,
+  primaryLight1: string,
+  success: string,
+  error: string,
+  secondary: string,
+  secondaryHighContrast: string,
+  textShadow: string,
+  white: string,
+  greyScale7: string,
+  greyScale6: string,
+  greyScale5: string,
+  greyScale4: string,
+  greyScale3: string,
+  greyScale2: string,
+  greyScale1: string,
+  impacts: {
+    HIGH: string,
+    MODERATE: string,
+    LOW: string,
+    MODIFIER: string,
+  },
+  vep: {
+    high: string,
+    moderate: string,
+    modifier: string,
+    low: string,
+  },
+  sift: {
+    deleterious: string,
+    deleterious_low_confidence: string,
+    tolerated: string,
+    tolerated_low_confidence: string,
+  },
+  polyphen: {
+    benign: string,
+    possibly_damaging: string,
+    probably_damaging: string,
+    unknown: string,
+  },
+  alertInfo: string,
+  tableStripe: string,
+  tableHighlight: string,
+  facetsPanelWidth: string,
+  headerPosition: string,
+  spacing: string,
+}
+
+const theme: IThemeProps = {
   /*
    *  Colors
    */

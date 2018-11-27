@@ -1,28 +1,41 @@
-// @flow
 import React from 'react';
 import { connect } from 'react-redux';
 import { compose, withState, pure, lifecycle } from 'recompose';
 import ArrangeIcon from 'react-icons/lib/fa/bars';
-
+import { IThemeProps } from '@ncigdc/theme/versions/active';
 import { Row } from '@ncigdc/uikit/Flex';
 import SortableItem from '@ncigdc/uikit/SortableItem';
 // import tableModels from '@ncigdc/tableModels';
-import { toggleColumn, setColumns } from '@ncigdc/dux/tableColumns';
+import {
+  toggleColumn,
+  setColumns,
+  ITableColumnsAction,
+} from '@ncigdc/dux/tableColumns';
 import styled from '@ncigdc/theme/styled';
 
 const SortRow = styled(Row, {
   alignItems: 'center',
   padding: '0.3rem 0.6rem',
   ':hover': {
-    backgroundColor: ({ theme }) => theme.greyScale6,
+    backgroundColor: (theme: IThemeProps): string => {
+      return theme.greyScale6;
+    },
   },
 });
-
-const ArrangeColumns = compose(
-  connect((state, props) => ({
+interface IArrangeColumnsProps {
+  dispatch: (action: ITableColumnsAction) => void;
+  localTableColumns: { [x: string]: any };
+  filteredTableColumns: { [x: string]: any };
+  setState: (props: { [x: string]: any }) => any;
+  state: { [x: string]: any };
+  searchTerm: string;
+  entityType: string;
+}
+const ArrangeColumns = compose<IArrangeColumnsProps, JSX.Element>(
+  connect((state: { [x: string]: any }, props: { [x: string]: any }) => ({
     localTableColumns: state.tableColumns[props.entityType],
     filteredTableColumns: state.tableColumns[props.entityType].filter(
-      t => !t.subHeading
+      (t: any) => !t.subHeading
     ),
   })),
   withState('state', 'setState', props => ({
@@ -30,11 +43,11 @@ const ArrangeColumns = compose(
     // localTableColumns: props.localTableColumns,
   })),
   lifecycle({
-    componentWillReceiveProps(nextProps) {
+    componentWillReceiveProps(nextProps: { [x: string]: any }) {
       if (nextProps.localTableColumns !== this.props.localTableColumns) {
         nextProps.setState({
           filteredTableColumns: this.props.localTableColumns.filter(
-            t => !t.subHeading
+            (t: any) => !t.subHeading
           ),
         });
       }
@@ -51,27 +64,28 @@ const ArrangeColumns = compose(
     searchTerm,
     entityType,
   }) => {
-    const subHeadings = localTableColumns.filter(t => t.subHeading) || [];
+    const subHeadings =
+      localTableColumns.filter((t: any) => t.subHeading) || [];
     return (
       <div className="test-arrange-columns">
-        {filteredTableColumns.map((column, i) => (
+        {filteredTableColumns.map((column: any, i: number) => (
           <SortableItem
             className="test-column"
             key={column.id}
-            updateState={nextState => {
+            updateState={(nextState: any) => {
               if (!nextState.items && state.items) {
-                let newItems = state.items.filter(item => !item.subHeading);
+                let newItems: any = state.items.filter(
+                  (item: any) => !item.subHeading
+                );
                 if (subHeadings && subHeadings.length > 0) {
-                  const index = filteredTableColumns.indexOf(
-                    filteredTableColumns.find(t => t.subHeadingIds)
+                  const index: number = filteredTableColumns.indexOf(
+                    filteredTableColumns.find((t: any) => t.subHeadingIds)
                   );
-                  console.log('items', newItems, index);
                   newItems = newItems
                     .slice(0, index)
                     .concat(subHeadings)
                     .concat(newItems.slice(index));
                 }
-                console.log('newItems', newItems);
                 dispatch(
                   setColumns({
                     entityType,
@@ -79,7 +93,7 @@ const ArrangeColumns = compose(
                   })
                 );
               }
-              setState(s => ({ filteredTableColumns, ...nextState }));
+              setState((s: any) => ({ filteredTableColumns, ...nextState }));
             }}
             draggingIndex={state.draggingIndex}
             items={filteredTableColumns}
@@ -101,9 +115,9 @@ const ArrangeColumns = compose(
                 }}
                 onClick={() => {
                   if (column.subHeadingIds) {
-                    localTableColumns.forEach((col, j) => {
+                    localTableColumns.forEach((col: any, j: number) => {
                       if (col.subHeading) {
-                        const index = localTableColumns.indexOf(col);
+                        const index: string = localTableColumns.indexOf(col);
                         dispatch(toggleColumn({ entityType, index }));
                       }
                     });

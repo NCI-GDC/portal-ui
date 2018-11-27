@@ -1,4 +1,3 @@
-/* @flow */
 import React from 'react';
 import { connect } from 'react-redux';
 import { compose, withState, withPropsOnChange } from 'recompose';
@@ -14,12 +13,31 @@ import { AppendExploreGeneSetButton } from '@ncigdc/modern_components/withSetAct
 import { RemoveFromExploreGeneSetButton } from '@ncigdc/modern_components/withSetAction';
 import timestamp from '@ncigdc/utils/timestamp';
 
-import tableModel from './GenesTable.model';
 import { theme } from '@ncigdc/theme';
 import withSelectIds from '@ncigdc/utils/withSelectIds';
-
-export default compose(
-  connect(state => {
+interface IGenesProps {
+  genesTableViewer: { explore: any };
+  filters: object;
+  relay: any;
+  setSurvivalLoadingId: string;
+  survivalLoadingId: string;
+  setSelectedSurvivalData: ({}) => any;
+  selectedSurvivalData: any;
+  hasEnoughSurvivalDataOnPrimaryCurve: boolean;
+  context: any;
+  query: { [x: string]: any };
+  ssmCounts: number[];
+  ssmCountsLoading: boolean;
+  parentVariables: any;
+  tableColumns: any;
+  dispatch: any;
+  selectedIds: number[];
+  setSelectedIds: any;
+  sort: any;
+  score: number;
+}
+export default compose<any, any>(
+  connect((state: any) => {
     return { tableColumns: state.tableColumns.genes };
   }),
   withRouter,
@@ -33,7 +51,7 @@ export default compose(
       const ssmCounts = (aggregations || {
         consequence__transcript__gene__gene_id: { buckets: [] },
       }).consequence__transcript__gene__gene_id.buckets.reduce(
-        (acc, b) => ({ ...acc, [b.key]: b.doc_count }),
+        (acc: any, b: any) => ({ ...acc, [b.key]: b.doc_count }),
         {}
       );
       return { ssmCounts };
@@ -42,7 +60,7 @@ export default compose(
   withSize()
 )(
   ({
-    genesTableViewer: { explore } = {},
+    genesTableViewer: { explore } = { explore: '' },
     filters,
     relay = { route: { params: {} } },
     setSurvivalLoadingId,
@@ -61,14 +79,19 @@ export default compose(
     setSelectedIds,
     sort,
     score,
-  }) => {
-    const { genes, filteredCases, cases, cnvCases } = explore || {};
+  }: IGenesProps) => {
+    const { genes, filteredCases, cases, cnvCases } = explore || {
+      genes: undefined,
+      filteredCases: undefined,
+      cases: undefined,
+      cnvCases: undefined,
+    };
     if (genes && !genes.hits.edges.length) {
       return <Row style={{ padding: '1rem' }}>No gene data found.</Row>;
     }
     const data = !genes ? [] : genes.hits.edges;
-    const totalGenes = !genes ? 0 : genes.hits.total;
-    const tableInfo = tableColumns.slice().filter(x => !x.hidden);
+    const totalGenes: number = !genes ? 0 : genes.hits.total;
+    const tableInfo = tableColumns.slice().filter((x: any) => !x.hidden);
     return (
       <span>
         <Row
@@ -116,18 +139,19 @@ export default compose(
         <div style={{ overflowX: 'auto' }}>
           <Table
             id="genes-table"
-            headings={tableInfo.map(x => (
+            style={{}}
+            headings={tableInfo.map((x: any) => (
               <x.th
                 key={x.id}
                 context={context}
-                nodes={data.map(e => e.node)}
+                nodes={data.map((e: any) => e.node)}
                 selectedIds={selectedIds}
                 setSelectedIds={setSelectedIds}
               />
             ))}
             body={
               <tbody>
-                {data.map((e, i) => (
+                {data.map((e: any, i: number) => (
                   <Tr
                     key={e.node.id}
                     index={i}
@@ -138,8 +162,8 @@ export default compose(
                     }}
                   >
                     {tableInfo
-                      .filter(x => x.td)
-                      .map(x => (
+                      .filter((x: any) => x.td)
+                      .map((x: any) => (
                         <x.td
                           key={x.id}
                           node={e.node}

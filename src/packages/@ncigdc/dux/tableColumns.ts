@@ -1,6 +1,3 @@
-// @flow
-import { REHYDRATE } from 'redux-persist/constants';
-
 // Custom
 import tableModels from '@ncigdc/tableModels';
 import { namespaceActions } from './utils';
@@ -12,6 +9,19 @@ const tableColumns = namespaceActions('tableColumns', [
   'RESTORE',
   'SET',
 ]);
+enum TableColumnsTypes {
+  TOGGLE_COLUMN = 'TOGGLE_COLUMN',
+  RESTORE = 'RESTORE',
+  SET = 'SET',
+  REHYDRATE = 'persist/REHYDRATE',
+}
+export interface ITableColumnsAction {
+  type: TableColumnsTypes;
+  payload: {
+    entityType: string;
+    [x: string]: any;
+  };
+}
 
 const toggleColumn = ({
   entityType,
@@ -51,9 +61,9 @@ const initialState = Object.keys(tableModels).reduce(
   { version: 3 }
 );
 
-const reducer = (state = initialState, action) => {
+const reducer = (state = initialState, action: ITableColumnsAction) => {
   switch (action.type) {
-    case REHYDRATE: {
+    case TableColumnsTypes.REHYDRATE: {
       const { version = -1, ...allTableColumns } =
         action.payload.tableColumns || {};
       if (version !== state.version) {
@@ -84,7 +94,7 @@ const reducer = (state = initialState, action) => {
       };
     }
 
-    case tableColumns.TOGGLE_COLUMN: {
+    case TableColumnsTypes.TOGGLE_COLUMN: {
       const { entityType, index } = action.payload;
       return {
         ...state,
@@ -99,7 +109,7 @@ const reducer = (state = initialState, action) => {
       };
     }
 
-    case tableColumns.RESTORE: {
+    case TableColumnsTypes.RESTORE: {
       const { entityType } = action.payload;
       return {
         ...state,
@@ -107,7 +117,7 @@ const reducer = (state = initialState, action) => {
       };
     }
 
-    case tableColumns.SET: {
+    case TableColumnsTypes.SET: {
       const { entityType, order } = action.payload;
       return { ...state, [entityType]: order.slice() };
     }

@@ -29,7 +29,7 @@ export default (Component: ReactClass<*>) =>
               value: ['cnv'],
             },
           ]),
-          q.genesTable_filters || defaultFilters,
+          q.genesTable_filters || defaultFilters
         );
 
         return {
@@ -38,7 +38,7 @@ export default (Component: ReactClass<*>) =>
           variables: {
             genesTable_filters: parseFilterParam(
               q.genesTable_filters,
-              defaultFilters,
+              defaultFilters
             ),
             genesTable_offset: parseIntParam(q.genesTable_offset, 0),
             genesTable_size: parseIntParam(q.genesTable_size, defaultSize),
@@ -51,8 +51,8 @@ export default (Component: ReactClass<*>) =>
                     field: 'cases.available_variation_data',
                     value: ['ssm'],
                   },
-                ]),
-              ),
+                ])
+              )
             ),
             score,
             ssmCase: {
@@ -88,7 +88,7 @@ export default (Component: ReactClass<*>) =>
                   value: ['Gain'],
                 },
               ]),
-              cnvFilters,
+              cnvFilters
             ),
 
             cnvLossFilters: replaceFilters(
@@ -98,12 +98,12 @@ export default (Component: ReactClass<*>) =>
                   value: ['Loss'],
                 },
               ]),
-              cnvFilters,
+              cnvFilters
             ),
           },
         };
-      },
-    ),
+      }
+    )
   )((props: mixed) => {
     return (
       <Query

@@ -183,9 +183,9 @@ export default compose(
               <Column
                 style={{
                   width: '65%',
-                  // minWidth: 1000,
                   padding: '0 3rem',
                   height: 1000,
+                  minWidth: 550,
                   overflow: 'scroll',
                   marginTop: 1,
                 }}
@@ -247,7 +247,13 @@ export default compose(
                   )}
               </Column>
 
-              <div style={{ flex: 1, width: '25%', marginTop: 1 }}>
+              <div
+                style={{
+                  flex: 1,
+                  width: '25%',
+                  marginTop: 1,
+                }}
+              >
                 <Toolbox
                   {...{
                     theme,

@@ -3,7 +3,14 @@
 // Vendor
 import React from 'react';
 import _ from 'lodash';
-import { compose, pure, withState, withHandlers, renameProp } from 'recompose';
+import {
+  compose,
+  pure,
+  withState,
+  withHandlers,
+  renameProp,
+  withPropsOnChange,
+} from 'recompose';
 import SearchIcon from 'react-icons/lib/fa/search';
 import LocationSubscriber from '@ncigdc/components/LocationSubscriber';
 
@@ -16,7 +23,7 @@ import styled from '@ncigdc/theme/styled';
 import { dropdown } from '@ncigdc/theme/mixins';
 import Link from '@ncigdc/components/Links/Link';
 import CheckCircleOIcon from '@ncigdc/theme/icons/CheckCircleOIcon';
-import { IRawQuery } from '@ncigdc/utils/uri/types';
+import type { TRawQuery } from '@ncigdc/utils/uri/types';
 import withSelectableList from '@ncigdc/utils/withSelectableList';
 import namespace from '@ncigdc/utils/namespace';
 import GeneSymbol from '@ncigdc/modern_components/GeneSymbol';
@@ -24,7 +31,11 @@ import Input from '@ncigdc/uikit/Form/Input';
 import SetId from '@ncigdc/components/SetId';
 import Hidden from '@ncigdc/components/Hidden';
 
-import { Container, CheckedRow, CheckedLink } from './';
+import {
+  Container,
+  CheckedRow,
+  CheckedLink,
+} from '@ncigdc/components/Aggregations/';
 
 const MagnifyingGlass = styled(SearchIcon, {
   backgroundColor: ({ theme }) => theme.greyScale5,
@@ -64,10 +75,14 @@ const StyledDropdownLink = styled(Link, {
 });
 
 const SuggestionFacet = compose(
+  // branch(({ facetSearchHits }) => facetSearchHits && !facetSearchHits.length, renderComponent(() => null)),
   withDropdown,
   withState('inputValue', 'setInputValue', ''),
-  withState('isLoading', 'setIsLoading', false),
-  renameProp('hits', 'results'),
+  withPropsOnChange(
+    ['facetSearchHits'],
+    ({ facetSearchHits }) => facetSearchHits,
+  ),
+  renameProp('facetSearchHits', 'results'),
   withHandlers({
     // TODO: use router push
     handleSelectItem: () => item =>
@@ -88,8 +103,6 @@ const SuggestionFacet = compose(
   pure,
 )(
   ({
-    isLoading,
-    setIsLoading,
     selectableList,
     dropdownItem,
     title,
@@ -97,7 +110,6 @@ const SuggestionFacet = compose(
     fieldNoDoctype,
     placeholder,
     results,
-    setAutocomplete,
     setActive,
     active,
     mouseDownHandler,
@@ -106,6 +118,9 @@ const SuggestionFacet = compose(
     style,
     inputValue,
     setInputValue,
+    setFacetSearch,
+    loading,
+    ...props
   }) => {
     const query = v => ({
       offset: 0,
@@ -135,7 +150,7 @@ const SuggestionFacet = compose(
 
     return (
       <LocationSubscriber>
-        {(ctx: { pathname: string, query: IRawQuery }) => {
+        {(ctx: {| pathname: string, query: TRawQuery |}) => {
           const { filters } = ctx.query || {};
           const currentFilters = parseFilterParam(filters, { content: [] })
             .content;
@@ -186,16 +201,7 @@ const SuggestionFacet = compose(
                         setInputValue(value);
                         setActive(!!value);
                         if (!!value) {
-                          setIsLoading(true);
-                          setAutocomplete(
-                            value,
-                            readyState =>
-                              _.some([
-                                readyState.ready,
-                                readyState.aborted,
-                                readyState.error,
-                              ]) && setIsLoading(false),
-                          );
+                          setFacetSearch(value);
                         }
                       }}
                       onKeyDown={selectableList.handleKeyEvent}
@@ -225,7 +231,7 @@ const SuggestionFacet = compose(
                         }}
                         onClick={e => e.stopPropagation()}
                       >
-                        {(results || []).map(x => (
+                        {((results && results[doctype]) || []).map(x => (
                           <Row
                             key={x.id}
                             style={{ alignItems: 'center' }}
@@ -242,13 +248,13 @@ const SuggestionFacet = compose(
                               data-link-id={x.id}
                               linkIsActive={selectableList.focusedItem === x}
                             >
-                              {dropdownItem(x, inputValue)}
+                              {dropdownItem(x)}
                             </StyledDropdownLink>
                           </Row>
                         ))}
-                        {(results || []).length === 0 && (
+                        {((results && results[doctype]) || []).length === 0 && (
                           <StyledDropdownRow>
-                            {isLoading ? 'Loading' : 'No matching items found'}
+                            {loading ? 'Loading' : 'No matching items found'}
                           </StyledDropdownRow>
                         )}
                       </Column>

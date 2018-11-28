@@ -1,81 +1,24 @@
 import Button from '@ncigdc/uikit/Button';
-import CollapsibleList from '@ncigdc/uikit/CollapsibleList';
 import DownloadTableToTsvButton from '@ncigdc/components/DownloadTableToTsvButton';
 import EntityPageHorizontalTable from '@ncigdc/components/EntityPageHorizontalTable';
-import ExploreLink from '@ncigdc/components/Links/ExploreLink';
-import ExploreSSMLink from '@ncigdc/components/Links/ExploreSSMLink';
-import GreyBox from '@ncigdc/uikit/GreyBox';
 import LocalPaginationTable from '@ncigdc/components/LocalPaginationTable';
-import MutationsCount from '@ncigdc/components/MutationsCount';
-import ProjectLink from '@ncigdc/components/Links/ProjectLink';
 import React from 'react';
 import saveFile from '@ncigdc/utils/filesaver';
 import timestamp from '@ncigdc/utils/timestamp';
-import { compose, withPropsOnChange } from 'recompose';
+import { compose, withPropsOnChange, withState } from 'recompose';
 import { groupBy, head } from 'lodash';
-import { makeFilter, replaceFilters } from '@ncigdc/utils/filters';
 import { Row } from '@ncigdc/uikit/Flex';
-import { tableToolTipHint, visualizingButton } from '@ncigdc/theme/mixins';
+import { visualizingButton } from '@ncigdc/theme/mixins';
 import { Tooltip } from '@ncigdc/uikit/Tooltip';
+import SortTableButton, {
+  TSortTableButtonSortFunc,
+  ISortSelection,
+} from '@ncigdc/components/SortTableButton';
+import tableModel from './CancerDistributionTable.model';
+import { TCancerDistributionTableProps, IBucket } from './types';
+import multisort from 'multisort';
 
 const paginationPrefix = 'canDistTable';
-
-const CollapsibleRowList: React.ComponentType<{
-  data: Array<{}>;
-  label: string;
-}> = props => {
-  const { data, label } = props;
-
-  if (!data.length) {
-    return <GreyBox />;
-  }
-
-  return (
-    <span>
-      {data.length > 1 && (
-        <CollapsibleList
-          liStyle={{ whiteSpace: 'normal', listStyleType: 'disc' }}
-          toggleStyle={{ fontStyle: 'normal' }}
-          data={data.slice(0).sort()}
-          limit={0}
-          expandText={`${data.length} ` + label}
-          collapseText="collapse"
-        />
-      )}
-      {data.length === 1 && data[0]}
-    </span>
-  );
-};
-
-interface IBucket {
-  doc_count: number;
-  key: string;
-}
-interface ICancerDistributionTableProps {
-  viewer: {
-    explore: {
-      cases: {
-        filtered: {
-          project__project_id: {
-            buckets: IBucket[];
-          };
-        };
-      };
-      ssms: {
-        aggregations: {
-          occurrence__case__project__project_id: {
-            buckets: IBucket[];
-          };
-        };
-      };
-    };
-  };
-  projectsViewer: {};
-  geneId: number;
-  entityName: string;
-  filters: {};
-  tableType: string;
-}
 
 type TRawData = Array<{
   project_id: string;
@@ -91,21 +34,19 @@ type TRawData = Array<{
   num_cnv_cases_total?: any;
 }>;
 
-interface ICDTWrappedProps extends ICancerDistributionTableProps {
+interface ICDTWrappedProps extends TCancerDistributionTableProps {
   cases: {};
   rawData: TRawData;
-  cancerDistData: Array<{ rawData: TRawData; cancerDistData: any }>;
+  tableSort: ReadonlyArray<ISortSelection>;
+  setTableSort: any;
 }
 
-export default compose<ICDTWrappedProps, ICancerDistributionTableProps>(
+export default compose<ICDTWrappedProps, TCancerDistributionTableProps>(
   withPropsOnChange(
     ['viewer', 'projectsViewer'],
     ({
       viewer: { explore: { cases, ssms: { aggregations } } },
       projectsViewer: { projects },
-      geneId,
-      entityName,
-      filters,
       tableType,
     }) => {
       const ssmCounts = (aggregations || {
@@ -126,6 +67,7 @@ export default compose<ICDTWrappedProps, ICancerDistributionTableProps>(
       let caseFiltered = {};
 
       const fields = ['filtered', 'total'];
+
       if (tableType !== 'ssm') {
         fields.push('cnvGain', 'cnvLoss', 'cnvTotal');
       }
@@ -142,6 +84,7 @@ export default compose<ICDTWrappedProps, ICancerDistributionTableProps>(
             })
         )
       );
+
       const rawData: TRawData = Object.keys(caseFiltered)
         .filter(b => head(projectsById[b]))
         .map(b => {
@@ -170,246 +113,69 @@ export default compose<ICDTWrappedProps, ICancerDistributionTableProps>(
           (a, b) => b.num_affected_cases_percent - a.num_affected_cases_percent
         );
 
-      const cancerDistData = rawData.map(row => {
-        const projectFilter = makeFilter([
-          {
-            field: 'cases.project.project_id',
-            value: row.project_id,
-          },
-          {
-            field: 'cases.available_variation_data',
-            value: 'ssm',
-          },
-        ]);
-        // const cnvProjectFilter = makeFilter([
-        //   {
-        //     field: 'cases.project.project_id',
-        //     value: [row.project_id],
-        //   },
-        //   {
-        //     field: 'cases.available_variation_data',
-        //     value: ['cnv'],
-        //   },
-        // ]);
-        // const cnvGainProjectFilter = makeFilter([
-        //   {
-        //     field: 'cases.project.project_id',
-        //     value: [row.project_id],
-        //   },
-        //   {
-        //     field: 'cases.available_variation_data',
-        //     value: ['cnv'],
-        //   },
-        //   {
-        //     field: 'cnvs.cnv_change',
-        //     value: ['Gain'],
-        //   },
-        // ]);
-        // const cnvLossProjectFilter = makeFilter([
-        //   {
-        //     field: 'cases.project.project_id',
-        //     value: [row.project_id],
-        //   },
-        //   {
-        //     field: 'cases.available_variation_data',
-        //     value: ['cnv'],
-        //   },
-        //   {
-        //     field: 'cnvs.cnv_change',
-        //     value: ['Loss'],
-        //   },
-        // ]);
-        return {
-          id: row.project_id, // used for key in table
-          freq: row.num_affected_cases_percent,
-          project_id: (
-            <ProjectLink uuid={row.project_id}>{row.project_id}</ProjectLink>
-          ),
-          disease_type: (
-            <CollapsibleRowList
-              data={row.disease_type}
-              label={'Disease Types'}
-            />
-          ),
-          site: <CollapsibleRowList data={row.site} label={'Primary Sites'} />,
-          num_affected_cases: (
-            <span>
-              <ExploreSSMLink
-                merge
-                searchTableTab={'cases'}
-                filters={replaceFilters(projectFilter, filters)}
-              >
-                {row.num_affected_cases}
-              </ExploreSSMLink>
-              <span> / </span>
-              <ExploreLink
-                query={{
-                  searchTableTab: 'cases',
-                  filters: projectFilter,
-                }}
-              >
-                {row.num_affected_cases_total.toLocaleString()}
-              </ExploreLink>
-              <span>
-                &nbsp;({(row.num_affected_cases_percent * 100).toFixed(2)}%)
-              </span>
-            </span>
-          ),
-          ...(tableType !== 'ssm' && {
-            cnv_gain: {
-              data: row.num_cnv_gain_percent,
-              elem: (
-                <span>
-                  {/* <ExploreLink
-                  query={{
-                    searchTableTab: 'cases',
-                    filters: replaceFilters(cnvGainProjectFilter, filters),
-                  }}
-                > */}
-                  {row.num_cnv_gain.toLocaleString()}
-                  {/* </ExploreLink> */}
-                  <span> / </span>
-                  {/* <ExploreLink
-                  query={{
-                    searchTableTab: 'cases',
-                    filters: cnvProjectFilter,
-                  }}
-                > */}
-                  {row.num_cnv_cases_total.toLocaleString()}
-                  {/* </ExploreLink> */}
-                  <span>
-                    &nbsp;({(row.num_cnv_gain_percent * 100).toFixed(2)}%)
-                  </span>
-                </span>
-              ),
-            },
-            cnv_loss: {
-              data: row.num_cnv_loss_percent,
-              elem: (
-                <span>
-                  {/* <ExploreLink
-                  query={{
-                    searchTableTab: 'cases',
-                    filters: replaceFilters(cnvLossProjectFilter, filters),
-                  }}
-                > */}
-                  {row.num_cnv_loss.toLocaleString()}
-                  {/* </ExploreLink> */}
-                  <span> / </span>
-                  {/* <ExploreLink
-                  query={{
-                    searchTableTab: 'cases',
-                    filters: cnvProjectFilter,
-                  }}
-                > */}
-                  {row.num_cnv_cases_total.toLocaleString()}
-                  {/* </ExploreLink> */}
-                  <span>
-                    &nbsp;({(row.num_cnv_loss_percent * 100).toFixed(2)}%)
-                  </span>
-                </span>
-              ),
-            },
-          }),
-          ...geneId
-            ? {
-                num_mutations: (
-                  <MutationsCount
-                    ssmCount={ssmCounts[row.project_id]}
-                    filters={replaceFilters(projectFilter, filters)}
-                  />
-                ),
-              }
-            : null,
-        };
-      });
-
-      return { rawData, cancerDistData };
+      return { rawData };
     }
-  )
+  ),
+  withState('tableSort', 'setTableSort', [])
 )(
   ({
     entityName,
     geneId,
     rawData,
-    cancerDistData,
     tableType,
+    tableSort,
+    viewer,
+    setTableSort,
+    filters,
   }) => {
-    const mutationsHeading = geneId
-      ? [
-          {
-            key: 'num_mutations',
-            title: (
-              <Tooltip
-                Component={
-                  <span>
-                    # Unique Simple Somatic Mutations observed in {entityName}
-                    in Project
-                  </span>
-                }
-                style={tableToolTipHint()}
-              >
-                # Mutations
-              </Tooltip>
-            ),
-            style: { textAlign: 'right' },
-          },
-        ]
-      : [];
-    const cnvHeadings =
-      tableType !== 'ssm'
-        ? [
-            {
-              key: 'cnv_gain.elem',
-              title: (
-                <Row>
-                  <Tooltip
-                    Component={
-                      <span>
-                        # of Cases tested for CNV in Project affected by CNV
-                        loss event in&nbsp;
-                        {entityName}&nbsp; / # of Cases tested for Copy Number
-                        Variation in Project
-                      </span>
-                    }
-                    style={tableToolTipHint()}
-                  >
-                    # CNV Gains
-                  </Tooltip>
-                </Row>
-              ),
+    const sortFunction: TSortTableButtonSortFunc = s => setTableSort(s);
+
+    const tableInfo = tableModel({
+      tableType,
+      viewer,
+      entityName,
+      filters,
+      geneId,
+    });
+
+    const visibleCols = tableInfo.filter(x => !x.hidden);
+    const sortableCols = tableInfo.filter(x => x.sortable);
+
+    const multisortKey: string[] =
+      tableSort.length > 0
+        ? tableSort.reduce(
+            (acc, { order, field }) => {
+              acc.push(order === 'desc' ? `~${field}` : field);
+              return acc;
             },
-            {
-              key: 'cnv_loss.elem',
-              title: (
-                <Row>
-                  <Tooltip
-                    Component={
-                      <span>
-                        # of Cases tested for CNV in Project affected by CNV
-                        loss event in&nbsp;
-                        {entityName}&nbsp; / # of Cases tested for Copy Number
-                        Variation in Project
-                      </span>
-                    }
-                    style={tableToolTipHint()}
-                  >
-                    # CNV Losses
-                  </Tooltip>
-                </Row>
-              ),
-            },
-          ]
-        : [];
+            [] as string[]
+          )
+        : ['~num_affected_cases_percent']; // default sort
+
+    // Sort rawdata before formatting
+    // https://www.npmjs.com/package/multisort
+    const data = multisort(rawData, multisortKey).map(row =>
+      visibleCols.reduce((acc, { id, td }) => {
+        acc[id] = td({ node: row });
+        return acc;
+      }, {})
+    );
 
     return (
       <span>
         <LocalPaginationTable
           style={{ width: '100%', minWidth: 450 }}
-          data={cancerDistData}
+          data={data}
           prefix={paginationPrefix}
           buttons={
             <Row style={{ alignItems: 'flex-end' }}>
+              {sortableCols.length > 1 && (
+                <SortTableButton
+                  sortFunction={sortFunction}
+                  options={sortableCols.map(({ id, name }) => ({ id, name }))}
+                  style={{ ...visualizingButton }}
+                />
+              )}
               <Tooltip
                 Component={
                   <span>Export All{geneId ? ' Except # Mutations' : ''}</span>
@@ -439,33 +205,17 @@ export default compose<ICDTWrappedProps, ICancerDistributionTableProps>(
           <EntityPageHorizontalTable
             idKey="id"
             tableId="cancer-distribution-table"
-            headings={[
-              { key: 'project_id', title: 'Project' },
-              { key: 'disease_type', title: 'Disease Type' },
-              { key: 'site', title: 'Site' },
-              {
-                key: 'num_affected_cases',
-                title: (
-                  <Row>
-                    <Tooltip
-                      Component={
-                        <span>
-                          # Cases tested for Simple Somatic Mutations in Project
-                          affected by&nbsp;
-                          {entityName}&nbsp; / # Cases tested for Simple Somatic
-                          Mutations in Project
-                        </span>
-                      }
-                      style={tableToolTipHint()}
-                    >
-                      # SSM Affected Cases
-                    </Tooltip>
-                  </Row>
-                ),
-              },
-              ...cnvHeadings,
-              ...mutationsHeading,
-            ]}
+            headings={visibleCols.map(({ id, th }, idx) => ({
+              key: id,
+              title: th({
+                style:
+                  idx === visibleCols.length - 1
+                    ? { justifyContent: 'flex-end' }
+                    : {},
+              }),
+              style:
+                idx === visibleCols.length - 1 ? { textAlign: 'right' } : {},
+            }))}
           />
         </LocalPaginationTable>
       </span>

@@ -10,6 +10,7 @@ import GitHut from '@ncigdc/components/GitHut';
 import { Column } from '@ncigdc/uikit/Flex';
 import ProjectsTable from '@ncigdc/modern_components/ProjectsTable';
 import ProjectAggregations from './ProjectAggregations';
+import { AWG } from '@ncigdc/utils/constants';
 
 export type TProps = {
   relay: Object,
@@ -54,19 +55,13 @@ export const ProjectsPageComponent = (props: TProps) => (
         component: (
           <ProjectAggregations
             aggregations={props.viewer.projects.aggregations}
-            suggestions={(props.viewer.autocomplete || { hits: [] }).hits}
-            setAutocomplete={(value, onReadyStateChange) =>
-              props.relay.setVariables(
-                { idAutocomplete: value, runAutocomplete: !!value },
-                onReadyStateChange,
-              )}
           />
         ),
       },
     ]}
     results={
       <Column spacing="2rem">
-        <ProjectsCharts />
+        {!AWG && <ProjectsCharts />}
         <TabbedLinks
           queryParam="projectsTableTab"
           defaultIndex={0}
@@ -76,11 +71,15 @@ export const ProjectsPageComponent = (props: TProps) => (
               text: 'Table',
               component: <ProjectsTable />,
             },
-            {
-              id: 'graph',
-              text: 'Graph',
-              component: <GitHut params={props.relay.route.params} />,
-            },
+            ...(!AWG
+              ? [
+                  {
+                    id: 'graph',
+                    text: 'Graph',
+                    component: <GitHut params={props.relay.route.params} />,
+                  },
+                ]
+              : []),
           ]}
         />
       </Column>
@@ -101,16 +100,6 @@ export const ProjectsPageQuery = {
   fragments: {
     viewer: () => Relay.QL`
       fragment on Root {
-        autocomplete: query(query: $idAutocomplete types: ["project"]) @include(if: $runAutocomplete) {
-          hits {
-            id
-            ...on Project {
-              project_id
-              name
-              primary_site
-            }
-          }
-        }
         projects {
           aggregations(filters: $filters aggregations_filter_themselves: false) {
             ${ProjectAggregations.getFragment('aggregations')}

@@ -1,8 +1,9 @@
 // @flow
 import _ from 'lodash';
+import { compose, withState, withHandlers, withProps } from 'recompose';
+
 import withRouter from '@ncigdc/utils/withRouter';
 import { fetchApi } from '@ncigdc/utils/ajax';
-import { compose, withState, withHandlers, withProps } from 'recompose';
 import withPropsOnChange from '@ncigdc/utils/withPropsOnChange';
 import { ISearchHit } from '@ncigdc/components/QuickSearch/types';
 
@@ -42,14 +43,20 @@ export const withSearch = passedInState => {
           isLoading: false,
         }));
       },
-      fetchResults: ({ handleResults }) => (query, timeOfRequest) =>
-        throttledInvoker(() =>
+      fetchResults: ({ handleResults }) => (query, timeOfRequest) => {
+        return throttledInvoker(() =>
           fetchApi(
-            `/all?query=${window.encodeURIComponent(query)}&size=5`,
+            `/quick_search?query=${window.encodeURIComponent(query)}&size=5`,
+            {
+              headers: {
+                'Content-Type': 'application/json',
+              },
+            },
           ).then(response =>
             handleResults(response.data.query.hits, timeOfRequest),
           ),
-        ),
+        );
+      },
     }),
     withHandlers({
       selectItem: ({ push, reset }) => (item: ISearchHit) => {

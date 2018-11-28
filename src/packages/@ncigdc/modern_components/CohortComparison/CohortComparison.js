@@ -184,9 +184,7 @@ export default compose(
                 style={{
                   width: '65%',
                   padding: '0 3rem',
-                  height: 1000,
                   minWidth: 550,
-                  overflow: 'scroll',
                   marginTop: 1,
                 }}
               >

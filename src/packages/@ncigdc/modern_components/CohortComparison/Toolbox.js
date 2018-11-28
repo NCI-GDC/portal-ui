@@ -53,15 +53,11 @@ export default withTheme(
   }) => (
     <div
       style={{
-        top: 180,
-        // bottom: 240,
-        // overflowY: 'auto',
+        top: 90,
         padding: 20,
-        // marginTop: 20,
-        width: '80%',
-        // position: 'fixed',
+        width: '20%',
+        position: 'sticky',
         backgroundColor: 'white',
-        // zIndex: 1000,
         minWidth: 220,
         ...zDepth1,
       }}

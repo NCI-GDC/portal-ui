@@ -11,7 +11,7 @@ const styles = {
   },
 };
 
-const Td = ({ style, children, ...props }) => (
+const Td = ({ style = {}, children, ...props }) => (
   <td style={{ ...styles.td, ...style }} {...props}>
     {children}
   </td>

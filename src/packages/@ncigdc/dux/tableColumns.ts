@@ -1,58 +1,48 @@
+import { REHYDRATE } from 'redux-persist/constants';
 // Custom
 import tableModels from '@ncigdc/tableModels';
 import { namespaceActions } from './utils';
-
 /*----------------------------------------------------------------------------*/
-
 const tableColumns = namespaceActions('tableColumns', [
   'TOGGLE_COLUMN',
   'RESTORE',
   'SET',
 ]);
-enum TableColumnsTypes {
-  TOGGLE_COLUMN = 'TOGGLE_COLUMN',
-  RESTORE = 'RESTORE',
-  SET = 'SET',
-  REHYDRATE = 'persist/REHYDRATE',
-}
+import { IColumnProps } from '@ncigdc/tableModels/utils';
+
 export interface ITableColumnsAction {
-  type: TableColumnsTypes;
+  type: string;
   payload: {
     entityType: string;
     [x: string]: any;
   };
 }
-
 const toggleColumn = ({
   entityType,
   index,
 }: {
   entityType: string;
-  index: string;
+  index: number;
 }) => ({
   type: tableColumns.TOGGLE_COLUMN,
   payload: { entityType, index },
 });
-
 const restoreColumns = (entityType: string) => ({
   type: tableColumns.RESTORE,
   payload: { entityType },
 });
-
 const setColumns = ({
   entityType,
   order,
 }: {
   entityType: string;
-  order: any;
+  order: Array<IColumnProps<any>>;
 }) => ({
   type: tableColumns.SET,
   payload: { entityType, order },
 });
-
 // Store ids of table items that are not hidden by default
 // const reduceColumns = (acc, x) => [...acc, ...(!x.hidden ? [x.id] : [])];
-
 const initialState = Object.keys(tableModels).reduce(
   (acc, key) => ({
     ...acc,
@@ -60,10 +50,9 @@ const initialState = Object.keys(tableModels).reduce(
   }),
   { version: 3 }
 );
-
 const reducer = (state = initialState, action: ITableColumnsAction) => {
   switch (action.type) {
-    case TableColumnsTypes.REHYDRATE: {
+    case REHYDRATE: {
       const { version = -1, ...allTableColumns } =
         action.payload.tableColumns || {};
       if (version !== state.version) {
@@ -73,17 +62,17 @@ const reducer = (state = initialState, action: ITableColumnsAction) => {
         ...state,
         ...Object.entries(
           allTableColumns || {}
-        ).reduce((acc, [key, val]: [string, any]) => {
-          const orderArray = val.map((v: any) => v.id);
+        ).reduce((acc, [key, val]: [string, Array<IColumnProps<any>>]) => {
+          const orderArray = val.map((v: IColumnProps<any>) => v.id);
           const order = Array.isArray(val)
             ? state[key]
                 .slice()
                 .sort(
-                  (a: any, b: any) =>
+                  (a: IColumnProps<any>, b: IColumnProps<any>) =>
                     orderArray.indexOf(a.id) - orderArray.indexOf(b.id)
                 )
             : state[key];
-          order.forEach((element: any, i: number) => {
+          order.forEach((element: IColumnProps<any>, i: number) => {
             element.hidden = val[i].hidden;
           });
           return {
@@ -93,8 +82,7 @@ const reducer = (state = initialState, action: ITableColumnsAction) => {
         }, {}),
       };
     }
-
-    case TableColumnsTypes.TOGGLE_COLUMN: {
+    case tableColumns.TOGGLE_COLUMN: {
       const { entityType, index } = action.payload;
       return {
         ...state,
@@ -108,26 +96,21 @@ const reducer = (state = initialState, action: ITableColumnsAction) => {
         ],
       };
     }
-
-    case TableColumnsTypes.RESTORE: {
+    case tableColumns.RESTORE: {
       const { entityType } = action.payload;
       return {
         ...state,
         [entityType]: initialState[entityType],
       };
     }
-
-    case TableColumnsTypes.SET: {
+    case tableColumns.SET: {
       const { entityType, order } = action.payload;
       return { ...state, [entityType]: order.slice() };
     }
-
     default:
       return state;
   }
 };
-
 /*----------------------------------------------------------------------------*/
-
 export { toggleColumn, restoreColumns, setColumns };
 export default reducer;

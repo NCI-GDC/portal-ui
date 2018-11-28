@@ -9,13 +9,21 @@ import { Th, Td, ThNum, TdNum } from '@ncigdc/uikit/Table';
 import { makeFilter } from '@ncigdc/utils/filters';
 import { findDataCategory } from '@ncigdc/utils/data';
 
+interface ICreateDataCategoryColumnsProps{
+  title: string; 
+  countKey: string; 
+  Link: (arg:any)=> JSX.Element; 
+  getCellLinkFilters: (arg:any)=> any[]; 
+  getTotalLinkFilters: (arg:any)=> any[];
+}
+
 export const createDataCategoryColumns = ({
   title,
   countKey,
   Link,
   getCellLinkFilters,
   getTotalLinkFilters,
-}) => {
+}: ICreateDataCategoryColumnsProps)=> {
   return [
     {
       name: 'Data Categories',
@@ -33,7 +41,7 @@ export const createDataCategoryColumns = ({
       downloadable: true,
       subHeadingIds: _.map(DATA_CATEGORIES, category => category.abbr),
     },
-    ..._.map(DATA_CATEGORIES, (category, key) => ({
+    ..._.map(DATA_CATEGORIES, (category: any, key: any) => ({
       name: category.abbr,
       id: category.abbr,
       subHeading: true,
@@ -47,10 +55,10 @@ export const createDataCategoryColumns = ({
           </abbr>
         </ThNum>
       ),
-      td: ({ node }) => {
+      td: ({ node }: any) => {
         const count = findDataCategory(
           category.abbr,
-          node.summary.data_categories,
+          node.summary.data_categories
         )[countKey];
         return (
           <TdNum>
@@ -71,7 +79,7 @@ export const createDataCategoryColumns = ({
           </TdNum>
         );
       },
-      total: ({ hits }) => (
+      total: ({ hits }: any) => (
         <TdNum>
           <Link
             query={{
@@ -83,10 +91,10 @@ export const createDataCategoryColumns = ({
           >
             {_.sumBy(
               hits.edges,
-              x =>
+              (x: any) =>
                 findDataCategory(category.abbr, x.node.summary.data_categories)[
                   countKey
-                ],
+                ]
             ).toLocaleString()}
           </Link>
         </TdNum>
@@ -94,25 +102,45 @@ export const createDataCategoryColumns = ({
     })),
   ];
 };
-
-type TCreateSelectColumn = ({
-  idField: string,
-  headerRowSpan?: number,
-}) => {};
-export const createSelectColumn: TCreateSelectColumn = ({
+// type SubHeadingIdsType = string[] | never;
+export interface IColumnProps<NoTH> {
+  name: string;
+  id: string;
+  sortable: boolean;
+  downloadable: boolean;
+  hidden: boolean;
+  field?: string;
+  subHeading?: boolean;
+  subHeadingIds?: NoTH extends true? string[] : undefined;
+  parent?: string;
+  th: (props: any) => JSX.Element;
+  td: NoTH extends true? undefined : (props: any) => JSX.Element;
+}
+export const createSelectColumn = ({
   idField,
   headerRowSpan,
-}) => {
+}: {
+  idField: string;
+  headerRowSpan?: number;
+}): IColumnProps<false> => {
   return {
     name: 'Select',
     id: 'select',
     sortable: false,
     downloadable: false,
     hidden: false,
-    th: ({ nodes, selectedIds, setSelectedIds }) => {
+    th: ({
+      nodes,
+      selectedIds,
+      setSelectedIds,
+    }: {
+      nodes: Array<IColumnProps<any>>;
+      selectedIds: string[];
+      setSelectedIds: (props: string[]) => void;
+    }) => {
       // NOTE: "nodes" is really "edges" in the graphql schema
-      const ids = nodes.map(node => node[idField] || node.node[idField]);
-      const allSelected = ids.every(id => selectedIds.includes(id));
+      const ids = nodes.map((node: any) => node[idField] || node.node[idField]);
+      const allSelected = ids.every((id: string) => selectedIds.includes(id));
       return (
         <Th rowSpan={headerRowSpan}>
           <Hidden>Select column</Hidden>
@@ -124,14 +152,22 @@ export const createSelectColumn: TCreateSelectColumn = ({
               setSelectedIds(
                 allSelected
                   ? _.xor(selectedIds, ids)
-                  : _.uniq(ids.concat(selectedIds)),
+                  : _.uniq(ids.concat(selectedIds))
               );
             }}
           />
         </Th>
       );
     },
-    td: ({ node, selectedIds, setSelectedIds }) => (
+    td: ({
+      node,
+      selectedIds,
+      setSelectedIds,
+    }: {
+      node: IColumnProps<any>;
+      selectedIds: string[];
+      setSelectedIds: (props: string[]) => void;
+    }) => (
       <Td>
         <input
           type="checkbox"

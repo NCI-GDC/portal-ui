@@ -1,4 +1,3 @@
-// @flow
 import React from 'react';
 import _ from 'lodash';
 import {
@@ -29,7 +28,7 @@ import MutationsCount from '@ncigdc/components/MutationsCount';
 
 const youngestDiagnosis = (
   p: { age_at_diagnosis: number },
-  c: { age_at_diagnosis: number },
+  c: { age_at_diagnosis: number }
 ): { age_at_diagnosis: number } =>
   c.age_at_diagnosis < p.age_at_diagnosis ? c : p;
 
@@ -54,7 +53,7 @@ const FilesLink = ({ node, fields = [], children }) =>
       query={{
         filters: makeFilter(
           [{ field: 'cases.case_id', value: [node.case_id] }, ...fields],
-          false,
+          false
         ),
       }}
     >
@@ -70,7 +69,7 @@ const getProjectIdFilter = projects =>
         value: projects.edges.map(({ node: p }) => p.project_id),
       },
     ],
-    false,
+    false
   );
 
 const casesTableModel = [
@@ -213,7 +212,7 @@ const casesTableModel = [
           ssmCount={ssmCount}
           filters={replaceFilters(
             makeFilter([{ field: 'cases.case_id', value: [node.case_id] }]),
-            filters,
+            filters
           )}
         />
       </Td>
@@ -241,9 +240,9 @@ const casesTableModel = [
             filters={replaceFilters(
               makeFilter(
                 [{ field: 'cases.case_id', value: [node.case_id] }],
-                false,
+                false
               ),
-              filters,
+              filters
             )}
           >
             {(node.score || 0).toLocaleString()}
@@ -331,7 +330,7 @@ const casesTableModel = [
         .map(x => x.node)
         .reduce(
           (p, c) => (c.age_at_diagnosis < p ? c.age_at_diagnosis : p),
-          Infinity,
+          Infinity
         );
       return (
         <Td>{age !== Infinity && node.diagnoses ? ageDisplay(age) : '--'}</Td>

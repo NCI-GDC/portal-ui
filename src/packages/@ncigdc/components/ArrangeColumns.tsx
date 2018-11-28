@@ -12,6 +12,7 @@ import {
   ITableColumnsAction,
 } from '@ncigdc/dux/tableColumns';
 import styled from '@ncigdc/theme/styled';
+import { IColumnProps } from '@ncigdc/tableModels/utils';
 
 const SortRow = styled(Row, {
   alignItems: 'center',
@@ -24,8 +25,8 @@ const SortRow = styled(Row, {
 });
 interface IArrangeColumnsProps {
   dispatch: (action: ITableColumnsAction) => void;
-  localTableColumns: { [x: string]: any };
-  filteredTableColumns: { [x: string]: any };
+  localTableColumns: Array<IColumnProps<any>>;
+  filteredTableColumns: Array<IColumnProps<any>>;
   setState: (props: { [x: string]: any }) => any;
   state: { [x: string]: any };
   searchTerm: string;
@@ -79,7 +80,7 @@ const ArrangeColumns = compose<IArrangeColumnsProps, JSX.Element>(
                 );
                 if (subHeadings && subHeadings.length > 0) {
                   const index: number = filteredTableColumns.indexOf(
-                    filteredTableColumns.find((t: any) => t.subHeadingIds)
+                    filteredTableColumns.filter((t: any) => t.subHeadingIds)[0]
                   );
                   newItems = newItems
                     .slice(0, index)
@@ -117,12 +118,11 @@ const ArrangeColumns = compose<IArrangeColumnsProps, JSX.Element>(
                   if (column.subHeadingIds) {
                     localTableColumns.forEach((col: any, j: number) => {
                       if (col.subHeading) {
-                        const index: string = localTableColumns.indexOf(col);
+                        const index: number = localTableColumns.indexOf(col);
                         dispatch(toggleColumn({ entityType, index }));
                       }
                     });
                   }
-
                   dispatch(
                     toggleColumn({
                       entityType,

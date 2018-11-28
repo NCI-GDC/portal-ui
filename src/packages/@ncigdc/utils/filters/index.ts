@@ -294,7 +294,7 @@ export const getFilterValue = ({
 }) => currentFilters.find(f => f.content.field === dotField);
 
 type TMakeFilter = (
-  fields: Array<{ field: string; value: string }>
+  fields: Array<{ field: string; value: string | string[] }>
 ) => IGroupFilter | null;
 export const makeFilter: TMakeFilter = fields => {
   if (!fields.length) {

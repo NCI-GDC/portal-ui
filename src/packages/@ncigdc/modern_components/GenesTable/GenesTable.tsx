@@ -12,34 +12,79 @@ import { CreateExploreGeneSetButton } from '@ncigdc/modern_components/withSetAct
 import { AppendExploreGeneSetButton } from '@ncigdc/modern_components/withSetAction';
 import { RemoveFromExploreGeneSetButton } from '@ncigdc/modern_components/withSetAction';
 import timestamp from '@ncigdc/utils/timestamp';
+import { IColumnProps } from '@ncigdc/tableModels/utils';
 
 import { theme } from '@ncigdc/theme';
 import withSelectIds from '@ncigdc/utils/withSelectIds';
+interface ITotalNumber {
+  hits: {
+    total: number;
+  };
+}
+
+interface INodeProps {
+  node: {
+    gene_id: string;
+    id: string;
+    symbol: string;
+    name: string;
+    cytoband: string;
+    biotype: string;
+    numCases: number;
+    is_cancer_gene_census: boolean;
+    ssm_case: ITotalNumber;
+    cnv_case: ITotalNumber;
+    case_cnv_gain: ITotalNumber;
+    case_cnv_loss: ITotalNumber;
+  };
+}
 interface IGenesProps {
-  genesTableViewer: { explore: any };
-  filters: object;
-  relay: any;
+  hits: {
+    total: number;
+    edges: INodeProps[];
+  };
+}
+interface IGenesTableProps {
+  genesTableViewer: {
+    explore: {
+      genes: IGenesProps | undefined;
+      filteredCases: ITotalNumber | undefined;
+      cases: ITotalNumber | undefined;
+      cnvCases: ITotalNumber | undefined;
+    };
+  };
+  filters: { [x: string]: any };
+  relay: { route: { params: { [x: string]: any } } };
   setSurvivalLoadingId: string;
   survivalLoadingId: string;
   setSelectedSurvivalData: ({}) => any;
   selectedSurvivalData: any;
   hasEnoughSurvivalDataOnPrimaryCurve: boolean;
-  context: any;
+  context: string;
   query: { [x: string]: any };
-  ssmCounts: number[];
+  ssmCounts: { [x: string]: number };
   ssmCountsLoading: boolean;
-  parentVariables: any;
-  tableColumns: any;
-  dispatch: any;
-  selectedIds: number[];
-  setSelectedIds: any;
+  parentVariables: {
+    genesTable_offset: number;
+    genesTable_size: number;
+    [x: string]: any;
+  };
+  tableColumns: Array<IColumnProps<any>>;
+  selectedIds: string[];
+  setSelectedIds: (props: string[]) => void;
   sort: any;
-  score: number;
+  score: string;
 }
-export default compose<any, any>(
-  connect((state: any) => {
-    return { tableColumns: state.tableColumns.genes };
-  }),
+export default compose<IGenesTableProps, JSX.Element>(
+  connect(
+    (state: {
+      tableColumns: { [x: string]: Array<IColumnProps<any>> };
+      [x: string]: any;
+    }) => {
+      console.log(state);
+      return { tableColumns: state.tableColumns.genes };
+    }
+  ),
   withRouter,
   withState('survivalLoadingId', 'setSurvivalLoadingId', ''),
   withState('ssmCountsLoading', 'setSsmCountsLoading', true),
@@ -60,7 +105,14 @@ export default compose<any, any>(
   withSize()
 )(
   ({
-    genesTableViewer: { explore } = { explore: '' },
+    genesTableViewer: { explore } = {
+      explore: {
+        genes: undefined,
+        filteredCases: undefined,
+        cases: undefined,
+        cnvCases: undefined,
+      },
+    },
     filters,
     relay = { route: { params: {} } },
     setSurvivalLoadingId,
@@ -70,28 +122,25 @@ export default compose<any, any>(
     hasEnoughSurvivalDataOnPrimaryCurve,
     context,
     query,
-    ssmCounts = [],
+    ssmCounts = {},
     ssmCountsLoading,
     parentVariables,
     tableColumns,
-    dispatch,
     selectedIds,
     setSelectedIds,
     sort,
     score,
-  }: IGenesProps) => {
-    const { genes, filteredCases, cases, cnvCases } = explore || {
-      genes: undefined,
-      filteredCases: undefined,
-      cases: undefined,
-      cnvCases: undefined,
-    };
+  }: IGenesTableProps) => {
+    const { genes, filteredCases, cases, cnvCases } = explore;
+
     if (genes && !genes.hits.edges.length) {
       return <Row style={{ padding: '1rem' }}>No gene data found.</Row>;
     }
-    const data = !genes ? [] : genes.hits.edges;
+    const data: INodeProps[] = !genes ? [] : genes.hits.edges;
     const totalGenes: number = !genes ? 0 : genes.hits.total;
-    const tableInfo = tableColumns.slice().filter((x: any) => !x.hidden);
+    const tableInfo = tableColumns
+      .slice()
+      .filter((x: IColumnProps<any>) => !x.hidden);
     return (
       <span>
         <Row
@@ -139,19 +188,18 @@ export default compose<any, any>(
         <div style={{ overflowX: 'auto' }}>
           <Table
             id="genes-table"
-            style={{}}
-            headings={tableInfo.map((x: any) => (
+            headings={tableInfo.map((x: IColumnProps<any>) => (
               <x.th
                 key={x.id}
                 context={context}
-                nodes={data.map((e: any) => e.node)}
+                nodes={data.map((e: INodeProps) => e.node)}
                 selectedIds={selectedIds}
                 setSelectedIds={setSelectedIds}
               />
             ))}
             body={
               <tbody>
-                {data.map((e: any, i: number) => (
+                {data.map((e: INodeProps, i: number) => (
                   <Tr
                     key={e.node.id}
                     index={i}
@@ -162,8 +210,8 @@ export default compose<any, any>(
                     }}
                   >
                     {tableInfo
-                      .filter((x: any) => x.td)
-                      .map((x: any) => (
+                      .filter((x: IColumnProps<any>) => x.td)
+                      .map((x: IColumnProps<false>) => (
                         <x.td
                           key={x.id}
                           node={e.node}

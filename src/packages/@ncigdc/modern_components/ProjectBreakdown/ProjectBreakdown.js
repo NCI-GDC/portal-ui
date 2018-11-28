@@ -90,7 +90,7 @@ const Component = ({ viewer: { explore: { cases = {} } }, filters, relay }) => {
           ...acc,
           [b.key]: b.doc_count,
         }),
-        {},
+        {}
       );
 
   const filteredAggs = !cases.aggregations
@@ -100,7 +100,7 @@ const Component = ({ viewer: { explore: { cases = {} } }, filters, relay }) => {
           ...acc,
           [b.key]: b.doc_count,
         }),
-        {},
+        {}
       );
 
   return (
@@ -115,7 +115,7 @@ const Component = ({ viewer: { explore: { cases = {} } }, filters, relay }) => {
               searchTableTab={'cases'}
               filters={addInFilters(
                 filters,
-                makeFilter([{ field: 'cases.project.project_id', value: [k] }]),
+                makeFilter([{ field: 'cases.project.project_id', value: [k] }])
               )}
             >
               {v}
@@ -152,7 +152,7 @@ const Renderer = createRenderer(Route, createContainer(Component));
 type TProps = {
   caseTotal: number,
   gdcCaseTotal: number,
-  filters: Object,
+  filters: { [x: string]: any } | null,
 };
 
 export default ({ caseTotal, gdcCaseTotal, filters }: TProps = {}) => (

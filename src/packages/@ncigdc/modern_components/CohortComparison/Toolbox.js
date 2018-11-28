@@ -55,7 +55,7 @@ export default withTheme(
       style={{
         top: 90,
         padding: 20,
-        width: '20%',
+        width: '90%',
         position: 'sticky',
         backgroundColor: 'white',
         minWidth: 220,

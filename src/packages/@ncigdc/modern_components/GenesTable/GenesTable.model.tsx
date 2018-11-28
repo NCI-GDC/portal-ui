@@ -44,12 +44,7 @@ const GenesTableModel = [
     downloadable: true,
     hidden: true,
     th: () => <Th>Gene ID</Th>,
-    td: ({ node }: { node: INodeProps }) => (
-      <Td>
-        {console.log('node', node)}
-        {node.gene_id}
-      </Td>
-    ),
+    td: ({ node }: { node: INodeProps }) => <Td>{node.gene_id}</Td>,
   },
   {
     name: 'Symbol',

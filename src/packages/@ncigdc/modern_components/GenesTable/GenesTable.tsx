@@ -81,7 +81,6 @@ export default compose<IGenesTableProps, JSX.Element>(
       tableColumns: { [x: string]: Array<IColumnProps<any>> };
       [x: string]: any;
     }) => {
-      console.log(state);
       return { tableColumns: state.tableColumns.genes };
     }
   ),

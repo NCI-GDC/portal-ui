@@ -5,7 +5,6 @@ import ArrangeIcon from 'react-icons/lib/fa/bars';
 import { IThemeProps } from '@ncigdc/theme/versions/active';
 import { Row } from '@ncigdc/uikit/Flex';
 import SortableItem from '@ncigdc/uikit/SortableItem';
-// import tableModels from '@ncigdc/tableModels';
 import {
   toggleColumn,
   setColumns,
@@ -41,7 +40,6 @@ const ArrangeColumns = compose<IArrangeColumnsProps, JSX.Element>(
   })),
   withState('state', 'setState', props => ({
     draggingIndex: null,
-    // localTableColumns: props.localTableColumns,
   })),
   lifecycle({
     componentWillReceiveProps(nextProps: { [x: string]: any }) {
@@ -127,7 +125,6 @@ const ArrangeColumns = compose<IArrangeColumnsProps, JSX.Element>(
                     toggleColumn({
                       entityType,
                       index: localTableColumns.indexOf(column),
-                      // if after subheading col include number of subheadings to place inbetween
                     })
                   );
                 }}

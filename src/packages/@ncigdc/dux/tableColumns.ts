@@ -41,8 +41,6 @@ const setColumns = ({
   type: tableColumns.SET,
   payload: { entityType, order },
 });
-// Store ids of table items that are not hidden by default
-// const reduceColumns = (acc, x) => [...acc, ...(!x.hidden ? [x.id] : [])];
 const initialState = Object.keys(tableModels).reduce(
   (acc, key) => ({
     ...acc,

@@ -68,13 +68,6 @@ export default compose(
   withState('survivalLoadingId', 'setSurvivalLoadingId', ''),
   withTheme,
   withSize(),
-  // lifecycle({
-  //   componentWillReceiveProps(nextProps) {
-  //     if (nextProps.tableColumns !== this.props.tableColumns) {
-  //       this.setState({ tableColumns: nextProps.tableColumns });
-  //     }
-  //   },
-  // }),
   connect(state => ({ tableColumns: state.tableColumns.ssms }))
 )(
   (

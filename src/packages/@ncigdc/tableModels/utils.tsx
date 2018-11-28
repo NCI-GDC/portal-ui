@@ -1,4 +1,3 @@
-// @flow
 import React from 'react';
 import _ from 'lodash';
 import Tooltip from '@ncigdc/uikit/Tooltip/Tooltip';
@@ -41,7 +40,7 @@ export const createDataCategoryColumns = ({
       downloadable: true,
       subHeadingIds: _.map(DATA_CATEGORIES, category => category.abbr),
     },
-    ..._.map(DATA_CATEGORIES, (category: any, key: any) => ({
+    ..._.map(DATA_CATEGORIES, (category: any) => ({
       name: category.abbr,
       id: category.abbr,
       subHeading: true,
@@ -102,7 +101,6 @@ export const createDataCategoryColumns = ({
     })),
   ];
 };
-// type SubHeadingIdsType = string[] | never;
 export interface IColumnProps<NoTH> {
   name: string;
   id: string;

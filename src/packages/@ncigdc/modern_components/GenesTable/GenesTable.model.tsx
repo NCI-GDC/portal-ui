@@ -24,17 +24,14 @@ import ExploreSSMLink from '@ncigdc/components/Links/ExploreSSMLink';
 
 import { ForTsvExport } from '@ncigdc/components/DownloadTableToTsvButton';
 import { createSelectColumn } from '@ncigdc/tableModels/utils';
-
+import {
+  INodeProps,
+  ITotalNumber,
+} from '@ncigdc/modern_components/GenesTable/GenesTable';
 import { IGroupFilter } from '@ncigdc/utils/filters/types';
 
 const colors = scaleOrdinal(schemeCategory10);
 
-interface INodeProps {
-  gene_id: string;
-  name: string;
-  cytoband: string[];
-  biotype: string;
-}
 const GenesTableModel = [
   createSelectColumn({ idField: 'gene_id' }),
   {
@@ -44,7 +41,7 @@ const GenesTableModel = [
     downloadable: true,
     hidden: true,
     th: () => <Th>Gene ID</Th>,
-    td: ({ node }: { node: INodeProps }) => <Td>{node.gene_id}</Td>,
+    td: ({ node }: INodeProps) => <Td>{node.gene_id}</Td>,
   },
   {
     name: 'Symbol',
@@ -56,7 +53,7 @@ const GenesTableModel = [
       node,
       defaultFilters,
     }: {
-      node: any;
+      node: INodeProps['node'];
       defaultFilters: IGroupFilter;
     }) => {
       return (
@@ -79,7 +76,7 @@ const GenesTableModel = [
     sortable: true,
     downloadable: true,
     th: () => <Th>Name</Th>,
-    td: ({ node }: { node: INodeProps }) => (
+    td: ({ node }: INodeProps) => (
       <Td>
         <div style={{ maxWidth: '230px', whiteSpace: 'normal' }}>
           {node.name}
@@ -94,9 +91,7 @@ const GenesTableModel = [
     downloadable: true,
     hidden: true,
     th: () => <Th>Cytoband</Th>,
-    td: ({ node }: { node: INodeProps }) => (
-      <Td>{(node.cytoband || []).join(', ')}</Td>
-    ),
+    td: ({ node }: INodeProps) => <Td>{(node.cytoband || []).join(', ')}</Td>,
   },
   {
     name: 'Type',
@@ -105,14 +100,14 @@ const GenesTableModel = [
     downloadable: true,
     hidden: true,
     th: () => <Th>Type</Th>,
-    td: ({ node }: { node: INodeProps }) => <Td>{node.biotype}</Td>,
+    td: ({ node }: INodeProps) => <Td>{node.biotype}</Td>,
   },
   {
     name: '# SSM Affected Cases in Cohort',
     id: 'filteredCases',
     sortable: true,
     downloadable: true,
-    th: ({ context }: any) => (
+    th: ({ context }: { context: string }) => (
       <Th>
         <Tooltip
           Component={
@@ -128,7 +123,17 @@ const GenesTableModel = [
         </Tooltip>
       </Th>
     ),
-    td: ({ node, query, defaultFilters, filteredCases }: any) => (
+    td: ({
+      node,
+      query,
+      defaultFilters,
+      filteredCases,
+    }: {
+      node: INodeProps['node'];
+      query: { [x: string]: any };
+      defaultFilters: IGroupFilter;
+      filteredCases: ITotalNumber;
+    }) => (
       <Td>
         <span>
           <ExploreSSMLink
@@ -157,7 +162,7 @@ const GenesTableModel = [
             query={{
               searchTableTab: 'cases',
               filters: removeFilterWithOp(
-                (op: any, field: any) =>
+                (op: string, field: string) =>
                   op.match(/^NOT$/) && field.match(/^ssms.ssm_id/),
                 addInFilters(
                   query.genesTable_filters || defaultFilters,
@@ -204,7 +209,13 @@ const GenesTableModel = [
         </Tooltip>
       </Th>
     ),
-    td: ({ node, cases }: any) => (
+    td: ({
+      node,
+      cases,
+    }: {
+      node: INodeProps['node'];
+      cases: ITotalNumber;
+    }) => (
       <Td>
         <ProjectBreakdown
           filters={makeFilter([
@@ -237,7 +248,19 @@ const GenesTableModel = [
         </Tooltip>
       </Th>
     ),
-    td: ({ node, query, defaultFilters, filteredCases, cnvCases }: any) => (
+    td: ({
+      node,
+      query,
+      defaultFilters,
+      filteredCases,
+      cnvCases,
+    }: {
+      node: INodeProps['node'];
+      query: { [x: string]: any };
+      defaultFilters: IGroupFilter;
+      filteredCases: ITotalNumber;
+      cnvCases: ITotalNumber;
+    }) => (
       <Td>
         <span>
           {node.case_cnv_gain.hits && node.case_cnv_gain.hits.total !== 0
@@ -311,7 +334,19 @@ const GenesTableModel = [
         </Tooltip>
       </Th>
     ),
-    td: ({ node, query, defaultFilters, filteredCases, cnvCases }: any) => (
+    td: ({
+      node,
+      query,
+      defaultFilters,
+      filteredCases,
+      cnvCases,
+    }: {
+      node: INodeProps['node'];
+      query: { [x: string]: any };
+      defaultFilters: IGroupFilter;
+      filteredCases: ITotalNumber;
+      cnvCases: ITotalNumber;
+    }) => (
       <Td>
         <span>
           {node.case_cnv_loss.hits && node.case_cnv_loss.hits.total !== 0
@@ -369,7 +404,7 @@ const GenesTableModel = [
     id: 'mutations',
     sortable: true,
     downloadable: true,
-    th: ({ context }: any) => (
+    th: ({ context }: { context: string }) => (
       <ThNum>
         <Tooltip
           style={tableToolTipHint()}
@@ -384,7 +419,15 @@ const GenesTableModel = [
         </Tooltip>
       </ThNum>
     ),
-    td: ({ node, ssmCounts, defaultFilters }: any) => (
+    td: ({
+      node,
+      ssmCounts,
+      defaultFilters,
+    }: {
+      node: INodeProps['node'];
+      ssmCounts: { [x: string]: number };
+      defaultFilters: IGroupFilter;
+    }) => (
       <TdNum>
         <MutationsCount
           ssmCount={ssmCounts[node.gene_id]}
@@ -402,7 +445,7 @@ const GenesTableModel = [
     sortable: true,
     downloadable: true,
     th: () => <Th style={{ textAlign: 'center' }}>Annotations</Th>,
-    td: ({ node }: any) => (
+    td: ({ node }: INodeProps) => (
       <Td style={{ textAlign: 'center' }}>
         {node.is_cancer_gene_census && (
           <span>
@@ -427,7 +470,15 @@ const GenesTableModel = [
       setSelectedSurvivalData,
       survivalLoadingId,
       defaultFilters,
-    }: any) => (
+    }: {
+      node: INodeProps['node'];
+      hasEnoughSurvivalDataOnPrimaryCurve: boolean;
+      selectedSurvivalData: { [x: string]: any };
+      setSurvivalLoadingId: (id: string) => any;
+      setSelectedSurvivalData: (data: any) => any;
+      survivalLoadingId: string;
+      defaultFilters: IGroupFilter;
+    }) => (
       <Td>
         <Tooltip
           Component={

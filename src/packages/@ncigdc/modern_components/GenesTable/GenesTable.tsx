@@ -16,19 +16,19 @@ import { IColumnProps } from '@ncigdc/tableModels/utils';
 
 import { theme } from '@ncigdc/theme';
 import withSelectIds from '@ncigdc/utils/withSelectIds';
-interface ITotalNumber {
+export interface ITotalNumber {
   hits: {
     total: number;
   };
 }
 
-interface INodeProps {
+export interface INodeProps {
   node: {
     gene_id: string;
     id: string;
     symbol: string;
     name: string;
-    cytoband: string;
+    cytoband: string[];
     biotype: string;
     numCases: number;
     is_cancer_gene_census: boolean;

@@ -7,11 +7,11 @@ import { DATA_CATEGORIES } from '@ncigdc/utils/constants';
 import { Th, Td, ThNum, TdNum } from '@ncigdc/uikit/Table';
 import { makeFilter } from '@ncigdc/utils/filters';
 import { findDataCategory } from '@ncigdc/utils/data';
-
+import {IListLinkProps} from '@ncigdc/components/Links/types';
 interface ICreateDataCategoryColumnsProps{
   title: string; 
   countKey: string; 
-  Link: (arg:any)=> JSX.Element; 
+  Link: (props: IListLinkProps) => React.Component<any>; 
   getCellLinkFilters: (arg:any)=> any[]; 
   getTotalLinkFilters: (arg:any)=> any[];
 }
@@ -40,7 +40,7 @@ export const createDataCategoryColumns = ({
       downloadable: true,
       subHeadingIds: _.map(DATA_CATEGORIES, category => category.abbr),
     },
-    ..._.map(DATA_CATEGORIES, (category: any) => ({
+    ..._.map(DATA_CATEGORIES, (category: {full:any;abbr:any }) => ({
       name: category.abbr,
       id: category.abbr,
       subHeading: true,
@@ -132,7 +132,7 @@ export const createSelectColumn = ({
       selectedIds,
       setSelectedIds,
     }: {
-      nodes: Array<IColumnProps<any>>;
+      nodes: Array<IColumnProps<false>>;
       selectedIds: string[];
       setSelectedIds: (props: string[]) => void;
     }) => {
@@ -162,7 +162,7 @@ export const createSelectColumn = ({
       selectedIds,
       setSelectedIds,
     }: {
-      node: IColumnProps<any>;
+      node: IColumnProps<boolean>;
       selectedIds: string[];
       setSelectedIds: (props: string[]) => void;
     }) => (

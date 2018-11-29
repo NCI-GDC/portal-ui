@@ -474,8 +474,8 @@ const GenesTableModel = [
       node: INodeProps['node'];
       hasEnoughSurvivalDataOnPrimaryCurve: boolean;
       selectedSurvivalData: { [x: string]: any };
-      setSurvivalLoadingId: (id: string) => any;
-      setSelectedSurvivalData: (data: any) => any;
+      setSurvivalLoadingId: (id: string) => void;
+      setSelectedSurvivalData: (data: any) => void;
       survivalLoadingId: string;
       defaultFilters: IGroupFilter;
     }) => (

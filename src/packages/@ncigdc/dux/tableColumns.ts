@@ -36,7 +36,7 @@ const setColumns = ({
   order,
 }: {
   entityType: string;
-  order: Array<IColumnProps<any>>;
+  order: Array<IColumnProps<boolean>>;
 }) => ({
   type: tableColumns.SET,
   payload: { entityType, order },
@@ -60,17 +60,17 @@ const reducer = (state = initialState, action: ITableColumnsAction) => {
         ...state,
         ...Object.entries(
           allTableColumns || {}
-        ).reduce((acc, [key, val]: [string, Array<IColumnProps<any>>]) => {
-          const orderArray = val.map((v: IColumnProps<any>) => v.id);
+        ).reduce((acc, [key, val]: [string, Array<IColumnProps<boolean>>]) => {
+          const orderArray = val.map((v: IColumnProps<boolean>) => v.id);
           const order = Array.isArray(val)
             ? state[key]
                 .slice()
                 .sort(
-                  (a: IColumnProps<any>, b: IColumnProps<any>) =>
+                  (a: IColumnProps<boolean>, b: IColumnProps<boolean>) =>
                     orderArray.indexOf(a.id) - orderArray.indexOf(b.id)
                 )
             : state[key];
-          order.forEach((element: IColumnProps<any>, i: number) => {
+          order.forEach((element: IColumnProps<boolean>, i: number) => {
             element.hidden = val[i].hidden;
           });
           return {

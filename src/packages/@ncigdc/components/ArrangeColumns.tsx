@@ -22,12 +22,17 @@ const SortRow = styled(Row, {
     },
   },
 });
+interface IState {
+  draggingIndex: number | null;
+  filteredTableColumns?: Array<IColumnProps<boolean>>;
+  items?: Array<IColumnProps<boolean>>;
+}
 interface IArrangeColumnsProps {
   dispatch: (action: ITableColumnsAction) => void;
   localTableColumns: Array<IColumnProps<boolean>>;
   filteredTableColumns: Array<IColumnProps<boolean>>;
-  setState: (props: { [x: string]: any }) => void;
-  state: { draggingIndex: number | null; [x: string]: any };
+  setState: (props: IStateProps) => void;
+  state: IStateProps;
   searchTerm: string;
   entityType: string;
 }
@@ -36,12 +41,14 @@ const ArrangeColumns = compose<IArrangeColumnsProps, JSX.Element>(
     (
       state: { draggingIndex: number | null; [x: string]: any },
       props: { [x: string]: any }
-    ) => ({
-      localTableColumns: state.tableColumns[props.entityType],
-      filteredTableColumns: state.tableColumns[props.entityType].filter(
-        (t: IColumnProps<boolean>) => !t.subHeading
-      ),
-    })
+    ) => {
+      return {
+        localTableColumns: state.tableColumns[props.entityType],
+        filteredTableColumns: state.tableColumns[props.entityType].filter(
+          (t: IColumnProps<boolean>) => !t.subHeading
+        ),
+      };
+    }
   ),
   withState('state', 'setState', props => ({
     draggingIndex: null,
@@ -71,6 +78,7 @@ const ArrangeColumns = compose<IArrangeColumnsProps, JSX.Element>(
     const subHeadings =
       localTableColumns.filter((t: IColumnProps<boolean>) => t.subHeading) ||
       [];
+    console.log(state);
     return (
       <div className="test-arrange-columns">
         {filteredTableColumns.map(
@@ -101,7 +109,10 @@ const ArrangeColumns = compose<IArrangeColumnsProps, JSX.Element>(
                     })
                   );
                 }
-                setState((s: any) => ({ filteredTableColumns, ...nextState }));
+                setState({
+                  filteredTableColumns,
+                  ...nextState,
+                });
               }}
               draggingIndex={state.draggingIndex}
               items={filteredTableColumns}

@@ -7,13 +7,19 @@ import { DATA_CATEGORIES } from '@ncigdc/utils/constants';
 import { Th, Td, ThNum, TdNum } from '@ncigdc/uikit/Table';
 import { makeFilter } from '@ncigdc/utils/filters';
 import { findDataCategory } from '@ncigdc/utils/data';
-import {IListLinkProps} from '@ncigdc/components/Links/types';
+import { IListLinkProps } from '@ncigdc/components/Links/types';
+import { TCategoryAbbr, IDataCategory } from '@ncigdc/utils/data/types';
 interface ICreateDataCategoryColumnsProps{
   title: string; 
   countKey: string; 
   Link: (props: IListLinkProps) => React.Component<any>; 
-  getCellLinkFilters: (arg:any)=> any[]; 
-  getTotalLinkFilters: (arg:any)=> any[];
+  getCellLinkFilters: (arg: {[x:string]: any}) => IFilter[]; 
+  getTotalLinkFilters: (arg: {[x:string]: any}) => IFilter[];
+}
+
+interface IFilter{
+    field: string;
+    value: string;
 }
 
 export const createDataCategoryColumns = ({
@@ -40,7 +46,7 @@ export const createDataCategoryColumns = ({
       downloadable: true,
       subHeadingIds: _.map(DATA_CATEGORIES, category => category.abbr),
     },
-    ..._.map(DATA_CATEGORIES, (category: {full:any;abbr:any }) => ({
+    ..._.map(DATA_CATEGORIES, (category: { full: string; abbr: TCategoryAbbr }) => ({
       name: category.abbr,
       id: category.abbr,
       subHeading: true,
@@ -54,7 +60,7 @@ export const createDataCategoryColumns = ({
           </abbr>
         </ThNum>
       ),
-      td: ({ node }: any) => {
+      td: ({ node }: { node: { summary: { data_categories: IDataCategory[] }}; [x:string]:any }) => {
         const count = findDataCategory(
           category.abbr,
           node.summary.data_categories

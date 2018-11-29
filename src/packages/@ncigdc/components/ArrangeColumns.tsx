@@ -22,7 +22,7 @@ const SortRow = styled(Row, {
     },
   },
 });
-interface IState {
+interface IStateProps {
   draggingIndex: number | null;
   filteredTableColumns?: Array<IColumnProps<boolean>>;
   items?: Array<IColumnProps<boolean>>;
@@ -31,7 +31,7 @@ interface IArrangeColumnsProps {
   dispatch: (action: ITableColumnsAction) => void;
   localTableColumns: Array<IColumnProps<boolean>>;
   filteredTableColumns: Array<IColumnProps<boolean>>;
-  setState: (props: IStateProps) => void;
+  setState: (state: IStateProps) => void;
   state: IStateProps;
   searchTerm: string;
   entityType: string;

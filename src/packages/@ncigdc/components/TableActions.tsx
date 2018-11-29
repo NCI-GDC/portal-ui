@@ -57,7 +57,7 @@ interface IProps {
   endpoint: string;
   downloadFields: string[];
   query?: IRawQuery;
-  push: ({}) => void;
+  push?: ({}) => void;
   displayType?: string;
   arrangeColumnKey?: string;
   currentFilters: IGroupFilter;
@@ -73,13 +73,13 @@ interface IProps {
   theme?: object;
   totalCases?: number;
   // Todo: type these properly
-  downloadTooltip?: any;
-  sort?: any;
-  score?: any;
-  scope?: any;
-  AppendSetButton?: any;
-  downloadClinical?: any;
-  downloadBiospecimen?: any;
+  downloadTooltip?: string | JSX.Element;
+  sort?: { field: string; order: string };
+  score?: string;
+  scope?: string;
+  AppendSetButton?: React.ComponentClass;
+  downloadClinical?: boolean;
+  downloadBiospecimen?: boolean;
 }
 
 const TableActions: React.SFC<IProps> = ({
@@ -100,7 +100,7 @@ const TableActions: React.SFC<IProps> = ({
   RemoveFromSetButton,
   idField,
   query = {},
-  push,
+  push = () => {},
   selectedIds,
   sort,
   score,
@@ -225,7 +225,7 @@ const TableActions: React.SFC<IProps> = ({
   );
 };
 
-export default compose<any, any>(
+export default compose<IProps, IProps>(
   withRouter,
   withState('state', 'setState', {
     tsvDownloading: false,

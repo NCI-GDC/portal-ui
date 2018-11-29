@@ -13,6 +13,7 @@ import { AppendExploreGeneSetButton } from '@ncigdc/modern_components/withSetAct
 import { RemoveFromExploreGeneSetButton } from '@ncigdc/modern_components/withSetAction';
 import timestamp from '@ncigdc/utils/timestamp';
 import { IColumnProps } from '@ncigdc/tableModels/utils';
+import { IGroupFilter } from '@ncigdc/utils/filters/types';
 
 import { theme } from '@ncigdc/theme';
 import withSelectIds from '@ncigdc/utils/withSelectIds';
@@ -53,11 +54,11 @@ interface IGenesTableProps {
       cnvCases: ITotalNumber | undefined;
     };
   };
-  filters: { [x: string]: any };
+  filters: IGroupFilter;
   relay: { route: { params: { [x: string]: any } } };
   setSurvivalLoadingId: string;
   survivalLoadingId: string;
-  setSelectedSurvivalData: ({}) => any;
+  setSelectedSurvivalData: ({}) => void;
   selectedSurvivalData: any;
   hasEnoughSurvivalDataOnPrimaryCurve: boolean;
   context: string;
@@ -69,7 +70,7 @@ interface IGenesTableProps {
     genesTable_size: number;
     [x: string]: any;
   };
-  tableColumns: Array<IColumnProps<any>>;
+  tableColumns: Array<IColumnProps<boolean>>;
   selectedIds: string[];
   setSelectedIds: (props: string[]) => void;
   sort: any;
@@ -78,7 +79,7 @@ interface IGenesTableProps {
 export default compose<IGenesTableProps, JSX.Element>(
   connect(
     (state: {
-      tableColumns: { [x: string]: Array<IColumnProps<any>> };
+      tableColumns: { [x: string]: Array<IColumnProps<boolean>> };
       [x: string]: any;
     }) => {
       return { tableColumns: state.tableColumns.genes };
@@ -95,7 +96,13 @@ export default compose<IGenesTableProps, JSX.Element>(
       const ssmCounts = (aggregations || {
         consequence__transcript__gene__gene_id: { buckets: [] },
       }).consequence__transcript__gene__gene_id.buckets.reduce(
-        (acc: any, b: any) => ({ ...acc, [b.key]: b.doc_count }),
+        (
+          acc: { [x: string]: number },
+          b: { [x: string]: any; doc_count: number }
+        ) => ({
+          ...acc,
+          [b.key]: b.doc_count,
+        }),
         {}
       );
       return { ssmCounts };
@@ -139,7 +146,7 @@ export default compose<IGenesTableProps, JSX.Element>(
     const totalGenes: number = !genes ? 0 : genes.hits.total;
     const tableInfo = tableColumns
       .slice()
-      .filter((x: IColumnProps<any>) => !x.hidden);
+      .filter((x: IColumnProps<boolean>) => !x.hidden);
     return (
       <span>
         <Row
@@ -187,7 +194,7 @@ export default compose<IGenesTableProps, JSX.Element>(
         <div style={{ overflowX: 'auto' }}>
           <Table
             id="genes-table"
-            headings={tableInfo.map((x: IColumnProps<any>) => (
+            headings={tableInfo.map((x: IColumnProps<boolean>) => (
               <x.th
                 key={x.id}
                 context={context}
@@ -209,7 +216,7 @@ export default compose<IGenesTableProps, JSX.Element>(
                     }}
                   >
                     {tableInfo
-                      .filter((x: IColumnProps<any>) => x.td)
+                      .filter((x: IColumnProps<boolean>) => x.td)
                       .map((x: IColumnProps<false>) => (
                         <x.td
                           key={x.id}

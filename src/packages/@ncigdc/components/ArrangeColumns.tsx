@@ -24,20 +24,25 @@ const SortRow = styled(Row, {
 });
 interface IArrangeColumnsProps {
   dispatch: (action: ITableColumnsAction) => void;
-  localTableColumns: Array<IColumnProps<any>>;
-  filteredTableColumns: Array<IColumnProps<any>>;
-  setState: (props: { [x: string]: any }) => any;
-  state: { [x: string]: any };
+  localTableColumns: Array<IColumnProps<boolean>>;
+  filteredTableColumns: Array<IColumnProps<boolean>>;
+  setState: (props: { [x: string]: any }) => void;
+  state: { draggingIndex: number | null; [x: string]: any };
   searchTerm: string;
   entityType: string;
 }
 const ArrangeColumns = compose<IArrangeColumnsProps, JSX.Element>(
-  connect((state: { [x: string]: any }, props: { [x: string]: any }) => ({
-    localTableColumns: state.tableColumns[props.entityType],
-    filteredTableColumns: state.tableColumns[props.entityType].filter(
-      (t: any) => !t.subHeading
-    ),
-  })),
+  connect(
+    (
+      state: { draggingIndex: number | null; [x: string]: any },
+      props: { [x: string]: any }
+    ) => ({
+      localTableColumns: state.tableColumns[props.entityType],
+      filteredTableColumns: state.tableColumns[props.entityType].filter(
+        (t: IColumnProps<boolean>) => !t.subHeading
+      ),
+    })
+  ),
   withState('state', 'setState', props => ({
     draggingIndex: null,
   })),
@@ -46,7 +51,7 @@ const ArrangeColumns = compose<IArrangeColumnsProps, JSX.Element>(
       if (nextProps.localTableColumns !== this.props.localTableColumns) {
         nextProps.setState({
           filteredTableColumns: this.props.localTableColumns.filter(
-            (t: any) => !t.subHeading
+            (t: IColumnProps<boolean>) => !t.subHeading
           ),
         });
       }
@@ -64,86 +69,95 @@ const ArrangeColumns = compose<IArrangeColumnsProps, JSX.Element>(
     entityType,
   }) => {
     const subHeadings =
-      localTableColumns.filter((t: any) => t.subHeading) || [];
+      localTableColumns.filter((t: IColumnProps<boolean>) => t.subHeading) ||
+      [];
     return (
       <div className="test-arrange-columns">
-        {filteredTableColumns.map((column: any, i: number) => (
-          <SortableItem
-            className="test-column"
-            key={column.id}
-            updateState={(nextState: any) => {
-              if (!nextState.items && state.items) {
-                let newItems: any = state.items.filter(
-                  (item: any) => !item.subHeading
-                );
-                if (subHeadings && subHeadings.length > 0) {
-                  const index: number = filteredTableColumns.indexOf(
-                    filteredTableColumns.filter((t: any) => t.subHeadingIds)[0]
+        {filteredTableColumns.map(
+          (column: IColumnProps<boolean>, i: number) => (
+            <SortableItem
+              className="test-column"
+              key={column.id}
+              updateState={(nextState: any) => {
+                if (!nextState.items && state.items) {
+                  let newItems = state.items.filter(
+                    (item: any) => !item.subHeading
                   );
-                  newItems = newItems
-                    .slice(0, index)
-                    .concat(subHeadings)
-                    .concat(newItems.slice(index));
-                }
-                dispatch(
-                  setColumns({
-                    entityType,
-                    order: newItems,
-                  })
-                );
-              }
-              setState((s: any) => ({ filteredTableColumns, ...nextState }));
-            }}
-            draggingIndex={state.draggingIndex}
-            items={filteredTableColumns}
-            sortId={i}
-            outline="list"
-          >
-            <SortRow
-              style={
-                column.name.toLowerCase().includes(searchTerm.toLowerCase())
-                  ? {}
-                  : { display: 'none' }
-              }
-            >
-              <Row
-                style={{
-                  width: '100%',
-                  cursor: 'pointer',
-                  alignItems: 'center',
-                }}
-                onClick={() => {
-                  if (column.subHeadingIds) {
-                    localTableColumns.forEach((col: any, j: number) => {
-                      if (col.subHeading) {
-                        const index: number = localTableColumns.indexOf(col);
-                        dispatch(toggleColumn({ entityType, index }));
-                      }
-                    });
+                  if (subHeadings && subHeadings.length > 0) {
+                    const index: number = filteredTableColumns.indexOf(
+                      filteredTableColumns.filter(
+                        (t: IColumnProps<boolean>) => t.subHeadingIds
+                      )[0]
+                    );
+                    newItems = newItems
+                      .slice(0, index)
+                      .concat(subHeadings)
+                      .concat(newItems.slice(index));
                   }
                   dispatch(
-                    toggleColumn({
+                    setColumns({
                       entityType,
-                      index: localTableColumns.indexOf(column),
+                      order: newItems,
                     })
                   );
-                }}
+                }
+                setState((s: any) => ({ filteredTableColumns, ...nextState }));
+              }}
+              draggingIndex={state.draggingIndex}
+              items={filteredTableColumns}
+              sortId={i}
+              outline="list"
+            >
+              <SortRow
+                style={
+                  column.name.toLowerCase().includes(searchTerm.toLowerCase())
+                    ? {}
+                    : { display: 'none' }
+                }
               >
-                <input
-                  readOnly
-                  style={{ pointerEvents: 'none' }}
-                  aria-label={column.name}
-                  type="checkbox"
-                  checked={!filteredTableColumns[i].hidden}
+                <Row
+                  style={{
+                    width: '100%',
+                    cursor: 'pointer',
+                    alignItems: 'center',
+                  }}
+                  onClick={() => {
+                    if (column.subHeadingIds) {
+                      localTableColumns.forEach(
+                        (col: IColumnProps<boolean>, j: number) => {
+                          if (col.subHeading) {
+                            const index: number = localTableColumns.indexOf(
+                              col
+                            );
+                            dispatch(toggleColumn({ entityType, index }));
+                          }
+                        }
+                      );
+                    }
+                    dispatch(
+                      toggleColumn({
+                        entityType,
+                        index: localTableColumns.indexOf(column),
+                      })
+                    );
+                  }}
+                >
+                  <input
+                    readOnly
+                    style={{ pointerEvents: 'none' }}
+                    aria-label={column.name}
+                    type="checkbox"
+                    checked={!filteredTableColumns[i].hidden}
+                  />
+                  <span style={{ marginLeft: '0.3rem' }}>{column.name}</span>
+                </Row>
+                <ArrangeIcon
+                  style={{ marginLeft: 'auto', cursor: 'row-resize' }}
                 />
-                <span style={{ marginLeft: '0.3rem' }}>{column.name}</span>
-              </Row>
-              <ArrangeIcon
-                style={{ marginLeft: 'auto', cursor: 'row-resize' }}
-              />
-            </SortRow>
-          </SortableItem>
-        ))}
+              </SortRow>
+            </SortableItem>
+          )
+        )}
       </div>
     );
   }

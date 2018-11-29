@@ -51,7 +51,6 @@ export default compose(
     history,
   }) => {
     const prefix = 'cases';
-
     const { cases } = explore || {};
 
     if (cases && !cases.hits.edges.length) {

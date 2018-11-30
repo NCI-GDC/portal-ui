@@ -5,7 +5,7 @@ import { Th, Td, ThNum } from '@ncigdc/uikit/Table';
 import { makeFilter } from '@ncigdc/utils/filters';
 import CollapsibleList from '@ncigdc/uikit/CollapsibleList';
 import withData from '@ncigdc/modern_components/PrimarySiteSummary/PrimarySiteSummary.relay.js';
-import { DATA_CATEGORIES } from '@ncigdc/utils/constants';
+import { DATA_CATEGORIES, AWG } from '@ncigdc/utils/constants';
 import { tableToolTipHint } from '@ncigdc/theme/mixins';
 import Tooltip from '@ncigdc/uikit/Tooltip/Tooltip';
 import ExploreLink from '@ncigdc/components/Links/ExploreLink';
@@ -304,28 +304,32 @@ const projectPrimarySitesTableModel = [
       </Td>
     ),
   },
-  {
-    name: 'Explore',
-    id: 'explore',
-    sortable: false,
-    downloadable: false,
-    th: () => <ThNum rowSpan="2" />,
-    td: ({ primarySite, projectId }) => (
-      <Td
-        key="explore"
-        style={{
-          maxWidth: '200px',
-          padding: '3px 15px',
-          whiteSpace: 'normal',
-        }}
-      >
-        <ExploreByPrimarySiteButton
-          primarySite={primarySite}
-          projectId={projectId}
-        />
-      </Td>
-    ),
-  },
+  ...(!AWG
+    ? [
+        {
+          name: 'Explore',
+          id: 'explore',
+          sortable: false,
+          downloadable: false,
+          th: () => <ThNum rowSpan="2" />,
+          td: ({ primarySite, projectId }) => (
+            <Td
+              key="explore"
+              style={{
+                maxWidth: '200px',
+                padding: '3px 15px',
+                whiteSpace: 'normal',
+              }}
+            >
+              <ExploreByPrimarySiteButton
+                primarySite={primarySite}
+                projectId={projectId}
+              />
+            </Td>
+          ),
+        },
+      ]
+    : []),
 ];
 
 export default projectPrimarySitesTableModel;

@@ -64,9 +64,7 @@ const PieChart = compose(
       .each(d => {
         d.outerRadius = outerRadius - 20;
       })
-      .attr('class', 'arc')
-      .attr('stroke', '#fff')
-      .attr('stroke-width', '0.5');
+      .attr('class', 'arc');
 
     const gHover = svg
       .selectAll('.arc-hover')

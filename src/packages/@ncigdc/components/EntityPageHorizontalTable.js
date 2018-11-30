@@ -108,7 +108,7 @@ const EntityPageHorizontalTable = ({
                 key={d[idKey] || k}
               >
                 {headings.map((h, i) =>
-                  [].concat(get(d, h.key, [])).map((v, j) => (
+                  [].concat(get(d, h.key, '--')).map((v, j) => (
                     <Td
                       {...h.tdProps}
                       key={`${h.key}-${j}`}
@@ -124,7 +124,7 @@ const EntityPageHorizontalTable = ({
                           style={{ backgroundColor: colors(i) }}
                         />
                       )}
-                      {v || '--'}
+                      {v}
                     </Td>
                   )),
                 )}

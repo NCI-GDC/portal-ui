@@ -9,8 +9,6 @@ import { compose } from 'recompose';
 import { withTooltip } from '@ncigdc/uikit/Tooltip';
 import { withTheme } from '@ncigdc/theme';
 
-const HALF_DEGREE_IN_RAD = 0.00872665;
-
 const getNestedValue = (item, path) => {
   if (path.length === 1) {
     return item[path[0]];
@@ -24,7 +22,7 @@ const getNestedValue = (item, path) => {
 
 const PieChart = compose(
   withTooltip,
-  withTheme,
+  withTheme
 )(
   ({
     data,
@@ -43,10 +41,7 @@ const PieChart = compose(
     node.style.setProperty('justify-content', 'center');
     node.setAttribute('class', 'test-pie-chart');
 
-    const pie = d3
-      .pie()
-      .value(d => getNestedValue(d, path.split('.')))
-      .padAngle(HALF_DEGREE_IN_RAD);
+    const pie = d3.pie().value(d => getNestedValue(d, path.split('.')));
 
     const arc = d3
       .arc()
@@ -69,7 +64,9 @@ const PieChart = compose(
       .each(d => {
         d.outerRadius = outerRadius - 20;
       })
-      .attr('class', 'arc');
+      .attr('class', 'arc')
+      .attr('stroke', '#fff')
+      .attr('stroke-width', '0.5');
 
     const gHover = svg
       .selectAll('.arc-hover')
@@ -95,13 +92,13 @@ const PieChart = compose(
       .attr('class', d => `pointer arc-hover-${_.snakeCase(d.data.id)}`)
       .on('mouseenter', d => {
         document.querySelector(
-          `.arc-hover-${_.snakeCase(d.data.id)}`,
+          `.arc-hover-${_.snakeCase(d.data.id)}`
         ).style.opacity = 0.5;
         setTooltip(d.data.tooltip);
       })
       .on('mouseleave', d => {
         document.querySelector(
-          `.arc-hover-${_.snakeCase(d.data.id)}`,
+          `.arc-hover-${_.snakeCase(d.data.id)}`
         ).style.opacity = 0;
         setTooltip();
       })
@@ -113,7 +110,7 @@ const PieChart = compose(
       });
 
     return node.toReact();
-  },
+  }
 );
 
 PieChart.propTypes = {

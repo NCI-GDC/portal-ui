@@ -39,7 +39,7 @@ interface IQueryProps {
 
 export interface ISelectedSurvivalDataProps {
   rawData?: {
-    overallStats: any;
+    overallStats: { pValue?: number };
     results: Array<{
       donnors: Array<{
         project_id: string;

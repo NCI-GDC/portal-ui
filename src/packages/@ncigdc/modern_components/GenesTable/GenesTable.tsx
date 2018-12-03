@@ -63,7 +63,7 @@ interface IGenesTableProps {
   selectedSurvivalData: ISelectedSurvivalDataProps;
   hasEnoughSurvivalDataOnPrimaryCurve: boolean;
   context: string;
-  query: { searchTableTab: string; filters: string | { [x: string]: any } };
+  query: { searchTableTab: string; filters: string | IGroupFilter };
   ssmCounts: { [x: string]: number };
   ssmCountsLoading: boolean;
   parentVariables: {

@@ -57,7 +57,7 @@ interface ITdProps {
   node: INode;
   selectedIds: string[];
   setSelectedIds: (props: string[]) => void;
-  [x:string]:any;
+  [x:string]: any;
 }
 export interface IColumnProps<NoTH> {
   name: string;

@@ -30,6 +30,13 @@ import {
 } from '@ncigdc/modern_components/GenesTable/GenesTable';
 import { IGroupFilter } from '@ncigdc/utils/filters/types';
 
+interface IQueryProps {
+  cases_sort: string;
+  filters: string;
+  searchTableTab: string;
+  genesTable_filters?: IGroupFilter;
+}
+
 const colors = scaleOrdinal(schemeCategory10);
 
 const GenesTableModel = [
@@ -130,7 +137,7 @@ const GenesTableModel = [
       filteredCases,
     }: {
       node: INodeProps['node'];
-      query: { [x: string]: any };
+      query: IQueryProps;
       defaultFilters: IGroupFilter;
       filteredCases: ITotalNumber;
     }) => (
@@ -256,7 +263,7 @@ const GenesTableModel = [
       cnvCases,
     }: {
       node: INodeProps['node'];
-      query: { [x: string]: any };
+      query: IQueryProps;
       defaultFilters: IGroupFilter;
       filteredCases: ITotalNumber;
       cnvCases: ITotalNumber;
@@ -342,7 +349,7 @@ const GenesTableModel = [
       cnvCases,
     }: {
       node: INodeProps['node'];
-      query: { [x: string]: any };
+      query: IQueryProps;
       defaultFilters: IGroupFilter;
       filteredCases: ITotalNumber;
       cnvCases: ITotalNumber;
@@ -473,7 +480,7 @@ const GenesTableModel = [
     }: {
       node: INodeProps['node'];
       hasEnoughSurvivalDataOnPrimaryCurve: boolean;
-      selectedSurvivalData: { [x: string]: any };
+      selectedSurvivalData: { rawData:any; id:string; legend: any };
       setSurvivalLoadingId: (id: string) => void;
       setSelectedSurvivalData: (data: any) => void;
       survivalLoadingId: string;
@@ -498,6 +505,8 @@ const GenesTableModel = [
             }}
             disabled={!hasEnoughSurvivalDataOnPrimaryCurve}
             onClick={() => {
+              console.log('select', selectedSurvivalData);
+
               if (node.symbol !== selectedSurvivalData.id) {
                 setSurvivalLoadingId(node.symbol);
                 getSurvivalCurves({

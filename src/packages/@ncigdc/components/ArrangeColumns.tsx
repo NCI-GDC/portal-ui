@@ -22,7 +22,7 @@ const SortRow = styled(Row, {
     },
   },
 });
-interface IStateProps {
+interface IState {
   draggingIndex: number | null;
   filteredTableColumns?: Array<IColumnProps<boolean>>;
   items?: Array<IColumnProps<boolean>>;
@@ -31,30 +31,34 @@ interface IArrangeColumnsProps {
   dispatch: (action: ITableColumnsAction) => void;
   localTableColumns: Array<IColumnProps<boolean>>;
   filteredTableColumns: Array<IColumnProps<boolean>>;
-  setState: (state: IStateProps) => void;
-  state: IStateProps;
+  setState: (state: any) => void;
+  state: IState;
   searchTerm: string;
   entityType: string;
 }
 const ArrangeColumns = compose<IArrangeColumnsProps, JSX.Element>(
   connect(
     (
-      state: { draggingIndex: number | null; [x: string]: any },
-      props: { [x: string]: any }
-    ) => {
-      return {
-        localTableColumns: state.tableColumns[props.entityType],
-        filteredTableColumns: state.tableColumns[props.entityType].filter(
-          (t: IColumnProps<boolean>) => !t.subHeading
-        ),
-      };
-    }
+      state: {
+        draggingIndex: number | null;
+        tableColumns: {
+          [x: string]: Array<IColumnProps<boolean>>;
+        };
+        [x: string]: any;
+      },
+      props: { entityType: string; searchTerm: string; [x: string]: any }
+    ) => ({
+      localTableColumns: state.tableColumns[props.entityType],
+      filteredTableColumns: state.tableColumns[props.entityType].filter(
+        (t: IColumnProps<boolean>) => !t.subHeading
+      ),
+    })
   ),
-  withState('state', 'setState', props => ({
+  withState('state', 'setState', state => ({
     draggingIndex: null,
   })),
   lifecycle({
-    componentWillReceiveProps(nextProps: { [x: string]: any }) {
+    componentWillReceiveProps(nextProps: IArrangeColumnsProps) {
       if (nextProps.localTableColumns !== this.props.localTableColumns) {
         nextProps.setState({
           filteredTableColumns: this.props.localTableColumns.filter(
@@ -78,7 +82,6 @@ const ArrangeColumns = compose<IArrangeColumnsProps, JSX.Element>(
     const subHeadings =
       localTableColumns.filter((t: IColumnProps<boolean>) => t.subHeading) ||
       [];
-    console.log(state);
     return (
       <div className="test-arrange-columns">
         {filteredTableColumns.map(
@@ -86,10 +89,10 @@ const ArrangeColumns = compose<IArrangeColumnsProps, JSX.Element>(
             <SortableItem
               className="test-column"
               key={column.id}
-              updateState={(nextState: any) => {
+              updateState={(nextState: IState) => {
                 if (!nextState.items && state.items) {
                   let newItems = state.items.filter(
-                    (item: any) => !item.subHeading
+                    (item: IColumnProps<boolean>) => !item.subHeading
                   );
                   if (subHeadings && subHeadings.length > 0) {
                     const index: number = filteredTableColumns.indexOf(

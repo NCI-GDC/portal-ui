@@ -172,7 +172,7 @@ export const createSelectColumn = ({
       selectedIds,
       setSelectedIds,
     }: {
-      node: IColumnProps<boolean>;
+      node: IColumnProps<false>;
       selectedIds: string[];
       setSelectedIds: (props: string[]) => void;
     }) => (

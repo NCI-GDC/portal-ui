@@ -27,11 +27,18 @@ interface IState {
   filteredTableColumns?: Array<IColumnProps<boolean>>;
   items?: Array<IColumnProps<boolean>>;
 }
+
 interface IArrangeColumnsProps {
   dispatch: (action: ITableColumnsAction) => void;
   localTableColumns: Array<IColumnProps<boolean>>;
   filteredTableColumns: Array<IColumnProps<boolean>>;
-  setState: (state: any) => void;
+  setState: (
+    state: {
+      filteredTableColumns?: Array<IColumnProps<boolean>>;
+      draggingIndex?: number | null;
+      [x: string]: any;
+    }
+  ) => void;
   state: IState;
   searchTerm: string;
   entityType: string;

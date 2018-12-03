@@ -22,6 +22,25 @@ interface IFilter{
     value: string;
 }
 
+interface IThProps {
+  nodes: Array<IColumnProps<false>>;
+  selectedIds: string[];
+  setSelectedIds: (props: string[]) => void;
+}
+
+export interface IColumnProps<NoTH> {
+  name: string;
+  id: string;
+  sortable: boolean;
+  downloadable: boolean;
+  hidden: boolean;
+  field?: string;
+  subHeading?: boolean;
+  subHeadingIds?: NoTH extends true? string[] : undefined;
+  parent?: string;
+  th: (props: any) => JSX.Element;
+  td: NoTH extends true? undefined : (props: any) => JSX.Element;
+}
 export const createDataCategoryColumns = ({
   title,
   countKey,
@@ -60,7 +79,7 @@ export const createDataCategoryColumns = ({
           </abbr>
         </ThNum>
       ),
-      td: ({ node }: { node: { summary: { data_categories: IDataCategory[] }}; [x:string]:any }) => {
+      td: ({ node }: { node: { summary: { data_categories: IDataCategory[] }}; [x:string]: any }) => {
         const count = findDataCategory(
           category.abbr,
           node.summary.data_categories
@@ -84,7 +103,7 @@ export const createDataCategoryColumns = ({
           </TdNum>
         );
       },
-      total: ({ hits }: any) => (
+      total: ({ hits }: {hits: {edges: any }}) => (
         <TdNum>
           <Link
             query={{
@@ -107,19 +126,7 @@ export const createDataCategoryColumns = ({
     })),
   ];
 };
-export interface IColumnProps<NoTH> {
-  name: string;
-  id: string;
-  sortable: boolean;
-  downloadable: boolean;
-  hidden: boolean;
-  field?: string;
-  subHeading?: boolean;
-  subHeadingIds?: NoTH extends true? string[] : undefined;
-  parent?: string;
-  th: (props: any) => JSX.Element;
-  td: NoTH extends true? undefined : (props: any) => JSX.Element;
-}
+
 export const createSelectColumn = ({
   idField,
   headerRowSpan,
@@ -137,12 +144,11 @@ export const createSelectColumn = ({
       nodes,
       selectedIds,
       setSelectedIds,
-    }: {
-      nodes: Array<IColumnProps<false>>;
-      selectedIds: string[];
-      setSelectedIds: (props: string[]) => void;
-    }) => {
+    }: IThProps) => {
       // NOTE: "nodes" is really "edges" in the graphql schema
+      console.log('node',nodes);
+      
+      // TODO: nodes structure here may look like {idField:{...}...} or { node: {idField: {...}...}...}. Make it consistent everywhere.
       const ids = nodes.map((node: any) => node[idField] || node.node[idField]);
       const allSelected = ids.every((id: string) => selectedIds.includes(id));
       return (

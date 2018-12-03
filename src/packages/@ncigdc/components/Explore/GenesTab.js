@@ -67,7 +67,7 @@ export default compose(
           loading: false,
         }));
       },
-    }),
+    })
   ),
   withPropsOnChange(['filters'], ({ updateData }) => {
     updateData();
@@ -82,16 +82,14 @@ export default compose(
               dotField: 'genes.gene_id',
             }),
             'content.value',
-            [],
-          ),
+            []
+          )
         )
         .filter(v => v.includes('set_id'));
 
       const newFilters = toggleFilters(
         filters,
-        makeFilter([
-          { field: 'genes.gene_id', value: [gene.gene_id, ...sets] },
-        ]),
+        makeFilter([{ field: 'genes.gene_id', value: [gene.gene_id, ...sets] }])
       );
       push({
         pathname: '/exploration',
@@ -101,7 +99,7 @@ export default compose(
         }),
       });
     },
-  }),
+  })
 )(
   ({
     state: { loading },
@@ -150,7 +148,7 @@ export default compose(
           defaultFilters={filters}
           survivalData={survivalData}
           hasEnoughSurvivalDataOnPrimaryCurve={enoughData(
-            defaultSurvivalData.rawData,
+            defaultSurvivalData.rawData
           )}
           setSelectedSurvivalData={setSelectedSurvivalData}
           selectedSurvivalData={selectedSurvivalData}
@@ -158,5 +156,5 @@ export default compose(
         />
       </Column>
     </Column>
-  ),
+  )
 );

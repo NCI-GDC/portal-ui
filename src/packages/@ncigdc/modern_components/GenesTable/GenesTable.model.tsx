@@ -37,6 +37,24 @@ interface IQueryProps {
   genesTable_filters?: IGroupFilter;
 }
 
+export interface ISelectedSurvivalDataProps {
+  rawData?: {
+    overallStats: any;
+    results: Array<{
+      donnors: Array<{
+        project_id: string;
+        censored: boolean;
+        time: number;
+        survivalEstimate: number;
+        submitter_id: string;
+      }>;
+      meta: { id: number };
+    }>;
+  };
+  id?: string;
+  legend?: Array<{ key: string; value: string | JSX.Element }>;
+}
+
 const colors = scaleOrdinal(schemeCategory10);
 
 const GenesTableModel = [
@@ -480,9 +498,9 @@ const GenesTableModel = [
     }: {
       node: INodeProps['node'];
       hasEnoughSurvivalDataOnPrimaryCurve: boolean;
-      selectedSurvivalData: { rawData:any; id:string; legend: any };
+      selectedSurvivalData: ISelectedSurvivalDataProps;
       setSurvivalLoadingId: (id: string) => void;
-      setSelectedSurvivalData: (data: any) => void;
+      setSelectedSurvivalData: (data: ISelectedSurvivalDataProps) => void;
       survivalLoadingId: string;
       defaultFilters: IGroupFilter;
     }) => (
@@ -505,15 +523,13 @@ const GenesTableModel = [
             }}
             disabled={!hasEnoughSurvivalDataOnPrimaryCurve}
             onClick={() => {
-              console.log('select', selectedSurvivalData);
-
               if (node.symbol !== selectedSurvivalData.id) {
                 setSurvivalLoadingId(node.symbol);
                 getSurvivalCurves({
                   field: 'gene.symbol',
                   value: node.symbol,
                   currentFilters: defaultFilters,
-                }).then((survivalData: any) => {
+                }).then((survivalData: ISelectedSurvivalDataProps) => {
                   setSelectedSurvivalData(survivalData);
                   setSurvivalLoadingId('');
                 });

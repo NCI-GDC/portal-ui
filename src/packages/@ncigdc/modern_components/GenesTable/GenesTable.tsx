@@ -14,7 +14,7 @@ import { RemoveFromExploreGeneSetButton } from '@ncigdc/modern_components/withSe
 import timestamp from '@ncigdc/utils/timestamp';
 import { IColumnProps } from '@ncigdc/tableModels/utils';
 import { IGroupFilter } from '@ncigdc/utils/filters/types';
-
+import { ISelectedSurvivalDataProps } from '@ncigdc/modern_components/GenesTable/GenesTable.model';
 import { theme } from '@ncigdc/theme';
 import withSelectIds from '@ncigdc/utils/withSelectIds';
 export interface ITotalNumber {
@@ -55,14 +55,15 @@ interface IGenesTableProps {
     };
   };
   filters: IGroupFilter;
-  relay: { route: { params: { [x: string]: any } } };
   setSurvivalLoadingId: string;
   survivalLoadingId: string;
-  setSelectedSurvivalData: ({}) => void;
-  selectedSurvivalData: any;
+  setSelectedSurvivalData: (
+    selectedSurvivalData: ISelectedSurvivalDataProps
+  ) => void;
+  selectedSurvivalData: ISelectedSurvivalDataProps;
   hasEnoughSurvivalDataOnPrimaryCurve: boolean;
   context: string;
-  query: { [x: string]: any };
+  query: { searchTableTab: string; filters: string | { [x: string]: any } };
   ssmCounts: { [x: string]: number };
   ssmCountsLoading: boolean;
   parentVariables: {
@@ -73,7 +74,7 @@ interface IGenesTableProps {
   tableColumns: Array<IColumnProps<boolean>>;
   selectedIds: string[];
   setSelectedIds: (props: string[]) => void;
-  sort: any;
+  sort?: { field: string; order: string };
   score: string;
 }
 export default compose<IGenesTableProps, JSX.Element>(
@@ -120,7 +121,6 @@ export default compose<IGenesTableProps, JSX.Element>(
       },
     },
     filters,
-    relay = { route: { params: {} } },
     setSurvivalLoadingId,
     survivalLoadingId,
     setSelectedSurvivalData,

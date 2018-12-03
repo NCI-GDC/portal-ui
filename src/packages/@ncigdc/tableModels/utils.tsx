@@ -146,8 +146,6 @@ export const createSelectColumn = ({
       setSelectedIds,
     }: IThProps) => {
       // NOTE: "nodes" is really "edges" in the graphql schema
-      console.log('node',nodes);
-      
       // TODO: nodes structure here may look like {idField:{...}...} or { node: {idField: {...}...}...}. Make it consistent everywhere.
       const ids = nodes.map((node: any) => node[idField] || node.node[idField]);
       const allSelected = ids.every((id: string) => selectedIds.includes(id));

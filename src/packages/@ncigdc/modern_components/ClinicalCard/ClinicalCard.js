@@ -11,6 +11,7 @@ import { withTheme } from '@ncigdc/theme';
 import { Row } from '@ncigdc/uikit/Flex/';
 import EntityPageVerticalTable from '@ncigdc/components/EntityPageVerticalTable';
 import ageDisplay from '@ncigdc/utils/ageDisplay';
+import formatFileSize from '@ncigdc/utils/formatFileSize';
 import { truncate } from 'lodash/string';
 import { visualizingButton } from '@ncigdc/theme/mixins';
 import timestamp from '@ncigdc/utils/timestamp';
@@ -39,7 +40,7 @@ const styles = {
 export default compose(
   branch(
     ({ viewer }) => !viewer.repository.cases.hits.edges[0],
-    renderComponent(() => <div>No case found.</div>),
+    renderComponent(() => <div>No case found.</div>)
   ),
   connect(state => state.cart),
   withState('activeTab', 'setTab', 0),
@@ -47,7 +48,7 @@ export default compose(
     tsvDownloading: false,
     jsonDownloading: false,
   }),
-  withTheme,
+  withTheme
 )(
   ({
     activeTab,
@@ -374,7 +375,7 @@ export default compose(
                     </span>
                   ),
                   data_format: f.node.data_format,
-                  file_size: f.node.file_size,
+                  file_size: formatFileSize(f.node.file_size),
                   action: (
                     <div
                       style={{
@@ -403,7 +404,11 @@ export default compose(
               headings={[
                 { key: 'file_name', title: 'Filename' },
                 { key: 'data_format', title: 'Data format' },
-                { key: 'file_size', title: 'Size' },
+                {
+                  key: 'file_size',
+                  title: 'Size',
+                  style: { textAlign: 'right' },
+                },
                 { key: 'action', title: 'Action' },
               ]}
             />
@@ -411,5 +416,5 @@ export default compose(
         )}
       </Card>
     );
-  },
+  }
 );

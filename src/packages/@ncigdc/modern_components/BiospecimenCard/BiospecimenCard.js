@@ -8,6 +8,7 @@ import { compose, withState, branch, renderComponent } from 'recompose';
 import { connect } from 'react-redux';
 import { humanify } from '@ncigdc/utils/string';
 import { makeFilter } from '@ncigdc/utils/filters';
+import formatFileSize from '@ncigdc/utils/formatFileSize';
 import Card from '@ncigdc/uikit/Card';
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import Input from '@ncigdc/uikit/Form/Input';
@@ -65,12 +66,12 @@ export default compose(
   withRouter,
   branch(
     ({ viewer }) => !viewer.repository.cases.hits.edges[0],
-    renderComponent(() => <div>No case found.</div>),
+    renderComponent(() => <div>No case found.</div>)
   ),
   branch(
     ({ viewer }) =>
       !viewer.repository.cases.hits.edges[0].node.samples.hits.edges.length,
-    renderComponent(() => <div>No biospecimen data found.</div>),
+    renderComponent(() => <div>No biospecimen data found.</div>)
   ),
   connect(state => state.cart),
   withState('allExpanded', 'setAllExpanded', false),
@@ -86,9 +87,9 @@ export default compose(
         type: getType(selectedEntity),
         query: bioId || '',
       };
-    },
+    }
   ),
-  withTheme,
+  withTheme
 )(
   ({
     history,
@@ -219,12 +220,12 @@ export default compose(
                         'expanded',
                         `${foundType}_id`,
                         '__dataID__',
-                      ].includes(key),
+                      ].includes(key)
                   )
                   .map(([key, val]) => {
                     if (
                       ['portions', 'aliquots', 'analytes', 'slides'].includes(
-                        key,
+                        key
                       )
                     ) {
                       return {
@@ -306,7 +307,11 @@ export default compose(
               headings={[
                 { key: 'file_name', title: 'Filename' },
                 { key: 'data_format', title: 'Data format' },
-                { key: 'file_size', title: 'Size' },
+                {
+                  key: 'file_size',
+                  title: 'Size',
+                  style: { textAlign: 'right' },
+                },
                 { key: 'action', title: 'Action' },
               ]}
               data={supplementalFiles.map((f, i) => {
@@ -327,7 +332,7 @@ export default compose(
                     </span>
                   ),
                   data_format: f.node.data_format,
-                  file_size: f.node.file_size,
+                  file_size: formatFileSize(f.node.file_size),
                   action: (
                     <div
                       style={{
@@ -358,5 +363,5 @@ export default compose(
         )}
       </Card>
     );
-  },
+  }
 );

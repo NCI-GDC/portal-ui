@@ -8,6 +8,7 @@ import { makeFilter, addInFilters } from '@ncigdc/utils/filters';
 import Toggle from '@ncigdc/uikit/Toggle';
 import ExploreLink from '@ncigdc/components/Links/ExploreLink';
 import ExploreSSMLink from '@ncigdc/components/Links/ExploreSSMLink';
+import { IGroupFilter } from '@ncigdc/utils/filters/types';
 
 const createRenderer = (Route, Container) => (props: mixed) => (
   <Relay.Renderer
@@ -152,7 +153,7 @@ const Renderer = createRenderer(Route, createContainer(Component));
 type TProps = {
   caseTotal: number,
   gdcCaseTotal: number,
-  filters: { [x: string]: any } | null,
+  filters: IGroupFilter | null,
 };
 
 export default ({ caseTotal, gdcCaseTotal, filters }: TProps = {}) => (

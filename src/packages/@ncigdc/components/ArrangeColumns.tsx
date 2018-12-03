@@ -27,7 +27,6 @@ interface IState {
   filteredTableColumns?: Array<IColumnProps<boolean>>;
   items?: Array<IColumnProps<boolean>>;
 }
-
 interface IArrangeColumnsProps {
   dispatch: (action: ITableColumnsAction) => void;
   localTableColumns: Array<IColumnProps<boolean>>;

@@ -12,9 +12,9 @@ import { TCategoryAbbr, IDataCategory } from '@ncigdc/utils/data/types';
 interface ICreateDataCategoryColumnsProps{
   title: string; 
   countKey: string; 
-  Link: (props: IListLinkProps) => React.Component<any>; 
-  getCellLinkFilters: (arg: {[x:string]: any}) => IFilter[]; 
-  getTotalLinkFilters: (arg: {[x:string]: any}) => IFilter[];
+  Link: (props: IListLinkProps) => React.Component<IListLinkProps>; 
+  getCellLinkFilters: (node: INode) => IFilter[]; 
+  getTotalLinkFilters: (hits: IHits) => IFilter[];
 }
 
 interface IFilter{
@@ -22,12 +22,43 @@ interface IFilter{
     value: string;
 }
 
-interface IThProps {
-  nodes: Array<IColumnProps<false>>;
-  selectedIds: string[];
-  setSelectedIds: (props: string[]) => void;
+interface INode {
+  [x:string]: any;
 }
 
+interface IHits {
+  total: number;
+  edges: Array<{
+    node: {
+      [x: string]: any;
+      summary: {
+        data_categories: IDataCategory[];
+        case_count: number;
+        file_count: number;
+        file_size: number;
+      };
+    };
+  }>;
+
+}
+
+interface IThProps {
+  key?: string;
+  context?: string;
+  nodes: INode[];
+  selectedIds: string[];
+  setSelectedIds: (props: string[]) => void;
+  [x:string]:any;
+}
+
+interface ITdProps {
+  key?: string;
+  context?: string;
+  node: INode;
+  selectedIds: string[];
+  setSelectedIds: (props: string[]) => void;
+  [x:string]:any;
+}
 export interface IColumnProps<NoTH> {
   name: string;
   id: string;
@@ -38,8 +69,8 @@ export interface IColumnProps<NoTH> {
   subHeading?: boolean;
   subHeadingIds?: NoTH extends true? string[] : undefined;
   parent?: string;
-  th: (props: any) => JSX.Element;
-  td: NoTH extends true? undefined : (props: any) => JSX.Element;
+  th: (props: IThProps) => JSX.Element;
+  td: NoTH extends true? undefined : (props: ITdProps) => JSX.Element;
 }
 export const createDataCategoryColumns = ({
   title,
@@ -79,7 +110,7 @@ export const createDataCategoryColumns = ({
           </abbr>
         </ThNum>
       ),
-      td: ({ node }: { node: { summary: { data_categories: IDataCategory[] }}; [x:string]: any }) => {
+      td: ({ node }: { node: INode }) => {
         const count = findDataCategory(
           category.abbr,
           node.summary.data_categories
@@ -103,7 +134,7 @@ export const createDataCategoryColumns = ({
           </TdNum>
         );
       },
-      total: ({ hits }: {hits: {edges: any }}) => (
+      total: ({ hits }: {hits: IHits }) => (
         <TdNum>
           <Link
             query={{
@@ -113,9 +144,10 @@ export const createDataCategoryColumns = ({
               ]),
             }}
           >
+            {console.log(hits)}
             {_.sumBy(
               hits.edges,
-              (x: any) =>
+              x =>
                 findDataCategory(category.abbr, x.node.summary.data_categories)[
                   countKey
                 ]
@@ -147,7 +179,7 @@ export const createSelectColumn = ({
     }: IThProps) => {
       // NOTE: "nodes" is really "edges" in the graphql schema
       // TODO: nodes structure here may look like {idField:{...}...} or { node: {idField: {...}...}...}. Make it consistent everywhere.
-      const ids = nodes.map((node: any) => node[idField] || node.node[idField]);
+      const ids = nodes.map((node: INode) => node[idField] || node.node[idField]);
       const allSelected = ids.every((id: string) => selectedIds.includes(id));
       return (
         <Th rowSpan={headerRowSpan}>
@@ -171,11 +203,7 @@ export const createSelectColumn = ({
       node,
       selectedIds,
       setSelectedIds,
-    }: {
-      node: IColumnProps<false>;
-      selectedIds: string[];
-      setSelectedIds: (props: string[]) => void;
-    }) => (
+    }: ITdProps) => (
       <Td>
         <input
           type="checkbox"

@@ -144,7 +144,6 @@ export const createDataCategoryColumns = ({
               ]),
             }}
           >
-            {console.log(hits)}
             {_.sumBy(
               hits.edges,
               x =>

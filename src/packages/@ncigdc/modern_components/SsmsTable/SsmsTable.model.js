@@ -76,7 +76,7 @@ const SsmsTableModel = [
             {truncateAfterMarker(
               node.genomic_dna_change,
               DNA_CHANGE_MARKERS,
-              8,
+              8
             )}
           </MutationLink>
         </Tooltip>
@@ -173,7 +173,7 @@ const SsmsTableModel = [
             searchTableTab={'cases'}
             filters={addInFilters(
               query.genesTable_filters || contextFilters || defaultFilters,
-              makeFilter([{ field: 'ssms.ssm_id', value: node.ssm_id }]),
+              makeFilter([{ field: 'ssms.ssm_id', value: node.ssm_id }])
             )}
           >
             {node.filteredOccurences.hits.total.toLocaleString()}
@@ -182,20 +182,15 @@ const SsmsTableModel = [
           <ExploreLink
             query={{
               searchTableTab: 'cases',
-              filters:
-                location.pathname.split('/')[1] === 'genes'
-                  ? query.ssmsTable_filters || contextFilters || defaultFilters
-                  : addInFilters(
-                      query.ssmsTable_filters ||
-                        contextFilters ||
-                        defaultFilters,
-                      makeFilter([
-                        {
-                          field: 'cases.available_variation_data',
-                          value: ['ssm'],
-                        },
-                      ]),
-                    ),
+              filters: addInFilters(
+                query.ssmsTable_filters || contextFilters || defaultFilters,
+                makeFilter([
+                  {
+                    field: 'cases.available_variation_data',
+                    value: ['ssm'],
+                  },
+                ])
+              ),
             }}
           >
             {(filteredCases.hits.total || 0).toLocaleString()}
@@ -301,10 +296,10 @@ const SsmsTableModel = [
                   value: node.ssm_id,
                   slug: `${get(
                     node,
-                    'consequence.hits.edges[0].node.transcript.gene.symbol',
+                    'consequence.hits.edges[0].node.transcript.gene.symbol'
                   )} ${get(
                     node,
-                    'consequence.hits.edges[0].node.transcript.aa_change',
+                    'consequence.hits.edges[0].node.transcript.aa_change'
                   )}`,
                   currentFilters: defaultFilters,
                 }).then(data => {

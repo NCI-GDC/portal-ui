@@ -9,6 +9,7 @@ export default ({
   winStyle = 'width=800, height=600',
 }) =>
   new Promise((resolve, reject) => {
+    console.log('win.open URL: ', winURL);
     if (navigator.cookieEnabled) {
       const win = open(winUrl, 'Auth', winStyle);
 

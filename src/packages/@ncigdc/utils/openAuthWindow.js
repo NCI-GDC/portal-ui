@@ -24,6 +24,7 @@ export default ({
           !win.document.URL.includes('auth')
         ) {
           console.log('return to origin: ', win.document.URL);
+          console.log('window location search: ', win.location.search);
           // Window is not closed yet so close
           win.close();
 
@@ -31,7 +32,7 @@ export default ({
           clearInterval(interval);
 
           // Resolve that we have something good
-          resolve();
+          resolve('success');
         }
       };
       const interval = setInterval(loginAttempt, pollInterval);

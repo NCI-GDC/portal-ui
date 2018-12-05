@@ -28,9 +28,14 @@ const LoginButton = ({ children, dispatch, user }) => (
       <Link
         className="test-login-button"
         onClick={async () => {
-          await openAuthWindow({
+          const nihAuth = await openAuthWindow({
             name: 'NIH',
           });
+          console.log('nih auth: ', nihAuth);
+          if (!nihAuth) {
+            console.log('redirecting to error');
+            return (window.location.href = '/login?error=no_intersection');
+          }
           await dispatch(fetchUser());
         }}
       >

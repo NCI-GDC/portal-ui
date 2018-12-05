@@ -32,7 +32,7 @@ export default ({
           clearInterval(interval);
 
           // Resolve that we have something good
-          resolve('success');
+          resolve();
         }
       };
       const interval = setInterval(loginAttempt, pollInterval);

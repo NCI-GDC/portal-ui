@@ -28,7 +28,7 @@ const LoginButton = ({ children, dispatch, user }) => (
       <Link
         className="test-login-button"
         onClick={async () => {
-          const nihAuth = await openAuthWindow({
+          await openAuthWindow({
             name: 'NIH',
           });
           await dispatch(fetchUser());

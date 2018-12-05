@@ -39,17 +39,12 @@ const AWGLoginButton = compose(
   <Button
     style={styles.loginButton}
     onClick={async () => {
-      const awgAuth = await openAuthWindow({
+      await openAuthWindow({
         winUrl: `${AUTH}?next=${FENCE}/login/fence?redirect=${window.location
           .origin}`,
         pollInterval: 200,
         name: 'AWG',
       });
-      console.log('awg auth: ', awgAuth);
-      if (!awgAuth) {
-        console.log('redirecting to error');
-        return (window.location.href = '/login?error=no_intersection');
-      }
       await dispatch(fetchUser());
       push({ pathname: '/repository' });
     }}

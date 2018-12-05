@@ -31,11 +31,6 @@ const LoginButton = ({ children, dispatch, user }) => (
           const nihAuth = await openAuthWindow({
             name: 'NIH',
           });
-          console.log('nih auth: ', nihAuth);
-          if (!nihAuth) {
-            console.log('redirecting to error');
-            return (window.location.href = '/login?error=no_intersection');
-          }
           await dispatch(fetchUser());
         }}
       >

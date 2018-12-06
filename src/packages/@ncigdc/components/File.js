@@ -32,7 +32,7 @@ import FileVersionsTable from '@ncigdc/components/FileVersionsTable';
 
 // value of data_category mapped to sections to display
 const DISPLAY_MAPPING = {
-  'Sequenced Reads': ['analysis', 'readGroup', 'downstreamAnalysis'],
+  'Sequencing Reads': ['analysis', 'readGroup', 'downstreamAnalysis'],
   'Transcriptome Profiling': ['analysis', 'downstreamAnalysis'],
   'Simple Nucleotide Variation': ['analysis', 'downstreamAnalysis'],
   'Copy Number Variation': ['analysis', 'downstreamAnalysis'],
@@ -116,6 +116,8 @@ let ZoomableImageWithData = withImageViewerData(
 );
 
 function displaySection(section: string, dataCategory: string): boolean {
+  console.log('section', section);
+
   return (DISPLAY_MAPPING[dataCategory] || []).includes(section);
 }
 
@@ -138,6 +140,8 @@ const File = ({
   query: {},
   push: Function,
 }) => {
+  console.log('node', node);
+
   const archiveComponent = node.archive.archive_id ? (
     <span>
       {node.archive.submitter_id || '--'} - rev {node.archive.revision} &nbsp; (<RepositoryFilesLink

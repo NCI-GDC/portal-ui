@@ -23,6 +23,10 @@ export default ({
           win.document.URL.includes(location.origin) &&
           !win.document.URL.includes('auth')
         ) {
+          if (win.document.URL.includes('login_error')) {
+            console.log('there was an error');
+            reject('login_error');
+          }
           console.log('return to origin: ', win.document.URL);
           console.log('window location search: ', win.location.search);
           // Window is not closed yet so close

@@ -41,7 +41,7 @@ const AWGLoginButton = compose(
     onClick={async () => {
       await openAuthWindow({
         winUrl: `${AUTH}?next=${FENCE}/login/fence?redirect=${window.location
-          .origin}`,
+          .origin}&on_error=${window.location.origin}/login_error`,
         pollInterval: 200,
         name: 'AWG',
       });

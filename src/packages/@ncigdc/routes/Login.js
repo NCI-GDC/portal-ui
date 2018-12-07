@@ -47,7 +47,7 @@ const AWGLoginButton = compose(
       });
       try {
         await openAuthWindow({
-          winUrl: urlJoin(AUTH, `?next=${FENCE}`, `?${search}`),
+          winUrl: urlJoin(AUTH, `?next=${FENCE}/login/fence?${search}`),
           // winUrl: `${AUTH}?next=${FENCE}/login/fence?redirect=${window.location
           //   .origin}&on_error=${window.location.origin}/login_error`,
           pollInterval: 200,

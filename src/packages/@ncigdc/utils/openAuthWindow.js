@@ -23,7 +23,7 @@ export default ({
           win.document.URL.includes(location.origin) &&
           !win.document.URL.includes('auth')
         ) {
-          if (win.document.URL.includes('login_error')) {
+          if (win.document.URL.includes('error')) {
             console.log('there was an error');
             reject('login_error');
           }

@@ -42,7 +42,7 @@ const AWGLoginButton = compose(
     onClick={async () => {
       const url = encodeURIComponent(
         `${AUTH}?next=${FENCE}/login/fence?redirect=${window.location
-          .origin}&on_error=${window.location.origin}/login_error`,
+          .origin}&on_error=${window.location.origin}/error`,
       );
       console.log('url: ', url);
       try {

@@ -1,8 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { compose } from 'recompose';
-import urlJoin from 'url-join';
-import queryString from 'query-string';
 
 import { AUTH, FENCE } from '@ncigdc/utils/constants';
 import { fetchUser } from '@ncigdc/dux/auth';
@@ -41,15 +39,9 @@ const AWGLoginButton = compose(
   <Button
     style={styles.loginButton}
     onClick={async () => {
-      const search = queryString.stringify({
-        redirect: window.location.origin,
-        on_error: urlJoin(window.location.origin, 'login_error'),
-      });
       try {
         await openAuthWindow({
-          winUrl: urlJoin(AUTH, `?next=${FENCE}/login/fence?${search}`),
-          // winUrl: `${AUTH}?next=${FENCE}/login/fence?redirect=${window.location
-          //   .origin}&on_error=${window.location.origin}/login_error`,
+          winUrl: `${AUTH}?next=${FENCE}/login/fence?redirect=${window.location.origin)}`,
           pollInterval: 200,
           name: 'AWG',
         });

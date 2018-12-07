@@ -40,15 +40,14 @@ const AWGLoginButton = compose(
   <Button
     style={styles.loginButton}
     onClick={async () => {
-      const url = encodeURIComponent(
-        `${AUTH}?next=${FENCE}/login/fence?redirect=${window.location
-          .origin}&on_error=${window.location.origin}/error`,
+      const search = encodeURIComponent(
+        `redirect=${window.location.origin}&on_error=${window.location
+          .origin}/login_error`,
       );
-      console.log('url: ', url);
+      console.log('url: ', `${AUTH}?next=${FENCE}/login/fence?${search}`);
       try {
         await openAuthWindow({
-          // winUrl: `${AUTH}?next=${FENCE}/login/fence?redirect=${window.location.origin)}`,
-          winUrl: url,
+          winUrl: `${AUTH}?next=${FENCE}/login/fence?${search}`,
           pollInterval: 200,
           name: 'AWG',
         });

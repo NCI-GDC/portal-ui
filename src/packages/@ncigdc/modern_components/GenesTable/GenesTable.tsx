@@ -1,4 +1,3 @@
-/* @flow */
 import React from 'react';
 import { connect } from 'react-redux';
 import { compose, withState, withPropsOnChange } from 'recompose';
@@ -13,12 +12,80 @@ import { CreateExploreGeneSetButton } from '@ncigdc/modern_components/withSetAct
 import { AppendExploreGeneSetButton } from '@ncigdc/modern_components/withSetAction';
 import { RemoveFromExploreGeneSetButton } from '@ncigdc/modern_components/withSetAction';
 import timestamp from '@ncigdc/utils/timestamp';
-
-import tableModel from './GenesTable.model';
+import { IColumnProps } from '@ncigdc/tableModels/utils';
+import { IGroupFilter } from '@ncigdc/utils/filters/types';
+import { ISelectedSurvivalDataProps } from '@ncigdc/modern_components/GenesTable/GenesTable.model';
 import { theme } from '@ncigdc/theme';
 import withSelectIds from '@ncigdc/utils/withSelectIds';
+export interface ITotalNumber {
+  hits: {
+    total: number;
+  };
+}
 
-export default compose(
+export interface INodeProps {
+  node: {
+    gene_id: string;
+    id: string;
+    symbol: string;
+    name: string;
+    cytoband: string[];
+    biotype: string;
+    numCases: number;
+    is_cancer_gene_census: boolean;
+    ssm_case: ITotalNumber;
+    cnv_case: ITotalNumber;
+    case_cnv_gain: ITotalNumber;
+    case_cnv_loss: ITotalNumber;
+  };
+}
+interface IGenesProps {
+  hits: {
+    total: number;
+    edges: INodeProps[];
+  };
+}
+interface IGenesTableProps {
+  genesTableViewer: {
+    explore: {
+      genes: IGenesProps | undefined;
+      filteredCases: ITotalNumber | undefined;
+      cases: ITotalNumber | undefined;
+      cnvCases: ITotalNumber | undefined;
+    };
+  };
+  filters: IGroupFilter;
+  setSurvivalLoadingId: string;
+  survivalLoadingId: string;
+  setSelectedSurvivalData: (
+    selectedSurvivalData: ISelectedSurvivalDataProps
+  ) => void;
+  selectedSurvivalData: ISelectedSurvivalDataProps;
+  hasEnoughSurvivalDataOnPrimaryCurve: boolean;
+  context: string;
+  query: { searchTableTab: string; filters: string | IGroupFilter };
+  ssmCounts: { [x: string]: number };
+  ssmCountsLoading: boolean;
+  parentVariables: {
+    genesTable_offset: number;
+    genesTable_size: number;
+    [x: string]: any;
+  };
+  tableColumns: Array<IColumnProps<boolean>>;
+  selectedIds: string[];
+  setSelectedIds: (props: string[]) => void;
+  sort?: { field: string; order: string };
+  score: string;
+}
+export default compose<IGenesTableProps, JSX.Element>(
+  connect(
+    (state: {
+      tableColumns: { [x: string]: Array<IColumnProps<boolean>> };
+      [x: string]: any;
+    }) => {
+      return { tableColumns: state.tableColumns.genes };
+    }
+  ),
   withRouter,
   withState('survivalLoadingId', 'setSurvivalLoadingId', ''),
   withState('ssmCountsLoading', 'setSsmCountsLoading', true),
@@ -30,19 +97,30 @@ export default compose(
       const ssmCounts = (aggregations || {
         consequence__transcript__gene__gene_id: { buckets: [] },
       }).consequence__transcript__gene__gene_id.buckets.reduce(
-        (acc, b) => ({ ...acc, [b.key]: b.doc_count }),
-        {},
+        (
+          acc: { [x: string]: number },
+          b: { [x: string]: any; doc_count: number }
+        ) => ({
+          ...acc,
+          [b.key]: b.doc_count,
+        }),
+        {}
       );
       return { ssmCounts };
-    },
+    }
   ),
-  withSize(),
-  connect(state => ({ tableColumns: state.tableColumns.genes.ids })),
+  withSize()
 )(
   ({
-    genesTableViewer: { explore } = {},
+    genesTableViewer: { explore } = {
+      explore: {
+        genes: undefined,
+        filteredCases: undefined,
+        cases: undefined,
+        cnvCases: undefined,
+      },
+    },
     filters,
-    relay = { route: { params: {} } },
     setSurvivalLoadingId,
     survivalLoadingId,
     setSelectedSurvivalData,
@@ -50,28 +128,25 @@ export default compose(
     hasEnoughSurvivalDataOnPrimaryCurve,
     context,
     query,
-    ssmCounts = [],
+    ssmCounts = {},
     ssmCountsLoading,
     parentVariables,
     tableColumns,
-    dispatch,
     selectedIds,
     setSelectedIds,
     sort,
     score,
-  }) => {
-    const { genes, filteredCases, cases, cnvCases } = explore || {};
+  }: IGenesTableProps) => {
+    const { genes, filteredCases, cases, cnvCases } = explore;
+
     if (genes && !genes.hits.edges.length) {
       return <Row style={{ padding: '1rem' }}>No gene data found.</Row>;
     }
-
-    const data = !genes ? [] : genes.hits.edges;
-    const totalGenes = !genes ? 0 : genes.hits.total;
-
-    const tableInfo = tableModel
+    const data: INodeProps[] = !genes ? [] : genes.hits.edges;
+    const totalGenes: number = !genes ? 0 : genes.hits.total;
+    const tableInfo = tableColumns
       .slice()
-      .sort((a, b) => tableColumns.indexOf(a.id) - tableColumns.indexOf(b.id))
-      .filter(x => tableColumns.includes(x.id));
+      .filter((x: IColumnProps<boolean>) => !x.hidden);
     return (
       <span>
         <Row
@@ -119,18 +194,18 @@ export default compose(
         <div style={{ overflowX: 'auto' }}>
           <Table
             id="genes-table"
-            headings={tableInfo.map(x => (
+            headings={tableInfo.map((x: IColumnProps<boolean>) => (
               <x.th
                 key={x.id}
                 context={context}
-                nodes={data.map(e => e.node)}
+                nodes={data.map((e: INodeProps) => e.node)}
                 selectedIds={selectedIds}
                 setSelectedIds={setSelectedIds}
               />
             ))}
             body={
               <tbody>
-                {data.map((e, i) => (
+                {data.map((e: INodeProps, i: number) => (
                   <Tr
                     key={e.node.id}
                     index={i}
@@ -141,8 +216,8 @@ export default compose(
                     }}
                   >
                     {tableInfo
-                      .filter(x => x.td)
-                      .map(x => (
+                      .filter((x: IColumnProps<boolean>) => x.td)
+                      .map((x: IColumnProps<false>) => (
                         <x.td
                           key={x.id}
                           node={e.node}
@@ -177,5 +252,5 @@ export default compose(
         />
       </span>
     );
-  },
+  }
 );

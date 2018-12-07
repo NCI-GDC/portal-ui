@@ -1,5 +1,3 @@
-// @flow
-
 import React from 'react';
 import { scaleOrdinal, schemeCategory10 } from 'd3';
 import { Th, Td, ThNum, TdNum } from '@ncigdc/uikit/Table';
@@ -26,8 +24,36 @@ import ExploreSSMLink from '@ncigdc/components/Links/ExploreSSMLink';
 
 import { ForTsvExport } from '@ncigdc/components/DownloadTableToTsvButton';
 import { createSelectColumn } from '@ncigdc/tableModels/utils';
-
+import {
+  INodeProps,
+  ITotalNumber,
+} from '@ncigdc/modern_components/GenesTable/GenesTable';
 import { IGroupFilter } from '@ncigdc/utils/filters/types';
+
+interface IQueryProps {
+  cases_sort: string;
+  filters: string;
+  searchTableTab: string;
+  genesTable_filters?: IGroupFilter;
+}
+
+export interface ISelectedSurvivalDataProps {
+  rawData?: {
+    overallStats: { pValue?: number };
+    results: Array<{
+      donnors: Array<{
+        project_id: string;
+        censored: boolean;
+        time: number;
+        survivalEstimate: number;
+        submitter_id: string;
+      }>;
+      meta: { id: number };
+    }>;
+  };
+  id?: string;
+  legend?: Array<{ key: string; value: string | JSX.Element }>;
+}
 
 const colors = scaleOrdinal(schemeCategory10);
 
@@ -40,7 +66,7 @@ const GenesTableModel = [
     downloadable: true,
     hidden: true,
     th: () => <Th>Gene ID</Th>,
-    td: ({ node }) => <Td>{node.gene_id}</Td>,
+    td: ({ node }: INodeProps) => <Td>{node.gene_id}</Td>,
   },
   {
     name: 'Symbol',
@@ -52,8 +78,8 @@ const GenesTableModel = [
       node,
       defaultFilters,
     }: {
-      node: Object,
-      defaultFilters: IGroupFilter,
+      node: INodeProps['node'];
+      defaultFilters: IGroupFilter;
     }) => {
       return (
         <Td>
@@ -75,7 +101,7 @@ const GenesTableModel = [
     sortable: true,
     downloadable: true,
     th: () => <Th>Name</Th>,
-    td: ({ node }) => (
+    td: ({ node }: INodeProps) => (
       <Td>
         <div style={{ maxWidth: '230px', whiteSpace: 'normal' }}>
           {node.name}
@@ -90,7 +116,7 @@ const GenesTableModel = [
     downloadable: true,
     hidden: true,
     th: () => <Th>Cytoband</Th>,
-    td: ({ node }) => <Td>{(node.cytoband || []).join(', ')}</Td>,
+    td: ({ node }: INodeProps) => <Td>{(node.cytoband || []).join(', ')}</Td>,
   },
   {
     name: 'Type',
@@ -99,14 +125,14 @@ const GenesTableModel = [
     downloadable: true,
     hidden: true,
     th: () => <Th>Type</Th>,
-    td: ({ node }) => <Td>{node.biotype}</Td>,
+    td: ({ node }: INodeProps) => <Td>{node.biotype}</Td>,
   },
   {
     name: '# SSM Affected Cases in Cohort',
     id: 'filteredCases',
     sortable: true,
     downloadable: true,
-    th: ({ context }) => (
+    th: ({ context }: { context: string }) => (
       <Th>
         <Tooltip
           Component={
@@ -122,7 +148,17 @@ const GenesTableModel = [
         </Tooltip>
       </Th>
     ),
-    td: ({ node, query, defaultFilters, filteredCases }) => (
+    td: ({
+      node,
+      query,
+      defaultFilters,
+      filteredCases,
+    }: {
+      node: INodeProps['node'];
+      query: IQueryProps;
+      defaultFilters: IGroupFilter;
+      filteredCases: ITotalNumber;
+    }) => (
       <Td>
         <span>
           <ExploreSSMLink
@@ -141,7 +177,7 @@ const GenesTableModel = [
                   },
                 ],
               },
-              query.genesTable_filters || defaultFilters,
+              query.genesTable_filters || defaultFilters
             )}
           >
             {(node.numCases || 0).toLocaleString()}
@@ -151,7 +187,8 @@ const GenesTableModel = [
             query={{
               searchTableTab: 'cases',
               filters: removeFilterWithOp(
-                (op, field) => op.match(/^NOT$/) && field.match(/^ssms.ssm_id/),
+                (op: string, field: string) =>
+                  op.match(/^NOT$/) && field.match(/^ssms.ssm_id/),
                 addInFilters(
                   query.genesTable_filters || defaultFilters,
                   makeFilter([
@@ -159,8 +196,8 @@ const GenesTableModel = [
                       field: 'cases.available_variation_data',
                       value: ['ssm'],
                     },
-                  ]),
-                ),
+                  ])
+                )
               ),
             }}
           >
@@ -197,7 +234,13 @@ const GenesTableModel = [
         </Tooltip>
       </Th>
     ),
-    td: ({ node, cases }) => (
+    td: ({
+      node,
+      cases,
+    }: {
+      node: INodeProps['node'];
+      cases: ITotalNumber;
+    }) => (
       <Td>
         <ProjectBreakdown
           filters={makeFilter([
@@ -230,7 +273,19 @@ const GenesTableModel = [
         </Tooltip>
       </Th>
     ),
-    td: ({ node, query, defaultFilters, filteredCases, cnvCases }) => (
+    td: ({
+      node,
+      query,
+      defaultFilters,
+      filteredCases,
+      cnvCases,
+    }: {
+      node: INodeProps['node'];
+      query: IQueryProps;
+      defaultFilters: IGroupFilter;
+      filteredCases: ITotalNumber;
+      cnvCases: ITotalNumber;
+    }) => (
       <Td>
         <span>
           {node.case_cnv_gain.hits && node.case_cnv_gain.hits.total !== 0
@@ -304,7 +359,19 @@ const GenesTableModel = [
         </Tooltip>
       </Th>
     ),
-    td: ({ node, query, defaultFilters, filteredCases, cnvCases }) => (
+    td: ({
+      node,
+      query,
+      defaultFilters,
+      filteredCases,
+      cnvCases,
+    }: {
+      node: INodeProps['node'];
+      query: IQueryProps;
+      defaultFilters: IGroupFilter;
+      filteredCases: ITotalNumber;
+      cnvCases: ITotalNumber;
+    }) => (
       <Td>
         <span>
           {node.case_cnv_loss.hits && node.case_cnv_loss.hits.total !== 0
@@ -362,7 +429,7 @@ const GenesTableModel = [
     id: 'mutations',
     sortable: true,
     downloadable: true,
-    th: ({ context }) => (
+    th: ({ context }: { context: string }) => (
       <ThNum>
         <Tooltip
           style={tableToolTipHint()}
@@ -377,13 +444,21 @@ const GenesTableModel = [
         </Tooltip>
       </ThNum>
     ),
-    td: ({ node, ssmCounts, defaultFilters }) => (
+    td: ({
+      node,
+      ssmCounts,
+      defaultFilters,
+    }: {
+      node: INodeProps['node'];
+      ssmCounts: { [x: string]: number };
+      defaultFilters: IGroupFilter;
+    }) => (
       <TdNum>
         <MutationsCount
           ssmCount={ssmCounts[node.gene_id]}
           filters={addInFilters(
             defaultFilters,
-            makeFilter([{ field: 'genes.gene_id', value: [node.gene_id] }]),
+            makeFilter([{ field: 'genes.gene_id', value: [node.gene_id] }])
           )}
         />
       </TdNum>
@@ -395,7 +470,7 @@ const GenesTableModel = [
     sortable: true,
     downloadable: true,
     th: () => <Th style={{ textAlign: 'center' }}>Annotations</Th>,
-    td: ({ node }) => (
+    td: ({ node }: INodeProps) => (
       <Td style={{ textAlign: 'center' }}>
         {node.is_cancer_gene_census && (
           <span>
@@ -420,6 +495,14 @@ const GenesTableModel = [
       setSelectedSurvivalData,
       survivalLoadingId,
       defaultFilters,
+    }: {
+      node: INodeProps['node'];
+      hasEnoughSurvivalDataOnPrimaryCurve: boolean;
+      selectedSurvivalData: ISelectedSurvivalDataProps;
+      setSurvivalLoadingId: (id: string) => void;
+      setSelectedSurvivalData: (data: ISelectedSurvivalDataProps) => void;
+      survivalLoadingId: string;
+      defaultFilters: IGroupFilter;
     }) => (
       <Td>
         <Tooltip
@@ -433,7 +516,7 @@ const GenesTableModel = [
             style={{
               padding: '2px 3px',
               backgroundColor: hasEnoughSurvivalDataOnPrimaryCurve
-                ? colors(selectedSurvivalData.id === node.symbol ? 1 : 0)
+                ? colors(selectedSurvivalData.id === node.symbol ? '1' : '0')
                 : '#666',
               color: 'white',
               margin: '0 auto',
@@ -446,7 +529,7 @@ const GenesTableModel = [
                   field: 'gene.symbol',
                   value: node.symbol,
                   currentFilters: defaultFilters,
-                }).then(survivalData => {
+                }).then((survivalData: ISelectedSurvivalDataProps) => {
                   setSelectedSurvivalData(survivalData);
                   setSurvivalLoadingId('');
                 });

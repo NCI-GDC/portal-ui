@@ -41,15 +41,15 @@ const AWGLoginButton = compose(
   <Button
     style={styles.loginButton}
     onClick={async () => {
-      // const search = queryString.stringify({
-      //   redirect: window.location.origin,
-      //   on_error: urlJoin(window.location.origin, 'login_error'),
-      // });
+      const search = queryString.stringify({
+        redirect: window.location.origin,
+        on_error: urlJoin(window.location.origin, 'login_error'),
+      });
       try {
         await openAuthWindow({
-          // winUrl: `${AUTH}?next=${FENCE}/login/fence?${search}`,
-          winUrl: `${AUTH}?next=${FENCE}/login/fence?redirect=${window.location
-            .origin}&on_error=${window.location.origin}/login_error`,
+          winUrl: urlJoin(AUTH, `?next=${FENCE}`, `?${search}`),
+          // winUrl: `${AUTH}?next=${FENCE}/login/fence?redirect=${window.location
+          //   .origin}&on_error=${window.location.origin}/login_error`,
           pollInterval: 200,
           name: 'AWG',
         });

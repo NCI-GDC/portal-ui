@@ -49,7 +49,7 @@ const createStyledComponent: TCreateStyledComponent = el => style =>
     );
   });
 
-export type TStyled = (
+type TStyled = (
   el: string | ComponentType,
   style: CSSProperties
 ) => ComponentType<any> | keyof ReactHTML;

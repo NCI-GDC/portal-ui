@@ -76,7 +76,6 @@ const PortalContainer = ({
       position: 'relative',
       minHeight: '100vh',
       minWidth: 1024,
-      // overflowX: 'hidden',
     }}
   >
     <SkipLink href="#skip">Skip to Main Content</SkipLink>

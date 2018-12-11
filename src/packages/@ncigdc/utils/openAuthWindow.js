@@ -21,6 +21,7 @@ export default ({
           win.document.URL.includes(location.origin) &&
           !win.document.URL.includes('auth')
         ) {
+          console.log('redirected: ', win.document.URL);
           if (win.document.URL.includes('login_error')) {
             reject('login_error');
           }
@@ -29,9 +30,9 @@ export default ({
 
           // Clear the interval calling this function
           clearInterval(interval);
-
+          console.log('login success');
           // Resolve that we have something good
-          resolve();
+          resolve('success');
         }
       };
       const interval = setInterval(loginAttempt, pollInterval);

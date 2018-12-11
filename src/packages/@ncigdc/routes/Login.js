@@ -46,7 +46,7 @@ const AWGLoginButton = compose(
         on_error: urlJoin(window.location.origin, 'login_error'),
       });
       try {
-        await openAuthWindow({
+        const loginRequest = await openAuthWindow({
           winUrl: `${AUTH}?next=${FENCE}/login/fence?${search}`,
           pollInterval: 200,
           name: 'AWG',
@@ -56,6 +56,7 @@ const AWGLoginButton = compose(
           return (window.location.href = '/login?error=no_fence_projects');
         }
       }
+      console.log('login request result: ', loginRequest);
       await dispatch(fetchUser());
       push({ pathname: '/repository' });
     }}

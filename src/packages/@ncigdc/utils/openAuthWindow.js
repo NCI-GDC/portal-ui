@@ -9,7 +9,6 @@ export default ({
   winStyle = 'width=800, height=600',
 }) =>
   new Promise((resolve, reject) => {
-    console.log('win.open URL: ', winUrl);
     if (navigator.cookieEnabled) {
       const win = open(winUrl, 'Auth', winStyle);
 
@@ -18,14 +17,11 @@ export default ({
           clearInterval(interval);
           reject('Window closed manually');
         }
-        console.log('in loginAttempt: ', win.document.URL);
         if (
           win.document.URL.includes(location.origin) &&
           !win.document.URL.includes('auth')
         ) {
-          console.log('return to origin: ', win.document.URL);
           if (win.document.URL.includes('login_error')) {
-            console.log('there was an error');
             reject('login_error');
           }
           // Window is not closed yet so close

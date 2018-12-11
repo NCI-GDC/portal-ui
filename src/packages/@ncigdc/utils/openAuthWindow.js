@@ -20,18 +20,15 @@ export default ({
           win.document.URL.includes(location.origin) &&
           !win.document.URL.includes('auth')
         ) {
-          console.log('redirected: ', win.document.URL);
-
           // Window is not closed yet so close
           win.close();
 
           // Clear the interval calling this function
           clearInterval(interval);
           if (win.document.URL.includes('error=401')) {
-            console.log('login error');
             reject('login_error');
+            return;
           }
-          console.log('login success');
           // Resolve that we have something good
           resolve('success');
         }

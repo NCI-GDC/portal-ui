@@ -24,7 +24,7 @@ export default ({
           !win.document.URL.includes('auth')
         ) {
           console.log('return to origin: ', win.document.URL);
-          if (win.document.URL.includes('error')) {
+          if (win.document.URL.includes('login_error')) {
             console.log('there was an error');
             reject('login_error');
           }

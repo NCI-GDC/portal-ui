@@ -40,11 +40,10 @@ const AWGLoginButton = compose(
   <Button
     style={styles.loginButton}
     onClick={async () => {
-      const search = encodeURIComponent(
-        `redirect=${window.location.origin}&on_error=${window.location
-          .origin}/login_error`,
-      );
-      console.log('url: ', `${AUTH}?next=${FENCE}/login/fence?${search}`);
+      const search = queryString.stringify({
+        redirect: window.location.origin,
+        on_error: urlJoin(window.location.origin, 'login_error'),
+      });
       try {
         await openAuthWindow({
           winUrl: `${AUTH}?next=${FENCE}/login/fence?${search}`,

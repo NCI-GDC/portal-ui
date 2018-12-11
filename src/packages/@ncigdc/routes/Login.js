@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { compose } from 'recompose';
+import queryString from 'query-string';
 import urlJoin from 'url-join';
 
 import { AUTH, FENCE } from '@ncigdc/utils/constants';

@@ -11,13 +11,11 @@ export default ({
   new Promise((resolve, reject) => {
     if (navigator.cookieEnabled) {
       const win = open(winUrl, 'Auth', winStyle);
-      console.log('url: ', winUrl);
       const loginAttempt = () => {
         if (win.closed) {
           clearInterval(interval);
           reject('window closed manually');
         }
-        console.log('win.document.url in loginAttempt: ', win.document.URL);
         if (
           win.document.URL.includes(location.origin) &&
           !win.document.URL.includes('auth')
@@ -29,7 +27,8 @@ export default ({
 
           // Clear the interval calling this function
           clearInterval(interval);
-          if (win.document.URL.includes('login_error')) {
+          if (win.document.URL.includes('error=401')) {
+            console.log('login error');
             reject('login_error');
           }
           console.log('login success');

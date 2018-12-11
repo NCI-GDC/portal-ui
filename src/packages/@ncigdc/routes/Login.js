@@ -43,15 +43,11 @@ const AWGLoginButton = compose(
     onClick={async () => {
       const search = queryString.stringify({
         redirect: window.location.origin,
-        on_error: urlJoin(window.location.origin, 'login_error'),
       });
 
       try {
         await openAuthWindow({
-          // winUrl: `${AUTH}?next=${FENCE}/login/fence?${search}`,
-          winUrl: `${AUTH}?next=${FENCE}/login/fence?${encodeURIComponent(
-            search,
-          )}`,
+          winUrl: `${AUTH}?next=${FENCE}/login/fence?${search}`,
           pollInterval: 200,
           name: 'AWG',
         });
@@ -63,7 +59,6 @@ const AWGLoginButton = compose(
           return (window.location.href = '/login?error=no_fence_projects');
         }
       }
-      console.log('got here');
       await dispatch(fetchUser());
       push({ pathname: '/repository' });
     }}

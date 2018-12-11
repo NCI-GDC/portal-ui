@@ -43,7 +43,7 @@ const AWGLoginButton = compose(
     onClick={async () => {
       const search = queryString.stringify({
         redirect: window.location.origin,
-        on_error: urlJoin(window.location.origin, 'login_error'),
+        // on_error: urlJoin(window.location.origin, 'login_error'),
       });
 
       try {

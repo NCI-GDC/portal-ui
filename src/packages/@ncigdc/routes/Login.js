@@ -55,7 +55,8 @@ const AWGLoginButton = compose(
         console.log('catch error: ', err);
         if (err === 'login_error') {
           console.log('in login error block');
-          return push({ pathname: '/login?error=no_intersection' });
+          // return push({ pathname: '/login?error=no_fence_projects' });
+          return (window.location.href = '/login?error=no_fence_projects');
         }
       }
       await dispatch(fetchUser());

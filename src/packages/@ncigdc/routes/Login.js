@@ -50,7 +50,7 @@ const AWGLoginButton = compose(
       try {
         const loginRequest = await openAuthWindow({
           // winUrl: `${AUTH}?next=${FENCE}/login/fence?${search}`,
-          winUrl: `${AUTH}?next=${FENCE}/login/fence?on_error=http%3A%2F%2Flocalhost%3A3000%2Flogin_error%26redirect=http%3A%2F%2Flocalhost%3A3000`,
+          winUrl: `${AUTH}?next=${FENCE}/login/fence?on_error=https%3A%2F%2Fportal.awg.gdc.cancer.gov%2Flogin_error%26redirect=https%3A%2F%2Fportal.awg.gdc.cancer.gov`,
           pollInterval: 200,
           name: 'AWG',
         });

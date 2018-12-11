@@ -43,13 +43,12 @@ const AWGLoginButton = compose(
     onClick={async () => {
       const search = queryString.stringify({
         redirect: window.location.origin,
-        // on_error: urlJoin(window.location.origin, 'login_error'),
+        on_error: urlJoin(window.location.origin, 'login_error'),
       });
 
       try {
         await openAuthWindow({
           // winUrl: `${AUTH}?next=${FENCE}/login/fence?${search}`,
-          // winUrl: `${AUTH}?next=${FENCE}/login/fence?on_error=https%3A%2F%2Fportal.awg.gdc.cancer.gov%2Flogin_error%26redirect=https%3A%2F%2Fportal.awg.gdc.cancer.gov`,
           winUrl: `${AUTH}?next=${FENCE}/login/fence?${encodeURIComponent(
             search,
           )}`,

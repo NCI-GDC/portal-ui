@@ -41,13 +41,13 @@ const AWGLoginButton = compose(
   <Button
     style={styles.loginButton}
     onClick={async () => {
-      const search = queryString.stringify({
+      const loginParams = queryString.stringify({
         redirect: window.location.origin,
       });
 
       try {
         await openAuthWindow({
-          winUrl: `${AUTH}?next=${FENCE}/login/fence?${search}`,
+          winUrl: `${AUTH}?next=${FENCE}/login/fence?${loginParams}`,
           pollInterval: 200,
           name: 'AWG',
         });

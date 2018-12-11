@@ -11,12 +11,13 @@ export default ({
   new Promise((resolve, reject) => {
     if (navigator.cookieEnabled) {
       const win = open(winUrl, 'Auth', winStyle);
-
+      console.log('url: ', winUrl);
       const loginAttempt = () => {
         if (win.closed) {
           clearInterval(interval);
           reject('Window closed manually');
         }
+        console.log('win.document.url in loginAttempt: ', win.document.URL);
         if (
           win.document.URL.includes(location.origin) &&
           !win.document.URL.includes('auth')

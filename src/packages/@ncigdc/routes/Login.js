@@ -45,18 +45,24 @@ const AWGLoginButton = compose(
         redirect: window.location.origin,
         on_error: urlJoin(window.location.origin, 'login_error'),
       });
-      try {
-        const loginRequest = await openAuthWindow({
-          winUrl: `${AUTH}?next=${FENCE}/login/fence?${search}`,
-          pollInterval: 200,
-          name: 'AWG',
-        });
-      } catch (err) {
-        if (err === 'login_error') {
-          return (window.location.href = '/login?error=no_fence_projects');
-        }
-      }
-      console.log('login request result: ', loginRequest);
+      // try {
+      //   const loginRequest = await openAuthWindow({
+      // winUrl: `${AUTH}?next=${FENCE}/login/fence?${search}`,
+      // pollInterval: 200,
+      // name: 'AWG',
+      //   });
+      //   console.log('login request result: ', loginRequest);
+      // } catch (err) {
+      //   if (err === 'login_error') {
+      //     return (window.location.href = '/login?error=no_fence_projects');
+      //   }
+      // }
+
+      await openAuthWindow({
+        winUrl: `${AUTH}?next=${FENCE}/login/fence?${search}`,
+        pollInterval: 200,
+        name: 'AWG',
+      });
       await dispatch(fetchUser());
       push({ pathname: '/repository' });
     }}

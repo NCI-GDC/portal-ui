@@ -22,14 +22,15 @@ export default ({
           !win.document.URL.includes('auth')
         ) {
           console.log('redirected: ', win.document.URL);
-          if (win.document.URL.includes('login_error')) {
-            reject('login_error');
-          }
+
           // Window is not closed yet so close
           win.close();
 
           // Clear the interval calling this function
           clearInterval(interval);
+          if (win.document.URL.includes('login_error')) {
+            reject('login_error');
+          }
           console.log('login success');
           // Resolve that we have something good
           resolve('success');

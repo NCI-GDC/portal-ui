@@ -15,7 +15,7 @@ export default ({
       const loginAttempt = () => {
         if (win.closed) {
           clearInterval(interval);
-          reject('Window closed manually');
+          reject('window closed manually');
         }
         console.log('win.document.url in loginAttempt: ', win.document.URL);
         if (

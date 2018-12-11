@@ -45,22 +45,26 @@ const AWGLoginButton = compose(
         redirect: window.location.origin,
         on_error: urlJoin(window.location.origin, 'login_error'),
       });
-      console.log('search: ', search);
 
       try {
-        const loginRequest = await openAuthWindow({
+        await openAuthWindow({
           // winUrl: `${AUTH}?next=${FENCE}/login/fence?${search}`,
-          winUrl: `${AUTH}?next=${FENCE}/login/fence?on_error=https%3A%2F%2Fportal.awg.gdc.cancer.gov%2Flogin_error%26redirect=https%3A%2F%2Fportal.awg.gdc.cancer.gov`,
+          // winUrl: `${AUTH}?next=${FENCE}/login/fence?on_error=https%3A%2F%2Fportal.awg.gdc.cancer.gov%2Flogin_error%26redirect=https%3A%2F%2Fportal.awg.gdc.cancer.gov`,
+          winUrl: `${AUTH}?next=${FENCE}/login/fence?${encodeURIComponent(
+            search,
+          )}`,
           pollInterval: 200,
           name: 'AWG',
         });
-        console.log('login request result: ', loginRequest);
       } catch (err) {
+        if (err === 'window closed manually') {
+          return;
+        }
         if (err === 'login_error') {
           return (window.location.href = '/login?error=no_fence_projects');
         }
       }
-
+      console.log('got here');
       await dispatch(fetchUser());
       push({ pathname: '/repository' });
     }}

@@ -52,7 +52,9 @@ const AWGLoginButton = compose(
           name: 'AWG',
         });
       } catch (err) {
+        console.log('catch error: ', err);
         if (err === 'login_error') {
+          console.log('in login error block');
           return push({ pathname: '/login?error=no_intersection' });
         }
       }

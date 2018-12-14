@@ -106,7 +106,7 @@ const downloadCart = ({
               Download {authorized.doc_count} Authorized Files
             </Button>
           )}
-          hidden={!user}
+          hidden={!user || authorized.doc_count === 0}
           closeText="Cancel"
           dispatch={dispatch}
         >

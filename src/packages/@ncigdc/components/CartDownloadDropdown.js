@@ -106,7 +106,7 @@ const downloadCart = ({
               Download {authorized.doc_count} Authorized Files
             </Button>
           )}
-          hidden={!user}
+          hidden={!user || authorized.doc_count === 0}
           closeText="Cancel"
           dispatch={dispatch}
         >
@@ -130,8 +130,7 @@ const downloadCart = ({
           </div>
           {user ? (
             <p>
-              You do not have access to download this file. Please request dbGaP
-              Access to the project (<a
+              Please request dbGaP Access to the project (<a
                 target={'_blank'}
                 href="https://gdc.cancer.gov/access-data/obtaining-access-controlled-data"
               >

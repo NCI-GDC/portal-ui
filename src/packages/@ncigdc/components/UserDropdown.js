@@ -36,10 +36,12 @@ const DropdownItemStyled = styled(DropdownItem, {
   cursor: 'pointer',
 });
 
-const logout = async () => {
+const logout = async dispatch => {
   if (AWG) {
     try {
       await fetch(urlJoin(FENCE, 'logout'), { credentials: 'include' });
+      // need to delete user from store
+      dispatch(forceLogout());
     } catch (err) {
       console.warn('There was an error: ', err);
     }
@@ -47,6 +49,7 @@ const logout = async () => {
       urlJoin(AUTH, `logout?next=https://portal.awg.gdc.cancer.gov/login`),
     );
   } else {
+    dispatch(forceLogout());
     if (window.location.port) {
       window.location.assign(
         IS_DEV
@@ -114,7 +117,7 @@ const UserDropdown = connect(state => ({
         <DownloadIcon style={iconStyle} />
         Download Token
       </DropdownItemStyled>
-      <DropdownItemStyled onClick={logout}>
+      <DropdownItemStyled onClick={() => logout(dispatch)}>
         <SignOutIcon aria-hidden="true" style={iconStyle} />
         Logout
       </DropdownItemStyled>

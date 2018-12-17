@@ -1,5 +1,5 @@
 {
-  "version": "1.17.0",
+  "version": "1.18.0",
   "repository": "NCI-GDC/portal-ui",
   "name": "portal-ui",
   "author": {
@@ -60,7 +60,7 @@
     "memoizee": "0.4.5",
     "moment": "2.19.3",
     "multisort": "0.5.3",
-    "oncogrid": "git+https://github.com/oncojs/oncogrid.git#new-grid-spec",
+    "oncogrid": "3.0.0",
     "openseadragon": "2.3.1",
     "pluralize": "7.0.0",
     "prop-types": "15.5.10",

@@ -1,6 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { compose } from 'recompose';
+import queryString from 'query-string';
+import urlJoin from 'url-join';
 
 import { AUTH, FENCE } from '@ncigdc/utils/constants';
 import { fetchUser } from '@ncigdc/dux/auth';
@@ -39,12 +41,24 @@ const AWGLoginButton = compose(
   <Button
     style={styles.loginButton}
     onClick={async () => {
-      await openAuthWindow({
-        winUrl: `${AUTH}?next=${FENCE}/login/fence?redirect=${window.location
-          .origin}`,
-        pollInterval: 200,
-        name: 'AWG',
+      const loginParams = queryString.stringify({
+        redirect: window.location.origin,
       });
+
+      try {
+        await openAuthWindow({
+          winUrl: `${AUTH}?next=${FENCE}/login/fence?${loginParams}`,
+          pollInterval: 200,
+          name: 'AWG',
+        });
+      } catch (err) {
+        if (err === 'window closed manually') {
+          return;
+        }
+        if (err === 'login_error') {
+          return (window.location.href = '/login?error=no_fence_projects');
+        }
+      }
       await dispatch(fetchUser());
       push({ pathname: '/repository' });
     }}

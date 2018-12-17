@@ -16,7 +16,7 @@ type TProps = {
 export default compose(
   branch(
     ({ viewer }) => !viewer.explore.genes.hits.edges[0],
-    renderComponent(() => <div>No gene found.</div>),
+    renderComponent(() => <div>No gene found.</div>)
   ),
   withProps(({ viewer: { explore: { genes: { hits: { edges } } } } } = {}) => {
     const gene = edges[0].node;
@@ -27,7 +27,7 @@ export default compose(
         ensembl: [gene.gene_id],
       },
     };
-  }),
+  })
 )(({ externalLinks }: TProps = {}) => (
   <EntityPageVerticalTable
     title={

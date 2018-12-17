@@ -8,7 +8,8 @@ export const externalLinkNames = {
 };
 
 export default {
-  hgnc: id => `http://www.genenames.org/data/hgnc_data.php?hgnc_id=${id}`,
+  hgnc: id =>
+    `https://www.genenames.org/data/gene-symbol-report/#!/hgnc_id/${id}`,
   ensembl: id =>
     `http://may2015.archive.ensembl.org/Homo_sapiens/Gene/Summary?db=core;g=${id}`,
   entrez_gene: id => `http://www.ncbi.nlm.nih.gov/gene/${id}`,

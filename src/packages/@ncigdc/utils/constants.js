@@ -24,7 +24,7 @@ export const SLIDE_IMAGE_ENDPOINT =
   localStorage.REACT_APP_SLIDE_IMAGE_ENDPOINT ||
   process.env.REACT_APP_SLIDE_IMAGE_ENDPOINT;
 
-export const AWG = localStorage.REACT_APP_AWG || process.env.REACT_APP_AWG;
+export const AWG = localStorage.REACT_APP_AWG || process.env.REACT_APP_AWG || false;
 
 export const IS_AUTH_PORTAL =
   localStorage.REACT_APP_IS_AUTH_PORTAL ||

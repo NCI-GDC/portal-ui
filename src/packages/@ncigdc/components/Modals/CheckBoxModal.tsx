@@ -48,7 +48,7 @@ const CheckBoxModal = ({
       {children}
       {hidden ? null : (
         <div>
-          <div>
+          <div style={{ marginBottom: '10px' }}>
             You are attempting to download files that are controlled access:
           </div>
           <input
@@ -78,6 +78,16 @@ const CheckBoxModal = ({
             <li>
               I agree to have read and understand study-specific Data Use
               Agreements and to comply with any additional restrictions therein.
+            </li>
+            <li>
+              I agree to abide by the{' '}
+              <a
+                href="https://osp.od.nih.gov/scientific-sharing/policies/"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                NIH Genomic Data Sharing Policy (GDS)
+              </a>.
             </li>
           </ul>
         </div>

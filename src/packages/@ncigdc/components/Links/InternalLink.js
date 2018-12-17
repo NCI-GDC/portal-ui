@@ -9,7 +9,7 @@ import removeEmptyKeys from '@ncigdc/utils/removeEmptyKeys';
 import validAttributes from '@ncigdc/theme/utils/validAttributes';
 import { scrollToId } from '@ncigdc/components/Links/deepLink';
 
-import type { TLinkProps } from './types';
+import { TLinkProps } from './types';
 
 const reactRouterLinkProps = [
   'to',

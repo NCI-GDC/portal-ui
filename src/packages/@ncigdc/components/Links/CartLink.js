@@ -4,12 +4,12 @@ import React from 'react';
 import { connect } from 'react-redux';
 import Link from './Link';
 
-type TProps = {|
+type TProps = {
   children?: Function,
   className?: string,
   count: number,
   style?: Object,
-|};
+};
 
 const CartLink = (props: TProps) => (
   <Link

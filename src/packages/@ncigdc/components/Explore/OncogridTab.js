@@ -5,7 +5,7 @@ import LocationSubscriber from '@ncigdc/components/LocationSubscriber';
 import { Column } from '@ncigdc/uikit/Flex';
 import OncoGridWrapper from '@ncigdc/components/Oncogrid/OncogridWrapper';
 import { parseFilterParam } from '@ncigdc/utils/uri';
-import type { TRawQuery } from '@ncigdc/utils/uri/types';
+import { IRawQuery } from '@ncigdc/utils/uri/types';
 
 const styles = {
   heading: {
@@ -27,7 +27,7 @@ export default props => (
     </h1>
 
     <LocationSubscriber>
-      {(ctx: {| pathname: string, query: TRawQuery |}) => {
+      {(ctx: { pathname: string, query: IRawQuery }) => {
         const { filters } = ctx.query || {};
         const currentFilters = parseFilterParam(filters, { content: [] });
         return (

@@ -1,5 +1,7 @@
 // @flow
-import type { TValueFilter } from '@ncigdc/utils/filters/types';
+import { IValueFilter } from '@ncigdc/utils/filters/types';
+
+// TODO: for first release hiding deep_loss and amplification, shallow_loss is loss
 
 // TODO: for first release hiding deep_loss and amplification, shallow_loss is loss
 
@@ -45,7 +47,7 @@ export const suggestedGridThemes = {
 export const consequenceTypes = Object.keys(colorMap.mutation);
 export const cnvChangeTypes = Object.keys(colorMap.cnv);
 
-const filter: TValueFilter = {
+const filter: IValueFilter = {
   op: 'in',
   content: {
     field: 'ssms.consequence.transcript.consequence_type',

@@ -9,7 +9,7 @@ import FacetHeader from '@ncigdc/components/Aggregations/FacetHeader';
 import FacetWrapper from '@ncigdc/components/FacetWrapper';
 import escapeForRelay from '@ncigdc/utils/escapeForRelay';
 
-import type { TBucket } from '@ncigdc/components/Aggregations/types';
+import { IBucket } from '@ncigdc/components/Aggregations/types';
 
 import { Row } from '@ncigdc/uikit/Flex';
 import { withTheme } from '@ncigdc/theme';
@@ -19,13 +19,13 @@ export type TProps = {
   annotationIdCollapsed: boolean,
   setAnnotationIdCollapsed: Function,
   aggregations: {
-    category: { buckets: [TBucket] },
-    classification: { buckets: [TBucket] },
-    entity_type: { buckets: [TBucket] },
-    project__primary_site: { buckets: [TBucket] },
-    project__program__name: { buckets: [TBucket] },
-    project__project_id: { buckets: [TBucket] },
-    status: { buckets: [TBucket] },
+    category: { buckets: [IBucket] },
+    classification: { buckets: [IBucket] },
+    entity_type: { buckets: [IBucket] },
+    project__primary_site: { buckets: [IBucket] },
+    project__program__name: { buckets: [IBucket] },
+    project__project_id: { buckets: [IBucket] },
+    status: { buckets: [IBucket] },
   },
   setAutocomplete: () => {},
   suggestions: Array<Object>,

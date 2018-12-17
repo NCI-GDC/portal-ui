@@ -27,7 +27,7 @@ import ExploreSSMLink from '@ncigdc/components/Links/ExploreSSMLink';
 import { ForTsvExport } from '@ncigdc/components/DownloadTableToTsvButton';
 import { createSelectColumn } from '@ncigdc/tableModels/utils';
 
-import type { TGroupFilter } from '@ncigdc/utils/filters/types';
+import { IGroupFilter } from '@ncigdc/utils/filters/types';
 
 const colors = scaleOrdinal(schemeCategory10);
 
@@ -53,7 +53,7 @@ const GenesTableModel = [
       defaultFilters,
     }: {
       node: Object,
-      defaultFilters: TGroupFilter,
+      defaultFilters: IGroupFilter,
     }) => {
       return (
         <Td>

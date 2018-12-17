@@ -12,7 +12,7 @@ import FilteredStackedBarChart from '@ncigdc/components/Charts/FilteredStackedBa
 import wrapSvg from '@ncigdc/utils/wrapSvg';
 import ExploreLink from '@ncigdc/components/Links/ExploreLink';
 import ProjectsLink from '@ncigdc/components/Links/ProjectsLink';
-import { TGroupFilter } from '@ncigdc/utils/filters/types';
+import { IGroupFilter } from '@ncigdc/utils/filters/types';
 import { cnvColors } from '@ncigdc/utils/filters/prepared/significantConsequences';
 import { renderToString } from 'react-dom/server';
 import { makeFilter, replaceFilters } from '@ncigdc/utils/filters';
@@ -20,7 +20,7 @@ import ExploreSSMLink from '@ncigdc/components/Links/ExploreSSMLink';
 
 type TProps = {
   style: Object,
-  filters: ?TGroupFilter,
+  filters: ?IGroupFilter,
   cases: {
     total: {
       project__project_id: {

@@ -10,13 +10,27 @@ const localStorage = window.localStorage || {};
 export const AUTH =
   localStorage.REACT_APP_GDC_AUTH || process.env.REACT_APP_GDC_AUTH || '';
 
-export const AUTH_API = localStorage.REACT_APP_GDC_AUTH_API || `${AUTH}/api`;
+export const FENCE =
+  localStorage.REACT_APP_FENCE || process.env.REACT_APP_FENCE || '';
+
+export const AUTH_API =
+  localStorage.REACT_APP_GDC_AUTH_API ||
+  process.env.REACT_APP_GDC_AUTH_API ||
+  `${AUTH}/api`;
 
 export const API = localStorage.REACT_APP_API || process.env.REACT_APP_API;
 
 export const SLIDE_IMAGE_ENDPOINT =
   localStorage.REACT_APP_SLIDE_IMAGE_ENDPOINT ||
   process.env.REACT_APP_SLIDE_IMAGE_ENDPOINT;
+
+export const AWG = localStorage.REACT_APP_AWG || process.env.REACT_APP_AWG || false;
+
+export const IS_AUTH_PORTAL =
+  localStorage.REACT_APP_IS_AUTH_PORTAL ||
+  process.env.REACT_APP_IS_AUTH_PORTAL ||
+  AWG ||
+  false;
 
 export const DISPLAY_SLIDES =
   localStorage.REACT_APP_GDC_DISPLAY_SLIDES ||

@@ -3,8 +3,6 @@ import { IValueFilter } from '@ncigdc/utils/filters/types';
 
 // TODO: for first release hiding deep_loss and amplification, shallow_loss is loss
 
-// TODO: for first release hiding deep_loss and amplification, shallow_loss is loss
-
 export const colorMap = {
   mutation: {
     missense_variant: '#2E7D32',

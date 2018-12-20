@@ -44,6 +44,15 @@ const styles = {
     zIndex: 90,
     width: '100%',
   },
+  resultIcon: {
+    width: 32,
+    height: '3.2rem',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    color: '#fff',
+    backgroundColor: '#453D3D',
+  },
 };
 
 const SearchInput = styled.input({
@@ -63,6 +72,19 @@ const SearchInput = styled.input({
   },
 });
 
+const FileHistoryResults = ({ releasedFile, query }) => {
+  return (
+    <div>
+      <div>
+        <div style={{ display: 'flex', flexDirection: 'row' }}>
+          <span style={styles.resultIcon}>FL</span>
+          <span>{releasedFile.uuid}</span>
+        </div>
+        File version {query} was updated
+      </div>
+    </div>
+  );
+};
 export default compose(
   namespace('search', withSearch()),
   namespace(
@@ -179,7 +201,19 @@ export default compose(
       )}
       {!state.isLoading &&
         state.query &&
-        (state.results || []).length === 0 && (
+        (state.results || []).length === 0 &&
+        (state.fileHistoryResult || []).length > 0 && (
+          <FileHistoryResults
+            query={state.query}
+            releasedFile={state.fileHistoryResult.find(
+              f => f.file_change === 'released',
+            )}
+          />
+        )}
+      {!state.isLoading &&
+        state.query &&
+        (state.results || []).length === 0 &&
+        (state.fileHistoryResult || []).length === 0 && (
           <div style={styles.noResults}>No results found</div>
         )}
     </a>

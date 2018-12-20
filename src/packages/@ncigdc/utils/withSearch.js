@@ -9,6 +9,30 @@ import { ISearchHit } from '@ncigdc/components/QuickSearch/types';
 
 const throttledInvoker = _.throttle(fn => fn(), 300, { leading: false });
 
+// is the latest version of the file always file_change: "released"?
+// of do we need to check for the highest version number?
+// is this just for QuickSearch? not facet search?
+// is my uuid check reliable? (do other entities match this)
+
+const fetchFileHistory = query => {
+  return fetchApi(`/history/${window.encodeURIComponent(query)}`, {
+    method: 'GET',
+  })
+    .then(response => {
+      if (!response) {
+        throw new Error('error');
+      }
+      return response;
+    })
+    .catch(err => {
+      return [];
+    });
+};
+
+const isUUID = query =>
+  query.match(
+    /^[a-zA-Z0-9]{8}\-[a-zA-Z0-9]{4}\-[a-zA-Z0-9]{4}\-[a-zA-Z0-9]{4}\-[a-zA-Z0-9]{12}$/,
+  );
 export const withSearch = passedInState => {
   // prefix props to avoid collisions with existing props for component being enhanced
   const defaultState = {
@@ -16,6 +40,7 @@ export const withSearch = passedInState => {
     query: '',
     isLoading: false,
     isInSearchMode: false,
+    fileHistoryResult: [],
   };
 
   // prevent results that come back out-of-order from being displayed
@@ -25,8 +50,21 @@ export const withSearch = passedInState => {
     withState('state', 'setState', _.defaults(passedInState, defaultState)),
     withRouter,
     withProps(({ setState }) => ({
-      handleResults: (results, timeOfRequest) => {
+      handleResults: async (results, timeOfRequest, query) => {
+        let resultsToDisplay = results;
         if (timeOfMostRecentRequest === timeOfRequest) {
+          if (!results.length && isUUID(query)) {
+            console.log('fetching file history');
+            const history = await fetchFileHistory(query);
+            if (history) {
+              setState(s => ({
+                ...s,
+                results,
+                fileHistoryResult: history,
+                isLoading: false,
+              }));
+            }
+          }
           setState(s => ({ ...s, results, isLoading: false }));
         }
       },
@@ -53,7 +91,7 @@ export const withSearch = passedInState => {
               },
             },
           ).then(response =>
-            handleResults(response.data.query.hits, timeOfRequest),
+            handleResults(response.data.query.hits, timeOfRequest, query),
           ),
         );
       },

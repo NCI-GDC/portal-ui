@@ -87,6 +87,10 @@ export default compose(
           <ExternalLink href="https://www.cancer.gov/policies/foia">
             FOIA
           </ExternalLink>
+          <span> | </span>
+          <ExternalLink href="https://gdc.cancer.gov/support">
+            Contact Us
+          </ExternalLink>
         </div>
         <div style={styles.innerContainer}>
           <ExternalLink href="https://www.hhs.gov/">

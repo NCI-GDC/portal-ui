@@ -89,7 +89,7 @@ export default compose(
           </ExternalLink>
           <span> | </span>
           <ExternalLink href="https://gdc.cancer.gov/support">
-            Contact Us
+            Support
           </ExternalLink>
         </div>
         <div style={styles.innerContainer}>

@@ -21,7 +21,7 @@ class LoginModal extends React.Component {
 
     return (
       <BaseModal
-        title="Access Error"
+        title="Access Alert"
         extraButtons={primaryButton}
         closeText={closeText}
       >

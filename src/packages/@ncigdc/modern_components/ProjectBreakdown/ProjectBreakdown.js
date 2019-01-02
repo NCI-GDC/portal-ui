@@ -7,6 +7,8 @@ import { viewerQuery } from '@ncigdc/routes/queries';
 import { makeFilter, addInFilters } from '@ncigdc/utils/filters';
 import Toggle from '@ncigdc/uikit/Toggle';
 import ExploreLink from '@ncigdc/components/Links/ExploreLink';
+import ExploreSSMLink from '@ncigdc/components/Links/ExploreSSMLink';
+import { IGroupFilter } from '@ncigdc/utils/filters/types';
 
 const createRenderer = (Route, Container) => (props: mixed) => (
   <Relay.Renderer
@@ -26,7 +28,19 @@ class Route extends Relay.Route {
   static routeName = 'ProjectBreakdownRoute';
   static queries = viewerQuery;
   static prepareParams = ({ filters = null }) => ({
-    aggFilters: filters,
+    aggFilters: {
+      op: 'and',
+      content: [
+        ...filters.content,
+        {
+          op: 'NOT',
+          content: {
+            field: 'cases.gene.ssm.observation.observation_id',
+            value: 'MISSING',
+          },
+        },
+      ],
+    },
   });
 }
 
@@ -77,7 +91,7 @@ const Component = ({ viewer: { explore: { cases = {} } }, filters, relay }) => {
           ...acc,
           [b.key]: b.doc_count,
         }),
-        {},
+        {}
       );
 
   const filteredAggs = !cases.aggregations
@@ -87,7 +101,7 @@ const Component = ({ viewer: { explore: { cases = {} } }, filters, relay }) => {
           ...acc,
           [b.key]: b.doc_count,
         }),
-        {},
+        {}
       );
 
   return (
@@ -98,19 +112,15 @@ const Component = ({ viewer: { explore: { cases = {} } }, filters, relay }) => {
         .map(([k, v]) => (
           <div key={k}>
             <span>{k}: </span>
-            <ExploreLink
-              query={{
-                searchTableTab: 'cases',
-                filters: addInFilters(
-                  filters,
-                  makeFilter([
-                    { field: 'cases.project.project_id', value: [k] },
-                  ]),
-                ),
-              }}
+            <ExploreSSMLink
+              searchTableTab={'cases'}
+              filters={addInFilters(
+                filters,
+                makeFilter([{ field: 'cases.project.project_id', value: [k] }])
+              )}
             >
               {v}
-            </ExploreLink>
+            </ExploreSSMLink>
             <span> / </span>
             <ExploreLink
               query={{
@@ -140,24 +150,19 @@ const Component = ({ viewer: { explore: { cases = {} } }, filters, relay }) => {
 
 const Renderer = createRenderer(Route, createContainer(Component));
 
-type TProps = {|
+type TProps = {
   caseTotal: number,
   gdcCaseTotal: number,
-  filters: Object,
-|};
+  filters: IGroupFilter | null,
+};
 
 export default ({ caseTotal, gdcCaseTotal, filters }: TProps = {}) => (
   <Toggle
     title={
       <span key="total">
-        <ExploreLink
-          query={{
-            searchTableTab: 'cases',
-            filters,
-          }}
-        >
+        <ExploreSSMLink searchTableTab={'cases'} filters={filters}>
           {caseTotal.toLocaleString()}
-        </ExploreLink>
+        </ExploreSSMLink>
         <span> / </span>
         <ExploreLink
           query={{

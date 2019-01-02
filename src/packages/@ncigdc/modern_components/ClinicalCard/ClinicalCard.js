@@ -11,6 +11,7 @@ import { withTheme } from '@ncigdc/theme';
 import { Row } from '@ncigdc/uikit/Flex/';
 import EntityPageVerticalTable from '@ncigdc/components/EntityPageVerticalTable';
 import ageDisplay from '@ncigdc/utils/ageDisplay';
+import formatFileSize from '@ncigdc/utils/formatFileSize';
 import { truncate } from 'lodash/string';
 import { visualizingButton } from '@ncigdc/theme/mixins';
 import timestamp from '@ncigdc/utils/timestamp';
@@ -19,7 +20,6 @@ import AddToCartButtonSingle from '@ncigdc/components/AddToCartButtonSingle';
 import DownloadFile from '@ncigdc/components/DownloadFile';
 import DownloadClinicalDropdown from '@ncigdc/modern_components/DownloadClinicalDropdown/';
 import { makeFilter } from '@ncigdc/utils/filters';
-import RemoveFromCartSingle from '@ncigdc/components/RemoveFromCartSingle';
 
 const styles = {
   common: theme => ({
@@ -40,7 +40,7 @@ const styles = {
 export default compose(
   branch(
     ({ viewer }) => !viewer.repository.cases.hits.edges[0],
-    renderComponent(() => <div>No case found.</div>),
+    renderComponent(() => <div>No case found.</div>)
   ),
   connect(state => state.cart),
   withState('activeTab', 'setTab', 0),
@@ -48,7 +48,7 @@ export default compose(
     tsvDownloading: false,
     jsonDownloading: false,
   }),
-  withTheme,
+  withTheme
 )(
   ({
     activeTab,
@@ -60,18 +60,18 @@ export default compose(
     state,
     setState,
     requests,
-    canAddToCart = true,
   }) => {
     const {
       case_id: caseId,
       submitter_id: submitterId,
       diagnoses: { hits: { edges: diagnoses = [] } },
-      family_histories: { hits: { edges: familyHistory = [] } },
+      family_histories: { hits: { edges: familyHistories = [] } },
       demographic = {},
       exposures: { hits: { edges: exposures = [], total: totalExposures } },
       files: { hits: { edges: clinicalFiles = [] } },
       project: { project_id: projectId = {} },
     } = edges[0].node;
+    const familyHistory = familyHistories.map(x => x.node);
     const caseFilter = makeFilter([
       { field: 'cases.case_id', value: [caseId] },
     ]);
@@ -221,7 +221,7 @@ export default compose(
                               <Th key="agents">Therapeutic Agents</Th>,
                               <Th key="intent_type">Treatment Intent Type</Th>,
                               <Th key="therapy">Treatment or Therapy</Th>,
-                              <Th key="days">Days to Treatment</Th>,
+                              <Th key="days">Days to Treatment Start</Th>,
                             ]}
                             body={
                               <tbody>
@@ -233,7 +233,9 @@ export default compose(
                                       {node.treatment_intent_type || '--'}
                                     </Td>
                                     <Td>{node.treatment_or_therapy || '--'}</Td>
-                                    <Td>{node.days_to_treatment || '--'}</Td>
+                                    <Td>
+                                      {node.days_to_treatment_start || '--'}
+                                    </Td>
                                   </Tr>
                                 ))}
                               </tbody>
@@ -373,7 +375,7 @@ export default compose(
                     </span>
                   ),
                   data_format: f.node.data_format,
-                  file_size: f.node.file_size,
+                  file_size: formatFileSize(f.node.file_size),
                   action: (
                     <div
                       style={{
@@ -382,12 +384,7 @@ export default compose(
                       }}
                     >
                       <span key="add_to_cart" style={{ paddingRight: '10px' }}>
-                        {canAddToCart && (
-                          <AddToCartButtonSingle file={fileData} />
-                        )}
-                        {!canAddToCart && (
-                          <RemoveFromCartSingle file={fileData} />
-                        )}
+                        <AddToCartButtonSingle file={fileData} />
                       </span>
                       <span style={{ paddingRight: '10px' }}>
                         <DownloadFile
@@ -407,7 +404,11 @@ export default compose(
               headings={[
                 { key: 'file_name', title: 'Filename' },
                 { key: 'data_format', title: 'Data format' },
-                { key: 'file_size', title: 'Size' },
+                {
+                  key: 'file_size',
+                  title: 'Size',
+                  style: { textAlign: 'right' },
+                },
                 { key: 'action', title: 'Action' },
               ]}
             />
@@ -415,5 +416,5 @@ export default compose(
         )}
       </Card>
     );
-  },
+  }
 );

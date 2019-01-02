@@ -80,24 +80,6 @@ const enhance = compose(
 );
 
 export const RepositoryPageComponent = (props: TProps) => {
-  const setAutocompleteCases = (value, onReadyStateChange) =>
-    props.relay.setVariables(
-      {
-        idAutocompleteCase: value,
-        runAutocompleteCase: !!value,
-      },
-      onReadyStateChange,
-    );
-
-  const setAutocompleteFiles = (value, onReadyStateChange) =>
-    props.relay.setVariables(
-      {
-        idAutocompleteFile: value,
-        runAutocompleteFile: !!value,
-      },
-      onReadyStateChange,
-    );
-
   const fileCount = props.viewer.repository.files.hits.total;
   const caseCount = props.viewer.repository.cases.hits.total;
   const fileSize = props.viewer.cart_summary.aggregations.fs.value;
@@ -113,28 +95,12 @@ export const RepositoryPageComponent = (props: TProps) => {
           {
             id: 'files',
             text: 'Files',
-            component: (
-              <FileAggregations
-                suggestions={
-                  (props.viewer.autocomplete_file || { hits: [] }).hits
-                }
-                setAutocomplete={setAutocompleteFiles}
-                relay={props.relay}
-              />
-            ),
+            component: <FileAggregations relay={props.relay} />,
           },
           {
             id: 'cases',
             text: 'Cases',
-            component: (
-              <CaseAggregations
-                suggestions={
-                  (props.viewer.autocomplete_case || { hits: [] }).hits
-                }
-                setAutocomplete={setAutocompleteCases}
-                relay={props.relay}
-              />
-            ),
+            component: <CaseAggregations relay={props.relay} />,
           },
         ]}
         results={
@@ -206,36 +172,10 @@ export const RepositoryPageQuery = {
     files_size: null,
     files_sort: null,
     filters: null,
-    idAutocompleteCase: null,
-    idAutocompleteFile: null,
-    runAutocompleteCase: false,
-    runAutocompleteFile: false,
   },
   fragments: {
     viewer: () => Relay.QL`
       fragment on Root {
-        autocomplete_case: query (query: $idAutocompleteCase types: ["case"]) @include(if: $runAutocompleteCase) {
-          hits {
-            id
-            ...on Case {
-              case_id
-              project {
-                project_id
-              }
-              submitter_id
-            }
-          }
-        }
-        autocomplete_file: query (query: $idAutocompleteFile types: ["file"]) @include(if: $runAutocompleteFile) {
-          hits {
-            id
-            ... on File {
-              file_id
-              file_name
-              submitter_id
-            }
-          }
-        }
         cart_summary {
           aggregations(filters: $filters) {
             fs {

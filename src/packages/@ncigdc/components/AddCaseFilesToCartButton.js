@@ -43,8 +43,7 @@ const fetchFiles = async (caseId: string, size, filters?: Object) => {
       ),
     ),
     size,
-    fields:
-      'acl,state,file_state,access,file_id,file_size,cases.project.project_id',
+    fields: 'acl,state,access,file_id,file_size,cases.project.project_id',
   });
 
   const { data } = await fetchApi(`files?${search}`);

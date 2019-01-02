@@ -72,17 +72,17 @@ export default compose(
     ({ viewer }) =>
       !viewer.projects.hits.edges ||
       viewer.projects.hits.edges[0].node.primary_site.length < 2,
-    () => renderNothing(),
+    () => renderNothing()
   ),
   withTheme,
   withState('searchValue', 'setSearchValue', ''),
   connect(state => ({
-    tableColumns: state.tableColumns.projectPrimarySites.ids,
+    tableColumns: state.tableColumns.projectPrimarySites,
   })),
   mapProps(props => ({
     ...props,
     edges: props.viewer.projects.hits.edges,
-  })),
+  }))
 )(
   ({
     edges,
@@ -96,9 +96,8 @@ export default compose(
     loading,
   }) => {
     const project = edges[0].node;
-    const tableInfo = tableModels[entityType].filter(x =>
-      tableColumns.includes(x.id),
-    );
+    const tableInfo = tableColumns.slice().filter(x => !x.hidden);
+
     const primarySiteData = project.primary_site
       .filter(site => site.toLowerCase().includes(searchValue.toLowerCase()))
       .sort();
@@ -192,5 +191,5 @@ export default compose(
         </LocalPaginationTable>
       </div>
     );
-  },
+  }
 );

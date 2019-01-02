@@ -4,14 +4,15 @@
 import React from 'react';
 import { REHYDRATE } from 'redux-persist/constants';
 import _ from 'lodash';
-
 import { stringify } from 'query-string';
+
 import { fetchApi } from '@ncigdc/utils/ajax';
 import { notify } from '@ncigdc/dux/notification';
 import { Column } from '@ncigdc/uikit/Flex';
 import { center } from '@ncigdc/theme/mixins';
 import { replaceFilters } from '@ncigdc/utils/filters';
 import UnstyledButton from '@ncigdc/uikit/UnstyledButton';
+import { API, IS_AUTH_PORTAL } from '@ncigdc/utils/constants';
 
 /*----------------------------------------------------------------------------*/
 
@@ -20,7 +21,6 @@ export type TCartFile = {
   file_id: string,
   acl: Array<string>,
   state: string,
-  file_state: string,
   access: string,
   file_size: number,
   projects: Array<string>,
@@ -45,6 +45,13 @@ export const CART_FULL = 'CART_FULL';
 export const MAX_CART_SIZE = 10000;
 const MAX_CART_WARNING = `The cart is limited to ${MAX_CART_SIZE.toLocaleString()} files.
   Please narrow the search criteria or remove some files from the cart to add more.`;
+
+const DEFAULTS = {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+};
 
 const getNotificationComponent = (
   action,
@@ -295,8 +302,7 @@ function fetchFilesAndAdd(currentFilters: ?Object, total: number): Function {
       const search = stringify({
         filters: currentFilters && JSON.stringify(currentFilters),
         size: total,
-        fields:
-          'acl,state,file_state,access,file_id,file_size,cases.project.project_id',
+        fields: 'acl,state,access,file_id,file_size,cases.project.project_id',
       });
       const { data } = await fetchApi(`files?${search}`);
       const files = data.hits.map(({ cases, ...rest }) => ({
@@ -430,7 +436,6 @@ export function reducer(state: Object = initialState, action: Object): Object {
           action.payload.map(file => ({
             acl: file.acl,
             state: file.state,
-            file_state: file.file_state,
             access: file.access,
             file_id: file.file_id,
             file_size: file.file_size,
@@ -452,7 +457,6 @@ export function reducer(state: Object = initialState, action: Object): Object {
         files: action.payload.map(file => ({
           acl: file.acl,
           state: file.state,
-          file_state: file.file_state,
           access: file.access,
           file_id: file.file_id,
           file_size: file.file_size,

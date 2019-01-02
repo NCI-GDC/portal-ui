@@ -14,7 +14,7 @@ export default (Component: ReactClass<*>) =>
         <div>
           <pre>projectId</pre> must be provided
         </div>
-      )),
+      ))
     ),
     withPropsOnChange(['projectId'], ({ projectId }) => {
       return {
@@ -33,7 +33,7 @@ export default (Component: ReactClass<*>) =>
           ]),
         },
       };
-    }),
+    })
   )((props: Object) => {
     return (
       <Query
@@ -52,11 +52,13 @@ export default (Component: ReactClass<*>) =>
                   edges {
                     node {
                       project_id
+                      dbgap_accession_number
                       name
                       disease_type
                       primary_site
                       program {
                         name
+                        dbgap_accession_number
                       }
                       summary {
                         case_count

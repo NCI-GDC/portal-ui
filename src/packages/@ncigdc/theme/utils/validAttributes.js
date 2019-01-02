@@ -1,4 +1,3 @@
-// @flow
 /* Trying to avoid the unknown-prop errors on styled components
  by filtering by React's attribute whitelist.
  */

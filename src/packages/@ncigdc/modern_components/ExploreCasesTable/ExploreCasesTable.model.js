@@ -1,22 +1,23 @@
-// @flow
 import React from 'react';
 import _ from 'lodash';
 import {
   RepositoryCasesLink,
   RepositoryFilesLink,
 } from '@ncigdc/components/Links/RepositoryLink';
+import OverflowTooltippedLabel from '@ncigdc/uikit/OverflowTooltippedLabel';
 import { Tooltip } from '@ncigdc/uikit/Tooltip';
 import ProjectLink from '@ncigdc/components/Links/ProjectLink';
 import CaseLink from '@ncigdc/components/Links/CaseLink';
 import { Th, Td, TdNum, ThNum } from '@ncigdc/uikit/Table';
 import { makeFilter, replaceFilters } from '@ncigdc/utils/filters';
-import ExploreLink from '@ncigdc/components/Links/ExploreLink';
 import ageDisplay from '@ncigdc/utils/ageDisplay';
 import withRouter from '@ncigdc/utils/withRouter';
 import ImageViewerLink from '@ncigdc/components/Links/ImageViewerLink';
-import { RepositorySlideCount } from '@ncigdc/modern_components/Counts';
 import { MicroscopeIcon } from '@ncigdc/theme/icons';
 import { DISPLAY_SLIDES } from '@ncigdc/utils/constants';
+import { ForTsvExport } from '@ncigdc/components/DownloadTableToTsvButton';
+import { slideCountFromCaseSummary } from '@ncigdc/modern_components/CaseSummary/CaseSummary';
+import ExploreSSMLink from '@ncigdc/components/Links/ExploreSSMLink';
 
 import {
   createDataCategoryColumns,
@@ -27,7 +28,7 @@ import MutationsCount from '@ncigdc/components/MutationsCount';
 
 const youngestDiagnosis = (
   p: { age_at_diagnosis: number },
-  c: { age_at_diagnosis: number },
+  c: { age_at_diagnosis: number }
 ): { age_at_diagnosis: number } =>
   c.age_at_diagnosis < p.age_at_diagnosis ? c : p;
 
@@ -52,7 +53,7 @@ const FilesLink = ({ node, fields = [], children }) =>
       query={{
         filters: makeFilter(
           [{ field: 'cases.case_id', value: [node.case_id] }, ...fields],
-          false,
+          false
         ),
       }}
     >
@@ -68,7 +69,7 @@ const getProjectIdFilter = projects =>
         value: projects.edges.map(({ node: p }) => p.project_id),
       },
     ],
-    false,
+    false
   );
 
 const casesTableModel = [
@@ -136,7 +137,11 @@ const casesTableModel = [
         Primary Site
       </Th>
     ),
-    td: ({ node }) => <Td key="primary_site">{node.primary_site}</Td>,
+    td: ({ node }) => (
+      <Td key="primary_site" style={{ maxWidth: 130, overflow: 'hidden' }}>
+        <OverflowTooltippedLabel>{node.primary_site}</OverflowTooltippedLabel>
+      </Td>
+    ),
   },
   {
     name: 'Gender',
@@ -207,7 +212,7 @@ const casesTableModel = [
           ssmCount={ssmCount}
           filters={replaceFilters(
             makeFilter([{ field: 'cases.case_id', value: [node.case_id] }]),
-            filters,
+            filters
           )}
         />
       </Td>
@@ -227,21 +232,21 @@ const casesTableModel = [
         </Tooltip>
       </ThNum>
     ),
-    td: ({ node }) => (
+    td: ({ node, filters }) => (
       <Td style={{ textAlign: 'right' }}>
         {node.score > 0 ? (
-          <ExploreLink
-            merge
-            query={{
-              searchTableTab: 'genes',
-              filters: makeFilter(
+          <ExploreSSMLink
+            searchTableTab={'genes'}
+            filters={replaceFilters(
+              makeFilter(
                 [{ field: 'cases.case_id', value: [node.case_id] }],
-                false,
+                false
               ),
-            }}
+              filters
+            )}
           >
             {(node.score || 0).toLocaleString()}
-          </ExploreLink>
+          </ExploreSSMLink>
         ) : (
           0
         )}
@@ -256,16 +261,19 @@ const casesTableModel = [
       downloadable: false,
       hidden: false,
       th: () => <Th rowSpan="2">Slides</Th>,
-      td: ({ node }) => (
-        <Td style={{ textAlign: 'center' }}>
-          <RepositorySlideCount
-            filters={makeFilter([
-              { field: 'cases.case_id', value: node.case_id },
-            ])}
-          >
-            {count =>
-              count ? (
-                <Tooltip Component="View Slide Image">
+      td: ({ node }) => {
+        const slideCount = slideCountFromCaseSummary(node.summary);
+        return (
+          <Td style={{ textAlign: 'center' }}>
+            {[
+              <ForTsvExport key={`tsv-export-${node.case_id}`}>
+                {slideCount}
+              </ForTsvExport>,
+              !!slideCount ? (
+                <Tooltip
+                  key={`view-image-${node.case_id}`}
+                  Component="View Slide Image"
+                >
                   <ImageViewerLink
                     isIcon
                     query={{
@@ -274,15 +282,21 @@ const casesTableModel = [
                       ]),
                     }}
                   >
-                    <MicroscopeIcon /> ({count})
+                    <MicroscopeIcon style={{ maxWidth: '20px' }} /> ({slideCount})
                   </ImageViewerLink>
                 </Tooltip>
               ) : (
-                <Tooltip Component="No slide images to view.">--</Tooltip>
-              )}
-          </RepositorySlideCount>
-        </Td>
-      ),
+                <Tooltip
+                  key="no-slide-images"
+                  Component="No slide images to view."
+                >
+                  --
+                </Tooltip>
+              ),
+            ]}
+          </Td>
+        );
+      },
     },
   ]),
   {
@@ -316,7 +330,7 @@ const casesTableModel = [
         .map(x => x.node)
         .reduce(
           (p, c) => (c.age_at_diagnosis < p ? c.age_at_diagnosis : p),
-          Infinity,
+          Infinity
         );
       return (
         <Td>{age !== Infinity && node.diagnoses ? ageDisplay(age) : '--'}</Td>

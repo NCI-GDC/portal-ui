@@ -18,9 +18,7 @@ export const buttonBaseStyles = {
   padding: '6px 12px',
   fontSize: '14px',
   borderRadius: '4px',
-  borderColor: 'transparent',
-  borderWidth: 1,
-  borderStyle: 'solid',
+  border: '1px solid transparent',
   backgroundColor: ({ theme, disabled }) =>
     disabled ? theme.greyScale4 : theme.primary,
   color: 'white',
@@ -43,6 +41,8 @@ type TButtonProps = {
   leftIcon?: mixed,
   rightIcon?: mixed,
   style?: Object,
+  onClick?: Function,
+  className?: string,
 };
 const Button = (
   {
@@ -51,8 +51,9 @@ const Button = (
     leftIcon = null,
     disabled = false,
     children,
+    className,
     ...props
-  }: TButtonProps = {},
+  }: TButtonProps = {}
 ) => {
   const StyledButton = styled.button({ ...buttonBaseStyles, ...style });
   StyledButton.displayName = 'StyledButton';
@@ -61,7 +62,7 @@ const Button = (
     <StyledButton
       disabled={disabled}
       {...validAttributes(props)}
-      className={props.className + ' button'}
+      className={className + ' button'}
     >
       <div style={{ display: 'flex', alignItems: 'center' }}>
         {leftIcon}

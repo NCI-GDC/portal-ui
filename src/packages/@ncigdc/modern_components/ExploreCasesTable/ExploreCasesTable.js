@@ -30,12 +30,12 @@ export default compose(
       };
       const ssmCounts = buckets.reduce(
         (acc, b) => ({ ...acc, [b.key]: b.doc_count }),
-        {},
+        {}
       );
       return { ssmCounts };
-    },
+    }
   ),
-  connect(state => ({ tableColumns: state.tableColumns.exploreCases.ids })),
+  connect(state => ({ tableColumns: state.tableColumns.exploreCases }))
 )(
   ({
     exploreCasesTableViewer: { explore } = {},
@@ -51,17 +51,13 @@ export default compose(
     history,
   }) => {
     const prefix = 'cases';
-
     const { cases } = explore || {};
 
     if (cases && !cases.hits.edges.length) {
       return <Row style={{ padding: '1rem' }}>No case data found.</Row>;
     }
 
-    const tableInfo = tableModels.exploreCases
-      .slice()
-      .sort((a, b) => tableColumns.indexOf(a.id) - tableColumns.indexOf(b.id))
-      .filter(x => tableColumns.includes(x.id));
+    const tableInfo = tableColumns.slice().filter(x => !x.hidden);
 
     return (
       <div>
@@ -84,7 +80,7 @@ export default compose(
             arrangeColumnKey="exploreCases"
             total={cases.hits.total}
             endpoint="case_ssms"
-            downloadTooltip="Export All Except #Mutations and #Genes"
+            downloadTooltip="Export All Except #Mutations, #Genes and Slides"
             currentFilters={filters}
             score={score}
             sort={sort}
@@ -160,5 +156,5 @@ export default compose(
         />
       </div>
     );
-  },
+  }
 );

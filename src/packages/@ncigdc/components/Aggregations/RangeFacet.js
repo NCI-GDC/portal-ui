@@ -260,7 +260,6 @@ const RangeFacet = (props: TProps) => {
     },
   };
   const { maxDisplayed, minDisplayed } = props.state;
-
   return (
     <Container style={{ ...props.style }} className="test-range-facet">
       {!props.collapsed &&
@@ -344,7 +343,8 @@ const RangeFacet = (props: TProps) => {
             <GoLink
               dark={!!innerContent.length}
               merge="replace"
-              query={innerContent.length && query}
+              query={innerContent.length ? query : null}
+              style={innerContent.length ? null : { color: '#6F6F6F' }}
             >
               Go!
             </GoLink>

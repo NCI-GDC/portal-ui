@@ -11,6 +11,7 @@ import DownloadIcon from '@ncigdc/theme/icons/Download';
 import Spinner from '@ncigdc/theme/icons/Spinner';
 import Hidden from '@ncigdc/components/Hidden';
 import { AUTH_API } from '@ncigdc/utils/constants';
+import { TSetModalFunc } from '@ncigdc/dux/modal';
 
 type TDownloadButton = {
   endpoint: string,
@@ -33,6 +34,9 @@ type TDownloadButton = {
   showIcon?: boolean,
   sets: Array<{ id: string, filename: string, type: string }>,
   requests: Array<{ endpoint: string, filename: string, params: Object }>,
+  scope: string,
+  method: string,
+  setModal: TSetModalFunc,
 };
 
 const DownloadButton = ({
@@ -55,6 +59,8 @@ const DownloadButton = ({
   showIcon = true,
   scope,
   sets,
+  method = 'POST',
+  setModal = () => {},
   ...props
 }: TDownloadButton) => {
   const text = active ? activeText : inactiveText;
@@ -76,22 +82,21 @@ const DownloadButton = ({
           fields: fields.join(),
           filters,
           pretty: true,
-          scope,
+          ...(scope ? { scope } : {}),
           ...(sets ? { sets } : {}),
           ...(dataExportExpands ? { expand: dataExportExpands.join() } : {}),
           ...(returnType ? { return_type: returnType } : {}),
           ...(filename ? { filename } : {}),
           ...extraParams,
         };
-
         setActive(true);
-
         download({
           params,
           url: urlJoin(AUTH_API, endpoint),
-          method: 'POST',
+          method,
           altMessage,
         })(() => {}, () => setActive(false));
+        setModal();
       }}
     >
       {text || [icon, <Hidden key="hidden">download</Hidden>]}
@@ -111,7 +116,7 @@ const enhance = compose(
       : active => setState(s => ({ ...s, active })),
     active: active ? active : state.active,
     ...rest,
-  })),
+  }))
 );
 
 export default enhance(DownloadButton);

@@ -1,5 +1,3 @@
-/* @flow */
-
 import {
   isUserProject,
   userCanDownloadFile,
@@ -190,23 +188,10 @@ describe('isUserProject', () => {
 });
 
 describe('fileInCorrectState', () => {
-  it('should be correct for active files when file.state is submitted and file.file_state is in ["submitted", "processing", "processed"]', () => {
-    expect(
-      fileInCorrectState({ state: 'submitted', file_state: 'submitted' }),
-    ).toBe(true);
-    expect(
-      fileInCorrectState({ state: 'submitted', file_state: 'processing' }),
-    ).toBe(true);
-    expect(
-      fileInCorrectState({ state: 'submitted', file_state: 'processed' }),
-    ).toBe(true);
-
-    expect(
-      fileInCorrectState({ state: 'submitted', file_state: 'registered' }),
-    ).toBe(false);
-    expect(
-      fileInCorrectState({ state: 'uploaded', file_state: 'submitted' }),
-    ).toBe(false);
+  it('should be correct for active files when file.state is submitted', () => {
+    expect(fileInCorrectState({ state: 'submitted' })).toBe(true);
+    expect(fileInCorrectState({ state: 'processing' })).toBe(false);
+    expect(fileInCorrectState({ state: 'uploaded' })).toBe(false);
   });
 });
 
@@ -292,7 +277,6 @@ describe('userCanDownloadFiles', () => {
         files: [
           {
             state: 'submitted',
-            file_state: 'submitted',
             acl: ['TEST'],
           },
         ],
@@ -304,12 +288,10 @@ describe('userCanDownloadFiles', () => {
         files: [
           {
             state: 'submitted',
-            file_state: 'submitted',
             acl: ['TEST'],
           },
           {
             state: 'submitted',
-            file_state: 'submitted',
             acl: ['NOT-IN'],
           },
         ],
@@ -321,7 +303,6 @@ describe('userCanDownloadFiles', () => {
         files: [
           {
             state: 'uploaded',
-            file_state: 'registered',
             acl: ['TEST'],
           },
         ],
@@ -333,7 +314,6 @@ describe('userCanDownloadFiles', () => {
         files: [
           {
             state: 'submitted',
-            file_state: 'submitted',
             acl: [],
           },
         ],
@@ -345,7 +325,6 @@ describe('userCanDownloadFiles', () => {
         files: [
           {
             state: 'submitted',
-            file_state: 'submitted',
             acl: ['NOT-IN'],
           },
         ],
@@ -360,7 +339,6 @@ describe('userCanDownloadFile', () => {
         user,
         file: {
           state: 'submitted',
-          file_state: 'submitted',
           acl: ['TEST'],
         },
       }),
@@ -370,7 +348,6 @@ describe('userCanDownloadFile', () => {
         user,
         file: {
           state: 'submitted',
-          file_state: 'submitted',
           acl: ['NOT-IN'],
         },
       }),

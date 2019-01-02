@@ -39,7 +39,7 @@ export const createClassicRenderer = (Route, Container, minHeight) => {
           </div>
         );
       }
-    },
+    }
   );
 };
 

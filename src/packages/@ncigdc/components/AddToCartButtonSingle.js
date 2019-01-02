@@ -19,6 +19,7 @@ import Hidden from '@ncigdc/components/Hidden';
 const styles = {
   button: theme => ({
     padding: '3px 5px',
+    height: '22px',
     border: `1px solid ${theme.greyScale4}`,
   }),
   inactive: theme => ({
@@ -30,7 +31,7 @@ const styles = {
   }),
   active: theme => ({
     backgroundColor: theme.success,
-    color: 'white',
+    color: '#fff',
     ':hover': {
       backgroundColor: Color(theme.success)
         .darken(0.3)
@@ -41,7 +42,14 @@ const styles = {
 
 const fileInCart = (files, file) => files.some(f => f.file_id === file.file_id);
 
-const AddToCartButtonSingle = ({ dispatch, file, files, theme, style }) => (
+const AddToCartButtonSingle = ({
+  dispatch,
+  file,
+  files,
+  theme,
+  style,
+  asIcon = false,
+}) => (
   <Button
     className="test-add-to-cart"
     style={{
@@ -53,7 +61,13 @@ const AddToCartButtonSingle = ({ dispatch, file, files, theme, style }) => (
     onClick={() => dispatch(toggleFilesInCart(file))}
     aria-label="Add to cart"
   >
-    <ShoppingCartIcon />
+    <ShoppingCartIcon
+      style={{
+        color: fileInCart(files, file)
+          ? asIcon ? '#3c763d' : 'white'
+          : 'rgb(0, 80, 131)',
+      }}
+    />
     <Hidden>Add to cart</Hidden>
   </Button>
 );

@@ -67,6 +67,10 @@ const SaveSetModal = ({
   const existingSet = Object.entries(sets).find(
     ([, label]) => label === inputName,
   );
+
+  const isdisabled =
+    (!inputTotal && inputTotal !== 0) ||
+    (!inputName || inputTotal > max || inputName.length > MAX_SET_NAME_LENGTH);
   return (
     <BaseModal
       title={title}
@@ -75,12 +79,7 @@ const SaveSetModal = ({
         <CreateSetButton
           forceCreate
           forceClick={submitted}
-          disabled={
-            !inputTotal ||
-            (!inputName ||
-              inputTotal > max ||
-              inputName.length > MAX_SET_NAME_LENGTH)
-          }
+          disabled={isdisabled}
           filters={filters}
           size={inputTotal}
           sort={sort}
@@ -125,12 +124,17 @@ const SaveSetModal = ({
           Above maximum of {pluralize(displayType, max, true)}
         </WarningBox>
       )}
-
+      {!inputTotal &&
+        inputTotal !== 0 && (
+          <WarningBox>
+            Save at least {pluralize(displayType, 0, true)}.
+          </WarningBox>
+        )}
       <InputWithWarning
         labelText="Name:"
         showWarning={existingSet}
         handleOnKeyPress={e => {
-          if (e.key === 'Enter') {
+          if (e.key === 'Enter' && !isdisabled) {
             submit(() => true);
           }
         }}
@@ -184,7 +188,8 @@ export const UploadAndSaveSetModal = compose(
           });
           addOrReplace({ dispatch, existingSet, setName, setId, type });
         },
-        disabled: !setName || setName.length > MAX_SET_NAME_LENGTH,
+        disabled:
+          !setName.split(' ').join('') || setName.length > MAX_SET_NAME_LENGTH,
       }))(CreateSetButton)}
     />
   ),

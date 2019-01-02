@@ -1,4 +1,3 @@
-/* @flow */
 import { stringifyJSONParam } from '@ncigdc/utils/uri/index';
 import { addInFilters, toggleFilters, mergeQuery } from '../';
 

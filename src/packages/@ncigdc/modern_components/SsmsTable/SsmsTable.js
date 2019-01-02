@@ -10,8 +10,8 @@ import Showing from '@ncigdc/components/Pagination/Showing';
 import { Row } from '@ncigdc/uikit/Flex';
 import Pagination from '@ncigdc/components/Pagination';
 import { withTheme } from '@ncigdc/theme';
-import type { TTheme } from '@ncigdc/theme';
-import type { TGroupFilter } from '@ncigdc/utils/filters/types';
+import { TTheme } from '@ncigdc/theme';
+import { IGroupFilter } from '@ncigdc/utils/filters/types';
 import TableActions from '@ncigdc/components/TableActions';
 import Table, { Tr } from '@ncigdc/uikit/Table';
 import { CreateExploreSsmSetButton } from '@ncigdc/modern_components/withSetAction';
@@ -55,7 +55,7 @@ type TProps = {
     ssmsTable_size: string,
     ssmsTable_filters: string,
   },
-  filters: TGroupFilter,
+  filters: IGroupFilter,
   parentVariables: Object,
   tableColumns: Array<string>,
   hideContext: boolean,
@@ -68,7 +68,7 @@ export default compose(
   withState('survivalLoadingId', 'setSurvivalLoadingId', ''),
   withTheme,
   withSize(),
-  connect(state => ({ tableColumns: state.tableColumns.ssms.ids })),
+  connect(state => ({ tableColumns: state.tableColumns.ssms }))
 )(
   (
     {
@@ -92,7 +92,7 @@ export default compose(
       hideSurvival,
       selectedIds,
       setSelectedIds,
-    }: TProps = {},
+    }: TProps = {}
   ) => {
     if (ssms && !ssms.hits.edges.length) {
       return <Row style={{ padding: '1rem' }}>No mutation data found.</Row>;
@@ -103,10 +103,7 @@ export default compose(
 
     const totalSsms = ssms ? ssms.hits.total : 0;
 
-    const tableInfo = tableModel
-      .slice()
-      .sort((a, b) => tableColumns.indexOf(a.id) - tableColumns.indexOf(b.id))
-      .filter(x => tableColumns.includes(x.id));
+    const tableInfo = tableColumns.slice().filter(x => !x.hidden);
 
     return (
       <span>
@@ -140,6 +137,8 @@ export default compose(
                 'mutation_subtype',
                 'consequence.transcript.consequence_type',
                 'consequence.transcript.annotation.vep_impact',
+                'consequence.transcript.annotation.sift_impact',
+                'consequence.transcript.annotation.polyphen_impact',
                 'consequence.transcript.is_canonical',
                 'consequence.transcript.gene.gene_id',
                 'consequence.transcript.gene.symbol',
@@ -187,10 +186,10 @@ export default compose(
                     {tableInfo
                       .filter(x => x.td)
                       .filter(
-                        x => (hideContext ? x.id !== 'filteredCases' : true),
+                        x => (hideContext ? x.id !== 'filteredCases' : true)
                       )
                       .filter(
-                        x => (hideSurvival ? x.id !== 'survival_plot' : true),
+                        x => (hideSurvival ? x.id !== 'survival_plot' : true)
                       )
                       .map(x => (
                         <x.td
@@ -228,5 +227,5 @@ export default compose(
         />
       </span>
     );
-  },
+  }
 );

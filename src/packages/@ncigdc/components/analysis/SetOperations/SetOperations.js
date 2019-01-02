@@ -1,5 +1,5 @@
 import React from 'react';
-import { compose, withState } from 'recompose';
+import { compose, withState, withPropsOnChange } from 'recompose';
 
 import Venn, { buildOps } from '@ncigdc/components/Charts/Venn';
 import { Row } from '@ncigdc/uikit/Flex';
@@ -27,6 +27,17 @@ export default compose(
   withState('selected', 'setSelected', () => new Set()),
   withState('hovering', 'setHovering', () => new Set()),
   withRouter,
+  withState('setSizes', 'setSetSizes', {}),
+  withPropsOnChange(
+    ['setSizes'],
+    ({ message, setSizes, sets, deprecatedSets }) => {
+      return {
+        deprecatedSets: Object.entries(setSizes)
+          .filter(([id, size]) => size === 0)
+          .map(([setId]) => sets[setId]),
+      };
+    },
+  ),
 )(
   ({
     sets,
@@ -38,12 +49,14 @@ export default compose(
     setHovering,
     CreateSetButton = CreateSetButtonMap[type],
     message,
+    setSizes,
+    setSetSizes,
+    deprecatedSets,
   }) => {
     const toggle = op => {
       selected[selected.has(op) ? 'delete' : 'add'](op);
       setSelected(selected);
     };
-
     const CountComponent = countComponents[type];
     const ops = buildOps({ setIds: Object.keys(sets), type });
 
@@ -55,50 +68,67 @@ export default compose(
     return (
       <div style={{ padding: 20 }}>
         <div style={{ fontSize: 20 }}>Set Operations</div>
+        {deprecatedSets.length > 0 &&
+          `Analysis is deprecated because it contains one or more deprecated sets (${deprecatedSets.join(
+            ', ',
+          )})`}
         {message && <div style={{ fontStyle: 'italic' }}>{message}</div>}
-        <div>
-          Click on the areas of the Venn diagram to include them in your result
-          set.
-        </div>
-
-        <Row style={{ alignItems: 'center', marginTop: 10 }}>
-          <Venn
-            style={{ width: '30%', maxWidth: 300, margin: '0 5%' }}
-            type={type}
-            ops={ops}
-            onClick={toggle}
-            onMouseOver={op => {
-              hovering.add(op);
-              setHovering(hovering);
-            }}
-            onMouseOut={() => setHovering(new Set())}
-            getFillColor={(d, i) => {
-              return hovering.has(d.op)
-                ? colors[1]
-                : selected.has(d.op) ? colors[2] : colors[0];
-            }}
-          />
-          <div style={{ flexGrow: 1 }}>
-            <SetTable
-              push={push}
-              sets={sets}
-              type={type}
-              CountComponent={CountComponent}
-              CreateSetButton={CreateSetButton}
-            />
-            <hr />
-            {OpsTable({
-              type,
-              selected,
-              toggle,
-              push,
-              ops,
-              CountComponent,
-              selectedFilters,
-              CreateSetButton,
-            })}
+        <div
+          style={{
+            display: deprecatedSets.length ? 'none' : 'auto',
+          }}
+        >
+          <div>
+            Click on the areas of the Venn diagram to include them in your
+            result set.
           </div>
-        </Row>
+
+          <Row
+            style={{
+              alignItems: 'center',
+              marginTop: 10,
+            }}
+          >
+            <Venn
+              style={{ width: '30%', maxWidth: 300, margin: '0 5%' }}
+              type={type}
+              ops={ops}
+              onClick={toggle}
+              onMouseOver={op => {
+                hovering.add(op);
+                setHovering(hovering);
+              }}
+              onMouseOut={() => setHovering(new Set())}
+              getFillColor={(d, i) => {
+                return hovering.has(d.op)
+                  ? colors[1]
+                  : selected.has(d.op) ? colors[2] : colors[0];
+              }}
+            />
+            <div style={{ flexGrow: 1 }}>
+              <SetTable
+                push={push}
+                sets={sets}
+                type={type}
+                CountComponent={CountComponent}
+                CreateSetButton={CreateSetButton}
+                setSetSize={({ setId, size }) =>
+                  setSetSizes({ ...setSizes, [setId]: size })}
+              />
+              <hr />
+              {OpsTable({
+                type,
+                selected,
+                toggle,
+                push,
+                ops,
+                CountComponent,
+                selectedFilters,
+                CreateSetButton,
+              })}
+            </div>
+          </Row>
+        </div>
       </div>
     );
   },

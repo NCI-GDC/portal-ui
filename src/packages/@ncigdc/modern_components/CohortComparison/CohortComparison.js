@@ -3,7 +3,7 @@ import { union, truncate } from 'lodash';
 import { connect } from 'react-redux';
 import { compose, withState, withProps } from 'recompose';
 import { withTheme } from '@ncigdc/theme';
-import { Row } from '@ncigdc/uikit/Flex';
+import { Row, Column } from '@ncigdc/uikit/Flex';
 import withPropsOnChange from '@ncigdc/utils/withPropsOnChange';
 import { getDefaultCurve } from '@ncigdc/utils/survivalplot';
 import { buildOps } from '@ncigdc/components/Charts/Venn';
@@ -157,100 +157,123 @@ export default compose(
 
     const availableFacets = Object.entries(COHORT_COMPARISON_FACETS);
     return (
-      <Row>
-        <div style={{ maxWidth: 1000, padding: '2rem 3rem', width: '70%' }}>
-          <Row
-            style={{
-              alignItems: 'center',
-              margin: '20px 0',
-              justifyContent: 'space-between',
-            }}
-          >
-            <div>
-              <h1 style={{ margin: 0 }}>Cohort Comparison</h1>
-              {message && <div style={{ fontStyle: 'italic' }}>{message}</div>}
-            </div>
-          </Row>
-          <div
-            className="facet-container"
-            style={{
-              display: 'block',
-            }}
-          >
-            <Survival
-              loading={loadingSurvival}
-              survivalData={survivalData}
-              result1={result1}
-              result2={result2}
-              set1id={setId1}
-              set2id={setId2}
-              palette={[SET1_COLOUR, SET2_COLOUR]}
-              style={{ marginTop: 10 }}
-            />
+      <Column style={{ marginBottom: '1rem' }}>
+        <Row
+          style={{
+            alignItems: 'center',
+            margin: '20px 0',
+            justifyContent: 'space-between',
+            padding: '2rem 3rem',
+          }}
+        >
+          <div>
+            <h1 style={{ margin: 0 }}>Cohort Comparison</h1>
+
+            {(result1.hits.total === 0 || result2.hits.total === 0) &&
+              `Analysis is deprecated because it contains one or more deprecated sets (${[
+                ...(result1.hits.total === 0 ? [setName1] : []),
+                ...(result2.hits.total === 0 ? [setName2] : []),
+              ].join(', ')})`}
+            {message && <div style={{ fontStyle: 'italic' }}>{message}</div>}
           </div>
-          {availableFacets
-            .filter(([field]) => activeFacets.includes(field))
-            .map(([field, heading]) =>
-              FacetTable({
-                key: field,
-                heading,
-                Alias,
-                field,
-                data1: {
-                  ...JSON.parse(result1.facets),
-                  'diagnoses.age_at_diagnosis': transformAgeAtDiagnosis(
-                    result1.aggregations.diagnoses__age_at_diagnosis.histogram
-                      .buckets,
-                    result2.aggregations.diagnoses__age_at_diagnosis.histogram
-                      .buckets,
-                    result1.hits.total,
-                  ),
-                },
-                data2: {
-                  ...JSON.parse(result2.facets),
-                  'diagnoses.age_at_diagnosis': transformAgeAtDiagnosis(
-                    result2.aggregations.diagnoses__age_at_diagnosis.histogram
-                      .buckets,
-                    result1.aggregations.diagnoses__age_at_diagnosis.histogram
-                      .buckets,
-                    result2.hits.total,
-                  ),
-                },
-                result1,
-                result2,
-                set1: setId1,
-                set2: setId2,
-                setName1,
-                setName2,
-                palette: [SET1_COLOUR, SET2_COLOUR],
-              }),
-            )}
-          <div
-            // padding on bottom of page for toolbox
-            style={{ height: '200px' }}
-          />
-        </div>
-        <div style={{ flex: 1 }}>
-          <Toolbox
-            {...{
-              theme,
-              ops,
-              sets,
-              availableFacets,
-              activeFacets,
-              showSurvival,
-              survivalHasData: loadingSurvival || survivalHasData,
-              toggleSurvival,
-              Set1,
-              Set2,
-              setId1,
-              setId2,
-              result1,
-              result2,
-            }}
-          />
-        </div>
-      </Row>
+        </Row>
+        {result1.hits.total !== 0 &&
+          result2.hits.total !== 0 && (
+            <Row>
+              <Column
+                style={{
+                  width: '65%',
+                  padding: '0 3rem',
+                  minWidth: 550,
+                  marginTop: 1,
+                }}
+              >
+                <div
+                  className="facet-container"
+                  style={{
+                    display: 'block',
+                    marginTop: 1,
+                  }}
+                >
+                  <Survival
+                    loading={loadingSurvival}
+                    survivalData={survivalData}
+                    result1={result1}
+                    result2={result2}
+                    set1id={setId1}
+                    set2id={setId2}
+                    palette={[SET1_COLOUR, SET2_COLOUR]}
+                    style={{ marginTop: 10 }}
+                  />
+                </div>
+                {availableFacets
+                  .filter(([field]) => activeFacets.includes(field))
+                  .map(([field, heading]) =>
+                    FacetTable({
+                      key: field,
+                      heading,
+                      Alias,
+                      field,
+                      data1: {
+                        ...JSON.parse(result1.facets),
+                        'diagnoses.age_at_diagnosis': transformAgeAtDiagnosis(
+                          result1.aggregations.diagnoses__age_at_diagnosis
+                            .histogram.buckets,
+                          result2.aggregations.diagnoses__age_at_diagnosis
+                            .histogram.buckets,
+                          result1.hits.total,
+                        ),
+                      },
+                      data2: {
+                        ...JSON.parse(result2.facets),
+                        'diagnoses.age_at_diagnosis': transformAgeAtDiagnosis(
+                          result2.aggregations.diagnoses__age_at_diagnosis
+                            .histogram.buckets,
+                          result1.aggregations.diagnoses__age_at_diagnosis
+                            .histogram.buckets,
+                          result2.hits.total,
+                        ),
+                      },
+                      result1,
+                      result2,
+                      set1: setId1,
+                      set2: setId2,
+                      setName1,
+                      setName2,
+                      palette: [SET1_COLOUR, SET2_COLOUR],
+                    }),
+                  )}
+              </Column>
+
+              <div
+                style={{
+                  flex: 1,
+                  width: '25%',
+                  marginTop: 1,
+                }}
+              >
+                <Toolbox
+                  {...{
+                    theme,
+                    ops,
+                    sets,
+                    availableFacets,
+                    activeFacets,
+                    showSurvival,
+                    survivalHasData: loadingSurvival || survivalHasData,
+                    toggleSurvival,
+                    Set1,
+                    Set2,
+                    setId1,
+                    setId2,
+                    result1,
+                    result2,
+                  }}
+                />
+              </div>
+            </Row>
+          )}
+      </Column>
     );
   },
 );

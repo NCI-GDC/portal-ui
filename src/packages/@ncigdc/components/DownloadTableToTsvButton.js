@@ -1,12 +1,13 @@
 // @flow
 import React from 'react';
 import { map, reduce } from 'lodash';
+import { compose } from 'recompose';
 
 import saveFile from '@ncigdc/utils/filesaver';
 import { mapStringArrayToTsvString } from '@ncigdc/utils/toTsvString';
 import Button from '@ncigdc/uikit/Button';
 import { visualizingButton } from '@ncigdc/theme/mixins';
-import { Tooltip } from '@ncigdc/uikit/Tooltip';
+import withTooltip from '@ncigdc/uikit/Tooltip/withTooltip';
 import { track } from '@ncigdc/utils/analytics';
 
 type TProps = {
@@ -23,14 +24,23 @@ const getSingleHeader = (headThs: Array<NodeList>) =>
     [],
   );
 
-const DownloadTableToTsvButton = ({
-  filename,
-  selector,
-  style = {},
-}: TProps) => (
-  <Tooltip Component={<span>Export current view</span>}>
+const DownloadTableToTsvButton = compose(
+  withTooltip,
+)(
+  ({
+    filename,
+    selector,
+    leftIcon,
+    style = {},
+    displayTooltip = true,
+    setTooltip,
+  }: TProps) => (
     <Button
+      leftIcon={leftIcon}
       style={{ ...visualizingButton, ...style }}
+      onMouseEnter={() =>
+        displayTooltip && setTooltip(<span>Export current view</span>)}
+      onMouseLeave={() => displayTooltip && setTooltip('')}
       onClick={() => {
         const tableEl = document.querySelector(selector);
         const headTrs = tableEl.querySelector('thead').querySelectorAll('tr');
@@ -72,7 +82,7 @@ const DownloadTableToTsvButton = ({
     >
       TSV
     </Button>
-  </Tooltip>
+  ),
 );
 export default DownloadTableToTsvButton;
 

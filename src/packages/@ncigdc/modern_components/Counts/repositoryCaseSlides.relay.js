@@ -5,7 +5,7 @@ import { graphql } from 'react-relay';
 import { get } from 'lodash';
 import { makeFilter, addInFilters } from '@ncigdc/utils/filters';
 
-export default (Component: ReactClass<*>) => (props: Object) => {
+export default (Component) => (props) => {
   return (
     <BaseQuery
       parentProps={{
@@ -22,17 +22,10 @@ export default (Component: ReactClass<*>) => (props: Object) => {
           op: 'and',
           content: [
             {
-              op: 'not',
-              content: {
-                field: 'cases.slide_ids',
-                value: ['MISSING'],
-              },
-            },
-            {
               op: 'in',
               content: {
-                field: 'files.data_type',
-                value: ['Slide Image'],
+                field: 'summary.experimental_strategies.experimental_strategy',
+                value: ['Tissue Slide', 'Diagnostic Slide'],
               },
             },
           ],

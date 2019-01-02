@@ -20,7 +20,7 @@ const withRouter = component => {
     unlisten = () => {};
     componentWillMount() {
       this.unlisten = this.context.router.history.listen(() =>
-        this.forceUpdate(),
+        this.forceUpdate()
       );
     }
 
@@ -55,7 +55,7 @@ const enhance = compose(
         push(opts);
       }
     },
-  })),
+  }))
 );
 
 const withBetterRouter = Wrapped => enhance(props => <Wrapped {...props} />);

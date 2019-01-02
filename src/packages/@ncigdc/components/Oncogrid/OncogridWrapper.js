@@ -3,9 +3,16 @@
 no-restricted-globals: 0
 */
 import React from 'react';
-import { lifecycle, compose, withState, withProps, mapProps } from 'recompose';
+import {
+  lifecycle,
+  compose,
+  withState,
+  withProps,
+  mapProps,
+  withHandlers,
+} from 'recompose';
 import OncoGrid from 'oncogrid';
-import { uniqueId, get, mapKeys, debounce } from 'lodash';
+import { uniqueId, get, debounce, isEqual } from 'lodash';
 import { connect } from 'react-redux';
 import withSize from '@ncigdc/utils/withSize';
 import FullScreenIcon from 'react-icons/lib/md/fullscreen';
@@ -19,6 +26,7 @@ import { getFilterValue, replaceFilters } from '@ncigdc/utils/filters';
 import {
   consequenceTypes,
   colorMap,
+  cnvChangeTypes,
 } from '@ncigdc/utils/filters/prepared/significantConsequences';
 import withRouter from '@ncigdc/utils/withRouter';
 
@@ -27,7 +35,7 @@ import Button from '@ncigdc/uikit/Button';
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import { Tooltip } from '@ncigdc/uikit/Tooltip';
 
-import { StepLegend, SwatchLegend } from '@ncigdc/components/Legends';
+import { ToggleSwatchLegend } from '@ncigdc/components/Legends';
 import DownloadVisualizationButton from '@ncigdc/components/DownloadVisualizationButton';
 import Hidden from '@ncigdc/components/Hidden';
 
@@ -39,6 +47,10 @@ import { withTooltip } from '@ncigdc/uikit/Tooltip/index';
 import getQueries from './getQueries';
 import oncoGridParams from './oncoGridParams';
 import mouseEvents from './mouseEvents';
+import { setModal } from '@ncigdc/dux/modal';
+import ColorPickerModal from '@ncigdc/components/Modals/ColorPickerModal';
+import DropDown from '@ncigdc/uikit/Dropdown';
+import DropdownItem from '@ncigdc/uikit/DropdownItem';
 
 import './oncogrid.css';
 
@@ -63,7 +75,7 @@ function refreshGridState({
 }
 
 const GRID_CLASS = 'oncogrid-wrapper';
-const MAX_CASES = 500;
+const MAX_CASES = 200;
 const MAX_GENES = 50;
 
 const styles = {
@@ -87,6 +99,12 @@ const styles = {
   buttonActive: {
     backgroundColor: '#e6e6e6',
     borderColor: '#adadad',
+  },
+  legends: {
+    width: '80%',
+    marginBottom: '30px',
+    marginLeft: '100px',
+    flexFlow: 'row wrap',
   },
 };
 
@@ -115,10 +133,22 @@ type TProps = {
 
 const OncoGridWrapper = compose(
   withRouter,
+  withState(
+    'gridColors',
+    'setGridColors',
+    JSON.parse(localStorage.getItem('oncogridActiveTheme') || 'null') ||
+      colorMap,
+  ),
+  withHandlers({
+    resetColors: ({ setGridColors }) => () => {
+      setGridColors(colorMap);
+      localStorage.setItem('oncogridActiveTheme', JSON.stringify(colorMap));
+    },
+  }),
   withState('oncoGrid', 'setOncoGrid', {}),
   withState('oncoGridData', 'setOncoGridData', null),
   withState('crosshairMode', 'setCrosshairMode', false),
-  withState('showGridLines', 'setShowGridLines', true),
+  withState('showGridLines', 'setShowGridLines', false),
   withState('heatMapMode', 'setHeatMapMode', false),
   withState('isLoading', 'setIsLoading', true),
   withState('caseCount', 'setCaseCount', 0),
@@ -129,65 +159,122 @@ const OncoGridWrapper = compose(
     () => GRID_CLASS + uniqueId(),
   ),
   withState('trackLegends', 'setTrackLegends', []),
-  mapProps(({ title, impacts, ...props }) => {
-    const cases = props.oncoGridData
-      ? props.oncoGridData.cases.length
-      : MAX_CASES;
-    const genes = props.oncoGridData
-      ? props.oncoGridData.genes.length
-      : MAX_GENES;
+  withState('variationDataTypes', 'setVariationDataTypes', ['cnv', 'ssm']),
+  withState('toggledCnvChanges', 'setToggledCnvChanges', cnvChangeTypes),
+  withState('toggledConsequences', 'setToggledConsequences', consequenceTypes),
+  withState('rankOncoGridBy', 'setRankOncoGridBy', 'ssm'),
+  mapProps(
+    ({
+      title,
+      impacts,
+      toggledConsequences,
+      variationDataTypes,
+      toggledCnvChanges,
+      rankOncoGridBy,
+      gridColors,
+      ...props
+    }) => {
+      const cases = props.oncoGridData
+        ? props.oncoGridData.cases.length
+        : MAX_CASES;
+      const genes = props.oncoGridData
+        ? props.oncoGridData.genes.length
+        : MAX_GENES;
 
-    const currentImpacts = getFilterValue({
-      currentFilters: props.currentFilters.content,
-      dotField: 'ssms.consequence.transcript.annotation.vep_impact',
-    });
-
-    const currentConsequenceTypes = get(
-      getFilterValue({
+      const currentImpacts = getFilterValue({
         currentFilters: props.currentFilters.content,
-        dotField: 'ssms.consequence.transcript.consequence_type',
-      }),
-      'content.value',
-      consequenceTypes,
-    );
-    const filteredConsequenceTypes = consequenceTypes.filter((c: any) =>
-      currentConsequenceTypes.includes(c),
-    );
+        dotField: 'ssms.consequence.transcript.annotation.vep_impact',
+      });
 
-    const currentFilters = replaceFilters(
-      {
-        op: 'and',
-        content: [
-          {
-            op: 'in',
-            content: {
-              field: 'ssms.consequence.transcript.consequence_type',
-              value: filteredConsequenceTypes,
+      const currentConsequenceTypes = get(
+        getFilterValue({
+          currentFilters: props.currentFilters.content,
+          dotField: 'ssms.consequence.transcript.consequence_type',
+        }),
+        'content.value',
+        consequenceTypes,
+      );
+
+      const currentCnvChanges = get(
+        getFilterValue({
+          currentFilters: props.currentFilters.content,
+          dotField: 'cnv.cnv_change',
+        }),
+        'content.value',
+        cnvChangeTypes,
+      );
+      // const filteredConsequenceTypes = consequenceTypes.filter((c: any) =>
+      //   currentConsequenceTypes.includes(c),
+      // );
+
+      const filteredConsequenceTypes = toggledConsequences.filter((c: any) =>
+        currentConsequenceTypes.includes(c),
+      );
+
+      const filteredCnvChanges = toggledCnvChanges.filter((c: any) =>
+        currentCnvChanges.includes(c),
+      );
+
+      const currentFilters = props.currentFilters;
+      const currentSSMFilters = replaceFilters(
+        {
+          op: 'and',
+          content: [
+            {
+              op: 'in',
+              content: {
+                field: 'ssms.consequence.transcript.consequence_type',
+                value: filteredConsequenceTypes,
+              },
             },
-          },
-        ],
-      },
-      props.currentFilters,
-    );
+          ],
+        },
+        props.currentFilters,
+      );
 
-    return {
-      ...props,
-      title:
-        title ||
-        `${cases}${cases < props.caseCount
-          ? ' Most'
-          : ''} Mutated Cases and Top ${genes} Mutated Genes`,
-      impacts:
-        impacts || (currentImpacts && currentImpacts.content.value) || [],
-      filteredConsequenceTypes,
-      currentFilters,
-    };
-  }),
+      let currentCNVFilters = replaceFilters(
+        {
+          op: 'and',
+          content: [
+            {
+              op: 'in',
+              content: {
+                field: 'cnv.cnv_change',
+                value: filteredCnvChanges,
+              },
+            },
+          ],
+        },
+        props.currentFilters,
+      );
+
+      return {
+        ...props,
+        title:
+          title ||
+          `${cases}${cases < props.caseCount
+            ? ' Most'
+            : ''} Mutated Cases and Top ${genes} Mutated Genes By SSM`,
+        impacts:
+          impacts || (currentImpacts && currentImpacts.content.value) || [],
+        filteredConsequenceTypes,
+        currentFilters,
+        toggledConsequences,
+        variationDataTypes,
+        toggledCnvChanges,
+        currentCNVFilters,
+        currentSSMFilters,
+        rankOncoGridBy,
+        gridColors,
+      };
+    },
+  ),
   withTooltip,
   withProps({
     oncoGridHeight: 150,
     oncoGridPadding: 306,
     oncoGridWrapper: null,
+    heatMapColor: '#2E7D32',
     async getQueries(
       {
         oncoGrid,
@@ -197,6 +284,7 @@ const OncoGridWrapper = compose(
         oncoGridHeight,
         setIsLoading,
         projectId,
+        heatMapMode,
         setHeatMapMode,
         setShowGridLines,
         setCrosshairMode,
@@ -212,6 +300,14 @@ const OncoGridWrapper = compose(
         lastRequest,
         setLastRequest,
         setTooltip,
+        variationDataTypes,
+        setVariationDataTypes,
+        currentCNVFilters,
+        currentSSMFilters,
+        toggledCnvChanges,
+        rankOncoGridBy,
+        heatMapColor,
+        gridColors,
       }: TProps = {},
       previousResponses: Object,
     ): Promise<*> {
@@ -231,12 +327,17 @@ const OncoGridWrapper = compose(
         currentFilters,
         maxCases: MAX_CASES,
         maxGenes: MAX_GENES,
+        currentCNVFilters,
+        currentSSMFilters,
+        rankOncoGridBy,
+        heatMapMode,
       });
 
       const performanceContext = {
         donors: responses.cases.length,
         genes: responses.genes.length,
-        occurrences: responses.occurrences.length,
+        ssm_occurrences: responses.ssm_occurrences.length,
+        cnv_occurrences: responses.cnv_occurrences.length,
         maxCases: MAX_CASES,
         maxGenes: MAX_GENES,
       };
@@ -247,11 +348,12 @@ const OncoGridWrapper = compose(
       performanceTracker.begin('oncogrid:process');
       const gridParams = oncoGridParams({
         grid: showGridLines,
-        colorMap,
+        colorMap: gridColors,
         element: wrapperRefs[uniqueGridClass],
         donorData: responses.cases,
         geneData: responses.genes,
-        occurrencesData: responses.occurrences,
+        ssmOccurrencesData: responses.ssm_occurrences,
+        cnvOccurrencesData: responses.cnv_occurrences,
         width:
           (containerRefs[uniqueGridClass] || { offsetWidth: 0 }).offsetWidth -
           oncoGridPadding,
@@ -259,6 +361,8 @@ const OncoGridWrapper = compose(
         trackPadding: 30,
         impacts,
         consequenceTypes: filteredConsequenceTypes,
+        heatMap: heatMapMode,
+        heatMapColor,
       });
 
       performanceTracker.end('oncogrid:process', performanceContext);
@@ -268,6 +372,7 @@ const OncoGridWrapper = compose(
 
         performanceTracker.begin('oncogrid:init');
         const grid = new OncoGrid(gridParams);
+
         performanceTracker.end('oncogrid:init', performanceContext);
         grid.resize = debounce(grid.resize.bind(grid), 200);
 
@@ -287,6 +392,7 @@ const OncoGridWrapper = compose(
           trackLegends: gridParams.trackLegends,
           push,
           dispatch,
+          currentFilters,
         });
 
         setCaseCount(responses.totalCases);
@@ -302,6 +408,7 @@ const OncoGridWrapper = compose(
       } else {
         if (oncoGrid.toggleGridLines) oncoGrid.destroy();
         setOncoGridData(null);
+        setIsLoading(false);
       }
 
       if (gridParams) {
@@ -348,8 +455,12 @@ const OncoGridWrapper = compose(
       }
 
       if (
-        JSON.stringify(this.props.currentFilters) !==
-        JSON.stringify(nextProps.currentFilters)
+        JSON.stringify(this.props.currentCNVFilters) !==
+          JSON.stringify(nextProps.currentCNVFilters) ||
+        JSON.stringify(this.props.currentSSMFilters) !==
+          JSON.stringify(nextProps.currentSSMFilters) ||
+        !isEqual(this.props.gridColors, nextProps.gridColors) ||
+        this.props.heatMapMode !== nextProps.heatMapMode
       ) {
         this.props.setIsLoading(true);
         this.props.getQueries(nextProps, this.props.oncoGridData);
@@ -380,6 +491,17 @@ const OncoGridWrapper = compose(
     uniqueGridClass,
     trackLegends,
     title,
+    toggledCnvChanges,
+    setToggledCnvChanges,
+    toggledConsequences,
+    setToggledConsequences,
+    variationDataTypes,
+    setVariationDataTypes,
+    heatMapColor,
+    setGridColors,
+    gridColors,
+    dispatch,
+    resetColors,
   }) => (
     <Loader loading={isLoading} height="800px">
       <div
@@ -392,29 +514,64 @@ const OncoGridWrapper = compose(
           containerRefs[uniqueGridClass] = r;
         }}
       >
-        <h4 style={{ textAlign: 'center' }}>{title}</h4>
-        {oncoGridData &&
-          !isLoading && (
-            <Row style={{ marginLeft: 0, minHeight: '70px' }}>
-              <div style={{ flexGrow: 1 }} className="oncogrid-legend">
-                {heatMapMode ? (
-                  <StepLegend rightLabel="More Mutations" />
-                ) : (
-                  <SwatchLegend
-                    colorMap={mapKeys(colorMap, (val, key) =>
-                      key.replace('_variant', ''),
-                    )}
-                  />
-                )}
-              </div>
+        <Row
+          style={{
+            display: 'flex',
+            justifyContent: oncoGridData ? 'space-between' : 'flex-end',
+          }}
+        >
+          {oncoGridData && <h3 style={{ textAlign: 'center' }}>{title}</h3>}
+          {!isLoading && (
+            <div>
               <Row
                 style={{
-                  justifyContent: 'flex-end',
+                  justifyContent: 'flex-start',
                   marginRight: '12px',
                   flexWrap: 'wrap',
+                  paddingBottom: 15,
                 }}
                 spacing="1rem"
               >
+                <DropDown
+                  isDisabled={!oncoGridData || isFullScreen()}
+                  button={
+                    <Tooltip Component="Customize Colors">
+                      <Button
+                        style={visualizingButton}
+                        disabled={!oncoGridData || isFullScreen()}
+                      >
+                        <i className="fa fa-paint-brush" />
+                        <Hidden>Customize Colors</Hidden>
+                      </Button>
+                    </Tooltip>
+                  }
+                >
+                  <DropdownItem
+                    onClick={() => {
+                      dispatch(
+                        setModal(
+                          <ColorPickerModal
+                            onSave={colors => {
+                              setGridColors(colors);
+                              localStorage.setItem(
+                                'oncogridActiveTheme',
+                                JSON.stringify(colors),
+                              );
+                              dispatch(setModal(null));
+                            }}
+                            onClose={() => dispatch(setModal(null))}
+                            colors={gridColors}
+                          />,
+                        ),
+                      );
+                    }}
+                  >
+                    Customize Colors
+                  </DropdownItem>
+                  <DropdownItem onClick={resetColors}>
+                    Reset to Default
+                  </DropdownItem>
+                </DropDown>
                 <DownloadVisualizationButton
                   svg={() => {
                     const elementsAfter = trackLegends.map(html => {
@@ -447,7 +604,6 @@ const OncoGridWrapper = compose(
                     });
 
                     elementsAfter.forEach(el => document.body.removeChild(el));
-
                     return wrappedSvg;
                   }}
                   data={oncoGridData}
@@ -455,12 +611,15 @@ const OncoGridWrapper = compose(
                   slug="oncogrid"
                   noText
                   tooltipHTML="Download"
+                  disabled={!oncoGridData}
                 />
                 <Tooltip Component="Reload Grid">
                   <Button
                     style={styles.button}
                     onClick={() => {
                       oncoGrid.reload();
+                      setToggledConsequences(consequenceTypes);
+                      setToggledCnvChanges(cnvChangeTypes);
                       refreshGridState({
                         oncoGrid,
                         setHeatMapMode,
@@ -469,6 +628,7 @@ const OncoGridWrapper = compose(
                         setIsLoading,
                       });
                     }}
+                    disabled={!oncoGridData}
                   >
                     <i className="fa fa-undo" />
                     <Hidden>Reload</Hidden>
@@ -478,6 +638,7 @@ const OncoGridWrapper = compose(
                   <Button
                     style={styles.button}
                     onClick={() => oncoGrid.cluster()}
+                    disabled={!oncoGridData}
                   >
                     <i className="fa fa-sort-amount-desc" />
                     <Hidden>Cluster</Hidden>
@@ -489,6 +650,7 @@ const OncoGridWrapper = compose(
                       ...styles.button,
                       ...(heatMapMode && styles.buttonActive),
                     }}
+                    disabled={toggledConsequences.length === 0 || !oncoGridData}
                     onClick={() => setHeatMapMode(!heatMapMode)}
                   >
                     <i className="fa fa-fire" />
@@ -502,6 +664,7 @@ const OncoGridWrapper = compose(
                       ...(showGridLines && styles.buttonActive),
                     }}
                     onClick={() => setShowGridLines(!showGridLines)}
+                    disabled={!oncoGridData}
                   >
                     <i className="fa fa-th" />
                     <Hidden>Lines</Hidden>
@@ -514,6 +677,7 @@ const OncoGridWrapper = compose(
                       ...(crosshairMode && styles.buttonActive),
                     }}
                     onClick={() => setCrosshairMode(!crosshairMode)}
+                    disabled={!oncoGridData}
                   >
                     <i className="fa fa-crosshairs" />
                     <Hidden>Crosshair</Hidden>
@@ -546,35 +710,104 @@ const OncoGridWrapper = compose(
                         );
                       }
                     }}
+                    disabled={!oncoGridData}
                   >
                     <FullScreenIcon />
                     <Hidden>Fullscreen</Hidden>
                   </Button>
                 </Tooltip>
-
-                {crosshairMode && (
-                  <div
-                    style={{
-                      fontSize: '1.1rem',
-                      verticalAlign: 'top',
-                      width: '100%',
-                      textAlign: 'right',
-                    }}
-                  >
-                    Click and drag to select a region on the OncoGrid to zoom
-                    in.
-                  </div>
-                )}
               </Row>
-            </Row>
+              {crosshairMode && (
+                <div
+                  style={{
+                    fontSize: '1.1rem',
+                    verticalAlign: 'top',
+                    width: '100%',
+                    textAlign: 'right',
+                    position: 'absolute',
+                    top: '40px',
+                    right: '10px',
+                  }}
+                >
+                  Click and drag to select a region on the OncoGrid to zoom in.
+                </div>
+              )}
+            </div>
           )}
+        </Row>
+        <Row style={styles.legends}>
+          <div
+            style={{
+              flexGrow: 1,
+            }}
+            className="oncogrid-mutation-legend"
+          >
+            <h3>Mutations</h3>
+            <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
+              <ToggleSwatchLegend
+                toggledValues={toggledConsequences}
+                toggle={key => {
+                  if (toggledConsequences.includes(key)) {
+                    setToggledConsequences(
+                      toggledConsequences.filter(c => c !== key),
+                    );
+                  } else {
+                    setToggledConsequences([...toggledConsequences, key]);
+                  }
+                }}
+                toggleAll={() => {
+                  if (toggledConsequences.length > 0) {
+                    setToggledConsequences([]);
+                  } else {
+                    setToggledConsequences(consequenceTypes);
+                  }
+                }}
+                colorMap={gridColors.mutation}
+                type={'mutations'}
+                heatMapMode={heatMapMode}
+                heatMapColor={heatMapColor}
+              />
+            </div>
+          </div>
+          {!heatMapMode && (
+            <div style={{ flexGrow: 1 }} className="oncogrid-cnv-legend">
+              <h3>CNV Changes</h3>
+              <ToggleSwatchLegend
+                toggledValues={toggledCnvChanges}
+                toggle={key => {
+                  if (toggledCnvChanges.includes(key)) {
+                    setToggledCnvChanges(
+                      toggledCnvChanges.filter(c => c !== key),
+                    );
+                  } else {
+                    setToggledCnvChanges([...toggledCnvChanges, key]);
+                  }
+                }}
+                toggleAll={() => {
+                  if (toggledCnvChanges.length > 0) {
+                    setToggledCnvChanges([]);
+                  } else {
+                    setToggledCnvChanges(cnvChangeTypes);
+                  }
+                }}
+                colorMap={gridColors.cnv}
+                type={'copy number variations'}
+              />
+            </div>
+          )}
+        </Row>
         {!oncoGridData &&
           !isLoading && (
-            <Column style={{ alignItems: 'center', padding: '2rem 0' }}>
-              <div>No result found.</div>
+            <Column style={{ padding: '2rem 0' }}>
+              {toggledConsequences.length === 0 && (
+                <div>
+                  The current selection has no results. Please select more
+                  mutation types or reload the page to continue exploration.
+                </div>
+              )}
+              {toggledConsequences.length > 0 && <div>No result found.</div>}
             </Column>
           )}
-
         <div
           className={`${GRID_CLASS} ${uniqueGridClass}`}
           ref={n => {
@@ -583,6 +816,7 @@ const OncoGridWrapper = compose(
           style={{
             cursor: crosshairMode ? 'crosshair' : 'pointer',
             visibility: isLoading ? 'hidden' : 'visible',
+            paddingTop: 15,
           }}
         />
       </div>

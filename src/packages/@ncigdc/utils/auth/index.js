@@ -1,6 +1,10 @@
 // @flow
 
 import _ from 'lodash';
+import urlJoin from 'url-join';
+
+import { forceLogout } from '@ncigdc/dux/auth';
+import { FENCE } from '@ncigdc/utils/constants';
 
 const isUserProject = ({ user, file }) => {
   if (!user) {
@@ -19,9 +23,7 @@ const isUserProject = ({ user, file }) => {
   return _.intersection(projectIds, gdcIds).length !== 0;
 };
 
-const fileInCorrectState = (file): boolean =>
-  file.state === 'submitted' &&
-  ['submitted', 'processing', 'processed'].indexOf(file.file_state) !== -1;
+const fileInCorrectState = (file): boolean => file.state === 'submitted';
 
 const intersectsWithFileAcl = ({ user, file }): boolean =>
   _.intersection(
@@ -114,6 +116,17 @@ const userProjectsCount = (user: Object) =>
     [],
   ).length;
 
+const awgLogout = async () => {
+  await fetch(urlJoin(FENCE, 'logout'), {
+    credentials: 'include',
+  });
+};
+
+const redirectToLogin = error => {
+  awgLogout();
+  store.dispatch(forceLogout());
+  return (window.location.href = `/login?error=${error}`);
+};
 /*----------------------------------------------------------------------------*/
 
 export {
@@ -125,4 +138,5 @@ export {
   getAuthCounts,
   userProjectsCount,
   authPartitionFiles,
+  redirectToLogin,
 };

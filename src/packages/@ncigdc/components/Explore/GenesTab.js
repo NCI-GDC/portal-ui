@@ -13,6 +13,7 @@ import {
   toggleFilters,
   getFilterValue,
 } from '@ncigdc/utils/filters';
+// import { ShowToggleBox } from '@ncigdc/components/TabPieCharts'; // GenesBarChart component and related are hidding for now.
 import { stringifyJSONParam } from '@ncigdc/utils/uri';
 import withPropsOnChange from '@ncigdc/utils/withPropsOnChange';
 import removeEmptyKeys from '@ncigdc/utils/removeEmptyKeys';
@@ -37,6 +38,7 @@ export default compose(
   withFilters(),
   withState('defaultSurvivalData', 'setDefaultSurvivalData', {}),
   withState('selectedSurvivalData', 'setSelectedSurvivalData', {}),
+  withState('showingMore', 'setShowingMore', false),
   withState('state', 'setState', initialState),
   withProps(
     ({
@@ -65,7 +67,7 @@ export default compose(
           loading: false,
         }));
       },
-    }),
+    })
   ),
   withPropsOnChange(['filters'], ({ updateData }) => {
     updateData();
@@ -80,16 +82,14 @@ export default compose(
               dotField: 'genes.gene_id',
             }),
             'content.value',
-            [],
-          ),
+            []
+          )
         )
         .filter(v => v.includes('set_id'));
 
       const newFilters = toggleFilters(
         filters,
-        makeFilter([
-          { field: 'genes.gene_id', value: [gene.gene_id, ...sets] },
-        ]),
+        makeFilter([{ field: 'genes.gene_id', value: [gene.gene_id, ...sets] }])
       );
       push({
         pathname: '/exploration',
@@ -99,7 +99,7 @@ export default compose(
         }),
       });
     },
-  }),
+  })
 )(
   ({
     state: { loading },
@@ -109,6 +109,8 @@ export default compose(
     setSelectedSurvivalData,
     viewer,
     filters,
+    showingMore,
+    setShowingMore,
     handleClickGene,
   }) => (
     <Column style={styles.card}>
@@ -117,11 +119,14 @@ export default compose(
         Genes
       </h1>
       <Column>
-        <Row>
+        <Row
+          style={{ paddingBottom: '1.5rem', borderBottom: '1px solid #c8c8c8' }}
+        >
           <Column flex="none" style={{ width: '50%' }}>
             <GenesBarChart
               defaultFilters={filters}
               onClickGene={handleClickGene}
+              showingMore={false} //{showingMore} // GenesBarChart component and related are hidding for now.
             />
           </Column>
           <Column flex="none" style={{ width: '50%' }}>
@@ -133,11 +138,17 @@ export default compose(
             />
           </Column>
         </Row>
+        {/* <Row style={{ margin: 'auto', marginTop: '-1.5rem' }}>
+          <ShowToggleBox onClick={() => setShowingMore(!showingMore)}>
+            Show {showingMore ? 'Less' : 'More'}
+          </ShowToggleBox>
+        </Row> */}
+        {/* GenesBarChart component and related are hidding for now. */}
         <GenesTable
           defaultFilters={filters}
           survivalData={survivalData}
           hasEnoughSurvivalDataOnPrimaryCurve={enoughData(
-            defaultSurvivalData.rawData,
+            defaultSurvivalData.rawData
           )}
           setSelectedSurvivalData={setSelectedSurvivalData}
           selectedSurvivalData={selectedSurvivalData}
@@ -145,5 +156,5 @@ export default compose(
         />
       </Column>
     </Column>
-  ),
+  )
 );

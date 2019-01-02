@@ -31,21 +31,17 @@ const enhance = compose(
           } else {
             this.props.setLoadError(false);
             setImageParams({
-              height: data.Height,
-              width: data.Width,
-              overlap: data.Overlap,
-              tileSize: data.TileSize,
+              height: Number(data.Height),
+              width: Number(data.Width),
+              overlap: Number(data.Overlap),
+              tileSize: Number(data.TileSize),
             });
             const viewer = OpenSeadragon({
               id: 'osd1',
               prefixUrl:
                 'https://cdn.jsdelivr.net/npm/openseadragon@2.3/build/openseadragon/images/',
-              defaultZoomLevel: 0.9, // so default zoom will be slightly less than full width of viewport
               visibilityRatio: 1,
               minLevel: 0,
-              maxLevel: 14,
-              maxZoomLevel: 14,
-              minZoomLevel: 0.9, // to match default zoom level
               showNavigator: true,
               tileSources: {
                 height: Number(data.Height),
@@ -58,10 +54,22 @@ const enhance = compose(
               },
             });
             reAddFullScreenHandler(viewer);
-
+            // to allow margins around horizontally and vertically oriented images on home zoom
+            const margins = viewer.viewport.getMargins();
+            viewer.viewport.setMargins(
+              {
+                left: 30,
+                top: 10,
+                right: 30,
+                bottom: 10,
+              },
+              margins,
+            );
             viewer.addControl(document.querySelector('#details-button'), {
               anchor: OpenSeadragon.ControlAnchor.TOP_LEFT,
             });
+            // an empty label that 508 scan doesnt like
+            document.querySelector('.openseadragon-container label').remove();
             setViewer(viewer);
           }
         });
@@ -104,10 +112,10 @@ const enhance = compose(
             return setLoadError(true);
           }
           setImageParams({
-            height: data.Height,
-            width: data.Width,
-            overlap: data.Overlap,
-            tileSize: data.TileSize,
+            height: Number(data.Height),
+            width: Number(data.Width),
+            overlap: Number(data.Overlap),
+            tileSize: Number(data.TileSize),
           });
           setLoadError(false);
         })

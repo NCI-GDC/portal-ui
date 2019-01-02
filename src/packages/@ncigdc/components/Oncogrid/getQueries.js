@@ -1,5 +1,10 @@
 /* @flow */
-import { replaceFilters } from '@ncigdc/utils/filters';
+import {
+  replaceFilters,
+  makeFilter,
+  getFilterValue,
+  removeFilter,
+} from '@ncigdc/utils/filters';
 import memoize from 'memoizee';
 import { fetchApi, fetchApiChunked } from '@ncigdc/utils/ajax';
 
@@ -20,7 +25,7 @@ async function getGenes({
   );
 }
 
-async function getOccurrences({ filters }): Promise<Object> {
+async function getSSMOccurrences({ filters }): Promise<Object> {
   return fetchApiChunked('ssm_occurrences', {
     headers: { 'Content-Type': 'application/json' },
     body: {
@@ -32,6 +37,21 @@ async function getOccurrences({ filters }): Promise<Object> {
         'ssm.consequence.transcript.gene.gene_id',
         'ssm.ssm_id',
         'case.case_id',
+      ].join(),
+    },
+  });
+}
+
+async function getCNVOccurrences({ filters }): Promise<Object> {
+  return fetchApiChunked('cnv_occurrences', {
+    headers: { 'Content-Type': 'application/json' },
+    body: {
+      filters,
+      fields: [
+        'cnv_occurrence_id',
+        'case.case_id',
+        'cnv.consequence.gene.gene_id',
+        'cnv.cnv_change',
       ].join(),
     },
   });
@@ -67,35 +87,54 @@ async function getCases({
   });
 }
 
-const NO_RESULT = { genes: [], occurrences: [], cases: [], totalCases: 0 };
+const NO_RESULT = {
+  genes: [],
+  ssm_occurrences: [],
+  cases: [],
+  totalCases: 0,
+  cnv_occurrences: [],
+};
 async function getQueries({
   currentFilters,
   maxGenes,
   maxCases,
+  currentCNVFilters,
+  currentSSMFilters,
+  rankOncoGridBy,
+  heatMapMode,
 }: {
   currentFilters: Object,
   maxGenes: number,
   maxCases: number,
+  currentCNVFilters: Object,
+  currentSSMFilters: Object,
+  rankOncoGridBy: string,
+  heatMapMode: boolean,
 }): Promise<Object> {
-  const geneFilters = replaceFilters(
-    {
-      op: 'and',
-      content: [
-        {
-          op: 'NOT',
-          content: {
-            field: 'ssms.consequence.transcript.annotation.vep_impact',
-            value: 'missing',
+  const geneFilters =
+    rankOncoGridBy === 'ssm'
+      ? replaceFilters(
+          {
+            op: 'and',
+            content: [
+              {
+                op: 'NOT',
+                content: {
+                  field: 'ssms.consequence.transcript.annotation.vep_impact',
+                  value: 'missing',
+                },
+              },
+            ],
           },
-        },
-      ],
-    },
-    currentFilters,
-  );
+          currentSSMFilters,
+        )
+      : currentCNVFilters;
+
   const { data: { hits: genes } } = await getGenes({
     filters: geneFilters,
     size: maxGenes,
   });
+
   if (!genes.length) return NO_RESULT;
 
   const geneIds = genes.map(gene => gene.gene_id);
@@ -120,26 +159,55 @@ async function getQueries({
   if (!totalCases) return NO_RESULT;
 
   const caseIds = cases.map(c => c.case_id);
-  const occurrenceFilters = replaceFilters(
-    {
-      op: 'and',
-      content: [
-        {
-          op: 'in',
-          content: { field: 'cases.case_id', value: caseIds },
-        },
-      ],
-    },
-    caseFilters,
+
+  const ssmOccurrenceFilters = removeFilter(
+    f => f.match(/^cnvs\./),
+    replaceFilters(
+      {
+        op: 'and',
+        content: [
+          {
+            op: 'in',
+            content: { field: 'cases.case_id', value: caseIds },
+          },
+        ],
+      },
+      caseFilters,
+    ),
   );
-  const { data: { hits: occurrences } } = await getOccurrences({
-    filters: occurrenceFilters,
+
+  const { data: { hits: ssm_occurrences } } = await getSSMOccurrences({
+    filters: ssmOccurrenceFilters,
   });
+
+  // remove ssm-specific filters because there is no ssm data in cnv_occurrence_centric
+  const cnvOccurrenceFilters = removeFilter(
+    f => f.match(/^ssms./),
+    replaceFilters(
+      currentCNVFilters,
+      makeFilter([
+        { field: 'cases.case_id', value: caseIds },
+        { field: 'genes.gene_id', value: geneIds },
+      ]),
+    ),
+  );
+
+  let cnv_occurrences = [];
+  let cnvChangeFilters = getFilterValue({
+    currentFilters: cnvOccurrenceFilters.content,
+    dotField: 'cnv.cnv_change',
+  });
+  if (cnvChangeFilters.content.value.length > 0 && !heatMapMode) {
+    let cnv_data = await getCNVOccurrences({
+      filters: cnvOccurrenceFilters,
+    });
+    cnv_occurrences = cnv_data.data.hits;
+  }
 
   // front end filter is_canonical on REST endpoint instead of
   // graphql endpoint with inner hits query because
   // that is very slow for large size (might be because inner hits causes ES to fire secondary queries)
-  const isCanonicalOccurrences = occurrences.map(occurrence => ({
+  const isCanonicalOccurrences = ssm_occurrences.map(occurrence => ({
     ...occurrence,
     ssm: {
       ...occurrence.ssm,
@@ -151,7 +219,8 @@ async function getQueries({
 
   return {
     genes,
-    occurrences: isCanonicalOccurrences,
+    ssm_occurrences: isCanonicalOccurrences,
+    cnv_occurrences,
     cases,
     totalCases,
   };

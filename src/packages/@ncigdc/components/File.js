@@ -8,6 +8,7 @@ import { uniq } from 'lodash';
 import moment from 'moment';
 import _ from 'lodash';
 
+import { DISPLAY_SLIDES } from '@ncigdc/utils/constants';
 import { withTheme } from '@ncigdc/theme';
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import formatFileSize from '@ncigdc/utils/formatFileSize';
@@ -20,7 +21,6 @@ import { toggleFilesInCart } from '@ncigdc/dux/cart';
 import Button from '@ncigdc/uikit/Button';
 import AddToCartButtonSingle from '@ncigdc/components/AddToCartButtonSingle';
 import DownloadFile from '@ncigdc/components/DownloadFile';
-import { visualizingButton } from '@ncigdc/theme/mixins';
 import { RepositoryFilesLink } from '@ncigdc/components/Links/RepositoryLink';
 import AssociatedEntitiesTable from '@ncigdc/modern_components/AssociatedEntitiesTable';
 import { makeFilter } from '@ncigdc/utils/filters';
@@ -28,10 +28,11 @@ import withRouter from '@ncigdc/utils/withRouter';
 import withImageViewerData from '@ncigdc/modern_components/ImageViewer/ImageViewer.relay';
 import ZoomableImage from '@ncigdc/components/ZoomableImage';
 import SlideDetailsButton from '@ncigdc/components/SlideDetailsButton';
+import FileVersionsTable from '@ncigdc/components/FileVersionsTable';
 
 // value of data_category mapped to sections to display
 const DISPLAY_MAPPING = {
-  'Raw Sequencing Data': ['analysis', 'readGroup', 'downstreamAnalysis'],
+  'Sequencing Reads': ['analysis', 'readGroup', 'downstreamAnalysis'],
   'Transcriptome Profiling': ['analysis', 'downstreamAnalysis'],
   'Simple Nucleotide Variation': ['analysis', 'downstreamAnalysis'],
   'Copy Number Variation': ['analysis', 'downstreamAnalysis'],
@@ -40,13 +41,17 @@ const DISPLAY_MAPPING = {
 };
 
 const styles = {
-  tableDownloadAction: {
-    ...visualizingButton,
+  tableDownloadAction: theme => ({
+    color: theme.greyScale2,
+    justifyContent: 'flex-start',
+    ':hover': {
+      backgroundColor: theme.greyScale6,
+    },
     padding: '3px 5px',
-    minWidth: 'initial',
-    minHeight: 'initial',
-    height: 'initial',
-  },
+    border: `1px solid ${theme.greyScale4}`,
+    height: '22px',
+    backgroundColor: 'white',
+  }),
 };
 
 export const getSlide = caseNode => {
@@ -54,7 +59,7 @@ export const getSlide = caseNode => {
     hits: { edges: [] },
   }).hits.edges.reduce(
     (acc, { node }) => [...acc, ...node.portions.hits.edges.map(p => p.node)],
-    [],
+    []
   );
   const slideImageIds = caseNode.files.hits.edges.map(({ node }) => ({
     file_id: node.file_id,
@@ -62,7 +67,7 @@ export const getSlide = caseNode => {
   }));
   let slides = portions.reduce(
     (acc, { slides }) => [...acc, ...slides.hits.edges.map(p => p.node)],
-    [],
+    []
   );
   return _.head(
     slideImageIds.map(id => {
@@ -70,7 +75,7 @@ export const getSlide = caseNode => {
         submitter_id: id.submitter_id,
       });
       return { ...id, ...matchBySubmitter };
-    }),
+    })
   );
 };
 
@@ -99,7 +104,7 @@ let ZoomableImageWithData = withImageViewerData(
             Slide Image Viewer
           </h2>
           <span style={{ marginTop: '15px', marginRight: '1rem' }}>
-            <SlideDetailsButton slide={slide} />
+            <SlideDetailsButton slide={slide || {}} />
           </span>
         </Row>
         <Row>
@@ -107,7 +112,7 @@ let ZoomableImageWithData = withImageViewerData(
         </Row>
       </Column>
     );
-  },
+  }
 );
 
 function displaySection(section: string, dataCategory: string): boolean {
@@ -154,8 +159,8 @@ const File = ({
 
   const projectIds = uniq(
     (node.cases.hits.edges || []).map(
-      ({ node: { project: { project_id: pId } } }) => pId,
-    ),
+      ({ node: { project: { project_id: pId } } }) => pId
+    )
   );
 
   const sourceFilesRepoLink = node.analysis.input_files.hits.total ? (
@@ -221,7 +226,7 @@ const File = ({
                     <ProjectLink key={pId} uuid={pId}>
                       {pId}
                     </ProjectLink>
-                  ),
+                  )
               ),
             },
           ]}
@@ -238,11 +243,12 @@ const File = ({
           ]}
         />
       </Row>
-      {node.data_format.toLowerCase() === 'svs' && (
-        <Row style={{ marginTop: '2rem' }}>
-          <ZoomableImageWithData fileId={node.file_id} />
-        </Row>
-      )}
+      {DISPLAY_SLIDES &&
+        node.data_format.toLowerCase() === 'svs' && (
+          <Row style={{ marginTop: '2rem' }}>
+            <ZoomableImageWithData fileId={node.file_id} />
+          </Row>
+        )}
       <Row style={{ paddingTop: '2rem', alignItems: 'flex-start' }}>
         <AssociatedEntitiesTable fileId={node.file_id} />
       </Row>
@@ -307,7 +313,7 @@ const File = ({
                   { key: 'sequencing_date', title: 'Sequencing Date' },
                 ]}
                 data={node.analysis.metadata.read_groups.hits.edges.map(
-                  readGroup => readGroup.node,
+                  readGroup => readGroup.node
                 )}
               />
             </Column>
@@ -348,7 +354,7 @@ const File = ({
                     />
                     <DownloadFile
                       file={{ ...md, cases: node.cases }}
-                      style={styles.tableDownloadAction}
+                      style={styles.tableDownloadAction(theme)}
                     />
                   </Row>
                 ),
@@ -392,7 +398,13 @@ const File = ({
                     ),
                     workflow_type,
                     action: (
-                      <Row>
+                      <Row
+                        style={{
+                          width: '70px',
+                          justifyContent: 'space-between',
+                          padding: '0 5px',
+                        }}
+                      >
                         <AddToCartButtonSingle
                           file={{
                             ...file,
@@ -402,7 +414,6 @@ const File = ({
                             ],
                             acl: node.acl,
                           }}
-                          style={{ padding: '3px 5px' }}
                         />
                         <DownloadFile
                           file={{
@@ -413,18 +424,21 @@ const File = ({
                             ],
                             acl: node.acl,
                           }}
-                          style={styles.tableDownloadAction}
+                          style={styles.tableDownloadAction(theme)}
                         />
                       </Row>
                     ),
                   })),
                 ],
-                [],
+                []
               )}
             />
           </Column>
         </Row>
       )}
+      <Row style={{ paddingTop: '2rem', alignItems: 'flex-start' }}>
+        <FileVersionsTable fileId={node.file_id} />
+      </Row>
     </Column>
   );
 };
@@ -432,5 +446,5 @@ const File = ({
 export default compose(
   withRouter,
   withTheme,
-  connect(state => ({ ...state.cart })),
+  connect(state => ({ ...state.cart }))
 )(File);

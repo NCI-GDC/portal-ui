@@ -1,7 +1,6 @@
-// @flow
-
 import React from 'react';
 import * as d3 from 'd3';
+import { get } from 'lodash';
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import Table, { Tr, Td, Th } from '@ncigdc/uikit/Table';
 import { withTheme } from '@ncigdc/theme';
@@ -48,11 +47,11 @@ const EntityPageHorizontalTable = ({
     }}
   >
     {(title || rightComponent) && (
-        <h3
+        <h1
           style={{
             color: theme.greyScale7,
             width: '100%',
-            fontSize: '24px',
+            fontSize: '2rem',
             lineHeight: '1.4em',
             fontWeight: 'normal',
             marginTop: 0,
@@ -65,7 +64,7 @@ const EntityPageHorizontalTable = ({
           }}
         >
           {title || <span />} {rightComponent}
-        </h3>
+        </h1>
       )}
     {!!data.length && (
       <Table
@@ -100,16 +99,16 @@ const EntityPageHorizontalTable = ({
         )}
         body={
           <tbody>
-            {data.map((d, i) => (
+            {data.map((d, k) => (
               <Tr
                 style={{
                   ...styles.tr,
-                  backgroundColor: i % 2 === 0 ? theme.tableStripe : '#fff',
+                  backgroundColor: k % 2 === 0 ? theme.tableStripe : '#fff',
                 }}
-                key={d[idKey] || i}
+                key={d[idKey] || k}
               >
                 {headings.map((h, i) =>
-                  [].concat(d[h.key]).map((v, j) => (
+                  [].concat(get(d, h.key, '--')).map((v, j) => (
                     <Td
                       {...h.tdProps}
                       key={`${h.key}-${j}`}
@@ -125,7 +124,7 @@ const EntityPageHorizontalTable = ({
                           style={{ backgroundColor: colors(i) }}
                         />
                       )}
-                      {v || '--'}
+                      {v}
                     </Td>
                   )),
                 )}
@@ -142,7 +141,9 @@ const EntityPageHorizontalTable = ({
           ...emptyMessageStyle,
         }}
       >
-        {emptyMessage && <h4 style={{ padding: '1rem' }}>{emptyMessage}</h4>}
+        {emptyMessage && (
+          <h2 style={{ padding: '1rem', fontSize: '18px' }}>{emptyMessage}</h2>
+        )}
       </Row>
     )}
   </Column>

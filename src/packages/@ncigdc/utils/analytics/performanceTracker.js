@@ -28,20 +28,6 @@ const performanceTracker = {
       ...additionalProperties,
     };
 
-    if (global.newrelic) {
-      global.newrelic.addPageAction(label, {
-        ...properties,
-        name: label,
-      });
-
-      global.newrelic.addToTrace({
-        ...properties,
-        name: label,
-        start: startTime,
-        end: endTime,
-      });
-    }
-
     return duration;
   },
 };

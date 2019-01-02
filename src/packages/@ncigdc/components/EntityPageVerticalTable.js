@@ -11,6 +11,7 @@ import Table, { Tr, Td, Th, CollapsibleTd } from '@ncigdc/uikit/Table';
 const EntityPageVerticalTable = ({
   style = {},
   title,
+  description = '',
   thToTd,
   className,
   titleStyle,
@@ -61,6 +62,7 @@ const EntityPageVerticalTable = ({
           {title}
         </h1>
       )}
+      {description}
       <Table
         style={styles.table}
         body={
@@ -70,6 +72,7 @@ const EntityPageVerticalTable = ({
                 <Th
                   style={{
                     ...styles.tr,
+                    width: '30%',
                     backgroundColor: i % 2 === 0 ? theme.tableStripe : '#fff',
                     textTransform: 'capitalize',
                     verticalAlign: 'top',

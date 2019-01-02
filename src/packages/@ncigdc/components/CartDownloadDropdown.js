@@ -8,8 +8,9 @@ import urlJoin from 'url-join';
 
 import { authPartitionFiles } from '@ncigdc/utils/auth';
 import DownloadButton from '@ncigdc/components/DownloadButton';
-import NoAccessModal from '@ncigdc/components/Modals/NoAccessModal';
 import BaseModal from '@ncigdc/components/Modals/BaseModal';
+import CheckBoxModal from '@ncigdc/components/Modals/CheckBoxModal';
+import LoginButton from '@ncigdc/components/LoginButton';
 
 import DownCaretIcon from 'react-icons/lib/fa/caret-down';
 
@@ -52,45 +53,51 @@ const downloadCart = ({
   user,
   files,
   dispatch,
+  disableAgreement = false,
   setState,
 }: {
   user: Object,
   files: Array<Object>,
   dispatch: Function,
+  disableAgreement: boolean,
   setState: Function,
 }) => {
   const { authorized, unauthorized } = authPartitionFiles({ user, files });
-  if (unauthorized.doc_count > 0) {
+
+  const dbGapList = Array.from(
+    new Set(
+      authorized.files
+        .concat(unauthorized.files)
+        .reduce((acc, f) => acc.concat(f.acl), [])
+        .filter(f => f !== 'open')
+    )
+  );
+  if (disableAgreement || dbGapList.length === 0) {
+    dispatch(setModal(null));
+    setState(s => ({ ...s, cartDownloading: true }));
+    download({
+      url: urlJoin(AUTH_API, 'data'),
+      params: {
+        ids: files.map(file => file.file_id),
+        annotations: true,
+        related_files: true,
+      },
+      method: 'POST',
+      altMessage: true,
+    })(() => {}, () => setState(s => ({ ...s, cartDownloading: false })));
+  } else if (unauthorized.doc_count > 0) {
     dispatch(
       setModal(
-        <NoAccessModal
-          message={
-            <div>
-              <p>
-                You are attempting to download files that you are not authorized
-                to access.
-              </p>
-              <p>
-                <span className="label label-success">
-                  {authorized.doc_count}
-                </span>{' '}
-                files that you are authorized to download.
-              </p>
-              <p>
-                <span className="label label-danger">
-                  {unauthorized.doc_count}
-                </span>{' '}
-                files that you are not authorized to download.
-              </p>
-            </div>
-          }
-          primaryButton={
+        <CheckBoxModal
+          dbGapList={dbGapList}
+          CustomButton={agreed => (
             <Button
-              disabled={!authorized.doc_count}
+              disabled={!authorized.doc_count || (!!user && !agreed)}
               onClick={() =>
                 downloadCart({
                   user,
                   files: authorized.files,
+                  disableAgreement: true,
                   dispatch,
                   setState,
                 })}
@@ -98,10 +105,45 @@ const downloadCart = ({
             >
               Download {authorized.doc_count} Authorized Files
             </Button>
-          }
+          )}
+          hidden={!user || authorized.doc_count === 0}
           closeText="Cancel"
-        />,
-      ),
+          dispatch={dispatch}
+        >
+          <div>
+            <p>
+              You are attempting to download files that you are not authorized
+              to access.
+            </p>
+            <p>
+              <span className="label label-success">
+                {authorized.doc_count}
+              </span>{' '}
+              files that you are authorized to download.
+            </p>
+            <p>
+              <span className="label label-danger">
+                {unauthorized.doc_count}
+              </span>{' '}
+              files that you are not authorized to download.
+            </p>
+          </div>
+          {user ? (
+            <p>
+              Please request dbGaP Access to the project (<a
+                target={'_blank'}
+                href="https://gdc.cancer.gov/access-data/obtaining-access-controlled-data"
+              >
+                click here for more information
+              </a>).
+            </p>
+          ) : (
+            <p>
+              Please <LoginButton />
+            </p>
+          )}
+        </CheckBoxModal>
+      )
     );
   } else if (files.reduce((sum, x) => sum + x.file_size, 0) > 5 * 10e8) {
     dispatch(
@@ -119,22 +161,42 @@ const downloadCart = ({
             </ExternalLink>{' '}
             Tool to continue.
           </p>
-        </BaseModal>,
-      ),
+        </BaseModal>
+      )
     );
   } else {
-    dispatch(setModal(null));
-    setState(s => ({ ...s, cartDownloading: true }));
-    download({
-      url: urlJoin(AUTH_API, 'data'),
-      params: {
-        ids: files.map(file => file.file_id),
-        annotations: true,
-        related_files: true,
-      },
-      method: 'POST',
-      altMessage: true,
-    })(() => {}, () => setState(s => ({ ...s, cartDownloading: false })));
+    dispatch(
+      setModal(
+        <CheckBoxModal
+          dbGapList={dbGapList}
+          CustomButton={agreed => (
+            <Button
+              disabled={!agreed}
+              onClick={() => {
+                setState(s => ({ ...s, cartDownloading: true }));
+                download({
+                  url: urlJoin(AUTH_API, 'data'),
+                  params: {
+                    ids: files.map(file => file.file_id),
+                    annotations: true,
+                    related_files: true,
+                  },
+                  method: 'POST',
+                  altMessage: true,
+                })(
+                  () => {},
+                  () => setState(s => ({ ...s, cartDownloading: false }))
+                );
+              }}
+              style={{ margin: '0 10px' }}
+            >
+              Download {authorized.doc_count} Authorized Files
+            </Button>
+          )}
+          dispatch={dispatch}
+        />
+      )
+    );
   }
 };
 
@@ -191,7 +253,14 @@ const CartDownloadDropdown = ({
           className="test-download-cart"
           style={styles.button(theme)}
           disabled={state.cartDownloading}
-          onClick={() => downloadCart({ user, files, dispatch, setState })}
+          onClick={() =>
+            downloadCart({
+              user,
+              files,
+              dispatch,
+              disableAgreement: false,
+              setState,
+            })}
           leftIcon={state.cartDownloading ? <Spinner /> : <DownloadIcon />}
         >
           Cart
@@ -207,5 +276,5 @@ export default compose(
   withState('state', 'setState', {
     manifestDownloading: false,
     cartDownloading: false,
-  }),
+  })
 )(CartDownloadDropdown);

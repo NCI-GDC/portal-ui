@@ -18,21 +18,8 @@ import SSMAggregations from '@ncigdc/containers/explore/SSMAggregations';
 import { CreateExploreCaseSetButton } from '@ncigdc/modern_components/withSetAction';
 import { replaceFilters } from '@ncigdc/utils/filters';
 import { stringifyJSONParam } from '@ncigdc/utils/uri';
-import ImageViewerLink from '@ncigdc/components/Links/ImageViewerLink';
 import { Row } from '@ncigdc/uikit/Flex';
-import styled from '@ncigdc/theme/styled';
-import { linkButton } from '@ncigdc/theme/mixins';
-import { DISPLAY_SLIDES } from '@ncigdc/utils/constants';
-import { RepositorySlideCount } from '@ncigdc/modern_components/Counts';
-import { Tooltip } from '@ncigdc/uikit/Tooltip';
-import Spinner from '@ncigdc/theme/icons/Spinner';
-import { withTheme } from '@ncigdc/theme';
-
-const ImageViewerLinkAsButton = styled(ImageViewerLink, {
-  padding: '9px 12px',
-  marginLeft: '5px',
-  ...linkButton,
-});
+import Button from '@ncigdc/uikit/Button';
 
 export type TProps = {
   filters: {},
@@ -86,7 +73,7 @@ function setVariables({ relay, filters }) {
           { op: 'not', content: { field: 'cosmic_id', value: ['MISSING'] } },
         ],
       },
-      filters,
+      filters
     ),
     dbsnpRsFilters: replaceFilters(
       {
@@ -101,14 +88,13 @@ function setVariables({ relay, filters }) {
           },
         ],
       },
-      filters,
+      filters
     ),
   });
 }
 
 const enhance = compose(
   withRouter,
-  withTheme,
   lifecycle({
     componentDidMount() {
       setVariables(this.props);
@@ -118,7 +104,7 @@ const enhance = compose(
         setVariables(nextProps);
       }
     },
-  }),
+  })
 );
 export const ExplorePageComponent = ({
   viewer,
@@ -141,7 +127,7 @@ export const ExplorePageComponent = ({
             setAutocomplete={(value, onReadyStateChange) =>
               relay.setVariables(
                 { idAutocompleteCases: value, runAutocompleteCases: !!value },
-                onReadyStateChange,
+                onReadyStateChange
               )}
           />
         ),
@@ -152,11 +138,12 @@ export const ExplorePageComponent = ({
         component: (
           <GeneAggregations
             aggregations={viewer.explore.genes.aggregations}
+            cnvAggregations={viewer.explore.cnvs.aggregations}
             suggestions={get(viewer, 'autocomplete_genes.hits', [])}
             setAutocomplete={(value, onReadyStateChange) =>
               relay.setVariables(
                 { idAutocompleteGenes: value, runAutocompleteGenes: !!value },
-                onReadyStateChange,
+                onReadyStateChange
               )}
           />
         ),
@@ -173,7 +160,7 @@ export const ExplorePageComponent = ({
             setAutocomplete={(value, onReadyStateChange) =>
               relay.setVariables(
                 { idAutocompleteSsms: value, runAutocompleteSsms: !!value },
-                onReadyStateChange,
+                onReadyStateChange
               )}
           />
         ),
@@ -182,59 +169,44 @@ export const ExplorePageComponent = ({
     results={
       <span>
         <Row>
-          <CreateExploreCaseSetButton
-            filters={filters}
-            disabled={!viewer.explore.cases.hits.total}
-            style={{ marginBottom: '2rem' }}
-            onComplete={setId => {
-              push({
-                pathname: '/repository',
-                query: {
-                  filters: stringifyJSONParam({
-                    op: 'AND',
-                    content: [
-                      {
-                        op: 'IN',
-                        content: {
-                          field: 'cases.case_id',
-                          value: [`set_id:${setId}`],
+          {filters ? (
+            <CreateExploreCaseSetButton
+              filters={filters}
+              disabled={!viewer.explore.cases.hits.total}
+              style={{ marginBottom: '2rem' }}
+              onComplete={setId => {
+                push({
+                  pathname: '/repository',
+                  query: {
+                    filters: stringifyJSONParam({
+                      op: 'AND',
+                      content: [
+                        {
+                          op: 'IN',
+                          content: {
+                            field: 'cases.case_id',
+                            value: [`set_id:${setId}`],
+                          },
                         },
-                      },
-                    ],
-                  }),
-                },
-              });
-            }}
-          >
-            View Files in Repository
-          </CreateExploreCaseSetButton>
-          {DISPLAY_SLIDES && (
-            <RepositorySlideCount filters={filters}>
-              {(count, loading) => (
-                <span style={{ marginTop: '7px' }}>
-                  <Tooltip
-                    Component={count === 0 ? 'No images available' : null}
-                  >
-                    <ImageViewerLinkAsButton
-                      query={{
-                        filters,
-                      }}
-                      style={
-                        loading || count === 0
-                          ? {
-                              backgroundColor: theme.greyScale4,
-                              pointerEvents: 'none',
-                            }
-                          : { cursor: 'pointer' }
-                      }
-                    >
-                      {loading && <Spinner style={{ marginRight: '5px' }} />}
-                      View Images
-                    </ImageViewerLinkAsButton>
-                  </Tooltip>
-                </span>
-              )}
-            </RepositorySlideCount>
+                      ],
+                    }),
+                  },
+                });
+              }}
+            >
+              View Files in Repository
+            </CreateExploreCaseSetButton>
+          ) : (
+            <Button
+              disabled={!viewer.explore.cases.hits.total}
+              style={{ marginBottom: '2rem' }}
+              onClick={() =>
+                push({
+                  pathname: '/repository',
+                })}
+            >
+              View Files in Repository
+            </Button>
           )}
         </Row>
         <TabbedLinks
@@ -335,6 +307,9 @@ export const ExplorePageQuery = {
             id
             ...on Ssm {
               ssm_id
+              cosmic_id
+              gene_aa_change
+              genomic_dna_change
             }
           }
         }
@@ -353,6 +328,14 @@ export const ExplorePageQuery = {
           genes {
             aggregations(filters: $filters aggregations_filter_themselves: false) {
               ${GeneAggregations.getFragment('aggregations')}
+            }
+            hits(first: $genes_size offset: $genes_offset, filters: $filters) {
+              total
+            }
+          }
+          cnvs {
+            aggregations(filters: $filters aggregations_filter_themselves: false) {
+              ${GeneAggregations.getFragment('cnvAggregations')}
             }
             hits(first: $genes_size offset: $genes_offset, filters: $filters) {
               total
@@ -380,7 +363,7 @@ export const ExplorePageQuery = {
 
 const ExplorePage = Relay.createContainer(
   enhance(ExplorePageComponent),
-  ExplorePageQuery,
+  ExplorePageQuery
 );
 
 export default ExplorePage;

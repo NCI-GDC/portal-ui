@@ -6,33 +6,11 @@ import withRouter from '@ncigdc/utils/withRouter';
 import { fetchApi } from '@ncigdc/utils/ajax';
 import withPropsOnChange from '@ncigdc/utils/withPropsOnChange';
 import { ISearchHit } from '@ncigdc/components/QuickSearch/types';
+import fetchFileHistory from '@ncigdc/utils/fetchFileHistory';
+import { isUUID } from '@ncigdc/utils/string';
 
 const throttledInvoker = _.throttle(fn => fn(), 300, { leading: false });
 
-// is the latest version of the file always file_change: "released"?
-// of do we need to check for the highest version number?
-// is this just for QuickSearch? not facet search?
-// is my uuid check reliable? (do other entities match this)
-
-const fetchFileHistory = query => {
-  return fetchApi(`/history/${window.encodeURIComponent(query)}`, {
-    method: 'GET',
-  })
-    .then(response => {
-      if (!response) {
-        throw new Error('error');
-      }
-      return response;
-    })
-    .catch(err => {
-      return [];
-    });
-};
-
-const isUUID = query =>
-  query.match(
-    /^[a-zA-Z0-9]{8}\-[a-zA-Z0-9]{4}\-[a-zA-Z0-9]{4}\-[a-zA-Z0-9]{4}\-[a-zA-Z0-9]{12}$/,
-  );
 export const withSearch = passedInState => {
   // prefix props to avoid collisions with existing props for component being enhanced
   const defaultState = {
@@ -51,21 +29,23 @@ export const withSearch = passedInState => {
     withRouter,
     withProps(({ setState }) => ({
       handleResults: async (results, timeOfRequest, query) => {
-        let resultsToDisplay = results;
         if (timeOfMostRecentRequest === timeOfRequest) {
-          if (!results.length && isUUID(query)) {
-            console.log('fetching file history');
+          if (query && !results.length && isUUID(query)) {
             const history = await fetchFileHistory(query);
-            if (history) {
-              setState(s => ({
+            if (history && history.length) {
+              return setState(s => ({
                 ...s,
-                results,
                 fileHistoryResult: history,
                 isLoading: false,
               }));
             }
           }
-          setState(s => ({ ...s, results, isLoading: false }));
+          setState(s => ({
+            ...s,
+            results,
+            fileHistoryResult: [],
+            isLoading: false,
+          }));
         }
       },
     })),
@@ -98,23 +78,31 @@ export const withSearch = passedInState => {
     }),
     withHandlers({
       selectItem: ({ push, reset }) => (item: ISearchHit) => {
-        push(
-          `/${atob(item.id)
-            .split(':')[0]
-            .toLocaleLowerCase()}s/${atob(item.id).split(':')[1]}`,
-        );
+        item.uuid
+          ? push(`/files/${item.uuid}`)
+          : push(
+              `/${atob(item.id)
+                .split(':')[0]
+                .toLocaleLowerCase()}s/${atob(item.id).split(':')[1]}`,
+            );
         setTimeout(reset, 100);
       },
     }),
     withPropsOnChange(
       (props, nextProps) => props.state.query !== nextProps.state.query,
-      ({ state: { query, results }, setState, fetchResults }) => {
+      ({
+        state: { query, results, fileHistoryResult },
+        setState,
+        fetchResults,
+      }) => {
         timeOfMostRecentRequest = new Date().getTime();
         if (query) {
           setState(s => ({ ...s, isLoading: true }));
           fetchResults(query, timeOfMostRecentRequest);
         } else if (results && results.length) {
           setState(s => ({ ...s, results: [] }));
+        } else if (fileHistoryResult && fileHistoryResult.length) {
+          setState(s => ({ ...s, fileHistoryResult: [] }));
         } else {
           setState(s => ({ ...s, isLoading: false }));
         }

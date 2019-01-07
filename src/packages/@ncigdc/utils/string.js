@@ -69,3 +69,9 @@ export const truncateAfterMarker = (
   }
   return term;
 };
+
+export const isUUID = query =>
+  query &&
+  /^[a-zA-Z0-9]{8}\-[a-zA-Z0-9]{4}\-[a-zA-Z0-9]{4}\-[a-zA-Z0-9]{4}\-[a-zA-Z0-9]{12}$/.test(
+    query,
+  );

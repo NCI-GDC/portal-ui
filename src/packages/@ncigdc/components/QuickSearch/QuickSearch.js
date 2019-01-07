@@ -8,6 +8,8 @@ import QuickSearchResults from './QuickSearchResults';
 import { withSearch } from '@ncigdc/utils/withSearch';
 import namespace from '@ncigdc/utils/namespace';
 import withSelectableList from '@ncigdc/utils/withSelectableList';
+import { styles as resultStyles } from './QuickSearchResults';
+import { Row, Column } from '@ncigdc/uikit/Flex';
 
 const styles = {
   searchIconWrapper: {
@@ -72,19 +74,46 @@ const SearchInput = styled.input({
   },
 });
 
-const FileHistoryResults = ({ releasedFile, query }) => {
+const FileHistoryResults = ({
+  releasedFile,
+  query,
+  isLoading,
+  onActivateItem,
+  onSelectItem,
+}) => {
   return (
-    <div>
-      <div>
-        <div style={{ display: 'flex', flexDirection: 'row' }}>
+    <div style={resultStyles.container}>
+      <Row
+        style={{
+          ...resultStyles.item,
+          ...(isLoading && resultStyles.deemphasizedItem),
+          ...(releasedFile.isSelected && resultStyles.selectedItem),
+        }}
+        onMouseEnter={() => onSelectItem(releasedFile)}
+        onClick={() => onActivateItem(releasedFile)}
+      >
+        <div style={resultStyles.itemIconWrapper}>
           <span style={styles.resultIcon}>FL</span>
-          <span>{releasedFile.uuid}</span>
         </div>
-        File version {query} was updated
-      </div>
+        <Column>
+          <div style={{ verticalAlign: 'middle' }}>
+            <span style={resultStyles.itemTitle}>{releasedFile.uuid}</span>
+          </div>
+          <div
+            style={{
+              ...resultStyles.highlights,
+              ...(releasedFile.isSelected &&
+                _.pick(resultStyles.selectedItem, 'color')),
+            }}
+          >
+            File version {query} was updated
+          </div>
+        </Column>
+      </Row>
     </div>
   );
 };
+
 export default compose(
   namespace('search', withSearch()),
   namespace(
@@ -182,32 +211,44 @@ export default compose(
           aria-label="Quick Search Input"
         />
       )}
-      {!!(state.results && state.results.length) && (
-        <QuickSearchResults
-          results={_.map(
-            state.results,
-            item =>
-              item === focusedItem ? { ...item, isSelected: true } : item,
-          )}
-          query={state.query}
-          onSelectItem={setFocusedItem}
-          onActivateItem={item => {
-            selectItem(item);
-            reset();
-            setIsInSearchMode(false);
-          }}
-          isLoading={state.isLoading}
-        />
-      )}
+      {!!(state.results && state.results.length) &&
+        !state.fileHistoryResult.length && (
+          <QuickSearchResults
+            results={_.map(
+              state.results,
+              item =>
+                item === focusedItem ? { ...item, isSelected: true } : item,
+            )}
+            query={state.query}
+            onSelectItem={setFocusedItem}
+            onActivateItem={item => {
+              selectItem(item);
+              reset();
+              setIsInSearchMode(false);
+            }}
+            isLoading={state.isLoading}
+          />
+        )}
       {!state.isLoading &&
-        state.query &&
-        (state.results || []).length === 0 &&
-        (state.fileHistoryResult || []).length > 0 && (
+        !state.results.length &&
+        !!(state.fileHistoryResult && state.fileHistoryResult.length) && (
           <FileHistoryResults
             query={state.query}
-            releasedFile={state.fileHistoryResult.find(
-              f => f.file_change === 'released',
-            )}
+            releasedFile={
+              state.fileHistoryResult
+                .filter(f => f.file_change === 'released')
+                .map(
+                  item =>
+                    item === focusedItem ? { ...item, isSelected: true } : item,
+                )[0]
+            }
+            onSelectItem={setFocusedItem}
+            onActivateItem={item => {
+              selectItem(item);
+              reset();
+              setIsInSearchMode(false);
+            }}
+            isLoading={state.isLoading}
           />
         )}
       {!state.isLoading &&

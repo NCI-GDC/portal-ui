@@ -33,7 +33,7 @@ import Input from '@ncigdc/uikit/Form/Input';
 import SetId from '@ncigdc/components/SetId';
 import Hidden from '@ncigdc/components/Hidden';
 import FileIcon from '@ncigdc/theme/icons/File';
-
+import { isUUID } from '@ncigdc/utils/string';
 import {
   Container,
   CheckedRow,
@@ -76,11 +76,6 @@ const StyledDropdownLink = styled(Link, {
   width: '100%',
   textDecoration: 'none',
 });
-
-const isUUID = query =>
-  /^[a-zA-Z0-9]{8}\-[a-zA-Z0-9]{4}\-[a-zA-Z0-9]{4}\-[a-zA-Z0-9]{4}\-[a-zA-Z0-9]{12}$/.test(
-    query,
-  );
 
 const SuggestionFacet = compose(
   withDropdown,
@@ -254,32 +249,29 @@ const SuggestionFacet = compose(
                         }}
                         onClick={e => e.stopPropagation()}
                       >
-                        {results &&
-                          results[doctype].length > 0 &&
-                          ((results && results[doctype]) || []).map(x => (
-                            <Row
-                              key={x.id}
-                              style={{ alignItems: 'center' }}
-                              onClick={() => {
-                                setInputValue('');
-                                setActive(false);
-                              }}
-                              onMouseOver={() =>
-                                selectableList.setFocusedItem(x)}
+                        {((results && results[doctype]) || []).map(x => (
+                          <Row
+                            key={x.id}
+                            style={{ alignItems: 'center' }}
+                            onClick={() => {
+                              setInputValue('');
+                              setActive(false);
+                            }}
+                            onMouseOver={() => selectableList.setFocusedItem(x)}
+                          >
+                            <StyledDropdownLink
+                              merge="add"
+                              query={query(x[fieldNoDoctype])}
+                              id={x[fieldNoDoctype]}
+                              data-link-id={x.id}
+                              linkIsActive={selectableList.focusedItem === x}
                             >
-                              <StyledDropdownLink
-                                merge="add"
-                                query={query(x[fieldNoDoctype])}
-                                id={x[fieldNoDoctype]}
-                                data-link-id={x.id}
-                                linkIsActive={selectableList.focusedItem === x}
-                              >
-                                {dropdownItem(x)}
-                              </StyledDropdownLink>
-                            </Row>
-                          ))}
-                        {results[doctype].length === 0 &&
-                          historyResults.length > 0 &&
+                              {dropdownItem(x)}
+                            </StyledDropdownLink>
+                          </Row>
+                        ))}
+                        {!(results[doctype] || []).length &&
+                          !!(historyResults || []).length &&
                           historyResults
                             .filter(result => result.file_change === 'released')
                             .map((result, i) => (
@@ -296,7 +288,7 @@ const SuggestionFacet = compose(
                                 <StyledDropdownLink
                                   merge="add"
                                   query={query(result.uuid)}
-                                  id={'file'}
+                                  id={result.uuid}
                                   data-link-id={result.uuid}
                                   linkIsActive={
                                     selectableList.focusedItem === result

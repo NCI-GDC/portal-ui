@@ -36,6 +36,7 @@ export const withSearch = passedInState => {
               return setState(s => ({
                 ...s,
                 fileHistoryResult: history,
+                results: [],
                 isLoading: false,
               }));
             }
@@ -70,9 +71,13 @@ export const withSearch = passedInState => {
                 'Content-Type': 'application/json',
               },
             },
-          ).then(response =>
-            handleResults(response.data.query.hits, timeOfRequest, query),
-          ),
+          ).then(response => {
+            let hits = [];
+            if (response && response.data) {
+              hits = response.data.query.hits;
+            }
+            return handleResults(hits, timeOfRequest, query);
+          }),
         );
       },
     }),

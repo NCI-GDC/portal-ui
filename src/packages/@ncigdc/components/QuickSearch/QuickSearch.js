@@ -8,8 +8,8 @@ import QuickSearchResults from './QuickSearchResults';
 import { withSearch } from '@ncigdc/utils/withSearch';
 import namespace from '@ncigdc/utils/namespace';
 import withSelectableList from '@ncigdc/utils/withSelectableList';
-import { styles as resultStyles } from './QuickSearchResults';
 import { Row, Column } from '@ncigdc/uikit/Flex';
+import FileHistoryResults from './FileHistoryResults';
 
 const styles = {
   searchIconWrapper: {
@@ -46,15 +46,6 @@ const styles = {
     zIndex: 90,
     width: '100%',
   },
-  resultIcon: {
-    width: 32,
-    height: '3.2rem',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    color: '#fff',
-    backgroundColor: '#453D3D',
-  },
 };
 
 const SearchInput = styled.input({
@@ -73,46 +64,6 @@ const SearchInput = styled.input({
     boxShadow: '0px 0px 22px 0px rgba(18, 147, 219, 0.75)',
   },
 });
-
-const FileHistoryResults = ({
-  releasedFile,
-  query,
-  isLoading,
-  onActivateItem,
-  onSelectItem,
-}) => {
-  return (
-    <div style={resultStyles.container}>
-      <Row
-        style={{
-          ...resultStyles.item,
-          ...(isLoading && resultStyles.deemphasizedItem),
-          ...(releasedFile.isSelected && resultStyles.selectedItem),
-        }}
-        onMouseEnter={() => onSelectItem(releasedFile)}
-        onClick={() => onActivateItem(releasedFile)}
-      >
-        <div style={resultStyles.itemIconWrapper}>
-          <span style={styles.resultIcon}>FL</span>
-        </div>
-        <Column>
-          <div style={{ verticalAlign: 'middle' }}>
-            <span style={resultStyles.itemTitle}>{releasedFile.uuid}</span>
-          </div>
-          <div
-            style={{
-              ...resultStyles.highlights,
-              ...(releasedFile.isSelected &&
-                _.pick(resultStyles.selectedItem, 'color')),
-            }}
-          >
-            File version {query} was updated
-          </div>
-        </Column>
-      </Row>
-    </div>
-  );
-};
 
 export default compose(
   namespace('search', withSearch()),
@@ -211,46 +162,38 @@ export default compose(
           aria-label="Quick Search Input"
         />
       )}
-      {!!(state.results && state.results.length) &&
-        !state.fileHistoryResult.length && (
-          <QuickSearchResults
-            results={_.map(
-              state.results,
-              item =>
-                item === focusedItem ? { ...item, isSelected: true } : item,
-            )}
-            query={state.query}
-            onSelectItem={setFocusedItem}
-            onActivateItem={item => {
-              selectItem(item);
-              reset();
-              setIsInSearchMode(false);
-            }}
-            isLoading={state.isLoading}
-          />
+      <QuickSearchResults
+        results={_.map(
+          state.results,
+          item => (item === focusedItem ? { ...item, isSelected: true } : item),
         )}
-      {!state.isLoading &&
-        !state.results.length &&
-        !!(state.fileHistoryResult && state.fileHistoryResult.length) && (
-          <FileHistoryResults
-            query={state.query}
-            releasedFile={
-              state.fileHistoryResult
-                .filter(f => f.file_change === 'released')
-                .map(
-                  item =>
-                    item === focusedItem ? { ...item, isSelected: true } : item,
-                )[0]
-            }
-            onSelectItem={setFocusedItem}
-            onActivateItem={item => {
-              selectItem(item);
-              reset();
-              setIsInSearchMode(false);
-            }}
-            isLoading={state.isLoading}
-          />
-        )}
+        query={state.query}
+        onSelectItem={setFocusedItem}
+        onActivateItem={item => {
+          selectItem(item);
+          reset();
+          setIsInSearchMode(false);
+        }}
+        isLoading={state.isLoading}
+      />
+
+      <FileHistoryResults
+        query={state.query}
+        results={state.fileHistoryResult
+          .filter(f => f.file_change === 'released')
+          .map(
+            item =>
+              item === focusedItem ? { ...item, isSelected: true } : item,
+          )}
+        onSelectItem={setFocusedItem}
+        onActivateItem={item => {
+          selectItem(item);
+          reset();
+          setIsInSearchMode(false);
+        }}
+        isLoading={state.isLoading}
+      />
+
       {!state.isLoading &&
         state.query &&
         (state.results || []).length === 0 &&

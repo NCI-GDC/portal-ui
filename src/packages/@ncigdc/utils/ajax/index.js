@@ -6,6 +6,7 @@ import md5 from 'blueimp-md5';
 
 import { API, AUTH, IS_AUTH_PORTAL } from '@ncigdc/utils/constants';
 import { redirectToLogin } from '@ncigdc/utils/auth';
+import consoleDebug from '@ncigdc/utils/consoleDebug';
 
 const DEFAULTS = {
   method: 'get',
@@ -57,7 +58,7 @@ export const fetchApi = (endpoint, opts = {}) => {
         switch (err.status) {
           case 401:
           case 403:
-            console.log(err.statusText);
+            consoleDebug(err.statusText);
             if (IS_AUTH_PORTAL) {
               return redirectToLogin('timeout');
             }
@@ -65,13 +66,13 @@ export const fetchApi = (endpoint, opts = {}) => {
           case 400:
           case 404:
           case 500:
-            console.log(err.statusText);
+            consoleDebug(err.statusText);
             break;
           default:
-            return console.log('there was an error', err.statusText);
+            return consoleDebug('there was an error', err.statusText);
         }
       } else {
-        console.log('Something went wrong');
+        consoleDebug('Something went wrong');
       }
     });
 };

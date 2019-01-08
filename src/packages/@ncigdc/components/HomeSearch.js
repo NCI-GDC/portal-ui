@@ -100,20 +100,21 @@ const HomeSearch = compose(
         isLoading={state.isLoading}
         style={styles}
       />
-
-      <FileHistoryResults
-        query={state.query}
-        results={state.fileHistoryResult
-          .filter(f => f.file_change === 'released')
-          .map(
-            item =>
-              item === focusedItem ? { ...item, isSelected: true } : item,
-          )}
-        onSelectItem={setFocusedItem}
-        onActivateItem={selectItem}
-        isLoading={state.isLoading}
-        styles={styles}
-      />
+      {!state.isLoading && (
+        <FileHistoryResults
+          query={state.query}
+          results={state.fileHistoryResult
+            .filter(f => f.file_change === 'released')
+            .map(
+              item =>
+                item === focusedItem ? { ...item, isSelected: true } : item,
+            )}
+          onSelectItem={setFocusedItem}
+          onActivateItem={selectItem}
+          isLoading={state.isLoading}
+          style={styles}
+        />
+      )}
     </Container>
   ),
 );

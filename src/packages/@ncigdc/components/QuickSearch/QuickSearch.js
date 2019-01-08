@@ -176,23 +176,24 @@ export default compose(
         }}
         isLoading={state.isLoading}
       />
-
-      <FileHistoryResults
-        query={state.query}
-        results={state.fileHistoryResult
-          .filter(f => f.file_change === 'released')
-          .map(
-            item =>
-              item === focusedItem ? { ...item, isSelected: true } : item,
-          )}
-        onSelectItem={setFocusedItem}
-        onActivateItem={item => {
-          selectItem(item);
-          reset();
-          setIsInSearchMode(false);
-        }}
-        isLoading={state.isLoading}
-      />
+      {!state.isLoading && (
+        <FileHistoryResults
+          query={state.query}
+          results={state.fileHistoryResult
+            .filter(f => f.file_change === 'released')
+            .map(
+              item =>
+                item === focusedItem ? { ...item, isSelected: true } : item,
+            )}
+          onSelectItem={setFocusedItem}
+          onActivateItem={item => {
+            selectItem(item);
+            reset();
+            setIsInSearchMode(false);
+          }}
+          isLoading={state.isLoading}
+        />
+      )}
 
       {!state.isLoading &&
         state.query &&

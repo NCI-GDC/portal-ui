@@ -99,10 +99,11 @@ export const withSearch = passedInState => {
         if (query) {
           setState(s => ({ ...s, isLoading: true }));
           fetchResults(query, timeOfMostRecentRequest);
-        } else if (results && results.length) {
-          setState(s => ({ ...s, results: [] }));
-        } else if (fileHistoryResult && fileHistoryResult.length) {
-          setState(s => ({ ...s, fileHistoryResult: [] }));
+        } else if (
+          (results && results.length) ||
+          (fileHistoryResult && fileHistoryResult.length)
+        ) {
+          setState(s => ({ ...s, results: [], fileHistoryResult: [] }));
         } else {
           setState(s => ({ ...s, isLoading: false }));
         }

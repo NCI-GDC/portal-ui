@@ -1,4 +1,5 @@
 import { fetchApi } from '@ncigdc/utils/ajax';
+import consoleDebug from '@ncigdc/utils/consoleDebug';
 
 interface IFileHistory {
   data_release: string;
@@ -10,7 +11,7 @@ interface IFileHistory {
 
 type TFetchFileHistory = (
   query: string
-) => Promise<[IFileHistory]> | Promise<[]>;
+) => Promise<[IFileHistory]> | Promise<[IFileHistory]>;
 
 const fetchFileHistory: TFetchFileHistory = query => {
   return fetchApi(`/history/${encodeURIComponent(query)}`, {
@@ -18,7 +19,7 @@ const fetchFileHistory: TFetchFileHistory = query => {
   })
     .then(response => {
       if (!response) {
-        console.log('throwing response error');
+        consoleDebug('throwing response error');
         throw new Error('error');
       }
       return response;

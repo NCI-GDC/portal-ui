@@ -90,7 +90,7 @@ const SuggestionFacet = compose(
         !facetSearchHits.files.length &&
         isUUID(facetSearch)
       ) {
-        const history = await fetchFileHistory(facetSearch);
+        const history = await fetchFileHistory(_.trim(facetSearch));
         await setHistoryResults(history);
       } else {
         return facetSearchHits;

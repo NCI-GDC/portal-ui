@@ -3,6 +3,7 @@ import React from 'react';
 import { graphql } from 'react-relay';
 import { compose, withPropsOnChange, withState } from 'recompose';
 import Query from '@ncigdc/modern_components/Query';
+import _ from 'lodash';
 
 export default (Component: ReactClass<*>) =>
   compose(
@@ -13,13 +14,14 @@ export default (Component: ReactClass<*>) =>
         const showCases = queryType === 'case';
         const showFiles = queryType === 'file';
         const showProjects = queryType === 'project';
+
         return {
           variables: {
             showCases,
             showFiles,
             showProjects,
             queryType: [queryType],
-            query: facetSearch,
+            query: _.trim(facetSearch),
           },
         };
       },

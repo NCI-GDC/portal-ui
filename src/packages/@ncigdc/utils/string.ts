@@ -1,5 +1,18 @@
 // @flow
-export const capitalize = (original: string) => {
+import _ from 'lodash';
+
+type TCapitalize = (original:string) => string;
+type THumanify = ({}:IHumanifyParams) => string;
+type TTruncateAfterMarker = (term: string, markers: [string], length: number, omission?: string) => string;
+type TIsUuid = (query: string) => boolean;
+
+interface IHumanifyParams {
+  term: string;
+  capitalize: boolean;
+  facetTerm: boolean;
+}
+
+export const capitalize:TCapitalize = original => {
   const customCapitalizations = {
     mirna: 'miRNA',
     dbsnp: 'dbSNP',
@@ -10,19 +23,15 @@ export const capitalize = (original: string) => {
     .map(
       word =>
         customCapitalizations[word.toLowerCase()] ||
-        `${word.charAt(0).toUpperCase()}${word.slice(1)}`,
+        `${word.charAt(0).toUpperCase()}${word.slice(1)}`
     )
     .join(' ');
 };
 
-export const humanify = ({
+export const humanify:THumanify = ({
   term,
   capitalize: cap = true,
   facetTerm = false,
-}: {
-  term: string,
-  capitalize?: boolean,
-  facetTerm?: boolean,
 }) => {
   let original;
   let humanified;
@@ -48,13 +57,13 @@ export const humanify = ({
   return cap ? capitalize(humanified) : humanified;
 };
 
-export const truncateAfterMarker = (
-  term: string,
-  markers: Array<string>,
-  length: number,
-  omission?: string = '…',
+export const truncateAfterMarker:TTruncateAfterMarker = (
+  term,
+  markers,
+  length,
+  omission = '…'
 ) => {
-  const { index, marker } = markers.reduce(
+  const markersByIndex = markers.reduce(
     (acc, marker) => {
       const index = term.indexOf(marker);
       if (index !== -1) {
@@ -62,16 +71,16 @@ export const truncateAfterMarker = (
       }
       return acc;
     },
-    { index: -1, marker: '' },
+    { index: -1, marker: '' }
   );
+  const { index, marker } = markersByIndex;
   if (index !== -1 && term.length > index + marker.length + 8) {
     return `${term.substring(0, index + marker.length + 8)}${omission}`;
   }
   return term;
 };
 
-export const isUUID = query =>
-  query &&
+export const isUUID: TIsUuid = query =>
   /^[a-zA-Z0-9]{8}\-[a-zA-Z0-9]{4}\-[a-zA-Z0-9]{4}\-[a-zA-Z0-9]{4}\-[a-zA-Z0-9]{12}$/.test(
-    query,
+    _.trim(query)
   );

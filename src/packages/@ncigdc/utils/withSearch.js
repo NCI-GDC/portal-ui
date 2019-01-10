@@ -6,7 +6,9 @@ import withRouter from '@ncigdc/utils/withRouter';
 import { fetchApi } from '@ncigdc/utils/ajax';
 import withPropsOnChange from '@ncigdc/utils/withPropsOnChange';
 import { ISearchHit } from '@ncigdc/components/QuickSearch/types';
-import fetchFileHistory from '@ncigdc/utils/fetchFileHistory';
+import fetchFileHistory, {
+  extractFilePath,
+} from '@ncigdc/utils/fetchFileHistory';
 import { isUUID } from '@ncigdc/utils/string';
 
 const throttledInvoker = _.throttle(fn => fn(), 300, { leading: false });
@@ -83,13 +85,7 @@ export const withSearch = passedInState => {
     }),
     withHandlers({
       selectItem: ({ push, reset }) => (item: ISearchHit) => {
-        item.uuid
-          ? push(`/files/${item.uuid}`)
-          : push(
-              `/${atob(item.id)
-                .split(':')[0]
-                .toLocaleLowerCase()}s/${atob(item.id).split(':')[1]}`,
-            );
+        push(extractFilePath(item));
         setTimeout(reset, 100);
       },
     }),

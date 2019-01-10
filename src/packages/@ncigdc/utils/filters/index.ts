@@ -148,7 +148,7 @@ export const removeFilter: TRemoveFilter = (field, query) => {
   } else if (!field) {
     return query;
   } else if (Object.keys(query).length === 0) {
-    return query;
+    return null;
   }
 
   if (!Array.isArray(query.content)) {

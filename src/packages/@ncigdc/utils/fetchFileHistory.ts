@@ -9,9 +9,40 @@ interface IFileHistory {
   version: string;
 }
 
-type TFileSearchResult = any;
+interface IFileSearchResult {
+  id: string;
+  cytoband: [
+    string
+  ];
+  external_db_ids: {
+    entrez_gene: [string];
+    hgnc: [
+      string
+    ];
+    omim_gene: [string];
+    uniprotkb_swissprot: [string]
+  };
+  gene_id: string;
+  name: string;
+  symbol: string;
+  synonyms: [
+    string
+  ];
+  transcripts: {
+    hits: {
+      edges: [
+        {
+          node: {
+            transcript_id: string;
+            translation_id: string
+          }
+        }
+      ]
+    }
+  }
+}
 
-type IFile = TFileSearchResult | IFileHistory;
+type IFile = IFileSearchResult | IFileHistory;
 
 type TFetchFileHistory = (
   query: string
@@ -36,12 +67,12 @@ const fetchFileHistory: TFetchFileHistory = query => {
 };
 
 export const extractFilePath: TExtractFilePath = file => {
-  if (file.id) {
-    return `/${atob(file.id)
+  if ((file as IFileSearchResult).id) {
+    return `/${atob((file as IFileSearchResult).id)
       .split(':')[0]
-      .toLocaleLowerCase()}s/${atob(file.id).split(':')[1]}`;
+      .toLocaleLowerCase()}s/${atob((file as IFileSearchResult).id).split(':')[1]}`;
   } else {
-    return `/files/${file.uuid}`;
+    return `/files/${(file as IFileHistory).uuid}`;
   }
 };
 

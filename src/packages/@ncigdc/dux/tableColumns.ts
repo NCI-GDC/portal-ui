@@ -1,4 +1,4 @@
-import { REHYDRATE } from 'redux-persist/constants';
+import { REHYDRATE } from 'redux-persist/lib/constants';
 // Custom
 import tableModels from '@ncigdc/tableModels';
 import { namespaceActions } from './utils';

@@ -1,5 +1,5 @@
 // @flow
-import { REHYDRATE } from 'redux-persist/constants';
+// import { REHYDRATE } from 'redux-persist/lib/constants';
 import { uniqBy } from 'lodash';
 
 // Custom
@@ -56,11 +56,11 @@ const reducer = (
   },
 ) => {
   switch (action.type) {
-    case REHYDRATE: {
-      const { customFacets } = action.payload;
-      if (customFacets) return { ...state, ...customFacets };
-      return state;
-    }
+    // case REHYDRATE: {
+    //   const { customFacets } = action.payload;
+    //   if (customFacets) return { ...state, ...customFacets };
+    //   return state;
+    // }
 
     case customFacets.ADD_FACET: {
       const { entityType, facet } = action.payload;

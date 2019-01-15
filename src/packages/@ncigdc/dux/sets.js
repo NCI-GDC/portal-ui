@@ -1,6 +1,6 @@
 // @flow
 import { omit } from 'lodash';
-import { REHYDRATE } from 'redux-persist/constants';
+// import { REHYDRATE } from 'redux-persist/lib/constants';
 import { trim } from 'lodash';
 import { namespaceActions } from './utils';
 
@@ -55,11 +55,11 @@ const trimAll = s => trim(s).replace(/\s+/g, ' ');
 const reducer = (state: TState = initialState, action: TAction) => {
   const payload = action.payload;
   switch (action.type) {
-    case REHYDRATE:
-      return {
-        ...state,
-        ...action.payload.sets,
-      };
+    // case REHYDRATE:
+    //   return {
+    //     ...state,
+    //     ...action.payload.sets,
+    //   };
     case sets.ADD_SET:
       return {
         ...state,

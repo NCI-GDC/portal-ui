@@ -2,7 +2,10 @@
 
 import React from 'react';
 
-import { ApiOverrideBanner } from '@ncigdc/components/DismissibleBanner';
+import {
+  ApiOverrideBanner,
+  DataAccessBanner,
+} from '@ncigdc/components/DismissibleBanner';
 import { fetchApi } from '@ncigdc/utils/ajax';
 import { LOCAL_STORAGE_API_OVERRIDE } from '@ncigdc/utils/constants';
 import { REHYDRATE } from 'redux-persist/constants';
@@ -59,14 +62,23 @@ if (LOCAL_STORAGE_API_OVERRIDE) {
     message: <ApiOverrideBanner />,
   });
 }
-
+if (1 > 0) {
+  initialState.push({
+    components: ['api'],
+    level: 'WARNING',
+    id: `data_access`,
+    dismissible: true,
+    reactElement: true,
+    message: <DataAccessBanner />,
+  });
+}
 const reducer = (state: TState = initialState, action: TAction) => {
   switch (action.type) {
     case REHYDRATE: {
       const incoming = uniqBy(
         action.payload.bannerNotification || [],
-        ({ id }) => id,
-      ).filter(({ id }) => id !== 'api_override');
+        ({ id }) => id
+      ).filter(({ id }) => (id !== 'api_override') & (id !== 'data_access'));
       if (incoming) return [...state, ...incoming];
       return state;
     }
@@ -77,11 +89,11 @@ const reducer = (state: TState = initialState, action: TAction) => {
           ...(Array.isArray(action.payload) ? action.payload : [])
             .filter(
               n =>
-                n.components.includes('PORTAL') || n.components.includes('API'),
+                n.components.includes('PORTAL') || n.components.includes('API')
             )
             .map(n => ({ ...n, dismissed: false })),
         ],
-        ({ id }) => id,
+        ({ id }) => id
       );
     case NOTIFICATION_DISMISS:
       const ids = action.payload.map(p => p.id);

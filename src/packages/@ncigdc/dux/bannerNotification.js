@@ -5,7 +5,7 @@ import React from 'react';
 import { ApiOverrideBanner } from '@ncigdc/components/DismissibleBanner';
 import { fetchApi } from '@ncigdc/utils/ajax';
 import { LOCAL_STORAGE_API_OVERRIDE } from '@ncigdc/utils/constants';
-// import { REHYDRATE } from 'redux-persist/lib/constants';
+import { REHYDRATE } from 'redux-persist';
 import { uniqBy } from 'lodash';
 
 const NOTIFICATION_SUCCESS = 'NOTIFICATION_SUCCESS';
@@ -62,14 +62,14 @@ if (LOCAL_STORAGE_API_OVERRIDE) {
 
 const reducer = (state: TState = initialState, action: TAction) => {
   switch (action.type) {
-    // case REHYDRATE: {
-    //   const incoming = uniqBy(
-    //     action.payload.bannerNotification || [],
-    //     ({ id }) => id,
-    //   ).filter(({ id }) => id !== 'api_override');
-    //   if (incoming) return [...state, ...incoming];
-    //   return state;
-    // }
+    case REHYDRATE: {
+      const incoming = uniqBy(
+        (action.payload && action.payload.bannerNotification) || [],
+        ({ id }) => id,
+      ).filter(({ id }) => id !== 'api_override');
+      if (incoming) return [...state, ...incoming];
+      return state;
+    }
     case NOTIFICATION_SUCCESS:
       return uniqBy(
         [

@@ -8,7 +8,6 @@ import {
 } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2';
-// import { REHYDRATE } from 'redux-persist/lib/constants';
 
 import { apiMiddleware } from 'redux-api-middleware';
 import reducers from './reducers';
@@ -37,9 +36,8 @@ const setupStore: TSetupStore = ({ persistConfig = {} } = {}) => {
     ...persistConfig,
   };
 
-  const pReducer = persistReducer(config, combineReducers(reducers));
   const store = createStore(
-    pReducer,
+    persistCombineReducers(config, reducers),
     composeEnhancers(applyMiddleware(thunk, apiMiddleware)),
   );
 

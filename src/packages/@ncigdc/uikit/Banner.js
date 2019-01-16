@@ -77,8 +77,7 @@ const Banner = ({
   >
     {levelToIcon[level.toLowerCase()] || levelToIcon.info}
     <span style={style.message}>
-      Banner message here
-      {/* {!reactElement ? <Markdown source={message} /> : message} */}
+      {!reactElement ? <Markdown source={message} /> : message}
     </span>
     {dismissible && (
       <span

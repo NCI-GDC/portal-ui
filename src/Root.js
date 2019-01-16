@@ -26,6 +26,7 @@ import { fetchUser, forceLogout } from '@ncigdc/dux/auth';
 import Login from '@ncigdc/routes/Login';
 import { redirectToLogin } from '@ncigdc/utils/auth';
 import consoleDebug from '@ncigdc/utils/consoleDebug';
+import { fetchNotifications } from '@ncigdc/dux/bannerNotification';
 
 const retryStatusCodes = [500, 503, 504];
 
@@ -72,6 +73,7 @@ Relay.injectNetworkLayer(
       req.credentials = 'include';
 
       let { user } = window.store.getState().auth;
+
       let parsedBody = JSON.parse(req.body);
       req.body = JSON.stringify(parsedBody);
       return next(req)
@@ -137,6 +139,7 @@ store.dispatch(fetchApiVersionInfo());
 
 if (process.env.NODE_ENV !== 'development') {
   store.dispatch(fetchUser());
+  store.dispatch(fetchNotifications())
 }
 
 class RelayRoute extends Relay.Route {
@@ -153,9 +156,9 @@ let HasUser = connect(state => state.auth)(props => {
 });
 
 const Root = (props: mixed) => (
-  <Router>
-    <Provider store={store}>
-      <PersistGate loading={<div>Loading...</div>} persistor={persistor}>
+  <Provider store={store}>
+    <PersistGate loading={<div>Loading...</div>} persistor={persistor}>
+      <Router>
         <React.Fragment>
           {!IS_AUTH_PORTAL ? (
             <Relay.Renderer
@@ -204,9 +207,9 @@ const Root = (props: mixed) => (
             </Switch>
           )}
         </React.Fragment>
-      </PersistGate>
-    </Provider>
-  </Router>
+      </Router>
+    </PersistGate>
+  </Provider>
 );
 
 export default Root;

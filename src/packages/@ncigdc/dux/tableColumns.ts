@@ -1,4 +1,4 @@
-// import { REHYDRATE } from 'redux-persist/lib/constants';
+import { REHYDRATE } from 'redux-persist';
 // Custom
 import tableModels from '@ncigdc/tableModels';
 import { namespaceActions } from './utils';
@@ -50,36 +50,39 @@ const initialState = Object.keys(tableModels).reduce(
 );
 const reducer = (state = initialState, action: ITableColumnsAction) => {
   switch (action.type) {
-    // case REHYDRATE: {
-    //   const { version = -1, ...allTableColumns } =
-    //     action.payload.tableColumns || {};
-    //   if (version !== state.version) {
-    //     return state;
-    //   }
-    //   return {
-    //     ...state,
-    //     ...Object.entries(
-    //       allTableColumns || {}
-    //     ).reduce((acc, [key, val]: [string, Array<IColumnProps<boolean>>]) => {
-    //       const orderArray = val.map((v: IColumnProps<boolean>) => v.id);
-    //       const order = Array.isArray(val)
-    //         ? state[key]
-    //             .slice()
-    //             .sort(
-    //               (a: IColumnProps<boolean>, b: IColumnProps<boolean>) =>
-    //                 orderArray.indexOf(a.id) - orderArray.indexOf(b.id)
-    //             )
-    //         : state[key];
-    //       order.forEach((element: IColumnProps<boolean>, i: number) => {
-    //         element.hidden = val[i].hidden;
-    //       });
-    //       return {
-    //         ...acc,
-    //         [key]: order,
-    //       };
-    //     }, {}),
-    //   };
-    // }
+    case REHYDRATE: {
+      const { version = -1, ...allTableColumns } =
+        (action.payload && action.payload.tableColumns) || {};
+      if (version !== state.version) {
+        return state;
+      }
+
+      return {
+        ...state,
+        ...Object.entries(
+          allTableColumns || {}
+        ).reduce((acc, [key, val]: [string, Array<IColumnProps<boolean>>]) => {
+          const orderArray = val.map((v: IColumnProps<boolean>) => v.id);
+          const order = Array.isArray(val)
+            ? state[key]
+                .slice()
+                .sort(
+                  (a: IColumnProps<boolean>, b: IColumnProps<boolean>) =>
+                    orderArray.indexOf(a.id) - orderArray.indexOf(b.id)
+                )
+            : state[key];
+          order.forEach((element: IColumnProps<boolean>, i: number) => {
+            if (val[i] && val[i].hidden) {
+              element.hidden = val[i].hidden
+            }
+          });
+          return {
+            ...acc,
+            [key]: order,
+          };
+        }, {}),
+      };
+    }
     case tableColumns.TOGGLE_COLUMN: {
       const { entityType, index } = action.payload;
       return {

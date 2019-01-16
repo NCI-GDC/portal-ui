@@ -31,11 +31,11 @@ const modalStyles = {
   },
 };
 
-const Modal = ({ isOpen, onRequestClose, style, children }) => (
+const Modal = ({ isOpen, onRequestClose = () => {}, style, children }) => (
   <ReactModal
     style={{ ..._.merge({}, modalStyles, style) }}
     isOpen={isOpen}
-    onRequestClose={onRequestClose || (() => {})}
+    onRequestClose={onRequestClose}
     contentLabel="Modal"
     className="test-modal"
   >

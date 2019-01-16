@@ -1,7 +1,7 @@
 /* @flow */
 import React from 'react';
 import Relay from 'react-relay/classic';
-import _ from 'lodash';
+import { reject } from 'lodash';
 import { connect } from 'react-redux';
 import {
   compose,
@@ -26,53 +26,98 @@ import FacetHeader from '@ncigdc/components/Aggregations/FacetHeader';
 import { UploadCaseSet } from '@ncigdc/components/Modals/UploadSet';
 
 import { IBucket } from '@ncigdc/components/Aggregations/types';
-
-export type TProps = {
-  caseIdCollapsed: boolean,
-  setCaseIdCollapsed: Function,
-  relay: Object,
-  facets: { facets: string },
-  parsedFacets: Object,
+import { CaseAggregationsQuery } from './explore.relay';
+import CaseAdvancedAggregations from './CaseAdvancedAggregations';
+export interface ITProps {
+  caseIdCollapsed: boolean;
+  setCaseIdCollapsed: (caseIdCollapsed: boolean) => void;
+  relay: any;
+  facets: { facets: string };
+  parsedFacets: any;
   aggregations: {
-    demographic__ethnicity: { buckets: [IBucket] },
-    demographic__gender: { buckets: [IBucket] },
-    demographic__race: { buckets: [IBucket] },
-    diagnoses__vital_status: { buckets: [IBucket] },
-    diagnoses__days_to_death: { max: number, min: number },
-    diagnoses__age_at_diagnosis: { max: number, min: number },
-    disease_type: { buckets: [IBucket] },
-    primary_site: { buckets: [IBucket] },
-    project__program__name: { buckets: [IBucket] },
-    project__project_id: { buckets: [IBucket] },
-  },
+    demographic__ethnicity: { buckets: [IBucket] };
+    demographic__gender: { buckets: [IBucket] };
+    demographic__race: { buckets: [IBucket] };
+    diagnoses__vital_status: { buckets: [IBucket] };
+    diagnoses__days_to_death: { max: number; min: number };
+    diagnoses__age_at_diagnosis: { max: number; min: number };
+    disease_type: { buckets: [IBucket] };
+    primary_site: { buckets: [IBucket] };
+    project__program__name: { buckets: [IBucket] };
+    project__project_id: { buckets: [IBucket] };
+  };
   hits: {
     edges: Array<{
       node: {
-        id: string,
-      },
-    }>,
-  },
-  setAutocomplete: Function,
-  theme: Object,
-  filters: Object,
-  suggestions: Array<Object>,
+        id: string;
+      };
+    }>;
+  };
+  setAutocomplete: any;
+  theme: any;
+  filters: any;
+  suggestions: any;
 
   userSelectedFacets: Array<{
-    description: String,
-    doc_type: String,
-    field: String,
-    full: String,
-    type: 'id' | 'string' | 'long',
-  }>,
-  handleSelectFacet: Function,
-  handleResetFacets: Function,
-  handleRequestRemoveFacet: Function,
-  presetFacetFields: Array<String>,
-  shouldShowFacetSelection: Boolean,
-  facetExclusionTest: Function,
-  setShouldShowFacetSelection: Function,
-};
-
+    description: any;
+    doc_type: string;
+    field: string;
+    full: string;
+    type: 'id' | 'string' | 'long';
+  }>;
+  handleSelectFacet: any;
+  handleResetFacets: (event: any) => void;
+  handleRequestRemoveFacet: any;
+  shouldShowFacetSelection: boolean;
+  facetExclusionTest: any;
+  setShouldShowFacetSelection: any;
+  advancedFilter: boolean;
+  setAdvancedFilter: any;
+}
+// const advancedPresetFacets = [
+//   {
+//     title: 'Demographic',
+//     field: 'case_id',
+//     full: 'cases.case_id',
+//     doc_type: 'cases',
+//     type: 'id',
+//   },
+//   {
+//     title: 'Diagnoses',
+//     field: 'case_id',
+//     full: 'cases.case_id',
+//     doc_type: 'cases',
+//     type: 'id',
+//   },
+//   {
+//     title: 'Treatments',
+//     field: 'case_id',
+//     full: 'cases.case_id',
+//     doc_type: 'cases',
+//     type: 'id',
+//   },
+//   {
+//     title: 'Exposures',
+//     field: 'case_id',
+//     full: 'cases.case_id',
+//     doc_type: 'cases',
+//     type: 'id',
+//   },
+//   {
+//     title: 'Follow Up',
+//     field: 'case_id',
+//     full: 'cases.case_id',
+//     doc_type: 'cases',
+//     type: 'id',
+//   },
+//   {
+//     title: 'Molecular Tests',
+//     field: 'case_id',
+//     full: 'cases.case_id',
+//     doc_type: 'cases',
+//     type: 'id',
+//   },
+// ];
 const presetFacets = [
   {
     title: 'Case',
@@ -181,7 +226,8 @@ const enhance = compose(
     ],
   }),
   withState('caseIdCollapsed', 'setCaseIdCollapsed', false),
-  connect((state, props) => ({
+  withState('advancedFilter', 'setAdvancedFilter', false),
+  connect((state: any, props) => ({
     userSelectedFacets: state.customFacets[entityType],
   })),
   withPropsOnChange(
@@ -190,24 +236,24 @@ const enhance = compose(
       relay.setVariables({
         filters,
         exploreCaseCustomFacetFields: userSelectedFacets
-          .map(({ field }) => field)
+          .map(({ field }: any) => field)
           .join(','),
-      }),
+      })
   ),
   withPropsOnChange(['facets'], ({ facets }) => ({
     parsedFacets: facets.facets ? tryParseJSON(facets.facets, {}) : {},
   })),
   lifecycle({
     componentDidMount(): void {
-      const { relay, filters, userSelectedFacets } = this.props;
+      const { relay, filters, userSelectedFacets }: any = this.props;
       relay.setVariables({
-        filters: filters,
+        filters,
         exploreCaseCustomFacetFields: userSelectedFacets
-          .map(({ field }) => field)
+          .map(({ field }: any) => field)
           .join(','),
       });
     },
-  }),
+  })
 );
 
 const styles = {
@@ -217,76 +263,99 @@ const styles = {
   },
 };
 
-export const CaseAggregationsComponent = (props: TProps) => (
+export const CaseAggregationsComponent = ({
+  caseIdCollapsed,
+  setCaseIdCollapsed,
+  relay,
+  facets,
+  parsedFacets,
+  aggregations,
+  hits,
+  setAutocomplete,
+  theme,
+  filters,
+  suggestions,
+  userSelectedFacets,
+  handleSelectFacet,
+  handleResetFacets,
+  handleRequestRemoveFacet,
+  shouldShowFacetSelection,
+  facetExclusionTest,
+  setShouldShowFacetSelection,
+  advancedFilter,
+  setAdvancedFilter,
+}: ITProps) => (
   <div className="test-case-aggregations">
     <div
       className="text-right"
       style={{
         padding: '10px 15px',
-        borderBottom: `1px solid ${props.theme.greyScale5}`,
+        borderBottom: `1px solid ${theme.greyScale5}`,
       }}
     >
-      {!!props.userSelectedFacets.length && (
+      {!!userSelectedFacets.length && (
         <span>
-          <a onClick={props.handleResetFacets} style={styles.link}>
+          <a onClick={handleResetFacets} style={styles.link}>
             Reset
           </a>{' '}
           &nbsp;|&nbsp;
         </span>
       )}
-      <a
-        onClick={() => props.setShouldShowFacetSelection(true)}
-        style={styles.link}
-      >
+      <a onClick={() => setShouldShowFacetSelection(true)} style={styles.link}>
         Add a Case Filter
       </a>
+      {' | '}
+      <a onClick={() => setAdvancedFilter(!advancedFilter)} style={styles.link}>
+        {advancedFilter ? 'Basic Filter' : 'Advanced Filter'}
+      </a>
     </div>
+
     <Modal
-      isOpen={props.shouldShowFacetSelection}
+      isOpen={shouldShowFacetSelection}
       style={{ content: { border: 0, padding: '15px' } }}
     >
       <FacetSelection
         title="Add a Case Filter"
         relayVarName="exploreCaseCustomFacetFields"
         docType="cases"
-        onSelect={props.handleSelectFacet}
-        onRequestClose={() => props.setShouldShowFacetSelection(false)}
-        excludeFacetsBy={props.facetExclusionTest}
-        additionalFacetData={props.parsedFacets}
-        relay={props.relay}
+        onSelect={handleSelectFacet}
+        onRequestClose={() => setShouldShowFacetSelection(false)}
+        excludeFacetsBy={facetExclusionTest}
+        additionalFacetData={parsedFacets}
+        relay={relay}
       />
     </Modal>
 
-    {props.userSelectedFacets.map(facet => (
+    {userSelectedFacets.map(facet => (
       <FacetWrapper
         isRemovable
         relayVarName="exploreCaseCustomFacetFields"
         key={facet.full}
         facet={facet}
-        aggregation={props.parsedFacets[facet.field]}
-        relay={props.relay}
-        onRequestRemove={() => props.handleRequestRemoveFacet(facet)}
-        style={{ borderBottom: `1px solid ${props.theme.greyScale5}` }}
+        aggregation={parsedFacets[facet.field]}
+        relay={relay}
+        onRequestRemove={() => handleRequestRemoveFacet(facet)}
+        style={{ borderBottom: `1px solid ${theme.greyScale5}` }}
       />
     ))}
     <FacetHeader
       title="Case"
       field="cases.case_id"
-      collapsed={props.caseIdCollapsed}
-      setCollapsed={props.setCaseIdCollapsed}
+      collapsed={caseIdCollapsed}
+      setCollapsed={setCaseIdCollapsed}
       description={
         'Enter UUID or ID of Case, Sample, Portion, Slide, Analyte or Aliquot'
       }
     />
     <SuggestionFacet
       title="Case"
-      collapsed={props.caseIdCollapsed}
+      collapsed={caseIdCollapsed}
       doctype="cases"
       fieldNoDoctype="case_id"
       placeholder="e.g. TCGA-A5-A0G2, 432fe4a9-2..."
-      hits={props.suggestions}
-      setAutocomplete={props.setAutocomplete}
-      dropdownItem={x => (
+      hits={suggestions}
+      setAutocomplete={setAutocomplete}
+      dropdownItem={(x: any) => (
         <Row>
           <CaseIcon style={{ paddingRight: '1rem', paddingTop: '1rem' }} />
           <div>
@@ -301,7 +370,7 @@ export const CaseAggregationsComponent = (props: TProps) => (
       type="case"
       style={{
         width: '100%',
-        borderBottom: `1px solid ${props.theme.greyScale5}`,
+        borderBottom: `1px solid ${theme.greyScale5}`,
         padding: '0 1.2rem 1rem',
       }}
       UploadModal={UploadCaseSet}
@@ -313,106 +382,29 @@ export const CaseAggregationsComponent = (props: TProps) => (
     >
       Upload Case Set
     </UploadSetButton>
-
-    {_.reject(presetFacets, { full: 'cases.case_id' })
-      .filter(facet => props.aggregations[escapeForRelay(facet.field)])
-      .map(facet => (
-        <FacetWrapper
-          key={facet.full}
-          facet={facet}
-          title={facet.title}
-          aggregation={props.aggregations[escapeForRelay(facet.field)]}
-          relay={props.relay}
-          additionalProps={facet.additionalProps}
-          style={{ borderBottom: `1px solid ${props.theme.greyScale5}` }}
-        />
-      ))}
+    {advancedFilter ? (
+      <CaseAdvancedAggregations />
+    ) : (
+      reject(presetFacets, { full: 'cases.case_id' })
+        .filter(facet => aggregations[escapeForRelay(facet.field)])
+        .map(facet => (
+          <FacetWrapper
+            key={facet.full}
+            facet={facet}
+            title={facet.title}
+            aggregation={aggregations[escapeForRelay(facet.field)]}
+            relay={relay}
+            additionalProps={facet.additionalProps}
+            style={{ borderBottom: `1px solid ${theme.greyScale5}` }}
+          />
+        ))
+    )}
   </div>
 );
 
-export const CaseAggregationsQuery = {
-  initialVariables: {
-    exploreCaseCustomFacetFields: '',
-    filters: null,
-  },
-  fragments: {
-    facets: () => Relay.QL`
-      fragment on ExploreCases {
-        facets(facets: $exploreCaseCustomFacetFields filters: $filters)
-      }
-    `,
-    aggregations: () => Relay.QL`
-      fragment on ECaseAggregations {
-        primary_site {
-          buckets {
-            doc_count
-            key
-          }
-        }
-        project__program__name {
-          buckets {
-            doc_count
-            key
-          }
-        }
-        project__project_id {
-          buckets {
-            doc_count
-            key
-          }
-        }
-        disease_type {
-          buckets {
-            doc_count
-            key
-          }
-        }
-        demographic__gender {
-          buckets {
-            doc_count
-            key
-          }
-        }
-        diagnoses__age_at_diagnosis {
-          stats {
-            max
-            min
-            count
-          }
-        }
-        diagnoses__vital_status {
-          buckets {
-            doc_count
-            key
-          }
-        }
-        diagnoses__days_to_death {
-          stats {
-            max
-            min
-            count
-          }
-        }
-        demographic__race {
-          buckets {
-            doc_count
-            key
-          }
-        }
-        demographic__ethnicity {
-          buckets {
-            doc_count
-            key
-          }
-        }
-      }
-    `,
-  },
-};
-
 const CaseAggregations = Relay.createContainer(
   enhance(withTheme(CaseAggregationsComponent)),
-  CaseAggregationsQuery,
+  CaseAggregationsQuery
 );
 
 export default CaseAggregations;

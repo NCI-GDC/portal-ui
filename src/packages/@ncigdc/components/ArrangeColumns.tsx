@@ -61,11 +61,11 @@ const ArrangeColumns = compose<IArrangeColumnsProps, JSX.Element>(
       }
     ) => ({
       localTableColumns: state.tableColumns[props.entityType].filter(
-        (t: IColumnProps<boolean>) => !props.hideColumns.includes(t.id)
+        (t: IColumnProps<boolean>) => !(props.hideColumns || []).includes(t.id)
       ),
       filteredTableColumns: state.tableColumns[props.entityType].filter(
         (t: IColumnProps<boolean>) =>
-          !props.hideColumns.includes(t.id) && !t.subHeading
+          !(props.hideColumns || []).includes(t.id) && !t.subHeading
       ),
     })
   ),

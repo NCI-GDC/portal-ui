@@ -1,14 +1,10 @@
-/* @flow */
-
 import React from 'react';
 import _ from 'lodash';
-// import { css } from 'glamor';
 import {
   compose,
   withState,
   lifecycle,
   withProps,
-  // renameProps,
   defaultProps,
   withHandlers,
 } from 'recompose';
@@ -16,30 +12,23 @@ import { fetchApi } from '@ncigdc/utils/ajax';
 import FacetHeader from '@ncigdc/components/Aggregations/FacetHeader';
 import FacetWrapper from '@ncigdc/components/FacetWrapper';
 import styled from '@ncigdc/theme/styled';
-
-// import entityShortnameMapping from '@ncigdc/utils/entityShortnameMapping';
-// import Highlight from '@ncigdc/uikit/Highlight';
-// import withSelectableList from '@ncigdc/utils/withSelectableList';
-// import withPropsOnChange from '@ncigdc/utils/withPropsOnChange';
+import RecursiveToggledBox, { NestedWrapper } from './RecursiveToggledBox';
 const facetMatchesQuery = (facet: any, query: any) =>
   _.some([facet.field, facet.description].map(_.toLower), searchTarget =>
     _.includes(searchTarget, query)
   );
-const FacetWrapperDiv = styled.div({
-  position: 'relative',
-  paddingLeft: '10px',
-});
-const nestedWrapper = (Component, title, isCollapsed, setCollapsed) => (
-  <FacetWrapperDiv key={title + 'div'}>
-    <FacetHeader
-      title={title}
-      collapsed={isCollapsed}
-      setCollapsed={setCollapsed}
-      key={title}
-    />
-    {isCollapsed || Component}
-  </FacetWrapperDiv>
-);
+
+// const nestedWrapper = (Component, title, isCollapsed, setCollapsed) => (
+//   <FacetWrapperDiv key={title + 'div'}>
+//     <FacetHeader
+//       title={title}
+//       collapsed={isCollapsed}
+//       setCollapsed={setCollapsed}
+//       key={title}
+//     />
+//     {isCollapsed || Component}
+//   </FacetWrapperDiv>
+// );
 
 const advancedPresetFacets = [
   {
@@ -106,10 +95,10 @@ export default compose(
   withState('fieldHash', 'setFieldHash', {}),
   withState('toggledTree', 'setToggledTree', {
     cases: { toggled: false },
-    demographic: { toggled: true },
-    diagnoses: { toggled: true },
-    treatments: { toggled: true },
-    exposures: { toggled: true },
+    demographic: { toggled: false },
+    diagnoses: { toggled: false },
+    treatments: { toggled: false },
+    exposures: { toggled: false },
     follow_up: { toggled: false },
     molecular_tests: { toggled: false },
   }),
@@ -207,62 +196,72 @@ export default compose(
   }
   console.log('fieldHash', fieldHash);
 
-  const rec = (componentWrapper, hash, toggledTree, setToggledTree, root) => {
-    if (!hash) {
-      return '';
-    }
-    if (Object.keys(hash) === 0) {
-      return '';
-    }
-    if (typeof hash !== 'object') {
-      return <div style={{ backgroundColor: 'green' }}>{hash}</div>;
-    }
+  // const rec = (componentWrapper, hash, toggledTree, setToggledTree, root) => {
+  //   if (!hash) {
+  //     return '';
+  //   }
+  //   if (Object.keys(hash) === 0) {
+  //     return '';
+  //   }
+  //   if (typeof hash !== 'object') {
+  //     return <div style={{ backgroundColor: 'green' }}>{hash}</div>;
+  //   }
 
-    return Object.keys(hash).map(key => {
-      toggledTree[key] = { toggled: false };
-      return componentWrapper(
-        rec(componentWrapper, hash[key], toggledTree[key], setToggledTree),
-        key,
-        toggledTree.toggled,
-        () => setToggledTree(),
-        root
-      );
-    });
-  };
+  //   return Object.keys(hash).map(key => {
+  //     toggledTree[key] = { toggled: false };
+  //     return componentWrapper(
+  //       rec(componentWrapper, hash[key], toggledTree[key], setToggledTree),
+  //       key,
+  //       toggledTree.toggled,
+  //       () => setToggledTree(),
+  //       root
+  //     );
+  //   });
+  // };
   return advancedPresetFacets.map(facet => {
-    if (facet.children) {
-      return nestedWrapper(
-        facet.children.map(sub =>
-          nestedWrapper(
-            rec(nestedWrapper, _.get(fieldHash, sub.full, {})),
-            sub.title
-          )
-        ),
-        facet.title,
-        props.toggledTree[facet.field].toggled,
-        () =>
+    // if (facet.children) {
+    //   return (
+    //     <NestedWrapper
+    //       Component={facet.children.map(sub =>
+    //         NestedWrapper(
+    //           RecursiveToggledBox(_.get(fieldHash, sub.full, {})),
+    //           sub.title
+    //         )
+    //       )}
+    //       title={facet.title}
+    //       isCollapsed={props.toggledTree[facet.field].toggled}
+    //       setCollapsed={() =>
+    //         props.setToggledTree({
+    //           ...props.toggledTree,
+    //           [facet.field]: {
+    //             ...props.toggledTree[facet.field],
+    //             toggled: !props.toggledTree[facet.field].toggled,
+    //           },
+    //         })}
+    //     />
+    //   );
+    // } else {
+    return (
+      <NestedWrapper
+        Component={
+          <RecursiveToggledBox
+            hash={_.get(fieldHash, facet.full, {})}
+            Component={<div style={{ backgroundColor: 'green' }} />}
+            key={facet.title + 'RecursiveToggledBox'}
+          />
+        }
+        title={facet.title}
+        isCollapsed={props.toggledTree[facet.field].toggled}
+        setCollapsed={() =>
           props.setToggledTree({
             ...props.toggledTree,
             [facet.field]: {
               ...props.toggledTree[facet.field],
               toggled: !props.toggledTree[facet.field].toggled,
             },
-          })
-      );
-    } else {
-      return nestedWrapper(
-        rec(nestedWrapper, _.get(fieldHash, facet.full, {})),
-        facet.title,
-        props.toggledTree[facet.field].toggled,
-        () =>
-          props.setToggledTree({
-            ...props.toggledTree,
-            [facet.field]: {
-              ...props.toggledTree[facet.field],
-              toggled: !props.toggledTree[facet.field].toggled,
-            },
-          })
-      );
-    }
+          })}
+      />
+    );
+    // }
   });
 });

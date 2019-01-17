@@ -207,7 +207,7 @@ export default compose(
   }
   console.log('fieldHash', fieldHash);
 
-  const rec = (componentWrapper, hash) => {
+  const rec = (componentWrapper, hash, toggledTree, setToggledTree, root) => {
     if (!hash) {
       return '';
     }
@@ -217,8 +217,16 @@ export default compose(
     if (typeof hash !== 'object') {
       return <div style={{ backgroundColor: 'green' }}>{hash}</div>;
     }
+
     return Object.keys(hash).map(key => {
-      return componentWrapper(rec(componentWrapper, hash[key]), key);
+      toggledTree[key] = { toggled: false };
+      return componentWrapper(
+        rec(componentWrapper, hash[key], toggledTree[key], setToggledTree),
+        key,
+        toggledTree.toggled,
+        () => setToggledTree(),
+        root
+      );
     });
   };
   return advancedPresetFacets.map(facet => {

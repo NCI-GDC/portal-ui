@@ -1,5 +1,5 @@
 import React from 'react';
-import { scaleOrdinal, schemeCategory10 } from 'd3';
+// import { scaleOrdinal, schemeCategory10 } from 'd3';
 import { Th, Td, ThNum, TdNum } from '@ncigdc/uikit/Table';
 import {
   makeFilter,
@@ -10,16 +10,16 @@ import {
 } from '@ncigdc/utils/filters';
 import GeneLink from '@ncigdc/components/Links/GeneLink';
 import { tableToolTipHint } from '@ncigdc/theme/mixins';
-import SurvivalIcon from '@ncigdc/theme/icons/SurvivalIcon';
+// import SurvivalIcon from '@ncigdc/theme/icons/SurvivalIcon';
 import ExploreLink from '@ncigdc/components/Links/ExploreLink';
 import { Tooltip } from '@ncigdc/uikit/Tooltip';
-import { SpinnerIcon } from '@ncigdc/theme/icons';
+// import { SpinnerIcon } from '@ncigdc/theme/icons';
 import ProjectBreakdown from '@ncigdc/modern_components/ProjectBreakdown';
 import MutationsCount from '@ncigdc/components/MutationsCount';
 import CosmicIcon from '@ncigdc/theme/icons/Cosmic';
-import Hidden from '@ncigdc/components/Hidden';
-import { getSurvivalCurves } from '@ncigdc/utils/survivalplot';
-import Button from '@ncigdc/uikit/Button';
+// import Hidden from '@ncigdc/components/Hidden';
+// import { getSurvivalCurves } from '@ncigdc/utils/survivalplot';
+// import Button from '@ncigdc/uikit/Button';
 import ExploreSSMLink from '@ncigdc/components/Links/ExploreSSMLink';
 
 import { ForTsvExport } from '@ncigdc/components/DownloadTableToTsvButton';
@@ -55,7 +55,7 @@ export interface ISelectedSurvivalDataProps {
   legend?: Array<{ key: string; value: string | JSX.Element }>;
 }
 
-const colors = scaleOrdinal(schemeCategory10);
+// const colors = scaleOrdinal(schemeCategory10);
 
 const GenesTableModel = [
   createSelectColumn({ idField: 'gene_id' }),
@@ -483,72 +483,72 @@ const GenesTableModel = [
       </Td>
     ),
   },
-  {
-    name: 'Survival',
-    id: 'survival_plot',
-    th: () => <Th>Survival</Th>,
-    td: ({
-      node,
-      hasEnoughSurvivalDataOnPrimaryCurve,
-      selectedSurvivalData,
-      setSurvivalLoadingId,
-      setSelectedSurvivalData,
-      survivalLoadingId,
-      defaultFilters,
-    }: {
-      node: INodeProps['node'];
-      hasEnoughSurvivalDataOnPrimaryCurve: boolean;
-      selectedSurvivalData: ISelectedSurvivalDataProps;
-      setSurvivalLoadingId: (id: string) => void;
-      setSelectedSurvivalData: (data: ISelectedSurvivalDataProps) => void;
-      survivalLoadingId: string;
-      defaultFilters: IGroupFilter;
-    }) => (
-      <Td>
-        <Tooltip
-          Component={
-            hasEnoughSurvivalDataOnPrimaryCurve
-              ? `Click icon to plot ${node.symbol}`
-              : 'Not enough survival data'
-          }
-        >
-          <Button
-            style={{
-              padding: '2px 3px',
-              backgroundColor: hasEnoughSurvivalDataOnPrimaryCurve
-                ? colors(selectedSurvivalData.id === node.symbol ? '1' : '0')
-                : '#666',
-              color: 'white',
-              margin: '0 auto',
-            }}
-            disabled={!hasEnoughSurvivalDataOnPrimaryCurve}
-            onClick={() => {
-              if (node.symbol !== selectedSurvivalData.id) {
-                setSurvivalLoadingId(node.symbol);
-                getSurvivalCurves({
-                  field: 'gene.symbol',
-                  value: node.symbol,
-                  currentFilters: defaultFilters,
-                }).then((survivalData: ISelectedSurvivalDataProps) => {
-                  setSelectedSurvivalData(survivalData);
-                  setSurvivalLoadingId('');
-                });
-              } else {
-                setSelectedSurvivalData({});
-              }
-            }}
-          >
-            {survivalLoadingId === node.symbol ? (
-              <SpinnerIcon />
-            ) : (
-              <SurvivalIcon />
-            )}
-            <Hidden>add to survival plot</Hidden>
-          </Button>
-        </Tooltip>
-      </Td>
-    ),
-  },
+  // {
+  //   name: 'Survival',
+  //   id: 'survival_plot',
+  //   th: () => <Th>Survival</Th>,
+  //   td: ({
+  //     node,
+  //     hasEnoughSurvivalDataOnPrimaryCurve,
+  //     selectedSurvivalData,
+  //     setSurvivalLoadingId,
+  //     setSelectedSurvivalData,
+  //     survivalLoadingId,
+  //     defaultFilters,
+  //   }: {
+  //     node: INodeProps['node'];
+  //     hasEnoughSurvivalDataOnPrimaryCurve: boolean;
+  //     selectedSurvivalData: ISelectedSurvivalDataProps;
+  //     setSurvivalLoadingId: (id: string) => void;
+  //     setSelectedSurvivalData: (data: ISelectedSurvivalDataProps) => void;
+  //     survivalLoadingId: string;
+  //     defaultFilters: IGroupFilter;
+  //   }) => (
+  //     <Td>
+  //       <Tooltip
+  //         Component={
+  //           hasEnoughSurvivalDataOnPrimaryCurve
+  //             ? `Click icon to plot ${node.symbol}`
+  //             : 'Not enough survival data'
+  //         }
+  //       >
+  //         <Button
+  //           style={{
+  //             padding: '2px 3px',
+  //             backgroundColor: hasEnoughSurvivalDataOnPrimaryCurve
+  //               ? colors(selectedSurvivalData.id === node.symbol ? '1' : '0')
+  //               : '#666',
+  //             color: 'white',
+  //             margin: '0 auto',
+  //           }}
+  //           disabled={!hasEnoughSurvivalDataOnPrimaryCurve}
+  //           onClick={() => {
+  //             if (node.symbol !== selectedSurvivalData.id) {
+  //               setSurvivalLoadingId(node.symbol);
+  //               getSurvivalCurves({
+  //                 field: 'gene.symbol',
+  //                 value: node.symbol,
+  //                 currentFilters: defaultFilters,
+  //               }).then((survivalData: ISelectedSurvivalDataProps) => {
+  //                 setSelectedSurvivalData(survivalData);
+  //                 setSurvivalLoadingId('');
+  //               });
+  //             } else {
+  //               setSelectedSurvivalData({});
+  //             }
+  //           }}
+  //         >
+  //           {survivalLoadingId === node.symbol ? (
+  //             <SpinnerIcon />
+  //           ) : (
+  //             <SurvivalIcon />
+  //           )}
+  //           <Hidden>add to survival plot</Hidden>
+  //         </Button>
+  //       </Tooltip>
+  //     </Td>
+  //   ),
+  // },
 ];
 
 export default GenesTableModel;

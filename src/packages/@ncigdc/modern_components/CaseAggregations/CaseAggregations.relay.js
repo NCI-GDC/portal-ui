@@ -54,7 +54,7 @@ export default (Component: ReactClass<*>) =>
             viewer {
               repository {
                 cases {
-                  facets(facets: $repoCaseCustomFacetFields)
+                  facets(facets: $repoCaseCustomFacetFields, filters: $filters)
                   aggregations(
                     filters: $filters
                     aggregations_filter_themselves: false

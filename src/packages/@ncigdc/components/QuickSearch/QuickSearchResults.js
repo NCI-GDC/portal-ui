@@ -4,7 +4,7 @@
 import React from 'react';
 import _ from 'lodash';
 import entityShortnameMapping from '@ncigdc/utils/entityShortnameMapping';
-import type { TSearchHit } from './types';
+import { ISearchHit } from './types';
 import { internalHighlight } from '@ncigdc/uikit/Highlight';
 
 const styles = {
@@ -78,10 +78,9 @@ const ResultIcon = ({ type, style }) => (
 
 export const findMatchingToken = (item, lq, value = '') => {
   const ks = Object.keys(item);
-
   for (let i = 0; i < ks.length; i++) {
     const k = ks[i];
-    if (k === 'isSelected') continue;
+    if (k === 'isSelected' || k === '__dataID__') continue;
     const terms = [].concat(item[k]);
     for (let j = 0; j < terms.length; j++) {
       const term = terms[j];
@@ -102,9 +101,8 @@ export const findMatchingToken = (item, lq, value = '') => {
         }
         continue;
       }
-
       if (
-        (term || '')
+        (typeof term === 'string' ? term : '')
           .toLocaleLowerCase()
           .replace(/[()]/g, '')
           .indexOf(lq) !== -1
@@ -113,11 +111,10 @@ export const findMatchingToken = (item, lq, value = '') => {
       }
     }
   }
-
   return value;
 };
 
-const ResultHighlights = ({
+export const ResultHighlights = ({
   item,
   query,
   style,
@@ -133,7 +130,7 @@ const ResultHighlights = ({
 };
 
 type TProps = {
-  results: TSearchHit[],
+  results: ISearchHit[],
   query: string,
   onSelectItem: Function,
   onActivateItem: Function,

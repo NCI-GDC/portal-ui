@@ -1,4 +1,3 @@
-// @flow
 import React from 'react';
 import _ from 'lodash';
 import {
@@ -11,7 +10,6 @@ import ProjectLink from '@ncigdc/components/Links/ProjectLink';
 import CaseLink from '@ncigdc/components/Links/CaseLink';
 import { Th, Td, TdNum, ThNum } from '@ncigdc/uikit/Table';
 import { makeFilter, replaceFilters } from '@ncigdc/utils/filters';
-import ExploreLink from '@ncigdc/components/Links/ExploreLink';
 import ageDisplay from '@ncigdc/utils/ageDisplay';
 import withRouter from '@ncigdc/utils/withRouter';
 import ImageViewerLink from '@ncigdc/components/Links/ImageViewerLink';
@@ -19,6 +17,7 @@ import { MicroscopeIcon } from '@ncigdc/theme/icons';
 import { DISPLAY_SLIDES } from '@ncigdc/utils/constants';
 import { ForTsvExport } from '@ncigdc/components/DownloadTableToTsvButton';
 import { slideCountFromCaseSummary } from '@ncigdc/modern_components/CaseSummary/CaseSummary';
+import ExploreSSMLink from '@ncigdc/components/Links/ExploreSSMLink';
 
 import {
   createDataCategoryColumns,
@@ -29,7 +28,7 @@ import MutationsCount from '@ncigdc/components/MutationsCount';
 
 const youngestDiagnosis = (
   p: { age_at_diagnosis: number },
-  c: { age_at_diagnosis: number },
+  c: { age_at_diagnosis: number }
 ): { age_at_diagnosis: number } =>
   c.age_at_diagnosis < p.age_at_diagnosis ? c : p;
 
@@ -54,7 +53,7 @@ const FilesLink = ({ node, fields = [], children }) =>
       query={{
         filters: makeFilter(
           [{ field: 'cases.case_id', value: [node.case_id] }, ...fields],
-          false,
+          false
         ),
       }}
     >
@@ -70,7 +69,7 @@ const getProjectIdFilter = projects =>
         value: projects.edges.map(({ node: p }) => p.project_id),
       },
     ],
-    false,
+    false
   );
 
 const casesTableModel = [
@@ -213,7 +212,7 @@ const casesTableModel = [
           ssmCount={ssmCount}
           filters={replaceFilters(
             makeFilter([{ field: 'cases.case_id', value: [node.case_id] }]),
-            filters,
+            filters
           )}
         />
       </Td>
@@ -233,21 +232,21 @@ const casesTableModel = [
         </Tooltip>
       </ThNum>
     ),
-    td: ({ node }) => (
+    td: ({ node, filters }) => (
       <Td style={{ textAlign: 'right' }}>
         {node.score > 0 ? (
-          <ExploreLink
-            merge
-            query={{
-              searchTableTab: 'genes',
-              filters: makeFilter(
+          <ExploreSSMLink
+            searchTableTab={'genes'}
+            filters={replaceFilters(
+              makeFilter(
                 [{ field: 'cases.case_id', value: [node.case_id] }],
-                false,
+                false
               ),
-            }}
+              filters
+            )}
           >
             {(node.score || 0).toLocaleString()}
-          </ExploreLink>
+          </ExploreSSMLink>
         ) : (
           0
         )}
@@ -331,7 +330,7 @@ const casesTableModel = [
         .map(x => x.node)
         .reduce(
           (p, c) => (c.age_at_diagnosis < p ? c.age_at_diagnosis : p),
-          Infinity,
+          Infinity
         );
       return (
         <Td>{age !== Infinity && node.diagnoses ? ageDisplay(age) : '--'}</Td>

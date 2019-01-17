@@ -14,11 +14,15 @@ import { withTheme } from '@ncigdc/theme';
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import DownloadVisualizationButton from '@ncigdc/components/DownloadVisualizationButton';
 import BarChart from '@ncigdc/components/Charts/BarChart';
+import FilteredStackedBarChart from '@ncigdc/components/Charts/FilteredStackedBarChart';
 import wrapSvg from '@ncigdc/utils/wrapSvg';
 import VisualizationHeader from '@ncigdc/components/VisualizationHeader';
 import { createClassicRenderer } from '@ncigdc/modern_components/Query';
+import { cnvColors } from '@ncigdc/utils/filters/prepared/significantConsequences';
+import { renderToString } from 'react-dom/server';
 
-const TITLE = 'Distribution of Most Frequently Mutated Genes';
+const MUTATED_TITLE = 'Distribution of Most Frequently Mutated Genes';
+const CNV_TITLE = 'Most Frequent Genes with CNV';
 const CHART_HEIGHT = 285;
 const COMPONENT_NAME = 'GenesBarChart';
 
@@ -48,6 +52,46 @@ const createContainer = Component =>
           value: 'ssm',
         },
       ]),
+      // amplificationFilters: makeFilter([
+      //   {
+      //     field: 'cnvs.cnv_change',
+      //     value: 'Amplification',
+      //   },
+      //   {
+      //     field: 'cases.available_variation_data',
+      //     value: 'cnv',
+      //   },
+      // ]),
+      gainFilters: makeFilter([
+        {
+          field: 'cnvs.cnv_change',
+          value: 'Gain',
+        },
+        {
+          field: 'cases.available_variation_data',
+          value: 'cnv',
+        },
+      ]),
+      lossFilters: makeFilter([
+        {
+          field: 'cnvs.cnv_change',
+          value: 'Loss',
+        },
+        {
+          field: 'cases.available_variation_data',
+          value: 'cnv',
+        },
+      ]),
+      // deepLossFilters: makeFilter([
+      //   {
+      //     field: 'cnvs.cnv_change',
+      //     value: 'Deep Loss',
+      //   },
+      //   {
+      //     field: 'cases.available_variation_data',
+      //     value: 'cnv',
+      //   },
+      // ]),
     },
     fragments: {
       viewer: () => Relay.QL`
@@ -80,6 +124,16 @@ const createContainer = Component =>
                     gene_id
                     case {
                       hits(first: 0) {
+                        total
+                      }
+                    }
+                    case_with_cnv_gain_count: case {
+                      hits(first: 0, filters: $gainFilters) {
+                        total
+                      }
+                    }
+                    case_with_cnv_loss_count: case {
+                      hits(first: 0, filters: $lossFilters) {
                         total
                       }
                     }
@@ -120,8 +174,10 @@ const Component = compose(
       explore: { genes = { hits: { edges: [] } }, cases, filteredCases },
     },
     context = 'explore',
+    showingMore,
     handleClickGene,
     style,
+    push,
   }) => {
     const numCasesAggByProject = cases.aggregations.project__project_id.buckets.reduce(
       (acc, b) => ({
@@ -130,7 +186,6 @@ const Component = compose(
       }),
       {},
     );
-
     const tooltipContext = (ctx, { symbol, score = 0 }) => {
       switch (ctx) {
         case 'project': {
@@ -181,12 +236,73 @@ const Component = compose(
         onClick: () => handleClickGene(g, mutatedGenesChartData),
       }));
 
+    const cnvNodes = genes.hits.edges.map(x => ({
+      symbol: x.node.symbol,
+      gene_id: x.node.gene_id,
+      // amplification: x.node.case_with_cnv_amplification_count.hits.total,
+      gain: x.node.case_with_cnv_gain_count.hits.total,
+      loss: x.node.case_with_cnv_loss_count.hits.total,
+      // deep_loss: x.node.case_with_cnv_deep_loss_count.hits.total,
+    }));
+    const totalNum =
+      context === 'project' && projectId
+        ? numCasesAggByProject[projectId]
+        : filteredCases.hits.total;
+    const cnvGenesChartData = cnvNodes
+      .sort((a, b) =>
+        cnvColors.reduce((acc, c) => b[c.key] - a[c.key] + acc, 0),
+      )
+      .map(g => {
+        return {
+          symbol: g.symbol,
+          // deep_loss: g.deep_loss / totalNum * 100,
+          loss: g.loss / totalNum * 100,
+          gain: g.gain / totalNum * 100,
+          // amplification: g.amplification / totalNum * 100,
+          tooltips: cnvColors.reduce(
+            (acc, color) => ({
+              ...acc,
+              [color.key]: tooltipContext(context, {
+                symbol: g.symbol,
+                score: g[color.key],
+              }),
+            }),
+            0,
+          ),
+          onClick: () => handleClickGene(g, cnvGenesChartData),
+        };
+      });
+    const Legends = () => (
+      <Row style={{ display: 'flex', justifyContent: 'center' }}>
+        {cnvColors.map(f => (
+          <label key={f.key} style={{ paddingRight: '10px' }}>
+            <span
+              style={{
+                color: f.color,
+                backgroundColor: f.color,
+                textAlign: 'center',
+                border: '2px solid',
+                height: '18px',
+                width: '18px',
+                cursor: 'pointer',
+                display: 'inline-block',
+                marginRight: '6px',
+                marginTop: '3px',
+                verticalAlign: 'middle',
+                lineHeight: '16px',
+              }}
+            />
+            {f.name}
+          </label>
+        ))}
+      </Row>
+    );
     return (
       <div style={style}>
         {!!mutatedGenesChartData && (
           <Column style={{ paddingLeft: '2rem' }}>
             <VisualizationHeader
-              title={TITLE}
+              title={MUTATED_TITLE}
               buttons={[
                 <DownloadVisualizationButton
                   key="download"
@@ -194,7 +310,7 @@ const Component = compose(
                   svg={() =>
                     wrapSvg({
                       selector: '#mutated-genes-chart svg',
-                      title: TITLE,
+                      title: MUTATED_TITLE,
                     })}
                   data={mutatedGenesChartData.map(d => ({
                     label: d.label,
@@ -233,6 +349,70 @@ const Component = compose(
                 </Row>
               </div>
             )}
+
+            {showingMore && (
+              <VisualizationHeader
+                title={CNV_TITLE}
+                buttons={[
+                  <DownloadVisualizationButton
+                    key="download"
+                    disabled={!cnvGenesChartData.length}
+                    svg={() =>
+                      wrapSvg({
+                        selector: '#cnv-genes-chart svg',
+                        title: CNV_TITLE,
+                        legends: renderToString(<Legends />),
+                      })}
+                    data={cnvGenesChartData.map(d => ({
+                      symbol: d.symbol,
+                      // amplification: d.amplification,
+                      gain: d.gain,
+                      loss: d.loss,
+                      // deep_loss: d.deep_loss,
+                      total: d.total,
+                    }))}
+                    slug="most-frequently-cnv-genes-bar-chart"
+                    tooltipHTML="Download image or data"
+                    noText
+                  />,
+                ]}
+              />
+            )}
+            {!!cnvGenesChartData.length &&
+              showingMore && (
+                <div id="cnv-genes-chart">
+                  <FilteredStackedBarChart
+                    data={cnvGenesChartData}
+                    yAxis={{ title: '% of Cases Affected' }}
+                    colors={cnvColors.reduce(
+                      (acc, f) => ({ ...acc, [f.key]: f.color }),
+                      0,
+                    )}
+                    displayFilters={cnvColors.reduce(
+                      (acc, f) => ({ ...acc, [f.key]: true }),
+                      0,
+                    )}
+                    margin={{ top: 20, right: 50, bottom: 65, left: 55 }}
+                    styles={{
+                      xAxis: {
+                        stroke: theme.greyScale4,
+                        textFill: theme.greyScale3,
+                      },
+                      yAxis: {
+                        stroke: theme.greyScale4,
+                        textFill: theme.greyScale3,
+                      },
+                      bars: { fill: theme.secondary },
+                      tooltips: {
+                        fill: '#fff',
+                        stroke: theme.greyScale4,
+                        textFill: theme.greyScale3,
+                      },
+                    }}
+                  />
+                  <Legends />
+                </div>
+              )}
           </Column>
         )}
       </div>

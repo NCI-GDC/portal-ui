@@ -62,7 +62,9 @@ export const VERSION_INFO_SUCCESS = 'gdc/VERSION_INFO_SUCCESS';
 // Action Creator
 export function fetchApiVersionInfo(): Function {
   return async (dispatch, getState) => {
-    const { tag, commit, data_release } = await fetchApi('status');
+    const { tag, commit, data_release } = await fetchApi('status', {
+      credentials: 'same-origin',
+    });
     const apiVersionInfo = {
       apiVersion: tag,
       apiCommitHash: commit,

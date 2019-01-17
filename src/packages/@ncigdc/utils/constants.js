@@ -10,13 +10,27 @@ const localStorage = window.localStorage || {};
 export const AUTH =
   localStorage.REACT_APP_GDC_AUTH || process.env.REACT_APP_GDC_AUTH || '';
 
-export const AUTH_API = localStorage.REACT_APP_GDC_AUTH_API || `${AUTH}/api`;
+export const FENCE =
+  localStorage.REACT_APP_FENCE || process.env.REACT_APP_FENCE || '';
+
+export const AUTH_API =
+  localStorage.REACT_APP_GDC_AUTH_API ||
+  process.env.REACT_APP_GDC_AUTH_API ||
+  `${AUTH}/api`;
 
 export const API = localStorage.REACT_APP_API || process.env.REACT_APP_API;
 
 export const SLIDE_IMAGE_ENDPOINT =
   localStorage.REACT_APP_SLIDE_IMAGE_ENDPOINT ||
   process.env.REACT_APP_SLIDE_IMAGE_ENDPOINT;
+
+export const AWG = localStorage.REACT_APP_AWG || process.env.REACT_APP_AWG || false;
+
+export const IS_AUTH_PORTAL =
+  localStorage.REACT_APP_IS_AUTH_PORTAL ||
+  process.env.REACT_APP_IS_AUTH_PORTAL ||
+  AWG ||
+  false;
 
 export const DISPLAY_SLIDES =
   localStorage.REACT_APP_GDC_DISPLAY_SLIDES ||
@@ -103,53 +117,100 @@ export const MUTATION_SUBTYPE_MAP = {
 export const DNA_CHANGE_MARKERS = ['del', 'ins', '>'];
 
 export const HUMAN_BODY_SITES_MAP = {
-  bladder: 'Bladder',
-  breast: 'Breast',
-  esophagus: 'Esophagus',
-  'other and ill-defined sites': 'Other And Ill-Defined Sites',
-  'other and unspecified major salivary glands': 'Head and Neck',
-  kidney: 'Kidney',
-  'not reported': 'Not Reported',
-  unknown: 'Not Reported',
-  ovary: 'Ovary',
-  pancreas: 'Pancreas',
-  thymus: 'Thymus',
-  'thyroid gland': 'Thyroid',
-  'bronchus and lung': 'Lung',
-  nasopharynx: 'Head and Neck',
-  'prostate gland': 'Prostate',
+  'accessory sinuses': 'Head and Neck',
+  'adrenal gland': 'Adrenal Gland',
   'anus and anal canal': 'Other And Ill-Defined Sites',
+  'base of tongue': 'Head and Neck',
+  'bile duct': 'Bile Duct',
+  bladder: 'Bladder',
+  blood: 'Blood',
+  'bone marrow': 'Bone Marrow',
+  bone: 'Bone',
+  'bones, joints and articular cartilage of limbs': 'Bone',
+  'bones, joints and articular cartilage of other and unspecified sites':
+    'Bone',
+  brain: 'Brain',
+  breast: 'Breast',
+  'bronchus and lung': 'Lung',
   'cervix uteri': 'Cervix',
-  penis: 'Other And Ill-Defined Sites',
-  rectum: 'Colorectal',
-  skin: 'Skin',
-  vagina: 'Other And Ill-Defined Sites',
-  vulva: 'Other And Ill-Defined Sites',
-  ureter: 'Other And Ill-Defined Sites',
+  cervix: 'Cervix',
   colon: 'Colorectal',
-  'other and unspecified parts of biliary tract': 'Bile Duct',
-  hypopharynx: 'Head and Neck',
-  'small intestine': 'Other And Ill-Defined Sites',
-  'other and unspecified female genital organs': 'Other And Ill-Defined Sites',
+  colorectal: 'Colorectal',
+  'connective, subcutaneous and other soft tissues': 'Soft Tissue',
+  'corpus uteri': 'Uterus',
+  esophagus: 'Esophagus',
+  'eye and adnexa': 'Eye',
+  eye: 'Eye',
+  'floor of mouth': 'Head and Neck',
   gallbladder: 'Other And Ill-Defined Sites',
-  'retroperitoneum and peritoneum': 'Other And Ill-Defined Sites',
-  stomach: 'Stomach',
-  uterus: 'Uterus',
-  'uterus, nos': 'Uterus',
+  gum: 'Head and Neck',
+  'head and neck': 'Head and Neck',
+  'heart, mediastinum, and pleura': 'Pleura',
+  'hematopoietic and reticuloendothelial systems': 'Bone Marrow',
+  hypopharynx: 'Head and Neck',
+  kidney: 'Kidney',
+  larynx: 'Head and Neck',
+  lip: 'Head and Neck',
   'liver and intrahepatic bile ducts': 'Liver',
-  trachea: 'Head and Neck',
+  liver: 'Liver',
+  lung: 'Lung',
+  'lymph nodes': 'Lymph Nodes',
+  meninges: 'Other And Ill-Defined Sites',
+  'nasal cavity and middle ear': 'Head and Neck',
+  nasopharynx: 'Head and Neck',
+  'nervous system': 'Nervous System',
+  'not reported': 'Not Reported',
+  oropharynx: 'Head and Neck',
+  'other and ill-defined digestive organs': 'Other And Ill-Defined Sites',
+  'other and ill-defined sites in lip, oral cavity and pharynx':
+    'Head and Neck',
+  'other and ill-defined sites within respiratory system and intrathoracic organs':
+    'Other And Ill-Defined Sites',
+  'other and ill-defined sites': 'Other And Ill-Defined Sites',
+  'other and unspecified female genital organs': 'Other And Ill-Defined Sites',
+  'other and unspecified major salivary glands': 'Head and Neck',
+  'other and unspecified male genital organs': 'Other And Ill-Defined Sites',
+  'other and unspecified parts of biliary tract': 'Bile Duct',
+  'other and unspecified parts of mouth': 'Head and Neck',
+  'other and unspecified parts of tongue': 'Head and Neck',
+  'other and unspecified urinary organs': 'Other And Ill-Defined Sites',
   'other endocrine glands and related structures':
     'Other And Ill-Defined Sites',
-  'adrenal gland': 'Adrenal Gland',
-  'eye and adnexa': 'Eye',
-  'other and ill-defined digestive organs': 'Other And Ill-Defined Sites',
-  'heart, mediastinum, and pleura': 'Pleura',
-  testis: 'Testis',
-  'spinal cord, cranial nerves, and other parts of central nervous system':
-    'Nervous System',
+  ovary: 'Ovary',
+  palate: 'Head and Neck',
+  pancreas: 'Pancreas',
+  'parotid gland': 'Head and Neck',
+  penis: 'Other And Ill-Defined Sites',
   'peripheral nerves and autonomic nervous system':
     'Other And Ill-Defined Sites',
-  'other and unspecified urinary organs': 'Other And Ill-Defined Sites',
+  placenta: 'Other And Ill-Defined Sites',
+  pleura: 'Pleura',
+  'prostate gland': 'Prostate',
+  prostate: 'Prostate',
+  'pyriform sinus': 'Head and Neck',
+  'rectosigmoid junction': 'Colorectal',
+  rectum: 'Colorectal',
+  'renal pelvis': 'Other And Ill-Defined Sites',
+  'retroperitoneum and peritoneum': 'Other And Ill-Defined Sites',
+  skin: 'Skin',
+  'small intestine': 'Stomach',
+  'soft tissue': 'Soft Tissue',
+  'spinal cord, cranial nerves, and other parts of central nervous system':
+    'Nervous System',
+  stomach: 'Stomach',
+  testis: 'Testis',
+  thymus: 'Thymus',
+  'thyroid gland': 'Thyroid',
+  thyroid: 'Thyroid',
+  tonsil: 'Head and Neck',
+  trachea: 'Head and Neck',
+  'unknown primary site': 'Other And Ill-Defined Sites',
+  unknown: 'Not Reported',
+  ureter: 'Other And Ill-Defined Sites',
+  'uterus, nos': 'Uterus',
+  uterus: 'Uterus',
+  vagina: 'Other And Ill-Defined Sites',
+  vulva: 'Other And Ill-Defined Sites',
 };
 
 export const HUMAN_BODY_ALL_ALLOWED_SITES = [

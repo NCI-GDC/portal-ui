@@ -10,7 +10,7 @@ type TProps = {
   hits: Array<string>,
   onClose: Function,
   push: Function,
-  query: TRawQuery,
+  query: IRawQuery,
 };
 
 const enhance = compose(withRouter);

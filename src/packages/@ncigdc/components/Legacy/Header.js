@@ -80,7 +80,7 @@ const Header = ({ theme }) => (
       </Row>
       <Row flex="3" style={center}>
         <a
-          href="https://gdc-portal.nci.nih.gov/"
+          href="https://portal.gdc.cancer.gov/"
           className={styles.activePortalLink(theme)}
         >
           <img

@@ -5,6 +5,6 @@ export const namespaceActions = (namespace, constants) =>
         ...obj,
         [constant]: `${namespace}/${constant}`,
       }),
-      {},
-    ),
+      {}
+    )
   );

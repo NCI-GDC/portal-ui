@@ -8,6 +8,7 @@ import { compose, withState, branch, renderComponent } from 'recompose';
 import { connect } from 'react-redux';
 import { humanify } from '@ncigdc/utils/string';
 import { makeFilter } from '@ncigdc/utils/filters';
+import formatFileSize from '@ncigdc/utils/formatFileSize';
 import Card from '@ncigdc/uikit/Card';
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import Input from '@ncigdc/uikit/Form/Input';
@@ -31,7 +32,6 @@ import timestamp from '@ncigdc/utils/timestamp';
 import EntityPageHorizontalTable from '@ncigdc/components/EntityPageHorizontalTable';
 import AddToCartButtonSingle from '@ncigdc/components/AddToCartButtonSingle';
 import DownloadFile from '@ncigdc/components/DownloadFile';
-import RemoveFromCartSingle from '@ncigdc/components/RemoveFromCartSingle';
 
 const styles = {
   searchIcon: theme => ({
@@ -66,12 +66,12 @@ export default compose(
   withRouter,
   branch(
     ({ viewer }) => !viewer.repository.cases.hits.edges[0],
-    renderComponent(() => <div>No case found.</div>),
+    renderComponent(() => <div>No case found.</div>)
   ),
   branch(
     ({ viewer }) =>
       !viewer.repository.cases.hits.edges[0].node.samples.hits.edges.length,
-    renderComponent(() => <div>No biospecimen data found.</div>),
+    renderComponent(() => <div>No biospecimen data found.</div>)
   ),
   connect(state => state.cart),
   withState('allExpanded', 'setAllExpanded', false),
@@ -87,9 +87,9 @@ export default compose(
         type: getType(selectedEntity),
         query: bioId || '',
       };
-    },
+    }
   ),
-  withTheme,
+  withTheme
 )(
   ({
     history,
@@ -103,7 +103,6 @@ export default compose(
     expandAllFirstClick,
     setExpandAllFirstClick,
     inactiveText,
-    canAddToCart = true,
   }) => {
     const p = edges[0].node;
     const caseFilter = makeFilter([
@@ -221,12 +220,12 @@ export default compose(
                         'expanded',
                         `${foundType}_id`,
                         '__dataID__',
-                      ].includes(key),
+                      ].includes(key)
                   )
                   .map(([key, val]) => {
                     if (
                       ['portions', 'aliquots', 'analytes', 'slides'].includes(
-                        key,
+                        key
                       )
                     ) {
                       return {
@@ -263,28 +262,18 @@ export default compose(
                             </ImageViewerLink>
                           </Tooltip>
                           <Tooltip Component="Add to cart">
-                            {canAddToCart && (
-                              <AddToCartButtonSingle
-                                style={{
-                                  ...iconButton,
-                                  marginLeft: '0.5rem',
-                                  marginRight: '0.5rem',
-                                  border: 'none',
-                                }}
-                                file={selectedSlide}
-                              />
-                            )}
-                            {!canAddToCart && (
-                              <RemoveFromCartSingle
-                                style={{
-                                  ...iconButton,
-                                  marginLeft: '0.5rem',
-                                  marginRight: '0.5rem',
-                                  padding: '0.2rem',
-                                }}
-                                file={selectedSlide}
-                              />
-                            )}
+                            <AddToCartButtonSingle
+                              style={{
+                                ...iconButton,
+                                marginLeft: '0.5rem',
+                                marginRight: '0.5rem',
+                                border: 'none',
+                                paddingLeft: '2px',
+                                paddingBottom: '5px',
+                              }}
+                              file={selectedSlide}
+                              asIcon
+                            />
                           </Tooltip>
                           <Tooltip Component="Download">
                             <DownloadFile
@@ -318,7 +307,11 @@ export default compose(
               headings={[
                 { key: 'file_name', title: 'Filename' },
                 { key: 'data_format', title: 'Data format' },
-                { key: 'file_size', title: 'Size' },
+                {
+                  key: 'file_size',
+                  title: 'Size',
+                  style: { textAlign: 'right' },
+                },
                 { key: 'action', title: 'Action' },
               ]}
               data={supplementalFiles.map((f, i) => {
@@ -339,7 +332,7 @@ export default compose(
                     </span>
                   ),
                   data_format: f.node.data_format,
-                  file_size: f.node.file_size,
+                  file_size: formatFileSize(f.node.file_size),
                   action: (
                     <div
                       style={{
@@ -348,12 +341,7 @@ export default compose(
                       }}
                     >
                       <span key="add_to_cart" style={{ paddingRight: '10px' }}>
-                        {canAddToCart && (
-                          <AddToCartButtonSingle file={fileData} />
-                        )}
-                        {!canAddToCart && (
-                          <RemoveFromCartSingle file={fileData} />
-                        )}
+                        <AddToCartButtonSingle file={fileData} />
                       </span>
                       <span style={{ paddingRight: '10px' }}>
                         <DownloadFile
@@ -375,5 +363,5 @@ export default compose(
         )}
       </Card>
     );
-  },
+  }
 );

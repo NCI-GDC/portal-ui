@@ -11,7 +11,12 @@ import {
   getColorValue,
 } from '@ncigdc/components/Oncogrid/tracks';
 import { mapDonors, mapGenes, buildOccurrences } from './dataMapping';
-import type { TDonorInput, TGeneInput, TOccurrenceInput } from './dataMapping';
+import {
+  TDonorInput,
+  TGeneInput,
+  TSSMOccurrenceInput,
+  TCNVOccurrenceInput,
+} from './dataMapping';
 
 const donorTracks = [...clinicalDonorTracks, ...dataTypeTracks];
 
@@ -50,7 +55,7 @@ function geneSetLegend(): string {
 export default function({
   donorData,
   geneData,
-  occurrencesData,
+  ssmOccurrencesData,
   colorMap,
   element,
   height = 150,
@@ -58,11 +63,15 @@ export default function({
   trackPadding,
   consequenceTypes,
   impacts,
-  grid = true,
+  grid = false,
+  cnvOccurrencesData = [],
+  heatMap = false,
+  heatMapColor,
 }: {
   donorData: Array<TDonorInput>,
   geneData: Array<TGeneInput>,
-  occurrencesData: Array<TOccurrenceInput>,
+  ssmOccurrencesData: Array<TSSMOccurrenceInput>,
+  cnvOccurrencesData: Array<TCNVOccurrenceInput>,
   colorMap: { [key: string]: string },
   element: string,
   height: number,
@@ -71,18 +80,34 @@ export default function({
   consequenceTypes: Array<string>,
   impacts: Array<string>,
   grid?: boolean,
+  heatMap: boolean,
+  heatMapColor: string,
 }): ?Object {
-  const { observations, donorIds, geneIds } = buildOccurrences(
-    occurrencesData,
+  const {
+    ssmObservations,
+    donorIds,
+    geneIds,
+    cnvObservations,
+  } = buildOccurrences(
+    ssmOccurrencesData,
+    cnvOccurrencesData,
     donorData,
     geneData,
     consequenceTypes,
     impacts,
   );
-  if (observations.length === 0) return null;
-  const donors = mapDonors(donorData, donorIds);
-  const genes = mapGenes(geneData, geneIds);
+  if (!ssmObservations.length && !cnvObservations.length) return null;
 
+  let donors = mapDonors(donorData, donorIds);
+  let genes = mapGenes(geneData, geneIds);
+  donors = donors.map(donor => ({
+    ...donor,
+    cnv: cnvObservations.filter(cnv => donor.id === cnv.donorId).length,
+  }));
+  genes = genes.map(gene => ({
+    ...gene,
+    cnv: cnvObservations.filter(cnv => gene.id === cnv.geneId).length,
+  }));
   const maxDaysToDeath = Math.max(...donors.map(d => d.daysToDeath));
   const maxAgeAtDiagnosis = Math.max(...donors.map(d => d.age));
   const maxDonorsAffected = Math.max(...genes.map(g => g.totalDonors));
@@ -127,15 +152,16 @@ export default function({
   };
 
   return {
+    cnvObservations,
     donors,
     genes,
-    observations,
+    ssmObservations,
     height,
     width,
     element,
     colorMap,
     scaleToFit: true,
-    heatMap: false,
+    heatMap,
     grid,
     minCellHeight: 8,
     trackHeight: 12,
@@ -169,6 +195,7 @@ export default function({
     margin: { top: 20, right: 5, bottom: 20, left: 0 },
     leftTextWidth: 120,
     trackPadding,
+    heatMapColor,
   };
 }
 

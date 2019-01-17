@@ -13,7 +13,7 @@ import { CreateRepositoryCaseSetButton } from '@ncigdc/modern_components/withSet
 import { fetchFilesAndAdd } from '@ncigdc/dux/cart';
 import { ShoppingCartIcon } from '@ncigdc/theme/icons';
 import DownloadManifestButton from '@ncigdc/components/DownloadManifestButton';
-import type { TGroupFilter } from '@ncigdc/utils/filters/types';
+import { IGroupFilter } from '@ncigdc/utils/filters/types';
 import { DISPLAY_SLIDES } from '@ncigdc/utils/constants';
 import { RepositorySlideCount } from '@ncigdc/modern_components/Counts';
 import { Tooltip } from '@ncigdc/uikit/Tooltip';
@@ -22,12 +22,12 @@ import styled from '@ncigdc/theme/styled';
 import { linkButton } from '@ncigdc/theme/mixins';
 import ImageViewerLink from '@ncigdc/components/Links/ImageViewerLink';
 import { withTheme } from '@ncigdc/theme';
-
 import pluralize from '@ncigdc/utils/pluralize';
+import { AWG } from '@ncigdc/utils/constants';
 
 const ImageViewerLinkAsButton = styled(ImageViewerLink, {
-  padding: '9px 12px',
   marginLeft: '5px',
+  padding: '9px 12px',
   ...linkButton,
 });
 
@@ -44,18 +44,19 @@ export default compose(
     push,
     theme,
   }: {
-    filters: TGroupFilter,
+    filters: IGroupFilter,
     totalCases: number,
     totalFiles: number,
     dispatch: Function,
     push: Function,
+    theme: any,
   }) => {
     return (
       <Row
         style={{
+          alignItems: 'center',
           justifyContent: 'space-between',
           padding: '0 0 2rem',
-          alignItems: 'center',
         }}
       >
         <Row spacing="0.2rem">
@@ -66,53 +67,55 @@ export default compose(
             Add All Files to Cart
           </Button>
           <DownloadManifestButton fileCount={totalFiles} filters={filters} />
-          {filters ? (
-            <CreateRepositoryCaseSetButton
-              filters={filters}
-              disabled={!totalCases}
-              style={{ paddingLeft: '5px' }}
-              onComplete={setId => {
-                push({
-                  pathname: '/exploration',
-                  query: {
-                    filters: stringifyJSONParam({
-                      op: 'AND',
-                      content: [
-                        {
-                          op: 'IN',
-                          content: {
-                            field: 'cases.case_id',
-                            value: [`set_id:${setId}`],
+          {!AWG ? (
+            filters ? (
+              <CreateRepositoryCaseSetButton
+                filters={filters}
+                disabled={!totalCases}
+                style={{ paddingLeft: '5px' }}
+                onComplete={(setId: String) => {
+                  push({
+                    pathname: '/exploration',
+                    query: {
+                      filters: stringifyJSONParam({
+                        content: [
+                          {
+                            content: {
+                              field: 'cases.case_id',
+                              value: [`set_id:${setId}`],
+                            },
+                            op: 'IN',
                           },
-                        },
-                      ],
-                    }),
-                  },
-                });
-              }}
-            >
-              {'View '}
-              {totalCases.toLocaleString()} {pluralize(' Case', totalCases)}
-              {' in Exploration'}
-            </CreateRepositoryCaseSetButton>
-          ) : (
-            <Button
-              disabled={!totalCases}
-              style={{ paddingLeft: '5px' }}
-              onClick={() =>
-                push({
-                  pathname: '/exploration',
-                })}
-            >
-              {'View '}
-              {totalCases.toLocaleString()} {pluralize(' Case', totalCases)}
-              {' in Exploration'}
-            </Button>
-          )}
+                        ],
+                        op: 'AND',
+                      }),
+                    },
+                  });
+                }}
+              >
+                {'View '}
+                {totalCases.toLocaleString()} {pluralize(' Case', totalCases)}
+                {' in Exploration'}
+              </CreateRepositoryCaseSetButton>
+            ) : (
+              <Button
+                disabled={!totalCases}
+                style={{ paddingLeft: '5px' }}
+                onClick={() =>
+                  push({
+                    pathname: '/exploration',
+                  })}
+              >
+                {'View '}
+                {totalCases.toLocaleString()} {pluralize(' Case', totalCases)}
+                {' in Exploration'}
+              </Button>
+            )
+          ) : null}
 
           {DISPLAY_SLIDES && (
             <RepositorySlideCount filters={filters}>
-              {(count, loading) => (
+              {(count: Number, loading: Boolean) => (
                 <span style={{ marginTop: '7px' }}>
                   <Tooltip
                     Component={count === 0 ? 'No images available' : null}

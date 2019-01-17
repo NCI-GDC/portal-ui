@@ -57,7 +57,6 @@ export default compose(
       selected[selected.has(op) ? 'delete' : 'add'](op);
       setSelected(selected);
     };
-
     const CountComponent = countComponents[type];
     const ops = buildOps({ setIds: Object.keys(sets), type });
 
@@ -69,7 +68,7 @@ export default compose(
     return (
       <div style={{ padding: 20 }}>
         <div style={{ fontSize: 20 }}>Set Operations</div>
-        {deprecatedSets.length &&
+        {deprecatedSets.length > 0 &&
           `Analysis is deprecated because it contains one or more deprecated sets (${deprecatedSets.join(
             ', ',
           )})`}

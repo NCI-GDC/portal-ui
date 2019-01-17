@@ -26,7 +26,7 @@ export default (Component: ReactClass<*>) =>
           projects_sort: parseJSONParam(q.projects_sort, DEFAULT_PROJECT_SORT),
         },
       };
-    }),
+    })
   )((props: mixed) => {
     return (
       <Query

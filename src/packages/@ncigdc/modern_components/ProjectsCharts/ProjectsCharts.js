@@ -1,4 +1,3 @@
-/* @flow */
 import React from 'react';
 import QuestionIcon from 'react-icons/lib/fa/question-circle';
 import * as d3 from 'd3';
@@ -16,7 +15,7 @@ import StackedBarChart from '@ncigdc/components/Charts/StackedBarChart';
 import ExploreLink from '@ncigdc/components/Links/ExploreLink';
 import styled from '@ncigdc/theme/styled';
 import { withTheme } from '@ncigdc/theme';
-import type { TGroupContent, TGroupFilter } from '@ncigdc/utils/filters/types';
+import { TGroupContent, IGroupFilter } from '@ncigdc/utils/filters/types';
 import PieChart from '@ncigdc/components/Charts/PieChart';
 
 const color = d3.scaleOrdinal([
@@ -32,7 +31,7 @@ type yAxisUnit = 'percent' | 'number';
 type TProps = {
   projectIds: Array<string>,
   caseCountFilters: TGroupContent,
-  fmgChartFilters: TGroupFilter,
+  fmgChartFilters: IGroupFilter,
   numUniqueCases: number,
   topGenesWithCasesPerProject: {
     [gene_id: string]: { [project_id: string]: number, symbol: string },
@@ -316,7 +315,7 @@ export default compose(
                 <div style={{ maxWidth: '24em' }}>
                   From COSMIC Cancer Gene Census and mutation consequence types
                   in {'{'}missense_variant, frameshift_variant, start_lost,
-                  stop_lost, initiator_codon_variant, stop_gained{'}'}
+                  stop_lost, stop_gained{'}'}
                 </div>
               }
             >
@@ -412,7 +411,11 @@ export default compose(
                             }),
                             {},
                           )}
-                          yAxis={{ title: 'Cases Affected' }}
+                          yAxis={{
+                            title:
+                              (yAxisUnit === 'number' ? '# of' : '% of') +
+                              ' Cases Affected',
+                          }}
                           styles={{
                             xAxis: {
                               stroke: theme.greyScale4,

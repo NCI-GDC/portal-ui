@@ -23,6 +23,7 @@ import { truncateAfterMarker } from '@ncigdc/utils/string';
 import { ForTsvExport } from '@ncigdc/components/DownloadTableToTsvButton';
 import { createSelectColumn } from '@ncigdc/tableModels/utils';
 import { ImpactTdContents, ImpactThContents } from '@ncigdc/components/Impacts';
+import ExploreSSMLink from '@ncigdc/components/Links/ExploreSSMLink';
 
 const colors = scaleOrdinal(schemeCategory10);
 
@@ -75,7 +76,7 @@ const SsmsTableModel = [
             {truncateAfterMarker(
               node.genomic_dna_change,
               DNA_CHANGE_MARKERS,
-              8,
+              8
             )}
           </MutationLink>
         </Tooltip>
@@ -167,36 +168,29 @@ const SsmsTableModel = [
     }) => (
       <Td>
         <span>
-          <ExploreLink
+          <ExploreSSMLink
             merge
-            query={{
-              searchTableTab: 'cases',
-              filters: addInFilters(
-                query.genesTable_filters || contextFilters || defaultFilters,
-                makeFilter([{ field: 'ssms.ssm_id', value: node.ssm_id }]),
-              ),
-            }}
+            searchTableTab={'cases'}
+            filters={addInFilters(
+              query.genesTable_filters || contextFilters || defaultFilters,
+              makeFilter([{ field: 'ssms.ssm_id', value: node.ssm_id }])
+            )}
           >
             {node.filteredOccurences.hits.total.toLocaleString()}
-          </ExploreLink>
+          </ExploreSSMLink>
           <span> / </span>
           <ExploreLink
             query={{
               searchTableTab: 'cases',
-              filters:
-                location.pathname.split('/')[1] === 'genes'
-                  ? query.ssmsTable_filters || contextFilters || defaultFilters
-                  : addInFilters(
-                      query.ssmsTable_filters ||
-                        contextFilters ||
-                        defaultFilters,
-                      makeFilter([
-                        {
-                          field: 'cases.available_variation_data',
-                          value: ['ssm'],
-                        },
-                      ]),
-                    ),
+              filters: addInFilters(
+                query.ssmsTable_filters || contextFilters || defaultFilters,
+                makeFilter([
+                  {
+                    field: 'cases.available_variation_data',
+                    value: ['ssm'],
+                  },
+                ])
+              ),
             }}
           >
             {(filteredCases.hits.total || 0).toLocaleString()}
@@ -302,10 +296,10 @@ const SsmsTableModel = [
                   value: node.ssm_id,
                   slug: `${get(
                     node,
-                    'consequence.hits.edges[0].node.transcript.gene.symbol',
+                    'consequence.hits.edges[0].node.transcript.gene.symbol'
                   )} ${get(
                     node,
-                    'consequence.hits.edges[0].node.transcript.aa_change',
+                    'consequence.hits.edges[0].node.transcript.aa_change'
                   )}`,
                   currentFilters: defaultFilters,
                 }).then(data => {

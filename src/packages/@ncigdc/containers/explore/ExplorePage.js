@@ -73,7 +73,7 @@ function setVariables({ relay, filters }) {
           { op: 'not', content: { field: 'cosmic_id', value: ['MISSING'] } },
         ],
       },
-      filters,
+      filters
     ),
     dbsnpRsFilters: replaceFilters(
       {
@@ -88,7 +88,7 @@ function setVariables({ relay, filters }) {
           },
         ],
       },
-      filters,
+      filters
     ),
   });
 }
@@ -104,7 +104,7 @@ const enhance = compose(
         setVariables(nextProps);
       }
     },
-  }),
+  })
 );
 export const ExplorePageComponent = ({
   viewer,
@@ -127,7 +127,7 @@ export const ExplorePageComponent = ({
             setAutocomplete={(value, onReadyStateChange) =>
               relay.setVariables(
                 { idAutocompleteCases: value, runAutocompleteCases: !!value },
-                onReadyStateChange,
+                onReadyStateChange
               )}
           />
         ),
@@ -138,11 +138,12 @@ export const ExplorePageComponent = ({
         component: (
           <GeneAggregations
             aggregations={viewer.explore.genes.aggregations}
+            cnvAggregations={viewer.explore.cnvs.aggregations}
             suggestions={get(viewer, 'autocomplete_genes.hits', [])}
             setAutocomplete={(value, onReadyStateChange) =>
               relay.setVariables(
                 { idAutocompleteGenes: value, runAutocompleteGenes: !!value },
-                onReadyStateChange,
+                onReadyStateChange
               )}
           />
         ),
@@ -159,7 +160,7 @@ export const ExplorePageComponent = ({
             setAutocomplete={(value, onReadyStateChange) =>
               relay.setVariables(
                 { idAutocompleteSsms: value, runAutocompleteSsms: !!value },
-                onReadyStateChange,
+                onReadyStateChange
               )}
           />
         ),
@@ -306,6 +307,9 @@ export const ExplorePageQuery = {
             id
             ...on Ssm {
               ssm_id
+              cosmic_id
+              gene_aa_change
+              genomic_dna_change
             }
           }
         }
@@ -324,6 +328,14 @@ export const ExplorePageQuery = {
           genes {
             aggregations(filters: $filters aggregations_filter_themselves: false) {
               ${GeneAggregations.getFragment('aggregations')}
+            }
+            hits(first: $genes_size offset: $genes_offset, filters: $filters) {
+              total
+            }
+          }
+          cnvs {
+            aggregations(filters: $filters aggregations_filter_themselves: false) {
+              ${GeneAggregations.getFragment('cnvAggregations')}
             }
             hits(first: $genes_size offset: $genes_offset, filters: $filters) {
               total
@@ -351,7 +363,7 @@ export const ExplorePageQuery = {
 
 const ExplorePage = Relay.createContainer(
   enhance(ExplorePageComponent),
-  ExplorePageQuery,
+  ExplorePageQuery
 );
 
 export default ExplorePage;

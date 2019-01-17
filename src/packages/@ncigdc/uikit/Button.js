@@ -41,6 +41,8 @@ type TButtonProps = {
   leftIcon?: mixed,
   rightIcon?: mixed,
   style?: Object,
+  onClick?: Function,
+  className?: string,
 };
 const Button = (
   {
@@ -49,8 +51,9 @@ const Button = (
     leftIcon = null,
     disabled = false,
     children,
+    className,
     ...props
-  }: TButtonProps = {},
+  }: TButtonProps = {}
 ) => {
   const StyledButton = styled.button({ ...buttonBaseStyles, ...style });
   StyledButton.displayName = 'StyledButton';
@@ -59,7 +62,7 @@ const Button = (
     <StyledButton
       disabled={disabled}
       {...validAttributes(props)}
-      className={props.className + ' button'}
+      className={className + ' button'}
     >
       <div style={{ display: 'flex', alignItems: 'center' }}>
         {leftIcon}

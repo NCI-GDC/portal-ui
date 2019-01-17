@@ -1,0 +1,19 @@
+# robots.txt
+#
+# Disallow access to subpages while still allowing access to the root path
+# and any static files.
+
+User-agent: *
+Disallow: /analysis
+Disallow: /annotations
+Disallow: /cart
+Disallow: /cases
+Disallow: /exploration
+Disallow: /files
+Disallow: /genes
+Disallow: /image-viewer
+Disallow: /manage-sets
+Disallow: /projects
+Disallow: /query
+Disallow: /repository
+Disallow: /ssms

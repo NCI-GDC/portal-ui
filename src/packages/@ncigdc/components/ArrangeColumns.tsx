@@ -41,6 +41,7 @@ interface IArrangeColumnsProps {
   state: IState;
   searchTerm: string;
   entityType: string;
+  hideColumns?: string[];
 }
 const ArrangeColumns = compose<IArrangeColumnsProps, JSX.Element>(
   connect(
@@ -52,11 +53,19 @@ const ArrangeColumns = compose<IArrangeColumnsProps, JSX.Element>(
         };
         [x: string]: any;
       },
-      props: { entityType: string; searchTerm: string; [x: string]: any }
+      props: {
+        entityType: string;
+        searchTerm: string;
+        [x: string]: any;
+        hideColumns: string[];
+      }
     ) => ({
-      localTableColumns: state.tableColumns[props.entityType],
+      localTableColumns: state.tableColumns[props.entityType].filter(
+        (t: IColumnProps<boolean>) => !(props.hideColumns || []).includes(t.id)
+      ),
       filteredTableColumns: state.tableColumns[props.entityType].filter(
-        (t: IColumnProps<boolean>) => !t.subHeading
+        (t: IColumnProps<boolean>) =>
+          !(props.hideColumns || []).includes(t.id) && !t.subHeading
       ),
     })
   ),
@@ -84,10 +93,12 @@ const ArrangeColumns = compose<IArrangeColumnsProps, JSX.Element>(
     state,
     searchTerm,
     entityType,
+    hideColumns,
   }) => {
     const subHeadings =
       localTableColumns.filter((t: IColumnProps<boolean>) => t.subHeading) ||
       [];
+
     return (
       <div className="test-arrange-columns">
         {filteredTableColumns.map(

@@ -54,7 +54,7 @@ export default withTheme(
     <div
       style={{
         top: 180,
-        bottom: 240,
+        bottom: 20,
         overflowY: 'auto',
         padding: 20,
         marginTop: 20,

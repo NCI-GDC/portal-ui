@@ -26,7 +26,7 @@ import DownloadIcon from '@ncigdc/theme/icons/Download';
 import Spinner from '@ncigdc/theme/icons/Spinner';
 
 import download from '@ncigdc/utils/download';
-import { AUTH_API } from '@ncigdc/utils/constants';
+import { API } from '@ncigdc/utils/constants';
 /*----------------------------------------------------------------------------*/
 
 const styles = {
@@ -76,7 +76,7 @@ const downloadCart = ({
     dispatch(setModal(null));
     setState(s => ({ ...s, cartDownloading: true }));
     download({
-      url: urlJoin(AUTH_API, 'data'),
+      url: urlJoin(API, 'data'),
       params: {
         ids: files.map(file => file.file_id),
         annotations: true,
@@ -175,7 +175,7 @@ const downloadCart = ({
               onClick={() => {
                 setState(s => ({ ...s, cartDownloading: true }));
                 download({
-                  url: urlJoin(AUTH_API, 'data'),
+                  url: urlJoin(API, 'data'),
                   params: {
                     ids: files.map(file => file.file_id),
                     annotations: true,

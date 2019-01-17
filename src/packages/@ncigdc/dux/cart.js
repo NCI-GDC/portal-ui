@@ -12,7 +12,7 @@ import { Column } from '@ncigdc/uikit/Flex';
 import { center } from '@ncigdc/theme/mixins';
 import { replaceFilters } from '@ncigdc/utils/filters';
 import UnstyledButton from '@ncigdc/uikit/UnstyledButton';
-import { API, IS_AUTH_PORTAL } from '@ncigdc/utils/constants';
+import { API } from '@ncigdc/utils/constants';
 
 /*----------------------------------------------------------------------------*/
 

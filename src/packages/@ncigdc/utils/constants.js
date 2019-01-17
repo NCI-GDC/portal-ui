@@ -13,18 +13,14 @@ export const AUTH =
 export const FENCE =
   localStorage.REACT_APP_FENCE || process.env.REACT_APP_FENCE || '';
 
-export const AUTH_API =
-  localStorage.REACT_APP_GDC_AUTH_API ||
-  process.env.REACT_APP_GDC_AUTH_API ||
-  `${AUTH}/api`;
-
 export const API = localStorage.REACT_APP_API || process.env.REACT_APP_API;
 
 export const SLIDE_IMAGE_ENDPOINT =
   localStorage.REACT_APP_SLIDE_IMAGE_ENDPOINT ||
   process.env.REACT_APP_SLIDE_IMAGE_ENDPOINT;
 
-export const AWG = localStorage.REACT_APP_AWG || process.env.REACT_APP_AWG || false;
+export const AWG =
+  localStorage.REACT_APP_AWG || process.env.REACT_APP_AWG || false;
 
 export const IS_AUTH_PORTAL =
   localStorage.REACT_APP_IS_AUTH_PORTAL ||
@@ -37,11 +33,7 @@ export const DISPLAY_SLIDES =
   process.env.REACT_APP_GDC_DISPLAY_SLIDES ||
   false;
 
-export const API_OVERRIDE_KEYS = [
-  'REACT_APP_API',
-  'REACT_APP_GDC_AUTH',
-  'REACT_APP_GDC_AUTH_API',
-];
+export const API_OVERRIDE_KEYS = ['REACT_APP_API', 'REACT_APP_GDC_AUTH'];
 
 export const LOCAL_STORAGE_API_OVERRIDE = API_OVERRIDE_KEYS.some(
   k => localStorage[k],

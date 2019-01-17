@@ -5,7 +5,7 @@ import Queue from 'queue';
 import md5 from 'blueimp-md5';
 
 import { API, AUTH, IS_AUTH_PORTAL } from '@ncigdc/utils/constants';
-import { redirectToLogin } from '@ncigdc/utils/auth';
+import { redirectToLogin, userNeedsAuth } from '@ncigdc/utils/auth';
 
 const DEFAULTS = {
   method: 'get',
@@ -21,7 +21,7 @@ export function fetchAuth(options: { endpoint: string }): Object {
   return {
     [CALL_API]: {
       ...DEFAULTS,
-      ...(IS_AUTH_PORTAL
+      ...(userNeedsAuth()
         ? {
             credentials: 'include',
             headers: {},
@@ -37,7 +37,7 @@ export function fetchAuth(options: { endpoint: string }): Object {
 export const fetchApi = (endpoint, opts = {}) => {
   const clonedOptions = {
     ...opts,
-    ...(IS_AUTH_PORTAL
+    ...(userNeedsAuth()
       ? { credentials: opts.credentials || 'include', headers: opts.headers }
       : {}),
     ...(opts.body && {

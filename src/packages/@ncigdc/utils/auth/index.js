@@ -4,7 +4,7 @@ import _ from 'lodash';
 import urlJoin from 'url-join';
 
 import { forceLogout } from '@ncigdc/dux/auth';
-import { FENCE } from '@ncigdc/utils/constants';
+import { FENCE, IS_AUTH_PORTAL } from '@ncigdc/utils/constants';
 
 const isUserProject = ({ user, file }) => {
   if (!user) {
@@ -127,6 +127,11 @@ const redirectToLogin = error => {
   store.dispatch(forceLogout());
   return (window.location.href = `/login?error=${error}`);
 };
+
+const userNeedsAuth = () => {
+  const { user } = window.store.getState().auth;
+  return !!IS_AUTH_PORTAL || !!user;
+};
 /*----------------------------------------------------------------------------*/
 
 export {
@@ -139,4 +144,5 @@ export {
   userProjectsCount,
   authPartitionFiles,
   redirectToLogin,
+  userNeedsAuth,
 };

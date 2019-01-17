@@ -10,7 +10,7 @@ const store = new Store(source);
 const simpleCache = {};
 const pendingCache = {};
 const handlerProvider = null;
-import { redirectToLogin } from '@ncigdc/utils/auth';
+import { redirectToLogin, userNeedsAuth } from '@ncigdc/utils/auth';
 import consoleDebug from '@ncigdc/utils/consoleDebug';
 
 function fetchQuery(operation, variables, cacheConfig) {
@@ -53,7 +53,7 @@ function fetchQuery(operation, variables, cacheConfig) {
   pendingCache[hash] = true;
 
   return fetch(urlJoin(API, `graphql/${componentName}?hash=${hash}`), {
-    ...(IS_AUTH_PORTAL ? { credentials: 'include' } : {}),
+    ...(userNeedsAuth() ? { credentials: 'include' } : {}),
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

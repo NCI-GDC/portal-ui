@@ -10,7 +10,7 @@ import Button from '@ncigdc/uikit/Button';
 import DownloadIcon from '@ncigdc/theme/icons/Download';
 import Spinner from '@ncigdc/theme/icons/Spinner';
 import Hidden from '@ncigdc/components/Hidden';
-import { AUTH_API } from '@ncigdc/utils/constants';
+import { API } from '@ncigdc/utils/constants';
 import { TSetModalFunc } from '@ncigdc/dux/modal';
 
 type TDownloadButton = {
@@ -92,7 +92,7 @@ const DownloadButton = ({
         setActive(true);
         download({
           params,
-          url: urlJoin(AUTH_API, endpoint),
+          url: urlJoin(API, endpoint),
           method,
           altMessage,
         })(() => {}, () => setActive(false));

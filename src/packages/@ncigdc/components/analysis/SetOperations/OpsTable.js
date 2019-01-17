@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { compose } from 'recompose';
 import urlJoin from 'url-join';
-import { AUTH_API } from '@ncigdc/utils/constants';
+import { API } from '@ncigdc/utils/constants';
 
 import Table, { Tr, Td, TdNum, ThNum } from '@ncigdc/uikit/Table';
 import { stringifyJSONParam } from '@ncigdc/utils/uri';
@@ -87,7 +87,7 @@ const ActionsTd = compose(
                       },
                     ],
                   },
-                  url: urlJoin(AUTH_API, '/tar_sets'),
+                  url: urlJoin(API, '/tar_sets'),
                   method: 'POST',
                   altMessage: false,
                 })(() => {}, () => {});

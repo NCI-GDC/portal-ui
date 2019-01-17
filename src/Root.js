@@ -63,14 +63,17 @@ Relay.injectNetworkLayer(
         );
 
       req.url = `${url}?hash=${hash}`;
+      let { user } = window.store.getState().auth;
 
       if (!IS_AUTH_PORTAL) {
+        if (!!user) {
+          req.credentials = 'include';
+        }
         return next(req);
       }
 
       req.credentials = 'include';
 
-      let { user } = window.store.getState().auth;
       let parsedBody = JSON.parse(req.body);
       req.body = JSON.stringify(parsedBody);
       return next(req)

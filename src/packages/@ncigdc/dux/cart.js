@@ -2,7 +2,6 @@
 
 // Vendor
 import React from 'react';
-// import { REHYDRATE } from 'redux-persist/lib/constants';
 import _ from 'lodash';
 import { stringify } from 'query-string';
 
@@ -425,11 +424,6 @@ const initialState = {
 
 export function reducer(state: Object = initialState, action: Object): Object {
   switch (action.type) {
-    // case REHYDRATE: {
-    //   const incoming = action.payload.cart;
-    //   if (incoming) return { ...state, ...incoming };
-    //   return state;
-    // }
     case ADD_TO_CART:
       return {
         files: state.files.concat(

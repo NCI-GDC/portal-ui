@@ -12,7 +12,7 @@ import LoginButton from '@ncigdc/components/LoginButton';
 import UserDropdown from '@ncigdc/components/UserDropdown';
 import Hidden from '@ncigdc/components/Hidden';
 import withRouter from '@ncigdc/utils/withRouter';
-// import Banner from '@ncigdc/uikit/Banner';
+import Banner from '@ncigdc/uikit/Banner';
 import { withTheme } from '@ncigdc/theme';
 import DatabaseIcon from '@ncigdc/theme/icons/Database';
 
@@ -55,13 +55,13 @@ const Header = compose(
       className="navbar navbar-default navbar-static-top"
       role="banner"
     >
-      {/* {notifications.map(n => (
+      {notifications.map(n => (
         <Banner
           {...n}
           key={n.id}
           handleOnDismiss={() => dispatch(dismissNotification(n.id))}
         />
-      ))} */}
+      ))}
       <div className="container-fluid">
         <div className="navbar-header">
           <button

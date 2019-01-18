@@ -76,7 +76,9 @@ const reducer = (state = initialState, action: ITableColumnsAction) => {
             : state[key];
           order.forEach((element: IColumnProps<boolean>, i: number) => {
             if (val[i] && val[i].hidden) {
+              console.log('val[i] ', val[i])
               element.hidden = val[i].hidden
+              console.log(element)
             }
           });
           return {

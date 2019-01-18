@@ -54,9 +54,10 @@ const reducer = (state = initialState, action: ITableColumnsAction) => {
       const { version = -1, ...allTableColumns } =
         (action.payload && action.payload.tableColumns) || {};
       if (version !== state.version) {
+        console.log('versions do not match')
         return state;
       }
-
+      console.log('versions match')
       return {
         ...state,
         ...Object.entries(

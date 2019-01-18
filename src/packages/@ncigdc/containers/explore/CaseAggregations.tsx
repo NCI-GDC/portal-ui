@@ -74,50 +74,7 @@ export interface ITProps {
   advancedFilter: boolean;
   setAdvancedFilter: any;
 }
-// const advancedPresetFacets = [
-//   {
-//     title: 'Demographic',
-//     field: 'case_id',
-//     full: 'cases.case_id',
-//     doc_type: 'cases',
-//     type: 'id',
-//   },
-//   {
-//     title: 'Diagnoses',
-//     field: 'case_id',
-//     full: 'cases.case_id',
-//     doc_type: 'cases',
-//     type: 'id',
-//   },
-//   {
-//     title: 'Treatments',
-//     field: 'case_id',
-//     full: 'cases.case_id',
-//     doc_type: 'cases',
-//     type: 'id',
-//   },
-//   {
-//     title: 'Exposures',
-//     field: 'case_id',
-//     full: 'cases.case_id',
-//     doc_type: 'cases',
-//     type: 'id',
-//   },
-//   {
-//     title: 'Follow Up',
-//     field: 'case_id',
-//     full: 'cases.case_id',
-//     doc_type: 'cases',
-//     type: 'id',
-//   },
-//   {
-//     title: 'Molecular Tests',
-//     field: 'case_id',
-//     full: 'cases.case_id',
-//     doc_type: 'cases',
-//     type: 'id',
-//   },
-// ];
+
 const presetFacets = [
   {
     title: 'Case',
@@ -325,7 +282,7 @@ export const CaseAggregationsComponent = ({
         relay={relay}
       />
     </Modal>
-
+    {console.log(parsedFacets)}
     {userSelectedFacets.map(facet => (
       <FacetWrapper
         isRemovable

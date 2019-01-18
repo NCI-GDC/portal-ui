@@ -32,10 +32,10 @@ export const NestedWrapper = ({
     {isCollapsed || Component}
   </FacetWrapperDiv>
 );
-const RecursiveToggledBox = compose(
-  withState('headerCollapsed', 'setheaderCollapsed', {})
+const RecursiveToggledFacet = compose(
+  withState('headerCollapsed', 'setHeaderCollapsed', {})
 )(
-  class RecursiveToggledBox extends React.Component {
+  class RecursiveToggledFacet extends React.Component {
     constructor() {
       super();
     }
@@ -44,26 +44,30 @@ const RecursiveToggledBox = compose(
         hash,
         Component,
         headerCollapsed,
-        setheaderCollapsed,
+        setHeaderCollapsed,
       } = this.props;
       if (!hash || Object.keys(hash) === 0) {
         return '';
       }
       if (Object.keys(hash).includes('description')) {
-        return Component;
+        console.log('primary site', hash);
+        return Component(hash);
       }
 
       return Object.keys(hash).map(key => {
+        if (Object.keys(hash[key]).includes('description')) {
+          return Component(hash[key]);
+        }
         return (
           <NestedWrapper
             key={key + 'nestedWrapper'}
             Component={
-              <RecursiveToggledBox hash={hash[key]} Component={Component} />
+              <RecursiveToggledFacet hash={hash[key]} Component={Component} />
             }
-            title={key}
+            title={_.startCase(key)}
             isCollapsed={get(headerCollapsed, key, true)}
             setCollapsed={() =>
-              setheaderCollapsed({
+              setHeaderCollapsed({
                 ...headerCollapsed,
                 [key]: !get(headerCollapsed, key, true),
               })}
@@ -74,4 +78,4 @@ const RecursiveToggledBox = compose(
   }
 );
 
-export default RecursiveToggledBox;
+export default RecursiveToggledFacet;

@@ -1,9 +1,8 @@
 // @flow
-import { createStore, combineReducers, applyMiddleware, compose } from 'redux';
+import { createStore, applyMiddleware, compose } from 'redux';
 import thunk from 'redux-thunk';
 import {
   persistStore,
-  persistReducer,
   persistCombineReducers,
 } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
@@ -33,6 +32,8 @@ const setupStore: TSetupStore = ({ persistConfig = {} } = {}) => {
       'bannerNotification',
       'auth',
     ],
+    debug: true,
+    // debug: process.env.NODE_ENV === 'development',
     ...persistConfig,
   };
 

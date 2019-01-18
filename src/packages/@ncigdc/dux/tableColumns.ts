@@ -53,6 +53,8 @@ const reducer = (state = initialState, action: ITableColumnsAction) => {
     case REHYDRATE: {
       const { version = -1, ...allTableColumns } =
         (action.payload && action.payload.tableColumns) || {};
+        console.log('state: ',state)
+        console.log('action: ', action.payload)
       if (version !== state.version) {
         console.log('versions do not match')
         return state;

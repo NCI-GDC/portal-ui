@@ -46,7 +46,7 @@ const logout = async dispatch => {
       console.warn('There was an error: ', err);
     }
     return window.location.assign(
-      urlJoin(AUTH, `logout?next=https://portal.awg.gdc.cancer.gov/login`),
+      urlJoin(AUTH, `logout?next=https://portal.awg.gdc.cancer.gov/login`)
     );
   } else {
     dispatch(forceLogout());
@@ -56,12 +56,12 @@ const logout = async dispatch => {
           ? ``
           : urlJoin(
               AUTH,
-              `logout?next=:${window.location.port}${window.location.pathname}`,
-            ),
+              `logout?next=:${window.location.port}${window.location.pathname}`
+            )
       );
     } else {
       window.location.assign(
-        IS_DEV ? `` : urlJoin(AUTH, `logout?next=${window.location.pathname}`),
+        IS_DEV ? `` : urlJoin(AUTH, `logout?next=${window.location.pathname}`)
       );
     }
   }
@@ -109,7 +109,7 @@ const UserDropdown = connect(state => ({
                     to learn more about obtaining access to protected data.
                   </span>
                 ),
-              }),
+              })
             );
           }
         }}

@@ -2,15 +2,13 @@
 
 import React from 'react';
 
-import {
-  ApiOverrideBanner,
-  DataAccessBanner,
-} from '@ncigdc/components/DismissibleBanner';
+import { ApiOverrideBanner } from '@ncigdc/components/DismissibleBanner';
 import { fetchApi } from '@ncigdc/utils/ajax';
 import { LOCAL_STORAGE_API_OVERRIDE } from '@ncigdc/utils/constants';
 import { REHYDRATE } from 'redux-persist/constants';
 import { uniqBy } from 'lodash';
-
+import { fetchTokenWithoutSaved } from '@ncigdc/dux/auth';
+import { store } from '../../../Root';
 const NOTIFICATION_SUCCESS = 'NOTIFICATION_SUCCESS';
 const NOTIFICATION_DISMISS = 'NOTIFICATION_DISMISS';
 
@@ -43,6 +41,21 @@ export function fetchNotifications() {
   };
 }
 
+export function fetchLoginNotifications(token) {
+  return dispatch => {
+    fetchApi('login-notifications', {
+      headers: {
+        'X-Auth-Token': token,
+      },
+    }).then(res => {
+      dispatch({
+        type: NOTIFICATION_SUCCESS,
+        payload: res.data,
+      });
+    });
+  };
+}
+
 export function dismissNotification(notificationID: string) {
   return {
     type: NOTIFICATION_DISMISS,
@@ -62,23 +75,14 @@ if (LOCAL_STORAGE_API_OVERRIDE) {
     message: <ApiOverrideBanner />,
   });
 }
-if (1 > 0) {
-  initialState.push({
-    components: ['api'],
-    level: 'WARNING',
-    id: `data_access`,
-    dismissible: true,
-    reactElement: true,
-    message: <DataAccessBanner />,
-  });
-}
+
 const reducer = (state: TState = initialState, action: TAction) => {
   switch (action.type) {
     case REHYDRATE: {
       const incoming = uniqBy(
         action.payload.bannerNotification || [],
         ({ id }) => id
-      ).filter(({ id }) => (id !== 'api_override') & (id !== 'data_access'));
+      ).filter(({ id }) => id !== 'api_override');
       if (incoming) return [...state, ...incoming];
       return state;
     }
@@ -89,7 +93,9 @@ const reducer = (state: TState = initialState, action: TAction) => {
           ...(Array.isArray(action.payload) ? action.payload : [])
             .filter(
               n =>
-                n.components.includes('PORTAL') || n.components.includes('API')
+                n.components.includes('PORTAL') ||
+                n.components.includes('API') ||
+                n.components.includes('LOGIN')
             )
             .map(n => ({ ...n, dismissed: false })),
         ],

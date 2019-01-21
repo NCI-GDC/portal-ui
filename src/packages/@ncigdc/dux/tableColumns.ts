@@ -70,7 +70,7 @@ const reducer = (state = initialState, action: ITableColumnsAction) => {
                   (a: IColumnProps<boolean>, b: IColumnProps<boolean>) =>
                     orderArray.indexOf(a.id) - orderArray.indexOf(b.id)
                 )
-            : state[key].map((foo: any) => foo);
+            : state[key];
 
           return {
             ...acc,

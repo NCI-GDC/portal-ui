@@ -48,18 +48,15 @@ const initialState = Object.keys(tableModels).reduce(
   }),
   { version: 3 }
 );
+
 const reducer = (state = initialState, action: ITableColumnsAction) => {
   switch (action.type) {
     case REHYDRATE: {
       const { version = -1, ...allTableColumns } =
         (action.payload && action.payload.tableColumns) || {};
-        console.log('state: ',state)
-        console.log('action: ', action.payload)
       if (version !== state.version) {
-        console.log('versions do not match')
         return state;
       }
-      console.log('versions match')
       return {
         ...state,
         ...Object.entries(
@@ -73,17 +70,20 @@ const reducer = (state = initialState, action: ITableColumnsAction) => {
                   (a: IColumnProps<boolean>, b: IColumnProps<boolean>) =>
                     orderArray.indexOf(a.id) - orderArray.indexOf(b.id)
                 )
-            : state[key];
-          order.forEach((element: IColumnProps<boolean>, i: number) => {
-            if (val[i] && val[i].hasOwnProperty('hidden')) {
-              // console.log('val[i] ', val[i].hidden);
-              element.hidden = val[i].hidden;
-              // console.log('element is hidden? ', element.hidden);
-            }
-          });
+            : state[key].map((foo: any) => foo);
+
           return {
             ...acc,
-            [key]: order,
+            [key]: order.map((element: IColumnProps<boolean>, i: number) => {
+              if (val[i] && val[i].hasOwnProperty('hidden')) {
+                return {
+                  ...element,
+                  hidden: val[i].hidden,
+                };
+              } else {
+                return element;
+              }
+            }),
           };
         }, {}),
       };
@@ -104,8 +104,6 @@ const reducer = (state = initialState, action: ITableColumnsAction) => {
     }
     case tableColumns.RESTORE: {
       const { entityType } = action.payload;
-      console.log('restore: ', entityType)
-      console.log('restore initialState: ', initialState[entityType])
       return {
         ...state,
         [entityType]: initialState[entityType],

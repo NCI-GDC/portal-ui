@@ -22,7 +22,6 @@ const setupStore: TSetupStore = ({ persistConfig = {} } = {}) => {
   const config = {
     key: 'reducers',
     storage: storage,
-    stateReconciler: autoMergeLevel2,
     whitelist: [
       'cart',
       'tableColumns',

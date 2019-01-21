@@ -76,9 +76,9 @@ const reducer = (state = initialState, action: ITableColumnsAction) => {
             : state[key];
           order.forEach((element: IColumnProps<boolean>, i: number) => {
             if (val[i] && val[i].hasOwnProperty('hidden')) {
-              console.log('val[i] ', val[i].hidden);
+              // console.log('val[i] ', val[i].hidden);
               element.hidden = val[i].hidden;
-              console.log('element is hidden? ', element.hidden);
+              // console.log('element is hidden? ', element.hidden);
             }
           });
           return {
@@ -104,6 +104,8 @@ const reducer = (state = initialState, action: ITableColumnsAction) => {
     }
     case tableColumns.RESTORE: {
       const { entityType } = action.payload;
+      console.log('restore: ', entityType)
+      console.log('restore initialState: ', initialState[entityType])
       return {
         ...state,
         [entityType]: initialState[entityType],

@@ -9,9 +9,10 @@ import {
   withHandlers,
 } from 'recompose';
 import { fetchApi } from '@ncigdc/utils/ajax';
-import FacetHeader from '@ncigdc/components/Aggregations/FacetHeader';
+// import FacetHeader from '@ncigdc/components/Aggregations/FacetHeader';
 import FacetWrapper from '@ncigdc/components/FacetWrapper';
-import styled from '@ncigdc/theme/styled';
+// import styled from '@ncigdc/theme/styled';
+import escapeForRelay from '@ncigdc/utils/escapeForRelay';
 import RecursiveToggledFacet, { NestedWrapper } from './RecursiveToggledFacet';
 const facetMatchesQuery = (facet: any, query: any) =>
   _.some([facet.field, facet.description].map(_.toLower), searchTarget =>
@@ -27,6 +28,7 @@ const advancedPresetFacets = [
         title: 'Primary Site',
         field: 'primary_site',
         full: 'cases.primary_site',
+        type: 'keyword',
       },
       {
         title: 'Program',
@@ -167,7 +169,7 @@ export default compose(
       this.props.fetchData();
     },
   })
-)((props: any) => {
+)((props: any): any => {
   const fieldHash = {};
   const fieldArray = Object.keys(props.facetMapping);
   let key = '';
@@ -200,8 +202,12 @@ export default compose(
                     relayVarName="exploreCaseCustomFacetFields"
                     key={subFacet.full}
                     facet={subFacet}
-                    // aggregation={aggregation}
+                    title={subFacet.title}
+                    aggregation={
+                      props.aggregations[escapeForRelay(subFacet.field)]
+                    }
                     relay={props.relay}
+                    // additionalProps={subFacet.additionalProps}
                     style={{
                       // borderBottom: `1px solid ${theme.greyScale5}`,
                       position: 'relative',
@@ -220,7 +226,11 @@ export default compose(
                             relayVarName="exploreCaseCustomFacetFields"
                             key={leafFacet.full}
                             facet={leafFacet}
-                            // aggregation={aggregation}
+                            aggregation={
+                              props.aggregations[
+                                escapeForRelay(leafFacet.field)
+                              ]
+                            }
                             relay={props.relay}
                             style={{
                               // borderBottom: `1px solid ${theme.greyScale5}`,
@@ -265,8 +275,10 @@ export default compose(
                   relayVarName="exploreCaseCustomFacetFields"
                   key={facet.full}
                   facet={facet}
-                  // aggregation={aggregation}
+                  title={facet.title}
+                  aggregation={props.aggregations[escapeForRelay(facet.field)]}
                   relay={props.relay}
+                  additionalProps={facet.additionalProps}
                   style={{
                     // borderBottom: `1px solid ${theme.greyScale5}`,
                     position: 'relative',

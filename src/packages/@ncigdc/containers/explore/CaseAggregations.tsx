@@ -340,7 +340,7 @@ export const CaseAggregationsComponent = ({
       Upload Case Set
     </UploadSetButton>
     {advancedFilter ? (
-      <CaseAdvancedAggregations />
+      <CaseAdvancedAggregations aggregations={aggregations} />
     ) : (
       reject(presetFacets, { full: 'cases.case_id' })
         .filter(facet => aggregations[escapeForRelay(facet.field)])

@@ -115,13 +115,16 @@ export const getSurvivalCurves = memoize(
     return {
       rawData: {
         ...rawData,
-        results: rawData.results.map((r, idx) => ({
-          ...r,
-          meta: {
-            ...r.meta,
-            label: `S${idx + 1}`,
-          },
-        })),
+        results:
+          rawData.results.length > 1
+            ? rawData.results.map((r, idx) => ({
+                ...r,
+                meta: {
+                  ...r.meta,
+                  label: `S${idx + 1}`,
+                },
+              }))
+            : [],
       },
       id: value,
       legend: hasEnoughData
@@ -143,11 +146,25 @@ export const getSurvivalCurves = memoize(
                 <span>
                   S
                   <sub>2</sub> (N ={' '}
-                  {rawData.results[1].donors.length.toLocaleString()}
+                  {((rawData.results[1] && rawData.results[1].donors) ||
+                    []
+                  ).length.toLocaleString()}
                   ) - <Symbol>{slug || value}</Symbol> Mutated Cases
                 </span>
               ),
             },
+            ...((!rawData.results[1] ||
+              rawData.results[1].donors.length === 0) && [
+                {
+                  key: `${slug || value}-cannot-compare`,
+                  value: (
+                    <div>
+                      <span>Not enough data to compare</span>
+                    </div>
+                  ),
+                  style: { width: '100%', marginTop: 5 },
+                },
+              ]),
           ]
         : [
             {

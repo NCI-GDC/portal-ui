@@ -30,6 +30,7 @@ type TProps = {
   collapsed: boolean,
   setShowingMore: Function,
   showingMore: boolean,
+  maxNum: number,
 };
 
 const ToggleMoreLink = styled.div({
@@ -56,7 +57,7 @@ const BottomRow = styled(Row, {
 let input;
 const TermAggregation = (props: TProps) => {
   const dotField = props.field.replace(/__/g, '.');
-  const { filteredBuckets } = props;
+  const { filteredBuckets, maxNum } = props;
 
   return (
     <LocationSubscriber>
@@ -101,7 +102,7 @@ const TermAggregation = (props: TProps) => {
             {!props.collapsed && (
               <Column>
                 {_.orderBy(filteredBuckets, 'doc_count', 'desc')
-                  .slice(0, props.showingMore ? Infinity : 5)
+                  .slice(0, props.showingMore ? Infinity : maxNum)
                   .map(b => ({ ...b, name: b.key_as_string || b.key }))
                   .map(bucket => (
                     <BucketRow key={bucket.name}>
@@ -140,17 +141,17 @@ const TermAggregation = (props: TProps) => {
                           })}
                           id={`input-${props.title}-${bucket.name.replace(
                             /\s/g,
-                            '-',
+                            '-'
                           )}`}
                           name={`input-${props.title}-${bucket.name.replace(
                             /\s/g,
-                            '-',
+                            '-'
                           )}`}
                         />
                         <OverflowTooltippedLabel
                           htmlFor={`input-${props.title}-${bucket.name.replace(
                             /\s/g,
-                            '-',
+                            '-'
                           )}`}
                           style={{
                             marginLeft: '0.3rem',
@@ -165,7 +166,7 @@ const TermAggregation = (props: TProps) => {
                       </CountBubble>
                     </BucketRow>
                   ))}
-                {filteredBuckets.length > 5 && (
+                {filteredBuckets.length > maxNum && (
                   <BottomRow>
                     <ToggleMoreLink
                       onClick={() => props.setShowingMore(!props.showingMore)}
@@ -202,10 +203,10 @@ const enhance = compose(
       b =>
         b.key !== '_missing' &&
         (b.key || '').length &&
-        b.key.toLowerCase().includes(filter.toLowerCase()),
+        b.key.toLowerCase().includes(filter.toLowerCase())
     ),
   })),
-  pure,
+  pure
 );
 
 export default enhance(TermAggregation);

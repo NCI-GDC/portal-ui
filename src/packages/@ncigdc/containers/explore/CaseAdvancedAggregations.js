@@ -186,7 +186,7 @@ export default compose(
       }
     }
   }
-  console.log('fieldHash', fieldHash);
+  // console.log('fieldHash', fieldHash);
 
   return advancedPresetFacets.map(facet => {
     return (
@@ -213,6 +213,8 @@ export default compose(
                       position: 'relative',
                       paddingLeft: '10px',
                     }}
+                    collapsed={true}
+                    maxNum={Infinity}
                   />
                 );
               } else {
@@ -231,6 +233,8 @@ export default compose(
                                 escapeForRelay(leafFacet.field)
                               ]
                             }
+                            maxNum={Infinity}
+                            // collapsed={true}
                             relay={props.relay}
                             style={{
                               // borderBottom: `1px solid ${theme.greyScale5}`,
@@ -284,6 +288,8 @@ export default compose(
                     position: 'relative',
                     paddingLeft: '10px',
                   }}
+                  collapsed={true}
+                  maxNum={Infinity}
                 />
               )}
               key={facet.title + 'RecursiveToggledBox'}

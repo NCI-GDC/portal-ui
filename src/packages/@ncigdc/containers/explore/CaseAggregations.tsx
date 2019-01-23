@@ -258,12 +258,12 @@ export const CaseAggregationsComponent = ({
           &nbsp;|&nbsp;
         </span>
       )}
-      <a onClick={() => setShouldShowFacetSelection(true)} style={styles.link}>
+      {/* <a onClick={() => setShouldShowFacetSelection(true)} style={styles.link}>
         Add a Case Filter
       </a>
-      {' | '}
+      {' | '} */}
       <a onClick={() => setAdvancedFilter(!advancedFilter)} style={styles.link}>
-        {advancedFilter ? 'Basic Filter' : 'Advanced Filter'}
+        {advancedFilter ? 'Basic Filters' : 'Advanced Filters'}
       </a>
     </div>
 
@@ -282,7 +282,7 @@ export const CaseAggregationsComponent = ({
         relay={relay}
       />
     </Modal>
-    {console.log(parsedFacets)}
+    {/* {console.log(parsedFacets)} */}
     {userSelectedFacets.map(facet => (
       <FacetWrapper
         isRemovable

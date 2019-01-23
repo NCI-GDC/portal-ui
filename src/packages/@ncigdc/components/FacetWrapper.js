@@ -3,7 +3,13 @@
 import React from 'react';
 import _ from 'lodash';
 
-import { compose, defaultProps, renameProps, withState } from 'recompose';
+import {
+  compose,
+  defaultProps,
+  renameProps,
+  withState,
+  lifecycle,
+} from 'recompose';
 
 import TermAggregation from '@ncigdc/components/Aggregations/TermAggregation';
 import DateFacet from '@ncigdc/components/Aggregations/DateFacet';
@@ -77,6 +83,15 @@ const FacetWrapper = compose(
   }),
   withState('showingValueSearch', 'setShowingValueSearch', false),
   withState('collapsed', 'setCollapsed', false)
+  // lifecycle({
+  //   componentWillReceiveProps(nextProps) {
+  //     console.log('nextProps', nextProps);
+
+  //     if (this.props.collapsed !== nextProps.collapsed) {
+  //       this.setState({ collapsed: nextProps.collapsed });
+  //     }
+  //   },
+  // })
 )(
   ({
     setShowingValueSearch,
@@ -90,6 +105,7 @@ const FacetWrapper = compose(
     style,
     isRemovable,
     additionalProps,
+    maxNum = 5,
   }) => {
     const facetType = getFacetType(facet);
     const displayTitle = title || fieldNameToTitle(facet.field);
@@ -130,6 +146,7 @@ const FacetWrapper = compose(
           {...commonProps}
           buckets={(aggregation || { buckets: [] }).buckets}
           showingValueSearch={showingValueSearch}
+          maxNum={maxNum}
           {...additionalProps}
         />
       ),

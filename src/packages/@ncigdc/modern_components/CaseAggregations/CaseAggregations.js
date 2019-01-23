@@ -167,7 +167,7 @@ const enhance = compose(
     parsedFacets: viewer.repository.cases.facets
       ? tryParseJSON(viewer.repository.cases.facets, {})
       : {},
-  })),
+  }))
 );
 
 const styles = {
@@ -271,7 +271,7 @@ const CaseAggregationsComponent = (props: TProps) => (
     >
       Upload Case Set
     </UploadSetButton>
-    {console.log('presetFacets', presetFacets)}
+    {/* {console.log('presetFacets', presetFacets)} */}
 
     {_.reject(presetFacets, { full: 'cases.case_id' }).map(facet => (
       <FacetWrapper
@@ -280,7 +280,7 @@ const CaseAggregationsComponent = (props: TProps) => (
         title={facet.title}
         aggregation={
           props.viewer.repository.cases.aggregations[
-          escapeForRelay(facet.field)
+            escapeForRelay(facet.field)
           ]
         }
         relay={props.relay}

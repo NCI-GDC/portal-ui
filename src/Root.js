@@ -27,6 +27,7 @@ import Login from '@ncigdc/routes/Login';
 import { redirectToLogin } from '@ncigdc/utils/auth';
 import consoleDebug from '@ncigdc/utils/consoleDebug';
 import { fetchNotifications } from '@ncigdc/dux/bannerNotification';
+import Loader from '@ncigdc/uikit/Loaders/Loader';
 
 const retryStatusCodes = [500, 503, 504];
 
@@ -139,7 +140,7 @@ store.dispatch(fetchApiVersionInfo());
 
 if (process.env.NODE_ENV !== 'development') {
   store.dispatch(fetchUser());
-  store.dispatch(fetchNotifications())
+  store.dispatch(fetchNotifications());
 }
 
 class RelayRoute extends Relay.Route {
@@ -157,7 +158,7 @@ let HasUser = connect(state => state.auth)(props => {
 
 const Root = (props: mixed) => (
   <Provider store={store}>
-    <PersistGate loading={<div>Loading...</div>} persistor={persistor}>
+    <PersistGate loading={<Loader />} persistor={persistor}>
       <Router>
         <React.Fragment>
           {!IS_AUTH_PORTAL ? (

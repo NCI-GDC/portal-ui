@@ -144,8 +144,7 @@ store.dispatch(fetchApiVersionInfo());
 
 if (process.env.NODE_ENV !== 'development') {
   store.dispatch(fetchUser());
-  store.dispatch(fetchTokenWithoutSaved());
-  store.dispatch(fetchLoginNotifications());
+  store.dispatch(fetchNotifications());
 }
 
 class RelayRoute extends Relay.Route {

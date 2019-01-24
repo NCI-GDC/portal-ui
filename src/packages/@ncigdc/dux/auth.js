@@ -54,24 +54,6 @@ export function clearToken(): Action {
     payload: {},
   };
 }
-export function fetchTokenWithoutSaved() {
-  let res = fetchAuth({
-    types: [
-      TOKEN_REQUEST,
-      {
-        type: TOKEN_SUCCESS,
-        payload: async (action, state, res) => {
-          const token = await res.text();
-          return token;
-        },
-      },
-      TOKEN_FAILURE,
-    ],
-    endpoint: AWG ? 'token/refresh/awg' : 'token/refresh',
-  });
-
-  return res;
-}
 
 export function fetchToken() {
   return fetchAuth({

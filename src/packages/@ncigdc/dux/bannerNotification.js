@@ -30,13 +30,13 @@ type TAction = {
 };
 export function fetchNotifications() {
   return async (dispatch: Function) => {
-    let { data } = await fetchApi('notifications', {
+    const res1 = await fetchApi('notifications', {
       headers: { 'Content-Type': 'application/json' },
     });
-
+    const res2 = await fetchApi('login-notifications', {});
     dispatch({
       type: NOTIFICATION_SUCCESS,
-      payload: data,
+      payload: [...res1.data, ...res2.data],
     });
   };
 }

@@ -146,9 +146,7 @@ export const getSurvivalCurves = memoize(
                 <span>
                   S
                   <sub>2</sub> (N ={' '}
-                  {((rawData.results[1] && rawData.results[1].donors) ||
-                    []
-                  ).length.toLocaleString()}
+                  {_.get(rawData, 'results[1].donors', []).length.toLocaleString()}
                   ) - <Symbol>{slug || value}</Symbol> Mutated Cases
                 </span>
               ),

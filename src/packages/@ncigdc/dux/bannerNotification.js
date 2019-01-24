@@ -41,17 +41,13 @@ export function fetchNotifications() {
   };
 }
 
-export function fetchLoginNotifications(token) {
-  return dispatch => {
-    fetchApi('login-notifications', {
-      headers: {
-        'X-Auth-Token': token,
-      },
-    }).then(res => {
-      dispatch({
-        type: NOTIFICATION_SUCCESS,
-        payload: res.data,
-      });
+export function fetchLoginNotifications() {
+  return async (dispatch: Function) => {
+    let { data } = await fetchApi('login-notifications', {});
+
+    dispatch({
+      type: NOTIFICATION_SUCCESS,
+      payload: data,
     });
   };
 }

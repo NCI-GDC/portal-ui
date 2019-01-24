@@ -24,24 +24,24 @@ export function fetchUser() {
       payload: FAKE_USER,
     };
   }
-  return dispatch => {
-    let userAuth = fetchAuth({
-      types: [
-        USER_REQUEST,
-        {
-          type: USER_SUCCESS,
-          payload: async (action, state, res) => {
-            const text = await res.text();
-            const json = JSON.parse(text);
-            return json;
-          },
+  let userAuth = fetchAuth({
+    types: [
+      USER_REQUEST,
+      {
+        type: USER_SUCCESS,
+        payload: async (action, state, res) => {
+          const text = await res.text();
+          const json = JSON.parse(text);
+          return json;
         },
-        USER_FAILURE,
-      ],
-      endpoint: 'user',
-    });
-    // dispatch(fetchNotifications());
-    // console.log('yes', userAuth);
+      },
+      USER_FAILURE,
+    ],
+    endpoint: 'user',
+  });
+  return dispatch => {
+    dispatch(fetchNotifications());
+    console.log('yes', userAuth);
     return userAuth;
   };
 }

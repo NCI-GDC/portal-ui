@@ -7,8 +7,6 @@ import { fetchApi } from '@ncigdc/utils/ajax';
 import { LOCAL_STORAGE_API_OVERRIDE } from '@ncigdc/utils/constants';
 import { REHYDRATE } from 'redux-persist/constants';
 import { uniqBy } from 'lodash';
-import { fetchTokenWithoutSaved } from '@ncigdc/dux/auth';
-import { store } from '../../../Root';
 const NOTIFICATION_SUCCESS = 'NOTIFICATION_SUCCESS';
 const NOTIFICATION_DISMISS = 'NOTIFICATION_DISMISS';
 
@@ -33,21 +31,10 @@ export function fetchNotifications() {
     const res1 = await fetchApi('notifications', {
       headers: { 'Content-Type': 'application/json' },
     });
-    const res2 = await fetchApi('login-notifications', {});
+    const res2 = (await fetchApi('login-notifications', {})) || { data: [] };
     dispatch({
       type: NOTIFICATION_SUCCESS,
       payload: [...res1.data, ...res2.data],
-    });
-  };
-}
-
-export function fetchLoginNotifications() {
-  return async (dispatch: Function) => {
-    let { data } = await fetchApi('login-notifications', {});
-
-    dispatch({
-      type: NOTIFICATION_SUCCESS,
-      payload: data,
     });
   };
 }

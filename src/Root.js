@@ -21,18 +21,11 @@ import { fetchApiVersionInfo } from '@ncigdc/dux/versionInfo';
 import { viewerQuery } from '@ncigdc/routes/queries';
 import Portal from './Portal';
 import { API, IS_AUTH_PORTAL } from '@ncigdc/utils/constants';
-import {
-  fetchUser,
-  forceLogout,
-  fetchTokenWithoutSaved,
-} from '@ncigdc/dux/auth';
+import { fetchUser, forceLogout } from '@ncigdc/dux/auth';
 import Login from '@ncigdc/routes/Login';
 import { redirectToLogin } from '@ncigdc/utils/auth';
 import consoleDebug from '@ncigdc/utils/consoleDebug';
-import {
-  fetchNotifications,
-  fetchLoginNotifications,
-} from '@ncigdc/dux/bannerNotification';
+import { fetchNotifications } from '@ncigdc/dux/bannerNotification';
 
 const retryStatusCodes = [500, 503, 504];
 

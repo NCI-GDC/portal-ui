@@ -194,7 +194,7 @@ const File = ({
         </Button>
         {node.data_type === 'Aligned Reads' &&
           node.data_format === 'BAM' &&
-          node.index_files.hits.total && <BAMSlicingButton file={node} />}
+          node.index_files.hits.total > 0 && <BAMSlicingButton file={node} />}
         <DownloadFile
           file={node}
           activeText={'Processing'}

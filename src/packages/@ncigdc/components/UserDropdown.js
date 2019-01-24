@@ -10,7 +10,7 @@ import Dropdown from '@ncigdc/uikit/Dropdown';
 import DropdownItem from '@ncigdc/uikit/DropdownItem';
 import styled from '@ncigdc/theme/styled';
 import DownloadIcon from '@ncigdc/theme/icons/Download';
-import { fetchToken } from '@ncigdc/dux/auth';
+import { fetchToken, forceLogout } from '@ncigdc/dux/auth';
 import { notify } from '@ncigdc/dux/notification';
 import { AUTH } from '@ncigdc/utils/constants';
 import UserIcon from '@ncigdc/theme/icons/User';

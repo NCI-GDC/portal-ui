@@ -24,7 +24,8 @@ export function fetchUser() {
       payload: FAKE_USER,
     };
   }
-  let userAuth = fetchAuth({
+  dispatch(fetchNotifications());
+  return fetchAuth({
     types: [
       USER_REQUEST,
       {
@@ -39,11 +40,10 @@ export function fetchUser() {
     ],
     endpoint: 'user',
   });
-  return dispatch => {
-    dispatch(fetchNotifications());
-    console.log('yes', userAuth);
-    return userAuth;
-  };
+  // return dispatch => {
+  //   console.log('yes', userAuth);
+  //   return userAuth;
+  // };
 }
 
 export function forceLogout(): Action {

@@ -136,9 +136,9 @@ window.store = store;
 store.dispatch(fetchApiVersionInfo());
 
 if (process.env.NODE_ENV !== 'development') {
+  store.dispatch(fetchUser());
   store.dispatch(fetchNotifications());
 }
-store.dispatch(fetchUser());
 
 class RelayRoute extends Relay.Route {
   static routeName = 'RootRoute';

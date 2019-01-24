@@ -33,7 +33,7 @@ const LoginButton = ({ children, dispatch, user }) => (
             name: 'NIH',
           });
           await dispatch(fetchUser());
-          dispatch(fetchNotifications());
+          await dispatch(fetchNotifications());
         }}
       >
         {children || (

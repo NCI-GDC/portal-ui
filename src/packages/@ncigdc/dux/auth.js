@@ -24,8 +24,8 @@ export function fetchUser() {
       payload: FAKE_USER,
     };
   }
-  return async dispatch => {
-    let userAuth = await fetchAuth({
+  return dispatch => {
+    let userAuth = fetchAuth({
       types: [
         USER_REQUEST,
         {

@@ -40,7 +40,9 @@ export function fetchUser() {
       ],
       endpoint: 'user',
     });
-    return dispatch(fetchNotifications()).then(() => userAuth);
+    dispatch(fetchNotifications());
+    console.log('yes');
+    return userAuth;
   };
 }
 

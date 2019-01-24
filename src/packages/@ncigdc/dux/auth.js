@@ -24,26 +24,39 @@ export function fetchUser() {
       payload: FAKE_USER,
     };
   }
-  dispatch(fetchNotifications());
-  return fetchAuth({
-    types: [
-      USER_REQUEST,
-      {
-        type: USER_SUCCESS,
-        payload: async (action, state, res) => {
-          const text = await res.text();
-          const json = JSON.parse(text);
-          return json;
+  // let userAuth = fetchAuth({
+  //   types: [
+  //     USER_REQUEST,
+  //     {
+  //       type: USER_SUCCESS,
+  //       payload: async (action, state, res) => {
+  //         const text = await res.text();
+  //         const json = JSON.parse(text);
+  //         return json;
+  //       },
+  //     },
+  //     USER_FAILURE,
+  //   ],
+  //   endpoint: 'user',
+  // });
+  return dispatch => {
+    dispatch(fetchNotifications());
+    return fetchAuth({
+      types: [
+        USER_REQUEST,
+        {
+          type: USER_SUCCESS,
+          payload: async (action, state, res) => {
+            const text = await res.text();
+            const json = JSON.parse(text);
+            return json;
+          },
         },
-      },
-      USER_FAILURE,
-    ],
-    endpoint: 'user',
-  });
-  // return dispatch => {
-  //   console.log('yes', userAuth);
-  //   return userAuth;
-  // };
+        USER_FAILURE,
+      ],
+      endpoint: 'user',
+    });
+  };
 }
 
 export function forceLogout(): Action {

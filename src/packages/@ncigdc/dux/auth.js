@@ -5,6 +5,7 @@ import { REHYDRATE } from 'redux-persist/constants';
 import { saveAs } from 'filesaver.js';
 import { fetchAuth } from '@ncigdc/utils/ajax';
 import { FAKE_USER, IS_DEV, AWG } from '@ncigdc/utils/constants';
+import { fetchNotifications } from './bannerNotification';
 export type State = { isFetching: boolean, user: ?Object, error?: Object };
 export type Action = { type: string, payload: any };
 const USER_REQUEST = 'gdc/USER_REQUEST';
@@ -23,22 +24,25 @@ export function fetchUser() {
       payload: FAKE_USER,
     };
   }
-
-  return fetchAuth({
-    types: [
-      USER_REQUEST,
-      {
-        type: USER_SUCCESS,
-        payload: async (action, state, res) => {
-          const text = await res.text();
-          const json = JSON.parse(text);
-          return json;
+  return async dispatch => {
+    let userAuth = await fetchAuth({
+      types: [
+        USER_REQUEST,
+        {
+          type: USER_SUCCESS,
+          payload: async (action, state, res) => {
+            const text = await res.text();
+            const json = JSON.parse(text);
+            return json;
+          },
         },
-      },
-      USER_FAILURE,
-    ],
-    endpoint: 'user',
-  });
+        USER_FAILURE,
+      ],
+      endpoint: 'user',
+    });
+    dispatch(fetchNotifications());
+    return userAuth;
+  };
 }
 
 export function forceLogout(): Action {

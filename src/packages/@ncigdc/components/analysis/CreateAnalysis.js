@@ -62,13 +62,6 @@ const CreateAnalysis = ({ analysis, setAnalysis, dispatch, push }) => {
         justifyContent: 'space-between',
       }}
     >
-      {/* <div
-        style={{
-
-          flex: 1,
-          flexWrap: 'wrap',
-        }}
-      > */}
       {availableAnalysis.map(analysis => {
         return (
           <Row
@@ -94,11 +87,6 @@ const CreateAnalysis = ({ analysis, setAnalysis, dispatch, push }) => {
           </Row>
         );
       })}
-      {/* </div> */}
-      {/* <div
-        // for a second column of analysis when the time comes
-        style={{ flex: 1 }}
-      /> */}
     </Row>
   );
 };

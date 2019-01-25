@@ -171,7 +171,11 @@ const SurvivalPlotWrapper = ({
             >
               {legend &&
                 legend.map((l, i) => (
-                  <div className={`legend-${i}`} key={l.key}>
+                  <div
+                    className={`legend-${i}`}
+                    key={l.key}
+                    style={l.style || {}}
+                  >
                     <div
                       style={{
                         color: palette[i],

@@ -114,13 +114,8 @@ export const getSurvivalCurves = memoize(
     const results2 = _.get(rawData, 'results[1].donors', []);
     const results1 = _.get(rawData, 'results[0].donors', []);
 
-    const getNotMutatedCases = () =>
-      results2.length > 0
-        ? results1.length.toLocaleString()
-        : results2.length.toLocaleString();
-
-    const getMutatedCases = () =>
-      results2.length === 0
+    const getCaseCount = condition =>
+      condition
         ? results1.length.toLocaleString()
         : results2.length.toLocaleString();
 
@@ -146,7 +141,7 @@ export const getSurvivalCurves = memoize(
               value: (
                 <span>
                   S
-                  <sub>1</sub> (N = {getNotMutatedCases()}
+                  <sub>1</sub> (N = {getCaseCount(results2.length > 0)}
                   ) - <Symbol>{slug || value}</Symbol> Not Mutated Cases
                 </span>
               ),
@@ -156,7 +151,7 @@ export const getSurvivalCurves = memoize(
               value: (
                 <span>
                   S
-                  <sub>2</sub> (N = {getMutatedCases()}
+                  <sub>2</sub> (N = {getCaseCount(results2.length === 0)}
                   ) - <Symbol>{slug || value}</Symbol> Mutated Cases
                 </span>
               ),

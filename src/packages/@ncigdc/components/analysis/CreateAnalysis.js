@@ -8,6 +8,7 @@ import Button from '@ncigdc/uikit/Button';
 import { Row } from '@ncigdc/uikit/Flex';
 import { zDepth1 } from '@ncigdc/theme/mixins';
 
+import SelectClinicalAnalysis from './SelectClinicalAnalysis';
 import availableAnalysis from './availableAnalysis';
 import SelectSet from './SelectSet';
 
@@ -28,31 +29,41 @@ const enhance = compose(
 );
 
 const CreateAnalysis = ({ analysis, setAnalysis, dispatch, push }) => {
-  return analysis ? (
-    <SelectSet
-      {...analysis}
-      onCancel={() => setAnalysis(null)}
-      onRun={sets => {
-        const created = new Date().toISOString();
-        const id = created;
+  const SelectSetComponent =
+    analysis && analysis.type === 'clinical_data' ? (
+      <SelectClinicalAnalysis
+        {...analysis}
+        onCancel={() => setAnalysis(null)}
+        onRun={() => console.log('Run analysis')}
+      />
+    ) : (
+      <SelectSet
+        {...analysis}
+        onCancel={() => setAnalysis(null)}
+        onRun={sets => {
+          const created = new Date().toISOString();
+          const id = created;
 
-        dispatch(
-          addAnalysis({
-            id,
-            sets,
-            type: analysis.type,
-            created,
-          }),
-        ).then(() => {
-          push({
-            query: {
-              analysisTableTab: 'result',
-              analysisId: id,
-            },
+          dispatch(
+            addAnalysis({
+              id,
+              sets,
+              type: analysis.type,
+              created,
+            }),
+          ).then(() => {
+            push({
+              query: {
+                analysisTableTab: 'result',
+                analysisId: id,
+              },
+            });
           });
-        });
-      }}
-    />
+        }}
+      />
+    );
+  return analysis ? (
+    SelectSetComponent
   ) : (
     <Row
       style={{

@@ -52,6 +52,7 @@ const CheckBoxModal = ({
             You are attempting to download files that are controlled access:
           </div>
           <input
+            aria-label={'Agree to GDC data use'}
             type="checkbox"
             onClick={() => {
               setAgreed(!agreed);

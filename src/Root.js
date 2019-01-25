@@ -25,6 +25,7 @@ import { fetchUser, forceLogout } from '@ncigdc/dux/auth';
 import Login from '@ncigdc/routes/Login';
 import { redirectToLogin } from '@ncigdc/utils/auth';
 import consoleDebug from '@ncigdc/utils/consoleDebug';
+import { fetchNotifications } from '@ncigdc/dux/bannerNotification';
 
 const retryStatusCodes = [500, 503, 504];
 
@@ -136,6 +137,7 @@ store.dispatch(fetchApiVersionInfo());
 
 if (process.env.NODE_ENV !== 'development') {
   store.dispatch(fetchUser());
+  store.dispatch(fetchNotifications());
 }
 
 class RelayRoute extends Relay.Route {

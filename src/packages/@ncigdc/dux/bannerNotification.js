@@ -7,7 +7,6 @@ import { fetchApi } from '@ncigdc/utils/ajax';
 import { LOCAL_STORAGE_API_OVERRIDE } from '@ncigdc/utils/constants';
 import { REHYDRATE } from 'redux-persist/constants';
 import { uniqBy } from 'lodash';
-
 const NOTIFICATION_SUCCESS = 'NOTIFICATION_SUCCESS';
 const NOTIFICATION_DISMISS = 'NOTIFICATION_DISMISS';
 
@@ -29,13 +28,13 @@ type TAction = {
 };
 export function fetchNotifications() {
   return async (dispatch: Function) => {
-    let { data } = await fetchApi('notifications', {
+    const res1 = await fetchApi('notifications', {
       headers: { 'Content-Type': 'application/json' },
     });
-
+    const res2 = (await fetchApi('login-notifications', {})) || { data: [] };
     dispatch({
       type: NOTIFICATION_SUCCESS,
-      payload: data,
+      payload: [...res1.data, ...res2.data],
     });
   };
 }
@@ -65,7 +64,7 @@ const reducer = (state: TState = initialState, action: TAction) => {
     case REHYDRATE: {
       const incoming = uniqBy(
         action.payload.bannerNotification || [],
-        ({ id }) => id,
+        ({ id }) => id
       ).filter(({ id }) => id !== 'api_override');
       if (incoming) return [...state, ...incoming];
       return state;
@@ -77,11 +76,13 @@ const reducer = (state: TState = initialState, action: TAction) => {
           ...(Array.isArray(action.payload) ? action.payload : [])
             .filter(
               n =>
-                n.components.includes('PORTAL') || n.components.includes('API'),
+                n.components.includes('PORTAL') ||
+                n.components.includes('API') ||
+                n.components.includes('LOGIN')
             )
             .map(n => ({ ...n, dismissed: false })),
         ],
-        ({ id }) => id,
+        ({ id }) => id
       );
     case NOTIFICATION_DISMISS:
       const ids = action.payload.map(p => p.id);

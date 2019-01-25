@@ -46,7 +46,7 @@ Relay.injectNetworkLayer(
       forceRetry: (cb, delay) => {
         window.forceRelayRetry = cb;
         console.log(
-          `call \`forceRelayRetry()\` for immediately retry! Or wait ${delay} ms.`,
+          `call \`forceRelayRetry()\` for immediately retry! Or wait ${delay} ms.`
         );
       },
       statusCodes: retryStatusCodes,
@@ -60,7 +60,7 @@ Relay.injectNetworkLayer(
           [
             req.relayReqObj._printedQuery.text,
             JSON.stringify(req.relayReqObj._printedQuery.variables),
-          ].join(':'),
+          ].join(':')
         );
 
       req.url = `${url}?hash=${hash}`;
@@ -122,7 +122,7 @@ Relay.injectNetworkLayer(
           }
         });
     },
-  ]),
+  ])
 );
 
 export const store = setupStore({
@@ -194,7 +194,7 @@ const Root = (props: mixed) => (
                       );
                     }
                     consoleDebug(
-                      'Response does not match any criteria, redirecting to login',
+                      'Response does not match any criteria, redirecting to login'
                     );
                     return <Redirect to="/login" />;
                   }}

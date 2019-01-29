@@ -19,6 +19,7 @@ import { parseJSONParam } from '@ncigdc/utils/uri';
 import { replaceFilters } from '@ncigdc/utils/filters';
 import { match as IMatch } from 'react-router';
 import { Location as ILocation } from 'history';
+import { isEmpty } from 'lodash';
 
 export default ({
   match,
@@ -65,7 +66,7 @@ export default ({
     <Exists type="Gene" id={geneId}>
       <FullWidthLayout title={<GeneSymbol geneId={geneId} />} entityType="GN">
         <Column spacing="2rem">
-          {filters && <CurrentFilters />}
+          {!isEmpty(filters) && <CurrentFilters />}
           <Row spacing="2rem">
             <Row flex="1">
               <GeneSummary geneId={geneId} />

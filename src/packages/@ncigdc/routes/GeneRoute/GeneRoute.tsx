@@ -42,7 +42,7 @@ export default ({
         },
       ],
     },
-    filters
+    filters,
   );
 
   const mutatedGeneFilter = replaceFilters(
@@ -58,9 +58,9 @@ export default ({
         },
       ],
     },
-    geneFilter
+    geneFilter,
   );
-
+  console.log(filters);
   return (
     <Exists type="Gene" id={geneId}>
       <FullWidthLayout title={<GeneSymbol geneId={geneId} />} entityType="GN">

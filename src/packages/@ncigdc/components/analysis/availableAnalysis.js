@@ -9,8 +9,8 @@ import Demo from './Demo';
 import ClinicalDataAnalysis from '@ncigdc/theme/icons/ClinicalDataAnalysis';
 import { DISPLAY_CDAVE } from '@ncigdc/utils/constants';
 
-type TSelectedSets = {
-  [TSetTypes]: {},
+export type TSelectedSets = {
+  [TSetTypes]: any,
 };
 
 type TAnalysis = {
@@ -322,6 +322,7 @@ const availableAnalysis: [TAnalysis] = [
             : null,
       setTypes: ['case'],
       validateSets: sets =>
+        sets &&
         ['case'].every((t: any) => Object.keys(sets[t] || {}).length === 2),
       ResultComponent: props =>
         props.id.includes('demo-') ? (

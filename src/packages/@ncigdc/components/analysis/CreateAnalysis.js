@@ -8,7 +8,7 @@ import Button from '@ncigdc/uikit/Button';
 import { Row } from '@ncigdc/uikit/Flex';
 import { zDepth1 } from '@ncigdc/theme/mixins';
 
-import SelectClinicalAnalysis from './SelectClinicalAnalysis';
+import ClinicalAnalysisLaunch from './ClinicalAnalysisLaunch';
 import availableAnalysis from './availableAnalysis';
 import SelectSet from './SelectSet';
 
@@ -30,40 +30,35 @@ const enhance = compose(
 
 const CreateAnalysis = ({ analysis, setAnalysis, dispatch, push }) => {
   const SelectSetComponent =
-    analysis && analysis.type === 'clinical_data' ? (
-      <SelectClinicalAnalysis
-        {...analysis}
-        onCancel={() => setAnalysis(null)}
-        onRun={() => console.log('Run analysis')}
-      />
-    ) : (
-      <SelectSet
-        {...analysis}
-        onCancel={() => setAnalysis(null)}
-        onRun={sets => {
-          const created = new Date().toISOString();
-          const id = created;
+    analysis && analysis.type === 'clinical_data'
+      ? ClinicalAnalysisLaunch
+      : SelectSet;
 
-          dispatch(
-            addAnalysis({
-              id,
-              sets,
-              type: analysis.type,
-              created,
-            }),
-          ).then(() => {
-            push({
-              query: {
-                analysisTableTab: 'result',
-                analysisId: id,
-              },
-            });
-          });
-        }}
-      />
-    );
   return analysis ? (
-    SelectSetComponent
+    <SelectSetComponent
+      {...analysis}
+      onCancel={() => setAnalysis(null)}
+      onRun={sets => {
+        const created = new Date().toISOString();
+        const id = created;
+
+        dispatch(
+          addAnalysis({
+            id,
+            sets,
+            type: analysis.type,
+            created,
+          }),
+        ).then(() => {
+          push({
+            query: {
+              analysisTableTab: 'result',
+              analysisId: id,
+            },
+          });
+        });
+      }}
+    />
   ) : (
     <Row
       style={{

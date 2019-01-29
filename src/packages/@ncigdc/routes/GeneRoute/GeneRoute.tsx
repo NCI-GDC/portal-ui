@@ -66,7 +66,7 @@ export default ({
     <Exists type="Gene" id={geneId}>
       <FullWidthLayout title={<GeneSymbol geneId={geneId} />} entityType="GN">
         <Column spacing="2rem">
-          {filters && !isEmpty(filters) && <CurrentFilters />}
+          {!isEmpty(filters) && <CurrentFilters />}
           <Row spacing="2rem">
             <Row flex="1">
               <GeneSummary geneId={geneId} />

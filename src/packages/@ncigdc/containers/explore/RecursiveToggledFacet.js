@@ -14,20 +14,24 @@ import FacetHeader from '@ncigdc/components/Aggregations/FacetHeader';
 
 const FacetWrapperDiv = styled.div({
   position: 'relative',
-  paddingLeft: '10px',
 });
 export const NestedWrapper = ({
   Component,
   title,
   isCollapsed,
   setCollapsed,
+  style,
+  headerStyle,
+  angleIconRight,
 }) => (
-  <FacetWrapperDiv key={title + 'div'}>
+  <FacetWrapperDiv key={title + 'div'} style={style}>
     <FacetHeader
       title={title}
       collapsed={isCollapsed}
       setCollapsed={setCollapsed}
       key={title}
+      style={headerStyle}
+      angleIconRight
     />
     {isCollapsed || Component}
   </FacetWrapperDiv>
@@ -50,7 +54,6 @@ const RecursiveToggledFacet = compose(
         return '';
       }
       if (Object.keys(hash).includes('description')) {
-        console.log('primary site', hash);
         return Component(hash);
       }
 
@@ -58,6 +61,7 @@ const RecursiveToggledFacet = compose(
         if (Object.keys(hash[key]).includes('description')) {
           return Component(hash[key]);
         }
+
         return (
           <NestedWrapper
             key={key + 'nestedWrapper'}

@@ -56,7 +56,7 @@ const SearchPage = (
     setShowFacets,
     filtersLinkProps,
     ...props
-  }: TProps = {},
+  }: TProps = {}
 ) => (
   <Container className={props.className + ' test-search-page'}>
     {showFacets && (
@@ -66,7 +66,7 @@ const SearchPage = (
           defaultIndex={0}
           tabToolbar={
             <UnstyledButton
-              style={{ minHeight: 46 }}
+              style={{ minHeight: 46, paddingLeft: 2 }}
               onClick={() => {
                 setShowFacets(!showFacets);
               }}

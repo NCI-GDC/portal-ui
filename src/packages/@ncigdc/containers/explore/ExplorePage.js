@@ -15,6 +15,7 @@ import NoResultsMessage from '@ncigdc/components/NoResultsMessage';
 import CaseAggregations from '@ncigdc/containers/explore/CaseAggregations';
 import GeneAggregations from '@ncigdc/containers/explore/GeneAggregations';
 import SSMAggregations from '@ncigdc/containers/explore/SSMAggregations';
+import ClinicalAggregations from './ClinicalAggregations';
 import { CreateExploreCaseSetButton } from '@ncigdc/modern_components/withSetAction';
 import { replaceFilters } from '@ncigdc/utils/filters';
 import { stringifyJSONParam } from '@ncigdc/utils/uri';
@@ -162,6 +163,30 @@ export const ExplorePageComponent = ({
                 { idAutocompleteSsms: value, runAutocompleteSsms: !!value },
                 onReadyStateChange
               )}
+          />
+        ),
+      },
+      {
+        id: 'clinical',
+        text: 'Clinical',
+        component: (
+          <ClinicalAggregations
+            facets={viewer.explore.customCaseFacets}
+            // defaultFilters={filters}
+            aggregations={viewer.explore.cases.aggregations}
+            suggestions={get(viewer, 'autocomplete_cases.hits', [])}
+            setAutocomplete={(value, onReadyStateChange) =>
+              relay.setVariables(
+                { idAutocompleteCases: value, runAutocompleteCases: !!value },
+                onReadyStateChange
+              )}
+            // ssms={viewer.explore.ssms}
+            // suggestions={get(viewer, 'autocomplete_ssms.hits', [])}
+            // setAutocomplete={(value, onReadyStateChange) =>
+            //   relay.setVariables(
+            //     { idAutocompleteSsms: value, runAutocompleteSsms: !!value },
+            //     onReadyStateChange
+            //   )}
           />
         ),
       },

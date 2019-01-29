@@ -27,7 +27,7 @@ import { UploadCaseSet } from '@ncigdc/components/Modals/UploadSet';
 
 import { IBucket } from '@ncigdc/components/Aggregations/types';
 import { CaseAggregationsQuery } from './explore.relay';
-import CaseAdvancedAggregations from './CaseAdvancedAggregations';
+import ClinicalAggregations from './ClinicalAggregations';
 export interface ITProps {
   caseIdCollapsed: boolean;
   setCaseIdCollapsed: (caseIdCollapsed: boolean) => void;
@@ -116,49 +116,6 @@ const presetFacets = [
     title: 'Disease Type',
     field: 'disease_type',
     full: 'cases.disease_type',
-    doc_type: 'cases',
-    type: 'keyword',
-  },
-  {
-    title: 'Gender',
-    field: 'demographic.gender',
-    full: 'cases.demographic.gender',
-    doc_type: 'cases',
-    type: 'keyword',
-  },
-  {
-    title: 'Age at Diagnosis',
-    field: 'diagnoses.age_at_diagnosis',
-    full: 'cases.diagnoses.age_at_diagnosis',
-    doc_type: 'cases',
-    type: 'long',
-    additionalProps: { convertDays: true },
-  },
-  {
-    title: 'Vital Status',
-    field: 'diagnoses.vital_status',
-    full: 'cases.diagnoses.vital_status',
-    doc_type: 'cases',
-    type: 'keyword',
-  },
-  {
-    title: 'Days to Death',
-    field: 'diagnoses.days_to_death',
-    full: 'cases.diagnoses.days_to_death',
-    doc_type: 'cases',
-    type: 'long',
-  },
-  {
-    title: 'Race',
-    field: 'demographic.race',
-    full: 'cases.demographic.race',
-    doc_type: 'cases',
-    type: 'keyword',
-  },
-  {
-    title: 'Ethnicity',
-    field: 'demographic.ethnicity',
-    full: 'cases.demographic.ethnicity',
     doc_type: 'cases',
     type: 'keyword',
   },
@@ -282,7 +239,6 @@ export const CaseAggregationsComponent = ({
         relay={relay}
       />
     </Modal>
-    {/* {console.log(parsedFacets)} */}
     {userSelectedFacets.map(facet => (
       <FacetWrapper
         isRemovable
@@ -340,7 +296,7 @@ export const CaseAggregationsComponent = ({
       Upload Case Set
     </UploadSetButton>
     {advancedFilter ? (
-      <CaseAdvancedAggregations aggregations={aggregations} />
+      <ClinicalAggregations aggregations={aggregations} />
     ) : (
       reject(presetFacets, { full: 'cases.case_id' })
         .filter(facet => aggregations[escapeForRelay(facet.field)])
@@ -351,7 +307,6 @@ export const CaseAggregationsComponent = ({
             title={facet.title}
             aggregation={aggregations[escapeForRelay(facet.field)]}
             relay={relay}
-            additionalProps={facet.additionalProps}
             style={{ borderBottom: `1px solid ${theme.greyScale5}` }}
           />
         ))

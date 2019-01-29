@@ -57,7 +57,7 @@ const FacetHeader = compose(
     isRemovable: false,
     hasValueSearch: false,
     setShowingValueSearch: () => {},
-  }),
+  })
 )(
   ({
     field,
@@ -70,24 +70,37 @@ const FacetHeader = compose(
     showingValueSearch,
     setShowingValueSearch,
     hasValueSearch,
+    style,
+    angleIconRight = false,
   }) => (
     <LocationSubscriber>
       {(ctx: { pathname: string, query: IRawQuery }) => {
         const currentFilters =
           ctx.query && parseFilterParam((ctx.query || {}).filters, {});
+        let spanStyle = { cursor: 'pointer' };
+        if (angleIconRight) {
+          spanStyle['width'] = '100%';
+        }
         return (
-          <Header className="test-facet-header">
-            <span
-              style={{ cursor: 'pointer' }}
-              onClick={() => setCollapsed(!collapsed)}
-            >
-              <AngleIcon
-                style={{
-                  paddingRight: '0.25rem',
-                  transform: `rotate(${collapsed ? 270 : 0}deg)`,
-                }}
-              />
+          <Header className="test-facet-header" style={style}>
+            <span style={spanStyle} onClick={() => setCollapsed(!collapsed)}>
+              {!angleIconRight && (
+                <AngleIcon
+                  style={{
+                    paddingRight: '0.25rem',
+                    transform: `rotate(${collapsed ? 270 : 0}deg)`,
+                  }}
+                />
+              )}
               {title}
+              {angleIconRight && (
+                <AngleIcon
+                  style={{
+                    float: 'right',
+                    transform: `rotate(${collapsed ? 270 : 0}deg)`,
+                  }}
+                />
+              )}
             </span>
             <IconsRow>
               {description && (
@@ -119,6 +132,6 @@ const FacetHeader = compose(
         );
       }}
     </LocationSubscriber>
-  ),
+  )
 );
 export default FacetHeader;

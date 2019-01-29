@@ -82,16 +82,7 @@ const FacetWrapper = compose(
     onRequestRemove: 'handleRequestRemove',
   }),
   withState('showingValueSearch', 'setShowingValueSearch', false),
-  withState('collapsed', 'setCollapsed', false)
-  // lifecycle({
-  //   componentWillReceiveProps(nextProps) {
-  //     console.log('nextProps', nextProps);
-
-  //     if (this.props.collapsed !== nextProps.collapsed) {
-  //       this.setState({ collapsed: nextProps.collapsed });
-  //     }
-  //   },
-  // })
+  withState('collapsed', 'setCollapsed', props => props.collapsed)
 )(
   ({
     setShowingValueSearch,

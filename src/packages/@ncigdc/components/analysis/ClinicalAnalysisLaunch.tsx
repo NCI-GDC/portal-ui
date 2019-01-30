@@ -9,8 +9,7 @@ import Button from '@ncigdc/uikit/Button';
 import ExploreLink from '@ncigdc/components/Links/ExploreLink';
 import EntityPageHorizontalTable from '@ncigdc/components/EntityPageHorizontalTable';
 import countComponents from '@ncigdc/modern_components/Counts';
-import { Tooltip } from '@ncigdc/uikit/Tooltip';
-import removeEmptyKeys from '@ncigdc/utils/removeEmptyKeys';
+// import { Tooltip } from '@ncigdc/uikit/Tooltip';
 import CollapsibleList from '@ncigdc/uikit/CollapsibleList';
 
 import { TSetTypes } from '@ncigdc/dux/sets';
@@ -25,23 +24,28 @@ interface IProps {
   description: string;
   demoData: any; // fix
   setInstructions: string;
-  setDisabledMessage: (
-    { sets, type }: { sets: Record<TSetTypes, string>; type: string },
-  ) => boolean | undefined;
+  // setDisabledMessage: (
+  //   { sets, type }: { sets: Record<TSetTypes, string>; type: string },
+  // ) => boolean | undefined;
   setTypes: string[];
   validateSets: (sets: TSelectedSets) => boolean;
   ResultComponent: () => React.Component;
   sets: Record<TSetTypes, string>;
   // selectedSets: { [K in TSetTypes]: string };
-  selectedSets: Record<TSetTypes, string>;
-  setSelectedSets: (arg: any) => void; // fix
-  configs: any[]; // fix
+  selectedSet: Record<TSetTypes, string>;
+  setSelectedSet: (arg: any) => void; // fix
+  configs: IConfig[]; // fix
+  selectedConfig: IConfig;
+  setSelectedConfig: (config: IConfig) => void;
 }
+
+// type TConfigVariables = string[];
+// type TConfigName = string;
+// type TConfig = Record<TConfigName, TConfigVariables>;
 
 interface IConfig {
   name: string;
   variables: string[];
-  type: string;
 }
 
 const styles = {
@@ -51,10 +55,6 @@ const styles = {
     borderBottom: `1px solid ${theme.greyScale5}`,
   },
 };
-const enhance = compose(
-  connect(({ sets }: any) => ({ sets })),
-  withState('selectedSets', 'setSelectedSets', {}),
-);
 
 const defaultVariables: string[] = [
   'Ethnicity',
@@ -63,26 +63,34 @@ const defaultVariables: string[] = [
   'Age at Diagnosis',
   'Cause of Death',
 ];
+
 const defaultConfig: IConfig = {
   name: 'Default',
   variables: defaultVariables,
-  type: 'default',
 };
+
+const enhance = compose(
+  connect(({ sets }: any) => ({ sets })),
+  withState('selectedSet', 'setSelectedSet', {}),
+  withState('selectedConfig', 'setSelectedConfig', defaultConfig),
+);
+
 const ClinicalAnalysisLaunch: ComponentType<IProps> = ({
   onCancel,
   onRun,
   type,
   demoData,
-  selectedSets,
+  selectedSet,
   validateSets,
   description,
   label,
   Icon,
   sets,
   setTypes,
-  setDisabledMessage,
-  setSelectedSets,
-  configs = [defaultConfig],
+  setSelectedSet,
+  configs = [defaultConfig, { name: 'Foo', variables: ['foo', 'bar'] }],
+  selectedConfig,
+  setSelectedConfig,
 }: IProps) => {
   const cohortHeadings = [
     { key: 'select', title: 'Select' },
@@ -96,7 +104,6 @@ const ClinicalAnalysisLaunch: ComponentType<IProps> = ({
     { key: 'variables', title: 'Variables' },
   ];
 
-  console.log('sets: ', sets);
   /* tslint:disable */
   const setArray: any[] = [];
   const setData: any[] = Object.entries(sets)
@@ -106,40 +113,25 @@ const ClinicalAnalysisLaunch: ComponentType<IProps> = ({
 
       return Object.entries(sets).map(([setId, label]: [string, any]) => {
         const id = `set-table-${type}-${setId}-select`;
-        const checked = Boolean((selectedSets[type] || {})[setId]);
-
-        const msg =
-          !checked && setDisabledMessage({ sets: selectedSets, type });
+        const checked = Boolean((selectedSet[type] || {})[setId]);
 
         return {
           select: (
-            <Tooltip
-              Component={msg}
+            <input
               style={{
-                cursor: msg ? 'not-allowed' : 'initial',
+                marginLeft: 3,
               }}
-            >
-              <input
-                style={{
-                  marginLeft: 3,
-                  pointerEvents: msg ? 'none' : 'initial',
-                }}
-                id={id}
-                type="checkbox"
-                value={setId}
-                disabled={msg}
-                onChange={e => {
-                  const setId = e.target.value;
-                  const setIdPath = [type, setId];
-                  setSelectedSets(
-                    _.get(selectedSets, setIdPath)
-                      ? removeEmptyKeys(_.omit(selectedSets, setIdPath))
-                      : _.set({ ...selectedSets }, setIdPath, sets[setId]),
-                  );
-                }}
-                checked={configs[name]}
-              />
-            </Tooltip>
+              id={id}
+              type="radio"
+              value={setId}
+              onChange={e => {
+                const setId = e.target.value;
+                const setIdPath = [type, setId];
+                setSelectedSet(_.set({}, setIdPath, sets[setId]));
+              }}
+              checked={checked}
+              aria-label={`Select ${name} set`}
+            />
           ),
           type: _.capitalize(type === 'ssm' ? 'mutations' : type + 's'),
           name: <label htmlFor={id}>{_.truncate(label, { length: 70 })}</label>,
@@ -159,24 +151,26 @@ const ClinicalAnalysisLaunch: ComponentType<IProps> = ({
     })
     .reduce((acc, rows) => acc.concat(rows), setArray);
 
-  // const configData: any[] = Object.entries(configs);
-  const configData = configs.map(({ name, type, variables }, i) => {
-    // return Object.entries(sets).map(([setId, label]: [string, any]) => {
-    // const id = `set-table-${type}-${setId}-select`;
-    // const checked = Boolean((selectedSets[type] || {})[setId]);
+  const configData = configs.map(({ name, variables }) => {
+    const checked = selectedConfig.name === name;
 
     return {
       select: (
         <input
           style={{
             marginLeft: 3,
-            // pointerEvents: msg ? 'none' : 'initial',
           }}
-          id={`${i}`}
-          type="checkbox"
+          id={name}
+          type="radio"
           value={name}
-          onChange={() => console.log('selected config')}
-          checked={false}
+          onChange={e => {
+            let configName = e.target.value;
+            setSelectedConfig(
+              _.find(configs, c => c.name === configName) || defaultConfig,
+            );
+          }}
+          checked={checked}
+          aria-label={`Select ${name} configuration`}
         />
       ),
       name: <label htmlFor={name}>{_.truncate(name, { length: 70 })}</label>,
@@ -195,7 +189,6 @@ const ClinicalAnalysisLaunch: ComponentType<IProps> = ({
         ),
     };
   });
-  // .reduce((acc, rows) => acc.concat(rows), setArray);
 
   return (
     <Column style={{ width: '70%', paddingLeft: '1rem', paddingTop: '2rem' }}>
@@ -243,13 +236,10 @@ const ClinicalAnalysisLaunch: ComponentType<IProps> = ({
           <div style={{ marginBottom: 15 }}>
             You can re-use previously saved analysis configurations.
           </div>
-          {/* {setData.length > 0 && ( */}
-          {true && (
-            <EntityPageHorizontalTable
-              data={configData}
-              headings={configurationHeadings}
-            />
-          )}
+          <EntityPageHorizontalTable
+            data={configData}
+            headings={configurationHeadings}
+          />
         </Column>
       </Row>
       <Row
@@ -260,8 +250,8 @@ const ClinicalAnalysisLaunch: ComponentType<IProps> = ({
         }}
       >
         <Button
-          disabled={!validateSets(selectedSets)}
-          onClick={() => onRun(selectedSets)}
+          disabled={!validateSets(selectedSet)}
+          onClick={() => onRun(selectedSet)}
         >
           Run
         </Button>

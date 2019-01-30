@@ -312,18 +312,10 @@ const availableAnalysis: [TAnalysis] = [
         type: 'clinical_data',
       },
       setInstructions: 'Set instructions',
-      setDisabledMessage: ({ sets, type }) =>
-        !['case'].includes(type)
-          ? "This analysis can't be run with this type"
-          : Object.keys(sets[type] || {}).length >= 2
-            ? `You can only select two ${type === 'ssm'
-                ? 'mutation'
-                : type} set`
-            : null,
       setTypes: ['case'],
       validateSets: sets =>
         sets &&
-        ['case'].every((t: any) => Object.keys(sets[t] || {}).length === 2),
+        ['case'].every((t: any) => Object.keys(sets[t] || {}).length === 1),
       ResultComponent: props =>
         props.id.includes('demo-') ? (
           <Demo

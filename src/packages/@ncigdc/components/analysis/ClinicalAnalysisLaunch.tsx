@@ -11,7 +11,7 @@ import EntityPageHorizontalTable from '@ncigdc/components/EntityPageHorizontalTa
 import countComponents from '@ncigdc/modern_components/Counts';
 import { Tooltip } from '@ncigdc/uikit/Tooltip';
 import removeEmptyKeys from '@ncigdc/utils/removeEmptyKeys';
-// import CollapsibleList from '@ncigdc/uikit/CollapsibleList';
+import CollapsibleList from '@ncigdc/uikit/CollapsibleList';
 
 import { TSetTypes } from '@ncigdc/dux/sets';
 import { TSelectedSets } from './availableAnalysis';
@@ -26,15 +26,22 @@ interface IProps {
   demoData: any; // fix
   setInstructions: string;
   setDisabledMessage: (
-    { sets, type }: { sets: any; type: any },
+    { sets, type }: { sets: Record<TSetTypes, string>; type: string },
   ) => boolean | undefined;
-  setTypes: TSetTypes[];
+  setTypes: string[];
   validateSets: (sets: TSelectedSets) => boolean;
   ResultComponent: () => React.Component;
-  sets: { type: string }; // fix
-  selectedSets: { type: string }; // fix
-  setSelectedSets: (arg: any) => void;
-  configs: any[];
+  sets: Record<TSetTypes, string>;
+  // selectedSets: { [K in TSetTypes]: string };
+  selectedSets: Record<TSetTypes, string>;
+  setSelectedSets: (arg: any) => void; // fix
+  configs: any[]; // fix
+}
+
+interface IConfig {
+  name: string;
+  variables: string[];
+  type: string;
 }
 
 const styles = {
@@ -49,6 +56,18 @@ const enhance = compose(
   withState('selectedSets', 'setSelectedSets', {}),
 );
 
+const defaultVariables: string[] = [
+  'Ethnicity',
+  'Gender',
+  'Race',
+  'Age at Diagnosis',
+  'Cause of Death',
+];
+const defaultConfig: IConfig = {
+  name: 'Default',
+  variables: defaultVariables,
+  type: 'default',
+};
 const ClinicalAnalysisLaunch: ComponentType<IProps> = ({
   onCancel,
   onRun,
@@ -63,7 +82,7 @@ const ClinicalAnalysisLaunch: ComponentType<IProps> = ({
   setTypes,
   setDisabledMessage,
   setSelectedSets,
-  configs = [],
+  configs = [defaultConfig],
 }: IProps) => {
   const cohortHeadings = [
     { key: 'select', title: 'Select' },
@@ -77,10 +96,11 @@ const ClinicalAnalysisLaunch: ComponentType<IProps> = ({
     { key: 'variables', title: 'Variables' },
   ];
 
+  console.log('sets: ', sets);
   /* tslint:disable */
   const setArray: any[] = [];
   const setData: any[] = Object.entries(sets)
-    // .filter((type: TSetTypes) => setTypes.includes(type))
+    .filter(([type]) => setTypes.includes(type))
     .map(([type, sets]) => {
       const CountComponent = countComponents[type];
 
@@ -117,7 +137,7 @@ const ClinicalAnalysisLaunch: ComponentType<IProps> = ({
                       : _.set({ ...selectedSets }, setIdPath, sets[setId]),
                   );
                 }}
-                checked={checked}
+                checked={configs[name]}
               />
             </Tooltip>
           ),
@@ -139,57 +159,48 @@ const ClinicalAnalysisLaunch: ComponentType<IProps> = ({
     })
     .reduce((acc, rows) => acc.concat(rows), setArray);
 
-  const configData: any[] = Object.entries(configs)
-    // .filter((type: TSetTypes) => setTypes.includes(type))
-    .map(([type, sets]) => {
-      return Object.entries(sets).map(([setId, label]: [string, any]) => {
-        const id = `set-table-${type}-${setId}-select`;
-        const checked = Boolean((selectedSets[type] || {})[setId]);
+  // const configData: any[] = Object.entries(configs);
+  const configData = configs.map(({ name, type, variables }, i) => {
+    // return Object.entries(sets).map(([setId, label]: [string, any]) => {
+    // const id = `set-table-${type}-${setId}-select`;
+    // const checked = Boolean((selectedSets[type] || {})[setId]);
 
-        const msg =
-          !checked && setDisabledMessage({ sets: selectedSets, type });
-
-        return {
-          select: (
-            <Tooltip
-              Component={msg}
-              style={{
-                cursor: msg ? 'not-allowed' : 'initial',
-              }}
-            >
-              <input
-                style={{
-                  marginLeft: 3,
-                  pointerEvents: msg ? 'none' : 'initial',
-                }}
-                id={id}
-                type="checkbox"
-                value={setId}
-                disabled={msg}
-                onChange={e => {
-                  const setId = e.target.value;
-                  const setIdPath = [type, setId];
-                  setSelectedSets(
-                    _.get(selectedSets, setIdPath)
-                      ? removeEmptyKeys(_.omit(selectedSets, setIdPath))
-                      : _.set({ ...selectedSets }, setIdPath, sets[setId]),
-                  );
-                }}
-                checked={checked}
-              />
-            </Tooltip>
-          ),
-          name: <label htmlFor={id}>{_.truncate(label, { length: 70 })}</label>,
-          variables: <div>Variables</div>, // CollapsibleList
-        };
-      });
-    })
-    .reduce((acc, rows) => acc.concat(rows), setArray);
+    return {
+      select: (
+        <input
+          style={{
+            marginLeft: 3,
+            // pointerEvents: msg ? 'none' : 'initial',
+          }}
+          id={`${i}`}
+          type="checkbox"
+          value={name}
+          onChange={() => console.log('selected config')}
+          checked={false}
+        />
+      ),
+      name: <label htmlFor={name}>{_.truncate(name, { length: 70 })}</label>,
+      variables:
+        variables && variables.length > 1 ? (
+          <CollapsibleList
+            liStyle={{ whiteSpace: 'normal', listStyleType: 'disc' }}
+            toggleStyle={{ fontStyle: 'normal' }}
+            data={variables.slice(0).sort()}
+            limit={0}
+            expandText={`${variables.length} Variables`}
+            collapseText="collapse"
+          />
+        ) : (
+          variables[0]
+        ),
+    };
+  });
+  // .reduce((acc, rows) => acc.concat(rows), setArray);
 
   return (
     <Column style={{ width: '70%', paddingLeft: '1rem', paddingTop: '2rem' }}>
       <Row
-        spacing={'5px'}
+        spacing={'10px'}
         style={{ ...styles.rowStyle, justifyContent: 'space-between' }}
       >
         <Icon />

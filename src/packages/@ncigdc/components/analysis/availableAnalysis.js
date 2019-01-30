@@ -274,7 +274,7 @@ const availableAnalysis: [TAnalysis] = [
       )),
       description: `Display basic statistical analyses for your clinical cohort using data variables and configurations that you select as input`,
       demoData: {
-        message: 'message',
+        message: 'Demo cases',
         sets: {
           case: {
             'demo-pancreas-kras': 'Pancreas - KRAS mutated',
@@ -309,7 +309,7 @@ const availableAnalysis: [TAnalysis] = [
             ],
           },
         },
-        type: 'comparison',
+        type: 'clinical_data',
       },
       setInstructions: 'Set instructions',
       setDisabledMessage: ({ sets, type }) =>
@@ -326,11 +326,26 @@ const availableAnalysis: [TAnalysis] = [
         ['case'].every((t: any) => Object.keys(sets[t] || {}).length === 2),
       ResultComponent: props =>
         props.id.includes('demo-') ? (
-          <Demo {...props}>
-            <div>Clinical Analysis Result</div>
+          <Demo
+            {...props}
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+          >
+            Clinical Analysis Result
           </Demo>
         ) : (
-          <div>Clinical Analysis Result</div>
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+          >
+            Clinical Analysis Result
+          </div>
         ),
     },
   ]),

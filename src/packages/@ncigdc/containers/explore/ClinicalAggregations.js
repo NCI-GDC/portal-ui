@@ -21,12 +21,21 @@ import RecursiveToggledFacet, { NestedWrapper } from './RecursiveToggledFacet';
 import { CaseAggregationsQuery } from './explore.relay';
 import SuggestionFacet from '@ncigdc/components/Aggregations/SuggestionFacet';
 import UploadSetButton from '@ncigdc/components/UploadSetButton';
+import SearchIcon from 'react-icons/lib/fa/search';
+import { Row } from '@ncigdc/uikit/Flex';
+import Input from '@ncigdc/uikit/Form/Input';
+import styled from '@ncigdc/theme/styled';
 
 const facetMatchesQuery = (facet: any, query: any) =>
   _.some([facet.field, facet.description].map(_.toLower), searchTarget =>
     _.includes(searchTarget, query)
   );
-
+const MagnifyingGlass = styled(SearchIcon, {
+  position: 'relative',
+  ':hover::before': {
+    textShadow: ({ theme }) => theme.textShadow,
+  },
+});
 const advancedPresetFacets = [
   {
     title: 'Demographic',
@@ -168,7 +177,7 @@ const enhance = compose(
         }
       }
     }
-
+    let input;
     return [
       <div key="header">
         <FacetHeader
@@ -216,6 +225,20 @@ const enhance = compose(
           Upload Case Set
         </UploadSetButton>
       </div>,
+
+      <Row>
+        <MagnifyingGlass />
+        <Input
+          getNode={node => {
+            input = node;
+          }}
+          style={{ borderRadius: '4px', marginBottom: '6px' }}
+          onChange={() => props.setFilter(input.value)}
+          placeholder={'Search...'}
+          aria-label="Search..."
+          autoFocus
+        />
+      </Row>,
       ...advancedPresetFacets.map(facet => {
         return (
           <NestedWrapper
@@ -230,92 +253,6 @@ const enhance = compose(
               position: 'relative',
             }}
             Component={
-              // facet.children ? (
-              //   facet.children.map(subFacet => {
-              //     const subTree = _.get(fieldHash, subFacet.full, {});
-              //     if (Object.keys(subTree).includes('description')) {
-              //       return (
-              //         <FacetWrapper
-              //           relayVarName="exploreCaseCustomFacetFields"
-              //           key={subFacet.full}
-              //           facet={subFacet}
-              //           title={subFacet.title.split('.').pop()}
-              //           aggregation={
-              //             props.aggregations[escapeForRelay(subFacet.field)]
-              //           }
-              //           relay={props.relay}
-              //           // additionalProps={subFacet.additionalProps}
-              //           style={{
-              //             borderBottom: `1px solid ${props.theme.greyScale5}`,
-              //             position: 'relative',
-              //           }}
-              //           collapsed={true}
-              //           maxNum={5}
-              //         />
-              //       );
-              //     } else {
-              //       return (
-              //         <NestedWrapper
-              //           style={{
-              //             border: `1px solid ${props.theme.greyScale5}`,
-              //             position: 'relative',
-              //           }}
-              //           Component={
-              //             <RecursiveToggledFacet
-              //               hash={_.omit(subTree, subFacet.excluded)}
-              //               Component={leafFacet => (
-              //                 <FacetWrapper
-              //                   relayVarName="exploreCaseCustomFacetFields"
-              //                   key={leafFacet.full}
-              //                   facet={leafFacet}
-              //                   title={leafFacet.full.split('.').pop()}
-              //                   aggregation={
-              //                     props.aggregations[
-              //                       escapeForRelay(leafFacet.field)
-              //                     ]
-              //                   }
-              //                   maxNum={Infinity}
-              //                   // collapsed={true}
-              //                   relay={props.relay}
-              //                   style={{
-              //                     // borderBottom: `1px solid ${props.theme
-              //                     //   .greyScale5}`,
-              //                     position: 'relative',
-              //                     paddingLeft: '10px',
-              //                   }}
-              //                 />
-              //               )}
-              //               key={subFacet.title + 'RecursiveToggledBox'}
-              //             />
-              //           }
-              //           title={subFacet.title}
-              //           key={subFacet.full + 'NestedWrapper'}
-              //           isCollapsed={_.get(
-              //             props.toggledTree[facet.field][subFacet.field],
-              //             'toggled',
-              //             true
-              //           )}
-              //           setCollapsed={() =>
-              //             props.setToggledTree({
-              //               ...props.toggledTree,
-              //               [facet.field]: {
-              //                 ...props.toggledTree[facet.field],
-              //                 [subFacet.field]: {
-              //                   toggled: !_.get(
-              //                     props.toggledTree[facet.field][
-              //                       subFacet.field
-              //                     ],
-              //                     'toggled',
-              //                     true
-              //                   ),
-              //                 },
-              //               },
-              //             })}
-              //         />
-              //       );
-              //     }
-              //   })
-              // ) :
               <RecursiveToggledFacet
                 hash={_.omit(_.get(fieldHash, facet.full, {}), facet.excluded)}
                 Component={facet => (
@@ -328,13 +265,13 @@ const enhance = compose(
                       props.aggregations[escapeForRelay(facet.field)]
                     }
                     relay={props.relay}
-                    additionalProps={{ style: { padding: 0 } }}
+                    additionalProps={{ style: { paddingBottom: 0 } }}
                     style={{
                       // borderBottom: `1px solid ${props.theme.greyScale5}`,
                       position: 'relative',
                       paddingLeft: '10px',
                     }}
-                    headerStyle={{ fontSize: '15px' }}
+                    headerStyle={{ fontSize: '14px' }}
                     collapsed={true}
                     maxNum={5}
                   />

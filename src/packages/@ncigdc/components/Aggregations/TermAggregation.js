@@ -33,7 +33,7 @@ type TProps = {
   maxNum: number,
 };
 
-const ToggleMoreLink = styled.div({
+export const ToggleMoreLink = styled.div({
   marginLeft: 'auto',
   color: ({ theme }) => theme.greyScale7,
   fontSize: '1.2rem',
@@ -50,7 +50,7 @@ const BucketRow = styled(Row, {
   padding: '0.3rem 0',
 });
 
-const BottomRow = styled(Row, {
+export const BottomRow = styled(Row, {
   padding: '0.5rem',
 });
 

@@ -230,120 +230,117 @@ const enhance = compose(
               position: 'relative',
             }}
             Component={
-              facet.children ? (
-                facet.children.map(subFacet => {
-                  const subTree = _.get(fieldHash, subFacet.full, {});
-                  if (Object.keys(subTree).includes('description')) {
-                    return (
-                      <FacetWrapper
-                        relayVarName="exploreCaseCustomFacetFields"
-                        key={subFacet.full}
-                        facet={subFacet}
-                        title={subFacet.title.split('.').pop()}
-                        aggregation={
-                          props.aggregations[escapeForRelay(subFacet.field)]
-                        }
-                        relay={props.relay}
-                        // additionalProps={subFacet.additionalProps}
-                        style={{
-                          borderBottom: `1px solid ${props.theme.greyScale5}`,
-                          position: 'relative',
-                        }}
-                        collapsed={true}
-                        maxNum={5}
-                      />
-                    );
-                  } else {
-                    return (
-                      <NestedWrapper
-                        style={{
-                          border: `1px solid ${props.theme.greyScale5}`,
-                          position: 'relative',
-                        }}
-                        Component={
-                          <RecursiveToggledFacet
-                            hash={_.omit(subTree, subFacet.excluded)}
-                            Component={leafFacet => (
-                              <FacetWrapper
-                                relayVarName="exploreCaseCustomFacetFields"
-                                key={leafFacet.full}
-                                facet={leafFacet}
-                                title={leafFacet.full.split('.').pop()}
-                                aggregation={
-                                  props.aggregations[
-                                    escapeForRelay(leafFacet.field)
-                                  ]
-                                }
-                                maxNum={Infinity}
-                                // collapsed={true}
-                                relay={props.relay}
-                                style={{
-                                  // borderBottom: `1px solid ${props.theme
-                                  //   .greyScale5}`,
-                                  position: 'relative',
-                                  paddingLeft: '10px',
-                                }}
-                              />
-                            )}
-                            key={subFacet.title + 'RecursiveToggledBox'}
-                          />
-                        }
-                        title={subFacet.title}
-                        key={subFacet.full + 'NestedWrapper'}
-                        isCollapsed={_.get(
-                          props.toggledTree[facet.field][subFacet.field],
-                          'toggled',
-                          true
-                        )}
-                        setCollapsed={() =>
-                          props.setToggledTree({
-                            ...props.toggledTree,
-                            [facet.field]: {
-                              ...props.toggledTree[facet.field],
-                              [subFacet.field]: {
-                                toggled: !_.get(
-                                  props.toggledTree[facet.field][
-                                    subFacet.field
-                                  ],
-                                  'toggled',
-                                  true
-                                ),
-                              },
-                            },
-                          })}
-                      />
-                    );
-                  }
-                })
-              ) : (
-                <RecursiveToggledFacet
-                  hash={_.omit(
-                    _.get(fieldHash, facet.full, {}),
-                    facet.excluded
-                  )}
-                  Component={facet => (
-                    <FacetWrapper
-                      relayVarName="exploreCaseCustomFacetFields"
-                      key={facet.full}
-                      facet={facet}
-                      title={_.startCase(facet.full.split('.').pop())}
-                      aggregation={
-                        props.aggregations[escapeForRelay(facet.field)]
-                      }
-                      relay={props.relay}
-                      additionalProps={facet.additionalProps}
-                      style={{
-                        // borderBottom: `1px solid ${props.theme.greyScale5}`,
-                        position: 'relative',
-                        paddingLeft: '10px',
-                      }}
-                      collapsed={true}
-                      maxNum={5}
-                    />
-                  )}
-                  key={facet.title + 'RecursiveToggledBox'}
-                />
-              )
+              // facet.children ? (
+              //   facet.children.map(subFacet => {
+              //     const subTree = _.get(fieldHash, subFacet.full, {});
+              //     if (Object.keys(subTree).includes('description')) {
+              //       return (
+              //         <FacetWrapper
+              //           relayVarName="exploreCaseCustomFacetFields"
+              //           key={subFacet.full}
+              //           facet={subFacet}
+              //           title={subFacet.title.split('.').pop()}
+              //           aggregation={
+              //             props.aggregations[escapeForRelay(subFacet.field)]
+              //           }
+              //           relay={props.relay}
+              //           // additionalProps={subFacet.additionalProps}
+              //           style={{
+              //             borderBottom: `1px solid ${props.theme.greyScale5}`,
+              //             position: 'relative',
+              //           }}
+              //           collapsed={true}
+              //           maxNum={5}
+              //         />
+              //       );
+              //     } else {
+              //       return (
+              //         <NestedWrapper
+              //           style={{
+              //             border: `1px solid ${props.theme.greyScale5}`,
+              //             position: 'relative',
+              //           }}
+              //           Component={
+              //             <RecursiveToggledFacet
+              //               hash={_.omit(subTree, subFacet.excluded)}
+              //               Component={leafFacet => (
+              //                 <FacetWrapper
+              //                   relayVarName="exploreCaseCustomFacetFields"
+              //                   key={leafFacet.full}
+              //                   facet={leafFacet}
+              //                   title={leafFacet.full.split('.').pop()}
+              //                   aggregation={
+              //                     props.aggregations[
+              //                       escapeForRelay(leafFacet.field)
+              //                     ]
+              //                   }
+              //                   maxNum={Infinity}
+              //                   // collapsed={true}
+              //                   relay={props.relay}
+              //                   style={{
+              //                     // borderBottom: `1px solid ${props.theme
+              //                     //   .greyScale5}`,
+              //                     position: 'relative',
+              //                     paddingLeft: '10px',
+              //                   }}
+              //                 />
+              //               )}
+              //               key={subFacet.title + 'RecursiveToggledBox'}
+              //             />
+              //           }
+              //           title={subFacet.title}
+              //           key={subFacet.full + 'NestedWrapper'}
+              //           isCollapsed={_.get(
+              //             props.toggledTree[facet.field][subFacet.field],
+              //             'toggled',
+              //             true
+              //           )}
+              //           setCollapsed={() =>
+              //             props.setToggledTree({
+              //               ...props.toggledTree,
+              //               [facet.field]: {
+              //                 ...props.toggledTree[facet.field],
+              //                 [subFacet.field]: {
+              //                   toggled: !_.get(
+              //                     props.toggledTree[facet.field][
+              //                       subFacet.field
+              //                     ],
+              //                     'toggled',
+              //                     true
+              //                   ),
+              //                 },
+              //               },
+              //             })}
+              //         />
+              //       );
+              //     }
+              //   })
+              // ) :
+              <RecursiveToggledFacet
+                hash={_.omit(_.get(fieldHash, facet.full, {}), facet.excluded)}
+                Component={facet => (
+                  <FacetWrapper
+                    relayVarName="exploreCaseCustomFacetFields"
+                    key={facet.full}
+                    facet={facet}
+                    title={_.startCase(facet.full.split('.').pop())}
+                    aggregation={
+                      props.aggregations[escapeForRelay(facet.field)]
+                    }
+                    relay={props.relay}
+                    additionalProps={{ style: { padding: 0 } }}
+                    style={{
+                      // borderBottom: `1px solid ${props.theme.greyScale5}`,
+                      position: 'relative',
+                      paddingLeft: '10px',
+                    }}
+                    headerStyle={{ fontSize: '15px' }}
+                    collapsed={true}
+                    maxNum={5}
+                  />
+                )}
+                key={facet.title + 'RecursiveToggledBox'}
+              />
             }
             angleIconRight
             title={facet.title}

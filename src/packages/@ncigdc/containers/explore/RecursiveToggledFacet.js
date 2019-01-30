@@ -11,6 +11,11 @@ import {
 } from 'recompose';
 import styled from '@ncigdc/theme/styled';
 import FacetHeader from '@ncigdc/components/Aggregations/FacetHeader';
+import { Row, Column } from '@ncigdc/uikit/Flex';
+import {
+  ToggleMoreLink,
+  BottomRow,
+} from '@ncigdc/components/Aggregations/TermAggregation';
 
 const FacetWrapperDiv = styled.div({
   position: 'relative',
@@ -37,48 +42,59 @@ export const NestedWrapper = ({
   </FacetWrapperDiv>
 );
 const RecursiveToggledFacet = compose(
-  withState('headerCollapsed', 'setHeaderCollapsed', {})
+  withState('headerCollapsed', 'setHeaderCollapsed', {}),
+  withState('showingMore', 'setShowingMore', false)
 )(
-  class RecursiveToggledFacet extends React.Component {
-    constructor() {
-      super();
+  ({
+    hash,
+    Component,
+    headerCollapsed,
+    setHeaderCollapsed,
+    showingMore,
+    setShowingMore,
+  }) => {
+    const keyArray = Object.keys(hash);
+    if (!hash || keyArray === 0) {
+      return '';
     }
-    render() {
-      const {
-        hash,
-        Component,
-        headerCollapsed,
-        setHeaderCollapsed,
-      } = this.props;
-      if (!hash || Object.keys(hash) === 0) {
-        return '';
-      }
-      if (Object.keys(hash).includes('description')) {
-        return Component(hash);
-      }
-
-      return Object.keys(hash).map(key => {
-        if (Object.keys(hash[key]).includes('description')) {
-          return Component(hash[key]);
-        }
-
-        return (
-          <NestedWrapper
-            key={key + 'nestedWrapper'}
-            Component={
-              <RecursiveToggledFacet hash={hash[key]} Component={Component} />
-            }
-            title={_.startCase(key)}
-            isCollapsed={get(headerCollapsed, key, true)}
-            setCollapsed={() =>
-              setHeaderCollapsed({
-                ...headerCollapsed,
-                [key]: !get(headerCollapsed, key, true),
-              })}
-          />
-        );
-      });
+    if (keyArray.includes('description')) {
+      return Component(hash);
     }
+
+    return (
+      <Column>
+        {keyArray.slice(0, showingMore ? Infinity : 5).map(key => {
+          if (Object.keys(hash[key]).includes('description')) {
+            return Component(hash[key]);
+          }
+
+          return (
+            <NestedWrapper
+              key={key + 'nestedWrapper'}
+              Component={
+                <RecursiveToggledFacet hash={hash[key]} Component={Component} />
+              }
+              title={_.startCase(key)}
+              isCollapsed={get(headerCollapsed, key, true)}
+              setCollapsed={() =>
+                setHeaderCollapsed({
+                  ...headerCollapsed,
+                  [key]: !get(headerCollapsed, key, true),
+                })}
+            />
+          );
+        })}
+        {keyArray.length > 5 && (
+          <BottomRow>
+            <ToggleMoreLink onClick={() => setShowingMore(!showingMore)}>
+              {showingMore
+                ? 'Less...'
+                : keyArray.length - 5 && `${keyArray.length - 5} More...`}
+            </ToggleMoreLink>
+          </BottomRow>
+        )}
+      </Column>
+    );
   }
 );
 

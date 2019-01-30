@@ -94,6 +94,7 @@ const FacetWrapper = compose(
     aggregation = { buckets: [] },
     handleRequestRemove,
     style,
+    headerStyle,
     isRemovable,
     additionalProps,
     maxNum = 5,
@@ -159,8 +160,9 @@ const FacetWrapper = compose(
           setCollapsed={setCollapsed}
           showingValueSearch={showingValueSearch}
           setShowingValueSearch={setShowingValueSearch}
+          style={headerStyle}
         />
-        {facetComponent}
+        <div style={{ paddingLeft: '10px' }}>{facetComponent}</div>
       </FacetWrapperDiv>
     );
   }

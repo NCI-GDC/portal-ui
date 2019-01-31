@@ -178,8 +178,6 @@ const Root = (props: mixed) => (
                     consoleDebug('Root component user: ', user);
                     if (!user) {
                       console.log('1', 1);
-
-                      store.dispatch(removeNotification('LOGIN'));
                     }
                     if (
                       failed &&

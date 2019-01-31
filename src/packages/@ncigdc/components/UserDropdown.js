@@ -71,8 +71,11 @@ const logout = async dispatch => {
   }
   console.log('logout');
 
-  dispatch(removeNotification('LOGIN'));
-  // localStorage.removeItem('ncigdcActivebannerNotification');
+  let nots = JSON.parse(localStorage.getItem('ncigdcActivebannerNotification'));
+  localStorage.setItem(
+    'ncigdcActivebannerNotification',
+    nots.filter(n => n.components.includes('LOGIN'))
+  );
 };
 
 const UserDropdown = connect(state => ({

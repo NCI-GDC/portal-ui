@@ -42,7 +42,7 @@ export default ({
         },
       ],
     },
-    filters,
+    filters
   );
 
   const mutatedGeneFilter = replaceFilters(
@@ -58,7 +58,7 @@ export default ({
         },
       ],
     },
-    geneFilter,
+    geneFilter
   );
   console.log(filters);
   return (

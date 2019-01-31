@@ -85,7 +85,7 @@ const defaultConfig: IConfig = {
 const enhance = compose(
   connect(({ sets }: any) => ({ sets })),
   withState('selectedSet', 'setSelectedSet', {}),
-  withState('selectedConfig', 'setSelectedConfig', defaultConfig),
+  withState('selectedConfig', 'setSelectedConfig', defaultConfig)
 );
 
 const ClinicalAnalysisLaunch: ComponentType<IProps> = ({
@@ -177,7 +177,7 @@ const ClinicalAnalysisLaunch: ComponentType<IProps> = ({
           onChange={e => {
             const configName = e.target.value;
             setSelectedConfig(
-              _.find(configs, c => c.name === configName) || defaultConfig,
+              _.find(configs, c => c.name === configName) || defaultConfig
             );
           }}
           checked={checked}

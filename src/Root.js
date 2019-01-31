@@ -142,7 +142,6 @@ if (process.env.NODE_ENV !== 'development') {
   store.dispatch(fetchUser());
   store.dispatch(fetchNotifications());
 }
-store.dispatch(removeNotification('LOGIN'));
 class RelayRoute extends Relay.Route {
   static routeName = 'RootRoute';
   static queries = viewerQuery;
@@ -174,7 +173,14 @@ const Root = (props: mixed) => (
                 <HasUser>
                   {({ user, failed, error }) => {
                     // if user request fails
+                    console.log('11', 11);
+
                     consoleDebug('Root component user: ', user);
+                    if (!user) {
+                      console.log('1', 1);
+
+                      store.dispatch(removeNotification('LOGIN'));
+                    }
                     if (
                       failed &&
                       error.message === 'Session timed out or not authorized'
@@ -199,6 +205,7 @@ const Root = (props: mixed) => (
                     consoleDebug(
                       'Response does not match any criteria, redirecting to login'
                     );
+
                     return <Redirect to="/login" />;
                   }}
                 </HasUser>

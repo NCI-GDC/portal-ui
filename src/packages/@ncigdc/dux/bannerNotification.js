@@ -100,10 +100,9 @@ const reducer = (state: TState = initialState, action: TAction) => {
         dismissed: ids.includes(n.id) ? true : n.dismissed,
       }));
     case NOTIFICATION_REMOVE:
-      // const ids = action.payload.map(p => p.id);
-      console.log('action.payload', action.payload, state);
+      console.log('state', state);
 
-      return [...state.filter(n => components.includes(action.payload))];
+      return [...state.filter(n => n.components.includes(action.payload))];
     default:
       return state;
   }

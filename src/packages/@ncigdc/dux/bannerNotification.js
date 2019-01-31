@@ -77,6 +77,8 @@ const reducer = (state: TState = initialState, action: TAction) => {
       return state;
     }
     case NOTIFICATION_SUCCESS:
+      console.log('state', state);
+
       return uniqBy(
         [
           ...state,
@@ -101,7 +103,7 @@ const reducer = (state: TState = initialState, action: TAction) => {
       // const ids = action.payload.map(p => p.id);
       console.log('action.payload', action.payload, state);
 
-      return state.splice().filter(n => components.includes(action.payload));
+      return [...state.filter(n => components.includes(action.payload))];
     default:
       return state;
   }

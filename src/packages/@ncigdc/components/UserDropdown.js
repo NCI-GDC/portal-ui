@@ -18,7 +18,10 @@ import SignOutIcon from '@ncigdc/theme/icons/SignOut';
 import UserProfileModal from '@ncigdc/components/Modals/UserProfileModal';
 import { setModal } from '@ncigdc/dux/modal';
 import { IS_DEV, AWG, FENCE } from '@ncigdc/utils/constants';
-import { dismissNotification } from '@ncigdc/dux/bannerNotification';
+import {
+  dismissNotification,
+  removeNotification,
+} from '@ncigdc/dux/bannerNotification';
 
 const NavLink = styled.a({
   padding: '15px 13px',
@@ -66,7 +69,10 @@ const logout = async dispatch => {
       );
     }
   }
-  localStorage.removeItem('ncigdcActivebannerNotification');
+  console.log('logout');
+
+  dispatch(dismissNotification('LOGIN'));
+  // localStorage.removeItem('ncigdcActivebannerNotification');
 };
 
 const UserDropdown = connect(state => ({

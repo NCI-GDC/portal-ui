@@ -9,7 +9,7 @@ import { REHYDRATE } from 'redux-persist/constants';
 import { uniqBy } from 'lodash';
 const NOTIFICATION_SUCCESS = 'NOTIFICATION_SUCCESS';
 const NOTIFICATION_DISMISS = 'NOTIFICATION_DISMISS';
-
+const NOTIFICATION_REMOVE = 'NOTIFICATION_REMOVE';
 type TState = Array<{
   components: Array<string>,
   level: string,
@@ -42,7 +42,14 @@ export function fetchNotifications() {
 export function dismissNotification(notificationID: string) {
   return {
     type: NOTIFICATION_DISMISS,
-    payload: [{ id: notificationID }],
+    payload: [{ components: notificationID }],
+  };
+}
+
+export function removeNotification(component: string) {
+  return {
+    type: NOTIFICATION_REMOVE,
+    payload: component,
   };
 }
 
@@ -90,6 +97,11 @@ const reducer = (state: TState = initialState, action: TAction) => {
         ...n,
         dismissed: ids.includes(n.id) ? true : n.dismissed,
       }));
+    case NOTIFICATION_REMOVE:
+      // const ids = action.payload.map(p => p.id);
+      console.log('action.payload', action.payload, state);
+
+      return state.splice().filter(n => components.includes(action.payload));
     default:
       return state;
   }

@@ -25,7 +25,10 @@ import { fetchUser, forceLogout } from '@ncigdc/dux/auth';
 import Login from '@ncigdc/routes/Login';
 import { redirectToLogin } from '@ncigdc/utils/auth';
 import consoleDebug from '@ncigdc/utils/consoleDebug';
-import { fetchNotifications } from '@ncigdc/dux/bannerNotification';
+import {
+  fetchNotifications,
+  removeNotification,
+} from '@ncigdc/dux/bannerNotification';
 
 const retryStatusCodes = [500, 503, 504];
 
@@ -139,7 +142,7 @@ if (process.env.NODE_ENV !== 'development') {
   store.dispatch(fetchUser());
   store.dispatch(fetchNotifications());
 }
-
+store.dispatch(removeNotification('LOGIN'));
 class RelayRoute extends Relay.Route {
   static routeName = 'RootRoute';
   static queries = viewerQuery;

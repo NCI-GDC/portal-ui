@@ -14,6 +14,19 @@ import CollapsibleList from '@ncigdc/uikit/CollapsibleList';
 
 import { TSetTypes } from '@ncigdc/dux/sets';
 import { TSelectedSets } from './availableAnalysis';
+import { IGroupFilter } from '@ncigdc/utils/filters/types';
+
+interface ICaseDemoSet {
+  case: Record<string, string>;
+}
+interface IDemoData {
+  message: string;
+  sets: {
+    case: ICaseDemoSet;
+  };
+  filters: IGroupFilter;
+  type: string;
+}
 
 interface IProps {
   onCancel: () => void;
@@ -22,7 +35,7 @@ interface IProps {
   label: string;
   Icon: () => React.Component;
   description: string;
-  demoData: any; // fix
+  demoData: IDemoData; // fix
   setInstructions: string;
   // setDisabledMessage: (
   //   { sets, type }: { sets: Record<TSetTypes, string>; type: string },
@@ -104,16 +117,15 @@ const ClinicalAnalysisLaunch: ComponentType<IProps> = ({
     { key: 'variables', title: 'Variables' },
   ];
 
-  /* tslint:disable */
   const setArray: any[] = [];
   const setData: any[] = Object.entries(sets)
-    .filter(([type]) => setTypes.includes(type))
-    .map(([type, sets]) => {
-      const CountComponent = countComponents[type];
+    .filter(([setType]) => setTypes.includes(setType))
+    .map(([setType, mappedSets]) => {
+      const CountComponent = countComponents[setType];
 
-      return Object.entries(sets).map(([setId, label]: [string, any]) => {
-        const id = `set-table-${type}-${setId}-select`;
-        const checked = Boolean((selectedSet[type] || {})[setId]);
+      return Object.entries(mappedSets).map(([setId, l]: [string, any]) => {
+        const id = `set-table-${setType}-${setId}-select`;
+        const checked = Boolean((selectedSet[setType] || {})[setId]);
 
         return {
           select: (
@@ -125,22 +137,21 @@ const ClinicalAnalysisLaunch: ComponentType<IProps> = ({
               type="radio"
               value={setId}
               onChange={e => {
-                const setId = e.target.value;
-                const setIdPath = [type, setId];
-                setSelectedSet(_.set({}, setIdPath, sets[setId]));
+                const targetId = e.target.value;
+                const setIdPath = [setType, targetId];
+                setSelectedSet(_.set({}, setIdPath, mappedSets[targetId]));
               }}
               checked={checked}
               aria-label={`Select ${name} set`}
             />
           ),
-          type: _.capitalize(type === 'ssm' ? 'mutations' : type + 's'),
-          name: <label htmlFor={id}>{_.truncate(label, { length: 70 })}</label>,
+          name: <label htmlFor={id}>{_.truncate(l, { length: 70 })}</label>,
           count: (
             <CountComponent
               filters={{
                 op: '=',
                 content: {
-                  field: `${type}s.${type}_id`,
+                  field: `${setType}s.${setType}_id`,
                   value: `set_id:${setId}`,
                 },
               }}
@@ -164,7 +175,7 @@ const ClinicalAnalysisLaunch: ComponentType<IProps> = ({
           type="radio"
           value={name}
           onChange={e => {
-            let configName = e.target.value;
+            const configName = e.target.value;
             setSelectedConfig(
               _.find(configs, c => c.name === configName) || defaultConfig,
             );

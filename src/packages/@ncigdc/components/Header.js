@@ -57,9 +57,6 @@ const Header = compose(
 
         dispatch(setModal(<SessionExpiredModal />));
         dispatch(forceLogout());
-        console.log('header');
-
-        dispatch(removeNotification('LOGIN'));
       }
     },
   }),

@@ -71,7 +71,7 @@ const logout = async dispatch => {
   }
   console.log('logout');
 
-  dispatch(dismissNotification('LOGIN'));
+  dispatch(removeNotification('LOGIN'));
   // localStorage.removeItem('ncigdcActivebannerNotification');
 };
 

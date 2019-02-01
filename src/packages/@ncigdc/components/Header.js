@@ -69,11 +69,10 @@ const Header = compose(
       }
     },
     componentWillReceiveProps(nextProps: Object): void {
-      if (!this.props.user) {
-        console.log('111', 111);
-        this.props.dispatch(removeNotification('LOGIN'));
-      }
       if (nextProps.error !== this.props.error) {
+        if (!this.props.user) {
+          this.props.dispatch(removeNotification('LOGIN'));
+        }
         this.props.handleApiError({ ...nextProps.error, user: nextProps.user });
       }
     },

@@ -101,6 +101,9 @@ const reducer = (state: TState = initialState, action: TAction) => {
       }));
     case NOTIFICATION_REMOVE:
       console.log('state', state);
+      console.log('newState', [
+        ...state.filter(n => n.components.includes(action.payload)),
+      ]);
 
       return [...state.filter(n => n.components.includes(action.payload))];
     default:

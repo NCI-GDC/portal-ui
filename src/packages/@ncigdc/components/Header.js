@@ -54,7 +54,7 @@ const Header = compose(
     handleApiError: ({ dispatch }) => ({ status, user }) => {
       if (user && status === 401) {
         console.log('not login', user, status);
-
+        dispatch(removeNotification('LOGIN'));
         dispatch(setModal(<SessionExpiredModal />));
         dispatch(forceLogout());
       }

@@ -105,7 +105,7 @@ const reducer = (state: TState = initialState, action: TAction) => {
         ...state.filter(n => n.components.includes(action.payload)),
       ]);
 
-      return state.slice().filter(n => n.components.includes(action.payload));
+      return state.slice().filter(n => !n.components.includes(action.payload));
     default:
       return state;
   }

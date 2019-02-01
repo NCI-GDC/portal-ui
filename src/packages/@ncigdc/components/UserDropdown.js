@@ -41,6 +41,7 @@ const DropdownItemStyled = styled(DropdownItem, {
 });
 
 const logout = async dispatch => {
+  dispatch(removeNotification('LOGIN'));
   if (AWG) {
     try {
       await fetch(urlJoin(FENCE, 'logout'), { credentials: 'include' });
@@ -70,7 +71,6 @@ const logout = async dispatch => {
     }
   }
   console.log('logout');
-  dispatch(removeNotification('LOGIN'));
   // let nots = JSON.parse(localStorage.getItem('ncigdcActivebannerNotification'));
   // localStorage.setItem(
   //   'ncigdcActivebannerNotification',

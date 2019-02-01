@@ -15,6 +15,7 @@ type TState = {
     type: string,
     created: string,
     message?: string,
+    config: Object,
   }>,
 };
 type TPayload = {

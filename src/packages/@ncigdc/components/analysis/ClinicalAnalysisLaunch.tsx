@@ -30,7 +30,7 @@ interface IDemoData {
 
 interface IProps {
   onCancel: () => void;
-  onRun: (sets: TSelectedSets) => void;
+  onRun: (sets: TSelectedSets, config?: any) => void;
   type: string;
   label: string;
   Icon: () => React.Component;
@@ -263,7 +263,7 @@ const ClinicalAnalysisLaunch: ComponentType<IProps> = ({
       >
         <Button
           disabled={!validateSets(selectedSet)}
-          onClick={() => onRun(selectedSet)}
+          onClick={() => onRun(selectedSet, selectedConfig)}
         >
           Run
         </Button>

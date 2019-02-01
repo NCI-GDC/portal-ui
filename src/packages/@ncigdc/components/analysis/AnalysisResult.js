@@ -8,7 +8,7 @@ import UnstyledButton from '@ncigdc/uikit/UnstyledButton';
 import {
   addAnalysis,
   removeAnalysis,
-  removeAllAnalysis
+  removeAllAnalysis,
 } from '@ncigdc/dux/analysis';
 import { notify, closeNotification } from '@ncigdc/dux/notification';
 import { Row, Column } from '@ncigdc/uikit/Flex';
@@ -47,7 +47,7 @@ function undoNotification(dispatch, analysis) {
             <i
               className="fa fa-undo"
               style={{
-                marginRight: '0.3rem'
+                marginRight: '0.3rem',
               }}
             />
             <UnstyledButton
@@ -61,7 +61,7 @@ function undoNotification(dispatch, analysis) {
             </UnstyledButton>
           </strong>
         </Column>
-      )
+      ),
     })
   );
 }
@@ -82,7 +82,7 @@ const AnalysisResult = ({ analysis, query, dispatch, push }) => {
           onClick={() => {
             dispatch(removeAllAnalysis());
             push({
-              query: omit(query, 'analysisId')
+              query: omit(query, 'analysisId'),
             });
             undoNotification(dispatch, analysis);
           }}
@@ -91,7 +91,7 @@ const AnalysisResult = ({ analysis, query, dispatch, push }) => {
         </Button>
       }
       linkStyle={{
-        width: '100%'
+        width: '100%',
       }}
       links={analysis
         .map(savedAnalysis => {
@@ -130,7 +130,9 @@ const AnalysisResult = ({ analysis, query, dispatch, push }) => {
                 </UnstyledButton>
               </Row>
             ),
-            component: <analysis.ResultComponent {...savedAnalysis} />
+            component: (
+              <analysis.ResultComponent {...savedAnalysis} {...analysis} />
+            ),
           };
         })
         .filter(Boolean)}

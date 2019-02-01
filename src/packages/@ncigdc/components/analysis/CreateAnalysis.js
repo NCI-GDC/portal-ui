@@ -21,11 +21,11 @@ const enhance = compose(
       <div style={{ padding: '2rem 2.5rem' }}>
         No analysis currently available
       </div>
-    )),
+    ))
   ),
   withState('analysis', 'setAnalysis', null),
   connect(),
-  withRouter,
+  withRouter
 );
 
 const CreateAnalysis = ({ analysis, setAnalysis, dispatch, push }) => {
@@ -38,7 +38,7 @@ const CreateAnalysis = ({ analysis, setAnalysis, dispatch, push }) => {
     <SelectSetComponent
       {...analysis}
       onCancel={() => setAnalysis(null)}
-      onRun={sets => {
+      onRun={(sets, config) => {
         const created = new Date().toISOString();
         const id = created;
 
@@ -48,7 +48,8 @@ const CreateAnalysis = ({ analysis, setAnalysis, dispatch, push }) => {
             sets,
             type: analysis.type,
             created,
-          }),
+            config,
+          })
         ).then(() => {
           push({
             query: {

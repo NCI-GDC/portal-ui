@@ -173,12 +173,8 @@ const Root = (props: mixed) => (
                 <HasUser>
                   {({ user, failed, error }) => {
                     // if user request fails
-                    console.log('11', 11);
 
                     consoleDebug('Root component user: ', user);
-                    if (!user) {
-                      console.log('1', 1);
-                    }
                     if (
                       failed &&
                       error.message === 'Session timed out or not authorized'

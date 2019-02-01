@@ -53,7 +53,6 @@ const logout = async dispatch => {
       urlJoin(AUTH, `logout?next=https://portal.awg.gdc.cancer.gov/login`)
     );
   } else {
-    // dispatch(removeNotification('LOGIN'));
     dispatch(forceLogout());
     if (window.location.port) {
       window.location.assign(

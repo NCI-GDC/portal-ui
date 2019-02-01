@@ -62,7 +62,6 @@ const Header = compose(
   lifecycle({
     componentWillMount() {
       if (!this.props.user) {
-        console.log('componentWillMount');
         this.props.dispatch(removeNotification('LOGIN'));
       }
     },

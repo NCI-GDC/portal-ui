@@ -36,7 +36,7 @@ export default class extends React.Component {
             onClick();
             createSet(props);
           }}
-          leftIcon={leftIcon}
+          lefticon={leftIcon}
         >
           {children}
         </Component>

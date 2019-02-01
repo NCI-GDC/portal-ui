@@ -13,7 +13,7 @@ export default ({ style, ...props }) => (
       marginBottom: '-0.1em',
       fill: 'currentcolor',
       flexBasis: 16,
-      ...style,
+      ...style
     }}
     {...props}
   >

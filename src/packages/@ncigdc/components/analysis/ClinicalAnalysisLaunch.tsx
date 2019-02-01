@@ -66,6 +66,7 @@ const styles = {
     marginTop: 'auto',
     padding: '1rem 2.5rem 1rem',
     borderBottom: `1px solid ${theme.greyScale5}`,
+    maxWidth: 1100,
   },
 };
 

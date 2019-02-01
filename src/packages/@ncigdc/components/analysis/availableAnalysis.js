@@ -10,7 +10,7 @@ import ClinicalDataAnalysis from '@ncigdc/theme/icons/ClinicalDataAnalysis';
 import { DISPLAY_CDAVE } from '@ncigdc/utils/constants';
 
 export type TSelectedSets = {
-  [TSetTypes]: any,
+  [TSetTypes]: any
 };
 
 type TAnalysis = {
@@ -21,23 +21,23 @@ type TAnalysis = {
   demoData: {
     sets: TSelectedSets,
     filters: {},
-    type: string,
+    type: string
   },
   setInstructions: string,
   setDisabledMessage: (opts: { sets: TSelectedSets, type: string }) => ?string,
   setTypes: Array<string>,
   validateSets: TSelectedSets => boolean,
-  ResultComponent: ReactComponent<*>,
+  ResultComponent: ReactComponent<*>
 };
 
 const availableAnalysis: [TAnalysis] = [
   {
     type: 'set_operations',
     label: 'Set Operations',
-    Icon: p => (
+    Icon: ({ style = {}, ...p }) => (
       <VennSvg
         {...p}
-        style={{ width: 80 }}
+        style={{ width: 80, ...style }}
         numCircles={3}
         ops={[
           { op: 1 },
@@ -46,7 +46,7 @@ const availableAnalysis: [TAnalysis] = [
           { op: 4 },
           { op: 5 },
           { op: 6 },
-          { op: 7 },
+          { op: 7 }
         ]}
         outlineColour="rgba(46, 90, 164, 0.62)"
         getFillColor={(d, i) => {
@@ -72,8 +72,8 @@ const availableAnalysis: [TAnalysis] = [
         ssm: {
           'demo-bladder-high-mutect2': 'Bladder, High impact, Mutect2',
           'demo-bladder-high-varscan': 'Bladder, High impact, Varscan',
-          'demo-bladder-high-muse': 'Bladder, High impact, Muse',
-        },
+          'demo-bladder-high-muse': 'Bladder, High impact, Muse'
+        }
       },
       filters: {
         'demo-bladder-high-mutect2': {
@@ -81,85 +81,85 @@ const availableAnalysis: [TAnalysis] = [
           content: [
             {
               op: 'in',
-              content: { field: 'cases.primary_site', value: ['Bladder'] },
+              content: { field: 'cases.primary_site', value: ['Bladder'] }
             },
             {
               op: 'in',
               content: {
                 field: 'ssms.consequence.transcript.annotation.vep_impact',
-                value: ['HIGH'],
-              },
+                value: ['HIGH']
+              }
             },
             {
               op: 'in',
               content: {
                 field:
                   'ssms.occurrence.case.observation.variant_calling.variant_caller',
-                value: ['mutect2'],
-              },
-            },
-          ],
+                value: ['mutect2']
+              }
+            }
+          ]
         },
         'demo-bladder-high-varscan': {
           op: 'and',
           content: [
             {
               op: 'in',
-              content: { field: 'cases.primary_site', value: ['Bladder'] },
+              content: { field: 'cases.primary_site', value: ['Bladder'] }
             },
             {
               op: 'in',
               content: {
                 field: 'ssms.consequence.transcript.annotation.vep_impact',
-                value: ['HIGH'],
-              },
+                value: ['HIGH']
+              }
             },
             {
               op: 'in',
               content: {
                 field:
                   'ssms.occurrence.case.observation.variant_calling.variant_caller',
-                value: ['varscan'],
-              },
-            },
-          ],
+                value: ['varscan']
+              }
+            }
+          ]
         },
         'demo-bladder-high-muse': {
           op: 'and',
           content: [
             {
               op: 'in',
-              content: { field: 'cases.primary_site', value: ['Bladder'] },
+              content: { field: 'cases.primary_site', value: ['Bladder'] }
             },
             {
               op: 'in',
               content: {
                 field: 'ssms.consequence.transcript.annotation.vep_impact',
-                value: ['HIGH'],
-              },
+                value: ['HIGH']
+              }
             },
             {
               op: 'in',
               content: {
                 field:
                   'ssms.occurrence.case.observation.variant_calling.variant_caller',
-                value: ['muse'],
-              },
-            },
-          ],
-        },
+                value: ['muse']
+              }
+            }
+          ]
+        }
       },
-      type: 'set_operations',
+      type: 'set_operations'
     },
     setInstructions: 'Select 2 or 3 of the same set type',
     setDisabledMessage: ({ sets, type }) =>
       ['case', 'gene', 'ssm'].filter(t => t !== type).some(t => sets[t])
         ? 'Please choose only one type'
         : Object.keys(sets[type] || {}).length >= 3
-          ? `Please select two or three ${type === 'ssm'
-              ? 'mutation'
-              : type} sets`
-          : null,
+        ? `Please select two or three ${
+            type === 'ssm' ? 'mutation' : type
+          } sets`
+        : null,
     setTypes: ['case', 'gene', 'ssm'],
     validateSets: sets => {
       const entries = Object.entries(sets);
@@ -188,18 +188,19 @@ const availableAnalysis: [TAnalysis] = [
           message={props.message}
         />
       );
-    },
+    }
   },
   {
     type: 'comparison',
     label: 'Cohort Comparison',
-    Icon: withTheme(({ theme }) => (
+    Icon: withTheme(({ theme, style = {} }) => (
       <div>
         <CCIcon
           width="80px"
           height="80px"
           color1="rgb(105, 16, 48)"
           color2={theme.primary}
+          style={style}
         />
       </div>
     )),
@@ -211,8 +212,8 @@ const availableAnalysis: [TAnalysis] = [
       sets: {
         case: {
           'demo-pancreas-kras': 'Pancreas - KRAS mutated',
-          'demo-pancreas-no-kras': 'Pancreas - KRAS not mutated',
-        },
+          'demo-pancreas-no-kras': 'Pancreas - KRAS not mutated'
+        }
       },
       filters: {
         'demo-pancreas-kras': {
@@ -220,37 +221,37 @@ const availableAnalysis: [TAnalysis] = [
           content: [
             {
               op: 'in',
-              content: { field: 'genes.symbol', value: ['KRAS'] },
+              content: { field: 'genes.symbol', value: ['KRAS'] }
             },
             {
               op: 'in',
-              content: { field: 'cases.primary_site', value: ['Pancreas'] },
-            },
-          ],
+              content: { field: 'cases.primary_site', value: ['Pancreas'] }
+            }
+          ]
         },
         'demo-pancreas-no-kras': {
           op: 'and',
           content: [
             {
               op: 'excludeifany',
-              content: { field: 'genes.symbol', value: 'KRAS' },
+              content: { field: 'genes.symbol', value: 'KRAS' }
             },
             {
               op: 'in',
-              content: { field: 'cases.primary_site', value: ['Pancreas'] },
-            },
-          ],
-        },
+              content: { field: 'cases.primary_site', value: ['Pancreas'] }
+            }
+          ]
+        }
       },
-      type: 'comparison',
+      type: 'comparison'
     },
     setInstructions: 'Select 2 case sets',
     setDisabledMessage: ({ sets, type }) =>
       !['case'].includes(type)
         ? "This analysis can't be run with this type"
         : Object.keys(sets[type] || {}).length >= 2
-          ? `You can only select two ${type === 'ssm' ? 'mutation' : type} set`
-          : null,
+        ? `You can only select two ${type === 'ssm' ? 'mutation' : type} set`
+        : null,
     setTypes: ['case'],
     validateSets: sets =>
       ['case'].every((t: any) => Object.keys(sets[t] || {}).length === 2),
@@ -261,15 +262,15 @@ const availableAnalysis: [TAnalysis] = [
         </Demo>
       ) : (
         <CohortComparison sets={props.sets} message={props.message} />
-      ),
+      )
   },
   ...(DISPLAY_CDAVE && [
     {
       type: 'clinical_data',
       label: 'Clinical Data Analysis',
-      Icon: withTheme(({ theme }) => (
+      Icon: withTheme(({ theme, style = {} }) => (
         <div>
-          <ClinicalDataAnalysis style={{ width: 80, height: 80 }} />
+          <ClinicalDataAnalysis style={{ width: 80, height: 80, ...style }} />
         </div>
       )),
       description: `Display basic statistical analyses for your clinical cohort using data variables and configurations that you select as input`,
@@ -278,8 +279,8 @@ const availableAnalysis: [TAnalysis] = [
         sets: {
           case: {
             'demo-pancreas-kras': 'Pancreas - KRAS mutated',
-            'demo-pancreas-no-kras': 'Pancreas - KRAS not mutated',
-          },
+            'demo-pancreas-no-kras': 'Pancreas - KRAS not mutated'
+          }
         },
         filters: {
           'demo-pancreas-kras': {
@@ -287,29 +288,29 @@ const availableAnalysis: [TAnalysis] = [
             content: [
               {
                 op: 'in',
-                content: { field: 'genes.symbol', value: ['KRAS'] },
+                content: { field: 'genes.symbol', value: ['KRAS'] }
               },
               {
                 op: 'in',
-                content: { field: 'cases.primary_site', value: ['Pancreas'] },
-              },
-            ],
+                content: { field: 'cases.primary_site', value: ['Pancreas'] }
+              }
+            ]
           },
           'demo-pancreas-no-kras': {
             op: 'and',
             content: [
               {
                 op: 'excludeifany',
-                content: { field: 'genes.symbol', value: 'KRAS' },
+                content: { field: 'genes.symbol', value: 'KRAS' }
               },
               {
                 op: 'in',
-                content: { field: 'cases.primary_site', value: ['Pancreas'] },
-              },
-            ],
-          },
+                content: { field: 'cases.primary_site', value: ['Pancreas'] }
+              }
+            ]
+          }
         },
-        type: 'clinical_data',
+        type: 'clinical_data'
       },
       setInstructions: 'Set instructions',
       setTypes: ['case'],
@@ -323,7 +324,7 @@ const availableAnalysis: [TAnalysis] = [
             style={{
               display: 'flex',
               justifyContent: 'center',
-              alignItems: 'center',
+              alignItems: 'center'
             }}
           >
             Clinical Analysis Result
@@ -333,14 +334,14 @@ const availableAnalysis: [TAnalysis] = [
             style={{
               display: 'flex',
               justifyContent: 'center',
-              alignItems: 'center',
+              alignItems: 'center'
             }}
           >
             Clinical Analysis Result
           </div>
-        ),
-    },
-  ]),
+        )
+    }
+  ])
 ];
 
 export default availableAnalysis;

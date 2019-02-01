@@ -8,7 +8,7 @@ import UnstyledButton from '@ncigdc/uikit/UnstyledButton';
 import {
   addAnalysis,
   removeAnalysis,
-  removeAllAnalysis,
+  removeAllAnalysis
 } from '@ncigdc/dux/analysis';
 import { notify, closeNotification } from '@ncigdc/dux/notification';
 import { Row, Column } from '@ncigdc/uikit/Flex';
@@ -20,7 +20,7 @@ import availableAnalysis from './availableAnalysis';
 
 const enhance = compose(
   connect(state => ({ analysis: state.analysis.saved })),
-  withRouter,
+  withRouter
 );
 
 function undoNotification(dispatch, analysis) {
@@ -47,7 +47,7 @@ function undoNotification(dispatch, analysis) {
             <i
               className="fa fa-undo"
               style={{
-                marginRight: '0.3rem',
+                marginRight: '0.3rem'
               }}
             />
             <UnstyledButton
@@ -61,8 +61,8 @@ function undoNotification(dispatch, analysis) {
             </UnstyledButton>
           </strong>
         </Column>
-      ),
-    }),
+      )
+    })
   );
 }
 
@@ -82,7 +82,7 @@ const AnalysisResult = ({ analysis, query, dispatch, push }) => {
           onClick={() => {
             dispatch(removeAllAnalysis());
             push({
-              query: omit(query, 'analysisId'),
+              query: omit(query, 'analysisId')
             });
             undoNotification(dispatch, analysis);
           }}
@@ -91,23 +91,33 @@ const AnalysisResult = ({ analysis, query, dispatch, push }) => {
         </Button>
       }
       linkStyle={{
-        width: '100%',
+        width: '100%'
       }}
       links={analysis
         .map(savedAnalysis => {
           const analysis = availableAnalysis.find(
-            a => a.type === savedAnalysis.type,
+            a => a.type === savedAnalysis.type
           );
+          const tabSub =
+            analysis.type === 'clinical_data'
+              ? Object.values(savedAnalysis.sets.case || {})
+              : new Date(savedAnalysis.created).toLocaleDateString();
+          console.log('analysis: ', analysis);
+          console.log('saved: ', savedAnalysis);
           return {
             id: savedAnalysis.id,
             text: (
               <Row>
                 <div style={{ marginRight: 15 }}>
-                  {analysis.label}
-                  <div style={{ fontSize: '1rem' }}>
-                    {new Date(savedAnalysis.created).toLocaleDateString()}
-                  </div>
+                  <Row spacing={'10px'} style={{ alignItems: 'center' }}>
+                    <analysis.Icon style={{ width: 25, height: 25 }} />
+                    <Column>
+                      <div style={{ fontSize: '1.5rem' }}>{analysis.label}</div>
+                      <div style={{ fontSize: '1.3rem' }}>{tabSub}</div>
+                    </Column>
+                  </Row>
                 </div>
+
                 <UnstyledButton
                   style={{ marginLeft: 'auto', backgroundColor: 'transparent' }}
                   onClick={e => {
@@ -120,7 +130,7 @@ const AnalysisResult = ({ analysis, query, dispatch, push }) => {
                 </UnstyledButton>
               </Row>
             ),
-            component: <analysis.ResultComponent {...savedAnalysis} />,
+            component: <analysis.ResultComponent {...savedAnalysis} />
           };
         })
         .filter(Boolean)}

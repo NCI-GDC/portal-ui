@@ -53,7 +53,7 @@ const logout = async dispatch => {
       urlJoin(AUTH, `logout?next=https://portal.awg.gdc.cancer.gov/login`)
     );
   } else {
-    await dispatch(removeNotification('LOGIN'));
+    // dispatch(removeNotification('LOGIN'));
     dispatch(forceLogout());
     if (window.location.port) {
       window.location.assign(
@@ -70,12 +70,6 @@ const logout = async dispatch => {
       );
     }
   }
-  console.log('logout');
-  // let nots = JSON.parse(localStorage.getItem('ncigdcActivebannerNotification'));
-  // localStorage.setItem(
-  //   'ncigdcActivebannerNotification',
-  //   nots.filter(n => n.components.includes('LOGIN'))
-  // );
 };
 
 const UserDropdown = connect(state => ({

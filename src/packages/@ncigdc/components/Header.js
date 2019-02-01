@@ -60,7 +60,14 @@ const Header = compose(
     },
   }),
   lifecycle({
+    componentWillMount(){
+      if (!this.props.user) {
+        console.log('componentWillMount');
+        this.props.dispatch(removeNotification('LOGIN'));
+      }
+    }
     componentDidMount(): void {
+
       if (this.props.error) {
         this.props.handleApiError({
           ...this.props.error,
@@ -70,9 +77,7 @@ const Header = compose(
     },
     componentWillReceiveProps(nextProps: Object): void {
       if (nextProps.error !== this.props.error) {
-        if (!this.props.user) {
-          this.props.dispatch(removeNotification('LOGIN'));
-        }
+
         this.props.handleApiError({ ...nextProps.error, user: nextProps.user });
       }
     },

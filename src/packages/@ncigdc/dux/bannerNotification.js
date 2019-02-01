@@ -42,7 +42,7 @@ export function fetchNotifications() {
 export function dismissNotification(notificationID: string) {
   return {
     type: NOTIFICATION_DISMISS,
-    payload: [{ components: notificationID }],
+    payload: [{ id: notificationID }],
   };
 }
 
@@ -77,8 +77,6 @@ const reducer = (state: TState = initialState, action: TAction) => {
       return state;
     }
     case NOTIFICATION_SUCCESS:
-      console.log('state', state);
-
       return uniqBy(
         [
           ...state,
@@ -100,11 +98,6 @@ const reducer = (state: TState = initialState, action: TAction) => {
         dismissed: ids.includes(n.id) ? true : n.dismissed,
       }));
     case NOTIFICATION_REMOVE:
-      console.log('state', state);
-      console.log('newState', [
-        ...state.filter(n => n.components.includes(action.payload)),
-      ]);
-
       return state.slice().filter(n => !n.components.includes(action.payload));
     default:
       return state;

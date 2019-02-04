@@ -139,7 +139,6 @@ if (process.env.NODE_ENV !== 'development') {
   store.dispatch(fetchUser());
   store.dispatch(fetchNotifications());
 }
-
 class RelayRoute extends Relay.Route {
   static routeName = 'RootRoute';
   static queries = viewerQuery;
@@ -171,6 +170,7 @@ const Root = (props: mixed) => (
                 <HasUser>
                   {({ user, failed, error }) => {
                     // if user request fails
+
                     consoleDebug('Root component user: ', user);
                     if (
                       failed &&
@@ -196,6 +196,7 @@ const Root = (props: mixed) => (
                     consoleDebug(
                       'Response does not match any criteria, redirecting to login'
                     );
+
                     return <Redirect to="/login" />;
                   }}
                 </HasUser>

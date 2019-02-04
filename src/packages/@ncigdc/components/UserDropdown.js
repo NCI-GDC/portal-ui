@@ -18,10 +18,6 @@ import SignOutIcon from '@ncigdc/theme/icons/SignOut';
 import UserProfileModal from '@ncigdc/components/Modals/UserProfileModal';
 import { setModal } from '@ncigdc/dux/modal';
 import { IS_DEV, AWG, FENCE } from '@ncigdc/utils/constants';
-import {
-  dismissNotification,
-  removeNotification,
-} from '@ncigdc/dux/bannerNotification';
 
 const NavLink = styled.a({
   padding: '15px 13px',

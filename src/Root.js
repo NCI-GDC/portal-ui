@@ -25,10 +25,7 @@ import { fetchUser, forceLogout } from '@ncigdc/dux/auth';
 import Login from '@ncigdc/routes/Login';
 import { redirectToLogin } from '@ncigdc/utils/auth';
 import consoleDebug from '@ncigdc/utils/consoleDebug';
-import {
-  fetchNotifications,
-  removeNotification,
-} from '@ncigdc/dux/bannerNotification';
+import { fetchNotifications } from '@ncigdc/dux/bannerNotification';
 
 const retryStatusCodes = [500, 503, 504];
 

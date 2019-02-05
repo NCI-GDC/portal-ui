@@ -31,7 +31,10 @@ const facetMatchesQuery = (facet: any, query: any) =>
     _.includes(searchTarget, query)
   );
 const MagnifyingGlass = styled(SearchIcon, {
+  marginLeft:'1rem',
   position: 'relative',
+  width: '3rem',
+  height: '3rem',
   ':hover::before': {
     textShadow: ({ theme }) => theme.textShadow,
   },
@@ -199,7 +202,7 @@ const enhance = compose(
           setAutocomplete={props.setAutocomplete}
           dropdownItem={(x: any) => (
             <Row>
-              <CaseIcon style={{ paddingRight: '1rem', paddingTop: '1rem' }} />
+              <CaseIcon style={{ paddingRight: '1rem',  paddingTop: '1rem' }} />
               <div>
                 <div style={{ fontWeight: 'bold' }}>{x.case_id}</div>
                 <div style={{ fontSize: '80%' }}>{x.submitter_id}</div>
@@ -226,13 +229,15 @@ const enhance = compose(
         </UploadSetButton>
       </div>,
 
-      <Row>
+      <Row 
+        style={{marginRight: '1rem', marginTop: '0.5rem'}}
+      >
         <MagnifyingGlass />
         <Input
           getNode={node => {
             input = node;
           }}
-          style={{ borderRadius: '4px', marginBottom: '6px' }}
+          style={{ borderRadius: '4px', marginBottom: '6px', marginLeft: '0.5rem'}}
           onChange={() => props.setFilter(input.value)}
           placeholder={'Search...'}
           aria-label="Search..."
@@ -244,10 +249,13 @@ const enhance = compose(
           <NestedWrapper
             key={facet.title + 'NestedWrapper'}
             style={{
-              borderBottom: `1px solid ${props.theme.greyScale5}`,
+              // borderBottom: `1px solid ${props.theme.greyScale5}`,
               position: 'relative',
             }}
             headerStyle={{
+              marginLeft: '1rem',
+              marginRight:'1rem', 
+              marginTop: '0.5rem',
               backgroundColor: '#eeeeee',
               borderBottom: `1px solid ${props.theme.greyScale5}`,
               position: 'relative',

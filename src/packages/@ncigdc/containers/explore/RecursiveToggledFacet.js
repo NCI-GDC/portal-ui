@@ -85,7 +85,7 @@ const RecursiveToggledFacet = compose(
           );
         })}
         {keyArray.length > 5 && (
-          <BottomRow>
+          <BottomRow style={{marginRight: '1rem'}}>
             <ToggleMoreLink onClick={() => setShowingMore(!showingMore)}>
               {showingMore
                 ? 'Less...'

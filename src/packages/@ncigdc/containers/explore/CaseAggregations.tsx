@@ -170,12 +170,12 @@ const enhance = compose(
   })
 );
 
-const styles = {
-  link: {
-    textDecoration: 'underline',
-    color: '#2a72a5',
-  },
-};
+// const styles = {
+//   link: {
+//     textDecoration: 'underline',
+//     color: '#2a72a5',
+//   },
+// };
 
 export const CaseAggregationsComponent = ({
   caseIdCollapsed,
@@ -207,21 +207,21 @@ export const CaseAggregationsComponent = ({
         borderBottom: `1px solid ${theme.greyScale5}`,
       }}
     >
-      {!!userSelectedFacets.length && (
+      {/* {!!userSelectedFacets.length && (
         <span>
           <a onClick={handleResetFacets} style={styles.link}>
             Reset
           </a>{' '}
           &nbsp;|&nbsp;
         </span>
-      )}
+      )} */}
       {/* <a onClick={() => setShouldShowFacetSelection(true)} style={styles.link}>
         Add a Case Filter
       </a>
       {' | '} */}
-      <a onClick={() => setAdvancedFilter(!advancedFilter)} style={styles.link}>
+      {/* <a onClick={() => setAdvancedFilter(!advancedFilter)} style={styles.link}>
         {advancedFilter ? 'Basic Filters' : 'Advanced Filters'}
-      </a>
+      </a> */}
     </div>
 
     <Modal

@@ -2,7 +2,6 @@
 import React from 'react';
 import { compose, pure, withState } from 'recompose';
 import { connect } from 'react-redux';
-import { dismissNotification } from '@ncigdc/dux/bannerNotification';
 import HomeLink from '@ncigdc/components/Links/HomeLink';
 import RepositoryLink from '@ncigdc/components/Links/RepositoryLink';
 import CartLink from '@ncigdc/components/Links/CartLink';
@@ -33,17 +32,14 @@ const Header = compose(
   withState('isInSearchMode', 'setIsInSearchMode', false),
   withRouter,
   connect(state => ({
-    notifications: state.bannerNotification,
     user: state.auth.user,
     error: state.error,
   })),
   withTheme,
-  pure,
+  pure
 )(
   ({
     user,
-    notifications,
-    dispatch,
     theme,
     isCollapsed,
     setIsCollapsed,
@@ -55,13 +51,6 @@ const Header = compose(
       className="navbar navbar-default navbar-static-top"
       role="banner"
     >
-      {notifications.map(n => (
-        <Banner
-          {...n}
-          key={n.id}
-          handleOnDismiss={() => dispatch(dismissNotification(n.id))}
-        />
-      ))}
       <div className="container-fluid">
         <div className="navbar-header">
           <button
@@ -123,12 +112,11 @@ const Header = compose(
                 tabIndex="0"
               />
             </li>
-            {user &&
-              !isInSearchMode && (
-                <li className="header-hidden-xs">
-                  <UserDropdown />
-                </li>
-              )}
+            {user && !isInSearchMode && (
+              <li className="header-hidden-xs">
+                <UserDropdown />
+              </li>
+            )}
             {!isInSearchMode && (
               <li>
                 <CartLink>
@@ -156,7 +144,7 @@ const Header = compose(
         </nav>
       </div>
     </header>
-  ),
+  )
 );
 
 export default Header;

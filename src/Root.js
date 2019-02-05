@@ -20,7 +20,7 @@ import setupStore from '@ncigdc/dux';
 import { fetchApiVersionInfo } from '@ncigdc/dux/versionInfo';
 import { viewerQuery } from '@ncigdc/routes/queries';
 import Portal from './Portal';
-import { API, IS_AUTH_PORTAL } from '@ncigdc/utils/constants';
+import { API, IS_AUTH_PORTAL, AWG } from '@ncigdc/utils/constants';
 import { fetchUser, forceLogout } from '@ncigdc/dux/auth';
 import Login from '@ncigdc/routes/Login';
 import { redirectToLogin } from '@ncigdc/utils/auth';
@@ -137,7 +137,9 @@ store.dispatch(fetchApiVersionInfo());
 
 if (process.env.NODE_ENV !== 'development') {
   store.dispatch(fetchUser());
-  store.dispatch(fetchNotifications());
+  if (!AWG) {
+    store.dispatch(fetchNotifications());
+  }
 }
 class RelayRoute extends Relay.Route {
   static routeName = 'RootRoute';

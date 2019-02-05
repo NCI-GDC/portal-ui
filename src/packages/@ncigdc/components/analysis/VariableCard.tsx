@@ -36,7 +36,8 @@ const VariableCard = ({
         border: '1px solid lightgray',
         minHeight: 200,
         margin: '0 1rem 1rem',
-        minWidth: '47%',
+        minWidth: '40%',
+        padding: '1rem',
       }}
     >
       <Row style={{ justifyContent: 'space-between', alignItems: 'center' }}>

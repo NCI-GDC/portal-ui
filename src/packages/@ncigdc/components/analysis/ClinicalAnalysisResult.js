@@ -1,5 +1,5 @@
 import React from 'react';
-import { compose } from 'recompose';
+import { compose, withState } from 'recompose';
 import { connect } from 'react-redux';
 import SearchIcon from 'react-icons/lib/fa/search';
 import DownCaretIcon from 'react-icons/lib/fa/caret-down';
@@ -23,6 +23,7 @@ import VariableCard from './VariableCard';
 import DropdownItem from '@ncigdc/uikit/DropdownItem';
 import Input from '@ncigdc/uikit/Form/Input';
 import { withTheme } from '@ncigdc/theme';
+import countComponents from '@ncigdc/modern_components/Counts';
 
 interface IAnalysisResultProps {
   sets: any;
@@ -30,6 +31,7 @@ interface IAnalysisResultProps {
   label: string;
   Icon: () => React.Component<any>;
   analysis: any;
+  setType: string;
 }
 //
 // interface ISavedSet {
@@ -60,6 +62,7 @@ const styles = {
 
 const enhance = compose(
   connect((state: any) => ({ allSets: state.sets })),
+  withState('controlsExpanded', 'setControlsExpanded', true),
   withTheme
 );
 const ClinicalAnalysisResult = ({
@@ -69,8 +72,29 @@ const ClinicalAnalysisResult = ({
   label,
   allSets,
   theme,
+  setType = 'case',
 }: IAnalysisResultProps) => {
   const setName = Object.values(sets.case)[0];
+  const CountComponent = countComponents[setType];
+  const dropdownItems = Object.values(allSets.case)
+    .filter(s => s !== setName)
+    .map((n: any) => (
+      <DropdownItem
+        key={n}
+        className="all-sets-item"
+        onClick={() => console.log(n)}
+        aria-label={`Switch selected set to ${n}`}
+      >
+        {n}
+      </DropdownItem>
+    ));
+
+  let selectedSetId = _.map(allSets[setType], (k, v) => {
+    if (k === setName) {
+      return v;
+    }
+  }).find(id => !!id);
+
   return (
     <div style={{ padding: 5 }}>
       <Row
@@ -121,7 +145,7 @@ const ClinicalAnalysisResult = ({
               justifyContent: 'space-between',
               alignItems: 'center',
               padding: '10px 10px 15px',
-              borderBottom: '1px solid lightgray',
+              borderBottom: `1px solid ${theme.greyScale4}`,
             }}
           >
             <Dropdown
@@ -144,21 +168,16 @@ const ClinicalAnalysisResult = ({
                 </Button>
               }
               dropdownStyle={{ width: '100%' }}
-            >
-              {Object.values(allSets.case)
-                .filter(s => s !== setName)
-                .map((n: any) => (
-                  <DropdownItem
-                    key={n}
-                    className="all-sets-item"
-                    onClick={() => console.log(n)}
-                    aria-label={`Switch selected set to ${n}`}
-                  >
-                    {n}
-                  </DropdownItem>
-                ))}
-            </Dropdown>
-            <span>400</span>
+            />
+            <CountComponent
+              filters={{
+                op: '=',
+                content: {
+                  field: `${setType}s.${setType}_id`,
+                  value: `set_id:${selectedSetId}`,
+                },
+              }}
+            />
           </Row>
           <Row
             style={{

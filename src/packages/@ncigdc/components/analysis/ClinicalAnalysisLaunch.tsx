@@ -232,11 +232,16 @@ const ClinicalAnalysisLaunch: ComponentType<IProps> = ({
             <ExploreLink>Exploration Page</ExploreLink>.
           </div>
 
-          {setData.length > 0 && (
+          {setData && setData.length > 0 && (
             <EntityPageHorizontalTable
               data={setData}
               headings={cohortHeadings}
             />
+          )}
+          {setData && setData.length === 0 && (
+            <Row>
+              <strong>You have not saved any sets yet.</strong>
+            </Row>
           )}
         </Column>
       </Row>

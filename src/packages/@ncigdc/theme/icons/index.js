@@ -18,6 +18,9 @@ import ExclamationTriangleIcon from './ExclamationTriangle';
 import TrashIcon from './Trash';
 import AnalysisIcon from './Analysis';
 import MicroscopeIcon from './Microscope';
+import CloseIcon from './CloseIcon';
+import HistogramIcon from './Histogram';
+import BarChartIcon from './BarChart';
 
 export {
   DownloadIcon,
@@ -38,4 +41,7 @@ export {
   TrashIcon,
   AnalysisIcon,
   MicroscopeIcon,
+  CloseIcon,
+  HistogramIcon,
+  BarChartIcon,
 };

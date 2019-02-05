@@ -102,8 +102,7 @@ const AnalysisResult = ({ analysis, query, dispatch, push }) => {
             analysis.type === 'clinical_data'
               ? Object.values(savedAnalysis.sets.case || {})
               : new Date(savedAnalysis.created).toLocaleDateString();
-          console.log('analysis: ', analysis);
-          console.log('saved: ', savedAnalysis);
+
           return {
             id: savedAnalysis.id,
             text: (

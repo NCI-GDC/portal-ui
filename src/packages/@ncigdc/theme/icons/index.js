@@ -21,6 +21,8 @@ import MicroscopeIcon from './Microscope';
 import CloseIcon from './CloseIcon';
 import HistogramIcon from './Histogram';
 import BarChartIcon from './BarChart';
+import ChevronRight from './ChevronRight';
+import ChevronLeft from './ChevronLeft';
 
 export {
   DownloadIcon,
@@ -44,4 +46,6 @@ export {
   CloseIcon,
   HistogramIcon,
   BarChartIcon,
+  ChevronRight,
+  ChevronLeft,
 };

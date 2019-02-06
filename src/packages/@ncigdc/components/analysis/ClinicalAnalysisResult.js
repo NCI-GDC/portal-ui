@@ -13,6 +13,8 @@ import {
   CloseIcon,
   SurvivalIcon,
   BarChartIcon,
+  ChevronRight,
+  ChevronLeft,
 } from '@ncigdc/theme/icons';
 import Hidden from '@ncigdc/components/Hidden';
 import { visualizingButton } from '@ncigdc/theme/mixins';
@@ -24,6 +26,8 @@ import DropdownItem from '@ncigdc/uikit/DropdownItem';
 import Input from '@ncigdc/uikit/Form/Input';
 import { withTheme } from '@ncigdc/theme';
 import countComponents from '@ncigdc/modern_components/Counts';
+import ExploreLink from '@ncigdc/components/Links/ExploreLink';
+import styled from '@ncigdc/theme/styled';
 
 interface IAnalysisResultProps {
   sets: any;
@@ -58,11 +62,34 @@ const styles = {
     border: `1px solid ${theme.greyScale4}`,
     borderRight: 'none',
   }),
+  icon: theme => ({
+    width: 30,
+    height: 30,
+    ...zDepth1,
+  }),
 };
+
+const LeftFooIcon = styled(ChevronLeft, {
+  fontSize: '2rem',
+  fontWeight: 'lighter',
+  padding: 10,
+  ':hover::before': {
+    textShadow: ({ theme }) => '0 0 25px rgba(0, 66,	107, 1)',
+  },
+});
+
+const RightFooIcon = styled(ChevronRight, {
+  fontSize: '2rem',
+  fontWeight: 'lighter',
+  padding: 10,
+  ':hover::before': {
+    textShadow: ({ theme }) => '0 0 25px rgba(0, 66,	107, 1)',
+  },
+});
 
 const enhance = compose(
   connect((state: any) => ({ allSets: state.sets })),
-  withState('controlsExpanded', 'setControlsExpanded', true),
+  withState('controlPanelExpanded', 'setControlPanelExpanded', true),
   withTheme
 );
 const ClinicalAnalysisResult = ({
@@ -73,6 +100,8 @@ const ClinicalAnalysisResult = ({
   allSets,
   theme,
   setType = 'case',
+  controlPanelExpanded,
+  setControlPanelExpanded,
 }: IAnalysisResultProps) => {
   const setName = Object.values(sets.case)[0];
   const CountComponent = countComponents[setType];
@@ -129,81 +158,118 @@ const ClinicalAnalysisResult = ({
         </Row>
       </Row>
       <Row>
-        <Column style={{ ...zDepth1, flex: 1 }}>
-          <Row style={{ justifyContent: 'flex-end' }}>{'<<'}</Row>
-          <Row
-            style={{
-              justifyContent: 'space-between',
-              padding: '10px 10px 0px',
-            }}
-          >
-            <span style={{ fontWeight: 'bold' }}>Cohort</span>
-            <span style={{ fontWeight: 'bold' }}># Cases</span>
-          </Row>
-          <Row
-            style={{
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              padding: '10px 10px 15px',
-              borderBottom: `1px solid ${theme.greyScale4}`,
-            }}
-          >
-            <Dropdown
+        {!controlPanelExpanded && (
+          <Column>
+            <Tooltip Component={'Show Control Panel'}>
+              <RightFooIcon
+                onClick={() => setControlPanelExpanded(!controlPanelExpanded)}
+              />
+            </Tooltip>
+          </Column>
+        )}
+        {controlPanelExpanded && (
+          <Column style={{ ...zDepth1, flex: 1, minWidth: 310 }}>
+            <Row style={{ justifyContent: 'flex-end' }}>
+              <Tooltip Component={'Hide Control Panel'}>
+                <LeftFooIcon
+                  onClick={() => setControlPanelExpanded(!controlPanelExpanded)}
+                />
+              </Tooltip>
+            </Row>
+            <Row
               style={{
-                width: '65%',
-                minWidth: 175,
-                justifyContent: 'flex-start',
-                marginRight: 10,
+                justifyContent: 'space-between',
+                padding: '10px 10px 0px',
               }}
-              button={
-                <Button
-                  style={{
-                    ...visualizingButton,
-                    width: '100%',
-                    justifyContent: 'flex-start',
+            >
+              <span style={{ fontWeight: 'bold' }}>Cohort</span>
+              <span style={{ fontWeight: 'bold' }}># Cases</span>
+            </Row>
+            <Row
+              style={{
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                padding: '10px 10px 15px',
+                borderBottom: `1px solid ${theme.greyScale4}`,
+              }}
+            >
+              <Dropdown
+                style={{
+                  // width: '65%',
+                  // minWidth: 175,
+                  justifyContent: 'flex-start',
+                  marginRight: 10,
+                }}
+                button={
+                  <Button
+                    style={{
+                      ...visualizingButton,
+                      // width: '100%',
+                      justifyContent: 'flex-start',
+                    }}
+                    rightIcon={<DownCaretIcon />}
+                  >
+                    {_.truncate(setName, { length: 20 })}
+                  </Button>
+                }
+                dropdownStyle={{ width: '100%' }}
+              >
+                {dropdownItems}
+              </Dropdown>
+              <ExploreLink
+                merge
+                query={{
+                  filters: {
+                    op: 'and',
+                    content: [
+                      {
+                        op: '=',
+                        content: {
+                          field: `${setType}s.${setType}_id`,
+                          value: `set_id:${selectedSetId}`,
+                        },
+                      },
+                    ],
+                  },
+                }}
+              >
+                <CountComponent
+                  filters={{
+                    op: '=',
+                    content: {
+                      field: `${setType}s.${setType}_id`,
+                      value: `set_id:${selectedSetId}`,
+                    },
                   }}
-                  rightIcon={<DownCaretIcon />}
-                >
-                  {_.truncate(setName, { length: 20 })}
-                </Button>
-              }
-              dropdownStyle={{ width: '100%' }}
-            />
-            <CountComponent
-              filters={{
-                op: '=',
-                content: {
-                  field: `${setType}s.${setType}_id`,
-                  value: `set_id:${selectedSetId}`,
-                },
+                />
+              </ExploreLink>
+            </Row>
+            <Row
+              style={{
+                height: 30,
+                margin: 15,
               }}
-            />
-          </Row>
-          <Row
-            style={{
-              height: 30,
-              margin: 15,
-            }}
-          >
-            <label htmlFor="search-facets">
-              <SearchIcon style={styles.searchIcon(theme)} />
-              <Hidden>Search</Hidden>
-            </label>
-            <Input
-              id="search-facets"
-              name="search-facets"
-              onChange={
-                () => console.log('search')
-                // ({ target }) => console.log(target)
-                // setState(s => ({ ...s, query: target.value }))
-              }
-              placeholder="Search"
-              value={''}
-              style={{ borderRadius: '0 4px 4px 0' }}
-            />
-          </Row>
-          <Column style={{ marginTop: 10 }}>Facet Toggle Menu</Column>
-        </Column>
+            >
+              <label htmlFor="search-facets">
+                <SearchIcon style={styles.searchIcon(theme)} />
+                <Hidden>Search</Hidden>
+              </label>
+              <Input
+                id="search-facets"
+                name="search-facets"
+                onChange={
+                  () => console.log('search')
+                  // ({ target }) => console.log(target)
+                  // setState(s => ({ ...s, query: target.value }))
+                }
+                placeholder="Search"
+                value={''}
+                style={{ borderRadius: '0 4px 4px 0' }}
+              />
+            </Row>
+            <Column style={{ marginTop: 10 }}>Facet Toggle Menu</Column>
+          </Column>
+        )}
         <Column style={{ flex: 3 }}>
           <Row style={{ ...zDepth1, margin: '0 1rem 1rem', height: 50 }}>
             Survival Analysis

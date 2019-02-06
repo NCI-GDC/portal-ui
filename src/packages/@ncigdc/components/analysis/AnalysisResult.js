@@ -91,7 +91,7 @@ const AnalysisResult = ({ analysis, query, dispatch, push }) => {
         </Button>
       }
       linkStyle={{
-        width: '100%',
+        maxWidth: 250,
       }}
       links={analysis
         .map(savedAnalysis => {
@@ -112,7 +112,9 @@ const AnalysisResult = ({ analysis, query, dispatch, push }) => {
                     <analysis.Icon style={{ width: 25, height: 25 }} />
                     <Column>
                       <div style={{ fontSize: '1.5rem' }}>{analysis.label}</div>
-                      <div style={{ fontSize: '1.3rem' }}>{tabSub}</div>
+                      <div style={{ fontSize: '1.2rem' }}>
+                        {_.truncate(tabSub, { length: 24 })}
+                      </div>
                     </Column>
                   </Row>
                 </div>

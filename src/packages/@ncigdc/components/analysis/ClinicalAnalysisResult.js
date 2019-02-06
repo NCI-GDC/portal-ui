@@ -3,6 +3,7 @@ import { compose, withState } from 'recompose';
 import { connect } from 'react-redux';
 import SearchIcon from 'react-icons/lib/fa/search';
 import DownCaretIcon from 'react-icons/lib/fa/caret-down';
+import { capitalize } from 'lodash';
 
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import Button from '@ncigdc/uikit/Button';
@@ -67,23 +68,27 @@ const styles = {
     height: 30,
     ...zDepth1,
   }),
+  sectionHeader: {
+    fontSize: '2rem',
+    paddingLeft: 5,
+  },
 };
 
-const LeftFooIcon = styled(ChevronLeft, {
+const ChevronLeftIcon = styled(ChevronLeft, {
   fontSize: '2rem',
   fontWeight: 'lighter',
   padding: 10,
   ':hover::before': {
-    textShadow: ({ theme }) => '0 0 25px rgba(0, 66,	107, 1)',
+    textShadow: '0 0 25px rgba(0, 66,	107, 1)',
   },
 });
 
-const RightFooIcon = styled(ChevronRight, {
+const ChevronRightIcon = styled(ChevronRight, {
   fontSize: '2rem',
   fontWeight: 'lighter',
   padding: 10,
   ':hover::before': {
-    textShadow: ({ theme }) => '0 0 25px rgba(0, 66,	107, 1)',
+    textShadow: '0 0 25px rgba(0, 66,	107, 1)',
   },
 });
 
@@ -124,6 +129,9 @@ const ClinicalAnalysisResult = ({
     }
   }).find(id => !!id);
 
+  let sortedVariables: any[] = [];
+  const divideBy = controlPanelExpanded ? 2 : 3;
+
   return (
     <div style={{ padding: 5 }}>
       <Row
@@ -136,10 +144,8 @@ const ClinicalAnalysisResult = ({
         <Row spacing={'10px'} style={{ alignItems: 'center' }}>
           <Icon style={{ height: 50, width: 50 }} />
           <Column>
-            <h1 style={{ fontSize: '2.5rem', margin: '5px 5px 10px 5px' }}>
-              {label}
-            </h1>
-            <span>
+            <h1 style={{ fontSize: '2.5rem', margin: 5 }}>{label}</h1>
+            <span style={{ margin: '0 0 5px 5px' }}>
               Cases from {setName} with {name} configuration
             </span>
           </Column>
@@ -161,7 +167,7 @@ const ClinicalAnalysisResult = ({
         {!controlPanelExpanded && (
           <Column>
             <Tooltip Component={'Show Control Panel'}>
-              <RightFooIcon
+              <ChevronRightIcon
                 onClick={() => setControlPanelExpanded(!controlPanelExpanded)}
               />
             </Tooltip>
@@ -171,7 +177,7 @@ const ClinicalAnalysisResult = ({
           <Column style={{ ...zDepth1, flex: 1, minWidth: 310 }}>
             <Row style={{ justifyContent: 'flex-end' }}>
               <Tooltip Component={'Hide Control Panel'}>
-                <LeftFooIcon
+                <ChevronLeftIcon
                   onClick={() => setControlPanelExpanded(!controlPanelExpanded)}
                 />
               </Tooltip>
@@ -183,7 +189,9 @@ const ClinicalAnalysisResult = ({
               }}
             >
               <span style={{ fontWeight: 'bold' }}>Cohort</span>
-              <span style={{ fontWeight: 'bold' }}># Cases</span>
+              <span style={{ fontWeight: 'bold' }}>{`# ${capitalize(
+                setType
+              )}s`}</span>
             </Row>
             <Row
               style={{
@@ -267,26 +275,62 @@ const ClinicalAnalysisResult = ({
                 style={{ borderRadius: '0 4px 4px 0' }}
               />
             </Row>
-            <Column style={{ marginTop: 10 }}>Facet Toggle Menu</Column>
+            <Column style={{ marginTop: 10 }}>Control Panel</Column>
           </Column>
         )}
         <Column style={{ flex: 3 }}>
-          <Row style={{ ...zDepth1, margin: '0 1rem 1rem', height: 50 }}>
-            Survival Analysis
-          </Row>
-          <Row style={{ flexWrap: 'wrap' }}>
-            {' '}
-            {variables.map((variable: string, i: number) => (
-              <VariableCard
-                key={i}
-                label={variable}
-                data={[]}
-                plots={[]}
-                variableHeadings={[]}
-                actions={[<SurvivalIcon />, <BarChartIcon />, <CloseIcon />]}
-              />
-            ))}
-          </Row>
+          <Column
+            style={{
+              ...zDepth1,
+              margin: '0 1rem 1rem',
+              height: 300,
+              padding: 5,
+            }}
+          >
+            <h2 style={styles.sectionHeader}>Survival Analysis</h2>
+            <Row style={{ justifyContent: 'space-around' }}>
+              <Column style={{ width: '47%' }}>
+                <div>Overall Survival</div>
+                <div
+                  style={{
+                    margin: 5,
+                    height: 200,
+                    backgroundColor: theme.greyScale5,
+                  }}
+                />
+              </Column>
+              <Column style={{ width: '47%' }}>
+                <div>Progression Free Survival</div>
+                <div
+                  style={{
+                    margin: 5,
+                    height: 200,
+                    backgroundColor: theme.greyScale5,
+                  }}
+                />
+              </Column>
+            </Row>
+          </Column>
+          <Column style={{ width: '100%', justifyContent: 'center' }}>
+            <Row style={{ flexWrap: 'wrap' }}>
+              {' '}
+              {variables.map((variable: string, i: number) => (
+                <VariableCard
+                  key={i}
+                  label={variable}
+                  data={[]}
+                  plots={[]}
+                  variableHeadings={[]}
+                  actions={['survival', 'bar_chart', 'delete']}
+                  style={
+                    controlPanelExpanded
+                      ? { width: '47%', minWidth: 310 }
+                      : { width: '31%', minWidth: 290 }
+                  }
+                />
+              ))}
+            </Row>
+          </Column>
         </Column>
       </Row>
     </div>
@@ -294,4 +338,3 @@ const ClinicalAnalysisResult = ({
 };
 
 export default enhance(ClinicalAnalysisResult);
-// export default ClinicalAnalysisResult;

@@ -12,12 +12,10 @@ import {
 import { fetchApi } from '@ncigdc/utils/ajax';
 import FacetHeader from '@ncigdc/components/Aggregations/FacetHeader';
 import FacetWrapper from '@ncigdc/components/FacetWrapper';
-// import styled from '@ncigdc/theme/styled';
 import { withTheme } from '@ncigdc/theme';
 import { UploadCaseSet } from '@ncigdc/components/Modals/UploadSet';
-
 import escapeForRelay from '@ncigdc/utils/escapeForRelay';
-import RecursiveToggledFacet, { NestedWrapper } from './RecursiveToggledFacet';
+import RecursiveToggledFacet from './RecursiveToggledFacet';
 import { CaseAggregationsQuery } from './explore.relay';
 import SuggestionFacet from '@ncigdc/components/Aggregations/SuggestionFacet';
 import UploadSetButton from '@ncigdc/components/UploadSetButton';
@@ -26,12 +24,12 @@ import { Row } from '@ncigdc/uikit/Flex';
 import Input from '@ncigdc/uikit/Form/Input';
 import styled from '@ncigdc/theme/styled';
 
-const facetMatchesQuery = (facet: any, query: any) =>
+const facetMatchesQuery = (facet, query) =>
   _.some([facet.field, facet.description].map(_.toLower), searchTarget =>
     _.includes(searchTarget, query)
   );
 const MagnifyingGlass = styled(SearchIcon, {
-  marginLeft:'1rem',
+  marginLeft: '1rem',
   position: 'relative',
   width: '3rem',
   height: '3rem',
@@ -72,6 +70,30 @@ const advancedPresetFacets = [
     full: '',
   },
 ];
+const FacetWrapperDiv = styled.div({
+  position: 'relative',
+});
+
+const NestedWrapper = ({
+  Component,
+  title,
+  isCollapsed,
+  setCollapsed,
+  style,
+  headerStyle,
+}) => (
+  <FacetWrapperDiv key={title + 'div'} style={style}>
+    <FacetHeader
+      title={title}
+      collapsed={isCollapsed}
+      setCollapsed={setCollapsed}
+      key={title}
+      style={headerStyle}
+      angleIconRight
+    />
+    {isCollapsed || Component}
+  </FacetWrapperDiv>
+);
 
 const enhance = compose(
   withState('facetMapping', 'setFacetMapping', {}),
@@ -88,8 +110,8 @@ const enhance = compose(
     molecular_tests: { toggled: false },
   }),
   defaultProps({
-    excludeFacetsBy: _.noop,
-    onRequestClose: _.noop,
+    excludeFacetsBy: () => undefined,
+    onRequestClose: () => undefined,
   }),
   withProps(
     ({
@@ -100,7 +122,7 @@ const enhance = compose(
       relayVarName,
       docType,
     }) => ({
-      setUselessFacetVisibility: (shouldHideUselessFacets: any) => {
+      setUselessFacetVisibility: shouldHideUselessFacets => {
         setShouldHideUselessFacets(shouldHideUselessFacets);
         localStorage.setItem(
           'shouldHideUselessFacets',
@@ -202,7 +224,7 @@ const enhance = compose(
           setAutocomplete={props.setAutocomplete}
           dropdownItem={(x: any) => (
             <Row>
-              <CaseIcon style={{ paddingRight: '1rem',  paddingTop: '1rem' }} />
+              <CaseIcon style={{ paddingRight: '1rem', paddingTop: '1rem' }} />
               <div>
                 <div style={{ fontWeight: 'bold' }}>{x.case_id}</div>
                 <div style={{ fontSize: '80%' }}>{x.submitter_id}</div>
@@ -229,15 +251,17 @@ const enhance = compose(
         </UploadSetButton>
       </div>,
 
-      <Row 
-        style={{marginRight: '1rem', marginTop: '0.5rem'}}
-      >
+      <Row style={{ marginRight: '1rem', marginTop: '0.5rem' }}>
         <MagnifyingGlass />
         <Input
           getNode={node => {
             input = node;
           }}
-          style={{ borderRadius: '4px', marginBottom: '6px', marginLeft: '0.5rem'}}
+          style={{
+            borderRadius: '4px',
+            marginBottom: '6px',
+            marginLeft: '0.5rem',
+          }}
           onChange={() => props.setFilter(input.value)}
           placeholder={'Search...'}
           aria-label="Search..."
@@ -249,12 +273,11 @@ const enhance = compose(
           <NestedWrapper
             key={facet.title + 'NestedWrapper'}
             style={{
-              // borderBottom: `1px solid ${props.theme.greyScale5}`,
               position: 'relative',
             }}
             headerStyle={{
               marginLeft: '1rem',
-              marginRight:'1rem', 
+              marginRight: '1rem',
               marginTop: '0.5rem',
               backgroundColor: '#eeeeee',
               borderBottom: `1px solid ${props.theme.greyScale5}`,
@@ -275,7 +298,6 @@ const enhance = compose(
                     relay={props.relay}
                     additionalProps={{ style: { paddingBottom: 0 } }}
                     style={{
-                      // borderBottom: `1px solid ${props.theme.greyScale5}`,
                       position: 'relative',
                       paddingLeft: '10px',
                     }}

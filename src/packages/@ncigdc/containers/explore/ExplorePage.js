@@ -134,6 +134,23 @@ export const ExplorePageComponent = ({
         ),
       },
       {
+        id: 'clinical',
+        text: 'Clinical',
+        component: (
+          <ClinicalAggregations
+            facets={viewer.explore.customCaseFacets}
+            defaultFilters={filters}
+            aggregations={viewer.explore.cases.aggregations}
+            suggestions={get(viewer, 'autocomplete_cases.hits', [])}
+            setAutocomplete={(value, onReadyStateChange) =>
+              relay.setVariables(
+                { idAutocompleteCases: value, runAutocompleteCases: !!value },
+                onReadyStateChange
+              )}
+          />
+        ),
+      },
+      {
         id: 'genes',
         text: 'Genes',
         component: (
@@ -163,30 +180,6 @@ export const ExplorePageComponent = ({
                 { idAutocompleteSsms: value, runAutocompleteSsms: !!value },
                 onReadyStateChange
               )}
-          />
-        ),
-      },
-      {
-        id: 'clinical',
-        text: 'Clinical',
-        component: (
-          <ClinicalAggregations
-            facets={viewer.explore.customCaseFacets}
-            // defaultFilters={filters}
-            aggregations={viewer.explore.cases.aggregations}
-            suggestions={get(viewer, 'autocomplete_cases.hits', [])}
-            setAutocomplete={(value, onReadyStateChange) =>
-              relay.setVariables(
-                { idAutocompleteCases: value, runAutocompleteCases: !!value },
-                onReadyStateChange
-              )}
-            // ssms={viewer.explore.ssms}
-            // suggestions={get(viewer, 'autocomplete_ssms.hits', [])}
-            // setAutocomplete={(value, onReadyStateChange) =>
-            //   relay.setVariables(
-            //     { idAutocompleteSsms: value, runAutocompleteSsms: !!value },
-            //     onReadyStateChange
-            //   )}
           />
         ),
       },

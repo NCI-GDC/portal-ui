@@ -29,50 +29,50 @@ import { IBucket } from '@ncigdc/components/Aggregations/types';
 import { CaseAggregationsQuery } from './explore.relay';
 import ClinicalAggregations from './ClinicalAggregations';
 export interface ITProps {
-  caseIdCollapsed: boolean;
-  setCaseIdCollapsed: (caseIdCollapsed: boolean) => void;
-  relay: any;
-  facets: { facets: string };
-  parsedFacets: any;
+  caseIdCollapsed: boolean,
+  setCaseIdCollapsed: (caseIdCollapsed: boolean) => void,
+  relay: any,
+  facets: { facets: string },
+  parsedFacets: any,
   aggregations: {
-    demographic__ethnicity: { buckets: [IBucket] };
-    demographic__gender: { buckets: [IBucket] };
-    demographic__race: { buckets: [IBucket] };
-    diagnoses__vital_status: { buckets: [IBucket] };
-    diagnoses__days_to_death: { max: number; min: number };
-    diagnoses__age_at_diagnosis: { max: number; min: number };
-    disease_type: { buckets: [IBucket] };
-    primary_site: { buckets: [IBucket] };
-    project__program__name: { buckets: [IBucket] };
-    project__project_id: { buckets: [IBucket] };
-  };
+    demographic__ethnicity: { buckets: [IBucket] },
+    demographic__gender: { buckets: [IBucket] },
+    demographic__race: { buckets: [IBucket] },
+    diagnoses__vital_status: { buckets: [IBucket] },
+    diagnoses__days_to_death: { max: number, min: number },
+    diagnoses__age_at_diagnosis: { max: number, min: number },
+    disease_type: { buckets: [IBucket] },
+    primary_site: { buckets: [IBucket] },
+    project__program__name: { buckets: [IBucket] },
+    project__project_id: { buckets: [IBucket] },
+  },
   hits: {
     edges: Array<{
       node: {
-        id: string;
-      };
-    }>;
-  };
-  setAutocomplete: any;
-  theme: any;
-  filters: any;
-  suggestions: any;
+        id: string,
+      },
+    }>,
+  },
+  setAutocomplete: any,
+  theme: any,
+  filters: any,
+  suggestions: any,
 
   userSelectedFacets: Array<{
-    description: any;
-    doc_type: string;
-    field: string;
-    full: string;
-    type: 'id' | 'string' | 'long';
-  }>;
-  handleSelectFacet: any;
-  handleResetFacets: (event: any) => void;
-  handleRequestRemoveFacet: any;
-  shouldShowFacetSelection: boolean;
-  facetExclusionTest: any;
-  setShouldShowFacetSelection: any;
-  advancedFilter: boolean;
-  setAdvancedFilter: any;
+    description: any,
+    doc_type: string,
+    field: string,
+    full: string,
+    type: 'id' | 'string' | 'long',
+  }>,
+  handleSelectFacet: any,
+  handleResetFacets: (event: any) => void,
+  handleRequestRemoveFacet: any,
+  shouldShowFacetSelection: boolean,
+  facetExclusionTest: any,
+  setShouldShowFacetSelection: any,
+  advancedFilter: boolean,
+  setAdvancedFilter: any,
 }
 
 const presetFacets = [
@@ -200,30 +200,6 @@ export const CaseAggregationsComponent = ({
   setAdvancedFilter,
 }: ITProps) => (
   <div className="test-case-aggregations">
-    <div
-      className="text-right"
-      style={{
-        padding: '10px 15px',
-        borderBottom: `1px solid ${theme.greyScale5}`,
-      }}
-    >
-      {/* {!!userSelectedFacets.length && (
-        <span>
-          <a onClick={handleResetFacets} style={styles.link}>
-            Reset
-          </a>{' '}
-          &nbsp;|&nbsp;
-        </span>
-      )} */}
-      {/* <a onClick={() => setShouldShowFacetSelection(true)} style={styles.link}>
-        Add a Case Filter
-      </a>
-      {' | '} */}
-      {/* <a onClick={() => setAdvancedFilter(!advancedFilter)} style={styles.link}>
-        {advancedFilter ? 'Basic Filters' : 'Advanced Filters'}
-      </a> */}
-    </div>
-
     <Modal
       isOpen={shouldShowFacetSelection}
       style={{ content: { border: 0, padding: '15px' } }}

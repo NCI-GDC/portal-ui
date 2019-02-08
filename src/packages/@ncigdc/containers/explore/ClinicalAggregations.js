@@ -91,6 +91,16 @@ const enhance = compose(
     excludeFacetsBy: _.noop,
     onRequestClose: _.noop,
   }),
+  // withPropsOnChange(
+  //   ['filters', 'userSelectedFacets'],
+  //   ({ filters, relay, userSelectedFacets }) =>
+  //     relay.setVariables({
+  //       filters,
+  //       exploreCaseCustomFacetFields: userSelectedFacets
+  //         .map(({ field }: any) => field)
+  //         .join(','),
+  //     })
+  // ),
   withProps(
     ({
       relay,

@@ -207,6 +207,13 @@ export const CaseAggregationsComponent = ({
         borderBottom: `1px solid ${theme.greyScale5}`,
       }}
     >
+    {console.log({
+        filters,
+        exploreCaseCustomFacetFields: userSelectedFacets
+          .map(({ field }: any) => field)
+          .join(','),
+      })}
+
       {/* {!!userSelectedFacets.length && (
         <span>
           <a onClick={handleResetFacets} style={styles.link}>
@@ -215,10 +222,9 @@ export const CaseAggregationsComponent = ({
           &nbsp;|&nbsp;
         </span>
       )} */}
-      {/* <a onClick={() => setShouldShowFacetSelection(true)} style={styles.link}>
+      <a onClick={() => setShouldShowFacetSelection(true)}>
         Add a Case Filter
       </a>
-      {' | '} */}
       {/* <a onClick={() => setAdvancedFilter(!advancedFilter)} style={styles.link}>
         {advancedFilter ? 'Basic Filters' : 'Advanced Filters'}
       </a> */}

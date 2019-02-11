@@ -29,6 +29,10 @@ import { withTheme } from '@ncigdc/theme';
 import countComponents from '@ncigdc/modern_components/Counts';
 import ExploreLink from '@ncigdc/components/Links/ExploreLink';
 import styled from '@ncigdc/theme/styled';
+import ControlPanelNode from '@ncigdc/modern_components/IntrospectiveType';
+import { humanify } from '@ncigdc/utils/string';
+
+import { CLINICAL_PREFIXES } from '@ncigdc/utils/constants';
 
 interface IAnalysisResultProps {
   sets: any;
@@ -36,7 +40,6 @@ interface IAnalysisResultProps {
   label: string;
   Icon: () => React.Component<any>;
   analysis: any;
-  setType: string;
 }
 //
 // interface ISavedSet {
@@ -50,7 +53,6 @@ interface IAnalysisResultProps {
 // interface IState {
 //   saved: ISavedSet[];
 // }
-/* tslint:disable */
 
 const styles = {
   searchIcon: theme => ({
@@ -73,6 +75,8 @@ const styles = {
     paddingLeft: 5,
   },
 };
+
+const clinicalTypes = ['Demographic', 'Diagnosis', 'Follow-Up', 'Exposure'];
 
 const ChevronLeftIcon = styled(ChevronLeft, {
   fontSize: '2rem',
@@ -98,18 +102,19 @@ const enhance = compose(
   withTheme
 );
 const ClinicalAnalysisResult = ({
-  sets,
-  config: { name, variables },
+  sets, // currently used sets
   Icon,
   label,
-  allSets,
+  allSets, // all saved sets
   theme,
-  setType = 'case',
   controlPanelExpanded,
   setControlPanelExpanded,
+  variables,
+  id,
+  ...props
 }: IAnalysisResultProps) => {
   const setName = Object.values(sets.case)[0];
-  const CountComponent = countComponents[setType];
+  const CountComponent = countComponents.case;
   const dropdownItems = Object.values(allSets.case)
     .filter(s => s !== setName)
     .map((n: any) => (
@@ -123,15 +128,12 @@ const ClinicalAnalysisResult = ({
       </DropdownItem>
     ));
 
-  let selectedSetId = _.map(allSets[setType], (k, v) => {
+  let selectedSetId = _.map(allSets.case, (k, v) => {
     if (k === setName) {
       return v;
     }
   }).find(id => !!id);
-
-  let sortedVariables: any[] = [];
   const divideBy = controlPanelExpanded ? 2 : 3;
-
   return (
     <div style={{ padding: 5 }}>
       <Row
@@ -145,13 +147,11 @@ const ClinicalAnalysisResult = ({
           <Icon style={{ height: 50, width: 50 }} />
           <Column>
             <h1 style={{ fontSize: '2.5rem', margin: 5 }}>{label}</h1>
-            <span style={{ margin: '0 0 5px 5px' }}>
-              Cases from {setName} with {name} configuration
-            </span>
+            <span style={{ margin: '0 0 5px 5px' }}>Cases from {setName}</span>
           </Column>
         </Row>
         <Row spacing={'5px'}>
-          <Button leftIcon={<SaveIcon />}>Save Configuration</Button>
+          <Button leftIcon={<SaveIcon />}>Copy Analysis</Button>
           <Tooltip Component={<span>Download</span>}>
             <Button
               style={{ ...visualizingButton, height: '100%' }}
@@ -189,9 +189,7 @@ const ClinicalAnalysisResult = ({
               }}
             >
               <span style={{ fontWeight: 'bold' }}>Cohort</span>
-              <span style={{ fontWeight: 'bold' }}>{`# ${capitalize(
-                setType
-              )}s`}</span>
+              <span style={{ fontWeight: 'bold' }}>{`# Cases`}</span>
             </Row>
             <Row
               style={{
@@ -233,7 +231,7 @@ const ClinicalAnalysisResult = ({
                       {
                         op: '=',
                         content: {
-                          field: `${setType}s.${setType}_id`,
+                          field: `cases.case_id`,
                           value: `set_id:${selectedSetId}`,
                         },
                       },
@@ -245,7 +243,7 @@ const ClinicalAnalysisResult = ({
                   filters={{
                     op: '=',
                     content: {
-                      field: `${setType}s.${setType}_id`,
+                      field: `cases.case_id`,
                       value: `set_id:${selectedSetId}`,
                     },
                   }}
@@ -275,7 +273,15 @@ const ClinicalAnalysisResult = ({
                 style={{ borderRadius: '0 4px 4px 0' }}
               />
             </Row>
-            <Column style={{ marginTop: 10 }}>Control Panel</Column>
+            <Column style={{ marginTop: 10 }}>
+              {clinicalTypes.map(clinicalType => (
+                <ControlPanelNode
+                  key={clinicalType}
+                  name={clinicalType}
+                  analysis_id={id}
+                />
+              ))}
+            </Column>
           </Column>
         )}
         <Column style={{ flex: 3 }}>
@@ -314,21 +320,28 @@ const ClinicalAnalysisResult = ({
           <Column style={{ width: '100%', justifyContent: 'center' }}>
             <Row style={{ flexWrap: 'wrap' }}>
               {' '}
-              {variables.map((variable: string, i: number) => (
-                <VariableCard
-                  key={i}
-                  label={variable}
-                  data={[]}
-                  plots={[]}
-                  variableHeadings={[]}
-                  actions={['survival', 'bar_chart', 'delete']}
-                  style={
-                    controlPanelExpanded
-                      ? { width: '47%', minWidth: 310 }
-                      : { width: '31%', minWidth: 290 }
-                  }
-                />
-              ))}
+              {variables.map((variable: string, i: number) => {
+                return (
+                  <VariableCard
+                    key={i}
+                    label={humanify({
+                      term: variable.fieldName.replace(
+                        `${CLINICAL_PREFIXES[_.capitalize(variable.type)]}.`,
+                        ''
+                      ),
+                    })}
+                    data={[]}
+                    plots={[]}
+                    variableHeadings={[]}
+                    actions={['survival', 'bar_chart', 'delete']}
+                    style={
+                      controlPanelExpanded
+                        ? { width: '47%', minWidth: 310 }
+                        : { width: '31%', minWidth: 290 }
+                    }
+                  />
+                );
+              })}
             </Row>
           </Column>
         </Column>

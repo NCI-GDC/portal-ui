@@ -14,6 +14,49 @@ import SelectSet from './SelectSet';
 
 import DemoButton from './DemoButton';
 
+const defaultVariables = [
+  {
+    type: 'Demographic',
+    title: 'Ethnicity',
+    fieldName: 'cases.demographic.ethnicity',
+    active_chart: 'survival',
+    active_calculation: 'number',
+    bins: [],
+  },
+  {
+    type: 'Demographic',
+    title: 'Gender',
+    fieldName: 'cases.demographic.gender',
+    active_chart: 'survival',
+    active_calculation: 'number',
+    bins: [],
+  },
+  {
+    type: 'Demographic',
+    title: 'Race',
+    fieldName: 'cases.demographic.race',
+    active_chart: 'survival',
+    active_calculation: 'number',
+    bins: [],
+  },
+  {
+    type: 'Diagnosis',
+    title: 'Age at Diagnosis',
+    fieldName: 'cases.diagnoses.age_at_diagnosis',
+    active_chart: 'survival',
+    active_calculation: 'number',
+    bins: [],
+  },
+  {
+    type: 'Diagnosis',
+    title: 'Cause of Death',
+    fieldName: 'cases.diagnoses.cause_of_death',
+    active_chart: 'survival',
+    active_calculation: 'number',
+    bins: [],
+  },
+];
+
 const enhance = compose(
   branch(
     () => !availableAnalysis.length,
@@ -38,17 +81,22 @@ const CreateAnalysis = ({ analysis, setAnalysis, dispatch, push }) => {
     <SelectSetComponent
       {...analysis}
       onCancel={() => setAnalysis(null)}
-      onRun={(sets, config) => {
+      onRun={sets => {
         const created = new Date().toISOString();
         const id = created;
 
         dispatch(
           addAnalysis({
             id,
-            sets,
             type: analysis.type,
             created,
-            config,
+            sets,
+            ...(analysis.type === 'clinical_data'
+              ? {
+                  name: 'name',
+                  variables: defaultVariables,
+                }
+              : { name: null, variables: null }),
           })
         ).then(() => {
           push({

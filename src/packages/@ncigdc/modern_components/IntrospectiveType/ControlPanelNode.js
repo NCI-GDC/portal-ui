@@ -1,5 +1,11 @@
 import React from 'react';
-import { compose, branch, renderComponent, withState } from 'recompose';
+import {
+  compose,
+  branch,
+  renderComponent,
+  withState,
+  withProps,
+} from 'recompose';
 import _ from 'lodash';
 import { connect } from 'react-redux';
 import QuestionIcon from 'react-icons/lib/fa/question-circle';
@@ -12,6 +18,13 @@ import { withTheme } from '@ncigdc/theme';
 import styled from '@ncigdc/theme/styled';
 import AngleIcon from '@ncigdc/theme/icons/AngleIcon';
 import { Tooltip } from '@ncigdc/uikit/Tooltip';
+import Hidden from '@ncigdc/components/Hidden';
+import {
+  addAnalysisVariable,
+  removeAnalysisVariable,
+} from '@ncigdc/dux/analysis';
+
+import { CLINICAL_PREFIXES } from '@ncigdc/utils/constants';
 
 const styles = {
   category: theme => ({
@@ -56,6 +69,45 @@ const ToggleMoreLink = styled.div({
   ':visited': {
     color: ({ theme }) => theme.greyScale7,
   },
+});
+
+const FacetCheckbox = compose(
+  connect((state: any) => ({
+    analyses: state.analysis.saved,
+  }))
+)(({ fieldName, dispatch, analysis_id, fieldType, analyses }) => {
+  const checked =
+    _.find(
+      analyses.find(a => a.id === analysis_id).variables,
+      v => v.fieldName === fieldName
+    ) || false;
+  return (
+    <div
+      onClick={() => {
+        const toggleAction = checked
+          ? removeAnalysisVariable
+          : addAnalysisVariable;
+        dispatch(toggleAction({ fieldName, id: analysis_id, fieldType }));
+      }}
+    >
+      <label htmlFor={fieldName}>
+        <Hidden>{fieldName}</Hidden>
+      </label>
+      <input
+        readOnly
+        type="checkbox"
+        style={{
+          pointerEvents: 'none',
+          flexShrink: 0,
+          verticalAlign: 'middle',
+        }}
+        disabled={false}
+        name={fieldName}
+        aria-label={fieldName}
+        checked={checked}
+      />
+    </div>
+  );
 });
 
 export default compose(
@@ -109,50 +161,49 @@ export default compose(
               .filter(f => !f.type.fields)
               .slice(0, showingMore ? Infinity : 5)
               .map(field => ({
-                fieldName: field.name,
                 fieldDescription: field.description,
+                fieldName: `${CLINICAL_PREFIXES[name]}.${field.name}`,
               }))
-              .map(({ fieldName, fieldDescription }, i) => (
-                <Row
-                  key={i}
-                  style={{
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    borderBottom: `1px solid ${theme.greyScale5}`,
-                  }}
-                >
-                  <Row style={{ alignItems: 'center' }}>
-                    <h4>{humanify({ term: fieldName })}</h4>
-                    <Tooltip
-                      Component={
-                        <div style={{ maxWidth: '24em' }}>
-                          {fieldDescription}
-                        </div>
-                      }
-                    >
-                      <QuestionIcon
-                        style={{ color: theme.greyScale7, marginLeft: '5px' }}
-                      />
-                    </Tooltip>
-                  </Row>
-
-                  <input
-                    type="checkbox"
+              .map(({ fieldDescription, fieldName }, i) => {
+                return (
+                  <Row
+                    key={i}
                     style={{
-                      pointerEvents: 'none',
-                      flexShrink: 0,
-                      verticalAlign: 'middle',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      borderBottom: `1px solid ${theme.greyScale5}`,
                     }}
-                    // checked={}
-                    value={fieldName}
-                    onClick={e => {
-                      dispatch(
-                        toggleAnalysisVariable(e.target.value, analysis_id)
-                      );
-                    }}
-                  />
-                </Row>
-              ))}
+                  >
+                    <Row style={{ alignItems: 'center' }}>
+                      <h4>
+                        {humanify({
+                          term: fieldName.replace(
+                            `${CLINICAL_PREFIXES[_.capitalize(name)]}.`,
+                            ''
+                          ),
+                        })}
+                      </h4>
+                      <Tooltip
+                        Component={
+                          <div style={{ maxWidth: '24em' }}>
+                            {fieldDescription}
+                          </div>
+                        }
+                      >
+                        <QuestionIcon
+                          style={{ color: theme.greyScale7, marginLeft: '5px' }}
+                        />
+                      </Tooltip>
+                    </Row>
+                    <FacetCheckbox
+                      fieldName={fieldName}
+                      dispatch={dispatch}
+                      analysis_id={analysis_id}
+                      fieldType={name}
+                    />
+                  </Row>
+                );
+              })}
             {fields.length > 5 && (
               <Row>
                 <ToggleMoreLink onClick={() => setShowingMore(!showingMore)}>

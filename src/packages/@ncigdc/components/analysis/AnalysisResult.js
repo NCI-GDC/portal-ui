@@ -66,6 +66,7 @@ function undoNotification(dispatch, analysis) {
   );
 }
 
+// analysis here is all analyses in localStorage
 const AnalysisResult = ({ analysis, query, dispatch, push }) => {
   const analysisId = query.analysisId || '';
   const currentIndex = analysis.findIndex(a => a.id === analysisId);
@@ -91,13 +92,14 @@ const AnalysisResult = ({ analysis, query, dispatch, push }) => {
         </Button>
       }
       linkStyle={{
-        maxWidth: 250,
+        maxWidth: '100%',
       }}
       links={analysis
         .map(savedAnalysis => {
           const analysis = availableAnalysis.find(
             a => a.type === savedAnalysis.type
           );
+
           const tabSub =
             analysis.type === 'clinical_data'
               ? Object.values(savedAnalysis.sets.case || {})
@@ -118,7 +120,6 @@ const AnalysisResult = ({ analysis, query, dispatch, push }) => {
                     </Column>
                   </Row>
                 </div>
-
                 <UnstyledButton
                   style={{ marginLeft: 'auto', backgroundColor: 'transparent' }}
                   onClick={e => {

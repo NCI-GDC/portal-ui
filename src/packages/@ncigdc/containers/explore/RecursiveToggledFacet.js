@@ -1,46 +1,12 @@
 import React from 'react';
-import { withTheme } from '@ncigdc/theme';
-import { get } from 'lodash';
-import {
-  compose,
-  withState,
-  lifecycle,
-  withProps,
-  defaultProps,
-  withHandlers,
-} from 'recompose';
-import styled from '@ncigdc/theme/styled';
-import FacetHeader from '@ncigdc/components/Aggregations/FacetHeader';
-import { Row, Column } from '@ncigdc/uikit/Flex';
+import { get, startCase } from 'lodash';
+import { compose, withState } from 'recompose';
+import { Column } from '@ncigdc/uikit/Flex';
 import {
   ToggleMoreLink,
   BottomRow,
 } from '@ncigdc/components/Aggregations/TermAggregation';
 
-const FacetWrapperDiv = styled.div({
-  position: 'relative',
-});
-export const NestedWrapper = ({
-  Component,
-  title,
-  isCollapsed,
-  setCollapsed,
-  style,
-  headerStyle,
-  angleIconRight,
-}) => (
-  <FacetWrapperDiv key={title + 'div'} style={style}>
-    <FacetHeader
-      title={title}
-      collapsed={isCollapsed}
-      setCollapsed={setCollapsed}
-      key={title}
-      style={headerStyle}
-      angleIconRight
-    />
-    {isCollapsed || Component}
-  </FacetWrapperDiv>
-);
 const RecursiveToggledFacet = compose(
   withState('headerCollapsed', 'setHeaderCollapsed', {}),
   withState('showingMore', 'setShowingMore', false)
@@ -52,6 +18,7 @@ const RecursiveToggledFacet = compose(
     setHeaderCollapsed,
     showingMore,
     setShowingMore,
+    NestedWrapper,
   }) => {
     const keyArray = Object.keys(hash);
     if (!hash || keyArray === 0) {
@@ -74,7 +41,7 @@ const RecursiveToggledFacet = compose(
               Component={
                 <RecursiveToggledFacet hash={hash[key]} Component={Component} />
               }
-              title={_.startCase(key)}
+              title={startCase(key)}
               isCollapsed={get(headerCollapsed, key, true)}
               setCollapsed={() =>
                 setHeaderCollapsed({
@@ -85,7 +52,7 @@ const RecursiveToggledFacet = compose(
           );
         })}
         {keyArray.length > 5 && (
-          <BottomRow style={{marginRight: '1rem'}}>
+          <BottomRow style={{ marginRight: '1rem' }}>
             <ToggleMoreLink onClick={() => setShowingMore(!showingMore)}>
               {showingMore
                 ? 'Less...'

@@ -8,16 +8,16 @@ import {
   withProps,
   defaultProps,
   withHandlers,
+  withPropsOnChange,
 } from 'recompose';
 import { fetchApi } from '@ncigdc/utils/ajax';
 import FacetHeader from '@ncigdc/components/Aggregations/FacetHeader';
 import FacetWrapper from '@ncigdc/components/FacetWrapper';
-// import styled from '@ncigdc/theme/styled';
+import CaseIcon from '@ncigdc/theme/icons/Case';
 import { withTheme } from '@ncigdc/theme';
 import { UploadCaseSet } from '@ncigdc/components/Modals/UploadSet';
-
 import escapeForRelay from '@ncigdc/utils/escapeForRelay';
-import RecursiveToggledFacet, { NestedWrapper } from './RecursiveToggledFacet';
+import RecursiveToggledFacet from './RecursiveToggledFacet';
 import { CaseAggregationsQuery } from './explore.relay';
 import SuggestionFacet from '@ncigdc/components/Aggregations/SuggestionFacet';
 import UploadSetButton from '@ncigdc/components/UploadSetButton';
@@ -25,20 +25,22 @@ import SearchIcon from 'react-icons/lib/fa/search';
 import { Row } from '@ncigdc/uikit/Flex';
 import Input from '@ncigdc/uikit/Form/Input';
 import styled from '@ncigdc/theme/styled';
+import withFacetSelection from '@ncigdc/utils/withFacetSelection';
 
-const facetMatchesQuery = (facet: any, query: any) =>
+const facetMatchesQuery = (facet: any, searchValue: any) =>
   _.some([facet.field, facet.description].map(_.toLower), searchTarget =>
-    _.includes(searchTarget, query)
+    _.includes(searchTarget, searchValue)
   );
 const MagnifyingGlass = styled(SearchIcon, {
-  marginLeft:'1rem',
+  marginLeft: '1rem',
   position: 'relative',
   width: '3rem',
   height: '3rem',
   ':hover::before': {
-    textShadow: ({ theme }) => theme.textShadow,
+    textShadow: ({ theme }: any) => theme.textShadow,
   },
 });
+
 const advancedPresetFacets = [
   {
     title: 'Demographic',
@@ -72,12 +74,41 @@ const advancedPresetFacets = [
     full: '',
   },
 ];
+const entityType = 'ExploreCases';
+const presetFacetFields = advancedPresetFacets.map(x => x.field);
+// @ts-ignore
+const FacetWrapperDiv = styled.div({
+  position: 'relative',
+});
+
+const NestedWrapper = ({
+  Component,
+  title,
+  isCollapsed,
+  setCollapsed,
+  style,
+  headerStyle,
+}: any) => (
+  <FacetWrapperDiv key={title + 'div'} style={style}>
+    <FacetHeader
+      title={title}
+      collapsed={isCollapsed}
+      setCollapsed={setCollapsed}
+      key={title}
+      style={headerStyle}
+      angleIconRight
+    />
+    {isCollapsed || Component}
+  </FacetWrapperDiv>
+);
 
 const enhance = compose(
   withState('facetMapping', 'setFacetMapping', {}),
   withState('isLoadingFacetMapping', 'setIsLoadingFacetMapping', false),
   withState('fieldHash', 'setFieldHash', {}),
   withState('caseIdCollapsed', 'setCaseIdCollapsed', false),
+  withState('shouldHideUselessFacets', 'setShouldHideUselessFacets', false),
+  withState('searchValue', 'setSearchValue', ''),
   withState('toggledTree', 'setToggledTree', {
     cases: { toggled: false },
     demographic: { toggled: false },
@@ -87,9 +118,38 @@ const enhance = compose(
     follow_up: { toggled: false },
     molecular_tests: { toggled: false },
   }),
+  withFacetSelection({
+    entityType,
+    presetFacetFields,
+    validFacetDocTypes: ['cases'],
+    validFacetPrefixes: [
+      'cases.demographic',
+      'cases.diagnoses',
+      'cases.diagnoses.treatments',
+      'cases.exposures',
+      'cases.follow_up',
+      'cases.molecular_tests',
+    ],
+  }),
+  withPropsOnChange(['additionalFacetData'], ({ additionalFacetData }) => ({
+    usefulFacets: _.omitBy(
+      additionalFacetData,
+      (aggregation: { [t: string]: any }) =>
+        !aggregation ||
+        _.some([
+          aggregation.buckets &&
+            aggregation.buckets.filter(
+              (bucket: any) => bucket.key !== '_missing'
+            ).length === 0,
+          aggregation.count === 0,
+          aggregation.count === null,
+          aggregation.stats && aggregation.stats.count === 0,
+        ])
+    ),
+  })),
   defaultProps({
-    excludeFacetsBy: _.noop,
-    onRequestClose: _.noop,
+    excludeFacetsBy: () => undefined,
+    onRequestClose: () => undefined,
   }),
   // withPropsOnChange(
   //   ['filters', 'userSelectedFacets'],
@@ -141,19 +201,21 @@ const enhance = compose(
     ({
       facetMapping,
       excludeFacetsBy,
-      query,
+      searchValue,
       shouldHideUselessFacets,
       usefulFacets,
-    }) => ({
-      filteredFacets: _.filter(_.values(facetMapping), facet =>
-        _.every([
-          facetMatchesQuery(facet, query),
-          !excludeFacetsBy(facet),
-          !shouldHideUselessFacets ||
-            Object.keys(usefulFacets).includes(facet.field),
-        ])
-      ),
-    })
+    }) => {
+      return {
+        filteredFacets: _.filter(_.values(facetMapping), facet =>
+          _.every([
+            facetMatchesQuery(facet, searchValue),
+            !excludeFacetsBy(facet),
+            !shouldHideUselessFacets ||
+              Object.keys(usefulFacets).includes(facet.field),
+          ])
+        ),
+      };
+    }
   ),
   withHandlers({
     fetchData: ({ setFacetMapping, setIsLoadingFacetMapping }) => async () => {
@@ -164,12 +226,13 @@ const enhance = compose(
       setFacetMapping(mapping);
       setIsLoadingFacetMapping(false);
     },
-    handleQueryInputChange: ({ setQuery }) => (event: any) =>
-      setQuery(event.target.value),
+    handleQueryInputChange: ({ setSearchValue }) => (event: any) =>
+      setSearchValue(event.target.value),
   }),
   lifecycle({
     componentDidMount(): void {
-      this.props.fetchData();
+      const { props }: any = this;
+      props.fetchData();
     },
   })
 )(
@@ -190,7 +253,9 @@ const enhance = compose(
         }
       }
     }
-    let input;
+    console.log('fieldHash', fieldHash);
+
+    let input: any = '';
     return [
       <div key="header">
         <FacetHeader
@@ -212,7 +277,7 @@ const enhance = compose(
           setAutocomplete={props.setAutocomplete}
           dropdownItem={(x: any) => (
             <Row>
-              <CaseIcon style={{ paddingRight: '1rem',  paddingTop: '1rem' }} />
+              <CaseIcon style={{ paddingRight: '1rem', paddingTop: '1rem' }} />
               <div>
                 <div style={{ fontWeight: 'bold' }}>{x.case_id}</div>
                 <div style={{ fontSize: '80%' }}>{x.submitter_id}</div>
@@ -239,32 +304,44 @@ const enhance = compose(
         </UploadSetButton>
       </div>,
 
-      <Row 
-        style={{marginRight: '1rem', marginTop: '0.5rem'}}
-      >
+      <Row style={{ marginRight: '1rem', marginTop: '0.5rem' }} key="row">
         <MagnifyingGlass />
         <Input
-          getNode={node => {
+          getNode={(node: any) => {
             input = node;
           }}
-          style={{ borderRadius: '4px', marginBottom: '6px', marginLeft: '0.5rem'}}
+          style={{
+            borderRadius: '4px',
+            marginBottom: '6px',
+            marginLeft: '0.5rem',
+          }}
           onChange={() => props.setFilter(input.value)}
           placeholder={'Search...'}
           aria-label="Search..."
           autoFocus
         />
       </Row>,
+      <label key="label">
+        <input
+          className="test-filter-useful-facet"
+          type="checkbox"
+          onChange={event =>
+            props.setUselessFacetVisibility(event.target.checked)}
+          checked={props.shouldHideUselessFacets}
+          style={{ margin: '12px' }}
+        />
+        Only show fields with values
+      </label>,
       ...advancedPresetFacets.map(facet => {
         return (
           <NestedWrapper
             key={facet.title + 'NestedWrapper'}
             style={{
-              // borderBottom: `1px solid ${props.theme.greyScale5}`,
               position: 'relative',
             }}
             headerStyle={{
               marginLeft: '1rem',
-              marginRight:'1rem', 
+              marginRight: '1rem',
               marginTop: '0.5rem',
               backgroundColor: '#eeeeee',
               borderBottom: `1px solid ${props.theme.greyScale5}`,
@@ -272,20 +349,22 @@ const enhance = compose(
             }}
             Component={
               <RecursiveToggledFacet
-                hash={_.omit(_.get(fieldHash, facet.full, {}), facet.excluded)}
-                Component={facet => (
+                hash={_.omit(
+                  _.get(fieldHash, facet.full, {}),
+                  facet.excluded || ''
+                )}
+                Component={(componentFacet: any) => (
                   <FacetWrapper
                     relayVarName="exploreCaseCustomFacetFields"
-                    key={facet.full}
-                    facet={facet}
-                    title={_.startCase(facet.full.split('.').pop())}
+                    key={componentFacet.full}
+                    facet={componentFacet}
+                    title={_.startCase(componentFacet.full.split('.').pop())}
                     aggregation={
-                      props.aggregations[escapeForRelay(facet.field)]
+                      props.aggregations[escapeForRelay(componentFacet.field)]
                     }
                     relay={props.relay}
                     additionalProps={{ style: { paddingBottom: 0 } }}
                     style={{
-                      // borderBottom: `1px solid ${props.theme.greyScale5}`,
                       position: 'relative',
                       paddingLeft: '10px',
                     }}

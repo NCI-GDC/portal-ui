@@ -18,9 +18,9 @@ import Highlight from '@ncigdc/uikit/Highlight';
 import withSelectableList from '@ncigdc/utils/withSelectableList';
 import withPropsOnChange from '@ncigdc/utils/withPropsOnChange';
 
-const facetMatchesQuery = (facet, query) =>
+const facetMatchesQuery = (facet: any, searchValue: any) =>
   _.some([facet.field, facet.description].map(_.toLower), searchTarget =>
-    _.includes(searchTarget, query)
+    _.includes(searchTarget, searchValue)
   );
 
 const styles = {
@@ -257,6 +257,8 @@ export default compose(
     },
   })
 )(props => {
+  console.log('props.filteredFacets', props.filteredFacets);
+
   let fieldHash = {};
   const fieldArray = Object.keys(props.facetMapping);
   let key;

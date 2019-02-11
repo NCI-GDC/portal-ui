@@ -4,7 +4,7 @@ import { withTheme } from '@ncigdc/theme';
 
 type TNoResultsProps = {
   children: any,
-  style: any
+  style: any,
 };
 
 const NoResultsMessage = withTheme(

@@ -60,7 +60,7 @@ export default ({
     },
     geneFilter
   );
-  console.log(filters);
+
   return (
     <Exists type="Gene" id={geneId}>
       <FullWidthLayout title={<GeneSymbol geneId={geneId} />} entityType="GN">

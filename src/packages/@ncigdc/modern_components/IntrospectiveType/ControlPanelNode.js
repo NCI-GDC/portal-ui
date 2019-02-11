@@ -146,7 +146,6 @@ export default compose(
                     // checked={}
                     value={fieldName}
                     onClick={e => {
-                      debugger;
                       dispatch(
                         toggleAnalysisVariable(e.target.value, analysis_id)
                       );

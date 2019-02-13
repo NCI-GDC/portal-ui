@@ -155,8 +155,10 @@ const ClinicalAnalysisResult = ({
         <Row spacing={'10px'} style={{ alignItems: 'center' }}>
           <Icon style={{ height: 50, width: 50 }} />
           <Column>
-            <h1 style={{ fontSize: '2.5rem', margin: 5 }}>{label}</h1>
-            <span style={{ margin: '0 0 5px 5px' }}>Cases from {setName}</span>
+            <h1 style={{ fontSize: '2.5rem', margin: 5 }}>
+              Cases from {setName}
+            </h1>
+            <span style={{ margin: '0 0 5px 5px' }}>{label}</span>
           </Column>
         </Row>
         <Row spacing={'5px'}>
@@ -183,7 +185,7 @@ const ClinicalAnalysisResult = ({
           </Column>
         )}
         {controlPanelExpanded && (
-          <Column style={{ ...zDepth1, flex: 1, minWidth: 310 }}>
+          <Column style={{ ...zDepth1, flex: 1, minWidth: 260 }}>
             <Row style={{ justifyContent: 'flex-end' }}>
               <Tooltip Component={'Hide Control Panel'}>
                 <ChevronLeftIcon
@@ -210,8 +212,7 @@ const ClinicalAnalysisResult = ({
             >
               <Dropdown
                 style={{
-                  // width: '65%',
-                  // minWidth: 175,
+                  width: 170,
                   justifyContent: 'flex-start',
                   marginRight: 10,
                 }}
@@ -219,12 +220,12 @@ const ClinicalAnalysisResult = ({
                   <Button
                     style={{
                       ...visualizingButton,
-                      // width: '100%',
-                      justifyContent: 'flex-start',
+                      padding: '0 6px',
+                      width: '100%',
                     }}
                     rightIcon={<DownCaretIcon />}
                   >
-                    {_.truncate(setName, { length: 20 })}
+                    {_.truncate(setName, { length: 18 })}
                   </Button>
                 }
                 dropdownStyle={{ width: '100%' }}
@@ -293,7 +294,7 @@ const ClinicalAnalysisResult = ({
             </Column>
           </Column>
         )}
-        <Column style={{ flex: 3 }}>
+        <Column style={{ flex: 4 }}>
           <Column
             style={{
               ...zDepth1,

@@ -207,7 +207,7 @@ export default compose(
                     }}
                   >
                     <Row style={{ alignItems: 'center' }}>
-                      <h4>
+                      <h4 style={{ fontSize: '1.4rem' }}>
                         {humanify({
                           term: fieldName.replace(
                             `${CLINICAL_PREFIXES[_.capitalize(name)]}.`,

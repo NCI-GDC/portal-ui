@@ -17,7 +17,7 @@ import { TrashIcon } from '@ncigdc/theme/icons';
 import TabbedLinks from '@ncigdc/components/TabbedLinks';
 
 import availableAnalysis from './availableAnalysis';
-
+``;
 const enhance = compose(
   connect(state => ({ analysis: state.analysis.saved })),
   withRouter
@@ -74,7 +74,7 @@ const AnalysisResult = ({ analysis, query, dispatch, push }) => {
   return (
     <TabbedLinks
       side
-      style={{ padding: '2rem 2.5rem' }}
+      style={{ padding: '1rem 1.5rem' }}
       queryParam="analysisId"
       defaultIndex={Math.max(currentIndex, 0)}
       tabToolbar={
@@ -92,7 +92,8 @@ const AnalysisResult = ({ analysis, query, dispatch, push }) => {
         </Button>
       }
       linkStyle={{
-        maxWidth: '100%',
+        width: '100%',
+        padding: '1rem 0.8rem',
       }}
       links={analysis
         .map(savedAnalysis => {
@@ -110,13 +111,13 @@ const AnalysisResult = ({ analysis, query, dispatch, push }) => {
             text: (
               <Row>
                 <div style={{ marginRight: 15 }}>
-                  <Row spacing={'10px'} style={{ alignItems: 'center' }}>
+                  <Row spacing={'8px'} style={{ alignItems: 'center' }}>
                     <analysis.Icon style={{ width: 25, height: 25 }} />
                     <Column>
-                      <div style={{ fontSize: '1.5rem' }}>{analysis.label}</div>
-                      <div style={{ fontSize: '1.2rem' }}>
-                        {_.truncate(tabSub, { length: 24 })}
+                      <div style={{ fontSize: '1.4rem' }}>
+                        {_.truncate(tabSub, { length: 16 })}
                       </div>
+                      <div style={{ fontSize: '1.2rem' }}>{analysis.label}</div>
                     </Column>
                   </Row>
                 </div>

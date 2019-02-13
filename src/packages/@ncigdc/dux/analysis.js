@@ -8,6 +8,8 @@ const sets = namespaceActions('sets', [
   'REMOVE_ALL_ANALYSIS',
   'ADD_ANALYSIS_VARIABLE',
   'REMOVE_ANALYSIS_VARIABLE',
+  'UPDATE_ANALYSIS_VARIABLE',
+  'UPDATE_ANALYSIS_VARIABLE_KEY'
 ]);
 
 type TState = {
@@ -24,6 +26,9 @@ type TPayload = {
   analysis?: TState,
   id: string,
   fieldName?: string,
+  type?: string,
+  value?: string,
+  variableKey?: string
 };
 type TAction = {
   type: sets.ADD_ANALYSIS | sets.REMOVE_ANALYSIS | sets.REMOVE_ALL_ANALYSIS,
@@ -51,6 +56,16 @@ const addAnalysisVariable = (payload: TPayload) => ({
 
 const removeAnalysisVariable = (payload: TPayload) => ({
   type: sets.REMOVE_ANALYSIS_VARIABLE,
+  payload,
+});
+
+const updateAnalysisVariable = (payload: TPayload) => ({
+  type: sets.UPDATE_ANALYSIS_VARIABLE,
+  payload,
+});
+
+const updateAnalysisVariableKey = (payload: TPayload) => ({
+  type: sets.UPDATE_ANALYSIS_VARIABLE_KEY,
   payload,
 });
 
@@ -86,19 +101,24 @@ const reducer = (state: TState = initialState, action: TAction) => {
     }
 
     case sets.ADD_ANALYSIS_VARIABLE: {
-      const currentAnalysisId = state.saved.findIndex(
+      const currentAnalysisIndex = state.saved.findIndex(
         a => a.id === action.payload.id
       );
-      const currentAnalysis = state.saved.slice(0)[currentAnalysisId];
+
+      if (currentAnalysisIndex < 0) {
+        return state
+      }
+      const currentAnalysis = state.saved.slice(0)[currentAnalysisIndex];
       const currentVariables = currentAnalysis.variables.slice(0);
+      console.log(action.payload)
       return {
         ...state,
         saved: [
-          ...state.saved.slice(0, currentAnalysisId),
+          ...state.saved.slice(0, currentAnalysisIndex),
           {
-            ...state.saved.slice(0)[currentAnalysisId],
+            ...currentAnalysis,
             variables: [
-              ...state.saved.slice(0)[currentAnalysisId].variables,
+              ...currentVariables,
               ...[
                 {
                   type: action.payload.fieldType,
@@ -106,11 +126,12 @@ const reducer = (state: TState = initialState, action: TAction) => {
                   active_chart: 'survival',
                   active_calculation: 'number',
                   bins: [],
+                  plotTypes: action.payload.plotTypes
                 },
               ],
             ],
           },
-          ...state.saved.slice(currentAnalysisId + 1, Infinity),
+          ...state.saved.slice(currentAnalysisIndex + 1, Infinity),
         ],
       };
     }
@@ -119,6 +140,9 @@ const reducer = (state: TState = initialState, action: TAction) => {
       const currentAnalysisId = state.saved.findIndex(
         a => a.id === action.payload.id
       );
+      if (currentAnalysisId < 0) {
+        return state;
+      }
       const currentAnalysis = state.saved.slice(0)[currentAnalysisId];
       const currentVariables = currentAnalysis.variables.slice(0);
 
@@ -127,7 +151,7 @@ const reducer = (state: TState = initialState, action: TAction) => {
         saved: [
           ...state.saved.slice(0, currentAnalysisId),
           {
-            ...state.saved.slice(0)[currentAnalysisId],
+            ...currentAnalysis,
             variables: currentVariables
               .slice(0)
               .filter(
@@ -138,6 +162,71 @@ const reducer = (state: TState = initialState, action: TAction) => {
         ],
       };
     }
+
+    case sets.UPDATE_ANALYSIS_VARIABLE: {
+      const currentAnalysisIndex = state.saved.findIndex(
+        a => a.id === action.payload.id
+      );
+
+      if (currentAnalysisIndex < 0) {
+        return state;
+      }
+      const currentAnalysis = state.saved.slice(0)[currentAnalysisIndex];
+      // const currentVariables = currentAnalysis.variables.slice(0);
+      const currentVariableIndex = currentAnalysis.variables.findIndex(
+        v => v.fieldName === action.payload.fieldName
+      )
+      return {
+        ...state,
+        // saved: [
+        //   ...state.saved.slice(0, currentAnalysisIndex),
+        //   {
+        //     ...currentAnalysis,
+        //     variables: [
+        //       ...currentAnalysis.variables.slice(0, currentVariableIndex),
+        //       [variableKey]: value,
+        //       ...currentAnalysis.variables.slice(currentVariableIndex + 1, Infinity)
+        //     ],
+        //   },
+        //   ...state.saved.slice(currentAnalysisIndex + 1, Infinity),
+        // ],
+      };
+    }
+    case sets.UPDATE_ANALYSIS_VARIABLE_KEY: {
+      const currentAnalysisIndex = state.saved.findIndex(
+        a => a.id === action.payload.id
+      );
+
+      if (currentAnalysisIndex < 0) {
+        return state;
+      }
+
+      const currentAnalysis = state.saved.slice(0)[currentAnalysisIndex];
+      const currentVariableIndex = currentAnalysis.variables.findIndex(
+        v => v.fieldName === action.payload.fieldName
+      )
+      console.log([
+        ...currentAnalysis.variables.slice(0, currentVariableIndex),
+        [action.payload.variableKey]: action.payload.value,
+        ...currentAnalysis.variables.slice(currentVariableIndex + 1, Infinity)
+      ])
+      return {
+        ...state,
+        saved: [
+          ...state.saved.slice(0, currentAnalysisIndex),
+          {
+            ...currentAnalysis,
+            variables: [
+              ...currentAnalysis.variables.slice(0, currentVariableIndex),
+              [action.payload.variableKey]: action.payload.value,
+              ...currentAnalysis.variables.slice(currentVariableIndex + 1, Infinity)
+            ],
+          },
+          ...state.saved.slice(currentAnalysisIndex + 1, Infinity),
+        ],
+      };
+    }
+
     default:
       return state;
   }
@@ -151,6 +240,8 @@ export {
   removeAllAnalysis,
   addAnalysisVariable,
   removeAnalysisVariable,
+  updateAnalysisVariable,
+  updateAnalysisVariableKey
 };
 
 export default reducer;

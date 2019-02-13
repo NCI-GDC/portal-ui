@@ -15,7 +15,7 @@ const NoResultsMessage = withTheme(
     >
       {children || 'No results found'}
     </span>
-  )
+  ),
 );
 
 export default NoResultsMessage;

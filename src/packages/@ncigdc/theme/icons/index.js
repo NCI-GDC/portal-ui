@@ -19,10 +19,10 @@ import TrashIcon from './Trash';
 import AnalysisIcon from './Analysis';
 import MicroscopeIcon from './Microscope';
 import CloseIcon from './CloseIcon';
-import HistogramIcon from './Histogram';
 import BarChartIcon from './BarChart';
 import ChevronRight from './ChevronRight';
 import ChevronLeft from './ChevronLeft';
+import BoxPlot from './BoxPlot';
 
 export {
   DownloadIcon,
@@ -44,8 +44,8 @@ export {
   AnalysisIcon,
   MicroscopeIcon,
   CloseIcon,
-  HistogramIcon,
   BarChartIcon,
   ChevronRight,
   ChevronLeft,
+  BoxPlot,
 };

@@ -117,13 +117,13 @@ const reducer = (state: TState = initialState, action: TAction) => {
           {
             ...currentAnalysis,
             variables: {
-              ...currentAnalysis.variables,
               [action.payload.fieldName]: {
                 ...defaultVariableConfig,
                 type: action.payload.fieldType,
                 fieldName: action.payload.fieldName,
                 plotTypes: action.payload.plotTypes,
               },
+              ...currentAnalysis.variables,
             },
           },
           ...state.saved.slice(currentAnalysisIndex + 1, Infinity),

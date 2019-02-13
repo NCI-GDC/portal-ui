@@ -30,7 +30,6 @@ import countComponents from '@ncigdc/modern_components/Counts';
 import ExploreLink from '@ncigdc/components/Links/ExploreLink';
 import styled from '@ncigdc/theme/styled';
 import ControlPanelNode from '@ncigdc/modern_components/IntrospectiveType';
-import { humanify } from '@ncigdc/utils/string';
 
 import { CLINICAL_PREFIXES } from '@ncigdc/utils/constants';
 
@@ -76,7 +75,16 @@ const styles = {
   },
 };
 
-const clinicalTypes = ['Demographic', 'Diagnosis', 'Follow-Up', 'Exposure'];
+// will need to update with correct type names for molecular and follow-up
+const clinicalTypes = Object.keys(CLINICAL_PREFIXES).filter(
+  clinicalType =>
+    clinicalType !== 'Molecular_test' && clinicalType !== 'Treatment'
+);
+
+const plotTypes = {
+  categorical: ['histogram', 'survival'],
+  continuous: ['histogram', 'survival', 'box'],
+};
 
 const ChevronLeftIcon = styled(ChevronLeft, {
   fontSize: '2rem',
@@ -111,6 +119,7 @@ const ClinicalAnalysisResult = ({
   setControlPanelExpanded,
   variables,
   id,
+  dispatch,
   ...props
 }: IAnalysisResultProps) => {
   const setName = Object.values(sets.case)[0];
@@ -324,14 +333,9 @@ const ClinicalAnalysisResult = ({
                 return (
                   <VariableCard
                     key={i}
-                    label={humanify({
-                      term: variable.fieldName.replace(
-                        `${CLINICAL_PREFIXES[_.capitalize(variable.type)]}.`,
-                        ''
-                      ),
-                    })}
+                    variable={variable}
                     data={[]}
-                    plots={[]}
+                    plots={plotTypes[variable.plotTypes || 'categorical']}
                     variableHeadings={[]}
                     actions={['survival', 'bar_chart', 'delete']}
                     style={
@@ -339,6 +343,7 @@ const ClinicalAnalysisResult = ({
                         ? { width: '47%', minWidth: 310 }
                         : { width: '31%', minWidth: 290 }
                     }
+                    id={id}
                   />
                 );
               })}

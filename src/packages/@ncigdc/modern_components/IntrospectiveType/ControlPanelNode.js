@@ -24,7 +24,20 @@ import {
   removeAnalysisVariable,
 } from '@ncigdc/dux/analysis';
 
-import { CLINICAL_PREFIXES } from '@ncigdc/utils/constants';
+import { CLINICAL_PREFIXES, CLINICAL_BLACKLIST } from '@ncigdc/utils/constants';
+
+const MAX_VISIBLE_FACETS = 5;
+
+const getPlotType = field => {
+  if (!field || !field.type) {
+    return 'categorical';
+  }
+  if (field.type.name === 'Float') {
+    return 'continuous';
+  } else {
+    return 'categorical';
+  }
+};
 
 const styles = {
   category: theme => ({
@@ -32,10 +45,9 @@ const styles = {
   }),
 };
 
-const FacetToggle = ({ name, active, style = {}, collapsed, setCollapsed }) => (
+const FacetToggle = ({ name, style = {}, collapsed, setCollapsed }) => (
   <Row
     style={{
-      justifyContent: 'space-between',
       alignItems: 'center',
       padding: '0 10px 0 5px',
       backgroundColor: theme.greyScale6,
@@ -52,9 +64,6 @@ const FacetToggle = ({ name, active, style = {}, collapsed, setCollapsed }) => (
         {name}
       </h3>
     </Row>
-    <div>
-      <input type="checkbox" checked={active} />
-    </div>
   </Row>
 );
 
@@ -75,40 +84,55 @@ const FacetCheckbox = compose(
   connect((state: any) => ({
     analyses: state.analysis.saved,
   }))
-)(({ fieldName, dispatch, analysis_id, fieldType, analyses }) => {
-  const checked =
-    _.find(
-      analyses.find(a => a.id === analysis_id).variables,
-      v => v.fieldName === fieldName
-    ) || false;
-  return (
-    <div
-      onClick={() => {
-        const toggleAction = checked
-          ? removeAnalysisVariable
-          : addAnalysisVariable;
-        dispatch(toggleAction({ fieldName, id: analysis_id, fieldType }));
-      }}
-    >
-      <label htmlFor={fieldName}>
-        <Hidden>{fieldName}</Hidden>
-      </label>
-      <input
-        readOnly
-        type="checkbox"
-        style={{
-          pointerEvents: 'none',
-          flexShrink: 0,
-          verticalAlign: 'middle',
+)(
+  ({
+    fieldName,
+    dispatch,
+    analysis_id,
+    fieldType,
+    analyses,
+    disabled,
+    plotTypes,
+  }) => {
+    const checked =
+      _.find(
+        analyses.find(a => a.id === analysis_id).variables,
+        v => v.fieldName === fieldName
+      ) || false;
+    return (
+      <div
+        onClick={() => {
+          if (disabled) {
+            return null;
+          }
+          const toggleAction = checked
+            ? removeAnalysisVariable
+            : addAnalysisVariable;
+          dispatch(
+            toggleAction({ fieldName, id: analysis_id, fieldType, plotTypes })
+          );
         }}
-        disabled={false}
-        name={fieldName}
-        aria-label={fieldName}
-        checked={checked}
-      />
-    </div>
-  );
-});
+      >
+        <label htmlFor={fieldName}>
+          <Hidden>{fieldName}</Hidden>
+        </label>
+        <input
+          readOnly
+          type="checkbox"
+          style={{
+            pointerEvents: 'none',
+            flexShrink: 0,
+            verticalAlign: 'middle',
+          }}
+          disabled={disabled}
+          name={fieldName}
+          aria-label={fieldName}
+          checked={checked}
+        />
+      </div>
+    );
+  }
+);
 
 export default compose(
   branch(
@@ -128,12 +152,17 @@ export default compose(
   connect((state: any, props: any) => ({
     analyses: state.analysis.saved,
   })),
+  withProps(({ __type: { fields, name } }) => ({
+    whitelistedFields: fields.filter(
+      field => !CLINICAL_BLACKLIST.includes(field.name)
+    ),
+  })),
   withTheme,
   withState('collapsed', 'setCollapsed', false),
   withState('showingMore', 'setShowingMore', false)
 )(
   ({
-    __type: { name, fields, description },
+    __type: { name, description },
     theme,
     showingMore,
     setShowingMore,
@@ -142,9 +171,10 @@ export default compose(
     analyses,
     analysis_id,
     dispatch,
+    whitelistedFields,
   }) => {
     return (
-      <Column>
+      <Column style={{ marginBottom: 2 }}>
         <FacetToggle
           name={_.capitalize(name)}
           style={styles.category(theme)}
@@ -157,14 +187,16 @@ export default compose(
               padding: '0 10px',
             }}
           >
-            {_.orderBy(fields, 'name', 'desc')
-              .filter(f => !f.type.fields)
-              .slice(0, showingMore ? Infinity : 5)
+            {_.orderBy(whitelistedFields, 'name', 'asc')
+              .filter(f => !f.type.fields) // filters out nested, like diagnoses.treatments
+              .slice(0, showingMore ? Infinity : MAX_VISIBLE_FACETS)
               .map(field => ({
                 fieldDescription: field.description,
                 fieldName: `${CLINICAL_PREFIXES[name]}.${field.name}`,
+                type: field.type,
+                plotTypes: getPlotType(field),
               }))
-              .map(({ fieldDescription, fieldName }, i) => {
+              .map(({ fieldDescription, fieldName, type, plotTypes }, i) => {
                 return (
                   <Row
                     key={i}
@@ -200,20 +232,23 @@ export default compose(
                       dispatch={dispatch}
                       analysis_id={analysis_id}
                       fieldType={name}
+                      disabled={!type.name}
+                      plotTypes={plotTypes}
                     />
                   </Row>
                 );
               })}
-            {fields.length > 5 && (
+            {whitelistedFields.length > MAX_VISIBLE_FACETS && (
               <Row>
                 <ToggleMoreLink onClick={() => setShowingMore(!showingMore)}>
                   {showingMore
                     ? 'Less...'
-                    : fields.length - 5 && `${fields.length - 5} More...`}
+                    : whitelistedFields.length - MAX_VISIBLE_FACETS &&
+                      `${whitelistedFields.length - 5} More...`}
                 </ToggleMoreLink>
               </Row>
             )}
-            {fields.length === 0 && <Row>No fields found</Row>}
+            {whitelistedFields.length === 0 && <Row>No fields found</Row>}
           </Column>
         )}
       </Column>

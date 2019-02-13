@@ -1,6 +1,8 @@
 import React from 'react';
 import { compose } from 'recompose';
 import DownCaretIcon from 'react-icons/lib/fa/caret-down';
+import { connect } from 'react-redux';
+import _ from 'lodash';
 
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import Button from '@ncigdc/uikit/Button';
@@ -9,10 +11,22 @@ import { visualizingButton } from '@ncigdc/theme/mixins';
 import { zDepth1 } from '@ncigdc/theme/mixins';
 import EntityPageHorizontalTable from '@ncigdc/components/EntityPageHorizontalTable';
 import Dropdown from '@ncigdc/uikit/Dropdown';
-import { CloseIcon, SurvivalIcon, BarChartIcon } from '@ncigdc/theme/icons';
+import {
+  CloseIcon,
+  SurvivalIcon,
+  BarChartIcon,
+  BoxPlot,
+} from '@ncigdc/theme/icons';
 import { withTheme } from '@ncigdc/theme';
 import { IThemeProps } from '@ncigdc/theme/versions/active';
-/* tslint:disable */
+
+import {
+  removeAnalysisVariable,
+  updateAnalysisVariableKey,
+} from '@ncigdc/dux/analysis';
+import { humanify } from '@ncigdc/utils/string';
+import { CLINICAL_PREFIXES } from '@ncigdc/utils/constants';
+
 interface ITableHeading {
   key: string;
   title: string;
@@ -20,54 +34,89 @@ interface ITableHeading {
 }
 
 interface IVariableProps {
-  label: string;
+  variable: any;
   data: any[];
   plots: any[];
   variableHeadings: ITableHeading[];
   actions: any[];
   style: React.CSSProperties;
   theme: IThemeProps;
+  analysis: any;
+  dispatch: (arg: any) => void;
+  id: string;
 }
 
 interface IVizButton {
-  type: string;
   title: string;
   icon: JSX.Element;
+  action: () => void;
 }
 
-const vizButtons: IVizButton[] = [
-  {
-    type: 'survival',
+interface IVizButtons {
+  survival: IVizButton;
+  histogram: IVizButton;
+  box: IVizButton;
+  delete: IVizButton;
+}
+
+const vizButtons: IVizButtons = {
+  survival: {
     title: 'Survival Plot',
-    icon: <SurvivalIcon />,
+    icon: <SurvivalIcon style={{ height: '1em' }} />,
+    action: updateAnalysisVariableKey,
   },
-  {
-    type: 'bar_chart',
-    title: 'Bar Chart',
+  histogram: {
+    title: 'Histogram',
     icon: <BarChartIcon />,
+    action: updateAnalysisVariableKey,
   },
-  // {
-  //   type: 'histogram',
-  //   title: 'Histogram',
-  //   icon: <HistogramIcon />,
-  // },
-  {
-    type: 'delete',
+  box: {
+    title: 'Box Plot',
+    icon: <BoxPlot style={{ height: '1em', width: '1em' }} />,
+    action: updateAnalysisVariableKey,
+  },
+  delete: {
     title: 'Delete Card',
     icon: <CloseIcon />,
+    action: removeAnalysisVariable,
   },
-];
+};
 
-const enhance = compose(withTheme);
+const styles = {
+  common: (theme: IThemeProps) => ({
+    // backgroundColor: 'transparent',
+    backgroundColor: theme.primary,
+    // color: theme.greyScale2,
+    color: '#fff',
+    justifyContent: 'flex-start',
+    ':hover': {
+      // backgroundColor: theme.greyScale5,
+      backgroundColor: 'rgb(0,138,224)',
+    },
+  }),
+  downloadButton: (theme: IThemeProps) => ({
+    ...styles.common(theme),
+    padding: '3px 5px',
+    // border: `1px solid ${theme.greyScale4}`,
+  }),
+};
+
+const enhance = compose(
+  connect((state: any) => ({ analysis: state.analysis })),
+  withTheme
+);
 
 const VariableCard: React.ComponentType<IVariableProps> = ({
-  label,
+  variable,
   data,
   plots,
   variableHeadings,
   actions,
   style = {},
   theme,
+  analysis,
+  dispatch,
+  id,
 }) => {
   return (
     <Column
@@ -81,22 +130,35 @@ const VariableCard: React.ComponentType<IVariableProps> = ({
       }}
     >
       <Row style={{ justifyContent: 'space-between', alignItems: 'center' }}>
-        <h2 style={{ fontSize: '1.8rem' }}>{label}</h2>
+        <h2 style={{ fontSize: '1.8rem' }}>
+          {humanify({
+            term: variable.fieldName.replace(
+              `${CLINICAL_PREFIXES[_.capitalize(variable.type)]}.`,
+              ''
+            ),
+          })}
+        </h2>
         <Row>
-          {/* {[...actions, 'close'].map(a => { */}
-          {vizButtons.map(a => {
+          {[...plots, 'delete'].map(plotType => {
             return (
-              <Tooltip key={a.type} Component={a.title}>
+              <Tooltip key={plotType} Component={vizButtons[plotType].title}>
                 <Button
                   style={{
+                    ...styles.downloadButton(theme),
                     margin: 2,
-                    ...(a.type === 'delete' ? { ...visualizingButton } : {}),
-                    ...(a.type === 'survival'
-                      ? { minWidth: 40, minHeight: 28 }
-                      : {}),
                   }}
+                  onClick={() =>
+                    dispatch(
+                      updateAnalysisVariableKey({
+                        fieldName: variable.fieldName,
+                        variableKey: 'active_chart',
+                        value: plotType,
+                        id,
+                      })
+                    )
+                  }
                 >
-                  {a.icon}
+                  {vizButtons[plotType].icon}
                 </Button>
               </Tooltip>
             );
@@ -149,8 +211,11 @@ const VariableCard: React.ComponentType<IVariableProps> = ({
       <Row style={{ justifyContent: 'space-between', margin: '5px 0' }}>
         <Dropdown
           button={
-            <Button style={visualizingButton} rightIcon={<DownCaretIcon />}>
-              Select an action
+            <Button
+              style={{ ...visualizingButton, padding: '0 12px' }}
+              rightIcon={<DownCaretIcon />}
+            >
+              Select action
             </Button>
           }
         />

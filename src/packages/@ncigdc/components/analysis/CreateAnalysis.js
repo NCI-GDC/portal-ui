@@ -14,8 +14,51 @@ import SelectSet from './SelectSet';
 
 import DemoButton from './DemoButton';
 
-const defaultVariables = [
-  {
+// const defaultVariables = [
+//   {
+//     type: 'Demographic',
+//     fieldName: 'cases.demographic.ethnicity',
+//     active_chart: 'survival',
+//     active_calculation: 'number',
+//     plotTypes: 'categorical',
+//     bins: [],
+//   },
+//   {
+//     type: 'Demographic',
+//     fieldName: 'cases.demographic.gender',
+//     active_chart: 'survival',
+//     active_calculation: 'number',
+//     plotTypes: 'categorical',
+//     bins: [],
+//   },
+//   {
+//     type: 'Demographic',
+//     fieldName: 'cases.demographic.race',
+//     active_chart: 'survival',
+//     active_calculation: 'number',
+//     plotTypes: 'categorical',
+//     bins: [],
+//   },
+//   {
+//     type: 'Diagnosis',
+//     fieldName: 'cases.diagnoses.age_at_diagnosis',
+//     active_chart: 'survival',
+//     active_calculation: 'number',
+//     plotTypes: 'continuous',
+//     bins: [],
+//   },
+//   {
+//     type: 'Diagnosis',
+//     fieldName: 'cases.diagnoses.cause_of_death',
+//     active_chart: 'survival',
+//     active_calculation: 'number',
+//     plotTypes: 'categorical',
+//     bins: [],
+//   },
+// ];
+
+const defaultVariables = {
+  'cases.demographic.ethnicity': {
     type: 'Demographic',
     fieldName: 'cases.demographic.ethnicity',
     active_chart: 'survival',
@@ -23,7 +66,8 @@ const defaultVariables = [
     plotTypes: 'categorical',
     bins: [],
   },
-  {
+
+  'cases.demographic.gender': {
     type: 'Demographic',
     fieldName: 'cases.demographic.gender',
     active_chart: 'survival',
@@ -31,7 +75,8 @@ const defaultVariables = [
     plotTypes: 'categorical',
     bins: [],
   },
-  {
+
+  'cases.demographic.race': {
     type: 'Demographic',
     fieldName: 'cases.demographic.race',
     active_chart: 'survival',
@@ -39,7 +84,7 @@ const defaultVariables = [
     plotTypes: 'categorical',
     bins: [],
   },
-  {
+  'cases.diagnoses.age_at_diagnosis': {
     type: 'Diagnosis',
     fieldName: 'cases.diagnoses.age_at_diagnosis',
     active_chart: 'survival',
@@ -47,7 +92,16 @@ const defaultVariables = [
     plotTypes: 'continuous',
     bins: [],
   },
-  {
+
+  'cases.diagnoses.age_at_diagnosis': {
+    type: 'Diagnosis',
+    fieldName: 'cases.diagnoses.age_at_diagnosis',
+    active_chart: 'survival',
+    active_calculation: 'number',
+    plotTypes: 'continuous',
+    bins: [],
+  },
+  'cases.diagnoses.cause_of_death': {
     type: 'Diagnosis',
     fieldName: 'cases.diagnoses.cause_of_death',
     active_chart: 'survival',
@@ -55,7 +109,7 @@ const defaultVariables = [
     plotTypes: 'categorical',
     bins: [],
   },
-];
+};
 
 const enhance = compose(
   branch(

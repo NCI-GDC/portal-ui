@@ -22,7 +22,7 @@ import { IThemeProps } from '@ncigdc/theme/versions/active';
 
 import {
   removeAnalysisVariable,
-  updateAnalysisVariableKey,
+  updateAnalysisVariable,
 } from '@ncigdc/dux/analysis';
 import { humanify } from '@ncigdc/utils/string';
 import { CLINICAL_PREFIXES } from '@ncigdc/utils/constants';
@@ -63,41 +63,42 @@ const vizButtons: IVizButtons = {
   survival: {
     title: 'Survival Plot',
     icon: <SurvivalIcon style={{ height: '1em' }} />,
-    action: updateAnalysisVariableKey,
+    action: updateAnalysisVariable,
   },
   histogram: {
     title: 'Histogram',
-    icon: <BarChartIcon />,
-    action: updateAnalysisVariableKey,
+    icon: <BarChartIcon style={{ height: '1em', width: '1em' }} />,
+    action: updateAnalysisVariable,
   },
   box: {
     title: 'Box Plot',
     icon: <BoxPlot style={{ height: '1em', width: '1em' }} />,
-    action: updateAnalysisVariableKey,
+    action: updateAnalysisVariable,
   },
   delete: {
     title: 'Delete Card',
-    icon: <CloseIcon />,
+    icon: <CloseIcon style={{ height: '1em', width: '1em' }} />,
     action: removeAnalysisVariable,
   },
 };
 
 const styles = {
   common: (theme: IThemeProps) => ({
-    // backgroundColor: 'transparent',
-    backgroundColor: theme.primary,
-    // color: theme.greyScale2,
-    color: '#fff',
+    backgroundColor: 'transparent',
+    color: theme.greyScale2,
+    border: `1px solid ${theme.greyScale4}`,
     justifyContent: 'flex-start',
     ':hover': {
-      // backgroundColor: theme.greyScale5,
       backgroundColor: 'rgb(0,138,224)',
+      color: '#fff',
+      border: `1px solid rgb(0,138,224)`,
     },
   }),
-  downloadButton: (theme: IThemeProps) => ({
+  activeButton: (theme: IThemeProps) => ({
     ...styles.common(theme),
-    padding: '3px 5px',
-    // border: `1px solid ${theme.greyScale4}`,
+    color: '#fff',
+    backgroundColor: theme.primary,
+    border: `1px solid ${theme.primary}`,
   }),
 };
 
@@ -144,19 +145,21 @@ const VariableCard: React.ComponentType<IVariableProps> = ({
               <Tooltip key={plotType} Component={vizButtons[plotType].title}>
                 <Button
                   style={{
-                    ...styles.downloadButton(theme),
+                    ...(plotType === variable.active_chart
+                      ? styles.activeButton(theme)
+                      : styles.common(theme)),
                     margin: 2,
                   }}
-                  onClick={() =>
+                  onClick={() => {
                     dispatch(
-                      updateAnalysisVariableKey({
+                      vizButtons[plotType].action({
                         fieldName: variable.fieldName,
                         variableKey: 'active_chart',
                         value: plotType,
                         id,
                       })
-                    )
-                  }
+                    );
+                  }}
                 >
                   {vizButtons[plotType].icon}
                 </Button>
@@ -177,8 +180,17 @@ const VariableCard: React.ComponentType<IVariableProps> = ({
               type={'radio'}
               value={'percentage'}
               aria-label={'% of Cases'}
-              onChange={() => null}
-              checked={true}
+              onChange={() =>
+                dispatch(
+                  updateAnalysisVariable({
+                    fieldName: variable.fieldName,
+                    variableKey: 'active_calculation',
+                    value: 'percentage',
+                    id,
+                  })
+                )
+              }
+              checked={variable.active_calculation === 'percentage'}
               style={{ marginRight: 5 }}
             />
             % of Cases
@@ -192,8 +204,17 @@ const VariableCard: React.ComponentType<IVariableProps> = ({
               type={'radio'}
               value={'number'}
               aria-label={'# of Cases'}
-              onChange={() => null}
-              checked={false}
+              onChange={() =>
+                dispatch(
+                  updateAnalysisVariable({
+                    fieldName: variable.fieldName,
+                    variableKey: 'active_calculation',
+                    value: 'number',
+                    id,
+                  })
+                )
+              }
+              checked={variable.active_calculation === 'number'}
               style={{ marginRight: 5 }}
             />
             # of Cases
@@ -203,11 +224,15 @@ const VariableCard: React.ComponentType<IVariableProps> = ({
       <div
         style={{
           display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
           height: 180,
           backgroundColor: theme.greyScale5,
           margin: '5px 5px 10px',
         }}
-      />
+      >
+        {variable.active_chart}
+      </div>
       <Row style={{ justifyContent: 'space-between', margin: '5px 0' }}>
         <Dropdown
           button={

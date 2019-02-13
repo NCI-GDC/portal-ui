@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import SearchIcon from 'react-icons/lib/fa/search';
 import DownCaretIcon from 'react-icons/lib/fa/caret-down';
 import { capitalize } from 'lodash';
+import _ from 'lodash';
 
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import Button from '@ncigdc/uikit/Button';
@@ -330,13 +331,13 @@ const ClinicalAnalysisResult = ({
           <Column style={{ width: '100%', justifyContent: 'center' }}>
             <Row style={{ flexWrap: 'wrap' }}>
               {' '}
-              {variables.map((variable: string, i: number) => {
+              {_.map(variables, (varProperties, varFieldname) => {
                 return (
                   <VariableCard
-                    key={i}
-                    variable={variable}
+                    key={varFieldname}
+                    variable={varProperties}
                     data={[]}
-                    plots={plotTypes[variable.plotTypes || 'categorical']}
+                    plots={plotTypes[varProperties.plotTypes || 'categorical']}
                     variableHeadings={[]}
                     actions={['survival', 'bar_chart', 'delete']}
                     style={

@@ -1,18 +1,23 @@
 // @flow
 import _ from 'lodash';
 
-type TCapitalize = (original:string) => string;
-type THumanify = ({}:IHumanifyParams) => string;
-type TTruncateAfterMarker = (term: string, markers: [string], length: number, omission?: string) => string;
+type TCapitalize = (original: string) => string;
+type THumanify = ({  }: IHumanifyParams) => string;
+type TTruncateAfterMarker = (
+  term: string,
+  markers: [string],
+  length: number,
+  omission?: string
+) => string;
 type TIsUuid = (query: string) => boolean;
 
 interface IHumanifyParams {
   term: string;
-  capitalize: boolean;
-  facetTerm: boolean;
+  capitalize?: boolean;
+  facetTerm?: boolean;
 }
 
-export const capitalize:TCapitalize = original => {
+export const capitalize: TCapitalize = original => {
   const customCapitalizations = {
     mirna: 'miRNA',
     dbsnp: 'dbSNP',
@@ -28,7 +33,7 @@ export const capitalize:TCapitalize = original => {
     .join(' ');
 };
 
-export const humanify:THumanify = ({
+export const humanify: THumanify = ({
   term,
   capitalize: cap = true,
   facetTerm = false,
@@ -57,7 +62,7 @@ export const humanify:THumanify = ({
   return cap ? capitalize(humanified) : humanified;
 };
 
-export const truncateAfterMarker:TTruncateAfterMarker = (
+export const truncateAfterMarker: TTruncateAfterMarker = (
   term,
   markers,
   length,

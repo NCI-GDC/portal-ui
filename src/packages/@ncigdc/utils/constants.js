@@ -316,3 +316,15 @@ export const CLINICAL_PREFIXES = {
   Follow_up: '',
   Molecular_test: '',
 };
+
+export const CLINICAL_BLACKLIST = [
+  'state',
+  'score',
+  'submitter_id',
+  'id',
+  'demographic_id',
+  'updated_datetime',
+  'diagnosis_id',
+  'created_datetime',
+  'exposure_id',
+];

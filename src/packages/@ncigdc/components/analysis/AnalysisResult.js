@@ -101,9 +101,9 @@ const AnalysisResult = ({ analysis, query, dispatch, push }) => {
             a => a.type === savedAnalysis.type
           );
 
-          const tabSub =
+          const tabTitle =
             analysis.type === 'clinical_data'
-              ? Object.values(savedAnalysis.sets.case || {})
+              ? savedAnalysis.name
               : new Date(savedAnalysis.created).toLocaleDateString();
 
           return {
@@ -115,7 +115,7 @@ const AnalysisResult = ({ analysis, query, dispatch, push }) => {
                     <analysis.Icon style={{ width: 25, height: 25 }} />
                     <Column>
                       <div style={{ fontSize: '1.4rem' }}>
-                        {_.truncate(tabSub, { length: 16 })}
+                        {_.truncate(tabTitle, { length: 16 })}
                       </div>
                       <div style={{ fontSize: '1.2rem' }}>{analysis.label}</div>
                     </Column>

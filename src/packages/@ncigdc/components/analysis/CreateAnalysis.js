@@ -147,7 +147,7 @@ const CreateAnalysis = ({ analysis, setAnalysis, dispatch, push }) => {
             sets,
             ...(analysis.type === 'clinical_data'
               ? {
-                  name: 'name',
+                  name: Object.values(sets.case)[0],
                   variables: defaultVariables,
                 }
               : { name: null, variables: null }),

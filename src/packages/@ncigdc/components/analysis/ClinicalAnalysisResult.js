@@ -3,7 +3,6 @@ import { compose, withState } from 'recompose';
 import { connect } from 'react-redux';
 import SearchIcon from 'react-icons/lib/fa/search';
 import DownCaretIcon from 'react-icons/lib/fa/caret-down';
-import { capitalize } from 'lodash';
 import _ from 'lodash';
 
 import { Row, Column } from '@ncigdc/uikit/Flex';
@@ -11,13 +10,14 @@ import Button from '@ncigdc/uikit/Button';
 import { Tooltip } from '@ncigdc/uikit/Tooltip';
 import {
   DownloadIcon,
-  SaveIcon,
   CloseIcon,
   SurvivalIcon,
   BarChartIcon,
   ChevronRight,
   ChevronLeft,
 } from '@ncigdc/theme/icons';
+import Pencil from '@ncigdc/theme/icons/Pencil';
+import CopyIcon from '@ncigdc/theme/icons/Copy';
 import Hidden from '@ncigdc/components/Hidden';
 import { visualizingButton } from '@ncigdc/theme/mixins';
 import { zDepth1 } from '@ncigdc/theme/mixins';
@@ -31,8 +31,11 @@ import countComponents from '@ncigdc/modern_components/Counts';
 import ExploreLink from '@ncigdc/components/Links/ExploreLink';
 import styled from '@ncigdc/theme/styled';
 import ControlPanelNode from '@ncigdc/modern_components/IntrospectiveType';
-
+import { updateAnalysisProperty, addAnalysis } from '@ncigdc/dux/analysis';
 import { CLINICAL_PREFIXES } from '@ncigdc/utils/constants';
+import withRouter from '@ncigdc/utils/withRouter';
+import BaseModal from '@ncigdc/components/Modals/BaseModal';
+import { setModal } from '@ncigdc/dux/modal';
 
 interface IAnalysisResultProps {
   sets: any;
@@ -105,10 +108,60 @@ const ChevronRightIcon = styled(ChevronRight, {
   },
 });
 
+const CopyAnalysisModal = compose(
+  withState('modalInputValue', 'setModalInputValue', '')
+)(({ analysis, modalInputValue, setModalInputValue, dispatch, push }) => {
+  return (
+    <BaseModal
+      title={'Copy Analysis'}
+      onClose={() => {
+        const created = new Date().toISOString();
+        const id = created;
+        dispatch(
+          addAnalysis({
+            ...analysis,
+            id,
+            created,
+            name: modalInputValue,
+          })
+        ).then(() => {
+          push({
+            query: {
+              analysisTableTab: 'result',
+              analysisId: id,
+            },
+          });
+        });
+      }}
+      extraButtons={
+        <Button onClick={() => dispatch(setModal(null))}>Cancel</Button>
+      }
+    >
+      <Row style={{ marginBottom: 10 }}>
+        Please enter a name for the new analysis.
+      </Row>
+      <Row>
+        <label htmlFor={'copy-analysis-input'}>
+          <Hidden>{modalInputValue}</Hidden>
+        </label>
+        <Input
+          id={'copy-analysis-input'}
+          placeholder={`${analysis.name} copy`}
+          onChange={e => setModalInputValue(e.target.value)}
+          style={{ borderRadius: '4px' }}
+          autoFocus
+        />
+      </Row>
+    </BaseModal>
+  );
+});
 const enhance = compose(
-  connect((state: any) => ({ allSets: state.sets })),
+  connect((state: any) => ({ allSets: state.sets, analysis: state.analysis })),
   withState('controlPanelExpanded', 'setControlPanelExpanded', true),
-  withTheme
+  withState('editingAnalysisName', 'setEditingAnalysisName', false),
+  withState('editedAnalysisName', 'setEditedAnalysisName', ''),
+  withTheme,
+  withRouter
 );
 const ClinicalAnalysisResult = ({
   sets, // currently used sets
@@ -121,12 +174,21 @@ const ClinicalAnalysisResult = ({
   variables,
   id,
   dispatch,
+  analysis,
+  editingAnalysisName,
+  setEditingAnalysisName,
+  editedAnalysisName,
+  setEditedAnalysisName,
+  push,
   ...props
 }: IAnalysisResultProps) => {
+  const currentAnalysis = analysis.saved.find(a => a.id === id);
   const setName = Object.values(sets.case)[0];
+  const setId = Object.keys(currentAnalysis.sets.case)[0];
+
   const CountComponent = countComponents.case;
   const dropdownItems = Object.values(allSets.case)
-    .filter(s => s !== setName)
+    .filter(s => s !== Object.values(currentAnalysis.sets.case)[0])
     .map((n: any) => (
       <DropdownItem
         key={n}
@@ -138,11 +200,6 @@ const ClinicalAnalysisResult = ({
       </DropdownItem>
     ));
 
-  let selectedSetId = _.map(allSets.case, (k, v) => {
-    if (k === setName) {
-      return v;
-    }
-  }).find(id => !!id);
   const divideBy = controlPanelExpanded ? 2 : 3;
   return (
     <div style={{ padding: 5 }}>
@@ -153,17 +210,91 @@ const ClinicalAnalysisResult = ({
           padding: 10,
         }}
       >
-        <Row spacing={'10px'} style={{ alignItems: 'center' }}>
+        <Row spacing={'10px'} style={{ alignItems: 'center', width: '80%' }}>
           <Icon style={{ height: 50, width: 50 }} />
-          <Column>
-            <h1 style={{ fontSize: '2.5rem', margin: 5 }}>
-              Cases from {setName}
-            </h1>
+          <Column style={{ width: '100%' }}>
+            <Row style={{ alignItems: 'center' }}>
+              {!editingAnalysisName && (
+                <h1 style={{ fontSize: '2.5rem', margin: 5 }}>
+                  Cases from {currentAnalysis.name}{' '}
+                </h1>
+              )}
+              {editingAnalysisName && (
+                <div style={{ width: '70%', borderRadius: '4px', margin: 5 }}>
+                  <label htmlFor={'analysis-name'}>
+                    <Hidden>{currentAnalysis.name}</Hidden>
+                  </label>
+                  <Input
+                    id={'analysis-name'}
+                    name={'analysis-name'}
+                    className="edit-analysis-name-input"
+                    onChange={e => {
+                      const value = e.target.value;
+                      setEditedAnalysisName(value);
+                    }}
+                    onBlur={e => {
+                      if (e.target.value.length) {
+                        dispatch(
+                          updateAnalysisProperty({
+                            value: _.trim(e.target.value),
+                            property: 'name',
+                            id,
+                          })
+                        );
+                      }
+                      setEditingAnalysisName(false);
+                    }}
+                    onKeyDown={e => {
+                      if (e.target.value.length && e.key === 'Enter') {
+                        dispatch(
+                          updateAnalysisProperty({
+                            value: _.trim(e.target.value),
+                            property: 'name',
+                            id,
+                          })
+                        );
+                        setEditingAnalysisName(false);
+                      }
+                    }}
+                    placeholder={currentAnalysis.name}
+                    value={editedAnalysisName}
+                    autoFocus
+                  />
+                </div>
+              )}
+              {!editingAnalysisName && (
+                <Tooltip Component={'Edit Analysis Name'}>
+                  <Pencil
+                    style={{
+                      marginLeft: 10,
+                      fontSize: '2.5rem',
+                      cursor: 'pointer',
+                    }}
+                    onClick={() => setEditingAnalysisName(true)}
+                  />
+                </Tooltip>
+              )}
+            </Row>
             <span style={{ margin: '0 0 5px 5px' }}>{label}</span>
           </Column>
         </Row>
         <Row spacing={'5px'}>
-          <Button leftIcon={<SaveIcon />}>Copy Analysis</Button>
+          <Button
+            onClick={() => {
+              dispatch(
+                setModal(
+                  <CopyAnalysisModal
+                    analysis={currentAnalysis}
+                    dispatch={dispatch}
+                    push={push}
+                  />
+                )
+              );
+            }}
+            leftIcon={<CopyIcon />}
+          >
+            Copy Analysis
+          </Button>
           <Tooltip Component={<span>Download</span>}>
             <Button
               style={{ ...visualizingButton, height: '100%' }}
@@ -213,7 +344,7 @@ const ClinicalAnalysisResult = ({
             >
               <Dropdown
                 style={{
-                  width: 170,
+                  width: 160,
                   justifyContent: 'flex-start',
                   marginRight: 10,
                 }}
@@ -226,7 +357,7 @@ const ClinicalAnalysisResult = ({
                     }}
                     rightIcon={<DownCaretIcon />}
                   >
-                    {_.truncate(setName, { length: 18 })}
+                    {_.truncate(setName, { length: 16 })}
                   </Button>
                 }
                 dropdownStyle={{ width: '100%' }}
@@ -243,7 +374,7 @@ const ClinicalAnalysisResult = ({
                         op: '=',
                         content: {
                           field: `cases.case_id`,
-                          value: `set_id:${selectedSetId}`,
+                          value: `set_id:${setId}`,
                         },
                       },
                     ],
@@ -255,7 +386,7 @@ const ClinicalAnalysisResult = ({
                     op: '=',
                     content: {
                       field: `cases.case_id`,
-                      value: `set_id:${selectedSetId}`,
+                      value: `set_id:${setId}`,
                     },
                   }}
                 />
@@ -274,11 +405,7 @@ const ClinicalAnalysisResult = ({
               <Input
                 id="search-facets"
                 name="search-facets"
-                onChange={
-                  () => console.log('search')
-                  // ({ target }) => console.log(target)
-                  // setState(s => ({ ...s, query: target.value }))
-                }
+                onChange={() => console.log('search')}
                 placeholder="Search"
                 value={''}
                 style={{ borderRadius: '0 4px 4px 0' }}

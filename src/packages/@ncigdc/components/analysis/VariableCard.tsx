@@ -71,7 +71,7 @@ const vizButtons: IVizButtons = {
     action: updateAnalysisVariable,
   },
   box: {
-    title: 'Box Plot',
+    title: 'Box/QQ Plot',
     icon: <BoxPlot style={{ height: '1em', width: '1em' }} />,
     action: updateAnalysisVariable,
   },

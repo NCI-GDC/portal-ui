@@ -10,6 +10,7 @@ const sets = namespaceActions('sets', [
   'ADD_ANALYSIS_VARIABLE',
   'REMOVE_ANALYSIS_VARIABLE',
   'UPDATE_ANALYSIS_VARIABLE',
+  'UPDATE_ANALYSIS_PROPERTY',
 ]);
 
 type TState = {
@@ -61,6 +62,11 @@ const removeAnalysisVariable = (payload: TPayload) => ({
 
 const updateAnalysisVariable = (payload: TPayload) => ({
   type: sets.UPDATE_ANALYSIS_VARIABLE,
+  payload,
+});
+
+const updateAnalysisProperty = (payload: TPayload) => ({
+  type: sets.UPDATE_ANALYSIS_PROPERTY,
   payload,
 });
 
@@ -185,6 +191,30 @@ const reducer = (state: TState = initialState, action: TAction) => {
       };
     }
 
+    case sets.UPDATE_ANALYSIS_PROPERTY: {
+      const currentAnalysisIndex = state.saved.findIndex(
+        a => a.id === action.payload.id
+      );
+
+      if (currentAnalysisIndex < 0) {
+        return state;
+      }
+
+      const currentAnalysis = state.saved.slice(0)[currentAnalysisIndex];
+      return {
+        ...state,
+        saved: [
+          ...state,
+          ...state.saved.slice(0, currentAnalysisIndex),
+          {
+            ...currentAnalysis,
+            [action.payload.property]: action.payload.value,
+          },
+          ...state.saved.slice(currentAnalysisIndex + 1, Infinity),
+        ],
+      };
+    }
+
     default:
       return state;
   }
@@ -199,6 +229,7 @@ export {
   addAnalysisVariable,
   removeAnalysisVariable,
   updateAnalysisVariable,
+  updateAnalysisProperty,
 };
 
 export default reducer;

@@ -216,7 +216,7 @@ const ClinicalAnalysisResult = ({
             <Row style={{ alignItems: 'center' }}>
               {!editingAnalysisName && (
                 <h1 style={{ fontSize: '2.5rem', margin: 5 }}>
-                  Cases from {currentAnalysis.name}{' '}
+                  {currentAnalysis.name}{' '}
                 </h1>
               )}
               {editingAnalysisName && (
@@ -365,7 +365,6 @@ const ClinicalAnalysisResult = ({
                 {dropdownItems}
               </Dropdown>
               <ExploreLink
-                merge
                 query={{
                   filters: {
                     op: 'and',

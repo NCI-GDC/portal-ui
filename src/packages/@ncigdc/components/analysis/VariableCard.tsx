@@ -76,7 +76,7 @@ const vizButtons: IVizButtons = {
     action: updateAnalysisVariable,
   },
   delete: {
-    title: 'Delete Card',
+    title: 'Remove Card',
     icon: <CloseIcon style={{ height: '1em', width: '1em' }} />,
     action: removeAnalysisVariable,
   },

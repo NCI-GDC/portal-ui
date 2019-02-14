@@ -192,7 +192,7 @@ export const CaseAggregationsComponent = ({
   setAdvancedFilter,
 }: ITProps) => (
   <div className="test-case-aggregations">
-    <div
+    {/* <div
       className="text-right"
       style={{
         padding: '10px 15px',
@@ -207,7 +207,7 @@ export const CaseAggregationsComponent = ({
       <a onClick={() => setShouldShowFacetSelection(true)}>
         Add a Case/Biospecimen Filter
       </a>
-    </div>
+    </div> */}
     <Modal
       isOpen={shouldShowFacetSelection}
       style={{ content: { border: 0, padding: '15px' } }}

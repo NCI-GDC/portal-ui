@@ -394,7 +394,7 @@ const enhance = compose(
                         paddingLeft: '10px',
                       }}
                       headerStyle={{ fontSize: '14px' }}
-                      collapsed={true}
+                      collapsed={false}
                       maxNum={5}
                     />
                   )}

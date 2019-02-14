@@ -45,7 +45,7 @@ const BaseModal = ({
         paddingTop: 10,
         paddingBottom: 15,
       }}
-      spacing={'10'}
+      spacing={'10px'}
     >
       <Button
         onClick={() => {

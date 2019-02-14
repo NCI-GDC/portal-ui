@@ -1,7 +1,7 @@
 // @flow
 import React from 'react';
 
-export default ({ style, ...props }) => (
+export default ({ style = {}, ...props }) => (
   <svg
     viewBox="0 0 2048 1536"
     style={{

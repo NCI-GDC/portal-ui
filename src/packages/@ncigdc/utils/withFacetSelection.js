@@ -61,13 +61,12 @@ export default ({
         query,
       }) => facet => {
         dispatch(remove({ entityType, field: facet.field }));
-
         const newFilters = removeFilter(
           facet.full,
           parseFilterParam(query.filters),
         );
 
-        push({
+        return push({
           query: removeEmptyKeys({
             ...query,
             filters: newFilters && stringifyJSONParam(newFilters),

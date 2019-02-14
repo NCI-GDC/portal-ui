@@ -8,6 +8,8 @@ import QuickSearchResults from './QuickSearchResults';
 import { withSearch } from '@ncigdc/utils/withSearch';
 import namespace from '@ncigdc/utils/namespace';
 import withSelectableList from '@ncigdc/utils/withSelectableList';
+import { Row, Column } from '@ncigdc/uikit/Flex';
+import FileHistoryResults from './FileHistoryResults';
 
 const styles = {
   searchIconWrapper: {
@@ -160,14 +162,29 @@ export default compose(
           aria-label="Quick Search Input"
         />
       )}
-      {!!(state.results && state.results.length) && (
-        <QuickSearchResults
-          results={_.map(
-            state.results,
-            item =>
-              item === focusedItem ? { ...item, isSelected: true } : item,
-          )}
+      <QuickSearchResults
+        results={_.map(
+          state.results,
+          item => (item === focusedItem ? { ...item, isSelected: true } : item),
+        )}
+        query={state.query}
+        onSelectItem={setFocusedItem}
+        onActivateItem={item => {
+          selectItem(item);
+          reset();
+          setIsInSearchMode(false);
+        }}
+        isLoading={state.isLoading}
+      />
+      {!state.isLoading && (
+        <FileHistoryResults
           query={state.query}
+          results={state.fileHistoryResult
+            .filter(f => f.file_change === 'released')
+            .map(
+              item =>
+                item === focusedItem ? { ...item, isSelected: true } : item,
+            )}
           onSelectItem={setFocusedItem}
           onActivateItem={item => {
             selectItem(item);
@@ -177,9 +194,11 @@ export default compose(
           isLoading={state.isLoading}
         />
       )}
+
       {!state.isLoading &&
         state.query &&
-        (state.results || []).length === 0 && (
+        (state.results || []).length === 0 &&
+        (state.fileHistoryResult || []).length === 0 && (
           <div style={styles.noResults}>No results found</div>
         )}
     </a>

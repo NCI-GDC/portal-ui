@@ -18,8 +18,8 @@ import './style.css';
 // TODO: switch to d3v4 and require d3-tip instead.
 loadScript('https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.js').then(() =>
   loadScript(
-    'https://cdnjs.cloudflare.com/ajax/libs/d3-tip/0.7.1/d3-tip.min.js',
-  ),
+    'https://cdnjs.cloudflare.com/ajax/libs/d3-tip/0.7.1/d3-tip.min.js'
+  )
 );
 
 const FIELDS = [
@@ -50,6 +50,7 @@ class GitHutWrapper extends React.Component {
         this.props.push({
           pathname: '/repository',
           query: {
+            searchTableTab: 'cases',
             filters: stringifyJSONParam({
               op: 'AND',
               content: [
@@ -69,6 +70,7 @@ class GitHutWrapper extends React.Component {
         this.props.push({
           pathname: '/repository',
           query: {
+            searchTableTab: 'cases',
             filters: stringifyJSONParam({
               op: 'AND',
               content: [
@@ -124,7 +126,7 @@ class GitHutWrapper extends React.Component {
     fetchApi(
       `projects?fields=${FIELDS}${filters
         ? `&filters=${JSON.stringify(filters)}`
-        : ''}&size=100&sort=summary.case_count:desc`,
+        : ''}&size=100&sort=summary.case_count:desc`
     ).then(data => {
       this.data = data.data.hits || [];
       this.drawGraph();

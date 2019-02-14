@@ -31,8 +31,8 @@ export const makeIDLink: TMakeIdLink = config => props => {
   });
 };
 
-type TMakeListLink = (
-  c: TListLinkConfig,
+export type TMakeListLink = (
+  c: TListLinkConfig
 ) => (p: IListLinkProps) => React.Element<>;
 export const makeListLink: TMakeListLink = ({
   query: configQuery,

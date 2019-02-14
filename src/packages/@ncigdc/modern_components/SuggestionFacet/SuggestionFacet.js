@@ -11,9 +11,11 @@ import {
   renameProp,
   withPropsOnChange,
 } from 'recompose';
+
 import SearchIcon from 'react-icons/lib/fa/search';
 import LocationSubscriber from '@ncigdc/components/LocationSubscriber';
-
+import { fetchApi } from '@ncigdc/utils/ajax';
+import fetchFileHistory from '@ncigdc/utils/fetchFileHistory';
 // Custom
 import { parseFilterParam } from '@ncigdc/utils/uri';
 import { getFilterValue } from '@ncigdc/utils/filters';
@@ -30,7 +32,8 @@ import GeneSymbol from '@ncigdc/modern_components/GeneSymbol';
 import Input from '@ncigdc/uikit/Form/Input';
 import SetId from '@ncigdc/components/SetId';
 import Hidden from '@ncigdc/components/Hidden';
-
+import FileIcon from '@ncigdc/theme/icons/File';
+import { isUUID } from '@ncigdc/utils/string';
 import {
   Container,
   CheckedRow,
@@ -75,12 +78,24 @@ const StyledDropdownLink = styled(Link, {
 });
 
 const SuggestionFacet = compose(
-  // branch(({ facetSearchHits }) => facetSearchHits && !facetSearchHits.length, renderComponent(() => null)),
   withDropdown,
   withState('inputValue', 'setInputValue', ''),
+  withState('historyResults', 'setHistoryResults', []),
   withPropsOnChange(
     ['facetSearchHits'],
-    ({ facetSearchHits }) => facetSearchHits,
+    async ({ facetSearchHits, facetSearch, queryType, setHistoryResults }) => {
+      if (
+        facetSearch &&
+        queryType === 'file' &&
+        !facetSearchHits.files.length &&
+        isUUID(facetSearch)
+      ) {
+        const history = await fetchFileHistory(_.trim(facetSearch));
+        await setHistoryResults(history);
+      } else {
+        return facetSearchHits;
+      }
+    },
   ),
   renameProp('facetSearchHits', 'results'),
   withHandlers({
@@ -120,6 +135,8 @@ const SuggestionFacet = compose(
     setInputValue,
     setFacetSearch,
     loading,
+    historyResults,
+    facetSearch,
     ...props
   }) => {
     const query = v => ({
@@ -226,7 +243,8 @@ const SuggestionFacet = compose(
                           ...dropdown,
                           marginTop: 0,
                           top: '35px',
-                          width: '300px',
+                          left: 1,
+                          width: '100%',
                           wordBreak: 'break-word',
                         }}
                         onClick={e => e.stopPropagation()}
@@ -252,11 +270,52 @@ const SuggestionFacet = compose(
                             </StyledDropdownLink>
                           </Row>
                         ))}
-                        {((results && results[doctype]) || []).length === 0 && (
-                          <StyledDropdownRow>
-                            {loading ? 'Loading' : 'No matching items found'}
-                          </StyledDropdownRow>
-                        )}
+                        {!(results[doctype] || []).length &&
+                          !!(historyResults || []).length &&
+                          historyResults
+                            .filter(result => result.file_change === 'released')
+                            .map((result, i) => (
+                              <Row
+                                key={result.uuid}
+                                style={{ alignItems: 'center' }}
+                                onClick={() => {
+                                  setInputValue('');
+                                  setActive(false);
+                                }}
+                                onMouseOver={() =>
+                                  selectableList.setFocusedItem(result)}
+                              >
+                                <StyledDropdownLink
+                                  merge="add"
+                                  query={query(result.uuid)}
+                                  id={result.uuid}
+                                  data-link-id={result.uuid}
+                                  linkIsActive={
+                                    selectableList.focusedItem === result
+                                  }
+                                >
+                                  <FileIcon
+                                    style={{
+                                      paddingRight: '1rem',
+                                      paddingTop: '1rem',
+                                    }}
+                                  />
+                                  {result.uuid}
+                                  <br />
+                                  File version {' '}
+                                  <span style={{ fontWeight: 'bold' }}>
+                                    {facetSearch}
+                                  </span>{' '}
+                                  was updated
+                                </StyledDropdownLink>
+                              </Row>
+                            ))}
+                        {(results && results[doctype]).length === 0 &&
+                          historyResults.length === 0 && (
+                            <StyledDropdownRow>
+                              {loading ? 'Loading' : 'No matching items found'}
+                            </StyledDropdownRow>
+                          )}
                       </Column>
                     )}
                   </Row>

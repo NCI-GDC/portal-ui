@@ -1,5 +1,5 @@
-import { stringifyJSONParam } from '@ncigdc/utils/uri/index';
-import { addInFilters, toggleFilters, mergeQuery } from '../';
+import { stringifyJSONParam, parseFilterParam } from '@ncigdc/utils/uri/index';
+import { addInFilters, toggleFilters, mergeQuery, removeFilter } from '../';
 
 const baseFilter = {
   op: 'and',
@@ -198,4 +198,130 @@ describe('mergeQuery', () => {
 
     expect(result).toEqual(expectedResult);
   });
+});
+
+describe('removeFilter', () => {
+  it('should remove all the filters specified in the field arg', () => {
+    const query = {
+      filters: {
+        op: 'and',
+        content: [primarySiteFilter, rangeToFilter, rangeFromFilter],
+      },
+    };
+    const field = 'cases.diagnoses.age_at_diagnosis';
+    const expectedResult = {
+      op: 'and',
+      content: [primarySiteFilter],
+    };
+
+    const result = removeFilter(field, query.filters);
+
+    expect(result).toEqual(expectedResult);
+  });
+
+  it('should return null if the query is empty', () => {
+    const query = {};
+    const field = 'cases.diagnoses.age_at_diagnosis';
+    const result = removeFilter(field, query.filters);
+    const expectedResult = null;
+
+    expect(result).toEqual(expectedResult);
+  });
+
+  it('should return the query if the filter field being removed does not have a value in the query filters', () => {
+    const query = {
+      filters: {
+        op: 'and',
+        content: [primarySiteFilter],
+      },
+    };
+    const field = 'cases.diagnoses.age_at_diagnosis';
+    const result = removeFilter(field, query.filters);
+    const expectedResult = {
+      op: 'and',
+      content: [primarySiteFilter],
+    };
+
+    expect(result).toEqual(expectedResult);
+  });
+
+  it('should return null if there are no filters in the query', () => {
+    const query = {
+      searchTableTab: 'cases',
+    };
+    const field = 'cases.diagnoses.age_at_diagnosis';
+    const result = removeFilter(field, parseFilterParam(query.filters));
+    const expectedResult = null;
+
+    expect(result).toEqual(expectedResult);
+  });
+
+  it('should remove the correct filter if it is the last filter in a list', () => {
+    const query = {
+      filters: {
+        op: 'and',
+        content: [rangeToFilter, rangeFromFilter, primarySiteFilter]
+      }
+    };
+
+    const field = 'cases.primary_site';
+    const result = removeFilter(field, query.filters);
+    const expectedResult = {
+            op: 'and',
+            content: [rangeToFilter, rangeFromFilter]
+          }
+
+    expect(result).toEqual(expectedResult)
+  });
+
+  it('should remove the filter if it is the first filter in a list', () => {
+    const query = {
+      filters: {
+        op: 'and',
+        content: [primarySiteFilter, rangeToFilter, rangeFromFilter]
+      }
+    };
+
+    const field = 'cases.primary_site';
+    const result = removeFilter(field, query.filters);
+    const expectedResult = {
+      op: 'and',
+      content: [rangeToFilter, rangeFromFilter]
+    };
+
+    expect(result).toEqual(expectedResult);
+  });
+
+  it('should return null if the field arg is the only filter in the list', () => {
+    const query = {
+      filters: {
+        op: 'and',
+        content: [primarySiteFilter]
+      }
+    };
+
+    const field = 'cases.primary_site';
+    const result = removeFilter(field, query.filters);
+    const expectedResult = null;
+
+    expect(result).toEqual(expectedResult);
+  });
+
+  it('should remove a filter if it is neither first nor last in a list', () => {
+    const query = {
+      filters: {
+        op: 'and',
+        content: [primarySiteFilter, caseFilter, rangeToFilter, rangeFromFilter]
+      }
+    };
+
+    const field = 'case.case_id';
+    const result = removeFilter(field, query.filters);
+    const expectedResult = {
+      op: 'and',
+      content: [primarySiteFilter, rangeToFilter, rangeFromFilter]
+    };
+
+    expect(result).toEqual(expectedResult);
+  })
 });

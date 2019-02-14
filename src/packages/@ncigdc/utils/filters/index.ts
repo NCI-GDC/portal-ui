@@ -148,7 +148,7 @@ export const removeFilter: TRemoveFilter = (field, query) => {
   } else if (!field) {
     return query;
   } else if (Object.keys(query).length === 0) {
-    return query;
+    return null;
   }
 
   if (!Array.isArray(query.content)) {
@@ -294,7 +294,7 @@ export const getFilterValue = ({
 }) => currentFilters.find(f => f.content.field === dotField);
 
 type TMakeFilter = (
-  fields: Array<{ field: string; value: string }>
+  fields: Array<{ field: string; value: string | string[] }>
 ) => IGroupFilter | null;
 export const makeFilter: TMakeFilter = fields => {
   if (!fields.length) {

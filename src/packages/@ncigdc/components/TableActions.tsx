@@ -33,7 +33,6 @@ const tableSortFuncCreator: TTableSortFuncCreator = (
   sortKey,
   push
 ) => selectedSort => {
-
   // Construct the new query by merging existing filters/query
   const newQuery = mergeQuery(
     { [sortKey]: stringifyJSONParam(selectedSort) },
@@ -43,13 +42,13 @@ const tableSortFuncCreator: TTableSortFuncCreator = (
 
   // If there are filters the stringify them otherwise remove the key
   if (Object.keys(newQuery.filters || {}).length > 0) {
-    newQuery.filters = stringifyJSONParam(newQuery.filters)
+    newQuery.filters = stringifyJSONParam(newQuery.filters);
   } else {
     delete newQuery.filters;
   }
 
   // Push the new query
-  push({query: newQuery});
+  push({ query: newQuery });
 };
 
 interface IProps {
@@ -57,8 +56,8 @@ interface IProps {
   total: number;
   endpoint: string;
   downloadFields: string[];
-  query: IRawQuery;
-  push: ({}) => void;
+  query?: IRawQuery;
+  push?: ({}) => void;
   displayType?: string;
   arrangeColumnKey?: string;
   currentFilters: IGroupFilter;
@@ -74,13 +73,14 @@ interface IProps {
   theme?: object;
   totalCases?: number;
   // Todo: type these properly
-  downloadTooltip?: any;
-  sort?: any;
-  score?: any;
-  scope?: any;
-  AppendSetButton?: any;
-  downloadClinical?: any;
-  downloadBiospecimen?: any;
+  downloadTooltip?: string | JSX.Element;
+  sort?: { field: string; order: string };
+  score?: string;
+  scope?: string;
+  AppendSetButton?: React.ComponentClass;
+  downloadClinical?: boolean;
+  downloadBiospecimen?: boolean;
+  hideColumns?: string[];
 }
 
 const TableActions: React.SFC<IProps> = ({
@@ -100,8 +100,8 @@ const TableActions: React.SFC<IProps> = ({
   CreateSetButton,
   RemoveFromSetButton,
   idField,
-  query,
-  push,
+  query = {},
+  push = () => {},
   selectedIds,
   sort,
   score,
@@ -111,6 +111,7 @@ const TableActions: React.SFC<IProps> = ({
   downloadBiospecimen,
   theme,
   totalCases,
+  hideColumns,
 }: IProps) => {
   const fieldContains = ({
     filters,
@@ -129,13 +130,18 @@ const TableActions: React.SFC<IProps> = ({
         <ArrangeColumnsButton
           entityType={arrangeColumnKey}
           style={visualizingButton}
+          hideColumns={hideColumns}
         />
       )}
       {sortOptions && (
         <SortTableButton
           sortFunction={tableSortFuncCreator(query, `${type}s_sort`, push)}
           options={sortOptions}
-          initialState={query[`${type}s_sort`] ? {sortSelection: parseJSONParam(query[`${type}s_sort`])} : {sortSelection: []}}
+          initialState={
+            query[`${type}s_sort`]
+              ? { sortSelection: parseJSONParam(query[`${type}s_sort`]) }
+              : { sortSelection: [] }
+          }
           isDisabled={!sortOptions.length}
           style={visualizingButton}
         />
@@ -222,7 +228,7 @@ const TableActions: React.SFC<IProps> = ({
   );
 };
 
-export default compose(
+export default compose<IProps, IProps>(
   withRouter,
   withState('state', 'setState', {
     tsvDownloading: false,

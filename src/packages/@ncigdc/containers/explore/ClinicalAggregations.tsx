@@ -7,7 +7,6 @@ import {
   lifecycle,
   withProps,
   withHandlers,
-  // connect,
   withPropsOnChange,
 } from 'recompose';
 import { fetchApi } from '@ncigdc/utils/ajax';
@@ -147,67 +146,11 @@ const enhance = compose(
       'cases.molecular_tests',
     ],
   }),
-  withPropsOnChange(['facets'], ({ facets }) => {
-    // const usefulFacets = _.omitBy(
-    //   facets.facets ? tryParseJSON(facets.facets, {}) : {},
-    //   (aggregation: { [t: string]: any }) =>
-    //     !aggregation ||
-    //     _.some([
-    //       aggregation.buckets &&
-    //         aggregation.buckets.filter(
-    //           (bucket: any) => bucket.key !== '_missing'
-    //         ).length === 0,
-    //       aggregation.count === 0,
-    //       aggregation.count === null,
-    //       aggregation.stats && aggregation.stats.count === 0,
-    //     ])
-    // );
-    // const fieldHash = {};
-    // // const fieldArray = filteredFacets.map((f: IFacetProps) => ({
-    // //   [f.field]: f,
-    // // }));
-    // console.log(
-    //   'fieldArray.length1111',
-    //   facetMapping,
-    //   filteredFacets.map((f: IFacetProps) => ({ [f.field]: f }))
-    // );
-    // console.log('yessss', _.values(facetMapping));
-
-    // let key = '';
-    // for (const str of filteredFacets.map((f: any) => f.field)) {
-    //   const el = str.split('.');
-    //   let subFieldHash = fieldHash;
-    //   while (el.length >= 1) {
-    //     key = el.shift() || '';
-    //     if (el.length === 0) {
-    //       subFieldHash[key] = facetMapping[str];
-    //     } else {
-    //       subFieldHash[key] = subFieldHash[key] || {};
-    //       subFieldHash = subFieldHash[key];
-    //     }
-    //   }
-    // }
-
-    return {
-      usefulFacets: _.omitBy(
-        facets.facets ? tryParseJSON(facets.facets, {}) : {},
-        (aggregation: { [t: string]: any }) =>
-          !aggregation ||
-          _.some([
-            aggregation.buckets &&
-              aggregation.buckets.filter(
-                (bucket: any) => bucket.key !== '_missing'
-              ).length === 0,
-            aggregation.count === 0,
-            aggregation.count === null,
-            aggregation.stats && aggregation.stats.count === 0,
-          ])
-      ),
-    };
-  }),
-  // connect((state: any, props) => ({
-  //   userSelectedFacets: state.customFacets[entityType],
-  // })),
+  withPropsOnChange(['filters'], ({ filters, relay }) =>
+    relay.setVariables({
+      filters,
+    })
+  ),
   withProps(
     ({
       relay,
@@ -216,10 +159,7 @@ const enhance = compose(
       facetMapping,
       relayVarName,
       docType,
-      searchValue,
       shouldHideUselessFacets,
-      usefulFacets,
-      facetExclusionTest,
     }) => ({
       setUselessFacetVisibility: (shouldHide: boolean) => {
         setShouldHideUselessFacets(shouldHide);
@@ -228,7 +168,6 @@ const enhance = compose(
           JSON.stringify(shouldHide)
         );
         const byDocType = _.groupBy(facetMapping, o => o.doc_type);
-        console.log('withProps');
 
         if (shouldHide && byDocType[docType]) {
           setIsLoadingAdditionalFacetData(shouldHide);
@@ -248,15 +187,59 @@ const enhance = compose(
           );
         }
       },
-      filteredFacets: _.filter(_.values(facetMapping), facet =>
+    })
+  ),
+  withPropsOnChange(
+    ['facets', 'facetMapping', 'searchValue', 'shouldHideUselessFacets'],
+    ({
+      facets,
+      facetMapping,
+      searchValue,
+      shouldHideUselessFacets,
+      facetExclusionTest,
+    }) => {
+      const usefulFacets = _.omitBy(
+        facets.facets ? tryParseJSON(facets.facets, {}) : {},
+        (aggregation: { [t: string]: any }) =>
+          !aggregation ||
+          _.some([
+            aggregation.buckets &&
+              aggregation.buckets.filter(
+                (bucket: any) => bucket.key !== '_missing'
+              ).length === 0,
+            aggregation.count === 0,
+            aggregation.count === null,
+            aggregation.stats && aggregation.stats.count === 0,
+          ])
+      );
+
+      const filteredFacets = _.filter(_.values(facetMapping), facet =>
         _.every([
           facetMatchesQuery(facet, searchValue),
           !facetExclusionTest(facet),
           !shouldHideUselessFacets ||
             Object.keys(usefulFacets).includes(facet.field),
         ])
-      ),
-    })
+      );
+      const fieldHash = {};
+      let key = '';
+      for (const str of filteredFacets.map((f: any) => f.field)) {
+        const el = str.split('.');
+        let subFieldHash = fieldHash;
+        while (el.length >= 1) {
+          key = el.shift() || '';
+          if (el.length === 0) {
+            subFieldHash[key] = facetMapping['cases.' + str];
+          } else {
+            subFieldHash[key] = subFieldHash[key] || {};
+            subFieldHash = subFieldHash[key];
+          }
+        }
+      }
+      return {
+        fieldHash,
+      };
+    }
   ),
   withHandlers({
     fetchData: ({ setFacetMapping, setIsLoadingFacetMapping }) => async () => {
@@ -270,11 +253,6 @@ const enhance = compose(
     handleQueryInputChange: ({ setSearchValue }) => (event: any) =>
       setSearchValue(event.target.value),
   }),
-  withPropsOnChange(['filters'], ({ filters, relay }) =>
-    relay.setVariables({
-      filters,
-    })
-  ),
   lifecycle({
     componentDidMount(): void {
       const { props }: any = this;
@@ -298,41 +276,12 @@ const enhance = compose(
       toggledTree,
       setToggledTree,
       suggestions,
-      usefulFacets,
       additionalFacetData,
       searchValue,
       setSearchValue,
       handleQueryInputChange,
+      fieldHash,
     }: any): any => {
-      const fieldHash = {};
-      // const fieldArray = filteredFacets.map((f: IFacetProps) => ({
-      //   [f.field]: f,
-      // }));
-      console.log(
-        'fieldArray.length1111',
-        facetMapping,
-        filteredFacets.map((f: IFacetProps) => ({ [f.field]: f }))
-      );
-      console.log('yessss', Object.keys(usefulFacets));
-
-      let key = '';
-      for (const str of filteredFacets.map((f: any) => f.field)) {
-        const el = str.split('.');
-        let subFieldHash = fieldHash;
-        while (el.length >= 1) {
-          key = el.shift() || '';
-          if (el.length === 0) {
-            subFieldHash[key] = facetMapping['cases.' + str];
-          } else {
-            subFieldHash[key] = subFieldHash[key] || {};
-            subFieldHash = subFieldHash[key];
-          }
-        }
-      }
-      console.log(
-        'fieldHash',
-        Object.keys(fieldHash).map((k: any) => Object.keys(fieldHash[k]))
-      );
       return [
         <div key="header">
           <FacetHeader
@@ -393,7 +342,6 @@ const enhance = compose(
             }}
             defaultValue={searchValue}
             onChange={handleQueryInputChange}
-            // onKeyDown={handleKeyDown}
             placeholder={'Search...'}
             aria-label="Search..."
             autoFocus

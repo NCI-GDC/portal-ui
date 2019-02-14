@@ -159,8 +159,6 @@ const enhance = compose(
   lifecycle({
     componentDidMount(): void {
       const { relay, filters, userSelectedFacets }: any = this.props;
-      console.log('mlgb', userSelectedFacets);
-
       relay.setVariables({
         filters,
         exploreCaseCustomFacetFields: userSelectedFacets
@@ -201,7 +199,6 @@ export const CaseAggregationsComponent = ({
         // borderBottom: `1px solid ${props.theme.greyScale5}`,
       }}
     >
-      {console.log('case', facets)}
       {!!userSelectedFacets.length && (
         <span>
           <a onClick={handleResetFacets}>Reset</a> &nbsp;|&nbsp;

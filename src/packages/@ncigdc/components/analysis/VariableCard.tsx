@@ -11,6 +11,8 @@ import { visualizingButton } from '@ncigdc/theme/mixins';
 import { zDepth1 } from '@ncigdc/theme/mixins';
 import EntityPageHorizontalTable from '@ncigdc/components/EntityPageHorizontalTable';
 import Dropdown from '@ncigdc/uikit/Dropdown';
+import Hidden from '@ncigdc/components/Hidden';
+
 import {
   CloseIcon,
   SurvivalIcon,
@@ -161,6 +163,7 @@ const VariableCard: React.ComponentType<IVariableProps> = ({
                     );
                   }}
                 >
+                  <Hidden>{vizButtons[plotType].title}</Hidden>
                   {vizButtons[plotType].icon}
                 </Button>
               </Tooltip>
@@ -172,14 +175,14 @@ const VariableCard: React.ComponentType<IVariableProps> = ({
         <form>
           {' '}
           <label
-            htmlFor={'variable-percentage-radio'}
+            htmlFor={`variable-percentage-radio-${variable.fieldName}`}
             style={{ marginRight: 10, fontSize: '1.2rem' }}
           >
             <input
-              id={'variable-percentage-radio'}
+              id={`variable-percentage-radio-${variable.fieldName}`}
               type={'radio'}
               value={'percentage'}
-              aria-label={'% of Cases'}
+              aria-label={'Percentage of cases'}
               onChange={() =>
                 dispatch(
                   updateAnalysisVariable({
@@ -196,14 +199,14 @@ const VariableCard: React.ComponentType<IVariableProps> = ({
             % of Cases
           </label>
           <label
-            htmlFor={'variable-number-radio'}
+            htmlFor={`variable-number-radio-${variable.fieldName}`}
             style={{ fontSize: '1.2rem' }}
           >
             <input
-              id={'variable-number-radio'}
+              id={`variable-number-radio-${variable.fieldName}`}
               type={'radio'}
               value={'number'}
-              aria-label={'# of Cases'}
+              aria-label={'Number of cases'}
               onChange={() =>
                 dispatch(
                   updateAnalysisVariable({

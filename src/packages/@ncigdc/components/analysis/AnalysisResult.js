@@ -74,7 +74,7 @@ const AnalysisResult = ({ analysis, query, dispatch, push }) => {
   return (
     <TabbedLinks
       side
-      style={{ padding: '1rem 1.5rem' }}
+      style={{ padding: '1rem 0.7rem' }}
       queryParam="analysisId"
       defaultIndex={Math.max(currentIndex, 0)}
       tabToolbar={

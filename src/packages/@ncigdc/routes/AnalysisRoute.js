@@ -12,7 +12,7 @@ import withRouter from '@ncigdc/utils/withRouter';
 
 const enhance = compose(
   connect(state => ({ hasAnalysis: !!state.analysis.saved.length })),
-  withRouter,
+  withRouter
 );
 
 const AnalysisRoute = enhance(({ hasAnalysis, query }) => {

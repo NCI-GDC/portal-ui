@@ -164,10 +164,10 @@ const enhance = compose(
   withRouter
 );
 const ClinicalAnalysisResult = ({
-  sets, // currently used sets
+  sets,
   Icon,
   label,
-  allSets, // all saved sets
+  allSets,
   theme,
   controlPanelExpanded,
   setControlPanelExpanded,
@@ -454,8 +454,16 @@ const ClinicalAnalysisResult = ({
               </Column>
             </Row>
           </Column>
-          <Column style={{ width: '100%', justifyContent: 'center' }}>
-            <Row style={{ flexWrap: 'wrap' }}>
+          <Column>
+            <div
+              style={{
+                display: 'grid',
+                gridTemplateColumns: controlPanelExpanded
+                  ? '50% 50%'
+                  : '33.33% 33.33% 33.33%',
+                gridTemplateRows: 'repeat(200)',
+              }}
+            >
               {' '}
               {_.map(variables, (varProperties, varFieldname) => {
                 return (
@@ -466,16 +474,12 @@ const ClinicalAnalysisResult = ({
                     plots={plotTypes[varProperties.plotTypes || 'categorical']}
                     variableHeadings={[]}
                     actions={['survival', 'bar_chart', 'delete']}
-                    style={
-                      controlPanelExpanded
-                        ? { width: '47%', minWidth: 310 }
-                        : { width: '31%', minWidth: 290 }
-                    }
+                    style={{ minWidth: controlPanelExpanded ? 310 : 290 }}
                     id={id}
                   />
                 );
               })}
-            </Row>
+            </div>
           </Column>
         </Column>
       </Row>

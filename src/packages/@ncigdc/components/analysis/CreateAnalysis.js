@@ -14,49 +14,6 @@ import SelectSet from './SelectSet';
 
 import DemoButton from './DemoButton';
 
-// const defaultVariables = [
-//   {
-//     type: 'Demographic',
-//     fieldName: 'cases.demographic.ethnicity',
-//     active_chart: 'survival',
-//     active_calculation: 'number',
-//     plotTypes: 'categorical',
-//     bins: [],
-//   },
-//   {
-//     type: 'Demographic',
-//     fieldName: 'cases.demographic.gender',
-//     active_chart: 'survival',
-//     active_calculation: 'number',
-//     plotTypes: 'categorical',
-//     bins: [],
-//   },
-//   {
-//     type: 'Demographic',
-//     fieldName: 'cases.demographic.race',
-//     active_chart: 'survival',
-//     active_calculation: 'number',
-//     plotTypes: 'categorical',
-//     bins: [],
-//   },
-//   {
-//     type: 'Diagnosis',
-//     fieldName: 'cases.diagnoses.age_at_diagnosis',
-//     active_chart: 'survival',
-//     active_calculation: 'number',
-//     plotTypes: 'continuous',
-//     bins: [],
-//   },
-//   {
-//     type: 'Diagnosis',
-//     fieldName: 'cases.diagnoses.cause_of_death',
-//     active_chart: 'survival',
-//     active_calculation: 'number',
-//     plotTypes: 'categorical',
-//     bins: [],
-//   },
-// ];
-
 const defaultVariables = {
   'cases.demographic.ethnicity': {
     type: 'Demographic',

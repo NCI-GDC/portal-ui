@@ -1,0 +1,45 @@
+export default [
+  {
+    title: 'Case',
+    field: 'case_id',
+    full: 'cases.case_id',
+    doc_type: 'cases',
+    type: 'id',
+  },
+  {
+    title: 'Case ID',
+    field: 'submitter_id',
+    full: 'cases.submitter_id',
+    doc_type: 'cases',
+    type: 'id',
+    placeholder: 'eg. TCGA-DD*, *DD*, TCGA-DD-AAVP',
+  },
+  {
+    title: 'Primary Site',
+    field: 'primary_site',
+    full: 'cases.primary_site',
+    doc_type: 'cases',
+    type: 'keyword',
+  },
+  {
+    title: 'Program',
+    field: 'project.program.name',
+    full: 'cases.project.program.name',
+    doc_type: 'cases',
+    type: 'keyword',
+  },
+  {
+    title: 'Project',
+    field: 'project.project_id',
+    full: 'cases.project.project_id',
+    doc_type: 'cases',
+    type: 'terms',
+  },
+  {
+    title: 'Disease Type',
+    field: 'disease_type',
+    full: 'cases.disease_type',
+    doc_type: 'cases',
+    type: 'keyword',
+  },
+];

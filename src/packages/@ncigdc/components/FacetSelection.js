@@ -257,8 +257,6 @@ export default compose(
     },
   })
 )(props => {
-  console.log('props.filteredFacets', props.filteredFacets);
-
   let fieldHash = {};
   const fieldArray = Object.keys(props.facetMapping);
   let key;

@@ -15,7 +15,7 @@ import NoResultsMessage from '@ncigdc/components/NoResultsMessage';
 import CaseAggregations from '@ncigdc/containers/explore/CaseAggregations';
 import GeneAggregations from '@ncigdc/containers/explore/GeneAggregations';
 import SSMAggregations from '@ncigdc/containers/explore/SSMAggregations';
-import ClinicalAggregations from './ClinicalAggregations';
+import ClinicalAggregations from '@ncigdc/containers/explore/ClinicalAggregations';
 import { CreateExploreCaseSetButton } from '@ncigdc/modern_components/withSetAction';
 import { replaceFilters } from '@ncigdc/utils/filters';
 import { stringifyJSONParam } from '@ncigdc/utils/uri';
@@ -139,7 +139,9 @@ export const ExplorePageComponent = ({
         component: (
           <ClinicalAggregations
             facets={viewer.explore.customCaseFacets}
-            defaultFilters={filters}
+            docType="cases"
+            // defaultFilters={filters}
+            relayVarName="exploreCaseCustomFacetFields"
             aggregations={viewer.explore.cases.aggregations}
             suggestions={get(viewer, 'autocomplete_cases.hits', [])}
             // excludeFacetsBy={facetExclusionTest}

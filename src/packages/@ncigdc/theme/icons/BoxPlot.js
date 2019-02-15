@@ -1,12 +1,7 @@
 import React from 'react';
 
 export default ({ style = {}, ...props }) => (
-  <svg
-    id="box_plot"
-    data-name="box plot"
-    viewBox="0 0 66.07 53.05"
-    style={{ ...style }}
-  >
+  <svg viewBox="0 0 66.07 53.05" style={{ ...style }}>
     <polygon
       style={{ fill: 'currentcolor' }}
       points="5.48 47.57 5.48 0 0 0 0 53.05 0.89 53.05 5.48 53.05 66.07 53.05 66.07 47.57 5.48 47.57"

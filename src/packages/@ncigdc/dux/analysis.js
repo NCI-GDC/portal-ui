@@ -7,10 +7,10 @@ const sets = namespaceActions('sets', [
   'ADD_ANALYSIS',
   'REMOVE_ANALYSIS',
   'REMOVE_ALL_ANALYSIS',
-  'ADD_ANALYSIS_VARIABLE',
-  'REMOVE_ANALYSIS_VARIABLE',
-  'UPDATE_ANALYSIS_VARIABLE',
-  'UPDATE_ANALYSIS_PROPERTY',
+  'ADD_CLINICAL_ANALYSIS_VARIABLE',
+  'REMOVE_CLINICAL_ANALYSIS_VARIABLE',
+  'UPDATE_CLINICAL_ANALYSIS_VARIABLE',
+  'UPDATE_CLINICAL_ANALYSIS_PROPERTY',
 ]);
 
 type TState = {
@@ -50,23 +50,23 @@ const removeAllAnalysis = () => ({
   type: sets.REMOVE_ALL_ANALYSIS,
 });
 
-const addAnalysisVariable = (payload: TPayload) => ({
-  type: sets.ADD_ANALYSIS_VARIABLE,
+const addClinicalAnalysisVariable = (payload: TPayload) => ({
+  type: sets.ADD_CLINICAL_ANALYSIS_VARIABLE,
   payload,
 });
 
-const removeAnalysisVariable = (payload: TPayload) => ({
-  type: sets.REMOVE_ANALYSIS_VARIABLE,
+const removeClinicalAnalysisVariable = (payload: TPayload) => ({
+  type: sets.REMOVE_CLINICAL_ANALYSIS_VARIABLE,
   payload,
 });
 
-const updateAnalysisVariable = (payload: TPayload) => ({
-  type: sets.UPDATE_ANALYSIS_VARIABLE,
+const updateClinicalAnalysisVariable = (payload: TPayload) => ({
+  type: sets.UPDATE_CLINICAL_ANALYSIS_VARIABLE,
   payload,
 });
 
-const updateAnalysisProperty = (payload: TPayload) => ({
-  type: sets.UPDATE_ANALYSIS_PROPERTY,
+const updateClinicalAnalysisProperty = (payload: TPayload) => ({
+  type: sets.UPDATE_CLINICAL_ANALYSIS_PROPERTY,
   payload,
 });
 
@@ -78,6 +78,15 @@ const defaultVariableConfig = {
   active_chart: 'survival',
   active_calculation: 'number',
   bins: [],
+};
+
+const getCurrentAnalysis = (currentState, analysisId) => {
+  const currentAnalysisIndex = currentState.saved.findIndex(
+    a => a.id === analysisId
+  );
+  const currentAnalysis = currentState.saved.slice(0)[currentAnalysisIndex];
+
+  return { currentAnalysisIndex, currentAnalysis };
 };
 
 const reducer = (state: TState = initialState, action: TAction) => {
@@ -107,15 +116,17 @@ const reducer = (state: TState = initialState, action: TAction) => {
       };
     }
 
-    case sets.ADD_ANALYSIS_VARIABLE: {
-      const currentAnalysisIndex = state.saved.findIndex(
-        a => a.id === action.payload.id
+    // adds new card to analysis
+    case sets.ADD_CLINICAL_ANALYSIS_VARIABLE: {
+      const { currentAnalysisIndex, currentAnalysis } = getCurrentAnalysis(
+        state,
+        action.payload.id
       );
 
       if (currentAnalysisIndex < 0) {
         return state;
       }
-      const currentAnalysis = state.saved.slice(0)[currentAnalysisIndex];
+
       return {
         ...state,
         saved: [
@@ -137,19 +148,21 @@ const reducer = (state: TState = initialState, action: TAction) => {
       };
     }
 
-    case sets.REMOVE_ANALYSIS_VARIABLE: {
-      const currentAnalysisId = state.saved.findIndex(
-        a => a.id === action.payload.id
+    // removes card from analysis
+    case sets.REMOVE_CLINICAL_ANALYSIS_VARIABLE: {
+      const { currentAnalysisIndex, currentAnalysis } = getCurrentAnalysis(
+        state,
+        action.payload.id
       );
-      if (currentAnalysisId < 0) {
+
+      if (currentAnalysisIndex < 0) {
         return state;
       }
-      const currentAnalysis = state.saved.slice(0)[currentAnalysisId];
 
       return {
         ...state,
         saved: [
-          ...state.saved.slice(0, currentAnalysisId),
+          ...state.saved.slice(0, currentAnalysisIndex),
           {
             ...currentAnalysis,
             variables: _.pickBy(
@@ -157,21 +170,22 @@ const reducer = (state: TState = initialState, action: TAction) => {
               (value, key) => key !== action.payload.fieldName
             ),
           },
-          ...state.saved.slice(currentAnalysisId + 1, Infinity),
+          ...state.saved.slice(currentAnalysisIndex + 1, Infinity),
         ],
       };
     }
 
-    case sets.UPDATE_ANALYSIS_VARIABLE: {
-      const currentAnalysisIndex = state.saved.findIndex(
-        a => a.id === action.payload.id
+    // updates value for single variable
+    case sets.UPDATE_CLINICAL_ANALYSIS_VARIABLE: {
+      const { currentAnalysisIndex, currentAnalysis } = getCurrentAnalysis(
+        state,
+        action.payload.id
       );
 
       if (currentAnalysisIndex < 0) {
         return state;
       }
 
-      const currentAnalysis = state.saved.slice(0)[currentAnalysisIndex];
       return {
         ...state,
         saved: [
@@ -191,16 +205,17 @@ const reducer = (state: TState = initialState, action: TAction) => {
       };
     }
 
-    case sets.UPDATE_ANALYSIS_PROPERTY: {
-      const currentAnalysisIndex = state.saved.findIndex(
-        a => a.id === action.payload.id
+    // updates non-variable key in analysis
+    case sets.UPDATE_CLINICAL_ANALYSIS_PROPERTY: {
+      const { currentAnalysisIndex, currentAnalysis } = getCurrentAnalysis(
+        state,
+        action.payload.id
       );
 
       if (currentAnalysisIndex < 0) {
         return state;
       }
 
-      const currentAnalysis = state.saved.slice(0)[currentAnalysisIndex];
       return {
         ...state,
         saved: [
@@ -226,10 +241,10 @@ export {
   addAnalysis,
   removeAnalysis,
   removeAllAnalysis,
-  addAnalysisVariable,
-  removeAnalysisVariable,
-  updateAnalysisVariable,
-  updateAnalysisProperty,
+  addClinicalAnalysisVariable,
+  removeClinicalAnalysisVariable,
+  updateClinicalAnalysisVariable,
+  updateClinicalAnalysisProperty,
 };
 
 export default reducer;

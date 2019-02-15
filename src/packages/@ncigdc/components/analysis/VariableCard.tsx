@@ -23,8 +23,8 @@ import { withTheme } from '@ncigdc/theme';
 import { IThemeProps } from '@ncigdc/theme/versions/active';
 
 import {
-  removeAnalysisVariable,
-  updateAnalysisVariable,
+  removeClinicalAnalysisVariable,
+  updateClinicalAnalysisVariable,
 } from '@ncigdc/dux/analysis';
 import { humanify } from '@ncigdc/utils/string';
 import { CLINICAL_PREFIXES } from '@ncigdc/utils/constants';
@@ -65,22 +65,22 @@ const vizButtons: IVizButtons = {
   survival: {
     title: 'Survival Plot',
     icon: <SurvivalIcon style={{ height: '1em' }} />,
-    action: updateAnalysisVariable,
+    action: updateClinicalAnalysisVariable,
   },
   histogram: {
     title: 'Histogram',
     icon: <BarChartIcon style={{ height: '1em', width: '1em' }} />,
-    action: updateAnalysisVariable,
+    action: updateClinicalAnalysisVariable,
   },
   box: {
     title: 'Box/QQ Plot',
     icon: <BoxPlot style={{ height: '1em', width: '1em' }} />,
-    action: updateAnalysisVariable,
+    action: updateClinicalAnalysisVariable,
   },
   delete: {
     title: 'Remove Card',
     icon: <CloseIcon style={{ height: '1em', width: '1em' }} />,
-    action: removeAnalysisVariable,
+    action: removeClinicalAnalysisVariable,
   },
 };
 
@@ -185,7 +185,7 @@ const VariableCard: React.ComponentType<IVariableProps> = ({
               aria-label={'Percentage of cases'}
               onChange={() =>
                 dispatch(
-                  updateAnalysisVariable({
+                  updateClinicalAnalysisVariable({
                     fieldName: variable.fieldName,
                     variableKey: 'active_calculation',
                     value: 'percentage',
@@ -209,7 +209,7 @@ const VariableCard: React.ComponentType<IVariableProps> = ({
               aria-label={'Number of cases'}
               onChange={() =>
                 dispatch(
-                  updateAnalysisVariable({
+                  updateClinicalAnalysisVariable({
                     fieldName: variable.fieldName,
                     variableKey: 'active_calculation',
                     value: 'number',

@@ -31,7 +31,10 @@ import countComponents from '@ncigdc/modern_components/Counts';
 import ExploreLink from '@ncigdc/components/Links/ExploreLink';
 import styled from '@ncigdc/theme/styled';
 import ControlPanelNode from '@ncigdc/modern_components/IntrospectiveType';
-import { updateAnalysisProperty, addAnalysis } from '@ncigdc/dux/analysis';
+import {
+  updateClinicalAnalysisProperty,
+  addAnalysis,
+} from '@ncigdc/dux/analysis';
 import { CLINICAL_PREFIXES } from '@ncigdc/utils/constants';
 import withRouter from '@ncigdc/utils/withRouter';
 import BaseModal from '@ncigdc/components/Modals/BaseModal';
@@ -155,6 +158,7 @@ const CopyAnalysisModal = compose(
     </BaseModal>
   );
 });
+
 const enhance = compose(
   connect((state: any) => ({ allSets: state.sets, analysis: state.analysis })),
   withState('controlPanelExpanded', 'setControlPanelExpanded', true),
@@ -200,7 +204,6 @@ const ClinicalAnalysisResult = ({
       </DropdownItem>
     ));
 
-  const divideBy = controlPanelExpanded ? 2 : 3;
   return (
     <div style={{ padding: 5 }}>
       <Row
@@ -227,7 +230,7 @@ const ClinicalAnalysisResult = ({
                   <Input
                     id={'analysis-name'}
                     name={'analysis-name'}
-                    className="edit-analysis-name-input"
+                    className="analysis-name-input"
                     onChange={e => {
                       const value = e.target.value;
                       setEditedAnalysisName(value);
@@ -235,7 +238,7 @@ const ClinicalAnalysisResult = ({
                     onBlur={e => {
                       if (e.target.value.length) {
                         dispatch(
-                          updateAnalysisProperty({
+                          updateClinicalAnalysisProperty({
                             value: _.trim(e.target.value),
                             property: 'name',
                             id,
@@ -247,7 +250,7 @@ const ClinicalAnalysisResult = ({
                     onKeyDown={e => {
                       if (e.target.value.length && e.key === 'Enter') {
                         dispatch(
-                          updateAnalysisProperty({
+                          updateClinicalAnalysisProperty({
                             value: _.trim(e.target.value),
                             property: 'name',
                             id,

@@ -20,8 +20,8 @@ import AngleIcon from '@ncigdc/theme/icons/AngleIcon';
 import { Tooltip } from '@ncigdc/uikit/Tooltip';
 import Hidden from '@ncigdc/components/Hidden';
 import {
-  addAnalysisVariable,
-  removeAnalysisVariable,
+  addClinicalAnalysisVariable,
+  removeClinicalAnalysisVariable,
 } from '@ncigdc/dux/analysis';
 
 import { CLINICAL_PREFIXES, CLINICAL_BLACKLIST } from '@ncigdc/utils/constants';
@@ -106,8 +106,8 @@ const FacetCheckbox = compose(
             return null;
           }
           const toggleAction = checked
-            ? removeAnalysisVariable
-            : addAnalysisVariable;
+            ? removeClinicalAnalysisVariable
+            : addClinicalAnalysisVariable;
           dispatch(
             toggleAction({ fieldName, id: analysis_id, fieldType, plotTypes })
           );

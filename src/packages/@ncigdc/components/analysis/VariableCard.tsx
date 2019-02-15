@@ -25,6 +25,7 @@ import { IThemeProps } from '@ncigdc/theme/versions/active';
 import {
   removeClinicalAnalysisVariable,
   updateClinicalAnalysisVariable,
+  IAnalysisPayload,
 } from '@ncigdc/dux/analysis';
 import { humanify } from '@ncigdc/utils/string';
 import { CLINICAL_PREFIXES } from '@ncigdc/utils/constants';
@@ -69,7 +70,9 @@ interface IVariableCardProps {
 interface IVizButton {
   title: string;
   icon: JSX.Element;
-  action: () => void;
+  action: (
+    payload: IAnalysisPayload
+  ) => { type: string; payload: IAnalysisPayload };
 }
 
 interface IVizButtons {

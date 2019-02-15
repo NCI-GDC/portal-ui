@@ -3,7 +3,7 @@ import { namespaceActions } from './utils';
 import { REHYDRATE } from 'redux-persist/constants';
 import _ from 'lodash';
 
-const sets = namespaceActions('sets', [
+const sets: any = namespaceActions('sets', [
   'ADD_ANALYSIS',
   'REMOVE_ANALYSIS',
   'REMOVE_ALL_ANALYSIS',
@@ -13,35 +13,51 @@ const sets = namespaceActions('sets', [
   'UPDATE_CLINICAL_ANALYSIS_PROPERTY',
 ]);
 
-type TState = {
-  saved: Array<{
-    id: string,
-    sets: Object,
-    type: string,
-    created: string,
-    message?: string,
-    config: Object,
-  }>,
-};
-type TPayload = {
-  analysis?: TState,
-  id: string,
-  fieldName?: string,
-  type?: string,
-  value?: string,
-  variableKey?: string,
-};
-type TAction = {
-  type: sets.ADD_ANALYSIS | sets.REMOVE_ANALYSIS | sets.REMOVE_ALL_ANALYSIS,
-  payload: TPayload,
-};
+interface IAnalysis {
+  id: string;
+  sets: any;
+  type: string;
+  created: string;
+  message?: string;
+  variables?: any;
+}
 
-const addAnalysis = (payload: TPayload) => ({
+interface IAnalysisState {
+  saved: [IAnalysis] | [];
+}
+
+type TClinicalAnalyisVariableKey =
+  | 'active_chart'
+  | 'active_calculation'
+  | 'bins'
+  | 'type'
+  | 'plotTypes';
+
+type TClinicalAnalysisProperty = 'name'; // only type mutable properties
+
+export interface IAnalysisPayload {
+  analysis?: IAnalysis;
+  id: string;
+  fieldName?: string;
+  type?: string;
+  value?: string;
+  variableKey?: string;
+  fieldType?: string;
+  plotTypes?: 'categorical' | 'continuous';
+  property?: TClinicalAnalysisProperty;
+}
+
+interface IAnalysisAction {
+  type: string;
+  payload: IAnalysisPayload;
+}
+
+const addAnalysis = (payload: IAnalysisPayload) => ({
   type: sets.ADD_ANALYSIS,
   payload,
 });
 
-const removeAnalysis = (payload: TPayload) => ({
+const removeAnalysis = (payload: IAnalysisPayload) => ({
   type: sets.REMOVE_ANALYSIS,
   payload,
 });
@@ -50,27 +66,27 @@ const removeAllAnalysis = () => ({
   type: sets.REMOVE_ALL_ANALYSIS,
 });
 
-const addClinicalAnalysisVariable = (payload: TPayload) => ({
+const addClinicalAnalysisVariable = (payload: IAnalysisPayload) => ({
   type: sets.ADD_CLINICAL_ANALYSIS_VARIABLE,
   payload,
 });
 
-const removeClinicalAnalysisVariable = (payload: TPayload) => ({
+const removeClinicalAnalysisVariable = (payload: IAnalysisPayload) => ({
   type: sets.REMOVE_CLINICAL_ANALYSIS_VARIABLE,
   payload,
 });
 
-const updateClinicalAnalysisVariable = (payload: TPayload) => ({
+const updateClinicalAnalysisVariable = (payload: IAnalysisPayload) => ({
   type: sets.UPDATE_CLINICAL_ANALYSIS_VARIABLE,
   payload,
 });
 
-const updateClinicalAnalysisProperty = (payload: TPayload) => ({
+const updateClinicalAnalysisProperty = (payload: IAnalysisPayload) => ({
   type: sets.UPDATE_CLINICAL_ANALYSIS_PROPERTY,
   payload,
 });
 
-const initialState = {
+const initialState: IAnalysisState = {
   saved: [],
 };
 
@@ -80,16 +96,30 @@ const defaultVariableConfig = {
   bins: [],
 };
 
-const getCurrentAnalysis = (currentState, analysisId) => {
-  const currentAnalysisIndex = currentState.saved.findIndex(
+interface ICurrentAnalysis {
+  currentAnalysisIndex: number;
+  currentAnalysis: IAnalysis;
+}
+type TGetCurrentAnalysis = (
+  currentState: IAnalysisState,
+  analysisId: string
+) => ICurrentAnalysis;
+
+const getCurrentAnalysis: TGetCurrentAnalysis = (currentState, analysisId) => {
+  const currentAnalysisIndex = (currentState.saved as [IAnalysis]).findIndex(
     a => a.id === analysisId
-  );
-  const currentAnalysis = currentState.saved.slice(0)[currentAnalysisIndex];
+  ) as number;
+  const currentAnalysis: IAnalysis = currentState.saved.slice(0)[
+    currentAnalysisIndex
+  ];
 
   return { currentAnalysisIndex, currentAnalysis };
 };
 
-const reducer = (state: TState = initialState, action: TAction) => {
+const reducer = (
+  state: IAnalysisState = initialState,
+  action: IAnalysisAction
+) => {
   switch (action.type) {
     case REHYDRATE:
       return {
@@ -106,7 +136,9 @@ const reducer = (state: TState = initialState, action: TAction) => {
     case sets.REMOVE_ANALYSIS: {
       return {
         ...state,
-        saved: state.saved.filter(s => s.id !== action.payload.id),
+        saved: (state.saved as [IAnalysis]).filter(
+          s => s.id !== action.payload.id
+        ),
       };
     }
     case sets.REMOVE_ALL_ANALYSIS: {
@@ -134,7 +166,7 @@ const reducer = (state: TState = initialState, action: TAction) => {
           {
             ...currentAnalysis,
             variables: {
-              [action.payload.fieldName]: {
+              [action.payload.fieldName as string]: {
                 ...defaultVariableConfig,
                 type: action.payload.fieldType,
                 plotTypes: action.payload.plotTypes,
@@ -193,9 +225,13 @@ const reducer = (state: TState = initialState, action: TAction) => {
             ...currentAnalysis,
             variables: {
               ...currentAnalysis.variables,
-              [action.payload.fieldName]: {
-                ...currentAnalysis.variables[action.payload.fieldName],
-                [action.payload.variableKey]: action.payload.value,
+              [action.payload.fieldName as string]: {
+                ...currentAnalysis.variables[
+                  action.payload.fieldName as string
+                ],
+                [action.payload
+                  .variableKey as TClinicalAnalyisVariableKey]: action.payload
+                  .value,
               },
             },
           },
@@ -218,11 +254,12 @@ const reducer = (state: TState = initialState, action: TAction) => {
       return {
         ...state,
         saved: [
-          ...state,
+          ...state.saved,
           ...state.saved.slice(0, currentAnalysisIndex),
           {
             ...currentAnalysis,
-            [action.payload.property]: action.payload.value,
+            [action.payload.property as TClinicalAnalysisProperty]: action
+              .payload.value,
           },
           ...state.saved.slice(currentAnalysisIndex + 1, Infinity),
         ],

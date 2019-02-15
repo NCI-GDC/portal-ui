@@ -479,7 +479,6 @@ const ClinicalAnalysisResult = ({
                     data={[]}
                     plots={plotTypes[varProperties.plotTypes || 'categorical']}
                     variableHeadings={[]}
-                    actions={['survival', 'bar_chart', 'delete']}
                     style={{ minWidth: controlPanelExpanded ? 310 : 290 }}
                     id={id}
                   />

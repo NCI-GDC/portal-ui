@@ -35,20 +35,33 @@ interface ITableHeading {
   style?: React.CSSProperties;
 }
 
-// interface IVariable {
-//
-// }
+type TPlotType = 'categorical' | 'continuous';
+type TActiveChart = 'box' | 'survival' | 'histogram';
+type TActiveCalculation = 'number' | 'percentage';
+type TVariableType =
+  | 'Demographic'
+  | 'Diagnosis'
+  | 'Exposure'
+  | 'Treatment'
+  | 'Follow_up'
+  | 'Molecular_test';
+
+interface IVariable {
+  bins: any[]; // tbd - bins still need spec
+  plotTypes: TPlotType;
+  active_chart: TActiveChart;
+  active_calculation: TActiveCalculation;
+  type: TVariableType;
+}
 
 interface IVariableCardProps {
-  variable: any;
+  variable: IVariable;
   fieldName: string;
   data: any[];
   plots: any[];
   variableHeadings: ITableHeading[];
-  actions: any[];
   style: React.CSSProperties;
   theme: IThemeProps;
-  analysis: any;
   dispatch: (arg: any) => void;
   id: string;
 }
@@ -120,10 +133,8 @@ const VariableCard: React.ComponentType<IVariableCardProps> = ({
   data,
   plots,
   variableHeadings,
-  actions,
   style = {},
   theme,
-  analysis,
   dispatch,
   id,
 }) => {

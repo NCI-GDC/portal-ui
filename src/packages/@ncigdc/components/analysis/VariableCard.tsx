@@ -35,8 +35,13 @@ interface ITableHeading {
   style?: React.CSSProperties;
 }
 
-interface IVariableProps {
+// interface IVariable {
+//
+// }
+
+interface IVariableCardProps {
   variable: any;
+  fieldName: string;
   data: any[];
   plots: any[];
   variableHeadings: ITableHeading[];
@@ -109,8 +114,9 @@ const enhance = compose(
   withTheme
 );
 
-const VariableCard: React.ComponentType<IVariableProps> = ({
+const VariableCard: React.ComponentType<IVariableCardProps> = ({
   variable,
+  fieldName,
   data,
   plots,
   variableHeadings,
@@ -125,7 +131,6 @@ const VariableCard: React.ComponentType<IVariableProps> = ({
     <Column
       style={{
         ...zDepth1,
-        border: '1px solid lightgray',
         minHeight: 200,
         margin: '0 1rem 1rem',
         padding: '0.5rem 1rem 1rem',
@@ -135,7 +140,7 @@ const VariableCard: React.ComponentType<IVariableProps> = ({
       <Row style={{ justifyContent: 'space-between', alignItems: 'center' }}>
         <h2 style={{ fontSize: '1.8rem' }}>
           {humanify({
-            term: variable.fieldName.replace(
+            term: fieldName.replace(
               `${CLINICAL_PREFIXES[_.capitalize(variable.type)]}.`,
               ''
             ),
@@ -155,7 +160,7 @@ const VariableCard: React.ComponentType<IVariableProps> = ({
                   onClick={() => {
                     dispatch(
                       vizButtons[plotType].action({
-                        fieldName: variable.fieldName,
+                        fieldName,
                         variableKey: 'active_chart',
                         value: plotType,
                         id,
@@ -175,18 +180,18 @@ const VariableCard: React.ComponentType<IVariableProps> = ({
         <form>
           {' '}
           <label
-            htmlFor={`variable-percentage-radio-${variable.fieldName}`}
+            htmlFor={`variable-percentage-radio-${fieldName}`}
             style={{ marginRight: 10, fontSize: '1.2rem' }}
           >
             <input
-              id={`variable-percentage-radio-${variable.fieldName}`}
+              id={`variable-percentage-radio-${fieldName}`}
               type={'radio'}
               value={'percentage'}
               aria-label={'Percentage of cases'}
               onChange={() =>
                 dispatch(
                   updateClinicalAnalysisVariable({
-                    fieldName: variable.fieldName,
+                    fieldName,
                     variableKey: 'active_calculation',
                     value: 'percentage',
                     id,
@@ -199,18 +204,18 @@ const VariableCard: React.ComponentType<IVariableProps> = ({
             % of Cases
           </label>
           <label
-            htmlFor={`variable-number-radio-${variable.fieldName}`}
+            htmlFor={`variable-number-radio-${fieldName}`}
             style={{ fontSize: '1.2rem' }}
           >
             <input
-              id={`variable-number-radio-${variable.fieldName}`}
+              id={`variable-number-radio-${fieldName}`}
               type={'radio'}
               value={'number'}
               aria-label={'Number of cases'}
               onChange={() =>
                 dispatch(
                   updateClinicalAnalysisVariable({
-                    fieldName: variable.fieldName,
+                    fieldName,
                     variableKey: 'active_calculation',
                     value: 'number',
                     id,

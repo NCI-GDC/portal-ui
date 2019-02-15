@@ -17,7 +17,6 @@ import DemoButton from './DemoButton';
 const defaultVariables = {
   'cases.demographic.ethnicity': {
     type: 'Demographic',
-    fieldName: 'cases.demographic.ethnicity',
     active_chart: 'survival',
     active_calculation: 'number',
     plotTypes: 'categorical',
@@ -26,7 +25,6 @@ const defaultVariables = {
 
   'cases.demographic.gender': {
     type: 'Demographic',
-    fieldName: 'cases.demographic.gender',
     active_chart: 'survival',
     active_calculation: 'number',
     plotTypes: 'categorical',
@@ -35,7 +33,6 @@ const defaultVariables = {
 
   'cases.demographic.race': {
     type: 'Demographic',
-    fieldName: 'cases.demographic.race',
     active_chart: 'survival',
     active_calculation: 'number',
     plotTypes: 'categorical',
@@ -43,7 +40,6 @@ const defaultVariables = {
   },
   'cases.diagnoses.age_at_diagnosis': {
     type: 'Diagnosis',
-    fieldName: 'cases.diagnoses.age_at_diagnosis',
     active_chart: 'survival',
     active_calculation: 'number',
     plotTypes: 'continuous',
@@ -52,7 +48,6 @@ const defaultVariables = {
 
   'cases.diagnoses.age_at_diagnosis': {
     type: 'Diagnosis',
-    fieldName: 'cases.diagnoses.age_at_diagnosis',
     active_chart: 'survival',
     active_calculation: 'number',
     plotTypes: 'continuous',
@@ -60,7 +55,6 @@ const defaultVariables = {
   },
   'cases.diagnoses.cause_of_death': {
     type: 'Diagnosis',
-    fieldName: 'cases.diagnoses.cause_of_death',
     active_chart: 'survival',
     active_calculation: 'number',
     plotTypes: 'categorical',

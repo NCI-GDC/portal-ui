@@ -320,7 +320,9 @@ const ClinicalAnalysisResult = ({
           </Column>
         )}
         {controlPanelExpanded && (
-          <Column style={{ ...zDepth1, flex: 1, minWidth: 260 }}>
+          <Column
+            style={{ ...zDepth1, flex: 1, minWidth: 260, marginBottom: '1rem' }}
+          >
             <Row style={{ justifyContent: 'flex-end' }}>
               <Tooltip Component={'Hide Control Panel'}>
                 <ChevronLeftIcon
@@ -464,7 +466,7 @@ const ClinicalAnalysisResult = ({
                 gridTemplateColumns: controlPanelExpanded
                   ? '50% 50%'
                   : '33.33% 33.33% 33.33%',
-                gridTemplateRows: 'repeat(200)',
+                gridTemplateRows: 'repeat(auto)',
               }}
             >
               {' '}
@@ -472,6 +474,7 @@ const ClinicalAnalysisResult = ({
                 return (
                   <VariableCard
                     key={varFieldname}
+                    fieldName={varFieldname}
                     variable={varProperties}
                     data={[]}
                     plots={plotTypes[varProperties.plotTypes || 'categorical']}

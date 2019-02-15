@@ -137,7 +137,6 @@ const reducer = (state: TState = initialState, action: TAction) => {
               [action.payload.fieldName]: {
                 ...defaultVariableConfig,
                 type: action.payload.fieldType,
-                fieldName: action.payload.fieldName,
                 plotTypes: action.payload.plotTypes,
               },
               ...currentAnalysis.variables,

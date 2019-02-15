@@ -94,11 +94,8 @@ const FacetCheckbox = compose(
     disabled,
     plotTypes,
   }) => {
-    const checked =
-      _.find(
-        analyses.find(a => a.id === analysis_id).variables,
-        v => v.fieldName === fieldName
-      ) || false;
+    const currentAnalysis = analyses.find(a => a.id === analysis_id);
+    const checked = Object.keys(currentAnalysis.variables).includes(fieldName);
     return (
       <div
         onClick={() => {

@@ -70,11 +70,13 @@ function undoNotification(dispatch, analysis) {
 const AnalysisResult = ({ analysis, query, dispatch, push }) => {
   const analysisId = query.analysisId || '';
   const currentIndex = analysis.findIndex(a => a.id === analysisId);
-
+  const analysisType = analysis[currentIndex].type;
+  const tabMinWidth =
+    analysisType === 'clinical_data' ? { minWidth: 1200 } : {};
   return (
     <TabbedLinks
       side
-      style={{ padding: '1rem 0.7rem' }}
+      style={{ padding: '1rem 0.7rem', ...tabMinWidth }}
       queryParam="analysisId"
       defaultIndex={Math.max(currentIndex, 0)}
       tabToolbar={

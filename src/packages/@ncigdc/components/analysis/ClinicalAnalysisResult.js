@@ -13,8 +13,8 @@ import {
   CloseIcon,
   SurvivalIcon,
   BarChartIcon,
-  ChevronRight,
-  ChevronLeft,
+  DoubleArrowLeftIcon,
+  DoubleArrowRightIcon,
 } from '@ncigdc/theme/icons';
 import CopyIcon from '@ncigdc/theme/icons/Copy';
 import Hidden from '@ncigdc/components/Hidden';
@@ -28,7 +28,6 @@ import Input from '@ncigdc/uikit/Form/Input';
 import { withTheme } from '@ncigdc/theme';
 import countComponents from '@ncigdc/modern_components/Counts';
 import ExploreLink from '@ncigdc/components/Links/ExploreLink';
-import styled from '@ncigdc/theme/styled';
 import ControlPanelNode from '@ncigdc/modern_components/IntrospectiveType';
 import {
   updateClinicalAnalysisProperty,
@@ -71,11 +70,11 @@ const styles = {
     border: `1px solid ${theme.greyScale4}`,
     borderRight: 'none',
   }),
-  icon: theme => ({
-    width: 30,
-    height: 30,
-    ...zDepth1,
-  }),
+  collapseIcon: {
+    fontSize: '2rem',
+    padding: 10,
+    cursor: 'pointer',
+  },
   sectionHeader: {
     fontSize: '2rem',
     paddingLeft: 5,
@@ -93,26 +92,12 @@ const plotTypes = {
   continuous: ['histogram', 'survival', 'box'],
 };
 
-const ChevronLeftIcon = styled(ChevronLeft, {
-  fontSize: '2rem',
-  fontWeight: 'lighter',
-  padding: 10,
-  ':hover::before': {
-    textShadow: '0 0 25px rgba(0, 66,	107, 1)',
-  },
-});
-
-const ChevronRightIcon = styled(ChevronRight, {
-  fontSize: '2rem',
-  fontWeight: 'lighter',
-  padding: 10,
-  ':hover::before': {
-    textShadow: '0 0 25px rgba(0, 66,	107, 1)',
-  },
-});
-
 const CopyAnalysisModal = compose(
-  withState('modalInputValue', 'setModalInputValue', '')
+  withState(
+    'modalInputValue',
+    'setModalInputValue',
+    ({ analysis }) => `${analysis.name} copy`
+  )
 )(({ analysis, modalInputValue, setModalInputValue, dispatch, push }) => {
   return (
     <BaseModal
@@ -149,10 +134,11 @@ const CopyAnalysisModal = compose(
         </label>
         <Input
           id={'copy-analysis-input'}
-          placeholder={`${analysis.name} copy`}
+          value={modalInputValue}
           onChange={e => setModalInputValue(e.target.value)}
           style={{ borderRadius: '4px' }}
           autoFocus
+          onFocus={e => e.target.select()}
         />
       </Row>
     </BaseModal>
@@ -227,9 +213,8 @@ const ClinicalAnalysisResult = ({
                   }
                   iconStyle={{
                     marginLeft: 10,
-                    fontSize: '2.5rem',
+                    fontSize: '1.8rem',
                     cursor: 'pointer',
-                    // color: 'inherit',
                   }}
                   containerStyle={{ justifyContent: 'flex-start' }}
                 >
@@ -274,7 +259,8 @@ const ClinicalAnalysisResult = ({
         {!controlPanelExpanded && (
           <Column>
             <Tooltip Component={'Show Control Panel'}>
-              <ChevronRightIcon
+              <DoubleArrowRightIcon
+                style={styles.collapseIcon}
                 onClick={() => setControlPanelExpanded(!controlPanelExpanded)}
               />
             </Tooltip>
@@ -286,7 +272,8 @@ const ClinicalAnalysisResult = ({
           >
             <Row style={{ justifyContent: 'flex-end' }}>
               <Tooltip Component={'Hide Control Panel'}>
-                <ChevronLeftIcon
+                <DoubleArrowLeftIcon
+                  style={styles.collapseIcon}
                   onClick={() => setControlPanelExpanded(!controlPanelExpanded)}
                 />
               </Tooltip>

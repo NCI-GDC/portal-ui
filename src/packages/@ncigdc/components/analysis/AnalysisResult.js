@@ -17,7 +17,7 @@ import { TrashIcon } from '@ncigdc/theme/icons';
 import TabbedLinks from '@ncigdc/components/TabbedLinks';
 
 import availableAnalysis from './availableAnalysis';
-``;
+
 const enhance = compose(
   connect(state => ({ analysis: state.analysis.saved })),
   withRouter

@@ -18,9 +18,9 @@ import Highlight from '@ncigdc/uikit/Highlight';
 import withSelectableList from '@ncigdc/utils/withSelectableList';
 import withPropsOnChange from '@ncigdc/utils/withPropsOnChange';
 
-const facetMatchesQuery = (facet: any, searchValue: any) =>
+const facetMatchesQuery = (facet, query) =>
   _.some([facet.field, facet.description].map(_.toLower), searchTarget =>
-    _.includes(searchTarget, searchValue)
+    _.includes(searchTarget, query)
   );
 
 const styles = {
@@ -256,106 +256,103 @@ export default compose(
       this.props.fetchData();
     },
   })
-)(props => {
-  let fieldHash = {};
-  const fieldArray = Object.keys(props.facetMapping);
-  let key;
-  for (let i = 0; i < fieldArray.length; i++) {
-    let el = fieldArray[i].split('.');
-    let subFieldHash = fieldHash;
-    while (el.length >= 1) {
-      key = el.shift();
-      if (el.length === 0) {
-        subFieldHash[key] = props.facetMapping[fieldArray[i]];
-      } else {
-        subFieldHash[key] = subFieldHash[key] || {};
-        subFieldHash = subFieldHash[key];
-      }
-    }
-  }
-
-  return (
-    <div className="test-facet-selection">
-      <div {...css(styles.header)}>
-        <h2
-          data-translate
-          style={{
-            margin: 0,
-            lineHeight: 1.42857143,
-          }}
+)(props => (
+  <div className="test-facet-selection">
+    <div {...css(styles.header)}>
+      <h2
+        data-translate
+        style={{
+          margin: 0,
+          lineHeight: 1.42857143,
+        }}
+      >
+        <span>{props.title}</span>
+        <a
+          onClick={props.handleClose}
+          className="pull-right"
+          style={{ fontSize: '1.5rem' }}
         >
-          <span>{props.title}</span>
-          <a
-            onClick={props.handleClose}
-            className="pull-right"
-            style={{ fontSize: '1.5rem' }}
-          >
-            Cancel
-          </a>
-        </h2>
-        <div style={{ marginBottom: 15 }}>
-          <label htmlFor="quick-search-input">Search for a field:</label>
-          <input
-            id="quick-search-input"
-            type="text"
-            autoComplete="off"
-            autoFocus
-            className="form-control"
-            placeholder="search"
-            defaultValue={props.query}
-            onChange={props.handleQueryInputChange}
-            onKeyDown={props.handleKeyDown}
-          />
-        </div>
-        <h3 {...css(styles.resultsCount)}>
-          {props.isLoading
-            ? 'Loading...'
-            : `${props.filteredFacets.length} ${props.docType} fields`}
-        </h3>
-
-        <label tabIndex={0} role="button" className="pull-right">
-          <input
-            className="test-filter-useful-facet"
-            type="checkbox"
-            onChange={event =>
-              props.setUselessFacetVisibility(event.target.checked)}
-            checked={props.shouldHideUselessFacets}
-            style={styles.uselessFacetVisibilityCheckbox}
-          />
-          Only show fields with values
-        </label>
+          Cancel
+        </a>
+      </h2>
+      <div style={{ marginBottom: 15 }}>
+        <label htmlFor="quick-search-input">Search for a field:</label>
+        <input
+          id="quick-search-input"
+          type="text"
+          autoComplete="off"
+          autoFocus
+          className="form-control"
+          placeholder="search"
+          defaultValue={props.query}
+          onChange={props.handleQueryInputChange}
+          onKeyDown={props.handleKeyDown}
+        />
       </div>
-      <ul {...css(styles.facetList)} className="test-search-result-list">
-        {!props.isLoading &&
-          _.map(props.filteredFacets, facet => {
-            const isFocused =
-              props.focusedFacet && facet.full === props.focusedFacet.full;
-            return (
-              <li
-                className="test-search-result-item"
-                key={facet.full}
-                onClick={() => props.handleSelectFacet(facet)}
-                onMouseEnter={() => props.setFocusedFacet(facet)}
-                {...css(styles.facetItem)}
+      <h3 {...css(styles.resultsCount)}>
+        {props.isLoading
+          ? 'Loading...'
+          : `${props.filteredFacets.length} ${props.docType} fields`}
+      </h3>
+
+      <label tabIndex={0} role="button" className="pull-right">
+        <input
+          className="test-filter-useful-facet"
+          type="checkbox"
+          onChange={event =>
+            props.setUselessFacetVisibility(event.target.checked)}
+          checked={props.shouldHideUselessFacets}
+          style={styles.uselessFacetVisibilityCheckbox}
+        />
+        Only show fields with values
+      </label>
+    </div>
+    <ul {...css(styles.facetList)} className="test-search-result-list">
+      {!props.isLoading &&
+        _.map(props.filteredFacets, facet => {
+          const isFocused =
+            props.focusedFacet && facet.full === props.focusedFacet.full;
+          return (
+            <li
+              className="test-search-result-item"
+              key={facet.full}
+              onClick={() => props.handleSelectFacet(facet)}
+              onMouseEnter={() => props.setFocusedFacet(facet)}
+              {...css(styles.facetItem)}
+            >
+              <div {...css(styles.itemIconWrapper)}>
+                <span {...css(styles.itemIcon)}>
+                  {
+                    entityShortnameMapping[
+                      { cases: 'case', files: 'file' }[facet.doc_type]
+                    ]
+                  }
+                </span>
+              </div>
+              <div
+                {...css(
+                  styles.facetTexts,
+                  isFocused && styles.focusedItem.container
+                )}
               >
-                <div {...css(styles.itemIconWrapper)}>
-                  <span {...css(styles.itemIcon)}>
-                    {
-                      entityShortnameMapping[
-                        { cases: 'case', files: 'file' }[facet.doc_type]
-                      ]
-                    }
-                  </span>
-                </div>
-                <div
+                <span
                   {...css(
-                    styles.facetTexts,
-                    isFocused && styles.focusedItem.container
+                    styles.facetTitle,
+                    isFocused && styles.focusedItem.text
                   )}
                 >
-                  <span
+                  <ConditionalHighlight
+                    condition={props.query.length >= 2}
+                    search={props.query}
+                  >
+                    {facet.field}
+                  </ConditionalHighlight>
+                  <span {...css(styles.facetType)}>{facet.type}</span>
+                </span>
+                {facet.description && (
+                  <p
                     {...css(
-                      styles.facetTitle,
+                      styles.facetDescription,
                       isFocused && styles.focusedItem.text
                     )}
                   >
@@ -363,30 +360,14 @@ export default compose(
                       condition={props.query.length >= 2}
                       search={props.query}
                     >
-                      {facet.field}
+                      {facet.description}
                     </ConditionalHighlight>
-                    <span {...css(styles.facetType)}>{facet.type}</span>
-                  </span>
-                  {facet.description && (
-                    <p
-                      {...css(
-                        styles.facetDescription,
-                        isFocused && styles.focusedItem.text
-                      )}
-                    >
-                      <ConditionalHighlight
-                        condition={props.query.length >= 2}
-                        search={props.query}
-                      >
-                        {facet.description}
-                      </ConditionalHighlight>
-                    </p>
-                  )}
-                </div>
-              </li>
-            );
-          })}
-      </ul>
-    </div>
-  );
-});
+                  </p>
+                )}
+              </div>
+            </li>
+          );
+        })}
+    </ul>
+  </div>
+));

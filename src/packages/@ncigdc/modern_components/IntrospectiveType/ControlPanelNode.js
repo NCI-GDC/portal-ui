@@ -20,8 +20,8 @@ import AngleIcon from '@ncigdc/theme/icons/AngleIcon';
 import { Tooltip } from '@ncigdc/uikit/Tooltip';
 import Hidden from '@ncigdc/components/Hidden';
 import {
-  addAnalysisVariable,
-  removeAnalysisVariable,
+  addClinicalAnalysisVariable,
+  removeClinicalAnalysisVariable,
 } from '@ncigdc/dux/analysis';
 
 import { CLINICAL_PREFIXES, CLINICAL_BLACKLIST } from '@ncigdc/utils/constants';
@@ -53,22 +53,23 @@ const FacetToggle = ({ name, style = {}, collapsed, setCollapsed }) => (
       backgroundColor: theme.greyScale6,
     }}
   >
-    <Row style={{ cursor: 'pointer' }} onClick={() => setCollapsed(!collapsed)}>
-      <h3 style={{ ...style, margin: '10px 0' }}>
-        <AngleIcon
-          style={{
-            paddingRight: '0.5rem',
-            transform: `rotate(${collapsed ? 270 : 0}deg)`,
-          }}
-        />
-        {name}
-      </h3>
-    </Row>
+    <h3
+      style={{ ...style, margin: '10px 0', cursor: 'pointer' }}
+      onClick={() => setCollapsed(!collapsed)}
+    >
+      <AngleIcon
+        style={{
+          paddingRight: '0.5rem',
+          transform: `rotate(${collapsed ? 270 : 0}deg)`,
+        }}
+      />
+      {name}
+    </h3>
   </Row>
 );
 
 const ToggleMoreLink = styled.div({
-  marginLeft: 'auto',
+  margin: '10px 0 10px  auto',
   color: ({ theme }) => theme.greyScale7,
   fontSize: '1.2rem',
   cursor: 'pointer',
@@ -80,58 +81,44 @@ const ToggleMoreLink = styled.div({
   },
 });
 
-const FacetCheckbox = compose(
-  connect((state: any) => ({
-    analyses: state.analysis.saved,
-  }))
-)(
-  ({
-    fieldName,
-    dispatch,
-    analysis_id,
-    fieldType,
-    analyses,
-    disabled,
-    plotTypes,
-  }) => {
-    const checked =
-      _.find(
-        analyses.find(a => a.id === analysis_id).variables,
-        v => v.fieldName === fieldName
-      ) || false;
-    return (
-      <div
-        onClick={() => {
-          if (disabled) {
-            return null;
-          }
-          const toggleAction = checked
-            ? removeAnalysisVariable
-            : addAnalysisVariable;
-          dispatch(
-            toggleAction({ fieldName, id: analysis_id, fieldType, plotTypes })
-          );
-        }}
-      >
-        <label htmlFor={fieldName}>
-          <Hidden>{fieldName}</Hidden>
-        </label>
-        <input
-          readOnly
-          type="checkbox"
-          style={{
-            pointerEvents: 'none',
-            flexShrink: 0,
-            verticalAlign: 'middle',
-          }}
-          disabled={disabled}
-          name={fieldName}
-          aria-label={fieldName}
-          checked={checked}
-        />
-      </div>
-    );
-  }
+const FacetCheckbox = ({
+  fieldName,
+  dispatch,
+  analysis_id,
+  fieldType,
+  analyses,
+  disabled,
+  plotTypes,
+  checked,
+  toggleAction,
+}) => (
+  <div
+    onClick={() => {
+      if (disabled) {
+        return null;
+      }
+      dispatch(
+        toggleAction({ fieldName, id: analysis_id, fieldType, plotTypes })
+      );
+    }}
+  >
+    <label htmlFor={fieldName}>
+      <Hidden>{fieldName}</Hidden>
+    </label>
+    <input
+      readOnly
+      type="checkbox"
+      style={{
+        pointerEvents: 'none',
+        flexShrink: 0,
+        verticalAlign: 'middle',
+      }}
+      disabled={disabled}
+      name={fieldName}
+      aria-label={fieldName}
+      checked={checked}
+    />
+  </div>
 );
 
 export default compose(
@@ -173,6 +160,7 @@ export default compose(
     dispatch,
     whitelistedFields,
   }) => {
+    const currentAnalysis = analyses.find(a => a.id === analysis_id);
     return (
       <Column style={{ marginBottom: 2 }}>
         <FacetToggle
@@ -197,6 +185,12 @@ export default compose(
                 plotTypes: getPlotType(field),
               }))
               .map(({ fieldDescription, fieldName, type, plotTypes }, i) => {
+                const checked = Object.keys(currentAnalysis.variables).includes(
+                  fieldName
+                );
+                const toggleAction = checked
+                  ? removeClinicalAnalysisVariable
+                  : addClinicalAnalysisVariable;
                 return (
                   <Row
                     key={i}
@@ -223,17 +217,22 @@ export default compose(
                         }
                       >
                         <QuestionIcon
-                          style={{ color: theme.greyScale7, marginLeft: '5px' }}
+                          style={{
+                            color: theme.greyScale7,
+                            margin: '10px 5px 10px',
+                          }}
                         />
                       </Tooltip>
                     </Row>
                     <FacetCheckbox
                       fieldName={fieldName}
-                      dispatch={dispatch}
                       analysis_id={analysis_id}
                       fieldType={name}
                       disabled={!type.name}
                       plotTypes={plotTypes}
+                      checked={checked}
+                      toggleAction={toggleAction}
+                      dispatch={dispatch}
                     />
                   </Row>
                 );

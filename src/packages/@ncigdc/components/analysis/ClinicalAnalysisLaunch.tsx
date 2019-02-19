@@ -153,7 +153,7 @@ const ClinicalAnalysisLaunch: ComponentType<IProps> = ({
       <Row style={styles.rowStyle}>
         <Column style={{ flex: 1 }}>
           <h2 style={{ color: '#c7254e', fontSize: '1.8rem' }}>
-            Step 1: Select a cohort
+            Select a cohort
           </h2>
           <div style={{ marginBottom: 15 }}>
             You can create and save case sets from the{' '}

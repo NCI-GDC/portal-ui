@@ -38,7 +38,7 @@ export default compose(
         }
       }
     },
-  }),
+  })
 )(
   ({
     text,
@@ -48,10 +48,20 @@ export default compose(
     setValue,
     setIsEditing,
     handleCancel,
+    children,
+    iconStyle = {},
+    containerStyle = {},
   }) => (
     <div>
       {isEditing ? (
-        <Row style={{ justifyContent: 'space-between', alignItems: 'center' }}>
+        <Row
+          style={{
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            ...containerStyle,
+          }}
+          spacing={'5px'}
+        >
           <Input
             style={{
               width: '300px',
@@ -76,8 +86,8 @@ export default compose(
               value.split(' ').join('').length === 0
                 ? 'Name must not be empty'
                 : value.length > MAX_SET_NAME_LENGTH
-                  ? `Maximum name length ${MAX_SET_NAME_LENGTH}`
-                  : null
+                ? `Maximum name length ${MAX_SET_NAME_LENGTH}`
+                : null
             }
           >
             <Button
@@ -99,17 +109,18 @@ export default compose(
         </Row>
       ) : (
         <Row onClick={toggleEditingAndSave} style={{ cursor: 'text' }}>
-          <span>{value}</span>
+          {children}
           <Pencil
             style={{
               fontSize: '0.9em',
               paddingLeft: '5px',
               alignSelf: 'center',
               color: 'rgb(96, 111, 81)',
+              ...iconStyle,
             }}
           />
         </Row>
       )}
     </div>
-  ),
+  )
 );

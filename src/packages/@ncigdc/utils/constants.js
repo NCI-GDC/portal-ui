@@ -313,8 +313,8 @@ export const CLINICAL_PREFIXES = {
   Treatment: 'cases.diagnoses.treatments',
   Exposure: 'cases.exposures',
   Demographic: 'cases.demographic',
-  Follow_up: '',
-  Molecular_test: '',
+  'Follow up': '',
+  'Molecular test': '',
 };
 
 export const CLINICAL_BLACKLIST = [

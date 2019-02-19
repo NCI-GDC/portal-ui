@@ -14,48 +14,53 @@ import SelectSet from './SelectSet';
 
 import DemoButton from './DemoButton';
 
-const defaultVariables = [
-  {
+const defaultVariables = {
+  'cases.demographic.ethnicity': {
     type: 'Demographic',
-    fieldName: 'cases.demographic.ethnicity',
     active_chart: 'survival',
     active_calculation: 'number',
     plotTypes: 'categorical',
     bins: [],
   },
-  {
+
+  'cases.demographic.gender': {
     type: 'Demographic',
-    fieldName: 'cases.demographic.gender',
     active_chart: 'survival',
     active_calculation: 'number',
     plotTypes: 'categorical',
     bins: [],
   },
-  {
+
+  'cases.demographic.race': {
     type: 'Demographic',
-    fieldName: 'cases.demographic.race',
     active_chart: 'survival',
     active_calculation: 'number',
     plotTypes: 'categorical',
     bins: [],
   },
-  {
+  'cases.diagnoses.age_at_diagnosis': {
     type: 'Diagnosis',
-    fieldName: 'cases.diagnoses.age_at_diagnosis',
     active_chart: 'survival',
     active_calculation: 'number',
     plotTypes: 'continuous',
     bins: [],
   },
-  {
+
+  'cases.diagnoses.age_at_diagnosis': {
     type: 'Diagnosis',
-    fieldName: 'cases.diagnoses.cause_of_death',
+    active_chart: 'survival',
+    active_calculation: 'number',
+    plotTypes: 'continuous',
+    bins: [],
+  },
+  'cases.diagnoses.cause_of_death': {
+    type: 'Diagnosis',
     active_chart: 'survival',
     active_calculation: 'number',
     plotTypes: 'categorical',
     bins: [],
   },
-];
+};
 
 const enhance = compose(
   branch(
@@ -93,10 +98,10 @@ const CreateAnalysis = ({ analysis, setAnalysis, dispatch, push }) => {
             sets,
             ...(analysis.type === 'clinical_data'
               ? {
-                  name: 'name',
+                  name: Object.values(sets.case)[0],
                   variables: defaultVariables,
                 }
-              : { name: null, variables: null }),
+              : {}),
           })
         ).then(() => {
           push({

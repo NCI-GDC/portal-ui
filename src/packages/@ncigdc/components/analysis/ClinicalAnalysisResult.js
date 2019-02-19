@@ -3,20 +3,20 @@ import { compose, withState } from 'recompose';
 import { connect } from 'react-redux';
 import SearchIcon from 'react-icons/lib/fa/search';
 import DownCaretIcon from 'react-icons/lib/fa/caret-down';
-import { capitalize } from 'lodash';
+import _ from 'lodash';
 
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import Button from '@ncigdc/uikit/Button';
 import { Tooltip } from '@ncigdc/uikit/Tooltip';
 import {
   DownloadIcon,
-  SaveIcon,
   CloseIcon,
   SurvivalIcon,
   BarChartIcon,
   ChevronRight,
   ChevronLeft,
 } from '@ncigdc/theme/icons';
+import CopyIcon from '@ncigdc/theme/icons/Copy';
 import Hidden from '@ncigdc/components/Hidden';
 import { visualizingButton } from '@ncigdc/theme/mixins';
 import { zDepth1 } from '@ncigdc/theme/mixins';
@@ -30,8 +30,15 @@ import countComponents from '@ncigdc/modern_components/Counts';
 import ExploreLink from '@ncigdc/components/Links/ExploreLink';
 import styled from '@ncigdc/theme/styled';
 import ControlPanelNode from '@ncigdc/modern_components/IntrospectiveType';
-
+import {
+  updateClinicalAnalysisProperty,
+  addAnalysis,
+} from '@ncigdc/dux/analysis';
 import { CLINICAL_PREFIXES } from '@ncigdc/utils/constants';
+import withRouter from '@ncigdc/utils/withRouter';
+import BaseModal from '@ncigdc/components/Modals/BaseModal';
+import { setModal } from '@ncigdc/dux/modal';
+import EditableLabel from '@ncigdc/uikit/EditableLabel';
 
 interface IAnalysisResultProps {
   sets: any;
@@ -78,7 +85,7 @@ const styles = {
 // will need to update with correct type names for molecular and follow-up
 const clinicalTypes = Object.keys(CLINICAL_PREFIXES).filter(
   clinicalType =>
-    clinicalType !== 'Molecular_test' && clinicalType !== 'Treatment'
+    clinicalType !== 'Molecular test' && clinicalType !== 'Treatment'
 );
 
 const plotTypes = {
@@ -104,28 +111,84 @@ const ChevronRightIcon = styled(ChevronRight, {
   },
 });
 
+const CopyAnalysisModal = compose(
+  withState('modalInputValue', 'setModalInputValue', '')
+)(({ analysis, modalInputValue, setModalInputValue, dispatch, push }) => {
+  return (
+    <BaseModal
+      title={'Copy Analysis'}
+      onClose={() => {
+        const created = new Date().toISOString();
+        const id = created;
+        dispatch(
+          addAnalysis({
+            ...analysis,
+            id,
+            created,
+            name: modalInputValue,
+          })
+        ).then(() => {
+          push({
+            query: {
+              analysisTableTab: 'result',
+              analysisId: id,
+            },
+          });
+        });
+      }}
+      extraButtons={
+        <Button onClick={() => dispatch(setModal(null))}>Cancel</Button>
+      }
+    >
+      <Row style={{ marginBottom: 10 }}>
+        Please enter a name for the new analysis.
+      </Row>
+      <Row>
+        <label htmlFor={'copy-analysis-input'}>
+          <Hidden>{modalInputValue}</Hidden>
+        </label>
+        <Input
+          id={'copy-analysis-input'}
+          placeholder={`${analysis.name} copy`}
+          onChange={e => setModalInputValue(e.target.value)}
+          style={{ borderRadius: '4px' }}
+          autoFocus
+        />
+      </Row>
+    </BaseModal>
+  );
+});
+
 const enhance = compose(
-  connect((state: any) => ({ allSets: state.sets })),
+  connect((state: any, props: any) => ({
+    allSets: state.sets,
+    currentAnalysis: state.analysis.saved.find(a => a.id === props.id),
+  })),
   withState('controlPanelExpanded', 'setControlPanelExpanded', true),
-  withTheme
+  withTheme,
+  withRouter
 );
 const ClinicalAnalysisResult = ({
-  sets, // currently used sets
+  sets,
   Icon,
   label,
-  allSets, // all saved sets
+  allSets,
   theme,
   controlPanelExpanded,
   setControlPanelExpanded,
   variables,
   id,
   dispatch,
+  currentAnalysis,
+  push,
   ...props
 }: IAnalysisResultProps) => {
   const setName = Object.values(sets.case)[0];
+  const setId = Object.keys(currentAnalysis.sets.case)[0];
+
   const CountComponent = countComponents.case;
   const dropdownItems = Object.values(allSets.case)
-    .filter(s => s !== setName)
+    .filter(s => s !== Object.values(currentAnalysis.sets.case)[0])
     .map((n: any) => (
       <DropdownItem
         key={n}
@@ -137,12 +200,6 @@ const ClinicalAnalysisResult = ({
       </DropdownItem>
     ));
 
-  let selectedSetId = _.map(allSets.case, (k, v) => {
-    if (k === setName) {
-      return v;
-    }
-  }).find(id => !!id);
-  const divideBy = controlPanelExpanded ? 2 : 3;
   return (
     <div style={{ padding: 5 }}>
       <Row
@@ -152,17 +209,56 @@ const ClinicalAnalysisResult = ({
           padding: 10,
         }}
       >
-        <Row spacing={'10px'} style={{ alignItems: 'center' }}>
+        <Row spacing={'10px'} style={{ alignItems: 'center', width: '80%' }}>
           <Icon style={{ height: 50, width: 50 }} />
-          <Column>
-            <h1 style={{ fontSize: '2.5rem', margin: 5 }}>
-              Cases from {setName}
-            </h1>
+          <Column style={{ width: '100%' }}>
+            <Row style={{ alignItems: 'center' }} spacing={'5px'}>
+              <div style={{ width: '70%' }}>
+                <EditableLabel
+                  text={currentAnalysis.name}
+                  handleSave={value =>
+                    dispatch(
+                      updateClinicalAnalysisProperty({
+                        value: _.trim(value),
+                        property: 'name',
+                        id,
+                      })
+                    )
+                  }
+                  iconStyle={{
+                    marginLeft: 10,
+                    fontSize: '2.5rem',
+                    cursor: 'pointer',
+                    // color: 'inherit',
+                  }}
+                  containerStyle={{ justifyContent: 'flex-start' }}
+                >
+                  <h1 style={{ fontSize: '2.5rem', margin: 5 }}>
+                    {currentAnalysis.name}{' '}
+                  </h1>
+                </EditableLabel>
+              </div>
+            </Row>
             <span style={{ margin: '0 0 5px 5px' }}>{label}</span>
           </Column>
         </Row>
         <Row spacing={'5px'}>
-          <Button leftIcon={<SaveIcon />}>Copy Analysis</Button>
+          <Button
+            onClick={() => {
+              dispatch(
+                setModal(
+                  <CopyAnalysisModal
+                    analysis={currentAnalysis}
+                    dispatch={dispatch}
+                    push={push}
+                  />
+                )
+              );
+            }}
+            leftIcon={<CopyIcon />}
+          >
+            Copy Analysis
+          </Button>
           <Tooltip Component={<span>Download</span>}>
             <Button
               style={{ ...visualizingButton, height: '100%' }}
@@ -185,7 +281,9 @@ const ClinicalAnalysisResult = ({
           </Column>
         )}
         {controlPanelExpanded && (
-          <Column style={{ ...zDepth1, flex: 1, minWidth: 260 }}>
+          <Column
+            style={{ ...zDepth1, flex: 1, minWidth: 260, marginBottom: '1rem' }}
+          >
             <Row style={{ justifyContent: 'flex-end' }}>
               <Tooltip Component={'Hide Control Panel'}>
                 <ChevronLeftIcon
@@ -212,7 +310,7 @@ const ClinicalAnalysisResult = ({
             >
               <Dropdown
                 style={{
-                  width: 170,
+                  width: 160,
                   justifyContent: 'flex-start',
                   marginRight: 10,
                 }}
@@ -225,7 +323,7 @@ const ClinicalAnalysisResult = ({
                     }}
                     rightIcon={<DownCaretIcon />}
                   >
-                    {_.truncate(setName, { length: 18 })}
+                    {_.truncate(setName, { length: 16 })}
                   </Button>
                 }
                 dropdownStyle={{ width: '100%' }}
@@ -233,7 +331,6 @@ const ClinicalAnalysisResult = ({
                 {dropdownItems}
               </Dropdown>
               <ExploreLink
-                merge
                 query={{
                   filters: {
                     op: 'and',
@@ -242,7 +339,7 @@ const ClinicalAnalysisResult = ({
                         op: '=',
                         content: {
                           field: `cases.case_id`,
-                          value: `set_id:${selectedSetId}`,
+                          value: `set_id:${setId}`,
                         },
                       },
                     ],
@@ -254,7 +351,7 @@ const ClinicalAnalysisResult = ({
                     op: '=',
                     content: {
                       field: `cases.case_id`,
-                      value: `set_id:${selectedSetId}`,
+                      value: `set_id:${setId}`,
                     },
                   }}
                 />
@@ -273,11 +370,7 @@ const ClinicalAnalysisResult = ({
               <Input
                 id="search-facets"
                 name="search-facets"
-                onChange={
-                  () => console.log('search')
-                  // ({ target }) => console.log(target)
-                  // setState(s => ({ ...s, query: target.value }))
-                }
+                onChange={() => console.log('search')}
                 placeholder="Search"
                 value={''}
                 style={{ borderRadius: '0 4px 4px 0' }}
@@ -327,28 +420,30 @@ const ClinicalAnalysisResult = ({
               </Column>
             </Row>
           </Column>
-          <Column style={{ width: '100%', justifyContent: 'center' }}>
-            <Row style={{ flexWrap: 'wrap' }}>
-              {' '}
-              {variables.map((variable: string, i: number) => {
-                return (
-                  <VariableCard
-                    key={i}
-                    variable={variable}
-                    data={[]}
-                    plots={plotTypes[variable.plotTypes || 'categorical']}
-                    variableHeadings={[]}
-                    actions={['survival', 'bar_chart', 'delete']}
-                    style={
-                      controlPanelExpanded
-                        ? { width: '47%', minWidth: 310 }
-                        : { width: '31%', minWidth: 290 }
-                    }
-                    id={id}
-                  />
-                );
-              })}
-            </Row>
+          <Column
+            style={{
+              display: 'grid',
+              gridTemplateColumns: controlPanelExpanded
+                ? '50% 50%'
+                : '33.33% 33.33% 33.33%',
+              gridTemplateRows: 'repeat(auto)',
+            }}
+          >
+            {' '}
+            {_.map(variables, (varProperties, varFieldname) => {
+              return (
+                <VariableCard
+                  key={varFieldname}
+                  fieldName={varFieldname}
+                  variable={varProperties}
+                  data={[]}
+                  plots={plotTypes[varProperties.plotTypes || 'categorical']}
+                  variableHeadings={[]}
+                  style={{ minWidth: controlPanelExpanded ? 310 : 290 }}
+                  id={id}
+                />
+              );
+            })}
           </Column>
         </Column>
       </Row>

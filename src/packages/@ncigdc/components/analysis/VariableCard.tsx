@@ -11,6 +11,8 @@ import { visualizingButton } from '@ncigdc/theme/mixins';
 import { zDepth1 } from '@ncigdc/theme/mixins';
 import EntityPageHorizontalTable from '@ncigdc/components/EntityPageHorizontalTable';
 import Dropdown from '@ncigdc/uikit/Dropdown';
+import Hidden from '@ncigdc/components/Hidden';
+
 import {
   CloseIcon,
   SurvivalIcon,
@@ -21,8 +23,9 @@ import { withTheme } from '@ncigdc/theme';
 import { IThemeProps } from '@ncigdc/theme/versions/active';
 
 import {
-  removeAnalysisVariable,
-  updateAnalysisVariableKey,
+  removeClinicalAnalysisVariable,
+  updateClinicalAnalysisVariable,
+  IAnalysisPayload,
 } from '@ncigdc/dux/analysis';
 import { humanify } from '@ncigdc/utils/string';
 import { CLINICAL_PREFIXES } from '@ncigdc/utils/constants';
@@ -33,15 +36,33 @@ interface ITableHeading {
   style?: React.CSSProperties;
 }
 
-interface IVariableProps {
-  variable: any;
+type TPlotType = 'categorical' | 'continuous';
+type TActiveChart = 'box' | 'survival' | 'histogram';
+type TActiveCalculation = 'number' | 'percentage';
+type TVariableType =
+  | 'Demographic'
+  | 'Diagnosis'
+  | 'Exposure'
+  | 'Treatment'
+  | 'Follow_up' // confirm type name
+  | 'Molecular_test'; // confirm type name
+
+interface IVariable {
+  bins: any[]; // tbd - bins still need spec
+  plotTypes: TPlotType;
+  active_chart: TActiveChart;
+  active_calculation: TActiveCalculation;
+  type: TVariableType;
+}
+
+interface IVariableCardProps {
+  variable: IVariable;
+  fieldName: string;
   data: any[];
   plots: any[];
   variableHeadings: ITableHeading[];
-  actions: any[];
   style: React.CSSProperties;
   theme: IThemeProps;
-  analysis: any;
   dispatch: (arg: any) => void;
   id: string;
 }
@@ -49,7 +70,9 @@ interface IVariableProps {
 interface IVizButton {
   title: string;
   icon: JSX.Element;
-  action: () => void;
+  action: (
+    payload: IAnalysisPayload
+  ) => { type: string; payload: IAnalysisPayload };
 }
 
 interface IVizButtons {
@@ -63,41 +86,42 @@ const vizButtons: IVizButtons = {
   survival: {
     title: 'Survival Plot',
     icon: <SurvivalIcon style={{ height: '1em' }} />,
-    action: updateAnalysisVariableKey,
+    action: updateClinicalAnalysisVariable,
   },
   histogram: {
     title: 'Histogram',
-    icon: <BarChartIcon />,
-    action: updateAnalysisVariableKey,
+    icon: <BarChartIcon style={{ height: '1em', width: '1em' }} />,
+    action: updateClinicalAnalysisVariable,
   },
   box: {
-    title: 'Box Plot',
+    title: 'Box/QQ Plot',
     icon: <BoxPlot style={{ height: '1em', width: '1em' }} />,
-    action: updateAnalysisVariableKey,
+    action: updateClinicalAnalysisVariable,
   },
   delete: {
-    title: 'Delete Card',
-    icon: <CloseIcon />,
-    action: removeAnalysisVariable,
+    title: 'Remove Card',
+    icon: <CloseIcon style={{ height: '1em', width: '1em' }} />,
+    action: removeClinicalAnalysisVariable,
   },
 };
 
 const styles = {
   common: (theme: IThemeProps) => ({
-    // backgroundColor: 'transparent',
-    backgroundColor: theme.primary,
-    // color: theme.greyScale2,
-    color: '#fff',
+    backgroundColor: 'transparent',
+    color: theme.greyScale2,
+    border: `1px solid ${theme.greyScale4}`,
     justifyContent: 'flex-start',
     ':hover': {
-      // backgroundColor: theme.greyScale5,
       backgroundColor: 'rgb(0,138,224)',
+      color: '#fff',
+      border: `1px solid rgb(0,138,224)`,
     },
   }),
-  downloadButton: (theme: IThemeProps) => ({
+  activeButton: (theme: IThemeProps) => ({
     ...styles.common(theme),
-    padding: '3px 5px',
-    // border: `1px solid ${theme.greyScale4}`,
+    color: '#fff',
+    backgroundColor: theme.primary,
+    border: `1px solid ${theme.primary}`,
   }),
 };
 
@@ -106,15 +130,14 @@ const enhance = compose(
   withTheme
 );
 
-const VariableCard: React.ComponentType<IVariableProps> = ({
+const VariableCard: React.ComponentType<IVariableCardProps> = ({
   variable,
+  fieldName,
   data,
   plots,
   variableHeadings,
-  actions,
   style = {},
   theme,
-  analysis,
   dispatch,
   id,
 }) => {
@@ -122,7 +145,6 @@ const VariableCard: React.ComponentType<IVariableProps> = ({
     <Column
       style={{
         ...zDepth1,
-        border: '1px solid lightgray',
         minHeight: 200,
         margin: '0 1rem 1rem',
         padding: '0.5rem 1rem 1rem',
@@ -132,7 +154,7 @@ const VariableCard: React.ComponentType<IVariableProps> = ({
       <Row style={{ justifyContent: 'space-between', alignItems: 'center' }}>
         <h2 style={{ fontSize: '1.8rem' }}>
           {humanify({
-            term: variable.fieldName.replace(
+            term: fieldName.replace(
               `${CLINICAL_PREFIXES[_.capitalize(variable.type)]}.`,
               ''
             ),
@@ -144,20 +166,23 @@ const VariableCard: React.ComponentType<IVariableProps> = ({
               <Tooltip key={plotType} Component={vizButtons[plotType].title}>
                 <Button
                   style={{
-                    ...styles.downloadButton(theme),
+                    ...(plotType === variable.active_chart
+                      ? styles.activeButton(theme)
+                      : styles.common(theme)),
                     margin: 2,
                   }}
-                  onClick={() =>
+                  onClick={() => {
                     dispatch(
-                      updateAnalysisVariableKey({
-                        fieldName: variable.fieldName,
+                      vizButtons[plotType].action({
+                        fieldName,
                         variableKey: 'active_chart',
                         value: plotType,
                         id,
                       })
-                    )
-                  }
+                    );
+                  }}
                 >
+                  <Hidden>{vizButtons[plotType].title}</Hidden>
                   {vizButtons[plotType].icon}
                 </Button>
               </Tooltip>
@@ -169,31 +194,49 @@ const VariableCard: React.ComponentType<IVariableProps> = ({
         <form>
           {' '}
           <label
-            htmlFor={'variable-percentage-radio'}
+            htmlFor={`variable-percentage-radio-${fieldName}`}
             style={{ marginRight: 10, fontSize: '1.2rem' }}
           >
             <input
-              id={'variable-percentage-radio'}
+              id={`variable-percentage-radio-${fieldName}`}
               type={'radio'}
               value={'percentage'}
-              aria-label={'% of Cases'}
-              onChange={() => null}
-              checked={true}
+              aria-label={'Percentage of cases'}
+              onChange={() =>
+                dispatch(
+                  updateClinicalAnalysisVariable({
+                    fieldName,
+                    variableKey: 'active_calculation',
+                    value: 'percentage',
+                    id,
+                  })
+                )
+              }
+              checked={variable.active_calculation === 'percentage'}
               style={{ marginRight: 5 }}
             />
             % of Cases
           </label>
           <label
-            htmlFor={'variable-number-radio'}
+            htmlFor={`variable-number-radio-${fieldName}`}
             style={{ fontSize: '1.2rem' }}
           >
             <input
-              id={'variable-number-radio'}
+              id={`variable-number-radio-${fieldName}`}
               type={'radio'}
               value={'number'}
-              aria-label={'# of Cases'}
-              onChange={() => null}
-              checked={false}
+              aria-label={'Number of cases'}
+              onChange={() =>
+                dispatch(
+                  updateClinicalAnalysisVariable({
+                    fieldName,
+                    variableKey: 'active_calculation',
+                    value: 'number',
+                    id,
+                  })
+                )
+              }
+              checked={variable.active_calculation === 'number'}
               style={{ marginRight: 5 }}
             />
             # of Cases
@@ -203,11 +246,15 @@ const VariableCard: React.ComponentType<IVariableProps> = ({
       <div
         style={{
           display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
           height: 180,
           backgroundColor: theme.greyScale5,
           margin: '5px 5px 10px',
         }}
-      />
+      >
+        {variable.active_chart}
+      </div>
       <Row style={{ justifyContent: 'space-between', margin: '5px 0' }}>
         <Dropdown
           button={

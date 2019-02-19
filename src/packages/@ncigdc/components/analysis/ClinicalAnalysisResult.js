@@ -16,7 +16,6 @@ import {
   ChevronRight,
   ChevronLeft,
 } from '@ncigdc/theme/icons';
-import Pencil from '@ncigdc/theme/icons/Pencil';
 import CopyIcon from '@ncigdc/theme/icons/Copy';
 import Hidden from '@ncigdc/components/Hidden';
 import { visualizingButton } from '@ncigdc/theme/mixins';
@@ -86,7 +85,7 @@ const styles = {
 // will need to update with correct type names for molecular and follow-up
 const clinicalTypes = Object.keys(CLINICAL_PREFIXES).filter(
   clinicalType =>
-    clinicalType !== 'Molecular_test' && clinicalType !== 'Treatment'
+    clinicalType !== 'Molecular test' && clinicalType !== 'Treatment'
 );
 
 const plotTypes = {
@@ -421,32 +420,30 @@ const ClinicalAnalysisResult = ({
               </Column>
             </Row>
           </Column>
-          <Column>
-            <div
-              style={{
-                display: 'grid',
-                gridTemplateColumns: controlPanelExpanded
-                  ? '50% 50%'
-                  : '33.33% 33.33% 33.33%',
-                gridTemplateRows: 'repeat(auto)',
-              }}
-            >
-              {' '}
-              {_.map(variables, (varProperties, varFieldname) => {
-                return (
-                  <VariableCard
-                    key={varFieldname}
-                    fieldName={varFieldname}
-                    variable={varProperties}
-                    data={[]}
-                    plots={plotTypes[varProperties.plotTypes || 'categorical']}
-                    variableHeadings={[]}
-                    style={{ minWidth: controlPanelExpanded ? 310 : 290 }}
-                    id={id}
-                  />
-                );
-              })}
-            </div>
+          <Column
+            style={{
+              display: 'grid',
+              gridTemplateColumns: controlPanelExpanded
+                ? '50% 50%'
+                : '33.33% 33.33% 33.33%',
+              gridTemplateRows: 'repeat(auto)',
+            }}
+          >
+            {' '}
+            {_.map(variables, (varProperties, varFieldname) => {
+              return (
+                <VariableCard
+                  key={varFieldname}
+                  fieldName={varFieldname}
+                  variable={varProperties}
+                  data={[]}
+                  plots={plotTypes[varProperties.plotTypes || 'categorical']}
+                  variableHeadings={[]}
+                  style={{ minWidth: controlPanelExpanded ? 310 : 290 }}
+                  id={id}
+                />
+              );
+            })}
           </Column>
         </Column>
       </Row>

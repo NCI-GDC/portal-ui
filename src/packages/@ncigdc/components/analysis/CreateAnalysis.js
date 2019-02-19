@@ -101,7 +101,7 @@ const CreateAnalysis = ({ analysis, setAnalysis, dispatch, push }) => {
                   name: Object.values(sets.case)[0],
                   variables: defaultVariables,
                 }
-              : { name: null, variables: null }),
+              : {}),
           })
         ).then(() => {
           push({

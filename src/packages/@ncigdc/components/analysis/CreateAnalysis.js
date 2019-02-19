@@ -141,7 +141,7 @@ const CreateAnalysis = ({ analysis, setAnalysis, dispatch, push }) => {
               <div style={{ marginBottom: 10 }}>{analysis.description}</div>
               <Row spacing={5}>
                 <Button onClick={() => setAnalysis(analysis)}>Select</Button>
-                <DemoButton demoData={analysis.demoData} type={analysis.type} />
+                <DemoButton demoData={analysis.demoData} type={analysis.type} disabled={analysis.type === 'clinical_data'} />
               </Row>
             </div>
           </Row>

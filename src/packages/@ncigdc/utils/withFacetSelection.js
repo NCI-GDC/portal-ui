@@ -30,11 +30,11 @@ export default ({
     withProps(({ userSelectedFacets }) => ({
       facetExclusionTest: facet => {
         const facetFieldNamesToExclude = presetFacetFields.concat(
-          userSelectedFacets.map(x => x.field),
+          userSelectedFacets.map(x => x.field)
         );
         const match = _.some([
           !_.includes(validFacetDocTypes, facet.doc_type),
-          _.includes(facetFieldNamesToExclude, facet.field),
+          // _.includes(facetFieldNamesToExclude, facet.field),
           validFacetPrefixes &&
             !_.includes(validFacetPrefixes.map(p => facet.full.indexOf(p)), 0),
         ]);
@@ -64,7 +64,7 @@ export default ({
 
         const newFilters = removeFilter(
           facet.full,
-          parseFilterParam(query.filters),
+          parseFilterParam(query.filters)
         );
 
         push({
@@ -74,5 +74,5 @@ export default ({
           }),
         });
       },
-    }),
+    })
   );

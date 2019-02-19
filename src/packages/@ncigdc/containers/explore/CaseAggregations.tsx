@@ -27,7 +27,6 @@ import { UploadCaseSet } from '@ncigdc/components/Modals/UploadSet';
 
 import { IBucket } from '@ncigdc/components/Aggregations/types';
 import { CaseAggregationsQuery } from './explore.relay';
-import ClinicalAggregations from './ClinicalAggregations';
 export interface ITProps {
   caseIdCollapsed: boolean,
   setCaseIdCollapsed: (caseIdCollapsed: boolean) => void,
@@ -279,22 +278,18 @@ export const CaseAggregationsComponent = ({
     >
       Upload Case Set
     </UploadSetButton>
-    {advancedFilter ? (
-      <ClinicalAggregations />
-    ) : (
-      reject(presetFacets, { full: 'cases.case_id' })
-        .filter(facet => aggregations[escapeForRelay(facet.field)])
-        .map(facet => (
-          <FacetWrapper
-            key={facet.full}
-            facet={facet}
-            title={facet.title}
-            aggregation={aggregations[escapeForRelay(facet.field)]}
-            relay={relay}
-            style={{ borderBottom: `1px solid ${theme.greyScale5}` }}
-          />
-        ))
-    )}
+    {reject(presetFacets, { full: 'cases.case_id' })
+      .filter(facet => aggregations[escapeForRelay(facet.field)])
+      .map(facet => (
+        <FacetWrapper
+          key={facet.full}
+          facet={facet}
+          title={facet.title}
+          aggregation={aggregations[escapeForRelay(facet.field)]}
+          relay={relay}
+          style={{ borderBottom: `1px solid ${theme.greyScale5}` }}
+        />
+      ))}
   </div>
 );
 

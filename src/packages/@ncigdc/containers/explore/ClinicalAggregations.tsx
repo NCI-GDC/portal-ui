@@ -1,6 +1,7 @@
 import React from 'react';
 import Relay from 'react-relay/classic';
 import _ from 'lodash';
+// import { connect } from 'react-redux';
 import {
   compose,
   withState,
@@ -15,7 +16,7 @@ import FacetWrapper from '@ncigdc/components/FacetWrapper';
 import CaseIcon from '@ncigdc/theme/icons/Case';
 import { withTheme } from '@ncigdc/theme';
 import { UploadCaseSet } from '@ncigdc/components/Modals/UploadSet';
-import escapeForRelay from '@ncigdc/utils/escapeForRelay';
+// import escapeForRelay from '@ncigdc/utils/escapeForRelay';
 import RecursiveToggledFacet from './RecursiveToggledFacet';
 import { CaseAggregationsQuery } from '@ncigdc/containers/explore/explore.relay';
 import SuggestionFacet from '@ncigdc/components/Aggregations/SuggestionFacet';
@@ -98,6 +99,7 @@ const NestedWrapper = ({
   setCollapsed,
   style,
   headerStyle,
+  isLoading,
 }: any) => (
   <FacetWrapperDiv key={title + 'div'} style={style}>
     <FacetHeader
@@ -108,7 +110,8 @@ const NestedWrapper = ({
       style={headerStyle}
       angleIconRight
     />
-    {isCollapsed || Component}
+    {isCollapsed ||
+      (isLoading ? <div style={{ marginLeft: '1rem' }}>...</div> : Component)}
   </FacetWrapperDiv>
 );
 
@@ -198,8 +201,9 @@ const enhance = compose(
       shouldHideUselessFacets,
       facetExclusionTest,
     }) => {
+      const parsedFacets = facets.facets ? tryParseJSON(facets.facets, {}) : {};
       const usefulFacets = _.omitBy(
-        facets.facets ? tryParseJSON(facets.facets, {}) : {},
+        parsedFacets,
         (aggregation: { [t: string]: any }) =>
           !aggregation ||
           _.some([
@@ -237,6 +241,8 @@ const enhance = compose(
         }
       }
       return {
+        parsedFacets,
+        filteredFacets,
         fieldHash,
       };
     }
@@ -281,6 +287,9 @@ const enhance = compose(
       setSearchValue,
       handleQueryInputChange,
       fieldHash,
+      parsedFacets,
+      isLoadingAdditionalFacetData,
+      isLoadingFacetMapping,
     }: any): any => {
       return [
         <div key="header">
@@ -355,7 +364,11 @@ const enhance = compose(
             checked={shouldHideUselessFacets}
             style={{ margin: '12px' }}
           />
-          Only show fields with values
+          Only show fields with values ({isLoadingAdditionalFacetData ||
+          isLoadingFacetMapping
+            ? '...'
+            : Object.keys(filteredFacets).length}{' '}
+          fileds now)
         </label>,
         ...advancedPresetFacets.map(facet => {
           return (
@@ -384,9 +397,7 @@ const enhance = compose(
                       key={componentFacet.full}
                       facet={componentFacet}
                       title={_.startCase(componentFacet.full.split('.').pop())}
-                      aggregation={
-                        aggregations[escapeForRelay(componentFacet.field)]
-                      }
+                      aggregation={parsedFacets[componentFacet.field]}
                       relay={relay}
                       additionalProps={{ style: { paddingBottom: 0 } }}
                       style={{
@@ -394,7 +405,7 @@ const enhance = compose(
                         paddingLeft: '10px',
                       }}
                       headerStyle={{ fontSize: '14px' }}
-                      collapsed={false}
+                      collapsed={true}
                       maxNum={5}
                     />
                   )}
@@ -412,6 +423,7 @@ const enhance = compose(
                     toggled: !toggledTree[facet.field].toggled,
                   },
                 })}
+              isLoading={isLoadingAdditionalFacetData || isLoadingFacetMapping}
             />
           );
         }),

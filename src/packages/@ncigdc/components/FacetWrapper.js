@@ -63,7 +63,7 @@ const getFacetType = facet => {
     )
   ) {
     return 'exact';
-  } else if (facet.type === 'long') {
+  } else if (facet.type === 'long' || facet.type === 'float') {
     return 'range';
   }
   return 'terms';
@@ -106,7 +106,7 @@ const FacetWrapper = compose(
       title: displayTitle,
       collapsed,
     };
-
+    
     const facetComponent = {
       exact: () => (
         <ExactMatchFacet

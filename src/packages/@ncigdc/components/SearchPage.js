@@ -66,7 +66,7 @@ const SearchPage = (
           defaultIndex={0}
           tabToolbar={
             <UnstyledButton
-              style={{ minHeight: 46, paddingLeft: 2 }}
+              style={{ minHeight: 46 }}
               onClick={() => {
                 setShowFacets(!showFacets);
               }}

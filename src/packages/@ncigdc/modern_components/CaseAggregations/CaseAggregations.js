@@ -271,7 +271,6 @@ const CaseAggregationsComponent = (props: TProps) => (
     >
       Upload Case Set
     </UploadSetButton>
-    {/* {console.log('presetFacets', presetFacets)} */}
 
     {_.reject(presetFacets, { full: 'cases.case_id' }).map(facet => (
       <FacetWrapper

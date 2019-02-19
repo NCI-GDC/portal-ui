@@ -2,7 +2,6 @@
 import React from 'react';
 import Relay from 'react-relay/classic';
 import { reject } from 'lodash';
-import { connect } from 'react-redux';
 import {
   compose,
   withState,
@@ -56,14 +55,6 @@ export interface ITProps {
   theme: any,
   filters: any,
   suggestions: any,
-
-  userSelectedFacets: Array<{
-    description: any,
-    doc_type: string,
-    field: string,
-    full: string,
-    type: 'id' | 'string' | 'long',
-  }>,
   handleSelectFacet: any,
   handleResetFacets: (event: any) => void,
   handleRequestRemoveFacet: any,
@@ -139,30 +130,19 @@ const enhance = compose(
   }),
   withState('caseIdCollapsed', 'setCaseIdCollapsed', false),
   withState('advancedFilter', 'setAdvancedFilter', false),
-  connect((state: any, props) => ({
-    userSelectedFacets: state.customFacets[entityType],
-  })),
-  withPropsOnChange(
-    ['filters', 'userSelectedFacets'],
-    ({ filters, relay, userSelectedFacets }) =>
-      relay.setVariables({
-        filters,
-        exploreCaseCustomFacetFields: userSelectedFacets
-          .map(({ field }: any) => field)
-          .join(','),
-      })
+  withPropsOnChange(['filters'], ({ filters, relay }) =>
+    relay.setVariables({
+      filters,
+    })
   ),
   withPropsOnChange(['facets'], ({ facets }) => ({
     parsedFacets: facets.facets ? tryParseJSON(facets.facets, {}) : {},
   })),
   lifecycle({
     componentDidMount(): void {
-      const { relay, filters, userSelectedFacets }: any = this.props;
+      const { relay, filters }: any = this.props;
       relay.setVariables({
         filters,
-        exploreCaseCustomFacetFields: userSelectedFacets
-          .map(({ field }: any) => field)
-          .join(','),
       });
     },
   })
@@ -180,7 +160,6 @@ export const CaseAggregationsComponent = ({
   theme,
   filters,
   suggestions,
-  userSelectedFacets,
   handleSelectFacet,
   handleResetFacets,
   handleRequestRemoveFacet,
@@ -191,22 +170,6 @@ export const CaseAggregationsComponent = ({
   setAdvancedFilter,
 }: ITProps) => (
   <div className="test-case-aggregations">
-    {/* <div
-      className="text-right"
-      style={{
-        padding: '10px 15px',
-        // borderBottom: `1px solid ${props.theme.greyScale5}`,
-      }}
-    >
-      {!!userSelectedFacets.length && (
-        <span>
-          <a onClick={handleResetFacets}>Reset</a> &nbsp;|&nbsp;
-        </span>
-      )}
-      <a onClick={() => setShouldShowFacetSelection(true)}>
-        Add a Case/Biospecimen Filter
-      </a>
-    </div> */}
     <Modal
       isOpen={shouldShowFacetSelection}
       style={{ content: { border: 0, padding: '15px' } }}
@@ -222,18 +185,6 @@ export const CaseAggregationsComponent = ({
         relay={relay}
       />
     </Modal>
-    {userSelectedFacets.map(facet => (
-      <FacetWrapper
-        isRemovable
-        relayVarName="exploreCaseCustomFacetFields"
-        key={facet.full}
-        facet={facet}
-        aggregation={parsedFacets[facet.field]}
-        relay={relay}
-        onRequestRemove={() => handleRequestRemoveFacet(facet)}
-        style={{ borderBottom: `1px solid ${theme.greyScale5}` }}
-      />
-    ))}
     <FacetHeader
       title="Case"
       field="cases.case_id"

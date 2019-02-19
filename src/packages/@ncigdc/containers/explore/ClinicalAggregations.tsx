@@ -1,7 +1,6 @@
 import React from 'react';
 import Relay from 'react-relay/classic';
 import _ from 'lodash';
-// import { connect } from 'react-redux';
 import {
   compose,
   withState,
@@ -16,7 +15,6 @@ import FacetWrapper from '@ncigdc/components/FacetWrapper';
 import CaseIcon from '@ncigdc/theme/icons/Case';
 import { withTheme } from '@ncigdc/theme';
 import { UploadCaseSet } from '@ncigdc/components/Modals/UploadSet';
-// import escapeForRelay from '@ncigdc/utils/escapeForRelay';
 import RecursiveToggledFacet from './RecursiveToggledFacet';
 import { CaseAggregationsQuery } from '@ncigdc/containers/explore/explore.relay';
 import SuggestionFacet from '@ncigdc/components/Aggregations/SuggestionFacet';
@@ -118,11 +116,7 @@ const NestedWrapper = ({
 const enhance = compose(
   withState('facetMapping', 'setFacetMapping', {}),
   withState('isLoadingFacetMapping', 'setIsLoadingFacetMapping', false),
-  withState(
-    'isLoadingAdditionalFacetData',
-    'setIsLoadingAdditionalFacetData',
-    false
-  ),
+  withState('isLoadingParsedFacets', 'setIsLoadingParsedFacets', false),
   withState('fieldHash', 'setFieldHash', {}),
   withState('caseIdCollapsed', 'setCaseIdCollapsed', false),
   withState('shouldHideUselessFacets', 'setShouldHideUselessFacets', false),
@@ -157,7 +151,7 @@ const enhance = compose(
   withProps(
     ({
       relay,
-      setIsLoadingAdditionalFacetData,
+      setIsLoadingParsedFacets,
       setShouldHideUselessFacets,
       facetMapping,
       relayVarName,
@@ -173,7 +167,7 @@ const enhance = compose(
         const byDocType = _.groupBy(facetMapping, o => o.doc_type);
 
         if (shouldHide && byDocType[docType]) {
-          setIsLoadingAdditionalFacetData(shouldHide);
+          setIsLoadingParsedFacets(shouldHide);
           relay.setVariables(
             {
               [relayVarName]: byDocType[docType]
@@ -184,7 +178,7 @@ const enhance = compose(
               if (
                 _.some([readyState.ready, readyState.aborted, readyState.error])
               ) {
-                setIsLoadingAdditionalFacetData(false);
+                setIsLoadingParsedFacets(false);
               }
             }
           );
@@ -263,6 +257,9 @@ const enhance = compose(
     componentDidMount(): void {
       const { props }: any = this;
       props.fetchData();
+      props.relay.setVariables({
+        filters: props.filters,
+      });
     },
   })
 )(
@@ -288,7 +285,7 @@ const enhance = compose(
       handleQueryInputChange,
       fieldHash,
       parsedFacets,
-      isLoadingAdditionalFacetData,
+      isLoadingParsedFacets,
       isLoadingFacetMapping,
     }: any): any => {
       return [
@@ -364,11 +361,11 @@ const enhance = compose(
             checked={shouldHideUselessFacets}
             style={{ margin: '12px' }}
           />
-          Only show fields with values ({isLoadingAdditionalFacetData ||
+          Only show fields with values ({isLoadingParsedFacets ||
           isLoadingFacetMapping
             ? '...'
             : Object.keys(filteredFacets).length}{' '}
-          fileds now)
+          fields now)
         </label>,
         ...advancedPresetFacets.map(facet => {
           return (
@@ -423,7 +420,7 @@ const enhance = compose(
                     toggled: !toggledTree[facet.field].toggled,
                   },
                 })}
-              isLoading={isLoadingAdditionalFacetData || isLoadingFacetMapping}
+              isLoading={isLoadingParsedFacets || isLoadingFacetMapping}
             />
           );
         }),

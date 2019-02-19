@@ -254,7 +254,6 @@ const reducer = (
       return {
         ...state,
         saved: [
-          ...state.saved,
           ...state.saved.slice(0, currentAnalysisIndex),
           {
             ...currentAnalysis,

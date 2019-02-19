@@ -81,9 +81,10 @@ const UploadSet = connect()(({ dispatch }) => (
                 type="case"
                 CreateSetButton={CreateRepositoryCaseSetButton}
                 UploadSet={UploadCaseSet}
-              />,
-            ),
-          )}
+              />
+            )
+          )
+        }
       >
         Case
       </DropdownItem>
@@ -96,9 +97,10 @@ const UploadSet = connect()(({ dispatch }) => (
                 type="gene"
                 CreateSetButton={CreateExploreGeneSetButton}
                 UploadSet={UploadGeneSet}
-              />,
-            ),
-          )}
+              />
+            )
+          )
+        }
       >
         Gene
       </DropdownItem>
@@ -111,9 +113,10 @@ const UploadSet = connect()(({ dispatch }) => (
                 type="ssm"
                 CreateSetButton={CreateExploreSsmSetButton}
                 UploadSet={UploadSsmSet}
-              />,
-            ),
-          )}
+              />
+            )
+          )
+        }
       >
         Mutation
       </DropdownItem>
@@ -166,7 +169,7 @@ const enhance = compose(
             },
           })),
         ],
-        [],
+        []
       ).map(({ filters, type, id, ...rest }) => ({
         filters,
         type,
@@ -181,7 +184,7 @@ const enhance = compose(
             }),
         }),
       })),
-    }),
+    })
   ),
   branch(
     p => p.flattenedSets.length === 0,
@@ -205,8 +208,8 @@ const enhance = compose(
           <UploadSet />
         </Column>
       </Row>
-    )),
-  ),
+    ))
+  )
 );
 
 const StyledRepoLink = styled(RepositoryLink, {
@@ -226,7 +229,7 @@ const ManageSetsPage = ({
   const allSelected =
     selectedIds.length !== 0 && flattenedSets.length === selectedIds.length;
   const emptyOrDeprecatedSets = Object.keys(setSizes).filter(
-    id => get(setSizes, id) === 0,
+    id => get(setSizes, id) === 0
   );
 
   const doneFetchingSetSizes =
@@ -268,7 +271,7 @@ const ManageSetsPage = ({
                 }
                 return acc;
               },
-              [],
+              []
             )}
             filename={`gdc_sets.${timestamp()}.tar.gz`}
           />
@@ -280,7 +283,7 @@ const ManageSetsPage = ({
               const setsToRemove = selectedIds.map(currentSetId => {
                 const set = find(
                   flattenedSets,
-                  ({ id }) => id === currentSetId,
+                  ({ id }) => id === currentSetId
                 );
                 const { type, id, label } = set;
                 return {
@@ -327,7 +330,7 @@ const ManageSetsPage = ({
                       </strong>
                     </Column>
                   ),
-                }),
+                })
               );
             }}
             style={{ marginBottom: '1rem', marginLeft: '1rem' }}
@@ -347,8 +350,8 @@ const ManageSetsPage = ({
                       type: find(flattenedSets, ({ id }) => currentSetId === id)
                         .type,
                       id: currentSetId,
-                    }),
-                  ),
+                    })
+                  )
                 );
                 setSetSizes(omit(setSizes, emptyOrDeprecatedSets));
               }}
@@ -376,8 +379,9 @@ const ManageSetsPage = ({
                   checked={allSelected}
                   onChange={e =>
                     setSelectedIds(
-                      allSelected ? [] : flattenedSets.map(({ id }) => id),
-                    )}
+                      allSelected ? [] : flattenedSets.map(({ id }) => id)
+                    )
+                  }
                 />
               </Th>,
               'Entity Type',
@@ -398,7 +402,7 @@ const ManageSetsPage = ({
                       countComponent,
                       filenameSafeLabel,
                     },
-                    i,
+                    i
                   ) => (
                     <Tr key={id} index={i}>
                       <Td key={`checkbox${i}`} style={{ width: '50px' }}>
@@ -408,14 +412,13 @@ const ManageSetsPage = ({
                           checked={selectedIds.includes(id)}
                           onChange={e => setSelectedIds(xor(selectedIds, [id]))}
                         />
-                        {doneFetchingSetSizes &&
-                          !get(setSizes, id) && (
-                            <Tooltip Component="Set is either empty or deprecated.">
-                              <ExclamationTriangleIcon
-                                style={{ paddingLeft: '5px', color: '#8a6d3b' }}
-                              />
-                            </Tooltip>
-                          )}
+                        {doneFetchingSetSizes && !get(setSizes, id) && (
+                          <Tooltip Component="Set is either empty or deprecated.">
+                            <ExclamationTriangleIcon
+                              style={{ paddingLeft: '5px', color: '#8a6d3b' }}
+                            />
+                          </Tooltip>
+                        )}
                       </Td>
                       <Td
                         key={`type${i}`}
@@ -441,9 +444,12 @@ const ManageSetsPage = ({
                                 type,
                                 label: value,
                                 id: id,
-                              }),
-                            )}
-                        />
+                              })
+                            )
+                          }
+                        >
+                          <span>{label}</span>
+                        </EditableLabel>
                       </Td>
                       <Td key={`count${i}`}>
                         {get(setSizes, id) > 0 ? (
@@ -461,46 +467,45 @@ const ManageSetsPage = ({
                         )}
                       </Td>
                       <Td>
-                        {doneFetchingSetSizes &&
-                          get(setSizes, id) > 0 && (
-                            <Row>
-                              <Tooltip Component="Export as TSV">
-                                <DownloadButton
-                                  className="test-download-set-tsv"
-                                  style={iconButton}
-                                  endpoint="/tar_sets"
-                                  activeText="" //intentionally blank
-                                  inactiveText="" //intentionally blank
-                                  altMessage={false}
-                                  setParentState={() => {}}
-                                  active={false}
-                                  sets={[
-                                    {
-                                      id,
-                                      type,
-                                      filename: `${type}_set_${filenameSafeLabel}.${timestamp()}.tsv`,
-                                    },
-                                  ]}
-                                />
+                        {doneFetchingSetSizes && get(setSizes, id) > 0 && (
+                          <Row>
+                            <Tooltip Component="Export as TSV">
+                              <DownloadButton
+                                className="test-download-set-tsv"
+                                style={iconButton}
+                                endpoint="/tar_sets"
+                                activeText="" //intentionally blank
+                                inactiveText="" //intentionally blank
+                                altMessage={false}
+                                setParentState={() => {}}
+                                active={false}
+                                sets={[
+                                  {
+                                    id,
+                                    type,
+                                    filename: `${type}_set_${filenameSafeLabel}.${timestamp()}.tsv`,
+                                  },
+                                ]}
+                              />
+                            </Tooltip>
+                            {type === 'case' && (
+                              <Tooltip Component="View Files in Repository">
+                                <StyledRepoLink
+                                  aria-label="View Files in Repository"
+                                  query={{
+                                    searchTableTab: 'files',
+                                    filters: linkFilters,
+                                  }}
+                                >
+                                  <DatabaseIcon />
+                                </StyledRepoLink>
                               </Tooltip>
-                              {type === 'case' && (
-                                <Tooltip Component="View Files in Repository">
-                                  <StyledRepoLink
-                                    aria-label="View Files in Repository"
-                                    query={{
-                                      searchTableTab: 'files',
-                                      filters: linkFilters,
-                                    }}
-                                  >
-                                    <DatabaseIcon />
-                                  </StyledRepoLink>
-                                </Tooltip>
-                              )}
-                            </Row>
-                          )}
+                            )}
+                          </Row>
+                        )}
                       </Td>
                     </Tr>
-                  ),
+                  )
                 )}
               </tbody>
             }
@@ -516,7 +521,8 @@ const ManageSetsPage = ({
               }}
             />
             Please be aware that your custom sets are deleted during each new
-            GDC data release.<br />
+            GDC data release.
+            <br />
             You can export them and re-upload them on this page.
           </p>
         </span>

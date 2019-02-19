@@ -44,8 +44,8 @@ type TVariableType =
   | 'Diagnosis'
   | 'Exposure'
   | 'Treatment'
-  | 'Follow_up'
-  | 'Molecular_test';
+  | 'Follow_up' // confirm type name
+  | 'Molecular_test'; // confirm type name
 
 interface IVariable {
   bins: any[]; // tbd - bins still need spec

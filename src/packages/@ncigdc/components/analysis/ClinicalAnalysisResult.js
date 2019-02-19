@@ -39,6 +39,7 @@ import { CLINICAL_PREFIXES } from '@ncigdc/utils/constants';
 import withRouter from '@ncigdc/utils/withRouter';
 import BaseModal from '@ncigdc/components/Modals/BaseModal';
 import { setModal } from '@ncigdc/dux/modal';
+import EditableLabel from '@ncigdc/uikit/EditableLabel';
 
 interface IAnalysisResultProps {
   sets: any;
@@ -160,10 +161,11 @@ const CopyAnalysisModal = compose(
 });
 
 const enhance = compose(
-  connect((state: any) => ({ allSets: state.sets, analysis: state.analysis })),
+  connect((state: any, props: any) => ({
+    allSets: state.sets,
+    currentAnalysis: state.analysis.saved.find(a => a.id === props.id),
+  })),
   withState('controlPanelExpanded', 'setControlPanelExpanded', true),
-  withState('editingAnalysisName', 'setEditingAnalysisName', false),
-  withState('editedAnalysisName', 'setEditedAnalysisName', ''),
   withTheme,
   withRouter
 );
@@ -178,15 +180,10 @@ const ClinicalAnalysisResult = ({
   variables,
   id,
   dispatch,
-  analysis,
-  editingAnalysisName,
-  setEditingAnalysisName,
-  editedAnalysisName,
-  setEditedAnalysisName,
+  currentAnalysis,
   push,
   ...props
 }: IAnalysisResultProps) => {
-  const currentAnalysis = analysis.saved.find(a => a.id === id);
   const setName = Object.values(sets.case)[0];
   const setId = Object.keys(currentAnalysis.sets.case)[0];
 
@@ -216,67 +213,32 @@ const ClinicalAnalysisResult = ({
         <Row spacing={'10px'} style={{ alignItems: 'center', width: '80%' }}>
           <Icon style={{ height: 50, width: 50 }} />
           <Column style={{ width: '100%' }}>
-            <Row style={{ alignItems: 'center' }}>
-              {!editingAnalysisName && (
-                <h1 style={{ fontSize: '2.5rem', margin: 5 }}>
-                  {currentAnalysis.name}{' '}
-                </h1>
-              )}
-              {editingAnalysisName && (
-                <div style={{ width: '70%', borderRadius: '4px', margin: 5 }}>
-                  <label htmlFor={'analysis-name'}>
-                    <Hidden>{currentAnalysis.name}</Hidden>
-                  </label>
-                  <Input
-                    id={'analysis-name'}
-                    name={'analysis-name'}
-                    className="analysis-name-input"
-                    onChange={e => {
-                      const value = e.target.value;
-                      setEditedAnalysisName(value);
-                    }}
-                    onBlur={e => {
-                      if (e.target.value.length) {
-                        dispatch(
-                          updateClinicalAnalysisProperty({
-                            value: _.trim(e.target.value),
-                            property: 'name',
-                            id,
-                          })
-                        );
-                      }
-                      setEditingAnalysisName(false);
-                    }}
-                    onKeyDown={e => {
-                      if (e.target.value.length && e.key === 'Enter') {
-                        dispatch(
-                          updateClinicalAnalysisProperty({
-                            value: _.trim(e.target.value),
-                            property: 'name',
-                            id,
-                          })
-                        );
-                        setEditingAnalysisName(false);
-                      }
-                    }}
-                    placeholder={currentAnalysis.name}
-                    value={editedAnalysisName}
-                    autoFocus
-                  />
-                </div>
-              )}
-              {!editingAnalysisName && (
-                <Tooltip Component={'Edit Analysis Name'}>
-                  <Pencil
-                    style={{
-                      marginLeft: 10,
-                      fontSize: '2.5rem',
-                      cursor: 'pointer',
-                    }}
-                    onClick={() => setEditingAnalysisName(true)}
-                  />
-                </Tooltip>
-              )}
+            <Row style={{ alignItems: 'center' }} spacing={'5px'}>
+              <div style={{ width: '70%' }}>
+                <EditableLabel
+                  text={currentAnalysis.name}
+                  handleSave={value =>
+                    dispatch(
+                      updateClinicalAnalysisProperty({
+                        value: _.trim(value),
+                        property: 'name',
+                        id,
+                      })
+                    )
+                  }
+                  iconStyle={{
+                    marginLeft: 10,
+                    fontSize: '2.5rem',
+                    cursor: 'pointer',
+                    // color: 'inherit',
+                  }}
+                  containerStyle={{ justifyContent: 'flex-start' }}
+                >
+                  <h1 style={{ fontSize: '2.5rem', margin: 5 }}>
+                    {currentAnalysis.name}{' '}
+                  </h1>
+                </EditableLabel>
+              </div>
             </Row>
             <span style={{ margin: '0 0 5px 5px' }}>{label}</span>
           </Column>

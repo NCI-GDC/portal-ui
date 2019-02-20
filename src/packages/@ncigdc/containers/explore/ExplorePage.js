@@ -21,9 +21,7 @@ import { replaceFilters } from '@ncigdc/utils/filters';
 import { stringifyJSONParam } from '@ncigdc/utils/uri';
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import Button from '@ncigdc/uikit/Button';
-import withFacets from '@ncigdc/modern_components/IntrospectiveType/Introspective.relay.js';
-
-import { CLINICAL_PREFIXES, CLINICAL_BLACKLIST } from '@ncigdc/utils/constants';
+import ClinicalTab from '@ncigdc/containers/explore/ClinicalTab';
 
 export type TProps = {
   filters: {},
@@ -97,46 +95,6 @@ function setVariables({ relay, filters }) {
   });
 }
 
-const ClinicalAggregationsWithFacets = withFacets(props => {
-  if (!props.__type) {
-    return <div>Data not available for {props.name}</div>;
-  }
-  const { fields, name, description } = props.__type;
-  if (!fields) {
-    return <div>No fields found</div>;
-  }
-  const facetPrefix = CLINICAL_PREFIXES[props.name].replace('cases.', '');
-  const whitelistedFields = fields.filter(
-    field => !CLINICAL_BLACKLIST.includes(field.name)
-  );
-  const facets = whitelistedFields
-    .map(field => `${facetPrefix}.${field.name}`)
-    .join();
-
-  const parsedFields = whitelistedFields.map(f => {
-    const fType = f.type.name === 'String' ? 'terms' : f.type.name;
-    return {
-      field: f.name,
-      description: f.description,
-      full: `${CLINICAL_PREFIXES[props.name]}.${f.name}`,
-      type: fType,
-      doc_type: 'cases',
-    };
-  });
-
-  return (
-    <ClinicalAggregations
-      facets={facets}
-      fields={parsedFields}
-      name={props.name}
-    />
-  );
-});
-
-const clinicalFacetTypes = Object.keys(CLINICAL_PREFIXES).filter(
-  key => key !== 'Follow up' && key !== 'Molecular test'
-);
-
 const enhance = compose(
   withRouter,
   lifecycle({
@@ -180,27 +138,16 @@ export const ExplorePageComponent = ({
         id: 'clinical',
         text: 'Clinical',
         component: (
-          <Column>
-            {clinicalFacetTypes.map(facetType => (
-              <ClinicalAggregationsWithFacets
-                key={facetType}
-                name={facetType}
-                docType="cases"
-                relayVarName="exploreCaseCustomFacetFields"
-                relay={relay}
-                suggestions={get(viewer, 'autocomplete_cases.hits', [])}
-                setAutocomplete={(value, onReadyStateChange) =>
-                  relay.setVariables(
-                    {
-                      idAutocompleteCases: value,
-                      runAutocompleteCases: !!value,
-                    },
-                    onReadyStateChange
-                  )
-                }
-              />
-            ))}
-          </Column>
+          <ClinicalTab
+            relay={relay}
+            suggestions={get(viewer, 'autocomplete_cases.hits', [])}
+            setAutocomplete={(value, onReadyStateChange) =>
+              relay.setVariables(
+                { idAutocompleteCases: value, runAutocompleteCases: !!value },
+                onReadyStateChange
+              )
+            }
+          />
         ),
       },
       {

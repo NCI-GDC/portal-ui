@@ -9,8 +9,6 @@ import { parseFilterParam } from '@ncigdc/utils/uri';
 import withRouter from '@ncigdc/utils/withRouter';
 import Query from '@ncigdc/modern_components/Query';
 
-const entityType = 'Cases';
-
 export default (Component: ReactClass<*>) =>
   compose(
     withRouter,
@@ -24,9 +22,6 @@ export default (Component: ReactClass<*>) =>
         };
       }
     ),
-    // connect((state, props) => ({
-    //   userSelectedFacets: state.customFacets[entityType],
-    // })),
     withPropsOnChange(['facets', 'filters'], ({ facets, filters }) => {
       return {
         variables: {

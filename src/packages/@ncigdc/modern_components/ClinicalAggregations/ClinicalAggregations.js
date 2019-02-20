@@ -26,7 +26,8 @@ import tryParseJSON from '@ncigdc/utils/tryParseJSON';
 import withFacetSelection from '@ncigdc/utils/withFacetSelection';
 import presetFacets from '@ncigdc/containers/explore/presetFacets';
 import Input from '@ncigdc/uikit/Form/Input';
-// import ClinicalFacet from '@ncigdc/modern_components/IntrospectiveType';
+
+import { CLINICAL_PREFIXES } from '@ncigdc/utils/constants';
 
 interface IFacetProps {
   description: string;
@@ -35,128 +36,86 @@ interface IFacetProps {
   full: string;
   type: string;
 }
-const facetMatchesQuery = (facet: IFacetProps, searchValue: string): boolean =>
-  _.some([facet.field, facet.description].map(_.toLower), searchTarget =>
+const facetMatchesQuery = (
+  facet: IFacetProps,
+  searchValue: string
+): boolean => {
+  if (!searchValue) {
+    return true;
+  }
+  return _.some([facet.field, facet.description].map(_.toLower), searchTarget =>
     _.includes(searchTarget, searchValue)
   );
-const MagnifyingGlass = styled(SearchIcon, {
-  marginLeft: '1rem',
-  position: 'relative',
-  width: '3rem',
-  height: '3rem',
-  ':hover::before': {
-    textShadow: ({
-      theme,
-    }: {
-      theme: { textShadow: string, [x: string]: any },
-    }) => theme.textShadow,
-  },
-});
-
-const advancedPresetFacets = [
-  {
-    title: 'Demographic',
-    field: 'demographic',
-    full: 'demographic',
-  },
-  {
-    title: 'Diagnoses',
-    field: 'diagnoses',
-    full: 'diagnoses',
-    excluded: ['treatments'],
-  },
-  {
-    title: 'Treatments',
-    field: 'treatments',
-    full: 'diagnoses.treatments',
-  },
-  {
-    title: 'Exposures',
-    field: 'exposures',
-    full: 'exposures',
-  },
-  {
-    title: 'Follow Up',
-    field: 'follow_up',
-    full: '',
-  },
-  {
-    title: 'Molecular Tests',
-    field: 'molecular_tests',
-    full: '',
-  },
-];
-
-const CLINICAL_PREFIXES = {
-  Diagnosis: 'cases.diagnoses',
-  Treatment: 'cases.diagnoses.treatments',
-  Exposure: 'cases.exposures',
-  Demographic: 'cases.demographic',
-  'Follow up': '',
-  'Molecular test': '',
 };
 
-const clinicalFacetTypes = Object.keys(CLINICAL_PREFIXES);
-
-const entityType = 'ExploreCases';
 const presetFacetFields = presetFacets.map(x => x.field);
 
-const FacetWrapperDiv = styled(`div`, {
-  position: 'relative',
-});
+// const FacetWrapperDiv = styled(`div`, {
+//   position: 'relative',
+// });
 
-const NestedWrapper = ({
-  Component,
-  title,
-  isCollapsed,
-  setCollapsed,
-  style,
-  headerStyle,
-  isLoading,
-}: any) => (
-  <FacetWrapperDiv key={title + 'div'} style={style}>
-    <FacetHeader
-      title={title}
-      collapsed={isCollapsed}
-      setCollapsed={setCollapsed}
-      key={title}
-      style={headerStyle}
-      angleIconRight
-    />
-    {isCollapsed ||
-      (isLoading ? <div style={{ marginLeft: '1rem' }}>...</div> : Component)}
-  </FacetWrapperDiv>
-);
+// const NestedWrapper = ({
+//   Component,
+//   title,
+//   isCollapsed,
+//   setCollapsed,
+//   style,
+//   headerStyle,
+//   isLoading,
+// }: any) => (
+//   <FacetWrapperDiv key={title + 'div'} style={style}>
+//     <FacetHeader
+//       title={title}
+//       collapsed={isCollapsed}
+//       setCollapsed={setCollapsed}
+//       key={title}
+//       style={headerStyle}
+//       angleIconRight
+//     />
+//     {isCollapsed ||
+//       (isLoading ? <div style={{ marginLeft: '1rem' }}>...</div> : Component)}
+//   </FacetWrapperDiv>
+// );
 
 const enhance = compose(
-  withState('facetMapping', 'setFacetMapping', {}),
-  withState('isLoadingFacetMapping', 'setIsLoadingFacetMapping', false),
-  withState('isLoadingParsedFacets', 'setIsLoadingParsedFacets', false),
-  withState('fieldHash', 'setFieldHash', {}),
-  withState('caseIdCollapsed', 'setCaseIdCollapsed', false),
-  withState('shouldHideUselessFacets', 'setShouldHideUselessFacets', false),
-  withState('searchValue', 'setSearchValue', ''),
-  withState('toggledTree', 'setToggledTree', {
-    cases: { toggled: false },
-    demographic: { toggled: false },
-    diagnoses: { toggled: false },
-    treatments: { toggled: false },
-    exposures: { toggled: false },
-    follow_up: { toggled: false },
-    molecular_tests: { toggled: false },
+  // withState('facetMapping', 'setFacetMapping', {}),
+  // withState('isLoadingFacetMapping', 'setIsLoadingFacetMapping', false),
+  // withState('isLoadingParsedFacets', 'setIsLoadingParsedFacets', false),
+  // withState('fieldHash', 'setFieldHash', {}),
+  // withState('caseIdCollapsed', 'setCaseIdCollapsed', false),
+  // withState('shouldHideUselessFacets', 'setShouldHideUselessFacets', false),
+  // withState('searchValue', 'setSearchValue', ''),
+  // withState('toggledTree', 'setToggledTree', {
+  //   cases: { toggled: false },
+  //   demographic: { toggled: false },
+  //   diagnoses: { toggled: false },
+  //   treatments: { toggled: false },
+  //   exposures: { toggled: false },
+  //   follow_up: { toggled: false },
+  //   molecular_tests: { toggled: false },
+  // }),
+  withFacetSelection(({ entityType }) => {
+    return {
+      entityType,
+      presetFacetFields,
+      validFacetDocTypes: ['cases'],
+      validFacetPrefixes: [
+        'cases.demographic',
+        'cases.diagnoses',
+        'cases.diagnoses.treatments',
+        'cases.exposures',
+        'cases.follow_up',
+        'cases.molecular_tests',
+      ],
+    };
   }),
-  withFacetSelection({
-    entityType,
-    presetFacetFields,
-    validFacetDocTypes: ['cases'],
-    validFacetPrefixes: [
-      'cases.demographic',
-      'cases.diagnoses',
-      'cases.diagnoses.treatments',
-      'cases.exposures',
-      'cases.follow_up',
-      'cases.molecular_tests',
-    ],
+  withProps(({ fields, name }) => {
+    return {
+      mappedFields: fields.map(f => ({
+        ...f,
+        field: `${CLINICAL_PREFIXES[name].replace('cases.', '')}.${f.field}`,
+      })),
+    };
   }),
   // withPropsOnChange(['filters'], ({ filters, relay }) =>
   //   relay.setVariables({
@@ -168,52 +127,60 @@ const enhance = compose(
   //     ? tryParseJSON(viewer.explore.cases.facets, {})
   //     : {},
   // })),
-  withProps(
-    ({
-      relay,
-      setIsLoadingParsedFacets,
-      setShouldHideUselessFacets,
-      facetMapping,
-      relayVarName,
-      docType,
-      shouldHideUselessFacets,
-    }) => ({
-      setUselessFacetVisibility: (shouldHide: boolean) => {
-        setShouldHideUselessFacets(shouldHide);
-        localStorage.setItem(
-          'shouldHideUselessFacets',
-          JSON.stringify(shouldHide)
-        );
-        const byDocType = _.groupBy(facetMapping, o => o.doc_type);
-
-        if (shouldHide && byDocType[docType]) {
-          setIsLoadingParsedFacets(shouldHide);
-          relay.setVariables(
-            {
-              [relayVarName]: byDocType[docType]
-                .map(({ field }) => field)
-                .join(','),
-            },
-            (readyState: any) => {
-              if (
-                _.some([readyState.ready, readyState.aborted, readyState.error])
-              ) {
-                setIsLoadingParsedFacets(false);
-              }
-            }
-          );
-        }
-      },
-    })
-  ),
+  // withProps(
+  //   ({
+  //     relay,
+  //     setIsLoadingParsedFacets,
+  //     setShouldHideUselessFacets,
+  //     facetMapping,
+  //     relayVarName,
+  //     docType,
+  //     shouldHideUselessFacets,
+  //   }) => ({
+  //     setUselessFacetVisibility: (shouldHide: boolean) => {
+  //       setShouldHideUselessFacets(shouldHide);
+  //       localStorage.setItem(
+  //         'shouldHideUselessFacets',
+  //         JSON.stringify(shouldHide)
+  //       );
+  //       const byDocType = _.groupBy(facetMapping, o => o.doc_type);
+  //
+  //       if (shouldHide && byDocType[docType]) {
+  //         setIsLoadingParsedFacets(shouldHide);
+  //         relay.setVariables(
+  //           {
+  //             [relayVarName]: byDocType[docType]
+  //               .map(({ field }) => field)
+  //               .join(','),
+  //           },
+  //           (readyState: any) => {
+  //             if (
+  //               _.some([readyState.ready, readyState.aborted, readyState.error])
+  //             ) {
+  //               setIsLoadingParsedFacets(false);
+  //             }
+  //           }
+  //         );
+  //       }
+  //     },
+  //   })
+  // ),
   withPropsOnChange(
-    ['viewer', 'facetMapping', 'searchValue', 'shouldHideUselessFacets'],
+    [
+      'viewer',
+      'facetMapping',
+      'searchValue',
+      'shouldHideUselessFacets',
+      'mappedFields',
+    ],
     ({
       viewer,
       facetMapping,
       searchValue,
       shouldHideUselessFacets,
       facetExclusionTest,
+      mappedFields,
+      fields,
     }) => {
       const parsedFacets = viewer.explore.cases.facets
         ? tryParseJSON(viewer.explore.cases.facets, {})
@@ -233,48 +200,49 @@ const enhance = compose(
           ])
       );
 
-      const filteredFacets = _.filter(_.values(facetMapping), facet =>
-        _.every([
-          facetMatchesQuery(facet, searchValue),
-          !facetExclusionTest(facet),
+      const filteredFacets = _.filter(mappedFields, field => {
+        return _.every([
+          facetMatchesQuery(field, searchValue),
+          // !facetExclusionTest(name),
           !shouldHideUselessFacets ||
-            Object.keys(usefulFacets).includes(facet.field),
-        ])
-      );
+            Object.keys(usefulFacets).includes(field.field),
+        ]);
+      });
+
       const fieldHash = {};
       let key = '';
-      for (const str of filteredFacets.map((f: any) => f.field)) {
-        const el = str.split('.');
-        let subFieldHash = fieldHash;
-        while (el.length >= 1) {
-          key = el.shift() || '';
-          if (el.length === 0) {
-            subFieldHash[key] = facetMapping['cases.' + str];
-          } else {
-            subFieldHash[key] = subFieldHash[key] || {};
-            subFieldHash = subFieldHash[key];
-          }
-        }
-      }
+      // for (const str of filteredFacets.map((f: any) => f.field)) {
+      //   const el = str.split('.');
+      //   let subFieldHash = fieldHash;
+      //   while (el.length >= 1) {
+      //     key = el.shift() || '';
+      //     if (el.length === 0) {
+      //       subFieldHash[key] = facetMapping['cases.' + str];
+      //     } else {
+      //       subFieldHash[key] = subFieldHash[key] || {};
+      //       subFieldHash = subFieldHash[key];
+      //     }
+      //   }
+      // }
       return {
         parsedFacets,
         filteredFacets,
         fieldHash,
       };
     }
-  ),
-  withHandlers({
-    fetchData: ({ setFacetMapping, setIsLoadingFacetMapping }) => async () => {
-      setIsLoadingFacetMapping(true);
-      const mapping = await fetchApi('gql/_mapping', {
-        headers: { 'Content-Type': 'application/json' },
-      });
-      setFacetMapping(mapping);
-      setIsLoadingFacetMapping(false);
-    },
-    handleQueryInputChange: ({ setSearchValue }) => (event: any) =>
-      setSearchValue(event.target.value),
-  })
+  )
+  // withHandlers({
+  //   fetchData: ({ setFacetMapping, setIsLoadingFacetMapping }) => async () => {
+  //     setIsLoadingFacetMapping(true);
+  //     const mapping = await fetchApi('gql/_mapping', {
+  //       headers: { 'Content-Type': 'application/json' },
+  //     });
+  //     setFacetMapping(mapping);
+  //     setIsLoadingFacetMapping(false);
+  //   },
+  //   handleQueryInputChange: ({ setSearchValue }) => (event: any) =>
+  //     setSearchValue(event.target.value),
+  // })
   // lifecycle({
   //   componentDidMount(): void {
   //     const { props }: any = this;
@@ -289,45 +257,36 @@ const ClinicalAggregationsComponent = withTheme(
   ({
     filteredFacets,
     facets,
-    facetMapping,
-    caseIdCollapsed,
-    setCaseIdCollapsed,
-    setAutocomplete,
+    // facetMapping,
+    // caseIdCollapsed,
+    // setCaseIdCollapsed,
+    // setAutocomplete,
     theme,
-    setUselessFacetVisibility,
+    // setUselessFacetVisibility,
     shouldHideUselessFacets,
     aggregations,
     relay,
-    toggledTree,
-    setToggledTree,
-    suggestions,
-    additionalFacetData,
-    searchValue,
-    setSearchValue,
-    handleQueryInputChange,
+    // toggledTree,
+    // setToggledTree,
+    // suggestions,
+    // additionalFacetData,
+    // searchValue,
+    // setSearchValue,
+    // handleQueryInputChange,
     fieldHash,
     parsedFacets,
-    isLoadingParsedFacets,
-    isLoadingFacetMapping,
+    // isLoadingParsedFacets,
+    // isLoadingFacetMapping,
     name,
     fields,
     ...props
   }: any): any => {
-    // console.log('parsed:', parsedFacets);
-    // console.log('fields: ', fields);
-    // return {
-    //   field: field.name,
-    //   description: field.description,
-    //   full: `${CLINICAL_PREFIXES['Demographic']}.${field.name}`,
-    //   type: field.type.name,
-    //   doc_type: 'cases',
-    // };
     return [
       <div>
         <h3>{name}</h3>
         <Column>
           {' '}
-          {fields.map((facet, i) => {
+          {filteredFacets.map((facet, i) => {
             return (
               <FacetWrapper
                 relayVarName="exploreCaseCustomFacetFields"
@@ -353,85 +312,6 @@ const ClinicalAggregationsComponent = withTheme(
           })}
         </Column>
       </div>,
-      // <div key="header">
-      //   <FacetHeader
-      //     title="Case"
-      //     field="cases.case_id"
-      //     collapsed={caseIdCollapsed}
-      //     setCollapsed={setCaseIdCollapsed}
-      //     description={
-      //       'Enter UUID or ID of Case, Sample, Portion, Slide, Analyte or Aliquot'
-      //     }
-      //   />
-      //   <SuggestionFacet
-      //     title="Case"
-      //     collapsed={caseIdCollapsed}
-      //     doctype="cases"
-      //     fieldNoDoctype="case_id"
-      //     placeholder="e.g. TCGA-A5-A0G2, 432fe4a9-2..."
-      //     hits={suggestions}
-      //     setAutocomplete={setAutocomplete}
-      //     dropdownItem={(x: any) => (
-      //       <Row>
-      //         <CaseIcon style={{ paddingRight: '1rem', paddingTop: '1rem' }} />
-      //         <div>
-      //           <div style={{ fontWeight: 'bold' }}>{x.case_id}</div>
-      //           <div style={{ fontSize: '80%' }}>{x.submitter_id}</div>
-      //           {x.project.project_id}
-      //         </div>
-      //       </Row>
-      //     )}
-      //   />
-      //   <UploadSetButton
-      //     type="case"
-      //     style={{
-      //       width: '100%',
-      //       borderBottom: `1px solid ${theme.greyScale5}`,
-      //       padding: '0 1.2rem 1rem',
-      //     }}
-      //     UploadModal={UploadCaseSet}
-      //     defaultQuery={{
-      //       pathname: '/exploration',
-      //       query: { searchTableTab: 'cases' },
-      //     }}
-      //     idField="cases.case_id"
-      //   >
-      //     Upload Case Set
-      //   </UploadSetButton>
-      // </div>,
-      //
-      // <Row style={{ marginRight: '1rem', marginTop: '0.5rem' }} key="row">
-      //   <MagnifyingGlass />
-      //   <Input
-      //     style={{
-      //       borderRadius: '4px',
-      //       marginBottom: '6px',
-      //       marginLeft: '0.5rem',
-      //     }}
-      //     defaultValue={searchValue}
-      //     onChange={handleQueryInputChange}
-      //     placeholder={'Search...'}
-      //     aria-label="Search..."
-      //     autoFocus
-      //   />
-      // </Row>,
-      // <label key="label">
-      //   <input
-      //     className="test-filter-useful-facet"
-      //     type="checkbox"
-      //     onChange={event => setUselessFacetVisibility(event.target.checked)}
-      //     checked={shouldHideUselessFacets}
-      //     style={{ margin: '12px' }}
-      //   />
-      //   Only show fields with values (
-      //   {isLoadingParsedFacets || isLoadingFacetMapping
-      //     ? '...'
-      //     : Object.keys(filteredFacets).length}{' '}
-      //   fields now)
-      // </label>,
-      // ...clinicalFacetTypes.map(facetType => {
-      //   return <ClinicalFacet key={facetType} name={facetType} />;
-      // }),
 
       // ...advancedPresetFacets.map(facet => {
       //   return (

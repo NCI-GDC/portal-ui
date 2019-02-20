@@ -43,19 +43,20 @@ const fieldNameToTitle = fieldName =>
   fieldName
     .replace(/_|\./g, ' ')
     .split(' ')
-    .map(
-      word => (COMMON_PREPOSITIONS.includes(word) ? word : _.capitalize(word))
+    .map(word =>
+      COMMON_PREPOSITIONS.includes(word) ? word : _.capitalize(word)
     )
     .join(' ');
 
 const getFacetType = facet => {
+  const facetType = facet.type.toLowerCase();
   if (_.includes(facet.field, 'datetime')) {
     return 'datetime';
-  } else if (facet.type === 'terms') {
+  } else if (facetType === 'terms') {
     // on Annotations & Repo pages project_id is a terms facet
     // need a way to force an *_id field to return terms
     return 'terms';
-  } else if (facet.type === 'exact') {
+  } else if (facetType === 'exact') {
     return 'exact';
   } else if (
     _.some(['_id', '_uuid', 'md5sum', 'file_name'], idSuffix =>
@@ -63,7 +64,7 @@ const getFacetType = facet => {
     )
   ) {
     return 'exact';
-  } else if (facet.type === 'long' || facet.type === 'float') {
+  } else if (facetType === 'long' || facetType === 'float') {
     return 'range';
   }
   return 'terms';
@@ -106,7 +107,7 @@ const FacetWrapper = compose(
       title: displayTitle,
       collapsed,
     };
-    
+
     const facetComponent = {
       exact: () => (
         <ExactMatchFacet
@@ -143,6 +144,9 @@ const FacetWrapper = compose(
         />
       ),
     }[facetType]();
+    if (!aggregation) {
+      debugger;
+    }
     const hasValueSearch =
       facetType === 'terms' &&
       (aggregation || { buckets: [] }).buckets.filter(b => b.key !== '_missing')

@@ -24,7 +24,8 @@ export const SLIDE_IMAGE_ENDPOINT =
   localStorage.REACT_APP_SLIDE_IMAGE_ENDPOINT ||
   process.env.REACT_APP_SLIDE_IMAGE_ENDPOINT;
 
-export const AWG = localStorage.REACT_APP_AWG || process.env.REACT_APP_AWG || false;
+export const AWG =
+  localStorage.REACT_APP_AWG || process.env.REACT_APP_AWG || false;
 
 export const IS_AUTH_PORTAL =
   localStorage.REACT_APP_IS_AUTH_PORTAL ||
@@ -44,7 +45,7 @@ export const API_OVERRIDE_KEYS = [
 ];
 
 export const LOCAL_STORAGE_API_OVERRIDE = API_OVERRIDE_KEYS.some(
-  k => localStorage[k],
+  k => localStorage[k]
 );
 
 export const DATA_CATEGORIES = {
@@ -301,3 +302,24 @@ export const FAKE_USER = process.env.REACT_APP_ALLOW_FAKE_USER
   : null;
 
 export const IS_DEV = process.env.NODE_ENV === 'development';
+
+export const CLINICAL_PREFIXES = {
+  Diagnosis: 'cases.diagnoses',
+  Treatment: 'cases.diagnoses.treatments',
+  Exposure: 'cases.exposures',
+  Demographic: 'cases.demographic',
+  'Follow up': '',
+  'Molecular test': '',
+};
+
+export const CLINICAL_BLACKLIST = [
+  'state',
+  'score',
+  'submitter_id',
+  'id',
+  'demographic_id',
+  'updated_datetime',
+  'diagnosis_id',
+  'created_datetime',
+  'exposure_id',
+];

@@ -15,12 +15,15 @@ import NoResultsMessage from '@ncigdc/components/NoResultsMessage';
 import CaseAggregations from '@ncigdc/containers/explore/CaseAggregations';
 import GeneAggregations from '@ncigdc/containers/explore/GeneAggregations';
 import SSMAggregations from '@ncigdc/containers/explore/SSMAggregations';
-import ClinicalAggregations from '@ncigdc/containers/explore/ClinicalAggregations';
+import ClinicalAggregations from '@ncigdc/modern_components/ClinicalAggregations';
 import { CreateExploreCaseSetButton } from '@ncigdc/modern_components/withSetAction';
 import { replaceFilters } from '@ncigdc/utils/filters';
 import { stringifyJSONParam } from '@ncigdc/utils/uri';
-import { Row } from '@ncigdc/uikit/Flex';
+import { Row, Column } from '@ncigdc/uikit/Flex';
 import Button from '@ncigdc/uikit/Button';
+import withFacets from '@ncigdc/modern_components/IntrospectiveType/Introspective.relay.js';
+
+import { CLINICAL_PREFIXES, CLINICAL_BLACKLIST } from '@ncigdc/utils/constants';
 
 export type TProps = {
   filters: {},
@@ -94,6 +97,46 @@ function setVariables({ relay, filters }) {
   });
 }
 
+const ClinicalAggregationsWithFacets = withFacets(props => {
+  if (!props.__type) {
+    return <div>Data not available for {props.name}</div>;
+  }
+  const { fields, name, description } = props.__type;
+  if (!fields) {
+    return <div>No fields found</div>;
+  }
+  const facetPrefix = CLINICAL_PREFIXES[props.name].replace('cases.', '');
+  const whitelistedFields = fields.filter(
+    field => !CLINICAL_BLACKLIST.includes(field.name)
+  );
+  const facets = whitelistedFields
+    .map(field => `${facetPrefix}.${field.name}`)
+    .join();
+
+  const parsedFields = whitelistedFields.map(f => {
+    const fType = f.type.name === 'String' ? 'terms' : f.type.name;
+    return {
+      field: f.name,
+      description: f.description,
+      full: `${CLINICAL_PREFIXES[props.name]}.${f.name}`,
+      type: fType,
+      doc_type: 'cases',
+    };
+  });
+
+  return (
+    <ClinicalAggregations
+      facets={facets}
+      fields={parsedFields}
+      name={props.name}
+    />
+  );
+});
+
+const clinicalFacetTypes = Object.keys(CLINICAL_PREFIXES).filter(
+  key => key !== 'Follow up' && key !== 'Molecular test'
+);
+
 const enhance = compose(
   withRouter,
   lifecycle({
@@ -117,38 +160,51 @@ export const ExplorePageComponent = ({
   <SearchPage
     className="test-explore-page"
     facetTabs={[
-      {
-        id: 'cases',
-        text: 'Cases',
-        component: (
-          <CaseAggregations
-            facets={viewer.explore.customCaseFacets}
-            aggregations={viewer.explore.cases.aggregations}
-            suggestions={get(viewer, 'autocomplete_cases.hits', [])}
-            setAutocomplete={(value, onReadyStateChange) =>
-              relay.setVariables(
-                { idAutocompleteCases: value, runAutocompleteCases: !!value },
-                onReadyStateChange
-              )}
-          />
-        ),
-      },
+      // {
+      //   id: 'cases',
+      //   text: 'Cases',
+      //   component: (
+      //     <CaseAggregations
+      //       // facets={viewer.explore.customCaseFacets}
+      //       facets={null}
+      //       aggregations={viewer.explore.cases.aggregations}
+      //       suggestions={get(viewer, 'autocomplete_cases.hits', [])}
+      //       setAutocomplete={(value, onReadyStateChange) =>
+      //         relay.setVariables(
+      //           { idAutocompleteCases: value, runAutocompleteCases: !!value },
+      //           onReadyStateChange
+      //         )
+      //       }
+      //     />
+      //   ),
+      // },
       {
         id: 'clinical',
         text: 'Clinical',
         component: (
-          <ClinicalAggregations
-            facets={viewer.explore.customCaseFacets}
-            docType="cases"
-            relayVarName="exploreCaseCustomFacetFields"
-            aggregations={viewer.explore.cases.aggregations}
-            suggestions={get(viewer, 'autocomplete_cases.hits', [])}
-            setAutocomplete={(value, onReadyStateChange) =>
-              relay.setVariables(
-                { idAutocompleteCases: value, runAutocompleteCases: !!value },
-                onReadyStateChange
-              )}
-          />
+          <Column>
+            {clinicalFacetTypes.map(facetType => (
+              <ClinicalAggregationsWithFacets
+                key={facetType}
+                name={facetType}
+                // facets={viewer.explore.customCaseFacets}
+                docType="cases"
+                relayVarName="exploreCaseCustomFacetFields"
+                // aggregations={viewer.explore.cases.aggregations}
+                relay={relay}
+                suggestions={get(viewer, 'autocomplete_cases.hits', [])}
+                setAutocomplete={(value, onReadyStateChange) =>
+                  relay.setVariables(
+                    {
+                      idAutocompleteCases: value,
+                      runAutocompleteCases: !!value,
+                    },
+                    onReadyStateChange
+                  )
+                }
+              />
+            ))}
+          </Column>
         ),
       },
       {
@@ -163,7 +219,8 @@ export const ExplorePageComponent = ({
               relay.setVariables(
                 { idAutocompleteGenes: value, runAutocompleteGenes: !!value },
                 onReadyStateChange
-              )}
+              )
+            }
           />
         ),
       },
@@ -180,7 +237,8 @@ export const ExplorePageComponent = ({
               relay.setVariables(
                 { idAutocompleteSsms: value, runAutocompleteSsms: !!value },
                 onReadyStateChange
-              )}
+              )
+            }
           />
         ),
       },
@@ -222,7 +280,8 @@ export const ExplorePageComponent = ({
               onClick={() =>
                 push({
                   pathname: '/repository',
-                })}
+                })
+              }
             >
               View Files in Repository
             </Button>
@@ -333,13 +392,7 @@ export const ExplorePageQuery = {
           }
         }
         explore {
-          customCaseFacets: cases {
-            ${CaseAggregations.getFragment('facets')}
-          }
           cases {
-            aggregations(filters: $filters aggregations_filter_themselves: false) {
-              ${CaseAggregations.getFragment('aggregations')}
-            }
             hits(first: $cases_size offset: $cases_offset filters: $filters score: $cases_score sort: $cases_sort) {
               total
             }

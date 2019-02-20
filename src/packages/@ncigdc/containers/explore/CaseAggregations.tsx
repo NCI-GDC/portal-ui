@@ -10,59 +10,56 @@ import {
   withPropsOnChange,
 } from 'recompose';
 
-import Modal from '@ncigdc/uikit/Modal';
+// import Modal from '@ncigdc/uikit/Modal';
 import SuggestionFacet from '@ncigdc/components/Aggregations/SuggestionFacet';
 import { Row } from '@ncigdc/uikit/Flex';
-import FacetSelection from '@ncigdc/components/FacetSelection';
 import FacetWrapper from '@ncigdc/components/FacetWrapper';
 import UploadSetButton from '@ncigdc/components/UploadSetButton';
 import { withTheme } from '@ncigdc/theme';
 import CaseIcon from '@ncigdc/theme/icons/Case';
 import withFacetSelection from '@ncigdc/utils/withFacetSelection';
 import escapeForRelay from '@ncigdc/utils/escapeForRelay';
-import tryParseJSON from '@ncigdc/utils/tryParseJSON';
+// import tryParseJSON from '@ncigdc/utils/tryParseJSON';
 import FacetHeader from '@ncigdc/components/Aggregations/FacetHeader';
 import { UploadCaseSet } from '@ncigdc/components/Modals/UploadSet';
 
 import { IBucket } from '@ncigdc/components/Aggregations/types';
 import { CaseAggregationsQuery } from './explore.relay';
 export interface ITProps {
-  caseIdCollapsed: boolean,
-  setCaseIdCollapsed: (caseIdCollapsed: boolean) => void,
-  relay: any,
-  facets: { facets: string },
-  parsedFacets: any,
+  caseIdCollapsed: boolean;
+  setCaseIdCollapsed: (caseIdCollapsed: boolean) => void;
+  relay: any;
   aggregations: {
-    demographic__ethnicity: { buckets: [IBucket] },
-    demographic__gender: { buckets: [IBucket] },
-    demographic__race: { buckets: [IBucket] },
-    diagnoses__vital_status: { buckets: [IBucket] },
-    diagnoses__days_to_death: { max: number, min: number },
-    diagnoses__age_at_diagnosis: { max: number, min: number },
-    disease_type: { buckets: [IBucket] },
-    primary_site: { buckets: [IBucket] },
-    project__program__name: { buckets: [IBucket] },
-    project__project_id: { buckets: [IBucket] },
-  },
+    demographic__ethnicity: { buckets: [IBucket] };
+    demographic__gender: { buckets: [IBucket] };
+    demographic__race: { buckets: [IBucket] };
+    diagnoses__vital_status: { buckets: [IBucket] };
+    diagnoses__days_to_death: { max: number; min: number };
+    diagnoses__age_at_diagnosis: { max: number; min: number };
+    disease_type: { buckets: [IBucket] };
+    primary_site: { buckets: [IBucket] };
+    project__program__name: { buckets: [IBucket] };
+    project__project_id: { buckets: [IBucket] };
+  };
   hits: {
     edges: Array<{
       node: {
-        id: string,
-      },
-    }>,
-  },
-  setAutocomplete: any,
-  theme: any,
-  filters: any,
-  suggestions: any,
-  handleSelectFacet: any,
-  handleResetFacets: (event: any) => void,
-  handleRequestRemoveFacet: any,
-  shouldShowFacetSelection: boolean,
-  facetExclusionTest: any,
-  setShouldShowFacetSelection: any,
-  advancedFilter: boolean,
-  setAdvancedFilter: any,
+        id: string;
+      };
+    }>;
+  };
+  setAutocomplete: any;
+  theme: any;
+  filters: any;
+  suggestions: any;
+  handleSelectFacet: any;
+  handleResetFacets: (event: any) => void;
+  handleRequestRemoveFacet: any;
+  shouldShowFacetSelection: boolean;
+  facetExclusionTest: any;
+  setShouldShowFacetSelection: any;
+  advancedFilter: boolean;
+  setAdvancedFilter: any;
 }
 
 const presetFacets = [
@@ -135,9 +132,6 @@ const enhance = compose(
       filters,
     })
   ),
-  withPropsOnChange(['facets'], ({ facets }) => ({
-    parsedFacets: facets.facets ? tryParseJSON(facets.facets, {}) : {},
-  })),
   lifecycle({
     componentDidMount(): void {
       const { relay, filters }: any = this.props;
@@ -152,8 +146,6 @@ export const CaseAggregationsComponent = ({
   caseIdCollapsed,
   setCaseIdCollapsed,
   relay,
-  facets,
-  parsedFacets,
   aggregations,
   hits,
   setAutocomplete,
@@ -170,21 +162,6 @@ export const CaseAggregationsComponent = ({
   setAdvancedFilter,
 }: ITProps) => (
   <div className="test-case-aggregations">
-    <Modal
-      isOpen={shouldShowFacetSelection}
-      style={{ content: { border: 0, padding: '15px' } }}
-    >
-      <FacetSelection
-        title="Add a Case Filter"
-        relayVarName="exploreCaseCustomFacetFields"
-        docType="cases"
-        onSelect={handleSelectFacet}
-        onRequestClose={() => setShouldShowFacetSelection(false)}
-        excludeFacetsBy={facetExclusionTest}
-        additionalFacetData={parsedFacets}
-        relay={relay}
-      />
-    </Modal>
     <FacetHeader
       title="Case"
       field="cases.case_id"

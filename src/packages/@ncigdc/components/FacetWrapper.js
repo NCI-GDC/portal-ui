@@ -144,9 +144,7 @@ const FacetWrapper = compose(
         />
       ),
     }[facetType]();
-    if (!aggregation) {
-      debugger;
-    }
+
     const hasValueSearch =
       facetType === 'terms' &&
       (aggregation || { buckets: [] }).buckets.filter(b => b.key !== '_missing')

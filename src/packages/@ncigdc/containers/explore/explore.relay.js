@@ -2,15 +2,9 @@ import Relay from 'react-relay/classic';
 
 export const CaseAggregationsQuery = {
   initialVariables: {
-    exploreCaseCustomFacetFields: '',
     filters: null,
   },
   fragments: {
-    facets: () => Relay.QL`
-      fragment on ExploreCases {
-        facets(facets: $exploreCaseCustomFacetFields filters: $filters)
-      }
-    `,
     aggregations: () => Relay.QL`
       fragment on ECaseAggregations {
         primary_site {

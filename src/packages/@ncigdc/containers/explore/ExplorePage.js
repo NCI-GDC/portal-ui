@@ -160,24 +160,22 @@ export const ExplorePageComponent = ({
   <SearchPage
     className="test-explore-page"
     facetTabs={[
-      // {
-      //   id: 'cases',
-      //   text: 'Cases',
-      //   component: (
-      //     <CaseAggregations
-      //       // facets={viewer.explore.customCaseFacets}
-      //       facets={null}
-      //       aggregations={viewer.explore.cases.aggregations}
-      //       suggestions={get(viewer, 'autocomplete_cases.hits', [])}
-      //       setAutocomplete={(value, onReadyStateChange) =>
-      //         relay.setVariables(
-      //           { idAutocompleteCases: value, runAutocompleteCases: !!value },
-      //           onReadyStateChange
-      //         )
-      //       }
-      //     />
-      //   ),
-      // },
+      {
+        id: 'cases',
+        text: 'Cases',
+        component: (
+          <CaseAggregations
+            aggregations={viewer.explore.cases.aggregations}
+            suggestions={get(viewer, 'autocomplete_cases.hits', [])}
+            setAutocomplete={(value, onReadyStateChange) =>
+              relay.setVariables(
+                { idAutocompleteCases: value, runAutocompleteCases: !!value },
+                onReadyStateChange
+              )
+            }
+          />
+        ),
+      },
       {
         id: 'clinical',
         text: 'Clinical',
@@ -187,10 +185,8 @@ export const ExplorePageComponent = ({
               <ClinicalAggregationsWithFacets
                 key={facetType}
                 name={facetType}
-                // facets={viewer.explore.customCaseFacets}
                 docType="cases"
                 relayVarName="exploreCaseCustomFacetFields"
-                // aggregations={viewer.explore.cases.aggregations}
                 relay={relay}
                 suggestions={get(viewer, 'autocomplete_cases.hits', [])}
                 setAutocomplete={(value, onReadyStateChange) =>
@@ -393,6 +389,9 @@ export const ExplorePageQuery = {
         }
         explore {
           cases {
+            aggregations(filters: $filters aggregations_filter_themselves: false) {
+              ${CaseAggregations.getFragment('aggregations')}
+            }
             hits(first: $cases_size offset: $cases_offset filters: $filters score: $cases_score sort: $cases_sort) {
               total
             }

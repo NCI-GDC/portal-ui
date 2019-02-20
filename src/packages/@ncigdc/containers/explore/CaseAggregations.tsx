@@ -23,6 +23,7 @@ import escapeForRelay from '@ncigdc/utils/escapeForRelay';
 import tryParseJSON from '@ncigdc/utils/tryParseJSON';
 import FacetHeader from '@ncigdc/components/Aggregations/FacetHeader';
 import { UploadCaseSet } from '@ncigdc/components/Modals/UploadSet';
+import presetFacets from '@ncigdc/containers/explore/presetFacets';
 
 import { IBucket } from '@ncigdc/components/Aggregations/types';
 import { CaseAggregationsQuery } from './explore.relay';
@@ -65,51 +66,6 @@ export interface ITProps {
   setAdvancedFilter: any,
 }
 
-const presetFacets = [
-  {
-    title: 'Case',
-    field: 'case_id',
-    full: 'cases.case_id',
-    doc_type: 'cases',
-    type: 'id',
-  },
-  {
-    title: 'Case ID',
-    field: 'submitter_id',
-    full: 'cases.submitter_id',
-    doc_type: 'cases',
-    type: 'id',
-    placeholder: 'eg. TCGA-DD*, *DD*, TCGA-DD-AAVP',
-  },
-  {
-    title: 'Primary Site',
-    field: 'primary_site',
-    full: 'cases.primary_site',
-    doc_type: 'cases',
-    type: 'keyword',
-  },
-  {
-    title: 'Program',
-    field: 'project.program.name',
-    full: 'cases.project.program.name',
-    doc_type: 'cases',
-    type: 'keyword',
-  },
-  {
-    title: 'Project',
-    field: 'project.project_id',
-    full: 'cases.project.project_id',
-    doc_type: 'cases',
-    type: 'terms',
-  },
-  {
-    title: 'Disease Type',
-    field: 'disease_type',
-    full: 'cases.disease_type',
-    doc_type: 'cases',
-    type: 'keyword',
-  },
-];
 const entityType = 'ExploreCases';
 const presetFacetFields = presetFacets.map(x => x.field);
 

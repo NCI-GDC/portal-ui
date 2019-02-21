@@ -1,6 +1,12 @@
 // @flow
 import React from 'react';
-import { compose, withState, withHandlers, defaultProps } from 'recompose';
+import {
+  compose,
+  withState,
+  withHandlers,
+  defaultProps,
+  lifecycle,
+} from 'recompose';
 
 import Input from '@ncigdc/uikit/Form/Input';
 import Pencil from '@ncigdc/theme/icons/Pencil';
@@ -36,6 +42,13 @@ export default compose(
         if (isEditing && value !== text) {
           handleSave(value);
         }
+      }
+    },
+  }),
+  lifecycle({
+    componentDidUpdate({ text, value, setValue, isEditing }): void {
+      if (!isEditing && value !== text) {
+        setValue(text);
       }
     },
   })

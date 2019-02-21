@@ -5,7 +5,7 @@ import React from 'react';
 import { ApiOverrideBanner } from '@ncigdc/components/DismissibleBanner';
 import { fetchApi } from '@ncigdc/utils/ajax';
 import { LOCAL_STORAGE_API_OVERRIDE } from '@ncigdc/utils/constants';
-import { REHYDRATE } from 'redux-persist/constants';
+import { REHYDRATE } from 'redux-persist';
 import { uniqBy } from 'lodash';
 const NOTIFICATION_SUCCESS = 'NOTIFICATION_SUCCESS';
 const NOTIFICATION_DISMISS = 'NOTIFICATION_DISMISS';
@@ -70,8 +70,8 @@ const reducer = (state: TState = initialState, action: TAction) => {
   switch (action.type) {
     case REHYDRATE: {
       const incoming = uniqBy(
-        action.payload.bannerNotification || [],
-        ({ id }) => id
+        (action.payload && action.payload.bannerNotification) || [],
+        ({ id }) => id,
       ).filter(({ id }) => id !== 'api_override');
       if (incoming) return [...state, ...incoming];
       return state;

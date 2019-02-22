@@ -69,7 +69,10 @@ function undoNotification(dispatch, analysis) {
 // analysis here is all analyses in localStorage
 const AnalysisResult = ({ analysis, query, dispatch, push }) => {
   const analysisId = query.analysisId || '';
-  const currentIndex = analysis.findIndex(a => a.id === analysisId);
+  const currentIndex = Math.max(
+    analysis.findIndex(a => a.id === analysisId),
+    0
+  );
   const analysisType = analysis[currentIndex].type;
   const tabMinWidth =
     analysisType === 'clinical_data' ? { minWidth: 1200 } : {};
@@ -78,7 +81,7 @@ const AnalysisResult = ({ analysis, query, dispatch, push }) => {
       side
       style={{ padding: '1rem 0.7rem', ...tabMinWidth }}
       queryParam="analysisId"
-      defaultIndex={Math.max(currentIndex, 0)}
+      defaultIndex={currentIndex}
       tabToolbar={
         <Button
           style={{ margin: '5px 5px 0 0' }}

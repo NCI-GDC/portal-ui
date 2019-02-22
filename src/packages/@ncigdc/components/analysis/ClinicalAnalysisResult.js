@@ -22,7 +22,7 @@ import { visualizingButton } from '@ncigdc/theme/mixins';
 import { zDepth1 } from '@ncigdc/theme/mixins';
 import EntityPageHorizontalTable from '@ncigdc/components/EntityPageHorizontalTable';
 import Dropdown from '@ncigdc/uikit/Dropdown';
-import VariableCard from './VariableCard';
+import ClinicalVariableCard from '@ncigdc/modern_components/ClinicalVariableCard';
 import DropdownItem from '@ncigdc/uikit/DropdownItem';
 import Input from '@ncigdc/uikit/Form/Input';
 import { withTheme } from '@ncigdc/theme';
@@ -417,17 +417,16 @@ const ClinicalAnalysisResult = ({
             }}
           >
             {' '}
-            {_.map(variables, (varProperties, varFieldname) => {
+            {_.map(variables, (varProperties, varFieldName) => {
               return (
-                <VariableCard
-                  key={varFieldname}
-                  fieldName={varFieldname}
+                <ClinicalVariableCard
+                  key={varFieldName}
+                  fieldName={varFieldName}
                   variable={varProperties}
-                  data={[]}
                   plots={plotTypes[varProperties.plotTypes || 'categorical']}
-                  variableHeadings={[]}
                   style={{ minWidth: controlPanelExpanded ? 310 : 290 }}
                   id={id}
+                  facetField={varFieldName.replace('cases.', '')}
                 />
               );
             })}

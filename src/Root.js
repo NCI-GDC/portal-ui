@@ -21,7 +21,7 @@ import setupStore from '@ncigdc/dux';
 import { fetchApiVersionInfo } from '@ncigdc/dux/versionInfo';
 import { viewerQuery } from '@ncigdc/routes/queries';
 import Portal from './Portal';
-import { API, IS_AUTH_PORTAL } from '@ncigdc/utils/constants';
+import { API, IS_AUTH_PORTAL, AWG } from '@ncigdc/utils/constants';
 import { fetchUser, forceLogout } from '@ncigdc/dux/auth';
 import Login from '@ncigdc/routes/Login';
 import { redirectToLogin } from '@ncigdc/utils/auth';
@@ -48,7 +48,7 @@ Relay.injectNetworkLayer(
       forceRetry: (cb, delay) => {
         window.forceRelayRetry = cb;
         console.log(
-          `call \`forceRelayRetry()\` for immediately retry! Or wait ${delay} ms.`,
+          `call \`forceRelayRetry()\` for immediately retry! Or wait ${delay} ms.`
         );
       },
       statusCodes: retryStatusCodes,
@@ -62,7 +62,7 @@ Relay.injectNetworkLayer(
           [
             req.relayReqObj._printedQuery.text,
             JSON.stringify(req.relayReqObj._printedQuery.variables),
-          ].join(':'),
+          ].join(':')
         );
 
       req.url = `${url}?hash=${hash}`;
@@ -125,7 +125,7 @@ Relay.injectNetworkLayer(
           }
         });
     },
-  ]),
+  ])
 );
 
 export const { store, persistor } = setupStore({
@@ -140,9 +140,10 @@ store.dispatch(fetchApiVersionInfo());
 
 if (process.env.NODE_ENV !== 'development') {
   store.dispatch(fetchUser());
-  store.dispatch(fetchNotifications());
+  if (!AWG) {
+    store.dispatch(fetchNotifications());
+  }
 }
-
 class RelayRoute extends Relay.Route {
   static routeName = 'RootRoute';
   static queries = viewerQuery;

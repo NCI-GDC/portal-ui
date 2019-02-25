@@ -160,7 +160,6 @@ const VariableCard: React.ComponentType<IVariableCardProps> = ({
             style={{
               marginLeft: 3,
               pointerEvents: 'initial',
-              // pointerEvents: msg ? 'none' : 'initial',
             }}
             // id={id}
             type="checkbox"
@@ -177,8 +176,9 @@ const VariableCard: React.ComponentType<IVariableCardProps> = ({
     if (!rawData) {
       return {};
     }
+    // TODO: what num format for stat counts?
     return _.map((rawData || { stats: {} }).stats, (count, stat) => {
-      return { stat, count, style: { textAlign: 'right' } };
+      return { stat, count: Math.floor(count), style: { textAlign: 'right' } };
     });
   };
 
@@ -214,11 +214,15 @@ const VariableCard: React.ComponentType<IVariableCardProps> = ({
   // ]
 
   const getHeadings = type => {
-    console.log('type: ', type);
     return type === 'continuous'
       ? [
           { key: 'stat', title: 'Stat' },
-          { key: 'count', title: 'Count', thStyle: { textAlign: 'right' } },
+          {
+            key: 'count',
+            title: 'Count',
+            thStyle: { textAlign: 'right' },
+            tdStyle: { textAlign: 'right' },
+          },
         ]
       : [
           { key: 'select', title: 'Select' },
@@ -364,7 +368,7 @@ const VariableCard: React.ComponentType<IVariableCardProps> = ({
           <EntityPageHorizontalTable
             data={data}
             headings={getHeadings(variable.plotTypes)}
-            // tableStyle={{ height: 200, overflow: 'scroll' }}
+            tableContainerStyle={{ height: 175, overflow: 'scroll' }}
           />
         </div>
       )}

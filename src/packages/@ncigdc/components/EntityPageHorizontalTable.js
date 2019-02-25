@@ -36,6 +36,7 @@ const EntityPageHorizontalTable = ({
   tableId,
   idKey,
   dividerStyle,
+  tableContainerStyle,
   ...props
 }) => (
   <Column
@@ -44,28 +45,29 @@ const EntityPageHorizontalTable = ({
       flexWrap: 'wrap',
       overflow: 'auto',
       ...style,
+      ...tableContainerStyle,
     }}
   >
     {(title || rightComponent) && (
-        <h1
-          style={{
-            color: theme.greyScale7,
-            width: '100%',
-            fontSize: '2rem',
-            lineHeight: '1.4em',
-            fontWeight: 'normal',
-            marginTop: 0,
-            marginBottom: 0,
-            padding: '1rem',
-            backgroundColor: '#fff',
-            display: 'flex',
-            justifyContent: 'space-between',
-            ...titleStyle,
-          }}
-        >
-          {title || <span />} {rightComponent}
-        </h1>
-      )}
+      <h1
+        style={{
+          color: theme.greyScale7,
+          width: '100%',
+          fontSize: '2rem',
+          lineHeight: '1.4em',
+          fontWeight: 'normal',
+          marginTop: 0,
+          marginBottom: 0,
+          padding: '1rem',
+          backgroundColor: '#fff',
+          display: 'flex',
+          justifyContent: 'space-between',
+          ...titleStyle,
+        }}
+      >
+        {title || <span />} {rightComponent}
+      </h1>
+    )}
     {!!data.length && (
       <Table
         id={tableId}
@@ -95,7 +97,7 @@ const EntityPageHorizontalTable = ({
               >
                 {s}
               </Th>
-            )),
+            ))
         )}
         body={
           <tbody>
@@ -126,7 +128,7 @@ const EntityPageHorizontalTable = ({
                       )}
                       {v}
                     </Td>
-                  )),
+                  ))
                 )}
               </Tr>
             ))}

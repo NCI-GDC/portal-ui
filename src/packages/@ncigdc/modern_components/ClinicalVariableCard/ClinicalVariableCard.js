@@ -145,8 +145,6 @@ const VariableCard: React.ComponentType<IVariableCardProps> = ({
   id,
   parsedFacets,
 }) => {
-  console.log('buckets?', _.values(parsedFacets)[0].buckets);
-  console.log('stats? ', _.values(parsedFacets)[0].stats);
   const getCategoricalData = rawData => {
     if (!rawData) {
       return [];
@@ -173,7 +171,7 @@ const VariableCard: React.ComponentType<IVariableCardProps> = ({
   };
 
   const getContinuousData = rawData => {
-    if (!rawData) {
+    if (_.isEmpty(rawData)) {
       return {};
     }
     // TODO: what num format for stat counts?
@@ -221,7 +219,6 @@ const VariableCard: React.ComponentType<IVariableCardProps> = ({
             key: 'count',
             title: 'Count',
             thStyle: { textAlign: 'right' },
-            tdStyle: { textAlign: 'right' },
           },
         ]
       : [

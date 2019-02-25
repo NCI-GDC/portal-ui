@@ -36,7 +36,7 @@ const EntityPageHorizontalTable = ({
   tableId,
   idKey,
   dividerStyle,
-  tableContainerStyle,
+  tableContainerStyle = {},
   ...props
 }) => (
   <Column

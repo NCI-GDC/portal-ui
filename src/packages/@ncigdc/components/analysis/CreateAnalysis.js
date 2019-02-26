@@ -19,6 +19,7 @@ const defaultVariables = {
     type: 'Demographic',
     active_chart: 'survival',
     active_calculation: 'number',
+    active_survival: 'overall',
     plotTypes: 'categorical',
     bins: [],
   },
@@ -27,6 +28,7 @@ const defaultVariables = {
     type: 'Demographic',
     active_chart: 'survival',
     active_calculation: 'number',
+    active_survival: 'overall',
     plotTypes: 'categorical',
     bins: [],
   },
@@ -35,6 +37,7 @@ const defaultVariables = {
     type: 'Demographic',
     active_chart: 'survival',
     active_calculation: 'number',
+    active_survival: 'overall',
     plotTypes: 'categorical',
     bins: [],
   },
@@ -42,6 +45,7 @@ const defaultVariables = {
     type: 'Diagnosis',
     active_chart: 'survival',
     active_calculation: 'number',
+    active_survival: 'overall',
     plotTypes: 'continuous',
     bins: [],
   },
@@ -50,6 +54,7 @@ const defaultVariables = {
     type: 'Diagnosis',
     active_chart: 'survival',
     active_calculation: 'number',
+    active_survival: 'overall',
     plotTypes: 'continuous',
     bins: [],
   },
@@ -57,6 +62,7 @@ const defaultVariables = {
     type: 'Diagnosis',
     active_chart: 'survival',
     active_calculation: 'number',
+    active_survival: 'overall',
     plotTypes: 'categorical',
     bins: [],
   },
@@ -142,7 +148,11 @@ const CreateAnalysis = ({ analysis, setAnalysis, dispatch, push }) => {
               <Row spacing={5}>
                 <Button onClick={() => setAnalysis(analysis)}>Select</Button>
                 {/* disabling demo button until demo data is ready */}
-                <DemoButton demoData={analysis.demoData} type={analysis.type} disabled={analysis.type === 'clinical_data'} />
+                <DemoButton
+                  demoData={analysis.demoData}
+                  type={analysis.type}
+                  disabled={analysis.type === 'clinical_data'}
+                />
               </Row>
             </div>
           </Row>

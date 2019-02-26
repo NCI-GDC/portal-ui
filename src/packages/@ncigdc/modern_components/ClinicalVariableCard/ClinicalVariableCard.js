@@ -135,6 +135,14 @@ const enhance = compose(
   }))
 );
 
+const fakeContinuousBuckets = [
+  { key: 'range 1', doc_count: 1 },
+  { key: 'range 2', doc_count: 2 },
+  { key: 'range 3', doc_count: 3 },
+  { key: 'range 4', doc_count: 4 },
+  { key: 'range 5', doc_count: 5 },
+];
+
 const VariableCard: React.ComponentType<IVariableCardProps> = ({
   variable,
   fieldName,
@@ -145,9 +153,28 @@ const VariableCard: React.ComponentType<IVariableCardProps> = ({
   id,
   parsedFacets,
 }) => {
-  const getCategoricalData = rawData => {
+  const getCategoricalData = (rawData, type) => {
     if (!rawData) {
       return [];
+    }
+    if (type === 'continuous') {
+      return fakeContinuousBuckets.map(b => ({
+        ...b,
+        select: (
+          <input
+            style={{
+              marginLeft: 3,
+              pointerEvents: 'initial',
+            }}
+            // id={id}
+            type="checkbox"
+            // value={setId}
+            // disabled={msg}
+            onChange={e => console.log(e.target.value)}
+            checked={false}
+          />
+        ),
+      }));
     }
     return (rawData || { buckets: [] }).buckets
       .filter(bucket => bucket.key !== '_missing')
@@ -167,6 +194,49 @@ const VariableCard: React.ComponentType<IVariableCardProps> = ({
             checked={false}
           />
         ),
+        ...(variable.active_chart === 'survival'
+          ? {
+              survival: (
+                <Tooltip
+                  Component={vizButtons.survival.title}
+                  // Component={
+                  //   hasEnoughSurvivalDataOnPrimaryCurve
+                  //     ? `Click icon to plot ${node.symbol}`
+                  //     : 'Not enough survival data'
+                  // }
+                >
+                  <Button
+                    style={{
+                      padding: '2px 3px',
+                      backgroundColor: '#666',
+                      color: 'white',
+                      margin: '0 auto',
+                    }}
+                    // disabled={!hasEnoughSurvivalDataOnPrimaryCurve}
+                    onClick={() => {
+                      console.log('survival plot');
+                      // if (node.symbol !== selectedSurvivalData.id) {
+                      //   setSurvivalLoadingId(node.symbol);
+                      //   getSurvivalCurves({
+                      //     field: 'gene.symbol',
+                      //     value: node.symbol,
+                      //     currentFilters: defaultFilters,
+                      //   }).then((survivalData: ISelectedSurvivalDataProps) => {
+                      //     setSelectedSurvivalData(survivalData);
+                      //     setSurvivalLoadingId('');
+                      //   });
+                      // } else {
+                      //   setSelectedSurvivalData({});
+                      // }
+                    }}
+                  >
+                    {false ? <SpinnerIcon /> : <SurvivalIcon />}
+                    <Hidden>add to survival plot</Hidden>
+                  </Button>
+                </Tooltip>
+              ),
+            }
+          : {}),
       }));
   };
 
@@ -176,56 +246,42 @@ const VariableCard: React.ComponentType<IVariableCardProps> = ({
     }
     // TODO: what num format for stat counts?
     return _.map((rawData || { stats: {} }).stats, (count, stat) => {
-      return { stat, count: Math.floor(count), style: { textAlign: 'right' } };
+      return {
+        stat,
+        count: _.round(count, 2).toLocaleString(),
+      };
     });
   };
 
   let data =
-    variable.plotTypes === 'continuous'
+    variable.active_chart === 'box'
       ? getContinuousData(_.values(parsedFacets)[0])
-      : getCategoricalData(_.values(parsedFacets)[0]);
+      : getCategoricalData(_.values(parsedFacets)[0], variable.plotTypes);
   console.log('data:', data);
-  // ([
-  //   aggregation.buckets &&
-  //     aggregation.buckets.filter(bucket => bucket.key !== '_missing')
-  //       .length === 0,
-  //   aggregation.count === 0,
-  //   aggregation.count === null,
-  //   aggregation.stats && aggregation.stats.count === 0,
-  // ])
-  // [
-  //   {
-  //     key: 'submitted',
-  //     title: 'Submitted Gene Identifier',
-  //     subheadings: submittedHeaders,
-  //     thStyle: { textAlign: 'center' },
-  //   },
-  //   {
-  //     key: 'mapped',
-  //     title: 'Mapped To',
-  //     subheadings: [
-  //       'GDC Gene ID',
-  //       GENE_ID_FIELD_DISPLAY.symbol,
-  //     ],
-  //     thStyle: { textAlign: 'center' },
-  //   },
-  // ]
 
-  const getHeadings = type => {
-    return type === 'continuous'
+  const getHeadings = chartType => {
+    return chartType === 'box'
       ? [
           { key: 'stat', title: 'Stat' },
           {
             key: 'count',
             title: 'Count',
-            thStyle: { textAlign: 'right' },
+            style: { textAlign: 'right' },
           },
         ]
       : [
           { key: 'select', title: 'Select' },
           { key: 'key', title: humanify({ term: fieldName }) },
           { key: 'doc_count', title: '#Cases' },
-          { key: 'survival', title: 'Survival' },
+          ...(chartType === 'survival'
+            ? [
+                {
+                  key: 'survival',
+                  title: 'Survival',
+                  style: { textAlign: 'right' },
+                },
+              ]
+            : []),
         ];
   };
 
@@ -233,7 +289,7 @@ const VariableCard: React.ComponentType<IVariableCardProps> = ({
     <Column
       style={{
         ...zDepth1,
-        minHeight: 500,
+        height: 500,
         margin: '0 1rem 1rem',
         padding: '0.5rem 1rem 1rem',
         ...style,
@@ -278,11 +334,17 @@ const VariableCard: React.ComponentType<IVariableCardProps> = ({
           })}
         </Row>
       </Row>
-      {data.length === 0 && <div>There is no data for this facet</div>}
+      {_.isEmpty(data) && (
+        <Row
+          style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
+        >
+          There is no data for this facet
+        </Row>
+      )}
 
-      {data.length > 0 && (
+      {!_.isEmpty(data) && (
         <div>
-          <Row>
+          <Row style={{ justifyContent: 'space-between', padding: '0 10px' }}>
             <form>
               {' '}
               <label
@@ -334,6 +396,59 @@ const VariableCard: React.ComponentType<IVariableCardProps> = ({
                 # of Cases
               </label>
             </form>
+            {variable.active_chart === 'survival' && (
+              <form>
+                {' '}
+                <label
+                  htmlFor={`overall-survival-${fieldName}`}
+                  style={{ marginRight: 10, fontSize: '1.2rem' }}
+                >
+                  <input
+                    id={`overall-survival-${fieldName}`}
+                    type={'radio'}
+                    value={'overall'}
+                    aria-label={`Overall survival for ${fieldName}`}
+                    onChange={() =>
+                      dispatch(
+                        updateClinicalAnalysisVariable({
+                          fieldName,
+                          variableKey: 'active_survival',
+                          value: 'overall',
+                          id,
+                        })
+                      )
+                    }
+                    checked={variable.active_survival === 'overall'}
+                    style={{ marginRight: 5 }}
+                  />
+                  Overall Survival
+                </label>
+                <label
+                  htmlFor={`progression-survival-${fieldName}`}
+                  style={{ fontSize: '1.2rem', marginLeft: 10 }}
+                >
+                  <input
+                    id={`progression-survival-${fieldName}`}
+                    type={'radio'}
+                    value={'progression'}
+                    aria-label={`Progression free survival for ${fieldName}`}
+                    onChange={() =>
+                      dispatch(
+                        updateClinicalAnalysisVariable({
+                          fieldName,
+                          variableKey: 'active_survival',
+                          value: 'progression',
+                          id,
+                        })
+                      )
+                    }
+                    checked={variable.active_survival === 'progression'}
+                    style={{ marginRight: 5 }}
+                  />
+                  Progression Free Survival
+                </label>
+              </form>
+            )}
           </Row>
           <div
             style={{
@@ -364,7 +479,7 @@ const VariableCard: React.ComponentType<IVariableCardProps> = ({
           </Row>
           <EntityPageHorizontalTable
             data={data}
-            headings={getHeadings(variable.plotTypes)}
+            headings={getHeadings(variable.active_chart)}
             tableContainerStyle={{ height: 175, overflow: 'scroll' }}
           />
         </div>

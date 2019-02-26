@@ -344,58 +344,61 @@ const VariableCard: React.ComponentType<IVariableCardProps> = ({
 
       {!_.isEmpty(data) && (
         <div>
-          <Row style={{ justifyContent: 'space-between', padding: '0 10px' }}>
-            <form>
-              {' '}
-              <label
-                htmlFor={`variable-percentage-radio-${fieldName}`}
-                style={{ marginRight: 10, fontSize: '1.2rem' }}
-              >
-                <input
-                  id={`variable-percentage-radio-${fieldName}`}
-                  type={'radio'}
-                  value={'percentage'}
-                  aria-label={'Percentage of cases'}
-                  onChange={() =>
-                    dispatch(
-                      updateClinicalAnalysisVariable({
-                        fieldName,
-                        variableKey: 'active_calculation',
-                        value: 'percentage',
-                        id,
-                      })
-                    )
-                  }
-                  checked={variable.active_calculation === 'percentage'}
-                  style={{ marginRight: 5 }}
-                />
-                % of Cases
-              </label>
-              <label
-                htmlFor={`variable-number-radio-${fieldName}`}
-                style={{ fontSize: '1.2rem' }}
-              >
-                <input
-                  id={`variable-number-radio-${fieldName}`}
-                  type={'radio'}
-                  value={'number'}
-                  aria-label={'Number of cases'}
-                  onChange={() =>
-                    dispatch(
-                      updateClinicalAnalysisVariable({
-                        fieldName,
-                        variableKey: 'active_calculation',
-                        value: 'number',
-                        id,
-                      })
-                    )
-                  }
-                  checked={variable.active_calculation === 'number'}
-                  style={{ marginRight: 5 }}
-                />
-                # of Cases
-              </label>
-            </form>
+          <Row style={{ paddingLeft: 10 }}>
+            {variable.active_chart !== 'survival' && (
+              <form>
+                {' '}
+                <label
+                  htmlFor={`variable-percentage-radio-${fieldName}`}
+                  style={{ marginRight: 10, fontSize: '1.2rem' }}
+                >
+                  <input
+                    id={`variable-percentage-radio-${fieldName}`}
+                    type={'radio'}
+                    value={'percentage'}
+                    aria-label={'Percentage of cases'}
+                    onChange={() =>
+                      dispatch(
+                        updateClinicalAnalysisVariable({
+                          fieldName,
+                          variableKey: 'active_calculation',
+                          value: 'percentage',
+                          id,
+                        })
+                      )
+                    }
+                    checked={variable.active_calculation === 'percentage'}
+                    style={{ marginRight: 5 }}
+                  />
+                  % of Cases
+                </label>
+                <label
+                  htmlFor={`variable-number-radio-${fieldName}`}
+                  style={{ fontSize: '1.2rem' }}
+                >
+                  <input
+                    id={`variable-number-radio-${fieldName}`}
+                    type={'radio'}
+                    value={'number'}
+                    aria-label={'Number of cases'}
+                    onChange={() =>
+                      dispatch(
+                        updateClinicalAnalysisVariable({
+                          fieldName,
+                          variableKey: 'active_calculation',
+                          value: 'number',
+                          id,
+                        })
+                      )
+                    }
+                    checked={variable.active_calculation === 'number'}
+                    style={{ marginRight: 5 }}
+                  />
+                  # of Cases
+                </label>
+              </form>
+            )}
+
             {variable.active_chart === 'survival' && (
               <form>
                 {' '}
@@ -447,6 +450,7 @@ const VariableCard: React.ComponentType<IVariableCardProps> = ({
                   />
                   Progression Free Survival
                 </label>
+                <div style={{ fontSize: '1rem' }}>Log Rank Test P=Value = </div>
               </form>
             )}
           </Row>

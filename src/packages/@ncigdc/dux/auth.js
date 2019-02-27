@@ -1,13 +1,11 @@
 /* @flow */
 import { handleActions } from 'redux-actions';
-import { REHYDRATE } from 'redux-persist/constants';
 
 import { saveAs } from 'filesaver.js';
 import { fetchAuth } from '@ncigdc/utils/ajax';
 import { FAKE_USER, IS_DEV, AWG } from '@ncigdc/utils/constants';
 export type State = { isFetching: boolean, user: ?Object, error?: Object };
 export type Action = { type: string, payload: any };
-
 const USER_REQUEST = 'gdc/USER_REQUEST';
 const USER_SUCCESS = 'gdc/USER_SUCCESS';
 const USER_FAILURE = 'gdc/USER_FAILURE';
@@ -64,10 +62,9 @@ export function fetchToken() {
         type: TOKEN_SUCCESS,
         payload: async (action, state, res) => {
           const token = await res.text();
-
           saveAs(
             new Blob([token], { type: 'text/plain;charset=us-ascii' }),
-            `gdc-user-token.${new Date().toISOString()}.txt`,
+            `gdc-user-token.${new Date().toISOString()}.txt`
           );
 
           return token;
@@ -91,12 +88,6 @@ const initialState: State = {
 
 export default handleActions(
   {
-    [REHYDRATE]: (state, action) => {
-      return {
-        ...state,
-        ...action.payload.auth,
-      };
-    },
     [USER_REQUEST]: state => ({
       ...state,
       isFetching: true,
@@ -139,5 +130,5 @@ export default handleActions(
       token: undefined,
     }),
   },
-  initialState,
+  initialState
 );

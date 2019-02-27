@@ -1,6 +1,4 @@
-// @flow
 import { namespaceActions } from './utils';
-import { REHYDRATE } from 'redux-persist/constants';
 import _ from 'lodash';
 
 const sets: any = namespaceActions('sets', [
@@ -121,11 +119,6 @@ const reducer = (
   action: IAnalysisAction
 ) => {
   switch (action.type) {
-    case REHYDRATE:
-      return {
-        ...state,
-        ...action.payload.analysis,
-      };
     case sets.ADD_ANALYSIS: {
       return {
         ...state,

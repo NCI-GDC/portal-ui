@@ -20,8 +20,6 @@ import AnalysisIcon from './Analysis';
 import MicroscopeIcon from './Microscope';
 import CloseIcon from './CloseIcon';
 import BarChartIcon from './BarChart';
-import ChevronRight from './ChevronRight';
-import ChevronLeft from './ChevronLeft';
 import BoxPlot from './BoxPlot';
 
 export {
@@ -45,7 +43,5 @@ export {
   MicroscopeIcon,
   CloseIcon,
   BarChartIcon,
-  ChevronRight,
-  ChevronLeft,
   BoxPlot,
 };

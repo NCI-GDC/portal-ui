@@ -9,8 +9,8 @@ export default (Component: ReactClass<*>) =>
       ({ facetField }) => !facetField,
       renderComponent(() => <div>Facet must be provided</div>)
     ),
-    withPropsOnChange(['facetField', 'filters'], ({ facetField, filters }) => ({
-      variables: { facetField, filters },
+    withPropsOnChange(['facetField'], ({ facetField }) => ({
+      variables: { facetField },
     }))
   )((props: any) => {
     return (
@@ -20,13 +20,12 @@ export default (Component: ReactClass<*>) =>
         Component={Component}
         query={graphql`
         query ClinicalVariableCard_relayQuery(
-          $filters: FiltersArgument
           $facetField: [String]!
         ) {
           viewer {
             explore {
               cases {
-                facets(facets: $facetField, filters: $filters)
+                facets(facets: $facetField)
               }
             }
           }

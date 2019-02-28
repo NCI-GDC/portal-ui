@@ -13,6 +13,7 @@ import EntityPageHorizontalTable from '@ncigdc/components/EntityPageHorizontalTa
 import Dropdown from '@ncigdc/uikit/Dropdown';
 import Hidden from '@ncigdc/components/Hidden';
 import tryParseJSON from '@ncigdc/utils/tryParseJSON';
+import BarChart from '@ncigdc/components/Charts/BarChart';
 
 import {
   CloseIcon,
@@ -81,6 +82,7 @@ interface IVizButtons {
   delete: IVizButton;
 }
 
+const CHART_HEIGHT = 250;
 const vizButtons: IVizButtons = {
   survival: {
     title: 'Survival Plot',
@@ -121,6 +123,14 @@ const styles = {
     color: '#fff',
     backgroundColor: theme.primary,
     border: `1px solid ${theme.primary}`,
+  }),
+  histogram: (theme: IThemeProps) => ({
+    axis: {
+      textFill: theme.greyScale3,
+      fontSize: '0.9rem',
+      fontWeight: '500',
+      stroke: theme.greyScale4,
+    },
   }),
 };
 
@@ -248,7 +258,7 @@ const VariableCard: React.ComponentType<IVariableCardProps> = ({
     return _.map((rawData || { stats: {} }).stats, (count, stat) => {
       return {
         stat,
-        count: _.round(count, 2).toLocaleString(),
+        count,
       };
     });
   };
@@ -265,31 +275,60 @@ const VariableCard: React.ComponentType<IVariableCardProps> = ({
           { key: 'stat', title: 'Stat' },
           {
             key: 'count',
-            title: 'Count',
+            title: 'Value',
             style: { textAlign: 'right' },
           },
         ]
       : [
-          { key: 'select', title: 'Select' },
-          { key: 'key', title: humanify({ term: fieldName }) },
-          { key: 'doc_count', title: '#Cases' },
+          {
+            key: 'select',
+            title: 'Select',
+            thStyle: { position: 'sticky', top: 0 },
+          },
+          {
+            key: 'key',
+            title: humanify({ term: fieldName }),
+            thStyle: { position: 'sticky', top: 0 },
+          },
+          {
+            key: 'doc_count',
+            title: '# Cases',
+            style: { textAlign: 'right' },
+            thStyle: { position: 'sticky', top: 0 },
+          },
           ...(chartType === 'survival'
             ? [
                 {
                   key: 'survival',
                   title: 'Survival',
                   style: { textAlign: 'right' },
+                  thStyle: { position: 'sticky', top: 0 },
                 },
               ]
             : []),
         ];
   };
 
+  const totalDocs = data.reduce((acc, i) => acc + i.doc_count, 0);
+  let chartData;
+  if (variable.active_chart === 'histogram') {
+    chartData = data.map(d => {
+      return {
+        label: _.truncate(d.key, { length: 18 }),
+        value:
+          variable.active_calculation === 'number'
+            ? d.doc_count
+            : (d.doc_count / totalDocs) * 100,
+        tooltip: `${d.key}: ${d.doc_count.toLocaleString()}`,
+        // onClick: () => handleClickGene(g, data),
+      };
+    });
+  }
   return (
     <Column
       style={{
         ...zDepth1,
-        height: 500,
+        height: 550,
         margin: '0 1rem 1rem',
         padding: '0.5rem 1rem 1rem',
         ...style,
@@ -454,18 +493,51 @@ const VariableCard: React.ComponentType<IVariableCardProps> = ({
               </form>
             )}
           </Row>
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              height: 180,
-              backgroundColor: theme.greyScale5,
-              margin: '5px 5px 10px',
-            }}
-          >
-            {variable.active_chart}
-          </div>
+          {variable.active_chart === 'histogram' && (
+            <BarChart
+              data={chartData}
+              yAxis={{
+                title: `${
+                  variable.active_calculation === 'number' ? '#' : '%'
+                } of Cases`,
+                style: styles.histogram(theme).axis,
+              }}
+              xAxis={{
+                style: styles.histogram(theme).axis,
+              }}
+              height={CHART_HEIGHT}
+              styles={{
+                xAxis: {
+                  stroke: theme.greyScale4,
+                  textFill: theme.greyScale3,
+                },
+                yAxis: {
+                  stroke: theme.greyScale4,
+                  textFill: theme.greyScale3,
+                },
+                bars: { fill: theme.secondary },
+                tooltips: {
+                  fill: '#fff',
+                  stroke: theme.greyScale4,
+                  textFill: theme.greyScale3,
+                },
+              }}
+            />
+          )}
+          {variable.active_chart !== 'histogram' && (
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                height: CHART_HEIGHT,
+                backgroundColor: theme.greyScale5,
+                margin: '5px 5px 10px',
+              }}
+            >
+              {variable.active_chart}
+            </div>
+          )}
           <Row style={{ justifyContent: 'space-between', margin: '5px 0' }}>
             <Dropdown
               button={
@@ -484,7 +556,10 @@ const VariableCard: React.ComponentType<IVariableCardProps> = ({
           <EntityPageHorizontalTable
             data={data}
             headings={getHeadings(variable.active_chart)}
-            tableContainerStyle={{ height: 175, overflow: 'scroll' }}
+            tableContainerStyle={{
+              height: 175,
+              overflow: 'scroll',
+            }}
           />
         </div>
       )}

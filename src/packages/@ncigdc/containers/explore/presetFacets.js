@@ -42,4 +42,11 @@ export default [
     doc_type: 'cases',
     type: 'keyword',
   },
+  {
+    title: 'Experimental Strategy',
+    field: 'summary.experimental_strategies.experimental_strategy',
+    full: 'cases.summary.experimental_strategies.experimental_strategy',
+    doc_type: 'cases',
+    type: 'keyword',
+  },
 ];

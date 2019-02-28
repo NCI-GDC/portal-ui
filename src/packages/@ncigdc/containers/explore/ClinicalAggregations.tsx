@@ -12,13 +12,10 @@ import {
 import { fetchApi } from '@ncigdc/utils/ajax';
 import FacetHeader from '@ncigdc/components/Aggregations/FacetHeader';
 import FacetWrapper from '@ncigdc/components/FacetWrapper';
-import CaseIcon from '@ncigdc/theme/icons/Case';
 import { withTheme } from '@ncigdc/theme';
-import { UploadCaseSet } from '@ncigdc/components/Modals/UploadSet';
 import RecursiveToggledFacet from './RecursiveToggledFacet';
 import { CaseAggregationsQuery } from '@ncigdc/containers/explore/explore.relay';
-import SuggestionFacet from '@ncigdc/components/Aggregations/SuggestionFacet';
-import UploadSetButton from '@ncigdc/components/UploadSetButton';
+// import { ResultHighlights } from '@ncigdc/components/QuickSearch/QuickSearchResults';
 import SearchIcon from 'react-icons/lib/fa/search';
 import { Row } from '@ncigdc/uikit/Flex';
 import styled from '@ncigdc/theme/styled';
@@ -38,17 +35,14 @@ const facetMatchesQuery = (facet: IFacetProps, searchValue: string): boolean =>
     _.includes(searchTarget, searchValue)
   );
 const MagnifyingGlass = styled(SearchIcon, {
-  marginLeft: '1rem',
-  position: 'relative',
-  width: '3rem',
-  height: '3rem',
-  ':hover::before': {
-    textShadow: ({
-      theme,
-    }: {
-      theme: { textShadow: string, [x: string]: any },
-    }) => theme.textShadow,
-  },
+  backgroundColor: ({ theme }: any) => theme.greyScale5,
+  color: ({ theme }: any) => theme.greyScale2,
+  padding: '0.8rem',
+  width: '3.4rem',
+  height: '3.4rem',
+  borderRadius: '4px 0 0 4px',
+  border: ({ theme }: any) => `1px solid ${theme.greyScale4}`,
+  borderRight: 'none',
 });
 const advancedPresetFacets = [
   {
@@ -289,62 +283,19 @@ const enhance = compose(
       isLoadingFacetMapping,
     }: any): any => {
       return [
-        <div key="header">
-          <FacetHeader
-            title="Case"
-            field="cases.case_id"
-            collapsed={caseIdCollapsed}
-            setCollapsed={setCaseIdCollapsed}
-            description={
-              'Enter UUID or ID of Case, Sample, Portion, Slide, Analyte or Aliquot'
-            }
-          />
-          <SuggestionFacet
-            title="Case"
-            collapsed={caseIdCollapsed}
-            doctype="cases"
-            fieldNoDoctype="case_id"
-            placeholder="e.g. TCGA-A5-A0G2, 432fe4a9-2..."
-            hits={suggestions}
-            setAutocomplete={setAutocomplete}
-            dropdownItem={(x: any) => (
-              <Row>
-                <CaseIcon
-                  style={{ paddingRight: '1rem', paddingTop: '1rem' }}
-                />
-                <div>
-                  <div style={{ fontWeight: 'bold' }}>{x.case_id}</div>
-                  <div style={{ fontSize: '80%' }}>{x.submitter_id}</div>
-                  {x.project.project_id}
-                </div>
-              </Row>
-            )}
-          />
-          <UploadSetButton
-            type="case"
-            style={{
-              width: '100%',
-              borderBottom: `1px solid ${theme.greyScale5}`,
-              padding: '0 1.2rem 1rem',
-            }}
-            UploadModal={UploadCaseSet}
-            defaultQuery={{
-              pathname: '/exploration',
-              query: { searchTableTab: 'cases' },
-            }}
-            idField="cases.case_id"
-          >
-            Upload Case Set
-          </UploadSetButton>
-        </div>,
-
-        <Row style={{ marginRight: '1rem', marginTop: '0.5rem' }} key="row">
-          <MagnifyingGlass />
+        <Row
+          style={{
+            margin: '2.5rem 1rem 0 0.5rem',
+          }}
+          key="row"
+        >
+          <label>
+            <MagnifyingGlass />
+          </label>
           <Input
             style={{
-              borderRadius: '4px',
+              borderRadius: '0 4px 4px 0',
               marginBottom: '6px',
-              marginLeft: '0.5rem',
             }}
             defaultValue={searchValue}
             onChange={handleQueryInputChange}
@@ -388,7 +339,7 @@ const enhance = compose(
                     _.get(fieldHash, facet.full, {}),
                     facet.excluded || ''
                   )}
-                  Component={(componentFacet: any) => (
+                  Component={(componentFacet: { [x: string]: any }) => [
                     <FacetWrapper
                       relayVarName="exploreCaseCustomFacetFields"
                       key={componentFacet.full}
@@ -404,8 +355,17 @@ const enhance = compose(
                       headerStyle={{ fontSize: '14px' }}
                       collapsed={true}
                       maxNum={5}
-                    />
-                  )}
+                    />,
+                    // <div key={componentFacet.description}>
+                    //   {searchValue.length > 0 ? (
+                    //     <ResultHighlights
+                    //       item={componentFacet.description}
+                    //       query={searchValue}
+                    //       style={{ position: 'relative' }}
+                    //     />
+                    //   ) : null}
+                    // </div>,
+                  ]}
                   key={facet.title + 'RecursiveToggledBox'}
                 />
               }

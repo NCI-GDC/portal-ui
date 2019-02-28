@@ -75,6 +75,12 @@ export const CaseAggregationsQuery = {
             key
           }
         }
+        summary__experimental_strategies__experimental_strategy {
+          buckets {
+            doc_count
+            key
+          }
+        }
       }
     `,
   },

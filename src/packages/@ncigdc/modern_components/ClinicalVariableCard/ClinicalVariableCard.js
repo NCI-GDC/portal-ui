@@ -328,14 +328,20 @@ const VariableCard: React.ComponentType<IVariableCardProps> = ({
     <Column
       style={{
         ...zDepth1,
-        height: 550,
+        height: 560,
         margin: '0 1rem 1rem',
         padding: '0.5rem 1rem 1rem',
         ...style,
       }}
     >
-      <Row style={{ justifyContent: 'space-between', alignItems: 'center' }}>
-        <h2 style={{ fontSize: '1.8rem' }}>
+      <Row
+        style={{
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          margin: '5px 0 10px',
+        }}
+      >
+        <h2 style={{ fontSize: '1.8rem', marginTop: 10, marginBottom: 0 }}>
           {humanify({
             term: fieldName.replace(
               `${CLINICAL_PREFIXES[_.capitalize(variable.type)]}.`,
@@ -439,58 +445,62 @@ const VariableCard: React.ComponentType<IVariableCardProps> = ({
             )}
 
             {variable.active_chart === 'survival' && (
-              <form>
-                {' '}
-                <label
-                  htmlFor={`overall-survival-${fieldName}`}
-                  style={{ marginRight: 10, fontSize: '1.2rem' }}
-                >
-                  <input
-                    id={`overall-survival-${fieldName}`}
-                    type={'radio'}
-                    value={'overall'}
-                    aria-label={`Overall survival for ${fieldName}`}
-                    onChange={() =>
-                      dispatch(
-                        updateClinicalAnalysisVariable({
-                          fieldName,
-                          variableKey: 'active_survival',
-                          value: 'overall',
-                          id,
-                        })
-                      )
-                    }
-                    checked={variable.active_survival === 'overall'}
-                    style={{ marginRight: 5 }}
-                  />
-                  Overall Survival
-                </label>
-                <label
-                  htmlFor={`progression-survival-${fieldName}`}
-                  style={{ fontSize: '1.2rem', marginLeft: 10 }}
-                >
-                  <input
-                    id={`progression-survival-${fieldName}`}
-                    type={'radio'}
-                    value={'progression'}
-                    aria-label={`Progression free survival for ${fieldName}`}
-                    onChange={() =>
-                      dispatch(
-                        updateClinicalAnalysisVariable({
-                          fieldName,
-                          variableKey: 'active_survival',
-                          value: 'progression',
-                          id,
-                        })
-                      )
-                    }
-                    checked={variable.active_survival === 'progression'}
-                    style={{ marginRight: 5 }}
-                  />
-                  Progression Free Survival
-                </label>
-                <div style={{ fontSize: '1rem' }}>Log Rank Test P=Value = </div>
-              </form>
+              <div>
+                <form>
+                  {' '}
+                  <label
+                    htmlFor={`overall-survival-${fieldName}`}
+                    style={{ marginRight: 5, fontSize: '1.2rem' }}
+                  >
+                    <input
+                      id={`overall-survival-${fieldName}`}
+                      type={'radio'}
+                      value={'overall'}
+                      aria-label={`Overall survival for ${fieldName}`}
+                      onChange={() =>
+                        dispatch(
+                          updateClinicalAnalysisVariable({
+                            fieldName,
+                            variableKey: 'active_survival',
+                            value: 'overall',
+                            id,
+                          })
+                        )
+                      }
+                      checked={variable.active_survival === 'overall'}
+                      style={{ marginRight: 5 }}
+                    />
+                    Overall Survival
+                  </label>
+                  <label
+                    htmlFor={`progression-survival-${fieldName}`}
+                    style={{ fontSize: '1.2rem', marginLeft: 10 }}
+                  >
+                    <input
+                      id={`progression-survival-${fieldName}`}
+                      type={'radio'}
+                      value={'progression'}
+                      aria-label={`Progression free survival for ${fieldName}`}
+                      onChange={() =>
+                        dispatch(
+                          updateClinicalAnalysisVariable({
+                            fieldName,
+                            variableKey: 'active_survival',
+                            value: 'progression',
+                            id,
+                          })
+                        )
+                      }
+                      checked={variable.active_survival === 'progression'}
+                      style={{ marginRight: 5 }}
+                    />
+                    Progression Free Survival
+                  </label>
+                </form>
+                <span style={{ fontSize: '1rem', marginLeft: 10 }}>
+                  Log Rank Test P=Value ={' '}
+                </span>
+              </div>
             )}
           </Row>
           {variable.active_chart === 'histogram' && (
@@ -530,7 +540,7 @@ const VariableCard: React.ComponentType<IVariableCardProps> = ({
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center',
-                height: CHART_HEIGHT,
+                height: CHART_HEIGHT - 10,
                 backgroundColor: theme.greyScale5,
                 margin: '5px 5px 10px',
               }}

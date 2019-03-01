@@ -419,17 +419,17 @@ const ClinicalAnalysisResult = ({
           >
             {' '}
             {_.map(variables, (varProperties, varFieldName) => {
-              const FooComponent = withFacetData(props => {
-                return <div>{props.viewer.explore.cases.facets}</div>;
-              });
-              if (varProperties.plotTypes === 'continuous') {
-                return (
-                  <FooComponent
-                    key={varFieldName}
-                    facetField={varFieldName.replace('cases.', '')}
-                  />
-                );
-              }
+              // const FooComponent = withFacetData(props => {
+              //   return <div>{props.viewer.explore.cases.facets}</div>;
+              // });
+              // if (varProperties.plotTypes === 'continuous') {
+              //   return (
+              //     <FooComponent
+              //       key={varFieldName}
+              //       facetField={varFieldName.replace('cases.', '')}
+              //     />
+              //   );
+              // }
               return (
                 <ClinicalVariableCard
                   key={varFieldName}

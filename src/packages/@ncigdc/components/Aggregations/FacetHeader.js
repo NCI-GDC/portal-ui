@@ -7,6 +7,8 @@ import { css } from 'glamor';
 import { parseFilterParam } from '@ncigdc/utils/uri';
 import LocationSubscriber from '@ncigdc/components/LocationSubscriber';
 import styled from '@ncigdc/theme/styled';
+import { ResultHighlights } from '@ncigdc/components/QuickSearch/QuickSearchResults';
+
 import FacetResetButton from '@ncigdc/components/Aggregations/FacetResetButton';
 import CloseIcon from '@ncigdc/theme/icons/CloseIcon';
 import SearchIcon from '@ncigdc/theme/icons/SearchIcon';
@@ -70,6 +72,7 @@ const FacetHeader = compose(
     showingValueSearch,
     setShowingValueSearch,
     hasValueSearch,
+    searchValue,
     style,
     angleIconRight = false,
   }) => (
@@ -77,30 +80,40 @@ const FacetHeader = compose(
       {(ctx: { pathname: string, query: IRawQuery }) => {
         const currentFilters =
           ctx.query && parseFilterParam((ctx.query || {}).filters, {});
-        let spanStyle = { cursor: 'pointer' };
+        let spanStyle = { cursor: 'pointer', whiteSpace: 'nowrap' };
         if (angleIconRight) {
           spanStyle['width'] = '100%';
         }
         return (
           <Header className="test-facet-header" style={style}>
             <span style={spanStyle} onClick={() => setCollapsed(!collapsed)}>
-              {!angleIconRight && (
-                <AngleIcon
-                  style={{
-                    paddingRight: '0.25rem',
-                    transform: `rotate(${collapsed ? 270 : 0}deg)`,
-                  }}
+              <Row>
+                {!angleIconRight && (
+                  <AngleIcon
+                    style={{
+                      paddingRight: '0.25rem',
+                      transform: `rotate(${collapsed ? 270 : 0}deg)`,
+                    }}
+                  />
+                )}
+                <ResultHighlights
+                  item={{ title }}
+                  query={searchValue}
+                  heighlightStyle={{ backgroundColor: '#FFFF00' }}
+                  style={{ padding: '0', margin: '0' }}
                 />
-              )}
-              {title}
-              {angleIconRight && (
-                <AngleIcon
-                  style={{
-                    float: 'right',
-                    transform: `rotate(${collapsed ? 270 : 0}deg)`,
-                  }}
-                />
-              )}
+                {/* {title} */}
+                {angleIconRight && (
+                  <AngleIcon
+                    style={{
+                      overflow: 'auto',
+                      display: 'flex',
+                      float: 'right',
+                      transform: `rotate(${collapsed ? 270 : 0}deg)`,
+                    }}
+                  />
+                )}
+              </Row>
             </span>
             <IconsRow>
               {description && (

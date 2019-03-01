@@ -98,6 +98,7 @@ const FacetWrapper = compose(
     isRemovable,
     additionalProps,
     maxNum = 5,
+    searchValue,
   }) => {
     const facetType = getFacetType(facet);
     const displayTitle = title || fieldNameToTitle(facet.field);
@@ -106,7 +107,7 @@ const FacetWrapper = compose(
       title: displayTitle,
       collapsed,
     };
-    
+
     const facetComponent = {
       exact: () => (
         <ExactMatchFacet
@@ -137,6 +138,7 @@ const FacetWrapper = compose(
           field={facet.full}
           {...commonProps}
           buckets={(aggregation || { buckets: [] }).buckets}
+          searchValue={searchValue}
           showingValueSearch={showingValueSearch}
           maxNum={maxNum}
           {...additionalProps}
@@ -153,6 +155,7 @@ const FacetWrapper = compose(
         <FacetHeader
           title={displayTitle}
           field={facet.full}
+          searchValue={searchValue}
           handleRequestRemove={handleRequestRemove}
           isRemovable={isRemovable}
           hasValueSearch={hasValueSearch}

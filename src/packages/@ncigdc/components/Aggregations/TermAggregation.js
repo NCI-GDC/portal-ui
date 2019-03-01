@@ -57,7 +57,8 @@ export const BottomRow = styled(Row, {
 let input;
 const TermAggregation = (props: TProps) => {
   const dotField = props.field.replace(/__/g, '.');
-  const { filteredBuckets, maxNum } = props;
+  const { filteredBuckets, maxNum, filter } = props;
+  console.log('filter', filter);
 
   return (
     <LocationSubscriber>
@@ -198,14 +199,18 @@ const TermAggregation = (props: TProps) => {
 const enhance = compose(
   withState('showingMore', 'setShowingMore', false),
   withState('filter', 'setFilter', ''),
-  withPropsOnChange(['buckets', 'filter'], ({ buckets, filter }) => ({
-    filteredBuckets: buckets.filter(
-      b =>
-        b.key !== '_missing' &&
-        (b.key || '').length &&
-        b.key.toLowerCase().includes(filter.toLowerCase())
-    ),
-  })),
+  withPropsOnChange(
+    ['buckets', 'filter', 'searchValue'],
+    ({ buckets, filter, searchValue = '' }) => ({
+      filteredBuckets: buckets.filter(
+        b =>
+          b.key !== '_missing' &&
+          (b.key || '').length &&
+          b.key.toLowerCase().includes(filter.toLowerCase()) &&
+          b.key.toLowerCase().includes(searchValue.toLowerCase())
+      ),
+    })
+  ),
   pure
 );
 

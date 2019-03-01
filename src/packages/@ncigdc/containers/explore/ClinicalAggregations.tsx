@@ -15,7 +15,7 @@ import FacetWrapper from '@ncigdc/components/FacetWrapper';
 import { withTheme } from '@ncigdc/theme';
 import RecursiveToggledFacet from './RecursiveToggledFacet';
 import { CaseAggregationsQuery } from '@ncigdc/containers/explore/explore.relay';
-// import { ResultHighlights } from '@ncigdc/components/QuickSearch/QuickSearchResults';
+import { ResultHighlights } from '@ncigdc/components/QuickSearch/QuickSearchResults';
 import SearchIcon from 'react-icons/lib/fa/search';
 import { Row } from '@ncigdc/uikit/Flex';
 import styled from '@ncigdc/theme/styled';
@@ -30,10 +30,22 @@ interface IFacetProps {
   full: string,
   type: string,
 }
-const facetMatchesQuery = (facet: IFacetProps, searchValue: string): boolean =>
-  _.some([facet.field, facet.description].map(_.toLower), searchTarget =>
-    _.includes(searchTarget, searchValue)
+const facetMatchesQuery = (
+  facet: IFacetProps,
+  elements: any,
+  searchValue: string
+): boolean => {
+  return _.some(
+    [
+      facet.field.split('.')[1],
+      ...(elements || []).map((e: any) => e.key),
+      facet.description,
+    ]
+      .filter((n: any) => n)
+      .map(_.toLower),
+    searchTarget => _.includes(searchTarget, searchValue)
   );
+};
 const MagnifyingGlass = styled(SearchIcon, {
   backgroundColor: ({ theme }: any) => theme.greyScale5,
   color: ({ theme }: any) => theme.greyScale2,
@@ -113,7 +125,7 @@ const enhance = compose(
   withState('isLoadingParsedFacets', 'setIsLoadingParsedFacets', false),
   withState('fieldHash', 'setFieldHash', {}),
   withState('caseIdCollapsed', 'setCaseIdCollapsed', false),
-  withState('shouldHideUselessFacets', 'setShouldHideUselessFacets', false),
+  withState('shouldHideUselessFacets', 'setShouldHideUselessFacets', true),
   withState('searchValue', 'setSearchValue', ''),
   withState('toggledTree', 'setToggledTree', {
     cases: { toggled: false },
@@ -158,25 +170,6 @@ const enhance = compose(
           'shouldHideUselessFacets',
           JSON.stringify(shouldHide)
         );
-        const byDocType = _.groupBy(facetMapping, o => o.doc_type);
-
-        if (shouldHide && byDocType[docType]) {
-          setIsLoadingParsedFacets(shouldHide);
-          relay.setVariables(
-            {
-              [relayVarName]: byDocType[docType]
-                .map(({ field }) => field)
-                .join(','),
-            },
-            (readyState: any) => {
-              if (
-                _.some([readyState.ready, readyState.aborted, readyState.error])
-              ) {
-                setIsLoadingParsedFacets(false);
-              }
-            }
-          );
-        }
       },
     })
   ),
@@ -190,6 +183,8 @@ const enhance = compose(
       facetExclusionTest,
     }) => {
       const parsedFacets = facets.facets ? tryParseJSON(facets.facets, {}) : {};
+      console.log('parsedFacets', parsedFacets);
+
       const usefulFacets = _.omitBy(
         parsedFacets,
         (aggregation: { [t: string]: any }) =>
@@ -205,14 +200,18 @@ const enhance = compose(
           ])
       );
 
-      const filteredFacets = _.filter(_.values(facetMapping), facet =>
-        _.every([
-          facetMatchesQuery(facet, searchValue),
+      const filteredFacets = _.filter(_.values(facetMapping), facet => {
+        return _.every([
+          facetMatchesQuery(
+            facet,
+            _.get(parsedFacets[facet.field], 'buckets', undefined),
+            searchValue
+          ),
           !facetExclusionTest(facet),
           !shouldHideUselessFacets ||
             Object.keys(usefulFacets).includes(facet.field),
-        ])
-      );
+        ]);
+      });
       const fieldHash = {};
       let key = '';
       for (const str of filteredFacets.map((f: any) => f.field)) {
@@ -236,12 +235,35 @@ const enhance = compose(
     }
   ),
   withHandlers({
-    fetchData: ({ setFacetMapping, setIsLoadingFacetMapping }) => async () => {
+    fetchData: ({
+      setFacetMapping,
+      setIsLoadingFacetMapping,
+      relay,
+      relayVarName,
+      docType,
+      setIsLoadingParsedFacets,
+    }) => async () => {
       setIsLoadingFacetMapping(true);
       const mapping = await fetchApi('gql/_mapping', {
         headers: { 'Content-Type': 'application/json' },
       });
       setFacetMapping(mapping);
+      const byDocType = _.groupBy(mapping, o => o.doc_type);
+      setIsLoadingParsedFacets(true);
+      relay.setVariables(
+        {
+          [relayVarName]: byDocType[docType]
+            .map(({ field }) => field)
+            .join(','),
+        },
+        (readyState: any) => {
+          if (
+            _.some([readyState.ready, readyState.aborted, readyState.error])
+          ) {
+            setIsLoadingParsedFacets(false);
+          }
+        }
+      );
       setIsLoadingFacetMapping(false);
     },
     handleQueryInputChange: ({ setSearchValue }) => (event: any) =>
@@ -316,7 +338,7 @@ const enhance = compose(
           isLoadingFacetMapping
             ? '...'
             : Object.keys(filteredFacets).length}{' '}
-          fields now)
+          fields show)
         </label>,
         ...advancedPresetFacets.map(facet => {
           return (
@@ -346,6 +368,7 @@ const enhance = compose(
                       facet={componentFacet}
                       title={_.startCase(componentFacet.full.split('.').pop())}
                       aggregation={parsedFacets[componentFacet.field]}
+                      searchValue={searchValue}
                       relay={relay}
                       additionalProps={{ style: { paddingBottom: 0 } }}
                       style={{
@@ -353,18 +376,23 @@ const enhance = compose(
                         paddingLeft: '10px',
                       }}
                       headerStyle={{ fontSize: '14px' }}
-                      collapsed={true}
+                      collapsed={searchValue.length === 0}
                       maxNum={5}
                     />,
-                    // <div key={componentFacet.description}>
-                    //   {searchValue.length > 0 ? (
-                    //     <ResultHighlights
-                    //       item={componentFacet.description}
-                    //       query={searchValue}
-                    //       style={{ position: 'relative' }}
-                    //     />
-                    //   ) : null}
-                    // </div>,
+                    <div key={componentFacet.description}>
+                      {searchValue.length > 0 ? (
+                        <ResultHighlights
+                          item={{ description: componentFacet.description }}
+                          query={searchValue}
+                          heighlightStyle={{ backgroundColor: '#FFFF00' }}
+                          style={{
+                            position: 'relative',
+                            paddingLeft: '30px',
+                            paddingRight: '10px',
+                          }}
+                        />
+                      ) : null}
+                    </div>,
                   ]}
                   key={facet.title + 'RecursiveToggledBox'}
                 />

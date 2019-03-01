@@ -439,6 +439,18 @@ const ClinicalAnalysisResult = ({
                   style={{ minWidth: controlPanelExpanded ? 310 : 290 }}
                   id={id}
                   facetField={varFieldName.replace('cases.', '')}
+                  filters={{
+                    op: 'and',
+                    content: [
+                      {
+                        op: '=',
+                        content: {
+                          field: `cases.case_id`,
+                          value: [`set_id:${setId}`],
+                        },
+                      },
+                    ],
+                  }}
                 />
               );
             })}

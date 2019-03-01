@@ -30,7 +30,7 @@ import {
   IAnalysisPayload,
 } from '@ncigdc/dux/analysis';
 import { humanify } from '@ncigdc/utils/string';
-import { CLINICAL_PREFIXES } from '@ncigdc/utils/constants';
+import { CLINICAL_PREFIXES, IS_CDAVE_DEV } from '@ncigdc/utils/constants';
 
 interface ITableHeading {
   key: string;
@@ -187,7 +187,9 @@ const VariableCard: React.ComponentType<IVariableCardProps> = ({
       }));
     }
     return (rawData || { buckets: [] }).buckets
-      .filter(bucket => bucket.key !== '_missing')
+      .filter(bucket =>
+        !IS_CDAVE_DEV ? bucket.key !== '_missing' : bucket.key
+      )
       .map(b => ({
         ...b,
         select: (
@@ -268,6 +270,12 @@ const VariableCard: React.ComponentType<IVariableCardProps> = ({
       ? getContinuousData(_.values(parsedFacets)[0])
       : getCategoricalData(_.values(parsedFacets)[0], variable.plotTypes);
   console.log('data:', data);
+  const totalDocs = data.reduce((acc, i) => acc + i.doc_count, 0);
+
+  const devData = [
+    ...data,
+    { select: '', key: 'Total', doc_count: totalDocs, survival: '' },
+  ];
 
   const getHeadings = chartType => {
     return chartType === 'box'
@@ -309,7 +317,6 @@ const VariableCard: React.ComponentType<IVariableCardProps> = ({
         ];
   };
 
-  const totalDocs = data.reduce((acc, i) => acc + i.doc_count, 0);
   let chartData;
   if (variable.active_chart === 'histogram') {
     chartData = data.map(d => {
@@ -320,7 +327,6 @@ const VariableCard: React.ComponentType<IVariableCardProps> = ({
             ? d.doc_count
             : (d.doc_count / totalDocs) * 100,
         tooltip: `${d.key}: ${d.doc_count.toLocaleString()}`,
-        // onClick: () => handleClickGene(g, data),
       };
     });
   }
@@ -564,7 +570,7 @@ const VariableCard: React.ComponentType<IVariableCardProps> = ({
             </Button>
           </Row>
           <EntityPageHorizontalTable
-            data={data}
+            data={IS_CDAVE_DEV ? devData : data}
             headings={getHeadings(variable.active_chart)}
             tableContainerStyle={{
               height: 175,

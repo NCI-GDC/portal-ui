@@ -338,7 +338,7 @@ const enhance = compose(
           isLoadingFacetMapping
             ? '...'
             : Object.keys(filteredFacets).length}{' '}
-          fields show)
+          fields shown)
         </label>,
         ...advancedPresetFacets.map(facet => {
           return (

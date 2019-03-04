@@ -212,10 +212,28 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
             <ExploreLink
               query={{
                 searchTableTab: 'cases',
-                filters: makeFilter([
-                  { field: 'cases.case_id', value: `set_id:${setId}` },
-                  { field: fieldName, value: [b.key] },
-                ]),
+                filters:
+                  b.key === '_missing'
+                    ? {
+                        op: 'AND',
+                        content: [
+                          {
+                            op: 'IS',
+                            content: { field: fieldName, value: [b.key] },
+                          },
+                          {
+                            op: 'in',
+                            content: {
+                              field: 'cases.case_id',
+                              value: `set_id:${setId}`,
+                            },
+                          },
+                        ],
+                      }
+                    : makeFilter([
+                        { field: 'cases.case_id', value: `set_id:${setId}` },
+                        { field: fieldName, value: [b.key] },
+                      ]),
               }}
             >
               {(b.doc_count || 0).toLocaleString()}

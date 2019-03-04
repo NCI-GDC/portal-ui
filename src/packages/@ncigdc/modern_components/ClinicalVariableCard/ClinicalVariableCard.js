@@ -14,6 +14,8 @@ import Dropdown from '@ncigdc/uikit/Dropdown';
 import Hidden from '@ncigdc/components/Hidden';
 import tryParseJSON from '@ncigdc/utils/tryParseJSON';
 import BarChart from '@ncigdc/components/Charts/BarChart';
+import ExploreLink from '@ncigdc/components/Links/ExploreLink';
+import { makeFilter } from '@ncigdc/utils/filters';
 
 import {
   CloseIcon,
@@ -153,7 +155,7 @@ const fakeContinuousBuckets = [
   { key: 'range 5', doc_count: 5 },
 ];
 
-const VariableCard: React.ComponentType<IVariableCardProps> = ({
+const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
   variable,
   fieldName,
   plots,
@@ -162,7 +164,19 @@ const VariableCard: React.ComponentType<IVariableCardProps> = ({
   dispatch,
   id,
   parsedFacets,
+  setId,
 }) => {
+  const queryData = _.values(parsedFacets)[0];
+
+  const totalDocsFromBuckets =
+    variable.plotTypes === 'continuous'
+      ? fakeContinuousBuckets
+          .map(fB => fB.doc_count)
+          .reduce((acc, doc_count) => acc + doc_count, 0)
+      : (queryData || { buckets: [] }).buckets
+          .map(b => b.doc_count)
+          .reduce((acc, i) => acc + i, 0);
+
   const getCategoricalData = (rawData, type) => {
     if (!rawData) {
       return [];
@@ -192,6 +206,25 @@ const VariableCard: React.ComponentType<IVariableCardProps> = ({
       )
       .map(b => ({
         ...b,
+        doc_count: (
+          <span>
+            <ExploreLink
+              query={{
+                searchTableTab: 'cases',
+                filters: makeFilter([
+                  { field: 'cases.case_id', value: `set_id:${setId}` },
+                  { field: fieldName, value: [b.key] },
+                ]),
+              }}
+            >
+              {(b.doc_count || 0).toLocaleString()}
+            </ExploreLink>
+            <span>{` (${(
+              ((b.doc_count || 0) / totalDocsFromBuckets) *
+              100
+            ).toFixed(2)}%)`}</span>
+          </span>
+        ),
         select: (
           <input
             style={{
@@ -223,6 +256,7 @@ const VariableCard: React.ComponentType<IVariableCardProps> = ({
                       backgroundColor: '#666',
                       color: 'white',
                       margin: '0 auto',
+                      position: 'static',
                     }}
                     // disabled={!hasEnoughSurvivalDataOnPrimaryCurve}
                     onClick={() => {
@@ -265,16 +299,15 @@ const VariableCard: React.ComponentType<IVariableCardProps> = ({
     });
   };
 
-  let data =
+  let tableData =
     variable.active_chart === 'box'
-      ? getContinuousData(_.values(parsedFacets)[0])
-      : getCategoricalData(_.values(parsedFacets)[0], variable.plotTypes);
-  console.log('data:', data);
-  const totalDocs = data.reduce((acc, i) => acc + i.doc_count, 0);
+      ? getContinuousData(queryData)
+      : getCategoricalData(queryData, variable.plotTypes);
+  console.log('data:', tableData);
 
   const devData = [
-    ...data,
-    { select: '', key: 'Total', doc_count: totalDocs, survival: '' },
+    ...tableData,
+    { select: '', key: 'Total', doc_count: totalDocsFromBuckets, survival: '' },
   ];
 
   const getHeadings = chartType => {
@@ -302,15 +335,15 @@ const VariableCard: React.ComponentType<IVariableCardProps> = ({
             key: 'doc_count',
             title: '# Cases',
             style: { textAlign: 'right' },
-            thStyle: { position: 'sticky', top: 0 },
+            thStyle: { position: 'sticky', top: 0, textAlign: 'right' },
           },
           ...(chartType === 'survival'
             ? [
                 {
                   key: 'survival',
                   title: 'Survival',
-                  style: { textAlign: 'right' },
-                  thStyle: { position: 'sticky', top: 0 },
+                  style: { display: 'flex', justifyContent: 'flex-end' },
+                  thStyle: { position: 'sticky', top: 0, textAlign: 'right' },
                 },
               ]
             : []),
@@ -319,17 +352,18 @@ const VariableCard: React.ComponentType<IVariableCardProps> = ({
 
   let chartData;
   if (variable.active_chart === 'histogram') {
-    chartData = data.map(d => {
+    chartData = (queryData || { buckets: [] }).buckets.map(d => {
       return {
         label: _.truncate(d.key, { length: 18 }),
         value:
           variable.active_calculation === 'number'
             ? d.doc_count
-            : (d.doc_count / totalDocs) * 100,
+            : (d.doc_count / totalDocsFromBuckets) * 100,
         tooltip: `${d.key}: ${d.doc_count.toLocaleString()}`,
       };
     });
   }
+  // debugger;
   return (
     <Column
       style={{
@@ -385,7 +419,7 @@ const VariableCard: React.ComponentType<IVariableCardProps> = ({
           })}
         </Row>
       </Row>
-      {_.isEmpty(data) && (
+      {_.isEmpty(tableData) && (
         <Row
           style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
         >
@@ -393,7 +427,7 @@ const VariableCard: React.ComponentType<IVariableCardProps> = ({
         </Row>
       )}
 
-      {!_.isEmpty(data) && (
+      {!_.isEmpty(tableData) && (
         <div>
           <Row style={{ paddingLeft: 10 }}>
             {variable.active_chart !== 'survival' && (
@@ -570,7 +604,7 @@ const VariableCard: React.ComponentType<IVariableCardProps> = ({
             </Button>
           </Row>
           <EntityPageHorizontalTable
-            data={IS_CDAVE_DEV ? devData : data}
+            data={IS_CDAVE_DEV ? devData : tableData}
             headings={getHeadings(variable.active_chart)}
             tableContainerStyle={{
               height: 175,
@@ -583,4 +617,4 @@ const VariableCard: React.ComponentType<IVariableCardProps> = ({
   );
 };
 
-export default enhance(VariableCard);
+export default enhance(ClinicalVariableCard);

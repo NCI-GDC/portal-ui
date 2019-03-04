@@ -124,6 +124,13 @@ const BarChart = ({
 
   xG.selectAll('line').style('stroke', xAxisStyle.stroke);
 
+  xG.selectAll('.tick').data(data).on('mouseenter', d => {
+    setTooltip(d.tooltip);
+  })
+  .on('mouseleave', () => {
+    setTooltip();
+  });
+
   const barGs = svg
     .selectAll('g.chart')
     .data(data)

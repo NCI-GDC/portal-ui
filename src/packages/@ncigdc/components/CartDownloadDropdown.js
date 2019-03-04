@@ -85,6 +85,28 @@ const downloadCart = ({
       method: 'POST',
       altMessage: true,
     })(() => {}, () => setState(s => ({ ...s, cartDownloading: false })));
+  } else if (
+    authorized.files.reduce((sum, x) => sum + x.file_size, 0) >
+    5 * 10e8
+  ) {
+    dispatch(
+      setModal(
+        <BaseModal title="Cart size limit">
+          <p>Your cart contains more than 5GBs of data.</p>
+          <p>
+            Please select the "Download &gt; Manifest" option and use the&nbsp;
+            <ExternalLink
+              hasExternalIcon={false}
+              title="GDC Data Transfer Tool"
+              href="https://gdc.cancer.gov/access-data/gdc-data-transfer-tool"
+            >
+              Data Transfer Tool
+            </ExternalLink>{' '}
+            Tool to continue.
+          </p>
+        </BaseModal>
+      )
+    );
   } else if (unauthorized.doc_count > 0) {
     dispatch(
       setModal(
@@ -143,25 +165,6 @@ const downloadCart = ({
             </p>
           )}
         </CheckBoxModal>
-      )
-    );
-  } else if (files.reduce((sum, x) => sum + x.file_size, 0) > 5 * 10e8) {
-    dispatch(
-      setModal(
-        <BaseModal title="Cart size limit">
-          <p>Your cart contains more than 5GBs of data.</p>
-          <p>
-            Please select the "Download &gt; Manifest" option and use the&nbsp;
-            <ExternalLink
-              hasExternalIcon={false}
-              title="GDC Data Transfer Tool"
-              href="https://gdc.cancer.gov/access-data/gdc-data-transfer-tool"
-            >
-              Data Transfer Tool
-            </ExternalLink>{' '}
-            Tool to continue.
-          </p>
-        </BaseModal>
       )
     );
   } else {

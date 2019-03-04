@@ -5,12 +5,11 @@ import React from 'react';
 import { ApiOverrideBanner } from '@ncigdc/components/DismissibleBanner';
 import { fetchApi } from '@ncigdc/utils/ajax';
 import { LOCAL_STORAGE_API_OVERRIDE } from '@ncigdc/utils/constants';
-import { REHYDRATE } from 'redux-persist/constants';
+import { REHYDRATE } from 'redux-persist';
 import { uniqBy } from 'lodash';
-
 const NOTIFICATION_SUCCESS = 'NOTIFICATION_SUCCESS';
 const NOTIFICATION_DISMISS = 'NOTIFICATION_DISMISS';
-
+const NOTIFICATION_REMOVE = 'NOTIFICATION_REMOVE';
 type TState = Array<{
   components: Array<string>,
   level: string,
@@ -29,13 +28,13 @@ type TAction = {
 };
 export function fetchNotifications() {
   return async (dispatch: Function) => {
-    let { data } = await fetchApi('notifications', {
+    const res1 = await fetchApi('notifications', {
       headers: { 'Content-Type': 'application/json' },
     });
-
+    const res2 = (await fetchApi('login-notifications', {})) || { data: [] };
     dispatch({
       type: NOTIFICATION_SUCCESS,
-      payload: data,
+      payload: [...res1.data, ...res2.data],
     });
   };
 }
@@ -44,6 +43,13 @@ export function dismissNotification(notificationID: string) {
   return {
     type: NOTIFICATION_DISMISS,
     payload: [{ id: notificationID }],
+  };
+}
+
+export function removeNotification(component: string) {
+  return {
+    type: NOTIFICATION_REMOVE,
+    payload: component,
   };
 }
 
@@ -64,7 +70,7 @@ const reducer = (state: TState = initialState, action: TAction) => {
   switch (action.type) {
     case REHYDRATE: {
       const incoming = uniqBy(
-        action.payload.bannerNotification || [],
+        (action.payload && action.payload.bannerNotification) || [],
         ({ id }) => id,
       ).filter(({ id }) => id !== 'api_override');
       if (incoming) return [...state, ...incoming];
@@ -77,11 +83,13 @@ const reducer = (state: TState = initialState, action: TAction) => {
           ...(Array.isArray(action.payload) ? action.payload : [])
             .filter(
               n =>
-                n.components.includes('PORTAL') || n.components.includes('API'),
+                n.components.includes('PORTAL') ||
+                n.components.includes('API') ||
+                n.components.includes('LOGIN')
             )
             .map(n => ({ ...n, dismissed: false })),
         ],
-        ({ id }) => id,
+        ({ id }) => id
       );
     case NOTIFICATION_DISMISS:
       const ids = action.payload.map(p => p.id);
@@ -89,6 +97,8 @@ const reducer = (state: TState = initialState, action: TAction) => {
         ...n,
         dismissed: ids.includes(n.id) ? true : n.dismissed,
       }));
+    case NOTIFICATION_REMOVE:
+      return state.slice().filter(n => !n.components.includes(action.payload));
     default:
       return state;
   }

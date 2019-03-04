@@ -79,12 +79,12 @@ export const fetchApi = (endpoint, opts = {}) => {
 
 type TFetchApiChunked = (
   endpoint: string,
-  opts: { chunkSize?: number },
+  opts: { chunkSize?: number }
 ) => Promise<{ data: { hits: Array<{}> } }>;
 const DEFAULT_CHUNK_SIZE = 10000;
 export const fetchApiChunked: TFetchApiChunked = async (
   endpoint,
-  { chunkSize = DEFAULT_CHUNK_SIZE, ...opts } = {},
+  { chunkSize = DEFAULT_CHUNK_SIZE, ...opts } = {}
 ) => {
   const queue = Queue({ concurrency: 6 });
   const body = opts.body || {};
@@ -102,7 +102,7 @@ export const fetchApiChunked: TFetchApiChunked = async (
   const hash = md5(JSON.stringify(defaultOptions));
   const { data } = await fetchApi(
     urlJoin(endpoint, `?hash=${hash}`),
-    defaultOptions,
+    defaultOptions
   );
   let hits = data.hits;
 

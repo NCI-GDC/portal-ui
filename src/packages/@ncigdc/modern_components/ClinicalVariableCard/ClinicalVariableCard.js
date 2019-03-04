@@ -168,6 +168,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
 }) => {
   const queryData = _.values(parsedFacets)[0];
 
+  // refactor once we have binning for continuous variables
   const totalDocsFromBuckets =
     variable.plotTypes === 'continuous'
       ? fakeContinuousBuckets
@@ -177,7 +178,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
           .map(b => b.doc_count)
           .reduce((acc, i) => acc + i, 0);
 
-  const getCategoricalData = (rawData, type) => {
+  const getCategoricalTableData = (rawData, type) => {
     if (!rawData) {
       return [];
     }
@@ -286,7 +287,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
       }));
   };
 
-  const getContinuousData = rawData => {
+  const getContinuousTableData = rawData => {
     if (_.isEmpty(rawData)) {
       return {};
     }
@@ -301,8 +302,8 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
 
   let tableData =
     variable.active_chart === 'box'
-      ? getContinuousData(queryData)
-      : getCategoricalData(queryData, variable.plotTypes);
+      ? getContinuousTableData(queryData)
+      : getCategoricalTableData(queryData, variable.plotTypes);
   console.log('data:', tableData);
 
   const devData = [
@@ -363,7 +364,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
       };
     });
   }
-  // debugger;
+
   return (
     <Column
       style={{

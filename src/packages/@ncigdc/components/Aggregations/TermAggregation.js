@@ -32,7 +32,7 @@ type TProps = {
   showingMore: boolean,
 };
 
-const ToggleMoreLink = styled.div({
+export const ToggleMoreLink = styled.div({
   marginLeft: 'auto',
   color: ({ theme }) => theme.greyScale7,
   fontSize: '1.2rem',
@@ -67,37 +67,35 @@ const TermAggregation = (props: TProps) => {
           [];
         return (
           <Container style={props.style} className="test-term-aggregation">
-            {!props.collapsed &&
-              props.showingValueSearch && (
-                <Row>
-                  <Input
-                    getNode={node => {
-                      input = node;
+            {!props.collapsed && props.showingValueSearch && (
+              <Row>
+                <Input
+                  getNode={node => {
+                    input = node;
+                  }}
+                  style={{ borderRadius: '4px', marginBottom: '6px' }}
+                  onChange={() => props.setFilter(input.value)}
+                  placeholder={'Search...'}
+                  aria-label="Search..."
+                  autoFocus
+                />
+                {input && input.value && (
+                  <CloseIcon
+                    style={{
+                      position: 'absolute',
+                      right: 0,
+                      padding: '10px',
+                      transition: 'all 0.3s ease',
+                      outline: 0,
                     }}
-                    style={{ borderRadius: '4px', marginBottom: '6px' }}
-                    onChange={() => props.setFilter(input.value)}
-                    placeholder={'Search...'}
-                    aria-label="Search..."
-                    autoFocus
+                    onClick={() => {
+                      props.setFilter('');
+                      input.value = '';
+                    }}
                   />
-                  {input &&
-                    input.value && (
-                      <CloseIcon
-                        style={{
-                          position: 'absolute',
-                          right: 0,
-                          padding: '10px',
-                          transition: 'all 0.3s ease',
-                          outline: 0,
-                        }}
-                        onClick={() => {
-                          props.setFilter('');
-                          input.value = '';
-                        }}
-                      />
-                    )}
-                </Row>
-              )}
+                )}
+              </Row>
+            )}
             {!props.collapsed && (
               <Column>
                 {_.orderBy(filteredBuckets, 'doc_count', 'desc')
@@ -140,17 +138,17 @@ const TermAggregation = (props: TProps) => {
                           })}
                           id={`input-${props.title}-${bucket.name.replace(
                             /\s/g,
-                            '-',
+                            '-'
                           )}`}
                           name={`input-${props.title}-${bucket.name.replace(
                             /\s/g,
-                            '-',
+                            '-'
                           )}`}
                         />
                         <OverflowTooltippedLabel
                           htmlFor={`input-${props.title}-${bucket.name.replace(
                             /\s/g,
-                            '-',
+                            '-'
                           )}`}
                           style={{
                             marginLeft: '0.3rem',
@@ -202,10 +200,10 @@ const enhance = compose(
       b =>
         b.key !== '_missing' &&
         (b.key || '').length &&
-        b.key.toLowerCase().includes(filter.toLowerCase()),
+        b.key.toLowerCase().includes(filter.toLowerCase())
     ),
   })),
-  pure,
+  pure
 );
 
 export default enhance(TermAggregation);

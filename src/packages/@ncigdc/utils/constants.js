@@ -308,20 +308,10 @@ export const DISPLAY_CDAVE =
   localStorage.REACT_APP_DISPLAY_CDAVE ||
   false;
 
-export const CLINICAL_PREFIXES = {
-  Diagnosis: 'cases.diagnoses',
-  Treatment: 'cases.diagnoses.treatments',
-  Exposure: 'cases.exposures',
-  Demographic: 'cases.demographic',
-  'Follow up': '',
-  'Molecular test': '',
-};
-
 export const CLINICAL_BLACKLIST = [
   'state',
   'score',
   'submitter_id',
-  'id',
   'demographic_id',
   'updated_datetime',
   'diagnosis_id',

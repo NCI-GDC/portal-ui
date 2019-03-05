@@ -30,7 +30,6 @@ import {
   IAnalysisPayload,
 } from '@ncigdc/dux/analysis';
 import { humanify } from '@ncigdc/utils/string';
-import { CLINICAL_PREFIXES } from '@ncigdc/utils/constants';
 
 interface ITableHeading {
   key: string;
@@ -320,7 +319,6 @@ const VariableCard: React.ComponentType<IVariableCardProps> = ({
             ? d.doc_count
             : (d.doc_count / totalDocs) * 100,
         tooltip: `${d.key}: ${d.doc_count.toLocaleString()}`,
-        // onClick: () => handleClickGene(g, data),
       };
     });
   }
@@ -342,12 +340,7 @@ const VariableCard: React.ComponentType<IVariableCardProps> = ({
         }}
       >
         <h2 style={{ fontSize: '1.8rem', marginTop: 10, marginBottom: 0 }}>
-          {humanify({
-            term: fieldName.replace(
-              `${CLINICAL_PREFIXES[_.capitalize(variable.type)]}.`,
-              ''
-            ),
-          })}
+          {humanify({ term: fieldName })}
         </h2>
         <Row>
           {[...plots, 'delete'].map(plotType => {

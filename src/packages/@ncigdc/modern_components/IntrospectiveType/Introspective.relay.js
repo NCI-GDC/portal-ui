@@ -13,13 +13,7 @@ export default (Component: ReactClass<*>) =>
         </div>
       ))
     ),
-    withPropsOnChange(['name'], ({ name }) => {
-      return {
-        variables: {
-          name,
-        },
-      };
-    })
+    withPropsOnChange(['name'], ({ name }) => ({ variables: { name } }))
   )((props: Object) => {
     return (
       <Query

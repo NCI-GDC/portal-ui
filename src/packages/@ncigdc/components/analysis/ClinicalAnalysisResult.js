@@ -38,6 +38,7 @@ import withRouter from '@ncigdc/utils/withRouter';
 import BaseModal from '@ncigdc/components/Modals/BaseModal';
 import { setModal } from '@ncigdc/dux/modal';
 import EditableLabel from '@ncigdc/uikit/EditableLabel';
+import ContinuousAggregation from '@ncigdc/modern_components/ClinicalVariableCard/ContinuousAggregationQuery';
 
 interface IAnalysisResultProps {
   sets: any;
@@ -406,17 +407,42 @@ const ClinicalAnalysisResult = ({
           >
             {' '}
             {_.map(variables, (varProperties, varFieldName) => {
-              // const FooComponent = withFacetData(props => {
-              //   return <div>{props.viewer.explore.cases.facets}</div>;
-              // });
-              // if (varProperties.plotTypes === 'continuous') {
-              //   return (
-              //     <FooComponent
-              //       key={varFieldName}
-              //       facetField={varFieldName.replace('cases.', '')}
-              //     />
-              //   );
-              // }
+              const filters = {
+                op: 'and',
+                content: [
+                  {
+                    op: '=',
+                    content: {
+                      field: `cases.case_id`,
+                      value: [`set_id:${setId}`],
+                    },
+                  },
+                ],
+              };
+
+              const ContinuousWrapper = withFacetData(props => {
+                const response = JSON.parse(props.viewer.explore.cases.facets);
+
+                return (
+                  <ContinuousAggregation
+                    fieldName={varFieldName}
+                    stats={response[varFieldName].stats}
+                    filters={filters}
+                    variable={varProperties}
+                    plots={plotTypes[varProperties.plotTypes || 'categorical']}
+                    style={{ minWidth: controlPanelExpanded ? 310 : 290 }}
+                    id={id}
+                  />
+                );
+              });
+              if (varProperties.plotTypes === 'continuous') {
+                return (
+                  <ContinuousWrapper
+                    key={varFieldName}
+                    facetField={varFieldName.replace('cases.', '')}
+                  />
+                );
+              }
               return (
                 <ClinicalVariableCard
                   key={varFieldName}
@@ -426,18 +452,7 @@ const ClinicalAnalysisResult = ({
                   style={{ minWidth: controlPanelExpanded ? 310 : 290 }}
                   id={id}
                   facetField={varFieldName.replace('cases.', '')}
-                  filters={{
-                    op: 'and',
-                    content: [
-                      {
-                        op: '=',
-                        content: {
-                          field: `cases.case_id`,
-                          value: [`set_id:${setId}`],
-                        },
-                      },
-                    ],
-                  }}
+                  filters={filters}
                 />
               );
             })}

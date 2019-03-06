@@ -141,16 +141,9 @@ const enhance = compose(
       viewer && viewer.explore.cases.facets
         ? tryParseJSON(viewer.explore.cases.facets, {})
         : {},
+    continuousAggs: viewer && viewer.explore.cases.aggregations,
   }))
 );
-
-const fakeContinuousBuckets = [
-  { key: 'range 1', doc_count: 1 },
-  { key: 'range 2', doc_count: 2 },
-  { key: 'range 3', doc_count: 3 },
-  { key: 'range 4', doc_count: 4 },
-  { key: 'range 5', doc_count: 5 },
-];
 
 const VariableCard: React.ComponentType<IVariableCardProps> = ({
   variable,
@@ -161,31 +154,34 @@ const VariableCard: React.ComponentType<IVariableCardProps> = ({
   dispatch,
   id,
   parsedFacets,
+  continuousAggs,
 }) => {
-  const getCategoricalData = (rawData, type) => {
-    if (!rawData) {
+  const getCategoricalData = (rawCategoricalData, rawAggData, type) => {
+    if (!rawCategoricalData && _.isEmpty(rawAggData)) {
       return [];
     }
     if (type === 'continuous') {
-      return fakeContinuousBuckets.map(b => ({
-        ...b,
-        select: (
-          <input
-            style={{
-              marginLeft: 3,
-              pointerEvents: 'initial',
-            }}
-            // id={id}
-            type="checkbox"
-            // value={setId}
-            // disabled={msg}
-            onChange={e => console.log(e.target.value)}
-            checked={false}
-          />
-        ),
-      }));
+      return rawAggData[fieldName.replace('.', '__')].histogram.buckets.map(
+        b => ({
+          ...b,
+          select: (
+            <input
+              style={{
+                marginLeft: 3,
+                pointerEvents: 'initial',
+              }}
+              // id={id}
+              type="checkbox"
+              // value={setId}
+              // disabled={msg}
+              onChange={e => console.log(e.target.value)}
+              checked={false}
+            />
+          ),
+        })
+      );
     }
-    return (rawData || { buckets: [] }).buckets
+    return (rawCategoricalData || { buckets: [] }).buckets
       .filter(bucket => bucket.key !== '_missing')
       .map(b => ({
         ...b,
@@ -265,7 +261,11 @@ const VariableCard: React.ComponentType<IVariableCardProps> = ({
   let data =
     variable.active_chart === 'box'
       ? getContinuousData(_.values(parsedFacets)[0])
-      : getCategoricalData(_.values(parsedFacets)[0], variable.plotTypes);
+      : getCategoricalData(
+          _.values(parsedFacets)[0],
+          continuousAggs,
+          variable.plotTypes
+        );
   console.log('data:', data);
 
   const getHeadings = chartType => {
@@ -308,7 +308,9 @@ const VariableCard: React.ComponentType<IVariableCardProps> = ({
         ];
   };
 
-  const totalDocs = data.reduce((acc, i) => acc + i.doc_count, 0);
+  const totalDocs = !_.isEmpty(data)
+    ? data.reduce((acc, i) => acc + i.doc_count, 0)
+    : 0;
   let chartData;
   if (variable.active_chart === 'histogram') {
     chartData = data.map(d => {

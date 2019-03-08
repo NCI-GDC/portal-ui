@@ -304,6 +304,6 @@ export const FAKE_USER = process.env.REACT_APP_ALLOW_FAKE_USER
 export const IS_DEV = process.env.NODE_ENV === 'development';
 
 export const DISPLAY_CDAVE =
-  process.env.REACT_APP_DISPLAY_CDAVE ||
   localStorage.REACT_APP_DISPLAY_CDAVE ||
+  process.env.REACT_APP_DISPLAY_CDAVE ||
   false;

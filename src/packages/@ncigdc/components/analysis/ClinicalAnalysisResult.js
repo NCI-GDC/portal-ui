@@ -1,5 +1,11 @@
 import React from 'react';
-import { compose, withState } from 'recompose';
+import {
+  compose,
+  withState,
+  withPropsOnChange,
+  withProps,
+  lifecycle,
+} from 'recompose';
 import { connect } from 'react-redux';
 import SearchIcon from 'react-icons/lib/fa/search';
 import DownCaretIcon from 'react-icons/lib/fa/caret-down';
@@ -40,12 +46,16 @@ import BaseModal from '@ncigdc/components/Modals/BaseModal';
 import { setModal } from '@ncigdc/dux/modal';
 import EditableLabel from '@ncigdc/uikit/EditableLabel';
 
+// survival plot
+import { getDefaultCurve, enoughData } from '@ncigdc/utils/survivalplot';
+import SurvivalPlotWrapper from '@ncigdc/components/SurvivalPlotWrapper';
+
 interface IAnalysisResultProps {
-  sets: any;
-  config: any;
-  label: string;
-  Icon: () => React.Component<any>;
-  analysis: any;
+  sets: any,
+  config: any,
+  label: string,
+  Icon: () => React.Component<any>,
+  analysis: any,
 }
 //
 // interface ISavedSet {
@@ -146,15 +156,50 @@ const CopyAnalysisModal = compose(
   );
 });
 
+const initialState = {
+  survivalPlotLoading: true,
+};
+
 const enhance = compose(
   connect((state: any, props: any) => ({
     allSets: state.sets,
     currentAnalysis: state.analysis.saved.find(a => a.id === props.id),
   })),
   withState('controlPanelExpanded', 'setControlPanelExpanded', true),
+  withState('overallSurvivalData', 'setOverallSurvivalData', {}),
+  withState('state', 'setState', initialState),
+  withProps(({ setOverallSurvivalData, currentAnalysis, setState }) => ({
+    populateSurvivalData: async () => {
+      const setId = Object.keys(currentAnalysis.sets.case)[0];
+      const analysisFilters = {
+        op: 'and',
+        content: [
+          {
+            op: '=',
+            content: {
+              field: `cases.case_id`,
+              value: [`set_id:${setId}`],
+            },
+          },
+        ],
+      };
+      const nextSurvivalData = await getDefaultCurve({
+        currentFilters: analysisFilters,
+        slug: 'Clinical Analysis',
+      });
+
+      setOverallSurvivalData(nextSurvivalData);
+
+      setState(s => ({
+        ...s,
+        survivalPlotLoading: false,
+      }));
+    },
+  })),
   withTheme,
   withRouter
 );
+
 const ClinicalAnalysisResult = ({
   sets,
   Icon,
@@ -168,6 +213,9 @@ const ClinicalAnalysisResult = ({
   dispatch,
   currentAnalysis,
   push,
+  overallSurvivalData,
+  populateSurvivalData,
+  survivalPlotLoading,
   ...props
 }: IAnalysisResultProps) => {
   const setName = Object.values(sets.case)[0];
@@ -210,8 +258,7 @@ const ClinicalAnalysisResult = ({
                         property: 'name',
                         id,
                       })
-                    )
-                  }
+                    )}
                   iconStyle={{
                     marginLeft: 10,
                     fontSize: '1.8rem',
@@ -386,25 +433,32 @@ const ClinicalAnalysisResult = ({
           >
             <h2 style={styles.sectionHeader}>Survival Analysis</h2>
             <Row style={{ justifyContent: 'space-around' }}>
-              <Column style={{ width: '47%' }}>
-                <div>Overall Survival</div>
+              <Column
+                style={{
+                  width: '99%',
+                  flexDirection: 'row',
+                  justifyContent: 'space-around',
+                }}
+              >
+                <div style={{ position: 'absolute', top: 0 }}>
+                  Overall Survival
+                </div>
                 <div
                   style={{
-                    margin: 5,
-                    height: 200,
-                    backgroundColor: theme.greyScale5,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    flex: '0 0 auto',
+                    height: 250,
+                    margin: '5px 5px 10px',
                   }}
-                />
-              </Column>
-              <Column style={{ width: '47%' }}>
-                <div>Progression Free Survival</div>
-                <div
-                  style={{
-                    margin: 5,
-                    height: 200,
-                    backgroundColor: theme.greyScale5,
-                  }}
-                />
+                >
+                  <SurvivalPlotWrapper
+                    {...overallSurvivalData}
+                    height={180}
+                    customClass="categorical-survival-plot"
+                    survivalPlotLoading={survivalPlotLoading}
+                  />
+                </div>
               </Column>
             </Row>
           </Column>
@@ -432,28 +486,29 @@ const ClinicalAnalysisResult = ({
               //   );
               // }
               return (
-                <ClinicalVariableCard
-                  key={varFieldName}
-                  fieldName={varFieldName}
-                  variable={varProperties}
-                  plots={plotTypes[varProperties.plotTypes || 'categorical']}
-                  style={{ minWidth: controlPanelExpanded ? 310 : 290 }}
-                  id={id}
-                  setId={setId}
-                  facetField={varFieldName.replace('cases.', '')}
-                  filters={{
-                    op: 'and',
-                    content: [
-                      {
-                        op: '=',
-                        content: {
-                          field: `cases.case_id`,
-                          value: [`set_id:${setId}`],
+                <div>
+                  <ClinicalVariableCard
+                    key={varFieldName}
+                    fieldName={varFieldName}
+                    variable={varProperties}
+                    plots={plotTypes[varProperties.plotTypes || 'categorical']}
+                    id={id}
+                    setId={setId}
+                    facetField={varFieldName.replace('cases.', '')}
+                    filters={{
+                      op: 'and',
+                      content: [
+                        {
+                          op: '=',
+                          content: {
+                            field: `cases.case_id`,
+                            value: [`set_id:${setId}`],
+                          },
                         },
-                      },
-                    ],
-                  }}
-                />
+                      ],
+                    }}
+                  />
+                </div>
               );
             })}
           </Column>
@@ -463,4 +518,10 @@ const ClinicalAnalysisResult = ({
   );
 };
 
-export default enhance(ClinicalAnalysisResult);
+const ClinicalAnalysisResultWithSurvivalData = lifecycle({
+  componentDidMount() {
+    this.props.populateSurvivalData();
+  },
+})(ClinicalAnalysisResult);
+
+export default enhance(ClinicalAnalysisResultWithSurvivalData);

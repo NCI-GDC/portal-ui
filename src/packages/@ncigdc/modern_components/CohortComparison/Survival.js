@@ -61,7 +61,7 @@ export const makeSurvivalCurveFilter = (setId, otherSetId) => ({
 
 export default compose(
   withTheme,
-  withRouter,
+  withRouter
 )(
   ({
     loading,
@@ -121,7 +121,7 @@ export default compose(
       get(survivalData, 'rawData.results[1].donors.length', 0) ? (
         <div>
           <SurvivalPlotWrapper
-            survivalPlotloading={loading}
+            survivalPlotLoading={loading}
             {...survivalData}
             palette={palette}
             height={240}
@@ -166,7 +166,7 @@ export default compose(
                       {get(
                         survivalData,
                         'rawData.results[0].donors.length',
-                        0,
+                        0
                       ) > 0 ? (
                         <CaseSetButton
                           setId={set1id}
@@ -188,7 +188,7 @@ export default compose(
                       {get(
                         survivalData,
                         'rawData.results[1].donors.length',
-                        0,
+                        0
                       ) > 0 ? (
                         <CaseSetButton
                           setId={set2id}
@@ -216,5 +216,5 @@ export default compose(
         <div>No Survival data available for this Cohort Comparison</div>
       )}
     </div>
-  ),
+  )
 );

@@ -60,7 +60,7 @@ export default compose(
           loading: false,
         }));
       },
-    }),
+    })
   ),
   withPropsOnChange(['filters'], ({ updateData }) => {
     updateData();
@@ -69,7 +69,7 @@ export default compose(
     handleClickMutation: ({ push, query, filters }) => ssm => {
       const newFilters = toggleFilters(
         filters,
-        makeFilter([{ field: 'ssms.ssm_id', value: [ssm.ssm_id] }]),
+        makeFilter([{ field: 'ssms.ssm_id', value: [ssm.ssm_id] }])
       );
       push({
         pathname: '/exploration',
@@ -79,7 +79,7 @@ export default compose(
         }),
       });
     },
-  }),
+  })
 )(
   ({
     viewer,
@@ -102,7 +102,7 @@ export default compose(
             {...survivalData}
             onReset={() => setSelectedSurvivalData({})}
             height={240}
-            survivalPlotloading={false}
+            survivalPlotLoading={false}
           />
         </Column>
         <Column flex="1" style={{ width: '50%' }} />
@@ -112,12 +112,12 @@ export default compose(
         defaultFilters={filters}
         selectedSurvivalData={selectedSurvivalData}
         hasEnoughSurvivalDataOnPrimaryCurve={enoughData(
-          defaultSurvivalData.rawData,
+          defaultSurvivalData.rawData
         )}
         setSelectedSurvivalData={setSelectedSurvivalData}
         showSurvivalPlot
         context="Cohort"
       />
     </Column>
-  ),
+  )
 );

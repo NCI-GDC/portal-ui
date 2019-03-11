@@ -1,8 +1,10 @@
 // @flow
 import reactSize from 'react-sizeme';
 
-const withSize = (options: Object = {}) =>
-  reactSize({ ...options, refreshRate: 200 });
+const withSize = (options: Object = {}) => {
+  console.log('options', options);
+  return reactSize({ refreshRate: 200, ...options });
+};
 
 export const WithSize = withSize()(({ children, size }) => children(size));
 

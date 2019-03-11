@@ -4,7 +4,13 @@
 import React from 'react';
 import * as d3 from 'd3';
 import ReactFauxDOM from 'react-faux-dom';
-import { compose, withState, pure } from 'recompose';
+import {
+  compose,
+  withState,
+  pure,
+  withProps,
+  withPropsOnChange,
+} from 'recompose';
 
 // Custom
 import { withTheme } from '@ncigdc/theme';
@@ -24,8 +30,10 @@ const BarChart = ({
   theme,
   size: { width },
 }) => {
+  console.log('width: ', width);
   const el = ReactFauxDOM.createElement('div');
   el.style.width = '100%';
+
   el.setAttribute('class', 'test-bar-chart');
   const innerPadding = 0.3;
   const outerPadding = 0.3;
@@ -83,13 +91,12 @@ const BarChart = ({
       .axisLeft(y)
       .ticks(Math.min(4, maxY))
       .tickSize(-chartWidth)
-      .tickSizeOuter(0),
+      .tickSizeOuter(0)
   );
 
   yG.selectAll('path').style('stroke', 'none');
   yG.selectAll('line').style('stroke', yAxisStyle.stroke);
-  yG
-    .selectAll('text')
+  yG.selectAll('text')
     .style('fontSize', yAxisStyle.fontSize)
     .style('fill', yAxisStyle.textFill);
 
@@ -110,8 +117,7 @@ const BarChart = ({
     .attr('transform', `translate(0, ${height})`)
     .call(d3.axisBottom(x));
 
-  xG
-    .selectAll('text')
+  xG.selectAll('text')
     .style('text-anchor', 'end')
     .style('fontSize', xAxisStyle.fontSize)
     .style('fontWeight', xAxisStyle.fontWeight)
@@ -124,12 +130,14 @@ const BarChart = ({
 
   xG.selectAll('line').style('stroke', xAxisStyle.stroke);
 
-  xG.selectAll('.tick').data(data).on('mouseenter', d => {
-    setTooltip(d.tooltip);
-  })
-  .on('mouseleave', () => {
-    setTooltip();
-  });
+  xG.selectAll('.tick')
+    .data(data)
+    .on('mouseenter', d => {
+      setTooltip(d.tooltip);
+    })
+    .on('mouseleave', () => {
+      setTooltip();
+    });
 
   const barGs = svg
     .selectAll('g.chart')
@@ -172,6 +180,6 @@ export default compose(
   withTheme,
   withTooltip,
   withState('chart', 'setState', <span />),
-  withSize(),
-  pure,
+  withSize({ refreshRate: 16 }),
+  pure
 )(BarChart);

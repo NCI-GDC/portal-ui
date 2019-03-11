@@ -401,7 +401,7 @@ const ClinicalAnalysisResult = ({
               display: 'grid',
               gridTemplateColumns: controlPanelExpanded
                 ? '50% 50%'
-                : '33.33% 33.33% 33.33%',
+                : '33% 33% 33%',
               gridTemplateRows: 'repeat(auto)',
             }}
           >

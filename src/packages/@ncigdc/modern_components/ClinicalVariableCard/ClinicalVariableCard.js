@@ -1,5 +1,5 @@
 import React from 'react';
-import { compose, withPropsOnChange, withProps } from 'recompose';
+import { compose, withPropsOnChange, withProps, lifecycle } from 'recompose';
 import DownCaretIcon from 'react-icons/lib/fa/caret-down';
 import { connect } from 'react-redux';
 import _ from 'lodash';
@@ -30,6 +30,7 @@ import {
   IAnalysisPayload,
 } from '@ncigdc/dux/analysis';
 import { humanify } from '@ncigdc/utils/string';
+import { getLowerAgeYears, getUpperAgeYears } from '@ncigdc/utils/ageDisplay';
 
 interface ITableHeading {
   key: string;
@@ -160,9 +161,69 @@ const VariableCard: React.ComponentType<IVariableCardProps> = ({
     if (!rawCategoricalData && _.isEmpty(rawAggData)) {
       return [];
     }
+
     if (type === 'continuous') {
-      return rawAggData[fieldName.replace('.', '__')].histogram.buckets.map(
-        b => ({
+      const buildDisplayKeyAndFilters = (acc, { doc_count, key }) => {
+        const unit = /year[^s]/.test(fieldName)
+          ? 'years'
+          : fieldName.includes('');
+
+        const valueIsDays = str => /(days_to|age_at)/.test(str);
+        const valueIsYear = str => /year_of/.test(str);
+
+        const getRangeValue = (key, field) => {
+          if (valueIsDays(field)) {
+            return `${getLowerAgeYears(key)}${
+              acc.nextInterval === 0
+                ? '+'
+                : ' - ' + getUpperAgeYears(acc.nextInterval - 1)
+            } years`;
+          } else if (valueIsYear(field)) {
+            return `${Math.floor(key)}${
+              acc.nextInterval === 0
+                ? ' - present'
+                : ' - ' + (acc.nextInterval - 1)
+            }`;
+          } else {
+            return key;
+          }
+        };
+        return {
+          nextInterval: key,
+          data: [
+            ...acc.data,
+            {
+              doc_count,
+              key: getRangeValue(key, fieldName),
+              filters: [
+                {
+                  op: '>=',
+                  content: {
+                    field: `cases.${fieldName}`,
+                    value: [key],
+                  },
+                },
+                ...(acc.nextInterval !== 0 && [
+                  {
+                    op: '<=',
+                    content: {
+                      field: `cases.${fieldName}`,
+                      value: [acc.nextInterval - 1],
+                    },
+                  },
+                ]),
+              ],
+            },
+          ],
+        };
+      };
+
+      return rawAggData[fieldName.replace('.', '__')].histogram.buckets
+        .sort((a, b) => b.key - a.key)
+        .reduce(buildDisplayKeyAndFilters, { nextInterval: 0, data: [] })
+        .data.slice(0)
+        .reverse()
+        .map(b => ({
           ...b,
           select: (
             <input
@@ -178,9 +239,9 @@ const VariableCard: React.ComponentType<IVariableCardProps> = ({
               checked={false}
             />
           ),
-        })
-      );
+        }));
     }
+
     return (rawCategoricalData || { buckets: [] }).buckets
       .filter(bucket => bucket.key !== '_missing')
       .map(b => ({

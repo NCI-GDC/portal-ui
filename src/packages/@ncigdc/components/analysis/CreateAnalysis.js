@@ -17,7 +17,7 @@ import DemoButton from './DemoButton';
 const defaultVariables = {
   'demographic.ethnicity': {
     type: 'Demographic',
-    active_chart: 'survival',
+    active_chart: 'histogram',
     active_calculation: 'number',
     active_survival: 'overall',
     plotTypes: 'categorical',
@@ -26,7 +26,7 @@ const defaultVariables = {
 
   'demographic.gender': {
     type: 'Demographic',
-    active_chart: 'survival',
+    active_chart: 'histogram',
     active_calculation: 'number',
     active_survival: 'overall',
     plotTypes: 'categorical',
@@ -35,7 +35,7 @@ const defaultVariables = {
 
   'demographic.race': {
     type: 'Demographic',
-    active_chart: 'survival',
+    active_chart: 'histogram',
     active_calculation: 'number',
     active_survival: 'overall',
     plotTypes: 'categorical',
@@ -43,7 +43,7 @@ const defaultVariables = {
   },
   'diagnoses.age_at_diagnosis': {
     type: 'Diagnosis',
-    active_chart: 'survival',
+    active_chart: 'histogram',
     active_calculation: 'number',
     active_survival: 'overall',
     plotTypes: 'continuous',
@@ -52,7 +52,7 @@ const defaultVariables = {
 
   'diagnoses.age_at_diagnosis': {
     type: 'Diagnosis',
-    active_chart: 'survival',
+    active_chart: 'histogram',
     active_calculation: 'number',
     active_survival: 'overall',
     plotTypes: 'continuous',
@@ -60,7 +60,7 @@ const defaultVariables = {
   },
   'diagnoses.cause_of_death': {
     type: 'Diagnosis',
-    active_chart: 'survival',
+    active_chart: 'histogram',
     active_calculation: 'number',
     active_survival: 'overall',
     plotTypes: 'categorical',

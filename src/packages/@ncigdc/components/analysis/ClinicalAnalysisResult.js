@@ -406,6 +406,7 @@ const ClinicalAnalysisResult = ({
           >
             {' '}
             {_.map(variables, (varProperties, varFieldName) => {
+              // leaving sample wrapper component for continuous variables, they'll need an extra step to get min/max for binning
               // const FooComponent = withFacetData(props => {
               //   return <div>{props.viewer.explore.cases.facets}</div>;
               // });
@@ -425,6 +426,7 @@ const ClinicalAnalysisResult = ({
                   plots={plotTypes[varProperties.plotTypes || 'categorical']}
                   style={{ minWidth: controlPanelExpanded ? 310 : 290 }}
                   id={id}
+                  setId={setId}
                   facetField={varFieldName.replace('cases.', '')}
                   filters={{
                     op: 'and',

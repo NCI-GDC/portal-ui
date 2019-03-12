@@ -13,27 +13,59 @@ import urlJoin from 'url-join';
 import _ from 'lodash';
 
 import ClinicalVariableCard from '@ncigdc/modern_components/ClinicalVariableCard/ClinicalVariableCard.js';
+import consoleDebug from '@ncigdc/utils/consoleDebug';
+import { redirectToLogin } from '@ncigdc/utils/auth';
+import { withLoader } from '@ncigdc/uikit/Loaders/Loader';
 import Loader from '@ncigdc/uikit/Loaders/Loader';
 
-import { API } from '@ncigdc/utils/constants';
+import { API, IS_AUTH_PORTAL } from '@ncigdc/utils/constants';
 
+const simpleAggCache = {};
+const pendingAggCache = {};
 const DEFAULT_CONTINUOUS_BUCKETS = 5;
 
-const continuousAggregationQuery = ({ fieldName, stats, filters }) => {
+const getContinousAggs = ({ fieldName, stats, filters }) => {
+  // prevent query failing if interval will equal 0
+  if (_.isNull(stats.min) || _.isNull(stats.max)) {
+    return null;
+  }
   const interval = (stats.max - stats.min) / DEFAULT_CONTINUOUS_BUCKETS;
   const queryFieldName = fieldName.replace('.', '__');
 
   const variables = {
     filters,
   };
-
+  const componentName = 'ContinuousAggregationQuery';
   const body = JSON.stringify({
-    query: `query ContinuousAggregationQuery(\n  $filters: FiltersArgument\n) {\n  viewer {\n    explore {\n      cases {\n        aggregations(filters: $filters) {\n          ${queryFieldName} {\n            histogram(interval: ${interval}) {\n              buckets {\n                key\n                doc_count\n              }\n            }\n          }\n        }\n      }\n    }\n  }\n}\n`,
+    query: `query ${componentName}(\n  $filters: FiltersArgument\n) {\n  viewer {\n    explore {\n      cases {\n        aggregations(filters: $filters) {\n          ${queryFieldName} {\n            histogram(interval: ${interval}) {\n              buckets {\n                key\n                doc_count\n              }\n            }\n          }\n        }\n      }\n    }\n  }\n}\n`,
     variables,
   });
 
   const hash = md5(body);
 
+  if (pendingAggCache[hash]) {
+    return new Promise((res, rej) => {
+      const id = setInterval(() => {
+        let timer = 0;
+        if (simpleAggCache[hash]) {
+          clearInterval(id);
+          res(simpleAggCache[hash]);
+        }
+
+        if (timer > 10000) {
+          clearInterval(id);
+          delete pendingAggCache[hash];
+          rej(`Error: ${componentName} was pending for too long.`);
+        }
+        timer += 100;
+      }, 100);
+    });
+  }
+
+  if (simpleAggCache[hash]) {
+    return Promise.resolve(simpleAggCache[hash]);
+  }
+  pendingAggCache[hash] = true;
   return fetch(
     urlJoin(API, `graphql/ContinuousAggregationQuery?hash=${hash}`),
     {
@@ -43,39 +75,102 @@ const continuousAggregationQuery = ({ fieldName, stats, filters }) => {
       },
       body,
     }
-  )
-    .then(res => res.json())
-    .then(data => data)
-    .catch(err => {
-      console.log('Error:', err);
-      return { data: null };
-    });
+  ).then(response =>
+    response
+      .json()
+      .then(json => {
+        console.log('json res: ', json);
+        if (!response.ok) {
+          consoleDebug('throwing error in Environment');
+          throw response;
+        }
+
+        if (response.status === 200) {
+          simpleAggCache[hash] = json;
+          delete pendingAggCache[hash];
+        }
+
+        return json;
+      })
+      .catch(err => {
+        if (err.status) {
+          switch (err.status) {
+            case 401:
+            case 403:
+              consoleDebug(err.statusText);
+              if (IS_AUTH_PORTAL) {
+                return redirectToLogin('timeout');
+              }
+              break;
+            case 400:
+            case 404:
+              consoleDebug(err.statusText);
+              break;
+            default:
+              return consoleDebug(`Default error case: ${err.statusText}`);
+          }
+        } else {
+          consoleDebug(
+            `Something went wrong in environment, but no error status: ${err}`
+          );
+        }
+      })
+  );
 };
 
 export default compose(
   withState('aggData', 'setAggData', null),
   withState('isLoading', 'setIsLoading', true),
-  lifecycle({
-    async componentDidMount() {
-      const {
-        fieldName,
-        stats,
-        filters,
-        setAggData,
-        setIsLoading,
-      } = this.props;
-      const res = await continuousAggregationQuery({
+  withProps({
+    updateData: async ({
+      fieldName,
+      stats,
+      filters,
+      aggData,
+      setAggData,
+      setIsLoading,
+    }) => {
+      const res = await getContinousAggs({
         fieldName,
         stats,
         filters,
       });
-      setAggData(res.data.viewer);
-      setIsLoading(false);
+      console.log('updating data: ', res);
+      setAggData(res && res.data.viewer, () => setIsLoading(false));
     },
-  })
+  }),
+  withPropsOnChange(['filters'], ({ updateData, ...props }) =>
+    updateData(props)
+  )
+  // lifecycle({
+  //   async componentDidMount() {
+  //     console.log('agg component is mounting');
+  //     const {
+  //       fieldName,
+  //       stats,
+  //       filters,
+  //       aggData,
+  //       setAggData,
+  //       setIsLoading,
+  //     } = this.props;
+  //
+  //     const res = await getContinousAggs({
+  //       fieldName,
+  //       stats,
+  //       filters,
+  //     });
+  //     console.log('fetching in mount');
+  //     setAggData(res.data.viewer);
+  //
+  //     setIsLoading(false);
+  //   },
+  // })
 )(({ aggData, isLoading, ...props }) => {
   if (isLoading) {
     return <Loader />;
   }
-  return <ClinicalVariableCard viewer={aggData} {...props} />;
+  // const Component = withLoader(ClinicalVariableCard);
+  return (
+    <ClinicalVariableCard viewer={aggData} loading={isLoading} {...props} />
+  );
 });

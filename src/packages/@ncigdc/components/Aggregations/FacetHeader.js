@@ -88,31 +88,29 @@ const FacetHeader = compose(
         return (
           <Header className="test-facet-header" style={style}>
             <span style={spanStyle} onClick={() => setCollapsed(!collapsed)}>
-              <Row>
-                {!angleIconRight && (
-                  <AngleIcon
-                    style={{
-                      paddingRight: '0.25rem',
-                      transform: `rotate(${collapsed ? 270 : 0}deg)`,
-                    }}
-                  />
-                )}
-                {searchValue
-                  ? internalHighlight(searchValue, title, {
-                      backgroundColor: '#FFFF00',
-                    })
-                  : title}
-                {angleIconRight && (
-                  <AngleIcon
-                    style={{
-                      overflow: 'auto',
-                      display: 'flex',
-                      float: 'right',
-                      transform: `rotate(${collapsed ? 270 : 0}deg)`,
-                    }}
-                  />
-                )}
-              </Row>
+              {!angleIconRight && (
+                <AngleIcon
+                  style={{
+                    paddingRight: '0.25rem',
+                    transform: `rotate(${collapsed ? 270 : 0}deg)`,
+                  }}
+                />
+              )}
+              {searchValue
+                ? internalHighlight(searchValue, title, {
+                    backgroundColor: '#FFFF00',
+                  })
+                : title}
+              {angleIconRight && (
+                <AngleIcon
+                  style={{
+                    overflow: 'auto',
+                    display: 'flex',
+                    float: 'right',
+                    transform: `rotate(${collapsed ? 270 : 0}deg)`,
+                  }}
+                />
+              )}
             </span>
             <IconsRow>
               {description && (

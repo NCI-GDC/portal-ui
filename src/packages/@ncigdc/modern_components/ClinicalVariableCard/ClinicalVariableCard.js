@@ -401,12 +401,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
         }}
       >
         <h2 style={{ fontSize: '1.8rem', marginTop: 10, marginBottom: 0 }}>
-          {humanify({
-            term: fieldName.replace(
-              `${CLINICAL_PREFIXES[_.capitalize(variable.type)]}.`,
-              ''
-            ),
-          })}
+          {humanify({ term: fieldName })}
         </h2>
         <Row>
           {[...plots, 'delete'].map(plotType => {

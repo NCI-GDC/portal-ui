@@ -34,7 +34,6 @@ import {
   updateClinicalAnalysisProperty,
   addAnalysis,
 } from '@ncigdc/dux/analysis';
-import { CLINICAL_PREFIXES } from '@ncigdc/utils/constants';
 import withRouter from '@ncigdc/utils/withRouter';
 import BaseModal from '@ncigdc/components/Modals/BaseModal';
 import { setModal } from '@ncigdc/dux/modal';
@@ -81,12 +80,6 @@ const styles = {
     paddingLeft: 5,
   },
 };
-
-// will need to update with correct type names for molecular and follow-up
-const clinicalTypes = Object.keys(CLINICAL_PREFIXES).filter(
-  clinicalType =>
-    clinicalType !== 'Molecular test' && clinicalType !== 'Treatment'
-);
 
 const plotTypes = {
   categorical: ['histogram', 'survival'],
@@ -365,13 +358,7 @@ const ClinicalAnalysisResult = ({
               />
             </Row>
             <Column style={{ marginTop: 10 }}>
-              {clinicalTypes.map(clinicalType => (
-                <ControlPanelNode
-                  key={clinicalType}
-                  name={clinicalType}
-                  analysis_id={id}
-                />
-              ))}
+              <ControlPanelNode name={'ExploreCases'} analysis_id={id} />
             </Column>
           </Column>
         )}

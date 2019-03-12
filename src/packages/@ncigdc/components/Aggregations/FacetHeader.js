@@ -16,6 +16,7 @@ import AngleIcon from '@ncigdc/theme/icons/AngleIcon';
 import QuestionIcon from '@ncigdc/theme/icons/Question';
 import { Row } from '@ncigdc/uikit/Flex';
 import { Tooltip } from '@ncigdc/uikit/Tooltip';
+import { internalHighlight } from '@ncigdc/uikit/Highlight';
 
 const Header = styled(Row, {
   color: ({ theme }) => theme.primary,
@@ -96,13 +97,11 @@ const FacetHeader = compose(
                     }}
                   />
                 )}
-                <ResultHighlights
-                  item={{ title }}
-                  query={searchValue}
-                  heighlightStyle={{ backgroundColor: '#FFFF00' }}
-                  style={{ padding: '0', margin: '0' }}
-                />
-                {/* {title} */}
+                {searchValue
+                  ? internalHighlight(searchValue, title, {
+                      backgroundColor: '#FFFF00',
+                    })
+                  : title}
                 {angleIconRight && (
                   <AngleIcon
                     style={{

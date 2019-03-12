@@ -49,4 +49,11 @@ export default [
     doc_type: 'cases',
     type: 'keyword',
   },
+  {
+    title: 'Sample Type',
+    field: 'samples.sample_type',
+    full: 'cases.samples.sample_type',
+    doc_type: 'cases',
+    type: 'keyword',
+  },
 ];

@@ -139,6 +139,7 @@ export const ExplorePageComponent = ({
         component: (
           <ClinicalAggregations
             facets={viewer.explore.customCaseFacets}
+            caseFacets={viewer.caseFacets}
             docType="cases"
             relayVarName="exploreCaseCustomFacetFields"
             aggregations={viewer.explore.cases.aggregations}
@@ -329,6 +330,23 @@ export const ExplorePageQuery = {
               cosmic_id
               gene_aa_change
               genomic_dna_change
+            }
+          }
+        }
+        caseFacets: __type(name: "ExploreCases"){
+          name
+          fields {
+            description
+            name
+            type { 
+              name 
+              fields 
+              { 
+                name 
+                description 
+                type { 
+                  name }
+              } 
             }
           }
         }

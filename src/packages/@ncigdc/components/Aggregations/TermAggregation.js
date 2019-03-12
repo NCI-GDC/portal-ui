@@ -19,6 +19,7 @@ import OverflowTooltippedLabel from '@ncigdc/uikit/OverflowTooltippedLabel';
 import { Container, BucketLink } from './';
 
 import { IBucket } from './types';
+import { internalHighlight } from '@ncigdc/uikit/Highlight';
 
 type TProps = {
   buckets: [IBucket],
@@ -31,6 +32,7 @@ type TProps = {
   setShowingMore: Function,
   showingMore: boolean,
   maxNum: number,
+  searchValue: string,
 };
 
 export const ToggleMoreLink = styled.div({
@@ -58,7 +60,6 @@ let input;
 const TermAggregation = (props: TProps) => {
   const dotField = props.field.replace(/__/g, '.');
   const { filteredBuckets, maxNum, filter } = props;
-  console.log('filter', filter);
 
   return (
     <LocationSubscriber>
@@ -159,7 +160,15 @@ const TermAggregation = (props: TProps) => {
                             verticalAlign: 'middle',
                           }}
                         >
-                          {bucket.name}
+                          {props.searchValue
+                            ? internalHighlight(
+                                props.searchValue,
+                                bucket.name,
+                                {
+                                  backgroundColor: '#FFFF00',
+                                }
+                              )
+                            : bucket.name}
                         </OverflowTooltippedLabel>
                       </BucketLink>
                       <CountBubble className="bucket-count">

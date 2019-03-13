@@ -408,7 +408,6 @@ const ClinicalAnalysisResult = ({
           >
             {' '}
             {_.map(variables, (varProperties, varFieldName) => {
-
               const filters = {
                 op: 'and',
                 content: [
@@ -434,6 +433,7 @@ const ClinicalAnalysisResult = ({
                     plots={plotTypes[varProperties.plotTypes || 'categorical']}
                     style={{ minWidth: controlPanelExpanded ? 310 : 290 }}
                     id={id}
+                    setId={setId}
                   />
                 );
               });
@@ -445,7 +445,6 @@ const ClinicalAnalysisResult = ({
                   />
                 );
               }
-
               return (
                 <ClinicalVariableCard
                   key={varFieldName}
@@ -454,9 +453,9 @@ const ClinicalAnalysisResult = ({
                   plots={plotTypes[varProperties.plotTypes || 'categorical']}
                   style={{ minWidth: controlPanelExpanded ? 310 : 290 }}
                   id={id}
-                  setId={setId}
                   facetField={varFieldName.replace('cases.', '')}
                   filters={filters}
+                  setId={setId}
                 />
               );
             })}

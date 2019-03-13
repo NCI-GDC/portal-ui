@@ -6,7 +6,7 @@ export interface IDataCategory {
 
 // waiting on $Values
 export type TCategory =
-  | 'Raw Sequencing Data'
+  | 'Sequencing Reads'
   | 'Transcriptome Profiling'
   | 'Simple Nucleotide Variation'
   | 'Copy Number Variation'

@@ -152,6 +152,7 @@ export default compose(
               RemoveFromSetButton={RemoveFromExploreSsmSetButton}
               idField="ssms.ssm_id"
               selectedIds={selectedIds}
+              hideColumns={hideSurvival ? ['survival_plot'] : []}
             />
           </Row>
         </Row>

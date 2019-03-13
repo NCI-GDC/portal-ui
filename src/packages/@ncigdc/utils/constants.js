@@ -24,7 +24,8 @@ export const SLIDE_IMAGE_ENDPOINT =
   localStorage.REACT_APP_SLIDE_IMAGE_ENDPOINT ||
   process.env.REACT_APP_SLIDE_IMAGE_ENDPOINT;
 
-export const AWG = localStorage.REACT_APP_AWG || process.env.REACT_APP_AWG || false;
+export const AWG =
+  localStorage.REACT_APP_AWG || process.env.REACT_APP_AWG || false;
 
 export const IS_AUTH_PORTAL =
   localStorage.REACT_APP_IS_AUTH_PORTAL ||
@@ -48,7 +49,7 @@ export const LOCAL_STORAGE_API_OVERRIDE = API_OVERRIDE_KEYS.some(
 );
 
 export const DATA_CATEGORIES = {
-  SEQ: { full: 'Raw Sequencing Data', abbr: 'Seq' },
+  SEQ: { full: 'Sequencing Reads', abbr: 'Seq' },
   EXP: { full: 'Transcriptome Profiling', abbr: 'Exp' },
   SNV: { full: 'Simple Nucleotide Variation', abbr: 'SNV' },
   CNV: { full: 'Copy Number Variation', abbr: 'CNV' },
@@ -301,3 +302,8 @@ export const FAKE_USER = process.env.REACT_APP_ALLOW_FAKE_USER
   : null;
 
 export const IS_DEV = process.env.NODE_ENV === 'development';
+
+export const DISPLAY_CDAVE =
+  localStorage.REACT_APP_DISPLAY_CDAVE ||
+  process.env.REACT_APP_DISPLAY_CDAVE ||
+  false;

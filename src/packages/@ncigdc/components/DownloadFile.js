@@ -60,9 +60,9 @@ function DownloadFile({
                       extraParams={{ ids: file.file_id }}
                       filename={file.file_name}
                       endpoint="data?annotations=true&related_files=true"
-                      activeText={activeText}
-                      inactiveText={inactiveText}
-                      style={style}
+                      activeText={'Processing'}
+                      inactiveText={'Download'}
+                      style={{ marginLeft: '0.2rem' }}
                       setModal={() => dispatch(setModal(null))}
                     />
                   )}

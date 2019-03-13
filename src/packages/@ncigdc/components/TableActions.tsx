@@ -80,6 +80,7 @@ interface IProps {
   AppendSetButton?: React.ComponentClass;
   downloadClinical?: boolean;
   downloadBiospecimen?: boolean;
+  hideColumns?: string[];
 }
 
 const TableActions: React.SFC<IProps> = ({
@@ -110,6 +111,7 @@ const TableActions: React.SFC<IProps> = ({
   downloadBiospecimen,
   theme,
   totalCases,
+  hideColumns,
 }: IProps) => {
   const fieldContains = ({
     filters,
@@ -128,6 +130,7 @@ const TableActions: React.SFC<IProps> = ({
         <ArrangeColumnsButton
           entityType={arrangeColumnKey}
           style={visualizingButton}
+          hideColumns={hideColumns}
         />
       )}
       {sortOptions && (

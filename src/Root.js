@@ -15,16 +15,19 @@ import {
   Route,
   Redirect,
 } from 'react-router-dom';
+import { PersistGate } from 'redux-persist/lib/integration/react';
 
 import setupStore from '@ncigdc/dux';
 import { fetchApiVersionInfo } from '@ncigdc/dux/versionInfo';
 import { viewerQuery } from '@ncigdc/routes/queries';
 import Portal from './Portal';
-import { API, IS_AUTH_PORTAL } from '@ncigdc/utils/constants';
+import { API, IS_AUTH_PORTAL, AWG } from '@ncigdc/utils/constants';
 import { fetchUser, forceLogout } from '@ncigdc/dux/auth';
 import Login from '@ncigdc/routes/Login';
 import { redirectToLogin } from '@ncigdc/utils/auth';
 import consoleDebug from '@ncigdc/utils/consoleDebug';
+import { fetchNotifications } from '@ncigdc/dux/bannerNotification';
+import Loader from '@ncigdc/uikit/Loaders/Loader';
 
 const retryStatusCodes = [500, 503, 504];
 
@@ -45,7 +48,7 @@ Relay.injectNetworkLayer(
       forceRetry: (cb, delay) => {
         window.forceRelayRetry = cb;
         console.log(
-          `call \`forceRelayRetry()\` for immediately retry! Or wait ${delay} ms.`,
+          `call \`forceRelayRetry()\` for immediately retry! Or wait ${delay} ms.`
         );
       },
       statusCodes: retryStatusCodes,
@@ -59,7 +62,7 @@ Relay.injectNetworkLayer(
           [
             req.relayReqObj._printedQuery.text,
             JSON.stringify(req.relayReqObj._printedQuery.variables),
-          ].join(':'),
+          ].join(':')
         );
 
       req.url = `${url}?hash=${hash}`;
@@ -71,6 +74,7 @@ Relay.injectNetworkLayer(
       req.credentials = 'include';
 
       let { user } = window.store.getState().auth;
+
       let parsedBody = JSON.parse(req.body);
       req.body = JSON.stringify(parsedBody);
       return next(req)
@@ -121,10 +125,10 @@ Relay.injectNetworkLayer(
           }
         });
     },
-  ]),
+  ])
 );
 
-export const store = setupStore({
+export const { store, persistor } = setupStore({
   persistConfig: {
     keyPrefix: 'ncigdcActive',
   },
@@ -136,8 +140,10 @@ store.dispatch(fetchApiVersionInfo());
 
 if (process.env.NODE_ENV !== 'development') {
   store.dispatch(fetchUser());
+  if (!AWG) {
+    store.dispatch(fetchNotifications());
+  }
 }
-
 class RelayRoute extends Relay.Route {
   static routeName = 'RootRoute';
   static queries = viewerQuery;
@@ -152,58 +158,60 @@ let HasUser = connect(state => state.auth)(props => {
 });
 
 const Root = (props: mixed) => (
-  <Router>
-    <Provider store={store}>
-      <React.Fragment>
-        {!IS_AUTH_PORTAL ? (
-          <Relay.Renderer
-            Container={Portal}
-            queryConfig={new RelayRoute(props)}
-            environment={Relay.Store}
-          />
-        ) : (
-          <Switch>
-            <Route exact path="/login" component={Login} />
-            <Route
-              render={props => (
-                <HasUser>
-                  {({ user, failed, error }) => {
-                    // if user request fails
-                    consoleDebug('Root component user: ', user);
-                    if (
-                      failed &&
-                      error.message === 'Session timed out or not authorized'
-                    ) {
-                      consoleDebug('User request failed with error message');
-                      return <Redirect to="/login?error=timeout" />;
-                    }
-                    if (failed) {
-                      consoleDebug('User request failed');
-                      return <Redirect to="/login" />;
-                    }
-                    if (user) {
-                      consoleDebug('Has a user, rendering container');
-                      return (
-                        <Relay.Renderer
-                          Container={Portal}
-                          queryConfig={new RelayRoute(props)}
-                          environment={Relay.Store}
-                        />
-                      );
-                    }
-                    consoleDebug(
-                      'Response does not match any criteria, redirecting to login',
-                    );
-                    return <Redirect to="/login" />;
-                  }}
-                </HasUser>
-              )}
+  <Provider store={store}>
+    <PersistGate loading={<Loader />} persistor={persistor}>
+      <Router>
+        <React.Fragment>
+          {!IS_AUTH_PORTAL ? (
+            <Relay.Renderer
+              Container={Portal}
+              queryConfig={new RelayRoute(props)}
+              environment={Relay.Store}
             />
-          </Switch>
-        )}
-      </React.Fragment>
-    </Provider>
-  </Router>
+          ) : (
+            <Switch>
+              <Route exact path="/login" component={Login} />
+              <Route
+                render={props => (
+                  <HasUser>
+                    {({ user, failed, error }) => {
+                      // if user request fails
+                      consoleDebug('Root component user: ', user);
+                      if (
+                        failed &&
+                        error.message === 'Session timed out or not authorized'
+                      ) {
+                        consoleDebug('User request failed with error message');
+                        return <Redirect to="/login?error=timeout" />;
+                      }
+                      if (failed) {
+                        consoleDebug('User request failed');
+                        return <Redirect to="/login" />;
+                      }
+                      if (user) {
+                        consoleDebug('Has a user, rendering container');
+                        return (
+                          <Relay.Renderer
+                            Container={Portal}
+                            queryConfig={new RelayRoute(props)}
+                            environment={Relay.Store}
+                          />
+                        );
+                      }
+                      consoleDebug(
+                        'Response does not match any criteria, redirecting to login',
+                      );
+                      return <Redirect to="/login" />;
+                    }}
+                  </HasUser>
+                )}
+              />
+            </Switch>
+          )}
+        </React.Fragment>
+      </Router>
+    </PersistGate>
+  </Provider>
 );
 
 export default Root;

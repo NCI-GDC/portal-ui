@@ -7,6 +7,7 @@ import LocationSubscriber from '@ncigdc/components/LocationSubscriber';
 import styled from '@ncigdc/theme/styled';
 import openAuthWindow from '@ncigdc/utils/openAuthWindow';
 import { fetchUser } from '@ncigdc/dux/auth';
+import { fetchNotifications } from '@ncigdc/dux/bannerNotification';
 
 /*----------------------------------------------------------------------------*/
 
@@ -32,6 +33,7 @@ const LoginButton = ({ children, dispatch, user }) => (
             name: 'NIH',
           });
           await dispatch(fetchUser());
+          await dispatch(fetchNotifications());
         }}
       >
         {children || (

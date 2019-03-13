@@ -17,6 +17,7 @@ import QuestionIcon from '@ncigdc/theme/icons/Question';
 import { Row } from '@ncigdc/uikit/Flex';
 import { Tooltip } from '@ncigdc/uikit/Tooltip';
 import { internalHighlight } from '@ncigdc/uikit/Highlight';
+import { IRawQuery } from '@ncigdc/utils/uri/types';
 
 const Header = styled(Row, {
   color: ({ theme }) => theme.primary,

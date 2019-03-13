@@ -7,7 +7,7 @@ import entityShortnameMapping from '@ncigdc/utils/entityShortnameMapping';
 import { ISearchHit } from './types';
 import { internalHighlight } from '@ncigdc/uikit/Highlight';
 
-const styles = {
+export const styles = {
   container: {
     position: 'absolute',
     right: 0,

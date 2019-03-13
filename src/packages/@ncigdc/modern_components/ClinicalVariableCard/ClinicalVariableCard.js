@@ -14,6 +14,8 @@ import Dropdown from '@ncigdc/uikit/Dropdown';
 import Hidden from '@ncigdc/components/Hidden';
 import tryParseJSON from '@ncigdc/utils/tryParseJSON';
 import BarChart from '@ncigdc/components/Charts/BarChart';
+import ExploreLink from '@ncigdc/components/Links/ExploreLink';
+import { makeFilter } from '@ncigdc/utils/filters';
 
 import {
   CloseIcon,
@@ -31,6 +33,8 @@ import {
 } from '@ncigdc/dux/analysis';
 import { humanify } from '@ncigdc/utils/string';
 import { getLowerAgeYears, getUpperAgeYears } from '@ncigdc/utils/ageDisplay';
+import { CLINICAL_PREFIXES, IS_CDAVE_DEV } from '@ncigdc/utils/constants';
+
 
 interface ITableHeading {
   key: string;
@@ -146,7 +150,7 @@ const enhance = compose(
   }))
 );
 
-const VariableCard: React.ComponentType<IVariableCardProps> = ({
+const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
   variable,
   fieldName,
   plots,
@@ -156,11 +160,23 @@ const VariableCard: React.ComponentType<IVariableCardProps> = ({
   id,
   parsedFacets,
   continuousAggs,
+  setId,
 }) => {
+  const queryData = _.values(parsedFacets)[0];
+  const fakeContinuousBuckets = [];
+  
+  // refactor once we have binning for continuous variables
+  const totalDocsFromBuckets =
+    variable.plotTypes === 'continuous'
+      ? fakeContinuousBuckets
+          .map(fB => fB.doc_count)
+          .reduce((acc, doc_count) => acc + doc_count, 0)
+      : (queryData || { buckets: [] }).buckets
+          .map(b => b.doc_count)
+          .reduce((acc, i) => acc + i, 0);
+  
   const getCategoricalData = (rawCategoricalData, rawAggData, type) => {
     if (!rawCategoricalData && _.isEmpty(rawAggData)) {
-      return [];
-    }
 
     if (type === 'continuous') {
       const buildDisplayKeyAndFilters = (acc, { doc_count, key }) => {
@@ -243,9 +259,48 @@ const VariableCard: React.ComponentType<IVariableCardProps> = ({
     }
 
     return (rawCategoricalData || { buckets: [] }).buckets
-      .filter(bucket => bucket.key !== '_missing')
+      .filter(bucket => 
+        !IS_CDAVE_DEV ? bucket.key !== '_missing' : bucket.key
+      )
       .map(b => ({
         ...b,
+        doc_count: (
+          <span>
+            <ExploreLink
+              query={{
+                searchTableTab: 'cases',
+                filters:
+                  b.key === '_missing'
+                    ? {
+                        op: 'AND',
+                        content: [
+                          {
+                            op: 'IS',
+                            content: { field: fieldName, value: [b.key] },
+                          },
+                          {
+                            op: 'in',
+                            content: {
+                              field: 'cases.case_id',
+                              value: `set_id:${setId}`,
+                            },
+                          },
+                        ],
+                      }
+                    : makeFilter([
+                        { field: 'cases.case_id', value: `set_id:${setId}` },
+                        { field: fieldName, value: [b.key] },
+                      ]),
+              }}
+            >
+              {(b.doc_count || 0).toLocaleString()}
+            </ExploreLink>
+            <span>{` (${(
+              ((b.doc_count || 0) / totalDocsFromBuckets) *
+              100
+            ).toFixed(2)}%)`}</span>
+          </span>
+        ),
         select: (
           <input
             style={{
@@ -277,6 +332,7 @@ const VariableCard: React.ComponentType<IVariableCardProps> = ({
                       backgroundColor: '#666',
                       color: 'white',
                       margin: '0 auto',
+                      position: 'static',
                     }}
                     // disabled={!hasEnoughSurvivalDataOnPrimaryCurve}
                     onClick={() => {
@@ -306,7 +362,7 @@ const VariableCard: React.ComponentType<IVariableCardProps> = ({
       }));
   };
 
-  const getContinuousData = rawData => {
+  const getContinuousTableData = rawData => {
     if (_.isEmpty(rawData)) {
       return {};
     }
@@ -319,15 +375,17 @@ const VariableCard: React.ComponentType<IVariableCardProps> = ({
     });
   };
 
-  let data =
+  let tableData =
     variable.active_chart === 'box'
-      ? getContinuousData(_.values(parsedFacets)[0])
-      : getCategoricalData(
-          _.values(parsedFacets)[0],
-          continuousAggs,
-          variable.plotTypes
-        );
-  console.log('data:', data);
+      ? getContinuousTableData(queryData)
+      : getCategoricalTableData(queryData, variable.plotTypes);
+
+  console.log('data:', tableData);
+
+  const devData = [
+    ...tableData,
+    { select: '', key: 'Total', doc_count: totalDocsFromBuckets, survival: '' },
+  ];
 
   const getHeadings = chartType => {
     return chartType === 'box'
@@ -354,37 +412,35 @@ const VariableCard: React.ComponentType<IVariableCardProps> = ({
             key: 'doc_count',
             title: '# Cases',
             style: { textAlign: 'right' },
-            thStyle: { position: 'sticky', top: 0 },
+            thStyle: { position: 'sticky', top: 0, textAlign: 'right' },
           },
           ...(chartType === 'survival'
             ? [
                 {
                   key: 'survival',
                   title: 'Survival',
-                  style: { textAlign: 'right' },
-                  thStyle: { position: 'sticky', top: 0 },
+                  style: { display: 'flex', justifyContent: 'flex-end' },
+                  thStyle: { position: 'sticky', top: 0, textAlign: 'right' },
                 },
               ]
             : []),
         ];
   };
 
-  const totalDocs = !_.isEmpty(data)
-    ? data.reduce((acc, i) => acc + i.doc_count, 0)
-    : 0;
   let chartData;
   if (variable.active_chart === 'histogram') {
-    chartData = data.map(d => {
+    chartData = (queryData || { buckets: [] }).buckets.map(d => {
       return {
         label: _.truncate(d.key, { length: 18 }),
         value:
           variable.active_calculation === 'number'
             ? d.doc_count
-            : (d.doc_count / totalDocs) * 100,
+            : (d.doc_count / totalDocsFromBuckets) * 100,
         tooltip: `${d.key}: ${d.doc_count.toLocaleString()}`,
       };
     });
   }
+
   return (
     <Column
       style={{
@@ -435,7 +491,7 @@ const VariableCard: React.ComponentType<IVariableCardProps> = ({
           })}
         </Row>
       </Row>
-      {_.isEmpty(data) && (
+      {_.isEmpty(tableData) && (
         <Row
           style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
         >
@@ -443,7 +499,7 @@ const VariableCard: React.ComponentType<IVariableCardProps> = ({
         </Row>
       )}
 
-      {!_.isEmpty(data) && (
+      {!_.isEmpty(tableData) && (
         <div>
           <Row style={{ paddingLeft: 10 }}>
             {variable.active_chart !== 'survival' && (
@@ -620,7 +676,7 @@ const VariableCard: React.ComponentType<IVariableCardProps> = ({
             </Button>
           </Row>
           <EntityPageHorizontalTable
-            data={data}
+            data={IS_CDAVE_DEV ? devData : tableData}
             headings={getHeadings(variable.active_chart)}
             tableContainerStyle={{
               height: 175,
@@ -633,4 +689,4 @@ const VariableCard: React.ComponentType<IVariableCardProps> = ({
   );
 };
 
-export default enhance(VariableCard);
+export default enhance(ClinicalVariableCard);

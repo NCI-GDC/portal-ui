@@ -35,7 +35,6 @@ import { humanify } from '@ncigdc/utils/string';
 import { getLowerAgeYears, getUpperAgeYears } from '@ncigdc/utils/ageDisplay';
 import { CLINICAL_PREFIXES, IS_CDAVE_DEV } from '@ncigdc/utils/constants';
 
-
 interface ITableHeading {
   key: string;
   title: string;
@@ -163,8 +162,12 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
   setId,
 }) => {
   const queryData = _.values(parsedFacets)[0];
+  const continuousData = (
+    (variable.plotTypes === 'continuous' &&
+      continuousAggs[fieldName.replace('.', '__')].histogram) || { buckets: [] }
+  ).buckets;
   const fakeContinuousBuckets = [];
-  
+
   // refactor once we have binning for continuous variables
   const totalDocsFromBuckets =
     variable.plotTypes === 'continuous'
@@ -174,9 +177,11 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
       : (queryData || { buckets: [] }).buckets
           .map(b => b.doc_count)
           .reduce((acc, i) => acc + i, 0);
-  
-  const getCategoricalData = (rawCategoricalData, rawAggData, type) => {
+
+  const getCategoricalTableData = (rawCategoricalData, rawAggData, type) => {
     if (!rawCategoricalData && _.isEmpty(rawAggData)) {
+      return [];
+    }
 
     if (type === 'continuous') {
       const buildDisplayKeyAndFilters = (acc, { doc_count, key }) => {
@@ -234,7 +239,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
         };
       };
 
-      return rawAggData[fieldName.replace('.', '__')].histogram.buckets
+      return rawAggData
         .sort((a, b) => b.key - a.key)
         .reduce(buildDisplayKeyAndFilters, { nextInterval: 0, data: [] })
         .data.slice(0)
@@ -259,7 +264,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
     }
 
     return (rawCategoricalData || { buckets: [] }).buckets
-      .filter(bucket => 
+      .filter(bucket =>
         !IS_CDAVE_DEV ? bucket.key !== '_missing' : bucket.key
       )
       .map(b => ({
@@ -362,7 +367,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
       }));
   };
 
-  const getContinuousTableData = rawData => {
+  const getBoxTableData = rawData => {
     if (_.isEmpty(rawData)) {
       return {};
     }
@@ -377,8 +382,8 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
 
   let tableData =
     variable.active_chart === 'box'
-      ? getContinuousTableData(queryData)
-      : getCategoricalTableData(queryData, variable.plotTypes);
+      ? getBoxTableData(queryData)
+      : getCategoricalTableData(queryData, continuousData, variable.plotTypes);
 
   console.log('data:', tableData);
 
@@ -428,8 +433,14 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
   };
 
   let chartData;
+
   if (variable.active_chart === 'histogram') {
-    chartData = (queryData || { buckets: [] }).buckets.map(d => {
+    let rawChartData =
+      variable.plotTypes === 'continuous'
+        ? continuousData
+        : (queryData || { buckets: [] }).buckets;
+
+    chartData = rawChartData.map(d => {
       return {
         label: _.truncate(d.key, { length: 18 }),
         value:

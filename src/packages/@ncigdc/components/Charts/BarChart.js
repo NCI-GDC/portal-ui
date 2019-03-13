@@ -30,7 +30,6 @@ const BarChart = ({
   theme,
   size: { width },
 }) => {
-  console.log('width: ', width);
   const el = ReactFauxDOM.createElement('div');
   el.style.width = '100%';
 

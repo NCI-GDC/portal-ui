@@ -10,20 +10,17 @@ import {
   withPropsOnChange,
 } from 'recompose';
 
-import Modal from '@ncigdc/uikit/Modal';
 import SuggestionFacet from '@ncigdc/components/Aggregations/SuggestionFacet';
 import { Row } from '@ncigdc/uikit/Flex';
-import FacetSelection from '@ncigdc/components/FacetSelection';
 import FacetWrapper from '@ncigdc/components/FacetWrapper';
 import UploadSetButton from '@ncigdc/components/UploadSetButton';
 import { withTheme } from '@ncigdc/theme';
 import CaseIcon from '@ncigdc/theme/icons/Case';
-import withFacetSelection from '@ncigdc/utils/withFacetSelection';
 import escapeForRelay from '@ncigdc/utils/escapeForRelay';
 import tryParseJSON from '@ncigdc/utils/tryParseJSON';
 import FacetHeader from '@ncigdc/components/Aggregations/FacetHeader';
 import { UploadCaseSet } from '@ncigdc/components/Modals/UploadSet';
-import presetFacets from '@ncigdc/containers/explore/presetFacets';
+import { presetFacets } from '@ncigdc/containers/explore/presetFacets';
 
 import { IBucket } from '@ncigdc/components/Aggregations/types';
 import { CaseAggregationsQuery } from './explore.relay';
@@ -66,24 +63,8 @@ export interface ITProps {
   setAdvancedFilter: any,
 }
 
-const entityType = 'ExploreCases';
-const presetFacetFields = presetFacets.map(x => x.field);
-
 const enhance = compose(
   setDisplayName('ExploreCaseAggregations'),
-  withFacetSelection({
-    entityType,
-    presetFacetFields,
-    validFacetDocTypes: ['cases'],
-    validFacetPrefixes: [
-      'cases.demographic',
-      'cases.diagnoses',
-      'cases.diagnoses.treatments',
-      'cases.exposures',
-      'cases.family_histories',
-      'cases.project',
-    ],
-  }),
   withState('caseIdCollapsed', 'setCaseIdCollapsed', false),
   withState('advancedFilter', 'setAdvancedFilter', false),
   withPropsOnChange(['filters'], ({ filters, relay }) =>
@@ -120,27 +101,11 @@ export const CaseAggregationsComponent = ({
   handleResetFacets,
   handleRequestRemoveFacet,
   shouldShowFacetSelection,
-  facetExclusionTest,
   setShouldShowFacetSelection,
   advancedFilter,
   setAdvancedFilter,
 }: ITProps) => (
   <div className="test-case-aggregations">
-    <Modal
-      isOpen={shouldShowFacetSelection}
-      style={{ content: { border: 0, padding: '15px' } }}
-    >
-      <FacetSelection
-        title="Add a Case Filter"
-        relayVarName="exploreCaseCustomFacetFields"
-        docType="cases"
-        onSelect={handleSelectFacet}
-        onRequestClose={() => setShouldShowFacetSelection(false)}
-        excludeFacetsBy={facetExclusionTest}
-        additionalFacetData={parsedFacets}
-        relay={relay}
-      />
-    </Modal>
     <FacetHeader
       title="Case"
       field="cases.case_id"

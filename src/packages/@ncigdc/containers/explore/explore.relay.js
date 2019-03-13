@@ -6,7 +6,7 @@ export const CaseAggregationsQuery = {
     filters: null,
   },
   fragments: {
-    facets: () => Relay.QL`
+    facets: filters => Relay.QL`
       fragment on ExploreCases {
         facets(facets: $exploreCaseCustomFacetFields filters: $filters)
       }

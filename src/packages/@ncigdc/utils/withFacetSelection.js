@@ -35,6 +35,7 @@ export default ({
           entityType === 'ExploreCases'
             ? presetFacetFields
             : presetFacetFields.concat(userSelectedFacets.map(x => x.field));
+
         const match = _.some([
           !_.includes(validFacetDocTypes, facet.doc_type),
           _.includes(facetFieldNamesToExclude, facet.field),

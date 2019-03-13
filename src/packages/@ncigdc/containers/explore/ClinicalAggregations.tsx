@@ -4,7 +4,6 @@ import _ from 'lodash';
 import {
   compose,
   withState,
-  lifecycle,
   withProps,
   withHandlers,
   withPropsOnChange,
@@ -20,8 +19,12 @@ import { Row } from '@ncigdc/uikit/Flex';
 import styled from '@ncigdc/theme/styled';
 import tryParseJSON from '@ncigdc/utils/tryParseJSON';
 import withFacetSelection from '@ncigdc/utils/withFacetSelection';
-import presetFacets from '@ncigdc/containers/explore/presetFacets';
+import {
+  presetFacets,
+  clinicalFacets,
+} from '@ncigdc/containers/explore/presetFacets';
 import Input from '@ncigdc/uikit/Form/Input';
+import { ITheme } from '@ncigdc/theme/types';
 interface IFacetProps {
   description: string,
   doc_type: string,
@@ -29,18 +32,46 @@ interface IFacetProps {
   full: string,
   type: string,
 }
+interface IBucketProps {
+  key: string,
+  doc_count: number,
+}
+
+interface IToggledTreeProps {
+  cases: { toggled: boolean, [x: string]: any },
+  demographic: { toggled: boolean, [x: string]: any },
+  diagnoses: { toggled: boolean, [x: string]: any },
+  treatments: { toggled: boolean, [x: string]: any },
+  exposures: { toggled: boolean, [x: string]: any },
+  follow_up: { toggled: boolean, [x: string]: any },
+  molecular_tests: { toggled: boolean, [x: string]: any },
+}
+interface IClinicalProps {
+  filteredFacets: any,
+  theme: ITheme,
+  setUselessFacetVisibility: (uselessFacetVisibility: boolean) => void,
+  shouldHideUselessFacets: boolean,
+  toggledTree: IToggledTreeProps,
+  setToggledTree: (toggledTree: IToggledTreeProps) => void,
+  searchValue: string,
+  setSearchValue: (searchValue: string) => void,
+  handleQueryInputChange: () => void,
+  fieldHash: { [x: string]: any },
+  parsedFacets: { [x: string]: any },
+  isLoadingParsedFacets: boolean,
+}
 const facetMatchesQuery = (
   facet: IFacetProps,
-  elements: any,
+  elements: IBucketProps[],
   searchValue: string
 ): boolean => {
   return _.some(
     [
       _.replace(facet.field.split('.')[1], /_/g, ' '),
-      ...(elements || []).map((e: any) => e.key),
+      ...(elements || []).map((e: IBucketProps) => e.key),
       facet.description,
     ]
-      .filter((n: any) => n)
+      .filter((n: string) => n)
       .map(_.toLower),
     searchTarget =>
       _.includes(
@@ -50,55 +81,32 @@ const facetMatchesQuery = (
   );
 };
 const MagnifyingGlass = styled(SearchIcon, {
-  backgroundColor: ({ theme }: any) => theme.greyScale5,
-  color: ({ theme }: any) => theme.greyScale2,
+  backgroundColor: ({ theme }: { theme: ITheme }) => theme.greyScale5,
+  color: ({ theme }: { theme: ITheme }) => theme.greyScale2,
   padding: '0.8rem',
   width: '3.4rem',
   height: '3.4rem',
   borderRadius: '4px 0 0 4px',
-  border: ({ theme }: any) => `1px solid ${theme.greyScale4}`,
+  border: ({ theme }: { theme: ITheme }) => `1px solid ${theme.greyScale4}`,
   borderRight: 'none',
 });
-const advancedPresetFacets = [
-  {
-    title: 'Demographic',
-    field: 'demographic',
-    full: 'demographic',
-  },
-  {
-    title: 'Diagnoses',
-    field: 'diagnoses',
-    full: 'diagnoses',
-    excluded: ['treatments'],
-  },
-  {
-    title: 'Treatments',
-    field: 'treatments',
-    full: 'diagnoses.treatments',
-  },
-  {
-    title: 'Exposures',
-    field: 'exposures',
-    full: 'exposures',
-  },
-  {
-    title: 'Follow Up',
-    field: 'follow_up',
-    full: '',
-  },
-  {
-    title: 'Molecular Tests',
-    field: 'molecular_tests',
-    full: '',
-  },
-];
-const entityType = 'ExploreCases';
-const presetFacetFields = presetFacets.map(x => x.field);
 
-const FacetWrapperDiv = styled(`div`, {
-  position: 'relative',
-});
-
+interface INestedWrapperProps {
+  Component: JSX.Element,
+  title: string,
+  isCollapsed: boolean,
+  setCollapsed: (isCollapsed: boolean) => void,
+  style: { [x: string]: string },
+  headerStyle: { [x: string]: string },
+  isLoading: boolean,
+  angleIconRight: boolean,
+}
+interface IGraphFieldProps {
+  __dataID: string,
+  name: string,
+  description: string,
+  type: { name: string, __dataID: string },
+}
 const NestedWrapper = ({
   Component,
   title,
@@ -107,8 +115,9 @@ const NestedWrapper = ({
   style,
   headerStyle,
   isLoading,
-}: any) => (
-  <FacetWrapperDiv key={title + 'div'} style={style}>
+  angleIconRight,
+}: INestedWrapperProps) => (
+  <div key={title + 'div'} style={style}>
     <FacetHeader
       title={title}
       collapsed={isCollapsed}
@@ -119,11 +128,10 @@ const NestedWrapper = ({
     />
     {isCollapsed ||
       (isLoading ? <div style={{ marginLeft: '1rem' }}>...</div> : Component)}
-  </FacetWrapperDiv>
+  </div>
 );
 
 const enhance = compose(
-  withState('isLoadingFacetMapping', 'setIsLoadingFacetMapping', false),
   withState('isLoadingParsedFacets', 'setIsLoadingParsedFacets', false),
   withState('fieldHash', 'setFieldHash', {}),
   withState('caseIdCollapsed', 'setCaseIdCollapsed', false),
@@ -139,8 +147,8 @@ const enhance = compose(
     molecular_tests: { toggled: false },
   }),
   withFacetSelection({
-    entityType,
-    presetFacetFields,
+    entityType: 'ExploreCases',
+    presetFacetFields: presetFacets.map(x => x.field),
     validFacetDocTypes: ['cases'],
     validFacetPrefixes: [
       'cases.demographic',
@@ -151,32 +159,63 @@ const enhance = compose(
       'cases.molecular_tests',
     ],
   }),
-  withPropsOnChange(['filters'], ({ filters, relay }) =>
-    relay.setVariables({
-      filters,
+  withPropsOnChange(
+    ['caseFacets'],
+    ({ caseFacets }: { caseFacets: { [x: string]: any, fields: any[] } }) => ({
+      facetMapping: caseFacets.fields
+        .filter((f: IGraphFieldProps) => f.name === 'aggregations')[0]
+        .type.fields.filter(
+          (f: {
+            __dataID: string,
+            name: string,
+            description: string,
+            type: { name: string, __dataID: string },
+          }) => !f.name.startsWith('gene')
+        )
+        .reduce(
+          (acc: { [x: string]: IFacetProps }, f: IGraphFieldProps) => ({
+            ...acc,
+            ['cases.' + f.name.replace(/__/g, '.')]: {
+              field: f.name.replace(/__/g, '.'),
+              full: 'cases.' + f.name.replace(/__/g, '.'),
+              doc_type: 'cases',
+              description: f.description,
+              type: f.type.name === 'Aggregations' ? 'keyword' : 'long',
+            },
+          }),
+          {}
+        ),
     })
   ),
-  withProps(({ caseFacets }) => ({
-    facetMapping: caseFacets.fields
-      .filter((f: any) => f.name === 'aggregations')[0]
-      .type.fields.filter((f: any) => !f.name.startsWith('gene'))
-      .reduce(
-        (acc: any, f: any) => ({
-          ...acc,
-          ['cases.' + f.name.replace(/__/g, '.')]: {
-            field: f.name.replace(/__/g, '.'),
-            full: 'cases.' + f.name.replace(/__/g, '.'),
-            doc_type: 'cases',
-            description: f.description,
-            type: f.type.name === 'Aggregations' ? 'keyword' : 'long',
-          },
-        }),
-        {}
-      ),
-  })),
-  withProps(
+  withPropsOnChange(
+    ['globalFilters', 'facetMapping'],
     ({
       relay,
+      facetMapping,
+      globalFilters,
+      setIsLoadingParsedFacets,
+      relayVarName,
+    }) => {
+      setIsLoadingParsedFacets(true);
+      relay.setVariables(
+        {
+          filters: globalFilters,
+          [relayVarName]: _.values(facetMapping)
+            .map(({ field }: { field: string }) => field)
+            .join(','),
+        },
+        (readyState: { ready: boolean, aborted: boolean, error: boolean }) => {
+          if (
+            _.some([readyState.ready, readyState.aborted, readyState.error])
+          ) {
+            setIsLoadingParsedFacets(false);
+          }
+        }
+      );
+    }
+  ),
+  withProps(
+    ({
       setIsLoadingParsedFacets,
       setShouldHideUselessFacets,
       relayVarName,
@@ -191,25 +230,6 @@ const enhance = compose(
           'shouldHideUselessFacets',
           JSON.stringify(shouldHide)
         );
-        console.log('facetMapping', facetMapping);
-
-        if (shouldHide && facetMapping) {
-          setIsLoadingParsedFacets(shouldHide);
-          relay.setVariables(
-            {
-              [relayVarName]: _.values(facetMapping)
-                .map(({ field }: any) => field)
-                .join(','),
-            },
-            (readyState: any) => {
-              if (
-                _.some([readyState.ready, readyState.aborted, readyState.error])
-              ) {
-                setIsLoadingParsedFacets(false);
-              }
-            }
-          );
-        }
       },
     })
   ),
@@ -217,7 +237,6 @@ const enhance = compose(
     ['facets', 'facetMapping', 'searchValue', 'shouldHideUselessFacets'],
     ({
       facets,
-      relay,
       docType,
       facetMapping,
       searchValue,
@@ -228,12 +247,16 @@ const enhance = compose(
       const parsedFacets = facets.facets ? tryParseJSON(facets.facets, {}) : {};
       const usefulFacets = _.omitBy(
         parsedFacets,
-        (aggregation: { [t: string]: any }) =>
+        (aggregation: {
+          buckets: IBucketProps[],
+          count: number,
+          stats: { count: number, [x: string]: any },
+        }) =>
           !aggregation ||
           _.some([
             aggregation.buckets &&
               aggregation.buckets.filter(
-                (bucket: any) => bucket.key !== '_missing'
+                (bucket: IBucketProps) => bucket.key !== '_missing'
               ).length === 0,
             aggregation.count === 0,
             aggregation.count === null,
@@ -278,55 +301,23 @@ const enhance = compose(
   withHandlers({
     handleQueryInputChange: ({ setSearchValue }) => (event: any) =>
       setSearchValue(event.target.value),
-  }),
-  lifecycle({
-    componentDidMount(): void {
-      const { props }: any = this;
-      props.setIsLoadingParsedFacets(true);
-      props.relay.setVariables(
-        {
-          filters: props.filters,
-          [props.relayVarName]: _.values(props.facetMapping)
-            .map(({ field }: any) => field)
-            .join(','),
-        },
-        (readyState: any) => {
-          if (
-            _.some([readyState.ready, readyState.aborted, readyState.error])
-          ) {
-            props.setIsLoadingParsedFacets(false);
-          }
-        }
-      );
-    },
   })
 )(
   withTheme(
     ({
       filteredFacets,
-      facets,
-      facetMapping,
-      caseIdCollapsed,
-      setCaseIdCollapsed,
-      setAutocomplete,
       theme,
       setUselessFacetVisibility,
       shouldHideUselessFacets,
-      aggregations,
-      relay,
       toggledTree,
       setToggledTree,
-      suggestions,
-      additionalFacetData,
       searchValue,
       setSearchValue,
       handleQueryInputChange,
       fieldHash,
       parsedFacets,
       isLoadingParsedFacets,
-      isLoadingFacetMapping,
-      caseFacets,
-    }: any): any => {
+    }: IClinicalProps): any => {
       return [
         <Row
           style={{
@@ -357,13 +348,12 @@ const enhance = compose(
             checked={shouldHideUselessFacets}
             style={{ margin: '12px' }}
           />
-          Only show fields with values ({isLoadingParsedFacets ||
-          isLoadingFacetMapping
+          Only show fields with values ({isLoadingParsedFacets
             ? '...'
             : Object.keys(filteredFacets).length}{' '}
           fields shown)
         </label>,
-        ...advancedPresetFacets
+        ...clinicalFacets
           .filter(
             facet => !searchValue || !!_.get(fieldHash, facet.full, false) // If the user is searching for something, hide the presetFacet with no value.
           )
@@ -375,9 +365,7 @@ const enhance = compose(
                   position: 'relative',
                 }}
                 headerStyle={{
-                  marginLeft: '1rem',
-                  marginRight: '1rem',
-                  marginTop: '0.5rem',
+                  margin: '0.5rem 1rem 0rem 1rem',
                   backgroundColor: '#eeeeee',
                   borderBottom: `1px solid ${theme.greyScale5}`,
                   position: 'relative',
@@ -398,7 +386,6 @@ const enhance = compose(
                         )}
                         aggregation={parsedFacets[componentFacet.field]}
                         searchValue={searchValue}
-                        relay={relay}
                         additionalProps={{ style: { paddingBottom: 0 } }}
                         style={{
                           position: 'relative',
@@ -415,6 +402,7 @@ const enhance = compose(
                             query={searchValue}
                             heighlightStyle={{ backgroundColor: '#FFFF00' }}
                             style={{
+                              fontStyle: 'italic',
                               position: 'relative',
                               paddingLeft: '30px',
                               paddingRight: '10px',
@@ -437,7 +425,7 @@ const enhance = compose(
                       toggled: !toggledTree[facet.field].toggled,
                     },
                   })}
-                isLoading={isLoadingParsedFacets || isLoadingFacetMapping}
+                isLoading={isLoadingParsedFacets}
               />
             );
           }),

@@ -140,15 +140,10 @@ export const ExplorePageComponent = ({
           <ClinicalAggregations
             facets={viewer.explore.customCaseFacets}
             caseFacets={viewer.caseFacets}
+            globalFilters={filters}
             docType="cases"
             relayVarName="exploreCaseCustomFacetFields"
             aggregations={viewer.explore.cases.aggregations}
-            suggestions={get(viewer, 'autocomplete_cases.hits', [])}
-            setAutocomplete={(value, onReadyStateChange) =>
-              relay.setVariables(
-                { idAutocompleteCases: value, runAutocompleteCases: !!value },
-                onReadyStateChange
-              )}
           />
         ),
       },

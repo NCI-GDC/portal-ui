@@ -1,4 +1,4 @@
-export default [
+export const presetFacets = [
   {
     title: 'Case',
     field: 'case_id',
@@ -55,5 +55,39 @@ export default [
     full: 'cases.samples.sample_type',
     doc_type: 'cases',
     type: 'keyword',
+  },
+];
+
+export const clinicalFacets = [
+  {
+    title: 'Demographic',
+    field: 'demographic',
+    full: 'demographic',
+  },
+  {
+    title: 'Diagnoses',
+    field: 'diagnoses',
+    full: 'diagnoses',
+    excluded: ['treatments'],
+  },
+  {
+    title: 'Treatments',
+    field: 'treatments',
+    full: 'diagnoses.treatments',
+  },
+  {
+    title: 'Exposures',
+    field: 'exposures',
+    full: 'exposures',
+  },
+  {
+    title: 'Follow Up',
+    field: 'follow_up',
+    full: '',
+  },
+  {
+    title: 'Molecular Tests',
+    field: 'molecular_tests',
+    full: '',
   },
 ];

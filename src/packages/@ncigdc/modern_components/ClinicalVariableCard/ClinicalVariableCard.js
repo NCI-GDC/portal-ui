@@ -179,6 +179,23 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
       return [];
     }
 
+    const getCountLink = ({ doc_count, filters }) => {
+      return (
+        <span>
+          <ExploreLink
+            query={{
+              searchTableTab: 'cases',
+              filters,
+            }}
+          >
+            {(doc_count || 0).toLocaleString()}
+          </ExploreLink>
+          <span>{` (${(((doc_count || 0) / totalDocsFromBuckets) * 100).toFixed(
+            2
+          )}%)`}</span>
+        </span>
+      );
+    };
     const getBucketRangesAndFilters = (acc, { doc_count, key }) => {
       const valueIsDays = str => /(days_to|age_at)/.test(str);
       const valueIsYear = str => /year_of/.test(str);
@@ -206,49 +223,37 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
           ...acc.data,
           {
             chart_doc_count: doc_count,
-            doc_count: (
-              <span>
-                <ExploreLink
-                  query={{
-                    searchTableTab: 'cases',
-                    filters: {
-                      op: 'and',
-                      content: [
-                        {
-                          op: 'in',
-                          content: {
-                            field: 'cases.case_id',
-                            value: `set_id:${setId}`,
-                          },
-                        },
-                        {
-                          op: '>=',
-                          content: {
-                            field: `cases.${fieldName}`,
-                            value: [key],
-                          },
-                        },
-                        ...(acc.nextInterval !== 0 && [
-                          {
-                            op: '<=',
-                            content: {
-                              field: `cases.${fieldName}`,
-                              value: [acc.nextInterval - 1],
-                            },
-                          },
-                        ]),
-                      ],
+            doc_count: getCountLink({
+              doc_count,
+              filters: {
+                op: 'and',
+                content: [
+                  {
+                    op: 'in',
+                    content: {
+                      field: 'cases.case_id',
+                      value: `set_id:${setId}`,
                     },
-                  }}
-                >
-                  {(doc_count || 0).toLocaleString()}
-                </ExploreLink>
-                <span>{` (${(
-                  ((doc_count || 0) / totalDocsFromBuckets) *
-                  100
-                ).toFixed(2)}%)`}</span>
-              </span>
-            ),
+                  },
+                  {
+                    op: '>=',
+                    content: {
+                      field: `cases.${fieldName}`,
+                      value: [key],
+                    },
+                  },
+                  ...(acc.nextInterval !== 0 && [
+                    {
+                      op: '<=',
+                      content: {
+                        field: `cases.${fieldName}`,
+                        value: [acc.nextInterval - 1],
+                      },
+                    },
+                  ]),
+                ],
+              },
+            }),
             key: getRangeValue(key, fieldName),
           },
         ],
@@ -269,46 +274,34 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
             .map(b => ({
               ...b,
               chart_doc_count: b.doc_count,
-              doc_count: (
-                <span>
-                  <ExploreLink
-                    query={{
-                      searchTableTab: 'cases',
-                      filters:
-                        b.key === '_missing'
-                          ? {
-                              op: 'AND',
-                              content: [
-                                {
-                                  op: 'IS',
-                                  content: { field: fieldName, value: [b.key] },
-                                },
-                                {
-                                  op: 'in',
-                                  content: {
-                                    field: 'cases.case_id',
-                                    value: `set_id:${setId}`,
-                                  },
-                                },
-                              ],
-                            }
-                          : makeFilter([
-                              {
-                                field: 'cases.case_id',
-                                value: `set_id:${setId}`,
-                              },
-                              { field: fieldName, value: [b.key] },
-                            ]),
-                    }}
-                  >
-                    {(b.doc_count || 0).toLocaleString()}
-                  </ExploreLink>
-                  <span>{` (${(
-                    ((b.doc_count || 0) / totalDocsFromBuckets) *
-                    100
-                  ).toFixed(2)}%)`}</span>
-                </span>
-              ),
+              doc_count: getCountLink({
+                doc_count: b.doc_count,
+                filters:
+                  b.key === '_missing'
+                    ? {
+                        op: 'AND',
+                        content: [
+                          {
+                            op: 'IS',
+                            content: { field: fieldName, value: [b.key] },
+                          },
+                          {
+                            op: 'in',
+                            content: {
+                              field: 'cases.case_id',
+                              value: `set_id:${setId}`,
+                            },
+                          },
+                        ],
+                      }
+                    : makeFilter([
+                        {
+                          field: 'cases.case_id',
+                          value: `set_id:${setId}`,
+                        },
+                        { field: fieldName, value: [b.key] },
+                      ]),
+              }),
             }));
 
     return displayData.map(b => ({

@@ -239,7 +239,9 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                     op: '>=',
                     content: {
                       field: `cases.${fieldName}`,
-                      value: [key],
+                      value: [
+                        `${valueIsYear(fieldName) ? Math.floor(key) : key}`,
+                      ],
                     },
                   },
                   ...(acc.nextInterval !== 0 && [
@@ -247,7 +249,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                       op: '<=',
                       content: {
                         field: `cases.${fieldName}`,
-                        value: [acc.nextInterval - 1],
+                        value: [`${acc.nextInterval - 1}`],
                       },
                     },
                   ]),

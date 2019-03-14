@@ -49,9 +49,9 @@ import { CLINICAL_PREFIXES, IS_CDAVE_DEV } from '@ncigdc/utils/constants';
 
 const colors = scaleOrdinal(schemeCategory10);
 interface ITableHeading {
-  key: string,
-  title: string,
-  style?: React.CSSProperties,
+  key: string;
+  title: string;
+  style?: React.CSSProperties;
 }
 
 type TPlotType = 'categorical' | 'continuous';
@@ -66,37 +66,37 @@ type TVariableType =
   | 'Molecular_test'; // confirm type name
 
 interface IVariable {
-  bins: any[], // tbd - bins still need spec
-  plotTypes: TPlotType,
-  active_chart: TActiveChart,
-  active_calculation: TActiveCalculation,
-  type: TVariableType,
+  bins: any[]; // tbd - bins still need spec
+  plotTypes: TPlotType;
+  active_chart: TActiveChart;
+  active_calculation: TActiveCalculation;
+  type: TVariableType;
 }
 
 interface IVariableCardProps {
-  variable: IVariable,
-  fieldName: string,
-  plots: any[],
-  style: React.CSSProperties,
-  theme: IThemeProps,
-  dispatch: (arg: any) => void,
-  id: string,
-  survivalData: any[],
+  variable: IVariable;
+  fieldName: string;
+  plots: any[];
+  style: React.CSSProperties;
+  theme: IThemeProps;
+  dispatch: (arg: any) => void;
+  id: string;
+  survivalData: any[];
 }
 
 interface IVizButton {
-  title: string,
-  icon: JSX.Element,
+  title: string;
+  icon: JSX.Element;
   action: (
     payload: IAnalysisPayload
-  ) => { type: string, payload: IAnalysisPayload },
+  ) => { type: string, payload: IAnalysisPayload };
 }
 
 interface IVizButtons {
-  survival: IVizButton,
-  histogram: IVizButton,
-  box: IVizButton,
-  delete: IVizButton,
+  survival: IVizButton;
+  histogram: IVizButton;
+  box: IVizButton;
+  delete: IVizButton;
 }
 
 const CHART_HEIGHT = 250;

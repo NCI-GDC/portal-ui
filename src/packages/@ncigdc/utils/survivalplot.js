@@ -32,11 +32,11 @@ export const enoughData = (data: Object) =>
 
 async function fetchCurves(
   filters: ?Array<Object>,
-  size: number,
+  size: number
 ): Promise<Object> {
   const params = _.omitBy(
     { filters: filters && JSON.stringify(filters), size },
-    _.isNil,
+    _.isNil
   );
   const url = `analysis/survival?${queryString.stringify(params)}`;
   performanceTracker.begin('survival:fetch');
@@ -56,7 +56,7 @@ export const getDefaultCurve = memoize(
       Array.isArray(currentFilters)
         ? currentFilters
         : currentFilters && [currentFilters],
-      size,
+      size
     );
     const hasEnoughData = enoughData(rawData);
 
@@ -84,7 +84,7 @@ export const getDefaultCurve = memoize(
     max: 10,
     promise: true,
     normalizer: args => JSON.stringify(args[0]),
-  },
+  }
 );
 
 export const getSurvivalCurves = memoize(
@@ -101,11 +101,11 @@ export const getSurvivalCurves = memoize(
           op: 'and',
           content: [{ op: 'excludeifany', content: { field, value } }],
         },
-        currentFilters,
+        currentFilters
       ),
       replaceFilters(
         { op: 'and', content: [{ op: '=', content: { field, value } }] },
-        currentFilters,
+        currentFilters
       ),
     ];
 
@@ -180,5 +180,5 @@ export const getSurvivalCurves = memoize(
     max: 10,
     promise: true,
     normalizer: args => JSON.stringify(args[0]),
-  },
+  }
 );

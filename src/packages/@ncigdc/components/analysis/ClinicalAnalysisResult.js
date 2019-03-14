@@ -4,7 +4,6 @@ import {
   withState,
   withPropsOnChange,
   withProps,
-  lifecycle,
 } from 'recompose';
 import { connect } from 'react-redux';
 import SearchIcon from 'react-icons/lib/fa/search';
@@ -40,12 +39,15 @@ import {
   updateClinicalAnalysisProperty,
   addAnalysis,
 } from '@ncigdc/dux/analysis';
-import { CLINICAL_PREFIXES } from '@ncigdc/utils/constants';
 import withRouter from '@ncigdc/utils/withRouter';
 import BaseModal from '@ncigdc/components/Modals/BaseModal';
 import { setModal } from '@ncigdc/dux/modal';
 import EditableLabel from '@ncigdc/uikit/EditableLabel';
 import { humanify } from '@ncigdc/utils/string';
+
+// survival plot
+import { getDefaultCurve, enoughData } from '@ncigdc/utils/survivalplot';
+import SurvivalPlotWrapper from '@ncigdc/components/SurvivalPlotWrapper';
 
 // survival plot
 import { getDefaultCurve, enoughData } from '@ncigdc/utils/survivalplot';
@@ -92,12 +94,6 @@ const styles = {
     paddingLeft: 5,
   },
 };
-
-// will need to update with correct type names for molecular and follow-up
-const clinicalTypes = Object.keys(CLINICAL_PREFIXES).filter(
-  clinicalType =>
-    clinicalType !== 'Molecular test' && clinicalType !== 'Treatment'
-);
 
 const plotTypes = {
   categorical: ['histogram', 'survival'],
@@ -173,6 +169,7 @@ const enhance = compose(
       setSurvivalPlotLoading,
     }) => ({
       populateSurvivalData: async () => {
+        setSurvivalPlotLoading(true);
         const setId = Object.keys(currentAnalysis.sets.case)[0];
         const analysisFilters = {
           op: 'and',
@@ -419,13 +416,7 @@ const ClinicalAnalysisResult = ({
               />
             </Row>
             <Column style={{ marginTop: 10 }}>
-              {clinicalTypes.map(clinicalType => (
-                <ControlPanelNode
-                  key={clinicalType}
-                  name={clinicalType}
-                  analysis_id={id}
-                />
-              ))}
+              <ControlPanelNode name={'ExploreCases'} analysis_id={id} />
             </Column>
           </Column>
         )}

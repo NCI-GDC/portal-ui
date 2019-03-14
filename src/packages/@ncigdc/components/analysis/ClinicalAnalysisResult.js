@@ -4,7 +4,6 @@ import {
   withState,
   withPropsOnChange,
   withProps,
-  lifecycle,
 } from 'recompose';
 import { connect } from 'react-redux';
 import SearchIcon from 'react-icons/lib/fa/search';
@@ -172,6 +171,7 @@ const enhance = compose(
       setSurvivalPlotLoading,
     }) => ({
       populateSurvivalData: async () => {
+        setSurvivalPlotLoading(true);
         const setId = Object.keys(currentAnalysis.sets.case)[0];
         const analysisFilters = {
           op: 'and',
@@ -497,6 +497,7 @@ const ClinicalAnalysisResult = ({
                   fieldName={varFieldName}
                   variable={varProperties}
                   plots={plotTypes[varProperties.plotTypes || 'categorical']}
+                  style={{ minWidth: controlPanelExpanded ? 310 : 290 }}
                   id={id}
                   setId={setId}
                   facetField={varFieldName.replace('cases.', '')}

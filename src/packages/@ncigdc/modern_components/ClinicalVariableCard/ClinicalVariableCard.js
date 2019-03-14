@@ -3,8 +3,7 @@ import {
   compose,
   withState,
   withPropsOnChange,
-  withProps,
-  lifecycle,
+  withProps
 } from 'recompose';
 import DownCaretIcon from 'react-icons/lib/fa/caret-down';
 import { connect } from 'react-redux';

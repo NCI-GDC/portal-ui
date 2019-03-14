@@ -45,6 +45,7 @@ import withRouter from '@ncigdc/utils/withRouter';
 import BaseModal from '@ncigdc/components/Modals/BaseModal';
 import { setModal } from '@ncigdc/dux/modal';
 import EditableLabel from '@ncigdc/uikit/EditableLabel';
+import { humanify } from '@ncigdc/utils/string';
 
 // survival plot
 import { getDefaultCurve, enoughData } from '@ncigdc/utils/survivalplot';
@@ -429,7 +430,7 @@ const ClinicalAnalysisResult = ({
           </Column>
         )}
         <Column style={{ flex: 4 }}>
-          <Column
+          {/* <Column
             style={{
               ...zDepth1,
               margin: '0 1rem 1rem',
@@ -467,7 +468,7 @@ const ClinicalAnalysisResult = ({
                 </div>
               </Column>
             </Row>
-          </Column>
+          </Column> */}
           <Column
             style={{
               display: 'grid',
@@ -477,7 +478,44 @@ const ClinicalAnalysisResult = ({
               gridTemplateRows: 'repeat(auto)',
             }}
           >
-            {' '}
+            <Column
+              style={{
+                ...zDepth1,
+                height: 560,
+                margin: '0 1rem 1rem',
+                padding: '0.5rem 1rem 1rem',
+              }}
+            >
+              <div
+                style={{
+                  margin: '5px 0 10px',
+                }}
+              >
+                <h2
+                  style={{
+                    fontSize: '1.8rem',
+                    marginTop: 10,
+                    marginBottom: 0,
+                  }}
+                >
+                  Overall Survival
+                </h2>
+              </div>
+              <div
+                style={{
+                  height: '250px',
+                  margin: '5px 5px 10px',
+                }}
+              >
+                <SurvivalPlotWrapper
+                  {...overallSurvivalData}
+                  height={180}
+                  customClass="categorical-survival-plot"
+                  survivalPlotLoading={survivalPlotLoading}
+                />
+              </div>
+            </Column>
+
             {_.map(variables, (varProperties, varFieldName) => {
               // leaving sample wrapper component for continuous variables, they'll need an extra step to get min/max for binning
               // const FooComponent = withFacetData(props => {

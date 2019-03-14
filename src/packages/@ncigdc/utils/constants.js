@@ -317,6 +317,7 @@ export const CLINICAL_BLACKLIST = [
   'diagnosis_id',
   'created_datetime',
   'exposure_id',
+  'treatment_id',
 ];
 
 export const IS_CDAVE_DEV =

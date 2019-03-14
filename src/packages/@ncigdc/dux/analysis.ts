@@ -89,7 +89,7 @@ const initialState: IAnalysisState = {
 };
 
 const defaultVariableConfig = {
-  active_chart: 'survival',
+  active_chart: 'histogram',
   active_calculation: 'number',
   active_survival: 'overall',
   bins: [],

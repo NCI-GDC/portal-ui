@@ -526,6 +526,7 @@ const ClinicalAnalysisResult = ({
                   fieldName={varFieldName}
                   variable={varProperties}
                   plots={plotTypes[varProperties.plotTypes || 'categorical']}
+                  style={{ minWidth: controlPanelExpanded ? 310 : 290 }}
                   id={id}
                   setId={setId}
                   facetField={varFieldName.replace('cases.', '')}

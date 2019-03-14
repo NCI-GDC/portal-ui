@@ -199,7 +199,13 @@ const enhance = compose(
         setSurvivalPlotLoading(false);
       },
     })
-  )
+  ),
+  withPropsOnChange(
+    ['filters'],
+    ({ filters, populateSurvivalData }) => {
+      populateSurvivalData();
+    }
+  ),
 );
 
 const fakeContinuousBuckets = [
@@ -716,10 +722,4 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
   );
 };
 
-const ClinicalVariableCardWithSurvivalData = lifecycle({
-  componentDidMount() {
-    this.props.populateSurvivalData();
-  },
-})(ClinicalVariableCard);
-
-export default enhance(ClinicalVariableCardWithSurvivalData);
+export default enhance(ClinicalVariableCard);

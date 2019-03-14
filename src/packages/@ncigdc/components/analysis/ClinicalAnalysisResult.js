@@ -196,6 +196,12 @@ const enhance = compose(
       },
     })
   ),
+  withPropsOnChange(
+    ['currentAnalysis'],
+    ({ currentAnalysis, populateSurvivalData }) => {
+      populateSurvivalData();
+    }
+  ),
   withTheme,
   withRouter
 );
@@ -516,10 +522,4 @@ const ClinicalAnalysisResult = ({
   );
 };
 
-const ClinicalAnalysisResultWithSurvivalData = lifecycle({
-  componentDidMount() {
-    this.props.populateSurvivalData();
-  },
-})(ClinicalAnalysisResult);
-
-export default enhance(ClinicalAnalysisResultWithSurvivalData);
+export default enhance(ClinicalAnalysisResult);

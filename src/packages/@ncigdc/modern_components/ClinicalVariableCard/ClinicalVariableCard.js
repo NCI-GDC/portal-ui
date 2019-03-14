@@ -151,10 +151,6 @@ const styles = {
   }),
 };
 
-const initialState = {
-  survivalPlotLoading: true,
-};
-
 const enhance = compose(
   connect((state: any) => ({ analysis: state.analysis })),
   withTheme,
@@ -167,7 +163,7 @@ const enhance = compose(
   withState('selectedSurvivalData', 'setSelectedSurvivalData', {}),
   withState('overallSurvivalData', 'setOverallSurvivalData', {}),
   withState('selectedSurvivalLoadingId', 'setSelectedSurvivalLoadingId', ''),
-  withState('state', 'setState', initialState),
+  withState('survivalPlotLoading', 'setSurvivalPlotLoading', true),
   withState(
     'hasEnoughOverallSurvivalData',
     'setHasEnoughOverallSurvivalData',
@@ -181,6 +177,7 @@ const enhance = compose(
       setOverallSurvivalData,
       hasEnoughOverallSurvivalData,
       setHasEnoughOverallSurvivalData,
+      setSurvivalPlotLoading,
       filters,
       fieldName,
       setState,
@@ -199,10 +196,7 @@ const enhance = compose(
         setHasEnoughOverallSurvivalData(nextSurvivalData.rawData);
         setSelectedSurvivalData({});
 
-        setState(s => ({
-          ...s,
-          survivalPlotLoading: false,
-        }));
+        setSurvivalPlotLoading(false);
       },
     })
   )
@@ -571,6 +565,63 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                 </label>
               </form>
             )}
+
+            {/* {variable.active_chart === 'survival' && (
+              <div>
+                <form>
+                  {' '}
+                  <label
+                    htmlFor={`overall-survival-${fieldName}`}
+                    style={{ marginRight: 5, fontSize: '1.2rem' }}
+                  >
+                    <input
+                      id={`overall-survival-${fieldName}`}
+                      type={'radio'}
+                      value={'overall'}
+                      aria-label={`Overall survival for ${fieldName}`}
+                      onChange={() =>
+                        dispatch(
+                          updateClinicalAnalysisVariable({
+                            fieldName,
+                            variableKey: 'active_survival',
+                            value: 'overall',
+                            id,
+                          })
+                        )}
+                      checked={variable.active_survival === 'overall'}
+                      style={{ marginRight: 5 }}
+                    />
+                    Overall Survival
+                  </label>
+                  <label
+                    htmlFor={`progression-survival-${fieldName}`}
+                    style={{ fontSize: '1.2rem', marginLeft: 10 }}
+                  >
+                    <input
+                      id={`progression-survival-${fieldName}`}
+                      type={'radio'}
+                      value={'progression'}
+                      aria-label={`Progression free survival for ${fieldName}`}
+                      onChange={() =>
+                        dispatch(
+                          updateClinicalAnalysisVariable({
+                            fieldName,
+                            variableKey: 'active_survival',
+                            value: 'progression',
+                            id,
+                          })
+                        )}
+                      checked={variable.active_survival === 'progression'}
+                      style={{ marginRight: 5 }}
+                    />
+                    Progression Free Survival
+                  </label>
+                </form>
+                <span style={{ fontSize: '1rem', marginLeft: 10 }}>
+                  Log Rank Test P=Value ={' '}
+                </span>
+              </div>
+            )} */}
           </Row>
           {variable.active_chart === 'histogram' && (
             <BarChart

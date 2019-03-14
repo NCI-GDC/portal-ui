@@ -156,10 +156,6 @@ const CopyAnalysisModal = compose(
   );
 });
 
-const initialState = {
-  survivalPlotLoading: true,
-};
-
 const enhance = compose(
   connect((state: any, props: any) => ({
     allSets: state.sets,
@@ -167,35 +163,39 @@ const enhance = compose(
   })),
   withState('controlPanelExpanded', 'setControlPanelExpanded', true),
   withState('overallSurvivalData', 'setOverallSurvivalData', {}),
-  withState('state', 'setState', initialState),
-  withProps(({ setOverallSurvivalData, currentAnalysis, setState }) => ({
-    populateSurvivalData: async () => {
-      const setId = Object.keys(currentAnalysis.sets.case)[0];
-      const analysisFilters = {
-        op: 'and',
-        content: [
-          {
-            op: '=',
-            content: {
-              field: `cases.case_id`,
-              value: [`set_id:${setId}`],
+  withState('survivalPlotLoading', 'setSurvivalPlotLoading', true),
+  withProps(
+    ({
+      setOverallSurvivalData,
+      currentAnalysis,
+      setState,
+      setSurvivalPlotLoading,
+    }) => ({
+      populateSurvivalData: async () => {
+        const setId = Object.keys(currentAnalysis.sets.case)[0];
+        const analysisFilters = {
+          op: 'and',
+          content: [
+            {
+              op: '=',
+              content: {
+                field: `cases.case_id`,
+                value: [`set_id:${setId}`],
+              },
             },
-          },
-        ],
-      };
-      const nextSurvivalData = await getDefaultCurve({
-        currentFilters: analysisFilters,
-        slug: 'Clinical Analysis',
-      });
+          ],
+        };
+        const nextSurvivalData = await getDefaultCurve({
+          currentFilters: analysisFilters,
+          slug: 'Clinical Analysis',
+        });
 
-      setOverallSurvivalData(nextSurvivalData);
+        setOverallSurvivalData(nextSurvivalData);
 
-      setState(s => ({
-        ...s,
-        survivalPlotLoading: false,
-      }));
-    },
-  })),
+        setSurvivalPlotLoading(false);
+      },
+    })
+  ),
   withTheme,
   withRouter
 );
@@ -486,29 +486,27 @@ const ClinicalAnalysisResult = ({
               //   );
               // }
               return (
-                <div>
-                  <ClinicalVariableCard
-                    key={varFieldName}
-                    fieldName={varFieldName}
-                    variable={varProperties}
-                    plots={plotTypes[varProperties.plotTypes || 'categorical']}
-                    id={id}
-                    setId={setId}
-                    facetField={varFieldName.replace('cases.', '')}
-                    filters={{
-                      op: 'and',
-                      content: [
-                        {
-                          op: '=',
-                          content: {
-                            field: `cases.case_id`,
-                            value: [`set_id:${setId}`],
-                          },
+                <ClinicalVariableCard
+                  key={varFieldName}
+                  fieldName={varFieldName}
+                  variable={varProperties}
+                  plots={plotTypes[varProperties.plotTypes || 'categorical']}
+                  id={id}
+                  setId={setId}
+                  facetField={varFieldName.replace('cases.', '')}
+                  filters={{
+                    op: 'and',
+                    content: [
+                      {
+                        op: '=',
+                        content: {
+                          field: `cases.case_id`,
+                          value: [`set_id:${setId}`],
                         },
-                      ],
-                    }}
-                  />
-                </div>
+                      },
+                    ],
+                  }}
+                />
               );
             })}
           </Column>

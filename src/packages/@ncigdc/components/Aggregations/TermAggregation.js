@@ -33,6 +33,7 @@ type TProps = {
   showingMore: boolean,
   maxNum: number,
   searchValue: string,
+  isMatchingSearchValue: boolean,
 };
 
 export const ToggleMoreLink = styled.div({
@@ -210,13 +211,14 @@ const enhance = compose(
   withState('filter', 'setFilter', ''),
   withPropsOnChange(
     ['buckets', 'filter', 'searchValue'],
-    ({ buckets, filter, searchValue = '' }) => ({
+    ({ buckets, filter, searchValue = '', isMatchingSearchValue }) => ({
       filteredBuckets: buckets.filter(
         b =>
           b.key !== '_missing' &&
           (b.key || '').length &&
           b.key.toLowerCase().includes(filter.toLowerCase()) &&
-          b.key.toLowerCase().includes(searchValue.toLowerCase())
+          (b.key.toLowerCase().includes(searchValue.toLowerCase()) ||
+            isMatchingSearchValue)
       ),
     })
   ),

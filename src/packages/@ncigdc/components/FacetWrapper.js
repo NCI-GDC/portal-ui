@@ -82,12 +82,17 @@ const FacetWrapper = compose(
     onRequestRemove: 'handleRequestRemove',
   }),
   withState('showingValueSearch', 'setShowingValueSearch', false),
-  withState('collapsed', 'setCollapsed', props => props.collapsed)
+  withState(
+    'collapsed',
+    'setCollapsed',
+    props => props.collapsed || props.isMatchingSearchValue
+  )
 )(
   ({
     setShowingValueSearch,
     showingValueSearch,
     collapsed,
+    isMatchingSearchValue,
     setCollapsed,
     facet,
     title,
@@ -137,6 +142,7 @@ const FacetWrapper = compose(
         <TermAggregation
           field={facet.full}
           {...commonProps}
+          isMatchingSearchValue={isMatchingSearchValue}
           buckets={(aggregation || { buckets: [] }).buckets}
           searchValue={searchValue}
           showingValueSearch={showingValueSearch}

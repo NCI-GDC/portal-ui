@@ -380,6 +380,11 @@ const enhance = compose(
                       <FacetWrapper
                         relayVarName="exploreCaseCustomFacetFields"
                         key={componentFacet.full}
+                        isMatchingSearchValue={(componentFacet.full +
+                          componentFacet.description
+                        )
+                          .toLocaleLowerCase()
+                          .includes(searchValue.toLocaleLowerCase())}
                         facet={componentFacet}
                         title={_.startCase(
                           componentFacet.full.split('.').pop()

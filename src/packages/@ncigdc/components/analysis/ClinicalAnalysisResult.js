@@ -49,10 +49,6 @@ import { humanify } from '@ncigdc/utils/string';
 import { getDefaultCurve, enoughData } from '@ncigdc/utils/survivalplot';
 import SurvivalPlotWrapper from '@ncigdc/components/SurvivalPlotWrapper';
 
-// survival plot
-import { getDefaultCurve, enoughData } from '@ncigdc/utils/survivalplot';
-import SurvivalPlotWrapper from '@ncigdc/components/SurvivalPlotWrapper';
-
 interface IAnalysisResultProps {
   sets: any;
   config: any;

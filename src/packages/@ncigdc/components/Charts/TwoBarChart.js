@@ -86,7 +86,7 @@ const BarChart = ({
       .axisLeft(y)
       .ticks(Math.min(4, maxY))
       .tickSize(-chartWidth)
-      .tickSizeOuter(0),
+      .tickSizeOuter(0)
   );
 
   yG.selectAll('path').style('stroke', 'none');
@@ -186,5 +186,5 @@ export default compose(
   withTooltip,
   withState('chart', 'setState', <span />),
   withSize(),
-  pure,
+  pure
 )(BarChart);

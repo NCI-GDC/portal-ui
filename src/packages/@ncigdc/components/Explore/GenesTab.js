@@ -134,7 +134,7 @@ export default compose(
               {...survivalData}
               onReset={() => setSelectedSurvivalData({})}
               height={240}
-              survivalPlotloading={loading}
+              survivalPlotLoading={loading}
             />
           </Column>
         </Row>

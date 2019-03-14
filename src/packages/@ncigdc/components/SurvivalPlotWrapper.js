@@ -293,7 +293,7 @@ const enhance = compose(
   withState('xDomain', 'setXDomain', undefined),
   withState('survivalContainer', 'setSurvivalContainer', null),
   withState('uniqueClass', 'setUniqueClass', () => CLASS_NAME + _.uniqueId()),
-  withSize(),
+  withSize({refreshRate: 16}),
   lifecycle({
     shouldComponentUpdate(nextProps: TProps): void {
       const props = [

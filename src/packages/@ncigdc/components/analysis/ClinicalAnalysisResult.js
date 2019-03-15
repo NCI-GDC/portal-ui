@@ -503,6 +503,7 @@ const ClinicalAnalysisResult = ({
                   <ContinuousWrapper
                     key={varFieldName}
                     facetField={varFieldName.replace('cases.', '')}
+                    filters={filters}
                   />
                 );
               }

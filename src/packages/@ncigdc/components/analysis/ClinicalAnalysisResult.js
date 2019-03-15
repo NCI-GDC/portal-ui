@@ -1,10 +1,5 @@
 import React from 'react';
-import {
-  compose,
-  withState,
-  withPropsOnChange,
-  withProps,
-} from 'recompose';
+import { compose, withState, withPropsOnChange, withProps } from 'recompose';
 import { connect } from 'react-redux';
 import SearchIcon from 'react-icons/lib/fa/search';
 import DownCaretIcon from 'react-icons/lib/fa/caret-down';
@@ -258,7 +253,8 @@ const ClinicalAnalysisResult = ({
                         property: 'name',
                         id,
                       })
-                    )}
+                    )
+                  }
                   iconStyle={{
                     marginLeft: 10,
                     fontSize: '1.8rem',
@@ -316,7 +312,12 @@ const ClinicalAnalysisResult = ({
         )}
         {controlPanelExpanded && (
           <Column
-            style={{ ...zDepth1, flex: 1, minWidth: 260, marginBottom: '1rem' }}
+            style={{
+              ...zDepth1,
+              flex: 1,
+              minWidth: 260,
+              marginBottom: '1rem',
+            }}
           >
             <Row style={{ justifyContent: 'flex-end' }}>
               <Tooltip Component={'Hide Control Panel'}>
@@ -416,7 +417,7 @@ const ClinicalAnalysisResult = ({
             </Column>
           </Column>
         )}
-        <Column style={{ flex: 4 }}>
+        <Column style={{ flex: 4, minWidth: 0 }}>
           {/* <Column
             style={{
               ...zDepth1,

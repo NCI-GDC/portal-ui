@@ -222,6 +222,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
   setSelectedSurvivalLoadingId,
   selectedSurvivalLoadingId,
   filters,
+  stats,
 }) => {
   const rawQueryData =
     variable.plotTypes === 'continuous'
@@ -271,10 +272,10 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
               : ' - ' + getUpperAgeYears(acc.nextInterval - 1)
           } years`;
         } else if (valueIsYear(field)) {
-          return `${Math.floor(key)}${
-            acc.nextInterval === 0
-              ? ' - present'
-              : ' - ' + (acc.nextInterval - 1)
+          return `${Math.ceil(key)}${
+            acc.nextInterval === 0 // if interval is 0, it is the highest key value
+              ? ` - ${Math.ceil(stats.max)}`
+              : ' - ' + `${Math.ceil(acc.nextInterval)}`
           }`;
         } else {
           return key;
@@ -303,7 +304,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                     content: {
                       field: `cases.${fieldName}`,
                       value: [
-                        `${valueIsYear(fieldName) ? Math.floor(key) : key}`,
+                        `${valueIsYear(fieldName) ? Math.ceil(key) : key}`,
                       ],
                     },
                   },
@@ -329,7 +330,10 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
       type === 'continuous'
         ? rawData
             .sort((a, b) => b.key - a.key)
-            .reduce(getBucketRangesAndFilters, { nextInterval: 0, data: [] })
+            .reduce(getBucketRangesAndFilters, {
+              nextInterval: 0,
+              data: [],
+            })
             .data.slice(0)
             .reverse()
         : rawData
@@ -338,6 +342,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
             )
             .map(b => ({
               ...b,
+              key: b.key === '_missing' ? 'No Data' : b.key,
               chart_doc_count: b.doc_count,
               doc_count: getCountLink({
                 doc_count: b.doc_count,

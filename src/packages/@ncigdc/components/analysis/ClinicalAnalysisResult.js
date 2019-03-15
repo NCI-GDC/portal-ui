@@ -43,7 +43,7 @@ import withRouter from '@ncigdc/utils/withRouter';
 import BaseModal from '@ncigdc/components/Modals/BaseModal';
 import { setModal } from '@ncigdc/dux/modal';
 import EditableLabel from '@ncigdc/uikit/EditableLabel';
-import { humanify } from '@ncigdc/utils/string';
+import ContinuousAggregation from '@ncigdc/modern_components/ClinicalVariableCard/ContinuousAggregationQuery';
 
 // survival plot
 import { getDefaultCurve, enoughData } from '@ncigdc/utils/survivalplot';
@@ -461,8 +461,9 @@ const ClinicalAnalysisResult = ({
               display: 'grid',
               gridTemplateColumns: controlPanelExpanded
                 ? '50% 50%'
-                : '33.33% 33.33% 33.33%',
+                : '33% 33% 33%',
               gridTemplateRows: 'repeat(auto)',
+              ...(controlPanelExpanded ? {} : { marginLeft: '1%' }),
             }}
           >
             <Column
@@ -504,18 +505,43 @@ const ClinicalAnalysisResult = ({
             </Column>
 
             {_.map(variables, (varProperties, varFieldName) => {
-              // leaving sample wrapper component for continuous variables, they'll need an extra step to get min/max for binning
-              // const FooComponent = withFacetData(props => {
-              //   return <div>{props.viewer.explore.cases.facets}</div>;
-              // });
-              // if (varProperties.plotTypes === 'continuous') {
-              //   return (
-              //     <FooComponent
-              //       key={varFieldName}
-              //       facetField={varFieldName.replace('cases.', '')}
-              //     />
-              //   );
-              // }
+              const filters = {
+                op: 'and',
+                content: [
+                  {
+                    op: '=',
+                    content: {
+                      field: `cases.case_id`,
+                      value: [`set_id:${setId}`],
+                    },
+                  },
+                ],
+              };
+
+              const ContinuousWrapper = withFacetData(props => {
+                const response = JSON.parse(props.viewer.explore.cases.facets);
+
+                return (
+                  <ContinuousAggregation
+                    fieldName={varFieldName}
+                    stats={response[varFieldName].stats}
+                    filters={filters}
+                    variable={varProperties}
+                    plots={plotTypes[varProperties.plotTypes || 'categorical']}
+                    style={{ minWidth: controlPanelExpanded ? 310 : 290 }}
+                    id={id}
+                    setId={setId}
+                  />
+                );
+              });
+              if (varProperties.plotTypes === 'continuous') {
+                return (
+                  <ContinuousWrapper
+                    key={varFieldName}
+                    facetField={varFieldName.replace('cases.', '')}
+                  />
+                );
+              }
               return (
                 <ClinicalVariableCard
                   key={varFieldName}
@@ -524,20 +550,9 @@ const ClinicalAnalysisResult = ({
                   plots={plotTypes[varProperties.plotTypes || 'categorical']}
                   style={{ minWidth: controlPanelExpanded ? 310 : 290 }}
                   id={id}
-                  setId={setId}
                   facetField={varFieldName.replace('cases.', '')}
-                  filters={{
-                    op: 'and',
-                    content: [
-                      {
-                        op: '=',
-                        content: {
-                          field: `cases.case_id`,
-                          value: [`set_id:${setId}`],
-                        },
-                      },
-                    ],
-                  }}
+                  filters={filters}
+                  setId={setId}
                 />
               );
             })}

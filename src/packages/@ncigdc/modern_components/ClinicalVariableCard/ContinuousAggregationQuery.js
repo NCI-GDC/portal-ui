@@ -22,14 +22,14 @@ import { API, IS_AUTH_PORTAL } from '@ncigdc/utils/constants';
 
 const simpleAggCache = {};
 const pendingAggCache = {};
-const DEFAULT_CONTINUOUS_BUCKETS = 5;
+const DEFAULT_CONTINUOUS_BUCKET_INTERVAL = 5;
 
 const getContinousAggs = ({ fieldName, stats, filters }) => {
   // prevent query failing if interval will equal 0
   if (_.isNull(stats.min) || _.isNull(stats.max)) {
     return null;
   }
-  const interval = (stats.max - stats.min) / DEFAULT_CONTINUOUS_BUCKETS;
+  const interval = (stats.max - stats.min) / DEFAULT_CONTINUOUS_BUCKET_INTERVAL;
   const queryFieldName = fieldName.replace('.', '__');
 
   const variables = {
@@ -79,7 +79,7 @@ const getContinousAggs = ({ fieldName, stats, filters }) => {
     response
       .json()
       .then(json => {
-        console.log('json res: ', json);
+        // console.log('json res: ', json);
         if (!response.ok) {
           consoleDebug('throwing error in Environment');
           throw response;
@@ -135,7 +135,7 @@ export default compose(
         stats,
         filters,
       });
-      console.log('updating data: ', res);
+      // console.log('updating data: ', res);
       setAggData(res && res.data.viewer, () => setIsLoading(false));
     },
   }),
@@ -165,7 +165,7 @@ export default compose(
   //     setIsLoading(false);
   //   },
   // })
-)(({ aggData, isLoading, setId, ...props }) => {
+)(({ aggData, isLoading, setId, stats, ...props }) => {
   if (isLoading) {
     return <Loader />;
   }
@@ -175,6 +175,7 @@ export default compose(
       viewer={aggData}
       loading={isLoading}
       setId={setId}
+      stats={stats}
       {...props}
     />
   );

@@ -8,6 +8,7 @@ import { replaceFilters } from '@ncigdc/utils/filters';
 import styled from '@ncigdc/theme/styled';
 import { fetchApi } from '@ncigdc/utils/ajax/index';
 import { performanceTracker } from '@ncigdc/utils/analytics';
+import { DAYS_IN_YEAR } from '@ncigdc/utils/ageDisplay';
 
 type TPropsDefault = { slug?: string, currentFilters?: Object, size?: number };
 type TPropsMulti = {
@@ -41,7 +42,19 @@ async function fetchCurves(
   const url = `analysis/survival?${queryString.stringify(params)}`;
   performanceTracker.begin('survival:fetch');
   const rawData = await fetchApi(url);
-  const data = enoughData(rawData) ? rawData : { results: [] };
+  const data = enoughData(rawData)
+    ? {
+        ...rawData,
+        results: rawData.results.map(r => ({
+          ...r,
+          donors: r.donors.map(d => ({
+            ...d,
+            time: Math.ceil(d.time / DAYS_IN_YEAR),
+          })),
+        })),
+      }
+    : { results: [] };
+
   performanceTracker.end('survival:fetch', {
     filters: params.filters,
     data_sets: data.results.length,
@@ -140,9 +153,8 @@ export const getSurvivalCurves = memoize(
               key: `${slug || value}-not-mutated`,
               value: (
                 <span>
-                  S
-                  <sub>1</sub> (N = {getCaseCount(results2.length > 0)}
-                  ) - <Symbol>{slug || value}</Symbol> Not Mutated Cases
+                  S<sub>1</sub> (N = {getCaseCount(results2.length > 0)}) -{' '}
+                  <Symbol>{slug || value}</Symbol> Not Mutated Cases
                 </span>
               ),
             },
@@ -150,9 +162,8 @@ export const getSurvivalCurves = memoize(
               key: `${slug || value}-mutated`,
               value: (
                 <span>
-                  S
-                  <sub>2</sub> (N = {getCaseCount(results2.length === 0)}
-                  ) - <Symbol>{slug || value}</Symbol> Mutated Cases
+                  S<sub>2</sub> (N = {getCaseCount(results2.length === 0)}) -{' '}
+                  <Symbol>{slug || value}</Symbol> Mutated Cases
                 </span>
               ),
             },

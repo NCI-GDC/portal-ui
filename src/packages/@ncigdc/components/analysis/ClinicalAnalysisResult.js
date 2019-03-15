@@ -315,7 +315,6 @@ const ClinicalAnalysisResult = ({
             style={{
               ...zDepth1,
               flex: 1,
-              // width: '25%',
               minWidth: 260,
               marginBottom: '1rem',
             }}
@@ -418,7 +417,6 @@ const ClinicalAnalysisResult = ({
             </Column>
           </Column>
         )}
-        {/* <Column style={{ width: controlPanelExpanded ? '75%' : '100%' }}> */}
         <Column style={{ flex: 4, minWidth: 0 }}>
           <Column
             style={{

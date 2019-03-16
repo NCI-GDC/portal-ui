@@ -27,6 +27,9 @@ export default (Component: ReactClass<*>) =>
             explore {
               cases {
                 facets(facets: $facetField filters: $filters)
+                hits(first: 0 filters: $filters) {
+                  total
+                }
               }
             }
           }

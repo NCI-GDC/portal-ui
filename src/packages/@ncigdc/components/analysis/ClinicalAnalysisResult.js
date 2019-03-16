@@ -483,18 +483,18 @@ const ClinicalAnalysisResult = ({
               };
 
               const ContinuousWrapper = withFacetData(props => {
-                const response = JSON.parse(props.viewer.explore.cases.facets);
-
+                const facets = JSON.parse(props.viewer.explore.cases.facets);
                 return (
                   <ContinuousAggregation
                     fieldName={varFieldName}
-                    stats={response[varFieldName].stats}
+                    stats={facets[varFieldName].stats}
                     filters={filters}
                     variable={varProperties}
                     plots={plotTypes[varProperties.plotTypes || 'categorical']}
                     style={{ minWidth: controlPanelExpanded ? 310 : 290 }}
                     id={id}
                     setId={setId}
+                    viewer={props.viewer}
                   />
                 );
               });

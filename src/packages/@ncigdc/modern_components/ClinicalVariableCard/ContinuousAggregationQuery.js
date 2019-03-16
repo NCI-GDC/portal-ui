@@ -165,17 +165,19 @@ export default compose(
   //     setIsLoading(false);
   //   },
   // })
-)(({ aggData, isLoading, setId, stats, ...props }) => {
+)(({ aggData, isLoading, setId, stats, viewer, ...props }) => {
   if (isLoading) {
     return <Loader />;
   }
+
   // const Component = withLoader(ClinicalVariableCard);
   return (
     <ClinicalVariableCard
-      viewer={aggData}
+      aggData={aggData}
       loading={isLoading}
       setId={setId}
       stats={stats}
+      viewer={viewer}
       {...props}
     />
   );

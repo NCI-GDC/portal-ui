@@ -83,6 +83,8 @@
     "react-relay-network-layer": "2.0.1",
     "react-router-dom": "4.2.2",
     "react-sizeme": "2.3.4",
+    "react-sticky-el": "1.0.20",
+    "react-stickynode": "2.1.1",
     "recompose": "0.30.0",
     "redux": "3.6.0",
     "redux-actions": "1.2.2",

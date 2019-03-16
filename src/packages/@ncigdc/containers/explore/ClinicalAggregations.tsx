@@ -8,7 +8,6 @@ import {
   withHandlers,
   withPropsOnChange,
 } from 'recompose';
-import FacetHeader from '@ncigdc/components/Aggregations/FacetHeader';
 import FacetWrapper from '@ncigdc/components/FacetWrapper';
 import { withTheme } from '@ncigdc/theme';
 import RecursiveToggledFacet from './RecursiveToggledFacet';
@@ -25,6 +24,10 @@ import {
 } from '@ncigdc/containers/explore/presetFacets';
 import Input from '@ncigdc/uikit/Form/Input';
 import { ITheme } from '@ncigdc/theme/types';
+// @ts-ignore
+import Sticky from 'react-sticky-el';
+import AngleIcon from '@ncigdc/theme/icons/AngleIcon';
+
 interface IFacetProps {
   description: string,
   doc_type: string,
@@ -38,7 +41,6 @@ interface IBucketProps {
 }
 
 interface IToggledTreeProps {
-  cases: { toggled: boolean, [x: string]: any },
   demographic: { toggled: boolean, [x: string]: any },
   diagnoses: { toggled: boolean, [x: string]: any },
   treatments: { toggled: boolean, [x: string]: any },
@@ -59,6 +61,8 @@ interface IClinicalProps {
   fieldHash: { [x: string]: any },
   parsedFacets: { [x: string]: any },
   isLoadingParsedFacets: boolean,
+  expandAll: any,
+  setExpandAll: any,
 }
 const facetMatchesQuery = (
   facet: IFacetProps,
@@ -91,54 +95,20 @@ const MagnifyingGlass = styled(SearchIcon, {
   borderRight: 'none',
 });
 
-interface INestedWrapperProps {
-  Component: JSX.Element,
-  title: string,
-  isCollapsed: boolean,
-  setCollapsed: (isCollapsed: boolean) => void,
-  style: { [x: string]: string },
-  headerStyle: { [x: string]: string },
-  isLoading: boolean,
-  angleIconRight: boolean,
-}
 interface IGraphFieldProps {
   __dataID: string,
   name: string,
   description: string,
   type: { name: string, __dataID: string },
 }
-const NestedWrapper = ({
-  Component,
-  title,
-  isCollapsed,
-  setCollapsed,
-  style,
-  headerStyle,
-  isLoading,
-  angleIconRight,
-}: INestedWrapperProps) => (
-  <div key={title + 'div'} style={style}>
-    <FacetHeader
-      title={title}
-      collapsed={isCollapsed}
-      setCollapsed={setCollapsed}
-      key={title}
-      style={headerStyle}
-      angleIconRight
-    />
-    {isCollapsed ||
-      (isLoading ? <div style={{ marginLeft: '1rem' }}>...</div> : Component)}
-  </div>
-);
 
 const enhance = compose(
   withState('isLoadingParsedFacets', 'setIsLoadingParsedFacets', false),
   withState('fieldHash', 'setFieldHash', {}),
-  withState('caseIdCollapsed', 'setCaseIdCollapsed', false),
+  withState('expandAll', 'setExpandAll', {}),
   withState('shouldHideUselessFacets', 'setShouldHideUselessFacets', true),
   withState('searchValue', 'setSearchValue', ''),
   withState('toggledTree', 'setToggledTree', {
-    cases: { toggled: false },
     demographic: { toggled: false },
     diagnoses: { toggled: false },
     treatments: { toggled: false },
@@ -317,6 +287,8 @@ const enhance = compose(
       fieldHash,
       parsedFacets,
       isLoadingParsedFacets,
+      expandAll,
+      setExpandAll,
     }: IClinicalProps): any => {
       return [
         <Row
@@ -359,79 +331,114 @@ const enhance = compose(
           )
           .map(facet => {
             return (
-              <NestedWrapper
-                key={facet.title + 'NestedWrapper'}
-                style={{
-                  position: 'relative',
-                }}
-                headerStyle={{
-                  margin: '0.5rem 1rem 0rem 1rem',
-                  backgroundColor: '#eeeeee',
-                  borderBottom: `1px solid ${theme.greyScale5}`,
-                  position: 'relative',
-                }}
-                Component={
-                  <RecursiveToggledFacet
-                    hash={_.omit(
-                      _.get(fieldHash, facet.full, {}),
-                      facet.excluded || ''
-                    )}
-                    Component={(componentFacet: { [x: string]: any }) => [
-                      <FacetWrapper
-                        relayVarName="exploreCaseCustomFacetFields"
-                        key={componentFacet.full}
-                        isMatchingSearchValue={(componentFacet.full +
-                          componentFacet.description
-                        )
-                          .toLocaleLowerCase()
-                          .includes(searchValue.toLocaleLowerCase())}
-                        facet={componentFacet}
-                        title={_.startCase(
-                          componentFacet.full.split('.').pop()
-                        )}
-                        aggregation={parsedFacets[componentFacet.field]}
-                        searchValue={searchValue}
-                        additionalProps={{ style: { paddingBottom: 0 } }}
+              <div key={facet.title + 'div'}>
+                <Row
+                  style={{
+                    position: 'sticky',
+                    top: '50px',
+                    background: '#eeeeee',
+                    zIndex: 10,
+                    fontSize: '1.7rem',
+                    cursor: 'pointer',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    padding: '1rem 1.2rem 0.5rem 1.2rem',
+                    margin: '0.5rem 1rem 0rem 1rem',
+                    color: theme.primary,
+                  }}
+                >
+                  <div
+                    onClick={() =>
+                      setToggledTree({
+                        ...toggledTree,
+                        [facet.field]: {
+                          ...toggledTree[facet.field],
+                          toggled: !toggledTree[facet.field].toggled,
+                        },
+                      })}
+                  >
+                    <span>
+                      <AngleIcon
                         style={{
-                          position: 'relative',
-                          paddingLeft: '10px',
+                          overflow: 'auto',
+                          display: 'flex',
+                          float: 'left',
+                          transform: `rotate(${toggledTree[facet.field].toggled
+                            ? 270
+                            : 0}deg)`,
                         }}
-                        headerStyle={{ fontSize: '14px' }}
-                        collapsed={searchValue.length === 0}
-                        maxNum={5}
-                      />,
-                      <div key={componentFacet.description}>
-                        {searchValue.length > 0 ? (
-                          <ResultHighlights
-                            item={{ description: componentFacet.description }}
-                            query={searchValue}
-                            heighlightStyle={{ backgroundColor: '#FFFF00' }}
-                            style={{
-                              fontStyle: 'italic',
-                              position: 'relative',
-                              paddingLeft: '30px',
-                              paddingRight: '10px',
-                            }}
-                          />
-                        ) : null}
-                      </div>,
-                    ]}
-                    key={facet.title + 'RecursiveToggledBox'}
-                  />
-                }
-                angleIconRight
-                title={facet.title}
-                isCollapsed={toggledTree[facet.field].toggled}
-                setCollapsed={() =>
-                  setToggledTree({
-                    ...toggledTree,
-                    [facet.field]: {
-                      ...toggledTree[facet.field],
-                      toggled: !toggledTree[facet.field].toggled,
-                    },
-                  })}
-                isLoading={isLoadingParsedFacets}
-              />
+                      />
+                    </span>
+                    {facet.title}
+                  </div>
+                  <span
+                    onClick={() =>
+                      setExpandAll({
+                        ...expandAll,
+                        [facet.field]: !expandAll[facet.field],
+                      })}
+                    style={{
+                      overflow: 'auto',
+                      display: 'flex',
+                      float: 'right',
+                    }}
+                  >
+                    {expandAll[facet.field] ? 'Expend All' : 'Less'}
+                  </span>
+                </Row>
+                {toggledTree[facet.field].toggled ||
+                  (isLoadingParsedFacets ? (
+                    <div style={{ marginLeft: '1rem' }}>...</div>
+                  ) : (
+                    <RecursiveToggledFacet
+                      hash={_.omit(
+                        _.get(fieldHash, facet.full, {}),
+                        facet.excluded || ''
+                      )}
+                      Component={(componentFacet: { [x: string]: any }) => [
+                        <FacetWrapper
+                          relayVarName="exploreCaseCustomFacetFields"
+                          key={componentFacet.full}
+                          isMatchingSearchValue={(componentFacet.full +
+                            componentFacet.description
+                          )
+                            .toLocaleLowerCase()
+                            .includes(searchValue.toLocaleLowerCase())}
+                          facet={componentFacet}
+                          title={_.startCase(
+                            componentFacet.full.split('.').pop()
+                          )}
+                          aggregation={parsedFacets[componentFacet.field]}
+                          searchValue={searchValue}
+                          additionalProps={{ style: { paddingBottom: 0 } }}
+                          style={{
+                            paddingLeft: '10px',
+                          }}
+                          headerStyle={{ fontSize: '14px' }}
+                          collapsed={
+                            searchValue.length === 0 || expandAll[facet.field]
+                          }
+                          maxNum={5}
+                        />,
+                        <div key={componentFacet.description}>
+                          {searchValue.length > 0 ? (
+                            <ResultHighlights
+                              item={{ description: componentFacet.description }}
+                              query={searchValue}
+                              heighlightStyle={{ backgroundColor: '#FFFF00' }}
+                              style={{
+                                fontStyle: 'italic',
+                                paddingLeft: '30px',
+                                paddingRight: '10px',
+                              }}
+                            />
+                          ) : null}
+                        </div>,
+                      ]}
+                      key={facet.title + 'RecursiveToggledBox'}
+                    />
+                  ))}
+              </div>
             );
           }),
       ];

@@ -229,14 +229,24 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
   const rawQueryData =
     variable.plotTypes === 'continuous'
       ? (
-          continuousAggs[fieldName.replace('.', '__')].histogram || {
+          (continuousAggs &&
+            continuousAggs[fieldName.replace('.', '__')].histogram) || {
             buckets: [],
           }
         ).buckets
       : (_.values(parsedFacets)[0] || { buckets: [] }).buckets;
 
   const totalDocs = hits.total;
+  const totalMissing =
+    totalDocs - rawQueryData.reduce((acc, bucket) => acc + bucket.doc_count, 0);
 
+  // const queryDataWithMissing = [
+  //   ...rawQueryData.filter(data => data.key !== '_missing'),
+  //   ...(rawQueryData.length
+  //     ? [{ key: '_missing', doc_count: totalMissing }]
+  //     : []),
+  // ];
+  // console.log(queryDataWithMissing);
   const getCategoricalTableData = (rawData, type) => {
     if (_.isEmpty(rawData)) {
       return [];
@@ -275,13 +285,13 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
           return `${Math.floor(key)}${
             acc.nextInterval === 0 // if interval is 0, it is the highest key value
               ? ` - ${Math.floor(stats.max)}`
-              : ' - ' + `${Math.floor(acc.nextInterval) - 1}`
+              : ' - ' + `${Math.floor(acc.nextInterval - 1)}`
           }`;
         } else {
-          return `${key}${
+          return `${Math.floor(key)}${
             acc.nextInterval === 0
-              ? ` - ${stats.max}`
-              : ' - ' + `${acc.nextInterval - 1}`
+              ? ` - ${Math.floor(stats.max)}`
+              : ' - ' + `${Math.floor(acc.nextInterval - 1)}`
           }`;
         }
       };
@@ -308,7 +318,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                     content: {
                       field: `cases.${fieldName}`,
                       value: [
-                        `${valueIsYear(fieldName) ? Math.ceil(key) : key}`,
+                        `${valueIsYear(fieldName) ? Math.floor(key) : key}`,
                       ],
                     },
                   },
@@ -317,7 +327,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                       op: '<=',
                       content: {
                         field: `cases.${fieldName}`,
-                        value: [`${acc.nextInterval - 1}`],
+                        value: [`${Math.floor(acc.nextInterval - 1)}`],
                       },
                     },
                   ]),

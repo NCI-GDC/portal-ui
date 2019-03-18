@@ -237,19 +237,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
       : (_.values(parsedFacets)[0] || { buckets: [] }).buckets;
 
   const totalDocs = hits.total;
-  const totalMissing =
-    totalDocs -
-    rawQueryData
-      .filter(d => d.key !== '_missing')
-      .reduce((acc, bucket) => acc + bucket.doc_count, 0);
 
-  const queryDataWithMissing = [
-    ...rawQueryData.filter(data => data.key !== '_missing'),
-    ...(rawQueryData.length
-      ? [{ key: '_missing', doc_count: totalMissing }]
-      : []),
-  ];
-  console.log(queryDataWithMissing);
   const getCategoricalTableData = (rawData, type) => {
     if (_.isEmpty(rawData)) {
       return [];
@@ -359,7 +347,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
             )
             .map(b => ({
               ...b,
-              key: b.key === '_missing' ? 'No Data' : b.key,
+              key: b.key === '_missing' ? 'Null Values' : b.key,
               chart_doc_count: b.doc_count,
               doc_count: getCountLink({
                 doc_count: b.doc_count,
@@ -474,10 +462,25 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
   let tableData =
     variable.active_chart === 'box'
       ? getBoxTableData([])
-      : getCategoricalTableData(queryDataWithMissing, variable.plotTypes);
+      : getCategoricalTableData(rawQueryData, variable.plotTypes);
+
+  const noDataTotal =
+    totalDocs - rawQueryData.reduce((acc, bucket) => acc + bucket.doc_count, 0);
 
   const devData = [
     ...tableData,
+    {
+      select: '',
+      key: 'No Data',
+
+      doc_count: (
+        <span>
+          {(noDataTotal || 0).toLocaleString()}
+          {` (${(((noDataTotal || 0) / totalDocs) * 100).toFixed(2)}%)`}
+        </span>
+      ),
+      survival: '',
+    },
     { select: '', key: 'Total', doc_count: totalDocs, survival: '' },
   ];
 

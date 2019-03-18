@@ -1,6 +1,10 @@
 import React from 'react';
-import { compose, withState, withPropsOnChange, withProps } from 'recompose';
-
+import {
+  compose,
+  withState,
+  withPropsOnChange,
+  withProps,
+} from 'recompose';
 import DownCaretIcon from 'react-icons/lib/fa/caret-down';
 import { connect } from 'react-redux';
 import _ from 'lodash';

@@ -418,7 +418,7 @@ const ClinicalAnalysisResult = ({
           </Column>
         )}
         <Column style={{ flex: 4, minWidth: 0 }}>
-          <Column
+          {/* <Column
             style={{
               ...zDepth1,
               margin: '0 1rem 1rem',
@@ -456,7 +456,7 @@ const ClinicalAnalysisResult = ({
                 </div>
               </Column>
             </Row>
-          </Column>
+          </Column> */}
           <Column
             style={{
               display: 'grid',
@@ -467,7 +467,44 @@ const ClinicalAnalysisResult = ({
               ...(controlPanelExpanded ? {} : { marginLeft: '1%' }),
             }}
           >
-            {' '}
+            <Column
+              style={{
+                ...zDepth1,
+                height: 560,
+                margin: '0 1rem 1rem',
+                padding: '0.5rem 1rem 1rem',
+              }}
+            >
+              <div
+                style={{
+                  margin: '5px 0 10px',
+                }}
+              >
+                <h2
+                  style={{
+                    fontSize: '1.8rem',
+                    marginTop: 10,
+                    marginBottom: 0,
+                  }}
+                >
+                  Overall Survival
+                </h2>
+              </div>
+              <div
+                style={{
+                  height: '250px',
+                  margin: '5px 5px 10px',
+                }}
+              >
+                <SurvivalPlotWrapper
+                  {...overallSurvivalData}
+                  height={180}
+                  customClass="categorical-survival-plot"
+                  survivalPlotLoading={survivalPlotLoading}
+                />
+              </div>
+            </Column>
+
             {_.map(variables, (varProperties, varFieldName) => {
               const filters = {
                 op: 'and',

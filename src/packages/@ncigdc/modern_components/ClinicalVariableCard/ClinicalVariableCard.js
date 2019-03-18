@@ -469,18 +469,20 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
 
   const devData = [
     ...tableData,
-    {
-      select: '',
-      key: 'No Data',
+    ...(noDataTotal > 0 && [
+      {
+        select: '',
+        key: 'No Data',
 
-      doc_count: (
-        <span>
-          {(noDataTotal || 0).toLocaleString()}
-          {` (${(((noDataTotal || 0) / totalDocs) * 100).toFixed(2)}%)`}
-        </span>
-      ),
-      survival: '',
-    },
+        doc_count: (
+          <span>
+            {(noDataTotal || 0).toLocaleString()}
+            {` (${(((noDataTotal || 0) / totalDocs) * 100).toFixed(2)}%)`}
+          </span>
+        ),
+        survival: '',
+      },
+    ]),
     { select: '', key: 'Total', doc_count: totalDocs, survival: '' },
   ];
 

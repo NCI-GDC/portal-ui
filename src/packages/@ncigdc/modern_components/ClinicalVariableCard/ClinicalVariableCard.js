@@ -238,15 +238,18 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
 
   const totalDocs = hits.total;
   const totalMissing =
-    totalDocs - rawQueryData.reduce((acc, bucket) => acc + bucket.doc_count, 0);
+    totalDocs -
+    rawQueryData
+      .filter(d => d.key !== '_missing')
+      .reduce((acc, bucket) => acc + bucket.doc_count, 0);
 
-  // const queryDataWithMissing = [
-  //   ...rawQueryData.filter(data => data.key !== '_missing'),
-  //   ...(rawQueryData.length
-  //     ? [{ key: '_missing', doc_count: totalMissing }]
-  //     : []),
-  // ];
-  // console.log(queryDataWithMissing);
+  const queryDataWithMissing = [
+    ...rawQueryData.filter(data => data.key !== '_missing'),
+    ...(rawQueryData.length
+      ? [{ key: '_missing', doc_count: totalMissing }]
+      : []),
+  ];
+  console.log(queryDataWithMissing);
   const getCategoricalTableData = (rawData, type) => {
     if (_.isEmpty(rawData)) {
       return [];
@@ -471,7 +474,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
   let tableData =
     variable.active_chart === 'box'
       ? getBoxTableData([])
-      : getCategoricalTableData(rawQueryData, variable.plotTypes);
+      : getCategoricalTableData(queryDataWithMissing, variable.plotTypes);
 
   const devData = [
     ...tableData,

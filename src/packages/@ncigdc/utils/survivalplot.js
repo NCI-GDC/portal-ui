@@ -49,7 +49,7 @@ async function fetchCurves(
           ...r,
           donors: r.donors.map(d => ({
             ...d,
-            time: Math.ceil(d.time / DAYS_IN_YEAR),
+            time: d.time / DAYS_IN_YEAR,
           })),
         })),
       }

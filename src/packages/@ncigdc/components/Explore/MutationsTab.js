@@ -101,6 +101,7 @@ export default compose(
           <SurvivalPlotWrapper
             {...survivalData}
             onReset={() => setSelectedSurvivalData({})}
+            plotType="mutation"
             height={240}
             survivalPlotLoading={false}
           />

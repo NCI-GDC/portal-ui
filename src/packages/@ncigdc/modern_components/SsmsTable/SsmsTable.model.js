@@ -294,6 +294,7 @@ const SsmsTableModel = [
                 getSurvivalCurves({
                   field: 'gene.ssm.ssm_id',
                   value: node.ssm_id,
+                  plotType: 'mutation',
                   slug: `${get(
                     node,
                     'consequence.hits.edges[0].node.transcript.gene.symbol'

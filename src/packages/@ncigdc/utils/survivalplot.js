@@ -10,7 +10,11 @@ import { fetchApi } from '@ncigdc/utils/ajax/index';
 import { performanceTracker } from '@ncigdc/utils/analytics';
 import { DAYS_IN_YEAR } from '@ncigdc/utils/ageDisplay';
 
-type TPropsDefault = { slug?: string, currentFilters?: Object, size?: number };
+type TPropsDefault = {
+  slug?: string,
+  currentFilters?: Object,
+  size?: number,
+};
 type TPropsMulti = {
   value: string,
   field: string,
@@ -20,6 +24,7 @@ type TPropsMulti = {
 };
 
 const MINIMUM_CASES = 10;
+export const MAXIMUM_CURVES = 5;
 
 const Symbol = styled.span({
   fontSize: '1.2em',
@@ -107,6 +112,7 @@ export const getSurvivalCurves = memoize(
     slug,
     currentFilters,
     size,
+    plotType,
   }: TPropsMulti): Promise<Object> => {
     const filters = [
       replaceFilters(
@@ -153,8 +159,14 @@ export const getSurvivalCurves = memoize(
               key: `${slug || value}-not-mutated`,
               value: (
                 <span>
-                  S<sub>1</sub> (N = {getCaseCount(results2.length > 0)}) -{' '}
-                  <Symbol>{slug || value}</Symbol> Not Mutated Cases
+                  S
+                  <sub>1</sub> (N = {getCaseCount(results2.length > 0)})
+                  {plotType === 'mutation' && (
+                    <span>
+                      {' '}
+                      - <Symbol>{slug || value}</Symbol> Not Mutated Cases
+                    </span>
+                  )}
                 </span>
               ),
             },
@@ -162,8 +174,14 @@ export const getSurvivalCurves = memoize(
               key: `${slug || value}-mutated`,
               value: (
                 <span>
-                  S<sub>2</sub> (N = {getCaseCount(results2.length === 0)}) -{' '}
-                  <Symbol>{slug || value}</Symbol> Mutated Cases
+                  S
+                  <sub>2</sub> (N = {getCaseCount(results2.length === 0)}){' '}
+                  {plotType === 'mutation' && (
+                    <span>
+                      {' '}
+                      - <Symbol>{slug || value}</Symbol> Mutated Cases
+                    </span>
+                  )}
                 </span>
               ),
             },
@@ -183,6 +201,82 @@ export const getSurvivalCurves = memoize(
             {
               key: `${slug || value}-not-enough-data`,
               value: <span>Not enough survival data for {slug || value}</span>,
+            },
+          ],
+    };
+  },
+  {
+    max: 10,
+    promise: true,
+    normalizer: args => JSON.stringify(args[0]),
+  }
+);
+
+export const getSurvivalCurvesArray = memoize(
+  async ({
+    values = [],
+    field,
+    currentFilters,
+    size,
+    plotType,
+  }: TPropsMulti): Promise<Object> => {
+    const filters = values.slice(0, MAXIMUM_CURVES).map(value =>
+      replaceFilters(
+        {
+          op: 'and',
+          content: [{ op: '=', content: { field, value } }],
+        },
+        currentFilters
+      )
+    );
+
+    const rawData = await fetchCurves(filters, size);
+    const hasEnoughData = enoughData(rawData);
+
+    const getCaseCount = i =>
+      _.get(rawData, `results[${i}].donors`, []).length.toLocaleString();
+
+    return {
+      rawData: {
+        ...rawData,
+        results:
+          rawData.results.length > 0
+            ? rawData.results.map((r, idx) => ({
+                ...r,
+                meta: {
+                  ...r.meta,
+                  label: `S${idx + 1}`,
+                },
+              }))
+            : [],
+      },
+      id: field,
+      legend: hasEnoughData
+        ? rawData.results.map(
+            (r, i) =>
+              r.length === 0
+                ? {
+                    key: `${values[i]}-cannot-compare`,
+                    value: (
+                      <div>
+                        <span>Not enough data to compare</span>
+                      </div>
+                    ),
+                    style: { width: '100%', marginTop: 5 },
+                  }
+                : {
+                    key: values[i],
+                    value: (
+                      <span>
+                        S<sub>{i + 1}</sub> (N = {getCaseCount(i)})
+                      </span>
+                    ),
+                  }
+          )
+        : [
+            {
+              key: `${field}-not-enough-data`,
+              value: <span>Not enough survival data for this facet</span>,
             },
           ],
     };

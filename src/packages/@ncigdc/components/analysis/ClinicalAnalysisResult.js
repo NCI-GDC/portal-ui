@@ -45,11 +45,11 @@ import { getDefaultCurve, enoughData } from '@ncigdc/utils/survivalplot';
 import SurvivalPlotWrapper from '@ncigdc/components/SurvivalPlotWrapper';
 
 interface IAnalysisResultProps {
-  sets: any;
-  config: any;
-  label: string;
-  Icon: () => React.Component<any>;
-  analysis: any;
+  sets: any,
+  config: any,
+  label: string,
+  Icon: () => React.Component<any>,
+  analysis: any,
 }
 //
 // interface ISavedSet {
@@ -253,8 +253,7 @@ const ClinicalAnalysisResult = ({
                         property: 'name',
                         id,
                       })
-                    )
-                  }
+                    )}
                   iconStyle={{
                     marginLeft: 10,
                     fontSize: '1.8rem',
@@ -498,7 +497,8 @@ const ClinicalAnalysisResult = ({
               >
                 <SurvivalPlotWrapper
                   {...overallSurvivalData}
-                  height={180}
+                  height={430}
+                  plotType="clinicalOverall"
                   customClass="categorical-survival-plot"
                   survivalPlotLoading={survivalPlotLoading}
                 />

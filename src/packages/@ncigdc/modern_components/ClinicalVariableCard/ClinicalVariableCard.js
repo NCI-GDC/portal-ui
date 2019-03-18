@@ -23,6 +23,7 @@ import {
   getDefaultCurve,
   enoughData,
   getSurvivalCurves,
+  getSurvivalCurvesArray,
 } from '@ncigdc/utils/survivalplot';
 import SurvivalPlotWrapper from '@ncigdc/components/SurvivalPlotWrapper';
 import { SpinnerIcon } from '@ncigdc/theme/icons';
@@ -44,12 +45,14 @@ import {
 import { humanify } from '@ncigdc/utils/string';
 import { getLowerAgeYears, getUpperAgeYears } from '@ncigdc/utils/ageDisplay';
 import { IS_CDAVE_DEV } from '@ncigdc/utils/constants';
+import { MAXIMUM_CURVES } from '../../utils/survivalplot';
 
 const colors = scaleOrdinal(schemeCategory10);
+
 interface ITableHeading {
-  key: string;
-  title: string;
-  style?: React.CSSProperties;
+  key: string,
+  title: string,
+  style?: React.CSSProperties,
 }
 
 type TPlotType = 'categorical' | 'continuous';
@@ -64,37 +67,37 @@ type TVariableType =
   | 'Molecular_test'; // confirm type name
 
 interface IVariable {
-  bins: any[]; // tbd - bins still need spec
-  plotTypes: TPlotType;
-  active_chart: TActiveChart;
-  active_calculation: TActiveCalculation;
-  type: TVariableType;
+  bins: any[], // tbd - bins still need spec
+  plotTypes: TPlotType,
+  active_chart: TActiveChart,
+  active_calculation: TActiveCalculation,
+  type: TVariableType,
 }
 
 interface IVariableCardProps {
-  variable: IVariable;
-  fieldName: string;
-  plots: any[];
-  style: React.CSSProperties;
-  theme: IThemeProps;
-  dispatch: (arg: any) => void;
-  id: string;
-  survivalData: any[];
+  variable: IVariable,
+  fieldName: string,
+  plots: any[],
+  style: React.CSSProperties,
+  theme: IThemeProps,
+  dispatch: (arg: any) => void,
+  id: string,
+  survivalData: any[],
 }
 
 interface IVizButton {
-  title: string;
-  icon: JSX.Element;
+  title: string,
+  icon: JSX.Element,
   action: (
     payload: IAnalysisPayload
-  ) => { type: string, payload: IAnalysisPayload };
+  ) => { type: string, payload: IAnalysisPayload },
 }
 
 interface IVizButtons {
-  survival: IVizButton;
-  histogram: IVizButton;
-  box: IVizButton;
-  delete: IVizButton;
+  survival: IVizButton,
+  histogram: IVizButton,
+  box: IVizButton,
+  delete: IVizButton,
 }
 
 const CHART_HEIGHT = 250;
@@ -160,9 +163,10 @@ const enhance = compose(
     continuousAggs: aggData && aggData.explore.cases.aggregations,
     hits: viewer && viewer.explore.cases.hits,
   })),
-  withState('selectedSurvivalData', 'setSelectedSurvivalData', {}),
+  withState('categoricalSurvivalData', 'setCategoricalSurvivalData', {}),
   withState('overallSurvivalData', 'setOverallSurvivalData', {}),
-  withState('selectedSurvivalLoadingId', 'setSelectedSurvivalLoadingId', ''),
+  withState('selectedSurvivalValues', 'setSelectedSurvivalValues', []),
+  withState('selectedSurvivalLoadingIds', 'setSelectedSurvivalLoadingIds', []),
   withState('survivalPlotLoading', 'setSurvivalPlotLoading', true),
   withState(
     'hasEnoughOverallSurvivalData',
@@ -171,20 +175,27 @@ const enhance = compose(
   ),
   withProps(
     ({
-      selectedSurvivalData,
-      setSelectedSurvivalData,
       overallSurvivalData,
       setOverallSurvivalData,
       hasEnoughOverallSurvivalData,
       setHasEnoughOverallSurvivalData,
       setSurvivalPlotLoading,
+      setCategoricalSurvivalData,
+      categoricalSurvivalData,
       filters,
       fieldName,
       setState,
+      variable,
+      continuousAggs,
+      parsedFacets,
+      setId,
+      setSelectedSurvivalValues,
+      selectedSurvivalValues,
+      setSelectedSurvivalLoadingIds,
     }) => ({
       survivalData: {
-        legend: selectedSurvivalData.legend || overallSurvivalData.legend,
-        rawData: selectedSurvivalData.rawData || overallSurvivalData.rawData,
+        legend: overallSurvivalData.legend,
+        rawData: overallSurvivalData.rawData,
       },
       populateSurvivalData: async () => {
         setSurvivalPlotLoading(true);
@@ -195,15 +206,206 @@ const enhance = compose(
 
         setOverallSurvivalData(nextSurvivalData);
         setHasEnoughOverallSurvivalData(nextSurvivalData.rawData);
-        setSelectedSurvivalData({});
 
         setSurvivalPlotLoading(false);
       },
+      populateSurvivalArrays: () => {
+        setSurvivalPlotLoading(true);
+
+        const rawQueryData =
+          variable.plotTypes === 'continuous'
+            ? (continuousAggs[fieldName.replace('.', '__')].histogram || {
+                buckets: [],
+              }).buckets
+            : (_.values(parsedFacets)[0] || { buckets: [] }).buckets;
+
+        const totalDocsFromBuckets = rawQueryData
+          .map(b => b.doc_count)
+          .reduce((acc, i) => acc + i, 0);
+
+        const getCountLink = ({ doc_count, filters }) => {
+          return (
+            <span>
+              <ExploreLink
+                query={{
+                  searchTableTab: 'cases',
+                  filters,
+                }}
+              >
+                {(doc_count || 0).toLocaleString()}
+              </ExploreLink>
+              <span>{` (${((doc_count || 0) /
+                totalDocsFromBuckets *
+                100
+              ).toFixed(2)}%)`}</span>
+            </span>
+          );
+        };
+
+        const getBucketRangesAndFilters = (acc, { doc_count, key }) => {
+          const valueIsDays = str => /(days_to|age_at)/.test(str);
+          const valueIsYear = str => /year_of/.test(str);
+
+          const getRangeValue = (key, field) => {
+            if (valueIsDays(field)) {
+              return `${getLowerAgeYears(key)}${acc.nextInterval === 0
+                ? '+'
+                : ' - ' + getUpperAgeYears(acc.nextInterval - 1)} years`;
+            } else if (valueIsYear(field)) {
+              return `${Math.floor(key)}${acc.nextInterval === 0
+                ? ' - present'
+                : ' - ' + (acc.nextInterval - 1)}`;
+            } else {
+              return key;
+            }
+          };
+          return {
+            nextInterval: key,
+            data: [
+              ...acc.data,
+              {
+                chart_doc_count: doc_count,
+                doc_count: getCountLink({
+                  doc_count,
+                  filters: {
+                    op: 'and',
+                    content: [
+                      {
+                        op: 'in',
+                        content: {
+                          field: 'cases.case_id',
+                          value: `set_id:${setId}`,
+                        },
+                      },
+                      {
+                        op: '>=',
+                        content: {
+                          field: `cases.${fieldName}`,
+                          value: [
+                            `${valueIsYear(fieldName) ? Math.floor(key) : key}`,
+                          ],
+                        },
+                      },
+                      ...(acc.nextInterval !== 0 && [
+                        {
+                          op: '<=',
+                          content: {
+                            field: `cases.${fieldName}`,
+                            value: [`${acc.nextInterval - 1}`],
+                          },
+                        },
+                      ]),
+                    ],
+                  },
+                }),
+                key: getRangeValue(key, fieldName),
+              },
+            ],
+          };
+        };
+
+        const displayData =
+          variable.plotTypes === 'continuous'
+            ? rawQueryData
+                .sort((a, b) => b.key - a.key)
+                .reduce(getBucketRangesAndFilters, {
+                  nextInterval: 0,
+                  data: [],
+                })
+                .data.slice(0)
+                .reverse()
+            : rawQueryData
+                .filter(
+                  bucket =>
+                    !IS_CDAVE_DEV ? bucket.key !== '_missing' : bucket.key
+                )
+                .map(b => ({
+                  ...b,
+                  chart_doc_count: b.doc_count,
+                  doc_count: getCountLink({
+                    doc_count: b.doc_count,
+                    filters:
+                      b.key === '_missing'
+                        ? {
+                            op: 'AND',
+                            content: [
+                              {
+                                op: 'IS',
+                                content: { field: fieldName, value: [b.key] },
+                              },
+                              {
+                                op: 'in',
+                                content: {
+                                  field: 'cases.case_id',
+                                  value: `set_id:${setId}`,
+                                },
+                              },
+                            ],
+                          }
+                        : makeFilter([
+                            {
+                              field: 'cases.case_id',
+                              value: `set_id:${setId}`,
+                            },
+                            { field: fieldName, value: [b.key] },
+                          ]),
+                  }),
+                }));
+
+        const valuesForCurves = displayData.map(d => d.key).slice(0, 2);
+        setSelectedSurvivalValues(valuesForCurves);
+        setSelectedSurvivalLoadingIds(valuesForCurves);
+
+        getSurvivalCurvesArray({
+          field: fieldName,
+          values: valuesForCurves,
+          currentFilters: filters,
+          plotType: 'clinicalCategorical',
+        }).then(data => {
+          setCategoricalSurvivalData(data);
+          setHasEnoughOverallSurvivalData(data.rawData);
+          setSurvivalPlotLoading(false);
+          setSelectedSurvivalLoadingIds([]);
+        });
+      },
+      updateSelectedSurvivalValues: value => {
+        if (
+          selectedSurvivalValues.indexOf(value) === -1 &&
+          selectedSurvivalValues.length >= MAXIMUM_CURVES
+        ) {
+          return;
+        }
+        setSurvivalPlotLoading(true);
+
+        const nextValues =
+          selectedSurvivalValues.indexOf(value) === -1
+            ? selectedSurvivalValues.concat(value)
+            : selectedSurvivalValues.filter(s => s !== value);
+
+        setSelectedSurvivalValues(nextValues);
+        setSelectedSurvivalLoadingIds(nextValues);
+
+        getSurvivalCurvesArray({
+          field: fieldName,
+          values: nextValues,
+          currentFilters: filters,
+          plotType: 'clinicalCategorical',
+        }).then(data => {
+          setCategoricalSurvivalData(data);
+          setHasEnoughOverallSurvivalData(data.rawData);
+          setSurvivalPlotLoading(false);
+          setSelectedSurvivalLoadingIds([]);
+        });
+      },
     })
   ),
-  withPropsOnChange(['filters'], ({ filters, populateSurvivalData }) => {
-    populateSurvivalData();
-  })
+  withPropsOnChange(
+    ['filters'],
+    ({ filters, populateSurvivalData, populateSurvivalArrays }) => {
+      populateSurvivalData();
+      populateSurvivalArrays();
+    }
+  )
 );
 
 const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
@@ -220,19 +422,19 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
   survivalData,
   hasEnoughOverallSurvivalData,
   survivalPlotLoading,
-  selectedSurvivalData,
-  setSelectedSurvivalData,
   setSelectedSurvivalLoadingId,
-  selectedSurvivalLoadingId,
+  selectedSurvivalLoadingIds,
+  categoricalSurvivalData,
+  selectedSurvivalValues,
+  updateSelectedSurvivalValues,
   filters,
   stats,
   hits,
 }) => {
   const rawQueryData =
     variable.plotTypes === 'continuous'
-      ? (
-          (continuousAggs &&
-            continuousAggs[fieldName.replace('.', '__')].histogram) || {
+      ? ((continuousAggs &&
+          continuousAggs[fieldName.replace('.', '__')].histogram) || {
             buckets: [],
           }
         ).buckets
@@ -256,7 +458,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
           >
             {(doc_count || 0).toLocaleString()}
           </ExploreLink>
-          <span>{` (${(((doc_count || 0) / totalDocs) * 100).toFixed(
+          <span>{` (${((doc_count || 0) / totalDocs * 100).toFixed(
             2
           )}%)`}</span>
         </span>
@@ -269,23 +471,17 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
 
       const getRangeValue = (key, field) => {
         if (valueIsDays(field)) {
-          return `${getLowerAgeYears(key)}${
-            acc.nextInterval === 0
-              ? '+'
-              : ' - ' + getUpperAgeYears(acc.nextInterval - 1)
-          } years`;
+          return `${getLowerAgeYears(key)}${acc.nextInterval === 0
+            ? '+'
+            : ' - ' + getUpperAgeYears(acc.nextInterval - 1)} years`;
         } else if (valueIsYear(field)) {
-          return `${Math.floor(key)}${
-            acc.nextInterval === 0 // if interval is 0, it is the highest key value
-              ? ` - ${Math.ceil(stats.max)}`
-              : ' - ' + `${Math.floor(acc.nextInterval - 1)}`
-          }`;
+          return `${Math.floor(key)}${acc.nextInterval === 0 // if interval is 0, it is the highest key value
+            ? ` - ${Math.ceil(stats.max)}`
+            : ' - ' + `${Math.floor(acc.nextInterval - 1)}`}`;
         } else {
-          return `${Math.floor(key)}${
-            acc.nextInterval === 0
-              ? ` - ${Math.ceil(stats.max)}`
-              : ' - ' + `${Math.floor(acc.nextInterval - 1)}`
-          }`;
+          return `${Math.floor(key)}${acc.nextInterval === 0
+            ? ` - ${Math.ceil(stats.max)}`
+            : ' - ' + `${Math.floor(acc.nextInterval - 1)}`}`;
         }
       };
       return {
@@ -344,8 +540,8 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
             .data.slice(0)
             .reverse()
         : rawData
-            .filter(bucket =>
-              !IS_CDAVE_DEV ? bucket.key !== '_missing' : bucket.key
+            .filter(
+              bucket => (!IS_CDAVE_DEV ? bucket.key !== '_missing' : bucket.key)
             )
             .map(b => ({
               ...b,
@@ -402,40 +598,33 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
             survival: (
               <Tooltip
                 Component={
-                  hasEnoughOverallSurvivalData
-                    ? `Click icon to plot ${b.key}`
-                    : 'Not enough survival data'
+                  !hasEnoughOverallSurvivalData
+                    ? 'Not enough survival data'
+                    : selectedSurvivalValues.indexOf(b.key) > -1
+                      ? `Click icon to remove ${b.key}`
+                      : selectedSurvivalValues.length < MAXIMUM_CURVES
+                        ? `Click icon to plot ${b.key}`
+                        : `Maximum plots (${MAXIMUM_CURVES}) reached`
                 }
               >
                 <Button
                   style={{
                     padding: '2px 3px',
-                    backgroundColor: hasEnoughOverallSurvivalData
-                      ? colors(b.key === selectedSurvivalData.id ? '1' : '0')
-                      : '#666',
+                    backgroundColor:
+                      !hasEnoughOverallSurvivalData ||
+                      selectedSurvivalValues.indexOf(b.key) === -1
+                        ? '#666'
+                        : colors(selectedSurvivalValues.indexOf(b.key)),
                     color: 'white',
                     margin: '0 auto',
                     position: 'static',
                   }}
                   disabled={!hasEnoughOverallSurvivalData}
                   onClick={() => {
-                    if (b.key !== selectedSurvivalData.id) {
-                      setSelectedSurvivalLoadingId(b.key);
-                      getSurvivalCurves({
-                        field: fieldName,
-                        value: b.key,
-                        currentFilters: filters,
-                        slug: `${b.key}`,
-                      }).then(data => {
-                        setSelectedSurvivalData(data);
-                        setSelectedSurvivalLoadingId('');
-                      });
-                    } else {
-                      setSelectedSurvivalData({});
-                    }
+                    updateSelectedSurvivalValues(b.key);
                   }}
                 >
-                  {b.key === selectedSurvivalLoadingId ? (
+                  {selectedSurvivalLoadingIds.indexOf(b.key) !== -1 ? (
                     <SpinnerIcon />
                   ) : (
                     <SurvivalIcon />
@@ -479,7 +668,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
         doc_count: (
           <span>
             {(noDataTotal || 0).toLocaleString()}
-            {` (${(((noDataTotal || 0) / totalDocs) * 100).toFixed(2)}%)`}
+            {` (${((noDataTotal || 0) / totalDocs * 100).toFixed(2)}%)`}
           </span>
         ),
         survival: '',
@@ -536,7 +725,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
             value:
               variable.active_calculation === 'number'
                 ? d.chart_doc_count
-                : (d.chart_doc_count / totalDocs) * 100,
+                : d.chart_doc_count / totalDocs * 100,
             tooltip: `${d.key}: ${d.chart_doc_count.toLocaleString()}`,
           };
         })
@@ -551,6 +740,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
         padding: '0.5rem 1rem 1rem',
         ...style,
       }}
+      className="clinical-analysis-categorical-card"
     >
       <Row
         style={{
@@ -623,8 +813,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                           value: 'percentage',
                           id,
                         })
-                      )
-                    }
+                      )}
                     checked={variable.active_calculation === 'percentage'}
                     style={{ marginRight: 5 }}
                   />
@@ -647,8 +836,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                           value: 'number',
                           id,
                         })
-                      )
-                    }
+                      )}
                     checked={variable.active_calculation === 'number'}
                     style={{ marginRight: 5 }}
                   />
@@ -718,9 +906,9 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
             <BarChart
               data={chartData}
               yAxis={{
-                title: `${
-                  variable.active_calculation === 'number' ? '#' : '%'
-                } of Cases`,
+                title: `${variable.active_calculation === 'number'
+                  ? '#'
+                  : '%'} of Cases`,
                 style: styles.histogram(theme).axis,
               }}
               xAxis={{
@@ -751,14 +939,14 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                 display: 'flex',
                 flexDirection: 'column',
                 flex: '0 0 auto',
-                height: CHART_HEIGHT - 10,
+                height: '265px',
                 margin: '5px 5px 10px',
               }}
             >
               <SurvivalPlotWrapper
-                {...survivalData}
-                height={180}
-                onReset={() => setSelectedSurvivalData({})}
+                {...categoricalSurvivalData}
+                height={202}
+                plotType="clinicalCategorical"
                 customClass="categorical-survival-plot"
                 survivalPlotLoading={survivalPlotLoading}
               />

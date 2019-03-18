@@ -61,12 +61,25 @@
 
 /* clinical analysis */
 
-.categorical-survival-plot .test-download-viz-button,
 .categorical-survival-plot .test-visualization-title[style] {
   display: none !important;
 }
 
 .categorical-survival-plot .test-visualization-header[style] {
-  justify-content: flex-end;
+  display: block !important;
+  float: right;
   margin: 0 !important;
+}
+
+.categorical-survival-plot .test-survival-plot-meta[style] {
+  display: block !important;
+}
+
+.categorical-survival-plot .p-value {
+  margin-right: 40px;
+}
+
+.clinical-analysis-categorical-card td:nth-child(2)[style] {
+  /* wrap long facet values so the table doesn't scroll */
+  white-space: normal !important;
 }

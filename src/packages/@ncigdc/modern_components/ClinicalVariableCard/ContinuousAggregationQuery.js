@@ -79,7 +79,6 @@ const getContinousAggs = ({ fieldName, stats, filters }) => {
     response
       .json()
       .then(json => {
-        // console.log('json res: ', json);
         if (!response.ok) {
           consoleDebug('throwing error in Environment');
           throw response;
@@ -135,42 +134,16 @@ export default compose(
         stats,
         filters,
       });
-      // console.log('updating data: ', res);
       setAggData(res && res.data.viewer, () => setIsLoading(false));
     },
   }),
   withPropsOnChange(['filters'], ({ updateData, ...props }) =>
     updateData(props)
   )
-  // lifecycle({
-  //   async componentDidMount() {
-  //     console.log('agg component is mounting');
-  //     const {
-  //       fieldName,
-  //       stats,
-  //       filters,
-  //       aggData,
-  //       setAggData,
-  //       setIsLoading,
-  //     } = this.props;
-  //
-  //     const res = await getContinousAggs({
-  //       fieldName,
-  //       stats,
-  //       filters,
-  //     });
-  //     console.log('fetching in mount');
-  //     setAggData(res.data.viewer);
-  //
-  //     setIsLoading(false);
-  //   },
-  // })
 )(({ aggData, isLoading, setId, stats, viewer, ...props }) => {
   if (isLoading) {
     return <Loader />;
   }
-
-  // const Component = withLoader(ClinicalVariableCard);
   return (
     <ClinicalVariableCard
       aggData={aggData}

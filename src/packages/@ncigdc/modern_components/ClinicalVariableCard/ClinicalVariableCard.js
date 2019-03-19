@@ -275,13 +275,13 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
         } else if (valueIsYear(field)) {
           return `${Math.floor(key)}${
             acc.nextInterval === 0 // if interval is 0, it is the highest key value
-              ? ` - ${Math.floor(stats.max)}`
+              ? ` - ${Math.ceil(stats.max)}`
               : ' - ' + `${Math.floor(acc.nextInterval - 1)}`
           }`;
         } else {
           return `${Math.floor(key)}${
             acc.nextInterval === 0
-              ? ` - ${Math.floor(stats.max)}`
+              ? ` - ${Math.ceil(stats.max)}`
               : ' - ' + `${Math.floor(acc.nextInterval - 1)}`
           }`;
         }

@@ -8,7 +8,6 @@ import {
 } from 'recompose';
 import _ from 'lodash';
 import { connect } from 'react-redux';
-import QuestionIcon from 'react-icons/lib/fa/question-circle';
 import { singular } from 'pluralize';
 
 import { humanify } from '@ncigdc/utils/string';
@@ -156,9 +155,6 @@ const ClinicalGrouping = compose(
                     }}
                   >
                     <Row style={{ alignItems: 'center' }}>
-                      <h4 style={{ fontSize: '1.4rem' }}>
-                        {humanify({ term: _.last(fieldName.split('.')) })}
-                      </h4>
                       <Tooltip
                         Component={
                           <div style={{ maxWidth: '24em' }}>
@@ -166,12 +162,9 @@ const ClinicalGrouping = compose(
                           </div>
                         }
                       >
-                        <QuestionIcon
-                          style={{
-                            color: theme.greyScale7,
-                            margin: '10px 5px 10px',
-                          }}
-                        />
+                        <h4 style={{ fontSize: '1.4rem' }}>
+                          {humanify({ term: _.last(fieldName.split('.')) })}
+                        </h4>
                       </Tooltip>
                     </Row>
                     <FacetCheckbox

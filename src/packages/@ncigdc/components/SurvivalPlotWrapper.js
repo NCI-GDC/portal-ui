@@ -131,7 +131,8 @@ const SurvivalPlotWrapper = ({
                         ],
                       },
                     },
-                  })}
+                  })
+                }
                 data={results.map((set, i) => ({
                   ...set,
                   meta: {
@@ -197,8 +198,11 @@ const SurvivalPlotWrapper = ({
               Component={
                 pValue === 0 && (
                   <div>
-                    Value shows 0.00e+0 because the<br />P-Value is extremely
-                    low and goes beyond<br />the precision inherent in the code
+                    Value shows 0.00e+0 because the
+                    <br />
+                    P-Value is extremely low and goes beyond
+                    <br />
+                    the precision inherent in the code
                   </div>
                 )
               }
@@ -250,7 +254,7 @@ function renderSurvivalPlot(props: TProps): void {
       dataSets: results,
       palette,
       xDomain,
-      xAxisLabel: 'Duration (days)',
+      xAxisLabel: 'Duration (years)',
       yAxisLabel: 'Survival Rate',
       height,
       getSetSymbol: (curve, curves) =>

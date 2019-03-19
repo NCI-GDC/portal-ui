@@ -24,9 +24,12 @@ import ExploreLink from '@ncigdc/components/Links/ExploreLink';
 import { makeFilter } from '@ncigdc/utils/filters';
 
 // survival plot
-import { getDefaultCurve, enoughData } from '@ncigdc/utils/survivalplot';
+import {
+  getDefaultCurve,
+  enoughData,
+  getSurvivalCurves,
+} from '@ncigdc/utils/survivalplot';
 import SurvivalPlotWrapper from '@ncigdc/components/SurvivalPlotWrapper';
-import { getSurvivalCurves } from '@ncigdc/utils/survivalplot';
 import { SpinnerIcon } from '@ncigdc/theme/icons';
 
 import {

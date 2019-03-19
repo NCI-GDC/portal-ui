@@ -1,5 +1,5 @@
 import React from 'react';
-import { get, startCase } from 'lodash';
+import { get, startCase, orderBy } from 'lodash';
 import { compose, withState } from 'recompose';
 import { Column } from '@ncigdc/uikit/Flex';
 import {
@@ -20,7 +20,7 @@ const RecursiveToggledFacet = compose(
     setShowingMore,
     NestedWrapper,
   }) => {
-    const keyArray = Object.keys(hash);
+    const keyArray = orderBy(Object.keys(hash), [key => key], ['asc']);
     if (!hash || keyArray === 0) {
       return '';
     }

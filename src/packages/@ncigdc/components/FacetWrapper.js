@@ -1,6 +1,7 @@
 /* @flow */
 
 import React from 'react';
+import { connect } from 'react-redux';
 import _ from 'lodash';
 
 import {
@@ -17,7 +18,11 @@ import RangeFacet from '@ncigdc/components/Aggregations/RangeFacet';
 import ExactMatchFacet from '@ncigdc/components/Aggregations/ExactMatchFacet';
 import styled from '@ncigdc/theme/styled';
 import FacetHeader from '@ncigdc/components/Aggregations/FacetHeader';
-
+// Only for clinicalAggregations.
+import {
+  addFacetNames,
+  changeFacetNames,
+} from '@ncigdc/dux/facetsExpandedStatus';
 const COMMON_PREPOSITIONS = [
   'a',
   'an',
@@ -74,6 +79,9 @@ const FacetWrapperDiv = styled.div({
 });
 
 const FacetWrapper = compose(
+  connect((state: any) => ({
+    facetsExpandedStatus: state.facetsExpandedStatus,
+  })),
   defaultProps({
     onRequestRemove: _.noop,
     isRemovable: false,
@@ -82,11 +90,7 @@ const FacetWrapper = compose(
     onRequestRemove: 'handleRequestRemove',
   }),
   withState('showingValueSearch', 'setShowingValueSearch', false),
-  withState(
-    'collapsed',
-    'setCollapsed',
-    props => props.collapsed || props.isMatchingSearchValue
-  )
+  withState('collapsed', 'setCollapsed', props => props.collapsed)
 )(
   ({
     setShowingValueSearch,
@@ -104,6 +108,9 @@ const FacetWrapper = compose(
     additionalProps,
     maxNum = 5,
     searchValue,
+    category,
+    dispatch,
+    expandedAll,
   }) => {
     const facetType = getFacetType(facet);
     const displayTitle = title || fieldNameToTitle(facet.field);
@@ -166,7 +173,15 @@ const FacetWrapper = compose(
           isRemovable={isRemovable}
           hasValueSearch={hasValueSearch}
           collapsed={collapsed}
-          setCollapsed={setCollapsed}
+          setCollapsed={collapsed => {
+            if (category) {
+              const x = facet.field.split('.').pop();
+              console.log('yes', category, x);
+
+              dispatch(changeFacetNames(category, x, !collapsed));
+            }
+            setCollapsed(collapsed);
+          }}
           showingValueSearch={showingValueSearch}
           setShowingValueSearch={setShowingValueSearch}
           style={headerStyle}

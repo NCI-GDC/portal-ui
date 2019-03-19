@@ -1,6 +1,12 @@
 import React from 'react';
 import { get, startCase } from 'lodash';
-import { compose, withState } from 'recompose';
+import { connect } from 'react-redux';
+import {
+  addFacetNames,
+  changeFacetNames,
+} from '@ncigdc/dux/facetsExpandedStatus';
+
+import { compose, withState, lifecycle } from 'recompose';
 import { Column } from '@ncigdc/uikit/Flex';
 import {
   ToggleMoreLink,
@@ -8,17 +14,26 @@ import {
 } from '@ncigdc/components/Aggregations/TermAggregation';
 
 const RecursiveToggledFacet = compose(
+  connect((state: any) => ({
+    facetsExpandedStatus: state.facetsExpandedStatus,
+  })),
   withState('headerCollapsed', 'setHeaderCollapsed', {}),
-  withState('showingMore', 'setShowingMore', false)
+  withState('showingMore', 'setShowingMore', false),
+  lifecycle({
+    componentDidMount(): void {
+      const { category, hash, dispatch }: any = this.props;
+      dispatch(addFacetNames(category, Object.keys(hash)));
+    },
+  })
 )(
   ({
     hash,
     Component,
-    headerCollapsed,
-    setHeaderCollapsed,
+    category,
     showingMore,
     setShowingMore,
     NestedWrapper,
+    facetsExpandedStatus,
   }) => {
     const keyArray = Object.keys(hash);
     if (!hash || keyArray === 0) {
@@ -27,7 +42,6 @@ const RecursiveToggledFacet = compose(
     if (keyArray.includes('description')) {
       return Component(hash);
     }
-
     return (
       <Column>
         {keyArray.slice(0, showingMore ? Infinity : 5).map(key => {
@@ -42,12 +56,8 @@ const RecursiveToggledFacet = compose(
                 <RecursiveToggledFacet hash={hash[key]} Component={Component} />
               }
               title={startCase(key)}
-              isCollapsed={get(headerCollapsed, key, true)}
-              setCollapsed={() =>
-                setHeaderCollapsed({
-                  ...headerCollapsed,
-                  [key]: !get(headerCollapsed, key, true),
-                })}
+              isCollapsed={get(facetsExpandedStatus[category], key, true)}
+              setCollapsed={() => dispatch(changeFacetNames(category, key))}
             />
           );
         })}

@@ -274,6 +274,9 @@ const enhance = compose(
           !facetExclusionTest(facet),
           !shouldHideUselessFacets ||
             Object.keys(usefulFacets).includes(facet.field),
+          !facet.field.endsWith('id'),
+          !facet.field.includes('updated_datetime'),
+          !facet.field.includes('created_datetime'),
         ]);
       });
       const fieldHash = {};

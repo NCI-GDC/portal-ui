@@ -157,12 +157,13 @@ const styles = {
 const enhance = compose(
   connect((state: any) => ({ analysis: state.analysis })),
   withTheme,
-  withPropsOnChange(['viewer'], ({ viewer }) => ({
+  withPropsOnChange(['viewer', 'aggData'], ({ viewer, aggData }) => ({
     parsedFacets:
       viewer && viewer.explore.cases.facets
         ? tryParseJSON(viewer.explore.cases.facets, {})
         : {},
-    continuousAggs: viewer && viewer.explore.cases.aggregations,
+    continuousAggs: aggData && aggData.explore.cases.aggregations,
+    hits: viewer && viewer.explore.cases.hits,
   })),
   withState('selectedSurvivalData', 'setSelectedSurvivalData', {}),
   withState('overallSurvivalData', 'setOverallSurvivalData', {}),
@@ -229,19 +230,20 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
   setSelectedSurvivalLoadingId,
   selectedSurvivalLoadingId,
   filters,
+  stats,
+  hits,
 }) => {
   const rawQueryData =
     variable.plotTypes === 'continuous'
       ? (
-          continuousAggs[fieldName.replace('.', '__')].histogram || {
+          (continuousAggs &&
+            continuousAggs[fieldName.replace('.', '__')].histogram) || {
             buckets: [],
           }
         ).buckets
       : (_.values(parsedFacets)[0] || { buckets: [] }).buckets;
 
-  const totalDocsFromBuckets = rawQueryData
-    .map(b => b.doc_count)
-    .reduce((acc, i) => acc + i, 0);
+  const totalDocs = hits.total;
 
   const getCategoricalTableData = (rawData, type) => {
     if (_.isEmpty(rawData)) {
@@ -259,7 +261,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
           >
             {(doc_count || 0).toLocaleString()}
           </ExploreLink>
-          <span>{` (${(((doc_count || 0) / totalDocsFromBuckets) * 100).toFixed(
+          <span>{` (${(((doc_count || 0) / totalDocs) * 100).toFixed(
             2
           )}%)`}</span>
         </span>
@@ -279,12 +281,16 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
           } years`;
         } else if (valueIsYear(field)) {
           return `${Math.floor(key)}${
-            acc.nextInterval === 0
-              ? ' - present'
-              : ' - ' + (acc.nextInterval - 1)
+            acc.nextInterval === 0 // if interval is 0, it is the highest key value
+              ? ` - ${Math.ceil(stats.max)}`
+              : ' - ' + `${Math.floor(acc.nextInterval - 1)}`
           }`;
         } else {
-          return key;
+          return `${Math.floor(key)}${
+            acc.nextInterval === 0
+              ? ` - ${Math.ceil(stats.max)}`
+              : ' - ' + `${Math.floor(acc.nextInterval - 1)}`
+          }`;
         }
       };
       return {
@@ -319,7 +325,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                       op: '<=',
                       content: {
                         field: `cases.${fieldName}`,
-                        value: [`${acc.nextInterval - 1}`],
+                        value: [`${Math.floor(acc.nextInterval - 1)}`],
                       },
                     },
                   ]),
@@ -336,7 +342,10 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
       type === 'continuous'
         ? rawData
             .sort((a, b) => b.key - a.key)
-            .reduce(getBucketRangesAndFilters, { nextInterval: 0, data: [] })
+            .reduce(getBucketRangesAndFilters, {
+              nextInterval: 0,
+              data: [],
+            })
             .data.slice(0)
             .reverse()
         : rawData
@@ -345,6 +354,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
             )
             .map(b => ({
               ...b,
+              key: b.key === '_missing' ? 'Null Values' : b.key,
               chart_doc_count: b.doc_count,
               doc_count: getCountLink({
                 doc_count: b.doc_count,
@@ -461,9 +471,26 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
       ? getBoxTableData([])
       : getCategoricalTableData(rawQueryData, variable.plotTypes);
 
+  const noDataTotal =
+    totalDocs - rawQueryData.reduce((acc, bucket) => acc + bucket.doc_count, 0);
+
   const devData = [
     ...tableData,
-    { select: '', key: 'Total', doc_count: totalDocsFromBuckets, survival: '' },
+    ...(noDataTotal > 0 && [
+      {
+        select: '',
+        key: 'No Data',
+
+        doc_count: (
+          <span>
+            {(noDataTotal || 0).toLocaleString()}
+            {` (${(((noDataTotal || 0) / totalDocs) * 100).toFixed(2)}%)`}
+          </span>
+        ),
+        survival: '',
+      },
+    ]),
+    { select: '', key: 'Total', doc_count: totalDocs, survival: '' },
   ];
 
   const getHeadings = chartType => {
@@ -514,7 +541,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
             value:
               variable.active_calculation === 'number'
                 ? d.chart_doc_count
-                : (d.chart_doc_count / totalDocsFromBuckets) * 100,
+                : (d.chart_doc_count / totalDocs) * 100,
             tooltip: `${d.key}: ${d.chart_doc_count.toLocaleString()}`,
           };
         })

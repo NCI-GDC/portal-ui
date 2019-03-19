@@ -22,7 +22,7 @@ import { API, IS_AUTH_PORTAL } from '@ncigdc/utils/constants';
 
 const simpleAggCache = {};
 const pendingAggCache = {};
-const DEFAULT_CONTINUOUS_BUCKETS = 5;
+const DEFAULT_CONTINUOUS_BUCKETS = 4;
 
 const getContinousAggs = ({ fieldName, stats, filters }) => {
   // prevent query failing if interval will equal 0
@@ -79,7 +79,6 @@ const getContinousAggs = ({ fieldName, stats, filters }) => {
     response
       .json()
       .then(json => {
-        console.log('json res: ', json);
         if (!response.ok) {
           consoleDebug('throwing error in Environment');
           throw response;
@@ -135,46 +134,23 @@ export default compose(
         stats,
         filters,
       });
-      console.log('updating data: ', res);
       setAggData(res && res.data.viewer, () => setIsLoading(false));
     },
   }),
   withPropsOnChange(['filters'], ({ updateData, ...props }) =>
     updateData(props)
   )
-  // lifecycle({
-  //   async componentDidMount() {
-  //     console.log('agg component is mounting');
-  //     const {
-  //       fieldName,
-  //       stats,
-  //       filters,
-  //       aggData,
-  //       setAggData,
-  //       setIsLoading,
-  //     } = this.props;
-  //
-  //     const res = await getContinousAggs({
-  //       fieldName,
-  //       stats,
-  //       filters,
-  //     });
-  //     console.log('fetching in mount');
-  //     setAggData(res.data.viewer);
-  //
-  //     setIsLoading(false);
-  //   },
-  // })
-)(({ aggData, isLoading, setId, ...props }) => {
+)(({ aggData, isLoading, setId, stats, viewer, ...props }) => {
   if (isLoading) {
     return <Loader />;
   }
-  // const Component = withLoader(ClinicalVariableCard);
   return (
     <ClinicalVariableCard
-      viewer={aggData}
+      aggData={aggData}
       loading={isLoading}
       setId={setId}
+      stats={stats}
+      viewer={viewer}
       {...props}
     />
   );

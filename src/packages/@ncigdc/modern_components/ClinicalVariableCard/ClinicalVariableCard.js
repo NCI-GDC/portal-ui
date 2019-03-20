@@ -557,8 +557,15 @@ const enhance = compose(
   ),
   withPropsOnChange(
     ['filters'],
-    ({ filters, populateSurvivalData, populateSurvivalArrays, variable }) => {
+    ({
+      filters,
+      fieldName,
+      populateSurvivalData,
+      populateSurvivalArrays,
+      variable,
+    }) => {
       console.log('filters', filters);
+      console.log('fieldName', fieldName);
       if (variable.active_chart === 'survival') {
         populateSurvivalData();
         populateSurvivalArrays();

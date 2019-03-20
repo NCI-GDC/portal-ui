@@ -521,6 +521,10 @@ const ClinicalAnalysisResult = ({
 
               const ContinuousWrapper = withFacetData(props => {
                 const facets = JSON.parse(props.viewer.explore.cases.facets);
+
+                console.log('facets', facets);
+                console.log('v');
+
                 return (
                   <ContinuousAggregation
                     fieldName={varFieldName}

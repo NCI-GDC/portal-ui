@@ -42,7 +42,8 @@ const getPlotType = field => {
   // yes NumericAggregations is spelled wrong in the index
   if (
     field.type.name === 'Float' ||
-    field.type.name === 'NumericAggergations'
+    field.type.name === 'NumericAggergations' ||
+    field.type.name === 'NumericAggregations'
   ) {
     return 'continuous';
   } else {

@@ -28,10 +28,10 @@ const changeFacetNames = (
   payload: { category, field, expanded },
 });
 
-// const expandOneCategory = (category: string, isExpanded: boolean) => ({
-//   type: facetsExpandedStatus.EXPAND_ONE_CATEGORY,
-//   payload: {category,isExpanded},
-// });
+const expandOneCategory = (category: string, isExpanded: boolean) => ({
+  type: facetsExpandedStatus.EXPAND_ONE_CATEGORY,
+  payload: { category, isExpanded },
+});
 // const resetFacetNames = () => ({
 //   type: facetsExpandedStatus.RESET_EXPANDED_STATUS,
 //   payload: {},
@@ -92,29 +92,28 @@ const reducer = (state = initialState, action: any) => {
         };
       }
     }
-    // case facetsExpandedStatus.EXPAND_ONE_CATEGORY:{
-    //   const category = action.payload;
-    //   return {
-    //     ...state,
-    //     [category]: {
-    //       ...state[category],
-    //       facets: {
-    //         ...state[category].facets,
-    //         ...facetNames.reduce(
-    //           (acc: any, facetName: string) => ({
-    //             ...acc,
-    //             [facetName]: false,
-    //           }),
-    //           {}
-    //         ),
-    //       },
-    //     },
-    //   };
-    // }
+    case facetsExpandedStatus.EXPAND_ONE_CATEGORY: {
+      const { category, isExpanded } = action.payload;
+      console.log('tes', isExpanded);
+
+      return {
+        ...state,
+        [category]: {
+          ...state[category],
+          facets: Object.keys(state[category].facets).reduce(
+            (acc: any, facetName: string) => ({
+              ...acc,
+              [facetName]: isExpanded,
+            }),
+            {}
+          ),
+        },
+      };
+    }
     default:
       return state;
   }
 };
 
-export { addFacetNames, changeFacetNames };
+export { addFacetNames, changeFacetNames, expandOneCategory };
 export default reducer;

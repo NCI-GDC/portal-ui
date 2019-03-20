@@ -6,7 +6,7 @@ import {
   changeFacetNames,
 } from '@ncigdc/dux/facetsExpandedStatus';
 
-import { compose, withState, lifecycle } from 'recompose';
+import { compose, withState, withPropsOnChange } from 'recompose';
 import { Column } from '@ncigdc/uikit/Flex';
 import {
   ToggleMoreLink,
@@ -18,13 +18,10 @@ const RecursiveToggledFacet = compose(
     facetsExpandedStatus: state.facetsExpandedStatus,
   })),
   withState('headerCollapsed', 'setHeaderCollapsed', {}),
-  withState('showingMore', 'setShowingMore', false),
-  lifecycle({
-    componentDidMount(): void {
-      const { category, hash, dispatch }: any = this.props;
-      dispatch(addFacetNames(category, Object.keys(hash)));
-    },
-  })
+  withState('showingMore', 'setShowingMore', false)
+  // withPropsOnChange(['hash'], ({ category, hash, dispatch }) => {
+  //   dispatch(addFacetNames(category, Object.keys(hash)));
+  // })
 )(
   ({
     hash,

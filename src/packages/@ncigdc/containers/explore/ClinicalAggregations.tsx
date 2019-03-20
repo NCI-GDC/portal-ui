@@ -9,7 +9,10 @@ import {
   withHandlers,
   withPropsOnChange,
 } from 'recompose';
-import { changeFacetNames } from '@ncigdc/dux/facetsExpandedStatus';
+import {
+  changeFacetNames,
+  expandOneCategory,
+} from '@ncigdc/dux/facetsExpandedStatus';
 import FacetWrapper from '@ncigdc/components/FacetWrapper';
 import { withTheme } from '@ncigdc/theme';
 import RecursiveToggledFacet from './RecursiveToggledFacet';
@@ -353,11 +356,18 @@ const enhance = compose(
                     {facet.title}
                   </div>
                   <span
-                    onClick={() =>
+                    onClick={() => {
+                      dispatch(
+                        expandOneCategory(
+                          facet.field,
+                          !allExpanded[facet.field]
+                        )
+                      );
                       setAllExpanded({
                         ...allExpanded,
                         [facet.field]: !allExpanded[facet.field],
-                      })}
+                      });
+                    }}
                     style={{
                       display: 'flex',
                       float: 'right',

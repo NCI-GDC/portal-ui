@@ -36,18 +36,30 @@ export const enoughData = (data: Object) =>
   data.results.length &&
   data.results.every(r => r.donors.length >= MINIMUM_CASES);
 
+const enoughDataOnSomeCurves = (data: Object) =>
+  data &&
+  data.results &&
+  data.results.length &&
+  data.results.some(r => r.donors.length >= MINIMUM_CASES);
+
 async function fetchCurves(
   filters: ?Array<Object>,
-  size: number
+  size: number,
+  hasMultipleCurves: Boolean
 ): Promise<Object> {
   const params = _.omitBy(
     { filters: filters && JSON.stringify(filters), size },
     _.isNil
   );
+  console.log('params', params);
   const url = `analysis/survival?${queryString.stringify(params)}`;
   performanceTracker.begin('survival:fetch');
   const rawData = await fetchApi(url);
-  const data = enoughData(rawData)
+  console.log('fetchCurves rawData', rawData);
+  const hasEnoughData = hasMultipleCurves
+    ? enoughDataOnSomeCurves(rawData)
+    : enoughData(rawData);
+  const data = hasEnoughData
     ? {
         ...rawData,
         results: rawData.results.map(r => ({
@@ -65,6 +77,8 @@ async function fetchCurves(
     data_sets: data.results.length,
     donors: _.sum(data.results.map(x => x.donors.length)),
   });
+
+  console.log('fetchCurves data', data);
   return data;
 }
 
@@ -230,8 +244,11 @@ export const getSurvivalCurvesArray = memoize(
       )
     );
 
-    const rawData = await fetchCurves(filters, size);
-    const hasEnoughData = enoughData(rawData);
+    const rawData = await fetchCurves(filters, size, true);
+    const hasEnoughDataOnSomeCurves = enoughDataOnSomeCurves(rawData);
+    console.log('field', field);
+    console.log('rawData', rawData);
+    console.log('hasEnoughDataOnSomeCurves', hasEnoughDataOnSomeCurves);
 
     const getCaseCount = i =>
       _.get(rawData, `results[${i}].donors`, []).length.toLocaleString();
@@ -241,17 +258,19 @@ export const getSurvivalCurvesArray = memoize(
         ...rawData,
         results:
           rawData.results.length > 0
-            ? rawData.results.map((r, idx) => ({
-                ...r,
-                meta: {
-                  ...r.meta,
-                  label: `S${idx + 1}`,
-                },
-              }))
+            ? rawData.results
+                .filter(r => r.donors.length >= MINIMUM_CASES)
+                .map((r, idx) => ({
+                  ...r,
+                  meta: {
+                    ...r.meta,
+                    label: `S${idx + 1}`,
+                  },
+                }))
             : [],
       },
       id: field,
-      legend: hasEnoughData
+      legend: hasEnoughDataOnSomeCurves
         ? rawData.results.map(
             (r, i) =>
               r.length === 0
@@ -264,14 +283,21 @@ export const getSurvivalCurvesArray = memoize(
                     ),
                     style: { width: '100%', marginTop: 5 },
                   }
-                : {
-                    key: values[i],
-                    value: (
-                      <span>
-                        S<sub>{i + 1}</sub> (N = {getCaseCount(i)})
-                      </span>
-                    ),
-                  }
+                : r.donors.length < MINIMUM_CASES
+                  ? {
+                      key: `${values[i]}-not-enough-data`,
+                      value: (
+                        <span>Not enough survival data for {values[i]}</span>
+                      ),
+                    }
+                  : {
+                      key: values[i],
+                      value: (
+                        <span>
+                          S<sub>{i + 1}</sub> (N = {getCaseCount(i)})
+                        </span>
+                      ),
+                    }
           )
         : [
             {

@@ -203,6 +203,8 @@ const enhance = compose(
           currentFilters: filters,
           slug: `Clinical Analysis - ${fieldName}`,
         });
+        // IMPORTANT - KEEP THIS HERE
+        console.log('nextSurvivalData', nextSurvivalData);
 
         setOverallSurvivalData(nextSurvivalData);
         setHasEnoughOverallSurvivalData(nextSurvivalData.rawData);
@@ -218,6 +220,8 @@ const enhance = compose(
                 buckets: [],
               }).buckets
             : (_.values(parsedFacets)[0] || { buckets: [] }).buckets;
+
+        console.log('rawQueryData', rawQueryData);
 
         const totalDocsFromBuckets = rawQueryData
           .map(b => b.doc_count)
@@ -391,6 +395,7 @@ const enhance = compose(
           currentFilters: filters,
           plotType: 'clinicalCategorical',
         }).then(data => {
+          console.log('data for survival curves', data);
           setCategoricalSurvivalData(data);
           setHasEnoughOverallSurvivalData(data.rawData);
           setSurvivalPlotLoading(false);
@@ -401,9 +406,11 @@ const enhance = compose(
   ),
   withPropsOnChange(
     ['filters'],
-    ({ filters, populateSurvivalData, populateSurvivalArrays }) => {
-      populateSurvivalData();
-      populateSurvivalArrays();
+    ({ filters, populateSurvivalData, populateSurvivalArrays, variable }) => {
+      if (variable.active_chart === 'survival') {
+        populateSurvivalData();
+        populateSurvivalArrays();
+      }
     }
   )
 );
@@ -938,18 +945,25 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
               style={{
                 display: 'flex',
                 flexDirection: 'column',
+                justifyContent: 'center',
                 flex: '0 0 auto',
                 height: '265px',
                 margin: '5px 5px 10px',
               }}
             >
-              <SurvivalPlotWrapper
-                {...categoricalSurvivalData}
-                height={202}
-                plotType="clinicalCategorical"
-                customClass="categorical-survival-plot"
-                survivalPlotLoading={survivalPlotLoading}
-              />
+              {selectedSurvivalValues.length === 0 ? (
+                <p style={{ textAlign: 'center', color: 'rgb(31, 119, 180)' }}>
+                  Select a survival plot
+                </p>
+              ) : (
+                <SurvivalPlotWrapper
+                  {...categoricalSurvivalData}
+                  height={202}
+                  plotType="clinicalCategorical"
+                  customClass="categorical-survival-plot"
+                  survivalPlotLoading={survivalPlotLoading}
+                />
+              )}
             </div>
           )}
           {variable.active_chart === 'box' && (

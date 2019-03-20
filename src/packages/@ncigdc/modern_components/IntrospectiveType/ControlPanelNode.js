@@ -263,9 +263,18 @@ export default compose(
     }
   });
 
+  // will need to add other types as they become available
+  const clinicalTypeOrder = [
+    'demographic',
+    'diagnoses',
+    'treatments',
+    'exposures',
+    // 'follow_ups',
+  ];
   return (
     <div>
-      {_.map(groupedByClinicalType, (fields, clinicalType) => {
+      {clinicalTypeOrder.map(clinicalType => {
+        const fields = groupedByClinicalType[clinicalType] || [];
         return (
           <ClinicalGrouping
             key={clinicalType}

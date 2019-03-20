@@ -21,8 +21,6 @@ import { makeFilter } from '@ncigdc/utils/filters';
 // survival plot
 import {
   getDefaultCurve,
-  enoughData,
-  getSurvivalCurves,
   getSurvivalCurvesArray,
 } from '@ncigdc/utils/survivalplot';
 import SurvivalPlotWrapper from '@ncigdc/components/SurvivalPlotWrapper';
@@ -82,7 +80,6 @@ interface IVariableCardProps {
   theme: IThemeProps,
   dispatch: (arg: any) => void,
   id: string,
-  survivalData: any[],
 }
 
 interface IVizButton {
@@ -180,16 +177,12 @@ const enhance = compose(
   ),
   withProps(
     ({
-      overallSurvivalData,
       setOverallSurvivalData,
-      hasEnoughOverallSurvivalData,
       setHasEnoughOverallSurvivalData,
       setSurvivalPlotLoading,
       setCategoricalSurvivalData,
-      categoricalSurvivalData,
       filters,
       fieldName,
-      setState,
       variable,
       continuousAggs,
       parsedFacets,
@@ -197,29 +190,22 @@ const enhance = compose(
       setSelectedSurvivalValues,
       selectedSurvivalValues,
       setSelectedSurvivalLoadingIds,
-      setAllSurvivalValues,
-      hasEnoughSurvivalDataValues,
       setHasEnoughSurvivalDataValues,
     }) => ({
-      survivalData: {
-        legend: overallSurvivalData.legend,
-        rawData: overallSurvivalData.rawData,
-      },
       populateSurvivalData: async () => {
         setSurvivalPlotLoading(true);
+
         const nextSurvivalData = await getDefaultCurve({
           currentFilters: filters,
           slug: `Clinical Analysis - ${fieldName}`,
         });
-        // IMPORTANT - KEEP THIS HERE
-        console.log('nextSurvivalData', nextSurvivalData);
 
         setOverallSurvivalData(nextSurvivalData);
         setHasEnoughOverallSurvivalData(nextSurvivalData.rawData);
 
         setSurvivalPlotLoading(false);
 
-        // get survival record counts
+        // get an array of values that have enough survival data
 
         const rawQueryData =
           variable.plotTypes === 'continuous'
@@ -227,8 +213,6 @@ const enhance = compose(
                 buckets: [],
               }).buckets
             : (_.values(parsedFacets)[0] || { buckets: [] }).buckets;
-
-        console.log('rawQueryData', rawQueryData);
 
         const totalDocsFromBuckets = rawQueryData
           .map(b => b.doc_count)
@@ -574,6 +558,7 @@ const enhance = compose(
   withPropsOnChange(
     ['filters'],
     ({ filters, populateSurvivalData, populateSurvivalArrays, variable }) => {
+      console.log('filters', filters);
       if (variable.active_chart === 'survival') {
         populateSurvivalData();
         populateSurvivalArrays();
@@ -594,7 +579,6 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
   parsedFacets,
   continuousAggs,
   setId,
-  survivalData,
   overallSurvivalData,
   hasEnoughOverallSurvivalData,
   survivalPlotLoading,

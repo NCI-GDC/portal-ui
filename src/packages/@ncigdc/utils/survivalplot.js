@@ -51,11 +51,9 @@ async function fetchCurves(
     { filters: filters && JSON.stringify(filters), size },
     _.isNil
   );
-  console.log('params', params);
   const url = `analysis/survival?${queryString.stringify(params)}`;
   performanceTracker.begin('survival:fetch');
   const rawData = await fetchApi(url);
-  console.log('fetchCurves rawData', rawData);
   const hasEnoughData = hasMultipleCurves
     ? enoughDataOnSomeCurves(rawData)
     : enoughData(rawData);
@@ -78,7 +76,6 @@ async function fetchCurves(
     donors: _.sum(data.results.map(x => x.donors.length)),
   });
 
-  console.log('fetchCurves data', data);
   return data;
 }
 
@@ -246,9 +243,6 @@ export const getSurvivalCurvesArray = memoize(
 
     const rawData = await fetchCurves(filters, size, true);
     const hasEnoughDataOnSomeCurves = enoughDataOnSomeCurves(rawData);
-    console.log('field', field);
-    console.log('rawData', rawData);
-    console.log('hasEnoughDataOnSomeCurves', hasEnoughDataOnSomeCurves);
 
     const getCaseCount = i =>
       _.get(rawData, `results[${i}].donors`, []).length.toLocaleString();

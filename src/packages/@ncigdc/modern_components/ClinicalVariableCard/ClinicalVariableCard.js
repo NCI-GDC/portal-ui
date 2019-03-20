@@ -1,10 +1,5 @@
 import React from 'react';
-import {
-  compose,
-  withState,
-  withPropsOnChange,
-  withProps,
-} from 'recompose';
+import { compose, withState, withPropsOnChange, withProps } from 'recompose';
 import DownCaretIcon from 'react-icons/lib/fa/caret-down';
 import { connect } from 'react-redux';
 import _ from 'lodash';
@@ -354,7 +349,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
             )
             .map(b => ({
               ...b,
-              key: b.key === '_missing' ? 'Null Values' : b.key,
+              key: b.key,
               chart_doc_count: b.doc_count,
               doc_count: getCountLink({
                 doc_count: b.doc_count,
@@ -479,7 +474,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
     ...(noDataTotal > 0 && [
       {
         select: '',
-        key: 'No Data',
+        key: 'Not in Index',
 
         doc_count: (
           <span>

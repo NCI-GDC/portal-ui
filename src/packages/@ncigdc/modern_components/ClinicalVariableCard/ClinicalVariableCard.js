@@ -165,6 +165,11 @@ const enhance = compose(
   })),
   withState('categoricalSurvivalData', 'setCategoricalSurvivalData', {}),
   withState('overallSurvivalData', 'setOverallSurvivalData', {}),
+  withState(
+    'hasEnoughSurvivalDataValues',
+    'setHasEnoughSurvivalDataValues',
+    []
+  ),
   withState('selectedSurvivalValues', 'setSelectedSurvivalValues', []),
   withState('selectedSurvivalLoadingIds', 'setSelectedSurvivalLoadingIds', []),
   withState('survivalPlotLoading', 'setSurvivalPlotLoading', true),
@@ -192,6 +197,9 @@ const enhance = compose(
       setSelectedSurvivalValues,
       selectedSurvivalValues,
       setSelectedSurvivalLoadingIds,
+      setAllSurvivalValues,
+      hasEnoughSurvivalDataValues,
+      setHasEnoughSurvivalDataValues,
     }) => ({
       survivalData: {
         legend: overallSurvivalData.legend,
@@ -199,7 +207,7 @@ const enhance = compose(
       },
       populateSurvivalData: async () => {
         setSurvivalPlotLoading(true);
-        await getDefaultCurve({
+        const nextSurvivalData = await getDefaultCurve({
           currentFilters: filters,
           slug: `Clinical Analysis - ${fieldName}`,
         });
@@ -210,6 +218,165 @@ const enhance = compose(
         setHasEnoughOverallSurvivalData(nextSurvivalData.rawData);
 
         setSurvivalPlotLoading(false);
+
+        // get survival record counts
+
+        const rawQueryData =
+          variable.plotTypes === 'continuous'
+            ? (continuousAggs[fieldName.replace('.', '__')].histogram || {
+                buckets: [],
+              }).buckets
+            : (_.values(parsedFacets)[0] || { buckets: [] }).buckets;
+
+        console.log('rawQueryData', rawQueryData);
+
+        const totalDocsFromBuckets = rawQueryData
+          .map(b => b.doc_count)
+          .reduce((acc, i) => acc + i, 0);
+
+        const getCountLink = ({ doc_count, filters }) => {
+          return (
+            <span>
+              <ExploreLink
+                query={{
+                  searchTableTab: 'cases',
+                  filters,
+                }}
+              >
+                {(doc_count || 0).toLocaleString()}
+              </ExploreLink>
+              <span>{` (${((doc_count || 0) /
+                totalDocsFromBuckets *
+                100
+              ).toFixed(2)}%)`}</span>
+            </span>
+          );
+        };
+
+        const getBucketRangesAndFilters = (acc, { doc_count, key }) => {
+          const valueIsDays = str => /(days_to|age_at)/.test(str);
+          const valueIsYear = str => /year_of/.test(str);
+
+          const getRangeValue = (key, field) => {
+            if (valueIsDays(field)) {
+              return `${getLowerAgeYears(key)}${acc.nextInterval === 0
+                ? '+'
+                : ' - ' + getUpperAgeYears(acc.nextInterval - 1)} years`;
+            } else if (valueIsYear(field)) {
+              return `${Math.floor(key)}${acc.nextInterval === 0
+                ? ' - present'
+                : ' - ' + (acc.nextInterval - 1)}`;
+            } else {
+              return key;
+            }
+          };
+          return {
+            nextInterval: key,
+            data: [
+              ...acc.data,
+              {
+                chart_doc_count: doc_count,
+                doc_count: getCountLink({
+                  doc_count,
+                  filters: {
+                    op: 'and',
+                    content: [
+                      {
+                        op: 'in',
+                        content: {
+                          field: 'cases.case_id',
+                          value: `set_id:${setId}`,
+                        },
+                      },
+                      {
+                        op: '>=',
+                        content: {
+                          field: `cases.${fieldName}`,
+                          value: [
+                            `${valueIsYear(fieldName) ? Math.floor(key) : key}`,
+                          ],
+                        },
+                      },
+                      ...(acc.nextInterval !== 0 && [
+                        {
+                          op: '<=',
+                          content: {
+                            field: `cases.${fieldName}`,
+                            value: [`${acc.nextInterval - 1}`],
+                          },
+                        },
+                      ]),
+                    ],
+                  },
+                }),
+                key: getRangeValue(key, fieldName),
+              },
+            ],
+          };
+        };
+
+        const displayData =
+          variable.plotTypes === 'continuous'
+            ? rawQueryData
+                .sort((a, b) => b.key - a.key)
+                .reduce(getBucketRangesAndFilters, {
+                  nextInterval: 0,
+                  data: [],
+                })
+                .data.slice(0)
+                .reverse()
+            : rawQueryData
+                .filter(
+                  bucket =>
+                    !IS_CDAVE_DEV ? bucket.key !== '_missing' : bucket.key
+                )
+                .map(b => ({
+                  ...b,
+                  chart_doc_count: b.doc_count,
+                  doc_count: getCountLink({
+                    doc_count: b.doc_count,
+                    filters:
+                      b.key === '_missing'
+                        ? {
+                            op: 'AND',
+                            content: [
+                              {
+                                op: 'IS',
+                                content: { field: fieldName, value: [b.key] },
+                              },
+                              {
+                                op: 'in',
+                                content: {
+                                  field: 'cases.case_id',
+                                  value: `set_id:${setId}`,
+                                },
+                              },
+                            ],
+                          }
+                        : makeFilter([
+                            {
+                              field: 'cases.case_id',
+                              value: `set_id:${setId}`,
+                            },
+                            { field: fieldName, value: [b.key] },
+                          ]),
+                  }),
+                }));
+
+        const valuesForCurves = displayData.map(d => d.key);
+
+        getSurvivalCurvesArray({
+          field: fieldName,
+          values: valuesForCurves,
+          currentFilters: filters,
+        }).then(data => {
+          const notEnoughStr = '-not-enough-data';
+          const matchedValues = data.legend
+            .map(l => l.key)
+            .filter(k => !k.match(notEnoughStr));
+          console.log('matchedValues', matchedValues);
+          setHasEnoughSurvivalDataValues(matchedValues);
+        });
       },
       populateSurvivalArrays: () => {
         setSurvivalPlotLoading(true);
@@ -410,6 +577,7 @@ const enhance = compose(
       if (variable.active_chart === 'survival') {
         populateSurvivalData();
         populateSurvivalArrays();
+        // setAllSurvivalValueCounts();
       }
     }
   )
@@ -435,6 +603,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
   categoricalSurvivalData,
   selectedSurvivalValues,
   updateSelectedSurvivalValues,
+  hasEnoughSurvivalDataValues,
   filters,
   stats,
   hits,
@@ -606,7 +775,8 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
             survival: (
               <Tooltip
                 Component={
-                  !hasEnoughOverallSurvivalData
+                  !hasEnoughOverallSurvivalData ||
+                  hasEnoughSurvivalDataValues.indexOf(b.key) === -1
                     ? 'Not enough survival data'
                     : selectedSurvivalValues.indexOf(b.key) > -1
                       ? `Click icon to remove ${b.key}`
@@ -627,7 +797,10 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                     margin: '0 auto',
                     position: 'static',
                   }}
-                  disabled={!hasEnoughOverallSurvivalData}
+                  disabled={
+                    !hasEnoughOverallSurvivalData ||
+                    hasEnoughSurvivalDataValues.indexOf(b.key) === -1
+                  }
                   onClick={() => {
                     updateSelectedSurvivalValues(b.key);
                   }}

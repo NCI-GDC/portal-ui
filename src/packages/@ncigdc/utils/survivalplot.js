@@ -234,7 +234,7 @@ export const getSurvivalCurvesArray = memoize(
     size,
     plotType,
   }: TPropsMulti): Promise<Object> => {
-    const filters = values.slice(0, MAXIMUM_CURVES).map(value =>
+    const filters = values.map(value =>
       replaceFilters(
         {
           op: 'and',

@@ -199,7 +199,7 @@ const enhance = compose(
       },
       populateSurvivalData: async () => {
         setSurvivalPlotLoading(true);
-        const nextSurvivalData = await getDefaultCurve({
+        await getDefaultCurve({
           currentFilters: filters,
           slug: `Clinical Analysis - ${fieldName}`,
         });
@@ -427,6 +427,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
   continuousAggs,
   setId,
   survivalData,
+  overallSurvivalData,
   hasEnoughOverallSurvivalData,
   survivalPlotLoading,
   setSelectedSurvivalLoadingId,
@@ -952,10 +953,18 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
               }}
             >
               {selectedSurvivalValues.length === 0 ? (
-                <p style={{ textAlign: 'center', color: 'rgb(31, 119, 180)' }}>
-                  Select a survival plot
-                </p>
+                <SurvivalPlotWrapper
+                  {...overallSurvivalData}
+                  height={202}
+                  plotType="clinicalOverall"
+                  customClass="categorical-survival-plot"
+                  survivalPlotLoading={survivalPlotLoading}
+                />
               ) : (
+                // <p style={{ textAlign: 'center', color: 'rgb(31, 119, 180)' }}>
+                //   Select a survival plot
+                // </p>
+
                 <SurvivalPlotWrapper
                   {...categoricalSurvivalData}
                   height={202}

@@ -9,13 +9,13 @@ import {
   withHandlers,
   withPropsOnChange,
 } from 'recompose';
+import { Column } from '@ncigdc/uikit/Flex';
 import {
   changeFacetNames,
   expandOneCategory,
 } from '@ncigdc/dux/facetsExpandedStatus';
 import { WrapperComponent } from '@ncigdc/components/FacetWrapper';
 import { withTheme } from '@ncigdc/theme';
-import RecursiveToggledFacet from './RecursiveToggledFacet';
 import { CaseAggregationsQuery } from '@ncigdc/containers/explore/explore.relay';
 import { ResultHighlights } from '@ncigdc/components/QuickSearch/QuickSearchResults';
 import SearchIcon from 'react-icons/lib/fa/search';
@@ -30,7 +30,10 @@ import {
 import Input from '@ncigdc/uikit/Form/Input';
 import { ITheme } from '@ncigdc/theme/types';
 import AngleIcon from '@ncigdc/theme/icons/AngleIcon';
-
+import {
+  ToggleMoreLink,
+  BottomRow,
+} from '@ncigdc/components/Aggregations/TermAggregation';
 interface IFacetProps {
   description: string,
   doc_type: string,
@@ -56,6 +59,8 @@ interface IClinicalProps {
   allExpanded: any,
   facetsExpandedStatus: any,
   dispatch: any,
+  showingMore: any,
+  setShowingMore: any,
 }
 const facetMatchesQuery = (
   facet: IFacetProps,
@@ -105,6 +110,9 @@ const enhance = compose(
   withState('isLoadingParsedFacets', 'setIsLoadingParsedFacets', false),
   withState('shouldHideUselessFacets', 'setShouldHideUselessFacets', true),
   withState('searchValue', 'setSearchValue', ''),
+  withState('showingMore', 'setShowingMore', ({ facetsExpandedStatus }) =>
+    _.mapValues(facetsExpandedStatus, status => false)
+  ),
   withFacetSelection({
     entityType: 'ExploreCases',
     presetFacetFields: presetFacets.map(x => x.field),
@@ -236,6 +244,9 @@ const enhance = compose(
               !shouldHideUselessFacets || facet.field in usefulFacets,
               facet.full.startsWith(header.full),
               !header.excluded || !facet.full.startsWith(header.excluded),
+              !facet.field.endsWith('id'),
+              !facet.field.includes('updated_datetime'),
+              !facet.field.includes('created_datetime'),
             ]);
           }),
         };
@@ -265,6 +276,8 @@ const enhance = compose(
       isLoadingParsedFacets,
       allExpanded,
       dispatch,
+      showingMore,
+      setShowingMore,
     }: IClinicalProps): any => {
       return [
         <Row
@@ -345,13 +358,18 @@ const enhance = compose(
                     {facet.title}
                   </div>
                   <span
-                    onClick={() =>
+                    onClick={() => {
                       dispatch(
                         expandOneCategory(
                           facet.field,
                           !allExpanded[facet.field]
                         )
-                      )}
+                      );
+                      setShowingMore({
+                        ...showingMore,
+                        [facet.field]: !allExpanded[facet.field],
+                      });
+                    }}
                     style={{
                       display: 'flex',
                       float: 'right',
@@ -363,64 +381,84 @@ const enhance = compose(
                   </span>
                 </Row>
                 {facetsExpandedStatus[facet.field].expanded && (
-                  <RecursiveToggledFacet
-                    hash={filteredFacets[facet.field]}
-                    category={facet.field}
-                    Component={(componentFacet: { [x: string]: any }) => [
-                      <WrapperComponent
-                        relayVarName="exploreCaseCustomFacetFields"
-                        key={componentFacet.full}
-                        isMatchingSearchValue={(componentFacet.full +
-                          componentFacet.description
-                        )
-                          .toLocaleLowerCase()
-                          .includes(searchValue.toLocaleLowerCase())}
-                        facet={componentFacet}
-                        allExpanded={allExpanded[facet.field]}
-                        title={_.startCase(
-                          componentFacet.full.split('.').pop()
-                        )}
-                        aggregation={parsedFacets[componentFacet.field]}
-                        searchValue={searchValue}
-                        additionalProps={{ style: { paddingBottom: 0 } }}
-                        style={{
-                          paddingLeft: '10px',
-                        }}
-                        headerStyle={{ fontSize: '14px' }}
-                        collapsed={
-                          searchValue.length === 0
-                            ? !facetsExpandedStatus[facet.field].facets[
-                                componentFacet.field.split('.')[1]
-                              ]
-                            : false
-                        }
-                        setCollapsed={(collapsed: any) =>
-                          dispatch(
-                            changeFacetNames(
-                              facet.field,
-                              componentFacet.field.split('.')[1],
-                              !collapsed
+                  <Column>
+                    {_.orderBy(filteredFacets[facet.field], ['field'], ['asc'])
+                      .slice(0, showingMore[facet.field] ? Infinity : 5)
+                      .map((componentFacet: any) => {
+                        return [
+                          <WrapperComponent
+                            relayVarName="exploreCaseCustomFacetFields"
+                            key={componentFacet.full}
+                            isMatchingSearchValue={(componentFacet.full +
+                              componentFacet.description
                             )
-                          )}
-                        category={facet.field}
-                      />,
-                      <div key={componentFacet.description}>
-                        {searchValue.length > 0 ? (
-                          <ResultHighlights
-                            item={{ description: componentFacet.description }}
-                            query={searchValue}
-                            heighlightStyle={{ backgroundColor: '#FFFF00' }}
+                              .toLocaleLowerCase()
+                              .includes(searchValue.toLocaleLowerCase())}
+                            facet={componentFacet}
+                            allExpanded={allExpanded[facet.field]}
+                            title={_.startCase(
+                              componentFacet.full.split('.').pop()
+                            )}
+                            aggregation={parsedFacets[componentFacet.field]}
+                            searchValue={searchValue}
+                            additionalProps={{ style: { paddingBottom: 0 } }}
                             style={{
-                              fontStyle: 'italic',
-                              paddingLeft: '30px',
-                              paddingRight: '10px',
+                              paddingLeft: '10px',
                             }}
-                          />
-                        ) : null}
-                      </div>,
-                    ]}
-                    key={facet.title + 'RecursiveToggledBox'}
-                  />
+                            headerStyle={{ fontSize: '14px' }}
+                            collapsed={
+                              searchValue.length === 0
+                                ? !facetsExpandedStatus[facet.field].facets[
+                                    componentFacet.field.split('.')[1]
+                                  ]
+                                : false
+                            }
+                            setCollapsed={(collapsed: any) =>
+                              dispatch(
+                                changeFacetNames(
+                                  facet.field,
+                                  componentFacet.field.split('.')[1],
+                                  !collapsed
+                                )
+                              )}
+                            category={facet.field}
+                          />,
+                          <div key={componentFacet.description}>
+                            {searchValue.length > 0 ? (
+                              <ResultHighlights
+                                item={{
+                                  description: componentFacet.description,
+                                }}
+                                query={searchValue}
+                                heighlightStyle={{ backgroundColor: '#FFFF00' }}
+                                style={{
+                                  fontStyle: 'italic',
+                                  paddingLeft: '30px',
+                                  paddingRight: '10px',
+                                }}
+                              />
+                            ) : null}
+                          </div>,
+                        ];
+                      })}
+                    {filteredFacets[facet.field].length > 5 && (
+                      <BottomRow style={{ marginRight: '1rem' }}>
+                        <ToggleMoreLink
+                          onClick={() =>
+                            setShowingMore({
+                              ...showingMore,
+                              [facet.field]: !showingMore[facet.field],
+                            })}
+                        >
+                          {showingMore[facet.field]
+                            ? 'Less...'
+                            : filteredFacets[facet.field].length - 5 &&
+                              `${filteredFacets[facet.field].length -
+                                5} More...`}
+                        </ToggleMoreLink>
+                      </BottomRow>
+                    )}
+                  </Column>
                 )}
               </div>
             );

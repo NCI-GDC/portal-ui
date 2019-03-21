@@ -30,6 +30,8 @@ const RecursiveToggledFacet = compose(
     facetsExpandedStatus,
   }) => {
     const keyArray = orderBy(Object.keys(hash), [key => key], ['asc']);
+    console.log('keyArray', orderBy(hash, ['field'], ['asc']));
+
     if (!hash || keyArray === 0) {
       return '';
     }

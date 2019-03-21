@@ -1,12 +1,12 @@
 import React from 'react';
-import { get, startCase } from 'lodash';
 import { connect } from 'react-redux';
 import {
   addFacetNames,
   changeFacetNames,
 } from '@ncigdc/dux/facetsExpandedStatus';
 
-import { compose, withState, withPropsOnChange } from 'recompose';
+import { compose, withState, withPropsOnChange, lifecycle } from 'recompose';
+import { get, startCase, orderBy } from 'lodash';
 import { Column } from '@ncigdc/uikit/Flex';
 import {
   ToggleMoreLink,
@@ -19,9 +19,6 @@ const RecursiveToggledFacet = compose(
   })),
   withState('headerCollapsed', 'setHeaderCollapsed', {}),
   withState('showingMore', 'setShowingMore', false)
-  // withPropsOnChange(['hash'], ({ category, hash, dispatch }) => {
-  //   dispatch(addFacetNames(category, Object.keys(hash)));
-  // })
 )(
   ({
     hash,
@@ -32,7 +29,7 @@ const RecursiveToggledFacet = compose(
     NestedWrapper,
     facetsExpandedStatus,
   }) => {
-    const keyArray = Object.keys(hash);
+    const keyArray = orderBy(Object.keys(hash), [key => key], ['asc']);
     if (!hash || keyArray === 0) {
       return '';
     }

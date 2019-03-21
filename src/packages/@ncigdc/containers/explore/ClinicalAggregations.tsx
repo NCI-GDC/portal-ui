@@ -13,7 +13,7 @@ import {
   changeFacetNames,
   expandOneCategory,
 } from '@ncigdc/dux/facetsExpandedStatus';
-import FacetWrapper from '@ncigdc/components/FacetWrapper';
+import { WrapperComponent } from '@ncigdc/components/FacetWrapper';
 import { withTheme } from '@ncigdc/theme';
 import RecursiveToggledFacet from './RecursiveToggledFacet';
 import { CaseAggregationsQuery } from '@ncigdc/containers/explore/explore.relay';
@@ -51,11 +51,9 @@ interface IClinicalProps {
   searchValue: string,
   setSearchValue: (searchValue: string) => void,
   handleQueryInputChange: () => void,
-  fieldHash: { [x: string]: any },
   parsedFacets: { [x: string]: any },
   isLoadingParsedFacets: boolean,
   allExpanded: any,
-  setAllExpanded: any,
   facetsExpandedStatus: any,
   dispatch: any,
 }
@@ -100,10 +98,11 @@ interface IGraphFieldProps {
 const enhance = compose(
   connect((state: any) => ({
     facetsExpandedStatus: state.facetsExpandedStatus,
+    allExpanded: _.mapValues(state.facetsExpandedStatus, status =>
+      _.every(_.values(status.facets))
+    ),
   })),
   withState('isLoadingParsedFacets', 'setIsLoadingParsedFacets', false),
-  withState('fieldHash', 'setFieldHash', {}),
-  withState('allExpanded', 'setAllExpanded', {}),
   withState('shouldHideUselessFacets', 'setShouldHideUselessFacets', true),
   withState('searchValue', 'setSearchValue', ''),
   withFacetSelection({
@@ -212,8 +211,8 @@ const enhance = compose(
           count: number,
           stats: { count: number, [x: string]: any },
         }) =>
-          !aggregation ||
           _.some([
+            !aggregation,
             aggregation.buckets &&
               aggregation.buckets.filter(
                 (bucket: IBucketProps) => bucket.key !== '_missing'
@@ -223,38 +222,27 @@ const enhance = compose(
             aggregation.stats && aggregation.stats.count === 0,
           ])
       );
-
-      const filteredFacets = _.filter(_.values(facetMapping), facet => {
-        return _.every([
-          facetMatchesQuery(
-            facet,
-            _.get(parsedFacets[facet.field], 'buckets', undefined),
-            searchValue
-          ),
-          !facetExclusionTest(facet),
-          !shouldHideUselessFacets ||
-            Object.keys(usefulFacets).includes(facet.field),
-        ]);
-      });
-      const fieldHash = {};
-      let key = '';
-      for (const str of filteredFacets.map((f: any) => f.field)) {
-        const el = str.split('.');
-        let subFieldHash = fieldHash;
-        while (el.length >= 1) {
-          key = el.shift() || '';
-          if (el.length === 0) {
-            subFieldHash[key] = facetMapping['cases.' + str];
-          } else {
-            subFieldHash[key] = subFieldHash[key] || {};
-            subFieldHash = subFieldHash[key];
-          }
-        }
-      }
+      const filteredFacets = clinicalFacets.reduce((acc, header) => {
+        return {
+          ...acc,
+          [header.field]: _.filter(facetMapping, facet => {
+            return _.every([
+              facetMatchesQuery(
+                facet,
+                _.get(parsedFacets[facet.field], 'buckets', undefined),
+                searchValue
+              ),
+              !facetExclusionTest(facet),
+              !shouldHideUselessFacets || facet.field in usefulFacets,
+              facet.full.startsWith(header.full),
+              !header.excluded || !facet.full.startsWith(header.excluded),
+            ]);
+          }),
+        };
+      }, {});
       return {
         parsedFacets,
         filteredFacets,
-        fieldHash,
       };
     }
   ),
@@ -273,11 +261,9 @@ const enhance = compose(
       searchValue,
       setSearchValue,
       handleQueryInputChange,
-      fieldHash,
       parsedFacets,
       isLoadingParsedFacets,
       allExpanded,
-      setAllExpanded,
       dispatch,
     }: IClinicalProps): any => {
       return [
@@ -312,12 +298,15 @@ const enhance = compose(
           />
           Only show fields with values ({isLoadingParsedFacets
             ? '...'
-            : Object.keys(filteredFacets).length}{' '}
+            : _.values(filteredFacets).reduce(
+                (acc: number, facet: IFacetProps[]) => acc + facet.length,
+                0
+              )}{' '}
           fields shown)
         </label>,
         ...clinicalFacets
           .filter(
-            facet => !searchValue || !!_.get(fieldHash, facet.full, false) // If the user is searching for something, hide the presetFacet with no value.
+            facet => !searchValue || filteredFacets[facet.field].length > 0 // If the user is searching for something, hide the presetFacet with no value.
           )
           .map(facet => {
             return (
@@ -356,35 +345,29 @@ const enhance = compose(
                     {facet.title}
                   </div>
                   <span
-                    onClick={() => {
+                    onClick={() =>
                       dispatch(
                         expandOneCategory(
                           facet.field,
                           !allExpanded[facet.field]
                         )
-                      );
-                      setAllExpanded({
-                        ...allExpanded,
-                        [facet.field]: !allExpanded[facet.field],
-                      });
-                    }}
+                      )}
                     style={{
                       display: 'flex',
                       float: 'right',
                     }}
                   >
-                    {allExpanded[facet.field] ? 'Reset' : 'Expand'}
+                    {searchValue || filteredFacets[facet.field].length === 0
+                      ? null
+                      : allExpanded[facet.field] ? 'Reset' : 'Expand All'}
                   </span>
                 </Row>
                 {facetsExpandedStatus[facet.field].expanded && (
                   <RecursiveToggledFacet
-                    hash={_.omit(
-                      _.get(fieldHash, facet.full, {}),
-                      facet.excluded || ''
-                    )}
+                    hash={filteredFacets[facet.field]}
                     category={facet.field}
                     Component={(componentFacet: { [x: string]: any }) => [
-                      <FacetWrapper
+                      <WrapperComponent
                         relayVarName="exploreCaseCustomFacetFields"
                         key={componentFacet.full}
                         isMatchingSearchValue={(componentFacet.full +
@@ -407,11 +390,18 @@ const enhance = compose(
                         collapsed={
                           searchValue.length === 0
                             ? !facetsExpandedStatus[facet.field].facets[
-                                componentFacet.field.split('.').pop()
+                                componentFacet.field.split('.')[1]
                               ]
                             : false
                         }
-                        maxNum={5}
+                        setCollapsed={(collapsed: any) =>
+                          dispatch(
+                            changeFacetNames(
+                              facet.field,
+                              componentFacet.field.split('.')[1],
+                              !collapsed
+                            )
+                          )}
                         category={facet.field}
                       />,
                       <div key={componentFacet.description}>

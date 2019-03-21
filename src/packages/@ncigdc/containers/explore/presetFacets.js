@@ -62,32 +62,32 @@ export const clinicalFacets = [
   {
     title: 'Demographic',
     field: 'demographic',
-    full: 'demographic',
+    full: 'cases.demographic',
   },
   {
     title: 'Diagnoses',
     field: 'diagnoses',
-    full: 'diagnoses',
-    excluded: ['treatments'],
+    full: 'cases.diagnoses',
+    excluded: 'cases.diagnoses.treatments',
   },
   {
     title: 'Treatments',
     field: 'treatments',
-    full: 'diagnoses.treatments',
+    full: 'cases.diagnoses.treatments',
   },
   {
     title: 'Exposures',
     field: 'exposures',
-    full: 'exposures',
+    full: 'cases.exposures',
   },
   {
     title: 'Follow Up',
     field: 'follow_up',
-    full: '',
+    full: 'cases.follow_up',
   },
   {
     title: 'Molecular Tests',
     field: 'molecular_tests',
-    full: '',
+    full: 'cases.molecular_tests',
   },
 ];

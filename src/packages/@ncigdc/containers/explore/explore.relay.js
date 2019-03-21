@@ -81,6 +81,12 @@ export const CaseAggregationsQuery = {
             key
           }
         }
+        samples__sample_type {
+          buckets {
+            doc_count,
+            key
+          }
+        }
       }
     `,
   },

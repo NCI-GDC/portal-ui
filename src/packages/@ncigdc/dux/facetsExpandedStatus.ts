@@ -94,8 +94,6 @@ const reducer = (state = initialState, action: any) => {
     }
     case facetsExpandedStatus.EXPAND_ONE_CATEGORY: {
       const { category, isExpanded } = action.payload;
-      console.log('tes', isExpanded);
-
       return {
         ...state,
         [category]: {

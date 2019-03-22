@@ -231,15 +231,44 @@ export const getSurvivalCurvesArray = memoize(
     size,
     plotType,
   }: TPropsMulti): Promise<Object> => {
-    const filters = values.map(value =>
-      replaceFilters(
+    console.log('getSurvivalCurvesArray currentFilters', currentFilters);
+    const newFilters = [
+      {
+        op: 'and',
+        content: [{ op: '>=', content: { field, value: 45 } }],
+      },
+      {
+        op: 'and',
+        content: [{ op: '<=', content: { field, value: 90 } }],
+      },
+    ];
+    const newValues = [
+      { lower: 14, upper: 20 },
+      { lower: 21, upper: 26 },
+      { lower: 27, upper: 33 },
+      { lower: 34, upper: 40 },
+      { lower: 41, upper: 45 },
+    ];
+    console.log('values', values);
+    const filters = newValues.map(value => ({
+      op: 'and',
+      content: [
+        ...currentFilters.content,
         {
-          op: 'and',
-          content: [{ op: '=', content: { field, value } }],
+          op: '>=',
+          content: { field, value: [value.lower * 365] },
         },
-        currentFilters
-      )
-    );
+        {
+          op: '<=',
+          content: { field, value: [value.upper * 365] },
+        },
+      ],
+    }));
+    // const filtersWithUpperValue = filtersWithLowerValue.map(filter => addInFilters({
+    //   op: 'and',
+    //   content: [{ op: '<=', content: { field, value: 90 } }],
+    // },)
+    console.log('getSurvivalCurvesArray filters', filters);
 
     const rawData = await fetchCurves(filters, size, true);
     const hasEnoughDataOnSomeCurves = enoughDataOnSomeCurves(rawData);

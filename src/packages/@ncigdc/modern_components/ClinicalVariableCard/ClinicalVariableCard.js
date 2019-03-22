@@ -556,7 +556,7 @@ const enhance = compose(
     })
   ),
   withPropsOnChange(
-    ['filters'],
+    ['filters.content[0].content.value', 'variable.active_chart'],
     ({
       filters,
       fieldName,

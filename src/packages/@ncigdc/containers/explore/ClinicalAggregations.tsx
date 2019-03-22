@@ -70,7 +70,7 @@ const facetMatchesQuery = (
 ): boolean => {
   return _.some(
     [
-      _.replace(facet.field.split('.')[1], /_/g, ' '),
+      _.replace(facet.field.split('.').pop() || '', /_/g, ' '),
       ...(elements || []).map((e: IBucketProps) => e.key),
       facet.description,
     ]
@@ -412,7 +412,7 @@ const enhance = compose(
                             collapsed={
                               searchValue.length === 0
                                 ? !facetsExpandedStatus[facet.field].facets[
-                                    componentFacet.field.split('.')[1]
+                                    componentFacet.field.split('.').pop()
                                   ]
                                 : false
                             }
@@ -420,7 +420,7 @@ const enhance = compose(
                               dispatch(
                                 changeFacetNames(
                                   facet.field,
-                                  componentFacet.field.split('.')[1],
+                                  componentFacet.field.split('.').pop(),
                                   !collapsed
                                 )
                               )}

@@ -1,7 +1,3 @@
-// @flow
-// import { get, set } from 'lodash';
-
-// Custom
 import { namespaceActions } from './utils';
 import _ from 'lodash';
 import { clinicalFacets } from '@ncigdc/containers/explore/presetFacets';

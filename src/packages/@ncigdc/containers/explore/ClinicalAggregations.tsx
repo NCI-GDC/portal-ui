@@ -11,6 +11,7 @@ import {
 } from 'recompose';
 import { Column } from '@ncigdc/uikit/Flex';
 import {
+  addAllFacets,
   changeFacetNames,
   expandOneCategory,
 } from '@ncigdc/dux/facetsExpandedStatus';
@@ -104,7 +105,7 @@ const enhance = compose(
   connect((state: any) => ({
     facetsExpandedStatus: state.facetsExpandedStatus,
     allExpanded: _.mapValues(state.facetsExpandedStatus, status =>
-      _.every(_.values(status.facets))
+      _.some(_.values(status.facets))
     ),
   })),
   withState('isLoadingParsedFacets', 'setIsLoadingParsedFacets', false),
@@ -210,6 +211,7 @@ const enhance = compose(
       relayVarName,
       shouldHideUselessFacets,
       facetExclusionTest,
+      dispatch,
     }) => {
       const parsedFacets = facets.facets ? tryParseJSON(facets.facets, {}) : {};
       const usefulFacets = _.omitBy(
@@ -251,6 +253,7 @@ const enhance = compose(
           }),
         };
       }, {});
+      dispatch(addAllFacets(filteredFacets));
       return {
         parsedFacets,
         filteredFacets,

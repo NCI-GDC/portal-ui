@@ -3,7 +3,7 @@
 
 // Custom
 import { namespaceActions } from './utils';
-
+import _ from 'lodash';
 import { clinicalFacets } from '@ncigdc/containers/explore/presetFacets';
 /*----------------------------------------------------------------------------*/
 
@@ -14,9 +14,9 @@ const facetsExpandedStatus = namespaceActions('facetsExpandedStatus', [
   'EXPAND_ONE_CATEGORY',
 ]);
 
-const addFacetNames = (category: string, facetNames: string[]) => ({
+const addAllFacets = (facets: any) => ({
   type: facetsExpandedStatus.ADD_FACET_NAMES,
-  payload: { category, facetNames },
+  payload: { facets },
 });
 
 const changeFacetNames = (
@@ -32,10 +32,6 @@ const expandOneCategory = (category: string, isExpanded: boolean) => ({
   type: facetsExpandedStatus.EXPAND_ONE_CATEGORY,
   payload: { category, isExpanded },
 });
-// const resetFacetNames = () => ({
-//   type: facetsExpandedStatus.RESET_EXPANDED_STATUS,
-//   payload: {},
-// });
 
 const initialState = clinicalFacets.reduce(
   (acc, facet: any) => ({
@@ -48,23 +44,17 @@ const initialState = clinicalFacets.reduce(
 const reducer = (state = initialState, action: any) => {
   switch (action.type) {
     case facetsExpandedStatus.ADD_FACET_NAMES: {
-      const { category, facetNames } = action.payload;
-      return {
-        ...state,
-        [category]: {
-          ...state[category],
-          facets: {
-            ...state[category].facets,
-            ...facetNames.reduce(
-              (acc: any, facetName: string) => ({
-                ...acc,
-                [facetName]: false,
-              }),
-              {}
-            ),
-          },
-        },
-      };
+      const { facets } = action.payload;
+      return _.mapValues(facets, (facet, key) => ({
+        expanded: state[key].expanded,
+        facets: facet.reduce((acc: any, f: any) => {
+          const name = f.field.split('.').slice(-1)[0];
+          return {
+            ...acc,
+            [name]: !!state[key].facets[name],
+          };
+        }, {}),
+      }));
     }
     case facetsExpandedStatus.CHANGE_EXPANDED_STATUS: {
       const { category, field, expanded } = action.payload;
@@ -113,5 +103,5 @@ const reducer = (state = initialState, action: any) => {
   }
 };
 
-export { addFacetNames, changeFacetNames, expandOneCategory };
+export { addAllFacets, changeFacetNames, expandOneCategory };
 export default reducer;

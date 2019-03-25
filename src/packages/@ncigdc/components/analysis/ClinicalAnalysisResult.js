@@ -413,7 +413,17 @@ const ClinicalAnalysisResult = ({
               />
             </Row>
             <Column style={{ marginTop: 10 }}>
-              <ControlPanelNode name={'ExploreCases'} analysis_id={id} />
+              <ControlPanelNode
+                name={'ExploreCases'}
+                analysis_id={id}
+                filters={{
+                  op: '=',
+                  content: {
+                    field: `cases.case_id`,
+                    value: `set_id:${setId}`,
+                  },
+                }}
+              />
             </Column>
           </Column>
         )}

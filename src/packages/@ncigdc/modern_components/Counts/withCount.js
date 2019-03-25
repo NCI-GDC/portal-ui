@@ -6,12 +6,14 @@ import exploreCase from './exploreCase.relay';
 import repositoryCase from './repositoryCase.relay';
 import exploreGene from './exploreGene.relay';
 import exploreSsm from './exploreSsm.relay';
+import exploreFacet from './exploreFacet.relay';
 
 const typeMap = {
   explore: {
     case: exploreCase,
     gene: exploreGene,
     ssm: exploreSsm,
+    facet: exploreFacet,
   },
   repository: {
     case: repositoryCase,
@@ -28,7 +30,7 @@ export default getProps => Component => {
           ...props,
           [countProps.key]: get(viewer, path, -1),
         };
-      }),
+      })
     )(Component);
 
     return <EnhancedComponent {...props} {...countProps} />;

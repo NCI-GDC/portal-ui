@@ -24,6 +24,10 @@ import {
   removeClinicalAnalysisVariable,
 } from '@ncigdc/dux/analysis';
 import { ToggleMoreLink } from '@ncigdc/components/Aggregations/TermAggregation';
+import withFieldCount from '@ncigdc/modern_components/IntrospectiveType';
+import { ExploreCaseFacetCount } from '@ncigdc/modern_components/Counts';
+import tryParseJSON from '@ncigdc/utils/tryParseJSON';
+// import getUsefulFacets from '@ncigdc/utils/getUsefulFacets';
 
 import { CLINICAL_BLACKLIST } from '@ncigdc/utils/constants';
 
@@ -253,38 +257,87 @@ export default compose(
     return { clinicalAnalysisFields };
   }),
   withTheme
-)(({ theme, analyses, analysis_id, dispatch, clinicalAnalysisFields }) => {
-  let groupedByClinicalType = _.groupBy(clinicalAnalysisFields, field => {
-    const sections = field.name.split('__');
-    if (sections.includes('treatments')) {
-      return sections[1];
-    } else {
-      return sections[0];
-    }
-  });
+)(
+  ({
+    theme,
+    analyses,
+    analysis_id,
+    dispatch,
+    clinicalAnalysisFields,
+    filters,
+  }) => {
+    let groupedByClinicalType = _.groupBy(clinicalAnalysisFields, field => {
+      const sections = field.name.split('__');
+      if (sections.includes('treatments')) {
+        return sections[1];
+      } else {
+        return sections[0];
+      }
+    });
 
-  // will need to add other types as they become available
-  const clinicalTypeOrder = [
-    'demographic',
-    'diagnoses',
-    'treatments',
-    'exposures',
-    // 'follow_ups',
-  ];
-  return (
-    <div>
-      {clinicalTypeOrder.map(clinicalType => {
-        const fields = groupedByClinicalType[clinicalType] || [];
-        return (
-          <ClinicalGrouping
-            key={clinicalType}
-            name={_.capitalize(singular(clinicalType))}
-            style={styles.category(theme)}
-            fields={fields}
-            analysis_id={analysis_id}
-          />
-        );
-      })}
-    </div>
-  );
-});
+    // will need to add other types as they become available
+    const clinicalTypeOrder = [
+      'demographic',
+      'diagnoses',
+      'treatments',
+      'exposures',
+      // 'follow_ups',
+    ];
+
+    const facetsForCount = clinicalAnalysisFields
+      .map(field => field.name.replace('__', '.'))
+      .join(',');
+
+    return (
+      <div>
+        <ExploreCaseFacetCount facets={facetsForCount} filters={filters}>
+          {facets => {
+            const parsedFacets = facets ? tryParseJSON(facets) : {};
+            // TODO: fix ts for this util, extract func out
+            // const usefulFacets = getUsefulFacets(parsedFacets);
+            const usefulFacets = _.omitBy(
+              parsedFacets,
+              aggregation =>
+                !aggregation ||
+                _.some([
+                  aggregation.buckets &&
+                    aggregation.buckets.filter(
+                      bucket => bucket.key !== '_missing'
+                    ).length === 0,
+                  aggregation.count === 0,
+                  aggregation.count === null,
+                  aggregation.stats && aggregation.stats.count === 0,
+                ])
+            );
+            return (
+              <Row
+                style={{
+                  padding: '5px 15px 15px',
+                }}
+              >
+                <span>
+                  {!_.isEmpty(usefulFacets)
+                    ? (_.keys(usefulFacets) || []).length
+                    : 'Loading...'}{' '}
+                  of {(clinicalAnalysisFields || []).length} fields with values
+                </span>
+              </Row>
+            );
+          }}
+        </ExploreCaseFacetCount>
+        {clinicalTypeOrder.map(clinicalType => {
+          const fields = groupedByClinicalType[clinicalType] || [];
+          return (
+            <ClinicalGrouping
+              key={clinicalType}
+              name={_.capitalize(singular(clinicalType))}
+              style={styles.category(theme)}
+              fields={fields}
+              analysis_id={analysis_id}
+            />
+          );
+        })}
+      </div>
+    );
+  }
+);

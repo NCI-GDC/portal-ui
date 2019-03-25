@@ -62,6 +62,7 @@ interface IClinicalProps {
   dispatch: any,
   showingMore: any,
   setShowingMore: any,
+  notifications: any,
 }
 const facetMatchesQuery = (
   facet: IFacetProps,
@@ -104,6 +105,7 @@ interface IGraphFieldProps {
 const enhance = compose(
   connect((state: any) => ({
     facetsExpandedStatus: state.facetsExpandedStatus,
+    notifications: state.bannerNotification,
     allExpanded: _.mapValues(state.facetsExpandedStatus, status =>
       _.some(_.values(status.facets))
     ),
@@ -280,6 +282,7 @@ const enhance = compose(
       allExpanded,
       dispatch,
       showingMore,
+      notifications,
       setShowingMore,
     }: IClinicalProps): any => {
       return [
@@ -330,7 +333,9 @@ const enhance = compose(
                 <Row
                   style={{
                     position: 'sticky',
-                    top: '50px',
+                    top: `calc(51px + ${notifications.filter(
+                      (n: any) => !n.dismissed
+                    ).length * 40}px)`,
                     background: '#eeeeee',
                     zIndex: 10,
                     cursor: 'pointer',

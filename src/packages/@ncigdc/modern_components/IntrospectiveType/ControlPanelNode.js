@@ -27,7 +27,6 @@ import { ToggleMoreLink } from '@ncigdc/components/Aggregations/TermAggregation'
 import withFieldCount from '@ncigdc/modern_components/IntrospectiveType';
 import { ExploreCaseFacetCount } from '@ncigdc/modern_components/Counts';
 import tryParseJSON from '@ncigdc/utils/tryParseJSON';
-// import getUsefulFacets from '@ncigdc/utils/getUsefulFacets';
 
 import { CLINICAL_BLACKLIST } from '@ncigdc/utils/constants';
 
@@ -293,17 +292,15 @@ export default compose(
         <ExploreCaseFacetCount facets={facetsForCount} filters={filters}>
           {facets => {
             const parsedFacets = facets ? tryParseJSON(facets) : {};
-            // TODO: fix ts for this util, extract func out
-            // const usefulFacets = getUsefulFacets(parsedFacets);
             const usefulFacets = _.omitBy(
               parsedFacets,
               aggregation =>
                 !aggregation ||
                 _.some([
-                  aggregation.buckets &&
-                    aggregation.buckets.filter(
-                      bucket => bucket.key !== '_missing'
-                    ).length === 0,
+                  // aggregation.buckets &&
+                  //   aggregation.buckets.filter(
+                  //     bucket => bucket.key !== '_missing'
+                  //   ).length === 0,
                   aggregation.count === 0,
                   aggregation.count === null,
                   aggregation.stats && aggregation.stats.count === 0,

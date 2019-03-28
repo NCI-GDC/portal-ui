@@ -24,8 +24,6 @@ import {
   removeClinicalAnalysisVariable,
 } from '@ncigdc/dux/analysis';
 import { ToggleMoreLink } from '@ncigdc/components/Aggregations/TermAggregation';
-import withFieldCount from '@ncigdc/modern_components/IntrospectiveType';
-import { ExploreCaseFacetCount } from '@ncigdc/modern_components/Counts';
 import tryParseJSON from '@ncigdc/utils/tryParseJSON';
 import getUsefulFacets from '@ncigdc/utils/getUsefulFacets';
 

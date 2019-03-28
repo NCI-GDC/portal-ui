@@ -140,7 +140,7 @@ export default compose(
   withPropsOnChange(['filters'], ({ updateData, ...props }) =>
     updateData(props)
   )
-)(({ aggData, isLoading, setId, stats, viewer, ...props }) => {
+)(({ aggData, isLoading, setId, stats, viewer, hits, ...props }) => {
   if (isLoading) {
     return <Loader />;
   }
@@ -150,7 +150,7 @@ export default compose(
       loading={isLoading}
       setId={setId}
       stats={stats}
-      viewer={viewer}
+      data={{ ...aggData, hits }}
       {...props}
     />
   );

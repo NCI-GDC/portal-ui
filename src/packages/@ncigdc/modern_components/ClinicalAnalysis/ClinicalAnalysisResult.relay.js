@@ -50,6 +50,7 @@ export default (Component: ReactClass<*>) =>
         parentProps={props}
         variables={props.variables}
         Component={Component}
+        minHeight={800}
         query={graphql`query ClinicalAnalysisResult_relayQuery($filters: FiltersArgument, $facets: [String]!) {
           viewer {
             explore {

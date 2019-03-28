@@ -159,11 +159,12 @@ const enhance = compose(
     ({
       viewer: {
         explore: {
-          cases: { facets },
+          cases: { facets, hits },
         },
       },
     }) => ({
       parsedFacets: facets ? tryParseJSON(facets) : {},
+      hits,
     })
   ),
   withProps(
@@ -228,9 +229,9 @@ const ClinicalAnalysisResult = ({
   parsedFacets,
   displayVariables,
   clinicalAnalysisFields,
+  hits,
   ...props
 }: IAnalysisResultProps) => {
-  console.log(currentAnalysis);
   const setName = Object.values(sets.case)[0];
   const setId = Object.keys(currentAnalysis.sets.case)[0];
 
@@ -550,30 +551,45 @@ const ClinicalAnalysisResult = ({
                 ],
               };
 
-              const ContinuousWrapper = withFacetData(props => {
-                const facets = JSON.parse(props.viewer.explore.cases.facets);
+              // const ContinuousWrapper = withFacetData(props => {
+              //   const facets = JSON.parse(props.viewer.explore.cases.facets);
+              //   return (
+              //     <ContinuousAggregation
+              //       fieldName={varFieldName}
+              //       stats={facets[varFieldName].stats}
+              //       filters={filters}
+              //       variable={varProperties}
+              //       plots={plotTypes[varProperties.plotTypes || 'categorical']}
+              //       style={{ minWidth: controlPanelExpanded ? 310 : 290 }}
+              //       id={id}
+              //       setId={setId}
+              //       viewer={props.viewer}
+              //     />
+              //   );
+              // });
+              if (varProperties.plotTypes === 'continuous') {
+                // <ContinuousWrapper
+                //   data={{ ...parsedFacets[varFieldName], hits }}
+                //   key={varFieldName}
+                //   facetField={varFieldName.replace('cases.', '')}
+                //   filters={filters}
+                // />
                 return (
                   <ContinuousAggregation
                     fieldName={varFieldName}
-                    stats={facets[varFieldName].stats}
+                    stats={parsedFacets[varFieldName].stats}
+                    hits={hits}
                     filters={filters}
                     variable={varProperties}
                     plots={plotTypes[varProperties.plotTypes || 'categorical']}
                     style={{ minWidth: controlPanelExpanded ? 310 : 290 }}
                     id={id}
                     setId={setId}
-                    viewer={props.viewer}
+                    // viewer={props.viewer}
+                    // data={{ ...parsedFacets[varFieldName], hits }}
+                    key={varFieldName}
+                    facetField={varFieldName.replace('cases.', '')}
                   />
-                );
-              });
-              if (varProperties.plotTypes === 'continuous') {
-                return (
-                  <div key={varFieldName}>ContinuousWrapper</div>
-                  // <ContinuousWrapper
-                  //   key={varFieldName}
-                  //   facetField={varFieldName.replace('cases.', '')}
-                  //   filters={filters}
-                  // />
                 );
               }
               return (
@@ -587,7 +603,7 @@ const ClinicalAnalysisResult = ({
                   facetField={varFieldName.replace('cases.', '')}
                   filters={filters}
                   setId={setId}
-                  data={parsedFacets[varFieldName]}
+                  data={{ ...parsedFacets[varFieldName], hits }}
                 />
               );
             })}

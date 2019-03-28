@@ -90,6 +90,7 @@ export const WrapperComponent = ({
   category,
   dispatch,
   expandedAll,
+  DescriptionComponent = null,
 }: any) => {
   const facetType = getFacetType(facet);
   const displayTitle = title || fieldNameToTitle(facet.field);
@@ -147,6 +148,7 @@ export const WrapperComponent = ({
       <FacetHeader
         title={displayTitle}
         field={facet.full}
+        DescriptionComponent={!searchValue && DescriptionComponent}
         searchValue={searchValue}
         handleRequestRemove={handleRequestRemove}
         isRemovable={isRemovable}
@@ -157,6 +159,7 @@ export const WrapperComponent = ({
         setShowingValueSearch={setShowingValueSearch}
         style={headerStyle}
       />
+      {searchValue && DescriptionComponent}
       <div style={{ paddingLeft: '10px' }}>{facetComponent}</div>
     </FacetWrapperDiv>
   );

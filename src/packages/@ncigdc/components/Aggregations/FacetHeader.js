@@ -66,6 +66,7 @@ const FacetHeader = compose(
   ({
     field,
     title,
+    DescriptionComponent,
     description,
     isRemovable,
     handleRequestRemove,
@@ -88,31 +89,33 @@ const FacetHeader = compose(
         }
         return (
           <Header className="test-facet-header" style={style}>
-            <span style={spanStyle} onClick={() => setCollapsed(!collapsed)}>
-              {!angleIconRight && (
-                <AngleIcon
-                  style={{
-                    paddingRight: '0.25rem',
-                    transform: `rotate(${collapsed ? 270 : 0}deg)`,
-                  }}
-                />
-              )}
-              {searchValue
-                ? internalHighlight(searchValue, title, {
-                    backgroundColor: '#FFFF00',
-                  })
-                : title}
-              {angleIconRight && (
-                <AngleIcon
-                  style={{
-                    overflow: 'auto',
-                    display: 'flex',
-                    float: 'right',
-                    transform: `rotate(${collapsed ? 270 : 0}deg)`,
-                  }}
-                />
-              )}
-            </span>
+            <Tooltip Component={DescriptionComponent}>
+              <span style={spanStyle} onClick={() => setCollapsed(!collapsed)}>
+                {!angleIconRight && (
+                  <AngleIcon
+                    style={{
+                      paddingRight: '0.25rem',
+                      transform: `rotate(${collapsed ? 270 : 0}deg)`,
+                    }}
+                  />
+                )}
+                {searchValue
+                  ? internalHighlight(searchValue, title, {
+                      backgroundColor: '#FFFF00',
+                    })
+                  : title}
+                {angleIconRight && (
+                  <AngleIcon
+                    style={{
+                      overflow: 'auto',
+                      display: 'flex',
+                      float: 'right',
+                      transform: `rotate(${collapsed ? 270 : 0}deg)`,
+                    }}
+                  />
+                )}
+              </span>
+            </Tooltip>
             <IconsRow>
               {description && (
                 <Tooltip

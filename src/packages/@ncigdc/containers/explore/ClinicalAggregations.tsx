@@ -429,23 +429,26 @@ const enhance = compose(
                                 )
                               )}
                             category={facet.field}
+                            DescriptionComponent={
+                              <div key={componentFacet.description}>
+                                <ResultHighlights
+                                  item={{
+                                    description: componentFacet.description,
+                                  }}
+                                  query={searchValue}
+                                  heighlightStyle={{
+                                    backgroundColor: '#FFFF00',
+                                  }}
+                                  style={{
+                                    fontStyle: 'italic',
+                                    paddingLeft: '30px',
+                                    paddingRight: '10px',
+                                  }}
+                                />
+                              </div>
+                            }
                           />,
-                          <div key={componentFacet.description}>
-                            {searchValue.length > 0 ? (
-                              <ResultHighlights
-                                item={{
-                                  description: componentFacet.description,
-                                }}
-                                query={searchValue}
-                                heighlightStyle={{ backgroundColor: '#FFFF00' }}
-                                style={{
-                                  fontStyle: 'italic',
-                                  paddingLeft: '30px',
-                                  paddingRight: '10px',
-                                }}
-                              />
-                            ) : null}
-                          </div>,
+                          ,
                         ];
                       })}
                     {filteredFacets[facet.field].length > 5 && (

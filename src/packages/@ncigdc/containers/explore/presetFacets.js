@@ -57,37 +57,42 @@ export const presetFacets = [
     type: 'keyword',
   },
 ];
-
+const excludedRegex = [/updated_datetime$/, /created_datetime$/, /_id$/];
 export const clinicalFacets = [
   {
     title: 'Demographic',
     field: 'demographic',
     full: 'cases.demographic',
+    excluded: [...excludedRegex],
   },
   {
     title: 'Diagnoses',
     field: 'diagnoses',
     full: 'cases.diagnoses',
-    excluded: 'cases.diagnoses.treatments',
+    excluded: [...excludedRegex, /^cases.diagnoses.treatments/],
   },
   {
     title: 'Treatments',
     field: 'treatments',
     full: 'cases.diagnoses.treatments',
+    excluded: [...excludedRegex],
   },
   {
     title: 'Exposures',
     field: 'exposures',
     full: 'cases.exposures',
+    excluded: [...excludedRegex],
   },
   {
     title: 'Follow Up',
     field: 'follow_up',
     full: 'cases.follow_up',
+    excluded: [...excludedRegex],
   },
   {
     title: 'Molecular Tests',
     field: 'molecular_tests',
     full: 'cases.molecular_tests',
+    excluded: [...excludedRegex],
   },
 ];

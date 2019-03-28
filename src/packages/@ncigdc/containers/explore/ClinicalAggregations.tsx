@@ -245,12 +245,10 @@ const enhance = compose(
                 searchValue
               ),
               !facetExclusionTest(facet),
-              !shouldHideUselessFacets || facet.field in usefulFacets,
+              !shouldHideUselessFacets ||
+                usefulFacets.hasOwnProperty(facet.field),
               facet.full.startsWith(header.full),
-              !header.excluded || !facet.full.startsWith(header.excluded),
-              !facet.field.endsWith('id'),
-              !facet.field.includes('updated_datetime'),
-              !facet.field.includes('created_datetime'),
+              !_.some(header.excluded.map(regex => regex.test(facet.full))),
             ]);
           }),
         };
@@ -333,6 +331,7 @@ const enhance = compose(
                 <Row
                   style={{
                     position: 'sticky',
+                    // 51px is height of header, 40 is the height of banner;
                     top: `calc(51px + ${notifications.filter(
                       (n: any) => !n.dismissed
                     ).length * 40}px)`,

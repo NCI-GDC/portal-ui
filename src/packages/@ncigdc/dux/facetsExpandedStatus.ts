@@ -37,19 +37,22 @@ const initialState = clinicalFacets.reduce(
   {}
 );
 
-const reducer = (state = initialState, action: any) => {
+const reducer = (state: any = initialState, action: any) => {
   switch (action.type) {
     case facetsExpandedStatus.ADD_FACET_NAMES: {
       const { facets } = action.payload;
       return _.mapValues(facets, (facet, key) => ({
         expanded: state[key].expanded,
-        facets: facet.reduce((acc: any, f: any) => {
-          const name = f.field.split('.').slice(-1)[0];
-          return {
-            ...acc,
-            [name]: !!state[key].facets[name],
-          };
-        }, {}),
+        facets: {
+          ...state[key].facets,
+          ...facet.reduce((acc: any, f: any) => {
+            const name = f.field.split('.').pop();
+            return {
+              ...acc,
+              [name]: !!state[key].facets[name],
+            };
+          }, {}),
+        },
       }));
     }
     case facetsExpandedStatus.CHANGE_EXPANDED_STATUS: {

@@ -49,13 +49,16 @@ const reducer = (state: any = initialState, action: any) => {
       return _.mapValues(facets, (facet, key) => ({
         expanded: state[key].expanded,
         showingMore: state[key].showingMore,
-        facets: facet.reduce((acc: any, f: any) => {
-          const name = f.field.split('.').slice(-1)[0];
-          return {
-            ...acc,
-            [name]: !!state[key].facets[name],
-          };
-        }, {}),
+        facets: {
+          ...state[key].facets,
+          ...facet.reduce((acc: any, f: any) => {
+            const name = f.field.split('.').pop();
+            return {
+              ...acc,
+              [name]: !!state[key].facets[name],
+            };
+          }, {}),
+        },
       }));
     }
     case facetsExpandedStatus.CHANGE_EXPANDED_STATUS: {

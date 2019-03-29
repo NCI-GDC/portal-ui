@@ -22,8 +22,8 @@ import { visualizingButton } from '@ncigdc/theme/mixins';
 import { zDepth1 } from '@ncigdc/theme/mixins';
 import EntityPageHorizontalTable from '@ncigdc/components/EntityPageHorizontalTable';
 import Dropdown from '@ncigdc/uikit/Dropdown';
-import ClinicalVariableCard from '@ncigdc/modern_components/ClinicalVariableCard/ClinicalVariableCard.js';
-import withFacetData from '@ncigdc/modern_components/ClinicalVariableCard/ClinicalVariableCard.relay.js';
+import ClinicalVariableCard from './ClinicalVariableCard.js';
+import ContinuousAggregation from './ContinuousAggregationQuery';
 import DropdownItem from '@ncigdc/uikit/DropdownItem';
 import Input from '@ncigdc/uikit/Form/Input';
 import { withTheme } from '@ncigdc/theme';
@@ -38,7 +38,6 @@ import withRouter from '@ncigdc/utils/withRouter';
 import BaseModal from '@ncigdc/components/Modals/BaseModal';
 import { setModal } from '@ncigdc/dux/modal';
 import EditableLabel from '@ncigdc/uikit/EditableLabel';
-import ContinuousAggregation from '@ncigdc/modern_components/ClinicalVariableCard/ContinuousAggregationQuery';
 import tryParseJSON from '@ncigdc/utils/tryParseJSON';
 import getUsefulFacets from '@ncigdc/utils/getUsefulFacets';
 
@@ -559,31 +558,10 @@ const ClinicalAnalysisResult = ({
                 ],
               };
 
-              // const ContinuousWrapper = withFacetData(props => {
-              //   const facets = JSON.parse(props.viewer.explore.cases.facets);
-              //   return (
-              //     <ContinuousAggregation
-              //       fieldName={varFieldName}
-              //       stats={facets[varFieldName].stats}
-              //       filters={filters}
-              //       variable={varProperties}
-              //       plots={plotTypes[varProperties.plotTypes || 'categorical']}
-              //       style={{ minWidth: controlPanelExpanded ? 310 : 290 }}
-              //       id={id}
-              //       setId={setId}
-              //       viewer={props.viewer}
-              //     />
-              //   );
-              // });
               if (varProperties.plotTypes === 'continuous') {
-                // <ContinuousWrapper
-                //   data={{ ...parsedFacets[varFieldName], hits }}
-                //   key={varFieldName}
-                //   facetField={varFieldName.replace('cases.', '')}
-                //   filters={filters}
-                // />
                 return (
                   <ContinuousAggregation
+                    key={varFieldName}
                     fieldName={varFieldName}
                     stats={parsedFacets[varFieldName].stats}
                     hits={hits}
@@ -593,10 +571,6 @@ const ClinicalAnalysisResult = ({
                     style={{ minWidth: controlPanelExpanded ? 310 : 290 }}
                     id={id}
                     setId={setId}
-                    // viewer={props.viewer}
-                    // data={{ ...parsedFacets[varFieldName], hits }}
-                    key={varFieldName}
-                    facetField={varFieldName.replace('cases.', '')}
                   />
                 );
               }

@@ -12,7 +12,7 @@ import md5 from 'blueimp-md5';
 import urlJoin from 'url-join';
 import _ from 'lodash';
 
-import ClinicalVariableCard from '@ncigdc/modern_components/ClinicalVariableCard/ClinicalVariableCard.js';
+import ClinicalVariableCard from './ClinicalVariableCard.js';
 import consoleDebug from '@ncigdc/utils/consoleDebug';
 import { redirectToLogin } from '@ncigdc/utils/auth';
 import { withLoader } from '@ncigdc/uikit/Loaders/Loader';

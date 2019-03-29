@@ -24,24 +24,15 @@ import {
   removeClinicalAnalysisVariable,
 } from '@ncigdc/dux/analysis';
 import { ToggleMoreLink } from '@ncigdc/components/Aggregations/TermAggregation';
-import tryParseJSON from '@ncigdc/utils/tryParseJSON';
-import getUsefulFacets from '@ncigdc/utils/getUsefulFacets';
-
-import { CLINICAL_BLACKLIST } from '@ncigdc/utils/constants';
 
 const MAX_VISIBLE_FACETS = 5;
 const MAX_FIELDS_LENGTH = 20;
-
-const validClinicalTypesRegex = /(demographic)|(diagnoses)|(exposures)|(treatments)|(follow_ups)/;
-const blacklistRegex = new RegExp(
-  CLINICAL_BLACKLIST.map(item => `(${item})`).join('|')
-);
 
 const getPlotType = field => {
   if (!field || !field.type) {
     return 'categorical';
   }
-  // yes NumericAggregations is spelled wrong in the index
+  // yes NumericAggregations is spelled wrong in the index, will be fixed in 1.21.0
   if (
     field.type.name === 'Float' ||
     field.type.name === 'NumericAggergations' ||
@@ -66,17 +57,7 @@ const StyledToggleMoreLink = styled(ToggleMoreLink, {
 });
 
 const ClinicalGrouping = compose(
-  // branch(
-  //   ({ fields, name }) => fields.length === 0,
-  //   renderComponent(({ name }) => (
-  //     <Column>
-  //       <div style={{ paddingRight: 10 }}>No fields found for {name}.</div>
-  //     </Column>
-  //   ))
-  // ),
-  connect((state: any, props: any) => ({
-    analyses: state.analysis.saved,
-  })),
+  connect(),
   withState('collapsed', 'setCollapsed', false),
   withState('showingMore', 'setShowingMore', false)
 )(
@@ -86,7 +67,6 @@ const ClinicalGrouping = compose(
     setShowingMore,
     collapsed,
     setCollapsed,
-    // analyses,
     analysis_id,
     dispatch,
     children,
@@ -94,7 +74,6 @@ const ClinicalGrouping = compose(
     name,
     currentAnalysis,
   }) => {
-    // const currentAnalysis = analyses.find(a => a.id === analysis_id);
     return (
       <Column style={{ marginBottom: 2 }}>
         <Row
@@ -209,7 +188,6 @@ const FacetCheckbox = ({
   dispatch,
   analysis_id,
   fieldType,
-  analyses,
   disabled,
   plotTypes,
   checked,
@@ -250,8 +228,6 @@ export default compose(withTheme)(
     currentAnalysis,
     dispatch,
     clinicalAnalysisFields,
-    filters,
-    parsedFacets,
     usefulFacets,
     analysis_id,
   }) => {
@@ -273,10 +249,6 @@ export default compose(withTheme)(
       // 'follow_ups',
     ];
 
-    const facetsForCount = clinicalAnalysisFields
-      .map(field => field.name.replace('__', '.'))
-      .join(',');
-
     return (
       <div>
         <Row
@@ -288,22 +260,7 @@ export default compose(withTheme)(
             {(_.keys(usefulFacets) || []).length} of{' '}
             {(clinicalAnalysisFields || []).length} fields with values
           </span>
-          {/* <span>
-            {!_.isEmpty(usefulFacets)
-              ? (_.keys(usefulFacets) || []).length
-              : 'Loading...'}{' '}
-            of {(clinicalAnalysisFields || []).length} fields with values
-          </span> */}
         </Row>
-        {/* <ExploreCaseFacetCount facets={facetsForCount} filters={filters}>
-          {facets => {
-            const parsedFacets = facets ? tryParseJSON(facets) : {};
-            const usefulFacets = getUsefulFacets(parsedFacets);
-            return (
-
-            );
-          }}
-        </ExploreCaseFacetCount> */}
         {clinicalTypeOrder.map(clinicalType => {
           const fields = groupedByClinicalType[clinicalType] || [];
           return (

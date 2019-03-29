@@ -453,13 +453,6 @@ const ClinicalAnalysisResult = ({
                 usefulFacets={getUsefulFacets(parsedFacets)}
                 currentAnalysis={currentAnalysis}
                 analysis_id={id}
-                // filters={{
-                //   op: '=',
-                //   content: {
-                //     field: `cases.case_id`,
-                //     value: `set_id:${setId}`,
-                //   },
-                // }}
               />
             </Column>
           </Column>

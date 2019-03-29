@@ -28,7 +28,7 @@ export default getProps => Component => {
           ...props,
           [countProps.key]: get(viewer, path, -1),
         };
-      })
+      }),
     )(Component);
 
     return <EnhancedComponent {...props} {...countProps} />;

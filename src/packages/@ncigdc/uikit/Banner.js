@@ -52,10 +52,11 @@ const levelToIcon = {
   error: <span className="fa fa-exclamation-triangle icon" />,
 };
 
-const WarningLink = props => (
+const BannerLink = ({ level, ...props }) => (
   <a
     href={props.href}
-    style={{ color: theme.primaryHighContrast }}
+    target={'blank'}
+    style={level === 'WARNING' ? { color: theme.primaryHighContrast } : {}}
     className="banner-warning-link"
   >
     {props.children}
@@ -92,11 +93,7 @@ const Banner = ({
       {!reactElement ? (
         <Markdown
           source={message}
-          renderers={
-            level === 'WARNING'
-              ? { link: props => <WarningLink {...props} /> }
-              : {}
-          }
+          renderers={{ link: props => <BannerLink level={level} {...props} /> }}
         />
       ) : (
         message

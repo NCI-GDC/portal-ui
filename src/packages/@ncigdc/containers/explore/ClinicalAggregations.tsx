@@ -14,6 +14,7 @@ import {
   addAllFacets,
   changeFacetNames,
   expandOneCategory,
+  showingMoreByCategory,
 } from '@ncigdc/dux/facetsExpandedStatus';
 import { WrapperComponent } from '@ncigdc/components/FacetWrapper';
 import { withTheme } from '@ncigdc/theme';
@@ -60,8 +61,8 @@ interface IClinicalProps {
   allExpanded: any,
   facetsExpandedStatus: any,
   dispatch: any,
-  showingMore: any,
-  setShowingMore: any,
+  // showingMore: any,
+  // setShowingMore: any,
   notifications: any,
 }
 const facetMatchesQuery = (
@@ -113,9 +114,9 @@ const enhance = compose(
   withState('isLoadingParsedFacets', 'setIsLoadingParsedFacets', false),
   withState('shouldHideUselessFacets', 'setShouldHideUselessFacets', true),
   withState('searchValue', 'setSearchValue', ''),
-  withState('showingMore', 'setShowingMore', ({ facetsExpandedStatus }) =>
-    _.mapValues(facetsExpandedStatus, status => false)
-  ),
+  // withState('showingMore', 'setShowingMore', ({ facetsExpandedStatus }) =>
+  //   _.mapValues(facetsExpandedStatus, status => false)
+  // ),
   withFacetSelection({
     entityType: 'ExploreCases',
     presetFacetFields: presetFacets.map(x => x.field),
@@ -281,10 +282,10 @@ const enhance = compose(
       isLoadingParsedFacets,
       allExpanded,
       dispatch,
-      showingMore,
+      // showingMore,
       notifications,
-      setShowingMore,
-    }: IClinicalProps): any => {
+    }: // setShowingMore,
+    IClinicalProps): any => {
       return [
         <Row
           style={{
@@ -373,10 +374,6 @@ const enhance = compose(
                           !allExpanded[facet.field]
                         )
                       );
-                      setShowingMore({
-                        ...showingMore,
-                        [facet.field]: !allExpanded[facet.field],
-                      });
                     }}
                     style={{
                       display: 'flex',
@@ -391,7 +388,12 @@ const enhance = compose(
                 {facetsExpandedStatus[facet.field].expanded && (
                   <Column>
                     {_.orderBy(filteredFacets[facet.field], ['field'], ['asc'])
-                      .slice(0, showingMore[facet.field] ? Infinity : 5)
+                      .slice(
+                        0,
+                        facetsExpandedStatus[facet.field].showingMore
+                          ? Infinity
+                          : 5
+                      )
                       .map((componentFacet: any) => {
                         return [
                           <WrapperComponent
@@ -453,12 +455,9 @@ const enhance = compose(
                       <BottomRow style={{ marginRight: '1rem' }}>
                         <ToggleMoreLink
                           onClick={() =>
-                            setShowingMore({
-                              ...showingMore,
-                              [facet.field]: !showingMore[facet.field],
-                            })}
+                            dispatch(showingMoreByCategory(facet.field))}
                         >
-                          {showingMore[facet.field]
+                          {facetsExpandedStatus[facet.field].showingMore
                             ? 'Less...'
                             : filteredFacets[facet.field].length - 5 &&
                               `${filteredFacets[facet.field].length -

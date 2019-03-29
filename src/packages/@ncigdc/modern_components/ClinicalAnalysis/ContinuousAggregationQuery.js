@@ -125,7 +125,6 @@ export default compose(
       fieldName,
       stats,
       filters,
-      aggData,
       setAggData,
       setIsLoading,
     }) => {
@@ -140,14 +139,12 @@ export default compose(
   withPropsOnChange(['filters'], ({ updateData, ...props }) =>
     updateData(props)
   )
-)(({ aggData, isLoading, setId, stats, viewer, hits, ...props }) => {
+)(({ aggData, isLoading, setId, stats, hits, ...props }) => {
   if (isLoading) {
     return <Loader />;
   }
   return (
     <ClinicalVariableCard
-      aggData={aggData}
-      loading={isLoading}
       setId={setId}
       stats={stats}
       data={{ ...aggData, hits }}

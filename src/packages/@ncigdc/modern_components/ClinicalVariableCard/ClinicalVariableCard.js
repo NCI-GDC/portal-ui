@@ -152,17 +152,6 @@ const styles = {
 const enhance = compose(
   connect((state: any) => ({ analysis: state.analysis })),
   withTheme,
-  // withPropsOnChange(['data'], ({ data }) => {
-  //   // parsedFacets:
-  //   //   viewer && viewer.explore.cases.facets
-  //   //     ? tryParseJSON(viewer.explore.cases.facets, {})
-  //   //     : {},
-  //   debugger;
-  //   return {
-  //     continuousAggs: data && data.explore.cases.aggregations,
-  //     hits: data && data.hits,
-  //   };
-  // }),
   withState('selectedSurvivalData', 'setSelectedSurvivalData', {}),
   withState('overallSurvivalData', 'setOverallSurvivalData', {}),
   withState('selectedSurvivalLoadingId', 'setSelectedSurvivalLoadingId', ''),

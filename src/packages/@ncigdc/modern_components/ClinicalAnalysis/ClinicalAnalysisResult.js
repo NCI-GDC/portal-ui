@@ -29,7 +29,7 @@ import Input from '@ncigdc/uikit/Form/Input';
 import { withTheme } from '@ncigdc/theme';
 import countComponents from '@ncigdc/modern_components/Counts';
 import ExploreLink from '@ncigdc/components/Links/ExploreLink';
-import ControlPanelNode from '@ncigdc/modern_components/IntrospectiveType/ControlPanelNode.js';
+import ControlPanelNode from './ControlPanelNode.js';
 import {
   updateClinicalAnalysisProperty,
   addAnalysis,

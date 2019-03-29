@@ -244,19 +244,7 @@ const FacetCheckbox = ({
   </div>
 );
 
-export default compose(
-  // withProps(({ __type: { fields, name } }) => {
-  //   const filteredFields = _.head(
-  //     fields.filter(field => field.name === 'aggregations')
-  //   ).type.fields;
-  //
-  //   const clinicalAnalysisFields = filteredFields
-  //     .filter(field => validClinicalTypesRegex.test(field.name))
-  //     .filter(field => !blacklistRegex.test(field.name));
-  //   return { clinicalAnalysisFields };
-  // }),
-  withTheme
-)(
+export default compose(withTheme)(
   ({
     theme,
     currentAnalysis,

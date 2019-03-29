@@ -227,7 +227,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
   const rawQueryData =
     variable.plotTypes === 'continuous'
       ? (
-          (data &&
+          (data.explore &&
             data.explore.cases.aggregations[fieldName.replace('.', '__')]
               .histogram) || {
             buckets: [],

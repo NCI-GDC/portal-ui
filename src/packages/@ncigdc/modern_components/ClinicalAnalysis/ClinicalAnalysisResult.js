@@ -235,6 +235,21 @@ const ClinicalAnalysisResult = ({
   const setName = Object.values(sets.case)[0];
   const setId = Object.keys(currentAnalysis.sets.case)[0];
 
+  if (hits.total === 0) {
+    return (
+      <Column style={{ margin: '2rem' }}>
+        <Row spacing={'10px'} style={{ alignItems: 'center', width: '80%' }}>
+          <Icon style={{ height: 50, width: 50 }} />
+          <h1 style={{ fontSize: '2.5rem', margin: 5 }}>Clinical Analysis</h1>
+        </Row>
+        <Row style={{ marginTop: '1rem', marginLeft: '1rem' }}>
+          Analysis is deprecated because {currentAnalysis.name} is a deprecated
+          set.
+        </Row>
+      </Column>
+    );
+  }
+
   const CountComponent = countComponents.case;
   const dropdownItems = Object.values(allSets.case)
     .filter(s => s !== Object.values(currentAnalysis.sets.case)[0])

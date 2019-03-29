@@ -1,7 +1,14 @@
 // @flow
 
 import React from 'react';
-import { compose, withState } from 'recompose';
+import {
+  compose,
+  withState,
+  withHandlers,
+  lifecycle,
+  withProps,
+  withPropsOnChange,
+} from 'recompose';
 
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import styled from '@ncigdc/theme/styled';
@@ -18,6 +25,13 @@ const Container = styled(Row, {
 
 const FacetsPanel = styled(Column, {
   width: ({ theme }) => theme.facetsPanelWidth,
+  // display: 'block',
+  // overflow: 'scroll',
+  // height: ({ height }) => {
+  //   console.log('height', height);
+
+  //   return height + 'px';
+  // },
   flex: 'none',
   marginRight: '18px',
 });
@@ -46,7 +60,23 @@ type TProps = {
   showRepositoryQuery: boolean,
 };
 
-const enhance = compose(withState('showFacets', 'setShowFacets', true));
+const enhance = compose(
+  withState('showFacets', 'setShowFacets', true),
+  withState('refNode', 'setRefNode', null),
+  withHandlers(({ setRefNode }) => {
+    return {
+      onRef: () => ref => setRefNode(ref),
+    };
+  }),
+  withPropsOnChange(
+    (props, nextProps) => props.refNode !== nextProps.refNode,
+    ({ refNode }) => {
+      return {
+        height: refNode && refNode.clientHeight,
+      };
+    }
+  )
+);
 
 const SearchPage = (
   {
@@ -54,7 +84,9 @@ const SearchPage = (
     results = <span />,
     showFacets,
     setShowFacets,
+    height,
     filtersLinkProps,
+    onRef,
     ...props
   }: TProps = {}
 ) => (
@@ -81,15 +113,17 @@ const SearchPage = (
       </FacetsPanel>
     )}
     <Content>
-      <Row style={{ marginBottom: '2rem' }}>
-        {!showFacets && (
-          <ShowFacetsButton onClick={() => setShowFacets(!showFacets)}>
-            <DoubleArrowRightIcon />
-          </ShowFacetsButton>
-        )}
-        <CurrentFilters style={{ flex: 1 }} {...filtersLinkProps} />
-      </Row>
-      {results}
+      <div ref={onRef}>
+        <Row style={{ marginBottom: '2rem' }}>
+          {!showFacets && (
+            <ShowFacetsButton onClick={() => setShowFacets(!showFacets)}>
+              <DoubleArrowRightIcon />
+            </ShowFacetsButton>
+          )}
+          <CurrentFilters style={{ flex: 1 }} {...filtersLinkProps} />
+        </Row>
+        {results}
+      </div>
     </Content>
   </Container>
 );

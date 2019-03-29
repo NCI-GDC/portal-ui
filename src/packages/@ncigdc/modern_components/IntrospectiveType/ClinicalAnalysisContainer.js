@@ -1,6 +1,8 @@
 import React from 'react';
 import ClinicalAnalysisResult from '@ncigdc/modern_components/ClinicalAnalysis';
-import { compose, withProps } from 'recompose';
+import { compose, withProps, branch } from 'recompose';
+import withRouter from '@ncigdc/utils/withRouter';
+import { connect } from 'react-redux';
 
 import { CLINICAL_BLACKLIST } from '@ncigdc/utils/constants';
 
@@ -10,6 +12,14 @@ const blacklistRegex = new RegExp(
 );
 
 const enhance = compose(
+  withRouter,
+  connect((state: any, props: any) => ({
+    currentAnalysis: state.analysis.saved.find(a => a.id === props.id),
+  })),
+  branch(
+    ({ currentAnalysis }) => !currentAnalysis,
+    ({ push }) => push({ pathname: '/analysis' })
+  ),
   withProps(({ __type: { fields, name } }) => {
     const filteredFields = _.head(
       fields.filter(field => field.name === 'aggregations')
@@ -22,11 +32,7 @@ const enhance = compose(
   })
 );
 
-const ClinicalAnalysisContainer = ({
-  clinicalAnalysisFields,
-  currentAnalysis,
-  ...props
-}) => {
+const ClinicalAnalysisContainer = ({ clinicalAnalysisFields, ...props }) => {
   return (
     <ClinicalAnalysisResult
       clinicalAnalysisFields={clinicalAnalysisFields}

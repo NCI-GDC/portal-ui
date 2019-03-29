@@ -7,17 +7,8 @@ import { connect } from 'react-redux';
 export default (Component: ReactClass<*>) =>
   compose(
     connect((state: any, props: any) => ({
-      allSets: state.sets,
       currentAnalysis: state.analysis.saved.find(a => a.id === props.id),
     })),
-    // branch(
-    //   ({ typeName }) => !typeName,
-    //   renderComponent(() => (
-    //     <div>
-    //       <pre>Type name</pre> must be provided
-    //     </div>
-    //   ))
-    // ),
     withPropsOnChange(
       ['clinicalAnalysisFields', 'currentAnalysis'],
       ({ clinicalAnalysisFields, currentAnalysis }) => {

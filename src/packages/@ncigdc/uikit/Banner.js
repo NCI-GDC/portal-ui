@@ -5,7 +5,6 @@ import React from 'react';
 import Row from '@ncigdc/uikit/Flex/Row';
 import Markdown from 'react-markdown';
 import './Banner.css';
-import styled from '@ncigdc/theme/styled';
 import { theme } from '@ncigdc/theme';
 
 const style = {

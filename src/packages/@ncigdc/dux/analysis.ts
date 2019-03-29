@@ -9,6 +9,7 @@ const sets: any = namespaceActions('sets', [
   'REMOVE_CLINICAL_ANALYSIS_VARIABLE',
   'UPDATE_CLINICAL_ANALYSIS_VARIABLE',
   'UPDATE_CLINICAL_ANALYSIS_PROPERTY',
+  'UPDATE_CLINICAL_ANALYSIS_SET',
 ]);
 
 interface IAnalysis {
@@ -43,6 +44,8 @@ export interface IAnalysisPayload {
   fieldType?: string;
   plotTypes?: 'categorical' | 'continuous';
   property?: TClinicalAnalysisProperty;
+  setId?: string;
+  setName?: string;
 }
 
 interface IAnalysisAction {
@@ -81,6 +84,11 @@ const updateClinicalAnalysisVariable = (payload: IAnalysisPayload) => ({
 
 const updateClinicalAnalysisProperty = (payload: IAnalysisPayload) => ({
   type: sets.UPDATE_CLINICAL_ANALYSIS_PROPERTY,
+  payload,
+});
+
+const updateClinicalAnalysisSet = (payload: IAnalysisPayload) => ({
+  type: sets.UPDATE_CLINICAL_ANALYSIS_SET,
   payload,
 });
 
@@ -259,6 +267,35 @@ const reducer = (
       };
     }
 
+    case sets.UPDATE_CLINICAL_ANALYSIS_SET: {
+      const { currentAnalysisIndex, currentAnalysis } = getCurrentAnalysis(
+        state,
+        action.payload.id
+      );
+
+      if (currentAnalysisIndex < 0) {
+        return state;
+      }
+
+      return {
+        ...state,
+        saved: [
+          ...state.saved.slice(0, currentAnalysisIndex),
+          {
+            ...currentAnalysis,
+            sets: {
+              case: {
+                [action.payload.setId as TClinicalAnalysisProperty]: action
+                  .payload.setName,
+              },
+            },
+            name: action.payload.setName,
+          },
+          ...state.saved.slice(currentAnalysisIndex + 1, Infinity),
+        ],
+      };
+    }
+
     default:
       return state;
   }
@@ -274,6 +311,7 @@ export {
   removeClinicalAnalysisVariable,
   updateClinicalAnalysisVariable,
   updateClinicalAnalysisProperty,
+  updateClinicalAnalysisSet,
 };
 
 export default reducer;

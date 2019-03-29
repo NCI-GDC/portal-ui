@@ -33,6 +33,7 @@ import ControlPanelNode from './ControlPanelNode.js';
 import {
   updateClinicalAnalysisProperty,
   addAnalysis,
+  updateClinicalAnalysisSet,
 } from '@ncigdc/dux/analysis';
 import withRouter from '@ncigdc/utils/withRouter';
 import BaseModal from '@ncigdc/components/Modals/BaseModal';
@@ -250,18 +251,24 @@ const ClinicalAnalysisResult = ({
   }
 
   const CountComponent = countComponents.case;
-  const dropdownItems = Object.values(allSets.case)
-    .filter(s => s !== Object.values(currentAnalysis.sets.case)[0])
-    .map((n: any) => (
-      <DropdownItem
-        key={n}
-        className="all-sets-item"
-        onClick={() => console.log(n)}
-        aria-label={`Switch selected set to ${n}`}
-      >
-        {n}
-      </DropdownItem>
-    ));
+  const dropdownItems = _.map(allSets.case, (name, setKey) => {
+    if (setKey !== _.keys(currentAnalysis.sets.case)[0]) {
+      return (
+        <DropdownItem
+          key={setKey}
+          className="all-sets-item"
+          onClick={() => {
+            dispatch(
+              updateClinicalAnalysisSet({ id, setId: setKey, setName: name })
+            );
+          }}
+          aria-label={`Switch selected set to ${name}`}
+        >
+          {name}
+        </DropdownItem>
+      );
+    }
+  });
 
   return (
     <div style={{ padding: 5 }}>

@@ -443,6 +443,7 @@ const enhance = compose(
                                     fontStyle: 'italic',
                                     paddingLeft: '30px',
                                     paddingRight: '10px',
+                                    width: '320px',
                                   }}
                                 />
                               </div>

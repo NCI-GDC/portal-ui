@@ -13,7 +13,7 @@ export default (Component: ReactClass<*>) =>
       ['clinicalAnalysisFields', 'currentAnalysis'],
       ({ clinicalAnalysisFields, currentAnalysis }) => {
         const facets = clinicalAnalysisFields
-          .map(field => field.name.replace('__', '.'))
+          .map(field => field.name.replace(/__/g, '.'))
           .join(',');
         const setId = Object.keys(currentAnalysis.sets.case)[0];
         return {

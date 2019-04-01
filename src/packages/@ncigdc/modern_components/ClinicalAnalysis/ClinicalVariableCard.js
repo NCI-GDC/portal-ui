@@ -12,11 +12,19 @@ import { visualizingButton } from '@ncigdc/theme/mixins';
 import { zDepth1 } from '@ncigdc/theme/mixins';
 import EntityPageHorizontalTable from '@ncigdc/components/EntityPageHorizontalTable';
 import Dropdown from '@ncigdc/uikit/Dropdown';
+import DropdownItem from '@ncigdc/uikit/DropdownItem';
 import Hidden from '@ncigdc/components/Hidden';
 import tryParseJSON from '@ncigdc/utils/tryParseJSON';
 import BarChart from '@ncigdc/components/Charts/BarChart';
 import ExploreLink from '@ncigdc/components/Links/ExploreLink';
-import { makeFilter } from '@ncigdc/utils/filters';
+import { makeFilter, addInFilters } from '@ncigdc/utils/filters';
+import { CreateExploreCaseSetButton } from '@ncigdc/modern_components/withSetAction';
+import { AppendExploreCaseSetButton } from '@ncigdc/modern_components/withSetAction';
+import { RemoveFromExploreCaseSetButton } from '@ncigdc/modern_components/withSetAction';
+import { setModal } from '@ncigdc/dux/modal';
+import SaveSetModal from '@ncigdc/components/Modals/SaveSetModal';
+import AppendSetModal from '@ncigdc/components/Modals/AppendSetModal';
+import RemoveSetModal from '@ncigdc/components/Modals/RemoveSetModal';
 
 // survival plot
 import {
@@ -161,6 +169,7 @@ const enhance = compose(
     'setHasEnoughOverallSurvivalData',
     false
   ),
+  withState('selectedBuckets', 'setSelectedBuckets', []),
   withProps(
     ({
       selectedSurvivalData,
@@ -223,6 +232,8 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
   filters,
   stats,
   data,
+  selectedBuckets,
+  setSelectedBuckets,
 }) => {
   const rawQueryData =
     variable.plotTypes === 'continuous'
@@ -377,71 +388,82 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
               }),
             }));
 
-    return displayData.map(b => ({
-      ...b,
-      select: (
-        <input
-          style={{
-            marginLeft: 3,
-            pointerEvents: 'initial',
-          }}
-          // id={id}
-          type="checkbox"
-          // value={setId}
-          // disabled={msg}
-          onChange={e => console.log(e.target.value)}
-          checked={false}
-        />
-      ),
-      ...(variable.active_chart === 'survival'
-        ? {
-            survival: (
-              <Tooltip
-                Component={
-                  hasEnoughOverallSurvivalData
-                    ? `Click icon to plot ${b.key}`
-                    : 'Not enough survival data'
-                }
-              >
-                <Button
-                  style={{
-                    padding: '2px 3px',
-                    backgroundColor: hasEnoughOverallSurvivalData
-                      ? colors(b.key === selectedSurvivalData.id ? '1' : '0')
-                      : '#666',
-                    color: 'white',
-                    margin: '0 auto',
-                    position: 'static',
-                  }}
-                  disabled={!hasEnoughOverallSurvivalData}
-                  onClick={() => {
-                    if (b.key !== selectedSurvivalData.id) {
-                      setSelectedSurvivalLoadingId(b.key);
-                      getSurvivalCurves({
-                        field: fieldName,
-                        value: b.key,
-                        currentFilters: filters,
-                        slug: `${b.key}`,
-                      }).then(data => {
-                        setSelectedSurvivalData(data);
-                        setSelectedSurvivalLoadingId('');
-                      });
-                    } else {
-                      setSelectedSurvivalData({});
-                    }
-                  }}
+    return displayData.map(b => {
+      return {
+        ...b,
+        select: (
+          <input
+            style={{
+              marginLeft: 3,
+              pointerEvents: 'initial',
+            }}
+            id={b.key}
+            type="checkbox"
+            value={b.key}
+            aria-label={`${fieldName}${b.key}`}
+            disabled={b.doc_count === 0}
+            onChange={e => {
+              if (_.find(selectedBuckets, { key: b.key })) {
+                setSelectedBuckets(
+                  _.reject(selectedBuckets, r => r.key === b.key)
+                );
+              } else {
+                setSelectedBuckets([...selectedBuckets, b]);
+              }
+            }}
+            checked={!!_.find(selectedBuckets, { key: b.key })}
+          />
+        ),
+        ...(variable.active_chart === 'survival'
+          ? {
+              survival: (
+                <Tooltip
+                  Component={
+                    hasEnoughOverallSurvivalData
+                      ? `Click icon to plot ${b.key}`
+                      : 'Not enough survival data'
+                  }
                 >
-                  {b.key === selectedSurvivalLoadingId ? (
-                    <SpinnerIcon />
-                  ) : (
-                    <SurvivalIcon />
-                  )}
-                </Button>
-              </Tooltip>
-            ),
-          }
-        : {}),
-    }));
+                  <Button
+                    style={{
+                      padding: '2px 3px',
+                      backgroundColor: hasEnoughOverallSurvivalData
+                        ? colors(b.key === selectedSurvivalData.id ? '1' : '0')
+                        : '#666',
+                      color: 'white',
+                      margin: '0 auto',
+                      position: 'static',
+                    }}
+                    disabled={!hasEnoughOverallSurvivalData}
+                    onClick={() => {
+                      if (b.key !== selectedSurvivalData.id) {
+                        setSelectedSurvivalLoadingId(b.key);
+                        getSurvivalCurves({
+                          field: fieldName,
+                          value: b.key,
+                          currentFilters: filters,
+                          slug: `${b.key}`,
+                        }).then(data => {
+                          setSelectedSurvivalData(data);
+                          setSelectedSurvivalLoadingId('');
+                        });
+                      } else {
+                        setSelectedSurvivalData({});
+                      }
+                    }}
+                  >
+                    {b.key === selectedSurvivalLoadingId ? (
+                      <SpinnerIcon />
+                    ) : (
+                      <SurvivalIcon />
+                    )}
+                  </Button>
+                </Tooltip>
+              ),
+            }
+          : {}),
+      };
+    });
   };
 
   const getBoxTableData = rawData => {
@@ -537,6 +559,11 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
           };
         })
       : [];
+
+  // set action will default to cohort total when no buckets are selected
+  const totalFromSelectedBuckets = selectedBuckets.length
+    ? selectedBuckets.reduce((acc, b) => acc + b.chart_doc_count, 0)
+    : totalDocs;
 
   return (
     <Column
@@ -778,13 +805,138 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
             <Dropdown
               button={
                 <Button
-                  style={{ ...visualizingButton, padding: '0 12px' }}
+                  style={{
+                    ...visualizingButton,
+                    padding: '0 12px',
+                  }}
                   rightIcon={<DownCaretIcon />}
                 >
                   Select action
                 </Button>
               }
-            />
+            >
+              <DropdownItem>Export to TSV</DropdownItem>
+              <DropdownItem
+                style={{ lineHeight: '1.5', cursor: 'pointer', width: 210 }}
+                onClick={() => {
+                  console.log(
+                    'blaaaaa:',
+                    addInFilters(filters, {
+                      op: 'and',
+                      content: [
+                        {
+                          op: 'in',
+                          content: {
+                            field: fieldName,
+                            value: selectedBuckets.map(
+                              selectedBucket => selectedBucket.key
+                            ),
+                          },
+                        },
+                      ],
+                    })
+                  );
+                  dispatch(
+                    setModal(
+                      <SaveSetModal
+                        title={`Save ${totalFromSelectedBuckets} Cases as New Set`}
+                        total={totalFromSelectedBuckets}
+                        filters={
+                          selectedBuckets.length
+                            ? addInFilters(filters, {
+                                op: 'and',
+                                content: [
+                                  {
+                                    op: 'in',
+                                    content: {
+                                      field: fieldName,
+                                      value: selectedBuckets.map(
+                                        selectedBucket => selectedBucket.key
+                                      ),
+                                    },
+                                  },
+                                ],
+                              })
+                            : filters
+                        }
+                        score={'gene.gene_id'}
+                        sort={null}
+                        type={'case'}
+                        displayType={'case'}
+                        CreateSetButton={CreateExploreCaseSetButton}
+                        setName={'Custom Case Selection'}
+                        // setName={
+                        //   (selectedIds || []).length
+                        //     ? `Custom Case Selection`
+                        //     : ''
+                        // }
+                      />
+                    )
+                  );
+                }}
+              >
+                Save as new case set
+              </DropdownItem>
+              <DropdownItem
+                style={{ lineHeight: '1.5', cursor: 'pointer', width: 210 }}
+                onClick={() => {
+                  dispatch(
+                    setModal(
+                      <AppendSetModal
+                        field="cases.case_id"
+                        title={`Add ${totalFromSelectedBuckets} Cases to Existing Set`}
+                        total={totalFromSelectedBuckets}
+                        filters={{}}
+                        score={'gene.gene_id'}
+                        sort={null}
+                        type={'case'}
+                        displayType={'case'}
+                        AppendSetButton={AppendExploreCaseSetButton}
+                        scope={'explore'}
+                      />
+                    )
+                  );
+                }}
+              >
+                Add to existing case set
+              </DropdownItem>
+              <DropdownItem
+                style={{ lineHeight: '1.5', cursor: 'pointer', width: 210 }}
+                onClick={() => {
+                  dispatch(
+                    setModal(
+                      <RemoveSetModal
+                        field="cases.case_id"
+                        title={`Remove ${totalFromSelectedBuckets} Cases from Existing Set`}
+                        filters={{}}
+                        type={'case'}
+                        RemoveFromSetButton={RemoveFromExploreCaseSetButton}
+                      />
+                    )
+                  );
+                }}
+              >
+                Remove from existing case set
+              </DropdownItem>
+              {/* <DropdownItem>
+                <SetActions
+                  CreateSetButton={CreateExploreCaseSetButton}
+                  AppendSetButton={AppendExploreCaseSetButton}
+                  RemoveFromSetButton={RemoveFromExploreCaseSetButton}
+                  field="cases.case_id"
+                  total={totalDocs}
+                  // total={total} // total from filtered cases. will be entire cohort with no checks. doesn't look like this adjusts with checkboxes
+                  filters={{}}
+                  // score={score}
+                  // sort={sort}
+                  type={'case'}
+                  displayType={'case'}
+                  selectedIds={[]}
+                  scope={'explore'}
+                  hasSets
+                />
+              </DropdownItem> */}
+            </Dropdown>
             <Button style={{ padding: '0 12px' }} rightIcon={<DownCaretIcon />}>
               Customize Bins
             </Button>

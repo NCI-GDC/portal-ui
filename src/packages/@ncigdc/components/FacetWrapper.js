@@ -148,7 +148,7 @@ export const WrapperComponent = ({
       <FacetHeader
         title={displayTitle}
         field={facet.full}
-        DescriptionComponent={!searchValue && DescriptionComponent}
+        DescriptionComponent={!searchValue && facet.description}
         searchValue={searchValue}
         handleRequestRemove={handleRequestRemove}
         isRemovable={isRemovable}

@@ -326,15 +326,16 @@ const enhance = compose(
             facet => !searchValue || filteredFacets[facet.field].length > 0 // If the user is searching for something, hide the presetFacet with no value.
           )
           .map(facet => {
+            const headerHeight = '51px';
+            const bannerHeight = 40;
             return (
               <div key={facet.title + 'div'}>
                 <Row
                   style={{
                     position: 'sticky',
-                    // 51px is height of header, 40 is the height of banner;
-                    top: `calc(51px + ${notifications.filter(
+                    top: `calc(${headerHeight} + ${notifications.filter(
                       (n: any) => !n.dismissed
-                    ).length * 40}px)`,
+                    ).length * bannerHeight}px)`,
                     background: '#eeeeee',
                     zIndex: 10,
                     cursor: 'pointer',

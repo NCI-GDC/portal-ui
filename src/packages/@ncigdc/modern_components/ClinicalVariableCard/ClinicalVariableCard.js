@@ -160,7 +160,7 @@ const enhance = compose(
     continuousAggs: aggData && aggData.explore.cases.aggregations,
     hits: viewer && viewer.explore.cases.hits,
   })),
-  withState('categoricalSurvivalData', 'setCategoricalSurvivalData', {}),
+  withState('selectedSurvivalData', 'setSelectedSurvivalData', {}),
   withState('overallSurvivalData', 'setOverallSurvivalData', {}),
   withState(
     'hasEnoughSurvivalDataValues',
@@ -180,7 +180,7 @@ const enhance = compose(
       setOverallSurvivalData,
       setHasEnoughOverallSurvivalData,
       setSurvivalPlotLoading,
-      setCategoricalSurvivalData,
+      setSelectedSurvivalData,
       filters,
       fieldName,
       variable,
@@ -415,6 +415,42 @@ const enhance = compose(
               return key;
             }
           };
+
+          const makeFilters = (prependCases = true) => {
+            const fieldNameForFilters = `${prependCases &&
+              'cases.'}${fieldName}`;
+            return {
+              op: 'and',
+              content: [
+                {
+                  op: 'in',
+                  content: {
+                    field: 'cases.case_id',
+                    value: `set_id:${setId}`,
+                  },
+                },
+                {
+                  op: '>=',
+                  content: {
+                    field: fieldNameForFilters,
+                    value: [
+                      `${valueIsYear(fieldName) ? Math.floor(key) : key}`,
+                    ],
+                  },
+                },
+                ...(acc.nextInterval !== 0 && [
+                  {
+                    op: '<=',
+                    content: {
+                      field: fieldNameForFilters,
+                      value: [`${acc.nextInterval - 1}`],
+                    },
+                  },
+                ]),
+              ],
+            };
+          };
+
           return {
             nextInterval: key,
             data: [
@@ -423,37 +459,9 @@ const enhance = compose(
                 chart_doc_count: doc_count,
                 doc_count: getCountLink({
                   doc_count,
-                  filters: {
-                    op: 'and',
-                    content: [
-                      {
-                        op: 'in',
-                        content: {
-                          field: 'cases.case_id',
-                          value: `set_id:${setId}`,
-                        },
-                      },
-                      {
-                        op: '>=',
-                        content: {
-                          field: `cases.${fieldName}`,
-                          value: [
-                            `${valueIsYear(fieldName) ? Math.floor(key) : key}`,
-                          ],
-                        },
-                      },
-                      ...(acc.nextInterval !== 0 && [
-                        {
-                          op: '<=',
-                          content: {
-                            field: `cases.${fieldName}`,
-                            value: [`${acc.nextInterval - 1}`],
-                          },
-                        },
-                      ]),
-                    ],
-                  },
+                  filters: makeFilters(),
                 }),
+                filters: makeFilters(false),
                 key: getRangeValue(key, fieldName),
               },
             ],
@@ -508,17 +516,28 @@ const enhance = compose(
                   }),
                 }));
 
-        const valuesForCurves = displayData.map(d => d.key).slice(0, 2);
-        setSelectedSurvivalValues(valuesForCurves);
-        setSelectedSurvivalLoadingIds(valuesForCurves);
+        const valuesForTable = displayData.map(d => d.key).slice(0, 2);
+        console.log('valuesForTable', valuesForTable);
+
+        const valuesForPlot =
+          variable.plotTypes === 'categorical'
+            ? [...valuesForTable]
+            : displayData
+                .sort((a, b) => b.chart_doc_count - a.chart_doc_count)
+                .slice(0, 2)
+                .map(data => _.omit(data, 'doc_count'));
+        console.log('valuesForPlot', valuesForPlot);
+
+        setSelectedSurvivalValues(valuesForTable);
+        setSelectedSurvivalLoadingIds(valuesForTable);
 
         getSurvivalCurvesArray({
           field: fieldName,
-          values: valuesForCurves,
+          values: valuesForPlot,
           currentFilters: filters,
-          plotType: 'categorical',
+          plotType: variable.plotTypes,
         }).then(data => {
-          setCategoricalSurvivalData(data);
+          setSelectedSurvivalData(data);
           setHasEnoughOverallSurvivalData(data.rawData);
           setSurvivalPlotLoading(false);
           setSelectedSurvivalLoadingIds([]);
@@ -547,8 +566,7 @@ const enhance = compose(
           currentFilters: filters,
           plotType: 'categorical',
         }).then(data => {
-          console.log('data for survival curves', data);
-          setCategoricalSurvivalData(data);
+          setSelectedSurvivalData(data);
           setHasEnoughOverallSurvivalData(data.rawData);
           setSurvivalPlotLoading(false);
           setSelectedSurvivalLoadingIds([]);
@@ -592,7 +610,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
   survivalPlotLoading,
   setSelectedSurvivalLoadingId,
   selectedSurvivalLoadingIds,
-  categoricalSurvivalData,
+  selectedSurvivalData,
   selectedSurvivalValues,
   updateSelectedSurvivalValues,
   hasEnoughSurvivalDataValues,
@@ -1131,7 +1149,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                 // </p>
 
                 <SurvivalPlotWrapper
-                  {...categoricalSurvivalData}
+                  {...selectedSurvivalData}
                   height={202}
                   plotType="categorical"
                   customClass="categorical-survival-plot"

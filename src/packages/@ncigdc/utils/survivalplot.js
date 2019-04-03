@@ -231,39 +231,53 @@ export const getSurvivalCurvesArray = memoize(
     size,
     plotType,
   }: TPropsMulti): Promise<Object> => {
+    // TODO:
+    // 1. separate categorical plots
+    // 2. feed real data to continuous plot
+    // 3. sort continuous plot somehow by # of cases?
+    // -- do I need to do that here or in clinicalVariableCard?
+
+    console.log('start of getSurvivalCurvesArray function');
+    console.log('getSurvivalCurvesArray values', values);
+    console.log('getSurvivalCurvesArray field', field);
     console.log('getSurvivalCurvesArray currentFilters', currentFilters);
-    const newFilters = [
-      {
-        op: 'and',
-        content: [{ op: '>=', content: { field, value: 45 } }],
-      },
-      {
-        op: 'and',
-        content: [{ op: '<=', content: { field, value: 90 } }],
-      },
-    ];
-    const newValues = [
-      { lower: 14, upper: 20 },
-      { lower: 21, upper: 26 },
-      { lower: 27, upper: 33 },
-      { lower: 34, upper: 40 },
-      { lower: 41, upper: 45 },
-    ];
-    console.log('values', values);
-    const filters = newValues.map(value => ({
-      op: 'and',
-      content: [
-        ...currentFilters.content,
-        {
-          op: '>=',
-          content: { field, value: [value.lower * 365] },
-        },
-        {
-          op: '<=',
-          content: { field, value: [value.upper * 365] },
-        },
-      ],
-    }));
+    console.log('getSurvivalCurvesArray size', size);
+    console.log('getSurvivalCurvesArray plotType', plotType);
+
+    const filters =
+      plotType === 'categorical'
+        ? values.slice(0, MAXIMUM_CURVES).map(value =>
+            replaceFilters(
+              {
+                op: 'and',
+                content: [{ op: '=', content: { field, value } }],
+              },
+              currentFilters
+            )
+          )
+        : values.map(value => ({
+            op: 'and',
+            content: [
+              ...currentFilters.content,
+              {
+                op: '>=',
+                content: [{ field, value: [value.lower * 365] }],
+              },
+              {
+                op: '<=',
+                content: [{ field, value: [value.upper * 365] }],
+              },
+            ],
+          }));
+
+    // {
+    //   addInFilters(
+    //     filters,
+    //     makeFilter([{ field: 'cases.project.project_id', value: [k] }])
+    //   );
+    // }
+
+    // is this for years?
     // const filtersWithUpperValue = filtersWithLowerValue.map(filter => addInFilters({
     //   op: 'and',
     //   content: [{ op: '<=', content: { field, value: 90 } }],

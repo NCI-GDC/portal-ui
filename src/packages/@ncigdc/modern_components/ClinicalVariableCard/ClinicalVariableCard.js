@@ -353,6 +353,7 @@ const enhance = compose(
           field: fieldName,
           values: valuesForCurves,
           currentFilters: filters,
+          plotType: variable.plotTypes,
         }).then(data => {
           const notEnoughStr = '-not-enough-data';
           const matchedValues = data.legend
@@ -515,7 +516,7 @@ const enhance = compose(
           field: fieldName,
           values: valuesForCurves,
           currentFilters: filters,
-          plotType: 'clinicalCategorical',
+          plotType: 'categorical',
         }).then(data => {
           setCategoricalSurvivalData(data);
           setHasEnoughOverallSurvivalData(data.rawData);
@@ -544,7 +545,7 @@ const enhance = compose(
           field: fieldName,
           values: nextValues,
           currentFilters: filters,
-          plotType: 'clinicalCategorical',
+          plotType: 'categorical',
         }).then(data => {
           console.log('data for survival curves', data);
           setCategoricalSurvivalData(data);
@@ -1132,7 +1133,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                 <SurvivalPlotWrapper
                   {...categoricalSurvivalData}
                   height={202}
-                  plotType="clinicalCategorical"
+                  plotType="categorical"
                   customClass="categorical-survival-plot"
                   survivalPlotLoading={survivalPlotLoading}
                 />

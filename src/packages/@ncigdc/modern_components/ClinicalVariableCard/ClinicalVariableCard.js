@@ -364,7 +364,7 @@ const enhance = compose(
             ? displayData.map(d => d.key)
             : displayData
                 .sort((a, b) => b.chart_doc_count - a.chart_doc_count)
-                .map(data => _.omit(data, 'doc_count'));
+                .map(data => ({ ...data, doc_count: undefined }));
         console.log('valuesForPlot', valuesForPlot);
 
         getSurvivalCurvesArray({
@@ -571,9 +571,9 @@ const enhance = compose(
           setSelectedSurvivalLoadingIds([]);
         });
       },
-      updateSelectedSurvivalValues: value => {
+      updateSelectedSurvivalValues: (displayData, value) => {
         if (
-          selectedSurvivalValues.indexOf(value) === -1 &&
+          selectedSurvivalValues.indexOf(value.key) === -1 &&
           selectedSurvivalValues.length >= MAXIMUM_CURVES
         ) {
           return;
@@ -581,18 +581,30 @@ const enhance = compose(
         setSurvivalPlotLoading(true);
 
         const nextValues =
-          selectedSurvivalValues.indexOf(value) === -1
-            ? selectedSurvivalValues.concat(value)
-            : selectedSurvivalValues.filter(s => s !== value);
+          selectedSurvivalValues.indexOf(value.key) === -1
+            ? selectedSurvivalValues.concat(value.key)
+            : selectedSurvivalValues.filter(s => s !== value.key);
 
         setSelectedSurvivalValues(nextValues);
         setSelectedSurvivalLoadingIds(nextValues);
 
+        console.log('displayData', displayData);
+
+        const valuesForPlot =
+          variable.plotTypes === 'categorical'
+            ? [...nextValues]
+            : nextValues
+                .map(v => displayData.filter(d => d.key === v)[0])
+                .map(data => ({ ...data, doc_count: undefined }))
+                .sort((a, b) => b.chart_doc_count - a.chart_doc_count);
+
+        console.log('valuesForPlot selected', valuesForPlot);
+
         getSurvivalCurvesArray({
           field: fieldName,
-          values: nextValues,
+          values: valuesForPlot,
           currentFilters: filters,
-          plotType: 'categorical',
+          plotType: variable.plotTypes,
         }).then(data => {
           setSelectedSurvivalData(data);
           const checkEnoughData = enoughData(data.rawData);
@@ -846,7 +858,8 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                     hasEnoughSurvivalDataValues.indexOf(b.key) === -1
                   }
                   onClick={() => {
-                    updateSelectedSurvivalValues(b.key);
+                    console.log('clicked b', b);
+                    updateSelectedSurvivalValues(displayData, b);
                   }}
                 >
                   {selectedSurvivalLoadingIds.indexOf(b.key) !== -1 ? (

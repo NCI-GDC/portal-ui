@@ -595,8 +595,7 @@ const enhance = compose(
             ? [...nextValues]
             : nextValues
                 .map(v => displayData.filter(d => d.key === v)[0])
-                .map(data => ({ ...data, doc_count: undefined }))
-                .sort((a, b) => b.chart_doc_count - a.chart_doc_count);
+                .map(data => ({ ...data, doc_count: undefined }));
 
         console.log('valuesForPlot selected', valuesForPlot);
 

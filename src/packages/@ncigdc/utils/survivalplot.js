@@ -260,7 +260,13 @@ export const getSurvivalCurvesArray = memoize(
     console.log('getSurvivalCurvesArray filters', filters);
 
     const rawData = await fetchCurves(filters, size, true);
+    console.log('getSurvivalCurvesArray rawData', rawData);
+
     const hasEnoughDataOnSomeCurves = enoughDataOnSomeCurves(rawData);
+    console.log(
+      'getSurvivalCurvesArray hasEnoughDataOnSomeCurves',
+      hasEnoughDataOnSomeCurves
+    );
 
     const getCaseCount = i =>
       _.get(rawData, `results[${i}].donors`, []).length.toLocaleString();
@@ -285,7 +291,7 @@ export const getSurvivalCurvesArray = memoize(
       legend: hasEnoughDataOnSomeCurves
         ? rawData.results.map((r, i) => {
             const valueName =
-              plotType === 'categorica' ? values[i] : values[i].key;
+              plotType === 'categorical' ? values[i] : values[i].key;
 
             return r.length === 0
               ? {

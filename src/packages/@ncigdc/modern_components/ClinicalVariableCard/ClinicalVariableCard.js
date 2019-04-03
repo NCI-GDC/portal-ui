@@ -22,6 +22,7 @@ import { makeFilter } from '@ncigdc/utils/filters';
 import {
   getDefaultCurve,
   getSurvivalCurvesArray,
+  enoughData,
 } from '@ncigdc/utils/survivalplot';
 import SurvivalPlotWrapper from '@ncigdc/components/SurvivalPlotWrapper';
 import { SpinnerIcon } from '@ncigdc/theme/icons';
@@ -201,7 +202,9 @@ const enhance = compose(
         });
 
         setOverallSurvivalData(nextSurvivalData);
-        setHasEnoughOverallSurvivalData(nextSurvivalData.rawData);
+        const checkEnoughData = enoughData(nextSurvivalData.rawData);
+        setHasEnoughOverallSurvivalData(checkEnoughData);
+        console.log('checkEnoughData', checkEnoughData);
 
         setSurvivalPlotLoading(false);
 
@@ -356,12 +359,12 @@ const enhance = compose(
           plotType: variable.plotTypes,
         }).then(data => {
           console.log('getSurvivalCurvesArray data', data);
-          // const notEnoughStr = '-not-enough-data';
-          // const matchedValues = data.legend
-          //   .map(l => l.key)
-          //   .filter(k => !k.match(notEnoughStr));
-          // console.log('matchedValues', matchedValues);
-          // setHasEnoughSurvivalDataValues(matchedValues);
+          const notEnoughStr = '-not-enough-data';
+          const matchedValues = data.legend
+            .map(l => l.key)
+            .filter(k => !k.match(notEnoughStr));
+          console.log('matchedValues', matchedValues);
+          setHasEnoughSurvivalDataValues(matchedValues);
         });
       },
       populateSurvivalArrays: () => {
@@ -547,7 +550,8 @@ const enhance = compose(
           plotType: variable.plotTypes,
         }).then(data => {
           setSelectedSurvivalData(data);
-          setHasEnoughOverallSurvivalData(data.rawData);
+          const checkEnoughData = enoughData(data.rawData);
+          setHasEnoughOverallSurvivalData(checkEnoughData);
           setSurvivalPlotLoading(false);
           setSelectedSurvivalLoadingIds([]);
         });
@@ -576,7 +580,8 @@ const enhance = compose(
           plotType: 'categorical',
         }).then(data => {
           setSelectedSurvivalData(data);
-          setHasEnoughOverallSurvivalData(data.rawData);
+          const checkEnoughData = enoughData(data.rawData);
+          setHasEnoughOverallSurvivalData(checkEnoughData);
           setSurvivalPlotLoading(false);
           setSelectedSurvivalLoadingIds([]);
         });

@@ -257,6 +257,43 @@ const enhance = compose(
               return key;
             }
           };
+
+          const makeFilters = (prependCases = true) => {
+            const fieldNameForFilters = `${prependCases
+              ? 'cases.'
+              : ''}${fieldName}`;
+            return {
+              op: 'and',
+              content: [
+                {
+                  op: 'in',
+                  content: {
+                    field: 'cases.case_id',
+                    value: `set_id:${setId}`,
+                  },
+                },
+                {
+                  op: '>=',
+                  content: {
+                    field: fieldNameForFilters,
+                    value: [
+                      `${valueIsYear(fieldName) ? Math.floor(key) : key}`,
+                    ],
+                  },
+                },
+                ...(acc.nextInterval !== 0 && [
+                  {
+                    op: '<=',
+                    content: {
+                      field: fieldNameForFilters,
+                      value: [`${acc.nextInterval - 1}`],
+                    },
+                  },
+                ]),
+              ],
+            };
+          };
+
           return {
             nextInterval: key,
             data: [
@@ -265,37 +302,9 @@ const enhance = compose(
                 chart_doc_count: doc_count,
                 doc_count: getCountLink({
                   doc_count,
-                  filters: {
-                    op: 'and',
-                    content: [
-                      {
-                        op: 'in',
-                        content: {
-                          field: 'cases.case_id',
-                          value: `set_id:${setId}`,
-                        },
-                      },
-                      {
-                        op: '>=',
-                        content: {
-                          field: `cases.${fieldName}`,
-                          value: [
-                            `${valueIsYear(fieldName) ? Math.floor(key) : key}`,
-                          ],
-                        },
-                      },
-                      ...(acc.nextInterval !== 0 && [
-                        {
-                          op: '<=',
-                          content: {
-                            field: `cases.${fieldName}`,
-                            value: [`${acc.nextInterval - 1}`],
-                          },
-                        },
-                      ]),
-                    ],
-                  },
+                  filters: makeFilters(),
                 }),
+                filters: makeFilters(false),
                 key: getRangeValue(key, fieldName),
               },
             ],
@@ -682,15 +691,48 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
             ? '+'
             : ' - ' + getUpperAgeYears(acc.nextInterval - 1)} years`;
         } else if (valueIsYear(field)) {
-          return `${Math.floor(key)}${acc.nextInterval === 0 // if interval is 0, it is the highest key value
-            ? ` - ${Math.ceil(stats.max)}`
-            : ' - ' + `${Math.floor(acc.nextInterval - 1)}`}`;
-        } else {
           return `${Math.floor(key)}${acc.nextInterval === 0
-            ? ` - ${Math.ceil(stats.max)}`
-            : ' - ' + `${Math.floor(acc.nextInterval - 1)}`}`;
+            ? ' - present'
+            : ' - ' + (acc.nextInterval - 1)}`;
+        } else {
+          return key;
         }
       };
+
+      const makeFilters = (prependCases = true) => {
+        const fieldNameForFilters = `${prependCases
+          ? 'cases.'
+          : ''}${fieldName}`;
+        return {
+          op: 'and',
+          content: [
+            {
+              op: 'in',
+              content: {
+                field: 'cases.case_id',
+                value: `set_id:${setId}`,
+              },
+            },
+            {
+              op: '>=',
+              content: {
+                field: fieldNameForFilters,
+                value: [`${valueIsYear(fieldName) ? Math.floor(key) : key}`],
+              },
+            },
+            ...(acc.nextInterval !== 0 && [
+              {
+                op: '<=',
+                content: {
+                  field: fieldNameForFilters,
+                  value: [`${acc.nextInterval - 1}`],
+                },
+              },
+            ]),
+          ],
+        };
+      };
+
       return {
         nextInterval: key,
         data: [
@@ -699,44 +741,16 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
             chart_doc_count: doc_count,
             doc_count: getCountLink({
               doc_count,
-              filters: {
-                op: 'and',
-                content: [
-                  {
-                    op: 'in',
-                    content: {
-                      field: 'cases.case_id',
-                      value: `set_id:${setId}`,
-                    },
-                  },
-                  {
-                    op: '>=',
-                    content: {
-                      field: `cases.${fieldName}`,
-                      value: [
-                        `${valueIsYear(fieldName) ? Math.floor(key) : key}`,
-                      ],
-                    },
-                  },
-                  ...(acc.nextInterval !== 0 && [
-                    {
-                      op: '<=',
-                      content: {
-                        field: `cases.${fieldName}`,
-                        value: [`${Math.floor(acc.nextInterval - 1)}`],
-                      },
-                    },
-                  ]),
-                ],
-              },
+              filters: makeFilters(),
             }),
+            filters: makeFilters(false),
             key: getRangeValue(key, fieldName),
           },
         ],
       };
     };
 
-    let displayData =
+    const displayData =
       type === 'continuous'
         ? rawData
             .sort((a, b) => b.key - a.key)

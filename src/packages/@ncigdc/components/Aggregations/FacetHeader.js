@@ -95,7 +95,6 @@ const FacetHeader = compose(
                   <div style={{ maxWidth: '24em' }}>{DescriptionComponent}</div>
                 ) : null
               }
-              interval={1000}
             >
               <span style={spanStyle} onClick={() => setCollapsed(!collapsed)}>
                 {!angleIconRight && (

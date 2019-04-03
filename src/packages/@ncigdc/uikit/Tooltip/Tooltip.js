@@ -11,8 +11,7 @@ type TProps = {
 
 const Tooltip = ({ Component, children, setTooltip, ...props }: TProps) => (
   <span
-    onMouseOver={() =>
-      setTimeout(() => setTooltip(Component), props.interval || 0)}
+    onMouseOver={() => setTooltip(Component)}
     onMouseOut={() => setTooltip()}
     {...props}
   >

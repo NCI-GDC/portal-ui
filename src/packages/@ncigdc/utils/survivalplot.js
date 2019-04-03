@@ -244,44 +244,32 @@ export const getSurvivalCurvesArray = memoize(
     console.log('getSurvivalCurvesArray size', size);
     console.log('getSurvivalCurvesArray plotType', plotType);
 
-    const filters =
-      plotType === 'categorical'
-        ? values.slice(0, MAXIMUM_CURVES).map(value =>
-            replaceFilters(
+    const filters = values.slice(0, MAXIMUM_CURVES).map(
+      value =>
+        plotType === 'categorical'
+          ? replaceFilters(
               {
                 op: 'and',
                 content: [{ op: '=', content: { field, value } }],
               },
               currentFilters
             )
-          )
-        : values.map(value => ({
-            op: 'and',
-            content: [
-              ...currentFilters.content,
-              {
-                op: '>=',
-                content: [{ field, value: [value.lower * 365] }],
-              },
-              {
-                op: '<=',
-                content: [{ field, value: [value.upper * 365] }],
-              },
-            ],
-          }));
+          : {
+              op: 'and',
+              content: [
+                ...currentFilters.content,
+                {
+                  op: '>=',
+                  content: [{ field, value: [value.lower * 365] }],
+                },
+                {
+                  op: '<=',
+                  content: [{ field, value: [value.upper * 365] }],
+                },
+              ],
+            }
+    );
 
-    // {
-    //   addInFilters(
-    //     filters,
-    //     makeFilter([{ field: 'cases.project.project_id', value: [k] }])
-    //   );
-    // }
-
-    // is this for years?
-    // const filtersWithUpperValue = filtersWithLowerValue.map(filter => addInFilters({
-    //   op: 'and',
-    //   content: [{ op: '<=', content: { field, value: 90 } }],
-    // },)
     console.log('getSurvivalCurvesArray filters', filters);
 
     const rawData = await fetchCurves(filters, size, true);

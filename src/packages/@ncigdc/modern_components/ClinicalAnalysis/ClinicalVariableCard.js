@@ -295,6 +295,27 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
           }`;
         }
       };
+      const rangeFilters = {
+        op: 'and',
+        content: [
+          {
+            op: '>=',
+            content: {
+              field: `cases.${fieldName}`,
+              value: [`${valueIsYear(fieldName) ? Math.floor(key) : key}`],
+            },
+          },
+          ...(acc.nextInterval !== 0 && [
+            {
+              op: '<=',
+              content: {
+                field: `cases.${fieldName}`,
+                value: [`${Math.floor(acc.nextInterval - 1)}`],
+              },
+            },
+          ]),
+        ],
+      };
       return {
         nextInterval: key,
         data: [
@@ -303,7 +324,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
             chart_doc_count: doc_count,
             doc_count: getCountLink({
               doc_count,
-              filters: {
+              filters: addInFilters(rangeFilters, {
                 op: 'and',
                 content: [
                   {
@@ -313,28 +334,11 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                       value: `set_id:${setId}`,
                     },
                   },
-                  {
-                    op: '>=',
-                    content: {
-                      field: `cases.${fieldName}`,
-                      value: [
-                        `${valueIsYear(fieldName) ? Math.floor(key) : key}`,
-                      ],
-                    },
-                  },
-                  ...(acc.nextInterval !== 0 && [
-                    {
-                      op: '<=',
-                      content: {
-                        field: `cases.${fieldName}`,
-                        value: [`${Math.floor(acc.nextInterval - 1)}`],
-                      },
-                    },
-                  ]),
                 ],
-              },
+              }),
             }),
             key: getRangeValue(key, fieldName),
+            rangeFilters,
           },
         ],
       };
@@ -564,6 +568,71 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
   const totalFromSelectedBuckets = selectedBuckets.length
     ? selectedBuckets.reduce((acc, b) => acc + b.chart_doc_count, 0)
     : totalDocs;
+
+  const getContinuousSetFilters = () => {
+    const rangeValues = _.flattenDeep(
+      selectedBuckets.map(sB => {
+        return sB.rangeFilters.content.map(bla => Number(bla.content.value));
+      })
+    );
+
+    if (rangeValues.length === 1) {
+      return addInFilters(filters, {
+        op: 'and',
+        content: [
+          {
+            op: '>=',
+            content: {
+              field: fieldName,
+              value: rangeValues,
+            },
+          },
+        ],
+      });
+    }
+
+    return addInFilters(filters, {
+      op: 'and',
+      content: [
+        {
+          op: '>=',
+          content: {
+            field: fieldName,
+            value: [_.min(rangeValues)],
+          },
+        },
+        {
+          op: '<=',
+          content: {
+            field: fieldName,
+            value: [_.max(rangeValues)],
+          },
+        },
+      ],
+    });
+  };
+  let cardFilters = filters;
+  if (selectedBuckets.length) {
+    cardFilters =
+      variable.plotTypes === 'continuous'
+        ? getContinuousSetFilters()
+        : addInFilters(filters, {
+            op: 'and',
+            content: [
+              {
+                op: 'in',
+                content: {
+                  field: fieldName,
+                  value: selectedBuckets.map(
+                    selectedBucket => selectedBucket.key
+                  ),
+                },
+              },
+            ],
+          });
+
+    console.log(cardFilters);
+  }
 
   return (
     <Column
@@ -819,46 +888,12 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
               <DropdownItem
                 style={{ lineHeight: '1.5', cursor: 'pointer', width: 210 }}
                 onClick={() => {
-                  console.log(
-                    'blaaaaa:',
-                    addInFilters(filters, {
-                      op: 'and',
-                      content: [
-                        {
-                          op: 'in',
-                          content: {
-                            field: fieldName,
-                            value: selectedBuckets.map(
-                              selectedBucket => selectedBucket.key
-                            ),
-                          },
-                        },
-                      ],
-                    })
-                  );
                   dispatch(
                     setModal(
                       <SaveSetModal
                         title={`Save ${totalFromSelectedBuckets} Cases as New Set`}
                         total={totalFromSelectedBuckets}
-                        filters={
-                          selectedBuckets.length
-                            ? addInFilters(filters, {
-                                op: 'and',
-                                content: [
-                                  {
-                                    op: 'in',
-                                    content: {
-                                      field: fieldName,
-                                      value: selectedBuckets.map(
-                                        selectedBucket => selectedBucket.key
-                                      ),
-                                    },
-                                  },
-                                ],
-                              })
-                            : filters
-                        }
+                        filters={cardFilters}
                         score={'gene.gene_id'}
                         sort={null}
                         type={'case'}

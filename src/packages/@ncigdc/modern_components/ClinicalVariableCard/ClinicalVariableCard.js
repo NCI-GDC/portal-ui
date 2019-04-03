@@ -355,12 +355,13 @@ const enhance = compose(
           currentFilters: filters,
           plotType: variable.plotTypes,
         }).then(data => {
-          const notEnoughStr = '-not-enough-data';
-          const matchedValues = data.legend
-            .map(l => l.key)
-            .filter(k => !k.match(notEnoughStr));
-          console.log('matchedValues', matchedValues);
-          setHasEnoughSurvivalDataValues(matchedValues);
+          console.log('getSurvivalCurvesArray data', data);
+          // const notEnoughStr = '-not-enough-data';
+          // const matchedValues = data.legend
+          //   .map(l => l.key)
+          //   .filter(k => !k.match(notEnoughStr));
+          // console.log('matchedValues', matchedValues);
+          // setHasEnoughSurvivalDataValues(matchedValues);
         });
       },
       populateSurvivalArrays: () => {
@@ -417,8 +418,9 @@ const enhance = compose(
           };
 
           const makeFilters = (prependCases = true) => {
-            const fieldNameForFilters = `${prependCases &&
-              'cases.'}${fieldName}`;
+            const fieldNameForFilters = `${prependCases
+              ? 'cases.'
+              : ''}${fieldName}`;
             return {
               op: 'and',
               content: [
@@ -516,16 +518,23 @@ const enhance = compose(
                   }),
                 }));
 
-        const valuesForTable = displayData.map(d => d.key).slice(0, 2);
+        const continuousTop2Values =
+          variable.plotTypes === 'continuous'
+            ? displayData
+                .sort((a, b) => b.chart_doc_count - a.chart_doc_count)
+                .slice(0, 2)
+            : [];
+
+        const valuesForTable =
+          variable.plotTypes === 'categorical'
+            ? displayData.map(d => d.key).slice(0, 2)
+            : continuousTop2Values.map(d => d.key);
         console.log('valuesForTable', valuesForTable);
 
         const valuesForPlot =
           variable.plotTypes === 'categorical'
             ? [...valuesForTable]
-            : displayData
-                .sort((a, b) => b.chart_doc_count - a.chart_doc_count)
-                .slice(0, 2)
-                .map(data => _.omit(data, 'doc_count'));
+            : continuousTop2Values.map(data => _.omit(data, 'doc_count'));
         console.log('valuesForPlot', valuesForPlot);
 
         setSelectedSurvivalValues(valuesForTable);

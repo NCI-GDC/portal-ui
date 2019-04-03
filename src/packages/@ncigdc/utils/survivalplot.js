@@ -246,28 +246,15 @@ export const getSurvivalCurvesArray = memoize(
 
     const filters = values.slice(0, MAXIMUM_CURVES).map(
       value =>
-        plotType === 'categorical'
-          ? replaceFilters(
+        plotType === 'continuous'
+          ? value.filters
+          : replaceFilters(
               {
                 op: 'and',
                 content: [{ op: '=', content: { field, value } }],
               },
               currentFilters
             )
-          : {
-              op: 'and',
-              content: [
-                ...currentFilters.content,
-                {
-                  op: '>=',
-                  content: [{ field, value: [value.lower * 365] }],
-                },
-                {
-                  op: '<=',
-                  content: [{ field, value: [value.upper * 365] }],
-                },
-              ],
-            }
     );
 
     console.log('getSurvivalCurvesArray filters', filters);
@@ -296,34 +283,36 @@ export const getSurvivalCurvesArray = memoize(
       },
       id: field,
       legend: hasEnoughDataOnSomeCurves
-        ? rawData.results.map(
-            (r, i) =>
-              r.length === 0
+        ? rawData.results.map((r, i) => {
+            const valueName =
+              plotType === 'categorica' ? values[i] : values[i].key;
+
+            return r.length === 0
+              ? {
+                  key: `${valueName}-cannot-compare`,
+                  value: (
+                    <div>
+                      <span>Not enough data to compare</span>
+                    </div>
+                  ),
+                  style: { width: '100%', marginTop: 5 },
+                }
+              : r.donors.length < MINIMUM_CASES
                 ? {
-                    key: `${values[i]}-cannot-compare`,
+                    key: `${valueName}-not-enough-data`,
                     value: (
-                      <div>
-                        <span>Not enough data to compare</span>
-                      </div>
+                      <span>Not enough survival data for {valueName}</span>
                     ),
-                    style: { width: '100%', marginTop: 5 },
                   }
-                : r.donors.length < MINIMUM_CASES
-                  ? {
-                      key: `${values[i]}-not-enough-data`,
-                      value: (
-                        <span>Not enough survival data for {values[i]}</span>
-                      ),
-                    }
-                  : {
-                      key: values[i],
-                      value: (
-                        <span>
-                          S<sub>{i + 1}</sub> (N = {getCaseCount(i)})
-                        </span>
-                      ),
-                    }
-          )
+                : {
+                    key: valueName,
+                    value: (
+                      <span>
+                        S<sub>{i + 1}</sub> (N = {getCaseCount(i)})
+                      </span>
+                    ),
+                  };
+          })
         : [
             {
               key: `${field}-not-enough-data`,

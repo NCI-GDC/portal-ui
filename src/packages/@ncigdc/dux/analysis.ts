@@ -289,7 +289,6 @@ const reducer = (
                   .payload.setName,
               },
             },
-            name: action.payload.setName,
           },
           ...state.saved.slice(currentAnalysisIndex + 1, Infinity),
         ],

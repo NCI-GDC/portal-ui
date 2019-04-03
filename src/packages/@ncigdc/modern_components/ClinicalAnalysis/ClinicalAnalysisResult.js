@@ -386,23 +386,27 @@ const ClinicalAnalysisResult = ({
             >
               <Dropdown
                 style={{
-                  width: 160,
                   justifyContent: 'flex-start',
-                  marginRight: 10,
                 }}
                 button={
                   <Button
+                    className="cohort-dropdown"
                     style={{
                       ...visualizingButton,
                       padding: '0 6px',
-                      width: '100%',
+                      width: 140,
+                      justifyContent: 'flex-start',
                     }}
                     rightIcon={<DownCaretIcon />}
+                    buttonContentStyle={{
+                      width: '100%',
+                      justifyContent: 'space-between',
+                    }}
                   >
                     {_.truncate(setName, { length: 16 })}
                   </Button>
                 }
-                dropdownStyle={{ width: '100%' }}
+                dropdownStyle={{ left: 0, cursor: 'pointer' }}
               >
                 {dropdownItems}
               </Dropdown>

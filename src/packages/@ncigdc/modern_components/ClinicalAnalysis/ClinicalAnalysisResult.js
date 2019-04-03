@@ -394,7 +394,7 @@ const ClinicalAnalysisResult = ({
                     style={{
                       ...visualizingButton,
                       padding: '0 6px',
-                      width: 140,
+                      width: 145,
                       justifyContent: 'flex-start',
                     }}
                     rightIcon={<DownCaretIcon />}

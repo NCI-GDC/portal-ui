@@ -350,11 +350,17 @@ const enhance = compose(
                   }),
                 }));
 
-        const valuesForCurves = displayData.map(d => d.key);
+        const valuesForPlot =
+          variable.plotTypes === 'categorical'
+            ? displayData.map(d => d.key)
+            : displayData
+                .sort((a, b) => b.chart_doc_count - a.chart_doc_count)
+                .map(data => _.omit(data, 'doc_count'));
+        console.log('valuesForPlot', valuesForPlot);
 
         getSurvivalCurvesArray({
           field: fieldName,
-          values: valuesForCurves,
+          values: valuesForPlot,
           currentFilters: filters,
           plotType: variable.plotTypes,
         }).then(data => {

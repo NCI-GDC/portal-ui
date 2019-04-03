@@ -91,8 +91,11 @@ const FacetHeader = compose(
           <Header className="test-facet-header" style={style}>
             <Tooltip
               Component={
-                <div style={{ maxWidth: '24em' }}>{DescriptionComponent}</div>
+                DescriptionComponent ? (
+                  <div style={{ maxWidth: '24em' }}>{DescriptionComponent}</div>
+                ) : null
               }
+              interval={1000}
             >
               <span style={spanStyle} onClick={() => setCollapsed(!collapsed)}>
                 {!angleIconRight && (

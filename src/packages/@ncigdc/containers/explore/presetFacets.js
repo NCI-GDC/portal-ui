@@ -63,10 +63,7 @@ export const clinicalFacets = [
     title: 'Demographic',
     field: 'demographic',
     full: 'cases.demographic',
-<<<<<<< HEAD
-=======
     excluded: [...excludedRegex],
->>>>>>> PRTL-2447
   },
   {
     title: 'Diagnoses',

@@ -162,7 +162,6 @@ const enhance = compose(
     hits: viewer && viewer.explore.cases.hits,
   })),
   withState('selectedSurvivalData', 'setSelectedSurvivalData', {}),
-  withState('overallSurvivalData', 'setOverallSurvivalData', {}),
   withState(
     'hasEnoughSurvivalDataValues',
     'setHasEnoughSurvivalDataValues',
@@ -171,15 +170,8 @@ const enhance = compose(
   withState('selectedSurvivalValues', 'setSelectedSurvivalValues', []),
   withState('selectedSurvivalLoadingIds', 'setSelectedSurvivalLoadingIds', []),
   withState('survivalPlotLoading', 'setSurvivalPlotLoading', true),
-  withState(
-    'hasEnoughOverallSurvivalData',
-    'setHasEnoughOverallSurvivalData',
-    false
-  ),
   withProps(
     ({
-      setOverallSurvivalData,
-      setHasEnoughOverallSurvivalData,
       setSurvivalPlotLoading,
       setSelectedSurvivalData,
       filters,
@@ -193,195 +185,6 @@ const enhance = compose(
       setSelectedSurvivalLoadingIds,
       setHasEnoughSurvivalDataValues,
     }) => ({
-      populateSurvivalData: async () => {
-        setSurvivalPlotLoading(true);
-
-        const nextSurvivalData = await getDefaultCurve({
-          currentFilters: filters,
-          slug: `Clinical Analysis - ${fieldName}`,
-        });
-
-        setOverallSurvivalData(nextSurvivalData);
-        const checkEnoughData = enoughData(nextSurvivalData.rawData);
-        setHasEnoughOverallSurvivalData(checkEnoughData);
-        console.log('checkEnoughData', checkEnoughData);
-
-        setSurvivalPlotLoading(false);
-
-        // get an array of values that have enough survival data
-
-        const rawQueryData =
-          variable.plotTypes === 'continuous'
-            ? (continuousAggs[fieldName.replace('.', '__')].histogram || {
-                buckets: [],
-              }).buckets
-            : (_.values(parsedFacets)[0] || { buckets: [] }).buckets;
-
-        const totalDocsFromBuckets = rawQueryData
-          .map(b => b.doc_count)
-          .reduce((acc, i) => acc + i, 0);
-
-        const getCountLink = ({ doc_count, filters }) => {
-          return (
-            <span>
-              <ExploreLink
-                query={{
-                  searchTableTab: 'cases',
-                  filters,
-                }}
-              >
-                {(doc_count || 0).toLocaleString()}
-              </ExploreLink>
-              <span>{` (${((doc_count || 0) /
-                totalDocsFromBuckets *
-                100
-              ).toFixed(2)}%)`}</span>
-            </span>
-          );
-        };
-
-        const getBucketRangesAndFilters = (acc, { doc_count, key }) => {
-          const valueIsDays = str => /(days_to|age_at)/.test(str);
-          const valueIsYear = str => /year_of/.test(str);
-
-          const getRangeValue = (key, field) => {
-            if (valueIsDays(field)) {
-              return `${getLowerAgeYears(key)}${acc.nextInterval === 0
-                ? '+'
-                : ' - ' + getUpperAgeYears(acc.nextInterval - 1)} years`;
-            } else if (valueIsYear(field)) {
-              return `${Math.floor(key)}${acc.nextInterval === 0
-                ? ' - present'
-                : ' - ' + (acc.nextInterval - 1)}`;
-            } else {
-              return key;
-            }
-          };
-
-          const makeFilters = (prependCases = true) => {
-            const fieldNameForFilters = `${prependCases
-              ? 'cases.'
-              : ''}${fieldName}`;
-            return {
-              op: 'and',
-              content: [
-                {
-                  op: 'in',
-                  content: {
-                    field: 'cases.case_id',
-                    value: `set_id:${setId}`,
-                  },
-                },
-                {
-                  op: '>=',
-                  content: {
-                    field: fieldNameForFilters,
-                    value: [
-                      `${valueIsYear(fieldName) ? Math.floor(key) : key}`,
-                    ],
-                  },
-                },
-                ...(acc.nextInterval !== 0 && [
-                  {
-                    op: '<=',
-                    content: {
-                      field: fieldNameForFilters,
-                      value: [`${acc.nextInterval - 1}`],
-                    },
-                  },
-                ]),
-              ],
-            };
-          };
-
-          return {
-            nextInterval: key,
-            data: [
-              ...acc.data,
-              {
-                chart_doc_count: doc_count,
-                doc_count: getCountLink({
-                  doc_count,
-                  filters: makeFilters(),
-                }),
-                filters: makeFilters(false),
-                key: getRangeValue(key, fieldName),
-              },
-            ],
-          };
-        };
-
-        const displayData =
-          variable.plotTypes === 'continuous'
-            ? rawQueryData
-                .sort((a, b) => b.key - a.key)
-                .reduce(getBucketRangesAndFilters, {
-                  nextInterval: 0,
-                  data: [],
-                })
-                .data.slice(0)
-                .reverse()
-            : rawQueryData
-                .filter(
-                  bucket =>
-                    !IS_CDAVE_DEV ? bucket.key !== '_missing' : bucket.key
-                )
-                .map(b => ({
-                  ...b,
-                  chart_doc_count: b.doc_count,
-                  doc_count: getCountLink({
-                    doc_count: b.doc_count,
-                    filters:
-                      b.key === '_missing'
-                        ? {
-                            op: 'AND',
-                            content: [
-                              {
-                                op: 'IS',
-                                content: { field: fieldName, value: [b.key] },
-                              },
-                              {
-                                op: 'in',
-                                content: {
-                                  field: 'cases.case_id',
-                                  value: `set_id:${setId}`,
-                                },
-                              },
-                            ],
-                          }
-                        : makeFilter([
-                            {
-                              field: 'cases.case_id',
-                              value: `set_id:${setId}`,
-                            },
-                            { field: fieldName, value: [b.key] },
-                          ]),
-                  }),
-                }));
-
-        const valuesForPlot =
-          variable.plotTypes === 'categorical'
-            ? displayData.map(d => d.key)
-            : displayData
-                .sort((a, b) => b.chart_doc_count - a.chart_doc_count)
-                .map(data => ({ ...data, doc_count: undefined }));
-        console.log('valuesForPlot', valuesForPlot);
-
-        // getSurvivalCurvesArray({
-        //   field: fieldName,
-        //   values: valuesForPlot,
-        //   currentFilters: filters,
-        //   plotType: variable.plotTypes,
-        // }).then(data => {
-        //   console.log('getSurvivalCurvesArray data', data);
-        //   const notEnoughStr = '-not-enough-data';
-        //   const matchedValues = data.legend
-        //     .map(l => l.key)
-        //     .filter(k => !k.match(notEnoughStr));
-        //   console.log('matchedValues', matchedValues);
-        //   setHasEnoughSurvivalDataValues(matchedValues);
-        // });
-      },
       populateSurvivalArrays: () => {
         setSurvivalPlotLoading(true);
 
@@ -391,8 +194,6 @@ const enhance = compose(
                 buckets: [],
               }).buckets
             : (_.values(parsedFacets)[0] || { buckets: [] }).buckets;
-
-        console.log('rawQueryData', rawQueryData);
 
         const totalDocsFromBuckets = rawQueryData
           .map(b => b.doc_count)
@@ -547,13 +348,11 @@ const enhance = compose(
           variable.plotTypes === 'categorical'
             ? displayData.map(d => d.key).slice(0, 2)
             : continuousTop2Values.map(d => d.key);
-        console.log('valuesForTable', valuesForTable);
 
         const valuesForPlot =
           variable.plotTypes === 'categorical'
             ? [...valuesForTable]
             : continuousTop2Values.map(data => _.omit(data, 'doc_count'));
-        console.log('valuesForPlot', valuesForPlot);
 
         setSelectedSurvivalValues(valuesForTable);
         setSelectedSurvivalLoadingIds(valuesForTable);
@@ -565,8 +364,6 @@ const enhance = compose(
           plotType: variable.plotTypes,
         }).then(data => {
           setSelectedSurvivalData(data);
-          const checkEnoughData = enoughData(data.rawData);
-          setHasEnoughOverallSurvivalData(checkEnoughData);
           setSurvivalPlotLoading(false);
           setSelectedSurvivalLoadingIds([]);
         });
@@ -588,16 +385,12 @@ const enhance = compose(
         setSelectedSurvivalValues(nextValues);
         setSelectedSurvivalLoadingIds(nextValues);
 
-        console.log('displayData', displayData);
-
         const valuesForPlot =
           variable.plotTypes === 'categorical'
             ? [...nextValues]
             : nextValues
                 .map(v => displayData.filter(d => d.key === v)[0])
                 .map(data => ({ ...data, doc_count: undefined }));
-
-        console.log('valuesForPlot selected', valuesForPlot);
 
         getSurvivalCurvesArray({
           field: fieldName,
@@ -606,8 +399,6 @@ const enhance = compose(
           plotType: variable.plotTypes,
         }).then(data => {
           setSelectedSurvivalData(data);
-          const checkEnoughData = enoughData(data.rawData);
-          setHasEnoughOverallSurvivalData(checkEnoughData);
           setSurvivalPlotLoading(false);
           setSelectedSurvivalLoadingIds([]);
         });
@@ -615,21 +406,10 @@ const enhance = compose(
     })
   ),
   withPropsOnChange(
-    // ['filters.content[0].content.value', 'variable.active_chart'],
     ['filters', 'variable'],
-    ({
-      filters,
-      fieldName,
-      populateSurvivalData,
-      populateSurvivalArrays,
-      variable,
-    }) => {
-      console.log('filters', filters);
-      console.log('fieldName', fieldName);
+    ({ populateSurvivalArrays, variable }) => {
       if (variable.active_chart === 'survival') {
-        // populateSurvivalData();
         populateSurvivalArrays();
-        // setAllSurvivalValueCounts();
       }
     }
   )
@@ -647,7 +427,6 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
   continuousAggs,
   setId,
   overallSurvivalData,
-  hasEnoughOverallSurvivalData,
   survivalPlotLoading,
   setSelectedSurvivalLoadingId,
   selectedSurvivalLoadingIds,
@@ -846,7 +625,6 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                   style={{
                     padding: '2px 3px',
                     backgroundColor:
-                      !hasEnoughOverallSurvivalData ||
                       selectedSurvivalValues.indexOf(b.key) === -1
                         ? '#666'
                         : colors(selectedSurvivalValues.indexOf(b.key)),
@@ -859,7 +637,6 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                   //   hasEnoughSurvivalDataValues.indexOf(b.key) === -1
                   // }
                   onClick={() => {
-                    console.log('clicked b', b);
                     updateSelectedSurvivalValues(displayData, b);
                   }}
                 >
@@ -1192,10 +969,6 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                   survivalPlotLoading={survivalPlotLoading}
                 />
               ) : (
-                // <p style={{ textAlign: 'center', color: 'rgb(31, 119, 180)' }}>
-                //   Select a survival plot
-                // </p>
-
                 <SurvivalPlotWrapper
                   {...selectedSurvivalData}
                   height={202}

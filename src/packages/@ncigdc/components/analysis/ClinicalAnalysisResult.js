@@ -41,7 +41,7 @@ import EditableLabel from '@ncigdc/uikit/EditableLabel';
 import ContinuousAggregation from '@ncigdc/modern_components/ClinicalVariableCard/ContinuousAggregationQuery';
 
 // survival plot
-import { getDefaultCurve, enoughData } from '@ncigdc/utils/survivalplot';
+import { getDefaultCurve } from '@ncigdc/utils/survivalplot';
 import SurvivalPlotWrapper from '@ncigdc/components/SurvivalPlotWrapper';
 
 interface IAnalysisResultProps {
@@ -536,6 +536,7 @@ const ClinicalAnalysisResult = ({
                     id={id}
                     setId={setId}
                     viewer={props.viewer}
+                    overallSurvivalData={overallSurvivalData}
                   />
                 );
               });
@@ -545,6 +546,7 @@ const ClinicalAnalysisResult = ({
                     key={varFieldName}
                     facetField={varFieldName.replace('cases.', '')}
                     filters={filters}
+                    overallSurvivalData={overallSurvivalData}
                   />
                 );
               }
@@ -559,6 +561,7 @@ const ClinicalAnalysisResult = ({
                   facetField={varFieldName.replace('cases.', '')}
                   filters={filters}
                   setId={setId}
+                  overallSurvivalData={overallSurvivalData}
                 />
               );
             })}

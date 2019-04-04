@@ -178,7 +178,7 @@ const enhance = compose(
       selectedSurvivalValues,
       setSelectedSurvivalLoadingIds,
     }) => ({
-      populateSurvivalArrays: () => {
+      populateSurvivalData: () => {
         setSurvivalPlotLoading(true);
 
         const rawQueryData =
@@ -191,25 +191,6 @@ const enhance = compose(
         const totalDocsFromBuckets = rawQueryData
           .map(b => b.doc_count)
           .reduce((acc, i) => acc + i, 0);
-
-        const getCountLink = ({ doc_count, filters }) => {
-          return (
-            <span>
-              <ExploreLink
-                query={{
-                  searchTableTab: 'cases',
-                  filters,
-                }}
-              >
-                {(doc_count || 0).toLocaleString()}
-              </ExploreLink>
-              <span>{` (${((doc_count || 0) /
-                totalDocsFromBuckets *
-                100
-              ).toFixed(2)}%)`}</span>
-            </span>
-          );
-        };
 
         const getBucketRangesAndFilters = (acc, { doc_count, key }) => {
           const valueIsDays = str => /(days_to|age_at)/.test(str);
@@ -229,41 +210,39 @@ const enhance = compose(
             }
           };
 
-          const makeFilters = (prependCases = true) => {
-            const fieldNameForFilters = `${prependCases
-              ? 'cases.'
-              : ''}${fieldName}`;
-            return {
-              op: 'and',
-              content: [
-                {
-                  op: 'in',
-                  content: {
-                    field: 'cases.case_id',
-                    value: `set_id:${setId}`,
-                  },
-                },
-                {
-                  op: '>=',
-                  content: {
-                    field: fieldNameForFilters,
-                    value: [
-                      `${valueIsYear(fieldName) ? Math.floor(key) : key}`,
-                    ],
-                  },
-                },
-                ...(acc.nextInterval !== 0 && [
-                  {
-                    op: '<=',
-                    content: {
-                      field: fieldNameForFilters,
-                      value: [`${acc.nextInterval - 1}`],
+          const filters =
+            variable.plotTypes === 'categorical'
+              ? {}
+              : {
+                  op: 'and',
+                  content: [
+                    {
+                      op: 'in',
+                      content: {
+                        field: 'cases.case_id',
+                        value: `set_id:${setId}`,
+                      },
                     },
-                  },
-                ]),
-              ],
-            };
-          };
+                    {
+                      op: '>=',
+                      content: {
+                        field: fieldName,
+                        value: [
+                          `${valueIsYear(fieldName) ? Math.floor(key) : key}`,
+                        ],
+                      },
+                    },
+                    ...(acc.nextInterval !== 0 && [
+                      {
+                        op: '<=',
+                        content: {
+                          field: fieldName,
+                          value: [`${acc.nextInterval - 1}`],
+                        },
+                      },
+                    ]),
+                  ],
+                };
 
           return {
             nextInterval: key,
@@ -271,11 +250,7 @@ const enhance = compose(
               ...acc.data,
               {
                 chart_doc_count: doc_count,
-                doc_count: getCountLink({
-                  doc_count,
-                  filters: makeFilters(),
-                }),
-                filters: makeFilters(false),
+                filters,
                 key: getRangeValue(key, fieldName),
               },
             ],
@@ -300,34 +275,6 @@ const enhance = compose(
                 .map(b => ({
                   ...b,
                   chart_doc_count: b.doc_count,
-                  doc_count: getCountLink({
-                    doc_count: b.doc_count,
-                    filters:
-                      b.key === '_missing'
-                        ? {
-                            op: 'AND',
-                            content: [
-                              {
-                                op: 'IS',
-                                content: { field: fieldName, value: [b.key] },
-                              },
-                              {
-                                op: 'in',
-                                content: {
-                                  field: 'cases.case_id',
-                                  value: `set_id:${setId}`,
-                                },
-                              },
-                            ],
-                          }
-                        : makeFilter([
-                            {
-                              field: 'cases.case_id',
-                              value: `set_id:${setId}`,
-                            },
-                            { field: fieldName, value: [b.key] },
-                          ]),
-                  }),
                 }));
 
         const continuousTop2Values =
@@ -345,7 +292,7 @@ const enhance = compose(
         const valuesForPlot =
           variable.plotTypes === 'categorical'
             ? [...valuesForTable]
-            : continuousTop2Values.map(data => _.omit(data, 'doc_count'));
+            : continuousTop2Values;
 
         setSelectedSurvivalValues(valuesForTable);
         setSelectedSurvivalLoadingIds(valuesForTable);
@@ -400,9 +347,9 @@ const enhance = compose(
   ),
   withPropsOnChange(
     ['filters', 'variable'],
-    ({ populateSurvivalArrays, variable }) => {
+    ({ populateSurvivalData, variable }) => {
       if (variable.active_chart === 'survival') {
-        populateSurvivalArrays();
+        populateSurvivalData();
       }
     }
   )
@@ -602,7 +549,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
             survival: (
               <Tooltip
                 Component={
-                  b.chart_doc_count < MINIMUM_CASES
+                  b.key === '_missing' || b.chart_doc_count < MINIMUM_CASES
                     ? 'Not enough data'
                     : selectedSurvivalValues.indexOf(b.key) > -1
                       ? `Click icon to remove ${b.key}`
@@ -622,6 +569,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                     margin: '0 auto',
                     position: 'static',
                     opacity:
+                      b.key === '_missing' ||
                       b.chart_doc_count < MINIMUM_CASES ||
                       (selectedSurvivalValues.length >= MAXIMUM_CURVES &&
                         selectedSurvivalValues.indexOf(b.key) === -1)
@@ -629,6 +577,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                         : '1',
                   }}
                   disabled={
+                    b.key === '_missing' ||
                     b.chart_doc_count < MINIMUM_CASES ||
                     (selectedSurvivalValues.length >= MAXIMUM_CURVES &&
                       selectedSurvivalValues.indexOf(b.key) === -1)

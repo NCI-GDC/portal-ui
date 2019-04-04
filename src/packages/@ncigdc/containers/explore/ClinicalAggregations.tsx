@@ -12,7 +12,7 @@ import {
 import { Column } from '@ncigdc/uikit/Flex';
 import {
   addAllFacets,
-  changeFacetNames,
+  changeExpandedStatus,
   expandOneCategory,
 } from '@ncigdc/dux/facetsExpandedStatus';
 import { WrapperComponent } from '@ncigdc/components/FacetWrapper';
@@ -346,7 +346,8 @@ const enhance = compose(
                   }}
                 >
                   <div
-                    onClick={() => dispatch(changeFacetNames(facet.field, ''))}
+                    onClick={() =>
+                      dispatch(changeExpandedStatus(facet.field, ''))}
                     style={{
                       color: theme.primary,
                       fontSize: '1.7rem',
@@ -423,10 +424,9 @@ const enhance = compose(
                             }
                             setCollapsed={(collapsed: any) =>
                               dispatch(
-                                changeFacetNames(
+                                changeExpandedStatus(
                                   facet.field,
-                                  componentFacet.field.split('.').pop(),
-                                  !collapsed
+                                  componentFacet.field.split('.').pop()
                                 )
                               )}
                             category={facet.field}

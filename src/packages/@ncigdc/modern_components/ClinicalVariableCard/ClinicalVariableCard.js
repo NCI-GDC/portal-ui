@@ -161,11 +161,6 @@ const enhance = compose(
     hits: viewer && viewer.explore.cases.hits,
   })),
   withState('selectedSurvivalData', 'setSelectedSurvivalData', {}),
-  withState(
-    'hasEnoughSurvivalDataValues',
-    'setHasEnoughSurvivalDataValues',
-    []
-  ),
   withState('selectedSurvivalValues', 'setSelectedSurvivalValues', []),
   withState('selectedSurvivalLoadingIds', 'setSelectedSurvivalLoadingIds', []),
   withState('survivalPlotLoading', 'setSurvivalPlotLoading', true),
@@ -182,7 +177,6 @@ const enhance = compose(
       setSelectedSurvivalValues,
       selectedSurvivalValues,
       setSelectedSurvivalLoadingIds,
-      setHasEnoughSurvivalDataValues,
     }) => ({
       populateSurvivalArrays: () => {
         setSurvivalPlotLoading(true);
@@ -432,7 +426,6 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
   selectedSurvivalData,
   selectedSurvivalValues,
   updateSelectedSurvivalValues,
-  hasEnoughSurvivalDataValues,
   filters,
   stats,
   hits,
@@ -628,6 +621,12 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                     color: 'white',
                     margin: '0 auto',
                     position: 'static',
+                    opacity:
+                      b.chart_doc_count < MINIMUM_CASES ||
+                      (selectedSurvivalValues.length >= MAXIMUM_CURVES &&
+                        selectedSurvivalValues.indexOf(b.key) === -1)
+                        ? '0.33'
+                        : '1',
                   }}
                   disabled={
                     b.chart_doc_count < MINIMUM_CASES ||

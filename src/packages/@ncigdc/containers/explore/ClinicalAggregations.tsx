@@ -12,7 +12,7 @@ import {
 import { Column } from '@ncigdc/uikit/Flex';
 import {
   addAllFacets,
-  changeFacetNames,
+  changeExpandedStatus,
   expandOneCategory,
 } from '@ncigdc/dux/facetsExpandedStatus';
 import { WrapperComponent } from '@ncigdc/components/FacetWrapper';
@@ -326,15 +326,16 @@ const enhance = compose(
             facet => !searchValue || filteredFacets[facet.field].length > 0 // If the user is searching for something, hide the presetFacet with no value.
           )
           .map(facet => {
+            const headerHeight = '51px';
+            const bannerHeight = 40;
             return (
               <div key={facet.title + 'div'}>
                 <Row
                   style={{
                     position: 'sticky',
-                    // 51px is height of header, 40 is the height of banner;
-                    top: `calc(51px + ${notifications.filter(
+                    top: `calc(${headerHeight} + ${notifications.filter(
                       (n: any) => !n.dismissed
-                    ).length * 40}px)`,
+                    ).length * bannerHeight}px)`,
                     background: '#eeeeee',
                     zIndex: 10,
                     cursor: 'pointer',
@@ -345,7 +346,8 @@ const enhance = compose(
                   }}
                 >
                   <div
-                    onClick={() => dispatch(changeFacetNames(facet.field, ''))}
+                    onClick={() =>
+                      dispatch(changeExpandedStatus(facet.field, ''))}
                     style={{
                       color: theme.primary,
                       fontSize: '1.7rem',
@@ -422,34 +424,29 @@ const enhance = compose(
                             }
                             setCollapsed={(collapsed: any) =>
                               dispatch(
-                                changeFacetNames(
+                                changeExpandedStatus(
                                   facet.field,
-                                  componentFacet.field.split('.').pop(),
-                                  !collapsed
+                                  componentFacet.field.split('.').pop()
                                 )
                               )}
                             category={facet.field}
-                            DescriptionComponent={
-                              <div key={componentFacet.description}>
-                                <ResultHighlights
-                                  item={{
-                                    description: componentFacet.description,
-                                  }}
-                                  query={searchValue}
-                                  heighlightStyle={{
-                                    backgroundColor: '#FFFF00',
-                                  }}
-                                  style={{
-                                    fontStyle: 'italic',
-                                    paddingLeft: '30px',
-                                    paddingRight: '10px',
-                                    width: '320px',
-                                  }}
-                                />
-                              </div>
-                            }
                           />,
-                          ,
+                          <div key={componentFacet.description}>
+                            {searchValue.length > 0 ? (
+                              <ResultHighlights
+                                item={{
+                                  description: componentFacet.description,
+                                }}
+                                query={searchValue}
+                                heighlightStyle={{ backgroundColor: '#FFFF00' }}
+                                style={{
+                                  fontStyle: 'italic',
+                                  paddingLeft: '30px',
+                                  paddingRight: '10px',
+                                }}
+                              />
+                            ) : null}
+                          </div>,
                         ];
                       })}
                     {filteredFacets[facet.field].length > 5 && (

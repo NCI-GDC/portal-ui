@@ -90,7 +90,10 @@ export const WrapperComponent = ({
   category,
   dispatch,
   expandedAll,
+<<<<<<< HEAD
   DescriptionComponent = null,
+=======
+>>>>>>> PRTL-2447
 }: any) => {
   const facetType = getFacetType(facet);
   const displayTitle = title || fieldNameToTitle(facet.field);

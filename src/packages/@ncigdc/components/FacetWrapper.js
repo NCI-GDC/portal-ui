@@ -85,7 +85,7 @@ export const WrapperComponent = ({
   headerStyle,
   isRemovable,
   additionalProps,
-  maxNum = 5,
+  maxShowing = 5,
   searchValue,
   category,
   dispatch,
@@ -132,7 +132,7 @@ export const WrapperComponent = ({
         buckets={(aggregation || { buckets: [] }).buckets}
         searchValue={searchValue}
         showingValueSearch={showingValueSearch}
-        maxNum={maxNum}
+        maxShowing={maxShowing}
         {...additionalProps}
       />
     ),

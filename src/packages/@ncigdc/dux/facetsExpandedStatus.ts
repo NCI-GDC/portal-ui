@@ -16,13 +16,9 @@ const addAllFacets = (facets: any) => ({
   payload: { facets },
 });
 
-const changeFacetNames = (
-  category: string,
-  field: string,
-  expanded?: boolean
-) => ({
+const changeExpandedStatus = (category: string, field: string) => ({
   type: facetsExpandedStatus.CHANGE_EXPANDED_STATUS,
-  payload: { category, field, expanded },
+  payload: { category, field },
 });
 
 const expandOneCategory = (category: string, isExpanded: boolean) => ({
@@ -62,7 +58,7 @@ const reducer = (state: any = initialState, action: any) => {
       }));
     }
     case facetsExpandedStatus.CHANGE_EXPANDED_STATUS: {
-      const { category, field, expanded } = action.payload;
+      const { category, field } = action.payload;
       if (field) {
         return {
           ...state,
@@ -79,10 +75,7 @@ const reducer = (state: any = initialState, action: any) => {
           ...state,
           [category]: {
             ...state[category],
-            expanded:
-              typeof expanded === 'undefined'
-                ? !state[category].expanded
-                : expanded,
+            expanded: !state[category].expanded,
           },
         };
       }
@@ -122,7 +115,7 @@ const reducer = (state: any = initialState, action: any) => {
 
 export {
   addAllFacets,
-  changeFacetNames,
+  changeExpandedStatus,
   expandOneCategory,
   showingMoreByCategory
 };

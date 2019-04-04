@@ -12,9 +12,8 @@ import {
 import { Column } from '@ncigdc/uikit/Flex';
 import {
   addAllFacets,
-  changeFacetNames,
+  changeExpandedStatus,
   expandOneCategory,
-  showingMoreByCategory,
 } from '@ncigdc/dux/facetsExpandedStatus';
 import { WrapperComponent } from '@ncigdc/components/FacetWrapper';
 import { withTheme } from '@ncigdc/theme';
@@ -246,12 +245,10 @@ const enhance = compose(
                 searchValue
               ),
               !facetExclusionTest(facet),
-              !shouldHideUselessFacets || facet.field in usefulFacets,
+              !shouldHideUselessFacets ||
+                usefulFacets.hasOwnProperty(facet.field),
               facet.full.startsWith(header.full),
-              !header.excluded || !facet.full.startsWith(header.excluded),
-              !facet.field.endsWith('id'),
-              !facet.field.includes('updated_datetime'),
-              !facet.field.includes('created_datetime'),
+              !_.some(header.excluded.map(regex => regex.test(facet.full))),
             ]);
           }),
         };
@@ -329,14 +326,16 @@ const enhance = compose(
             facet => !searchValue || filteredFacets[facet.field].length > 0 // If the user is searching for something, hide the presetFacet with no value.
           )
           .map(facet => {
+            const headerHeight = '51px';
+            const bannerHeight = 40;
             return (
               <div key={facet.title + 'div'}>
                 <Row
                   style={{
                     position: 'sticky',
-                    top: `calc(51px + ${notifications.filter(
+                    top: `calc(${headerHeight} + ${notifications.filter(
                       (n: any) => !n.dismissed
-                    ).length * 40}px)`,
+                    ).length * bannerHeight}px)`,
                     background: '#eeeeee',
                     zIndex: 10,
                     cursor: 'pointer',
@@ -347,7 +346,8 @@ const enhance = compose(
                   }}
                 >
                   <div
-                    onClick={() => dispatch(changeFacetNames(facet.field, ''))}
+                    onClick={() =>
+                      dispatch(changeExpandedStatus(facet.field, ''))}
                     style={{
                       color: theme.primary,
                       fontSize: '1.7rem',
@@ -388,12 +388,7 @@ const enhance = compose(
                 {facetsExpandedStatus[facet.field].expanded && (
                   <Column>
                     {_.orderBy(filteredFacets[facet.field], ['field'], ['asc'])
-                      .slice(
-                        0,
-                        facetsExpandedStatus[facet.field].showingMore
-                          ? Infinity
-                          : 5
-                      )
+                      .slice(0, showingMore[facet.field] ? Infinity : 5)
                       .map((componentFacet: any) => {
                         return [
                           <WrapperComponent
@@ -425,10 +420,9 @@ const enhance = compose(
                             }
                             setCollapsed={(collapsed: any) =>
                               dispatch(
-                                changeFacetNames(
+                                changeExpandedStatus(
                                   facet.field,
-                                  componentFacet.field.split('.').pop(),
-                                  !collapsed
+                                  componentFacet.field.split('.').pop()
                                 )
                               )}
                             category={facet.field}

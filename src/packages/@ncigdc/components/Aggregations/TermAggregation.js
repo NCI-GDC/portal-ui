@@ -31,7 +31,7 @@ type TProps = {
   collapsed: boolean,
   setShowingMore: Function,
   showingMore: boolean,
-  maxNum: number,
+  maxShowing: number,
   searchValue: string,
   isMatchingSearchValue: boolean,
 };
@@ -60,7 +60,7 @@ export const BottomRow = styled(Row, {
 let input;
 const TermAggregation = (props: TProps) => {
   const dotField = props.field.replace(/__/g, '.');
-  const { filteredBuckets, maxNum, filter } = props;
+  const { filteredBuckets, maxShowing, filter } = props;
 
   return (
     <LocationSubscriber>
@@ -105,7 +105,7 @@ const TermAggregation = (props: TProps) => {
             {!props.collapsed && (
               <Column>
                 {_.orderBy(filteredBuckets, 'doc_count', 'desc')
-                  .slice(0, props.showingMore ? Infinity : maxNum)
+                  .slice(0, props.showingMore ? Infinity : maxShowing)
                   .map(b => ({ ...b, name: b.key_as_string || b.key }))
                   .map(bucket => (
                     <BucketRow key={bucket.name}>
@@ -177,7 +177,7 @@ const TermAggregation = (props: TProps) => {
                       </CountBubble>
                     </BucketRow>
                   ))}
-                {filteredBuckets.length > maxNum && (
+                {filteredBuckets.length > maxShowing && (
                   <BottomRow>
                     <ToggleMoreLink
                       onClick={() => props.setShowingMore(!props.showingMore)}

@@ -8,10 +8,14 @@
   },
   "homepage": "https://portal.gdc.cancer.gov/",
   "scripts": {
-    "start": "concurrently --kill-others 'npm run start-ui' 'npm run relay -- --watch'",
-    "start-ui": "BROWSER=none react-app-rewired start --scripts-version react-scripts-ts",
-    "build": "npm run relay && react-app-rewired build --scripts-version react-scripts-ts",
-    "test": "react-app-rewired test --scripts-version react-scripts-ts --env=jsdom",
+    "start":
+      "concurrently --kill-others 'npm run start-ui' 'npm run relay -- --watch'",
+    "start-ui":
+      "BROWSER=none react-app-rewired start --scripts-version react-scripts-ts",
+    "build":
+      "npm run relay && react-app-rewired build --scripts-version react-scripts-ts",
+    "test":
+      "react-app-rewired test --scripts-version react-scripts-ts --env=jsdom",
     "lint": "tslint -p tsconfig.json",
     "relay": "relay-compiler --src src --schema ./data/schema.graphql",
     "schema": "node ./data/getSchema"

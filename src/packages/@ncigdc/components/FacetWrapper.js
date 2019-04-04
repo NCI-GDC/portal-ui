@@ -17,7 +17,6 @@ import RangeFacet from '@ncigdc/components/Aggregations/RangeFacet';
 import ExactMatchFacet from '@ncigdc/components/Aggregations/ExactMatchFacet';
 import styled from '@ncigdc/theme/styled';
 import FacetHeader from '@ncigdc/components/Aggregations/FacetHeader';
-
 const COMMON_PREPOSITIONS = [
   'a',
   'an',
@@ -72,7 +71,96 @@ const getFacetType = facet => {
 const FacetWrapperDiv = styled.div({
   position: 'relative',
 });
+export const WrapperComponent = ({
+  setShowingValueSearch,
+  showingValueSearch,
+  collapsed,
+  isMatchingSearchValue,
+  setCollapsed,
+  facet,
+  title,
+  aggregation = { buckets: [] },
+  handleRequestRemove,
+  style,
+  headerStyle,
+  isRemovable,
+  additionalProps,
+  maxShowing = 5,
+  searchValue,
+  category,
+  dispatch,
+  expandedAll,
+}: any) => {
+  const facetType = getFacetType(facet);
+  const displayTitle = title || fieldNameToTitle(facet.field);
+  const commonProps = {
+    style,
+    title: displayTitle,
+    collapsed,
+  };
 
+  const facetComponent = {
+    exact: () => (
+      <ExactMatchFacet
+        {...commonProps}
+        fieldNoDoctype={facet.field}
+        doctype={facet.doc_type}
+        placeholder={
+          facet.placeholder ? facet.placeholder : `Enter ${commonProps.title}`
+        }
+        {...additionalProps}
+      />
+    ),
+    datetime: () => (
+      <DateFacet field={facet.full} {...commonProps} {...additionalProps} />
+    ),
+    range: () => (
+      <RangeFacet
+        field={facet.full}
+        convertDays={false}
+        max={(aggregation.stats || { max: 0 }).max}
+        min={(aggregation.stats || { min: 0 }).min}
+        {...commonProps}
+        {...additionalProps}
+      />
+    ),
+    terms: () => (
+      <TermAggregation
+        field={facet.full}
+        {...commonProps}
+        isMatchingSearchValue={isMatchingSearchValue}
+        buckets={(aggregation || { buckets: [] }).buckets}
+        searchValue={searchValue}
+        showingValueSearch={showingValueSearch}
+        maxShowing={maxShowing}
+        {...additionalProps}
+      />
+    ),
+  }[facetType]();
+  const hasValueSearch =
+    facetType === 'terms' &&
+    (aggregation || { buckets: [] }).buckets.filter(b => b.key !== '_missing')
+      .length >= 20;
+
+  return (
+    <FacetWrapperDiv style={style} className="test-facet">
+      <FacetHeader
+        title={displayTitle}
+        field={facet.full}
+        searchValue={searchValue}
+        handleRequestRemove={handleRequestRemove}
+        isRemovable={isRemovable}
+        hasValueSearch={hasValueSearch}
+        collapsed={collapsed}
+        setCollapsed={setCollapsed}
+        showingValueSearch={showingValueSearch}
+        setShowingValueSearch={setShowingValueSearch}
+        style={headerStyle}
+      />
+      <div style={{ paddingLeft: '10px' }}>{facetComponent}</div>
+    </FacetWrapperDiv>
+  );
+};
 const FacetWrapper = compose(
   defaultProps({
     onRequestRemove: _.noop,
@@ -82,99 +170,7 @@ const FacetWrapper = compose(
     onRequestRemove: 'handleRequestRemove',
   }),
   withState('showingValueSearch', 'setShowingValueSearch', false),
-  withState(
-    'collapsed',
-    'setCollapsed',
-    props => props.collapsed || props.isMatchingSearchValue
-  )
-)(
-  ({
-    setShowingValueSearch,
-    showingValueSearch,
-    collapsed,
-    isMatchingSearchValue,
-    setCollapsed,
-    facet,
-    title,
-    aggregation = { buckets: [] },
-    handleRequestRemove,
-    style,
-    headerStyle,
-    isRemovable,
-    additionalProps,
-    maxNum = 5,
-    searchValue,
-  }) => {
-    const facetType = getFacetType(facet);
-    const displayTitle = title || fieldNameToTitle(facet.field);
-    const commonProps = {
-      style,
-      title: displayTitle,
-      collapsed,
-    };
-
-    const facetComponent = {
-      exact: () => (
-        <ExactMatchFacet
-          {...commonProps}
-          fieldNoDoctype={facet.field}
-          doctype={facet.doc_type}
-          placeholder={
-            facet.placeholder ? facet.placeholder : `Enter ${commonProps.title}`
-          }
-          {...additionalProps}
-        />
-      ),
-      datetime: () => (
-        <DateFacet field={facet.full} {...commonProps} {...additionalProps} />
-      ),
-      range: () => (
-        <RangeFacet
-          field={facet.full}
-          convertDays={false}
-          max={(aggregation.stats || { max: 0 }).max}
-          min={(aggregation.stats || { min: 0 }).min}
-          {...commonProps}
-          {...additionalProps}
-        />
-      ),
-      terms: () => (
-        <TermAggregation
-          field={facet.full}
-          {...commonProps}
-          isMatchingSearchValue={isMatchingSearchValue}
-          buckets={(aggregation || { buckets: [] }).buckets}
-          searchValue={searchValue}
-          showingValueSearch={showingValueSearch}
-          maxNum={maxNum}
-          {...additionalProps}
-        />
-      ),
-    }[facetType]();
-    const hasValueSearch =
-      facetType === 'terms' &&
-      (aggregation || { buckets: [] }).buckets.filter(b => b.key !== '_missing')
-        .length >= 20;
-
-    return (
-      <FacetWrapperDiv style={style} className="test-facet">
-        <FacetHeader
-          title={displayTitle}
-          field={facet.full}
-          searchValue={searchValue}
-          handleRequestRemove={handleRequestRemove}
-          isRemovable={isRemovable}
-          hasValueSearch={hasValueSearch}
-          collapsed={collapsed}
-          setCollapsed={setCollapsed}
-          showingValueSearch={showingValueSearch}
-          setShowingValueSearch={setShowingValueSearch}
-          style={headerStyle}
-        />
-        <div style={{ paddingLeft: '10px' }}>{facetComponent}</div>
-      </FacetWrapperDiv>
-    );
-  }
-);
+  withState('collapsed', 'setCollapsed', props => props.collapsed)
+)(WrapperComponent);
 
 export default FacetWrapper;

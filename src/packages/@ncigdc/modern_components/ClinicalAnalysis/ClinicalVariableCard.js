@@ -316,6 +316,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
           ]),
         ],
       };
+
       return {
         nextInterval: key,
         data: [
@@ -338,7 +339,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
               }),
             }),
             key: getRangeValue(key, fieldName),
-            rangeFilters,
+            rangeValues: { min: key, max: Math.floor(acc.nextInterval - 1) },
           },
         ],
       };
@@ -570,13 +571,9 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
     : totalDocs;
 
   const getContinuousSetFilters = () => {
-    const rangeValues = _.flattenDeep(
-      selectedBuckets.map(sB => {
-        return sB.rangeFilters.content.map(bla => Number(bla.content.value));
-      })
-    );
+    const bucketRanges = selectedBuckets.map(b => b.rangeValues);
 
-    if (rangeValues.length === 1) {
+    if (bucketRanges.length === 1 && bucketRanges[0].max === -1) {
       return addInFilters(filters, {
         op: 'and',
         content: [
@@ -584,7 +581,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
             op: '>=',
             content: {
               field: fieldName,
-              value: rangeValues,
+              value: [bucketRanges[0].min],
             },
           },
         ],
@@ -598,14 +595,14 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
           op: '>=',
           content: {
             field: fieldName,
-            value: [_.min(rangeValues)],
+            value: [_.min(bucketRanges.map(range => range.min))],
           },
         },
         {
           op: '<=',
           content: {
             field: fieldName,
-            value: [_.max(rangeValues)],
+            value: [_.max(bucketRanges.map(range => range.max))],
           },
         },
       ],

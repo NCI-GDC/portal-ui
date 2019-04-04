@@ -367,20 +367,20 @@ const enhance = compose(
                 .map(data => ({ ...data, doc_count: undefined }));
         console.log('valuesForPlot', valuesForPlot);
 
-        getSurvivalCurvesArray({
-          field: fieldName,
-          values: valuesForPlot,
-          currentFilters: filters,
-          plotType: variable.plotTypes,
-        }).then(data => {
-          console.log('getSurvivalCurvesArray data', data);
-          const notEnoughStr = '-not-enough-data';
-          const matchedValues = data.legend
-            .map(l => l.key)
-            .filter(k => !k.match(notEnoughStr));
-          console.log('matchedValues', matchedValues);
-          setHasEnoughSurvivalDataValues(matchedValues);
-        });
+        // getSurvivalCurvesArray({
+        //   field: fieldName,
+        //   values: valuesForPlot,
+        //   currentFilters: filters,
+        //   plotType: variable.plotTypes,
+        // }).then(data => {
+        //   console.log('getSurvivalCurvesArray data', data);
+        //   const notEnoughStr = '-not-enough-data';
+        //   const matchedValues = data.legend
+        //     .map(l => l.key)
+        //     .filter(k => !k.match(notEnoughStr));
+        //   console.log('matchedValues', matchedValues);
+        //   setHasEnoughSurvivalDataValues(matchedValues);
+        // });
       },
       populateSurvivalArrays: () => {
         setSurvivalPlotLoading(true);
@@ -615,7 +615,8 @@ const enhance = compose(
     })
   ),
   withPropsOnChange(
-    ['filters.content[0].content.value', 'variable.active_chart'],
+    // ['filters.content[0].content.value', 'variable.active_chart'],
+    ['filters', 'variable'],
     ({
       filters,
       fieldName,
@@ -626,7 +627,7 @@ const enhance = compose(
       console.log('filters', filters);
       console.log('fieldName', fieldName);
       if (variable.active_chart === 'survival') {
-        populateSurvivalData();
+        // populateSurvivalData();
         populateSurvivalArrays();
         // setAllSurvivalValueCounts();
       }
@@ -830,14 +831,15 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
             survival: (
               <Tooltip
                 Component={
-                  !hasEnoughOverallSurvivalData ||
-                  hasEnoughSurvivalDataValues.indexOf(b.key) === -1
-                    ? 'Not enough survival data'
-                    : selectedSurvivalValues.indexOf(b.key) > -1
-                      ? `Click icon to remove ${b.key}`
-                      : selectedSurvivalValues.length < MAXIMUM_CURVES
-                        ? `Click icon to plot ${b.key}`
-                        : `Maximum plots (${MAXIMUM_CURVES}) reached`
+                  // !hasEnoughOverallSurvivalData ||
+                  // hasEnoughSurvivalDataValues.indexOf(b.key) === -1
+                  //   ? 'Not enough survival data'
+                  //   :
+                  selectedSurvivalValues.indexOf(b.key) > -1
+                    ? `Click icon to remove ${b.key}`
+                    : selectedSurvivalValues.length < MAXIMUM_CURVES
+                      ? `Click icon to plot ${b.key}`
+                      : `Maximum plots (${MAXIMUM_CURVES}) reached`
                 }
               >
                 <Button
@@ -852,10 +854,10 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                     margin: '0 auto',
                     position: 'static',
                   }}
-                  disabled={
-                    !hasEnoughOverallSurvivalData ||
-                    hasEnoughSurvivalDataValues.indexOf(b.key) === -1
-                  }
+                  // disabled={
+                  //   !hasEnoughOverallSurvivalData ||
+                  //   hasEnoughSurvivalDataValues.indexOf(b.key) === -1
+                  // }
                   onClick={() => {
                     console.log('clicked b', b);
                     updateSelectedSurvivalValues(displayData, b);

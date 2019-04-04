@@ -273,8 +273,8 @@ function renderSurvivalPlot(props: TProps): void {
             <br />
             Survival Rate: {Math.round(survivalEstimate * 100)}%<br />
             {censored
-              ? `Interval of last follow-up: ${time.toLocaleString()} days`
-              : `Time of Death: ${time.toLocaleString()} days`}
+              ? `Interval of last follow-up: ${time.toLocaleString()} years`
+              : `Time of Death: ${time.toLocaleString()} years`}
           </span>
         );
       },

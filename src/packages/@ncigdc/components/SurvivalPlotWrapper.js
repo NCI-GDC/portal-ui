@@ -96,7 +96,6 @@ const SurvivalPlotWrapper = ({
   survivalPlotLoading = false,
   uniqueClass,
   palette = [colors(0), colors(1), colors(2), colors(3), colors(4)],
-  customClass,
   plotType,
 }: TProps) => {
   const { results = [], overallStats = {} } = rawData || {};
@@ -107,7 +106,6 @@ const SurvivalPlotWrapper = ({
       loading={survivalPlotLoading}
       height={height}
       className={uniqueClass}
-      className={customClass}
     >
       {!survivalPlotLoading && (
         <Column className="test-survival-plot-meta">

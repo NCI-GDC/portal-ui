@@ -22,7 +22,6 @@ import { makeFilter } from '@ncigdc/utils/filters';
 import {
   getDefaultCurve,
   getSurvivalCurvesArray,
-  enoughData,
 } from '@ncigdc/utils/survivalplot';
 import SurvivalPlotWrapper from '@ncigdc/components/SurvivalPlotWrapper';
 import { SpinnerIcon } from '@ncigdc/theme/icons';
@@ -44,7 +43,7 @@ import {
 import { humanify } from '@ncigdc/utils/string';
 import { getLowerAgeYears, getUpperAgeYears } from '@ncigdc/utils/ageDisplay';
 import { IS_CDAVE_DEV } from '@ncigdc/utils/constants';
-import { MAXIMUM_CURVES } from '../../utils/survivalplot';
+import { MAXIMUM_CURVES, MINIMUM_CASES } from '../../utils/survivalplot';
 
 const colors = scaleOrdinal(schemeCategory10);
 
@@ -610,15 +609,13 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
             survival: (
               <Tooltip
                 Component={
-                  // !hasEnoughOverallSurvivalData ||
-                  // hasEnoughSurvivalDataValues.indexOf(b.key) === -1
-                  //   ? 'Not enough survival data'
-                  //   :
-                  selectedSurvivalValues.indexOf(b.key) > -1
-                    ? `Click icon to remove ${b.key}`
-                    : selectedSurvivalValues.length < MAXIMUM_CURVES
-                      ? `Click icon to plot ${b.key}`
-                      : `Maximum plots (${MAXIMUM_CURVES}) reached`
+                  b.chart_doc_count < MINIMUM_CASES
+                    ? 'Not enough data'
+                    : selectedSurvivalValues.indexOf(b.key) > -1
+                      ? `Click icon to remove ${b.key}`
+                      : selectedSurvivalValues.length < MAXIMUM_CURVES
+                        ? `Click icon to plot ${b.key}`
+                        : `Maximum plots (${MAXIMUM_CURVES}) reached`
                 }
               >
                 <Button
@@ -632,10 +629,11 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                     margin: '0 auto',
                     position: 'static',
                   }}
-                  // disabled={
-                  //   !hasEnoughOverallSurvivalData ||
-                  //   hasEnoughSurvivalDataValues.indexOf(b.key) === -1
-                  // }
+                  disabled={
+                    b.chart_doc_count < MINIMUM_CASES ||
+                    (selectedSurvivalValues.length >= MAXIMUM_CURVES &&
+                      selectedSurvivalValues.indexOf(b.key) === -1)
+                  }
                   onClick={() => {
                     updateSelectedSurvivalValues(displayData, b);
                   }}
@@ -965,7 +963,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                   {...overallSurvivalData}
                   height={202}
                   plotType="clinicalOverall"
-                  customClass="categorical-survival-plot"
+                  unqiueClass="clinical-survival-plot"
                   survivalPlotLoading={survivalPlotLoading}
                 />
               ) : (
@@ -973,7 +971,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                   {...selectedSurvivalData}
                   height={202}
                   plotType="categorical"
-                  customClass="categorical-survival-plot"
+                  unqiueClass="clinical-survival-plot"
                   survivalPlotLoading={survivalPlotLoading}
                 />
               )}

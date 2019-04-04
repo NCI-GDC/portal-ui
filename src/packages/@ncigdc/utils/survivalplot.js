@@ -23,7 +23,7 @@ type TPropsMulti = {
   size?: number,
 };
 
-const MINIMUM_CASES = 10;
+export const MINIMUM_CASES = 10;
 export const MAXIMUM_CURVES = 5;
 
 const Symbol = styled.span({
@@ -231,19 +231,6 @@ export const getSurvivalCurvesArray = memoize(
     size,
     plotType,
   }: TPropsMulti): Promise<Object> => {
-    // TODO:
-    // 1. separate categorical plots
-    // 2. feed real data to continuous plot
-    // 3. sort continuous plot somehow by # of cases?
-    // -- do I need to do that here or in clinicalVariableCard?
-
-    console.log('start of getSurvivalCurvesArray function');
-    console.log('getSurvivalCurvesArray values', values);
-    console.log('getSurvivalCurvesArray field', field);
-    console.log('getSurvivalCurvesArray currentFilters', currentFilters);
-    console.log('getSurvivalCurvesArray size', size);
-    console.log('getSurvivalCurvesArray plotType', plotType);
-
     const filters = values.slice(0, MAXIMUM_CURVES).map(
       value =>
         plotType === 'continuous'
@@ -257,16 +244,8 @@ export const getSurvivalCurvesArray = memoize(
             )
     );
 
-    console.log('getSurvivalCurvesArray filters', filters);
-
     const rawData = await fetchCurves(filters, size, true);
-    console.log('getSurvivalCurvesArray rawData', rawData);
-
     const hasEnoughDataOnSomeCurves = enoughDataOnSomeCurves(rawData);
-    console.log(
-      'getSurvivalCurvesArray hasEnoughDataOnSomeCurves',
-      hasEnoughDataOnSomeCurves
-    );
 
     const getCaseCount = i =>
       _.get(rawData, `results[${i}].donors`, []).length.toLocaleString();

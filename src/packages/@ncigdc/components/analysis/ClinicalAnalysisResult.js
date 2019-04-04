@@ -449,7 +449,7 @@ const ClinicalAnalysisResult = ({
                   <SurvivalPlotWrapper
                     {...overallSurvivalData}
                     height={180}
-                    customClass="categorical-survival-plot"
+                    uniqueClass="clinical-survival-plot"
                     survivalPlotLoading={survivalPlotLoading}
                   />
                 </div>
@@ -499,7 +499,7 @@ const ClinicalAnalysisResult = ({
                   {...overallSurvivalData}
                   height={430}
                   plotType="clinicalOverall"
-                  customClass="categorical-survival-plot"
+                  uniqueClass="clinical-survival-plot"
                   survivalPlotLoading={survivalPlotLoading}
                 />
               </div>

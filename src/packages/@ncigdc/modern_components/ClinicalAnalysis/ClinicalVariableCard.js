@@ -152,14 +152,6 @@ const styles = {
 const enhance = compose(
   connect((state: any) => ({ analysis: state.analysis })),
   withTheme,
-  withPropsOnChange(['viewer', 'aggData'], ({ viewer, aggData }) => ({
-    parsedFacets:
-      viewer && viewer.explore.cases.facets
-        ? tryParseJSON(viewer.explore.cases.facets, {})
-        : {},
-    continuousAggs: aggData && aggData.explore.cases.aggregations,
-    hits: viewer && viewer.explore.cases.hits,
-  })),
   withState('selectedSurvivalData', 'setSelectedSurvivalData', {}),
   withState('overallSurvivalData', 'setOverallSurvivalData', {}),
   withState('selectedSurvivalLoadingId', 'setSelectedSurvivalLoadingId', ''),
@@ -201,9 +193,14 @@ const enhance = compose(
       },
     })
   ),
-  withPropsOnChange(['filters'], ({ filters, populateSurvivalData }) => {
-    populateSurvivalData();
-  })
+  withPropsOnChange(
+    ['filters'],
+    ({ filters, populateSurvivalData, variable }) => {
+      if (variable.active_chart === 'survival') {
+        populateSurvivalData();
+      }
+    }
+  )
 );
 
 const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
@@ -215,7 +212,6 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
   dispatch,
   id,
   parsedFacets,
-  continuousAggs,
   setId,
   survivalData,
   hasEnoughOverallSurvivalData,
@@ -226,19 +222,19 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
   selectedSurvivalLoadingId,
   filters,
   stats,
-  hits,
+  data,
 }) => {
   const rawQueryData =
     variable.plotTypes === 'continuous'
       ? (
-          (continuousAggs &&
-            continuousAggs[fieldName.replace('.', '__')].histogram) || {
+          (data.explore &&
+            data.explore.cases.aggregations[fieldName.replace('.', '__')]
+              .histogram) || {
             buckets: [],
           }
         ).buckets
-      : (_.values(parsedFacets)[0] || { buckets: [] }).buckets;
-
-  const totalDocs = hits.total;
+      : (data || { buckets: [] }).buckets;
+  const totalDocs = (data.hits || { total: 0 }).total;
 
   const getCategoricalTableData = (rawData, type) => {
     if (_.isEmpty(rawData)) {

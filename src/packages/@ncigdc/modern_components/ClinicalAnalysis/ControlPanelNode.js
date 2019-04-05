@@ -25,21 +25,14 @@ import {
 } from '@ncigdc/dux/analysis';
 import { ToggleMoreLink } from '@ncigdc/components/Aggregations/TermAggregation';
 
-import { CLINICAL_BLACKLIST } from '@ncigdc/utils/constants';
-
 const MAX_VISIBLE_FACETS = 5;
 const MAX_FIELDS_LENGTH = 20;
-
-const validClinicalTypesRegex = /(demographic)|(diagnoses)|(exposures)|(treatments)|(follow_ups)/;
-const blacklistRegex = new RegExp(
-  CLINICAL_BLACKLIST.map(item => `(${item})`).join('|')
-);
 
 const getPlotType = field => {
   if (!field || !field.type) {
     return 'categorical';
   }
-  // yes NumericAggregations is spelled wrong in the index
+  // yes NumericAggregations is spelled wrong in the index, will be fixed in 1.21.0
   if (
     field.type.name === 'Float' ||
     field.type.name === 'NumericAggergations' ||
@@ -64,17 +57,7 @@ const StyledToggleMoreLink = styled(ToggleMoreLink, {
 });
 
 const ClinicalGrouping = compose(
-  branch(
-    ({ fields, name }) => fields.length === 0,
-    renderComponent(({ name }) => (
-      <Column>
-        <div style={{ paddingRight: 10 }}>No fields found for {name}.</div>
-      </Column>
-    ))
-  ),
-  connect((state: any, props: any) => ({
-    analyses: state.analysis.saved,
-  })),
+  connect(),
   withState('collapsed', 'setCollapsed', false),
   withState('showingMore', 'setShowingMore', false)
 )(
@@ -84,14 +67,13 @@ const ClinicalGrouping = compose(
     setShowingMore,
     collapsed,
     setCollapsed,
-    analyses,
     analysis_id,
     dispatch,
     children,
     fields,
     name,
+    currentAnalysis,
   }) => {
-    const currentAnalysis = analyses.find(a => a.id === analysis_id);
     return (
       <Column style={{ marginBottom: 2 }}>
         <Row
@@ -140,9 +122,9 @@ const ClinicalGrouping = compose(
                 plotTypes: getPlotType(field),
               }))
               .map(({ fieldDescription, fieldName, type, plotTypes }, i) => {
-                const checked = Object.keys(currentAnalysis.variables).includes(
-                  fieldName
-                );
+                const checked = Object.keys(
+                  currentAnalysis.displayVariables
+                ).includes(fieldName);
                 const toggleAction = checked
                   ? removeClinicalAnalysisVariable
                   : addClinicalAnalysisVariable;
@@ -206,7 +188,6 @@ const FacetCheckbox = ({
   dispatch,
   analysis_id,
   fieldType,
-  analyses,
   disabled,
   plotTypes,
   checked,
@@ -241,50 +222,59 @@ const FacetCheckbox = ({
   </div>
 );
 
-export default compose(
-  withProps(({ __type: { fields, name } }) => {
-    const filteredFields = _.head(
-      fields.filter(field => field.name === 'aggregations')
-    ).type.fields;
+export default compose(withTheme)(
+  ({
+    theme,
+    currentAnalysis,
+    dispatch,
+    clinicalAnalysisFields,
+    usefulFacets,
+    analysis_id,
+  }) => {
+    let groupedByClinicalType = _.groupBy(clinicalAnalysisFields, field => {
+      const sections = field.name.split('__');
+      if (sections.includes('treatments')) {
+        return sections[1];
+      } else {
+        return sections[0];
+      }
+    });
 
-    const clinicalAnalysisFields = filteredFields
-      .filter(field => validClinicalTypesRegex.test(field.name))
-      .filter(field => !blacklistRegex.test(field.name));
-    return { clinicalAnalysisFields };
-  }),
-  withTheme
-)(({ theme, analyses, analysis_id, dispatch, clinicalAnalysisFields }) => {
-  let groupedByClinicalType = _.groupBy(clinicalAnalysisFields, field => {
-    const sections = field.name.split('__');
-    if (sections.includes('treatments')) {
-      return sections[1];
-    } else {
-      return sections[0];
-    }
-  });
+    // will need to add other types as they become available
+    const clinicalTypeOrder = [
+      'demographic',
+      'diagnoses',
+      'treatments',
+      'exposures',
+      // 'follow_ups',
+    ];
 
-  // will need to add other types as they become available
-  const clinicalTypeOrder = [
-    'demographic',
-    'diagnoses',
-    'treatments',
-    'exposures',
-    // 'follow_ups',
-  ];
-  return (
-    <div>
-      {clinicalTypeOrder.map(clinicalType => {
-        const fields = groupedByClinicalType[clinicalType] || [];
-        return (
-          <ClinicalGrouping
-            key={clinicalType}
-            name={_.capitalize(singular(clinicalType))}
-            style={styles.category(theme)}
-            fields={fields}
-            analysis_id={analysis_id}
-          />
-        );
-      })}
-    </div>
-  );
-});
+    return (
+      <div>
+        <Row
+          style={{
+            padding: '5px 15px 15px',
+          }}
+        >
+          <span>
+            {(_.keys(usefulFacets) || []).length} of{' '}
+            {(clinicalAnalysisFields || []).length} fields with values
+          </span>
+        </Row>
+        {clinicalTypeOrder.map(clinicalType => {
+          const fields = groupedByClinicalType[clinicalType] || [];
+          return (
+            <ClinicalGrouping
+              key={clinicalType}
+              name={_.capitalize(singular(clinicalType))}
+              style={styles.category(theme)}
+              fields={fields}
+              currentAnalysis={currentAnalysis}
+              analysis_id={analysis_id}
+            />
+          );
+        })}
+      </div>
+    );
+  }
+);

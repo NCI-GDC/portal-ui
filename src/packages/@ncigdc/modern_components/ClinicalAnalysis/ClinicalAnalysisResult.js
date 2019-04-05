@@ -22,14 +22,14 @@ import { visualizingButton } from '@ncigdc/theme/mixins';
 import { zDepth1 } from '@ncigdc/theme/mixins';
 import EntityPageHorizontalTable from '@ncigdc/components/EntityPageHorizontalTable';
 import Dropdown from '@ncigdc/uikit/Dropdown';
-import ClinicalVariableCard from '@ncigdc/modern_components/ClinicalVariableCard';
-import withFacetData from '@ncigdc/modern_components/ClinicalVariableCard/ClinicalVariableCard.relay.js';
+import ClinicalVariableCard from './ClinicalVariableCard.js';
+import ContinuousAggregation from './ContinuousAggregationQuery';
 import DropdownItem from '@ncigdc/uikit/DropdownItem';
 import Input from '@ncigdc/uikit/Form/Input';
 import { withTheme } from '@ncigdc/theme';
 import countComponents from '@ncigdc/modern_components/Counts';
 import ExploreLink from '@ncigdc/components/Links/ExploreLink';
-import ControlPanelNode from '@ncigdc/modern_components/IntrospectiveType';
+import ControlPanelNode from './ControlPanelNode.js';
 import {
   updateClinicalAnalysisProperty,
   addAnalysis,
@@ -38,7 +38,8 @@ import withRouter from '@ncigdc/utils/withRouter';
 import BaseModal from '@ncigdc/components/Modals/BaseModal';
 import { setModal } from '@ncigdc/dux/modal';
 import EditableLabel from '@ncigdc/uikit/EditableLabel';
-import ContinuousAggregation from '@ncigdc/modern_components/ClinicalVariableCard/ContinuousAggregationQuery';
+import tryParseJSON from '@ncigdc/utils/tryParseJSON';
+import getUsefulFacets from '@ncigdc/utils/getUsefulFacets';
 
 // survival plot
 import { getDefaultCurve, enoughData } from '@ncigdc/utils/survivalplot';
@@ -152,6 +153,19 @@ const enhance = compose(
   withState('controlPanelExpanded', 'setControlPanelExpanded', true),
   withState('overallSurvivalData', 'setOverallSurvivalData', {}),
   withState('survivalPlotLoading', 'setSurvivalPlotLoading', true),
+  withPropsOnChange(
+    ['viewer'],
+    ({
+      viewer: {
+        explore: {
+          cases: { facets, hits },
+        },
+      },
+    }) => ({
+      parsedFacets: facets ? tryParseJSON(facets) : {},
+      hits,
+    })
+  ),
   withProps(
     ({
       setOverallSurvivalData,
@@ -211,10 +225,28 @@ const ClinicalAnalysisResult = ({
   overallSurvivalData,
   populateSurvivalData,
   survivalPlotLoading,
+  parsedFacets,
+  displayVariables,
+  clinicalAnalysisFields,
+  hits,
   ...props
 }: IAnalysisResultProps) => {
   const setName = Object.values(sets.case)[0];
   const setId = Object.keys(currentAnalysis.sets.case)[0];
+
+  if (hits.total === 0) {
+    return (
+      <Column style={{ margin: '2rem' }}>
+        <Row spacing={'10px'} style={{ alignItems: 'center', width: '80%' }}>
+          <Icon style={{ height: 50, width: 50 }} />
+          <h1 style={{ fontSize: '2.5rem', margin: 5 }}>Clinical Analysis</h1>
+        </Row>
+        <Row style={{ marginTop: '1rem', marginLeft: '1rem' }}>
+          Analysis is deprecated because {setName} is a deprecated set.
+        </Row>
+      </Column>
+    );
+  }
 
   const CountComponent = countComponents.case;
   const dropdownItems = Object.values(allSets.case)
@@ -413,7 +445,12 @@ const ClinicalAnalysisResult = ({
               />
             </Row>
             <Column style={{ marginTop: 10 }}>
-              <ControlPanelNode name={'ExploreCases'} analysis_id={id} />
+              <ControlPanelNode
+                clinicalAnalysisFields={clinicalAnalysisFields}
+                usefulFacets={getUsefulFacets(parsedFacets)}
+                currentAnalysis={currentAnalysis}
+                analysis_id={id}
+              />
             </Column>
           </Column>
         )}
@@ -505,7 +542,7 @@ const ClinicalAnalysisResult = ({
               </div>
             </Column>
 
-            {_.map(variables, (varProperties, varFieldName) => {
+            {_.map(displayVariables, (varProperties, varFieldName) => {
               const filters = {
                 op: 'and',
                 content: [
@@ -519,28 +556,19 @@ const ClinicalAnalysisResult = ({
                 ],
               };
 
-              const ContinuousWrapper = withFacetData(props => {
-                const facets = JSON.parse(props.viewer.explore.cases.facets);
+              if (varProperties.plotTypes === 'continuous') {
                 return (
                   <ContinuousAggregation
+                    key={varFieldName}
                     fieldName={varFieldName}
-                    stats={facets[varFieldName].stats}
+                    stats={parsedFacets[varFieldName].stats}
+                    hits={hits}
                     filters={filters}
                     variable={varProperties}
                     plots={plotTypes[varProperties.plotTypes || 'categorical']}
                     style={{ minWidth: controlPanelExpanded ? 310 : 290 }}
                     id={id}
                     setId={setId}
-                    viewer={props.viewer}
-                  />
-                );
-              });
-              if (varProperties.plotTypes === 'continuous') {
-                return (
-                  <ContinuousWrapper
-                    key={varFieldName}
-                    facetField={varFieldName.replace('cases.', '')}
-                    filters={filters}
                   />
                 );
               }
@@ -555,6 +583,7 @@ const ClinicalAnalysisResult = ({
                   facetField={varFieldName.replace('cases.', '')}
                   filters={filters}
                   setId={setId}
+                  data={{ ...parsedFacets[varFieldName], hits }}
                 />
               );
             })}

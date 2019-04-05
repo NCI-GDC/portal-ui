@@ -166,7 +166,6 @@ const enhance = compose(
             }
           ).buckets
         : (data || { buckets: [] }).buckets,
-    totalDocs: (data.hits || { total: 0 }).total,
   })),
   withProps(({ rawQueryData, variable, fieldName, setId }) => ({
     getBucketRangesAndFilters: (acc, { doc_count, key }) => {
@@ -373,8 +372,8 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
   data,
   rawQueryData,
   getBucketRangesAndFilters,
-  totalDocs,
 }) => {
+  const totalDocs = (data.hits || { total: 0 }).total;
   const getCategoricalTableData = (rawData, type) => {
     if (_.isEmpty(rawData)) {
       return [];

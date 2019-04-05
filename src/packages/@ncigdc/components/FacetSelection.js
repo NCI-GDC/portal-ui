@@ -20,7 +20,7 @@ import withPropsOnChange from '@ncigdc/utils/withPropsOnChange';
 
 const facetMatchesQuery = (facet, query) =>
   _.some([facet.field, facet.description].map(_.toLower), searchTarget =>
-    _.includes(searchTarget, query)
+    _.includes(searchTarget, query),
   );
 
 const styles = {
@@ -122,13 +122,13 @@ export default compose(
   withState(
     'isLoadingAdditionalFacetData',
     'setIsLoadingAdditionalFacetData',
-    false
+    false,
   ),
   withPropsOnChange(
     ['isLoadingFacetMapping', 'isLoadingAdditionalFacetData'],
     ({ isLoadingFacetMapping, isLoadingAdditionalFacetData }) => ({
       isLoading: _.some([isLoadingFacetMapping, isLoadingAdditionalFacetData]),
-    })
+    }),
   ),
   withState('shouldHideUselessFacets', 'setShouldHideUselessFacets', false),
   withProps(
@@ -144,7 +144,7 @@ export default compose(
         setShouldHideUselessFacets(shouldHideUselessFacets);
         localStorage.setItem(
           'shouldHideUselessFacets',
-          JSON.stringify(shouldHideUselessFacets)
+          JSON.stringify(shouldHideUselessFacets),
         );
         const byDocType = _.groupBy(facetMapping, o => o.doc_type);
         if (shouldHideUselessFacets && byDocType[docType]) {
@@ -161,18 +161,18 @@ export default compose(
               ) {
                 setIsLoadingAdditionalFacetData(false);
               }
-            }
+            },
           );
         }
       },
-    })
+    }),
   ),
   withPropsOnChange(
     ['isLoadingFacetMapping'],
     ({ isLoadingFacetMapping, setUselessFacetVisibility }) =>
       !isLoadingFacetMapping &&
       JSON.parse(localStorage.getItem('shouldHideUselessFacets') || 'null') &&
-      setUselessFacetVisibility(true)
+      setUselessFacetVisibility(true),
   ),
   withHandlers({
     fetchData: ({ setFacetMapping, setIsLoadingFacetMapping }) => async () => {
@@ -203,7 +203,7 @@ export default compose(
           aggregation.count === 0,
           aggregation.count === null,
           aggregation.stats && aggregation.stats.count === 0,
-        ])
+        ]),
     ),
   })),
   withProps(
@@ -220,9 +220,9 @@ export default compose(
           !excludeFacetsBy(facet),
           !shouldHideUselessFacets ||
             Object.keys(usefulFacets).includes(facet.field),
-        ])
+        ]),
       ),
-    })
+    }),
   ),
   renameProps({
     onSelect: 'handleSelectFacet',
@@ -249,13 +249,13 @@ export default compose(
       // TODO: if focused item is off view, scroll into view
       onFocusItem: (item, { setFocusedFacet }) => setFocusedFacet(item),
       onCancel: ({ handleClose }) => handleClose(),
-    }
+    },
   ),
   lifecycle({
     componentDidMount(): void {
       this.props.fetchData();
     },
-  })
+  }),
 )(props => (
   <div className="test-facet-selection">
     <div {...css(styles.header)}>
@@ -332,13 +332,13 @@ export default compose(
               <div
                 {...css(
                   styles.facetTexts,
-                  isFocused && styles.focusedItem.container
+                  isFocused && styles.focusedItem.container,
                 )}
               >
                 <span
                   {...css(
                     styles.facetTitle,
-                    isFocused && styles.focusedItem.text
+                    isFocused && styles.focusedItem.text,
                   )}
                 >
                   <ConditionalHighlight
@@ -353,7 +353,7 @@ export default compose(
                   <p
                     {...css(
                       styles.facetDescription,
-                      isFocused && styles.focusedItem.text
+                      isFocused && styles.focusedItem.text,
                     )}
                   >
                     <ConditionalHighlight

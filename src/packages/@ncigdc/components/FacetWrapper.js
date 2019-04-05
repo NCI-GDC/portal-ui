@@ -43,7 +43,7 @@ const fieldNameToTitle = fieldName =>
     .replace(/_|\./g, ' ')
     .split(' ')
     .map(
-      word => (COMMON_PREPOSITIONS.includes(word) ? word : _.capitalize(word))
+      word => (COMMON_PREPOSITIONS.includes(word) ? word : _.capitalize(word)),
     )
     .join(' ');
 
@@ -58,7 +58,7 @@ const getFacetType = facet => {
     return 'exact';
   } else if (
     _.some(['_id', '_uuid', 'md5sum', 'file_name'], idSuffix =>
-      _.includes(facet.field, idSuffix)
+      _.includes(facet.field, idSuffix),
     )
   ) {
     return 'exact';
@@ -170,7 +170,7 @@ const FacetWrapper = compose(
     onRequestRemove: 'handleRequestRemove',
   }),
   withState('showingValueSearch', 'setShowingValueSearch', false),
-  withState('collapsed', 'setCollapsed', props => props.collapsed)
+  withState('collapsed', 'setCollapsed', props => props.collapsed),
 )(WrapperComponent);
 
 export default FacetWrapper;

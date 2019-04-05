@@ -66,7 +66,7 @@ interface IClinicalProps {
 const facetMatchesQuery = (
   facet: IFacetProps,
   elements: IBucketProps[],
-  searchValue: string
+  searchValue: string,
 ): boolean => {
   return _.some(
     [
@@ -79,8 +79,8 @@ const facetMatchesQuery = (
     searchTarget =>
       _.includes(
         searchTarget.toLocaleLowerCase(),
-        searchValue.toLocaleLowerCase()
-      )
+        searchValue.toLocaleLowerCase(),
+      ),
   );
 };
 const MagnifyingGlass = styled(SearchIcon, {
@@ -106,7 +106,7 @@ const enhance = compose(
     facetsExpandedStatus: state.facetsExpandedStatus,
     notifications: state.bannerNotification,
     allExpanded: _.mapValues(state.facetsExpandedStatus, status =>
-      _.some(_.values(status.facets))
+      _.some(_.values(status.facets)),
     ),
   })),
   withState('isLoadingParsedFacets', 'setIsLoadingParsedFacets', false),
@@ -136,7 +136,7 @@ const enhance = compose(
             name: string,
             description: string,
             type: { name: string, __dataID: string },
-          }) => !f.name.startsWith('gene')
+          }) => !f.name.startsWith('gene'),
         )
         .reduce(
           (acc: { [x: string]: IFacetProps }, f: IGraphFieldProps) => ({
@@ -149,9 +149,9 @@ const enhance = compose(
               type: f.type.name === 'Aggregations' ? 'keyword' : 'long',
             },
           }),
-          {}
+          {},
         ),
-    })
+    }),
   ),
   withPropsOnChange(
     ['globalFilters', 'facetMapping'],
@@ -176,9 +176,9 @@ const enhance = compose(
           ) {
             setIsLoadingParsedFacets(false);
           }
-        }
+        },
       );
-    }
+    },
   ),
   withProps(
     ({
@@ -194,10 +194,10 @@ const enhance = compose(
         setShouldHideUselessFacets(shouldHide);
         localStorage.setItem(
           'shouldHideUselessFacets',
-          JSON.stringify(shouldHide)
+          JSON.stringify(shouldHide),
         );
       },
-    })
+    }),
   ),
   withPropsOnChange(
     ['facets', 'facetMapping', 'searchValue', 'shouldHideUselessFacets'],
@@ -223,12 +223,12 @@ const enhance = compose(
             !aggregation,
             aggregation.buckets &&
               aggregation.buckets.filter(
-                (bucket: IBucketProps) => bucket.key !== '_missing'
+                (bucket: IBucketProps) => bucket.key !== '_missing',
               ).length === 0,
             aggregation.count === 0,
             aggregation.count === null,
             aggregation.stats && aggregation.stats.count === 0,
-          ])
+          ]),
       );
       const filteredFacets = clinicalFacets.reduce((acc, header: any) => {
         return {
@@ -238,14 +238,14 @@ const enhance = compose(
               facetMatchesQuery(
                 facet,
                 _.get(parsedFacets[facet.field], 'buckets', undefined),
-                searchValue
+                searchValue,
               ),
               !facetExclusionTest(facet),
               !shouldHideUselessFacets ||
                 usefulFacets.hasOwnProperty(facet.field),
               !header.excluded || facet.full.startsWith(header.full),
               !_.some(
-                header.excluded.map((regex: any) => regex.test(facet.full))
+                header.excluded.map((regex: any) => regex.test(facet.full)),
               ),
             ]);
           }),
@@ -256,12 +256,12 @@ const enhance = compose(
         parsedFacets,
         filteredFacets,
       };
-    }
+    },
   ),
   withHandlers({
     handleQueryInputChange: ({ setSearchValue }) => (event: any) =>
       setSearchValue(event.target.value),
-  })
+  }),
 )(
   withTheme(
     ({
@@ -313,13 +313,13 @@ const enhance = compose(
             ? '...'
             : _.values(filteredFacets).reduce(
                 (acc: number, facet: IFacetProps[]) => acc + facet.length,
-                0
+                0,
               )}{' '}
           fields shown)
         </label>,
         ...clinicalFacets
           .filter(
-            facet => !searchValue || filteredFacets[facet.field].length > 0 // If the user is searching for something, hide the presetFacet with no value.
+            facet => !searchValue || filteredFacets[facet.field].length > 0, // If the user is searching for something, hide the presetFacet with no value.
           )
           .map(facet => {
             const headerHeight = '51px';
@@ -330,7 +330,7 @@ const enhance = compose(
                   style={{
                     position: 'sticky',
                     top: `calc(${headerHeight} + ${notifications.filter(
-                      (n: any) => !n.dismissed
+                      (n: any) => !n.dismissed,
                     ).length * bannerHeight}px)`,
                     background: '#eeeeee',
                     zIndex: 10,
@@ -367,8 +367,8 @@ const enhance = compose(
                       dispatch(
                         expandOneCategory(
                           facet.field,
-                          !allExpanded[facet.field]
-                        )
+                          !allExpanded[facet.field],
+                        ),
                       );
                     }}
                     style={{
@@ -378,7 +378,9 @@ const enhance = compose(
                   >
                     {searchValue || filteredFacets[facet.field].length === 0
                       ? null
-                      : allExpanded[facet.field] ? 'Reset' : 'Expand All'}
+                      : allExpanded[facet.field]
+                        ? 'Collapse All'
+                        : 'Expand All'}
                   </span>
                 </Row>
                 {facetsExpandedStatus[facet.field].expanded && (
@@ -388,7 +390,7 @@ const enhance = compose(
                         0,
                         facetsExpandedStatus[facet.field].showingMore
                           ? Infinity
-                          : 5
+                          : 5,
                       )
                       .map((componentFacet: any) => {
                         return [
@@ -403,7 +405,7 @@ const enhance = compose(
                             facet={componentFacet}
                             allExpanded={allExpanded[facet.field]}
                             title={_.startCase(
-                              componentFacet.full.split('.').pop()
+                              componentFacet.full.split('.').pop(),
                             )}
                             aggregation={parsedFacets[componentFacet.field]}
                             searchValue={searchValue}
@@ -423,27 +425,30 @@ const enhance = compose(
                               dispatch(
                                 changeExpandedStatus(
                                   facet.field,
-                                  componentFacet.field.split('.').pop()
-                                )
+                                  componentFacet.field.split('.').pop(),
+                                ),
                               )}
                             category={facet.field}
+                            DescriptionComponent={
+                              <div key={componentFacet.description}>
+                                <ResultHighlights
+                                  item={{
+                                    description: componentFacet.description,
+                                  }}
+                                  query={searchValue}
+                                  highlightStyle={{
+                                    backgroundColor: '#FFFF00',
+                                  }}
+                                  style={{
+                                    fontStyle: 'italic',
+                                    paddingLeft: '30px',
+                                    paddingRight: '10px',
+                                    width: '320px',
+                                  }}
+                                />
+                              </div>
+                            }
                           />,
-                          <div key={componentFacet.description}>
-                            {searchValue.length > 0 ? (
-                              <ResultHighlights
-                                item={{
-                                  description: componentFacet.description,
-                                }}
-                                query={searchValue}
-                                heighlightStyle={{ backgroundColor: '#FFFF00' }}
-                                style={{
-                                  fontStyle: 'italic',
-                                  paddingLeft: '30px',
-                                  paddingRight: '10px',
-                                }}
-                              />
-                            ) : null}
-                          </div>,
                         ];
                       })}
                     {filteredFacets[facet.field].length > 5 && (
@@ -466,12 +471,12 @@ const enhance = compose(
             );
           }),
       ];
-    }
-  )
+    },
+  ),
 );
 
 const ClinicalAggregations = Relay.createContainer(
   enhance,
-  CaseAggregationsQuery
+  CaseAggregationsQuery,
 );
 export default ClinicalAggregations;

@@ -35,7 +35,7 @@ const initialState = clinicalFacets.reduce(
     ...acc,
     [facet.field]: { showingMore: false, expanded: true, facets: {} },
   }),
-  {}
+  {},
 );
 
 const reducer = (state: any = initialState, action: any) => {
@@ -92,7 +92,7 @@ const reducer = (state: any = initialState, action: any) => {
               ...acc,
               [facetName]: isExpanded,
             }),
-            {}
+            {},
           ),
         },
       };

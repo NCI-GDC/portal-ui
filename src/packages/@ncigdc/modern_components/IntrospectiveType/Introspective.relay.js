@@ -6,14 +6,16 @@ import { compose, withPropsOnChange, branch, renderComponent } from 'recompose';
 export default (Component: ReactClass<*>) =>
   compose(
     branch(
-      ({ name }) => !name,
+      ({ typeName }) => !typeName,
       renderComponent(() => (
         <div>
           <pre>Type name</pre> must be provided
         </div>
       ))
     ),
-    withPropsOnChange(['name'], ({ name }) => ({ variables: { name } }))
+    withPropsOnChange(['typeName'], ({ typeName }) => ({
+      variables: { typeName },
+    }))
   )((props: Object) => {
     return (
       <Query
@@ -21,8 +23,8 @@ export default (Component: ReactClass<*>) =>
         variables={props.variables}
         Component={Component}
         query={graphql`
-          query Introspective_relayQuery($name: String!) {
-            __type(name: $name) {
+          query Introspective_relayQuery($typeName: String!) {
+            __type(name: $typeName) {
               name
               fields {
                 name

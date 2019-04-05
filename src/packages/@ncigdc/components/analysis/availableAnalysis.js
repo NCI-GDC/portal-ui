@@ -8,7 +8,7 @@ import { TSetTypes } from '@ncigdc/dux/sets';
 import Demo from './Demo';
 import ClinicalDataAnalysis from '@ncigdc/theme/icons/ClinicalDataAnalysis';
 import { DISPLAY_CDAVE } from '@ncigdc/utils/constants';
-import ClinicalAnalysisResult from '@ncigdc/components/analysis/ClinicalAnalysisResult';
+import ClinicalAnalysisContainer from '@ncigdc/modern_components/IntrospectiveType';
 
 export type TSelectedSets = {
   [TSetTypes]: any,
@@ -324,7 +324,7 @@ const availableAnalysis: [TAnalysis] = [
             <ClinicalAnalysisResult />
           </Demo>
         ) : (
-          <ClinicalAnalysisResult {...props} />
+          <ClinicalAnalysisContainer typeName={'ExploreCases'} {...props} />
         ),
     },
   ]),

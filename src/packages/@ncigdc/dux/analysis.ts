@@ -17,7 +17,7 @@ interface IAnalysis {
   type: string;
   created: string;
   message?: string;
-  variables?: any;
+  displayVariables?: any;
 }
 
 interface IAnalysisState {
@@ -159,13 +159,13 @@ const reducer = (
           ...state.saved.slice(0, currentAnalysisIndex),
           {
             ...currentAnalysis,
-            variables: {
+            displayVariables: {
               [action.payload.fieldName as string]: {
                 ...defaultVariableConfig,
                 type: action.payload.fieldType,
                 plotTypes: action.payload.plotTypes,
               },
-              ...currentAnalysis.variables,
+              ...currentAnalysis.displayVariables,
             },
           },
           ...state.saved.slice(currentAnalysisIndex + 1, Infinity),
@@ -190,8 +190,8 @@ const reducer = (
           ...state.saved.slice(0, currentAnalysisIndex),
           {
             ...currentAnalysis,
-            variables: _.pickBy(
-              currentAnalysis.variables,
+            displayVariables: _.pickBy(
+              currentAnalysis.displayVariables,
               (value, key) => key !== action.payload.fieldName
             ),
           },
@@ -217,10 +217,10 @@ const reducer = (
           ...state.saved.slice(0, currentAnalysisIndex),
           {
             ...currentAnalysis,
-            variables: {
-              ...currentAnalysis.variables,
+            displayVariables: {
+              ...currentAnalysis.displayVariables,
               [action.payload.fieldName as string]: {
-                ...currentAnalysis.variables[
+                ...currentAnalysis.displayVariables[
                   action.payload.fieldName as string
                 ],
                 [action.payload

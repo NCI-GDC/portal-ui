@@ -156,6 +156,84 @@ const enhance = compose(
   withState('selectedSurvivalValues', 'setSelectedSurvivalValues', []),
   withState('selectedSurvivalLoadingIds', 'setSelectedSurvivalLoadingIds', []),
   withState('survivalPlotLoading', 'setSurvivalPlotLoading', true),
+  withProps(({ variable, data, fieldName }) => ({
+    rawQueryData:
+      variable.plotTypes === 'continuous'
+        ? ((data.explore &&
+            data.explore.cases.aggregations[fieldName.replace('.', '__')]
+              .histogram) || {
+              buckets: [],
+            }
+          ).buckets
+        : (data || { buckets: [] }).buckets,
+    totalDocs: (data.hits || { total: 0 }).total,
+  })),
+  withProps(({ rawQueryData, variable, fieldName, setId }) => ({
+    getBucketRangesAndFilters: (acc, { doc_count, key }) => {
+      const valueIsDays = str => /(days_to|age_at)/.test(str);
+      const valueIsYear = str => /year_of/.test(str);
+
+      const getRangeValue = (key, field) => {
+        if (valueIsDays(field)) {
+          return `${getLowerAgeYears(key)}${acc.nextInterval === 0
+            ? '+'
+            : ' - ' + getUpperAgeYears(acc.nextInterval - 1)} years`;
+        } else if (valueIsYear(field)) {
+          return `${Math.floor(key)}${acc.nextInterval === 0
+            ? ' - present'
+            : ' - ' + (acc.nextInterval - 1)}`;
+        } else {
+          return key;
+        }
+      };
+
+      const filters =
+        variable.plotTypes === 'categorical'
+          ? {}
+          : {
+              op: 'and',
+              content: [
+                {
+                  op: 'in',
+                  content: {
+                    field: 'cases.case_id',
+                    value: `set_id:${setId}`,
+                  },
+                },
+                {
+                  op: '>=',
+                  content: {
+                    field: fieldName,
+                    value: [
+                      `${valueIsYear(fieldName) ? Math.floor(key) : key}`,
+                    ],
+                  },
+                },
+                ...(acc.nextInterval !== 0 && [
+                  {
+                    op: '<=',
+                    content: {
+                      field: fieldName,
+                      value: [`${acc.nextInterval - 1}`],
+                    },
+                  },
+                ]),
+              ],
+            };
+
+      return {
+        nextInterval: key,
+        data: [
+          ...acc.data,
+          {
+            chart_doc_count: doc_count,
+            filters,
+            key: getRangeValue(key, fieldName),
+          },
+        ],
+      };
+    },
+  })),
   withProps(
     ({
       setSurvivalPlotLoading,
@@ -169,90 +247,13 @@ const enhance = compose(
       setSelectedSurvivalValues,
       selectedSurvivalValues,
       setSelectedSurvivalLoadingIds,
+      rawQueryData,
+      getBucketRangesAndFilters,
     }) => ({
       populateSurvivalData: () => {
         setSurvivalPlotLoading(true);
 
-        const rawQueryData =
-          variable.plotTypes === 'continuous'
-            ? ((data.explore &&
-                data.explore.cases.aggregations[fieldName.replace('.', '__')]
-                  .histogram) || {
-                  buckets: [],
-                }
-              ).buckets
-            : (data || { buckets: [] }).buckets;
-
-        const totalDocsFromBuckets = rawQueryData
-          .map(b => b.doc_count)
-          .reduce((acc, i) => acc + i, 0);
-
-        const getBucketRangesAndFilters = (acc, { doc_count, key }) => {
-          const valueIsDays = str => /(days_to|age_at)/.test(str);
-          const valueIsYear = str => /year_of/.test(str);
-
-          const getRangeValue = (key, field) => {
-            if (valueIsDays(field)) {
-              return `${getLowerAgeYears(key)}${acc.nextInterval === 0
-                ? '+'
-                : ' - ' + getUpperAgeYears(acc.nextInterval - 1)} years`;
-            } else if (valueIsYear(field)) {
-              return `${Math.floor(key)}${acc.nextInterval === 0
-                ? ' - present'
-                : ' - ' + (acc.nextInterval - 1)}`;
-            } else {
-              return key;
-            }
-          };
-
-          const filters =
-            variable.plotTypes === 'categorical'
-              ? {}
-              : {
-                  op: 'and',
-                  content: [
-                    {
-                      op: 'in',
-                      content: {
-                        field: 'cases.case_id',
-                        value: `set_id:${setId}`,
-                      },
-                    },
-                    {
-                      op: '>=',
-                      content: {
-                        field: fieldName,
-                        value: [
-                          `${valueIsYear(fieldName) ? Math.floor(key) : key}`,
-                        ],
-                      },
-                    },
-                    ...(acc.nextInterval !== 0 && [
-                      {
-                        op: '<=',
-                        content: {
-                          field: fieldName,
-                          value: [`${acc.nextInterval - 1}`],
-                        },
-                      },
-                    ]),
-                  ],
-                };
-
-          return {
-            nextInterval: key,
-            data: [
-              ...acc.data,
-              {
-                chart_doc_count: doc_count,
-                filters,
-                key: getRangeValue(key, fieldName),
-              },
-            ],
-          };
-        };
-
-        const displayData =
+        const dataForSurvival =
           variable.plotTypes === 'continuous'
             ? rawQueryData
                 .sort((a, b) => b.key - a.key)
@@ -274,14 +275,14 @@ const enhance = compose(
 
         const continuousTop2Values =
           variable.plotTypes === 'continuous'
-            ? displayData
+            ? dataForSurvival
                 .sort((a, b) => b.chart_doc_count - a.chart_doc_count)
                 .slice(0, 2)
             : [];
 
         const valuesForTable =
           variable.plotTypes === 'categorical'
-            ? displayData.map(d => d.key).slice(0, 2)
+            ? dataForSurvival.map(d => d.key).slice(0, 2)
             : continuousTop2Values.map(d => d.key);
 
         const valuesForPlot =
@@ -303,7 +304,7 @@ const enhance = compose(
           setSelectedSurvivalLoadingIds([]);
         });
       },
-      updateSelectedSurvivalValues: (displayData, value) => {
+      updateSelectedSurvivalValues: (data, value) => {
         if (
           selectedSurvivalValues.indexOf(value.key) === -1 &&
           selectedSurvivalValues.length >= MAXIMUM_CURVES
@@ -324,7 +325,7 @@ const enhance = compose(
           variable.plotTypes === 'categorical'
             ? [...nextValues]
             : nextValues
-                .map(v => displayData.filter(d => d.key === v)[0])
+                .map(v => data.filter(d => d.key === v)[0])
                 .map(data => ({ ...data, doc_count: undefined }));
 
         getSurvivalCurvesArray({
@@ -370,18 +371,10 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
   filters,
   stats,
   data,
+  rawQueryData,
+  getBucketRangesAndFilters,
+  totalDocs,
 }) => {
-  const rawQueryData =
-    variable.plotTypes === 'continuous'
-      ? ((data.explore &&
-          data.explore.cases.aggregations[fieldName.replace('.', '__')]
-            .histogram) || {
-            buckets: [],
-          }
-        ).buckets
-      : (data || { buckets: [] }).buckets;
-  const totalDocs = (data.hits || { total: 0 }).total;
-
   const getCategoricalTableData = (rawData, type) => {
     if (_.isEmpty(rawData)) {
       return [];
@@ -403,75 +396,6 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
           )}%)`}</span>
         </span>
       );
-    };
-
-    const getBucketRangesAndFilters = (acc, { doc_count, key }) => {
-      const valueIsDays = str => /(days_to|age_at)/.test(str);
-      const valueIsYear = str => /year_of/.test(str);
-
-      const getRangeValue = (key, field) => {
-        if (valueIsDays(field)) {
-          return `${getLowerAgeYears(key)}${acc.nextInterval === 0
-            ? '+'
-            : ' - ' + getUpperAgeYears(acc.nextInterval - 1)} years`;
-        } else if (valueIsYear(field)) {
-          return `${Math.floor(key)}${acc.nextInterval === 0
-            ? ' - present'
-            : ' - ' + (acc.nextInterval - 1)}`;
-        } else {
-          return key;
-        }
-      };
-
-      const makeFilters = (prependCases = true) => {
-        const fieldNameForFilters = `${prependCases
-          ? 'cases.'
-          : ''}${fieldName}`;
-        return {
-          op: 'and',
-          content: [
-            {
-              op: 'in',
-              content: {
-                field: 'cases.case_id',
-                value: `set_id:${setId}`,
-              },
-            },
-            {
-              op: '>=',
-              content: {
-                field: fieldNameForFilters,
-                value: [`${valueIsYear(fieldName) ? Math.floor(key) : key}`],
-              },
-            },
-            ...(acc.nextInterval !== 0 && [
-              {
-                op: '<=',
-                content: {
-                  field: fieldNameForFilters,
-                  value: [`${acc.nextInterval - 1}`],
-                },
-              },
-            ]),
-          ],
-        };
-      };
-
-      return {
-        nextInterval: key,
-        data: [
-          ...acc.data,
-          {
-            chart_doc_count: doc_count,
-            doc_count: getCountLink({
-              doc_count,
-              filters: makeFilters(),
-            }),
-            filters: makeFilters(false),
-            key: getRangeValue(key, fieldName),
-          },
-        ],
-      };
     };
 
     const displayData =

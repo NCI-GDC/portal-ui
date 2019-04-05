@@ -8,6 +8,7 @@ const facetsExpandedStatus = namespaceActions('facetsExpandedStatus', [
   'CHANGE_EXPANDED_STATUS',
   'RESET_EXPANDED_STATUS',
   'EXPAND_ONE_CATEGORY',
+  'MORE_BY_CATEGORY',
 ]);
 
 const addAllFacets = (facets: any) => ({
@@ -25,27 +26,35 @@ const expandOneCategory = (category: string, isExpanded: boolean) => ({
   payload: { category, isExpanded },
 });
 
+const showingMoreByCategory = (category: string) => ({
+  type: facetsExpandedStatus.MORE_BY_CATEGORY,
+  payload: { category },
+});
 const initialState = clinicalFacets.reduce(
   (acc, facet: any) => ({
     ...acc,
-    [facet.field]: { expanded: true, facets: {} },
+    [facet.field]: { showingMore: false, expanded: true, facets: {} },
   }),
   {},
 );
 
-const reducer = (state = initialState, action: any) => {
+const reducer = (state: any = initialState, action: any) => {
   switch (action.type) {
     case facetsExpandedStatus.ADD_FACET_NAMES: {
       const { facets } = action.payload;
       return _.mapValues(facets, (facet, key) => ({
         expanded: state[key].expanded,
-        facets: facet.reduce((acc: any, f: any) => {
-          const name = f.field.split('.').slice(-1)[0];
-          return {
-            ...acc,
-            [name]: !!state[key].facets[name],
-          };
-        }, {}),
+        showingMore: state[key].showingMore,
+        facets: {
+          ...state[key].facets,
+          ...facet.reduce((acc: any, f: any) => {
+            const name = f.field.split('.').pop();
+            return {
+              ...acc,
+              [name]: !!state[key].facets[name],
+            };
+          }, {}),
+        },
       }));
     }
     case facetsExpandedStatus.CHANGE_EXPANDED_STATUS: {
@@ -77,6 +86,7 @@ const reducer = (state = initialState, action: any) => {
         ...state,
         [category]: {
           ...state[category],
+          showingMore: isExpanded,
           facets: Object.keys(state[category].facets).reduce(
             (acc: any, facetName: string) => ({
               ...acc,
@@ -87,10 +97,26 @@ const reducer = (state = initialState, action: any) => {
         },
       };
     }
+    case facetsExpandedStatus.MORE_BY_CATEGORY: {
+      const { category } = action.payload;
+      return {
+        ...state,
+        [category]: {
+          ...state[category],
+          showingMore: !state[category].showingMore,
+        },
+      };
+    }
+
     default:
       return state;
   }
 };
 
-export { addAllFacets, changeExpandedStatus, expandOneCategory };
+export {
+  addAllFacets,
+  changeExpandedStatus,
+  expandOneCategory,
+  showingMoreByCategory
+};
 export default reducer;

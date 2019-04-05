@@ -410,7 +410,6 @@ const ClinicalAnalysisResult = ({
             </Row>
             <Column style={{ marginTop: 10 }}>
               <ControlPanelNode
-                parsedFacets={parsedFacets}
                 clinicalAnalysisFields={clinicalAnalysisFields}
                 usefulFacets={getUsefulFacets(parsedFacets)}
                 currentAnalysis={currentAnalysis}

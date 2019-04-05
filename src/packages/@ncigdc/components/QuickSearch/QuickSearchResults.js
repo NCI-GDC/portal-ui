@@ -118,18 +118,18 @@ export const ResultHighlights = ({
   item,
   query = '',
   style,
-  heighlightStyle,
+  highlightStyle,
 }: {
   item: Object,
   query: string,
   style: Object,
-  heighlightStyle?: React.CSSProperties,
+  highlightStyle?: React.CSSProperties,
 }) => {
   const lq = query.toLocaleLowerCase();
   const value = findMatchingToken(item, lq);
 
   return (
-    <div style={style}>{internalHighlight(lq, value, heighlightStyle)}</div>
+    <div style={style}>{internalHighlight(lq, value, highlightStyle)}</div>
   );
 };
 

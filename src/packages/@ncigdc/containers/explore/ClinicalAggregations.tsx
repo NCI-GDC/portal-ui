@@ -437,7 +437,7 @@ const enhance = compose(
                                     description: componentFacet.description,
                                   }}
                                   query={searchValue}
-                                  heighlightStyle={{
+                                  highlightStyle={{
                                     backgroundColor: '#FFFF00',
                                   }}
                                   style={{

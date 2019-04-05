@@ -56,7 +56,7 @@ const SearchPage = (
     setShowFacets,
     filtersLinkProps,
     ...props
-  }: TProps = {}
+  }: TProps = {},
 ) => (
   <Container className={props.className + ' test-search-page'}>
     {showFacets && (

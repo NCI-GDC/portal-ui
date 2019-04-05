@@ -61,7 +61,7 @@ const FacetHeader = compose(
     isRemovable: false,
     hasValueSearch: false,
     setShowingValueSearch: () => {},
-  })
+  }),
 )(
   ({
     field,
@@ -152,6 +152,6 @@ const FacetHeader = compose(
         );
       }}
     </LocationSubscriber>
-  )
+  ),
 );
 export default FacetHeader;

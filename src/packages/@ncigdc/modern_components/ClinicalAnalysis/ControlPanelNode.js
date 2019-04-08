@@ -9,6 +9,8 @@ import {
 import _ from 'lodash';
 import { connect } from 'react-redux';
 import { singular } from 'pluralize';
+import Toggle from 'react-toggle';
+import './reactToggle.css';
 
 import { humanify } from '@ncigdc/utils/string';
 import { Row, Column } from '@ncigdc/uikit/Flex';
@@ -137,23 +139,35 @@ const ClinicalGrouping = compose(
                       alignItems: 'center',
                       borderBottom: `1px solid ${theme.greyScale5}`,
                     }}
-                    id={`${fieldName}-label`}
                   >
-                    <Row style={{ alignItems: 'center' }}>
-                      <Tooltip
-                        Component={
-                          <div style={{ maxWidth: '24em' }}>
-                            {fieldDescription}
-                          </div>
-                        }
+                    <div style={{ display: 'flex', width: '100%' }}>
+                      <label
+                        htmlFor={fieldName}
+                        style={{
+                          width: '100%',
+                          // background: 'magenta',
+                          display: 'block',
+                          cursor: 'pointer',
+                        }}
                       >
-                        <label htmlFor={fieldName}>
-                          <h4 style={{ fontSize: '1.4rem' }}>
+                        <Tooltip
+                          Component={
+                            <div style={{ maxWidth: '24em' }}>
+                              {fieldDescription}
+                            </div>
+                          }
+                        >
+                          <h4
+                            style={{
+                              fontSize: '1.4rem',
+                              display: 'inline-block',
+                            }}
+                          >
                             {humanify({ term: _.last(fieldName.split('.')) })}
                           </h4>
-                        </label>
-                      </Tooltip>
-                    </Row>
+                        </Tooltip>
+                      </label>
+                    </div>
                     <FacetCheckbox
                       fieldName={fieldName}
                       analysis_id={analysis_id}
@@ -197,12 +211,8 @@ const FacetCheckbox = ({
   checked,
   toggleAction,
 }) => (
-  <input
-    type="checkbox"
-    style={{
-      flexShrink: 0,
-      verticalAlign: 'middle',
-    }}
+  <Toggle
+    icons={false}
     id={fieldName}
     disabled={disabled}
     name={fieldName}

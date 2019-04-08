@@ -203,10 +203,11 @@ const GenesTableModel = [
           >
             {(filteredCases.hits.total || 0).toLocaleString()}
           </ExploreLink>
-          <span>{` (${((node.numCases || 0) /
-            filteredCases.hits.total *
-            100
-          ).toFixed(2)}%)`}</span>
+          <span>{` (${!filteredCases.hits.total || !node.numCases
+            ? '0'
+            : (node.numCases / filteredCases.hits.total * 100).toFixed(
+                2
+              )}%)`}</span>
         </span>
       </Td>
     ),
@@ -329,7 +330,7 @@ const GenesTableModel = [
           {(cnvCases.hits.total || 0).toLocaleString()}
           {/* </ExploreLink> */}
           <span>{` (${!cnvCases.hits.total || !node.case_cnv_gain.hits
-            ? '0%'
+            ? '0'
             : (node.case_cnv_gain.hits.total /
                 cnvCases.hits.total *
                 100
@@ -415,7 +416,7 @@ const GenesTableModel = [
           {(cnvCases.hits.total || 0).toLocaleString()}
           {/* </ExploreLink> */}
           <span>{` (${!cnvCases.hits.total || !node.case_cnv_loss.hits
-            ? '0%'
+            ? '0'
             : (node.case_cnv_loss.hits.total /
                 cnvCases.hits.total *
                 100

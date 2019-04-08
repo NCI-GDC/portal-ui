@@ -137,6 +137,7 @@ const ClinicalGrouping = compose(
                       alignItems: 'center',
                       borderBottom: `1px solid ${theme.greyScale5}`,
                     }}
+                    id={`${fieldName}-label`}
                   >
                     <Row style={{ alignItems: 'center' }}>
                       <Tooltip
@@ -146,9 +147,11 @@ const ClinicalGrouping = compose(
                           </div>
                         }
                       >
-                        <h4 style={{ fontSize: '1.4rem' }}>
-                          {humanify({ term: _.last(fieldName.split('.')) })}
-                        </h4>
+                        <label htmlFor={fieldName}>
+                          <h4 style={{ fontSize: '1.4rem' }}>
+                            {humanify({ term: _.last(fieldName.split('.')) })}
+                          </h4>
+                        </label>
                       </Tooltip>
                     </Row>
                     <FacetCheckbox
@@ -194,8 +197,18 @@ const FacetCheckbox = ({
   checked,
   toggleAction,
 }) => (
-  <div
-    onClick={() => {
+  <input
+    type="checkbox"
+    style={{
+      flexShrink: 0,
+      verticalAlign: 'middle',
+    }}
+    id={fieldName}
+    disabled={disabled}
+    name={fieldName}
+    checked={checked}
+    onChange={() => {
+      console.log('changed!');
       if (disabled) {
         return null;
       }
@@ -203,24 +216,7 @@ const FacetCheckbox = ({
         toggleAction({ fieldName, id: analysis_id, fieldType, plotTypes })
       );
     }}
-  >
-    <label htmlFor={fieldName}>
-      <Hidden>{fieldName}</Hidden>
-    </label>
-    <input
-      readOnly
-      type="checkbox"
-      style={{
-        pointerEvents: 'none',
-        flexShrink: 0,
-        verticalAlign: 'middle',
-      }}
-      disabled={disabled}
-      name={fieldName}
-      aria-label={fieldName}
-      checked={checked}
-    />
-  </div>
+  />
 );
 
 export default compose(

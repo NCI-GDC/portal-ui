@@ -242,8 +242,7 @@ const ClinicalAnalysisResult = ({
           <h1 style={{ fontSize: '2.5rem', margin: 5 }}>Clinical Analysis</h1>
         </Row>
         <Row style={{ marginTop: '1rem', marginLeft: '1rem' }}>
-          Analysis is deprecated because {currentAnalysis.name} is a deprecated
-          set.
+          Analysis is deprecated because {setName} is a deprecated set.
         </Row>
       </Column>
     );
@@ -447,7 +446,6 @@ const ClinicalAnalysisResult = ({
             </Row>
             <Column style={{ marginTop: 10 }}>
               <ControlPanelNode
-                parsedFacets={parsedFacets}
                 clinicalAnalysisFields={clinicalAnalysisFields}
                 usefulFacets={getUsefulFacets(parsedFacets)}
                 currentAnalysis={currentAnalysis}

@@ -295,6 +295,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
           }`;
         }
       };
+
       const rangeFilters = {
         op: 'and',
         content: [

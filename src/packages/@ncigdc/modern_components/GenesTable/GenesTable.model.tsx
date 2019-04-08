@@ -414,12 +414,12 @@ const GenesTableModel = [
           > */}
           {(cnvCases.hits.total || 0).toLocaleString()}
           {/* </ExploreLink> */}
-          <span>{` (${((node.case_cnv_loss.hits
-            ? node.case_cnv_loss.hits.total
-            : 0) /
-            (cnvCases.hits.total || 0) *
-            100
-          ).toFixed(2)}%)`}</span>
+          <span>{` (${!cnvCases.hits.total
+            ? '0%'
+            : ((node.case_cnv_loss.hits ? node.case_cnv_loss.hits.total : 0) /
+                cnvCases.hits.total *
+                100
+              ).toFixed(2)}%)`}</span>
         </span>
       </Td>
     ),

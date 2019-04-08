@@ -25,13 +25,6 @@ const Container = styled(Row, {
 
 const FacetsPanel = styled(Column, {
   width: ({ theme }) => theme.facetsPanelWidth,
-  // display: 'block',
-  // overflow: 'scroll',
-  // height: ({ height }) => {
-  //   console.log('height', height);
-
-  //   return height + 'px';
-  // },
   flex: 'none',
   marginRight: '18px',
 });
@@ -74,8 +67,8 @@ const enhance = compose(
       return {
         height: refNode && refNode.clientHeight,
       };
-    }
-  )
+    },
+  ),
 );
 
 const SearchPage = (

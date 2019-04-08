@@ -149,6 +149,23 @@ const styles = {
   }),
 };
 
+const valueIsDays = str => /(days_to|age_at)/.test(str);
+const valueIsYear = str => /year_of/.test(str);
+
+const getRangeValue = (key, field, nextInterval) => {
+  if (valueIsDays(field)) {
+    return `${getLowerAgeYears(key)}${nextInterval === 0
+      ? '+'
+      : ' - ' + getUpperAgeYears(nextInterval - 1)} years`;
+  } else if (valueIsYear(field)) {
+    return `${Math.floor(key)}${nextInterval === 0
+      ? ' - present'
+      : ' - ' + (nextInterval - 1)}`;
+  } else {
+    return key;
+  }
+};
+
 const enhance = compose(
   connect((state: any) => ({ analysis: state.analysis })),
   withTheme,
@@ -169,23 +186,6 @@ const enhance = compose(
   })),
   withProps(({ rawQueryData, variable, fieldName, setId }) => ({
     getBucketRangesAndFilters: (acc, { doc_count, key }) => {
-      const valueIsDays = str => /(days_to|age_at)/.test(str);
-      const valueIsYear = str => /year_of/.test(str);
-
-      const getRangeValue = (key, field) => {
-        if (valueIsDays(field)) {
-          return `${getLowerAgeYears(key)}${acc.nextInterval === 0
-            ? '+'
-            : ' - ' + getUpperAgeYears(acc.nextInterval - 1)} years`;
-        } else if (valueIsYear(field)) {
-          return `${Math.floor(key)}${acc.nextInterval === 0
-            ? ' - present'
-            : ' - ' + (acc.nextInterval - 1)}`;
-        } else {
-          return key;
-        }
-      };
-
       const filters =
         variable.plotTypes === 'categorical'
           ? {}
@@ -227,7 +227,7 @@ const enhance = compose(
           {
             chart_doc_count: doc_count,
             filters,
-            key: getRangeValue(key, fieldName),
+            key: getRangeValue(key, fieldName, acc.nextInterval),
           },
         ],
       };

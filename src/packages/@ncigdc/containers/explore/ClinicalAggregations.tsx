@@ -280,8 +280,7 @@ const enhance = compose(
       dispatch,
       notifications,
     }: IClinicalProps): any => {
-      return (
-        <Column>
+       return (<Column>
         <Row
           style={{
             margin: '2.5rem 1rem 0 0.5rem',
@@ -315,23 +314,26 @@ const enhance = compose(
             ? '...'
             : _.values(filteredFacets).reduce(
                 (acc: number, facet: IFacetProps[]) => acc + facet.length,
-                0
+                0,
               )}{' '}
           fields shown)
         </label>
         <div key="1" style={{ overflow:'scroll', maxHeight:'970px'}}>
           {...clinicalFacets
             .filter(
-              facet => !searchValue || filteredFacets[facet.field].length > 0 // If the user is searching for something, hide the presetFacet with no value.
+              facet => !searchValue || filteredFacets[facet.field].length > 0, // If the user is searching for something, hide the presetFacet with no value.
             )
             .map(facet => {
+              const headerHeight = '51px';
+              const bannerHeight = 40;
               return (
                 <div key={facet.title + 'div'}>
                   <Row
                     style={{
                       position: 'sticky',
-                      // 51px is height of header, 40 is the height of banner;
-                      top: 0,
+                      top: `calc(${headerHeight} + ${notifications.filter(
+                        (n: any) => !n.dismissed,
+                      ).length * bannerHeight}px)`,
                       background: '#eeeeee',
                       zIndex: 10,
                       cursor: 'pointer',
@@ -342,7 +344,8 @@ const enhance = compose(
                     }}
                   >
                     <div
-                      onClick={() => dispatch(changeFacetNames(facet.field, ''))}
+                      onClick={() =>
+                        dispatch(changeExpandedStatus(facet.field, ''))}
                       style={{
                         color: theme.primary,
                         fontSize: '1.7rem',
@@ -366,13 +369,9 @@ const enhance = compose(
                         dispatch(
                           expandOneCategory(
                             facet.field,
-                            !allExpanded[facet.field]
-                          )
+                            !allExpanded[facet.field],
+                          ),
                         );
-                        setShowingMore({
-                          ...showingMore,
-                          [facet.field]: !allExpanded[facet.field],
-                        });
                       }}
                       style={{
                         display: 'flex',
@@ -381,14 +380,27 @@ const enhance = compose(
                     >
                       {searchValue || filteredFacets[facet.field].length === 0
                         ? null
-                        : allExpanded[facet.field] ? 'Reset' : 'Expand All'}
+                        : allExpanded[facet.field]
+                          ? 'Collapse All'
+                          : 'Expand All'}
                     </span>
                   </Row>
                   {facetsExpandedStatus[facet.field].expanded && (
                     <Column>
                       {_.orderBy(filteredFacets[facet.field], ['field'], ['asc'])
-                        .slice(0, showingMore[facet.field] ? Infinity : 5)
+                        .slice(
+                          0,
+                          facetsExpandedStatus[facet.field].showingMore
+                            ? Infinity
+                            : 5,
+                        )
                         .map((componentFacet: any) => {
+                          if (componentFacet.field.includes('ethnicity')) {
+                            console.log(
+                              'componentFacet',
+                              componentFacet.description,
+                            );
+                          }
                           return [
                             <WrapperComponent
                               relayVarName="exploreCaseCustomFacetFields"
@@ -401,7 +413,7 @@ const enhance = compose(
                               facet={componentFacet}
                               allExpanded={allExpanded[facet.field]}
                               title={_.startCase(
-                                componentFacet.full.split('.').pop()
+                                componentFacet.full.split('.').pop(),
                               )}
                               aggregation={parsedFacets[componentFacet.field]}
                               searchValue={searchValue}
@@ -419,42 +431,41 @@ const enhance = compose(
                               }
                               setCollapsed={(collapsed: any) =>
                                 dispatch(
-                                  changeFacetNames(
+                                  changeExpandedStatus(
                                     facet.field,
                                     componentFacet.field.split('.').pop(),
-                                    !collapsed
-                                  )
+                                  ),
                                 )}
                               category={facet.field}
-                            />,
-                            <div key={componentFacet.description}>
-                              {searchValue.length > 0 ? (
-                                <ResultHighlights
-                                  item={{
-                                    description: componentFacet.description,
-                                  }}
-                                  query={searchValue}
-                                  heighlightStyle={{ backgroundColor: '#FFFF00' }}
+                              DescriptionComponent={
+                                <div
+                                  key={componentFacet.description}
                                   style={{
                                     fontStyle: 'italic',
                                     paddingLeft: '30px',
                                     paddingRight: '10px',
+                                    width: '320px',
                                   }}
-                                />
-                              ) : null}
-                            </div>,
+                                >
+                                  {internalHighlight(
+                                    searchValue,
+                                    componentFacet.description,
+                                    {
+                                      backgroundColor: '#FFFF00',
+                                    },
+                                  )}
+                                </div>
+                              }
+                            />,
                           ];
                         })}
                       {filteredFacets[facet.field].length > 5 && (
                         <BottomRow style={{ marginRight: '1rem' }}>
                           <ToggleMoreLink
                             onClick={() =>
-                              setShowingMore({
-                                ...showingMore,
-                                [facet.field]: !showingMore[facet.field],
-                              })}
+                              dispatch(showingMoreByCategory(facet.field))}
                           >
-                            {showingMore[facet.field]
+                            {facetsExpandedStatus[facet.field].showingMore
                               ? 'Less...'
                               : filteredFacets[facet.field].length - 5 &&
                                 `${filteredFacets[facet.field].length -
@@ -468,9 +479,9 @@ const enhance = compose(
               );
             })}
         </div>
-      </Column>);
-    }
-  )
+    </Column>)
+    },
+  ),
 );
 
 const ClinicalAggregations = Relay.createContainer(

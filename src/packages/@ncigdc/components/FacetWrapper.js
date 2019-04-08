@@ -43,7 +43,7 @@ const fieldNameToTitle = fieldName =>
     .replace(/_|\./g, ' ')
     .split(' ')
     .map(
-      word => (COMMON_PREPOSITIONS.includes(word) ? word : _.capitalize(word))
+      word => (COMMON_PREPOSITIONS.includes(word) ? word : _.capitalize(word)),
     )
     .join(' ');
 
@@ -58,7 +58,7 @@ const getFacetType = facet => {
     return 'exact';
   } else if (
     _.some(['_id', '_uuid', 'md5sum', 'file_name'], idSuffix =>
-      _.includes(facet.field, idSuffix)
+      _.includes(facet.field, idSuffix),
     )
   ) {
     return 'exact';
@@ -90,6 +90,7 @@ export const WrapperComponent = ({
   category,
   dispatch,
   expandedAll,
+  DescriptionComponent = null,
 }: any) => {
   const facetType = getFacetType(facet);
   const displayTitle = title || fieldNameToTitle(facet.field);
@@ -147,6 +148,11 @@ export const WrapperComponent = ({
       <FacetHeader
         title={displayTitle}
         field={facet.full}
+        DescriptionComponent={
+          DescriptionComponent &&
+          !searchValue &&
+          (facet.description || 'No description available')
+        }
         searchValue={searchValue}
         handleRequestRemove={handleRequestRemove}
         isRemovable={isRemovable}
@@ -157,6 +163,7 @@ export const WrapperComponent = ({
         setShowingValueSearch={setShowingValueSearch}
         style={headerStyle}
       />
+      {searchValue && DescriptionComponent}
       <div style={{ paddingLeft: '10px' }}>{facetComponent}</div>
     </FacetWrapperDiv>
   );
@@ -170,7 +177,7 @@ const FacetWrapper = compose(
     onRequestRemove: 'handleRequestRemove',
   }),
   withState('showingValueSearch', 'setShowingValueSearch', false),
-  withState('collapsed', 'setCollapsed', props => props.collapsed)
+  withState('collapsed', 'setCollapsed', props => props.collapsed),
 )(WrapperComponent);
 
 export default FacetWrapper;

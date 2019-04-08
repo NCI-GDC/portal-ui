@@ -144,17 +144,17 @@ const TermAggregation = (props: TProps) => {
                           })}
                           id={`input-${props.title}-${bucket.name.replace(
                             /\s/g,
-                            '-'
+                            '-',
                           )}`}
                           name={`input-${props.title}-${bucket.name.replace(
                             /\s/g,
-                            '-'
+                            '-',
                           )}`}
                         />
                         <OverflowTooltippedLabel
                           htmlFor={`input-${props.title}-${bucket.name.replace(
                             /\s/g,
-                            '-'
+                            '-',
                           )}`}
                           style={{
                             marginLeft: '0.3rem',
@@ -167,7 +167,7 @@ const TermAggregation = (props: TProps) => {
                                 bucket.name,
                                 {
                                   backgroundColor: '#FFFF00',
-                                }
+                                },
                               )
                             : bucket.name}
                         </OverflowTooltippedLabel>
@@ -218,11 +218,11 @@ const enhance = compose(
           (b.key || '').length &&
           b.key.toLowerCase().includes(filter.toLowerCase()) &&
           (b.key.toLowerCase().includes(searchValue.toLowerCase()) ||
-            isMatchingSearchValue)
+            isMatchingSearchValue),
       ),
-    })
+    }),
   ),
-  pure
+  pure,
 );
 
 export default enhance(TermAggregation);

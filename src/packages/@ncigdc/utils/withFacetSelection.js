@@ -67,7 +67,7 @@ export default ({
         dispatch(remove({ entityType, field: facet.field }));
         const newFilters = removeFilter(
           facet.full,
-          parseFilterParam(query.filters)
+          parseFilterParam(query.filters),
         );
 
         return push({
@@ -77,5 +77,5 @@ export default ({
           }),
         });
       },
-    })
+    }),
   );

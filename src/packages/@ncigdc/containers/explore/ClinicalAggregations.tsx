@@ -12,13 +12,15 @@ import {
 import { Column } from '@ncigdc/uikit/Flex';
 import {
   addAllFacets,
-  changeFacetNames,
+  changeExpandedStatus,
   expandOneCategory,
+  showingMoreByCategory,
 } from '@ncigdc/dux/facetsExpandedStatus';
 import { WrapperComponent } from '@ncigdc/components/FacetWrapper';
 import { withTheme } from '@ncigdc/theme';
 import { CaseAggregationsQuery } from '@ncigdc/containers/explore/explore.relay';
-import { ResultHighlights } from '@ncigdc/components/QuickSearch/QuickSearchResults';
+import { internalHighlight } from '@ncigdc/uikit/Highlight';
+
 import SearchIcon from 'react-icons/lib/fa/search';
 import { Row } from '@ncigdc/uikit/Flex';
 import styled from '@ncigdc/theme/styled';
@@ -60,14 +62,12 @@ interface IClinicalProps {
   allExpanded: any,
   facetsExpandedStatus: any,
   dispatch: any,
-  showingMore: any,
-  setShowingMore: any,
   notifications: any,
 }
 const facetMatchesQuery = (
   facet: IFacetProps,
   elements: IBucketProps[],
-  searchValue: string
+  searchValue: string,
 ): boolean => {
   return _.some(
     [
@@ -80,8 +80,8 @@ const facetMatchesQuery = (
     searchTarget =>
       _.includes(
         searchTarget.toLocaleLowerCase(),
-        searchValue.toLocaleLowerCase()
-      )
+        searchValue.toLocaleLowerCase(),
+      ),
   );
 };
 const MagnifyingGlass = styled(SearchIcon, {
@@ -107,15 +107,12 @@ const enhance = compose(
     facetsExpandedStatus: state.facetsExpandedStatus,
     notifications: state.bannerNotification,
     allExpanded: _.mapValues(state.facetsExpandedStatus, status =>
-      _.some(_.values(status.facets))
+      _.some(_.values(status.facets)),
     ),
   })),
   withState('isLoadingParsedFacets', 'setIsLoadingParsedFacets', false),
   withState('shouldHideUselessFacets', 'setShouldHideUselessFacets', true),
   withState('searchValue', 'setSearchValue', ''),
-  withState('showingMore', 'setShowingMore', ({ facetsExpandedStatus }) =>
-    _.mapValues(facetsExpandedStatus, status => false)
-  ),
   withFacetSelection({
     entityType: 'ExploreCases',
     presetFacetFields: presetFacets.map(x => x.field),
@@ -140,7 +137,7 @@ const enhance = compose(
             name: string,
             description: string,
             type: { name: string, __dataID: string },
-          }) => !f.name.startsWith('gene')
+          }) => !f.name.startsWith('gene'),
         )
         .reduce(
           (acc: { [x: string]: IFacetProps }, f: IGraphFieldProps) => ({
@@ -153,9 +150,9 @@ const enhance = compose(
               type: f.type.name === 'Aggregations' ? 'keyword' : 'long',
             },
           }),
-          {}
+          {},
         ),
-    })
+    }),
   ),
   withPropsOnChange(
     ['globalFilters', 'facetMapping'],
@@ -180,9 +177,9 @@ const enhance = compose(
           ) {
             setIsLoadingParsedFacets(false);
           }
-        }
+        },
       );
-    }
+    },
   ),
   withProps(
     ({
@@ -198,10 +195,10 @@ const enhance = compose(
         setShouldHideUselessFacets(shouldHide);
         localStorage.setItem(
           'shouldHideUselessFacets',
-          JSON.stringify(shouldHide)
+          JSON.stringify(shouldHide),
         );
       },
-    })
+    }),
   ),
   withPropsOnChange(
     ['facets', 'facetMapping', 'searchValue', 'shouldHideUselessFacets'],
@@ -227,14 +224,14 @@ const enhance = compose(
             !aggregation,
             aggregation.buckets &&
               aggregation.buckets.filter(
-                (bucket: IBucketProps) => bucket.key !== '_missing'
+                (bucket: IBucketProps) => bucket.key !== '_missing',
               ).length === 0,
             aggregation.count === 0,
             aggregation.count === null,
             aggregation.stats && aggregation.stats.count === 0,
-          ])
+          ]),
       );
-      const filteredFacets = clinicalFacets.reduce((acc, header) => {
+      const filteredFacets = clinicalFacets.reduce((acc, header: any) => {
         return {
           ...acc,
           [header.field]: _.filter(facetMapping, facet => {
@@ -242,13 +239,15 @@ const enhance = compose(
               facetMatchesQuery(
                 facet,
                 _.get(parsedFacets[facet.field], 'buckets', undefined),
-                searchValue
+                searchValue,
               ),
               !facetExclusionTest(facet),
               !shouldHideUselessFacets ||
                 usefulFacets.hasOwnProperty(facet.field),
-              facet.full.startsWith(header.full),
-              !_.some(header.excluded.map(regex => regex.test(facet.full))),
+              !header.excluded || facet.full.startsWith(header.full),
+              !_.some(
+                header.excluded.map((regex: any) => regex.test(facet.full)),
+              ),
             ]);
           }),
         };
@@ -258,12 +257,12 @@ const enhance = compose(
         parsedFacets,
         filteredFacets,
       };
-    }
+    },
   ),
   withHandlers({
     handleQueryInputChange: ({ setSearchValue }) => (event: any) =>
       setSearchValue(event.target.value),
-  })
+  }),
 )(
   withTheme(
     ({
@@ -279,9 +278,7 @@ const enhance = compose(
       isLoadingParsedFacets,
       allExpanded,
       dispatch,
-      showingMore,
       notifications,
-      setShowingMore,
     }: IClinicalProps): any => {
       return (
         <Column>
@@ -478,6 +475,6 @@ const enhance = compose(
 
 const ClinicalAggregations = Relay.createContainer(
   enhance,
-  CaseAggregationsQuery
+  CaseAggregationsQuery,
 );
 export default ClinicalAggregations;

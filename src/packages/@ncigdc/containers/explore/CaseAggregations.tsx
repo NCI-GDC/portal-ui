@@ -70,7 +70,7 @@ const enhance = compose(
   withPropsOnChange(['filters'], ({ filters, relay }) =>
     relay.setVariables({
       filters,
-    })
+    }),
   ),
   withPropsOnChange(['facets'], ({ facets }) => ({
     parsedFacets: facets.facets ? tryParseJSON(facets.facets, {}) : {},
@@ -82,7 +82,7 @@ const enhance = compose(
         filters,
       });
     },
-  })
+  }),
 );
 
 export const CaseAggregationsComponent = ({
@@ -167,7 +167,7 @@ export const CaseAggregationsComponent = ({
 
 const CaseAggregations = Relay.createContainer(
   enhance(withTheme(CaseAggregationsComponent)),
-  CaseAggregationsQuery
+  CaseAggregationsQuery,
 );
 
 export default CaseAggregations;

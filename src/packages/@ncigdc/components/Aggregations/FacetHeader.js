@@ -61,11 +61,12 @@ const FacetHeader = compose(
     isRemovable: false,
     hasValueSearch: false,
     setShowingValueSearch: () => {},
-  })
+  }),
 )(
   ({
     field,
     title,
+    DescriptionComponent,
     description,
     isRemovable,
     handleRequestRemove,
@@ -88,31 +89,39 @@ const FacetHeader = compose(
         }
         return (
           <Header className="test-facet-header" style={style}>
-            <span style={spanStyle} onClick={() => setCollapsed(!collapsed)}>
-              {!angleIconRight && (
-                <AngleIcon
-                  style={{
-                    paddingRight: '0.25rem',
-                    transform: `rotate(${collapsed ? 270 : 0}deg)`,
-                  }}
-                />
-              )}
-              {searchValue
-                ? internalHighlight(searchValue, title, {
-                    backgroundColor: '#FFFF00',
-                  })
-                : title}
-              {angleIconRight && (
-                <AngleIcon
-                  style={{
-                    overflow: 'auto',
-                    display: 'flex',
-                    float: 'right',
-                    transform: `rotate(${collapsed ? 270 : 0}deg)`,
-                  }}
-                />
-              )}
-            </span>
+            <Tooltip
+              Component={
+                DescriptionComponent ? (
+                  <div style={{ maxWidth: '24em' }}>{DescriptionComponent}</div>
+                ) : null
+              }
+            >
+              <span style={spanStyle} onClick={() => setCollapsed(!collapsed)}>
+                {!angleIconRight && (
+                  <AngleIcon
+                    style={{
+                      paddingRight: '0.25rem',
+                      transform: `rotate(${collapsed ? 270 : 0}deg)`,
+                    }}
+                  />
+                )}
+                {searchValue
+                  ? internalHighlight(searchValue, title, {
+                      backgroundColor: '#FFFF00',
+                    })
+                  : title}
+                {angleIconRight && (
+                  <AngleIcon
+                    style={{
+                      overflow: 'auto',
+                      display: 'flex',
+                      float: 'right',
+                      transform: `rotate(${collapsed ? 270 : 0}deg)`,
+                    }}
+                  />
+                )}
+              </span>
+            </Tooltip>
             <IconsRow>
               {description && (
                 <Tooltip
@@ -143,6 +152,6 @@ const FacetHeader = compose(
         );
       }}
     </LocationSubscriber>
-  )
+  ),
 );
 export default FacetHeader;

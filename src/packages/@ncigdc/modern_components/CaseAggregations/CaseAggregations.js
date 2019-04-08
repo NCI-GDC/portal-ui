@@ -167,7 +167,7 @@ const enhance = compose(
     parsedFacets: viewer.repository.cases.facets
       ? tryParseJSON(viewer.repository.cases.facets, {})
       : {},
-  }))
+  })),
 );
 
 const styles = {

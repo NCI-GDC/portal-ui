@@ -283,7 +283,8 @@ const enhance = compose(
       notifications,
       setShowingMore,
     }: IClinicalProps): any => {
-      return [
+      return (
+        <Column>
         <Row
           style={{
             margin: '2.5rem 1rem 0 0.5rem',
@@ -304,7 +305,7 @@ const enhance = compose(
             aria-label="Search..."
             autoFocus
           />
-        </Row>,
+        </Row>
         <label key="label">
           <input
             className="test-filter-useful-facet"
@@ -320,157 +321,157 @@ const enhance = compose(
                 0
               )}{' '}
           fields shown)
-        </label>,
-        ...clinicalFacets
-          .filter(
-            facet => !searchValue || filteredFacets[facet.field].length > 0 // If the user is searching for something, hide the presetFacet with no value.
-          )
-          .map(facet => {
-            return (
-              <div key={facet.title + 'div'}>
-                <Row
-                  style={{
-                    position: 'sticky',
-                    // 51px is height of header, 40 is the height of banner;
-                    top: `calc(51px + ${notifications.filter(
-                      (n: any) => !n.dismissed
-                    ).length * 40}px)`,
-                    background: '#eeeeee',
-                    zIndex: 10,
-                    cursor: 'pointer',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    padding: '1rem 1.2rem 0.5rem 1.2rem',
-                    margin: '0.5rem 1rem 0rem 1rem',
-                  }}
-                >
-                  <div
-                    onClick={() => dispatch(changeFacetNames(facet.field, ''))}
+        </label>
+        <div key="1" style={{ overflow:'scroll', maxHeight:'970px'}}>
+          {...clinicalFacets
+            .filter(
+              facet => !searchValue || filteredFacets[facet.field].length > 0 // If the user is searching for something, hide the presetFacet with no value.
+            )
+            .map(facet => {
+              return (
+                <div key={facet.title + 'div'}>
+                  <Row
                     style={{
-                      color: theme.primary,
-                      fontSize: '1.7rem',
+                      position: 'sticky',
+                      // 51px is height of header, 40 is the height of banner;
+                      top: 0,
+                      background: '#eeeeee',
+                      zIndex: 10,
+                      cursor: 'pointer',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      padding: '1rem 1.2rem 0.5rem 1.2rem',
+                      margin: '0.5rem 1rem 0rem 1rem',
                     }}
                   >
-                    <AngleIcon
+                    <div
+                      onClick={() => dispatch(changeFacetNames(facet.field, ''))}
+                      style={{
+                        color: theme.primary,
+                        fontSize: '1.7rem',
+                      }}
+                    >
+                      <AngleIcon
+                        style={{
+                          display: 'flex',
+                          padding: '0.25rem 0.25rem 0.25rem 0rem',
+                          float: 'left',
+                          transform: `rotate(${facetsExpandedStatus[facet.field]
+                            .expanded
+                            ? 0
+                            : 270}deg)`,
+                        }}
+                      />
+                      {facet.title}
+                    </div>
+                    <span
+                      onClick={() => {
+                        dispatch(
+                          expandOneCategory(
+                            facet.field,
+                            !allExpanded[facet.field]
+                          )
+                        );
+                        setShowingMore({
+                          ...showingMore,
+                          [facet.field]: !allExpanded[facet.field],
+                        });
+                      }}
                       style={{
                         display: 'flex',
-                        padding: '0.25rem 0.25rem 0.25rem 0rem',
-                        float: 'left',
-                        transform: `rotate(${facetsExpandedStatus[facet.field]
-                          .expanded
-                          ? 0
-                          : 270}deg)`,
+                        float: 'right',
                       }}
-                    />
-                    {facet.title}
-                  </div>
-                  <span
-                    onClick={() => {
-                      dispatch(
-                        expandOneCategory(
-                          facet.field,
-                          !allExpanded[facet.field]
-                        )
-                      );
-                      setShowingMore({
-                        ...showingMore,
-                        [facet.field]: !allExpanded[facet.field],
-                      });
-                    }}
-                    style={{
-                      display: 'flex',
-                      float: 'right',
-                    }}
-                  >
-                    {searchValue || filteredFacets[facet.field].length === 0
-                      ? null
-                      : allExpanded[facet.field] ? 'Reset' : 'Expand All'}
-                  </span>
-                </Row>
-                {facetsExpandedStatus[facet.field].expanded && (
-                  <Column>
-                    {_.orderBy(filteredFacets[facet.field], ['field'], ['asc'])
-                      .slice(0, showingMore[facet.field] ? Infinity : 5)
-                      .map((componentFacet: any) => {
-                        return [
-                          <WrapperComponent
-                            relayVarName="exploreCaseCustomFacetFields"
-                            key={componentFacet.full}
-                            isMatchingSearchValue={(componentFacet.full +
-                              componentFacet.description
-                            )
-                              .toLocaleLowerCase()
-                              .includes(searchValue.toLocaleLowerCase())}
-                            facet={componentFacet}
-                            allExpanded={allExpanded[facet.field]}
-                            title={_.startCase(
-                              componentFacet.full.split('.').pop()
-                            )}
-                            aggregation={parsedFacets[componentFacet.field]}
-                            searchValue={searchValue}
-                            additionalProps={{ style: { paddingBottom: 0 } }}
-                            style={{
-                              paddingLeft: '10px',
-                            }}
-                            headerStyle={{ fontSize: '14px' }}
-                            collapsed={
-                              searchValue.length === 0
-                                ? !facetsExpandedStatus[facet.field].facets[
-                                    componentFacet.field.split('.').pop()
-                                  ]
-                                : false
-                            }
-                            setCollapsed={(collapsed: any) =>
-                              dispatch(
-                                changeFacetNames(
-                                  facet.field,
-                                  componentFacet.field.split('.').pop(),
-                                  !collapsed
-                                )
+                    >
+                      {searchValue || filteredFacets[facet.field].length === 0
+                        ? null
+                        : allExpanded[facet.field] ? 'Reset' : 'Expand All'}
+                    </span>
+                  </Row>
+                  {facetsExpandedStatus[facet.field].expanded && (
+                    <Column>
+                      {_.orderBy(filteredFacets[facet.field], ['field'], ['asc'])
+                        .slice(0, showingMore[facet.field] ? Infinity : 5)
+                        .map((componentFacet: any) => {
+                          return [
+                            <WrapperComponent
+                              relayVarName="exploreCaseCustomFacetFields"
+                              key={componentFacet.full}
+                              isMatchingSearchValue={(componentFacet.full +
+                                componentFacet.description
+                              )
+                                .toLocaleLowerCase()
+                                .includes(searchValue.toLocaleLowerCase())}
+                              facet={componentFacet}
+                              allExpanded={allExpanded[facet.field]}
+                              title={_.startCase(
+                                componentFacet.full.split('.').pop()
                               )}
-                            category={facet.field}
-                          />,
-                          <div key={componentFacet.description}>
-                            {searchValue.length > 0 ? (
-                              <ResultHighlights
-                                item={{
-                                  description: componentFacet.description,
-                                }}
-                                query={searchValue}
-                                heighlightStyle={{ backgroundColor: '#FFFF00' }}
-                                style={{
-                                  fontStyle: 'italic',
-                                  paddingLeft: '30px',
-                                  paddingRight: '10px',
-                                }}
-                              />
-                            ) : null}
-                          </div>,
-                        ];
-                      })}
-                    {filteredFacets[facet.field].length > 5 && (
-                      <BottomRow style={{ marginRight: '1rem' }}>
-                        <ToggleMoreLink
-                          onClick={() =>
-                            setShowingMore({
-                              ...showingMore,
-                              [facet.field]: !showingMore[facet.field],
-                            })}
-                        >
-                          {showingMore[facet.field]
-                            ? 'Less...'
-                            : filteredFacets[facet.field].length - 5 &&
-                              `${filteredFacets[facet.field].length -
-                                5} More...`}
-                        </ToggleMoreLink>
-                      </BottomRow>
-                    )}
-                  </Column>
-                )}
-              </div>
-            );
-          }),
-      ];
+                              aggregation={parsedFacets[componentFacet.field]}
+                              searchValue={searchValue}
+                              additionalProps={{ style: { paddingBottom: 0 } }}
+                              style={{
+                                paddingLeft: '10px',
+                              }}
+                              headerStyle={{ fontSize: '14px' }}
+                              collapsed={
+                                searchValue.length === 0
+                                  ? !facetsExpandedStatus[facet.field].facets[
+                                      componentFacet.field.split('.').pop()
+                                    ]
+                                  : false
+                              }
+                              setCollapsed={(collapsed: any) =>
+                                dispatch(
+                                  changeFacetNames(
+                                    facet.field,
+                                    componentFacet.field.split('.').pop(),
+                                    !collapsed
+                                  )
+                                )}
+                              category={facet.field}
+                            />,
+                            <div key={componentFacet.description}>
+                              {searchValue.length > 0 ? (
+                                <ResultHighlights
+                                  item={{
+                                    description: componentFacet.description,
+                                  }}
+                                  query={searchValue}
+                                  heighlightStyle={{ backgroundColor: '#FFFF00' }}
+                                  style={{
+                                    fontStyle: 'italic',
+                                    paddingLeft: '30px',
+                                    paddingRight: '10px',
+                                  }}
+                                />
+                              ) : null}
+                            </div>,
+                          ];
+                        })}
+                      {filteredFacets[facet.field].length > 5 && (
+                        <BottomRow style={{ marginRight: '1rem' }}>
+                          <ToggleMoreLink
+                            onClick={() =>
+                              setShowingMore({
+                                ...showingMore,
+                                [facet.field]: !showingMore[facet.field],
+                              })}
+                          >
+                            {showingMore[facet.field]
+                              ? 'Less...'
+                              : filteredFacets[facet.field].length - 5 &&
+                                `${filteredFacets[facet.field].length -
+                                  5} More...`}
+                          </ToggleMoreLink>
+                        </BottomRow>
+                      )}
+                    </Column>
+                  )}
+                </div>
+              );
+            })}
+        </div>
+      </Column>);
     }
   )
 );

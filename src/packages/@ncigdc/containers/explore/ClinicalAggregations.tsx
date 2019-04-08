@@ -318,22 +318,18 @@ const enhance = compose(
               )}{' '}
           fields shown)
         </label>
-        <div key="1" style={{ overflow:'scroll', maxHeight:'970px'}}>
+        <div key="1" style={{ overflow:'scroll', maxHeight:'990px'}}>
           {...clinicalFacets
             .filter(
               facet => !searchValue || filteredFacets[facet.field].length > 0, // If the user is searching for something, hide the presetFacet with no value.
             )
             .map(facet => {
-              const headerHeight = '51px';
-              const bannerHeight = 40;
               return (
                 <div key={facet.title + 'div'}>
                   <Row
                     style={{
                       position: 'sticky',
-                      top: `calc(${headerHeight} + ${notifications.filter(
-                        (n: any) => !n.dismissed,
-                      ).length * bannerHeight}px)`,
+                      top: 0,
                       background: '#eeeeee',
                       zIndex: 10,
                       cursor: 'pointer',

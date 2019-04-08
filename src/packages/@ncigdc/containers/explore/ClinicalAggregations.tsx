@@ -19,7 +19,8 @@ import {
 import { WrapperComponent } from '@ncigdc/components/FacetWrapper';
 import { withTheme } from '@ncigdc/theme';
 import { CaseAggregationsQuery } from '@ncigdc/containers/explore/explore.relay';
-import { ResultHighlights } from '@ncigdc/components/QuickSearch/QuickSearchResults';
+import { internalHighlight } from '@ncigdc/uikit/Highlight';
+
 import SearchIcon from 'react-icons/lib/fa/search';
 import { Row } from '@ncigdc/uikit/Flex';
 import styled from '@ncigdc/theme/styled';
@@ -393,6 +394,12 @@ const enhance = compose(
                           : 5,
                       )
                       .map((componentFacet: any) => {
+                        if (componentFacet.field.includes('ethnicity')) {
+                          console.log(
+                            'componentFacet',
+                            componentFacet.description,
+                          );
+                        }
                         return [
                           <WrapperComponent
                             relayVarName="exploreCaseCustomFacetFields"
@@ -430,22 +437,22 @@ const enhance = compose(
                               )}
                             category={facet.field}
                             DescriptionComponent={
-                              <div key={componentFacet.description}>
-                                <ResultHighlights
-                                  item={{
-                                    description: componentFacet.description,
-                                  }}
-                                  query={searchValue}
-                                  highlightStyle={{
+                              <div
+                                key={componentFacet.description}
+                                style={{
+                                  fontStyle: 'italic',
+                                  paddingLeft: '30px',
+                                  paddingRight: '10px',
+                                  width: '320px',
+                                }}
+                              >
+                                {internalHighlight(
+                                  searchValue,
+                                  componentFacet.description,
+                                  {
                                     backgroundColor: '#FFFF00',
-                                  }}
-                                  style={{
-                                    fontStyle: 'italic',
-                                    paddingLeft: '30px',
-                                    paddingRight: '10px',
-                                    width: '320px',
-                                  }}
-                                />
+                                  },
+                                )}
                               </div>
                             }
                           />,

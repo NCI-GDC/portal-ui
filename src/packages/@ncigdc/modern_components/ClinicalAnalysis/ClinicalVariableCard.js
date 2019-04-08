@@ -166,6 +166,20 @@ const getRangeValue = (key, field, nextInterval) => {
   }
 };
 
+const getCountLink = ({ doc_count, filters, totalDocs }) => (
+  <span>
+    <ExploreLink
+      query={{
+        searchTableTab: 'cases',
+        filters,
+      }}
+    >
+      {(doc_count || 0).toLocaleString()}
+    </ExploreLink>
+    <span>{` (${((doc_count || 0) / totalDocs * 100).toFixed(2)}%)`}</span>
+  </span>
+);
+
 const enhance = compose(
   connect((state: any) => ({ analysis: state.analysis })),
   withTheme,
@@ -183,56 +197,64 @@ const enhance = compose(
             }
           ).buckets
         : (data || { buckets: [] }).buckets,
+    totalDocs: (data.hits || { total: 0 }).total,
   })),
-  withProps(({ rawQueryData, variable, fieldName, setId }) => ({
-    getBucketRangesAndFilters: (acc, { doc_count, key }) => {
-      const filters =
-        variable.plotTypes === 'categorical'
-          ? {}
-          : {
-              op: 'and',
-              content: [
-                {
-                  op: 'in',
-                  content: {
-                    field: 'cases.case_id',
-                    value: `set_id:${setId}`,
-                  },
-                },
-                {
-                  op: '>=',
-                  content: {
-                    field: fieldName,
-                    value: [
-                      `${valueIsYear(fieldName) ? Math.floor(key) : key}`,
-                    ],
-                  },
-                },
-                ...(acc.nextInterval !== 0 && [
+  withProps(
+    ({ rawQueryData, variable, fieldName, setId, data, totalDocs }) => ({
+      getBucketRangesAndFilters: (acc, { doc_count, key }) => {
+        const filters =
+          variable.plotTypes === 'categorical'
+            ? {}
+            : {
+                op: 'and',
+                content: [
                   {
-                    op: '<=',
+                    op: 'in',
                     content: {
-                      field: fieldName,
-                      value: [`${acc.nextInterval - 1}`],
+                      field: 'cases.case_id',
+                      value: `set_id:${setId}`,
                     },
                   },
-                ]),
-              ],
-            };
+                  {
+                    op: '>=',
+                    content: {
+                      field: fieldName,
+                      value: [
+                        `${valueIsYear(fieldName) ? Math.floor(key) : key}`,
+                      ],
+                    },
+                  },
+                  ...(acc.nextInterval !== 0 && [
+                    {
+                      op: '<=',
+                      content: {
+                        field: fieldName,
+                        value: [`${acc.nextInterval - 1}`],
+                      },
+                    },
+                  ]),
+                ],
+              };
 
-      return {
-        nextInterval: key,
-        data: [
-          ...acc.data,
-          {
-            chart_doc_count: doc_count,
-            filters,
-            key: getRangeValue(key, fieldName, acc.nextInterval),
-          },
-        ],
-      };
-    },
-  })),
+        return {
+          nextInterval: key,
+          data: [
+            ...acc.data,
+            {
+              chart_doc_count: doc_count,
+              doc_count: getCountLink({
+                doc_count,
+                filters,
+                totalDocs,
+              }),
+              filters,
+              key: getRangeValue(key, fieldName, acc.nextInterval),
+            },
+          ],
+        };
+      },
+    })
+  ),
   withProps(
     ({
       setSurvivalPlotLoading,
@@ -372,30 +394,12 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
   data,
   rawQueryData,
   getBucketRangesAndFilters,
+  totalDocs,
 }) => {
-  const totalDocs = (data.hits || { total: 0 }).total;
   const getCategoricalTableData = (rawData, type) => {
     if (_.isEmpty(rawData)) {
       return [];
     }
-
-    const getCountLink = ({ doc_count, filters }) => {
-      return (
-        <span>
-          <ExploreLink
-            query={{
-              searchTableTab: 'cases',
-              filters,
-            }}
-          >
-            {(doc_count || 0).toLocaleString()}
-          </ExploreLink>
-          <span>{` (${((doc_count || 0) / totalDocs * 100).toFixed(
-            2
-          )}%)`}</span>
-        </span>
-      );
-    };
 
     const displayData =
       type === 'continuous'
@@ -442,6 +446,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                         },
                         { field: fieldName, value: [b.key] },
                       ]),
+                totalDocs,
               }),
             }));
 

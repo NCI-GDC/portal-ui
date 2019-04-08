@@ -83,12 +83,15 @@ const FacetHeader = compose(
       {(ctx: { pathname: string, query: IRawQuery }) => {
         const currentFilters =
           ctx.query && parseFilterParam((ctx.query || {}).filters, {});
-        let spanStyle = { cursor: 'pointer', whiteSpace: 'nowrap' };
+        let spanStyle = { cursor: 'pointer' };
         if (angleIconRight) {
           spanStyle['width'] = '100%';
         }
         return (
-          <Header className="test-facet-header" style={style}>
+          <Header
+            className="test-facet-header"
+            onClick={() => setCollapsed(!collapsed)}
+            style={style} >
             <Tooltip
               Component={
                 DescriptionComponent ? (
@@ -96,31 +99,29 @@ const FacetHeader = compose(
                 ) : null
               }
             >
-              <span style={spanStyle} onClick={() => setCollapsed(!collapsed)}>
-                {!angleIconRight && (
-                  <AngleIcon
-                    style={{
-                      paddingRight: '0.25rem',
-                      transform: `rotate(${collapsed ? 270 : 0}deg)`,
-                    }}
-                  />
-                )}
-                {searchValue
-                  ? internalHighlight(searchValue, title, {
-                      backgroundColor: '#FFFF00',
-                    })
-                  : title}
-                {angleIconRight && (
-                  <AngleIcon
-                    style={{
-                      overflow: 'auto',
-                      display: 'flex',
-                      float: 'right',
-                      transform: `rotate(${collapsed ? 270 : 0}deg)`,
-                    }}
-                  />
-                )}
-              </span>
+              {!angleIconRight && (
+                <AngleIcon
+                  style={{
+                    paddingRight: '0.25rem',
+                    transform: `rotate(${collapsed ? 270 : 0}deg)`,
+                  }}
+                />
+              )}
+              {searchValue
+                ? internalHighlight(searchValue, title, {
+                    backgroundColor: '#FFFF00',
+                  })
+                : title}
+              {angleIconRight && (
+                <AngleIcon
+                  style={{
+                    overflow: 'auto',
+                    display: 'flex',
+                    float: 'right',
+                    transform: `rotate(${collapsed ? 270 : 0}deg)`,
+                  }}
+                />
+              )}
             </Tooltip>
             <IconsRow>
               {description && (

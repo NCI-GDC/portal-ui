@@ -122,6 +122,7 @@ export default compose(
         <div>
           <SurvivalPlotWrapper
             survivalPlotLoading={loading}
+            plotType="mutation"
             {...survivalData}
             palette={palette}
             height={240}

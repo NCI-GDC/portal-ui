@@ -24,7 +24,7 @@ const simpleAggCache = {};
 const pendingAggCache = {};
 const DEFAULT_CONTINUOUS_BUCKETS = 4;
 
-const getContinousAggs = ({ fieldName, stats, filters }) => {
+const getContinuousAggs = ({ fieldName, stats, filters }) => {
   // prevent query failing if interval will equal 0
   if (_.isNull(stats.min) || _.isNull(stats.max)) {
     return null;
@@ -128,7 +128,7 @@ export default compose(
       setAggData,
       setIsLoading,
     }) => {
-      const res = await getContinousAggs({
+      const res = await getContinuousAggs({
         fieldName,
         stats,
         filters,

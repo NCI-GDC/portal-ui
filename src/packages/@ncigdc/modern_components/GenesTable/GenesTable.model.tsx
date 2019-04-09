@@ -203,10 +203,11 @@ const GenesTableModel = [
           >
             {(filteredCases.hits.total || 0).toLocaleString()}
           </ExploreLink>
-          <span>{` (${((node.numCases || 0) /
-            filteredCases.hits.total *
-            100
-          ).toFixed(2)}%)`}</span>
+          <span>{` (${!filteredCases.hits.total || !node.numCases
+            ? '0'
+            : (node.numCases / filteredCases.hits.total * 100).toFixed(
+                2
+              )}%)`}</span>
         </span>
       </Td>
     ),

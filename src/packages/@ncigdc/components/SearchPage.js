@@ -1,14 +1,7 @@
 // @flow
 
 import React from 'react';
-import {
-  compose,
-  withState,
-  withHandlers,
-  lifecycle,
-  withProps,
-  withPropsOnChange,
-} from 'recompose';
+import { compose, withState } from 'recompose';
 
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import styled from '@ncigdc/theme/styled';
@@ -53,23 +46,7 @@ type TProps = {
   showRepositoryQuery: boolean,
 };
 
-const enhance = compose(
-  withState('showFacets', 'setShowFacets', true),
-  withState('refNode', 'setRefNode', null),
-  withHandlers(({ setRefNode }) => {
-    return {
-      onRef: () => ref => setRefNode(ref),
-    };
-  }),
-  withPropsOnChange(
-    (props, nextProps) => props.refNode !== nextProps.refNode,
-    ({ refNode }) => {
-      return {
-        height: refNode && refNode.clientHeight,
-      };
-    },
-  ),
-);
+const enhance = compose(withState('showFacets', 'setShowFacets', true));
 
 const SearchPage = (
   {
@@ -77,9 +54,7 @@ const SearchPage = (
     results = <span />,
     showFacets,
     setShowFacets,
-    height,
     filtersLinkProps,
-    onRef,
     ...props
   }: TProps = {},
 ) => (
@@ -106,17 +81,15 @@ const SearchPage = (
       </FacetsPanel>
     )}
     <Content>
-      <div ref={onRef}>
-        <Row style={{ marginBottom: '2rem' }}>
-          {!showFacets && (
-            <ShowFacetsButton onClick={() => setShowFacets(!showFacets)}>
-              <DoubleArrowRightIcon />
-            </ShowFacetsButton>
-          )}
-          <CurrentFilters style={{ flex: 1 }} {...filtersLinkProps} />
-        </Row>
-        {results}
-      </div>
+      <Row style={{ marginBottom: '2rem' }}>
+        {!showFacets && (
+          <ShowFacetsButton onClick={() => setShowFacets(!showFacets)}>
+            <DoubleArrowRightIcon />
+          </ShowFacetsButton>
+        )}
+        <CurrentFilters style={{ flex: 1 }} {...filtersLinkProps} />
+      </Row>
+      {results}
     </Content>
   </Container>
 );

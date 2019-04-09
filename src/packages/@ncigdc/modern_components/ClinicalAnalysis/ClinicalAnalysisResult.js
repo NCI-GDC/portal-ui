@@ -403,7 +403,6 @@ const ClinicalAnalysisResult = ({
               <Input
                 id="search-facets"
                 name="search-facets"
-                onChange={() => console.log('search')}
                 placeholder="Search"
                 value={searchValue}
                 onChange={handleQueryInputChange}
@@ -416,6 +415,7 @@ const ClinicalAnalysisResult = ({
                 usefulFacets={getUsefulFacets(parsedFacets)}
                 currentAnalysis={currentAnalysis}
                 analysis_id={id}
+                searchValue={searchValue}
               />
             </Column>
           </Column>

@@ -2,7 +2,6 @@ import React from 'react';
 import { compose, withState, withPropsOnChange, withProps } from 'recompose';
 import { connect } from 'react-redux';
 import SearchIcon from 'react-icons/lib/fa/search';
-import DownCaretIcon from 'react-icons/lib/fa/caret-down';
 import _ from 'lodash';
 
 import { Row, Column } from '@ncigdc/uikit/Flex';
@@ -21,10 +20,8 @@ import Hidden from '@ncigdc/components/Hidden';
 import { visualizingButton } from '@ncigdc/theme/mixins';
 import { zDepth1 } from '@ncigdc/theme/mixins';
 import EntityPageHorizontalTable from '@ncigdc/components/EntityPageHorizontalTable';
-import Dropdown from '@ncigdc/uikit/Dropdown';
 import ClinicalVariableCard from './ClinicalVariableCard.js';
 import ContinuousAggregation from './ContinuousAggregationQuery';
-import DropdownItem from '@ncigdc/uikit/DropdownItem';
 import Input from '@ncigdc/uikit/Form/Input';
 import { withTheme } from '@ncigdc/theme';
 import countComponents from '@ncigdc/modern_components/Counts';
@@ -40,6 +37,8 @@ import { setModal } from '@ncigdc/dux/modal';
 import EditableLabel from '@ncigdc/uikit/EditableLabel';
 import tryParseJSON from '@ncigdc/utils/tryParseJSON';
 import getUsefulFacets from '@ncigdc/utils/getUsefulFacets';
+import DeprecatedSetResult from './DeprecatedSetResult';
+import CohortDropdown from './CohortDropdown';
 
 // survival plot
 import { getDefaultCurve, enoughData } from '@ncigdc/utils/survivalplot';
@@ -231,37 +230,19 @@ const ClinicalAnalysisResult = ({
   hits,
   ...props
 }: IAnalysisResultProps) => {
-  const setName = Object.values(sets.case)[0];
   const setId = Object.keys(currentAnalysis.sets.case)[0];
+  const CountComponent = countComponents.case;
 
   if (hits.total === 0) {
     return (
-      <Column style={{ margin: '2rem' }}>
-        <Row spacing={'10px'} style={{ alignItems: 'center', width: '80%' }}>
-          <Icon style={{ height: 50, width: 50 }} />
-          <h1 style={{ fontSize: '2.5rem', margin: 5 }}>Clinical Analysis</h1>
-        </Row>
-        <Row style={{ marginTop: '1rem', marginLeft: '1rem' }}>
-          Analysis is deprecated because {setName} is a deprecated set.
-        </Row>
-      </Column>
+      <DeprecatedSetResult
+        currentAnalysis={currentAnalysis}
+        dispatch={dispatch}
+        allSets={allSets}
+        Icon={Icon}
+      />
     );
   }
-
-  const CountComponent = countComponents.case;
-  const dropdownItems = Object.values(allSets.case)
-    .filter(s => s !== Object.values(currentAnalysis.sets.case)[0])
-    .map((n: any) => (
-      <DropdownItem
-        key={n}
-        className="all-sets-item"
-        onClick={() => console.log(n)}
-        aria-label={`Switch selected set to ${n}`}
-      >
-        {n}
-      </DropdownItem>
-    ));
-
   return (
     <div style={{ padding: 5 }}>
       <Row
@@ -376,28 +357,11 @@ const ClinicalAnalysisResult = ({
                 borderBottom: `1px solid ${theme.greyScale4}`,
               }}
             >
-              <Dropdown
-                style={{
-                  width: 160,
-                  justifyContent: 'flex-start',
-                  marginRight: 10,
-                }}
-                button={
-                  <Button
-                    style={{
-                      ...visualizingButton,
-                      padding: '0 6px',
-                      width: '100%',
-                    }}
-                    rightIcon={<DownCaretIcon />}
-                  >
-                    {_.truncate(setName, { length: 16 })}
-                  </Button>
-                }
-                dropdownStyle={{ width: '100%' }}
-              >
-                {dropdownItems}
-              </Dropdown>
+              <CohortDropdown
+                sets={allSets}
+                currentAnalysis={currentAnalysis}
+                dispatch={dispatch}
+              />
               <ExploreLink
                 query={{
                   filters: {

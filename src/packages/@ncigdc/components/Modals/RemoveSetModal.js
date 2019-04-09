@@ -10,12 +10,13 @@ import SetTable from '@ncigdc/components/SetTable';
 import withRouter from '@ncigdc/utils/withRouter';
 
 import onSaveComplete from './onSaveComplete';
+import { updateClinicalAnalysisSet } from '@ncigdc/dux/analysis';
 
 const enhance = compose(
   withState('selected', 'setSelected', ''),
   connect(({ sets }) => ({ sets })),
   withProps(({ sets, type }) => ({ sets: sets[type] || {} })),
-  withRouter,
+  withRouter
 );
 
 const RemoveSetModal = ({
@@ -30,6 +31,8 @@ const RemoveSetModal = ({
   sets,
   history,
   query,
+  setName,
+  analysisId,
 }) => (
   <BaseModal
     title={title}
@@ -53,8 +56,15 @@ const RemoveSetModal = ({
             dispatch,
             label: sets[selected],
           });
-
           dispatch(replaceSet({ type, oldId: selected, newId: setId }));
+          debugger;
+          dispatch(
+            updateClinicalAnalysisSet({
+              id: analysisId,
+              setId,
+              setName,
+            })
+          );
         }}
       >
         Save

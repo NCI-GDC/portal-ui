@@ -234,6 +234,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
   data,
   selectedBuckets,
   setSelectedBuckets,
+  setName,
 }) => {
   const rawQueryData =
     variable.plotTypes === 'continuous'
@@ -964,6 +965,9 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                         filters={cardFilters}
                         type={'case'}
                         RemoveFromSetButton={RemoveFromExploreCaseSetButton}
+                        analysisId={id}
+                        setName={setName}
+                        setKey={setId}
                       />
                     )
                   );

@@ -965,9 +965,6 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                         filters={cardFilters}
                         type={'case'}
                         RemoveFromSetButton={RemoveFromExploreCaseSetButton}
-                        analysisId={id}
-                        setName={setName}
-                        setKey={setId}
                       />
                     )
                   );

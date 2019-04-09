@@ -14,8 +14,11 @@ import { updateClinicalAnalysisSet } from '@ncigdc/dux/analysis';
 
 const enhance = compose(
   withState('selected', 'setSelected', ''),
-  connect(({ sets }) => ({ sets })),
-  withProps(({ sets, type }) => ({ sets: sets[type] || {} })),
+  connect(({ sets, analysis }) => ({ sets, analysis })),
+  withProps(({ sets, type, analysis }) => ({
+    sets: sets[type] || {},
+    analyses: analysis.saved,
+  })),
   withRouter
 );
 
@@ -31,8 +34,7 @@ const RemoveSetModal = ({
   sets,
   history,
   query,
-  setName,
-  analysisId,
+  analyses,
 }) => (
   <BaseModal
     title={title}
@@ -42,7 +44,7 @@ const RemoveSetModal = ({
         set_id={`set_id:${selected}`}
         filters={filters}
         action="remove"
-        onComplete={setId => {
+        onComplete={async setId => {
           if ((query.filters || '').includes(selected)) {
             history.replace({
               search: `?${stringify({
@@ -56,15 +58,19 @@ const RemoveSetModal = ({
             dispatch,
             label: sets[selected],
           });
-          dispatch(replaceSet({ type, oldId: selected, newId: setId }));
-          debugger;
-          dispatch(
-            updateClinicalAnalysisSet({
-              id: analysisId,
-              setId,
-              setName,
-            })
-          );
+          await dispatch(replaceSet({ type, oldId: selected, newId: setId }));
+          analyses
+            .filter(analysis => analysis.sets.case[selected])
+            .forEach(affected => {
+              console.log('affected: ', affected);
+              dispatch(
+                updateClinicalAnalysisSet({
+                  id: affected.id,
+                  setId,
+                  setName: affected.sets.case[selected],
+                })
+              );
+            });
         }}
       >
         Save

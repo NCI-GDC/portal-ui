@@ -48,7 +48,6 @@ interface IBucketProps {
   key: string,
   doc_count: number,
 }
-
 interface IClinicalProps {
   filteredFacets: any,
   theme: ITheme,
@@ -63,6 +62,8 @@ interface IClinicalProps {
   facetsExpandedStatus: any,
   dispatch: any,
   notifications: any,
+  setBottomFading: any,
+  bottomFading: number,
 }
 const facetMatchesQuery = (
   facet: IFacetProps,
@@ -113,6 +114,7 @@ const enhance = compose(
   withState('isLoadingParsedFacets', 'setIsLoadingParsedFacets', false),
   withState('shouldHideUselessFacets', 'setShouldHideUselessFacets', true),
   withState('searchValue', 'setSearchValue', ''),
+  withState('bottomFading', 'setBottomFading', 1),
   withFacetSelection({
     entityType: 'ExploreCases',
     presetFacetFields: presetFacets.map(x => x.field),
@@ -279,9 +281,12 @@ const enhance = compose(
       allExpanded,
       dispatch,
       notifications,
+      bottomFading,
+      setBottomFading,
     }: IClinicalProps): any => {
+      const maxHeight = 990;
       return (
-        <Column>
+        <React.Fragment>
           <Row
             style={{
               margin: '2.5rem 1rem 0 0.5rem',
@@ -323,11 +328,16 @@ const enhance = compose(
           <div
             key="1"
             className="cohortBuilder"
+            onScroll={(e: any) =>
+              setBottomFading(
+                e.target.scrollHeight - e.target.scrollTop === maxHeight
+                  ? 0
+                  : 1,
+              )}
             style={{
               overflowY: 'scroll',
-              maxHeight: '990px',
-              backgroundImage:
-                'linear-gradient(to bottom, rgba(255,255,255, 0), rgba(255,255,255, 1) 90%)',
+              maxHeight: `${maxHeight}px`,
+              paddingBottom: '20px',
             }}
           >
             {clinicalFacets
@@ -407,12 +417,6 @@ const enhance = compose(
                               : 5,
                           )
                           .map((componentFacet: any) => {
-                            if (componentFacet.field.includes('ethnicity')) {
-                              console.log(
-                                'componentFacet',
-                                componentFacet.description,
-                              );
-                            }
                             return [
                               <WrapperComponent
                                 relayVarName="exploreCaseCustomFacetFields"
@@ -493,7 +497,16 @@ const enhance = compose(
                 );
               })}
           </div>
-        </Column>
+          <span
+            style={{
+              marginTop: '-50px',
+              marginRight: '15px',
+              height: '50px',
+              zIndex: 11,
+              background: `linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,${bottomFading}) 100.00%)`,
+            }}
+          />
+        </React.Fragment>
       );
     },
   ),

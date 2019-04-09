@@ -609,25 +609,50 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
       ],
     });
   };
+
+  const getCategoricalSetFilters = () => {
+    let bucketFilters = filters;
+    if (
+      selectedBuckets.filter(bucket => bucket.key !== '_missing').length > 0
+    ) {
+      bucketFilters = addInFilters(bucketFilters, {
+        op: 'and',
+        content: [
+          {
+            op: 'in',
+            content: {
+              field: fieldName,
+              value: selectedBuckets
+                .filter(bucket => bucket.key !== '_missing')
+                .map(selectedBucket => selectedBucket.key),
+            },
+          },
+        ],
+      });
+    }
+
+    if (_.find(selectedBuckets, bucket => bucket.key === '_missing')) {
+      bucketFilters = addInFilters(bucketFilters, {
+        op: 'and',
+        content: [
+          {
+            op: 'is',
+            content: {
+              field: fieldName,
+              value: 'MISSING',
+            },
+          },
+        ],
+      });
+    }
+    return bucketFilters;
+  };
   let cardFilters = filters;
   if (selectedBuckets.length) {
     cardFilters =
       variable.plotTypes === 'continuous'
         ? getContinuousSetFilters()
-        : addInFilters(filters, {
-            op: 'and',
-            content: [
-              {
-                op: 'in',
-                content: {
-                  field: fieldName,
-                  value: selectedBuckets.map(
-                    selectedBucket => selectedBucket.key
-                  ),
-                },
-              },
-            ],
-          });
+        : getCategoricalSetFilters();
 
     console.log(cardFilters);
   }
@@ -898,11 +923,6 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                         displayType={'case'}
                         CreateSetButton={CreateExploreCaseSetButton}
                         setName={'Custom Case Selection'}
-                        // setName={
-                        //   (selectedIds || []).length
-                        //     ? `Custom Case Selection`
-                        //     : ''
-                        // }
                       />
                     )
                   );
@@ -919,7 +939,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                         field="cases.case_id"
                         title={`Add ${totalFromSelectedBuckets} Cases to Existing Set`}
                         total={totalFromSelectedBuckets}
-                        filters={{}}
+                        filters={cardFilters}
                         score={'gene.gene_id'}
                         sort={null}
                         type={'case'}
@@ -941,7 +961,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                       <RemoveSetModal
                         field="cases.case_id"
                         title={`Remove ${totalFromSelectedBuckets} Cases from Existing Set`}
-                        filters={{}}
+                        filters={cardFilters}
                         type={'case'}
                         RemoveFromSetButton={RemoveFromExploreCaseSetButton}
                       />

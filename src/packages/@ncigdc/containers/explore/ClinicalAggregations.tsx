@@ -280,202 +280,221 @@ const enhance = compose(
       dispatch,
       notifications,
     }: IClinicalProps): any => {
-       return (<Column>
-        <Row
-          style={{
-            margin: '2.5rem 1rem 0 0.5rem',
-          }}
-          key="row"
-        >
-          <label>
-            <MagnifyingGlass />
-          </label>
-          <Input
+      return (
+        <Column>
+          <Row
             style={{
-              borderRadius: '0 4px 4px 0',
-              marginBottom: '6px',
+              margin: '2.5rem 1rem 0 0.5rem',
             }}
-            defaultValue={searchValue}
-            onChange={handleQueryInputChange}
-            placeholder={'Search...'}
-            aria-label="Search..."
-            autoFocus
-          />
-        </Row>
-        <label key="label">
-          <input
-            className="test-filter-useful-facet"
-            type="checkbox"
-            onChange={event => setUselessFacetVisibility(event.target.checked)}
-            checked={shouldHideUselessFacets}
-            style={{ margin: '12px' }}
-          />
-          Only show fields with values ({isLoadingParsedFacets
-            ? '...'
-            : _.values(filteredFacets).reduce(
-                (acc: number, facet: IFacetProps[]) => acc + facet.length,
-                0,
-              )}{' '}
-          fields shown)
-        </label>
-        <div key="1" style={{ overflow:'scroll', maxHeight:'990px'}}>
-          {...clinicalFacets
-            .filter(
-              facet => !searchValue || filteredFacets[facet.field].length > 0, // If the user is searching for something, hide the presetFacet with no value.
-            )
-            .map(facet => {
-              return (
-                <div key={facet.title + 'div'}>
-                  <Row
-                    style={{
-                      position: 'sticky',
-                      top: 0,
-                      background: '#eeeeee',
-                      zIndex: 10,
-                      cursor: 'pointer',
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
-                      padding: '1rem 1.2rem 0.5rem 1.2rem',
-                      margin: '0.5rem 1rem 0rem 1rem',
-                    }}
-                  >
-                    <div
-                      onClick={() =>
-                        dispatch(changeExpandedStatus(facet.field, ''))}
+            key="row"
+          >
+            <label>
+              <MagnifyingGlass />
+            </label>
+            <Input
+              style={{
+                borderRadius: '0 4px 4px 0',
+                marginBottom: '6px',
+              }}
+              defaultValue={searchValue}
+              onChange={handleQueryInputChange}
+              placeholder={'Search...'}
+              aria-label="Search..."
+              autoFocus
+            />
+          </Row>
+          <label key="label">
+            <input
+              className="test-filter-useful-facet"
+              type="checkbox"
+              onChange={event =>
+                setUselessFacetVisibility(event.target.checked)}
+              checked={shouldHideUselessFacets}
+              style={{ margin: '12px' }}
+            />
+            Only show fields with values ({isLoadingParsedFacets
+              ? '...'
+              : _.values(filteredFacets).reduce(
+                  (acc: number, facet: IFacetProps[]) => acc + facet.length,
+                  0,
+                )}{' '}
+            fields shown)
+          </label>
+          <div
+            key="1"
+            className="cohortBuilder"
+            style={{
+              overflowY: 'scroll',
+              maxHeight: '990px',
+              backgroundImage:
+                'linear-gradient(to bottom, rgba(255,255,255, 0), rgba(255,255,255, 1) 90%)',
+            }}
+          >
+            {clinicalFacets
+              .filter(
+                facet => !searchValue || filteredFacets[facet.field].length > 0, // If the user is searching for something, hide the presetFacet with no value.
+              )
+              .map(facet => {
+                return (
+                  <div key={facet.title + 'div'}>
+                    <Row
                       style={{
-                        color: theme.primary,
-                        fontSize: '1.7rem',
+                        position: 'sticky',
+                        top: 0,
+                        background: '#eeeeee',
+                        zIndex: 10,
+                        cursor: 'pointer',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        padding: '1rem 1.2rem 0.5rem 1.2rem',
+                        margin: '0.5rem 1rem 0rem 1rem',
                       }}
                     >
-                      <AngleIcon
+                      <div
+                        onClick={() =>
+                          dispatch(changeExpandedStatus(facet.field, ''))}
+                        style={{
+                          color: theme.primary,
+                          fontSize: '1.7rem',
+                        }}
+                      >
+                        <AngleIcon
+                          style={{
+                            display: 'flex',
+                            padding: '0.25rem 0.25rem 0.25rem 0rem',
+                            float: 'left',
+                            transform: `rotate(${facetsExpandedStatus[
+                              facet.field
+                            ].expanded
+                              ? 0
+                              : 270}deg)`,
+                          }}
+                        />
+                        {facet.title}
+                      </div>
+                      <span
+                        onClick={() => {
+                          dispatch(
+                            expandOneCategory(
+                              facet.field,
+                              !allExpanded[facet.field],
+                            ),
+                          );
+                        }}
                         style={{
                           display: 'flex',
-                          padding: '0.25rem 0.25rem 0.25rem 0rem',
-                          float: 'left',
-                          transform: `rotate(${facetsExpandedStatus[facet.field]
-                            .expanded
-                            ? 0
-                            : 270}deg)`,
+                          float: 'right',
                         }}
-                      />
-                      {facet.title}
-                    </div>
-                    <span
-                      onClick={() => {
-                        dispatch(
-                          expandOneCategory(
-                            facet.field,
-                            !allExpanded[facet.field],
-                          ),
-                        );
-                      }}
-                      style={{
-                        display: 'flex',
-                        float: 'right',
-                      }}
-                    >
-                      {searchValue || filteredFacets[facet.field].length === 0
-                        ? null
-                        : allExpanded[facet.field]
-                          ? 'Collapse All'
-                          : 'Expand All'}
-                    </span>
-                  </Row>
-                  {facetsExpandedStatus[facet.field].expanded && (
-                    <Column>
-                      {_.orderBy(filteredFacets[facet.field], ['field'], ['asc'])
-                        .slice(
-                          0,
-                          facetsExpandedStatus[facet.field].showingMore
-                            ? Infinity
-                            : 5,
+                      >
+                        {searchValue || filteredFacets[facet.field].length === 0
+                          ? null
+                          : allExpanded[facet.field]
+                            ? 'Collapse All'
+                            : 'Expand All'}
+                      </span>
+                    </Row>
+                    {facetsExpandedStatus[facet.field].expanded && (
+                      <Column>
+                        {_.orderBy(
+                          filteredFacets[facet.field],
+                          ['field'],
+                          ['asc'],
                         )
-                        .map((componentFacet: any) => {
-                          if (componentFacet.field.includes('ethnicity')) {
-                            console.log(
-                              'componentFacet',
-                              componentFacet.description,
-                            );
-                          }
-                          return [
-                            <WrapperComponent
-                              relayVarName="exploreCaseCustomFacetFields"
-                              key={componentFacet.full}
-                              isMatchingSearchValue={(componentFacet.full +
-                                componentFacet.description
-                              )
-                                .toLocaleLowerCase()
-                                .includes(searchValue.toLocaleLowerCase())}
-                              facet={componentFacet}
-                              allExpanded={allExpanded[facet.field]}
-                              title={_.startCase(
-                                componentFacet.full.split('.').pop(),
-                              )}
-                              aggregation={parsedFacets[componentFacet.field]}
-                              searchValue={searchValue}
-                              additionalProps={{ style: { paddingBottom: 0 } }}
-                              style={{
-                                paddingLeft: '10px',
-                              }}
-                              headerStyle={{ fontSize: '14px' }}
-                              collapsed={
-                                searchValue.length === 0
-                                  ? !facetsExpandedStatus[facet.field].facets[
-                                      componentFacet.field.split('.').pop()
-                                    ]
-                                  : false
-                              }
-                              setCollapsed={(collapsed: any) =>
-                                dispatch(
-                                  changeExpandedStatus(
-                                    facet.field,
-                                    componentFacet.field.split('.').pop(),
-                                  ),
+                          .slice(
+                            0,
+                            facetsExpandedStatus[facet.field].showingMore
+                              ? Infinity
+                              : 5,
+                          )
+                          .map((componentFacet: any) => {
+                            if (componentFacet.field.includes('ethnicity')) {
+                              console.log(
+                                'componentFacet',
+                                componentFacet.description,
+                              );
+                            }
+                            return [
+                              <WrapperComponent
+                                relayVarName="exploreCaseCustomFacetFields"
+                                key={componentFacet.full}
+                                isMatchingSearchValue={(componentFacet.full +
+                                  componentFacet.description
+                                )
+                                  .toLocaleLowerCase()
+                                  .includes(searchValue.toLocaleLowerCase())}
+                                facet={componentFacet}
+                                allExpanded={allExpanded[facet.field]}
+                                title={_.startCase(
+                                  componentFacet.full.split('.').pop(),
                                 )}
-                              category={facet.field}
-                              DescriptionComponent={
-                                <div
-                                  key={componentFacet.description}
-                                  style={{
-                                    fontStyle: 'italic',
-                                    paddingLeft: '30px',
-                                    paddingRight: '10px',
-                                    width: '320px',
-                                  }}
-                                >
-                                  {internalHighlight(
-                                    searchValue,
-                                    componentFacet.description,
-                                    {
-                                      backgroundColor: '#FFFF00',
-                                    },
+                                aggregation={parsedFacets[componentFacet.field]}
+                                searchValue={searchValue}
+                                additionalProps={{
+                                  style: { paddingBottom: 0 },
+                                }}
+                                style={{
+                                  paddingLeft: '10px',
+                                }}
+                                headerStyle={{ fontSize: '14px' }}
+                                collapsed={
+                                  searchValue.length === 0
+                                    ? !facetsExpandedStatus[facet.field].facets[
+                                        componentFacet.field.split('.').pop()
+                                      ]
+                                    : false
+                                }
+                                setCollapsed={(collapsed: any) =>
+                                  dispatch(
+                                    changeExpandedStatus(
+                                      facet.field,
+                                      componentFacet.field.split('.').pop(),
+                                    ),
                                   )}
-                                </div>
-                              }
-                            />,
-                          ];
-                        })}
-                      {filteredFacets[facet.field].length > 5 && (
-                        <BottomRow style={{ marginRight: '1rem' }}>
-                          <ToggleMoreLink
-                            onClick={() =>
-                              dispatch(showingMoreByCategory(facet.field))}
-                          >
-                            {facetsExpandedStatus[facet.field].showingMore
-                              ? 'Less...'
-                              : filteredFacets[facet.field].length - 5 &&
-                                `${filteredFacets[facet.field].length -
-                                  5} More...`}
-                          </ToggleMoreLink>
-                        </BottomRow>
-                      )}
-                    </Column>
-                  )}
-                </div>
-              );
-            })}
-        </div>
-    </Column>)
+                                category={facet.field}
+                                DescriptionComponent={
+                                  <div
+                                    key={componentFacet.description}
+                                    style={{
+                                      fontStyle: 'italic',
+                                      paddingLeft: '30px',
+                                      paddingRight: '10px',
+                                      width: '320px',
+                                    }}
+                                  >
+                                    {internalHighlight(
+                                      searchValue,
+                                      componentFacet.description,
+                                      {
+                                        backgroundColor: '#FFFF00',
+                                      },
+                                    )}
+                                  </div>
+                                }
+                              />,
+                            ];
+                          })}
+                        {filteredFacets[facet.field].length > 5 && (
+                          <BottomRow style={{ marginRight: '1rem' }}>
+                            <ToggleMoreLink
+                              onClick={() =>
+                                dispatch(showingMoreByCategory(facet.field))}
+                            >
+                              {facetsExpandedStatus[facet.field].showingMore
+                                ? 'Less...'
+                                : filteredFacets[facet.field].length - 5 &&
+                                  `${filteredFacets[facet.field].length -
+                                    5} More...`}
+                            </ToggleMoreLink>
+                          </BottomRow>
+                        )}
+                      </Column>
+                    )}
+                  </div>
+                );
+              })}
+          </div>
+        </Column>
+      );
     },
   ),
 );

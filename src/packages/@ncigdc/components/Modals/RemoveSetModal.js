@@ -59,18 +59,20 @@ const RemoveSetModal = ({
             label: sets[selected],
           });
           await dispatch(replaceSet({ type, oldId: selected, newId: setId }));
-          analyses
-            .filter(analysis => analysis.sets.case[selected])
-            .forEach(affected => {
-              console.log('remove affected: ', affected);
-              dispatch(
-                updateClinicalAnalysisSet({
-                  id: affected.id,
-                  setId,
-                  setName: affected.sets.case[selected],
-                })
-              );
-            });
+          if (type === 'case') {
+            analyses
+              .filter(analysis => analysis.sets.case[selected])
+              .forEach(affected => {
+                console.log('remove affected: ', affected);
+                dispatch(
+                  updateClinicalAnalysisSet({
+                    id: affected.id,
+                    setId,
+                    setName: affected.sets.case[selected],
+                  })
+                );
+              });
+          }
         }}
       >
         Save

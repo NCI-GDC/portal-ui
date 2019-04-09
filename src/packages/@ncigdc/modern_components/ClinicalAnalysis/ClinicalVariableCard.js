@@ -163,13 +163,13 @@ const valueIsYear = str => /year_of/.test(str);
 
 const getRangeValue = (key, field, nextInterval) => {
   if (valueIsDays(field)) {
-    return `${getLowerAgeYears(key)}${nextInterval === 0
-      ? '+'
-      : ' - ' + getUpperAgeYears(nextInterval - 1)} years`;
+    return `${getLowerAgeYears(key)}${
+      nextInterval === 0 ? '+' : ' - ' + getUpperAgeYears(nextInterval - 1)
+    } years`;
   } else if (valueIsYear(field)) {
-    return `${Math.floor(key)}${nextInterval === 0
-      ? ' - present'
-      : ' - ' + (nextInterval - 1)}`;
+    return `${Math.floor(key)}${
+      nextInterval === 0 ? ' - present' : ' - ' + (nextInterval - 1)
+    }`;
   } else {
     return key;
   }
@@ -185,7 +185,7 @@ const getCountLink = ({ doc_count, filters, totalDocs }) => (
     >
       {(doc_count || 0).toLocaleString()}
     </ExploreLink>
-    <span>{` (${((doc_count || 0) / totalDocs * 100).toFixed(2)}%)`}</span>
+    <span>{` (${(((doc_count || 0) / totalDocs) * 100).toFixed(2)}%)`}</span>
   </span>
 );
 
@@ -199,9 +199,10 @@ const enhance = compose(
   withProps(({ variable, data, fieldName }) => ({
     rawQueryData:
       variable.plotTypes === 'continuous'
-        ? ((data.explore &&
-            data.explore.cases.aggregations[fieldName.replace('.', '__')]
-              .histogram) || {
+        ? (
+            (data.explore &&
+              data.explore.cases.aggregations[fieldName.replace('.', '__')]
+                .histogram) || {
               buckets: [],
             }
           ).buckets
@@ -256,8 +257,8 @@ const enhance = compose(
                 filters,
                 totalDocs,
               }),
-              filters,
               key: getRangeValue(key, fieldName, acc.nextInterval),
+              rangeValues: { min: key, max: Math.floor(acc.nextInterval - 1) },
             },
           ],
         };
@@ -273,7 +274,6 @@ const enhance = compose(
       fieldName,
       variable,
       data,
-      parsedFacets,
       setId,
       setSelectedSurvivalValues,
       selectedSurvivalValues,
@@ -295,9 +295,8 @@ const enhance = compose(
                 .data.slice(0)
                 .reverse()
             : rawQueryData
-                .filter(
-                  bucket =>
-                    !IS_CDAVE_DEV ? bucket.key !== '_missing' : bucket.key
+                .filter(bucket =>
+                  !IS_CDAVE_DEV ? bucket.key !== '_missing' : bucket.key
                 )
                 .map(b => ({
                   ...b,
@@ -392,7 +391,6 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
   theme,
   dispatch,
   id,
-  parsedFacets,
   setId,
   overallSurvivalData,
   survivalPlotLoading,
@@ -425,8 +423,8 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
             .data.slice(0)
             .reverse()
         : rawData
-            .filter(
-              bucket => (!IS_CDAVE_DEV ? bucket.key !== '_missing' : bucket.key)
+            .filter(bucket =>
+              !IS_CDAVE_DEV ? bucket.key !== '_missing' : bucket.key
             )
             .map(b => ({
               ...b,
@@ -463,32 +461,31 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
               }),
             }));
 
-    return displayData.map(b => {
-      return {
-        ...b,
-        select: (
-          <input
-            style={{
-              marginLeft: 3,
-              pointerEvents: 'initial',
-            }}
-            id={b.key}
-            type="checkbox"
-            value={b.key}
-            aria-label={`${fieldName}-${b.key}`}
-            disabled={b.doc_count === 0}
-            onChange={e => {
-              if (_.find(selectedBuckets, { key: b.key })) {
-                setSelectedBuckets(
-                  _.reject(selectedBuckets, r => r.key === b.key)
-                );
-              } else {
-                setSelectedBuckets([...selectedBuckets, b]);
-              }
-            }}
-            checked={!!_.find(selectedBuckets, { key: b.key })}
-          />
-        ),
+    return displayData.map(b => ({
+      ...b,
+      select: (
+        <input
+          style={{
+            marginLeft: 3,
+            pointerEvents: 'initial',
+          }}
+          id={b.key}
+          type="checkbox"
+          value={b.key}
+          aria-label={`${fieldName}-${b.key}`}
+          disabled={b.doc_count === 0}
+          onChange={e => {
+            if (_.find(selectedBuckets, { key: b.key })) {
+              setSelectedBuckets(
+                _.reject(selectedBuckets, r => r.key === b.key)
+              );
+            } else {
+              setSelectedBuckets([...selectedBuckets, b]);
+            }
+          }}
+          checked={!!_.find(selectedBuckets, { key: b.key })}
+        />
+      ),
       ...(variable.active_chart === 'survival'
         ? {
             survival: (
@@ -497,10 +494,10 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                   b.key === '_missing' || b.chart_doc_count < MINIMUM_CASES
                     ? 'Not enough data'
                     : selectedSurvivalValues.indexOf(b.key) > -1
-                      ? `Click icon to remove ${b.key}`
-                      : selectedSurvivalValues.length < MAXIMUM_CURVES
-                        ? `Click icon to plot ${b.key}`
-                        : `Maximum plots (${MAXIMUM_CURVES}) reached`
+                    ? `Click icon to remove ${b.key}`
+                    : selectedSurvivalValues.length < MAXIMUM_CURVES
+                    ? `Click icon to plot ${b.key}`
+                    : `Maximum plots (${MAXIMUM_CURVES}) reached`
                 }
               >
                 <Button
@@ -541,7 +538,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
             ),
           }
         : {}),
-    }});
+    }));
   };
 
   const getBoxTableData = rawData => {
@@ -575,7 +572,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
         doc_count: (
           <span>
             {(noDataTotal || 0).toLocaleString()}
-            {` (${((noDataTotal || 0) / totalDocs * 100).toFixed(2)}%)`}
+            {` (${(((noDataTotal || 0) / totalDocs) * 100).toFixed(2)}%)`}
           </span>
         ),
         survival: '',
@@ -632,7 +629,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
             value:
               variable.active_calculation === 'number'
                 ? d.chart_doc_count
-                : d.chart_doc_count / totalDocs * 100,
+                : (d.chart_doc_count / totalDocs) * 100,
             tooltip: `${d.key}: ${d.chart_doc_count.toLocaleString()}`,
           };
         })
@@ -811,7 +808,8 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                           value: 'percentage',
                           id,
                         })
-                      )}
+                      )
+                    }
                     checked={variable.active_calculation === 'percentage'}
                     style={{ marginRight: 5 }}
                   />
@@ -834,7 +832,8 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                           value: 'number',
                           id,
                         })
-                      )}
+                      )
+                    }
                     checked={variable.active_calculation === 'number'}
                     style={{ marginRight: 5 }}
                   />
@@ -904,9 +903,9 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
             <BarChart
               data={chartData}
               yAxis={{
-                title: `${variable.active_calculation === 'number'
-                  ? '#'
-                  : '%'} of Cases`,
+                title: `${
+                  variable.active_calculation === 'number' ? '#' : '%'
+                } of Cases`,
                 style: styles.histogram(theme).axis,
               }}
               xAxis={{
@@ -1053,24 +1052,6 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
               >
                 Remove from existing case set
               </DropdownItem>
-              {/* <DropdownItem>
-                <SetActions
-                  CreateSetButton={CreateExploreCaseSetButton}
-                  AppendSetButton={AppendExploreCaseSetButton}
-                  RemoveFromSetButton={RemoveFromExploreCaseSetButton}
-                  field="cases.case_id"
-                  total={totalDocs}
-                  // total={total} // total from filtered cases. will be entire cohort with no checks. doesn't look like this adjusts with checkboxes
-                  filters={{}}
-                  // score={score}
-                  // sort={sort}
-                  type={'case'}
-                  displayType={'case'}
-                  selectedIds={[]}
-                  scope={'explore'}
-                  hasSets
-                />
-              </DropdownItem> */}
             </Dropdown>
             <Button style={{ padding: '0 12px' }} rightIcon={<DownCaretIcon />}>
               Customize Bins

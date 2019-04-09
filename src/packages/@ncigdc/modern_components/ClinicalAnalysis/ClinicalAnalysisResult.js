@@ -41,7 +41,7 @@ import DeprecatedSetResult from './DeprecatedSetResult';
 import CohortDropdown from './CohortDropdown';
 
 // survival plot
-import { getDefaultCurve, enoughData } from '@ncigdc/utils/survivalplot';
+import { getDefaultCurve } from '@ncigdc/utils/survivalplot';
 import SurvivalPlotWrapper from '@ncigdc/components/SurvivalPlotWrapper';
 
 interface IAnalysisResultProps {
@@ -154,13 +154,7 @@ const enhance = compose(
   withState('survivalPlotLoading', 'setSurvivalPlotLoading', true),
   withPropsOnChange(
     ['viewer'],
-    ({
-      viewer: {
-        explore: {
-          cases: { facets, hits },
-        },
-      },
-    }) => ({
+    ({ viewer: { explore: { cases: { facets, hits } } } }) => ({
       parsedFacets: facets ? tryParseJSON(facets) : {},
       hits,
     })
@@ -266,8 +260,7 @@ const ClinicalAnalysisResult = ({
                         property: 'name',
                         id,
                       })
-                    )
-                  }
+                    )}
                   iconStyle={{
                     marginLeft: 10,
                     fontSize: '1.8rem',
@@ -451,7 +444,7 @@ const ClinicalAnalysisResult = ({
                   <SurvivalPlotWrapper
                     {...overallSurvivalData}
                     height={180}
-                    customClass="categorical-survival-plot"
+                    uniqueClass="clinical-survival-plot"
                     survivalPlotLoading={survivalPlotLoading}
                   />
                 </div>
@@ -499,8 +492,9 @@ const ClinicalAnalysisResult = ({
               >
                 <SurvivalPlotWrapper
                   {...overallSurvivalData}
-                  height={180}
-                  customClass="categorical-survival-plot"
+                  height={430}
+                  plotType="clinicalOverall"
+                  uniqueClass="clinical-survival-plot"
                   survivalPlotLoading={survivalPlotLoading}
                 />
               </div>
@@ -533,6 +527,7 @@ const ClinicalAnalysisResult = ({
                     style={{ minWidth: controlPanelExpanded ? 310 : 290 }}
                     id={id}
                     setId={setId}
+                    overallSurvivalData={overallSurvivalData}
                   />
                 );
               }
@@ -547,6 +542,7 @@ const ClinicalAnalysisResult = ({
                   facetField={varFieldName.replace('cases.', '')}
                   filters={filters}
                   setId={setId}
+                  overallSurvivalData={overallSurvivalData}
                   data={{ ...parsedFacets[varFieldName], hits }}
                 />
               );

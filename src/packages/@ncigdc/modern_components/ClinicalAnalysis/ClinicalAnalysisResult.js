@@ -46,11 +46,11 @@ import { getDefaultCurve } from '@ncigdc/utils/survivalplot';
 import SurvivalPlotWrapper from '@ncigdc/components/SurvivalPlotWrapper';
 
 interface IAnalysisResultProps {
-  sets: any,
-  config: any,
-  label: string,
-  Icon: () => React.Component<any>,
-  analysis: any,
+  sets: any;
+  config: any;
+  label: string;
+  Icon: () => React.Component<any>;
+  analysis: any;
 }
 //
 // interface ISavedSet {

@@ -10,11 +10,7 @@ import { fetchApi } from '@ncigdc/utils/ajax/index';
 import { performanceTracker } from '@ncigdc/utils/analytics';
 import { DAYS_IN_YEAR } from '@ncigdc/utils/ageDisplay';
 
-type TPropsDefault = {
-  slug?: string,
-  currentFilters?: Object,
-  size?: number,
-};
+type TPropsDefault = { slug?: string, currentFilters?: Object, size?: number };
 type TPropsMulti = {
   value: string,
   field: string,

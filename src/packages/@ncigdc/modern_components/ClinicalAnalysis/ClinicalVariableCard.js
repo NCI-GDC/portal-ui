@@ -363,7 +363,8 @@ const enhance = compose(
     })
   ),
   withPropsOnChange(
-    ['filters', 'variable'],
+    (props, nextProps) =>
+      props.variable.active_chart !== nextProps.variable.active_chart,
     ({ filters, populateSurvivalData, variable }) => {
       if (variable.active_chart === 'survival') {
         populateSurvivalData();

@@ -209,7 +209,8 @@ const enhance = compose(
         populateSurvivalData();
       }
     }
-  )
+  ),
+  withPropsOnChange(['id'], ({ setSelectedBuckets }) => setSelectedBuckets([]))
 );
 
 const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
@@ -234,7 +235,6 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
   data,
   selectedBuckets,
   setSelectedBuckets,
-  setName,
 }) => {
   const rawQueryData =
     variable.plotTypes === 'continuous'
@@ -407,7 +407,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
             id={b.key}
             type="checkbox"
             value={b.key}
-            aria-label={`${fieldName}${b.key}`}
+            aria-label={`${fieldName}-${b.key}`}
             disabled={b.doc_count === 0}
             onChange={e => {
               if (_.find(selectedBuckets, { key: b.key })) {

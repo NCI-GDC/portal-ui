@@ -14,13 +14,17 @@ import pluralize from '@ncigdc/utils/pluralize';
 import { withCount } from '@ncigdc/modern_components/Counts';
 import Spinner from '@ncigdc/theme/icons/Spinner';
 import Button from '@ncigdc/uikit/Button';
+import { updateClinicalAnalysisSet } from '@ncigdc/dux/analysis';
 
 import onSaveComplete from './onSaveComplete';
 
 const enhance = compose(
   withState('selected', 'setSelected', ''),
-  connect(({ sets }) => ({ sets })),
-  withProps(({ sets, type, total }) => ({ sets: sets[type] || {} })),
+  connect(({ sets, analysis }) => ({ sets, analysis })),
+  withProps(({ sets, type, total, analysis }) => ({
+    sets: sets[type] || {},
+    analyses: analysis.saved || [],
+  })),
   withRouter,
   withCount(({ field, type, scope, selected, filters }) => ({
     key: 'countInBoth',
@@ -42,7 +46,7 @@ const enhance = compose(
       op: 'and',
       content: [{ op: '=', content: { field, value: `set_id:${selected}` } }],
     },
-  })),
+  }))
 );
 
 const AppendSetModal = ({
@@ -65,6 +69,7 @@ const AppendSetModal = ({
   setInputTotal,
   countInBoth,
   countExisting,
+  analyses,
 }) => {
   const validating = selected && (countInBoth === -1 || countExisting === -1);
   const nothingToAdd = !validating && total === countInBoth;
@@ -100,7 +105,7 @@ const AppendSetModal = ({
             size={MAX_SET_SIZE - countExisting}
             sort={sort}
             score={score}
-            onComplete={setId => {
+            onComplete={async setId => {
               if ((query.filters || '').includes(selected)) {
                 history.replace({
                   search: `?${stringify({
@@ -115,7 +120,21 @@ const AppendSetModal = ({
                 label: sets[selected],
               });
 
-              dispatch(replaceSet({ type, oldId: selected, newId: setId }));
+              await dispatch(
+                replaceSet({ type, oldId: selected, newId: setId })
+              );
+              analyses
+                .filter(analysis => analysis.sets.case[selected])
+                .forEach(affected => {
+                  console.log('append affected: ', affected);
+                  dispatch(
+                    updateClinicalAnalysisSet({
+                      id: affected.id,
+                      setId,
+                      setName: affected.sets.case[selected],
+                    })
+                  );
+                });
             }}
           >
             Save
@@ -134,9 +153,10 @@ const AppendSetModal = ({
             ? `The set cannot exceed ${pluralize(
                 displayType,
                 MAX_SET_SIZE,
-                true,
+                true
               )}`
-            : ''}
+            : ''
+        }
       />
       {selected &&
         !validating && [

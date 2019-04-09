@@ -548,7 +548,6 @@ const ClinicalAnalysisResult = ({
                   filters={filters}
                   setId={setId}
                   data={{ ...parsedFacets[varFieldName], hits }}
-                  setName={allSets.case[setId]}
                 />
               );
             })}

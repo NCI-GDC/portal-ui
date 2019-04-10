@@ -246,7 +246,12 @@ export default compose(
         ...field,
         title: humanify({ term: _.last(field.name.split('__')) }),
       }));
-      const groupedByClinicalType = _.groupBy(humanifyFields, field => {
+      const filteredFields = humanifyFields.filter(field => {
+        const titleLower = _.toLower(field.title);
+        const queryLower = _.toLower(searchValue);
+        return titleLower.match(queryLower);
+      });
+      const groupedByClinicalType = _.groupBy(filteredFields, field => {
         const sections = field.name.split('__');
         if (sections.includes('treatments')) {
           return sections[1];

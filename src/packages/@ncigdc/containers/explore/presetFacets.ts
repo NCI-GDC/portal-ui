@@ -58,7 +58,13 @@ export const presetFacets = [
   },
 ];
 const excludedRegex = [/updated_datetime$/, /created_datetime$/, /_id$/];
-export const clinicalFacets = [
+interface IClinicalFacetProps {
+  title: string;
+  field: string;
+  full: string;
+  excluded: RegExp[];
+}
+export const clinicalFacets: IClinicalFacetProps[] = [
   {
     title: 'Demographic',
     field: 'demographic',

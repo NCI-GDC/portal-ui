@@ -15,6 +15,8 @@ import {
   changeExpandedStatus,
   expandOneCategory,
   showingMoreByCategory,
+  IExpandedStatusStateProps,
+  IExpandedStatusActionProps,
 } from '@ncigdc/dux/facetsExpandedStatus';
 import { WrapperComponent } from '@ncigdc/components/FacetWrapper';
 import { withTheme } from '@ncigdc/theme';
@@ -37,7 +39,7 @@ import {
   ToggleMoreLink,
   BottomRow,
 } from '@ncigdc/components/Aggregations/TermAggregation';
-interface IFacetProps {
+export interface IFacetProps {
   description: string,
   doc_type: string,
   field: string,
@@ -49,20 +51,63 @@ interface IBucketProps {
   doc_count: number,
 }
 
+interface IAggregationProps {
+  buckets?: IBucketProps[],
+  count?: number,
+  stats?: { count: number, [x: string]: number },
+}
+interface IParsedFacetsProps {
+  [x: string]: IAggregationProps,
+}
+export interface IfilterdFacetsProps {
+  [x: string]: IFacetProps[],
+}
+interface INotificationProps {
+  components: string[],
+  level: string,
+  id: string,
+  dismissible: boolean,
+  message: JSX.Element,
+  dismissed?: boolean,
+}
 interface IClinicalProps {
-  filteredFacets: any,
+  filteredFacets: IfilterdFacetsProps,
   theme: ITheme,
   setUselessFacetVisibility: (uselessFacetVisibility: boolean) => void,
   shouldHideUselessFacets: boolean,
   searchValue: string,
   setSearchValue: (searchValue: string) => void,
   handleQueryInputChange: () => void,
-  parsedFacets: { [x: string]: any },
+  parsedFacets: IParsedFacetsProps | {},
   isLoadingParsedFacets: boolean,
-  allExpanded: any,
-  facetsExpandedStatus: any,
-  dispatch: any,
-  notifications: any,
+  allExpanded: { [x: string]: boolean },
+  facetsExpandedStatus: IExpandedStatusStateProps,
+  dispatch: (action: IExpandedStatusActionProps) => void,
+  notifications: INotificationProps[],
+}
+
+interface ICaseFacetsProps {
+  __dataID__: string,
+  name: string,
+  fields: IGraphFieldProps[],
+}
+
+interface IGraphFieldProps {
+  __dataID__: string,
+  name: string,
+  description: string,
+  type: {
+    name: string,
+    __dataID__: string,
+    fields: IFieldProps[],
+  },
+}
+
+interface IFieldProps {
+  __dataID: string,
+  name: string,
+  description: string,
+  type: { name: string, __dataID: string },
 }
 const facetMatchesQuery = (
   facet: IFacetProps,
@@ -95,21 +140,22 @@ const MagnifyingGlass = styled(SearchIcon, {
   borderRight: 'none',
 });
 
-interface IGraphFieldProps {
-  __dataID: string,
-  name: string,
-  description: string,
-  type: { name: string, __dataID: string },
-}
-
 const enhance = compose(
-  connect((state: any) => ({
-    facetsExpandedStatus: state.facetsExpandedStatus,
-    notifications: state.bannerNotification,
-    allExpanded: _.mapValues(state.facetsExpandedStatus, status =>
-      _.some(_.values(status.facets)),
-    ),
-  })),
+  connect(
+    ({
+      facetsExpandedStatus,
+      bannerNotification,
+    }: {
+      facetsExpandedStatus: IExpandedStatusStateProps,
+      bannerNotification: INotificationProps[],
+    }) => ({
+      facetsExpandedStatus,
+      notifications: bannerNotification,
+      allExpanded: _.mapValues(facetsExpandedStatus, status =>
+        _.some(_.values(status.facets)),
+      ),
+    }),
+  ),
   withState('isLoadingParsedFacets', 'setIsLoadingParsedFacets', false),
   withState('shouldHideUselessFacets', 'setShouldHideUselessFacets', true),
   withState('searchValue', 'setSearchValue', ''),
@@ -128,19 +174,12 @@ const enhance = compose(
   }),
   withPropsOnChange(
     ['caseFacets'],
-    ({ caseFacets }: { caseFacets: { [x: string]: any, fields: any[] } }) => ({
+    ({ caseFacets }: { caseFacets: ICaseFacetsProps }) => ({
       facetMapping: caseFacets.fields
-        .filter((f: IGraphFieldProps) => f.name === 'aggregations')[0]
-        .type.fields.filter(
-          (f: {
-            __dataID: string,
-            name: string,
-            description: string,
-            type: { name: string, __dataID: string },
-          }) => !f.name.startsWith('gene'),
-        )
+        .filter((f: IGraphFieldProps): boolean => f.name === 'aggregations')[0]
+        .type.fields.filter((f: IFieldProps) => !f.name.startsWith('gene'))
         .reduce(
-          (acc: { [x: string]: IFacetProps }, f: IGraphFieldProps) => ({
+          (acc: { [x: string]: IFacetProps } | {}, f: IFieldProps) => ({
             ...acc,
             ['cases.' + f.name.replace(/__/g, '.')]: {
               field: f.name.replace(/__/g, '.'),
@@ -212,14 +251,13 @@ const enhance = compose(
       facetExclusionTest,
       dispatch,
     }) => {
-      const parsedFacets = facets.facets ? tryParseJSON(facets.facets, {}) : {};
+      const parsedFacets: IParsedFacetsProps | {} = facets.facets
+        ? tryParseJSON(facets.facets, {})
+        : {};
+
       const usefulFacets = _.omitBy(
         parsedFacets,
-        (aggregation: {
-          buckets: IBucketProps[],
-          count: number,
-          stats: { count: number, [x: string]: any },
-        }) =>
+        (aggregation: IAggregationProps) =>
           _.some([
             !aggregation,
             aggregation.buckets &&
@@ -231,7 +269,8 @@ const enhance = compose(
             aggregation.stats && aggregation.stats.count === 0,
           ]),
       );
-      const filteredFacets = clinicalFacets.reduce((acc, header: any) => {
+
+      const filteredFacets = clinicalFacets.reduce((acc, header) => {
         return {
           ...acc,
           [header.field]: _.filter(facetMapping, facet => {
@@ -246,12 +285,13 @@ const enhance = compose(
                 usefulFacets.hasOwnProperty(facet.field),
               !header.excluded || facet.full.startsWith(header.full),
               !_.some(
-                header.excluded.map((regex: any) => regex.test(facet.full)),
+                header.excluded.map((regex: RegExp) => regex.test(facet.full)),
               ),
             ]);
           }),
         };
       }, {});
+
       dispatch(addAllFacets(filteredFacets));
       return {
         parsedFacets,
@@ -331,7 +371,7 @@ const enhance = compose(
                   style={{
                     position: 'sticky',
                     top: `calc(${headerHeight} + ${notifications.filter(
-                      (n: any) => !n.dismissed,
+                      (n: INotificationProps) => !n.dismissed,
                     ).length * bannerHeight}px)`,
                     background: '#eeeeee',
                     zIndex: 10,
@@ -393,13 +433,9 @@ const enhance = compose(
                           ? Infinity
                           : 5,
                       )
-                      .map((componentFacet: any) => {
-                        if (componentFacet.field.includes('ethnicity')) {
-                          console.log(
-                            'componentFacet',
-                            componentFacet.description,
-                          );
-                        }
+                      .map((componentFacet: IFacetProps) => {
+                        const fieldName =
+                          componentFacet.full.split('.').pop() || '';
                         return [
                           <WrapperComponent
                             relayVarName="exploreCaseCustomFacetFields"
@@ -411,29 +447,24 @@ const enhance = compose(
                               .includes(searchValue.toLocaleLowerCase())}
                             facet={componentFacet}
                             allExpanded={allExpanded[facet.field]}
-                            title={_.startCase(
-                              componentFacet.full.split('.').pop(),
-                            )}
+                            title={_.startCase(fieldName)}
                             aggregation={parsedFacets[componentFacet.field]}
                             searchValue={searchValue}
                             additionalProps={{ style: { paddingBottom: 0 } }}
                             style={{
                               paddingLeft: '10px',
                             }}
-                            headerStyle={{ fontSize: '14px' }}
+                            headerStyle={{ fontSize: '16px' }}
                             collapsed={
                               searchValue.length === 0
                                 ? !facetsExpandedStatus[facet.field].facets[
-                                    componentFacet.field.split('.').pop()
+                                    fieldName
                                   ]
                                 : false
                             }
-                            setCollapsed={(collapsed: any) =>
+                            setCollapsed={(collapsed: boolean) =>
                               dispatch(
-                                changeExpandedStatus(
-                                  facet.field,
-                                  componentFacet.field.split('.').pop(),
-                                ),
+                                changeExpandedStatus(facet.field, fieldName),
                               )}
                             category={facet.field}
                             DescriptionComponent={

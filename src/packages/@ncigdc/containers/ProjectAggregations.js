@@ -61,7 +61,7 @@ const projectFacets = [
     type: 'keyword',
   },
   {
-    title: 'Experimental Strategies',
+    title: 'Experimental Strategy',
     field: 'summary.experimental_strategies.experimental_strategy',
     full: 'projects.summary.experimental_strategies.experimental_strategy',
     doc_type: 'project',
@@ -70,7 +70,7 @@ const projectFacets = [
 ];
 
 export const ProjectAggregationsComponent = compose(
-  withState('projectIdCollapsed', 'setProjectIdCollapsed', false),
+  withState('projectIdCollapsed', 'setProjectIdCollapsed', false)
 )((props: TProps) => (
   <div className="test-project-aggregations">
     <FacetHeader
@@ -160,7 +160,7 @@ export const ProjectAggregationsQuery = {
 
 const ProjectAggregations = Relay.createContainer(
   withTheme(ProjectAggregationsComponent),
-  ProjectAggregationsQuery,
+  ProjectAggregationsQuery
 );
 
 export default ProjectAggregations;

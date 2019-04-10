@@ -10,6 +10,8 @@ import {
 import _ from 'lodash';
 import { connect } from 'react-redux';
 import { singular } from 'pluralize';
+import Toggle from 'react-toggle';
+import './reactToggle.css';
 
 import { humanify } from '@ncigdc/utils/string';
 import { Row, Column } from '@ncigdc/uikit/Flex';
@@ -155,36 +157,60 @@ const ClinicalGrouping = compose(
                         borderBottom: `1px solid ${theme.greyScale5}`,
                       }}
                     >
-                      <Row style={{ alignItems: 'center' }}>
-                        <Tooltip
-                          Component={
-                            <div style={{ maxWidth: '24em' }}>
-                              {internalHighlight(
-                                searchValue,
-                                fieldDescription,
-                                {
-                                  backgroundColor: '#FFFF00',
-                                }
-                              )}
-                            </div>
-                          }
+                      <div style={{ display: 'flex', width: '100%' }}>
+                        <label
+                          htmlFor={fieldName}
+                          style={{
+                            width: '100%',
+                            display: 'block',
+                            cursor: 'pointer',
+                          }}
                         >
-                          <h4 style={{ fontSize: '1.4rem' }}>
-                            {internalHighlight(searchValue, fieldTitle, {
-                              backgroundColor: '#FFFF00',
-                            })}
-                          </h4>
-                        </Tooltip>
-                      </Row>
-                      <FacetCheckbox
-                        fieldName={fieldName}
-                        analysis_id={analysis_id}
-                        fieldType={name}
+                          <Tooltip
+                            Component={
+                              <div style={{ maxWidth: '24em' }}>
+                                {internalHighlight(
+                                  searchValue,
+                                  fieldDescription,
+                                  {
+                                    backgroundColor: '#FFFF00',
+                                  }
+                                )}
+                              </div>
+                            }
+                          >
+                            <h4
+                              style={{
+                                fontSize: '1.4rem',
+                                display: 'inline-block',
+                              }}
+                            >
+                              {internalHighlight(searchValue, fieldTitle, {
+                                backgroundColor: '#FFFF00',
+                              })}
+                            </h4>
+                          </Tooltip>
+                        </label>
+                      </div>
+                      <Toggle
+                        icons={false}
+                        id={fieldName}
                         disabled={!type.name}
-                        plotTypes={plotTypes}
+                        name={fieldName}
                         checked={checked}
-                        toggleAction={toggleAction}
-                        dispatch={dispatch}
+                        onChange={() => {
+                          if (!type.name) {
+                            return null;
+                          }
+                          dispatch(
+                            toggleAction({
+                              fieldName,
+                              id: analysis_id,
+                              fieldType: name,
+                              plotTypes,
+                            })
+                          );
+                        }}
                       />
                     </Row>
                   );
@@ -208,45 +234,6 @@ const ClinicalGrouping = compose(
       </Column>
     );
   }
-);
-
-const FacetCheckbox = ({
-  fieldName,
-  dispatch,
-  analysis_id,
-  fieldType,
-  disabled,
-  plotTypes,
-  checked,
-  toggleAction,
-}) => (
-  <div
-    onClick={() => {
-      if (disabled) {
-        return null;
-      }
-      dispatch(
-        toggleAction({ fieldName, id: analysis_id, fieldType, plotTypes })
-      );
-    }}
-  >
-    <label htmlFor={fieldName}>
-      <Hidden>{fieldName}</Hidden>
-    </label>
-    <input
-      readOnly
-      type="checkbox"
-      style={{
-        pointerEvents: 'none',
-        flexShrink: 0,
-        verticalAlign: 'middle',
-      }}
-      disabled={disabled}
-      name={fieldName}
-      aria-label={fieldName}
-      checked={checked}
-    />
-  </div>
 );
 
 export default compose(

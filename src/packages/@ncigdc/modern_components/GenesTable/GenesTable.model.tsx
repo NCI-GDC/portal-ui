@@ -287,50 +287,15 @@ const GenesTableModel = [
       cnvCases: ITotalNumber;
     }) => (
       <Td>
-        {!cnvCases.hits.total ? (
-          <span>--</span>
-        ) : (
+        {cnvCases.hits.total ? (
           <span>
             {node.case_cnv_gain.hits && node.case_cnv_gain.hits.total !== 0
-              ? // <ExploreLink
-                //   merge
-                //   query={{
-                //     searchTableTab: 'cases',
-                //     filters: replaceFilters(
-                //       makeFilter([
-                //         {
-                //           field: 'genes.gene_id',
-                //           value: [node.gene_id],
-                //         },
-                //         {
-                //           field: 'cnvs.cnv_change',
-                //           value: ['Gain'],
-                //         },
-                //       ]),
-                //       query.genesTable_filters || defaultFilters,
-                //     ),
-                //   }}
-                // >
-                node.case_cnv_gain.hits.total
-              : // </ExploreLink>
-                0}
+              ? node.case_cnv_gain.hits.total
+              : 0}
             <span> / </span>
-            {/* <ExploreLink
-            query={{
-              searchTableTab: 'cases',
-              filters: addInFilters(
-                query.genesTable_filters || defaultFilters,
-                makeFilter([
-                  {
-                    field: 'cases.available_variation_data',
-                    value: ['cnv'],
-                  },
-                ]),
-              ),
-            }}
-          > */}
+
             {(cnvCases.hits.total || 0).toLocaleString()}
-            {/* </ExploreLink> */}
+
             <span>{` (${((node.case_cnv_gain.hits
               ? node.case_cnv_gain.hits.total
               : 0) /
@@ -338,6 +303,8 @@ const GenesTableModel = [
               100
             ).toFixed(2)}%)`}</span>
           </span>
+        ) : (
+          <span>--</span>
         )}
       </Td>
     ),
@@ -377,9 +344,7 @@ const GenesTableModel = [
       cnvCases: ITotalNumber;
     }) => (
       <Td>
-        {!cnvCases.hits.total ? (
-          <span>--</span>
-        ) : (
+        {cnvCases.hits.total ? (
           <span>
             {node.case_cnv_loss.hits && node.case_cnv_loss.hits.total !== 0
               ? node.case_cnv_loss.hits.total
@@ -393,6 +358,8 @@ const GenesTableModel = [
               100
             ).toFixed(2)}%)`}</span>
           </span>
+        ) : (
+          <span>--</span>
         )}
       </Td>
     ),

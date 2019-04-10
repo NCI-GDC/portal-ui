@@ -293,9 +293,7 @@ const GenesTableModel = [
               ? node.case_cnv_gain.hits.total
               : 0}
             <span> / </span>
-
             {(cnvCases.hits.total || 0).toLocaleString()}
-
             <span>{` (${((node.case_cnv_gain.hits
               ? node.case_cnv_gain.hits.total
               : 0) /

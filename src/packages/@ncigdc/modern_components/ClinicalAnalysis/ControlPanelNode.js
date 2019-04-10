@@ -254,23 +254,20 @@ export default compose(
   withPropsOnChange(
     (props, nextProps) => props.searchValue !== nextProps.searchValue,
     ({ searchValue, clinicalAnalysisFields }) => {
-      const humanifyFields = clinicalAnalysisFields.map(field => ({
-        ...field,
-        title: humanify({ term: _.last(field.name.split('__')) }),
-      }));
-      const filteredFields = humanifyFields.filter(field => {
-        const titleLower = _.toLower(field.title);
-        const queryLower = _.toLower(searchValue);
-        const descLower = _.toLower(field.description);
-        return titleLower.match(queryLower) || descLower.match(queryLower);
-      });
+      const filteredFields = clinicalAnalysisFields
+        .map(field => ({
+          ...field,
+          title: humanify({ term: _.last(field.name.split('__')) }),
+        }))
+        .filter(field => {
+          const titleLower = _.toLower(field.title);
+          const queryLower = _.toLower(searchValue);
+          const descLower = _.toLower(field.description);
+          return titleLower.match(queryLower) || descLower.match(queryLower);
+        });
       const groupedByClinicalType = _.groupBy(filteredFields, field => {
         const sections = field.name.split('__');
-        if (sections.includes('treatments')) {
-          return sections[1];
-        } else {
-          return sections[0];
-        }
+        return sections.includes('treatments') ? sections[1] : sections[0];
       });
 
       return { groupedByClinicalType };

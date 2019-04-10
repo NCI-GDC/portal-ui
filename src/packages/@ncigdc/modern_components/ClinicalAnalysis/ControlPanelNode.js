@@ -105,15 +105,16 @@ const ClinicalGrouping = compose(
               padding: '0 10px',
             }}
           >
-            {fields.length > MAX_FIELDS_LENGTH && showingMore && (
-              <Row>
-                <StyledToggleMoreLink
-                  onClick={() => setShowingMore(!showingMore)}
-                >
-                  {'Less...'}
-                </StyledToggleMoreLink>
-              </Row>
-            )}
+            {fields.length > MAX_FIELDS_LENGTH &&
+              showingMore && (
+                <Row>
+                  <StyledToggleMoreLink
+                    onClick={() => setShowingMore(!showingMore)}
+                  >
+                    {'Less...'}
+                  </StyledToggleMoreLink>
+                </Row>
+              )}
             {_.orderBy(fields, 'name', 'asc')
               .slice(0, showingMore ? Infinity : MAX_VISIBLE_FACETS)
               .map(field => ({
@@ -166,15 +167,25 @@ const ClinicalGrouping = compose(
                         </Tooltip>
                       </label>
                     </div>
-                    <FacetCheckbox
-                      fieldName={fieldName}
-                      analysis_id={analysis_id}
-                      fieldType={name}
+                    <Toggle
+                      icons={false}
+                      id={fieldName}
                       disabled={!type.name}
-                      plotTypes={plotTypes}
+                      name={fieldName}
                       checked={checked}
-                      toggleAction={toggleAction}
-                      dispatch={dispatch}
+                      onChange={() => {
+                        if (!type.name) {
+                          return null;
+                        }
+                        dispatch(
+                          toggleAction({
+                            fieldName,
+                            id: analysis_id,
+                            fieldType: name,
+                            plotTypes,
+                          })
+                        );
+                      }}
                     />
                   </Row>
                 );
@@ -199,34 +210,9 @@ const ClinicalGrouping = compose(
   }
 );
 
-const FacetCheckbox = ({
-  fieldName,
-  dispatch,
-  analysis_id,
-  fieldType,
-  disabled,
-  plotTypes,
-  checked,
-  toggleAction,
-}) => (
-  <Toggle
-    icons={false}
-    id={fieldName}
-    disabled={disabled}
-    name={fieldName}
-    checked={checked}
-    onChange={() => {
-      if (disabled) {
-        return null;
-      }
-      dispatch(
-        toggleAction({ fieldName, id: analysis_id, fieldType, plotTypes })
-      );
-    }}
-  />
-);
-
-export default compose(withTheme)(
+export default compose(
+  withTheme
+)(
   ({
     theme,
     currentAnalysis,

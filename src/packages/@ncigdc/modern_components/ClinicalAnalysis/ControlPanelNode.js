@@ -20,6 +20,7 @@ import styled from '@ncigdc/theme/styled';
 import AngleIcon from '@ncigdc/theme/icons/AngleIcon';
 import { Tooltip } from '@ncigdc/uikit/Tooltip';
 import Hidden from '@ncigdc/components/Hidden';
+import { internalHighlight } from '@ncigdc/uikit/Highlight';
 import {
   addClinicalAnalysisVariable,
   removeClinicalAnalysisVariable,
@@ -83,6 +84,7 @@ const ClinicalGrouping = compose(
     fields,
     name,
     currentAnalysis,
+    searchValue,
   }) => {
     return (
       <Column style={{ marginBottom: 2 }}>
@@ -157,11 +159,21 @@ const ClinicalGrouping = compose(
                         <Tooltip
                           Component={
                             <div style={{ maxWidth: '24em' }}>
-                              {fieldDescription}
+                              {internalHighlight(
+                                searchValue,
+                                fieldDescription,
+                                {
+                                  backgroundColor: '#FFFF00',
+                                }
+                              )}
                             </div>
                           }
                         >
-                          <h4 style={{ fontSize: '1.4rem' }}>{fieldTitle}</h4>
+                          <h4 style={{ fontSize: '1.4rem' }}>
+                            {internalHighlight(searchValue, fieldTitle, {
+                              backgroundColor: '#FFFF00',
+                            })}
+                          </h4>
                         </Tooltip>
                       </Row>
                       <FacetCheckbox
@@ -297,6 +309,7 @@ export default compose(
               fields={fields}
               currentAnalysis={currentAnalysis}
               analysis_id={analysis_id}
+              searchValue={searchValue}
             />
           );
         })}

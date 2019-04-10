@@ -249,7 +249,8 @@ export default compose(
       const filteredFields = humanifyFields.filter(field => {
         const titleLower = _.toLower(field.title);
         const queryLower = _.toLower(searchValue);
-        return titleLower.match(queryLower);
+        const descLower = _.toLower(field.description);
+        return titleLower.match(queryLower) || descLower.match(queryLower);
       });
       const groupedByClinicalType = _.groupBy(filteredFields, field => {
         const sections = field.name.split('__');

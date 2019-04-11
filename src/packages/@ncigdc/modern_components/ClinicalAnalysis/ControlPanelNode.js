@@ -94,26 +94,28 @@ const ClinicalGrouping = compose(
   }) => {
     return (
       <Column style={{ marginBottom: 2 }}>
-        <Row
-          style={{
-            alignItems: 'center',
-            padding: '0 10px 0 5px',
-            backgroundColor: theme.greyScale6,
-          }}
-        >
-          <h3
-            style={{ ...style, margin: '10px 0', cursor: 'pointer' }}
-            onClick={() => setCollapsed(!collapsed)}
-          >
-            <AngleIcon
+        {(searchValue === '' || fields.length > 0) && (
+            <Row
               style={{
-                paddingRight: '0.5rem',
-                transform: `rotate(${collapsed ? 270 : 0}deg)`,
+                alignItems: 'center',
+                padding: '0 10px 0 5px',
+                backgroundColor: theme.greyScale6,
               }}
-            />
-            {name}
-          </h3>
-        </Row>
+            >
+              <h3
+                style={{ ...style, margin: '10px 0', cursor: 'pointer' }}
+                onClick={() => setCollapsed(!collapsed)}
+              >
+                <AngleIcon
+                  style={{
+                    paddingRight: '0.5rem',
+                    transform: `rotate(${collapsed ? 270 : 0}deg)`,
+                  }}
+                />
+                {name}
+              </h3>
+            </Row>
+          )}
 
         {!collapsed && (
           <Column
@@ -151,6 +153,39 @@ const ClinicalGrouping = compose(
                   const toggleAction = checked
                     ? removeClinicalAnalysisVariable
                     : addClinicalAnalysisVariable;
+                  const queryLower = _.toLower(searchValue);
+                  const descLower = _.toLower(fieldDescription);
+                  const descMatch =
+                    queryLower !== '' && fieldDescription !== defaultDescription
+                      ? descLower.match(queryLower) !== null
+                      : false;
+                  const DescEl = props => (
+                    <div
+                      style={{
+                        maxWidth: '24em',
+                        fontSize: '1.3rem',
+                        marginBottom: descMatch ? '10px' : '0',
+                      }}
+                    >
+                      {descMatch
+                        ? internalHighlight(searchValue, fieldDescription, {
+                            backgroundColor: '#FFFF00',
+                          })
+                        : fieldDescription}
+                    </div>
+                  );
+                  const TitleEl = () => (
+                    <h4
+                      style={{
+                        fontSize: '1.4rem',
+                        display: 'inline-block',
+                      }}
+                    >
+                      {internalHighlight(searchValue, fieldTitle, {
+                        backgroundColor: '#FFFF00',
+                      })}
+                    </h4>
+                  );
                   return (
                     <Row
                       key={i}
@@ -166,33 +201,18 @@ const ClinicalGrouping = compose(
                           style={{
                             width: '100%',
                             display: 'block',
-                            cursor: 'pointer',
+                            cursor: descMatch ? 'default' : 'pointer',
                           }}
                         >
-                          <Tooltip
-                            Component={
-                              <div style={{ maxWidth: '24em' }}>
-                                {internalHighlight(
-                                  searchValue,
-                                  fieldDescription,
-                                  {
-                                    backgroundColor: '#FFFF00',
-                                  }
-                                )}
-                              </div>
-                            }
-                          >
-                            <h4
-                              style={{
-                                fontSize: '1.4rem',
-                                display: 'inline-block',
-                              }}
-                            >
-                              {internalHighlight(searchValue, fieldTitle, {
-                                backgroundColor: '#FFFF00',
-                              })}
-                            </h4>
-                          </Tooltip>
+                          {descMatch ? (
+                            <React.Fragment>
+                              <TitleEl /> <DescEl />
+                            </React.Fragment>
+                          ) : (
+                            <Tooltip Component={<DescEl />}>
+                              <TitleEl />
+                            </Tooltip>
+                          )}
                         </label>
                       </div>
                       <Toggle
@@ -231,7 +251,8 @@ const ClinicalGrouping = compose(
                 </StyledToggleMoreLink>
               </Row>
             )}
-            {fields.length === 0 && <Row>No fields found</Row>}
+            {searchValue === '' &&
+              fields.length === 0 && <Row>No fields found</Row>}
           </Column>
         )}
       </Column>
@@ -250,14 +271,15 @@ export default compose(
           title: humanify({ term: _.last(field.name.split('__')) }),
         }))
         .filter(field => {
+          if (searchValue === '') return true;
           const titleLower = _.toLower(field.title);
           const queryLower = _.toLower(searchValue);
           const descLower = _.toLower(field.description);
           const descMatch =
-            field.description === defaultDescription
-              ? false
-              : descLower.match(queryLower);
-          return descMatch || titleLower.match(queryLower);
+            field.description !== defaultDescription
+              ? descLower.match(queryLower) !== null
+              : false;
+          return descMatch || titleLower.match(queryLower) !== null;
         });
       const groupedByClinicalType = _.groupBy(filteredFields, field => {
         const sections = field.name.split('__');

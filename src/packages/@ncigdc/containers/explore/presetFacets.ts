@@ -57,7 +57,12 @@ export const presetFacets = [
     type: 'keyword',
   },
 ];
-const excludedRegex = [/updated_datetime$/, /created_datetime$/, /_id$/];
+const excludedRegex = [
+  /updated_datetime$/,
+  /created_datetime$/,
+  /_id$/,
+  /state$/,
+];
 interface IClinicalFacetProps {
   title: string;
   field: string;

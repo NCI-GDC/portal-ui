@@ -112,6 +112,7 @@ const reducer = (
         ...state,
         [category]: {
           ...state[category],
+          expanded: isExpanded || state[category].expanded,
           showingMore: isExpanded,
           facets: Object.keys(state[category].facets).reduce(
             (acc: { [x: string]: boolean }, facetName: string) => ({

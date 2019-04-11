@@ -159,7 +159,7 @@ const ClinicalGrouping = compose(
                     queryLower !== '' && fieldDescription !== defaultDescription
                       ? descLower.match(queryLower) !== null
                       : false;
-                  const DescEl = props => (
+                  const DescEl = () => (
                     <div
                       style={{
                         maxWidth: '24em',

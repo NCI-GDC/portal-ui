@@ -159,6 +159,7 @@ const styles = {
       stroke: theme.greyScale4,
     },
   }),
+  actionMenuItem: { lineHeight: '1.5', cursor: 'pointer' },
 };
 
 const valueIsDays = str => /(days_to|age_at)/.test(str);
@@ -990,6 +991,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                   Select action
                 </Button>
               }
+              dropdownStyle={{ left: 0, minWidth: 205 }}
             >
               <DropdownItem
                 onClick={() =>
@@ -1004,7 +1006,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                 Export to TSV
               </DropdownItem>
               <DropdownItem
-                style={{ lineHeight: '1.5', cursor: 'pointer', width: 210 }}
+                style={styles.actionMenuItem}
                 onClick={() => {
                   dispatch(
                     setModal(
@@ -1026,7 +1028,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                 Save as new case set
               </DropdownItem>
               <DropdownItem
-                style={{ lineHeight: '1.5', cursor: 'pointer', width: 210 }}
+                style={styles.actionMenuItem}
                 onClick={() => {
                   dispatch(
                     setModal(
@@ -1049,7 +1051,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                 Add to existing case set
               </DropdownItem>
               <DropdownItem
-                style={{ lineHeight: '1.5', cursor: 'pointer', width: 210 }}
+                style={styles.actionMenuItem}
                 onClick={() => {
                   dispatch(
                     setModal(

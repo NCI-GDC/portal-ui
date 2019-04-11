@@ -165,6 +165,7 @@ const ClinicalGrouping = compose(
                         maxWidth: '24em',
                         fontSize: '1.3rem',
                         marginBottom: descMatch ? '10px' : '0',
+                        fontStyle: descMatch ? 'italic' : 'normal',
                       }}
                     >
                       {descMatch
@@ -179,12 +180,35 @@ const ClinicalGrouping = compose(
                       style={{
                         fontSize: '1.4rem',
                         display: 'inline-block',
+                        marginRight: '50px',
                       }}
                     >
                       {internalHighlight(searchValue, fieldTitle, {
                         backgroundColor: '#FFFF00',
                       })}
                     </h4>
+                  );
+                  const ToggleEl = () => (
+                    <Toggle
+                      icons={false}
+                      id={fieldName}
+                      disabled={!type.name}
+                      name={fieldName}
+                      checked={checked}
+                      onChange={() => {
+                        if (!type.name) {
+                          return null;
+                        }
+                        dispatch(
+                          toggleAction({
+                            fieldName,
+                            id: analysis_id,
+                            fieldType: name,
+                            plotTypes,
+                          })
+                        );
+                      }}
+                    />
                   );
                   return (
                     <Row
@@ -206,35 +230,21 @@ const ClinicalGrouping = compose(
                         >
                           {descMatch ? (
                             <React.Fragment>
-                              <TitleEl /> <DescEl />
+                              <div>
+                                <TitleEl /> <ToggleEl />
+                              </div>
+                              <DescEl />
                             </React.Fragment>
                           ) : (
-                            <Tooltip Component={<DescEl />}>
-                              <TitleEl />
-                            </Tooltip>
+                            <React.Fragment>
+                              <Tooltip Component={<DescEl />}>
+                                <TitleEl />
+                              </Tooltip>
+                              <ToggleEl />
+                            </React.Fragment>
                           )}
                         </label>
                       </div>
-                      <Toggle
-                        icons={false}
-                        id={fieldName}
-                        disabled={!type.name}
-                        name={fieldName}
-                        checked={checked}
-                        onChange={() => {
-                          if (!type.name) {
-                            return null;
-                          }
-                          dispatch(
-                            toggleAction({
-                              fieldName,
-                              id: analysis_id,
-                              fieldType: name,
-                              plotTypes,
-                            })
-                          );
-                        }}
-                      />
                     </Row>
                   );
                 }

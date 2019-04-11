@@ -12,11 +12,19 @@ import { visualizingButton } from '@ncigdc/theme/mixins';
 import { zDepth1 } from '@ncigdc/theme/mixins';
 import EntityPageHorizontalTable from '@ncigdc/components/EntityPageHorizontalTable';
 import Dropdown from '@ncigdc/uikit/Dropdown';
+import DropdownItem from '@ncigdc/uikit/DropdownItem';
 import Hidden from '@ncigdc/components/Hidden';
 import tryParseJSON from '@ncigdc/utils/tryParseJSON';
 import BarChart from '@ncigdc/components/Charts/BarChart';
 import ExploreLink from '@ncigdc/components/Links/ExploreLink';
-import { makeFilter } from '@ncigdc/utils/filters';
+import { makeFilter, addInFilters } from '@ncigdc/utils/filters';
+import { CreateExploreCaseSetButton } from '@ncigdc/modern_components/withSetAction';
+import { AppendExploreCaseSetButton } from '@ncigdc/modern_components/withSetAction';
+import { RemoveFromExploreCaseSetButton } from '@ncigdc/modern_components/withSetAction';
+import { setModal } from '@ncigdc/dux/modal';
+import SaveSetModal from '@ncigdc/components/Modals/SaveSetModal';
+import AppendSetModal from '@ncigdc/components/Modals/AppendSetModal';
+import RemoveSetModal from '@ncigdc/components/Modals/RemoveSetModal';
 
 // survival plot
 import {
@@ -155,13 +163,13 @@ const valueIsYear = str => /year_of/.test(str);
 
 const getRangeValue = (key, field, nextInterval) => {
   if (valueIsDays(field)) {
-    return `${getLowerAgeYears(key)}${nextInterval === 0
-      ? '+'
-      : ' - ' + getUpperAgeYears(nextInterval - 1)} years`;
+    return `${getLowerAgeYears(key)}${
+      nextInterval === 0 ? '+' : ' - ' + getUpperAgeYears(nextInterval - 1)
+    } years`;
   } else if (valueIsYear(field)) {
-    return `${Math.floor(key)}${nextInterval === 0
-      ? ' - present'
-      : ' - ' + (nextInterval - 1)}`;
+    return `${Math.floor(key)}${
+      nextInterval === 0 ? ' - present' : ' - ' + (nextInterval - 1)
+    }`;
   } else {
     return key;
   }
@@ -177,7 +185,7 @@ const getCountLink = ({ doc_count, filters, totalDocs }) => (
     >
       {(doc_count || 0).toLocaleString()}
     </ExploreLink>
-    <span>{` (${((doc_count || 0) / totalDocs * 100).toFixed(2)}%)`}</span>
+    <span>{` (${(((doc_count || 0) / totalDocs) * 100).toFixed(2)}%)`}</span>
   </span>
 );
 
@@ -191,9 +199,10 @@ const enhance = compose(
   withProps(({ variable, data, fieldName }) => ({
     rawQueryData:
       variable.plotTypes === 'continuous'
-        ? ((data.explore &&
-            data.explore.cases.aggregations[fieldName.replace('.', '__')]
-              .histogram) || {
+        ? (
+            (data.explore &&
+              data.explore.cases.aggregations[fieldName.replace('.', '__')]
+                .histogram) || {
               buckets: [],
             }
           ).buckets
@@ -248,14 +257,15 @@ const enhance = compose(
                 filters,
                 totalDocs,
               }),
-              filters,
               key: getRangeValue(key, fieldName, acc.nextInterval),
+              rangeValues: { min: key, max: Math.floor(acc.nextInterval - 1) },
             },
           ],
         };
       },
     })
   ),
+  withState('selectedBuckets', 'setSelectedBuckets', []),
   withProps(
     ({
       setSurvivalPlotLoading,
@@ -264,7 +274,6 @@ const enhance = compose(
       fieldName,
       variable,
       data,
-      parsedFacets,
       setId,
       setSelectedSurvivalValues,
       selectedSurvivalValues,
@@ -286,9 +295,8 @@ const enhance = compose(
                 .data.slice(0)
                 .reverse()
             : rawQueryData
-                .filter(
-                  bucket =>
-                    !IS_CDAVE_DEV ? bucket.key !== '_missing' : bucket.key
+                .filter(bucket =>
+                  !IS_CDAVE_DEV ? bucket.key !== '_missing' : bucket.key
                 )
                 .map(b => ({
                   ...b,
@@ -371,7 +379,8 @@ const enhance = compose(
         populateSurvivalData();
       }
     }
-  )
+  ),
+  withPropsOnChange(['id'], ({ setSelectedBuckets }) => setSelectedBuckets([]))
 );
 
 const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
@@ -382,7 +391,6 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
   theme,
   dispatch,
   id,
-  parsedFacets,
   setId,
   overallSurvivalData,
   survivalPlotLoading,
@@ -393,7 +401,8 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
   updateSelectedSurvivalValues,
   filters,
   stats,
-  data,
+  selectedBuckets,
+  setSelectedBuckets,
   rawQueryData,
   getBucketRangesAndFilters,
   totalDocs,
@@ -414,8 +423,8 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
             .data.slice(0)
             .reverse()
         : rawData
-            .filter(
-              bucket => (!IS_CDAVE_DEV ? bucket.key !== '_missing' : bucket.key)
+            .filter(bucket =>
+              !IS_CDAVE_DEV ? bucket.key !== '_missing' : bucket.key
             )
             .map(b => ({
               ...b,
@@ -460,12 +469,21 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
             marginLeft: 3,
             pointerEvents: 'initial',
           }}
-          // id={id}
+          id={b.key}
           type="checkbox"
-          // value={setId}
-          // disabled={msg}
-          onChange={e => console.log(e.target.value)}
-          checked={false}
+          value={b.key}
+          aria-label={`${fieldName}-${b.key}`}
+          disabled={b.doc_count === 0}
+          onChange={e => {
+            if (_.find(selectedBuckets, { key: b.key })) {
+              setSelectedBuckets(
+                _.reject(selectedBuckets, r => r.key === b.key)
+              );
+            } else {
+              setSelectedBuckets([...selectedBuckets, b]);
+            }
+          }}
+          checked={!!_.find(selectedBuckets, { key: b.key })}
         />
       ),
       ...(variable.active_chart === 'survival'
@@ -476,10 +494,10 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                   b.key === '_missing' || b.chart_doc_count < MINIMUM_CASES
                     ? 'Not enough data'
                     : selectedSurvivalValues.indexOf(b.key) > -1
-                      ? `Click icon to remove ${b.key}`
-                      : selectedSurvivalValues.length < MAXIMUM_CURVES
-                        ? `Click icon to plot ${b.key}`
-                        : `Maximum plots (${MAXIMUM_CURVES}) reached`
+                    ? `Click icon to remove ${b.key}`
+                    : selectedSurvivalValues.length < MAXIMUM_CURVES
+                    ? `Click icon to plot ${b.key}`
+                    : `Maximum plots (${MAXIMUM_CURVES}) reached`
                 }
               >
                 <Button
@@ -554,7 +572,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
         doc_count: (
           <span>
             {(noDataTotal || 0).toLocaleString()}
-            {` (${((noDataTotal || 0) / totalDocs * 100).toFixed(2)}%)`}
+            {` (${(((noDataTotal || 0) / totalDocs) * 100).toFixed(2)}%)`}
           </span>
         ),
         survival: '',
@@ -611,11 +629,102 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
             value:
               variable.active_calculation === 'number'
                 ? d.chart_doc_count
-                : d.chart_doc_count / totalDocs * 100,
+                : (d.chart_doc_count / totalDocs) * 100,
             tooltip: `${d.key}: ${d.chart_doc_count.toLocaleString()}`,
           };
         })
       : [];
+
+  // set action will default to cohort total when no buckets are selected
+  const totalFromSelectedBuckets = selectedBuckets.length
+    ? selectedBuckets.reduce((acc, b) => acc + b.chart_doc_count, 0)
+    : totalDocs;
+
+  const getContinuousSetFilters = () => {
+    const bucketRanges = selectedBuckets.map(b => b.rangeValues);
+
+    if (bucketRanges.length === 1 && bucketRanges[0].max === -1) {
+      return addInFilters(filters, {
+        op: 'and',
+        content: [
+          {
+            op: '>=',
+            content: {
+              field: fieldName,
+              value: [bucketRanges[0].min],
+            },
+          },
+        ],
+      });
+    }
+
+    return addInFilters(filters, {
+      op: 'and',
+      content: [
+        {
+          op: '>=',
+          content: {
+            field: fieldName,
+            value: [_.min(bucketRanges.map(range => range.min))],
+          },
+        },
+        {
+          op: '<=',
+          content: {
+            field: fieldName,
+            value: [_.max(bucketRanges.map(range => range.max))],
+          },
+        },
+      ],
+    });
+  };
+
+  const getCategoricalSetFilters = () => {
+    let bucketFilters = filters;
+    if (
+      selectedBuckets.filter(bucket => bucket.key !== '_missing').length > 0
+    ) {
+      bucketFilters = addInFilters(bucketFilters, {
+        op: 'and',
+        content: [
+          {
+            op: 'in',
+            content: {
+              field: fieldName,
+              value: selectedBuckets
+                .filter(bucket => bucket.key !== '_missing')
+                .map(selectedBucket => selectedBucket.key),
+            },
+          },
+        ],
+      });
+    }
+
+    if (_.find(selectedBuckets, bucket => bucket.key === '_missing')) {
+      bucketFilters = addInFilters(bucketFilters, {
+        op: 'and',
+        content: [
+          {
+            op: 'is',
+            content: {
+              field: fieldName,
+              value: 'MISSING',
+            },
+          },
+        ],
+      });
+    }
+    return bucketFilters;
+  };
+  let cardFilters = filters;
+  if (selectedBuckets.length) {
+    cardFilters =
+      variable.plotTypes === 'continuous'
+        ? getContinuousSetFilters()
+        : getCategoricalSetFilters();
+
+    console.log(cardFilters);
+  }
 
   return (
     <Column
@@ -699,7 +808,8 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                           value: 'percentage',
                           id,
                         })
-                      )}
+                      )
+                    }
                     checked={variable.active_calculation === 'percentage'}
                     style={{ marginRight: 5 }}
                   />
@@ -722,7 +832,8 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                           value: 'number',
                           id,
                         })
-                      )}
+                      )
+                    }
                     checked={variable.active_calculation === 'number'}
                     style={{ marginRight: 5 }}
                   />
@@ -792,9 +903,9 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
             <BarChart
               data={chartData}
               yAxis={{
-                title: `${variable.active_calculation === 'number'
-                  ? '#'
-                  : '%'} of Cases`,
+                title: `${
+                  variable.active_calculation === 'number' ? '#' : '%'
+                } of Cases`,
                 style: styles.histogram(theme).axis,
               }}
               xAxis={{
@@ -867,13 +978,81 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
             <Dropdown
               button={
                 <Button
-                  style={{ ...visualizingButton, padding: '0 12px' }}
+                  style={{
+                    ...visualizingButton,
+                    padding: '0 12px',
+                  }}
                   rightIcon={<DownCaretIcon />}
                 >
                   Select action
                 </Button>
               }
-            />
+            >
+              <DropdownItem>Export to TSV</DropdownItem>
+              <DropdownItem
+                style={{ lineHeight: '1.5', cursor: 'pointer', width: 210 }}
+                onClick={() => {
+                  dispatch(
+                    setModal(
+                      <SaveSetModal
+                        title={`Save ${totalFromSelectedBuckets} Cases as New Set`}
+                        total={totalFromSelectedBuckets}
+                        filters={cardFilters}
+                        score={'gene.gene_id'}
+                        sort={null}
+                        type={'case'}
+                        displayType={'case'}
+                        CreateSetButton={CreateExploreCaseSetButton}
+                        setName={'Custom Case Selection'}
+                      />
+                    )
+                  );
+                }}
+              >
+                Save as new case set
+              </DropdownItem>
+              <DropdownItem
+                style={{ lineHeight: '1.5', cursor: 'pointer', width: 210 }}
+                onClick={() => {
+                  dispatch(
+                    setModal(
+                      <AppendSetModal
+                        field="cases.case_id"
+                        title={`Add ${totalFromSelectedBuckets} Cases to Existing Set`}
+                        total={totalFromSelectedBuckets}
+                        filters={cardFilters}
+                        score={'gene.gene_id'}
+                        sort={null}
+                        type={'case'}
+                        displayType={'case'}
+                        AppendSetButton={AppendExploreCaseSetButton}
+                        scope={'explore'}
+                      />
+                    )
+                  );
+                }}
+              >
+                Add to existing case set
+              </DropdownItem>
+              <DropdownItem
+                style={{ lineHeight: '1.5', cursor: 'pointer', width: 210 }}
+                onClick={() => {
+                  dispatch(
+                    setModal(
+                      <RemoveSetModal
+                        field="cases.case_id"
+                        title={`Remove ${totalFromSelectedBuckets} Cases from Existing Set`}
+                        filters={cardFilters}
+                        type={'case'}
+                        RemoveFromSetButton={RemoveFromExploreCaseSetButton}
+                      />
+                    )
+                  );
+                }}
+              >
+                Remove from existing case set
+              </DropdownItem>
+            </Dropdown>
             <Button style={{ padding: '0 12px' }} rightIcon={<DownCaretIcon />}>
               Customize Bins
             </Button>

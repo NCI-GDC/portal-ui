@@ -62,8 +62,6 @@ interface IClinicalProps {
   facetsExpandedStatus: any,
   dispatch: any,
   notifications: any,
-  setBottomFading: any,
-  bottomFading: number,
 }
 const facetMatchesQuery = (
   facet: IFacetProps,
@@ -114,7 +112,6 @@ const enhance = compose(
   withState('isLoadingParsedFacets', 'setIsLoadingParsedFacets', false),
   withState('shouldHideUselessFacets', 'setShouldHideUselessFacets', true),
   withState('searchValue', 'setSearchValue', ''),
-  withState('bottomFading', 'setBottomFading', 1),
   withFacetSelection({
     entityType: 'ExploreCases',
     presetFacetFields: presetFacets.map(x => x.field),
@@ -281,8 +278,6 @@ const enhance = compose(
       allExpanded,
       dispatch,
       notifications,
-      bottomFading,
-      setBottomFading,
     }: IClinicalProps): any => {
       const maxHeight = 990;
       return (
@@ -328,12 +323,6 @@ const enhance = compose(
           <div
             key="1"
             className="cohortBuilder"
-            onScroll={(e: any) =>
-              setBottomFading(
-                e.target.scrollHeight - e.target.scrollTop === maxHeight
-                  ? 0
-                  : 1,
-              )}
             style={{
               overflowY: 'scroll',
               maxHeight: `${maxHeight}px`,
@@ -497,15 +486,6 @@ const enhance = compose(
                 );
               })}
           </div>
-          <span
-            style={{
-              marginTop: '-50px',
-              marginRight: '15px',
-              height: '50px',
-              zIndex: 11,
-              background: `linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,${bottomFading}) 100.00%)`,
-            }}
-          />
         </React.Fragment>
       );
     },

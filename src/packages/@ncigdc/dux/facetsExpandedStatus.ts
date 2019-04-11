@@ -1,6 +1,10 @@
 import { namespaceActions } from './utils';
 import _ from 'lodash';
 import { clinicalFacets } from '@ncigdc/containers/explore/presetFacets';
+import {
+  IFacetProps,
+  IfilterdFacetsProps
+} from '@ncigdc/containers/explore/ClinicalAggregations';
 /*----------------------------------------------------------------------------*/
 
 const facetsExpandedStatus = namespaceActions('facetsExpandedStatus', [
@@ -10,8 +14,26 @@ const facetsExpandedStatus = namespaceActions('facetsExpandedStatus', [
   'EXPAND_ONE_CATEGORY',
   'MORE_BY_CATEGORY',
 ]);
+export interface IExpandedStatusActionProps {
+  type: string;
+  payload: {
+    facets?: IfilterdFacetsProps;
+    category?: string;
+    field?: string;
+    isExpanded?: boolean;
+  };
+}
 
-const addAllFacets = (facets: any) => ({
+export interface IExpandedStatusStateProps {
+  [x: string]: {
+    expanded: boolean;
+    showingMore: boolean;
+    facets: {
+      [x: string]: boolean;
+    };
+  };
+}
+const addAllFacets = (facets: IFacetProps | {}) => ({
   type: facetsExpandedStatus.ADD_FACET_NAMES,
   payload: { facets },
 });
@@ -31,24 +53,28 @@ const showingMoreByCategory = (category: string) => ({
   payload: { category },
 });
 const initialState = clinicalFacets.reduce(
-  (acc, facet: any) => ({
+  (acc, facet) => ({
     ...acc,
     [facet.field]: { showingMore: false, expanded: true, facets: {} },
   }),
-  {},
+  {}
 );
 
-const reducer = (state: any = initialState, action: any) => {
+const reducer = (
+  state: IExpandedStatusStateProps = initialState,
+  action: IExpandedStatusActionProps
+) => {
   switch (action.type) {
     case facetsExpandedStatus.ADD_FACET_NAMES: {
       const { facets } = action.payload;
+
       return _.mapValues(facets, (facet, key) => ({
         expanded: state[key].expanded,
         showingMore: state[key].showingMore,
         facets: {
           ...state[key].facets,
-          ...facet.reduce((acc: any, f: any) => {
-            const name = f.field.split('.').pop();
+          ...facet.reduce((acc: { [x: string]: boolean }, f: IFacetProps) => {
+            const name = f.field.split('.').pop() || '';
             return {
               ...acc,
               [name]: !!state[key].facets[name],
@@ -58,7 +84,7 @@ const reducer = (state: any = initialState, action: any) => {
       }));
     }
     case facetsExpandedStatus.CHANGE_EXPANDED_STATUS: {
-      const { category, field } = action.payload;
+      const { category = '', field } = action.payload;
       if (field) {
         return {
           ...state,
@@ -81,24 +107,24 @@ const reducer = (state: any = initialState, action: any) => {
       }
     }
     case facetsExpandedStatus.EXPAND_ONE_CATEGORY: {
-      const { category, isExpanded } = action.payload;
+      const { category = '', isExpanded } = action.payload;
       return {
         ...state,
         [category]: {
           ...state[category],
           showingMore: isExpanded,
           facets: Object.keys(state[category].facets).reduce(
-            (acc: any, facetName: string) => ({
+            (acc: { [x: string]: boolean }, facetName: string) => ({
               ...acc,
               [facetName]: isExpanded,
             }),
-            {},
+            {}
           ),
         },
       };
     }
     case facetsExpandedStatus.MORE_BY_CATEGORY: {
-      const { category } = action.payload;
+      const { category = '' } = action.payload;
       return {
         ...state,
         [category]: {

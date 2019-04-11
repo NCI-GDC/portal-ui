@@ -25,6 +25,7 @@ import { setModal } from '@ncigdc/dux/modal';
 import SaveSetModal from '@ncigdc/components/Modals/SaveSetModal';
 import AppendSetModal from '@ncigdc/components/Modals/AppendSetModal';
 import RemoveSetModal from '@ncigdc/components/Modals/RemoveSetModal';
+import { downloadToTSV } from '@ncigdc/components/DownloadTableToTsvButton';
 
 // survival plot
 import {
@@ -50,6 +51,8 @@ import {
 } from '@ncigdc/dux/analysis';
 import { humanify } from '@ncigdc/utils/string';
 import { getLowerAgeYears, getUpperAgeYears } from '@ncigdc/utils/ageDisplay';
+import timestamp from '@ncigdc/utils/timestamp';
+
 import { IS_CDAVE_DEV } from '@ncigdc/utils/constants';
 import { MAXIMUM_CURVES, MINIMUM_CASES } from '../../utils/survivalplot';
 
@@ -406,6 +409,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
   rawQueryData,
   getBucketRangesAndFilters,
   totalDocs,
+  currentAnalysis,
 }) => {
   const getCategoricalTableData = (rawData, type) => {
     if (_.isEmpty(rawData)) {
@@ -722,10 +726,9 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
       variable.plotTypes === 'continuous'
         ? getContinuousSetFilters()
         : getCategoricalSetFilters();
-
-    console.log(cardFilters);
   }
 
+  const tsvSubstring = fieldName.replace(/\./g, '-');
   return (
     <Column
       style={{
@@ -988,7 +991,18 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                 </Button>
               }
             >
-              <DropdownItem>Export to TSV</DropdownItem>
+              <DropdownItem
+                onClick={() =>
+                  downloadToTSV({
+                    selector: `#analysis-${tsvSubstring}-table`,
+                    filename: `analysis-${
+                      currentAnalysis.name
+                    }-${tsvSubstring}.${timestamp()}.tsv`,
+                  })
+                }
+              >
+                Export to TSV
+              </DropdownItem>
               <DropdownItem
                 style={{ lineHeight: '1.5', cursor: 'pointer', width: 210 }}
                 onClick={() => {
@@ -1058,6 +1072,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
             </Button>
           </Row>
           <EntityPageHorizontalTable
+            tableId={`analysis-${tsvSubstring}-table`}
             data={IS_CDAVE_DEV ? devData : tableData}
             headings={getHeadings(variable.active_chart)}
             tableContainerStyle={{

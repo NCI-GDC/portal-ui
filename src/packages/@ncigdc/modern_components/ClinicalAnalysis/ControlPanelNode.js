@@ -28,6 +28,8 @@ import {
   removeClinicalAnalysisVariable,
 } from '@ncigdc/dux/analysis';
 import { ToggleMoreLink } from '@ncigdc/components/Aggregations/TermAggregation';
+import filesTableModel from '@ncigdc/tableModels/filesTableModel';
+import { search } from '../BiospecimenCard/utils';
 
 const MAX_VISIBLE_FACETS = 5;
 const MAX_FIELDS_LENGTH = 20;
@@ -58,6 +60,8 @@ const clinicalTypeOrder = [
 ];
 
 const parseFieldName = field => field.replace(/__/g, '.');
+
+const defaultDescription = 'No description available';
 
 const styles = {
   category: theme => ({
@@ -130,8 +134,7 @@ const ClinicalGrouping = compose(
             {_.orderBy(fields, 'name', 'asc')
               .slice(0, showingMore ? Infinity : MAX_VISIBLE_FACETS)
               .map(field => ({
-                fieldDescription:
-                  field.description || 'No description available',
+                fieldDescription: field.description || defaultDescription,
                 fieldName: parseFieldName(field.name),
                 fieldTitle: field.title,
                 type: field.type,
@@ -250,7 +253,11 @@ export default compose(
           const titleLower = _.toLower(field.title);
           const queryLower = _.toLower(searchValue);
           const descLower = _.toLower(field.description);
-          return titleLower.match(queryLower) || descLower.match(queryLower);
+          const descMatch =
+            field.description === defaultDescription
+              ? false
+              : descLower.match(queryLower);
+          return descMatch || titleLower.match(queryLower);
         });
       const groupedByClinicalType = _.groupBy(filteredFields, field => {
         const sections = field.name.split('__');

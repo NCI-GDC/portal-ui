@@ -469,7 +469,10 @@ const enhance = compose(
                                 style={{
                                   paddingLeft: '10px',
                                 }}
-                                headerStyle={{ fontSize: '14px' }}
+                                headerStyle={{
+                                  padding: '0.5rem 1.2rem 0.5rem 1.2rem',
+                                  fontSize: '16px',
+                                }}
                                 collapsed={
                                   searchValue.length === 0
                                     ? !facetsExpandedStatus[facet.field].facets[

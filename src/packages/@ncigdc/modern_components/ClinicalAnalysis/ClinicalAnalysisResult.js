@@ -39,17 +39,18 @@ import tryParseJSON from '@ncigdc/utils/tryParseJSON';
 import getUsefulFacets from '@ncigdc/utils/getUsefulFacets';
 import DeprecatedSetResult from './DeprecatedSetResult';
 import CohortDropdown from './CohortDropdown';
+import './print.css';
 
 // survival plot
 import { getDefaultCurve } from '@ncigdc/utils/survivalplot';
 import SurvivalPlotWrapper from '@ncigdc/components/SurvivalPlotWrapper';
 
 interface IAnalysisResultProps {
-  sets: any;
-  config: any;
-  label: string;
-  Icon: () => React.Component<any>;
-  analysis: any;
+  sets: any,
+  config: any,
+  label: string,
+  Icon: () => React.Component<any>,
+  analysis: any,
 }
 //
 // interface ISavedSet {
@@ -324,6 +325,7 @@ const ClinicalAnalysisResult = ({
               minWidth: 260,
               marginBottom: '1rem',
             }}
+            className="no-print"
           >
             <Row style={{ justifyContent: 'flex-end' }}>
               <Tooltip Component={'Hide Control Panel'}>
@@ -460,6 +462,7 @@ const ClinicalAnalysisResult = ({
               gridTemplateRows: 'repeat(auto)',
               ...(controlPanelExpanded ? {} : { marginLeft: '1%' }),
             }}
+            className="print-grid"
           >
             <Column
               style={{
@@ -468,6 +471,7 @@ const ClinicalAnalysisResult = ({
                 margin: '0 1rem 1rem',
                 padding: '0.5rem 1rem 1rem',
               }}
+              className="no-print"
             >
               <div
                 style={{

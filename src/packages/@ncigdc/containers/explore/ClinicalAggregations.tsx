@@ -291,7 +291,6 @@ const enhance = compose(
           }),
         };
       }, {});
-
       dispatch(addAllFacets(filteredFacets));
       return {
         parsedFacets,
@@ -412,26 +411,30 @@ const enhance = compose(
                         />
                         {facet.title}
                       </div>
-                      <span
-                        onClick={() => {
-                          dispatch(
-                            expandOneCategory(
-                              facet.field,
-                              !allExpanded[facet.field],
-                            ),
-                          );
-                        }}
-                        style={{
-                          display: 'flex',
-                          float: 'right',
-                        }}
-                      >
-                        {searchValue || filteredFacets[facet.field].length === 0
-                          ? null
-                          : allExpanded[facet.field]
-                            ? 'Collapse All'
-                            : 'Expand All'}
-                      </span>
+                      {facetsExpandedStatus[facet.field].expanded && (
+                        <span
+                          onClick={() => {
+                            dispatch(
+                              expandOneCategory(
+                                facet.field,
+                                !allExpanded[facet.field],
+                              ),
+                            );
+                          }}
+                          style={{
+                            display: 'flex',
+                            float: 'right',
+                            fontSize: '12px',
+                          }}
+                        >
+                          {searchValue ||
+                          filteredFacets[facet.field].length === 0
+                            ? null
+                            : allExpanded[facet.field]
+                              ? 'Collapse All'
+                              : 'Expand All'}
+                        </span>
+                      )}
                     </Row>
                     {facetsExpandedStatus[facet.field].expanded && (
                       <Column>
@@ -446,7 +449,9 @@ const enhance = compose(
                               ? Infinity
                               : 5,
                           )
-                          .map((componentFacet: any) => {
+                          .map((componentFacet: IFacetProps) => {
+                            const fieldName =
+                              componentFacet.full.split('.').pop() || '';
                             return [
                               <WrapperComponent
                                 relayVarName="exploreCaseCustomFacetFields"
@@ -458,9 +463,7 @@ const enhance = compose(
                                   .includes(searchValue.toLocaleLowerCase())}
                                 facet={componentFacet}
                                 allExpanded={allExpanded[facet.field]}
-                                title={_.startCase(
-                                  componentFacet.full.split('.').pop(),
-                                )}
+                                title={_.startCase(fieldName)}
                                 aggregation={parsedFacets[componentFacet.field]}
                                 searchValue={searchValue}
                                 additionalProps={{
@@ -476,15 +479,15 @@ const enhance = compose(
                                 collapsed={
                                   searchValue.length === 0
                                     ? !facetsExpandedStatus[facet.field].facets[
-                                        componentFacet.field.split('.').pop()
+                                        fieldName
                                       ]
                                     : false
                                 }
-                                setCollapsed={(collapsed: any) =>
+                                setCollapsed={(collapsed: boolean) =>
                                   dispatch(
                                     changeExpandedStatus(
                                       facet.field,
-                                      componentFacet.field.split('.').pop(),
+                                      fieldName,
                                     ),
                                   )}
                                 category={facet.field}

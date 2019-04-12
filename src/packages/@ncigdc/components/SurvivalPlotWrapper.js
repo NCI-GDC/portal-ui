@@ -101,8 +101,6 @@ const SurvivalPlotWrapper = ({
   const { results = [], overallStats = {} } = rawData || {};
   const pValue = overallStats.pValue;
 
-  console.log('legend', legend);
-
   return (
     <Loader
       loading={survivalPlotLoading}

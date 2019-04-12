@@ -101,6 +101,8 @@ const SurvivalPlotWrapper = ({
   const { results = [], overallStats = {} } = rawData || {};
   const pValue = overallStats.pValue;
 
+  console.log('legend', legend);
+
   return (
     <Loader
       loading={survivalPlotLoading}
@@ -112,7 +114,7 @@ const SurvivalPlotWrapper = ({
           <VisualizationHeader
             title={plotType === 'mutation' ? TITLE : ''}
             buttons={[
-              ...(plotType === 'mutation'
+              ...(plotType !== 'mutation'
                 ? [
                     <DownloadVisualizationButton
                       key="download"
@@ -123,19 +125,19 @@ const SurvivalPlotWrapper = ({
                           className: CLASS_NAME,
                           embed: {
                             top: {
-                              elements: [
-                                document.querySelector(
-                                  `.${uniqueClass} .legend-0`
+                              elements: legend
+                                .map((l, i) =>
+                                  document.querySelector(
+                                    `.${uniqueClass} .legend-${i}`
+                                  )
+                                )
+                                .concat(
+                                  pValue
+                                    ? document.querySelector(
+                                        `.${uniqueClass} .p-value`
+                                      )
+                                    : null
                                 ),
-                                document.querySelector(
-                                  `.${uniqueClass} .legend-1`
-                                ),
-                                pValue
-                                  ? document.querySelector(
-                                      `.${uniqueClass} .p-value`
-                                    )
-                                  : null,
-                              ],
                             },
                           },
                         })}

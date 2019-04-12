@@ -24,6 +24,8 @@ import { presetFacets } from '@ncigdc/containers/explore/presetFacets';
 
 import { IBucket } from '@ncigdc/components/Aggregations/types';
 import { CaseAggregationsQuery } from './explore.relay';
+import { connect } from 'react-redux';
+
 export interface ITProps {
   caseIdCollapsed: boolean,
   setCaseIdCollapsed: (caseIdCollapsed: boolean) => void,
@@ -61,9 +63,13 @@ export interface ITProps {
   setShouldShowFacetSelection: any,
   advancedFilter: boolean,
   setAdvancedFilter: any,
+  dynamicStyle: { [x: string]: number },
 }
 
 const enhance = compose(
+  connect(({ dynamicStyle }: { [x: string]: number }) => ({
+    dynamicStyle,
+  })),
   setDisplayName('ExploreCaseAggregations'),
   withState('caseIdCollapsed', 'setCaseIdCollapsed', false),
   withState('advancedFilter', 'setAdvancedFilter', false),
@@ -104,6 +110,7 @@ export const CaseAggregationsComponent = ({
   setShouldShowFacetSelection,
   advancedFilter,
   setAdvancedFilter,
+  dynamicStyle,
 }: ITProps) => (
   <div className="test-case-aggregations">
     <FacetHeader
@@ -150,18 +157,26 @@ export const CaseAggregationsComponent = ({
     >
       Upload Case Set
     </UploadSetButton>
-    {reject(presetFacets, { full: 'cases.case_id' })
-      .filter(facet => aggregations[escapeForRelay(facet.field)])
-      .map(facet => (
-        <FacetWrapper
-          key={facet.full}
-          facet={facet}
-          title={facet.title}
-          aggregation={aggregations[escapeForRelay(facet.field)]}
-          relay={relay}
-          style={{ borderBottom: `1px solid ${theme.greyScale5}` }}
-        />
-      ))}
+    <div
+      style={{
+        overflowY: 'scroll',
+        maxHeight: `${dynamicStyle.tableHeight - 68}px`,
+        paddingBottom: '20px',
+      }}
+    >
+      {reject(presetFacets, { full: 'cases.case_id' })
+        .filter(facet => aggregations[escapeForRelay(facet.field)])
+        .map(facet => (
+          <FacetWrapper
+            key={facet.full}
+            facet={facet}
+            title={facet.title}
+            aggregation={aggregations[escapeForRelay(facet.field)]}
+            relay={relay}
+            style={{ borderBottom: `1px solid ${theme.greyScale5}` }}
+          />
+        ))}
+    </div>
   </div>
 );
 

@@ -21,7 +21,9 @@ import { replaceFilters } from '@ncigdc/utils/filters';
 import { stringifyJSONParam } from '@ncigdc/utils/uri';
 import { Row } from '@ncigdc/uikit/Flex';
 import Button from '@ncigdc/uikit/Button';
-
+import ResizeObserver from 'react-resize-observer';
+import { connect } from 'react-redux';
+import { addStyle } from '@ncigdc/dux/dynamicStyle';
 export type TProps = {
   filters: {},
   relay: Object,
@@ -96,6 +98,7 @@ function setVariables({ relay, filters }) {
 
 const enhance = compose(
   withRouter,
+  connect(),
   lifecycle({
     componentDidMount() {
       setVariables(this.props);
@@ -113,6 +116,7 @@ export const ExplorePageComponent = ({
   relay,
   push,
   theme,
+  dispatch,
 }: TProps) => (
   <SearchPage
     className="test-explore-page"
@@ -183,6 +187,11 @@ export const ExplorePageComponent = ({
     ]}
     results={
       <span>
+        <ResizeObserver
+          onResize={rect => {
+            dispatch(addStyle('tableHeight', rect.height));
+          }}
+        />
         <Row>
           {filters ? (
             <CreateExploreCaseSetButton

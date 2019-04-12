@@ -84,6 +84,7 @@ interface IClinicalProps {
   facetsExpandedStatus: IExpandedStatusStateProps,
   dispatch: (action: IExpandedStatusActionProps) => void,
   notifications: INotificationProps[],
+  dynamicStyle: any,
 }
 
 interface ICaseFacetsProps {
@@ -145,12 +146,15 @@ const enhance = compose(
     ({
       facetsExpandedStatus,
       bannerNotification,
+      dynamicStyle,
     }: {
       facetsExpandedStatus: IExpandedStatusStateProps,
       bannerNotification: INotificationProps[],
+      dynamicStyle: { [x: string]: number },
     }) => ({
       facetsExpandedStatus,
       notifications: bannerNotification,
+      dynamicStyle,
       allExpanded: _.mapValues(facetsExpandedStatus, status =>
         _.some(_.values(status.facets)),
       ),
@@ -319,8 +323,8 @@ const enhance = compose(
       allExpanded,
       dispatch,
       notifications,
+      dynamicStyle,
     }: IClinicalProps): any => {
-      const maxHeight = 990;
       return (
         <React.Fragment>
           <Row
@@ -362,11 +366,9 @@ const enhance = compose(
             fields shown)
           </label>
           <div
-            key="1"
-            className="cohortBuilder"
             style={{
               overflowY: 'scroll',
-              maxHeight: `${maxHeight}px`,
+              maxHeight: `${dynamicStyle.tableHeight - 43}px`,
               paddingBottom: '20px',
             }}
           >

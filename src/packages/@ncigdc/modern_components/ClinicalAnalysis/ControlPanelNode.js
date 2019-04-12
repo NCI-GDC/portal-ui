@@ -105,16 +105,15 @@ const ClinicalGrouping = compose(
               padding: '0 10px',
             }}
           >
-            {fields.length > MAX_FIELDS_LENGTH &&
-              showingMore && (
-                <Row>
-                  <StyledToggleMoreLink
-                    onClick={() => setShowingMore(!showingMore)}
-                  >
-                    {'Less...'}
-                  </StyledToggleMoreLink>
-                </Row>
-              )}
+            {fields.length > MAX_FIELDS_LENGTH && showingMore && (
+              <Row>
+                <StyledToggleMoreLink
+                  onClick={() => setShowingMore(!showingMore)}
+                >
+                  {'Less...'}
+                </StyledToggleMoreLink>
+              </Row>
+            )}
             {_.orderBy(fields, 'name', 'asc')
               .slice(0, showingMore ? Infinity : MAX_VISIBLE_FACETS)
               .map(field => ({
@@ -210,9 +209,7 @@ const ClinicalGrouping = compose(
   }
 );
 
-export default compose(
-  withTheme
-)(
+export default compose(withTheme)(
   ({
     theme,
     currentAnalysis,

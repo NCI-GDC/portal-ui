@@ -13,60 +13,61 @@ import availableAnalysis from './availableAnalysis';
 import SelectSet from './SelectSet';
 
 import DemoButton from './DemoButton';
+import defaultVariables from './defaultCDAVEvariables';
 
-const defaultVariables = {
-  'demographic.ethnicity': {
-    type: 'Demographic',
-    active_chart: 'histogram',
-    active_calculation: 'number',
-    active_survival: 'overall',
-    plotTypes: 'categorical',
-    bins: [],
-  },
-
-  'demographic.gender': {
-    type: 'Demographic',
-    active_chart: 'histogram',
-    active_calculation: 'number',
-    active_survival: 'overall',
-    plotTypes: 'categorical',
-    bins: [],
-  },
-
-  'demographic.race': {
-    type: 'Demographic',
-    active_chart: 'histogram',
-    active_calculation: 'number',
-    active_survival: 'overall',
-    plotTypes: 'categorical',
-    bins: [],
-  },
-  'diagnoses.age_at_diagnosis': {
-    type: 'Diagnosis',
-    active_chart: 'histogram',
-    active_calculation: 'number',
-    active_survival: 'overall',
-    plotTypes: 'continuous',
-    bins: [],
-  },
-
-  'diagnoses.age_at_diagnosis': {
-    type: 'Diagnosis',
-    active_chart: 'histogram',
-    active_calculation: 'number',
-    active_survival: 'overall',
-    plotTypes: 'continuous',
-    bins: [],
-  },
-  'diagnoses.cause_of_death': {
-    type: 'Diagnosis',
-    active_chart: 'histogram',
-    active_calculation: 'number',
-    active_survival: 'overall',
-    plotTypes: 'categorical',
-    bins: [],
-  },
-};
+// export const defaultVariables = {
+//   'demographic.ethnicity': {
+//     type: 'Demographic',
+//     active_chart: 'histogram',
+//     active_calculation: 'number',
+//     active_survival: 'overall',
+//     plotTypes: 'categorical',
+//     bins: [],
+//   },
+//
+//   'demographic.gender': {
+//     type: 'Demographic',
+//     active_chart: 'histogram',
+//     active_calculation: 'number',
+//     active_survival: 'overall',
+//     plotTypes: 'categorical',
+//     bins: [],
+//   },
+//
+//   'demographic.race': {
+//     type: 'Demographic',
+//     active_chart: 'histogram',
+//     active_calculation: 'number',
+//     active_survival: 'overall',
+//     plotTypes: 'categorical',
+//     bins: [],
+//   },
+//   'diagnoses.age_at_diagnosis': {
+//     type: 'Diagnosis',
+//     active_chart: 'histogram',
+//     active_calculation: 'number',
+//     active_survival: 'overall',
+//     plotTypes: 'continuous',
+//     bins: [],
+//   },
+//
+//   'diagnoses.age_at_diagnosis': {
+//     type: 'Diagnosis',
+//     active_chart: 'histogram',
+//     active_calculation: 'number',
+//     active_survival: 'overall',
+//     plotTypes: 'continuous',
+//     bins: [],
+//   },
+//   'diagnoses.cause_of_death': {
+//     type: 'Diagnosis',
+//     active_chart: 'histogram',
+//     active_calculation: 'number',
+//     active_survival: 'overall',
+//     plotTypes: 'categorical',
+//     bins: [],
+//   },
+// };
 
 const enhance = compose(
   branch(
@@ -147,12 +148,7 @@ const CreateAnalysis = ({ analysis, setAnalysis, dispatch, push }) => {
               <div style={{ marginBottom: 10 }}>{analysis.description}</div>
               <Row spacing={5}>
                 <Button onClick={() => setAnalysis(analysis)}>Select</Button>
-                {/* disabling demo button until demo data is ready */}
-                <DemoButton
-                  demoData={analysis.demoData}
-                  type={analysis.type}
-                  disabled={analysis.type === 'clinical_data'}
-                />
+                <DemoButton demoData={analysis.demoData} type={analysis.type} />
               </Row>
             </div>
           </Row>

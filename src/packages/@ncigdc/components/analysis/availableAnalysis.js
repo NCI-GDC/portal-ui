@@ -9,7 +9,61 @@ import Demo from './Demo';
 import ClinicalDataAnalysis from '@ncigdc/theme/icons/ClinicalDataAnalysis';
 import { DISPLAY_CDAVE } from '@ncigdc/utils/constants';
 import ClinicalAnalysisContainer from '@ncigdc/modern_components/IntrospectiveType';
+import defaultVariables from './defaultCDAVEvariables';
 
+// const defaultVariables = {
+//   'demographic.ethnicity': {
+//     type: 'Demographic',
+//     active_chart: 'histogram',
+//     active_calculation: 'number',
+//     active_survival: 'overall',
+//     plotTypes: 'categorical',
+//     bins: [],
+//   },
+//
+//   'demographic.gender': {
+//     type: 'Demographic',
+//     active_chart: 'histogram',
+//     active_calculation: 'number',
+//     active_survival: 'overall',
+//     plotTypes: 'categorical',
+//     bins: [],
+//   },
+//
+//   'demographic.race': {
+//     type: 'Demographic',
+//     active_chart: 'histogram',
+//     active_calculation: 'number',
+//     active_survival: 'overall',
+//     plotTypes: 'categorical',
+//     bins: [],
+//   },
+//   'diagnoses.age_at_diagnosis': {
+//     type: 'Diagnosis',
+//     active_chart: 'histogram',
+//     active_calculation: 'number',
+//     active_survival: 'overall',
+//     plotTypes: 'continuous',
+//     bins: [],
+//   },
+//
+//   'diagnoses.age_at_diagnosis': {
+//     type: 'Diagnosis',
+//     active_chart: 'histogram',
+//     active_calculation: 'number',
+//     active_survival: 'overall',
+//     plotTypes: 'continuous',
+//     bins: [],
+//   },
+//   'diagnoses.cause_of_death': {
+//     type: 'Diagnosis',
+//     active_chart: 'histogram',
+//     active_calculation: 'number',
+//     active_survival: 'overall',
+//     plotTypes: 'categorical',
+//     bins: [],
+//   },
+// };
 export type TSelectedSets = {
   [TSetTypes]: any,
 };
@@ -279,31 +333,13 @@ const availableAnalysis: [TAnalysis] = [
         message: 'Demo cases',
         sets: {
           case: {
-            'demo-pancreas-kras': 'Pancreas - KRAS mutated',
-            'demo-pancreas-no-kras': 'Pancreas - KRAS not mutated',
+            'demo-pancreas': 'Pancreas',
           },
         },
         filters: {
-          'demo-pancreas-kras': {
+          'demo-pancreas': {
             op: 'and',
             content: [
-              {
-                op: 'in',
-                content: { field: 'genes.symbol', value: ['KRAS'] },
-              },
-              {
-                op: 'in',
-                content: { field: 'cases.primary_site', value: ['Pancreas'] },
-              },
-            ],
-          },
-          'demo-pancreas-no-kras': {
-            op: 'and',
-            content: [
-              {
-                op: 'excludeifany',
-                content: { field: 'genes.symbol', value: 'KRAS' },
-              },
               {
                 op: 'in',
                 content: { field: 'cases.primary_site', value: ['Pancreas'] },
@@ -312,20 +348,23 @@ const availableAnalysis: [TAnalysis] = [
           },
         },
         type: 'clinical_data',
+        displayVariables: { ...defaultVariables },
       },
       setInstructions: 'Set instructions',
       setTypes: ['case'],
       validateSets: sets =>
         sets &&
         ['case'].every((t: any) => Object.keys(sets[t] || {}).length === 1),
-      ResultComponent: props =>
-        props.id.includes('demo-') ? (
+      ResultComponent: props => {
+        console.log('props: ', props);
+        return props.id.includes('demo-') ? (
           <Demo {...props}>
-            <ClinicalAnalysisResult />
+            <ClinicalAnalysisContainer typeName={'ExploreCases'} {...props} />
           </Demo>
         ) : (
           <ClinicalAnalysisContainer typeName={'ExploreCases'} {...props} />
-        ),
+        );
+      },
     },
   ]),
 ];

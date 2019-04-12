@@ -12,7 +12,7 @@ const enhance = compose(
   connect(state => ({ analysis: state.analysis.saved })),
 );
 
-const DemoButton = ({ demoData, type, push, dispatch, analysis, style, disabled = false }) => {
+const DemoButton = ({ demoData, type, push, dispatch, analysis, style,disabled = false }) => {
   const pushToResultTab = id =>
     push({
       query: {
@@ -46,7 +46,9 @@ const DemoButton = ({ demoData, type, push, dispatch, analysis, style, disabled 
         demoData && <div style={{ maxWidth: 240 }}>{demoData.message}</div>
       }
     >
-      <Button onClick={() => demoData && onDemo(type)} disabled={disabled}>Demo</Button>
+      <Button onClick={() => demoData && onDemo(type)} disabled={disabled}>
+        Demo
+      </Button>
     </Tooltip>
   );
 };

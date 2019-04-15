@@ -49,7 +49,6 @@ const defaultVariables = {
     plotTypes: 'continuous',
     bins: [],
   },
-
   'diagnoses.age_at_diagnosis': {
     type: 'Diagnosis',
     active_chart: 'histogram',
@@ -58,7 +57,7 @@ const defaultVariables = {
     plotTypes: 'continuous',
     bins: [],
   },
-  'diagnoses.cause_of_death': {
+  'diagnoses.primary_diagnosis': {
     type: 'Diagnosis',
     active_chart: 'histogram',
     active_calculation: 'number',

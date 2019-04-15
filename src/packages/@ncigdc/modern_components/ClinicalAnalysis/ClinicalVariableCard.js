@@ -4,6 +4,7 @@ import DownCaretIcon from 'react-icons/lib/fa/caret-down';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import { scaleOrdinal, schemeCategory10 } from 'd3';
+import ScrollableAnchor from 'react-scrollable-anchor';
 
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import Button from '@ncigdc/uikit/Button';
@@ -736,7 +737,6 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
         ...style,
       }}
       className="clinical-analysis-categorical-card"
-      id={`${fieldName}-card`}
     >
       <Row
         style={{
@@ -745,9 +745,11 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
           margin: '5px 0 10px',
         }}
       >
-        <h2 style={{ fontSize: '1.8rem', marginTop: 10, marginBottom: 0 }}>
-          {humanify({ term: fieldName })}
-        </h2>
+        <ScrollableAnchor id={`${fieldName}-card`}>
+          <h2 style={{ fontSize: '1.8rem', marginTop: 10, marginBottom: 0 }}>
+            {humanify({ term: fieldName })}
+          </h2>
+        </ScrollableAnchor>
         <Row>
           {[...plots, 'delete'].map(plotType => {
             return (

@@ -9,6 +9,7 @@ import {
 import _ from 'lodash';
 import { connect } from 'react-redux';
 import { singular } from 'pluralize';
+import { goToAnchor } from 'react-scrollable-anchor';
 import Toggle from 'react-toggle';
 import './reactToggle.css';
 
@@ -26,7 +27,6 @@ import {
   removeClinicalAnalysisVariable,
 } from '@ncigdc/dux/analysis';
 import { ToggleMoreLink } from '@ncigdc/components/Aggregations/TermAggregation';
-import { scrollToId } from '@ncigdc/components/Links/deepLink';
 
 const MAX_VISIBLE_FACETS = 5;
 const MAX_FIELDS_LENGTH = 20;
@@ -186,7 +186,15 @@ const ClinicalGrouping = compose(
                             plotTypes,
                           })
                         );
-                        scrollToId(`${fieldName}-card`);
+                        if (!checked) {
+                          console.log('unchecked');
+                          console.log(`${fieldName}-card`);
+                          goToAnchor(`${fieldName}-card`);
+                        } else {
+                          console.log('checked!');
+                          console.log(`${fieldName}-card`);
+                          goToAnchor(`${fieldName}-card`);
+                        }
                       }}
                     />
                   </Row>

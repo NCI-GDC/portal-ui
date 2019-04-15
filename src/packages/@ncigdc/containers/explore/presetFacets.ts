@@ -56,6 +56,14 @@ export const presetFacets = [
     doc_type: 'cases',
     type: 'keyword',
   },
+
+  {
+    title: 'Available Variation Data',
+    field: 'available_variation_data',
+    full: 'cases.available_variation_data',
+    doc_type: 'cases',
+    type: 'keyword',
+  },
 ];
 const excludedRegex = [
   /updated_datetime$/,

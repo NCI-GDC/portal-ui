@@ -9,6 +9,7 @@ import Button from '@ncigdc/uikit/Button';
 import { Tooltip } from '@ncigdc/uikit/Tooltip';
 import {
   DownloadIcon,
+  PrintIcon,
   CloseIcon,
   SurvivalIcon,
   BarChartIcon,
@@ -295,13 +296,16 @@ const ClinicalAnalysisResult = ({
           >
             Copy Analysis
           </Button>
-          <Tooltip Component={<span>Download</span>}>
+          <Tooltip Component={<span>Print</span>}>
             <Button
               style={{ ...visualizingButton, height: '100%' }}
               disabled={false}
+              onClick={() => {
+                window.print();
+              }}
             >
-              <DownloadIcon />
-              <Hidden>Download</Hidden>
+              <PrintIcon />
+              <Hidden>Print</Hidden>
             </Button>
           </Tooltip>
         </Row>

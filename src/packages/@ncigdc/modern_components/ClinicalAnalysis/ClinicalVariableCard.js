@@ -288,9 +288,9 @@ const enhance = compose(
       populateSurvivalData: () => {
         setSurvivalPlotLoading(true);
 
-        const dataWithEnoughCases = rawQueryData.filter(
-          d => d.doc_count >= MINIMUM_CASES
-        );
+        const dataWithEnoughCases = rawQueryData
+          .filter(d => d.doc_count >= MINIMUM_CASES)
+          .filter(d => d.key !== '_missing');
 
         const dataForSurvival =
           variable.plotTypes === 'continuous'
@@ -302,15 +302,10 @@ const enhance = compose(
                 })
                 .data.slice(0)
                 .reverse()
-            : dataWithEnoughCases
-                .filter(
-                  bucket =>
-                    !IS_CDAVE_DEV ? bucket.key !== '_missing' : bucket.key
-                )
-                .map(b => ({
-                  ...b,
-                  chart_doc_count: b.doc_count,
-                }));
+            : dataWithEnoughCases.map(b => ({
+                ...b,
+                chart_doc_count: b.doc_count,
+              }));
 
         const continuousTop2Values =
           variable.plotTypes === 'continuous'
@@ -513,19 +508,17 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                   style={{
                     padding: '2px 3px',
                     backgroundColor:
-                      selectedSurvivalValues.indexOf(b.key) === -1
-                        ? '#666'
-                        : colors(selectedSurvivalValues.indexOf(b.key)),
-                    color: 'white',
-                    margin: '0 auto',
-                    position: 'static',
-                    opacity:
                       b.key === '_missing' ||
                       b.chart_doc_count < MINIMUM_CASES ||
                       (selectedSurvivalValues.length >= MAXIMUM_CURVES &&
                         selectedSurvivalValues.indexOf(b.key) === -1)
-                        ? '0.33'
-                        : '1',
+                        ? '#CCC'
+                        : selectedSurvivalValues.indexOf(b.key) === -1
+                          ? '#666'
+                          : colors(selectedSurvivalValues.indexOf(b.key)),
+                    color: 'white',
+                    margin: '0 auto',
+                    position: 'static',
                   }}
                   disabled={
                     b.key === '_missing' ||

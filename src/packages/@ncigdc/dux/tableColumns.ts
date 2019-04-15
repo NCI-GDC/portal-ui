@@ -1,4 +1,4 @@
-import { REHYDRATE } from 'redux-persist/constants';
+import { REHYDRATE } from 'redux-persist';
 // Custom
 import tableModels from '@ncigdc/tableModels';
 import { namespaceActions } from './utils';
@@ -48,11 +48,12 @@ const initialState = Object.keys(tableModels).reduce(
   }),
   { version: 3 }
 );
+
 const reducer = (state = initialState, action: ITableColumnsAction) => {
   switch (action.type) {
     case REHYDRATE: {
       const { version = -1, ...allTableColumns } =
-        action.payload.tableColumns || {};
+        (action.payload && action.payload.tableColumns) || {};
       if (version !== state.version) {
         return state;
       }
@@ -70,12 +71,19 @@ const reducer = (state = initialState, action: ITableColumnsAction) => {
                     orderArray.indexOf(a.id) - orderArray.indexOf(b.id)
                 )
             : state[key];
-          order.forEach((element: IColumnProps<boolean>, i: number) => {
-            element.hidden = val[i].hidden;
-          });
+
           return {
             ...acc,
-            [key]: order,
+            [key]: order.map((element: IColumnProps<boolean>, i: number) => {
+              if (val[i] && val[i].hasOwnProperty('hidden')) {
+                return {
+                  ...element,
+                  hidden: val[i].hidden,
+                };
+              } else {
+                return element;
+              }
+            }),
           };
         }, {}),
       };

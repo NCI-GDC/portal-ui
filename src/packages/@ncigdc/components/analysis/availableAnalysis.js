@@ -6,6 +6,8 @@ import CCIcon from '@ncigdc/theme/icons/CohortComparisonIcon';
 import { withTheme } from '@ncigdc/theme';
 import { TSetTypes } from '@ncigdc/dux/sets';
 import Demo from './Demo';
+import ClinicalDataAnalysis from '@ncigdc/theme/icons/ClinicalDataAnalysis';
+import { DISPLAY_CDAVE } from '@ncigdc/utils/constants';
 
 type TSelectedSets = {
   [TSetTypes]: {},
@@ -22,7 +24,7 @@ type TAnalysis = {
     type: string,
   },
   setInstructions: string,
-  setDisabledMessage: (opts: {sets: TSelectedSets, type: string}) => ?string,
+  setDisabledMessage: (opts: { sets: TSelectedSets, type: string }) => ?string,
   setTypes: Array<string>,
   validateSets: TSelectedSets => boolean,
   ResultComponent: ReactComponent<*>,
@@ -48,9 +50,15 @@ const availableAnalysis: [TAnalysis] = [
         ]}
         outlineColour="rgba(46, 90, 164, 0.62)"
         getFillColor={(d, i) => {
-          if (d.op === 5) {return 'rgba(38, 166, 166, 0.65)';}
-          if (d.op === 6) {return 'rgba(235, 233, 46, 0.79)';}
-          if (d.op === 7) {return 'rgba(175, 58, 215, 0.8)';}
+          if (d.op === 5) {
+            return 'rgba(38, 166, 166, 0.65)';
+          }
+          if (d.op === 6) {
+            return 'rgba(235, 233, 46, 0.79)';
+          }
+          if (d.op === 7) {
+            return 'rgba(175, 58, 215, 0.8)';
+          }
           return 'rgba(0,0,0,0)';
         }}
       />
@@ -255,6 +263,76 @@ const availableAnalysis: [TAnalysis] = [
         <CohortComparison sets={props.sets} message={props.message} />
       ),
   },
+  ...(DISPLAY_CDAVE && [
+    {
+      type: 'clinical_data',
+      label: 'Clinical Data Analysis',
+      Icon: withTheme(({ theme }) => (
+        <div>
+          <ClinicalDataAnalysis style={{ width: 80, height: 80 }} />
+        </div>
+      )),
+      description: `Display basic statistical analyses for your clinical cohort using data variables and configurations that you select as input`,
+      demoData: {
+        message: 'message',
+        sets: {
+          case: {
+            'demo-pancreas-kras': 'Pancreas - KRAS mutated',
+            'demo-pancreas-no-kras': 'Pancreas - KRAS not mutated',
+          },
+        },
+        filters: {
+          'demo-pancreas-kras': {
+            op: 'and',
+            content: [
+              {
+                op: 'in',
+                content: { field: 'genes.symbol', value: ['KRAS'] },
+              },
+              {
+                op: 'in',
+                content: { field: 'cases.primary_site', value: ['Pancreas'] },
+              },
+            ],
+          },
+          'demo-pancreas-no-kras': {
+            op: 'and',
+            content: [
+              {
+                op: 'excludeifany',
+                content: { field: 'genes.symbol', value: 'KRAS' },
+              },
+              {
+                op: 'in',
+                content: { field: 'cases.primary_site', value: ['Pancreas'] },
+              },
+            ],
+          },
+        },
+        type: 'comparison',
+      },
+      setInstructions: 'Set instructions',
+      setDisabledMessage: ({ sets, type }) =>
+        !['case'].includes(type)
+          ? "This analysis can't be run with this type"
+          : Object.keys(sets[type] || {}).length >= 2
+            ? `You can only select two ${type === 'ssm'
+                ? 'mutation'
+                : type} set`
+            : null,
+      setTypes: ['case'],
+      validateSets: sets =>
+        ['case'].every((t: any) => Object.keys(sets[t] || {}).length === 2),
+      ResultComponent: props =>
+        props.id.includes('demo-') ? (
+          <Demo {...props}>
+            <div>Clinical Analysis Result</div>
+          </Demo>
+        ) : (
+          <div>Clinical Analysis Result</div>
+        ),
+    },
+  ]),
 ];
 
 export default availableAnalysis;

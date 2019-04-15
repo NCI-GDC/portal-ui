@@ -8574,14 +8574,3 @@ fieldset[disabled] .btn-primary.active {
   cursor: pointer;
   background-color: #dbdbdb;
 }
-
-div.forceScrollbars::-webkit-scrollbar {
-  -webkit-appearance: none;
-  width: 10px;
-}
-
-div.forceScrollbars::-webkit-scrollbar-thumb {
-  border-radius: 5px;
-  background-color: rgba(0,0,0,.5);
-  -webkit-box-shadow: 0 0 1px rgba(255,255,255,.5);
-}

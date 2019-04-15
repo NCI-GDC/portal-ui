@@ -26,6 +26,7 @@ import {
   removeClinicalAnalysisVariable,
 } from '@ncigdc/dux/analysis';
 import { ToggleMoreLink } from '@ncigdc/components/Aggregations/TermAggregation';
+import { scrollToId } from '@ncigdc/components/Links/deepLink';
 
 const MAX_VISIBLE_FACETS = 5;
 const MAX_FIELDS_LENGTH = 20;
@@ -185,6 +186,7 @@ const ClinicalGrouping = compose(
                             plotTypes,
                           })
                         );
+                        scrollToId(`${fieldName}-card`);
                       }}
                     />
                   </Row>

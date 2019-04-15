@@ -1077,7 +1077,6 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
             </Button>
           </Row>
           <EntityPageHorizontalTable
-            className="forceScrollbars"
             tableId={`analysis-${tsvSubstring}-table`}
             data={IS_CDAVE_DEV ? devData : tableData}
             headings={getHeadings(variable.active_chart)}

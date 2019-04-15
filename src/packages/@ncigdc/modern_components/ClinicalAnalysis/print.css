@@ -1,4 +1,7 @@
 @media print {
+  *[style] {
+    font-family: Arial, Helvetica, sans-serif !important;
+  }
   .no-print,
   #header,
   .test-footer,
@@ -30,15 +33,11 @@
 
   .clinical-analysis-categorical-card[style] {
     display: inline-block !important;
-    width: 50%;
+    width: 100%;
     min-width: auto !important;
     height: auto !important;
-    /* border: 5px solid magenta; */
     box-sizing: border-box;
     margin: 0 !important;
-  }
-
-  .clinical-analysis-categorical-card:nth-of-type(4) {
     page-break-after: always;
     page-break-inside: avoid;
     position: relative !important;
@@ -49,7 +48,7 @@
   }
 
   .print-grid[style] {
-    display: table !important;
+    display: block !important;
   }
   .test-survival-plot-meta div:nth-of-type(2),
   .test-survival-plot-meta span:nth-of-type(1) {

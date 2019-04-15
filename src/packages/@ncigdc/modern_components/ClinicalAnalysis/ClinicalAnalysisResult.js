@@ -471,7 +471,7 @@ const ClinicalAnalysisResult = ({
                 margin: '0 1rem 1rem',
                 padding: '0.5rem 1rem 1rem',
               }}
-              className="no-print"
+              // className="no-print"
             >
               <div
                 style={{

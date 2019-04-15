@@ -13,11 +13,6 @@ const reducer = (state = initialState, action: any) => {
   switch (action.type) {
     case style.ADD_STYLE:
       const { key, value } = action.payload;
-      console.log(key, value, {
-        ...state,
-        [key]: value,
-      });
-
       return {
         ...state,
         [key]: value,

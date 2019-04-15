@@ -21,7 +21,7 @@ import { replaceFilters } from '@ncigdc/utils/filters';
 import { stringifyJSONParam } from '@ncigdc/utils/uri';
 import { Row } from '@ncigdc/uikit/Flex';
 import Button from '@ncigdc/uikit/Button';
-import ResizeObserver from 'react-resize-observer';
+import ResizeDetector from 'react-resize-detector';
 import { connect } from 'react-redux';
 import { addStyle } from '@ncigdc/dux/dynamicStyle';
 export type TProps = {
@@ -187,10 +187,10 @@ export const ExplorePageComponent = ({
     ]}
     results={
       <span>
-        <ResizeObserver
-          onResize={rect => {
-            dispatch(addStyle('tableHeight', rect.height));
-          }}
+        <ResizeDetector
+          handleHeight
+          onResize={(width, height) =>
+            dispatch(addStyle('tableHeight', height))}
         />
         <Row>
           {filters ? (

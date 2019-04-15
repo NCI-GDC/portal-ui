@@ -89,7 +89,6 @@ export const CaseAggregationsQuery = {
         }
         available_variation_data {
           buckets {
-            key_as_string,
             doc_count,
             key
           }

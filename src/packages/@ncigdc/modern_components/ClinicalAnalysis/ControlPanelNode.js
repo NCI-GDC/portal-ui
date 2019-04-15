@@ -186,15 +186,7 @@ const ClinicalGrouping = compose(
                             plotTypes,
                           })
                         );
-                        if (!checked) {
-                          console.log('unchecked');
-                          console.log(`${fieldName}-card`);
-                          goToAnchor(`${fieldName}-card`);
-                        } else {
-                          console.log('checked!');
-                          console.log(`${fieldName}-card`);
-                          goToAnchor(`${fieldName}-card`);
-                        }
+                        if (!checked) goToAnchor(`${fieldName}-card`);
                       }}
                     />
                   </Row>

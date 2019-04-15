@@ -258,6 +258,10 @@ const ClinicalAnalysisResult = ({
             <Row style={{ alignItems: 'center' }} spacing={'5px'}>
               <div style={{ width: '70%' }}>
                 <EditableLabel
+                  disabled={currentAnalysis.id === 'demo-clinical_data'}
+                  disabledMessage={
+                    'Editing analysis name is not available in demo mode'
+                  }
                   text={currentAnalysis.name}
                   handleSave={value =>
                     dispatch(
@@ -361,6 +365,10 @@ const ClinicalAnalysisResult = ({
                 sets={allSets}
                 currentAnalysis={currentAnalysis}
                 dispatch={dispatch}
+                disabled={currentAnalysis.id === 'demo-clinical_data'}
+                disabledMessage={
+                  'Switching cohorts is not available in demo mode'
+                }
               />
               <ExploreLink
                 query={{

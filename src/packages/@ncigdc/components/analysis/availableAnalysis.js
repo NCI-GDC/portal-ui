@@ -349,6 +349,7 @@ const availableAnalysis: [TAnalysis] = [
         },
         type: 'clinical_data',
         displayVariables: { ...defaultVariables },
+        name: 'Demo Clinical Analysis',
       },
       setInstructions: 'Set instructions',
       setTypes: ['case'],
@@ -356,7 +357,6 @@ const availableAnalysis: [TAnalysis] = [
         sets &&
         ['case'].every((t: any) => Object.keys(sets[t] || {}).length === 1),
       ResultComponent: props => {
-        console.log('props: ', props);
         return props.id.includes('demo-') ? (
           <Demo {...props}>
             <ClinicalAnalysisContainer typeName={'ExploreCases'} {...props} />

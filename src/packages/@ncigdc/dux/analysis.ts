@@ -168,12 +168,12 @@ const reducer = (
           {
             ...currentAnalysis,
             displayVariables: {
+              ...currentAnalysis.displayVariables,
               [action.payload.fieldName as string]: {
                 ...defaultVariableConfig,
                 type: action.payload.fieldType,
                 plotTypes: action.payload.plotTypes,
               },
-              ...currentAnalysis.displayVariables,
             },
           },
           ...state.saved.slice(currentAnalysisIndex + 1, Infinity),

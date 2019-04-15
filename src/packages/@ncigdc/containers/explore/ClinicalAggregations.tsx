@@ -368,7 +368,7 @@ const enhance = compose(
           <div
             style={{
               overflowY: 'scroll',
-              maxHeight: `${dynamicStyle.tableHeight - 43}px`,
+              maxHeight: `${dynamicStyle.tableHeight - 44}px`,
               paddingBottom: '20px',
             }}
           >

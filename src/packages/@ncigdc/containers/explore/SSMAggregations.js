@@ -3,6 +3,7 @@
 import React from 'react';
 import Relay from 'react-relay/classic';
 import { compose, withState } from 'recompose';
+import { connect } from 'react-redux';
 
 import SuggestionFacet from '@ncigdc/components/Aggregations/SuggestionFacet';
 import FacetWrapper from '@ncigdc/components/FacetWrapper';
@@ -123,6 +124,7 @@ export type TProps = {
 };
 
 export const SSMAggregationsComponent = compose(
+  connect(({ dynamicStyle }) => ({ dynamicStyle })),
   withState('idCollapsed', 'setIdCollapsed', false),
   withState('cosmicIdCollapsed', 'setCosmicIdCollapsed', false),
   withState('dbSNPCollapsed', 'setDbSNPCollapsed', false),
@@ -170,52 +172,59 @@ export const SSMAggregationsComponent = compose(
     >
       Upload Mutation Set
     </UploadSetButton>
-    {presetFacets
-      .filter(
-        ({ full }) =>
-          ![
-            'ssms.ssm_id',
-            'ssms.cosmic_id',
-            'ssms.consequence.transcript.annotation.dbsnp_rs',
-          ].includes(full),
-      )
-      .map(facet => (
-        <FacetWrapper
-          key={facet.full}
-          facet={facet}
-          title={facet.title}
-          aggregation={props.aggregations[escapeForRelay(facet.field)]}
-          relay={props.relay}
-          additionalProps={facet.additionalProps}
-          style={{ borderBottom: `1px solid ${props.theme.greyScale5}` }}
-        />
-      ))}
-    <FacetHeader
-      title="COSMIC ID"
-      field="ssms.cosmic_id"
-      collapsed={props.cosmicIdCollapsed}
-      setCollapsed={props.setCosmicIdCollapsed}
-    />
-    <NotMissingFacet
-      field="ssms.cosmic_id"
-      title="COSMIC ID"
-      collapsed={props.cosmicIdCollapsed}
-      notMissingDocCount={props.ssms.cosmic_id_not_missing.total}
-      style={{ borderBottom: `1px solid ${props.theme.greyScale5}` }}
-    />
-    <FacetHeader
-      title="dbSNP rs ID"
-      field="ssms.consequence.transcript.annotation.dbsnp_rs"
-      collapsed={props.cosmicIdCollapsed}
-      setCollapsed={props.setCosmicIdCollapsed}
-    />
-    <NotMissingFacet
-      field="ssms.consequence.transcript.annotation.dbsnp_rs"
-      title="dbSNP rs ID"
-      collapsed={props.dbSNPCollapsed}
-      notMissingDocCount={props.ssms.dbsnp_rs_not_missing.total}
-      style={{ borderBottom: `1px solid ${props.theme.greyScale5}` }}
-    />
+    <div
+      style={{
+        overflowY: 'scroll',
+        maxHeight: `${props.dynamicStyle.tableHeight - 68}px`,
+      }}
+    >
+      {presetFacets
+        .filter(
+          ({ full }) =>
+            ![
+              'ssms.ssm_id',
+              'ssms.cosmic_id',
+              'ssms.consequence.transcript.annotation.dbsnp_rs',
+            ].includes(full),
+        )
+        .map(facet => (
+          <FacetWrapper
+            key={facet.full}
+            facet={facet}
+            title={facet.title}
+            aggregation={props.aggregations[escapeForRelay(facet.field)]}
+            relay={props.relay}
+            additionalProps={facet.additionalProps}
+            style={{ borderBottom: `1px solid ${props.theme.greyScale5}` }}
+          />
+        ))}
+      <FacetHeader
+        title="COSMIC ID"
+        field="ssms.cosmic_id"
+        collapsed={props.cosmicIdCollapsed}
+        setCollapsed={props.setCosmicIdCollapsed}
+      />
+      <NotMissingFacet
+        field="ssms.cosmic_id"
+        title="COSMIC ID"
+        collapsed={props.cosmicIdCollapsed}
+        notMissingDocCount={props.ssms.cosmic_id_not_missing.total}
+        style={{ borderBottom: `1px solid ${props.theme.greyScale5}` }}
+      />
+      <FacetHeader
+        title="dbSNP rs ID"
+        field="ssms.consequence.transcript.annotation.dbsnp_rs"
+        collapsed={props.cosmicIdCollapsed}
+        setCollapsed={props.setCosmicIdCollapsed}
+      />
+      <NotMissingFacet
+        field="ssms.consequence.transcript.annotation.dbsnp_rs"
+        title="dbSNP rs ID"
+        collapsed={props.dbSNPCollapsed}
+        notMissingDocCount={props.ssms.dbsnp_rs_not_missing.total}
+        style={{ borderBottom: `1px solid ${props.theme.greyScale5}` }}
+      />
+    </div>
   </div>
 ));
 

@@ -1,0 +1,29 @@
+/* clinical analysis */
+
+.clinical-analysis-categorical-card .test-visualization-title[style] {
+  display: none !important;
+}
+
+.clinical-analysis-categorical-card .test-visualization-title + div[style] {
+  display: block !important;
+}
+
+.clinical-analysis-categorical-card .test-visualization-header[style] {
+  display: block !important;
+  margin: 0 !important;
+  text-align: right;
+  width: 100%;
+}
+
+.clinical-analysis-categorical-card .test-survival-plot-meta[style] {
+  display: block !important;
+}
+
+.clinical-analysis-categorical-card .p-value {
+  margin-right: 40px;
+}
+
+.clinical-analysis-categorical-card td:nth-child(2)[style] {
+  /* wrap long facet values so the table doesn't scroll */
+  white-space: normal !important;
+}

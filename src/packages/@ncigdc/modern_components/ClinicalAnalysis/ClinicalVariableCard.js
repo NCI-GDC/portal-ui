@@ -25,6 +25,8 @@ import { setModal } from '@ncigdc/dux/modal';
 import SaveSetModal from '@ncigdc/components/Modals/SaveSetModal';
 import AppendSetModal from '@ncigdc/components/Modals/AppendSetModal';
 import RemoveSetModal from '@ncigdc/components/Modals/RemoveSetModal';
+import DownloadVisualizationButton from '@ncigdc/components/DownloadVisualizationButton';
+import wrapSvg from '@ncigdc/utils/wrapSvg';
 
 // survival plot
 import {
@@ -52,6 +54,7 @@ import { humanify } from '@ncigdc/utils/string';
 import { getLowerAgeYears, getUpperAgeYears } from '@ncigdc/utils/ageDisplay';
 import { IS_CDAVE_DEV } from '@ncigdc/utils/constants';
 import { MAXIMUM_CURVES, MINIMUM_CASES } from '../../utils/survivalplot';
+import './survivalPlot.css';
 
 const colors = scaleOrdinal(schemeCategory10);
 
@@ -727,6 +730,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
 
     console.log(cardFilters);
   }
+  const wrapperId = `${fieldName.split('.')[1]}-chart`;
 
   return (
     <Column
@@ -788,11 +792,10 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
       )}
 
       {!_.isEmpty(tableData) && (
-        <div>
+        <div id={wrapperId}>
           <Row style={{ paddingLeft: 10 }}>
             {variable.active_chart !== 'survival' && (
-              <form>
-                {' '}
+              <form style={{ width: '100%' }}>
                 <label
                   htmlFor={`variable-percentage-radio-${fieldName}`}
                   style={{ marginRight: 10, fontSize: '1.2rem' }}
@@ -839,6 +842,25 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                   />
                   # of Cases
                 </label>
+                <DownloadVisualizationButton
+                  key="download"
+                  onClick={() => {
+                    console.log('chartData', chartData);
+                  }}
+                  svg={() =>
+                    wrapSvg({
+                      selector: `#${wrapperId} svg`,
+                      title: humanify({ term: fieldName }),
+                    })}
+                  data={chartData.map(d => ({
+                    label: d.fullLabel,
+                    value: d.value,
+                  }))}
+                  slug={`${fieldName}-bar-chart`}
+                  noText
+                  tooltipHTML="Download image or data"
+                  style={{ float: 'right', marginRight: 2 }}
+                />
               </form>
             )}
 
@@ -938,7 +960,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                 justifyContent: 'center',
                 flex: '0 0 auto',
                 height: '265px',
-                margin: '5px 5px 10px',
+                margin: '5px 2px 10px',
               }}
             >
               {selectedSurvivalValues.length === 0 ? (
@@ -968,7 +990,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                 alignItems: 'center',
                 height: CHART_HEIGHT - 10,
                 backgroundColor: theme.greyScale5,
-                margin: '5px 5px 10px',
+                margin: '5px 2px 10px',
               }}
             >
               {variable.active_chart}

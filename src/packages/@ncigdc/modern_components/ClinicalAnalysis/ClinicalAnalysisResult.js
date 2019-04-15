@@ -41,6 +41,7 @@ import getUsefulFacets from '@ncigdc/utils/getUsefulFacets';
 import DeprecatedSetResult from './DeprecatedSetResult';
 import CohortDropdown from './CohortDropdown';
 import './print.css';
+import './survivalPlot.css';
 
 // survival plot
 import { getDefaultCurve } from '@ncigdc/utils/survivalplot';
@@ -444,7 +445,7 @@ const ClinicalAnalysisResult = ({
                     flexDirection: 'column',
                     flex: '0 0 auto',
                     height: 250,
-                    margin: '5px 5px 10px',
+                    margin: '5px 2px 10px',
                   }}
                 >
                   <SurvivalPlotWrapper
@@ -495,7 +496,7 @@ const ClinicalAnalysisResult = ({
               <div
                 style={{
                   height: '250px',
-                  margin: '5px 5px 10px',
+                  margin: '5px 2px 10px',
                 }}
               >
                 <SurvivalPlotWrapper

@@ -406,8 +406,7 @@ const enhance = compose(
         populateSurvivalData();
       }
     }
-  ),
-  withPropsOnChange(['id'], ({ setSelectedBuckets }) => setSelectedBuckets([]))
+  )
 );
 
 const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({

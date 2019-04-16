@@ -1084,7 +1084,6 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
             headings={getHeadings(variable.active_chart)}
             tableContainerStyle={{
               height: 175,
-              overflow: 'scroll',
             }}
           />
         </div>

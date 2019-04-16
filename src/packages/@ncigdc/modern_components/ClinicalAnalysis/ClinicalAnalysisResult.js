@@ -1,5 +1,11 @@
 import React from 'react';
-import { compose, withState, withPropsOnChange, withProps, withHandlers, } from 'recompose';
+import {
+  compose,
+  withState,
+  withPropsOnChange,
+  withProps,
+  withHandlers,
+} from 'recompose';
 import { connect } from 'react-redux';
 import SearchIcon from 'react-icons/lib/fa/search';
 import _ from 'lodash';
@@ -155,6 +161,11 @@ const enhance = compose(
   withState('controlPanelExpanded', 'setControlPanelExpanded', true),
   withState('overallSurvivalData', 'setOverallSurvivalData', {}),
   withState('survivalPlotLoading', 'setSurvivalPlotLoading', true),
+  withState(
+    'hasEnoughOverallSurvivalData',
+    'setHasEnoughOverallSurvivalData',
+    false
+  ),
   withState('searchValue', 'setSearchValue', ''),
   withPropsOnChange(
     ['viewer'],
@@ -166,6 +177,7 @@ const enhance = compose(
   withProps(
     ({
       setOverallSurvivalData,
+      setHasEnoughOverallSurvivalData,
       currentAnalysis,
       setState,
       setSurvivalPlotLoading,
@@ -191,6 +203,7 @@ const enhance = compose(
         });
 
         setOverallSurvivalData(nextSurvivalData);
+        setHasEnoughOverallSurvivalData(nextSurvivalData.hasEnoughData);
 
         setSurvivalPlotLoading(false);
       },
@@ -233,6 +246,7 @@ const ClinicalAnalysisResult = ({
   searchValue,
   setSearchValue,
   handleQueryInputChange,
+  hasEnoughOverallSurvivalData,
   ...props
 }: IAnalysisResultProps) => {
   const setId = Object.keys(currentAnalysis.sets.case)[0];
@@ -514,6 +528,7 @@ const ClinicalAnalysisResult = ({
                   plotType="clinicalOverall"
                   uniqueClass="clinical-survival-plot"
                   survivalPlotLoading={survivalPlotLoading}
+                  printSurvivalPlot={hasEnoughOverallSurvivalData}
                 />
               </div>
             </Column>
@@ -546,6 +561,7 @@ const ClinicalAnalysisResult = ({
                     id={id}
                     setId={setId}
                     overallSurvivalData={overallSurvivalData}
+                    hasEnoughOverallSurvivalData={hasEnoughOverallSurvivalData}
                   />
                 );
               }
@@ -561,6 +577,7 @@ const ClinicalAnalysisResult = ({
                   filters={filters}
                   setId={setId}
                   overallSurvivalData={overallSurvivalData}
+                  hasEnoughOverallSurvivalData={hasEnoughOverallSurvivalData}
                   data={{ ...parsedFacets[varFieldName], hits }}
                 />
               );

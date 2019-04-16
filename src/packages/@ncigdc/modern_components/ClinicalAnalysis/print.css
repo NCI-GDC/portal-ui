@@ -1,3 +1,7 @@
+.print-only {
+  display: none;
+}
+
 @media print {
   *[style] {
     font-family: Arial, Helvetica, sans-serif !important;
@@ -67,5 +71,8 @@
   }
   .p-value > div {
     text-align: left !important;
+  }
+  .print-only {
+    display: block;
   }
 }

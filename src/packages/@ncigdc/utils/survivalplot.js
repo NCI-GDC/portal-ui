@@ -103,6 +103,7 @@ export const getDefaultCurve = memoize(
       rawData,
       id: slug,
       legend,
+      hasEnoughData,
     };
   },
   {
@@ -263,7 +264,7 @@ export const getSurvivalCurvesArray = memoize(
             : [],
       },
       id: field,
-      enoughData: hasEnoughDataOnSomeCurves,
+      hasEnoughData: hasEnoughDataOnSomeCurves,
       legend: hasEnoughDataOnSomeCurves
         ? rawData.results.map((r, i) => {
             const valueName =

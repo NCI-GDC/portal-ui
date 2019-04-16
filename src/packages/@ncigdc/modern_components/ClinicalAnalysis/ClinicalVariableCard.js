@@ -203,7 +203,11 @@ const enhance = compose(
   withState('selectedSurvivalValues', 'setSelectedSurvivalValues', []),
   withState('selectedSurvivalLoadingIds', 'setSelectedSurvivalLoadingIds', []),
   withState('survivalPlotLoading', 'setSurvivalPlotLoading', true),
-  withState('hasEnoughSelectedData', 'setHasEnoughSelectedData', false),
+  withState(
+    'hasEnoughSelectedSurvivalData',
+    'setHasEnoughSelectedSurvivalData',
+    false
+  ),
   withState(
     'hasEnoughSelectedSurvivalData',
     'setHasEnoughSelectedSurvivalData',
@@ -292,7 +296,7 @@ const enhance = compose(
       setSelectedSurvivalLoadingIds,
       rawQueryData,
       getBucketRangesAndFilters,
-      setHasEnoughSelectedData,
+      setHasEnoughSelectedSurvivalData,
     }) => ({
       populateSurvivalData: () => {
         setSurvivalPlotLoading(true);
@@ -342,7 +346,7 @@ const enhance = compose(
           currentFilters: filters,
           plotType: variable.plotTypes,
         }).then(data => {
-          setHasEnoughSelectedData(data.enoughData);
+          setHasEnoughSelectedSurvivalData(data.hasEnoughData);
           setSelectedSurvivalData(data);
           setSurvivalPlotLoading(false);
           setSelectedSurvivalLoadingIds([]);
@@ -378,7 +382,7 @@ const enhance = compose(
           currentFilters: filters,
           plotType: variable.plotTypes,
         }).then(data => {
-          setHasEnoughSelectedData(data.enoughData);
+          setHasEnoughSelectedSurvivalData(data.hasEnoughData);
           setSelectedSurvivalData(data);
           setSurvivalPlotLoading(false);
           setSelectedSurvivalLoadingIds([]);
@@ -387,9 +391,17 @@ const enhance = compose(
     })
   ),
   withPropsOnChange(
-    (props, nextProps) =>
-      props.variable.active_chart !== nextProps.variable.active_chart,
+    (props, nextProps) => {
+      console.log('props', props);
+      return (
+        props.variable.active_chart !== nextProps.variable.active_chart ||
+        props.id !== nextProps.id
+      );
+    },
+    // props.variable.active_chart !== nextProps.variable.active_chart ||
+    // props.analysis.id !== nextProps.analysis.id,
     ({ filters, populateSurvivalData, variable }) => {
+      console.log('update survival plots');
       if (variable.active_chart === 'survival') {
         populateSurvivalData();
       }
@@ -408,6 +420,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
   id,
   setId,
   overallSurvivalData,
+  hasEnoughOverallSurvivalData,
   survivalPlotLoading,
   setSelectedSurvivalLoadingId,
   selectedSurvivalLoadingIds,
@@ -421,7 +434,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
   rawQueryData,
   getBucketRangesAndFilters,
   totalDocs,
-  hasEnoughSelectedData,
+  hasEnoughSelectedSurvivalData,
 }) => {
   const getCategoricalTableData = (rawData, type) => {
     if (_.isEmpty(rawData)) {
@@ -962,35 +975,44 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
             />
           )}
           {variable.active_chart === 'survival' && (
-            <div
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'center',
-                flex: '0 0 auto',
-                height: '265px',
-                margin: '5px 2px 10px',
-              }}
-            >
-              {selectedSurvivalValues.length === 0 ? (
-                <SurvivalPlotWrapper
-                  {...overallSurvivalData}
-                  height={202}
-                  plotType="clinicalOverall"
-                  unqiueClass="clinical-survival-plot"
-                  survivalPlotLoading={survivalPlotLoading}
-                />
-              ) : (
-                <SurvivalPlotWrapper
-                  {...selectedSurvivalData}
-                  height={202}
-                  plotType="categorical"
-                  unqiueClass="clinical-survival-plot"
-                  survivalPlotLoading={survivalPlotLoading}
-                  printSurvivalPlot={hasEnoughSelectedData}
-                />
+            <React.Fragment>
+              {selectedSurvivalValues.length === 0 && (
+                <p className="print-only">No values selected</p>
               )}
-            </div>
+
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'center',
+                  flex: '0 0 auto',
+                  height: '265px',
+                  margin: '5px 2px 10px',
+                }}
+                className={
+                  selectedSurvivalValues.length === 0 ? 'no-print' : ''
+                }
+              >
+                {selectedSurvivalValues.length === 0 ? (
+                  <SurvivalPlotWrapper
+                    {...overallSurvivalData}
+                    height={202}
+                    plotType="clinicalOverall"
+                    unqiueClass="clinical-survival-plot"
+                    survivalPlotLoading={survivalPlotLoading}
+                  />
+                ) : (
+                  <SurvivalPlotWrapper
+                    {...selectedSurvivalData}
+                    height={202}
+                    plotType="categorical"
+                    unqiueClass="clinical-survival-plot"
+                    survivalPlotLoading={survivalPlotLoading}
+                    printSurvivalPlot={hasEnoughSelectedSurvivalData}
+                  />
+                )}
+              </div>
+            </React.Fragment>
           )}
           {variable.active_chart === 'box' && (
             <div

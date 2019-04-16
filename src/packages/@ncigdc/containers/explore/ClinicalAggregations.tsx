@@ -277,7 +277,10 @@ const enhance = compose(
             return _.every([
               facetMatchesQuery(
                 facet,
-                _.get(parsedFacets[facet.field], 'buckets', undefined),
+                _.filter(
+                  _.get(parsedFacets[facet.field], 'buckets', undefined),
+                  obj => obj.key !== '_missing',
+                ),
                 searchValue,
               ),
               !facetExclusionTest(facet),
@@ -320,6 +323,7 @@ const enhance = compose(
       notifications,
     }: IClinicalProps): any => {
       const maxHeight = 990;
+      console.log('filteredFacets', filteredFacets, parsedFacets);
       return (
         <React.Fragment>
           <Row

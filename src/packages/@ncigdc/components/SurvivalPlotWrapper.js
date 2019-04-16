@@ -75,7 +75,10 @@ class Container extends React.Component {
   render() {
     return (
       <div
-        className={CLASS_NAME + ' test-survival-plot-container'}
+        className={`${CLASS_NAME} test-survival-plot-container${this.props
+          .printSurvivalPlot
+          ? ''
+          : ' no-print'}`}
         ref={this.props.setSurvivalContainer}
         style={{
           overflow: 'hidden',
@@ -95,6 +98,7 @@ const SurvivalPlotWrapper = ({
   setSurvivalContainer,
   survivalPlotLoading = false,
   uniqueClass,
+  printSurvivalPlot,
   palette = [colors(0), colors(1), colors(2), colors(3), colors(4)],
   plotType,
 }: TProps) => {
@@ -235,6 +239,7 @@ const SurvivalPlotWrapper = ({
         </Column>
       )}
       <Container
+        printSurvivalPlot={printSurvivalPlot}
         setSurvivalContainer={setSurvivalContainer}
         survivalPlotLoading={survivalPlotLoading}
       />

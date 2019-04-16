@@ -53,7 +53,11 @@ import {
 import { humanify } from '@ncigdc/utils/string';
 import { getLowerAgeYears, getUpperAgeYears } from '@ncigdc/utils/ageDisplay';
 import { IS_CDAVE_DEV } from '@ncigdc/utils/constants';
-import { MAXIMUM_CURVES, MINIMUM_CASES } from '../../utils/survivalplot';
+import {
+  MAXIMUM_CURVES,
+  MINIMUM_CASES,
+  enoughData,
+} from '../../utils/survivalplot';
 import './survivalPlot.css';
 
 const colors = scaleOrdinal(schemeCategory10);
@@ -199,6 +203,7 @@ const enhance = compose(
   withState('selectedSurvivalValues', 'setSelectedSurvivalValues', []),
   withState('selectedSurvivalLoadingIds', 'setSelectedSurvivalLoadingIds', []),
   withState('survivalPlotLoading', 'setSurvivalPlotLoading', true),
+  withState('hasEnoughSelectedData', 'setHasEnoughSelectedData', false),
   withState(
     'hasEnoughSelectedSurvivalData',
     'setHasEnoughSelectedSurvivalData',
@@ -287,6 +292,7 @@ const enhance = compose(
       setSelectedSurvivalLoadingIds,
       rawQueryData,
       getBucketRangesAndFilters,
+      setHasEnoughSelectedData,
     }) => ({
       populateSurvivalData: () => {
         setSurvivalPlotLoading(true);
@@ -336,6 +342,7 @@ const enhance = compose(
           currentFilters: filters,
           plotType: variable.plotTypes,
         }).then(data => {
+          setHasEnoughSelectedData(data.enoughData);
           setSelectedSurvivalData(data);
           setSurvivalPlotLoading(false);
           setSelectedSurvivalLoadingIds([]);
@@ -371,6 +378,7 @@ const enhance = compose(
           currentFilters: filters,
           plotType: variable.plotTypes,
         }).then(data => {
+          setHasEnoughSelectedData(data.enoughData);
           setSelectedSurvivalData(data);
           setSurvivalPlotLoading(false);
           setSelectedSurvivalLoadingIds([]);
@@ -413,6 +421,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
   rawQueryData,
   getBucketRangesAndFilters,
   totalDocs,
+  hasEnoughSelectedData,
 }) => {
   const getCategoricalTableData = (rawData, type) => {
     if (_.isEmpty(rawData)) {
@@ -978,6 +987,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                   plotType="categorical"
                   unqiueClass="clinical-survival-plot"
                   survivalPlotLoading={survivalPlotLoading}
+                  printSurvivalPlot={hasEnoughSelectedData}
                 />
               )}
             </div>

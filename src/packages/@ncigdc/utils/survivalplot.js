@@ -263,6 +263,7 @@ export const getSurvivalCurvesArray = memoize(
             : [],
       },
       id: field,
+      enoughData: hasEnoughDataOnSomeCurves,
       legend: hasEnoughDataOnSomeCurves
         ? rawData.results.map((r, i) => {
             const valueName =

@@ -1,6 +1,7 @@
 @media print {
   *[style] {
     font-family: Arial, Helvetica, sans-serif !important;
+    justify-content: left !important;
   }
   .no-print,
   #header,
@@ -49,6 +50,9 @@
 
   .print-grid[style] {
     display: block !important;
+  }
+  .print-grid div[style] {
+    height: auto !important;
   }
   .test-survival-plot-meta div:nth-of-type(2),
   .test-survival-plot-meta span:nth-of-type(1) {

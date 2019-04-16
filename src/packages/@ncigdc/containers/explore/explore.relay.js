@@ -87,6 +87,12 @@ export const CaseAggregationsQuery = {
             key
           }
         }
+        available_variation_data {
+          buckets {
+            doc_count,
+            key
+          }
+        }
       }
     `,
   },

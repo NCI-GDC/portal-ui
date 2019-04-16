@@ -28,7 +28,7 @@ export default (Component: React$Element<*>) =>
             : [
                 'demographic.gender',
                 'diagnoses.age_at_diagnosis',
-                'diagnoses.vital_status',
+                'demographic.vital_status',
               ];
 
         return {

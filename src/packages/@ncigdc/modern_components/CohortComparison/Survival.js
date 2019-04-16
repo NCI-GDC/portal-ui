@@ -19,7 +19,10 @@ const survivalDataCompletenessFilters = [
       {
         op: 'and',
         content: [
-          { op: '>', content: { field: 'diagnoses.days_to_death', value: 0 } },
+          {
+            op: '>',
+            content: { field: 'demographic.days_to_death', value: 0 },
+          },
         ],
       },
       {
@@ -33,7 +36,7 @@ const survivalDataCompletenessFilters = [
       },
     ],
   },
-  { op: 'not', content: { field: 'diagnoses.vital_status' } },
+  { op: 'not', content: { field: 'demographic.vital_status' } },
 ];
 
 export const makeSurvivalCurveFilter = (setId, otherSetId) => ({

@@ -37,8 +37,8 @@ export type TProps = {
     demographic__ethnicity: { buckets: [IBucket] },
     demographic__gender: { buckets: [IBucket] },
     demographic__race: { buckets: [IBucket] },
-    diagnoses__vital_status: { buckets: [IBucket] },
-    diagnoses__days_to_death: { max: number, min: number },
+    demographic__days_to_death: { max: number, min: number },
+    demographic__vital_status: { buckets: [IBucket] },
     diagnoses__age_at_diagnosis: { max: number, min: number },
     disease_type: { buckets: [IBucket] },
     primary_site: { buckets: [IBucket] },
@@ -134,15 +134,15 @@ const presetFacets = [
   },
   {
     title: 'Vital Status',
-    field: 'diagnoses.vital_status',
-    full: 'cases.diagnoses.vital_status',
+    field: 'demographic.vital_status',
+    full: 'cases.demographic.vital_status',
     doc_type: 'cases',
     type: 'keyword',
   },
   {
     title: 'Days to Death',
-    field: 'diagnoses.days_to_death',
-    full: 'cases.diagnoses.days_to_death',
+    field: 'demographic.days_to_death',
+    full: 'cases.demographic.days_to_death',
     doc_type: 'cases',
     type: 'long',
   },
@@ -380,13 +380,13 @@ export const CaseAggregationsQuery = {
             count
           }
         }
-        diagnoses__vital_status {
+        demographic__vital_status {
           buckets {
             doc_count
             key
           }
         }
-        diagnoses__days_to_death {
+        demographic__days_to_death {
           stats {
             max
             min

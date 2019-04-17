@@ -1,5 +1,11 @@
 import React from 'react';
-import { compose, withState, withPropsOnChange, withProps, withHandlers, } from 'recompose';
+import {
+  compose,
+  withState,
+  withPropsOnChange,
+  withProps,
+  withHandlers,
+} from 'recompose';
 import { connect } from 'react-redux';
 import SearchIcon from 'react-icons/lib/fa/search';
 import _ from 'lodash';
@@ -8,7 +14,7 @@ import { Row, Column } from '@ncigdc/uikit/Flex';
 import Button from '@ncigdc/uikit/Button';
 import { Tooltip } from '@ncigdc/uikit/Tooltip';
 import {
-  DownloadIcon,
+  PrintIcon,
   CloseIcon,
   SurvivalIcon,
   BarChartIcon,
@@ -39,17 +45,18 @@ import tryParseJSON from '@ncigdc/utils/tryParseJSON';
 import getUsefulFacets from '@ncigdc/utils/getUsefulFacets';
 import DeprecatedSetResult from './DeprecatedSetResult';
 import CohortDropdown from './CohortDropdown';
+import './print.css';
 
 // survival plot
 import { getDefaultCurve } from '@ncigdc/utils/survivalplot';
 import SurvivalPlotWrapper from '@ncigdc/components/SurvivalPlotWrapper';
 
 interface IAnalysisResultProps {
-  sets: any;
-  config: any;
-  label: string;
-  Icon: () => React.Component<any>;
-  analysis: any;
+  sets: any,
+  config: any,
+  label: string,
+  Icon: () => React.Component<any>,
+  analysis: any,
 }
 //
 // interface ISavedSet {
@@ -302,13 +309,16 @@ const ClinicalAnalysisResult = ({
           >
             Copy Analysis
           </Button>
-          <Tooltip Component={<span>Download</span>}>
+          <Tooltip Component={<span>Print</span>}>
             <Button
               style={{ ...visualizingButton, height: '100%' }}
               disabled={false}
+              onClick={() => {
+                window.print();
+              }}
             >
-              <DownloadIcon />
-              <Hidden>Download</Hidden>
+              <PrintIcon />
+              <Hidden>Print</Hidden>
             </Button>
           </Tooltip>
         </Row>

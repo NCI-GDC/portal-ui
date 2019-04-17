@@ -1,5 +1,5 @@
 import React from 'react';
-import { compose, withState, withPropsOnChange, withProps } from 'recompose';
+import { compose, withState, withPropsOnChange, withProps, withHandlers, } from 'recompose';
 import { connect } from 'react-redux';
 import SearchIcon from 'react-icons/lib/fa/search';
 import _ from 'lodash';
@@ -152,6 +152,7 @@ const enhance = compose(
   withState('controlPanelExpanded', 'setControlPanelExpanded', true),
   withState('overallSurvivalData', 'setOverallSurvivalData', {}),
   withState('survivalPlotLoading', 'setSurvivalPlotLoading', true),
+  withState('searchValue', 'setSearchValue', ''),
   withPropsOnChange(
     ['viewer'],
     ({ viewer: { explore: { cases: { facets, hits } } } }) => ({
@@ -198,6 +199,10 @@ const enhance = compose(
       populateSurvivalData();
     }
   ),
+  withHandlers({
+    handleQueryInputChange: ({ setSearchValue }) => (event: any) =>
+      setSearchValue(event.target.value),
+  }),
   withTheme,
   withRouter
 );
@@ -222,6 +227,9 @@ const ClinicalAnalysisResult = ({
   displayVariables,
   clinicalAnalysisFields,
   hits,
+  searchValue,
+  setSearchValue,
+  handleQueryInputChange,
   ...props
 }: IAnalysisResultProps) => {
   const setId = Object.keys(currentAnalysis.sets.case)[0];
@@ -395,9 +403,9 @@ const ClinicalAnalysisResult = ({
               <Input
                 id="search-facets"
                 name="search-facets"
-                onChange={() => console.log('search')}
                 placeholder="Search"
-                value={''}
+                value={searchValue}
+                onChange={handleQueryInputChange}
                 style={{ borderRadius: '0 4px 4px 0' }}
               />
             </Row>
@@ -407,6 +415,7 @@ const ClinicalAnalysisResult = ({
                 usefulFacets={getUsefulFacets(parsedFacets)}
                 currentAnalysis={currentAnalysis}
                 analysis_id={id}
+                searchValue={searchValue}
               />
             </Column>
           </Column>

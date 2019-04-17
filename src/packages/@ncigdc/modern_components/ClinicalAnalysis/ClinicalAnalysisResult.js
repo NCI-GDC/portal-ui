@@ -46,6 +46,7 @@ import getUsefulFacets from '@ncigdc/utils/getUsefulFacets';
 import DeprecatedSetResult from './DeprecatedSetResult';
 import CohortDropdown from './CohortDropdown';
 import './print.css';
+import './survivalPlot.css';
 
 // survival plot
 import { getDefaultCurve } from '@ncigdc/utils/survivalplot';

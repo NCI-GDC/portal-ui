@@ -1,0 +1,24 @@
+/* clinical analysis */
+
+.clinical-survival-plot .test-visualization-title[style] {
+  display: none !important;
+}
+
+.clinical-survival-plot .test-visualization-header[style] {
+  display: block !important;
+  float: right;
+  margin: 0 !important;
+}
+
+.clinical-survival-plot .test-survival-plot-meta[style] {
+  display: block !important;
+}
+
+.clinical-survival-plot .p-value {
+  margin-right: 40px;
+}
+
+.clinical-analysis-categorical-card td:nth-child(2)[style] {
+  /* wrap long facet values so the table doesn't scroll */
+  white-space: normal !important;
+}

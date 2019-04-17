@@ -277,7 +277,7 @@ const availableAnalysis: [TAnalysis] = [
       )),
       description: `Display basic statistical analyses for your clinical cohort using data variables and configurations that you select as input`,
       demoData: {
-        message: 'Demo cases',
+        message: 'Demo showing cases with pancreatic cancer',
         sets: {
           case: {
             'demo-pancreas': 'Pancreas',

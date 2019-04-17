@@ -2,6 +2,7 @@
 
 import DownloadIcon from './Download';
 import SurvivalIcon from './SurvivalIcon';
+import PrintIcon from './Print';
 import SortIcon from './Sort';
 import SpinnerIcon from './Spinner';
 import DoubleArrowLeftIcon from './DoubleArrowLeft';
@@ -25,6 +26,7 @@ import BoxPlot from './BoxPlot';
 export {
   DownloadIcon,
   SurvivalIcon,
+  PrintIcon,
   SortIcon,
   SpinnerIcon,
   DoubleArrowLeftIcon,

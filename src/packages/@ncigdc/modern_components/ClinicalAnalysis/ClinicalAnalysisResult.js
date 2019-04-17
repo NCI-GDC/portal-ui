@@ -1,5 +1,11 @@
 import React from 'react';
-import { compose, withState, withPropsOnChange, withProps, withHandlers, } from 'recompose';
+import {
+  compose,
+  withState,
+  withPropsOnChange,
+  withProps,
+  withHandlers,
+} from 'recompose';
 import { connect } from 'react-redux';
 import SearchIcon from 'react-icons/lib/fa/search';
 import _ from 'lodash';
@@ -45,11 +51,11 @@ import { getDefaultCurve } from '@ncigdc/utils/survivalplot';
 import SurvivalPlotWrapper from '@ncigdc/components/SurvivalPlotWrapper';
 
 interface IAnalysisResultProps {
-  sets: any;
-  config: any;
-  label: string;
-  Icon: () => React.Component<any>;
-  analysis: any;
+  sets: any,
+  config: any,
+  label: string,
+  Icon: () => React.Component<any>,
+  analysis: any,
 }
 //
 // interface ISavedSet {
@@ -331,6 +337,11 @@ const ClinicalAnalysisResult = ({
               flex: 1,
               minWidth: 260,
               marginBottom: '1rem',
+              position: 'sticky',
+              top: 50,
+              alignSelf: 'flex-start',
+              maxHeight: 'calc(100vh - 50px',
+              overflowY: 'hidden',
             }}
           >
             <Row style={{ justifyContent: 'flex-end' }}>
@@ -344,7 +355,7 @@ const ClinicalAnalysisResult = ({
             <Row
               style={{
                 justifyContent: 'space-between',
-                padding: '10px 10px 0px',
+                padding: '0 10px',
               }}
             >
               <span style={{ fontWeight: 'bold' }}>Cohort</span>
@@ -409,7 +420,7 @@ const ClinicalAnalysisResult = ({
                 style={{ borderRadius: '0 4px 4px 0' }}
               />
             </Row>
-            <Column style={{ marginTop: 10 }}>
+            <Column>
               <ControlPanelNode
                 clinicalAnalysisFields={clinicalAnalysisFields}
                 usefulFacets={getUsefulFacets(parsedFacets)}

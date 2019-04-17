@@ -101,6 +101,9 @@ const ClinicalGrouping = compose(
                 alignItems: 'center',
                 padding: '0 10px 0 5px',
                 backgroundColor: theme.greyScale6,
+                position: 'sticky',
+                top: 0,
+                zIndex: 99,
               }}
             >
               <h3
@@ -324,20 +327,30 @@ export default compose(
             {(clinicalAnalysisFields || []).length} fields with values
           </span>
         </Row>
-        {clinicalTypeOrder.map(clinicalType => {
-          const fields = groupedByClinicalType[clinicalType] || [];
-          return (
-            <ClinicalGrouping
-              key={clinicalType}
-              name={_.capitalize(singular(clinicalType))}
-              style={styles.category(theme)}
-              fields={fields}
-              currentAnalysis={currentAnalysis}
-              analysis_id={analysis_id}
-              searchValue={searchValue}
-            />
-          );
-        })}
+        <div
+          style={{
+            height: '100%',
+            maxHeight: 'calc(100vh - 265px)',
+            position: 'sticky',
+            top: 0,
+            overflowY: 'auto',
+          }}
+        >
+          {clinicalTypeOrder.map(clinicalType => {
+            const fields = groupedByClinicalType[clinicalType] || [];
+            return (
+              <ClinicalGrouping
+                key={clinicalType}
+                name={_.capitalize(singular(clinicalType))}
+                style={styles.category(theme)}
+                fields={fields}
+                currentAnalysis={currentAnalysis}
+                analysis_id={analysis_id}
+                searchValue={searchValue}
+              />
+            );
+          })}
+        </div>
       </div>
     );
   }

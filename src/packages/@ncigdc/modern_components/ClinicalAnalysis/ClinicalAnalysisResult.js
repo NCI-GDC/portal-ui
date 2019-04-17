@@ -161,6 +161,11 @@ const enhance = compose(
   withState('overallSurvivalData', 'setOverallSurvivalData', {}),
   withState('survivalPlotLoading', 'setSurvivalPlotLoading', true),
   withState('searchValue', 'setSearchValue', ''),
+  withState(
+    'hasEnoughOverallSurvivalData',
+    'setHasEnoughOverallSurvivalData',
+    false
+  ),
   withPropsOnChange(
     ['viewer'],
     ({ viewer: { explore: { cases: { facets, hits } } } }) => ({
@@ -171,6 +176,7 @@ const enhance = compose(
   withProps(
     ({
       setOverallSurvivalData,
+      setHasEnoughOverallSurvivalData,
       currentAnalysis,
       setState,
       setSurvivalPlotLoading,
@@ -196,6 +202,7 @@ const enhance = compose(
         });
 
         setOverallSurvivalData(nextSurvivalData);
+        setHasEnoughOverallSurvivalData(nextSurvivalData.hasEnoughData);
 
         setSurvivalPlotLoading(false);
       },
@@ -238,6 +245,7 @@ const ClinicalAnalysisResult = ({
   searchValue,
   setSearchValue,
   handleQueryInputChange,
+  hasEnoughOverallSurvivalData,
   ...props
 }: IAnalysisResultProps) => {
   const setId = Object.keys(currentAnalysis.sets.case)[0];
@@ -518,6 +526,7 @@ const ClinicalAnalysisResult = ({
                   plotType="clinicalOverall"
                   uniqueClass="clinical-survival-plot"
                   survivalPlotLoading={survivalPlotLoading}
+                  printSurvivalPlot={hasEnoughOverallSurvivalData}
                 />
               </div>
             </Column>
@@ -550,6 +559,7 @@ const ClinicalAnalysisResult = ({
                     id={id}
                     setId={setId}
                     overallSurvivalData={overallSurvivalData}
+                    hasEnoughOverallSurvivalData={hasEnoughOverallSurvivalData}
                   />
                 );
               }
@@ -566,6 +576,7 @@ const ClinicalAnalysisResult = ({
                   setId={setId}
                   overallSurvivalData={overallSurvivalData}
                   data={{ ...parsedFacets[varFieldName], hits }}
+                  hasEnoughOverallSurvivalData={hasEnoughOverallSurvivalData}
                 />
               );
             })}

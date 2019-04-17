@@ -6,6 +6,8 @@
   *[style] {
     font-family: Arial, Helvetica, sans-serif !important;
     justify-content: left !important;
+    background: transparent !important;
+    background-color: transparent !important;
   }
   .no-print,
   #header,

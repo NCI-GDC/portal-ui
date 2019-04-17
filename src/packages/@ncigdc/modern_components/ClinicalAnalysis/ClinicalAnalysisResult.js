@@ -343,6 +343,7 @@ const ClinicalAnalysisResult = ({
               minWidth: 260,
               marginBottom: '1rem',
             }}
+            className="no-print"
           >
             <Row style={{ justifyContent: 'flex-end' }}>
               <Tooltip Component={'Hide Control Panel'}>
@@ -480,6 +481,7 @@ const ClinicalAnalysisResult = ({
               gridTemplateRows: 'repeat(auto)',
               ...(controlPanelExpanded ? {} : { marginLeft: '1%' }),
             }}
+            className="print-grid"
           >
             <Column
               style={{
@@ -507,7 +509,7 @@ const ClinicalAnalysisResult = ({
               <div
                 style={{
                   height: '250px',
-                  margin: '5px 5px 10px',
+                  margin: '5px 2px 10px',
                 }}
               >
                 <SurvivalPlotWrapper

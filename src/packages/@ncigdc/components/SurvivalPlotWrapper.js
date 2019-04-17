@@ -179,6 +179,7 @@ const SurvivalPlotWrapper = ({
                 flexWrap: 'wrap',
                 marginTop: '0.5rem',
               }}
+              className="survival-legend-wrapper"
             >
               {legend &&
                 legend.map((l, i) => (
@@ -230,6 +231,7 @@ const SurvivalPlotWrapper = ({
               marginRight: SVG_MARGINS.right,
               fontSize: '1.1rem',
             }}
+            className="no-print"
           >
             drag to zoom
           </div>

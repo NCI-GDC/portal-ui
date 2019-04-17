@@ -459,7 +459,7 @@ const ClinicalAnalysisResult = ({
                     flexDirection: 'column',
                     flex: '0 0 auto',
                     height: 250,
-                    margin: '5px 5px 10px',
+                    margin: '5px 2px 10px',
                   }}
                 >
                   <SurvivalPlotWrapper

@@ -25,6 +25,9 @@ import { setModal } from '@ncigdc/dux/modal';
 import SaveSetModal from '@ncigdc/components/Modals/SaveSetModal';
 import AppendSetModal from '@ncigdc/components/Modals/AppendSetModal';
 import RemoveSetModal from '@ncigdc/components/Modals/RemoveSetModal';
+import DownloadVisualizationButton from '@ncigdc/components/DownloadVisualizationButton';
+import wrapSvg from '@ncigdc/utils/wrapSvg';
+import './survivalPlot.css';
 
 // survival plot
 import {
@@ -56,9 +59,9 @@ import { MAXIMUM_CURVES, MINIMUM_CASES } from '../../utils/survivalplot';
 const colors = scaleOrdinal(schemeCategory10);
 
 interface ITableHeading {
-  key: string;
-  title: string;
-  style?: React.CSSProperties;
+  key: string,
+  title: string,
+  style?: React.CSSProperties,
 }
 
 type TPlotType = 'categorical' | 'continuous';
@@ -73,37 +76,37 @@ type TVariableType =
   | 'Molecular_test'; // confirm type name
 
 interface IVariable {
-  bins: any[]; // tbd - bins still need spec
-  plotTypes: TPlotType;
-  active_chart: TActiveChart;
-  active_calculation: TActiveCalculation;
-  type: TVariableType;
+  bins: any[], // tbd - bins still need spec
+  plotTypes: TPlotType,
+  active_chart: TActiveChart,
+  active_calculation: TActiveCalculation,
+  type: TVariableType,
 }
 
 interface IVariableCardProps {
-  variable: IVariable;
-  fieldName: string;
-  plots: any[];
-  style: React.CSSProperties;
-  theme: IThemeProps;
-  dispatch: (arg: any) => void;
-  id: string;
-  survivalData: any[];
+  variable: IVariable,
+  fieldName: string,
+  plots: any[],
+  style: React.CSSProperties,
+  theme: IThemeProps,
+  dispatch: (arg: any) => void,
+  id: string,
+  survivalData: any[],
 }
 
 interface IVizButton {
-  title: string;
-  icon: JSX.Element;
+  title: string,
+  icon: JSX.Element,
   action: (
     payload: IAnalysisPayload
-  ) => { type: string, payload: IAnalysisPayload };
+  ) => { type: string, payload: IAnalysisPayload },
 }
 
 interface IVizButtons {
-  survival: IVizButton;
-  histogram: IVizButton;
-  box: IVizButton;
-  delete: IVizButton;
+  survival: IVizButton,
+  histogram: IVizButton,
+  box: IVizButton,
+  delete: IVizButton,
 }
 
 const CHART_HEIGHT = 250;
@@ -163,13 +166,13 @@ const valueIsYear = str => /year_of/.test(str);
 
 const getRangeValue = (key, field, nextInterval) => {
   if (valueIsDays(field)) {
-    return `${getLowerAgeYears(key)}${
-      nextInterval === 0 ? '+' : ' - ' + getUpperAgeYears(nextInterval - 1)
-    } years`;
+    return `${getLowerAgeYears(key)}${nextInterval === 0
+      ? '+'
+      : ' - ' + getUpperAgeYears(nextInterval - 1)} years`;
   } else if (valueIsYear(field)) {
-    return `${Math.floor(key)}${
-      nextInterval === 0 ? ' - present' : ' - ' + (nextInterval - 1)
-    }`;
+    return `${Math.floor(key)}${nextInterval === 0
+      ? ' - present'
+      : ' - ' + (nextInterval - 1)}`;
   } else {
     return key;
   }
@@ -185,7 +188,7 @@ const getCountLink = ({ doc_count, filters, totalDocs }) => (
     >
       {(doc_count || 0).toLocaleString()}
     </ExploreLink>
-    <span>{` (${(((doc_count || 0) / totalDocs) * 100).toFixed(2)}%)`}</span>
+    <span>{` (${((doc_count || 0) / totalDocs * 100).toFixed(2)}%)`}</span>
   </span>
 );
 
@@ -199,10 +202,9 @@ const enhance = compose(
   withProps(({ variable, data, fieldName }) => ({
     rawQueryData:
       variable.plotTypes === 'continuous'
-        ? (
-            (data.explore &&
-              data.explore.cases.aggregations[fieldName.replace('.', '__')]
-                .histogram) || {
+        ? ((data.explore &&
+            data.explore.cases.aggregations[fieldName.replace('.', '__')]
+              .histogram) || {
               buckets: [],
             }
           ).buckets
@@ -295,8 +297,9 @@ const enhance = compose(
                 .data.slice(0)
                 .reverse()
             : rawQueryData
-                .filter(bucket =>
-                  !IS_CDAVE_DEV ? bucket.key !== '_missing' : bucket.key
+                .filter(
+                  bucket =>
+                    !IS_CDAVE_DEV ? bucket.key !== '_missing' : bucket.key
                 )
                 .map(b => ({
                   ...b,
@@ -423,8 +426,8 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
             .data.slice(0)
             .reverse()
         : rawData
-            .filter(bucket =>
-              !IS_CDAVE_DEV ? bucket.key !== '_missing' : bucket.key
+            .filter(
+              bucket => (!IS_CDAVE_DEV ? bucket.key !== '_missing' : bucket.key)
             )
             .map(b => ({
               ...b,
@@ -494,10 +497,10 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                   b.key === '_missing' || b.chart_doc_count < MINIMUM_CASES
                     ? 'Not enough data'
                     : selectedSurvivalValues.indexOf(b.key) > -1
-                    ? `Click icon to remove ${b.key}`
-                    : selectedSurvivalValues.length < MAXIMUM_CURVES
-                    ? `Click icon to plot ${b.key}`
-                    : `Maximum plots (${MAXIMUM_CURVES}) reached`
+                      ? `Click icon to remove ${b.key}`
+                      : selectedSurvivalValues.length < MAXIMUM_CURVES
+                        ? `Click icon to plot ${b.key}`
+                        : `Maximum plots (${MAXIMUM_CURVES}) reached`
                 }
               >
                 <Button
@@ -572,7 +575,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
         doc_count: (
           <span>
             {(noDataTotal || 0).toLocaleString()}
-            {` (${(((noDataTotal || 0) / totalDocs) * 100).toFixed(2)}%)`}
+            {` (${((noDataTotal || 0) / totalDocs * 100).toFixed(2)}%)`}
           </span>
         ),
         survival: '',
@@ -629,7 +632,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
             value:
               variable.active_calculation === 'number'
                 ? d.chart_doc_count
-                : (d.chart_doc_count / totalDocs) * 100,
+                : d.chart_doc_count / totalDocs * 100,
             tooltip: `${d.key}: ${d.chart_doc_count.toLocaleString()}`,
           };
         })
@@ -725,6 +728,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
 
     console.log(cardFilters);
   }
+  const wrapperId = `${fieldName.split('.')[1]}-chart`;
 
   return (
     <Column
@@ -786,11 +790,10 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
       )}
 
       {!_.isEmpty(tableData) && (
-        <div>
+        <div id={wrapperId}>
           <Row style={{ paddingLeft: 10 }}>
             {variable.active_chart !== 'survival' && (
-              <form>
-                {' '}
+              <form style={{ width: '100%' }}>
                 <label
                   htmlFor={`variable-percentage-radio-${fieldName}`}
                   style={{ marginRight: 10, fontSize: '1.2rem' }}
@@ -808,8 +811,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                           value: 'percentage',
                           id,
                         })
-                      )
-                    }
+                      )}
                     checked={variable.active_calculation === 'percentage'}
                     style={{ marginRight: 5 }}
                   />
@@ -832,13 +834,31 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                           value: 'number',
                           id,
                         })
-                      )
-                    }
+                      )}
                     checked={variable.active_calculation === 'number'}
                     style={{ marginRight: 5 }}
                   />
                   # of Cases
                 </label>
+                <DownloadVisualizationButton
+                  key="download"
+                  onClick={() => {
+                    console.log('chartData', chartData);
+                  }}
+                  svg={() =>
+                    wrapSvg({
+                      selector: `#${wrapperId} svg`,
+                      title: humanify({ term: fieldName }),
+                    })}
+                  data={chartData.map(d => ({
+                    label: d.fullLabel,
+                    value: d.value,
+                  }))}
+                  slug={`${fieldName}-bar-chart`}
+                  noText
+                  tooltipHTML="Download image or data"
+                  style={{ float: 'right', marginRight: 2 }}
+                />
               </form>
             )}
 
@@ -903,9 +923,9 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
             <BarChart
               data={chartData}
               yAxis={{
-                title: `${
-                  variable.active_calculation === 'number' ? '#' : '%'
-                } of Cases`,
+                title: `${variable.active_calculation === 'number'
+                  ? '#'
+                  : '%'} of Cases`,
                 style: styles.histogram(theme).axis,
               }}
               xAxis={{
@@ -938,7 +958,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                 justifyContent: 'center',
                 flex: '0 0 auto',
                 height: '265px',
-                margin: '5px 5px 10px',
+                margin: '5px 2px 10px',
               }}
             >
               {selectedSurvivalValues.length === 0 ? (
@@ -968,7 +988,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                 alignItems: 'center',
                 height: CHART_HEIGHT - 10,
                 backgroundColor: theme.greyScale5,
-                margin: '5px 5px 10px',
+                margin: '5px 2px 10px',
               }}
             >
               {variable.active_chart}

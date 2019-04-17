@@ -112,58 +112,54 @@ const SurvivalPlotWrapper = ({
           <VisualizationHeader
             title={plotType === 'mutation' ? TITLE : ''}
             buttons={[
-              ...(plotType === 'mutation'
-                ? [
-                    <DownloadVisualizationButton
-                      key="download"
-                      svg={() =>
-                        wrapSvg({
-                          selector: `.${uniqueClass} .${CLASS_NAME} svg`,
-                          title: TITLE,
-                          className: CLASS_NAME,
-                          embed: {
-                            top: {
-                              elements: [
-                                document.querySelector(
-                                  `.${uniqueClass} .legend-0`
-                                ),
-                                document.querySelector(
-                                  `.${uniqueClass} .legend-1`
-                                ),
-                                pValue
-                                  ? document.querySelector(
-                                      `.${uniqueClass} .p-value`
-                                    )
-                                  : null,
-                              ],
-                            },
-                          },
-                        })}
-                      data={results.map((set, i) => ({
-                        ...set,
-                        meta: {
-                          ...set.meta,
-                          label: set.meta.label || `S${i + 1}`,
-                        },
-                      }))}
-                      stylePrefix={`.${CLASS_NAME}`}
-                      slug="survival-plot"
-                      noText
-                      tooltipHTML="Download SurvivalPlot data or image"
-                      tsvData={results.reduce((data, set, i) => {
-                        const mapData = set.donors.map(d => toMap(d));
-                        return [
-                          ...data,
-                          ...(results.length > 1
-                            ? mapData.map(m =>
-                                m.set('label', set.meta.label || `S${i + 1}`)
-                              )
-                            : mapData),
-                        ];
-                      }, [])}
-                    />,
-                  ]
-                : []),
+              <DownloadVisualizationButton
+                key="download"
+                svg={() =>
+                  wrapSvg({
+                    selector: `.${uniqueClass} .${CLASS_NAME} svg`,
+                    title: TITLE,
+                    className: CLASS_NAME,
+                    embed: {
+                      top: {
+                        elements: legend
+                          .map((l, i) =>
+                            document.querySelector(
+                              `.${uniqueClass} .legend-${i}`
+                            )
+                          )
+                          .concat(
+                            pValue
+                              ? document.querySelector(
+                                  `.${uniqueClass} .p-value`
+                                )
+                              : null
+                          ),
+                      },
+                    },
+                  })}
+                data={results.map((set, i) => ({
+                  ...set,
+                  meta: {
+                    ...set.meta,
+                    label: set.meta.label || `S${i + 1}`,
+                  },
+                }))}
+                stylePrefix={`.${CLASS_NAME}`}
+                slug="survival-plot"
+                noText
+                tooltipHTML="Download SurvivalPlot data or image"
+                tsvData={results.reduce((data, set, i) => {
+                  const mapData = set.donors.map(d => toMap(d));
+                  return [
+                    ...data,
+                    ...(results.length > 1
+                      ? mapData.map(m =>
+                          m.set('label', set.meta.label || `S${i + 1}`)
+                        )
+                      : mapData),
+                  ];
+                }, [])}
+              />,
               <Tooltip Component="Reset SurvivalPlot Zoom" key="reset">
                 <Button style={visualizingButton} onClick={() => setXDomain()}>
                   <i className="fa fa-undo" />

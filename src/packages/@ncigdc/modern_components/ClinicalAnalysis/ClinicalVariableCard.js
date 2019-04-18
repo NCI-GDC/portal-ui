@@ -994,6 +994,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
               dropdownStyle={{ left: 0, minWidth: 205 }}
             >
               <DropdownItem
+                style={styles.actionMenuItem}
                 onClick={() =>
                   downloadToTSV({
                     selector: `#analysis-${tsvSubstring}-table`,

@@ -9,6 +9,7 @@ import Demo from './Demo';
 import ClinicalDataAnalysis from '@ncigdc/theme/icons/ClinicalDataAnalysis';
 import { DISPLAY_CDAVE } from '@ncigdc/utils/constants';
 import ClinicalAnalysisContainer from '@ncigdc/modern_components/IntrospectiveType';
+import defaultVariables from './defaultCDAVEvariables';
 
 export type TSelectedSets = {
   [TSetTypes]: any,
@@ -276,34 +277,16 @@ const availableAnalysis: [TAnalysis] = [
       )),
       description: `Display basic statistical analyses for your clinical cohort using data variables and configurations that you select as input`,
       demoData: {
-        message: 'Demo cases',
+        message: 'Demo showing cases with pancreatic cancer',
         sets: {
           case: {
-            'demo-pancreas-kras': 'Pancreas - KRAS mutated',
-            'demo-pancreas-no-kras': 'Pancreas - KRAS not mutated',
+            'demo-pancreas': 'Pancreas',
           },
         },
         filters: {
-          'demo-pancreas-kras': {
+          'demo-pancreas': {
             op: 'and',
             content: [
-              {
-                op: 'in',
-                content: { field: 'genes.symbol', value: ['KRAS'] },
-              },
-              {
-                op: 'in',
-                content: { field: 'cases.primary_site', value: ['Pancreas'] },
-              },
-            ],
-          },
-          'demo-pancreas-no-kras': {
-            op: 'and',
-            content: [
-              {
-                op: 'excludeifany',
-                content: { field: 'genes.symbol', value: 'KRAS' },
-              },
               {
                 op: 'in',
                 content: { field: 'cases.primary_site', value: ['Pancreas'] },
@@ -312,20 +295,23 @@ const availableAnalysis: [TAnalysis] = [
           },
         },
         type: 'clinical_data',
+        displayVariables: { ...defaultVariables },
+        name: 'Demo Clinical Analysis',
       },
       setInstructions: 'Set instructions',
       setTypes: ['case'],
       validateSets: sets =>
         sets &&
         ['case'].every((t: any) => Object.keys(sets[t] || {}).length === 1),
-      ResultComponent: props =>
-        props.id.includes('demo-') ? (
+      ResultComponent: props => {
+        return props.id.includes('demo-') ? (
           <Demo {...props}>
-            <ClinicalAnalysisResult />
+            <ClinicalAnalysisContainer typeName={'ExploreCases'} {...props} />
           </Demo>
         ) : (
           <ClinicalAnalysisContainer typeName={'ExploreCases'} {...props} />
-        ),
+        );
+      },
     },
   ]),
 ];

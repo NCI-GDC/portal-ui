@@ -1,4 +1,4 @@
-FROM nginx:stable-alpine
+FROM quay.io/ncigdc/nginx-extras:latest
 
 RUN rm -v /etc/nginx/conf.d/default.conf
 

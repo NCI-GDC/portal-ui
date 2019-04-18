@@ -155,7 +155,13 @@ const enhance = compose(
   withState('searchValue', 'setSearchValue', ''),
   withPropsOnChange(
     ['viewer'],
-    ({ viewer: { explore: { cases: { facets, hits } } } }) => ({
+    ({
+      viewer: {
+        explore: {
+          cases: { facets, hits },
+        },
+      },
+    }) => ({
       parsedFacets: facets ? tryParseJSON(facets) : {},
       hits,
     })
@@ -268,7 +274,8 @@ const ClinicalAnalysisResult = ({
                         property: 'name',
                         id,
                       })
-                    )}
+                    )
+                  }
                   iconStyle={{
                     marginLeft: 10,
                     fontSize: '1.8rem',
@@ -537,6 +544,7 @@ const ClinicalAnalysisResult = ({
                     id={id}
                     setId={setId}
                     overallSurvivalData={overallSurvivalData}
+                    currentAnalysis={currentAnalysis}
                   />
                 );
               }
@@ -553,6 +561,7 @@ const ClinicalAnalysisResult = ({
                   setId={setId}
                   overallSurvivalData={overallSurvivalData}
                   data={{ ...parsedFacets[varFieldName], hits }}
+                  currentAnalysis={currentAnalysis}
                 />
               );
             })}

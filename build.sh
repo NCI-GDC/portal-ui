@@ -7,9 +7,9 @@ export REACT_APP_COMMIT_TAG=`git tag -l --points-at HEAD`
 export REACT_APP_API="https://api.gdc.cancer.gov/v0/"
 export REACT_APP_GDC_AUTH="https://portal.gdc.cancer.gov/auth/"
 export GDC_BASE="/"
-export ES_HOST="http://elasticsearch.service.consul:9200"
-export ES_INDEX_VERSION="gdc-r7"
-export REACT_APP_AWG=false
-export REACT_APP_IS_AUTH_PORTAL=false
+export NODE_ENV=production
+export REACT_APP_COMMIT_HASH=$TRAVIS_COMMIT
+unset REACT_APP_AWG
+unset REACT_APP_IS_AUTH_PORTAL
 npm run build
 

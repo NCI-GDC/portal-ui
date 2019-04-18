@@ -18,7 +18,7 @@ jobs:
   - stage: deploy
     script:
     - bash build.sh
-    - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD" quay.io
+    - docker login -u="$QUAY_USERNAME" -p="$QUAY_PASSWORD" quay.io
     - bash docker.sh
 notifications:
   email: false

@@ -1,5 +1,11 @@
 import React from 'react';
-import { compose, withState, withPropsOnChange, withProps, withHandlers, } from 'recompose';
+import {
+  compose,
+  withState,
+  withPropsOnChange,
+  withProps,
+  withHandlers,
+} from 'recompose';
 import { connect } from 'react-redux';
 import SearchIcon from 'react-icons/lib/fa/search';
 import _ from 'lodash';
@@ -8,7 +14,7 @@ import { Row, Column } from '@ncigdc/uikit/Flex';
 import Button from '@ncigdc/uikit/Button';
 import { Tooltip } from '@ncigdc/uikit/Tooltip';
 import {
-  DownloadIcon,
+  PrintIcon,
   CloseIcon,
   SurvivalIcon,
   BarChartIcon,
@@ -39,6 +45,8 @@ import tryParseJSON from '@ncigdc/utils/tryParseJSON';
 import getUsefulFacets from '@ncigdc/utils/getUsefulFacets';
 import DeprecatedSetResult from './DeprecatedSetResult';
 import CohortDropdown from './CohortDropdown';
+import './print.css';
+import './survivalPlot.css';
 
 // survival plot
 import { getDefaultCurve } from '@ncigdc/utils/survivalplot';
@@ -313,13 +321,16 @@ const ClinicalAnalysisResult = ({
           >
             Copy Analysis
           </Button>
-          <Tooltip Component={<span>Download</span>}>
+          <Tooltip Component={<span>Print</span>}>
             <Button
               style={{ ...visualizingButton, height: '100%' }}
               disabled={false}
+              onClick={() => {
+                window.print();
+              }}
             >
-              <DownloadIcon />
-              <Hidden>Download</Hidden>
+              <PrintIcon />
+              <Hidden>Print</Hidden>
             </Button>
           </Tooltip>
         </Row>
@@ -343,6 +354,7 @@ const ClinicalAnalysisResult = ({
               minWidth: 260,
               marginBottom: '1rem',
             }}
+            className="no-print"
           >
             <Row style={{ justifyContent: 'flex-end' }}>
               <Tooltip Component={'Hide Control Panel'}>
@@ -462,7 +474,7 @@ const ClinicalAnalysisResult = ({
                     flexDirection: 'column',
                     flex: '0 0 auto',
                     height: 250,
-                    margin: '5px 5px 10px',
+                    margin: '5px 2px 10px',
                   }}
                 >
                   <SurvivalPlotWrapper
@@ -484,6 +496,7 @@ const ClinicalAnalysisResult = ({
               gridTemplateRows: 'repeat(auto)',
               ...(controlPanelExpanded ? {} : { marginLeft: '1%' }),
             }}
+            className="print-grid"
           >
             <Column
               style={{
@@ -511,7 +524,7 @@ const ClinicalAnalysisResult = ({
               <div
                 style={{
                   height: '250px',
-                  margin: '5px 5px 10px',
+                  margin: '5px 2px 10px',
                 }}
               >
                 <SurvivalPlotWrapper

@@ -168,7 +168,7 @@ const DownloadVisualizationButton = ({
                 ? mapArrayToTsvString(tsvData)
                 : toTsvString(tsvData),
               'TSV',
-              `${slug}.tsv`
+              `${slug}.tsv`,
             );
             track('download-viz', { type: 'tsv' });
           }

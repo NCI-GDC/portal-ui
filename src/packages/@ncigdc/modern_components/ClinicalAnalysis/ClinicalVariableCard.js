@@ -29,6 +29,7 @@ import DownloadVisualizationButton from '@ncigdc/components/DownloadVisualizatio
 import wrapSvg from '@ncigdc/utils/wrapSvg';
 import './survivalPlot.css';
 import { downloadToTSV } from '@ncigdc/components/DownloadTableToTsvButton';
+import { updateClinicalAnalysisVariable } from '@ncigdc/dux/analysis';
 
 // survival plot
 import {
@@ -49,7 +50,6 @@ import { IThemeProps } from '@ncigdc/theme/versions/active';
 
 import {
   removeClinicalAnalysisVariable,
-  updateClinicalAnalysisVariable,
   IAnalysisPayload,
 } from '@ncigdc/dux/analysis';
 import { humanify } from '@ncigdc/utils/string';
@@ -396,15 +396,24 @@ const enhance = compose(
   withPropsOnChange(['id'], ({ setSelectedBuckets }) => setSelectedBuckets([])),
   lifecycle({
     componentDidMount(): void {
-      if (!this.props.variable.scrollToCard) return;
+      const { dispatch, variable, fieldName, id } = this.props;
+      if (!variable.scrollToCard) return;
       const offset = 60;
-      const wrapperId = makeWrapperId(this.props.fieldName);
+      const wrapperId = makeWrapperId(fieldName);
       const $anchor = document.getElementById(wrapperId);
       const offsetTop = $anchor.getBoundingClientRect().top + window.pageYOffset;
       window.scroll({
         top: offsetTop - offset,
         behavior: 'smooth'
       });
+      dispatch(
+        updateClinicalAnalysisVariable({
+          fieldName,
+          variableKey: 'scrollToCard',
+          value: false,
+          id,
+        })
+      );
     },
   })
 );

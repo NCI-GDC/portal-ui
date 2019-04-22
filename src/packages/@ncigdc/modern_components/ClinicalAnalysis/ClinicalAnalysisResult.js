@@ -163,7 +163,13 @@ const enhance = compose(
   withState('searchValue', 'setSearchValue', ''),
   withPropsOnChange(
     ['viewer'],
-    ({ viewer: { explore: { cases: { facets, hits } } } }) => ({
+    ({
+      viewer: {
+        explore: {
+          cases: { facets, hits },
+        },
+      },
+    }) => ({
       parsedFacets: facets ? tryParseJSON(facets) : {},
       hits,
     })
@@ -268,6 +274,10 @@ const ClinicalAnalysisResult = ({
             <Row style={{ alignItems: 'center' }} spacing={'5px'}>
               <div style={{ width: '70%' }}>
                 <EditableLabel
+                  disabled={currentAnalysis.id === 'demo-clinical_data'}
+                  disabledMessage={
+                    'Editing analysis name is not available in demo mode'
+                  }
                   text={currentAnalysis.name}
                   handleSave={value =>
                     dispatch(
@@ -276,7 +286,8 @@ const ClinicalAnalysisResult = ({
                         property: 'name',
                         id,
                       })
-                    )}
+                    )
+                  }
                   iconStyle={{
                     marginLeft: 10,
                     fontSize: '1.8rem',
@@ -374,6 +385,10 @@ const ClinicalAnalysisResult = ({
                 sets={allSets}
                 currentAnalysis={currentAnalysis}
                 dispatch={dispatch}
+                disabled={currentAnalysis.id === 'demo-clinical_data'}
+                disabledMessage={
+                  'Switching cohorts is not available in demo mode'
+                }
               />
               <ExploreLink
                 query={{
@@ -550,6 +565,7 @@ const ClinicalAnalysisResult = ({
                     id={id}
                     setId={setId}
                     overallSurvivalData={overallSurvivalData}
+                    currentAnalysis={currentAnalysis}
                   />
                 );
               }
@@ -566,6 +582,7 @@ const ClinicalAnalysisResult = ({
                   setId={setId}
                   overallSurvivalData={overallSurvivalData}
                   data={{ ...parsedFacets[varFieldName], hits }}
+                  currentAnalysis={currentAnalysis}
                 />
               );
             })}

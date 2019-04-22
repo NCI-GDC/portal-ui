@@ -28,6 +28,7 @@ import RemoveSetModal from '@ncigdc/components/Modals/RemoveSetModal';
 import DownloadVisualizationButton from '@ncigdc/components/DownloadVisualizationButton';
 import wrapSvg from '@ncigdc/utils/wrapSvg';
 import './survivalPlot.css';
+import { downloadToTSV } from '@ncigdc/components/DownloadTableToTsvButton';
 
 // survival plot
 import {
@@ -53,6 +54,8 @@ import {
 } from '@ncigdc/dux/analysis';
 import { humanify } from '@ncigdc/utils/string';
 import { getLowerAgeYears, getUpperAgeYears } from '@ncigdc/utils/ageDisplay';
+import timestamp from '@ncigdc/utils/timestamp';
+
 import { IS_CDAVE_DEV } from '@ncigdc/utils/constants';
 import { MAXIMUM_CURVES, MINIMUM_CASES } from '../../utils/survivalplot';
 
@@ -159,6 +162,7 @@ const styles = {
       stroke: theme.greyScale4,
     },
   }),
+  actionMenuItem: { lineHeight: '1.5', cursor: 'pointer' },
 };
 
 const valueIsDays = str => /(days_to|age_at)/.test(str);
@@ -409,6 +413,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
   rawQueryData,
   getBucketRangesAndFilters,
   totalDocs,
+  currentAnalysis,
 }) => {
   const getCategoricalTableData = (rawData, type) => {
     if (_.isEmpty(rawData)) {
@@ -725,11 +730,10 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
       variable.plotTypes === 'continuous'
         ? getContinuousSetFilters()
         : getCategoricalSetFilters();
-
-    console.log(cardFilters);
   }
   const wrapperId = `${fieldName.split('.')[1]}-chart`;
 
+  const tsvSubstring = fieldName.replace(/\./g, '-');
   return (
     <Column
       style={{
@@ -1007,10 +1011,23 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                   Select action
                 </Button>
               }
+              dropdownStyle={{ left: 0, minWidth: 205 }}
             >
-              <DropdownItem>Export to TSV</DropdownItem>
               <DropdownItem
-                style={{ lineHeight: '1.5', cursor: 'pointer', width: 210 }}
+                style={styles.actionMenuItem}
+                onClick={() =>
+                  downloadToTSV({
+                    selector: `#analysis-${tsvSubstring}-table`,
+                    filename: `analysis-${
+                      currentAnalysis.name
+                    }-${tsvSubstring}.${timestamp()}.tsv`,
+                  })
+                }
+              >
+                Export to TSV
+              </DropdownItem>
+              <DropdownItem
+                style={styles.actionMenuItem}
                 onClick={() => {
                   dispatch(
                     setModal(
@@ -1032,7 +1049,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                 Save as new case set
               </DropdownItem>
               <DropdownItem
-                style={{ lineHeight: '1.5', cursor: 'pointer', width: 210 }}
+                style={styles.actionMenuItem}
                 onClick={() => {
                   dispatch(
                     setModal(
@@ -1055,7 +1072,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                 Add to existing case set
               </DropdownItem>
               <DropdownItem
-                style={{ lineHeight: '1.5', cursor: 'pointer', width: 210 }}
+                style={styles.actionMenuItem}
                 onClick={() => {
                   dispatch(
                     setModal(
@@ -1073,11 +1090,15 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                 Remove from existing case set
               </DropdownItem>
             </Dropdown>
-            <Button style={{ padding: '0 12px' }} rightIcon={<DownCaretIcon />}>
+            <Button
+              style={{ ...visualizingButton, padding: '0 12px' }}
+              rightIcon={<DownCaretIcon />}
+            >
               Customize Bins
             </Button>
           </Row>
           <EntityPageHorizontalTable
+            tableId={`analysis-${tsvSubstring}-table`}
             data={IS_CDAVE_DEV ? devData : tableData}
             headings={getHeadings(variable.active_chart)}
             tableContainerStyle={{

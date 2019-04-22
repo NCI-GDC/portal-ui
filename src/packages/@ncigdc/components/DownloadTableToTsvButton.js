@@ -21,12 +21,47 @@ const getSingleHeader = (headThs: Array<NodeList>) =>
     headThs[0],
     (acc, th) =>
       th.rowSpan === 2 ? [...acc, th] : [...acc, ...map(headThs[1], t => t)],
-    [],
+    []
   );
 
-const DownloadTableToTsvButton = compose(
-  withTooltip,
-)(
+export const downloadToTSV = ({ selector, filename }) => {
+  const tableEl = document.querySelector(selector);
+  const headTrs = tableEl.querySelector('thead').querySelectorAll('tr');
+  const headThs = map(headTrs, h => h.querySelectorAll('th'));
+  const thEls =
+    headThs.length === 2
+      ? getSingleHeader(headThs)
+      : tableEl.querySelectorAll('th');
+  const thText = map(thEls, el => el.innerText).map(t =>
+    t.replace(/\s+/g, ' ')
+  );
+  const trs = tableEl.querySelector('tbody').querySelectorAll('tr');
+  const tdText = map(trs, t => {
+    const tds = t.querySelectorAll('td');
+    return reduce(
+      tds,
+      (acc, td) => {
+        const markedForTsv = td.querySelector('.for-tsv-export');
+        const exportText = markedForTsv ? markedForTsv.innerText : td.innerText;
+        const joinedText = exportText
+          .trim()
+          .split(/\s*\n\s*/)
+          .join(',')
+          .replace(/[\s\u00A0]+/g, ' ');
+        const colspan = td.getAttribute('colspan');
+        const fittedToColspan = colspan
+          ? [joinedText, ...Array(colspan - 1)]
+          : [joinedText];
+        return [...acc, ...fittedToColspan];
+      },
+      []
+    );
+  });
+  saveFile(mapStringArrayToTsvString(thText, tdText), 'TSV', filename);
+  track('download-table', { type: 'tsv', filename, selector });
+};
+
+const DownloadTableToTsvButton = compose(withTooltip)(
   ({
     filename,
     selector,
@@ -39,50 +74,14 @@ const DownloadTableToTsvButton = compose(
       leftIcon={leftIcon}
       style={{ ...visualizingButton, ...style }}
       onMouseEnter={() =>
-        displayTooltip && setTooltip(<span>Export current view</span>)}
+        displayTooltip && setTooltip(<span>Export current view</span>)
+      }
       onMouseLeave={() => displayTooltip && setTooltip('')}
-      onClick={() => {
-        const tableEl = document.querySelector(selector);
-        const headTrs = tableEl.querySelector('thead').querySelectorAll('tr');
-        const headThs = map(headTrs, h => h.querySelectorAll('th'));
-        const thEls =
-          headThs.length === 2
-            ? getSingleHeader(headThs)
-            : tableEl.querySelectorAll('th');
-        const thText = map(thEls, el => el.innerText).map(t =>
-          t.replace(/\s+/g, ' '),
-        );
-        const trs = tableEl.querySelector('tbody').querySelectorAll('tr');
-        const tdText = map(trs, t => {
-          const tds = t.querySelectorAll('td');
-          return reduce(
-            tds,
-            (acc, td) => {
-              const markedForTsv = td.querySelector('.for-tsv-export');
-              const exportText = markedForTsv
-                ? markedForTsv.innerText
-                : td.innerText;
-              const joinedText = exportText
-                .trim()
-                .split(/\s*\n\s*/)
-                .join(',')
-                .replace(/[\s\u00A0]+/g, ' ');
-              const colspan = td.getAttribute('colspan');
-              const fittedToColspan = colspan
-                ? [joinedText, ...Array(colspan - 1)]
-                : [joinedText];
-              return [...acc, ...fittedToColspan];
-            },
-            [],
-          );
-        });
-        saveFile(mapStringArrayToTsvString(thText, tdText), 'TSV', filename);
-        track('download-table', { type: 'tsv', filename, selector });
-      }}
+      onClick={() => downloadToTSV({ selector, filename })}
     >
       TSV
     </Button>
-  ),
+  )
 );
 export default DownloadTableToTsvButton;
 

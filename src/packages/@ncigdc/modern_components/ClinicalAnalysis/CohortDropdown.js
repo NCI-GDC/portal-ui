@@ -10,7 +10,13 @@ import { visualizingButton } from '@ncigdc/theme/mixins';
 import Tooltip from '@ncigdc/uikit/Tooltip/Tooltip';
 
 import { updateClinicalAnalysisSet } from '@ncigdc/dux/analysis';
-export default ({ sets, currentAnalysis, dispatch }) => {
+export default ({
+  sets,
+  currentAnalysis,
+  dispatch,
+  disabled,
+  disabledMessage,
+}) => {
   const dropdownItems = _.map(sets.case, (name, setKey) => {
     if (setKey !== _.keys(currentAnalysis.sets.case)[0]) {
       return (
@@ -40,8 +46,13 @@ export default ({ sets, currentAnalysis, dispatch }) => {
       style={{
         justifyContent: 'flex-start',
       }}
+      isDisabled={disabled}
       button={
-        <Tooltip Component={setName.length > 16 ? setName : null}>
+        <Tooltip
+          Component={
+            disabled ? disabledMessage : setName.length > 16 ? setName : null
+          }
+        >
           <Button
             className="cohort-dropdown"
             style={{
@@ -55,6 +66,7 @@ export default ({ sets, currentAnalysis, dispatch }) => {
               width: '100%',
               justifyContent: 'space-between',
             }}
+            disabled={disabled}
           >
             {_.truncate(setName, {
               length: 16,

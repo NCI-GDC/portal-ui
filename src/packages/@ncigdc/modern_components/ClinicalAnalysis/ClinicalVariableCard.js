@@ -397,8 +397,8 @@ const enhance = compose(
   lifecycle({
     componentDidMount(): void {
       const { dispatch, variable, fieldName, id } = this.props;
-      if (!variable.scrollToCard) return;
-      const offset = 60;
+      if (variable.scrollToCard === false) return;
+      const offset = document.getElementById('header').getBoundingClientRect().bottom + 10;
       const wrapperId = makeWrapperId(fieldName);
       const $anchor = document.getElementById(wrapperId);
       const offsetTop = $anchor.getBoundingClientRect().top + window.pageYOffset;

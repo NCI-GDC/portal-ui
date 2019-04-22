@@ -6,6 +6,7 @@ export default {
     active_survival: 'overall',
     plotTypes: 'categorical',
     bins: [],
+    scrollToCard: false,
   },
 
   'demographic.gender': {
@@ -15,6 +16,7 @@ export default {
     active_survival: 'overall',
     plotTypes: 'categorical',
     bins: [],
+    scrollToCard: false,
   },
 
   'demographic.race': {
@@ -24,6 +26,7 @@ export default {
     active_survival: 'overall',
     plotTypes: 'categorical',
     bins: [],
+    scrollToCard: false,
   },
   'diagnoses.age_at_diagnosis': {
     type: 'Diagnosis',
@@ -32,6 +35,7 @@ export default {
     active_survival: 'overall',
     plotTypes: 'continuous',
     bins: [],
+    scrollToCard: false,
   },
 
   'diagnoses.age_at_diagnosis': {
@@ -41,6 +45,7 @@ export default {
     active_survival: 'overall',
     plotTypes: 'continuous',
     bins: [],
+    scrollToCard: false,
   },
   'diagnoses.primary_diagnosis': {
     type: 'Diagnosis',
@@ -49,5 +54,6 @@ export default {
     active_survival: 'overall',
     plotTypes: 'categorical',
     bins: [],
+    scrollToCard: false,
   },
 };

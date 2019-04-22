@@ -14,7 +14,7 @@ import { Row, Column } from '@ncigdc/uikit/Flex';
 import Button from '@ncigdc/uikit/Button';
 import { Tooltip } from '@ncigdc/uikit/Tooltip';
 import {
-  DownloadIcon,
+  PrintIcon,
   CloseIcon,
   SurvivalIcon,
   BarChartIcon,
@@ -45,6 +45,8 @@ import tryParseJSON from '@ncigdc/utils/tryParseJSON';
 import getUsefulFacets from '@ncigdc/utils/getUsefulFacets';
 import DeprecatedSetResult from './DeprecatedSetResult';
 import CohortDropdown from './CohortDropdown';
+import './print.css';
+import './survivalPlot.css';
 
 // survival plot
 import { getDefaultCurve } from '@ncigdc/utils/survivalplot';
@@ -161,7 +163,13 @@ const enhance = compose(
   withState('searchValue', 'setSearchValue', ''),
   withPropsOnChange(
     ['viewer'],
-    ({ viewer: { explore: { cases: { facets, hits } } } }) => ({
+    ({
+      viewer: {
+        explore: {
+          cases: { facets, hits },
+        },
+      },
+    }) => ({
       parsedFacets: facets ? tryParseJSON(facets) : {},
       hits,
     })
@@ -266,6 +274,10 @@ const ClinicalAnalysisResult = ({
             <Row style={{ alignItems: 'center' }} spacing={'5px'}>
               <div style={{ width: '70%' }}>
                 <EditableLabel
+                  disabled={currentAnalysis.id === 'demo-clinical_data'}
+                  disabledMessage={
+                    'Editing analysis name is not available in demo mode'
+                  }
                   text={currentAnalysis.name}
                   handleSave={value =>
                     dispatch(
@@ -274,7 +286,8 @@ const ClinicalAnalysisResult = ({
                         property: 'name',
                         id,
                       })
-                    )}
+                    )
+                  }
                   iconStyle={{
                     marginLeft: 10,
                     fontSize: '1.8rem',
@@ -308,13 +321,16 @@ const ClinicalAnalysisResult = ({
           >
             Copy Analysis
           </Button>
-          <Tooltip Component={<span>Download</span>}>
+          <Tooltip Component={<span>Print</span>}>
             <Button
               style={{ ...visualizingButton, height: '100%' }}
               disabled={false}
+              onClick={() => {
+                window.print();
+              }}
             >
-              <DownloadIcon />
-              <Hidden>Download</Hidden>
+              <PrintIcon />
+              <Hidden>Print</Hidden>
             </Button>
           </Tooltip>
         </Row>
@@ -343,6 +359,7 @@ const ClinicalAnalysisResult = ({
               maxHeight: 'calc(100vh - 50px',
               overflowY: 'hidden',
             }}
+            className="no-print"
           >
             <Row style={{ justifyContent: 'flex-end' }}>
               <Tooltip Component={'Hide Control Panel'}>
@@ -373,6 +390,10 @@ const ClinicalAnalysisResult = ({
                 sets={allSets}
                 currentAnalysis={currentAnalysis}
                 dispatch={dispatch}
+                disabled={currentAnalysis.id === 'demo-clinical_data'}
+                disabledMessage={
+                  'Switching cohorts is not available in demo mode'
+                }
               />
               <ExploreLink
                 query={{
@@ -458,7 +479,7 @@ const ClinicalAnalysisResult = ({
                     flexDirection: 'column',
                     flex: '0 0 auto',
                     height: 250,
-                    margin: '5px 5px 10px',
+                    margin: '5px 2px 10px',
                   }}
                 >
                   <SurvivalPlotWrapper
@@ -480,6 +501,7 @@ const ClinicalAnalysisResult = ({
               gridTemplateRows: 'repeat(auto)',
               ...(controlPanelExpanded ? {} : { marginLeft: '1%' }),
             }}
+            className="print-grid"
           >
             <Column
               style={{
@@ -507,7 +529,7 @@ const ClinicalAnalysisResult = ({
               <div
                 style={{
                   height: '250px',
-                  margin: '5px 5px 10px',
+                  margin: '5px 2px 10px',
                 }}
               >
                 <SurvivalPlotWrapper
@@ -548,6 +570,7 @@ const ClinicalAnalysisResult = ({
                     id={id}
                     setId={setId}
                     overallSurvivalData={overallSurvivalData}
+                    currentAnalysis={currentAnalysis}
                   />
                 );
               }
@@ -564,6 +587,7 @@ const ClinicalAnalysisResult = ({
                   setId={setId}
                   overallSurvivalData={overallSurvivalData}
                   data={{ ...parsedFacets[varFieldName], hits }}
+                  currentAnalysis={currentAnalysis}
                 />
               );
             })}

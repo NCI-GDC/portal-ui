@@ -36,7 +36,11 @@ export default compose(
       text,
       handleSave,
       handleCancel,
+      disabled = false,
     }) => () => {
+      if (disabled) {
+        return null;
+      }
       if (value.length !== 0) {
         setIsEditing(!isEditing);
         if (isEditing && value !== text) {
@@ -64,6 +68,8 @@ export default compose(
     children,
     iconStyle = {},
     containerStyle = {},
+    disabled = false,
+    disabledMessage = null,
   }) => (
     <div>
       {isEditing ? (
@@ -121,18 +127,24 @@ export default compose(
           </Button>
         </Row>
       ) : (
-        <Row onClick={toggleEditingAndSave} style={{ cursor: 'text' }}>
-          {children}
-          <Pencil
-            style={{
-              fontSize: '0.9em',
-              paddingLeft: '5px',
-              alignSelf: 'center',
-              color: 'rgb(96, 111, 81)',
-              ...iconStyle,
-            }}
-          />
-        </Row>
+        <Tooltip Component={disabled ? disabledMessage : null}>
+          <Row
+            onClick={toggleEditingAndSave}
+            style={{ cursor: disabled ? 'not-allowed' : 'text' }}
+          >
+            {children}
+            <Pencil
+              style={{
+                fontSize: '0.9em',
+                paddingLeft: '5px',
+                alignSelf: 'center',
+                color: 'rgb(96, 111, 81)',
+                ...iconStyle,
+                cursor: disabled ? 'not-allowed' : 'pointer',
+              }}
+            />
+          </Row>
+        </Tooltip>
       )}
     </div>
   )

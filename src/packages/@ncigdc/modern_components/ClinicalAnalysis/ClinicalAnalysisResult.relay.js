@@ -22,15 +22,18 @@ export default (Component: ReactClass<*>) =>
       currentSetId: Object.keys(currentAnalysis.sets.case)[0],
     })),
     branch(
-      ({ currentSetId, allSets }) => !allSets.case[currentSetId],
-      renderComponent(({ currentAnalysis, allSets, dispatch, Icon }) => (
-        <DeprecatedSetResult
-          allSets={allSets}
-          dispatch={dispatch}
-          currentAnalysis={currentAnalysis}
-          Icon={Icon}
-        />
-      ))
+      ({ currentSetId, allSets }) =>
+        !currentSetId.includes('demo') && !allSets.case[currentSetId],
+      renderComponent(({ currentAnalysis, allSets, dispatch, Icon }) => {
+        return (
+          <DeprecatedSetResult
+            allSets={allSets}
+            dispatch={dispatch}
+            currentAnalysis={currentAnalysis}
+            Icon={Icon}
+          />
+        );
+      })
     ),
     withPropsOnChange(
       ['clinicalAnalysisFields', 'currentAnalysis'],

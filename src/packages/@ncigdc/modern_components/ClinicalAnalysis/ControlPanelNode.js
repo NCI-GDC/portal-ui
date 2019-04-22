@@ -207,11 +207,9 @@ const ClinicalGrouping = compose(
                             id: analysis_id,
                             fieldType: name,
                             plotTypes,
+                            scrollToCard: !checked,
                           })
                         );
-                        if (!checked) {
-                          console.log('adding card: ' + fieldName);
-                        }
                       }}
                     />
                   );

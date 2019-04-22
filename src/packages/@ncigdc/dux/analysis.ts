@@ -35,6 +35,7 @@ type TClinicalAnalyisVariableKey =
 type TClinicalAnalysisProperty = 'name'; // only type mutable properties
 
 export interface IAnalysisPayload {
+  scrollToCard?: boolean;
   analysis?: IAnalysis;
   id: string;
   fieldName?: string;
@@ -173,6 +174,7 @@ const reducer = (
                 ...defaultVariableConfig,
                 type: action.payload.fieldType,
                 plotTypes: action.payload.plotTypes,
+                scrollToCard: action.payload.scrollToCard,
               },
             },
           },

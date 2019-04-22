@@ -396,9 +396,9 @@ const enhance = compose(
   withPropsOnChange(['id'], ({ setSelectedBuckets }) => setSelectedBuckets([])),
   lifecycle({
     componentDidMount(): void {
-      const wrapperId = makeWrapperId(this.props.fieldName);
+      if (!this.props.variable.scrollToCard) return;
       const offset = 60;
-      console.log(wrapperId);
+      const wrapperId = makeWrapperId(this.props.fieldName);
       const $anchor = document.getElementById(wrapperId);
       const offsetTop = $anchor.getBoundingClientRect().top + window.pageYOffset;
       window.scroll({

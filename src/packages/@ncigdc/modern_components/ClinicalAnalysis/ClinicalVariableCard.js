@@ -397,7 +397,7 @@ const enhance = compose(
   lifecycle({
     componentDidMount(): void {
       const wrapperId = makeWrapperId(this.props.fieldName);
-      const offset = 50;
+      const offset = 60;
       console.log(wrapperId);
       const $anchor = document.getElementById(wrapperId);
       const offsetTop = $anchor.getBoundingClientRect().top + window.pageYOffset;
@@ -771,12 +771,11 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
           alignItems: 'center',
           margin: '5px 0 10px',
         }}
+        id={wrapperId}
       >
-        <div id={wrapperId}>
-          <h2 style={{ fontSize: '1.8rem', marginTop: 10, marginBottom: 0 }}>
-            {humanify({ term: fieldName })}
-          </h2>
-        </div>
+        <h2 style={{ fontSize: '1.8rem', marginTop: 10, marginBottom: 0 }}>
+          {humanify({ term: fieldName })}
+        </h2>
         <Row>
           {[...plots, 'delete'].map(plotType => {
             return (

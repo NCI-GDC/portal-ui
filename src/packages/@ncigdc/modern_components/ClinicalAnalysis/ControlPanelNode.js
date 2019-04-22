@@ -10,7 +10,6 @@ import {
 import _ from 'lodash';
 import { connect } from 'react-redux';
 import { singular } from 'pluralize';
-import { goToAnchor } from 'react-scrollable-anchor';
 import Toggle from 'react-toggle';
 import './reactToggle.css';
 
@@ -96,30 +95,30 @@ const ClinicalGrouping = compose(
     return (
       <Column style={{ marginBottom: 2 }}>
         {(searchValue === '' || fields.length > 0) && (
-            <Row
-              style={{
-                alignItems: 'center',
-                padding: '0 10px 0 5px',
-                backgroundColor: theme.greyScale6,
-                position: 'sticky',
-                top: 0,
-                zIndex: 99,
-              }}
+          <Row
+            style={{
+              alignItems: 'center',
+              padding: '0 10px 0 5px',
+              backgroundColor: theme.greyScale6,
+              position: 'sticky',
+              top: 0,
+              zIndex: 99,
+            }}
+          >
+            <h3
+              style={{ ...style, margin: '10px 0', cursor: 'pointer' }}
+              onClick={() => setCollapsed(!collapsed)}
             >
-              <h3
-                style={{ ...style, margin: '10px 0', cursor: 'pointer' }}
-                onClick={() => setCollapsed(!collapsed)}
-              >
-                <AngleIcon
-                  style={{
-                    paddingRight: '0.5rem',
-                    transform: `rotate(${collapsed ? 270 : 0}deg)`,
-                  }}
-                />
-                {name}
-              </h3>
-            </Row>
-          )}
+              <AngleIcon
+                style={{
+                  paddingRight: '0.5rem',
+                  transform: `rotate(${collapsed ? 270 : 0}deg)`,
+                }}
+              />
+              {name}
+            </h3>
+          </Row>
+        )}
 
         {!collapsed && (
           <Column
@@ -173,8 +172,8 @@ const ClinicalGrouping = compose(
                     >
                       {descMatch
                         ? internalHighlight(searchValue, fieldDescription, {
-                            backgroundColor: '#FFFF00',
-                          })
+                          backgroundColor: '#FFFF00',
+                        })
                         : fieldDescription}
                     </div>
                   );
@@ -210,7 +209,9 @@ const ClinicalGrouping = compose(
                             plotTypes,
                           })
                         );
-                        if (!checked) goToAnchor(`${fieldName}-card`);
+                        if (!checked) {
+                          console.log('adding card: ' + fieldName);
+                        }
                       }}
                     />
                   );
@@ -240,13 +241,13 @@ const ClinicalGrouping = compose(
                               <DescEl />
                             </React.Fragment>
                           ) : (
-                            <React.Fragment>
-                              <Tooltip Component={<DescEl />}>
-                                <TitleEl />
-                              </Tooltip>
-                              <ToggleEl />
-                            </React.Fragment>
-                          )}
+                              <React.Fragment>
+                                <Tooltip Component={<DescEl />}>
+                                  <TitleEl />
+                                </Tooltip>
+                                <ToggleEl />
+                              </React.Fragment>
+                            )}
                         </label>
                       </div>
                     </Row>
@@ -261,7 +262,7 @@ const ClinicalGrouping = compose(
                   {showingMore
                     ? 'Less...'
                     : fields.length - MAX_VISIBLE_FACETS &&
-                      `${fields.length - 5} More...`}
+                    `${fields.length - 5} More...`}
                 </StyledToggleMoreLink>
               </Row>
             )}

@@ -27,7 +27,7 @@ import AppendSetModal from '@ncigdc/components/Modals/AppendSetModal';
 import RemoveSetModal from '@ncigdc/components/Modals/RemoveSetModal';
 import DownloadVisualizationButton from '@ncigdc/components/DownloadVisualizationButton';
 import wrapSvg from '@ncigdc/utils/wrapSvg';
-import './survivalPlot.css';
+// import './survivalPlot.css';
 import { downloadToTSV } from '@ncigdc/components/DownloadTableToTsvButton';
 
 // survival plot
@@ -36,7 +36,7 @@ import {
   getDefaultCurve,
   getSurvivalCurvesArray,
 } from '@ncigdc/utils/survivalplot';
-import SurvivalPlotWrapper from '@ncigdc/components/SurvivalPlotWrapper';
+// import SurvivalPlotWrapper from '@ncigdc/components/SurvivalPlotWrapper';
 import { SpinnerIcon } from '@ncigdc/theme/icons';
 
 import {
@@ -290,6 +290,11 @@ const enhance = compose(
     }) => ({
       populateSurvivalData: () => {
         setSurvivalPlotLoading(true);
+        // console.log("trying to populate");
+        // console.log('fieldName', fieldName);
+        // console.log('setId', setId);
+        // console.log('rawQueryData', rawQueryData);
+        // console.log('data', data)
 
         const dataForSurvival =
           variable.plotTypes === 'continuous'
@@ -336,6 +341,8 @@ const enhance = compose(
 
         setSelectedSurvivalValues(valuesForTable);
         setSelectedSurvivalLoadingIds(valuesForTable);
+        console.log('valuesForPlot', valuesForPlot)
+        console.log('valuesForTable', valuesForTable)
 
         getSurvivalCurvesArray({
           field: fieldName,
@@ -387,13 +394,17 @@ const enhance = compose(
   ),
   withPropsOnChange(
     (props, nextProps) =>
-      props.variable.active_chart !== nextProps.variable.active_chart,
-    ({ filters, populateSurvivalData, variable }) => {
+      props.variable.active_chart !== nextProps.variable.active_chart ||
+      !_.isEqual(props.data, nextProps.data),
+    // props.data !== nextProps.data ||
+    // props.setId !== nextProps.setId,
+    ({ filters, data, setId, populateSurvivalData, variable }) => {
+      console.log('setId changed', setId);
+      console.log("data changed", data);
       if (variable.active_chart === 'survival') {
         populateSurvivalData();
       }
-    }
-  ),
+    }),
   withPropsOnChange(['id'], ({ setSelectedBuckets }) => setSelectedBuckets([]))
 );
 
@@ -741,6 +752,9 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
   const wrapperId = `${fieldName.split('.')[1]}-chart`;
 
   const tsvSubstring = fieldName.replace(/\./g, '-');
+
+  // SURVIVAL PLOT STUFF        
+
   return (
     <Column
       style={{
@@ -963,10 +977,14 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
           )}
           {variable.active_chart === 'survival' && (
             <ClinicalVariableSurvivalPlot
+              // props i think i'll need
               overallSurvivalData={overallSurvivalData}
               height={202}
               uniqueClass="clinical-survival-plot"
               selectedSurvivalData={selectedSurvivalData}
+              // testing things
+              selectedSurvivalValues={selectedSurvivalValues}
+              survivalPlotLoading={survivalPlotLoading}
             />
             // <div
             //   style={{

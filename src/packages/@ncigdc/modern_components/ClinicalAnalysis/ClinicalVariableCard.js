@@ -27,16 +27,15 @@ import AppendSetModal from '@ncigdc/components/Modals/AppendSetModal';
 import RemoveSetModal from '@ncigdc/components/Modals/RemoveSetModal';
 import DownloadVisualizationButton from '@ncigdc/components/DownloadVisualizationButton';
 import wrapSvg from '@ncigdc/utils/wrapSvg';
-// import './survivalPlot.css';
+import './survivalPlot.css';
 import { downloadToTSV } from '@ncigdc/components/DownloadTableToTsvButton';
 
 // survival plot
-import ClinicalVariableSurvivalPlot from './ClinicalVariableSurvivalPlot';
 import {
   getDefaultCurve,
   getSurvivalCurvesArray,
 } from '@ncigdc/utils/survivalplot';
-// import SurvivalPlotWrapper from '@ncigdc/components/SurvivalPlotWrapper';
+import SurvivalPlotWrapper from '@ncigdc/components/SurvivalPlotWrapper';
 import { SpinnerIcon } from '@ncigdc/theme/icons';
 
 import {
@@ -268,6 +267,7 @@ const enhance = compose(
               rangeValues: { min: key, max: Math.floor(acc.nextInterval - 1) },
             },
           ],
+          filters,
         };
       },
     })
@@ -290,11 +290,6 @@ const enhance = compose(
     }) => ({
       populateSurvivalData: () => {
         setSurvivalPlotLoading(true);
-        // console.log("trying to populate");
-        // console.log('fieldName', fieldName);
-        // console.log('setId', setId);
-        // console.log('rawQueryData', rawQueryData);
-        // console.log('data', data)
 
         const dataForSurvival =
           variable.plotTypes === 'continuous'
@@ -341,8 +336,6 @@ const enhance = compose(
 
         setSelectedSurvivalValues(valuesForTable);
         setSelectedSurvivalLoadingIds(valuesForTable);
-        console.log('valuesForPlot', valuesForPlot)
-        console.log('valuesForTable', valuesForTable)
 
         getSurvivalCurvesArray({
           field: fieldName,
@@ -396,11 +389,7 @@ const enhance = compose(
     (props, nextProps) =>
       props.variable.active_chart !== nextProps.variable.active_chart ||
       !_.isEqual(props.data, nextProps.data),
-    // props.data !== nextProps.data ||
-    // props.setId !== nextProps.setId,
     ({ filters, data, setId, populateSurvivalData, variable }) => {
-      console.log('setId changed', setId);
-      console.log("data changed", data);
       if (variable.active_chart === 'survival') {
         populateSurvivalData();
       }
@@ -976,44 +965,32 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
             />
           )}
           {variable.active_chart === 'survival' && (
-            <ClinicalVariableSurvivalPlot
-              // props i think i'll need
-              overallSurvivalData={overallSurvivalData}
-              height={202}
-              uniqueClass="clinical-survival-plot"
-              selectedSurvivalData={selectedSurvivalData}
-              // testing things
-              selectedSurvivalValues={selectedSurvivalValues}
-              survivalPlotLoading={survivalPlotLoading}
-            />
-            // <div
-            //   style={{
-            //     display: 'flex',
-            //     flexDirection: 'column',
-            //     justifyContent: 'center',
-            //     flex: '0 0 auto',
-            //     height: '265px',
-            //     margin: '5px 2px 10px',
-            //   }}
-            // >
-            //   {selectedSurvivalValues.length === 0 ? (
-            //     <SurvivalPlotWrapper
-            //       {...overallSurvivalData}
-            //       height={202}
-            //       plotType="clinicalOverall"
-            //       uniqueClass="clinical-survival-plot"
-            //       survivalPlotLoading={survivalPlotLoading}
-            //     />
-            //   ) : (
-            //       <SurvivalPlotWrapper
-            //         {...selectedSurvivalData}
-            //         height={202}
-            //         plotType="categorical"
-            //         uniqueClass="clinical-survival-plot"
-            //         survivalPlotLoading={survivalPlotLoading}
-            //       />
-            //     )}
-            // </div>
+            <div style={{
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              flex: '0 0 auto',
+              height: '265px',
+              margin: '5px 2px 10px',
+            }}>
+              {selectedSurvivalValues.length === 0 ? (
+                <SurvivalPlotWrapper
+                  {...overallSurvivalData}
+                  height={202}
+                  plotType="clinicalOverall"
+                  uniqueClass="clinical-survival-plot"
+                  survivalPlotLoading={survivalPlotLoading}
+                />
+              ) : (
+                  <SurvivalPlotWrapper
+                    {...selectedSurvivalData}
+                    height={202}
+                    plotType="categorical"
+                    uniqueClass="clinical-survival-plot"
+                    survivalPlotLoading={survivalPlotLoading}
+                  />
+                )}
+            </div>
           )}
           {variable.active_chart === 'box' && (
             <div

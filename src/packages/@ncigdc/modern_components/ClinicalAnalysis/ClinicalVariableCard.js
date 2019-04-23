@@ -31,6 +31,7 @@ import './survivalPlot.css';
 import { downloadToTSV } from '@ncigdc/components/DownloadTableToTsvButton';
 
 // survival plot
+import ClinicalVariableSurvivalPlot from './ClinicalVariableSurvivalPlot';
 import {
   getDefaultCurve,
   getSurvivalCurvesArray,
@@ -955,34 +956,40 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
             />
           )}
           {variable.active_chart === 'survival' && (
-            <div
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'center',
-                flex: '0 0 auto',
-                height: '265px',
-                margin: '5px 2px 10px',
-              }}
-            >
-              {selectedSurvivalValues.length === 0 ? (
-                <SurvivalPlotWrapper
-                  {...overallSurvivalData}
-                  height={202}
-                  plotType="clinicalOverall"
-                  unqiueClass="clinical-survival-plot"
-                  survivalPlotLoading={survivalPlotLoading}
-                />
-              ) : (
-                <SurvivalPlotWrapper
-                  {...selectedSurvivalData}
-                  height={202}
-                  plotType="categorical"
-                  unqiueClass="clinical-survival-plot"
-                  survivalPlotLoading={survivalPlotLoading}
-                />
-              )}
-            </div>
+            <ClinicalVariableSurvivalPlot
+              overallSurvivalData={overallSurvivalData}
+              height={202}
+              uniqueClass="clinical-survival-plot"
+              selectedSurvivalData={selectedSurvivalData}
+            />
+            // <div
+            //   style={{
+            //     display: 'flex',
+            //     flexDirection: 'column',
+            //     justifyContent: 'center',
+            //     flex: '0 0 auto',
+            //     height: '265px',
+            //     margin: '5px 2px 10px',
+            //   }}
+            // >
+            //   {selectedSurvivalValues.length === 0 ? (
+            //     <SurvivalPlotWrapper
+            //       {...overallSurvivalData}
+            //       height={202}
+            //       plotType="clinicalOverall"
+            //       uniqueClass="clinical-survival-plot"
+            //       survivalPlotLoading={survivalPlotLoading}
+            //     />
+            //   ) : (
+            //       <SurvivalPlotWrapper
+            //         {...selectedSurvivalData}
+            //         height={202}
+            //         plotType="categorical"
+            //         uniqueClass="clinical-survival-plot"
+            //         survivalPlotLoading={survivalPlotLoading}
+            //       />
+            //     )}
+            // </div>
           )}
           {variable.active_chart === 'box' && (
             <div

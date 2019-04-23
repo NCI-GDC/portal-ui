@@ -311,18 +311,20 @@ const enhance = compose(
                 chart_doc_count: b.doc_count,
               }));
 
+        const filteredData = dataForSurvival
+          .filter(x => x.chart_doc_count >= MINIMUM_CASES)
+          .filter(x => x.key !== '_missing');
+
         const continuousTop2Values =
           variable.plotTypes === 'continuous'
-            ? dataForSurvival
-              .filter(x => x.chart_doc_count >= MINIMUM_CASES)
+            ? filteredData
               .sort((a, b) => b.chart_doc_count - a.chart_doc_count)
               .slice(0, 2)
             : [];
 
         const valuesForTable =
           variable.plotTypes === 'categorical'
-            ? dataForSurvival
-              .filter(x => x.doc_count >= MINIMUM_CASES)
+            ? filteredData
               .map(d => d.key)
               .slice(0, 2)
             : continuousTop2Values.map(d => d.key);

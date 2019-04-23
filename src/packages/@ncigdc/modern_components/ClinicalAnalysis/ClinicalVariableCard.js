@@ -314,13 +314,17 @@ const enhance = compose(
         const continuousTop2Values =
           variable.plotTypes === 'continuous'
             ? dataForSurvival
+              .filter(x => x.chart_doc_count >= MINIMUM_CASES)
               .sort((a, b) => b.chart_doc_count - a.chart_doc_count)
               .slice(0, 2)
             : [];
 
         const valuesForTable =
           variable.plotTypes === 'categorical'
-            ? dataForSurvival.map(d => d.key).slice(0, 2)
+            ? dataForSurvival
+              .filter(x => x.doc_count >= MINIMUM_CASES)
+              .map(d => d.key)
+              .slice(0, 2)
             : continuousTop2Values.map(d => d.key);
 
         const valuesForPlot =

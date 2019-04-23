@@ -240,7 +240,6 @@ export const getSurvivalCurvesArray = memoize(
             currentFilters
           )
     );
-    console.log("get curves array - filters", filters);
 
     const rawData = await fetchCurves(filters, size, true);
     const hasEnoughDataOnSomeCurves = enoughDataOnSomeCurves(rawData);

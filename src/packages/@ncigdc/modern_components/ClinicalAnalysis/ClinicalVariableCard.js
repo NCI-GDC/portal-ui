@@ -265,9 +265,9 @@ const enhance = compose(
               }),
               key: getRangeValue(key, fieldName, acc.nextInterval),
               rangeValues: { min: key, max: Math.floor(acc.nextInterval - 1) },
+              filters,
             },
           ],
-          filters,
         };
       },
     })

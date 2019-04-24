@@ -240,16 +240,18 @@ const enhance = compose(
                     ],
                   },
                 },
-                acc.nextInterval !== 0 &&
-                {
+                ...acc.nextInterval !== 0 &&
+                [{
                   op: '<=',
                   content: {
                     field: fieldName,
                     value: [`${acc.nextInterval - 1}`],
                   },
-                },
+                }],
               ],
+
             };
+            console.log("filters updated", filters);
 
         return {
           nextInterval: key,

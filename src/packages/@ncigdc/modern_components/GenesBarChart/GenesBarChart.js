@@ -157,13 +157,13 @@ const Component = compose(
       onClickGene
         ? onClickGene(gene, chartData)
         : push({
-            pathname: `/genes/${gene.gene_id}`,
-            query: {
-              filters: stringifyJSONParam(
-                removeFilter(f => f.match(/^genes\./), defaultFilters),
-              ),
-            },
-          }),
+          pathname: `/genes/${gene.gene_id}`,
+          query: {
+            filters: stringifyJSONParam(
+              removeFilter(f => f.match(/^genes\./), defaultFilters),
+            ),
+          },
+        }),
   }),
   withTheme,
 )(
@@ -177,7 +177,6 @@ const Component = compose(
     showingMore,
     handleClickGene,
     style,
-    push,
   }) => {
     const numCasesAggByProject = cases.aggregations.project__project_id.buckets.reduce(
       (acc, b) => ({
@@ -380,39 +379,39 @@ const Component = compose(
             )}
             {!!cnvGenesChartData.length &&
               showingMore && (
-                <div id="cnv-genes-chart">
-                  <FilteredStackedBarChart
-                    data={cnvGenesChartData}
-                    yAxis={{ title: '% of Cases Affected' }}
-                    colors={cnvColors.reduce(
-                      (acc, f) => ({ ...acc, [f.key]: f.color }),
-                      0,
-                    )}
-                    displayFilters={cnvColors.reduce(
-                      (acc, f) => ({ ...acc, [f.key]: true }),
-                      0,
-                    )}
-                    margin={{ top: 20, right: 50, bottom: 65, left: 55 }}
-                    styles={{
-                      xAxis: {
-                        stroke: theme.greyScale4,
-                        textFill: theme.greyScale3,
-                      },
-                      yAxis: {
-                        stroke: theme.greyScale4,
-                        textFill: theme.greyScale3,
-                      },
-                      bars: { fill: theme.secondary },
-                      tooltips: {
-                        fill: '#fff',
-                        stroke: theme.greyScale4,
-                        textFill: theme.greyScale3,
-                      },
-                    }}
-                  />
-                  <Legends />
-                </div>
-              )}
+              <div id="cnv-genes-chart">
+                <FilteredStackedBarChart
+                  data={cnvGenesChartData}
+                  yAxis={{ title: '% of Cases Affected' }}
+                  colors={cnvColors.reduce(
+                    (acc, f) => ({ ...acc, [f.key]: f.color }),
+                    0,
+                  )}
+                  displayFilters={cnvColors.reduce(
+                    (acc, f) => ({ ...acc, [f.key]: true }),
+                    0,
+                  )}
+                  margin={{ top: 20, right: 50, bottom: 65, left: 55 }}
+                  styles={{
+                    xAxis: {
+                      stroke: theme.greyScale4,
+                      textFill: theme.greyScale3,
+                    },
+                    yAxis: {
+                      stroke: theme.greyScale4,
+                      textFill: theme.greyScale3,
+                    },
+                    bars: { fill: theme.secondary },
+                    tooltips: {
+                      fill: '#fff',
+                      stroke: theme.greyScale4,
+                      textFill: theme.greyScale3,
+                    },
+                  }}
+                />
+                <Legends />
+              </div>
+            )}
           </Column>
         )}
       </div>

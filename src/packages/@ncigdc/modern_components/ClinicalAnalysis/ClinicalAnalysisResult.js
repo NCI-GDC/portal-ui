@@ -353,6 +353,11 @@ const ClinicalAnalysisResult = ({
               flex: 1,
               minWidth: 260,
               marginBottom: '1rem',
+              position: 'sticky',
+              top: 50,
+              alignSelf: 'flex-start',
+              maxHeight: 'calc(100vh - 50px',
+              overflowY: 'hidden',
             }}
             className="no-print"
           >
@@ -367,7 +372,7 @@ const ClinicalAnalysisResult = ({
             <Row
               style={{
                 justifyContent: 'space-between',
-                padding: '10px 10px 0px',
+                padding: '0 10px',
               }}
             >
               <span style={{ fontWeight: 'bold' }}>Cohort</span>
@@ -436,7 +441,7 @@ const ClinicalAnalysisResult = ({
                 style={{ borderRadius: '0 4px 4px 0' }}
               />
             </Row>
-            <Column style={{ marginTop: 10 }}>
+            <Column>
               <ControlPanelNode
                 clinicalAnalysisFields={clinicalAnalysisFields}
                 usefulFacets={getUsefulFacets(parsedFacets)}

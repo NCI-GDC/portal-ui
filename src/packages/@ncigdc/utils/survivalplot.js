@@ -192,8 +192,8 @@ export const getSurvivalCurves = memoize(
               </span>
             ),
           },
-          (results2.length === 0 &&
-            {
+          ...(results2.length === 0 &&
+            [{
               key: `${slug || value}-cannot-compare`,
               value: (
                 <div>
@@ -201,7 +201,7 @@ export const getSurvivalCurves = memoize(
                 </div>
               ),
               style: { width: '100%', marginTop: 5 },
-            }),
+            }]),
         ]
         : [
           {

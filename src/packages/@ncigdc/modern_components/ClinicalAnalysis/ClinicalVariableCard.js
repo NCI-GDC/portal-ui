@@ -58,6 +58,7 @@ import timestamp from '@ncigdc/utils/timestamp';
 
 import { IS_CDAVE_DEV } from '@ncigdc/utils/constants';
 import { MAXIMUM_CURVES, MINIMUM_CASES } from '../../utils/survivalplot';
+import consoleDebug from '@ncigdc/utils/consoleDebug';
 
 const colors = scaleOrdinal(schemeCategory10);
 
@@ -240,18 +241,16 @@ const enhance = compose(
                     ],
                   },
                 },
-                ...acc.nextInterval !== 0 &&
+                ...(acc.nextInterval !== 0 &&
                 [{
                   op: '<=',
                   content: {
                     field: fieldName,
                     value: [`${acc.nextInterval - 1}`],
                   },
-                }],
+                }]),
               ],
-
             };
-            console.log("filters updated", filters);
 
         return {
           nextInterval: key,
@@ -502,7 +501,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
           checked={!!_.find(selectedBuckets, { key: b.key })}
         />
       ),
-      ...variable.active_chart === 'survival'
+      ...(variable.active_chart === 'survival'
       && {
         survival: (
           <Tooltip
@@ -552,7 +551,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
             </Button>
           </Tooltip>
         ),
-      },
+      }),
     }));
   };
 
@@ -579,8 +578,8 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
 
   const devData = [
     ...tableData,
-    noDataTotal > 0 &&
-    {
+    ...(noDataTotal > 0 &&
+    [{
       select: '',
       key: 'Not in Index',
       doc_count: (
@@ -590,7 +589,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
         </span>
       ),
       survival: '',
-    },
+    }]),
     { select: '', key: 'Total', doc_count: totalDocs, survival: '' },
   ];
 

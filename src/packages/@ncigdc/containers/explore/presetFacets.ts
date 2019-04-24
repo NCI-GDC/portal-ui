@@ -115,3 +115,15 @@ export const clinicalFacets: IClinicalFacetProps[] = [
     excluded: [...excludedRegex],
   },
 ];
+
+export const customSorting = {
+  'diagnoses.ajcc_clinical_t': -23,
+  'diagnoses.ajcc_clinical_n': -22,
+  'diagnoses.ajcc_clinical_m': -21,
+  'diagnoses.ajcc_clinical_stage': -20,
+  'diagnoses.ajcc_pathologic_t': -13,
+  'diagnoses.ajcc_pathologic_n': -12,
+  'diagnoses.ajcc_pathologic_m': -11,
+  'diagnoses.ajcc_pathologic_stage': -10,
+  'diagnoses.ajcc_staging_system_edition': -1,
+};

@@ -29,8 +29,9 @@ import styled from '@ncigdc/theme/styled';
 import tryParseJSON from '@ncigdc/utils/tryParseJSON';
 import withFacetSelection from '@ncigdc/utils/withFacetSelection';
 import {
-  presetFacets,
   clinicalFacets,
+  customSorting,
+  presetFacets,
 } from '@ncigdc/containers/explore/presetFacets';
 import Input from '@ncigdc/uikit/Form/Input';
 import { ITheme } from '@ncigdc/theme/types';
@@ -474,6 +475,7 @@ const enhance = compose(
                                   style: { paddingBottom: 0 },
                                 }}
                                 style={{
+                                  order: customSorting[componentFacet.field] || 0,
                                   paddingLeft: '10px',
                                 }}
                                 headerStyle={{

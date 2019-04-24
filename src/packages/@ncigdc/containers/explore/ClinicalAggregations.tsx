@@ -1,7 +1,20 @@
 import React from 'react';
 import Relay from 'react-relay/classic';
 import { connect } from 'react-redux';
-import _ from 'lodash';
+import {
+  every,
+  filter,
+  get,
+  includes,
+  mapValues,
+  omitBy,
+  orderBy,
+  replace,
+  some,
+  startCase,
+  toLower,
+  values,
+} from 'lodash';
 import {
   compose,
   withState,
@@ -115,16 +128,16 @@ const facetMatchesQuery = (
   elements: IBucketProps[],
   searchValue: string,
 ): boolean => {
-  return _.some(
+  return some(
     [
-      _.replace(facet.field.split('.').pop() || '', /_/g, ' '),
+      replace(facet.field.split('.').pop() || '', /_/g, ' '),
       ...(elements || []).map((e: IBucketProps) => e.key),
       facet.description,
     ]
       .filter((n: string) => n)
-      .map(_.toLower),
+      .map(toLower),
     searchTarget =>
-      _.includes(
+      includes(
         searchTarget.toLocaleLowerCase(),
         searchValue.toLocaleLowerCase(),
       ),
@@ -152,8 +165,8 @@ const enhance = compose(
     }) => ({
       facetsExpandedStatus,
       notifications: bannerNotification,
-      allExpanded: _.mapValues(facetsExpandedStatus, status =>
-        _.some(_.values(status.facets)),
+      allExpanded: mapValues(facetsExpandedStatus, status =>
+        some(values(status.facets)),
       ),
     }),
   ),
@@ -207,13 +220,13 @@ const enhance = compose(
       relay.setVariables(
         {
           filters: globalFilters,
-          [relayVarName]: _.values(facetMapping)
+          [relayVarName]: values(facetMapping)
             .map(({ field }: { field: string }) => field)
             .join(','),
         },
         (readyState: { ready: boolean, aborted: boolean, error: boolean }) => {
           if (
-            _.some([readyState.ready, readyState.aborted, readyState.error])
+            some([readyState.ready, readyState.aborted, readyState.error])
           ) {
             setIsLoadingParsedFacets(false);
           }
@@ -256,10 +269,10 @@ const enhance = compose(
         ? tryParseJSON(facets.facets, {})
         : {};
 
-      const usefulFacets = _.omitBy(
+      const usefulFacets = omitBy(
         parsedFacets,
         (aggregation: IAggregationProps) =>
-          _.some([
+          some([
             !aggregation,
             aggregation.buckets &&
               aggregation.buckets.filter(
@@ -274,12 +287,12 @@ const enhance = compose(
       const filteredFacets = clinicalFacets.reduce((acc, header) => {
         return {
           ...acc,
-          [header.field]: _.filter(facetMapping, facet => {
-            return _.every([
+          [header.field]: filter(facetMapping, facet => {
+            return every([
               facetMatchesQuery(
                 facet,
-                _.filter(
-                  _.get(parsedFacets[facet.field], 'buckets', undefined),
+                filter(
+                  get(parsedFacets[facet.field], 'buckets', undefined),
                   obj => obj.key !== '_missing',
                 ),
                 searchValue,
@@ -288,7 +301,7 @@ const enhance = compose(
               !shouldHideUselessFacets ||
                 usefulFacets.hasOwnProperty(facet.field),
               !header.excluded || facet.full.startsWith(header.full),
-              !_.some(
+              !some(
                 header.excluded.map((regex: RegExp) => regex.test(facet.full)),
               ),
             ]);
@@ -359,7 +372,7 @@ const enhance = compose(
             />
             Only show fields with values ({isLoadingParsedFacets
               ? '...'
-              : _.values(filteredFacets).reduce(
+              : values(filteredFacets).reduce(
                   (acc: number, facet: IFacetProps[]) => acc + facet.length,
                   0,
                 )}{' '}
@@ -443,82 +456,93 @@ const enhance = compose(
                     </Row>
                     {facetsExpandedStatus[facet.field].expanded && (
                       <Column>
-                        {_.orderBy(
-                          filteredFacets[facet.field],
-                          ['field'],
-                          ['asc'],
-                        )
-                          .slice(
-                            0,
-                            facetsExpandedStatus[facet.field].showingMore
-                              ? Infinity
-                              : 5,
-                          )
-                          .map((componentFacet: IFacetProps) => {
-                            const fieldName =
-                              componentFacet.full.split('.').pop() || '';
-                            return [
-                              <WrapperComponent
-                                relayVarName="exploreCaseCustomFacetFields"
-                                key={componentFacet.full}
-                                isMatchingSearchValue={(componentFacet.full +
-                                  componentFacet.description
-                                )
-                                  .toLocaleLowerCase()
-                                  .includes(searchValue.toLocaleLowerCase())}
-                                facet={componentFacet}
-                                allExpanded={allExpanded[facet.field]}
-                                title={_.startCase(fieldName)}
-                                aggregation={parsedFacets[componentFacet.field]}
-                                searchValue={searchValue}
-                                additionalProps={{
-                                  style: { paddingBottom: 0 },
-                                }}
-                                style={{
-                                  order: customSorting[componentFacet.field] || 0,
-                                  paddingLeft: '10px',
-                                }}
-                                headerStyle={{
-                                  padding: '0.5rem 1.2rem 0.5rem 1.2rem',
-                                  fontSize: '16px',
-                                }}
-                                collapsed={
-                                  searchValue.length === 0
-                                    ? !facetsExpandedStatus[facet.field].facets[
-                                        fieldName
-                                      ]
-                                    : false
-                                }
-                                setCollapsed={(collapsed: boolean) =>
-                                  dispatch(
-                                    changeExpandedStatus(
-                                      facet.field,
-                                      fieldName,
-                                    ),
-                                  )}
-                                category={facet.field}
-                                DescriptionComponent={
-                                  <div
-                                    key={componentFacet.description}
-                                    style={{
-                                      fontStyle: 'italic',
-                                      paddingLeft: '30px',
-                                      paddingRight: '10px',
-                                      width: '320px',
+                        {filteredFacets[facet.field].length > 0
+                          ? (
+                            orderBy(
+                              filteredFacets[facet.field],
+                              ['field'],
+                              ['asc'],
+                            )
+                              .slice(
+                                0,
+                                facetsExpandedStatus[facet.field].showingMore
+                                  ? Infinity
+                                  : 5,
+                              )
+                              .map((componentFacet: IFacetProps) => {
+                                const fieldName =
+                                  componentFacet.full.split('.').pop() || '';
+                                return [
+                                  <WrapperComponent
+                                    relayVarName="exploreCaseCustomFacetFields"
+                                    key={componentFacet.full}
+                                    isMatchingSearchValue={(componentFacet.full +
+                                      componentFacet.description
+                                    )
+                                      .toLocaleLowerCase()
+                                      .includes(searchValue.toLocaleLowerCase())}
+                                    facet={componentFacet}
+                                    allExpanded={allExpanded[facet.field]}
+                                    title={startCase(fieldName)}
+                                    aggregation={parsedFacets[componentFacet.field]}
+                                    searchValue={searchValue}
+                                    additionalProps={{
+                                      style: { paddingBottom: 0 },
                                     }}
-                                  >
-                                    {internalHighlight(
-                                      searchValue,
-                                      componentFacet.description,
-                                      {
-                                        backgroundColor: '#FFFF00',
-                                      },
-                                    )}
-                                  </div>
-                                }
-                              />,
-                            ];
-                          })}
+                                    style={{
+                                      order: customSorting[componentFacet.field] || 0,
+                                      paddingLeft: '10px',
+                                    }}
+                                    headerStyle={{
+                                      padding: '0.5rem 1.2rem 0.5rem 1.2rem',
+                                      fontSize: '16px',
+                                    }}
+                                    collapsed={
+                                      searchValue.length === 0
+                                        ? !facetsExpandedStatus[facet.field].facets[
+                                            fieldName
+                                          ]
+                                        : false
+                                    }
+                                    setCollapsed={(collapsed: boolean) =>
+                                      dispatch(
+                                        changeExpandedStatus(
+                                          facet.field,
+                                          fieldName,
+                                        ),
+                                      )}
+                                    category={facet.field}
+                                    DescriptionComponent={
+                                      <div
+                                        key={componentFacet.description}
+                                        style={{
+                                          fontStyle: 'italic',
+                                          paddingLeft: '30px',
+                                          paddingRight: '10px',
+                                          width: '320px',
+                                        }}
+                                      >
+                                        {internalHighlight(
+                                          searchValue,
+                                          componentFacet.description,
+                                          {
+                                            backgroundColor: '#FFFF00',
+                                          },
+                                        )}
+                                      </div>
+                                    }
+                                  />,
+                                ];
+                              }))
+                          : (
+                            <article
+                              style={{
+                                fontSize: '1.7rem',
+                                padding: '2rem 3rem',
+                              }} >
+                              No data is available for this clinical category.
+                            </article>)}
+
                         {filteredFacets[facet.field].length > 5 && (
                           <BottomRow style={{ marginRight: '1rem' }}>
                             <ToggleMoreLink

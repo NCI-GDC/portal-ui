@@ -37,12 +37,15 @@ module.exports = {
       FunctionDeclaration: { parameters: 'first' },
       FunctionExpression: { parameters: 'first' },
       ignoreComments: true,
-      ignoredNodes: [ 'ConditionalExpression' ],
+      ignoredNodes: ['ConditionalExpression'],
       ImportDeclaration: 'first',
       MemberExpression: 1,
       ObjectExpression: 'first',
       SwitchCase: 1,
     }],
+    'quotes': ['warn', 'single', { 'allowTemplateLiterals': true }],
+    'jsx-quotes': ['warn', 'prefer-double'],
+    'comma-dangle': ['warn', 'always-multiline'],
     'no-var': 'error', // Must use const or let.
     'react/prop-types': 'off', // Disable prop-types as TS is used for type checking.
     '@typescript-eslint/explicit-function-return-type': 'off', // Allows functional components, should be fixed soon: https://github.com/typescript-eslint/typescript-eslint/issues/149

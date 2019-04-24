@@ -113,12 +113,23 @@ const BarChart = ({
   xG
     .selectAll('text')
     .style('text-anchor', 'end')
-    .style('fontSize', xAxisStyle.fontSize)
     .style('fontWeight', xAxisStyle.fontWeight)
     .attr('fill', xAxisStyle.textFill)
     .attr('dx', '-1em')
     .attr('dy', '.15em')
     .attr('transform', 'rotate(-45)');
+
+  xG
+    .selectAll('text')
+    .each(function (d) {
+      const xFontSize = d.length > 12
+        ? '0.8rem'
+        : d.length > 8
+          ? '1rem'
+          : xAxis.fontSize;
+      d3.select(this)
+        .style('fontSize', xFontSize);
+    });
 
   xG.selectAll('path').style('stroke', xAxisStyle.stroke);
 

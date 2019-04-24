@@ -1,5 +1,5 @@
 import React from 'react';
-import { compose, withState, withPropsOnChange, withProps } from 'recompose';
+import { compose, withState, withPropsOnChange, withProps, lifecycle } from 'recompose';
 import DownCaretIcon from 'react-icons/lib/fa/caret-down';
 import { connect } from 'react-redux';
 import _ from 'lodash';
@@ -56,6 +56,12 @@ import { IS_CDAVE_DEV } from '@ncigdc/utils/constants';
 import { MAXIMUM_CURVES, MINIMUM_CASES } from '../../utils/survivalplot';
 
 const colors = scaleOrdinal(schemeCategory10);
+
+const makeWrapperId = fieldName => {
+  const fieldArr = fieldName.split('.');
+  const fieldTerm = fieldArr[1] === 'treatments' ? fieldArr[2] : fieldArr[1];
+  return `${fieldTerm}-chart`;
+};
 
 interface ITableHeading {
   key: string;
@@ -387,7 +393,29 @@ const enhance = compose(
       }
     }
   ),
-  withPropsOnChange(['id'], ({ setSelectedBuckets }) => setSelectedBuckets([]))
+  withPropsOnChange(['id'], ({ setSelectedBuckets }) => setSelectedBuckets([])),
+  lifecycle({
+    componentDidMount(): void {
+      const { dispatch, variable, fieldName, id } = this.props;
+      if (variable.scrollToCard === false) return;
+      const offset = document.getElementById('header').getBoundingClientRect().bottom + 10;
+      const wrapperId = makeWrapperId(fieldName);
+      const $anchor = document.getElementById(wrapperId);
+      const offsetTop = $anchor.getBoundingClientRect().top + window.pageYOffset;
+      window.scroll({
+        top: offsetTop - offset,
+        behavior: 'smooth'
+      });
+      dispatch(
+        updateClinicalAnalysisVariable({
+          fieldName,
+          variableKey: 'scrollToCard',
+          value: false,
+          id,
+        })
+      );
+    },
+  })
 );
 
 const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
@@ -635,6 +663,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
             variable.active_calculation === 'number'
               ? d.chart_doc_count
               : (d.chart_doc_count / totalDocs) * 100,
+
           tooltip: `${d.key}: ${d.chart_doc_count.toLocaleString()}`,
         };
       })
@@ -728,7 +757,8 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
         ? getContinuousSetFilters()
         : getCategoricalSetFilters();
   }
-  const wrapperId = `${fieldName.split('.')[1]}-chart`;
+
+  const wrapperId = makeWrapperId(fieldName);
 
   const tsvSubstring = fieldName.replace(/\./g, '-');
 
@@ -751,6 +781,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
           alignItems: 'center',
           margin: '5px 0 10px',
         }}
+        id={wrapperId}
       >
         <h2 style={{ fontSize: '1.8rem', marginTop: 10, marginBottom: 0 }}>
           {humanify({ term: fieldName })}
@@ -1023,7 +1054,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                     selector: `#analysis-${tsvSubstring}-table`,
                     filename: `analysis-${
                       currentAnalysis.name
-                    }-${tsvSubstring}.${timestamp()}.tsv`,
+                      }-${tsvSubstring}.${timestamp()}.tsv`,
                   })
                 }
               >

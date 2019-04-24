@@ -43,7 +43,6 @@ async function fetchCurves(
   size: number,
   hasMultipleCurves: Boolean
 ): Promise<Object> {
-  console.log("fetch curves - filters", filters);
   const params = _.omitBy(
     { filters: filters && JSON.stringify(filters), size },
     _.isNil
@@ -193,7 +192,7 @@ export const getSurvivalCurves = memoize(
               </span>
             ),
           },
-          ...(results2.length === 0 && [
+          (results2.length === 0 &&
             {
               key: `${slug || value}-cannot-compare`,
               value: (
@@ -202,8 +201,7 @@ export const getSurvivalCurves = memoize(
                 </div>
               ),
               style: { width: '100%', marginTop: 5 },
-            },
-          ]),
+            }),
         ]
         : [
           {

@@ -240,15 +240,14 @@ const enhance = compose(
                     ],
                   },
                 },
-                ...(acc.nextInterval !== 0 && [
-                  {
-                    op: '<=',
-                    content: {
-                      field: fieldName,
-                      value: [`${acc.nextInterval - 1}`],
-                    },
+                acc.nextInterval !== 0 &&
+                {
+                  op: '<=',
+                  content: {
+                    field: fieldName,
+                    value: [`${acc.nextInterval - 1}`],
                   },
-                ]),
+                },
               ],
             };
 
@@ -304,7 +303,7 @@ const enhance = compose(
             : rawQueryData
               .filter(
                 bucket =>
-                  !IS_CDAVE_DEV ? bucket.key !== '_missing' : bucket.key
+                  IS_CDAVE_DEV ? bucket.key : bucket.key !== '_missing'
               )
               .map(b => ({
                 ...b,
@@ -439,7 +438,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
           .reverse()
         : rawData
           .filter(
-            bucket => (!IS_CDAVE_DEV ? bucket.key !== '_missing' : bucket.key)
+            bucket => (IS_CDAVE_DEV ? bucket.key : bucket.key !== '_missing')
           )
           .map(b => ({
             ...b,
@@ -501,58 +500,57 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
           checked={!!_.find(selectedBuckets, { key: b.key })}
         />
       ),
-      ...(variable.active_chart === 'survival'
-        ? {
-          survival: (
-            <Tooltip
-              Component={
-                b.key === '_missing' || b.chart_doc_count < MINIMUM_CASES
-                  ? 'Not enough data'
-                  : selectedSurvivalValues.indexOf(b.key) > -1
-                    ? `Click icon to remove ${b.key}`
-                    : selectedSurvivalValues.length < MAXIMUM_CURVES
-                      ? `Click icon to plot ${b.key}`
-                      : `Maximum plots (${MAXIMUM_CURVES}) reached`
-              }
-            >
-              <Button
-                style={{
-                  padding: '2px 3px',
-                  backgroundColor:
-                    selectedSurvivalValues.indexOf(b.key) === -1
-                      ? '#666'
-                      : colors(selectedSurvivalValues.indexOf(b.key)),
-                  color: 'white',
-                  margin: '0 auto',
-                  position: 'static',
-                  opacity:
-                    b.key === '_missing' ||
-                      b.chart_doc_count < MINIMUM_CASES ||
-                      (selectedSurvivalValues.length >= MAXIMUM_CURVES &&
-                        selectedSurvivalValues.indexOf(b.key) === -1)
-                      ? '0.33'
-                      : '1',
-                }}
-                disabled={
+      ...variable.active_chart === 'survival'
+      && {
+        survival: (
+          <Tooltip
+            Component={
+              b.key === '_missing' || b.chart_doc_count < MINIMUM_CASES
+                ? 'Not enough data'
+                : selectedSurvivalValues.indexOf(b.key) > -1
+                  ? `Click icon to remove ${b.key}`
+                  : selectedSurvivalValues.length < MAXIMUM_CURVES
+                    ? `Click icon to plot ${b.key}`
+                    : `Maximum plots (${MAXIMUM_CURVES}) reached`
+            }
+          >
+            <Button
+              style={{
+                padding: '2px 3px',
+                backgroundColor:
+                  selectedSurvivalValues.indexOf(b.key) === -1
+                    ? '#666'
+                    : colors(selectedSurvivalValues.indexOf(b.key)),
+                color: 'white',
+                margin: '0 auto',
+                position: 'static',
+                opacity:
                   b.key === '_missing' ||
-                  b.chart_doc_count < MINIMUM_CASES ||
-                  (selectedSurvivalValues.length >= MAXIMUM_CURVES &&
-                    selectedSurvivalValues.indexOf(b.key) === -1)
-                }
-                onClick={() => {
-                  updateSelectedSurvivalValues(displayData, b);
-                }}
-              >
-                {selectedSurvivalLoadingIds.indexOf(b.key) !== -1 ? (
-                  <SpinnerIcon />
-                ) : (
-                    <SurvivalIcon />
-                  )}
-              </Button>
-            </Tooltip>
-          ),
-        }
-        : {}),
+                    b.chart_doc_count < MINIMUM_CASES ||
+                    (selectedSurvivalValues.length >= MAXIMUM_CURVES &&
+                      selectedSurvivalValues.indexOf(b.key) === -1)
+                    ? '0.33'
+                    : '1',
+              }}
+              disabled={
+                b.key === '_missing' ||
+                b.chart_doc_count < MINIMUM_CASES ||
+                (selectedSurvivalValues.length >= MAXIMUM_CURVES &&
+                  selectedSurvivalValues.indexOf(b.key) === -1)
+              }
+              onClick={() => {
+                updateSelectedSurvivalValues(displayData, b);
+              }}
+            >
+              {selectedSurvivalLoadingIds.indexOf(b.key) !== -1 ? (
+                <SpinnerIcon />
+              ) : (
+                  <SurvivalIcon />
+                )}
+            </Button>
+          </Tooltip>
+        ),
+      },
     }));
   };
 
@@ -579,20 +577,18 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
 
   const devData = [
     ...tableData,
-    ...(noDataTotal > 0 && [
-      {
-        select: '',
-        key: 'Not in Index',
-
-        doc_count: (
-          <span>
-            {(noDataTotal || 0).toLocaleString()}
-            {` (${((noDataTotal || 0) / totalDocs * 100).toFixed(2)}%)`}
-          </span>
-        ),
-        survival: '',
-      },
-    ]),
+    noDataTotal > 0 &&
+    {
+      select: '',
+      key: 'Not in Index',
+      doc_count: (
+        <span>
+          {(noDataTotal || 0).toLocaleString()}
+          {` (${((noDataTotal || 0) / totalDocs * 100).toFixed(2)}%)`}
+        </span>
+      ),
+      survival: '',
+    },
     { select: '', key: 'Total', doc_count: totalDocs, survival: '' },
   ];
 
@@ -623,16 +619,15 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
           style: { textAlign: 'right' },
           thStyle: { position: 'sticky', top: 0, textAlign: 'right' },
         },
-        ...(chartType === 'survival'
-          ? [
-            {
-              key: 'survival',
-              title: 'Survival',
-              style: { display: 'flex', justifyContent: 'flex-end' },
-              thStyle: { position: 'sticky', top: 0, textAlign: 'right' },
-            },
-          ]
-          : []),
+        ...chartType === 'survival'
+        && [
+          {
+            key: 'survival',
+            title: 'Survival',
+            style: { display: 'flex', justifyContent: 'flex-end' },
+            thStyle: { position: 'sticky', top: 0, textAlign: 'right' },
+          }
+        ],
       ];
   };
 
@@ -771,9 +766,9 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
               <Tooltip key={plotType} Component={vizButtons[plotType].title}>
                 <Button
                   style={{
-                    ...(plotType === variable.active_chart
+                    ...plotType === variable.active_chart
                       ? styles.activeButton(theme)
-                      : styles.common(theme)),
+                      : styles.common(theme),
                     margin: 2,
                   }}
                   onClick={() => {

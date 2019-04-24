@@ -167,12 +167,12 @@ export const getSurvivalCurves = memoize(
             value: (
               <span>
                 S
-                  <sub>1</sub> (N = {getCaseCount(results2.length > 0)})
-                  {plotType === 'mutation' && (
+                <sub>1</sub> (N = {getCaseCount(results2.length > 0)})
+                {plotType === 'mutation' && (
                   <span>
                     {' '}
                     - <Symbol>{slug || value}</Symbol> Not Mutated Cases
-                    </span>
+                  </span>
                 )}
               </span>
             ),
@@ -182,17 +182,17 @@ export const getSurvivalCurves = memoize(
             value: (
               <span>
                 S
-                  <sub>2</sub> (N = {getCaseCount(results2.length === 0)}){' '}
+                <sub>2</sub> (N = {getCaseCount(results2.length === 0)}){' '}
                 {plotType === 'mutation' && (
                   <span>
                     {' '}
                     - <Symbol>{slug || value}</Symbol> Mutated Cases
-                    </span>
+                  </span>
                 )}
               </span>
             ),
           },
-          ...(results2.length === 0 &&
+          ...(results2.length === 0 ?
             [{
               key: `${slug || value}-cannot-compare`,
               value: (
@@ -201,7 +201,7 @@ export const getSurvivalCurves = memoize(
                 </div>
               ),
               style: { width: '100%', marginTop: 5 },
-            }]),
+            }] : []),
         ]
         : [
           {
@@ -289,7 +289,7 @@ export const getSurvivalCurvesArray = memoize(
                 value: (
                   <span>
                     S<sub>{i + 1}</sub> (N = {getCaseCount(i)})
-                      </span>
+                  </span>
                 ),
               };
         })

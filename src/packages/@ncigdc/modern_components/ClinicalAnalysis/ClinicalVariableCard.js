@@ -14,7 +14,6 @@ import EntityPageHorizontalTable from '@ncigdc/components/EntityPageHorizontalTa
 import Dropdown from '@ncigdc/uikit/Dropdown';
 import DropdownItem from '@ncigdc/uikit/DropdownItem';
 import Hidden from '@ncigdc/components/Hidden';
-import tryParseJSON from '@ncigdc/utils/tryParseJSON';
 import BarChart from '@ncigdc/components/Charts/BarChart';
 import ExploreLink from '@ncigdc/components/Links/ExploreLink';
 import { makeFilter, addInFilters } from '@ncigdc/utils/filters';
@@ -32,7 +31,6 @@ import { downloadToTSV } from '@ncigdc/components/DownloadTableToTsvButton';
 
 // survival plot
 import {
-  getDefaultCurve,
   getSurvivalCurvesArray,
 } from '@ncigdc/utils/survivalplot';
 import SurvivalPlotWrapper from '@ncigdc/components/SurvivalPlotWrapper';
@@ -45,12 +43,10 @@ import {
   BoxPlot,
 } from '@ncigdc/theme/icons';
 import { withTheme } from '@ncigdc/theme';
-import { IThemeProps } from '@ncigdc/theme/versions/active';
 
 import {
   removeClinicalAnalysisVariable,
   updateClinicalAnalysisVariable,
-  IAnalysisPayload,
 } from '@ncigdc/dux/analysis';
 import { humanify } from '@ncigdc/utils/string';
 import { getLowerAgeYears, getUpperAgeYears } from '@ncigdc/utils/ageDisplay';
@@ -58,7 +54,6 @@ import timestamp from '@ncigdc/utils/timestamp';
 
 import { IS_CDAVE_DEV } from '@ncigdc/utils/constants';
 import { MAXIMUM_CURVES, MINIMUM_CASES } from '../../utils/survivalplot';
-import consoleDebug from '@ncigdc/utils/consoleDebug';
 
 const colors = scaleOrdinal(schemeCategory10);
 
@@ -218,7 +213,7 @@ const enhance = compose(
     totalDocs: (data.hits || { total: 0 }).total,
   })),
   withProps(
-    ({ rawQueryData, variable, fieldName, setId, data, totalDocs }) => ({
+    ({ variable, fieldName, setId, totalDocs }) => ({
       getBucketRangesAndFilters: (acc, { doc_count, key }) => {
         const filters =
           variable.plotTypes === 'categorical'
@@ -282,8 +277,6 @@ const enhance = compose(
       filters,
       fieldName,
       variable,
-      data,
-      setId,
       setSelectedSurvivalValues,
       selectedSurvivalValues,
       setSelectedSurvivalLoadingIds,
@@ -388,7 +381,7 @@ const enhance = compose(
     (props, nextProps) =>
       props.variable.active_chart !== nextProps.variable.active_chart ||
       !_.isEqual(props.data, nextProps.data),
-    ({ filters, data, setId, populateSurvivalData, variable }) => {
+    ({ populateSurvivalData, variable }) => {
       if (variable.active_chart === 'survival') {
         populateSurvivalData();
       }
@@ -408,13 +401,11 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
   setId,
   overallSurvivalData,
   survivalPlotLoading,
-  setSelectedSurvivalLoadingId,
   selectedSurvivalLoadingIds,
   selectedSurvivalData,
   selectedSurvivalValues,
   updateSelectedSurvivalValues,
   filters,
-  stats,
   selectedBuckets,
   setSelectedBuckets,
   rawQueryData,
@@ -489,7 +480,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
           value={b.key}
           aria-label={`${fieldName}-${b.key}`}
           disabled={b.doc_count === 0}
-          onChange={e => {
+          onChange={() => {
             if (_.find(selectedBuckets, { key: b.key })) {
               setSelectedBuckets(
                 _.reject(selectedBuckets, r => r.key === b.key)

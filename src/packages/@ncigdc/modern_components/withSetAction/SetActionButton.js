@@ -34,7 +34,7 @@ export default class extends React.Component {
         </Overlay>
         <Component
           disabled={disabled}
-          lefticon={leftIcon}
+          leftIcon={leftIcon}
           onClick={() => {
             onClick();
             createSet(props);

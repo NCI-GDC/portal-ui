@@ -66,118 +66,114 @@ const DownloadVisualizationButton = ({
   tooltipHTML,
   disabled,
   ...props
-}: TProps) => (
-  <DropDown
-    className={props.className || 'test-download-viz-button'}
-    isDisabled={disabled}
-    button={
-      <Tooltip Component={tooltipHTML}>
-        <Button
-          disabled={disabled}
-          leftIcon={!noText && <Download />}
-          style={visualizingButton}
-          type="button"
-        >
-          {noText ? (
-            <span>
-              <Download />
-              <Hidden>Download</Hidden>
-            </span>
+}: TProps) => {
+  const { className } = props;
+  return (
+    <DropDown
+      button={(
+        <Tooltip Component={tooltipHTML}>
+          <Button
+            disabled={disabled}
+            leftIcon={!noText && <Download />}
+            style={visualizingButton}
+            type="button">
+            {noText ? (
+              <span>
+                <Download />
+                <Hidden>Download</Hidden>
+              </span>
           ) : (
             'Download'
           )}
-        </Button>
-      </Tooltip>
-    }
-    {...props}
-  >
-    {svg && (
-      <DropdownItem
-        key="svg"
-        className="test-download-svg"
-        style={styles.row(theme)}
-        onClick={() => {
-          downloadSvg({
-            svg: getDOMNode(svg),
-            stylePrefix,
-            fileName: `${slug}.svg`,
-          });
-          track('download-viz', { type: 'svg' });
-        }}
-      >
+          </Button>
+        </Tooltip>
+      )}
+      className={className || 'test-download-viz-button'}
+      isDisabled={disabled}
+      {...props}>
+      {svg && (
+        <DropdownItem
+          className="test-download-svg"
+          key="svg"
+          onClick={() => {
+            downloadSvg({
+              svg: getDOMNode(svg),
+              stylePrefix,
+              fileName: `${slug}.svg`,
+            });
+            track('download-viz', { type: 'svg' });
+          }}
+          style={styles.row(theme)}>
         SVG
-      </DropdownItem>
-    )}
-    {svg && (
-      <DropdownItem
-        key="png"
-        className="test-download-png"
-        style={{
-          ...styles.row(theme),
-          ...(supportsSvgToPng()
+        </DropdownItem>
+      )}
+      {svg && (
+        <DropdownItem
+          className="test-download-png"
+          key="png"
+          onClick={() => {
+            if (!supportsSvgToPng()) return;
+            downloadSvg({
+              svg: getDOMNode(svg),
+              stylePrefix,
+              fileName: `${slug}.png`,
+              scale: 2,
+            });
+            track('download-viz', { type: 'png' });
+          }}
+          style={{
+            ...styles.row(theme),
+            ...(supportsSvgToPng()
             ? {}
             : {
-                opacity: 0.5,
-              }),
-        }}
-        onClick={() => {
-          if (!supportsSvgToPng()) return;
-          downloadSvg({
-            svg: getDOMNode(svg),
-            stylePrefix,
-            fileName: `${slug}.png`,
-            scale: 2,
-          });
-          track('download-viz', { type: 'png' });
-        }}
-      >
-        {supportsSvgToPng() ? (
+              opacity: 0.5,
+            }),
+          }}>
+          {supportsSvgToPng() ? (
           'PNG'
         ) : (
           <Tooltip
-            Component={`
+            Component="
                   Download as PNG is currently unavaialable in your browser.
                   Please use the latest version of Chrome or Firefox
-                `}
-          >
+                ">
             PNG
           </Tooltip>
         )}
-      </DropdownItem>
-    )}
-    {data && (
-      <DropdownItem
-        key="JSON"
-        style={styles.row(theme)}
-        onClick={() => {
-          saveFile(JSON.stringify(data, null, 2), 'JSON', `${slug}.json`);
-          track('download-viz', { type: 'json' });
-        }}
-      >
+        </DropdownItem>
+      )}
+      {data && (
+        <DropdownItem
+          key="JSON"
+          onClick={() => {
+            saveFile(JSON.stringify(data, null, 2), 'JSON', `${slug}.json`);
+            track('download-viz', { type: 'json' });
+          }}
+          style={styles.row(theme)}>
         JSON
-      </DropdownItem>
-    )}
-    {tsvData && (
-      <DropdownItem
-        key="TSV"
-        style={styles.row(theme)}
-        onClick={() => {
-          if (tsvData) {
-            saveFile(
+        </DropdownItem>
+      )}
+      {tsvData && (
+        <DropdownItem
+          key="TSV"
+          onClick={() => {
+            if (tsvData) {
+              saveFile(
               tsvData[0] && tsvData[0].forEach
                 ? mapArrayToTsvString(tsvData)
                 : toTsvString(tsvData),
               'TSV',
               `${slug}.tsv`,
-            );
-            track('download-viz', { type: 'tsv' });
-          }
-        }}
-      >
+              );
+              track('download-viz', { type: 'tsv' });
+            }
+          }}
+          style={styles.row(theme)}>
         TSV
-      </DropdownItem>
-    )}
-  </DropDown>
-);
+        </DropdownItem>
+      )}
+    </DropDown>
+  );
+};
 
 export default enhance(DownloadVisualizationButton);

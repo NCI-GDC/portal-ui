@@ -21,19 +21,28 @@ const styles = {
   },
 };
 
-const Input = ({ style, getNode, ...props }) => (
+const Input = ({
+  style, getNode, ...props
+}) => (
   <input
-    ref={getNode}
     aria-label="text"
-    style={{ ...styles.input, ...style }}
+    ref={getNode}
+    style={{
+      ...styles.input,
+      ...style,
+    }}
     type="text"
     {...props}
   />
 );
 
 Input.propTypes = {
-  style: PropTypes.object,
   onChange: PropTypes.func,
+  style: PropTypes.objectOf(PropTypes.object),
+};
+Input.defaultProps = {
+  onChange: () => {},
+  style: {},
 };
 
 /*----------------------------------------------------------------------------*/

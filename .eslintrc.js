@@ -96,7 +96,7 @@ module.exports = {
     'import/no-extraneous-dependencies': ['warn', {
       'packageDir': './'
     }],
-    'react/jsx-closing-bracket-location': ['warn', 'after-props'],
+    'react/jsx-closing-bracket-location': ['warn', 'tag-aligned'],
     'react/jsx-indent-props': ['warn', 'first'],
     'react/jsx-max-props-per-line': ['warn', {
       maximum: 1,
@@ -142,6 +142,7 @@ module.exports = {
     'react/prop-types': 'off', // Disable prop-types as TS is used for type checking.
     '@typescript-eslint/explicit-function-return-type': 'off', // Allows functional components, should be fixed soon: https://github.com/typescript-eslint/typescript-eslint/issues/149
     '@typescript-eslint/explicit-member-accessibility': 'off', // Allows not having to set public/private on class properties.
+    'jsx-a11y/label-has-for': 'off', // deprecated
   },
   settings: {
     'import/resolver': {

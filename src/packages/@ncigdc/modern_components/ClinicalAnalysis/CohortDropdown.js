@@ -10,6 +10,7 @@ import { visualizingButton } from '@ncigdc/theme/mixins';
 import Tooltip from '@ncigdc/uikit/Tooltip/Tooltip';
 
 import { updateClinicalAnalysisSet } from '@ncigdc/dux/analysis';
+
 export default ({
   sets,
   currentAnalysis,
@@ -21,8 +22,9 @@ export default ({
     if (setKey !== _.keys(currentAnalysis.sets.case)[0]) {
       return (
         <DropdownItem
-          key={setKey}
+          aria-label={`Switch selected set to ${name}`}
           className="all-sets-item"
+          key={setKey}
           onClick={() => {
             dispatch(
               updateClinicalAnalysisSet({
@@ -31,9 +33,7 @@ export default ({
                 setName: name,
               })
             );
-          }}
-          aria-label={`Switch selected set to ${name}`}
-        >
+          }}>
           {name}
         </DropdownItem>
       );
@@ -43,39 +43,39 @@ export default ({
   const setName = _.first(_.values(currentAnalysis.sets.case));
   return (
     <Dropdown
-      style={{
-        justifyContent: 'flex-start',
-      }}
-      isDisabled={disabled}
-      button={
+      button={(
         <Tooltip
           Component={
             disabled ? disabledMessage : setName.length > 16 ? setName : null
-          }
-        >
+          }>
           <Button
+            buttonContentStyle={{
+              width: '100%',
+              justifyContent: 'space-between',
+            }}
             className="cohort-dropdown"
+            disabled={disabled}
+            rightIcon={<DownCaretIcon />}
             style={{
               ...visualizingButton,
               padding: '0 6px',
               width: 145,
               justifyContent: 'flex-start',
-            }}
-            rightIcon={<DownCaretIcon />}
-            buttonContentStyle={{
-              width: '100%',
-              justifyContent: 'space-between',
-            }}
-            disabled={disabled}
-          >
+            }}>
             {_.truncate(setName, {
               length: 16,
             })}
           </Button>
         </Tooltip>
-      }
-      dropdownStyle={{ left: 0, cursor: 'pointer' }}
-    >
+      )}
+      dropdownStyle={{
+        left: 0,
+        cursor: 'pointer',
+      }}
+      isDisabled={disabled}
+      style={{
+        justifyContent: 'flex-start',
+      }}>
       {dropdownItems}
     </Dropdown>
   );

@@ -1,6 +1,8 @@
 import React from 'react';
 import OpenSeadragon from 'openseadragon';
-import { compose, withPropsOnChange, withState, lifecycle } from 'recompose';
+import {
+  compose, withPropsOnChange, withState, lifecycle,
+} from 'recompose';
 import { SLIDE_IMAGE_ENDPOINT } from '@ncigdc/utils/constants';
 
 import { Row } from '@ncigdc/uikit/Flex';
@@ -125,7 +127,9 @@ const enhance = compose(
   withPropsOnChange(
     ['imageParams'],
     ({
-      imageParams: { height, width, overlap, tileSize },
+      imageParams: {
+        height, width, overlap, tileSize,
+      },
       viewer,
       imageId,
       setBoundsByImage,
@@ -154,27 +158,32 @@ const enhance = compose(
 const ZoomableImage = enhance(props => {
   if (props.loadError) {
     return (
-      <Row style={{ width: '100%', height: '550px', backgroundColor: 'white' }}>
+      <Row style={{
+        width: '100%',
+        height: '550px',
+        backgroundColor: 'white',
+      }}>
         <div
           style={{
             marginLeft: '5rem',
             marginTop: '2rem',
             fontSize: 40,
             color: 'black',
-          }}
-        >
+          }}>
           <span>Image is not available</span>
         </div>
       </Row>
     );
-  } else {
-    return (
-      <Row
-        id="osd1"
-        style={{ width: '100%', height: '550px', backgroundColor: '#000' }}
-      />
-    );
   }
+  return (
+    <Row
+      id="osd1"
+      style={{
+        width: '100%',
+        height: '550px',
+        backgroundColor: '#000',
+      }} />
+  );
 });
 
 export default ZoomableImage;

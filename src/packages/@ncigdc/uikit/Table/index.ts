@@ -9,4 +9,6 @@ import CollapsibleTd from './CollapsibleTd';
 
 export default Table;
 
-export { Tr, Th, Td, TTd, TdNum, ThNum, CollapsibleTd };
+export {
+  Tr, Th, Td, TTd, TdNum, ThNum, CollapsibleTd,
+};

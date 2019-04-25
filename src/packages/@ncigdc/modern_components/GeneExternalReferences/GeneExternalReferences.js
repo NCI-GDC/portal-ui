@@ -1,5 +1,7 @@
 import React from 'react';
-import { compose, withProps, branch, renderComponent } from 'recompose';
+import {
+  compose, withProps, branch, renderComponent,
+} from 'recompose';
 import { omit } from 'lodash';
 import EntityPageVerticalTable from '@ncigdc/components/EntityPageVerticalTable';
 import externalReferenceLinks, {
@@ -30,11 +32,7 @@ export default compose(
   })
 )(({ externalLinks }: TProps = {}) => (
   <EntityPageVerticalTable
-    title={
-      <span>
-        <BookIcon style={{ marginRight: '1rem' }} /> External References
-      </span>
-    }
+    style={{ flex: 1 }}
     thToTd={Object.keys(externalLinks).map(db => ({
       th: externalLinkNames[db] || db.replace(/_/, ' '),
       td: externalLinks[db].length ? (
@@ -45,6 +43,11 @@ export default compose(
         '--'
       ),
     }))}
-    style={{ flex: 1 }}
-  />
+    title={(
+      <span>
+        <BookIcon style={{ marginRight: '1rem' }} />
+        {' '}
+External References
+      </span>
+    )} />
 ));

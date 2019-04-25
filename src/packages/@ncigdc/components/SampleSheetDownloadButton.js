@@ -11,13 +11,11 @@ const SampleSheetDownloadButton = ({
   files: { files: Array<TCartFile> },
 }) => (
   <DownloadButton
-    endpoint="files"
-    style={{ marginRight: '1em' }}
-    size={files.files.length}
-    filename={`gdc_sample_sheet.${timestamp()}.tsv`}
     activeText="Downloading"
-    inactiveText="Sample Sheet"
-    format="tsv"
+    endpoint="files"
+    extraParams={{
+      tsv_format: 'sample-sheet',
+    }}
     fields={[
       'file_id',
       'file_name',
@@ -28,9 +26,7 @@ const SampleSheetDownloadButton = ({
       'cases.samples.submitter_id',
       'cases.samples.sample_type',
     ]}
-    extraParams={{
-      tsv_format: 'sample-sheet',
-    }}
+    filename={`gdc_sample_sheet.${timestamp()}.tsv`}
     filters={{
       content: [
         {
@@ -43,7 +39,10 @@ const SampleSheetDownloadButton = ({
       ],
       op: 'and',
     }}
-  />
+    format="tsv"
+    inactiveText="Sample Sheet"
+    size={files.files.length}
+    style={{ marginRight: '1em' }} />
 );
 
 export default SampleSheetDownloadButton;

@@ -31,12 +31,14 @@ const SsmsTable = createCaseSummary(
   }) => (
     <ST
       {...props}
-      contextFilters={makeFilter([
-        { field: 'cases.project.project_id', value: projectId },
-      ])}
       context={projectId}
-      hideSurvival
-    />
+      contextFilters={makeFilter([
+        {
+          field: 'cases.project.project_id',
+          value: projectId,
+        },
+      ])}
+      hideSurvival />
   ),
 );
 
@@ -66,52 +68,72 @@ export default ({
   location,
   query = parse(location.search),
 }: Object) => {
-  const fmFilters = makeFilter([{ field: 'cases.case_id', value: caseId }]);
+  const fmFilters = makeFilter([
+    {
+      field: 'cases.case_id',
+      value: caseId,
+    },
+  ]);
 
   return (
-    <Exists type="Case" id={caseId}>
-      <FullWidthLayout title={<CaseSymbol caseId={caseId} />} entityType="CA">
-        <Column spacing="2rem" className="test-case">
+    <Exists id={caseId} type="Case">
+      <FullWidthLayout entityType="CA" title={<CaseSymbol caseId={caseId} />}>
+        <Column className="test-case" spacing="2rem">
           <Row style={{ justifyContent: 'flex-end' }}>
             <AddOrRemoveAllFilesButton
               caseId={caseId}
-              style={{ width: 'auto' }}
-            />
+              style={{ width: 'auto' }} />
           </Row>
           <CaseSummary caseId={caseId} />
-          <Row style={{ flexWrap: 'wrap' }} spacing={'2rem'}>
-            <span style={{ ...styles.column, marginBottom: '2rem', flex: 1 }}>
+          <Row spacing="2rem" style={{ flexWrap: 'wrap' }}>
+            <span style={{
+              ...styles.column,
+              marginBottom: '2rem',
+              flex: 1,
+            }}>
               <CaseCountsDataCategory caseId={caseId} />
             </span>
-            <span style={{ ...styles.column, marginBottom: '2rem', flex: 1 }}>
+            <span style={{
+              ...styles.column,
+              marginBottom: '2rem',
+              flex: 1,
+            }}>
               <CaseCountsExpStrategy caseId={caseId} />
             </span>
           </Row>
 
-          <Row id="clinical" style={{ flexWrap: 'wrap' }} spacing="2rem">
+          <Row id="clinical" spacing="2rem" style={{ flexWrap: 'wrap' }}>
             <ClinicalCard caseId={caseId} />
           </Row>
 
-          <Row id="biospecimen" style={{ flexWrap: 'wrap' }} spacing="2rem">
-            <BiospecimenCard caseId={caseId} bioId={query.bioId} />
+          <Row id="biospecimen" spacing="2rem" style={{ flexWrap: 'wrap' }}>
+            <BiospecimenCard bioId={query.bioId} caseId={caseId} />
           </Row>
           {!AWG && (
             <HasSsms caseId={caseId}>
-              <Column style={{ ...styles.card, marginTop: '2rem' }}>
+              <Column style={{
+                ...styles.card,
+                marginTop: '2rem',
+              }}>
                 <Row
-                  style={{ padding: '1rem 1rem 2rem', alignItems: 'center' }}
-                >
-                  <h1 style={{ ...styles.heading }} id="frequent-mutations">
+                  style={{
+                    padding: '1rem 1rem 2rem',
+                    alignItems: 'center',
+                  }}>
+                  <h1 id="frequent-mutations" style={{ ...styles.heading }}>
                     <i
                       className="fa fa-bar-chart-o"
-                      style={{ paddingRight: '10px' }}
-                    />
+                      style={{ paddingRight: '10px' }} />
                     Most Frequent Somatic Mutations
                   </h1>
                   <ExploreLink
-                    query={{ searchTableTab: 'mutations', filters: fmFilters }}
-                  >
-                    <GdcDataIcon /> Open in Exploration
+                    query={{
+                      searchTableTab: 'mutations',
+                      filters: fmFilters,
+                    }}>
+                    <GdcDataIcon />
+                    {' '}
+Open in Exploration
                   </ExploreLink>
                 </Row>
                 <Column>

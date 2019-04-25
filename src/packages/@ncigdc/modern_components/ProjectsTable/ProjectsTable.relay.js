@@ -10,32 +10,35 @@ import { withRouter } from 'react-router-dom';
 import { parse } from 'query-string';
 import Query from '@ncigdc/modern_components/Query';
 
-const DEFAULT_PROJECT_SORT = [{ field: 'summary.case_count', order: 'desc' }];
+const DEFAULT_PROJECT_SORT = [
+  {
+    field: 'summary.case_count',
+    order: 'desc',
+  },
+];
 
-export default (Component: ReactClass<*>) =>
-  compose(
-    withRouter,
-    withPropsOnChange(['location'], ({ location: { search } }) => {
-      const q = parse(search);
+export default (Component: ReactClass<*>) => compose(
+  withRouter,
+  withPropsOnChange(['location'], ({ location: { search } }) => {
+    const q = parse(search);
 
-      return {
-        variables: {
-          offset: parseIntParam(q.offset, 0),
-          size: 1000,
-          filters: parseFilterParam(q.filters, null),
-          projects_sort: parseJSONParam(q.projects_sort, DEFAULT_PROJECT_SORT),
-        },
-      };
-    })
-  )((props: mixed) => {
-    return (
-      <Query
-        parentProps={props}
-        name="ProjectsTable"
-        minHeight={600}
-        variables={props.variables}
-        Component={Component}
-        query={graphql`
+    return {
+      variables: {
+        offset: parseIntParam(q.offset, 0),
+        size: 1000,
+        filters: parseFilterParam(q.filters, null),
+        projects_sort: parseJSONParam(q.projects_sort, DEFAULT_PROJECT_SORT),
+      },
+    };
+  })
+)((props: mixed) => {
+  return (
+    <Query
+      Component={Component}
+      minHeight={600}
+      name="ProjectsTable"
+      parentProps={props}
+      query={graphql`
           query ProjectsTable_relayQuery(
             $size: Int
             $offset: Int
@@ -76,6 +79,6 @@ export default (Component: ReactClass<*>) =>
             }
           }
         `}
-      />
-    );
-  });
+      variables={props.variables} />
+  );
+});

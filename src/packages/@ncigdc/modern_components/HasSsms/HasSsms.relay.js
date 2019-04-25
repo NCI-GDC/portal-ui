@@ -4,28 +4,26 @@ import { makeFilter } from '@ncigdc/utils/filters';
 import { compose, withPropsOnChange } from 'recompose';
 import { BaseQuery } from '@ncigdc/modern_components/Query';
 
-export default (Component: ReactClass<*>) =>
-  compose(
-    withPropsOnChange(['caseId'], ({ caseId }) => {
-      return {
-        variables: {
-          filters: makeFilter([
-            {
-              field: 'cases.case_id',
-              value: [caseId],
-            },
-          ]),
-        },
-      };
-    }),
-  )((props: Object) => {
-    return (
-      <BaseQuery
-        parentProps={props}
-        name="HasSsms"
-        variables={props.variables}
-        Component={Component}
-        query={graphql`
+export default (Component: ReactClass<*>) => compose(
+  withPropsOnChange(['caseId'], ({ caseId }) => {
+    return {
+      variables: {
+        filters: makeFilter([
+          {
+            field: 'cases.case_id',
+            value: [caseId],
+          },
+        ]),
+      },
+    };
+  }),
+)((props: Object) => {
+  return (
+    <BaseQuery
+      Component={Component}
+      name="HasSsms"
+      parentProps={props}
+      query={graphql`
           query HasSsms_relayQuery($filters: FiltersArgument) {
             viewer {
               explore {
@@ -38,6 +36,6 @@ export default (Component: ReactClass<*>) =>
             }
           }
         `}
-      />
-    );
-  });
+      variables={props.variables} />
+  );
+});

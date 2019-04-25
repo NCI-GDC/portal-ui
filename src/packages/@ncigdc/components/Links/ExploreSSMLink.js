@@ -1,7 +1,7 @@
 /* @flow */
 import React from 'react';
-import Link from './Link';
 import { replaceFilters } from '@ncigdc/utils/filters';
+import Link from './Link';
 
 const ExploreSSMLink = ({
   children,
@@ -12,7 +12,7 @@ const ExploreSSMLink = ({
   return (
     <Link
       merge={merge}
-      pathname={'/exploration'}
+      pathname="/exploration"
       query={{
         searchTableTab,
         filters: replaceFilters(
@@ -37,8 +37,7 @@ const ExploreSSMLink = ({
           },
           filters,
         ),
-      }}
-    >
+      }}>
       {children}
     </Link>
   );

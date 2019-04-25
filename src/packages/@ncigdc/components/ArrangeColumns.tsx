@@ -1,6 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { compose, withState, pure, lifecycle } from 'recompose';
+import {
+  compose, withState, pure, lifecycle,
+} from 'recompose';
 import ArrangeIcon from 'react-icons/lib/fa/bars';
 import { IThemeProps } from '@ncigdc/theme/versions/active';
 import { Row } from '@ncigdc/uikit/Flex';
@@ -64,8 +66,7 @@ const ArrangeColumns = compose<IArrangeColumnsProps, JSX.Element>(
         (t: IColumnProps<boolean>) => !(props.hideColumns || []).includes(t.id)
       ),
       filteredTableColumns: state.tableColumns[props.entityType].filter(
-        (t: IColumnProps<boolean>) =>
-          !(props.hideColumns || []).includes(t.id) && !t.subHeading
+        (t: IColumnProps<boolean>) => !(props.hideColumns || []).includes(t.id) && !t.subHeading
       ),
     })
   ),
@@ -105,7 +106,11 @@ const ArrangeColumns = compose<IArrangeColumnsProps, JSX.Element>(
           (column: IColumnProps<boolean>, i: number) => (
             <SortableItem
               className="test-column"
+              draggingIndex={state.draggingIndex}
+              items={filteredTableColumns}
               key={column.id}
+              outline="list"
+              sortId={i}
               updateState={(nextState: IState) => {
                 if (!nextState.items && state.items) {
                   let newItems = state.items.filter(
@@ -133,25 +138,14 @@ const ArrangeColumns = compose<IArrangeColumnsProps, JSX.Element>(
                   filteredTableColumns,
                   ...nextState,
                 });
-              }}
-              draggingIndex={state.draggingIndex}
-              items={filteredTableColumns}
-              sortId={i}
-              outline="list"
-            >
+              }}>
               <SortRow
                 style={
                   column.name.toLowerCase().includes(searchTerm.toLowerCase())
                     ? {}
                     : { display: 'none' }
-                }
-              >
+                }>
                 <Row
-                  style={{
-                    width: '100%',
-                    cursor: 'pointer',
-                    alignItems: 'center',
-                  }}
                   onClick={() => {
                     if (column.subHeadingIds) {
                       localTableColumns.forEach(
@@ -160,7 +154,10 @@ const ArrangeColumns = compose<IArrangeColumnsProps, JSX.Element>(
                             const index: number = localTableColumns.indexOf(
                               col
                             );
-                            dispatch(toggleColumn({ entityType, index }));
+                            dispatch(toggleColumn({
+                              entityType,
+                              index,
+                            }));
                           }
                         }
                       );
@@ -172,19 +169,24 @@ const ArrangeColumns = compose<IArrangeColumnsProps, JSX.Element>(
                       })
                     );
                   }}
-                >
+                  style={{
+                    width: '100%',
+                    cursor: 'pointer',
+                    alignItems: 'center',
+                  }}>
                   <input
+                    aria-label={column.name}
+                    checked={!filteredTableColumns[i].hidden}
                     readOnly
                     style={{ pointerEvents: 'none' }}
-                    aria-label={column.name}
-                    type="checkbox"
-                    checked={!filteredTableColumns[i].hidden}
-                  />
+                    type="checkbox" />
                   <span style={{ marginLeft: '0.3rem' }}>{column.name}</span>
                 </Row>
                 <ArrangeIcon
-                  style={{ marginLeft: 'auto', cursor: 'row-resize' }}
-                />
+                  style={{
+                    marginLeft: 'auto',
+                    cursor: 'row-resize',
+                  }} />
               </SortRow>
             </SortableItem>
           )

@@ -15,7 +15,7 @@ import { Tooltip } from '@ncigdc/uikit/Tooltip';
 const SET1_COLOUR = 'rgb(145, 114, 33)';
 const SET2_COLOUR = 'rgb(29, 97, 135)';
 
-let Item = styled.div({
+const Item = styled.div({
   lineHeight: 2,
   paddingLeft: 5,
   cursor: 'pointer',
@@ -60,12 +60,21 @@ export default withTheme(
         backgroundColor: 'white',
         minWidth: 220,
         ...zDepth1,
-      }}
-    >
-      <Row style={{ justifyContent: 'space-between', alignItems: 'center' }}>
+      }}>
+      <Row style={{
+        justifyContent: 'space-between',
+        alignItems: 'center',
+      }}>
         <Column flex={1}>
-          <Row style={{ alignItems: 'center', flex: 1 }}>
-            <Row style={{ flex: 3, fontWeight: 'bold', fontSize: 16 }}>
+          <Row style={{
+            alignItems: 'center',
+            flex: 1,
+          }}>
+            <Row style={{
+              flex: 3,
+              fontWeight: 'bold',
+              fontSize: 16,
+            }}>
               Cohort
             </Row>
             <Row
@@ -74,18 +83,24 @@ export default withTheme(
                 fontWeight: 'bold',
                 fontSize: 16,
                 justifyContent: 'flex-end',
-              }}
-            >
+              }}>
               # Cases
             </Row>
           </Row>
-          <Row style={{ alignItems: 'center', marginTop: 10 }}>
-            <Row style={{ flex: 3, color: SET1_COLOUR }}>
-              <Alias i={1} style={{ fontWeight: 'bold' }} />&nbsp;:&nbsp;{Set1}
+          <Row style={{
+            alignItems: 'center',
+            marginTop: 10,
+          }}>
+            <Row style={{
+              flex: 3,
+              color: SET1_COLOUR,
+            }}>
+              <Alias i={1} style={{ fontWeight: 'bold' }} />
+&nbsp;:&nbsp;
+              {Set1}
             </Row>
             <Column flex={1} style={{ alignItems: 'center' }}>
               <ExploreLink
-                style={{ fontSize: 16 }}
                 query={{
                   searchTableTab: 'cases',
                   filters: {
@@ -94,25 +109,32 @@ export default withTheme(
                       {
                         op: 'IN',
                         content: {
-                          field: `cases.case_id`,
+                          field: 'cases.case_id',
                           value: [`set_id:${setId1}`],
                         },
                       },
                     ],
                   },
                 }}
-              >
+                style={{ fontSize: 16 }}>
                 {result1.hits.total.toLocaleString()}
               </ExploreLink>
             </Column>
           </Row>
-          <Row style={{ alignItems: 'center', marginTop: 10 }}>
-            <Row style={{ flex: 3, color: SET2_COLOUR }}>
-              <Alias i={2} style={{ fontWeight: 'bold' }} />&nbsp;:&nbsp;{Set2}
+          <Row style={{
+            alignItems: 'center',
+            marginTop: 10,
+          }}>
+            <Row style={{
+              flex: 3,
+              color: SET2_COLOUR,
+            }}>
+              <Alias i={2} style={{ fontWeight: 'bold' }} />
+&nbsp;:&nbsp;
+              {Set2}
             </Row>
             <Column flex={1} style={{ alignItems: 'center' }}>
               <ExploreLink
-                style={{ fontSize: 16 }}
                 query={{
                   searchTableTab: 'cases',
                   filters: {
@@ -121,14 +143,14 @@ export default withTheme(
                       {
                         op: 'IN',
                         content: {
-                          field: `cases.case_id`,
+                          field: 'cases.case_id',
                           value: [`set_id:${setId2}`],
                         },
                       },
                     ],
                   },
                 }}
-              >
+                style={{ fontSize: 16 }}>
                 {result2.hits.total.toLocaleString()}
               </ExploreLink>
             </Column>
@@ -144,10 +166,8 @@ export default withTheme(
             fontWeight: 'bold',
             margin: 0,
             fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif',
-          }}
-        >
+          }}>
           <CreateOrOpenAnalysis
-            type="set_operations"
             sets={sets}
             style={{
               color: theme.primary,
@@ -155,22 +175,21 @@ export default withTheme(
               textDecoration: 'underline',
               display: 'inline-block',
             }}
-          >
+            type="set_operations">
             Open Venn diagram in new tab
           </CreateOrOpenAnalysis>
         </h2>
 
         <Venn
-          type="case"
-          ops={ops}
           getFillColor={d => 'rgb(237, 237, 237)'}
+          ops={ops}
           style={{
             fontSize: 12,
             width: '100%',
             margin: 'auto',
             paddingTop: 5,
           }}
-        />
+          type="case" />
       </div>
       <hr style={{ borderWidth: '1px' }} />
       <Column>
@@ -179,25 +198,25 @@ export default withTheme(
             survivalHasData
               ? () => toggleSurvival(survivalShowing => !survivalShowing)
               : () => {}
-          }
-        >
+          }>
           <input
-            readOnly
-            style={{ marginRight: 5, pointerEvents: 'none', cursor: 'pointer' }}
-            type="checkbox"
-            aria-label={`Select survival`}
+            aria-label="Select survival"
             checked={showSurvival && survivalHasData}
             disabled={!survivalHasData}
-          />
+            readOnly
+            style={{
+              marginRight: 5,
+              pointerEvents: 'none',
+              cursor: 'pointer',
+            }}
+            type="checkbox" />
           <Tooltip
-            Component={!survivalHasData && 'Not enough data to plot survival'}
-          >
+            Component={!survivalHasData && 'Not enough data to plot survival'}>
             <label
               style={{
                 cursor: 'pointer',
                 ...(!survivalHasData && { color: theme.greyScale7 }),
-              }}
-            >
+              }}>
               Survival
             </label>
           </Tooltip>
@@ -209,16 +228,17 @@ export default withTheme(
                 merge
                 query={{
                   activeFacets: stringifyJSONParam(xor(activeFacets, [field])),
-                }}
-              >
+                }}>
                 <label style={{ cursor: 'pointer' }}>
                   <input
-                    readOnly
-                    style={{ marginRight: 5, pointerEvents: 'none' }}
-                    type="checkbox"
                     aria-label={`Select ${field}`}
                     checked={activeFacets.includes(field)}
-                  />
+                    readOnly
+                    style={{
+                      marginRight: 5,
+                      pointerEvents: 'none',
+                    }}
+                    type="checkbox" />
                   {label}
                 </label>
               </LinkAsText>

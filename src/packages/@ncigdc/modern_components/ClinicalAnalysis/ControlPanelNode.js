@@ -16,8 +16,8 @@ import './reactToggle.css';
 import { humanify } from '@ncigdc/utils/string';
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import CollapsibleList from '@ncigdc/uikit/CollapsibleList';
-import { theme } from '@ncigdc/theme/index';
-import { withTheme } from '@ncigdc/theme';
+import { theme, withTheme } from '@ncigdc/theme/index';
+
 import styled from '@ncigdc/theme/styled';
 import AngleIcon from '@ncigdc/theme/icons/AngleIcon';
 import { Tooltip } from '@ncigdc/uikit/Tooltip';
@@ -45,9 +45,8 @@ const getPlotType = field => {
     field.type.name === 'NumericAggregations'
   ) {
     return 'continuous';
-  } else {
-    return 'categorical';
   }
+  return 'categorical';
 };
 
 // will need to add other types as they become available
@@ -103,18 +102,19 @@ const ClinicalGrouping = compose(
               position: 'sticky',
               top: 0,
               zIndex: 99,
-            }}
-          >
+            }}>
             <h3
-              style={{ ...style, margin: '10px 0', cursor: 'pointer' }}
               onClick={() => setCollapsed(!collapsed)}
-            >
+              style={{
+                ...style,
+                margin: '10px 0',
+                cursor: 'pointer',
+              }}>
               <AngleIcon
                 style={{
                   paddingRight: '0.5rem',
                   transform: `rotate(${collapsed ? 270 : 0}deg)`,
-                }}
-              />
+                }} />
               {name}
             </h3>
           </Row>
@@ -124,13 +124,11 @@ const ClinicalGrouping = compose(
           <Column
             style={{
               padding: '0 10px',
-            }}
-          >
+            }}>
             {fields.length > MAX_FIELDS_LENGTH && showingMore && (
               <Row>
                 <StyledToggleMoreLink
-                  onClick={() => setShowingMore(!showingMore)}
-                >
+                  onClick={() => setShowingMore(!showingMore)}>
                   {'Less...'}
                 </StyledToggleMoreLink>
               </Row>
@@ -146,7 +144,9 @@ const ClinicalGrouping = compose(
               }))
               .map(
                 (
-                  { fieldDescription, fieldName, type, fieldTitle, plotTypes },
+                  {
+                    fieldDescription, fieldName, type, fieldTitle, plotTypes,
+                  },
                   i
                 ) => {
                   const checked = Object.keys(
@@ -168,8 +168,7 @@ const ClinicalGrouping = compose(
                         fontSize: '1.3rem',
                         marginBottom: descMatch ? '10px' : '0',
                         fontStyle: descMatch ? 'italic' : 'normal',
-                      }}
-                    >
+                      }}>
                       {descMatch
                         ? internalHighlight(searchValue, fieldDescription, {
                           backgroundColor: '#FFFF00',
@@ -183,8 +182,7 @@ const ClinicalGrouping = compose(
                         fontSize: '1.4rem',
                         display: 'inline-block',
                         marginRight: '50px',
-                      }}
-                    >
+                      }}>
                       {internalHighlight(searchValue, fieldTitle, {
                         backgroundColor: '#FFFF00',
                       })}
@@ -192,11 +190,11 @@ const ClinicalGrouping = compose(
                   );
                   const ToggleEl = () => (
                     <Toggle
+                      checked={checked}
+                      disabled={!type.name}
                       icons={false}
                       id={fieldName}
-                      disabled={!type.name}
                       name={fieldName}
-                      checked={checked}
                       onChange={() => {
                         if (!type.name) {
                           return null;
@@ -210,8 +208,7 @@ const ClinicalGrouping = compose(
                             scrollToCard: !checked,
                           })
                         );
-                      }}
-                    />
+                      }} />
                   );
                   return (
                     <Row
@@ -220,31 +217,34 @@ const ClinicalGrouping = compose(
                         justifyContent: 'space-between',
                         alignItems: 'center',
                         borderBottom: `1px solid ${theme.greyScale5}`,
-                      }}
-                    >
-                      <div style={{ display: 'flex', width: '100%' }}>
+                      }}>
+                      <div style={{
+                        display: 'flex',
+                        width: '100%',
+                      }}>
                         <label
                           htmlFor={fieldName}
                           style={{
                             width: '100%',
                             display: 'block',
                             cursor: descMatch ? 'default' : 'pointer',
-                          }}
-                        >
+                          }}>
                           {descMatch ? (
                             <React.Fragment>
                               <div>
-                                <TitleEl /> <ToggleEl />
+                                <TitleEl />
+                                {' '}
+                                <ToggleEl />
                               </div>
                               <DescEl />
                             </React.Fragment>
                           ) : (
-                              <React.Fragment>
-                                <Tooltip Component={<DescEl />}>
-                                  <TitleEl />
-                                </Tooltip>
-                                <ToggleEl />
-                              </React.Fragment>
+                            <React.Fragment>
+                              <Tooltip Component={<DescEl />}>
+                                <TitleEl />
+                              </Tooltip>
+                              <ToggleEl />
+                            </React.Fragment>
                             )}
                         </label>
                       </div>
@@ -255,8 +255,7 @@ const ClinicalGrouping = compose(
             {fields.length > MAX_VISIBLE_FACETS && (
               <Row>
                 <StyledToggleMoreLink
-                  onClick={() => setShowingMore(!showingMore)}
-                >
+                  onClick={() => setShowingMore(!showingMore)}>
                   {showingMore
                     ? 'Less...'
                     : fields.length - MAX_VISIBLE_FACETS &&
@@ -318,11 +317,15 @@ export default compose(
         <Row
           style={{
             padding: '5px 15px 15px',
-          }}
-        >
+          }}>
           <span>
-            {(_.keys(usefulFacets) || []).length} of{' '}
-            {(clinicalAnalysisFields || []).length} fields with values
+            {(_.keys(usefulFacets) || []).length}
+            {' '}
+of
+            {' '}
+            {(clinicalAnalysisFields || []).length}
+            {' '}
+fields with values
           </span>
         </Row>
         <div
@@ -332,20 +335,18 @@ export default compose(
             position: 'sticky',
             top: 0,
             overflowY: 'auto',
-          }}
-        >
+          }}>
           {clinicalTypeOrder.map(clinicalType => {
             const fields = groupedByClinicalType[clinicalType] || [];
             return (
               <ClinicalGrouping
+                analysis_id={analysis_id}
+                currentAnalysis={currentAnalysis}
+                fields={fields}
                 key={clinicalType}
                 name={_.capitalize(singular(clinicalType))}
-                style={styles.category(theme)}
-                fields={fields}
-                currentAnalysis={currentAnalysis}
-                analysis_id={analysis_id}
                 searchValue={searchValue}
-              />
+                style={styles.category(theme)} />
             );
           })}
         </div>

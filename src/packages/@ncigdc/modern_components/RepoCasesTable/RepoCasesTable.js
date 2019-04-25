@@ -1,7 +1,9 @@
 /* @flow */
 
 import React from 'react';
-import { compose, setDisplayName, branch, renderComponent } from 'recompose';
+import {
+  compose, setDisplayName, branch, renderComponent,
+} from 'recompose';
 import { connect } from 'react-redux';
 import Pagination from '@ncigdc/components/Pagination';
 import Showing from '@ncigdc/components/Pagination/Showing';
@@ -9,9 +11,9 @@ import { Row } from '@ncigdc/uikit/Flex';
 import TableActions from '@ncigdc/components/TableActions';
 import tableModels from '@ncigdc/tableModels';
 import Table, { Tr } from '@ncigdc/uikit/Table';
-import { CreateRepositoryCaseSetButton } from '@ncigdc/modern_components/withSetAction';
-import { AppendRepositoryCaseSetButton } from '@ncigdc/modern_components/withSetAction';
-import { RemoveFromRepositoryCaseSetButton } from '@ncigdc/modern_components/withSetAction';
+import { CreateRepositoryCaseSetButton, AppendRepositoryCaseSetButton, RemoveFromRepositoryCaseSetButton } from '@ncigdc/modern_components/withSetAction';
+
+
 import { theme } from '@ncigdc/theme';
 import withSelectIds from '@ncigdc/utils/withSelectIds';
 import timestamp from '@ncigdc/utils/timestamp';
@@ -20,8 +22,7 @@ export default compose(
   setDisplayName('RepoCasesTablePresentation'),
   connect(state => ({ tableColumns: state.tableColumns.cases })),
   branch(
-    ({ viewer }) =>
-      !viewer.repository.cases.hits ||
+    ({ viewer }) => !viewer.repository.cases.hits ||
       !viewer.repository.cases.hits.edges.length,
     renderComponent(() => <div>No results found</div>)
   ),
@@ -46,41 +47,64 @@ export default compose(
             backgroundColor: 'white',
             padding: '1rem',
             justifyContent: 'space-between',
-          }}
-        >
+          }}>
           <Showing
             docType="cases"
-            prefix={entityType}
             params={variables}
-            total={hits.total}
-          />
+            prefix={entityType}
+            total={hits.total} />
           <TableActions
-            type="case"
-            scope="repository"
+            AppendSetButton={AppendRepositoryCaseSetButton}
             arrangeColumnKey={entityType}
-            total={hits.total}
-            endpoint="cases"
+            CreateSetButton={CreateRepositoryCaseSetButton}
+            currentFilters={variables.filters}
+            downloadBiospecimen
+            downloadClinical
             downloadFields={tableInfo
               .filter(x => x.downloadable)
               .map(x => x.field || x.id)}
-            sortOptions={tableInfo.filter(x => x.sortable)}
-            tsvSelector="#repository-cases-table"
-            tsvFilename={`repository-cases-table.${timestamp()}.tsv`}
-            score={variables.score}
-            sort={variables.cases_sort}
-            currentFilters={variables.filters}
-            CreateSetButton={CreateRepositoryCaseSetButton}
-            AppendSetButton={AppendRepositoryCaseSetButton}
-            RemoveFromSetButton={RemoveFromRepositoryCaseSetButton}
+            endpoint="cases"
             idField="cases.case_id"
+            RemoveFromSetButton={RemoveFromRepositoryCaseSetButton}
+            scope="repository"
+            score={variables.score}
             selectedIds={selectedIds}
-            downloadClinical
-            downloadBiospecimen
-          />
+            sort={variables.cases_sort}
+            sortOptions={tableInfo.filter(x => x.sortable)}
+            total={hits.total}
+            tsvFilename={`repository-cases-table.${timestamp()}.tsv`}
+            tsvSelector="#repository-cases-table"
+            type="case" />
         </Row>
         <div style={{ overflowX: 'auto' }}>
           <Table
-            id="repository-cases-table"
+            body={(
+              <tbody>
+                {hits.edges.map((e, i) => (
+                  <Tr
+                    index={i}
+                    key={e.node.id}
+                    style={{
+                      ...(selectedIds.includes(e.node.case_id) && {
+                        backgroundColor: theme.tableHighlight,
+                      }),
+                    }}>
+                    {tableInfo
+                      .filter(x => x.td)
+                      .map(x => (
+                        <x.td
+                          edges={hits.edges}
+                          index={i}
+                          key={x.id}
+                          node={e.node}
+                          selectedIds={selectedIds}
+                          setSelectedIds={setSelectedIds}
+                          total={hits.total} />
+                      ))}
+                  </Tr>
+                ))}
+              </tbody>
+            )}
             headings={tableInfo
               .filter(x => !x.subHeading)
               .map(x => (
@@ -88,44 +112,14 @@ export default compose(
                   key={x.id}
                   nodes={hits.edges}
                   selectedIds={selectedIds}
-                  setSelectedIds={setSelectedIds}
-                />
+                  setSelectedIds={setSelectedIds} />
               ))}
+            id="repository-cases-table"
             subheadings={tableInfo
               .filter(x => x.subHeading)
-              .map(x => <x.th key={x.id} />)}
-            body={
-              <tbody>
-                {hits.edges.map((e, i) => (
-                  <Tr
-                    key={e.node.id}
-                    index={i}
-                    style={{
-                      ...(selectedIds.includes(e.node.case_id) && {
-                        backgroundColor: theme.tableHighlight,
-                      }),
-                    }}
-                  >
-                    {tableInfo
-                      .filter(x => x.td)
-                      .map(x => (
-                        <x.td
-                          key={x.id}
-                          node={e.node}
-                          index={i}
-                          total={hits.total}
-                          edges={hits.edges}
-                          selectedIds={selectedIds}
-                          setSelectedIds={setSelectedIds}
-                        />
-                      ))}
-                  </Tr>
-                ))}
-              </tbody>
-            }
-          />
+              .map(x => <x.th key={x.id} />)} />
         </div>
-        <Pagination prefix={entityType} params={variables} total={hits.total} />
+        <Pagination params={variables} prefix={entityType} total={hits.total} />
       </div>
     );
   }

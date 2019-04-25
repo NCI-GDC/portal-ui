@@ -1,5 +1,7 @@
 import React from 'react';
-import { compose, withState, branch, renderComponent } from 'recompose';
+import {
+  compose, withState, branch, renderComponent,
+} from 'recompose';
 import { connect } from 'react-redux';
 
 import { addAnalysis } from '@ncigdc/dux/analysis';
@@ -29,7 +31,9 @@ const enhance = compose(
   withRouter
 );
 
-const CreateAnalysis = ({ analysis, setAnalysis, dispatch, push }) => {
+const CreateAnalysis = ({
+  analysis, setAnalysis, dispatch, push,
+}) => {
   const SelectSetComponent =
     analysis && analysis.type === 'clinical_data'
       ? ClinicalAnalysisLaunch
@@ -51,9 +55,9 @@ const CreateAnalysis = ({ analysis, setAnalysis, dispatch, push }) => {
             sets,
             ...(analysis.type === 'clinical_data'
               ? {
-                  name: Object.values(sets.case)[0],
-                  displayVariables: defaultVariables,
-                }
+                name: Object.values(sets.case)[0],
+                displayVariables: defaultVariables,
+              }
               : {}),
           })
         ).then(() => {
@@ -64,8 +68,7 @@ const CreateAnalysis = ({ analysis, setAnalysis, dispatch, push }) => {
             },
           });
         });
-      }}
-    />
+      }} />
   ) : (
     <Row
       style={{
@@ -73,8 +76,7 @@ const CreateAnalysis = ({ analysis, setAnalysis, dispatch, push }) => {
         flexFlow: 'row wrap',
         margin: '0 2rem',
         justifyContent: 'space-between',
-      }}
-    >
+      }}>
       {availableAnalysis.map(analysis => {
         return (
           <Row
@@ -84,8 +86,7 @@ const CreateAnalysis = ({ analysis, setAnalysis, dispatch, push }) => {
               margin: '2rem',
               padding: '2rem',
               width: '45%',
-            }}
-          >
+            }}>
             <div style={{ margin: 20 }}>
               <analysis.Icon />
             </div>

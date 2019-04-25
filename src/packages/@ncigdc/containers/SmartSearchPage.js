@@ -18,8 +18,8 @@ import { stringifyJSONParam, parseJSONParam } from '@ncigdc/utils/uri';
 
 require('lodash-backports').register();
 
-declare var _: Object;
-declare var angular: Object;
+let var _: Object;
+let var angular: Object;
 
 _.pluck = _.map;
 const enhance = compose(connect(), withRouter);
@@ -33,7 +33,7 @@ class SmartSearchComponent extends React.Component {
   };
 
   componentDidMount() {
-    const push = this.props.push;
+    const {push} = this.props;
     angular
       .module('legacyAngularWrapper', ['ngApp'])
       .config([
@@ -53,9 +53,9 @@ class SmartSearchComponent extends React.Component {
             if (url) {
               pendingLocation = url;
               return $browser;
-            } else {
+            } 
               return pendingLocation || location.href.replace(/%27/g, "'"); // eslint-disable-line no-restricted-globals
-            }
+            
           };
         },
       ])
@@ -78,7 +78,8 @@ class SmartSearchComponent extends React.Component {
             };
             this.sendQuery = () => {
               const gql = this.gql || {};
-              const filters = { op: 'and', content: [gql.filters] };
+              const filters = { op: 'and',
+content: [gql.filters] };
 
               const data = {
                 query: this.query,
@@ -103,7 +104,7 @@ class SmartSearchComponent extends React.Component {
             this.setQuery();
 
             document.querySelector('.btn-search-query').onclick = () => {
-              push(`/repository`);
+              push('/repository');
             };
           },
           controllerAs: 'sb',
@@ -115,20 +116,19 @@ class SmartSearchComponent extends React.Component {
 
   render(): void {
     return (
-      <div style={{ padding: '3rem 8rem' }} className="test-smart-search">
+      <div className="test-smart-search" style={{ padding: '3rem 8rem' }}>
         <div
+          dangerouslySetInnerHTML={{ __html: angularBootstrapHtml }}
           ref={c => {
             this.container = c;
           }}
-          dangerouslySetInnerHTML={{ __html: angularBootstrapHtml }}
         />
         <ActionsRow
+          filters={this.props.filters}
           totalCases={this.props.viewer.repository.cases.hits.total}
           totalFiles={this.props.viewer.repository.files.hits.total}
-          filters={this.props.filters}
         />
         <TabbedLinks
-          queryParam="searchTableTab"
           defaultIndex={0}
           links={[
             {
@@ -142,6 +142,7 @@ class SmartSearchComponent extends React.Component {
               component: <RepoCasesTable />,
             },
           ]}
+          queryParam="searchTableTab"
         />
       </div>
     );

@@ -66,36 +66,43 @@ const allowTab = (event: any, setValue) => {
 
 const enhance = compose(withState('value', 'setValue', ''), pure);
 
-const BAMModal = ({ file, closeModal, value, setValue, setActive }: TProps) => (
+const BAMModal = ({
+  file, closeModal, value, setValue, setActive,
+}: TProps) => (
   <Column
     style={{
       padding: '15px',
-    }}
-  >
+    }}>
     <h2>BAM Slicing</h2>
-    <h3>File name: {file.file_name}</h3>
+    <h3>
+File name:
+      {file.file_name}
+    </h3>
     <label htmlFor="bed">
       Please enter one or more slices' genome coordinates below in one of the
       following formats:
     </label>
     <pre>
-      chr7:140505783-140511649<br />
+      chr7:140505783-140511649
+      <br />
       {'chr1	150505782	150511648'}
     </pre>
     <textarea
       id="bed"
-      style={{
-        minHeight: '100px',
-        tabSize: 4,
-        fontFamily: "'Courier New', Courier, monospace",
-      }}
-      value={value}
-      onKeyDown={e => allowTab(e, setValue)}
       onChange={e => {
         setValue(e.target.value);
       }}
-    />
-    <Row style={{ paddingTop: '0.5rem', justifyContent: 'flex-end' }}>
+      onKeyDown={e => allowTab(e, setValue)}
+      style={{
+        minHeight: '100px',
+        tabSize: 4,
+        fontFamily: '\'Courier New\', Courier, monospace',
+      }}
+      value={value} />
+    <Row style={{
+      paddingTop: '0.5rem',
+      justifyContent: 'flex-end',
+    }}>
       <Button onClick={closeModal} style={{ marginRight: '0.5rem' }}>
         Cancel
       </Button>
@@ -114,8 +121,7 @@ const BAMModal = ({ file, closeModal, value, setValue, setActive }: TProps) => (
             })(() => {}, () => setActive(false));
           }
           closeModal();
-        }}
-      >
+        }}>
         Download
       </Button>
     </Row>

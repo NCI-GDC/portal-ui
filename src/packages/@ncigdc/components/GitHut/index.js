@@ -1,7 +1,6 @@
 /* @flow */
 
 import React from 'react';
-import draw from './draw';
 import { debounce } from 'lodash';
 import { compose } from 'recompose';
 
@@ -9,6 +8,7 @@ import withRouter from '@ncigdc/utils/withRouter';
 import { fetchApi } from '@ncigdc/utils/ajax/index';
 import { parseFilterParam, stringifyJSONParam } from '@ncigdc/utils/uri';
 import loadScript from '@ncigdc/utils/loadScript';
+import draw from './draw';
 
 import getColumns from './columns';
 import prepareData from './prepareData';
@@ -16,11 +16,9 @@ import prepareData from './prepareData';
 import './style.css';
 
 // TODO: switch to d3v4 and require d3-tip instead.
-loadScript('https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.js').then(() =>
-  loadScript(
-    'https://cdnjs.cloudflare.com/ajax/libs/d3-tip/0.7.1/d3-tip.min.js'
-  )
-);
+loadScript('https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.js').then(() => loadScript(
+  'https://cdnjs.cloudflare.com/ajax/libs/d3-tip/0.7.1/d3-tip.min.js'
+));
 
 const FIELDS = [
   'disease_type',
@@ -38,14 +36,14 @@ const FIELDS = [
 
 class GitHutWrapper extends React.Component {
   container = null;
+
   data = null;
 
   onResize = debounce(() => this.drawGraph(), 150);
 
   drawGraph() {
     const columns = getColumns({
-      onProjectClick: ({ projectId }) =>
-        this.props.push({ pathname: `projects/${projectId}` }),
+      onProjectClick: ({ projectId }) => this.props.push({ pathname: `projects/${projectId}` }),
       onCaseCountClick: ({ projectId }) => {
         this.props.push({
           pathname: '/repository',
@@ -120,6 +118,7 @@ class GitHutWrapper extends React.Component {
       data: prepareData(this.data, columns),
     });
   }
+
   fetchData(props) {
     const filters = parseFilterParam(props.query.filters);
 
@@ -133,28 +132,35 @@ class GitHutWrapper extends React.Component {
       window.addEventListener('resize', this.onResize);
     });
   }
+
   componentDidMount() {
     this.fetchData(this.props);
   }
+
   componentWillReceiveProps(nextProps) {
     if (this.props.query.filters !== nextProps.query.filters) {
       this.fetchData(nextProps);
     }
   }
+
   componentWillUnmount() {
     window.removeEventListener('resize', this.onResize);
   }
+
   render() {
     return (
       <div className="githut">
-        <div style={{ textAlign: 'center', fontSize: 20, marginTop: 20 }}>
+        <div style={{
+          textAlign: 'center',
+          fontSize: 20,
+          marginTop: 20,
+        }}>
           Case count per Data Category
         </div>
         <div
-          style={{ width: '100%' }}
           className="container"
           ref={e => (this.container = e)}
-        />
+          style={{ width: '100%' }} />
       </div>
     );
   }

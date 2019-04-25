@@ -24,43 +24,49 @@ export default compose(
     node = edges[0].node,
   }) => (
     <FullWidthLayout
-      title={node.entity_id}
-      entityType="AN"
       className="test-annotation-page"
-    >
-      <Column spacing={theme.spacing} className="test-annotation">
+      entityType="AN"
+      title={node.entity_id}>
+      <Column className="test-annotation" spacing={theme.spacing}>
         <EntityPageVerticalTable
           id="summary"
-          title={
-            <span>
-              <i className="fa fa-table" /> Summary
-            </span>
-          }
+          style={{ flex: 1 }}
           thToTd={[
-            { th: 'Annotation UUID', td: node.annotation_id },
+            {
+              th: 'Annotation UUID',
+              td: node.annotation_id,
+            },
             {
               th: 'Entity UUID',
               td: (
                 <CaseLink
-                  uuid={node.case_id}
-                  query={
-                    node.entity_type !== 'case' ? { bioId: node.entity_id } : {}
-                  }
                   deepLink={
                     node.entity_type !== 'case' ? 'biospecimen' : undefined
                   }
-                >
+                  query={
+                    node.entity_type !== 'case' ? { bioId: node.entity_id } : {}
+                  }
+                  uuid={node.case_id}>
                   {node.entity_id}
                 </CaseLink>
               ),
             },
-            { th: 'Entity ID', td: node.entity_submitter_id },
-            { th: 'Entity type', td: node.entity_type },
+            {
+              th: 'Entity ID',
+              td: node.entity_submitter_id,
+            },
+            {
+              th: 'Entity type',
+              td: node.entity_type,
+            },
             {
               th: 'Case UUID',
               td: <CaseLink uuid={node.case_id}>{node.case_id}</CaseLink>,
             },
-            { th: 'Case ID', td: node.case_submitter_id },
+            {
+              th: 'Case ID',
+              td: node.case_submitter_id,
+            },
             {
               th: 'Project',
               td: (
@@ -69,13 +75,30 @@ export default compose(
                 </ProjectLink>
               ),
             },
-            { th: 'Classification', td: node.classification },
-            { th: 'Category', td: node.category },
-            { th: 'Created On', td: node.created_datetime },
-            { th: 'Status', td: node.status },
+            {
+              th: 'Classification',
+              td: node.classification,
+            },
+            {
+              th: 'Category',
+              td: node.category,
+            },
+            {
+              th: 'Created On',
+              td: node.created_datetime,
+            },
+            {
+              th: 'Status',
+              td: node.status,
+            },
           ]}
-          style={{ flex: 1 }}
-        />
+          title={(
+            <span>
+              <i className="fa fa-table" />
+              {' '}
+Summary
+            </span>
+          )} />
         <Card title="NOTES">
           <div style={{ padding: 10 }}>{node.notes}</div>
         </Card>

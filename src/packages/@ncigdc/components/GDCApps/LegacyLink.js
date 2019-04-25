@@ -7,15 +7,20 @@ export default ({ width }) => (
   <Wrapper>
     <ExternalLink
       hasExternalIcon={false}
-      title="GDC Legacy Archive"
       href="https://portal.gdc.cancer.gov/legacy-archive"
-      style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}
-    >
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+      }}
+      title="GDC Legacy Archive">
       <span
         className="icon icon-gdc-legacy-archive"
-        style={{ fontSize: width, marginBottom: '5px' }}
-      >
-        {_.range(0, 11).map(x => <span key={x} className={`path${x}`} />)}
+        style={{
+          fontSize: width,
+          marginBottom: '5px',
+        }}>
+        {_.range(0, 11).map(x => <span className={`path${x}`} key={x} />)}
       </span>
       <p>Legacy Archive</p>
     </ExternalLink>

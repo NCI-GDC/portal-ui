@@ -1,7 +1,9 @@
 // @flow
 import React from 'react';
 import { connect } from 'react-redux';
-import { withProps, compose, withState, defaultProps } from 'recompose';
+import {
+  withProps, compose, withState, defaultProps,
+} from 'recompose';
 import EntityPageHorizontalTable from '@ncigdc/components/EntityPageHorizontalTable';
 import countComponents from '@ncigdc/modern_components/Counts';
 import withPropsOnChange from '@ncigdc/utils/withPropsOnChange';
@@ -25,15 +27,15 @@ const enhance = compose(
   defaultProps({
     getDisabledMessage: () => null,
   }),
-  withState('counts', 'setCounts', ({ sets }) =>
-    Object.keys(sets).reduce(
-      (acc, key) => Object.assign(acc, { [key]: '' }),
-      {},
-    ),
-  ),
+  withState('counts', 'setCounts', ({ sets }) => Object.keys(sets).reduce(
+    (acc, key) => Object.assign(acc, { [key]: '' }),
+    {},
+  ),),
   withPropsOnChange(
     ['sets', 'counts'],
-    ({ sets, selected, setSelected, counts, getDisabledMessage }) => {
+    ({
+      sets, selected, setSelected, counts, getDisabledMessage,
+    }) => {
       const setKeys = Object.keys(sets);
       if (
         !selected &&
@@ -62,7 +64,6 @@ const SetTable = ({
 
   return (
     <EntityPageHorizontalTable
-      style={style}
       data={Object.keys(sets).map((key, i) => {
         const id = `set-table-${key}-select`;
         const disabledMessage = getDisabledMessage({ count: counts[key] });
@@ -73,30 +74,23 @@ const SetTable = ({
               Component={disabledMessage || null}
               style={{
                 cursor: disabledMessage ? 'not-allowed' : 'default',
-              }}
-            >
+              }}>
               <input
+                checked={key === selected}
                 disabled={disabledMessage}
+                id={id}
+                onChange={e => setSelected(e.target.value)}
                 style={{
                   marginLeft: 3,
                   pointerEvents: disabledMessage ? 'none' : 'all',
                 }}
-                id={id}
                 type="radio"
-                value={key}
-                onChange={e => setSelected(e.target.value)}
-                checked={key === selected}
-              />
+                value={key} />
             </Tooltip>
           ),
           name: <label htmlFor={id}>{sets[key]}</label>,
           count: (
             <CountComponent
-              handleCountChange={count =>
-                setCounts({
-                  ...counts,
-                  [key]: count,
-                })}
               filters={{
                 op: '=',
                 content: {
@@ -104,16 +98,29 @@ const SetTable = ({
                   value: `set_id:${key}`,
                 },
               }}
-            />
+              handleCountChange={count => setCounts({
+                ...counts,
+                [key]: count,
+              })} />
           ),
         };
       })}
       headings={[
-        { key: 'select', title: ' ' },
-        { key: 'name', title: 'Name' },
-        { key: 'count', title: 'Items', style: { textAlign: 'right' } },
+        {
+          key: 'select',
+          title: ' ',
+        },
+        {
+          key: 'name',
+          title: 'Name',
+        },
+        {
+          key: 'count',
+          title: 'Items',
+          style: { textAlign: 'right' },
+        },
       ]}
-    />
+      style={style} />
   );
 };
 

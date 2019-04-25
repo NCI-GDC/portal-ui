@@ -2,7 +2,9 @@
 
 import React from 'react';
 import { uniq } from 'lodash';
-import { Th, Td, TdNum, ThNum } from '@ncigdc/uikit/Table';
+import {
+  Th, Td, TdNum, ThNum,
+} from '@ncigdc/uikit/Table';
 import CaseLink from '@ncigdc/components/Links/CaseLink';
 import ProjectLink from '@ncigdc/components/Links/ProjectLink';
 import { RepositoryCasesLink } from '@ncigdc/components/Links/RepositoryLink';
@@ -18,9 +20,11 @@ const filesTableModel = [
     td: ({ node }) => (
       <Td>
         <FileLink
-          uuid={node.file_id}
-          style={{ whiteSpace: 'pre-line', wordBreak: 'break-all' }}
-        >
+          style={{
+            whiteSpace: 'pre-line',
+            wordBreak: 'break-all',
+          }}
+          uuid={node.file_id}>
           {node.file_id}
         </FileLink>
       </Td>
@@ -42,8 +46,7 @@ const filesTableModel = [
         <span
           style={{
             marginLeft: '0.3rem',
-          }}
-        >
+          }}>
           {node.access}
         </span>
       </Td>
@@ -58,9 +61,11 @@ const filesTableModel = [
     td: ({ node }) => (
       <Td>
         <FileLink
-          uuid={node.file_id}
-          style={{ whiteSpace: 'pre-line', wordBreak: 'break-all' }}
-        >
+          style={{
+            whiteSpace: 'pre-line',
+            wordBreak: 'break-all',
+          }}
+          uuid={node.file_id}>
           {node.file_name}
         </FileLink>
       </Td>
@@ -78,11 +83,15 @@ const filesTableModel = [
           <RepositoryCasesLink
             query={{
               filters: makeFilter(
-                [{ field: 'files.file_id', value: [fileId] }],
+                [
+                  {
+                    field: 'files.file_id',
+                    value: [fileId],
+                  },
+                ],
                 false,
               ),
-            }}
-          >
+            }}>
             {total.toLocaleString()}
           </RepositoryCasesLink>
         )}

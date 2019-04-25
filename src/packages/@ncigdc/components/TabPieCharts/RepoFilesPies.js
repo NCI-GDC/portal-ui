@@ -16,7 +16,7 @@ import {
   BottomBorderedBox,
   PieTitle,
   SelfFilteringPie,
-} from './';
+} from '.';
 
 export type TProps = {
   push: Function,
@@ -54,145 +54,136 @@ const RepoFilesPiesComponent = ({
   return (
     <div className="test-repo-files-pies">
       <BottomBorderedBox>
-        <WrappedRow style={{ maxWidth: `${width}px`, width: '100%' }}>
+        <WrappedRow style={{
+          maxWidth: `${width}px`,
+          width: '100%',
+        }}>
           <ColumnCenter
-            style={{ minWidth: `${pieColMinWidth}px` }}
             className="test-primary-site-pie"
-          >
+            style={{ minWidth: `${pieColMinWidth}px` }}>
             <PieTitle>Primary Site</PieTitle>
             <SelfFilteringPie
               buckets={_.get(aggregations, 'cases__primary_site.buckets')}
-              fieldName="files.cases.primary_site"
-              docTypeSingular="file"
               currentFieldNames={currentFieldNames}
               currentFilters={currentFilters}
-              query={query}
-              push={push}
-              path="doc_count"
+              docTypeSingular="file"
+              fieldName="files.cases.primary_site"
               height={125}
-              width={125}
-            />
+              path="doc_count"
+              push={push}
+              query={query}
+              width={125} />
           </ColumnCenter>
           <ColumnCenter
-            style={{ minWidth: `${pieColMinWidth}px` }}
             className="test-project-pie"
-          >
+            style={{ minWidth: `${pieColMinWidth}px` }}>
             <PieTitle>Project</PieTitle>
             <SelfFilteringPie
               buckets={_.get(
                 aggregations,
                 'cases__project__project_id.buckets',
               )}
-              fieldName="cases.project.project_id"
-              docTypeSingular="file"
               currentFieldNames={currentFieldNames}
               currentFilters={currentFilters}
-              query={query}
-              push={push}
-              path="doc_count"
+              docTypeSingular="file"
+              fieldName="cases.project.project_id"
               height={125}
-              width={125}
-            />
+              path="doc_count"
+              push={push}
+              query={query}
+              width={125} />
           </ColumnCenter>
           <ColumnCenter
-            style={{ minWidth: `${pieColMinWidth}px` }}
             className="test-data-category-pie"
-          >
+            style={{ minWidth: `${pieColMinWidth}px` }}>
             <PieTitle>Data Category</PieTitle>
             <SelfFilteringPie
               buckets={_.get(aggregations, 'data_category.buckets')}
-              fieldName="files.data_category"
-              docTypeSingular="file"
               currentFieldNames={currentFieldNames}
               currentFilters={currentFilters}
-              query={query}
-              push={push}
-              path="doc_count"
+              docTypeSingular="file"
+              fieldName="files.data_category"
               height={125}
-              width={125}
-            />
+              path="doc_count"
+              push={push}
+              query={query}
+              width={125} />
           </ColumnCenter>
           <ColumnCenter
-            style={{ minWidth: `${pieColMinWidth}px` }}
             className="test-data-type"
-          >
+            style={{ minWidth: `${pieColMinWidth}px` }}>
             <PieTitle>Data Type</PieTitle>
             <SelfFilteringPie
               buckets={_.get(aggregations, 'data_type.buckets')}
-              fieldName="files.data_type"
-              docTypeSingular="file"
               currentFieldNames={currentFieldNames}
               currentFilters={currentFilters}
-              query={query}
-              push={push}
-              path="doc_count"
+              docTypeSingular="file"
+              fieldName="files.data_type"
               height={125}
-              width={125}
-            />
+              path="doc_count"
+              push={push}
+              query={query}
+              width={125} />
           </ColumnCenter>
           <ColumnCenter
-            style={{ minWidth: `${pieColMinWidth}px` }}
             className="test-data-format"
-          >
+            style={{ minWidth: `${pieColMinWidth}px` }}>
             <PieTitle>Data Format</PieTitle>
             <SelfFilteringPie
               buckets={_.get(aggregations, 'data_format.buckets')}
-              fieldName="files.data_format"
-              docTypeSingular="file"
               currentFieldNames={currentFieldNames}
               currentFilters={currentFilters}
-              query={query}
-              push={push}
-              path="doc_count"
+              docTypeSingular="file"
+              fieldName="files.data_format"
               height={125}
-              width={125}
-            />
+              path="doc_count"
+              push={push}
+              query={query}
+              width={125} />
           </ColumnCenter>
           {showingMore && [
             <ColumnCenter
-              style={{ minWidth: `${pieColMinWidth}px` }}
-              key="files.experimental_strategy"
               className="test-experimental-strategy"
-            >
+              key="files.experimental_strategy"
+              style={{ minWidth: `${pieColMinWidth}px` }}>
               <PieTitle>Experimental Strategy</PieTitle>
               <SelfFilteringPie
                 buckets={_.get(aggregations, 'experimental_strategy.buckets')}
-                fieldName="files.experimental_strategy"
-                docTypeSingular="file"
                 currentFieldNames={currentFieldNames}
                 currentFilters={currentFilters}
-                query={query}
-                push={push}
-                path="doc_count"
+                docTypeSingular="file"
+                fieldName="files.experimental_strategy"
                 height={125}
-                width={125}
-              />
+                path="doc_count"
+                push={push}
+                query={query}
+                width={125} />
             </ColumnCenter>,
             <ColumnCenter
-              key="files.access"
-              style={{ minWidth: `${pieColMinWidth}px` }}
               className="test-access-level"
-            >
+              key="files.access"
+              style={{ minWidth: `${pieColMinWidth}px` }}>
               <PieTitle>Access Level</PieTitle>
               <SelfFilteringPie
                 buckets={_.get(aggregations, 'access.buckets')}
-                fieldName="files.access"
-                docTypeSingular="file"
                 currentFieldNames={currentFieldNames}
                 currentFilters={currentFilters}
-                query={query}
-                push={push}
-                path="doc_count"
+                docTypeSingular="file"
+                fieldName="files.access"
                 height={125}
-                width={125}
-              />
+                path="doc_count"
+                push={push}
+                query={query}
+                width={125} />
             </ColumnCenter>,
           ]}
         </WrappedRow>
       </BottomBorderedBox>
       <RowCenter style={{ marginTop: '-1.5rem' }}>
         <ShowToggleBox onClick={() => setShowingMore(!showingMore)}>
-          Show {showingMore ? 'Less' : 'More'}
+          Show
+          {' '}
+          {showingMore ? 'Less' : 'More'}
         </ShowToggleBox>
       </RowCenter>
     </div>

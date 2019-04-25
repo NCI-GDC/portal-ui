@@ -66,15 +66,9 @@ export default compose(
     const clinicalCount = viewer ? viewer[scope].cases.hits.total : null;
     return (
       <Dropdown
-        className="data-download-clinical"
-        button={
+        button={(
           <Button
             className="data-download-clinical-button"
-            style={{
-              ...styles.common,
-              ...styles.dropdownButton,
-              ...buttonStyles,
-            }}
             leftIcon={
               state.jsonDownloading || state.tsvDownloading ? (
                 <Spinner />
@@ -82,49 +76,43 @@ export default compose(
                 <DownloadIcon />
               )
             }
-          >
+            style={{
+              ...styles.common,
+              ...styles.dropdownButton,
+              ...buttonStyles,
+            }}>
             {state.jsonDownloading || state.tsvDownloading
               ? 'Processing'
               : inactiveText}
           </Button>
-        }
-        dropdownStyle={{ ...styles.dropdownContainer, ...dropdownStyles }}
-      >
+        )}
+        className="data-download-clinical"
+        dropdownStyle={{
+          ...styles.dropdownContainer,
+          ...dropdownStyles,
+        }}>
         <DownloadButton
-          className="data-download-clinical-tsv"
-          size={clinicalCount}
-          style={styles.button(theme)}
-          endpoint="/clinical_tar"
-          format={'TSV'}
-          activeText="Processing"
-          inactiveText="TSV"
-          altMessage={false}
-          setParentState={currentState =>
-            setState(s => ({
-              ...s,
-              tsvDownloading: currentState,
-            }))}
           active={state.tsvDownloading}
-          filters={filters}
-          filename={tsvFilename}
-          scope={scope}
-        />
-        <DownloadButton
-          className="data-download-clinical-json"
-          size={clinicalCount}
-          style={styles.button(theme)}
-          endpoint="/cases"
           activeText="Processing"
-          inactiveText="JSON"
           altMessage={false}
-          setParentState={currentState =>
-            setState(s => ({
-              ...s,
-              jsonDownloading: currentState,
-            }))}
-          active={state.jsonDownloading}
+          className="data-download-clinical-tsv"
+          endpoint="/clinical_tar"
+          filename={tsvFilename}
           filters={filters}
-          fields={['case_id']}
+          format="TSV"
+          inactiveText="TSV"
+          scope={scope}
+          setParentState={currentState => setState(s => ({
+            ...s,
+            tsvDownloading: currentState,
+          }))}
+          size={clinicalCount}
+          style={styles.button(theme)} />
+        <DownloadButton
+          active={state.jsonDownloading}
+          activeText="Processing"
+          altMessage={false}
+          className="data-download-clinical-json"
           dataExportExpands={[
             'demographic',
             'diagnoses',
@@ -132,8 +120,17 @@ export default compose(
             'family_histories',
             'exposures',
           ]}
+          endpoint="/cases"
+          fields={['case_id']}
           filename={jsonFilename}
-        />
+          filters={filters}
+          inactiveText="JSON"
+          setParentState={currentState => setState(s => ({
+            ...s,
+            jsonDownloading: currentState,
+          }))}
+          size={clinicalCount}
+          style={styles.button(theme)} />
       </Dropdown>
     );
   },

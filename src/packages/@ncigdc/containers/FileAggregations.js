@@ -31,9 +31,22 @@ import FileIcon from '@ncigdc/theme/icons/File';
 import { Row } from '@ncigdc/uikit/Flex';
 
 const presetFacets = [
-  { title: 'File', field: 'file_id', full: 'files.file_id', type: 'keyword' },
-  { field: 'data_category', full: 'files.data_category', type: 'keyword' },
-  { field: 'data_type', full: 'files.data_type', type: 'keyword' },
+  {
+    title: 'File',
+    field: 'file_id',
+    full: 'files.file_id',
+    type: 'keyword',
+  },
+  {
+    field: 'data_category',
+    full: 'files.data_category',
+    type: 'keyword',
+  },
+  {
+    field: 'data_type',
+    full: 'files.data_type',
+    type: 'keyword',
+  },
   {
     field: 'experimental_strategy',
     full: 'files.experimental_strategy',
@@ -45,9 +58,21 @@ const presetFacets = [
     full: 'files.analysis.workflow_type',
     type: 'keyword',
   },
-  { field: 'data_format', full: 'files.data_format', type: 'keyword' },
-  { field: 'platform', full: 'files.platform', type: 'keyword' },
-  { field: 'access', full: 'files.access', type: 'keyword' },
+  {
+    field: 'data_format',
+    full: 'files.data_format',
+    type: 'keyword',
+  },
+  {
+    field: 'platform',
+    full: 'files.platform',
+    type: 'keyword',
+  },
+  {
+    field: 'access',
+    full: 'files.access',
+    type: 'keyword',
+  },
 ];
 
 const presetFacetFields = presetFacets.map(x => x.field);
@@ -66,13 +91,12 @@ const enhance = compose(
   withState('fileIdCollapsed', 'setFileIdCollapsed', false),
   withPropsOnChange(
     ['filters', 'userSelectedFacets'],
-    ({ filters, relay, userSelectedFacets }) =>
-      relay.setVariables({
-        filters,
-        filesCustomFacetFields: userSelectedFacets
-          .map(({ field }) => field)
-          .join(','),
-      }),
+    ({ filters, relay, userSelectedFacets }) => relay.setVariables({
+      filters,
+      filesCustomFacetFields: userSelectedFacets
+        .map(({ field }) => field)
+        .join(','),
+    }),
   ),
   withPropsOnChange(['facets'], ({ facets }) => ({
     parsedFacets: facets.facets ? tryParseJSON(facets.facets, {}) : {},
@@ -140,68 +164,65 @@ export const FileAggregationsComponent = (props: TProps) => (
       style={{
         padding: '10px 15px',
         borderBottom: `1px solid ${props.theme.greyScale5}`,
-      }}
-    >
+      }}>
       {!!props.userSelectedFacets.length && (
         <span>
           <a onClick={props.handleResetFacets} style={styles.link}>
             Reset
-          </a>{' '}
+          </a>
+          {' '}
           &nbsp;|&nbsp;
         </span>
       )}
       <a
         onClick={() => props.setShouldShowFacetSelection(true)}
-        style={styles.link}
-      >
+        style={styles.link}>
         Add a File Filter
       </a>
     </div>
     <Modal
       isOpen={props.shouldShowFacetSelection}
-      style={{ content: { border: 0, padding: '15px' } }}
-    >
+      style={{
+        content: {
+          border: 0,
+          padding: '15px',
+        },
+      }}>
       <FacetSelection
-        title="Add a File Filter"
-        docType="files"
-        onSelect={props.handleSelectFacet}
-        onRequestClose={() => props.setShouldShowFacetSelection(false)}
-        excludeFacetsBy={props.facetExclusionTest}
         additionalFacetData={props.parsedFacets}
-      />
+        docType="files"
+        excludeFacetsBy={props.facetExclusionTest}
+        onRequestClose={() => props.setShouldShowFacetSelection(false)}
+        onSelect={props.handleSelectFacet}
+        title="Add a File Filter" />
     </Modal>
 
     {props.userSelectedFacets.map(facet => (
       <FacetWrapper
-        isRemovable
-        relayVarName="filesCustomFacetFields"
-        key={facet.full}
-        facet={facet}
         aggregation={props.parsedFacets[facet.field]}
-        relay={props.relay}
+        facet={facet}
+        isRemovable
+        key={facet.full}
         onRequestRemove={() => props.handleRequestRemoveFacet(facet)}
-        style={{ borderBottom: `1px solid ${props.theme.greyScale5}` }}
-      />
+        relay={props.relay}
+        relayVarName="filesCustomFacetFields"
+        style={{ borderBottom: `1px solid ${props.theme.greyScale5}` }} />
     ))}
     <FacetHeader
-      title="File"
-      field="files.file_id"
       collapsed={props.fileIdCollapsed}
-      setCollapsed={props.setFileIdCollapsed}
       description="Enter File UUID or name"
-    />
+      field="files.file_id"
+      setCollapsed={props.setFileIdCollapsed}
+      title="File" />
     <SuggestionFacet
-      title="File"
       collapsed={props.fileIdCollapsed}
       doctype="files"
-      fieldNoDoctype="file_id"
-      placeholder="e.g. 142682.bam, 4f6e2e7a-b..."
-      hits={props.suggestions}
-      setAutocomplete={props.setAutocomplete}
-      style={{ borderBottom: `1px solid ${props.theme.greyScale5}` }}
       dropdownItem={x => (
         <Row>
-          <FileIcon style={{ paddingRight: '1rem', paddingTop: '1rem' }} />
+          <FileIcon style={{
+            paddingRight: '1rem',
+            paddingTop: '1rem',
+          }} />
           <div>
             <div style={{ fontWeight: 'bold' }}>{x.file_id}</div>
             <div style={{ fontSize: '80%' }}>{x.submitter_id}</div>
@@ -209,17 +230,21 @@ export const FileAggregationsComponent = (props: TProps) => (
           </div>
         </Row>
       )}
-    />
+      fieldNoDoctype="file_id"
+      hits={props.suggestions}
+      placeholder="e.g. 142682.bam, 4f6e2e7a-b..."
+      setAutocomplete={props.setAutocomplete}
+      style={{ borderBottom: `1px solid ${props.theme.greyScale5}` }}
+      title="File" />
     {_.reject(presetFacets, { full: 'files.file_id' }).map(facet => (
       <FacetWrapper
-        key={facet.full}
-        facet={facet}
-        title={facet.title}
+        additionalProps={facet.additionalProps}
         aggregation={props.aggregations[escapeForRelay(facet.field)]}
+        facet={facet}
+        key={facet.full}
         relay={props.relay}
         style={{ borderBottom: `1px solid ${props.theme.greyScale5}` }}
-        additionalProps={facet.additionalProps}
-      />
+        title={facet.title} />
     ))}
   </div>
 );

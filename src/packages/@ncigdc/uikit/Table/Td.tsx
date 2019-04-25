@@ -16,7 +16,12 @@ interface ITdProps {
 export type TTd = (props: ITdProps) => JSX.Element;
 
 const Td: TTd = ({ style, children, ...props }) => (
-  <td style={{ ...styles.td, ...style }} {...props}>
+  <td
+    style={{
+      ...styles.td,
+      ...style,
+    }}
+    {...props}>
     {children}
   </td>
 );

@@ -13,8 +13,10 @@ export default compose(
       fileCount={viewer.projects.hits.edges[0].node.summary.file_count}
       filters={{
         op: 'IN',
-        content: { field: 'cases.project.project_id', value: [projectId] },
-      }}
-    />
+        content: {
+          field: 'cases.project.project_id',
+          value: [projectId],
+        },
+      }} />
   );
 });

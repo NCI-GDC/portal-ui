@@ -36,11 +36,10 @@ const annotationsTableModel = [
     td: ({ node, index }) => (
       <Td>
         <AnnotationLink
-          uuid={node.annotation_id}
           id={`row-${index}-annotation-link`}
           merge
-          whitelist={['filters']}
-        >
+          uuid={node.annotation_id}
+          whitelist={['filters']}>
           {node.annotation_id.substr(0, 8)}
         </AnnotationLink>
         <ForTsvExport>{node.annotation_id}</ForTsvExport>
@@ -72,11 +71,10 @@ const annotationsTableModel = [
     td: ({ node, index }) => (
       <Td>
         <CaseLink
-          uuid={node.case_id}
           id={`row-${index}-case_submitter_id-link`}
           merge
-          whitelist={['filters']}
-        >
+          uuid={node.case_id}
+          whitelist={['filters']}>
           {node.case_submitter_id}
         </CaseLink>
         <ForTsvExport>{node.case_submitter_id}</ForTsvExport>
@@ -159,10 +157,9 @@ const annotationsTableModel = [
     td: ({ node, index }) => (
       <Td>
         <CaseLink
-          uuid={node.case_id}
-          query={node.entity_type !== 'case' ? { bioId: node.entity_id } : {}}
           deepLink={node.entity_type !== 'case' ? 'biospecimen' : undefined}
-        >
+          query={node.entity_type !== 'case' ? { bioId: node.entity_id } : {}}
+          uuid={node.case_id}>
           {node.entity_submitter_id}
         </CaseLink>
         <ForTsvExport>{node.entity_submitter_id}</ForTsvExport>

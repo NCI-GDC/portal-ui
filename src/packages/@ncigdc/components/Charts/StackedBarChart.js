@@ -38,7 +38,12 @@ const drawChart = ({
   const el = ReactFauxDOM.createElement('div');
   el.setAttribute('class', 'test-stacked-bar-chart');
 
-  const margin = { top: 10, right: 0, bottom: 55, left: 70 };
+  const margin = {
+    top: 10,
+    right: 0,
+    bottom: 55,
+    left: 70,
+  };
   const x = d3
     .scaleBand()
     .rangeRound([0, width])
@@ -66,11 +71,13 @@ const drawChart = ({
     .append('g')
     .attr('transform', `translate(${margin.left},${margin.top})`);
 
-  const stackedData = stack(data).map(d =>
-    d
-      .filter(d2 => !isNaN(d2[0]) && !isNaN(d2[1]))
-      .map(d2 => d2.concat({ key: d.key, index: d.index, data: d2.data })),
-  );
+  const stackedData = stack(data).map(d => d
+    .filter(d2 => !isNaN(d2[0]) && !isNaN(d2[1]))
+    .map(d2 => d2.concat({
+      key: d.key,
+      index: d.index,
+      data: d2.data,
+    })),);
 
   const bars = g
     .selectAll('.series')
@@ -170,8 +177,7 @@ const StackedBarChart: TStackedBarChart = (
     height = 200,
     setTooltip,
   } = {},
-) =>
-  Object.keys(data).length ? (
+) => (Object.keys(data).length ? (
     drawChart({
       data,
       yAxis,
@@ -185,9 +191,12 @@ const StackedBarChart: TStackedBarChart = (
       theme,
     })
   ) : (
-    <Row style={{ color: xAxis.style.textFill, justifyContent: 'center' }}>
+    <Row style={{
+      color: xAxis.style.textFill,
+      justifyContent: 'center',
+    }}>
       No data
     </Row>
-  );
+  ));
 
 export default withTheme(withTooltip(StackedBarChart));

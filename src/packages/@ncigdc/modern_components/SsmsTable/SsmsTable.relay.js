@@ -14,66 +14,74 @@ import {
 import { makeFilter, addInFilters } from '@ncigdc/utils/filters';
 import Query from '@ncigdc/modern_components/Query';
 
-export default (Component: ReactClass<*>) =>
-  compose(
-    withRouter,
-    withPropsOnChange(
-      ['location', 'defaultFilters', 'defaultSize'],
-      ({
-        location,
-        defaultFilters = null,
-        contextFilters = null,
-        defaultSize = 10,
-      }) => {
-        const q = parse(location.search);
-        return {
-          filters: defaultFilters,
-          variables: {
-            ssmsTable_filters: parseFilterParam(
-              q.ssmsTable_filters,
-              defaultFilters,
-            ),
-            ssmsTable_offset: parseIntParam(q.ssmsTable_offset, 0),
-            ssmsTable_size: parseIntParam(q.ssmsTable_size, defaultSize),
-            ssmsTable_sort: parseJSONParam(q.ssmsTable_sort, null),
-            ssmCaseFilter: addInFilters(
-              q.ssmsTable_filters || contextFilters || defaultFilters,
-              makeFilter([
-                {
-                  field: 'available_variation_data',
-                  value: 'ssm',
-                },
-              ]),
-            ),
-            score: 'occurrence.case.project.project_id',
-            consequenceFilters: makeFilter([
+export default (Component: ReactClass<*>) => compose(
+  withRouter,
+  withPropsOnChange(
+    [
+      'location',
+      'defaultFilters',
+      'defaultSize',
+    ],
+    ({
+      location,
+      defaultFilters = null,
+      contextFilters = null,
+      defaultSize = 10,
+    }) => {
+      const q = parse(location.search);
+      return {
+        filters: defaultFilters,
+        variables: {
+          ssmsTable_filters: parseFilterParam(
+            q.ssmsTable_filters,
+            defaultFilters,
+          ),
+          ssmsTable_offset: parseIntParam(q.ssmsTable_offset, 0),
+          ssmsTable_size: parseIntParam(q.ssmsTable_size, defaultSize),
+          ssmsTable_sort: parseJSONParam(q.ssmsTable_sort, null),
+          ssmCaseFilter: addInFilters(
+            q.ssmsTable_filters || contextFilters || defaultFilters,
+            makeFilter([
               {
-                field: 'consequence.transcript.is_canonical',
-                value: 'true',
-              },
-            ]),
-            ssmTested: makeFilter([
-              {
-                field: 'cases.available_variation_data',
+                field: 'available_variation_data',
                 value: 'ssm',
               },
             ]),
-            sort: [
-              { field: '_score', order: 'desc' },
-              { field: '_uid', order: 'asc' },
-            ],
-          },
-        };
-      },
-    ),
-  )((props: Object) => {
-    return (
-      <Query
-        parentProps={props}
-        minHeight={387}
-        variables={props.variables}
-        Component={Component}
-        query={graphql`
+          ),
+          score: 'occurrence.case.project.project_id',
+          consequenceFilters: makeFilter([
+            {
+              field: 'consequence.transcript.is_canonical',
+              value: 'true',
+            },
+          ]),
+          ssmTested: makeFilter([
+            {
+              field: 'cases.available_variation_data',
+              value: 'ssm',
+            },
+          ]),
+          sort: [
+            {
+              field: '_score',
+              order: 'desc',
+            },
+            {
+              field: '_uid',
+              order: 'asc',
+            },
+          ],
+        },
+      };
+    },
+  ),
+)((props: Object) => {
+  return (
+    <Query
+      Component={Component}
+      minHeight={387}
+      parentProps={props}
+      query={graphql`
           query SsmsTable_relayQuery(
             $ssmTested: FiltersArgument
             $ssmCaseFilter: FiltersArgument
@@ -154,6 +162,6 @@ export default (Component: ReactClass<*>) =>
             }
           }
         `}
-      />
-    );
-  });
+      variables={props.variables} />
+  );
+});

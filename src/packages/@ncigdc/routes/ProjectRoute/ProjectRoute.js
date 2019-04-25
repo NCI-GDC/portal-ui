@@ -1,7 +1,9 @@
 /* @flow */
 
 import React from 'react';
-import { compose, withState, lifecycle, withProps } from 'recompose';
+import {
+  compose, withState, lifecycle, withProps,
+} from 'recompose';
 import { get } from 'lodash';
 import { getDefaultCurve } from '@ncigdc/utils/survivalplot';
 import FullWidthLayout from '@ncigdc/components/Layouts/FullWidthLayout';
@@ -48,7 +50,10 @@ const initialState = {
 };
 
 const enhance = compose(
-  withProps(({ match }) => ({ type: 'Project', id: get(match, 'params.id') })),
+  withProps(({ match }) => ({
+    type: 'Project',
+    id: get(match, 'params.id'),
+  })),
   withExists,
   withRouter,
   withState(
@@ -69,7 +74,10 @@ const enhance = compose(
     const defaultSurvivalData = await getDefaultCurve({
       currentFilters: {
         op: '=',
-        content: { field: 'cases.project.project_id', value: id },
+        content: {
+          field: 'cases.project.project_id',
+          value: id,
+        },
       },
       slug: id,
     });
@@ -127,14 +135,19 @@ export default enhance(
     push,
   }) => {
     const projectFilter = makeFilter([
-      { field: 'cases.project.project_id', value: projectId },
+      {
+        field: 'cases.project.project_id',
+        value: projectId,
+      },
     ]);
     return (
-      <FullWidthLayout title={projectId} entityType="PR">
+      <FullWidthLayout entityType="PR" title={projectId}>
         <Row
-          style={{ marginBottom: '2rem', marginLeft: 'auto' }}
           spacing="0.2rem"
-        >
+          style={{
+            marginBottom: '2rem',
+            marginLeft: 'auto',
+          }}>
           <span>
             <Button
               onClick={projectId => {
@@ -144,8 +157,7 @@ export default enhance(
                     filters: stringifyJSONParam(projectFilter),
                   },
                 });
-              }}
-            >
+              }}>
               Explore Project Data
             </Button>
           </span>
@@ -156,11 +168,10 @@ export default enhance(
                 left: '2px',
                 marginTop: '2px',
               }}
-              jsonFilename={`biospecimen.project-${projectId}.${timestamp()}.json`}
-              tsvFilename={`biospecimen.project-${projectId}.${timestamp()}.tar.gz`}
               filters={projectFilter}
-              inactiveText={'Biospecimen'}
-            />
+              inactiveText="Biospecimen"
+              jsonFilename={`biospecimen.project-${projectId}.${timestamp()}.json`}
+              tsvFilename={`biospecimen.project-${projectId}.${timestamp()}.tar.gz`} />
           </span>
           <span>
             <DownloadClinicalDropdown
@@ -170,26 +181,37 @@ export default enhance(
                 marginTop: '2px',
               }}
               filters={projectFilter}
-              tsvFilename={`clinical.project-${projectId}.${timestamp()}.tar.gz`}
+              inactiveText="Clinical"
               jsonFilename={`clinical.project-${projectId}.${timestamp()}.json`}
-              inactiveText={'Clinical'}
-            />
+              tsvFilename={`clinical.project-${projectId}.${timestamp()}.tar.gz`} />
           </span>
           <span>
             <DownloadManifestButton projectId={projectId} />
           </span>
         </Row>
         <ProjectSummary projectId={projectId} />
-        <Row style={{ flexWrap: 'wrap' }} spacing={'2rem'}>
-          <span style={{ ...styles.column, marginBottom: '2rem', flex: 1 }}>
+        <Row spacing="2rem" style={{ flexWrap: 'wrap' }}>
+          <span style={{
+            ...styles.column,
+            marginBottom: '2rem',
+            flex: 1,
+          }}>
             <ProjectCountsDataCategory projectId={projectId} />
           </span>
-          <span style={{ ...styles.column, marginBottom: '2rem', flex: 1 }}>
+          <span style={{
+            ...styles.column,
+            marginBottom: '2rem',
+            flex: 1,
+          }}>
             <ProjectCountsExpStrategy projectId={projectId} />
           </span>
         </Row>
         <Row>
-          <span style={{ ...styles.column, marginBottom: '2rem', flex: 1 }}>
+          <span style={{
+            ...styles.column,
+            marginBottom: '2rem',
+            flex: 1,
+          }}>
             <ProjectPrimarySitesTable projectId={projectId} />
           </span>
         </Row>

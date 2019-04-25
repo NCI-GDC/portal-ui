@@ -13,10 +13,9 @@ type TProps = {
 
 const CartLink = (props: TProps) => (
   <Link
-    pathname="/cart"
     className={props.className || ''}
-    style={props.style || {}}
-  >
+    pathname="/cart"
+    style={props.style || {}}>
     {props.children ? props.children(props.count) : 'cart'}
   </Link>
 );

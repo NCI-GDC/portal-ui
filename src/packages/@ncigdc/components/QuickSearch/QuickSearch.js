@@ -4,11 +4,11 @@ import React from 'react';
 import _ from 'lodash';
 import { compose } from 'recompose';
 import styled from '@ncigdc/theme/styled';
-import QuickSearchResults from './QuickSearchResults';
 import { withSearch } from '@ncigdc/utils/withSearch';
 import namespace from '@ncigdc/utils/namespace';
 import withSelectableList from '@ncigdc/utils/withSelectableList';
 import { Row, Column } from '@ncigdc/uikit/Flex';
+import QuickSearchResults from './QuickSearchResults';
 import FileHistoryResults from './FileHistoryResults';
 
 const styles = {
@@ -82,7 +82,9 @@ export default compose(
 )(
   ({
     search: { state, setQuery, reset },
-    selectableList: { handleKeyDown, focusedItem, setFocusedItem, selectItem },
+    selectableList: {
+      handleKeyDown, focusedItem, setFocusedItem, selectItem,
+    },
     tabIndex,
     isInSearchMode,
     setIsInSearchMode,
@@ -90,11 +92,9 @@ export default compose(
   }) => (
     <a
       className="quick-search-toggle"
-      tabIndex={tabIndex}
-      onClick={() => !isInSearchMode && setIsInSearchMode(true)}
       onBlur={event => {
-        const currentTarget = event.currentTarget;
-        const relatedTarget = event.relatedTarget;
+        const { currentTarget } = event;
+        const { relatedTarget } = event;
         // defer 1 frame to get correct value of document.activeElement, which is required for x-browser compat
         setImmediate(() => {
           const triggerElement = relatedTarget || document.activeElement;
@@ -111,11 +111,12 @@ export default compose(
           }
         });
       }}
+      onClick={() => !isInSearchMode && setIsInSearchMode(true)}
       style={{
         ...style,
         ...styles.container,
       }}
-    >
+      tabIndex={tabIndex}>
       <span style={styles.searchIconWrapper}>
         <i
           className="fa fa-search stock-icon"
@@ -123,16 +124,14 @@ export default compose(
             {},
             styles.searchIcon,
             state.isLoading ? styles.invisible : styles.visible,
-          )}
-        />
+          )} />
         <i
           className="fa fa-spin fa-spinner stock-icon"
           style={Object.assign(
             {},
             styles.loadingIcon,
             state.isLoading ? styles.visible : styles.invisible,
-          )}
-        />
+          )} />
       </span>
       {!isInSearchMode && (
         <span className="header-hidden-sm header-hidden-md" data-translate>
@@ -142,10 +141,9 @@ export default compose(
 
       {isInSearchMode && (
         <SearchInput
+          aria-label="Quick Search Input"
           autoFocus
           className="quick-search-input"
-          placeholder="Quick Search"
-          type="text"
           onChange={event => setQuery(event.target.value)}
           onKeyDown={event => {
             handleKeyDown(event);
@@ -159,48 +157,51 @@ export default compose(
               setIsInSearchMode(false);
             }
           }}
-          aria-label="Quick Search Input"
-        />
+          placeholder="Quick Search"
+          type="text" />
       )}
       <QuickSearchResults
-        results={_.map(
-          state.results,
-          item => (item === focusedItem ? { ...item, isSelected: true } : item),
-        )}
-        query={state.query}
-        onSelectItem={setFocusedItem}
+        isLoading={state.isLoading}
         onActivateItem={item => {
           selectItem(item);
           reset();
           setIsInSearchMode(false);
         }}
-        isLoading={state.isLoading}
-      />
+        onSelectItem={setFocusedItem}
+        query={state.query}
+        results={_.map(
+          state.results,
+          item => (item === focusedItem ? {
+            ...item,
+            isSelected: true,
+          } : item),
+        )} />
       {!state.isLoading && (
         <FileHistoryResults
-          query={state.query}
-          results={state.fileHistoryResult
-            .filter(f => f.file_change === 'released')
-            .map(
-              item =>
-                item === focusedItem ? { ...item, isSelected: true } : item,
-            )}
-          onSelectItem={setFocusedItem}
+          isLoading={state.isLoading}
           onActivateItem={item => {
             selectItem(item);
             reset();
             setIsInSearchMode(false);
           }}
-          isLoading={state.isLoading}
-        />
+          onSelectItem={setFocusedItem}
+          query={state.query}
+          results={state.fileHistoryResult
+            .filter(f => f.file_change === 'released')
+            .map(
+              item => (item === focusedItem ? {
+                ...item,
+                isSelected: true,
+              } : item),
+            )} />
       )}
 
       {!state.isLoading &&
         state.query &&
         (state.results || []).length === 0 &&
         (state.fileHistoryResult || []).length === 0 && (
-          <div style={styles.noResults}>No results found</div>
-        )}
+        <div style={styles.noResults}>No results found</div>
+      )}
     </a>
   ),
 );

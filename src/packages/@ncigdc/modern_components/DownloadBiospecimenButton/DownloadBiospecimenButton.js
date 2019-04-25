@@ -20,15 +20,8 @@ export default compose(withTheme)(({ isLoading, projectId, viewer }) => {
 
   return (
     <DownloadButton
-      className="test-download-biospecimen"
-      disabled={!biospecimenCount}
-      filename={`biospecimen.project-${projectId}.${timestamp()}.json`}
-      endpoint="cases"
       activeText="Processing"
-      inactiveText={
-        biospecimenCount ? 'Download Biospecimen' : 'No Biospecimen Data'
-      }
-      fields={['case_id']}
+      className="test-download-biospecimen"
       dataExportExpands={[
         'samples',
         'samples.portions',
@@ -41,7 +34,13 @@ export default compose(withTheme)(({ isLoading, projectId, viewer }) => {
         'samples.portions.annotations',
         'samples.portions.center',
       ]}
+      disabled={!biospecimenCount}
+      endpoint="cases"
+      fields={['case_id']}
+      filename={`biospecimen.project-${projectId}.${timestamp()}.json`}
       filters={dataExportFilters}
-    />
+      inactiveText={
+        biospecimenCount ? 'Download Biospecimen' : 'No Biospecimen Data'
+      } />
   );
 });

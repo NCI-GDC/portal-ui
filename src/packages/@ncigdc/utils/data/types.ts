@@ -2,7 +2,7 @@ export interface IDataCategory {
   case_count?: number;
   data_category: TCategory;
   file_count?: number;
-};
+}
 
 // waiting on $Values
 export type TCategory =

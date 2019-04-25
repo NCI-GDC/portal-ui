@@ -2,15 +2,17 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { compose } from 'recompose';
 import urlJoin from 'url-join';
-import { AUTH_API } from '@ncigdc/utils/constants';
+import { AUTH_API, MAX_SET_SIZE } from '@ncigdc/utils/constants';
 
-import Table, { Tr, Td, TdNum, ThNum } from '@ncigdc/uikit/Table';
+import Table, {
+  Tr, Td, TdNum, ThNum,
+} from '@ncigdc/uikit/Table';
 import { stringifyJSONParam } from '@ncigdc/utils/uri';
 import { Tooltip } from '@ncigdc/uikit/Tooltip';
 import { setModal } from '@ncigdc/dux/modal';
 import SaveSetModal from '@ncigdc/components/Modals/SaveSetModal';
 import GreyBox from '@ncigdc/uikit/GreyBox';
-import { MAX_SET_SIZE } from '@ncigdc/utils/constants';
+
 import { withTheme } from '@ncigdc/theme';
 import download from '@ncigdc/utils/download';
 import DownloadIcon from '@ncigdc/theme/icons/Download';
@@ -43,34 +45,46 @@ const ActionsTd = compose(
                   ? `Set Operation can not be saved because it is over the limit of ${MAX_SET_SIZE}`
                   : 'Save selection as new set'
               }
-              style={{ marginRight: 5 }}
-            >
+              style={{ marginRight: 5 }}>
               <i
-                style={
-                  saveSetDisabled
-                    ? { color: theme.greyScale4 }
-                    : { cursor: 'pointer', color: 'rgb(37, 94, 153)' }
-                }
                 className="fa fa-save"
                 onClick={() => {
                   if (saveSetDisabled) return;
                   dispatch(
                     setModal(
                       <SaveSetModal
-                        title={`Save selection as new set`}
-                        total={count}
-                        filters={filters}
-                        type={type}
-                        displayType={type}
                         CreateSetButton={CreateSetButton}
+                        displayType={type}
+                        filters={filters}
                         setName="My Set"
-                      />,
+                        title="Save selection as new set"
+                        total={count}
+                        type={type} />,
                     ),
                   );
                 }}
-              />
+                style={
+                  saveSetDisabled
+                    ? { color: theme.greyScale4 }
+                    : {
+                      cursor: 'pointer',
+                      color: 'rgb(37, 94, 153)',
+                    }
+                } />
             </Tooltip>
             <CreateSetButton
+              Component={props => (
+                <Tooltip
+                  {...props}
+                  Component="Export as TSV"
+                  style={{
+                    cursor: 'pointer',
+                    color: theme.primary,
+                    textDecoration: 'underline',
+                  }}>
+                  <DownloadIcon key="icon" style={{ marginRight: '5px' }} />
+                </Tooltip>
+              )}
               filters={filters}
               onComplete={setId => {
                 download({
@@ -91,23 +105,20 @@ const ActionsTd = compose(
                   method: 'POST',
                   altMessage: false,
                 })(() => {}, () => {});
-              }}
-              Component={props => (
-                <Tooltip
-                  {...props}
-                  Component={'Export as TSV'}
-                  style={{
-                    cursor: 'pointer',
-                    color: theme.primary,
-                    textDecoration: 'underline',
-                  }}
-                >
-                  <DownloadIcon key="icon" style={{ marginRight: '5px' }} />
-                </Tooltip>
-              )}
-            />
+              }} />
             {type === 'case' && (
               <CreateSetButton
+                Component={p => (
+                  <Tooltip Component="View files in repository">
+                    <i
+                      className="fa fa-database"
+                      {...p}
+                      style={{
+                        cursor: 'pointer',
+                        color: 'rgb(37, 94, 153)',
+                      }} />
+                  </Tooltip>
+                )}
                 filters={filters}
                 onComplete={setId => {
                   push({
@@ -127,20 +138,7 @@ const ActionsTd = compose(
                       }),
                     },
                   });
-                }}
-                Component={p => (
-                  <Tooltip Component="View files in repository">
-                    <i
-                      className="fa fa-database"
-                      {...p}
-                      style={{
-                        cursor: 'pointer',
-                        color: 'rgb(37, 94, 153)',
-                      }}
-                    />
-                  </Tooltip>
-                )}
-              />
+                }} />
             )}
           </span>
         )}
@@ -164,13 +162,7 @@ export default compose(
     theme,
   }) => (
     <Table
-      headings={[
-        'Select',
-        'Set Operation',
-        <ThNum key="# Items"># Items</ThNum>,
-        '',
-      ]}
-      body={
+      body={(
         <tbody>
           {ops.map((op, i) => (
             <CountComponent filters={op.filters} key={op.op}>
@@ -181,15 +173,13 @@ export default compose(
                     ...(selected.has(op.op) && {
                       backgroundColor: theme.tableHighlight,
                     }),
-                  }}
-                >
+                  }}>
                   <Td>
                     <input
-                      type="checkbox"
                       aria-label={`Select ${op.op}`}
                       checked={selected.has(op.op)}
                       onChange={e => toggle(op.op)}
-                    />
+                      type="checkbox" />
                   </Td>
                   <Td>{op.op}</Td>
                   <TdNum>
@@ -199,13 +189,25 @@ export default compose(
                       <GreyBox />
                     ) : (
                       <CreateSetButton
+                        Component={props => (
+                          <Tooltip
+                            {...props}
+                            Component={`View ${type} set in exploration`}
+                            style={{
+                              cursor: 'pointer',
+                              color: theme.primary,
+                              textDecoration: 'underline',
+                            }}>
+                            {count.toLocaleString()}
+                          </Tooltip>
+                        )}
                         filters={op.filters}
                         onComplete={setId => {
                           push({
                             pathname: '/exploration',
                             query: {
                               searchTableTab:
-                                (type === 'ssm' ? 'mutation' : type) + 's',
+                                `${type === 'ssm' ? 'mutation' : type}s`,
                               filters: stringifyJSONParam({
                                 op: 'AND',
                                 content: [
@@ -220,32 +222,17 @@ export default compose(
                               }),
                             },
                           });
-                        }}
-                        Component={props => (
-                          <Tooltip
-                            {...props}
-                            Component={`View ${type} set in exploration`}
-                            style={{
-                              cursor: 'pointer',
-                              color: theme.primary,
-                              textDecoration: 'underline',
-                            }}
-                          >
-                            {count.toLocaleString()}
-                          </Tooltip>
-                        )}
-                      />
+                        }} />
                     )}
                   </TdNum>
                   <ActionsTd
-                    hide={!count}
                     count={count}
-                    filters={op.filters}
-                    fileName={`${op.op}-set-ids.${timestamp()}.json`}
-                    type={type}
                     CreateSetButton={CreateSetButton}
+                    fileName={`${op.op}-set-ids.${timestamp()}.json`}
+                    filters={op.filters}
+                    hide={!count}
                     push={push}
-                  />
+                    type={type} />
                 </Tr>
               )}
             </CountComponent>
@@ -256,8 +243,7 @@ export default compose(
                 style={{
                   borderTop: '1px solid black',
                   borderBottom: '1px solid black',
-                }}
-              >
+                }}>
                 <Td colSpan="2">
                   <b>Union of selected sets</b>
                 </Td>
@@ -268,13 +254,26 @@ export default compose(
                     <GreyBox />
                   ) : (
                     <CreateSetButton
+                      Component={p => (
+                        <Tooltip Component={`View ${type} set in exploration`}>
+                          <span
+                            {...p}
+                            style={{
+                              cursor: 'pointer',
+                              color: theme.primary,
+                              textDecoration: 'underline',
+                            }}>
+                            {count.toLocaleString()}
+                          </span>
+                        </Tooltip>
+                      )}
                       filters={selectedFilters}
                       onComplete={setId => {
                         push({
                           pathname: '/exploration',
                           query: {
                             searchTableTab:
-                              (type === 'ssm' ? 'mutation' : type) + 's',
+                              `${type === 'ssm' ? 'mutation' : type}s`,
                             filters: stringifyJSONParam({
                               op: 'AND',
                               content: [
@@ -289,38 +288,27 @@ export default compose(
                             }),
                           },
                         });
-                      }}
-                      Component={p => (
-                        <Tooltip Component={`View ${type} set in exploration`}>
-                          <span
-                            {...p}
-                            style={{
-                              cursor: 'pointer',
-                              color: theme.primary,
-                              textDecoration: 'underline',
-                            }}
-                          >
-                            {count.toLocaleString()}
-                          </span>
-                        </Tooltip>
-                      )}
-                    />
+                      }} />
                   )}
                 </TdNum>
                 <ActionsTd
-                  hide={!selected.size || !count}
                   count={count}
-                  filters={selectedFilters}
-                  fileName={`union-of-set-ids.${timestamp()}.json`}
-                  type={type}
                   CreateSetButton={CreateSetButton}
+                  fileName={`union-of-set-ids.${timestamp()}.json`}
+                  filters={selectedFilters}
+                  hide={!selected.size || !count}
                   push={push}
-                />
+                  type={type} />
               </Tr>
             )}
           </CountComponent>
         </tbody>
-      }
-    />
+      )}
+      headings={[
+        'Select',
+        'Set Operation',
+        <ThNum key="# Items"># Items</ThNum>,
+        '',
+      ]} />
   ),
 );

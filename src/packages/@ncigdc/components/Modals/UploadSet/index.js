@@ -14,9 +14,8 @@ import {
   SSM_ID_FIELD_DISPLAY,
 } from '@ncigdc/utils/validateIds';
 
-import { CreateRepositoryCaseSetButton } from '@ncigdc/modern_components/withSetAction';
-import { CreateExploreGeneSetButton } from '@ncigdc/modern_components/withSetAction';
-import { CreateExploreSsmSetButton } from '@ncigdc/modern_components/withSetAction';
+import { CreateRepositoryCaseSetButton, CreateExploreGeneSetButton, CreateExploreSsmSetButton } from '@ncigdc/modern_components/withSetAction';
+
 
 import { SpinnerIcon } from '@ncigdc/theme/icons';
 
@@ -45,12 +44,17 @@ export const UploadCaseSet = withProps(({ CreateButton }) => ({
       'e.g. TCGA-DD-AAVP, TCGA-DD-AAVP-10A-01D-A40U-10, 0004d251-3f70-4395-b175-c94c2f5b1b81',
     helpText: (
       <div>
-        <div style={{ maxWidth: '50rem', whiteSpace: 'initial' }}>
-          - Case identifier accepted:{' '}
+        <div style={{
+          maxWidth: '50rem',
+          whiteSpace: 'initial',
+        }}>
+          - Case identifier accepted:
+          {' '}
           {Object.values(CASE_ID_FIELD_DISPLAY).join(', ')}
         </div>
         - Delimiters between case identifiers: comma, space, tab or 1 case
-        identifier per line<br />
+        identifier per line
+        <br />
         <FileFormats />
       </div>
     ),
@@ -61,7 +65,9 @@ export const UploadCaseSet = withProps(({ CreateButton }) => ({
   heading: 'Upload Case Set',
   validatingMessage: (
     <span>
-      <SpinnerIcon /> validating cases
+      <SpinnerIcon />
+      {' '}
+validating cases
     </span>
   ),
 }))(Base);
@@ -80,12 +86,17 @@ export const UploadGeneSet = withProps(({ CreateButton }) => ({
     placeholder: 'e.g. ENSG00000155657, TTN, 7273, HGNC:12403, 188840, Q8WZ42',
     helpText: (
       <div>
-        <div style={{ maxWidth: '50rem', whiteSpace: 'initial' }}>
-          - Gene identifier accepted:{' '}
+        <div style={{
+          maxWidth: '50rem',
+          whiteSpace: 'initial',
+        }}>
+          - Gene identifier accepted:
+          {' '}
           {Object.values(GENE_ID_FIELD_DISPLAY).join(', ')}
         </div>
         - Delimiters between gene identifiers: comma, space, tab or 1 gene
-        identifier per line<br />
+        identifier per line
+        <br />
         <FileFormats />
       </div>
     ),
@@ -96,7 +107,9 @@ export const UploadGeneSet = withProps(({ CreateButton }) => ({
   heading: 'Upload Gene Set',
   validatingMessage: (
     <span>
-      <SpinnerIcon /> validating genes
+      <SpinnerIcon />
+      {' '}
+validating genes
     </span>
   ),
 }))(Base);
@@ -116,12 +129,17 @@ export const UploadSsmSet = withProps(({ CreateButton }) => ({
       'e.g. chr3:g.179234297A>G, 92b75ae1-8d4d-52c2-8658-9c981eef0e57',
     helpText: (
       <div>
-        <div style={{ maxWidth: '50rem', whiteSpace: 'initial' }}>
-          - Mutation identifier accepted:{' '}
+        <div style={{
+          maxWidth: '50rem',
+          whiteSpace: 'initial',
+        }}>
+          - Mutation identifier accepted:
+          {' '}
           {Object.values(SSM_ID_FIELD_DISPLAY).join(', ')}
         </div>
         - Delimiters between mutation identifiers: comma, space, tab or 1
-        mutation identifier per line<br />
+        mutation identifier per line
+        <br />
         <FileFormats />
       </div>
     ),
@@ -132,7 +150,9 @@ export const UploadSsmSet = withProps(({ CreateButton }) => ({
   heading: 'Upload Mutation Set',
   validatingMessage: (
     <span>
-      <SpinnerIcon /> validating mutations
+      <SpinnerIcon />
+      {' '}
+validating mutations
     </span>
   ),
 }))(Base);

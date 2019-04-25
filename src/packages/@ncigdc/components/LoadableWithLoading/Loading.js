@@ -20,24 +20,27 @@ const Loading = ({
     if (timedOut) {
       // In case we've timed out loading our other component.
       return <div>Loader timed out!</div>;
-    } else if (pastDelay) {
+    } if (pastDelay) {
       // Display a loading screen after a set delay.
       return (
-        <Overlay show={true} style={{ position: 'absolute', zIndex: 10 }}>
+        <Overlay
+          show
+          style={{
+            position: 'absolute',
+            zIndex: 10,
+          }}>
           <Spinner />
         </Overlay>
       );
-    } else {
-      // Don't flash "Loading..." when we don't need to.
-      return null;
     }
-  } else if (error) {
+      // Don't flash "Loading..." when we don't need to.
+    return null;
+  } if (error) {
     // If we aren't loading, maybe
     return <div>Error! Component failed to load</div>;
-  } else {
-    // This case shouldn't happen... but we'll return null anyways.
-    return null;
   }
+    // This case shouldn't happen... but we'll return null anyways.
+  return null;
 };
 
 export default Loading;

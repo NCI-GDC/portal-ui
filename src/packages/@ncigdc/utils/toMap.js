@@ -3,7 +3,7 @@
 function idFirst(a, b) {
   if (a[0] === 'id') {
     return -1;
-  } else if (b[0] === 'id') {
+  } if (b[0] === 'id') {
     return 1;
   }
 

@@ -7,15 +7,20 @@ export default ({ width }) => (
   <Wrapper>
     <ExternalLink
       hasExternalIcon={false}
-      title="GDC Data Transfer Tool"
       href="https://gdc.cancer.gov/access-data/gdc-data-transfer-tool"
-      style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}
-    >
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+      }}
+      title="GDC Data Transfer Tool">
       <span
         className="icon icon-gdc-data-transer-tool"
-        style={{ fontSize: width, marginBottom: '5px' }}
-      >
-        {_.range(0, 9).map(x => <span key={x} className={`path${x}`} />)}
+        style={{
+          fontSize: width,
+          marginBottom: '5px',
+        }}>
+        {_.range(0, 9).map(x => <span className={`path${x}`} key={x} />)}
       </span>
       <p>Data Transfer Tool</p>
     </ExternalLink>

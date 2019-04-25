@@ -38,27 +38,26 @@ const BUTTON_WIDTH = 26;
 
 const GDCAppsDropdown = () => (
   <Dropdown
-    dropdownClassName="gdc-apps-menu-container"
-    style={{
-      margin: 0,
-      border: 'none',
-      color: '#767676',
-      display: 'block',
-    }}
-    dropdownStyle={{
-      marginTop: '15px',
-      borderBottomLeftRadius: '5px',
-      borderBottomRightRadius: '5px',
-    }}
-    button={
+    button={(
       <DropDownButton>
         <i className="icon-gdc-apps-menu" style={{ paddingRight: '4px' }} />
         <span className="header-hidden-sm header-hidden-md" data-translate>
           GDC Apps
         </span>
       </DropDownButton>
-    }
-  >
+    )}
+    dropdownClassName="gdc-apps-menu-container"
+    dropdownStyle={{
+      marginTop: '15px',
+      borderBottomLeftRadius: '5px',
+      borderBottomRightRadius: '5px',
+    }}
+    style={{
+      margin: 0,
+      border: 'none',
+      color: '#767676',
+      display: 'block',
+    }}>
     <DropdownContent>
       <Column>
         <PortalLink width={BUTTON_WIDTH} />

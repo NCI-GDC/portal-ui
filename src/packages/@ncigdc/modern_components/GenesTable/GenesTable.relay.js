@@ -13,105 +13,103 @@ import {
 } from '@ncigdc/utils/filters';
 import Query from '@ncigdc/modern_components/Query';
 
-export default (Component: ReactClass<*>) =>
-  compose(
-    withRouter,
-    withPropsOnChange(
-      ['location'],
-      ({ location: { search }, defaultSize = 10, defaultFilters = null }) => {
-        const q = parse(search);
-        const score = 'case.project.project_id';
+export default (Component: ReactClass<*>) => compose(
+  withRouter,
+  withPropsOnChange(
+    ['location'],
+    ({ location: { search }, defaultSize = 10, defaultFilters = null }) => {
+      const q = parse(search);
+      const score = 'case.project.project_id';
 
-        const cnvFilters = replaceFilters(
-          makeFilter([
+      const cnvFilters = replaceFilters(
+        makeFilter([
+          {
+            field: 'cases.available_variation_data',
+            value: ['cnv'],
+          },
+        ]),
+        q.genesTable_filters || defaultFilters
+      );
+
+      return {
+        filters: defaultFilters,
+        score,
+        variables: {
+          genesTable_filters: parseFilterParam(
+            q.genesTable_filters,
+            defaultFilters
+          ),
+          genesTable_offset: parseIntParam(q.genesTable_offset, 0),
+          genesTable_size: parseIntParam(q.genesTable_size, defaultSize),
+          geneCaseFilter: removeFilterWithOp(
+            (op, field) => op.match(/^NOT$/) && field.match(/^ssms.ssm_id/),
+            addInFilters(
+              q.genesTable_filters || defaultFilters,
+              makeFilter([
+                {
+                  field: 'cases.available_variation_data',
+                  value: ['ssm'],
+                },
+              ])
+            )
+          ),
+          score,
+          ssmCase: {
+            op: 'and',
+            content: [
+              {
+                op: 'in',
+                content: {
+                  field: 'cases.available_variation_data',
+                  value: ['ssm'],
+                },
+              },
+              {
+                op: 'NOT',
+                content: {
+                  field: 'genes.case.ssm.observation.observation_id',
+                  value: 'MISSING',
+                },
+              },
+            ],
+          },
+          ssmTested: makeFilter([
             {
               field: 'cases.available_variation_data',
-              value: ['cnv'],
+              value: ['ssm'],
             },
           ]),
-          q.genesTable_filters || defaultFilters
-        );
-
-        return {
-          filters: defaultFilters,
-          score,
-          variables: {
-            genesTable_filters: parseFilterParam(
-              q.genesTable_filters,
-              defaultFilters
-            ),
-            genesTable_offset: parseIntParam(q.genesTable_offset, 0),
-            genesTable_size: parseIntParam(q.genesTable_size, defaultSize),
-            geneCaseFilter: removeFilterWithOp(
-              (op, field) => op.match(/^NOT$/) && field.match(/^ssms.ssm_id/),
-              addInFilters(
-                q.genesTable_filters || defaultFilters,
-                makeFilter([
-                  {
-                    field: 'cases.available_variation_data',
-                    value: ['ssm'],
-                  },
-                ])
-              )
-            ),
-            score,
-            ssmCase: {
-              op: 'and',
-              content: [
-                {
-                  op: 'in',
-                  content: {
-                    field: 'cases.available_variation_data',
-                    value: ['ssm'],
-                  },
-                },
-                {
-                  op: 'NOT',
-                  content: {
-                    field: 'genes.case.ssm.observation.observation_id',
-                    value: 'MISSING',
-                  },
-                },
-              ],
-            },
-            ssmTested: makeFilter([
+          cnvTested: cnvFilters,
+          cnvGainFilters: replaceFilters(
+            makeFilter([
               {
-                field: 'cases.available_variation_data',
-                value: ['ssm'],
+                field: 'cnvs.cnv_change',
+                value: ['Gain'],
               },
             ]),
-            cnvTested: cnvFilters,
-            cnvGainFilters: replaceFilters(
-              makeFilter([
-                {
-                  field: 'cnvs.cnv_change',
-                  value: ['Gain'],
-                },
-              ]),
-              cnvFilters
-            ),
+            cnvFilters
+          ),
 
-            cnvLossFilters: replaceFilters(
-              makeFilter([
-                {
-                  field: 'cnvs.cnv_change',
-                  value: ['Loss'],
-                },
-              ]),
-              cnvFilters
-            ),
-          },
-        };
-      }
-    )
-  )((props: mixed) => {
-    return (
-      <Query
-        parentProps={props}
-        minHeight={387}
-        variables={props.variables}
-        Component={Component}
-        query={graphql`
+          cnvLossFilters: replaceFilters(
+            makeFilter([
+              {
+                field: 'cnvs.cnv_change',
+                value: ['Loss'],
+              },
+            ]),
+            cnvFilters
+          ),
+        },
+      };
+    }
+  )
+)((props: mixed) => {
+  return (
+    <Query
+      Component={Component}
+      minHeight={387}
+      parentProps={props}
+      query={graphql`
           query GenesTable_relayQuery(
             $genesTable_filters: FiltersArgument
             $genesTable_size: Int
@@ -187,6 +185,6 @@ export default (Component: ReactClass<*>) =>
             }
           }
         `}
-      />
-    );
-  });
+      variables={props.variables} />
+  );
+});

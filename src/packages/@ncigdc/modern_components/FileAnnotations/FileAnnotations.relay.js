@@ -6,29 +6,27 @@ import { makeFilter } from '@ncigdc/utils/filters';
 import { withRouter } from 'react-router-dom';
 import { BaseQuery } from '@ncigdc/modern_components/Query';
 
-export default (Component: ReactClass<*>) =>
-  compose(
-    withRouter,
-    withPropsOnChange(['entityId'], ({ entityId }) => {
-      return {
-        variables: {
-          filters: makeFilter([
-            {
-              field: 'files.annotations.entity_id',
-              value: [entityId],
-            },
-          ]),
-        },
-      };
-    }),
-  )((props: Object) => {
-    return (
-      <BaseQuery
-        name="FileAnnotations"
-        parentProps={props}
-        variables={props.variables}
-        Component={Component}
-        query={graphql`
+export default (Component: ReactClass<*>) => compose(
+  withRouter,
+  withPropsOnChange(['entityId'], ({ entityId }) => {
+    return {
+      variables: {
+        filters: makeFilter([
+          {
+            field: 'files.annotations.entity_id',
+            value: [entityId],
+          },
+        ]),
+      },
+    };
+  }),
+)((props: Object) => {
+  return (
+    <BaseQuery
+      Component={Component}
+      name="FileAnnotations"
+      parentProps={props}
+      query={graphql`
           query FileAnnotations_relayQuery($filters: FiltersArgument) {
             repository {
               files {
@@ -53,6 +51,6 @@ export default (Component: ReactClass<*>) =>
             }
           }
         `}
-      />
-    );
-  });
+      variables={props.variables} />
+  );
+});

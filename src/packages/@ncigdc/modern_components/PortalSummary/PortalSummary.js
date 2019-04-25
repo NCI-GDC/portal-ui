@@ -28,8 +28,7 @@ const Title = styled(Row, {
 
 const PortalSummary = compose(
   branch(
-    ({ viewer }) =>
-      !viewer.projects.hits ||
+    ({ viewer }) => !viewer.projects.hits ||
       !viewer.repository.cases.hits ||
       !viewer.repository.files.hits,
     renderComponent(() => <div>No data found.</div>),
@@ -39,8 +38,14 @@ const PortalSummary = compose(
   })),
 )(props => (
   <span>
-    <Row style={{ padding: '2rem', alignItems: 'baseline' }}>
-      <div style={{ fontSize: '2.3rem', color: 'rgb(70, 70, 70)' }}>
+    <Row style={{
+      padding: '2rem',
+      alignItems: 'baseline',
+    }}>
+      <div style={{
+        fontSize: '2.3rem',
+        color: 'rgb(70, 70, 70)',
+      }}>
         Data Portal Summary
       </div>
       <div
@@ -48,14 +53,12 @@ const PortalSummary = compose(
           fontSize: '1.3rem',
           color: 'rgb(37, 97, 122)',
           marginLeft: '2rem',
-        }}
-      >
+        }}>
         <a
           className="test-release"
-          target="_blank"
-          rel="noopener noreferrer"
           href="https://docs.gdc.cancer.gov/Data/Release_Notes/Data_Release_Notes/"
-        >
+          rel="noopener noreferrer"
+          target="_blank">
           {props.dataRelease}
         </a>
       </div>
@@ -66,10 +69,15 @@ const PortalSummary = compose(
           <Title className="test-projects-label">Projects</Title>
           <Row>
             <i
-              style={{ color: '#01b987', fontSize: '3rem' }}
               className="icon-gdc-projects project-icon"
-            />
-            <span style={{ fontSize: '2.5rem', marginLeft: '0.5rem' }}>
+              style={{
+                color: '#01b987',
+                fontSize: '3rem',
+              }} />
+            <span style={{
+              fontSize: '2.5rem',
+              marginLeft: '0.5rem',
+            }}>
               <ProjectsCount hits={props.viewer.projects.hits} />
             </span>
           </Row>
@@ -78,13 +86,17 @@ const PortalSummary = compose(
           <Title className="test-primary-sites-label">Primary Sites</Title>
           <Row>
             <i
-              style={{ color: '#01b987', fontSize: '3rem' }}
               className="icon-gdc-cases data-icon"
-            />
-            <span style={{ fontSize: '2.5rem', marginLeft: '0.5rem' }}>
+              style={{
+                color: '#01b987',
+                fontSize: '3rem',
+              }} />
+            <span style={{
+              fontSize: '2.5rem',
+              marginLeft: '0.5rem',
+            }}>
               <PrimarySitesCount
-                aggregations={props.viewer.projects.aggregations}
-              />
+                aggregations={props.viewer.projects.aggregations} />
             </span>
           </Row>
         </CountBox>
@@ -92,10 +104,15 @@ const PortalSummary = compose(
           <Title className="test-cases-label">Cases</Title>
           <Row>
             <i
-              style={{ color: '#01b987', fontSize: '3rem' }}
               className="icon-gdc-cases data-icon"
-            />
-            <span style={{ fontSize: '2.5rem', marginLeft: '0.5rem' }}>
+              style={{
+                color: '#01b987',
+                fontSize: '3rem',
+              }} />
+            <span style={{
+              fontSize: '2.5rem',
+              marginLeft: '0.5rem',
+            }}>
               <CasesCount hits={props.viewer.repository.cases.hits} />
             </span>
           </Row>
@@ -106,10 +123,15 @@ const PortalSummary = compose(
           <Title className="test-files-label">Files</Title>
           <Row>
             <i
-              style={{ color: '#01b987', fontSize: '3rem' }}
               className="fa fa-file-o data-icon"
-            />
-            <span style={{ fontSize: '2.5rem', marginLeft: '0.5rem' }}>
+              style={{
+                color: '#01b987',
+                fontSize: '3rem',
+              }} />
+            <span style={{
+              fontSize: '2.5rem',
+              marginLeft: '0.5rem',
+            }}>
               <FilesCount hits={props.viewer.repository.files.hits} />
             </span>
           </Row>
@@ -117,24 +139,28 @@ const PortalSummary = compose(
         <CountBox>
           <Title className="test-genes-label">Genes</Title>
           <Row>
-            <DoubleHelix color="#01b987" width={20} height={35} />
-            <span style={{ fontSize: '2.5rem', marginLeft: '0.5rem' }}>
+            <DoubleHelix color="#01b987" height={35} width={20} />
+            <span style={{
+              fontSize: '2.5rem',
+              marginLeft: '0.5rem',
+            }}>
               <CasesCount
                 className="test-genes-count"
-                hits={props.viewer.explore.genes.hits}
-              />
+                hits={props.viewer.explore.genes.hits} />
             </span>
           </Row>
         </CountBox>
         <CountBox>
           <Title className="test-mutations-label">Mutations</Title>
           <Row>
-            <MutationIcon color="#01b987" width="32px" height="39px" />
-            <span style={{ fontSize: '2.5rem', marginLeft: '0.5rem' }}>
+            <MutationIcon color="#01b987" height="39px" width="32px" />
+            <span style={{
+              fontSize: '2.5rem',
+              marginLeft: '0.5rem',
+            }}>
               <FilesCount
                 className="test-mutations-count"
-                hits={props.viewer.explore.ssms.hits}
-              />
+                hits={props.viewer.explore.ssms.hits} />
             </span>
           </Row>
         </CountBox>

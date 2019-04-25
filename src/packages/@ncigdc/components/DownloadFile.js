@@ -32,66 +32,69 @@ function DownloadFile({
   if (file.access === 'open') {
     return (
       <DownloadButton
+        activeText={activeText}
         className="test-download-button"
+        endpoint="data?annotations=true&related_files=true"
         extraParams={{ ids: file.file_id }}
         filename={file.file_name}
-        endpoint="data?annotations=true&related_files=true"
-        activeText={activeText}
         inactiveText={inactiveText}
-        style={style}
-      />
+        style={style} />
     );
   }
   return (
     <Button
       className="test-download-button"
-      style={{ flex: 'none', marginLeft: '0.2rem', ...style }}
-      onClick={() =>
-        dispatch(
-          setModal(
+      leftIcon={inactiveText && <i className="fa fa-download" />}
+      onClick={() => dispatch(
+        setModal(
             user ? (
-              userCanDownloadFile({ user, file }) ? (
+              userCanDownloadFile({
+                user,
+                file,
+              }) ? (
                 <CheckBoxModal
-                  dbGapList={file.acl}
                   CustomButton={agreed => (
                     <DownloadButton
-                      disabled={!agreed}
+                      activeText="Processing"
                       className="test-download-button"
+                      disabled={!agreed}
+                      endpoint="data?annotations=true&related_files=true"
                       extraParams={{ ids: file.file_id }}
                       filename={file.file_name}
-                      endpoint="data?annotations=true&related_files=true"
-                      activeText={'Processing'}
-                      inactiveText={'Download'}
-                      style={{ marginLeft: '0.2rem' }}
+                      inactiveText="Download"
                       setModal={() => dispatch(setModal(null))}
-                    />
+                      style={{ marginLeft: '0.2rem' }} />
                   )}
-                  dispatch={dispatch}
-                />
+                  dbGapList={file.acl}
+                  dispatch={dispatch} />
               ) : (
-                <BaseModal title="Access Alert" closeText={'close'}>
+                <BaseModal closeText="close" title="Access Alert">
                   <p>
                     You are attempting to download files that you are not
                     authorized to access. Please request dbGaP Access to the
-                    project (<a
-                      target={'_blank'}
+                    project (
+                    <a
                       href="https://gdc.cancer.gov/access-data/obtaining-access-controlled-data"
-                    >
+                      target="_blank">
                       click here for more information
-                    </a>).
+                    </a>
+).
                   </p>
                 </BaseModal>
               )
             ) : (
               <NoAccessModal message="You don't have access to this file." />
             )
-          )
-        )}
-      leftIcon={inactiveText && <i className={'fa fa-download'} />}
-    >
+        )
+      )}
+      style={{
+        flex: 'none',
+        marginLeft: '0.2rem',
+        ...style,
+      }}>
       {inactiveText || (
         <span>
-          <i className={'fa fa-download'} />
+          <i className="fa fa-download" />
           <Hidden>Download</Hidden>
         </span>
       )}
@@ -99,6 +102,9 @@ function DownloadFile({
   );
 }
 
-export default compose(connect(state => ({ ...state.auth, ...state.cart })))(
+export default compose(connect(state => ({
+  ...state.auth,
+  ...state.cart,
+})))(
   DownloadFile
 );

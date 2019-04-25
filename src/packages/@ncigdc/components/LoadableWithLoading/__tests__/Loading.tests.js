@@ -12,7 +12,7 @@ describe('Loading', () => {
       error: false,
     };
     const component = renderer.create(<Loading {...props} />);
-    expect(component).toMatchSnapshot(); //shows null
+    expect(component).toMatchSnapshot(); // shows null
   });
   it('handles timedOut', () => {
     const props = {
@@ -22,7 +22,7 @@ describe('Loading', () => {
       error: false,
     };
     const component = renderer.create(<Loading {...props} />);
-    expect(component).toMatchSnapshot(); //shows timed out, note: currently timeout is not set, will keep waiting
+    expect(component).toMatchSnapshot(); // shows timed out, note: currently timeout is not set, will keep waiting
   });
   it('handles pastDelay', () => {
     const props = {
@@ -32,7 +32,7 @@ describe('Loading', () => {
       error: false,
     };
     const component = renderer.create(<Loading {...props} />);
-    expect(component).toMatchSnapshot(); //shows spinner
+    expect(component).toMatchSnapshot(); // shows spinner
   });
   it('handles error', () => {
     const props = {
@@ -42,6 +42,6 @@ describe('Loading', () => {
       error: true,
     };
     const component = renderer.create(<Loading {...props} />);
-    expect(component).toMatchSnapshot(); //shows error message
+    expect(component).toMatchSnapshot(); // shows error message
   });
 });

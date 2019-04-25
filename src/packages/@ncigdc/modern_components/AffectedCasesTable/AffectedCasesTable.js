@@ -36,10 +36,12 @@ import timestamp from '@ncigdc/utils/timestamp';
 
 class Route extends Relay.Route {
   static routeName = 'AffectedCasesTableRoute';
+
   static queries = {
     ...viewerQuery,
     exploreSsms: () => Relay.QL`query { viewer }`,
   };
+
   static prepareParams = ({
     location: { search },
     defaultSize = 10,
@@ -62,17 +64,16 @@ class Route extends Relay.Route {
   };
 }
 
-const createContainer = Component =>
-  Relay.createContainer(Component, {
-    initialVariables: {
-      score: 'gene.gene_id',
-      affectedCasesTable_filters: null,
-      affectedCasesTable_size: 10,
-      affectedCasesTable_offset: 0,
-      ssmCountsfilters: null,
-    },
-    fragments: {
-      exploreSsms: () => Relay.QL`
+const createContainer = Component => Relay.createContainer(Component, {
+  initialVariables: {
+    score: 'gene.gene_id',
+    affectedCasesTable_filters: null,
+    affectedCasesTable_size: 10,
+    affectedCasesTable_offset: 0,
+    ssmCountsfilters: null,
+  },
+  fragments: {
+    exploreSsms: () => Relay.QL`
         fragment on Root {
           explore {
             ssms {
@@ -88,7 +89,7 @@ const createContainer = Component =>
           }
         }
       `,
-      viewer: () => Relay.QL`
+    viewer: () => Relay.QL`
         fragment on Root {
           explore {
             cases {
@@ -136,8 +137,8 @@ const createContainer = Component =>
           }
         }
       `,
-    },
-  });
+  },
+});
 
 const Component = compose(
   withRouter,
@@ -160,11 +161,11 @@ const Component = compose(
         {
           ssmCountsfilters: caseIds.length
             ? makeFilter([
-                {
-                  field: 'occurrence.case.case_id',
-                  value: caseIds,
-                },
-              ])
+              {
+                field: 'occurrence.case.case_id',
+                value: caseIds,
+              },
+            ])
             : null,
         },
         readyState => {
@@ -180,7 +181,10 @@ const Component = compose(
     const ssmCounts = (aggregations || {
       occurrence__case__case_id: { buckets: [] },
     }).occurrence__case__case_id.buckets.reduce(
-      (acc, b) => ({ ...acc, [b.key]: b.doc_count }),
+      (acc, b) => ({
+        ...acc,
+        [b.key]: b.doc_count,
+      }),
       {},
     );
     return { ssmCounts };
@@ -209,23 +213,15 @@ const Component = compose(
             padding: '1rem',
             justifyContent: 'space-between',
             alignItems: 'flex-end',
-          }}
-        >
+          }}>
           <Showing
             docType="cases"
-            prefix="affectedCasesTable"
             params={relay.route.params}
-            total={totalCases}
-          />
+            prefix="affectedCasesTable"
+            total={totalCases} />
           <Row style={{ alignItems: 'flex-end' }}>
             <TableActions
-              type="case"
-              scope="explore"
               currentFilters={defaultFilters}
-              style={{ marginLeft: '2rem' }}
-              total={totalCases}
-              endpoint={'case_ssms'}
-              downloadTooltip="Export All Except #Mutations and #Genes"
               downloadFields={[
                 'case_id',
                 'primary_site',
@@ -238,29 +234,138 @@ const Component = compose(
                 'diagnoses.days_to_last_follow_up',
                 'diagnoses.days_to_death',
               ]}
-              tsvSelector="#most-affected-cases-table"
+              downloadTooltip="Export All Except #Mutations and #Genes"
+              endpoint="case_ssms"
+              scope="explore"
+              style={{ marginLeft: '2rem' }}
+              total={totalCases}
               tsvFilename={`most-affected-cases-table.${timestamp()}.tsv`}
-            />
+              tsvSelector="#most-affected-cases-table"
+              type="case" />
           </Row>
         </Row>
         <EntityPageHorizontalTable
-          idKey="case_id"
-          tableId="most-affected-cases-table"
+          data={
+            !cases
+              ? []
+              : cases.hits.edges.map(x => x.node).map(c => {
+                const dataCategorySummary = c.summary.data_categories.reduce(
+                  (acc, d) => ({
+                    ...acc,
+                    [d.data_category]: d.file_count,
+                  }),
+                  {},
+                );
+
+                const diagnosis = (c.diagnoses.hits.edges[0] || { node: {} })
+                  .node;
+
+                return {
+                  ...c,
+                  id: <ForTsvExport>{c.case_id}</ForTsvExport>,
+                  submitter_id: (
+                    <CaseLink uuid={c.case_id}>{c.submitter_id}</CaseLink>
+                  ),
+                  project_id: c.project.project_id,
+                  primary_site: c.primary_site,
+                  gender: c.demographic ? c.demographic.gender : '',
+                  age_at_diagnosis: ageDisplay(diagnosis.age_at_diagnosis),
+                  tumor_stage: diagnosis.tumor_stage,
+                  days_to_last_follow_up: (!_.isNil(
+                    diagnosis.days_to_last_follow_up,
+                  )
+                      ? diagnosis.days_to_last_follow_up
+                      : '--'
+                  ).toLocaleString(),
+                  days_to_death: (!_.isNil(diagnosis.days_to_death)
+                      ? diagnosis.days_to_death
+                      : '--'
+                  ).toLocaleString(),
+                  num_mutations: (
+                    <MutationsCount
+                      filters={makeFilter([
+                        {
+                          field: 'cases.case_id',
+                          value: [c.case_id],
+                        },
+                      ])}
+                      isLoading={ssmCountsLoading}
+                      ssmCount={ssmCounts[c.case_id]} />
+                  ),
+                  num_genes: (
+                    <ExploreLink
+                      query={{
+                        searchTableTab: 'genes',
+                        filters: makeFilter([
+                          {
+                            field: 'cases.case_id',
+                            value: [c.case_id],
+                          },
+                        ]),
+                      }}>
+                      {c.score.toLocaleString()}
+                    </ExploreLink>
+                  ),
+                  data_types: Object.keys(DATA_CATEGORIES).map(
+                    k => (dataCategorySummary[DATA_CATEGORIES[k].full] ? (
+                      <RepositoryFilesLink
+                        query={{
+                          filters: makeFilter([
+                            {
+                              field: 'cases.case_id',
+                              value: c.case_id,
+                            },
+                            {
+                              field: 'files.data_category',
+                              value: DATA_CATEGORIES[k].full,
+                            },
+                          ]),
+                        }}>
+                        {dataCategorySummary[DATA_CATEGORIES[k].full]}
+                      </RepositoryFilesLink>
+                        ) : (
+                          '--'
+                        )),
+                  ),
+                };
+              })
+          }
           headings={[
-            { key: 'id', title: 'Case UUID', style: { display: 'none' } },
-            { key: 'submitter_id', title: 'Case ID' },
-            { key: 'project_id', title: 'Project' },
-            { key: 'primary_site', title: 'Site' },
-            { key: 'gender', title: 'Gender' },
+            {
+              key: 'id',
+              title: 'Case UUID',
+              style: { display: 'none' },
+            },
+            {
+              key: 'submitter_id',
+              title: 'Case ID',
+            },
+            {
+              key: 'project_id',
+              title: 'Project',
+            },
+            {
+              key: 'primary_site',
+              title: 'Site',
+            },
+            {
+              key: 'gender',
+              title: 'Gender',
+            },
             {
               key: 'age_at_diagnosis',
               title: (
                 <span>
-                  Age at<br />Diagnosis
+                  Age at
+                  <br />
+Diagnosis
                 </span>
               ),
             },
-            { key: 'tumor_stage', title: 'Stage' },
+            {
+              key: 'tumor_stage',
+              title: 'Stage',
+            },
             {
               key: 'days_to_death',
               title: 'Survival (days)',
@@ -271,12 +376,16 @@ const Component = compose(
               title: (
                 <Tooltip
                   Component="Days to Last Follow Up"
-                  style={tableToolTipHint()}
-                >
-                  Last Follow<br />Up (days)
+                  style={tableToolTipHint()}>
+                  Last Follow
+                  <br />
+Up (days)
                 </Tooltip>
               ),
-              style: { textAlign: 'right', padding: '3px 15px 3px 3px' },
+              style: {
+                textAlign: 'right',
+                padding: '3px 15px 3px 3px',
+              },
             },
             {
               key: 'data_types',
@@ -289,12 +398,10 @@ const Component = compose(
               subheadings: Object.keys(DATA_CATEGORIES).map(k => (
                 <abbr
                   key={DATA_CATEGORIES[k].abbr}
-                  style={{ fontSize: '1rem' }}
-                >
+                  style={{ fontSize: '1rem' }}>
                   <Tooltip
                     Component={DATA_CATEGORIES[k].full}
-                    style={tableToolTipHint()}
-                  >
+                    style={tableToolTipHint()}>
                     {DATA_CATEGORIES[k].abbr}
                   </Tooltip>
                 </abbr>
@@ -305,8 +412,7 @@ const Component = compose(
               title: (
                 <Tooltip
                   Component="# Simple Somatic Mutations"
-                  style={tableToolTipHint()}
-                >
+                  style={tableToolTipHint()}>
                   # Mutations
                 </Tooltip>
               ),
@@ -317,103 +423,19 @@ const Component = compose(
               title: (
                 <Tooltip
                   Component="# Genes with Simple Somatic Mutations"
-                  style={tableToolTipHint()}
-                >
+                  style={tableToolTipHint()}>
                   # Genes
                 </Tooltip>
               ),
               style: { textAlign: 'right' },
             },
           ]}
-          data={
-            !cases
-              ? []
-              : cases.hits.edges.map(x => x.node).map(c => {
-                  const dataCategorySummary = c.summary.data_categories.reduce(
-                    (acc, d) => ({
-                      ...acc,
-                      [d.data_category]: d.file_count,
-                    }),
-                    {},
-                  );
-
-                  const diagnosis = (c.diagnoses.hits.edges[0] || { node: {} })
-                    .node;
-
-                  return {
-                    ...c,
-                    id: <ForTsvExport>{c.case_id}</ForTsvExport>,
-                    submitter_id: (
-                      <CaseLink uuid={c.case_id}>{c.submitter_id}</CaseLink>
-                    ),
-                    project_id: c.project.project_id,
-                    primary_site: c.primary_site,
-                    gender: c.demographic ? c.demographic.gender : '',
-                    age_at_diagnosis: ageDisplay(diagnosis.age_at_diagnosis),
-                    tumor_stage: diagnosis.tumor_stage,
-                    days_to_last_follow_up: (!_.isNil(
-                      diagnosis.days_to_last_follow_up,
-                    )
-                      ? diagnosis.days_to_last_follow_up
-                      : '--'
-                    ).toLocaleString(),
-                    days_to_death: (!_.isNil(diagnosis.days_to_death)
-                      ? diagnosis.days_to_death
-                      : '--'
-                    ).toLocaleString(),
-                    num_mutations: (
-                      <MutationsCount
-                        isLoading={ssmCountsLoading}
-                        ssmCount={ssmCounts[c.case_id]}
-                        filters={makeFilter([
-                          { field: 'cases.case_id', value: [c.case_id] },
-                        ])}
-                      />
-                    ),
-                    num_genes: (
-                      <ExploreLink
-                        query={{
-                          searchTableTab: 'genes',
-                          filters: makeFilter([
-                            { field: 'cases.case_id', value: [c.case_id] },
-                          ]),
-                        }}
-                      >
-                        {c.score.toLocaleString()}
-                      </ExploreLink>
-                    ),
-                    data_types: Object.keys(DATA_CATEGORIES).map(
-                      k =>
-                        dataCategorySummary[DATA_CATEGORIES[k].full] ? (
-                          <RepositoryFilesLink
-                            query={{
-                              filters: makeFilter([
-                                {
-                                  field: 'cases.case_id',
-                                  value: c.case_id,
-                                },
-                                {
-                                  field: 'files.data_category',
-                                  value: DATA_CATEGORIES[k].full,
-                                },
-                              ]),
-                            }}
-                          >
-                            {dataCategorySummary[DATA_CATEGORIES[k].full]}
-                          </RepositoryFilesLink>
-                        ) : (
-                          '--'
-                        ),
-                    ),
-                  };
-                })
-          }
-        />
+          idKey="case_id"
+          tableId="most-affected-cases-table" />
         <Pagination
-          prefix="affectedCasesTable"
           params={relay.route.params}
-          total={!cases ? 0 : cases.hits.total}
-        />
+          prefix="affectedCasesTable"
+          total={!cases ? 0 : cases.hits.total} />
       </span>
     );
   },

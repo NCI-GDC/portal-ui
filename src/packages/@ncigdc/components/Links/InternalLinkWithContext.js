@@ -46,9 +46,9 @@ const InternalLinkWithContext = ({
       const queryWithOffsetsReset = hasFilterChanged
         ? mergedQuery
         : _.mapValues(
-            mergedQuery,
-            (value, paramName) => (paramName.endsWith('offset') ? 0 : value),
-          );
+          mergedQuery,
+          (value, paramName) => (paramName.endsWith('offset') ? 0 : value),
+        );
 
       return (
         <InternalLink pathname={pn} query={queryWithOffsetsReset} {...rest} />

@@ -5,25 +5,38 @@ import filtersToName from '../filtersToName';
 
 const sets = {
   case: {
-    '24601': 'Set Name',
+    24601: 'Set Name',
   },
 };
 
 const filterEq = {
   op: 'in',
-  content: { field: 'field', value: ['one'] },
+  content: {
+    field: 'field',
+    value: ['one'],
+  },
 };
 
 const filterIn2 = {
   op: 'in',
-  content: { field: 'field', value: ['one', 'two'] },
+  content: {
+    field: 'field',
+    value: ['one', 'two'],
+  },
 };
 
 const filterIn6 = {
   op: 'in',
   content: {
     field: 'field',
-    value: ['one', 'two', 'three', 'four', 'five', 'six'],
+    value: [
+      'one',
+      'two',
+      'three',
+      'four',
+      'five',
+      'six',
+    ],
   },
 };
 
@@ -31,27 +44,56 @@ const filterIn7 = {
   op: 'in',
   content: {
     field: 'field',
-    value: ['one', 'two', 'three', 'four', 'five', 'six', 'seven'],
+    value: [
+      'one',
+      'two',
+      'three',
+      'four',
+      'five',
+      'six',
+      'seven',
+    ],
   },
 };
 
 describe('filtersToName', () => {
   it('should return an empty string when passed empty filters', () => {
-    expect(filtersToName({ filters: null, sets })).toEqual('');
+    expect(filtersToName({
+      filters: null,
+      sets,
+    })).toEqual('');
     expect(filtersToName({ sets })).toEqual('');
-    expect(filtersToName({ filters: {}, sets })).toEqual('');
+    expect(filtersToName({
+      filters: {},
+      sets,
+    })).toEqual('');
     expect(
       filtersToName({
-        filters: { op: 'in', content: { field: 'field', value: [] } },
+        filters: {
+          op: 'in',
+          content: {
+            field: 'field',
+            value: [],
+          },
+        },
         sets,
       }),
     ).toEqual('');
     expect(
-      filtersToName({ filters: { op: 'and', content: [] }, sets }),
+      filtersToName({
+        filters: {
+          op: 'and',
+          content: [],
+        },
+        sets,
+      }),
     ).toEqual('');
   });
   it('should join same value by "/", different values by ","', () => {
-    expect(filtersToName({ filters: filterIn2, sets })).toEqual('one / two');
+    expect(filtersToName({
+      filters: filterIn2,
+      sets,
+    })).toEqual('one / two');
     expect(
       filtersToName({
         filters: {
@@ -63,7 +105,10 @@ describe('filtersToName', () => {
     ).toEqual('one / two, one / two');
   });
   it('should handle ops with single value', () => {
-    expect(filtersToName({ filters: filterEq, sets })).toEqual('one');
+    expect(filtersToName({
+      filters: filterEq,
+      sets,
+    })).toEqual('one');
 
     expect(
       filtersToName({
@@ -76,11 +121,17 @@ describe('filtersToName', () => {
     ).toEqual('one, one / two');
   });
   it('should truncate to 6 values', () => {
-    expect(filtersToName({ filters: filterIn6, sets })).toEqual(
+    expect(filtersToName({
+      filters: filterIn6,
+      sets,
+    })).toEqual(
       'one / two / three / four / five / six',
     );
 
-    expect(filtersToName({ filters: filterIn7, sets })).toEqual(
+    expect(filtersToName({
+      filters: filterIn7,
+      sets,
+    })).toEqual(
       'one / two / three / four / five / six...',
     );
 
@@ -88,7 +139,12 @@ describe('filtersToName', () => {
       filtersToName({
         filters: {
           op: 'and',
-          content: [filterIn2, filterEq, filterIn2, filterEq],
+          content: [
+            filterIn2,
+            filterEq,
+            filterIn2,
+            filterEq,
+          ],
         },
         sets,
       }),
@@ -98,7 +154,12 @@ describe('filtersToName', () => {
       filtersToName({
         filters: {
           op: 'and',
-          content: [filterIn2, filterEq, filterIn2, filterIn6],
+          content: [
+            filterIn2,
+            filterEq,
+            filterIn2,
+            filterIn6,
+          ],
         },
         sets,
       }),
@@ -108,7 +169,13 @@ describe('filtersToName', () => {
       filtersToName({
         filters: {
           op: 'and',
-          content: [filterIn2, filterEq, filterIn2, filterEq, filterIn2],
+          content: [
+            filterIn2,
+            filterEq,
+            filterIn2,
+            filterEq,
+            filterIn2,
+          ],
         },
         sets,
       }),
@@ -119,7 +186,10 @@ describe('filtersToName', () => {
       filtersToName({
         filters: {
           op: 'in',
-          content: { field: 'field', value: ['set_id:24601'] },
+          content: {
+            field: 'field',
+            value: ['set_id:24601'],
+          },
         },
         sets,
       }),
@@ -128,7 +198,10 @@ describe('filtersToName', () => {
       filtersToName({
         filters: {
           op: 'in',
-          content: { field: 'field', value: ['set_id:25631'] },
+          content: {
+            field: 'field',
+            value: ['set_id:25631'],
+          },
         },
         sets,
       }),

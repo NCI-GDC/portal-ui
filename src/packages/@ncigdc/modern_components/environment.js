@@ -1,17 +1,20 @@
 // @flow
 
 import urlJoin from 'url-join';
-import { Environment, Network, RecordSource, Store } from 'relay-runtime';
+import {
+  Environment, Network, RecordSource, Store,
+} from 'relay-runtime';
 import md5 from 'blueimp-md5';
 
 import { API, IS_AUTH_PORTAL } from '@ncigdc/utils/constants';
+import { redirectToLogin } from '@ncigdc/utils/auth';
+import consoleDebug from '@ncigdc/utils/consoleDebug';
+
 const source = new RecordSource();
 const store = new Store(source);
 const simpleCache = {};
 const pendingCache = {};
 const handlerProvider = null;
-import { redirectToLogin } from '@ncigdc/utils/auth';
-import consoleDebug from '@ncigdc/utils/consoleDebug';
 
 function fetchQuery(operation, variables, cacheConfig) {
   const body = JSON.stringify({
@@ -59,47 +62,45 @@ function fetchQuery(operation, variables, cacheConfig) {
       'Content-Type': 'application/json',
     },
     body,
-  }).then(response =>
-    response
-      .json()
-      .then(json => {
-        if (!response.ok) {
-          consoleDebug('throwing error in Environment');
-          throw response;
-        }
+  }).then(response => response
+    .json()
+    .then(json => {
+      if (!response.ok) {
+        consoleDebug('throwing error in Environment');
+        throw response;
+      }
 
-        if (response.status === 200) {
+      if (response.status === 200) {
           // if the response is ok, and the result to the simpleCache and delete it from the pendingCache
-          simpleCache[hash] = json;
-          delete pendingCache[hash];
-        }
+        simpleCache[hash] = json;
+        delete pendingCache[hash];
+      }
 
-        return json;
-      })
-      .catch(err => {
-        if (err.status) {
-          switch (err.status) {
-            case 401:
-            case 403:
-              consoleDebug(err.statusText);
-              if (IS_AUTH_PORTAL) {
-                return redirectToLogin('timeout');
-              }
-              break;
-            case 400:
-            case 404:
-              consoleDebug(err.statusText);
-              break;
-            default:
-              return consoleDebug(`Default error case: ${err.statusText}`);
-          }
-        } else {
-          consoleDebug(
-            `Something went wrong in environment, but no error status: ${err}`,
-          );
+      return json;
+    })
+    .catch(err => {
+      if (err.status) {
+        switch (err.status) {
+          case 401:
+          case 403:
+            consoleDebug(err.statusText);
+            if (IS_AUTH_PORTAL) {
+              return redirectToLogin('timeout');
+            }
+            break;
+          case 400:
+          case 404:
+            consoleDebug(err.statusText);
+            break;
+          default:
+            return consoleDebug(`Default error case: ${err.statusText}`);
         }
-      }),
-  );
+      } else {
+        consoleDebug(
+          `Something went wrong in environment, but no error status: ${err}`,
+        );
+      }
+    }),);
 }
 
 // Create a network layer from the fetch function

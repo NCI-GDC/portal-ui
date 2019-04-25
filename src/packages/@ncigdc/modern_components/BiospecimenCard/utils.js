@@ -20,10 +20,22 @@ export const formatValue: TFormatValue = value => {
 };
 
 export const entityTypes = [
-  { s: 'portion', p: 'portions' },
-  { s: 'aliquot', p: 'aliquots' },
-  { s: 'analyte', p: 'analytes' },
-  { s: 'slide', p: 'slides' },
+  {
+    s: 'portion',
+    p: 'portions',
+  },
+  {
+    s: 'aliquot',
+    p: 'aliquots',
+  },
+  {
+    s: 'analyte',
+    p: 'analytes',
+  },
+  {
+    s: 'slide',
+    p: 'slides',
+  },
 ];
 
 export const idFields = [
@@ -34,14 +46,13 @@ export const idFields = [
   'aliquot_id',
 ];
 
-export const match = (query: string, entity: Object): boolean =>
-  Object.keys(entity).some(k => {
-    const formatted = formatValue(entity[k]);
-    return (
-      typeof formatted === 'string' &&
+export const match = (query: string, entity: Object): boolean => Object.keys(entity).some(k => {
+  const formatted = formatValue(entity[k]);
+  return (
+    typeof formatted === 'string' &&
       formatted.toLowerCase().includes(query.toLowerCase())
-    );
-  });
+  );
+});
 
 export const search = (query: string, entity: Object): any[] => {
   const found = [];

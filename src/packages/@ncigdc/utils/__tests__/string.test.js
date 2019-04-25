@@ -1,7 +1,7 @@
 /* @flow */
 
-import { capitalize, truncateAfterMarker } from '../string';
 import { DNA_CHANGE_MARKERS } from '@ncigdc/utils/constants';
+import { capitalize, truncateAfterMarker } from '../string';
 
 describe('capitalize', () => {
   it('should captalize a string', () => {

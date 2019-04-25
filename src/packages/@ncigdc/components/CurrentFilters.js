@@ -37,20 +37,18 @@ import { AWG } from '@ncigdc/utils/constants';
 const Field = styled(Button, {
   backgroundColor: ({ theme }) => theme.greyScale2,
   ':hover': {
-    backgroundColor: ({ theme }) =>
-      Color(theme.greyScale2)
-        .lighten(0.7)
-        .rgbString(),
+    backgroundColor: ({ theme }) => Color(theme.greyScale2)
+      .lighten(0.7)
+      .rgbString(),
   },
 });
 
 const Value = styled(Button, {
   backgroundColor: ({ theme }) => theme.success,
   ':hover': {
-    backgroundColor: ({ theme }) =>
-      Color(theme.success)
-        .lighten(0.7)
-        .rgbString(),
+    backgroundColor: ({ theme }) => Color(theme.success)
+      .lighten(0.7)
+      .rgbString(),
   },
 });
 
@@ -177,37 +175,34 @@ const CurrentFilters = (
     hideClearButton = false,
   }: TProps = {},
 ) => (
-  <Info style={style} className="test-current-filters">
+  <Info className="test-current-filters" style={style}>
     {!currentFilters.length &&
       !hideHelpText && (
-        <span
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            lineHeight: '44px',
-            width: '100%',
-          }}
-        >
-          <LeftArrow />
-          <span style={{ marginLeft: '0.6rem' }}>
+      <span
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          lineHeight: '44px',
+          width: '100%',
+        }}>
+        <LeftArrow />
+        <span style={{ marginLeft: '0.6rem' }}>
             Start searching by selecting a facet
-          </span>
         </span>
-      )}
+      </span>
+    )}
     {!!currentFilters.length && (
       <Row
         style={{
           width: '100%',
           justifyContent: 'space-between',
-        }}
-      >
+        }}>
         <Row wrap spacing="0.3rem">
           {!hideClearButton && (
             <NotUnderlinedLink
               className="test-clear"
-              style={styles.groupPadding}
               query={omit(query, 'filters')}
-            >
+              style={styles.groupPadding}>
               <Button leftIcon={<UndoIcon />}>Clear</Button>
             </NotUnderlinedLink>
           )}
@@ -219,8 +214,7 @@ const CurrentFilters = (
               <Row
                 key={`${filter.content.field}.${filter.op}.${value.join()}`}
                 spacing="0.3rem"
-                style={styles.groupPadding}
-              >
+                style={styles.groupPadding}>
                 <NotUnderlinedLink
                   className="test-field-name"
                   merge="toggle"
@@ -230,8 +224,7 @@ const CurrentFilters = (
                       op: 'and',
                       content: [filter],
                     },
-                  }}
-                >
+                  }}>
                   <Field>
                     {humanify({
                       term: facetFieldDisplayMapper(filter.content.field),
@@ -262,8 +255,7 @@ const CurrentFilters = (
                           },
                         ],
                       },
-                    }}
-                  >
+                    }}>
                     <Value>
                       {getDisplayValue(filter.content.field, value)}
                     </Value>
@@ -272,18 +264,19 @@ const CurrentFilters = (
                 {value.length > 2 && (
                   <UnstyledButton
                     className="test-toggle"
-                    style={styles.rightParen}
                     onClick={() => onLessClicked(filter)}
-                  >
+                    style={styles.rightParen}>
                     …
                   </UnstyledButton>
                 )}
                 {isFilterExpanded(filter) && (
                   <UnstyledButton
                     className="test-toggle"
-                    style={{ display: 'flex', alignItems: 'center' }}
                     onClick={() => onLessClicked(filter)}
-                  >
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                    }}>
                     Less
                   </UnstyledButton>
                 )}
@@ -298,26 +291,28 @@ const CurrentFilters = (
     {!AWG &&
       linkPathname &&
       (!hideLinkOnEmpty || !!currentFilters.length) && (
-        <LinkButton
-          pathname={linkPathname}
-          query={
-            currentFilters.length && {
-              filters: {
-                op: 'and',
-                content: currentFilters.map(
-                  ({ content: { field, value }, op }) => ({
-                    op: op.toLowerCase(),
-                    content: { field: linkFieldMap(field), value },
-                  }),
-                ),
-              },
-            }
+      <LinkButton
+        pathname={linkPathname}
+        query={
+          currentFilters.length && {
+            filters: {
+              op: 'and',
+              content: currentFilters.map(
+                ({ content: { field, value }, op }) => ({
+                  op: op.toLowerCase(),
+                  content: {
+                    field: linkFieldMap(field),
+                    value,
+                  },
+                }),
+              ),
+            },
           }
-        >
-          <Cogs style={{ marginRight: 5 }} />
-          {linkText}
-        </LinkButton>
-      )}
+        }>
+        <Cogs style={{ marginRight: 5 }} />
+        {linkText}
+      </LinkButton>
+    )}
   </Info>
 );
 /*----------------------------------------------------------------------------*/

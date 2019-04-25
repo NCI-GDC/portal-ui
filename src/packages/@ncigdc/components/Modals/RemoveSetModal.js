@@ -14,7 +14,10 @@ import onSaveComplete from './onSaveComplete';
 
 const enhance = compose(
   withState('selected', 'setSelected', ''),
-  connect(({ sets, analysis }) => ({ sets, analysis })),
+  connect(({ sets, analysis }) => ({
+    sets,
+    analysis,
+  })),
   withProps(({ sets, type, analysis }) => ({
     sets: sets[type] || {},
     analyses: analysis.saved || [],
@@ -37,13 +40,12 @@ const RemoveSetModal = ({
   analyses,
 }) => (
   <BaseModal
-    title={title}
-    extraButtons={
+    closeText="Cancel"
+    extraButtons={(
       <RemoveFromSetButton
-        disabled={!selected}
-        set_id={`set_id:${selected}`}
-        filters={filters}
         action="remove"
+        disabled={!selected}
+        filters={filters}
         onComplete={async setId => {
           if ((query.filters || '').includes(selected)) {
             history.replace({
@@ -58,7 +60,11 @@ const RemoveSetModal = ({
             dispatch,
             label: sets[selected],
           });
-          await dispatch(replaceSet({ type, oldId: selected, newId: setId }));
+          await dispatch(replaceSet({
+            type,
+            oldId: selected,
+            newId: setId,
+          }));
           if (type === 'case') {
             analyses
               .filter(analysis => analysis.sets.case[selected])
@@ -74,19 +80,17 @@ const RemoveSetModal = ({
               });
           }
         }}
-      >
+        set_id={`set_id:${selected}`}>
         Save
       </RemoveFromSetButton>
-    }
-    closeText="Cancel"
-  >
+    )}
+    title={title}>
     <SetTable
+      field={field}
+      selected={selected}
       sets={sets}
       setSelected={setSelected}
-      selected={selected}
-      type={type}
-      field={field}
-    />
+      type={type} />
   </BaseModal>
 );
 

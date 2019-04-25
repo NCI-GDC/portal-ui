@@ -14,29 +14,27 @@ const fieldMap = {
   slide: 'cases.samples.portions.slides.slide_id',
 };
 
-export default (Component: ReactClass<*>) =>
-  compose(
-    withRouter,
-    withPropsOnChange(['entityType, entityId'], ({ entityType, entityId }) => {
-      return {
-        variables: {
-          filters: makeFilter([
-            {
-              field: fieldMap[entityType],
-              value: entityId,
-            },
-          ]),
-        },
-      };
-    }),
-  )((props: Object) => {
-    return (
-      <BaseQuery
-        name="SampleType"
-        parentProps={props}
-        variables={props.variables}
-        Component={Component}
-        query={graphql`
+export default (Component: ReactClass<*>) => compose(
+  withRouter,
+  withPropsOnChange(['entityType, entityId'], ({ entityType, entityId }) => {
+    return {
+      variables: {
+        filters: makeFilter([
+          {
+            field: fieldMap[entityType],
+            value: entityId,
+          },
+        ]),
+      },
+    };
+  }),
+)((props: Object) => {
+  return (
+    <BaseQuery
+      Component={Component}
+      name="SampleType"
+      parentProps={props}
+      query={graphql`
           query SampleType_relayQuery($filters: FiltersArgument) {
             repository {
               cases {
@@ -59,6 +57,6 @@ export default (Component: ReactClass<*>) =>
             }
           }
         `}
-      />
-    );
-  });
+      variables={props.variables} />
+  );
+});

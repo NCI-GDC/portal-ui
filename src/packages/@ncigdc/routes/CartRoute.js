@@ -15,7 +15,9 @@ import { viewerQuery } from './queries';
 
 class CartRoute extends Relay.Route {
   static routeName = 'CartRoute';
+
   static queries = viewerQuery;
+
   static prepareParams = ({ location: { search }, files }) => {
     const q = parse(search);
 
@@ -25,9 +27,9 @@ class CartRoute extends Relay.Route {
       files_sort: parseJSONParam(q.files_sort, null),
       filters: files.length
         ? setFilter({
-            field: 'files.file_id',
-            value: files.map(f => f.file_id),
-          })
+          field: 'files.file_id',
+          value: files.map(f => f.file_id),
+        })
         : null,
     };
   };
@@ -36,8 +38,7 @@ class CartRoute extends Relay.Route {
 export default connect(state => state.cart)((props: mixed) => (
   <Relay.Renderer
     Container={CartPage}
-    queryConfig={new CartRoute(props)}
     environment={Relay.Store}
     onReadyStateChange={handleStateChange(props)}
-  />
+    queryConfig={new CartRoute(props)} />
 ));

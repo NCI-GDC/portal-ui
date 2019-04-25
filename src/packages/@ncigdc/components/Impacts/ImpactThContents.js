@@ -17,32 +17,37 @@ export const ImpactThContents = compose(
   withTheme,
 )(({ extraText, theme }: { extraText: string, theme: Object }) => (
   <Tooltip
-    style={tableToolTipHint()}
-    Component={
+    Component={(
       <Column>
         <b>{extraText}</b>
-        {['VEP', 'SIFT', 'PolyPhen'].map((impactType: string) => (
-          <Row style={{ paddingTop: '5px' }} key={impactType}>
-            <b style={{ textTransform: 'capitalize' }}>{impactType}</b>:{' '}
+        {[
+          'VEP',
+          'SIFT',
+          'PolyPhen',
+        ].map((impactType: string) => (
+          <Row key={impactType} style={{ paddingTop: '5px' }}>
+            <b style={{ textTransform: 'capitalize' }}>{impactType}</b>
+:
+            {' '}
             {Object.entries(
               IMPACT_SHORT_FORMS[impactType.toLowerCase()],
             ).map(([full, short]) => (
-              <div style={{ marginRight: '2px' }} key={full}>
+              <div key={full} style={{ marginRight: '2px' }}>
                 <Box
                   style={{
                     backgroundColor: theme[impactType.toLowerCase()][full],
-                  }}
-                >
+                  }}>
                   {short}
-                </Box>{' '}
+                </Box>
+                {' '}
                 {full}
               </div>
             ))}
           </Row>
         ))}
       </Column>
-    }
-  >
+    )}
+    style={tableToolTipHint()}>
     Impact
   </Tooltip>
 ));

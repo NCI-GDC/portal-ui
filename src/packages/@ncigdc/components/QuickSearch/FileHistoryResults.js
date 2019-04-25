@@ -2,8 +2,8 @@ import React from 'react';
 import _ from 'lodash';
 
 import withSelectableList from '@ncigdc/utils/withSelectableList';
-import { styles as resultStyles } from './QuickSearchResults';
 import { Row, Column } from '@ncigdc/uikit/Flex';
+import { styles as resultStyles } from './QuickSearchResults';
 
 const styles = {
   resultIcon: {
@@ -24,35 +24,41 @@ export default ({
   onActivateItem,
   onSelectItem,
   style = {},
-}) =>
-  results.map((result, i) => (
-    <div style={{ ...resultStyles.container, ...style.container }} key={i}>
-      <Row
-        style={{
-          ...resultStyles.item,
-          ...(isLoading && resultStyles.deemphasizedItem),
-          ...(result.isSelected && resultStyles.selectedItem),
-        }}
-        onMouseEnter={() => onSelectItem(result)}
-        onClick={() => onActivateItem(result)}
-      >
-        <div style={resultStyles.itemIconWrapper}>
-          <span style={styles.resultIcon}>FL</span>
+}) => results.map((result, i) => (
+  <div
+    key={i}
+    style={{
+      ...resultStyles.container,
+      ...style.container,
+    }}>
+    <Row
+      onClick={() => onActivateItem(result)}
+      onMouseEnter={() => onSelectItem(result)}
+      style={{
+        ...resultStyles.item,
+        ...(isLoading && resultStyles.deemphasizedItem),
+        ...(result.isSelected && resultStyles.selectedItem),
+      }}>
+      <div style={resultStyles.itemIconWrapper}>
+        <span style={styles.resultIcon}>FL</span>
+      </div>
+      <Column>
+        <div style={{ verticalAlign: 'middle' }}>
+          <span style={resultStyles.itemTitle}>{result.uuid}</span>
         </div>
-        <Column>
-          <div style={{ verticalAlign: 'middle' }}>
-            <span style={resultStyles.itemTitle}>{result.uuid}</span>
-          </div>
-          <div
-            style={{
-              ...resultStyles.highlights,
-              ...(result.isSelected &&
+        <div
+          style={{
+            ...resultStyles.highlights,
+            ...(result.isSelected &&
                 _.pick(resultStyles.selectedItem, 'color')),
-            }}
-          >
-            File version {query} was updated
-          </div>
-        </Column>
-      </Row>
-    </div>
-  ));
+          }}>
+            File version
+          {' '}
+          {query}
+          {' '}
+was updated
+        </div>
+      </Column>
+    </Row>
+  </div>
+));

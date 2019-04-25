@@ -24,9 +24,9 @@ export function fetchAuth(options: { endpoint: string }): Object {
       ...DEFAULTS,
       ...(IS_AUTH_PORTAL
         ? {
-            credentials: 'include',
-            headers: {},
-          }
+          credentials: 'include',
+          headers: {},
+        }
         : {}),
       ...options,
       endpoint: urlJoin(AUTH, options.endpoint),
@@ -39,7 +39,10 @@ export const fetchApi = (endpoint, opts = {}) => {
   const clonedOptions = {
     ...opts,
     ...(IS_AUTH_PORTAL
-      ? { credentials: opts.credentials || 'include', headers: opts.headers }
+      ? {
+        credentials: opts.credentials || 'include',
+        headers: opts.headers,
+      }
       : {}),
     ...(opts.body && {
       body: JSON.stringify(opts.body),
@@ -104,7 +107,7 @@ export const fetchApiChunked: TFetchApiChunked = async (
     urlJoin(endpoint, `?hash=${hash}`),
     defaultOptions
   );
-  let hits = data.hits;
+  let { hits } = data;
 
   for (
     let count = firstSize;

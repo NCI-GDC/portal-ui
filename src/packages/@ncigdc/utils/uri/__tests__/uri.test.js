@@ -15,7 +15,10 @@ describe('parseIntParam', () => {
 });
 describe('parseFilterParam', () => {
   it('should handle defaults', () => {
-    const obj = { op: 'and', content: [] };
+    const obj = {
+      op: 'and',
+      content: [],
+    };
     expect(parseFilterParam(null, obj)).toBe(obj);
   });
 });

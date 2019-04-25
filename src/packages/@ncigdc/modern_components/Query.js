@@ -17,11 +17,14 @@ export const createClassicRenderer = (Route, Container, minHeight) => {
 
       render() {
         return (
-          <div style={{ position: 'relative', minHeight }}>
+          <div style={{
+            position: 'relative',
+            minHeight,
+          }}>
             <Relay.Renderer
+              Container={Container}
               environment={Relay.Store}
               queryConfig={new Route(this.props)}
-              Container={Container}
               render={({ props: relayProps, error }) => {
                 this.lastProps = relayProps || this.lastProps;
 
@@ -31,11 +34,9 @@ export const createClassicRenderer = (Route, Container, minHeight) => {
                     {...this.lastProps}
                     {...this.props}
                     firstLoad={!this.lastProps}
-                    loading={!relayProps && !error}
-                  />
+                    loading={!relayProps && !error} />
                 );
-              }}
-            />
+              }} />
           </div>
         );
       }
@@ -53,7 +54,6 @@ export class BaseQuery extends React.Component {
       <QueryRenderer
         environment={environment}
         query={query}
-        variables={variables}
         render={({ props: relayProps, error }) => {
           const { parentProps, parentVariables, Component } = this.props;
           // TODO: handle error
@@ -70,11 +70,10 @@ export class BaseQuery extends React.Component {
               {...this.lastProps}
               {...this.props}
               firstLoad={!this.lastProps}
-              loading={!relayProps && !error}
-            />
+              loading={!relayProps && !error} />
           );
         }}
-      />
+        variables={variables} />
     );
   }
 }

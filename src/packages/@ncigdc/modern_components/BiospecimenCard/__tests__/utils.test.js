@@ -4,10 +4,9 @@ import { flatten } from 'lodash';
 import { search, match } from '../utils';
 import { testBiotree, testAliquot } from '../__fixtures__/biotree.fixture';
 
-const getSubmitterIds = array =>
-  array
-    .map(o => (o.node || { submitter_id: '' }).submitter_id)
-    .filter(x => x.length);
+const getSubmitterIds = array => array
+  .map(o => (o.node || { submitter_id: '' }).submitter_id)
+  .filter(x => x.length);
 describe('match', () => {
   it('should match submitter ids', () => {
     const didMatch = match('TCGA-IR-A3LF-01A-21R-A22V-13', testAliquot);

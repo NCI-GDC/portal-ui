@@ -24,19 +24,20 @@ type TProps = {
 
 // the first item in items is used as the toggle
 const TogglableUl = (
-  { active, toggleActive, children, title, onToggle = () => {} }: TProps = {},
+  {
+    active, toggleActive, children, title, onToggle = () => {},
+  }: TProps = {},
 ) => (
   <span>
     <div>
       <span>
         {title}
         <DownIcon
+          isDown={active}
           onClick={() => {
             toggleActive();
             onToggle();
-          }}
-          isDown={active}
-        />
+          }} />
       </span>
     </div>
     {active && children}

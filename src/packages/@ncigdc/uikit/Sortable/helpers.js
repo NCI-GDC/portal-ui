@@ -1,4 +1,4 @@
-/*** Helper functions - they are decoupled because of testability */
+/** * Helper functions - they are decoupled because of testability */
 
 /**
  * @param {array} items
@@ -7,7 +7,7 @@
  * @returns {array}
  */
 export function swapArrayElements(items, indexFrom, indexTo) {
-  var item = items[indexTo];
+  const item = items[indexTo];
   items[indexTo] = items[indexFrom];
   items[indexFrom] = item;
   return items;
@@ -20,12 +20,12 @@ export function swapArrayElements(items, indexFrom, indexTo) {
  * @returns {boolean}
  */
 export function isMouseBeyond(mousePos, elementPos, elementSize, moveInMiddle) {
-  var breakPoint;
+  let breakPoint;
   if (moveInMiddle) {
-    breakPoint = elementSize / 2; //break point is set to the middle line of element
+    breakPoint = elementSize / 2; // break point is set to the middle line of element
   } else {
     breakPoint = 0;
   }
-  var mouseOverlap = mousePos - elementPos;
+  const mouseOverlap = mousePos - elementPos;
   return mouseOverlap > breakPoint;
 }

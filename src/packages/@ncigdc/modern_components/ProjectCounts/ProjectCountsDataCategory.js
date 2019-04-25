@@ -38,38 +38,37 @@ export default compose(
     return acc.concat(
       type
         ? {
-            ...type,
-            file_count_meter: (
-              <SparkMeterWithTooltip
-                part={type.file_count}
-                whole={totalFiles}
-              />
-            ),
-            case_count_meter: (
-              <SparkMeterWithTooltip
-                part={type.case_count}
-                whole={totalCases}
-              />
-            ),
-          }
+          ...type,
+          file_count_meter: (
+            <SparkMeterWithTooltip
+              part={type.file_count}
+              whole={totalFiles} />
+          ),
+          case_count_meter: (
+            <SparkMeterWithTooltip
+              part={type.case_count}
+              whole={totalCases} />
+          ),
+        }
         : {
-            data_category: DATA_CATEGORIES[key].full,
-            file_count: 0,
-            case_count: 0,
-          },
+          data_category: DATA_CATEGORIES[key].full,
+          file_count: 0,
+          case_count: 0,
+        },
     );
   }, []);
   return (
     <SummaryCard
-      tableTitle="Cases and File Counts by Data Category"
-      pieChartTitle="File Counts by Data Category"
       data={dataCategories.map((item, i) => {
         const filters = makeFilter([
           {
             field: 'cases.project.project_id',
             value: [project.project_id],
           },
-          { field: 'files.data_category', value: [item.data_category] },
+          {
+            field: 'files.data_category',
+            value: [item.data_category],
+          },
         ]);
 
         return {
@@ -81,8 +80,7 @@ export default compose(
                 style={{
                   ...styles.coloredSquare,
                   backgroundColor: colors20(i),
-                }}
-              />
+                }} />
               {item.data_category}
             </span>
           ),
@@ -95,8 +93,7 @@ export default compose(
                   filters,
                   facetTab: 'cases',
                   searchTableTab: 'cases',
-                }}
-              >
+                }}>
                 {item.case_count.toLocaleString()}
               </Link>
             ) : (
@@ -110,8 +107,7 @@ export default compose(
                 filters,
                 facetTab: 'files',
                 searchTableTab: 'files',
-              }}
-            >
+              }}>
               {item.file_count.toLocaleString()}
             </Link>
           ) : (
@@ -122,7 +118,10 @@ export default compose(
             <span>
               <b>{item.data_category}</b>
               <br />
-              {item.file_count} file{item.file_count > 1 ? 's' : ''}
+              {item.file_count}
+              {' '}
+file
+              {item.file_count > 1 ? 's' : ''}
             </span>
           ),
           clickHandler: () => {
@@ -139,14 +138,20 @@ export default compose(
               ...newQuery,
               filters: newQuery.filters && stringifyJSONParam(newQuery.filters),
             });
-            push({ pathname: '/repository', query: q });
+            push({
+              pathname: '/repository',
+              query: q,
+            });
           },
         };
       })}
       footer={`${dataCategories.length} Data Categories`}
-      path="file_count_value"
       headings={[
-        { key: 'data_category', title: 'Data Category', color: true },
+        {
+          key: 'data_category',
+          title: 'Data Category',
+          color: true,
+        },
         {
           key: 'case_count',
           title: 'Cases',
@@ -167,8 +172,7 @@ export default compose(
                 facetTab: 'cases',
                 searchTableTab: 'cases',
               }}
-              title="Browse cases"
-            >
+              title="Browse cases">
               <SampleSize n={totalCases} />
             </Link>
           ),
@@ -198,8 +202,7 @@ export default compose(
                 facetTab: 'files',
                 searchTableTab: 'files',
               }}
-              title="Browse files"
-            >
+              title="Browse files">
               <SampleSize n={totalFiles} />
             </Link>
           ),
@@ -210,6 +213,8 @@ export default compose(
           style: { textAlign: 'left' },
         },
       ]}
-    />
+      path="file_count_value"
+      pieChartTitle="File Counts by Data Category"
+      tableTitle="Cases and File Counts by Data Category" />
   );
 });

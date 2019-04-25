@@ -1,7 +1,9 @@
 // @flow
 
 import React from 'react';
-import { compose, withPropsOnChange, branch, renderComponent } from 'recompose';
+import {
+  compose, withPropsOnChange, branch, renderComponent,
+} from 'recompose';
 import { get } from 'lodash';
 import EntityPageVerticalTable from '@ncigdc/components/EntityPageVerticalTable';
 import TableIcon from '@ncigdc/theme/icons/Table';
@@ -31,7 +33,7 @@ export default compose(
   withPropsOnChange(
     ['viewer'],
     ({ viewer: { explore: { ssms: { hits: { edges } } } } }) => {
-      const node = edges[0].node;
+      const { node } = edges[0];
 
       const { transcript } = get(node, 'consequence.hits.edges[0].node', {
         transcript: {
@@ -66,23 +68,35 @@ export default compose(
     <EntityPageVerticalTable
       data-test="ssm-summary"
       id="Summary"
-      title={
-        <span>
-          <TableIcon style={{ marginRight: '1rem' }} />Summary
-        </span>
-      }
+      style={{
+        ...styles.summary,
+        ...styles.column,
+        alignSelf: 'flex-start',
+      }}
       thToTd={[
-        { th: 'UUID', td: node.ssm_id },
+        {
+          th: 'UUID',
+          td: node.ssm_id,
+        },
         {
           th: 'DNA change',
           td: (
-            <span style={{ whiteSpace: 'pre-line', wordBreak: 'break-all' }}>
+            <span style={{
+              whiteSpace: 'pre-line',
+              wordBreak: 'break-all',
+            }}>
               {node.genomic_dna_change}
             </span>
           ),
         },
-        { th: 'Type', td: node.mutation_subtype },
-        { th: 'Reference genome assembly', td: node.ncbi_build || '' },
+        {
+          th: 'Type',
+          td: node.mutation_subtype,
+        },
+        {
+          th: 'Reference genome assembly',
+          td: node.ncbi_build || '',
+        },
         {
           th: 'Allele in the reference assembly',
           td: node.reference_allele || '',
@@ -97,38 +111,46 @@ export default compose(
                   <span>
                     <ExternalLink
                       data-test="function-impact-transcript-link"
-                      key={transcript_id}
-                      style={{ paddingRight: '0.5em' }}
                       href={externalReferenceLinks.ensembl(transcript_id)}
-                    >
+                      key={transcript_id}
+                      style={{ paddingRight: '0.5em' }}>
                       {transcript_id}
                     </ExternalLink>
                     <BubbleIcon
-                      text="C"
-                      toolTipText="Canonical"
                       backgroundColor={theme.primary}
-                    />
+                      text="C"
+                      toolTipText="Canonical" />
                   </span>
                   <Row>
-                    VEP:{' '}
+                    VEP:
+                    {' '}
                     <span
                       style={{
                         display: 'inline-block',
                         marginLeft: '0.4em',
                         marginRight: '0.4em',
-                      }}
-                    >
+                      }}>
                       {vep_impact}
                     </span>
                   </Row>
                   {sift_impact && (
                     <Row>
-                      SIFT: {sift_impact}, score: {sift_score}
+                      SIFT:
+                      {' '}
+                      {sift_impact}
+, score:
+                      {' '}
+                      {sift_score}
                     </Row>
                   )}
                   {polyphen_impact && (
                     <Row>
-                      PolyPhen: {polyphen_impact}, score: {polyphen_score}
+                      PolyPhen:
+                      {' '}
+                      {polyphen_impact}
+, score:
+                      {' '}
+                      {polyphen_score}
                     </Row>
                   )}
                 </span>
@@ -137,11 +159,11 @@ export default compose(
           ),
         },
       ]}
-      style={{
-        ...styles.summary,
-        ...styles.column,
-        alignSelf: 'flex-start',
-      }}
-    />
+      title={(
+        <span>
+          <TableIcon style={{ marginRight: '1rem' }} />
+Summary
+        </span>
+      )} />
   ),
 );

@@ -6,30 +6,28 @@ import { compose, withPropsOnChange } from 'recompose';
 import { makeFilter } from '@ncigdc/utils/filters';
 import Query from '@ncigdc/modern_components/Query';
 
-export default (Component: ReactClass<*>) =>
-  compose(
-    withPropsOnChange(['filters'], ({ filters = null }) => {
-      return {
-        variables: {
-          ssmTested: makeFilter([
-            {
-              field: 'cases.available_variation_data',
-              value: 'ssm',
-            },
-          ]),
-          caseAggsFilter: filters,
-          ssmCountsFilters: filters,
-        },
-      };
-    }),
-  )((props: Object) => {
-    return (
-      <Query
-        parentProps={props}
-        minHeight={50}
-        variables={props.variables}
-        Component={Component}
-        query={graphql`
+export default (Component: ReactClass<*>) => compose(
+  withPropsOnChange(['filters'], ({ filters = null }) => {
+    return {
+      variables: {
+        ssmTested: makeFilter([
+          {
+            field: 'cases.available_variation_data',
+            value: 'ssm',
+          },
+        ]),
+        caseAggsFilter: filters,
+        ssmCountsFilters: filters,
+      },
+    };
+  }),
+)((props: Object) => {
+  return (
+    <Query
+      Component={Component}
+      minHeight={50}
+      parentProps={props}
+      query={graphql`
           query CancerDistributionSsmTable_relayQuery(
             $ssmTested: FiltersArgument
             $ssmCountsFilters: FiltersArgument
@@ -69,6 +67,6 @@ export default (Component: ReactClass<*>) =>
             }
           }
         `}
-      />
-    );
-  });
+      variables={props.variables} />
+  );
+});

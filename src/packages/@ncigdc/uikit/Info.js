@@ -19,15 +19,16 @@ const styles = {
   },
 };
 
-const Info = ({ style, children, theme, ...props }) => (
+const Info = ({
+  style, children, theme, ...props
+}) => (
   <Row
     style={{
       backgroundColor: theme.alertInfo,
       ...styles.alert,
       ...style,
     }}
-    {...props}
-  >
+    {...props}>
     {children}
   </Row>
 );

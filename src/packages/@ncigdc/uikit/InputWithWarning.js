@@ -19,24 +19,29 @@ export default compose(
     style,
   }) => (
     <div style={style}>
-      <label style={{ marginTop: 10, width: '100%' }}>
+      <label style={{
+        marginTop: 10,
+        width: '100%',
+      }}>
         {labelText}
         <br />
         <input
-          style={{ width: '100%' }}
           autoFocus
-          onFocus={e => e.target.select()}
-          value={value}
-          onKeyPress={handleOnKeyPress}
+          id="save-set-modal-name"
           onChange={e => {
             setValue(e.target.value);
             handleOnChange(e);
           }}
-          id="save-set-modal-name"
+          onFocus={e => e.target.select()}
+          onKeyPress={handleOnKeyPress}
+          style={{ width: '100%' }}
           type="text"
-        />
+          value={value} />
         {value.length > maxLength && (
-          <WarningBox>Maximum name length is {maxLength}</WarningBox>
+          <WarningBox>
+Maximum name length is
+            {maxLength}
+          </WarningBox>
         )}
       </label>
       {showWarning && <WarningBox>{warningMessage}</WarningBox>}

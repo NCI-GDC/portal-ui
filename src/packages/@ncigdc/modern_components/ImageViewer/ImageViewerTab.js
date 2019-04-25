@@ -1,6 +1,8 @@
 import React from 'react';
 
-import { compose, mapProps, branch, renderComponent } from 'recompose';
+import {
+  compose, mapProps, branch, renderComponent,
+} from 'recompose';
 import { head } from 'lodash';
 
 import withRouter from '@ncigdc/utils/withRouter';
@@ -53,7 +55,9 @@ export default compose(
         : null,
     ...rest,
   })),
-)(({ slides, query, selectedId, theme }) => {
+)(({
+  slides, query, selectedId, theme,
+}) => {
   const selectedOrFirstId = selectedId || head(slides).file_id;
   const selectedOrFirstSlide = slides.find(
     ({ file_id }) => file_id === selectedOrFirstId,
@@ -66,8 +70,7 @@ export default compose(
           padding: '1rem 1rem 1rem 1rem',
           maxHeight: '550px',
           overflow: 'auto',
-        }}
-      >
+        }}>
         {slides.map(({ file_id, submitter_id }) => (
           <Column key={file_id}>
             <ThumbnailLink
@@ -77,18 +80,16 @@ export default compose(
                 ...{ marginBottom: '1.5rem' },
                 ...(selectedOrFirstId === file_id
                   ? {
-                      backgroundColor: theme.secondary,
-                      color: theme.white,
-                    }
+                    backgroundColor: theme.secondary,
+                    color: theme.white,
+                  }
                   : {}),
-              }}
-            >
+              }}>
               <Row style={{ color: '#000' }}>{submitter_id}</Row>
               <img
                 alt={`thumbnail of ${submitter_id}`}
                 src={`${SLIDE_IMAGE_ENDPOINT}${file_id}?level=7&x=0&y=0`}
-                style={{ maxWidth: '200px' }}
-              />
+                style={{ maxWidth: '200px' }} />
             </ThumbnailLink>
           </Column>
         ))}
@@ -97,7 +98,10 @@ export default compose(
         <Row>
           <ZoomableImage imageId={selectedOrFirstId} />
         </Row>
-        <Row style={{ justifyContent: 'flex-end', padding: '1rem' }}>
+        <Row style={{
+          justifyContent: 'flex-end',
+          padding: '1rem',
+        }}>
           <SlideDetailsButton slide={selectedOrFirstSlide} />
         </Row>
       </Column>

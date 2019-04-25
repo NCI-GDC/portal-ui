@@ -8,7 +8,9 @@ import {
 import AddCaseFilesToCartButton from '@ncigdc/components/AddCaseFilesToCartButton';
 import ProjectLink from '@ncigdc/components/Links/ProjectLink';
 import CaseLink from '@ncigdc/components/Links/CaseLink';
-import { Th, Td, ThNum, TdNum } from '@ncigdc/uikit/Table';
+import {
+  Th, Td, ThNum, TdNum,
+} from '@ncigdc/uikit/Table';
 import { makeFilter } from '@ncigdc/utils/filters';
 import ageDisplay from '@ncigdc/utils/ageDisplay';
 import withRouter from '@ncigdc/utils/withRouter';
@@ -28,8 +30,7 @@ import { ForTsvExport } from '@ncigdc/components/DownloadTableToTsvButton';
 const youngestDiagnosis = (
   p: { age_at_diagnosis: number },
   c: { age_at_diagnosis: number },
-): { age_at_diagnosis: number } =>
-  c.age_at_diagnosis < p.age_at_diagnosis ? c : p;
+): { age_at_diagnosis: number } => (c.age_at_diagnosis < p.age_at_diagnosis ? c : p);
 
 const dataCategoryColumns = createDataCategoryColumns({
   title: 'Available Files per Data Category',
@@ -44,32 +45,35 @@ const dataCategoryColumns = createDataCategoryColumns({
   getTotalLinkFilters: hits => [],
 });
 
-const FilesLink = ({ node, fields = [], children }) =>
-  children === '0' ? (
-    <span>0</span>
+const FilesLink = ({ node, fields = [], children }) => (children === '0' ? (
+  <span>0</span>
   ) : (
     <RepositoryFilesLink
       query={{
         filters: makeFilter([
-          { field: 'cases.case_id', value: [node.case_id] },
+          {
+            field: 'cases.case_id',
+            value: [node.case_id],
+          },
           ...fields,
         ]),
-      }}
-    >
+      }}>
       {children}
     </RepositoryFilesLink>
-  );
+  ));
 
-const getProjectIdFilter = projects =>
-  makeFilter([
-    {
-      field: 'cases.project.project_id',
-      value: projects.edges.map(({ node: p }) => p.project_id),
-    },
-  ]);
+const getProjectIdFilter = projects => makeFilter([
+  {
+    field: 'cases.project.project_id',
+    value: projects.edges.map(({ node: p }) => p.project_id),
+  },
+]);
 
 const casesTableModel = [
-  createSelectColumn({ idField: 'case_id', headerRowSpan: 2 }),
+  createSelectColumn({
+    idField: 'case_id',
+    headerRowSpan: 2,
+  }),
   {
     name: 'Cart',
     id: 'cart',
@@ -82,18 +86,20 @@ const casesTableModel = [
       <Td>
         <AddCaseFilesToCartButton
           caseId={node.case_id}
+          dropdownStyle={
+            index > edges.length - 3 ? {
+              top: 'auto',
+              bottom: '100%',
+            } : {}
+          }
+          fileCount={node.summary.file_count}
           hasFiles={
             _.sum(
               node.summary.data_categories.map(
                 dataCategory => dataCategory.file_count,
               ),
             ) > 0
-          }
-          fileCount={node.summary.file_count}
-          dropdownStyle={
-            index > edges.length - 3 ? { top: 'auto', bottom: '100%' } : {}
-          }
-        />
+          } />
       </Td>
     ),
   },
@@ -121,11 +127,10 @@ const casesTableModel = [
     td: ({ node, index }) => (
       <Td>
         <CaseLink
-          uuid={node.case_id}
           id={`row-${index}-case-link`}
           merge
-          whitelist={['filters']}
-        >
+          uuid={node.case_id}
+          whitelist={['filters']}>
           {node.submitter_id}
         </CaseLink>
       </Td>
@@ -144,9 +149,8 @@ const casesTableModel = [
     td: ({ node, index }) => (
       <Td>
         <ProjectLink
-          uuid={node.project.project_id}
           id={`row-${index}-project-link`}
-        />
+          uuid={node.project.project_id} />
       </Td>
     ),
   },
@@ -200,8 +204,7 @@ const casesTableModel = [
         <RepositoryCasesLink
           query={{
             filters: query.filters ? getProjectIdFilter(hits) : null,
-          }}
-        >
+          }}>
           {hits.edges
             .reduce((acc, val) => acc + val.node.summary.case_count, 0)
             .toLocaleString()}
@@ -222,11 +225,13 @@ const casesTableModel = [
     td: ({ node }) => (
       <TdNum key="score">
         <AnnotationCountLink
-          hits={node.annotations.hits}
           filters={makeFilter([
-            { field: 'annotations.case_id', value: node.case_id },
+            {
+              field: 'annotations.case_id',
+              value: node.case_id,
+            },
           ])}
-        />
+          hits={node.annotations.hits} />
       </TdNum>
     ),
   },
@@ -242,9 +247,11 @@ const casesTableModel = [
         <Td style={{ textAlign: 'center' }}>
           <RepositorySlideCount
             filters={makeFilter([
-              { field: 'cases.case_id', value: node.case_id },
-            ])}
-          >
+              {
+                field: 'cases.case_id',
+                value: node.case_id,
+              },
+            ])}>
             {count => [
               <ForTsvExport key="slide-count-tsv-export">{count}</ForTsvExport>,
               count ? (
@@ -253,11 +260,17 @@ const casesTableModel = [
                     isIcon
                     query={{
                       filters: makeFilter([
-                        { field: 'cases.case_id', value: node.case_id },
+                        {
+                          field: 'cases.case_id',
+                          value: node.case_id,
+                        },
                       ]),
-                    }}
-                  >
-                    <MicroscopeIcon style={{ maxWidth: '20px' }} /> ({count})
+                    }}>
+                    <MicroscopeIcon style={{ maxWidth: '20px' }} />
+                    {' '}
+(
+                    {count}
+)
                   </ImageViewerLink>
                 </Tooltip>
               ) : (

@@ -6,75 +6,73 @@ import { compose, withPropsOnChange } from 'recompose';
 import { makeFilter, replaceFilters } from '@ncigdc/utils/filters';
 import Query from '@ncigdc/modern_components/Query';
 
-export default (Component: ReactClass<*>) =>
-  compose(
-    withPropsOnChange(['filters'], ({ filters = null }) => {
-      const cnvAvailableVariationDataFilter = {
-        field: 'cases.available_variation_data',
-        value: ['cnv'],
-      };
-      const ssmAvailableVariationDataFilter = {
-        field: 'cases.available_variation_data',
-        value: ['ssm'],
-      };
-      return {
-        variables: {
-          ssmTested: makeFilter([ssmAvailableVariationDataFilter]),
-          cnvTested: makeFilter([cnvAvailableVariationDataFilter]),
-          cnvGainFilter: replaceFilters(
-            makeFilter([
-              cnvAvailableVariationDataFilter,
-              {
-                field: 'cnvs.cnv_change',
-                value: ['Gain'],
-              },
-            ]),
-            filters,
-          ),
-          cnvLossFilter: replaceFilters(
-            makeFilter([
-              cnvAvailableVariationDataFilter,
-              {
-                field: 'cnvs.cnv_change',
-                value: ['Loss'],
-              },
-            ]),
-            filters,
-          ),
-          caseAggsFilter: replaceFilters(
+export default (Component: ReactClass<*>) => compose(
+  withPropsOnChange(['filters'], ({ filters = null }) => {
+    const cnvAvailableVariationDataFilter = {
+      field: 'cases.available_variation_data',
+      value: ['cnv'],
+    };
+    const ssmAvailableVariationDataFilter = {
+      field: 'cases.available_variation_data',
+      value: ['ssm'],
+    };
+    return {
+      variables: {
+        ssmTested: makeFilter([ssmAvailableVariationDataFilter]),
+        cnvTested: makeFilter([cnvAvailableVariationDataFilter]),
+        cnvGainFilter: replaceFilters(
+          makeFilter([
+            cnvAvailableVariationDataFilter,
             {
-              op: 'and',
-              content: [
-                {
-                  op: 'NOT',
-                  content: {
-                    field: 'cases.gene.ssm.observation.observation_id',
-                    value: 'MISSING',
-                  },
-                },
-                {
-                  op: 'in',
-                  content: ssmAvailableVariationDataFilter,
-                },
-              ],
+              field: 'cnvs.cnv_change',
+              value: ['Gain'],
             },
-            filters,
-          ),
-          ssmCountsFilters: replaceFilters(
-            makeFilter([ssmAvailableVariationDataFilter]),
-            filters,
-          ),
-        },
-      };
-    }),
-  )((props: Object) => {
-    return (
-      <Query
-        parentProps={props}
-        minHeight={50}
-        variables={props.variables}
-        Component={Component}
-        query={graphql`
+          ]),
+          filters,
+        ),
+        cnvLossFilter: replaceFilters(
+          makeFilter([
+            cnvAvailableVariationDataFilter,
+            {
+              field: 'cnvs.cnv_change',
+              value: ['Loss'],
+            },
+          ]),
+          filters,
+        ),
+        caseAggsFilter: replaceFilters(
+          {
+            op: 'and',
+            content: [
+              {
+                op: 'NOT',
+                content: {
+                  field: 'cases.gene.ssm.observation.observation_id',
+                  value: 'MISSING',
+                },
+              },
+              {
+                op: 'in',
+                content: ssmAvailableVariationDataFilter,
+              },
+            ],
+          },
+          filters,
+        ),
+        ssmCountsFilters: replaceFilters(
+          makeFilter([ssmAvailableVariationDataFilter]),
+          filters,
+        ),
+      },
+    };
+  }),
+)((props: Object) => {
+  return (
+    <Query
+      Component={Component}
+      minHeight={50}
+      parentProps={props}
+      query={graphql`
           query CancerDistributionTable_relayQuery(
             $ssmTested: FiltersArgument
             $ssmCountsFilters: FiltersArgument
@@ -141,6 +139,6 @@ export default (Component: ReactClass<*>) =>
             }
           }
         `}
-      />
-    );
-  });
+      variables={props.variables} />
+  );
+});

@@ -120,6 +120,6 @@ const theme: IThemeProps = {
   spacing: '2rem',
 };
 
-export const globalRules = ``;
+export const globalRules = '';
 
 export default theme;

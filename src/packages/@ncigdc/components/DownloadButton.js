@@ -2,7 +2,9 @@
 
 import React from 'react';
 import { connect } from 'react-redux';
-import { compose, withState, mapProps, setDisplayName } from 'recompose';
+import {
+ compose, withState, mapProps, setDisplayName 
+} from 'recompose';
 import urlJoin from 'url-join';
 
 import download from '@ncigdc/utils/download';
@@ -69,11 +71,8 @@ const DownloadButton = ({
   return (
     <Button
       className={props.className || 'test-download-button'}
-      style={{
-        ...style,
-      }}
-      leftIcon={text && icon}
       disabled={disabled || active}
+      leftIcon={text && icon}
       onClick={() => {
         const params = {
           size,
@@ -98,6 +97,9 @@ const DownloadButton = ({
         })(() => {}, () => setActive(false));
         setModal();
       }}
+      style={{
+        ...style,
+      }}
     >
       {text || [icon, <Hidden key="hidden">download</Hidden>]}
     </Button>
@@ -110,11 +112,11 @@ const enhance = compose(
   withState('state', 'setState', {
     active: false,
   }),
-  mapProps(({ setParentState, state, setState, active, ...rest }) => ({
-    setActive: setParentState
-      ? setParentState
-      : active => setState(s => ({ ...s, active })),
-    active: active ? active : state.active,
+  mapProps(({
+ setParentState, state, setState, active, ...rest 
+}) => ({
+    setActive: setParentState || active => setState(s => ({ ...s, active })),
+    active: active || state.active,
     ...rest,
   }))
 );

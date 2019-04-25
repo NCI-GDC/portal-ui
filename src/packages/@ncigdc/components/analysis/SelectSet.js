@@ -53,10 +53,23 @@ const SetTable = ({
   demoData,
 }: TProps) => {
   const headings = [
-    { key: 'select', title: ' ' },
-    { key: 'type', title: 'Type' },
-    { key: 'name', title: 'Name' },
-    { key: 'count', title: 'Items', style: { textAlign: 'right' } },
+    {
+      key: 'select',
+      title: ' ',
+    },
+    {
+      key: 'type',
+      title: 'Type',
+    },
+    {
+      key: 'name',
+      title: 'Name',
+    },
+    {
+      key: 'count',
+      title: 'Items',
+      style: { textAlign: 'right' },
+    },
   ];
   const setData = Object.entries(sets)
     .filter(([type]) => setTypes.includes(type))
@@ -68,7 +81,10 @@ const SetTable = ({
         const checked = Boolean((selectedSets[type] || {})[setId]);
 
         const msg =
-          !checked && setDisabledMessage({ sets: selectedSets, type });
+          !checked && setDisabledMessage({
+            sets: selectedSets,
+            type,
+          });
 
         return {
           select: (
@@ -76,17 +92,11 @@ const SetTable = ({
               Component={msg}
               style={{
                 cursor: msg ? 'not-allowed' : 'initial',
-              }}
-            >
+              }}>
               <input
-                style={{
-                  marginLeft: 3,
-                  pointerEvents: msg ? 'none' : 'initial',
-                }}
-                id={id}
-                type="checkbox"
-                value={setId}
+                checked={checked}
                 disabled={msg}
+                id={id}
                 onChange={e => {
                   const setId = e.target.value;
                   const setIdPath = [type, setId];
@@ -96,11 +106,15 @@ const SetTable = ({
                       : _.set({ ...selectedSets }, setIdPath, sets[setId]),
                   );
                 }}
-                checked={checked}
-              />
+                style={{
+                  marginLeft: 3,
+                  pointerEvents: msg ? 'none' : 'initial',
+                }}
+                type="checkbox"
+                value={setId} />
             </Tooltip>
           ),
-          type: _.capitalize(type === 'ssm' ? 'mutations' : type + 's'),
+          type: _.capitalize(type === 'ssm' ? 'mutations' : `${type}s`),
           name: <label htmlFor={id}>{_.truncate(label, { length: 70 })}</label>,
           count: (
             <CountComponent
@@ -110,8 +124,7 @@ const SetTable = ({
                   field: `${type}s.${type}_id`,
                   value: `set_id:${setId}`,
                 },
-              }}
-            />
+              }} />
           ),
         };
       });
@@ -121,9 +134,15 @@ const SetTable = ({
   return (
     <div>
       <Row>
-        <Column style={{ padding: '2rem 2.5rem 0', flex: 1 }}>
+        <Column style={{
+          padding: '2rem 2.5rem 0',
+          flex: 1,
+        }}>
           <Row>
-            <div style={{ width: 80, margin: 20 }}>
+            <div style={{
+              width: 80,
+              margin: 20,
+            }}>
               <Icon />
             </div>
             <div>
@@ -138,14 +157,12 @@ const SetTable = ({
               justifyContent: 'flex-end',
               padding: '1rem 2.5rem 1rem',
               borderTop: `1px solid ${theme.greyScale5}`,
-            }}
-          >
+            }}>
             <Button onClick={onCancel}>Cancel</Button>
             <DemoButton demoData={demoData} type={type} />
             <Button
               disabled={!validateSets(selectedSets)}
-              onClick={() => onRun(selectedSets)}
-            >
+              onClick={() => onRun(selectedSets)}>
               Run
             </Button>
           </Row>
@@ -162,7 +179,9 @@ const SetTable = ({
             </div>
             <div style={{ fontStyle: 'italic' }}>
               You can create and save case, gene and mutation sets of interest
-              from the <ExploreLink>Exploration Page</ExploreLink>
+              from the
+              {' '}
+              <ExploreLink>Exploration Page</ExploreLink>
             </div>
           </div>
           {setData.length > 0 && (

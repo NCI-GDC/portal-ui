@@ -24,13 +24,12 @@ const DemoButton = ({
   style,
   disabled = false,
 }) => {
-  const pushToResultTab = id =>
-    push({
-      query: {
-        analysisTableTab: 'result',
-        analysisId: id,
-      },
-    });
+  const pushToResultTab = id => push({
+    query: {
+      analysisTableTab: 'result',
+      analysisId: id,
+    },
+  });
   const onDemo = type => {
     const id = `demo-${type}`;
     const existingDemo = analysis.find(a => a.id === id);
@@ -49,7 +48,7 @@ const DemoButton = ({
       dispatch(
         addAnalysis({
           id,
-          type: type,
+          type,
           created: new Date().toISOString(),
           ...demoData,
         }),
@@ -61,12 +60,11 @@ const DemoButton = ({
 
   return (
     <Tooltip
-      style={style}
       Component={
         demoData && <div style={{ maxWidth: 240 }}>{demoData.message}</div>
       }
-    >
-      <Button onClick={() => demoData && onDemo(type)} disabled={disabled}>
+      style={style}>
+      <Button disabled={disabled} onClick={() => demoData && onDemo(type)}>
         Demo
       </Button>
     </Tooltip>

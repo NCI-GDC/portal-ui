@@ -51,9 +51,8 @@ const initialState = {};
 const trimAll = s => trim(s).replace(/\s+/g, ' ');
 
 const reducer = (state: TState = initialState, action: TAction) => {
-  const payload = action.payload;
+  const { payload } = action;
   switch (action.type) {
-
     case sets.ADD_SET:
       return {
         ...state,
@@ -94,6 +93,8 @@ const reducer = (state: TState = initialState, action: TAction) => {
 
 /*----------------------------------------------------------------------------*/
 
-export { addSet, removeSet, replaceSet, updateSet };
+export {
+  addSet, removeSet, replaceSet, updateSet,
+};
 
 export default reducer;

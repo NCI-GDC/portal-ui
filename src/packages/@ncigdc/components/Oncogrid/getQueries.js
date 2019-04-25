@@ -15,7 +15,11 @@ async function getGenes({
   filters: Object,
   size: number,
 }): Promise<Object> {
-  const fields = ['gene_id', 'symbol', 'is_cancer_gene_census'];
+  const fields = [
+    'gene_id',
+    'symbol',
+    'is_cancer_gene_census',
+  ];
 
   return fetchApi(
     `analysis/top_mutated_genes_by_project?size=${size}&fields=${fields.join()}${filters
@@ -114,20 +118,20 @@ async function getQueries({
   const geneFilters =
     rankOncoGridBy === 'ssm'
       ? replaceFilters(
-          {
-            op: 'and',
-            content: [
-              {
-                op: 'NOT',
-                content: {
-                  field: 'ssms.consequence.transcript.annotation.vep_impact',
-                  value: 'missing',
-                },
+        {
+          op: 'and',
+          content: [
+            {
+              op: 'NOT',
+              content: {
+                field: 'ssms.consequence.transcript.annotation.vep_impact',
+                value: 'missing',
               },
-            ],
-          },
-          currentSSMFilters,
-        )
+            },
+          ],
+        },
+        currentSSMFilters,
+      )
       : currentCNVFilters;
 
   const { data: { hits: genes } } = await getGenes({
@@ -144,7 +148,10 @@ async function getQueries({
       content: [
         {
           op: 'in',
-          content: { field: 'genes.gene_id', value: geneIds },
+          content: {
+            field: 'genes.gene_id',
+            value: geneIds,
+          },
         },
       ],
     },
@@ -168,7 +175,10 @@ async function getQueries({
         content: [
           {
             op: 'in',
-            content: { field: 'cases.case_id', value: caseIds },
+            content: {
+              field: 'cases.case_id',
+              value: caseIds,
+            },
           },
         ],
       },
@@ -186,19 +196,25 @@ async function getQueries({
     replaceFilters(
       currentCNVFilters,
       makeFilter([
-        { field: 'cases.case_id', value: caseIds },
-        { field: 'genes.gene_id', value: geneIds },
+        {
+          field: 'cases.case_id',
+          value: caseIds,
+        },
+        {
+          field: 'genes.gene_id',
+          value: geneIds,
+        },
       ]),
     ),
   );
 
   let cnv_occurrences = [];
-  let cnvChangeFilters = getFilterValue({
+  const cnvChangeFilters = getFilterValue({
     currentFilters: cnvOccurrenceFilters.content,
     dotField: 'cnv.cnv_change',
   });
   if (cnvChangeFilters.content.value.length > 0 && !heatMapMode) {
-    let cnv_data = await getCNVOccurrences({
+    const cnv_data = await getCNVOccurrences({
       filters: cnvOccurrenceFilters,
     });
     cnv_occurrences = cnv_data.data.hits;

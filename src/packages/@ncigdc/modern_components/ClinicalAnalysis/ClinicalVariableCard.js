@@ -1,5 +1,7 @@
 import React from 'react';
-import { compose, withState, withPropsOnChange, withProps, lifecycle } from 'recompose';
+import {
+  compose, withState, withPropsOnChange, withProps, lifecycle,
+} from 'recompose';
 import DownCaretIcon from 'react-icons/lib/fa/caret-down';
 import { connect } from 'react-redux';
 import _ from 'lodash';
@@ -8,8 +10,8 @@ import { scaleOrdinal, schemeCategory10 } from 'd3';
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import Button from '@ncigdc/uikit/Button';
 import { Tooltip } from '@ncigdc/uikit/Tooltip';
-import { visualizingButton } from '@ncigdc/theme/mixins';
-import { zDepth1 } from '@ncigdc/theme/mixins';
+import { visualizingButton, zDepth1 } from '@ncigdc/theme/mixins';
+
 import EntityPageHorizontalTable from '@ncigdc/components/EntityPageHorizontalTable';
 import Dropdown from '@ncigdc/uikit/Dropdown';
 import DropdownItem from '@ncigdc/uikit/DropdownItem';
@@ -17,9 +19,9 @@ import Hidden from '@ncigdc/components/Hidden';
 import BarChart from '@ncigdc/components/Charts/BarChart';
 import ExploreLink from '@ncigdc/components/Links/ExploreLink';
 import { makeFilter, addInFilters } from '@ncigdc/utils/filters';
-import { CreateExploreCaseSetButton } from '@ncigdc/modern_components/withSetAction';
-import { AppendExploreCaseSetButton } from '@ncigdc/modern_components/withSetAction';
-import { RemoveFromExploreCaseSetButton } from '@ncigdc/modern_components/withSetAction';
+import { CreateExploreCaseSetButton, AppendExploreCaseSetButton, RemoveFromExploreCaseSetButton } from '@ncigdc/modern_components/withSetAction';
+
+
 import { setModal } from '@ncigdc/dux/modal';
 import SaveSetModal from '@ncigdc/components/Modals/SaveSetModal';
 import AppendSetModal from '@ncigdc/components/Modals/AppendSetModal';
@@ -34,14 +36,15 @@ import {
   getSurvivalCurvesArray,
 } from '@ncigdc/utils/survivalplot';
 import SurvivalPlotWrapper from '@ncigdc/components/SurvivalPlotWrapper';
-import { SpinnerIcon } from '@ncigdc/theme/icons';
-
 import {
+  SpinnerIcon,
   CloseIcon,
   SurvivalIcon,
   BarChartIcon,
   BoxPlot,
 } from '@ncigdc/theme/icons';
+
+
 import { withTheme } from '@ncigdc/theme';
 
 import {
@@ -123,17 +126,26 @@ const vizButtons: IVizButtons = {
   },
   histogram: {
     title: 'Histogram',
-    icon: <BarChartIcon style={{ height: '1em', width: '1em' }} />,
+    icon: <BarChartIcon style={{
+      height: '1em',
+      width: '1em',
+    }} />,
     action: updateClinicalAnalysisVariable,
   },
   box: {
     title: 'Box/QQ Plot',
-    icon: <BoxPlot style={{ height: '1em', width: '1em' }} />,
+    icon: <BoxPlot style={{
+      height: '1em',
+      width: '1em',
+    }} />,
     action: updateClinicalAnalysisVariable,
   },
   delete: {
     title: 'Remove Card',
-    icon: <CloseIcon style={{ height: '1em', width: '1em' }} />,
+    icon: <CloseIcon style={{
+      height: '1em',
+      width: '1em',
+    }} />,
     action: removeClinicalAnalysisVariable,
   },
 };
@@ -147,7 +159,7 @@ const styles = {
     ':hover': {
       backgroundColor: 'rgb(0,138,224)',
       color: '#fff',
-      border: `1px solid rgb(0,138,224)`,
+      border: '1px solid rgb(0,138,224)',
     },
   }),
   activeButton: (theme: IThemeProps) => ({
@@ -164,7 +176,10 @@ const styles = {
       stroke: theme.greyScale4,
     },
   }),
-  actionMenuItem: { lineHeight: '1.5', cursor: 'pointer' },
+  actionMenuItem: {
+    lineHeight: '1.5',
+    cursor: 'pointer',
+  },
 };
 
 const valueIsDays = str => /(days_to|age_at)/.test(str);
@@ -173,15 +188,14 @@ const valueIsYear = str => /year_of/.test(str);
 const getRangeValue = (key, field, nextInterval) => {
   if (valueIsDays(field)) {
     return `${getLowerAgeYears(key)}${
-      nextInterval === 0 ? '+' : ' - ' + getUpperAgeYears(nextInterval - 1)
+      nextInterval === 0 ? '+' : ` - ${getUpperAgeYears(nextInterval - 1)}`
     } years`;
-  } else if (valueIsYear(field)) {
+  } if (valueIsYear(field)) {
     return `${Math.floor(key)}${
-      nextInterval === 0 ? ' - present' : ' - ' + (nextInterval - 1)
+      nextInterval === 0 ? ' - present' : ` - ${nextInterval - 1}`
     }`;
-  } else {
-    return key;
   }
+  return key;
 };
 
 const getCountLink = ({ doc_count, filters, totalDocs }) => (
@@ -190,8 +204,7 @@ const getCountLink = ({ doc_count, filters, totalDocs }) => (
       query={{
         searchTableTab: 'cases',
         filters,
-      }}
-    >
+      }}>
       {(doc_count || 0).toLocaleString()}
     </ExploreLink>
     <span>{` (${(((doc_count || 0) / totalDocs) * 100).toFixed(2)}%)`}</span>
@@ -219,7 +232,9 @@ const enhance = compose(
     totalDocs: (data.hits || { total: 0 }).total,
   })),
   withProps(
-    ({ variable, fieldName, setId, totalDocs }) => ({
+    ({
+      variable, fieldName, setId, totalDocs,
+    }) => ({
       getBucketRangesAndFilters: (acc, { doc_count, key }) => {
         const filters =
           variable.plotTypes === 'categorical'
@@ -238,9 +253,7 @@ const enhance = compose(
                   op: '>=',
                   content: {
                     field: fieldName,
-                    value: [
-                      `${valueIsYear(fieldName) ? Math.floor(key) : key}`,
-                    ],
+                    value: [`${valueIsYear(fieldName) ? Math.floor(key) : key}`],
                   },
                 },
                 ...(acc.nextInterval !== 0 ? [
@@ -267,7 +280,10 @@ const enhance = compose(
                 totalDocs,
               }),
               key: getRangeValue(key, fieldName, acc.nextInterval),
-              rangeValues: { min: key, max: Math.floor(acc.nextInterval - 1) },
+              rangeValues: {
+                min: key,
+                max: Math.floor(acc.nextInterval - 1),
+              },
               filters,
             },
           ],
@@ -303,9 +319,7 @@ const enhance = compose(
               .data.slice(0)
               .reverse()
             : rawQueryData
-              .filter(bucket =>
-                IS_CDAVE_DEV ? bucket.key : bucket.key !== '_missing'
-              )
+              .filter(bucket => (IS_CDAVE_DEV ? bucket.key : bucket.key !== '_missing'))
               .map(b => ({
                 ...b,
                 chart_doc_count: b.doc_count,
@@ -368,7 +382,10 @@ const enhance = compose(
             ? [...nextValues]
             : nextValues
               .map(v => data.filter(d => d.key === v)[0])
-              .map(data => ({ ...data, doc_count: undefined }));
+              .map(data => ({
+                ...data,
+                doc_count: undefined,
+              }));
 
         getSurvivalCurvesArray({
           field: fieldName,
@@ -384,8 +401,7 @@ const enhance = compose(
     })
   ),
   withPropsOnChange(
-    (props, nextProps) =>
-      props.variable.active_chart !== nextProps.variable.active_chart ||
+    (props, nextProps) => props.variable.active_chart !== nextProps.variable.active_chart ||
       !_.isEqual(props.data, nextProps.data),
     ({ populateSurvivalData, variable }) => {
       if (variable.active_chart === 'survival') {
@@ -396,7 +412,9 @@ const enhance = compose(
   withPropsOnChange(['id'], ({ setSelectedBuckets }) => setSelectedBuckets([])),
   lifecycle({
     componentDidMount(): void {
-      const { dispatch, variable, fieldName, id } = this.props;
+      const {
+        dispatch, variable, fieldName, id,
+      } = this.props;
       if (variable.scrollToCard === false) return;
       const offset = document.getElementById('header').getBoundingClientRect().bottom + 10;
       const wrapperId = makeWrapperId(fieldName);
@@ -404,7 +422,7 @@ const enhance = compose(
       const offsetTop = $anchor.getBoundingClientRect().top + window.pageYOffset;
       window.scroll({
         top: offsetTop - offset,
-        behavior: 'smooth'
+        behavior: 'smooth',
       });
       dispatch(
         updateClinicalAnalysisVariable({
@@ -457,9 +475,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
           .data.slice(0)
           .reverse()
         : rawData
-          .filter(bucket =>
-            IS_CDAVE_DEV ? bucket.key : bucket.key !== '_missing'
-          )
+          .filter(bucket => (IS_CDAVE_DEV ? bucket.key : bucket.key !== '_missing'))
           .map(b => ({
             ...b,
             key: b.key,
@@ -473,7 +489,10 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                     content: [
                       {
                         op: 'IS',
-                        content: { field: fieldName, value: [b.key] },
+                        content: {
+                          field: fieldName,
+                          value: [b.key],
+                        },
                       },
                       {
                         op: 'in',
@@ -489,7 +508,10 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                       field: 'cases.case_id',
                       value: `set_id:${setId}`,
                     },
-                    { field: fieldName, value: [b.key] },
+                    {
+                      field: fieldName,
+                      value: [b.key],
+                    },
                   ]),
               totalDocs,
             }),
@@ -499,15 +521,10 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
       ...b,
       select: (
         <input
-          style={{
-            marginLeft: 3,
-            pointerEvents: 'initial',
-          }}
-          id={b.key}
-          type="checkbox"
-          value={b.key}
           aria-label={`${fieldName}-${b.key}`}
+          checked={!!_.find(selectedBuckets, { key: b.key })}
           disabled={b.doc_count === 0}
+          id={b.key}
           onChange={() => {
             if (_.find(selectedBuckets, { key: b.key })) {
               setSelectedBuckets(
@@ -517,8 +534,12 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
               setSelectedBuckets([...selectedBuckets, b]);
             }
           }}
-          checked={!!_.find(selectedBuckets, { key: b.key })}
-        />
+          style={{
+            marginLeft: 3,
+            pointerEvents: 'initial',
+          }}
+          type="checkbox"
+          value={b.key} />
       ),
       ...(variable.active_chart === 'survival'
         ? {
@@ -532,9 +553,17 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                     : selectedSurvivalValues.length < MAXIMUM_CURVES
                       ? `Click icon to plot ${b.key}`
                       : `Maximum plots (${MAXIMUM_CURVES}) reached`
-              }
-            >
+              }>
               <Button
+                disabled={
+                  b.key === '_missing' ||
+                  b.chart_doc_count < MINIMUM_CASES ||
+                  (selectedSurvivalValues.length >= MAXIMUM_CURVES &&
+                    selectedSurvivalValues.indexOf(b.key) === -1)
+                }
+                onClick={() => {
+                  updateSelectedSurvivalValues(displayData, b);
+                }}
                 style={{
                   padding: '2px 3px',
                   backgroundColor:
@@ -551,21 +580,11 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                         selectedSurvivalValues.indexOf(b.key) === -1)
                       ? '0.33'
                       : '1',
-                }}
-                disabled={
-                  b.key === '_missing' ||
-                  b.chart_doc_count < MINIMUM_CASES ||
-                  (selectedSurvivalValues.length >= MAXIMUM_CURVES &&
-                    selectedSurvivalValues.indexOf(b.key) === -1)
-                }
-                onClick={() => {
-                  updateSelectedSurvivalValues(displayData, b);
-                }}
-              >
+                }}>
                 {selectedSurvivalLoadingIds.indexOf(b.key) !== -1 ? (
                   <SpinnerIcon />
                 ) : (
-                    <SurvivalIcon />
+                  <SurvivalIcon />
                   )}
               </Button>
             </Tooltip>
@@ -588,7 +607,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
     });
   };
 
-  let tableData =
+  const tableData =
     variable.active_chart === 'box'
       ? getBoxTableData([])
       : getCategoricalTableData(rawQueryData, variable.plotTypes);
@@ -613,13 +632,21 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
         },
       ]
       : []),
-    { select: '', key: 'Total', doc_count: totalDocs, survival: '' },
+    {
+      select: '',
+      key: 'Total',
+      doc_count: totalDocs,
+      survival: '',
+    },
   ];
 
   const getHeadings = chartType => {
     return chartType === 'box'
       ? [
-        { key: 'stat', title: 'Stat' },
+        {
+          key: 'stat',
+          title: 'Stat',
+        },
         {
           key: 'count',
           title: 'Value',
@@ -630,25 +657,42 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
         {
           key: 'select',
           title: 'Select',
-          thStyle: { position: 'sticky', top: 0 },
+          thStyle: {
+            position: 'sticky',
+            top: 0,
+          },
         },
         {
           key: 'key',
           title: humanify({ term: fieldName }),
-          thStyle: { position: 'sticky', top: 0 },
+          thStyle: {
+            position: 'sticky',
+            top: 0,
+          },
         },
         {
           key: 'doc_count',
           title: '# Cases',
           style: { textAlign: 'right' },
-          thStyle: { position: 'sticky', top: 0, textAlign: 'right' },
+          thStyle: {
+            position: 'sticky',
+            top: 0,
+            textAlign: 'right',
+          },
         },
         ...(chartType === 'survival' ? [
           {
             key: 'survival',
             title: 'Survival',
-            style: { display: 'flex', justifyContent: 'flex-end' },
-            thStyle: { position: 'sticky', top: 0, textAlign: 'right' },
+            style: {
+              display: 'flex',
+              justifyContent: 'flex-end',
+            },
+            thStyle: {
+              position: 'sticky',
+              top: 0,
+              textAlign: 'right',
+            },
           },
         ] : []),
       ];
@@ -766,37 +810,33 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
 
   return (
     <Column
+      className="clinical-analysis-categorical-card"
       style={{
         ...zDepth1,
         height: 560,
         margin: '0 1rem 1rem',
         padding: '0.5rem 1rem 1rem',
         ...style,
-      }}
-      className="clinical-analysis-categorical-card"
-    >
+      }}>
       <Row
+        id={wrapperId}
         style={{
           justifyContent: 'space-between',
           alignItems: 'center',
           margin: '5px 0 10px',
-        }}
-        id={wrapperId}
-      >
-        <h2 style={{ fontSize: '1.8rem', marginTop: 10, marginBottom: 0 }}>
+        }}>
+        <h2 style={{
+          fontSize: '1.8rem',
+          marginTop: 10,
+          marginBottom: 0,
+        }}>
           {humanify({ term: fieldName })}
         </h2>
         <Row>
           {[...plots, 'delete'].map(plotType => {
             return (
-              <Tooltip key={plotType} Component={vizButtons[plotType].title}>
+              <Tooltip Component={vizButtons[plotType].title} key={plotType}>
                 <Button
-                  style={{
-                    ...(plotType === variable.active_chart
-                      ? styles.activeButton(theme)
-                      : styles.common(theme)),
-                    margin: 2,
-                  }}
                   onClick={() => {
                     dispatch(
                       vizButtons[plotType].action({
@@ -807,7 +847,12 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                       })
                     );
                   }}
-                >
+                  style={{
+                    ...(plotType === variable.active_chart
+                      ? styles.activeButton(theme)
+                      : styles.common(theme)),
+                    margin: 2,
+                  }}>
                   <Hidden>{vizButtons[plotType].title}</Hidden>
                   {vizButtons[plotType].icon}
                 </Button>
@@ -818,8 +863,11 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
       </Row>
       {_.isEmpty(tableData) && (
         <Row
-          style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
-        >
+          style={{
+            flex: 1,
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
           There is no data for this facet
         </Row>
       )}
@@ -831,72 +879,70 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
               <form style={{ width: '100%' }}>
                 <label
                   htmlFor={`variable-percentage-radio-${fieldName}`}
-                  style={{ marginRight: 10, fontSize: '1.2rem' }}
-                >
+                  style={{
+                    marginRight: 10,
+                    fontSize: '1.2rem',
+                  }}>
                   <input
-                    id={`variable-percentage-radio-${fieldName}`}
-                    type={'radio'}
-                    value={'percentage'}
-                    aria-label={'Percentage of cases'}
-                    onChange={() =>
-                      dispatch(
-                        updateClinicalAnalysisVariable({
-                          fieldName,
-                          variableKey: 'active_calculation',
-                          value: 'percentage',
-                          id,
-                        })
-                      )
-                    }
+                    aria-label="Percentage of cases"
                     checked={variable.active_calculation === 'percentage'}
+                    id={`variable-percentage-radio-${fieldName}`}
+                    onChange={() => dispatch(
+                      updateClinicalAnalysisVariable({
+                        fieldName,
+                        variableKey: 'active_calculation',
+                        value: 'percentage',
+                        id,
+                      })
+                    )
+                    }
                     style={{ marginRight: 5 }}
-                  />
+                    type="radio"
+                    value="percentage" />
                   % of Cases
                 </label>
                 <label
                   htmlFor={`variable-number-radio-${fieldName}`}
-                  style={{ fontSize: '1.2rem' }}
-                >
+                  style={{ fontSize: '1.2rem' }}>
                   <input
-                    id={`variable-number-radio-${fieldName}`}
-                    type={'radio'}
-                    value={'number'}
-                    aria-label={'Number of cases'}
-                    onChange={() =>
-                      dispatch(
-                        updateClinicalAnalysisVariable({
-                          fieldName,
-                          variableKey: 'active_calculation',
-                          value: 'number',
-                          id,
-                        })
-                      )
-                    }
+                    aria-label="Number of cases"
                     checked={variable.active_calculation === 'number'}
+                    id={`variable-number-radio-${fieldName}`}
+                    onChange={() => dispatch(
+                      updateClinicalAnalysisVariable({
+                        fieldName,
+                        variableKey: 'active_calculation',
+                        value: 'number',
+                        id,
+                      })
+                    )
+                    }
                     style={{ marginRight: 5 }}
-                  />
+                    type="radio"
+                    value="number" />
                   # of Cases
                 </label>
                 <DownloadVisualizationButton
-                  key="download"
-                  onClick={() => {
-                    console.log('chartData', chartData);
-                  }}
-                  svg={() =>
-                    wrapSvg({
-                      selector: `#${wrapperId} svg`,
-                      title: humanify({ term: fieldName }),
-                    })
-                  }
                   data={chartData.map(d => ({
                     label: d.fullLabel,
                     value: d.value,
                   }))}
-                  slug={`${fieldName}-bar-chart`}
+                  key="download"
                   noText
-                  tooltipHTML="Download image or data"
-                  style={{ float: 'right', marginRight: 2 }}
-                />
+                  onClick={() => {
+                    console.log('chartData', chartData);
+                  }}
+                  slug={`${fieldName}-bar-chart`}
+                  style={{
+                    float: 'right',
+                    marginRight: 2,
+                  }}
+                  svg={() => wrapSvg({
+                    selector: `#${wrapperId} svg`,
+                    title: humanify({ term: fieldName }),
+                  })
+                  }
+                  tooltipHTML="Download image or data" />
               </form>
             )}
 
@@ -960,15 +1006,6 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
           {variable.active_chart === 'histogram' && (
             <BarChart
               data={chartData}
-              yAxis={{
-                title: `${
-                  variable.active_calculation === 'number' ? '#' : '%'
-                } of Cases`,
-                style: styles.histogram(theme).axis,
-              }}
-              xAxis={{
-                style: styles.histogram(theme).axis,
-              }}
               height={CHART_HEIGHT}
               styles={{
                 xAxis: {
@@ -986,7 +1023,15 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                   textFill: theme.greyScale3,
                 },
               }}
-            />
+              xAxis={{
+                style: styles.histogram(theme).axis,
+              }}
+              yAxis={{
+                title: `${
+                  variable.active_calculation === 'number' ? '#' : '%'
+                } of Cases`,
+                style: styles.histogram(theme).axis,
+              }} />
           )}
           {variable.active_chart === 'survival' && (
             <div
@@ -997,24 +1042,21 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                 flex: '0 0 auto',
                 height: '265px',
                 margin: '5px 2px 10px',
-              }}
-            >
+              }}>
               {selectedSurvivalValues.length === 0 ? (
                 <SurvivalPlotWrapper
                   {...overallSurvivalData}
                   height={202}
                   plotType="clinicalOverall"
-                  uniqueClass="clinical-survival-plot"
                   survivalPlotLoading={survivalPlotLoading}
-                />
+                  uniqueClass="clinical-survival-plot" />
               ) : (
-                  <SurvivalPlotWrapper
-                    {...selectedSurvivalData}
-                    height={202}
-                    plotType="categorical"
-                    uniqueClass="clinical-survival-plot"
-                    survivalPlotLoading={survivalPlotLoading}
-                  />
+                <SurvivalPlotWrapper
+                  {...selectedSurvivalData}
+                  height={202}
+                  plotType="categorical"
+                  survivalPlotLoading={survivalPlotLoading}
+                  uniqueClass="clinical-survival-plot" />
                 )}
             </div>
           )}
@@ -1027,118 +1069,114 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                 height: CHART_HEIGHT - 10,
                 backgroundColor: theme.greyScale5,
                 margin: '5px 2px 10px',
-              }}
-            >
+              }}>
               {variable.active_chart}
             </div>
           )}
-          <Row style={{ justifyContent: 'space-between', margin: '5px 0' }}>
+          <Row style={{
+            justifyContent: 'space-between',
+            margin: '5px 0',
+          }}>
             <Dropdown
-              button={
+              button={(
                 <Button
+                  rightIcon={<DownCaretIcon />}
                   style={{
                     ...visualizingButton,
                     padding: '0 12px',
-                  }}
-                  rightIcon={<DownCaretIcon />}
-                >
+                  }}>
                   Select action
                 </Button>
-              }
-              dropdownStyle={{ left: 0, minWidth: 205 }}
-            >
+              )}
+              dropdownStyle={{
+                left: 0,
+                minWidth: 205,
+              }}>
               <DropdownItem
-                style={styles.actionMenuItem}
-                onClick={() =>
-                  downloadToTSV({
-                    selector: `#analysis-${tsvSubstring}-table`,
-                    filename: `analysis-${
-                      currentAnalysis.name
-                      }-${tsvSubstring}.${timestamp()}.tsv`,
-                  })
+                onClick={() => downloadToTSV({
+                  selector: `#analysis-${tsvSubstring}-table`,
+                  filename: `analysis-${
+                    currentAnalysis.name
+                  }-${tsvSubstring}.${timestamp()}.tsv`,
+                })
                 }
-              >
+                style={styles.actionMenuItem}>
                 Export to TSV
               </DropdownItem>
               <DropdownItem
-                style={styles.actionMenuItem}
                 onClick={() => {
                   dispatch(
                     setModal(
                       <SaveSetModal
+                        CreateSetButton={CreateExploreCaseSetButton}
+                        displayType="case"
+                        filters={cardFilters}
+                        score="gene.gene_id"
+                        setName="Custom Case Selection"
+                        sort={null}
                         title={`Save ${totalFromSelectedBuckets} Cases as New Set`}
                         total={totalFromSelectedBuckets}
-                        filters={cardFilters}
-                        score={'gene.gene_id'}
-                        sort={null}
-                        type={'case'}
-                        displayType={'case'}
-                        CreateSetButton={CreateExploreCaseSetButton}
-                        setName={'Custom Case Selection'}
-                      />
+                        type="case" />
                     )
                   );
                 }}
-              >
+                style={styles.actionMenuItem}>
                 Save as new case set
               </DropdownItem>
               <DropdownItem
-                style={styles.actionMenuItem}
                 onClick={() => {
                   dispatch(
                     setModal(
                       <AppendSetModal
+                        AppendSetButton={AppendExploreCaseSetButton}
+                        displayType="case"
                         field="cases.case_id"
+                        filters={cardFilters}
+                        scope="explore"
+                        score="gene.gene_id"
+                        sort={null}
                         title={`Add ${totalFromSelectedBuckets} Cases to Existing Set`}
                         total={totalFromSelectedBuckets}
-                        filters={cardFilters}
-                        score={'gene.gene_id'}
-                        sort={null}
-                        type={'case'}
-                        displayType={'case'}
-                        AppendSetButton={AppendExploreCaseSetButton}
-                        scope={'explore'}
-                      />
+                        type="case" />
                     )
                   );
                 }}
-              >
+                style={styles.actionMenuItem}>
                 Add to existing case set
               </DropdownItem>
               <DropdownItem
-                style={styles.actionMenuItem}
                 onClick={() => {
                   dispatch(
                     setModal(
                       <RemoveSetModal
                         field="cases.case_id"
-                        title={`Remove ${totalFromSelectedBuckets} Cases from Existing Set`}
                         filters={cardFilters}
-                        type={'case'}
                         RemoveFromSetButton={RemoveFromExploreCaseSetButton}
-                      />
+                        title={`Remove ${totalFromSelectedBuckets} Cases from Existing Set`}
+                        type="case" />
                     )
                   );
                 }}
-              >
+                style={styles.actionMenuItem}>
                 Remove from existing case set
               </DropdownItem>
             </Dropdown>
             <Button
-              style={{ ...visualizingButton, padding: '0 12px' }}
               rightIcon={<DownCaretIcon />}
-            >
+              style={{
+                ...visualizingButton,
+                padding: '0 12px',
+              }}>
               Customize Bins
             </Button>
           </Row>
           <EntityPageHorizontalTable
-            tableId={`analysis-${tsvSubstring}-table`}
             data={IS_CDAVE_DEV ? devData : tableData}
             headings={getHeadings(variable.active_chart)}
             tableContainerStyle={{
               height: 175,
             }}
-          />
+            tableId={`analysis-${tsvSubstring}-table`} />
         </div>
       )}
     </Column>

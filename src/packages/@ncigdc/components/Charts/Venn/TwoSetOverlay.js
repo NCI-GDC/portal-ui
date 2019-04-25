@@ -13,8 +13,7 @@ export default ({ ops, CountComponent, style }) => {
         bottom: 0,
         left: 0,
         right: 0,
-      }}
-    >
+      }}>
       <Alias
         i={1}
         style={{
@@ -22,8 +21,7 @@ export default ({ ops, CountComponent, style }) => {
           top: '50%',
           right: '102%',
           transform: 'translateY(-50%)',
-        }}
-      />
+        }} />
       <Alias
         i={2}
         style={{
@@ -31,17 +29,20 @@ export default ({ ops, CountComponent, style }) => {
           top: '50%',
           left: '102%',
           transform: 'translateY(-50%)',
-        }}
-      />
+        }} />
       <CountComponent
         filters={ops[1].filters}
-        style={{ ...floatingNumber, left: '20%' }}
-      />
+        style={{
+          ...floatingNumber,
+          left: '20%',
+        }} />
       <CountComponent filters={ops[0].filters} style={floatingNumber} />
       <CountComponent
         filters={ops[2].filters}
-        style={{ ...floatingNumber, left: '80%' }}
-      />
+        style={{
+          ...floatingNumber,
+          left: '80%',
+        }} />
     </div>
   );
 };

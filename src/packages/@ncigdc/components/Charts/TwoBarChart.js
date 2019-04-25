@@ -32,7 +32,12 @@ const BarChart = ({
   const innerPadding = 0.3;
   const outerPadding = 0.3;
 
-  const margin = m || { top: 20, right: 50, bottom: 85, left: 55 };
+  const margin = m || {
+    top: 20,
+    right: 50,
+    bottom: 85,
+    left: 55,
+  };
   const chartWidth = width - margin.left - margin.right;
   const height = (h || 200) - margin.top - margin.bottom;
   const yAxisStyle = yAxis.style || {
@@ -164,7 +169,7 @@ const BarChart = ({
     .enter()
     .append('g')
     .attr('class', 'bar-g')
-    .each(function() {
+    .each(function () {
       drawBar(d3.select(this), styles.bars1);
     });
 
@@ -174,7 +179,7 @@ const BarChart = ({
     .enter()
     .append('g')
     .attr('class', 'bar-g')
-    .each(function() {
+    .each(function () {
       drawBar(d3.select(this), styles.bars2, x1.bandwidth() / 2 + 4);
     });
 

@@ -9,14 +9,12 @@ type TArgs = {
   propName: string,
   defaults: mixed,
 };
-export default ({ propName = 'filters', defaults = null }: TArgs = {}) =>
-  compose(
-    withRouter,
-    withPropsOnChange(
-      ({ location }, { location: previousLocation }) =>
-        location.search !== previousLocation.search,
-      ({ query: { filters } }) => ({
-        [propName]: parseJSONParam(filters, defaults),
-      }),
-    ),
-  );
+export default ({ propName = 'filters', defaults = null }: TArgs = {}) => compose(
+  withRouter,
+  withPropsOnChange(
+    ({ location }, { location: previousLocation }) => location.search !== previousLocation.search,
+    ({ query: { filters } }) => ({
+      [propName]: parseJSONParam(filters, defaults),
+    }),
+  ),
+);

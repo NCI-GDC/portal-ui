@@ -105,41 +105,39 @@ const Pagination = (props: TProps) => {
       <Row style={{ alignItems: 'center' }}>
         <span style={{ marginRight: '1rem' }}>Show</span>
         <Sizes
-          prfSize={prfSize}
           prfOff={prfOff}
+          prfSize={prfSize}
           size={size}
-          sizes={props.sizes}
-        />
+          sizes={props.sizes} />
         <span style={{ marginLeft: '1rem' }}>entries</span>
       </Row>
 
       <Row style={{ marginLeft: 'auto' }}>
-        <PaginationLink pred={prevPred} prfOff={prfOff} offset={0}>
+        <PaginationLink offset={0} pred={prevPred} prfOff={prfOff}>
           <PaginationButton style={styles.leftBtn(props.theme)}>
             {'«'}
           </PaginationButton>
         </PaginationLink>
-        <PaginationLink pred={prevPred} prfOff={prfOff} offset={prev}>
+        <PaginationLink offset={prev} pred={prevPred} prfOff={prfOff}>
           <PaginationButton style={styles.middleBtn(props.theme)}>
             {'‹'}
           </PaginationButton>
         </PaginationLink>
         {getPaginationRange(pageOffset, totalPages).map(x => (
-          <PaginationLink key={x} prfOff={prfOff} offset={(x - 1) * size} pred>
+          <PaginationLink key={x} offset={(x - 1) * size} pred prfOff={prfOff}>
             <PaginationButton
               active={currentPage === x}
-              style={styles.middleBtn(props.theme)}
-            >
+              style={styles.middleBtn(props.theme)}>
               {x}
             </PaginationButton>
           </PaginationLink>
         ))}
-        <PaginationLink pred={nextPred} prfOff={prfOff} offset={next}>
+        <PaginationLink offset={next} pred={nextPred} prfOff={prfOff}>
           <PaginationButton style={styles.middleBtn(props.theme)}>
             {'›'}
           </PaginationButton>
         </PaginationLink>
-        <PaginationLink pred={nextPred} prfOff={prfOff} offset={last}>
+        <PaginationLink offset={last} pred={nextPred} prfOff={prfOff}>
           <PaginationButton style={styles.rightBtn(props.theme)}>
             {'»'}
           </PaginationButton>

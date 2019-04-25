@@ -45,8 +45,20 @@ const tests = [
   },
   {
     message: 'should split correctly',
-    data: [p1, p2, p3, p4, p5, p6],
-    expected: [[p1, p3], [p2], [p4], [p5, p6]],
+    data: [
+      p1,
+      p2,
+      p3,
+      p4,
+      p5,
+      p6,
+    ],
+    expected: [
+      [p1, p3],
+      [p2],
+      [p4],
+      [p5, p6],
+    ],
   },
 ];
 

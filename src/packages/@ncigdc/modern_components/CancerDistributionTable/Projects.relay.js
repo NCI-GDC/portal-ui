@@ -6,29 +6,27 @@ import { compose, withPropsOnChange } from 'recompose';
 import { makeFilter } from '@ncigdc/utils/filters';
 import Query from '@ncigdc/modern_components/Query';
 
-export default (Component: ReactClass<*>) =>
-  compose(
-    withPropsOnChange(['viewer'], ({ viewer: { explore: { cases } } }) => {
-      return {
-        variables: {
-          numProjects: cases.filtered.project__project_id.buckets.length,
-          projectsFilter: makeFilter([
-            {
-              field: 'project_id',
-              value: cases.filtered.project__project_id.buckets.map(b => b.key),
-            },
-          ]),
-        },
-      };
-    }),
-  )((props: Object) => {
-    return (
-      <Query
-        parentProps={props}
-        minHeight={0}
-        variables={props.variables}
-        Component={Component}
-        query={graphql`
+export default (Component: ReactClass<*>) => compose(
+  withPropsOnChange(['viewer'], ({ viewer: { explore: { cases } } }) => {
+    return {
+      variables: {
+        numProjects: cases.filtered.project__project_id.buckets.length,
+        projectsFilter: makeFilter([
+          {
+            field: 'project_id',
+            value: cases.filtered.project__project_id.buckets.map(b => b.key),
+          },
+        ]),
+      },
+    };
+  }),
+)((props: Object) => {
+  return (
+    <Query
+      Component={Component}
+      minHeight={0}
+      parentProps={props}
+      query={graphql`
           query Projects_relayQuery(
             $projectsFilter: FiltersArgument
             $numProjects: Int
@@ -48,6 +46,6 @@ export default (Component: ReactClass<*>) =>
             }
           }
         `}
-      />
-    );
-  });
+      variables={props.variables} />
+  );
+});

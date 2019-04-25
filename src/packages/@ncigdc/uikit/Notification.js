@@ -3,7 +3,9 @@
 // Vendor
 import React from 'react';
 import PropTypes from 'prop-types';
-import { compose, withState, shouldUpdate, mapProps } from 'recompose';
+import {
+  compose, withState, shouldUpdate, mapProps,
+} from 'recompose';
 import CloseIcon from 'react-icons/lib/md/close';
 
 // Custom
@@ -81,18 +83,20 @@ const Notification = ({
   children,
   className,
 }) => (
-  <div style={styles.wrapper} className={className}>
+  <div className={className} style={styles.wrapper}>
     <div
+      className="test-notification"
+      role="complementary"
       style={{
         ...styles.container,
         ...(visible && !closed ? styles.active : styles.inactive),
         ...style,
-      }}
-      className="test-notification"
-      role="complementary"
-    >
-      <div style={{ ...styles.toast, ...(styles[action] || styles.add) }}>
-        <CloseIcon style={styles.closeIcon} onClick={close} />
+      }}>
+      <div style={{
+        ...styles.toast,
+        ...(styles[action] || styles.add),
+      }}>
+        <CloseIcon onClick={close} style={styles.closeIcon} />
         {children}
       </div>
     </div>
@@ -100,13 +104,13 @@ const Notification = ({
 );
 
 Notification.propTypes = {
-  style: PropTypes.object,
-  children: PropTypes.node,
-  id: PropTypes.string,
-  visible: PropTypes.bool,
   action: PropTypes.string,
+  children: PropTypes.node,
   close: PropTypes.func,
   delay: PropTypes.number,
+  id: PropTypes.string,
+  style: PropTypes.object,
+  visible: PropTypes.bool,
 };
 
 let timeoutId;

@@ -7,9 +7,11 @@ import GreyBox from '@ncigdc/uikit/GreyBox';
 
 export default compose(
   withProps(({ getter, path }) => ({
-    getCount: getter ? getter : v => get(v, path, ''),
+    getCount: getter || v => get(v, path, ''),
   })),
-  withProps(({ viewer, path, loading, getCount }) => {
+  withProps(({
+ viewer, path, loading, getCount 
+}) => {
     return {
       count: loading ? '' : getCount(viewer),
     };
@@ -19,7 +21,9 @@ export default compose(
       handleCountChange(count);
     }
   }),
-)(({ count, children, loading, style }) => {
+)(({
+ count, children, loading, style 
+}) => {
   return children ? (
     children(count, loading)
   ) : count === '' ? (

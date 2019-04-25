@@ -9,7 +9,7 @@ function _getIds(obj, path) {
       return []
         .concat(data)
         .reduce((acc, o) => acc.concat(getIds(o, path.slice(1))), []);
-    } else if (path.length === 1) {
+    } if (path.length === 1) {
       return [data];
     }
   }

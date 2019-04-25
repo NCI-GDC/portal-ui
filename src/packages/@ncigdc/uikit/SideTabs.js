@@ -15,12 +15,11 @@ const SideTabs = ({
 }) => (
   <Row flex="1" style={containerStyle}>
     <Tabs
-      onTabClick={i => setTab(() => i)}
-      tabs={tabs}
       activeIndex={activeTab}
+      onTabClick={i => setTab(() => i)}
       side
-      {...props}
-    >
+      tabs={tabs}
+      {...props}>
       {tabContent.filter((x, i) => i === activeTab)}
     </Tabs>
   </Row>

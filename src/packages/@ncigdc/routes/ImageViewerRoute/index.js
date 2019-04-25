@@ -5,11 +5,10 @@ import LoadableWithLoading from '@ncigdc/components/LoadableWithLoading';
 
 const ImageViewerRoute = (
   <Route
-    path="/image-viewer"
     component={LoadableWithLoading({
       loader: () => import('./ImageViewerRoute'),
     })}
-  />
+    path="/image-viewer" />
 );
 
 export default ImageViewerRoute;

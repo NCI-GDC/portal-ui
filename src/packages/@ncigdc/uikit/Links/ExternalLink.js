@@ -10,10 +10,9 @@ export default function ExternalLink({
   return (
     <a
       {...props}
-      target="_blank"
+      className={`${className} test-external-link`}
       rel="noopener noreferrer"
-      className={className + ' test-external-link'}
-    >
+      target="_blank">
       {hasExternalIcon && (
         <ExternalLinkIcon style={{ marginRight: '0.5rem' }} />
       )}

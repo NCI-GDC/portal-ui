@@ -8,43 +8,45 @@ import significantConsequences from '@ncigdc/utils/filters/prepared/significantC
 import withFilters from '@ncigdc/utils/withFilters';
 import withRouter from '@ncigdc/utils/withRouter';
 
-export default (Component: ReactClass<*>) =>
-  compose(
-    withRouter,
-    withFilters(),
-    withPropsOnChange(
-      ['activeTranscript', 'filters', 'location'],
-      ({ activeTranscript, filters }) => {
-        return {
-          variables: {
-            score: 'occurrence.case.project.project_id',
-            first: 10000,
-            filters: {
-              op: 'and',
-              content: [
-                significantConsequences,
-                {
-                  op: '=',
-                  content: {
-                    field: 'consequence.transcript.transcript_id',
-                    value: [activeTranscript.transcript_id],
-                  },
+export default (Component: ReactClass<*>) => compose(
+  withRouter,
+  withFilters(),
+  withPropsOnChange(
+    [
+      'activeTranscript',
+      'filters',
+      'location',
+    ],
+    ({ activeTranscript, filters }) => {
+      return {
+        variables: {
+          score: 'occurrence.case.project.project_id',
+          first: 10000,
+          filters: {
+            op: 'and',
+            content: [
+              significantConsequences,
+              {
+                op: '=',
+                content: {
+                  field: 'consequence.transcript.transcript_id',
+                  value: [activeTranscript.transcript_id],
                 },
-                ...(filters ? filters.content : []),
-              ],
-            },
+              },
+              ...(filters ? filters.content : []),
+            ],
           },
-        };
-      },
-    ),
-  )((props: Object) => {
-    return (
-      <Query
-        parentProps={props}
-        minHeight={387}
-        variables={props.variables}
-        Component={Component}
-        query={graphql`
+        },
+      };
+    },
+  ),
+)((props: Object) => {
+  return (
+    <Query
+      Component={Component}
+      minHeight={387}
+      parentProps={props}
+      query={graphql`
           query Lolliplot_relayQuery(
             $filters: FiltersArgument
             $first: Int
@@ -77,6 +79,6 @@ export default (Component: ReactClass<*>) =>
             }
           }
         `}
-      />
-    );
-  });
+      variables={props.variables} />
+  );
+});

@@ -2,7 +2,7 @@
 import _ from 'lodash';
 
 type TCapitalize = (original: string) => string;
-type THumanify = ({  }: IHumanifyParams) => string;
+type THumanify = ({ }: IHumanifyParams) => string;
 type TTruncateAfterMarker = (
   term: string,
   markers: [string],
@@ -26,8 +26,7 @@ export const capitalize: TCapitalize = original => {
   return original
     .split(' ')
     .map(
-      word =>
-        customCapitalizations[word.toLowerCase()] ||
+      word => customCapitalizations[word.toLowerCase()] ||
         `${word.charAt(0).toUpperCase()}${word.slice(1)}`
     )
     .join(' ');
@@ -72,11 +71,17 @@ export const truncateAfterMarker: TTruncateAfterMarker = (
     (acc, marker) => {
       const index = term.indexOf(marker);
       if (index !== -1) {
-        return { index, marker };
+        return {
+          index,
+          marker,
+        };
       }
       return acc;
     },
-    { index: -1, marker: '' }
+    {
+      index: -1,
+      marker: '',
+    }
   );
   const { index, marker } = markersByIndex;
   if (index !== -1 && term.length > index + marker.length + 8) {
@@ -85,7 +90,6 @@ export const truncateAfterMarker: TTruncateAfterMarker = (
   return term;
 };
 
-export const isUUID: TIsUuid = query =>
-  /^[a-zA-Z0-9]{8}\-[a-zA-Z0-9]{4}\-[a-zA-Z0-9]{4}\-[a-zA-Z0-9]{4}\-[a-zA-Z0-9]{12}$/.test(
-    _.trim(query)
-  );
+export const isUUID: TIsUuid = query => /^[a-zA-Z0-9]{8}\-[a-zA-Z0-9]{4}\-[a-zA-Z0-9]{4}\-[a-zA-Z0-9]{4}\-[a-zA-Z0-9]{12}$/.test(
+  _.trim(query)
+);

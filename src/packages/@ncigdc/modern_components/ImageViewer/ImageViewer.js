@@ -32,13 +32,16 @@ export const getSlides = caseNode => {
     file_id: node.file_id,
     submitter_id: _.trimEnd(node.submitter_id, '_slide_image'),
   }));
-  let slides = portions.reduce(
+  const slides = portions.reduce(
     (acc, { slides }) => [...acc, ...slides.hits.edges.map(p => p.node)],
     [],
   );
   return slideImageIds.map(id => {
     const matchBySubmitter = _.find(slides, { submitter_id: id.submitter_id });
-    return { ...id, ...matchBySubmitter };
+    return {
+      ...id,
+      ...matchBySubmitter,
+    };
   });
 };
 
@@ -60,10 +63,9 @@ const MagnifyingGlass = styled(SearchIcon, {
   },
 });
 
-const caseExtractor = repo =>
-  (repo.cases.hits || {
-    edges: [],
-  }).edges.map(({ node }) => node);
+const caseExtractor = repo => (repo.cases.hits || {
+  edges: [],
+}).edges.map(({ node }) => node);
 
 export default compose(
   connect(({ backLocation }) => ({ backLocation })),
@@ -108,29 +110,29 @@ export default compose(
             fontSize: '2rem',
             marginTop: '5px',
             marginBottom: '5px',
-          }}
-        >
+          }}>
           Slide Image Viewer
           {backLocation && (
             <InternalLinkAsButton
-              pathname={backLocation.pathname}
-              search={backLocation.search}
               deepLink={
                 backLocation.search && backLocation.search.includes('bioId')
                   ? 'biospecimen'
                   : null
               }
-            >
+              pathname={backLocation.pathname}
+              search={backLocation.search}>
               Back
             </InternalLinkAsButton>
           )}
         </Heading>
         {query.filters && (
           <CurrentFilters
-            style={{ flex: 1, padding: '1rem' }}
+            style={{
+              flex: 1,
+              padding: '1rem',
+            }}
             hideHelpText
-            hideClearButton
-          />
+            hideClearButton />
         )}
         {repository.cases.hits.total > 0 ? (
           <div
@@ -139,36 +141,34 @@ export default compose(
               margin: '0.5rem 0 1rem 0',
               backgroundColor: theme.white,
               border: `1px solid ${theme.greyScale4}`,
-            }}
-          >
+            }}>
             <Row style={{ padding: '0 1rem' }}>
-              <h2 style={{ width: '180px', margin: '0.5rem 0' }}>
+              <h2 style={{
+                width: '180px',
+                margin: '0.5rem 0',
+              }}>
                 Cases
                 <MagnifyingGlass
-                  onClick={() => setShowSearchInput(!showSearchInput)}
-                />
+                  onClick={() => setShowSearchInput(!showSearchInput)} />
               </h2>
-              <h2 style={{ width: '240px', margin: '0.5rem 0' }}>Slides</h2>
+              <h2 style={{
+                width: '240px',
+                margin: '0.5rem 0',
+              }}>
+Slides
+              </h2>
               <h2 style={{ margin: '0.5rem 0' }}>Image</h2>
             </Row>
             {showSearchInput && (
               <Row style={{ width: '200px' }}>
                 <ExactMatchFacet
-                  fieldNoDoctype="submitter_id"
                   doctype="cases"
-                  placeholder="eg. TCGA-DD*, *DD*, TCGA-DD-AAVP"
-                />
+                  fieldNoDoctype="submitter_id"
+                  placeholder="eg. TCGA-DD*, *DD*, TCGA-DD-AAVP" />
               </Row>
             )}
             <TabbedLinks
-              side
-              style={{ padding: '0 1rem' }}
-              queryParam="caseId"
               defaultIndex={Math.max(currentIndex, 0)}
-              linkStyle={{
-                width: '100%',
-                minWidth: '180px',
-              }}
               links={cases.map(caseNode => ({
                 key: caseNode.case_id,
                 id: caseNode.case_id,
@@ -181,22 +181,35 @@ export default compose(
                 component: <ImageViewerTab slides={getSlides(caseNode)} />,
                 merge: false,
               }))}
-              tabToolbar={
-                <Column style={{ alignSelf: 'center', paddingTop: '1rem' }}>
+              linkStyle={{
+                width: '100%',
+                minWidth: '180px',
+              }}
+              queryParam="caseId"
+              side
+              style={{ padding: '0 1rem' }}
+              tabToolbar={(
+                <Column style={{
+                  alignSelf: 'center',
+                  paddingTop: '1rem',
+                }}>
                   {loadedItems.length < repository.cases.hits.total && (
                     <ShowMoreLinkAsButton
-                      prefix="cases"
                       offset={variables.cases_offset}
-                      size={10}
-                    />
+                      prefix="cases"
+                      size={10} />
                   )}
                   <div>
-                    Showing <b>{loadedItems.length}</b> of{' '}
+                    Showing
+                    {' '}
+                    <b>{loadedItems.length}</b>
+                    {' '}
+of
+                    {' '}
                     <b>{repository.cases.hits.total}</b>
                   </div>
                 </Column>
-              }
-            />
+              )} />
           </div>
         ) : (
           <Row style={{ padding: '1rem' }}>

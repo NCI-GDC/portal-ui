@@ -39,17 +39,14 @@ const enhance = compose(
     )
       .map(([ssmId, submitted]) => {
         const ssmData = ssmMap[ssmId.toUpperCase()];
-        var temp = SSM_ID_FIELDS.map((idField, i) => {
-          const value = getIds(ssmData, idField).filter(v =>
-            submitted.includes(v.toUpperCase()),
-          )[0];
+        const temp = SSM_ID_FIELDS.map((idField, i) => {
+          const value = getIds(ssmData, idField).filter(v => submitted.includes(v.toUpperCase()),)[0];
 
           if (value) {
             submittedHeaders[i] = idField;
             return value;
-          } else {
-            return '';
           }
+          return '';
         });
 
         return {
@@ -72,14 +69,15 @@ const enhance = compose(
 );
 
 export default enhance(
-  ({ matched, matchedSsm, unmatched, submittedHeaders, ...props }) => {
+  ({
+    matched, matchedSsm, unmatched, submittedHeaders, ...props
+  }) => {
     const from = matched.length;
     const to = matchedSsm.length;
 
     return (
       <TabbedLinks
         {...props}
-        queryParam="uploadSsmTab"
         links={[
           {
             id: 'matched',
@@ -91,41 +89,47 @@ export default enhance(
                     alignItems: 'center',
                     justifyContent: 'space-between',
                     margin: '1rem',
-                  }}
-                >
+                  }}>
                   <div>
-                    {from} submitted mutation {pluralize('identifier', from)}{' '}
-                    mapped to {to} unique GDC {pluralize('mutation', to)}
+                    {from}
+                    {' '}
+submitted mutation
+                    {pluralize('identifier', from)}
+                    {' '}
+                    mapped to
+                    {' '}
+                    {to}
+                    {' '}
+unique GDC
+                    {' '}
+                    {pluralize('mutation', to)}
                   </div>
                   <Button
-                    style={{ ...visualizingButton }}
                     disabled={!matchedSsm.length}
-                    onClick={() =>
-                      saveFile(
-                        toTsvString(
-                          matchedSsm.map(item => ({
-                            ...item.submitted.reduce(
-                              (acc, field, i) =>
-                                Object.assign(acc, {
-                                  [`submitted${submittedHeaders[i]}`]: field,
-                                }),
-                              {},
-                            ),
-                            mappedSsmId: item.mapped[0],
-                          })),
-                        ),
-                        'TSV',
-                        `matched-mutation-list.tsv`,
-                      )}
-                  >
+                    onClick={() => saveFile(
+                      toTsvString(
+                        matchedSsm.map(item => ({
+                          ...item.submitted.reduce(
+                            (acc, field, i) => Object.assign(acc, {
+                              [`submitted${submittedHeaders[i]}`]: field,
+                            }),
+                            {},
+                          ),
+                          mappedSsmId: item.mapped[0],
+                        })),
+                      ),
+                      'TSV',
+                      'matched-mutation-list.tsv',
+                    )}
+                    style={{ ...visualizingButton }}>
                     TSV
                   </Button>
                 </Row>
                 <EntityPageHorizontalTable
+                  data={matchedSsm}
                   dividerStyle={{
                     borderLeft: `1px solid ${theme.greyScale3}`,
                   }}
-                  data={matchedSsm}
                   headings={[
                     {
                       key: 'submitted',
@@ -139,8 +143,7 @@ export default enhance(
                       subheadings: ['GDC Mutation ID'],
                       thStyle: { textAlign: 'center' },
                     },
-                  ]}
-                />
+                  ]} />
               </div>
             ),
           },
@@ -154,22 +157,24 @@ export default enhance(
                     alignItems: 'center',
                     justifyContent: 'space-between',
                     margin: '1rem',
-                  }}
-                >
+                  }}>
                   <div>
-                    {unmatched.length} submitted mutation{' '}
-                    {pluralize('identifier', unmatched.length)} not recognized
+                    {unmatched.length}
+                    {' '}
+submitted mutation
+                    {' '}
+                    {pluralize('identifier', unmatched.length)}
+                    {' '}
+not recognized
                   </div>
                   <Button
-                    style={{ ...visualizingButton }}
                     disabled={!unmatched.length}
-                    onClick={() =>
-                      saveFile(
-                        toTsvString(unmatched),
-                        'TSV',
-                        `unmatched-mutation-list.tsv`,
-                      )}
-                  >
+                    onClick={() => saveFile(
+                      toTsvString(unmatched),
+                      'TSV',
+                      'unmatched-mutation-list.tsv',
+                    )}
+                    style={{ ...visualizingButton }}>
                     TSV
                   </Button>
                 </Row>
@@ -181,13 +186,12 @@ export default enhance(
                       title: 'Submitted Mutation Identifier',
                       thStyle: { textAlign: 'center' },
                     },
-                  ]}
-                />
+                  ]} />
               </div>
             ),
           },
         ]}
-      />
+        queryParam="uploadSsmTab" />
     );
   },
 );

@@ -9,12 +9,13 @@ type TProps = {
   setTooltip: Function,
 };
 
-const Tooltip = ({ Component, children, setTooltip, ...props }: TProps) => (
+const Tooltip = ({
+  Component, children, setTooltip, ...props
+}: TProps) => (
   <span
-    onMouseOver={() => setTooltip(Component)}
     onMouseOut={() => setTooltip()}
-    {...props}
-  >
+    onMouseOver={() => setTooltip(Component)}
+    {...props}>
     {children}
   </span>
 );

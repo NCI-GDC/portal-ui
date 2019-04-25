@@ -2,40 +2,42 @@
 
 import React from 'react';
 import { graphql } from 'react-relay';
-import { compose, branch, withPropsOnChange, renderComponent } from 'recompose';
+import {
+  compose, branch, withPropsOnChange, renderComponent,
+} from 'recompose';
 import { makeFilter } from '@ncigdc/utils/filters';
 import Query from '@ncigdc/modern_components/Query';
 
-export default (Component: ReactClass<*>) =>
-  compose(
-    branch(
-      ({ ssmId }) => !ssmId,
-      renderComponent(() => (
-        <div>
-          <pre>ssmId</pre> must be provided
-        </div>
-      )),
-    ),
-    withPropsOnChange(['ssmId'], ({ ssmId }) => {
-      return {
-        variables: {
-          filters: makeFilter([
-            {
-              field: 'ssms.ssm_id',
-              value: [ssmId],
-            },
-          ]),
-        },
-      };
-    }),
-  )((props: Object) => {
-    return (
-      <Query
-        parentProps={props}
-        minHeight={20}
-        variables={props.variables}
-        Component={Component}
-        query={graphql`
+export default (Component: ReactClass<*>) => compose(
+  branch(
+    ({ ssmId }) => !ssmId,
+    renderComponent(() => (
+      <div>
+        <pre>ssmId</pre>
+        {' '}
+must be provided
+      </div>
+    )),
+  ),
+  withPropsOnChange(['ssmId'], ({ ssmId }) => {
+    return {
+      variables: {
+        filters: makeFilter([
+          {
+            field: 'ssms.ssm_id',
+            value: [ssmId],
+          },
+        ]),
+      },
+    };
+  }),
+)((props: Object) => {
+  return (
+    <Query
+      Component={Component}
+      minHeight={20}
+      parentProps={props}
+      query={graphql`
           query SsmLolliplot_relayQuery($filters: FiltersArgument) {
             ssmsViewer: viewer {
               explore {
@@ -66,6 +68,6 @@ export default (Component: ReactClass<*>) =>
             }
           }
         `}
-      />
-    );
-  });
+      variables={props.variables} />
+  );
+});

@@ -16,35 +16,36 @@ type TImpacts = {
   vep_impact: string,
 };
 
-const makeBubbles = (impacts: TImpacts, theme) =>
-  ['VEP', 'SIFT', 'PolyPhen'].map(impactType => {
-    const impact = impacts[`${impactType.toLowerCase()}_impact`];
-    const impactScore = impacts[`${impactType.toLowerCase()}_score`];
-    const tipTextImpact = `${impactType} Impact: ${impact}`;
-    const tipTextScore = `${impactType} score: ${impactScore}`;
-    const tipText = [
-      tipTextImpact,
-      ...(impactScore >= 0 && impactType !== 'VEP' ? [tipTextScore] : []),
-    ].join(' / ');
-    return impact ? (
-      <BubbleIcon
-        key={tipText}
-        toolTipText={tipText}
-        text={
-          IMPACT_SHORT_FORMS[impactType.toLowerCase()][impact.toLowerCase()] ||
+const makeBubbles = (impacts: TImpacts, theme) => [
+  'VEP',
+  'SIFT',
+  'PolyPhen',
+].map(impactType => {
+  const impact = impacts[`${impactType.toLowerCase()}_impact`];
+  const impactScore = impacts[`${impactType.toLowerCase()}_score`];
+  const tipTextImpact = `${impactType} Impact: ${impact}`;
+  const tipTextScore = `${impactType} score: ${impactScore}`;
+  const tipText = [tipTextImpact, ...(impactScore >= 0 && impactType !== 'VEP' ? [tipTextScore] : [])].join(' / ');
+  return impact ? (
+    <BubbleIcon
+      backgroundColor={theme[impactType.toLowerCase()][impact.toLowerCase()]}
+      key={tipText}
+      text={
+        IMPACT_SHORT_FORMS[impactType.toLowerCase()][impact.toLowerCase()] ||
           ''
-        }
-        backgroundColor={theme[impactType.toLowerCase()][impact.toLowerCase()]}
-      />
+      }
+      toolTipText={tipText} />
     ) : (
       <BubbleIcon
         key={tipText}
-        toolTipText=""
+        style={{
+          color: theme.greyScale1,
+          width: '27px',
+        }}
         text="--"
-        style={{ color: theme.greyScale1, width: '27px' }}
-      />
+        toolTipText="" />
     );
-  });
+});
 
 export const ImpactTdContents = compose(
   withTheme,
@@ -53,8 +54,7 @@ export const ImpactTdContents = compose(
     style={{
       display: 'flex',
       justifyContent: 'space-between',
-    }}
-  >
+    }}>
     {makeBubbles(node, theme)}
     <ForTsvExport>
       {[

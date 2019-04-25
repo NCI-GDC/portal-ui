@@ -36,6 +36,7 @@ const ArrangeColumnsButton = compose(
 )(
   class extends React.Component {
     searchInput;
+
     render() {
       const {
         searchTerm,
@@ -47,35 +48,37 @@ const ArrangeColumnsButton = compose(
       } = this.props;
       return (
         <Dropdown
-          className="test-arrange-columns-button"
           autoclose={false}
-          button={
+          button={(
             <Tooltip Component={<span>Arrange Columns</span>}>
               <Button style={style}>
                 <ArrangeIcon />
                 <Hidden>Sort Table</Hidden>
               </Button>
             </Tooltip>
-          }
-          dropdownStyle={{ top: '100%', marginTop: 5, whiteSpace: 'nowrap' }}
-        >
+          )}
+          className="test-arrange-columns-button"
+          dropdownStyle={{
+            top: '100%',
+            marginTop: 5,
+            whiteSpace: 'nowrap',
+          }}>
           <Column style={{ minWidth: '22rem' }}>
             <Row>
               <SearchIcon />
               <input
-                className="test-filter-columns"
-                style={{
-                  width: '100%',
-                  padding: '0.3rem 0.5rem',
-                }}
-                type="text"
                 aria-label="Filter Columns"
+                className="test-filter-columns"
+                onChange={() => setSearchTerm(() => this.searchInput.value)}
                 placeholder="Filter Columns"
                 ref={node => {
                   this.searchInput = node;
                 }}
-                onChange={() => setSearchTerm(() => this.searchInput.value)}
-              />
+                style={{
+                  width: '100%',
+                  padding: '0.3rem 0.5rem',
+                }}
+                type="text" />
             </Row>
             <RestoreDefaults
               className="test-restore-defaults"
@@ -83,15 +86,13 @@ const ArrangeColumnsButton = compose(
                 dispatch(restoreColumns(entityType));
                 setSearchTerm(() => '');
                 this.searchInput.value = '';
-              }}
-            >
+              }}>
               Restore Defaults
             </RestoreDefaults>
             <ArrangeColumns
               entityType={entityType}
-              searchTerm={searchTerm}
               hideColumns={hideColumns}
-            />
+              searchTerm={searchTerm} />
           </Column>
         </Dropdown>
       );

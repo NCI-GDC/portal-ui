@@ -3,7 +3,7 @@ const HEADER_HEIGHT = 160;
 const getOffset = elem => {
   const box = elem.getBoundingClientRect();
 
-  const body = document.body;
+  const { body } = document;
   const docEl = document.documentElement;
 
   const scrollTop = window.pageYOffset || docEl.scrollTop || body.scrollTop;
@@ -14,8 +14,8 @@ const getOffset = elem => {
   return Math.round(top);
 };
 
-let observer = undefined;
-let stopObservingTimeoutId = undefined;
+let observer;
+let stopObservingTimeoutId;
 const reset = () => {
   if (observer) {
     observer.disconnect();

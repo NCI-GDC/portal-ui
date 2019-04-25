@@ -47,17 +47,15 @@ const Header = compose(
     setIsInSearchMode,
   }) => (
     <header
-      id="header"
       className="navbar navbar-default navbar-static-top"
-      role="banner"
-    >
+      id="header"
+      role="banner">
       <div className="container-fluid">
         <div className="navbar-header">
           <button
-            type="button"
             className="navbar-toggle"
             onClick={() => setIsCollapsed(!isCollapsed)}
-          >
+            type="button">
             <span className="sr-only test-toggle-navigation">
               Toggle navigation
             </span>
@@ -67,27 +65,24 @@ const Header = compose(
           </button>
           <HomeLink
             className="navbar-brand"
-            tabIndex="0"
             style={{ padding: 0 }}
-          >
+            tabIndex="0">
             <img
-              style={{ width: 260 }}
-              src="https://i.imgur.com/O33FmeE.png"
               alt="gdc-logo"
-            />
+              src="https://i.imgur.com/O33FmeE.png"
+              style={{ width: 260 }} />
             <Hidden>
               <h1>Home</h1>
             </Hidden>
           </HomeLink>
         </div>
         <nav
-          style={{ outline: 'none' }}
+          aria-label="Site Navigation"
           className={`navbar-collapse ${isCollapsed ? 'collapse' : ''}`}
           data-uib-collapse="hc.isCollapsed"
-          tabIndex="-1"
-          aria-label="Site Navigation"
           onClick={() => setIsCollapsed(true)}
-        >
+          style={{ outline: 'none' }}
+          tabIndex="-1">
           <ul className="nav navbar-nav">
             <li>
               <ProjectsLink exact activeStyle={styles.activeNavLink(theme)}>
@@ -109,8 +104,7 @@ const Header = compose(
               <QuickSearch
                 isInSearchMode={isInSearchMode}
                 setIsInSearchMode={setIsInSearchMode}
-                tabIndex="0"
-              />
+                tabIndex="0" />
             </li>
             {user && !isInSearchMode && (
               <li className="header-hidden-xs">
@@ -124,12 +118,10 @@ const Header = compose(
                     <span>
                       <i
                         className="fa fa-shopping-cart"
-                        style={styles.iconPadding}
-                      />
+                        style={styles.iconPadding} />
                       <span
                         className="header-hidden-sm header-hidden-md"
-                        style={styles.iconPadding}
-                      >
+                        style={styles.iconPadding}>
                         Cart
                       </span>
                       <span className="label label-primary">

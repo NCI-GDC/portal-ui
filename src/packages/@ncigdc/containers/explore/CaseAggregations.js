@@ -186,13 +186,12 @@ const enhance = compose(
   })),
   withPropsOnChange(
     ['filters', 'userSelectedFacets'],
-    ({ filters, relay, userSelectedFacets }) =>
-      relay.setVariables({
-        filters,
-        exploreCaseCustomFacetFields: userSelectedFacets
-          .map(({ field }) => field)
-          .join(','),
-      }),
+    ({ filters, relay, userSelectedFacets }) => relay.setVariables({
+      filters,
+      exploreCaseCustomFacetFields: userSelectedFacets
+        .map(({ field }) => field)
+        .join(','),
+    }),
   ),
   withPropsOnChange(['facets'], ({ facets }) => ({
     parsedFacets: facets.facets ? tryParseJSON(facets.facets, {}) : {},
@@ -201,7 +200,7 @@ const enhance = compose(
     componentDidMount(): void {
       const { relay, filters, userSelectedFacets } = this.props;
       relay.setVariables({
-        filters: filters,
+        filters,
         exploreCaseCustomFacetFields: userSelectedFacets
           .map(({ field }) => field)
           .join(','),
@@ -224,71 +223,67 @@ export const CaseAggregationsComponent = (props: TProps) => (
       style={{
         padding: '10px 15px',
         borderBottom: `1px solid ${props.theme.greyScale5}`,
-      }}
-    >
+      }}>
       {!!props.userSelectedFacets.length && (
         <span>
           <a onClick={props.handleResetFacets} style={styles.link}>
             Reset
-          </a>{' '}
+          </a>
+          {' '}
           &nbsp;|&nbsp;
         </span>
       )}
       <a
         onClick={() => props.setShouldShowFacetSelection(true)}
-        style={styles.link}
-      >
+        style={styles.link}>
         Add a Case Filter
       </a>
     </div>
     <Modal
       isOpen={props.shouldShowFacetSelection}
-      style={{ content: { border: 0, padding: '15px' } }}
-    >
+      style={{
+        content: {
+          border: 0,
+          padding: '15px',
+        },
+      }}>
       <FacetSelection
-        title="Add a Case Filter"
-        relayVarName="exploreCaseCustomFacetFields"
-        docType="cases"
-        onSelect={props.handleSelectFacet}
-        onRequestClose={() => props.setShouldShowFacetSelection(false)}
-        excludeFacetsBy={props.facetExclusionTest}
         additionalFacetData={props.parsedFacets}
+        docType="cases"
+        excludeFacetsBy={props.facetExclusionTest}
+        onRequestClose={() => props.setShouldShowFacetSelection(false)}
+        onSelect={props.handleSelectFacet}
         relay={props.relay}
-      />
+        relayVarName="exploreCaseCustomFacetFields"
+        title="Add a Case Filter" />
     </Modal>
 
     {props.userSelectedFacets.map(facet => (
       <FacetWrapper
-        isRemovable
-        relayVarName="exploreCaseCustomFacetFields"
-        key={facet.full}
-        facet={facet}
         aggregation={props.parsedFacets[facet.field]}
-        relay={props.relay}
+        facet={facet}
+        isRemovable
+        key={facet.full}
         onRequestRemove={() => props.handleRequestRemoveFacet(facet)}
-        style={{ borderBottom: `1px solid ${props.theme.greyScale5}` }}
-      />
+        relay={props.relay}
+        relayVarName="exploreCaseCustomFacetFields"
+        style={{ borderBottom: `1px solid ${props.theme.greyScale5}` }} />
     ))}
     <FacetHeader
-      title="Case"
-      field="cases.case_id"
       collapsed={props.caseIdCollapsed}
+      description="Enter UUID or ID of Case, Sample, Portion, Slide, Analyte or Aliquot"
+      field="cases.case_id"
       setCollapsed={props.setCaseIdCollapsed}
-      description={
-        'Enter UUID or ID of Case, Sample, Portion, Slide, Analyte or Aliquot'
-      }
-    />
+      title="Case" />
     <SuggestionFacet
-      title="Case"
       collapsed={props.caseIdCollapsed}
       doctype="cases"
-      fieldNoDoctype="case_id"
-      placeholder="e.g. TCGA-A5-A0G2, 432fe4a9-2..."
-      hits={props.suggestions}
-      setAutocomplete={props.setAutocomplete}
       dropdownItem={x => (
         <Row>
-          <CaseIcon style={{ paddingRight: '1rem', paddingTop: '1rem' }} />
+          <CaseIcon style={{
+            paddingRight: '1rem',
+            paddingTop: '1rem',
+          }} />
           <div>
             <div style={{ fontWeight: 'bold' }}>{x.case_id}</div>
             <div style={{ fontSize: '80%' }}>{x.submitter_id}</div>
@@ -296,21 +291,24 @@ export const CaseAggregationsComponent = (props: TProps) => (
           </div>
         </Row>
       )}
-    />
+      fieldNoDoctype="case_id"
+      hits={props.suggestions}
+      placeholder="e.g. TCGA-A5-A0G2, 432fe4a9-2..."
+      setAutocomplete={props.setAutocomplete}
+      title="Case" />
     <UploadSetButton
-      type="case"
-      style={{
-        width: '100%',
-        borderBottom: `1px solid ${props.theme.greyScale5}`,
-        padding: '0 1.2rem 1rem',
-      }}
-      UploadModal={UploadCaseSet}
       defaultQuery={{
         pathname: '/exploration',
         query: { searchTableTab: 'cases' },
       }}
       idField="cases.case_id"
-    >
+      style={{
+        width: '100%',
+        borderBottom: `1px solid ${props.theme.greyScale5}`,
+        padding: '0 1.2rem 1rem',
+      }}
+      type="case"
+      UploadModal={UploadCaseSet}>
       Upload Case Set
     </UploadSetButton>
 
@@ -318,14 +316,13 @@ export const CaseAggregationsComponent = (props: TProps) => (
       .filter(facet => props.aggregations[escapeForRelay(facet.field)])
       .map(facet => (
         <FacetWrapper
-          key={facet.full}
-          facet={facet}
-          title={facet.title}
-          aggregation={props.aggregations[escapeForRelay(facet.field)]}
-          relay={props.relay}
           additionalProps={facet.additionalProps}
+          aggregation={props.aggregations[escapeForRelay(facet.field)]}
+          facet={facet}
+          key={facet.full}
+          relay={props.relay}
           style={{ borderBottom: `1px solid ${props.theme.greyScale5}` }}
-        />
+          title={facet.title} />
       ))}
   </div>
 );

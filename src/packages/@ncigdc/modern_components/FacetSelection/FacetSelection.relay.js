@@ -29,62 +29,66 @@ const styles = {
   },
 };
 
-export default (Component: ReactClass<*>) =>
-  compose(
-    withState('facetMapping', 'setFacetMapping', null),
-    withState('shouldHideUselessFacets', 'setShouldHideUselessFacets', false),
-    withProps(({ setShouldHideUselessFacets }) => ({
-      setUselessFacetVisibility: shouldHideUselessFacets => {
-        setShouldHideUselessFacets(shouldHideUselessFacets);
-        localStorage.setItem(
-          'shouldHideUselessFacets',
-          JSON.stringify(shouldHideUselessFacets),
-        );
-      },
-    })),
-    lifecycle({
-      async componentDidMount() {
-        let { setFacetMapping, setUselessFacetVisibility } = this.props;
-        const mapping = await fetchApi('gql/_mapping', {
-          headers: { 'Content-Type': 'application/json' },
-        });
-        setFacetMapping(mapping);
-        JSON.parse(localStorage.getItem('shouldHideUselessFacets') || 'null') &&
+export default (Component: ReactClass<*>) => compose(
+  withState('facetMapping', 'setFacetMapping', null),
+  withState('shouldHideUselessFacets', 'setShouldHideUselessFacets', false),
+  withProps(({ setShouldHideUselessFacets }) => ({
+    setUselessFacetVisibility: shouldHideUselessFacets => {
+      setShouldHideUselessFacets(shouldHideUselessFacets);
+      localStorage.setItem(
+        'shouldHideUselessFacets',
+        JSON.stringify(shouldHideUselessFacets),
+      );
+    },
+  })),
+  lifecycle({
+    async componentDidMount() {
+      const { setFacetMapping, setUselessFacetVisibility } = this.props;
+      const mapping = await fetchApi('gql/_mapping', {
+        headers: { 'Content-Type': 'application/json' },
+      });
+      setFacetMapping(mapping);
+      JSON.parse(localStorage.getItem('shouldHideUselessFacets') || 'null') &&
           setUselessFacetVisibility(true);
-      },
-    }),
-    branch(({ facetMapping }) => !facetMapping, renderComponent(() => null)),
-    withPropsOnChange(
-      ['availableCaseFacets', 'facetMapping', 'filters', 'docType'],
-      ({ facetMapping, availableCaseFacets, filters, docType }) => {
-        const facetsByDocType = _.groupBy(facetMapping, o => o.doc_type);
-        const showCases = docType === 'cases';
-        const showFiles = docType === 'files';
-        return {
-          variables: {
-            filters,
-            showCases,
-            showFiles,
-            repoCustomFacetFields: facetsByDocType[docType]
-              .map(({ field }) => field)
-              .join(','),
-          },
-        };
-      },
-    ),
-  )((props: Object) => {
-    return (
-      <Query
-        parentProps={props}
-        Loader={({ loading }) =>
-          !loading ? null : (
-            <Column {...css(styles.loadContainer)}>
-              <h3 {...css(styles.resultsCount)}>Loading...</h3>
-            </Column>
-          )}
-        variables={props.variables}
-        Component={Component}
-        query={graphql`
+    },
+  }),
+  branch(({ facetMapping }) => !facetMapping, renderComponent(() => null)),
+  withPropsOnChange(
+    [
+      'availableCaseFacets',
+      'facetMapping',
+      'filters',
+      'docType',
+    ],
+    ({
+      facetMapping, availableCaseFacets, filters, docType,
+    }) => {
+      const facetsByDocType = _.groupBy(facetMapping, o => o.doc_type);
+      const showCases = docType === 'cases';
+      const showFiles = docType === 'files';
+      return {
+        variables: {
+          filters,
+          showCases,
+          showFiles,
+          repoCustomFacetFields: facetsByDocType[docType]
+            .map(({ field }) => field)
+            .join(','),
+        },
+      };
+    },
+  ),
+)((props: Object) => {
+  return (
+    <Query
+      Component={Component}
+      Loader={({ loading }) => (!loading ? null : (
+        <Column {...css(styles.loadContainer)}>
+          <h3 {...css(styles.resultsCount)}>Loading...</h3>
+        </Column>
+          ))}
+      parentProps={props}
+      query={graphql`
           query FacetSelection_relayQuery(
             $filters: FiltersArgument
             $repoCustomFacetFields: [String]!
@@ -103,6 +107,6 @@ export default (Component: ReactClass<*>) =>
             }
           }
         `}
-      />
-    );
-  });
+      variables={props.variables} />
+  );
+});

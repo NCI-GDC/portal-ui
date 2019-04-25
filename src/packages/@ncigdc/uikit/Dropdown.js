@@ -20,9 +20,11 @@ const Dropdown = ({
   className,
 }) => (
   <span
-    style={{ position: 'relative', ...style }}
-    className={className + ' dropdown'}
-  >
+    className={`${className} dropdown`}
+    style={{
+      position: 'relative',
+      ...style,
+    }}>
     <span onClick={e => !isDisabled && setActive(!active)}>
       {button || (
         <Row style={styles.dropdownButton}>
@@ -34,9 +36,11 @@ const Dropdown = ({
     {active && (
       <Column
         className={dropdownClassName}
-        style={{ ...styles.dropdown, ...dropdownStyle }}
         onClick={e => !autoclose && e.stopPropagation()}
-      >
+        style={{
+          ...styles.dropdown,
+          ...dropdownStyle,
+        }}>
         {children}
       </Column>
     )}

@@ -79,41 +79,35 @@ const FacetHeader = compose(
         return (
           <Header className="test-facet-header">
             <span
-              style={{ cursor: 'pointer' }}
               onClick={() => setCollapsed(!collapsed)}
-            >
+              style={{ cursor: 'pointer' }}>
               <AngleIcon
                 style={{
                   paddingRight: '0.25rem',
                   transform: `rotate(${collapsed ? 270 : 0}deg)`,
-                }}
-              />
+                }} />
               {title}
             </span>
             <IconsRow>
               {description && (
                 <Tooltip
                   Component={description}
-                  {...css({ ':not(:last-child)': { marginRight: 8 } })}
-                >
+                  {...css({ ':not(:last-child)': { marginRight: 8 } })}>
                   <QuestionIcon />
                 </Tooltip>
               )}
               {hasValueSearch && (
                 <MagnifyingGlass
-                  onClick={() => setShowingValueSearch(!showingValueSearch)}
-                />
+                  onClick={() => setShowingValueSearch(!showingValueSearch)} />
               )}
-              <FacetResetButton field={field} currentFilters={currentFilters} />
+              <FacetResetButton currentFilters={currentFilters} field={field} />
               {isRemovable && (
                 <RemoveIcon
-                  onClick={handleRequestRemove}
-                  onKeyPress={event =>
-                    event.key === 'Enter' && handleRequestRemove()}
-                  role="button"
-                  tabIndex="0"
                   aria-label="Close"
-                />
+                  onClick={handleRequestRemove}
+                  onKeyPress={event => event.key === 'Enter' && handleRequestRemove()}
+                  role="button"
+                  tabIndex="0" />
               )}
             </IconsRow>
           </Header>

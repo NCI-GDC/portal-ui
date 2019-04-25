@@ -8,13 +8,18 @@ export default ({ width }) => (
     <ExternalLink
       hasExternalIcon={false}
       href="https://gdc.cancer.gov/developers/gdc-application-programming-interface-api"
-      style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}
-    >
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+      }}>
       <span
         className="icon icon-gdc-portal-api"
-        style={{ fontSize: width, marginBottom: '5px' }}
-      >
-        {_.range(0, 11).map(x => <span key={x} className={`path${x}`} />)}
+        style={{
+          fontSize: width,
+          marginBottom: '5px',
+        }}>
+        {_.range(0, 11).map(x => <span className={`path${x}`} key={x} />)}
       </span>
       <p>API</p>
     </ExternalLink>

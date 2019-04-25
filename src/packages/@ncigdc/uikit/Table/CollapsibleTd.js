@@ -21,7 +21,9 @@ const Toggle = styled.div({
 
 const enhance = withState('expanded', 'toggleExpand', false);
 const CollapsibleTd = enhance(
-  ({ style, text, expanded, toggleExpand, ...props }) => (
+  ({
+    style, text, expanded, toggleExpand, ...props
+  }) => (
     <Td style={style || {}} {...props}>
       <div>
         {expanded || text.length <= 250

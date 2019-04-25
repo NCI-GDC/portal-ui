@@ -17,7 +17,7 @@ const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 const setupStore: TSetupStore = ({ persistConfig = {} } = {}) => {
   const config = {
     key: 'reducers',
-    storage: storage,
+    storage,
     whitelist: [
       'cart',
       'tableColumns',
@@ -38,7 +38,10 @@ const setupStore: TSetupStore = ({ persistConfig = {} } = {}) => {
 
   const persistor = persistStore(store);
 
-  return { store, persistor };
+  return {
+    store,
+    persistor,
+  };
 };
 
 export default setupStore;

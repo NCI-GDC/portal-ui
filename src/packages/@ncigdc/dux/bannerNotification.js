@@ -7,6 +7,7 @@ import { fetchApi } from '@ncigdc/utils/ajax';
 import { LOCAL_STORAGE_API_OVERRIDE } from '@ncigdc/utils/constants';
 import { REHYDRATE } from 'redux-persist';
 import { uniqBy } from 'lodash';
+
 const NOTIFICATION_SUCCESS = 'NOTIFICATION_SUCCESS';
 const NOTIFICATION_DISMISS = 'NOTIFICATION_DISMISS';
 const NOTIFICATION_REMOVE = 'NOTIFICATION_REMOVE';
@@ -53,13 +54,13 @@ export function removeNotification(component: string) {
   };
 }
 
-let initialState = [];
+const initialState = [];
 
 if (LOCAL_STORAGE_API_OVERRIDE) {
   initialState.push({
     components: ['PORTAL'],
     level: 'INFO',
-    id: `api_override`,
+    id: 'api_override',
     dismissible: true,
     reactElement: true,
     message: <ApiOverrideBanner />,
@@ -82,12 +83,14 @@ const reducer = (state: TState = initialState, action: TAction) => {
           ...state,
           ...(Array.isArray(action.payload) ? action.payload : [])
             .filter(
-              n =>
-                n.components.includes('PORTAL') ||
+              n => n.components.includes('PORTAL') ||
                 n.components.includes('API') ||
                 n.components.includes('LOGIN')
             )
-            .map(n => ({ ...n, dismissed: false })),
+            .map(n => ({
+              ...n,
+              dismissed: false,
+            })),
         ],
         ({ id }) => id
       );

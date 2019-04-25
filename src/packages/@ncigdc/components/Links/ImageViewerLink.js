@@ -5,9 +5,9 @@ import { compose } from 'recompose';
 
 import withRouter from '@ncigdc/utils/withRouter';
 import namespace from '@ncigdc/utils/namespace';
-import Link from './Link';
 import { iconLink } from '@ncigdc/theme/mixins';
 import { updateBackLocation } from '@ncigdc/dux/backLocation';
+import Link from './Link';
 
 type TProps = {
   dispatch: Function,
@@ -32,7 +32,6 @@ const ImageViewerLink = compose(
     ...props
   }: TProps) => (
     <Link
-      pathname="/image-viewer"
       onClick={() => {
         // saving back location to redux because
         // image viewer updates the url to switch between slides & cases
@@ -40,12 +39,12 @@ const ImageViewerLink = compose(
         dispatch(updateBackLocation(router.location));
         onClick();
       }}
+      pathname="/image-viewer"
       style={{
         ...(isIcon && iconLink),
         ...style,
       }}
-      {...props}
-    >
+      {...props}>
       {children || 'View Image'}
     </Link>
   ),

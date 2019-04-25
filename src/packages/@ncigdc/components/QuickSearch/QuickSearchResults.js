@@ -4,8 +4,8 @@
 import React from 'react';
 import _ from 'lodash';
 import entityShortnameMapping from '@ncigdc/utils/entityShortnameMapping';
-import { ISearchHit } from './types';
 import { internalHighlight } from '@ncigdc/uikit/Highlight';
+import { ISearchHit } from './types';
 
 export const styles = {
   container: {
@@ -147,25 +147,25 @@ export default ({
   style = {},
 }: TProps) => (
   <ul
-    style={{ ...styles.container, ...style.container }}
     className="test-quick-search-results"
-  >
+    style={{
+      ...styles.container,
+      ...style.container,
+    }}>
     {results.map((item, i) => (
       <li
         key={item.id}
+        onClick={() => onActivateItem(item)}
+        onMouseEnter={() => onSelectItem(item)}
         style={{
           ...(item.isSelected && styles.selectedItem),
           ...styles.item,
           ...(isLoading && styles.deemphasizedItem),
-        }}
-        onMouseEnter={() => onSelectItem(item)}
-        onClick={() => onActivateItem(item)}
-      >
+        }}>
         <div style={styles.itemIconWrapper}>
           <ResultIcon
-            type={atob(item.id).split(':')[0]}
             style={styles.itemIcon}
-          />
+            type={atob(item.id).split(':')[0]} />
         </div>
         <div>
           <span style={styles.itemTitle}>
@@ -177,8 +177,7 @@ export default ({
             style={{
               ...styles.highlights,
               ...(item.isSelected && _.pick(styles.selectedItem, 'color')),
-            }}
-          />
+            }} />
         </div>
       </li>
     ))}

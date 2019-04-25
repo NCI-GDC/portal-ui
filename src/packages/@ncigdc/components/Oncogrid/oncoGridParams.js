@@ -10,26 +10,29 @@ import {
   gdcTracks,
   getColorValue,
 } from '@ncigdc/components/Oncogrid/tracks';
-import { mapDonors, mapGenes, buildOccurrences } from './dataMapping';
 import {
+  mapDonors, mapGenes, buildOccurrences,
   TDonorInput,
   TGeneInput,
   TSSMOccurrenceInput,
   TCNVOccurrenceInput,
 } from './dataMapping';
 
+
 const donorTracks = [...clinicalDonorTracks, ...dataTypeTracks];
 
 const trackColorMap = [...donorTracks, ...geneTracks].reduce(
-  (acc, t) => ({ ...acc, [t.fieldName]: t.color }),
+  (acc, t) => ({
+    ...acc,
+    [t.fieldName]: t.color,
+  }),
   {},
 );
 
-const fillFunc = (track: { fieldName: string, value?: mixed }) =>
-  getColorValue({
-    color: trackColorMap[track.fieldName] || '',
-    value: track.value,
-  });
+const fillFunc = (track: { fieldName: string, value?: mixed }) => getColorValue({
+  color: trackColorMap[track.fieldName] || '',
+  value: track.value,
+});
 
 function dataTypeLegend(): string {
   return `<div><b>Available Data Types:</b></div><div>${dataTypeTracks
@@ -40,7 +43,10 @@ function dataTypeLegend(): string {
 
 function gdcLegend(max: number): string {
   return `<div><b># of Cases Affected:</b></div><div>${gdcTracks
-    .map(t => (t.legend ? t.legend({ ...t, max }) : ''))
+    .map(t => (t.legend ? t.legend({
+      ...t,
+      max,
+    }) : ''))
     .filter(Boolean)
     .join('</div><div>')}`;
 }
@@ -52,7 +58,7 @@ function geneSetLegend(): string {
     .join('</div><div>')}</div>`;
 }
 
-export default function({
+export default function ({
   donorData,
   geneData,
   ssmOccurrencesData,
@@ -168,14 +174,13 @@ export default function({
     trackLegends: {
       Clinical: `<div><b>Clinical Data:</b></div><div>${clinicalDonorTracks
         .map(
-          t =>
-            t.legend
+          t => (t.legend
               ? t.legend({
-                  ...t,
-                  maxDaysToDeath,
-                  values: uniq(donors.map(d => d[t.fieldName])),
-                })
-              : '',
+                ...t,
+                maxDaysToDeath,
+                values: uniq(donors.map(d => d[t.fieldName])),
+              })
+              : ''),
         )
         .filter(Boolean)
         .join('</div><div>')}</div>`,
@@ -192,7 +197,12 @@ export default function({
     geneOpacityFunc: geneOpacity,
     geneFillFunc: fillFunc,
     expandableGroups: ['Clinical'],
-    margin: { top: 20, right: 5, bottom: 20, left: 0 },
+    margin: {
+      top: 20,
+      right: 5,
+      bottom: 20,
+      left: 0,
+    },
     leftTextWidth: 120,
     trackPadding,
     heatMapColor,

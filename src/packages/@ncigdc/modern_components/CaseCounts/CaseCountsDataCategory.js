@@ -33,8 +33,14 @@ export default compose(
 
     const linkQuery = {
       filters: makeFilter([
-        { field: 'cases.case_id', value: p.case_id },
-        { field: 'files.data_category', value: [type.data_category] },
+        {
+          field: 'cases.case_id',
+          value: p.case_id,
+        },
+        {
+          field: 'files.data_category',
+          value: [type.data_category],
+        },
       ]),
     };
 
@@ -57,7 +63,10 @@ export default compose(
         <span>
           <b>{type.data_category}</b>
           <br />
-          {type.file_count} file{type.file_count > 1 ? 's' : ''}
+          {type.file_count}
+          {' '}
+file
+          {type.file_count > 1 ? 's' : ''}
         </span>
       ),
       clickHandler: () => {
@@ -66,7 +75,10 @@ export default compose(
           ...newQuery,
           filters: newQuery.filters && stringifyJSONParam(newQuery.filters),
         });
-        push({ pathname: '/repository', query: q });
+        push({
+          pathname: '/repository',
+          query: q,
+        });
       },
     });
   }, []);
@@ -75,13 +87,14 @@ export default compose(
     <span style={{ flex: 1 }}>
       <SummaryCard
         className="test-data-category-summary"
-        tableTitle="File Counts by Data Category"
-        pieChartTitle="File Counts by Experimental Strategy"
         data={dataCategories}
         footer={`${(dataCategories || []).length} Experimental Strategies`}
-        path="file_count_value"
         headings={[
-          { key: 'data_category', title: 'Data Category', color: true },
+          {
+            key: 'data_category',
+            title: 'Data Category',
+            color: true,
+          },
           {
             key: 'file_count',
             title: 'Files',
@@ -102,8 +115,7 @@ export default compose(
                   facetTab: 'files',
                   searchTableTab: 'files',
                 }}
-                title="Browse files"
-              >
+                title="Browse files">
                 <SampleSize n={totalFiles} />
               </Link>
             ),
@@ -114,7 +126,9 @@ export default compose(
             style: { textAlign: 'left' },
           },
         ]}
-      />
+        path="file_count_value"
+        pieChartTitle="File Counts by Experimental Strategy"
+        tableTitle="File Counts by Data Category" />
     </span>
   );
 });

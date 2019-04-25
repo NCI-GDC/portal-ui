@@ -4,6 +4,7 @@ import { handleActions } from 'redux-actions';
 import { saveAs } from 'filesaver.js';
 import { fetchAuth } from '@ncigdc/utils/ajax';
 import { FAKE_USER, IS_DEV, AWG } from '@ncigdc/utils/constants';
+
 export type State = { isFetching: boolean, user: ?Object, error?: Object };
 export type Action = { type: string, payload: any };
 const USER_REQUEST = 'gdc/USER_REQUEST';

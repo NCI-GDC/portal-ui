@@ -9,9 +9,9 @@ import tableModels from '@ncigdc/tableModels';
 import Pagination from '@ncigdc/components/Pagination';
 import TableActions from '@ncigdc/components/TableActions';
 import Table, { Tr } from '@ncigdc/uikit/Table';
-import { CreateExploreCaseSetButton } from '@ncigdc/modern_components/withSetAction';
-import { AppendExploreCaseSetButton } from '@ncigdc/modern_components/withSetAction';
-import { RemoveFromExploreCaseSetButton } from '@ncigdc/modern_components/withSetAction';
+import { CreateExploreCaseSetButton, AppendExploreCaseSetButton, RemoveFromExploreCaseSetButton } from '@ncigdc/modern_components/withSetAction';
+
+
 import { theme } from '@ncigdc/theme';
 import withSelectIds from '@ncigdc/utils/withSelectIds';
 import withPropsOnChange from '@ncigdc/utils/withPropsOnChange';
@@ -29,7 +29,10 @@ export default compose(
         occurrence__case__case_id: { buckets: [] },
       };
       const ssmCounts = buckets.reduce(
-        (acc, b) => ({ ...acc, [b.key]: b.doc_count }),
+        (acc, b) => ({
+          ...acc,
+          [b.key]: b.doc_count,
+        }),
         {}
       );
       return { ssmCounts };
@@ -66,42 +69,68 @@ export default compose(
             backgroundColor: 'white',
             padding: '1rem',
             justifyContent: 'space-between',
-          }}
-        >
+          }}>
           <Showing
             docType="cases"
-            prefix={prefix}
             params={parentVariables}
-            total={cases.hits.total}
-          />
+            prefix={prefix}
+            total={cases.hits.total} />
           <TableActions
-            type="case"
-            scope="explore"
+            AppendSetButton={AppendExploreCaseSetButton}
             arrangeColumnKey="exploreCases"
-            total={cases.hits.total}
-            endpoint="case_ssms"
-            downloadTooltip="Export All Except #Mutations, #Genes and Slides"
+            CreateSetButton={CreateExploreCaseSetButton}
             currentFilters={filters}
-            score={score}
-            sort={sort}
+            downloadBiospecimen
+            downloadClinical
             downloadFields={tableInfo
               .filter(x => x.downloadable)
               .map(x => x.field || x.id)}
-            sortOptions={tableInfo.filter(x => x.sortable)}
-            tsvSelector="#explore-case-table"
-            tsvFilename={`explore-case-table.${timestamp()}.tsv`}
-            CreateSetButton={CreateExploreCaseSetButton}
-            AppendSetButton={AppendExploreCaseSetButton}
-            RemoveFromSetButton={RemoveFromExploreCaseSetButton}
+            downloadTooltip="Export All Except #Mutations, #Genes and Slides"
+            endpoint="case_ssms"
             idField="cases.case_id"
+            RemoveFromSetButton={RemoveFromExploreCaseSetButton}
+            scope="explore"
+            score={score}
             selectedIds={selectedIds}
-            downloadClinical
-            downloadBiospecimen
-          />
+            sort={sort}
+            sortOptions={tableInfo.filter(x => x.sortable)}
+            total={cases.hits.total}
+            tsvFilename={`explore-case-table.${timestamp()}.tsv`}
+            tsvSelector="#explore-case-table"
+            type="case" />
         </Row>
         <div style={{ overflowX: 'auto' }}>
           <Table
-            id="explore-case-table"
+            body={(
+              <tbody>
+                {cases.hits.edges.map((e, i) => (
+                  <Tr
+                    index={i}
+                    key={e.node.id}
+                    style={{
+                      ...(selectedIds.includes(e.node.case_id) && {
+                        backgroundColor: theme.tableHighlight,
+                      }),
+                    }}>
+                    {tableInfo.filter(x => x.td).map(x => (
+                      <x.td
+                        filters={filters}
+                        index={i}
+                        key={x.id}
+                        node={{
+                          ...e.node,
+                          history,
+                        }}
+                        selectedIds={selectedIds}
+                        setSelectedIds={setSelectedIds}
+                        ssmCount={ssmCounts[e.node.case_id]}
+                        ssmCountsLoading={ssmCountsLoading}
+                        total={cases.hits.total} />
+                    ))}
+                  </Tr>
+                ))}
+              </tbody>
+            )}
             headings={tableInfo
               .filter(x => !x.subHeading)
               .map(x => (
@@ -109,51 +138,17 @@ export default compose(
                   key={x.id}
                   nodes={cases.hits.edges.map(e => e.node)}
                   selectedIds={selectedIds}
-                  setSelectedIds={setSelectedIds}
-                />
+                  setSelectedIds={setSelectedIds} />
               ))}
+            id="explore-case-table"
             subheadings={tableInfo
               .filter(x => x.subHeading)
-              .map(x => <x.th key={x.id} />)}
-            body={
-              <tbody>
-                {cases.hits.edges.map((e, i) => (
-                  <Tr
-                    key={e.node.id}
-                    index={i}
-                    style={{
-                      ...(selectedIds.includes(e.node.case_id) && {
-                        backgroundColor: theme.tableHighlight,
-                      }),
-                    }}
-                  >
-                    {tableInfo.filter(x => x.td).map(x => (
-                      <x.td
-                        key={x.id}
-                        node={{
-                          ...e.node,
-                          history,
-                        }}
-                        index={i}
-                        total={cases.hits.total}
-                        ssmCount={ssmCounts[e.node.case_id]}
-                        ssmCountsLoading={ssmCountsLoading}
-                        filters={filters}
-                        selectedIds={selectedIds}
-                        setSelectedIds={setSelectedIds}
-                      />
-                    ))}
-                  </Tr>
-                ))}
-              </tbody>
-            }
-          />
+              .map(x => <x.th key={x.id} />)} />
         </div>
         <Pagination
-          prefix={prefix}
           params={parentVariables}
-          total={cases.hits.total}
-        />
+          prefix={prefix}
+          total={cases.hits.total} />
       </div>
     );
   }

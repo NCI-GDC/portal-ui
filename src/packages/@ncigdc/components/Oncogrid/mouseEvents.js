@@ -5,7 +5,7 @@ import { setModal } from '@ncigdc/dux/modal';
 import SelectModal from '@ncigdc/components/Modals/SelectModal';
 import { replaceFilters } from '@ncigdc/utils/filters';
 
-export default function({
+export default function ({
   grid,
   setTooltip,
   trackLegends,
@@ -21,20 +21,26 @@ export default function({
       <div style={{ maxWidth: 800 }}>
         {data.donor && (
           <div>
-            <span style={{ fontWeight: 'bold' }}>Case:</span>{' '}
+            <span style={{ fontWeight: 'bold' }}>Case:</span>
+            {' '}
             {data.donor.displayId}
           </div>
         )}
         {data.gene && (
           <div style={{ marginTop: 2 }}>
-            <span style={{ fontWeight: 'bold' }}>Gene:</span> {data.gene.symbol}
+            <span style={{ fontWeight: 'bold' }}>Gene:</span>
+            {' '}
+            {data.gene.symbol}
           </div>
         )}
         <div style={{ marginTop: 2 }}>
           {!!cnvData.length && (
             <span>
               <span style={{ fontWeight: 'bold' }}>CNV change:</span>
-              <span> {cnvData[0].cnvChange}</span>
+              <span>
+                {' '}
+                {cnvData[0].cnvChange}
+              </span>
             </span>
           )}
           {!!ssmData.length && (
@@ -44,7 +50,9 @@ export default function({
               </div>
               {ssmData.map((ssm, i) => (
                 <div key={i} style={{ marginLeft: 5 }}>
-                  {ssm.consequence}: <span>{ssm.ids.length}</span>
+                  {ssm.consequence}
+:
+                  <span>{ssm.ids.length}</span>
                 </div>
               ))}
             </div>
@@ -59,8 +67,18 @@ export default function({
   grid.on('gridCrosshairMouseOver', data => {
     setTooltip(
       <div style={{ maxWidth: 800 }}>
-        {data.donor && <div>Case: {data.donor.displayId}</div>}
-        {data.gene && <div>Gene: {data.gene.symbol}</div>}
+        {data.donor && (
+          <div>
+Case:
+            {data.donor.displayId}
+          </div>
+        )}
+        {data.gene && (
+          <div>
+Gene:
+            {data.gene.symbol}
+          </div>
+        )}
       </div>,
     );
   });
@@ -70,7 +88,10 @@ export default function({
     setTooltip(
       <div style={{ maxWidth: 800 }}>
         {data.domain.symbol ? data.domain.symbol : data.domain.displayId}
-        <br /> Count: {data.domain.count}
+        <br />
+        {' '}
+Count:
+        {data.domain.count}
         <br />
       </div>,
     );
@@ -80,7 +101,10 @@ export default function({
     setTooltip(
       <div style={{ maxWidth: 800 }}>
         {data.domain.symbol ? data.domain.symbol : data.domain.displayId}
-        <br /> Count: {data.domain.cnv}
+        <br />
+        {' '}
+Count:
+        {data.domain.cnv}
         <br />
       </div>,
     );
@@ -103,7 +127,9 @@ export default function({
       setTooltip(
         <div style={{ maxWidth: 800 }}>
           <div>{displayId}</div>
-          {displayName}: {displayValue.toString()}
+          {displayName}
+:
+          {displayValue.toString()}
           {type === 'age'
             ? ' days'
             : type === 'bool' && fieldName !== 'cgc' ? ' files' : ''}
@@ -133,7 +159,10 @@ export default function({
           content: [
             {
               op: 'IN',
-              content: { field: `${gdcType}s.${gdcType}_id`, value: [id] },
+              content: {
+                field: `${gdcType}s.${gdcType}_id`,
+                value: [id],
+              },
             },
             ...currentFilters.content,
           ],
@@ -181,12 +210,11 @@ export default function({
     dispatch(
       setModal(
         <SelectModal
-          options={hiddenTracks}
           onClose={(tracks = []) => {
             dispatch(setModal(null));
             if (tracks.length) addTrack(tracks);
           }}
-        />,
+          options={hiddenTracks} />,
       ),
     );
   });

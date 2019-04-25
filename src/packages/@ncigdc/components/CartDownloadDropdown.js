@@ -62,7 +62,10 @@ const downloadCart = ({
   disableAgreement: boolean,
   setState: Function,
 }) => {
-  const { authorized, unauthorized } = authPartitionFiles({ user, files });
+  const { authorized, unauthorized } = authPartitionFiles({
+    user,
+    files,
+  });
 
   const dbGapList = Array.from(
     new Set(
@@ -74,7 +77,10 @@ const downloadCart = ({
   );
   if (disableAgreement || dbGapList.length === 0) {
     dispatch(setModal(null));
-    setState(s => ({ ...s, cartDownloading: true }));
+    setState(s => ({
+      ...s,
+      cartDownloading: true,
+    }));
     download({
       url: urlJoin(AUTH_API, 'data'),
       params: {
@@ -84,7 +90,10 @@ const downloadCart = ({
       },
       method: 'POST',
       altMessage: true,
-    })(() => {}, () => setState(s => ({ ...s, cartDownloading: false })));
+    })(() => {}, () => setState(s => ({
+      ...s,
+      cartDownloading: false,
+    })));
   } else if (
     authorized.files.reduce((sum, x) => sum + x.file_size, 0) >
     5 * 10e8
@@ -97,11 +106,11 @@ const downloadCart = ({
             Please select the "Download &gt; Manifest" option and use the&nbsp;
             <ExternalLink
               hasExternalIcon={false}
-              title="GDC Data Transfer Tool"
               href="https://gdc.cancer.gov/access-data/gdc-data-transfer-tool"
-            >
+              title="GDC Data Transfer Tool">
               Data Transfer Tool
-            </ExternalLink>{' '}
+            </ExternalLink>
+            {' '}
             Tool to continue.
           </p>
         </BaseModal>
@@ -111,27 +120,28 @@ const downloadCart = ({
     dispatch(
       setModal(
         <CheckBoxModal
-          dbGapList={dbGapList}
+          closeText="Cancel"
           CustomButton={agreed => (
             <Button
               disabled={!authorized.doc_count || (!!user && !agreed)}
-              onClick={() =>
-                downloadCart({
-                  user,
-                  files: authorized.files,
-                  disableAgreement: true,
-                  dispatch,
-                  setState,
-                })}
-              style={{ margin: '0 10px' }}
-            >
-              Download {authorized.doc_count} Authorized Files
+              onClick={() => downloadCart({
+                user,
+                files: authorized.files,
+                disableAgreement: true,
+                dispatch,
+                setState,
+              })}
+              style={{ margin: '0 10px' }}>
+              Download
+              {' '}
+              {authorized.doc_count}
+              {' '}
+Authorized Files
             </Button>
           )}
-          hidden={!user || authorized.doc_count === 0}
-          closeText="Cancel"
+          dbGapList={dbGapList}
           dispatch={dispatch}
-        >
+          hidden={!user || authorized.doc_count === 0}>
           <div>
             <p>
               You are attempting to download files that you are not authorized
@@ -140,28 +150,33 @@ const downloadCart = ({
             <p>
               <span className="label label-success">
                 {authorized.doc_count}
-              </span>{' '}
+              </span>
+              {' '}
               files that you are authorized to download.
             </p>
             <p>
               <span className="label label-danger">
                 {unauthorized.doc_count}
-              </span>{' '}
+              </span>
+              {' '}
               files that you are not authorized to download.
             </p>
           </div>
           {user ? (
             <p>
-              Please request dbGaP Access to the project (<a
-                target={'_blank'}
+              Please request dbGaP Access to the project (
+              <a
                 href="https://gdc.cancer.gov/access-data/obtaining-access-controlled-data"
-              >
+                target="_blank">
                 click here for more information
-              </a>).
+              </a>
+).
             </p>
           ) : (
             <p>
-              Please <LoginButton />
+              Please
+              {' '}
+              <LoginButton />
             </p>
           )}
         </CheckBoxModal>
@@ -171,12 +186,14 @@ const downloadCart = ({
     dispatch(
       setModal(
         <CheckBoxModal
-          dbGapList={dbGapList}
           CustomButton={agreed => (
             <Button
               disabled={!agreed}
               onClick={() => {
-                setState(s => ({ ...s, cartDownloading: true }));
+                setState(s => ({
+                  ...s,
+                  cartDownloading: true,
+                }));
                 download({
                   url: urlJoin(AUTH_API, 'data'),
                   params: {
@@ -188,16 +205,22 @@ const downloadCart = ({
                   altMessage: true,
                 })(
                   () => {},
-                  () => setState(s => ({ ...s, cartDownloading: false }))
+                  () => setState(s => ({
+                    ...s,
+                    cartDownloading: false,
+                  }))
                 );
               }}
-              style={{ margin: '0 10px' }}
-            >
-              Download {authorized.doc_count} Authorized Files
+              style={{ margin: '0 10px' }}>
+              Download
+              {' '}
+              {authorized.doc_count}
+              {' '}
+Authorized Files
             </Button>
           )}
-          dispatch={dispatch}
-        />
+          dbGapList={dbGapList}
+          dispatch={dispatch} />
       )
     );
   }
@@ -214,15 +237,8 @@ const CartDownloadDropdown = ({
 }) => (
   <Row>
     <Dropdown
-      className="test-cart-download-dropdown"
-      dropdownStyle={{
-        marginTop: '2px',
-        borderRadius: '4px',
-      }}
-      dropdownItemClass={false}
-      button={
+      button={(
         <Button
-          style={{ marginLeft: '1em' }}
           leftIcon={
             state.manifestDownloading || state.cartDownloading ? (
               <Spinner />
@@ -231,41 +247,45 @@ const CartDownloadDropdown = ({
             )
           }
           rightIcon={<DownCaretIcon />}
-        >
+          style={{ marginLeft: '1em' }}>
           Download
         </Button>
-      }
-    >
+      )}
+      className="test-cart-download-dropdown"
+      dropdownItemClass={false}
+      dropdownStyle={{
+        marginTop: '2px',
+        borderRadius: '4px',
+      }}>
       <Column>
         <DownloadButton
-          size={files.length}
-          className="test-download-manifest"
-          style={styles.button(theme)}
-          endpoint="manifest"
-          activeText="Manifest"
-          inactiveText="Manifest"
-          altMessage={false}
-          setParentState={currentState =>
-            setState(s => ({ ...s, manifestDownloading: currentState }))}
           active={state.manifestDownloading}
+          activeText="Manifest"
+          altMessage={false}
+          className="test-download-manifest"
+          endpoint="manifest"
           extraParams={{
             ids: files.map(file => file.file_id),
           }}
-        />
+          inactiveText="Manifest"
+          setParentState={currentState => setState(s => ({
+            ...s,
+            manifestDownloading: currentState,
+          }))}
+          size={files.length}
+          style={styles.button(theme)} />
         <Button
           className="test-download-cart"
-          style={styles.button(theme)}
           disabled={state.cartDownloading}
-          onClick={() =>
-            downloadCart({
-              user,
-              files,
-              dispatch,
-              disableAgreement: false,
-              setState,
-            })}
           leftIcon={state.cartDownloading ? <Spinner /> : <DownloadIcon />}
-        >
+          onClick={() => downloadCart({
+            user,
+            files,
+            dispatch,
+            disableAgreement: false,
+            setState,
+          })}
+          style={styles.button(theme)}>
           Cart
         </Button>
       </Column>

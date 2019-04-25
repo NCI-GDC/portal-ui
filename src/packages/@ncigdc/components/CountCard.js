@@ -15,26 +15,39 @@ const CountCard = ({
 }) => (
   <Card
     className={className}
-    style={{ padding: '1rem', width: '15rem', ...style }}
-  >
+    style={{
+      padding: '1rem',
+      width: '15rem',
+      ...style,
+    }}>
     <Row>
       <Column>
         <Row style={{ fontSize: '1.1rem' }}>{title}</Row>
-        <Row style={{ fontSize: '2rem', width: '5em' }} className="test-count">
+        <Row
+          className="test-count"
+          style={{
+            fontSize: '2rem',
+            width: '5em',
+          }}>
           {linkParams ? <Link {...linkParams}>{count}</Link> : count}
         </Row>
       </Column>
-      <Row style={{ marginLeft: 'auto', alignItems: 'center' }}>{icon}</Row>
+      <Row style={{
+        marginLeft: 'auto',
+        alignItems: 'center',
+      }}>
+        {icon}
+      </Row>
     </Row>
   </Card>
 );
 
 CountCard.propTypes = {
-  title: PropTypes.string,
   count: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   icon: PropTypes.node,
-  style: PropTypes.object,
   linkParams: PropTypes.object,
+  style: PropTypes.object,
+  title: PropTypes.string,
 };
 
 /*----------------------------------------------------------------------------*/

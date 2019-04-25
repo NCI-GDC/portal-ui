@@ -56,8 +56,7 @@ const InternalLink = ({
         if (deepLink) {
           scrollToId(deepLink);
         }
-      }}
-    />
+      }} />
   );
 };
 

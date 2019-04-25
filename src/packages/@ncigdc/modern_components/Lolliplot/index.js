@@ -1,7 +1,7 @@
 import { compose, withPropsOnChange } from 'recompose';
+import LoadableWithLoading from '@ncigdc/components/LoadableWithLoading';
 import createRendererSsm from './SsmLolliplot.relay';
 import createRendererGene from './GeneLolliplot.relay';
-import LoadableWithLoading from '@ncigdc/components/LoadableWithLoading';
 
 // This is the component used for the gene entity page
 

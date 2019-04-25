@@ -8,6 +8,7 @@ import { makeFilter, addInFilters } from '@ncigdc/utils/filters';
 export default (Component) => (props) => {
   return (
     <BaseQuery
+      Component={Component}
       parentProps={{
         getter: (viewer: Object) => {
           return get(viewer, 'repository.cases.hits.edges', []).reduce(
@@ -17,27 +18,6 @@ export default (Component) => (props) => {
         },
         ...props,
       }}
-      variables={{
-        filters: addInFilters(props.filters, {
-          op: 'and',
-          content: [
-            {
-              op: 'in',
-              content: {
-                field: 'summary.experimental_strategies.experimental_strategy',
-                value: ['Tissue Slide', 'Diagnostic Slide'],
-              },
-            },
-          ],
-        }),
-        slideFilter: makeFilter([
-          {
-            field: 'files.data_type',
-            value: ['Slide Image'],
-          },
-        ]),
-      }}
-      Component={Component}
       query={graphql`
         query repositoryCaseSlides_relayQuery(
           $filters: FiltersArgument
@@ -66,6 +46,25 @@ export default (Component) => (props) => {
           }
         }
       `}
-    />
+      variables={{
+        filters: addInFilters(props.filters, {
+          op: 'and',
+          content: [
+            {
+              op: 'in',
+              content: {
+                field: 'summary.experimental_strategies.experimental_strategy',
+                value: ['Tissue Slide', 'Diagnostic Slide'],
+              },
+            },
+          ],
+        }),
+        slideFilter: makeFilter([
+          {
+            field: 'files.data_type',
+            value: ['Slide Image'],
+          },
+        ]),
+      }} />
   );
 };

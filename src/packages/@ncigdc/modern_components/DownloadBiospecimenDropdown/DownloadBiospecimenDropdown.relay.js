@@ -8,37 +8,36 @@ import { makeFilter, addInFilters } from '@ncigdc/utils/filters';
 
 import Query from '@ncigdc/modern_components/Query';
 
-export default (Component: ReactClass<*>) =>
-  compose(
-    withRouter,
-    withPropsOnChange(
-      ['filters', 'selectedIds'],
-      ({ filters, selectedIds }) => {
-        const downloadFilters =
+export default (Component: ReactClass<*>) => compose(
+  withRouter,
+  withPropsOnChange(
+    ['filters', 'selectedIds'],
+    ({ filters, selectedIds }) => {
+      const downloadFilters =
           selectedIds && selectedIds.length
             ? addInFilters(
-                ...filters,
-                makeFilter(
-                  [
-                    {
-                      field: 'cases.case_id',
-                      value: selectedIds,
-                    },
-                  ],
-                  false,
-                ),
-              )
+              ...filters,
+              makeFilter(
+                [
+                  {
+                    field: 'cases.case_id',
+                    value: selectedIds,
+                  },
+                ],
+                false,
+              ),
+            )
             : filters;
-        return {
+      return {
+        filters: downloadFilters,
+        variables: {
           filters: downloadFilters,
-          variables: {
-            filters: downloadFilters,
-          },
-        };
-      },
-    ),
-  )((props: Object) => {
-    const caseQuery =
+        },
+      };
+    },
+  ),
+)((props: Object) => {
+  const caseQuery =
       props.scope === 'explore'
         ? graphql`
             query DownloadBiospecimenDropdownExplore_relayQuery(
@@ -71,13 +70,12 @@ export default (Component: ReactClass<*>) =>
             }
           `;
 
-    return (
-      <Query
-        parentProps={props}
-        variables={props.variables}
-        Component={Component}
-        style={{ width: 'auto' }}
-        query={caseQuery}
-      />
-    );
-  });
+  return (
+    <Query
+      Component={Component}
+      parentProps={props}
+      query={caseQuery}
+      style={{ width: 'auto' }}
+      variables={props.variables} />
+  );
+});

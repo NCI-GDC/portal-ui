@@ -27,9 +27,11 @@ const enhance = compose(
       }
     },
   }),
-  mapProps(props =>
-    omit(props, ['tooltipState', 'setTooltipState', 'dispatch']),
-  ),
+  mapProps(props => omit(props, [
+    'tooltipState',
+    'setTooltipState',
+    'dispatch',
+  ]),),
 );
 
 const withTooltip = Wrapped => enhance(props => <Wrapped {...props} />);

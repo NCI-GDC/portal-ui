@@ -17,7 +17,9 @@ export default compose(
       ),
     };
   }),
-)(({ dispatch, cartFiles, style, loading, files, ...props }) => {
+)(({
+  dispatch, cartFiles, style, loading, files, ...props
+}) => {
   const hasFilesToAdd = files.filter(
     f => !cartFiles.some(cf => cf.file_id === f.file_id),
   ).length;
@@ -25,11 +27,10 @@ export default compose(
 
   return (
     <Button
-      style={style}
       className="test-cart-file-toggle"
-      onClick={() => !loading && dispatch(cartOperation(files))}
       leftIcon={loading ? <SpinnerIcon /> : <ShoppingCartIcon />}
-    >
+      onClick={() => !loading && dispatch(cartOperation(files))}
+      style={style}>
       {loading
         ? 'Loading files'
         : hasFilesToAdd

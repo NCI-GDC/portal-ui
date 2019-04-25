@@ -4,7 +4,7 @@ import formatFileSize from '@ncigdc/utils/formatFileSize';
 import { DATA_CATEGORIES } from '@ncigdc/utils/constants';
 
 const colors = scaleOrdinal(schemeCategory10);
-var colorGroups = {
+const colorGroups = {
   file_count: colors(0),
   file_size: colors(1),
   case_count: colors(2),
@@ -13,7 +13,7 @@ var colorGroups = {
 const onClickDefault = d => console.log('clicked', d);
 
 export default function columns(params) {
-  var results = [
+  let results = [
     {
       id: 'project_id',
       displayName: ['Project', 'ID'],
@@ -25,7 +25,7 @@ export default function columns(params) {
       id: 'case_count',
       displayName: ['Case', 'Count'],
       scale: 'ordinal',
-      color: colorGroups['case_count'],
+      color: colorGroups.case_count,
       onClick: params.onCaseCountClick || onClickDefault,
     },
   ];
@@ -36,7 +36,7 @@ export default function columns(params) {
       displayName: [DATA_CATEGORIES[key].abbr],
       scale: 'ordinal',
       isSubtype: true,
-      color: colorGroups['case_count'],
+      color: colorGroups.case_count,
       onClick: params.onDataTypeClick || onClickDefault,
     })),
   );
@@ -46,19 +46,23 @@ export default function columns(params) {
       id: 'file_count',
       displayName: ['File', 'Count'],
       scale: 'ordinal',
-      color: colorGroups['file_count'],
+      color: colorGroups.file_count,
       onClick: params.onFileCountClick || onClickDefault,
     },
     {
       id: 'file_size',
       displayName: ['File', 'Size'],
       scale: 'ordinal',
-      color: colorGroups['file_size'],
+      color: colorGroups.file_size,
       format: formatFileSize,
     },
     {
       id: 'primary_site',
-      displayName: ['Major', 'Primary', 'Sites'],
+      displayName: [
+        'Major',
+        'Primary',
+        'Sites',
+      ],
       scale: 'linear',
     },
   ]);

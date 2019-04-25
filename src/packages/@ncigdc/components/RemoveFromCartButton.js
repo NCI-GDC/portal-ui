@@ -32,55 +32,64 @@ const styles = {
   },
 };
 
-const RemoveFromCartButton = ({ style, files, theme, dispatch, user }) => (
+const RemoveFromCartButton = ({
+  style, files, theme, dispatch, user,
+}) => (
   <Row className="test-remove-from-cart-button-container">
     <Dropdown
-      dropdownStyle={{
-        marginTop: '2px',
-        borderRadius: '4px',
-        minWidth: '22rem',
-      }}
-      dropdownItemClass={false}
-      button={
+      button={(
         <Button
           className="test-remove-from-cart"
+          leftIcon={<TrashIcon />}
+          rightIcon={<DownCaretIcon />}
           style={{
             backgroundColor: '#A62924',
             marginLeft: '10px',
             ':hover': {
               backgroundColor: '#7C1F1B',
             },
-          }}
-          leftIcon={<TrashIcon />}
-          rightIcon={<DownCaretIcon />}
-        >
+          }}>
           Remove From Cart
         </Button>
-      }
-    >
+      )}
+      dropdownItemClass={false}
+      dropdownStyle={{
+        marginTop: '2px',
+        borderRadius: '4px',
+        minWidth: '22rem',
+      }}>
       <Column>
         <Button
           className="test-remove-all-files"
-          style={styles.row(theme)}
-          onClick={() => dispatch(toggleFilesInCart(files))}
           leftIcon={<XIcon />}
-        >
-          <span>All Files ({files.length})</span>
+          onClick={() => dispatch(toggleFilesInCart(files))}
+          style={styles.row(theme)}>
+          <span>
+All Files (
+            {files.length}
+)
+          </span>
         </Button>
         <Button
           className="test-remove-unauthorized-files"
-          style={styles.row(theme)}
-          onClick={() =>
-            dispatch(
-              toggleFilesInCart(
-                files.filter(file => !userCanDownloadFile({ user, file })),
-              ),
-            )}
           leftIcon={<XIcon />}
-        >
-          Unauthorized Files ({
-            files.filter(file => !userCanDownloadFile({ user, file })).length
-          })
+          onClick={() => dispatch(
+            toggleFilesInCart(
+              files.filter(file => !userCanDownloadFile({
+                user,
+                file,
+              })),
+            ),
+          )}
+          style={styles.row(theme)}>
+          Unauthorized Files (
+          {
+            files.filter(file => !userCanDownloadFile({
+              user,
+              file,
+            })).length
+          }
+)
         </Button>
       </Column>
     </Dropdown>

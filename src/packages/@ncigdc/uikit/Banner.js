@@ -53,11 +53,10 @@ const levelToIcon = {
 
 const BannerLink = ({ level, ...props }) => (
   <a
-    href={props.href}
-    target={'blank'}
-    style={level === 'WARNING' ? { color: theme.primaryHighContrast } : {}}
     className="banner-warning-link"
-  >
+    href={props.href}
+    style={level === 'WARNING' ? { color: theme.primaryHighContrast } : {}}
+    target="blank">
     {props.children}
   </a>
 );
@@ -80,20 +79,18 @@ const Banner = ({
   reactElement,
 }: BannerProps) => (
   <Row
+    className="header-banner"
     style={{
       ...style.headerBanner,
       ...(dismissed ? style.dismissed : {}),
       ...(style[level.toLowerCase()] || {}),
-    }}
-    className="header-banner"
-  >
+    }}>
     {levelToIcon[level.toLowerCase()] || levelToIcon.info}
     <span style={style.message}>
       {!reactElement ? (
         <Markdown
-          source={message}
           renderers={{ link: props => <BannerLink level={level} {...props} /> }}
-        />
+          source={message} />
       ) : (
         message
       )}
@@ -101,10 +98,11 @@ const Banner = ({
     {dismissible && (
       <span
         className="header-banner-dismiss"
-        style={style.dismiss}
         onClick={handleOnDismiss}
-      >
-        Dismiss <i className="fa fa-times" />
+        style={style.dismiss}>
+        Dismiss
+        {' '}
+        <i className="fa fa-times" />
       </span>
     )}
   </Row>

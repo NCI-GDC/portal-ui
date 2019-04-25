@@ -19,7 +19,9 @@ const toPieData = (clickHandler, docTypeSingular) => bucket => ({
     <span>
       <b>{bucket.key}</b>
       <br />
-      {bucket.doc_count.toLocaleString()} {docTypeSingular}
+      {bucket.doc_count.toLocaleString()}
+      {' '}
+      {docTypeSingular}
       {bucket.doc_count > 1 ? 's' : ''}
     </span>
   ),
@@ -66,7 +68,10 @@ function addFilter(query: Object, push: Function): Function {
     const newQuery = mergeQuery(
       {
         filters: makeFilter([
-          { field, value: Array.isArray(values) ? values : [values] },
+          {
+            field,
+            value: Array.isArray(values) ? values : [values],
+          },
         ]),
       },
       query,
@@ -96,14 +101,13 @@ export const SelfFilteringPie = ({
     data={(buckets || [])
       .filter(bucket => bucket.key !== '_missing')
       .filter(
-        bucket =>
-          currentFieldNames.includes(fieldName)
+        bucket => (currentFieldNames.includes(fieldName)
             ? inCurrentFilters({
-                key: bucket.key,
-                dotField: fieldName,
-                currentFilters,
-              })
-            : true,
+              key: bucket.key,
+              dotField: fieldName,
+              currentFilters,
+            })
+            : true),
       )
       .map(
         toPieData(
@@ -111,6 +115,5 @@ export const SelfFilteringPie = ({
           docTypeSingular,
         ),
       )}
-    {...props}
-  />
+    {...props} />
 );

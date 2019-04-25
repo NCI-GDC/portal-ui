@@ -25,19 +25,18 @@ const styles = {
     justifyContent: 'center',
     zIndex: 2000,
   }),
-  link: theme =>
-    css({
-      color: 'white !important',
-      padding: '10px 13px',
-      textDecoration: 'none !important',
-      transition: 'background-color 0.2s ease',
-      ':hover': {
-        backgroundColor: Color(theme.greyScale2)
-          .darken(0.5)
-          .rgbString(),
-      },
-      ...center,
-    }),
+  link: theme => css({
+    color: 'white !important',
+    padding: '10px 13px',
+    textDecoration: 'none !important',
+    transition: 'background-color 0.2s ease',
+    ':hover': {
+      backgroundColor: Color(theme.greyScale2)
+        .darken(0.5)
+        .rgbString(),
+    },
+    ...center,
+  }),
   faded: {
     color: 'rgb(191, 191, 191)',
   },
@@ -56,11 +55,11 @@ const Nav = ({ theme }) => (
   <Row style={styles.nav(theme)}>
     <Row flex="1" />
     <Row flex="1">
-      <Link to="/files" className={`${styles.link(theme)}`}>
+      <Link className={`${styles.link(theme)}`} to="/files">
         <FileIcon style={styles.faded} />
         <span style={styles.marginLeft}>Files</span>
       </Link>
-      <Link to="/annotations" className={`${styles.link(theme)}`}>
+      <Link className={`${styles.link(theme)}`} to="/annotations">
         <AnnotationIcon style={styles.faded} />
         <span style={styles.marginLeft}>Annotations</span>
       </Link>

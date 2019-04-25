@@ -25,36 +25,42 @@ const isUserProject = ({ user, file }) => {
 
 const fileInCorrectState = (file): boolean => file.state === 'submitted';
 
-const intersectsWithFileAcl = ({ user, file }): boolean =>
-  _.intersection(
-    Object.keys(_.get(user, 'projects.phs_ids', {})).filter(
-      p => user.projects.phs_ids[p].indexOf('_member_') !== -1,
-    ) || [],
-    file.acl,
-  ).length !== 0;
+const intersectsWithFileAcl = ({ user, file }): boolean => _.intersection(
+  Object.keys(_.get(user, 'projects.phs_ids', {})).filter(
+    p => user.projects.phs_ids[p].indexOf('_member_') !== -1,
+  ) || [],
+  file.acl,
+).length !== 0;
 
-const userCanDownloadFiles = ({ user, files }) =>
-  files.every(file => {
-    if (file.access === 'open') {
-      return true;
-    }
+const userCanDownloadFiles = ({ user, files }) => files.every(file => {
+  if (file.access === 'open') {
+    return true;
+  }
 
-    if (file.access !== 'open' && !user) {
-      return false;
-    }
-
-    if (
-      isUserProject({ user, file }) ||
-      (intersectsWithFileAcl({ user, file }) && fileInCorrectState(file))
-    ) {
-      return true;
-    }
-
+  if (file.access !== 'open' && !user) {
     return false;
-  });
+  }
 
-const userCanDownloadFile = ({ user, file }: { user: Object, file: Object }) =>
-  userCanDownloadFiles({ user, files: [file] });
+  if (
+    isUserProject({
+      user,
+      file,
+    }) ||
+      (intersectsWithFileAcl({
+        user,
+        file,
+      }) && fileInCorrectState(file))
+  ) {
+    return true;
+  }
+
+  return false;
+});
+
+const userCanDownloadFile = ({ user, file }: { user: Object, file: Object }) => userCanDownloadFiles({
+  user,
+  files: [file],
+});
 
 type TFilesAuthData = {
   key?: string,
@@ -71,12 +77,23 @@ const authPartitionFiles = ({
   files: Array<Object>,
 }): { authorized: TFilesAuthData, unauthorized: TFilesAuthData } => {
   const defaultData = {
-    authorized: { doc_count: 0, file_size: 0, files: [] },
-    unauthorized: { doc_count: 0, file_size: 0, files: [] },
+    authorized: {
+      doc_count: 0,
+      file_size: 0,
+      files: [],
+    },
+    unauthorized: {
+      doc_count: 0,
+      file_size: 0,
+      files: [],
+    },
   };
 
   return files.reduce((result, file) => {
-    const canDownloadKey = userCanDownloadFile({ user, file })
+    const canDownloadKey = userCanDownloadFile({
+      user,
+      file,
+    })
       ? 'authorized'
       : 'unauthorized';
     result[canDownloadKey].doc_count += 1;
@@ -93,7 +110,10 @@ const getAuthCounts = ({
   user: Object,
   files: Array<Object>,
 }): Array<TFilesAuthData> => {
-  const authCountAndFileSizes = authPartitionFiles({ user, files });
+  const authCountAndFileSizes = authPartitionFiles({
+    user,
+    files,
+  });
   return [
     {
       key: 'authorized',
@@ -110,11 +130,10 @@ const getAuthCounts = ({
   ].filter(i => i.doc_count);
 };
 
-const userProjectsCount = (user: Object) =>
-  Object.keys(user.projects || {}).reduce(
-    (acc, k) => [...acc, ...Object.keys(user.projects[k])],
-    [],
-  ).length;
+const userProjectsCount = (user: Object) => Object.keys(user.projects || {}).reduce(
+  (acc, k) => [...acc, ...Object.keys(user.projects[k])],
+  [],
+).length;
 
 const awgLogout = async () => {
   await fetch(urlJoin(FENCE, 'logout'), {

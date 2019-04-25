@@ -9,13 +9,17 @@ const Column: React.SFC<IFlexDivProps> = ({
   spacing,
   ...props
 }) => (
-  <Row style={{ ...style, flexDirection: 'column' }} {...props}>
+  <Row
+    style={{
+      ...style,
+      flexDirection: 'column',
+    }}
+    {...props}>
     {!spacing && children}
     {spacing &&
       Children.map(
         children,
-        (child: ReactElement<any>, i) =>
-          child &&
+        (child: ReactElement<any>, i) => child &&
           cloneElement(child, {
             ...child.props,
             style: {

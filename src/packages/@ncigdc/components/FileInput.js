@@ -7,9 +7,7 @@ export default ({ addFiles, ...props }: TProps) => {
   return (
     <input
       {...props}
-      type="file"
-      title="File Input"
-      className={props.className + ' test-file-input'}
+      className={`${props.className} test-file-input`}
       onChange={event => {
         addFiles(Array.prototype.slice.call(event.target.files));
 
@@ -21,6 +19,7 @@ export default ({ addFiles, ...props }: TProps) => {
           event.target.value = '';
         }
       }}
-    />
+      title="File Input"
+      type="file" />
   );
 };

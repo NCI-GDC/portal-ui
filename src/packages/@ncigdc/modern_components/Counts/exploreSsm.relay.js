@@ -6,9 +6,11 @@ import { graphql } from 'react-relay';
 export default (Component: ReactClass<*>) => (props: Object) => {
   return (
     <BaseQuery
-      parentProps={{ path: 'explore.ssms.hits.total', ...props }}
-      variables={{ filters: props.filters }}
       Component={Component}
+      parentProps={{
+        path: 'explore.ssms.hits.total',
+        ...props,
+      }}
       query={graphql`
         query exploreSsm_relayQuery($filters: FiltersArgument) {
           viewer {
@@ -22,6 +24,6 @@ export default (Component: ReactClass<*>) => (props: Object) => {
           }
         }
       `}
-    />
+      variables={{ filters: props.filters }} />
   );
 };

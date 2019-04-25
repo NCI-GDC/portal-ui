@@ -1,9 +1,12 @@
 /* @flow */
-import { dataTypeTracks } from './tracks';
 import _ from 'lodash';
+import { dataTypeTracks } from './tracks';
 
 const dataTypesInitial = dataTypeTracks.reduce(
-  (acc, d) => ({ ...acc, [d.fieldName]: 0 }),
+  (acc, d) => ({
+    ...acc,
+    [d.fieldName]: 0,
+  }),
   {},
 );
 
@@ -120,7 +123,9 @@ export const mapGenes: TMapGenes = (genes, geneIds) => {
   const arr = [];
 
   for (let i = 0; i < genes.length; i += 1) {
-    const { gene_id, symbol, _score, is_cancer_gene_census: cgc } = genes[i];
+    const {
+      gene_id, symbol, _score, is_cancer_gene_census: cgc,
+    } = genes[i];
     if (geneIds.has(gene_id)) {
       arr.push({
         id: gene_id,
@@ -219,8 +224,8 @@ export const buildOccurrences: TBuildOccurrences = (
     geneIdToSymbol[gene.gene_id] = gene.symbol;
   }
 
-  let ssmObservations = [];
-  let cnvObservations = [];
+  const ssmObservations = [];
+  const cnvObservations = [];
   const donorIds = new Set();
   const geneIds = new Set();
 
@@ -249,10 +254,9 @@ export const buildOccurrences: TBuildOccurrences = (
           donorIds.add(case_id);
           geneIds.add(gene_id);
 
-          let match = _.findIndex(
+          const match = _.findIndex(
             ssmObservations,
-            o =>
-              o.donorId === case_id &&
+            o => o.donorId === case_id &&
               o.geneId === gene_id &&
               o.consequence === consequence_type,
           );
@@ -285,7 +289,7 @@ export const buildOccurrences: TBuildOccurrences = (
     'frameshift_variant',
   ];
 
-  let orderedSSMObservations = ssmObservations.sort(function(a, b) {
+  const orderedSSMObservations = ssmObservations.sort((a, b) => {
     return (
       consequencePriorityOrder.indexOf(a.consequence) -
       consequencePriorityOrder.indexOf(b.consequence)
@@ -321,4 +325,8 @@ export const buildOccurrences: TBuildOccurrences = (
   };
 };
 
-export default { mapDonors, mapGenes, buildOccurrences };
+export default {
+  mapDonors,
+  mapGenes,
+  buildOccurrences,
+};

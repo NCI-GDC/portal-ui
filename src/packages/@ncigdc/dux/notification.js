@@ -12,7 +12,10 @@ export type TState = TNotification & {
   closed: boolean,
 };
 
-const notify = (payload: TNotification) => ({ type: NOTIFY, payload });
+const notify = (payload: TNotification) => ({
+  type: NOTIFY,
+  payload,
+});
 const closeNotification = () => ({
   type: CLOSE_NOTIFICATION,
   payload: true,

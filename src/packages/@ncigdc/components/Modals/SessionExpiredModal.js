@@ -5,10 +5,12 @@ import BaseModal from '@ncigdc/components/Modals/BaseModal';
 import LoginButton from '../LoginButton';
 
 const SessionExpired = () => (
-  <BaseModal title="Session Expired" closeText="Cancel">
+  <BaseModal closeText="Cancel" title="Session Expired">
     Your session has expired.
     <p>
-      Please <LoginButton />
+      Please
+      {' '}
+      <LoginButton />
     </p>
   </BaseModal>
 );

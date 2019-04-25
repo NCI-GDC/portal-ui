@@ -68,7 +68,7 @@ export default compose(
 
     const svg = d3
       .select(root)
-      .append(`svg`)
+      .append('svg')
       .style('display', 'block')
       .attr('viewBox', `0 0 ${width} ${height}`);
 
@@ -97,82 +97,70 @@ export default compose(
     });
 
     if (numCircles === 2) {
-      ops.slice(1).forEach((d, i) =>
-        svg
-          .append('svg:rect')
-          .attr('clip-path', `url(#circle_${i}_outline)`)
-          .attr('class', 'inner')
-          .attr('width', width)
-          .attr('height', height)
-          .style('fill', outlineColour),
-      );
+      ops.slice(1).forEach((d, i) => svg
+        .append('svg:rect')
+        .attr('clip-path', `url(#circle_${i}_outline)`)
+        .attr('class', 'inner')
+        .attr('width', width)
+        .attr('height', height)
+        .style('fill', outlineColour),);
 
-      ops.slice(1).forEach((d, i) =>
-        svg
-          .append('svg:rect')
-          .attr('clip-path', `url(#circle_${i})`)
-          .attr('class', 'inner')
-          .attr('width', width)
-          .attr('height', height)
-          .style('cursor', cursor)
-          .style('fill', () => getFillColor(d, 0) || colors[0])
-          .on('click', () => onClick(d.op))
-          .on('mouseover', () => onMouseOver(d.op))
-          .on('mouseout', onMouseOut),
-      );
+      ops.slice(1).forEach((d, i) => svg
+        .append('svg:rect')
+        .attr('clip-path', `url(#circle_${i})`)
+        .attr('class', 'inner')
+        .attr('width', width)
+        .attr('height', height)
+        .style('cursor', cursor)
+        .style('fill', () => getFillColor(d, 0) || colors[0])
+        .on('click', () => onClick(d.op))
+        .on('mouseover', () => onMouseOver(d.op))
+        .on('mouseout', onMouseOut),);
     } else {
-      ops.slice(4).forEach((d, i) =>
-        svg
-          .append('svg:rect')
-          .attr('clip-path', `url(#circle_${i}_outline)`)
-          .attr('class', 'inner')
-          .attr('width', width)
-          .attr('height', height)
-          .style('fill', outlineColour),
-      );
+      ops.slice(4).forEach((d, i) => svg
+        .append('svg:rect')
+        .attr('clip-path', `url(#circle_${i}_outline)`)
+        .attr('class', 'inner')
+        .attr('width', width)
+        .attr('height', height)
+        .style('fill', outlineColour),);
 
-      ops.slice(4).forEach((d, i) =>
-        svg
-          .append('svg:rect')
-          .attr('clip-path', `url(#circle_${i})`)
-          .attr('class', 'inner')
-          .attr('width', width)
-          .attr('height', height)
-          .style('cursor', cursor)
-          .style('fill', () => getFillColor(d, 0) || colors[0])
-          .on('click', () => onClick(d.op))
-          .on('mouseover', () => onMouseOver(d.op))
-          .on('mouseout', onMouseOut),
-      );
+      ops.slice(4).forEach((d, i) => svg
+        .append('svg:rect')
+        .attr('clip-path', `url(#circle_${i})`)
+        .attr('class', 'inner')
+        .attr('width', width)
+        .attr('height', height)
+        .style('cursor', cursor)
+        .style('fill', () => getFillColor(d, 0) || colors[0])
+        .on('click', () => onClick(d.op))
+        .on('mouseover', () => onMouseOver(d.op))
+        .on('mouseout', onMouseOut),);
 
-      ops.slice(1, 4).forEach((d, i) =>
-        svg
-          .append('svg:g')
-          .attr('clip-path', `url(#circle_${i}_outline)`)
-          .append('svg:rect')
-          .attr('clip-path', `url(#circle_${(i + 1) % numCircles}_outline)`)
-          .attr('width', width)
-          .attr('height', height)
-          .style('fill', outlineColour),
-      );
+      ops.slice(1, 4).forEach((d, i) => svg
+        .append('svg:g')
+        .attr('clip-path', `url(#circle_${i}_outline)`)
+        .append('svg:rect')
+        .attr('clip-path', `url(#circle_${(i + 1) % numCircles}_outline)`)
+        .attr('width', width)
+        .attr('height', height)
+        .style('fill', outlineColour),);
 
-      ops.slice(1, 4).forEach((d, i) =>
-        svg
-          .append('svg:g')
-          .attr('clip-path', `url(#circle_${i})`)
-          .append('svg:rect')
-          .attr('class', 'inner')
-          .attr('clip-path', `url(#circle_${(i + 1) % numCircles})`)
-          .attr('width', width)
-          .attr('height', height)
-          .style('cursor', cursor)
-          .style('fill', () => getFillColor(d, 1) || colors[1])
-          .style('stroke', 'black')
-          .style('stroke-width', 2)
-          .on('click', () => onClick(d.op))
-          .on('mouseover', () => onMouseOver(d.op))
-          .on('mouseout', onMouseOut),
-      );
+      ops.slice(1, 4).forEach((d, i) => svg
+        .append('svg:g')
+        .attr('clip-path', `url(#circle_${i})`)
+        .append('svg:rect')
+        .attr('class', 'inner')
+        .attr('clip-path', `url(#circle_${(i + 1) % numCircles})`)
+        .attr('width', width)
+        .attr('height', height)
+        .style('cursor', cursor)
+        .style('fill', () => getFillColor(d, 1) || colors[1])
+        .style('stroke', 'black')
+        .style('stroke-width', 2)
+        .on('click', () => onClick(d.op))
+        .on('mouseover', () => onMouseOver(d.op))
+        .on('mouseout', onMouseOut),);
     }
 
     let innerOutline = svg
@@ -180,10 +168,9 @@ export default compose(
       .attr('clip-path', `url(#circle_${numCircles - 1}_outline)`);
 
     _.range(numCircles - 1, 0).forEach(
-      x =>
-        (innerOutline = innerOutline
-          .append('svg:g')
-          .attr('clip-path', `url(#circle_${x}_outline)`)),
+      x => (innerOutline = innerOutline
+        .append('svg:g')
+        .attr('clip-path', `url(#circle_${x}_outline)`)),
     );
 
     innerOutline
@@ -198,8 +185,7 @@ export default compose(
       .attr('clip-path', `url(#circle_${numCircles - 1})`);
 
     _.range(numCircles - 1, 0).forEach(
-      x =>
-        (inner = inner.append('svg:g').attr('clip-path', `url(#circle_${x})`)),
+      x => (inner = inner.append('svg:g').attr('clip-path', `url(#circle_${x})`)),
     );
 
     inner

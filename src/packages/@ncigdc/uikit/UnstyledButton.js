@@ -14,7 +14,12 @@ const base = {
 };
 
 export default ({ children, style, ...props }) => (
-  <button {...props} style={{ ...base, ...style }}>
+  <button
+    {...props}
+    style={{
+      ...base,
+      ...style,
+    }}>
     {children}
   </button>
 );

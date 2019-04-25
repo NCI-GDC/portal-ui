@@ -20,6 +20,7 @@ class Demo extends React.Component {
       }, []),
     };
   }
+
   componentWillUpdate(nextProps, nextState) {
     nextState.setStates.forEach(({ count, id, type }, i) => {
       if (
@@ -36,13 +37,17 @@ class Demo extends React.Component {
           filters: nextProps.filters[id],
           onComplete: () => {
             const setStates = [...this.state.setStates];
-            setStates[i] = { ...setStates[i], created: true };
+            setStates[i] = {
+              ...setStates[i],
+              created: true,
+            };
             this.setState({ setStates });
           },
         });
       }
     });
   }
+
   render() {
     const { children } = this.props;
     const setsReady = this.state.setStates.every(
@@ -57,7 +62,6 @@ class Demo extends React.Component {
 
           return (
             <CountComponent
-              key={id}
               filters={{
                 op: 'and',
                 content: [
@@ -72,10 +76,13 @@ class Demo extends React.Component {
               }}
               handleCountChange={count => {
                 const setStates = [...this.state.setStates];
-                setStates[i] = { ...setStates[i], count };
+                setStates[i] = {
+                  ...setStates[i],
+                  count,
+                };
                 this.setState({ setStates });
               }}
-            >
+              key={id}>
               {() => null}
             </CountComponent>
           );

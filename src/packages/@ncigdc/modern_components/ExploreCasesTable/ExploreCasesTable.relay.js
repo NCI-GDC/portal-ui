@@ -10,38 +10,36 @@ import { withRouter } from 'react-router-dom';
 import { parse } from 'query-string';
 import Query from '@ncigdc/modern_components/Query';
 
-export default (Component: ReactClass<*>) =>
-  compose(
-    withRouter,
-    withPropsOnChange(
-      ['location'],
-      ({ location: { search }, defaultSize = 20, defaultFilters = null }) => {
-        const q = parse(search);
-        const filters = parseFilterParam(q.filters, defaultFilters);
-        const score = 'gene.gene_id';
-        const sort = parseJSONParam(q.cases_sort, null);
-        return {
+export default (Component: ReactClass<*>) => compose(
+  withRouter,
+  withPropsOnChange(
+    ['location'],
+    ({ location: { search }, defaultSize = 20, defaultFilters = null }) => {
+      const q = parse(search);
+      const filters = parseFilterParam(q.filters, defaultFilters);
+      const score = 'gene.gene_id';
+      const sort = parseJSONParam(q.cases_sort, null);
+      return {
+        filters,
+        score,
+        sort,
+        variables: {
           filters,
-          score,
-          sort,
-          variables: {
-            filters,
-            cases_offset: parseIntParam(q.cases_offset, 0),
-            cases_size: parseIntParam(q.cases_size, defaultSize),
-            cases_sort: sort,
-            cases_score: score,
-          },
-        };
-      },
-    ),
-  )((props: mixed) => {
-    return (
-      <Query
-        parentProps={props}
-        minHeight={387}
-        variables={props.variables}
-        Component={Component}
-        query={graphql`
+          cases_offset: parseIntParam(q.cases_offset, 0),
+          cases_size: parseIntParam(q.cases_size, defaultSize),
+          cases_sort: sort,
+          cases_score: score,
+        },
+      };
+    },
+  ),
+)((props: mixed) => {
+  return (
+    <Query
+      Component={Component}
+      minHeight={387}
+      parentProps={props}
+      query={graphql`
           query ExploreCasesTable_relayQuery(
             $filters: FiltersArgument
             $cases_size: Int
@@ -110,6 +108,6 @@ export default (Component: ReactClass<*>) =>
             }
           }
         `}
-      />
-    );
-  });
+      variables={props.variables} />
+  );
+});

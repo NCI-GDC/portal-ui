@@ -5,14 +5,14 @@ import { API_OVERRIDE_KEYS } from '@ncigdc/utils/constants';
 
 export default () => (
   <div>
-    Local Storage is Overriding the API.{' '}
+    Local Storage is Overriding the API.
+    {' '}
     <UnstyledButton
-      style={{ textDecoration: 'underline' }}
       onClick={() => {
         API_OVERRIDE_KEYS.forEach(k => localStorage.removeItem(k));
         window.location.reload();
       }}
-    >
+      style={{ textDecoration: 'underline' }}>
       Remove Override and Reload
     </UnstyledButton>
   </div>

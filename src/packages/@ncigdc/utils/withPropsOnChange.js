@@ -14,11 +14,10 @@ const withPropsOnChange = (shouldMapOrKeys, propsMapper) => BaseComponent => {
   const shouldMap =
     typeof shouldMapOrKeys === 'function'
       ? shouldMapOrKeys
-      : (props, nextProps) =>
-          !shallowEqual(
-            pick(props, shouldMapOrKeys),
-            pick(nextProps, shouldMapOrKeys),
-          );
+      : (props, nextProps) => !shallowEqual(
+        pick(props, shouldMapOrKeys),
+        pick(nextProps, shouldMapOrKeys),
+      );
 
   class WithPropsOnChange extends Component {
     computedProps = {};

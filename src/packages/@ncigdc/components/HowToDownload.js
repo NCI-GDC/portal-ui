@@ -10,17 +10,17 @@ import Card from '@ncigdc/uikit/Card';
 const title = <span>How to download files in my Cart?</span>;
 
 const HowToDownload = ({ style = {} }) => (
-  <Card style={style} title={title} className="test-how-to-download">
+  <Card className="test-how-to-download" style={style} title={title}>
     <div style={{ padding: '1rem' }}>
       <strong>Download Manifest:</strong>
       <br />
       Download a manifest for use with the
       <a
-        style={{ marginLeft: '0.4rem' }}
         href="https://gdc.cancer.gov/access-data/gdc-data-transfer-tool"
-      >
+        style={{ marginLeft: '0.4rem' }}>
         GDC Data Transfer Tool
-      </a>. The GDC Data Transfer Tool is recommended for transferring large
+      </a>
+. The GDC Data Transfer Tool is recommended for transferring large
       volumes of data.
       <br />
       <br />

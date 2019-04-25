@@ -4,7 +4,7 @@ import { DATA_CATEGORIES, HUMAN_BODY_SITES_MAP } from '@ncigdc/utils/constants';
 const normalize = str => str.toLowerCase().replace(/\s+/g, '');
 const DEFAULT_UNKNOWN_VAL = 'Unknown';
 
-export default function(data) {
+export default function (data) {
   return data
     .map(project => {
       const types = project.summary.data_categories || [];
@@ -30,7 +30,7 @@ export default function(data) {
         },
       );
     })
-    .sort(function(a, b) {
+    .sort((a, b) => {
       return b < a ? -1 : b > a ? 1 : b >= a ? 0 : NaN;
     });
 }

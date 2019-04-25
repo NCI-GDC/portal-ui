@@ -32,25 +32,24 @@ const styles = {
     minWidth: '275px',
     margin: '0 15px',
   },
-  activePortalLink: theme =>
-    css({
-      backgroundColor: theme.primary,
-      padding: '7px',
-      color: '#fff !important',
-      borderRadius: '5px',
-      margin: '0 2rem 0 auto',
-      display: 'flex',
-      fontSize: '1.5rem',
-      transition: 'background-color 0.2s ease',
-      textDecoration: 'none !important',
-      ':hover': {
-        color: '#fff',
-        textDecoration: 'none',
-        backgroundColor: Color(theme.primary)
-          .lighten(0.5)
-          .rgbString(),
-      },
-    }),
+  activePortalLink: theme => css({
+    backgroundColor: theme.primary,
+    padding: '7px',
+    color: '#fff !important',
+    borderRadius: '5px',
+    margin: '0 2rem 0 auto',
+    display: 'flex',
+    fontSize: '1.5rem',
+    transition: 'background-color 0.2s ease',
+    textDecoration: 'none !important',
+    ':hover': {
+      color: '#fff',
+      textDecoration: 'none',
+      backgroundColor: Color(theme.primary)
+        .lighten(0.5)
+        .rgbString(),
+    },
+  }),
   activePortalLogo: {
     height: '40px',
     width: '4rem',
@@ -64,8 +63,8 @@ const Header = ({ theme }) => (
   <Column style={styles.header(theme)}>
     <Row style={styles.top}>
       <Row flex="9">
-        <Link to="/" style={styles.logo}>
-          <img src={logo} alt="GDC Data Portal" />
+        <Link style={styles.logo} to="/">
+          <img alt="GDC Data Portal" src={logo} />
         </Link>
         <span style={styles.copy}>
           The legacy data is the original data that uses the old genome build
@@ -73,21 +72,20 @@ const Header = ({ theme }) => (
           actively being updated in any way. Users should migrate to the
           harmonized data.
           <br />
-          Please visit the{' '}
+          Please visit the
+          {' '}
           <a href="https://portal.gdc.cancer.gov/">GDC Data Portal</a>
           .
         </span>
       </Row>
       <Row flex="3" style={center}>
         <a
-          href="https://portal.gdc.cancer.gov/"
           className={styles.activePortalLink(theme)}
-        >
+          href="https://portal.gdc.cancer.gov/">
           <img
-            src={activePortalLogo}
             alt="GDC Data Portal"
-            style={styles.activePortalLogo}
-          />
+            src={activePortalLogo}
+            style={styles.activePortalLogo} />
           <Column>
             <Row>Launch the</Row>
             <Row>

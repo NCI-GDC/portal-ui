@@ -62,51 +62,36 @@ export default compose(
     const clinicalCount = viewer.repository.cases.hits.total;
     return (
       <Dropdown
-        button={
+        button={(
           <Button leftIcon={isLoading ? <Spinner /> : <DownloadIcon />}>
             {state.jsonDownloading || state.tsvDownloading
               ? 'Processing'
               : 'Clinical'}
           </Button>
-        }
-        dropdownStyle={styles.dropdownContainer}
-      >
+        )}
+        dropdownStyle={styles.dropdownContainer}>
         <DownloadButton
+          active={state.tsvDownloading}
+          activeText="Processing"
+          altMessage={false}
           className="data-download-clinical-tsv"
           disabled={!clinicalCount}
-          size={clinicalCount}
-          style={styles.button(theme)}
           endpoint="/clinical_tar"
-          format={'TSV'}
-          activeText="Processing"
-          inactiveText="TSV"
-          altMessage={false}
-          setParentState={currentState =>
-            setState(s => ({
-              ...s,
-              tsvDownloading: currentState,
-            }))}
-          active={state.tsvDownloading}
-          filters={dataExportFilters}
           filename={`clinical.project-${projectId}.${timestamp()}.tar.gz`}
-        />
-        <DownloadButton
-          className="data-download-clinical"
-          disabled={!clinicalCount}
-          size={clinicalCount}
-          style={styles.button(theme)}
-          endpoint="/cases"
-          activeText="Processing"
-          inactiveText="JSON"
-          altMessage={false}
-          setParentState={currentState =>
-            setState(s => ({
-              ...s,
-              jsonDownloading: currentState,
-            }))}
-          active={state.jsonDownloading}
           filters={dataExportFilters}
-          fields={['case_id']}
+          format="TSV"
+          inactiveText="TSV"
+          setParentState={currentState => setState(s => ({
+            ...s,
+            tsvDownloading: currentState,
+          }))}
+          size={clinicalCount}
+          style={styles.button(theme)} />
+        <DownloadButton
+          active={state.jsonDownloading}
+          activeText="Processing"
+          altMessage={false}
+          className="data-download-clinical"
           dataExportExpands={[
             'demographic',
             'diagnoses',
@@ -114,8 +99,18 @@ export default compose(
             'family_histories',
             'exposures',
           ]}
+          disabled={!clinicalCount}
+          endpoint="/cases"
+          fields={['case_id']}
           filename={`clinical.project-${projectId}.${timestamp()}.json`}
-        />
+          filters={dataExportFilters}
+          inactiveText="JSON"
+          setParentState={currentState => setState(s => ({
+            ...s,
+            jsonDownloading: currentState,
+          }))}
+          size={clinicalCount}
+          style={styles.button(theme)} />
       </Dropdown>
     );
   },

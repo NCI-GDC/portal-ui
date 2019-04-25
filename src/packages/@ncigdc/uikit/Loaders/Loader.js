@@ -12,18 +12,27 @@ type TProps = {
 };
 
 export const OverlayLoader = ({ loading }: { loading: boolean }) => (
-  <Overlay show={loading} style={{ position: 'absolute', zIndex: 10 }}>
+  <Overlay
+    show={loading}
+    style={{
+      position: 'absolute',
+      zIndex: 10,
+    }}>
     <Spinner />
   </Overlay>
 );
 
 export default (
-  { children, style = {}, loading = true, height, ...props }: TProps = {},
+  {
+    children, style = {}, loading = true, height, ...props
+  }: TProps = {},
 ) => (
   <div
-    style={{ ...style, height: loading ? height || '1rem' : 'auto' }}
-    {...props}
-  >
+    style={{
+      ...style,
+      height: loading ? height || '1rem' : 'auto',
+    }}
+    {...props}>
     <OverlayLoader loading={loading} />
     {children}
   </div>
@@ -40,7 +49,10 @@ export const withLoader = (Component: ReactClass<*>) => {
   return ({
     Loader = OverlayLoader,
     minHeight,
-    style = { position: 'relative', width: '100%' },
+    style = {
+      position: 'relative',
+      width: '100%',
+    },
     loading,
     firstLoad,
     ...props
@@ -52,8 +64,7 @@ export const withLoader = (Component: ReactClass<*>) => {
           width: '100%',
           ...(minHeight ? { minHeight } : {}),
           ...style,
-        }}
-      >
+        }}>
         {!firstLoad && <Component loading={loading} {...props} />}
         <Loader loading={loading} />
       </div>

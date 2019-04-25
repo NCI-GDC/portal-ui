@@ -24,13 +24,14 @@ const enhance = compose(
   withState('hits', 'setHits', []),
   withPropsOnChange(
     ['hits', 'validating'],
-    ({ hits, setValidating, validating, validateHits, idMap }) => {
+    ({
+      hits, setValidating, validating, validateHits, idMap,
+    }) => {
       const { noSpecialCharHits = [], specialCharHits = [] } = groupBy(
         hits,
-        id =>
-          /^[a-zA-Z0-9\->:.]*$/.test(id)
+        id => (/^[a-zA-Z0-9\->:.]*$/.test(id)
             ? 'noSpecialCharHits'
-            : 'specialCharHits',
+            : 'specialCharHits'),
       );
 
       if (!validating) {
@@ -39,10 +40,7 @@ const enhance = compose(
 
       return {
         matched: noSpecialCharHits.filter(g => idMap[g]),
-        unmatched: [
-          ...noSpecialCharHits.filter(g => idMap[g] === null),
-          ...specialCharHits,
-        ],
+        unmatched: [...noSpecialCharHits.filter(g => idMap[g] === null), ...specialCharHits],
       };
     },
   ),
@@ -50,9 +48,11 @@ const enhance = compose(
 
 class UploadSet extends React.Component {
   input = null;
+
   clear = () => {
     this.input && this.input.clear();
   };
+
   render() {
     const {
       hits,
@@ -77,8 +77,7 @@ class UploadSet extends React.Component {
             margin: 0,
             paddingBottom: 10,
             paddingTop: 15,
-          }}
-        >
+          }}>
           {heading}
         </h2>
         <div
@@ -91,35 +90,31 @@ class UploadSet extends React.Component {
             overflow: 'auto',
             // calc instead of using flex because IE11 doesn't handle flex + max-height properly
             maxHeight: 'calc(100vh - 160px)',
-          }}
-        >
+          }}>
           {content}
           <SetInput
             {...inputProps}
             onUpdate={setHits}
-            ref={n => (this.input = n)}
-          />
+            ref={n => (this.input = n)} />
           {validating && validatingMessage}
           <MappingTable matched={matched} unmatched={unmatched} />
         </div>
         <Row
+          spacing="1rem"
           style={{
             ...styles.horizontalPadding,
             justifyContent: 'flex-end',
             paddingTop: 10,
             paddingBottom: 15,
-          }}
-          spacing="1rem"
-        >
+          }}>
           <Button onClick={() => dispatch(setModal(null))}>Cancel</Button>
-          <Button onClick={this.clear} disabled={!hits.length}>
+          <Button disabled={!hits.length} onClick={this.clear}>
             Clear
           </Button>
 
           <CreateSetButton
             hits={matched}
-            onClose={() => dispatch(setModal(null))}
-          />
+            onClose={() => dispatch(setModal(null))} />
         </Row>
       </div>
     );

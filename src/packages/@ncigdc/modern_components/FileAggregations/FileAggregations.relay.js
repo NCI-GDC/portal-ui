@@ -11,43 +11,41 @@ import { parse } from 'query-string';
 
 const entityType = 'Files';
 
-export default (Component: ReactClass<*>) =>
-  compose(
-    withRouter,
-    withPropsOnChange(
-      ['location'],
-      ({ location: { search }, defaultFilters = null }) => {
-        const q = parse(search);
-        const filters = parseFilterParam(q.filters, defaultFilters);
-        return {
+export default (Component: ReactClass<*>) => compose(
+  withRouter,
+  withPropsOnChange(
+    ['location'],
+    ({ location: { search }, defaultFilters = null }) => {
+      const q = parse(search);
+      const filters = parseFilterParam(q.filters, defaultFilters);
+      return {
+        filters,
+      };
+    },
+  ),
+  connect((state, props) => ({
+    userSelectedFacets: state.customFacets[entityType],
+  })),
+  withPropsOnChange(
+    ['userSelectedFacets', 'filters'],
+    ({ userSelectedFacets, filters }) => {
+      return {
+        variables: {
           filters,
-        };
-      },
-    ),
-    connect((state, props) => ({
-      userSelectedFacets: state.customFacets[entityType],
-    })),
-    withPropsOnChange(
-      ['userSelectedFacets', 'filters'],
-      ({ userSelectedFacets, filters }) => {
-        return {
-          variables: {
-            filters,
-            repoFileCustomFacetFields: userSelectedFacets
-              .map(({ field }) => field)
-              .join(','),
-          },
-        };
-      },
-    ),
-  )((props: Object) => {
-    return (
-      <Query
-        parentProps={props}
-        minHeight={578}
-        variables={props.variables}
-        Component={Component}
-        query={graphql`
+          repoFileCustomFacetFields: userSelectedFacets
+            .map(({ field }) => field)
+            .join(','),
+        },
+      };
+    },
+  ),
+)((props: Object) => {
+  return (
+    <Query
+      Component={Component}
+      minHeight={578}
+      parentProps={props}
+      query={graphql`
           query FileAggregations_relayQuery(
             $filters: FiltersArgument
             $repoFileCustomFacetFields: [String]!
@@ -108,6 +106,6 @@ export default (Component: ReactClass<*>) =>
             }
           }
         `}
-      />
-    );
-  });
+      variables={props.variables} />
+  );
+});

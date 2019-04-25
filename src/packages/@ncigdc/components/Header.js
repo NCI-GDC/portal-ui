@@ -1,10 +1,12 @@
 // @flow
 
 import React from 'react';
-import { compose, pure, lifecycle, withHandlers, withState } from 'recompose';
+import {
+  compose, pure, lifecycle, withHandlers, withState,
+} from 'recompose';
 import { connect } from 'react-redux';
 
-import { dismissNotification } from '@ncigdc/dux/bannerNotification';
+import { dismissNotification, removeNotification } from '@ncigdc/dux/bannerNotification';
 import nciGdcLogo from '@ncigdc/theme/images/NHI_GDC_DataPortal-logo.svg';
 import HomeLink from '@ncigdc/components/Links/HomeLink';
 import AnalysisLink from '@ncigdc/components/Links/AnalysisLink';
@@ -19,7 +21,7 @@ import UserDropdown from '@ncigdc/components/UserDropdown';
 import Hidden from '@ncigdc/components/Hidden';
 import { setModal } from '@ncigdc/dux/modal';
 import { forceLogout } from '@ncigdc/dux/auth';
-import { removeNotification } from '@ncigdc/dux/bannerNotification';
+
 import SessionExpiredModal from '@ncigdc/components/Modals/SessionExpiredModal';
 import withRouter from '@ncigdc/utils/withRouter';
 import Banner from '@ncigdc/uikit/Banner';
@@ -75,7 +77,10 @@ const Header = compose(
     },
     componentWillReceiveProps(nextProps: Object): void {
       if (nextProps.error !== this.props.error) {
-        this.props.handleApiError({ ...nextProps.error, user: nextProps.user });
+        this.props.handleApiError({
+          ...nextProps.error,
+          user: nextProps.user,
+        });
       }
     },
   }),
@@ -93,24 +98,21 @@ const Header = compose(
     setIsInSearchMode,
   }) => (
     <header
-      id="header"
       className="navbar navbar-default navbar-static-top"
-      role="banner"
-    >
+      id="header"
+      role="banner">
       {notifications.map(n => (
         <Banner
           {...n}
-          key={n.id}
           handleOnDismiss={() => dispatch(dismissNotification(n.id))}
-        />
+          key={n.id} />
       ))}
       <div className="container-fluid">
         <div className="navbar-header">
           <button
-            type="button"
             className="navbar-toggle"
             onClick={() => setIsCollapsed(!isCollapsed)}
-          >
+            type="button">
             <span className="sr-only test-toggle-navigation">
               Toggle navigation
             </span>
@@ -120,23 +122,21 @@ const Header = compose(
           </button>
           <HomeLink
             className="navbar-brand"
-            tabIndex="0"
             style={{ padding: 0 }}
-          >
-            <img src={nciGdcLogo} alt="gdc-logo" />
+            tabIndex="0">
+            <img alt="gdc-logo" src={nciGdcLogo} />
             <Hidden>
               <h1>GDC Home</h1>
             </Hidden>
           </HomeLink>
         </div>
         <nav
-          style={{ outline: 'none' }}
+          aria-label="Site Navigation"
           className={`navbar-collapse ${isCollapsed ? 'collapse' : ''}`}
           data-uib-collapse="hc.isCollapsed"
-          tabIndex="-1"
-          aria-label="Site Navigation"
           onClick={() => setIsCollapsed(true)}
-        >
+          style={{ outline: 'none' }}
+          tabIndex="-1">
           <ul className="nav navbar-nav">
             <li>
               <HomeLink exact activeStyle={styles.activeNavLink(theme)}>
@@ -163,8 +163,7 @@ const Header = compose(
               <AnalysisLink exact activeStyle={styles.activeNavLink(theme)}>
                 <Row
                   // needed for handling IE default svg style
-                  style={{ alignItems: 'center' }}
-                >
+                  style={{ alignItems: 'center' }}>
                   <AnalysisIcon style={styles.iconPadding} />
                   <span className="header-hidden-sm">Analysis</span>
                   <Hidden>Analysis</Hidden>
@@ -184,8 +183,7 @@ const Header = compose(
               <QuickSearch
                 isInSearchMode={isInSearchMode}
                 setIsInSearchMode={setIsInSearchMode}
-                tabIndex="0"
-              />
+                tabIndex="0" />
             </li>
             {!isInSearchMode && (
               <li>
@@ -194,16 +192,16 @@ const Header = compose(
             )}
             {!user &&
               !isInSearchMode && (
-                <li>
-                  <LoginButton />
-                </li>
-              )}
+              <li>
+                <LoginButton />
+              </li>
+            )}
             {user &&
               !isInSearchMode && (
-                <li className="header-hidden-xs">
-                  <UserDropdown />
-                </li>
-              )}
+              <li className="header-hidden-xs">
+                <UserDropdown />
+              </li>
+            )}
             {!isInSearchMode && (
               <li>
                 <CartLink>
@@ -211,12 +209,10 @@ const Header = compose(
                     <span>
                       <i
                         className="fa fa-shopping-cart"
-                        style={styles.iconPadding}
-                      />
+                        style={styles.iconPadding} />
                       <span
                         className="header-hidden-sm header-hidden-md"
-                        style={styles.iconPadding}
-                      >
+                        style={styles.iconPadding}>
                         Cart
                       </span>
                       <span className="label label-primary">

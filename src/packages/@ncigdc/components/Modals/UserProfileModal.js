@@ -53,36 +53,49 @@ const UserProfileModal = ({
   }));
   return (
     <BaseModal
-      title={`Username: ${username}`}
       closeText="Done"
       contentStyle={{ padding: 0 }}
-    >
+      title={`Username: ${username}`}>
       <div
         style={{
           overflow: 'auto',
           // calc instead of using flex because IE11 doesn't handle flex + max-height properly
           maxHeight: 'calc(100vh - 200px)',
-        }}
-      >
+        }}>
         <Column style={{ alignContent: 'center' }}>
           {data
             ? (
               <EntityPageHorizontalTable
                 data={data}
-                emptyMessage={'User has no projects'}
+                emptyMessage="User has no projects"
                 headings={[
-                  { key: 'projectId', title: 'Project ID' },
-                  ...allValues.map(v => ({ key: v, title: v })),
+                  {
+                    key: 'projectId',
+                    title: 'Project ID',
+                  },
+                  ...allValues.map(v => ({
+                    key: v,
+                    title: v,
+                  })),
                 ]}
-                style={{ padding: '2rem', width: '100%' }} />)
+                style={{
+                  padding: '2rem',
+                  width: '100%',
+                }} />
+)
             : (
               <React.Fragment>
                 {/* TODO Turn this into a proper styled component (message pannel?) */}
                 <p style={{ padding: '2rem 2rem 0' }}>
-                  You do not have any access to controlled access data for projects available in the GDC Data Portal.</p>
-                <p style={{ padding: '0 2rem 1rem' }}>For instructions on <a target="_blank" href="https://gdc.cancer.gov/access-data/obtaining-access-controlled-data">how to apply for access to controlled data</a>, please visit our documentation on how to apply for access through dbGAP.
+                  You do not have any access to controlled access data for projects available in the GDC Data Portal.
                 </p>
-              </React.Fragment>)}
+                <p style={{ padding: '0 2rem 1rem' }}>
+For instructions on
+                  <a href="https://gdc.cancer.gov/access-data/obtaining-access-controlled-data" target="_blank">how to apply for access to controlled data</a>
+, please visit our documentation on how to apply for access through dbGAP.
+                </p>
+              </React.Fragment>
+)}
         </Column>
       </div>
     </BaseModal>

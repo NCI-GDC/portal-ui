@@ -19,7 +19,9 @@ const COMPONENT_NAME = 'AffectedCasesBarChart';
 
 class Route extends Relay.Route {
   static routeName = COMPONENT_NAME;
+
   static queries = viewerQuery;
+
   static prepareParams = ({ location: { search }, defaultFilters = null }) => {
     const q = parse(search);
 
@@ -32,14 +34,13 @@ class Route extends Relay.Route {
   };
 }
 
-const createContainer = Component =>
-  Relay.createContainer(Component, {
-    initialVariables: {
-      affectedCasesBarChart_filters: null,
-      score: 'gene.gene_id',
-    },
-    fragments: {
-      viewer: () => Relay.QL`
+const createContainer = Component => Relay.createContainer(Component, {
+  initialVariables: {
+    affectedCasesBarChart_filters: null,
+    score: 'gene.gene_id',
+  },
+  fragments: {
+    viewer: () => Relay.QL`
         fragment on Root {
           explore {
             allCases: cases {
@@ -63,8 +64,8 @@ const createContainer = Component =>
           }
         }
       `,
-    },
-  });
+  },
+});
 
 const Component = compose(
   withTheme,
@@ -84,9 +85,13 @@ const Component = compose(
         <span>
           <b>{c.submitter_id}</b>
           <br />
-          Project: {c.project.project_id}
+          Project:
+          {' '}
+          {c.project.project_id}
           <br />
-          {c.score.toLocaleString()} Genes Affected
+          {c.score.toLocaleString()}
+          {' '}
+Genes Affected
         </span>
       ),
       onClick: () => push(`/cases/${c.case_id}`),
@@ -97,51 +102,53 @@ const Component = compose(
         <Column style={{ padding: '0 0 0 2rem' }}>
           {cases &&
             !!cases.hits.edges.length && (
-              <Row style={{ justifyContent: 'flex-end' }}>
-                <DownloadVisualizationButton
-                  svg={() =>
-                    wrapSvg({
-                      selector: '#most-affected-cases svg',
-                      title: 'Most Affected Cases',
-                    })}
-                  data={chartData.map(d => ({
-                    label: d.fullLabel,
-                    value: d.value,
-                  }))}
-                  slug="most-affected-cases-bar-chart"
-                  noText
-                  tooltipHTML="Download image or data"
-                  style={{ marginRight: '2rem' }}
-                />
-              </Row>
-            )}
+            <Row style={{ justifyContent: 'flex-end' }}>
+              <DownloadVisualizationButton
+                data={chartData.map(d => ({
+                  label: d.fullLabel,
+                  value: d.value,
+                }))}
+                noText
+                slug="most-affected-cases-bar-chart"
+                style={{ marginRight: '2rem' }}
+                svg={() => wrapSvg({
+                  selector: '#most-affected-cases svg',
+                  title: 'Most Affected Cases',
+                })}
+                tooltipHTML="Download image or data" />
+            </Row>
+          )}
           {cases &&
             !!cases.hits.edges.length && (
-              <Row id="most-affected-cases">
-                <BarChart
-                  data={chartData}
-                  height={CHART_HEIGHT}
-                  margin={{ top: 20, right: 50, bottom: 85, left: 55 }}
-                  yAxis={{ title: '# Affected Genes' }}
-                  styles={{
-                    xAxis: {
-                      stroke: theme.greyScale4,
-                      textFill: theme.greyScale3,
-                    },
-                    yAxis: {
-                      stroke: theme.greyScale4,
-                      textFill: theme.greyScale3,
-                    },
-                    bars: { fill: theme.secondary },
-                    tooltips: {
-                      fill: '#fff',
-                      stroke: theme.greyScale4,
-                      textFill: theme.greyScale3,
-                    },
-                  }}
-                />
-              </Row>
-            )}
+            <Row id="most-affected-cases">
+              <BarChart
+                data={chartData}
+                height={CHART_HEIGHT}
+                margin={{
+                  top: 20,
+                  right: 50,
+                  bottom: 85,
+                  left: 55,
+                }}
+                styles={{
+                  xAxis: {
+                    stroke: theme.greyScale4,
+                    textFill: theme.greyScale3,
+                  },
+                  yAxis: {
+                    stroke: theme.greyScale4,
+                    textFill: theme.greyScale3,
+                  },
+                  bars: { fill: theme.secondary },
+                  tooltips: {
+                    fill: '#fff',
+                    stroke: theme.greyScale4,
+                    textFill: theme.greyScale3,
+                  },
+                }}
+                yAxis={{ title: '# Affected Genes' }} />
+            </Row>
+          )}
         </Column>
       </div>
     );

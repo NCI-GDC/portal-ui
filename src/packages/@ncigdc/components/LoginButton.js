@@ -34,15 +34,13 @@ const LoginButton = ({ children, dispatch, user }) => (
           });
           await dispatch(fetchUser());
           await dispatch(fetchNotifications());
-        }}
-      >
+        }}>
         {children || (
           <span>
             <LoginIcon />
             <span
               className="header-hidden-sm header-hidden-md"
-              style={styles.marginLeft}
-            >
+              style={styles.marginLeft}>
               Login
             </span>
           </span>

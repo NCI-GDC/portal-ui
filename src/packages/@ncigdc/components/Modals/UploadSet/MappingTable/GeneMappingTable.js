@@ -37,17 +37,14 @@ const enhance = compose(
     )
       .map(([geneId, submitted]) => {
         const geneData = geneMap[geneId];
-        var temp = GENE_ID_FIELDS.map((idField, i) => {
-          const value = getIds(geneData, idField).filter(v =>
-            submitted.includes(v.toUpperCase()),
-          )[0];
+        const temp = GENE_ID_FIELDS.map((idField, i) => {
+          const value = getIds(geneData, idField).filter(v => submitted.includes(v.toUpperCase()),)[0];
 
           if (value) {
             submittedHeaders[i] = idField;
             return value;
-          } else {
-            return '';
           }
+          return '';
         });
 
         return {
@@ -70,14 +67,15 @@ const enhance = compose(
 );
 
 export default enhance(
-  ({ matched, matchedGenes, unmatched, submittedHeaders, ...props }) => {
+  ({
+    matched, matchedGenes, unmatched, submittedHeaders, ...props
+  }) => {
     const from = matched.length;
     const to = matchedGenes.length;
 
     return (
       <TabbedLinks
         {...props}
-        queryParam="uploadGeneTab"
         links={[
           {
             id: 'matched',
@@ -89,42 +87,47 @@ export default enhance(
                     alignItems: 'center',
                     justifyContent: 'space-between',
                     margin: '1rem',
-                  }}
-                >
+                  }}>
                   <div>
-                    {from} submitted gene identifier{from > 1 ? 's' : ''} mapped
-                    to {to} unique GDC gene{to > 1 ? 's' : ''}
+                    {from}
+                    {' '}
+submitted gene identifier
+                    {from > 1 ? 's' : ''}
+                    {' '}
+mapped
+                    to
+                    {to}
+                    {' '}
+unique GDC gene
+                    {to > 1 ? 's' : ''}
                   </div>
                   <Button
-                    style={{ ...visualizingButton }}
                     disabled={!matchedGenes.length}
-                    onClick={() =>
-                      saveFile(
-                        toTsvString(
-                          matchedGenes.map(item => ({
-                            ...item.submitted.reduce(
-                              (acc, field, i) =>
-                                Object.assign(acc, {
-                                  [`submitted${submittedHeaders[i]}`]: field,
-                                }),
-                              {},
-                            ),
-                            mappedGeneId: item.mapped[0],
-                            mappedSymbol: item.mapped[1],
-                          })),
-                        ),
-                        'TSV',
-                        `matched-gene-list.tsv`,
-                      )}
-                  >
+                    onClick={() => saveFile(
+                      toTsvString(
+                        matchedGenes.map(item => ({
+                          ...item.submitted.reduce(
+                            (acc, field, i) => Object.assign(acc, {
+                              [`submitted${submittedHeaders[i]}`]: field,
+                            }),
+                            {},
+                          ),
+                          mappedGeneId: item.mapped[0],
+                          mappedSymbol: item.mapped[1],
+                        })),
+                      ),
+                      'TSV',
+                      'matched-gene-list.tsv',
+                    )}
+                    style={{ ...visualizingButton }}>
                     TSV
                   </Button>
                 </Row>
                 <EntityPageHorizontalTable
+                  data={matchedGenes}
                   dividerStyle={{
                     borderLeft: `1px solid ${theme.greyScale3}`,
                   }}
-                  data={matchedGenes}
                   headings={[
                     {
                       key: 'submitted',
@@ -135,14 +138,10 @@ export default enhance(
                     {
                       key: 'mapped',
                       title: 'Mapped To',
-                      subheadings: [
-                        'GDC Gene ID',
-                        GENE_ID_FIELD_DISPLAY.symbol,
-                      ],
+                      subheadings: ['GDC Gene ID', GENE_ID_FIELD_DISPLAY.symbol],
                       thStyle: { textAlign: 'center' },
                     },
-                  ]}
-                />
+                  ]} />
               </div>
             ),
           },
@@ -156,22 +155,23 @@ export default enhance(
                     alignItems: 'center',
                     justifyContent: 'space-between',
                     margin: '1rem',
-                  }}
-                >
+                  }}>
                   <div>
-                    {unmatched.length} submitted gene identifier{unmatched.length > 1 ? 's' : ''}{' '}
+                    {unmatched.length}
+                    {' '}
+submitted gene identifier
+                    {unmatched.length > 1 ? 's' : ''}
+                    {' '}
                     not recognized
                   </div>
                   <Button
-                    style={{ ...visualizingButton }}
                     disabled={!unmatched.length}
-                    onClick={() =>
-                      saveFile(
-                        toTsvString(unmatched),
-                        'TSV',
-                        `unmatched-gene-list.tsv`,
-                      )}
-                  >
+                    onClick={() => saveFile(
+                      toTsvString(unmatched),
+                      'TSV',
+                      'unmatched-gene-list.tsv',
+                    )}
+                    style={{ ...visualizingButton }}>
                     TSV
                   </Button>
                 </Row>
@@ -183,13 +183,12 @@ export default enhance(
                       title: 'Submitted Gene Identifier',
                       thStyle: { textAlign: 'center' },
                     },
-                  ]}
-                />
+                  ]} />
               </div>
             ),
           },
         ]}
-      />
+        queryParam="uploadGeneTab" />
     );
   },
 );

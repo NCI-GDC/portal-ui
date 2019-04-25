@@ -11,8 +11,7 @@ export default ({ children, style = {}, ...props }) => (
       alignItems: 'center',
       ...style,
     }}
-    {...props}
-  >
+    {...props}>
     {children}
   </h1>
 );

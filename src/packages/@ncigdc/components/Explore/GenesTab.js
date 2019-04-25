@@ -1,7 +1,9 @@
 // @flow
 import React from 'react';
 import { get } from 'lodash';
-import { compose, withState, withProps, withHandlers } from 'recompose';
+import {
+  compose, withState, withProps, withHandlers,
+} from 'recompose';
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import { getDefaultCurve, enoughData } from '@ncigdc/utils/survivalplot';
 import withFilters from '@ncigdc/utils/withFilters';
@@ -89,7 +91,12 @@ export default compose(
 
       const newFilters = toggleFilters(
         filters,
-        makeFilter([{ field: 'genes.gene_id', value: [gene.gene_id, ...sets] }])
+        makeFilter([
+          {
+            field: 'genes.gene_id',
+            value: [gene.gene_id, ...sets],
+          },
+        ])
       );
       push({
         pathname: '/exploration',
@@ -114,29 +121,34 @@ export default compose(
     handleClickGene,
   }) => (
     <Column style={styles.card}>
-      <h1 style={{ ...styles.heading, padding: '1rem' }} id="mutated-genes">
+      <h1
+        id="mutated-genes"
+        style={{
+          ...styles.heading,
+          padding: '1rem',
+        }}>
         <i className="fa fa-bar-chart-o" style={{ paddingRight: '10px' }} />
         Genes
       </h1>
       <Column>
         <Row
-          style={{ paddingBottom: '1.5rem', borderBottom: '1px solid #c8c8c8' }}
-        >
+          style={{
+            paddingBottom: '1.5rem',
+            borderBottom: '1px solid #c8c8c8',
+          }}>
           <Column flex="none" style={{ width: '50%' }}>
             <GenesBarChart
               defaultFilters={filters}
               onClickGene={handleClickGene}
-              showingMore={false} //{showingMore} // GenesBarChart component and related are hidding for now.
-            />
+              showingMore={false} />
           </Column>
           <Column flex="none" style={{ width: '50%' }}>
             <SurvivalPlotWrapper
               {...survivalData}
+              height={240}
               onReset={() => setSelectedSurvivalData({})}
               plotType="mutation"
-              height={240}
-              survivalPlotLoading={loading}
-            />
+              survivalPlotLoading={loading} />
           </Column>
         </Row>
         {/* <Row style={{ margin: 'auto', marginTop: '-1.5rem' }}>
@@ -146,15 +158,14 @@ export default compose(
         </Row> */}
         {/* GenesBarChart component and related are hidding for now. */}
         <GenesTable
+          context="Cohort"
           defaultFilters={filters}
-          survivalData={survivalData}
           hasEnoughSurvivalDataOnPrimaryCurve={enoughData(
             defaultSurvivalData.rawData
           )}
-          setSelectedSurvivalData={setSelectedSurvivalData}
           selectedSurvivalData={selectedSurvivalData}
-          context="Cohort"
-        />
+          setSelectedSurvivalData={setSelectedSurvivalData}
+          survivalData={survivalData} />
       </Column>
     </Column>
   )

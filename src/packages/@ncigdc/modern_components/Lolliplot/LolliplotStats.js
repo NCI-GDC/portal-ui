@@ -19,33 +19,45 @@ export default ({
   state,
   style,
 }) => (
-  <div id="mutation-stats" style={{ marginLeft: '20px', ...style }}>
+  <div
+    id="mutation-stats"
+    style={{
+      marginLeft: '20px',
+      ...style,
+    }}>
     <div
       style={{
         border: '1px solid rgb(186, 186, 186)',
         padding: '13px',
-      }}
-    >
+      }}>
       <div>
         <span>
-          Viewing{' '}
+          Viewing
+          {' '}
           {mutations
             .filter(d => d.x >= min && d.x <= max)
             .filter(filterByType(blacklist))
             .length.toLocaleString()}
         </span>
         <span> / </span>
-        <span>{mutations.length.toLocaleString()} Mutations</span>
+        <span>
+          {mutations.length.toLocaleString()}
+          {' '}
+Mutations
+        </span>
         {outsideSsms.length > 0 && (
           <span style={{ float: 'right' }}>
             <Tooltip
-              Component={
+              Component={(
                 <div>
                   <div>
-                    {outsideSsms.length.toLocaleString()} mutation
+                    {outsideSsms.length.toLocaleString()}
+                    {' '}
+mutation
                     {outsideSsms.length > 1
                       ? 's amino acid changes occur '
-                      : "'s amino acid change occurs "}{' '}
+                      : '\'s amino acid change occurs '}
+                    {' '}
                     outside of the annotated transcript's length.
                   </div>
                   <div style={{ marginTop: 5 }}>
@@ -69,30 +81,30 @@ export default ({
                     </table>
                   </div>
                 </div>
-              }
-            >
+              )}>
               <i
                 className="fa fa-warning"
                 style={{
                   color: 'rgb(215, 175, 33)',
                   cursor: 'pointer',
-                }}
-              />
+                }} />
             </Tooltip>
           </span>
         )}
       </div>
       <div style={{ marginTop: '6px' }}>
         <select
-          value={blacklist}
+          aria-label="Color by:"
           onChange={e => {
             e.persist();
-            setState(s => ({ ...s, blacklist: e.target.value }));
+            setState(s => ({
+              ...s,
+              blacklist: e.target.value,
+            }));
           }}
-          aria-label="Color by:"
-        >
+          value={blacklist}>
           <option value="consequence">Consequence</option>
-          <option value="impact" disabled={impactUnknown}>
+          <option disabled={impactUnknown} value="impact">
             Impact (VEP)
           </option>
         </select>
@@ -102,16 +114,14 @@ export default ({
           style={{
             marginTop: '6px',
             fontSize: '14px',
-          }}
-        >
+          }}>
           <div>
             <span
               onClick={clearBlacklist}
               style={{
                 color: 'rgb(27, 103, 145)',
                 cursor: 'pointer',
-              }}
-            >
+              }}>
               Select All
             </span>
             <span>&nbsp;|&nbsp;</span>
@@ -122,8 +132,7 @@ export default ({
               style={{
                 color: 'rgb(27, 103, 145)',
                 cursor: 'pointer',
-              }}
-            >
+              }}>
               Deselect All
             </span>
           </div>
@@ -136,8 +145,7 @@ export default ({
             style={{
               marginTop: '6px',
               fontSize: '14px',
-            }}
-          >
+            }}>
             <div>
               <span
                 onClick={() => toggleBlacklistItem(variant)}
@@ -149,25 +157,29 @@ export default ({
                   cursor: 'pointer',
                   display: 'inline-block',
                   marginRight: '6px',
-                }}
-              >
+                }}>
                 {state[`${blacklist}Blacklist`].has(variant) ? (
                   <span>&nbsp;</span>
                 ) : (
                   '✓'
                 )}
               </span>
-              <span>{startCase(variant)}:</span>
+              <span>
+                {startCase(variant)}
+:
+              </span>
               <span style={{ float: 'right' }}>
                 <b>
                   {// $FlowIgnore
-                  xs
-                    .filter(d => d.x >= min && d.x <= max)
-                    .filter(filterByType(blacklist))
-                    .length.toLocaleString()}
+                    xs
+                      .filter(d => d.x >= min && d.x <= max)
+                      .filter(filterByType(blacklist))
+                      .length.toLocaleString()}
                 </b>
                 {/* $FlowIgnore */}
-                &nbsp;/ <b>{xs.length.toLocaleString()}</b>
+                &nbsp;/
+                {' '}
+                <b>{xs.length.toLocaleString()}</b>
               </span>
             </div>
           </div>

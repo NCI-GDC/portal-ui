@@ -32,7 +32,10 @@ export default compose(
       if (strat) {
         const linkQuery = {
           filters: makeFilter([
-            { field: 'cases.case_id', value: p.case_id },
+            {
+              field: 'cases.case_id',
+              value: p.case_id,
+            },
             {
               field: 'files.experimental_strategy',
               value: [strat.experimental_strategy],
@@ -53,15 +56,17 @@ export default compose(
             file_count_meter: (
               <SparkMeterWithTooltip
                 part={strat.file_count}
-                whole={totalFiles}
-              />
+                whole={totalFiles} />
             ),
             file_count_value: strat.file_count,
             tooltip: (
               <span>
                 <b>{strat.experimental_strategy}</b>
                 <br />
-                {strat.file_count} file{strat.file_count > 1 ? 's' : ''}
+                {strat.file_count}
+                {' '}
+file
+                {strat.file_count > 1 ? 's' : ''}
               </span>
             ),
             clickHandler: () => {
@@ -71,7 +76,10 @@ export default compose(
                 filters:
                   newQuery.filters && stringifyJSONParam(newQuery.filters),
               });
-              push({ pathname: '/repository', query: q });
+              push({
+                pathname: '/repository',
+                query: q,
+              });
             },
           },
         ];
@@ -85,12 +93,9 @@ export default compose(
     <span style={{ flex: 1 }}>
       <SummaryCard
         className="test-experimental-strategy-summary"
-        tableTitle="File Counts by Experimental Strategy"
-        pieChartTitle="File Counts by Experimental Strategy"
         data={experimentalStrategies}
         footer={`${(experimentalStrategies || [])
           .length} Experimental Strategies`}
-        path="file_count_value"
         headings={[
           {
             key: 'experimental_strategy',
@@ -117,8 +122,7 @@ export default compose(
                   facetTab: 'files',
                   searchTableTab: 'files',
                 }}
-                title="Browse files"
-              >
+                title="Browse files">
                 <SampleSize n={totalFiles} />
               </Link>
             ),
@@ -129,7 +133,9 @@ export default compose(
             style: { textAlign: 'left' },
           },
         ]}
-      />
+        path="file_count_value"
+        pieChartTitle="File Counts by Experimental Strategy"
+        tableTitle="File Counts by Experimental Strategy" />
     </span>
   );
 });

@@ -65,8 +65,13 @@ export default (Component: any) => {
             },
             onCompleted: response => {
               setIsCreating(false);
-              const hash = get(response, ['sets', action, scope, type]);
-              const [setId, size] = [hash['set_id'], hash['size']];
+              const hash = get(response, [
+                'sets',
+                action,
+                scope,
+                type,
+              ]);
+              const [setId, size] = [hash.set_id, hash.size];
               onComplete(setId, size);
             },
             onError: err => {

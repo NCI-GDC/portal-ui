@@ -35,21 +35,19 @@ const Row: ComponentType<IFlexDivProps> = ({
   ...props
 }) => (
   <div
+    className={className}
     style={{
       ...baseStyle,
       flex,
       ...wrap ? { flexWrap: 'wrap' } : {},
       ...style,
     }}
-    className={className}
-    {...props}
-  >
+    {...props}>
     {!spacing && children}
     {spacing &&
       Children.map(
         children,
-        (child: ReactElement<any>, i) =>
-          child &&
+        (child: ReactElement<any>, i) => child &&
           cloneElement(child, {
             ...child.props,
             style: {

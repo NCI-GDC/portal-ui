@@ -20,8 +20,16 @@ const styles = {
 };
 
 export default props => (
-  <Column style={{ ...styles.card, position: 'static' }}>
-    <h1 style={{ ...styles.heading, padding: '1rem' }} id="oncogrid">
+  <Column style={{
+    ...styles.card,
+    position: 'static',
+  }}>
+    <h1
+      id="oncogrid"
+      style={{
+        ...styles.heading,
+        padding: '1rem',
+      }}>
       <i className="fa fa-th" style={{ paddingRight: '10px' }} />
       OncoGrid
     </h1>
@@ -33,8 +41,7 @@ export default props => (
         return (
           <OncoGridWrapper
             currentFilters={currentFilters}
-            width={window.innerWidth}
-          />
+            width={window.innerWidth} />
         );
       }}
     </LocationSubscriber>

@@ -14,9 +14,9 @@ import SortTableButton, {
   TSortTableButtonSortFunc,
   ISortSelection,
 } from '@ncigdc/components/SortTableButton';
+import multisort from 'multisort';
 import tableModel from './CancerDistributionTable.model';
 import { TCancerDistributionTableProps, IBucket } from './types';
-import multisort from 'multisort';
 
 const paginationPrefix = 'canDistTable';
 
@@ -72,18 +72,15 @@ export default compose<ICDTWrappedProps, TCancerDistributionTableProps>(
         fields.push('cnvGain', 'cnvLoss', 'cnvTotal');
       }
 
-      fields.map(type =>
-        cases[type].project__project_id.buckets.map(
-          (b: IBucket) =>
-            (caseFiltered = {
-              ...caseFiltered,
-              [b.key]: {
-                ...caseFiltered[b.key],
-                [type]: b.doc_count,
-              },
-            })
-        )
-      );
+      fields.map(type => cases[type].project__project_id.buckets.map(
+        (b: IBucket) => (caseFiltered = {
+          ...caseFiltered,
+          [b.key]: {
+            ...caseFiltered[b.key],
+            [type]: b.doc_count,
+          },
+        })
+      ));
 
       const rawData: TRawData = Object.keys(caseFiltered)
         .filter(b => head(projectsById[b]))
@@ -144,67 +141,66 @@ export default compose<ICDTWrappedProps, TCancerDistributionTableProps>(
     const multisortKey: string[] =
       tableSort.length > 0
         ? tableSort.reduce(
-            (acc, { order, field }) => {
-              acc.push(order === 'desc' ? `~${field}` : field);
-              return acc;
-            },
+          (acc, { order, field }) => {
+            acc.push(order === 'desc' ? `~${field}` : field);
+            return acc;
+          },
             [] as string[]
-          )
+        )
         : ['~num_affected_cases_percent']; // default sort
 
     // Sort rawdata before formatting
     // https://www.npmjs.com/package/multisort
-    const data = multisort(rawData, multisortKey).map(row =>
-      visibleCols.reduce((acc, { id, td }) => {
-        acc[id] = td({ node: row });
-        return acc;
-      }, {})
-    );
+    const data = multisort(rawData, multisortKey).map(row => visibleCols.reduce((acc, { id, td }) => {
+      acc[id] = td({ node: row });
+      return acc;
+    }, {}));
 
     return (
       <span>
         <LocalPaginationTable
-          style={{ width: '100%', minWidth: 450 }}
-          data={data}
-          prefix={paginationPrefix}
-          buttons={
+          buttons={(
             <Row style={{ alignItems: 'flex-end' }}>
               {sortableCols.length > 1 && (
                 <SortTableButton
+                  options={sortableCols.map(({ id, name }) => ({
+                    id,
+                    name,
+                  }))}
                   sortFunction={sortFunction}
-                  options={sortableCols.map(({ id, name }) => ({ id, name }))}
-                  style={{ ...visualizingButton }}
-                />
+                  style={{ ...visualizingButton }} />
               )}
               <Tooltip
-                Component={
-                  <span>Export All{geneId ? ' Except # Mutations' : ''}</span>
-                }
-                style={{ marginLeft: '0.5rem' }}
-              >
+                Component={(
+                  <span>
+Export All
+                    {geneId ? ' Except # Mutations' : ''}
+                  </span>
+                )}
+                style={{ marginLeft: '0.5rem' }}>
                 <Button
-                  style={{ ...visualizingButton }}
-                  onClick={() =>
-                    saveFile(
-                      JSON.stringify(rawData, null, 2),
-                      'JSON',
-                      'cancer-distribution-data.json'
-                    )}
-                >
+                  onClick={() => saveFile(
+                    JSON.stringify(rawData, null, 2),
+                    'JSON',
+                    'cancer-distribution-data.json'
+                  )}
+                  style={{ ...visualizingButton }}>
                   JSON
                 </Button>
               </Tooltip>
               <DownloadTableToTsvButton
-                selector="#cancer-distribution-table"
                 filename={`cancer-distribution-table${timestamp()}.tsv`}
-                style={{ marginLeft: '0.5rem' }}
-              />
+                selector="#cancer-distribution-table"
+                style={{ marginLeft: '0.5rem' }} />
             </Row>
-          }
-        >
+          )}
+          data={data}
+          prefix={paginationPrefix}
+          style={{
+            width: '100%',
+            minWidth: 450,
+          }}>
           <EntityPageHorizontalTable
-            idKey="id"
-            tableId="cancer-distribution-table"
             headings={visibleCols.map(({ id, th }, idx) => ({
               key: id,
               title: th({
@@ -216,7 +212,8 @@ export default compose<ICDTWrappedProps, TCancerDistributionTableProps>(
               style:
                 idx === visibleCols.length - 1 ? { textAlign: 'right' } : {},
             }))}
-          />
+            idKey="id"
+            tableId="cancer-distribution-table" />
         </LocalPaginationTable>
       </span>
     );

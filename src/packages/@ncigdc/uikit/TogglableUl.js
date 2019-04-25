@@ -22,28 +22,33 @@ type TProps = {
 
 // the first item in items is used as the toggle
 const TogglableUl = (
-  { active, toggleActive, items, onToggle = () => {} }: TProps = {},
+  {
+    active, toggleActive, items, onToggle = () => {},
+  }: TProps = {},
 ) => (
   <ul
     style={{
       listStyle: 'none',
       paddingLeft: 0,
       marginBottom: 0,
-    }}
-  >
+    }}>
     <li
       key="first"
-      role="button"
       onClick={() => {
         toggleActive();
         onToggle();
       }}
-    >
+      role="button">
       {items[0]}
       <DownIcon isDown={active} />
     </li>
     {items.slice(1).map((r, i) => (
-      <li key={i} style={{ height: active ? 'auto' : 0, overflow: 'hidden' }}>
+      <li
+        key={i}
+        style={{
+          height: active ? 'auto' : 0,
+          overflow: 'hidden',
+        }}>
         {r}
       </li>
     ))}

@@ -108,10 +108,7 @@ describe('isUserProject', () => {
         isUserProject({
           user,
           file: {
-            projects: [
-              { project_id: 'TCGA-TEST' },
-              { project_id: 'TCGA-LUAD' },
-            ],
+            projects: [{ project_id: 'TCGA-TEST' }, { project_id: 'TCGA-LUAD' }],
           },
         }),
       ).toBe(true);
@@ -119,10 +116,7 @@ describe('isUserProject', () => {
         isUserProject({
           user,
           file: {
-            projects: [
-              { project_id: 'TCGA-TEST' },
-              { project_id: 'TCGA-KIRC' },
-            ],
+            projects: [{ project_id: 'TCGA-TEST' }, { project_id: 'TCGA-KIRC' }],
           },
         }),
       ).toBe(true);
@@ -142,9 +136,18 @@ describe('isUserProject', () => {
   });
   it('should detect projects directly under file.cases', () => {
     it('with only one project', () => {
-      expect(isUserProject({ user, file: TESTFile })).toBe(true);
-      expect(isUserProject({ user, file: LUADFile })).toBe(true);
-      expect(isUserProject({ user, file: KIRPFile })).toBe(false);
+      expect(isUserProject({
+        user,
+        file: TESTFile,
+      })).toBe(true);
+      expect(isUserProject({
+        user,
+        file: LUADFile,
+      })).toBe(true);
+      expect(isUserProject({
+        user,
+        file: KIRPFile,
+      })).toBe(false);
     });
     it('with more than one project, only one of them needs to be in gdc_ids', () => {
       expect(
@@ -197,11 +200,20 @@ describe('fileInCorrectState', () => {
 
 describe('intersectsWithFileAcl', () => {
   it('should detect _member_ role phsids_ has intersection with file.acl', () => {
-    expect(intersectsWithFileAcl({ user, file: { acl: ['TEST'] } })).toBe(true);
+    expect(intersectsWithFileAcl({
+      user,
+      file: { acl: ['TEST'] },
+    })).toBe(true);
     expect(
-      intersectsWithFileAcl({ user, file: { acl: ['TEST', 'NOT IN'] } }),
+      intersectsWithFileAcl({
+        user,
+        file: { acl: ['TEST', 'NOT IN'] },
+      }),
     ).toBe(true);
-    expect(intersectsWithFileAcl({ user, file: { acl: ['NOT IN'] } })).toBe(
+    expect(intersectsWithFileAcl({
+      user,
+      file: { acl: ['NOT IN'] },
+    })).toBe(
       false,
     );
   });
@@ -209,33 +221,57 @@ describe('intersectsWithFileAcl', () => {
 
 describe('userCanDownloadFiles', () => {
   it('should work on files with projects', () => {
-    expect(userCanDownloadFiles({ user, files: [{ access: 'open' }] })).toBe(
+    expect(userCanDownloadFiles({
+      user,
+      files: [{ access: 'open' }],
+    })).toBe(
       true,
     );
     expect(
       userCanDownloadFiles({
         user,
-        files: [{ access: 'controlled', projects: ['TCGA-TEST'] }],
-      }),
-    ).toBe(true);
-    expect(
-      userCanDownloadFiles({
-        user,
-        files: [{ access: 'controlled', projects: ['TCGA-KIRC'] }],
-      }),
-    ).toBe(false);
-    expect(
-      userCanDownloadFiles({
-        user,
-        files: [{ access: 'controlled', projects: ['TCGA-KIRC', 'TCGA-TEST'] }],
+        files: [
+          {
+            access: 'controlled',
+            projects: ['TCGA-TEST'],
+          },
+        ],
       }),
     ).toBe(true);
     expect(
       userCanDownloadFiles({
         user,
         files: [
-          { access: 'controlled', projects: ['TCGA-KIRC', 'TCGA-TEST'] },
-          { access: 'controlled', projects: ['TCGA-KIRC'] },
+          {
+            access: 'controlled',
+            projects: ['TCGA-KIRC'],
+          },
+        ],
+      }),
+    ).toBe(false);
+    expect(
+      userCanDownloadFiles({
+        user,
+        files: [
+          {
+            access: 'controlled',
+            projects: ['TCGA-KIRC', 'TCGA-TEST'],
+          },
+        ],
+      }),
+    ).toBe(true);
+    expect(
+      userCanDownloadFiles({
+        user,
+        files: [
+          {
+            access: 'controlled',
+            projects: ['TCGA-KIRC', 'TCGA-TEST'],
+          },
+          {
+            access: 'controlled',
+            projects: ['TCGA-KIRC'],
+          },
         ],
       }),
     ).toBe(false);
@@ -255,8 +291,14 @@ describe('userCanDownloadFiles', () => {
       userCanDownloadFiles({
         user,
         files: [
-          { access: 'open', ...TESTFile },
-          { access: 'open', ...KIRPFile },
+          {
+            access: 'open',
+            ...TESTFile,
+          },
+          {
+            access: 'open',
+            ...KIRPFile,
+          },
         ],
       }),
     ).toBe(true);
@@ -264,8 +306,14 @@ describe('userCanDownloadFiles', () => {
       userCanDownloadFiles({
         user,
         files: [
-          { access: 'controlled', ...TESTFile },
-          { access: 'controlled', ...KIRPFile },
+          {
+            access: 'controlled',
+            ...TESTFile,
+          },
+          {
+            access: 'controlled',
+            ...KIRPFile,
+          },
         ],
       }),
     ).toBe(false);
@@ -363,7 +411,10 @@ describe('userCanDownloadFile', () => {
     expect(
       userCanDownloadFile({
         user: { username: 'TEST_USER' },
-        file: { access: 'open', ...TESTFile },
+        file: {
+          access: 'open',
+          ...TESTFile,
+        },
       }),
     ).toBe(true);
   });

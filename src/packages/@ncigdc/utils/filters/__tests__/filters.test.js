@@ -1,5 +1,7 @@
 import { stringifyJSONParam, parseFilterParam } from '@ncigdc/utils/uri/index';
-import { addInFilters, toggleFilters, mergeQuery, removeFilter } from '../';
+import {
+  addInFilters, toggleFilters, mergeQuery, removeFilter,
+} from '..';
 
 const baseFilter = {
   op: 'and',
@@ -150,7 +152,11 @@ describe('toggleFilters', () => {
 
   const ctxq = {
     op: 'and',
-    content: [rangeFromFilter, rangeToFilter, primarySiteFilter],
+    content: [
+      rangeFromFilter,
+      rangeToFilter,
+      primarySiteFilter,
+    ],
   };
   it('should not change the range filter if an unrelated filter was removed', () => {
     const result = toggleFilters(q, ctxq);
@@ -182,7 +188,11 @@ describe('mergeQuery', () => {
     const c = {
       filters: stringifyJSONParam({
         op: 'and',
-        content: [rangeFromFilter, rangeToFilter, primarySiteFilter],
+        content: [
+          rangeFromFilter,
+          rangeToFilter,
+          primarySiteFilter,
+        ],
       }),
     };
 
@@ -205,7 +215,11 @@ describe('removeFilter', () => {
     const query = {
       filters: {
         op: 'and',
-        content: [primarySiteFilter, rangeToFilter, rangeFromFilter],
+        content: [
+          primarySiteFilter,
+          rangeToFilter,
+          rangeFromFilter,
+        ],
       },
     };
     const field = 'cases.diagnoses.age_at_diagnosis';
@@ -260,33 +274,41 @@ describe('removeFilter', () => {
     const query = {
       filters: {
         op: 'and',
-        content: [rangeToFilter, rangeFromFilter, primarySiteFilter]
-      }
-    };
-
-    const field = 'cases.primary_site';
-    const result = removeFilter(field, query.filters);
-    const expectedResult = {
-            op: 'and',
-            content: [rangeToFilter, rangeFromFilter]
-          }
-
-    expect(result).toEqual(expectedResult)
-  });
-
-  it('should remove the filter if it is the first filter in a list', () => {
-    const query = {
-      filters: {
-        op: 'and',
-        content: [primarySiteFilter, rangeToFilter, rangeFromFilter]
-      }
+        content: [
+          rangeToFilter,
+          rangeFromFilter,
+          primarySiteFilter,
+        ],
+      },
     };
 
     const field = 'cases.primary_site';
     const result = removeFilter(field, query.filters);
     const expectedResult = {
       op: 'and',
-      content: [rangeToFilter, rangeFromFilter]
+      content: [rangeToFilter, rangeFromFilter],
+    };
+
+    expect(result).toEqual(expectedResult);
+  });
+
+  it('should remove the filter if it is the first filter in a list', () => {
+    const query = {
+      filters: {
+        op: 'and',
+        content: [
+          primarySiteFilter,
+          rangeToFilter,
+          rangeFromFilter,
+        ],
+      },
+    };
+
+    const field = 'cases.primary_site';
+    const result = removeFilter(field, query.filters);
+    const expectedResult = {
+      op: 'and',
+      content: [rangeToFilter, rangeFromFilter],
     };
 
     expect(result).toEqual(expectedResult);
@@ -296,8 +318,8 @@ describe('removeFilter', () => {
     const query = {
       filters: {
         op: 'and',
-        content: [primarySiteFilter]
-      }
+        content: [primarySiteFilter],
+      },
     };
 
     const field = 'cases.primary_site';
@@ -311,17 +333,26 @@ describe('removeFilter', () => {
     const query = {
       filters: {
         op: 'and',
-        content: [primarySiteFilter, caseFilter, rangeToFilter, rangeFromFilter]
-      }
+        content: [
+          primarySiteFilter,
+          caseFilter,
+          rangeToFilter,
+          rangeFromFilter,
+        ],
+      },
     };
 
     const field = 'case.case_id';
     const result = removeFilter(field, query.filters);
     const expectedResult = {
       op: 'and',
-      content: [primarySiteFilter, rangeToFilter, rangeFromFilter]
+      content: [
+        primarySiteFilter,
+        rangeToFilter,
+        rangeFromFilter,
+      ],
     };
 
     expect(result).toEqual(expectedResult);
-  })
+  });
 });

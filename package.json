@@ -27,7 +27,7 @@
   "dependencies": {
     "@oncojs/react-lolliplot": "0.11.1",
     "@oncojs/sapien": "0.5.2",
-    "@oncojs/survivalplot": "0.6.5",
+    "@oncojs/survivalplot": "0.8.2",
     "@types/d3": "5.0.1",
     "@types/filesize": "3.6.0",
     "@types/lodash": "4.14.117",
@@ -101,7 +101,6 @@
     "babel-plugin-transform-export-extensions": "6.22.0",
     "eslint": "5.16.0",
     "eslint-config-airbnb": "17.1.0",
-    "eslint-import-resolver-webpack": "0.11.1",
     "eslint-plugin-import": "2.17.2",
     "eslint-plugin-jsx-a11y": "6.2.1",
     "eslint-plugin-react": "7.12.4",

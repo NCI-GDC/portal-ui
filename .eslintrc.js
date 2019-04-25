@@ -8,6 +8,7 @@ module.exports = {
   },
   extends: [
     'airbnb',
+    'plugin:import/typescript',
     // 'plugin:@typescript-eslint/recommended', // Allows for TypeScript-specific linting rules to run.
   ],
   globals: {
@@ -29,7 +30,8 @@ module.exports = {
     // 'jest'
   ],
   rules: {
-    'array-element-newline': ['warn', 'consistent'],
+    'array-bracket-newline': ['error', { 'multiline': true, 'minItems': 3 }],
+    'array-element-newline': ['warn', { 'multiline': true, 'minItems': 3 }],
     'arrow-body-style': 'off',
     'arrow-parens': 'off',
     'comma-dangle': ['warn', 'always-multiline'],
@@ -91,6 +93,9 @@ module.exports = {
     'padded-blocks': 'error',
     'semi': ['warn', 'always'],
     'quotes': ['warn', 'single'],
+    'import/no-extraneous-dependencies': ['warn', {
+      'packageDir': './'
+    }],
     'react/jsx-closing-bracket-location': ['warn', 'after-props'],
     'react/jsx-indent-props': ['warn', 'first'],
     'react/jsx-max-props-per-line': ['warn', {
@@ -112,13 +117,13 @@ module.exports = {
       beforeClosing: 'allow',
     }],
     'react/jsx-wrap-multilines': ['error', {
-      declaration: "parens",
-      assignment: "parens",
-      return: "parens",
-      arrow: "parens",
-      condition: "parens",
-      logical: "parens",
-      prop: "parens",
+      declaration: 'parens-new-line',
+      assignment: 'parens-new-line',
+      return: 'parens-new-line',
+      arrow: 'parens-new-line',
+      condition: 'parens-new-line',
+      logical: 'parens-new-line',
+      prop: 'parens-new-line',
     }],
     'react/no-did-mount-set-state': 'warn',
     'react/no-did-update-set-state': 'warn',

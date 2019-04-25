@@ -55,15 +55,15 @@ async function fetchCurves(
     : enoughData(rawData);
   const data = hasEnoughData
     ? {
-        ...rawData,
-        results: rawData.results.map(r => ({
-          ...r,
-          donors: r.donors.map(d => ({
-            ...d,
-            time: d.time / DAYS_IN_YEAR,
-          })),
+      ...rawData,
+      results: rawData.results.map(r => ({
+        ...r,
+        donors: r.donors.map(d => ({
+          ...d,
+          time: d.time / DAYS_IN_YEAR,
         })),
-      }
+      })),
+    }
     : { results: [] };
 
   performanceTracker.end('survival:fetch', {
@@ -87,17 +87,17 @@ export const getDefaultCurve = memoize(
 
     const legend = hasEnoughData
       ? slug && [
-          {
-            key: slug,
-            value: `${rawData.results[0].donors.length.toLocaleString()} Cases with Survival Data`,
-          },
-        ]
+        {
+          key: slug,
+          value: `${rawData.results[0].donors.length.toLocaleString()} Cases with Survival Data`,
+        },
+      ]
       : [
-          {
-            key: `${slug || ''}-not-enough-data`,
-            value: <span>Not enough survival data</span>,
-          },
-        ];
+        {
+          key: `${slug || ''}-not-enough-data`,
+          value: <span>Not enough survival data</span>,
+        },
+      ];
 
     return {
       rawData,
@@ -151,65 +151,64 @@ export const getSurvivalCurves = memoize(
         results:
           rawData.results.length > 1
             ? rawData.results.map((r, idx) => ({
-                ...r,
-                meta: {
-                  ...r.meta,
-                  label: `S${idx + 1}`,
-                },
-              }))
+              ...r,
+              meta: {
+                ...r.meta,
+                label: `S${idx + 1}`,
+              },
+            }))
             : [],
       },
       id: value,
       legend: hasEnoughData
         ? [
-            {
-              key: `${slug || value}-not-mutated`,
+          {
+            key: `${slug || value}-not-mutated`,
+            value: (
+              <span>
+                S
+                <sub>1</sub> (N = {getCaseCount(results2.length > 0)})
+                {plotType === 'mutation' && (
+                  <span>
+                    {' '}
+                    - <Symbol>{slug || value}</Symbol> Not Mutated Cases
+                  </span>
+                )}
+              </span>
+            ),
+          },
+          {
+            key: `${slug || value}-mutated`,
+            value: (
+              <span>
+                S
+                <sub>2</sub> (N = {getCaseCount(results2.length === 0)}){' '}
+                {plotType === 'mutation' && (
+                  <span>
+                    {' '}
+                    - <Symbol>{slug || value}</Symbol> Mutated Cases
+                  </span>
+                )}
+              </span>
+            ),
+          },
+          ...(results2.length === 0 ?
+            [{
+              key: `${slug || value}-cannot-compare`,
               value: (
-                <span>
-                  S
-                  <sub>1</sub> (N = {getCaseCount(results2.length > 0)})
-                  {plotType === 'mutation' && (
-                    <span>
-                      {' '}
-                      - <Symbol>{slug || value}</Symbol> Not Mutated Cases
-                    </span>
-                  )}
-                </span>
+                <div>
+                  <span>Not enough data to compare</span>
+                </div>
               ),
-            },
-            {
-              key: `${slug || value}-mutated`,
-              value: (
-                <span>
-                  S
-                  <sub>2</sub> (N = {getCaseCount(results2.length === 0)}){' '}
-                  {plotType === 'mutation' && (
-                    <span>
-                      {' '}
-                      - <Symbol>{slug || value}</Symbol> Mutated Cases
-                    </span>
-                  )}
-                </span>
-              ),
-            },
-            ...(results2.length === 0 && [
-              {
-                key: `${slug || value}-cannot-compare`,
-                value: (
-                  <div>
-                    <span>Not enough data to compare</span>
-                  </div>
-                ),
-                style: { width: '100%', marginTop: 5 },
-              },
-            ]),
-          ]
+              style: { width: '100%', marginTop: 5 },
+            }] : []),
+        ]
         : [
-            {
-              key: `${slug || value}-not-enough-data`,
-              value: <span>Not enough survival data for {slug || value}</span>,
-            },
-          ],
+          {
+            key: `${slug || value}-not-enough-data`,
+            value: <span>Not enough survival data for {slug || value}</span>,
+          },
+        ],
     };
   },
   {
@@ -232,12 +231,12 @@ export const getSurvivalCurvesArray = memoize(
         plotType === 'continuous'
           ? value.filters
           : replaceFilters(
-              {
-                op: 'and',
-                content: [{ op: '=', content: { field, value } }],
-              },
-              currentFilters
-            )
+            {
+              op: 'and',
+              content: [{ op: '=', content: { field, value } }],
+            },
+            currentFilters
+          )
     );
 
     const rawData = await fetchCurves(filters, size, true);
@@ -252,54 +251,54 @@ export const getSurvivalCurvesArray = memoize(
         results:
           rawData.results.length > 0
             ? rawData.results
-                .filter(r => r.donors.length >= MINIMUM_CASES)
-                .map((r, idx) => ({
-                  ...r,
-                  meta: {
-                    ...r.meta,
-                    label: `S${idx + 1}`,
-                  },
-                }))
+              .filter(r => r.donors.length >= MINIMUM_CASES)
+              .map((r, idx) => ({
+                ...r,
+                meta: {
+                  ...r.meta,
+                  label: `S${idx + 1}`,
+                },
+              }))
             : [],
       },
       id: field,
       legend: hasEnoughDataOnSomeCurves
         ? rawData.results.map((r, i) => {
-            const valueName =
-              plotType === 'categorical' ? values[i] : values[i].key;
+          const valueName =
+            plotType === 'categorical' ? values[i] : values[i].key;
 
-            return r.length === 0
+          return r.length === 0
+            ? {
+              key: `${valueName}-cannot-compare`,
+              value: (
+                <div>
+                  <span>Not enough data to compare</span>
+                </div>
+              ),
+              style: { width: '100%', marginTop: 5 },
+            }
+            : r.donors.length < MINIMUM_CASES
               ? {
-                  key: `${valueName}-cannot-compare`,
-                  value: (
-                    <div>
-                      <span>Not enough data to compare</span>
-                    </div>
-                  ),
-                  style: { width: '100%', marginTop: 5 },
-                }
-              : r.donors.length < MINIMUM_CASES
-                ? {
-                    key: `${valueName}-not-enough-data`,
-                    value: (
-                      <span>Not enough survival data for {valueName}</span>
-                    ),
-                  }
-                : {
-                    key: valueName,
-                    value: (
-                      <span>
-                        S<sub>{i + 1}</sub> (N = {getCaseCount(i)})
-                      </span>
-                    ),
-                  };
-          })
+                key: `${valueName}-not-enough-data`,
+                value: (
+                  <span>Not enough survival data for {valueName}</span>
+                ),
+              }
+              : {
+                key: valueName,
+                value: (
+                  <span>
+                    S<sub>{i + 1}</sub> (N = {getCaseCount(i)})
+                  </span>
+                ),
+              };
+        })
         : [
-            {
-              key: `${field}-not-enough-data`,
-              value: <span>Not enough survival data for this facet</span>,
-            },
-          ],
+          {
+            key: `${field}-not-enough-data`,
+            value: <span>Not enough survival data for this facet</span>,
+          },
+        ],
     };
   },
   {

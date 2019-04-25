@@ -355,6 +355,9 @@ export const getSurvivalCurvesArray = memoize(
                     (N =
                     {' '}
                     {getCaseCount(i)}
+                    <span className="print-only inline">
+                      {` - ${valueName}`}
+                    </span>
                     )
                   </span>
                 ),

@@ -12,14 +12,12 @@ import styled from '@ncigdc/theme/styled';
 import DownloadIcon from '@ncigdc/theme/icons/Download';
 import { fetchToken, forceLogout } from '@ncigdc/dux/auth';
 import { notify } from '@ncigdc/dux/notification';
-import {
-  AUTH, IS_DEV, AWG, FENCE,
-} from '@ncigdc/utils/constants';
+import { AUTH } from '@ncigdc/utils/constants';
 import UserIcon from '@ncigdc/theme/icons/User';
 import SignOutIcon from '@ncigdc/theme/icons/SignOut';
 import UserProfileModal from '@ncigdc/components/Modals/UserProfileModal';
 import { setModal } from '@ncigdc/dux/modal';
-
+import { IS_DEV, AWG, FENCE } from '@ncigdc/utils/constants';
 
 const NavLink = styled.a({
   padding: '15px 13px',
@@ -48,23 +46,24 @@ const logout = async dispatch => {
       console.warn('There was an error: ', err);
     }
     return window.location.assign(
-      urlJoin(AUTH, 'logout?next=https://portal.awg.gdc.cancer.gov/login')
-    );
-  }
-  dispatch(forceLogout());
-  if (window.location.port) {
-    window.location.assign(
-        IS_DEV
-          ? ''
-          : urlJoin(
-            AUTH,
-            `logout?next=:${window.location.port}${window.location.pathname}`
-          )
+      urlJoin(AUTH, `logout?next=https://portal.awg.gdc.cancer.gov/login`)
     );
   } else {
-    window.location.assign(
-        IS_DEV ? '' : urlJoin(AUTH, `logout?next=${window.location.pathname}`)
-    );
+    dispatch(forceLogout());
+    if (window.location.port) {
+      window.location.assign(
+        IS_DEV
+          ? ``
+          : urlJoin(
+              AUTH,
+              `logout?next=:${window.location.port}${window.location.pathname}`
+            )
+      );
+    } else {
+      window.location.assign(
+        IS_DEV ? `` : urlJoin(AUTH, `logout?next=${window.location.pathname}`)
+      );
+    }
   }
 };
 
@@ -72,24 +71,22 @@ const UserDropdown = connect(state => ({
   token: state.auth.token,
   user: state.auth.user,
 }))(({ user, dispatch }) => (
-  <Row className="test-user-dropdown" style={{ alignSelf: 'stretch' }}>
+  <Row style={{ alignSelf: 'stretch' }} className="test-user-dropdown">
     <Dropdown
-      button={(
+      button={
         <NavLink>
           <span>{user ? user.username : 'CURRENT_USER'}</span>
           <DownCaretIcon style={{ marginLeft: 'auto' }} />
         </NavLink>
-      )}>
+      }
+    >
       {!AWG && (
         <DropdownItemStyled
-          onClick={() => dispatch(setModal(<UserProfileModal />))}>
+          onClick={() => dispatch(setModal(<UserProfileModal />))}
+        >
           <UserIcon
-            style={{
-              ...iconStyle,
-              fontSize: '1.8rem',
-              marginRight: '0.6rem',
-            }} />
-          {' '}
+            style={{ ...iconStyle, fontSize: '1.8rem', marginRight: '0.6rem' }}
+          />{' '}
           User Profile
         </DropdownItemStyled>
       )}
@@ -104,22 +101,19 @@ const UserDropdown = connect(state => ({
                 id: `${new Date().getTime()}`,
                 component: (
                   <span>
-                    {user.username}
-                    {' '}
-does not have access to any protected data
-                    within the GDC. Click
-                    {' '}
+                    {user.username} does not have access to any protected data
+                    within the GDC. Click{' '}
                     <a href="https://gdc.cancer.gov/access-data/obtaining-access-controlled-data">
                       here
-                    </a>
-                    {' '}
+                    </a>{' '}
                     to learn more about obtaining access to protected data.
                   </span>
                 ),
               })
             );
           }
-        }}>
+        }}
+      >
         <DownloadIcon style={iconStyle} />
         Download Token
       </DropdownItemStyled>

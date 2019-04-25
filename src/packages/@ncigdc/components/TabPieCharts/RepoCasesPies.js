@@ -7,9 +7,7 @@ import { compose } from 'recompose';
 import { IBucket } from '@ncigdc/components/Aggregations/types';
 import withRouter from '@ncigdc/utils/withRouter';
 import { parseFilterParam } from '@ncigdc/utils/uri';
-import {
-  ColumnCenter, RowCenter, PieTitle, SelfFilteringPie,
-} from '.';
+import { ColumnCenter, RowCenter, PieTitle, SelfFilteringPie } from './';
 
 export type TProps = {
   push: Function,
@@ -38,71 +36,76 @@ const RepoCasesPiesComponent = ({ aggregations, query, push }: TProps) => {
         <PieTitle>Primary Site</PieTitle>
         <SelfFilteringPie
           buckets={_.get(aggregations, 'primary_site.buckets')}
+          fieldName="cases.primary_site"
+          docTypeSingular="case"
           currentFieldNames={currentFieldNames}
           currentFilters={currentFilters}
-          docTypeSingular="case"
-          fieldName="cases.primary_site"
-          height={125}
-          path="doc_count"
-          push={push}
           query={query}
-          width={125} />
+          push={push}
+          path="doc_count"
+          height={125}
+          width={125}
+        />
       </ColumnCenter>
       <ColumnCenter className="test-project">
         <PieTitle>Project</PieTitle>
         <SelfFilteringPie
           buckets={_.get(aggregations, 'project__project_id.buckets')}
+          fieldName="cases.project.project_id"
+          docTypeSingular="case"
           currentFieldNames={currentFieldNames}
           currentFilters={currentFilters}
-          docTypeSingular="case"
-          fieldName="cases.project.project_id"
-          height={125}
-          path="doc_count"
-          push={push}
           query={query}
-          width={125} />
+          push={push}
+          path="doc_count"
+          height={125}
+          width={125}
+        />
       </ColumnCenter>
       <ColumnCenter className="test-disease-type">
         <PieTitle>Disease Type</PieTitle>
         <SelfFilteringPie
           buckets={_.get(aggregations, 'disease_type.buckets')}
+          fieldName="cases.disease_type"
+          docTypeSingular="case"
           currentFieldNames={currentFieldNames}
           currentFilters={currentFilters}
-          docTypeSingular="case"
-          fieldName="cases.disease_type"
-          height={125}
-          path="doc_count"
-          push={push}
           query={query}
-          width={125} />
+          push={push}
+          path="doc_count"
+          height={125}
+          width={125}
+        />
       </ColumnCenter>
       <ColumnCenter className="test-gender">
         <PieTitle>Gender</PieTitle>
         <SelfFilteringPie
           buckets={_.get(aggregations, 'demographic__gender.buckets')}
+          fieldName="cases.demographic.gender"
+          docTypeSingular="case"
           currentFieldNames={currentFieldNames}
           currentFilters={currentFilters}
-          docTypeSingular="case"
-          fieldName="cases.demographic.gender"
-          height={125}
-          path="doc_count"
-          push={push}
           query={query}
-          width={125} />
+          push={push}
+          path="doc_count"
+          height={125}
+          width={125}
+        />
       </ColumnCenter>
       <ColumnCenter className="test-vital-status">
         <PieTitle>Vital Status</PieTitle>
         <SelfFilteringPie
           buckets={_.get(aggregations, 'diagnoses__vital_status.buckets')}
+          fieldName="cases.diagnoses.vital_status"
+          docTypeSingular="case"
           currentFieldNames={currentFieldNames}
           currentFilters={currentFilters}
-          docTypeSingular="case"
-          fieldName="cases.diagnoses.vital_status"
-          height={125}
-          path="doc_count"
-          push={push}
           query={query}
-          width={125} />
+          push={push}
+          path="doc_count"
+          height={125}
+          width={125}
+        />
       </ColumnCenter>
     </RowCenter>
   );

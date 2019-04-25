@@ -4,6 +4,7 @@ import LoadableWithLoading from '@ncigdc/components/LoadableWithLoading';
 
 export default (
   <Route
+    path="/cases/:id"
     component={LoadableWithLoading({ loader: () => import('./CaseRoute') })}
-    path="/cases/:id" />
+  />
 );

@@ -5,32 +5,35 @@ import { compose, withPropsOnChange, withState } from 'recompose';
 import Query from '@ncigdc/modern_components/Query';
 import _ from 'lodash';
 
-export default (Component: ReactClass<*>) => compose(
-  withState('facetSearch', 'setFacetSearch', ''),
-  withPropsOnChange(
-    ['queryType', 'facetSearch'],
-    ({ queryType, facetSearch }) => {
-      const showCases = queryType === 'case';
-      const showFiles = queryType === 'file';
-      const showProjects = queryType === 'project';
+export default (Component: ReactClass<*>) =>
+  compose(
+    withState('facetSearch', 'setFacetSearch', ''),
+    withPropsOnChange(
+      ['queryType', 'facetSearch'],
+      ({ queryType, facetSearch }) => {
+        const showCases = queryType === 'case';
+        const showFiles = queryType === 'file';
+        const showProjects = queryType === 'project';
 
-      return {
-        variables: {
-          showCases,
-          showFiles,
-          showProjects,
-          queryType: [queryType],
-          query: _.trim(facetSearch),
-        },
-      };
-    },
-  ),
-)((props: Object) => {
-  return (
-    <Query
-      Component={Component}
-      parentProps={props}
-      query={graphql`
+        return {
+          variables: {
+            showCases,
+            showFiles,
+            showProjects,
+            queryType: [queryType],
+            query: _.trim(facetSearch),
+          },
+        };
+      },
+    ),
+  )((props: Object) => {
+    return (
+      <Query
+        parentProps={props}
+        variables={props.variables}
+        Component={Component}
+        setFacetSearch={props.setFacetSearch}
+        query={graphql`
           query SuggestionFacet_relayQuery(
             $query: String
             $showFiles: Boolean!
@@ -68,7 +71,6 @@ export default (Component: ReactClass<*>) => compose(
             }
           }
         `}
-      setFacetSearch={props.setFacetSearch}
-      variables={props.variables} />
-  );
-});
+      />
+    );
+  });

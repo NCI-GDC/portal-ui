@@ -4,19 +4,16 @@ import Tooltip from '@ncigdc/uikit/Tooltip/Tooltip';
 import Hidden from '@ncigdc/components/Hidden';
 import { tableToolTipHint } from '@ncigdc/theme/mixins';
 import { DATA_CATEGORIES } from '@ncigdc/utils/constants';
-import {
-  Th, Td, ThNum, TdNum,
-} from '@ncigdc/uikit/Table';
+import { Th, Td, ThNum, TdNum } from '@ncigdc/uikit/Table';
 import { makeFilter } from '@ncigdc/utils/filters';
 import { findDataCategory } from '@ncigdc/utils/data';
 import { IListLinkProps } from '@ncigdc/components/Links/types';
 import { TCategoryAbbr, IDataCategory } from '@ncigdc/utils/data/types';
-
 interface ICreateDataCategoryColumnsProps{
-  title: string;
-  countKey: string;
-  Link: (props: IListLinkProps) => React.Component<IListLinkProps>;
-  getCellLinkFilters: (node: INode) => IFilter[];
+  title: string; 
+  countKey: string; 
+  Link: (props: IListLinkProps) => React.Component<IListLinkProps>; 
+  getCellLinkFilters: (node: INode) => IFilter[]; 
   getTotalLinkFilters: (hits: IHits) => IFilter[];
 }
 
@@ -81,7 +78,7 @@ export const createDataCategoryColumns = ({
   Link,
   getCellLinkFilters,
   getTotalLinkFilters,
-}: ICreateDataCategoryColumnsProps) => {
+}: ICreateDataCategoryColumnsProps)=> {
   return [
     {
       name: 'Data Categories',
@@ -89,9 +86,10 @@ export const createDataCategoryColumns = ({
       field: `summary.data_categories.data_category,summary.data_categories.${countKey}`,
       th: () => (
         <Th
-          colSpan={Object.keys(DATA_CATEGORIES).length}
           key="data_category"
-          style={{ textAlign: 'center' }}>
+          colSpan={Object.keys(DATA_CATEGORIES).length}
+          style={{ textAlign: 'center' }}
+        >
           {title}
         </Th>
       ),
@@ -126,12 +124,10 @@ export const createDataCategoryColumns = ({
                 query={{
                   filters: makeFilter([
                     ...getCellLinkFilters(node),
-                    {
-                      field: 'files.data_category',
-                      value: category.full,
-                    },
+                    { field: 'files.data_category', value: category.full },
                   ]),
-                }}>
+                }}
+              >
                 {count.toLocaleString()}
               </Link>
             )}
@@ -144,17 +140,16 @@ export const createDataCategoryColumns = ({
             query={{
               filters: makeFilter([
                 ...getTotalLinkFilters(hits),
-                {
-                  field: 'files.data_category',
-                  value: category.full,
-                },
+                { field: 'files.data_category', value: category.full },
               ]),
-            }}>
+            }}
+          >
             {_.sumBy(
               hits.edges,
-              x => findDataCategory(category.abbr, x.node.summary.data_categories)[
-                countKey
-              ]
+              x =>
+                findDataCategory(category.abbr, x.node.summary.data_categories)[
+                  countKey
+                ]
             ).toLocaleString()}
           </Link>
         </TdNum>
@@ -189,6 +184,7 @@ export const createSelectColumn = ({
         <Th rowSpan={headerRowSpan}>
           <Hidden>Select column</Hidden>
           <input
+            type="checkbox"
             aria-label="Select column"
             checked={allSelected}
             onChange={e => {
@@ -198,7 +194,7 @@ export const createSelectColumn = ({
                   : _.uniq(ids.concat(selectedIds))
               );
             }}
-            type="checkbox" />
+          />
         </Th>
       );
     },
@@ -209,13 +205,14 @@ export const createSelectColumn = ({
     }: ITdProps) => (
       <Td>
         <input
+          type="checkbox"
           aria-label={`Select ${node[idField]}`}
+          value={node[idField]}
           checked={selectedIds.includes(node[idField])}
           onChange={e => {
             setSelectedIds(_.xor(selectedIds, [node[idField]]));
           }}
-          type="checkbox"
-          value={node[idField]} />
+        />
       </Td>
     ),
   };

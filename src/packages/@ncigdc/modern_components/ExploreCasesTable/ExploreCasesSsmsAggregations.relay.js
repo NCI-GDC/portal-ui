@@ -4,40 +4,42 @@ import { compose, withPropsOnChange } from 'recompose';
 import { makeFilter, addInFilters } from '@ncigdc/utils/filters';
 import Query from '@ncigdc/modern_components/Query';
 
-export default (Component: ReactClass<*>) => compose(
-  withPropsOnChange(
-    ['exploreCasesTableViewer'],
-    ({ exploreCasesTableViewer, filters = null }) => {
-      const { hits } = exploreCasesTableViewer.explore.cases;
-      const caseIds = hits.edges.map(e => e.node.case_id);
+export default (Component: ReactClass<*>) =>
+  compose(
+    withPropsOnChange(
+      ['exploreCasesTableViewer'],
+      ({ exploreCasesTableViewer, filters = null }) => {
+        const { hits } = exploreCasesTableViewer.explore.cases;
+        const caseIds = hits.edges.map(e => e.node.case_id);
 
-      return {
-        variables: {
-          ssmCountsfilters: caseIds.length
+        return {
+          variables: {
+            ssmCountsfilters: caseIds.length
               ? addInFilters(
-                filters,
-                makeFilter(
-                  [
-                    {
-                      field: 'occurrence.case.case_id',
-                      value: caseIds,
-                    },
-                  ],
-                  false,
-                ),
-              )
+                  filters,
+                  makeFilter(
+                    [
+                      {
+                        field: 'occurrence.case.case_id',
+                        value: caseIds,
+                      },
+                    ],
+                    false,
+                  ),
+                )
               : null,
-        },
-      };
-    },
-  ),
-)((props: mixed) => {
-  return (
-    <Query
-      Component={Component}
-      minHeight={387}
-      parentProps={props}
-      query={graphql`
+          },
+        };
+      },
+    ),
+  )((props: mixed) => {
+    return (
+      <Query
+        parentProps={props}
+        minHeight={387}
+        variables={props.variables}
+        Component={Component}
+        query={graphql`
           query ExploreCasesSsmsAggregations_relayQuery(
             $ssmCountsfilters: FiltersArgument
           ) {
@@ -60,6 +62,6 @@ export default (Component: ReactClass<*>) => compose(
             }
           }
         `}
-      variables={props.variables} />
-  );
-});
+      />
+    );
+  });

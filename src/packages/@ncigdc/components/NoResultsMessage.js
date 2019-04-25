@@ -11,10 +11,8 @@ const NoResultsMessage = withTheme(
   ({ children, style, theme }: TNoResultsProps) => (
     <span
       className="test-no-results-message"
-      style={Object.assign({
-        padding: 10,
-        color: theme.greyScale7,
-      }, style)}>
+      style={Object.assign({ padding: 10, color: theme.greyScale7 }, style)}
+    >
       {children || 'No results found'}
     </span>
   ),

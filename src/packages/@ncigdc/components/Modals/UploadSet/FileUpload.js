@@ -17,27 +17,23 @@ function readFile(file) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.readAsText(file);
-    reader.onload = evt => resolve({
-      result: reader.result,
-      file,
-    });
+    reader.onload = evt => resolve({ result: reader.result, file });
   });
 }
 
 const enhance = compose(withState('uploading', 'setUploading', false));
 
 export default enhance(
-  ({
-    setInputFile, setInput, inputFiles, setUploading, uploading,
-  }) => {
+  ({ setInputFile, setInput, inputFiles, setUploading, uploading }) => {
     return (
       <div>
         Or choose a file to upload
         <Row style={{ alignItems: 'center' }}>
           <BrowseButton>
-            Browse
-            <FileInput
+            Browse<FileInput
+              multiple
               accept=".tsv,.csv,.txt"
+              style={{ display: 'none' }}
               addFiles={files => {
                 setUploading(true);
                 setInputFile(files.map(f => f.name).join(', '));
@@ -46,25 +42,23 @@ export default enhance(
                   setInput(
                     data
                       .map(
-                        ({ result, file }) => (REMOVE_HEADER_FROM_TSV && file.name.match(/\.tsv$/)
+                        ({ result, file }) =>
+                          REMOVE_HEADER_FROM_TSV && file.name.match(/\.tsv$/)
                             ? result.replace(/.*\n/, '')
-                            : result),
+                            : result,
                       )
                       .join(),
                   );
                   setUploading(false);
                 });
               }}
-              multiple
-              style={{ display: 'none' }} />
+            />
           </BrowseButton>
           {inputFiles}
         </Row>
         {uploading && (
           <span>
-            <SpinnerIcon />
-            {' '}
-uploading files
+            <SpinnerIcon /> uploading files
           </span>
         )}
       </div>

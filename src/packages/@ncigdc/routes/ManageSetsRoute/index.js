@@ -5,10 +5,11 @@ import LoadableWithLoading from '@ncigdc/components/LoadableWithLoading';
 
 const ManageSetsRoute = (
   <Route
+    path="/manage-sets"
     component={LoadableWithLoading({
       loader: () => import('./ManageSetsPage'),
     })}
-    path="/manage-sets" />
+  />
 );
 
 export default ManageSetsRoute;

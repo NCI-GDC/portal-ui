@@ -51,29 +51,31 @@ const AddToCartButtonSingle = ({
   asIcon = false,
 }) => (
   <Button
-    aria-label="Add to cart"
     className="test-add-to-cart"
-    onClick={() => dispatch(toggleFilesInCart(file))}
     style={{
       ...styles.button(theme),
       ...(fileInCart(files, file)
         ? style || styles.active(theme)
         : style || styles.inactive(theme)),
-    }}>
+    }}
+    onClick={() => dispatch(toggleFilesInCart(file))}
+    aria-label="Add to cart"
+  >
     <ShoppingCartIcon
       style={{
         color: fileInCart(files, file)
           ? asIcon ? '#3c763d' : 'white'
           : 'rgb(0, 80, 131)',
-      }} />
+      }}
+    />
     <Hidden>Add to cart</Hidden>
   </Button>
 );
 
 AddToCartButtonSingle.propTypes = {
-  dispatch: PropTypes.func,
-  file: PropTypes.object,
   files: PropTypes.array,
+  file: PropTypes.object,
+  dispatch: PropTypes.func,
 };
 
 /*----------------------------------------------------------------------------*/

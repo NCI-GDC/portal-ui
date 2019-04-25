@@ -7,7 +7,7 @@ const PADDING = 20;
 let windowWidth = window.innerWidth;
 window.addEventListener(
   'resize',
-  _.debounce(() => {
+  _.debounce(function() {
     windowWidth = window.innerWidth;
   }, 300),
 );
@@ -37,7 +37,6 @@ class GlobalTooltip extends Component {
   }, 16);
 
   showTooltip = () => this.setState({ showTootip: true });
-
   hideTooltip = () => this.setState({ showTootip: false });
 
   render() {
@@ -47,7 +46,8 @@ class GlobalTooltip extends Component {
         ref={node => (this.globalTooltip = node)}
         style={{
           visibility: this.props.tooltip.Component ? 'visible' : 'hidden',
-        }}>
+        }}
+      >
         <div className="wrapper" ref={node => (this.wrapper = node)}>
           {this.props.tooltip.Component}
           <div className="point1" ref={node => (this.point1 = node)} />

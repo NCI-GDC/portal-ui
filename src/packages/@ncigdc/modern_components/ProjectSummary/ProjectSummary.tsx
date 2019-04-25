@@ -93,32 +93,24 @@ export default compose<IProjectProps, React.Component>(
     td: number | string | JSX.Element;
   }
   const basicColumns = [
-    {
-      th: 'Project ID',
-      td: project.project_id,
-    },
+    { th: 'Project ID', td: project.project_id },
     {
       th: 'dbGaP Study Accession',
       td: (
         <a
           href={
-            `https://www.ncbi.nlm.nih.gov/projects/gap/cgi-bin/study.cgi?study_id=${
-              dbgapAccessionNumber}`
+            'https://www.ncbi.nlm.nih.gov/projects/gap/cgi-bin/study.cgi?study_id=' +
+            dbgapAccessionNumber
           }
+          target="_blank"
           rel="noopener noreferrer"
-          target="_blank">
+        >
           {dbgapAccessionNumber}
         </a>
       ),
     },
-    {
-      th: 'Project Name',
-      td: project.name,
-    },
-    {
-      th: 'Program',
-      td: project.program.name,
-    },
+    { th: 'Project Name', td: project.name },
+    { th: 'Program', td: project.program.name },
   ];
   const collapsibleListColumns = [
     ...basicColumns.slice(0, 3),
@@ -128,16 +120,17 @@ export default compose<IProjectProps, React.Component>(
         <span>
           {project.disease_type.length > 1 && (
             <CollapsibleList
-              collapseText="collapse"
               data={project.disease_type.slice(0).sort()}
-              expandText={`${project.disease_type.length} Disease Types`}
               limit={0}
+              toggleStyle={{ fontStyle: 'normal' }}
               liStyle={{
                 whiteSpace: 'normal',
                 listStyleType: 'disc',
                 listStylePosition: 'inside',
               }}
-              toggleStyle={{ fontStyle: 'normal' }} />
+              expandText={`${project.disease_type.length} Disease Types`}
+              collapseText="collapse"
+            />
           )}
           {project.disease_type.length <= 1 && project.disease_type}
         </span>
@@ -149,16 +142,17 @@ export default compose<IProjectProps, React.Component>(
         <span>
           {project.primary_site.length > 1 && (
             <CollapsibleList
-              collapseText="collapse"
               data={project.primary_site.slice(0).sort()}
-              expandText={`${project.primary_site.length} Primary Sites`}
               limit={0}
+              toggleStyle={{ fontStyle: 'normal' }}
               liStyle={{
                 whiteSpace: 'normal',
                 listStyleType: 'disc',
                 listStylePosition: 'inside',
               }}
-              toggleStyle={{ fontStyle: 'normal' }} />
+              expandText={`${project.primary_site.length} Primary Sites`}
+              collapseText="collapse"
+            />
           )}
           {project.primary_site.length <= 1 && project.primary_site}
         </span>
@@ -168,40 +162,33 @@ export default compose<IProjectProps, React.Component>(
   ];
   const SummaryTable = (columns: IColumnsProps[]) => (
     <EntityPageVerticalTable
-      description={(
-        <div style={{
-          paddingLeft: '10px',
-          marginBottom: '20px',
-        }}>
+      id="summary"
+      title={
+        <span>
+          <i className="fa fa-table" /> Summary
+        </span>
+      }
+      description={
+        <div style={{ paddingLeft: '10px', marginBottom: '20px' }}>
           <div>
             The project has controlled access data which requires dbGaP Access.
-            See instructions for
-            {' '}
+            See instructions for{' '}
             <a
               href="https://gdc.cancer.gov/access-data/obtaining-access-controlled-data"
+              target="_blank"
               rel="noopener noreferrer"
-              target="_blank">
+            >
               Obtaining Access to Controlled Data.
             </a>
           </div>
         </div>
-      )}
-      id="summary"
+      }
       thToTd={columns}
-      title={(
-        <span>
-          <i className="fa fa-table" />
-          {' '}
-Summary
-        </span>
-      )} />
+    />
   );
   return (
-    <Row spacing={SPACING} style={{ flexWrap: 'wrap' }}>
-      <span style={{
-        ...styles.column,
-        ...styles.margin,
-      }}>
+    <Row style={{ flexWrap: 'wrap' }} spacing={SPACING}>
+      <span style={{ ...styles.column, ...styles.margin }}>
         {SummaryTable(
           project.primary_site.length <= 1
             ? collapsibleListColumns
@@ -209,58 +196,59 @@ Summary
         )}
       </span>
 
-      <Column style={{
-        ...styles.margin,
-        width: '200px',
-      }}>
+      <Column style={{ ...styles.margin, width: '200px' }}>
         <CountCard
+          title="CASES"
           count={project.summary.case_count.toLocaleString()}
-          icon={<CaseIcon className="fa-3x" style={styles.icon} />}
+          icon={<CaseIcon style={styles.icon} className="fa-3x" />}
+          style={styles.countCard}
           linkParams={
             project.summary.case_count
               ? {
-                merge: 'replace',
-                pathname: '/repository',
-                query: {
-                  filters: makeFilter(projectFilter),
-                  facetTab: 'cases',
-                  searchTableTab: 'cases',
-                },
-              }
+                  merge: 'replace',
+                  pathname: '/repository',
+                  query: {
+                    filters: makeFilter(projectFilter),
+                    facetTab: 'cases',
+                    searchTableTab: 'cases',
+                  },
+                }
               : null
           }
-          style={styles.countCard}
-          title="CASES" />
+        />
         <CountCard
+          title="FILES"
           count={project.summary.file_count.toLocaleString()}
-          icon={<FileIcon className="fa-3x" style={styles.icon} />}
+          icon={<FileIcon style={styles.icon} className="fa-3x" />}
+          style={styles.countCard}
           linkParams={
             project.summary.file_count
               ? {
-                pathname: '/repository',
-                query: {
-                  filters: makeFilter(projectFilter),
-                  facetTab: 'files',
-                  searchTableTab: 'files',
-                },
-              }
+                  pathname: '/repository',
+                  query: {
+                    filters: makeFilter(projectFilter),
+                    facetTab: 'files',
+                    searchTableTab: 'files',
+                  },
+                }
               : null
           }
-          style={styles.countCard}
-          title="FILES" />
+        />
         <CountCard
+          title="ANNOTATIONS"
           count={annotations.hits.total.toLocaleString()}
-          icon={<AnnotationIcon className="fa-3x" style={styles.icon} />}
+          icon={<AnnotationIcon style={styles.icon} className="fa-3x" />}
+          style={{ ...styles.countCard, marginBottom: 0 }}
           linkParams={
             annotations.hits.total
               ? {
-                merge: 'replace',
-                pathname: `/annotations${annotations.hits.total.toLocaleString() ===
+                  merge: 'replace',
+                  pathname: `/annotations${annotations.hits.total.toLocaleString() ===
                   '1'
                     ? `/${annotations.hits.edges[0].node.annotation_id}`
                     : ''}`,
-                query: {
-                  filters:
+                  query: {
+                    filters:
                       annotations.hits.total > 1 &&
                       makeFilter([
                         {
@@ -268,15 +256,11 @@ Summary
                           value: project.project_id,
                         },
                       ]),
-                },
-              }
+                  },
+                }
               : null
           }
-          style={{
-            ...styles.countCard,
-            marginBottom: 0,
-          }}
-          title="ANNOTATIONS" />
+        />
       </Column>
     </Row>
   );

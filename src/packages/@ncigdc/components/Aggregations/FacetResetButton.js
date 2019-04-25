@@ -47,13 +47,11 @@ const FacetResetButton = ({
   return (
     inCurrent && (
       <StyledLink
-        aria-label="reset"
         className="test-facet-reset-button"
+        style={{ display: inCurrent ? 'inline' : 'none', ...style }}
         query={newQuery}
-        style={{
-          display: inCurrent ? 'inline' : 'none',
-          ...style,
-        }}>
+        aria-label="reset"
+      >
         <ShadowedUndoIcon />
       </StyledLink>
     )

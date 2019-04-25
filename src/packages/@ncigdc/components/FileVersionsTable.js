@@ -38,12 +38,12 @@ export default compose(
             uuid:
               d.uuid === this.props.fileId ? (
                 <div>
-                  {d.uuid}
-                  {' '}
+                  {d.uuid}{' '}
                   <BubbleIcon
+                    text="Current Version"
                     backgroundColor={this.props.theme.secondaryHighContrast}
                     style={{ marginLeft: '1em' }}
-                    text="Current Version" />
+                  />
                 </div>
               ) : (
                 <div>{d.uuid}</div>
@@ -54,74 +54,61 @@ export default compose(
           })),
         );
       } catch (e) {
-        // means no history for the file, just display nothing
+        //means no history for the file, just display nothing
       }
     },
   }),
   branch(({ data }) => !data.length, renderComponent(() => <span />)),
 )(({ data, fileId, theme }) => (
   <EntityPageHorizontalTable
-    data={data}
-    emptyMessage="No Previous File Versions"
-    emptyMessageStyle={{ background: '#fff' }}
-    headings={[
-      {
-        key: 'version',
-        title: 'Version',
-      },
-      {
-        key: 'uuid',
-        title: 'File UUID',
-      },
-      {
-        key: 'release_date',
-        title: 'Release Date',
-      },
-      {
-        key: 'data_release',
-        title: 'Release Number',
-      },
-    ]}
-    rightComponent={(
+    tableId="file-history-table"
+    rightComponent={
       <DropDown
-        button={(
+        className="test-download-file-versions"
+        button={
           <Button
             leftIcon={<DownloadIcon />}
             style={{
               ...styles.common,
               ...styles.dropdownButton,
               ...visualizingButton,
-            }}>
+            }}
+          >
             Download
           </Button>
-        )}
-        className="test-download-file-versions"
-        dropdownStyle={{ ...styles.dropdownContainer }}>
+        }
+        dropdownStyle={{ ...styles.dropdownContainer }}
+      >
         <DownloadTableToTsvButton
           className="test-download-file-versions-tsv"
-          displayTooltip={false}
-          filename={`file-history-${fileId}.tsv`}
           leftIcon={<DownloadIcon />}
           selector="#file-history-table"
-          style={{
-            ...styles.button(theme),
-            borderColor: 'transparent',
-          }} />
+          filename={`file-history-${fileId}.tsv`}
+          style={{ ...styles.button(theme), borderColor: 'transparent' }}
+          displayTooltip={false}
+        />
         <DownloadButton
-          activeText="Processing"
-          altMessage={false}
           className="test-download-file-versions-json"
           endpoint={`/history/${fileId}`}
-          format="JSON"
+          style={styles.button(theme)}
+          format={'JSON'}
+          activeText="Processing"
           inactiveText="JSON"
           method="GET"
-          style={styles.button(theme)} />
+          altMessage={false}
+        />
       </DropDown>
-    )}
-    style={{
-      width: '100%',
-      overflow: 'visible',
-    }}
-    tableId="file-history-table"
-    title="File Versions" />
+    }
+    data={data}
+    style={{ width: '100%', overflow: 'visible' }}
+    title="File Versions"
+    emptyMessage="No Previous File Versions"
+    emptyMessageStyle={{ background: '#fff' }}
+    headings={[
+      { key: 'version', title: 'Version' },
+      { key: 'uuid', title: 'File UUID' },
+      { key: 'release_date', title: 'Release Date' },
+      { key: 'data_release', title: 'Release Number' },
+    ]}
+  />
 ));

@@ -15,23 +15,19 @@ const aStyle = css({
   },
 });
 
-const A = ({
-  style, children, theme, ...props
-}) => (
+const A = ({ style, children, theme, ...props }) => (
   <a
     className={aStyle}
-    style={{
-      color: theme.primaryLight1,
-      ...style,
-    }}
-    {...props}>
+    style={{ color: theme.primaryLight1, ...style }}
+    {...props}
+  >
     {children}
   </a>
 );
 
 A.propTypes = {
-  children: PropTypes.node,
   style: PropTypes.object,
+  children: PropTypes.node,
 };
 
 /*----------------------------------------------------------------------------*/

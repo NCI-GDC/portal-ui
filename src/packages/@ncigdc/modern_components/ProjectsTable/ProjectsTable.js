@@ -35,33 +35,40 @@ export default compose(
             padding: '1rem',
             justifyContent: 'space-between',
             alignItems: 'center',
-          }}>
+          }}
+        >
           {tableHeader && <h3 className="panel-title">{tableHeader}</h3>}
           <div>
-            <b>{hits.total}</b>
-            {' '}
-Projects
+            <b>{hits.total}</b> Projects
           </div>
           <TableActions
+            type="project"
+            scope="repository"
             arrangeColumnKey={entityType}
+            total={hits.total}
+            endpoint={entityType}
             downloadable={downloadable}
             downloadFields={tableInfo
               .filter(x => x.downloadable)
               .map(x => x.field || x.id)}
-            endpoint={entityType}
-            scope="repository"
             sortOptions={tableInfo.filter(x => x.sortable)}
-            total={hits.total}
-            tsvFilename={`projects-table.${timestamp()}.tsv`}
             tsvSelector="#projects-table"
-            type="project" />
+            tsvFilename={`projects-table.${timestamp()}.tsv`}
+          />
         </Row>
         <div style={{ overflowX: 'auto' }}>
           <Table
-            body={(
+            id="projects-table"
+            headings={tableInfo
+              .filter(x => !x.subHeading)
+              .map(x => <x.th key={x.id} />)}
+            subheadings={tableInfo
+              .filter(x => x.subHeading)
+              .map(x => <x.th key={x.id} />)}
+            body={
               <tbody>
                 {hits.edges.map((e, i) => (
-                  <Tr index={i} key={e.node.id}>
+                  <Tr key={e.node.id} index={i}>
                     {tableInfo
                       .filter(x => x.td)
                       .map(x => <x.td key={x.id} node={e.node} />)}
@@ -72,22 +79,17 @@ Projects
                     tableInfo
                       .filter(x => x.td)
                       .map(
-                        x => (x.total ? (
-                          <x.total hits={hits} key={x.id} />
+                        x =>
+                          x.total ? (
+                            <x.total key={x.id} hits={hits} />
                           ) : (
                             <Td key={x.id} />
-                          ))
+                          )
                       )}
                 </Tr>
               </tbody>
-            )}
-            headings={tableInfo
-              .filter(x => !x.subHeading)
-              .map(x => <x.th key={x.id} />)}
-            id="projects-table"
-            subheadings={tableInfo
-              .filter(x => x.subHeading)
-              .map(x => <x.th key={x.id} />)} />
+            }
+          />
         </div>
       </div>
     );

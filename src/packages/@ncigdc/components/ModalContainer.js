@@ -10,7 +10,8 @@ const ModalContainer = connect(
 )(({ component, autoClose, dispatch }) => (
   <Modal
     isOpen={!!component}
-    onRequestClose={() => autoClose && dispatch(setModal(null))}>
+    onRequestClose={() => autoClose && dispatch(setModal(null))}
+  >
     {component}
   </Modal>
 ));

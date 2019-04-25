@@ -19,15 +19,8 @@ const styles = {
   }),
 };
 
-const Card = ({
-  style, children, title, theme, ...props
-}) => (
-  <div
-    style={{
-      ...styles.card,
-      ...style,
-    }}
-    {...props}>
+const Card = ({ style, children, title, theme, ...props }) => (
+  <div style={{ ...styles.card, ...style }} {...props}>
     {title && <div style={styles.header(theme)}>{title}</div>}
     {children}
   </div>
@@ -36,8 +29,8 @@ const Card = ({
 Card.propTypes = {
   children: PropTypes.node,
   style: PropTypes.object,
-  theme: PropTypes.object,
   title: PropTypes.node,
+  theme: PropTypes.object,
 };
 
 /*----------------------------------------------------------------------------*/

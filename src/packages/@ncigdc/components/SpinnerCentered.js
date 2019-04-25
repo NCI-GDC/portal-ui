@@ -18,7 +18,8 @@ const SpinnerCentered = ({ style, ...props }: TProps) => (
       padding: 20,
       ...style,
     }}
-    {...props}>
+    {...props}
+  >
     <Particle />
   </Column>
 );

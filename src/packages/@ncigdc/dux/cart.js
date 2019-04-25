@@ -64,16 +64,9 @@ const getNotificationComponent = (
     <Column>
       <span>
         {notification.action}
-        <strong>
-          {' '}
-          {notification.file}
-          {' '}
-        </strong>
+        <strong> {notification.file} </strong>
         {notification.fileText}
-        {notification.prepositon}
-        {' '}
-the cart.
-        {notification.extraText}
+        {notification.prepositon} the cart. {notification.extraText}
       </span>
       {notification.undo && (
         <span style={center}>
@@ -82,12 +75,15 @@ the cart.
               className="fa fa-undo"
               style={{
                 marginRight: '0.3rem',
-              }} />
+              }}
+            />
             <UnstyledButton
-              onClick={() => dispatch(toggleFilesInCart(notification.undo.files))}
               style={{
                 textDecoration: 'underline',
-              }}>
+              }}
+              onClick={() =>
+                dispatch(toggleFilesInCart(notification.undo.files))}
+            >
               Undo
             </UnstyledButton>
           </strong>
@@ -222,9 +218,10 @@ function addAllFilesInCart(
       : [incomingFiles];
     const existingFiles = getState().cart.files;
     const nextFiles = incomingFilesArray.filter(
-      file => !existingFiles.some(
-        existingFile => existingFile.file_id === file.file_id,
-      ),
+      file =>
+        !existingFiles.some(
+          existingFile => existingFile.file_id === file.file_id,
+        ),
     );
     const filesInCart = incomingFilesArray.length - nextFiles.length;
 
@@ -247,11 +244,8 @@ function addAllFilesInCart(
               fileText: nextFiles.length > 1 ? 'files ' : 'file ',
               extraText: (
                 <span>
-                  <strong>{filesInCart}</strong>
-                  {' '}
-                  {filesInCart > 1 ? 'files' : 'file'}
-                  {' '}
-already in cart, not
+                  <strong>{filesInCart}</strong>{' '}
+                  {filesInCart > 1 ? 'files' : 'file'} already in cart, not
                   added.
                 </span>
               ),
@@ -299,11 +293,7 @@ function fetchFilesAndAdd(currentFilters: ?Object, total: number): Function {
       messageNotificationDispatcher(
         'info',
         <span>
-          Adding
-          {' '}
-          <b>{total}</b>
-          {' '}
-files to cart
+          Adding <b>{total}</b> files to cart
         </span>,
         dispatch,
       );
@@ -356,20 +346,20 @@ function fetchFilesAndRemove(currentFilters: ?Object, size: number): Function {
     const filters =
       size > MAX_CART_SIZE
         ? replaceFilters(
-          {
-            op: 'and',
-            content: [
-              {
-                op: 'in',
-                content: {
-                  field: 'files.file_id',
-                  value: existingFiles.map(f => f.file_id),
+            {
+              op: 'and',
+              content: [
+                {
+                  op: 'in',
+                  content: {
+                    field: 'files.file_id',
+                    value: existingFiles.map(f => f.file_id),
+                  },
                 },
-              },
-            ],
-          },
-          currentFilters,
-        )
+              ],
+            },
+            currentFilters,
+          )
         : currentFilters;
 
     const search = {
@@ -445,8 +435,8 @@ export function reducer(state: Object = initialState, action: Object): Object {
             file_size: file.file_size,
             projects: file.cases
               ? file.cases.hits.edges.map(
-                ({ node: { project: { project_id } } }) => project_id,
-              )
+                  ({ node: { project: { project_id } } }) => project_id,
+                )
               : file.projects,
           })),
         ),
@@ -466,8 +456,8 @@ export function reducer(state: Object = initialState, action: Object): Object {
           file_size: file.file_size,
           projects: file.cases
             ? file.cases.hits.edges.map(
-              ({ node: { project: { project_id } } }) => project_id,
-            )
+                ({ node: { project: { project_id } } }) => project_id,
+              )
             : file.projects,
         })),
       };

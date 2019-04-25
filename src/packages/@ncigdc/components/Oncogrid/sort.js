@@ -5,8 +5,9 @@ export const sortInt: TSortFunctionGenerator = field => {
   return (a, b) => {
     if (b[field] !== a[field]) {
       return b[field] - a[field];
+    } else {
+      return defaultSort(a, b);
     }
-    return defaultSort(a, b);
   };
 };
 
@@ -14,10 +15,11 @@ export const sortBool: TSortFunctionGenerator = field => {
   return (a, b) => {
     if (a[field] && !b[field]) {
       return -1;
-    } if (!a[field] && b[field]) {
+    } else if (!a[field] && b[field]) {
       return 1;
+    } else {
+      return defaultSort(a, b);
     }
-    return defaultSort(a, b);
   };
 };
 
@@ -25,10 +27,11 @@ export const sortByString: TSortFunctionGenerator = field => {
   return (a, b) => {
     if (a[field] > b[field]) {
       return 1;
-    } if (a[field] < b[field]) {
+    } else if (a[field] < b[field]) {
       return -1;
+    } else {
+      return defaultSort(a, b);
     }
-    return defaultSort(a, b);
   };
 };
 

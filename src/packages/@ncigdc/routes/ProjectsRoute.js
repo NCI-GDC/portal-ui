@@ -16,12 +16,7 @@ import {
 
 import { viewerQuery } from './queries';
 
-const DEFAULT_PROJECT_SORT = [
-  {
-    field: 'summary.case_count',
-    order: 'desc',
-  },
-];
+const DEFAULT_PROJECT_SORT = [{ field: 'summary.case_count', order: 'desc' }];
 
 class ProjectsRoute extends Relay.Route {
   static routeName = 'ProjectsRoute';
@@ -43,7 +38,8 @@ class ProjectsRoute extends Relay.Route {
 export default connect()((props: mixed) => (
   <Relay.Renderer
     Container={ProjectsPage}
+    queryConfig={new ProjectsRoute(props)}
     environment={Relay.Store}
     onReadyStateChange={handleStateChange(props)}
-    queryConfig={new ProjectsRoute(props)} />
+  />
 ));

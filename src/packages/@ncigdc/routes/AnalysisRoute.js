@@ -16,8 +16,8 @@ const enhance = compose(
     hasAnalysis: DISPLAY_CDAVE
       ? !!state.analysis.saved.length
       : !!state.analysis.saved.filter(
-        analysis => analysis.type !== 'clinical_data'
-      ).length,
+          analysis => analysis.type !== 'clinical_data'
+        ).length,
   })),
   withRouter
 );
@@ -25,6 +25,8 @@ const enhance = compose(
 const AnalysisRoute = enhance(({ hasAnalysis, query }) => {
   return (
     <TabbedLinks
+      style={{ padding: '2rem 2.5rem' }}
+      queryParam="analysisTableTab"
       links={[
         {
           id: 'launch',
@@ -33,17 +35,16 @@ const AnalysisRoute = enhance(({ hasAnalysis, query }) => {
         },
         ...(hasAnalysis
           ? [
-            {
-              id: 'result',
-              text: 'Results',
-              component: <AnalysisResult />,
-            },
-          ]
+              {
+                id: 'result',
+                text: 'Results',
+                component: <AnalysisResult />,
+              },
+            ]
           : []),
       ]}
-      queryParam="analysisTableTab"
-      style={{ padding: '2rem 2.5rem' }} />
+    />
   );
 });
 
-export default <Route component={AnalysisRoute} path="/analysis" />;
+export default <Route path="/analysis" component={AnalysisRoute} />;

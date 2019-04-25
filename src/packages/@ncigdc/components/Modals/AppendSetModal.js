@@ -20,54 +20,31 @@ import onSaveComplete from './onSaveComplete';
 
 const enhance = compose(
   withState('selected', 'setSelected', ''),
-  connect(({ sets, analysis }) => ({
-    sets,
-    analysis,
-  })),
-  withProps(({
-    sets, type, total, analysis,
-  }) => ({
+  connect(({ sets, analysis }) => ({ sets, analysis })),
+  withProps(({ sets, type, total, analysis }) => ({
     sets: sets[type] || {},
     analyses: analysis.saved || [],
   })),
   withRouter,
-  withCount(({
-    field, type, scope, selected, filters,
-  }) => ({
+  withCount(({ field, type, scope, selected, filters }) => ({
     key: 'countInBoth',
     type,
     scope,
     filters: {
       op: 'and',
       content: [
-        {
-          op: '=',
-          content: {
-            field,
-            value: `set_id:${selected}`,
-          },
-        },
+        { op: '=', content: { field, value: `set_id:${selected}` } },
         filters,
       ].filter(Boolean),
     },
   })),
-  withCount(({
-    field, type, scope, selected, filters,
-  }) => ({
+  withCount(({ field, type, scope, selected, filters }) => ({
     key: 'countExisting',
     type,
     scope,
     filters: {
       op: 'and',
-      content: [
-        {
-          op: '=',
-          content: {
-            field,
-            value: `set_id:${selected}`,
-          },
-        },
-      ],
+      content: [{ op: '=', content: { field, value: `set_id:${selected}` } }],
     },
   }))
 );
@@ -99,6 +76,7 @@ const AppendSetModal = ({
 
   return (
     <BaseModal
+      title={title}
       closeText="Cancel"
       extraButtons={
         validating ? (
@@ -110,6 +88,7 @@ const AppendSetModal = ({
             disabled={
               !selected || countExisting >= MAX_SET_SIZE || nothingToAdd
             }
+            set_id={`set_id:${selected}`}
             filters={{
               op: 'and',
               content: [
@@ -123,6 +102,9 @@ const AppendSetModal = ({
                 },
               ].filter(Boolean),
             }}
+            size={MAX_SET_SIZE - countExisting}
+            sort={sort}
+            score={score}
             onComplete={async setId => {
               if ((query.filters || '').includes(selected)) {
                 history.replace({
@@ -139,11 +121,7 @@ const AppendSetModal = ({
               });
 
               await dispatch(
-                replaceSet({
-                  type,
-                  oldId: selected,
-                  newId: setId,
-                })
+                replaceSet({ type, oldId: selected, newId: setId })
               );
               if (type === 'case') {
                 analyses
@@ -160,59 +138,48 @@ const AppendSetModal = ({
                   });
               }
             }}
-            score={score}
-            set_id={`set_id:${selected}`}
-            size={MAX_SET_SIZE - countExisting}
-            sort={sort}>
+          >
             Save
           </AppendSetButton>
         )
       }
-      title={title}>
+    >
       <SetTable
-        field={field}
-        getDisabledMessage={({ count }) => (count >= MAX_SET_SIZE
-            ? `The set cannot exceed ${pluralize(
-              displayType,
-              MAX_SET_SIZE,
-              true
-            )}`
-            : '')
-        }
-        selected={selected}
-        setSelected={setSelected}
         style={{ marginTop: 10 }}
-        type={type} />
+        setSelected={setSelected}
+        selected={selected}
+        type={type}
+        field={field}
+        getDisabledMessage={({ count }) =>
+          count >= MAX_SET_SIZE
+            ? `The set cannot exceed ${pluralize(
+                displayType,
+                MAX_SET_SIZE,
+                true
+              )}`
+            : ''
+        }
+      />
       {selected &&
         !validating && [
-        countExisting + total - countInBoth > MAX_SET_SIZE && (
-          <WarningBox key="over-max">
-              Above maximum of
-            {' '}
-            {pluralize(displayType, MAX_SET_SIZE, true)}
-.
-            {countExisting < MAX_SET_SIZE && (
-              <span>
-                  &nbsp;Only the top
-                {' '}
-                {(MAX_SET_SIZE - countExisting).toLocaleString()}
-                {' '}
-will be
+          countExisting + total - countInBoth > MAX_SET_SIZE && (
+            <WarningBox key="over-max">
+              Above maximum of {pluralize(displayType, MAX_SET_SIZE, true)}.
+              {countExisting < MAX_SET_SIZE && (
+                <span>
+                  &nbsp;Only the top{' '}
+                  {(MAX_SET_SIZE - countExisting).toLocaleString()} will be
                   saved.
-              </span>
-            )}
-          </WarningBox>
-        ),
-        nothingToAdd && (
-          <WarningBox key="nothing-to-add">
-              All
-            {' '}
-            {pluralize(displayType, 2)}
-            {' '}
-already in set.
-          </WarningBox>
-        ),
-      ]}
+                </span>
+              )}
+            </WarningBox>
+          ),
+          nothingToAdd && (
+            <WarningBox key="nothing-to-add">
+              All {pluralize(displayType, 2)} already in set.
+            </WarningBox>
+          ),
+        ]}
     </BaseModal>
   );
 };

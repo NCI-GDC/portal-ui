@@ -21,7 +21,8 @@ export default ({
       [`${prefix}_size`]: size,
     }}
     {...props}
-    merge>
+    merge
+  >
     {children || 'Show more'}
   </Link>
 );

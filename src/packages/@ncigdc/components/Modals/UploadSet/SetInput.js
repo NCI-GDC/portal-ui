@@ -13,37 +13,33 @@ const onUpdate = debounce((str, callback) => {
   );
 }, 500);
 
-const initState = {
-  input: '',
-  inputFiles: '',
-};
+const initState = { input: '', inputFiles: '' };
 
 class SetInput extends React.Component {
   state = initState;
-
   update = str => {
     this.setState({ input: str });
     onUpdate(str, this.props.onUpdate);
   };
-
   clear() {
     this.setState(initState);
     this.props.onUpdate([]);
   }
-
   render() {
     return (
       <div>
         <TextArea
-          displayType={this.props.displayType}
-          helpText={this.props.helpText}
           input={this.state.input}
+          setInput={this.update}
+          helpText={this.props.helpText}
           placeholder={this.props.placeholder}
-          setInput={this.update} />
+          displayType={this.props.displayType}
+        />
         <FileUpload
           inputFiles={this.state.inputFiles}
           setInput={this.update}
-          setInputFile={files => this.setState({ inputFiles: files })} />
+          setInputFile={files => this.setState({ inputFiles: files })}
+        />
       </div>
     );
   }

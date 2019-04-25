@@ -46,7 +46,8 @@ const enhance = compose(
             <FirstTimeModal
               onClose={() => {
                 Cookies.set(FIRST_TIME_KEY, true);
-              }} />,
+              }}
+            />,
             false,
           ),
         );
@@ -75,7 +76,8 @@ const PortalContainer = ({
       position: 'relative',
       minHeight: '100vh',
       minWidth: 1024,
-    }}>
+    }}
+  >
     <SkipLink href="#skip">Skip to Main Content</SkipLink>
     <ProgressContainer />
     {AWG ? <AWGHeader /> : <Header />}
@@ -87,7 +89,8 @@ const PortalContainer = ({
           .length * 40}px)`,
         paddingBottom: '120px',
         transition: 'padding 0.25s ease',
-      }}>
+      }}
+    >
       {AWG ? <AWGRoutes /> : <Routes />}
     </div>
     <Footer />

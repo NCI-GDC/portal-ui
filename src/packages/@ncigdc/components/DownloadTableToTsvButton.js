@@ -16,11 +16,13 @@ type TProps = {
   style: Object,
 };
 
-const getSingleHeader = (headThs: Array<NodeList>) => reduce(
-  headThs[0],
-  (acc, th) => (th.rowSpan === 2 ? [...acc, th] : [...acc, ...map(headThs[1], t => t)]),
-  []
-);
+const getSingleHeader = (headThs: Array<NodeList>) =>
+  reduce(
+    headThs[0],
+    (acc, th) =>
+      th.rowSpan === 2 ? [...acc, th] : [...acc, ...map(headThs[1], t => t)],
+    []
+  );
 
 export const downloadToTSV = ({ selector, filename }) => {
   const tableEl = document.querySelector(selector);
@@ -30,7 +32,9 @@ export const downloadToTSV = ({ selector, filename }) => {
     headThs.length === 2
       ? getSingleHeader(headThs)
       : tableEl.querySelectorAll('th');
-  const thText = map(thEls, el => el.innerText).map(t => t.replace(/\s+/g, ' '));
+  const thText = map(thEls, el => el.innerText).map(t =>
+    t.replace(/\s+/g, ' ')
+  );
   const trs = tableEl.querySelector('tbody').querySelectorAll('tr');
   const tdText = map(trs, t => {
     const tds = t.querySelectorAll('td');
@@ -54,11 +58,7 @@ export const downloadToTSV = ({ selector, filename }) => {
     );
   });
   saveFile(mapStringArrayToTsvString(thText, tdText), 'TSV', filename);
-  track('download-table', {
-    type: 'tsv',
-    filename,
-    selector,
-  });
+  track('download-table', { type: 'tsv', filename, selector });
 };
 
 const DownloadTableToTsvButton = compose(withTooltip)(
@@ -72,17 +72,13 @@ const DownloadTableToTsvButton = compose(withTooltip)(
   }: TProps) => (
     <Button
       leftIcon={leftIcon}
-      onClick={() => downloadToTSV({
-        selector,
-        filename,
-      })}
-      onMouseEnter={() => displayTooltip && setTooltip(<span>Export current view</span>)
+      style={{ ...visualizingButton, ...style }}
+      onMouseEnter={() =>
+        displayTooltip && setTooltip(<span>Export current view</span>)
       }
       onMouseLeave={() => displayTooltip && setTooltip('')}
-      style={{
-        ...visualizingButton,
-        ...style,
-      }}>
+      onClick={() => downloadToTSV({ selector, filename })}
+    >
       TSV
     </Button>
   )

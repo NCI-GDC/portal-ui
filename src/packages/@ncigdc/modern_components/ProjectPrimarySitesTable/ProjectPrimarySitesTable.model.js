@@ -10,8 +10,8 @@ import { tableToolTipHint } from '@ncigdc/theme/mixins';
 import Tooltip from '@ncigdc/uikit/Tooltip/Tooltip';
 import ExploreLink from '@ncigdc/components/Links/ExploreLink';
 
-const DataCategoryColumns = withData(props => {
-  const dataColumns = Object.keys(DATA_CATEGORIES).reduce((acc, k) => {
+let DataCategoryColumns = withData(props => {
+  var dataColumns = Object.keys(DATA_CATEGORIES).reduce((acc, k) => {
     const type = props.repository.cases.aggregations.files__data_category.buckets.find(
       item => item.key === DATA_CATEGORIES[k].full,
     );
@@ -22,10 +22,7 @@ const DataCategoryColumns = withData(props => {
           field: 'cases.project.project_id',
           value: props.projectId,
         },
-        {
-          field: 'files.data_category',
-          value: DATA_CATEGORIES[k].full,
-        },
+        { field: 'files.data_category', value: DATA_CATEGORIES[k].full },
         {
           field: 'cases.primary_site',
           value: [props.primarySite],
@@ -35,23 +32,20 @@ const DataCategoryColumns = withData(props => {
 
     return acc.concat(
       <div
-        key={k}
         style={{
           display: 'flex',
           justifyContent: 'flex-end',
           alignItems: 'center',
           minWidth: '40px',
-        }}>
+        }}
+        key={k}
+      >
         {type ? (
           <RepositoryFilesLink query={linkQuery}>
-            {type.doc_count.toLocaleString()}
-            {' '}
+            {type.doc_count.toLocaleString()}{' '}
           </RepositoryFilesLink>
         ) : (
-          <span>
-            {'0 '.toLocaleString()}
-            {' '}
-          </span>
+          <span>{'0 '.toLocaleString()} </span>
         )}
       </div>,
     );
@@ -62,42 +56,42 @@ const DataCategoryColumns = withData(props => {
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'space-between',
-      }}>
+      }}
+    >
       {dataColumns}
     </span>
   );
 });
 
-const DiseaseList = withData(props => {
+let DiseaseList = withData(props => {
   const { buckets } = props.repository.cases.aggregations.disease_type;
   const diseasesByName = buckets.map(type => type.key).sort();
   return (
     <span>
       {diseasesByName.length > 1 && (
         <CollapsibleList
-          collapseText="collapse"
+          liStyle={{ whiteSpace: 'normal', listStyleType: 'disc' }}
+          toggleStyle={{ fontStyle: 'normal' }}
           data={diseasesByName.slice(0).sort()}
-          expandText={`${diseasesByName.length} Disease Types`}
           limit={0}
-          liStyle={{
-            whiteSpace: 'normal',
-            listStyleType: 'disc',
-          }}
-          toggleStyle={{ fontStyle: 'normal' }} />
+          expandText={`${diseasesByName.length} Disease Types`}
+          collapseText="collapse"
+        />
       )}
       {diseasesByName.length <= 1 && diseasesByName[0]}
     </span>
   );
 });
 
-const FilesByPrimarySite = withData(props => {
+let FilesByPrimarySite = withData(props => {
   return (
     <span
       style={{
         display: 'flex',
         justifyContent: 'flex-end',
         minWidth: '60px',
-      }}>
+      }}
+    >
       {props.repository.files.hits ? (
         <RepositoryFilesLink
           query={{
@@ -111,7 +105,8 @@ const FilesByPrimarySite = withData(props => {
                 value: [props.primarySite],
               },
             ]),
-          }}>
+          }}
+        >
           {props.repository.files.hits.total.toLocaleString()}
         </RepositoryFilesLink>
       ) : (
@@ -121,7 +116,7 @@ const FilesByPrimarySite = withData(props => {
   );
 });
 
-const ExploreByPrimarySiteButton = props => {
+let ExploreByPrimarySiteButton = props => {
   return (
     <ExploreLink
       query={{
@@ -145,13 +140,14 @@ const ExploreByPrimarySiteButton = props => {
             },
           ],
         },
-      }}>
+      }}
+    >
       Explore
     </ExploreLink>
   );
 };
 
-const CasesByPrimarySite = withData(props => {
+let CasesByPrimarySite = withData(props => {
   const linkQuery = {
     searchTableTab: 'cases',
     filters: makeFilter([
@@ -171,7 +167,8 @@ const CasesByPrimarySite = withData(props => {
         display: 'flex',
         justifyContent: 'flex-end',
         minWidth: '60px',
-      }}>
+      }}
+    >
       {props.repository.cases.hits && (
         <RepositoryFilesLink query={linkQuery}>
           {props.repository.cases.hits.total.toLocaleString()}
@@ -195,7 +192,8 @@ const projectPrimarySitesTableModel = [
           maxWidth: '200px',
           padding: '3px 15px 3px 3px',
           whiteSpace: 'normal',
-        }}>
+        }}
+      >
         {primarySite}
       </Td>
     ),
@@ -214,8 +212,9 @@ const projectPrimarySitesTableModel = [
             maxWidth: '200px',
             padding: '3px 15px 3px 3px',
             whiteSpace: 'normal',
-          }}>
-          <DiseaseList primarySite={primarySite} projectId={projectId} />
+          }}
+        >
+          <DiseaseList projectId={projectId} primarySite={primarySite} />
         </Td>
       );
     },
@@ -233,7 +232,8 @@ const projectPrimarySitesTableModel = [
           maxWidth: '200px',
           padding: '3px',
           whiteSpace: 'normal',
-        }}>
+        }}
+      >
         <CasesByPrimarySite primarySite={primarySite} projectId={projectId} />
       </Td>
     ),
@@ -250,23 +250,27 @@ const projectPrimarySitesTableModel = [
           style={{
             display: 'flex',
             justifyContent: 'space-between',
-          }}>
+          }}
+        >
           {Object.keys(DATA_CATEGORIES).map(category => (
             <span
               key={category}
               style={{
                 width: '50px',
                 textAlign: 'right',
-              }}>
+              }}
+            >
               <abbr
                 key={DATA_CATEGORIES[category].abbr}
                 style={{
                   fontSize: '1rem',
                   fontVariantPosition: 'super',
-                }}>
+                }}
+              >
                 <Tooltip
                   Component={DATA_CATEGORIES[category].full}
-                  style={tableToolTipHint()}>
+                  style={tableToolTipHint()}
+                >
                   {DATA_CATEGORIES[category].abbr}
                 </Tooltip>
               </abbr>
@@ -294,34 +298,37 @@ const projectPrimarySitesTableModel = [
           maxWidth: '200px',
           padding: '3px',
           whiteSpace: 'normal',
-        }}>
+        }}
+      >
         <FilesByPrimarySite primarySite={primarySite} projectId={projectId} />
       </Td>
     ),
   },
   ...(!AWG
     ? [
-      {
-        name: 'Explore',
-        id: 'explore',
-        sortable: false,
-        downloadable: false,
-        th: () => <ThNum rowSpan="2" />,
-        td: ({ primarySite, projectId }) => (
-          <Td
-            key="explore"
-            style={{
-              maxWidth: '200px',
-              padding: '3px 15px',
-              whiteSpace: 'normal',
-            }}>
-            <ExploreByPrimarySiteButton
-              primarySite={primarySite}
-              projectId={projectId} />
-          </Td>
-        ),
-      },
-    ]
+        {
+          name: 'Explore',
+          id: 'explore',
+          sortable: false,
+          downloadable: false,
+          th: () => <ThNum rowSpan="2" />,
+          td: ({ primarySite, projectId }) => (
+            <Td
+              key="explore"
+              style={{
+                maxWidth: '200px',
+                padding: '3px 15px',
+                whiteSpace: 'normal',
+              }}
+            >
+              <ExploreByPrimarySiteButton
+                primarySite={primarySite}
+                projectId={projectId}
+              />
+            </Td>
+          ),
+        },
+      ]
     : []),
 ];
 

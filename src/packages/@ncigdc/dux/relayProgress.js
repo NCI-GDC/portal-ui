@@ -35,7 +35,8 @@ const handleStateChange: THandleStateChange = props => ({ events }) => {
 
   if (
     events.some(
-      x => x.type === 'NETWORK_QUERY_RECEIVED_ALL' || x.type === 'STORE_FOUND_ALL',
+      x =>
+        x.type === 'NETWORK_QUERY_RECEIVED_ALL' || x.type === 'STORE_FOUND_ALL',
     )
   ) {
     props.dispatch(

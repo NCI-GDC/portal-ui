@@ -34,14 +34,16 @@ const getLink = (hits: {
             value: annotations[0].node.entity_id,
           },
         ]),
-      }}>
+      }}
+    >
       {total}
     </AnnotationsLink>
   );
 };
 
-export default ({ repository, loading }) => (loading ? (
-  <GreyBox />
+export default ({ repository, loading }) =>
+  loading ? (
+    <GreyBox />
   ) : (
     getLink(
       get(repository, 'files.hits.edges[0].node.annotations.hits', {
@@ -49,4 +51,4 @@ export default ({ repository, loading }) => (loading ? (
         total: 0,
       }),
     )
-  ));
+  );

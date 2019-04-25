@@ -44,39 +44,23 @@ export default enhance(
     const countAndType = pluralize(titleType, total, true);
     const filters = selectedIds.length
       ? {
-        op: 'and',
-        content: [
-          {
-            op: 'in',
-            content: {
-              field,
-              value: selectedIds,
-            },
-          },
-        ],
-      }
+          op: 'and',
+          content: [{ op: 'in', content: { field, value: selectedIds } }],
+        }
       : props.filters;
     return (
       <Dropdown
-        button={(
-          <Button
-            disabled={!total}
-            style={{
-              ...visualizingButton,
-              ...style,
-            }}>
-            Save/Edit
-            {' '}
-            {titleType}
-            {' '}
-Set
+        button={
+          <Button style={{ ...visualizingButton, ...style }} disabled={!total}>
+            Save/Edit {titleType} Set
           </Button>
-        )}
+        }
         dropdownStyle={{
           top: '100%',
           marginTop: 5,
           whiteSpace: 'nowrap',
-        }}>
+        }}
+      >
         <Column style={{ minWidth: '22rem' }}>
           <DropdownItem
             style={{
@@ -86,93 +70,79 @@ Set
                 color: theme.greyScale2,
                 background: 'none',
               },
-            }}>
+            }}
+          >
             {countAndType}
           </DropdownItem>
           <DropdownItem
+            style={{ lineHeight: '1.5', cursor: 'pointer' }}
             onClick={() => {
               dispatch(
                 setModal(
                   <SaveSetModal
-                    CreateSetButton={CreateSetButton}
-                    displayType={displayType}
+                    title={`Save ${countAndType} as New Set`}
+                    total={total}
                     filters={filters}
                     score={score}
+                    sort={sort}
+                    type={type}
+                    displayType={displayType}
+                    CreateSetButton={CreateSetButton}
                     setName={
                       (selectedIds || []).length
                         ? `Custom ${capitalize(displayType)} Selection`
                         : ''
                     }
-                    sort={sort}
-                    title={`Save ${countAndType} as New Set`}
-                    total={total}
-                    type={type} />,
+                  />,
                 ),
               );
             }}
-            style={{
-              lineHeight: '1.5',
-              cursor: 'pointer',
-            }}>
-            Save as new
-            {' '}
-            {displayType}
-            {' '}
-set
+          >
+            Save as new {displayType} set
           </DropdownItem>
           {hasSets && (
             <DropdownItem
+              style={{ lineHeight: '1.5', cursor: 'pointer' }}
               onClick={() => {
                 dispatch(
                   setModal(
                     <AppendSetModal
-                      AppendSetButton={AppendSetButton}
-                      displayType={displayType}
                       field={field}
-                      filters={filters}
-                      scope={scope}
-                      score={score}
-                      sort={sort}
                       title={`Add ${countAndType} to Existing Set`}
                       total={total}
-                      type={type} />,
+                      filters={filters}
+                      score={score}
+                      sort={sort}
+                      type={type}
+                      displayType={displayType}
+                      AppendSetButton={AppendSetButton}
+                      scope={scope}
+                    />,
                   ),
                 );
               }}
-              style={{
-                lineHeight: '1.5',
-                cursor: 'pointer',
-              }}>
-              Add to existing
-              {' '}
-              {displayType}
-              {' '}
-set
+            >
+              Add to existing {displayType} set
             </DropdownItem>
           )}
           {hasSets && (
             <DropdownItem
+              style={{ lineHeight: '1.5', cursor: 'pointer' }}
               onClick={() => {
                 dispatch(
                   setModal(
                     <RemoveSetModal
                       field={field}
-                      filters={filters}
-                      RemoveFromSetButton={RemoveFromSetButton}
                       title={`Remove ${countAndType} from Existing Set`}
-                      type={type} />,
+                      filters={filters}
+                      type={type}
+                      RemoveFromSetButton={RemoveFromSetButton}
+                    />,
                   ),
                 );
               }}
-              style={{
-                lineHeight: '1.5',
-                cursor: 'pointer',
-              }}>
-              Remove from existing
-              {' '}
-              {displayType}
-              {' '}
-set
+            >
+              Remove from existing {displayType} set
             </DropdownItem>
           )}
         </Column>

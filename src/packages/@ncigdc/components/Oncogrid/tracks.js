@@ -10,12 +10,7 @@ function random({ value }: { value: string | number }): string {
   return colors(`${value}`.split('').reduce((h, c) => h + c.charCodeAt(0), 0));
 }
 
-const fadeSteps = [
-  0.05,
-  0.4,
-  0.7,
-  1,
-];
+const fadeSteps = [0.05, 0.4, 0.7, 1];
 
 export const getColorValue = (track: { color: any, value?: mixed }) => {
   switch (typeof track.color) {
@@ -39,12 +34,9 @@ function getSquare(track: Object): string {
 function legendGradient(track): string {
   return `
     <b>${track.name}: </b> ${track.min || 0} ${fadeSteps.reduce(
-  (html, opacity) => html + getSquare({
-    ...track,
-    opacity,
-  }),
-  '',
-)} ${track.max}
+    (html, opacity) => html + getSquare({ ...track, opacity }),
+    '',
+  )} ${track.max}
   `;
 }
 
@@ -55,23 +47,17 @@ function legendMulti(track): string {
 
   return `
     <b>${track.name}:</b>${joinCharacter}${values
-  .map(
-    value => `
-        ${value}: ${getSquare({
-  ...track,
-  value,
-})}
+    .map(
+      value => `
+        ${value}: ${getSquare({ ...track, value })}
       `,
-  )
-  .join(joinCharacter)}
+    )
+    .join(joinCharacter)}
   `;
 }
 
 function legendBoolean(track): string {
-  return legendMulti({
-    ...track,
-    joinCharacter: ' ',
-  });
+  return legendMulti({ ...track, joinCharacter: ' ' });
 }
 
 function legendSingle(track): string {
@@ -117,10 +103,7 @@ export const clinicalDonorTracks = [
     sort: sortInt,
     group: 'Clinical',
     color: '#638f56',
-    legend: track => legendGradient({
-      ...track,
-      max: '100+',
-    }),
+    legend: track => legendGradient({ ...track, max: '100+' }),
   },
   {
     name: 'Vital Status',
@@ -141,10 +124,7 @@ export const clinicalDonorTracks = [
     sort: sortInt,
     group: 'Clinical',
     color: 'blue',
-    legend: track => legendGradient({
-      ...track,
-      max: track.maxDaysToDeath,
-    }),
+    legend: track => legendGradient({ ...track, max: track.maxDaysToDeath }),
   },
 ];
 

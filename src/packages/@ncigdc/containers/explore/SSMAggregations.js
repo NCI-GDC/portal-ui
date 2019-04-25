@@ -16,7 +16,6 @@ import NotMissingFacet from '@ncigdc/components/Aggregations/NotMissingFacet';
 import UploadSetButton from '@ncigdc/components/UploadSetButton';
 import { UploadSsmSet } from '@ncigdc/components/Modals/UploadSet';
 import { ResultHighlights } from '@ncigdc/components/QuickSearch/QuickSearchResults';
-
 const presetFacets: Array<{
   title: string,
   field: string,
@@ -130,14 +129,20 @@ export const SSMAggregationsComponent = compose(
 )((props: TProps) => (
   <div className="test-ssm-aggregations">
     <FacetHeader
-      collapsed={props.idCollapsed}
-      description="Enter Mutation UUID, DNA Change, Gene AA Change, COSMIC ID or dbSNP rs ID"
+      title="Mutation"
       field="ssms.ssm_id"
-      setCollapsed={props.setIdCollapsed}
-      title="Mutation" />
-    <SuggestionFacet
       collapsed={props.idCollapsed}
+      setCollapsed={props.setIdCollapsed}
+      description="Enter Mutation UUID, DNA Change, Gene AA Change, COSMIC ID or dbSNP rs ID"
+    />
+    <SuggestionFacet
+      title="Mutation"
       doctype="ssms"
+      collapsed={props.idCollapsed}
+      fieldNoDoctype="ssm_id"
+      placeholder="e.g. BRAF V600E, chr7:g.140753336A>T"
+      hits={props.suggestions}
+      setAutocomplete={props.setAutocomplete}
       dropdownItem={(x, inputValue) => (
         <div>
           <div>
@@ -147,67 +152,70 @@ export const SSMAggregationsComponent = compose(
           <div>{x.genomic_dna_change}</div>
         </div>
       )}
-      fieldNoDoctype="ssm_id"
-      hits={props.suggestions}
-      placeholder="e.g. BRAF V600E, chr7:g.140753336A>T"
-      setAutocomplete={props.setAutocomplete}
-      title="Mutation" />
+    />
     <UploadSetButton
-      defaultQuery={{
-        pathname: '/exploration',
-        query: { searchTableTab: 'ssms' },
-      }}
+      type="ssm"
       displayType="mutation"
-      idField="ssms.ssm_id"
       style={{
         width: '100%',
         borderBottom: `1px solid ${props.theme.greyScale5}`,
         padding: '0 1.2rem 1rem',
       }}
-      type="ssm"
-      UploadModal={UploadSsmSet}>
+      UploadModal={UploadSsmSet}
+      defaultQuery={{
+        pathname: '/exploration',
+        query: { searchTableTab: 'ssms' },
+      }}
+      idField="ssms.ssm_id"
+    >
       Upload Mutation Set
     </UploadSetButton>
     {presetFacets
       .filter(
-        ({ full }) => ![
-          'ssms.ssm_id',
-          'ssms.cosmic_id',
-          'ssms.consequence.transcript.annotation.dbsnp_rs',
-        ].includes(full),
+        ({ full }) =>
+          ![
+            'ssms.ssm_id',
+            'ssms.cosmic_id',
+            'ssms.consequence.transcript.annotation.dbsnp_rs',
+          ].includes(full),
       )
       .map(facet => (
         <FacetWrapper
-          additionalProps={facet.additionalProps}
-          aggregation={props.aggregations[escapeForRelay(facet.field)]}
-          facet={facet}
           key={facet.full}
+          facet={facet}
+          title={facet.title}
+          aggregation={props.aggregations[escapeForRelay(facet.field)]}
           relay={props.relay}
+          additionalProps={facet.additionalProps}
           style={{ borderBottom: `1px solid ${props.theme.greyScale5}` }}
-          title={facet.title} />
+        />
       ))}
     <FacetHeader
-      collapsed={props.cosmicIdCollapsed}
+      title="COSMIC ID"
       field="ssms.cosmic_id"
+      collapsed={props.cosmicIdCollapsed}
       setCollapsed={props.setCosmicIdCollapsed}
-      title="COSMIC ID" />
+    />
     <NotMissingFacet
-      collapsed={props.cosmicIdCollapsed}
       field="ssms.cosmic_id"
+      title="COSMIC ID"
+      collapsed={props.cosmicIdCollapsed}
       notMissingDocCount={props.ssms.cosmic_id_not_missing.total}
       style={{ borderBottom: `1px solid ${props.theme.greyScale5}` }}
-      title="COSMIC ID" />
+    />
     <FacetHeader
+      title="dbSNP rs ID"
+      field="ssms.consequence.transcript.annotation.dbsnp_rs"
       collapsed={props.cosmicIdCollapsed}
-      field="ssms.consequence.transcript.annotation.dbsnp_rs"
       setCollapsed={props.setCosmicIdCollapsed}
-      title="dbSNP rs ID" />
+    />
     <NotMissingFacet
-      collapsed={props.dbSNPCollapsed}
       field="ssms.consequence.transcript.annotation.dbsnp_rs"
+      title="dbSNP rs ID"
+      collapsed={props.dbSNPCollapsed}
       notMissingDocCount={props.ssms.dbsnp_rs_not_missing.total}
       style={{ borderBottom: `1px solid ${props.theme.greyScale5}` }}
-      title="dbSNP rs ID" />
+    />
   </div>
 ));
 

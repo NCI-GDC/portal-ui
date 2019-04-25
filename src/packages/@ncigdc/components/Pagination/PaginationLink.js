@@ -13,16 +13,18 @@ export type TProps = {
   className?: Object,
 };
 
-const PaginationLink = (props: TProps) => (props.pred ? (
-  <Link
-    className={props.className || 'test-pagination-link'}
-    merge
-    query={{ [props.prfOff]: props.offset }}
-    style={props.style || {}}>
-    {props.children}
-  </Link>
+const PaginationLink = (props: TProps) =>
+  props.pred ? (
+    <Link
+      merge
+      query={{ [props.prfOff]: props.offset }}
+      style={props.style || {}}
+      className={props.className || 'test-pagination-link'}
+    >
+      {props.children}
+    </Link>
   ) : (
     <span>{props.children}</span>
-  ));
+  );
 
 export default PaginationLink;

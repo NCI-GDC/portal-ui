@@ -74,20 +74,22 @@ export const ProjectAggregationsComponent = compose(
 )((props: TProps) => (
   <div className="test-project-aggregations">
     <FacetHeader
-      collapsed={props.projectIdCollapsed}
-      description="Enter Project ID, Project name, Disease Type or Primary Site"
+      title="Project"
       field="projects.project_id"
-      setCollapsed={props.setProjectIdCollapsed}
-      title="Project" />
-    <SuggestionFacet
       collapsed={props.projectIdCollapsed}
+      setCollapsed={props.setProjectIdCollapsed}
+      description="Enter Project ID, Project name, Disease Type or Primary Site"
+    />
+    <SuggestionFacet
+      title="Project"
+      collapsed={props.projectIdCollapsed}
+      placeholder="e.g. TCGA-GBM, Brain"
       doctype="projects"
+      fieldNoDoctype="project_id"
+      queryType="project"
       dropdownItem={x => (
         <Row>
-          <FolderIcon style={{
-            paddingRight: '1rem',
-            paddingTop: '1rem',
-          }} />
+          <FolderIcon style={{ paddingRight: '1rem', paddingTop: '1rem' }} />
           <div>
             <div style={{ fontWeight: 'bold' }}>{x.name}</div>
             {x.project_id}
@@ -96,19 +98,17 @@ export const ProjectAggregationsComponent = compose(
           </div>
         </Row>
       )}
-      fieldNoDoctype="project_id"
-      placeholder="e.g. TCGA-GBM, Brain"
-      queryType="project"
-      title="Project" />
+    />
     {projectFacets.map(facet => (
       <FacetWrapper
-        additionalProps={facet.additionalProps}
-        aggregation={props.aggregations[escapeForRelay(facet.field)]}
-        facet={facet}
         key={facet.full}
+        facet={facet}
+        title={facet.title}
+        aggregation={props.aggregations[escapeForRelay(facet.field)]}
         relay={props.relay}
+        additionalProps={facet.additionalProps}
         style={{ borderBottom: `1px solid ${props.theme.greyScale5}` }}
-        title={facet.title} />
+      />
     ))}
   </div>
 ));

@@ -48,11 +48,9 @@ const ExternalLink = ({
 }) => (
   <ELink
     hasExternalIcon={hasExternalIcon}
-    style={{
-      ...styles.link,
-      ...style,
-    }}
-    {...props}>
+    style={{ ...styles.link, ...style }}
+    {...props}
+  >
     {children}
   </ELink>
 );
@@ -70,9 +68,10 @@ export default compose(
     dataRelease,
   }) => (
     <footer
+      style={styles.footer(theme)}
       className="test-footer"
       role="contentinfo"
-      style={styles.footer(theme)}>
+    >
       <div style={styles.outerContainer}>
         <div style={styles.innerContainer}>
           <HomeLink style={styles.link}>Site Home</HomeLink>
@@ -112,27 +111,13 @@ export default compose(
           NIH... Turning Discovery Into Health ®
         </div>
         <div style={styles.innerContainer}>
-          <span>
-            {' '}
-UI @
-            {uiVersion || (uiCommitHash || '').slice(0, 7)}
-          </span>
+          <span> UI @ {uiVersion || (uiCommitHash || '').slice(0, 7)}</span>
+
+          <span>, API {apiVersion}</span>
+          {apiCommitHash && <span> @ {apiCommitHash.slice(0, 7)}</span>}
 
           <span>
-, API
-            {apiVersion}
-          </span>
-          {apiCommitHash && (
-            <span>
-              {' '}
-@
-              {apiCommitHash.slice(0, 7)}
-            </span>
-          )}
-
-          <span>
-            ,
-            {' '}
+            ,{' '}
             <ExternalLink href="https://docs.gdc.cancer.gov/Data/Release_Notes/Data_Release_Notes/">
               {dataRelease}
             </ExternalLink>

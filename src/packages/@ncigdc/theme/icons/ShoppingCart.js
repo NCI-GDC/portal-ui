@@ -2,5 +2,5 @@
 import React from 'react';
 
 export default ({ className = '', style = {}, ...props }) => (
-  <i className={`${className} fa fa-shopping-cart`} style={style} {...props} />
+  <i style={style} className={`${className} fa fa-shopping-cart`} {...props} />
 );

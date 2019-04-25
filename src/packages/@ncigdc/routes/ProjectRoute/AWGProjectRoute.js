@@ -37,29 +37,21 @@ const styles = {
 };
 
 const enhance = compose(
-  withProps(({ match }) => ({
-    type: 'Project',
-    id: get(match, 'params.id'),
-  })),
+  withProps(({ match }) => ({ type: 'Project', id: get(match, 'params.id') })),
   withExists,
   withRouter,
 );
 
 export default enhance(({ id: projectId, filters, push }) => {
   const projectFilter = makeFilter([
-    {
-      field: 'cases.project.project_id',
-      value: projectId,
-    },
+    { field: 'cases.project.project_id', value: projectId },
   ]);
   return (
-    <FullWidthLayout entityType="PR" title={projectId}>
+    <FullWidthLayout title={projectId} entityType="PR">
       <Row
+        style={{ marginBottom: '2rem', marginLeft: 'auto' }}
         spacing="0.2rem"
-        style={{
-          marginBottom: '2rem',
-          marginLeft: 'auto',
-        }}>
+      >
         <span>
           <DownloadBiospecimenDropdown
             dropdownStyles={{
@@ -67,10 +59,11 @@ export default enhance(({ id: projectId, filters, push }) => {
               left: '2px',
               marginTop: '2px',
             }}
-            filters={projectFilter}
-            inactiveText="Biospecimen"
             jsonFilename={`biospecimen.project-${projectId}.${timestamp()}.json`}
-            tsvFilename={`biospecimen.project-${projectId}.${timestamp()}.tar.gz`} />
+            tsvFilename={`biospecimen.project-${projectId}.${timestamp()}.tar.gz`}
+            filters={projectFilter}
+            inactiveText={'Biospecimen'}
+          />
         </span>
         <span>
           <DownloadClinicalDropdown
@@ -80,37 +73,26 @@ export default enhance(({ id: projectId, filters, push }) => {
               marginTop: '2px',
             }}
             filters={projectFilter}
-            inactiveText="Clinical"
+            tsvFilename={`clinical.project-${projectId}.${timestamp()}.tar.gz`}
             jsonFilename={`clinical.project-${projectId}.${timestamp()}.json`}
-            tsvFilename={`clinical.project-${projectId}.${timestamp()}.tar.gz`} />
+            inactiveText={'Clinical'}
+          />
         </span>
         <span>
           <DownloadManifestButton projectId={projectId} />
         </span>
       </Row>
       <ProjectSummary projectId={projectId} />
-      <Row spacing="2rem" style={{ flexWrap: 'wrap' }}>
-        <span style={{
-          ...styles.column,
-          marginBottom: '2rem',
-          flex: 1,
-        }}>
+      <Row style={{ flexWrap: 'wrap' }} spacing={'2rem'}>
+        <span style={{ ...styles.column, marginBottom: '2rem', flex: 1 }}>
           <ProjectCountsDataCategory projectId={projectId} />
         </span>
-        <span style={{
-          ...styles.column,
-          marginBottom: '2rem',
-          flex: 1,
-        }}>
+        <span style={{ ...styles.column, marginBottom: '2rem', flex: 1 }}>
           <ProjectCountsExpStrategy projectId={projectId} />
         </span>
       </Row>
       <Row>
-        <span style={{
-          ...styles.column,
-          marginBottom: '2rem',
-          flex: 1,
-        }}>
+        <span style={{ ...styles.column, marginBottom: '2rem', flex: 1 }}>
           <ProjectPrimarySitesTable projectId={projectId} />
         </span>
       </Row>

@@ -13,16 +13,19 @@ export const CATEGORY_MAP: TCategoryMap = _.fromPairs(
   Object.values(DATA_CATEGORIES).map(c => [c.abbr, c.full]),
 );
 
-export const findDataCategory: TFindDataCategory = (category, categories) => categories.find(x => x.data_category === CATEGORY_MAP[category]) || {
-  data_category: CATEGORY_MAP[category],
-  file_count: 0,
-  case_count: 0,
-};
+export const findDataCategory: TFindDataCategory = (category, categories) =>
+  categories.find(x => x.data_category === CATEGORY_MAP[category]) || {
+    data_category: CATEGORY_MAP[category],
+    file_count: 0,
+    case_count: 0,
+  };
 
-export const sumDataCategories: TSumDataCategories = categories => Object.keys(CATEGORY_MAP).reduce(
-  (acc, key: TCategoryAbbr) => acc + findDataCategory(key, categories).file_count,
-  0,
-);
+export const sumDataCategories: TSumDataCategories = categories =>
+  Object.keys(CATEGORY_MAP).reduce(
+    (acc, key: TCategoryAbbr) =>
+      acc + findDataCategory(key, categories).file_count,
+    0,
+  );
 
 type TBuildProteinLolliplotArgs = {
   transcript: {

@@ -11,12 +11,10 @@ import { getFilterValue, makeFilter } from '@ncigdc/utils/filters';
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import CheckCircleOIcon from '@ncigdc/theme/icons/CheckCircleOIcon';
 import { IRawQuery } from '@ncigdc/utils/uri/types';
+import Hidden from '../Hidden';
+import { Container, GoLink, CheckedRow, CheckedLink } from './';
 import Input from '@ncigdc/uikit/Form/Input';
 import { Tooltip } from '@ncigdc/uikit/Tooltip';
-import Hidden from '../Hidden';
-import {
-  Container, GoLink, CheckedRow, CheckedLink,
-} from '.';
 
 const ExactMatchFacet = compose(
   withState('inputValue', 'setInputValue', ''),
@@ -43,7 +41,7 @@ const ExactMatchFacet = compose(
             dotField: `${doctype}.${fieldNoDoctype}`,
           }) || { content: { value: [] } };
           return (
-            <Container className="test-exact-match-facet" style={style}>
+            <Container style={style} className="test-exact-match-facet">
               {!collapsed && (
                 <Column>
                   {currentValues.content.value.map(v => (
@@ -58,9 +56,11 @@ const ExactMatchFacet = compose(
                                 value: [v],
                               },
                             ]),
-                          }}>
+                          }}
+                        >
                           <CheckCircleOIcon
-                            style={{ paddingRight: '0.5rem' }} />
+                            style={{ paddingRight: '0.5rem' }}
+                          />
                           {v}
                         </CheckedLink>
                       </Tooltip>
@@ -71,20 +71,19 @@ const ExactMatchFacet = compose(
                       <Hidden>{title}</Hidden>
                     </label>
                     <Input
+                      style={{
+                        borderRadius: '4px 0 0 4px',
+                      }}
                       id={fieldNoDoctype}
                       name={fieldNoDoctype}
                       onChange={e => {
                         setInputValue(e.target.value);
                       }}
                       placeholder={placeholder}
-                      style={{
-                        borderRadius: '4px 0 0 4px',
-                      }}
-                      value={inputValue} />
+                      value={inputValue}
+                    />
                     <GoLink
-                      dark={!!inputValue}
                       merge="toggle"
-                      onClick={inputValue ? () => setInputValue('') : null}
                       query={
                         inputValue && {
                           filters: makeFilter([
@@ -95,14 +94,14 @@ const ExactMatchFacet = compose(
                           ]),
                         }
                       }
+                      dark={!!inputValue}
+                      onClick={inputValue ? () => setInputValue('') : null}
                       style={
                         inputValue
                           ? null
-                          : {
-                            color: '#6F6F6F',
-                            cursor: 'not-allowed',
-                          }
-                      }>
+                          : { color: '#6F6F6F', cursor: 'not-allowed' }
+                      }
+                    >
                       Go!
                     </GoLink>
                   </Row>

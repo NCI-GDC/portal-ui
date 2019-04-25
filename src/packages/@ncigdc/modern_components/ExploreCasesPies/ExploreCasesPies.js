@@ -38,11 +38,9 @@ const COMPONENT_NAME = 'ExploreCasesPies';
 
 class Route extends Relay.Route {
   static routeName = COMPONENT_NAME;
-
   static queries = {
     viewer: () => Relay.QL`query { viewer }`,
   };
-
   static prepareParams = ({ location: { search }, defaultFilters = null }) => {
     const q = parse(search);
 
@@ -52,12 +50,13 @@ class Route extends Relay.Route {
   };
 }
 
-const createContainer = Component => Relay.createContainer(Component, {
-  initialVariables: {
-    filters: null,
-  },
-  fragments: {
-    viewer: () => Relay.QL`
+const createContainer = Component =>
+  Relay.createContainer(Component, {
+    initialVariables: {
+      filters: null,
+    },
+    fragments: {
+      viewer: () => Relay.QL`
         fragment on Root {
           explore {
             cases {
@@ -115,8 +114,8 @@ const createContainer = Component => Relay.createContainer(Component, {
           }
         }
       `,
-  },
-});
+    },
+  });
 
 const Component = ({
   viewer: { explore: { cases: { aggregations } } },
@@ -131,72 +130,77 @@ const Component = ({
       <ColumnCenter>
         <PieTitle>Primary Site</PieTitle>
         <SelfFilteringPie
+          docTypeSingular="case"
           buckets={_.get(aggregations, 'primary_site.buckets')}
+          fieldName="cases.primary_site"
           currentFieldNames={currentFieldNames}
           currentFilters={currentFilters}
-          docTypeSingular="case"
-          fieldName="cases.primary_site"
-          height={125}
-          path="doc_count"
-          push={push}
           query={query}
-          width={125} />
+          push={push}
+          path="doc_count"
+          height={125}
+          width={125}
+        />
       </ColumnCenter>
       <ColumnCenter>
         <PieTitle>Project</PieTitle>
         <SelfFilteringPie
+          docTypeSingular="case"
           buckets={_.get(aggregations, 'project__project_id.buckets')}
+          fieldName="cases.project.project_id"
           currentFieldNames={currentFieldNames}
           currentFilters={currentFilters}
-          docTypeSingular="case"
-          fieldName="cases.project.project_id"
-          height={125}
-          path="doc_count"
-          push={push}
           query={query}
-          width={125} />
+          push={push}
+          path="doc_count"
+          height={125}
+          width={125}
+        />
       </ColumnCenter>
       <ColumnCenter>
         <PieTitle>Disease Type</PieTitle>
         <SelfFilteringPie
+          docTypeSingular="case"
           buckets={_.get(aggregations, 'disease_type.buckets')}
+          fieldName="cases.disease_type"
           currentFieldNames={currentFieldNames}
           currentFilters={currentFilters}
-          docTypeSingular="case"
-          fieldName="cases.disease_type"
-          height={125}
-          path="doc_count"
-          push={push}
           query={query}
-          width={125} />
+          push={push}
+          path="doc_count"
+          height={125}
+          width={125}
+        />
       </ColumnCenter>
       <ColumnCenter>
         <PieTitle>Gender</PieTitle>
         <SelfFilteringPie
+          docTypeSingular="case"
           buckets={_.get(aggregations, 'demographic__gender.buckets')}
+          fieldName="cases.demographic.gender"
           currentFieldNames={currentFieldNames}
           currentFilters={currentFilters}
-          docTypeSingular="case"
-          fieldName="cases.demographic.gender"
-          height={125}
-          path="doc_count"
-          push={push}
           query={query}
-          width={125} />
+          push={push}
+          path="doc_count"
+          height={125}
+          width={125}
+        />
       </ColumnCenter>
       <ColumnCenter>
         <PieTitle>Vital Status</PieTitle>
         <SelfFilteringPie
+          docTypeSingular="case"
           buckets={_.get(aggregations, 'diagnoses__vital_status.buckets')}
+          fieldName="cases.diagnoses.vital_status"
           currentFieldNames={currentFieldNames}
           currentFilters={currentFilters}
-          docTypeSingular="case"
-          fieldName="cases.diagnoses.vital_status"
-          height={125}
-          path="doc_count"
-          push={push}
           query={query}
-          width={125} />
+          push={push}
+          path="doc_count"
+          height={125}
+          width={125}
+        />
       </ColumnCenter>
     </RowCenter>
   );

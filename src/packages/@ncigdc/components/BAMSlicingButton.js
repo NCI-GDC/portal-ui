@@ -38,25 +38,25 @@ const BAMSlicingButton = ({
 }: TProps) => (
   <BAMButton
     className="test-bam-button"
-    disabled={active}
+    style={{ marginLeft: '0.5rem' }}
     leftIcon={active ? <Spinner /> : <CutleryIcon />}
-    onClick={() => dispatch(
-      setModal(
-          user && userCanDownloadFile({
-            user,
-            file,
-          }) ? (
+    disabled={active}
+    onClick={() =>
+      dispatch(
+        setModal(
+          user && userCanDownloadFile({ user, file }) ? (
             <BAMModal
               className="test-bam-modal"
-              closeModal={() => dispatch(setModal(null))}
               file={file}
-              setActive={setActive} />
+              closeModal={() => dispatch(setModal(null))}
+              setActive={setActive}
+            />
           ) : (
             <NoAccessModal />
           ),
-      ),
-    )}
-    style={{ marginLeft: '0.5rem' }}>
+        ),
+      )}
+  >
     {active ? 'Slicing' : 'BAM Slicing'}
   </BAMButton>
 );

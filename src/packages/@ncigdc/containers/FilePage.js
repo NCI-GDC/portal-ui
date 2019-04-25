@@ -25,9 +25,10 @@ export type TProps = {
 
 export const FilePageComponent = (props: TProps) => (
   <FullWidthLayout
-    className="test-file-page"
+    title={props.node.file_name}
     entityType="FL"
-    title={props.node.file_name}>
+    className="test-file-page"
+  >
     <File node={props.node} />
   </FullWidthLayout>
 );

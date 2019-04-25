@@ -14,10 +14,7 @@ const customFacets = namespaceActions('customFacets', [
 
 const add = ({ entityType, facet }: { entityType: string, facet: Object }) => ({
   type: customFacets.ADD_FACET,
-  payload: {
-    entityType,
-    facet,
-  },
+  payload: { entityType, facet },
 });
 
 const remove = ({
@@ -28,10 +25,7 @@ const remove = ({
   field: string,
 }) => ({
   type: customFacets.REMOVE_FACET,
-  payload: {
-    entityType,
-    field,
-  },
+  payload: { entityType, field },
 });
 
 const reset = ({ entityType }: { entityType: string }) => ({
@@ -61,6 +55,7 @@ const reducer = (
   },
 ) => {
   switch (action.type) {
+
     case customFacets.ADD_FACET: {
       const { entityType, facet } = action.payload;
       return {
@@ -79,10 +74,7 @@ const reducer = (
 
     case customFacets.RESET_FACETS: {
       const { entityType } = action.payload;
-      return {
-        ...state,
-        [entityType]: [],
-      };
+      return { ...state, [entityType]: [] };
     }
 
     default:

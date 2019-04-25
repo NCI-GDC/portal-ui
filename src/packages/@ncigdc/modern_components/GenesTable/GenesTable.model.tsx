@@ -1,8 +1,6 @@
 import React from 'react';
 import { scaleOrdinal, schemeCategory10 } from 'd3';
-import {
-  Th, Td, ThNum, TdNum,
-} from '@ncigdc/uikit/Table';
+import { Th, Td, ThNum, TdNum } from '@ncigdc/uikit/Table';
 import {
   makeFilter,
   addInFilters,
@@ -86,10 +84,11 @@ const GenesTableModel = [
       return (
         <Td>
           <GeneLink
+            uuid={node.gene_id}
             query={{
               filters: removeFilter(f => f.match(/^genes\./), defaultFilters),
             }}
-            uuid={node.gene_id}>
+          >
             {node.symbol}
           </GeneLink>
         </Td>
@@ -104,10 +103,7 @@ const GenesTableModel = [
     th: () => <Th>Name</Th>,
     td: ({ node }: INodeProps) => (
       <Td>
-        <div style={{
-          maxWidth: '230px',
-          whiteSpace: 'normal',
-        }}>
+        <div style={{ maxWidth: '230px', whiteSpace: 'normal' }}>
           {node.name}
         </div>
       </Td>
@@ -139,25 +135,16 @@ const GenesTableModel = [
     th: ({ context }: { context: string }) => (
       <Th>
         <Tooltip
-          Component={(
+          Component={
             <span>
-              Breakdown of Affected Cases in
-              {' '}
-              {context}
-              {' '}
-              <br />
-              # of Cases where Gene is
-              {' '}
-              <br />
+              Breakdown of Affected Cases in {context} <br />
+              # of Cases where Gene is <br />
               mutated /# Cases tested for Simple Somatic Mutations
             </span>
-          )}
-          style={tableToolTipHint()}>
-          # SSM Affected Cases
-          <br />
-in
-          {' '}
-          {context}
+          }
+          style={tableToolTipHint()}
+        >
+          # SSM Affected Cases<br />in {context}
         </Tooltip>
       </Th>
     ),
@@ -175,6 +162,8 @@ in
       <Td>
         <span>
           <ExploreSSMLink
+            merge
+            searchTableTab={'cases'}
             filters={replaceFilters(
               {
                 op: 'and',
@@ -190,8 +179,7 @@ in
               },
               query.genesTable_filters || defaultFilters
             )}
-            merge
-            searchTableTab="cases">
+          >
             {(node.numCases || 0).toLocaleString()}
           </ExploreSSMLink>
           <span> / </span>
@@ -199,7 +187,8 @@ in
             query={{
               searchTableTab: 'cases',
               filters: removeFilterWithOp(
-                (op: string, field: string) => op.match(/^NOT$/) && field.match(/^ssms.ssm_id/),
+                (op: string, field: string) =>
+                  op.match(/^NOT$/) && field.match(/^ssms.ssm_id/),
                 addInFilters(
                   query.genesTable_filters || defaultFilters,
                   makeFilter([
@@ -210,15 +199,14 @@ in
                   ])
                 )
               ),
-            }}>
+            }}
+          >
             {(filteredCases.hits.total || 0).toLocaleString()}
           </ExploreLink>
-          <span>
-            {` (${((node.numCases || 0) /
+          <span>{` (${((node.numCases || 0) /
             filteredCases.hits.total *
             100
-            ).toFixed(2)}%)`}
-          </span>
+          ).toFixed(2)}%)`}</span>
         </span>
       </Td>
     ),
@@ -231,7 +219,7 @@ in
     th: () => (
       <Th>
         <Tooltip
-          Component={(
+          Component={
             <span>
               # of Cases where Gene contains Simple Somatic Mutations
               <br />
@@ -239,12 +227,10 @@ in
               <br />
               Expand to see breakdown by project
             </span>
-          )}
-          style={tableToolTipHint()}>
-          # SSM Affected Cases
-          <br />
-          {' '}
-Across the GDC
+          }
+          style={tableToolTipHint()}
+        >
+          # SSM Affected Cases<br /> Across the GDC
         </Tooltip>
       </Th>
     ),
@@ -257,14 +243,12 @@ Across the GDC
     }) => (
       <Td>
         <ProjectBreakdown
-          caseTotal={node.ssm_case.hits.total}
           filters={makeFilter([
-            {
-              field: 'genes.gene_id',
-              value: node.gene_id,
-            },
+            { field: 'genes.gene_id', value: node.gene_id },
           ])}
-          gdcCaseTotal={cases.hits.total} />
+          caseTotal={node.ssm_case.hits.total}
+          gdcCaseTotal={cases.hits.total}
+        />
       </Td>
     ),
   },
@@ -276,14 +260,15 @@ Across the GDC
     th: () => (
       <Th>
         <Tooltip
-          Component={(
+          Component={
             <span>
               # of Cases where CNV gain events are observed in Gene
               <br />
               / # of Cases tested for Copy Number Alteration in Gene
             </span>
-          )}
-          style={tableToolTipHint()}>
+          }
+          style={tableToolTipHint()}
+        >
           # CNV Gain
         </Tooltip>
       </Th>
@@ -309,14 +294,12 @@ Across the GDC
               : 0}
             <span> / </span>
             {(cnvCases.hits.total || 0).toLocaleString()}
-            <span>
-              {` (${((node.case_cnv_gain.hits
+            <span>{` (${((node.case_cnv_gain.hits
               ? node.case_cnv_gain.hits.total
               : 0) /
               cnvCases.hits.total *
               100
-              ).toFixed(2)}%)`}
-            </span>
+            ).toFixed(2)}%)`}</span>
           </span>
         ) : (
           <span>--</span>
@@ -332,14 +315,15 @@ Across the GDC
     th: () => (
       <Th>
         <Tooltip
-          Component={(
+          Component={
             <span>
               # of Cases where CNV loss events are observed in Gene
               <br />
               / # of Cases tested for Copy Number Alteration in Gene
             </span>
-          )}
-          style={tableToolTipHint()}>
+          }
+          style={tableToolTipHint()}
+        >
           # CNV Loss
         </Tooltip>
       </Th>
@@ -365,14 +349,12 @@ Across the GDC
               : 0}
             <span> / </span>
             {(cnvCases.hits.total || 0).toLocaleString()}
-            <span>
-              {` (${((node.case_cnv_loss.hits
+            <span>{` (${((node.case_cnv_loss.hits
               ? node.case_cnv_loss.hits.total
               : 0) /
               cnvCases.hits.total *
               100
-              ).toFixed(2)}%)`}
-            </span>
+            ).toFixed(2)}%)`}</span>
           </span>
         ) : (
           <span>--</span>
@@ -388,19 +370,14 @@ Across the GDC
     th: ({ context }: { context: string }) => (
       <ThNum>
         <Tooltip
-          Component={(
+          style={tableToolTipHint()}
+          Component={
             <span>
-              # Unique Simple Somatic Mutations in the Gene
-              {' '}
-              {context ? (
-                <span>
-in
-                  {context}
-                </span>
-) : ''}
+              # Unique Simple Somatic Mutations in the Gene{' '}
+              {context ? <span>in {context}</span> : ''}
             </span>
-          )}
-          style={tableToolTipHint()}>
+          }
+        >
           # Mutations
         </Tooltip>
       </ThNum>
@@ -416,16 +393,12 @@ in
     }) => (
       <TdNum>
         <MutationsCount
+          ssmCount={ssmCounts[node.gene_id]}
           filters={addInFilters(
             defaultFilters,
-            makeFilter([
-              {
-                field: 'genes.gene_id',
-                value: [node.gene_id],
-              },
-            ])
+            makeFilter([{ field: 'genes.gene_id', value: [node.gene_id] }])
           )}
-          ssmCount={ssmCounts[node.gene_id]} />
+        />
       </TdNum>
     ),
   },
@@ -440,7 +413,7 @@ in
         {node.is_cancer_gene_census && (
           <span>
             <Tooltip Component="Cancer Gene Census">
-              <CosmicIcon height="16px" width="20px" />
+              <CosmicIcon width={'20px'} height={'16px'} />
             </Tooltip>
             <ForTsvExport>Cancer Gene Census</ForTsvExport>
           </span>
@@ -475,8 +448,17 @@ in
             hasEnoughSurvivalDataOnPrimaryCurve
               ? `Click icon to plot ${node.symbol}`
               : 'Not enough survival data'
-          }>
+          }
+        >
           <Button
+            style={{
+              padding: '2px 3px',
+              backgroundColor: hasEnoughSurvivalDataOnPrimaryCurve
+                ? colors(selectedSurvivalData.id === node.symbol ? '1' : '0')
+                : '#666',
+              color: 'white',
+              margin: '0 auto',
+            }}
             disabled={!hasEnoughSurvivalDataOnPrimaryCurve}
             onClick={() => {
               if (node.symbol !== selectedSurvivalData.id) {
@@ -494,14 +476,7 @@ in
                 setSelectedSurvivalData({});
               }
             }}
-            style={{
-              padding: '2px 3px',
-              backgroundColor: hasEnoughSurvivalDataOnPrimaryCurve
-                ? colors(selectedSurvivalData.id === node.symbol ? '1' : '0')
-                : '#666',
-              color: 'white',
-              margin: '0 auto',
-            }}>
+          >
             {survivalLoadingId === node.symbol ? (
               <SpinnerIcon />
             ) : (

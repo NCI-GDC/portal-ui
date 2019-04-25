@@ -96,34 +96,37 @@ export const AnnotationAggregationsComponent = compose(
 )((props: TProps) => (
   <div className="test-annotation-aggregations">
     <FacetHeader
-      collapsed={props.annotationIdCollapsed}
+      title="Annotation UUID"
       field="annotations.annotation_id"
-      setCollapsed={props.setAnnotationIdCollapsed}
-      title="Annotation UUID" />
-    <SuggestionFacet
       collapsed={props.annotationIdCollapsed}
+      setCollapsed={props.setAnnotationIdCollapsed}
+    />
+    <SuggestionFacet
+      title={'Annotation ID'}
+      collapsed={props.annotationIdCollapsed}
+      placeholder="Search for Annotation UUID"
+      hits={props.suggestions}
+      setAutocomplete={props.setAutocomplete}
       doctype="annotations"
+      fieldNoDoctype="annotation_id"
+      style={{ borderBottom: `1px solid ${props.theme.greyScale5}` }}
       dropdownItem={x => (
         <Row>
           <AnnotationIcon style={{ paddingRight: '1rem' }} />
           {x.annotation_id}
         </Row>
       )}
-      fieldNoDoctype="annotation_id"
-      hits={props.suggestions}
-      placeholder="Search for Annotation UUID"
-      setAutocomplete={props.setAutocomplete}
-      style={{ borderBottom: `1px solid ${props.theme.greyScale5}` }}
-      title="Annotation ID" />
+    />
     {annotationFacets.map(facet => (
       <FacetWrapper
-        additionalProps={facet.additionalProps}
-        aggregation={props.aggregations[escapeForRelay(facet.field)]}
-        facet={facet}
         key={facet.full}
+        facet={facet}
+        title={facet.title}
+        aggregation={props.aggregations[escapeForRelay(facet.field)]}
         relay={props.relay}
+        additionalProps={facet.additionalProps}
         style={{ borderBottom: `1px solid ${props.theme.greyScale5}` }}
-        title={facet.title} />
+      />
     ))}
   </div>
 ));

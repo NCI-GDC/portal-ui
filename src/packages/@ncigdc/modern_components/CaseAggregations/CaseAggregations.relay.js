@@ -10,41 +10,43 @@ import { parseFilterParam } from '@ncigdc/utils/uri';
 import withRouter from '@ncigdc/utils/withRouter';
 
 const entityType = 'RepositoryCases';
-export default (Component: ReactClass<*>) => compose(
-  withRouter,
-  withPropsOnChange(
-    ['location'],
-    ({ location: { search }, defaultFilters = null }) => {
-      const q = parse(search);
-      const filters = parseFilterParam(q.filters, defaultFilters);
-      return {
-        filters,
-      };
-    },
-  ),
-  connect((state, props) => ({
-    userSelectedFacets: state.customFacets[entityType],
-  })),
-  withPropsOnChange(
-    ['userSelectedFacets', 'filters'],
-    ({ userSelectedFacets, filters }) => {
-      return {
-        variables: {
+export default (Component: ReactClass<*>) =>
+  compose(
+    withRouter,
+    withPropsOnChange(
+      ['location'],
+      ({ location: { search }, defaultFilters = null }) => {
+        const q = parse(search);
+        const filters = parseFilterParam(q.filters, defaultFilters);
+        return {
           filters,
-          repoCaseCustomFacetFields: userSelectedFacets
-            .map(({ field }) => field)
-            .join(','),
-        },
-      };
-    },
-  ),
-)((props: Object) => {
-  return (
-    <Query
-      Component={Component}
-      minHeight={578}
-      parentProps={props}
-      query={graphql`
+        };
+      },
+    ),
+    connect((state, props) => ({
+      userSelectedFacets: state.customFacets[entityType],
+    })),
+    withPropsOnChange(
+      ['userSelectedFacets', 'filters'],
+      ({ userSelectedFacets, filters }) => {
+        return {
+          variables: {
+            filters,
+            repoCaseCustomFacetFields: userSelectedFacets
+              .map(({ field }) => field)
+              .join(','),
+          },
+        };
+      },
+    ),
+  )((props: Object) => {
+    return (
+      <Query
+        parentProps={props}
+        minHeight={578}
+        variables={props.variables}
+        Component={Component}
+        query={graphql`
           query CaseAggregations_relayQuery(
             $filters: FiltersArgument
             $repoCaseCustomFacetFields: [String]!
@@ -125,6 +127,6 @@ export default (Component: ReactClass<*>) => compose(
             }
           }
         `}
-      variables={props.variables} />
-  );
-});
+      />
+    );
+  });

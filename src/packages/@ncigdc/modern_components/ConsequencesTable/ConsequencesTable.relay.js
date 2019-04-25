@@ -3,41 +3,39 @@
 import React from 'react';
 import { graphql } from 'react-relay';
 import { makeFilter } from '@ncigdc/utils/filters';
-import {
-  compose, withPropsOnChange, branch, renderComponent,
-} from 'recompose';
+import { compose, withPropsOnChange, branch, renderComponent } from 'recompose';
 import Query from '@ncigdc/modern_components/Query';
 
-export default (Component: ReactClass<*>) => compose(
-  branch(
-    ({ ssmId }) => !ssmId,
-    renderComponent(() => (
-      <div>
-        <pre>ssmId</pre>
-        {' '}
-must be provided
-      </div>
-    )),
-  ),
-  withPropsOnChange(['ssmId'], ({ ssmId }) => {
-    return {
-      variables: {
-        filters: makeFilter([
-          {
-            field: 'ssms.ssm_id',
-            value: [ssmId],
-          },
-        ]),
-      },
-    };
-  }),
-)((props: Object) => {
-  return (
-    <Query
-      Component={Component}
-      minHeight={53}
-      parentProps={props}
-      query={graphql`
+export default (Component: ReactClass<*>) =>
+  compose(
+    branch(
+      ({ ssmId }) => !ssmId,
+      renderComponent(() => (
+        <div>
+          <pre>ssmId</pre> must be provided
+        </div>
+      )),
+    ),
+    withPropsOnChange(['ssmId'], ({ ssmId }) => {
+      return {
+        variables: {
+          filters: makeFilter([
+            {
+              field: 'ssms.ssm_id',
+              value: [ssmId],
+            },
+          ]),
+        },
+      };
+    }),
+  )((props: Object) => {
+    return (
+      <Query
+        parentProps={props}
+        minHeight={53}
+        variables={props.variables}
+        Component={Component}
+        query={graphql`
           query ConsequencesTable_relayQuery($filters: FiltersArgument) {
             viewer {
               explore {
@@ -81,6 +79,6 @@ must be provided
             }
           }
         `}
-      variables={props.variables} />
-  );
-});
+      />
+    );
+  });

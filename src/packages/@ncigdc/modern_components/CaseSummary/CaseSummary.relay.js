@@ -3,41 +3,39 @@
 import React from 'react';
 import { graphql } from 'react-relay';
 import { makeFilter } from '@ncigdc/utils/filters';
-import {
-  compose, withPropsOnChange, branch, renderComponent,
-} from 'recompose';
+import { compose, withPropsOnChange, branch, renderComponent } from 'recompose';
 import Query from '@ncigdc/modern_components/Query';
 
-export default (Component: ReactClass<*>) => compose(
-  branch(
-    ({ caseId }) => !caseId,
-    renderComponent(() => (
-      <div>
-        <pre>caseId</pre>
-        {' '}
-must be provided
-      </div>
-    )),
-  ),
-  withPropsOnChange(['caseId'], ({ caseId }) => {
-    return {
-      variables: {
-        filters: makeFilter([
-          {
-            field: 'cases.case_id',
-            value: [caseId],
-          },
-        ]),
-      },
-    };
-  }),
-)((props: Object) => {
-  return (
-    <Query
-      Component={Component}
-      minHeight={249}
-      parentProps={props}
-      query={graphql`
+export default (Component: ReactClass<*>) =>
+  compose(
+    branch(
+      ({ caseId }) => !caseId,
+      renderComponent(() => (
+        <div>
+          <pre>caseId</pre> must be provided
+        </div>
+      )),
+    ),
+    withPropsOnChange(['caseId'], ({ caseId }) => {
+      return {
+        variables: {
+          filters: makeFilter([
+            {
+              field: 'cases.case_id',
+              value: [caseId],
+            },
+          ]),
+        },
+      };
+    }),
+  )((props: Object) => {
+    return (
+      <Query
+        parentProps={props}
+        minHeight={249}
+        variables={props.variables}
+        Component={Component}
+        query={graphql`
           query CaseSummary_relayQuery($filters: FiltersArgument) {
             viewer {
               repository {
@@ -96,6 +94,6 @@ must be provided
             }
           }
         `}
-      variables={props.variables} />
-  );
-});
+      />
+    );
+  });

@@ -4,7 +4,7 @@ export interface ITheme {
   greyScale4?: string,
   greyScale5?: string,
   secondary?: boolean,
-}
+};
 
 export type TSetTheme = (version: string, custom?: object) => void;
 

@@ -1,15 +1,13 @@
 // @flow
 
 import React from 'react';
-import {
-  withState, compose, lifecycle, mapProps,
-} from 'recompose';
+import { withState, compose, lifecycle, mapProps } from 'recompose';
 import { style } from 'glamor';
 import Emitter from '@ncigdc/utils/emitter';
-import Highlight from '@ncigdc/uikit/Highlight';
-import { capitalize } from 'lodash';
 import BioTreeItem from './BioTreeItem';
 import { search } from './utils';
+import Highlight from '@ncigdc/uikit/Highlight';
+import { capitalize } from 'lodash';
 
 const expandedColor = style({
   color: '#267c2a',
@@ -33,12 +31,7 @@ const BioTreeView = ({
   query,
   childrenExpanded,
 }) => {
-  const entityTypes = [
-    'portions',
-    'analytes',
-    'aliquots',
-    'slides',
-  ];
+  const entityTypes = ['portions', 'analytes', 'aliquots', 'slides'];
 
   const lCaseQuery = query.toLowerCase();
   const expanded =
@@ -51,24 +44,27 @@ const BioTreeView = ({
     <div className="test-biotree-view">
       {entities.hits.total > 0 && (
         <div
-          className="tree-indent"
           onClick={e => {
             setExpanded(state => !state);
             e.stopPropagation();
-          }}>
+          }}
+          className="tree-indent"
+        >
           <div className="tree">
             <i
+              style={{ cursor: 'pointer' }}
               className={`
                 fa
                 ${expanded
                   ? `fa-minus-square ${expandedColor}`
                   : `fa-plus-square ${collapsedColor}`}
               `}
-              style={{ cursor: 'pointer' }} />
+            />
             <span
               className={`h5 type ${query && type.p.includes(lCaseQuery)
                 ? highlight
-                : ''}`}>
+                : ''}`}
+            >
               <Highlight search={lCaseQuery}>{capitalize(type.p)}</Highlight>
             </span>
           </div>
@@ -76,13 +72,14 @@ const BioTreeView = ({
           {expanded &&
             entities.hits.edges.map((entity, i) => (
               <BioTreeItem
-                entity={entity.node}
-                expanded={childrenExpanded}
                 key={i}
-                query={lCaseQuery}
-                selectedEntity={selectedEntity}
+                entity={entity.node}
+                type={type}
                 selectEntity={selectEntity}
-                type={type} />
+                selectedEntity={selectedEntity}
+                query={lCaseQuery}
+                expanded={childrenExpanded}
+              />
             ))}
         </div>
       )}

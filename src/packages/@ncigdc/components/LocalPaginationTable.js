@@ -29,32 +29,37 @@ const LocalPaginationTable = ({
   };
   const tableData = enablePagination ? data.slice(offset, offset + size) : data;
   return (
-    <div className={props.className} style={style}>
+    <div style={style} className={props.className}>
       <Row
         style={{
           backgroundColor: 'white',
           padding: '1rem',
           justifyContent: 'space-between',
           alignItems: 'flex-end',
-        }}>
+        }}
+      >
         {enablePagination ? (
           <Showing
             docType={entityName}
-            params={params}
             prefix={prefix}
-            total={data.length} />
+            params={params}
+            total={data.length}
+          />
         ) : (
           <span />
         )}
         {buttons}
       </Row>
-      {React.Children.map(children, child => React.cloneElement(child, { data: tableData }),)}
+      {React.Children.map(children, child =>
+        React.cloneElement(child, { data: tableData }),
+      )}
       {enablePagination && (
         <Pagination
-          params={params}
           prefix={prefix}
+          params={params}
+          total={data.length}
           sizes={sizes}
-          total={data.length} />
+        />
       )}
     </div>
   );

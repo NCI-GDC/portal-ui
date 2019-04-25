@@ -18,11 +18,7 @@ describe('processBAMSliceInput', () => {
       regions: ['chr1:1-2', 'chr2'],
     });
     expect(processBAMSliceInput('chr1\t1\t2\nchr2\nchr3:1')).toEqual({
-      regions: [
-        'chr1:1-2',
-        'chr2',
-        'chr3:1',
-      ],
+      regions: ['chr1:1-2', 'chr2', 'chr3:1'],
     });
   });
   it('should process colon dash format', () => {

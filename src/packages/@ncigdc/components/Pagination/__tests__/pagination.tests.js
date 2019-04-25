@@ -1,5 +1,5 @@
 /* @flow */
-import { calculatePages, getPaginationRange } from '..';
+import { calculatePages, getPaginationRange } from '../';
 
 describe('Pagination', () => {
   it('calculates pages', () => {
@@ -26,18 +26,7 @@ describe('generates a pagination range', () => {
     expect(getPaginationRange(0, 2)).toEqual([1, 2]);
   });
   it('displays only 10 pages if more than 10 pages', () => {
-    expect(getPaginationRange(0, 300)).toEqual([
-      1,
-      2,
-      3,
-      4,
-      5,
-      6,
-      7,
-      8,
-      9,
-      10,
-    ]);
+    expect(getPaginationRange(0, 300)).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
     expect(getPaginationRange(10, 300)).toEqual([
       11,
       12,

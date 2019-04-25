@@ -58,24 +58,26 @@ const SearchPage = (
     ...props
   }: TProps = {},
 ) => (
-  <Container className={`${props.className} test-search-page`}>
+  <Container className={props.className + ' test-search-page'}>
     {showFacets && (
       <FacetsPanel>
         <TabbedLinks
-          defaultIndex={0}
-          hideTabs={facetTabs.length <= 1}
-          links={facetTabs}
           queryParam="facetTab"
-          tabToolbar={(
+          defaultIndex={0}
+          tabToolbar={
             <UnstyledButton
-              aria-label="Toggle Facet Panel Visibility"
+              style={{ minHeight: 46 }}
               onClick={() => {
                 setShowFacets(!showFacets);
               }}
-              style={{ minHeight: 46 }}>
+              aria-label="Toggle Facet Panel Visibility"
+            >
               <DoubleArrowLeftIcon />
             </UnstyledButton>
-          )} />
+          }
+          hideTabs={facetTabs.length <= 1}
+          links={facetTabs}
+        />
       </FacetsPanel>
     )}
     <Content>

@@ -20,24 +20,28 @@ const CenteredColumnContainer = styled(Column, {
 export default (Component: ReactClass<*>) => (props: Object) => {
   return (
     <Query
-      Component={Component}
-      Loader={({ loading }) => (!loading ? null : (
-        <CenteredColumnContainer>
-          <Row
-            style={{
-              color: 'white',
-              fontSize: '1.2em',
-              marginBottom: '1rem',
-            }}>
-              Loading, please wait...
-          </Row>
-          <span
-            className="fa fa-spinner fa-spin fa-2x"
-            style={{ color: 'white' }} />
-        </CenteredColumnContainer>
-        ))}
-      minHeight={200}
       parentProps={props}
+      minHeight={200}
+      Loader={({ loading }) =>
+        !loading ? null : (
+          <CenteredColumnContainer>
+            <Row
+              style={{
+                color: 'white',
+                fontSize: '1.2em',
+                marginBottom: '1rem',
+              }}
+            >
+              Loading, please wait...
+            </Row>
+            <span
+              style={{ color: 'white' }}
+              className="fa fa-spinner fa-spin fa-2x"
+            />
+          </CenteredColumnContainer>
+        )}
+      variables={props.variables}
+      Component={Component}
       query={graphql`
         query HumanBody_relayQuery {
           viewer {
@@ -66,6 +70,6 @@ export default (Component: ReactClass<*>) => (props: Object) => {
           }
         }
       `}
-      variables={props.variables} />
+    />
   );
 };

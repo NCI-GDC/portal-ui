@@ -8,16 +8,15 @@ import { Row } from '@ncigdc/uikit/Flex';
 import Pagination from '@ncigdc/components/Pagination';
 import TableActions from '@ncigdc/components/TableActions';
 import Table, { Tr } from '@ncigdc/uikit/Table';
-import { CreateExploreGeneSetButton, AppendExploreGeneSetButton, RemoveFromExploreGeneSetButton } from '@ncigdc/modern_components/withSetAction';
-
-
+import { CreateExploreGeneSetButton } from '@ncigdc/modern_components/withSetAction';
+import { AppendExploreGeneSetButton } from '@ncigdc/modern_components/withSetAction';
+import { RemoveFromExploreGeneSetButton } from '@ncigdc/modern_components/withSetAction';
 import timestamp from '@ncigdc/utils/timestamp';
 import { IColumnProps } from '@ncigdc/tableModels/utils';
 import { IGroupFilter } from '@ncigdc/utils/filters/types';
 import { ISelectedSurvivalDataProps } from '@ncigdc/modern_components/GenesTable/GenesTable.model';
 import { theme } from '@ncigdc/theme';
 import withSelectIds from '@ncigdc/utils/withSelectIds';
-
 export interface ITotalNumber {
   hits: {
     total: number;
@@ -138,9 +137,7 @@ export default compose<IGenesTableProps, JSX.Element>(
     sort,
     score,
   }: IGenesTableProps) => {
-    const {
-      genes, filteredCases, cases, cnvCases,
-    } = explore;
+    const { genes, filteredCases, cases, cnvCases } = explore;
 
     if (genes && !genes.hits.edges.length) {
       return <Row style={{ padding: '1rem' }}>No gene data found.</Row>;
@@ -157,18 +154,25 @@ export default compose<IGenesTableProps, JSX.Element>(
             backgroundColor: 'white',
             padding: '1rem',
             justifyContent: 'space-between',
-          }}>
+          }}
+        >
           <Showing
             docType="genes"
-            params={parentVariables}
             prefix="genesTable"
-            total={totalGenes} />
+            params={parentVariables}
+            total={totalGenes}
+          />
           <Row>
             <TableActions
-              AppendSetButton={AppendExploreGeneSetButton}
+              type="gene"
+              scope="explore"
               arrangeColumnKey="genes"
-              CreateSetButton={CreateExploreGeneSetButton}
+              total={totalGenes}
+              endpoint="genes"
+              downloadTooltip="Export All Except #Cases and #Mutations"
               currentFilters={filters}
+              score={score}
+              sort={sort}
               downloadFields={[
                 'symbol',
                 'name',
@@ -177,74 +181,75 @@ export default compose<IGenesTableProps, JSX.Element>(
                 'gene_id',
                 'is_cancer_gene_census',
               ]}
-              downloadTooltip="Export All Except #Cases and #Mutations"
-              endpoint="genes"
-              idField="genes.gene_id"
-              RemoveFromSetButton={RemoveFromExploreGeneSetButton}
-              scope="explore"
-              score={score}
-              selectedIds={selectedIds}
-              sort={sort}
-              total={totalGenes}
-              tsvFilename={`frequently-mutated-genes.${timestamp()}.tsv`}
               tsvSelector="#genes-table"
-              type="gene" />
+              tsvFilename={`frequently-mutated-genes.${timestamp()}.tsv`}
+              CreateSetButton={CreateExploreGeneSetButton}
+              AppendSetButton={AppendExploreGeneSetButton}
+              RemoveFromSetButton={RemoveFromExploreGeneSetButton}
+              idField="genes.gene_id"
+              selectedIds={selectedIds}
+            />
           </Row>
         </Row>
         <div style={{ overflowX: 'auto' }}>
           <Table
-            body={(
+            id="genes-table"
+            headings={tableInfo.map((x: IColumnProps<boolean>) => (
+              <x.th
+                key={x.id}
+                context={context}
+                nodes={data.map((e: INodeProps) => e.node)}
+                selectedIds={selectedIds}
+                setSelectedIds={setSelectedIds}
+              />
+            ))}
+            body={
               <tbody>
                 {data.map((e: INodeProps, i: number) => (
                   <Tr
-                    index={i}
                     key={e.node.id}
+                    index={i}
                     style={{
                       ...(selectedIds.includes(e.node.gene_id) && {
                         backgroundColor: theme.tableHighlight,
                       }),
-                    }}>
+                    }}
+                  >
                     {tableInfo
                       .filter((x: IColumnProps<boolean>) => x.td)
                       .map((x: IColumnProps<false>) => (
                         <x.td
-                          cases={cases}
-                          cnvCases={cnvCases}
+                          key={x.id}
+                          node={e.node}
                           context={context}
+                          ssmCounts={ssmCounts}
+                          cases={cases}
                           defaultFilters={filters}
                           filteredCases={filteredCases}
+                          cnvCases={cnvCases}
+                          query={query}
+                          setSurvivalLoadingId={setSurvivalLoadingId}
+                          survivalLoadingId={survivalLoadingId}
+                          setSelectedSurvivalData={setSelectedSurvivalData}
+                          selectedSurvivalData={selectedSurvivalData}
                           hasEnoughSurvivalDataOnPrimaryCurve={
                             hasEnoughSurvivalDataOnPrimaryCurve
                           }
-                          key={x.id}
-                          node={e.node}
-                          query={query}
                           selectedIds={selectedIds}
-                          selectedSurvivalData={selectedSurvivalData}
                           setSelectedIds={setSelectedIds}
-                          setSelectedSurvivalData={setSelectedSurvivalData}
-                          setSurvivalLoadingId={setSurvivalLoadingId}
-                          ssmCounts={ssmCounts}
-                          survivalLoadingId={survivalLoadingId} />
+                        />
                       ))}
                   </Tr>
                 ))}
               </tbody>
-            )}
-            headings={tableInfo.map((x: IColumnProps<boolean>) => (
-              <x.th
-                context={context}
-                key={x.id}
-                nodes={data.map((e: INodeProps) => e.node)}
-                selectedIds={selectedIds}
-                setSelectedIds={setSelectedIds} />
-            ))}
-            id="genes-table" />
+            }
+          />
         </div>
         <Pagination
-          params={parentVariables}
           prefix="genesTable"
-          total={!genes ? 0 : genes.hits.total} />
+          params={parentVariables}
+          total={!genes ? 0 : genes.hits.total}
+        />
       </span>
     );
   }

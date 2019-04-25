@@ -50,6 +50,8 @@ export default compose(
   );
   return (
     <SummaryCard
+      tableTitle="Cases and File Counts by Experimental Strategy"
+      pieChartTitle="File Counts by Experimental Strategy"
       data={experimentalStrategies.map((item, i) => {
         const filters = makeFilter([
           {
@@ -71,7 +73,8 @@ export default compose(
                 style={{
                   ...styles.coloredSquare,
                   backgroundColor: colors20(i),
-                }} />
+                }}
+              />
               {item.experimental_strategy}
             </span>
           ),
@@ -83,7 +86,8 @@ export default compose(
                 filters,
                 facetTab: 'cases',
                 searchTableTab: 'cases',
-              }}>
+              }}
+            >
               {(item.case_count || 0).toLocaleString()}
             </Link>
           ),
@@ -95,7 +99,8 @@ export default compose(
                 filters,
                 facetTab: 'files',
                 searchTableTab: 'files',
-              }}>
+              }}
+            >
               {(item.file_count || 0).toLocaleString()}
             </Link>
           ),
@@ -104,10 +109,7 @@ export default compose(
             <span>
               <b>{item.experimental_strategy}</b>
               <br />
-              {item.file_count}
-              {' '}
-file
-              {item.file_count > 1 ? 's' : ''}
+              {item.file_count} file{item.file_count > 1 ? 's' : ''}
             </span>
           ),
           clickHandler: () => {
@@ -124,14 +126,12 @@ file
               ...newQuery,
               filters: newQuery.filters && stringifyJSONParam(newQuery.filters),
             });
-            push({
-              pathname: '/repository',
-              query: q,
-            });
+            push({ pathname: '/repository', query: q });
           },
         };
       })}
       footer={`${experimentalStrategies.length} Experimental Strategies`}
+      path="file_count_value"
       headings={[
         {
           key: 'experimental_strategy',
@@ -158,7 +158,8 @@ file
                 facetTab: 'cases',
                 searchTableTab: 'cases',
               }}
-              title="Browse cases">
+              title="Browse cases"
+            >
               <SampleSize n={totalCases} />
             </Link>
           ),
@@ -188,7 +189,8 @@ file
                 facetTab: 'files',
                 searchTableTab: 'files',
               }}
-              title="Browse files">
+              title="Browse files"
+            >
               <SampleSize n={totalFiles} />
             </Link>
           ),
@@ -199,8 +201,6 @@ file
           style: { textAlign: 'left' },
         },
       ]}
-      path="file_count_value"
-      pieChartTitle="File Counts by Experimental Strategy"
-      tableTitle="Cases and File Counts by Experimental Strategy" />
+    />
   );
 });

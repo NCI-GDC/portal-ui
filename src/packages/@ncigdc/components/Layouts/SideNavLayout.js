@@ -60,10 +60,11 @@ const SideNavLayout = props => (
     <Column style={styles.nav(props.theme)}>
       {props.links.map(x => (
         <Row
-          className="side-nav-link"
-          key={x.title}
           onClick={() => scrollToId(x.id)}
-          style={styles.linkContainer}>
+          key={x.title}
+          style={styles.linkContainer}
+          className="side-nav-link"
+        >
           <a style={styles.link(props.theme)}>
             {typeof x.icon === 'string' ? (
               <i className={`fa fa-${x.icon}`} />

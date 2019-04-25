@@ -24,26 +24,14 @@ export default compose(
   return (
     <EntityPageVerticalTable
       id="summary"
-      style={{
-        summary: {
-          marginBottom: '2rem',
-        },
-        column: {
-          width: '100%',
-          minWidth: 450,
-        },
-        alignSelf: 'flex-start',
-        width: '100%',
-      }}
+      title={
+        <span>
+          <TableIcon style={{ marginRight: '1rem' }} />Summary
+        </span>
+      }
       thToTd={[
-        {
-          th: 'Symbol',
-          td: gene.symbol,
-        },
-        {
-          th: 'Name',
-          td: gene.name,
-        },
+        { th: 'Symbol', td: gene.symbol },
+        { th: 'Name', td: gene.name },
         {
           th: 'Synonyms',
           td:
@@ -54,10 +42,7 @@ export default compose(
             wordBreak: 'breakWord',
           },
         },
-        {
-          th: 'Type',
-          td: gene.biotype,
-        },
+        { th: 'Type', td: gene.biotype },
         {
           th: 'Location',
           td: `chr${gene.gene_chromosome}:${gene.gene_start}-${gene.gene_end} (GRCh38)`,
@@ -88,7 +73,8 @@ export default compose(
                     value: [gene.is_cancer_gene_census ? 'true' : 'false'],
                   },
                 ]),
-              }}>
+              }}
+            >
               Cancer Gene Census
             </ExploreLink>
           ) : (
@@ -96,11 +82,17 @@ export default compose(
           ),
         },
       ]}
-      title={(
-        <span>
-          <TableIcon style={{ marginRight: '1rem' }} />
-Summary
-        </span>
-      )} />
+      style={{
+        summary: {
+          marginBottom: '2rem',
+        },
+        column: {
+          width: '100%',
+          minWidth: 450,
+        },
+        alignSelf: 'flex-start',
+        width: '100%',
+      }}
+    />
   );
 });

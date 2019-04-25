@@ -17,7 +17,8 @@ const getBody = iframe => {
 
 // const cookiePath = document.querySelector('base').getAttribute('href')
 const cookiePath = '/';
-const getIframeResponse = iFrame => JSON.parse(getBody(iFrame).querySelector('pre').innerText);
+const getIframeResponse = iFrame =>
+  JSON.parse(getBody(iFrame).querySelector('pre').innerText);
 const showErrorModal = error => {
   const warning = error.warning || error.message;
   window.store.dispatch(
@@ -25,12 +26,10 @@ const showErrorModal = error => {
       <Column
         style={{
           padding: '15px',
-        }}>
+        }}
+      >
         {warning}
-        <Row style={{
-          paddingTop: '0.5rem',
-          justifyContent: 'flex-end',
-        }}>
+        <Row style={{ paddingTop: '0.5rem', justifyContent: 'flex-end' }}>
           <Button onClick={() => window.store.dispatch(setModal(null))}>
             OK
           </Button>
@@ -58,18 +57,19 @@ const progressChecker = (
   const handleError = () => {
     const error = _.flow(
       _.attempt,
-      e => (_.isError(e)
+      e =>
+        _.isError(e)
           ? {
-            message: 'GDC download service is currently experiencing issues.',
-          }
-          : e),
+              message: 'GDC download service is currently experiencing issues.',
+            }
+          : e,
     )(_.partial(getIframeResponse, iFrame));
 
     return error;
   };
 
   const finished = () => {
-    // console.info('Download check count & wait interval (in milliseconds):', attempts, waitTime);
+    //console.info('Download check count & wait interval (in milliseconds):', attempts, waitTime);
     timeoutPromise = null;
     window.store.dispatch(closeNotification());
     iFrame.parentNode.removeChild(iFrame);
@@ -88,9 +88,7 @@ const progressChecker = (
     <div>
       <div>Download preparation in progress. Please wait…</div>
       <a onClick={cancelDownload}>
-        <i className="fa fa-times-circle-o" />
-        {' '}
-Cancel Download
+        <i className="fa fa-times-circle-o" /> Cancel Download
       </a>
     </div>
   );
@@ -102,27 +100,25 @@ Cancel Download
         file size, number of files, or number of concurrent users).
       </div>
       <div>
-        We recommend that you use the
-        {' '}
+        We recommend that you use the{' '}
         <a
           href="https://gdc.cancer.gov/access-data/gdc-data-transfer-tool"
+          target="_blank"
           rel="noopener noreferrer"
-          target="_blank">
+        >
           {' '}
           GDC Data Transfer Tool
-        </a>
-        {' '}
+        </a>{' '}
         or cancel the download and try again later.
       </div>
       <a
         onClick={cancelDownload}
         style={{
           textDecoration: 'underline',
-        }}>
+        }}
+      >
         <strong>
-          <i className="fa fa-times-circle-o" />
-          {' '}
-Cancel Download
+          <i className="fa fa-times-circle-o" /> Cancel Download
         </strong>
       </a>
     </div>
@@ -209,9 +205,11 @@ const cookielessChecker = (iFrame, inProgress, done) => {
   // setTimeout(checker, waitTime);
 };
 
-const hashString = s => s.split('').reduce((acc, c) => (acc << 5) - acc + c.charCodeAt(0), 0);
+const hashString = s =>
+  s.split('').reduce((acc, c) => (acc << 5) - acc + c.charCodeAt(0), 0);
 
-const toHtml = (key, value) => `<input
+const toHtml = (key, value) =>
+  `<input
     type="hidden"
     name="${key}"
     value="${_.isPlainObject(value)
@@ -219,13 +217,10 @@ const toHtml = (key, value) => `<input
       : value}"
   />`;
 
-const arrayToStringFields = [
-  'expand',
-  'fields',
-  'facets',
-];
+const arrayToStringFields = ['expand', 'fields', 'facets'];
 
-const arrayToStringOnFields = (key, value, fields) => (_.includes(fields, key) ? [].concat(value).join() : value);
+const arrayToStringOnFields = (key, value, fields) =>
+  _.includes(fields, key) ? [].concat(value).join() : value;
 
 type TDownloadCallbacks = (inProgress: Function, done: Function) => {};
 
@@ -270,7 +265,7 @@ const download = ({
 
   iFrame.style.display = 'none';
   iFrame.src = 'about:blank';
-  iFrame.onload = function () {
+  iFrame.onload = function() {
     this.__frame__loaded = true;
   };
   // Appending to document body to allow navigation away from the current

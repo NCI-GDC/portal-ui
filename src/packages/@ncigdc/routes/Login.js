@@ -39,6 +39,7 @@ const AWGLoginButton = compose(
   withRouter,
 )(({ dispatch, push }) => (
   <Button
+    style={styles.loginButton}
     onClick={async () => {
       const loginParams = queryString.stringify({
         redirect: window.location.origin,
@@ -61,7 +62,7 @@ const AWGLoginButton = compose(
       await dispatch(fetchUser());
       push({ pathname: '/repository' });
     }}
-    style={styles.loginButton}>
+  >
     Login
   </Button>
 ));
@@ -72,20 +73,16 @@ export default connect(state => ({
 }))(
   class extends React.Component {
     componentDidMount() {}
-
     render() {
-      const NihWarning = () => (
+      let NihWarning = () => (
         <div>
           <br />
-          <br />
-You do not have access to any AWG projects in dbGaP. More
+          <br />You do not have access to any AWG projects in dbGaP. More
           information about obtaining access to controlled-access data can be
-          found
-          {' '}
+          found{' '}
           <a href="https://gdc.cancer.gov/access-data/obtaining-access-controlled-data">
             here
-          </a>
-.
+          </a>.
         </div>
       );
       return (
@@ -102,7 +99,8 @@ You do not have access to any AWG projects in dbGaP. More
             flexDirection: 'column',
             justifyContent: 'center',
             alignItems: 'center',
-          }}>
+          }}
+        >
           <div
             style={{
               height: '400px',
@@ -110,12 +108,14 @@ You do not have access to any AWG projects in dbGaP. More
               justifyContent: 'center',
               alignItems: 'center',
               textAlign: 'center',
-            }}>
+            }}
+          >
             <div>
               <img
                 alt="NCI GDC AWG Portal"
+                style={{ width: 525 }}
                 src="https://i.imgur.com/O33FmeE.png"
-                style={{ width: 525 }} />
+              />
             </div>
             <br />
             <div
@@ -123,18 +123,13 @@ You do not have access to any AWG projects in dbGaP. More
                 display: 'flex',
                 justifyContent: 'center',
                 flexDirection: 'column',
-              }}>
+              }}
+            >
               <h1 style={styles.title}>Analysis Working Group</h1>
-              <h1 style={{
-                ...styles.title,
-                margin: '0 0 20px',
-              }}>
+              <h1 style={{ ...styles.title, margin: '0 0 20px' }}>
                 Data Portal
               </h1>
-              <div style={{
-                fontSize: '3em',
-                color: 'rgb(38, 89, 134)',
-              }}>
+              <div style={{ fontSize: '3em', color: 'rgb(38, 89, 134)' }}>
                 <i className="fa fa-users" />
               </div>
               {window.location.search.includes('error=no_fence_projects') && (
@@ -163,10 +158,7 @@ You do not have access to any AWG projects in dbGaP. More
               {window.location.search.includes('error=no_intersection') && (
                 <NihWarning />
               )}
-              <Row style={{
-                justifyContent: 'center',
-                marginTop: '1.5rem',
-              }}>
+              <Row style={{ justifyContent: 'center', marginTop: '1.5rem' }}>
                 <AWGLoginButton />
               </Row>
             </div>

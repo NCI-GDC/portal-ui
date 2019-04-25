@@ -10,10 +10,10 @@ import { buildOps } from '@ncigdc/components/Charts/Venn';
 import withSize from '@ncigdc/utils/withSize';
 import { COHORT_COMPARISON_FACETS } from '@ncigdc/utils/constants';
 import Alias from '@ncigdc/components/Alias';
-import { getLowerAgeYears, getUpperAgeYears } from '@ncigdc/utils/ageDisplay';
-import withRouter from '@ncigdc/utils/withRouter';
 import FacetTable from './FacetTable';
 import Survival, { makeSurvivalCurveFilter } from './Survival';
+import { getLowerAgeYears, getUpperAgeYears } from '@ncigdc/utils/ageDisplay';
+import withRouter from '@ncigdc/utils/withRouter';
 import Toolbox from './Toolbox';
 import './facet.css';
 
@@ -47,7 +47,7 @@ const transformAgeAtDiagnosis = (buckets, compareBuckets, total) => {
   const buildDisplayKeyAndFilters = (acc, { doc_count, key }) => {
     const displayRange = `${getLowerAgeYears(key)}${acc.nextAge === 0
       ? '+'
-      : ` - ${getUpperAgeYears(acc.nextAge - 1)}`}`;
+      : ' - ' + getUpperAgeYears(acc.nextAge - 1)}`;
     return {
       nextAge: key,
       data: [
@@ -80,10 +80,7 @@ const transformAgeAtDiagnosis = (buckets, compareBuckets, total) => {
   return {
     buckets: unionAndParsed
       .sort((a, b) => b.key - a.key) // iterate descending to populate nextAge
-      .reduce(buildDisplayKeyAndFilters, {
-        nextAge: 0,
-        data: [],
-      })
+      .reduce(buildDisplayKeyAndFilters, { nextAge: 0, data: [] })
       .data.slice(0)
       .reverse(), // but display ascending
   };
@@ -94,11 +91,12 @@ export default compose(
   withState('survivalData', 'setSurvivalData', {}),
   withState('state', 'setState', initialState),
   withProps({
-    updateData: async ({
-      setId1, setId2, setSurvivalData, setState,
-    }) => {
+    updateData: async ({ setId1, setId2, setSurvivalData, setState }) => {
       const survivalData = await getDefaultCurve({
-        currentFilters: [makeSurvivalCurveFilter(setId1, setId2), makeSurvivalCurveFilter(setId2, setId1)],
+        currentFilters: [
+          makeSurvivalCurveFilter(setId1, setId2),
+          makeSurvivalCurveFilter(setId2, setId1),
+        ],
       });
 
       setSurvivalData(survivalData);
@@ -115,11 +113,7 @@ export default compose(
   }),
   withRouter,
   withPropsOnChange(
-    [
-      'set1',
-      'set2',
-      'location',
-    ],
+    ['set1', 'set2', 'location'],
     ({ updateData, ...props }) => {
       updateData(props);
     },
@@ -145,19 +139,13 @@ export default compose(
     state: { loadingSurvival, survivalHasData },
   }) => {
     const Set1 = (
-      <span style={{
-        color: SET1_COLOUR,
-        fontWeight: 'bold',
-      }}>
+      <span style={{ color: SET1_COLOUR, fontWeight: 'bold' }}>
         {truncate(setName1, { length: 50 })}
       </span>
     );
 
     const Set2 = (
-      <span style={{
-        color: SET2_COLOUR,
-        fontWeight: 'bold',
-      }}>
+      <span style={{ color: SET2_COLOUR, fontWeight: 'bold' }}>
         {truncate(setName2, { length: 50 })}
       </span>
     );
@@ -176,104 +164,115 @@ export default compose(
             margin: '20px 0',
             justifyContent: 'space-between',
             padding: '2rem 3rem',
-          }}>
+          }}
+        >
           <div>
             <h1 style={{ margin: 0 }}>Cohort Comparison</h1>
 
             {(result1.hits.total === 0 || result2.hits.total === 0) &&
-              `Analysis is deprecated because it contains one or more deprecated sets (${[...(result1.hits.total === 0 ? [setName1] : []), ...(result2.hits.total === 0 ? [setName2] : [])].join(', ')})`}
+              `Analysis is deprecated because it contains one or more deprecated sets (${[
+                ...(result1.hits.total === 0 ? [setName1] : []),
+                ...(result2.hits.total === 0 ? [setName2] : []),
+              ].join(', ')})`}
             {message && <div style={{ fontStyle: 'italic' }}>{message}</div>}
           </div>
         </Row>
         {result1.hits.total !== 0 &&
           result2.hits.total !== 0 && (
-          <Row>
-            <Column
-              style={{
-                width: '65%',
-                padding: '0 3rem',
-                minWidth: 550,
-                marginTop: 1,
-              }}>
-              <div
-                className="facet-container"
+            <Row>
+              <Column
                 style={{
-                  display: 'block',
+                  width: '65%',
+                  padding: '0 3rem',
+                  minWidth: 550,
                   marginTop: 1,
-                }}>
-                <Survival
-                  loading={loadingSurvival}
-                  palette={[SET1_COLOUR, SET2_COLOUR]}
-                  result1={result1}
-                  result2={result2}
-                  set1id={setId1}
-                  set2id={setId2}
-                  style={{ marginTop: 10 }}
-                  survivalData={survivalData} />
-              </div>
-              {availableFacets
-                .filter(([field]) => activeFacets.includes(field))
-                .map(([field, heading]) => FacetTable({
-                  key: field,
-                  heading,
-                  Alias,
-                  field,
-                  data1: {
-                    ...JSON.parse(result1.facets),
-                    'diagnoses.age_at_diagnosis': transformAgeAtDiagnosis(
-                      result1.aggregations.diagnoses__age_at_diagnosis
-                        .histogram.buckets,
-                      result2.aggregations.diagnoses__age_at_diagnosis
-                        .histogram.buckets,
-                      result1.hits.total,
-                    ),
-                  },
-                  data2: {
-                    ...JSON.parse(result2.facets),
-                    'diagnoses.age_at_diagnosis': transformAgeAtDiagnosis(
-                      result2.aggregations.diagnoses__age_at_diagnosis
-                        .histogram.buckets,
-                      result1.aggregations.diagnoses__age_at_diagnosis
-                        .histogram.buckets,
-                      result2.hits.total,
-                    ),
-                  },
-                  result1,
-                  result2,
-                  set1: setId1,
-                  set2: setId2,
-                  setName1,
-                  setName2,
-                  palette: [SET1_COLOUR, SET2_COLOUR],
-                }),)}
-            </Column>
+                }}
+              >
+                <div
+                  className="facet-container"
+                  style={{
+                    display: 'block',
+                    marginTop: 1,
+                  }}
+                >
+                  <Survival
+                    loading={loadingSurvival}
+                    survivalData={survivalData}
+                    result1={result1}
+                    result2={result2}
+                    set1id={setId1}
+                    set2id={setId2}
+                    palette={[SET1_COLOUR, SET2_COLOUR]}
+                    style={{ marginTop: 10 }}
+                  />
+                </div>
+                {availableFacets
+                  .filter(([field]) => activeFacets.includes(field))
+                  .map(([field, heading]) =>
+                    FacetTable({
+                      key: field,
+                      heading,
+                      Alias,
+                      field,
+                      data1: {
+                        ...JSON.parse(result1.facets),
+                        'diagnoses.age_at_diagnosis': transformAgeAtDiagnosis(
+                          result1.aggregations.diagnoses__age_at_diagnosis
+                            .histogram.buckets,
+                          result2.aggregations.diagnoses__age_at_diagnosis
+                            .histogram.buckets,
+                          result1.hits.total,
+                        ),
+                      },
+                      data2: {
+                        ...JSON.parse(result2.facets),
+                        'diagnoses.age_at_diagnosis': transformAgeAtDiagnosis(
+                          result2.aggregations.diagnoses__age_at_diagnosis
+                            .histogram.buckets,
+                          result1.aggregations.diagnoses__age_at_diagnosis
+                            .histogram.buckets,
+                          result2.hits.total,
+                        ),
+                      },
+                      result1,
+                      result2,
+                      set1: setId1,
+                      set2: setId2,
+                      setName1,
+                      setName2,
+                      palette: [SET1_COLOUR, SET2_COLOUR],
+                    }),
+                  )}
+              </Column>
 
-            <div
-              style={{
-                flex: 1,
-                width: '25%',
-                marginTop: 1,
-              }}>
-              <Toolbox
-                {...{
-                  theme,
-                  ops,
-                  sets,
-                  availableFacets,
-                  activeFacets,
-                  showSurvival,
-                  survivalHasData: loadingSurvival || survivalHasData,
-                  toggleSurvival,
-                  Set1,
-                  Set2,
-                  setId1,
-                  setId2,
-                  result1,
-                  result2,
-                }} />
-            </div>
-          </Row>
-        )}
+              <div
+                style={{
+                  flex: 1,
+                  width: '25%',
+                  marginTop: 1,
+                }}
+              >
+                <Toolbox
+                  {...{
+                    theme,
+                    ops,
+                    sets,
+                    availableFacets,
+                    activeFacets,
+                    showSurvival,
+                    survivalHasData: loadingSurvival || survivalHasData,
+                    toggleSurvival,
+                    Set1,
+                    Set2,
+                    setId1,
+                    setId2,
+                    result1,
+                    result2,
+                  }}
+                />
+              </div>
+            </Row>
+          )}
       </Column>
     );
   },

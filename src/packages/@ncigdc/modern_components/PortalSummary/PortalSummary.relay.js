@@ -7,9 +7,10 @@ import Query from '@ncigdc/modern_components/Query';
 export default (Component: ReactClass<*>) => (props: Object) => {
   return (
     <Query
-      Component={Component}
-      minHeight={259}
       parentProps={props}
+      minHeight={259}
+      variables={props.variables}
+      Component={Component}
       query={graphql`
         query PortalSummary_relayQuery {
           viewer {
@@ -52,6 +53,6 @@ export default (Component: ReactClass<*>) => (props: Object) => {
           }
         }
       `}
-      variables={props.variables} />
+    />
   );
 };

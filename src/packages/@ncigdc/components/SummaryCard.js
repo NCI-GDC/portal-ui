@@ -10,8 +10,8 @@ import withSize from '@ncigdc/utils/withSize';
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import Card from '@ncigdc/uikit/Card';
 import styled from '@ncigdc/theme/styled';
-import NoResultsMessage from '@ncigdc/components/NoResultsMessage';
 import EntityPageHorizontalTable from './EntityPageHorizontalTable';
+import NoResultsMessage from '@ncigdc/components/NoResultsMessage';
 
 /*----------------------------------------------------------------------------*/
 
@@ -36,13 +36,10 @@ const SummaryCard = compose(
     headings,
     ...props
   }) => (
-    <Card className={`${props.className} test-summary-card`} style={style}>
+    <Card style={style} className={props.className + ' test-summary-card'}>
       <Column>
         <Header>
-          <span style={{
-            flexGrow: 1,
-            fontSize: '1.7rem',
-          }}>
+          <span style={{ flexGrow: 1, fontSize: '1.7rem' }}>
             {tableTitle || title}
           </span>
         </Header>
@@ -50,13 +47,10 @@ const SummaryCard = compose(
 
         {!!data.length && (
           <EntityPageHorizontalTable
-            data={data}
             headings={headings}
-            style={{
-              overflow: 'hidden',
-              borderLeft: 0,
-              borderTop: 0,
-            }} />
+            data={data}
+            style={{ overflow: 'hidden', borderLeft: 0, borderTop: 0 }}
+          />
         )}
       </Column>
     </Card>
@@ -64,12 +58,12 @@ const SummaryCard = compose(
 );
 
 SummaryCard.propTypes = {
+  style: PropTypes.object,
+  title: PropTypes.string,
   data: PropTypes.array,
   footer: PropTypes.node,
   path: PropTypes.string,
-  style: PropTypes.object,
   table: PropTypes.object,
-  title: PropTypes.string,
 };
 
 /*----------------------------------------------------------------------------*/

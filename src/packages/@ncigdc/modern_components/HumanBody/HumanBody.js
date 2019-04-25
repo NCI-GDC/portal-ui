@@ -50,15 +50,17 @@ export default compose(
         key: majorPrimarySite,
         docCount: group.reduce((sum, { doc_count }) => sum + doc_count, 0),
         fileCount: group.reduce(
-          (sumFiles, { key }) => (viewer.repository.files.aggregations.cases__primary_site.buckets.find(
-            f => f.key === key,
-          ) || { doc_count: 0 }).doc_count + sumFiles,
+          (sumFiles, { key }) =>
+            (viewer.repository.files.aggregations.cases__primary_site.buckets.find(
+              f => f.key === key,
+            ) || { doc_count: 0 }).doc_count + sumFiles,
           0,
         ),
         allPrimarySites: group.map(({ key }) => key),
       }),
     ).filter(
-      ({ key }) => !['Other And Ill-Defined Sites', 'Not Reported'].includes(key) &&
+      ({ key }) =>
+        !['Other And Ill-Defined Sites', 'Not Reported'].includes(key) &&
         HUMAN_BODY_ALL_ALLOWED_SITES.includes(key),
     ),
   })),
@@ -67,9 +69,7 @@ export default compose(
       const { setTooltip, push, groupedData } = this.props;
 
       const data = groupedData
-        .map(({
-          key, docCount, fileCount, allPrimarySites,
-        }) => ({
+        .map(({ key, docCount, fileCount, allPrimarySites }) => ({
           _key: key,
           _count: docCount,
           fileCount,
@@ -105,10 +105,7 @@ export default compose(
                   ]),
                 ),
               };
-              push({
-                pathname: '/exploration',
-                query,
-              });
+              push({ pathname: '/exploration', query });
             } else {
               setTooltip();
             }
@@ -116,22 +113,12 @@ export default compose(
           mouseOverHandler: d => {
             setTooltip(
               <span>
-                <div style={{
-                  fontSize: '16px',
-                  color: '#bb0e3d',
-                }}>
+                <div style={{ fontSize: '16px', color: '#bb0e3d' }}>
                   {d._key}
                 </div>
-                <div style={{
-                  fontSize: '12px',
-                  color: 'rgb(20, 20, 20)',
-                }}>
-                  {d._count.toLocaleString()}
-                  {' '}
-cases (
-                  {d.fileCount.toLocaleString()}
-                  {' '}
-files)
+                <div style={{ fontSize: '12px', color: 'rgb(20, 20, 20)' }}>
+                  {d._count.toLocaleString()} cases (
+                  {d.fileCount.toLocaleString()} files)
                 </div>
               </span>,
             );

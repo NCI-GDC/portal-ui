@@ -36,7 +36,8 @@ const ClinicalAnalysisContainer = ({ clinicalAnalysisFields, ...props }) => {
   return (
     <ClinicalAnalysisResult
       clinicalAnalysisFields={clinicalAnalysisFields}
-      {...props} />
+      {...props}
+    />
   );
 };
 

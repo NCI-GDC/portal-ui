@@ -13,18 +13,8 @@ import {
   MAX_CART_SIZE,
 } from '../cart';
 
-const fileA = {
-  file_id: 'a',
-  access: 'open',
-  file_size: 0,
-  projects: [],
-};
-const fileB = {
-  file_id: 'b',
-  access: 'open',
-  file_size: 0,
-  projects: [],
-};
+const fileA = { file_id: 'a', access: 'open', file_size: 0, projects: [] };
+const fileB = { file_id: 'b', access: 'open', file_size: 0, projects: [] };
 
 describe('action creators', () => {
   const storeInitalState = { cart: { files: [] } };
@@ -69,10 +59,7 @@ describe('action creators', () => {
   it('should not allow more than MAX_CART_SIZE files to be added', () => {
     const getState = () => ({
       cart: {
-        files: range(0, MAX_CART_SIZE).map(id => ({
-          ...fileA,
-          file_id: id,
-        })),
+        files: range(0, MAX_CART_SIZE).map(id => ({ ...fileA, file_id: id })),
       },
     });
     const dispatch = jest.fn();
@@ -85,10 +72,7 @@ describe('action creators', () => {
     const getState = () => ({ cart: { files: [fileA, fileB] } });
     const dispatch = jest.fn();
     removeAllInCart()(dispatch, getState);
-    expect(dispatch).toHaveBeenCalledWith({
-      type: CLEAR_CART,
-      payload: [],
-    });
+    expect(dispatch).toHaveBeenCalledWith({ type: CLEAR_CART, payload: [] });
   });
 
   it('should allow a file to be toggled in', () => {
@@ -105,10 +89,7 @@ describe('action creators', () => {
     const getState = () => ({ cart: { files: [fileA] } });
     const dispatch = jest.fn();
     toggleFilesInCart(fileA)(dispatch, getState);
-    expect(dispatch).toHaveBeenCalledWith({
-      type: UPDATE_CART,
-      payload: [],
-    });
+    expect(dispatch).toHaveBeenCalledWith({ type: UPDATE_CART, payload: [] });
   });
 
   it('should allow up to max to be toggled in', () => {
@@ -131,10 +112,7 @@ describe('action creators', () => {
   it('should not allow more files than max to be toggled in', () => {
     const getState = () => ({
       cart: {
-        files: range(0, MAX_CART_SIZE).map(id => ({
-          ...fileA,
-          file_id: id,
-        })),
+        files: range(0, MAX_CART_SIZE).map(id => ({ ...fileA, file_id: id })),
       },
     });
     const dispatch = jest.fn();

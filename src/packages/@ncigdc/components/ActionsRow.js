@@ -14,7 +14,7 @@ import { fetchFilesAndAdd } from '@ncigdc/dux/cart';
 import { ShoppingCartIcon } from '@ncigdc/theme/icons';
 import DownloadManifestButton from '@ncigdc/components/DownloadManifestButton';
 import { IGroupFilter } from '@ncigdc/utils/filters/types';
-import { DISPLAY_SLIDES, AWG } from '@ncigdc/utils/constants';
+import { DISPLAY_SLIDES } from '@ncigdc/utils/constants';
 import { RepositorySlideCount } from '@ncigdc/modern_components/Counts';
 import { Tooltip } from '@ncigdc/uikit/Tooltip';
 import Spinner from '@ncigdc/theme/icons/Spinner';
@@ -23,7 +23,7 @@ import { linkButton } from '@ncigdc/theme/mixins';
 import ImageViewerLink from '@ncigdc/components/Links/ImageViewerLink';
 import { withTheme } from '@ncigdc/theme';
 import pluralize from '@ncigdc/utils/pluralize';
-
+import { AWG } from '@ncigdc/utils/constants';
 
 const ImageViewerLinkAsButton = styled(ImageViewerLink, {
   marginLeft: '5px',
@@ -57,19 +57,22 @@ export default compose(
           alignItems: 'center',
           justifyContent: 'space-between',
           padding: '0 0 2rem',
-        }}>
+        }}
+      >
         <Row spacing="0.2rem">
           <Button
+            onClick={() => dispatch(fetchFilesAndAdd(filters, totalFiles))}
             leftIcon={<ShoppingCartIcon />}
-            onClick={() => dispatch(fetchFilesAndAdd(filters, totalFiles))}>
+          >
             Add All Files to Cart
           </Button>
           <DownloadManifestButton fileCount={totalFiles} filters={filters} />
           {!AWG ? (
             filters ? (
               <CreateRepositoryCaseSetButton
-                disabled={!totalCases}
                 filters={filters}
+                disabled={!totalCases}
+                style={{ paddingLeft: '5px' }}
                 onComplete={(setId: String) => {
                   push({
                     pathname: '/exploration',
@@ -89,24 +92,22 @@ export default compose(
                     },
                   });
                 }}
-                style={{ paddingLeft: '5px' }}>
+              >
                 {'View '}
-                {totalCases.toLocaleString()}
-                {' '}
-                {pluralize(' Case', totalCases)}
+                {totalCases.toLocaleString()} {pluralize(' Case', totalCases)}
                 {' in Exploration'}
               </CreateRepositoryCaseSetButton>
             ) : (
               <Button
                 disabled={!totalCases}
-                onClick={() => push({
-                  pathname: '/exploration',
-                })}
-                style={{ paddingLeft: '5px' }}>
+                style={{ paddingLeft: '5px' }}
+                onClick={() =>
+                  push({
+                    pathname: '/exploration',
+                  })}
+              >
                 {'View '}
-                {totalCases.toLocaleString()}
-                {' '}
-                {pluralize(' Case', totalCases)}
+                {totalCases.toLocaleString()} {pluralize(' Case', totalCases)}
                 {' in Exploration'}
               </Button>
             )
@@ -117,7 +118,8 @@ export default compose(
               {(count: Number, loading: Boolean) => (
                 <span style={{ marginTop: '7px' }}>
                   <Tooltip
-                    Component={count === 0 ? 'No images available' : null}>
+                    Component={count === 0 ? 'No images available' : null}
+                  >
                     <ImageViewerLinkAsButton
                       query={{
                         filters,
@@ -125,11 +127,12 @@ export default compose(
                       style={
                         loading || count === 0
                           ? {
-                            backgroundColor: theme.greyScale4,
-                            pointerEvents: 'none',
-                          }
+                              backgroundColor: theme.greyScale4,
+                              pointerEvents: 'none',
+                            }
                           : { cursor: 'pointer' }
-                      }>
+                      }
+                    >
                       {loading && <Spinner style={{ marginRight: '5px' }} />}
                       View Images
                     </ImageViewerLinkAsButton>
@@ -140,9 +143,7 @@ export default compose(
           )}
         </Row>
         <AnnotationsLink>
-          <i className="fa fa-edit" />
-          {' '}
-Browse Annotations
+          <i className="fa fa-edit" /> Browse Annotations
         </AnnotationsLink>
       </Row>
     );

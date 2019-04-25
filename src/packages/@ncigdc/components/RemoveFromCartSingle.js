@@ -23,14 +23,13 @@ const styles = {
 
 export default compose(
   connect(state => state.cart),
-)(({
-  dispatch, file, style = {}, ...props
-}) => (
+)(({ dispatch, file, style = {}, ...props }) => (
   <Button
-    aria-label="Remove"
+    style={styles}
     onClick={() => dispatch(toggleFilesInCart(file))}
-    style={styles}>
-    <Tooltip Component="Remove">
+    aria-label="Remove"
+  >
+    <Tooltip Component={'Remove'}>
       <i className="fa fa-trash-o" />
     </Tooltip>
   </Button>

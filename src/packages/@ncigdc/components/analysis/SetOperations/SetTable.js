@@ -7,9 +7,7 @@ import Alias from '@ncigdc/components/Alias';
 
 const enhance = compose(); // left to minimize diff
 export default enhance(
-  ({
-    push, type, CountComponent, CreateSetButton, sets, setSetSize,
-  }) => (
+  ({ push, type, CountComponent, CreateSetButton, sets, setSetSize }) => (
     <EntityPageHorizontalTable
       data={Object.entries(sets).map(([setId, label], i) => {
         const id = `set-table-${type}-${setId}-select`;
@@ -17,9 +15,10 @@ export default enhance(
           id,
           alias: <Alias i={i + 1} />,
           name: <label htmlFor={id}>{_.truncate(label, { length: 70 })}</label>,
-          type: `${_.capitalize(type === 'ssm' ? 'Mutation' : type)}s`,
+          type: _.capitalize(type === 'ssm' ? 'Mutation' : type) + 's',
           count: (
             <CountComponent
+              handleCountChange={count => setSetSize({ setId, size: count })}
               filters={{
                 op: '=',
                 content: {
@@ -27,10 +26,7 @@ export default enhance(
                   value: `set_id:${setId}`,
                 },
               }}
-              handleCountChange={count => setSetSize({
-                setId,
-                size: count,
-              })}>
+            >
               {count => (
                 <span>
                   {count === 0 ? (
@@ -39,7 +35,7 @@ export default enhance(
                     <ExploreLink
                       query={{
                         searchTableTab:
-                          `${type === 'ssm' ? 'mutation' : type}s`,
+                          (type === 'ssm' ? 'mutation' : type) + 's',
                         filters: {
                           op: 'AND',
                           content: [
@@ -52,7 +48,8 @@ export default enhance(
                             },
                           ],
                         },
-                      }}>
+                      }}
+                    >
                       {count.toLocaleString()}
                     </ExploreLink>
                   )}
@@ -63,24 +60,15 @@ export default enhance(
         };
       })}
       headings={[
-        {
-          key: 'alias',
-          title: 'Alias',
-        },
-        {
-          key: 'type',
-          title: 'Item Type',
-        },
-        {
-          key: 'name',
-          title: 'Name',
-          style: { width: 100 },
-        },
+        { key: 'alias', title: 'Alias' },
+        { key: 'type', title: 'Item Type' },
+        { key: 'name', title: 'Name', style: { width: 100 } },
         {
           key: 'count',
           title: '# Items',
           style: { textAlign: 'right' },
         },
-      ]} />
+      ]}
+    />
   ),
 );

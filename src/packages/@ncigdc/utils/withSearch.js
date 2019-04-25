@@ -1,8 +1,6 @@
 // @flow
 import _ from 'lodash';
-import {
-  compose, withState, withHandlers, withProps,
-} from 'recompose';
+import { compose, withState, withHandlers, withProps } from 'recompose';
 
 import withRouter from '@ncigdc/utils/withRouter';
 import { fetchApi } from '@ncigdc/utils/ajax';
@@ -56,10 +54,7 @@ export const withSearch = passedInState => {
     })),
     withHandlers({
       setQuery: ({ setState }) => q => {
-        setState(s => ({
-          ...s,
-          query: q.trim(),
-        }));
+        setState(s => ({ ...s, query: q.trim() }));
       },
       reset: ({ setState }) => () => {
         setState(s => ({
@@ -70,20 +65,22 @@ export const withSearch = passedInState => {
         }));
       },
       fetchResults: ({ handleResults }) => (query, timeOfRequest) => {
-        return throttledInvoker(() => fetchApi(
-          `/quick_search?query=${window.encodeURIComponent(query)}&size=5`,
-          {
-            headers: {
-              'Content-Type': 'application/json',
+        return throttledInvoker(() =>
+          fetchApi(
+            `/quick_search?query=${window.encodeURIComponent(query)}&size=5`,
+            {
+              headers: {
+                'Content-Type': 'application/json',
+              },
             },
-          },
-        ).then(response => {
-          let hits = [];
-          if (response && response.data) {
-            hits = response.data.query.hits;
-          }
-          return handleResults(hits, timeOfRequest, query);
-        }),);
+          ).then(response => {
+            let hits = [];
+            if (response && response.data) {
+              hits = response.data.query.hits;
+            }
+            return handleResults(hits, timeOfRequest, query);
+          }),
+        );
       },
     }),
     withHandlers({
@@ -101,25 +98,15 @@ export const withSearch = passedInState => {
       }) => {
         timeOfMostRecentRequest = new Date().getTime();
         if (query) {
-          setState(s => ({
-            ...s,
-            isLoading: true,
-          }));
+          setState(s => ({ ...s, isLoading: true }));
           fetchResults(query, timeOfMostRecentRequest);
         } else if (
           (results && results.length) ||
           (fileHistoryResult && fileHistoryResult.length)
         ) {
-          setState(s => ({
-            ...s,
-            results: [],
-            fileHistoryResult: [],
-          }));
+          setState(s => ({ ...s, results: [], fileHistoryResult: [] }));
         } else {
-          setState(s => ({
-            ...s,
-            isLoading: false,
-          }));
+          setState(s => ({ ...s, isLoading: false }));
         }
       },
     ),

@@ -31,15 +31,14 @@ const modalStyles = {
   },
 };
 
-const Modal = ({
-  isOpen, onRequestClose, style, children,
-}) => (
+const Modal = ({ isOpen, onRequestClose, style, children }) => (
   <ReactModal
-    className="test-modal"
-    contentLabel="Modal"
+    style={{ ..._.merge({}, modalStyles, style) }}
     isOpen={isOpen}
     onRequestClose={onRequestClose || (() => {})}
-    style={{ ..._.merge({}, modalStyles, style) }}>
+    contentLabel="Modal"
+    className="test-modal"
+  >
     {Children.map(children, child => cloneElement(child, { ...child.props }))}
   </ReactModal>
 );

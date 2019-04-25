@@ -29,20 +29,20 @@ import CloseIcon from '@ncigdc/theme/icons/CloseIcon';
 const debouncedPush = debounce((field, value, filters, push) => {
   const newFilters = value
     ? replaceFilters(
-      {
-        op: 'and',
-        content: [
-          {
-            op: 'in',
-            content: {
-              field,
-              value: [value],
+        {
+          op: 'and',
+          content: [
+            {
+              op: 'in',
+              content: {
+                field: field,
+                value: [value],
+              },
             },
-          },
-        ],
-      },
-      filters,
-    )
+          ],
+        },
+        filters,
+      )
     : removeFilter(field, filters);
   push({
     query: {
@@ -73,9 +73,7 @@ export default compose(
   ),
   withPropsOnChange(
     ['location'],
-    ({
-      location: { search }, searchValue, setSearchValue, setSearchField,
-    }) => {
+    ({ location: { search }, searchValue, setSearchValue, setSearchField }) => {
       const q = parse(search);
       const aeFilters = parseFilterParam(q.aeFilters, { content: [] });
       const aeTableFilters = aeFilters.content;
@@ -121,22 +119,17 @@ export default compose(
       case_id: <CaseLink uuid={ae.case_id}>{ae.case_id}</CaseLink>,
       entity_submitter_id: (
         <CaseLink
-          deepLink={ae.entity_type !== 'case' ? 'biospecimen' : undefined}
+          uuid={ae.case_id}
           query={ae.entity_type !== 'case' ? { bioId: ae.entity_id } : {}}
-          uuid={ae.case_id}>
+          deepLink={ae.entity_type !== 'case' ? 'biospecimen' : undefined}
+        >
           {ae.entity_submitter_id}
         </CaseLink>
       ),
-      sample_type: [
-        'sample',
-        'portion',
-        'analyte',
-        'slide',
-        'aliquot',
-      ].some(
+      sample_type: ['sample', 'portion', 'analyte', 'slide', 'aliquot'].some(
         x => x === ae.entity_type,
       ) ? (
-        <SampleType entityId={ae.entity_id} entityType={ae.entity_type} />
+        <SampleType entityType={ae.entity_type} entityId={ae.entity_id} />
       ) : (
         '--'
       ),
@@ -157,40 +150,18 @@ export default compose(
             padding: '1rem',
             justifyContent: 'space-between',
             alignItems: 'flex-end',
-          }}>
+          }}
+        >
           <Showing
             docType="associated cases/biospecimen"
-            params={parentVariables}
             prefix="aeTable"
-            total={total} />
+            params={parentVariables}
+            total={total}
+          />
         </Row>
         <EntityPageHorizontalTable
           data={ae}
-          emptyMessage="No cases or biospecimen found."
-          emptyMessageStyle={{ background: '#fff' }}
-          headings={[
-            {
-              key: 'entity_submitter_id',
-              title: 'Entity ID',
-            },
-            {
-              key: 'entity_type',
-              title: 'Entity Type',
-            },
-            {
-              key: 'sample_type',
-              title: 'Sample Type',
-            },
-            {
-              key: 'case_id',
-              title: 'Case UUID',
-            },
-            {
-              key: 'annotation_count',
-              title: 'Annotations',
-            },
-          ]}
-          rightComponent={(
+          rightComponent={
             <Row>
               <label htmlFor="filter-input">
                 <div
@@ -206,27 +177,13 @@ export default compose(
                     display: 'flex',
                     justifyContent: 'center',
                     alignItems: 'center',
-                  }}>
+                  }}
+                >
                   <SearchIcon size={14} />
                 </div>
                 <Hidden>Filter</Hidden>
               </label>
               <Dropdown
-                button={(
-                  <Row
-                    style={{
-                      padding: '0 4px 0 4px',
-                      marginBottom: '-1px',
-                      width: '90px',
-                      justifyContent: 'space-around',
-                      cursor: 'pointer',
-                    }}>
-                    {fieldToDisplay[searchField].name}
-                    <span style={{ paddingLeft: '4px' }}>
-                      <DownCaretIcon />
-                    </span>
-                  </Row>
-                )}
                 style={{
                   borderTop: `1px solid ${theme.greyScale5}`,
                   borderLeft: 0,
@@ -234,10 +191,29 @@ export default compose(
                   borderRight: 0,
                   fontSize: '14px',
                   padding: 0,
-                }}>
+                }}
+                button={
+                  <Row
+                    style={{
+                      padding: '0 4px 0 4px',
+                      marginBottom: '-1px',
+                      width: '90px',
+                      justifyContent: 'space-around',
+                      cursor: 'pointer',
+                    }}
+                  >
+                    {fieldToDisplay[searchField].name}
+                    <span style={{ paddingLeft: '4px' }}>
+                      <DownCaretIcon />
+                    </span>
+                  </Row>
+                }
+              >
                 {Object.keys(fieldToDisplay).map(field => (
                   <DropdownItem
-                    aria-label={fieldToDisplay[field].name}
+                    style={{
+                      cursor: 'pointer',
+                    }}
                     key={field}
                     onClick={() => {
                       setSearchField(field);
@@ -245,20 +221,14 @@ export default compose(
                         push({
                           query: {
                             aeFilters: stringifyJSONParam(
-                              makeFilter([
-                                {
-                                  field,
-                                  value: searchValue,
-                                },
-                              ]),
+                              makeFilter([{ field, value: searchValue }]),
                             ),
                           },
                         });
                       }
                     }}
-                    style={{
-                      cursor: 'pointer',
-                    }}>
+                    aria-label={fieldToDisplay[field].name}
+                  >
                     {fieldToDisplay[field].name}
                   </DropdownItem>
                 ))}
@@ -268,12 +238,7 @@ export default compose(
                 <Input
                   disabled={loading}
                   id="filter-input"
-                  onChange={e => {
-                    const trimmed = trim(e.target.value);
-                    setSearchValue(trimmed);
-                    debouncedPush(searchField, trimmed, aeFilters, push);
-                  }}
-                  placeholder={fieldToDisplay[searchField].placeholder}
+                  value={searchValue}
                   style={{
                     fontSize: '14px',
                     paddingLeft: '1rem',
@@ -281,16 +246,16 @@ export default compose(
                     width: '31rem',
                     borderRadius: '0 4px 4px 0',
                   }}
+                  placeholder={fieldToDisplay[searchField].placeholder}
+                  onChange={e => {
+                    const trimmed = trim(e.target.value);
+                    setSearchValue(trimmed);
+                    debouncedPush(searchField, trimmed, aeFilters, push);
+                  }}
                   type="text"
-                  value={searchValue} />
+                />
                 {!!searchValue.length && (
                   <CloseIcon
-                    onClick={() => {
-                      setSearchValue('');
-                      push({
-                        query: removeFilter(searchField, aeFilters),
-                      });
-                    }}
                     style={{
                       position: 'absolute',
                       right: 0,
@@ -299,13 +264,30 @@ export default compose(
                       transition: 'all 0.3s ease',
                       outline: 0,
                       cursor: 'pointer',
-                    }} />
+                    }}
+                    onClick={() => {
+                      setSearchValue('');
+                      push({
+                        query: removeFilter(searchField, aeFilters),
+                      });
+                    }}
+                  />
                 )}
               </Row>
             </Row>
-          )}
-          title="Associated Cases/Biospecimen" />
-        <Pagination params={parentVariables} prefix="aeTable" total={total} />
+          }
+          title="Associated Cases/Biospecimen"
+          emptyMessage="No cases or biospecimen found."
+          emptyMessageStyle={{ background: '#fff' }}
+          headings={[
+            { key: 'entity_submitter_id', title: 'Entity ID' },
+            { key: 'entity_type', title: 'Entity Type' },
+            { key: 'sample_type', title: 'Sample Type' },
+            { key: 'case_id', title: 'Case UUID' },
+            { key: 'annotation_count', title: 'Annotations' },
+          ]}
+        />
+        <Pagination prefix="aeTable" params={parentVariables} total={total} />
       </span>
     );
   },

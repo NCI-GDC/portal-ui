@@ -8,39 +8,41 @@ import { makeFilter } from '@ncigdc/utils/filters';
 import { withRouter } from 'react-router-dom';
 import Query from '@ncigdc/modern_components/Query';
 
-export default (Component: ReactClass<*>) => compose(
-  withRouter,
-  withPropsOnChange(
-    ['fileId', 'location'],
-    ({
-      location: { search },
-      fileId,
-      defaultSize = 10,
-      defaultFilters = null,
-    }) => {
-      const q = parse(search);
-      return {
-        variables: {
-          filters: makeFilter([
-            {
-              field: 'files.file_id',
-              value: fileId,
-            },
-          ]),
-          aeTable_filters: parseFilterParam(q.aeFilters, defaultFilters),
-          aeTable_offset: parseIntParam(q.aeTable_offset, 0),
-          aeTable_size: parseIntParam(q.aeTable_size, defaultSize),
-        },
-      };
-    },
-  ),
-)((props: Object) => {
-  return (
-    <Query
-      Component={Component}
-      name="AssociatedEntitiesTable"
-      parentProps={props}
-      query={graphql`
+export default (Component: ReactClass<*>) =>
+  compose(
+    withRouter,
+    withPropsOnChange(
+      ['fileId', 'location'],
+      ({
+        location: { search },
+        fileId,
+        defaultSize = 10,
+        defaultFilters = null,
+      }) => {
+        const q = parse(search);
+        return {
+          variables: {
+            filters: makeFilter([
+              {
+                field: 'files.file_id',
+                value: fileId,
+              },
+            ]),
+            aeTable_filters: parseFilterParam(q.aeFilters, defaultFilters),
+            aeTable_offset: parseIntParam(q.aeTable_offset, 0),
+            aeTable_size: parseIntParam(q.aeTable_size, defaultSize),
+          },
+        };
+      },
+    ),
+  )((props: Object) => {
+    return (
+      <Query
+        name="AssociatedEntitiesTable"
+        parentProps={props}
+        variables={props.variables}
+        Component={Component}
+        query={graphql`
           query AssociatedEntitiesTable_relayQuery(
             $filters: FiltersArgument
             $aeTable_filters: FiltersArgument
@@ -86,6 +88,6 @@ export default (Component: ReactClass<*>) => compose(
             }
           }
         `}
-      variables={props.variables} />
-  );
-});
+      />
+    );
+  });

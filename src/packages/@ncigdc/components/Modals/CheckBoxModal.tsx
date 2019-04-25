@@ -31,19 +31,20 @@ const CheckBoxModal = ({
 }: ICheckBoxModalProps) => {
   let dbGapLink =
     dbGapList.length === 1
-      ? `https://www.ncbi.nlm.nih.gov/projects/gap/cgi-bin/study.cgi?study_id=${
-        dbGapList[0]}`
-      : `https://www.ncbi.nlm.nih.gov/gap/?term=${
-        dbGapList.reduce((acc, d) => `${acc}(${d}%5BStudy%5D)+OR+`, '')}`;
+      ? 'https://www.ncbi.nlm.nih.gov/projects/gap/cgi-bin/study.cgi?study_id=' +
+        dbGapList[0]
+      : 'https://www.ncbi.nlm.nih.gov/gap/?term=' +
+        dbGapList.reduce((acc, d) => acc + '(' + d + '%5BStudy%5D)+OR+', '');
   if (dbGapLink.substr(dbGapLink.length - 4) === '+OR+') {
     dbGapLink = dbGapLink.slice(0, dbGapLink.length - 4);
   }
   return (
     <BaseModal
-      closeText="Cancel"
+      title="Access Alert"
       extraButtons={CustomButton(agreed)}
+      closeText="Cancel"
       style={style}
-      title="Access Alert">
+    >
       {children}
       {hidden ? null : (
         <div>
@@ -51,28 +52,25 @@ const CheckBoxModal = ({
             You are attempting to download files that are controlled access:
           </div>
           <input
-            aria-label="Agree to GDC data use"
-            checked={agreed}
+            aria-label={'Agree to GDC data use'}
+            type="checkbox"
             onClick={() => {
               setAgreed(!agreed);
             }}
-            type="checkbox" />
-          {' '}
-          I agree to abide by the GDC
-          {' '}
+            checked={agreed}
+          />{' '}
+          I agree to abide by the GDC{' '}
           <a
             href="https://gdc.cancer.gov/about-data/data-analysis-policies"
+            target="_blank"
             rel="noopener noreferrer"
-            target="_blank">
+          >
             Data Use Agreement
-          </a>
-          {' '}
-          and the study-specific Data Use Certification Agreement available in
-          {' '}
-          <a href={dbGapLink} rel="noopener noreferrer" target="_blank">
+          </a>{' '}
+          and the study-specific Data Use Certification Agreement available in{' '}
+          <a href={dbGapLink} target="_blank" rel="noopener noreferrer">
             dbGaP
-          </a>
-. This means:
+          </a>. This means:
           <ul style={{ marginTop: '10px' }}>
             <li>
               I agree not to attempt to reidentify any individual participant in
@@ -83,15 +81,14 @@ const CheckBoxModal = ({
               Agreements and to comply with any additional restrictions therein.
             </li>
             <li>
-              I agree to abide by the
-              {' '}
+              I agree to abide by the{' '}
               <a
                 href="https://osp.od.nih.gov/scientific-sharing/policies/"
+                target="_blank"
                 rel="noopener noreferrer"
-                target="_blank">
+              >
                 NIH Genomic Data Sharing Policy (GDS)
-              </a>
-.
+              </a>.
             </li>
           </ul>
         </div>

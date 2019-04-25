@@ -17,11 +17,12 @@ const ProgressContainer = compose(
 )(({ percent, theme }) => (
   <ProgressBar
     className="test-progress-bar"
+    percent={percent}
     color={theme.primaryLight1}
     height={3}
+    speed={2}
     hideDelay={0.1}
-    percent={percent}
-    speed={2} />
+  />
 ));
 
 export default ProgressContainer;

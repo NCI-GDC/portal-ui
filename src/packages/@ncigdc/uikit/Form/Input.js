@@ -23,19 +23,17 @@ const styles = {
 
 const Input = ({ style, getNode, ...props }) => (
   <input
-    aria-label="text"
     ref={getNode}
-    style={{
-      ...styles.input,
-      ...style,
-    }}
+    aria-label="text"
+    style={{ ...styles.input, ...style }}
     type="text"
-    {...props} />
+    {...props}
+  />
 );
 
 Input.propTypes = {
-  onChange: PropTypes.func,
   style: PropTypes.object,
+  onChange: PropTypes.func,
 };
 
 /*----------------------------------------------------------------------------*/

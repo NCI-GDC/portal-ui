@@ -24,14 +24,15 @@ export default ({
   style,
   ...props
 }: TProps) => (
-  <Tooltip className={`${props.className} bubble-icon`} Component={toolTipText}>
+  <Tooltip Component={toolTipText} className={props.className + ' bubble-icon'}>
     <span
       style={{
         ...bubbleStyle,
         ...style,
         backgroundColor,
       }}
-      {...props}>
+      {...props}
+    >
       {text}
     </span>
   </Tooltip>

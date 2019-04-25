@@ -70,13 +70,7 @@ function setVariables({ relay, filters }) {
       {
         op: 'and',
         content: [
-          {
-            op: 'not',
-            content: {
-              field: 'cosmic_id',
-              value: ['MISSING'],
-            },
-          },
+          { op: 'not', content: { field: 'cosmic_id', value: ['MISSING'] } },
         ],
       },
       filters
@@ -127,16 +121,15 @@ export const ExplorePageComponent = ({
         text: 'Cases',
         component: (
           <CaseAggregations
-            aggregations={viewer.explore.cases.aggregations}
             facets={viewer.explore.customCaseFacets}
-            setAutocomplete={(value, onReadyStateChange) => relay.setVariables(
-              {
-                idAutocompleteCases: value,
-                runAutocompleteCases: !!value,
-              },
-              onReadyStateChange
-            )}
-            suggestions={get(viewer, 'autocomplete_cases.hits', [])} />
+            aggregations={viewer.explore.cases.aggregations}
+            suggestions={get(viewer, 'autocomplete_cases.hits', [])}
+            setAutocomplete={(value, onReadyStateChange) =>
+              relay.setVariables(
+                { idAutocompleteCases: value, runAutocompleteCases: !!value },
+                onReadyStateChange
+              )}
+          />
         ),
       },
       {
@@ -146,14 +139,13 @@ export const ExplorePageComponent = ({
           <GeneAggregations
             aggregations={viewer.explore.genes.aggregations}
             cnvAggregations={viewer.explore.cnvs.aggregations}
-            setAutocomplete={(value, onReadyStateChange) => relay.setVariables(
-              {
-                idAutocompleteGenes: value,
-                runAutocompleteGenes: !!value,
-              },
-              onReadyStateChange
-            )}
-            suggestions={get(viewer, 'autocomplete_genes.hits', [])} />
+            suggestions={get(viewer, 'autocomplete_genes.hits', [])}
+            setAutocomplete={(value, onReadyStateChange) =>
+              relay.setVariables(
+                { idAutocompleteGenes: value, runAutocompleteGenes: !!value },
+                onReadyStateChange
+              )}
+          />
         ),
       },
       {
@@ -161,27 +153,27 @@ export const ExplorePageComponent = ({
         text: 'Mutations',
         component: (
           <SSMAggregations
-            aggregations={viewer.explore.ssms.aggregations}
             defaultFilters={filters}
-            setAutocomplete={(value, onReadyStateChange) => relay.setVariables(
-              {
-                idAutocompleteSsms: value,
-                runAutocompleteSsms: !!value,
-              },
-              onReadyStateChange
-            )}
+            aggregations={viewer.explore.ssms.aggregations}
             ssms={viewer.explore.ssms}
-            suggestions={get(viewer, 'autocomplete_ssms.hits', [])} />
+            suggestions={get(viewer, 'autocomplete_ssms.hits', [])}
+            setAutocomplete={(value, onReadyStateChange) =>
+              relay.setVariables(
+                { idAutocompleteSsms: value, runAutocompleteSsms: !!value },
+                onReadyStateChange
+              )}
+          />
         ),
       },
     ]}
-    results={(
+    results={
       <span>
         <Row>
           {filters ? (
             <CreateExploreCaseSetButton
-              disabled={!viewer.explore.cases.hits.total}
               filters={filters}
+              disabled={!viewer.explore.cases.hits.total}
+              style={{ marginBottom: '2rem' }}
               onComplete={setId => {
                 push({
                   pathname: '/repository',
@@ -201,27 +193,30 @@ export const ExplorePageComponent = ({
                   },
                 });
               }}
-              style={{ marginBottom: '2rem' }}>
+            >
               View Files in Repository
             </CreateExploreCaseSetButton>
           ) : (
             <Button
               disabled={!viewer.explore.cases.hits.total}
-              onClick={() => push({
-                pathname: '/repository',
-              })}
-              style={{ marginBottom: '2rem' }}>
+              style={{ marginBottom: '2rem' }}
+              onClick={() =>
+                push({
+                  pathname: '/repository',
+                })}
+            >
               View Files in Repository
             </Button>
           )}
         </Row>
         <TabbedLinks
+          queryParam="searchTableTab"
           defaultIndex={0}
           links={[
             {
               id: 'cases',
               text: `Cases (${viewer.explore.cases.hits.total.toLocaleString()})`,
-              component: viewer.explore.cases.hits.total ? (
+              component: !!viewer.explore.cases.hits.total ? (
                 <CasesTab />
               ) : (
                 <NoResultsMessage>No Cases Found.</NoResultsMessage>
@@ -242,7 +237,8 @@ export const ExplorePageComponent = ({
               component: viewer.explore.ssms.hits.total ? (
                 <MutationsTab
                   totalNumCases={viewer.explore.cases.hits.total}
-                  viewer={viewer} />
+                  viewer={viewer}
+                />
               ) : (
                 <NoResultsMessage>No Mutations Found.</NoResultsMessage>
               ),
@@ -253,9 +249,10 @@ export const ExplorePageComponent = ({
               component: <OncogridTab />,
             },
           ]}
-          queryParam="searchTableTab" />
+        />
       </span>
-    )} />
+    }
+  />
 );
 
 export const ExplorePageQuery = {

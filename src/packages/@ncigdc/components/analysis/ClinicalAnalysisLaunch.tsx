@@ -4,15 +4,15 @@ import { connect } from 'react-redux';
 import { compose, withState } from 'recompose';
 import { theme } from '@ncigdc/theme/index';
 import { Row, Column } from '@ncigdc/uikit/Flex';
+import DemoButton from './DemoButton';
 import Button from '@ncigdc/uikit/Button';
 import ExploreLink from '@ncigdc/components/Links/ExploreLink';
 import EntityPageHorizontalTable from '@ncigdc/components/EntityPageHorizontalTable';
 import countComponents from '@ncigdc/modern_components/Counts';
 
 import { TSetTypes } from '@ncigdc/dux/sets';
-import { IGroupFilter } from '@ncigdc/utils/filters/types';
 import { TSelectedSets } from './availableAnalysis';
-import DemoButton from './DemoButton';
+import { IGroupFilter } from '@ncigdc/utils/filters/types';
 
 interface ICaseDemoSet {
   case: Record<string, string>;
@@ -80,19 +80,9 @@ const ClinicalAnalysisLaunch: ComponentType<IProps> = ({
   setSelectedSet,
 }: IProps) => {
   const cohortHeadings = [
-    {
-      key: 'select',
-      title: 'Select',
-    },
-    {
-      key: 'name',
-      title: 'Case Set Name',
-    },
-    {
-      key: 'count',
-      title: '#Cases',
-      style: { textAlign: 'right' },
-    },
+    { key: 'select', title: 'Select' },
+    { key: 'name', title: 'Case Set Name' },
+    { key: 'count', title: '#Cases', style: { textAlign: 'right' } },
   ];
 
   const setArray: any[] = [];
@@ -108,19 +98,20 @@ const ClinicalAnalysisLaunch: ComponentType<IProps> = ({
         return {
           select: (
             <input
-              aria-label={`Select ${name} set`}
-              checked={checked}
+              style={{
+                marginLeft: 3,
+              }}
               id={id}
+              type="radio"
+              value={setId}
               onChange={e => {
                 const targetId = e.target.value;
                 const setIdPath = [setType, targetId];
                 setSelectedSet(_.set({}, setIdPath, mappedSets[targetId]));
               }}
-              style={{
-                marginLeft: 3,
-              }}
-              type="radio"
-              value={setId} />
+              checked={checked}
+              aria-label={`Select ${name} set`}
+            />
           ),
           name: <label htmlFor={id}>{_.truncate(l, { length: 70 })}</label>,
           count: (
@@ -131,7 +122,8 @@ const ClinicalAnalysisLaunch: ComponentType<IProps> = ({
                   field: `${setType}s.${setType}_id`,
                   value: `set_id:${setId}`,
                 },
-              }} />
+              }}
+            />
           ),
         };
       });
@@ -139,17 +131,11 @@ const ClinicalAnalysisLaunch: ComponentType<IProps> = ({
     .reduce((acc, rows) => acc.concat(rows), setArray);
 
   return (
-    <Column style={{
-      width: '70%',
-      paddingLeft: '1rem',
-      paddingTop: '2rem',
-    }}>
+    <Column style={{ width: '70%', paddingLeft: '1rem', paddingTop: '2rem' }}>
       <Row
-        spacing="10px"
-        style={{
-          ...styles.rowStyle,
-          justifyContent: 'space-between',
-        }}>
+        spacing={'10px'}
+        style={{ ...styles.rowStyle, justifyContent: 'space-between' }}
+      >
         <Icon />
         <Column>
           <Row>
@@ -158,7 +144,7 @@ const ClinicalAnalysisLaunch: ComponentType<IProps> = ({
           <Row>{description}</Row>
         </Column>
         <Column style={{ paddingTop: 5 }}>
-          <Row spacing="5px">
+          <Row spacing={'5px'}>
             <Button onClick={onCancel}>Back</Button>
             <DemoButton demoData={demoData} type={type} disabled />
           </Row>
@@ -166,23 +152,19 @@ const ClinicalAnalysisLaunch: ComponentType<IProps> = ({
       </Row>
       <Row style={styles.rowStyle}>
         <Column style={{ flex: 1 }}>
-          <h2 style={{
-            color: '#c7254e',
-            fontSize: '1.8rem',
-          }}>
+          <h2 style={{ color: '#c7254e', fontSize: '1.8rem' }}>
             Select a cohort
           </h2>
           <div style={{ marginBottom: 15 }}>
-            You can create and save case sets from the
-            {' '}
-            <ExploreLink>Exploration Page</ExploreLink>
-.
+            You can create and save case sets from the{' '}
+            <ExploreLink>Exploration Page</ExploreLink>.
           </div>
 
           {setData && setData.length > 0 && (
             <EntityPageHorizontalTable
               data={setData}
-              headings={cohortHeadings} />
+              headings={cohortHeadings}
+            />
           )}
           {setData && setData.length === 0 && (
             <Row>
@@ -196,10 +178,12 @@ const ClinicalAnalysisLaunch: ComponentType<IProps> = ({
           ...styles.rowStyle,
           border: 'none',
           justifyContent: 'flex-end',
-        }}>
+        }}
+      >
         <Button
           disabled={!validateSets(selectedSet)}
-          onClick={() => onRun(selectedSet)}>
+          onClick={() => onRun(selectedSet)}
+        >
           Run
         </Button>
       </Row>

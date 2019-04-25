@@ -86,6 +86,11 @@ export const RepositoryPageComponent = (props: TProps) => {
   return (
     <div className="test-repository-page">
       <SearchPage
+        filtersLinkProps={{
+          hideLinkOnEmpty: false,
+          linkPathname: '/query',
+          linkText: 'Advanced Search',
+        }}
         facetTabs={[
           {
             id: 'files',
@@ -98,27 +103,33 @@ export const RepositoryPageComponent = (props: TProps) => {
             component: <CaseAggregations relay={props.relay} />,
           },
         ]}
-        filtersLinkProps={{
-          hideLinkOnEmpty: false,
-          linkPathname: '/query',
-          linkText: 'Advanced Search',
-        }}
-        results={(
+        results={
           <span>
             <ActionsRow
-              filters={props.filters}
               totalCases={caseCount}
-              totalFiles={fileCount} />
+              totalFiles={fileCount}
+              filters={props.filters}
+            />
             <TabbedLinks
+              queryParam="searchTableTab"
               defaultIndex={0}
+              tabToolbar={
+                <Row spacing="2rem" style={{ alignItems: 'center' }}>
+                  <span style={{ flex: 'none' }}>
+                    <SaveIcon style={{ marginRight: 5 }} />{' '}
+                    <strong>{formatFileSize(fileSize)}</strong>
+                  </span>
+                </Row>
+              }
               links={[
                 {
                   id: 'files',
                   text: `Files (${fileCount.toLocaleString()})`,
-                  component: props.viewer.repository.files.hits.total ? (
+                  component: !!props.viewer.repository.files.hits.total ? (
                     <div>
                       <RepoFilesPies
-                        aggregations={props.viewer.repository.files.pies} />
+                        aggregations={props.viewer.repository.files.pies}
+                      />
                       <FilesTable />
                     </div>
                   ) : (
@@ -130,10 +141,11 @@ export const RepositoryPageComponent = (props: TProps) => {
                 {
                   id: 'cases',
                   text: `Cases (${caseCount.toLocaleString()})`,
-                  component: props.viewer.repository.cases.hits.total ? (
+                  component: !!props.viewer.repository.cases.hits.total ? (
                     <div>
                       <RepoCasesPies
-                        aggregations={props.viewer.repository.cases.pies} />
+                        aggregations={props.viewer.repository.cases.pies}
+                      />
                       <RepoCasesTable />
                     </div>
                   ) : (
@@ -143,18 +155,10 @@ export const RepositoryPageComponent = (props: TProps) => {
                   ),
                 },
               ]}
-              queryParam="searchTableTab"
-              tabToolbar={(
-                <Row spacing="2rem" style={{ alignItems: 'center' }}>
-                  <span style={{ flex: 'none' }}>
-                    <SaveIcon style={{ marginRight: 5 }} />
-                    {' '}
-                    <strong>{formatFileSize(fileSize)}</strong>
-                  </span>
-                </Row>
-              )} />
+            />
           </span>
-        )} />
+        }
+      />
     </div>
   );
 };

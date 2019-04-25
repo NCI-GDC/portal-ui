@@ -74,7 +74,7 @@ const CancerDistributionTableModel: TCancerDistributionTableModel = ({
     downloadable: true,
     th: () => 'Disease Type',
     td: ({ node }) => (
-      <CollapsibleRowList data={node.disease_type} label="Disease Types" />
+      <CollapsibleRowList data={node.disease_type} label={'Disease Types'} />
     ),
   },
   {
@@ -84,7 +84,7 @@ const CancerDistributionTableModel: TCancerDistributionTableModel = ({
     downloadable: true,
     th: () => 'Site',
     td: ({ node }) => (
-      <CollapsibleRowList data={node.site} label="Primary Sites" />
+      <CollapsibleRowList data={node.site} label={'Primary Sites'} />
     ),
   },
   {
@@ -95,16 +95,16 @@ const CancerDistributionTableModel: TCancerDistributionTableModel = ({
     th: props => (
       <Row {...props}>
         <Tooltip
-          Component={(
+          Component={
             <span>
               # Cases tested for Simple Somatic Mutations in Project affected
               by&nbsp;
-              {entityName}
-&nbsp; / # Cases tested for Simple Somatic Mutations
+              {entityName}&nbsp; / # Cases tested for Simple Somatic Mutations
               in Project
             </span>
-          )}
-          style={tableToolTipHint()}>
+          }
+          style={tableToolTipHint()}
+        >
           # SSM Affected Cases
         </Tooltip>
       </Row>
@@ -112,9 +112,10 @@ const CancerDistributionTableModel: TCancerDistributionTableModel = ({
     td: ({ node }) => (
       <span>
         <ExploreSSMLink
-          filters={replaceFilters(makeProjectFilters(node.project_id), filters)}
           merge
-          searchTableTab="cases">
+          searchTableTab={'cases'}
+          filters={replaceFilters(makeProjectFilters(node.project_id), filters)}
+        >
           {node.num_affected_cases}
         </ExploreSSMLink>
         <span> / </span>
@@ -122,124 +123,119 @@ const CancerDistributionTableModel: TCancerDistributionTableModel = ({
           query={{
             searchTableTab: 'cases',
             filters: makeProjectFilters(node.project_id),
-          }}>
+          }}
+        >
           {node.num_affected_cases_total.toLocaleString()}
         </ExploreLink>
         <span>
-          &nbsp;(
-          {(node.num_affected_cases_percent * 100).toFixed(2)}
-%)
+          &nbsp;({(node.num_affected_cases_percent * 100).toFixed(2)}%)
         </span>
       </span>
     ),
   },
   ...((tableType !== 'ssm'
     ? [
-      {
-        name: 'CNV Gains',
-        id: 'num_cnv_gain',
-        sortable: true,
-        downloadable: true,
-        th: props => (
-          <Row {...props}>
-            <Tooltip
-              Component={(
-                <span>
+        {
+          name: 'CNV Gains',
+          id: 'num_cnv_gain',
+          sortable: true,
+          downloadable: true,
+          th: props => (
+            <Row {...props}>
+              <Tooltip
+                Component={
+                  <span>
                     # of Cases tested for CNV in Project affected by CNV loss
                     event in&nbsp;
-                  {entityName}
-&nbsp; / # of Cases tested for Copy Number
+                    {entityName}&nbsp; / # of Cases tested for Copy Number
                     Variation in Project
-                </span>
-              )}
-              style={tableToolTipHint()}>
+                  </span>
+                }
+                style={tableToolTipHint()}
+              >
                 # CNV Gains
-            </Tooltip>
-          </Row>
-        ),
-        td: ({ node }) => (
-          <span>
-            {node.num_cnv_gain.toLocaleString()}
-            <span> / </span>
-            {node.num_cnv_cases_total.toLocaleString()}
+              </Tooltip>
+            </Row>
+          ),
+          td: ({ node }) => (
             <span>
-                &nbsp;(
-              {(node.num_cnv_gain_percent * 100).toFixed(2)}
-%)
+              {node.num_cnv_gain.toLocaleString()}
+              <span> / </span>
+              {node.num_cnv_cases_total.toLocaleString()}
+              <span>
+                &nbsp;({(node.num_cnv_gain_percent * 100).toFixed(2)}%)
+              </span>
             </span>
-          </span>
-        ),
-      },
-      {
-        name: 'CNV Losses',
-        id: 'num_cnv_loss',
-        sortable: true,
-        downloadable: true,
-        th: props => (
-          <Row {...props}>
-            <Tooltip
-              Component={(
-                <span>
+          ),
+        },
+        {
+          name: 'CNV Losses',
+          id: 'num_cnv_loss',
+          sortable: true,
+          downloadable: true,
+          th: props => (
+            <Row {...props}>
+              <Tooltip
+                Component={
+                  <span>
                     # of Cases tested for CNV in Project affected by CNV loss
                     event in&nbsp;
-                  {entityName}
-&nbsp; / # of Cases tested for Copy Number
+                    {entityName}&nbsp; / # of Cases tested for Copy Number
                     Variation in Project
-                </span>
-              )}
-              style={tableToolTipHint()}>
+                  </span>
+                }
+                style={tableToolTipHint()}
+              >
                 # CNV Losses
-            </Tooltip>
-          </Row>
-        ),
-        td: ({ node }) => (
-          <span>
-            {node.num_cnv_loss.toLocaleString()}
-            <span> / </span>
-            {node.num_cnv_cases_total.toLocaleString()}
+              </Tooltip>
+            </Row>
+          ),
+          td: ({ node }) => (
             <span>
-                &nbsp;(
-              {(node.num_cnv_loss_percent * 100).toFixed(2)}
-%)
+              {node.num_cnv_loss.toLocaleString()}
+              <span> / </span>
+              {node.num_cnv_cases_total.toLocaleString()}
+              <span>
+                &nbsp;({(node.num_cnv_loss_percent * 100).toFixed(2)}%)
+              </span>
             </span>
-          </span>
-        ),
-      },
-    ]
+          ),
+        },
+      ]
     : []) as IModelEntry[]),
   ...((geneId
     ? [
-      {
-        name: 'Mutations',
-        id: 'num_mutations',
-        sortable: false,
-        downloadable: true,
-        th: props => (
-          <Row {...props}>
-            <Tooltip
-              Component={(
-                <span>
-                    # Unique Simple Somatic Mutations observed in
-                  {' '}
-                  {entityName}
+        {
+          name: 'Mutations',
+          id: 'num_mutations',
+          sortable: false,
+          downloadable: true,
+          th: props => (
+            <Row {...props}>
+              <Tooltip
+                Component={
+                  <span>
+                    # Unique Simple Somatic Mutations observed in {entityName}
                     in Project
-                </span>
-              )}
-              style={tableToolTipHint()}>
+                  </span>
+                }
+                style={tableToolTipHint()}
+              >
                 # Mutations
-            </Tooltip>
-          </Row>
-        ),
-        td: ({ node }) => (
-          <MutationsCount
-            filters={replaceFilters(
-              makeProjectFilters(node.project_id),
-              filters
-            )}
-            ssmCount={ssmCount(aggregations, node.project_id)} />
-        ),
-      },
-    ]
+              </Tooltip>
+            </Row>
+          ),
+          td: ({ node }) => (
+            <MutationsCount
+              ssmCount={ssmCount(aggregations, node.project_id)}
+              filters={replaceFilters(
+                makeProjectFilters(node.project_id),
+                filters
+              )}
+            />
+          ),
+        },
+      ]
     : []) as IModelEntry[]),
 ];
 
@@ -259,38 +255,38 @@ const CollapsibleRowList: React.ComponentType<{
     <span>
       {data.length > 1 && (
         <CollapsibleList
-          collapseText="collapse"
+          liStyle={{ whiteSpace: 'normal', listStyleType: 'disc' }}
+          toggleStyle={{ fontStyle: 'normal' }}
           data={data.slice(0).sort()}
-          expandText={`${data.length} ${label}`}
           limit={0}
-          liStyle={{
-            whiteSpace: 'normal',
-            listStyleType: 'disc',
-          }}
-          toggleStyle={{ fontStyle: 'normal' }} />
+          expandText={`${data.length} ` + label}
+          collapseText="collapse"
+        />
       )}
       {data.length === 1 && data[0]}
     </span>
   );
 };
 
-const makeProjectFilters = (id: string) => makeFilter([
-  {
-    field: 'cases.project.project_id',
-    value: id,
-  },
-  {
-    field: 'cases.available_variation_data',
-    value: 'ssm',
-  },
-]);
+const makeProjectFilters = (id: string) =>
+  makeFilter([
+    {
+      field: 'cases.project.project_id',
+      value: id,
+    },
+    {
+      field: 'cases.available_variation_data',
+      value: 'ssm',
+    },
+  ]);
 
-const ssmCount = (aggregations: IAggregations, id: string) => (aggregations || {
-  occurrence__case__project__project_id: { buckets: [] },
-}).occurrence__case__project__project_id.buckets.reduce(
-  (acc: { [key: string]: number }, b: IBucket) => ({
-    ...acc,
-    [b.key]: b.doc_count,
-  }),
-  {}
-)[id];
+const ssmCount = (aggregations: IAggregations, id: string) =>
+  (aggregations || {
+    occurrence__case__project__project_id: { buckets: [] },
+  }).occurrence__case__project__project_id.buckets.reduce(
+    (acc: { [key: string]: number }, b: IBucket) => ({
+      ...acc,
+      [b.key]: b.doc_count,
+    }),
+    {}
+  )[id];

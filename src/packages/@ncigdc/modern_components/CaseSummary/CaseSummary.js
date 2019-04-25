@@ -27,7 +27,7 @@ const getAnnotationsLinkParams = annotations => {
     return {
       pathname: `/annotations/${annotations.edges[0].node.annotation_id}`,
     };
-  } if (annotations.total > 1) {
+  } else if (annotations.total > 1) {
     return {
       pathname: '/annotations',
       query: {
@@ -54,9 +54,10 @@ export const slideCountFromCaseSummary = (summary: {
 }): number => {
   const slideTypes = ['Diagnostic Slide', 'Tissue Slide'];
   return (summary.experimental_strategies || []).reduce(
-    (slideCount, { file_count, experimental_strategy }) => (slideTypes.includes(experimental_strategy)
+    (slideCount, { file_count, experimental_strategy }) =>
+      slideTypes.includes(experimental_strategy)
         ? slideCount + file_count
-        : slideCount),
+        : slideCount,
     0,
   );
 };
@@ -77,16 +78,14 @@ export default compose(
     <Row spacing={theme.spacing}>
       <EntityPageVerticalTable
         id="summary"
-        style={{ flex: 1 }}
+        title={
+          <span>
+            <i className="fa fa-table" /> Summary
+          </span>
+        }
         thToTd={[
-          {
-            th: 'Case UUID',
-            td: p.case_id,
-          },
-          {
-            th: 'Case ID',
-            td: p.submitter_id,
-          },
+          { th: 'Case UUID', td: p.case_id },
+          { th: 'Case ID', td: p.submitter_id },
           {
             th: 'Project',
             td: (
@@ -95,97 +94,74 @@ export default compose(
               </ProjectLink>
             ),
           },
-          {
-            th: 'Project Name',
-            td: p.project.name,
-          },
-          {
-            th: 'Disease Type',
-            td: p.disease_type,
-          },
-          {
-            th: 'Program',
-            td: p.project.program.name,
-          },
-          {
-            th: 'Primary Site',
-            td: p.primary_site,
-          },
+          { th: 'Project Name', td: p.project.name },
+          { th: 'Disease Type', td: p.disease_type },
+          { th: 'Program', td: p.project.program.name },
+          { th: 'Primary Site', td: p.primary_site },
           ...(DISPLAY_SLIDES &&
             !!slideCount && [
-            {
-              th: 'Images',
-              td: (
-                <span>
-                  <Tooltip Component="View Slide Image">
-                    <ImageViewerLink
-                      isIcon
-                      query={{
-                        filters: makeFilter([
-                          {
-                            field: 'cases.case_id',
-                            value: p.case_id,
-                          },
-                        ]),
-                      }}>
-                      <MicroscopeIcon style={{ maxWidth: '20px' }} />
-                      {' '}
-(
-                      {slideCount}
-)
-                    </ImageViewerLink>
-                  </Tooltip>
-                  <Tooltip Component="Add to cart">
-                    <AddToCartButtonAll
-                      asIcon
-                      edges={imageFiles.map(f => f.node)}
-                      style={{ display: 'none' }}
-                      total={slideCount.file_count} />
-                  </Tooltip>
-                </span>
-              ),
-            },
-          ]),
+              {
+                th: 'Images',
+                td: (
+                  <span>
+                    <Tooltip Component="View Slide Image">
+                      <ImageViewerLink
+                        isIcon
+                        query={{
+                          filters: makeFilter([
+                            { field: 'cases.case_id', value: p.case_id },
+                          ]),
+                        }}
+                      >
+                        <MicroscopeIcon style={{ maxWidth: '20px' }} /> ({slideCount})
+                      </ImageViewerLink>
+                    </Tooltip>
+                    <Tooltip Component="Add to cart">
+                      <AddToCartButtonAll
+                        edges={imageFiles.map(f => f.node)}
+                        total={slideCount.file_count}
+                        asIcon
+                        style={{ display: 'none' }}
+                      />
+                    </Tooltip>
+                  </span>
+                ),
+              },
+            ]),
         ]}
-        title={(
-          <span>
-            <i className="fa fa-table" />
-            {' '}
-Summary
-          </span>
-        )} />
+        style={{ flex: 1 }}
+      />
 
-      <Column spacing={theme.spacing} style={{ width: '200px' }}>
+      <Column style={{ width: '200px' }} spacing={theme.spacing}>
         <CountCard
           className="test-files-count"
+          style={{ width: 'auto' }}
+          title="FILES"
           count={totalFiles.toLocaleString()}
-          icon={<FileIcon className="fa-3x" style={styles.icon} />}
+          icon={<FileIcon style={styles.icon} className="fa-3x" />}
           linkParams={
             totalFiles
               ? {
-                pathname: '/repository',
-                query: {
-                  filters: makeFilter([
-                    {
-                      field: 'cases.case_id',
-                      value: p.case_id,
-                    },
-                  ]),
-                  facetTab: 'files',
-                  searchTableTab: 'files',
-                },
-              }
+                  pathname: '/repository',
+                  query: {
+                    filters: makeFilter([
+                      { field: 'cases.case_id', value: p.case_id },
+                    ]),
+                    facetTab: 'files',
+                    searchTableTab: 'files',
+                  },
+                }
               : null
           }
-          style={{ width: 'auto' }}
-          title="FILES" />
+        />
         <CountCard
           className="test-annotations-count"
-          count={p.annotations.hits.total.toLocaleString()}
-          icon={<AnnotationIcon className="fa-3x" style={styles.icon} />}
-          linkParams={getAnnotationsLinkParams(p.annotations.hits)}
           style={{ width: 'auto' }}
-          title="ANNOTATIONS" />
+          title="ANNOTATIONS"
+          count={p.annotations.hits.total.toLocaleString()}
+          icon={<AnnotationIcon style={styles.icon} className="fa-3x" />}
+          linkParams={getAnnotationsLinkParams(p.annotations.hits)}
+        />
       </Column>
     </Row>
   );

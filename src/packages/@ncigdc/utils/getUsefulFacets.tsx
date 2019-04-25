@@ -19,17 +19,20 @@ interface ICategoricalFacet {
   buckets: [{ key: string; doc_count: number }];
 }
 
-export default (facets: TFacet) => omitBy(
-  facets,
-  aggregation => !(aggregation as ICategoricalFacet) ||
+export default (facets: TFacet) =>
+  omitBy(
+    facets,
+    aggregation =>
+      !(aggregation as ICategoricalFacet) ||
       some([
         (aggregation as ICategoricalFacet).buckets &&
           (aggregation as ICategoricalFacet).buckets.filter(
-            (bucket: { key: string; doc_count: number }) => bucket.key !== '_missing'
+            (bucket: { key: string; doc_count: number }) =>
+              bucket.key !== '_missing'
           ).length === 0,
         (aggregation as IContinuousFacet).count === 0,
         (aggregation as IContinuousFacet).count === null,
         (aggregation as IContinuousFacet).stats &&
           (aggregation as IContinuousFacet).stats.count === 0,
       ])
-);
+  );

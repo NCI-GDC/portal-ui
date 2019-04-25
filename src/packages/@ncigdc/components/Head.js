@@ -8,9 +8,10 @@ import Favicon from '@ncigdc/theme/images/favicon.ico';
 export default ({ title }) => (
   <Helmet>
     <meta
+      name="description"
       content="A unique tool to foster important discoveries in Cancer Research"
-      name="description" />
+    />
     <title>{capitalize(title) || 'GDC'}</title>
-    <link href={Favicon} rel="icon" />
+    <link rel="icon" href={Favicon} />
   </Helmet>
 );

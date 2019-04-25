@@ -16,12 +16,7 @@ const styles = {
 };
 
 const CountBubble = ({ style, children, ...props }) => (
-  <a
-    style={{
-      ...styles.countBubble,
-      ...style,
-    }}
-    {...props}>
+  <a style={{ ...styles.countBubble, ...style }} {...props}>
     {children}
   </a>
 );

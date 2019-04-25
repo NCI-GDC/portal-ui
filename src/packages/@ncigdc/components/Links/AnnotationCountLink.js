@@ -9,9 +9,10 @@ export const AnnotationCountLink = ({ hits, filters }) => {
         {hits.total.toLocaleString()}
       </AnnotationsLink>
     );
-  } if (hits.total === 1) {
+  } else if (hits.total === 1) {
     const uuid = hits.edges[0].node.annotation_id;
     return <AnnotationLink uuid={uuid}>1</AnnotationLink>;
+  } else {
+    return <span>0</span>;
   }
-  return <span>0</span>;
 };

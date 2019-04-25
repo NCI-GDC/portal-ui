@@ -9,12 +9,13 @@ const MutationsCount = ({ ssmCount, filters, isLoading = false }) => {
   }
   return ssmCount ? (
     <ExploreLink
-      className="test-mutations-count"
       merge
       query={{
         searchTableTab: 'mutations',
         filters,
-      }}>
+      }}
+      className="test-mutations-count"
+    >
       {ssmCount.toLocaleString()}
     </ExploreLink>
   ) : (

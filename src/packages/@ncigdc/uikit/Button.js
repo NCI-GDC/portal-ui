@@ -19,16 +19,18 @@ export const buttonBaseStyles = {
   fontSize: '14px',
   borderRadius: '4px',
   border: '1px solid transparent',
-  backgroundColor: ({ theme, disabled }) => (disabled ? theme.greyScale4 : theme.primary),
+  backgroundColor: ({ theme, disabled }) =>
+    disabled ? theme.greyScale4 : theme.primary,
   color: 'white',
   outline: 'none',
   transition: '0.25s ease',
   ':hover': {
-    backgroundColor: ({ theme, disabled }) => (disabled
+    backgroundColor: ({ theme, disabled }) =>
+      disabled
         ? theme.greyScale4
         : Color(theme.primary)
-          .lighten(0.7)
-          .rgbString()),
+            .lighten(0.7)
+            .rgbString(),
     color: 'white',
   },
 };
@@ -53,28 +55,20 @@ const Button = ({
   buttonContentStyle = {},
   ...props
 }: TButtonProps = {}) => {
-  const StyledButton = styled.button({
-    ...buttonBaseStyles,
-    ...style,
-  });
+  const StyledButton = styled.button({ ...buttonBaseStyles, ...style });
   StyledButton.displayName = 'StyledButton';
 
   return (
     <StyledButton
       disabled={disabled}
       {...validAttributes(props)}
-      className={`${className} button`}>
+      className={className + ' button'}
+    >
       <div
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          ...buttonContentStyle,
-        }}>
+        style={{ display: 'flex', alignItems: 'center', ...buttonContentStyle }}
+      >
         {leftIcon}
-        <span style={{
-          ...margin(leftIcon, rightIcon),
-          ...center,
-        }}>
+        <span style={{ ...margin(leftIcon, rightIcon), ...center }}>
           {children}
         </span>
         {rightIcon}

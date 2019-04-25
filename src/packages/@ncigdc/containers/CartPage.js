@@ -59,13 +59,8 @@ export type TProps = {
 };
 
 type TCartPage = (props: TProps) => React.Element<*>;
-const CartPage: TCartPage = ({
-  viewer, files, user, theme,
-} = {}) => {
-  const authCounts = getAuthCounts({
-    user,
-    files,
-  });
+const CartPage: TCartPage = ({ viewer, files, user, theme } = {}) => {
+  const authCounts = getAuthCounts({ user, files });
 
   const styles = {
     container: {
@@ -87,53 +82,52 @@ const CartPage: TCartPage = ({
 
   const filters = files.length
     ? setFilter({
-      field: 'files.file_id',
-      value: files.map(f => f.file_id),
-    })
+        field: 'files.file_id',
+        value: files.map(f => f.file_id),
+      })
     : null;
 
   return (
-    <Column className="test-cart-page" style={styles.container}>
+    <Column style={styles.container} className="test-cart-page">
       {!files.length && <h1>Your cart is empty.</h1>}
       {!!files.length && (
         <Column>
-          <Row style={{
-            marginBottom: '2rem',
-            flexWrap: 'wrap',
-          }}>
+          <Row style={{ marginBottom: '2rem', flexWrap: 'wrap' }}>
             <Column spacing="0.8rem" style={{ marginRight: '1rem' }}>
               <CountCard
+                title="FILES"
                 count={files.length}
-                icon={(
-                  <FileIcon style={{
-                    width: '4rem',
-                    height: '4rem',
-                  }} />
-                )}
+                icon={<FileIcon style={{ width: '4rem', height: '4rem' }} />}
                 style={{ backgroundColor: 'transparent' }}
-                title="FILES" />
+              />
               <CountCard
+                title="CASES"
                 count={caseCount}
-                icon={(
-                  <CaseIcon style={{
-                    width: '4rem',
-                    height: '4rem',
-                  }} />
-                )}
+                icon={<CaseIcon style={{ width: '4rem', height: '4rem' }} />}
                 style={{ backgroundColor: 'transparent' }}
-                title="CASES" />
+              />
               <CountCard
+                title="FILE SIZE"
                 count={formatFileSize(fileSize)}
-                icon={(
-                  <FileSizeIcon style={{
-                    width: '4rem',
-                    height: '4rem',
-                  }} />
-                )}
+                icon={
+                  <FileSizeIcon style={{ width: '4rem', height: '4rem' }} />
+                }
                 style={{ backgroundColor: 'transparent' }}
-                title="FILE SIZE" />
+              />
             </Column>
             <SummaryCard
+              style={{
+                flex: 1,
+                backgroundColor: 'transparent',
+                height: '19em',
+                overflow: 'auto',
+                minWidth: '30em',
+                flexShrink: 0,
+                marginLeft: '1rem',
+                marginRight: '1rem',
+              }}
+              tableTitle="File Counts by Project"
+              pieChartTitle="File Counts by Project"
               data={viewer.summary.aggregations.project__project_id.buckets.map(
                 item => ({
                   project: item.key,
@@ -141,31 +135,31 @@ const CartPage: TCartPage = ({
                   case_count_meter: (
                     <SparkMeterWithTooltip
                       part={item.case_count}
-                      whole={caseCount} />
+                      whole={caseCount}
+                    />
                   ),
                   file_count: item.doc_count.toLocaleString(),
                   file_count_meter: (
                     <SparkMeterWithTooltip
                       part={item.doc_count}
-                      whole={files.length} />
+                      whole={files.length}
+                    />
                   ),
                   file_size: formatFileSize(item.file_size),
                   file_size_meter: (
                     <SparkMeterWithTooltip
                       part={item.file_size}
-                      whole={fileSize} />
+                      whole={fileSize}
+                    />
                   ),
                   tooltip: `${item.key}: ${item.doc_count.toLocaleString()}`,
                 }),
               )}
               footer={`${viewer.summary.aggregations.project__project_id.buckets
                 .length} Projects `}
+              path="file_count"
               headings={[
-                {
-                  key: 'project',
-                  title: 'Project',
-                  color: true,
-                },
+                { key: 'project', title: 'Project', color: true },
                 {
                   key: 'case_count',
                   title: 'Cases',
@@ -203,9 +197,10 @@ const CartPage: TCartPage = ({
                   key: 'file_size_meter',
                   title: (
                     <SampleSize
-                      formatter={formatFileSize}
                       n={fileSize}
-                      symbol="∑" />
+                      formatter={formatFileSize}
+                      symbol="∑"
+                    />
                   ),
                   thStyle: {
                     width: 1,
@@ -214,26 +209,27 @@ const CartPage: TCartPage = ({
                   style: { textAlign: 'left' },
                 },
               ]}
-              path="file_count"
-              pieChartTitle="File Counts by Project"
+            />
+            <SummaryCard
               style={{
                 flex: 1,
                 backgroundColor: 'transparent',
                 height: '19em',
                 overflow: 'auto',
-                minWidth: '30em',
+                minWidth: '23em',
                 flexShrink: 0,
                 marginLeft: '1rem',
                 marginRight: '1rem',
               }}
-              tableTitle="File Counts by Project" />
-            <SummaryCard
+              tableTitle="File Counts by Authorization Level"
+              pieChartTitle="File Counts by Authorization Level"
               data={authCounts.map(x => ({
                 ...x,
                 file_count_meter: (
                   <SparkMeterWithTooltip
                     part={x.doc_count}
-                    whole={files.length} />
+                    whole={files.length}
+                  />
                 ),
                 file_size: formatFileSize(x.file_size),
                 file_size_meter: (
@@ -242,6 +238,7 @@ const CartPage: TCartPage = ({
                 tooltip: `${x.key}: ${formatFileSize(x.file_size)}`,
               }))}
               footer={`${authCounts.length} Authorization Levels`}
+              path="doc_count"
               headings={[
                 {
                   key: 'key',
@@ -272,9 +269,10 @@ const CartPage: TCartPage = ({
                   key: 'file_size_meter',
                   title: (
                     <SampleSize
-                      formatter={formatFileSize}
                       n={fileSize}
-                      symbol="∑" />
+                      formatter={formatFileSize}
+                      symbol="∑"
+                    />
                   ),
                   thStyle: {
                     width: 1,
@@ -283,29 +281,18 @@ const CartPage: TCartPage = ({
                   style: { textAlign: 'left' },
                 },
               ]}
-              path="doc_count"
-              pieChartTitle="File Counts by Authorization Level"
-              style={{
-                flex: 1,
-                backgroundColor: 'transparent',
-                height: '19em',
-                overflow: 'auto',
-                minWidth: '23em',
-                flexShrink: 0,
-                marginLeft: '1rem',
-                marginRight: '1rem',
-              }}
-              tableTitle="File Counts by Authorization Level" />
+            />
             <HowToDownload
               style={{
                 flex: 1,
                 backgroundColor: 'transparent',
                 minWidth: '18em',
                 flexShrink: 0,
-              }} />
+              }}
+            />
           </Row>
           <Row style={{ marginBottom: '6rem' }}>
-            <Row spacing="1rem" style={{ marginLeft: 'auto' }}>
+            <Row style={{ marginLeft: 'auto' }} spacing="1rem">
               <DownloadBiospecimenDropdown
                 buttonStyles={{ marginLeft: '1em' }}
                 dropdownStyles={{
@@ -315,20 +302,22 @@ const CartPage: TCartPage = ({
                   marginTop: '2px',
                 }}
                 filters={filters}
-                inactiveText="Biospecimen"
+                tsvFilename={`biospecimen.cart.${timestamp()}.tar.gz`}
                 jsonFilename={`biospecimen.cart.${timestamp()}.json`}
-                tsvFilename={`biospecimen.cart.${timestamp()}.tar.gz`} />
+                inactiveText={'Biospecimen'}
+              />
               <DownloadClinicalDropdown
-                buttonStyles={{ margin: '0 1em' }}
                 dropdownStyles={{
                   width: '90px',
                   left: '13px',
                   marginTop: '2px',
                 }}
+                buttonStyles={{ margin: '0 1em' }}
                 filters={filters}
-                inactiveText="Clinical"
+                tsvFilename={`clinical.cart.${timestamp()}.tar.gz`}
                 jsonFilename={`clinical.cart.${timestamp()}.json`}
-                tsvFilename={`clinical.cart.${timestamp()}.tar.gz`} />
+                inactiveText={'Clinical'}
+              />
               <SampleSheetDownloadButton files={{ files }} />
               <MetadataDownloadButton files={{ files }} />
               <CartDownloadDropdown files={files} user={user} />
@@ -336,10 +325,11 @@ const CartPage: TCartPage = ({
             </Row>
           </Row>
           <FilesTable
-            canAddToCart={false}
             downloadable={false}
+            canAddToCart={false}
+            tableHeader={'Cart Items'}
             filters={filters}
-            tableHeader="Cart Items" />
+          />
         </Column>
       )}
     </Column>

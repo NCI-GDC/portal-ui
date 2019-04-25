@@ -85,26 +85,26 @@ export default compose(
       props.analysisViewer.analysis.top_cases_count_by_genes.data,
     );
 
-    const caseAggs = aggregations.projects.buckets.filter(b => props.projectIds.includes(b.key),);
+    const caseAggs = aggregations.projects.buckets.filter(b =>
+      props.projectIds.includes(b.key),
+    );
 
     const numUniqueCases = props.viewer.explore.cases.hits.total;
 
     const topGenesWithCasesPerProject = caseAggs.reduce(
-      (acc, agg) => agg.genes.my_genes.gene_id.buckets.reduce(
-        (genes, gene) => ({
-          ...genes,
-          [gene.key]: {
-            ...genes[gene.key],
-            [agg.key]: gene.doc_count,
-          },
-        }),
-        acc,
-      ),
+      (acc, agg) =>
+        agg.genes.my_genes.gene_id.buckets.reduce(
+          (genes, gene) => ({
+            ...genes,
+            [gene.key]: {
+              ...genes[gene.key],
+              [agg.key]: gene.doc_count,
+            },
+          }),
+          acc,
+        ),
       props.topGenesSource.reduce(
-        (acc, g) => ({
-          ...acc,
-          [g.gene_id]: {},
-        }),
+        (acc, g) => ({ ...acc, [g.gene_id]: {} }),
         {},
       ),
     );
@@ -139,7 +139,8 @@ export default compose(
         ...acc,
         [geneId]: {
           countTotal: Object.keys(topGenesWithCasesPerProject[geneId]).reduce(
-            (sum, projectId) => sum + topGenesWithCasesPerProject[geneId][projectId],
+            (sum, projectId) =>
+              sum + topGenesWithCasesPerProject[geneId][projectId],
             0,
           ),
           byProject: Object.keys(
@@ -160,46 +161,31 @@ export default compose(
       .map(({ gene_id: geneId, symbol }) => ({
         symbol,
         gene_id: geneId,
-        onClick: () => push({
-          pathname: `/genes/${geneId}`,
-          query: {
-            filters: JSURL.stringify(
-              removeFilter(f => f.match(/^genes\./), fmgChartFilters),
-            ),
-          },
-        }),
+        onClick: () =>
+          push({
+            pathname: `/genes/${geneId}`,
+            query: {
+              filters: JSURL.stringify(
+                removeFilter(f => f.match(/^genes\./), fmgChartFilters),
+              ),
+            },
+          }),
         tooltips: stackedBarCalculations[geneId].byProject.reduce(
           (acc, { projectId, percent, count }) => ({
             ...acc,
             [projectId]: (
               <span>
                 <b>
-                  {projectId}
-:
-                  {' '}
+                  {projectId}:{' '}
                   {
                     (projects.find(p => p.project_id === projectId) || {
                       name: '',
                     }).name
                   }
                 </b>
-                <br />
-                {' '}
-                {count.toLocaleString()}
-                {' '}
-Case
-                {count > 1 ? 's' : ''}
-                {' '}
-                Affected
-                <br />
-                {count.toLocaleString()}
-                {' '}
-/
-                {numUniqueCases.toLocaleString()}
-                {' '}
-(
-                {percent.toFixed(2)}
-%)
+                <br /> {count.toLocaleString()} Case{count > 1 ? 's' : ''}{' '}
+                Affected<br />
+                {count.toLocaleString()} / {numUniqueCases.toLocaleString()} ({percent.toFixed(2)}%)
               </span>
             ),
           }),
@@ -242,23 +228,15 @@ Case
             filters: newQuery.filters && JSURL.stringify(newQuery.filters),
           });
 
-          push({
-            pathname,
-            query: q,
-          });
+          push({ pathname, query: q });
         },
         tooltip: (
           <span>
             <b>
-              {project.project_id}
-:
-              {project.name}
+              {project.project_id}: {project.name}
             </b>
             <br />
-            {count.toLocaleString()}
-            {' '}
-case
-            {count > 1 ? 's' : ''}
+            {count.toLocaleString()} case{count > 1 ? 's' : ''}
           </span>
         ),
       };
@@ -274,12 +252,18 @@ case
       [],
     );
 
-    const primarySiteProjects = sortBy(projects, [p => projectsInTopGenes.includes(p), p => p.project_id]).reduce(
+    const primarySiteProjects = sortBy(projects, [
+      p => projectsInTopGenes.includes(p),
+      p => p.project_id,
+    ]).reduce(
       (acc, p, i) => ({
         ...acc,
         [p.primary_site]: {
           color: acc[p.primary_site] ? acc[p.primary_site].color : color(i),
-          projects: [...(acc[p.primary_site] || { projects: [] }).projects, p.project_id],
+          projects: [
+            ...(acc[p.primary_site] || { projects: [] }).projects,
+            p.project_id,
+          ],
         },
       }),
       {},
@@ -315,54 +299,50 @@ case
             paddingRight: '10px',
             minWidth: '550px',
             flexGrow: '2',
-          }}>
+          }}
+        >
           <div
             style={{
               alignSelf: 'center',
               color: theme.greyScale7,
               padding: '1.5rem 0 0.5rem',
               fontWeight: 'bold',
-            }}>
+            }}
+          >
             Top Mutated Cancer Genes in Selected Projects
             <Tooltip
-              Component={(
+              Component={
                 <div style={{ maxWidth: '24em' }}>
                   From COSMIC Cancer Gene Census and mutation consequence types
-                  in
-                  {' '}
-                  {'{'}
-missense_variant, frameshift_variant, start_lost,
-                  stop_lost, stop_gained
-                  {'}'}
+                  in {'{'}missense_variant, frameshift_variant, start_lost,
+                  stop_lost, stop_gained{'}'}
                 </div>
-              )}>
+              }
+            >
               <QuestionIcon
-                style={{
-                  color: theme.greyScale7,
-                  marginLeft: '5px',
-                }} />
+                style={{ color: theme.greyScale7, marginLeft: '5px' }}
+              />
             </Tooltip>
           </div>
           {[
             numUniqueCases ? (
               ((
                 <div
-                  key="bar-subtitle"
                   style={{
                     alignSelf: 'center',
                     color: theme.greyScale7,
                     fontSize: '1.2rem',
-                  }}>
+                  }}
+                  key="bar-subtitle"
+                >
                   <ExploreLink
                     query={{
                       searchTableTab: 'cases',
                       filters: caseCountFilters
-                        ? {
-                          op: 'and',
-                          content: caseCountFilters,
-                        }
+                        ? { op: 'and', content: caseCountFilters }
                         : null,
-                    }}>
+                    }}
+                  >
                     {numUniqueCases.toLocaleString()}
                   </ExploreLink>
                   {` Unique Case${!numUniqueCases || numUniqueCases > 1
@@ -373,25 +353,25 @@ missense_variant, frameshift_variant, start_lost,
               (
                 <span
                   key="bar-wrapper"
-                  style={{
-                    paddingLeft: '10px',
-                    paddingRight: '10px',
-                  }}>
-                  <form key="y-axis-unit-toggle" name="y-axis-unit-toggle">
+                  style={{ paddingLeft: '10px', paddingRight: '10px' }}
+                >
+                  <form name="y-axis-unit-toggle" key="y-axis-unit-toggle">
                     <label
                       htmlFor="percentage-cases-radio"
                       style={{
                         paddingRight: '10px',
                         color: theme.greyScale7,
                         fontSize: '1.2rem',
-                      }}>
+                      }}
+                    >
                       <input
+                        type="radio"
+                        value="days"
+                        onChange={() => setYAxisUnit('percent')}
                         checked={yAxisUnit === 'percent'}
                         id="percentage-cases-radio"
-                        onChange={() => setYAxisUnit('percent')}
                         style={{ marginRight: '5px' }}
-                        type="radio"
-                        value="days" />
+                      />
                       % of Cases Affected
                     </label>
                     <label
@@ -400,14 +380,16 @@ missense_variant, frameshift_variant, start_lost,
                         paddingRight: '10px',
                         color: theme.greyScale7,
                         fontSize: '1.2rem',
-                      }}>
+                      }}
+                    >
                       <input
+                        type="radio"
+                        value="years"
+                        onChange={() => setYAxisUnit('number')}
                         checked={yAxisUnit === 'number'}
                         id="number-cases-radio"
-                        onChange={() => setYAxisUnit('number')}
                         style={{ marginRight: '5px' }}
-                        type="radio"
-                        value="years" />
+                      />
                       # of Cases Affected
                     </label>
                   </form>
@@ -415,6 +397,13 @@ missense_variant, frameshift_variant, start_lost,
                     {({ width }) => (
                       <div style={{ transform: 'scale(0.9)' }}>
                         <StackedBarChart
+                          width={width}
+                          height={170}
+                          data={stackedBarData}
+                          projectsIdtoName={projects.reduce(
+                            (acc, p) => ({ ...acc, [p.project_id]: p.name }),
+                            {},
+                          )}
                           colors={Object.keys(primarySiteToColor).reduce(
                             (acc, pSite) => ({
                               ...acc,
@@ -422,15 +411,11 @@ missense_variant, frameshift_variant, start_lost,
                             }),
                             {},
                           )}
-                          data={stackedBarData}
-                          height={170}
-                          projectsIdtoName={projects.reduce(
-                            (acc, p) => ({
-                              ...acc,
-                              [p.project_id]: p.name,
-                            }),
-                            {},
-                          )}
+                          yAxis={{
+                            title:
+                              (yAxisUnit === 'number' ? '# of' : '% of') +
+                              ' Cases Affected',
+                          }}
                           styles={{
                             xAxis: {
                               stroke: theme.greyScale4,
@@ -441,69 +426,61 @@ missense_variant, frameshift_variant, start_lost,
                               textFill: theme.greyScale3,
                             },
                           }}
-                          width={width}
-                          yAxis={{
-                            title:
-                              `${yAxisUnit === 'number' ? '# of' : '% of'
-                              } Cases Affected`,
-                          }} />
+                        />
                       </div>
                     )}
                   </WithSize>
                 </span>
               ))
             ) : (
-              <div style={{
-                alignSelf: 'center',
-                color: 'rgb(144,144,144)',
-              }}>
+              <div style={{ alignSelf: 'center', color: 'rgb(144,144,144)' }}>
                 No Data
               </div>
             ),
           ]}
         </Column>
         <Column
+          style={{ minWidth: '200px', flexGrow: '1', flexBasis: '33%' }}
           className="test-case-distribution-per-project"
-          style={{
-            minWidth: '200px',
-            flexGrow: '1',
-            flexBasis: '33%',
-          }}>
+        >
           <div
             style={{
               alignSelf: 'center',
               color: theme.greyScale7,
               padding: '1.5rem 0 0.5rem',
               fontWeight: 'bold',
-            }}>
+            }}
+          >
             Case Distribution per Project
           </div>
           {[
             <div
-              key="pie-subtitle"
               style={{
                 alignSelf: 'center',
                 fontSize: '1.2rem',
                 marginBottom: '2rem',
-              }}>
+              }}
+              key="pie-subtitle"
+            >
               <ExploreLink
                 query={{
                   searchTableTab: 'cases',
                   filters: projects.length
                     ? {
-                      op: 'and',
-                      content: [
-                        {
-                          op: 'in',
-                          content: {
-                            field: 'cases.project.project_id',
-                            value: projects.map(x => x.project_id),
+                        op: 'and',
+                        content: [
+                          {
+                            op: 'in',
+                            content: {
+                              field: 'cases.project.project_id',
+                              value: projects.map(x => x.project_id),
+                            },
                           },
-                        },
-                      ],
-                    }
+                        ],
+                      }
                     : null,
-                }}>
+                }}
+              >
                 {totalCases.toLocaleString()}
               </ExploreLink>
               {` Case${totalCases === 0 || totalCases > 1 ? 's' : ''}
@@ -513,12 +490,13 @@ missense_variant, frameshift_variant, start_lost,
                 : ''}`}
             </div>,
             <PieChart
+              key="pie-chart"
+              path="count"
               data={pieChartData}
               height={150}
-              key="pie-chart"
+              width={150}
               marginTop={25}
-              path="count"
-              width={150} />,
+            />,
           ]}
         </Column>
       </Container>

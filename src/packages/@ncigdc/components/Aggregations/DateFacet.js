@@ -1,9 +1,7 @@
 /* @flow */
 
 import React from 'react';
-import {
-  compose, withState, mapProps, pure,
-} from 'recompose';
+import { compose, withState, mapProps, pure } from 'recompose';
 import 'react-dates/initialize';
 import { SingleDatePicker } from 'react-dates';
 import 'react-dates/lib/css/_datepicker.css';
@@ -12,7 +10,7 @@ import moment from 'moment';
 import styled from '@ncigdc/theme/styled';
 import { Row } from '@ncigdc/uikit/Flex';
 
-import { Container, GoLink } from '.';
+import { Container, GoLink } from './';
 import './style.css';
 
 const Label = styled.label({
@@ -29,10 +27,7 @@ const enhance = compose(
     focused: false,
   }),
   mapProps(({ setState, ...rest }) => ({
-    handleDatePicked: date => setState(s => ({
-      ...s,
-      date,
-    })),
+    handleDatePicked: date => setState(s => ({ ...s, date })),
     setState,
     ...rest,
   })),
@@ -73,35 +68,31 @@ const DateFacet = (props: TProps) => {
   };
 
   return (
-    <Container className="test-date-facet" style={{ ...props.style }}>
+    <Container style={{ ...props.style }} className="test-date-facet">
       {!props.collapsed && (
         <Row>
           <Label
-            htmlFor={`since-${dotField}`}
             style={{
               borderRight: 0,
               borderRadius: '4px 0 0 4px',
-            }}>
+            }}
+            htmlFor={`since-${dotField}`}
+          >
             since
           </Label>
           <SingleDatePicker
+            id="date_input"
             date={props.state.date}
             displayFormat="YYYY-MM-DD"
-            enableOutsideDays
-            focused={props.state.focused}
-            id="date_input"
             isOutsideRange={() => false}
-            onDateChange={date => props.setState(s => ({
-              ...s,
-              date,
-            }))}
+            focused={props.state.focused}
+            onDateChange={date => props.setState(s => ({ ...s, date }))}
             onFocusChange={({ focused }) => {
-              props.setState(s => ({
-                ...s,
-                focused,
-              }));
-            }} />
-          <GoLink dark={props.state.date} merge="merge" query={query}>
+              props.setState(s => ({ ...s, focused }));
+            }}
+            enableOutsideDays
+          />
+          <GoLink merge="merge" query={query} dark={props.state.date}>
             Go!
           </GoLink>
         </Row>

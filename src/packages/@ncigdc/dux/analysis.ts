@@ -1,5 +1,5 @@
-import _ from 'lodash';
 import { namespaceActions } from './utils';
+import _ from 'lodash';
 
 const sets: any = namespaceActions('sets', [
   'ADD_ANALYSIS',
@@ -121,10 +121,7 @@ const getCurrentAnalysis: TGetCurrentAnalysis = (currentState, analysisId) => {
     currentAnalysisIndex
   ];
 
-  return {
-    currentAnalysisIndex,
-    currentAnalysis,
-  };
+  return { currentAnalysisIndex, currentAnalysis };
 };
 
 const reducer = (

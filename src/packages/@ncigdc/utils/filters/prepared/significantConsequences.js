@@ -21,16 +21,8 @@ export const colorMap = {
 };
 
 export const cnvColors = [
-  {
-    key: 'gain',
-    name: 'Gain',
-    color: '#d33737',
-  },
-  {
-    key: 'loss',
-    name: 'Loss',
-    color: '#0d71e8',
-  },
+  { key: 'gain', name: 'Gain', color: '#d33737' },
+  { key: 'loss', name: 'Loss', color: '#0d71e8' },
 ];
 
 export const suggestedGridThemes = {

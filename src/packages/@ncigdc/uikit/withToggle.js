@@ -6,9 +6,9 @@ export default function withToggle(ComposedComponent) {
   return class Toggle extends Component {
     static propTypes = {
       // Allow active state changes to trigger actions such as toggling relay variables
-      active: PropTypes.bool,
       onActivate: PropTypes.func,
       onDeactivate: PropTypes.func,
+      active: PropTypes.bool,
     };
 
     static defaultProps = {
@@ -39,7 +39,8 @@ export default function withToggle(ComposedComponent) {
           {...this.state}
           {..._.omit(this.props, Object.keys(Toggle.defaultProps))}
           setActive={this.setActive}
-          toggleActive={this.toggleActive} />
+          toggleActive={this.toggleActive}
+        />
       );
     }
   };

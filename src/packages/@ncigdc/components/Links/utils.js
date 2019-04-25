@@ -37,11 +37,5 @@ export type TMakeListLink = (
 export const makeListLink: TMakeListLink = ({
   query: configQuery,
   ...config
-}) => ({ query, ...props }) => makeLinkBase({
-  query: {
-    ...configQuery,
-    ...query,
-  },
-  ...config,
-  ...props,
-});
+}) => ({ query, ...props }) =>
+  makeLinkBase({ query: { ...configQuery, ...query }, ...config, ...props });

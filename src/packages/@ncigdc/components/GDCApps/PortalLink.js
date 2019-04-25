@@ -8,17 +8,15 @@ export default ({ width }) => (
     <ExternalLink
       hasExternalIcon={false}
       href="https://portal.gdc.cancer.gov/"
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-      }}
-      title="Data Portal">
+      title="Data Portal"
+      style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}
+    >
       <img
-        alt="GDC Data Portal"
-        className="icon icon-gdc-portal home"
+        style={{ width }}
         src={dataPortalImg}
-        style={{ width }} />
+        className="icon icon-gdc-portal home"
+        alt="GDC Data Portal"
+      />
       <p>Data Portal</p>
     </ExternalLink>
   </Wrapper>

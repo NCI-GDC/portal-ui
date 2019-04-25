@@ -14,14 +14,7 @@ export type TProps = {
 };
 
 const Sizes = ({
-  sizes = [
-    10,
-    20,
-    40,
-    60,
-    80,
-    100,
-  ],
+  sizes = [10, 20, 40, 60, 80, 100],
   size,
   prfSize,
   prfOff,
@@ -30,13 +23,14 @@ const Sizes = ({
     <span>
       <Dropdown
         className="test-page-size-selection"
+        selected={size}
         dropdownStyle={{
           minWidth: '40px',
           width: '40px',
           left: '0',
           zIndex: 99999,
         }}
-        selected={size}>
+      >
         {sizes.map(x => (
           <DropdownItem
             className="test-page-size-option"
@@ -45,16 +39,12 @@ const Sizes = ({
               display: 'flex',
               justifyContent: 'center',
               alignItems: 'center',
-            }}>
+            }}
+          >
             {x === size ? (
               x
             ) : (
-              <Link
-                merge
-                query={{
-                  [prfSize]: x,
-                  [prfOff]: 0,
-                }}>
+              <Link merge query={{ [prfSize]: x, [prfOff]: 0 }}>
                 {x}
               </Link>
             )}

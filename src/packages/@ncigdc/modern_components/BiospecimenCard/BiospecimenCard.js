@@ -4,9 +4,7 @@ import React from 'react';
 import _ from 'lodash';
 
 import SearchIcon from 'react-icons/lib/fa/search';
-import {
-  compose, withState, branch, renderComponent,
-} from 'recompose';
+import { compose, withState, branch, renderComponent } from 'recompose';
 import { connect } from 'react-redux';
 import { humanify } from '@ncigdc/utils/string';
 import { makeFilter } from '@ncigdc/utils/filters';
@@ -17,13 +15,16 @@ import Input from '@ncigdc/uikit/Form/Input';
 import EntityPageVerticalTable from '@ncigdc/components/EntityPageVerticalTable';
 import Hidden from '@ncigdc/components/Hidden';
 import { withTheme } from '@ncigdc/theme';
-import { visualizingButton, iconButton } from '@ncigdc/theme/mixins';
+import { visualizingButton } from '@ncigdc/theme/mixins';
 import Button from '@ncigdc/uikit/Button';
 import Emitter from '@ncigdc/utils/emitter';
+import BioTreeView from './BioTreeView';
+import { search, idFields, formatValue } from './utils';
 import ImageViewerLink from '@ncigdc/components/Links/ImageViewerLink';
-
+import { iconButton } from '@ncigdc/theme/mixins';
 import { Tooltip } from '@ncigdc/uikit/Tooltip';
 import { MicroscopeIcon } from '@ncigdc/theme/icons';
+import { entityTypes } from './';
 import withRouter from '@ncigdc/utils/withRouter';
 import { DISPLAY_SLIDES } from '@ncigdc/utils/constants';
 import DownloadBiospecimenDropdown from '@ncigdc/modern_components/DownloadBiospecimenDropdown';
@@ -31,9 +32,6 @@ import timestamp from '@ncigdc/utils/timestamp';
 import EntityPageHorizontalTable from '@ncigdc/components/EntityPageHorizontalTable';
 import AddToCartButtonSingle from '@ncigdc/components/AddToCartButtonSingle';
 import DownloadFile from '@ncigdc/components/DownloadFile';
-import { search, idFields, formatValue } from './utils';
-import BioTreeView from './BioTreeView';
-import { entityTypes } from '.';
 
 const styles = {
   searchIcon: theme => ({
@@ -61,7 +59,8 @@ const styles = {
   }),
 };
 
-const getType = node => (entityTypes.find(type => node[`${type.s}_id`]) || { s: null }).s;
+const getType = node =>
+  (entityTypes.find(type => node[`${type.s}_id`]) || { s: null }).s;
 
 export default compose(
   withRouter,
@@ -70,7 +69,8 @@ export default compose(
     renderComponent(() => <div>No case found.</div>)
   ),
   branch(
-    ({ viewer }) => !viewer.repository.cases.hits.edges[0].node.samples.hits.edges.length,
+    ({ viewer }) =>
+      !viewer.repository.cases.hits.edges[0].node.samples.hits.edges.length,
     renderComponent(() => <div>No biospecimen data found.</div>)
   ),
   connect(state => state.cart),
@@ -106,10 +106,7 @@ export default compose(
   }) => {
     const p = edges[0].node;
     const caseFilter = makeFilter([
-      {
-        field: 'cases.case_id',
-        value: [p.case_id],
-      },
+      { field: 'cases.case_id', value: [p.case_id] },
     ]);
 
     const founds = p.samples.hits.edges.map(e => search(query, e));
@@ -134,20 +131,22 @@ export default compose(
       <Card
         className="test-biospecimen-card"
         style={{ flex: 1 }}
-        title={(
+        title={
           <Row style={{ justifyContent: 'space-between' }}>
             <span>Biospecimen</span>
             <DownloadBiospecimenDropdown
-              buttonStyles={visualizingButton}
-              filters={caseFilter}
-              inactiveText="Download"
               jsonFilename={`biospecimen.case-${p.submitter_id}-${p.project
                 .project_id}.${timestamp()}.json`}
-              total={edges.length}
               tsvFilename={`biospecimen.case-${p.submitter_id}-${p.project
-                .project_id}.${timestamp()}.tar.gz`} />
+                .project_id}.${timestamp()}.tar.gz`}
+              filters={caseFilter}
+              buttonStyles={visualizingButton}
+              inactiveText={'Download'}
+              total={edges.length}
+            />
           </Row>
-        )}>
+        }
+      >
         <Row>
           <Column flex="3" style={{ padding: '0 15px' }}>
             <Row style={{ justifyContent: 'space-between' }}>
@@ -159,34 +158,31 @@ export default compose(
                 <Input
                   id="search-biospecimen"
                   name="search-biospecimen"
-                  onChange={({ target }) => setState(s => ({
-                    ...s,
-                    query: target.value,
-                  }))}
+                  onChange={({ target }) =>
+                    setState(s => ({ ...s, query: target.value }))}
                   placeholder="Search"
+                  value={query}
                   style={{ borderRadius: '0 4px 4px 0' }}
-                  value={query} />
+                />
               </Row>
               <Button
+                style={{
+                  paddingLeft: '10px',
+                }}
                 onClick={() => {
                   Emitter.emit('expand', !allExpanded);
                   setExpandAllFirstClick(false);
                   setAllExpanded(!allExpanded);
                 }}
-                style={{
-                  paddingLeft: '10px',
-                }}>
+              >
                 {allExpanded ? 'Collapse All' : 'Expand All'}
               </Button>
             </Row>
 
             <Column style={{ padding: '10px' }}>
               <BioTreeView
-                defaultExpanded={allExpanded}
-                entities={{
-                  ...p.samples,
-                  expanded: expandAllFirstClick,
-                }}
+                entities={{ ...p.samples, expanded: expandAllFirstClick }}
+                type={{ s: 'sample', p: 'samples' }}
                 query={query}
                 selectedEntity={selectedEntity}
                 selectEntity={(selectedEntity, type) => {
@@ -204,41 +200,31 @@ export default compose(
                     },
                   });
                 }}
-                type={{
-                  s: 'sample',
-                  p: 'samples',
-                }} />
+                defaultExpanded={allExpanded}
+              />
             </Column>
           </Column>
           <Column flex="4">
             <EntityPageVerticalTable
-              style={{ flex: '1 1 auto' }}
               thToTd={[
-                {
-                  th: `${foundType} ID`,
-                  td: selectedEntity.submitter_id,
-                },
+                { th: `${foundType} ID`, td: selectedEntity.submitter_id },
                 {
                   th: `${foundType} UUID`,
                   td: selectedEntity[idFields.find(id => selectedEntity[id])],
                 },
                 ...Object.entries(selectedEntity)
                   .filter(
-                    ([key]) => ![
-                      'submitter_id',
-                      'expanded',
-                      `${foundType}_id`,
-                      '__dataID__',
-                    ].includes(key)
+                    ([key]) =>
+                      ![
+                        'submitter_id',
+                        'expanded',
+                        `${foundType}_id`,
+                        '__dataID__',
+                      ].includes(key)
                   )
                   .map(([key, val]) => {
                     if (
-                      [
-                        'portions',
-                        'aliquots',
-                        'analytes',
-                        'slides',
-                      ].includes(
+                      ['portions', 'aliquots', 'analytes', 'slides'].includes(
                         key
                       )
                     ) {
@@ -255,55 +241,55 @@ export default compose(
                 ...(DISPLAY_SLIDES &&
                   foundType === 'slide' &&
                   !!selectedSlide && [
-                  {
-                    th: 'Slide Image',
-                    td: (
-                      <Row>
-                        <Tooltip Component="View Slide Image">
-                          <ImageViewerLink
-                            isIcon
-                            query={{
-                              filters: makeFilter([
-                                {
-                                  field: 'cases.case_id',
-                                  value: p.case_id,
-                                },
-                              ]),
-                              selectedId: selectedSlide.file_id,
-                            }}>
-                            <MicroscopeIcon
-                              aria-label="View slide image"
-                              style={{ maxWidth: '20px' }} />
-                          </ImageViewerLink>
-                        </Tooltip>
-                        <Tooltip Component="Add to cart">
-                          <AddToCartButtonSingle
-                            asIcon
-                            file={selectedSlide}
-                            style={{
-                              ...iconButton,
-                              marginLeft: '0.5rem',
-                              marginRight: '0.5rem',
-                              border: 'none',
-                              paddingLeft: '2px',
-                              paddingBottom: '5px',
-                            }} />
-                        </Tooltip>
-                        <Tooltip Component="Download">
-                          <DownloadFile
-                            activeText=""
-                            file={selectedSlide}
-                            inactiveText=""
-                            style={{
-                              ...iconButton,
-                              marginLeft: '0.5rem',
-                            }} />
-                        </Tooltip>
-                      </Row>
-                    ),
-                  },
-                ]),
-              ]} />
+                    {
+                      th: 'Slide Image',
+                      td: (
+                        <Row>
+                          <Tooltip Component="View Slide Image">
+                            <ImageViewerLink
+                              isIcon
+                              query={{
+                                filters: makeFilter([
+                                  { field: 'cases.case_id', value: p.case_id },
+                                ]),
+                                selectedId: selectedSlide.file_id,
+                              }}
+                            >
+                              <MicroscopeIcon
+                                aria-label={'View slide image'}
+                                style={{ maxWidth: '20px' }}
+                              />
+                            </ImageViewerLink>
+                          </Tooltip>
+                          <Tooltip Component="Add to cart">
+                            <AddToCartButtonSingle
+                              style={{
+                                ...iconButton,
+                                marginLeft: '0.5rem',
+                                marginRight: '0.5rem',
+                                border: 'none',
+                                paddingLeft: '2px',
+                                paddingBottom: '5px',
+                              }}
+                              file={selectedSlide}
+                              asIcon
+                            />
+                          </Tooltip>
+                          <Tooltip Component="Download">
+                            <DownloadFile
+                              style={{ ...iconButton, marginLeft: '0.5rem' }}
+                              file={selectedSlide}
+                              activeText={''}
+                              inactiveText={''}
+                            />
+                          </Tooltip>
+                        </Row>
+                      ),
+                    },
+                  ]),
+              ]}
+              style={{ flex: '1 1 auto' }}
+            />
           </Column>
         </Row>
         {supplementalFiles.length > 0 && (
@@ -312,9 +298,22 @@ export default compose(
               padding: '2px 10px 10px 10px',
               borderTop: `1px solid ${theme.greyScale5}`,
               marginTop: '10px',
-            }}>
+            }}
+          >
             <EntityPageHorizontalTable
+              title={'Biospecimen Supplement File'}
+              titleStyle={{ fontSize: '1em' }}
               className="biospecimen-supplement-file-table"
+              headings={[
+                { key: 'file_name', title: 'Filename' },
+                { key: 'data_format', title: 'Data format' },
+                {
+                  key: 'file_size',
+                  title: 'Size',
+                  style: { textAlign: 'right' },
+                },
+                { key: 'action', title: 'Action' },
+              ]}
               data={supplementalFiles.map((f, i) => {
                 const fileData = {
                   ...f.node,
@@ -328,8 +327,7 @@ export default compose(
                       )}
                       {f.node.access === 'controlled' && (
                         <i className="fa fa-lock" />
-                      )}
-                      {' '}
+                      )}{' '}
                       {f.node.file_name}
                     </span>
                   ),
@@ -340,45 +338,27 @@ export default compose(
                       style={{
                         display: 'flex',
                         flexDirection: 'row',
-                      }}>
+                      }}
+                    >
                       <span key="add_to_cart" style={{ paddingRight: '10px' }}>
                         <AddToCartButtonSingle file={fileData} />
                       </span>
                       <span style={{ paddingRight: '10px' }}>
                         <DownloadFile
-                          activeText=""
-                          file={f.node}
-                          inactiveText=""
                           style={{
                             ...styles.downloadButton(theme),
                             backgroundColor: 'white',
-                          }} />
+                          }}
+                          file={f.node}
+                          activeText={''}
+                          inactiveText={''}
+                        />
                       </span>
                     </div>
                   ),
                 };
               })}
-              headings={[
-                {
-                  key: 'file_name',
-                  title: 'Filename',
-                },
-                {
-                  key: 'data_format',
-                  title: 'Data format',
-                },
-                {
-                  key: 'file_size',
-                  title: 'Size',
-                  style: { textAlign: 'right' },
-                },
-                {
-                  key: 'action',
-                  title: 'Action',
-                },
-              ]}
-              title="Biospecimen Supplement File"
-              titleStyle={{ fontSize: '1em' }} />
+            />
           </div>
         )}
       </Card>

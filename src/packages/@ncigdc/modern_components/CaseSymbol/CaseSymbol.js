@@ -2,9 +2,7 @@
 
 import React from 'react';
 import { head, get } from 'lodash';
-import {
-  compose, branch, renderComponent, mapProps,
-} from 'recompose';
+import { compose, branch, renderComponent, mapProps } from 'recompose';
 
 export default compose(
   branch(
@@ -23,9 +21,6 @@ export default compose(
   })),
 )(({ node }) => (
   <span>
-    {node.project.project_id}
-    {' '}
-/
-    {node.submitter_id}
+    {node.project.project_id} / {node.submitter_id}
   </span>
 ));

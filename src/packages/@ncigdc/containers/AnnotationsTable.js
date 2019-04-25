@@ -32,10 +32,8 @@ export const SearchTable = compose(
         {tableHeader && (
           <h3
             className="panel-title"
-            style={{
-              padding: '1rem',
-              marginTop: '-6rem',
-            }}>
+            style={{ padding: '1rem', marginTop: '-6rem' }}
+          >
             {tableHeader}
           </h3>
         )}
@@ -44,56 +42,62 @@ export const SearchTable = compose(
             backgroundColor: 'white',
             padding: '1rem',
             justifyContent: 'space-between',
-          }}>
+          }}
+        >
           <Showing
             docType="annotations"
-            params={relay.route.params}
             prefix={entityType}
-            total={hits.total} />
+            params={relay.route.params}
+            total={hits.total}
+          />
           <TableActions
+            type="annotation"
+            scope="repository"
             arrangeColumnKey={entityType}
+            total={hits.total}
+            endpoint="annotations"
             downloadable={downloadable}
+            entityType={entityType}
             downloadFields={tableInfo
               .filter(x => x.downloadable)
               .map(x => x.field || x.id)}
-            endpoint="annotations"
-            entityType={entityType}
-            scope="repository"
             sortOptions={tableInfo.filter(x => x.sortable)}
-            total={hits.total}
-            tsvFilename={`repository-annotations-table.${timestamp()}.tsv`}
             tsvSelector="#repository-annotations-table"
-            type="annotation" />
+            tsvFilename={`repository-annotations-table.${timestamp()}.tsv`}
+          />
         </Row>
         <div style={{ overflowX: 'auto' }}>
           <Table
-            body={(
+            id="repository-annotations-table"
+            headings={tableInfo.map(x => (
+              <x.th key={x.id} hits={hits} canAddToCart={canAddToCart} />
+            ))}
+            body={
               <tbody>
                 {hits.edges.map((e, i) => (
-                  <Tr index={i} key={e.node.id}>
+                  <Tr key={e.node.id} index={i}>
                     {tableInfo
                       .filter(x => x.td)
                       .map(x => (
                         <x.td
-                          index={i}
                           key={x.id}
                           node={e.node}
                           relay={relay}
-                          total={hits.total} />
+                          index={i}
+                          total={hits.total}
+                        />
                       ))}
                   </Tr>
                 ))}
               </tbody>
-            )}
-            headings={tableInfo.map(x => (
-              <x.th canAddToCart={canAddToCart} hits={hits} key={x.id} />
-            ))}
-            id="repository-annotations-table" />
+            }
+          />
         </div>
         <Pagination
-          params={relay.route.params}
           prefix={entityType}
-          total={hits.total} />
+          params={relay.route.params}
+          total={hits.total}
+        />
       </div>
     );
   }

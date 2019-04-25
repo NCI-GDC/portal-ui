@@ -1,8 +1,6 @@
 // @flow
 import React from 'react';
-import {
-  compose, withState, withProps, withHandlers,
-} from 'recompose';
+import { compose, withState, withProps, withHandlers } from 'recompose';
 
 import { Column, Row } from '@ncigdc/uikit/Flex';
 import { getDefaultCurve, enoughData } from '@ncigdc/utils/survivalplot';
@@ -71,12 +69,7 @@ export default compose(
     handleClickMutation: ({ push, query, filters }) => ssm => {
       const newFilters = toggleFilters(
         filters,
-        makeFilter([
-          {
-            field: 'ssms.ssm_id',
-            value: [ssm.ssm_id],
-          },
-        ])
+        makeFilter([{ field: 'ssms.ssm_id', value: [ssm.ssm_id] }])
       );
       push({
         pathname: '/exploration',
@@ -98,42 +91,34 @@ export default compose(
     handleClickMutation,
   }) => (
     <Column style={styles.card}>
-      <h1
-        id="mutated-genes"
-        style={{
-          ...styles.heading,
-          padding: '1rem',
-        }}>
+      <h1 style={{ ...styles.heading, padding: '1rem' }} id="mutated-genes">
         <i className="fa fa-bar-chart-o" style={{ paddingRight: '10px' }} />
         Somatic Mutations
       </h1>
 
       <Row>
-        <Column
-          flex="1"
-          style={{
-            width: '50%',
-            padding: '0 20px',
-          }}>
+        <Column flex="1" style={{ width: '50%', padding: '0 20px' }}>
           <SurvivalPlotWrapper
             {...survivalData}
-            height={240}
             onReset={() => setSelectedSurvivalData({})}
             plotType="mutation"
-            survivalPlotLoading={false} />
+            height={240}
+            survivalPlotLoading={false}
+          />
         </Column>
         <Column flex="1" style={{ width: '50%' }} />
       </Row>
 
       <SsmsTable
-        context="Cohort"
         defaultFilters={filters}
+        selectedSurvivalData={selectedSurvivalData}
         hasEnoughSurvivalDataOnPrimaryCurve={enoughData(
           defaultSurvivalData.rawData
         )}
-        selectedSurvivalData={selectedSurvivalData}
         setSelectedSurvivalData={setSelectedSurvivalData}
-        showSurvivalPlot />
+        showSurvivalPlot
+        context="Cohort"
+      />
     </Column>
   )
 );

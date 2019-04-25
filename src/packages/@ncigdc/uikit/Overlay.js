@@ -26,16 +26,15 @@ const styles = {
   },
 };
 
-const Overlay = ({
-  children, style, show, ...props
-}) => (
+const Overlay = ({ children, style, show, ...props }) => (
   <div
     style={{
       ...styles.container,
       ...style,
       ...(show ? styles.show : styles.hide),
     }}
-    {...props}>
+    {...props}
+  >
     {children}
   </div>
 );

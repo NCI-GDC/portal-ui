@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import { setModal, IModalAction } from '@ncigdc/dux/modal';
 import Button from '@ncigdc/uikit/Button';
 import { Column, Row } from '@ncigdc/uikit/Flex';
-
 export interface IBaseModalProps {
   dispatch: (action: IModalAction) => void,
   title: string,
@@ -34,25 +33,28 @@ const BaseModal = ({
         borderTop: '1px solid #e5e5e5',
         padding: '15px',
         ...contentStyle,
-      }}>
+      }}
+    >
       {children}
     </Column>
     <Row
-      spacing="10px"
       style={{
         justifyContent: 'flex-end',
         paddingRight: 15,
         paddingLeft: 15,
         paddingTop: 10,
         paddingBottom: 15,
-      }}>
+      }}
+      spacing={'10px'}
+    >
       <Button
         onClick={() => {
           if (typeof onClose === 'function') {
             onClose();
           }
           dispatch(setModal(null));
-        }}>
+        }}
+      >
         {closeText}
       </Button>
       {extraButtons && <span style={{ marginRight: 10 }}>{extraButtons}</span>}

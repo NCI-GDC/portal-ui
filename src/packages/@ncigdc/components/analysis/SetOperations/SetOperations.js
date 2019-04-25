@@ -5,9 +5,9 @@ import Venn, { buildOps } from '@ncigdc/components/Charts/Venn';
 import { Row } from '@ncigdc/uikit/Flex';
 import countComponents from '@ncigdc/modern_components/Counts';
 import withRouter from '@ncigdc/utils/withRouter';
-import { CreateExploreCaseSetButton, CreateExploreGeneSetButton, CreateExploreSsmSetButton } from '@ncigdc/modern_components/withSetAction';
-
-
+import { CreateExploreCaseSetButton } from '@ncigdc/modern_components/withSetAction';
+import { CreateExploreGeneSetButton } from '@ncigdc/modern_components/withSetAction';
+import { CreateExploreSsmSetButton } from '@ncigdc/modern_components/withSetAction';
 import OpsTable from './OpsTable';
 import SetTable from './SetTable';
 
@@ -30,9 +30,7 @@ export default compose(
   withState('setSizes', 'setSetSizes', {}),
   withPropsOnChange(
     ['setSizes'],
-    ({
-      message, setSizes, sets, deprecatedSets,
-    }) => {
+    ({ message, setSizes, sets, deprecatedSets }) => {
       return {
         deprecatedSets: Object.entries(setSizes)
           .filter(([id, size]) => size === 0)
@@ -60,10 +58,7 @@ export default compose(
       setSelected(selected);
     };
     const CountComponent = countComponents[type];
-    const ops = buildOps({
-      setIds: Object.keys(sets),
-      type,
-    });
+    const ops = buildOps({ setIds: Object.keys(sets), type });
 
     const selectedFilters = {
       op: 'or',
@@ -81,7 +76,8 @@ export default compose(
         <div
           style={{
             display: deprecatedSets.length ? 'none' : 'auto',
-          }}>
+          }}
+        >
           <div>
             Click on the areas of the Venn diagram to include them in your
             result set.
@@ -91,37 +87,34 @@ export default compose(
             style={{
               alignItems: 'center',
               marginTop: 10,
-            }}>
+            }}
+          >
             <Venn
+              style={{ width: '30%', maxWidth: 300, margin: '0 5%' }}
+              type={type}
+              ops={ops}
+              onClick={toggle}
+              onMouseOver={op => {
+                hovering.add(op);
+                setHovering(hovering);
+              }}
+              onMouseOut={() => setHovering(new Set())}
               getFillColor={(d, i) => {
                 return hovering.has(d.op)
                   ? colors[1]
                   : selected.has(d.op) ? colors[2] : colors[0];
               }}
-              onClick={toggle}
-              onMouseOut={() => setHovering(new Set())}
-              onMouseOver={op => {
-                hovering.add(op);
-                setHovering(hovering);
-              }}
-              ops={ops}
-              style={{
-                width: '30%',
-                maxWidth: 300,
-                margin: '0 5%',
-              }}
-              type={type} />
+            />
             <div style={{ flexGrow: 1 }}>
               <SetTable
-                CountComponent={CountComponent}
-                CreateSetButton={CreateSetButton}
                 push={push}
                 sets={sets}
-                setSetSize={({ setId, size }) => setSetSizes({
-                  ...setSizes,
-                  [setId]: size,
-                })}
-                type={type} />
+                type={type}
+                CountComponent={CountComponent}
+                CreateSetButton={CreateSetButton}
+                setSetSize={({ setId, size }) =>
+                  setSetSizes({ ...setSizes, [setId]: size })}
+              />
               <hr />
               {OpsTable({
                 type,

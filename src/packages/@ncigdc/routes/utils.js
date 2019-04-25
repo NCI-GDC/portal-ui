@@ -18,41 +18,38 @@ export function makeEntityPage({
 }) {
   class Route extends Relay.Route {
     static routeName = `${entity}PageRoute`;
-
     static queries = queries;
-
     static prepareParams = prepareParams || prepareNodeParams(entity);
   }
 
   class RouteContainer extends React.Component {
     isRendered = false;
-
     componentWillReceiveProps(nextProps) {
       if (nextProps.match.params.id !== this.props.match.params.id) {
         this.isRendered = false;
       }
     }
-
     render() {
       const routeProps = this.props;
 
       return (
         <Relay.Renderer
           Container={Page}
+          queryConfig={new Route(routeProps)}
           environment={Relay.Store}
           onReadyStateChange={handleStateChange(routeProps)}
-          queryConfig={new Route(routeProps)}
           render={({ error, props }) => {
             if (error) {
               return <NotFound />;
-            } if (props) {
+            } else if (props) {
               this.isRendered = true;
               return <Page {...props} />;
             }
             if (!this.isRendered) {
               return <Loader />;
             }
-          }} />
+          }}
+        />
       );
     }
   }

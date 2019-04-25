@@ -11,7 +11,17 @@ export default compose(withTheme)(({ theme, slide }) => {
     <div id="details-button">
       <Dropdown
         autoclose={false}
-        button={(
+        style={{
+          margin: 0,
+          border: 'none',
+          display: 'block',
+        }}
+        dropdownStyle={{
+          marginTop: '15px',
+          borderBottomLeftRadius: '5px',
+          borderBottomRightRadius: '5px',
+        }}
+        button={
           <div
             style={{
               background: theme.primary,
@@ -21,20 +31,12 @@ export default compose(withTheme)(({ theme, slide }) => {
               maxWidth: '70px',
               padding: '3px 10px',
               textAlign: 'center',
-            }}>
+            }}
+          >
             Details
           </div>
-        )}
-        dropdownStyle={{
-          marginTop: '15px',
-          borderBottomLeftRadius: '5px',
-          borderBottomRightRadius: '5px',
-        }}
-        style={{
-          margin: 0,
-          border: 'none',
-          display: 'block',
-        }}>
+        }
+      >
         <div
           className="details-container"
           style={{
@@ -42,14 +44,16 @@ export default compose(withTheme)(({ theme, slide }) => {
             padding: '5px',
             background: 'white',
             border: `1px solid ${theme.greyScale4}`,
-          }}>
+          }}
+        >
           <EntityPageVerticalTable
             thToTd={[
               ...Object.entries(slide).map(([key, value]) => ({
                 th: key,
                 td: value,
               })),
-            ]} />
+            ]}
+          />
         </div>
       </Dropdown>
     </div>

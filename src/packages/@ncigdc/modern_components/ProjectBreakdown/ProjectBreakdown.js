@@ -12,21 +12,21 @@ import { IGroupFilter } from '@ncigdc/utils/filters/types';
 
 const createRenderer = (Route, Container) => (props: mixed) => (
   <Relay.Renderer
-    Container={Container}
     environment={Relay.Store}
     queryConfig={new Route(props)}
-    render={({ props: relayProps }) => (relayProps ? (
-      <Container {...relayProps} {...props} />
+    Container={Container}
+    render={({ props: relayProps }) =>
+      relayProps ? (
+        <Container {...relayProps} {...props} />
       ) : (
         <i className="fa fa-spinner fa-spin" />
-      ))} />
+      )}
+  />
 );
 
 class Route extends Relay.Route {
   static routeName = 'ProjectBreakdownRoute';
-
   static queries = viewerQuery;
-
   static prepareParams = ({ filters = null }) => ({
     aggFilters: {
       op: 'and',
@@ -44,18 +44,19 @@ class Route extends Relay.Route {
   });
 }
 
-const createContainer = Component => Relay.createContainer(Component, {
-  initialVariables: {
-    aggFilters: null,
-    ssmTested: makeFilter([
-      {
-        field: 'cases.available_variation_data',
-        value: 'ssm',
-      },
-    ]),
-  },
-  fragments: {
-    viewer: () => Relay.QL`
+const createContainer = Component =>
+  Relay.createContainer(Component, {
+    initialVariables: {
+      aggFilters: null,
+      ssmTested: makeFilter([
+        {
+          field: 'cases.available_variation_data',
+          value: 'ssm',
+        },
+      ]),
+    },
+    fragments: {
+      viewer: () => Relay.QL`
         fragment on Root {
           explore {
             cases {
@@ -79,29 +80,29 @@ const createContainer = Component => Relay.createContainer(Component, {
           }
         }
       `,
-  },
-});
+    },
+  });
 
 const Component = ({ viewer: { explore: { cases = {} } }, filters, relay }) => {
   const allAggs = !cases.allAggs
     ? {}
     : cases.allAggs.project__project_id.buckets.reduce(
-      (acc, b) => ({
-        ...acc,
-        [b.key]: b.doc_count,
-      }),
-      {}
-    );
+        (acc, b) => ({
+          ...acc,
+          [b.key]: b.doc_count,
+        }),
+        {}
+      );
 
   const filteredAggs = !cases.aggregations
     ? {}
     : cases.aggregations.project__project_id.buckets.reduce(
-      (acc, b) => ({
-        ...acc,
-        [b.key]: b.doc_count,
-      }),
-      {}
-    );
+        (acc, b) => ({
+          ...acc,
+          [b.key]: b.doc_count,
+        }),
+        {}
+      );
 
   return (
     <div>
@@ -110,22 +111,14 @@ const Component = ({ viewer: { explore: { cases = {} } }, filters, relay }) => {
         .sort(([ak, av], [bk, bv]) => bv / allAggs[bk] - av / allAggs[ak])
         .map(([k, v]) => (
           <div key={k}>
-            <span>
-              {k}
-:
-              {' '}
-            </span>
+            <span>{k}: </span>
             <ExploreSSMLink
+              searchTableTab={'cases'}
               filters={addInFilters(
                 filters,
-                makeFilter([
-                  {
-                    field: 'cases.project.project_id',
-                    value: [k],
-                  },
-                ])
+                makeFilter([{ field: 'cases.project.project_id', value: [k] }])
               )}
-              searchTableTab="cases">
+            >
               {v}
             </ExploreSSMLink>
             <span> / </span>
@@ -137,18 +130,16 @@ const Component = ({ viewer: { explore: { cases = {} } }, filters, relay }) => {
                     field: 'cases.available_variation_data',
                     value: ['ssm'],
                   },
-                  {
-                    field: 'cases.project.project_id',
-                    value: [k],
-                  },
+                  { field: 'cases.project.project_id', value: [k] },
                 ]),
-              }}>
+              }}
+            >
               {allAggs[k]}
             </ExploreLink>
             <span>
               &nbsp; (
               {// $FlowIgnore
-                (v / allAggs[k] * 100).toFixed(2)}
+              (v / allAggs[k] * 100).toFixed(2)}
               %)
             </span>
           </div>
@@ -167,9 +158,9 @@ type TProps = {
 
 export default ({ caseTotal, gdcCaseTotal, filters }: TProps = {}) => (
   <Toggle
-    title={(
+    title={
       <span key="total">
-        <ExploreSSMLink filters={filters} searchTableTab="cases">
+        <ExploreSSMLink searchTableTab={'cases'} filters={filters}>
           {caseTotal.toLocaleString()}
         </ExploreSSMLink>
         <span> / </span>
@@ -177,16 +168,15 @@ export default ({ caseTotal, gdcCaseTotal, filters }: TProps = {}) => (
           query={{
             searchTableTab: 'cases',
             filters: makeFilter([
-              {
-                field: 'cases.available_variation_data',
-                value: ['ssm'],
-              },
+              { field: 'cases.available_variation_data', value: ['ssm'] },
             ]),
-          }}>
+          }}
+        >
           {gdcCaseTotal.toLocaleString()}
         </ExploreLink>
       </span>
-    )}>
+    }
+  >
     <Renderer filters={filters} />
   </Toggle>
 );

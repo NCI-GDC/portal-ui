@@ -7,18 +7,16 @@ export default ({ width }) => (
   <Wrapper>
     <ExternalLink
       hasExternalIcon={false}
+      title="GDC Website"
       href="https://gdc.cancer.gov/"
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-      }}
-      title="GDC Website">
+      style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}
+    >
       <img
-        alt="GDC Website"
-        className="icon icon-gdc-portal home"
+        style={{ width }}
         src={websiteImg}
-        style={{ width }} />
+        className="icon icon-gdc-portal home"
+        alt="GDC Website"
+      />
       <p>Website</p>
     </ExternalLink>
   </Wrapper>

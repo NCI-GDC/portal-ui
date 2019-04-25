@@ -71,8 +71,9 @@ export const extractFilePath: TExtractFilePath = file => {
     return `/${atob((file as IFileSearchResult).id)
       .split(':')[0]
       .toLocaleLowerCase()}s/${atob((file as IFileSearchResult).id).split(':')[1]}`;
+  } else {
+    return `/files/${(file as IFileHistory).uuid}`;
   }
-  return `/files/${(file as IFileHistory).uuid}`;
 };
 
 export default fetchFileHistory;

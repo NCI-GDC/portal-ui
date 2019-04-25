@@ -9,18 +9,18 @@ import withBetterRouter from '@ncigdc/utils/withRouter';
 import Showing from '@ncigdc/components/Pagination/Showing';
 import { Row } from '@ncigdc/uikit/Flex';
 import Pagination from '@ncigdc/components/Pagination';
-import { withTheme, TTheme } from '@ncigdc/theme';
-
+import { withTheme } from '@ncigdc/theme';
+import { TTheme } from '@ncigdc/theme';
 import { IGroupFilter } from '@ncigdc/utils/filters/types';
 import TableActions from '@ncigdc/components/TableActions';
 import Table, { Tr } from '@ncigdc/uikit/Table';
-import { CreateExploreSsmSetButton, AppendExploreSsmSetButton, RemoveFromExploreSsmSetButton } from '@ncigdc/modern_components/withSetAction';
-
-
+import { CreateExploreSsmSetButton } from '@ncigdc/modern_components/withSetAction';
+import { AppendExploreSsmSetButton } from '@ncigdc/modern_components/withSetAction';
+import { RemoveFromExploreSsmSetButton } from '@ncigdc/modern_components/withSetAction';
 import withSelectIds from '@ncigdc/utils/withSelectIds';
-import timestamp from '@ncigdc/utils/timestamp';
 import tableModel from './SsmsTable.model';
 import mapData from './mapData';
+import timestamp from '@ncigdc/utils/timestamp';
 
 type TProps = {
   showSurvivalPlot: boolean,
@@ -113,19 +113,25 @@ export default compose(
             padding: '1rem',
             justifyContent: 'space-between',
             alignItems: 'flex-end',
-          }}>
+          }}
+        >
           <Showing
             docType="somatic mutations"
-            params={parentVariables}
             prefix="ssmsTable"
-            total={totalSsms} />
+            params={parentVariables}
+            total={totalSsms}
+          />
           <Row style={{ alignItems: 'flex-end' }}>
             <TableActions
-              AppendSetButton={AppendExploreSsmSetButton}
-              arrangeColumnKey="ssms"
-              CreateSetButton={CreateExploreSsmSetButton}
-              currentFilters={query.ssmsTable_filters || filters}
+              type="ssm"
+              scope="explore"
               displayType="mutation"
+              currentFilters={query.ssmsTable_filters || filters}
+              style={{ marginLeft: '2rem' }}
+              arrangeColumnKey="ssms"
+              total={totalSsms}
+              endpoint="ssms"
+              downloadTooltip="Export All Except #Cases"
               downloadFields={[
                 'genomic_dna_change',
                 'mutation_subtype',
@@ -139,33 +145,45 @@ export default compose(
                 'consequence.transcript.aa_change',
                 'ssm_id',
               ]}
-              downloadTooltip="Export All Except #Cases"
-              endpoint="ssms"
-              hideColumns={hideSurvival ? ['survival_plot'] : []}
-              idField="ssms.ssm_id"
-              RemoveFromSetButton={RemoveFromExploreSsmSetButton}
-              scope="explore"
-              selectedIds={selectedIds}
-              style={{ marginLeft: '2rem' }}
-              total={totalSsms}
-              tsvFilename={`frequent-mutations.${timestamp()}.tsv`}
               tsvSelector="#ssms-table"
-              type="ssm" />
+              tsvFilename={`frequent-mutations.${timestamp()}.tsv`}
+              CreateSetButton={CreateExploreSsmSetButton}
+              AppendSetButton={AppendExploreSsmSetButton}
+              RemoveFromSetButton={RemoveFromExploreSsmSetButton}
+              idField="ssms.ssm_id"
+              selectedIds={selectedIds}
+              hideColumns={hideSurvival ? ['survival_plot'] : []}
+            />
           </Row>
         </Row>
         <div style={{ overflowX: 'auto' }}>
           <Table
-            body={(
+            id="ssms-table"
+            headings={tableInfo
+              .filter(x => (hideContext ? x.id !== 'filteredCases' : true))
+              .filter(x => (hideSurvival ? x.id !== 'survival_plot' : true))
+              .map(x => (
+                <x.th
+                  key={x.id}
+                  context={context}
+                  theme={theme}
+                  nodes={data}
+                  selectedIds={selectedIds}
+                  setSelectedIds={setSelectedIds}
+                />
+              ))}
+            body={
               <tbody>
                 {data.map((node, i) => (
                   <Tr
-                    index={i}
                     key={node.id}
+                    index={i}
                     style={{
                       ...(selectedIds.includes(node.ssm_id) && {
                         backgroundColor: theme.tableHighlight,
                       }),
-                    }}>
+                    }}
+                  >
                     {tableInfo
                       .filter(x => x.td)
                       .filter(
@@ -176,48 +194,38 @@ export default compose(
                       )
                       .map(x => (
                         <x.td
-                          cases={cases}
-                          context={context}
-                          contextFilters={contextFilters}
-                          defaultFilters={filters}
-                          filteredCases={filteredCases}
-                          hasEnoughSurvivalDataOnPrimaryCurve={
-                            hasEnoughSurvivalDataOnPrimaryCurve
-                          }
                           key={x.id}
                           location={location}
                           node={node}
+                          theme={theme}
+                          context={context}
+                          cases={cases}
+                          defaultFilters={filters}
+                          contextFilters={contextFilters}
+                          filteredCases={filteredCases}
                           query={query}
-                          selectedIds={selectedIds}
-                          selectedSurvivalData={selectedSurvivalData}
-                          setSelectedIds={setSelectedIds}
-                          setSelectedSurvivalData={setSelectedSurvivalData}
                           setSurvivalLoadingId={setSurvivalLoadingId}
                           survivalLoadingId={survivalLoadingId}
-                          theme={theme} />
+                          setSelectedSurvivalData={setSelectedSurvivalData}
+                          selectedSurvivalData={selectedSurvivalData}
+                          hasEnoughSurvivalDataOnPrimaryCurve={
+                            hasEnoughSurvivalDataOnPrimaryCurve
+                          }
+                          selectedIds={selectedIds}
+                          setSelectedIds={setSelectedIds}
+                        />
                       ))}
                   </Tr>
                 ))}
               </tbody>
-            )}
-            headings={tableInfo
-              .filter(x => (hideContext ? x.id !== 'filteredCases' : true))
-              .filter(x => (hideSurvival ? x.id !== 'survival_plot' : true))
-              .map(x => (
-                <x.th
-                  context={context}
-                  key={x.id}
-                  nodes={data}
-                  selectedIds={selectedIds}
-                  setSelectedIds={setSelectedIds}
-                  theme={theme} />
-              ))}
-            id="ssms-table" />
+            }
+          />
         </div>
         <Pagination
-          params={parentVariables}
           prefix="ssmsTable"
-          total={!ssms ? 0 : ssms.hits.total} />
+          params={parentVariables}
+          total={!ssms ? 0 : ssms.hits.total}
+        />
       </span>
     );
   }

@@ -6,67 +6,68 @@ import { compose, withPropsOnChange } from 'recompose';
 import { makeFilter, replaceFilters } from '@ncigdc/utils/filters';
 import Query from '@ncigdc/modern_components/Query';
 
-export default (Component: ReactClass<*>) => compose(
-  withPropsOnChange(['filters'], ({ filters = null }) => {
-    const cnvAvailableVariationDataFilter = {
-      field: 'cases.available_variation_data',
-      value: 'cnv',
-    };
-    const ssmAvailableVariationDataFilter = {
-      field: 'cases.available_variation_data',
-      value: ['ssm'],
-    };
-    return {
-      variables: {
-        cnvAll: replaceFilters(
-          makeFilter([
-            {
-              field: 'cnvs.cnv_change',
-              value: ['Gain', 'Loss'],
-            },
-            cnvAvailableVariationDataFilter,
-          ]),
-          filters,
-        ),
-        cnvTestedByGene: replaceFilters(
-          makeFilter([cnvAvailableVariationDataFilter]),
-          filters,
-        ),
-        ssmFilters: replaceFilters(
-          makeFilter([ssmAvailableVariationDataFilter]),
-          filters,
-        ),
-        caseAggsFilters: replaceFilters(
-          {
-            op: 'and',
-            content: [
+export default (Component: ReactClass<*>) =>
+  compose(
+    withPropsOnChange(['filters'], ({ filters = null }) => {
+      const cnvAvailableVariationDataFilter = {
+        field: 'cases.available_variation_data',
+        value: 'cnv',
+      };
+      const ssmAvailableVariationDataFilter = {
+        field: 'cases.available_variation_data',
+        value: ['ssm'],
+      };
+      return {
+        variables: {
+          cnvAll: replaceFilters(
+            makeFilter([
               {
-                op: 'NOT',
-                content: {
-                  field: 'cases.gene.ssm.observation.observation_id',
-                  value: 'MISSING',
+                field: 'cnvs.cnv_change',
+                value: ['Gain', 'Loss'],
+              },
+              cnvAvailableVariationDataFilter,
+            ]),
+            filters,
+          ),
+          cnvTestedByGene: replaceFilters(
+            makeFilter([cnvAvailableVariationDataFilter]),
+            filters,
+          ),
+          ssmFilters: replaceFilters(
+            makeFilter([ssmAvailableVariationDataFilter]),
+            filters,
+          ),
+          caseAggsFilters: replaceFilters(
+            {
+              op: 'and',
+              content: [
+                {
+                  op: 'NOT',
+                  content: {
+                    field: 'cases.gene.ssm.observation.observation_id',
+                    value: 'MISSING',
+                  },
                 },
-              },
-              {
-                op: 'in',
-                content: ssmAvailableVariationDataFilter,
-              },
-            ],
-          },
-          filters,
-        ),
-        ssmTested: makeFilter([ssmAvailableVariationDataFilter]),
-        cnvTested: makeFilter([cnvAvailableVariationDataFilter]),
-        cnvGain: replaceFilters(
-          makeFilter([
-            {
-              field: 'cnvs.cnv_change',
-              value: ['Gain'],
+                {
+                  op: 'in',
+                  content: ssmAvailableVariationDataFilter,
+                },
+              ],
             },
-            cnvAvailableVariationDataFilter,
-          ]),
-          filters,
-        ),
+            filters,
+          ),
+          ssmTested: makeFilter([ssmAvailableVariationDataFilter]),
+          cnvTested: makeFilter([cnvAvailableVariationDataFilter]),
+          cnvGain: replaceFilters(
+            makeFilter([
+              {
+                field: 'cnvs.cnv_change',
+                value: ['Gain'],
+              },
+              cnvAvailableVariationDataFilter,
+            ]),
+            filters,
+          ),
           // cnvAmplification: replaceFilters(
           //   makeFilter([
           //     {
@@ -77,16 +78,16 @@ export default (Component: ReactClass<*>) => compose(
           //   ]),
           //   filters,
           // ),
-        cnvLoss: replaceFilters(
-          makeFilter([
-            {
-              field: 'cnvs.cnv_change',
-              value: ['Loss'],
-            },
-            cnvAvailableVariationDataFilter,
-          ]),
-          filters,
-        ),
+          cnvLoss: replaceFilters(
+            makeFilter([
+              {
+                field: 'cnvs.cnv_change',
+                value: ['Loss'],
+              },
+              cnvAvailableVariationDataFilter,
+            ]),
+            filters,
+          ),
           // cnvDeepLoss: replaceFilters(
           //   makeFilter([
           //     {
@@ -97,16 +98,17 @@ export default (Component: ReactClass<*>) => compose(
           //   ]),
           //   filters,
           // ),
-      },
-    };
-  }),
-)((props: Object) => {
-  return (
-    <Query
-      Component={Component}
-      minHeight={10}
-      parentProps={props}
-      query={graphql`
+        },
+      };
+    }),
+  )((props: Object) => {
+    return (
+      <Query
+        parentProps={props}
+        minHeight={10}
+        variables={props.variables}
+        Component={Component}
+        query={graphql`
           query CancerDistributionBarChart_relayQuery(
             $caseAggsFilters: FiltersArgument
             $ssmTested: FiltersArgument
@@ -176,6 +178,6 @@ export default (Component: ReactClass<*>) => compose(
             }
           }
         `}
-      variables={props.variables} />
-  );
-});
+      />
+    );
+  });

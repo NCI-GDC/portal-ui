@@ -3,9 +3,7 @@
 import React from 'react';
 import _ from 'lodash';
 
-import {
-  compose, defaultProps, renameProps, withState,
-} from 'recompose';
+import { compose, defaultProps, renameProps, withState } from 'recompose';
 
 import TermAggregation from '@ncigdc/components/Aggregations/TermAggregation';
 import DateFacet from '@ncigdc/components/Aggregations/DateFacet';
@@ -35,33 +33,31 @@ const COMMON_PREPOSITIONS = [
   'yet',
 ];
 
-const fieldNameToTitle = fieldName => fieldName
-  .replace(/_|\./g, ' ')
-  .split(' ')
-  .map(
-    word => (COMMON_PREPOSITIONS.includes(word) ? word : _.capitalize(word)),
-  )
-  .join(' ');
+const fieldNameToTitle = fieldName =>
+  fieldName
+    .replace(/_|\./g, ' ')
+    .split(' ')
+    .map(
+      word => (COMMON_PREPOSITIONS.includes(word) ? word : _.capitalize(word)),
+    )
+    .join(' ');
 
 const getFacetType = facet => {
   if (_.includes(facet.field, 'datetime')) {
     return 'datetime';
-  } if (facet.type === 'terms') {
+  } else if (facet.type === 'terms') {
     // on Annotations & Repo pages project_id is a terms facet
     // need a way to force an *_id field to return terms
     return 'terms';
-  } if (facet.type === 'exact') {
+  } else if (facet.type === 'exact') {
     return 'exact';
-  } if (
-    _.some([
-      '_id',
-      '_uuid',
-      'md5sum',
-      'file_name',
-    ], idSuffix => _.includes(facet.field, idSuffix),)
+  } else if (
+    _.some(['_id', '_uuid', 'md5sum', 'file_name'], idSuffix =>
+      _.includes(facet.field, idSuffix),
+    )
   ) {
     return 'exact';
-  } if (facet.type === 'long') {
+  } else if (facet.type === 'long') {
     return 'range';
   }
   return 'terms';
@@ -107,24 +103,26 @@ const FacetWrapper = compose(
       exact: () => (
         <ExactMatchFacet
           {...commonProps}
-          doctype={facet.doc_type}
           fieldNoDoctype={facet.field}
+          doctype={facet.doc_type}
           placeholder={
             facet.placeholder ? facet.placeholder : `Enter ${commonProps.title}`
           }
-          {...additionalProps} />
+          {...additionalProps}
+        />
       ),
       datetime: () => (
         <DateFacet field={facet.full} {...commonProps} {...additionalProps} />
       ),
       range: () => (
         <RangeFacet
-          convertDays={false}
           field={facet.full}
+          convertDays={false}
           max={(aggregation.stats || { max: 0 }).max}
           min={(aggregation.stats || { min: 0 }).min}
           {...commonProps}
-          {...additionalProps} />
+          {...additionalProps}
+        />
       ),
       terms: () => (
         <TermAggregation
@@ -132,7 +130,8 @@ const FacetWrapper = compose(
           {...commonProps}
           buckets={(aggregation || { buckets: [] }).buckets}
           showingValueSearch={showingValueSearch}
-          {...additionalProps} />
+          {...additionalProps}
+        />
       ),
     }[facetType]();
     const hasValueSearch =
@@ -141,17 +140,18 @@ const FacetWrapper = compose(
         .length >= 20;
 
     return (
-      <FacetWrapperDiv className="test-facet" style={style}>
+      <FacetWrapperDiv style={style} className="test-facet">
         <FacetHeader
-          collapsed={collapsed}
+          title={displayTitle}
           field={facet.full}
           handleRequestRemove={handleRequestRemove}
-          hasValueSearch={hasValueSearch}
           isRemovable={isRemovable}
+          hasValueSearch={hasValueSearch}
+          collapsed={collapsed}
           setCollapsed={setCollapsed}
-          setShowingValueSearch={setShowingValueSearch}
           showingValueSearch={showingValueSearch}
-          title={displayTitle} />
+          setShowingValueSearch={setShowingValueSearch}
+        />
         {facetComponent}
       </FacetWrapperDiv>
     );

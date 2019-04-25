@@ -53,18 +53,14 @@ const HomeSearch = compose(
   ),
 )(
   ({
-    search: {
-      state, setQuery, focusItem, reset,
-    },
-    selectableList: {
-      handleKeyDown, focusedItem, setFocusedItem, selectItem,
-    },
+    search: { state, setQuery, focusItem, reset },
+    selectableList: { handleKeyDown, focusedItem, setFocusedItem, selectItem },
   }) => (
     <Container
       className="test-home-search"
       onBlur={event => {
-        const { currentTarget } = event;
-        const { relatedTarget } = event;
+        const currentTarget = event.currentTarget;
+        const relatedTarget = event.relatedTarget;
         setImmediate(() => {
           const triggerElement = relatedTarget || document.activeElement;
           if (
@@ -76,48 +72,48 @@ const HomeSearch = compose(
             setTimeout(reset, 500);
           }
         });
-      }}>
+      }}
+    >
       <SearchIcon
         style={{
           position: 'absolute',
           top: '34px',
           left: '15px',
-        }} />
+        }}
+      />
       <Input
-        aria-label="Quick search: e.g. BRAF, Breast, TCGA-BLCA, TCGA-A5-A0G2"
         className="test-search-input"
+        type="text"
+        placeholder="e.g. BRAF, Breast, TCGA-BLCA, TCGA-A5-A0G2"
         onChange={event => setQuery(event.target.value)}
         onKeyDown={handleKeyDown}
-        placeholder="e.g. BRAF, Breast, TCGA-BLCA, TCGA-A5-A0G2"
-        type="text" />
+        aria-label="Quick search: e.g. BRAF, Breast, TCGA-BLCA, TCGA-A5-A0G2"
+      />
 
       <QuickSearchResults
-        isLoading={state.isLoading}
-        onActivateItem={selectItem}
-        onSelectItem={setFocusedItem}
-        query={state.query}
         results={state.results.map(
-          item => (item === focusedItem ? {
-            ...item,
-            isSelected: true,
-          } : item),
+          item => (item === focusedItem ? { ...item, isSelected: true } : item),
         )}
-        style={styles} />
+        query={state.query}
+        onSelectItem={setFocusedItem}
+        onActivateItem={selectItem}
+        isLoading={state.isLoading}
+        style={styles}
+      />
       {!state.isLoading && (
         <FileHistoryResults
-          isLoading={state.isLoading}
-          onActivateItem={selectItem}
-          onSelectItem={setFocusedItem}
           query={state.query}
           results={state.fileHistoryResult
             .filter(f => f.file_change === 'released')
             .map(
-              item => (item === focusedItem ? {
-                ...item,
-                isSelected: true,
-              } : item),
+              item =>
+                item === focusedItem ? { ...item, isSelected: true } : item,
             )}
-          style={styles} />
+          onSelectItem={setFocusedItem}
+          onActivateItem={selectItem}
+          isLoading={state.isLoading}
+          style={styles}
+        />
       )}
     </Container>
   ),

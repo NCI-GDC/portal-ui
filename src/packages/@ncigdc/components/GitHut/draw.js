@@ -1,26 +1,20 @@
 import { isNumber, uniq } from 'lodash';
 
-let var d3: Object; // requires d3 v3
+declare var d3: Object; // requires d3 v3
 
-const padding = {
- left: 100,
-right: 300,
-top: 60,
-bottom: 30 
-};
+const padding = { left: 100, right: 300, top: 60, bottom: 30 };
 const languageLabelAdjust = 25;
 
-export default function (params) {
+export default function(params) {
   const defaultDuration = params.duration || 1000;
   const titleColumn = params.titleColumn || 'project_id';
-  const {data} = params;
-  const columnMap = params.columns.reduce((m, c) => ({ ...m,
-[c.id]: c }), {});
+  const data = params.data;
+  const columnMap = params.columns.reduce((m, c) => ({ ...m, [c.id]: c }), {});
 
   params.container.innerHTML = '';
 
-  let totalWidth = params.container.offsetWidth;
-  let innerWidth = totalWidth - padding.left - padding.right;
+  var totalWidth = params.container.offsetWidth;
+  var innerWidth = totalWidth - padding.left - padding.right;
 
   const primary_sites = uniq(
     data.reduce((sites, project) => {
@@ -28,21 +22,21 @@ export default function (params) {
     }, []),
   );
 
-  let totalHeight = 80 + Math.max(data.length, primary_sites.length) * 15;
-  let innerHeight = totalHeight - padding.top - padding.bottom;
+  var totalHeight = 80 + Math.max(data.length, primary_sites.length) * 15;
+  var innerHeight = totalHeight - padding.top - padding.bottom;
 
-  let markerMaxWidth = innerWidth / params.columns.length;
+  var markerMaxWidth = innerWidth / params.columns.length;
 
-  let xScale = d3.scale
+  var xScale = d3.scale
     .ordinal()
     .domain(
-      params.columns.map((c) => {
+      params.columns.map(function(c) {
         return c.id;
       }),
     )
     .rangePoints([0, innerWidth]);
 
-  let svg = d3
+  var svg = d3
     .select(params.container)
     .append('svg')
     .attr('width', totalWidth)
@@ -50,16 +44,16 @@ export default function (params) {
     .append('g')
     .attr(
       'transform',
-      `translate(${ 
-        padding.left + languageLabelAdjust 
-        },${ 
-        padding.top 
-        })`,
+      'translate(' +
+        (padding.left + languageLabelAdjust) +
+        ',' +
+        padding.top +
+        ')',
     );
 
-  let languagesGroup = svg.append('g').attr('id', 'languages');
-  let labelsGroup = svg.append('g').attr('id', 'labels');
-  let columns = svg.append('g').attr('id', 'columns');
+  var languagesGroup = svg.append('g').attr('id', 'languages');
+  var labelsGroup = svg.append('g').attr('id', 'labels');
+  var columns = svg.append('g').attr('id', 'columns');
 
   labelsGroup
     .selectAll('g.labels')
@@ -73,47 +67,47 @@ export default function (params) {
           })),
         ];
       }, []),
-      (d) => {
+      function(d) {
         return `${d[titleColumn]}${d.primary_site[0]}`;
       },
     )
     .enter()
     .append('g')
     .attr('class', 'labels')
-    .attr('rel', (d) => {
+    .attr('rel', function(d) {
       return d[titleColumn];
     })
-    .on('mouseover', function (d) {
+    .on('mouseover', function(d) {
       d3.select(this).classed('hover', true);
       languagesGroup
-        .selectAll('g.lang[rel=\'' + d[titleColumn] + '\']')
+        .selectAll("g.lang[rel='" + d[titleColumn] + "']")
         .classed('hover', true);
     })
-    .on('mouseout', () => {
+    .on('mouseout', function() {
       svg
         .selectAll('g.hover,g.primary_site')
         .classed('hover', false)
         .classed('primary_site', false);
     });
 
-  let language = languagesGroup
+  var language = languagesGroup
     .selectAll('g.lang')
-    .data(data, (d) => {
+    .data(data, function(d) {
       return d[titleColumn];
     })
     .enter()
     .append('g')
     .attr('class', 'lang')
-    .attr('rel', (d) => {
+    .attr('rel', function(d) {
       return d[titleColumn];
     });
 
-  let line = d3.svg
+  var line = d3.svg
     .line()
-    .x((d) => {
+    .x(function(d) {
       return d.x;
     })
-    .y((d) => {
+    .y(function(d) {
       if (d.y === 0) {
         return columnMap[d.col].yScale.range()[0];
       } else {
@@ -121,12 +115,12 @@ export default function (params) {
       }
     });
 
-  let drawn_primary_sites = [];
+  var drawn_primary_sites = [];
 
   function updateScales() {
     const sites = primary_sites.slice();
 
-    params.columns.forEach((column) => {
+    params.columns.forEach(function(column) {
       var id = column.id;
       var sortKey = column.sortKey || id;
       var sorting = column.sorting || d3.ascending;
@@ -167,27 +161,27 @@ export default function (params) {
   }
 
   function addAxes() {
-    let column = columns
+    var column = columns
       .selectAll('g.column')
       .data(params.columns)
       .enter()
       .append('g')
       .attr('class', 'column')
-      .attr('transform', (d) => {
+      .attr('transform', function(d) {
         return 'translate(' + xScale(d.id) + ',0)';
       });
 
-    let title = column
+    var title = column
       .append('text')
       .attr('class', 'title')
       .attr('x', 0)
       .attr('y', 0);
 
-    let tip = d3
+    var tip = d3
       .tip()
       .attr('class', 'tooltip')
       .offset([-5, 0])
-      .html((d) => {
+      .html(function(d) {
         return d.tool_tip_text || d.id;
       });
 
@@ -200,16 +194,16 @@ export default function (params) {
       .on('mouseout', tip.hide);
 
     title
-      .filter((d) => {
+      .filter(function(d) {
         return d.id === titleColumn;
       })
       .classed('first', true)
       .attr('transform', 'translate(-10,0)');
 
-    let fontHeight = 12;
+    var fontHeight = 12;
     title
       .selectAll('tspan')
-      .data((d) => {
+      .data(function(d) {
         return d.displayName.map(function(text, i, arr) {
           return { text: text, total: arr.length };
         });
@@ -217,34 +211,34 @@ export default function (params) {
       .enter()
       .append('tspan')
       .attr('x', 0)
-      .attr('y', (d, i) => {
+      .attr('y', function(d, i) {
         return -(d.total - i) * fontHeight;
       })
-      .text((d) => {
+      .text(function(d) {
         return d.text;
       });
 
-    let axis = column
-      .filter((col) => {
+    var axis = column
+      .filter(function(col) {
         return col.scale === 'ordinal' && col.id !== titleColumn;
       })
       .append('g')
       .attr('class', 'axis')
-      .attr('transform', `translate(0,${  innerHeight + 8  })`)
-      .classed('start', (d) => {
+      .attr('transform', 'translate(0,' + (innerHeight + 8) + ')')
+      .classed('start', function(d) {
         return d.x < 0;
       })
-      .classed('end', (d) => {
+      .classed('end', function(d) {
         return d.x > 0;
       });
 
-    let tickHeight = 6;
+    var tickHeight = 6;
     axis
       .append('line')
-      .attr('x1', (d) => {
+      .attr('x1', function(d) {
         return -(d.widthScale.range()[1] / 2);
       })
-      .attr('x2', (d) => {
+      .attr('x2', function(d) {
         return d.widthScale.range()[1] / 2;
       })
       .attr('y1', tickHeight / 2)
@@ -258,7 +252,7 @@ export default function (params) {
     axis
       .append('text')
       .attr('y', tickHeight + fontHeight)
-      .text((d) => {
+      .text(function(d) {
         return d3.format('s')(d.widthScale.domain()[1]);
       });
   }
@@ -268,10 +262,10 @@ export default function (params) {
 
     languages.append('g').attr('class', 'markers');
 
-    let languageLabel = languages
+    var languageLabel = languages
       .append('g')
       .attr('class', 'lang-label')
-      .attr('transform', (d) => {
+      .attr('transform', function(d) {
         var x = xScale(titleColumn);
         var y = columnMap[titleColumn].yScale.range()[0];
 
@@ -289,18 +283,18 @@ export default function (params) {
       .append('text')
       .attr('x', -10)
       .attr('y', 3)
-      .text((d) => {
+      .text(function(d) {
         return d[titleColumn];
       });
   }
 
   function updateConnections(duration) {
-    let connection = languagesGroup
+    var connection = languagesGroup
       .selectAll('.lang')
       .select('g.connections')
       .selectAll('g.connection')
       .data(
-        (d) => {
+        function(d) {
           return d.primary_site.map((site, i) => {
             const flattened = params.columns
               .slice(i && -2) // for primary sites after the first, we only need to render the last 2 segments.
@@ -340,21 +334,21 @@ export default function (params) {
             };
           });
         },
-        (d) => {
+        function(d) {
           return d.key;
         },
       );
 
     connection.exit().remove();
 
-    let new_connection = connection
+    var new_connection = connection
       .enter()
       .append('g')
       .attr('class', 'connection');
 
-    let paths = ['line', 'hover'];
+    var paths = ['line', 'hover'];
 
-    paths.forEach((p) => {
+    paths.forEach(function(p) {
       new_connection.append('path').attr('class', p);
       connection
         .select('path.' + p)
@@ -367,12 +361,12 @@ export default function (params) {
   }
 
   function updateMarkers(duration) {
-    let marker = languagesGroup
+    var marker = languagesGroup
       .selectAll('.lang')
       .select('g.markers')
       .selectAll('g.marker')
       .data(
-        (d) => {
+        function(d) {
           return params.columns
             .filter(function(col) {
               return col.id !== titleColumn;
@@ -386,21 +380,21 @@ export default function (params) {
               };
             });
         },
-        (d) => {
+        function(d) {
           return d.projectId + '_' + d.columnId;
         },
       );
 
     marker.exit().remove();
 
-    let new_markers = marker
+    var new_markers = marker
       .enter()
       .append('g')
       .attr('class', 'marker')
-      .classed('ordinal', (d) => {
+      .classed('ordinal', function(d) {
         return columnMap[d.columnId].scale === 'ordinal';
       })
-      .attr('transform', (d) => {
+      .attr('transform', function(d) {
         var x = xScale(d.columnId);
         var y = columnMap[d.columnId].yScale(d.value);
 
@@ -408,24 +402,24 @@ export default function (params) {
       });
 
     new_markers
-      .filter((d) => {
+      .filter(function(d) {
         return columnMap[d.columnId].scale === 'ordinal';
       })
       .append('rect')
-      .attr('x', (d) => {
+      .attr('x', function(d) {
         return 0;
       })
       .attr('y', -4)
       .attr('width', 0)
       .attr('height', 8)
-      .style('fill', (d) => {
+      .style('fill', function(d) {
         return columnMap[d.columnId].color;
       });
 
     marker
       .transition()
       .duration(duration || defaultDuration)
-      .attr('transform', (d) => {
+      .attr('transform', function(d) {
         var x = xScale(d.columnId);
         var y = columnMap[d.columnId].yScale(d.value);
 
@@ -437,22 +431,22 @@ export default function (params) {
       .transition()
       .duration(defaultDuration)
       .attr('x', d => {
-        let x = -columnMap[d.columnId].widthScale(d.value) / 2;
+        var x = -columnMap[d.columnId].widthScale(d.value) / 2;
         return isNaN(x) ? 0 : x;
       })
       .attr('width', d => {
-        let width = columnMap[d.columnId].widthScale(d.value);
+        var width = columnMap[d.columnId].widthScale(d.value);
         // no neg widths
         return isNaN(width) ? 0 : Math.max(0, width);
       });
   }
 
   function updateLabels(duration) {
-    let labelAdjust = 25;
-    let labels = labelsGroup
+    var labelAdjust = 25;
+    var labels = labelsGroup
       .selectAll('.labels')
       .selectAll('g.label')
-      .data((d) => {
+      .data(function(d) {
         return params.columns.map(function(column) {
           return {
             projectId: d[titleColumn],
@@ -465,15 +459,15 @@ export default function (params) {
         });
       });
 
-    let newLabels = labels
+    var newLabels = labels
       .enter()
       .append('g')
       .attr('class', 'label')
-      .classed('primary_site', (d) => {
+      .classed('primary_site', function(d) {
         return d.columnId === 'primary_site';
       });
 
-    let newLabelDataColumns = newLabels.filter((d) => {
+    var newLabelDataColumns = newLabels.filter(function(d) {
       return d.columnId !== 'primary_site' && d.columnId !== titleColumn;
     });
     newLabelDataColumns.append('path');
@@ -483,7 +477,7 @@ export default function (params) {
       .attr('y', 4);
 
     newLabels
-      .filter((d) => {
+      .filter(function(d) {
         return d.columnId === 'primary_site';
       })
       .append('text')
@@ -496,7 +490,7 @@ export default function (params) {
       .attr('class', 'ix')
       .attr('y', -8)
       .attr('height', 15)
-      .on('click', (z) => {
+      .on('click', function(z) {
         if (z.onClick && z.value) {
           z.onClick(z);
         }
@@ -511,18 +505,18 @@ export default function (params) {
 
     labels
       .select('text')
-      .attr('x', (d) => {
+      .attr('x', function(d) {
         if (d.columnId === 'primary_site') {
           return -10;
         } else {
           return 0;
         }
       })
-      .attr('transform', `translate(${  labelAdjust  },0)`)
-      .style('text-anchor', (d) => {
+      .attr('transform', 'translate(' + labelAdjust + ',0)')
+      .style('text-anchor', function(d) {
         return d.columnId === 'primary_site' ? 'start' : 'middle';
       })
-      .text((d) => {
+      .text(function(d) {
         var filter =
           columnMap[d.columnId].format ||
           function(value) {
@@ -548,7 +542,7 @@ export default function (params) {
           return filter(t);
         }
       })
-      .each(function (d) {
+      .each(function(d) {
         if (d.columnId === 'primary_site') {
           d.marker_width = 10;
         } else {
@@ -561,7 +555,7 @@ export default function (params) {
     labels
       .select('path')
       .attr('class', 'label')
-      .attr('d', (d) => {
+      .attr('d', function(d) {
         var dw = 10;
         var w = d.text_width + dw;
 
@@ -578,11 +572,11 @@ export default function (params) {
         );
       })
       .attr('x', 50)
-      .attr('transform', `translate(${  labelAdjust  },0)`);
+      .attr('transform', 'translate(' + labelAdjust + ',0)');
 
     labels
       .select('rect.ix')
-      .attr('x', (d) => {
+      .attr('x', function(d) {
         if (d.columnId === titleColumn) {
           return -padding.left;
         }
@@ -592,7 +586,7 @@ export default function (params) {
           return d.text_width / 2;
         }
       })
-      .attr('width', (d) => {
+      .attr('width', function(d) {
         if (d.columnId === titleColumn) {
           return padding.left;
         } else {
@@ -600,7 +594,7 @@ export default function (params) {
         }
       });
 
-    labels.attr('transform', (d) => {
+    labels.attr('transform', function(d) {
       var x = xScale(d.columnId);
       var y = columnMap[d.columnId].yScale(d.value);
 
@@ -625,10 +619,10 @@ export default function (params) {
     });
 
     labels
-      .filter((d) => {
+      .filter(function(d) {
         return d.columnId === 'primary_site';
       })
-      .on('mouseover', (d) => {
+      .on('mouseover', function(d) {
         labelsGroup.selectAll('.labels').classed('hover', function(l) {
           return l.primary_site.some(p => d.value.includes(p));
         });
@@ -638,11 +632,11 @@ export default function (params) {
         });
       });
 
-    let projectTip = d3
+    var projectTip = d3
       .tip()
       .attr('class', 'tooltip')
       .offset([-5, 0])
-      .html((d) => {
+      .html(function(d) {
         return data.find(nested => nested[titleColumn] === d.projectId).name;
       });
 
@@ -658,10 +652,10 @@ export default function (params) {
     // Mouseover trigger for highlighting all paths that cross through
     // a label that isn't primary site or project id
     labels
-      .filter((d) => {
+      .filter(function(d) {
         return d.columnId !== 'primary_site' && d.columnId !== 'project_id';
       })
-      .on('mouseover', (d) => {
+      .on('mouseover', function(d) {
         labelsGroup.selectAll('.labels').classed('hover', function(l) {
           var ret = l[d.columnId] === d.value;
 
@@ -684,7 +678,7 @@ export default function (params) {
       .select('g.lang-label')
       .transition()
       .duration(duration || defaultDuration)
-      .attr('transform', (d) => {
+      .attr('transform', function(d) {
         var x = xScale(titleColumn);
         var y = columnMap[titleColumn].yScale(d[titleColumn]);
         return 'translate(' + x + ',' + y + ')';

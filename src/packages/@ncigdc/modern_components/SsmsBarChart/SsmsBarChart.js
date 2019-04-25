@@ -23,9 +23,7 @@ const COMPONENT_NAME = 'SsmsBarChart';
 
 class Route extends Relay.Route {
   static routeName = COMPONENT_NAME;
-
   static queries = viewerQuery;
-
   static prepareParams = ({ location: { search }, defaultFilters = null }) => {
     const q = parse(search);
 
@@ -38,30 +36,25 @@ class Route extends Relay.Route {
   };
 }
 
-const createContainer = Component => Relay.createContainer(Component, {
-  initialVariables: {
-    fetchData: false,
-    ssmsBarChart_filters: null,
-    score: 'occurrence.case.project.project_id',
-    ssmTested: makeFilter([
-      {
-        field: 'cases.available_variation_data',
-        value: 'ssm',
-      },
-    ]),
-    sort: [
-      {
-        field: '_score',
-        order: 'desc',
-      },
-      {
-        field: '_uid',
-        order: 'asc',
-      },
-    ],
-  },
-  fragments: {
-    viewer: () => Relay.QL`
+const createContainer = Component =>
+  Relay.createContainer(Component, {
+    initialVariables: {
+      fetchData: false,
+      ssmsBarChart_filters: null,
+      score: 'occurrence.case.project.project_id',
+      ssmTested: makeFilter([
+        {
+          field: 'cases.available_variation_data',
+          value: 'ssm',
+        },
+      ]),
+      sort: [
+        { field: '_score', order: 'desc' },
+        { field: '_uid', order: 'asc' },
+      ],
+    },
+    fragments: {
+      viewer: () => Relay.QL`
         fragment on Root {
           explore {
             filteredCases: cases {
@@ -84,15 +77,16 @@ const createContainer = Component => Relay.createContainer(Component, {
           }
         }
       `,
-  },
-});
+    },
+  });
 
 const Component = compose(
   withRouter,
   withHandlers({
-    handleClickMutation: ({ push, onClickMutation }) => (ssm, chartData) => (onClickMutation
+    handleClickMutation: ({ push, onClickMutation }) => (ssm, chartData) =>
+      onClickMutation
         ? onClickMutation(ssm, chartData)
-        : push(`/ssms/${ssm.ssm_id}`)),
+        : push(`/ssms/${ssm.ssm_id}`),
   }),
   withTheme,
 )(
@@ -117,13 +111,8 @@ const Component = compose(
           <b>{ssmId}</b>
           <br />
           <div>
-            {score.toLocaleString()}
-            {' '}
-Case
-            {score > 1 ? 's' : ''}
-            &nbsp;affected in
-            {' '}
-            {context}
+            {score.toLocaleString()} Case{score > 1 ? 's' : ''}
+            &nbsp;affected in {context}
           </div>
           {!!filteredCases.hits.total && (
             <div>
@@ -131,9 +120,7 @@ Case
               <span> / </span>
               <span>{filteredCases.hits.total.toLocaleString()}</span>
               <span>
-                &nbsp;(
-                {(score / filteredCases.hits.total * 100).toFixed(2)}
-%)
+                &nbsp;({(score / filteredCases.hits.total * 100).toFixed(2)}%)
               </span>
             </div>
           )}
@@ -146,40 +133,44 @@ Case
       <div style={style}>
         {ssms &&
           !!ssms.hits.edges.length && (
-          <Column style={{ paddingLeft: '2rem' }}>
-            <VisualizationHeader
-              buttons={[
-                <DownloadVisualizationButton
-                  data={chartData.map(d => ({
-                    label: d.fullLabel,
-                    value: d.value,
-                  }))}
-                  key="download"
-                  noText
-                  slug="most-frequent-mutations-bar-chart"
-                  svg={() => wrapSvg({
-                    selector: '#mutation-chart svg',
-                    title: TITLE,
-                  })}
-                  tooltipHTML="Download image or data" />,
-              ]}
-              title={TITLE} />
-            <Row id="mutation-chart" style={{ paddingTop: '2rem' }}>
-              <BarChart
-                data={chartData}
-                height={CHART_HEIGHT}
-                styles={{
-                  bars: { fill: theme.secondary },
-                  tooltips: {
-                    fill: '#fff',
-                    stroke: theme.greyScale4,
-                    textFill: theme.greyScale3,
-                  },
-                }}
-                yAxis={{ title: '# Affected Cases' }} />
-            </Row>
-          </Column>
-        )}
+            <Column style={{ paddingLeft: '2rem' }}>
+              <VisualizationHeader
+                title={TITLE}
+                buttons={[
+                  <DownloadVisualizationButton
+                    key="download"
+                    svg={() =>
+                      wrapSvg({
+                        selector: '#mutation-chart svg',
+                        title: TITLE,
+                      })}
+                    data={chartData.map(d => ({
+                      label: d.fullLabel,
+                      value: d.value,
+                    }))}
+                    slug="most-frequent-mutations-bar-chart"
+                    noText
+                    tooltipHTML="Download image or data"
+                  />,
+                ]}
+              />
+              <Row id="mutation-chart" style={{ paddingTop: '2rem' }}>
+                <BarChart
+                  data={chartData}
+                  height={CHART_HEIGHT}
+                  yAxis={{ title: '# Affected Cases' }}
+                  styles={{
+                    bars: { fill: theme.secondary },
+                    tooltips: {
+                      fill: '#fff',
+                      stroke: theme.greyScale4,
+                      textFill: theme.greyScale3,
+                    },
+                  }}
+                />
+              </Row>
+            </Column>
+          )}
       </div>
     );
   },

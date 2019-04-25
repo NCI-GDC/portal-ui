@@ -9,8 +9,8 @@ import TabbedLinks from '@ncigdc/components/TabbedLinks';
 import GitHut from '@ncigdc/components/GitHut';
 import { Column } from '@ncigdc/uikit/Flex';
 import ProjectsTable from '@ncigdc/modern_components/ProjectsTable';
-import { AWG } from '@ncigdc/utils/constants';
 import ProjectAggregations from './ProjectAggregations';
+import { AWG } from '@ncigdc/utils/constants';
 
 export type TProps = {
   relay: Object,
@@ -30,16 +30,6 @@ export type TProps = {
 export const ProjectsPageComponent = (props: TProps) => (
   <SearchPage
     className="test-projects-page"
-    facetTabs={[
-      {
-        id: 'projects',
-        text: 'Projects',
-        component: (
-          <ProjectAggregations
-            aggregations={props.viewer.projects.aggregations} />
-        ),
-      },
-    ]}
     filtersLinkProps={{
       linkPathname: '/repository',
       linkText: 'Open Query in Repository',
@@ -58,10 +48,22 @@ export const ProjectsPageComponent = (props: TProps) => (
         return field.replace(/^projects/, 'cases.project');
       },
     }}
-    results={(
+    facetTabs={[
+      {
+        id: 'projects',
+        text: 'Projects',
+        component: (
+          <ProjectAggregations
+            aggregations={props.viewer.projects.aggregations}
+          />
+        ),
+      },
+    ]}
+    results={
       <Column spacing="2rem">
         {!AWG && <ProjectsCharts />}
         <TabbedLinks
+          queryParam="projectsTableTab"
           defaultIndex={0}
           links={[
             {
@@ -71,17 +73,18 @@ export const ProjectsPageComponent = (props: TProps) => (
             },
             ...(!AWG
               ? [
-                {
-                  id: 'graph',
-                  text: 'Graph',
-                  component: <GitHut params={props.relay.route.params} />,
-                },
-              ]
+                  {
+                    id: 'graph',
+                    text: 'Graph',
+                    component: <GitHut params={props.relay.route.params} />,
+                  },
+                ]
               : []),
           ]}
-          queryParam="projectsTableTab" />
+        />
       </Column>
-    )} />
+    }
+  />
 );
 
 export const ProjectsPageQuery = {

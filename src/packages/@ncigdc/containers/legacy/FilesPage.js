@@ -25,10 +25,11 @@ export type TProps = {
 };
 
 export const FilesPageComponent = (props: TProps) => {
-  const setAutocomplete = quicksearch => props.relay.setVariables({
-    quicksearch,
-    runQuicksearch: !!quicksearch,
-  });
+  const setAutocomplete = quicksearch =>
+    props.relay.setVariables({
+      quicksearch,
+      runQuicksearch: !!quicksearch,
+    });
 
   return (
     <SearchPage
@@ -40,7 +41,8 @@ export const FilesPageComponent = (props: TProps) => {
             <CaseAggregations
               aggregations={props.viewer.cases.aggregations}
               hits={(props.viewer.cases || {}).hits || {}}
-              setAutocomplete={setAutocomplete} />
+              setAutocomplete={setAutocomplete}
+            />
           ),
         },
         {
@@ -50,7 +52,8 @@ export const FilesPageComponent = (props: TProps) => {
           ),
         },
       ]}
-      results={<FileTable hits={props.viewer.files.hits} />} />
+      results={<FileTable hits={props.viewer.files.hits} />}
+    />
   );
 };
 

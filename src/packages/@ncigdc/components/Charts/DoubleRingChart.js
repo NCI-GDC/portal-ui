@@ -55,11 +55,13 @@ const DoubleRingChart = ({
     innerRadius: centerRadius,
     outerRadius: radius,
   }));
-  const outerPie = outerPieData.map((p, i) => d3
-    .pie()
-    .padAngle(HALF_DEGREE_IN_RAD)
-    .startAngle(innerPie[i].startAngle)
-    .endAngle(innerPie[i].endAngle)(p.items.map(i => i.v)),);
+  const outerPie = outerPieData.map((p, i) =>
+    d3
+      .pie()
+      .padAngle(HALF_DEGREE_IN_RAD)
+      .startAngle(innerPie[i].startAngle)
+      .endAngle(innerPie[i].endAngle)(p.items.map(i => i.v)),
+  );
 
   const dataWithPie = [
     innerPieData.map((p, i) => ({
@@ -94,10 +96,12 @@ const DoubleRingChart = ({
     .data(d => d)
     .enter()
     .append('path')
-    .attr('d', d => d3
-      .arc()
-      .outerRadius(d.outerRadius)
-      .innerRadius(d.innerRadius)(d.pie),)
+    .attr('d', d =>
+      d3
+        .arc()
+        .outerRadius(d.outerRadius)
+        .innerRadius(d.innerRadius)(d.pie),
+    )
     .style('fill', (d, i) => d.color);
 
   fill
@@ -116,22 +120,22 @@ const DoubleRingChart = ({
 DoubleRingChart.propTypes = {
   data: PropTypes.arrayOf(
     PropTypes.shape({
-      clickHandler: PropTypes.func,
       key: PropTypes.string,
+      value: PropTypes.number,
+      tooltip: PropTypes.object,
+      clickHandler: PropTypes.func,
       outer: PropTypes.arrayOf(
         PropTypes.shape({
-          clickHandler: PropTypes.func,
           key: PropTypes.string,
           value: PropTypes.number,
+          clickHandler: PropTypes.func,
         }),
       ),
-      tooltip: PropTypes.object,
-      value: PropTypes.number,
     }),
   ),
   height: PropTypes.number,
-  outerRingWidth: PropTypes.number,
   width: PropTypes.number,
+  outerRingWidth: PropTypes.number,
 };
 
 /*----------------------------------------------------------------------------*/

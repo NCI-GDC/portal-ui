@@ -29,19 +29,27 @@ const Header = styled(Row, {
 
 const PrimarySitesTable = ({ data, tableInfo, projectId }) => (
   <Table
-    body={(
+    id="project-primary-site-table"
+    headings={tableInfo
+      .filter(x => !x.subHeading)
+      .map(x => <x.th key={x.id} />)}
+    subheadings={tableInfo
+      .filter(x => x.subHeading)
+      .map(x => <x.th key={x.id} />)}
+    body={
       <tbody>
         {data.length >= 1 ? (
           data.map((primarySite, i) => {
             return (
-              <Tr index={i} key={i}>
+              <Tr key={i} index={i}>
                 {tableInfo
                   .filter(x => x.td)
                   .map(x => (
                     <x.td
                       key={x.id}
                       primarySite={primarySite}
-                      projectId={projectId} />
+                      projectId={projectId}
+                    />
                   ))}
               </Tr>
             );
@@ -54,20 +62,15 @@ const PrimarySitesTable = ({ data, tableInfo, projectId }) => (
           </Tr>
         )}
       </tbody>
-    )}
-    headings={tableInfo
-      .filter(x => !x.subHeading)
-      .map(x => <x.th key={x.id} />)}
-    id="project-primary-site-table"
-    subheadings={tableInfo
-      .filter(x => x.subHeading)
-      .map(x => <x.th key={x.id} />)} />
+    }
+  />
 );
 
 export default compose(
   setDisplayName('ProjectPrimarySitesTablePresentation'),
   branch(
-    ({ viewer }) => !viewer.projects.hits.edges ||
+    ({ viewer }) =>
+      !viewer.projects.hits.edges ||
       viewer.projects.hits.edges[0].node.primary_site.length < 2,
     () => renderNothing()
   ),
@@ -107,7 +110,8 @@ export default compose(
             backgroundColor: 'white',
             justifyContent: 'space-between',
             alignItems: 'flex-end',
-          }} />
+          }}
+        />
         <Row>
           <div
             style={{
@@ -118,7 +122,8 @@ export default compose(
               width: '100%',
               backgroundColor: 'white',
               padding: '1rem 1rem 0 1rem',
-            }}>
+            }}
+          >
             <Row>{tableHeader && <Header>{tableHeader}</Header>}</Row>
             <Row>
               <label htmlFor="filter-input">
@@ -135,18 +140,15 @@ export default compose(
                     display: 'flex',
                     justifyContent: 'center',
                     alignItems: 'center',
-                  }}>
+                  }}
+                >
                   <SearchIcon size={14} />
                 </div>
               </label>
               <Input
                 disabled={loading}
                 id="filter-input"
-                onChange={e => {
-                  const trimmed = trim(e.target.value);
-                  setSearchValue(trimmed);
-                }}
-                placeholder="Search"
+                value={searchValue}
                 style={{
                   fontSize: '14px',
                   paddingLeft: '1rem',
@@ -154,13 +156,15 @@ export default compose(
                   width: '25rem',
                   borderRadius: '0 4px 4px 0',
                 }}
+                placeholder={'Search'}
+                onChange={e => {
+                  const trimmed = trim(e.target.value);
+                  setSearchValue(trimmed);
+                }}
                 type="text"
-                value={searchValue} />
+              />
               {!!searchValue.length && (
                 <CloseIcon
-                  onClick={() => {
-                    setSearchValue('');
-                  }}
                   style={{
                     position: 'absolute',
                     right: 0,
@@ -169,16 +173,21 @@ export default compose(
                     transition: 'all 0.3s ease',
                     outline: 0,
                     cursor: 'pointer',
-                  }} />
+                  }}
+                  onClick={() => {
+                    setSearchValue('');
+                  }}
+                />
               )}
             </Row>
           </div>
         </Row>
         <LocalPaginationTable
-          customDefaultSize={10}
           data={primarySiteData}
-          prefix={paginationPrefix}>
-          <PrimarySitesTable projectId={projectId} tableInfo={tableInfo} />
+          prefix={paginationPrefix}
+          customDefaultSize={10}
+        >
+          <PrimarySitesTable tableInfo={tableInfo} projectId={projectId} />
         </LocalPaginationTable>
       </div>
     );

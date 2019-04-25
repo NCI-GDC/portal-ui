@@ -32,18 +32,18 @@ export const AnnotationsPageComponent = (props: TProps) => (
         component: (
           <AnnotationAggregations
             aggregations={props.viewer.annotations.aggregations}
-            setAutocomplete={(value, onReadyStateChange) => props.relay.setVariables(
-              {
-                idAutocomplete: value,
-                runAutocomplete: !!value,
-              },
-              onReadyStateChange,
-            )}
-            suggestions={(props.viewer.autocomplete || { hits: [] }).hits} />
+            suggestions={(props.viewer.autocomplete || { hits: [] }).hits}
+            setAutocomplete={(value, onReadyStateChange) =>
+              props.relay.setVariables(
+                { idAutocomplete: value, runAutocomplete: !!value },
+                onReadyStateChange,
+              )}
+          />
         ),
       },
     ]}
-    results={<AnnotationsTable hits={props.viewer.annotations.hits} />} />
+    results={<AnnotationsTable hits={props.viewer.annotations.hits} />}
+  />
 );
 
 export const AnnotationsPageQuery = {

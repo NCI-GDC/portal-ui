@@ -6,8 +6,9 @@ import { graphql } from 'react-relay';
 export default (Component: ReactClass<*>) => (props: Object) => {
   return (
     <BaseQuery
-      Component={Component}
       parentProps={props}
+      variables={{ id: btoa(`${props.type}:${props.id}`) }}
+      Component={Component}
       query={graphql`
         query exists_relayQuery($id: ID) {
           node(id: $id) {
@@ -15,6 +16,6 @@ export default (Component: ReactClass<*>) => (props: Object) => {
           }
         }
       `}
-      variables={{ id: btoa(`${props.type}:${props.id}`) }} />
+    />
   );
 };

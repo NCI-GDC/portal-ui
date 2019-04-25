@@ -68,14 +68,23 @@ export const GeneAggregationsComponent = compose(
 )((props: TProps) => (
   <div className="test-gene-aggregations">
     <FacetHeader
-      collapsed={props.idCollapsed}
-      description="Enter Gene symbol, synonym, name or IDs for Ensembl, Entrez gene, HGNC Gene, OMIM, UniProtKB/Swiss-Prot"
+      title="Gene"
       field="genes.gene_id"
-      setCollapsed={props.setSsmIdCollapsed}
-      title="Gene" />
-    <SuggestionFacet
       collapsed={props.idCollapsed}
+      setCollapsed={props.setSsmIdCollapsed}
+      description={
+        'Enter Gene symbol, synonym, name or IDs for Ensembl, Entrez gene, HGNC Gene, OMIM, UniProtKB/Swiss-Prot'
+      }
+    />
+    <SuggestionFacet
+      geneSymbolFragment={props.geneSymbolFragment}
+      title="Gene"
       doctype="genes"
+      collapsed={props.idCollapsed}
+      fieldNoDoctype="gene_id"
+      placeholder="e.g. BRAF, ENSG00000157764"
+      hits={props.suggestions}
+      setAutocomplete={props.setAutocomplete}
       dropdownItem={x => (
         <div>
           <div style={{ fontWeight: 'bold' }}>{x.symbol}</div>
@@ -84,38 +93,35 @@ export const GeneAggregationsComponent = compose(
           {x.name}
         </div>
       )}
-      fieldNoDoctype="gene_id"
-      geneSymbolFragment={props.geneSymbolFragment}
-      hits={props.suggestions}
-      placeholder="e.g. BRAF, ENSG00000157764"
-      setAutocomplete={props.setAutocomplete}
-      title="Gene" />
+    />
 
     <UploadSetButton
-      defaultQuery={{
-        pathname: '/exploration',
-        query: { searchTableTab: 'genes' },
-      }}
-      idField="genes.gene_id"
+      type="gene"
       style={{
         width: '100%',
         borderBottom: `1px solid ${props.theme.greyScale5}`,
         padding: '0 1.2rem 1rem',
       }}
-      type="gene"
-      UploadModal={UploadGeneSet}>
+      UploadModal={UploadGeneSet}
+      defaultQuery={{
+        pathname: '/exploration',
+        query: { searchTableTab: 'genes' },
+      }}
+      idField="genes.gene_id"
+    >
       Upload Gene Set
     </UploadSetButton>
 
     {_.reject(presetFacets, { full: 'genes.gene_id' }).map(facet => (
       <FacetWrapper
-        additionalProps={facet.additionalProps}
-        aggregation={props.aggregations[escapeForRelay(facet.field)]}
-        facet={facet}
         key={facet.full}
+        facet={facet}
+        title={facet.title}
+        aggregation={props.aggregations[escapeForRelay(facet.field)]}
         relay={props.relay}
+        additionalProps={facet.additionalProps}
         style={{ borderBottom: `1px solid ${props.theme.greyScale5}` }}
-        title={facet.title} />
+      />
     ))}
     {/* <FacetWrapper
       key={'cnvs.cnv_change'}

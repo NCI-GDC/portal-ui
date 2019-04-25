@@ -4,7 +4,7 @@ import { ExternalLink } from '@ncigdc/uikit/Links';
 import BaseModal from '@ncigdc/components/Modals/BaseModal';
 
 const FirstTimeModal = ({ onClose }) => (
-  <BaseModal closeText="Accept" onClose={onClose} title="Warning">
+  <BaseModal title="Warning" closeText="Accept" onClose={onClose}>
     <p>
       You are accessing a U.S. Government web site which may contain information
       that must be protected under the U. S. Privacy Act or other sensitive
@@ -32,26 +32,24 @@ const FirstTimeModal = ({ onClose }) => (
       <b>WARNING</b>
       : Data in the GDC is considered provisional as the GDC applies
       state-of-the art analysis pipelines which evolve over time. Please read
-      the
-      {' '}
+      the{' '}
       <ExternalLink
         hasExternalIcon={false}
-        href="https://docs.gdc.cancer.gov/Data/Release_Notes/Data_Release_Notes">
+        href="https://docs.gdc.cancer.gov/Data/Release_Notes/Data_Release_Notes"
+      >
         GDC Data Release Notes
-      </ExternalLink>
-      {' '}
+      </ExternalLink>{' '}
       prior to accessing this web site as the Release Notes provide details
       about data updates, known issues and workarounds.
     </p>
     <p>
-      Contact
-      {' '}
+      Contact{' '}
       <ExternalLink
         hasExternalIcon={false}
-        href="https://gdc.cancer.gov/support#gdc-help-desk">
+        href="https://gdc.cancer.gov/support#gdc-help-desk"
+      >
         GDC Support
-      </ExternalLink>
-      {' '}
+      </ExternalLink>{' '}
       for more information.
     </p>
   </BaseModal>

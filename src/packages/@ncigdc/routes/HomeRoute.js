@@ -62,10 +62,7 @@ const Home = () => (
         <HumanBody />
       </Row>
     </GradientContainer>
-    <Column style={{
-      paddingTop: '7rem',
-      alignItems: 'center',
-    }}>
+    <Column style={{ paddingTop: '7rem', alignItems: 'center' }}>
       <Row style={{ fontSize: '1.3em' }}>GDC Applications</Row>
       <Row style={{ textAlign: 'center' }}>
         The GDC Data Portal is a robust data-driven platform that allows cancer

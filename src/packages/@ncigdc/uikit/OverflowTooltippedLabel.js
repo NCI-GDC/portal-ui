@@ -21,16 +21,6 @@ const OverflowTooltippedLabel = compose(
       } = this.props;
       return (
         <label
-          htmlFor={htmlFor}
-          onMouseOut={() => hasTooltip && setTooltip()}
-          onMouseOver={() => hasTooltip && setTooltip(children)}
-          ref={el => {
-            if (!hasTooltip && el) {
-              if (el.clientWidth < el.scrollWidth) {
-                setHasTooltip(true);
-              }
-            }
-          }}
           style={{
             whiteSpace: 'nowrap',
             textOverflow: 'ellipsis',
@@ -39,7 +29,18 @@ const OverflowTooltippedLabel = compose(
             padding: '0 0.25rem',
             ...style,
           }}
-          {...props}>
+          ref={el => {
+            if (!hasTooltip && el) {
+              if (el.clientWidth < el.scrollWidth) {
+                setHasTooltip(true);
+              }
+            }
+          }}
+          onMouseOver={() => hasTooltip && setTooltip(children)}
+          onMouseOut={() => hasTooltip && setTooltip()}
+          htmlFor={htmlFor}
+          {...props}
+        >
           {children}
         </label>
       );

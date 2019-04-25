@@ -12,13 +12,13 @@ import md5 from 'blueimp-md5';
 import urlJoin from 'url-join';
 import _ from 'lodash';
 
+import ClinicalVariableCard from './ClinicalVariableCard.js';
 import consoleDebug from '@ncigdc/utils/consoleDebug';
 import { redirectToLogin } from '@ncigdc/utils/auth';
-import Loader, { withLoader } from '@ncigdc/uikit/Loaders/Loader';
-
+import { withLoader } from '@ncigdc/uikit/Loaders/Loader';
+import Loader from '@ncigdc/uikit/Loaders/Loader';
 
 import { API, IS_AUTH_PORTAL } from '@ncigdc/utils/constants';
-import ClinicalVariableCard from './ClinicalVariableCard.js';
 
 const simpleAggCache = {};
 const pendingAggCache = {};
@@ -75,44 +75,46 @@ const getContinuousAggs = ({ fieldName, stats, filters }) => {
       },
       body,
     }
-  ).then(response => response
-    .json()
-    .then(json => {
-      if (!response.ok) {
-        consoleDebug('throwing error in Environment');
-        throw response;
-      }
-
-      if (response.status === 200) {
-        simpleAggCache[hash] = json;
-        delete pendingAggCache[hash];
-      }
-
-      return json;
-    })
-    .catch(err => {
-      if (err.status) {
-        switch (err.status) {
-          case 401:
-          case 403:
-            consoleDebug(err.statusText);
-            if (IS_AUTH_PORTAL) {
-              return redirectToLogin('timeout');
-            }
-            break;
-          case 400:
-          case 404:
-            consoleDebug(err.statusText);
-            break;
-          default:
-            return consoleDebug(`Default error case: ${err.statusText}`);
+  ).then(response =>
+    response
+      .json()
+      .then(json => {
+        if (!response.ok) {
+          consoleDebug('throwing error in Environment');
+          throw response;
         }
-      } else {
-        consoleDebug(
-          `Something went wrong in environment, but no error status: ${err}`
-        );
-      }
-    }));
+
+        if (response.status === 200) {
+          simpleAggCache[hash] = json;
+          delete pendingAggCache[hash];
+        }
+
+        return json;
+      })
+      .catch(err => {
+        if (err.status) {
+          switch (err.status) {
+            case 401:
+            case 403:
+              consoleDebug(err.statusText);
+              if (IS_AUTH_PORTAL) {
+                return redirectToLogin('timeout');
+              }
+              break;
+            case 400:
+            case 404:
+              consoleDebug(err.statusText);
+              break;
+            default:
+              return consoleDebug(`Default error case: ${err.statusText}`);
+          }
+        } else {
+          consoleDebug(
+            `Something went wrong in environment, but no error status: ${err}`
+          );
+        }
+      })
+  );
 };
 
 export default compose(
@@ -134,21 +136,19 @@ export default compose(
       setAggData(res && res.data.viewer, () => setIsLoading(false));
     },
   }),
-  withPropsOnChange(['filters'], ({ updateData, ...props }) => updateData(props))
-)(({
-  aggData, isLoading, setId, stats, hits, ...props
-}) => {
+  withPropsOnChange(['filters'], ({ updateData, ...props }) =>
+    updateData(props)
+  )
+)(({ aggData, isLoading, setId, stats, hits, ...props }) => {
   if (isLoading) {
     return <Loader />;
   }
   return (
     <ClinicalVariableCard
-      data={{
-        ...aggData,
-        hits,
-      }}
       setId={setId}
       stats={stats}
-      {...props} />
+      data={{ ...aggData, hits }}
+      {...props}
+    />
   );
 });

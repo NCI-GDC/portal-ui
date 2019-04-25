@@ -5,25 +5,11 @@ import DownloadButton from '@ncigdc/components/DownloadButton';
 
 const MetadataDropdownButton = ({ files }) => (
   <DownloadButton
-    activeText="Downloading"
     endpoint="files"
-    extraParams={{
-      expand: [
-        'metadata_files',
-        'annotations',
-        'archive',
-        'associated_entities',
-        'center',
-        'analysis',
-        'analysis.input_files',
-        'analysis.metadata',
-        'analysis.metadata_files',
-        'analysis.downstream_analyses',
-        'analysis.downstream_analyses.output_files',
-        'reference_genome',
-        'index_file',
-      ],
-    }}
+    size={files.files.length}
+    filename={`metadata.cart.${timestamp()}.json`}
+    activeText="Downloading"
+    inactiveText="Metadata"
     fields={[
       'state',
       'access',
@@ -67,7 +53,23 @@ const MetadataDropdownButton = ({ files }) => (
       'downstream_analyses.output_files.file_size',
       'index_files.file_id',
     ]}
-    filename={`metadata.cart.${timestamp()}.json`}
+    extraParams={{
+      expand: [
+        'metadata_files',
+        'annotations',
+        'archive',
+        'associated_entities',
+        'center',
+        'analysis',
+        'analysis.input_files',
+        'analysis.metadata',
+        'analysis.metadata_files',
+        'analysis.downstream_analyses',
+        'analysis.downstream_analyses.output_files',
+        'reference_genome',
+        'index_file',
+      ],
+    }}
     filters={{
       content: [
         {
@@ -80,8 +82,7 @@ const MetadataDropdownButton = ({ files }) => (
       ],
       op: 'and',
     }}
-    inactiveText="Metadata"
-    size={files.files.length} />
+  />
 );
 
 export default MetadataDropdownButton;

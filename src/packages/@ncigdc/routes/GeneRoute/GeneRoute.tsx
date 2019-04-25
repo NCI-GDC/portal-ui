@@ -39,10 +39,7 @@ export default ({
       content: [
         {
           op: 'in',
-          content: {
-            field: 'genes.gene_id',
-            value: [geneId],
-          },
+          content: { field: 'genes.gene_id', value: [geneId] },
         },
       ],
     },
@@ -66,8 +63,8 @@ export default ({
   );
 
   return (
-    <Exists id={geneId} type="Gene">
-      <FullWidthLayout entityType="GN" title={<GeneSymbol geneId={geneId} />}>
+    <Exists type="Gene" id={geneId}>
+      <FullWidthLayout title={<GeneSymbol geneId={geneId} />} entityType="GN">
         <Column spacing="2rem">
           {!isEmpty(filters) && <CurrentFilters />}
           <Row spacing="2rem">
@@ -78,11 +75,8 @@ export default ({
               <GeneExternalReferences geneId={geneId} />
             </Row>
           </Row>
-          <Column id="cancer-distribution" style={{ backgroundColor: 'white' }}>
-            <Row style={{
-              padding: '1rem 1rem 2rem',
-              alignItems: 'center',
-            }}>
+          <Column style={{ backgroundColor: 'white' }} id="cancer-distribution">
+            <Row style={{ padding: '1rem 1rem 2rem', alignItems: 'center' }}>
               <Heading>
                 <ChartIcon style={{ marginRight: '1rem' }} />
                 Cancer Distribution
@@ -91,56 +85,45 @@ export default ({
                 query={{
                   searchTableTab: 'cases',
                   filters: mutatedGeneFilter,
-                }}>
-                <GdcDataIcon />
-                {' '}
-Open in Exploration
+                }}
+              >
+                <GdcDataIcon /> Open in Exploration
               </ExploreLink>
             </Row>
             <Column>
               <CancerDistributionBarChart
                 filters={mutatedGeneFilter}
-                style={{ width: '100%' }} />
+                style={{ width: '100%' }}
+              />
               <CancerDistributionTable
-                entityName={<GeneSymbol geneId={geneId} />}
                 filters={mutatedGeneFilter}
-                geneId={geneId} />
+                entityName={<GeneSymbol geneId={geneId} />}
+                geneId={geneId}
+              />
             </Column>
           </Column>
-          <Column style={{
-            backgroundColor: 'white',
-            marginTop: '2rem',
-          }}>
+          <Column style={{ backgroundColor: 'white', marginTop: '2rem' }}>
             <GeneLolliplot geneId={geneId} />
           </Column>
-          <Column style={{
-            backgroundColor: 'white',
-            marginTop: '2rem',
-          }}>
-            <Row style={{
-              padding: '1rem 1rem 2rem',
-              alignItems: 'center',
-            }}>
+          <Column style={{ backgroundColor: 'white', marginTop: '2rem' }}>
+            <Row style={{ padding: '1rem 1rem 2rem', alignItems: 'center' }}>
               <Heading id="frequent-mutations">
                 <ChartIcon style={{ marginRight: '1rem' }} />
                 Most Frequent Somatic Mutations
               </Heading>
               <ExploreLink
-                query={{
-                  searchTableTab: 'mutations',
-                  filters: geneFilter,
-                }}>
-                <GdcDataIcon />
-                {' '}
-Open in Exploration
+                query={{ searchTableTab: 'mutations', filters: geneFilter }}
+              >
+                <GdcDataIcon /> Open in Exploration
               </ExploreLink>
             </Row>
             <Column>
               <SsmsTable
-                context={<GeneSymbol geneId={geneId} />}
                 defaultFilters={geneFilter}
+                shouldShowGeneSymbol={false}
+                context={<GeneSymbol geneId={geneId} />}
                 hideSurvival
-                shouldShowGeneSymbol={false} />
+              />
             </Column>
           </Column>
         </Column>

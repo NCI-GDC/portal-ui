@@ -10,7 +10,7 @@ import { Row, Column } from '@ncigdc/uikit/Flex';
 import CountBubble from '@ncigdc/uikit/CountBubble';
 import styled from '@ncigdc/theme/styled';
 
-import { Container, BucketLink } from '.';
+import { Container, BucketLink } from './';
 
 type TProps = {
   field: string,
@@ -34,7 +34,7 @@ const NotMissingFacet = (props: TProps) => {
             parseFilterParam((ctx.query || {}).filters, {}).content) ||
           [];
         return (
-          <Container className="test-not-missing-facet" style={props.style}>
+          <Container style={props.style} className="test-not-missing-facet">
             {!props.collapsed && (
               <Column>
                 <BucketRow>
@@ -47,32 +47,33 @@ const NotMissingFacet = (props: TProps) => {
                         content: [
                           {
                             op: 'not',
-                            content: {
-                              field: dotField,
-                              value: ['missing'],
-                            },
+                            content: { field: dotField, value: ['missing'] },
                           },
                         ],
                       },
-                    }}>
+                    }}
+                  >
                     <input
-                      checked={currentFilters.some(
-                        ({ op, content: { field, value } }) => op === 'not' &&
-                          field === dotField &&
-                          value.includes('missing'),
-                      )}
-                      id={`input-${props.title}-not-missing`}
-                      name={`input-${props.title}-not-missing`}
                       readOnly
+                      type="checkbox"
                       style={{
                         pointerEvents: 'none',
                         marginRight: '5px',
                         verticalAlign: 'middle',
                       }}
-                      type="checkbox" />
+                      checked={currentFilters.some(
+                        ({ op, content: { field, value } }) =>
+                          op === 'not' &&
+                          field === dotField &&
+                          value.includes('missing'),
+                      )}
+                      id={`input-${props.title}-not-missing`}
+                      name={`input-${props.title}-not-missing`}
+                    />
                     <label
                       htmlFor={`input-${props.title}-not-missing`}
-                      style={{ verticalAlign: 'middle' }}>
+                      style={{ verticalAlign: 'middle' }}
+                    >
                       Not Missing
                     </label>
                   </BucketLink>

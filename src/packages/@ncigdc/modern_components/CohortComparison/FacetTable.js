@@ -1,8 +1,6 @@
 import React from 'react';
 import { compose } from 'recompose';
-import {
-  union, find, truncate, get, omit,
-} from 'lodash';
+import { union, find, truncate, get, omit } from 'lodash';
 
 import { IBucket } from '@ncigdc/components/Aggregations/types';
 import ExploreLink from '@ncigdc/components/Links/ExploreLink';
@@ -17,9 +15,7 @@ import saveFile from '@ncigdc/utils/filesaver';
 import EntityPageHorizontalTable from '@ncigdc/components/EntityPageHorizontalTable';
 import { Tooltip } from '../../uikit/Tooltip/index';
 
-function barChartData({
-  term, value, name, percent,
-}) {
+function barChartData({ term, value, name, percent }) {
   return {
     label: truncate(term, { length: 15 }),
     value: percent,
@@ -27,10 +23,7 @@ function barChartData({
       <div>
         <strong>{name}</strong>
         <br />
-        {percent.toFixed(0)}
-% Cases (
-        {value.toLocaleString()}
-)
+        {percent.toFixed(0)}% Cases ({value.toLocaleString()})
       </div>
     ),
   };
@@ -96,15 +89,15 @@ export default compose(
     const buckets1 = buckets1Raw.includes(({ key }) => key === '_missing')
       ? buckets1Raw
       : addMissing({
-        buckets: buckets1Raw,
-        total: result1.hits.total,
-      });
+          buckets: buckets1Raw,
+          total: result1.hits.total,
+        });
     const buckets2 = buckets2Raw.includes(({ key }) => key === '_missing')
       ? buckets2Raw
       : addMissing({
-        buckets: buckets2Raw,
-        total: result2.hits.total,
-      });
+          buckets: buckets2Raw,
+          total: result2.hits.total,
+        });
 
     const tableData = union(
       buckets1.map(b => b.key),
@@ -127,12 +120,11 @@ export default compose(
       };
     });
 
-    const noDataKeys = [
-      '_missing',
-      'not reported',
-      'unknown',
+    const noDataKeys = ['_missing', 'not reported', 'unknown'];
+    const pValueBuckets = [
+      buckets1.filter(({ key }) => !noDataKeys.includes(key)),
+      buckets2.filter(({ key }) => !noDataKeys.includes(key)),
     ];
-    const pValueBuckets = [buckets1.filter(({ key }) => !noDataKeys.includes(key)), buckets2.filter(({ key }) => !noDataKeys.includes(key))];
 
     return (
       <div className="facet-container">
@@ -140,26 +132,20 @@ export default compose(
         <div
           style={{
             maxWidth: tableData.length * 140 + 150, // TODO: use same logic used in TwoBarCharts
-          }}>
+          }}
+        >
           <BarChart
+            minBarHeight={1}
             data1={tableData.map(
-              ({ term, casesS1: value, percentS1: percent }) => barChartData({
-                term,
-                value,
-                name: setName1,
-                percent,
-              }),
+              ({ term, casesS1: value, percentS1: percent }) =>
+                barChartData({ term, value, name: setName1, percent }),
             )}
             data2={tableData.map(
-              ({ term, casesS2: value, percentS2: percent }) => barChartData({
-                term,
-                value,
-                name: setName2,
-                percent,
-              }),
+              ({ term, casesS2: value, percentS2: percent }) =>
+                barChartData({ term, value, name: setName2, percent }),
             )}
+            yAxis={{ title: '% Cases' }}
             height={200}
-            minBarHeight={1}
             styles={{
               xAxis: {
                 stroke: theme.greyScale4,
@@ -177,9 +163,75 @@ export default compose(
                 textFill: theme.greyScale3,
               },
             }}
-            yAxis={{ title: '% Cases' }} />
+          />
         </div>
         <EntityPageHorizontalTable
+          rightComponent={
+            <Button
+              style={{ ...visualizingButton }}
+              onClick={() =>
+                saveFile(
+                  toTsvString(
+                    tableData.map(d =>
+                      omit(
+                        {
+                          ...d,
+                          [heading]: d.term,
+                          '# Cases S1': d.casesS1,
+                          '% Cases S1': d.percentS1,
+                          '# Cases S2': d.casesS2,
+                          '% Cases S2': d.percentS2,
+                        },
+                        [
+                          'term',
+                          'casesS1',
+                          'casesS2',
+                          'percentS1',
+                          'percentS2',
+                          'filters1',
+                          'filters2',
+                        ],
+                      ),
+                    ),
+                  ),
+                  'TSV',
+                  `${heading}-comparison.tsv`,
+                )}
+            >
+              TSV
+            </Button>
+          }
+          headings={[
+            { key: 'term', title: heading, tdStyle: { maxWidth: 250 } },
+            {
+              key: 'casesS1',
+              title: (
+                <span>
+                  # Cases <Alias i={1} />
+                </span>
+              ),
+              style: { textAlign: 'right' },
+            },
+            {
+              key: 'percentS1',
+              title: '%',
+              style: { textAlign: 'right' },
+            },
+            {
+              key: 'casesS2',
+              title: (
+                <span>
+                  # Cases <Alias i={2} />
+                </span>
+              ),
+              style: { textAlign: 'right' },
+            },
+            {
+              key: 'percentS2',
+              title: '%',
+              style: { textAlign: 'right' },
+            },
+          ]}
           data={tableData.map(row => ({
             ...row,
             casesS1:
@@ -202,17 +254,18 @@ export default compose(
                         ...(row.filters1
                           ? row.filters1
                           : [
-                            {
-                              op: row.term === '_missing' ? 'is' : 'in',
-                              content: {
-                                field: `cases.${field}`,
-                                value: [row.term],
+                              {
+                                op: row.term === '_missing' ? 'is' : 'in',
+                                content: {
+                                  field: `cases.${field}`,
+                                  value: [row.term],
+                                },
                               },
-                            },
-                          ]),
+                            ]),
                       ],
                     },
-                  }}>
+                  }}
+                >
                   {row.casesS1.toLocaleString()}
                 </ExploreLink>
               ),
@@ -237,99 +290,35 @@ export default compose(
                         ...(row.filters2
                           ? row.filters2
                           : [
-                            {
-                              op: row.term === '_missing' ? 'is' : 'in',
-                              content: {
-                                field: `cases.${field}`,
-                                value: [row.term],
+                              {
+                                op: row.term === '_missing' ? 'is' : 'in',
+                                content: {
+                                  field: `cases.${field}`,
+                                  value: [row.term],
+                                },
                               },
-                            },
-                          ]),
+                            ]),
                       ],
                     },
-                  }}>
+                  }}
+                >
                   {row.casesS2}
                 </ExploreLink>
               ),
             percentS2: `${row.percentS2.toFixed(2)}%`,
           }))}
-          headings={[
-            {
-              key: 'term',
-              title: heading,
-              tdStyle: { maxWidth: 250 },
-            },
-            {
-              key: 'casesS1',
-              title: (
-                <span>
-                  # Cases
-                  {' '}
-                  <Alias i={1} />
-                </span>
-              ),
-              style: { textAlign: 'right' },
-            },
-            {
-              key: 'percentS1',
-              title: '%',
-              style: { textAlign: 'right' },
-            },
-            {
-              key: 'casesS2',
-              title: (
-                <span>
-                  # Cases
-                  {' '}
-                  <Alias i={2} />
-                </span>
-              ),
-              style: { textAlign: 'right' },
-            },
-            {
-              key: 'percentS2',
-              title: '%',
-              style: { textAlign: 'right' },
-            },
-          ]}
-          rightComponent={(
-            <Button
-              onClick={() => saveFile(
-                toTsvString(
-                  tableData.map(d => omit(
-                    {
-                      ...d,
-                      [heading]: d.term,
-                      '# Cases S1': d.casesS1,
-                      '% Cases S1': d.percentS1,
-                      '# Cases S2': d.casesS2,
-                      '% Cases S2': d.percentS2,
-                    },
-                    [
-                      'term',
-                      'casesS1',
-                      'casesS2',
-                      'percentS1',
-                      'percentS2',
-                      'filters1',
-                      'filters2',
-                    ],
-                  ),),
-                ),
-                'TSV',
-                `${heading}-comparison.tsv`,
-              )}
-              style={{ ...visualizingButton }}>
-              TSV
-            </Button>
-          )} />
+        />
         <div style={{ textAlign: 'right' }}>
           {pValueBuckets.every(b => b.length === 2) && (
             <Tooltip
               Component={`P-Value for ${pValueBuckets[0][0]
-                .key} and ${pValueBuckets[0][1].key}`}>
+                .key} and ${pValueBuckets[0][1].key}`}
+            >
               <Pvalue
-                data={pValueBuckets.map(buckets => buckets.map(x => x.doc_count),)} />
+                data={pValueBuckets.map(buckets =>
+                  buckets.map(x => x.doc_count),
+                )}
+              />
             </Tooltip>
           )}
         </div>

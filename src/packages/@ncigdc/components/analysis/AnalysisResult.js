@@ -33,17 +33,14 @@ function undoNotification(dispatch, analysis) {
           {analysis.length === 1 ? (
             <span>
               {' '}
-              Analysis
-              {' '}
+              Analysis{' '}
               <strong>
                 {availableAnalysis.find(a => analysis[0].type === a.type).label}
               </strong>
             </span>
           ) : (
             <span>
-              <strong>{analysis.length}</strong>
-              {' '}
-Analyses
+              <strong>{analysis.length}</strong> Analyses
             </span>
           )}
           <strong>
@@ -51,13 +48,15 @@ Analyses
               className="fa fa-undo"
               style={{
                 marginRight: '0.3rem',
-              }} />
+              }}
+            />
             <UnstyledButton
+              style={{ textDecoration: 'underline' }}
               onClick={() => {
                 analysis.map(set => dispatch(addAnalysis(set)));
                 dispatch(closeNotification());
               }}
-              style={{ textDecoration: 'underline' }}>
+            >
               Undo
             </UnstyledButton>
           </strong>
@@ -68,9 +67,7 @@ Analyses
 }
 
 // analysis here is all analyses in localStorage
-const AnalysisResult = ({
-  analysis, query, dispatch, push,
-}) => {
+const AnalysisResult = ({ analysis, query, dispatch, push }) => {
   const analysisId = query.analysisId || '';
   const currentIndex = Math.max(
     analysis.findIndex(a => a.id === analysisId),
@@ -81,7 +78,28 @@ const AnalysisResult = ({
     analysisType === 'clinical_data' ? { minWidth: 1200 } : {};
   return (
     <TabbedLinks
+      side
+      style={{ padding: '1rem 0.7rem', ...tabMinWidth }}
+      queryParam="analysisId"
       defaultIndex={currentIndex}
+      tabToolbar={
+        <Button
+          style={{ margin: '5px 5px 0 0' }}
+          onClick={() => {
+            dispatch(removeAllAnalysis());
+            push({
+              query: omit(query, 'analysisId'),
+            });
+            undoNotification(dispatch, analysis);
+          }}
+        >
+          <TrashIcon /> Delete All
+        </Button>
+      }
+      linkStyle={{
+        width: '100%',
+        padding: '1rem 0.8rem',
+      }}
       links={analysis
         .map(savedAnalysis => {
           const analysis = availableAnalysis.find(
@@ -98,11 +116,8 @@ const AnalysisResult = ({
             text: (
               <Row>
                 <div style={{ marginRight: 15 }}>
-                  <Row spacing="8px" style={{ alignItems: 'center' }}>
-                    <analysis.Icon style={{
-                      width: 25,
-                      height: 25,
-                    }} />
+                  <Row spacing={'8px'} style={{ alignItems: 'center' }}>
+                    <analysis.Icon style={{ width: 25, height: 25 }} />
                     <Column>
                       <div style={{ fontSize: '1.4rem' }}>
                         {_.truncate(tabTitle, { length: 16 })}
@@ -112,15 +127,13 @@ const AnalysisResult = ({
                   </Row>
                 </div>
                 <UnstyledButton
+                  style={{ marginLeft: 'auto', backgroundColor: 'transparent' }}
                   onClick={e => {
                     e.preventDefault();
                     dispatch(removeAnalysis(savedAnalysis));
                     undoNotification(dispatch, [savedAnalysis]);
                   }}
-                  style={{
-                    marginLeft: 'auto',
-                    backgroundColor: 'transparent',
-                  }}>
+                >
                   x
                 </UnstyledButton>
               </Row>
@@ -131,31 +144,7 @@ const AnalysisResult = ({
           };
         })
         .filter(Boolean)}
-      linkStyle={{
-        width: '100%',
-        padding: '1rem 0.8rem',
-      }}
-      queryParam="analysisId"
-      side
-      style={{
-        padding: '1rem 0.7rem',
-        ...tabMinWidth,
-      }}
-      tabToolbar={(
-        <Button
-          onClick={() => {
-            dispatch(removeAllAnalysis());
-            push({
-              query: omit(query, 'analysisId'),
-            });
-            undoNotification(dispatch, analysis);
-          }}
-          style={{ margin: '5px 5px 0 0' }}>
-          <TrashIcon />
-          {' '}
-Delete All
-        </Button>
-      )} />
+    />
   );
 };
 

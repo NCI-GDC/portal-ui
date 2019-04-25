@@ -12,9 +12,9 @@ import { compose, withState } from 'recompose';
 import { IGroupFilter } from '@ncigdc/utils/filters/types';
 import { IRawQuery } from '@ncigdc/utils/uri/types';
 import { mergeQuery } from '@ncigdc/utils/filters';
-import { parseFilterParam, parseJSONParam, stringifyJSONParam } from '@ncigdc/utils/uri';
+import { parseFilterParam } from '@ncigdc/utils/uri';
 import { Row } from '@ncigdc/uikit/Flex';
-
+import { parseJSONParam, stringifyJSONParam } from '@ncigdc/utils/uri';
 import { Tooltip } from '@ncigdc/uikit/Tooltip';
 import { visualizingButton } from '@ncigdc/theme/mixins';
 import { withTheme } from '@ncigdc/theme';
@@ -120,104 +120,110 @@ const TableActions: React.SFC<IProps> = ({
     filters: IGroupFilter;
     field: string;
   }) => {
-    return ((filters || {}).content || []).some(f => f.content.field.includes(field));
+    return ((filters || {}).content || []).some(f =>
+      f.content.field.includes(field)
+    );
   };
   return (
-    <Row className="test-table-actions" spacing="0.2rem" style={style}>
+    <Row style={style} spacing="0.2rem" className="test-table-actions">
       {arrangeColumnKey && (
         <ArrangeColumnsButton
           entityType={arrangeColumnKey}
+          style={visualizingButton}
           hideColumns={hideColumns}
-          style={visualizingButton} />
+        />
       )}
       {sortOptions && (
         <SortTableButton
+          sortFunction={tableSortFuncCreator(query, `${type}s_sort`, push)}
+          options={sortOptions}
           initialState={
             query[`${type}s_sort`]
               ? { sortSelection: parseJSONParam(query[`${type}s_sort`]) }
               : { sortSelection: [] }
           }
           isDisabled={!sortOptions.length}
-          options={sortOptions}
-          sortFunction={tableSortFuncCreator(query, `${type}s_sort`, push)}
-          style={visualizingButton} />
+          style={visualizingButton}
+        />
       )}
       {downloadBiospecimen && (
         <DownloadBiospecimenDropdown
-          buttonStyles={visualizingButton}
+          jsonFilename={`biospecimen.cases_selection.${timestamp()}.json`}
+          tsvFilename={`biospecimen.cases_selection.${timestamp()}.tar.gz`}
           filters={
             currentFilters || parseFilterParam((query || {}).filters, {})
           }
-          inactiveText="Biospecimen"
-          jsonFilename={`biospecimen.cases_selection.${timestamp()}.json`}
-          selectedIds={selectedIds}
+          buttonStyles={visualizingButton}
+          inactiveText={'Biospecimen'}
           shouldCreateSet={
             (scope === 'explore' &&
               fieldContains({
                 filters: { ...currentFilters },
                 field: 'gene',
               })) ||
-            fieldContains({
-              filters: { ...currentFilters },
-              field: 'ssms',
-            })
+            fieldContains({ filters: { ...currentFilters }, field: 'ssms' })
           }
-          tsvFilename={`biospecimen.cases_selection.${timestamp()}.tar.gz`} />
+          selectedIds={selectedIds}
+        />
       )}
       {downloadClinical && (
         <DownloadClinicalDropdown
           buttonStyles={visualizingButton}
+          tsvFilename={`clinical.cases_selection.${timestamp()}.tar.gz`}
+          jsonFilename={`clinical.cases_selection.${timestamp()}.json`}
           filters={
             currentFilters || parseFilterParam((query || {}).filters, {})
           }
-          inactiveText="Clinical"
-          jsonFilename={`clinical.cases_selection.${timestamp()}.json`}
+          inactiveText={'Clinical'}
           scope={scope}
           selectedIds={selectedIds}
-          tsvFilename={`clinical.cases_selection.${timestamp()}.tar.gz`} />
+        />
       )}
       {downloadable && (
         <Tooltip Component={downloadTooltip}>
           <DownloadButton
-            activeText="JSON"
-            disabled={!total}
-            endpoint={endpoint}
-            fields={downloadFields}
-            filename={`${pluralize(displayType, total)}.${timestamp()}.json`}
             filters={
               currentFilters || parseFilterParam((query || {}).filters, {})
             }
-            inactiveText="JSON"
-            showIcon={false}
+            disabled={!total}
+            filename={`${pluralize(displayType, total)}.${timestamp()}.json`}
+            endpoint={endpoint}
+            fields={downloadFields}
+            style={visualizingButton}
             size={total}
-            style={visualizingButton} />
+            inactiveText="JSON"
+            activeText="JSON"
+            showIcon={false}
+          />
         </Tooltip>
       )}
       {tsvSelector &&
         tsvFilename && (
-        <DownloadTableToTsvButton
-          filename={tsvFilename}
-          selector={tsvSelector} />
-      )}
+          <DownloadTableToTsvButton
+            selector={tsvSelector}
+            filename={tsvFilename}
+          />
+        )}
 
       {CreateSetButton &&
         RemoveFromSetButton &&
         AppendSetButton &&
         idField && (
-        <SetActions
-          AppendSetButton={AppendSetButton}
-          CreateSetButton={CreateSetButton}
-          displayType={displayType}
-          field={idField}
-          filters={currentFilters}
-          RemoveFromSetButton={RemoveFromSetButton}
-          scope={scope}
-          score={score}
-          selectedIds={selectedIds || []}
-          sort={sort}
-          total={total}
-          type={type} />
-      )}
+          <SetActions
+            total={total}
+            filters={currentFilters}
+            score={score}
+            sort={sort}
+            CreateSetButton={CreateSetButton}
+            AppendSetButton={AppendSetButton}
+            RemoveFromSetButton={RemoveFromSetButton}
+            field={idField}
+            type={type}
+            displayType={displayType}
+            selectedIds={selectedIds || []}
+            scope={scope}
+          />
+        )}
     </Row>
   );
 };

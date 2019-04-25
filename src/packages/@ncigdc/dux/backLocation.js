@@ -34,7 +34,7 @@ const updateBackLocation: TActionCreator = payload => ({
 const initialState = {};
 
 const reducer = (state: TState = initialState, action: TAction) => {
-  const { payload } = action;
+  const payload = action.payload;
   switch (action.type) {
     case backLocation.UPDATE:
       return payload;

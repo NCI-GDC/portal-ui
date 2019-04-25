@@ -43,7 +43,7 @@ export default compose(
   withPropsOnChange(
     ['viewer'],
     ({ viewer: { explore: { ssms: { hits: { edges } } } }, theme }) => {
-      const { node } = edges[0];
+      const node = edges[0].node;
 
       const canonicalTranscript = (find(
         node.consequence.hits.edges,
@@ -80,7 +80,8 @@ export default compose(
                   sift_score: transcript.annotation.sift_score,
                   sift_impact: transcript.annotation.sift_impact,
                   vep_impact: transcript.annotation.vep_impact,
-                }} />
+                }}
+              />
             ),
             strand: transcript.gene.gene_strand ? (
               <Row style={{ justifyContent: 'space-around' }}>
@@ -95,20 +96,22 @@ export default compose(
             transcripts: (
               <span>
                 <ExternalLink
-                  href={externalReferenceLinks.ensembl(
-                    transcript.transcript_id,
-                  )}
                   key={transcript.transcript_id}
                   style={{
                     paddingRight: '0.5em',
-                  }}>
+                  }}
+                  href={externalReferenceLinks.ensembl(
+                    transcript.transcript_id,
+                  )}
+                >
                   {transcript.transcript_id}
                 </ExternalLink>
                 {transcript.transcript_id === canonicalTranscriptId && (
                   <BubbleIcon
-                    backgroundColor={theme.primary}
                     text="C"
-                    toolTipText="Canonical" />
+                    toolTipText="Canonical"
+                    backgroundColor={theme.primary}
+                  />
                 )}
               </span>
             ),
@@ -137,54 +140,53 @@ export default compose(
     }: TProps = {},
   ) => (
     <LocalPaginationTable
-      buttons={(
+      className="test-consequences-table"
+      style={{ width: '100%', minWidth: 450 }}
+      data={dataRows}
+      prefix={paginationPrefix}
+      buttons={
         <Row style={{ alignItems: 'flex-end' }}>
           <Tooltip
             Component={<span>Export All</span>}
-            style={{ marginLeft: '2rem' }}>
+            style={{ marginLeft: '2rem' }}
+          >
             <Button
-              onClick={() => saveFile(
-                JSON.stringify(consequences, null, 2),
-                'JSON',
-                'consequences-data.json',
-              )}
-              style={{ ...visualizingButton }}>
+              style={{ ...visualizingButton }}
+              onClick={() =>
+                saveFile(
+                  JSON.stringify(consequences, null, 2),
+                  'JSON',
+                  'consequences-data.json',
+                )}
+            >
               JSON
             </Button>
           </Tooltip>
           <DownloadTableToTsvButton
-            filename={`consequences-table.${timestamp()}.tsv`}
             selector="#consequences-table"
-            style={{ marginLeft: '0.5rem' }} />
+            filename={`consequences-table.${timestamp()}.tsv`}
+            style={{ marginLeft: '0.5rem' }}
+          />
         </Row>
-      )}
-      className="test-consequences-table"
-      data={dataRows}
-      prefix={paginationPrefix}
-      style={{
-        width: '100%',
-        minWidth: 450,
-      }}>
+      }
+    >
       <EntityPageHorizontalTable
+        tableId="consequences-table"
+        style={{ width: '100%', minWidth: '450px' }}
         headings={[
-          {
-            key: 'symbol',
-            title: 'Gene',
-          },
+          { key: 'symbol', title: 'Gene' },
           {
             key: 'aa_change',
             title: 'AA Change',
-            tdStyle: {
-              wordBreak: 'break-all',
-              whiteSpace: 'pre-line',
-            },
+            tdStyle: { wordBreak: 'break-all', whiteSpace: 'pre-line' },
           },
           {
             key: 'consequence',
             title: (
               <Tooltip
-                Component="SO Term: consequence type"
-                style={tableToolTipHint()}>
+                Component={'SO Term: consequence type'}
+                style={tableToolTipHint()}
+              >
                 Consequence
               </Tooltip>
             ),
@@ -192,33 +194,17 @@ export default compose(
           {
             key: 'coding_dna_change',
             title: 'Coding DNA Change',
-            tdStyle: {
-              wordBreak: 'break-all',
-              whiteSpace: 'pre-line',
-            },
+            tdStyle: { wordBreak: 'break-all', whiteSpace: 'pre-line' },
           },
           {
             key: 'impact',
             title: <ImpactThContents />,
-            tdStyle: {
-              width: '90px',
-              paddingRight: '5px',
-            },
+            tdStyle: { width: '90px', paddingRight: '5px' },
           },
-          {
-            key: 'strand',
-            title: 'Gene Strand',
-          },
-          {
-            key: 'transcripts',
-            title: 'Transcript(s)',
-          },
+          { key: 'strand', title: 'Gene Strand' },
+          { key: 'transcripts', title: 'Transcript(s)' },
         ]}
-        style={{
-          width: '100%',
-          minWidth: '450px',
-        }}
-        tableId="consequences-table" />
+      />
     </LocalPaginationTable>
   ),
 );

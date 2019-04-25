@@ -43,31 +43,33 @@ const TabbedLinks: TTabbedLinks = (
 
       return (
         <Tabs
-          activeIndex={activeIndex}
-          className="test-tabbed-links"
           side={side}
+          className="test-tabbed-links"
           style={style}
+          tabToolbar={tabToolbar}
+          tabStyle={{ padding: 0 }}
           tabs={
             hideTabs
               ? []
               : links.map(x => (
-                <Link
-                  className={`test-${x.id}`}
-                  key={x.id}
-                  merge={x.merge || true}
-                  query={{ [queryParam]: x.id }}
-                  style={{
-                    padding: '1.2rem 1.8rem',
-                    textDecoration: 'none',
-                    display: 'inline-block',
-                    ...linkStyle,
-                  }}>
-                  {x.text}
-                </Link>
-              ))
+                  <Link
+                    style={{
+                      padding: '1.2rem 1.8rem',
+                      textDecoration: 'none',
+                      display: 'inline-block',
+                      ...linkStyle,
+                    }}
+                    key={x.id}
+                    query={{ [queryParam]: x.id }}
+                    merge={x.merge || true}
+                    className={'test-' + x.id}
+                  >
+                    {x.text}
+                  </Link>
+                ))
           }
-          tabStyle={{ padding: 0 }}
-          tabToolbar={tabToolbar}>
+          activeIndex={activeIndex}
+        >
           {get(links, [activeIndex, 'component'], defaultContent)}
         </Tabs>
       );

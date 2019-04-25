@@ -22,12 +22,7 @@ const Table = ({
   subheadings = [],
   ...props
 }) => (
-  <table
-    style={{
-      ...styles.table,
-      ...style,
-    }}
-    {...props}>
+  <table style={{ ...styles.table, ...style }} {...props}>
     <thead>
       <Tr>
         {headings.map(x => (typeof x === 'string' ? <Th key={x}>{x}</Th> : x))}

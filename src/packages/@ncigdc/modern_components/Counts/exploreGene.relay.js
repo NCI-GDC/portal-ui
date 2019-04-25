@@ -6,11 +6,9 @@ import { graphql } from 'react-relay';
 export default (Component: ReactClass<*>) => (props: Object) => {
   return (
     <BaseQuery
+      parentProps={{ path: 'explore.genes.hits.total', ...props }}
+      variables={{ filters: props.filters }}
       Component={Component}
-      parentProps={{
-        path: 'explore.genes.hits.total',
-        ...props,
-      }}
       query={graphql`
         query exploreGene_relayQuery($filters: FiltersArgument) {
           viewer {
@@ -24,6 +22,6 @@ export default (Component: ReactClass<*>) => (props: Object) => {
           }
         }
       `}
-      variables={{ filters: props.filters }} />
+    />
   );
 };

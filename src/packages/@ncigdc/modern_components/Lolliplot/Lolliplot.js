@@ -7,18 +7,16 @@ import {
   withProps,
   withState,
 } from 'recompose';
-import {
-  isEqual, groupBy, pickBy, pick,
-} from 'lodash';
+import { isEqual, groupBy, pickBy, pick } from 'lodash';
 import { Lolliplot, Backbone, Minimap } from '@oncojs/react-lolliplot/dist/lib';
+import LolliplotStats from './LolliplotStats';
 import { withTooltip } from '@ncigdc/uikit/Tooltip';
 import { Row } from '@ncigdc/uikit/Flex';
 import groupByType from '@ncigdc/utils/groupByType';
 import withPropsOnChange from '@ncigdc/utils/withPropsOnChange';
 import withSize from '@ncigdc/utils/withSize';
-import styled from '@ncigdc/theme/styled';
 import mapData from './mapData';
-import LolliplotStats from './LolliplotStats';
+import styled from '@ncigdc/theme/styled';
 import separateOverlapping from './separateOverlapping';
 
 const id = 'protein-viewer-root';
@@ -69,27 +67,15 @@ export default compose(
     renderComponent(() => <div>Not enough data.</div>),
   ),
   withPropsOnChange(
-    (props, nextProps) => !isEqual(
-      pick(props, [
-        'activeTranscript',
-        'ssms',
-        'state',
-      ]),
-      pick(nextProps, [
-        'activeTranscript',
-        'ssms',
-        'state',
-      ]),
-    ),
-    ({
-      activeTranscript, blacklist, ssms, setState, state,
-    }) => {
+    (props, nextProps) =>
+      !isEqual(
+        pick(props, ['activeTranscript', 'ssms', 'state']),
+        pick(nextProps, ['activeTranscript', 'ssms', 'state']),
+      ),
+    ({ activeTranscript, blacklist, ssms, setState, state }) => {
       const lolliplotData = mapData({
         transcript: activeTranscript,
-        data: (ssms.hits || []).map(x => ({
-          score: x._score,
-          ...x._source,
-        })),
+        data: (ssms.hits || []).map(x => ({ score: x._score, ...x._source })),
       });
       const lolliplotCollisions = pickBy(
         groupBy(
@@ -102,20 +88,14 @@ export default compose(
       );
 
       // pass data up to parent for download button
-      setState(s => ({
-        ...s,
-        lolliplotData,
-      }));
+      setState(s => ({ ...s, lolliplotData }));
       const impactUnknown = isEqual(
         Object.keys(groupByType('impact', lolliplotData.mutations)),
         ['UNKNOWN'],
       );
 
       if (blacklist === 'impact' && impactUnknown) {
-        setState(s => ({
-          ...s,
-          blacklist: 'consequence',
-        }));
+        setState(s => ({ ...s, blacklist: 'consequence' }));
       }
 
       const consequences = groupByType('consequence', lolliplotData.mutations);
@@ -176,12 +156,7 @@ export default compose(
     selectCollisions,
   }) => (
     <Row>
-      <div
-        id={id}
-        style={{
-          flex: 1,
-          userSelect: 'none',
-        }}>
+      <div id={id} style={{ flex: 1, userSelect: 'none' }}>
         {graphWidth && (
           <div style={{ position: 'relative' }}>
             <span
@@ -191,20 +166,23 @@ export default compose(
                 position: 'relative',
                 left: -20,
                 bottom: -100,
-              }}>
+              }}
+            >
               # Cases
             </span>
             <Lolliplot
-              collisions={lolliplotCollisions}
               d3={d3}
+              min={min}
+              max={max}
+              domainWidth={activeTranscript.length_amino_acid}
+              width={graphWidth}
+              update={payload => setState(s => ({ ...s, ...payload }))}
+              highlightedPointId={mutationId}
+              getPointColor={d => mutationColors[blacklist][d[blacklist]]}
               data={lolliplotData.mutations
                 .filter(d => d.x > min && d.x < max)
                 .filter(filterByType(blacklist))}
-              domainWidth={activeTranscript.length_amino_acid}
-              getPointColor={d => mutationColors[blacklist][d[blacklist]]}
-              highlightedPointId={mutationId}
-              max={max}
-              min={min}
+              collisions={lolliplotCollisions}
               onPointClick={d => {
                 if (lolliplotCollisions[`${d.x},${d.y}`]) {
                   selectCollisions(lolliplotCollisions[`${d.x},${d.y}`]);
@@ -212,76 +190,50 @@ export default compose(
                   push(`/ssms/${d.id}`);
                 }
               }}
-              onPointMouseout={() => setTooltip(null)}
               onPointMouseover={({ y: cases = 0, ...d }) => {
                 lolliplotCollisions[`${d.x},${cases}`]
                   ? setTooltip(
-                    'There are multiple mutations at this coordinate. Click to view.',
-                  )
+                      'There are multiple mutations at this coordinate. Click to view.',
+                    )
                   : setTooltip(
-                    <span>
-                      <div>
-                        <b>
-DNA Change:
-                          {d.genomic_dna_change}
-                        </b>
-                      </div>
-                      <div>
-ID:
-                        {d.id}
-                      </div>
-                      <div>
-AA Change:
-                        {d.aa_change}
-                      </div>
-                      <div>
-# of Cases:
-                        {cases.toLocaleString()}
-                      </div>
-                      <div>
-VEP Impact:
-                        {d.impact}
-                      </div>
-                      {d.sift_impact && (
+                      <span>
                         <div>
-                            SIFT Impact:
-                          {' '}
-                          {d.sift_impact}
-, score:
-                          {' '}
-                          {d.sift_score}
+                          <b>DNA Change: {d.genomic_dna_change}</b>
                         </div>
-                      )}
-                      {d.polyphen_impact && (
-                        <div>
-                            PolyPhen Impact:
-                          {' '}
-                          {d.polyphen_impact}
-, score:
-                          {' '}
-                          {d.polyphen_score}
-                        </div>
-                      )}
-                    </span>,
-                  );
+                        <div>ID: {d.id}</div>
+                        <div>AA Change: {d.aa_change}</div>
+                        <div># of Cases: {cases.toLocaleString()}</div>
+                        <div>VEP Impact: {d.impact}</div>
+                        {d.sift_impact && (
+                          <div>
+                            SIFT Impact: {d.sift_impact}, score: {d.sift_score}
+                          </div>
+                        )}
+                        {d.polyphen_impact && (
+                          <div>
+                            PolyPhen Impact: {d.polyphen_impact}, score:{' '}
+                            {d.polyphen_score}
+                          </div>
+                        )}
+                      </span>,
+                    );
               }}
-              update={payload => setState(s => ({
-                ...s,
-                ...payload,
-              }))}
-              width={graphWidth} />
+              onPointMouseout={() => setTooltip(null)}
+            />
             <div style={{ marginTop: '-20px' }}>
               {proteinTracks.length > 1 && (
-                <Row spacing="5px" style={{ margin: '15px 0 0 15px' }}>
+                <Row style={{ margin: '15px 0 0 15px' }} spacing="5px">
                   <i
                     className="fa fa-warning"
                     style={{
                       color: 'rgb(215, 175, 33)',
-                    }} />
+                    }}
+                  />
                   <span style={{ fontSize: '0.8em' }}>
                     Some overlapping domains are not shown by default. &nbsp;
                     <LinkSpan
-                      onClick={() => toggleExpandedDomains(!expandDomains)}>
+                      onClick={() => toggleExpandedDomains(!expandDomains)}
+                    >
                       Click here to show / hide them.
                     </LinkSpan>
                   </span>
@@ -291,12 +243,14 @@ VEP Impact:
                 .slice(0, expandDomains ? Infinity : 1)
                 .map((trackData, i) => (
                   <Backbone
-                    d3={d3}
-                    data={trackData}
-                    domainWidth={activeTranscript.length_amino_acid}
                     key={i}
-                    max={max}
                     min={min}
+                    max={max}
+                    d3={d3}
+                    domainWidth={activeTranscript.length_amino_acid}
+                    width={graphWidth}
+                    update={payload => setState(s => ({ ...s, ...payload }))}
+                    data={trackData}
                     onProteinClick={d => {
                       if (min === d.start && max === d.end) {
                         setState(s => ({
@@ -306,11 +260,7 @@ VEP Impact:
                         }));
                         setTooltip(null);
                       } else {
-                        setState(s => ({
-                          ...s,
-                          min: d.start,
-                          max: d.end,
-                        }));
+                        setState(s => ({ ...s, min: d.start, max: d.end }));
                         setTooltip(
                           <span>
                             <div>
@@ -324,7 +274,6 @@ VEP Impact:
                         );
                       }
                     }}
-                    onProteinMouseout={() => setTooltip(null)}
                     onProteinMouseover={d => {
                       setTooltip(
                         <span>
@@ -334,40 +283,35 @@ VEP Impact:
                           <div>{d.description}</div>
                           {min === d.start &&
                             max === d.end && (
-                            <div>
-                              <b>Click to reset zoom</b>
-                            </div>
-                          )}
+                              <div>
+                                <b>Click to reset zoom</b>
+                              </div>
+                            )}
                           {(min !== d.start || max !== d.end) && (
-                            <div>
-                              <b>Click to zoom</b>
-                            </div>
-                          )}
+                              <div>
+                                <b>Click to zoom</b>
+                              </div>
+                            )}
                         </span>,
                       );
                     }}
-                    update={payload => setState(s => ({
-                      ...s,
-                      ...payload,
-                    }))}
-                    width={graphWidth} />
+                    onProteinMouseout={() => setTooltip(null)}
+                  />
                 ))}
               <Minimap
+                min={min}
+                max={max}
                 d3={d3}
+                domainWidth={activeTranscript.length_amino_acid}
+                width={graphWidth}
+                update={payload => setState(s => ({ ...s, ...payload }))}
                 data={{
                   ...lolliplotData,
                   mutations: lolliplotData.mutations.filter(
                     filterByType(blacklist),
                   ),
                 }}
-                domainWidth={activeTranscript.length_amino_acid}
-                max={max}
-                min={min}
-                update={payload => setState(s => ({
-                  ...s,
-                  ...payload,
-                }))}
-                width={graphWidth} />
+              />
             </div>
           </div>
         )}
@@ -381,51 +325,38 @@ VEP Impact:
               {`Mutations at ${selectedCollisions[0].x}, ${selectedCollisions[0]
                 .y}`}
               <a onClick={() => selectCollisions([])}>
-                <i className="fa fa-close" style={{ float: 'right' }} />
+                <i style={{ float: 'right' }} className="fa fa-close" />
               </a>
             </h6>
 
             {selectedCollisions.map((d, i) => {
               return (
                 <span
-                  key={d.id}
                   style={{
                     padding: '10px 0px 5px 0px',
                     display: 'flex',
                     flexDirection: 'row',
-                  }}>
+                  }}
+                  key={d.id}
+                >
                   <div>
-                    <svg height="8" style={{ marginRight: '5px' }} width="8">
+                    <svg height="8" width="8" style={{ marginRight: '5px' }}>
                       <circle
                         cx="4"
                         cy="4"
+                        r="4"
                         fill={mutationColors[blacklist][d[blacklist]]}
-                        r="4" />
+                      />
                     </svg>
                   </div>
                   <div>
                     <div>
-                      <b>
-DNA Change:
-                        {d.genomic_dna_change}
-                      </b>
+                      <b>DNA Change: {d.genomic_dna_change}</b>
                     </div>
-                    <div>
-ID:
-                      {d.id}
-                    </div>
-                    <div>
-AA Change:
-                      {d.aa_change}
-                    </div>
-                    <div>
-# of Cases:
-                      {d.y.toLocaleString()}
-                    </div>
-                    <div>
-Functional Impact:
-                      {d.impact}
-                    </div>
+                    <div>ID: {d.id}</div>
+                    <div>AA Change: {d.aa_change}</div>
+                    <div># of Cases: {d.y.toLocaleString()}</div>
+                    <div>Functional Impact: {d.impact}</div>
                     <LinkSpan onClick={() => push(`/ssms/${d.id}`)}>
                       View Mutation
                     </LinkSpan>
@@ -436,23 +367,21 @@ Functional Impact:
           </div>
         )}
         <LolliplotStats
-          blacklist={blacklist}
-          clearBlacklist={clearBlacklist}
-          fillBlacklist={fillBlacklist}
-          filterByType={filterByType}
-          impactUnknown={impactUnknown}
-          max={max}
-          min={min}
-          mutationColors={mutationColors}
+          style={{ width: STATS_WIDTH, flex: 'none' }}
           mutations={lolliplotData.mutations}
+          filterByType={filterByType}
+          blacklist={blacklist}
+          min={min}
+          max={max}
           outsideSsms={outsideSsms}
           setState={setState}
+          impactUnknown={impactUnknown}
+          clearBlacklist={clearBlacklist}
+          fillBlacklist={fillBlacklist}
+          toggleBlacklistItem={toggleBlacklistItem}
+          mutationColors={mutationColors}
           state={state}
-          style={{
-            width: STATS_WIDTH,
-            flex: 'none',
-          }}
-          toggleBlacklistItem={toggleBlacklistItem} />
+        />
       </div>
     </Row>
   ),

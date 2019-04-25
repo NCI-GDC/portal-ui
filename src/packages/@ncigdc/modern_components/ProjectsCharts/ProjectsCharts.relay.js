@@ -12,35 +12,32 @@ import {
   parseJSONParam,
 } from '@ncigdc/utils/uri';
 
-const DEFAULT_PROJECT_SORT = [
-  {
-    field: 'summary.case_count',
-    order: 'desc',
-  },
-];
+const DEFAULT_PROJECT_SORT = [{ field: 'summary.case_count', order: 'desc' }];
 
-export default (Component: ReactClass<*>) => compose(
-  withRouter,
-  withPropsOnChange(['location'], ({ location: { search } }) => {
-    const q = parse(search);
+export default (Component: ReactClass<*>) =>
+  compose(
+    withRouter,
+    withPropsOnChange(['location'], ({ location: { search } }) => {
+      const q = parse(search);
 
-    return {
-      variables: {
-        offset: parseIntParam(q.offset, 0),
-        size: 1000,
-        filters: parseFilterParam(q.filters, null),
-        projects_sort: parseJSONParam(q.projects_sort, DEFAULT_PROJECT_SORT),
-      },
-    };
-  }),
-)((props: Object) => {
-  return (
-    <Query
-      Component={Component}
-      minHeight={280}
-      name="ProjectsCharts"
-      parentProps={props}
-      query={graphql`
+      return {
+        variables: {
+          offset: parseIntParam(q.offset, 0),
+          size: 1000,
+          filters: parseFilterParam(q.filters, null),
+          projects_sort: parseJSONParam(q.projects_sort, DEFAULT_PROJECT_SORT),
+        },
+      };
+    }),
+  )((props: Object) => {
+    return (
+      <Query
+        parentProps={props}
+        name="ProjectsCharts"
+        minHeight={280}
+        variables={props.variables}
+        Component={Component}
+        query={graphql`
           query ProjectsCharts_relayQuery(
             $size: Int
             $offset: Int
@@ -81,6 +78,6 @@ export default (Component: ReactClass<*>) => compose(
             }
           }
         `}
-      variables={props.variables} />
-  );
-});
+      />
+    );
+  });

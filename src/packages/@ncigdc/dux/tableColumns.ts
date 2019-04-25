@@ -1,7 +1,6 @@
 import { REHYDRATE } from 'redux-persist';
 // Custom
 import tableModels from '@ncigdc/tableModels';
-import { IColumnProps } from '@ncigdc/tableModels/utils';
 import { namespaceActions } from './utils';
 /*----------------------------------------------------------------------------*/
 const tableColumns = namespaceActions('tableColumns', [
@@ -9,6 +8,7 @@ const tableColumns = namespaceActions('tableColumns', [
   'RESTORE',
   'SET',
 ]);
+import { IColumnProps } from '@ncigdc/tableModels/utils';
 
 export interface ITableColumnsAction {
   type: string;
@@ -25,10 +25,7 @@ const toggleColumn = ({
   index: number;
 }) => ({
   type: tableColumns.TOGGLE_COLUMN,
-  payload: {
-    entityType,
-    index,
-  },
+  payload: { entityType, index },
 });
 const restoreColumns = (entityType: string) => ({
   type: tableColumns.RESTORE,
@@ -42,10 +39,7 @@ const setColumns = ({
   order: Array<IColumnProps<boolean>>;
 }) => ({
   type: tableColumns.SET,
-  payload: {
-    entityType,
-    order,
-  },
+  payload: { entityType, order },
 });
 const initialState = Object.keys(tableModels).reduce(
   (acc, key) => ({
@@ -71,10 +65,11 @@ const reducer = (state = initialState, action: ITableColumnsAction) => {
           const orderArray = val.map((v: IColumnProps<boolean>) => v.id);
           const order = Array.isArray(val)
             ? state[key]
-              .slice()
-              .sort(
-                (a: IColumnProps<boolean>, b: IColumnProps<boolean>) => orderArray.indexOf(a.id) - orderArray.indexOf(b.id)
-              )
+                .slice()
+                .sort(
+                  (a: IColumnProps<boolean>, b: IColumnProps<boolean>) =>
+                    orderArray.indexOf(a.id) - orderArray.indexOf(b.id)
+                )
             : state[key];
 
           return {
@@ -85,8 +80,9 @@ const reducer = (state = initialState, action: ITableColumnsAction) => {
                   ...element,
                   hidden: val[i].hidden,
                 };
+              } else {
+                return element;
               }
-              return element;
             }),
           };
         }, {}),
@@ -115,10 +111,7 @@ const reducer = (state = initialState, action: ITableColumnsAction) => {
     }
     case tableColumns.SET: {
       const { entityType, order } = action.payload;
-      return {
-        ...state,
-        [entityType]: order.slice(),
-      };
+      return { ...state, [entityType]: order.slice() };
     }
     default:
       return state;

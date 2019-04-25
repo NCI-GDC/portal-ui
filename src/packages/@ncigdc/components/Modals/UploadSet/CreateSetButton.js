@@ -33,18 +33,6 @@ export default enhance(
       <CreateButton
         {...props}
         disabled={disabled || !hits.length}
-        filters={{
-          op: 'and',
-          content: [
-            {
-              op: 'in',
-              content: {
-                field: mainField,
-                value: uniq(hits.map(h => idMap[h][idKey])),
-              },
-            },
-          ],
-        }}
         onComplete={setId => {
           onClose();
           push({
@@ -69,7 +57,20 @@ export default enhance(
               ),
             },
           });
-        }}>
+        }}
+        filters={{
+          op: 'and',
+          content: [
+            {
+              op: 'in',
+              content: {
+                field: mainField,
+                value: uniq(hits.map(h => idMap[h][idKey])),
+              },
+            },
+          ],
+        }}
+      >
         Submit
       </CreateButton>
     );

@@ -39,7 +39,8 @@ class RepositoryRoute extends Relay.Route {
 export default connect()((props: mixed) => (
   <Relay.Renderer
     Container={RepositoryPage}
+    queryConfig={new RepositoryRoute(props)}
     environment={Relay.Store}
     onReadyStateChange={handleStateChange(props)}
-    queryConfig={new RepositoryRoute(props)} />
+  />
 ));

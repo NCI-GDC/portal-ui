@@ -13,31 +13,33 @@ import {
 } from '@ncigdc/utils/uri';
 import Query from '@ncigdc/modern_components/Query';
 
-export default (Component: React.Class<*>) => compose(
-  withRouter,
-  withPropsOnChange(
-    ['location', 'defaultFilters'],
-    ({ location, defaultFilters = null, defaultSize = 10 }) => {
-      const q = parse(location.search);
-      return {
-        variables: {
-          cases_offset: parseIntParam(q.cases_offset, 0),
-          cases_size: parseIntParam(q.cases_size, 20),
-          cases_sort: parseJSONParam(q.cases_sort, null),
-          filters: parseFilterParam(q.filters, defaultFilters),
-          score: 'annotations.annotation_id',
-        },
-      };
-    },
-  ),
-)((props: Object) => {
-  return (
-    <Query
-      Component={Component}
-      minHeight={387}
-      name="RepoCasesTable"
-      parentProps={props}
-      query={graphql`
+export default (Component: React.Class<*>) =>
+  compose(
+    withRouter,
+    withPropsOnChange(
+      ['location', 'defaultFilters'],
+      ({ location, defaultFilters = null, defaultSize = 10 }) => {
+        const q = parse(location.search);
+        return {
+          variables: {
+            cases_offset: parseIntParam(q.cases_offset, 0),
+            cases_size: parseIntParam(q.cases_size, 20),
+            cases_sort: parseJSONParam(q.cases_sort, null),
+            filters: parseFilterParam(q.filters, defaultFilters),
+            score: 'annotations.annotation_id',
+          },
+        };
+      },
+    ),
+  )((props: Object) => {
+    return (
+      <Query
+        parentProps={props}
+        name="RepoCasesTable"
+        minHeight={387}
+        variables={props.variables}
+        Component={Component}
+        query={graphql`
           query RepoCasesTable_relayQuery(
             $cases_size: Int
             $cases_offset: Int
@@ -111,6 +113,6 @@ export default (Component: React.Class<*>) => compose(
             }
           }
         `}
-      variables={props.variables} />
-  );
-});
+      />
+    );
+  });

@@ -50,9 +50,7 @@ export default compose(
     },
   }),
   lifecycle({
-    componentDidUpdate({
-      text, value, setValue, isEditing,
-    }): void {
+    componentDidUpdate({ text, value, setValue, isEditing }): void {
       if (!isEditing && value !== text) {
         setValue(text);
       }
@@ -76,16 +74,21 @@ export default compose(
     <div>
       {isEditing ? (
         <Row
-          spacing="5px"
           style={{
             justifyContent: 'space-between',
             alignItems: 'center',
             ...containerStyle,
-          }}>
+          }}
+          spacing={'5px'}
+        >
           <Input
-            autoFocus
+            style={{
+              width: '300px',
+              borderRadius: '4px',
+              transition: 'all 0.2s ease',
+            }}
+            value={value}
             onChange={e => setValue(e.target.value)}
-            onFocus={e => e.target.select()}
             onKeyDown={e => {
               if (e.key === 'Enter') {
                 toggleEditingAndSave();
@@ -93,13 +96,10 @@ export default compose(
                 handleCancel();
               }
             }}
-            style={{
-              width: '300px',
-              borderRadius: '4px',
-              transition: 'all 0.2s ease',
-            }}
             type="text"
-            value={value} />
+            autoFocus
+            onFocus={e => e.target.select()}
+          />
           <Tooltip
             Component={
               value.split(' ').join('').length === 0
@@ -107,16 +107,18 @@ export default compose(
                 : value.length > MAX_SET_NAME_LENGTH
                 ? `Maximum name length ${MAX_SET_NAME_LENGTH}`
                 : null
-            }>
+            }
+          >
             <Button
+              onClick={toggleEditingAndSave}
               disabled={
                 value.split(' ').join('').length === 0 ||
                 value.length > MAX_SET_NAME_LENGTH
               }
-              onClick={toggleEditingAndSave}
               style={{
                 ...visualizingButton,
-              }}>
+              }}
+            >
               Save
             </Button>
           </Tooltip>
@@ -128,7 +130,8 @@ export default compose(
         <Tooltip Component={disabled ? disabledMessage : null}>
           <Row
             onClick={toggleEditingAndSave}
-            style={{ cursor: disabled ? 'not-allowed' : 'text' }}>
+            style={{ cursor: disabled ? 'not-allowed' : 'text' }}
+          >
             {children}
             <Pencil
               style={{
@@ -138,7 +141,8 @@ export default compose(
                 color: 'rgb(96, 111, 81)',
                 ...iconStyle,
                 cursor: disabled ? 'not-allowed' : 'pointer',
-              }} />
+              }}
+            />
           </Row>
         </Tooltip>
       )}

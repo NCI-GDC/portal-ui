@@ -18,9 +18,10 @@ const withRouter = component => {
     };
 
     unlisten = () => {};
-
     componentWillMount() {
-      this.unlisten = this.context.router.history.listen(() => this.forceUpdate());
+      this.unlisten = this.context.router.history.listen(() =>
+        this.forceUpdate()
+      );
     }
 
     componentWillUnmount() {
@@ -28,8 +29,8 @@ const withRouter = component => {
     }
 
     render() {
-      const { history } = this.context.router;
-      const { location } = this.context.router.history;
+      const history = this.context.router.history;
+      const location = this.context.router.history.location;
       return React.createElement(component, {
         ...this.props,
         history,

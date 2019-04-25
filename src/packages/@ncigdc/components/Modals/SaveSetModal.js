@@ -1,8 +1,6 @@
 // @flow
 import React from 'react';
-import {
-  compose, withState, withProps, withPropsOnChange,
-} from 'recompose';
+import { compose, withState, withProps, withPropsOnChange } from 'recompose';
 import { connect } from 'react-redux';
 
 import BaseModal from '@ncigdc/components/Modals/BaseModal';
@@ -15,21 +13,11 @@ import { MAX_SET_SIZE, MAX_SET_NAME_LENGTH } from '@ncigdc/utils/constants';
 
 import onSaveComplete from './onSaveComplete';
 
-const addOrReplace = ({
-  dispatch, existingSet, setName, setId, type,
-}) => {
+const addOrReplace = ({ dispatch, existingSet, setName, setId, type }) => {
   if (existingSet) {
-    dispatch(replaceSet({
-      type,
-      oldId: existingSet[0],
-      newId: setId,
-    }));
+    dispatch(replaceSet({ type, oldId: existingSet[0], newId: setId }));
   } else {
-    dispatch(addSet({
-      type,
-      label: setName,
-      id: setId,
-    }));
+    dispatch(addSet({ type, label: setName, id: setId }));
   }
 };
 
@@ -38,9 +26,8 @@ const enhance = compose(
   withState(
     'inputName',
     'setInputName',
-    ({
-      filters, displayType, sets, setName,
-    }) => setName ||
+    ({ filters, displayType, sets, setName }) =>
+      setName ||
       filtersToName({
         filters,
         sets,
@@ -86,13 +73,18 @@ const SaveSetModal = ({
     (!inputName || inputTotal > max || inputName.length > MAX_SET_NAME_LENGTH);
   return (
     <BaseModal
-      closeText="Cancel"
-      extraButtons={(
+      title={title}
+      onKeyDown={event => event.key === 'Enter' && setShouldCallCreateSet(true)}
+      extraButtons={
         <CreateSetButton
+          forceCreate
+          forceClick={submitted}
           disabled={isdisabled}
           filters={filters}
-          forceClick={submitted}
-          forceCreate
+          size={inputTotal}
+          sort={sort}
+          score={score}
+          shouldCallCreateSet={shouldCallCreateSet}
           onComplete={setId => {
             onSaveComplete({
               dispatch,
@@ -107,59 +99,50 @@ const SaveSetModal = ({
               type,
             });
           }}
-          score={score}
-          shouldCallCreateSet={shouldCallCreateSet}
-          size={inputTotal}
-          sort={sort}>
+        >
           Save
         </CreateSetButton>
-      )}
-      onKeyDown={event => event.key === 'Enter' && setShouldCallCreateSet(true)}
-      title={title}>
+      }
+      closeText="Cancel"
+    >
       <label>
-        Save top:
-        <br />
+        Save top:<br />
         <input
+          type="number"
           max={max}
           min="1"
+          value={inputTotal}
           onChange={e => setInputTotal(parseInt(e.target.value, 10))}
-          type="number"
-          value={inputTotal} />
+        />
         <div style={{ fontSize: '0.8em' }}>
-          You can save up to the top
-          {' '}
-          {pluralize(displayType, max, true)}
+          You can save up to the top {pluralize(displayType, max, true)}
         </div>
       </label>
 
       {inputTotal > max && (
         <WarningBox>
-          Above maximum of
-          {' '}
-          {pluralize(displayType, max, true)}
+          Above maximum of {pluralize(displayType, max, true)}
         </WarningBox>
       )}
       {!inputTotal &&
         inputTotal !== 0 && (
-        <WarningBox>
-            Save at least
-          {' '}
-          {pluralize(displayType, 0, true)}
-.
-        </WarningBox>
-      )}
+          <WarningBox>
+            Save at least {pluralize(displayType, 0, true)}.
+          </WarningBox>
+        )}
       <InputWithWarning
-        handleOnChange={e => setInputName(e.target.value)}
+        labelText="Name:"
+        showWarning={existingSet}
         handleOnKeyPress={e => {
           if (e.key === 'Enter' && !isdisabled) {
             submit(() => true);
           }
         }}
-        labelText="Name:"
+        handleOnChange={e => setInputName(e.target.value)}
+        warningMessage="Warning: A set with the same name exists, this will overwrite it."
         maxLength={MAX_SET_NAME_LENGTH}
-        showWarning={existingSet}
         value={inputName}
-        warningMessage="Warning: A set with the same name exists, this will overwrite it." />
+      />
     </BaseModal>
   );
 };
@@ -187,31 +170,27 @@ export const UploadAndSaveSetModal = compose(
     UploadSet,
   }) => (
     <UploadSet
-      content={(
+      content={
         <InputWithWarning
-          handleOnChange={e => setSetName(e.target.value)}
           labelText="Name:"
-          maxLength={MAX_SET_NAME_LENGTH}
+          handleOnChange={e => setSetName(e.target.value)}
           showWarning={existingSet}
+          warningMessage="Warning: A set with the same name exists, this will overwrite it."
+          maxLength={MAX_SET_NAME_LENGTH}
           style={{ marginBottom: '1rem' }}
-          warningMessage="Warning: A set with the same name exists, this will overwrite it." />
-      )}
+        />
+      }
       CreateButton={withProps(() => ({
         onComplete: setId => {
           onSaveComplete({
             dispatch,
             label: setName,
           });
-          addOrReplace({
-            dispatch,
-            existingSet,
-            setName,
-            setId,
-            type,
-          });
+          addOrReplace({ dispatch, existingSet, setName, setId, type });
         },
         disabled:
           !setName.split(' ').join('') || setName.length > MAX_SET_NAME_LENGTH,
-      }))(CreateSetButton)} />
+      }))(CreateSetButton)}
+    />
   ),
 );

@@ -13,30 +13,32 @@ import {
 } from '@ncigdc/utils/uri';
 import Query from '@ncigdc/modern_components/Query';
 
-export default (Component: ReactClass<*>) => compose(
-  withRouter,
-  withPropsOnChange(
-    ['location', 'filters'],
-    ({ location, filters = null, defaultSize = 10 }) => {
-      const q = parse(location.search);
-      return {
-        variables: {
-          files_offset: parseIntParam(q.files_offset, 0),
-          files_size: parseIntParam(q.files_size, 20),
-          files_sort: parseJSONParam(q.files_sort, null),
-          filters: parseFilterParam(q.filters, filters),
-        },
-      };
-    },
-  ),
-)((props: Object) => {
-  return (
-    <Query
-      Component={Component}
-      minHeight={387}
-      name="FilesTable"
-      parentProps={props}
-      query={graphql`
+export default (Component: ReactClass<*>) =>
+  compose(
+    withRouter,
+    withPropsOnChange(
+      ['location', 'filters'],
+      ({ location, filters = null, defaultSize = 10 }) => {
+        const q = parse(location.search);
+        return {
+          variables: {
+            files_offset: parseIntParam(q.files_offset, 0),
+            files_size: parseIntParam(q.files_size, 20),
+            files_sort: parseJSONParam(q.files_sort, null),
+            filters: parseFilterParam(q.filters, filters),
+          },
+        };
+      },
+    ),
+  )((props: Object) => {
+    return (
+      <Query
+        parentProps={props}
+        name="FilesTable"
+        minHeight={387}
+        variables={props.variables}
+        Component={Component}
+        query={graphql`
           query FilesTable_relayQuery(
             $files_size: Int
             $files_offset: Int
@@ -93,6 +95,6 @@ export default (Component: ReactClass<*>) => compose(
             }
           }
         `}
-      variables={props.variables} />
-  );
-});
+      />
+    );
+  });

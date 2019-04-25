@@ -21,7 +21,7 @@ class ExploreRoute extends Relay.Route {
 
   static queries = {
     ...viewerQuery,
-    // autocomplete: () => Relay.QL`query { explore }`,
+    //autocomplete: () => Relay.QL`query { explore }`,
   };
 
   static prepareParams = ({ location: { search } }) => {
@@ -39,7 +39,8 @@ class ExploreRoute extends Relay.Route {
 export default connect()((props: mixed) => (
   <Relay.Renderer
     Container={ExplorePage}
+    queryConfig={new ExploreRoute(props)}
     environment={Relay.Store}
     onReadyStateChange={handleStateChange(props)}
-    queryConfig={new ExploreRoute(props)} />
+  />
 ));

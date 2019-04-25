@@ -588,18 +588,20 @@ const isCustomAttribute = RegExp.prototype.test.bind(
   new RegExp(`^(data|aria)-[${ATTRIBUTE_NAME_CHAR}]*$`),
 );
 
-const { hasOwnProperty } = {};
-const isValidAttr = (name: string) => hasOwnProperty.call(htmlProps, name) ||
+const hasOwnProperty: (name: string) => boolean = {}.hasOwnProperty;
+const isValidAttr = (name: string) =>
+  hasOwnProperty.call(htmlProps, name) ||
   hasOwnProperty.call(svgProps, name) ||
   isCustomAttribute(name.toLowerCase()) ||
   hasOwnProperty.call(reactProps, name);
 
-const validAttrs = props => Object.entries(props).reduce(
-  (acc, [k, v]) => ({
-    ...acc,
-    ...(isValidAttr(k) ? { [k]: v } : {}),
-  }),
-  {},
-);
+const validAttrs = props =>
+  Object.entries(props).reduce(
+    (acc, [k, v]) => ({
+      ...acc,
+      ...(isValidAttr(k) ? { [k]: v } : {}),
+    }),
+    {},
+  );
 
 export default validAttrs;

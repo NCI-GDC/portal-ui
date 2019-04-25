@@ -29,12 +29,7 @@ const styles = {
 };
 
 export const StepLegend = ({
-  steps = [
-    0.25,
-    0.5,
-    0.75,
-    1,
-  ],
+  steps = [0.25, 0.5, 0.75, 1],
   color,
   leftLabel = 'Less',
   rightLabel = 'More',
@@ -44,12 +39,9 @@ export const StepLegend = ({
     <Row style={styles.td}>
       {steps.map(opacity => (
         <div
+          style={{ ...styles.color, background: color, opacity }}
           key={opacity}
-          style={{
-            ...styles.color,
-            background: color,
-            opacity,
-          }} />
+        />
       ))}
     </Row>
     <Column style={styles.td}>{rightLabel}</Column>
@@ -58,17 +50,14 @@ export const StepLegend = ({
 
 export const SwatchLegend = ({ colorMap }) => {
   const labels = _.map(colorMap, (color, key) => (
-    <div key={key} style={styles.cell}>
-      <div style={{
-        ...styles.color,
-        background: color,
-      }} />
+    <div style={styles.cell} key={key}>
+      <div style={{ ...styles.color, background: color }} />
       <span>{key.replace(/_/g, ' ')}</span>
     </div>
   ));
 
   return (
-    <Row className="test-legends" style={styles.table}>
+    <Row style={styles.table} className="test-legends">
       <Column style={styles.td}>{labels.slice(0, 2)}</Column>
       <Column style={styles.td}>{labels.slice(2, 4)}</Column>
       <Column style={styles.td}>{labels.slice(4, 6)}</Column>
@@ -91,7 +80,8 @@ const Checkbox = ({
         display: 'flex',
         alignItems: 'center',
         paddingTop: 10,
-      }}>
+      }}
+    >
       <div
         onClick={onChange}
         style={{
@@ -105,18 +95,20 @@ const Checkbox = ({
           justifyContent: 'center',
           alignItems: 'center',
           ...boxStyle,
-        }}>
+        }}
+      >
         {checked ? (
           <span
             style={
               heatMapMode
-                ? { color }
+                ? { color: color }
                 : {
-                  color: Color(color)
-                    .darken(0.4)
-                    .rgbString(),
-                }
-            }>
+                    color: Color(color)
+                      .darken(0.4)
+                      .rgbString(),
+                  }
+            }
+          >
             {'✓'}
           </span>
         ) : null}
@@ -147,20 +139,16 @@ export const ToggleSwatchLegend = ({
 }) => {
   const labels = _.map(colorMap, (color, key) => (
     <Checkbox
-      aria-label={key}
       boxStyle={{ alignItems: 'flex-start' }}
-      checked={toggledValues && toggledValues.includes(key)}
-      color={getCheckBoxColor({
-        type,
-        heatMapMode,
-        heatMapColor,
-        color,
-      })}
-      heatMapColor={heatMapColor}
-      heatMapMode={heatMapMode}
       key={key}
       label={key.replace(/_/g, ' ').replace(/variant/g, '')}
-      onChange={() => toggle(key)} />
+      onChange={() => toggle(key)}
+      checked={toggledValues && toggledValues.includes(key)}
+      aria-label={key}
+      color={getCheckBoxColor({ type, heatMapMode, heatMapColor, color })}
+      heatMapMode={heatMapMode}
+      heatMapColor={heatMapColor}
+    />
   ));
   return (
     <Column
@@ -170,27 +158,26 @@ export const ToggleSwatchLegend = ({
         border: '1px solid lightgray',
         borderRadius: '8px',
         padding: 10,
-      }}>
+      }}
+    >
       <Row
         style={{
           borderBottom: '1px solid lightgray',
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
-        }}>
+        }}
+      >
         <Column>
           <Checkbox
-            aria-label={type}
-            checked={toggledValues.length > 0}
-            color={getCheckBoxColor({
-              type,
-              heatMapMode,
-              heatMapColor,
-            })}
-            heatMapColor={heatMapColor}
-            heatMapMode={heatMapMode}
             label={`Show ${type}`}
-            onChange={() => toggleAll(toggledValues.length > 0)} />
+            onChange={() => toggleAll(toggledValues.length > 0)}
+            checked={toggledValues.length > 0}
+            aria-label={type}
+            color={getCheckBoxColor({ type, heatMapMode, heatMapColor })}
+            heatMapMode={heatMapMode}
+            heatMapColor={heatMapColor}
+          />
         </Column>
         <Column style={{ marginLeft: 60 }}>
           {heatMapMode &&
@@ -199,14 +186,14 @@ export const ToggleSwatchLegend = ({
       </Row>
 
       {type === 'mutations' && (
-        <Row className="test-legends" style={(styles.table, { marginTop: 10 })}>
+        <Row style={(styles.table, { marginTop: 10 })} className="test-legends">
           <Column style={styles.td}>{labels.slice(0, 2)}</Column>
           <Column style={styles.td}>{labels.slice(2, 4)}</Column>
           <Column style={styles.td}>{labels.slice(4, 6)}</Column>
         </Row>
       )}
       {type === 'copy number variations' && (
-        <Row className="test-legends" style={(styles.table, { marginTop: 10 })}>
+        <Row style={(styles.table, { marginTop: 10 })} className="test-legends">
           <Column style={styles.td}>{labels}</Column>
         </Row>
       )}

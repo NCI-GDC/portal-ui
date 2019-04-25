@@ -15,7 +15,6 @@ import { viewerQuery } from '../queries';
 
 class FilesRoute extends Relay.Route {
   static routeName = 'LegacyFilesPage';
-
   static queries = viewerQuery;
 
   static prepareParams = ({ location: { query } }) => {
@@ -33,6 +32,7 @@ class FilesRoute extends Relay.Route {
 export default (props: mixed) => (
   <Relay.Renderer
     Container={FilesPage}
+    queryConfig={new FilesRoute(props)}
     environment={Relay.Store}
-    queryConfig={new FilesRoute(props)} />
+  />
 );

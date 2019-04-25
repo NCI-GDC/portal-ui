@@ -96,30 +96,23 @@ export default compose(
       } else {
         blacklist.add(variant);
       }
-      setState(s => ({
-        ...s,
-        [`${state.blacklist}Blacklist`]: blacklist,
-      }));
+      setState(s => ({ ...s, [`${state.blacklist}Blacklist`]: blacklist }));
     },
     clearBlacklist: () => {
-      setState(s => ({
-        ...s,
-        [`${state.blacklist}Blacklist`]: new Set(),
-      }));
+      setState(s => ({ ...s, [`${state.blacklist}Blacklist`]: new Set() }));
     },
     fillBlacklist: variants => {
       const blacklist = new Set(variants);
-      setState(s => ({
-        ...s,
-        [`${state.blacklist}Blacklist`]: blacklist,
-      }));
+      setState(s => ({ ...s, [`${state.blacklist}Blacklist`]: blacklist }));
     },
   })),
   withPropsOnChange(['state'], ({ state }) => ({
     filterByType: type => d => !state[`${type}Blacklist`].has(d[type]),
   })),
   withPropsOnChange(['viewer'], ({ gene }, transcripts) => ({
-    transcripts: transcripts || (gene ? gene.transcripts.hits.edges.map(x => x.node) : transcripts),
+    transcripts: transcripts
+      ? transcripts
+      : gene ? gene.transcripts.hits.edges.map(x => x.node) : transcripts,
   })),
 )(
   ({
@@ -145,18 +138,9 @@ export default compose(
   }) => (
     <Column style={{ backgroundColor: 'white' }}>
       <Row>
-        <h1
-          id="protein"
-          style={{
-            ...styles.heading,
-            padding: '1rem',
-          }}>
+        <h1 style={{ ...styles.heading, padding: '1rem' }} id="protein">
           <DoubleHelix width={12} />
-          <span style={{ marginLeft: '1rem' }}>
-            {gene.symbol}
-            {' '}
-- Protein
-          </span>
+          <span style={{ marginLeft: '1rem' }}>{gene.symbol} - Protein</span>
         </h1>
       </Row>
       <div>
@@ -164,33 +148,34 @@ export default compose(
           <LolliplotToolbar
             activeTranscript={activeTranscript}
             gene={gene}
-            lolliplotData={lolliplotData}
-            selector={selector}
+            transcripts={transcripts.filter(x =>
+              transcriptBuckets.find(b => b.key === x.transcript_id),
+            )}
             setState={setState}
-            transcripts={transcripts.filter(x => transcriptBuckets.find(b => b.key === x.transcript_id),)} />
+            selector={selector}
+            lolliplotData={lolliplotData}
+          />
         )}
         {notEnoughData && (
-          <Column style={{
-            alignItems: 'center',
-            padding: '20px',
-          }}>
+          <Column style={{ alignItems: 'center', padding: '20px' }}>
             Not enough data
           </Column>
         )}
         <div style={{ padding: '0 3rem 2rem' }}>
           <Lolliplot
             activeTranscript={activeTranscript}
+            setState={setState}
+            mutationId={mutationId}
+            min={min}
+            max={max}
             blacklist={blacklist}
+            push={push}
+            state={state}
             clearBlacklist={clearBlacklist}
             fillBlacklist={fillBlacklist}
+            toggleBlacklistItem={toggleBlacklistItem}
             filterByType={filterByType}
-            max={max}
-            min={min}
-            mutationId={mutationId}
-            push={push}
-            setState={setState}
-            state={state}
-            toggleBlacklistItem={toggleBlacklistItem} />
+          />
         </div>
       </div>
     </Column>

@@ -14,9 +14,8 @@ export default ({ children, style, ...props }) => (
       borderRadius: '4px',
       ...style,
     }}
-    {...props}>
-    <ExclamationTriangleIcon />
-    {' '}
-    {children}
+    {...props}
+  >
+    <ExclamationTriangleIcon /> {children}
   </div>
 );

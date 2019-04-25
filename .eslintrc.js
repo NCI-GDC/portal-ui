@@ -44,7 +44,7 @@ module.exports = {
       FunctionDeclaration: { parameters: 'first' },
       FunctionExpression: { parameters: 'first' },
       ignoreComments: true,
-      ignoredNodes: ['ConditionalExpression'],
+      ignoredNodes: [ 'ConditionalExpression' ],
       ImportDeclaration: 'first',
       MemberExpression: 1,
       ObjectExpression: 'first',

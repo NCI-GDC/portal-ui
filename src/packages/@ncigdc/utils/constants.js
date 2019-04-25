@@ -285,7 +285,8 @@ export const IMPACT_SHORT_FORMS = {
   },
 };
 
-export const FAKE_USER = process.env.REACT_APP_ALLOW_FAKE_USER
+export const FAKE_USER =
+  localStorage.REACT_APP_ALLOW_FAKE_USER || process.env.REACT_APP_ALLOW_FAKE_USER
   ? {
       username: 'DEV_USER',
       projects: {

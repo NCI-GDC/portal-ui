@@ -9,6 +9,7 @@ import urlJoin from 'url-join';
 import { authPartitionFiles } from '@ncigdc/utils/auth';
 import DownloadButton from '@ncigdc/components/DownloadButton';
 import BaseModal from '@ncigdc/components/Modals/BaseModal';
+import CheckBoxModal from '@ncigdc/components/Modals/CheckBoxModal';
 import LoginButton from '@ncigdc/components/LoginButton';
 
 import DownCaretIcon from 'react-icons/lib/fa/caret-down';
@@ -52,26 +53,73 @@ const downloadCart = ({
   user,
   files,
   dispatch,
+  disableAgreement = false,
   setState,
 }: {
   user: Object,
   files: Array<Object>,
   dispatch: Function,
+  disableAgreement: boolean,
   setState: Function,
 }) => {
   const { authorized, unauthorized } = authPartitionFiles({ user, files });
-  if (unauthorized.doc_count > 0) {
+
+  const dbGapList = Array.from(
+    new Set(
+      authorized.files
+        .concat(unauthorized.files)
+        .reduce((acc, f) => acc.concat(f.acl), [])
+        .filter(f => f !== 'open')
+    )
+  );
+  if (disableAgreement || dbGapList.length === 0) {
+    dispatch(setModal(null));
+    setState(s => ({ ...s, cartDownloading: true }));
+    download({
+      url: urlJoin(AUTH_API, 'data'),
+      params: {
+        ids: files.map(file => file.file_id),
+        annotations: true,
+        related_files: true,
+      },
+      method: 'POST',
+      altMessage: true,
+    })(() => {}, () => setState(s => ({ ...s, cartDownloading: false })));
+  } else if (
+    authorized.files.reduce((sum, x) => sum + x.file_size, 0) >
+    5 * 10e8
+  ) {
     dispatch(
       setModal(
-        <BaseModal
-          title="Access Error"
-          extraButtons={
+        <BaseModal title="Cart size limit">
+          <p>Your cart contains more than 5GBs of data.</p>
+          <p>
+            Please select the "Download &gt; Manifest" option and use the&nbsp;
+            <ExternalLink
+              hasExternalIcon={false}
+              title="GDC Data Transfer Tool"
+              href="https://gdc.cancer.gov/access-data/gdc-data-transfer-tool"
+            >
+              Data Transfer Tool
+            </ExternalLink>{' '}
+            Tool to continue.
+          </p>
+        </BaseModal>
+      )
+    );
+  } else if (unauthorized.doc_count > 0) {
+    dispatch(
+      setModal(
+        <CheckBoxModal
+          dbGapList={dbGapList}
+          CustomButton={agreed => (
             <Button
-              disabled={!authorized.doc_count}
+              disabled={!authorized.doc_count || (!!user && !agreed)}
               onClick={() =>
                 downloadCart({
                   user,
                   files: authorized.files,
+                  disableAgreement: true,
                   dispatch,
                   setState,
                 })}
@@ -79,8 +127,10 @@ const downloadCart = ({
             >
               Download {authorized.doc_count} Authorized Files
             </Button>
-          }
+          )}
+          hidden={!user || authorized.doc_count === 0}
           closeText="Cancel"
+          dispatch={dispatch}
         >
           <div>
             <p>
@@ -114,41 +164,42 @@ const downloadCart = ({
               Please <LoginButton />
             </p>
           )}
-        </BaseModal>,
-      ),
-    );
-  } else if (files.reduce((sum, x) => sum + x.file_size, 0) > 5 * 10e8) {
-    dispatch(
-      setModal(
-        <BaseModal title="Cart size limit">
-          <p>Your cart contains more than 5GBs of data.</p>
-          <p>
-            Please select the "Download &gt; Manifest" option and use the&nbsp;
-            <ExternalLink
-              hasExternalIcon={false}
-              title="GDC Data Transfer Tool"
-              href="https://gdc.cancer.gov/access-data/gdc-data-transfer-tool"
-            >
-              Data Transfer Tool
-            </ExternalLink>{' '}
-            Tool to continue.
-          </p>
-        </BaseModal>,
-      ),
+        </CheckBoxModal>
+      )
     );
   } else {
-    dispatch(setModal(null));
-    setState(s => ({ ...s, cartDownloading: true }));
-    download({
-      url: urlJoin(AUTH_API, 'data'),
-      params: {
-        ids: files.map(file => file.file_id),
-        annotations: true,
-        related_files: true,
-      },
-      method: 'POST',
-      altMessage: true,
-    })(() => {}, () => setState(s => ({ ...s, cartDownloading: false })));
+    dispatch(
+      setModal(
+        <CheckBoxModal
+          dbGapList={dbGapList}
+          CustomButton={agreed => (
+            <Button
+              disabled={!agreed}
+              onClick={() => {
+                setState(s => ({ ...s, cartDownloading: true }));
+                download({
+                  url: urlJoin(AUTH_API, 'data'),
+                  params: {
+                    ids: files.map(file => file.file_id),
+                    annotations: true,
+                    related_files: true,
+                  },
+                  method: 'POST',
+                  altMessage: true,
+                })(
+                  () => {},
+                  () => setState(s => ({ ...s, cartDownloading: false }))
+                );
+              }}
+              style={{ margin: '0 10px' }}
+            >
+              Download {authorized.doc_count} Authorized Files
+            </Button>
+          )}
+          dispatch={dispatch}
+        />
+      )
+    );
   }
 };
 
@@ -205,7 +256,14 @@ const CartDownloadDropdown = ({
           className="test-download-cart"
           style={styles.button(theme)}
           disabled={state.cartDownloading}
-          onClick={() => downloadCart({ user, files, dispatch, setState })}
+          onClick={() =>
+            downloadCart({
+              user,
+              files,
+              dispatch,
+              disableAgreement: false,
+              setState,
+            })}
           leftIcon={state.cartDownloading ? <Spinner /> : <DownloadIcon />}
         >
           Cart
@@ -221,5 +279,5 @@ export default compose(
   withState('state', 'setState', {
     manifestDownloading: false,
     cartDownloading: false,
-  }),
+  })
 )(CartDownloadDropdown);

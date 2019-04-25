@@ -14,6 +14,7 @@ import AngleIcon from '@ncigdc/theme/icons/AngleIcon';
 import QuestionIcon from '@ncigdc/theme/icons/Question';
 import { Row } from '@ncigdc/uikit/Flex';
 import { Tooltip } from '@ncigdc/uikit/Tooltip';
+import { IRawQuery } from '@ncigdc/utils/uri/types';
 
 const Header = styled(Row, {
   color: ({ theme }) => theme.primary,
@@ -72,7 +73,7 @@ const FacetHeader = compose(
     hasValueSearch,
   }) => (
     <LocationSubscriber>
-      {(ctx: {| pathname: string, query: TRawQuery |}) => {
+      {(ctx: { pathname: string, query: IRawQuery }) => {
         const currentFilters =
           ctx.query && parseFilterParam((ctx.query || {}).filters, {});
         return (

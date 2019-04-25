@@ -9,6 +9,7 @@ import namespace from '@ncigdc/utils/namespace';
 import withSelectableList from '@ncigdc/utils/withSelectableList';
 
 import QuickSearchResults from './QuickSearch/QuickSearchResults';
+import FileHistoryResults from './QuickSearch/FileHistoryResults';
 
 const Container = styled.div({
   position: 'relative',
@@ -28,6 +29,13 @@ const Input = styled.input({
     boxShadow: '0px 0px 22px 0px rgba(219, 139, 18, 0.75)',
   },
 });
+
+const styles = {
+  container: {
+    width: '100%',
+    left: 0,
+  },
+};
 
 const HomeSearch = compose(
   namespace('search', withSearch()),
@@ -90,13 +98,23 @@ const HomeSearch = compose(
         onSelectItem={setFocusedItem}
         onActivateItem={selectItem}
         isLoading={state.isLoading}
-        style={{
-          container: {
-            width: '100%',
-            left: 0,
-          },
-        }}
+        style={styles}
       />
+      {!state.isLoading && (
+        <FileHistoryResults
+          query={state.query}
+          results={state.fileHistoryResult
+            .filter(f => f.file_change === 'released')
+            .map(
+              item =>
+                item === focusedItem ? { ...item, isSelected: true } : item,
+            )}
+          onSelectItem={setFocusedItem}
+          onActivateItem={selectItem}
+          isLoading={state.isLoading}
+          style={styles}
+        />
+      )}
     </Container>
   ),
 );

@@ -4,12 +4,12 @@ import React from 'react';
 import Row from '@ncigdc/uikit/Flex/Row';
 import styled from '@ncigdc/theme/styled';
 
-type TProps = {|
+type TProps = {
   title: string,
   buttons: Array<any>,
   buttonWidth?: number,
   style?: Object,
-|};
+};
 
 const SPACING = 10;
 

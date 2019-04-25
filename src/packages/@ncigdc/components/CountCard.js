@@ -1,5 +1,3 @@
-// @flow
-
 import React from 'react';
 import PropTypes from 'prop-types';
 
@@ -7,9 +5,16 @@ import Card from '@ncigdc/uikit/Card';
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import Link from '@ncigdc/components/Links/Link';
 
-const CountCard = ({ title, count, icon, style, linkParams, ...props }) => (
+const CountCard = ({
+  title,
+  count,
+  icon,
+  style,
+  linkParams,
+  className = 'test-count-card',
+}) => (
   <Card
-    className={props.className || 'test-count-card'}
+    className={className}
     style={{ padding: '1rem', width: '15rem', ...style }}
   >
     <Row>

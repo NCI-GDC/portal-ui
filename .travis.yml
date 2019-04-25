@@ -13,6 +13,8 @@ jobs:
   include:
   - stage: test
     script:
+    # this will only run lint / tests against modified files but it is unstable
+    # - echo $TRAVIS_COMMIT_RANGE | sed 's/\.\.\./../' | xargs git diff-tree --no-commit-id --name-only -r | xargs echo -n
     - npm run lint -- --max-warnings=0 || travis_terminate 1
     - npm test || travis_terminate 1
   - stage: deploy
@@ -20,6 +22,7 @@ jobs:
     - bash build.sh
     - docker login -u="$QUAY_USERNAME" -p="$QUAY_PASSWORD" quay.io
     - bash docker.sh
+    
 notifications:
   email: false
   slack:

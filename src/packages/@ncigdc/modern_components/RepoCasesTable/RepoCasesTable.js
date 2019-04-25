@@ -18,14 +18,14 @@ import timestamp from '@ncigdc/utils/timestamp';
 
 export default compose(
   setDisplayName('RepoCasesTablePresentation'),
-  connect(state => ({ tableColumns: state.tableColumns.cases.ids })),
+  connect(state => ({ tableColumns: state.tableColumns.cases })),
   branch(
     ({ viewer }) =>
       !viewer.repository.cases.hits ||
       !viewer.repository.cases.hits.edges.length,
-    renderComponent(() => <div>No results found</div>),
+    renderComponent(() => <div>No results found</div>)
   ),
-  withSelectIds,
+  withSelectIds
 )(
   ({
     viewer: { repository: { cases: { hits } } },
@@ -37,10 +37,7 @@ export default compose(
     score,
     sort,
   }) => {
-    const tableInfo = tableModels[entityType]
-      .slice()
-      .sort((a, b) => tableColumns.indexOf(a.id) - tableColumns.indexOf(b.id))
-      .filter(x => tableColumns.includes(x.id));
+    const tableInfo = tableColumns.slice().filter(x => !x.hidden);
 
     return (
       <div className="test-cases-table">
@@ -131,5 +128,5 @@ export default compose(
         <Pagination prefix={entityType} params={variables} total={hits.total} />
       </div>
     );
-  },
+  }
 );

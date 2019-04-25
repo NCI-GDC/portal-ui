@@ -598,9 +598,9 @@ var ngApp;
                     link: function ($scope, element) {
                         var ASPECT_RATIO = 1.33, CLAMP_HEIGHT = Number.POSITIVE_INFINITY, //470;
                         CLAMP_WIDTH = Number.POSITIVE_INFINITY, NUM_Y_TICKS = 4, PADDING = 25;
-                        var _data, _svg, _barChartBoundingBox, _barChartCanvas, _barChartTitle, _barChartLegend, 
+                        var _data, _svg, _barChartBoundingBox, _barChartCanvas, _barChartTitle, _barChartLegend,
                         //_barChartMarkerGroup,
-                        _barChartCaption, 
+                        _barChartCaption,
                         //_barChartBG,
                         _chartMargin, _width, _height, _tipFn, _axisTipFn, _xScale, _yScale, _invYScale, _xAxis, _yAxis, _xAxisGroup, _yAxisGroup, _colourScale, _postFixID = _getUniqueChartID(8);
                         function _getUniqueChartID(size) {
@@ -636,13 +636,13 @@ var ngApp;
                                 /*
                                 _barChartMarkerGroup = _barChartLegend.append("g")
                                   .attr("transform", "translate(-25, 55)");
-                    
+
                                 _barChartMarkerGroup.append("circle")
                                   .classed("marked-bar-chart-marker", true)
                                   .attr("cx", 10)
                                   .attr("cy", 10)
                                   .attr("r", 8);
-                    
+
                                 _barChartMarkerGroup.append("use")
                                   .attr("xlink:href", "#bar-chart-marker-symbol")
                                   .attr("fill", "#fff")
@@ -1677,7 +1677,7 @@ angular
     GEQ: { full: "Gene Expression Quantification", abbr: "GEQ" }
 })
     .constant('DATA_CATEGORIES', {
-    SEQ: { full: "Raw Sequencing Data", abbr: "Seq" },
+    SEQ: { full: "Sequencing Reads", abbr: "Seq" },
     EXP: { full: "Transcriptome Profiling", abbr: "Exp" },
     SNV: { full: "Simple Nucleotide Variation", abbr: "SNV" },
     CNV: { full: "Copy Number Variation", abbr: "CNV" },
@@ -2988,7 +2988,7 @@ var ngApp;
                     },
                     controllerAs: 'ctrl',
                     templateUrl: "cart/templates/add-to-cart-button-filtered.html",
-                    controller: ["$scope", "CartService", "LocationService", "FilesService", "ParticipantsService", function ($scope, CartService, 
+                    controller: ["$scope", "CartService", "LocationService", "FilesService", "ParticipantsService", function ($scope, CartService,
                         //QueryCartService: IQueryCartService,
                         LocationService, FilesService, ParticipantsService) {
                         var _this = this;
@@ -4435,7 +4435,7 @@ var ngApp;
                 return LocalStorageService;
             }());
             var dataNames = [
-                'Raw sequencing data',
+                'Sequencing Reads',
                 'Gene expression',
                 'Simple nucleotide variation',
                 'Copy number variation',
@@ -4496,7 +4496,7 @@ var ngApp;
 
 /* @ngInject */
 function exceptionDecorator($provide) {
-    $provide.decorator("$exceptionHandler", 
+    $provide.decorator("$exceptionHandler",
     /* @ngInject */
     ["$delegate", "$injector", "$log", "$window", function ($delegate, $injector, $log, $window) {
         return function (exception, cause) {
@@ -4568,7 +4568,7 @@ var ngApp;
                     });
                     CoreService.setPageTitle("File", file.file_name);
                     var toDisplayLogic = {
-                        'Raw Sequencing Data': ['analysis', 'referenceGenome', 'readGroup', 'downstreamAnalysis'],
+                        'Sequencing Reads': ['analysis', 'referenceGenome', 'readGroup', 'downstreamAnalysis'],
                         'Transcriptome Profiling': ['analysis', 'referenceGenome', 'downstreamAnalysis'],
                         'Simple Nucleotide Variation': ['analysis', 'referenceGenome', 'downstreamAnalysis'],
                         'Copy Number Variation': ['analysis', 'referenceGenome', 'downstreamAnalysis'],
@@ -6901,7 +6901,7 @@ angular.module("reports.githut.config", [])
         var columns = ReportsGithutColumns, config = ReportsGithutConfig, order = ["Clinical", "Array", "Seq", "SNV", "CNV", "SV", "Exp", "PExp", "Meth", "Other"], dataTypesMap = {
             "Clinical": "Clinical",
             "Raw microarray data": "Array",
-            "Raw sequencing data": "Seq",
+            "Sequencing Reads": "Seq",
             "Simple nucleotide variation": "SNV",
             "Copy number variation": "CNV",
             "Structural rearrangement": "SV",
@@ -10246,7 +10246,7 @@ var ngApp;
                                 size: "lg",
                                 windowClass: "banner-modal",
                                 resolve: {
-                                    warning: function () { return "\n              <div>\n                <h2 class=\"banner-title\">\n                  Can't find your data?\n                  <span class=\"banner-title-link\">\n                    You may be looking for the\n                    <a href=\"https://gdc-portal.nci.nih.gov/legacy-archive/search/f\" target=\"_blank\">GDC Legacy Archive</a>.\n                  </span>\n                </h2>\n                <div>\n                  Data in the GDC Data Portal\n                  has been harmonized using GDC Bioinformatics Pipelines whereas data in the\n                  GDC Legacy Archive is an unmodified copy of data that was previously stored\n                  in CGHub and in the TCGA Data Portal hosted by the TCGA Data Coordinating Center (DCC).\n                  Certain previously available data types and formats are not currently supported by\n                  the GDC Data Portal and are only distributed via the GDC Legacy Archive.\n                  <br>\n                  <br>\n                  Check the <a href=\"https://gdc-docs.nci.nih.gov/Data/Release_Notes/Data_Release_Notes/\" target=\"_blank\">Data Release Notes</a> for additional details.\n                </div>\n              </div>\n            "; },
+                                    warning: function () { return "\n              <div>\n                <h2 class=\"banner-title\">\n                  Can't find your data?\n                  <span class=\"banner-title-link\">\n                    You may be looking for the\n                    <a href=\"https://portal.gdc.cancer.gov/legacy-archive/search/f\" target=\"_blank\">GDC Legacy Archive</a>.\n                  </span>\n                </h2>\n                <div>\n                  Data in the GDC Data Portal\n                  has been harmonized using GDC Bioinformatics Pipelines whereas data in the\n                  GDC Legacy Archive is an unmodified copy of data that was previously stored\n                  in CGHub and in the TCGA Data Portal hosted by the TCGA Data Coordinating Center (DCC).\n                  Certain previously available data types and formats are not currently supported by\n                  the GDC Data Portal and are only distributed via the GDC Legacy Archive.\n                  <br>\n                  <br>\n                  Check the <a href=\"https://gdc-docs.nci.nih.gov/Data/Release_Notes/Data_Release_Notes/\" target=\"_blank\">Data Release Notes</a> for additional details.\n                </div>\n              </div>\n            "; },
                                     header: null
                                 }
                             });

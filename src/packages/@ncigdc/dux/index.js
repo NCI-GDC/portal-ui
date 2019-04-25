@@ -1,7 +1,9 @@
 // @flow
-import { createStore, combineReducers, applyMiddleware } from 'redux';
+import { createStore, applyMiddleware, compose } from 'redux';
 import thunk from 'redux-thunk';
-import { persistStore } from 'redux-persist';
+import { persistStore, persistCombineReducers } from 'redux-persist';
+import storage from 'redux-persist/lib/storage';
+
 import { apiMiddleware } from 'redux-api-middleware';
 import reducers from './reducers';
 
@@ -9,13 +11,13 @@ type TSetupStoreArgs = {
   persistConfig: Object,
 };
 type TSetupStore = (args: TSetupStoreArgs) => Object;
-const setupStore: TSetupStore = ({ persistConfig = {} } = {}) => {
-  const store = createStore(
-    combineReducers(reducers),
-    applyMiddleware(thunk, apiMiddleware),
-  );
 
-  persistStore(store, {
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+
+const setupStore: TSetupStore = ({ persistConfig = {} } = {}) => {
+  const config = {
+    key: 'reducers',
+    storage: storage,
     whitelist: [
       'cart',
       'tableColumns',
@@ -23,11 +25,20 @@ const setupStore: TSetupStore = ({ persistConfig = {} } = {}) => {
       'sets',
       'analysis',
       'bannerNotification',
+      'auth',
     ],
+    debug: process.env.NODE_ENV === 'development',
     ...persistConfig,
-  });
+  };
 
-  return store;
+  const store = createStore(
+    persistCombineReducers(config, reducers),
+    composeEnhancers(applyMiddleware(thunk, apiMiddleware)),
+  );
+
+  const persistor = persistStore(store);
+
+  return { store, persistor };
 };
 
 export default setupStore;

@@ -12,7 +12,7 @@ import {
 } from 'recompose';
 
 import Modal from '@ncigdc/uikit/Modal';
-import SuggestionFacet from '@ncigdc/components/Aggregations/SuggestionFacet';
+import SuggestionFacet from '@ncigdc/modern_components/SuggestionFacet';
 import FacetSelection from '@ncigdc/modern_components/FacetSelection';
 import FacetWrapper from '@ncigdc/components/FacetWrapper';
 import FacetHeader from '@ncigdc/components/Aggregations/FacetHeader';
@@ -21,7 +21,7 @@ import withFacetSelection from '@ncigdc/utils/withFacetSelection';
 import escapeForRelay from '@ncigdc/utils/escapeForRelay';
 import tryParseJSON from '@ncigdc/utils/tryParseJSON';
 
-import type { TBucket } from '@ncigdc/components/Aggregations/types';
+import { IBucket } from '@ncigdc/components/Aggregations/types';
 
 import { withTheme } from '@ncigdc/theme';
 import FileIcon from '@ncigdc/theme/icons/File';
@@ -80,25 +80,25 @@ export type TProps = {
   facets: { facets: string },
   parsedFacets: Object,
   aggregations: {
-    access: { buckets: [TBucket] },
-    data_category: { buckets: [TBucket] },
-    data_format: { buckets: [TBucket] },
-    data_type: { buckets: [TBucket] },
-    experimental_strategy: { buckets: [TBucket] },
-    platform: { buckets: [TBucket] },
-    analysis__workflow_type: { buckets: [TBucket] },
+    access: { buckets: [IBucket] },
+    data_category: { buckets: [IBucket] },
+    data_format: { buckets: [IBucket] },
+    data_type: { buckets: [IBucket] },
+    experimental_strategy: { buckets: [IBucket] },
+    platform: { buckets: [IBucket] },
+    analysis__workflow_type: { buckets: [IBucket] },
   },
   theme: Object,
   suggestions: Array<Object>,
   setAutocomplete: Function,
 
-  userSelectedFacets: Array<{|
+  userSelectedFacets: Array<{
     description: String,
     doc_type: String,
     field: String,
     full: String,
     type: 'id' | 'string' | 'long',
-  |}>,
+  }>,
   handleSelectFacet: Function,
   handleResetFacets: Function,
   handleRequestRemoveFacet: Function,
@@ -171,9 +171,8 @@ const FileAggregations = (props: TProps) => (
       collapsed={props.fileIdCollapsed}
       doctype="files"
       fieldNoDoctype="file_id"
+      queryType="file"
       placeholder="e.g. 142682.bam, 4f6e2e7a-b..."
-      hits={props.suggestions}
-      setAutocomplete={props.setAutocomplete}
       style={{ borderBottom: `1px solid ${props.theme.greyScale5}` }}
       dropdownItem={x => (
         <Row>

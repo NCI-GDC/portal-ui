@@ -32,7 +32,7 @@ const RestoreDefaults = styled(Row, {
 
 const ArrangeColumnsButton = compose(
   connect(),
-  withState('searchTerm', 'setSearchTerm', ''),
+  withState('searchTerm', 'setSearchTerm', '')
 )(
   class extends React.Component {
     searchInput;
@@ -43,6 +43,7 @@ const ArrangeColumnsButton = compose(
         dispatch,
         entityType,
         style = {},
+        hideColumns,
       } = this.props;
       return (
         <Dropdown
@@ -86,12 +87,16 @@ const ArrangeColumnsButton = compose(
             >
               Restore Defaults
             </RestoreDefaults>
-            <ArrangeColumns entityType={entityType} searchTerm={searchTerm} />
+            <ArrangeColumns
+              entityType={entityType}
+              searchTerm={searchTerm}
+              hideColumns={hideColumns}
+            />
           </Column>
         </Dropdown>
       );
     }
-  },
+  }
 );
 
 export default ArrangeColumnsButton;

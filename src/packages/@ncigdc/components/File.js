@@ -32,7 +32,7 @@ import FileVersionsTable from '@ncigdc/components/FileVersionsTable';
 
 // value of data_category mapped to sections to display
 const DISPLAY_MAPPING = {
-  'Raw Sequencing Data': ['analysis', 'readGroup', 'downstreamAnalysis'],
+  'Sequencing Reads': ['analysis', 'readGroup', 'downstreamAnalysis'],
   'Transcriptome Profiling': ['analysis', 'downstreamAnalysis'],
   'Simple Nucleotide Variation': ['analysis', 'downstreamAnalysis'],
   'Copy Number Variation': ['analysis', 'downstreamAnalysis'],
@@ -59,7 +59,7 @@ export const getSlide = caseNode => {
     hits: { edges: [] },
   }).hits.edges.reduce(
     (acc, { node }) => [...acc, ...node.portions.hits.edges.map(p => p.node)],
-    [],
+    []
   );
   const slideImageIds = caseNode.files.hits.edges.map(({ node }) => ({
     file_id: node.file_id,
@@ -67,7 +67,7 @@ export const getSlide = caseNode => {
   }));
   let slides = portions.reduce(
     (acc, { slides }) => [...acc, ...slides.hits.edges.map(p => p.node)],
-    [],
+    []
   );
   return _.head(
     slideImageIds.map(id => {
@@ -75,7 +75,7 @@ export const getSlide = caseNode => {
         submitter_id: id.submitter_id,
       });
       return { ...id, ...matchBySubmitter };
-    }),
+    })
   );
 };
 
@@ -112,7 +112,7 @@ let ZoomableImageWithData = withImageViewerData(
         </Row>
       </Column>
     );
-  },
+  }
 );
 
 function displaySection(section: string, dataCategory: string): boolean {
@@ -159,8 +159,8 @@ const File = ({
 
   const projectIds = uniq(
     (node.cases.hits.edges || []).map(
-      ({ node: { project: { project_id: pId } } }) => pId,
-    ),
+      ({ node: { project: { project_id: pId } } }) => pId
+    )
   );
 
   const sourceFilesRepoLink = node.analysis.input_files.hits.total ? (
@@ -194,7 +194,7 @@ const File = ({
         </Button>
         {node.data_type === 'Aligned Reads' &&
           node.data_format === 'BAM' &&
-          node.index_files.hits.total && <BAMSlicingButton file={node} />}
+          node.index_files.hits.total > 0 && <BAMSlicingButton file={node} />}
         <DownloadFile
           file={node}
           activeText={'Processing'}
@@ -226,7 +226,7 @@ const File = ({
                     <ProjectLink key={pId} uuid={pId}>
                       {pId}
                     </ProjectLink>
-                  ),
+                  )
               ),
             },
           ]}
@@ -313,7 +313,7 @@ const File = ({
                   { key: 'sequencing_date', title: 'Sequencing Date' },
                 ]}
                 data={node.analysis.metadata.read_groups.hits.edges.map(
-                  readGroup => readGroup.node,
+                  readGroup => readGroup.node
                 )}
               />
             </Column>
@@ -430,7 +430,7 @@ const File = ({
                     ),
                   })),
                 ],
-                [],
+                []
               )}
             />
           </Column>
@@ -446,5 +446,5 @@ const File = ({
 export default compose(
   withRouter,
   withTheme,
-  connect(state => ({ ...state.cart })),
+  connect(state => ({ ...state.cart }))
 )(File);

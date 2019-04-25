@@ -19,6 +19,7 @@ import UserDropdown from '@ncigdc/components/UserDropdown';
 import Hidden from '@ncigdc/components/Hidden';
 import { setModal } from '@ncigdc/dux/modal';
 import { forceLogout } from '@ncigdc/dux/auth';
+import { removeNotification } from '@ncigdc/dux/bannerNotification';
 import SessionExpiredModal from '@ncigdc/components/Modals/SessionExpiredModal';
 import withRouter from '@ncigdc/utils/withRouter';
 import Banner from '@ncigdc/uikit/Banner';
@@ -52,12 +53,18 @@ const Header = compose(
   withHandlers({
     handleApiError: ({ dispatch }) => ({ status, user }) => {
       if (user && status === 401) {
+        dispatch(removeNotification('LOGIN'));
         dispatch(setModal(<SessionExpiredModal />));
         dispatch(forceLogout());
       }
     },
   }),
   lifecycle({
+    componentWillMount() {
+      if (!this.props.user) {
+        this.props.dispatch(removeNotification('LOGIN'));
+      }
+    },
     componentDidMount(): void {
       if (this.props.error) {
         this.props.handleApiError({
@@ -73,7 +80,7 @@ const Header = compose(
     },
   }),
   withTheme,
-  pure,
+  pure
 )(
   ({
     user,
@@ -229,7 +236,7 @@ const Header = compose(
         </nav>
       </div>
     </header>
-  ),
+  )
 );
 
 export default Header;

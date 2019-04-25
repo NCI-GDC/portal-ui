@@ -1,12 +1,11 @@
 /* @flow */
+import { handleActions } from 'redux-actions';
 
 import { saveAs } from 'filesaver.js';
-import { handleActions } from 'redux-actions';
 import { fetchAuth } from '@ncigdc/utils/ajax';
-import { FAKE_USER, IS_DEV } from '@ncigdc/utils/constants';
+import { FAKE_USER, IS_DEV, AWG } from '@ncigdc/utils/constants';
 export type State = { isFetching: boolean, user: ?Object, error?: Object };
 export type Action = { type: string, payload: any };
-
 const USER_REQUEST = 'gdc/USER_REQUEST';
 const USER_SUCCESS = 'gdc/USER_SUCCESS';
 const USER_FAILURE = 'gdc/USER_FAILURE';
@@ -63,10 +62,9 @@ export function fetchToken() {
         type: TOKEN_SUCCESS,
         payload: async (action, state, res) => {
           const token = await res.text();
-
           saveAs(
             new Blob([token], { type: 'text/plain;charset=us-ascii' }),
-            `gdc-user-token.${new Date().toISOString()}.txt`,
+            `gdc-user-token.${new Date().toISOString()}.txt`
           );
 
           return token;
@@ -74,7 +72,7 @@ export function fetchToken() {
       },
       TOKEN_FAILURE,
     ],
-    endpoint: 'token/refresh',
+    endpoint: AWG ? 'token/refresh/awg' : 'token/refresh',
   });
 }
 
@@ -85,6 +83,7 @@ const initialState: State = {
   error: {},
   isFetchingToken: false,
   token: undefined,
+  failed: false,
 };
 
 export default handleActions(
@@ -92,7 +91,7 @@ export default handleActions(
     [USER_REQUEST]: state => ({
       ...state,
       isFetching: true,
-      user: null,
+      user: state.user,
       error: {},
     }),
     [USER_SUCCESS]: (state, action) => ({
@@ -101,6 +100,7 @@ export default handleActions(
       user: action.error ? null : action.payload,
       error: action.error ? action.payload : {},
       firstLoad: false,
+      failed: false,
     }),
     [USER_FAILURE]: (state, action) => ({
       ...state,
@@ -108,6 +108,7 @@ export default handleActions(
       error: action.payload,
       user: null,
       firstLoad: false,
+      failed: true,
     }),
     [TOKEN_REQUEST]: state => ({
       ...state,
@@ -129,5 +130,5 @@ export default handleActions(
       token: undefined,
     }),
   },
-  initialState,
+  initialState
 );

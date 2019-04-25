@@ -1,9 +1,12 @@
 // @flow
 import { CALL_API } from 'redux-api-middleware';
 import urlJoin from 'url-join';
-import { API, AUTH } from '@ncigdc/utils/constants';
 import Queue from 'queue';
 import md5 from 'blueimp-md5';
+
+import { API, AUTH, IS_AUTH_PORTAL } from '@ncigdc/utils/constants';
+import { redirectToLogin } from '@ncigdc/utils/auth';
+import consoleDebug from '@ncigdc/utils/consoleDebug';
 
 const DEFAULTS = {
   method: 'get',
@@ -19,6 +22,12 @@ export function fetchAuth(options: { endpoint: string }): Object {
   return {
     [CALL_API]: {
       ...DEFAULTS,
+      ...(IS_AUTH_PORTAL
+        ? {
+            credentials: 'include',
+            headers: {},
+          }
+        : {}),
       ...options,
       endpoint: urlJoin(AUTH, options.endpoint),
     },
@@ -29,22 +38,53 @@ export function fetchAuth(options: { endpoint: string }): Object {
 export const fetchApi = (endpoint, opts = {}) => {
   const clonedOptions = {
     ...opts,
+    ...(IS_AUTH_PORTAL
+      ? { credentials: opts.credentials || 'include', headers: opts.headers }
+      : {}),
     ...(opts.body && {
       body: JSON.stringify(opts.body),
       method: 'POST',
     }),
   };
-  return fetch(urlJoin(API, endpoint), clonedOptions).then(r => r.json());
+  return fetch(urlJoin(API, endpoint), clonedOptions)
+    .then(r => {
+      if (!r.ok) {
+        throw r;
+      }
+      return r.json();
+    })
+    .catch(err => {
+      if (err.status) {
+        switch (err.status) {
+          case 401:
+          case 403:
+            consoleDebug(err.statusText);
+            if (IS_AUTH_PORTAL) {
+              return redirectToLogin('timeout');
+            }
+            break;
+          case 400:
+          case 404:
+          case 500:
+            consoleDebug(err.statusText);
+            break;
+          default:
+            return consoleDebug('there was an error', err.statusText);
+        }
+      } else {
+        consoleDebug('Something went wrong');
+      }
+    });
 };
 
 type TFetchApiChunked = (
   endpoint: string,
-  opts: { chunkSize?: number },
+  opts: { chunkSize?: number }
 ) => Promise<{ data: { hits: Array<{}> } }>;
 const DEFAULT_CHUNK_SIZE = 10000;
 export const fetchApiChunked: TFetchApiChunked = async (
   endpoint,
-  { chunkSize = DEFAULT_CHUNK_SIZE, ...opts } = {},
+  { chunkSize = DEFAULT_CHUNK_SIZE, ...opts } = {}
 ) => {
   const queue = Queue({ concurrency: 6 });
   const body = opts.body || {};
@@ -62,7 +102,7 @@ export const fetchApiChunked: TFetchApiChunked = async (
   const hash = md5(JSON.stringify(defaultOptions));
   const { data } = await fetchApi(
     urlJoin(endpoint, `?hash=${hash}`),
-    defaultOptions,
+    defaultOptions
   );
   let hits = data.hits;
 

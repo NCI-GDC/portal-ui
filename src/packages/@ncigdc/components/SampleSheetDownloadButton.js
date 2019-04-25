@@ -3,7 +3,7 @@ import React from 'react';
 
 import timestamp from '@ncigdc/utils/timestamp';
 import DownloadButton from '@ncigdc/components/DownloadButton';
-import type { TCartFile } from '@ncigdc/dux/cart';
+import { TCartFile } from '@ncigdc/dux/cart';
 
 const SampleSheetDownloadButton = ({
   files,

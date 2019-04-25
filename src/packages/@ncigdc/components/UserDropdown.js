@@ -10,14 +10,14 @@ import Dropdown from '@ncigdc/uikit/Dropdown';
 import DropdownItem from '@ncigdc/uikit/DropdownItem';
 import styled from '@ncigdc/theme/styled';
 import DownloadIcon from '@ncigdc/theme/icons/Download';
-import { fetchToken } from '@ncigdc/dux/auth';
+import { fetchToken, forceLogout } from '@ncigdc/dux/auth';
 import { notify } from '@ncigdc/dux/notification';
 import { AUTH } from '@ncigdc/utils/constants';
 import UserIcon from '@ncigdc/theme/icons/User';
 import SignOutIcon from '@ncigdc/theme/icons/SignOut';
 import UserProfileModal from '@ncigdc/components/Modals/UserProfileModal';
 import { setModal } from '@ncigdc/dux/modal';
-import { IS_DEV } from '@ncigdc/utils/constants';
+import { IS_DEV, AWG, FENCE } from '@ncigdc/utils/constants';
 
 const NavLink = styled.a({
   padding: '15px 13px',
@@ -36,20 +36,34 @@ const DropdownItemStyled = styled(DropdownItem, {
   cursor: 'pointer',
 });
 
-const logout = () => {
-  if (window.location.port) {
-    window.location.assign(
-      IS_DEV
-        ? ``
-        : urlJoin(
-            AUTH,
-            `logout?next=:${window.location.port}${window.location.pathname}`,
-          ),
+const logout = async dispatch => {
+  if (AWG) {
+    try {
+      await fetch(urlJoin(FENCE, 'logout'), { credentials: 'include' });
+      // need to delete user from store
+      dispatch(forceLogout());
+    } catch (err) {
+      console.warn('There was an error: ', err);
+    }
+    return window.location.assign(
+      urlJoin(AUTH, `logout?next=https://portal.awg.gdc.cancer.gov/login`)
     );
   } else {
-    window.location.assign(
-      IS_DEV ? `` : urlJoin(AUTH, `logout?next=${window.location.pathname}`),
-    );
+    dispatch(forceLogout());
+    if (window.location.port) {
+      window.location.assign(
+        IS_DEV
+          ? ``
+          : urlJoin(
+              AUTH,
+              `logout?next=:${window.location.port}${window.location.pathname}`
+            )
+      );
+    } else {
+      window.location.assign(
+        IS_DEV ? `` : urlJoin(AUTH, `logout?next=${window.location.pathname}`)
+      );
+    }
   }
 };
 
@@ -66,14 +80,16 @@ const UserDropdown = connect(state => ({
         </NavLink>
       }
     >
-      <DropdownItemStyled
-        onClick={() => dispatch(setModal(<UserProfileModal />))}
-      >
-        <UserIcon
-          style={{ ...iconStyle, fontSize: '1.8rem', marginRight: '0.6rem' }}
-        />{' '}
-        User Profile
-      </DropdownItemStyled>
+      {!AWG && (
+        <DropdownItemStyled
+          onClick={() => dispatch(setModal(<UserProfileModal />))}
+        >
+          <UserIcon
+            style={{ ...iconStyle, fontSize: '1.8rem', marginRight: '0.6rem' }}
+          />{' '}
+          User Profile
+        </DropdownItemStyled>
+      )}
       <DropdownItemStyled
         onClick={() => {
           if (userProjectsCount(user)) {
@@ -93,7 +109,7 @@ const UserDropdown = connect(state => ({
                     to learn more about obtaining access to protected data.
                   </span>
                 ),
-              }),
+              })
             );
           }
         }}
@@ -101,7 +117,7 @@ const UserDropdown = connect(state => ({
         <DownloadIcon style={iconStyle} />
         Download Token
       </DropdownItemStyled>
-      <DropdownItemStyled onClick={logout}>
+      <DropdownItemStyled onClick={() => logout(dispatch)}>
         <SignOutIcon aria-hidden="true" style={iconStyle} />
         Logout
       </DropdownItemStyled>

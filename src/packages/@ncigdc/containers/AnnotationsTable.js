@@ -13,7 +13,7 @@ import Table, { Tr } from '@ncigdc/uikit/Table';
 import timestamp from '@ncigdc/utils/timestamp';
 
 export const SearchTable = compose(
-  connect(state => ({ tableColumns: state.tableColumns.annotations.ids })),
+  connect(state => ({ tableColumns: state.tableColumns.annotations }))
 )(
   ({
     downloadable,
@@ -25,10 +25,7 @@ export const SearchTable = compose(
     tableHeader,
     dispatch,
   }) => {
-    const tableInfo = tableModels[entityType]
-      .slice()
-      .sort((a, b) => tableColumns.indexOf(a.id) - tableColumns.indexOf(b.id))
-      .filter(x => tableColumns.includes(x.id));
+    const tableInfo = tableColumns.slice().filter(x => !x.hidden);
 
     return (
       <div className="test-annotations-table">
@@ -103,7 +100,7 @@ export const SearchTable = compose(
         />
       </div>
     );
-  },
+  }
 );
 
 export const AnnotationsTableQuery = {
@@ -140,7 +137,7 @@ export const AnnotationsTableQuery = {
 
 const AnnotationsTable = Relay.createContainer(
   SearchTable,
-  AnnotationsTableQuery,
+  AnnotationsTableQuery
 );
 
 export default AnnotationsTable;

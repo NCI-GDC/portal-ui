@@ -12,11 +12,11 @@ import Table, { Tr, Td } from '@ncigdc/uikit/Table';
 
 export default compose(
   setDisplayName('ProjectsTablePresentation'),
-  connect(state => ({ tableColumns: state.tableColumns.projects.ids })),
+  connect(state => ({ tableColumns: state.tableColumns.projects })),
   mapProps(props => ({
     ...props,
     hits: props.viewer.projects.hits,
-  })),
+  }))
 )(
   ({
     downloadable,
@@ -26,10 +26,7 @@ export default compose(
     tableHeader,
     tableColumns,
   }) => {
-    const tableInfo = tableModels[entityType]
-      .slice()
-      .sort((a, b) => tableColumns.indexOf(a.id) - tableColumns.indexOf(b.id))
-      .filter(x => tableColumns.includes(x.id));
+    const tableInfo = tableColumns.slice().filter(x => !x.hidden);
     return (
       <div className="test-projects-table">
         <Row
@@ -87,7 +84,7 @@ export default compose(
                             <x.total key={x.id} hits={hits} />
                           ) : (
                             <Td key={x.id} />
-                          ),
+                          )
                       )}
                 </Tr>
               </tbody>
@@ -96,5 +93,5 @@ export default compose(
         </div>
       </div>
     );
-  },
+  }
 );

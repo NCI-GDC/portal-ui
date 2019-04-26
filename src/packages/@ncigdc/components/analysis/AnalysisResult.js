@@ -20,7 +20,7 @@ import availableAnalysis from './availableAnalysis';
 
 const enhance = compose(
   connect(state => ({ analysis: state.analysis.saved })),
-  withRouter,
+  withRouter
 );
 
 function undoNotification(dispatch, analysis) {
@@ -62,20 +62,26 @@ function undoNotification(dispatch, analysis) {
           </strong>
         </Column>
       ),
-    }),
+    })
   );
 }
 
+// analysis here is all analyses in localStorage
 const AnalysisResult = ({ analysis, query, dispatch, push }) => {
   const analysisId = query.analysisId || '';
-  const currentIndex = analysis.findIndex(a => a.id === analysisId);
-
+  const currentIndex = Math.max(
+    analysis.findIndex(a => a.id === analysisId),
+    0
+  );
+  const analysisType = analysis[currentIndex].type;
+  const tabMinWidth =
+    analysisType === 'clinical_data' ? { minWidth: 1200 } : {};
   return (
     <TabbedLinks
       side
-      style={{ padding: '2rem 2.5rem' }}
+      style={{ padding: '1rem 0.7rem', ...tabMinWidth }}
       queryParam="analysisId"
-      defaultIndex={Math.max(currentIndex, 0)}
+      defaultIndex={currentIndex}
       tabToolbar={
         <Button
           style={{ margin: '5px 5px 0 0' }}
@@ -92,21 +98,33 @@ const AnalysisResult = ({ analysis, query, dispatch, push }) => {
       }
       linkStyle={{
         width: '100%',
+        padding: '1rem 0.8rem',
       }}
       links={analysis
         .map(savedAnalysis => {
           const analysis = availableAnalysis.find(
-            a => a.type === savedAnalysis.type,
+            a => a.type === savedAnalysis.type
           );
+
+          const tabTitle =
+            analysis.type === 'clinical_data'
+              ? savedAnalysis.name
+              : new Date(savedAnalysis.created).toLocaleDateString();
+
           return {
             id: savedAnalysis.id,
             text: (
               <Row>
                 <div style={{ marginRight: 15 }}>
-                  {analysis.label}
-                  <div style={{ fontSize: '1rem' }}>
-                    {new Date(savedAnalysis.created).toLocaleDateString()}
-                  </div>
+                  <Row spacing={'8px'} style={{ alignItems: 'center' }}>
+                    <analysis.Icon style={{ width: 25, height: 25 }} />
+                    <Column>
+                      <div style={{ fontSize: '1.4rem' }}>
+                        {_.truncate(tabTitle, { length: 16 })}
+                      </div>
+                      <div style={{ fontSize: '1.2rem' }}>{analysis.label}</div>
+                    </Column>
+                  </Row>
                 </div>
                 <UnstyledButton
                   style={{ marginLeft: 'auto', backgroundColor: 'transparent' }}
@@ -120,7 +138,9 @@ const AnalysisResult = ({ analysis, query, dispatch, push }) => {
                 </UnstyledButton>
               </Row>
             ),
-            component: <analysis.ResultComponent {...savedAnalysis} />,
+            component: (
+              <analysis.ResultComponent {...savedAnalysis} {...analysis} />
+            ),
           };
         })
         .filter(Boolean)}

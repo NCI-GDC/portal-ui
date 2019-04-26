@@ -467,6 +467,7 @@ const GenesTableModel = [
                   field: 'gene.symbol',
                   value: node.symbol,
                   currentFilters: defaultFilters,
+                  plotType: 'mutation',
                 }).then((survivalData: ISelectedSurvivalDataProps) => {
                   setSelectedSurvivalData(survivalData);
                   setSurvivalLoadingId('');

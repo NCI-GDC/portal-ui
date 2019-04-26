@@ -9,9 +9,9 @@
   font-size: 1.5ex;
 }
 .survival-plot .axis .axis-label {
-  color: rgb(107,98,98);
+  color: rgb(107, 98, 98);
   font-size: 1.2rem;
-  fill: rgb(107,98,98);
+  fill: rgb(107, 98, 98);
   font-weight: 500;
 }
 .survival-plot .line {
@@ -28,23 +28,23 @@
 .survival-plot .serie .point:active {
   r: 5;
 }
-.survival-plot .serie .point[status="alive"] {
+.survival-plot .serie .point[status='alive'] {
   opacity: 0.5;
 }
-.survival-plot .serie .point[status="deceased"] {
+.survival-plot .serie .point[status='deceased'] {
   opacity: 0;
   transition: r 0.3s, opacity 0.3s;
   r: 5;
 }
-.survival-plot .serie .point[status="deceased"]:hover,
-.survival-plot .serie .point[status="deceased"]:active {
+.survival-plot .serie .point[status='deceased']:hover,
+.survival-plot .serie .point[status='deceased']:active {
   opacity: 1;
   r: 2;
 }
 .survival-plot .serie .point-line {
   cursor: pointer;
 }
-.survival-plot .serie .point-line[status="deceased"] {
+.survival-plot .serie .point-line[status='deceased'] {
   opacity: 0;
 }
 .survival-plot .brush .extent {
@@ -55,6 +55,6 @@
 }
 
 .survival-plot.exported-svg-class div {
-    position: static !important;
-    display: block !important;
+  position: static !important;
+  display: block !important;
 }

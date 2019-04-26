@@ -5,12 +5,15 @@ import Spinner from '@ncigdc/uikit/Loaders/Material';
 
 export default class extends React.Component {
   clicked = false;
+
   componentWillReceiveProps(next) {
     if (next.forceClick && !this.clicked) {
+      const { createSet } = this.props;
       this.clicked = true;
-      this.props.createSet(this.props);
+      createSet(this.props);
     }
   }
+
   render() {
     const {
       style,
@@ -31,13 +34,12 @@ export default class extends React.Component {
         </Overlay>
         <Component
           disabled={disabled}
-          style={style}
+          leftIcon={leftIcon}
           onClick={() => {
             onClick();
             createSet(props);
           }}
-          leftIcon={leftIcon}
-        >
+          style={style}>
           {children}
         </Component>
       </span>

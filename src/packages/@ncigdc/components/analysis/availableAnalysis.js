@@ -8,9 +8,11 @@ import { TSetTypes } from '@ncigdc/dux/sets';
 import Demo from './Demo';
 import ClinicalDataAnalysis from '@ncigdc/theme/icons/ClinicalDataAnalysis';
 import { DISPLAY_CDAVE } from '@ncigdc/utils/constants';
+import ClinicalAnalysisContainer from '@ncigdc/modern_components/IntrospectiveType';
+import defaultVariables from './defaultCDAVEvariables';
 
-type TSelectedSets = {
-  [TSetTypes]: {},
+export type TSelectedSets = {
+  [TSetTypes]: any,
 };
 
 type TAnalysis = {
@@ -34,10 +36,10 @@ const availableAnalysis: [TAnalysis] = [
   {
     type: 'set_operations',
     label: 'Set Operations',
-    Icon: p => (
+    Icon: ({ style = {}, ...p }) => (
       <VennSvg
         {...p}
-        style={{ width: 80 }}
+        style={{ width: 80, ...style }}
         numCircles={3}
         ops={[
           { op: 1 },
@@ -156,10 +158,10 @@ const availableAnalysis: [TAnalysis] = [
       ['case', 'gene', 'ssm'].filter(t => t !== type).some(t => sets[t])
         ? 'Please choose only one type'
         : Object.keys(sets[type] || {}).length >= 3
-          ? `Please select two or three ${type === 'ssm'
-              ? 'mutation'
-              : type} sets`
-          : null,
+        ? `Please select two or three ${
+            type === 'ssm' ? 'mutation' : type
+          } sets`
+        : null,
     setTypes: ['case', 'gene', 'ssm'],
     validateSets: sets => {
       const entries = Object.entries(sets);
@@ -193,13 +195,14 @@ const availableAnalysis: [TAnalysis] = [
   {
     type: 'comparison',
     label: 'Cohort Comparison',
-    Icon: withTheme(({ theme }) => (
+    Icon: withTheme(({ theme, style = {} }) => (
       <div>
         <CCIcon
           width="80px"
           height="80px"
           color1="rgb(105, 16, 48)"
           color2={theme.primary}
+          style={style}
         />
       </div>
     )),
@@ -249,8 +252,8 @@ const availableAnalysis: [TAnalysis] = [
       !['case'].includes(type)
         ? "This analysis can't be run with this type"
         : Object.keys(sets[type] || {}).length >= 2
-          ? `You can only select two ${type === 'ssm' ? 'mutation' : type} set`
-          : null,
+        ? `You can only select two ${type === 'ssm' ? 'mutation' : type} set`
+        : null,
     setTypes: ['case'],
     validateSets: sets =>
       ['case'].every((t: any) => Object.keys(sets[t] || {}).length === 2),
@@ -267,41 +270,23 @@ const availableAnalysis: [TAnalysis] = [
     {
       type: 'clinical_data',
       label: 'Clinical Data Analysis',
-      Icon: withTheme(({ theme }) => (
+      Icon: withTheme(({ theme, style = {} }) => (
         <div>
-          <ClinicalDataAnalysis style={{ width: 80, height: 80 }} />
+          <ClinicalDataAnalysis style={{ width: 80, height: 80, ...style }} />
         </div>
       )),
       description: `Display basic statistical analyses for your clinical cohort using data variables and configurations that you select as input`,
       demoData: {
-        message: 'message',
+        message: 'Demo showing cases with pancreatic cancer',
         sets: {
           case: {
-            'demo-pancreas-kras': 'Pancreas - KRAS mutated',
-            'demo-pancreas-no-kras': 'Pancreas - KRAS not mutated',
+            'demo-pancreas': 'Pancreas',
           },
         },
         filters: {
-          'demo-pancreas-kras': {
+          'demo-pancreas': {
             op: 'and',
             content: [
-              {
-                op: 'in',
-                content: { field: 'genes.symbol', value: ['KRAS'] },
-              },
-              {
-                op: 'in',
-                content: { field: 'cases.primary_site', value: ['Pancreas'] },
-              },
-            ],
-          },
-          'demo-pancreas-no-kras': {
-            op: 'and',
-            content: [
-              {
-                op: 'excludeifany',
-                content: { field: 'genes.symbol', value: 'KRAS' },
-              },
               {
                 op: 'in',
                 content: { field: 'cases.primary_site', value: ['Pancreas'] },
@@ -309,28 +294,24 @@ const availableAnalysis: [TAnalysis] = [
             ],
           },
         },
-        type: 'comparison',
+        type: 'clinical_data',
+        displayVariables: { ...defaultVariables },
+        name: 'Demo Clinical Analysis',
       },
       setInstructions: 'Set instructions',
-      setDisabledMessage: ({ sets, type }) =>
-        !['case'].includes(type)
-          ? "This analysis can't be run with this type"
-          : Object.keys(sets[type] || {}).length >= 2
-            ? `You can only select two ${type === 'ssm'
-                ? 'mutation'
-                : type} set`
-            : null,
       setTypes: ['case'],
       validateSets: sets =>
-        ['case'].every((t: any) => Object.keys(sets[t] || {}).length === 2),
-      ResultComponent: props =>
-        props.id.includes('demo-') ? (
+        sets &&
+        ['case'].every((t: any) => Object.keys(sets[t] || {}).length === 1),
+      ResultComponent: props => {
+        return props.id.includes('demo-') ? (
           <Demo {...props}>
-            <div>Clinical Analysis Result</div>
+            <ClinicalAnalysisContainer typeName={'ExploreCases'} {...props} />
           </Demo>
         ) : (
-          <div>Clinical Analysis Result</div>
-        ),
+          <ClinicalAnalysisContainer typeName={'ExploreCases'} {...props} />
+        );
+      },
     },
   ]),
 ];

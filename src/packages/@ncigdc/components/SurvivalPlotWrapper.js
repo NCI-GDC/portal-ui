@@ -137,9 +137,14 @@ const SurvivalPlotWrapper = ({
                   embed: {
                     top: {
                       elements: legend
-                        .map((l, i) => document.querySelector(
-                          `.${uniqueClass} .legend-${i}`
-                        ))
+                        .map((l, i) => {
+                          const legendItem = document.querySelector(
+                            `.${uniqueClass} .legend-${i}`
+                          ).cloneNode(true);
+                          const legendTitle = legendItem.querySelector('span.print-only.inline');
+                          if (legendTitle !== null) legendTitle.className = '';
+                          return legendItem;
+                        })
                         .concat(
                           pValue
                             ? document.querySelector(

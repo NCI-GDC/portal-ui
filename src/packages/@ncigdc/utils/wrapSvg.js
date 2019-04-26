@@ -67,7 +67,7 @@ function buildForeignObject({
 }): { html: string, height: number } {
   const foreignObjects = elements.filter(Boolean);
   // $FlowIgnore
-  const elementsHeight = sum(foreignObjects.map(e => e.offsetHeight));
+  const elementsHeight = sum(foreignObjects.map(e => e.offsetHeight || 15));
 
   return {
     height: elementsHeight,
@@ -83,8 +83,8 @@ function buildForeignObject({
         <div xmlns="http://www.w3.org/1999/xhtml">
           <div style="${styles}">
             ${foreignObjects
-              .map(e => e.innerHTML)
-              .join(`</div><div style="${styles}">`)}
+        .map(e => e.innerHTML)
+        .join(`</div><div style="${styles}">`)}
           </div>
         </div>
       </foreignObject>
@@ -171,32 +171,32 @@ export const wrapSvg: TWrapSvg = ({
     >
       <g transform="translate(0, ${margins.top || 0})">
         <text x="${width /
-          2}" y="0" text-anchor="middle" dominant-baseline="hanging">
+    2}" y="0" text-anchor="middle" dominant-baseline="hanging">
           <tspan style="font-size: 1.4rem;">${title}</tspan>
         </text>
       </g>
       ${beforeObject.html}
       ${rightObject.html}
       <g transform="translate(${margins.left || 0},${sum([
-    titleHeight,
-    margins.top,
-    beforeObject.height,
-  ])})">
+      titleHeight,
+      margins.top,
+      beforeObject.height,
+    ])})">
         ${svg.innerHTML.replace(
-          /url\(['"]?https?:\/\/[^#]+(#.+)['"]?\)/g,
-          'url($1)',
-        )}
+      /url\(['"]?https?:\/\/[^#]+(#.+)['"]?\)/g,
+      'url($1)',
+    )}
       </g>
       ${afterObject.html}
       ${legends
-        ? simpleForeign(
-            legends,
-            0,
-            sum([height, afterObject.height]),
-            '650',
-            '22',
-          )
-        : ''}
+      ? simpleForeign(
+        legends,
+        0,
+        sum([height, afterObject.height]),
+        '650',
+        '22',
+      )
+      : ''}
     </svg>
   `;
   return wrapper.querySelector('svg');

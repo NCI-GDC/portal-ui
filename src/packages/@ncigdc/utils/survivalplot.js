@@ -339,9 +339,7 @@ export const getSurvivalCurvesArray = memoize(
                 key: `${valueName}-not-enough-data`,
                 value: (
                   <span>
-                    Not enough survival data for
-                    {' '}
-                    {valueName}
+                    {`Not enough survival data for ${valueName}`}
                   </span>
                 ),
               }
@@ -351,14 +349,10 @@ export const getSurvivalCurvesArray = memoize(
                   <span>
                     S
                     <sub>{i + 1}</sub>
-                    {' '}
-                    (N =
-                    {' '}
-                    {getCaseCount(i)}
+                    {` (N = ${getCaseCount(i)})`}
                     <span className="print-only inline">
                       {` - ${valueName}`}
                     </span>
-                    )
                   </span>
                 ),
               };

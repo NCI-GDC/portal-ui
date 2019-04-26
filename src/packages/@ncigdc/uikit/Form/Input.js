@@ -38,10 +38,10 @@ const Input = ({
 
 Input.propTypes = {
   onChange: PropTypes.func,
-  style: PropTypes.objectOf(PropTypes.object),
+  style: PropTypes.objectOf(PropTypes.string),
 };
 Input.defaultProps = {
-  onChange: () => {},
+  onChange: () => { },
   style: {},
 };
 

@@ -27,19 +27,19 @@ type TProps = {
   height: number,
   legend: Array<{
     key: string,
-    value: any,
+    value: any
   }>,
   rawData: {
     results: Array<{
       donors: Array<Object>,
       meta: {
         id: string | number,
-        label: string,
-      },
+        label: string
+      }
     }>,
     overallStats: {
-      pValue: number,
-    },
+      pValue: number
+    }
   },
   setXDomain: Function,
   setSurvivalContainer: Function,
@@ -48,7 +48,7 @@ type TProps = {
   survivalContainer: Element,
   setTooltip: Function,
   push: Function,
-  uniqueClass: string,
+  uniqueClass: string
 };
 
 const TITLE = 'Overall Survival Plot';
@@ -149,7 +149,8 @@ const SurvivalPlotWrapper = ({
                         ),
                     },
                   },
-                })}
+                })
+                }
                 tooltipHTML="Download SurvivalPlot data or image"
                 tsvData={results.reduce((data, set, i) => {
                   const mapData = set.donors.map(d => toMap(d));
@@ -284,18 +285,9 @@ function renderSurvivalPlot(props: TProps): void {
       ) => {
         setTooltip(
           <span>
-            Case ID:
-            {' '}
-            {project_id}
-            {' '}
-            /
-            {' '}
-            {submitter_id}
+            {`Case ID: ${project_id} / ${submitter_id}`}
             <br />
-            Survival Rate:
-            {' '}
-            {Math.round(survivalEstimate * 100)}
-            %
+            {`Survival Rate: ${Math.round(survivalEstimate * 100)}%`}
             <br />
             {censored
               ? `Interval of last follow-up: ${time.toLocaleString()} years`

@@ -8,6 +8,7 @@ module.exports = {
   },
   extends: [
     'airbnb',
+    'plugin:react/recommended',
     'plugin:import/typescript',
     // 'plugin:@typescript-eslint/recommended', // Allows for TypeScript-specific linting rules to run.
   ],
@@ -44,7 +45,22 @@ module.exports = {
       FunctionDeclaration: { parameters: 'first' },
       FunctionExpression: { parameters: 'first' },
       ignoreComments: true,
-      ignoredNodes: [ 'ConditionalExpression' ],
+      ignoredNodes: [
+        'ConditionalExpression',
+        'JSXAttribute',
+        'JSXClosingElement',
+        'JSXElement',
+        'JSXElement > *',
+        'JSXEmptyExpression',
+        'JSXExpressionContainer',
+        'JSXIdentifier',
+        'JSXMemberExpression',
+        'JSXNamespacedName',
+        'JSXOpeningElement',
+        'JSXSpreadAttribute',
+        'JSXSpreadChild',
+        'JSXText',
+      ],
       ImportDeclaration: 'first',
       MemberExpression: 1,
       ObjectExpression: 'first',
@@ -96,7 +112,8 @@ module.exports = {
     'import/no-extraneous-dependencies': ['warn', {
       'packageDir': './'
     }],
-    'react/jsx-closing-bracket-location': ['warn', 'after-props'],
+    'react/jsx-indent-props': ['warn', 2],
+    'react/jsx-closing-bracket-location': ['warn', 'props-aligned'],
     'react/jsx-indent-props': ['warn', 'first'],
     'react/jsx-max-props-per-line': ['warn', {
       maximum: 1,
@@ -108,7 +125,6 @@ module.exports = {
     'react/jsx-sort-default-props': 'error',
     'react/jsx-sort-props': ['warn', {
       ignoreCase: true,
-      shorthandFirst: true,
     }],
     'react/jsx-tag-spacing': ['warn', {
       closingSlash: 'never',

@@ -26,13 +26,13 @@ import Hidden from '@ncigdc/components/Hidden';
 import { visualizingButton } from '@ncigdc/theme/mixins';
 import { zDepth1 } from '@ncigdc/theme/mixins';
 import EntityPageHorizontalTable from '@ncigdc/components/EntityPageHorizontalTable';
-import ClinicalVariableCard from './ClinicalVariableCard.js';
+import ClinicalVariableCard from './ClinicalVariableCard';
 import ContinuousAggregation from './ContinuousAggregationQuery';
 import Input from '@ncigdc/uikit/Form/Input';
 import { withTheme } from '@ncigdc/theme';
 import countComponents from '@ncigdc/modern_components/Counts';
 import ExploreLink from '@ncigdc/components/Links/ExploreLink';
-import ControlPanelNode from './ControlPanelNode.js';
+import ControlPanelNode from './ControlPanelNode';
 import {
   updateClinicalAnalysisProperty,
   addAnalysis,

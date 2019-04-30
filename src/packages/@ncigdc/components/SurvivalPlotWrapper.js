@@ -27,19 +27,19 @@ type TProps = {
   height: number,
   legend: Array<{
     key: string,
-    value: any
+    value: any,
   }>,
   rawData: {
     results: Array<{
       donors: Array<Object>,
       meta: {
         id: string | number,
-        label: string
-      }
+        label: string,
+      },
     }>,
     overallStats: {
-      pValue: number
-    }
+      pValue: number,
+    },
   },
   setXDomain: Function,
   setSurvivalContainer: Function,
@@ -48,7 +48,7 @@ type TProps = {
   survivalContainer: Element,
   setTooltip: Function,
   push: Function,
-  uniqueClass: string
+  uniqueClass: string,
 };
 
 const TITLE = 'Overall Survival Plot';

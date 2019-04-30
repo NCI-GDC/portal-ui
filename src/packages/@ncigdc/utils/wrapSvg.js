@@ -37,7 +37,7 @@ type TEmbed = {
   width?: number,
 };
 
-export type TWrapSvg = ({
+export type TWrapSvg = {
   title: string,
   selector: string,
   legends: string,
@@ -48,7 +48,7 @@ export type TWrapSvg = ({
     right?: TEmbed,
     bottom?: TEmbed,
   },
-}) => ?Element;
+};
 
 const titleHeight = 20;
 
@@ -92,14 +92,19 @@ function buildForeignObject({
   };
 }
 
-export const wrapSvg: TWrapSvg = ({
+export const wrapSvg = ({
   selector,
   title,
   legends,
-  margins = { top: 20, right: 20, bottom: 20, left: 20 },
+  margins = {
+    top: 20,
+    right: 20,
+    bottom: 20,
+    left: 20,
+  },
   className = '',
   embed = {},
-}) => {
+}: TWrapSvg): Element => {
   const svg = document.querySelector(selector);
   if (!svg) return svg;
   const viewBox = (svg.getAttribute('viewBox') || '').split(/\s+|,/);

@@ -1,7 +1,12 @@
 // @flow
 
 import React from 'react';
-import { compose, lifecycle, withState } from 'recompose';
+import {
+  compose,
+  lifecycle,
+  setDisplayName,
+  withState,
+} from 'recompose';
 import _ from 'lodash';
 import { scaleOrdinal, schemeCategory10 } from 'd3';
 import { renderPlot } from '@oncojs/survivalplot';
@@ -71,22 +76,21 @@ const styles = {
   },
 };
 
-class Container extends React.Component {
-  render() {
-    const { setSurvivalContainer, survivalPlotLoading, height } = this.props;
-    return (
-      <div
-        className={`${CLASS_NAME} test-survival-plot-container`}
-        ref={setSurvivalContainer}
-        style={{
-          overflow: 'hidden',
-          height: survivalPlotLoading ? '0px' : height,
-          position: 'relative',
-        }}
-        />
-    );
-  }
-}
+const Container = ({
+  height,
+  setSurvivalContainer,
+  survivalPlotLoading,
+}) => (
+  <div
+    className={`${CLASS_NAME} test-survival-plot-container`}
+    ref={setSurvivalContainer}
+    style={{
+      overflow: 'hidden',
+      height: survivalPlotLoading ? '0px' : height,
+      position: 'relative',
+    }}
+    />
+);
 
 const SurvivalPlotWrapper = ({
   height = 0,
@@ -304,6 +308,7 @@ function renderSurvivalPlot(props: TProps): void {
       onClickDonor: (e, donor) => push({ pathname: `/cases/${donor.id}` }),
       onDomainChange: setXDomain,
       margins: SVG_MARGINS,
+      shouldShowConfidenceIntervals: false,
     });
     const performanceContext = {
       data_sets: results.length,
@@ -314,6 +319,7 @@ function renderSurvivalPlot(props: TProps): void {
 }
 
 const enhance = compose(
+  setDisplayName('EnhancedSurvivalPlotWrapper'),
   withTooltip,
   withRouter,
   withState('xDomain', 'setXDomain', undefined),

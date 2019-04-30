@@ -37,7 +37,7 @@ type TEmbed = {
   width?: number,
 };
 
-export type TWrapSvg = ({
+export type TWrapSvg = {
   title: string,
   selector: string,
   legends: string,
@@ -48,7 +48,7 @@ export type TWrapSvg = ({
     right?: TEmbed,
     bottom?: TEmbed,
   },
-});
+};
 
 const titleHeight = 20;
 

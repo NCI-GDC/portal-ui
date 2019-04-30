@@ -8,8 +8,6 @@ import {
   compose,
   withState,
   pure,
-  withProps,
-  withPropsOnChange,
 } from 'recompose';
 
 // Custom
@@ -37,7 +35,12 @@ const BarChart = ({
   const innerPadding = 0.3;
   const outerPadding = 0.3;
 
-  const margin = m || { top: 20, right: 50, bottom: 65, left: 55 };
+  const margin = m || {
+    top: 20,
+    right: 50,
+    bottom: 65,
+    left: 55,
+  };
   const chartWidth = width - margin.left - margin.right;
   const height = (h || 200) - margin.top - margin.bottom;
   const yAxisStyle = yAxis.style || {

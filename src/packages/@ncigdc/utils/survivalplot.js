@@ -26,14 +26,12 @@ const Symbol = styled.span({
   fontSize: '1.2em',
 });
 
-export const enoughData = (data: Object) =>
-  data &&
+export const enoughData = (data: Object) => data &&
   data.results &&
   data.results.length &&
   data.results.every(r => r.donors.length >= MINIMUM_CASES);
 
-const enoughDataOnSomeCurves = (data: Object) =>
-  data &&
+const enoughDataOnSomeCurves = (data: Object) => data &&
   data.results &&
   data.results.length &&
   data.results.some(r => r.donors.length >= MINIMUM_CASES);
@@ -44,7 +42,10 @@ async function fetchCurves(
   hasMultipleCurves: Boolean
 ): Promise<Object> {
   const params = _.omitBy(
-    { filters: filters && JSON.stringify(filters), size },
+    {
+      filters: filters && JSON.stringify(filters),
+      size,
+    },
     _.isNil
   );
   const url = `analysis/survival?${queryString.stringify(params)}`;
@@ -125,12 +126,31 @@ export const getSurvivalCurves = memoize(
       replaceFilters(
         {
           op: 'and',
-          content: [{ op: 'excludeifany', content: { field, value } }],
+          content: [
+            {
+              op: 'excludeifany',
+              content: {
+                field,
+                value,
+              },
+            },
+          ],
         },
         currentFilters
       ),
       replaceFilters(
-        { op: 'and', content: [{ op: '=', content: { field, value } }] },
+        {
+          op: 'and',
+          content: [
+            {
+              op: '=',
+              content: {
+                field,
+                value,
+              },
+            },
+          ],
+        },
         currentFilters
       ),
     ];
@@ -140,10 +160,9 @@ export const getSurvivalCurves = memoize(
     const results2 = _.get(rawData, 'results[1].donors', []);
     const results1 = _.get(rawData, 'results[0].donors', []);
 
-    const getCaseCount = condition =>
-      condition
-        ? results1.length.toLocaleString()
-        : results2.length.toLocaleString();
+    const getCaseCount = condition => (condition
+      ? results1.length.toLocaleString()
+      : results2.length.toLocaleString());
 
     return {
       rawData: {
@@ -167,11 +186,13 @@ export const getSurvivalCurves = memoize(
             value: (
               <span>
                 S
-                <sub>1</sub> (N = {getCaseCount(results2.length > 0)})
+                <sub>1</sub>
+                {` (N = ${getCaseCount(results2.length > 0)})`}
                 {plotType === 'mutation' && (
                   <span>
-                    {' '}
-                    - <Symbol>{slug || value}</Symbol> Not Mutated Cases
+                    {' - '}
+                    <Symbol>{slug || value}</Symbol>
+                    {' Not Mutated Cases'}
                   </span>
                 )}
               </span>
@@ -182,31 +203,51 @@ export const getSurvivalCurves = memoize(
             value: (
               <span>
                 S
-                <sub>2</sub> (N = {getCaseCount(results2.length === 0)}){' '}
+                <sub>2</sub>
+                {' '}
+                (N =
+                {' '}
+                {getCaseCount(results2.length === 0)}
+                )
+                {' '}
                 {plotType === 'mutation' && (
                   <span>
                     {' '}
-                    - <Symbol>{slug || value}</Symbol> Mutated Cases
+                    -
+                    {' '}
+                    <Symbol>{slug || value}</Symbol>
+                    {' '}
+                    Mutated Cases
                   </span>
                 )}
               </span>
             ),
           },
-          ...(results2.length === 0 ?
-            [{
-              key: `${slug || value}-cannot-compare`,
-              value: (
-                <div>
-                  <span>Not enough data to compare</span>
-                </div>
-              ),
-              style: { width: '100%', marginTop: 5 },
-            }] : []),
+          ...(results2.length === 0
+            ? [
+              {
+                key: `${slug || value}-cannot-compare`,
+                value: (
+                  <div>
+                    <span>Not enough data to compare</span>
+                  </div>
+                ),
+                style: {
+                  width: '100%',
+                  marginTop: 5,
+                },
+              },
+            ] : []),
         ]
         : [
           {
             key: `${slug || value}-not-enough-data`,
-            value: <span>Not enough survival data for {slug || value}</span>,
+            value: (
+              <span>
+                Not enough survival data for
+                {' '}
+                {slug || value}
+              </span>),
           },
         ],
     };
@@ -227,23 +268,29 @@ export const getSurvivalCurvesArray = memoize(
     plotType,
   }: TPropsMulti): Promise<Object> => {
     const filters = values.slice(0, MAXIMUM_CURVES).map(
-      value =>
-        plotType === 'continuous'
-          ? value.filters
-          : replaceFilters(
-            {
-              op: 'and',
-              content: [{ op: '=', content: { field, value } }],
-            },
-            currentFilters
-          )
+      value => (plotType === 'continuous'
+        ? value.filters
+        : replaceFilters(
+          {
+            op: 'and',
+            content: [
+              {
+                op: '=',
+                content: {
+                  field,
+                  value,
+                },
+              },
+            ],
+          },
+          currentFilters
+        ))
     );
 
     const rawData = await fetchCurves(filters, size, true);
     const hasEnoughDataOnSomeCurves = enoughDataOnSomeCurves(rawData);
 
-    const getCaseCount = i =>
-      _.get(rawData, `results[${i}].donors`, []).length.toLocaleString();
+    const getCaseCount = i => _.get(rawData, `results[${i}].donors`, []).length.toLocaleString();
 
     return {
       rawData: {
@@ -275,20 +322,30 @@ export const getSurvivalCurvesArray = memoize(
                   <span>Not enough data to compare</span>
                 </div>
               ),
-              style: { width: '100%', marginTop: 5 },
+              style: {
+                width: '100%',
+                marginTop: 5,
+              },
             }
             : r.donors.length < MINIMUM_CASES
               ? {
                 key: `${valueName}-not-enough-data`,
                 value: (
-                  <span>Not enough survival data for {valueName}</span>
+                  <span>
+                    {`Not enough survival data for ${valueName}`}
+                  </span>
                 ),
               }
               : {
                 key: valueName,
                 value: (
                   <span>
-                    S<sub>{i + 1}</sub> (N = {getCaseCount(i)})
+                    S
+                    <sub>{i + 1}</sub>
+                    {` (N = ${getCaseCount(i)})`}
+                    <span className="print-only inline">
+                      {` - ${valueName}`}
+                    </span>
                   </span>
                 ),
               };

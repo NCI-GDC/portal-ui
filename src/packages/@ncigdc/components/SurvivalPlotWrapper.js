@@ -27,19 +27,19 @@ type TProps = {
   height: number,
   legend: Array<{
     key: string,
-    value: any,
+    value: any
   }>,
   rawData: {
     results: Array<{
       donors: Array<Object>,
       meta: {
         id: string | number,
-        label: string,
-      },
+        label: string
+      }
     }>,
     overallStats: {
-      pValue: number,
-    },
+      pValue: number
+    }
   },
   setXDomain: Function,
   setSurvivalContainer: Function,
@@ -48,7 +48,7 @@ type TProps = {
   survivalContainer: Element,
   setTooltip: Function,
   push: Function,
-  uniqueClass: string,
+  uniqueClass: string
 };
 
 const TITLE = 'Overall Survival Plot';
@@ -73,16 +73,17 @@ const styles = {
 
 class Container extends React.Component {
   render() {
+    const { setSurvivalContainer, survivalPlotLoading, height } = this.props;
     return (
       <div
-        className={CLASS_NAME + ' test-survival-plot-container'}
-        ref={this.props.setSurvivalContainer}
+        className={`${CLASS_NAME} test-survival-plot-container`}
+        ref={setSurvivalContainer}
         style={{
           overflow: 'hidden',
-          height: this.props.survivalPlotLoading ? '0px' : this.props.height,
+          height: survivalPlotLoading ? '0px' : height,
           position: 'relative',
         }}
-      />
+        />
     );
   }
 }
@@ -95,48 +96,29 @@ const SurvivalPlotWrapper = ({
   setSurvivalContainer,
   survivalPlotLoading = false,
   uniqueClass,
-  palette = [colors(0), colors(1), colors(2), colors(3), colors(4)],
+  palette = [
+    colors(0),
+    colors(1),
+    colors(2),
+    colors(3),
+    colors(4),
+  ],
   plotType,
 }: TProps) => {
   const { results = [], overallStats = {} } = rawData || {};
-  const pValue = overallStats.pValue;
+  const { pValue } = overallStats;
 
   return (
     <Loader
-      loading={survivalPlotLoading}
-      height={height}
       className={uniqueClass}
-    >
+      height={height}
+      loading={survivalPlotLoading}
+      >
       {!survivalPlotLoading && (
         <Column className="test-survival-plot-meta">
           <VisualizationHeader
-            title={plotType === 'mutation' ? TITLE : ''}
             buttons={[
               <DownloadVisualizationButton
-                key="download"
-                svg={() =>
-                  wrapSvg({
-                    selector: `.${uniqueClass} .${CLASS_NAME} svg`,
-                    title: TITLE,
-                    className: CLASS_NAME,
-                    embed: {
-                      top: {
-                        elements: legend
-                          .map((l, i) =>
-                            document.querySelector(
-                              `.${uniqueClass} .legend-${i}`
-                            )
-                          )
-                          .concat(
-                            pValue
-                              ? document.querySelector(
-                                  `.${uniqueClass} .p-value`
-                                )
-                              : null
-                          ),
-                      },
-                    },
-                  })}
                 data={results.map((set, i) => ({
                   ...set,
                   meta: {
@@ -144,46 +126,72 @@ const SurvivalPlotWrapper = ({
                     label: set.meta.label || `S${i + 1}`,
                   },
                 }))}
-                stylePrefix={`.${CLASS_NAME}`}
-                slug="survival-plot"
+                key="download"
                 noText
+                slug="survival-plot"
+                stylePrefix={`.${CLASS_NAME}`}
+                svg={() => wrapSvg({
+                  selector: `.${uniqueClass} .${CLASS_NAME} svg`,
+                  title: plotType === 'mutation' ? TITLE : '',
+                  className: CLASS_NAME,
+                  embed: {
+                    top: {
+                      elements: legend
+                        .map((l, i) => {
+                          const legendItem = document.querySelector(
+                            `.${uniqueClass} .legend-${i}`
+                          ).cloneNode(true);
+                          const legendTitle = legendItem.querySelector('span.print-only.inline');
+                          if (legendTitle !== null) legendTitle.className = '';
+                          return legendItem;
+                        })
+                        .concat(
+                          pValue
+                            ? document.querySelector(
+                              `.${uniqueClass} .p-value`
+                            )
+                            : null
+                        ),
+                    },
+                  },
+                })
+                }
                 tooltipHTML="Download SurvivalPlot data or image"
                 tsvData={results.reduce((data, set, i) => {
                   const mapData = set.donors.map(d => toMap(d));
                   return [
                     ...data,
                     ...(results.length > 1
-                      ? mapData.map(m =>
-                          m.set('label', set.meta.label || `S${i + 1}`)
-                        )
+                      ? mapData.map(m => m.set('label', set.meta.label || `S${i + 1}`))
                       : mapData),
                   ];
                 }, [])}
-              />,
+                />,
               <Tooltip Component="Reset SurvivalPlot Zoom" key="reset">
-                <Button style={visualizingButton} onClick={() => setXDomain()}>
+                <Button onClick={() => setXDomain()} style={visualizingButton}>
                   <i className="fa fa-undo" />
                   <Hidden>Reset</Hidden>
                 </Button>
               </Tooltip>,
             ]}
-          />
+            title={plotType === 'mutation' ? TITLE : ''}
+            />
           <div>
             <Row
+              className="survival-legend-wrapper"
               style={{
                 justifyContent: 'center',
                 flexWrap: 'wrap',
                 marginTop: '0.5rem',
               }}
-              className="survival-legend-wrapper"
-            >
+              >
               {legend &&
                 legend.map((l, i) => (
                   <div
                     className={`legend-${i}`}
                     key={l.key}
                     style={l.style || {}}
-                  >
+                    >
                     <div
                       style={{
                         color: palette[i],
@@ -191,7 +199,7 @@ const SurvivalPlotWrapper = ({
                         fontSize: '1.35rem',
                         textAlign: 'center',
                       }}
-                    >
+                      >
                       {l.value}
                     </div>
                   </div>
@@ -211,7 +219,7 @@ const SurvivalPlotWrapper = ({
                   </div>
                 )
               }
-            >
+              >
               <div className="p-value">
                 <div style={styles.pValue}>
                   {_.isNumber(pValue) &&
@@ -221,14 +229,14 @@ const SurvivalPlotWrapper = ({
             </Tooltip>
           }
           <div
+            className="no-print"
             style={{
               textAlign: 'right',
               marginBottom: -SVG_MARGINS.top,
               marginRight: SVG_MARGINS.right,
               fontSize: '1.1rem',
             }}
-            className="no-print"
-          >
+            >
             drag to zoom
           </div>
         </Column>
@@ -236,7 +244,7 @@ const SurvivalPlotWrapper = ({
       <Container
         setSurvivalContainer={setSurvivalContainer}
         survivalPlotLoading={survivalPlotLoading}
-      />
+        />
     </Loader>
   );
 };
@@ -250,7 +258,13 @@ function renderSurvivalPlot(props: TProps): void {
     setXDomain,
     setTooltip,
     push,
-    palette = [colors(0), colors(1), colors(2), colors(3), colors(4)],
+    palette = [
+      colors(0),
+      colors(1),
+      colors(2),
+      colors(3),
+      colors(4),
+    ],
   } = props;
   const { results = [] } = rawData;
   if (survivalContainer) {
@@ -263,21 +277,23 @@ function renderSurvivalPlot(props: TProps): void {
       xAxisLabel: 'Duration (years)',
       yAxisLabel: 'Survival Rate',
       height,
-      getSetSymbol: (curve, curves) =>
-        curves.length === 1
-          ? ''
-          : `<tspan font-style="italic">S</tspan><tspan font-size="0.7em" baseline-shift="-15%">${curves.indexOf(
-              curve
-            ) + 1}</tspan>`,
+      getSetSymbol: (curve, curves) => (curves.length === 1
+        ? ''
+        : `<tspan font-style="italic">S</tspan><tspan font-size="0.7em" baseline-shift="-15%">${curves.indexOf(
+          curve
+        ) + 1}</tspan>`),
       onMouseEnterDonor: (
         e,
-        { id, survivalEstimate, time = 0, censored, submitter_id, project_id }
+        {
+          survivalEstimate, time = 0, censored, submitter_id, project_id,
+        }
       ) => {
         setTooltip(
           <span>
-            Case ID: {project_id} / {submitter_id}
+            {`Case ID: ${project_id} / ${submitter_id}`}
             <br />
-            Survival Rate: {Math.round(survivalEstimate * 100)}%<br />
+            {`Survival Rate: ${Math.round(survivalEstimate * 100)}%`}
+            <br />
             {censored
               ? `Interval of last follow-up: ${time.toLocaleString()} years`
               : `Time of Death: ${time.toLocaleString()} years`}
@@ -317,11 +333,11 @@ const enhance = compose(
     },
 
     componentDidUpdate(): void {
-      !this.props.survivalPlotLoading && renderSurvivalPlot(this.props);
+      if (!this.props.survivalPlotLoading) renderSurvivalPlot(this.props);
     },
 
     componentDidMount(): void {
-      !this.props.survivalPlotLoading && renderSurvivalPlot(this.props);
+      if (!this.props.survivalPlotLoading) renderSurvivalPlot(this.props);
     },
   })
 );

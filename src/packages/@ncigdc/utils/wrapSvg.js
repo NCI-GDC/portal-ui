@@ -67,7 +67,7 @@ function buildForeignObject({
 }): { html: string, height: number } {
   const foreignObjects = elements.filter(Boolean);
   // $FlowIgnore
-  const elementsHeight = sum(foreignObjects.map(e => e.offsetHeight));
+  const elementsHeight = sum(foreignObjects.map(e => e.offsetHeight || 15));
 
   return {
     height: elementsHeight,

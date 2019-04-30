@@ -12,75 +12,87 @@ import { connect } from 'react-redux';
 
 import DeprecatedSetResult from './DeprecatedSetResult';
 
-export default (Component: ReactClass<*>) =>
-  compose(
-    connect((state: any, props: any) => ({
-      currentAnalysis: state.analysis.saved.find(a => a.id === props.id),
-      allSets: state.sets,
-    })),
-    withProps(({ currentAnalysis, allSets }) => ({
-      currentSetId: Object.keys(currentAnalysis.sets.case)[0],
-    })),
-    branch(
-      ({ currentSetId, allSets }) =>
-        !currentSetId.includes('demo') && !allSets.case[currentSetId],
-      renderComponent(({ currentAnalysis, allSets, dispatch, Icon }) => {
-        return (
-          <DeprecatedSetResult
-            allSets={allSets}
-            dispatch={dispatch}
-            currentAnalysis={currentAnalysis}
-            Icon={Icon}
-          />
-        );
-      })
-    ),
-    withPropsOnChange(
-      ['clinicalAnalysisFields', 'currentAnalysis'],
-      ({ clinicalAnalysisFields, currentAnalysis }) => {
-        const facets = clinicalAnalysisFields
-          .map(field => field.name.replace(/__/g, '.'))
-          .join(',');
-        const setId = Object.keys(currentAnalysis.sets.case)[0];
-        return {
-          variables: {
-            filters: {
-              op: 'and',
-              content: [
-                {
-                  op: '=',
-                  content: {
-                    field: `cases.case_id`,
-                    value: [`set_id:${setId}`],
-                  },
+export default (Component: ReactClass<*>) => compose(
+  connect((state: any, props: any) => ({
+    currentAnalysis: state.analysis.saved.find(a => a.id === props.id),
+    allSets: state.sets,
+  })),
+  withProps(({ currentAnalysis, allSets }) => ({
+    currentSetId: Object.keys(currentAnalysis.sets.case)[0],
+  })),
+  branch(
+    ({ currentSetId, allSets }) => !currentSetId.includes('demo') && !allSets.case[currentSetId],
+    renderComponent(({
+      currentAnalysis, allSets, dispatch, Icon,
+    }) => {
+      return (
+        <DeprecatedSetResult
+          allSets={allSets}
+          currentAnalysis={currentAnalysis}
+          dispatch={dispatch}
+          Icon={Icon} />
+      );
+    })
+  ),
+  withPropsOnChange(
+    ['clinicalAnalysisFields', 'currentAnalysis'],
+    ({ clinicalAnalysisFields, currentAnalysis }) => {
+      const facets = clinicalAnalysisFields
+        .map(field => field.name.replace(/__/g, '.'))
+        .join(',');
+      const setId = Object.keys(currentAnalysis.sets.case)[0];
+      return {
+        variables: {
+          filters: {
+            op: 'and',
+            content: [
+              {
+                op: '=',
+                content: {
+                  field: 'cases.case_id',
+                  value: [`set_id:${setId}`],
                 },
-              ],
-            },
-            facets,
+              },
+            ],
           },
-        };
-      }
-    )
-  )((props: Object) => {
-    return (
-      <Query
-        parentProps={props}
-        variables={props.variables}
-        Component={Component}
-        minHeight={800}
-        query={graphql`query ClinicalAnalysisResult_relayQuery($filters: FiltersArgument, $facets: [String]!) {
+          facets,
+        },
+      };
+    }
+  )
+)((props: Object) => {
+  return (
+    <Query
+      Component={Component}
+      minHeight={800}
+      parentProps={props}
+      query={graphql`query ClinicalAnalysisResult_relayQuery($filters: FiltersArgument, $facets: [String]!) {
           viewer {
             explore {
               cases {
                 facets(facets: $facets filters: $filters)
-                hits(first: 0 filters: $filters) {
+                hits(first: 20 filters: $filters) {
                   total
+                  edges {
+                    node {
+                      diagnoses {
+                        hits(first: 1, filters: $filters) {
+                          edges {
+                            node {
+                              diagnosis_id
+                              age_at_diagnosis
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }
           }
         }
       `}
-      />
-    );
-  });
+      variables={props.variables} />
+  );
+});

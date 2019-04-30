@@ -2,42 +2,42 @@ import React from 'react';
 import {
   compose,
   withPropsOnChange,
-  branch,
-  renderComponent,
+  // branch,
+  // renderComponent,
   withProps,
   withState,
-  lifecycle,
 } from 'recompose';
 import md5 from 'blueimp-md5';
 import urlJoin from 'url-join';
 import _ from 'lodash';
 
-import ClinicalVariableCard from './ClinicalVariableCard.js';
 import consoleDebug from '@ncigdc/utils/consoleDebug';
 import { redirectToLogin } from '@ncigdc/utils/auth';
-import { withLoader } from '@ncigdc/uikit/Loaders/Loader';
 import Loader from '@ncigdc/uikit/Loaders/Loader';
 
 import { API, IS_AUTH_PORTAL } from '@ncigdc/utils/constants';
+import ClinicalVariableCard from './ClinicalVariableCard';
 
 const simpleAggCache = {};
 const pendingAggCache = {};
 const DEFAULT_CONTINUOUS_BUCKETS = 4;
 
-const getContinuousAggs = ({ fieldName, stats, filters }) => {
+const getContinuousAggs = ({
+  fieldName, stats, filters,
+}) => {
   // prevent query failing if interval will equal 0
   if (_.isNull(stats.min) || _.isNull(stats.max)) {
     return null;
   }
   const interval = (stats.max - stats.min) / DEFAULT_CONTINUOUS_BUCKETS;
-  const queryFieldName = fieldName.replace('.', '__');
+  const aggregationFieldName = fieldName.replace('.', '__');
 
   const variables = {
     filters,
   };
   const componentName = 'ContinuousAggregationQuery';
   const body = JSON.stringify({
-    query: `query ${componentName}(\n  $filters: FiltersArgument\n) {\n  viewer {\n    explore {\n      cases {\n        aggregations(filters: $filters) {\n          ${queryFieldName} {\n            histogram(interval: ${interval}) {\n              buckets {\n                key\n                doc_count\n              }\n            }\n          }\n        }\n      }\n    }\n  }\n}\n`,
+    query: `query ${componentName}(\n  $filters: FiltersArgument\n) {\n  viewer {\n    explore {\n      cases {\n        aggregations(filters: $filters) {\n          ${aggregationFieldName} {\n            histogram(interval: ${interval}) {\n              buckets {\n                key\n                doc_count\n              }\n            }\n          }\n        }\n      }\n    }\n  }\n}\n`,
     variables,
   });
 
@@ -75,46 +75,44 @@ const getContinuousAggs = ({ fieldName, stats, filters }) => {
       },
       body,
     }
-  ).then(response =>
-    response
-      .json()
-      .then(json => {
-        if (!response.ok) {
-          consoleDebug('throwing error in Environment');
-          throw response;
-        }
+  ).then(response => response
+    .json()
+    .then(json => {
+      if (!response.ok) {
+        consoleDebug('throwing error in Environment');
+        throw response;
+      }
 
-        if (response.status === 200) {
-          simpleAggCache[hash] = json;
-          delete pendingAggCache[hash];
-        }
+      if (response.status === 200) {
+        simpleAggCache[hash] = json;
+        delete pendingAggCache[hash];
+      }
 
-        return json;
-      })
-      .catch(err => {
-        if (err.status) {
-          switch (err.status) {
-            case 401:
-            case 403:
-              consoleDebug(err.statusText);
-              if (IS_AUTH_PORTAL) {
-                return redirectToLogin('timeout');
-              }
-              break;
-            case 400:
-            case 404:
-              consoleDebug(err.statusText);
-              break;
-            default:
-              return consoleDebug(`Default error case: ${err.statusText}`);
-          }
-        } else {
-          consoleDebug(
-            `Something went wrong in environment, but no error status: ${err}`
-          );
+      return json;
+    })
+    .catch(err => {
+      if (err.status) {
+        switch (err.status) {
+          case 401:
+          case 403:
+            consoleDebug(err.statusText);
+            if (IS_AUTH_PORTAL) {
+              return redirectToLogin('timeout');
+            }
+            break;
+          case 400:
+          case 404:
+            consoleDebug(err.statusText);
+            break;
+          default:
+            return consoleDebug(`Default error case: ${err.statusText}`);
         }
-      })
-  );
+      } else {
+        consoleDebug(
+          `Something went wrong in environment, but no error status: ${err}`
+        );
+      }
+    }));
 };
 
 export default compose(
@@ -127,28 +125,32 @@ export default compose(
       filters,
       setAggData,
       setIsLoading,
+      hits,
     }) => {
       const res = await getContinuousAggs({
         fieldName,
         stats,
         filters,
+        hits,
       });
       setAggData(res && res.data.viewer, () => setIsLoading(false));
     },
   }),
-  withPropsOnChange(['filters'], ({ updateData, ...props }) =>
-    updateData(props)
-  )
-)(({ aggData, isLoading, setId, stats, hits, ...props }) => {
+  withPropsOnChange(['filters'], ({ updateData, ...props }) => updateData(props))
+)(({
+  aggData, isLoading, setId, stats, hits, ...props
+}) => {
   if (isLoading) {
     return <Loader />;
   }
   return (
     <ClinicalVariableCard
+      data={{
+        ...aggData,
+        hits,
+      }}
       setId={setId}
       stats={stats}
-      data={{ ...aggData, hits }}
-      {...props}
-    />
+      {...props} />
   );
 });

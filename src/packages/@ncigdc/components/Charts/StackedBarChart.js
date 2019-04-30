@@ -10,6 +10,7 @@ import { withTooltip } from '@ncigdc/uikit/Tooltip';
 import Row from '@ncigdc/uikit/Flex/Row';
 import { withTheme } from '@ncigdc/theme';
 import './style.css';
+import { MAX_X_AXIS_LENGTH } from '@ncigdc/components/Charts/BarChart';
 
 const drawChart = ({
   data,
@@ -110,13 +111,14 @@ const drawChart = ({
     .call(d3.axisBottom(x));
   xG
     .selectAll('text')
-    .style('text-anchor', 'end')
+    .style('text-anchor', 'start')
     .style('fontSize', xAxisStyle.fontSize)
     .style('fontWeight', xAxisStyle.fontWeight)
     .attr('fill', xAxisStyle.textFill)
-    .attr('dx', '-1em')
-    .attr('dy', '.15em')
-    .attr('transform', 'rotate(-45)');
+    .attr('dx', '.8em')
+    .attr('dy', '.5em')
+    .text(d => (d.length > MAX_X_AXIS_LENGTH ? `${d.substring(0, MAX_X_AXIS_LENGTH)}...` : d))
+    .attr('transform', 'rotate(45)');
   xG.selectAll('path').style('stroke', xAxisStyle.stroke);
   xG.selectAll('line').style('stroke', xAxisStyle.stroke);
 

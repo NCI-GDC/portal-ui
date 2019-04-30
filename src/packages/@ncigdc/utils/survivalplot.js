@@ -204,20 +204,12 @@ export const getSurvivalCurves = memoize(
               <span>
                 S
                 <sub>2</sub>
-                {' '}
-                (N =
-                {' '}
-                {getCaseCount(results2.length === 0)}
-                )
-                {' '}
+                {` (N = ${getCaseCount(results2.length === 0)})`}
                 {plotType === 'mutation' && (
                   <span>
-                    {' '}
-                    -
-                    {' '}
+                    {' - '}
                     <Symbol>{slug || value}</Symbol>
-                    {' '}
-                    Mutated Cases
+                    {' Mutated Cases'}
                   </span>
                 )}
               </span>
@@ -244,9 +236,7 @@ export const getSurvivalCurves = memoize(
             key: `${slug || value}-not-enough-data`,
             value: (
               <span>
-                Not enough survival data for
-                {' '}
-                {slug || value}
+                {`Not enough survival data for ${slug || value}`}
               </span>),
           },
         ],

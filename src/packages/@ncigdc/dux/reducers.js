@@ -17,7 +17,6 @@ import sets from './sets';
 import analysis from './analysis';
 import backLocation from './backLocation';
 import facetsExpandedStatus from './facetsExpandedStatus';
-import dynamicStyle from './dynamicStyle';
 
 /*----------------------------------------------------------------------------*/
 
@@ -38,5 +37,4 @@ export default {
   analysis,
   backLocation,
   facetsExpandedStatus,
-  dynamicStyle,
 };

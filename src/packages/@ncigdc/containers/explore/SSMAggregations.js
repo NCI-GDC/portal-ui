@@ -3,7 +3,6 @@
 import React from 'react';
 import Relay from 'react-relay/classic';
 import { compose, withState } from 'recompose';
-import { connect } from 'react-redux';
 
 import SuggestionFacet from '@ncigdc/components/Aggregations/SuggestionFacet';
 import FacetWrapper from '@ncigdc/components/FacetWrapper';
@@ -25,70 +24,70 @@ const presetFacets: Array<{
   type: string,
   additionalProps?: {},
 }> = [
-  {
-    title: 'SSM ID',
-    field: 'ssm_id',
-    full: 'ssms.ssm_id',
-    doc_type: 'ssms',
-    type: 'id',
-  },
-  {
-    title: 'VEP Impact',
-    field: 'consequence.transcript.annotation.vep_impact',
-    full: 'ssms.consequence.transcript.annotation.vep_impact',
-    doc_type: 'ssms',
-    type: 'terms',
-  },
-  {
-    title: 'SIFT Impact',
-    field: 'consequence.transcript.annotation.sift_impact',
-    full: 'ssms.consequence.transcript.annotation.sift_impact',
-    doc_type: 'ssms',
-    type: 'terms',
-  },
-  {
-    title: 'Polyphen Impact',
-    field: 'consequence.transcript.annotation.polyphen_impact',
-    full: 'ssms.consequence.transcript.annotation.polyphen_impact',
-    doc_type: 'ssms',
-    type: 'terms',
-  },
-  {
-    title: 'Consequence Type',
-    field: 'consequence.transcript.consequence_type',
-    full: 'ssms.consequence.transcript.consequence_type',
-    doc_type: 'ssms',
-    type: 'terms',
-  },
-  {
-    title: 'Type',
-    field: 'mutation_subtype',
-    full: 'ssms.mutation_subtype',
-    doc_type: 'ssms',
-    type: 'terms',
-  },
-  {
-    title: 'Variant Caller',
-    field: 'occurrence.case.observation.variant_calling.variant_caller',
-    full: 'ssms.occurrence.case.observation.variant_calling.variant_caller',
-    doc_type: 'ssms',
-    type: 'terms',
-  },
-  {
-    title: 'COSMIC ID',
-    field: 'cosmic_id',
-    full: 'ssms.cosmic_id',
-    doc_type: 'ssms',
-    type: 'notMissing',
-  },
-  {
-    title: 'dbSNP rs ID',
-    field: 'consequence.transcript.annotation.dbsnp_rs',
-    full: 'ssms.consequence.transcript.annotation.dbsnp_rs',
-    doc_type: 'ssms',
-    type: 'notMissing',
-  },
-];
+    {
+      title: 'SSM ID',
+      field: 'ssm_id',
+      full: 'ssms.ssm_id',
+      doc_type: 'ssms',
+      type: 'id',
+    },
+    {
+      title: 'VEP Impact',
+      field: 'consequence.transcript.annotation.vep_impact',
+      full: 'ssms.consequence.transcript.annotation.vep_impact',
+      doc_type: 'ssms',
+      type: 'terms',
+    },
+    {
+      title: 'SIFT Impact',
+      field: 'consequence.transcript.annotation.sift_impact',
+      full: 'ssms.consequence.transcript.annotation.sift_impact',
+      doc_type: 'ssms',
+      type: 'terms',
+    },
+    {
+      title: 'Polyphen Impact',
+      field: 'consequence.transcript.annotation.polyphen_impact',
+      full: 'ssms.consequence.transcript.annotation.polyphen_impact',
+      doc_type: 'ssms',
+      type: 'terms',
+    },
+    {
+      title: 'Consequence Type',
+      field: 'consequence.transcript.consequence_type',
+      full: 'ssms.consequence.transcript.consequence_type',
+      doc_type: 'ssms',
+      type: 'terms',
+    },
+    {
+      title: 'Type',
+      field: 'mutation_subtype',
+      full: 'ssms.mutation_subtype',
+      doc_type: 'ssms',
+      type: 'terms',
+    },
+    {
+      title: 'Variant Caller',
+      field: 'occurrence.case.observation.variant_calling.variant_caller',
+      full: 'ssms.occurrence.case.observation.variant_calling.variant_caller',
+      doc_type: 'ssms',
+      type: 'terms',
+    },
+    {
+      title: 'COSMIC ID',
+      field: 'cosmic_id',
+      full: 'ssms.cosmic_id',
+      doc_type: 'ssms',
+      type: 'notMissing',
+    },
+    {
+      title: 'dbSNP rs ID',
+      field: 'consequence.transcript.annotation.dbsnp_rs',
+      full: 'ssms.consequence.transcript.annotation.dbsnp_rs',
+      doc_type: 'ssms',
+      type: 'notMissing',
+    },
+  ];
 
 export type TProps = {
   aggregations: {
@@ -124,7 +123,6 @@ export type TProps = {
 };
 
 export const SSMAggregationsComponent = compose(
-  connect(({ dynamicStyle }) => ({ dynamicStyle })),
   withState('idCollapsed', 'setIdCollapsed', false),
   withState('cosmicIdCollapsed', 'setCosmicIdCollapsed', false),
   withState('dbSNPCollapsed', 'setDbSNPCollapsed', false),
@@ -175,7 +173,7 @@ export const SSMAggregationsComponent = compose(
     <div
       style={{
         overflowY: 'scroll',
-        maxHeight: `${props.dynamicStyle.tableHeight - 68}px`,
+        maxHeight: `${props.maxHeight - 68}px`,
       }}
     >
       {presetFacets

@@ -24,7 +24,6 @@ import { presetFacets } from '@ncigdc/containers/explore/presetFacets';
 
 import { IBucket } from '@ncigdc/components/Aggregations/types';
 import { CaseAggregationsQuery } from './explore.relay';
-import { connect } from 'react-redux';
 
 export interface ITProps {
   caseIdCollapsed: boolean,
@@ -63,13 +62,10 @@ export interface ITProps {
   setShouldShowFacetSelection: any,
   advancedFilter: boolean,
   setAdvancedFilter: any,
-  dynamicStyle: { [x: string]: number },
+  maxHeight: number,
 }
 
 const enhance = compose(
-  connect(({ dynamicStyle }: { [x: string]: number }) => ({
-    dynamicStyle,
-  })),
   setDisplayName('ExploreCaseAggregations'),
   withState('caseIdCollapsed', 'setCaseIdCollapsed', false),
   withState('advancedFilter', 'setAdvancedFilter', false),
@@ -110,75 +106,75 @@ export const CaseAggregationsComponent = ({
   setShouldShowFacetSelection,
   advancedFilter,
   setAdvancedFilter,
-  dynamicStyle,
+  maxHeight,
 }: ITProps) => (
-  <div className="test-case-aggregations">
-    <FacetHeader
-      title="Case"
-      field="cases.case_id"
-      collapsed={caseIdCollapsed}
-      setCollapsed={setCaseIdCollapsed}
-      description={
-        'Enter UUID or ID of Case, Sample, Portion, Slide, Analyte or Aliquot'
-      }
-    />
-    <SuggestionFacet
-      title="Case"
-      collapsed={caseIdCollapsed}
-      doctype="cases"
-      fieldNoDoctype="case_id"
-      placeholder="e.g. TCGA-A5-A0G2, 432fe4a9-2..."
-      hits={suggestions}
-      setAutocomplete={setAutocomplete}
-      dropdownItem={(x: any) => (
-        <Row>
-          <CaseIcon style={{ paddingRight: '1rem', paddingTop: '1rem' }} />
-          <div>
-            <div style={{ fontWeight: 'bold' }}>{x.case_id}</div>
-            <div style={{ fontSize: '80%' }}>{x.submitter_id}</div>
-            {x.project.project_id}
-          </div>
-        </Row>
-      )}
-    />
-    <UploadSetButton
-      type="case"
-      style={{
-        width: '100%',
-        borderBottom: `1px solid ${theme.greyScale5}`,
-        padding: '0 1.2rem 1rem',
-      }}
-      UploadModal={UploadCaseSet}
-      defaultQuery={{
-        pathname: '/exploration',
-        query: { searchTableTab: 'cases' },
-      }}
-      idField="cases.case_id"
-    >
-      Upload Case Set
+    <div className="test-case-aggregations">
+      <FacetHeader
+        title="Case"
+        field="cases.case_id"
+        collapsed={caseIdCollapsed}
+        setCollapsed={setCaseIdCollapsed}
+        description={
+          'Enter UUID or ID of Case, Sample, Portion, Slide, Analyte or Aliquot'
+        }
+      />
+      <SuggestionFacet
+        title="Case"
+        collapsed={caseIdCollapsed}
+        doctype="cases"
+        fieldNoDoctype="case_id"
+        placeholder="e.g. TCGA-A5-A0G2, 432fe4a9-2..."
+        hits={suggestions}
+        setAutocomplete={setAutocomplete}
+        dropdownItem={(x: any) => (
+          <Row>
+            <CaseIcon style={{ paddingRight: '1rem', paddingTop: '1rem' }} />
+            <div>
+              <div style={{ fontWeight: 'bold' }}>{x.case_id}</div>
+              <div style={{ fontSize: '80%' }}>{x.submitter_id}</div>
+              {x.project.project_id}
+            </div>
+          </Row>
+        )}
+      />
+      <UploadSetButton
+        type="case"
+        style={{
+          width: '100%',
+          borderBottom: `1px solid ${theme.greyScale5}`,
+          padding: '0 1.2rem 1rem',
+        }}
+        UploadModal={UploadCaseSet}
+        defaultQuery={{
+          pathname: '/exploration',
+          query: { searchTableTab: 'cases' },
+        }}
+        idField="cases.case_id"
+      >
+        Upload Case Set
     </UploadSetButton>
-    <div
-      style={{
-        overflowY: 'scroll',
-        maxHeight: `${dynamicStyle.tableHeight - 68}px`,
-        paddingBottom: '20px',
-      }}
-    >
-      {reject(presetFacets, { full: 'cases.case_id' })
-        .filter(facet => aggregations[escapeForRelay(facet.field)])
-        .map(facet => (
-          <FacetWrapper
-            key={facet.full}
-            facet={facet}
-            title={facet.title}
-            aggregation={aggregations[escapeForRelay(facet.field)]}
-            relay={relay}
-            style={{ borderBottom: `1px solid ${theme.greyScale5}` }}
-          />
-        ))}
+      <div
+        style={{
+          overflowY: 'scroll',
+          maxHeight: `${maxHeight - 68}px`,
+          paddingBottom: '20px',
+        }}
+      >
+        {reject(presetFacets, { full: 'cases.case_id' })
+          .filter(facet => aggregations[escapeForRelay(facet.field)])
+          .map(facet => (
+            <FacetWrapper
+              key={facet.full}
+              facet={facet}
+              title={facet.title}
+              aggregation={aggregations[escapeForRelay(facet.field)]}
+              relay={relay}
+              style={{ borderBottom: `1px solid ${theme.greyScale5}` }}
+            />
+          ))}
+      </div>
     </div>
-  </div>
-);
+  );
 
 const CaseAggregations = Relay.createContainer(
   enhance(withTheme(CaseAggregationsComponent)),

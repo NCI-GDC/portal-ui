@@ -84,7 +84,7 @@ interface IClinicalProps {
   facetsExpandedStatus: IExpandedStatusStateProps,
   dispatch: (action: IExpandedStatusActionProps) => void,
   notifications: INotificationProps[],
-  dynamicStyle: any,
+  maxHeight: number,
 }
 
 interface ICaseFacetsProps {
@@ -146,15 +146,12 @@ const enhance = compose(
     ({
       facetsExpandedStatus,
       bannerNotification,
-      dynamicStyle,
     }: {
       facetsExpandedStatus: IExpandedStatusStateProps,
       bannerNotification: INotificationProps[],
-      dynamicStyle: { [x: string]: number },
     }) => ({
       facetsExpandedStatus,
       notifications: bannerNotification,
-      dynamicStyle,
       allExpanded: _.mapValues(facetsExpandedStatus, status =>
         _.some(_.values(status.facets)),
       ),
@@ -265,9 +262,9 @@ const enhance = compose(
           _.some([
             !aggregation,
             aggregation.buckets &&
-              aggregation.buckets.filter(
-                (bucket: IBucketProps) => bucket.key !== '_missing',
-              ).length === 0,
+            aggregation.buckets.filter(
+              (bucket: IBucketProps) => bucket.key !== '_missing',
+            ).length === 0,
             aggregation.count === 0,
             aggregation.count === null,
             aggregation.stats && aggregation.stats.count === 0,
@@ -286,7 +283,7 @@ const enhance = compose(
               ),
               !facetExclusionTest(facet),
               !shouldHideUselessFacets ||
-                usefulFacets.hasOwnProperty(facet.field),
+              usefulFacets.hasOwnProperty(facet.field),
               !header.excluded || facet.full.startsWith(header.full),
               !_.some(
                 header.excluded.map((regex: RegExp) => regex.test(facet.full)),
@@ -323,7 +320,7 @@ const enhance = compose(
       allExpanded,
       dispatch,
       notifications,
-      dynamicStyle,
+      maxHeight,
     }: IClinicalProps): any => {
       return (
         <React.Fragment>
@@ -360,15 +357,15 @@ const enhance = compose(
             Only show fields with values ({isLoadingParsedFacets
               ? '...'
               : _.values(filteredFacets).reduce(
-                  (acc: number, facet: IFacetProps[]) => acc + facet.length,
-                  0,
-                )}{' '}
+                (acc: number, facet: IFacetProps[]) => acc + facet.length,
+                0,
+              )}{' '}
             fields shown)
           </label>
           <div
             style={{
               overflowY: 'scroll',
-              maxHeight: `${dynamicStyle.tableHeight - 44}px`,
+              maxHeight: `${maxHeight - 44}px`,
               paddingBottom: '20px',
             }}
           >
@@ -475,8 +472,8 @@ const enhance = compose(
                                 collapsed={
                                   searchValue.length === 0
                                     ? !facetsExpandedStatus[facet.field].facets[
-                                        componentFacet.field.split('.').pop()
-                                      ]
+                                    componentFacet.field.split('.').pop()
+                                    ]
                                     : false
                                 }
                                 setCollapsed={(collapsed: any) =>
@@ -518,8 +515,8 @@ const enhance = compose(
                               {facetsExpandedStatus[facet.field].showingMore
                                 ? 'Less...'
                                 : filteredFacets[facet.field].length - 5 &&
-                                  `${filteredFacets[facet.field].length -
-                                    5} More...`}
+                                `${filteredFacets[facet.field].length -
+                                5} More...`}
                             </ToggleMoreLink>
                           </BottomRow>
                         )}

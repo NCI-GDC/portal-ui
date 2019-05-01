@@ -3,7 +3,9 @@
 import React from 'react';
 import _ from 'lodash';
 import LocationSubscriber from '@ncigdc/components/LocationSubscriber';
-import { compose, withState, withPropsOnChange, pure } from 'recompose';
+import {
+  compose, withState, withPropsOnChange, pure,
+} from 'recompose';
 
 import CloseIcon from '@ncigdc/theme/icons/CloseIcon';
 import { IRawQuery } from '@ncigdc/utils/uri/types';
@@ -16,10 +18,10 @@ import styled from '@ncigdc/theme/styled';
 import Input from '@ncigdc/uikit/Form/Input';
 import OverflowTooltippedLabel from '@ncigdc/uikit/OverflowTooltippedLabel';
 
-import { Container, BucketLink } from './';
+import { internalHighlight } from '@ncigdc/uikit/Highlight';
+import { Container, BucketLink } from '.';
 
 import { IBucket } from './types';
-import { internalHighlight } from '@ncigdc/uikit/Highlight';
 
 type TProps = {
   buckets: [IBucket],
@@ -70,43 +72,47 @@ const TermAggregation = (props: TProps) => {
             parseFilterParam((ctx.query || {}).filters, {}).content) ||
           [];
         return (
-          <Container style={props.style} className="test-term-aggregation">
-            {!props.collapsed &&
-              props.showingValueSearch && (
-                <Row>
-                  <Input
-                    getNode={node => {
-                      input = node;
-                    }}
-                    style={{ borderRadius: '4px', marginBottom: '6px' }}
-                    onChange={() => props.setFilter(input.value)}
-                    placeholder={'Search...'}
-                    aria-label="Search..."
-                    autoFocus
+          <Container className="test-term-aggregation" style={props.style}>
+            {!props.collapsed && props.showingValueSearch && (
+              <Row>
+                <Input
+                  aria-label="Search..."
+                  autoFocus
+                  getNode={node => {
+                    input = node;
+                  }}
+                  onChange={() => props.setFilter(input.value)}
+                  placeholder="Search..."
+                  style={{
+                    borderRadius: '4px',
+                    marginBottom: '6px',
+                  }}
                   />
-                  {input &&
-                    input.value && (
-                      <CloseIcon
-                        style={{
-                          position: 'absolute',
-                          right: 0,
-                          padding: '10px',
-                          transition: 'all 0.3s ease',
-                          outline: 0,
-                        }}
-                        onClick={() => {
-                          props.setFilter('');
-                          input.value = '';
-                        }}
-                      />
-                    )}
-                </Row>
-              )}
+                {input && input.value && (
+                  <CloseIcon
+                    onClick={() => {
+                      props.setFilter('');
+                      input.value = '';
+                    }}
+                    style={{
+                      position: 'absolute',
+                      right: 0,
+                      padding: '10px',
+                      transition: 'all 0.3s ease',
+                      outline: 0,
+                    }}
+                    />
+                )}
+              </Row>
+            )}
             {!props.collapsed && (
               <Column>
                 {_.orderBy(filteredBuckets, 'doc_count', 'desc')
                   .slice(0, props.showingMore ? Infinity : maxShowing)
-                  .map(b => ({ ...b, name: b.key_as_string || b.key }))
+                  .map(b => ({
+                    ...b,
+                    name: b.key_as_string || b.key,
+                  }))
                   .map(bucket => (
                     <BucketRow key={bucket.name}>
                       <BucketLink
@@ -127,16 +133,8 @@ const TermAggregation = (props: TProps) => {
                             ],
                           },
                         }}
-                      >
+                        >
                         <input
-                          readOnly
-                          type="checkbox"
-                          style={{
-                            pointerEvents: 'none',
-                            marginRight: '5px',
-                            flexShrink: 0,
-                            verticalAlign: 'middle',
-                          }}
                           checked={inCurrentFilters({
                             key: bucket.name,
                             dotField,
@@ -144,31 +142,39 @@ const TermAggregation = (props: TProps) => {
                           })}
                           id={`input-${props.title}-${bucket.name.replace(
                             /\s/g,
-                            '-',
+                            '-'
                           )}`}
                           name={`input-${props.title}-${bucket.name.replace(
                             /\s/g,
-                            '-',
+                            '-'
                           )}`}
-                        />
+                          readOnly
+                          style={{
+                            pointerEvents: 'none',
+                            marginRight: '5px',
+                            flexShrink: 0,
+                            verticalAlign: 'middle',
+                          }}
+                          type="checkbox"
+                          />
                         <OverflowTooltippedLabel
                           htmlFor={`input-${props.title}-${bucket.name.replace(
                             /\s/g,
-                            '-',
+                            '-'
                           )}`}
                           style={{
                             marginLeft: '0.3rem',
                             verticalAlign: 'middle',
                           }}
-                        >
+                          >
                           {props.searchValue
                             ? internalHighlight(
-                                props.searchValue,
-                                bucket.name,
-                                {
-                                  backgroundColor: '#FFFF00',
-                                },
-                              )
+                              props.searchValue,
+                              bucket.name,
+                              {
+                                backgroundColor: '#FFFF00',
+                              },
+                            )
                             : bucket.name}
                         </OverflowTooltippedLabel>
                       </BucketLink>
@@ -181,11 +187,11 @@ const TermAggregation = (props: TProps) => {
                   <BottomRow>
                     <ToggleMoreLink
                       onClick={() => props.setShowingMore(!props.showingMore)}
-                    >
+                      >
                       {props.showingMore
                         ? 'Less...'
                         : filteredBuckets.length - 5 &&
-                          `${filteredBuckets.length - 5} More...`}
+                        `${filteredBuckets.length - 5} More...`}
                     </ToggleMoreLink>
                   </BottomRow>
                 )}
@@ -210,11 +216,16 @@ const enhance = compose(
   withState('showingMore', 'setShowingMore', false),
   withState('filter', 'setFilter', ''),
   withPropsOnChange(
-    ['buckets', 'filter', 'searchValue'],
-    ({ buckets, filter, searchValue = '', isMatchingSearchValue }) => ({
+    [
+      'buckets',
+      'filter',
+      'searchValue',
+    ],
+    ({
+      buckets, filter, searchValue = '', isMatchingSearchValue,
+    }) => ({
       filteredBuckets: buckets.filter(
-        b =>
-          b.key !== '_missing' &&
+        b => b.key !== '_missing' &&
           (b.key || '').length &&
           b.key.toLowerCase().includes(filter.toLowerCase()) &&
           (b.key.toLowerCase().includes(searchValue.toLowerCase()) ||

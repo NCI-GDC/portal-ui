@@ -1,6 +1,4 @@
-import { fetchUser } from '@ncigdc/dux/auth';
-
-import { AUTH } from '@ncigdc/utils/constants';
+import { AUTH, IS_DEV } from '@ncigdc/utils/constants';
 
 export default ({
   name,
@@ -9,6 +7,7 @@ export default ({
   winStyle = 'width=800, height=600',
 }) =>
   new Promise((resolve, reject) => {
+    if (IS_DEV) return resolve('localhost');
     if (navigator.cookieEnabled) {
       const win = open(winUrl, 'Auth', winStyle);
       const loginAttempt = () => {

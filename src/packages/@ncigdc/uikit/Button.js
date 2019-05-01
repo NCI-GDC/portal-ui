@@ -43,18 +43,18 @@ type TButtonProps = {
   style?: Object,
   onClick?: Function,
   className?: string,
+  buttonContentStyle?: Object,
 };
-const Button = (
-  {
-    style = {},
-    rightIcon = null,
-    leftIcon = null,
-    disabled = false,
-    children,
-    className,
-    ...props
-  }: TButtonProps = {}
-) => {
+const Button = ({
+  style = {},
+  rightIcon = null,
+  leftIcon = null,
+  disabled = false,
+  children,
+  className,
+  buttonContentStyle = {},
+  ...props
+}: TButtonProps = {}) => {
   const StyledButton = styled.button({ ...buttonBaseStyles, ...style });
   StyledButton.displayName = 'StyledButton';
 
@@ -64,7 +64,9 @@ const Button = (
       {...validAttributes(props)}
       className={className + ' button'}
     >
-      <div style={{ display: 'flex', alignItems: 'center' }}>
+      <div
+        style={{ display: 'flex', alignItems: 'center', ...buttonContentStyle }}
+      >
         {leftIcon}
         <span style={{ ...margin(leftIcon, rightIcon), ...center }}>
           {children}

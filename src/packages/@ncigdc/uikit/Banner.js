@@ -5,6 +5,7 @@ import React from 'react';
 import Row from '@ncigdc/uikit/Flex/Row';
 import Markdown from 'react-markdown';
 import './Banner.css';
+import { theme } from '@ncigdc/theme';
 
 const style = {
   headerBanner: {
@@ -35,7 +36,7 @@ const style = {
     borderBottom: 0,
   },
   warning: {
-    color: '#000000',
+    color: '#000',
     fontWeight: 'bold',
     backgroundColor: '#D39C3F',
   },
@@ -49,6 +50,17 @@ const levelToIcon = {
   warning: <span className="fa fa-exclamation icon" />,
   error: <span className="fa fa-exclamation-triangle icon" />,
 };
+
+const BannerLink = ({ level, ...props }) => (
+  <a
+    href={props.href}
+    target={'blank'}
+    style={level === 'WARNING' ? { color: theme.primaryHighContrast } : {}}
+    className="banner-warning-link"
+  >
+    {props.children}
+  </a>
+);
 
 type BannerProps = {
   message: string,
@@ -77,7 +89,14 @@ const Banner = ({
   >
     {levelToIcon[level.toLowerCase()] || levelToIcon.info}
     <span style={style.message}>
-      {!reactElement ? <Markdown source={message} /> : message}
+      {!reactElement ? (
+        <Markdown
+          source={message}
+          renderers={{ link: props => <BannerLink level={level} {...props} /> }}
+        />
+      ) : (
+        message
+      )}
     </span>
     {dismissible && (
       <span

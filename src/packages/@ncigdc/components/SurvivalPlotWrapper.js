@@ -17,7 +17,7 @@ import Button from '@ncigdc/uikit/Button';
 import { Tooltip, withTooltip } from '@ncigdc/uikit/Tooltip';
 import Hidden from '@ncigdc/components/Hidden';
 import withRouter from '@ncigdc/utils/withRouter';
-import { wrapSvg } from '@ncigdc/utils/wrapSvg';
+import wrapSvg from '@ncigdc/utils/wrapSvg';
 import withSize from '@ncigdc/utils/withSize';
 import DownloadVisualizationButton from '@ncigdc/components/DownloadVisualizationButton';
 import { visualizingButton } from '@ncigdc/theme/mixins';
@@ -82,14 +82,14 @@ const Container = ({
   survivalPlotLoading,
 }) => (
   <div
-    className={`${CLASS_NAME} test-survival-plot-container`}
-    ref={setSurvivalContainer}
-    style={{
-      overflow: 'hidden',
-      height: survivalPlotLoading ? '0px' : height,
-      position: 'relative',
-    }}
-    />
+      className={`${CLASS_NAME} test-survival-plot-container`}
+      ref={setSurvivalContainer}
+      style={{
+        overflow: 'hidden',
+        height: survivalPlotLoading ? '0px' : height,
+        position: 'relative',
+      }}
+      />
 );
 
 const SurvivalPlotWrapper = ({
@@ -145,11 +145,11 @@ const SurvivalPlotWrapper = ({
                           `.${uniqueClass} .legend-${i}`
                         ))
                         .concat(
-                            pValue
-                              ? document.querySelector(
-                                `.${uniqueClass} .p-value`
-                              )
-                              : null
+                          pValue
+                            ? document.querySelector(
+                              `.${uniqueClass} .p-value`
+                            )
+                            : null
                         ),
                     },
                   },
@@ -276,10 +276,10 @@ function renderSurvivalPlot(props: TProps): void {
       yAxisLabel: 'Survival Rate',
       height,
       getSetSymbol: (curve, curves) => (curves.length === 1
-          ? ''
-          : `<tspan font-style="italic">S</tspan><tspan font-size="0.7em" baseline-shift="-15%">${curves.indexOf(
-            curve
-          ) + 1}</tspan>`),
+        ? ''
+        : `<tspan font-style="italic">S</tspan><tspan font-size="0.7em" baseline-shift="-15%">${curves.indexOf(
+          curve
+        ) + 1}</tspan>`),
       onMouseEnterDonor: (
         e,
         {
@@ -292,14 +292,14 @@ function renderSurvivalPlot(props: TProps): void {
             {' '}
             {project_id}
             {' '}
-/
+            /
             {' '}
             {submitter_id}
             <br />
             Survival Rate:
             {' '}
             {Math.round(survivalEstimate * 100)}
-%
+            %
             <br />
             {censored
               ? `Interval of last follow-up: ${time.toLocaleString()} years`

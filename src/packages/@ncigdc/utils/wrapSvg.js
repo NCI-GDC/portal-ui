@@ -83,8 +83,8 @@ function buildForeignObject({
         <div xmlns="http://www.w3.org/1999/xhtml">
           <div style="${styles}">
             ${foreignObjects
-              .map(e => e.innerHTML)
-              .join(`</div><div style="${styles}">`)}
+        .map(e => e.innerHTML)
+        .join(`</div><div style="${styles}">`)}
           </div>
         </div>
       </foreignObject>
@@ -92,7 +92,7 @@ function buildForeignObject({
   };
 }
 
-export const wrapSvg = ({
+const wrapSvg = ({
   selector,
   title,
   legends,
@@ -156,8 +156,7 @@ export const wrapSvg = ({
   const svgClass = svg.getAttribute('class');
 
   const wrapper = document.createElement('div');
-  const simpleForeign = (element, x, y, width, height) =>
-    `<foreignobject
+  const simpleForeign = (element, x, y, width, height) => `<foreignobject
       class="node"
       x=${x}
       y=${y}
@@ -169,39 +168,47 @@ export const wrapSvg = ({
   wrapper.innerHTML = `
     <svg
       width="${width}"
-      height="${sum([height, afterObject.height, 22])}"
-      viewBox="0 0 ${width} ${sum([height, afterObject.height, 22])}"
+      height="${sum([
+height,
+afterObject.height,
+22
+])}"
+      viewBox="0 0 ${width} ${sum([
+height,
+afterObject.height,
+22
+])}"
       style="font-size: 10px"
       class="${EXPORT_CLASS} ${svgClass || ''} ${className}"
     >
       <g transform="translate(0, ${margins.top || 0})">
         <text x="${width /
-          2}" y="0" text-anchor="middle" dominant-baseline="hanging">
+    2}" y="0" text-anchor="middle" dominant-baseline="hanging">
           <tspan style="font-size: 1.4rem;">${title}</tspan>
         </text>
       </g>
       ${beforeObject.html}
       ${rightObject.html}
       <g transform="translate(${margins.left || 0},${sum([
-    titleHeight,
-    margins.top,
-    beforeObject.height,
-  ])})">
+  titleHeight,
+  margins.top,
+  beforeObject.height,
+])})">
         ${svg.innerHTML.replace(
-          /url\(['"]?https?:\/\/[^#]+(#.+)['"]?\)/g,
-          'url($1)',
-        )}
+    /url\(['"]?https?:\/\/[^#]+(#.+)['"]?\)/g,
+    'url($1)',
+  )}
       </g>
       ${afterObject.html}
       ${legends
-        ? simpleForeign(
-            legends,
-            0,
-            sum([height, afterObject.height]),
-            '650',
-            '22',
-          )
-        : ''}
+      ? simpleForeign(
+        legends,
+        0,
+        sum([height, afterObject.height]),
+        '650',
+        '22',
+      )
+      : ''}
     </svg>
   `;
   return wrapper.querySelector('svg');

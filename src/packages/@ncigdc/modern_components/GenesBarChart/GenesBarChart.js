@@ -15,7 +15,7 @@ import { Row, Column } from '@ncigdc/uikit/Flex';
 import DownloadVisualizationButton from '@ncigdc/components/DownloadVisualizationButton';
 import BarChart from '@ncigdc/components/Charts/BarChart';
 import FilteredStackedBarChart from '@ncigdc/components/Charts/FilteredStackedBarChart';
-import { wrapSvg } from '@ncigdc/utils/wrapSvg';
+import wrapSvg from '@ncigdc/utils/wrapSvg';
 import VisualizationHeader from '@ncigdc/components/VisualizationHeader';
 import { createClassicRenderer } from '@ncigdc/modern_components/Query';
 import { cnvColors } from '@ncigdc/utils/filters/prepared/significantConsequences';
@@ -292,7 +292,7 @@ const Component = compose(
         display: 'flex',
         justifyContent: 'center',
       }}
-      >
+           >
         {cnvColors.map(f => (
           <span
             key={f.key}
@@ -300,7 +300,7 @@ const Component = compose(
               paddingRight: '10px',
               display: 'inline-block,',
             }}
-          >
+            >
             <span
               style={{
                 color: f.color,
@@ -316,7 +316,7 @@ const Component = compose(
                 verticalAlign: 'middle',
                 lineHeight: '16px',
               }}
-            />
+              />
             {f.name}
           </span>
         ))}
@@ -342,10 +342,10 @@ const Component = compose(
                     title: MUTATED_TITLE,
                   })}
                   tooltipHTML="Download image or data"
-                />,
+                  />,
               ]}
               title={MUTATED_TITLE}
-            />
+              />
             {!!mutatedGenesChartData.length && (
               <div id="mutated-genes-chart">
                 <Row style={{ paddingTop: '2rem' }}>
@@ -369,7 +369,7 @@ const Component = compose(
                       },
                     }}
                     yAxis={{ title: '% of Cases Affected' }}
-                  />
+                    />
                 </Row>
               </div>
             )}
@@ -396,10 +396,10 @@ const Component = compose(
                       legends: renderToString(<Legends />),
                     })}
                     tooltipHTML="Download image or data"
-                  />,
+                    />,
                 ]}
                 title={CNV_TITLE}
-              />
+                />
             )}
             {!!cnvGenesChartData.length &&
               showingMore && (
@@ -443,10 +443,10 @@ const Component = compose(
                       },
                     }}
                     yAxis={{ title: '% of Cases Affected' }}
-                  />
+                    />
                   <Legends />
                 </div>
-              )}
+            )}
           </Column>
         )}
       </div>

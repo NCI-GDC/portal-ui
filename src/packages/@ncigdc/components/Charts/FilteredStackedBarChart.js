@@ -8,7 +8,8 @@ import withSize from '@ncigdc/utils/withSize';
 // Custom
 import { withTheme } from '@ncigdc/theme';
 import './style.css';
-import { MAX_X_AXIS_LENGTH } from '@ncigdc/components/Charts/BarChart';
+
+import { DEFAULT_X_AXIS_LENGTH } from '@ncigdc/components/Charts/BarChart';
 
 type TProps = {
   data: Object,
@@ -35,6 +36,7 @@ const FilteredStackedBarChart = ({
   size: { width },
   theme,
   setTooltip,
+  xAxisLabelLength = DEFAULT_X_AXIS_LENGTH,
 }: TProps) => {
   const yAxisStyle = yAxis.style || {
     textFill: theme.greyScale3,
@@ -104,7 +106,7 @@ const FilteredStackedBarChart = ({
     .attr('fill', xAxisStyle.textFill)
     .attr('dx', '.8em')
     .attr('dy', '.5em')
-    .text(d => (d.length > MAX_X_AXIS_LENGTH ? `${d.substring(0, MAX_X_AXIS_LENGTH)}...` : d))
+    .text(d => (d.length > xAxisLabelLength ? `${d.substring(0, xAxisLabelLength - 3)}...` : d))
     .attr('transform', 'rotate(45)');
   xG.selectAll('path').style('stroke', xAxisStyle.stroke);
   xG.selectAll('line').style('stroke', xAxisStyle.stroke);

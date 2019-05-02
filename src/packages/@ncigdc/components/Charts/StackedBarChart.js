@@ -10,7 +10,8 @@ import { withTooltip } from '@ncigdc/uikit/Tooltip';
 import Row from '@ncigdc/uikit/Flex/Row';
 import { withTheme } from '@ncigdc/theme';
 import './style.css';
-import { MAX_X_AXIS_LENGTH } from '@ncigdc/components/Charts/BarChart';
+
+import { DEFAULT_X_AXIS_LENGTH } from '@ncigdc/components/Charts/BarChart';
 
 const drawChart = ({
   data,
@@ -21,6 +22,7 @@ const drawChart = ({
   colors,
   setTooltip,
   theme,
+  xAxisLabelLength = DEFAULT_X_AXIS_LENGTH,
 }) => {
   const yAxisStyle = yAxis.style || {
     textFill: theme.greyScale3,
@@ -123,7 +125,7 @@ const drawChart = ({
     .attr('fill', xAxisStyle.textFill)
     .attr('dx', '.8em')
     .attr('dy', '.5em')
-    .text(d => (d.length > MAX_X_AXIS_LENGTH ? `${d.substring(0, MAX_X_AXIS_LENGTH)}...` : d))
+    .text(d => (d.length > xAxisLabelLength ? `${d.substring(0, xAxisLabelLength - 3)}...` : d))
     .attr('transform', 'rotate(45)');
   xG.selectAll('path').style('stroke', xAxisStyle.stroke);
   xG.selectAll('line').style('stroke', xAxisStyle.stroke);

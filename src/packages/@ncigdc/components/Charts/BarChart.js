@@ -16,7 +16,7 @@ import { withTooltip } from '@ncigdc/uikit/Tooltip';
 import withSize from '@ncigdc/utils/withSize';
 import './style.css';
 
-export const MAX_X_AXIS_LENGTH = 8;
+export const DEFAULT_X_AXIS_LENGTH = 8;
 
 const BarChart = ({
   data,
@@ -28,6 +28,7 @@ const BarChart = ({
   margin: m,
   setTooltip,
   theme,
+  xAxisLabelLength = DEFAULT_X_AXIS_LENGTH,
   size: { width },
 }) => {
   const el = ReactFauxDOM.createElement('div');
@@ -128,7 +129,7 @@ const BarChart = ({
     .attr('fill', xAxisStyle.textFill)
     .attr('dx', '.8em')
     .attr('dy', '.5em')
-    .text(d => (d.length > MAX_X_AXIS_LENGTH ? `${d.substring(0, MAX_X_AXIS_LENGTH)}...` : d))
+    .text(d => (d.length > xAxisLabelLength ? `${d.substring(0, xAxisLabelLength - 3)}...` : d))
     .attr('transform', 'rotate(45)');
 
   xG.selectAll('path').style('stroke', xAxisStyle.stroke);

@@ -17,13 +17,13 @@ import Loader from '@ncigdc/uikit/Loaders/Loader';
 
 import { API, IS_AUTH_PORTAL } from '@ncigdc/utils/constants';
 import ClinicalVariableCard from './ClinicalVariableCard';
-
-const simpleAggCache = {};
-const pendingAggCache = {};
+//
+// const simpleAggCache = {};
+// const pendingAggCache = {};
 const DEFAULT_CONTINUOUS_BUCKETS = 4;
 
 const getContinuousAggs = ({
-  fieldName, stats, filters,
+  fieldName, stats, filters, simpleAggCache, pendingAggCache,
 }) => {
   // prevent query failing if interval will equal 0
   if (_.isNull(stats.min) || _.isNull(stats.max)) {
@@ -126,12 +126,16 @@ export default compose(
       setAggData,
       setIsLoading,
       hits,
+      simpleAggCache,
+      pendingAggCache,
     }) => {
       const res = await getContinuousAggs({
         fieldName,
         stats,
         filters,
         hits,
+        simpleAggCache,
+        pendingAggCache,
       });
       setAggData(res && res.data.viewer, () => setIsLoading(false));
     },

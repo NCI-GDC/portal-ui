@@ -73,20 +73,6 @@ export default (Component: ReactClass<*>) => compose(
                 facets(facets: $facets filters: $filters)
                 hits(first: 20 filters: $filters) {
                   total
-                  edges {
-                    node {
-                      diagnoses {
-                        hits(first: 1, filters: $filters) {
-                          edges {
-                            node {
-                              diagnosis_id
-                              age_at_diagnosis
-                            }
-                          }
-                        }
-                      }
-                    }
-                  }
                 }
               }
             }

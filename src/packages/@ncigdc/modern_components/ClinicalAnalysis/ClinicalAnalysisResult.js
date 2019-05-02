@@ -15,9 +15,6 @@ import Button from '@ncigdc/uikit/Button';
 import { Tooltip } from '@ncigdc/uikit/Tooltip';
 import {
   PrintIcon,
-  CloseIcon,
-  SurvivalIcon,
-  BarChartIcon,
   DoubleArrowLeftIcon,
   DoubleArrowRightIcon,
 } from '@ncigdc/theme/icons';
@@ -25,7 +22,6 @@ import CopyIcon from '@ncigdc/theme/icons/Copy';
 import Hidden from '@ncigdc/components/Hidden';
 import { visualizingButton, zDepth1 } from '@ncigdc/theme/mixins';
 
-import EntityPageHorizontalTable from '@ncigdc/components/EntityPageHorizontalTable';
 import Input from '@ncigdc/uikit/Form/Input';
 import { withTheme } from '@ncigdc/theme';
 import countComponents from '@ncigdc/modern_components/Counts';
@@ -42,15 +38,19 @@ import tryParseJSON from '@ncigdc/utils/tryParseJSON';
 import getUsefulFacets from '@ncigdc/utils/getUsefulFacets';
 import DeprecatedSetResult from './DeprecatedSetResult';
 import CohortDropdown from './CohortDropdown';
+import ControlPanelNode from './ControlPanelNode';
+import ContinuousAggregation from './ContinuousAggregationQuery';
+import ClinicalVariableCard from './ClinicalVariableCard';
 import './print.css';
 import './survivalPlot.css';
 
 // survival plot
 import { getDefaultCurve } from '@ncigdc/utils/survivalplot';
 import SurvivalPlotWrapper from '@ncigdc/components/SurvivalPlotWrapper';
-import ControlPanelNode from './ControlPanelNode.js';
-import ContinuousAggregation from './ContinuousAggregationQuery';
-import ClinicalVariableCard from './ClinicalVariableCard.js';
+
+// where is the best place to initialize the custom cache?
+const simpleAggCache = {};
+const pendingAggCache = {};
 
 interface IAnalysisResultProps {
   sets: any;
@@ -252,6 +252,8 @@ const ClinicalAnalysisResult = ({
   const setId = Object.keys(currentAnalysis.sets.case)[0];
   const CountComponent = countComponents.case;
 
+  // console.log('simple: ', simpleAggCache);
+  // console.log('pending :', pendingAggCache);
   if (hits.total === 0) {
     return (
       <DeprecatedSetResult
@@ -559,8 +561,10 @@ const ClinicalAnalysisResult = ({
                     id={id}
                     key={varFieldName}
                     overallSurvivalData={overallSurvivalData}
+                    pendingAggCache={pendingAggCache}
                     plots={plotTypes[varProperties.plotTypes || 'categorical']}
                     setId={setId}
+                    simpleAggCache={simpleAggCache}
                     stats={parsedFacets[varFieldName].stats}
                     style={{ minWidth: controlPanelExpanded ? 310 : 290 }}
                     variable={varProperties} />

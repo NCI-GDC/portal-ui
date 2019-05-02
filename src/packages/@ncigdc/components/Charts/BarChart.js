@@ -16,7 +16,7 @@ import { withTooltip } from '@ncigdc/uikit/Tooltip';
 import withSize from '@ncigdc/utils/withSize';
 import './style.css';
 
-export const DEFAULT_X_AXIS_LENGTH = 8;
+export const DEFAULT_X_AXIS_LABEL_LENGTH = 8;
 
 const BarChart = ({
   data,
@@ -28,7 +28,7 @@ const BarChart = ({
   margin: m,
   setTooltip,
   theme,
-  xAxisLabelLength = DEFAULT_X_AXIS_LENGTH,
+  xAxisLabelLength = DEFAULT_X_AXIS_LABEL_LENGTH,
   size: { width },
 }) => {
   const el = ReactFauxDOM.createElement('div');

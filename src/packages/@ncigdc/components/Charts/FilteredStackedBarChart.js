@@ -9,7 +9,7 @@ import withSize from '@ncigdc/utils/withSize';
 import { withTheme } from '@ncigdc/theme';
 import './style.css';
 
-import { DEFAULT_X_AXIS_LENGTH } from '@ncigdc/components/Charts/BarChart';
+import { DEFAULT_X_AXIS_LABEL_LENGTH } from '@ncigdc/components/Charts/BarChart';
 
 type TProps = {
   data: Object,
@@ -36,7 +36,7 @@ const FilteredStackedBarChart = ({
   size: { width },
   theme,
   setTooltip,
-  xAxisLabelLength = DEFAULT_X_AXIS_LENGTH,
+  xAxisLabelLength = DEFAULT_X_AXIS_LABEL_LENGTH,
 }: TProps) => {
   const yAxisStyle = yAxis.style || {
     textFill: theme.greyScale3,

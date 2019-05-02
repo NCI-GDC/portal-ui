@@ -11,7 +11,7 @@ import { withTheme } from '@ncigdc/theme';
 import { withTooltip } from '@ncigdc/uikit/Tooltip';
 import withSize from '@ncigdc/utils/withSize';
 import './style.css';
-import { DEFAULT_X_AXIS_LENGTH } from '@ncigdc/components/Charts/BarChart';
+import { DEFAULT_X_AXIS_LABEL_LENGTH } from '@ncigdc/components/Charts/BarChart';
 
 const BarChart = ({
   data1,
@@ -26,7 +26,7 @@ const BarChart = ({
   theme,
   size: { width },
   minBarHeight = 0,
-  xAxisLabelLength = DEFAULT_X_AXIS_LENGTH,
+  xAxisLabelLength = DEFAULT_X_AXIS_LABEL_LENGTH,
 }) => {
   const el = ReactFauxDOM.createElement('div');
   el.style.width = '100%';

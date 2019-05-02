@@ -11,7 +11,7 @@ import Row from '@ncigdc/uikit/Flex/Row';
 import { withTheme } from '@ncigdc/theme';
 import './style.css';
 
-import { DEFAULT_X_AXIS_LENGTH } from '@ncigdc/components/Charts/BarChart';
+import { DEFAULT_X_AXIS_LABEL_LENGTH } from '@ncigdc/components/Charts/BarChart';
 
 const drawChart = ({
   data,
@@ -22,7 +22,7 @@ const drawChart = ({
   colors,
   setTooltip,
   theme,
-  xAxisLabelLength = DEFAULT_X_AXIS_LENGTH,
+  xAxisLabelLength = DEFAULT_X_AXIS_LABEL_LENGTH,
 }) => {
   const yAxisStyle = yAxis.style || {
     textFill: theme.greyScale3,
@@ -194,11 +194,11 @@ const StackedBarChart: TStackedBarChart = (
     theme,
   })
 ) : (
-  <Row style={{
+    <Row style={{
       color: xAxis.style.textFill,
       justifyContent: 'center',
     }}
-         >
+    >
       No data
     </Row>
   ));

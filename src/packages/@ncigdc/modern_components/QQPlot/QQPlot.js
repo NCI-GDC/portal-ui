@@ -12,16 +12,13 @@ import _ from 'lodash';
 import * as ss from 'simple-statistics';
 import './qq.css';
 
-// Custom
 import { withTheme } from '@ncigdc/theme';
 import { withTooltip } from '@ncigdc/uikit/Tooltip';
 import withSize from '@ncigdc/utils/withSize';
 
 import '@ncigdc/components/Charts/style.css';
 
-const sortAscending = (a, b) => {
-  return a - b;
-};
+const sortAscending = (a, b) => a - b;
 
 // from https://rangevoting.org/Qnorm.html
 const qnorm = function (p) {
@@ -79,52 +76,56 @@ const QQPlot = ({
   styles,
   height = 317,
   margin: m,
-  setTooltip,
   theme,
   size: { width },
-  clinicalType,
-  queryField,
-  realData = true,
+  // clinicalType,
+  // queryField,
+  // realData = true,
+  fieldName,
 }) => {
-  let gdcData;
+  // if (data && data.explore.cases.hits) {
+  //   gdcData = _.flattenDeep(
+  //     data.explore.cases.hits.edges.map(edge => {
+  //       return edge.node[clinicalType].hits.edges.map(e => {
+  //         return e.node[queryField];
+  //       });
+  //     })
+  //   );
+  // }
 
-  if (data && data.explore.cases.hits) {
-    gdcData = _.flattenDeep(
-      data.explore.cases.hits.edges.map(edge => {
-        return edge.node[clinicalType].hits.edges.map(e => {
-          return e.node[queryField];
-        });
-      })
-    );
-  }
+  const plotData = (data && data.explore.cases.aggregations)
+    ? _.flattenDeep(data.explore.cases.aggregations[fieldName].histogram.buckets
+      .filter(bucket => bucket.doc_count > 0)
+      .map(bucket => _.times(bucket.doc_count, () => Number(bucket.key))))
+  : [];
 
-  const testValues = realData
-    ? gdcData.filter(d => _.isNumber(d)).sort(sortAscending)
-    : data.filter(d => _.isNumber(d)).sort(sortAscending);
-  const n = testValues.length;
+  const n = plotData.length;
+  // const testValues = realData
+  //   ? gdcData.filter(d => _.isNumber(d)).sort(sortAscending)
+  //   : data.filter(d => _.isNumber(d)).sort(sortAscending);
+  // const n = testValues.length;
+  //
+  // const mean = testValues.reduce((acc, i) => acc + i, 0) / n;
+  // const deviations = testValues.map(v => v - mean);
+  // const squaredDeviations = deviations
+  //   .map(d => d * d)
+  //   .reduce((acc, d) => acc + d, 0);
 
-  const mean = testValues.reduce((acc, i) => acc + i, 0) / n;
-  const deviations = testValues.map(v => v - mean);
-  const squaredDeviations = deviations
-    .map(d => d * d)
-    .reduce((acc, d) => acc + d, 0);
+  // const variance = squaredDeviations / n;
 
-  const variance = squaredDeviations / n;
+  // const standardDeviation = Math.sqrt(variance);
 
-  const standardDeviation = Math.sqrt(variance);
-
-  const getZScore = (age, m, stdDev) => (age - m) / stdDev;
+  // const getZScore = (age, m, stdDev) => (age - m) / stdDev;
 
   // const qqLine = testValues.map((age, i) => [
   //   getZScore(age, mean, standardDeviation),
   //   age,
   // ]);
 
-  const zScores = testValues.map((age, i) => ({
+  const zScores = plotData.sort(sortAscending).map((age, i) => ({
     x: qnorm((i + 1 - 0.5) / n),
     y: age,
   }));
-  // console.log(title, ' : ', zScores);
 
   const el = ReactFauxDOM.createElement('div');
   el.style.width = '100%';
@@ -165,7 +166,6 @@ const QQPlot = ({
         return Math.ceil(d.y);
       }),
     ])
-    // .range([padding, w-padding * 2]);
     .range([chartHeight - padding, padding]);
 
   const xAxis = d3
@@ -191,7 +191,6 @@ const QQPlot = ({
     stroke: theme.greyScale4,
   };
 
-  // create svg element
   const svg = d3
     .select(el)
     .append('svg')
@@ -360,13 +359,6 @@ const QQPlot = ({
         return d.y;
       });
 
-    // console.log(
-    //   lineFunction([
-    //     { x: 50, y: lsCoef[0].m * 50 + lsCoef[0].b },
-    //     { x: 450, y: lsCoef[0].m * 450 + lsCoef[0].b },
-    //   ])
-    // );
-
     svg
       .append('path')
       .attr(
@@ -509,14 +501,6 @@ const QQPlot = ({
   //
   // xG.selectAll('line').style('stroke', xAxisStyle.stroke);
   //
-  // xG.selectAll('.tick')
-  //   .data(data)
-  //   .on('mouseenter', d => {
-  //     setTooltip(d.tooltip);
-  //   })
-  //   .on('mouseleave', () => {
-  //     setTooltip();
-  //   });
   return el.toReact();
 };
 

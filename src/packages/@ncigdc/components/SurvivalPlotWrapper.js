@@ -136,14 +136,19 @@ const SurvivalPlotWrapper = ({
                 stylePrefix={`.${CLASS_NAME}`}
                 svg={() => wrapSvg({
                   selector: `.${uniqueClass} .${CLASS_NAME} svg`,
-                  title: TITLE,
+                  title: plotType === 'mutation' ? TITLE : '',
                   className: CLASS_NAME,
                   embed: {
                     top: {
                       elements: legend
-                        .map((l, i) => document.querySelector(
-                          `.${uniqueClass} .legend-${i}`
-                        ))
+                        .map((l, i) => {
+                          const legendItem = document.querySelector(
+                            `.${uniqueClass} .legend-${i}`
+                          ).cloneNode(true);
+                          const legendTitle = legendItem.querySelector('span.print-only.inline');
+                          if (legendTitle !== null) legendTitle.className = '';
+                          return legendItem;
+                        })
                         .concat(
                           pValue
                             ? document.querySelector(
@@ -153,7 +158,8 @@ const SurvivalPlotWrapper = ({
                         ),
                     },
                   },
-                })}
+                })
+                }
                 tooltipHTML="Download SurvivalPlot data or image"
                 tsvData={results.reduce((data, set, i) => {
                   const mapData = set.donors.map(d => toMap(d));
@@ -288,18 +294,9 @@ function renderSurvivalPlot(props: TProps): void {
       ) => {
         setTooltip(
           <span>
-            Case ID:
-            {' '}
-            {project_id}
-            {' '}
-            /
-            {' '}
-            {submitter_id}
+            {`Case ID: ${project_id} / ${submitter_id}`}
             <br />
-            Survival Rate:
-            {' '}
-            {Math.round(survivalEstimate * 100)}
-            %
+            {`Survival Rate: ${Math.round(survivalEstimate * 100)}%`}
             <br />
             {censored
               ? `Interval of last follow-up: ${time.toLocaleString()} years`
@@ -342,11 +339,11 @@ const enhance = compose(
     },
 
     componentDidUpdate(): void {
-      !this.props.survivalPlotLoading && renderSurvivalPlot(this.props);
+      if (!this.props.survivalPlotLoading) renderSurvivalPlot(this.props);
     },
 
     componentDidMount(): void {
-      !this.props.survivalPlotLoading && renderSurvivalPlot(this.props);
+      if (!this.props.survivalPlotLoading) renderSurvivalPlot(this.props);
     },
   })
 );

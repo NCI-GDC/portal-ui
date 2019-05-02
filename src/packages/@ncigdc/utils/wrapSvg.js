@@ -67,7 +67,7 @@ function buildForeignObject({
 }): { html: string, height: number } {
   const foreignObjects = elements.filter(Boolean);
   // $FlowIgnore
-  const elementsHeight = sum(foreignObjects.map(e => e.offsetHeight));
+  const elementsHeight = sum(foreignObjects.map(e => e.offsetHeight || 15));
 
   return {
     height: elementsHeight,
@@ -169,14 +169,15 @@ const wrapSvg = ({
     <svg
       width="${width}"
       height="${sum([
-height,
-afterObject.height,
-22
-])}"
+
+    height,
+    afterObject.height,
+    22,
+  ])}"
       viewBox="0 0 ${width} ${sum([
-height,
-afterObject.height,
-22
+  height,
+  afterObject.height,
+  22,
 ])}"
       style="font-size: 10px"
       class="${EXPORT_CLASS} ${svgClass || ''} ${className}"

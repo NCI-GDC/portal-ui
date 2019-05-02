@@ -35,6 +35,7 @@ module.exports = {
     'array-element-newline': ['warn', { 'multiline': true, 'minItems': 3 }],
     'arrow-body-style': 'off',
     'arrow-parens': 'off',
+    'camelcase': 'warn',
     'comma-dangle': ['warn', 'always-multiline'],
     'func-names': ['warn', 'as-needed'],
     'function-paren-newline': ['warn', 'consistent'],
@@ -74,7 +75,7 @@ module.exports = {
       ]
     }],
     'no-debugger': 'warn',
-    'no-fallthrough': ['warn',{
+    'no-fallthrough': ['warn', {
       commentPattern: 'break[\\s\\w]*omitted',
     }],
     'no-nested-ternary': 'off',
@@ -83,22 +84,22 @@ module.exports = {
       // allowAllPropertiesOnSameLine: false,
     }],
     'object-curly-newline': 'warn', // ['warn', {
-      // ObjectExpression: {
-      //   'multiline': true,
-      //   'minProperties': 2,
-      // },
-      // ObjectPattern: {
-      //   'multiline': true,
-      //   'minProperties': 2,
-      // },
-      // ImportDeclaration: {
-      //   'multiline': true,
-      //   'minProperties': 2,
-      // },
-      // ExportDeclaration: {
-      //   'multiline': true,
-      //   'minProperties': 2,
-      // },
+    // ObjectExpression: {
+    //   'multiline': true,
+    //   'minProperties': 2,
+    // },
+    // ObjectPattern: {
+    //   'multiline': true,
+    //   'minProperties': 2,
+    // },
+    // ImportDeclaration: {
+    //   'multiline': true,
+    //   'minProperties': 2,
+    // },
+    // ExportDeclaration: {
+    //   'multiline': true,
+    //   'minProperties': 2,
+    // },
     // }],
     'operator-linebreak': ['warn', 'after', {
       overrides: {

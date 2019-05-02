@@ -92,7 +92,7 @@ function buildForeignObject({
   };
 }
 
-export const wrapSvg = ({
+const wrapSvg = ({
   selector,
   title,
   legends,
@@ -169,6 +169,7 @@ export const wrapSvg = ({
     <svg
       width="${width}"
       height="${sum([
+
     height,
     afterObject.height,
     22,

@@ -28,7 +28,9 @@ const COMPONENT_NAME = 'GenesBarChart';
 
 class Route extends Relay.Route {
   static routeName = COMPONENT_NAME;
+
   static queries = viewerQuery;
+
   static prepareParams = ({ location: { search }, defaultFilters = null }) => {
     const q = parse(search);
 
@@ -41,60 +43,59 @@ class Route extends Relay.Route {
   };
 }
 
-const createContainer = Component =>
-  Relay.createContainer(Component, {
-    initialVariables: {
-      genesBarChart_filters: null,
-      score: 'case.project.project_id',
-      ssmTested: makeFilter([
-        {
-          field: 'cases.available_variation_data',
-          value: 'ssm',
-        },
-      ]),
-      // amplificationFilters: makeFilter([
-      //   {
-      //     field: 'cnvs.cnv_change',
-      //     value: 'Amplification',
-      //   },
-      //   {
-      //     field: 'cases.available_variation_data',
-      //     value: 'cnv',
-      //   },
-      // ]),
-      gainFilters: makeFilter([
-        {
-          field: 'cnvs.cnv_change',
-          value: 'Gain',
-        },
-        {
-          field: 'cases.available_variation_data',
-          value: 'cnv',
-        },
-      ]),
-      lossFilters: makeFilter([
-        {
-          field: 'cnvs.cnv_change',
-          value: 'Loss',
-        },
-        {
-          field: 'cases.available_variation_data',
-          value: 'cnv',
-        },
-      ]),
-      // deepLossFilters: makeFilter([
-      //   {
-      //     field: 'cnvs.cnv_change',
-      //     value: 'Deep Loss',
-      //   },
-      //   {
-      //     field: 'cases.available_variation_data',
-      //     value: 'cnv',
-      //   },
-      // ]),
-    },
-    fragments: {
-      viewer: () => Relay.QL`
+const createContainer = Component => Relay.createContainer(Component, {
+  initialVariables: {
+    genesBarChart_filters: null,
+    score: 'case.project.project_id',
+    ssmTested: makeFilter([
+      {
+        field: 'cases.available_variation_data',
+        value: 'ssm',
+      },
+    ]),
+    // amplificationFilters: makeFilter([
+    //   {
+    //     field: 'cnvs.cnv_change',
+    //     value: 'Amplification',
+    //   },
+    //   {
+    //     field: 'cases.available_variation_data',
+    //     value: 'cnv',
+    //   },
+    // ]),
+    gainFilters: makeFilter([
+      {
+        field: 'cnvs.cnv_change',
+        value: 'Gain',
+      },
+      {
+        field: 'cases.available_variation_data',
+        value: 'cnv',
+      },
+    ]),
+    lossFilters: makeFilter([
+      {
+        field: 'cnvs.cnv_change',
+        value: 'Loss',
+      },
+      {
+        field: 'cases.available_variation_data',
+        value: 'cnv',
+      },
+    ]),
+    // deepLossFilters: makeFilter([
+    //   {
+    //     field: 'cnvs.cnv_change',
+    //     value: 'Deep Loss',
+    //   },
+    //   {
+    //     field: 'cases.available_variation_data',
+    //     value: 'cnv',
+    //   },
+    // ]),
+  },
+  fragments: {
+    viewer: () => Relay.QL`
         fragment on Root {
           explore {
             cases {
@@ -144,8 +145,8 @@ const createContainer = Component =>
           }
         }
       `,
-    },
-  });
+  },
+});
 
 const Component = compose(
   withRouter,
@@ -153,17 +154,16 @@ const Component = compose(
     handleClickGene: ({ push, onClickGene, defaultFilters }) => (
       gene,
       chartData,
-    ) =>
-      onClickGene
-        ? onClickGene(gene, chartData)
-        : push({
-            pathname: `/genes/${gene.gene_id}`,
-            query: {
-              filters: stringifyJSONParam(
-                removeFilter(f => f.match(/^genes\./), defaultFilters),
-              ),
-            },
-          }),
+    ) => (onClickGene
+      ? onClickGene(gene, chartData)
+      : push({
+        pathname: `/genes/${gene.gene_id}`,
+        query: {
+          filters: stringifyJSONParam(
+            removeFilter(f => f.match(/^genes\./), defaultFilters),
+          ),
+        },
+      })),
   }),
   withTheme,
 )(
@@ -177,7 +177,6 @@ const Component = compose(
     showingMore,
     handleClickGene,
     style,
-    push,
   }) => {
     const numCasesAggByProject = cases.aggregations.project__project_id.buckets.reduce(
       (acc, b) => ({
@@ -193,10 +192,19 @@ const Component = compose(
             <span>
               <b>{symbol}</b>
               <br />
-              {score.toLocaleString()} Case
-              {score > 1 ? 's' : ''} affected in {projectId}
+              {score.toLocaleString()}
+              {' '}
+              Case
+              {score > 1 ? 's' : ''}
+              {' '}
+              affected in
+              {' '}
+              {projectId}
               <br />
-              {score.toLocaleString()} /{' '}
+              {score.toLocaleString()}
+              {' '}
+              /
+              {' '}
               {(numCasesAggByProject[projectId] || 0).toLocaleString()}
               &nbsp;(
               {(score / numCasesAggByProject[projectId] * 100).toFixed(2)}
@@ -209,12 +217,21 @@ const Component = compose(
             <span>
               <b>{symbol}</b>
               <br />
-              {score.toLocaleString()} Case
-              {score > 1 ? 's' : ''} affected in explore
+              {score.toLocaleString()}
+              {' '}
+              Case
+              {score > 1 ? 's' : ''}
+              {' '}
+              affected in explore
               <br />
-              {score.toLocaleString()} /{' '}
+              {score.toLocaleString()}
+              {' '}
+              /
+              {' '}
               {(filteredCases.hits.total || 0).toLocaleString()}
-              &nbsp;({(score / filteredCases.hits.total * 100).toFixed(2)}%)
+              &nbsp;(
+              {(score / filteredCases.hits.total * 100).toFixed(2)}
+              %)
             </span>
           );
         }
@@ -249,9 +266,7 @@ const Component = compose(
         ? numCasesAggByProject[projectId]
         : filteredCases.hits.total;
     const cnvGenesChartData = cnvNodes
-      .sort((a, b) =>
-        cnvColors.reduce((acc, c) => b[c.key] - a[c.key] + acc, 0),
-      )
+      .sort((a, b) => cnvColors.reduce((acc, c) => b[c.key] - a[c.key] + acc, 0))
       .map(g => {
         return {
           symbol: g.symbol,
@@ -273,9 +288,19 @@ const Component = compose(
         };
       });
     const Legends = () => (
-      <Row style={{ display: 'flex', justifyContent: 'center' }}>
+      <Row style={{
+        display: 'flex',
+        justifyContent: 'center',
+      }}
+           >
         {cnvColors.map(f => (
-          <label key={f.key} style={{ paddingRight: '10px' }}>
+          <span
+            key={f.key}
+            style={{
+              paddingRight: '10px',
+              display: 'inline-block,',
+            }}
+            >
             <span
               style={{
                 color: f.color,
@@ -291,9 +316,9 @@ const Component = compose(
                 verticalAlign: 'middle',
                 lineHeight: '16px',
               }}
-            />
+              />
             {f.name}
-          </label>
+          </span>
         ))}
       </Row>
     );
@@ -302,32 +327,30 @@ const Component = compose(
         {!!mutatedGenesChartData && (
           <Column style={{ paddingLeft: '2rem' }}>
             <VisualizationHeader
-              title={MUTATED_TITLE}
               buttons={[
                 <DownloadVisualizationButton
-                  key="download"
-                  disabled={!mutatedGenesChartData.length}
-                  svg={() =>
-                    wrapSvg({
-                      selector: '#mutated-genes-chart svg',
-                      title: MUTATED_TITLE,
-                    })}
                   data={mutatedGenesChartData.map(d => ({
                     label: d.label,
                     value: d.value,
                   }))}
-                  slug="most-frequently-mutated-genes-bar-chart"
-                  tooltipHTML="Download image or data"
+                  disabled={!mutatedGenesChartData.length}
+                  key="download"
                   noText
-                />,
+                  slug="most-frequently-mutated-genes-bar-chart"
+                  svg={() => wrapSvg({
+                    selector: '#mutated-genes-chart svg',
+                    title: MUTATED_TITLE,
+                  })}
+                  tooltipHTML="Download image or data"
+                  />,
               ]}
-            />
+              title={MUTATED_TITLE}
+              />
             {!!mutatedGenesChartData.length && (
               <div id="mutated-genes-chart">
                 <Row style={{ paddingTop: '2rem' }}>
                   <BarChart
                     data={mutatedGenesChartData}
-                    yAxis={{ title: '% of Cases Affected' }}
                     height={CHART_HEIGHT}
                     styles={{
                       xAxis: {
@@ -345,24 +368,16 @@ const Component = compose(
                         textFill: theme.greyScale3,
                       },
                     }}
-                  />
+                    yAxis={{ title: '% of Cases Affected' }}
+                    />
                 </Row>
               </div>
             )}
 
             {showingMore && (
               <VisualizationHeader
-                title={CNV_TITLE}
                 buttons={[
                   <DownloadVisualizationButton
-                    key="download"
-                    disabled={!cnvGenesChartData.length}
-                    svg={() =>
-                      wrapSvg({
-                        selector: '#cnv-genes-chart svg',
-                        title: CNV_TITLE,
-                        legends: renderToString(<Legends />),
-                      })}
                     data={cnvGenesChartData.map(d => ({
                       symbol: d.symbol,
                       // amplification: d.amplification,
@@ -371,28 +386,46 @@ const Component = compose(
                       // deep_loss: d.deep_loss,
                       total: d.total,
                     }))}
-                    slug="most-frequently-cnv-genes-bar-chart"
-                    tooltipHTML="Download image or data"
+                    disabled={!cnvGenesChartData.length}
+                    key="download"
                     noText
-                  />,
+                    slug="most-frequently-cnv-genes-bar-chart"
+                    svg={() => wrapSvg({
+                      selector: '#cnv-genes-chart svg',
+                      title: CNV_TITLE,
+                      legends: renderToString(<Legends />),
+                    })}
+                    tooltipHTML="Download image or data"
+                    />,
                 ]}
-              />
+                title={CNV_TITLE}
+                />
             )}
             {!!cnvGenesChartData.length &&
               showingMore && (
                 <div id="cnv-genes-chart">
                   <FilteredStackedBarChart
-                    data={cnvGenesChartData}
-                    yAxis={{ title: '% of Cases Affected' }}
                     colors={cnvColors.reduce(
-                      (acc, f) => ({ ...acc, [f.key]: f.color }),
+                      (acc, f) => ({
+                        ...acc,
+                        [f.key]: f.color,
+                      }),
                       0,
                     )}
+                    data={cnvGenesChartData}
                     displayFilters={cnvColors.reduce(
-                      (acc, f) => ({ ...acc, [f.key]: true }),
+                      (acc, f) => ({
+                        ...acc,
+                        [f.key]: true,
+                      }),
                       0,
                     )}
-                    margin={{ top: 20, right: 50, bottom: 65, left: 55 }}
+                    margin={{
+                      top: 20,
+                      right: 50,
+                      bottom: 65,
+                      left: 55,
+                    }}
                     styles={{
                       xAxis: {
                         stroke: theme.greyScale4,
@@ -409,10 +442,11 @@ const Component = compose(
                         textFill: theme.greyScale3,
                       },
                     }}
-                  />
+                    yAxis={{ title: '% of Cases Affected' }}
+                    />
                   <Legends />
                 </div>
-              )}
+            )}
           </Column>
         )}
       </div>

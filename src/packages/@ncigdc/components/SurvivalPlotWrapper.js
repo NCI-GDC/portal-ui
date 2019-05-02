@@ -17,7 +17,7 @@ import Button from '@ncigdc/uikit/Button';
 import { Tooltip, withTooltip } from '@ncigdc/uikit/Tooltip';
 import Hidden from '@ncigdc/components/Hidden';
 import withRouter from '@ncigdc/utils/withRouter';
-import { wrapSvg } from '@ncigdc/utils/wrapSvg';
+import wrapSvg from '@ncigdc/utils/wrapSvg';
 import withSize from '@ncigdc/utils/withSize';
 import DownloadVisualizationButton from '@ncigdc/components/DownloadVisualizationButton';
 import { visualizingButton } from '@ncigdc/theme/mixins';
@@ -82,14 +82,14 @@ const Container = ({
   survivalPlotLoading,
 }) => (
   <div
-    className={`${CLASS_NAME} test-survival-plot-container`}
-    ref={setSurvivalContainer}
-    style={{
-      overflow: 'hidden',
-      height: survivalPlotLoading ? '0px' : height,
-      position: 'relative',
-    }}
-    />
+      className={`${CLASS_NAME} test-survival-plot-container`}
+      ref={setSurvivalContainer}
+      style={{
+        overflow: 'hidden',
+        height: survivalPlotLoading ? '0px' : height,
+        position: 'relative',
+      }}
+      />
 );
 
 const SurvivalPlotWrapper = ({

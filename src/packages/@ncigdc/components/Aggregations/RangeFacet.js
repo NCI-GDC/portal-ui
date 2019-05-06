@@ -396,7 +396,7 @@ const RangeFacet = (props: TProps) => {
                 paddingRight: '5px',
                 paddingLeft: '5px',
               }}
-              title={`eg. ${minDisplayed}`}
+              title={`Min value: eg. ${minDisplayed}`}
               type="number"
               value={props.state.fromDisplayed || ''}
               />
@@ -420,7 +420,7 @@ const RangeFacet = (props: TProps) => {
                 paddingRight: '5px',
                 paddingLeft: '5px',
               }}
-              title={`eg. ${maxDisplayed}`}
+              title={`Max value: eg. ${maxDisplayed}`}
               type="number"
               value={props.state.toDisplayed || ''}
               />

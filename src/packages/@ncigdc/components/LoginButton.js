@@ -8,6 +8,8 @@ import styled from '@ncigdc/theme/styled';
 import openAuthWindow from '@ncigdc/utils/openAuthWindow';
 import { fetchUser } from '@ncigdc/dux/auth';
 import { fetchNotifications } from '@ncigdc/dux/bannerNotification';
+import { setModal } from '@ncigdc/dux/modal';
+
 
 /*----------------------------------------------------------------------------*/
 
@@ -34,6 +36,7 @@ const LoginButton = ({ children, dispatch, user }) => (
           });
           await dispatch(fetchUser());
           await dispatch(fetchNotifications());
+          await dispatch(setModal(null));
         }}
       >
         {children || (

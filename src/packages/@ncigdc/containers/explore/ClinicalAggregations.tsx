@@ -332,6 +332,7 @@ const enhance = compose(
       isLoadingParsedFacets,
       allExpanded,
       dispatch,
+      maxHeight,
     }: IClinicalProps): any => {
       return (
         <React.Fragment>

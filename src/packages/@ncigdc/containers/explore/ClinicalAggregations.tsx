@@ -378,7 +378,7 @@ const enhance = compose(
             key="1"
             style={{
               overflowY: 'scroll',
-              maxHeight: `${maxFacetsPanelHeight - 44}px`,
+              maxHeight: `${maxFacetsPanelHeight - 44}px`, // 44 is the height of all elements above this div.
               paddingBottom: '20px',
             }}
             >

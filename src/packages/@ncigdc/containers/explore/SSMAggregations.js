@@ -174,7 +174,7 @@ export const SSMAggregationsComponent = compose(
     <div
       style={{
         overflowY: 'scroll',
-        maxHeight: `${props.maxFacetsPanelHeight - 68}px`,
+        maxHeight: `${props.maxFacetsPanelHeight - 68}px`, // 68 is the height of all elements above this div.
       }}
       >
       {presetFacets

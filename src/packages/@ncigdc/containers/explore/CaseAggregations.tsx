@@ -119,8 +119,11 @@ export const CaseAggregationsComponent = ({
         doctype="cases"
         dropdownItem={(x: any) => (
           <Row>
-            <CaseIcon style={{ paddingRight: '1rem',
-paddingTop: '1rem' }} />
+            <CaseIcon style={{
+              paddingRight: '1rem',
+              paddingTop: '1rem',
+            }}
+                      />
             <div>
               <div style={{ fontWeight: 'bold' }}>{x.case_id}</div>
               <div style={{ fontSize: '80%' }}>{x.submitter_id}</div>
@@ -153,7 +156,7 @@ paddingTop: '1rem' }} />
       <div
         style={{
           overflowY: 'scroll',
-          maxHeight: `${maxFacetsPanelHeight - 68}px`,
+          maxHeight: `${maxFacetsPanelHeight - 68}px`, // 68 is the height of all elements above this div.
           paddingBottom: '20px',
         }}
         >

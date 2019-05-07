@@ -6,8 +6,8 @@ import {
 import { addInFilters } from '@ncigdc/utils/filters';
 import customQuery from '@ncigdc/modern_components/QQPlot/customQuery';
 import Loader from '@ncigdc/uikit/Loaders/Loader';
+import { fetchApi } from '@ncigdc/utils/ajax';
 import QQPlot from './QQPlot';
-import { fetchApi } from '@ncigdc/utils/ajax'
 
 const myFieldName = 'diagnoses.treatments.days_to_treatment_start';
 
@@ -26,14 +26,15 @@ export default compose(
     const fooFilters = {
       op: 'and',
       content: [
-        {op: '=',
-        content: {
-          field: 'cases.case_id',
-          value: 'set_id:AWp1PRe5MiBtcCotu6Tn'
-        }
-      }
-    ]
-  };
+        {
+          op: '=',
+          content: {
+            field: 'cases.case_id',
+            value: 'set_id:AWp1PRe5MiBtcCotu6Tn',
+          },
+        },
+      ],
+    };
     const missingFilter = {
       op: 'and',
       content: [
@@ -47,7 +48,10 @@ export default compose(
         },
       ],
     };
-    return { newFilters: addInFilters(filters, missingFilter), first}
+    return {
+      newFilters: addInFilters(filters, missingFilter),
+      first,
+    };
 
   //   const facetName = fieldName.replace(/\./g, '__');
   //
@@ -72,10 +76,9 @@ export default compose(
       setIsLoading,
       // query,
       // queryName = 'QQPlot',
-      fieldName
+      fieldName,
     }) => {
-
-      const res = await fetchApi(`case_ssms`, {
+      const res = await fetchApi('case_ssms', {
         headers: { 'Content-Type': 'application/json' },
         body: {
           filters: JSON.stringify(newFilters),
@@ -83,7 +86,7 @@ export default compose(
           fields: fieldName,
         },
       });
-      const data = res && res.data ? res.data.hit;s : []
+      const data = res && res.data ? res.data.hits : [];
       // const parsedFieldName = field => {
         // return field.split('.');
           // return {
@@ -95,21 +98,20 @@ export default compose(
 
       const splitName = fieldName.split('.');
 
-      let continuousValues = []
-        data.map(d => {
-          return d[splitName[0]].map(firstLevel => {
-            if (_.isArray(firstLevel[splitName[1]])) {
-              return firstLevel[splitName[1]].map(secondLevel => {
-                continuousValues.push(secondLevel[splitName[2]]);
-              })
-            } else {
-              continuousValues.push(firstLevel[splitName[1]]);
-            }
-          });
-        })
+      const continuousValues = [];
+      data.map(d => {
+        return d[splitName[0]].map(firstLevel => {
+          if (_.isArray(firstLevel[splitName[1]])) {
+            return firstLevel[splitName[1]].map(secondLevel => {
+              continuousValues.push(secondLevel[splitName[2]]);
+            });
+          }
+          continuousValues.push(firstLevel[splitName[1]]);
+        });
+      });
 
-      console.log('values: ', continuousValues.filter(b => _.isNumber(b)))
-      setData(continuousValues.filter(b => _.isNumber(b)), () => setIsLoading(false))
+      console.log('values: ', continuousValues.filter(b => _.isNumber(b)));
+      setData(continuousValues.filter(b => _.isNumber(b)), () => setIsLoading(false));
       // setData(res && res.data.viewer, () => setIsLoading(false));
     },
   }),

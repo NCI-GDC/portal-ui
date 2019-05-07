@@ -62,18 +62,16 @@ export interface ITProps {
   setShouldShowFacetSelection: any,
   advancedFilter: boolean,
   setAdvancedFilter: any,
-  maxHeight: number,
+  maxFacetsPanelHeight: number,
 }
 
 const enhance = compose(
   setDisplayName('ExploreCaseAggregations'),
   withState('caseIdCollapsed', 'setCaseIdCollapsed', false),
   withState('advancedFilter', 'setAdvancedFilter', false),
-  withPropsOnChange(['filters'], ({ filters, relay }) =>
-    relay.setVariables({
-      filters,
-    }),
-  ),
+  withPropsOnChange(['filters'], ({ filters, relay }) => relay.setVariables({
+    filters,
+  })),
   withPropsOnChange(['facets'], ({ facets }) => ({
     parsedFacets: facets.facets ? tryParseJSON(facets.facets, {}) : {},
   })),
@@ -106,29 +104,23 @@ export const CaseAggregationsComponent = ({
   setShouldShowFacetSelection,
   advancedFilter,
   setAdvancedFilter,
-  maxHeight,
+  maxFacetsPanelHeight,
 }: ITProps) => (
-    <div className="test-case-aggregations">
+  <div className="test-case-aggregations">
       <FacetHeader
-        title="Case"
-        field="cases.case_id"
         collapsed={caseIdCollapsed}
+        description="Enter UUID or ID of Case, Sample, Portion, Slide, Analyte or Aliquot"
+        field="cases.case_id"
         setCollapsed={setCaseIdCollapsed}
-        description={
-          'Enter UUID or ID of Case, Sample, Portion, Slide, Analyte or Aliquot'
-        }
-      />
-      <SuggestionFacet
         title="Case"
+        />
+      <SuggestionFacet
         collapsed={caseIdCollapsed}
         doctype="cases"
-        fieldNoDoctype="case_id"
-        placeholder="e.g. TCGA-A5-A0G2, 432fe4a9-2..."
-        hits={suggestions}
-        setAutocomplete={setAutocomplete}
         dropdownItem={(x: any) => (
           <Row>
-            <CaseIcon style={{ paddingRight: '1rem', paddingTop: '1rem' }} />
+            <CaseIcon style={{ paddingRight: '1rem',
+paddingTop: '1rem' }} />
             <div>
               <div style={{ fontWeight: 'bold' }}>{x.case_id}</div>
               <div style={{ fontSize: '80%' }}>{x.submitter_id}</div>
@@ -136,45 +128,50 @@ export const CaseAggregationsComponent = ({
             </div>
           </Row>
         )}
-      />
+        fieldNoDoctype="case_id"
+        hits={suggestions}
+        placeholder="e.g. TCGA-A5-A0G2, 432fe4a9-2..."
+        setAutocomplete={setAutocomplete}
+        title="Case"
+        />
       <UploadSetButton
-        type="case"
-        style={{
-          width: '100%',
-          borderBottom: `1px solid ${theme.greyScale5}`,
-          padding: '0 1.2rem 1rem',
-        }}
-        UploadModal={UploadCaseSet}
         defaultQuery={{
           pathname: '/exploration',
           query: { searchTableTab: 'cases' },
         }}
         idField="cases.case_id"
-      >
+        style={{
+          width: '100%',
+          borderBottom: `1px solid ${theme.greyScale5}`,
+          padding: '0 1.2rem 1rem',
+        }}
+        type="case"
+        UploadModal={UploadCaseSet}
+        >
         Upload Case Set
-    </UploadSetButton>
+      </UploadSetButton>
       <div
         style={{
           overflowY: 'scroll',
-          maxHeight: `${maxHeight - 68}px`,
+          maxHeight: `${maxFacetsPanelHeight - 68}px`,
           paddingBottom: '20px',
         }}
-      >
+        >
         {reject(presetFacets, { full: 'cases.case_id' })
           .filter(facet => aggregations[escapeForRelay(facet.field)])
           .map(facet => (
             <FacetWrapper
-              key={facet.full}
-              facet={facet}
-              title={facet.title}
               aggregation={aggregations[escapeForRelay(facet.field)]}
+              facet={facet}
+              key={facet.full}
               relay={relay}
               style={{ borderBottom: `1px solid ${theme.greyScale5}` }}
-            />
+              title={facet.title}
+              />
           ))}
       </div>
     </div>
-  );
+);
 
 const CaseAggregations = Relay.createContainer(
   enhance(withTheme(CaseAggregationsComponent)),

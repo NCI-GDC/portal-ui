@@ -99,7 +99,7 @@ interface IClinicalProps {
   facetsExpandedStatus: IExpandedStatusStateProps,
   dispatch: (action: IExpandedStatusActionProps) => void,
   notifications: INotificationProps[],
-  maxHeight: number,
+  maxFacetsPanelHeight: number,
 }
 
 interface ICaseFacetsProps {
@@ -332,7 +332,7 @@ const enhance = compose(
       isLoadingParsedFacets,
       allExpanded,
       dispatch,
-      maxHeight,
+      maxFacetsPanelHeight,
     }: IClinicalProps): any => {
       return (
         <React.Fragment>
@@ -378,7 +378,7 @@ const enhance = compose(
             key="1"
             style={{
               overflowY: 'scroll',
-              maxHeight: `${maxHeight - 44}px`,
+              maxHeight: `${maxFacetsPanelHeight - 44}px`,
               paddingBottom: '20px',
             }}
             >

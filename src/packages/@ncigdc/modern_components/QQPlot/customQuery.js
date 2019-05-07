@@ -5,6 +5,7 @@ import consoleDebug from '@ncigdc/utils/consoleDebug';
 import { redirectToLogin } from '@ncigdc/utils/auth';
 
 import { API, IS_AUTH_PORTAL } from '@ncigdc/utils/constants';
+import { fetchApi } from '@ncigdc/utils/ajax';
 
 const customQueryCache = {};
 const pendingCustomQueryCache = {};
@@ -13,6 +14,7 @@ export default ({
   query,
   variables,
   queryName,
+  fieldName,
 }) => {
   const body = JSON.stringify({
     query,
@@ -44,30 +46,44 @@ export default ({
     return Promise.resolve(customQueryCache[hash]);
   }
   pendingCustomQueryCache[hash] = true;
-  return fetch(
-    urlJoin(API, `graphql/${queryName}?hash=${hash}`),
-    {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body,
-    }
-  ).then(response => response
-    .json()
-    .then(json => {
-      if (!response.ok) {
-        consoleDebug('throwing error in Custom Query');
-        throw response;
-      }
+  // return fetchApi(
+  //   `analysis/top_mutated_genes_by_project?size=${size}&fields=${fields.join()}${filters
+  //     .content.length
+  //     ? `&filters=${JSON.stringify(filters)}`
+  //     : ''}`,
+  // );
 
-      if (response.status === 200) {
-        customQueryCache[hash] = json;
-        delete pendingCustomQueryCache[hash];
-      }
+//   return fetch(
+//     urlJoin(API, `graphql/${queryName}?hash=${hash}`),
+//     {
+//       method: 'POST',
+//       headers: {
+//         'Content-Type': 'application/json',
+//       },
+//       body,
+//     }
+//   )
 
-      return json;
-    })
+  return fetchApi('case_ssms', {
+    headers: { 'Content-Type': 'application/json' },
+    body: {
+      filters: JSON.stringify(variables.filters_1),
+      size: variables.first,
+      fields: fieldName,
+    },
+  }).then(json => {
+        // if (!response.ok) {
+        //   consoleDebug('throwing error in Custom Query');
+        //   throw response;
+        // }
+
+      // if (response.status === 200) {
+      //   customQueryCache[hash] = json;
+      //   delete pendingCustomQueryCache[hash];
+      // }
+
+    return json;
+  })
     .catch(err => {
       if (err.status) {
         switch (err.status) {
@@ -90,5 +106,5 @@ export default ({
           `Something went wrong in environment, but no error status: ${err}`
         );
       }
-    }));
+    });
 };

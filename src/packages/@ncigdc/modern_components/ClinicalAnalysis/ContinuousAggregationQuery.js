@@ -30,7 +30,7 @@ const getContinuousAggs = ({
     return null;
   }
   const interval = (stats.max - stats.min) / DEFAULT_CONTINUOUS_BUCKETS;
-  const aggregationFieldName = fieldName.replace('.', '__');
+  const aggregationFieldName = fieldName.replace(/\./g, '__');
 
   const variables = {
     filters,

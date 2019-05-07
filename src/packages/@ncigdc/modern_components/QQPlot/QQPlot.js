@@ -81,7 +81,7 @@ const QQPlot = ({
   // clinicalType,
   // queryField,
   // realData = true,
-  fieldName,
+  // fieldName,
 }) => {
   // if (data && data.explore.cases.hits) {
   //   gdcData = _.flattenDeep(
@@ -93,13 +93,14 @@ const QQPlot = ({
   //   );
   // }
 
-  const plotData = (data && data.explore.cases.aggregations)
-    ? _.flattenDeep(data.explore.cases.aggregations[fieldName].histogram.buckets
-      .filter(bucket => bucket.doc_count > 0)
-      .map(bucket => _.times(bucket.doc_count, () => Number(bucket.key))))
-  : [];
+  // const plotData = (data && data.explore.cases.aggregations)
+  //   ? _.flattenDeep(data.explore.cases.aggregations[fieldName].histogram.buckets
+  //     .filter(bucket => bucket.doc_count > 0)
+  //     .map(bucket => _.times(bucket.doc_count, () => Number(bucket.key))))
+  // : [];
 
-  const n = plotData.length;
+  const plotData = data;
+  const n = data.length;
   // const testValues = realData
   //   ? gdcData.filter(d => _.isNumber(d)).sort(sortAscending)
   //   : data.filter(d => _.isNumber(d)).sort(sortAscending);
@@ -121,7 +122,7 @@ const QQPlot = ({
   //   getZScore(age, mean, standardDeviation),
   //   age,
   // ]);
-
+  // quantile(y) and theoretical quantile (x)
   const zScores = plotData.sort(sortAscending).map((age, i) => ({
     x: qnorm((i + 1 - 0.5) / n),
     y: age,

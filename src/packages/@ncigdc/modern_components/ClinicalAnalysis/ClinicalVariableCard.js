@@ -224,7 +224,7 @@ const enhance = compose(
       variable.plotTypes === 'continuous'
         ? (
           (data.explore &&
-            data.explore.cases.aggregations[fieldName.replace('.', '__')]
+            data.explore.cases.aggregations[fieldName.replace(/\./g, '__')]
               .histogram) || {
             buckets: [],
           }

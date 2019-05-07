@@ -47,7 +47,7 @@ const EntityPageHorizontalTable = ({
       ...style,
       ...tableContainerStyle,
     }}
-  >
+    >
     {(title || rightComponent) && (
       <h1
         style={{
@@ -64,87 +64,92 @@ const EntityPageHorizontalTable = ({
           justifyContent: 'space-between',
           ...titleStyle,
         }}
-      >
-        {title || <span />} {rightComponent}
+        >
+        {`${title || <span />} ${rightComponent}`}
       </h1>
     )}
-    {!!data.length && (
+    {data.length > 0
+    ? (
       <Table
-        id={tableId}
-        style={styles.table}
+        body={(
+          <tbody>
+            {data.map((d, k) => (
+              <Tr
+                key={d[idKey] || k}
+                style={{
+                  ...styles.tr,
+                  backgroundColor: k % 2 === 0 ? theme.tableStripe : '#fff',
+                }}
+                >
+                {headings.map((h, i) => [].concat(get(d, h.key, '--')).map((v, j) => (
+                  <Td
+                      {...h.tdProps}
+                      className={h.className || ''}
+                      key={`${h.key}-${j}`}
+                      style={{
+                        ...(h.tdStyle || h.style || {}),
+                        ...(i > 0 && j === 0 ? dividerStyle : {}),
+                      }}
+                      >
+                    {h.color && (
+                      <div
+                        className="h-color"
+                        style={{ backgroundColor: colors(i) }}
+                        />
+                    )}
+
+                    {v}
+                  </Td>
+                )))}
+              </Tr>
+            ))}
+          </tbody>
+        )}
         headings={headings.map((h, i) => (
           <Th
-            rowSpan={h.subheadings ? 1 : 2}
             colSpan={h.subheadings ? h.subheadings.length : 1}
             key={h.key}
+            rowSpan={h.subheadings ? 1 : 2}
             style={{
               ...(h.thStyle || h.style || {}),
               ...(i > 0 ? dividerStyle : {}),
             }}
-          >
+            >
             {h.title}
           </Th>
         ))}
+        id={tableId}
+        style={styles.table}
         subheadings={headings.map(
-          (h, i) =>
-            h.subheadings &&
+          (h, i) => h.subheadings &&
             h.subheadings.map((s, j) => (
               <Th
                 key={`subheading-${j}`}
                 style={{
                   ...(i > 0 && j === 0 ? dividerStyle : {}),
                 }}
-              >
+                >
                 {s}
               </Th>
             ))
         )}
-        body={
-          <tbody>
-            {data.map((d, k) => (
-              <Tr
-                style={{
-                  ...styles.tr,
-                  backgroundColor: k % 2 === 0 ? theme.tableStripe : '#fff',
-                }}
-                key={d[idKey] || k}
-              >
-                {headings.map((h, i) =>
-                  [].concat(get(d, h.key, '--')).map((v, j) => (
-                    <Td
-                      {...h.tdProps}
-                      key={`${h.key}-${j}`}
-                      style={{
-                        ...(h.tdStyle || h.style || {}),
-                        ...(i > 0 && j === 0 ? dividerStyle : {}),
-                      }}
-                      className={h.className || ''}
-                    >
-                      {h.color && (
-                        <div
-                          className="h-color"
-                          style={{ backgroundColor: colors(i) }}
-                        />
-                      )}
-                      {v}
-                    </Td>
-                  ))
-                )}
-              </Tr>
-            ))}
-          </tbody>
-        }
-      />
-    )}
-    {!data.length && (
+        />
+      )
+    : (
       <Row
         style={{
           borderBottom: `1px solid ${theme.greyScale5}`,
           ...emptyMessageStyle,
         }}
-      >
+        >
         {emptyMessage && (
-          <h2 style={{ padding: '1rem', fontSize: '18px' }}>{emptyMessage}</h2>
+          <h2 style={{
+            padding: '1rem',
+            fontSize: '18px',
+          }}
+              >
+            {emptyMessage}
+          </h2>
         )}
       </Row>
     )}

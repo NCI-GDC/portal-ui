@@ -16,7 +16,9 @@ import {
   min,
   map,
   max,
+  omit,
   reject,
+  sortBy,
   truncate,
 } from 'lodash';
 import { scaleOrdinal, schemeCategory10 } from 'd3';
@@ -41,7 +43,12 @@ import SaveSetModal from '@ncigdc/components/Modals/SaveSetModal';
 import AppendSetModal from '@ncigdc/components/Modals/AppendSetModal';
 import RemoveSetModal from '@ncigdc/components/Modals/RemoveSetModal';
 import DownloadVisualizationButton from '@ncigdc/components/DownloadVisualizationButton';
-import { wrapSvg } from '@ncigdc/utils/wrapSvg';
+import wrapSvg from '@ncigdc/utils/wrapSvg';
+import {
+  DAYS_IN_YEAR,
+  getLowerAgeYears,
+  getUpperAgeYears,
+} from '@ncigdc/utils/ageDisplay';
 import './survivalPlot.css';
 import { downloadToTSV } from '@ncigdc/components/DownloadTableToTsvButton';
 
@@ -65,7 +72,6 @@ import {
   updateClinicalAnalysisVariable,
 } from '@ncigdc/dux/analysis';
 import { humanify } from '@ncigdc/utils/string';
-import { getLowerAgeYears, getUpperAgeYears } from '@ncigdc/utils/ageDisplay';
 import timestamp from '@ncigdc/utils/timestamp';
 
 import { IS_CDAVE_DEV } from '@ncigdc/utils/constants';
@@ -229,52 +235,54 @@ const getCountLink = ({ doc_count, filters, totalDocs }) => (
 );
 
 const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
-  variable,
-  fieldName,
-  plots,
-  style = {},
-  theme,
-  dispatch,
-  id,
-  setId,
-  overallSurvivalData,
-  survivalPlotLoading,
-  selectedSurvivalLoadingIds,
-  selectedSurvivalData,
-  selectedSurvivalValues,
-  updateSelectedSurvivalValues,
-  filters,
-  selectedBuckets,
-  setSelectedBuckets,
-  rawQueryData,
-  getBucketRangesAndFilters,
-  totalDocs,
   currentAnalysis,
+  dataBuckets,
+  dispatch,
+  fieldName,
+  filters,
+  getBucketRangesAndFilters,
+  id,
+  overallSurvivalData,
+  plots,
+  rawQueryData,
+  selectedBuckets,
+  selectedSurvivalData,
+  selectedSurvivalLoadingIds,
+  selectedSurvivalValues,
+  setId,
+  setSelectedBuckets,
+  style = {},
+  survivalPlotLoading,
+  theme,
+  totalDocs,
+  updateSelectedSurvivalValues,
+  variable,
 }) => {
+  const noDataTotal = totalDocs - dataBuckets.reduce((acc, bucket) => acc + bucket.doc_count, 0);
+
   const getCategoricalTableData = (rawData, type) => {
     if (isEmpty(rawData)) {
       return [];
     }
 
-    const displayData =
-      type === 'continuous'
-        ? rawData
-          .sort((a, b) => b.key - a.key)
-          .reduce(getBucketRangesAndFilters, {
-            nextInterval: 0,
-            data: [],
-          })
-          .data.slice(0)
-          .reverse()
-        : rawData
-          .filter(bucket => (IS_CDAVE_DEV ? bucket.key : bucket.key !== '_missing'))
-          .map(b => ({
-            ...b,
-            key: b.key,
-            chart_doc_count: b.doc_count,
-            doc_count: getCountLink({
-              doc_count: b.doc_count,
-              filters:
+    const displayData = type === 'continuous'
+      ? rawData
+        .sort((a, b) => b.key - a.key)
+        .reduce(getBucketRangesAndFilters, {
+          nextInterval: 0,
+          data: [],
+        })
+        .data.slice(0)
+        .reverse()
+      : rawData
+        .filter(bucket => (IS_CDAVE_DEV ? bucket.key : bucket.key !== '_missing'))
+        .map(b => ({
+          ...b,
+          key: b.key,
+          chart_doc_count: b.doc_count,
+          doc_count: getCountLink({
+            doc_count: b.doc_count,
+            filters:
                 b.key === '_missing'
                   ? {
                     op: 'AND',
@@ -305,9 +313,9 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                       value: [b.key],
                     },
                   ]),
-              totalDocs,
-            }),
-          }));
+            totalDocs,
+          }),
+        }));
 
     return displayData.map(b => ({
       ...b,
@@ -389,51 +397,33 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
     }));
   };
 
-  const getBoxTableData = rawData => {
-    if (isEmpty(rawData)) {
-      return {};
-    }
-    // TODO: what num format for stat counts?
-    return map((rawData || { stats: {} }).stats, (count, stat) => {
-      return {
-        stat,
-        count,
-      };
-    });
-  };
+  const getBoxTableData = rawData => (
+    isEmpty(rawData) ? {}
+    : sortBy(map(
+      {
+        ...rawData.stats,
+        ...rawData.percentiles,
+      },
+      (value, stat) => {
+        const age = Number.parseFloat(value / DAYS_IN_YEAR).toFixed(2);
+        return ({
+          stat,
+          count: age % 1 ? age : Number.parseFloat(age).toFixed(),
+        });
+      }
+    ), item => [ // TODO this fixed sorting warrants having a custom component
+      'min',
+      'max',
+      'mean',
+      'median',
+      'sd',
+      'iqr',
+    ].indexOf(item.stat.toLowerCase()))
+  );
 
-  const tableData =
-    variable.active_chart === 'box'
-      ? getBoxTableData([])
-      : getCategoricalTableData(rawQueryData, variable.plotTypes);
-
-  const noDataTotal =
-    totalDocs - rawQueryData.reduce((acc, bucket) => acc + bucket.doc_count, 0);
-
-  const devData = [
-    ...tableData,
-    ...(noDataTotal > 0
-      ? [
-        {
-          select: '',
-          key: 'Not in Index',
-          doc_count: (
-            <span>
-              {(noDataTotal || 0).toLocaleString()}
-              {` (${(((noDataTotal || 0) / totalDocs) * 100).toFixed(2)}%)`}
-            </span>
-          ),
-          survival: '',
-        },
-      ]
-      : []),
-    {
-      select: '',
-      key: 'Total',
-      doc_count: totalDocs,
-      survival: '',
-    },
-  ];
+  const tableData = variable.active_chart === 'box'
+    ? getBoxTableData(omit(rawQueryData, ['histogram']) || {})
+    : getCategoricalTableData(dataBuckets, variable.plotTypes);
 
   const getHeadings = chartType => {
     return chartType === 'box'
@@ -509,7 +499,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
       : [];
 
   // set action will default to cohort total when no buckets are selected
-  const totalFromSelectedBuckets = selectedBuckets.length
+  const totalFromSelectedBuckets = selectedBuckets && selectedBuckets.length
     ? selectedBuckets.reduce((acc, b) => acc + b.chart_doc_count, 0)
     : totalDocs;
 
@@ -589,19 +579,16 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
     }
     return bucketFilters;
   };
-  let cardFilters = filters;
-  if (selectedBuckets.length) {
-    cardFilters =
-      variable.plotTypes === 'continuous'
+
+  const cardFilters = selectedBuckets && selectedBuckets.length
+    ? variable.plotTypes === 'continuous'
         ? getContinuousSetFilters()
-        : getCategoricalSetFilters();
-  }
+        : getCategoricalSetFilters()
+    : filters;
 
   const wrapperId = makeWrapperId(fieldName);
 
   const tsvSubstring = fieldName.replace(/\./g, '-');
-
-  // SURVIVAL PLOT STUFF
 
   return (
     <Column
@@ -658,6 +645,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
             ))}
         </Row>
       </Row>
+
       {isEmpty(tableData)
         ? (
           <Row
@@ -672,8 +660,8 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
         )
         : (
           <div id={wrapperId}>
-            <Row style={{ paddingLeft: 10 }}>
-              {variable.active_chart !== 'survival' && (
+            {['survival', 'box'].includes(variable.active_chart) || (
+              <Row style={{ paddingLeft: 10 }}>
                 <form style={{ width: '100%' }}>
                   <label
                     htmlFor={`variable-percentage-radio-${fieldName}`}
@@ -747,9 +735,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                     tooltipHTML="Download image or data"
                     />
                 </form>
-              )}
-
-              {/* {variable.active_chart === 'survival' && (
+                {/* {variable.active_chart === 'survival' && (
                 <div>
                   <form>
                     {' '}
@@ -805,7 +791,9 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                   </span>
                 </div>
               )} */}
-            </Row>
+              </Row>
+            )}
+
             {variable.active_chart === 'histogram' && (
               <BarChart
                 data={chartData}
@@ -867,7 +855,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                 )}
               </div>
             )}
-            {variable.active_chart === 'box' && (
+            {/* variable.active_chart === 'box' && (
               <div
                 style={{
                   display: 'flex',
@@ -878,18 +866,19 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                   margin: '5px 2px 10px',
                 }}
                 >
-                {variable.active_chart}
               </div>
-            )}
+            ) */}
 
-            <Row style={{
-              justifyContent: 'space-between',
-              margin: '5px 0',
-            }}
-                 >
-              <Dropdown
-                button={(
-                  <Button
+            {variable.active_chart === 'box' || (
+              <Row
+                style={{
+                  justifyContent: 'space-between',
+                  margin: '5px 0',
+                }}
+                >
+                <Dropdown
+                  button={(
+                    <Button
                     rightIcon={<DownCaretIcon />}
                     style={{
                       ...visualizingButton,
@@ -897,102 +886,103 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                     }}
                     >
                     Select action
-                  </Button>
-  )}
-                dropdownStyle={{
-                  left: 0,
-                  minWidth: 205,
-                }}
-                >
-                <DropdownItem
-                  onClick={() => downloadToTSV({
-                    selector: `#analysis-${tsvSubstring}-table`,
-                    filename: `analysis-${
-                      currentAnalysis.name
-                    }-${tsvSubstring}.${timestamp()}.tsv`,
-                  })
-                  }
-                  style={styles.actionMenuItem}
-                  >
-                  Export to TSV
-                </DropdownItem>
-                <DropdownItem
-                  onClick={() => {
-                    dispatch(
-                      setModal(
-                        <SaveSetModal
-                          CreateSetButton={CreateExploreCaseSetButton}
-                          displayType="case"
-                          filters={cardFilters}
-                          score="gene.gene_id"
-                          setName="Custom Case Selection"
-                          sort={null}
-                          title={`Save ${totalFromSelectedBuckets} Cases as New Set`}
-                          total={totalFromSelectedBuckets}
-                          type="case"
-                          />
-                      )
-                    );
+                    </Button>
+                  )}
+                  dropdownStyle={{
+                    left: 0,
+                    minWidth: 205,
                   }}
-                  style={styles.actionMenuItem}
                   >
-                  Save as new case set
-                </DropdownItem>
-                <DropdownItem
-                  onClick={() => {
-                    dispatch(
-                      setModal(
-                        <AppendSetModal
-                          AppendSetButton={AppendExploreCaseSetButton}
-                          displayType="case"
-                          field="cases.case_id"
-                          filters={cardFilters}
-                          scope="explore"
-                          score="gene.gene_id"
-                          sort={null}
-                          title={`Add ${totalFromSelectedBuckets} Cases to Existing Set`}
-                          total={totalFromSelectedBuckets}
-                          type="case"
-                          />
-                      )
-                    );
+                  <DropdownItem
+                    onClick={() => downloadToTSV({
+                      selector: `#analysis-${tsvSubstring}-table`,
+                      filename: `analysis-${
+                        currentAnalysis.name
+                      }-${tsvSubstring}.${timestamp()}.tsv`,
+                    })
+                    }
+                    style={styles.actionMenuItem}
+                    >
+                    Export to TSV
+                  </DropdownItem>
+                  <DropdownItem
+                    onClick={() => {
+                      dispatch(
+                        setModal(
+                          <SaveSetModal
+                            CreateSetButton={CreateExploreCaseSetButton}
+                            displayType="case"
+                            filters={cardFilters}
+                            score="gene.gene_id"
+                            setName="Custom Case Selection"
+                            sort={null}
+                            title={`Save ${totalFromSelectedBuckets} Cases as New Set`}
+                            total={totalFromSelectedBuckets}
+                            type="case"
+                            />
+                        )
+                      );
+                    }}
+                    style={styles.actionMenuItem}
+                    >
+                    Save as new case set
+                  </DropdownItem>
+                  <DropdownItem
+                    onClick={() => {
+                      dispatch(
+                        setModal(
+                          <AppendSetModal
+                            AppendSetButton={AppendExploreCaseSetButton}
+                            displayType="case"
+                            field="cases.case_id"
+                            filters={cardFilters}
+                            scope="explore"
+                            score="gene.gene_id"
+                            sort={null}
+                            title={`Add ${totalFromSelectedBuckets} Cases to Existing Set`}
+                            total={totalFromSelectedBuckets}
+                            type="case"
+                            />
+                        )
+                      );
+                    }}
+                    style={styles.actionMenuItem}
+                    >
+                    Add to existing case set
+                  </DropdownItem>
+                  <DropdownItem
+                    onClick={() => {
+                      dispatch(
+                        setModal(
+                          <RemoveSetModal
+                            field="cases.case_id"
+                            filters={cardFilters}
+                            RemoveFromSetButton={RemoveFromExploreCaseSetButton}
+                            title={`Remove ${totalFromSelectedBuckets} Cases from Existing Set`}
+                            type="case"
+                            />
+                        )
+                      );
+                    }}
+                    style={styles.actionMenuItem}
+                    >
+                    Remove from existing case set
+                  </DropdownItem>
+                </Dropdown>
+                <Button
+                  rightIcon={<DownCaretIcon />}
+                  style={{
+                    ...visualizingButton,
+                    padding: '0 12px',
                   }}
-                  style={styles.actionMenuItem}
                   >
-                  Add to existing case set
-                </DropdownItem>
-                <DropdownItem
-                  onClick={() => {
-                    dispatch(
-                      setModal(
-                        <RemoveSetModal
-                          field="cases.case_id"
-                          filters={cardFilters}
-                          RemoveFromSetButton={RemoveFromExploreCaseSetButton}
-                          title={`Remove ${totalFromSelectedBuckets} Cases from Existing Set`}
-                          type="case"
-                          />
-                      )
-                    );
-                  }}
-                  style={styles.actionMenuItem}
-                  >
-                  Remove from existing case set
-                </DropdownItem>
-              </Dropdown>
-              <Button
-                rightIcon={<DownCaretIcon />}
-                style={{
-                  ...visualizingButton,
-                  padding: '0 12px',
-                }}
-                >
-                Customize Bins
-              </Button>
-            </Row>
+                  Customize Bins
+                </Button>
+              </Row>
+            )}
 
             <EntityPageHorizontalTable
-              data={IS_CDAVE_DEV ? devData : tableData}
+              data={tableData}
               headings={getHeadings(variable.active_chart)}
               tableContainerStyle={{
                 height: 175,
@@ -1013,19 +1003,21 @@ export default compose(
   withState('selectedSurvivalValues', 'setSelectedSurvivalValues', []),
   withState('selectedSurvivalLoadingIds', 'setSelectedSurvivalLoadingIds', []),
   withState('survivalPlotLoading', 'setSurvivalPlotLoading', true),
-  withProps(({ variable, data, fieldName }) => ({
-    rawQueryData:
-      variable.plotTypes === 'continuous'
-        ? (
-          (data.explore &&
-            data.explore.cases.aggregations[fieldName.replace('.', '__')]
-              .histogram) || {
-            buckets: [],
-          }
-        ).buckets
-        : (data || { buckets: [] }).buckets,
-    totalDocs: (data.hits || { total: 0 }).total,
-  })),
+  withProps(({ data, fieldName, variable }) => {
+    const rawQueryData = data.explore
+      ? data.explore.cases.aggregations[fieldName.replace('.', '__')]
+      : data;
+
+    return ({
+      rawQueryData,
+      dataBuckets: rawQueryData
+        ? variable.plotTypes === 'continuous'
+          ? rawQueryData.histogram.buckets
+          : rawQueryData.buckets
+        : [],
+      totalDocs: (data.hits || { total: 0 }).total,
+    });
+  }),
   withProps(
     ({
       variable, fieldName, setId, totalDocs,
@@ -1097,7 +1089,7 @@ export default compose(
       setSelectedSurvivalValues,
       selectedSurvivalValues,
       setSelectedSurvivalLoadingIds,
-      rawQueryData,
+      dataBuckets,
       getBucketRangesAndFilters,
     }) => ({
       populateSurvivalData: () => {
@@ -1105,7 +1097,7 @@ export default compose(
 
         const dataForSurvival =
           variable.plotTypes === 'continuous'
-            ? rawQueryData
+            ? dataBuckets
               .sort((a, b) => b.key - a.key)
               .reduce(getBucketRangesAndFilters, {
                 nextInterval: 0,
@@ -1113,7 +1105,7 @@ export default compose(
               })
               .data.slice(0)
               .reverse()
-            : rawQueryData
+            : dataBuckets
               .filter(bucket => (IS_CDAVE_DEV ? bucket.key : bucket.key !== '_missing'))
               .map(b => ({
                 ...b,

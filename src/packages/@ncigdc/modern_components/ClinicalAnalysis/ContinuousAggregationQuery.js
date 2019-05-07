@@ -12,13 +12,13 @@ import md5 from 'blueimp-md5';
 import urlJoin from 'url-join';
 import _ from 'lodash';
 
-import ClinicalVariableCard from './ClinicalVariableCard.js';
 import consoleDebug from '@ncigdc/utils/consoleDebug';
 import { redirectToLogin } from '@ncigdc/utils/auth';
-import { withLoader } from '@ncigdc/uikit/Loaders/Loader';
-import Loader from '@ncigdc/uikit/Loaders/Loader';
+import Loader, { withLoader } from '@ncigdc/uikit/Loaders/Loader';
+
 
 import { API, IS_AUTH_PORTAL } from '@ncigdc/utils/constants';
+import ClinicalVariableCard from './ClinicalVariableCard';
 
 const simpleAggCache = {};
 const pendingAggCache = {};
@@ -37,7 +37,36 @@ const getContinuousAggs = ({ fieldName, stats, filters }) => {
   };
   const componentName = 'ContinuousAggregationQuery';
   const body = JSON.stringify({
-    query: `query ${componentName}(\n  $filters: FiltersArgument\n) {\n  viewer {\n    explore {\n      cases {\n        aggregations(filters: $filters) {\n          ${queryFieldName} {\n            histogram(interval: ${interval}) {\n              buckets {\n                key\n                doc_count\n              }\n            }\n          }\n        }\n      }\n    }\n  }\n}\n`,
+    query: `query ${componentName}($filters: FiltersArgument) {
+      viewer {
+        explore {
+          cases {
+            aggregations(filters: $filters) {
+              ${queryFieldName} {
+                stats {
+                  Min : min
+                  Max: max
+                  Mean: avg
+                  SD: std_deviation
+                }
+                percentiles {
+                  Median: median
+                  IQR: iqr
+                  q1: quartile_1
+                  q3: quartile_3
+                }
+                histogram(interval: ${interval}) {
+                  buckets {
+                    key
+                    doc_count
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }`,
     variables,
   });
 
@@ -75,46 +104,44 @@ const getContinuousAggs = ({ fieldName, stats, filters }) => {
       },
       body,
     }
-  ).then(response =>
-    response
-      .json()
-      .then(json => {
-        if (!response.ok) {
-          consoleDebug('throwing error in Environment');
-          throw response;
-        }
+  ).then(response => response
+    .json()
+    .then(json => {
+      if (!response.ok) {
+        consoleDebug('throwing error in Environment');
+        throw response;
+      }
 
-        if (response.status === 200) {
-          simpleAggCache[hash] = json;
-          delete pendingAggCache[hash];
-        }
+      if (response.status === 200) {
+        simpleAggCache[hash] = json;
+        delete pendingAggCache[hash];
+      }
 
-        return json;
-      })
-      .catch(err => {
-        if (err.status) {
-          switch (err.status) {
-            case 401:
-            case 403:
-              consoleDebug(err.statusText);
-              if (IS_AUTH_PORTAL) {
-                return redirectToLogin('timeout');
-              }
-              break;
-            case 400:
-            case 404:
-              consoleDebug(err.statusText);
-              break;
-            default:
-              return consoleDebug(`Default error case: ${err.statusText}`);
-          }
-        } else {
-          consoleDebug(
+      return json;
+    })
+    .catch(err => {
+      if (err.status) {
+        switch (err.status) {
+          case 401:
+          case 403:
+            consoleDebug(err.statusText);
+            if (IS_AUTH_PORTAL) {
+              return redirectToLogin('timeout');
+            }
+            break;
+          case 400:
+          case 404:
+            consoleDebug(err.statusText);
+            break;
+          default:
+            return consoleDebug(`Default error case: ${err.statusText}`);
+        }
+      } else {
+        consoleDebug(
             `Something went wrong in environment, but no error status: ${err}`
-          );
-        }
-      })
-  );
+        );
+      }
+    }));
 };
 
 export default compose(
@@ -136,19 +163,22 @@ export default compose(
       setAggData(res && res.data.viewer, () => setIsLoading(false));
     },
   }),
-  withPropsOnChange(['filters'], ({ updateData, ...props }) =>
-    updateData(props)
-  )
-)(({ aggData, isLoading, setId, stats, hits, ...props }) => {
+  withPropsOnChange(['filters'], ({ updateData, ...props }) => updateData(props))
+)(({
+  aggData, isLoading, setId, stats, hits, ...props
+}) => {
   if (isLoading) {
     return <Loader />;
   }
   return (
     <ClinicalVariableCard
+      data={{
+        ...aggData,
+        hits,
+      }}
       setId={setId}
       stats={stats}
-      data={{ ...aggData, hits }}
       {...props}
-    />
+      />
   );
 });

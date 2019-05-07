@@ -1,7 +1,20 @@
 import React from 'react';
 import Relay from 'react-relay/classic';
 import { connect } from 'react-redux';
-import _ from 'lodash';
+import {
+  every,
+  filter,
+  get,
+  includes,
+  mapValues,
+  omitBy,
+  orderBy,
+  replace,
+  some,
+  startCase,
+  toLower,
+  values,
+} from 'lodash';
 import {
   compose,
   withState,
@@ -9,7 +22,7 @@ import {
   withHandlers,
   withPropsOnChange,
 } from 'recompose';
-import { Column } from '@ncigdc/uikit/Flex';
+import { Column, Row } from '@ncigdc/uikit/Flex';
 import {
   addAllFacets,
   changeExpandedStatus,
@@ -24,13 +37,14 @@ import { CaseAggregationsQuery } from '@ncigdc/containers/explore/explore.relay'
 import { internalHighlight } from '@ncigdc/uikit/Highlight';
 
 import SearchIcon from 'react-icons/lib/fa/search';
-import { Row } from '@ncigdc/uikit/Flex';
+
 import styled from '@ncigdc/theme/styled';
 import tryParseJSON from '@ncigdc/utils/tryParseJSON';
 import withFacetSelection from '@ncigdc/utils/withFacetSelection';
 import {
-  presetFacets,
   clinicalFacets,
+  customSorting,
+  presetFacets,
 } from '@ncigdc/containers/explore/presetFacets';
 import Input from '@ncigdc/uikit/Form/Input';
 import { ITheme } from '@ncigdc/theme/types';
@@ -39,6 +53,7 @@ import {
   ToggleMoreLink,
   BottomRow,
 } from '@ncigdc/components/Aggregations/TermAggregation';
+
 export interface IFacetProps {
   description: string,
   doc_type: string,
@@ -115,19 +130,18 @@ const facetMatchesQuery = (
   elements: IBucketProps[],
   searchValue: string,
 ): boolean => {
-  return _.some(
+  return some(
     [
-      _.replace(facet.field.split('.').pop() || '', /_/g, ' '),
+      replace(facet.field.split('.').pop() || '', /_/g, ' '),
       ...(elements || []).map((e: IBucketProps) => e.key),
       facet.description,
     ]
       .filter((n: string) => n)
-      .map(_.toLower),
-    searchTarget =>
-      _.includes(
-        searchTarget.toLocaleLowerCase(),
-        searchValue.toLocaleLowerCase(),
-      ),
+      .map(toLower),
+    searchTarget => includes(
+      searchTarget.toLocaleLowerCase(),
+      searchValue.toLocaleLowerCase(),
+    ),
   );
 };
 const MagnifyingGlass = styled(SearchIcon, {
@@ -152,9 +166,7 @@ const enhance = compose(
     }) => ({
       facetsExpandedStatus,
       notifications: bannerNotification,
-      allExpanded: _.mapValues(facetsExpandedStatus, status =>
-        _.some(_.values(status.facets)),
-      ),
+      allExpanded: mapValues(facetsExpandedStatus, status => some(values(status.facets))),
     }),
   ),
   withState('isLoadingParsedFacets', 'setIsLoadingParsedFacets', false),
@@ -182,9 +194,9 @@ const enhance = compose(
         .reduce(
           (acc: { [x: string]: IFacetProps } | {}, f: IFieldProps) => ({
             ...acc,
-            ['cases.' + f.name.replace(/__/g, '.')]: {
+            [`cases.${f.name.replace(/__/g, '.')}`]: {
               field: f.name.replace(/__/g, '.'),
-              full: 'cases.' + f.name.replace(/__/g, '.'),
+              full: `cases.${f.name.replace(/__/g, '.')}`,
               doc_type: 'cases',
               description: f.description,
               type: f.type.name === 'Aggregations' ? 'keyword' : 'long',
@@ -207,13 +219,17 @@ const enhance = compose(
       relay.setVariables(
         {
           filters: globalFilters,
-          [relayVarName]: _.values(facetMapping)
+          [relayVarName]: values(facetMapping)
             .map(({ field }: { field: string }) => field)
             .join(','),
         },
         (readyState: { ready: boolean, aborted: boolean, error: boolean }) => {
           if (
-            _.some([readyState.ready, readyState.aborted, readyState.error])
+            some([
+              readyState.ready,
+              readyState.aborted,
+              readyState.error,
+            ])
           ) {
             setIsLoadingParsedFacets(false);
           }
@@ -223,13 +239,7 @@ const enhance = compose(
   ),
   withProps(
     ({
-      setIsLoadingParsedFacets,
       setShouldHideUselessFacets,
-      relayVarName,
-      facetMapping,
-      docType,
-      shouldHideUselessFacets,
-      caseFacets,
     }) => ({
       setUselessFacetVisibility: (shouldHide: boolean) => {
         setShouldHideUselessFacets(shouldHide);
@@ -241,13 +251,16 @@ const enhance = compose(
     }),
   ),
   withPropsOnChange(
-    ['facets', 'facetMapping', 'searchValue', 'shouldHideUselessFacets'],
+    [
+      'facets',
+      'facetMapping',
+      'searchValue',
+      'shouldHideUselessFacets',
+    ],
     ({
       facets,
-      docType,
       facetMapping,
       searchValue,
-      relayVarName,
       shouldHideUselessFacets,
       facetExclusionTest,
       dispatch,
@@ -256,43 +269,44 @@ const enhance = compose(
         ? tryParseJSON(facets.facets, {})
         : {};
 
-      const usefulFacets = _.omitBy(
+      const usefulFacets = omitBy(
         parsedFacets,
-        (aggregation: IAggregationProps) =>
-          _.some([
-            !aggregation,
-            aggregation.buckets &&
-            aggregation.buckets.filter(
-              (bucket: IBucketProps) => bucket.key !== '_missing',
-            ).length === 0,
-            aggregation.count === 0,
-            aggregation.count === null,
-            aggregation.stats && aggregation.stats.count === 0,
-          ]),
+        (aggregation: IAggregationProps) => some([
+          !aggregation,
+          aggregation.buckets &&
+          aggregation.buckets.filter(
+            (bucket: IBucketProps) => bucket.key !== '_missing',
+          ).length === 0,
+          aggregation.count === 0,
+          aggregation.count === null,
+          aggregation.stats && aggregation.stats.count === 0,
+        ]),
       );
 
       const filteredFacets = clinicalFacets.reduce((acc, header) => {
         return {
           ...acc,
-          [header.field]: _.filter(facetMapping, facet => {
-            return _.every([
+          [header.field]: filter(facetMapping, facet => {
+            return every([
               facetMatchesQuery(
                 facet,
-                _.get(parsedFacets[facet.field], 'buckets', undefined),
+                filter(
+                  get(parsedFacets[facet.field], 'buckets', undefined),
+                  obj => obj.key !== '_missing',
+                ),
                 searchValue,
               ),
               !facetExclusionTest(facet),
               !shouldHideUselessFacets ||
-              usefulFacets.hasOwnProperty(facet.field),
+              Object.prototype.hasOwnProperty.call(usefulFacets, facet.field),
               !header.excluded || facet.full.startsWith(header.full),
-              !_.some(
+              !some(
                 header.excluded.map((regex: RegExp) => regex.test(facet.full)),
               ),
             ]);
           }),
         };
       }, {});
-
       dispatch(addAllFacets(filteredFacets));
       return {
         parsedFacets,
@@ -301,8 +315,8 @@ const enhance = compose(
     },
   ),
   withHandlers({
-    handleQueryInputChange: ({ setSearchValue }) => (event: any) =>
-      setSearchValue(event.target.value),
+    handleQueryInputChange:
+      ({ setSearchValue }) => (event: any) => setSearchValue(event.target.value),
   }),
 )(
   withTheme(
@@ -313,69 +327,68 @@ const enhance = compose(
       shouldHideUselessFacets,
       facetsExpandedStatus,
       searchValue,
-      setSearchValue,
       handleQueryInputChange,
       parsedFacets,
       isLoadingParsedFacets,
       allExpanded,
       dispatch,
-      notifications,
-      maxHeight,
     }: IClinicalProps): any => {
       return (
         <React.Fragment>
           <Row
+            key="row"
             style={{
               margin: '2.5rem 1rem 0 0.5rem',
             }}
-            key="row"
-          >
-            <label>
-              <MagnifyingGlass />
-            </label>
+            >
+            <MagnifyingGlass />
             <Input
+              aria-label="Search..."
+              autoFocus
+              defaultValue={searchValue}
+              onChange={handleQueryInputChange}
+              placeholder="Search..."
               style={{
                 borderRadius: '0 4px 4px 0',
                 marginBottom: '6px',
               }}
-              defaultValue={searchValue}
-              onChange={handleQueryInputChange}
-              placeholder={'Search...'}
-              aria-label="Search..."
-              autoFocus
-            />
+              />
           </Row>
           <label key="label">
             <input
-              className="test-filter-useful-facet"
-              type="checkbox"
-              onChange={event =>
-                setUselessFacetVisibility(event.target.checked)}
               checked={shouldHideUselessFacets}
+              className="test-filter-useful-facet"
+              onChange={event => setUselessFacetVisibility(event.target.checked)}
               style={{ margin: '12px' }}
-            />
-            Only show fields with values ({isLoadingParsedFacets
+              type="checkbox"
+              />
+            Only show fields with values (
+            {isLoadingParsedFacets
               ? '...'
-              : _.values(filteredFacets).reduce(
+              : values(filteredFacets).reduce(
                 (acc: number, facet: IFacetProps[]) => acc + facet.length,
                 0,
-              )}{' '}
+              )}
+            {' '}
             fields shown)
           </label>
           <div
+            className="cohortBuilder"
+            key="1"
             style={{
               overflowY: 'scroll',
               maxHeight: `${maxHeight - 44}px`,
               paddingBottom: '20px',
             }}
-          >
+            >
             {clinicalFacets
               .filter(
-                facet => !searchValue || filteredFacets[facet.field].length > 0, // If the user is searching for something, hide the presetFacet with no value.
+                facet => !searchValue || filteredFacets[facet.field].length > 0,
+                // If the user is searching for something, hide the presetFacet with no value.
               )
               .map(facet => {
                 return (
-                  <div key={facet.title + 'div'}>
+                  <div key={`${facet.title}div`}>
                     <Row
                       style={{
                         position: 'sticky',
@@ -388,15 +401,14 @@ const enhance = compose(
                         padding: '1rem 1.2rem 0.5rem 1.2rem',
                         margin: '0.5rem 1rem 0rem 1rem',
                       }}
-                    >
+                      >
                       <div
-                        onClick={() =>
-                          dispatch(changeExpandedStatus(facet.field, ''))}
+                        onClick={() => dispatch(changeExpandedStatus(facet.field, ''))}
                         style={{
                           color: theme.primary,
                           fontSize: '1.7rem',
                         }}
-                      >
+                        >
                         <AngleIcon
                           style={{
                             display: 'flex',
@@ -408,110 +420,129 @@ const enhance = compose(
                               ? 0
                               : 270}deg)`,
                           }}
-                        />
+                          />
                         {facet.title}
                       </div>
-                      <span
-                        onClick={() => {
-                          dispatch(
-                            expandOneCategory(
-                              facet.field,
-                              !allExpanded[facet.field],
-                            ),
-                          );
-                        }}
-                        style={{
-                          display: 'flex',
-                          float: 'right',
-                        }}
-                      >
-                        {searchValue || filteredFacets[facet.field].length === 0
-                          ? null
-                          : allExpanded[facet.field]
-                            ? 'Collapse All'
-                            : 'Expand All'}
-                      </span>
+                      {facetsExpandedStatus[facet.field].expanded && (
+                        <span
+                          onClick={() => {
+                            dispatch(
+                              expandOneCategory(
+                                facet.field,
+                                !allExpanded[facet.field],
+                              ),
+                            );
+                          }}
+                          style={{
+                            display: 'flex',
+                            float: 'right',
+                            fontSize: '12px',
+                          }}
+                          >
+                          {searchValue ||
+                            filteredFacets[facet.field].length === 0
+                            ? null
+                            : allExpanded[facet.field]
+                              ? 'Collapse All'
+                              : 'Expand All'}
+                        </span>
+                      )}
                     </Row>
                     {facetsExpandedStatus[facet.field].expanded && (
                       <Column>
-                        {_.orderBy(
-                          filteredFacets[facet.field],
-                          ['field'],
-                          ['asc'],
-                        )
-                          .slice(
-                            0,
-                            facetsExpandedStatus[facet.field].showingMore
-                              ? Infinity
-                              : 5,
-                          )
-                          .map((componentFacet: any) => {
-                            return [
-                              <WrapperComponent
-                                relayVarName="exploreCaseCustomFacetFields"
-                                key={componentFacet.full}
-                                isMatchingSearchValue={(componentFacet.full +
-                                  componentFacet.description
-                                )
-                                  .toLocaleLowerCase()
-                                  .includes(searchValue.toLocaleLowerCase())}
-                                facet={componentFacet}
-                                allExpanded={allExpanded[facet.field]}
-                                title={_.startCase(
-                                  componentFacet.full.split('.').pop(),
-                                )}
-                                aggregation={parsedFacets[componentFacet.field]}
-                                searchValue={searchValue}
-                                additionalProps={{
-                                  style: { paddingBottom: 0 },
-                                }}
-                                style={{
-                                  paddingLeft: '10px',
-                                }}
-                                headerStyle={{ fontSize: '14px' }}
-                                collapsed={
-                                  searchValue.length === 0
-                                    ? !facetsExpandedStatus[facet.field].facets[
-                                    componentFacet.field.split('.').pop()
-                                    ]
-                                    : false
-                                }
-                                setCollapsed={(collapsed: any) =>
-                                  dispatch(
-                                    changeExpandedStatus(
-                                      facet.field,
-                                      componentFacet.field.split('.').pop(),
-                                    ),
-                                  )}
-                                category={facet.field}
-                                DescriptionComponent={
-                                  <div
-                                    key={componentFacet.description}
-                                    style={{
-                                      fontStyle: 'italic',
-                                      paddingLeft: '30px',
-                                      paddingRight: '10px',
-                                      width: '320px',
+                        {filteredFacets[facet.field].length > 0
+                          ? (
+                            orderBy(
+                              filteredFacets[facet.field],
+                              ['field'],
+                              ['asc'],
+                            )
+                              .slice(
+                                0,
+                                facetsExpandedStatus[facet.field].showingMore
+                                  ? Infinity
+                                  : 5,
+                              )
+                              .map((componentFacet: IFacetProps) => {
+                                const fieldName =
+                                  componentFacet.full.split('.').pop() || '';
+                                return [
+                                  <WrapperComponent
+                                    additionalProps={{
+                                      style: { paddingBottom: 0 },
                                     }}
-                                  >
-                                    {internalHighlight(
-                                      searchValue,
-                                      componentFacet.description,
-                                      {
-                                        backgroundColor: '#FFFF00',
-                                      },
+                                    aggregation={parsedFacets[componentFacet.field]}
+                                    allExpanded={allExpanded[facet.field]}
+                                    category={facet.field}
+                                    collapsed={
+                                      searchValue.length === 0
+                                        ? !facetsExpandedStatus[facet.field].facets[
+                                          fieldName
+                                        ]
+                                        : false
+                                    }
+                                    DescriptionComponent={(
+                                      <div
+                                        key={componentFacet.description}
+                                        style={{
+                                          fontStyle: 'italic',
+                                          paddingLeft: '30px',
+                                          paddingRight: '10px',
+                                          width: '320px',
+                                        }}
+                                        >
+                                        {internalHighlight(
+                                          searchValue,
+                                          componentFacet.description,
+                                          {
+                                            backgroundColor: '#FFFF00',
+                                          },
+                                        )}
+                                      </div>
                                     )}
-                                  </div>
-                                }
-                              />,
-                            ];
-                          })}
+                                    facet={componentFacet}
+                                    headerStyle={{
+                                      padding: '0.5rem 1.2rem 0.5rem 1.2rem',
+                                      fontSize: '16px',
+                                    }}
+                                    isMatchingSearchValue={(componentFacet.full +
+                                      componentFacet.description
+                                    )
+                                      .toLocaleLowerCase()
+                                      .includes(searchValue.toLocaleLowerCase())}
+                                    key={componentFacet.full}
+                                    relayVarName="exploreCaseCustomFacetFields"
+                                    searchValue={searchValue}
+                                    setCollapsed={() => dispatch(
+                                      changeExpandedStatus(
+                                        facet.field,
+                                        fieldName,
+                                      ),
+                                    )}
+                                    style={{
+                                      order: customSorting[componentFacet.field] || 0,
+                                      paddingLeft: '10px',
+                                    }}
+                                    title={startCase(fieldName)}
+                                    />,
+                                ];
+                              }))
+                          : (
+                            <article
+                              style={{
+                                fontSize: '1.7rem',
+                                padding: '2rem 3rem',
+                              }}
+                              >
+                              No data is available for this clinical category.
+                            </article>
+                          )}
+
                         {filteredFacets[facet.field].length > 5 && (
                           <BottomRow style={{ marginRight: '1rem' }}>
                             <ToggleMoreLink
-                              onClick={() =>
-                                dispatch(showingMoreByCategory(facet.field))}
-                            >
+                              onClick={() => dispatch(showingMoreByCategory(facet.field))}
+                              >
                               {facetsExpandedStatus[facet.field].showingMore
                                 ? 'Less...'
                                 : filteredFacets[facet.field].length - 5 &&

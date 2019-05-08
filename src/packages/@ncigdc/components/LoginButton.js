@@ -31,7 +31,6 @@ const LoginButton = ({ children, dispatch, user }) => (
       <Link
         className="test-login-button"
         onClick={async () => {
-          console.log('works');
           await dispatch(setModal(null));
           await openAuthWindow({
             name: 'NIH',

@@ -17,7 +17,7 @@ export default (Component: ReactClass<*>) => compose(
     currentAnalysis: state.analysis.saved.find(a => a.id === props.id),
     allSets: state.sets,
   })),
-  withProps(({ currentAnalysis, allSets }) => ({
+  withProps(({ currentAnalysis }) => ({
     currentSetId: Object.keys(currentAnalysis.sets.case)[0],
   })),
   branch(

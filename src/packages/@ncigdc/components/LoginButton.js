@@ -34,18 +34,18 @@ const LoginButton = ({ children, dispatch, user }) => (
           await openAuthWindow({
             name: 'NIH',
           });
+          await dispatch(setModal(null));
           await dispatch(fetchUser());
           await dispatch(fetchNotifications());
-          await dispatch(setModal(null));
         }}
-      >
+        >
         {children || (
           <span>
             <LoginIcon />
             <span
               className="header-hidden-sm header-hidden-md"
               style={styles.marginLeft}
-            >
+              >
               Login
             </span>
           </span>

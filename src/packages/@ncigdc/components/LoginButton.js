@@ -31,10 +31,10 @@ const LoginButton = ({ children, dispatch, user }) => (
       <Link
         className="test-login-button"
         onClick={async () => {
+          await dispatch(setModal(null));
           await openAuthWindow({
             name: 'NIH',
           });
-          await dispatch(setModal(null));
           await dispatch(fetchUser());
           await dispatch(fetchNotifications());
         }}

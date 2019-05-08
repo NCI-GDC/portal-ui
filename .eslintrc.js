@@ -27,12 +27,19 @@ module.exports = {
   },
   plugins: [
     '@typescript-eslint',
-    'react'
+    'react',
+    'react-hooks',
     // 'jest'
   ],
   rules: {
-    'array-bracket-newline': ['error', { 'multiline': true, 'minItems': 3 }],
-    'array-element-newline': ['warn', { 'multiline': true, 'minItems': 3 }],
+    'array-bracket-newline': ['error', {
+      'multiline': true,
+      'minItems': 3,
+    }],
+    'array-element-newline': ['warn', {
+      'multiline': true,
+      'minItems': 3,
+    }],
     'arrow-body-style': 'off',
     'arrow-parens': 'off',
     'camelcase': 'warn',
@@ -61,11 +68,13 @@ module.exports = {
         'JSXSpreadAttribute',
         'JSXSpreadChild',
         'JSXText',
+        'TemplateLiteral > *',
       ],
       ImportDeclaration: 'first',
       MemberExpression: 1,
       ObjectExpression: 'first',
       SwitchCase: 1,
+      VariableDeclarator: 'first',
     }],
     'no-console': ['warn', {
       allow: [
@@ -109,12 +118,19 @@ module.exports = {
     }],
     'padded-blocks': 'error',
     'semi': ['warn', 'always'],
+    'sort-keys': ['warn', 'asc', {
+      caseSensitive: false,
+      natural: true,
+    }],
     'quotes': ['warn', 'single'],
     'import/no-extraneous-dependencies': ['warn', {
       'packageDir': './'
     }],
-    'react/jsx-indent-props': ['warn', 2],
     'react/jsx-closing-bracket-location': ['warn', 'props-aligned'],
+    'react/jsx-indent': ['warn', 2, {
+      checkAttributes: true,
+      // indentLogicalExpressions: true,
+    }],
     'react/jsx-indent-props': ['warn', 'first'],
     'react/jsx-max-props-per-line': ['warn', {
       maximum: 1,

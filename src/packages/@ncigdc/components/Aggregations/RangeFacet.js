@@ -433,7 +433,7 @@ const RangeFacet = (props: TProps) => {
               Go!
             </GoLink>
           </Row>
-          {props.title === 'Age at Diagnosis' &&
+          {props.title === 'Age At Diagnosis' &&
             (props.state.from >= warningDays ||
               props.state.to >= warningDays) && (
               <WarningRow>

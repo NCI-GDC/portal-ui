@@ -60,6 +60,7 @@ export interface IFacetProps {
   field: string,
   full: string,
   type: string,
+  additionalProps?: any,
 }
 interface IBucketProps {
   key: string,
@@ -200,6 +201,7 @@ const enhance = compose(
               doc_type: 'cases',
               description: f.description,
               type: f.type.name === 'Aggregations' ? 'keyword' : 'long',
+              additionalProps: { convertDays: f.name.includes('age_at_diagnosis') },
             },
           }),
           {},
@@ -469,9 +471,7 @@ const enhance = compose(
                                   componentFacet.full.split('.').pop() || '';
                                 return [
                                   <WrapperComponent
-                                    additionalProps={{
-                                      style: { paddingBottom: 0 },
-                                    }}
+                                    additionalProps={componentFacet.additionalProps}
                                     aggregation={parsedFacets[componentFacet.field]}
                                     allExpanded={allExpanded[facet.field]}
                                     category={facet.field}

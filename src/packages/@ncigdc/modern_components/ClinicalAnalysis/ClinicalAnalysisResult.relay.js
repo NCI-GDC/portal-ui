@@ -71,7 +71,7 @@ export default (Component: ReactClass<*>) => compose(
             explore {
               cases {
                 facets(facets: $facets filters: $filters)
-                hits(first: 20 filters: $filters) {
+                hits(first: 0 filters: $filters) {
                   total
                 }
               }

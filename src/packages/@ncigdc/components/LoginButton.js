@@ -31,6 +31,7 @@ const LoginButton = ({ children, dispatch, user }) => (
       <Link
         className="test-login-button"
         onClick={async () => {
+          console.log('works');
           await dispatch(setModal(null));
           await openAuthWindow({
             name: 'NIH',
@@ -39,6 +40,7 @@ const LoginButton = ({ children, dispatch, user }) => (
           await dispatch(fetchNotifications());
         }}
         >
+
         {children || (
           <span>
             <LoginIcon />

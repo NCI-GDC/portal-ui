@@ -1,7 +1,9 @@
 /* @flow */
 
 import React from 'react';
-import { compose, withState, mapProps, pure, lifecycle } from 'recompose';
+import {
+  compose, withState, mapProps, pure, lifecycle,
+} from 'recompose';
 import { isEqual } from 'lodash';
 
 import styled from '@ncigdc/theme/styled';
@@ -16,23 +18,30 @@ import {
   getUpperAgeYears,
 } from '@ncigdc/utils/ageDisplay';
 
-import { Container, InputLabel, GoLink } from './';
+import { Container, InputLabel, GoLink } from '.';
 
 const getCurrentFromAndTo = ({ field, query }) => {
   const dotField = field.replace(/__/g, '.');
   const currentFilters =
     (query && parseFilterParam((query || {}).filters, {}).content) || [];
   return currentFilters.reduce(
-    (acc, c) =>
-      c.content.field === dotField
-        ? { ...acc, [c.op]: c.content.value[0] }
-        : acc,
-    { '>=': undefined, '<=': undefined },
+    (acc, c) => (c.content.field === dotField
+      ? {
+        ...acc,
+        [c.op]: c.content.value[0],
+      }
+      : acc),
+    {
+      '>=': undefined,
+      '<=': undefined,
+    },
   );
 };
 
 const warningDays = Math.floor(90 * DAYS_IN_YEAR);
-const convertMaxMin = ({ max, min, convertDays, selectedUnit, setState }) => {
+const convertMaxMin = ({
+  max, min, convertDays, selectedUnit, setState,
+}) => {
   if (convertDays && selectedUnit === 'years') {
     setState(s => ({
       ...s,
@@ -40,31 +49,39 @@ const convertMaxMin = ({ max, min, convertDays, selectedUnit, setState }) => {
       maxDisplayed: Math.ceil((max + 1 - DAYS_IN_YEAR) / DAYS_IN_YEAR),
     }));
   } else {
-    setState(s => ({ ...s, maxDisplayed: max || 0, minDisplayed: min || 0 }));
+    setState(s => ({
+      ...s,
+      maxDisplayed: max || 0,
+      minDisplayed: min || 0,
+    }));
   }
 };
 
-const inputChanged = ({ from, to, convertDays, selectedUnit, setState }) => {
+const inputChanged = ({
+  from, to, convertDays, selectedUnit, setState,
+}) => {
   if (!convertDays || selectedUnit === 'days') {
     setState(s => ({
       ...s,
-      from: from ? from : undefined,
-      to: to ? to : undefined,
-      fromDisplayed: from ? from : '',
-      toDisplayed: to ? to : '',
+      from: from || undefined,
+      to: to || undefined,
+      fromDisplayed: from || '',
+      toDisplayed: to || '',
     }));
   } else if (selectedUnit === 'years') {
     setState(s => ({
       ...s,
       from: from ? Math.floor(from * DAYS_IN_YEAR) : undefined,
       to: to ? Math.floor(to * DAYS_IN_YEAR + DAYS_IN_YEAR - 1) : undefined,
-      fromDisplayed: from ? from : '',
-      toDisplayed: to ? to : '',
+      fromDisplayed: from || '',
+      toDisplayed: to || '',
     }));
   }
 };
 
-const convertInputs = ({ from, to, selectedUnit, setState }) => {
+const convertInputs = ({
+  from, to, selectedUnit, setState,
+}) => {
   if (selectedUnit === 'days') {
     setState(s => ({
       ...s,
@@ -115,12 +132,21 @@ const enhance = compose(
         state: { selectedUnit },
         setState,
       } = this.props;
-      const thisFieldCurrent = getCurrentFromAndTo({ field, query });
-      const opToWord = { '>=': 'from', '<=': 'to' };
+      const thisFieldCurrent = getCurrentFromAndTo({
+        field,
+        query,
+      });
+      const opToWord = {
+        '>=': 'from',
+        '<=': 'to',
+      };
       const newState = Object.keys(thisFieldCurrent)
         .filter(k => thisFieldCurrent[k])
         .reduce(
-          (acc, k) => ({ ...acc, [opToWord[k]]: thisFieldCurrent[k] }),
+          (acc, k) => ({
+            ...acc,
+            [opToWord[k]]: thisFieldCurrent[k],
+          }),
           {},
         );
       if (convertDays) {
@@ -138,22 +164,44 @@ const enhance = compose(
           toDisplayed: newState.to,
         }));
       }
-      convertMaxMin({ max, min, convertDays, selectedUnit, setState });
+      convertMaxMin({
+        max,
+        min,
+        convertDays,
+        selectedUnit,
+        setState,
+      });
     },
     componentWillReceiveProps(nextProps: Object): void {
       if (
-        ['field', 'query', 'max', 'min'].some(
+        [
+          'field',
+          'query',
+          'max',
+          'min',
+        ].some(
           k => !isEqual(this.props[k], nextProps[k]),
         )
       ) {
-        const { field, query, max, min } = nextProps;
+        const {
+          field, query, max, min,
+        } = nextProps;
         const { state: { selectedUnit }, setState, convertDays } = this.props;
-        const thisFieldCurrent = getCurrentFromAndTo({ field, query });
-        const opToWord = { '>=': 'from', '<=': 'to' };
+        const thisFieldCurrent = getCurrentFromAndTo({
+          field,
+          query,
+        });
+        const opToWord = {
+          '>=': 'from',
+          '<=': 'to',
+        };
         const newState = Object.keys(thisFieldCurrent)
           .filter(k => thisFieldCurrent[k])
           .reduce(
-            (acc, k) => ({ ...acc, [opToWord[k]]: thisFieldCurrent[k] }),
+            (acc, k) => ({
+              ...acc,
+              [opToWord[k]]: thisFieldCurrent[k],
+            }),
             {},
           );
         if (convertDays) {
@@ -172,11 +220,19 @@ const enhance = compose(
           }));
         }
 
-        convertMaxMin({ max, min, convertDays, selectedUnit, setState });
+        convertMaxMin({
+          max,
+          min,
+          convertDays,
+          selectedUnit,
+          setState,
+        });
       }
     },
   }),
-  mapProps(({ setState, max, min, convertDays, ...rest }) => ({
+  mapProps(({
+    setState, max, min, convertDays, ...rest
+  }) => ({
     handleFromChanged: e => {
       const v = e.target.value;
       const { state: { toDisplayed, selectedUnit } } = rest;
@@ -202,9 +258,23 @@ const enhance = compose(
     handleUnitChanged: e => {
       const v = e.target.value;
       const { state: { from, to } } = rest;
-      setState(s => ({ ...s, selectedUnit: v }));
-      convertMaxMin({ max, min, convertDays, selectedUnit: v, setState });
-      convertInputs({ from, to, selectedUnit: v, setState });
+      setState(s => ({
+        ...s,
+        selectedUnit: v,
+      }));
+      convertMaxMin({
+        max,
+        min,
+        convertDays,
+        selectedUnit: v,
+        setState,
+      });
+      convertInputs({
+        from,
+        to,
+        selectedUnit: v,
+        setState,
+      });
     },
     setState,
     max,
@@ -241,8 +311,14 @@ type TProps = {
 const RangeFacet = (props: TProps) => {
   const dotField = props.field.replace(/__/g, '.');
   const innerContent = [
-    { op: '>=', value: props.state.from },
-    { op: '<=', value: props.state.to },
+    {
+      op: '>=',
+      value: props.state.from,
+    },
+    {
+      op: '<=',
+      value: props.state.to,
+    },
   ]
     .filter(v => v.value)
     .map(v => ({
@@ -261,7 +337,7 @@ const RangeFacet = (props: TProps) => {
   };
   const { maxDisplayed, minDisplayed } = props.state;
   return (
-    <Container style={{ ...props.style }} className="test-range-facet">
+    <Container className="test-range-facet" style={{ ...props.style }}>
       {!props.collapsed &&
         props.convertDays && (
           <Row style={{ marginBottom: '0.5rem' }}>
@@ -269,83 +345,91 @@ const RangeFacet = (props: TProps) => {
               <label
                 htmlFor={`${dotField}-years-radio`}
                 style={{ paddingRight: '10px' }}
-              >
+                >
                 <input
-                  type="radio"
-                  value="years"
-                  onChange={props.handleUnitChanged}
                   checked={props.state.selectedUnit === 'years'}
                   id={`${dotField}-years-radio`}
+                  onChange={props.handleUnitChanged}
                   style={{ marginRight: '5px' }}
-                />
+                  type="radio"
+                  value="years"
+                  />
                 Years
               </label>
               <label
                 htmlFor={`${dotField}-days-radio`}
                 style={{ paddingRight: '10px' }}
-              >
+                >
                 <input
-                  type="radio"
-                  value="days"
-                  onChange={props.handleUnitChanged}
                   checked={props.state.selectedUnit === 'days'}
                   id={`${dotField}-days-radio`}
+                  onChange={props.handleUnitChanged}
                   style={{ marginRight: '5px' }}
-                />
+                  type="radio"
+                  value="days"
+                  />
                 Days
               </label>
             </form>
           </Row>
-        )}
+      )}
       {!props.collapsed && (
         <Column>
           <Row>
             <InputLabel
+              htmlFor={`from-${dotField}`}
               style={{
                 borderRight: 0,
                 borderRadius: '4px 0 0 4px',
               }}
-              htmlFor={`from-${dotField}`}
-            >
+              >
               From:
             </InputLabel>
             <Input
-              value={props.state.fromDisplayed || ''}
-              onChange={props.handleFromChanged}
               id={`from-${dotField}`}
               key={`from-${dotField}`}
-              type="number"
-              placeholder={`eg. ${minDisplayed}`}
               max={maxDisplayed}
               min={minDisplayed}
-              title="todo"
-            />
+              onChange={props.handleFromChanged}
+              placeholder={`eg. ${minDisplayed}`}
+              style={{
+                paddingRight: '5px',
+                paddingLeft: '5px',
+              }}
+              title={`Min value: eg. ${minDisplayed}`}
+              type="number"
+              value={props.state.fromDisplayed || ''}
+              />
             <InputLabel
+              htmlFor={`to-${dotField}`}
               style={{
                 borderLeft: 0,
                 borderRight: 0,
               }}
-              htmlFor={`to-${dotField}`}
-            >
+              >
               To:
             </InputLabel>
             <Input
-              value={props.state.toDisplayed || ''}
-              onChange={props.handleToChanged}
               id={`to-${dotField}`}
               key={`to-${dotField}`}
-              type="number"
-              placeholder={`eg. ${maxDisplayed}`}
               max={maxDisplayed}
               min={minDisplayed}
-              title="todo"
-            />
+              onChange={props.handleToChanged}
+              placeholder={`eg. ${maxDisplayed}`}
+              style={{
+                paddingRight: '5px',
+                paddingLeft: '5px',
+              }}
+              title={`Max value: eg. ${maxDisplayed}`}
+              type="number"
+              value={props.state.toDisplayed || ''}
+              />
             <GoLink
               dark={!!innerContent.length}
               merge="replace"
               query={innerContent.length ? query : null}
               style={innerContent.length ? null : { color: '#6F6F6F' }}
-            >
+              >
               Go!
             </GoLink>
           </Row>
@@ -356,18 +440,19 @@ const RangeFacet = (props: TProps) => {
                 <span>
                   <ExclamationTriangle style={{ paddingRight: '5px' }} />
                   For health information privacy concerns, individuals over 89
-                  will all appear as 90 years old. For more information, click{' '}
+                  will all appear as 90 years old. For more information, click
+                  {' '}
                   <a
                     href="https://gdc.cancer.gov/about-gdc/gdc-faqs#collapsible-item-618-question"
-                    target="_blank"
                     rel="noopener noreferrer"
-                  >
+                    target="_blank"
+                    >
                     here
                   </a>
                   .
                 </span>
               </WarningRow>
-            )}
+          )}
         </Column>
       )}
     </Container>

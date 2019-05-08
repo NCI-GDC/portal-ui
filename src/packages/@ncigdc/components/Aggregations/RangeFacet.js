@@ -345,7 +345,7 @@ const RangeFacet = (props: TProps) => {
               <label
                 htmlFor={`${dotField}-years-radio`}
                 style={{ paddingRight: '10px' }}
-              >
+                >
                 <input
                   checked={props.state.selectedUnit === 'years'}
                   id={`${dotField}-years-radio`}
@@ -353,13 +353,13 @@ const RangeFacet = (props: TProps) => {
                   style={{ marginRight: '5px' }}
                   type="radio"
                   value="years"
-                />
+                  />
                 Years
               </label>
               <label
                 htmlFor={`${dotField}-days-radio`}
                 style={{ paddingRight: '10px' }}
-              >
+                >
                 <input
                   checked={props.state.selectedUnit === 'days'}
                   id={`${dotField}-days-radio`}
@@ -367,12 +367,12 @@ const RangeFacet = (props: TProps) => {
                   style={{ marginRight: '5px' }}
                   type="radio"
                   value="days"
-                />
+                  />
                 Days
               </label>
             </form>
           </Row>
-        )}
+      )}
       {!props.collapsed && (
         <Column>
           <Row>
@@ -382,7 +382,7 @@ const RangeFacet = (props: TProps) => {
                 borderRight: 0,
                 borderRadius: '4px 0 0 4px',
               }}
-            >
+              >
               From:
             </InputLabel>
             <Input
@@ -392,17 +392,21 @@ const RangeFacet = (props: TProps) => {
               min={minDisplayed}
               onChange={props.handleFromChanged}
               placeholder={`eg. ${minDisplayed}`}
-              title="todo"
+              style={{
+                paddingRight: '5px',
+                paddingLeft: '5px',
+              }}
+              title={`Min value: eg. ${minDisplayed}`}
               type="number"
               value={props.state.fromDisplayed || ''}
-            />
+              />
             <InputLabel
               htmlFor={`to-${dotField}`}
               style={{
                 borderLeft: 0,
                 borderRight: 0,
               }}
-            >
+              >
               To:
             </InputLabel>
             <Input
@@ -412,16 +416,20 @@ const RangeFacet = (props: TProps) => {
               min={minDisplayed}
               onChange={props.handleToChanged}
               placeholder={`eg. ${maxDisplayed}`}
-              title="todo"
+              style={{
+                paddingRight: '5px',
+                paddingLeft: '5px',
+              }}
+              title={`Max value: eg. ${maxDisplayed}`}
               type="number"
               value={props.state.toDisplayed || ''}
-            />
+              />
             <GoLink
               dark={!!innerContent.length}
               merge="replace"
               query={innerContent.length ? query : null}
               style={innerContent.length ? null : { color: '#6F6F6F' }}
-            >
+              >
               Go!
             </GoLink>
           </Row>
@@ -438,13 +446,13 @@ const RangeFacet = (props: TProps) => {
                     href="https://gdc.cancer.gov/about-gdc/gdc-faqs#collapsible-item-618-question"
                     rel="noopener noreferrer"
                     target="_blank"
-                  >
+                    >
                     here
                   </a>
                   .
                 </span>
               </WarningRow>
-            )}
+          )}
         </Column>
       )}
     </Container>

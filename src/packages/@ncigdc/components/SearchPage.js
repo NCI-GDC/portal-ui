@@ -58,40 +58,40 @@ const SearchPage = (
     ...props
   }: TProps = {},
 ) => (
-  <Container className={props.className + ' test-search-page'}>
-    {showFacets && (
-      <FacetsPanel>
-        <TabbedLinks
-          queryParam="facetTab"
-          defaultIndex={0}
-          tabToolbar={
-            <UnstyledButton
-              style={{ minHeight: 46 }}
-              onClick={() => {
-                setShowFacets(!showFacets);
-              }}
-              aria-label="Toggle Facet Panel Visibility"
-            >
-              <DoubleArrowLeftIcon />
-            </UnstyledButton>
-          }
-          hideTabs={facetTabs.length <= 1}
-          links={facetTabs}
-        />
-      </FacetsPanel>
-    )}
-    <Content>
-      <Row style={{ marginBottom: '2rem' }}>
-        {!showFacets && (
-          <ShowFacetsButton onClick={() => setShowFacets(!showFacets)}>
-            <DoubleArrowRightIcon />
-          </ShowFacetsButton>
-        )}
-        <CurrentFilters style={{ flex: 1 }} {...filtersLinkProps} />
-      </Row>
-      {results}
-    </Content>
-  </Container>
-);
+    <Container className={props.className + ' test-search-page'}>
+      {showFacets && (
+        <FacetsPanel>
+          <TabbedLinks
+            queryParam="facetTab"
+            defaultIndex={0}
+            tabToolbar={
+              <UnstyledButton
+                style={{ minHeight: 46 }}
+                onClick={() => {
+                  setShowFacets(!showFacets);
+                }}
+                aria-label="Toggle Facet Panel Visibility"
+              >
+                <DoubleArrowLeftIcon />
+              </UnstyledButton>
+            }
+            hideTabs={facetTabs.length <= 1}
+            links={facetTabs}
+          />
+        </FacetsPanel>
+      )}
+      <Content>
+        <Row style={{ marginBottom: '2rem' }}>
+          {!showFacets && (
+            <ShowFacetsButton onClick={() => setShowFacets(!showFacets)}>
+              <DoubleArrowRightIcon />
+            </ShowFacetsButton>
+          )}
+          <CurrentFilters style={{ flex: 1 }} {...filtersLinkProps} />
+        </Row>
+        {results}
+      </Content>
+    </Container>
+  );
 
 export default enhance(SearchPage);

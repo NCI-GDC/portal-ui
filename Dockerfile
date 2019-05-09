@@ -1,7 +1,5 @@
-FROM nginx:stable-alpine
+FROM quay.io/ncigdc/nginx-extras:1.10.3-oobleck
 
-RUN rm -v /etc/nginx/conf.d/default.conf
-
-COPY infra/nginx.conf /etc/nginx/conf.d/nginx.conf
+RUN rm -v /etc/nginx/sites-enabled/default
 
 COPY build /usr/share/nginx/html

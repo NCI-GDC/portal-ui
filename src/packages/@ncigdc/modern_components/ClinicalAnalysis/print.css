@@ -77,4 +77,7 @@
   .print-only {
     display: block;
   }
+  .print-only.inline {
+    display: inline;
+  }
 }

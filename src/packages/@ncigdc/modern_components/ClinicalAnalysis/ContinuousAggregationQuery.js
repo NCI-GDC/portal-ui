@@ -37,7 +37,36 @@ const getContinuousAggs = ({
   };
   const componentName = 'ContinuousAggregationQuery';
   const body = JSON.stringify({
-    query: `query ${componentName}(\n  $filters: FiltersArgument\n) {\n  viewer {\n    explore {\n      cases {\n        aggregations(filters: $filters) {\n          ${aggregationFieldName} {\n            histogram(interval: ${interval}) {\n              buckets {\n                key\n                doc_count\n              }\n            }\n          }\n        }\n      }\n    }\n  }\n}\n`,
+    query: `query ${componentName}($filters: FiltersArgument) {
+      viewer {
+        explore {
+          cases {
+            aggregations(filters: $filters) {
+              ${queryFieldName} {
+                stats {
+                  Min : min
+                  Max: max
+                  Mean: avg
+                  SD: std_deviation
+                }
+                percentiles {
+                  Median: median
+                  IQR: iqr
+                  q1: quartile_1
+                  q3: quartile_3
+                }
+                histogram(interval: ${interval}) {
+                  buckets {
+                    key
+                    doc_count
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }`,
     variables,
   });
 
@@ -109,7 +138,7 @@ const getContinuousAggs = ({
         }
       } else {
         consoleDebug(
-          `Something went wrong in environment, but no error status: ${err}`
+            `Something went wrong in environment, but no error status: ${err}`
         );
       }
     }));
@@ -151,6 +180,7 @@ export default compose(
       }}
       setId={setId}
       stats={stats}
-      {...props} />
+      {...props}
+      />
   );
 });

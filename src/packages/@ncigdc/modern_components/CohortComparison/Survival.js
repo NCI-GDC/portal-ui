@@ -10,7 +10,10 @@ import { CreateExploreCaseSetButton } from '@ncigdc/modern_components/withSetAct
 import withRouter from '@ncigdc/utils/withRouter';
 import Alias from '@ncigdc/components/Alias';
 import { withTheme } from '@ncigdc/theme';
-import { get } from 'lodash';
+import {
+  get,
+  omit,
+} from 'lodash';
 
 const survivalDataCompletenessFilters = [
   {
@@ -19,7 +22,13 @@ const survivalDataCompletenessFilters = [
       {
         op: 'and',
         content: [
-          { op: '>', content: { field: 'diagnoses.days_to_death', value: 0 } },
+          {
+            op: '>',
+            content: {
+              field: 'diagnoses.days_to_death',
+              value: 0,
+            },
+          },
         ],
       },
       {
@@ -27,13 +36,19 @@ const survivalDataCompletenessFilters = [
         content: [
           {
             op: '>',
-            content: { field: 'diagnoses.days_to_last_follow_up', value: 0 },
+            content: {
+              field: 'diagnoses.days_to_last_follow_up',
+              value: 0,
+            },
           },
         ],
       },
     ],
   },
-  { op: 'not', content: { field: 'diagnoses.vital_status' } },
+  {
+    op: 'not',
+    content: { field: 'diagnoses.vital_status' },
+  },
 ];
 
 export const makeSurvivalCurveFilter = (setId, otherSetId) => ({
@@ -45,7 +60,10 @@ export const makeSurvivalCurveFilter = (setId, otherSetId) => ({
       content: [
         {
           op: 'in',
-          content: { field: 'cases.case_id', value: `set_id:${setId}` },
+          content: {
+            field: 'cases.case_id',
+            value: `set_id:${setId}`,
+          },
         },
         {
           op: 'excludeifany',
@@ -59,23 +77,32 @@ export const makeSurvivalCurveFilter = (setId, otherSetId) => ({
   ],
 });
 
-export default compose(
-  withTheme,
-  withRouter
-)(
-  ({
-    loading,
-    survivalData,
-    result1,
-    result2,
-    palette,
-    set1id,
-    set2id,
-    push,
-    style,
-    theme,
-    CaseSetButton = props => (
-      <CreateExploreCaseSetButton
+const SurvivalAnalysisCard = ({
+  loading,
+  survivalData,
+  result1,
+  result2,
+  palette,
+  set1id,
+  set2id,
+  push,
+  style,
+  theme,
+  CaseSetButton = props => (
+    <CreateExploreCaseSetButton
+        Component={compProps => (
+          <span
+          {...omit(compProps, ['leftIcon'])}
+
+          style={{
+            cursor: 'pointer',
+            color: theme.primary,
+            textDecoration: 'underline',
+          }}
+          >
+            {props.count}
+          </span>
+        )}
         filters={makeSurvivalCurveFilter(props.setId, props.otherSetId)}
         onComplete={setId => {
           push({
@@ -88,7 +115,7 @@ export default compose(
                   {
                     op: 'IN',
                     content: {
-                      field: `cases.case_id`,
+                      field: 'cases.case_id',
                       value: [`set_id:${setId}`],
                     },
                   },
@@ -97,69 +124,27 @@ export default compose(
             },
           });
         }}
-        Component={p => (
-          <span
-            {...p}
-            style={{
-              cursor: 'pointer',
-              color: theme.primary,
-              textDecoration: 'underline',
-            }}
-          >
-            {props.count}
-          </span>
-        )}
-      />
-    ),
-  }) => (
-    <div style={style}>
-      <Row>
-        <h2>Survival Analysis</h2>
-      </Row>
-      {loading ||
+        />
+  ),
+}) => (
+  <div style={style}>
+    <Row>
+      <h2>Survival Analysis</h2>
+    </Row>
+    {loading ||
       get(survivalData, 'rawData.results[0].donors.length', 0) ||
       get(survivalData, 'rawData.results[1].donors.length', 0) ? (
         <div>
           <SurvivalPlotWrapper
-            survivalPlotLoading={loading}
             plotType="mutation"
+            survivalPlotLoading={loading}
             {...survivalData}
-            palette={palette}
             height={240}
-          />
+            palette={palette}
+            />
           {survivalData.rawData && (
             <Table
-              headings={[
-                <Th key="1">
-                  <Tooltip
-                    style={tableToolTipHint()}
-                    Component={
-                      <span>
-                        Criteria to include Case from your sets in the survival
-                        analysis:<br />
-                        - Case does not overlap between your selected sets<br />
-                        - Case has complete data for the purpose of the analysis
-                        (event and time-to-event)
-                      </span>
-                    }
-                  >
-                    Cases included in Analysis
-                  </Tooltip>
-                </Th>,
-                <Th key="2" style={{ textAlign: 'right' }}>
-                  # Cases <Alias i={1} />
-                </Th>,
-                <Th key="3" style={{ textAlign: 'right' }}>
-                  %
-                </Th>,
-                <Th key="4" style={{ textAlign: 'right' }}>
-                  # Cases <Alias i={2} />
-                </Th>,
-                <Th key="5" style={{ textAlign: 'right' }}>
-                  %
-                </Th>,
-              ]}
-              body={
+              body={(
                 <tbody>
                   <Tr index={0}>
                     <Td width={250}>Overall Survival Analysis</Td>
@@ -170,10 +155,10 @@ export default compose(
                         0
                       ) > 0 ? (
                         <CaseSetButton
-                          setId={set1id}
-                          otherSetId={set2id}
                           count={survivalData.rawData.results[0].donors.length.toLocaleString()}
-                        />
+                          otherSetId={set2id}
+                          setId={set1id}
+                          />
                       ) : (
                         'No Survival Data'
                       )}
@@ -183,7 +168,8 @@ export default compose(
                         (survivalData.rawData.results[0].donors.length /
                           result1.hits.total *
                           100
-                        ).toFixed(0)}%
+                        ).toFixed(0)}
+                        %
                     </Td>
                     <Td style={{ textAlign: 'right' }}>
                       {get(
@@ -192,10 +178,10 @@ export default compose(
                         0
                       ) > 0 ? (
                         <CaseSetButton
-                          setId={set2id}
-                          otherSetId={set1id}
                           count={survivalData.rawData.results[1].donors.length.toLocaleString()}
-                        />
+                          otherSetId={set1id}
+                          setId={set2id}
+                          />
                       ) : (
                         'No Survival Data'
                       )}
@@ -205,17 +191,58 @@ export default compose(
                         (survivalData.rawData.results[1].donors.length /
                           result2.hits.total *
                           100
-                        ).toFixed(0)}%
+                        ).toFixed(0)}
+                        %
                     </Td>
                   </Tr>
                 </tbody>
-              }
-            />
+              )}
+              headings={[
+                <Th key="1">
+                  <Tooltip
+                    Component={(
+                      <span>
+                        Criteria to include Case from your sets in the survival
+                        analysis:
+                        <br />
+                        - Case does not overlap between your selected sets
+                        <br />
+                        - Case has complete data for the purpose of the analysis
+                        (event and time-to-event)
+                      </span>
+                    )}
+                    style={tableToolTipHint()}
+                    >
+                    Cases included in Analysis
+                  </Tooltip>
+                </Th>,
+                <Th key="2" style={{ textAlign: 'right' }}>
+                  # Cases
+                  {' '}
+                  <Alias i={1} />
+                </Th>,
+                <Th key="3" style={{ textAlign: 'right' }}>
+                  %
+                </Th>,
+                <Th key="4" style={{ textAlign: 'right' }}>
+                  # Cases
+                  {' '}
+                  <Alias i={2} />
+                </Th>,
+                <Th key="5" style={{ textAlign: 'right' }}>
+                  %
+                </Th>,
+              ]}
+              />
           )}
         </div>
       ) : (
         <div>No Survival data available for this Cohort Comparison</div>
       )}
-    </div>
-  )
+  </div>
 );
+
+export default compose(
+  withTheme,
+  withRouter
+)(SurvivalAnalysisCard);

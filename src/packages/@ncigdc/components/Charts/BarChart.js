@@ -8,8 +8,6 @@ import {
   compose,
   withState,
   pure,
-  withProps,
-  withPropsOnChange,
 } from 'recompose';
 
 // Custom
@@ -17,6 +15,8 @@ import { withTheme } from '@ncigdc/theme';
 import { withTooltip } from '@ncigdc/uikit/Tooltip';
 import withSize from '@ncigdc/utils/withSize';
 import './style.css';
+
+export const DEFAULT_X_AXIS_LABEL_LENGTH = 8;
 
 const BarChart = ({
   data,
@@ -28,6 +28,7 @@ const BarChart = ({
   margin: m,
   setTooltip,
   theme,
+  xAxisLabelLength = DEFAULT_X_AXIS_LABEL_LENGTH,
   size: { width },
 }) => {
   const el = ReactFauxDOM.createElement('div');
@@ -37,7 +38,12 @@ const BarChart = ({
   const innerPadding = 0.3;
   const outerPadding = 0.3;
 
-  const margin = m || { top: 20, right: 50, bottom: 65, left: 55 };
+  const margin = m || {
+    top: 20,
+    right: 50,
+    bottom: 65,
+    left: 55,
+  };
   const chartWidth = width - margin.left - margin.right;
   const height = (h || 200) - margin.top - margin.bottom;
   const yAxisStyle = yAxis.style || {
@@ -117,13 +123,14 @@ const BarChart = ({
     .call(d3.axisBottom(x));
 
   xG.selectAll('text')
-    .style('text-anchor', 'end')
+    .style('text-anchor', 'start')
     .style('fontSize', xAxisStyle.fontSize)
     .style('fontWeight', xAxisStyle.fontWeight)
     .attr('fill', xAxisStyle.textFill)
-    .attr('dx', '-1em')
-    .attr('dy', '.15em')
-    .attr('transform', 'rotate(-45)');
+    .attr('dx', '.8em')
+    .attr('dy', '.5em')
+    .text(d => (d.length > xAxisLabelLength ? `${d.substring(0, xAxisLabelLength - 3)}...` : d))
+    .attr('transform', 'rotate(45)');
 
   xG.selectAll('path').style('stroke', xAxisStyle.stroke);
 

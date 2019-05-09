@@ -77,7 +77,7 @@ const QQPlot = ({
   height = 317,
   margin: m,
   theme,
-  size: { width },
+  width,
   // clinicalType,
   // queryField,
   // realData = true,

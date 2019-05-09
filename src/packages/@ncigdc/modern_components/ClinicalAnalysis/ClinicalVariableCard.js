@@ -807,7 +807,6 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
   const wrapperId = makeWrapperId(fieldName);
 
   const tsvSubstring = fieldName.replace(/\./g, '-');
-
   // SURVIVAL PLOT STUFF
 
   return (
@@ -1066,8 +1065,6 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
             <div
               style={{
                 display: 'flex',
-                // justifyContent: 'center',
-                // alignItems: 'center',
                 minHeight: 287,
                 margin: '5px 2px 10px',
               }}>

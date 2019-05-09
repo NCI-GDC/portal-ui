@@ -5,8 +5,9 @@ import {
 import _ from 'lodash';
 
 import { addInFilters } from '@ncigdc/utils/filters';
-import Loader from '@ncigdc/uikit/Loaders/Loader';
+// import Loader from '@ncigdc/uikit/Loaders/Loader';
 import { fetchApi } from '@ncigdc/utils/ajax';
+import Spinner from '@ncigdc/uikit/Loaders/Material';
 import QQPlot from './QQPlot';
 
 export default compose(
@@ -80,19 +81,29 @@ export default compose(
       setData(continuousValues.filter(b => _.isNumber(b)), () => setIsLoading(false));
     },
   }),
-  withPropsOnChange(['fieldName'], ({ updateData, ...props }) => updateData(props))
+  withPropsOnChange(['fieldName'], ({ updateData, ...props }) => updateData(props)),
 )(({
   isLoading, data, clinicalType, queryField, facetName, ...props
 }) => {
   if (isLoading) {
-    return <Loader />;
+    return (
+      <div style={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: 200,
+        width: 300,
+      }}>
+        <Spinner />
+      </div>
+    );
   }
   return (
     <QQPlot
       clinicalType={clinicalType}
       data={data}
       queryField={queryField}
-      width={200}
+      width={400}
       {...props}
       fieldName={facetName} />
   );

@@ -15,17 +15,24 @@ import Button from '@ncigdc/uikit/Button';
 import { Tooltip } from '@ncigdc/uikit/Tooltip';
 import {
   PrintIcon,
+  CloseIcon,
+  SurvivalIcon,
+  BarChartIcon,
   DoubleArrowLeftIcon,
   DoubleArrowRightIcon,
 } from '@ncigdc/theme/icons';
 import CopyIcon from '@ncigdc/theme/icons/Copy';
 import Hidden from '@ncigdc/components/Hidden';
-import { visualizingButton, zDepth1 } from '@ncigdc/theme/mixins';
-
+import { visualizingButton } from '@ncigdc/theme/mixins';
+import { zDepth1 } from '@ncigdc/theme/mixins';
+import EntityPageHorizontalTable from '@ncigdc/components/EntityPageHorizontalTable';
+import ClinicalVariableCard from './ClinicalVariableCard';
+import ContinuousAggregation from './ContinuousAggregationQuery';
 import Input from '@ncigdc/uikit/Form/Input';
 import { withTheme } from '@ncigdc/theme';
 import countComponents from '@ncigdc/modern_components/Counts';
 import ExploreLink from '@ncigdc/components/Links/ExploreLink';
+import ControlPanelNode from './ControlPanelNode';
 import {
   updateClinicalAnalysisProperty,
   addAnalysis,
@@ -38,9 +45,6 @@ import tryParseJSON from '@ncigdc/utils/tryParseJSON';
 import getUsefulFacets from '@ncigdc/utils/getUsefulFacets';
 import DeprecatedSetResult from './DeprecatedSetResult';
 import CohortDropdown from './CohortDropdown';
-import ControlPanelNode from './ControlPanelNode';
-import ContinuousAggregation from './ContinuousAggregationQuery';
-import ClinicalVariableCard from './ClinicalVariableCard';
 import './print.css';
 import './survivalPlot.css';
 

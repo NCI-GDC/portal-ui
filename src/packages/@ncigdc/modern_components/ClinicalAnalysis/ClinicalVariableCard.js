@@ -70,7 +70,7 @@ import { getLowerAgeYears, getUpperAgeYears } from '@ncigdc/utils/ageDisplay';
 import timestamp from '@ncigdc/utils/timestamp';
 
 import { IS_CDAVE_DEV } from '@ncigdc/utils/constants';
-import { MAXIMUM_CURVES, MINIMUM_CASES } from '../../utils/survivalplot';
+import { MAXIMUM_CURVES, MINIMUM_CASES } from '@ncigdc/utils/survivalplot';
 
 const colors = scaleOrdinal(schemeCategory10);
 

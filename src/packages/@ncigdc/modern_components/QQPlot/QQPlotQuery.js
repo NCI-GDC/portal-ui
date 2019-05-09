@@ -81,7 +81,7 @@ export default compose(
       setData(continuousValues.filter(b => _.isNumber(b)), () => setIsLoading(false));
     },
   }),
-  withPropsOnChange(['fieldName'], ({ updateData, ...props }) => updateData(props)),
+  withPropsOnChange(['filters'], ({ updateData, ...props }) => updateData(props)),
 )(({
   isLoading, data, clinicalType, queryField, facetName, ...props
 }) => {
@@ -93,7 +93,8 @@ export default compose(
         alignItems: 'center',
         height: 200,
         width: 300,
-      }}>
+      }}
+           >
         <Spinner />
       </div>
     );
@@ -105,6 +106,7 @@ export default compose(
       queryField={queryField}
       width={400}
       {...props}
-      fieldName={facetName} />
+      fieldName={facetName}
+      />
   );
 });

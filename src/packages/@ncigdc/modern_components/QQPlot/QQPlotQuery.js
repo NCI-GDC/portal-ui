@@ -71,7 +71,8 @@ export default compose(
             }
             return continuousValues.push(subType[clinicalField]);
           });
-        } if (_.isPlainObject(hit[clinicalType])) {
+        }
+        if (_.isPlainObject(hit[clinicalType])) {
           return continuousValues.push(hit[clinicalType][clinicalField]);
         }
         return continuousValues.push(hit[clinicalType]);

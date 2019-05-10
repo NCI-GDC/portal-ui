@@ -1,21 +1,29 @@
-const { injectBabelPlugin } = require("react-app-rewired");
+const { injectBabelPlugin } = require('react-app-rewired');
 
 module.exports = function override(config, env) {
   config = injectBabelPlugin(
     [
-      "import-inspector",
+      'import-inspector',
       {
         serverSideRequirePath: false,
-        webpackRequireWeakId: true
-      }
+        webpackRequireWeakId: true,
+      },
     ],
     config
   );
 
   config = injectBabelPlugin(
-    ["relay", { compat: true, schema: "data/schema.graphql" }],
+    [
+      'relay',
+      {
+        compat: true,
+        schema: 'data/schema.graphql',
+      },
+    ],
     config
   );
+
+  env === 'development' && (config.devtool = 'eval-source-map');
 
   return config;
 };

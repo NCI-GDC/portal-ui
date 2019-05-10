@@ -79,6 +79,51 @@ export const DATA_CATEGORIES = {
   },
 };
 
+export const DATA_CATEGORIES_WITH_METADATA = {
+  SEQ: {
+    full: 'Sequencing Reads',
+    abbr: 'Seq',
+  },
+  EXP: {
+    full: 'Transcriptome Profiling',
+    abbr: 'Exp',
+  },
+  SNV: {
+    full: 'Simple Nucleotide Variation',
+    abbr: 'SNV',
+  },
+  CNV: {
+    full: 'Copy Number Variation',
+    abbr: 'CNV',
+  },
+  METH: {
+    full: 'DNA Methylation',
+    abbr: 'Meth',
+  },
+  CLINICAL_METADATA: {
+    full: '',
+    abbr: 'Clinical',
+    tooltip: 'Clinical Metadata',
+  },
+  CLINICAL_SUPPLEMENT: {
+    full: 'Clinical',
+    dataCategory: 'Clinical',
+    abbr: 'Clinical Supplement',
+    tooltip: 'Clinical Supplement',
+  },
+  BIOSPECIMEN_METADATA: {
+    full: '',
+    abbr: 'Bio',
+    tooltip: 'Biospecimen Metadata',
+  },
+  BIOSPECIMEN_SUPPLEMENT: {
+    full: 'Biospecimen',
+    dataCategory: 'Bio',
+    abbr: 'Bio Supplement',
+    tooltip: 'Biospecimen Supplement',
+  },
+};
+
 export const DATA_TYPES = {
   GEQ: {
     full: 'Gene Expression Quantification',

@@ -15,13 +15,13 @@ export type TCategory =
   | 'Biospecimen';
 
 export type TCategoryAbbr =
-  | 'Seq'
-  | 'Exp'
-  | 'SNV'
-  | 'CNV'
-  | 'Clinical'
   | 'Bio'
-  | 'Meth';
+  | 'Clinical'
+  | 'CNV'
+  | 'Exp'
+  | 'Meth'
+  | 'Seq'
+  | 'SNV';
 
 export type TCategoryMap = { [k in TCategoryAbbr]: TCategory };
 

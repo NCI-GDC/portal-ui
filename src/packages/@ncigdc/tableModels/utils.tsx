@@ -136,7 +136,7 @@ export const createDataCategoryColumns = ({
               '0'
             ) : isMetadataColumn ? (
               <ProjectLink uuid={node.project_id}>
-                {count.toLocaleString()}
+                {node.summary.case_count.toLocaleString()}
               </ProjectLink>
             ) : (
               <Link

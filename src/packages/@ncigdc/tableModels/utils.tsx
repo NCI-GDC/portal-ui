@@ -8,6 +8,7 @@ import { Th, Td, ThNum, TdNum } from '@ncigdc/uikit/Table';
 import { makeFilter } from '@ncigdc/utils/filters';
 import { findDataCategory } from '@ncigdc/utils/data';
 import { IListLinkProps } from '@ncigdc/components/Links/types';
+import ProjectLink from '@ncigdc/components/Links/ProjectLink';
 import { 
   IDataCategory,
   TCategoryAbbr,
@@ -122,7 +123,7 @@ export const createDataCategoryColumns = ({
         </ThNum>
       ),
       td: ({ node }: { node: INode }) => {
-        const showFileCount = category.tooltip === 'Clinical Metadata' || category.tooltip === 'Biospecimen Metadata';
+        const showFileCount = ['Clinical Metadata', 'Biospecimen Metadata'].includes('category.tooltip');
         const count = showFileCount 
           ? node.summary.file_count 
           : findDataCategory(
@@ -134,6 +135,10 @@ export const createDataCategoryColumns = ({
           <TdNum>
             {count === 0 ? (
               '0'
+            ) : showFileCount ? (
+              <ProjectLink uuid={node.project_id}>
+                {count.toLocaleString()}
+              </ProjectLink>
             ) : (
               <Link
                 query={{

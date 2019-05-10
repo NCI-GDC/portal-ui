@@ -127,7 +127,6 @@ export const createDataCategoryColumns = ({
         const count = showFileCount 
           ? node.summary.file_count 
           : findDataCategory(
-            // 'Seq',
             category.dataCategory || category.abbr,
             node.summary.data_categories
           )[countKey];
@@ -168,7 +167,6 @@ export const createDataCategoryColumns = ({
               hits.edges,
               x =>
                 findDataCategory(
-                  // 'Seq',
                   category.dataCategory || category.abbr,
                   x.node.summary.data_categories)[countKey]
                 ).toLocaleString()}

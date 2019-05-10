@@ -3,7 +3,7 @@ import _ from 'lodash';
 import Tooltip from '@ncigdc/uikit/Tooltip/Tooltip';
 import Hidden from '@ncigdc/components/Hidden';
 import { tableToolTipHint } from '@ncigdc/theme/mixins';
-import { DATA_CATEGORIES, DATA_CATEGORIES_WITH_METADATA } from '@ncigdc/utils/constants';
+import { DATA_CATEGORIES, DATA_CATEGORIES_FOR_PROJECTS_TABLE } from '@ncigdc/utils/constants';
 import { Th, Td, ThNum, TdNum } from '@ncigdc/uikit/Table';
 import { makeFilter } from '@ncigdc/utils/filters';
 import { findDataCategory } from '@ncigdc/utils/data';
@@ -84,8 +84,8 @@ export const createDataCategoryColumns = ({
   getCellLinkFilters,
   getTotalLinkFilters,
 }: ICreateDataCategoryColumnsProps)=> {
-  const isCaseTable = countKey === 'case_count';
-  const CATEGORY_COLUMNS = isCaseTable ? DATA_CATEGORIES_WITH_METADATA : DATA_CATEGORIES; 
+  const isProjectsTable = countKey === 'case_count';
+  const CATEGORY_COLUMNS = isProjectsTable ? DATA_CATEGORIES_FOR_PROJECTS_TABLE : DATA_CATEGORIES; 
   return [
     {
       name: 'Data Categories',
@@ -123,8 +123,8 @@ export const createDataCategoryColumns = ({
         </ThNum>
       ),
       td: ({ node }: { node: INode }) => {
-        const showFileCount = ['Clinical Metadata', 'Biospecimen Metadata'].includes('category.tooltip');
-        const count = showFileCount 
+        const isMetadataColumn = ['Clinical Metadata', 'Biospecimen Metadata'].includes('category.tooltip');
+        const count = isMetadataColumn 
           ? node.summary.file_count 
           : findDataCategory(
             category.dataCategory || category.abbr,
@@ -134,7 +134,7 @@ export const createDataCategoryColumns = ({
           <TdNum>
             {count === 0 ? (
               '0'
-            ) : showFileCount ? (
+            ) : isMetadataColumn ? (
               <ProjectLink uuid={node.project_id}>
                 {count.toLocaleString()}
               </ProjectLink>

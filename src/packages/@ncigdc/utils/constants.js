@@ -48,7 +48,7 @@ export const LOCAL_STORAGE_API_OVERRIDE = API_OVERRIDE_KEYS.some(
   k => localStorage[k]
 );
 
-export const DATA_CATEGORIES = {
+const DATA_CATEGORIES_COMMON = {
   SEQ: {
     full: 'Sequencing Reads',
     abbr: 'Seq',
@@ -69,6 +69,10 @@ export const DATA_CATEGORIES = {
     full: 'DNA Methylation',
     abbr: 'Meth',
   },
+};
+
+export const DATA_CATEGORIES = {
+  ...DATA_CATEGORIES_COMMON,
   CLINICAL: {
     full: 'Clinical',
     abbr: 'Clinical',
@@ -79,27 +83,8 @@ export const DATA_CATEGORIES = {
   },
 };
 
-export const DATA_CATEGORIES_WITH_METADATA = {
-  SEQ: {
-    full: 'Sequencing Reads',
-    abbr: 'Seq',
-  },
-  EXP: {
-    full: 'Transcriptome Profiling',
-    abbr: 'Exp',
-  },
-  SNV: {
-    full: 'Simple Nucleotide Variation',
-    abbr: 'SNV',
-  },
-  CNV: {
-    full: 'Copy Number Variation',
-    abbr: 'CNV',
-  },
-  METH: {
-    full: 'DNA Methylation',
-    abbr: 'Meth',
-  },
+export const DATA_CATEGORIES_FOR_PROJECTS_TABLE = {
+  ...DATA_CATEGORIES_COMMON,
   CLINICAL_METADATA: {
     full: '',
     abbr: 'Clinical',

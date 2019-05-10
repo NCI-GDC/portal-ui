@@ -123,7 +123,7 @@ export const createDataCategoryColumns = ({
         </ThNum>
       ),
       td: ({ node }: { node: INode }) => {
-        const isMetadataColumn = ['Clinical Metadata', 'Biospecimen Metadata'].includes('category.tooltip');
+        const isMetadataColumn = ['Clinical Metadata', 'Biospecimen Metadata'].includes(category.tooltip);
         const count = isMetadataColumn 
           ? node.summary.file_count 
           : findDataCategory(

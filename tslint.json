@@ -1,5 +1,9 @@
 {
-  "extends": ["tslint:recommended", "tslint-react", "tslint-config-prettier"],
+  "extends": [
+    "tslint:recommended",
+    "tslint-react",
+    "tslint-config-prettier"
+  ],
   "linterOptions": {
     "exclude": [
       "config/**/*.js",
@@ -18,7 +22,11 @@
     "jsx-boolean-value": false,
     "no-empty": false,
     "object-literal-sort-keys": false,
-    "quotemark": [true, "single", "jsx-double"],
+    "quotemark": [
+      true,
+      "single",
+      "jsx-double"
+    ],
     "ordered-imports": false,
     "trailing-comma": [
       true,
@@ -55,7 +63,10 @@
     "no-empty": false,
     "object-literal-sort-keys": false,
     "no-shadowed-variable": false,
-    "curly": [true, "ignore-same-line"],
+    "curly": [
+      true,
+      "ignore-same-line"
+    ],
     "no-string-literal": false,
     "no-bitwise": false,
     "no-unused-expression": false,

@@ -8,6 +8,8 @@ import styled from '@ncigdc/theme/styled';
 import openAuthWindow from '@ncigdc/utils/openAuthWindow';
 import { fetchUser } from '@ncigdc/dux/auth';
 import { fetchNotifications } from '@ncigdc/dux/bannerNotification';
+import { setModal } from '@ncigdc/dux/modal';
+
 
 /*----------------------------------------------------------------------------*/
 
@@ -29,20 +31,22 @@ const LoginButton = ({ children, dispatch, user }) => (
       <Link
         className="test-login-button"
         onClick={async () => {
+          await dispatch(setModal(null));
           await openAuthWindow({
             name: 'NIH',
           });
           await dispatch(fetchUser());
           await dispatch(fetchNotifications());
         }}
-      >
+        >
+
         {children || (
           <span>
             <LoginIcon />
             <span
               className="header-hidden-sm header-hidden-md"
               style={styles.marginLeft}
-            >
+              >
               Login
             </span>
           </span>

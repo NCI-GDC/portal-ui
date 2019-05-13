@@ -1,0 +1,83 @@
+.print-only {
+  display: none;
+}
+
+@media print {
+  *[style] {
+    font-family: Arial, Helvetica, sans-serif !important;
+    justify-content: left !important;
+    background: transparent !important;
+    background-color: transparent !important;
+  }
+  .no-print,
+  #header,
+  .test-footer,
+  .test-loading-container,
+  .test-notification-wrapper,
+  .global-tooltip,
+  .test-tabbed-links > div:first-child,
+  .test-tabs > div:first-child,
+  .fa,
+  .test-entity-table-wrapper,
+  button,
+  label {
+    display: none !important;
+  }
+  .test-tabbed-links > div[style],
+  .test-tabs > div[style] {
+    border: 0 none !important;
+  }
+
+  .test-tabs[style] {
+    min-width: auto !important;
+  }
+
+  #skip[style],
+  .test-tabbed-links[style],
+  .test-tabs[style] {
+    padding: 0 !important;
+  }
+
+  .clinical-analysis-categorical-card[style] {
+    display: inline-block !important;
+    width: 100%;
+    min-width: auto !important;
+    height: auto !important;
+    box-sizing: border-box;
+    margin: 0 !important;
+    page-break-after: always;
+    page-break-inside: avoid;
+    position: relative !important;
+  }
+
+  .clinical-analysis-categorical-card div[style] {
+    margin: 0 !important;
+  }
+
+  .print-grid[style] {
+    display: block !important;
+  }
+  .print-grid div[style] {
+    height: auto !important;
+  }
+  .test-survival-plot-meta div:nth-of-type(2),
+  .test-survival-plot-meta span:nth-of-type(1) {
+    text-align: left;
+  }
+
+  .survival-legend-wrapper[style] {
+    justify-content: left !important;
+  }
+  .survival-legend-wrapper > div > div[style] {
+    padding-left: 0 !important;
+  }
+  .p-value > div {
+    text-align: left !important;
+  }
+  .print-only {
+    display: block;
+  }
+  .print-only.inline {
+    display: inline;
+  }
+}

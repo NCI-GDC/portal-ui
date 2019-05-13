@@ -11,6 +11,8 @@ import Row from '@ncigdc/uikit/Flex/Row';
 import { withTheme } from '@ncigdc/theme';
 import './style.css';
 
+import { DEFAULT_X_AXIS_LABEL_LENGTH } from '@ncigdc/components/Charts/BarChart';
+
 const drawChart = ({
   data,
   yAxis,
@@ -18,9 +20,9 @@ const drawChart = ({
   width,
   height,
   colors,
-  projectsIdtoName,
   setTooltip,
   theme,
+  xAxisLabelLength = DEFAULT_X_AXIS_LABEL_LENGTH,
 }) => {
   const yAxisStyle = yAxis.style || {
     textFill: theme.greyScale3,
@@ -38,7 +40,12 @@ const drawChart = ({
   const el = ReactFauxDOM.createElement('div');
   el.setAttribute('class', 'test-stacked-bar-chart');
 
-  const margin = { top: 10, right: 0, bottom: 55, left: 70 };
+  const margin = {
+    top: 10,
+    right: 0,
+    bottom: 55,
+    left: 70,
+  };
   const x = d3
     .scaleBand()
     .rangeRound([0, width])
@@ -66,11 +73,13 @@ const drawChart = ({
     .append('g')
     .attr('transform', `translate(${margin.left},${margin.top})`);
 
-  const stackedData = stack(data).map(d =>
-    d
-      .filter(d2 => !isNaN(d2[0]) && !isNaN(d2[1]))
-      .map(d2 => d2.concat({ key: d.key, index: d.index, data: d2.data })),
-  );
+  const stackedData = stack(data).map(d => d
+    .filter(d2 => !isNaN(d2[0]) && !isNaN(d2[1]))
+    .map(d2 => d2.concat({
+      key: d.key,
+      index: d.index,
+      data: d2.data,
+    })));
 
   const bars = g
     .selectAll('.series')
@@ -110,13 +119,14 @@ const drawChart = ({
     .call(d3.axisBottom(x));
   xG
     .selectAll('text')
-    .style('text-anchor', 'end')
+    .style('text-anchor', 'start')
     .style('fontSize', xAxisStyle.fontSize)
     .style('fontWeight', xAxisStyle.fontWeight)
     .attr('fill', xAxisStyle.textFill)
-    .attr('dx', '-1em')
-    .attr('dy', '.15em')
-    .attr('transform', 'rotate(-45)');
+    .attr('dx', '.8em')
+    .attr('dy', '.5em')
+    .text(d => (d.length > xAxisLabelLength ? `${d.substring(0, xAxisLabelLength - 3)}...` : d))
+    .attr('transform', 'rotate(45)');
   xG.selectAll('path').style('stroke', xAxisStyle.stroke);
   xG.selectAll('line').style('stroke', xAxisStyle.stroke);
 
@@ -170,24 +180,27 @@ const StackedBarChart: TStackedBarChart = (
     height = 200,
     setTooltip,
   } = {},
-) =>
-  Object.keys(data).length ? (
-    drawChart({
-      data,
-      yAxis,
-      xAxis,
-      styles,
-      colors,
-      projectsIdtoName,
-      width,
-      height,
-      setTooltip,
-      theme,
-    })
-  ) : (
-    <Row style={{ color: xAxis.style.textFill, justifyContent: 'center' }}>
+) => (Object.keys(data).length ? (
+  drawChart({
+    data,
+    yAxis,
+    xAxis,
+    styles,
+    colors,
+    projectsIdtoName,
+    width,
+    height,
+    setTooltip,
+    theme,
+  })
+) : (
+    <Row style={{
+      color: xAxis.style.textFill,
+      justifyContent: 'center',
+    }}
+    >
       No data
     </Row>
-  );
+  ));
 
 export default withTheme(withTooltip(StackedBarChart));

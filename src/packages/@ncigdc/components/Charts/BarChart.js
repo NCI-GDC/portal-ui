@@ -4,13 +4,19 @@
 import React from 'react';
 import * as d3 from 'd3';
 import ReactFauxDOM from 'react-faux-dom';
-import { compose, withState, pure } from 'recompose';
+import {
+  compose,
+  withState,
+  pure,
+} from 'recompose';
 
 // Custom
 import { withTheme } from '@ncigdc/theme';
 import { withTooltip } from '@ncigdc/uikit/Tooltip';
 import withSize from '@ncigdc/utils/withSize';
 import './style.css';
+
+export const DEFAULT_X_AXIS_LABEL_LENGTH = 8;
 
 const BarChart = ({
   data,
@@ -22,15 +28,22 @@ const BarChart = ({
   margin: m,
   setTooltip,
   theme,
+  xAxisLabelLength = DEFAULT_X_AXIS_LABEL_LENGTH,
   size: { width },
 }) => {
   const el = ReactFauxDOM.createElement('div');
   el.style.width = '100%';
+
   el.setAttribute('class', 'test-bar-chart');
   const innerPadding = 0.3;
   const outerPadding = 0.3;
 
-  const margin = m || { top: 20, right: 50, bottom: 65, left: 55 };
+  const margin = m || {
+    top: 20,
+    right: 50,
+    bottom: 65,
+    left: 55,
+  };
   const chartWidth = width - margin.left - margin.right;
   const height = (h || 200) - margin.top - margin.bottom;
   const yAxisStyle = yAxis.style || {
@@ -83,13 +96,12 @@ const BarChart = ({
       .axisLeft(y)
       .ticks(Math.min(4, maxY))
       .tickSize(-chartWidth)
-      .tickSizeOuter(0),
+      .tickSizeOuter(0)
   );
 
   yG.selectAll('path').style('stroke', 'none');
   yG.selectAll('line').style('stroke', yAxisStyle.stroke);
-  yG
-    .selectAll('text')
+  yG.selectAll('text')
     .style('fontSize', yAxisStyle.fontSize)
     .style('fill', yAxisStyle.textFill);
 
@@ -110,19 +122,28 @@ const BarChart = ({
     .attr('transform', `translate(0, ${height})`)
     .call(d3.axisBottom(x));
 
-  xG
-    .selectAll('text')
-    .style('text-anchor', 'end')
+  xG.selectAll('text')
+    .style('text-anchor', 'start')
     .style('fontSize', xAxisStyle.fontSize)
     .style('fontWeight', xAxisStyle.fontWeight)
     .attr('fill', xAxisStyle.textFill)
-    .attr('dx', '-1em')
-    .attr('dy', '.15em')
-    .attr('transform', 'rotate(-45)');
+    .attr('dx', '.8em')
+    .attr('dy', '.5em')
+    .text(d => (d.length > xAxisLabelLength ? `${d.substring(0, xAxisLabelLength - 3)}...` : d))
+    .attr('transform', 'rotate(45)');
 
   xG.selectAll('path').style('stroke', xAxisStyle.stroke);
 
   xG.selectAll('line').style('stroke', xAxisStyle.stroke);
+
+  xG.selectAll('.tick')
+    .data(data)
+    .on('mouseenter', d => {
+      setTooltip(d.tooltip);
+    })
+    .on('mouseleave', () => {
+      setTooltip();
+    });
 
   const barGs = svg
     .selectAll('g.chart')
@@ -165,6 +186,6 @@ export default compose(
   withTheme,
   withTooltip,
   withState('chart', 'setState', <span />),
-  withSize(),
-  pure,
+  withSize({ refreshRate: 16 }),
+  pure
 )(BarChart);

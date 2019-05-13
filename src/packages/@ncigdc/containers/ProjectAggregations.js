@@ -61,7 +61,7 @@ const projectFacets = [
     type: 'keyword',
   },
   {
-    title: 'Experimental Strategies',
+    title: 'Experimental Strategy',
     field: 'summary.experimental_strategies.experimental_strategy',
     full: 'projects.summary.experimental_strategies.experimental_strategy',
     doc_type: 'project',

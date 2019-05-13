@@ -2,6 +2,7 @@
 
 import DownloadIcon from './Download';
 import SurvivalIcon from './SurvivalIcon';
+import PrintIcon from './Print';
 import SortIcon from './Sort';
 import SpinnerIcon from './Spinner';
 import DoubleArrowLeftIcon from './DoubleArrowLeft';
@@ -18,10 +19,14 @@ import ExclamationTriangleIcon from './ExclamationTriangle';
 import TrashIcon from './Trash';
 import AnalysisIcon from './Analysis';
 import MicroscopeIcon from './Microscope';
+import CloseIcon from './CloseIcon';
+import BarChartIcon from './BarChart';
+import BoxPlot from './BoxPlot';
 
 export {
   DownloadIcon,
   SurvivalIcon,
+  PrintIcon,
   SortIcon,
   SpinnerIcon,
   DoubleArrowLeftIcon,
@@ -38,4 +43,7 @@ export {
   TrashIcon,
   AnalysisIcon,
   MicroscopeIcon,
+  CloseIcon,
+  BarChartIcon,
+  BoxPlot,
 };

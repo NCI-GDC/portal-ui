@@ -9,6 +9,8 @@ import withSize from '@ncigdc/utils/withSize';
 import { withTheme } from '@ncigdc/theme';
 import './style.css';
 
+import { DEFAULT_X_AXIS_LABEL_LENGTH } from '@ncigdc/components/Charts/BarChart';
+
 type TProps = {
   data: Object,
   yAxis: Object,
@@ -27,15 +29,14 @@ const FilteredStackedBarChart = ({
   data,
   yAxis = {},
   xAxis = {},
-  styles,
   margin: m,
   displayFilters = {},
   colors,
-  projectsIdtoName,
   height = 200,
   size: { width },
   theme,
   setTooltip,
+  xAxisLabelLength = DEFAULT_X_AXIS_LABEL_LENGTH,
 }: TProps) => {
   const yAxisStyle = yAxis.style || {
     textFill: theme.greyScale3,
@@ -53,7 +54,12 @@ const FilteredStackedBarChart = ({
   el.style.width = '100%';
   el.setAttribute('class', 'test-stacked-bar-chart');
 
-  const margin = m || { top: 10, right: 0, bottom: 55, left: 70 };
+  const margin = m || {
+    top: 10,
+    right: 0,
+    bottom: 55,
+    left: 70,
+  };
   const chartWidth = width - margin.left - margin.right;
   const x = d3
     .scaleBand()
@@ -79,11 +85,13 @@ const FilteredStackedBarChart = ({
     .append('g')
     .attr('transform', `translate(${margin.left},${margin.top})`);
 
-  const stackedData = stack(data).map(d =>
-    d
-      .filter(d2 => !isNaN(d2[0]) && !isNaN(d2[1]))
-      .map(d2 => d2.concat({ key: d.key, index: d.index, data: d2.data })),
-  );
+  const stackedData = stack(data).map(d => d
+    .filter(d2 => !isNaN(d2[0]) && !isNaN(d2[1]))
+    .map(d2 => d2.concat({
+      key: d.key,
+      index: d.index,
+      data: d2.data,
+    })));
 
   const xG = g
     .append('g')
@@ -92,13 +100,14 @@ const FilteredStackedBarChart = ({
     .call(d3.axisBottom(x));
   xG
     .selectAll('text')
-    .style('text-anchor', 'end')
+    .style('text-anchor', 'start')
     .style('fontSize', xAxisStyle.fontSize)
     .style('fontWeight', xAxisStyle.fontWeight)
     .attr('fill', xAxisStyle.textFill)
-    .attr('dx', '-1em')
-    .attr('dy', '.15em')
-    .attr('transform', 'rotate(-45)');
+    .attr('dx', '.8em')
+    .attr('dy', '.5em')
+    .text(d => (d.length > xAxisLabelLength ? `${d.substring(0, xAxisLabelLength - 3)}...` : d))
+    .attr('transform', 'rotate(45)');
   xG.selectAll('path').style('stroke', xAxisStyle.stroke);
   xG.selectAll('line').style('stroke', xAxisStyle.stroke);
 

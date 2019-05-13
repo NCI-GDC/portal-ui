@@ -1,6 +1,12 @@
 // @flow
 import React from 'react';
-import { compose, withState, withHandlers, defaultProps } from 'recompose';
+import {
+  compose,
+  withState,
+  withHandlers,
+  defaultProps,
+  lifecycle,
+} from 'recompose';
 
 import Input from '@ncigdc/uikit/Form/Input';
 import Pencil from '@ncigdc/theme/icons/Pencil';
@@ -30,7 +36,11 @@ export default compose(
       text,
       handleSave,
       handleCancel,
+      disabled = false,
     }) => () => {
+      if (disabled) {
+        return null;
+      }
       if (value.length !== 0) {
         setIsEditing(!isEditing);
         if (isEditing && value !== text) {
@@ -39,6 +49,13 @@ export default compose(
       }
     },
   }),
+  lifecycle({
+    componentDidUpdate({ text, value, setValue, isEditing }): void {
+      if (!isEditing && value !== text) {
+        setValue(text);
+      }
+    },
+  })
 )(
   ({
     text,
@@ -48,10 +65,22 @@ export default compose(
     setValue,
     setIsEditing,
     handleCancel,
+    children,
+    iconStyle = {},
+    containerStyle = {},
+    disabled = false,
+    disabledMessage = null,
   }) => (
     <div>
       {isEditing ? (
-        <Row style={{ justifyContent: 'space-between', alignItems: 'center' }}>
+        <Row
+          style={{
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            ...containerStyle,
+          }}
+          spacing={'5px'}
+        >
           <Input
             style={{
               width: '300px',
@@ -76,8 +105,8 @@ export default compose(
               value.split(' ').join('').length === 0
                 ? 'Name must not be empty'
                 : value.length > MAX_SET_NAME_LENGTH
-                  ? `Maximum name length ${MAX_SET_NAME_LENGTH}`
-                  : null
+                ? `Maximum name length ${MAX_SET_NAME_LENGTH}`
+                : null
             }
           >
             <Button
@@ -98,18 +127,25 @@ export default compose(
           </Button>
         </Row>
       ) : (
-        <Row onClick={toggleEditingAndSave} style={{ cursor: 'text' }}>
-          <span>{value}</span>
-          <Pencil
-            style={{
-              fontSize: '0.9em',
-              paddingLeft: '5px',
-              alignSelf: 'center',
-              color: 'rgb(96, 111, 81)',
-            }}
-          />
-        </Row>
+        <Tooltip Component={disabled ? disabledMessage : null}>
+          <Row
+            onClick={toggleEditingAndSave}
+            style={{ cursor: disabled ? 'not-allowed' : 'text' }}
+          >
+            {children}
+            <Pencil
+              style={{
+                fontSize: '0.9em',
+                paddingLeft: '5px',
+                alignSelf: 'center',
+                color: 'rgb(96, 111, 81)',
+                ...iconStyle,
+                cursor: disabled ? 'not-allowed' : 'pointer',
+              }}
+            />
+          </Row>
+        </Tooltip>
       )}
     </div>
-  ),
+  )
 );

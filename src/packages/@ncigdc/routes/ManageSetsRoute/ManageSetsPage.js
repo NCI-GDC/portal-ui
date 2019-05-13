@@ -443,7 +443,9 @@ const ManageSetsPage = ({
                                 id: id,
                               }),
                             )}
-                        />
+                        >
+                          <span>{label}</span>
+                        </EditableLabel>
                       </Td>
                       <Td key={`count${i}`}>
                         {get(setSizes, id) > 0 ? (

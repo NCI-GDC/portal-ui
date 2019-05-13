@@ -76,6 +76,7 @@ const DownloadVisualizationButton = ({
           disabled={disabled}
           leftIcon={!noText && <Download />}
           style={visualizingButton}
+          type="button"
         >
           {noText ? (
             <span>

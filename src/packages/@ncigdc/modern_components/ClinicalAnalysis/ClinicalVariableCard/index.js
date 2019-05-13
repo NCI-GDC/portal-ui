@@ -78,6 +78,7 @@ import { humanify } from '@ncigdc/utils/string';
 import timestamp from '@ncigdc/utils/timestamp';
 
 import { IS_CDAVE_DEV } from '@ncigdc/utils/constants';
+import termCapitaliser from '@ncigdc/utils/customisation';
 import {
   boxTableAllowedStats,
   boxTableRenamedStats,
@@ -452,7 +453,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
             position: 'sticky',
             top: 0,
           },
-          title: humanify({ term: fieldName }),
+          title: humanify({ term: termCapitaliser(fieldName) }),
         },
         {
           key: 'doc_count',
@@ -589,6 +590,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
   return (
     <Column
       className="clinical-analysis-categorical-card"
+      id={`${wrapperId}-container`}
       style={{
         ...zDepth1,
         height: 560,
@@ -610,7 +612,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
           marginTop: 10,
         }}
             >
-          {humanify({ term: fieldName })}
+          {humanify({ term: termCapitaliser(fieldName) })}
         </h2>
         <Row>
           {plots.concat('delete')
@@ -725,7 +727,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                     }}
                     svg={() => wrapSvg({
                       selector: `#${wrapperId} svg`,
-                      title: humanify({ term: fieldName }),
+                      title: humanify({ term: termCapitaliser(fieldName) }),
                     })
                     }
                     tooltipHTML="Download image or data"
@@ -1010,7 +1012,9 @@ export default compose(
       {
         dataBuckets: rawQueryData
           ? variable.plotTypes === 'continuous'
-            ? rawQueryData.histogram.buckets
+            ? rawQueryData.histogram
+              ? rawQueryData.histogram.buckets
+              : []
             : rawQueryData.buckets
           : [],
         dataValues: variable.plotTypes === 'continuous' && map(
@@ -1233,12 +1237,15 @@ export default compose(
       } = this.props;
       if (variable.scrollToCard === false) return;
       const offset = document.getElementById('header').getBoundingClientRect().bottom + 10;
-      const $anchor = document.getElementById(wrapperId);
-      const offsetTop = $anchor.getBoundingClientRect().top + window.pageYOffset;
-      window.scroll({
-        behavior: 'smooth',
-        top: offsetTop - offset,
-      });
+      const $anchor = document.getElementById(`${wrapperId}-container`);
+      if ($anchor) {
+        const offsetTop = $anchor.getBoundingClientRect().top + window.pageYOffset;
+        window.scroll({
+          behavior: 'smooth',
+          top: offsetTop - offset,
+        });
+      }
+
       dispatch(
         updateClinicalAnalysisVariable({
           fieldName,

@@ -49,17 +49,41 @@ export const LOCAL_STORAGE_API_OVERRIDE = API_OVERRIDE_KEYS.some(
 );
 
 export const DATA_CATEGORIES = {
-  SEQ: { full: 'Sequencing Reads', abbr: 'Seq' },
-  EXP: { full: 'Transcriptome Profiling', abbr: 'Exp' },
-  SNV: { full: 'Simple Nucleotide Variation', abbr: 'SNV' },
-  CNV: { full: 'Copy Number Variation', abbr: 'CNV' },
-  METH: { full: 'DNA Methylation', abbr: 'Meth' },
-  CLINICAL: { full: 'Clinical', abbr: 'Clinical' },
-  BIOSPECIMEN: { full: 'Biospecimen', abbr: 'Bio' },
+  SEQ: {
+    full: 'Sequencing Reads',
+    abbr: 'Seq',
+  },
+  EXP: {
+    full: 'Transcriptome Profiling',
+    abbr: 'Exp',
+  },
+  SNV: {
+    full: 'Simple Nucleotide Variation',
+    abbr: 'SNV',
+  },
+  CNV: {
+    full: 'Copy Number Variation',
+    abbr: 'CNV',
+  },
+  METH: {
+    full: 'DNA Methylation',
+    abbr: 'Meth',
+  },
+  CLINICAL: {
+    full: 'Clinical',
+    abbr: 'Clinical',
+  },
+  BIOSPECIMEN: {
+    full: 'Biospecimen',
+    abbr: 'Bio',
+  },
 };
 
 export const DATA_TYPES = {
-  GEQ: { full: 'Gene Expression Quantification', abbr: 'GEQ' },
+  GEQ: {
+    full: 'Gene Expression Quantification',
+    abbr: 'GEQ',
+  },
 };
 
 export const EXPERIMENTAL_STRATEGIES = [
@@ -115,7 +139,11 @@ export const MUTATION_SUBTYPE_MAP = {
   'small insertion': 'Insertion',
 };
 
-export const DNA_CHANGE_MARKERS = ['del', 'ins', '>'];
+export const DNA_CHANGE_MARKERS = [
+  'del',
+  'ins',
+  '>',
+];
 
 export const HUMAN_BODY_SITES_MAP = {
   'accessory sinuses': 'Head and Neck',
@@ -288,18 +316,39 @@ export const IMPACT_SHORT_FORMS = {
 export const FAKE_USER =
   localStorage.REACT_APP_ALLOW_FAKE_USER || process.env.REACT_APP_ALLOW_FAKE_USER
   ? {
-      username: 'DEV_USER',
-      projects: {
-        phs_ids: {
-          phs000178: ['_member_', 'read', 'delete'],
-        },
-        gdc_ids: {
-          'TCGA-LIHC': ['read', 'delete', 'create', 'update', 'read_report'],
-          'CGCI-BLGSP': ['create', 'update', 'release', 'read_report'],
-          'TCGA-DEV3': ['read', 'create', 'update', 'release', 'delete'],
-        },
+    username: 'DEV_USER',
+    projects: {
+      phs_ids: {
+        phs000178: [
+          '_member_',
+          'read',
+          'delete',
+        ],
       },
-    }
+      gdc_ids: {
+        'TCGA-LIHC': [
+          'read',
+          'delete',
+          'create',
+          'update',
+          'read_report',
+        ],
+        'CGCI-BLGSP': [
+          'create',
+          'update',
+          'release',
+          'read_report',
+        ],
+        'TCGA-DEV3': [
+          'read',
+          'create',
+          'update',
+          'release',
+          'delete',
+        ],
+      },
+    },
+  }
   : null;
 
 export const IS_DEV = process.env.NODE_ENV === 'development';
@@ -325,3 +374,43 @@ export const IS_CDAVE_DEV =
   localStorage.REACT_APP_IS_CDAVE_DEV ||
   process.env.NODE_ENV === 'development' ||
   false;
+
+// specific string values, in case of mixed casing e.g. 'MaRS'
+export const capitalisedTerms = {
+  '.bmi': '.BMI',
+  _bmi: '_BMI',
+  'aa.': 'AA.',
+  aa_: 'AA_',
+  'ajc.': 'AJC.',
+  ajcc: 'AJCC',
+  'cog.': 'COG.',
+  cog_: 'COG_',
+  'dlco.': 'DLCO.',
+  dlco_: 'DLCO_',
+  'ecog.': 'ECOG.',
+  ecog_: 'ECOG_',
+  'fev1.': 'FEV1.',
+  fev1_: 'FEV1_',
+  'figo.': 'FIGO.',
+  figo_: 'FIGO_',
+  'fvc.': 'FVC.',
+  fvc_: 'FVC_',
+  'hiv.': 'HIV.',
+  hiv_: 'HIV_',
+  'hpv.': 'HPV.',
+  hpv_: 'HPV_',
+  'inpc.': 'INPC.',
+  inpc_: 'INPC_',
+  'inrg.': 'INRG.',
+  inrg_: 'INRG_',
+  'inss.': 'INSS.',
+  inss_: 'INSS_',
+  'irs.': 'IRS.',
+  irs_: 'IRS_',
+  'iss.': 'ISS.',
+  iss_: 'ISS_',
+  'ldh.': 'LDH.',
+  ldh_: 'LDH_',
+  'msts.': 'MSTS.',
+  msts_: 'MSTS_',
+};

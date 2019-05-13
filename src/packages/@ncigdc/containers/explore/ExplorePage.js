@@ -101,195 +101,200 @@ function setVariables({ relay, filters }) {
   });
 }
 
-const enhance = compose(
-  withRouter,
-  withState('maxFacetsPanelHeight', 'setMaxFacetsPanelHeight', 0),
-  lifecycle({
-    componentDidMount() {
-      setVariables(this.props);
-    },
-    componentWillReceiveProps(nextProps) {
-      if (!isEqual(this.props.filters, nextProps.filters)) {
-        setVariables(nextProps);
-      }
-    },
-  }),
-);
-export const ExplorePageComponent = ({
-  viewer,
-  filters,
-  relay,
-  push,
-  maxFacetsPanelHeight,
-  setMaxFacetsPanelHeight,
-}: TProps) => (
-  <SearchPage
-      className="test-explore-page"
-      facetTabs={[
-        {
-          id: 'cases',
-          text: 'Cases',
-          component: (
-            <CaseAggregations
-              aggregations={viewer.explore.cases.aggregations}
-              facets={viewer.explore.customCaseFacets}
-              maxFacetsPanelHeight={maxFacetsPanelHeight}
-              setAutocomplete={(value, onReadyStateChange) => relay.setVariables(
-                {
-                  idAutocompleteCases: value,
-                  runAutocompleteCases: !!value,
-                },
-                onReadyStateChange,
-              )}
-              suggestions={get(viewer, 'autocomplete_cases.hits', [])}
-              />
-          ),
-        },
-        {
-          id: 'clinical',
-          text: 'Clinical',
-          component: (
-            <ClinicalAggregations
-              aggregations={viewer.explore.cases.aggregations}
-              caseFacets={viewer.caseFacets}
-              docType="cases"
-              facets={viewer.explore.customCaseFacets}
-              globalFilters={filters}
-              maxFacetsPanelHeight={maxFacetsPanelHeight}
-              relayVarName="exploreCaseCustomFacetFields"
-              />
-          ),
-        },
-        {
-          id: 'genes',
-          text: 'Genes',
-          component: (
-            <GeneAggregations
-              aggregations={viewer.explore.genes.aggregations}
-              cnvAggregations={viewer.explore.cnvs.aggregations}
-              setAutocomplete={(value, onReadyStateChange) => relay.setVariables(
-                {
-                  idAutocompleteGenes: value,
-                  runAutocompleteGenes: !!value,
-                },
-                onReadyStateChange,
-              )}
-              suggestions={get(viewer, 'autocomplete_genes.hits', [])}
-              />
-          ),
-        },
-        {
-          id: 'mutations',
-          text: 'Mutations',
-          component: (
-            <SSMAggregations
-              aggregations={viewer.explore.ssms.aggregations}
-              defaultFilters={filters}
-              maxFacetsPanelHeight={maxFacetsPanelHeight}
-              setAutocomplete={(value, onReadyStateChange) => relay.setVariables(
-                {
-                  idAutocompleteSsms: value,
-                  runAutocompleteSsms: !!value,
-                },
-                onReadyStateChange,
-              )}
-              ssms={viewer.explore.ssms}
-              suggestions={get(viewer, 'autocomplete_ssms.hits', [])}
-              />
-          ),
-        },
-      ]}
-      results={(
-        <span>
-          <ResizeDetector
-            handleHeight
-            onResize={(width, height) => setMaxFacetsPanelHeight(height)}
-            />
-          <Row>
-            {filters ? (
-              <CreateExploreCaseSetButton
-                disabled={!viewer.explore.cases.hits.total}
-                filters={filters}
-                onComplete={setId => {
-                  push({
-                    pathname: '/repository',
-                    query: {
-                      filters: stringifyJSONParam({
-                        op: 'AND',
-                        content: [
-                          {
-                            op: 'IN',
-                            content: {
-                              field: 'cases.case_id',
-                              value: [`set_id:${setId}`],
-                            },
-                          },
-                        ],
-                      }),
+export class ExplorePageComponent extends React.Component {
+  state = {
+    maxFacetsPanelHeight: 0,
+  }
+
+  componentDidMount() {
+    setVariables(this.props);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (!isEqual(this.props.filters, nextProps.filters)) {
+      setVariables(nextProps);
+    }
+  }
+
+  render() {
+    const {
+      viewer,
+      filters,
+      relay,
+      push,
+    } = this.props;
+    const { maxFacetsPanelHeight } = this.state;
+
+    return (
+      <SearchPage
+          className="test-explore-page"
+          facetTabs={[
+            {
+              id: 'cases',
+              text: 'Cases',
+              component: (
+                <CaseAggregations
+                  aggregations={viewer.explore.cases.aggregations}
+                  facets={viewer.explore.customCaseFacets}
+                  maxFacetsPanelHeight={maxFacetsPanelHeight}
+                  setAutocomplete={(value, onReadyStateChange) => relay.setVariables(
+                    {
+                      idAutocompleteCases: value,
+                      runAutocompleteCases: !!value,
                     },
-                  });
-                }}
-                style={{ marginBottom: '2rem' }}
-                >
-                View Files in Repository
-              </CreateExploreCaseSetButton>
-            ) : (
-              <Button
-                  disabled={!viewer.explore.cases.hits.total}
-                  onClick={() => push({
-                    pathname: '/repository',
-                  })}
-                  style={{ marginBottom: '2rem' }}
-                  >
-                  View Files in Repository
-                </Button>
-              )}
-          </Row>
-          <TabbedLinks
-            defaultIndex={0}
-            links={[
-              {
-                id: 'cases',
-                text: `Cases (${viewer.explore.cases.hits.total.toLocaleString()})`,
-                component: viewer.explore.cases.hits.total ? (
-                  <CasesTab />
+                    onReadyStateChange,
+                  )}
+                  suggestions={get(viewer, 'autocomplete_cases.hits', [])}
+                  />
+              ),
+            },
+            {
+              id: 'clinical',
+              text: 'Clinical',
+              component: (
+                <ClinicalAggregations
+                  aggregations={viewer.explore.cases.aggregations}
+                  caseFacets={viewer.caseFacets}
+                  docType="cases"
+                  facets={viewer.explore.customCaseFacets}
+                  globalFilters={filters}
+                  maxFacetsPanelHeight={maxFacetsPanelHeight}
+                  relayVarName="exploreCaseCustomFacetFields"
+                  />
+              ),
+            },
+            {
+              id: 'genes',
+              text: 'Genes',
+              component: (
+                <GeneAggregations
+                  aggregations={viewer.explore.genes.aggregations}
+                  cnvAggregations={viewer.explore.cnvs.aggregations}
+                  setAutocomplete={(value, onReadyStateChange) => relay.setVariables(
+                    {
+                      idAutocompleteGenes: value,
+                      runAutocompleteGenes: !!value,
+                    },
+                    onReadyStateChange,
+                  )}
+                  suggestions={get(viewer, 'autocomplete_genes.hits', [])}
+                  />
+              ),
+            },
+            {
+              id: 'mutations',
+              text: 'Mutations',
+              component: (
+                <SSMAggregations
+                  aggregations={viewer.explore.ssms.aggregations}
+                  defaultFilters={filters}
+                  maxFacetsPanelHeight={maxFacetsPanelHeight}
+                  setAutocomplete={(value, onReadyStateChange) => relay.setVariables(
+                    {
+                      idAutocompleteSsms: value,
+                      runAutocompleteSsms: !!value,
+                    },
+                    onReadyStateChange,
+                  )}
+                  ssms={viewer.explore.ssms}
+                  suggestions={get(viewer, 'autocomplete_ssms.hits', [])}
+                  />
+              ),
+            },
+          ]}
+          results={(
+            <span>
+              <ResizeDetector
+                handleHeight
+                onResize={(width, height) => this.setState({ maxFacetsPanelHeight: height })}
+                />
+              <Row>
+                {filters ? (
+                  <CreateExploreCaseSetButton
+                    disabled={!viewer.explore.cases.hits.total}
+                    filters={filters}
+                    onComplete={setId => {
+                      push({
+                        pathname: '/repository',
+                        query: {
+                          filters: stringifyJSONParam({
+                            op: 'AND',
+                            content: [
+                              {
+                                op: 'IN',
+                                content: {
+                                  field: 'cases.case_id',
+                                  value: [`set_id:${setId}`],
+                                },
+                              },
+                            ],
+                          }),
+                        },
+                      });
+                    }}
+                    style={{ marginBottom: '2rem' }}
+                    >
+                    View Files in Repository
+                  </CreateExploreCaseSetButton>
                 ) : (
-                  <NoResultsMessage>No Cases Found.</NoResultsMessage>
-                  ),
-              },
-              {
-                id: 'genes',
-                text: `Genes (${viewer.explore.genes.hits.total.toLocaleString()})`,
-                component: viewer.explore.genes.hits.total ? (
-                  <GenesTab viewer={viewer} />
-                ) : (
-                  <NoResultsMessage>No Genes Found.</NoResultsMessage>
-                  ),
-              },
-              {
-                id: 'mutations',
-                text: `Mutations (${viewer.explore.ssms.hits.total.toLocaleString()})`,
-                component: viewer.explore.ssms.hits.total ? (
-                  <MutationsTab
-                    totalNumCases={viewer.explore.cases.hits.total}
-                    viewer={viewer}
-                    />
-                ) : (
-                  <NoResultsMessage>No Mutations Found.</NoResultsMessage>
-                  ),
-              },
-              {
-                id: 'oncogrid',
-                text: 'OncoGrid',
-                component: <OncogridTab />,
-              },
-            ]}
-            queryParam="searchTableTab"
-            />
-        </span>
-      )}
-      />
-);
+                  <Button
+                      disabled={!viewer.explore.cases.hits.total}
+                      onClick={() => push({
+                        pathname: '/repository',
+                      })}
+                      style={{ marginBottom: '2rem' }}
+                      >
+                      View Files in Repository
+                  </Button>
+                  )}
+              </Row>
+              <TabbedLinks
+                defaultIndex={0}
+                links={[
+                  {
+                    id: 'cases',
+                    text: `Cases (${viewer.explore.cases.hits.total.toLocaleString()})`,
+                    component: viewer.explore.cases.hits.total ? (
+                      <CasesTab />
+                    ) : (
+                      <NoResultsMessage>No Cases Found.</NoResultsMessage>
+                      ),
+                  },
+                  {
+                    id: 'genes',
+                    text: `Genes (${viewer.explore.genes.hits.total.toLocaleString()})`,
+                    component: viewer.explore.genes.hits.total ? (
+                      <GenesTab viewer={viewer} />
+                    ) : (
+                      <NoResultsMessage>No Genes Found.</NoResultsMessage>
+                      ),
+                  },
+                  {
+                    id: 'mutations',
+                    text: `Mutations (${viewer.explore.ssms.hits.total.toLocaleString()})`,
+                    component: viewer.explore.ssms.hits.total ? (
+                      <MutationsTab
+                        totalNumCases={viewer.explore.cases.hits.total}
+                        viewer={viewer}
+                        />
+                    ) : (
+                      <NoResultsMessage>No Mutations Found.</NoResultsMessage>
+                      ),
+                  },
+                  {
+                    id: 'oncogrid',
+                    text: 'OncoGrid',
+                    component: <OncogridTab />,
+                  },
+                ]}
+                queryParam="searchTableTab"
+                />
+            </span>
+          )}
+          />
+    );
+  }
+}
 
 export const ExplorePageQuery = {
   initialVariables: {
@@ -354,15 +359,15 @@ export const ExplorePageQuery = {
           fields {
             description
             name
-            type { 
-              name 
-              fields 
-              { 
-                name 
-                description 
-                type { 
+            type {
+              name
+              fields
+              {
+                name
+                description
+                type {
                   name }
-              } 
+              }
             }
           }
         }
@@ -415,7 +420,7 @@ export const ExplorePageQuery = {
 };
 
 const ExplorePage = Relay.createContainer(
-  enhance(ExplorePageComponent),
+  withRouter(ExplorePageComponent),
   ExplorePageQuery,
 );
 

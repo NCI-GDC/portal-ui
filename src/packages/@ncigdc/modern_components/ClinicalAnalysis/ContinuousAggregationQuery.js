@@ -35,6 +35,18 @@ const getContinuousAggs = ({ fieldName, stats, filters }) => {
   const variables = {
     filters,
   };
+  // stats {
+  //   Min : min
+  //   Max: max
+  //   Mean: avg
+  //   SD: std_deviation
+  // }
+  // percentiles {
+  //   Median: median
+  //   IQR: iqr
+  //   q1: quartile_1
+  //   q3: quartile_3
+  // }
   const componentName = 'ContinuousAggregationQuery';
   const body = JSON.stringify({
     query: `query ${componentName}($filters: FiltersArgument) {
@@ -43,18 +55,6 @@ const getContinuousAggs = ({ fieldName, stats, filters }) => {
           cases {
             aggregations(filters: $filters) {
               ${queryFieldName} {
-                stats {
-                  Min : min
-                  Max: max
-                  Mean: avg
-                  SD: std_deviation
-                }
-                percentiles {
-                  Median: median
-                  IQR: iqr
-                  q1: quartile_1
-                  q3: quartile_3
-                }
                 histogram(interval: ${interval}) {
                   buckets {
                     key

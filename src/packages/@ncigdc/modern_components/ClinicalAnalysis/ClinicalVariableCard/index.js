@@ -994,8 +994,8 @@ export default compose(
       {
         dataBuckets: rawQueryData
           ? variable.plotTypes === 'continuous'
-            ? rawQueryData.histogram.buckets
-            : rawQueryData.buckets
+            ? (rawQueryData.histogram || { buckets: [] }).buckets
+            : (rawQueryData || { buckets: [] }).buckets
           : [],
         dataValues: variable.plotTypes === 'continuous' && map(
           {

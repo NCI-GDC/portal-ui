@@ -50,7 +50,9 @@ export default compose(
     },
   }),
   lifecycle({
-    componentDidUpdate({ text, value, setValue, isEditing }): void {
+    componentDidUpdate({
+      text, value, setValue, isEditing,
+    }): void {
       if (!isEditing && value !== text) {
         setValue(text);
       }
@@ -70,82 +72,84 @@ export default compose(
     containerStyle = {},
     disabled = false,
     disabledMessage = null,
+    pencilEditingOnly = false,
   }) => (
     <div>
-      {isEditing ? (
-        <Row
-          style={{
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            ...containerStyle,
-          }}
-          spacing={'5px'}
-        >
-          <Input
-            style={{
-              width: '300px',
-              borderRadius: '4px',
-              transition: 'all 0.2s ease',
-            }}
-            value={value}
-            onChange={e => setValue(e.target.value)}
-            onKeyDown={e => {
-              if (e.key === 'Enter') {
-                toggleEditingAndSave();
-              } else if (e.key === 'Escape') {
-                handleCancel();
-              }
-            }}
-            type="text"
-            autoFocus
-            onFocus={e => e.target.select()}
-          />
-          <Tooltip
-            Component={
-              value.split(' ').join('').length === 0
-                ? 'Name must not be empty'
-                : value.length > MAX_SET_NAME_LENGTH
-                ? `Maximum name length ${MAX_SET_NAME_LENGTH}`
-                : null
-            }
-          >
-            <Button
-              onClick={toggleEditingAndSave}
-              disabled={
-                value.split(' ').join('').length === 0 ||
-                value.length > MAX_SET_NAME_LENGTH
-              }
-              style={{
-                ...visualizingButton,
-              }}
-            >
-              Save
-            </Button>
-          </Tooltip>
-          <Button onClick={handleCancel} style={visualizingButton}>
-            Cancel
-          </Button>
-        </Row>
-      ) : (
-        <Tooltip Component={disabled ? disabledMessage : null}>
+        {isEditing ? (
           <Row
-            onClick={toggleEditingAndSave}
-            style={{ cursor: disabled ? 'not-allowed' : 'text' }}
-          >
-            {children}
-            <Pencil
-              style={{
-                fontSize: '0.9em',
-                paddingLeft: '5px',
-                alignSelf: 'center',
-                color: 'rgb(96, 111, 81)',
-                ...iconStyle,
-                cursor: disabled ? 'not-allowed' : 'pointer',
+            spacing="5px"
+            style={{
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              ...containerStyle,
+            }}
+            >
+            <Input
+              autoFocus
+              onChange={e => setValue(e.target.value)}
+              onFocus={e => e.target.select()}
+              onKeyDown={e => {
+                if (e.key === 'Enter') {
+                  toggleEditingAndSave();
+                } else if (e.key === 'Escape') {
+                  handleCancel();
+                }
               }}
-            />
+              style={{
+                width: '300px',
+                borderRadius: '4px',
+                transition: 'all 0.2s ease',
+              }}
+              type="text"
+              value={value}
+              />
+            <Tooltip
+              Component={
+                value.split(' ').join('').length === 0
+                  ? 'Name must not be empty'
+                  : value.length > MAX_SET_NAME_LENGTH
+                    ? `Maximum name length ${MAX_SET_NAME_LENGTH}`
+                    : null
+              }
+              >
+              <Button
+                disabled={
+                  value.split(' ').join('').length === 0 ||
+                  value.length > MAX_SET_NAME_LENGTH
+                }
+                onClick={toggleEditingAndSave}
+                style={{
+                  ...visualizingButton,
+                }}
+                >
+                Save
+              </Button>
+            </Tooltip>
+            <Button onClick={handleCancel} style={visualizingButton}>
+              Cancel
+            </Button>
           </Row>
-        </Tooltip>
-      )}
-    </div>
+        ) : (
+          <Tooltip Component={disabled ? disabledMessage : null}>
+              <Row
+                onClick={pencilEditingOnly ? toggleEditingAndSave : null}
+                style={{ cursor: disabled ? 'not-allowed' : 'text' }}
+                >
+                {children}
+                <Pencil
+                  onClick={pencilEditingOnly ? null : toggleEditingAndSave}
+                  style={{
+                    fontSize: '0.9em',
+                    paddingLeft: '5px',
+                    alignSelf: 'center',
+                    color: 'rgb(96, 111, 81)',
+                    ...iconStyle,
+                    cursor: disabled ? 'not-allowed' : 'pointer',
+                  }}
+                  />
+              </Row>
+            </Tooltip>
+          )}
+      </div>
   )
 );

@@ -655,7 +655,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
           </Row>
         )
         : (
-          <div id={wrapperId}>
+          <div id={`${wrapperId}-container`}>
             {['survival', 'box'].includes(variable.active_chart) || (
               <Row style={{ paddingLeft: 10 }}>
                 <form style={{ width: '100%' }}>
@@ -1010,7 +1010,9 @@ export default compose(
       {
         dataBuckets: rawQueryData
           ? variable.plotTypes === 'continuous'
-            ? rawQueryData.histogram.buckets
+            ? rawQueryData.histogram
+              ? rawQueryData.histogram.buckets
+              : []
             : rawQueryData.buckets
           : [],
         dataValues: variable.plotTypes === 'continuous' && map(
@@ -1233,12 +1235,15 @@ export default compose(
       } = this.props;
       if (variable.scrollToCard === false) return;
       const offset = document.getElementById('header').getBoundingClientRect().bottom + 10;
-      const $anchor = document.getElementById(wrapperId);
-      const offsetTop = $anchor.getBoundingClientRect().top + window.pageYOffset;
-      window.scroll({
-        behavior: 'smooth',
-        top: offsetTop - offset,
-      });
+      const $anchor = document.getElementById(`${wrapperId}-container`);
+      if ($anchor) {
+        const offsetTop = $anchor.getBoundingClientRect().top + window.pageYOffset;
+        window.scroll({
+          behavior: 'smooth',
+          top: offsetTop - offset,
+        });
+      }
+
       dispatch(
         updateClinicalAnalysisVariable({
           fieldName,

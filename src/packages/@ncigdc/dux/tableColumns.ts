@@ -46,7 +46,7 @@ const initialState = Object.keys(tableModels).reduce(
     ...acc,
     [key]: tableModels[key],
   }),
-  { version: 3 }
+  { version: 5 }
 );
 
 const reducer = (state = initialState, action: ITableColumnsAction) => {

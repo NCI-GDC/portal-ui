@@ -76,8 +76,9 @@ export default (Component: ReactClass<*>) =>
                           ethnicity
                           gender
                           race
-                          year_of_birth
-                          year_of_death
+                          days_to_birth
+                          days_to_death
+                          vital_status
                         }
                         family_histories {
                           hits(first: 99) {
@@ -100,8 +101,6 @@ export default (Component: ReactClass<*>) =>
                                 diagnosis_id
                                 classification_of_tumor
                                 age_at_diagnosis
-                                days_to_birth
-                                days_to_death
                                 days_to_last_follow_up
                                 days_to_last_known_disease_status
                                 days_to_recurrence
@@ -114,7 +113,6 @@ export default (Component: ReactClass<*>) =>
                                 tissue_or_organ_of_origin
                                 tumor_stage
                                 tumor_grade
-                                vital_status
                                 treatments {
                                   hits(first: 99) {
                                     edges {
@@ -138,12 +136,10 @@ export default (Component: ReactClass<*>) =>
                             edges {
                               node {
                                 id
-                                cigarettes_per_day
                                 weight
                                 updated_datetime
                                 alcohol_history
                                 alcohol_intensity
-                                bmi
                                 years_smoked
                                 submitter_id
                                 created_datetime

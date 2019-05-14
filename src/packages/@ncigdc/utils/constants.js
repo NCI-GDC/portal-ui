@@ -317,7 +317,7 @@ export const MAX_SET_NAME_LENGTH = 100;
 export const COHORT_COMPARISON_FACETS = {
   'demographic.ethnicity': 'Ethnicity',
   'demographic.gender': 'Gender',
-  'diagnoses.vital_status': 'Vital Status',
+  'demographic.vital_status': 'Vital Status',
   'demographic.race': 'Race',
   'diagnoses.age_at_diagnosis': 'Age at Diagnosis',
 };

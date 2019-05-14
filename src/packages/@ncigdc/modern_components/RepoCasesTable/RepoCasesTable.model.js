@@ -311,18 +311,15 @@ const casesTableModel = [
   },
   {
     name: 'Days to death',
-    id: 'diagnoses.days_to_death',
+    id: 'demographic.days_to_death',
     sortable: false,
     downloadable: true,
     hidden: true,
     th: () => <Th rowSpan="2">Days to death</Th>,
     td: ({ node }) => {
-      const primaryDiagnosis = node.diagnoses.hits.edges
-        .map(x => x.node)
-        .reduce(youngestDiagnosis, { age_at_diagnosis: Infinity });
       return (
         <Td>
-          {(node.diagnoses && ageDisplay(primaryDiagnosis.days_to_death)) ||
+          {(node.demographic && ageDisplay(node.demographic.days_to_death)) ||
             '--'}
         </Td>
       );
@@ -330,16 +327,13 @@ const casesTableModel = [
   },
   {
     name: 'Vital Status',
-    id: 'diagnoses.vital_status',
+    id: 'demographic.vital_status',
     sortable: false,
     downloadable: true,
     hidden: true,
     th: () => <Th rowSpan="2">Vital Status</Th>,
     td: ({ node }) => {
-      const primaryDiagnosis = node.diagnoses.hits.edges
-        .map(x => x.node)
-        .reduce(youngestDiagnosis, { age_at_diagnosis: Infinity });
-      return <Td>{primaryDiagnosis.vital_status}</Td>;
+      return <Td>{node.demographic && node.demographic.vital_status}</Td>;
     },
   },
   {

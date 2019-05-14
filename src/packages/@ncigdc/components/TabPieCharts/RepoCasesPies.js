@@ -16,7 +16,7 @@ export type TProps = {
     demographic__ethnicity: { buckets: [IBucket] },
     demographic__gender: { buckets: [IBucket] },
     demographic__race: { buckets: [IBucket] },
-    diagnoses__vital_status: { buckets: [IBucket] },
+    demographic__vital_status: { buckets: [IBucket] },
     disease_type: { buckets: [IBucket] },
     primary_site: { buckets: [IBucket] },
     project__program__name: { buckets: [IBucket] },
@@ -95,8 +95,8 @@ const RepoCasesPiesComponent = ({ aggregations, query, push }: TProps) => {
       <ColumnCenter className="test-vital-status">
         <PieTitle>Vital Status</PieTitle>
         <SelfFilteringPie
-          buckets={_.get(aggregations, 'diagnoses__vital_status.buckets')}
-          fieldName="cases.diagnoses.vital_status"
+          buckets={_.get(aggregations, 'demographic__vital_status.buckets')}
+          fieldName="cases.demographic.vital_status"
           docTypeSingular="case"
           currentFieldNames={currentFieldNames}
           currentFilters={currentFilters}
@@ -133,7 +133,7 @@ export const RepoCasesPiesQuery = {
             key
           }
         }
-        diagnoses__vital_status {
+        demographic__vital_status {
           buckets {
             doc_count
             key

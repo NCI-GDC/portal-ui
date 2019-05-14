@@ -80,8 +80,6 @@ export default (Component: ReactClass<*>) =>
                               node {
                                 primary_diagnosis
                                 age_at_diagnosis
-                                vital_status
-                                days_to_death
                               }
                             }
                           }
@@ -90,6 +88,8 @@ export default (Component: ReactClass<*>) =>
                           gender
                           ethnicity
                           race
+                          days_to_death
+                          vital_status
                         }
                         summary {
                           data_categories {

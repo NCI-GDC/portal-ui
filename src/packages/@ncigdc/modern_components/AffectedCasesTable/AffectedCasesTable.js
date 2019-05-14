@@ -110,6 +110,7 @@ const createContainer = Component =>
                     submitter_id
                     demographic {
                       gender
+                      days_to_death
                     }
                     summary {
                       data_categories {
@@ -124,7 +125,6 @@ const createContainer = Component =>
                             age_at_diagnosis
                             tumor_stage
                             days_to_last_follow_up
-                            days_to_death
                           }
                         }
                       }
@@ -236,7 +236,7 @@ const Component = compose(
                 'diagnoses.age_at_diagnosis',
                 'diagnoses.tumor_stage',
                 'diagnoses.days_to_last_follow_up',
-                'diagnoses.days_to_death',
+                'demographic.days_to_death',
               ]}
               tsvSelector="#most-affected-cases-table"
               tsvFilename={`most-affected-cases-table.${timestamp()}.tsv`}
@@ -357,8 +357,8 @@ const Component = compose(
                       ? diagnosis.days_to_last_follow_up
                       : '--'
                     ).toLocaleString(),
-                    days_to_death: (!_.isNil(diagnosis.days_to_death)
-                      ? diagnosis.days_to_death
+                    days_to_death: (!_.isNil(demographic.days_to_death)
+                      ? demographic.days_to_death
                       : '--'
                     ).toLocaleString(),
                     num_mutations: (

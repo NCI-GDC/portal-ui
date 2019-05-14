@@ -40,7 +40,7 @@ const styles = {
 export default compose(
   branch(
     ({ viewer }) => !viewer.repository.cases.hits.edges[0],
-    renderComponent(() => <div>No case found.</div>)
+    renderComponent(() => <div>No case found.</div>),
   ),
   connect(state => state.cart),
   withState('activeTab', 'setTab', 0),
@@ -48,7 +48,7 @@ export default compose(
     tsvDownloading: false,
     jsonDownloading: false,
   }),
-  withTheme
+  withTheme,
 )(
   ({
     activeTab,
@@ -116,8 +116,9 @@ export default compose(
                     { th: 'Ethnicity', td: demographic.ethnicity },
                     { th: 'Gender', td: demographic.gender },
                     { th: 'Race', td: demographic.race },
-                    { th: 'Year of Birth', td: demographic.year_of_birth },
-                    { th: 'Year of Death', td: demographic.year_of_death },
+                    { th: 'Days to Birth', td: demographic.days_to_birth },
+                    { th: 'Days to Death', td: demographic.days_to_death },
+                    { th: 'Vital Status', td: demographic.vital_status },
                   ]}
                   style={{ flex: '1 1 auto' }}
                 />
@@ -142,7 +143,7 @@ export default compose(
                         ))
                       : []
                   }
-                  tabContent={diagnoses.map(d => d.node).map(x => (
+                  tabContent={diagnoses.map(({ node: x }) => (
                     <span key={x.diagnosis_id}>
                       <EntityPageVerticalTable
                         thToTd={[
@@ -159,8 +160,7 @@ export default compose(
                             th: 'Age at Diagnosis',
                             td: ageDisplay(x.age_at_diagnosis),
                           },
-                          { th: 'Days to Birth', td: x.days_to_birth },
-                          { th: 'Days to Death', td: x.days_to_death },
+
                           {
                             th: 'Days to Last Follow Up',
                             td: x.days_to_last_follow_up,
@@ -197,7 +197,6 @@ export default compose(
                           },
                           { th: 'Tumor Grade', td: x.tumor_grade },
                           { th: 'Tumor Stage', td: x.tumor_stage },
-                          { th: 'Vital Status', td: x.vital_status },
                         ]}
                         style={{ flex: 1 }}
                       />
@@ -326,11 +325,6 @@ export default compose(
                       thToTd={[
                         { th: 'UUID', td: x.node.exposure_id },
                         { th: 'Alcohol History', td: x.node.alcohol_history },
-                        { th: 'BMI', td: x.node.bmi },
-                        {
-                          th: 'Cigarettes per Day',
-                          td: x.node.cigarettes_per_day,
-                        },
                         { th: 'Height', td: x.node.height },
                         { th: 'Weight', td: x.node.weight },
                         { th: 'Years Smoked', td: x.node.years_smoked },
@@ -416,5 +410,5 @@ export default compose(
         )}
       </Card>
     );
-  }
+  },
 );

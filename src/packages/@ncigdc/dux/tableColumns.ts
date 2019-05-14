@@ -1,6 +1,6 @@
 import { REHYDRATE } from 'redux-persist';
 // Custom
-import tableModels from '@ncigdc/tableModels';
+import { default as tableModels } from '@ncigdc/tableModels';
 import { namespaceActions } from './utils';
 /*----------------------------------------------------------------------------*/
 const tableColumns = namespaceActions('tableColumns', [
@@ -46,7 +46,7 @@ const initialState = Object.keys(tableModels).reduce(
     ...acc,
     [key]: tableModels[key],
   }),
-  { version: 3 }
+  { version: 4 }
 );
 
 const reducer = (state = initialState, action: ITableColumnsAction) => {
@@ -55,7 +55,7 @@ const reducer = (state = initialState, action: ITableColumnsAction) => {
       const { version = -1, ...allTableColumns } =
         (action.payload && action.payload.tableColumns) || {};
       if (version !== state.version) {
-        return state;
+        return { ...initialState };
       }
       return {
         ...state,

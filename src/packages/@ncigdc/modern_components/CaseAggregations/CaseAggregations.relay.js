@@ -96,13 +96,13 @@ export default (Component: ReactClass<*>) =>
                         count
                       }
                     }
-                    diagnoses__vital_status {
+                    demographic__vital_status {
                       buckets {
                         doc_count
                         key
                       }
                     }
-                    diagnoses__days_to_death {
+                    demographic__days_to_death {
                       stats {
                         max
                         min

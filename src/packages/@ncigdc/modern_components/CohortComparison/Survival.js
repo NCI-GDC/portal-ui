@@ -25,7 +25,7 @@ const survivalDataCompletenessFilters = [
           {
             op: '>',
             content: {
-              field: 'diagnoses.days_to_death',
+              field: 'demographic.days_to_death',
               value: 0,
             },
           },
@@ -47,7 +47,7 @@ const survivalDataCompletenessFilters = [
   },
   {
     op: 'not',
-    content: { field: 'diagnoses.vital_status' },
+    content: { field: 'demographic.vital_status' },
   },
 ];
 
@@ -90,8 +90,8 @@ const SurvivalAnalysisCard = ({
   theme,
   CaseSetButton = props => (
     <CreateExploreCaseSetButton
-        Component={compProps => (
-          <span
+      Component={compProps => (
+        <span
           {...omit(compProps, ['leftIcon'])}
 
           style={{
@@ -100,146 +100,146 @@ const SurvivalAnalysisCard = ({
             textDecoration: 'underline',
           }}
           >
-            {props.count}
-          </span>
-        )}
-        filters={makeSurvivalCurveFilter(props.setId, props.otherSetId)}
-        onComplete={setId => {
-          push({
-            pathname: '/exploration',
-            query: {
-              searchTableTab: 'cases',
-              filters: stringifyJSONParam({
-                op: 'AND',
-                content: [
-                  {
-                    op: 'IN',
-                    content: {
-                      field: 'cases.case_id',
-                      value: [`set_id:${setId}`],
-                    },
+          {props.count}
+        </span>
+      )}
+      filters={makeSurvivalCurveFilter(props.setId, props.otherSetId)}
+      onComplete={setId => {
+        push({
+          pathname: '/exploration',
+          query: {
+            searchTableTab: 'cases',
+            filters: stringifyJSONParam({
+              op: 'AND',
+              content: [
+                {
+                  op: 'IN',
+                  content: {
+                    field: 'cases.case_id',
+                    value: [`set_id:${setId}`],
                   },
-                ],
-              }),
-            },
-          });
-        }}
-        />
+                },
+              ],
+            }),
+          },
+        });
+      }}
+      />
   ),
 }) => (
   <div style={style}>
-    <Row>
-      <h2>Survival Analysis</h2>
-    </Row>
-    {loading ||
-      get(survivalData, 'rawData.results[0].donors.length', 0) ||
-      get(survivalData, 'rawData.results[1].donors.length', 0) ? (
-        <div>
-          <SurvivalPlotWrapper
-            plotType="mutation"
-            survivalPlotLoading={loading}
-            {...survivalData}
-            height={240}
-            palette={palette}
-            />
-          {survivalData.rawData && (
-            <Table
-              body={(
-                <tbody>
-                  <Tr index={0}>
-                    <Td width={250}>Overall Survival Analysis</Td>
-                    <Td style={{ textAlign: 'right' }}>
-                      {get(
-                        survivalData,
-                        'rawData.results[0].donors.length',
-                        0
-                      ) > 0 ? (
-                        <CaseSetButton
-                          count={survivalData.rawData.results[0].donors.length.toLocaleString()}
-                          otherSetId={set2id}
-                          setId={set1id}
-                          />
-                      ) : (
-                        'No Survival Data'
-                      )}
-                    </Td>
-                    <Td style={{ textAlign: 'right' }}>
-                      {survivalData.rawData.results[0] &&
-                        (survivalData.rawData.results[0].donors.length /
-                          result1.hits.total *
-                          100
-                        ).toFixed(0)}
-                        %
-                    </Td>
-                    <Td style={{ textAlign: 'right' }}>
-                      {get(
-                        survivalData,
-                        'rawData.results[1].donors.length',
-                        0
-                      ) > 0 ? (
-                        <CaseSetButton
-                          count={survivalData.rawData.results[1].donors.length.toLocaleString()}
-                          otherSetId={set1id}
-                          setId={set2id}
-                          />
-                      ) : (
-                        'No Survival Data'
-                      )}
-                    </Td>
-                    <Td style={{ textAlign: 'right' }}>
-                      {survivalData.rawData.results[1] &&
-                        (survivalData.rawData.results[1].donors.length /
-                          result2.hits.total *
-                          100
-                        ).toFixed(0)}
-                        %
-                    </Td>
-                  </Tr>
-                </tbody>
-              )}
-              headings={[
-                <Th key="1">
-                  <Tooltip
-                    Component={(
-                      <span>
-                        Criteria to include Case from your sets in the survival
-                        analysis:
-                        <br />
-                        - Case does not overlap between your selected sets
-                        <br />
-                        - Case has complete data for the purpose of the analysis
-                        (event and time-to-event)
-                      </span>
-                    )}
-                    style={tableToolTipHint()}
-                    >
-                    Cases included in Analysis
-                  </Tooltip>
-                </Th>,
-                <Th key="2" style={{ textAlign: 'right' }}>
-                  # Cases
-                  {' '}
-                  <Alias i={1} />
-                </Th>,
-                <Th key="3" style={{ textAlign: 'right' }}>
-                  %
-                </Th>,
-                <Th key="4" style={{ textAlign: 'right' }}>
-                  # Cases
-                  {' '}
-                  <Alias i={2} />
-                </Th>,
-                <Th key="5" style={{ textAlign: 'right' }}>
-                  %
-                </Th>,
-              ]}
+      <Row>
+        <h2>Survival Analysis</h2>
+      </Row>
+      {loading ||
+        get(survivalData, 'rawData.results[0].donors.length', 0) ||
+        get(survivalData, 'rawData.results[1].donors.length', 0) ? (
+          <div>
+            <SurvivalPlotWrapper
+              plotType="mutation"
+              survivalPlotLoading={loading}
+              {...survivalData}
+              height={240}
+              palette={palette}
               />
-          )}
-        </div>
-      ) : (
-        <div>No Survival data available for this Cohort Comparison</div>
-      )}
-  </div>
+            {survivalData.rawData && (
+              <Table
+                body={(
+                  <tbody>
+                    <Tr index={0}>
+                      <Td width={250}>Overall Survival Analysis</Td>
+                      <Td style={{ textAlign: 'right' }}>
+                        {get(
+                          survivalData,
+                          'rawData.results[0].donors.length',
+                          0
+                        ) > 0 ? (
+                          <CaseSetButton
+                              count={survivalData.rawData.results[0].donors.length.toLocaleString()}
+                              otherSetId={set2id}
+                              setId={set1id}
+                              />
+                          ) : (
+                            'No Survival Data'
+                          )}
+                      </Td>
+                      <Td style={{ textAlign: 'right' }}>
+                        {survivalData.rawData.results[0] &&
+                          (survivalData.rawData.results[0].donors.length /
+                            result1.hits.total *
+                            100
+                          ).toFixed(0)}
+                        %
+                      </Td>
+                      <Td style={{ textAlign: 'right' }}>
+                        {get(
+                          survivalData,
+                          'rawData.results[1].donors.length',
+                          0
+                        ) > 0 ? (
+                          <CaseSetButton
+                              count={survivalData.rawData.results[1].donors.length.toLocaleString()}
+                              otherSetId={set1id}
+                              setId={set2id}
+                              />
+                          ) : (
+                            'No Survival Data'
+                          )}
+                      </Td>
+                      <Td style={{ textAlign: 'right' }}>
+                        {survivalData.rawData.results[1] &&
+                          (survivalData.rawData.results[1].donors.length /
+                            result2.hits.total *
+                            100
+                          ).toFixed(0)}
+                        %
+                      </Td>
+                    </Tr>
+                  </tbody>
+                )}
+                headings={[
+                  <Th key="1">
+                    <Tooltip
+                      Component={(
+                        <span>
+                          Criteria to include Case from your sets in the survival
+                          analysis:
+                          <br />
+                          - Case does not overlap between your selected sets
+                          <br />
+                          - Case has complete data for the purpose of the analysis
+                          (event and time-to-event)
+                        </span>
+                      )}
+                      style={tableToolTipHint()}
+                      >
+                      Cases included in Analysis
+                    </Tooltip>
+                  </Th>,
+                  <Th key="2" style={{ textAlign: 'right' }}>
+                    # Cases
+                    {' '}
+                    <Alias i={1} />
+                  </Th>,
+                  <Th key="3" style={{ textAlign: 'right' }}>
+                    %
+                  </Th>,
+                  <Th key="4" style={{ textAlign: 'right' }}>
+                    # Cases
+                    {' '}
+                    <Alias i={2} />
+                  </Th>,
+                  <Th key="5" style={{ textAlign: 'right' }}>
+                    %
+                  </Th>,
+                ]}
+                />
+            )}
+          </div>
+        ) : (
+          <div>No Survival data available for this Cohort Comparison</div>
+        )}
+    </div>
 );
 
 export default compose(

@@ -18,6 +18,7 @@ import {
   max,
   reject,
   truncate,
+  groupBy,
 } from 'lodash';
 import { scaleOrdinal, schemeCategory10 } from 'd3';
 
@@ -70,8 +71,8 @@ import { getLowerAgeYears, getUpperAgeYears } from '@ncigdc/utils/ageDisplay';
 import timestamp from '@ncigdc/utils/timestamp';
 
 import { IS_CDAVE_DEV } from '@ncigdc/utils/constants';
-import { MAXIMUM_CURVES, MINIMUM_CASES } from '../../utils/survivalplot';
 import GroupValuesModal from '@ncigdc/components/Modals/GroupValuesModal';
+import { MAXIMUM_CURVES, MINIMUM_CASES } from '../../utils/survivalplot';
 
 const colors = scaleOrdinal(schemeCategory10);
 
@@ -147,7 +148,7 @@ const vizButtons: IVizButtons = {
           height: '1em',
           width: '1em',
         }}
-      />
+        />
     ),
     action: updateClinicalAnalysisVariable,
   },
@@ -159,7 +160,7 @@ const vizButtons: IVizButtons = {
           height: '1em',
           width: '1em',
         }}
-      />
+        />
     ),
     action: updateClinicalAnalysisVariable,
   },
@@ -171,7 +172,7 @@ const vizButtons: IVizButtons = {
           height: '1em',
           width: '1em',
         }}
-      />
+        />
     ),
     action: removeClinicalAnalysisVariable,
   },
@@ -233,7 +234,7 @@ const getCountLink = ({ doc_count, filters, totalDocs }) => (
         searchTableTab: 'cases',
         filters,
       }}
-    >
+      >
       {(doc_count || 0).toLocaleString()}
     </ExploreLink>
     <span>{` (${(((doc_count || 0) / totalDocs) * 100).toFixed(2)}%)`}</span>
@@ -263,6 +264,8 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
   totalDocs,
   currentAnalysis,
 }) => {
+  console.log('variable', variable, rawQueryData);
+
   const getCategoricalTableData = (rawData, type) => {
     if (isEmpty(rawData)) {
       return [];
@@ -278,9 +281,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
           .data.slice(0)
           .reverse()
         : rawData
-          .filter(bucket =>
-            IS_CDAVE_DEV ? bucket.key : bucket.key !== '_missing',
-          )
+          .filter(bucket => (IS_CDAVE_DEV ? bucket.key : bucket.key !== '_missing'))
           .map(b => ({
             ...b,
             key: b.key,
@@ -343,7 +344,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
           }}
           type="checkbox"
           value={b.key}
-        />
+          />
       ),
       ...(variable.active_chart === 'survival'
         ? {
@@ -358,7 +359,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                       ? `Click icon to plot ${b.key}`
                       : `Maximum plots (${MAXIMUM_CURVES}) reached`
               }
-            >
+              >
               <Button
                 disabled={
                   b.key === '_missing' ||
@@ -386,11 +387,11 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                       ? '0.33'
                       : '1',
                 }}
-              >
+                >
                 {selectedSurvivalLoadingIds.indexOf(b.key) !== -1 ? (
                   <SpinnerIcon />
                 ) : (
-                    <SurvivalIcon />
+                  <SurvivalIcon />
                   )}
               </Button>
             </Tooltip>
@@ -412,11 +413,15 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
       };
     });
   };
-
+  const binData = map(groupBy(variable.bins, bin => bin.groupName), (values, key) => ({
+    key,
+    doc_count: values.reduce((acc, value) => acc + value.doc_count, 0),
+  }));
+  console.log('bindata', binData, rawQueryData);
   const tableData =
     variable.active_chart === 'box'
       ? getBoxTableData([])
-      : getCategoricalTableData(rawQueryData, variable.plotTypes);
+      : getCategoricalTableData(binData, variable.plotTypes);
 
   const noDataTotal =
     totalDocs - rawQueryData.reduce((acc, bucket) => acc + bucket.doc_count, 0);
@@ -626,21 +631,21 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
         padding: '0.5rem 1rem 1rem',
         ...style,
       }}
-    >
+      >
       <Row
         style={{
           justifyContent: 'space-between',
           alignItems: 'center',
           margin: '5px 0 10px',
         }}
-      >
+        >
         <h2
           style={{
             fontSize: '1.8rem',
             marginTop: 10,
             marginBottom: 0,
           }}
-        >
+          >
           {humanify({ term: fieldName })}
         </h2>
         <Row>
@@ -663,7 +668,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                     : styles.common(theme)),
                   margin: 2,
                 }}
-              >
+                >
                 <Hidden>{vizButtons[plotType].title}</Hidden>
                 {vizButtons[plotType].icon}
               </Button>
@@ -678,11 +683,11 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
             justifyContent: 'center',
             alignItems: 'center',
           }}
-        >
+          >
           There is no data for this facet
         </Row>
       ) : (
-          <div id={wrapperId}>
+        <div id={wrapperId}>
             <Row style={{ paddingLeft: 10 }}>
               {variable.active_chart !== 'survival' && (
                 <form style={{ width: '100%' }}>
@@ -692,51 +697,49 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                       marginRight: 10,
                       fontSize: '1.2rem',
                     }}
-                  >
+                    >
                     <input
                       aria-label="Percentage of cases"
                       checked={variable.active_calculation === 'percentage'}
                       id={`variable-percentage-radio-${fieldName}`}
-                      onChange={() =>
-                        dispatch(
-                          updateClinicalAnalysisVariable({
-                            fieldName,
-                            variableKey: 'active_calculation',
-                            value: 'percentage',
-                            id,
-                          }),
-                        )
+                      onChange={() => dispatch(
+                        updateClinicalAnalysisVariable({
+                          fieldName,
+                          variableKey: 'active_calculation',
+                          value: 'percentage',
+                          id,
+                        }),
+                      )
                       }
                       style={{ marginRight: 5 }}
                       type="radio"
                       value="percentage"
-                    />
+                      />
                     % of Cases
-                </label>
+                  </label>
                   <label
                     htmlFor={`variable-number-radio-${fieldName}`}
                     style={{ fontSize: '1.2rem' }}
-                  >
+                    >
                     <input
                       aria-label="Number of cases"
                       checked={variable.active_calculation === 'number'}
                       id={`variable-number-radio-${fieldName}`}
-                      onChange={() =>
-                        dispatch(
-                          updateClinicalAnalysisVariable({
-                            fieldName,
-                            variableKey: 'active_calculation',
-                            value: 'number',
-                            id,
-                          }),
-                        )
+                      onChange={() => dispatch(
+                        updateClinicalAnalysisVariable({
+                          fieldName,
+                          variableKey: 'active_calculation',
+                          value: 'number',
+                          id,
+                        }),
+                      )
                       }
                       style={{ marginRight: 5 }}
                       type="radio"
                       value="number"
-                    />
+                      />
                     # of Cases
-                </label>
+                  </label>
                   <DownloadVisualizationButton
                     data={chartData.map(d => ({
                       label: d.fullLabel,
@@ -752,14 +755,13 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                       float: 'right',
                       marginRight: 2,
                     }}
-                    svg={() =>
-                      wrapSvg({
-                        selector: `#${wrapperId} svg`,
-                        title: humanify({ term: fieldName }),
-                      })
+                    svg={() => wrapSvg({
+                      selector: `#${wrapperId} svg`,
+                      title: humanify({ term: fieldName }),
+                    })
                     }
                     tooltipHTML="Download image or data"
-                  />
+                    />
                 </form>
               )}
 
@@ -849,7 +851,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                     } of Cases`,
                   style: styles.histogram(theme).axis,
                 }}
-              />
+                />
             )}
             {variable.active_chart === 'survival' && (
               <div
@@ -861,7 +863,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                   height: '265px',
                   margin: '5px 2px 10px',
                 }}
-              >
+                >
                 {selectedSurvivalValues.length === 0 ? (
                   <SurvivalPlotWrapper
                     {...overallSurvivalData}
@@ -869,15 +871,15 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                     plotType="clinicalOverall"
                     survivalPlotLoading={survivalPlotLoading}
                     uniqueClass="clinical-survival-plot"
-                  />
+                    />
                 ) : (
-                    <SurvivalPlotWrapper
+                  <SurvivalPlotWrapper
                       {...selectedSurvivalData}
                       height={202}
                       plotType="categorical"
                       survivalPlotLoading={survivalPlotLoading}
                       uniqueClass="clinical-survival-plot"
-                    />
+                      />
                   )}
               </div>
             )}
@@ -891,7 +893,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                   backgroundColor: theme.greyScale5,
                   margin: '5px 2px 10px',
                 }}
-              >
+                >
                 {variable.active_chart}
               </div>
             )}
@@ -901,37 +903,36 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                 justifyContent: 'space-between',
                 margin: '5px 0',
               }}
-            >
+              >
               <Dropdown
-                button={
+                button={(
                   <Button
                     rightIcon={<DownCaretIcon />}
                     style={{
                       ...visualizingButton,
                       padding: '0 12px',
                     }}
-                  >
+                    >
                     Select action
-                </Button>
-                }
+                  </Button>
+                )}
                 dropdownStyle={{
                   left: 0,
                   minWidth: 205,
                 }}
-              >
+                >
                 <DropdownItem
-                  onClick={() =>
-                    downloadToTSV({
-                      selector: `#analysis-${tsvSubstring}-table`,
-                      filename: `analysis-${
-                        currentAnalysis.name
-                        }-${tsvSubstring}.${timestamp()}.tsv`,
-                    })
+                  onClick={() => downloadToTSV({
+                    selector: `#analysis-${tsvSubstring}-table`,
+                    filename: `analysis-${
+                      currentAnalysis.name
+                      }-${tsvSubstring}.${timestamp()}.tsv`,
+                  })
                   }
                   style={styles.actionMenuItem}
-                >
+                  >
                   Export to TSV
-              </DropdownItem>
+                </DropdownItem>
                 <DropdownItem
                   onClick={() => {
                     dispatch(
@@ -946,14 +947,14 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                           title={`Save ${totalFromSelectedBuckets} Cases as New Set`}
                           total={totalFromSelectedBuckets}
                           type="case"
-                        />,
+                          />,
                       ),
                     );
                   }}
                   style={styles.actionMenuItem}
-                >
+                  >
                   Save as new case set
-              </DropdownItem>
+                </DropdownItem>
                 <DropdownItem
                   onClick={() => {
                     dispatch(
@@ -969,14 +970,14 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                           title={`Add ${totalFromSelectedBuckets} Cases to Existing Set`}
                           total={totalFromSelectedBuckets}
                           type="case"
-                        />,
+                          />,
                       ),
                     );
                   }}
                   style={styles.actionMenuItem}
-                >
+                  >
                   Add to existing case set
-              </DropdownItem>
+                </DropdownItem>
                 <DropdownItem
                   onClick={() => {
                     dispatch(
@@ -987,79 +988,82 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                           RemoveFromSetButton={RemoveFromExploreCaseSetButton}
                           title={`Remove ${totalFromSelectedBuckets} Cases from Existing Set`}
                           type="case"
-                        />,
+                          />,
                       ),
                     );
                   }}
                   style={styles.actionMenuItem}
-                >
+                  >
                   Remove from existing case set
-              </DropdownItem>
+                </DropdownItem>
               </Dropdown>
               <Dropdown
-                button={
+                button={(
                   <Button
                     rightIcon={<DownCaretIcon />}
                     style={{
                       ...visualizingButton,
                       padding: '0 12px',
                     }}
-                  >
+                    >
                     Customize Bins
-                </Button>
-                }
+                  </Button>
+                )}
                 dropdownStyle={{
                   left: 0,
                   minWidth: 205,
                 }}
-              >
+                >
                 <DropdownItem
-                  onClick={() =>
-                    dispatch(
-                      setModal(
-                        <GroupValuesModal
-                          bins={variable.bins}
-                          onUpdate={
-                            (newBins) => dispatch(
+                  onClick={() => dispatch(
+                    setModal(
+                      <GroupValuesModal
+                        bins={variable.bins}
+                        fieldName={humanify({ term: fieldName })}
+                        onClose={() => dispatch(setModal(null))}
+                        onUpdate={
+                          (newBins) => {
+                            dispatch(
                               updateClinicalAnalysisVariable({
                                 fieldName,
-                                variableKey: 'bins',
-                                value: newBins.map(r => ({ ...r, groupName: r.key })),
                                 id,
+                                value: newBins,
+                                variableKey: 'bins',
                               }),
-                            )
-                          }
-                          onClose={() => dispatch(setModal(null))}
+                            );
+                            dispatch(setModal(null));
+                        }
+
+                        }
                         />,
-                      ),
-                    )
+                    ),
+                  )
                   }
                   style={styles.actionMenuItem}
-                >
+                  >
                   Edit Bins
-              </DropdownItem>
+                </DropdownItem>
                 <DropdownItem
-                  // onClick={() => {
-                  //   dispatch(
-                  //     setModal(
-                  //       <SaveSetModal
-                  //         CreateSetButton={CreateExploreCaseSetButton}
-                  //         displayType="case"
-                  //         filters={cardFilters}
-                  //         score="gene.gene_id"
-                  //         setName="Custom Case Selection"
-                  //         sort={null}
-                  //         title={`Save ${totalFromSelectedBuckets} Cases as New Set`}
-                  //         total={totalFromSelectedBuckets}
-                  //         type="case"
-                  //       />
-                  //     )
-                  //   );
-                  // }}
+                  onClick={() => {
+                    dispatch(
+                      updateClinicalAnalysisVariable({
+                        fieldName,
+                        variableKey: 'bins',
+                        value: rawQueryData.reduce((acc, r) => ({
+                          ...acc,
+                          [r.key]: {
+                            ...r,
+                            groupName: r.key,
+                          },
+                        }), {}),
+                        id,
+                      }),
+                    );
+                  }}
                   style={styles.actionMenuItem}
-                >
+                  >
                   Reset to Default
-              </DropdownItem>
+                </DropdownItem>
               </Dropdown>
             </Row>
 
@@ -1070,7 +1074,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                 height: 175,
               }}
               tableId={`analysis-${tsvSubstring}-table`}
-            />
+              />
           </div>
         )}
     </Column>
@@ -1099,7 +1103,9 @@ export default compose(
         : (data || { buckets: [] }).buckets,
     totalDocs: (data.hits || { total: 0 }).total,
   })),
-  withProps(({ variable, fieldName, setId, totalDocs }) => ({
+  withProps(({
+    variable, fieldName, setId, totalDocs,
+  }) => ({
     getBucketRangesAndFilters: (acc, { doc_count, key }) => {
       const filters =
         variable.plotTypes === 'categorical'
@@ -1118,9 +1124,7 @@ export default compose(
                 op: '>=',
                 content: {
                   field: fieldName,
-                  value: [
-                    `${valueIsYear(fieldName) ? Math.floor(key) : key}`,
-                  ],
+                  value: [`${valueIsYear(fieldName) ? Math.floor(key) : key}`],
                 },
               },
               ...(acc.nextInterval !== 0
@@ -1186,9 +1190,7 @@ export default compose(
               .data.slice(0)
               .reverse()
             : rawQueryData
-              .filter(bucket =>
-                IS_CDAVE_DEV ? bucket.key : bucket.key !== '_missing',
-              )
+              .filter(bucket => (IS_CDAVE_DEV ? bucket.key : bucket.key !== '_missing'))
               .map(b => ({
                 ...b,
                 chart_doc_count: b.doc_count,
@@ -1270,8 +1272,7 @@ export default compose(
     }),
   ),
   withPropsOnChange(
-    (props, nextProps) =>
-      props.variable.active_chart !== nextProps.variable.active_chart ||
+    (props, nextProps) => props.variable.active_chart !== nextProps.variable.active_chart ||
       !isEqual(props.data, nextProps.data),
     ({ populateSurvivalData, variable }) => {
       if (variable.active_chart === 'survival') {
@@ -1288,15 +1289,25 @@ export default compose(
   // ),
   lifecycle({
     componentDidMount(): void {
-      const { dispatch, variable, fieldName, id, data, rawQueryData } = this.props;
-      dispatch(
-        updateClinicalAnalysisVariable({
-          fieldName,
-          variableKey: 'bins',
-          value: rawQueryData.map(r => ({ ...r, groupName: r.key })),
-          id,
-        }),
-      );
+      const {
+        dispatch, variable, fieldName, id, data, rawQueryData,
+      } = this.props;
+      if (Object.keys(variable.bins) === 0) {
+        dispatch(
+          updateClinicalAnalysisVariable({
+            fieldName,
+            variableKey: 'bins',
+            value: rawQueryData.reduce((acc, r) => ({
+              ...acc,
+              [r.key]: {
+                ...r,
+                groupName: r.key,
+              },
+            }), {}),
+            id,
+          }),
+        );
+      }
       if (variable.scrollToCard === false) return;
       const offset =
         document.getElementById('header').getBoundingClientRect().bottom + 10;
@@ -1316,8 +1327,6 @@ export default compose(
           id,
         }),
       );
-
-
     },
   }),
 )(ClinicalVariableCard);

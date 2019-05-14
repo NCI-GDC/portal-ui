@@ -6,11 +6,12 @@ import { map, groupBy, reduce } from 'lodash';
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import Button from '@ncigdc/uikit/Button';
 import { visualizingButton } from '@ncigdc/theme/mixins';
+
 // import {
 //   removeClinicalAnalysisVariable,
 //   updateClinicalAnalysisVariable,
 // } from '@ncigdc/dux/analysis';
-import OutsideClickHandler from 'react-outside-click-handler';
+// import OutsideClickHandler from 'react-outside-click-handler';
 import EditableLabel from '@ncigdc/uikit/EditableLabel';
 
 const styles = {
@@ -47,184 +48,200 @@ const listStyle = {
   borderStyle: 'inset',
   borderWidth: '2px',
   height: '100%',
+  overflow: 'scroll',
 };
 
 export default compose(
-  withState('currentBins', 'setCurrentBins', ({ bins }: any) => bins.reduce((acc: any, bin: any) => ({
-    ...acc,
-    [bin.key]: bin.groupName,
-  }), {})),
+  withState('currentBins', 'setCurrentBins', ({ bins }: any) => bins),
   withState('selectedHidingBins', 'setSelectedHidingBins', {}),
   withState('selectedGroupBins', 'setSelectedGroupBins', {})
 )(
   ({
-    bins,
     currentBins,
     setCurrentBins,
     onUpdate,
     onClose,
+    fieldName,
     selectedHidingBins,
     setSelectedHidingBins,
     selectedGroupBins,
     setSelectedGroupBins,
   }: any) => (
     <Column>
-        <h1 style={{ margin: '20px' }}>Create Custom Bins: Something</h1>
+        <h1 style={{ margin: '20px' }}>
+          Create Custom Bins:
+          {' '}
+          {fieldName}
+        </h1>
         <h3 style={{ margin: '20px' }}>
           Organize values into groups of your choosing. Click Save Bins to udpate
           the analysis plots.
         </h3>
-        <OutsideClickHandler
+        {/* <OutsideClickHandler
+          disabled={Object.keys({
+            ...selectedGroupBins,
+            ...selectedHidingBins,
+          }).length === 0}
           onOutsideClick={() => {
             setSelectedGroupBins({});
             setSelectedHidingBins({});
           }}
-          >
+          > */}
 
-          <Row style={{ justifyContent: 'center' }}>
-            <Column style={blockStyle}>
-              Hiding Values
-              <Column style={listStyle}>
-                {Object.keys(currentBins)
-                  .filter((bin: any) => currentBins[bin] === '')
-                  .map((bin: any) => (
+        <Row style={{ justifyContent: 'center' }}>
+          <Column style={blockStyle}>
+            Hiding Values
+            <Column style={listStyle}>
+              {Object.keys(currentBins)
+                .filter((bin: any) => currentBins[bin].groupName === '')
+                .map((bin: any) => (
+                  <Row
+                    key={bin}
+                    onClick={() => {
+                      if (Object.keys(selectedGroupBins).length > 0) {
+                        setSelectedGroupBins({});
+                      }
+                      setSelectedHidingBins({
+                        ...selectedHidingBins,
+                        [bin]: !selectedHidingBins[bin],
+                      });
+                    }}
+                    style={{
+                      backgroundColor: selectedHidingBins[bin] ? '#d5f4e6' : '',
+                      paddingLeft: '10px',
+                    }}
+                    >
+                    {bin}
+                  </Row>
+                ))}
+            </Column>
+          </Column>
+          <Column style={{ justifyContent: 'center' }}>
+            <Button
+              disabled={Object.values(selectedHidingBins).every(value => !value)}
+              onClick={() => {
+                setCurrentBins({
+                  ...currentBins,
+                  ...reduce(selectedHidingBins, (acc, val, key) => {
+                    if (val) {
+                      const newGroupName = Object.keys(selectedHidingBins).length > 1 ? `selected value ${Object.values(currentBins).filter(bin => bin).length + 1}` : key;
+                      return {
+                        ...acc,
+                        [key]: {
+                          ...currentBins[key],
+                          groupName: newGroupName,
+                        },
+                      };
+                    }
+                    return acc;
+                  }, {}),
+                });
+                setSelectedHidingBins({});
+              }}
+              style={{ margin: '10px' }}
+              >
+              {'>>'}
+            </Button>
+            <Button
+              disabled={Object.values(selectedGroupBins).every(value => !value)}
+              onClick={() => {
+                setCurrentBins({
+                  ...currentBins,
+                  ...reduce(selectedGroupBins, (acc, val, key) => {
+                    if (val) {
+                      return {
+                        ...acc,
+                        [key]: {
+                          ...currentBins[key],
+                          groupName: '',
+                        },
+                      };
+                    }
+                    return acc;
+                  }, {}),
+                });
+                setSelectedGroupBins({});
+              }}
+              style={{ margin: '10px' }}
+              >
+              {'<<'}
+            </Button>
+          </Column>
+          <Column style={blockStyle}>
+            Display Values
+            <Column style={listStyle}>
+              {map(
+                groupBy(
+                  Object.keys(currentBins)
+                    .filter((bin: any) => currentBins[bin].groupName !== ''),
+                  key => currentBins[key].groupName
+                ),
+                (group: any) => (
+                  <Column key={group[0]}>
                     <Row
-                      key={bin}
+                      key={group[0]}
                       onClick={() => {
-                        if (Object.keys(selectedGroupBins).length > 0) {
-                          setSelectedGroupBins({});
+                        if (Object.keys(selectedHidingBins).length > 0) {
+                          setSelectedHidingBins({});
                         }
-                        setSelectedHidingBins({
-                          ...selectedHidingBins,
-                          [bin]: !selectedHidingBins[bin],
+                        setSelectedGroupBins({
+                          ...selectedGroupBins,
+                          ...group.reduce((acc: any, bin: any) => ({
+                            ...acc,
+                            [bin]: !group.every((gbin: any) => selectedGroupBins[gbin]),
+                          }), {}),
                         });
                       }}
-                      style={{
-                        backgroundColor: selectedHidingBins[bin] ? '#d5f4e6' : '',
-                        paddingLeft: '10px',
-                      }}
+                      style={{ backgroundColor: group.every((bin: any) => selectedGroupBins[bin]) ? '#d5f4e6' : '' }}
                       >
-                      {bin}
-                    </Row>
-                  ))}
-              </Column>
-            </Column>
-            <Column style={{ justifyContent: 'center' }}>
-              <Button
-                disabled={Object.values(selectedHidingBins).every(value => !value)}
-                onClick={() => {
-                  setCurrentBins({
-                    ...currentBins,
-                    ...reduce(selectedHidingBins, (acc, val, key) => {
-                      if (val) {
-                        return {
-                          ...acc,
-                          [key]: Object.keys(selectedHidingBins).length > 1 ? `selected value ${Object.values(currentBins).filter(bin => bin).length + 1}` : key,
-                        };
-                      }
-                      return acc;
-                    }, {}),
-                  });
-                  setSelectedHidingBins({});
-                }}
-                style={{ margin: '10px' }}
-                >
-                {'>>'}
-              </Button>
-              <Button
-                disabled={Object.values(selectedGroupBins).every(value => !value)}
-                onClick={() => {
-                  setCurrentBins({
-                    ...currentBins,
-                    ...reduce(selectedGroupBins, (acc, val, key) => {
-                      if (val) {
-                        return {
-                          ...acc,
-                          [key]: '',
-                        };
-                      }
-                      return acc;
-                    }, {}),
-                  });
-                  setSelectedGroupBins({});
-                }}
-                style={{ margin: '10px' }}
-                >
-                {'<<'}
-              </Button>
-            </Column>
-            <Column style={blockStyle}>
-              Display Values
-              <Column style={listStyle}>
-                {map(
-                  groupBy(
-                    Object.keys(currentBins)
-                      .filter((bin: any) => currentBins[bin] !== ''),
-                    key => currentBins[key]
-                  ),
-                  (group: any) => (
-                    <Column key={group[0]}>
-                      <Row
-                        key={group[0]}
-                        onClick={() => {
-                          if (Object.keys(selectedHidingBins).length > 0) {
-                            setSelectedHidingBins({});
-                          }
-                          setSelectedGroupBins({
-                            ...selectedGroupBins,
-                            ...group.reduce((acc: any, bin: any) => ({
-                              ...acc,
-                              [bin]: !group.every((gbin: any) => selectedGroupBins[gbin]),
-                            }), {}),
-                          });
+                      <EditableLabel
+                        containerStyle={{ justifyContent: 'flex-start' }}
+                        handleSave={(value: any) => setCurrentBins({
+                          ...currentBins,
+                          ...group.reduce((acc: any, bin: any) => ({
+                            ...acc,
+                            [bin]: {
+                              ...currentBins[bin],
+                              groupName: value,
+                            },
+                          }), {}),
+                        })
+                        }
+                        iconStyle={{
+                          cursor: 'pointer',
+                          fontSize: '1.8rem',
+                          marginLeft: 10,
                         }}
-                        style={{ backgroundColor: group.every((bin: any) => selectedGroupBins[bin]) ? '#d5f4e6' : '' }}
+                        pencilEditingOnly
+                        text={currentBins[group[0]].groupName}
                         >
-                        <EditableLabel
-                          containerStyle={{ justifyContent: 'flex-start' }}
-                          handleSave={(value: any) => setCurrentBins({
-                            ...currentBins,
-                            ...group.reduce((acc: any, bin: any) => ({
-                              ...acc,
-                              [bin]: value,
-                            }), {}),
-                          })
-                          }
-                          iconStyle={{
-                            cursor: 'pointer',
-                            fontSize: '1.8rem',
-                            marginLeft: 10,
+                        {currentBins[group[0]].groupName}
+                      </EditableLabel>
+                    </Row>
+                    {group.length > 1 || group[0] !== currentBins[group[0]].groupName
+                      ? group.map((bin: any) => (
+                        <Row
+                          key={bin}
+                          onClick={() => setSelectedGroupBins({
+                            ...selectedGroupBins,
+                            [bin]: !selectedGroupBins[bin],
+                          })}
+                          style={{
+                            backgroundColor: selectedGroupBins[bin] ? '#d5f4e6' : '',
+                            paddingLeft: '10px',
                           }}
-                          pencilEditingOnly
-                          text={currentBins[group[0]]}
                           >
-                          {currentBins[group[0]]}
-                        </EditableLabel>
-                      </Row>
-                      {group.length > 1 || group[0] !== currentBins[group[0]]
-                        ? group.map((bin: any) => (
-                          <Row
-                            key={bin}
-                            onClick={() => setSelectedGroupBins({
-                              ...selectedGroupBins,
-                              [bin]: !selectedGroupBins[bin],
-                            })}
-                            style={{
-                              backgroundColor: selectedGroupBins[bin] ? '#d5f4e6' : '',
-                              paddingLeft: '10px',
-                            }}
-                            >
-                            {bin}
-                          </Row>
-                        ))
-                        : null}
-                    </Column>
-                  )
-                )}
-              </Column>
+                          {bin}
+                        </Row>
+                      ))
+                      : null}
+                  </Column>
+                )
+              )}
             </Column>
-          </Row>
-        </OutsideClickHandler>
+          </Column>
+        </Row>
+        {/* </OutsideClickHandler> */}
         <Row
           spacing="1rem"
           style={{
@@ -232,10 +249,14 @@ export default compose(
             margin: '20px',
           }}
           >
-          <Button onClick={() => onClose()} style={styles.button}>
+          <Button
+            onClick={onClose}
+            style={styles.button}
+            >
             Cancel
           </Button>
           <Button
+            onClick={() => onUpdate(currentBins)}
             style={styles.button}
             >
             Save Bins

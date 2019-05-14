@@ -132,12 +132,12 @@ export default compose(
         ) : (
           <Tooltip Component={disabled ? disabledMessage : null}>
               <Row
-                onClick={pencilEditingOnly ? toggleEditingAndSave : null}
-                style={{ cursor: disabled ? 'not-allowed' : 'text' }}
+                onClick={pencilEditingOnly ? null : toggleEditingAndSave}
+                style={{ cursor: disabled ? 'not-allowed' : (pencilEditingOnly ? 'default' : 'text') }}
                 >
                 {children}
                 <Pencil
-                  onClick={pencilEditingOnly ? null : toggleEditingAndSave}
+                  onClick={pencilEditingOnly ? toggleEditingAndSave : null}
                   style={{
                     fontSize: '0.9em',
                     paddingLeft: '5px',

@@ -17,10 +17,11 @@ import {
 } from 'lodash';
 import {
   compose,
-  withState,
-  withProps,
+  setDisplayName,
   withHandlers,
+  withProps,
   withPropsOnChange,
+  withState,
 } from 'recompose';
 import { Column, Row } from '@ncigdc/uikit/Flex';
 import {
@@ -39,6 +40,7 @@ import { internalHighlight } from '@ncigdc/uikit/Highlight';
 import SearchIcon from 'react-icons/lib/fa/search';
 
 import styled from '@ncigdc/theme/styled';
+import termCapitaliser from '@ncigdc/utils/customisation';
 import tryParseJSON from '@ncigdc/utils/tryParseJSON';
 import withFacetSelection from '@ncigdc/utils/withFacetSelection';
 import {
@@ -157,6 +159,7 @@ const MagnifyingGlass = styled(SearchIcon, {
 });
 
 const enhance = compose(
+  setDisplayName('ClinicalAggregations'),
   connect(
     ({
       facetsExpandedStatus,
@@ -467,8 +470,10 @@ const enhance = compose(
                                   : 5,
                               )
                               .map((componentFacet: IFacetProps) => {
-                                const fieldName =
-                                  componentFacet.full.split('.').pop() || '';
+                                const fieldName = startCase(
+                                    termCapitaliser(componentFacet.full)
+                                      .split('.').pop()
+                                ) || '';
                                 return [
                                   <WrapperComponent
                                     additionalProps={componentFacet.additionalProps}
@@ -524,7 +529,7 @@ const enhance = compose(
                                       order: customSorting[componentFacet.field] || 0,
                                       paddingLeft: '10px',
                                     }}
-                                    title={startCase(fieldName)}
+                                    title={fieldName}
                                     />,
                                 ];
                               }))

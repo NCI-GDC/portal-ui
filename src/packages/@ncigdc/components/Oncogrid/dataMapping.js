@@ -15,6 +15,8 @@ export type TDonorInput = {
     gender: string,
     race: string,
     ethnicity: string,
+    days_to_death: number,
+    vital_status: string,
   },
   case_id: string,
   project: {
@@ -23,8 +25,6 @@ export type TDonorInput = {
   submitter_id: string,
   diagnoses: Array<{
     age_at_diagnosis: number,
-    vital_status: string,
-    days_to_death: number,
     primary_diagnosis: string,
   }>,
 };
@@ -66,13 +66,10 @@ export const mapDonors: TMapDonors = (donors, donorIds) => {
         gender,
         race = 'not reported',
         ethnicity = 'not reported',
-      } = demographic;
-      const {
-        age_at_diagnosis,
-        vital_status: vitalStatus = 'not reported',
         days_to_death,
-      } =
-        diagnoses[0] || {};
+        vital_status: vitalStatus = 'not reported',
+      } = demographic;
+      const { age_at_diagnosis } = diagnoses[0] || {};
 
       const output = {
         ...dataTypesInitial,

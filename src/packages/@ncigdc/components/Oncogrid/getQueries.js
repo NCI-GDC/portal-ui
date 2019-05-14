@@ -71,9 +71,9 @@ async function getCases({
       filters,
       size,
       fields: [
-        'diagnoses.days_to_death',
+        'demographic.days_to_death',
         'diagnoses.age_at_diagnosis',
-        'diagnoses.vital_status',
+        'demographic.vital_status',
         'demographic.gender',
         'demographic.race',
         'demographic.ethnicity',

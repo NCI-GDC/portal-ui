@@ -85,6 +85,8 @@ export default (Component: React.Class<*>) =>
                           gender
                           ethnicity
                           race
+                          days_to_death
+                          vital_status
                         }
                         diagnoses {
                           hits(first: 99) {
@@ -92,8 +94,6 @@ export default (Component: React.Class<*>) =>
                               node {
                                 primary_diagnosis
                                 age_at_diagnosis
-                                vital_status
-                                days_to_death
                               }
                             }
                           }

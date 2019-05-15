@@ -68,59 +68,6 @@ const qnorm = function (p) {
   return ppnd;
 };
 
-function LeastSquares(values_x, values_y) {
-  let sum_x = 0;
-  let sum_y = 0;
-  let sum_xy = 0;
-  let sum_xx = 0;
-  let count = 0;
-
-  /*
-   * We'll use those variables for faster read/write access.
-   */
-  let x = 0;
-  let y = 0;
-  const values_length = values_x.length;
-
-  if (values_length !== values_y.length) {
-    throw new Error(
-      'The parameters values_x and values_y need to have same size!'
-    );
-  }
-
-  /*
-   * Nothing to do.
-   */
-  if (values_length === 0) {
-    return [[], []];
-  }
-
-  /*
-   * Calculate the sum for each of the parts necessary.
-   */
-  for (let v = 0; v < values_length; v++) {
-    x = values_x[v];
-    y = values_y[v];
-    sum_x += x;
-    sum_y += y;
-    sum_xx += x * x;
-    sum_xy += x * y;
-    count++;
-  }
-
-  /*
-   * Calculate m and b for the formular:
-   * y = x * m + b
-   */
-  const m = (count * sum_xy - sum_x * sum_y) / (count * sum_xx - sum_x * sum_x);
-  const b = sum_y / count - (m * sum_x) / count;
-
-  return {
-    b,
-    m,
-  };
-}
-
 const QQPlot = ({
   data = [],
   title,
@@ -132,25 +79,19 @@ const QQPlot = ({
   theme,
   width,
 }) => {
-  const plotData = data.slice(0, 100);
-  const n = plotData.length;
-
-  // sort data asc
-  // find q1 index ->  y value
-  // find q3 index -> y value
-  // what are the x coords?
-
+  const dataLength = data.length >= 100 ? 100 : data.length;
+  const n = data.slice(0, dataLength).length;
+  console.log(data.slice(0, dataLength));
   const getQuantile = (n, quantile) => Math.ceil(n * (quantile / 4)) - 1; // subtract 1 to account for 0 index array
-  const quantile1 = getQuantile(n, 1);
-  const quantile3 = getQuantile(n, 3);
 
   // quantile(y) and theoretical quantile (x)
-  const zScores = plotData.sort(sortAscending).map((age, i) => ({
+  const zScores = data.slice(0, dataLength).sort(sortAscending).map((age, i) => ({
     x: qnorm((i + 1 - 0.5) / n),
     y: age,
   }));
 
-  const coords = [zScores[quantile1], zScores[quantile3]];
+  const quantile1Coords = zScores[getQuantile(n, 1)];
+  const quantile3Coords = zScores[getQuantile(n, 3)];
 
   const el = ReactFauxDOM.createElement('div');
   el.style.width = '100%';
@@ -216,20 +157,11 @@ const QQPlot = ({
     stroke: theme.greyScale4,
   };
 
-  const slope = (coords[1].y - coords[0].y) / (coords[1].x - coords[0].x);
+  const slope = (quantile3Coords.y - quantile1Coords.y) / (quantile3Coords.x - quantile1Coords.x);
   const yMin = zScores[0].y;
   const yMax = last(zScores).y;
-  const xAtYMin = zScores[quantile1].x - ((zScores[quantile1].y - yMin) / slope);
-  const xAtYMax = zScores[quantile3].x + ((yMax - zScores[quantile3].y) / slope);
-  const changeInY = zScores[quantile1].y - yMin;
-  // const changeInX = quantile1.x -
-  // slope = changeInY/changeInX
-  // slope(changeInX) = changeInY
-  const yo = changeInY / slope;
-  const xIntercept = zScores[quantile1].x - yo;
-  const changeInY2 = yMax - zScores[quantile3].y;
-  const yo2 = changeInY2 / slope;
-  const xIntercept2 = zScores[quantile3].x + yo2;
+  const xAtYMin = quantile1Coords.x - ((quantile1Coords.y - yMin) / slope);
+  const xAtYMax = quantile3Coords.x + ((yMax - quantile3Coords.y) / slope);
 
   const svg = d3
     .select(el)
@@ -251,7 +183,8 @@ const QQPlot = ({
         x: xAtYMin,
         y: yMin,
       },
-      ...coords,
+      ...quantile1Coords,
+      ...quantile3Coords,
       {
         x: xAtYMax,
         y: yMax,
@@ -293,6 +226,7 @@ const QQPlot = ({
     .style('fontWeight', yAxisStyle.fontWeight)
     .attr('fill', yAxisStyle.textFill)
     .text(yAxis.title || '');
+
   svg
     .append('text')
     .attr('y', 0)
@@ -310,150 +244,11 @@ const QQPlot = ({
     .data(zScores)
     .enter()
     .append('circle')
-    .attr('cx', (d) => {
-      return xScale(d.x);
-    })
-    .attr('cy', (d) => {
-      return yScale(d.y);
-    })
+    .attr('cx', (d) => xScale(d.x))
+    .attr('cy', (d) => yScale(d.y))
     .attr('r', 2)
     .attr('stroke', 'green')
     .attr('fill', 'transparent');
-
-  // svg
-  //   .append('defs')
-  //   .append('clipPath')
-  //   .attr('id', 'bananas')
-  //   .append('rect')
-  //   .attr('width', width)
-  //   .attr('height', chartHeight + 55); // calculate from height instead of hardcoded
-
-  // var drawline = function(data) {
-  //   var xValues = data.map(function(d) {
-  //     return xScale(d.x);
-  //   });
-  //   var yValues = data.map(function(d) {
-  //     return yScale(d.y);
-  //   });
-  //   var lsCoef = [LeastSquares(xValues, yValues)];
-  //
-  //   var lineFunction = d3
-  //     .line()
-  //     .x(function(d) {
-  //       return xScale(d.x);
-  //     })
-  //     .y(function(d) {
-  //       return yScale(d.y);
-  //     });
-  //
-  //   svg
-  //     .append('path')
-  //     .attr(
-  //       'd',
-  //       lineFunction([
-  //         { x: 50, y: lsCoef[0].m * 50 + lsCoef[0].b },
-  //         { x: 450, y: lsCoef[0].m * 450 + lsCoef[0].b },
-  //       ])
-  //     )
-  //     .attr('stroke-width', 2)
-  //     .attr('stroke', 'black')
-  //     .attr('id', 'regline');
-  // };
-
-  const transitionline = function (data) {
-    // const myXScale = d3
-    //   .scaleLinear()
-    //   .domain([
-    //     d3.min(zScores, function(d) {
-    //       return d[0];
-    //     }),
-    //     // 0,
-    //     d3.max(zScores, function(d) {
-    //       return d[0];
-    //     }),
-    //   ])
-    //   .range([padding, chartWidth- padding * 2]);
-    //
-    // const myYScale = d3
-    //   .scaleLinear()
-    //   .domain([
-    //     0,
-    //     d3.max(zScores, function(d) {
-    //       return d[1];
-    //     }),
-    //   ])
-    //   .range([h - padding, padding]);
-
-    const xValues = data.map((d) => {
-      return xScale(d.x);
-    });
-    const yValues = data.map((d) => {
-      return yScale(d.y);
-    });
-
-    const lsCoef = [LeastSquares(xValues, yValues)];
-
-    const lineFunction = d3
-      .line()
-      .x((d) => {
-        return d.x;
-      })
-      .y((d) => {
-        return d.y;
-      });
-
-    svg
-      .append('path')
-      .attr(
-        'd',
-        lineFunction([
-          {
-            x: 50,
-            y: lsCoef[0].m * 50 + lsCoef[0].b,
-          },
-          {
-            x: 450,
-            y: lsCoef[0].m * 450 + lsCoef[0].b,
-          },
-        ])
-      )
-      .attr('stroke-width', 2)
-      .attr('stroke', 'black');
-  };
-
-  // transitionline(zScores);
-
-  const linearRegression = ss.linearRegression(
-    zScores.map(d => {
-      return [d.x, d.y];
-    })
-  );
-
-  const linearRegressionLine = ss.linearRegressionLine(linearRegression);
-
-  const regressionPoints = data => {
-    const firstX = data[0].x;
-    const lastX = data.slice(-1)[0].x;
-    const xCoordinates = [firstX, lastX];
-
-    return xCoordinates.map(d => ({
-      x: d, // We pick x and y arbitrarily, just make sure they match d3.line accessors
-      y: linearRegressionLine(d),
-    }));
-  };
-
-  // const line = d3
-  //   .line()
-  //   .x(d => xScale(d.x))
-  //   .y(d => yScale(d.y));
-
-  // svg
-  //   .append('path')
-  //   .classed('regressionLine', true)
-  //   .datum(regressionPoints(zScores))
-  //   .attr('d', line)
-  //   .attr('stroke', 'black')
-  //   .attr('stroke-width', 2);
 
   // x axis
   svg

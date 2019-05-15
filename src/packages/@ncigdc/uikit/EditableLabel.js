@@ -17,7 +17,7 @@ import { MAX_SET_NAME_LENGTH } from '@ncigdc/utils/constants';
 import { Tooltip } from './Tooltip/index';
 
 export default compose(
-  withState('isEditing', 'setIsEditing', false),
+  withState('isEditing', 'setIsEditing', ({ isEditing }) => isEditing || false),
   withState('value', 'setValue', ({ text }) => text),
   defaultProps({
     handleSave: value => console.log(value),

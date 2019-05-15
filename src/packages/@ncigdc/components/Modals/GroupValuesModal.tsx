@@ -1,17 +1,14 @@
 // @flow
-
-import React from 'react';
+/* eslint-disable */
+import React, { ReactNode } from 'react';
+/* eslint-enable */
 import { compose, withState } from 'recompose';
-import { map, groupBy, reduce } from 'lodash';
+import {
+  map, groupBy, reduce, max,
+} from 'lodash';
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import Button from '@ncigdc/uikit/Button';
 import { visualizingButton } from '@ncigdc/theme/mixins';
-
-// import {
-//   removeClinicalAnalysisVariable,
-//   updateClinicalAnalysisVariable,
-// } from '@ncigdc/dux/analysis';
-// import OutsideClickHandler from 'react-outside-click-handler';
 import EditableLabel from '@ncigdc/uikit/EditableLabel';
 
 const styles = {
@@ -29,12 +26,32 @@ const styles = {
 //   name: string,
 // };
 
-// type TProps = {
-//   options: Array<TOption>,
-//   onClose: Function,
-//   selectedOptions: Array<number>,
-//   setSelectedOptions: Function,
-// };
+interface IBinProps {
+  key: string,
+  /* eslint-disable */
+  doc_count: number,
+  /* eslint-enable */
+  groupName: string,
+}
+
+interface ISelectedBinsProps {
+  [x: string]: boolean
+}
+interface IBinsProps { [x: string]: IBinProps }
+interface IGroupValuesModalProps {
+  currentBins: IBinsProps,
+  setCurrentBins: (currentBins: IBinsProps) => void,
+  onUpdate: (bins: IBinsProps) => void,
+  onClose: () => void,
+  fieldName: string,
+  selectedHidingBins: ISelectedBinsProps,
+  setSelectedHidingBins: (selectedHidingBins: ISelectedBinsProps) => void,
+  selectedGroupBins: ISelectedBinsProps,
+  setSelectedGroupBins: (selectedGroupBins: ISelectedBinsProps) => void,
+  editingGroupName: string,
+  setEditingGroupName: (editingGroupName: string) => void,
+  children?: ReactNode,
+}
 
 const blockStyle = {
   height: '500px',
@@ -52,9 +69,10 @@ const listStyle = {
 };
 
 export default compose(
-  withState('currentBins', 'setCurrentBins', ({ bins }: any) => bins),
+  withState('currentBins', 'setCurrentBins', ({ bins }: { bins: IBinsProps }) => bins),
   withState('selectedHidingBins', 'setSelectedHidingBins', {}),
-  withState('selectedGroupBins', 'setSelectedGroupBins', {})
+  withState('selectedGroupBins', 'setSelectedGroupBins', {}),
+  withState('editingGroupName', 'setEditingGroupName', '')
 )(
   ({
     currentBins,
@@ -66,8 +84,16 @@ export default compose(
     setSelectedHidingBins,
     selectedGroupBins,
     setSelectedGroupBins,
-  }: any) => (
-    <Column>
+    editingGroupName,
+    setEditingGroupName,
+  }: IGroupValuesModalProps) => {
+    const groupNameMapping = groupBy(
+      Object.keys(currentBins)
+        .filter((bin: string) => currentBins[bin].groupName !== ''),
+      key => currentBins[key].groupName
+    );
+    return (
+      <Column>
         <h1 style={{ margin: '20px' }}>
           Create Custom Bins:
           {' '}
@@ -77,46 +103,35 @@ export default compose(
           Organize values into groups of your choosing. Click Save Bins to udpate
           the analysis plots.
         </h3>
-        {/* <OutsideClickHandler
-          disabled={Object.keys({
-            ...selectedGroupBins,
-            ...selectedHidingBins,
-          }).length === 0}
-          onOutsideClick={() => {
-            setSelectedGroupBins({});
-            setSelectedHidingBins({});
-          }}
-          > */}
-
         <Row style={{ justifyContent: 'center' }}>
           <Column style={blockStyle}>
             Hiding Values
             <Column style={listStyle}>
               {Object.keys(currentBins)
-                .filter((bin: any) => currentBins[bin].groupName === '')
-                .map((bin: any) => (
+                .filter((binKey: string) => currentBins[binKey].groupName === '')
+                .map((binKey: string) => (
                   <Row
-                    key={bin}
+                    key={binKey}
                     onClick={() => {
                       if (Object.keys(selectedGroupBins).length > 0) {
                         setSelectedGroupBins({});
                       }
                       setSelectedHidingBins({
                         ...selectedHidingBins,
-                        [bin]: !selectedHidingBins[bin],
+                        [binKey]: !selectedHidingBins[binKey],
                       });
                     }}
                     style={{
-                      backgroundColor: selectedHidingBins[bin] ? '#d5f4e6' : '',
+                      backgroundColor: selectedHidingBins[binKey] ? '#d5f4e6' : '',
                       paddingLeft: '10px',
                     }}
                     >
-                    {bin}
+                    {binKey}
                   </Row>
                 ))}
             </Column>
           </Column>
-          <Column style={{ justifyContent: 'center' }}>
+          <Column style={{ justifyContent: 'center' }} >
             <Button
               disabled={Object.values(selectedHidingBins).every(value => !value)}
               onClick={() => {
@@ -124,7 +139,14 @@ export default compose(
                   ...currentBins,
                   ...reduce(selectedHidingBins, (acc, val, key) => {
                     if (val) {
-                      const newGroupName = Object.keys(selectedHidingBins).length > 1 ? `selected value ${Object.values(currentBins).filter(bin => bin).length + 1}` : key;
+                      const newGroupName = Object.keys(selectedHidingBins).length > 1
+                        ? `selected value ${(max(
+                          Object.keys(groupNameMapping)
+                            .filter((el) => el.startsWith('selected value '))
+                            .map((el) => parseInt(el.slice(15), 0))
+                        ) || 0) + 1}`
+                        : key;
+                      setEditingGroupName(newGroupName);
                       return {
                         ...acc,
                         [key]: {
@@ -171,12 +193,8 @@ export default compose(
             Display Values
             <Column style={listStyle}>
               {map(
-                groupBy(
-                  Object.keys(currentBins)
-                    .filter((bin: any) => currentBins[bin].groupName !== ''),
-                  key => currentBins[key].groupName
-                ),
-                (group: any) => (
+                groupNameMapping,
+                (group: string[]) => (
                   <Column key={group[0]}>
                     <Row
                       key={group[0]}
@@ -186,19 +204,21 @@ export default compose(
                         }
                         setSelectedGroupBins({
                           ...selectedGroupBins,
-                          ...group.reduce((acc: any, bin: any) => ({
+                          ...group.reduce((acc: ISelectedBinsProps, binKey: string) => ({
                             ...acc,
-                            [bin]: !group.every((gbin: any) => selectedGroupBins[gbin]),
+                            [binKey]: !group.every(
+                              (binsWithSameGroupNameKey: string) => selectedGroupBins[binsWithSameGroupNameKey]
+                            ),
                           }), {}),
                         });
                       }}
-                      style={{ backgroundColor: group.every((bin: any) => selectedGroupBins[bin]) ? '#d5f4e6' : '' }}
+                      style={{ backgroundColor: group.every((binKey: string) => selectedGroupBins[binKey]) ? '#d5f4e6' : '' }}
                       >
                       <EditableLabel
                         containerStyle={{ justifyContent: 'flex-start' }}
-                        handleSave={(value: any) => setCurrentBins({
+                        handleSave={(value: string) => setCurrentBins({
                           ...currentBins,
-                          ...group.reduce((acc: any, bin: any) => ({
+                          ...group.reduce((acc: ISelectedBinsProps, bin: string) => ({
                             ...acc,
                             [bin]: {
                               ...currentBins[bin],
@@ -212,6 +232,7 @@ export default compose(
                           fontSize: '1.8rem',
                           marginLeft: 10,
                         }}
+                        isEditing={currentBins[group[0]].groupName === editingGroupName}
                         pencilEditingOnly
                         text={currentBins[group[0]].groupName}
                         >
@@ -219,7 +240,7 @@ export default compose(
                       </EditableLabel>
                     </Row>
                     {group.length > 1 || group[0] !== currentBins[group[0]].groupName
-                      ? group.map((bin: any) => (
+                      ? group.map((bin: string) => (
                         <Row
                           key={bin}
                           onClick={() => setSelectedGroupBins({
@@ -241,7 +262,6 @@ export default compose(
             </Column>
           </Column>
         </Row>
-        {/* </OutsideClickHandler> */}
         <Row
           spacing="1rem"
           style={{
@@ -262,6 +282,7 @@ export default compose(
             Save Bins
           </Button>
         </Row>
-      </Column >
-  )
+      </Column>
+    );
+  }
 );

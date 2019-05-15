@@ -264,8 +264,6 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
   totalDocs,
   currentAnalysis,
 }) => {
-  console.log('variable', variable, rawQueryData);
-
   const getCategoricalTableData = (rawData, type) => {
     if (isEmpty(rawData)) {
       return [];
@@ -413,11 +411,10 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
       };
     });
   };
-  const binData = map(groupBy(variable.bins, bin => bin.groupName), (values, key) => ({
+  const binData = Object.keys(variable.bins).length > 0 ? map(groupBy(variable.bins, bin => bin.groupName), (values, key) => ({
     key,
     doc_count: values.reduce((acc, value) => acc + value.doc_count, 0),
-  }));
-  console.log('bindata', binData, rawQueryData);
+  })) : rawQueryData;
   const tableData =
     variable.active_chart === 'box'
       ? getBoxTableData([])
@@ -1281,18 +1278,12 @@ export default compose(
     },
   ),
   withPropsOnChange(['id'], ({ setSelectedBuckets }) => setSelectedBuckets([])),
-  // withPropsOnChange(['data'],
-  //   ({ rawQueryData, dispatch, data, fieldName, id }) => {
-  //     // console.log('rawQueryData2', rawQueryData, data);
-
-  //   },
-  // ),
   lifecycle({
     componentDidMount(): void {
       const {
         dispatch, variable, fieldName, id, data, rawQueryData,
       } = this.props;
-      if (Object.keys(variable.bins) === 0) {
+      if (Object.keys(variable.bins).length === 0) {
         dispatch(
           updateClinicalAnalysisVariable({
             fieldName,

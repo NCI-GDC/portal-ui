@@ -1,7 +1,7 @@
 #!/bin/bash
 # Copied from tungsten
 export REACT_APP_GDC_DISPLAY_SLIDES=true
-export REACT_APP_SLIDE_IMAGE_ENDPOINT="https://portal.gdc.cancer.gov/auth/api/tile/"
+export REACT_APP_SLIDE_IMAGE_ENDPOINT="https://api.gdc.cancer.gov/tile/"
 export REACT_APP_COMMIT_HASH=`git rev-parse --short HEAD`
 export REACT_APP_COMMIT_TAG=`git tag -l --points-at HEAD`
 export REACT_APP_API="https://portal.gdc.cancer.gov/auth/api/v0/"

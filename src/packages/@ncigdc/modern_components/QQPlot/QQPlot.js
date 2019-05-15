@@ -207,14 +207,7 @@ const QQPlot = ({
     // yG.selectAll('text')
     //   .style('fontSize', yAxisStyle.fontSize)
     //   .style('fill', yAxisStyle.textFill);
-    //
-    // svg
-    //   .append('path')
-    //   .classed('regressionLine', true)
-    //   .datum(regressionPoints(zScores))
-    //   .attr('d', line)
-    //   .attr('stroke', 'black')
-    //   .attr('stroke-width', 2);
+
   svg
     .append('text')
     .attr('transform', 'rotate(-90)')
@@ -250,6 +243,16 @@ const QQPlot = ({
     .attr('stroke', 'green')
     .attr('fill', 'transparent');
 
+// position and dimensions should come from chart settings
+  svg
+    .append('rect')
+    .attr('x', -10)
+    .attr('y', 20)
+    .attr('clip-path', 'url(#regression-clip)')
+    .style('fill', 'white')
+    .attr('height', 200)
+    .attr('width', 50);
+
   // x axis
   svg
     .append('g')
@@ -280,14 +283,6 @@ const QQPlot = ({
       // .style('fontSize', yAxisStyle.fontSize)
       // .style('fontWeight', yAxisStyle.fontWeight)
       // .attr('fill', yAxisStyle.textFill)
-  svg
-    .append('rect')
-    .attr('x', chartWidth)
-    .attr('y', 100)
-    .attr('clip-path', 'url(#regression-clip)')
-    .style('fill', 'white')
-    .attr('height', 100)
-    .attr('width', chartWidth);
 
   return el.toReact();
 };

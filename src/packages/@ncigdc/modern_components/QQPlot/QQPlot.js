@@ -8,7 +8,7 @@ import {
   withProps,
   withPropsOnChange,
 } from 'recompose';
-import _ from 'lodash';
+import { last, groupBy } from 'lodash';
 import * as ss from 'simple-statistics';
 import './qq.css';
 
@@ -68,65 +68,89 @@ const qnorm = function (p) {
   return ppnd;
 };
 
+function LeastSquares(values_x, values_y) {
+  let sum_x = 0;
+  let sum_y = 0;
+  let sum_xy = 0;
+  let sum_xx = 0;
+  let count = 0;
+
+  /*
+   * We'll use those variables for faster read/write access.
+   */
+  let x = 0;
+  let y = 0;
+  const values_length = values_x.length;
+
+  if (values_length !== values_y.length) {
+    throw new Error(
+      'The parameters values_x and values_y need to have same size!'
+    );
+  }
+
+  /*
+   * Nothing to do.
+   */
+  if (values_length === 0) {
+    return [[], []];
+  }
+
+  /*
+   * Calculate the sum for each of the parts necessary.
+   */
+  for (let v = 0; v < values_length; v++) {
+    x = values_x[v];
+    y = values_y[v];
+    sum_x += x;
+    sum_y += y;
+    sum_xx += x * x;
+    sum_xy += x * y;
+    count++;
+  }
+
+  /*
+   * Calculate m and b for the formular:
+   * y = x * m + b
+   */
+  const m = (count * sum_xy - sum_x * sum_y) / (count * sum_xx - sum_x * sum_x);
+  const b = sum_y / count - (m * sum_x) / count;
+
+  return {
+    b,
+    m,
+  };
+}
+
 const QQPlot = ({
   data = [],
   title,
-  // yAxis = {},
-  // xAxis = {},
-  styles,
+  yAxisTitle = 'Sample Quantiles',
+  xAxisTitle = 'Theoretical Quantiles',
+  styles = {},
   height = 317,
   margin: m,
   theme,
   width,
-  // clinicalType,
-  // queryField,
-  // realData = true,
-  // fieldName,
 }) => {
-  // if (data && data.explore.cases.hits) {
-  //   gdcData = _.flattenDeep(
-  //     data.explore.cases.hits.edges.map(edge => {
-  //       return edge.node[clinicalType].hits.edges.map(e => {
-  //         return e.node[queryField];
-  //       });
-  //     })
-  //   );
-  // }
+  const plotData = data.slice(0, 100);
+  const n = plotData.length;
 
-  // const plotData = (data && data.explore.cases.aggregations)
-  //   ? _.flattenDeep(data.explore.cases.aggregations[fieldName].histogram.buckets
-  //     .filter(bucket => bucket.doc_count > 0)
-  //     .map(bucket => _.times(bucket.doc_count, () => Number(bucket.key))))
-  // : [];
+  // sort data asc
+  // find q1 index ->  y value
+  // find q3 index -> y value
+  // what are the x coords?
 
-  const plotData = data;
-  const n = data.length;
-  // const testValues = realData
-  //   ? gdcData.filter(d => _.isNumber(d)).sort(sortAscending)
-  //   : data.filter(d => _.isNumber(d)).sort(sortAscending);
-  // const n = testValues.length;
-  //
-  // const mean = testValues.reduce((acc, i) => acc + i, 0) / n;
-  // const deviations = testValues.map(v => v - mean);
-  // const squaredDeviations = deviations
-  //   .map(d => d * d)
-  //   .reduce((acc, d) => acc + d, 0);
+  const getQuantile = (n, quantile) => Math.ceil(n * (quantile / 4)) - 1; // subtract 1 to account for 0 index array
+  const quantile1 = getQuantile(n, 1);
+  const quantile3 = getQuantile(n, 3);
 
-  // const variance = squaredDeviations / n;
-
-  // const standardDeviation = Math.sqrt(variance);
-
-  // const getZScore = (age, m, stdDev) => (age - m) / stdDev;
-
-  // const qqLine = testValues.map((age, i) => [
-  //   getZScore(age, mean, standardDeviation),
-  //   age,
-  // ]);
   // quantile(y) and theoretical quantile (x)
   const zScores = plotData.sort(sortAscending).map((age, i) => ({
     x: qnorm((i + 1 - 0.5) / n),
     y: age,
   }));
+
+  const coords = [zScores[quantile1], zScores[quantile3]];
 
   const el = ReactFauxDOM.createElement('div');
   el.style.width = '100%';
@@ -172,7 +196,7 @@ const QQPlot = ({
   const xAxis = d3
     .axisBottom()
     .scale(xScale)
-    .ticks(Object.keys(_.groupBy(zScores.map(z => z.x), Math.floor)).length);
+    .ticks(Object.keys(groupBy(zScores.map(z => z.x), Math.floor)).length);
 
   const yAxis = d3
     .axisLeft()
@@ -192,12 +216,83 @@ const QQPlot = ({
     stroke: theme.greyScale4,
   };
 
+  const slope = (coords[1].y - coords[0].y) / (coords[1].x - coords[0].x);
+  const yMin = zScores[0].y;
+  const yMax = last(zScores).y;
+  const xAtYMin = zScores[quantile1].x - ((zScores[quantile1].y - yMin) / slope);
+  const xAtYMax = zScores[quantile3].x + ((yMax - zScores[quantile3].y) / slope);
+  const changeInY = zScores[quantile1].y - yMin;
+  // const changeInX = quantile1.x -
+  // slope = changeInY/changeInX
+  // slope(changeInX) = changeInY
+  const yo = changeInY / slope;
+  const xIntercept = zScores[quantile1].x - yo;
+  const changeInY2 = yMax - zScores[quantile3].y;
+  const yo2 = changeInY2 / slope;
+  const xIntercept2 = zScores[quantile3].x + yo2;
+
   const svg = d3
     .select(el)
     .append('svg')
-    .attr('width', chartWidth)
-    .attr('height', chartHeight);
+    .attr('width', chartWidth + 30)
+    .attr('height', chartHeight)
+    .style('paddingLeft', 30);
 
+  const line = d3
+    .line()
+    .x(d => xScale(d.x))
+    .y(d => yScale(d.y));
+
+  svg
+    .append('path')
+    .attr('class', 'coords')
+    .datum([
+      {
+        x: xAtYMin,
+        y: yMin,
+      },
+      ...coords,
+      {
+        x: xAtYMax,
+        y: yMax,
+      },
+    ])
+    .attr('d', line)
+    .attr('stroke', 'red')
+    .attr('stroke-width', 2);
+
+    // const yG = svg.append('g').call(
+      // d3
+        // .axisLeft(y)
+        // .ticks(Math.min(4, maxY))
+        // .tickSize(-chartWidth)
+        // .tickSizeOuter(0)
+    // );
+    //
+    // yG.selectAll('path').style('stroke', 'none');
+    // yG.selectAll('line').style('stroke', yAxisStyle.stroke);
+    // yG.selectAll('text')
+    //   .style('fontSize', yAxisStyle.fontSize)
+    //   .style('fill', yAxisStyle.textFill);
+    //
+    // svg
+    //   .append('path')
+    //   .classed('regressionLine', true)
+    //   .datum(regressionPoints(zScores))
+    //   .attr('d', line)
+    //   .attr('stroke', 'black')
+    //   .attr('stroke-width', 2);
+  svg
+    .append('text')
+    .attr('transform', 'rotate(-90)')
+    .attr('y', 0 - margin.left)
+    .attr('x', 0 - height / 2)
+    .attr('dy', '1em')
+    .style('text-anchor', 'middle')
+    .style('fontSize', yAxisStyle.fontSize)
+    .style('fontWeight', yAxisStyle.fontWeight)
+    .attr('fill', yAxisStyle.textFill)
+    .text(yAxis.title || '');
   svg
     .append('text')
     .attr('y', 0)
@@ -209,6 +304,7 @@ const QQPlot = ({
     .style('marginBottom', 10)
     // .attr('fill', yAxisStyle.textFill)
     .text(title);
+
   svg
     .selectAll('circle')
     .data(zScores)
@@ -224,69 +320,15 @@ const QQPlot = ({
     .attr('stroke', 'green')
     .attr('fill', 'transparent');
 
-  svg
-    .append('defs')
-    .append('clipPath')
-    .attr('id', 'clip')
-    .append('rect')
-    .attr('width', width)
-    .attr('height', chartHeight + 55); // calculate from height instead of hardcoded
-
-  function LeastSquares(values_x, values_y) {
-    let sum_x = 0;
-    let sum_y = 0;
-    let sum_xy = 0;
-    let sum_xx = 0;
-    let count = 0;
-
-    /*
-     * We'll use those variables for faster read/write access.
-     */
-    let x = 0;
-    let y = 0;
-    const values_length = values_x.length;
-
-    if (values_length !== values_y.length) {
-      throw new Error(
-        'The parameters values_x and values_y need to have same size!'
-      );
-    }
-
-    /*
-     * Nothing to do.
-     */
-    if (values_length === 0) {
-      return [[], []];
-    }
-
-    /*
-     * Calculate the sum for each of the parts necessary.
-     */
-    for (let v = 0; v < values_length; v++) {
-      x = values_x[v];
-      y = values_y[v];
-      sum_x += x;
-      sum_y += y;
-      sum_xx += x * x;
-      sum_xy += x * y;
-      count++;
-    }
-
-    /*
-     * Calculate m and b for the formular:
-     * y = x * m + b
-     */
-    const m = (count * sum_xy - sum_x * sum_y) / (count * sum_xx - sum_x * sum_x);
-    const b = sum_y / count - (m * sum_x) / count;
-
-    return {
-      b,
-      m,
-    };
-  }
+  // svg
+  //   .append('defs')
+  //   .append('clipPath')
+  //   .attr('id', 'bananas')
+  //   .append('rect')
+  //   .attr('width', width)
+  //   .attr('height', chartHeight + 55); // calculate from height instead of hardcoded
 
   // var drawline = function(data) {
-  //   console.log('hiiiii');
   //   var xValues = data.map(function(d) {
   //     return xScale(d.x);
   //   });
@@ -400,18 +442,18 @@ const QQPlot = ({
     }));
   };
 
-  const line = d3
-    .line()
-    .x(d => xScale(d.x))
-    .y(d => yScale(d.y));
+  // const line = d3
+  //   .line()
+  //   .x(d => xScale(d.x))
+  //   .y(d => yScale(d.y));
 
-  svg
-    .append('path')
-    .classed('regressionLine', true)
-    .datum(regressionPoints(zScores))
-    .attr('d', line)
-    .attr('stroke', 'black')
-    .attr('stroke-width', 2);
+  // svg
+  //   .append('path')
+  //   .classed('regressionLine', true)
+  //   .datum(regressionPoints(zScores))
+  //   .attr('d', line)
+  //   .attr('stroke', 'black')
+  //   .attr('stroke-width', 2);
 
   // x axis
   svg
@@ -427,81 +469,31 @@ const QQPlot = ({
     .attr('transform', `translate(${padding}, 0)`)
     .call(yAxis);
 
-  // svg
-  //   .append('rect')
-  //   .attr('x', chartWidth
-  //   .attr('y', 100)
-  //   .attr('clip-path', 'url(#regression-clip)')
-  //   .style('fill', 'white')
-  //   .attr('height', 100)
-  //   .attr('width', chartWidth;
+  svg
+    .append('text')
+    .attr('transform', 'rotate(-90)')
+      // .attr('y', 0 - margin.left)
+      // .attr('x', 0 - chartHeight / 2)
+    .attr('y', -10)
+    .attr('x', -100)
+    .attr('dy', '1em')
+    .style('text-anchor', 'middle')
+    .style('fontSize', '1rem')
+    .attr('fill', 'blue')
+    .text(yAxisTitle);
 
-  // const x = d3
-  //   .scaleBand()
-  //   .domain(data.map(d => d.label))
-  //   .rangeRound([0, chartWidth])
-  //   .paddingInner(innerPadding)
-  //   .paddingOuter(outerPadding);
-  // const maxY = d3.max(data, d => d.value);
-  // const y = d3
-  //   .scaleLinear()
-  //   .range([chartHeight, 0])
-  //   .domain([0, maxY]);
-  // //
-  // const svg = d3
-  //   .select(el)
-  //   .append('svg')
-  //   .attr('width', width)
-  //   .attr('height', chartHeight + margin.top + margin.bottom)
-  //   .append('g', 'chart')
-  //   .attr('fill', '#fff')
-  //   .attr('transform', `translate(${margin.left}, ${margin.top})`);
-  //
-  //
-  // const yG = svg.append('g').call(
-  //   d3
-  //     .axisLeft(y)
-  //     .ticks(Math.min(4, maxY))
-  //     .tickSize(-chartWidth)
-  //     .tickSizeOuter(0)
-  // );
-  //
-  // yG.selectAll('path').style('stroke', 'none');
-  // yG.selectAll('line').style('stroke', yAxisStyle.stroke);
-  // yG.selectAll('text')
-  //   .style('fontSize', yAxisStyle.fontSize)
-  //   .style('fill', yAxisStyle.textFill);
-  //
-  // svg
-  //   .append('text')
-  //   .attr('transform', 'rotate(-90)')
-  //   .attr('y', 0 - margin.left)
-  //   .attr('x', 0 - chartHeight / 2)
-  //   .attr('dy', '1em')
-  //   .style('text-anchor', 'middle')
-  //   .style('fontSize', yAxisStyle.fontSize)
-  //   .style('fontWeight', yAxisStyle.fontWeight)
-  //   .attr('fill', yAxisStyle.textFill)
-  //   .text(yAxis.title || '');
-  //
-  // const xG = svg
-  //   .append('g')
-  //   .attr('transform', `translate(0, ${chartHeight})`)
-  //   .call(d3.axisBottom(x));
-  //
-  // xG.selectAll('text')
-  //   .style('text-anchor', 'end')
-  //   .style('fontSize', xAxisStyle.fontSize)
-  //   .style('fontWeight', xAxisStyle.fontWeight)
-  //   .attr('fill', xAxisStyle.textFill)
-  //   .attr('dx', '-1em')
-  //   .attr('dy', '.15em')
-  //   .attr('transform', 'rotate(-45)');
-  //
-  // xG.selectAll('path').style('stroke', xAxisStyle.stroke);
-  //
-  // xG.selectAll('line').style('stroke', xAxisStyle.stroke);
-  //
+      // .style('fontSize', yAxisStyle.fontSize)
+      // .style('fontWeight', yAxisStyle.fontWeight)
+      // .attr('fill', yAxisStyle.textFill)
+  svg
+    .append('rect')
+    .attr('x', chartWidth)
+    .attr('y', 100)
+    .attr('clip-path', 'url(#regression-clip)')
+    .style('fill', 'white')
+    .attr('height', 100)
+    .attr('width', chartWidth);
+
   return el.toReact();
 };
 

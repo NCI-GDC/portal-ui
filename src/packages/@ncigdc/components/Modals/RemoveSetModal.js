@@ -13,81 +13,90 @@ import { updateClinicalAnalysisSet } from '@ncigdc/dux/analysis';
 import onSaveComplete from './onSaveComplete';
 
 const enhance = compose(
-  withState('selected', 'setSelected', ''),
-  connect(({ sets, analysis }) => ({ sets, analysis })),
-  withProps(({ sets, type, analysis }) => ({
-    sets: sets[type] || {},
+  withState('selected', 'setSelected', ({ selected }) => selected || ''),
+  connect(({ analysis, sets }) => ({
+    analysis,
+    sets,
+  })),
+  withProps(({ analysis, sets, type }) => ({
     analyses: analysis.saved || [],
+    sets: sets[type] || {},
   })),
   withRouter
 );
 
 const RemoveSetModal = ({
-  title,
   RemoveFromSetButton,
-  selected,
-  setSelected,
-  filters,
+  analyses,
+  currentCohort,
   dispatch,
-  type,
   field,
-  sets,
+  filters,
   history,
   query,
-  analyses,
-}) => (
-  <BaseModal
-    title={title}
-    extraButtons={
-      <RemoveFromSetButton
-        disabled={!selected}
-        set_id={`set_id:${selected}`}
-        filters={filters}
-        action="remove"
-        onComplete={async setId => {
-          if ((query.filters || '').includes(selected)) {
-            history.replace({
-              search: `?${stringify({
-                ...query,
-                filters: query.filters.replace(selected, setId),
-              })}`,
-            });
-          }
-
-          onSaveComplete({
-            dispatch,
-            label: sets[selected],
-          });
-          await dispatch(replaceSet({ type, oldId: selected, newId: setId }));
-          if (type === 'case') {
-            analyses
-              .filter(analysis => analysis.sets.case[selected])
-              .forEach(affected => {
-                console.log('remove affected: ', affected);
-                dispatch(
-                  updateClinicalAnalysisSet({
-                    id: affected.id,
-                    setId,
-                    setName: affected.sets.case[selected],
-                  })
-                );
+  selected,
+  setSelected,
+  sets,
+  title,
+  type,
+}) => {
+  return (
+    <BaseModal
+      closeText="Cancel"
+      extraButtons={(
+        <RemoveFromSetButton
+          action="remove"
+          disabled={!selected}
+          filters={filters}
+          onComplete={async setId => {
+            if ((query.filters || '').includes(selected)) {
+              history.replace({
+                search: `?${stringify({
+                  ...query,
+                  filters: query.filters.replace(selected, setId),
+                })}`,
               });
-          }
-        }}
+            }
+
+            onSaveComplete({
+              dispatch,
+              label: sets[selected],
+            });
+            await dispatch(replaceSet({
+              newId: setId,
+              oldId: selected,
+              type,
+            }));
+            if (type === 'case') {
+              analyses
+                .filter(analysis => analysis.sets.case[selected])
+                .forEach(affected => {
+                  dispatch(
+                    updateClinicalAnalysisSet({
+                      id: affected.id,
+                      setId,
+                      setName: affected.sets.case[selected],
+                    })
+                  );
+                });
+            }
+          }}
+          set_id={`set_id:${selected}`}
+          >
+          Save
+        </RemoveFromSetButton>
+      )}
+      title={title}
       >
-        Save
-      </RemoveFromSetButton>
-    }
-    closeText="Cancel"
-  >
-    <SetTable
-      sets={sets}
-      setSelected={setSelected}
-      selected={selected}
-      type={type}
-      field={field}
-    />
-  </BaseModal>
-);
+      <SetTable
+        field={field}
+        selected={selected}
+        sets={sets}
+        setSelected={setSelected}
+        type={type}
+        />
+    </BaseModal>
+  );
+};
 
 export default enhance(RemoveSetModal);

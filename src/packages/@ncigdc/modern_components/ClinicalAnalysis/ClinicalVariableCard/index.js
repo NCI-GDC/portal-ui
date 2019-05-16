@@ -21,6 +21,7 @@ import {
   reject,
   sortBy,
   truncate,
+  get,
 } from 'lodash';
 import { scaleOrdinal, schemeCategory10 } from 'd3';
 
@@ -143,22 +144,22 @@ const vizButtons: IVizButtons = {
     action: updateClinicalAnalysisVariable,
     icon: (
       <BoxPlot
-      style={{
-        height: '1em',
-        width: '1em',
-      }}
-      />),
+        style={{
+          height: '1em',
+          width: '1em',
+        }}
+        />),
     title: 'Box/QQ Plot',
   },
   delete: {
     action: removeClinicalAnalysisVariable,
     icon: (
       <CloseIcon
-      style={{
-        height: '1em',
-        width: '1em',
-      }}
-      />),
+        style={{
+          height: '1em',
+          width: '1em',
+        }}
+        />),
     title: 'Remove Card',
   },
   histogram: {
@@ -218,11 +219,11 @@ const getRangeValue = (key, field, nextInterval) => {
   if (valueIsDays(field)) {
     return `${getLowerAgeYears(key)}${
       nextInterval === 0 ? '+' : ` - ${getUpperAgeYears(nextInterval - 1)}`
-    } years`;
+      } years`;
   } if (valueIsYear(field)) {
     return `${Math.floor(key)}${
       nextInterval === 0 ? ' - present' : ` - ${nextInterval - 1}`
-    }`;
+      }`;
   }
   return key;
 };
@@ -269,18 +270,18 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
 }) => {
   const getBoxTableData = (data = {}) => (
     Object.keys(data).length
-    ? sortBy(Object.keys(data), datum => boxTableAllowedStats.indexOf(datum.toLowerCase()))
-      .reduce(
-        (tableData, stat) => (
-          boxTableAllowedStats.includes(stat.toLowerCase())
-          ? tableData.concat({
-            count: data[stat],
-            stat: boxTableRenamedStats[stat] || stat, // Shows the descriptive label
-          })
-          : tableData
-        ), []
-      )
-    : []
+      ? sortBy(Object.keys(data), datum => boxTableAllowedStats.indexOf(datum.toLowerCase()))
+        .reduce(
+          (tableData, stat) => (
+            boxTableAllowedStats.includes(stat.toLowerCase())
+              ? tableData.concat({
+                count: data[stat],
+                stat: boxTableRenamedStats[stat] || stat, // Shows the descriptive label
+              })
+              : tableData
+          ), []
+        )
+      : []
   );
 
   const getCategoricalTableData = (rawData, type) => {
@@ -305,36 +306,36 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
           doc_count: getCountLink({
             doc_count: b.doc_count,
             filters:
-                b.key === '_missing'
-                  ? {
-                    content: [
-                      {
-                        content: {
-                          field: fieldName,
-                          value: [b.key],
-                        },
-                        op: 'IS',
-                      },
-                      {
-                        content: {
-                          field: 'cases.case_id',
-                          value: `set_id:${setId}`,
-                        },
-                        op: 'in',
-                      },
-                    ],
-                    op: 'AND',
-                  }
-                  : makeFilter([
+              b.key === '_missing'
+                ? {
+                  content: [
                     {
-                      field: 'cases.case_id',
-                      value: `set_id:${setId}`,
+                      content: {
+                        field: fieldName,
+                        value: [b.key],
+                      },
+                      op: 'IS',
                     },
                     {
-                      field: fieldName,
-                      value: [b.key],
+                      content: {
+                        field: 'cases.case_id',
+                        value: `set_id:${setId}`,
+                      },
+                      op: 'in',
                     },
-                  ]),
+                  ],
+                  op: 'AND',
+                }
+                : makeFilter([
+                  {
+                    field: 'cases.case_id',
+                    value: `set_id:${setId}`,
+                  },
+                  {
+                    field: fieldName,
+                    value: [b.key],
+                  },
+                ]),
             totalDocs,
           }),
           key: b.key,
@@ -411,7 +412,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                   <SpinnerIcon />
                 ) : (
                   <SurvivalIcon />
-                )}
+                  )}
               </Button>
             </Tooltip>
           ),
@@ -580,8 +581,8 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
 
   const cardFilters = selectedBuckets && selectedBuckets.length
     ? variable.plotTypes === 'continuous'
-        ? getContinuousSetFilters()
-        : getCategoricalSetFilters()
+      ? getContinuousSetFilters()
+      : getCategoricalSetFilters()
     : filters;
 
   const tsvSubstring = fieldName.replace(/\./g, '-');
@@ -817,7 +818,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                   style: styles.histogram(theme).axis,
                   title: `${
                     variable.active_calculation === 'number' ? '#' : '%'
-                  } of Cases`,
+                    } of Cases`,
                 }}
                 />
             )}
@@ -848,7 +849,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                       survivalPlotLoading={survivalPlotLoading}
                       uniqueClass="clinical-survival-plot"
                       />
-                )}
+                  )}
               </div>
             )}
             {/* variable.active_chart === 'box' && (
@@ -875,12 +876,12 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                 <Dropdown
                   button={(
                     <Button
-                    rightIcon={<DownCaretIcon />}
-                    style={{
-                      ...visualizingButton,
-                      padding: '0 12px',
-                    }}
-                    >
+                      rightIcon={<DownCaretIcon />}
+                      style={{
+                        ...visualizingButton,
+                        padding: '0 12px',
+                      }}
+                      >
                       Select action
                     </Button>
                   )}
@@ -893,7 +894,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                     onClick={() => downloadToTSV({
                       filename: `analysis-${
                         currentAnalysis.name
-                      }-${tsvSubstring}.${timestamp()}.tsv`,
+                        }-${tsvSubstring}.${timestamp()}.tsv`,
                       selector: `#analysis-${tsvSubstring}-table`,
                     })
                     }
@@ -954,6 +955,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                             field="cases.case_id"
                             filters={cardFilters}
                             RemoveFromSetButton={RemoveFromExploreCaseSetButton}
+                            selected={Object.keys(get(currentAnalysis, 'sets.case', {}))[0] || ''}
                             title={`Remove ${totalFromSelectedBuckets} Cases from Existing Set`}
                             type="case"
                             />

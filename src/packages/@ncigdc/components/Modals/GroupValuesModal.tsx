@@ -87,10 +87,10 @@ const listStyle = {
 };
 
 export default compose(
+  withState('editingGroupName', 'setEditingGroupName', ''),
   withState('currentBins', 'setCurrentBins', ({ bins }: { bins: IBinsProps }) => bins),
   withState('selectedHidingBins', 'setSelectedHidingBins', {}),
   withState('selectedGroupBins', 'setSelectedGroupBins', {}),
-  withState('editingGroupName', 'setEditingGroupName', ''),
   withState('warning', 'setWarning', ''),
   withProps(({
     currentBins,
@@ -99,7 +99,7 @@ export default compose(
     setEditingGroupName,
     setSelectedHidingBins,
   }: any) => ({
-    binGrouping: () => {
+    binGrouping: async () => {
       const newGroupName = initialName(
         Object.values(currentBins).map((bin: IBinProps) => bin.groupName), 'selected Value '
       );
@@ -245,8 +245,8 @@ export default compose(
           <Column style={blockStyle}>
             <Row style={{ justifyContent: 'space-between' }}>
               <span style={{
-                display: 'flex',
                 alignItems: 'center',
+                display: 'flex',
               }}
                     >
                 Display Values
@@ -266,10 +266,10 @@ export default compose(
             <Column style={listStyle}>
               {map(
                 groupNameMapping,
-                (group: string[]) => (
-                  <Column key={group[0]}>
+                (group: string[], groupName: string) => (
+                  <Column key={groupName}>
                     <Row
-                      key={group[0]}
+                      key={groupName}
                       onClick={() => {
                         if (Object.keys(selectedHidingBins).length > 0) {
                           setSelectedHidingBins({});
@@ -286,7 +286,7 @@ export default compose(
                       }}
                       style={{ backgroundColor: group.every((binKey: string) => selectedGroupBins[binKey]) ? '#d5f4e6' : '' }}
                       >
-                      {group.length > 1 || group[0] !== currentBins[group[0]].groupName
+                      {group.length > 1 || group[0] !== groupName
                         ? (
                           <EditableLabel
                             containerStyle={{ justifyContent: 'flex-start' }}
@@ -306,15 +306,15 @@ export default compose(
                               fontSize: '1.8rem',
                               marginLeft: 10,
                             }}
-                            isEditing={editingGroupName === currentBins[group[0]].groupName}
+                            isEditing={editingGroupName === groupName}
                             pencilEditingOnly
-                            text={currentBins[group[0]].groupName}
+                            text={groupName}
                             >
-                            {currentBins[group[0]].groupName}
+                            {groupName}
                           </EditableLabel>
                         ) : currentBins[group[0]].key}
                     </Row>
-                    {group.length > 1 || group[0] !== currentBins[group[0]].groupName
+                    {group.length > 1 || group[0] !== groupName
                       ? group.map((bin: string) => (
                         <Row
                           key={bin}

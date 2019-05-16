@@ -23,20 +23,20 @@ export default compose(
     handleSave: value => console.log(value),
   }),
   withHandlers({
-    handleCancel: ({ text, setIsEditing, setValue }) => () => {
+    handleCancel: ({ setIsEditing, setValue, text }) => () => {
       setIsEditing(false);
       setValue(text);
     },
   }),
   withHandlers({
     toggleEditingAndSave: ({
+      disabled = false,
+      handleCancel,
+      handleSave,
       isEditing,
       setIsEditing,
-      value,
       text,
-      handleSave,
-      handleCancel,
-      disabled = false,
+      value,
     }) => () => {
       if (disabled) {
         return null;
@@ -51,7 +51,7 @@ export default compose(
   }),
   lifecycle({
     componentDidUpdate({
-      text, value, setValue, isEditing,
+      isEditing, setValue, text, value,
     }): void {
       if (!isEditing && value !== text) {
         setValue(text);

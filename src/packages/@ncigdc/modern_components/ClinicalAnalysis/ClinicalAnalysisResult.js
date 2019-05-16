@@ -103,8 +103,8 @@ const CopyAnalysisModal = compose(
   withState(
     'modalInputValue',
     'setModalInputValue',
-    ({ analysis }) => `${analysis.name} copy`,
-  ),
+    ({ analysis }) => `${analysis.name} copy`
+  )
 )(({ analysis, modalInputValue, setModalInputValue, dispatch, push }) => {
   return (
     <BaseModal
@@ -118,7 +118,7 @@ const CopyAnalysisModal = compose(
             id,
             created,
             name: modalInputValue,
-          }),
+          })
         ).then(() => {
           push({
             query: {
@@ -172,7 +172,7 @@ const enhance = compose(
     }) => ({
       parsedFacets: facets ? tryParseJSON(facets) : {},
       hits,
-    }),
+    })
   ),
   withProps(
     ({
@@ -205,20 +205,20 @@ const enhance = compose(
 
         setSurvivalPlotLoading(false);
       },
-    }),
+    })
   ),
   withPropsOnChange(
     ['currentAnalysis'],
     ({ currentAnalysis, populateSurvivalData }) => {
       populateSurvivalData();
-    },
+    }
   ),
   withHandlers({
     handleQueryInputChange: ({ setSearchValue }) => (event: any) =>
       setSearchValue(event.target.value),
   }),
   withTheme,
-  withRouter,
+  withRouter
 );
 
 const ClinicalAnalysisResult = ({
@@ -285,7 +285,7 @@ const ClinicalAnalysisResult = ({
                         value: _.trim(value),
                         property: 'name',
                         id,
-                      }),
+                      })
                     )
                   }
                   iconStyle={{
@@ -313,8 +313,8 @@ const ClinicalAnalysisResult = ({
                     analysis={currentAnalysis}
                     dispatch={dispatch}
                     push={push}
-                  />,
-                ),
+                  />
+                )
               );
             }}
             leftIcon={<CopyIcon />}

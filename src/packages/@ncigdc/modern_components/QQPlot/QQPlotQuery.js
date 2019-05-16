@@ -2,13 +2,20 @@ import React from 'react';
 import {
   compose, withPropsOnChange, withProps, withState, // branch, renderComponent,
 } from 'recompose';
-import _ from 'lodash';
+import { sortBy, isArray, isPlainObject } from 'lodash';
 
 import { addInFilters } from '@ncigdc/utils/filters';
 // import Loader from '@ncigdc/uikit/Loaders/Loader';
 import { fetchApi } from '@ncigdc/utils/ajax';
 import Spinner from '@ncigdc/uikit/Loaders/Material';
 import QQPlot from './QQPlot';
+import { Row } from '@ncigdc/uikit/Flex';
+import Button from '@ncigdc/uikit/Button';
+import DownloadVisualizationButton from '@ncigdc/components/DownloadVisualizationButton';
+
+import { qnorm, sortAscending } from './qqUtils'
+import { mapStringArrayToTsvString } from '@ncigdc/utils/toTsvString';
+import saveFile from '@ncigdc/utils/filesaver';
 
 export default compose(
   withState('data', 'setData', null),
@@ -63,7 +70,7 @@ export default compose(
       const continuousValues = [];
 
       data.forEach(hit => {
-        if (_.isArray(hit[clinicalType])) {
+        if (isArray(hit[clinicalType])) {
           return hit[clinicalType].map(subType => {
             if (clinicalNestedField) {
               return subType[clinicalField].map(sub => {
@@ -73,7 +80,7 @@ export default compose(
             return continuousValues.push(subType[clinicalField]);
           });
         }
-        if (_.isPlainObject(hit[clinicalType])) {
+        if (isPlainObject(hit[clinicalType])) {
           return continuousValues.push(hit[clinicalType][clinicalField]);
         }
         return continuousValues.push(hit[clinicalType]);
@@ -83,7 +90,7 @@ export default compose(
   }),
   withPropsOnChange(['filters'], ({ updateData, ...props }) => updateData(props)),
 )(({
-  isLoading, data, clinicalType, queryField, facetName, ...props
+  isLoading, data, clinicalType, queryField, fieldName, ...props
 }) => {
   if (isLoading) {
     return (
@@ -100,13 +107,25 @@ export default compose(
     );
   }
   return (
-    <QQPlot
-      clinicalType={clinicalType}
-      data={data}
-      queryField={queryField}
-      width={400}
-      {...props}
-      fieldName={facetName}
+    <Row style={{ justifyContent: 'flex-end', width: '100%', marginBottom: 10}}>
+      <QQPlot
+        clinicalType={clinicalType}
+        data={data}
+        queryField={queryField}
+        width={400}
+        {...props}
+        fieldName={fieldName}
+        plotTitle={'QQ Plot'}
+        />
+      <DownloadVisualizationButton
+        slug={`qq-plot-${fieldName}`}
+        noText
+        tooltipHTML="Download plot data"
+        tsvData={sortBy(data).map((val, i) => ({
+          'Theoretical Quantile': qnorm((i + 1 - 0.5) / data.length),
+          'Sample Quantile': val,
+        }))}
       />
+      </Row>
   );
 });

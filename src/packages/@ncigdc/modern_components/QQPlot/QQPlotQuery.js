@@ -106,6 +106,10 @@ export default compose(
       </div>
     );
   }
+  const downloadData = sortBy(data).map((val, i) => ({
+    theoretical_quantile: qnorm((i + 1 - 0.5) / data.length),
+    sample_quantile: val,
+  }))
   return (
     <Row style={{ justifyContent: 'flex-end', width: '100%', marginBottom: 10}}>
       <QQPlot
@@ -120,11 +124,9 @@ export default compose(
       <DownloadVisualizationButton
         slug={`qq-plot-${fieldName}`}
         noText
-        tooltipHTML="Download plot data"
-        tsvData={sortBy(data).map((val, i) => ({
-          'Theoretical Quantile': qnorm((i + 1 - 0.5) / data.length),
-          'Sample Quantile': val,
-        }))}
+        tooltipHTML="Download TSV or JSON data"
+        data={downloadData}
+        tsvData={downloadData}
       />
       </Row>
   );

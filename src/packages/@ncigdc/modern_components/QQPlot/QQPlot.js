@@ -31,7 +31,7 @@ const QQPlot = ({
   // subtract 1 to account for 0 index array
   const getQuantile = (count, quantile) => Math.ceil(count * (quantile / 4)) - 1;
 
-  // quantile(y) and theoretical quantile (x)
+  // sample quantile(y) and theoretical quantile (x)
   const zScores = sortBy(data).map((age, i) => ({
     x: qnorm((i + 1 - 0.5) / n),
     y: age,
@@ -197,8 +197,8 @@ const QQPlot = ({
 
   svg
     .append('text')
-    .attr('text-anchor', 'middle') // this makes it easy to centre the text as the transform is applied to the anchor
-    .attr('transform', `translate(${padding - 10},${height / 3})rotate(-90)`) // text is drawn off the screen top left, move down and out and rotate
+    .attr('text-anchor', 'middle')
+    .attr('transform', `translate(${padding - 10},${height / 3})rotate(-90)`)
     .text(yAxisTitle)
     .style('fontSize', axisStyle.fontSize)
     .style('fontWeight', axisStyle.fontWeight)

@@ -37,16 +37,6 @@ export default {
     bins: [],
     scrollToCard: false,
   },
-
-  'diagnoses.age_at_diagnosis': {
-    type: 'Diagnosis',
-    active_chart: 'histogram',
-    active_calculation: 'number',
-    active_survival: 'overall',
-    plotTypes: 'continuous',
-    bins: [],
-    scrollToCard: false,
-  },
   'diagnoses.primary_diagnosis': {
     type: 'Diagnosis',
     active_chart: 'histogram',

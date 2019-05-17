@@ -28,7 +28,6 @@ const enhance = compose(
 const RemoveSetModal = ({
   RemoveFromSetButton,
   analyses,
-  currentCohort,
   dispatch,
   field,
   filters,

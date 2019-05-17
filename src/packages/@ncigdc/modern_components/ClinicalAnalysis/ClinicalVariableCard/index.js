@@ -850,7 +850,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
               </div>
             ) */}
 
-            {variable.active_chart === 'box' || (
+            {(variable.active_chart === 'histogram' || variable.active_chart === 'survival') && (
               <Row
                 style={{
                   justifyContent: 'space-between',
@@ -951,15 +951,40 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                     Remove from existing case set
                   </DropdownItem>
                 </Dropdown>
-                <Button
-                  rightIcon={<DownCaretIcon />}
-                  style={{
-                    ...visualizingButton,
-                    padding: '0 12px',
+                <Dropdown
+                  button={(
+                    <Button
+                      rightIcon={<DownCaretIcon />}
+                      style={{
+                        ...visualizingButton,
+                        padding: '0 12px',
+                      }}
+                      >
+                      Manage Bins
+                    </Button>
+                  )}
+                  dropdownStyle={{
+                    right: 0,
+                    minWidth: 150,
                   }}
                   >
-                  Customize Bins
-                </Button>
+                  <DropdownItem
+                    onClick={() => function () {
+                      console.log('clicked customize bins');
+                    }}
+                    style={styles.actionMenuItem}
+                    >
+                    Customize Bins
+                  </DropdownItem>
+                  <DropdownItem
+                    onClick={() => function () {
+                      console.log('clicked reset');
+                    }}
+                    style={styles.actionMenuItem}
+                    >
+                    Reset to Default
+                  </DropdownItem>
+                </Dropdown>
               </Row>
             )}
 

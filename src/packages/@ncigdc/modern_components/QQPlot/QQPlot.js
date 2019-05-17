@@ -8,7 +8,6 @@ import {
   withProps,
 } from 'recompose';
 import { last, groupBy, sortBy } from 'lodash';
-import * as ss from 'simple-statistics';
 import './qq.css';
 
 import { withTheme } from '@ncigdc/theme';
@@ -27,9 +26,10 @@ const QQPlot = ({
   theme,
   plotTitle = '',
 }) => {
-  const dataLength = data.length >= 100 ? 100 : data.length;
   const n = data.length;
-  const getQuantile = (n, quantile) => Math.ceil(n * (quantile / 4)) - 1; // subtract 1 to account for 0 index array
+
+  // subtract 1 to account for 0 index array
+  const getQuantile = (count, quantile) => Math.ceil(count * (quantile / 4)) - 1;
 
   // quantile(y) and theoretical quantile (x)
   const zScores = sortBy(data).map((age, i) => ({
@@ -95,9 +95,12 @@ const QQPlot = ({
     stroke: theme.greyScale4,
   };
 
+  // get slope from first and third quantile to match qqline from R
   const slope = (quantile3Coords.y - quantile1Coords.y) / (quantile3Coords.x - quantile1Coords.x);
   const yMin = zScores[0].y;
   const yMax = last(zScores).y;
+
+  // calculate x values for start and end of line
   const xAtYMin = quantile1Coords.x - ((quantile1Coords.y - yMin) / slope);
   const xAtYMax = quantile3Coords.x + ((yMax - quantile3Coords.y) / slope);
 
@@ -115,8 +118,8 @@ const QQPlot = ({
     .append('circle')
     .attr('cx', (d) => xScale(d.x))
     .attr('cy', (d) => yScale(d.y))
-    .attr('r', 2)
-    .attr('stroke', 'green')
+    .attr('r', 1.5)
+    .attr('stroke', theme.secondary)
     .attr('fill', 'transparent')
     .attr('transform', `translate(${padding},0)`);
 
@@ -142,7 +145,7 @@ const QQPlot = ({
       },
     ])
     .attr('d', line)
-    .attr('stroke', 'red')
+    .attr('stroke', '#e377c2')
     .attr('stroke-width', 2)
     .attr('transform', `translate(${padding},0)`);
 
@@ -154,21 +157,9 @@ const QQPlot = ({
     .attr('y', 20)
     .attr('clip-path', 'url(#regression-clip)')
     .style('fill', 'white')
-    .attr('height', 200)
-    .attr('width', 50)
+    .attr('height', chartHeight)
+    .attr('width', padding + 10)
     .attr('transform', `translate(${padding},0)`);
-
-  // svg
-  //   .append('text')
-  //   .attr('transform', 'rotate(-90)')
-  //   .attr('y', 0 - margin.left)
-  //   .attr('x', 0 - height / 2)
-  //   .attr('dy', '1em')
-  //   .style('text-anchor', 'middle')
-  //   .style('fontSize', axisStyle.fontSize)
-  //   .style('fontWeight', axisStyle.fontWeight)
-  //   .attr('fill', axisStyle.textFill)
-  //   .text(yAxis.title || '');
 
   svg
     .append('text')
@@ -203,24 +194,6 @@ const QQPlot = ({
     .attr('class', 'y axis')
     .attr('transform', `translate(${padding * 2}, 0)`)
     .call(yAxis);
-    // .selectAll('text')
-    // .attr('y', 0)
-    // .attr('x', 9)
-    // .attr('dy', '.35em')
-    // .attr('transform', 'translate(-15,-5)rotate(45)')
-    // .style('text-anchor', 'start');
-  // svg
-  //   .append('text')
-  //   .attr('transform', 'rotate(-90)')
-  //     // .attr('y', 0 - margin.left)
-  //     // .attr('x', 0 - chartHeight / 2)
-  //   .attr('y', -10)
-  //   .attr('x', -100)
-  //   .attr('dy', '1em')
-  //   .style('text-anchor', 'middle')
-  //   .style('fontSize', '1rem')
-  //   .attr('fill', 'blue')
-  //   .text(yAxisTitle);
 
   svg
     .append('text')

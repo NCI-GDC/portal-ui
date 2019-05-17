@@ -4,11 +4,11 @@ import { connect } from 'react-redux';
 import {
   withProps, compose, withState, defaultProps,
 } from 'recompose';
-import { sortBy } from 'lodash';
 import EntityPageHorizontalTable from '@ncigdc/components/EntityPageHorizontalTable';
 import countComponents from '@ncigdc/modern_components/Counts';
 import withPropsOnChange from '@ncigdc/utils/withPropsOnChange';
 import { Tooltip } from '@ncigdc/uikit/Tooltip/index';
+import { theme } from '@ncigdc/theme';
 
 type TProps = {
   sets: {},
@@ -89,6 +89,7 @@ const SetTable = ({
           select: (
             <Tooltip
               Component={disabledMessage || null}
+              selected={key === selected}
               style={{
                 cursor: disabledMessage ? 'not-allowed' : 'default',
               }}

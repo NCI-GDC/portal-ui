@@ -1,21 +1,17 @@
 import React from 'react';
 import {
-  compose, withPropsOnChange, withProps, withState, // branch, renderComponent,
+  compose, withPropsOnChange, withProps, withState,
 } from 'recompose';
 import { sortBy, isArray, isPlainObject } from 'lodash';
 
 import { addInFilters } from '@ncigdc/utils/filters';
-// import Loader from '@ncigdc/uikit/Loaders/Loader';
 import { fetchApi } from '@ncigdc/utils/ajax';
 import Spinner from '@ncigdc/uikit/Loaders/Material';
 import QQPlot from './QQPlot';
 import { Row } from '@ncigdc/uikit/Flex';
-import Button from '@ncigdc/uikit/Button';
 import DownloadVisualizationButton from '@ncigdc/components/DownloadVisualizationButton';
 
-import { qnorm, sortAscending } from './qqUtils'
-import { mapStringArrayToTsvString } from '@ncigdc/utils/toTsvString';
-import saveFile from '@ncigdc/utils/filesaver';
+import { qnorm } from './qqUtils'
 
 export default compose(
   withState('data', 'setData', null),

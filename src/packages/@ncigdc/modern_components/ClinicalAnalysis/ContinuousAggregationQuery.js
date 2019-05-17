@@ -2,8 +2,6 @@ import React from 'react';
 import {
   compose,
   withPropsOnChange,
-  // branch,
-  // renderComponent,
   withProps,
   withState,
 } from 'recompose';

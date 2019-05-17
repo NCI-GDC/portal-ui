@@ -20,7 +20,7 @@ class Demo extends React.Component {
       }, []),
     };
   }
-  componentWillUpdate(nextProps, nextState) {
+  UNSAFE_componentWillUpdate(nextProps, nextState) {
     nextState.setStates.forEach(({ count, id, type }, i) => {
       if (
         nextProps.filters &&

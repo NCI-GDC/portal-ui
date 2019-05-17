@@ -8,7 +8,6 @@ import EntityPageHorizontalTable from '@ncigdc/components/EntityPageHorizontalTa
 import countComponents from '@ncigdc/modern_components/Counts';
 import withPropsOnChange from '@ncigdc/utils/withPropsOnChange';
 import { Tooltip } from '@ncigdc/uikit/Tooltip/index';
-import { theme } from '@ncigdc/theme';
 
 type TProps = {
   sets: {},

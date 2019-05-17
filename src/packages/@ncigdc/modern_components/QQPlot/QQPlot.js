@@ -153,12 +153,12 @@ const QQPlot = ({
 // position and dimensions should come from chart settings
   svg
     .append('rect')
-    .attr('x', -10)
-    .attr('y', 20)
+    .attr('x', -(padding))
+    .attr('y', padding / 2)
     .attr('clip-path', 'url(#regression-clip)')
     .style('fill', 'white')
     .attr('height', chartHeight)
-    .attr('width', padding + 10)
+    .attr('width', padding * 2)
     .attr('transform', `translate(${padding},0)`);
 
   svg

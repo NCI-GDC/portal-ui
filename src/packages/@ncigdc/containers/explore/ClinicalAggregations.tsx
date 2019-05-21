@@ -162,8 +162,8 @@ const enhance = compose(
   setDisplayName('ClinicalAggregations'),
   connect(
     ({
-      facetsExpandedStatus,
       bannerNotification,
+      facetsExpandedStatus,
     }: {
       facetsExpandedStatus: IExpandedStatusStateProps,
       bannerNotification: INotificationProps[],
@@ -214,11 +214,11 @@ const enhance = compose(
   withPropsOnChange(
     ['globalFilters', 'facetMapping'],
     ({
-      relay,
       facetMapping,
       globalFilters,
-      setIsLoadingParsedFacets,
+      relay,
       relayVarName,
+      setIsLoadingParsedFacets,
     }) => {
       setIsLoadingParsedFacets(true);
       relay.setVariables(
@@ -263,12 +263,12 @@ const enhance = compose(
       'shouldHideUselessFacets',
     ],
     ({
-      facets,
+      dispatch,
+      facetExclusionTest,
       facetMapping,
+      facets,
       searchValue,
       shouldHideUselessFacets,
-      facetExclusionTest,
-      dispatch,
     }) => {
       const parsedFacets: IParsedFacetsProps | {} = facets.facets
         ? tryParseJSON(facets.facets, {})
@@ -326,18 +326,18 @@ const enhance = compose(
 )(
   withTheme(
     ({
-      filteredFacets,
-      theme,
-      setUselessFacetVisibility,
-      shouldHideUselessFacets,
-      facetsExpandedStatus,
-      searchValue,
-      handleQueryInputChange,
-      parsedFacets,
-      isLoadingParsedFacets,
       allExpanded,
       dispatch,
+      facetsExpandedStatus,
+      filteredFacets,
+      handleQueryInputChange,
+      isLoadingParsedFacets,
       maxFacetsPanelHeight,
+      parsedFacets,
+      searchValue,
+      setUselessFacetVisibility,
+      shouldHideUselessFacets,
+      theme,
     }: IClinicalProps): any => {
       return (
         <React.Fragment>
@@ -471,12 +471,15 @@ const enhance = compose(
                               )
                               .map((componentFacet: IFacetProps) => {
                                 const fieldName = startCase(
-                                    termCapitaliser(componentFacet.full)
-                                      .split('.').pop()
+                                  termCapitaliser(componentFacet.full)
+                                    .split('.').pop()
                                 ) || '';
                                 return [
                                   <WrapperComponent
-                                    additionalProps={componentFacet.additionalProps}
+                                    additionalProps={{
+                                      ...componentFacet.additionalProps,
+                                      style: { paddingBottom: 0 },
+                                    }}
                                     aggregation={parsedFacets[componentFacet.field]}
                                     allExpanded={allExpanded[facet.field]}
                                     category={facet.field}

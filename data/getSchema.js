@@ -6,6 +6,7 @@ const {
   printSchema,
 } = require('graphql/utilities');
 const path = require('path');
+
 const schemaPath = path.join(__dirname, 'schema');
 
 const SERVER = 'http://localhost:5000/graphql';

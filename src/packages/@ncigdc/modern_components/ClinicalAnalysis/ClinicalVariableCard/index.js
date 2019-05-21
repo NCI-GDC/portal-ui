@@ -854,21 +854,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                   )}
               </div>
             )}
-            {/* variable.active_chart === 'box' && (
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  height: CHART_HEIGHT - 10,
-                  backgroundColor: theme.greyScale5,
-                  margin: '5px 2px 10px',
-                }}
-                >
-              </div>
-            ) */}
-
-            {variable.active_chart === 'box' || (
+            {(variable.active_chart === 'histogram' || variable.active_chart === 'survival') && (
               <Row
                 style={{
                   justifyContent: 'space-between',

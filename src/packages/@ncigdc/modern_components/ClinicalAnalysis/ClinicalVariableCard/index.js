@@ -967,8 +967,8 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                     </Button>
                   )}
                   dropdownStyle={{
-                    left: 0,
-                    minWidth: 205,
+                    right: 0,
+                    minWidth: 155,
                   }}
                   >
                   <DropdownItem

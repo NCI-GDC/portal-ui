@@ -67,7 +67,7 @@ function buildForeignObject({
 }): { html: string, height: number } {
   const foreignObjects = elements.filter(Boolean);
   // $FlowIgnore
-  const elementsHeight = sum(foreignObjects.map(e => e.offsetHeight || 15));
+  const elementsHeight = sum(foreignObjects.map(e => (e.className === 'p-value' ? 25 : e.offsetHeight || 17)));
 
   return {
     height: elementsHeight,
@@ -175,10 +175,10 @@ const wrapSvg = ({
     22,
   ])}"
       viewBox="0 0 ${width} ${sum([
-  height,
-  afterObject.height,
-  22,
-])}"
+    height,
+    afterObject.height,
+    22,
+  ])}"
       style="font-size: 10px"
       class="${EXPORT_CLASS} ${svgClass || ''} ${className}"
     >
@@ -191,14 +191,14 @@ const wrapSvg = ({
       ${beforeObject.html}
       ${rightObject.html}
       <g transform="translate(${margins.left || 0},${sum([
-  titleHeight,
-  margins.top,
-  beforeObject.height,
-])})">
+      titleHeight,
+      margins.top,
+      beforeObject.height,
+    ])})">
         ${svg.innerHTML.replace(
-    /url\(['"]?https?:\/\/[^#]+(#.+)['"]?\)/g,
-    'url($1)',
-  )}
+      /url\(['"]?https?:\/\/[^#]+(#.+)['"]?\)/g,
+      'url($1)',
+    )}
       </g>
       ${afterObject.html}
       ${legends

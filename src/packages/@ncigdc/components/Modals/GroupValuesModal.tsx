@@ -69,6 +69,7 @@ interface IGroupValuesModalProps {
   children?: ReactNode,
   warning: string,
   setWarning: (warning: string) => void,
+  plotType: string,
 }
 
 const blockStyle = {
@@ -138,6 +139,7 @@ export default compose(
     setSelectedHidingBins,
     setWarning,
     warning,
+    plotType,
   }: IGroupValuesModalProps) => {
     const groupNameMapping = groupBy(
       Object.keys(currentBins)
@@ -147,13 +149,12 @@ export default compose(
     return (
       <Column>
         <h1 style={{ margin: '20px' }}>
-          Create Custom Bins:
-          {' '}
-          {fieldName}
+          {`Create Custom Bins: ${fieldName}`}
         </h1>
-        <h3 style={{ margin: '20px' }}>
-          Organize values into groups of your choosing. Click Save Bins to update the analysis plots.
-        </h3>
+        {plotType === 'continuous' ? 
+          <h3>Configure your bins then click <strong>Save Bins</strong> to update the analysis plots.</h3>
+          : <h3>Organize values into groups of your choosing. Click <strong>Save Bins</strong> to update the analysis plots.</h3>
+        }
         <Row style={{ justifyContent: 'center' }}>
           <Column style={blockStyle}>
             <span style={{ height: '54px' }}>Hiding Values</span>

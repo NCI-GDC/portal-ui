@@ -990,6 +990,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                             dispatch(setModal(null));
                           }
                           }
+                          plotType={variable.plotTypes}
                           />,
                       ),
                     )

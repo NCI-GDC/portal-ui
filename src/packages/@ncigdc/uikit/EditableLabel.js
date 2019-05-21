@@ -17,26 +17,26 @@ import { MAX_SET_NAME_LENGTH } from '@ncigdc/utils/constants';
 import { Tooltip } from './Tooltip/index';
 
 export default compose(
-  withState('isEditing', 'setIsEditing', false),
+  withState('isEditing', 'setIsEditing', ({ isEditing }) => isEditing || false),
   withState('value', 'setValue', ({ text }) => text),
   defaultProps({
     handleSave: value => console.log(value),
   }),
   withHandlers({
-    handleCancel: ({ text, setIsEditing, setValue }) => () => {
+    handleCancel: ({ setIsEditing, setValue, text }) => () => {
       setIsEditing(false);
       setValue(text);
     },
   }),
   withHandlers({
     toggleEditingAndSave: ({
+      disabled = false,
+      handleCancel,
+      handleSave,
       isEditing,
       setIsEditing,
-      value,
       text,
-      handleSave,
-      handleCancel,
-      disabled = false,
+      value,
     }) => () => {
       if (disabled) {
         return null;
@@ -50,7 +50,9 @@ export default compose(
     },
   }),
   lifecycle({
-    componentDidUpdate({ text, value, setValue, isEditing }): void {
+    componentDidUpdate({
+      isEditing, setValue, text, value,
+    }): void {
       if (!isEditing && value !== text) {
         setValue(text);
       }
@@ -70,82 +72,84 @@ export default compose(
     containerStyle = {},
     disabled = false,
     disabledMessage = null,
+    pencilEditingOnly = false,
   }) => (
-    <div>
-      {isEditing ? (
-        <Row
-          style={{
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            ...containerStyle,
-          }}
-          spacing={'5px'}
-        >
-          <Input
-            style={{
-              width: '300px',
-              borderRadius: '4px',
-              transition: 'all 0.2s ease',
-            }}
-            value={value}
-            onChange={e => setValue(e.target.value)}
-            onKeyDown={e => {
-              if (e.key === 'Enter') {
-                toggleEditingAndSave();
-              } else if (e.key === 'Escape') {
-                handleCancel();
-              }
-            }}
-            type="text"
-            autoFocus
-            onFocus={e => e.target.select()}
-          />
-          <Tooltip
-            Component={
-              value.split(' ').join('').length === 0
-                ? 'Name must not be empty'
-                : value.length > MAX_SET_NAME_LENGTH
-                ? `Maximum name length ${MAX_SET_NAME_LENGTH}`
-                : null
-            }
-          >
-            <Button
-              onClick={toggleEditingAndSave}
-              disabled={
-                value.split(' ').join('').length === 0 ||
-                value.length > MAX_SET_NAME_LENGTH
-              }
-              style={{
-                ...visualizingButton,
-              }}
-            >
-              Save
-            </Button>
-          </Tooltip>
-          <Button onClick={handleCancel} style={visualizingButton}>
-            Cancel
-          </Button>
-        </Row>
-      ) : (
-        <Tooltip Component={disabled ? disabledMessage : null}>
+      <div>
+        {isEditing ? (
           <Row
-            onClick={toggleEditingAndSave}
-            style={{ cursor: disabled ? 'not-allowed' : 'text' }}
+            spacing="5px"
+            style={{
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              ...containerStyle,
+            }}
           >
-            {children}
-            <Pencil
-              style={{
-                fontSize: '0.9em',
-                paddingLeft: '5px',
-                alignSelf: 'center',
-                color: 'rgb(96, 111, 81)',
-                ...iconStyle,
-                cursor: disabled ? 'not-allowed' : 'pointer',
+            <Input
+              autoFocus
+              onChange={e => setValue(e.target.value)}
+              onFocus={e => e.target.select()}
+              onKeyDown={e => {
+                if (e.key === 'Enter') {
+                  toggleEditingAndSave();
+                } else if (e.key === 'Escape') {
+                  handleCancel();
+                }
               }}
+              style={{
+                width: '300px',
+                borderRadius: '4px',
+                transition: 'all 0.2s ease',
+              }}
+              type="text"
+              value={value}
             />
+            <Tooltip
+              Component={
+                value.split(' ').join('').length === 0
+                  ? 'Name must not be empty'
+                  : value.length > MAX_SET_NAME_LENGTH
+                    ? `Maximum name length ${MAX_SET_NAME_LENGTH}`
+                    : null
+              }
+            >
+              <Button
+                disabled={
+                  value.split(' ').join('').length === 0 ||
+                  value.length > MAX_SET_NAME_LENGTH
+                }
+                onClick={toggleEditingAndSave}
+                style={{
+                  ...visualizingButton,
+                }}
+              >
+                Save
+              </Button>
+            </Tooltip>
+            <Button onClick={handleCancel} style={visualizingButton}>
+              Cancel
+            </Button>
           </Row>
-        </Tooltip>
-      )}
-    </div>
-  )
+        ) : (
+            <Tooltip Component={disabled ? disabledMessage : null}>
+              <Row
+                onClick={pencilEditingOnly ? null : toggleEditingAndSave}
+                style={{ cursor: disabled ? 'not-allowed' : (pencilEditingOnly ? 'default' : 'text') }}
+              >
+                {children}
+                <Pencil
+                  onClick={pencilEditingOnly ? toggleEditingAndSave : null}
+                  style={{
+                    fontSize: '0.9em',
+                    paddingLeft: '5px',
+                    alignSelf: 'center',
+                    color: 'rgb(96, 111, 81)',
+                    ...iconStyle,
+                    cursor: disabled ? 'not-allowed' : 'pointer',
+                  }}
+                />
+              </Row>
+            </Tooltip>
+          )}
+      </div>
+    )
 );

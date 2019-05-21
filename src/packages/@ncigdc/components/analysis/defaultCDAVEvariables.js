@@ -5,7 +5,7 @@ export default {
     active_calculation: 'number',
     active_survival: 'overall',
     plotTypes: 'categorical',
-    bins: [],
+    bins: {},
     scrollToCard: false,
   },
 
@@ -15,7 +15,7 @@ export default {
     active_calculation: 'number',
     active_survival: 'overall',
     plotTypes: 'categorical',
-    bins: [],
+    bins: {},
     scrollToCard: false,
   },
 
@@ -34,7 +34,17 @@ export default {
     active_calculation: 'number',
     active_survival: 'overall',
     plotTypes: 'continuous',
-    bins: [],
+    bins: {},
+    scrollToCard: false,
+  },
+
+  'diagnoses.age_at_diagnosis': {
+    type: 'Diagnosis',
+    active_chart: 'histogram',
+    active_calculation: 'number',
+    active_survival: 'overall',
+    plotTypes: 'continuous',
+    bins: {},
     scrollToCard: false,
   },
   'diagnoses.primary_diagnosis': {
@@ -43,7 +53,7 @@ export default {
     active_calculation: 'number',
     active_survival: 'overall',
     plotTypes: 'categorical',
-    bins: [],
+    bins: {},
     scrollToCard: false,
   },
 };

@@ -16,10 +16,13 @@ import {
   min,
   map,
   max,
+  // omit,
+  // pick,
   reject,
   sortBy,
   truncate,
-  get,
+  groupBy,
+  // reduce,
 } from 'lodash';
 import { scaleOrdinal, schemeCategory10 } from 'd3';
 
@@ -42,10 +45,13 @@ import { setModal } from '@ncigdc/dux/modal';
 import SaveSetModal from '@ncigdc/components/Modals/SaveSetModal';
 import AppendSetModal from '@ncigdc/components/Modals/AppendSetModal';
 import RemoveSetModal from '@ncigdc/components/Modals/RemoveSetModal';
+import GroupValuesModal from '@ncigdc/components/Modals/GroupValuesModal';
 import DownloadVisualizationButton from '@ncigdc/components/DownloadVisualizationButton';
 import wrapSvg from '@ncigdc/utils/wrapSvg';
 import {
   DAYS_IN_YEAR,
+  getLowerAgeYears,
+  getUpperAgeYears,
 } from '@ncigdc/utils/ageDisplay';
 import '../survivalPlot.css';
 import { downloadToTSV } from '@ncigdc/components/DownloadTableToTsvButton';
@@ -208,9 +214,21 @@ const styles = {
   }),
 };
 
-const parseBucketValue = value => (value % 1 ? Number.parseFloat(value).toFixed(2) : Math.round(value * 100) / 100);
+const valueIsDays = str => /(days_to|age_at)/.test(str);
+const valueIsYear = str => /year_of/.test(str);
 
-const getRangeValue = (key, nextInterval) => `${parseBucketValue(key)}${nextInterval === 0 ? ' and up' : ` to ${parseBucketValue(nextInterval - 1)}`}`;
+const getRangeValue = (key, field, nextInterval) => {
+  if (valueIsDays(field)) {
+    return `${getLowerAgeYears(key)}${
+      nextInterval === 0 ? '+' : ` - ${getUpperAgeYears(nextInterval - 1)}`
+      } years`;
+  } if (valueIsYear(field)) {
+    return `${Math.floor(key)}${
+      nextInterval === 0 ? ' - present' : ` - ${nextInterval - 1}`
+      }`;
+  }
+  return key;
+};
 
 const getCountLink = ({ doc_count, filters, totalDocs }) => (
   <span>
@@ -229,6 +247,7 @@ const getCountLink = ({ doc_count, filters, totalDocs }) => (
 const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
   currentAnalysis,
   dataBuckets,
+  customBins,
   dataDimension,
   dataValues,
   dispatch,
@@ -407,7 +426,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
 
   const tableData = variable.active_chart === 'box'
     ? getBoxTableData(dataValues)
-    : getCategoricalTableData(dataBuckets, variable.plotTypes);
+    : getCategoricalTableData(customBins, variable.plotTypes);
 
   const getHeadings = chartType => {
     return chartType === 'box'
@@ -787,8 +806,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                     textFill: theme.greyScale3,
                   },
                   xAxis: {
-                    stroke: theme.greyScale4,
-                    textFill: theme.greyScale3,
+                    textFill: theme.greyScaleD3,
                   },
                   yAxis: {
                     stroke: theme.greyScale4,
@@ -850,7 +868,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
               </div>
             ) */}
 
-            {(variable.active_chart === 'histogram' || variable.active_chart === 'survival') && (
+            {variable.active_chart === 'box' || (
               <Row
                 style={{
                   justifyContent: 'space-between',
@@ -939,7 +957,6 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                             field="cases.case_id"
                             filters={cardFilters}
                             RemoveFromSetButton={RemoveFromExploreCaseSetButton}
-                            selected={Object.keys(get(currentAnalysis, 'sets.case', {}))[0] || ''}
                             title={`Remove ${totalFromSelectedBuckets} Cases from Existing Set`}
                             type="case"
                             />
@@ -960,25 +977,57 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                         padding: '0 12px',
                       }}
                       >
-                      Manage Bins
+                      Customize Bins
                     </Button>
                   )}
                   dropdownStyle={{
-                    right: 0,
-                    minWidth: 150,
+                    left: 0,
+                    minWidth: 205,
                   }}
                   >
                   <DropdownItem
-                    onClick={() => function () {
-                      console.log('clicked customize bins');
-                    }}
+                    onClick={() => dispatch(
+                      setModal(
+                        <GroupValuesModal
+                          bins={variable.bins}
+                          fieldName={humanify({ term: fieldName })}
+                          onClose={() => dispatch(setModal(null))}
+                          onUpdate={(newBins) => {
+                            dispatch(
+                              updateClinicalAnalysisVariable({
+                                fieldName,
+                                id,
+                                value: newBins,
+                                variableKey: 'bins',
+                              }),
+                            );
+                            dispatch(setModal(null));
+                          }
+                          }
+                          />,
+                      ),
+                    )
+                    }
                     style={styles.actionMenuItem}
                     >
-                    Customize Bins
+                    Edit Bins
                   </DropdownItem>
                   <DropdownItem
-                    onClick={() => function () {
-                      console.log('clicked reset');
+                    onClick={() => {
+                      dispatch(
+                        updateClinicalAnalysisVariable({
+                          fieldName,
+                          id,
+                          value: dataBuckets.reduce((acc, r) => ({
+                            ...acc,
+                            [r.key]: {
+                              ...r,
+                              groupName: r.key,
+                            },
+                          }), {}),
+                          variableKey: 'bins',
+                        }),
+                      );
                     }}
                     style={styles.actionMenuItem}
                     >
@@ -1010,9 +1059,10 @@ export default compose(
   withState('selectedSurvivalValues', 'setSelectedSurvivalValues', []),
   withState('selectedSurvivalLoadingIds', 'setSelectedSurvivalLoadingIds', []),
   withState('survivalPlotLoading', 'setSurvivalPlotLoading', true),
+  withState('selectedBuckets', 'setSelectedBuckets', []),
   withProps(({ data, fieldName, variable }) => {
     const sanitisedId = fieldName.split('.').pop();
-    const rawQueryData = (data.explore && data.explore.cases.aggregations
+    const rawQueryData = (data.explore
       ? data.explore.cases.aggregations[fieldName.replace('.', '__')]
       : data);
     const dataDimension = dataDimensions[sanitisedId] && dataDimensions[sanitisedId].unit;
@@ -1056,9 +1106,24 @@ export default compose(
       dataDimension && { dataDimension },
     );
   }),
+  withProps(({ dataBuckets, variable }) => ({
+    customBins: Object.keys(variable.bins).length > 0
+      ? map(groupBy(variable.bins, bin => bin.groupName), (values, key) => ({
+        key,
+        doc_count: values.reduce((acc, value) => acc + value.doc_count, 0),
+      }))
+      : dataBuckets.map(b => ({
+        key: b.key,
+        doc_count: b.doc_count,
+        groupName: b.key,
+      })),
+  })),
   withProps(
     ({
-      fieldName, setId, totalDocs, variable,
+      fieldName,
+      setId,
+      totalDocs,
+      variable,
     }) => ({
       getBucketRangesAndFilters: (acc, { doc_count, key }) => {
         const filters =
@@ -1076,7 +1141,7 @@ export default compose(
                 {
                   content: {
                     field: fieldName,
-                    value: [`${parseBucketValue(key)}`],
+                    value: [`${valueIsYear(fieldName) ? Math.floor(key) : key}`],
                   },
                   op: '>=',
                 },
@@ -1084,7 +1149,7 @@ export default compose(
                   {
                     content: {
                       field: fieldName,
-                      value: [`${parseBucketValue(acc.nextInterval - 1)}`],
+                      value: [`${acc.nextInterval - 1}`],
                     },
                     op: '<=',
                   },
@@ -1104,7 +1169,7 @@ export default compose(
                 totalDocs,
               }),
               filters,
-              key: getRangeValue(key, acc.nextInterval),
+              key: getRangeValue(key, fieldName, acc.nextInterval),
               rangeValues: {
                 max: Math.floor(acc.nextInterval - 1),
                 min: key,
@@ -1116,9 +1181,9 @@ export default compose(
       },
     })
   ),
-  withState('selectedBuckets', 'setSelectedBuckets', []),
   withProps(
     ({
+      customBins,
       dataBuckets,
       fieldName,
       filters,
@@ -1143,7 +1208,7 @@ export default compose(
               })
               .data.slice(0)
               .reverse()
-            : dataBuckets
+            : customBins
               .filter(bucket => (IS_CDAVE_DEV ? bucket.key : bucket.key !== '_missing'))
               .map(b => ({
                 ...b,
@@ -1238,12 +1303,29 @@ export default compose(
   lifecycle({
     componentDidMount(): void {
       const {
+        dataBuckets,
         dispatch,
         fieldName,
         id,
         variable,
         wrapperId,
       } = this.props;
+      if (Object.keys(variable.bins).length === 0) {
+        dispatch(
+          updateClinicalAnalysisVariable({
+            fieldName,
+            id,
+            value: dataBuckets.reduce((acc, r) => ({
+              ...acc,
+              [r.key]: {
+                ...r,
+                groupName: r.key,
+              },
+            }), {}),
+            variableKey: 'bins',
+          }),
+        );
+      }
       if (variable.scrollToCard === false) return;
       const offset = document.getElementById('header').getBoundingClientRect().bottom + 10;
       const $anchor = document.getElementById(`${wrapperId}-container`);

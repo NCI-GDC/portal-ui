@@ -101,7 +101,7 @@ const defaultVariableConfig = {
   active_chart: 'histogram',
   active_calculation: 'number',
   active_survival: 'overall',
-  bins: [],
+  bins: {},
 };
 
 interface ICurrentAnalysis {

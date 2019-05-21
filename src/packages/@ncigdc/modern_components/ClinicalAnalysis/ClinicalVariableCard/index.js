@@ -471,6 +471,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
     variable.active_chart === 'histogram'
       ? tableData.map(d => {
         return {
+          fullLabel: d.key,
           label: truncate(d.key, { length: 18 }),
           tooltip: `${d.key}: ${d.chart_doc_count.toLocaleString()}`,
           value:

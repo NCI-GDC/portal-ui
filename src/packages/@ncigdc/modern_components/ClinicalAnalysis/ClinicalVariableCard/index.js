@@ -482,7 +482,6 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
         };
       })
       : [];
-  console.log(chartData);
 
   // set action will default to cohort total when no buckets are selected
   const totalFromSelectedBuckets = selectedBuckets && selectedBuckets.length

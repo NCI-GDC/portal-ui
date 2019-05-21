@@ -472,6 +472,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
     variable.active_chart === 'histogram'
       ? tableData.map(d => {
         return {
+          fullLabel: d.key,
           label: truncate(d.key, { length: 18 }),
           tooltip: `${d.key}: ${d.chart_doc_count.toLocaleString()}`,
           value:
@@ -481,6 +482,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
         };
       })
       : [];
+  console.log(chartData);
 
   // set action will default to cohort total when no buckets are selected
   const totalFromSelectedBuckets = selectedBuckets && selectedBuckets.length

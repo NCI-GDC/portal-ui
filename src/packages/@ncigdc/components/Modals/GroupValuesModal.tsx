@@ -152,8 +152,7 @@ export default compose(
           {fieldName}
         </h1>
         <h3 style={{ margin: '20px' }}>
-          Organize values into groups of your choosing. Click Save Bins to udpate
-          the analysis plots.
+          Organize values into groups of your choosing. Click Save Bins to update the analysis plots.
         </h3>
         <Row style={{ justifyContent: 'center' }}>
           <Column style={blockStyle}>

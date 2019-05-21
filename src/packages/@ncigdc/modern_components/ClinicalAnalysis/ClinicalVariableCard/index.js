@@ -711,7 +711,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                       marginRight: 2,
                     }}
                     svg={() => wrapSvg({
-                      selector: `#${wrapperId} svg`,
+                      selector: `#${wrapperId}-container .test-bar-chart svg`,
                       title: humanify({ term: fieldName }),
                     })
                     }
@@ -838,7 +838,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                   )}
               </div>
             )}
-            { variable.active_chart === 'box' && (
+            {variable.active_chart === 'box' && (
               <div
                 style={{
                   display: 'flex',
@@ -850,7 +850,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                 >
                 <QQPlotQuery fieldName={fieldName} filters={cardFilters} first={totalDocs} />
               </div>
-            ) }
+            )}
 
             {variable.active_chart === 'box' || (
               <Row

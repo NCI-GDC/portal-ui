@@ -702,8 +702,8 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                     }))}
                     key="download"
                     noText
-                    onClick={() => {
-                      console.log('chartData', chartData);
+                    onClick={(e) => {
+                      e.preventDefault();
                     }}
                     slug={`${fieldName}-bar-chart`}
                     style={{

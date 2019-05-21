@@ -165,33 +165,33 @@ const ClinicalGrouping = compose(
                 const queryLower = _.toLower(searchValue);
                 const descLower = _.toLower(fieldDescription);
                 const descMatch =
-                    queryLower !== '' && fieldDescription !== defaultDescription
-                      ? descLower.match(queryLower) !== null
-                      : false;
+                  queryLower !== '' && fieldDescription !== defaultDescription
+                    ? descLower.match(queryLower) !== null
+                    : false;
                 const DescEl = () => (
                   <div
-                      style={{
-                        maxWidth: '24em',
-                        fontSize: '1.3rem',
-                        marginBottom: descMatch ? '10px' : '0',
-                        fontStyle: descMatch ? 'italic' : 'normal',
-                      }}
-                      >
+                    style={{
+                      maxWidth: '24em',
+                      fontSize: '1.3rem',
+                      marginBottom: descMatch ? '10px' : '0',
+                      fontStyle: descMatch ? 'italic' : 'normal',
+                    }}
+                    >
                     {descMatch
-                        ? internalHighlight(searchValue, fieldDescription, {
-                          backgroundColor: '#FFFF00',
-                        })
-                        : fieldDescription}
+                      ? internalHighlight(searchValue, fieldDescription, {
+                        backgroundColor: '#FFFF00',
+                      })
+                      : fieldDescription}
                   </div>
                 );
                 const TitleEl = () => (
                   <h4
-                      style={{
-                        fontSize: '1.4rem',
-                        display: 'inline-block',
-                        marginRight: '50px',
-                      }}
-                      >
+                    style={{
+                      fontSize: '1.4rem',
+                      display: 'inline-block',
+                      marginRight: '50px',
+                    }}
+                    >
                     {internalHighlight(searchValue, fieldTitle, {
                       backgroundColor: '#FFFF00',
                     })}
@@ -199,26 +199,26 @@ const ClinicalGrouping = compose(
                 );
                 const ToggleEl = () => (
                   <Toggle
-                      checked={checked}
-                      disabled={!type.name}
-                      icons={false}
-                      id={fieldName}
-                      name={fieldName}
-                      onChange={() => {
-                        if (!type.name) {
-                          return null;
-                        }
-                        dispatch(
-                          toggleAction({
-                            fieldName,
-                            id: analysis_id,
-                            fieldType: name,
-                            plotTypes,
-                            scrollToCard: !checked,
-                          })
-                        );
-                      }}
-                      />
+                    checked={checked}
+                    disabled={!type.name}
+                    icons={false}
+                    id={fieldName}
+                    name={fieldName}
+                    onChange={() => {
+                      if (!type.name) {
+                        return null;
+                      }
+                      dispatch(
+                        toggleAction({
+                          fieldName,
+                          id: analysis_id,
+                          fieldType: name,
+                          plotTypes,
+                          scrollToCard: !checked,
+                        })
+                      );
+                    }}
+                    />
                 );
                 return (
                   <Row
@@ -260,7 +260,7 @@ const ClinicalGrouping = compose(
                               </Tooltip>
                               <ToggleEl />
                             </React.Fragment>
-                            )}
+                          )}
                       </label>
                     </div>
                   </Row>
@@ -339,11 +339,11 @@ export default compose(
           <span>
             {(_.keys(usefulFacets) || []).length}
             {' '}
-of
+            of
             {' '}
             {(clinicalAnalysisFields || []).length}
             {' '}
-fields with values
+            fields with values
           </span>
         </Row>
         <div

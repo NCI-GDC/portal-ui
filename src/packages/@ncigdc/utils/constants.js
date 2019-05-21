@@ -48,6 +48,29 @@ export const LOCAL_STORAGE_API_OVERRIDE = API_OVERRIDE_KEYS.some(
   k => localStorage[k]
 );
 
+const DATA_CATEGORIES_COMMON = {
+  SEQ: {
+    full: 'Sequencing Reads',
+    abbr: 'Seq',
+  },
+  EXP: {
+    full: 'Transcriptome Profiling',
+    abbr: 'Exp',
+  },
+  SNV: {
+    full: 'Simple Nucleotide Variation',
+    abbr: 'SNV',
+  },
+  CNV: {
+    full: 'Copy Number Variation',
+    abbr: 'CNV',
+  },
+  METH: {
+    full: 'DNA Methylation',
+    abbr: 'Meth',
+  },
+};
+
 export const DATA_CATEGORIES = {
   SEQ: {
     full: 'Sequencing Reads',
@@ -69,6 +92,7 @@ export const DATA_CATEGORIES = {
     full: 'DNA Methylation',
     abbr: 'Meth',
   },
+  ...DATA_CATEGORIES_COMMON,
   CLINICAL: {
     full: 'Clinical',
     abbr: 'Clinical',
@@ -76,6 +100,32 @@ export const DATA_CATEGORIES = {
   BIOSPECIMEN: {
     full: 'Biospecimen',
     abbr: 'Bio',
+  },
+};
+
+export const DATA_CATEGORIES_FOR_PROJECTS_TABLE = {
+  ...DATA_CATEGORIES_COMMON,
+  CLINICAL_METADATA: {
+    full: '',
+    abbr: 'Clinical',
+    tooltip: 'Clinical Metadata',
+  },
+  CLINICAL_SUPPLEMENT: {
+    full: 'Clinical',
+    dataCategory: 'Clinical',
+    abbr: 'Clinical Supplement',
+    tooltip: 'Clinical Supplement',
+  },
+  BIOSPECIMEN_METADATA: {
+    full: '',
+    abbr: 'Bio',
+    tooltip: 'Biospecimen Metadata',
+  },
+  BIOSPECIMEN_SUPPLEMENT: {
+    full: 'Biospecimen',
+    dataCategory: 'Bio',
+    abbr: 'Bio Supplement',
+    tooltip: 'Biospecimen Supplement',
   },
 };
 
@@ -287,7 +337,7 @@ export const MAX_SET_NAME_LENGTH = 100;
 export const COHORT_COMPARISON_FACETS = {
   'demographic.ethnicity': 'Ethnicity',
   'demographic.gender': 'Gender',
-  'diagnoses.vital_status': 'Vital Status',
+  'demographic.vital_status': 'Vital Status',
   'demographic.race': 'Race',
   'diagnoses.age_at_diagnosis': 'Age at Diagnosis',
 };
@@ -315,41 +365,41 @@ export const IMPACT_SHORT_FORMS = {
 
 export const FAKE_USER =
   localStorage.REACT_APP_ALLOW_FAKE_USER || process.env.REACT_APP_ALLOW_FAKE_USER
-  ? {
-    username: 'DEV_USER',
-    projects: {
-      phs_ids: {
-        phs000178: [
-          '_member_',
-          'read',
-          'delete',
-        ],
+    ? {
+      username: 'DEV_USER',
+      projects: {
+        phs_ids: {
+          phs000178: [
+            '_member_',
+            'read',
+            'delete',
+          ],
+        },
+        gdc_ids: {
+          'TCGA-LIHC': [
+            'read',
+            'delete',
+            'create',
+            'update',
+            'read_report',
+          ],
+          'CGCI-BLGSP': [
+            'create',
+            'update',
+            'release',
+            'read_report',
+          ],
+          'TCGA-DEV3': [
+            'read',
+            'create',
+            'update',
+            'release',
+            'delete',
+          ],
+        },
       },
-      gdc_ids: {
-        'TCGA-LIHC': [
-          'read',
-          'delete',
-          'create',
-          'update',
-          'read_report',
-        ],
-        'CGCI-BLGSP': [
-          'create',
-          'update',
-          'release',
-          'read_report',
-        ],
-        'TCGA-DEV3': [
-          'read',
-          'create',
-          'update',
-          'release',
-          'delete',
-        ],
-      },
-    },
-  }
-  : null;
+    }
+    : null;
 
 export const IS_DEV = process.env.NODE_ENV === 'development';
 

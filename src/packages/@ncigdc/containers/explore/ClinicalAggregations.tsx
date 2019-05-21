@@ -34,7 +34,7 @@ import {
 } from '@ncigdc/dux/facetsExpandedStatus';
 import { WrapperComponent } from '@ncigdc/components/FacetWrapper';
 import { withTheme } from '@ncigdc/theme';
-import { CaseAggregationsQuery } from '@ncigdc/containers/explore/explore.relay';
+import CaseAggregationsQuery from '@ncigdc/containers/explore/explore.relay';
 import { internalHighlight } from '@ncigdc/uikit/Highlight';
 
 import SearchIcon from 'react-icons/lib/fa/search';
@@ -470,10 +470,7 @@ const enhance = compose(
                                   : 5,
                               )
                               .map((componentFacet: IFacetProps) => {
-                                const fieldName = startCase(
-                                  termCapitaliser(componentFacet.full)
-                                    .split('.').pop()
-                                ) || '';
+                                const fieldName = componentFacet.full.split('.').pop() || '';
                                 return [
                                   <WrapperComponent
                                     additionalProps={{
@@ -532,7 +529,9 @@ const enhance = compose(
                                       order: customSorting[componentFacet.field] || 0,
                                       paddingLeft: '10px',
                                     }}
-                                    title={fieldName}
+                                    title={startCase(
+                                      termCapitaliser(fieldName)
+                                    )}
                                     />,
                                 ];
                               }))

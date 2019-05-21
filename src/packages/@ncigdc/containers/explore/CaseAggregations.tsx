@@ -23,7 +23,7 @@ import { UploadCaseSet } from '@ncigdc/components/Modals/UploadSet';
 import { presetFacets } from '@ncigdc/containers/explore/presetFacets';
 
 import { IBucket } from '@ncigdc/components/Aggregations/types';
-import { CaseAggregationsQuery } from './explore.relay';
+import CaseAggregationsQuery from './explore.relay';
 
 export interface ITProps {
   caseIdCollapsed: boolean,
@@ -77,7 +77,7 @@ const enhance = compose(
   })),
   lifecycle({
     componentDidMount(): void {
-      const { relay, filters }: any = this.props;
+      const { filters, relay }: any = this.props;
       relay.setVariables({
         filters,
       });
@@ -86,25 +86,25 @@ const enhance = compose(
 );
 
 export const CaseAggregationsComponent = ({
-  caseIdCollapsed,
-  setCaseIdCollapsed,
-  relay,
-  facets,
-  parsedFacets,
-  aggregations,
-  hits,
-  setAutocomplete,
-  theme,
-  filters,
-  suggestions,
-  handleSelectFacet,
-  handleResetFacets,
-  handleRequestRemoveFacet,
-  shouldShowFacetSelection,
-  setShouldShowFacetSelection,
   advancedFilter,
-  setAdvancedFilter,
+  aggregations,
+  caseIdCollapsed,
+  facets,
+  filters,
+  handleRequestRemoveFacet,
+  handleResetFacets,
+  handleSelectFacet,
+  hits,
   maxFacetsPanelHeight,
+  parsedFacets,
+  relay,
+  setAdvancedFilter,
+  setAutocomplete,
+  setCaseIdCollapsed,
+  setShouldShowFacetSelection,
+  shouldShowFacetSelection,
+  suggestions,
+  theme,
 }: ITProps) => (
   <div className="test-case-aggregations">
       <FacetHeader

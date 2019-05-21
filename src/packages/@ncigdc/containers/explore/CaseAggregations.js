@@ -1,17 +1,20 @@
 /* @flow */
 import React from 'react';
+import Relay from 'react-relay/classic';
 import _ from 'lodash';
+import { connect } from 'react-redux';
 import {
   compose,
   withState,
   setDisplayName,
+  lifecycle,
   withPropsOnChange,
 } from 'recompose';
 
 import Modal from '@ncigdc/uikit/Modal';
-import SuggestionFacet from '@ncigdc/modern_components/SuggestionFacet';
+import SuggestionFacet from '@ncigdc/components/Aggregations/SuggestionFacet';
 import { Row } from '@ncigdc/uikit/Flex';
-import FacetSelection from '@ncigdc/modern_components/FacetSelection';
+import FacetSelection from '@ncigdc/components/FacetSelection';
 import FacetWrapper from '@ncigdc/components/FacetWrapper';
 import UploadSetButton from '@ncigdc/components/UploadSetButton';
 import { withTheme } from '@ncigdc/theme';
@@ -34,16 +37,24 @@ export type TProps = {
     demographic__ethnicity: { buckets: [IBucket] },
     demographic__gender: { buckets: [IBucket] },
     demographic__race: { buckets: [IBucket] },
+    demographic__days_to_death: { max: number, min: number },
     demographic__vital_status: { buckets: [IBucket] },
-    demographic__days_to_death: { stats: { max: number, min: number } },
-    diagnoses__age_at_diagnosis: { stats: { max: number, min: number } },
+    diagnoses__age_at_diagnosis: { max: number, min: number },
     disease_type: { buckets: [IBucket] },
     primary_site: { buckets: [IBucket] },
     project__program__name: { buckets: [IBucket] },
     project__project_id: { buckets: [IBucket] },
   },
+  hits: {
+    edges: Array<{
+      node: {
+        id: string,
+      },
+    }>,
+  },
   setAutocomplete: Function,
   theme: Object,
+  filters: Object,
   suggestions: Array<Object>,
 
   userSelectedFacets: Array<{
@@ -151,23 +162,52 @@ const presetFacets = [
   },
 ];
 
+const entityType = 'ExploreCases';
 const presetFacetFields = presetFacets.map(x => x.field);
-const entityType = 'RepositoryCases';
 
 const enhance = compose(
-  setDisplayName('RepoCaseAggregations'),
+  setDisplayName('ExploreCaseAggregations'),
   withFacetSelection({
     entityType,
     presetFacetFields,
     validFacetDocTypes: ['cases'],
+    validFacetPrefixes: [
+      'cases.demographic',
+      'cases.diagnoses',
+      'cases.diagnoses.treatments',
+      'cases.exposures',
+      'cases.family_histories',
+      'cases.project',
+    ],
   }),
-  withTheme,
   withState('caseIdCollapsed', 'setCaseIdCollapsed', false),
-  withPropsOnChange(['viewer'], ({ viewer }) => ({
-    parsedFacets: viewer.repository.cases.facets
-      ? tryParseJSON(viewer.repository.cases.facets, {})
-      : {},
+  connect((state, props) => ({
+    userSelectedFacets: state.customFacets[entityType],
   })),
+  withPropsOnChange(
+    ['filters', 'userSelectedFacets'],
+    ({ filters, relay, userSelectedFacets }) =>
+      relay.setVariables({
+        filters,
+        exploreCaseCustomFacetFields: userSelectedFacets
+          .map(({ field }) => field)
+          .join(','),
+      }),
+  ),
+  withPropsOnChange(['facets'], ({ facets }) => ({
+    parsedFacets: facets.facets ? tryParseJSON(facets.facets, {}) : {},
+  })),
+  lifecycle({
+    componentDidMount(): void {
+      const { relay, filters, userSelectedFacets } = this.props;
+      relay.setVariables({
+        filters: filters,
+        exploreCaseCustomFacetFields: userSelectedFacets
+          .map(({ field }) => field)
+          .join(','),
+      });
+    },
+  }),
 );
 
 const styles = {
@@ -177,7 +217,7 @@ const styles = {
   },
 };
 
-const CaseAggregationsComponent = (props: TProps) => (
+export const CaseAggregationsComponent = (props: TProps) => (
   <div className="test-case-aggregations">
     <div
       className="text-right"
@@ -198,7 +238,7 @@ const CaseAggregationsComponent = (props: TProps) => (
         onClick={() => props.setShouldShowFacetSelection(true)}
         style={styles.link}
       >
-        Add a Case/Biospecimen Filter
+        Add a Case Filter
       </a>
     </div>
     <Modal
@@ -206,27 +246,29 @@ const CaseAggregationsComponent = (props: TProps) => (
       style={{ content: { border: 0, padding: '15px' } }}
     >
       <FacetSelection
-        title="Add a Case/Biospecimen Filter"
+        title="Add a Case Filter"
+        relayVarName="exploreCaseCustomFacetFields"
         docType="cases"
         onSelect={props.handleSelectFacet}
         onRequestClose={() => props.setShouldShowFacetSelection(false)}
         excludeFacetsBy={props.facetExclusionTest}
         additionalFacetData={props.parsedFacets}
+        relay={props.relay}
       />
     </Modal>
 
     {props.userSelectedFacets.map(facet => (
       <FacetWrapper
         isRemovable
-        relayVarName="repoCaseCustomFacetFields"
+        relayVarName="exploreCaseCustomFacetFields"
         key={facet.full}
         facet={facet}
         aggregation={props.parsedFacets[facet.field]}
+        relay={props.relay}
         onRequestRemove={() => props.handleRequestRemoveFacet(facet)}
         style={{ borderBottom: `1px solid ${props.theme.greyScale5}` }}
       />
     ))}
-
     <FacetHeader
       title="Case"
       field="cases.case_id"
@@ -236,14 +278,14 @@ const CaseAggregationsComponent = (props: TProps) => (
         'Enter UUID or ID of Case, Sample, Portion, Slide, Analyte or Aliquot'
       }
     />
-
     <SuggestionFacet
       title="Case"
       collapsed={props.caseIdCollapsed}
       doctype="cases"
       fieldNoDoctype="case_id"
-      queryType="case"
       placeholder="e.g. TCGA-A5-A0G2, 432fe4a9-2..."
+      hits={props.suggestions}
+      setAutocomplete={props.setAutocomplete}
       dropdownItem={x => (
         <Row>
           <CaseIcon style={{ paddingRight: '1rem', paddingTop: '1rem' }} />
@@ -264,7 +306,7 @@ const CaseAggregationsComponent = (props: TProps) => (
       }}
       UploadModal={UploadCaseSet}
       defaultQuery={{
-        pathname: '/repository',
+        pathname: '/exploration',
         query: { searchTableTab: 'cases' },
       }}
       idField="cases.case_id"
@@ -272,22 +314,105 @@ const CaseAggregationsComponent = (props: TProps) => (
       Upload Case Set
     </UploadSetButton>
 
-    {_.reject(presetFacets, { full: 'cases.case_id' }).map(facet => (
-      <FacetWrapper
-        key={facet.full}
-        facet={facet}
-        title={facet.title}
-        aggregation={
-          props.viewer.repository.cases.aggregations[
-            escapeForRelay(facet.field)
-          ]
-        }
-        relay={props.relay}
-        additionalProps={facet.additionalProps}
-        style={{ borderBottom: `1px solid ${props.theme.greyScale5}` }}
-      />
-    ))}
+    {_.reject(presetFacets, { full: 'cases.case_id' })
+      .filter(facet => props.aggregations[escapeForRelay(facet.field)])
+      .map(facet => (
+        <FacetWrapper
+          key={facet.full}
+          facet={facet}
+          title={facet.title}
+          aggregation={props.aggregations[escapeForRelay(facet.field)]}
+          relay={props.relay}
+          additionalProps={facet.additionalProps}
+          style={{ borderBottom: `1px solid ${props.theme.greyScale5}` }}
+        />
+      ))}
   </div>
 );
 
-export default enhance(CaseAggregationsComponent);
+export const CaseAggregationsQuery = {
+  initialVariables: {
+    exploreCaseCustomFacetFields: '',
+    filters: null,
+  },
+  fragments: {
+    facets: () => Relay.QL`
+      fragment on ExploreCases {
+        facets(facets: $exploreCaseCustomFacetFields filters: $filters)
+      }
+    `,
+    aggregations: () => Relay.QL`
+      fragment on ECaseAggregations {
+        primary_site {
+          buckets {
+            doc_count
+            key
+          }
+        }
+        project__program__name {
+          buckets {
+            doc_count
+            key
+          }
+        }
+        project__project_id {
+          buckets {
+            doc_count
+            key
+          }
+        }
+        disease_type {
+          buckets {
+            doc_count
+            key
+          }
+        }
+        demographic__gender {
+          buckets {
+            doc_count
+            key
+          }
+        }
+        diagnoses__age_at_diagnosis {
+          stats {
+            max
+            min
+            count
+          }
+        }
+        demographic__vital_status {
+          buckets {
+            doc_count
+            key
+          }
+        }
+        demographic__days_to_death {
+          stats {
+            max
+            min
+            count
+          }
+        }
+        demographic__race {
+          buckets {
+            doc_count
+            key
+          }
+        }
+        demographic__ethnicity {
+          buckets {
+            doc_count
+            key
+          }
+        }
+      }
+    `,
+  },
+};
+
+const CaseAggregations = Relay.createContainer(
+  enhance(withTheme(CaseAggregationsComponent)),
+  CaseAggregationsQuery,
+);
+
+export default CaseAggregations;

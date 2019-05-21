@@ -98,7 +98,7 @@ function setVariables({ filters, relay }) {
     ),
   });
 }
-
+const noResultsMessageStyle = { minHeight: 387 };
 export class ExplorePageComponent extends React.Component {
   state = {
     maxFacetsPanelHeight: 0,
@@ -255,7 +255,7 @@ export class ExplorePageComponent extends React.Component {
                   component: viewer.explore.cases.hits.total ? (
                     <CasesTab />
                   ) : (
-                    <NoResultsMessage>No Cases Found.</NoResultsMessage>
+                    <NoResultsMessage style={noResultsMessageStyle}>No Cases Found.</NoResultsMessage>
                     ),
                 },
                 {
@@ -264,7 +264,7 @@ export class ExplorePageComponent extends React.Component {
                   component: viewer.explore.genes.hits.total ? (
                     <GenesTab viewer={viewer} />
                   ) : (
-                    <NoResultsMessage>No Genes Found.</NoResultsMessage>
+                    <NoResultsMessage style={noResultsMessageStyle}>No Genes Found.</NoResultsMessage>
                     ),
                 },
                 {
@@ -276,7 +276,7 @@ export class ExplorePageComponent extends React.Component {
                       viewer={viewer}
                       />
                   ) : (
-                    <NoResultsMessage>No Mutations Found.</NoResultsMessage>
+                    <NoResultsMessage style={noResultsMessageStyle}>No Mutations Found.</NoResultsMessage>
                     ),
                 },
                 {

@@ -1023,7 +1023,6 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                 </Dropdown>
               </Row>
             )}
-
             <EntityPageHorizontalTable
               data={tableData}
               headings={getHeadings(variable.active_chart)}

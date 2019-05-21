@@ -87,6 +87,13 @@ const listStyle = {
   overflow: 'scroll',
 };
 
+const backgroundStyle = {
+  padding: '0 20px',
+  backgroundColor: '#eee',
+  borderRadius: '5px',
+  width: '100%',
+};
+
 export default compose(
   withState('editingGroupName', 'setEditingGroupName', ''),
   withState('currentBins', 'setCurrentBins', ({ bins }: { bins: IBinsProps }) => bins),
@@ -152,10 +159,22 @@ export default compose(
           {`Create Custom Bins: ${fieldName}`}
         </h1>
         {plotType === 'continuous' ? 
-          <p>Configure your bins then click <strong>Save Bins</strong> to update the analysis plots.</p>
+          (<div>
+            <p>Available values from <strong>33</strong> to <strong>66</strong></p>
+            <p>Quartile bin interval: <strong>11</strong></p>
+            <p>Configure your bins then click <strong>Save Bins</strong> to update the analysis plots.</p>
+          </div>)
           : <p>Organize values into groups of your choosing. Click <strong>Save Bins</strong> to update the analysis plots.</p>
         }
-        <Row style={{ justifyContent: 'center' }}>
+        {plotType === 'continuous' ? 
+        (
+          <Row>
+            <Column style={backgroundStyle}>
+              <h3>Define bins by:</h3>
+            </Column>
+          </Row>
+        ) : 
+        (<Row style={{ justifyContent: 'center' }}>
           <Column style={blockStyle}>
             <h3 style={{paddingBottom: '6px'}}>Hiding Values</h3>
             <Column style={listStyle}>
@@ -336,7 +355,7 @@ export default compose(
               )}
             </Column>
           </Column>
-        </Row>
+        </Row>)}
         <Row
           spacing="1rem"
           style={{

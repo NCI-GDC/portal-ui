@@ -147,17 +147,17 @@ export default compose(
       key => currentBins[key].groupName
     );
     return (
-      <Column>
-        <h1 style={{ margin: '20px' }}>
+      <Column style={{padding: '20px'}}>
+        <h1 style={{ marginTop: 0 }}>
           {`Create Custom Bins: ${fieldName}`}
         </h1>
         {plotType === 'continuous' ? 
-          <h3>Configure your bins then click <strong>Save Bins</strong> to update the analysis plots.</h3>
-          : <h3>Organize values into groups of your choosing. Click <strong>Save Bins</strong> to update the analysis plots.</h3>
+          <p>Configure your bins then click <strong>Save Bins</strong> to update the analysis plots.</p>
+          : <p>Organize values into groups of your choosing. Click <strong>Save Bins</strong> to update the analysis plots.</p>
         }
         <Row style={{ justifyContent: 'center' }}>
           <Column style={blockStyle}>
-            <span style={{ height: '54px' }}>Hiding Values</span>
+            <h3 style={{paddingBottom: '6px'}}>Hiding Values</h3>
             <Column style={listStyle}>
               {Object.keys(currentBins)
                 .filter((binKey: string) => currentBins[binKey].groupName === '')
@@ -244,14 +244,14 @@ export default compose(
           </Column>
           <Column style={blockStyle}>
             <Row style={{ justifyContent: 'space-between' }}>
-              <span style={{
+              <h3 style={{
                 alignItems: 'center',
                 display: 'flex',
               }}
                     >
                 Display Values
 
-              </span>
+              </h3>
               <Button
                 disabled={Object.values(selectedGroupBins).filter(value => value).length < 2}
                 onClick={binGrouping}

@@ -10,6 +10,7 @@ import { Row, Column } from '@ncigdc/uikit/Flex';
 import Button from '@ncigdc/uikit/Button';
 import { visualizingButton } from '@ncigdc/theme/mixins';
 import EditableLabel from '@ncigdc/uikit/EditableLabel';
+import { Th, Tr } from '@ncigdc/uikit/Table';
 
 const styles = {
   button: {
@@ -97,8 +98,8 @@ const listStyle = {
 };
 
 const backgroundStyle = {
-  padding: '0 20px',
-  backgroundColor: '#eee',
+  padding: '0 20px 20px',
+  backgroundColor: '#f5f5f5',
   borderRadius: '5px',
   width: '100%',
 };
@@ -199,18 +200,20 @@ export default compose(
           <Row>
             <Column style={backgroundStyle}>
               <h3>Define bins by:</h3>
-              <table>
-                <tbody>
+              <table style={{marginBottom: '20px'}}>
+                <thead>
                   <tr>
-                    <th scope="col" id="continuous-manual-label-name">Bin Name</th>
-                    <th scope="col" id="continuous-manual-label-from">From</th>
-                    <th scope="col" id="continuous-manual-label-to">To</th>
-                    <th scope="col">Remove</th>
+                    <Th scope="col" id="continuous-manual-label-name">Bin Name</Th>
+                    <Th scope="col" id="continuous-manual-label-from">From</Th>
+                    <Th scope="col" id="continuous-manual-label-to">To</Th>
+                    <Th scope="col">Remove</Th>
                   </tr>
+                </thead>
+                <tbody>
                   {continuousManualRows.map((row, rowIndex) => (
-                    <tr key={`manual-row-${rowIndex}`}>
+                    <Tr key={`manual-row-${rowIndex}`} index={rowIndex}>
                       {Object.keys(row).map(inputKey => (
-                        <td key={`manual-row-${rowIndex}-${inputKey}`}>
+                        <td key={`manual-row-${rowIndex}-${inputKey}`} style={{padding: '5px'}}>
                           <input id={`manual-row-${rowIndex}-${inputKey}`} type={inputKey === 'name' ? 'text' : 'number'} onChange={e => {
                             const inputValue = e.target.value;
                             const nextContinuousManualRows = continuousManualRows.map((contRow, contRowIndex) => contRowIndex === rowIndex
@@ -224,24 +227,39 @@ export default compose(
                           }}
                           value={continuousManualRows[rowIndex][inputKey]}
                           aria-labelledby={`continuous-manual-label-${inputKey}`}
+                          style={{
+                            width: '100%',
+                            padding: '5px',
+                          }}
                           />
                         </td>
                       ))}
-                      <td><button type="button" onClick={() => {
-                        const nextContinuousManualRows = continuousManualRows.filter((filterRow, filterRowIndex) => filterRowIndex !== rowIndex);
-                        setContinuousManualRows(nextContinuousManualRows);
-                      }}>Remove</button></td>
-                    </tr>
+                      <td>
+                        <Button onClick={() => {
+                            const nextContinuousManualRows = continuousManualRows.filter((filterRow, filterRowIndex) => filterRowIndex !== rowIndex);
+                            setContinuousManualRows(nextContinuousManualRows);
+                          }}
+                          aria-label="Remove"
+                          style={{margin: '0 auto'}}
+                        >
+                          <i className="fa fa-trash" aria-hidden="true" />
+                        </Button>
+                      </td>
+                    </Tr>
                   ))}
                 </tbody>
               </table>
-              <button type="button" onClick={() => {
-                const nextContinuousManualRows = [
-                  ...continuousManualRows, 
-                  ...defaultContinuousManualRow,
-                ];
-                setContinuousManualRows(nextContinuousManualRows);
-              }}>Add</button>
+              <Button onClick={() => {
+                  const nextContinuousManualRows = [
+                    ...continuousManualRows, 
+                    ...defaultContinuousManualRow,
+                  ];
+                  setContinuousManualRows(nextContinuousManualRows);
+                }}
+                style={{...styles.button, maxWidth: '100px', marginLeft: 'auto'}}
+              >
+                <i className="fa fa-plus-circle" aria-hidden="true" /> &nbsp; Add
+              </Button>
             </Column>
           </Row>
         ) : 

@@ -104,20 +104,20 @@ const backgroundStyle = {
   width: '100%',
 };
 
-const defaultContinuousManualRow = [
-  {
-    name: '',
-    from: 0,
-    to: 0,
-  },
-];
+const defaultContinuousManualRow = {
+  name: '',
+  from: 0,
+  to: 0,
+};
+
+const defaultContinuousManualRowDisplay = Array(5).fill(defaultContinuousManualRow);
 
 export default compose(
   withState('editingGroupName', 'setEditingGroupName', ''),
   withState('currentBins', 'setCurrentBins', ({ bins }: { bins: IBinsProps }) => bins),
   withState('selectedHidingBins', 'setSelectedHidingBins', {}),
   withState('selectedGroupBins', 'setSelectedGroupBins', {}),
-  withState('continuousManualRows', 'setContinuousManualRows', defaultContinuousManualRow),
+  withState('continuousManualRows', 'setContinuousManualRows', defaultContinuousManualRowDisplay),
   withState('warning', 'setWarning', ''),
   withProps(({
     currentBins,
@@ -252,7 +252,7 @@ export default compose(
               <Button onClick={() => {
                   const nextContinuousManualRows = [
                     ...continuousManualRows, 
-                    ...defaultContinuousManualRow,
+                    defaultContinuousManualRow,
                   ];
                   setContinuousManualRows(nextContinuousManualRows);
                 }}

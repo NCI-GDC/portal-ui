@@ -49,6 +49,12 @@ interface IBinProps {
   groupName: string,
 }
 
+// interface IContinuousManualRows {
+//   name: string,
+//   from: number,
+//   to: number,
+// }
+
 interface ISelectedBinsProps {
   [x: string]: boolean
 }
@@ -71,6 +77,8 @@ interface IGroupValuesModalProps {
   setWarning: (warning: string) => void,
   plotType: string,
   originalBins: IBinsProps,
+  setContinuousManualRows: ([]) => void,
+  continuousManualRows: [],
 }
 
 const blockStyle = {
@@ -95,11 +103,20 @@ const backgroundStyle = {
   width: '100%',
 };
 
+const defaultContinuousManualRow = [
+  {
+    name: '',
+    from: 0,
+    to: 0,
+  },
+];
+
 export default compose(
   withState('editingGroupName', 'setEditingGroupName', ''),
   withState('currentBins', 'setCurrentBins', ({ bins }: { bins: IBinsProps }) => bins),
   withState('selectedHidingBins', 'setSelectedHidingBins', {}),
   withState('selectedGroupBins', 'setSelectedGroupBins', {}),
+  withState('continuousManualRows', 'setContinuousManualRows', defaultContinuousManualRow),
   withState('warning', 'setWarning', ''),
   withProps(({
     currentBins,
@@ -149,6 +166,8 @@ export default compose(
     warning,
     plotType,
     originalBins,
+    setContinuousManualRows,
+    continuousManualRows,
   }: IGroupValuesModalProps) => {
     const groupNameMapping = groupBy(
       Object.keys(currentBins)
@@ -180,6 +199,47 @@ export default compose(
           <Row>
             <Column style={backgroundStyle}>
               <h3>Define bins by:</h3>
+              <table>
+                <tbody>
+                  <tr>
+                    <th>Bin Name</th>
+                    <th>From</th>
+                    <th>To</th>
+                    <th>Remove</th>
+                  </tr>
+                  {continuousManualRows.map((row, rowN) => (
+                    <tr key={`manual-row-${rowN}`}>
+                      {Object.keys(row).map(rowKey => (
+                        <td key={`manual-row-${rowN}-${rowKey}`}>
+                          <input id={`row-${rowN}-${rowKey}`} type={rowKey === 'name' ? 'text' : 'number'} onChange={e => {
+                            const inputValue = e.target.value;
+                            const nextContinuousManualRows = continuousManualRows.map((contRow, contRowN) => contRowN === rowN
+                              ? Object.assign(
+                                {},
+                                contRow,
+                                { [rowKey]: inputValue }
+                              ) : contRow
+                            );
+                            setContinuousManualRows(nextContinuousManualRows)
+                          }}
+                          value={continuousManualRows[rowN][rowKey]}/>
+                        </td>
+                      ))}
+                      <td><button type="button" onClick={() => {
+                        const nextContinuousManualRows = continuousManualRows.filter((nextRow, i) => i !== rowN);
+                        setContinuousManualRows(nextContinuousManualRows);
+                      }}>Remove</button></td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              <button type="button" onClick={() => {
+                const nextContinuousManualRows = [
+                  ...continuousManualRows, 
+                  ...defaultContinuousManualRow,
+                ];
+                setContinuousManualRows(nextContinuousManualRows);
+              }}>Add</button>
             </Column>
           </Row>
         ) : 

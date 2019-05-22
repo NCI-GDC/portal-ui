@@ -70,6 +70,7 @@ interface IGroupValuesModalProps {
   warning: string,
   setWarning: (warning: string) => void,
   plotType: string,
+  originalBins: IBinsProps,
 }
 
 const blockStyle = {
@@ -147,12 +148,20 @@ export default compose(
     setWarning,
     warning,
     plotType,
+    originalBins,
   }: IGroupValuesModalProps) => {
     const groupNameMapping = groupBy(
       Object.keys(currentBins)
         .filter((bin: string) => currentBins[bin].groupName !== ''),
       key => currentBins[key].groupName
     );
+
+    const continuousValues = plotType === 'continuous' ? Object.keys(originalBins).map(n => Number(n)) : [];
+    const continuousLowestValue = continuousValues.length ? continuousValues[continuousValues.length - 1] : 0;
+    const continuousHighestValue = continuousValues.length ? continuousValues[0] : 0;
+    const continuousQuartileDecimals = (continuousHighestValue - continuousLowestValue) / 4;
+    const continuousQuartile = continuousQuartileDecimals.toFixed(2);
+
     return (
       <Column style={{padding: '20px'}}>
         <h1 style={{ marginTop: 0 }}>
@@ -160,8 +169,8 @@ export default compose(
         </h1>
         {plotType === 'continuous' ? 
           (<div>
-            <p>Available values from <strong>33</strong> to <strong>66</strong></p>
-            <p>Quartile bin interval: <strong>11</strong></p>
+            <p>Available values from <strong>{continuousLowestValue}</strong> to <strong>{continuousHighestValue}</strong></p>
+            <p>Quartile bin interval: <strong>{continuousQuartile}</strong></p>
             <p>Configure your bins then click <strong>Save Bins</strong> to update the analysis plots.</p>
           </div>)
           : <p>Organize values into groups of your choosing. Click <strong>Save Bins</strong> to update the analysis plots.</p>
@@ -369,8 +378,7 @@ export default compose(
             visibility: warning.length > 0 ? 'visible' : 'hidden',
           }}
                 >
-            {'Warning: '}
-            {warning}
+            {`Warning: ${warning}`}
           </span>
           <Button
             onClick={onClose}

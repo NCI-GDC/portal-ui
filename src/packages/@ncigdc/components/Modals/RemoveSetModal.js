@@ -1,6 +1,11 @@
 // @flow
 import React from 'react';
-import { compose, withState, withProps } from 'recompose';
+import {
+  compose,
+  setDisplayName,
+  withProps,
+  withState,
+} from 'recompose';
 import { connect } from 'react-redux';
 import { stringify } from 'query-string';
 
@@ -13,6 +18,7 @@ import { updateClinicalAnalysisSet } from '@ncigdc/dux/analysis';
 import onSaveComplete from './onSaveComplete';
 
 const enhance = compose(
+  setDisplayName('EnhancedRemoveSetModal'),
   withState('selected', 'setSelected', ({ selected }) => selected || ''),
   connect(({ analysis, sets }) => ({
     analysis,

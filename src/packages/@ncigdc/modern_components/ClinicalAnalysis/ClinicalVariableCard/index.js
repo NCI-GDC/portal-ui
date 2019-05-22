@@ -208,7 +208,9 @@ const styles = {
   }),
 };
 
-const parseBucketValue = value => (value % 1 ? Number.parseFloat(value).toFixed(2) : Math.round(value * 100) / 100);
+const parseBucketValue = value => (value % 1
+  ? Number.parseFloat(value).toFixed(2)
+  : Math.round(value * 100) / 100);
 
 const getRangeValue = (key, nextInterval) => `${parseBucketValue(key)}${nextInterval === 0 ? ' and up' : ` to ${parseBucketValue(nextInterval - 1)}`}`;
 
@@ -527,41 +529,44 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
   };
 
   const getCategoricalSetFilters = () => {
-    let bucketFilters = filters;
-    if (
-      selectedBuckets.filter(bucket => bucket.key !== '_missing').length > 0
-    ) {
-      bucketFilters = addInFilters(bucketFilters, {
-        content: [
-          {
-            content: {
-              field: fieldName,
-              value: selectedBuckets
-                .filter(bucket => bucket.key !== '_missing')
-                .map(selectedBucket => selectedBucket.key),
-            },
-            op: 'in',
+    const bucketFilters = []
+      .concat(selectedBuckets.filter(bucket => bucket.key !== '_missing').length > 0 && [
+        {
+          content: {
+            field: fieldName,
+            value: selectedBuckets
+              .filter(bucket => bucket.key !== '_missing')
+              .map(selectedBucket => selectedBucket.key),
           },
-        ],
-        op: 'and',
-      });
-    }
+          op: 'in',
+        },
+      ])
+      .concat(selectedBuckets.some(bucket => bucket.key === '_missing') && [
+        {
+          content: {
+            field: fieldName,
+            value: 'MISSING',
+          },
+          op: 'is',
+        },
+      ])
+      .filter(item => item);
 
-    if (find(selectedBuckets, bucket => bucket.key === '_missing')) {
-      bucketFilters = addInFilters(bucketFilters, {
-        content: [
-          {
-            content: {
-              field: fieldName,
-              value: 'MISSING',
-            },
-            op: 'is',
-          },
-        ],
-        op: 'and',
-      });
-    }
-    return bucketFilters;
+    return Object.assign(
+      {},
+      filters,
+      bucketFilters.length && {
+        content: filters.content
+          .concat(
+            bucketFilters.length > 1
+              ? {
+                content: bucketFilters,
+                op: 'or',
+              }
+              : bucketFilters[0]
+          ),
+      }
+    );
   };
 
   const cardFilters = selectedBuckets && selectedBuckets.length

@@ -202,31 +202,33 @@ export default compose(
               <table>
                 <tbody>
                   <tr>
-                    <th>Bin Name</th>
-                    <th>From</th>
-                    <th>To</th>
-                    <th>Remove</th>
+                    <th scope="col" id="continuous-manual-label-name">Bin Name</th>
+                    <th scope="col" id="continuous-manual-label-from">From</th>
+                    <th scope="col" id="continuous-manual-label-to">To</th>
+                    <th scope="col">Remove</th>
                   </tr>
-                  {continuousManualRows.map((row, rowN) => (
-                    <tr key={`manual-row-${rowN}`}>
-                      {Object.keys(row).map(rowKey => (
-                        <td key={`manual-row-${rowN}-${rowKey}`}>
-                          <input id={`row-${rowN}-${rowKey}`} type={rowKey === 'name' ? 'text' : 'number'} onChange={e => {
+                  {continuousManualRows.map((row, rowIndex) => (
+                    <tr key={`manual-row-${rowIndex}`}>
+                      {Object.keys(row).map(inputKey => (
+                        <td key={`manual-row-${rowIndex}-${inputKey}`}>
+                          <input id={`manual-row-${rowIndex}-${inputKey}`} type={inputKey === 'name' ? 'text' : 'number'} onChange={e => {
                             const inputValue = e.target.value;
-                            const nextContinuousManualRows = continuousManualRows.map((contRow, contRowN) => contRowN === rowN
+                            const nextContinuousManualRows = continuousManualRows.map((contRow, contRowIndex) => contRowIndex === rowIndex
                               ? Object.assign(
                                 {},
                                 contRow,
-                                { [rowKey]: inputValue }
+                                { [inputKey]: inputValue }
                               ) : contRow
                             );
                             setContinuousManualRows(nextContinuousManualRows)
                           }}
-                          value={continuousManualRows[rowN][rowKey]}/>
+                          value={continuousManualRows[rowIndex][inputKey]}
+                          aria-labelledby={`continuous-manual-label-${inputKey}`}
+                          />
                         </td>
                       ))}
                       <td><button type="button" onClick={() => {
-                        const nextContinuousManualRows = continuousManualRows.filter((nextRow, i) => i !== rowN);
+                        const nextContinuousManualRows = continuousManualRows.filter((filterRow, filterRowIndex) => filterRowIndex !== rowIndex);
                         setContinuousManualRows(nextContinuousManualRows);
                       }}>Remove</button></td>
                     </tr>

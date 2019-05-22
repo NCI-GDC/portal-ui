@@ -171,7 +171,6 @@ export default compose(
               }}
               >
                 Hidden Values
-
               </div>
             </Row>
             <Column style={listStyle}>

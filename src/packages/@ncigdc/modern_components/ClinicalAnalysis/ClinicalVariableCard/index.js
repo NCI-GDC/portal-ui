@@ -23,6 +23,7 @@ import {
   truncate,
   groupBy,
   // reduce,
+  get,
 } from 'lodash';
 import { scaleOrdinal, schemeCategory10 } from 'd3';
 
@@ -50,8 +51,6 @@ import DownloadVisualizationButton from '@ncigdc/components/DownloadVisualizatio
 import wrapSvg from '@ncigdc/utils/wrapSvg';
 import {
   DAYS_IN_YEAR,
-  getLowerAgeYears,
-  getUpperAgeYears,
 } from '@ncigdc/utils/ageDisplay';
 import '../survivalPlot.css';
 import { downloadToTSV } from '@ncigdc/components/DownloadTableToTsvButton';
@@ -214,21 +213,9 @@ const styles = {
   }),
 };
 
-const valueIsDays = str => /(days_to|age_at)/.test(str);
-const valueIsYear = str => /year_of/.test(str);
+const parseBucketValue = value => (value % 1 ? Number.parseFloat(value).toFixed(2) : Math.round(value * 100) / 100);
 
-const getRangeValue = (key, field, nextInterval) => {
-  if (valueIsDays(field)) {
-    return `${getLowerAgeYears(key)}${
-      nextInterval === 0 ? '+' : ` - ${getUpperAgeYears(nextInterval - 1)}`
-      } years`;
-  } if (valueIsYear(field)) {
-    return `${Math.floor(key)}${
-      nextInterval === 0 ? ' - present' : ` - ${nextInterval - 1}`
-      }`;
-  }
-  return key;
-};
+const getRangeValue = (key, nextInterval) => `${parseBucketValue(key)}${nextInterval === 0 ? ' and up' : ` to ${parseBucketValue(nextInterval - 1)}`}`;
 
 const getCountLink = ({ doc_count, filters, totalDocs }) => (
   <span>
@@ -957,6 +944,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                             field="cases.case_id"
                             filters={cardFilters}
                             RemoveFromSetButton={RemoveFromExploreCaseSetButton}
+                            selected={Object.keys(get(currentAnalysis, 'sets.case', {}))[0] || ''}
                             title={`Remove ${totalFromSelectedBuckets} Cases from Existing Set`}
                             type="case"
                           />
@@ -1062,7 +1050,7 @@ export default compose(
   withState('selectedBuckets', 'setSelectedBuckets', []),
   withProps(({ data, fieldName, variable }) => {
     const sanitisedId = fieldName.split('.').pop();
-    const rawQueryData = (data.explore
+    const rawQueryData = (data.explore && data.explore.cases.aggregations
       ? data.explore.cases.aggregations[fieldName.replace('.', '__')]
       : data);
     const dataDimension = dataDimensions[sanitisedId] && dataDimensions[sanitisedId].unit;
@@ -1141,7 +1129,7 @@ export default compose(
                 {
                   content: {
                     field: fieldName,
-                    value: [`${valueIsYear(fieldName) ? Math.floor(key) : key}`],
+                    value: [`${parseBucketValue(key)}`],
                   },
                   op: '>=',
                 },
@@ -1149,7 +1137,7 @@ export default compose(
                   {
                     content: {
                       field: fieldName,
-                      value: [`${acc.nextInterval - 1}`],
+                      value: [`${parseBucketValue(acc.nextInterval - 1)}`],
                     },
                     op: '<=',
                   },
@@ -1169,7 +1157,7 @@ export default compose(
                 totalDocs,
               }),
               filters,
-              key: getRangeValue(key, fieldName, acc.nextInterval),
+              key: getRangeValue(key, acc.nextInterval),
               rangeValues: {
                 max: Math.floor(acc.nextInterval - 1),
                 min: key,

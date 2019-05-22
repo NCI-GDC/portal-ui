@@ -67,7 +67,7 @@ const RemoveSetModal = ({
               type,
             }));
             if (type === 'case') {
-              analyses
+              await analyses
                 .filter(analysis => analysis.sets.case[selected])
                 .forEach(affected => {
                   dispatch(

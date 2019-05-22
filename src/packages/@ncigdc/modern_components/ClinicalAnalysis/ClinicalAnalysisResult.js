@@ -1,10 +1,11 @@
 import React from 'react';
 import {
   compose,
-  withState,
-  withPropsOnChange,
-  withProps,
+  setDisplayName,
   withHandlers,
+  withProps,
+  withPropsOnChange,
+  withState,
 } from 'recompose';
 import { connect } from 'react-redux';
 import SearchIcon from 'react-icons/lib/fa/search';
@@ -23,16 +24,13 @@ import {
 } from '@ncigdc/theme/icons';
 import CopyIcon from '@ncigdc/theme/icons/Copy';
 import Hidden from '@ncigdc/components/Hidden';
-import { visualizingButton } from '@ncigdc/theme/mixins';
-import { zDepth1 } from '@ncigdc/theme/mixins';
+import { visualizingButton, zDepth1 } from '@ncigdc/theme/mixins';
+
 import EntityPageHorizontalTable from '@ncigdc/components/EntityPageHorizontalTable';
-import ClinicalVariableCard from './ClinicalVariableCard';
-import ContinuousAggregation from './ContinuousAggregationQuery';
 import Input from '@ncigdc/uikit/Form/Input';
 import { withTheme } from '@ncigdc/theme';
 import countComponents from '@ncigdc/modern_components/Counts';
 import ExploreLink from '@ncigdc/components/Links/ExploreLink';
-import ControlPanelNode from './ControlPanelNode';
 import {
   updateClinicalAnalysisProperty,
   addAnalysis,
@@ -51,6 +49,9 @@ import './survivalPlot.css';
 // survival plot
 import { getDefaultCurve } from '@ncigdc/utils/survivalplot';
 import SurvivalPlotWrapper from '@ncigdc/components/SurvivalPlotWrapper';
+import ControlPanelNode from './ControlPanelNode';
+import ContinuousAggregation from './ContinuousAggregationQuery';
+import ClinicalVariableCard from './ClinicalVariableCard';
 
 interface IAnalysisResultProps {
   sets: any;
@@ -104,59 +105,61 @@ const plotTypes = {
 };
 
 const CopyAnalysisModal = compose(
+  setDisplayName('EnhancedCopyAnalysisModal'),
   withState(
     'modalInputValue',
     'setModalInputValue',
     ({ analysis }) => `${analysis.name} copy`
   )
 )(({
-  analysis, modalInputValue, setModalInputValue, dispatch, push,
-}) => {
-  return (
-    <BaseModal
-      extraButtons={
-        <Button onClick={() => dispatch(setModal(null))}>Cancel</Button>
-      }
-      onClose={() => {
-        const created = new Date().toISOString();
-        const id = created;
-        dispatch(
-          addAnalysis({
-            ...analysis,
-            id,
-            created,
-            name: modalInputValue,
-          })
-        ).then(() => {
-          push({
-            query: {
-              analysisTableTab: 'result',
-              analysisId: id,
-            },
-          });
+  analysis, dispatch, modalInputValue, push, setModalInputValue,
+}) => (
+  <BaseModal
+    extraButtons={
+      <Button onClick={() => dispatch(setModal(null))}>Cancel</Button>
+    }
+    onClose={() => {
+      const created = new Date().toISOString();
+      const id = created;
+      dispatch(
+        addAnalysis({
+          ...analysis,
+          id,
+          created,
+          name: modalInputValue,
+        })
+      ).then(() => {
+        push({
+          query: {
+            analysisTableTab: 'result',
+            analysisId: id,
+          },
         });
-      }}
-      title="Copy Analysis">
-      <Row style={{ marginBottom: 10 }}>
-        Please enter a name for the new analysis.
-      </Row>
-      <Row>
-        <label htmlFor="copy-analysis-input">
-          <Hidden>{modalInputValue}</Hidden>
-        </label>
-        <Input
-          autoFocus
-          id="copy-analysis-input"
-          onChange={e => setModalInputValue(e.target.value)}
-          onFocus={e => e.target.select()}
-          style={{ borderRadius: '4px' }}
-          value={modalInputValue} />
-      </Row>
-    </BaseModal>
-  );
-});
+      });
+    }}
+    title="Copy Analysis"
+    >
+    <Row style={{ marginBottom: 10 }}>
+      Please enter a name for the new analysis.
+    </Row>
+    <Row>
+      <label htmlFor="copy-analysis-input">
+        <Hidden>{modalInputValue}</Hidden>
+      </label>
+      <Input
+        autoFocus
+        id="copy-analysis-input"
+        onChange={e => setModalInputValue(e.target.value)}
+        onFocus={e => e.target.select()}
+        style={{ borderRadius: '4px' }}
+        value={modalInputValue}
+        />
+    </Row>
+  </BaseModal>
+));
 
 const enhance = compose(
+  setDisplayName('EnhancedClinicalAnalysisResult'),
   connect((state: any, props: any) => ({
     allSets: state.sets,
     currentAnalysis: state.analysis.saved.find(a => a.id === props.id),
@@ -174,14 +177,14 @@ const enhance = compose(
         },
       },
     }) => ({
-      parsedFacets: facets ? tryParseJSON(facets) : {},
       hits,
+      parsedFacets: facets ? tryParseJSON(facets) : {},
     })
   ),
   withProps(
     ({
-      setOverallSurvivalData,
       currentAnalysis,
+      setOverallSurvivalData,
       setState,
       setSurvivalPlotLoading,
     }) => ({
@@ -225,28 +228,28 @@ const enhance = compose(
 );
 
 const ClinicalAnalysisResult = ({
-  sets,
-  Icon,
-  label,
   allSets,
-  theme,
-  controlPanelExpanded,
-  setControlPanelExpanded,
-  variables,
-  id,
-  dispatch,
-  currentAnalysis,
-  push,
-  overallSurvivalData,
-  populateSurvivalData,
-  survivalPlotLoading,
-  parsedFacets,
-  displayVariables,
   clinicalAnalysisFields,
-  hits,
-  searchValue,
-  setSearchValue,
+  controlPanelExpanded,
+  currentAnalysis,
+  dispatch,
+  displayVariables,
   handleQueryInputChange,
+  hits,
+  Icon,
+  id,
+  label,
+  overallSurvivalData,
+  parsedFacets,
+  populateSurvivalData,
+  push,
+  searchValue,
+  setControlPanelExpanded,
+  sets,
+  setSearchValue,
+  survivalPlotLoading,
+  theme,
+  variables,
   ...props
 }: IAnalysisResultProps) => {
   const setId = Object.keys(currentAnalysis.sets.case)[0];
@@ -258,7 +261,8 @@ const ClinicalAnalysisResult = ({
         allSets={allSets}
         currentAnalysis={currentAnalysis}
         dispatch={dispatch}
-        Icon={Icon} />
+        Icon={Icon}
+        />
     );
   }
   return (
@@ -268,17 +272,20 @@ const ClinicalAnalysisResult = ({
           alignItems: 'center',
           justifyContent: 'space-between',
           padding: 10,
-        }}>
+        }}
+        >
         <Row
           spacing="10px"
           style={{
             alignItems: 'center',
             width: '80%',
-          }}>
+          }}
+          >
           <Icon style={{
             height: 50,
             width: 50,
-          }} />
+          }}
+                />
           <Column style={{ width: '100%' }}>
             <Row spacing="5px" style={{ alignItems: 'center' }}>
               <div style={{ width: '70%' }}>
@@ -299,11 +306,13 @@ const ClinicalAnalysisResult = ({
                     fontSize: '1.8rem',
                     cursor: 'pointer',
                   }}
-                  text={currentAnalysis.name}>
+                  text={currentAnalysis.name}
+                  >
                   <h1 style={{
                     fontSize: '2.5rem',
                     margin: 5,
-                  }}>
+                  }}
+                      >
                     {currentAnalysis.name}
                     {' '}
                   </h1>
@@ -322,10 +331,12 @@ const ClinicalAnalysisResult = ({
                   <CopyAnalysisModal
                     analysis={currentAnalysis}
                     dispatch={dispatch}
-                    push={push} />
+                    push={push}
+                    />
                 )
               );
-            }}>
+            }}
+            >
             Copy Analysis
           </Button>
           <Tooltip Component={<span>Print</span>}>
@@ -337,7 +348,8 @@ const ClinicalAnalysisResult = ({
               style={{
                 ...visualizingButton,
                 height: '100%',
-              }}>
+              }}
+              >
               <PrintIcon />
               <Hidden>Print</Hidden>
             </Button>
@@ -350,7 +362,8 @@ const ClinicalAnalysisResult = ({
             <Tooltip Component="Show Control Panel">
               <DoubleArrowRightIcon
                 onClick={() => setControlPanelExpanded(!controlPanelExpanded)}
-                style={styles.collapseIcon} />
+                style={styles.collapseIcon}
+                />
             </Tooltip>
           </Column>
         )}
@@ -367,19 +380,22 @@ const ClinicalAnalysisResult = ({
               alignSelf: 'flex-start',
               maxHeight: 'calc(100vh - 50px',
               overflowY: 'hidden',
-            }}>
+            }}
+            >
             <Row style={{ justifyContent: 'flex-end' }}>
               <Tooltip Component="Hide Control Panel">
                 <DoubleArrowLeftIcon
                   onClick={() => setControlPanelExpanded(!controlPanelExpanded)}
-                  style={styles.collapseIcon} />
+                  style={styles.collapseIcon}
+                  />
               </Tooltip>
             </Row>
             <Row
               style={{
                 justifyContent: 'space-between',
                 padding: '0 10px',
-              }}>
+              }}
+              >
               <span style={{ fontWeight: 'bold' }}>Cohort</span>
               <span style={{ fontWeight: 'bold' }}># Cases</span>
             </Row>
@@ -389,13 +405,15 @@ const ClinicalAnalysisResult = ({
                 alignItems: 'center',
                 padding: '10px 10px 15px',
                 borderBottom: `1px solid ${theme.greyScale4}`,
-              }}>
+              }}
+              >
               <CohortDropdown
                 currentAnalysis={currentAnalysis}
                 disabled={currentAnalysis.id === 'demo-clinical_data'}
                 disabledMessage="Switching cohorts is not available in demo mode"
                 dispatch={dispatch}
-                sets={allSets} />
+                sets={allSets}
+                />
               <ExploreLink
                 query={{
                   filters: {
@@ -410,7 +428,8 @@ const ClinicalAnalysisResult = ({
                       },
                     ],
                   },
-                }}>
+                }}
+                >
                 <CountComponent
                   filters={{
                     op: '=',
@@ -418,14 +437,16 @@ const ClinicalAnalysisResult = ({
                       field: 'cases.case_id',
                       value: `set_id:${setId}`,
                     },
-                  }} />
+                  }}
+                  />
               </ExploreLink>
             </Row>
             <Row
               style={{
                 height: 30,
                 margin: 15,
-              }}>
+              }}
+              >
               <label htmlFor="search-facets">
                 <SearchIcon style={styles.searchIcon(theme)} />
                 <Hidden>Search</Hidden>
@@ -436,7 +457,8 @@ const ClinicalAnalysisResult = ({
                 onChange={handleQueryInputChange}
                 placeholder="Search"
                 style={{ borderRadius: '0 4px 4px 0' }}
-                value={searchValue} />
+                value={searchValue}
+                />
             </Row>
             <Column>
               <ControlPanelNode
@@ -444,14 +466,16 @@ const ClinicalAnalysisResult = ({
                 clinicalAnalysisFields={clinicalAnalysisFields}
                 currentAnalysis={currentAnalysis}
                 searchValue={searchValue}
-                usefulFacets={getUsefulFacets(parsedFacets)} />
+                usefulFacets={getUsefulFacets(parsedFacets)}
+                />
             </Column>
           </Column>
         )}
         <Column style={{
           flex: 4,
           minWidth: 0,
-        }}>
+        }}
+                >
           {/* <Column
             style={{
               ...zDepth1,
@@ -500,24 +524,28 @@ const ClinicalAnalysisResult = ({
                 : '33% 33% 33%',
               gridTemplateRows: 'repeat(auto)',
               ...(controlPanelExpanded ? {} : { marginLeft: '1%' }),
-            }}>
+            }}
+            >
             <Column
               style={{
                 ...zDepth1,
                 height: 560,
                 margin: '0 1rem 1rem',
                 padding: '0.5rem 1rem 1rem',
-              }}>
+              }}
+              >
               <div
                 style={{
                   margin: '5px 0 10px',
-                }}>
+                }}
+                >
                 <h2
                   style={{
                     fontSize: '1.8rem',
-                    marginTop: 10,
                     marginBottom: 0,
-                  }}>
+                    marginTop: 10,
+                  }}
+                  >
                   Overall Survival
                 </h2>
               </div>
@@ -525,28 +553,30 @@ const ClinicalAnalysisResult = ({
                 style={{
                   height: '250px',
                   margin: '5px 2px 10px',
-                }}>
+                }}
+                >
                 <SurvivalPlotWrapper
                   {...overallSurvivalData}
                   height={430}
                   plotType="clinicalOverall"
                   survivalPlotLoading={survivalPlotLoading}
-                  uniqueClass="clinical-survival-plot" />
+                  uniqueClass="clinical-survival-plot"
+                  />
               </div>
             </Column>
 
             {_.map(displayVariables, (varProperties, varFieldName) => {
               const filters = {
-                op: 'and',
                 content: [
                   {
-                    op: '=',
                     content: {
                       field: 'cases.case_id',
                       value: [`set_id:${setId}`],
                     },
+                    op: '=',
                   },
                 ],
+                op: 'and',
               };
 
               if (varProperties.plotTypes === 'continuous') {
@@ -563,7 +593,8 @@ const ClinicalAnalysisResult = ({
                     setId={setId}
                     stats={parsedFacets[varFieldName].stats}
                     style={{ minWidth: controlPanelExpanded ? 310 : 290 }}
-                    variable={varProperties} />
+                    variable={varProperties}
+                    />
                 );
               }
               return (
@@ -582,7 +613,8 @@ const ClinicalAnalysisResult = ({
                   plots={plotTypes[varProperties.plotTypes || 'categorical']}
                   setId={setId}
                   style={{ minWidth: controlPanelExpanded ? 310 : 290 }}
-                  variable={varProperties} />
+                  variable={varProperties}
+                  />
               );
             })}
           </Column>

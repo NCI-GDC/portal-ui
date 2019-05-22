@@ -19,8 +19,8 @@ import {
 
 function compareTerms(a: IValueFilter, b: IValueFilter): boolean {
   return (
-    a.content.field === b.content.field &&
-    a.op.toLowerCase() === b.op.toLowerCase()
+    a.content && (a.content.field === b.content.field) &&
+    a.op && (a.op.toLowerCase() === b.op.toLowerCase())
   );
 }
 
@@ -82,7 +82,6 @@ const replace: TMergeFilters = (x, y) => ({
 });
 
 const addIn: TMergeFilters = (x, y) => ({
-  op: 'and',
   content: y.content
     .reduce((acc, curr) => {
       const found = acc.find(a => compareTerms(a, curr));
@@ -95,6 +94,7 @@ const addIn: TMergeFilters = (x, y) => ({
       ].filter(removeNoValueFilter);
     }, x.content)
     .sort(sortFilters),
+  op: y.op || 'and',
 });
 
 const filterNoContent = (f: IGroupFilter) => (f.content.length ? f : null);

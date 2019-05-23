@@ -258,7 +258,6 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
   variable,
   wrapperId,
 }) => {
-  console.log('customBins', customBins);
 
   const getBoxTableData = (data = {}) => (
     Object.keys(data).length

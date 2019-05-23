@@ -142,9 +142,9 @@ export default compose(
     continuousAvailableBins,
     plotType,
   }: any) => {
-    const values = plotType === 'continuous' ? Object.keys(continuousAvailableBins).map(n => Number(n)) : [];
-    const continuousMin = values.length ? values[values.length - 1] : 0;
-    const continuousMax = values.length ? values[0] : 0;
+    const values = plotType === 'continuous' ? Object.keys(continuousAvailableBins).map(n => Number(n)).sort((a,b) => a - b) : [];
+    const continuousMin = values.length ? values[0] : 0;
+    const continuousMax = values.length ? values[values.length - 1] : 0;
     const quartileWithDecimals = (continuousMax - continuousMin) / 4;
     const continuousQuartile = quartileWithDecimals.toFixed(2);
 

@@ -258,6 +258,8 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
   variable,
   wrapperId,
 }) => {
+  console.log('customBins', customBins);
+
   const getBoxTableData = (data = {}) => (
     Object.keys(data).length
       ? sortBy(Object.keys(data), datum => boxTableAllowedStats.indexOf(datum.toLowerCase()))
@@ -1099,7 +1101,7 @@ export default compose(
       ? map(groupBy(variable.bins, bin => bin.groupName), (values, key) => ({
         key,
         doc_count: values.reduce((acc, value) => acc + value.doc_count, 0),
-      }))
+      })).filter(bin => bin.key)
       : dataBuckets.map(b => ({
         key: b.key,
         doc_count: b.doc_count,

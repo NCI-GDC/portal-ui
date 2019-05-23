@@ -51,12 +51,12 @@ interface IBinProps {
 }
 
 interface IContinuousIntervalProps {
-  interval: string | number,
+  amount: string | number,
   min: string | number,
   max: string | number,
 };
 
-interface IUpdateContinuousIntervalProps {
+interface IEventTargetProps {
   id: string,
   value: string | number,
 };
@@ -64,6 +64,13 @@ interface IUpdateContinuousIntervalProps {
 interface ISelectedBinsProps {
   [x: string]: boolean
 }
+
+interface IContinuousManualRowsProps {
+  name: string,
+  min: number,
+  max: number,
+};
+
 interface IBinsProps { [x: string]: IBinProps }
 interface IGroupValuesModalProps {
   binGrouping: () => void,
@@ -155,7 +162,7 @@ export default compose(
     });
   }),
   withState('continuousInterval', 'setContinuousInterval', (props:IGroupValuesModalProps) => ({
-    interval: props.continuousQuartile,
+    amount: props.continuousQuartile,
     min: props.continuousMin,
     max: props.continuousMax,
   })),
@@ -223,14 +230,48 @@ export default compose(
       key => currentBins[key].groupName
     );
 
-    const updateContinuousInterval = (target: IUpdateContinuousIntervalProps) => {
+    const updateContinuousInterval = (target: IEventTargetProps) => {
+      validateContinuousFieldsProps(target);
       const key = target.id.split('-')[2];
-      const value = target.value;
+      const value = Number(target.value);
       const nextContinuousInterval = {
         ...continuousInterval, 
         [key]: value,
       };
       setContinuousInterval(nextContinuousInterval);
+    };
+
+    const validateContinuousFieldsProps = (target: IEventTargetProps) => {
+      const inputValue = Number(target.value);
+      const inputId = target.id;
+
+      console.log('test!');
+
+      if (inputId.includes('interval-amount')) {
+        const intervalError = inputValue > (continuousMax - continuousMin + 1);
+        console.log('intervalError', intervalError);
+        return;
+      }
+
+      if (inputId.includes('manual')) {
+        const overlapError = continuousManualRows.some((row: IContinuousManualRowsProps) => inputValue >= row.min && inputValue <= row.max);
+        console.log('overlapError', overlapError);
+      }
+
+      if (inputId.includes('min') || inputId.includes('max')) {
+        // find the opposite field and make sure they match
+        console.log('min or max field');
+      }
+
+      if (inputId.includes('min')) {
+        const minError = inputValue < continuousMin;
+        console.log('minError', minError);
+      }
+
+      if (inputId.includes('max')) {
+        const maxError = inputValue > continuousMax;
+        console.log('maxError', maxError);
+      }
     };
 
     return (
@@ -266,7 +307,7 @@ export default compose(
                 />
                 <label htmlFor="continuous-radio-interval">Bin interval:</label>
                   <input 
-                    id="continuous-interval-interval" 
+                    id="continuous-interval-amount" 
                     type="number" 
                     aria-label="bin interval" 
                     style={{
@@ -276,7 +317,7 @@ export default compose(
                     onChange={e => {
                       updateContinuousInterval(e.target);
                     }}
-                    value={continuousInterval.interval}
+                    value={continuousInterval.amount}
                     disabled={selectedContinuousMethod !== 'interval'}
                   />
                 <span>limit values from</span>
@@ -342,6 +383,7 @@ export default compose(
                           <td key={`manual-row-${rowIndex}-${inputKey}`} style={{padding: '5px'}}>
                             <input 
                               id={`manual-row-${rowIndex}-${inputKey}`} type={inputKey === 'name' ? 'text' : 'number'} onChange={e => {
+                                validateContinuousFieldsProps(e.target);
                                 const inputValue = e.target.value;
                                 const nextContinuousManualRows = continuousManualRows.map((contRow, contRowIndex) => contRowIndex === rowIndex
                                   ? Object.assign(

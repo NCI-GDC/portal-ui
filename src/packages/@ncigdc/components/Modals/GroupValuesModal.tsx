@@ -90,6 +90,8 @@ interface IGroupValuesModalProps {
   continuousQuartile: number,
   continuousMin: number,
   continuousMax: number,
+  selectedContinuousMethod: string,
+  setSelectedContinuousMethod: (selectedContinuousMethod: string) => void,
 };
 
 const blockStyle = {
@@ -122,8 +124,8 @@ const continuousIntervalInputStyle = {
 
 const defaultContinuousManualRow = {
   name: '',
-  from: 0,
-  to: 0,
+  min: 0,
+  max: 0,
 };
 
 const defaultContinuousManualRowDisplay = Array(5).fill(defaultContinuousManualRow);
@@ -134,6 +136,7 @@ export default compose(
   withState('selectedHidingBins', 'setSelectedHidingBins', {}),
   withState('selectedGroupBins', 'setSelectedGroupBins', {}),
   withState('continuousManualRows', 'setContinuousManualRows', defaultContinuousManualRowDisplay),
+  withState('selectedContinuousMethod', 'setSelectedContinuousMethod', 'interval'),
   withState('warning', 'setWarning', ''),
   withProps(({
     continuousAvailableBins,
@@ -211,6 +214,8 @@ export default compose(
     continuousMin,
     continuousMax,
     continuousQuartile,
+    setSelectedContinuousMethod,
+    selectedContinuousMethod,
   }: IGroupValuesModalProps) => {
     const groupNameMapping = groupBy(
       Object.keys(currentBins)
@@ -248,7 +253,17 @@ export default compose(
               <h3>Define bins by:</h3>
 
               <div className="continuous-interval-binning" style={{marginBottom: '15px'}}>
-                <input type="radio" id="continuous-radio-interval" name="continuous-radio" value="interval" style={{ marginRight: '15px'}} />
+                <input 
+                  type="radio" 
+                  id="continuous-radio-interval"
+                  name="continuous-radio" 
+                  value="interval"
+                  style={{ marginRight: '15px'}} 
+                  onClick={() => {
+                    setSelectedContinuousMethod('interval');
+                  }}
+                  defaultChecked={selectedContinuousMethod === 'interval'}
+                />
                 <label htmlFor="continuous-radio-interval">Bin interval:</label>
                   <input 
                     id="continuous-interval-interval" 
@@ -262,7 +277,7 @@ export default compose(
                   />
                 <span>limit values from</span>
                 <input 
-                  id="continuous-interval-from" 
+                  id="continuous-interval-min" 
                   type="number" 
                   aria-label="lower limit" 
                   style={continuousIntervalInputStyle}
@@ -273,7 +288,7 @@ export default compose(
                 />
                 <span>to</span>
                 <input 
-                  id="continuous-interval-to" 
+                  id="continuous-interval-max" 
                   type="number" 
                   arial-label="upper limit"
                   style={continuousIntervalInputStyle}
@@ -286,15 +301,25 @@ export default compose(
 
               <div className="continuous-manual-binning">
                 <div style={{marginBottom: '15px'}}>
-                  <input type="radio" id="continuous-radio-manual" name="continuous-radio" value="manual" style={{ marginRight: '15px'}} />
+                  <input 
+                    type="radio" 
+                    id="continuous-radio-manual"
+                    name="continuous-radio" 
+                    value="manual"
+                    style={{ marginRight: '15px'}} 
+                    onClick={() => {
+                      setSelectedContinuousMethod('manual');
+                    }}
+                    defaultChecked={selectedContinuousMethod === 'manual'}
+                  />
                   <label htmlFor="continuous-radio-manual">Manually</label>
                 </div>
                 <table style={{marginBottom: '20px'}}>
                   <thead>
                     <tr>
                       <Th scope="col" id="continuous-manual-label-name">Bin Name</Th>
-                      <Th scope="col" id="continuous-manual-label-from">From</Th>
-                      <Th scope="col" id="continuous-manual-label-to">To</Th>
+                      <Th scope="col" id="continuous-manual-label-min">From</Th>
+                      <Th scope="col" id="continuous-manual-label-max">To</Th>
                       <Th scope="col">Remove</Th>
                     </tr>
                   </thead>
@@ -345,7 +370,11 @@ export default compose(
                     ];
                     setContinuousManualRows(nextContinuousManualRows);
                   }}
-                  style={{...styles.button, maxWidth: '100px', marginLeft: 'auto'}}
+                  style={{
+                    ...styles.button, 
+                    maxWidth: '100px', 
+                    marginLeft: 'auto', 
+                    display: 'flex',}}
                 >
                   <i className="fa fa-plus-circle" aria-hidden="true" /> &nbsp; Add
                 </Button>

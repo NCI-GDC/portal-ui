@@ -249,7 +249,7 @@ export default compose(
         {plotType === 'continuous' ? 
         (
           <Row>
-            <Column style={backgroundStyle}>
+            <Column style={backgroundStyle} className="continuous">
               <h3>Define bins by:</h3>
 
               <div className="continuous-interval-binning" style={{marginBottom: '15px'}}>
@@ -269,33 +269,45 @@ export default compose(
                     id="continuous-interval-interval" 
                     type="number" 
                     aria-label="bin interval" 
-                    style={continuousIntervalInputStyle}
+                    style={{
+                      ...continuousIntervalInputStyle, 
+                      background: selectedContinuousMethod === 'interval' ? '#fff' : '#efefef',
+                    }}
                     onChange={e => {
                       updateContinuousInterval(e.target);
                     }}
                     value={continuousInterval.interval}
+                    disabled={selectedContinuousMethod !== 'interval'}
                   />
                 <span>limit values from</span>
                 <input 
                   id="continuous-interval-min" 
                   type="number" 
                   aria-label="lower limit" 
-                  style={continuousIntervalInputStyle}
+                  style={{
+                    ...continuousIntervalInputStyle, 
+                    background: selectedContinuousMethod === 'interval' ? '#fff' : '#efefef',
+                  }}
                   onChange={e => {
                     updateContinuousInterval(e.target);
                   }}
                   value={continuousInterval.min}
+                  disabled={selectedContinuousMethod !== 'interval'}
                 />
                 <span>to</span>
                 <input 
                   id="continuous-interval-max" 
                   type="number" 
                   arial-label="upper limit"
-                  style={continuousIntervalInputStyle}
+                  style={{
+                    ...continuousIntervalInputStyle, 
+                    background: selectedContinuousMethod === 'interval' ? '#fff' : '#efefef',
+                  }}
                   onChange={e => {
                     updateContinuousInterval(e.target);
                   }}
                   value={continuousInterval.max}
+                  disabled={selectedContinuousMethod !== 'interval'}
                 />
               </div>
 
@@ -328,23 +340,26 @@ export default compose(
                       <Tr key={`manual-row-${rowIndex}`} index={rowIndex}>
                         {Object.keys(row).map(inputKey => (
                           <td key={`manual-row-${rowIndex}-${inputKey}`} style={{padding: '5px'}}>
-                            <input id={`manual-row-${rowIndex}-${inputKey}`} type={inputKey === 'name' ? 'text' : 'number'} onChange={e => {
-                              const inputValue = e.target.value;
-                              const nextContinuousManualRows = continuousManualRows.map((contRow, contRowIndex) => contRowIndex === rowIndex
-                                ? Object.assign(
-                                  {},
-                                  contRow,
-                                  { [inputKey]: inputValue }
-                                ) : contRow
-                              );
-                              setContinuousManualRows(nextContinuousManualRows)
-                            }}
-                            value={continuousManualRows[rowIndex][inputKey]}
-                            aria-labelledby={`continuous-manual-label-${inputKey}`}
-                            style={{
-                              width: '100%',
-                              padding: '5px',
-                            }}
+                            <input 
+                              id={`manual-row-${rowIndex}-${inputKey}`} type={inputKey === 'name' ? 'text' : 'number'} onChange={e => {
+                                const inputValue = e.target.value;
+                                const nextContinuousManualRows = continuousManualRows.map((contRow, contRowIndex) => contRowIndex === rowIndex
+                                  ? Object.assign(
+                                    {},
+                                    contRow,
+                                    { [inputKey]: inputValue }
+                                  ) : contRow
+                                );
+                                setContinuousManualRows(nextContinuousManualRows)
+                              }}
+                              value={continuousManualRows[rowIndex][inputKey]}
+                              aria-labelledby={`continuous-manual-label-${inputKey}`}
+                              style={{
+                                width: '100%',
+                                padding: '5px',
+                                background: selectedContinuousMethod === 'manual' ? '#fff' : '#efefef',
+                              }}
+                              disabled={selectedContinuousMethod !== 'manual'}
                             />
                           </td>
                         ))}
@@ -355,6 +370,7 @@ export default compose(
                             }}
                             aria-label="Remove"
                             style={{margin: '0 auto'}}
+                            disabled={selectedContinuousMethod !== 'manual'}
                           >
                             <i className="fa fa-trash" aria-hidden="true" />
                           </Button>
@@ -374,7 +390,10 @@ export default compose(
                     ...styles.button, 
                     maxWidth: '100px', 
                     marginLeft: 'auto', 
-                    display: 'flex',}}
+                    display: 'flex',
+                    background: selectedContinuousMethod !== 'manual' ? '#ccc' : '#fff',
+                  }}
+                  disabled={selectedContinuousMethod !== 'manual'}
                 >
                   <i className="fa fa-plus-circle" aria-hidden="true" /> &nbsp; Add
                 </Button>

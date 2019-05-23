@@ -258,19 +258,20 @@ export default compose(
         console.log('overlapError', overlapError);
       }
 
-      if (inputId.includes('min') || inputId.includes('max')) {
-        // find the opposite field and make sure they match
-        console.log('min or max field');
-      }
-
       if (inputId.includes('min')) {
         const minError = inputValue < continuousMin;
         console.log('minError', minError);
+        // const idRoot = inputId.split('min');
+        // const minMaxError = checkMinMax(idRoot); 
+        // console.log('minMaxError', minMaxError);
       }
 
       if (inputId.includes('max')) {
         const maxError = inputValue > continuousMax;
         console.log('maxError', maxError);
+        // const idRoot = inputId.split('max');
+        // const minMaxError = checkMinMax(idRoot); 
+        // console.log('minMaxError', minMaxError);
       }
     };
 

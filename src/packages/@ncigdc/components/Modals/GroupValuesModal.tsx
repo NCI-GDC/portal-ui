@@ -56,6 +56,12 @@ interface IBinProps {
 //   to: number,
 // }
 
+interface IContinuousIntervalProps {
+  interval: string | number,
+  from: string | number,
+  to: string | number,
+};
+
 interface ISelectedBinsProps {
   [x: string]: boolean
 }
@@ -80,6 +86,8 @@ interface IGroupValuesModalProps {
   originalBins: IBinsProps,
   setContinuousManualRows: ([]) => void,
   continuousManualRows: [],
+  setContinuousInterval: (continuousInterval: IContinuousIntervalProps) => void,
+  continuousInterval: IContinuousIntervalProps,
 }
 
 const blockStyle = {
@@ -104,10 +112,22 @@ const backgroundStyle = {
   width: '100%',
 };
 
+const continuousIntervalInputStyle = {
+  padding: '5px',
+  width: '100px',
+  margin: '0 10px',
+};
+
 const defaultContinuousManualRow = {
   name: '',
   from: 0,
   to: 0,
+};
+
+const defaultContinuousInterval = {
+  interval: '0',
+  from: '0',
+  to: '0',
 };
 
 const defaultContinuousManualRowDisplay = Array(5).fill(defaultContinuousManualRow);
@@ -118,6 +138,7 @@ export default compose(
   withState('selectedHidingBins', 'setSelectedHidingBins', {}),
   withState('selectedGroupBins', 'setSelectedGroupBins', {}),
   withState('continuousManualRows', 'setContinuousManualRows', defaultContinuousManualRowDisplay),
+  withState('continuousInterval', 'setContinuousInterval', defaultContinuousInterval),
   withState('warning', 'setWarning', ''),
   withProps(({
     currentBins,
@@ -169,6 +190,8 @@ export default compose(
     originalBins,
     setContinuousManualRows,
     continuousManualRows,
+    continuousInterval,
+    setContinuousInterval,
   }: IGroupValuesModalProps) => {
     const groupNameMapping = groupBy(
       Object.keys(currentBins)
@@ -181,6 +204,22 @@ export default compose(
     const continuousHighestValue = continuousValues.length ? continuousValues[0] : 0;
     const continuousQuartileDecimals = (continuousHighestValue - continuousLowestValue) / 4;
     const continuousQuartile = continuousQuartileDecimals.toFixed(2);
+
+    const displayContinuousInterval = {
+      interval: continuousQuartile,
+      from: continuousLowestValue,
+      to: continuousHighestValue,
+    };
+    setContinuousInterval(displayContinuousInterval);
+
+    const updateContinuousInterval = (targetId: string, targetValue: string) => {
+      const inputKey = targetId.split('-')[2];
+      const nextContinuousInterval = {
+        ...continuousInterval, 
+        [inputKey]: targetValue,
+      };
+      setContinuousInterval(nextContinuousInterval);
+    };
 
     return (
       <Column style={{padding: '20px'}}>
@@ -200,66 +239,114 @@ export default compose(
           <Row>
             <Column style={backgroundStyle}>
               <h3>Define bins by:</h3>
-              <table style={{marginBottom: '20px'}}>
-                <thead>
-                  <tr>
-                    <Th scope="col" id="continuous-manual-label-name">Bin Name</Th>
-                    <Th scope="col" id="continuous-manual-label-from">From</Th>
-                    <Th scope="col" id="continuous-manual-label-to">To</Th>
-                    <Th scope="col">Remove</Th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {continuousManualRows.map((row, rowIndex) => (
-                    <Tr key={`manual-row-${rowIndex}`} index={rowIndex}>
-                      {Object.keys(row).map(inputKey => (
-                        <td key={`manual-row-${rowIndex}-${inputKey}`} style={{padding: '5px'}}>
-                          <input id={`manual-row-${rowIndex}-${inputKey}`} type={inputKey === 'name' ? 'text' : 'number'} onChange={e => {
-                            const inputValue = e.target.value;
-                            const nextContinuousManualRows = continuousManualRows.map((contRow, contRowIndex) => contRowIndex === rowIndex
-                              ? Object.assign(
-                                {},
-                                contRow,
-                                { [inputKey]: inputValue }
-                              ) : contRow
-                            );
-                            setContinuousManualRows(nextContinuousManualRows)
-                          }}
-                          value={continuousManualRows[rowIndex][inputKey]}
-                          aria-labelledby={`continuous-manual-label-${inputKey}`}
-                          style={{
-                            width: '100%',
-                            padding: '5px',
-                          }}
-                          />
+
+              <div className="continuous-interval-binning" style={{marginBottom: '15px'}}>
+                <input type="radio" id="continuous-radio-interval" name="continuous-radio" value="interval" style={{ marginRight: '15px'}} />
+                <label htmlFor="continuous-radio-interval">Bin interval:</label>
+                  <input 
+                    id="continuous-interval-interval" 
+                    type="number" 
+                    aria-label="bin interval" 
+                    style={continuousIntervalInputStyle}
+                    onChange={e => {
+                      updateContinuousInterval(e.target.id, e.target.value);
+                    }}
+                    value={continuousInterval.interval}
+                  />
+                <span>limit values from</span>
+                <input 
+                  id="continuous-interval-from" 
+                  type="number" 
+                  aria-label="lower limit" 
+                  style={continuousIntervalInputStyle}
+                  onChange={e => {
+                    const inputKey = e.target.id.split('-')[2];
+                    const inputValue = e.target.value;
+                    updateContinuousInterval(inputKey, inputValue);
+                  }}
+                  value={continuousInterval.from}
+                />
+                <span>to</span>
+                <input 
+                  id="continuous-interval-to" 
+                  type="number" 
+                  arial-label="upper limit"
+                  style={continuousIntervalInputStyle}
+                  onChange={e => {
+                    const inputKey = e.target.id.split('-')[2];
+                    const inputValue = e.target.value;
+                    updateContinuousInterval(inputKey, inputValue);
+                  }}
+                  value={continuousInterval.to}
+                />
+              </div>
+
+              <div className="continuous-manual-binning">
+                <div style={{marginBottom: '15px'}}>
+                  <input type="radio" id="continuous-radio-manual" name="continuous-radio" value="manual" style={{ marginRight: '15px'}} />
+                  <label htmlFor="continuous-radio-manual">Manually</label>
+                </div>
+                <table style={{marginBottom: '20px'}}>
+                  <thead>
+                    <tr>
+                      <Th scope="col" id="continuous-manual-label-name">Bin Name</Th>
+                      <Th scope="col" id="continuous-manual-label-from">From</Th>
+                      <Th scope="col" id="continuous-manual-label-to">To</Th>
+                      <Th scope="col">Remove</Th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {continuousManualRows.map((row, rowIndex) => (
+                      <Tr key={`manual-row-${rowIndex}`} index={rowIndex}>
+                        {Object.keys(row).map(inputKey => (
+                          <td key={`manual-row-${rowIndex}-${inputKey}`} style={{padding: '5px'}}>
+                            <input id={`manual-row-${rowIndex}-${inputKey}`} type={inputKey === 'name' ? 'text' : 'number'} onChange={e => {
+                              const inputValue = e.target.value;
+                              const nextContinuousManualRows = continuousManualRows.map((contRow, contRowIndex) => contRowIndex === rowIndex
+                                ? Object.assign(
+                                  {},
+                                  contRow,
+                                  { [inputKey]: inputValue }
+                                ) : contRow
+                              );
+                              setContinuousManualRows(nextContinuousManualRows)
+                            }}
+                            value={continuousManualRows[rowIndex][inputKey]}
+                            aria-labelledby={`continuous-manual-label-${inputKey}`}
+                            style={{
+                              width: '100%',
+                              padding: '5px',
+                            }}
+                            />
+                          </td>
+                        ))}
+                        <td>
+                          <Button onClick={() => {
+                              const nextContinuousManualRows = continuousManualRows.filter((filterRow, filterRowIndex) => filterRowIndex !== rowIndex);
+                              setContinuousManualRows(nextContinuousManualRows);
+                            }}
+                            aria-label="Remove"
+                            style={{margin: '0 auto'}}
+                          >
+                            <i className="fa fa-trash" aria-hidden="true" />
+                          </Button>
                         </td>
-                      ))}
-                      <td>
-                        <Button onClick={() => {
-                            const nextContinuousManualRows = continuousManualRows.filter((filterRow, filterRowIndex) => filterRowIndex !== rowIndex);
-                            setContinuousManualRows(nextContinuousManualRows);
-                          }}
-                          aria-label="Remove"
-                          style={{margin: '0 auto'}}
-                        >
-                          <i className="fa fa-trash" aria-hidden="true" />
-                        </Button>
-                      </td>
-                    </Tr>
-                  ))}
-                </tbody>
-              </table>
-              <Button onClick={() => {
-                  const nextContinuousManualRows = [
-                    ...continuousManualRows, 
-                    defaultContinuousManualRow,
-                  ];
-                  setContinuousManualRows(nextContinuousManualRows);
-                }}
-                style={{...styles.button, maxWidth: '100px', marginLeft: 'auto'}}
-              >
-                <i className="fa fa-plus-circle" aria-hidden="true" /> &nbsp; Add
-              </Button>
+                      </Tr>
+                    ))}
+                  </tbody>
+                </table>
+                <Button onClick={() => {
+                    const nextContinuousManualRows = [
+                      ...continuousManualRows, 
+                      defaultContinuousManualRow,
+                    ];
+                    setContinuousManualRows(nextContinuousManualRows);
+                  }}
+                  style={{...styles.button, maxWidth: '100px', marginLeft: 'auto'}}
+                >
+                  <i className="fa fa-plus-circle" aria-hidden="true" /> &nbsp; Add
+                </Button>
+              </div>
             </Column>
           </Row>
         ) : 

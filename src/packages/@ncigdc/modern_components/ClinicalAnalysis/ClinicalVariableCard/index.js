@@ -976,6 +976,13 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                       setModal(
                         <GroupValuesModal
                           bins={variable.bins}
+                          continuousAvailableBins={variable.plotTypes === 'continuous' ? dataBuckets.reduce((acc, r) => ({
+                            ...acc,
+                            [r.key]: {
+                              ...r,
+                              groupName: r.key,
+                            },
+                          }), {}) : {}}
                           fieldName={humanify({ term: fieldName })}
                           onClose={() => dispatch(setModal(null))}
                           onUpdate={(newBins) => {
@@ -990,13 +997,6 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                             dispatch(setModal(null));
                           }
                           }
-                          originalBins={dataBuckets.reduce((acc, r) => ({
-                            ...acc,
-                            [r.key]: {
-                              ...r,
-                              groupName: r.key,
-                            },
-                          }), {})}
                           plotType={variable.plotTypes}
                           />,
                       ),

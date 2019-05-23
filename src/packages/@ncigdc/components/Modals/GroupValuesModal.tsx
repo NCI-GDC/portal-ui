@@ -2,7 +2,7 @@
 /* eslint-disable */
 import React, { ReactNode } from 'react';
 /* eslint-enable */
-import { compose, withState, withProps } from 'recompose';
+import { compose, withState, withProps,} from 'recompose';
 import {
   map, groupBy, reduce, filter,
 } from 'lodash';
@@ -50,16 +50,15 @@ interface IBinProps {
   groupName: string,
 }
 
-// interface IContinuousManualRows {
-//   name: string,
-//   from: number,
-//   to: number,
-// }
-
 interface IContinuousIntervalProps {
   interval: string | number,
-  from: string | number,
-  to: string | number,
+  min: string | number,
+  max: string | number,
+};
+
+interface IUpdateContinuousIntervalProps {
+  id: string,
+  value: string | number,
 };
 
 interface ISelectedBinsProps {
@@ -83,12 +82,15 @@ interface IGroupValuesModalProps {
   warning: string,
   setWarning: (warning: string) => void,
   plotType: string,
-  originalBins: IBinsProps,
+  continuousAvailableBins: IBinsProps,
   setContinuousManualRows: ([]) => void,
   continuousManualRows: [],
   setContinuousInterval: (continuousInterval: IContinuousIntervalProps) => void,
   continuousInterval: IContinuousIntervalProps,
-}
+  continuousQuartile: number,
+  continuousMin: number,
+  continuousMax: number,
+};
 
 const blockStyle = {
   height: '500px',
@@ -124,12 +126,6 @@ const defaultContinuousManualRow = {
   to: 0,
 };
 
-const defaultContinuousInterval = {
-  interval: '0',
-  from: '0',
-  to: '0',
-};
-
 const defaultContinuousManualRowDisplay = Array(5).fill(defaultContinuousManualRow);
 
 export default compose(
@@ -138,8 +134,28 @@ export default compose(
   withState('selectedHidingBins', 'setSelectedHidingBins', {}),
   withState('selectedGroupBins', 'setSelectedGroupBins', {}),
   withState('continuousManualRows', 'setContinuousManualRows', defaultContinuousManualRowDisplay),
-  withState('continuousInterval', 'setContinuousInterval', defaultContinuousInterval),
   withState('warning', 'setWarning', ''),
+  withProps(({
+    continuousAvailableBins,
+    plotType,
+  }: any) => {
+    const values = plotType === 'continuous' ? Object.keys(continuousAvailableBins).map(n => Number(n)) : [];
+    const continuousMin = values.length ? values[values.length - 1] : 0;
+    const continuousMax = values.length ? values[0] : 0;
+    const quartileWithDecimals = (continuousMax - continuousMin) / 4;
+    const continuousQuartile = quartileWithDecimals.toFixed(2);
+
+    return ({
+      continuousMin,
+      continuousMax,
+      continuousQuartile,
+    });
+  }),
+  withState('continuousInterval', 'setContinuousInterval', (props:IGroupValuesModalProps) => ({
+    interval: props.continuousQuartile,
+    min: props.continuousMin,
+    max: props.continuousMax,
+  })),
   withProps(({
     currentBins,
     selectedGroupBins,
@@ -187,11 +203,14 @@ export default compose(
     setWarning,
     warning,
     plotType,
-    originalBins,
+    continuousAvailableBins,
     setContinuousManualRows,
     continuousManualRows,
     continuousInterval,
     setContinuousInterval,
+    continuousMin,
+    continuousMax,
+    continuousQuartile,
   }: IGroupValuesModalProps) => {
     const groupNameMapping = groupBy(
       Object.keys(currentBins)
@@ -199,24 +218,12 @@ export default compose(
       key => currentBins[key].groupName
     );
 
-    const continuousValues = plotType === 'continuous' ? Object.keys(originalBins).map(n => Number(n)) : [];
-    const continuousLowestValue = continuousValues.length ? continuousValues[continuousValues.length - 1] : 0;
-    const continuousHighestValue = continuousValues.length ? continuousValues[0] : 0;
-    const continuousQuartileDecimals = (continuousHighestValue - continuousLowestValue) / 4;
-    const continuousQuartile = continuousQuartileDecimals.toFixed(2);
-
-    const displayContinuousInterval = {
-      interval: continuousQuartile,
-      from: continuousLowestValue,
-      to: continuousHighestValue,
-    };
-    setContinuousInterval(displayContinuousInterval);
-
-    const updateContinuousInterval = (targetId: string, targetValue: string) => {
-      const inputKey = targetId.split('-')[2];
+    const updateContinuousInterval = (target: IUpdateContinuousIntervalProps) => {
+      const key = target.id.split('-')[2];
+      const value = target.value;
       const nextContinuousInterval = {
         ...continuousInterval, 
-        [inputKey]: targetValue,
+        [key]: value,
       };
       setContinuousInterval(nextContinuousInterval);
     };
@@ -228,7 +235,7 @@ export default compose(
         </h1>
         {plotType === 'continuous' ? 
           (<div>
-            <p>Available values from <strong>{continuousLowestValue}</strong> to <strong>{continuousHighestValue}</strong></p>
+            <p>Available values from <strong>{continuousMin}</strong> to <strong>{continuousMax}</strong></p>
             <p>Quartile bin interval: <strong>{continuousQuartile}</strong></p>
             <p>Configure your bins then click <strong>Save Bins</strong> to update the analysis plots.</p>
           </div>)
@@ -249,7 +256,7 @@ export default compose(
                     aria-label="bin interval" 
                     style={continuousIntervalInputStyle}
                     onChange={e => {
-                      updateContinuousInterval(e.target.id, e.target.value);
+                      updateContinuousInterval(e.target);
                     }}
                     value={continuousInterval.interval}
                   />
@@ -260,11 +267,9 @@ export default compose(
                   aria-label="lower limit" 
                   style={continuousIntervalInputStyle}
                   onChange={e => {
-                    const inputKey = e.target.id.split('-')[2];
-                    const inputValue = e.target.value;
-                    updateContinuousInterval(inputKey, inputValue);
+                    updateContinuousInterval(e.target);
                   }}
-                  value={continuousInterval.from}
+                  value={continuousInterval.min}
                 />
                 <span>to</span>
                 <input 
@@ -273,11 +278,9 @@ export default compose(
                   arial-label="upper limit"
                   style={continuousIntervalInputStyle}
                   onChange={e => {
-                    const inputKey = e.target.id.split('-')[2];
-                    const inputValue = e.target.value;
-                    updateContinuousInterval(inputKey, inputValue);
+                    updateContinuousInterval(e.target);
                   }}
-                  value={continuousInterval.to}
+                  value={continuousInterval.max}
                 />
               </div>
 

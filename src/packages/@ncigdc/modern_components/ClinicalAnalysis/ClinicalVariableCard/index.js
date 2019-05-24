@@ -216,6 +216,7 @@ const styles = {
 
 const valueIsDays = str => /(days_to|age_at)/.test(str);
 const valueIsYear = str => /year_of/.test(str);
+
 const parseBucketValue = value => (value % 1
   ? Number.parseFloat(value).toFixed(2)
   : Math.round(value * 100) / 100);

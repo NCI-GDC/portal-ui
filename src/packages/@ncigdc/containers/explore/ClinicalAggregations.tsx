@@ -526,7 +526,7 @@ const enhance = compose(
                                       ),
                                     )}
                                     style={{
-                                      order: customSorting(componentFacet.field) || 0,
+                                      order: customSorting(componentFacet.field),
                                       paddingLeft: '10px',
                                     }}
                                     title={startCase(

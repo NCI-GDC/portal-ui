@@ -368,7 +368,7 @@ export default compose(
                   />
                   <label htmlFor="continuous-radio-manual">Manually</label>
                 </div>
-                <table style={{marginBottom: '20px'}}>
+                <table style={{marginBottom: '20px', width: '100%'}}>
                   <thead>
                     <tr>
                       <Th scope="col" id="continuous-manual-label-name">Bin Name</Th>

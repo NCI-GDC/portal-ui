@@ -70,7 +70,7 @@ const colors = scaleOrdinal(schemeCategory10);
 const styles = {
   pValue: {
     fontSize: '1.1rem',
-    height: '1.5rem',
+    lineHeight: '1.5rem',
     marginTop: '0.5rem',
     textAlign: 'center',
   },
@@ -221,7 +221,7 @@ const SurvivalPlotWrapper = ({
                     <br />
                     the precision inherent in the code
                   </div>
-                )
+              )
               }
               >
               <div className="p-value">
@@ -289,7 +289,7 @@ function renderSurvivalPlot(props: TProps): void {
       onMouseEnterDonor: (
         e,
         {
-          survivalEstimate, time = 0, censored, submitter_id, project_id,
+          censored, project_id, submitter_id, survivalEstimate, time = 0,
         }
       ) => {
         setTooltip(

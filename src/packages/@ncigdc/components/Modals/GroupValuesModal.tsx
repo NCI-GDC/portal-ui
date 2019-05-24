@@ -230,8 +230,8 @@ export default compose(
             <Button
               disabled={Object.values(selectedGroupBins).every(value => !value)}
               onClick={() => {
-                if (filter(selectedGroupBins, bin => bin).length ===
-                  Object.keys(currentBins).length) {
+                if (filter(selectedGroupBins, Boolean).length ===
+                  Object.keys(filter(currentBins, (bin: IBinProps) => !!bin.groupName)).length) {
                   setWarning('Leave at least one bin.');
                   return;
                 }

@@ -2,7 +2,7 @@
 /* eslint-disable */
 import React, { ReactNode } from 'react';
 /* eslint-enable */
-import { compose, withState, withProps,} from 'recompose';
+import { compose, withState, withProps } from 'recompose';
 import {
   map, groupBy, reduce, filter,
 } from 'lodash';
@@ -99,6 +99,7 @@ interface IGroupValuesModalProps {
   continuousMax: number,
   selectedContinuousMethod: string,
   setSelectedContinuousMethod: (selectedContinuousMethod: string) => void,
+  bins: any,
 };
 
 const blockStyle = {
@@ -137,6 +138,10 @@ const defaultContinuousManualRow = {
 
 const defaultContinuousManualRowDisplay = Array(5).fill(defaultContinuousManualRow);
 
+const buttonStyle = {
+  float: 'right',
+  margin: '10px 2px 10px 3px',
+}
 export default compose(
   withState('editingGroupName', 'setEditingGroupName', ''),
   withState('currentBins', 'setCurrentBins', ({ bins }: { bins: IBinsProps }) => bins),
@@ -144,7 +149,6 @@ export default compose(
   withState('selectedGroupBins', 'setSelectedGroupBins', {}),
   withState('continuousManualRows', 'setContinuousManualRows', defaultContinuousManualRowDisplay),
   withState('selectedContinuousMethod', 'setSelectedContinuousMethod', 'interval'),
-  withState('warning', 'setWarning', ''),
   withProps(({
     continuousAvailableBins,
     plotType,
@@ -166,6 +170,7 @@ export default compose(
     min: props.continuousMin,
     max: props.continuousMax,
   })),
+  withState('warning', 'setWarning', ''),
   withProps(({
     currentBins,
     selectedGroupBins,
@@ -173,7 +178,7 @@ export default compose(
     setEditingGroupName,
     setSelectedHidingBins,
   }: any) => ({
-    binGrouping: async () => {
+    binGrouping: () => {
       const newGroupName = initialName(
         Object.values(currentBins).map((bin: IBinProps) => bin.groupName), 'selected Value '
       );
@@ -198,6 +203,7 @@ export default compose(
   }))
 )(
   ({
+    bins,
     binGrouping,
     currentBins,
     editingGroupName,
@@ -244,8 +250,6 @@ export default compose(
     const validateContinuousFieldsProps = (target: IEventTargetProps) => {
       const inputValue = Number(target.value);
       const inputId = target.id;
-
-      console.log('test!');
 
       if (inputId.includes('interval-amount')) {
         const intervalError = inputValue > (continuousMax - continuousMin + 1);
@@ -504,8 +508,8 @@ export default compose(
             <Button
               disabled={Object.values(selectedGroupBins).every(value => !value)}
               onClick={() => {
-                if (filter(selectedGroupBins, bin => bin).length ===
-                  Object.keys(currentBins).length) {
+                if (filter(selectedGroupBins, Boolean).length ===
+                  Object.keys(filter(currentBins, (bin: IBinProps) => !!bin.groupName)).length) {
                   setWarning('Leave at least one bin.');
                   return;
                 }
@@ -533,24 +537,69 @@ export default compose(
           </Column>
           <Column style={blockStyle}>
             <Row style={{ justifyContent: 'space-between' }}>
-              <h3 style={{
-                alignItems: 'center',
+              <span style={{
+                alignItems: 'flex-end',
                 display: 'flex',
               }}
-                    >
-                Display Values
+              >
+                Displayed Values
 
-              </h3>
-              <Button
-                disabled={Object.values(selectedGroupBins).filter(value => value).length < 2}
-                onClick={binGrouping}
-                style={{
-                  float: 'right',
-                  margin: '10px',
-                }}
+              </span>
+              <Row>
+                <Button
+                  onClick={() => {
+                    setCurrentBins({
+                      ...reduce(currentBins, (acc, val, key) => {
+                        return {
+                          ...acc,
+                          [key]: {
+                            ...currentBins[key],
+                            groupName: key,
+                          },
+                        };
+                      }, {}),
+                    });
+                    setSelectedGroupBins({});
+                  }}
+                  style={buttonStyle}
                 >
-                {'Group'}
-              </Button>
+                  {'Reset'}
+                </Button>
+                <Button
+                  disabled={Object
+                    .keys(selectedGroupBins)
+                    .filter(key => selectedGroupBins[key])
+                    .every(key => currentBins[key].groupName === key)}
+                  onClick={() => {
+                    setCurrentBins({
+                      ...currentBins,
+                      ...reduce(selectedGroupBins, (acc, val, key) => {
+                        if (val) {
+                          return {
+                            ...acc,
+                            [key]: {
+                              ...currentBins[key],
+                              groupName: key,
+                            },
+                          };
+                        }
+                        return acc;
+                      }, {}),
+                    });
+                    setSelectedGroupBins({});
+                  }}
+                  style={buttonStyle}
+                >
+                  {'Ungroup'}
+                </Button>
+                <Button
+                  disabled={Object.values(selectedGroupBins).filter(Boolean).length < 2}
+                  onClick={binGrouping}
+                  style={buttonStyle}
+                >
+                  {'Group'}
+                </Button>
+              </Row>
             </Row>
             <Column style={listStyle}>
               {map(
@@ -598,10 +647,10 @@ export default compose(
                             isEditing={editingGroupName === groupName}
                             pencilEditingOnly
                             text={groupName}
-                            >
+                          >
                             {groupName}
                           </EditableLabel>
-                        ) : currentBins[group[0]].key}
+                        ) : currentBins[group[0]].key + ' (' + currentBins[group[0]].doc_count + ')'}
                     </Row>
                     {group.length > 1 || group[0] !== groupName
                       ? group.map((bin: string) => (
@@ -615,8 +664,8 @@ export default compose(
                             backgroundColor: selectedGroupBins[bin] ? '#d5f4e6' : '',
                             paddingLeft: '10px',
                           }}
-                          >
-                          {bin}
+                        >
+                          {bin + ' (' + currentBins[bin].doc_count + ')'}
                         </Row>
                       ))
                       : null}
@@ -625,7 +674,7 @@ export default compose(
               )}
             </Column>
           </Column>
-        </Row>)}
+        </Row>
         <Row
           spacing="1rem"
           style={{

@@ -231,11 +231,11 @@ const reducer = (
               ...currentAnalysis.displayVariables,
               [action.payload.fieldName as string]: {
                 ...currentAnalysis.displayVariables[
-                  action.payload.fieldName as string
+                action.payload.fieldName as string
                 ],
                 [action.payload
                   .variableKey as TClinicalAnalyisVariableKey]: action.payload
-                  .value,
+                    .value,
               },
             },
           },

@@ -74,7 +74,7 @@ export default compose(
     disabledMessage = null,
     pencilEditingOnly = false,
   }) => (
-      <div>
+    <div>
         {isEditing ? (
           <Row
             spacing="5px"
@@ -83,7 +83,7 @@ export default compose(
               alignItems: 'center',
               ...containerStyle,
             }}
-          >
+            >
             <Input
               autoFocus
               onChange={e => setValue(e.target.value)}
@@ -102,7 +102,7 @@ export default compose(
               }}
               type="text"
               value={value}
-            />
+              />
             <Tooltip
               Component={
                 value.split(' ').join('').length === 0
@@ -111,7 +111,7 @@ export default compose(
                     ? `Maximum name length ${MAX_SET_NAME_LENGTH}`
                     : null
               }
-            >
+              >
               <Button
                 disabled={
                   value.split(' ').join('').length === 0 ||
@@ -121,7 +121,7 @@ export default compose(
                 style={{
                   ...visualizingButton,
                 }}
-              >
+                >
                 Save
               </Button>
             </Tooltip>
@@ -130,11 +130,11 @@ export default compose(
             </Button>
           </Row>
         ) : (
-            <Tooltip Component={disabled ? disabledMessage : null}>
+          <Tooltip Component={disabled ? disabledMessage : null}>
               <Row
                 onClick={pencilEditingOnly ? null : toggleEditingAndSave}
                 style={{ cursor: disabled ? 'not-allowed' : (pencilEditingOnly ? 'default' : 'text') }}
-              >
+                >
                 {children}
                 <Pencil
                   onClick={pencilEditingOnly ? toggleEditingAndSave : null}
@@ -146,10 +146,10 @@ export default compose(
                     ...iconStyle,
                     cursor: disabled ? 'not-allowed' : 'pointer',
                   }}
-                />
+                  />
               </Row>
             </Tooltip>
           )}
       </div>
-    )
+  )
 );

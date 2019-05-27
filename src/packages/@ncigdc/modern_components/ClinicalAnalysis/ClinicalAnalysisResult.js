@@ -281,11 +281,12 @@ const ClinicalAnalysisResult = ({
             width: '80%',
           }}
           >
-          <Icon style={{
-            height: 50,
-            width: 50,
-          }}
-                />
+          <Icon
+            style={{
+              height: 50,
+              width: 50,
+            }}
+            />
           <Column style={{ width: '100%' }}>
             <Row spacing="5px" style={{ alignItems: 'center' }}>
               <div style={{ width: '70%' }}>
@@ -308,13 +309,13 @@ const ClinicalAnalysisResult = ({
                   }}
                   text={currentAnalysis.name}
                   >
-                  <h1 style={{
-                    fontSize: '2.5rem',
-                    margin: 5,
-                  }}
-                      >
-                    {currentAnalysis.name}
-                    {' '}
+                  <h1
+                    style={{
+                      fontSize: '2.5rem',
+                      margin: 5,
+                    }}
+                    >
+                    {`${currentAnalysis.name} `}
                   </h1>
                 </EditableLabel>
               </div>
@@ -471,11 +472,12 @@ const ClinicalAnalysisResult = ({
             </Column>
           </Column>
         )}
-        <Column style={{
-          flex: 4,
-          minWidth: 0,
-        }}
-                >
+        <Column
+          style={{
+            flex: 4,
+            minWidth: 0,
+          }}
+          >
           {/* <Column
             style={{
               ...zDepth1,

@@ -25,7 +25,7 @@ export default (Component: ReactClass<*>) => compose(
   branch(
     ({ allSets, currentSetId }) => !currentSetId.includes('demo') && !allSets.case[currentSetId],
     renderComponent(({
-      Icon, allSets, currentAnalysis, dispatch,
+      allSets, currentAnalysis, dispatch, Icon,
     }) => (
       <DeprecatedSetResult
         allSets={allSets}

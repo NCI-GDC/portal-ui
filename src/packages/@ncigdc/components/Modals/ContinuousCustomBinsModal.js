@@ -1,7 +1,4 @@
-// @flow
-/* eslint-disable */
 import React, { ReactNode } from 'react';
-/* eslint-enable */
 import { compose, withState, withProps } from 'recompose';
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import Button from '@ncigdc/uikit/Button';
@@ -33,53 +30,19 @@ const styles = {
   },
 };
 
-interface ICustomIntervalProps {
-  amount: string | number,
-  min: string | number,
-  max: string | number,
-};
-
-interface IEventTargetProps {
-  id: string,
-  value: string | number,
-};
-
-interface IBinsProps {
-  key: string,
-  /* eslint-disable */
-  doc_count: number,
-  /* eslint-enable */
-  groupName: string,
-}
-
-// interface IRangeRowsProps {
-//   name: string,
-//   min: number,
-//   max: number,
-// };
-
-interface IContinuousCustomBinsModalProps {
-  bins: IBinsProps,
-  children?: ReactNode,
-  customInterval: ICustomIntervalProps,
-  defaultMax: number,
-  defaultMin: number,
-  defaultQuartile: number,
-  fieldName: string,
-  onClose: () => void,
-  rangeRows: [],
-  selectedBinningMethod: string,
-  setCustomInterval: (customInterval: ICustomIntervalProps) => void,
-  setRangeRows: ([]) => void,
-  setSelectedBinningMethod: (selectedBinningMethod: string) => void,
-  setWarning: (warning: string) => void,
-  warning: string,
-};
-
 const defaultRangeRow = {
-  name: '',
-  min: 0,
-  max: 0,
+  name: {
+    errors: [],
+    testing: '',
+  },
+  min: {
+    errors: [],
+    testing: 0,
+  },
+  max: {
+   errors: [],
+   testing: 0,
+  },
 };
 
 const defaultRangeRowDisplay = Array(5).fill(defaultRangeRow);
@@ -103,11 +66,23 @@ export default compose(
       defaultQuartile,
     });
   }),
-  withState('customInterval', 'setCustomInterval', (props:IContinuousCustomBinsModalProps) => ({
-    amount: props.defaultQuartile,
-    max: props.defaultMax,
-    min: props.defaultMin,
-  }))
+  withState('customInterval', 'setCustomInterval', (props) => {
+    const { defaultQuartile, defaultMax, defaultMin } = props;
+    return ({
+      amount: {
+        errors: [],
+        testing: defaultQuartile,
+      },
+      max: {
+        errors: [],
+        testing: defaultMax,
+      },
+      min: {
+        errors: [],
+        testing: defaultMin,
+      },
+    })
+  })
 )(
   ({
     bins,
@@ -123,13 +98,10 @@ export default compose(
     setRangeRows,
     setSelectedBinningMethod,
     warning,
-  }: IContinuousCustomBinsModalProps) => {
-    const updateCustomInterval = (target: IEventTargetProps) => {
-      // validateContinuousFieldsProps(target);
+  }) => {
+    const updateCustomInterval = (target) => {
       const inputKey = target.id.split('-')[2];
       const inputValue = Number(target.value);
-      // validate here
-      // update fields with errors
       
       const nextCustomInterval = {
         ...customInterval, 
@@ -143,7 +115,15 @@ export default compose(
         ? Object.assign(
           {},
           rangeRow,
-          { [inputKey]: inputKey === 'name' ? inputValue : Number(inputValue) }
+          { 
+            [inputKey]: Object.assign(
+              {}, 
+              rangeRow[inputKey],
+              { 
+                testing: inputKey === 'name' ? inputValue : Number(inputValue),
+              }
+            ),
+          }
         ) : rangeRow
       );
       setRangeRows(nextRangeRows);
@@ -257,7 +237,7 @@ export default compose(
                               onChange={e => {
                                 updateRangeRows(e.target.value, rowIndex, inputKey);
                               }}
-                              value={rangeRows[rowIndex][inputKey]}
+                              value={rangeRows[rowIndex][inputKey].testing}
                               aria-labelledby={`range-table-label-${inputKey}`}
                               style={{
                                 ...styles.inputTable,

@@ -162,7 +162,7 @@ export default compose(
                   aria-label="bin interval" 
                   style={{
                     ...styles.input, 
-                    ...(selectedBinningMethod !== 'binByInterval' ? styles.inputDisabled : {}),
+                    ...(selectedBinningMethod === 'binByInterval' ? {} : styles.inputDisabled),
                   }}
                   onChange={e => {
                     updateCustomInterval(e.target);
@@ -177,7 +177,7 @@ export default compose(
                 aria-label="lower limit" 
                 style={{
                   ...styles.input, 
-                  ...(selectedBinningMethod !== 'binByInterval' ? styles.inputDisabled : {}),
+                  ...(selectedBinningMethod === 'binByInterval' ? {} : styles.inputDisabled),
                 }}
                 onChange={e => {
                   updateCustomInterval(e.target);
@@ -192,7 +192,7 @@ export default compose(
                 arial-label="upper limit"
                 style={{
                   ...styles.input, 
-                  ...(selectedBinningMethod !== 'binByInterval' ? styles.inputDisabled : {}),
+                  ...(selectedBinningMethod === 'binByInterval' ? {} : styles.inputDisabled),
                 }}
                 onChange={e => {
                   updateCustomInterval(e.target);
@@ -249,6 +249,7 @@ export default compose(
                               width: '100%',
                               padding: '5px',
                               background: selectedBinningMethod === 'binByRange' ? '#fff' : '#efefef',
+                              ...(selectedBinningMethod === 'binByRange' ? {} : styles.inputDisabled),
                             }}
                             disabled={selectedBinningMethod !== 'binByRange'}
                           />

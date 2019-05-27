@@ -159,28 +159,43 @@ export default compose(
           <p>Quartile bin interval: <strong>{defaultQuartile}</strong></p>
           <p>Configure your bins then click <strong>Save Bins</strong> to update the analysis plots.</p>
         </div>
+        <form>
+          <Row>
+            <Column style={styles.formBg}>
+              <h3>Define bins by:</h3>
 
-        <Row>
-          <Column style={styles.formBg}>
-            <h3>Define bins by:</h3>
-
-            <div className="binning-interval" style={{marginBottom: '15px'}}>
-              <input 
-                type="radio" 
-                id="binning-method-interval"
-                name="binning-method" 
-                value="interval"
-                style={{ marginRight: '15px'}} 
-                onClick={() => {
-                  setSelectedBinningMethod('binByInterval');
-                }}
-                defaultChecked={selectedBinningMethod === 'binByInterval'}
-              />
-              <label htmlFor="binning-method-interval">Bin interval:</label>
+              <div className="binning-interval" style={{marginBottom: '15px'}}>
                 <input 
-                  id="custom-interval-amount" 
+                  type="radio" 
+                  id="binning-method-interval"
+                  name="binning-method" 
+                  value="interval"
+                  style={{ marginRight: '15px'}} 
+                  onClick={() => {
+                    setSelectedBinningMethod('binByInterval');
+                  }}
+                  defaultChecked={selectedBinningMethod === 'binByInterval'}
+                />
+                <label htmlFor="binning-method-interval">Bin interval:</label>
+                  <input 
+                    id="custom-interval-amount" 
+                    type="number" 
+                    aria-label="bin interval" 
+                    style={{
+                      ...styles.input, 
+                      ...(selectedBinningMethod === 'binByInterval' ? {} : styles.inputDisabled),
+                    }}
+                    onChange={e => {
+                      updateCustomInterval(e.target);
+                    }}
+                    value={customInterval.amount}
+                    disabled={selectedBinningMethod !== 'binByInterval'}
+                  />
+                <span>limit values from</span>
+                <input 
+                  id="custom-interval-min" 
                   type="number" 
-                  aria-label="bin interval" 
+                  aria-label="lower limit" 
                   style={{
                     ...styles.input, 
                     ...(selectedBinningMethod === 'binByInterval' ? {} : styles.inputDisabled),
@@ -188,151 +203,136 @@ export default compose(
                   onChange={e => {
                     updateCustomInterval(e.target);
                   }}
-                  value={customInterval.amount}
+                  value={customInterval.min}
                   disabled={selectedBinningMethod !== 'binByInterval'}
                 />
-              <span>limit values from</span>
-              <input 
-                id="custom-interval-min" 
-                type="number" 
-                aria-label="lower limit" 
-                style={{
-                  ...styles.input, 
-                  ...(selectedBinningMethod === 'binByInterval' ? {} : styles.inputDisabled),
-                }}
-                onChange={e => {
-                  updateCustomInterval(e.target);
-                }}
-                value={customInterval.min}
-                disabled={selectedBinningMethod !== 'binByInterval'}
-              />
-              <span>to</span>
-              <input 
-                id="custom-interval-max" 
-                type="number" 
-                arial-label="upper limit"
-                style={{
-                  ...styles.input, 
-                  ...(selectedBinningMethod === 'binByInterval' ? {} : styles.inputDisabled),
-                }}
-                onChange={e => {
-                  updateCustomInterval(e.target);
-                }}
-                value={customInterval.max}
-                disabled={selectedBinningMethod !== 'binByInterval'}
-              />
-            </div>
-
-            <div className="binning-range">
-              <div style={{marginBottom: '15px'}}>
+                <span>to</span>
                 <input 
-                  type="radio" 
-                  id="binning-method-range"
-                  name="binning-method" 
-                  value="range"
-                  style={{ marginRight: '15px'}} 
-                  onClick={() => {
-                    setSelectedBinningMethod('binByRange');
+                  id="custom-interval-max" 
+                  type="number" 
+                  arial-label="upper limit"
+                  style={{
+                    ...styles.input, 
+                    ...(selectedBinningMethod === 'binByInterval' ? {} : styles.inputDisabled),
                   }}
-                  defaultChecked={selectedBinningMethod === 'binByRange'}
+                  onChange={e => {
+                    updateCustomInterval(e.target);
+                  }}
+                  value={customInterval.max}
+                  disabled={selectedBinningMethod !== 'binByInterval'}
                 />
-                <label htmlFor="binning-method-range">Manually</label>
               </div>
-              <table style={{marginBottom: '20px', width: '100%'}}>
-                <thead>
-                  <tr>
-                    <Th scope="col" id="range-label-name">Bin Name</Th>
-                    <Th scope="col" id="range-label-min">From</Th>
-                    <Th scope="col" id="range-label-max">To</Th>
-                    <Th scope="col">Remove</Th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {rangeRows.map((row, rowIndex) => (
-                    <Tr key={`range-row-${rowIndex}`} index={rowIndex}>
-                      {Object.keys(row).map(inputKey => (
-                        <td key={`range-row-${rowIndex}-${inputKey}`} style={{padding: '5px'}}>
-                          <input 
-                            id={`range-row-${rowIndex}-${inputKey}`} 
-                            type={inputKey === 'name' ? 'text' : 'number'} 
-                            onChange={e => {
-                              updateRangeRows(e.target.value, rowIndex, inputKey);
+
+              <div className="binning-range">
+                <div style={{marginBottom: '15px'}}>
+                  <input 
+                    type="radio" 
+                    id="binning-method-range"
+                    name="binning-method" 
+                    value="range"
+                    style={{ marginRight: '15px'}} 
+                    onClick={() => {
+                      setSelectedBinningMethod('binByRange');
+                    }}
+                    defaultChecked={selectedBinningMethod === 'binByRange'}
+                  />
+                  <label htmlFor="binning-method-range">Manually</label>
+                </div>
+                <table style={{marginBottom: '20px', width: '100%'}}>
+                  <thead>
+                    <tr>
+                      <Th scope="col" id="range-table-label-name">Bin Name</Th>
+                      <Th scope="col" id="range-table-label-min">From</Th>
+                      <Th scope="col" id="range-table-label-max">To</Th>
+                      <Th scope="col">Remove</Th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {rangeRows.map((row, rowIndex) => (
+                      <Tr key={`range-row-${rowIndex}`} index={rowIndex}>
+                        {Object.keys(row).map(inputKey => (
+                          <td key={`range-row-${rowIndex}-${inputKey}`} style={{padding: '5px'}}>
+                            <input 
+                              type={inputKey === 'name' ? 'text' : 'number'} 
+                              onChange={e => {
+                                updateRangeRows(e.target.value, rowIndex, inputKey);
+                              }}
+                              value={rangeRows[rowIndex][inputKey]}
+                              aria-labelledby={`range-table-label-${inputKey}`}
+                              style={{
+                                ...styles.inputTable,
+                                ...(selectedBinningMethod === 'binByRange' ? {} : styles.inputDisabled),
+                              }}
+                              disabled={selectedBinningMethod !== 'binByRange'}
+                            />
+                          </td>
+                        ))}
+                        <td>
+                          <Button onClick={() => {
+                              const nextRangeRows = rangeRows.filter((filterRow, filterRowIndex) => filterRowIndex !== rowIndex);
+                              setRangeRows(nextRangeRows);
                             }}
-                            value={rangeRows[rowIndex][inputKey]}
-                            aria-labelledby={`range-label-${inputKey}`}
-                            style={{
-                              ...styles.inputTable,
-                              ...(selectedBinningMethod === 'binByRange' ? {} : styles.inputDisabled),
-                            }}
+                            aria-label="Remove"
+                            style={{margin: '0 auto'}}
                             disabled={selectedBinningMethod !== 'binByRange'}
-                          />
+                          >
+                            <i className="fa fa-trash" aria-hidden="true" />
+                          </Button>
                         </td>
-                      ))}
-                      <td>
-                        <Button onClick={() => {
-                            const nextRangeRows = rangeRows.filter((filterRow, filterRowIndex) => filterRowIndex !== rowIndex);
-                            setRangeRows(nextRangeRows);
-                          }}
-                          aria-label="Remove"
-                          style={{margin: '0 auto'}}
-                          disabled={selectedBinningMethod !== 'binByRange'}
-                        >
-                          <i className="fa fa-trash" aria-hidden="true" />
-                        </Button>
-                      </td>
-                    </Tr>
-                  ))}
-                </tbody>
-              </table>
-              <Button onClick={() => {
-                  const nextRangeRows = [
-                    ...rangeRows, 
-                    defaultRangeRow,
-                  ];
-                  setRangeRows(nextRangeRows);
-                }}
-                style={{
-                  ...styles.button, 
-                  maxWidth: '100px', 
-                  marginLeft: 'auto', 
-                  display: 'flex',
-                  ...(selectedBinningMethod !== 'binByRange' ? styles.inputDisabled : {}),
-                }}
-                disabled={selectedBinningMethod !== 'binByRange'}
-              >
-                <i className="fa fa-plus-circle" aria-hidden="true" /> &nbsp; Add
-              </Button>
-            </div>
-          </Column>
-        </Row>
-        <Row
-          spacing="1rem"
-          style={{
-            justifyContent: 'flex-end',
-            margin: '20px',
-          }}
-          >
-          <span style={{
-            color: 'red',
-            justifyContent: 'flex-start',
-            visibility: warning.length > 0 ? 'visible' : 'hidden',
-          }}
+                      </Tr>
+                    ))}
+                  </tbody>
+                </table>
+                <Button onClick={() => {
+                    const nextRangeRows = [
+                      ...rangeRows, 
+                      defaultRangeRow,
+                    ];
+                    setRangeRows(nextRangeRows);
+                  }}
+                  style={{
+                    ...styles.button, 
+                    maxWidth: '100px', 
+                    marginLeft: 'auto', 
+                    display: 'flex',
+                    ...(selectedBinningMethod !== 'binByRange' ? styles.inputDisabled : {}),
+                  }}
+                  disabled={selectedBinningMethod !== 'binByRange'}
                 >
-            {`Warning: ${warning}`}
-          </span>
-          <Button
-            onClick={onClose}
-            style={styles.button}
+                  <i className="fa fa-plus-circle" aria-hidden="true" /> &nbsp; Add
+                </Button>
+              </div>
+            </Column>
+          </Row>
+          <Row
+            spacing="1rem"
+            style={{
+              justifyContent: 'flex-end',
+              margin: '20px',
+            }}
             >
-            Cancel
-          </Button>
-          <Button
-            onClick={() => console.log('update')}
-            style={styles.button}
-            >
-            Save Bins
-          </Button>
-        </Row>
+            <span style={{
+              color: 'red',
+              justifyContent: 'flex-start',
+              visibility: warning.length > 0 ? 'visible' : 'hidden',
+            }}
+                  >
+              {`Warning: ${warning}`}
+            </span>
+            <Button
+              onClick={onClose}
+              style={styles.button}
+              >
+              Cancel
+            </Button>
+            <Button
+              onClick={() => console.log('update')}
+              style={styles.button}
+              >
+              Save Bins
+            </Button>
+          </Row>
+        </form>
       </Column>
     );
   }

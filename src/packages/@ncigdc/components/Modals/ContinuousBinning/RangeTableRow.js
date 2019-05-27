@@ -10,7 +10,6 @@ const RangeTableRow = ({
   row,
   rowIndex,
 }) => {
-  console.log('row', row);
   return (
     <Tr index={rowIndex} key={`range-row-${rowIndex}`}>
       {Object.keys(row).map(rowItem => (
@@ -22,10 +21,10 @@ const RangeTableRow = ({
             inputErrors={row[rowItem].errors}
             inputId={`range-row-${rowIndex}-${rowItem}`}
             inputKey={rowItem}
-            inputValue={row[rowItem].value}
             key={`range-row-${rowIndex}-${rowItem}`}
             rowIndex={rowIndex}
             valid={row[rowItem].errors.length === 0}
+            value={row[rowItem].value}
             />
         </td>
       ))}

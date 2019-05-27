@@ -99,8 +99,13 @@ export default compose(
       setCustomInterval(nextCustomInterval);
     };
 
-    const updateRangeRows = (inputValue: string, rowIndex: number, inputKey: string) => {
-      const nextRangeRows = rangeRows.map((rangeRow, rangeRowIndex) => (rangeRowIndex === rowIndex
+    const updateRangeRows = (target) => {
+      const targetInfo = target.id.split('-');
+      const inputRowIndex = Number(targetInfo[2]);
+      const inputKey = targetInfo[3];
+      const inputValue = target.value;
+
+      const nextRangeRows = rangeRows.map((rangeRow, rangeRowIndex) => (rangeRowIndex === inputRowIndex
         ? Object.assign(
           {},
           rangeRow,
@@ -109,7 +114,7 @@ export default compose(
               {},
               rangeRow[inputKey],
               {
-                testing: inputKey === 'name' ? inputValue : Number(inputValue),
+                value: inputKey === 'name' ? inputValue : Number(inputValue),
               }
             ),
           }

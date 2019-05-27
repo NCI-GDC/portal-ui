@@ -25,11 +25,11 @@ const BinningInput = ({
   binningMethod,
   disabled,
   handleChange,
-  // inputErrors,
+  inputErrors,
   inputId,
   inputKey,
-  inputValue,
   valid,
+  value,
 }) => {
   return (
     <React.Fragment>
@@ -43,9 +43,9 @@ const BinningInput = ({
           ...(valid ? {} : styles.inputInvalid),
         }}
         type={inputKey === 'name' ? 'text' : 'number'}
-        value={inputValue}
+        value={value}
         />
-      {/* {inputErrors.map(err => <span key={`${inputId}-error-${err.substr(0, 2)}`} style={styles.error}>{err}</span>)} */}
+      {inputErrors.map(err => <span key={`${inputId}-error-${err.substr(0, 2)}`} style={styles.error}>{err}</span>)}
     </React.Fragment>
   );
 };

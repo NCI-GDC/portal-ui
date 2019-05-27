@@ -674,7 +674,7 @@ export default compose(
               )}
             </Column>
           </Column>
-        </Row>
+        </Row>)}
         <Row
           spacing="1rem"
           style={{
@@ -703,7 +703,7 @@ export default compose(
             Save Bins
           </Button>
         </Row>
-      </Column >
+      </Column>
     );
   }
 );

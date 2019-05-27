@@ -24,6 +24,10 @@ const styles = {
     width: '100px',
     margin: '0 10px',
   },
+  inputTable: {
+    width: '100%',
+    padding: '5px',
+  },
   inputDisabled: {
     background: '#efefef',
   },
@@ -47,6 +51,12 @@ interface IBinsProps {
   /* eslint-enable */
   groupName: string,
 }
+
+// interface IRangeRowsProps {
+//   name: string,
+//   min: number,
+//   max: number,
+// };
 
 interface IContinuousCustomBinsModalProps {
   bins: IBinsProps,
@@ -126,6 +136,17 @@ export default compose(
         [inputKey]: inputValue,
       };
       setCustomInterval(nextCustomInterval);
+    };
+
+    const updateRangeRows = (inputValue: string, rowIndex: number, inputKey: string) => {
+      const nextRangeRows = rangeRows.map((rangeRow, rangeRowIndex) => rangeRowIndex === rowIndex
+        ? Object.assign(
+          {},
+          rangeRow,
+          { [inputKey]: inputKey === 'name' ? inputValue : Number(inputValue) }
+        ) : rangeRow
+      );
+      setRangeRows(nextRangeRows);
     };
 
     return (
@@ -232,23 +253,15 @@ export default compose(
                       {Object.keys(row).map(inputKey => (
                         <td key={`range-row-${rowIndex}-${inputKey}`} style={{padding: '5px'}}>
                           <input 
-                            id={`range-row-${rowIndex}-${inputKey}`} type={inputKey === 'name' ? 'text' : 'number'} onChange={e => {
-                              const inputValue = e.target.value;
-                              const nextRangeRows = rangeRows.map((rangeRow, rangeRowIndex) => rangeRowIndex === rowIndex
-                                ? Object.assign(
-                                  {},
-                                  rangeRow,
-                                  { [inputKey]: inputValue }
-                                ) : rangeRow
-                              );
-                              setRangeRows(nextRangeRows)
+                            id={`range-row-${rowIndex}-${inputKey}`} 
+                            type={inputKey === 'name' ? 'text' : 'number'} 
+                            onChange={e => {
+                              updateRangeRows(e.target.value, rowIndex, inputKey);
                             }}
                             value={rangeRows[rowIndex][inputKey]}
                             aria-labelledby={`range-label-${inputKey}`}
                             style={{
-                              width: '100%',
-                              padding: '5px',
-                              background: selectedBinningMethod === 'binByRange' ? '#fff' : '#efefef',
+                              ...styles.inputTable,
                               ...(selectedBinningMethod === 'binByRange' ? {} : styles.inputDisabled),
                             }}
                             disabled={selectedBinningMethod !== 'binByRange'}

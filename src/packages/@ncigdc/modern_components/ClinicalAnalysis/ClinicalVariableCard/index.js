@@ -82,6 +82,7 @@ import { humanify } from '@ncigdc/utils/string';
 import timestamp from '@ncigdc/utils/timestamp';
 
 import { IS_CDAVE_DEV } from '@ncigdc/utils/constants';
+import ContinuousCustomBins from '@ncigdc/components/Modals/ContinuousCustomBinsModal';
 import {
   boxTableAllowedStats,
   boxTableRenamedStats,
@@ -983,31 +984,39 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                   <DropdownItem
                     onClick={() => dispatch(
                       setModal(
-                        <GroupValuesModal
-                          bins={variable.bins}
-                          continuousAvailableBins={variable.plotTypes === 'continuous' ? dataBuckets.reduce((acc, r) => ({
-                            ...acc,
-                            [r.key]: {
-                              ...r,
-                              groupName: r.key,
-                            },
-                          }), {}) : {}}
-                          fieldName={humanify({ term: fieldName })}
-                          onClose={() => dispatch(setModal(null))}
-                          onUpdate={(newBins) => {
-                            dispatch(
-                              updateClinicalAnalysisVariable({
-                                fieldName,
-                                id,
-                                value: newBins,
-                                variableKey: 'bins',
-                              }),
-                            );
-                            dispatch(setModal(null));
-                          }
-                          }
-                          plotType={variable.plotTypes}
-                          />,
+                        variable.plotTypes === 'continuous'
+                          ? (
+                            <ContinuousCustomBins
+                              bins={dataBuckets.reduce((acc, r) => ({
+                                ...acc,
+                                [r.key]: {
+                                  ...r,
+                                  groupName: r.key,
+                                },
+                              }), {})}
+                              fieldName={humanify({ term: fieldName })}
+                              onClose={() => dispatch(setModal(null))}
+                              />
+                          )
+                          : (
+                            <GroupValuesModal
+                              bins={variable.bins}
+                              fieldName={humanify({ term: fieldName })}
+                              onClose={() => dispatch(setModal(null))}
+                              onUpdate={(newBins) => {
+                                dispatch(
+                                  updateClinicalAnalysisVariable({
+                                    fieldName,
+                                    id,
+                                    value: newBins,
+                                    variableKey: 'bins',
+                                  }),
+                                );
+                                dispatch(setModal(null));
+                              }
+                              }
+                              />
+                          )
                       ),
                     )
                     }

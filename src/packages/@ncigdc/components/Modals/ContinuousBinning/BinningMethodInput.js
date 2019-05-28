@@ -14,9 +14,9 @@ const BinningMethodInput = ({
         type="radio"
         value={binningMethod}
         />
-      <label htmlFor={`binning-method-${binningMethod}`}>
+      <label htmlFor={`binning-method-${binningMethod}`} style={{ lineHeight: '26px' }}>
         {label}
-        :
+        :&nbsp;
       </label>
     </React.Fragment>
   );

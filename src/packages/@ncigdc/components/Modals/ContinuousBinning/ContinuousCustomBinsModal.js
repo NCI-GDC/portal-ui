@@ -155,60 +155,73 @@ export default compose(
             <Column style={styles.formBg}>
               <h3>Define bins by:</h3>
 
-              <div className="binning-interval" style={{ marginBottom: '15px' }}>
-                <BinningMethodInput
-                  binningMethod="interval"
-                  defaultChecked={selectedBinningMethod === 'interval'}
-                  label="Bin Interval"
-                  onClick={() => {
-                    setSelectedBinningMethod('interval');
-                  }}
-                  />
-
-                <input
-                  aria-label="bin interval"
-                  disabled={selectedBinningMethod !== 'interval'}
-                  id="custom-interval-amount"
-                  onChange={e => {
-                    updateCustomInterval(e.target);
-                  }}
-                  style={{
-                    ...styles.input,
-                    ...(selectedBinningMethod === 'interval' ? {} : styles.inputDisabled),
-                  }}
-                  type="number"
-                  value={customInterval.amount}
-                  />
-                <span>limit values from</span>
-                <input
-                  aria-label="lower limit"
-                  disabled={selectedBinningMethod !== 'interval'}
-                  id="custom-interval-min"
-                  onChange={e => {
-                    updateCustomInterval(e.target);
-                  }}
-                  style={{
-                    ...styles.input,
-                    ...(selectedBinningMethod === 'interval' ? {} : styles.inputDisabled),
-                  }}
-                  type="number"
-                  value={customInterval.min}
-                  />
-                <span>to</span>
-                <input
-                  arial-label="upper limit"
-                  disabled={selectedBinningMethod !== 'interval'}
-                  id="custom-interval-max"
-                  onChange={e => {
-                    updateCustomInterval(e.target);
-                  }}
-                  style={{
-                    ...styles.input,
-                    ...(selectedBinningMethod === 'interval' ? {} : styles.inputDisabled),
-                  }}
-                  type="number"
-                  value={customInterval.max}
-                  />
+              <div
+                className="binning-interval"
+                style={{
+                  display: 'flex',
+                  marginBottom: '15px',
+                }}
+                >
+                <div>
+                  <BinningMethodInput
+                    binningMethod="interval"
+                    defaultChecked={selectedBinningMethod === 'interval'}
+                    label="Bin Interval"
+                    onClick={() => {
+                      setSelectedBinningMethod('interval');
+                    }}
+                    />
+                </div>
+                <div>
+                  <input
+                    aria-label="bin interval"
+                    disabled={selectedBinningMethod !== 'interval'}
+                    id="custom-interval-amount"
+                    onChange={e => {
+                      updateCustomInterval(e.target);
+                    }}
+                    style={{
+                      ...styles.input,
+                      ...(selectedBinningMethod === 'interval' ? {} : styles.inputDisabled),
+                    }}
+                    type="number"
+                    value={customInterval.amount}
+                    />
+                </div>
+                <div style={{ lineHeight: '26px' }}>&nbsp;limit values from&nbsp;</div>
+                <div>
+                  <input
+                    aria-label="lower limit"
+                    disabled={selectedBinningMethod !== 'interval'}
+                    id="custom-interval-min"
+                    onChange={e => {
+                      updateCustomInterval(e.target);
+                    }}
+                    style={{
+                      ...styles.input,
+                      ...(selectedBinningMethod === 'interval' ? {} : styles.inputDisabled),
+                    }}
+                    type="number"
+                    value={customInterval.min}
+                    />
+                </div>
+                <div style={{ lineHeight: '26px' }}>&nbsp;to&nbsp;</div>
+                <div>
+                  <input
+                    arial-label="upper limit"
+                    disabled={selectedBinningMethod !== 'interval'}
+                    id="custom-interval-max"
+                    onChange={e => {
+                      updateCustomInterval(e.target);
+                    }}
+                    style={{
+                      ...styles.input,
+                      ...(selectedBinningMethod === 'interval' ? {} : styles.inputDisabled),
+                    }}
+                    type="number"
+                    value={customInterval.max}
+                    />
+                </div>
               </div>
 
               <div className="binning-range">

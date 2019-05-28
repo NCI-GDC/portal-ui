@@ -57,6 +57,7 @@ import {
 } from '@ncigdc/components/Aggregations/TermAggregation';
 
 export interface IFacetProps {
+  customSort: number,
   description: string,
   doc_type: string,
   field: string,
@@ -124,8 +125,9 @@ interface IGraphFieldProps {
 
 interface IFieldProps {
   __dataID: string,
-  name: string,
+  customSort: number,
   description: string,
+  name: string,
   type: { name: string, __dataID: string },
 }
 const facetMatchesQuery = (
@@ -195,20 +197,28 @@ const enhance = compose(
       facetMapping: caseFacets.fields
         .filter((f: IGraphFieldProps): boolean => f.name === 'aggregations')[0]
         .type.fields.filter((f: IFieldProps) => !f.name.startsWith('gene'))
-        .reduce(
-          (acc: { [x: string]: IFacetProps } | {}, f: IFieldProps) => ({
-            ...acc,
-            [`cases.${f.name.replace(/__/g, '.')}`]: {
-              field: f.name.replace(/__/g, '.'),
-              full: `cases.${f.name.replace(/__/g, '.')}`,
-              doc_type: 'cases',
-              description: f.description,
-              type: f.type.name === 'Aggregations' ? 'keyword' : 'long',
-              additionalProps: { convertDays: f.name.includes('age_at_diagnosis') },
-            },
-          }),
-          {},
-        ),
+        .reduce((
+          acc: { [x: string]: IFacetProps } | {},
+          {
+            description,
+            name,
+            type,
+          }: IFieldProps) => {
+            const dottedName = name.replace(/__/g, '.');
+
+            return ({
+              ...acc,
+              [`cases.${dottedName}`]: {
+                additionalProps: { convertDays: name.includes('age_at_diagnosis') },
+                customSort: customSorting(dottedName),
+                description,
+                doc_type: 'cases',
+                field: dottedName,
+                full: `cases.${dottedName}`,
+                type: type.name === 'Aggregations' ? 'keyword' : 'long',
+              },
+            })
+          }, {}),
     }),
   ),
   withPropsOnChange(
@@ -420,11 +430,10 @@ const enhance = compose(
                             display: 'flex',
                             padding: '0.25rem 0.25rem 0.25rem 0rem',
                             float: 'left',
-                            transform: `rotate(${facetsExpandedStatus[
-                              facet.field
-                            ].expanded
-                              ? 0
-                              : 270}deg)`,
+                            transform: `rotate(${
+                              facetsExpandedStatus[facet.field].expanded
+                                ? 0
+                                : 270}deg)`,
                           }}
                           />
                         {facet.title}
@@ -445,10 +454,8 @@ const enhance = compose(
                             fontSize: '12px',
                           }}
                           >
-                          {searchValue ||
-                            filteredFacets[facet.field].length === 0
-                            ? null
-                            : allExpanded[facet.field]
+                          {(searchValue || filteredFacets[facet.field].length === 0) ||
+                            allExpanded[facet.field]
                               ? 'Collapse All'
                               : 'Expand All'}
                         </span>
@@ -460,8 +467,7 @@ const enhance = compose(
                           ? (
                             orderBy(
                               filteredFacets[facet.field],
-                              ['field'],
-                              ['asc'],
+                              ['customSort', 'field'],
                             )
                               .slice(
                                 0,
@@ -525,10 +531,7 @@ const enhance = compose(
                                         fieldName,
                                       ),
                                     )}
-                                    style={{
-                                      order: customSorting(componentFacet.field),
-                                      paddingLeft: '10px',
-                                    }}
+                                    style={{ paddingLeft: '10px' }}
                                     title={startCase(
                                       termCapitaliser(fieldName)
                                     )}
@@ -538,7 +541,7 @@ const enhance = compose(
                           : (
                             <article
                               style={{
-                                fontSize: '1.7rem',
+                                fontSize: '1.5rem',
                                 padding: '2rem 3rem',
                               }}
                               >

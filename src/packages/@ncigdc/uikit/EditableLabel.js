@@ -20,7 +20,7 @@ export default compose(
   withState('isEditing', 'setIsEditing', ({ isEditing }) => isEditing || false),
   withState('value', 'setValue', ({ text }) => text),
   defaultProps({
-    handleSave: value => console.log(value),
+    handleSave: () => { },
   }),
   withHandlers({
     handleCancel: ({ setIsEditing, setValue, text }) => () => {
@@ -31,7 +31,6 @@ export default compose(
   withHandlers({
     toggleEditingAndSave: ({
       disabled = false,
-      handleCancel,
       handleSave,
       isEditing,
       setIsEditing,
@@ -39,7 +38,7 @@ export default compose(
       value,
     }) => () => {
       if (disabled) {
-        return null;
+        return;
       }
       if (value.length !== 0) {
         setIsEditing(!isEditing);
@@ -60,12 +59,10 @@ export default compose(
   })
 )(
   ({
-    text,
     isEditing,
     toggleEditingAndSave,
     value,
     setValue,
-    setIsEditing,
     handleCancel,
     children,
     iconStyle = {},
@@ -73,14 +70,16 @@ export default compose(
     disabled = false,
     disabledMessage = null,
     pencilEditingOnly = false,
-  }) => (
-    <div>
+    noEditingStyle,
+  }) => {
+    return (
+      <React.Fragment>
         {isEditing ? (
           <Row
             spacing="5px"
             style={{
-              justifyContent: 'space-between',
               alignItems: 'center',
+              justifyContent: 'space-between',
               ...containerStyle,
             }}
             >
@@ -96,9 +95,9 @@ export default compose(
                 }
               }}
               style={{
-                width: '300px',
                 borderRadius: '4px',
                 transition: 'all 0.2s ease',
+                width: '300px',
               }}
               type="text"
               value={value}
@@ -129,20 +128,24 @@ export default compose(
               Cancel
             </Button>
           </Row>
-        ) : (
-          <Tooltip Component={disabled ? disabledMessage : null}>
+        )
+          : (
+            <Tooltip Component={disabled ? disabledMessage : null}>
               <Row
                 onClick={pencilEditingOnly ? null : toggleEditingAndSave}
-                style={{ cursor: disabled ? 'not-allowed' : (pencilEditingOnly ? 'default' : 'text') }}
+                style={{
+                  cursor: disabled ? 'not-allowed' : (pencilEditingOnly ? 'default' : 'text'),
+                  ...noEditingStyle,
+                }}
                 >
                 {children}
                 <Pencil
                   onClick={pencilEditingOnly ? toggleEditingAndSave : null}
                   style={{
-                    fontSize: '0.9em',
-                    paddingLeft: '5px',
                     alignSelf: 'center',
                     color: 'rgb(96, 111, 81)',
+                    fontSize: '0.9em',
+                    paddingLeft: '5px',
                     ...iconStyle,
                     cursor: disabled ? 'not-allowed' : 'pointer',
                   }}
@@ -150,6 +153,7 @@ export default compose(
               </Row>
             </Tooltip>
           )}
-      </div>
-  )
+      </React.Fragment>
+    );
+  }
 );

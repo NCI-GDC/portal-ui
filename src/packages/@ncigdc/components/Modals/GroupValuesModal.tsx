@@ -4,7 +4,7 @@ import React, { ReactNode } from 'react';
 /* eslint-enable */
 import { compose, withState, withProps } from 'recompose';
 import {
-  map, groupBy, reduce, filter,
+  map, groupBy, reduce, filter, some,
 } from 'lodash';
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import Button from '@ncigdc/uikit/Button';
@@ -90,7 +90,7 @@ const listStyle = {
 const buttonStyle = {
   float: 'right',
   margin: '10px 2px 10px 3px',
-}
+};
 export default compose(
   withState('editingGroupName', 'setEditingGroupName', ''),
   withState('currentBins', 'setCurrentBins', ({ bins }: { bins: IBinsProps }) => bins),
@@ -129,8 +129,8 @@ export default compose(
   }))
 )(
   ({
-    bins,
     binGrouping,
+    bins,
     currentBins,
     editingGroupName,
     fieldName,
@@ -169,7 +169,7 @@ export default compose(
                 alignItems: 'flex-end',
                 display: 'flex',
               }}
-              >
+                   >
                 Hidden Values
               </div>
             </Row>
@@ -192,7 +192,7 @@ export default compose(
                       backgroundColor: selectedHidingBins[binKey] ? '#d5f4e6' : '',
                       paddingLeft: '10px',
                     }}
-                  >
+                    >
                     {binKey}
                   </Row>
                 ))}
@@ -206,15 +206,11 @@ export default compose(
                   ...currentBins,
                   ...reduce(selectedHidingBins, (acc, val, key) => {
                     if (val) {
-                      const newGroupName = initialName(
-                        Object.values(currentBins).map((bin: IBinProps) => bin.groupName), 'selected Value '
-                      );
-                      setEditingGroupName(newGroupName);
                       return {
                         ...acc,
                         [key]: {
                           ...currentBins[key],
-                          groupName: newGroupName,
+                          groupName: key,
                         },
                       };
                     }
@@ -224,7 +220,7 @@ export default compose(
                 setSelectedHidingBins({});
               }}
               style={{ margin: '10px' }}
-            >
+              >
               {'>>'}
             </Button>
             <Button
@@ -253,7 +249,7 @@ export default compose(
                 setSelectedGroupBins({});
               }}
               style={{ margin: '10px' }}
-            >
+              >
               {'<<'}
             </Button>
           </Column>
@@ -263,7 +259,7 @@ export default compose(
                 alignItems: 'flex-end',
                 display: 'flex',
               }}
-              >
+                    >
                 Displayed Values
 
               </span>
@@ -284,7 +280,7 @@ export default compose(
                     setSelectedGroupBins({});
                   }}
                   style={buttonStyle}
-                >
+                  >
                   {'Reset'}
                 </Button>
                 <Button
@@ -311,14 +307,14 @@ export default compose(
                     setSelectedGroupBins({});
                   }}
                   style={buttonStyle}
-                >
+                  >
                   {'Ungroup'}
                 </Button>
                 <Button
                   disabled={Object.values(selectedGroupBins).filter(Boolean).length < 2}
                   onClick={binGrouping}
                   style={buttonStyle}
-                >
+                  >
                   {'Group'}
                 </Button>
               </Row>
@@ -344,22 +340,34 @@ export default compose(
                           }), {}),
                         });
                       }}
-                      style={{ backgroundColor: group.every((binKey: string) => selectedGroupBins[binKey]) ? '#d5f4e6' : '' }}
-                    >
+                      style={{
+                        backgroundColor: group.every((binKey: string) => selectedGroupBins[binKey]) ? '#d5f4e6' : '',
+
+
+                      }}
+                      >
                       {group.length > 1 || group[0] !== groupName
                         ? (
                           <EditableLabel
-                            containerStyle={{ justifyContent: 'flex-start' }}
-                            handleSave={(value: string) => setCurrentBins({
-                              ...currentBins,
-                              ...group.reduce((acc: ISelectedBinsProps, bin: string) => ({
-                                ...acc,
-                                [bin]: {
-                                  ...currentBins[bin],
-                                  groupName: value,
-                                },
-                              }), {}),
-                            })
+                            containerStyle={{
+                              justifyContent: 'flex-start',
+                            }}
+                            handleSave={(value: string) => {
+                              if (some(currentBins, (bin: IBinProps) => bin.groupName === value)) {
+                                setWarning(`"${value}" has been existed.`);
+                                return;
+                              }
+                              setCurrentBins({
+                                ...currentBins,
+                                ...group.reduce((acc: ISelectedBinsProps, bin: string) => ({
+                                  ...acc,
+                                  [bin]: {
+                                    ...currentBins[bin],
+                                    groupName: value,
+                                  },
+                                }), {}),
+                              });
+                            }
                             }
                             iconStyle={{
                               cursor: 'pointer',
@@ -367,30 +375,41 @@ export default compose(
                               marginLeft: 10,
                             }}
                             isEditing={editingGroupName === groupName}
+                            noEditingStyle={{ fontWeight: 'bold' }}
                             pencilEditingOnly
                             text={groupName}
-                          >
+                            >
                             {groupName}
                           </EditableLabel>
-                        ) : currentBins[group[0]].key + ' (' + currentBins[group[0]].doc_count + ')'}
+                        ) : (
+                          <div style={{ fontWeight: 'bold' }}>
+                            {`${currentBins[group[0]].key} (${currentBins[group[0]].doc_count})`}
+                          </div>
+                        )
+                      }
                     </Row>
-                    {group.length > 1 || group[0] !== groupName
-                      ? group.map((bin: string) => (
-                        <Row
-                          key={bin}
-                          onClick={() => setSelectedGroupBins({
-                            ...selectedGroupBins,
-                            [bin]: !selectedGroupBins[bin],
-                          })}
-                          style={{
-                            backgroundColor: selectedGroupBins[bin] ? '#d5f4e6' : '',
-                            paddingLeft: '10px',
-                          }}
-                        >
-                          {bin + ' (' + currentBins[bin].doc_count + ')'}
-                        </Row>
-                      ))
-                      : null}
+                    {
+                      group.length > 1 || group[0] !== groupName
+                        ? group.map((bin: string) => (
+                          <Row
+                            key={bin}
+                            onClick={() => setSelectedGroupBins({
+                              ...selectedGroupBins,
+                              [bin]: !selectedGroupBins[bin],
+                            })}
+                            style={{
+                              backgroundColor: selectedGroupBins[bin] ? '#d5f4e6' : '',
+                              display: 'list-item', /* This has to be "list-item"                                               */
+                              listStyleType: 'disc', /* See https://developer.mozilla.org/en-US/docs/Web/CSS/list-style-type     */
+                              listStylePosition: 'inside',
+                              paddingLeft: '5px',
+                            }}
+                            >
+                            {`${bin} (${currentBins[bin].doc_count})`}
+                          </Row>
+                        ))
+                        : null
+                    }
                   </Column>
                 )
               )}
@@ -403,26 +422,26 @@ export default compose(
             justifyContent: 'flex-end',
             margin: '20px',
           }}
-        >
+          >
           <span style={{
             color: 'red',
             justifyContent: 'flex-start',
             visibility: warning.length > 0 ? 'visible' : 'hidden',
           }}
-          >
+                >
             {'Warning: '}
             {warning}
           </span>
           <Button
             onClick={onClose}
             style={styles.button}
-          >
+            >
             Cancel
           </Button>
           <Button
             onClick={() => onUpdate(currentBins)}
             style={styles.button}
-          >
+            >
             Save Bins
           </Button>
         </Row>

@@ -25,6 +25,7 @@
     }
   },
   "dependencies": {
+    "@oncojs/boxplot": "0.1.1",
     "@oncojs/react-lolliplot": "0.11.1",
     "@oncojs/sapien": "0.5.2",
     "@oncojs/survivalplot": "0.8.2",

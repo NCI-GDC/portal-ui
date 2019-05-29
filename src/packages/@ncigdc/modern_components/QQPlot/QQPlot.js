@@ -8,7 +8,6 @@ import {
   withProps,
 } from 'recompose';
 import { last, groupBy, sortBy } from 'lodash';
-import './qq.css';
 
 import { withTheme } from '@ncigdc/theme';
 import { withTooltip } from '@ncigdc/uikit/Tooltip';
@@ -22,7 +21,7 @@ const QQPlot = ({
   xAxisTitle = 'Theoretical Quantiles',
   styles = {},
   height = 320,
-  width,
+  size: { width = 400 },
   theme,
   plotTitle = '',
 }) => {
@@ -46,10 +45,11 @@ const QQPlot = ({
 
   const margin = styles.margin || {
     top: 20,
-    right: 50,
-    bottom: 65,
-    left: 45,
+    right: 20,
+    bottom: 20,
+    left: 20,
   };
+
   const chartWidth = width - margin.left - margin.right;
   const chartHeight = (height || 200) - margin.top - margin.bottom;
   const padding = styles.padding || 40;
@@ -150,16 +150,25 @@ const QQPlot = ({
     .attr('transform', `translate(${padding},0)`);
 
 // clip path to prevent qq line extending beyond y-axis
-// position and dimensions should come from chart settings
   svg
     .append('rect')
     .attr('x', -(padding))
     .attr('y', padding / 2)
-    .attr('clip-path', 'url(#regression-clip)')
+    .attr('clip-path', 'url(#regression-clip-left)')
     .style('fill', 'white')
-    .attr('height', chartHeight)
+    .attr('height', chartHeight - padding)
     .attr('width', padding * 2)
-    .attr('transform', `translate(${padding},0)`);
+    .attr('transform', `translate(${padding},${padding / 2})`);
+
+  svg
+    .append('rect')
+    .attr('x', -(padding))
+    .attr('y', padding / 2)
+    .attr('clip-path', 'url(#regression-clip-right)')
+    .style('fill', 'white')
+    .attr('height', chartHeight - padding)
+    .attr('width', padding * 2)
+    .attr('transform', `translate(${chartWidth},${padding / 2})`);
 
   svg
     .append('text')
@@ -182,7 +191,7 @@ const QQPlot = ({
   svg
     .append('text')
     .attr('text-anchor', 'middle')
-    .attr('transform', `translate(${width / 2 - (padding / 2)},${height - (padding * 2) - 10})`)
+    .attr('transform', `translate(${width / 2},${height - 10})`)
     .text(xAxisTitle)
     .style('fontSize', axisStyle.fontSize)
     .style('fontWeight', axisStyle.fontWeight)
@@ -198,7 +207,7 @@ const QQPlot = ({
   svg
     .append('text')
     .attr('text-anchor', 'middle')
-    .attr('transform', `translate(${padding - 10},${height / 3})rotate(-90)`)
+    .attr('transform', `translate(${padding - 10},${height / 2})rotate(-90)`)
     .text(yAxisTitle)
     .style('fontSize', axisStyle.fontSize)
     .style('fontWeight', axisStyle.fontWeight)

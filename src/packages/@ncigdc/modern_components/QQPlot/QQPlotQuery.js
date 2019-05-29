@@ -8,7 +8,7 @@ import { addInFilters } from '@ncigdc/utils/filters';
 import { fetchApi } from '@ncigdc/utils/ajax';
 import Spinner from '@ncigdc/uikit/Loaders/Material';
 import QQPlot from './QQPlot';
-import { Row } from '@ncigdc/uikit/Flex';
+import { Column } from '@ncigdc/uikit/Flex';
 import DownloadVisualizationButton from '@ncigdc/components/DownloadVisualizationButton';
 
 import { qnorm } from './qqUtils'
@@ -90,14 +90,14 @@ export default compose(
 }) => {
   if (isLoading) {
     return (
-      <div style={{
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        height: 200,
-        width: 300,
-      }}
-           >
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          height: 250,
+        }}
+      >
         <Spinner />
       </div>
     );
@@ -107,23 +107,14 @@ export default compose(
     sample_quantile: val,
   }))
   return (
-    <Row style={{ justifyContent: 'flex-end', width: '100%', marginBottom: 10}}>
       <QQPlot
         clinicalType={clinicalType}
         data={data}
         queryField={queryField}
-        width={400}
+        height={240}
         {...props}
         fieldName={fieldName}
-        plotTitle={'QQ Plot'}
-        />
-      <DownloadVisualizationButton
-        slug={`qq-plot-${fieldName}`}
-        noText
-        tooltipHTML="Download TSV or JSON data"
-        data={downloadData}
-        tsvData={downloadData}
+        styles={{ margin: { top: 0, right: 10, bottom: 0, left: 10}}}
       />
-      </Row>
   );
 });

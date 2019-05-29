@@ -86,7 +86,7 @@ export default compose(
   }),
   withPropsOnChange(['filters'], ({ updateData, ...props }) => updateData(props)),
 )(({
-  isLoading, data, clinicalType, queryField, fieldName, ...props
+  isLoading, data, clinicalType, queryField, fieldName, chartHeight, ...props
 }) => {
   if (isLoading) {
     return (
@@ -111,7 +111,7 @@ export default compose(
         clinicalType={clinicalType}
         data={data}
         queryField={queryField}
-        height={240}
+        height={chartHeight}
         {...props}
         fieldName={fieldName}
         styles={{ margin: { top: 0, right: 10, bottom: 0, left: 10}}}

@@ -21,7 +21,7 @@ const QQPlot = ({
   xAxisTitle = 'Theoretical Quantiles',
   styles = {},
   height = 320,
-  size: { width = 400 },
+  size: { width },
   theme,
   plotTitle = '',
 }) => {
@@ -50,8 +50,8 @@ const QQPlot = ({
     left: 20,
   };
 
-  const chartWidth = width - margin.left - margin.right;
-  const chartHeight = (height || 200) - margin.top - margin.bottom;
+  const chartWidth = (width || 300) - margin.left - margin.right;
+  const chartHeight = height - margin.top - margin.bottom;
   const padding = styles.padding || 40;
 
   const xScale = d3
@@ -76,7 +76,7 @@ const QQPlot = ({
         return Math.ceil(d.y);
       }),
     ])
-    .range([chartHeight - padding, padding]);
+    .range([chartHeight, padding]);
 
   const xAxis = d3
     .axisBottom()
@@ -108,7 +108,7 @@ const QQPlot = ({
     .select(el)
     .append('svg')
     .attr('width', chartWidth)
-    .attr('height', chartHeight);
+    .attr('height', chartHeight + padding);
 
   // draw sample points
   svg
@@ -160,6 +160,7 @@ const QQPlot = ({
     .attr('width', padding * 2)
     .attr('transform', `translate(${padding},${padding / 2})`);
 
+  // position slightly higher to account for qqline end
   svg
     .append('rect')
     .attr('x', -(padding))
@@ -168,7 +169,7 @@ const QQPlot = ({
     .style('fill', 'white')
     .attr('height', chartHeight - padding)
     .attr('width', padding * 2)
-    .attr('transform', `translate(${chartWidth},${padding / 2})`);
+    .attr('transform', `translate(${chartWidth},${padding / 2.1})`);
 
   svg
     .append('text')
@@ -185,13 +186,13 @@ const QQPlot = ({
   svg
     .append('g')
     .attr('class', 'x axis')
-    .attr('transform', `translate(${padding},${chartHeight - padding})`)
+    .attr('transform', `translate(${padding},${chartHeight})`)
     .call(xAxis);
 
   svg
     .append('text')
     .attr('text-anchor', 'middle')
-    .attr('transform', `translate(${width / 2},${height - 10})`)
+    .attr('transform', `translate(${width / 2},${height + padding})`)
     .text(xAxisTitle)
     .style('fontSize', axisStyle.fontSize)
     .style('fontWeight', axisStyle.fontWeight)

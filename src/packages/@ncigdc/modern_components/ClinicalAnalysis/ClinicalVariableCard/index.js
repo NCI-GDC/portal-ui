@@ -142,6 +142,9 @@ interface IVizButtons {
 }
 
 const CHART_HEIGHT = 250;
+const QQ_PLOT_RATIO = '75%';
+const BOX_PLOT_RATIO = '25%';
+
 const vizButtons: IVizButtons = {
   box: {
     action: updateClinicalAnalysisVariable,
@@ -593,6 +596,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
         height: 560,
         margin: '0 1rem 1rem',
         padding: '0.5rem 1rem 1rem',
+        justifyContent: 'space-between',
         ...style,
       }}
       >
@@ -641,10 +645,10 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
             ))}
         </Row>
       </Row>
-
       {isEmpty(tableData)
         ? (
           <Row
+            id={`${wrapperId}-container`}
             style={{
               alignItems: 'center',
               flex: 1,
@@ -655,7 +659,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
           </Row>
         )
         : (
-          <div id={`${wrapperId}-container`}>
+          <Column id={`${wrapperId}-container`}>
             {['histogram'].includes(variable.active_chart) && (
               <Row style={{ paddingLeft: 10 }}>
                 <form style={{ width: '100%' }}>
@@ -857,38 +861,39 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                   alignItems: 'space-between',
                   height: CHART_HEIGHT,
                   minWidth: 300,
-                  margin: '5px 2px 10px 0',
+                  marginBottom: 10,
                 }}
                 >
-                <Row style={{ justifyContent: 'space-around' }}>
+                <Row>
                   <Row style={{
-                    width: '50%',
+                    width: BOX_PLOT_RATIO,
                     marginLeft: 10,
                     fontSize: '1.3rem',
                     color: theme.greyScale3,
+                    justifyContent: 'center',
                   }}
                        >
                     Box Plot
                   </Row>
                   <Row style={{
-                    width: '50%',
+                    width: QQ_PLOT_RATIO,
                     marginLeft: 10,
                     fontSize: '1.3rem',
                     color: theme.greyScale3,
+                    justifyContent: 'center',
                   }}
                        >
                     QQ Plot
                   </Row>
                 </Row>
                 <Row style={{
-                  height: CHART_HEIGHT - 60,
-                  justifyContent: 'center',
+                  height: CHART_HEIGHT,
+                  justifyContent: 'space-between',
                 }}
                      >
                   <Column
                     style={{
-                      display: 'flex',
-                      flex: 1,
+                      width: BOX_PLOT_RATIO,
                       justifyContent: 'center',
                     }}
                     >
@@ -899,12 +904,16 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                   </Column>
                   <Column
                     style={{
-                      display: 'flex',
-                      flex: 2.5,
+                      width: QQ_PLOT_RATIO,
                       justifyContent: 'center',
                     }}
                     >
-                    <QQPlotQuery fieldName={fieldName} filters={cardFilters} first={totalDocs} />
+                    <QQPlotQuery
+                      chartHeight={CHART_HEIGHT + 10}
+                      fieldName={fieldName}
+                      filters={cardFilters}
+                      first={totalDocs}
+                      />
                   </Column>
                 </Row>
               </Column>
@@ -1079,17 +1088,18 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                 </Dropdown>
               </Row>
             )}
-
-            <EntityPageHorizontalTable
-              data={tableData}
-              headings={getHeadings(variable.active_chart)}
-              tableContainerStyle={{
-                height: 175,
-              }}
-              tableId={`analysis-${tsvSubstring}-table`}
-              />
-          </div>
+          </Column>
         )}
+      {!isEmpty(tableData) && (
+      <EntityPageHorizontalTable
+          data={tableData}
+          headings={getHeadings(variable.active_chart)}
+          tableContainerStyle={{
+            height: 175,
+          }}
+          tableId={`analysis-${tsvSubstring}-table`}
+          />
+      )}
     </Column>
   );
 };

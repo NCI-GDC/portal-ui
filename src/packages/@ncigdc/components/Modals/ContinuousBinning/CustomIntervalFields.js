@@ -6,7 +6,7 @@ const CustomIntervalFields = ({
   customInterval,
   disabled,
   handleChange,
-  handleChangeBinningMethod,
+  handleUpdateBinningMethod,
 }) => {
   const CustomIntervalInput = props => {
     const { field } = props;
@@ -52,7 +52,7 @@ const CustomIntervalFields = ({
           binningMethod="interval"
           defaultChecked={!disabled}
           label="Bin Interval"
-          onClick={handleChangeBinningMethod}
+          onClick={handleUpdateBinningMethod}
           />
       </div>
       <CustomIntervalInput field="amount" />

@@ -49,7 +49,7 @@ export default compose(
     const defaultMin = values.length ? values[0] : 0;
     const defaultMax = values.length ? values[values.length - 1] : 0;
     const quartileWithDecimals = (defaultMax - defaultMin) / 4;
-    const defaultQuartile = quartileWithDecimals.toFixed(2);
+    const defaultQuartile = Number(quartileWithDecimals.toFixed(2));
 
     return ({
       defaultMax,
@@ -95,7 +95,10 @@ export default compose(
 
       const nextCustomInterval = {
         ...customInterval,
-        [inputKey]: inputValue,
+        [inputKey]: {
+          ...customInterval[inputKey],
+          value: inputValue,
+        },
       };
       setCustomInterval(nextCustomInterval);
     };

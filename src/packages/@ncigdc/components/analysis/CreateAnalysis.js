@@ -8,10 +8,12 @@ import Button from '@ncigdc/uikit/Button';
 import { Row } from '@ncigdc/uikit/Flex';
 import { zDepth1 } from '@ncigdc/theme/mixins';
 
+import ClinicalAnalysisLaunch from './ClinicalAnalysisLaunch';
 import availableAnalysis from './availableAnalysis';
 import SelectSet from './SelectSet';
 
 import DemoButton from './DemoButton';
+import defaultVariables from './defaultCDAVEvariables';
 
 const enhance = compose(
   branch(
@@ -20,16 +22,21 @@ const enhance = compose(
       <div style={{ padding: '2rem 2.5rem' }}>
         No analysis currently available
       </div>
-    )),
+    ))
   ),
   withState('analysis', 'setAnalysis', null),
   connect(),
-  withRouter,
+  withRouter
 );
 
 const CreateAnalysis = ({ analysis, setAnalysis, dispatch, push }) => {
+  const SelectSetComponent =
+    analysis && analysis.type === 'clinical_data'
+      ? ClinicalAnalysisLaunch
+      : SelectSet;
+
   return analysis ? (
-    <SelectSet
+    <SelectSetComponent
       {...analysis}
       onCancel={() => setAnalysis(null)}
       onRun={sets => {
@@ -39,10 +46,16 @@ const CreateAnalysis = ({ analysis, setAnalysis, dispatch, push }) => {
         dispatch(
           addAnalysis({
             id,
-            sets,
             type: analysis.type,
             created,
-          }),
+            sets,
+            ...(analysis.type === 'clinical_data'
+              ? {
+                  name: Object.values(sets.case)[0],
+                  displayVariables: defaultVariables,
+                }
+              : {}),
+          })
         ).then(() => {
           push({
             query: {

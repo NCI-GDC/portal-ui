@@ -37,7 +37,7 @@ type TEmbed = {
   width?: number,
 };
 
-export type TWrapSvg = ({
+export type TWrapSvg = {
   title: string,
   selector: string,
   legends: string,
@@ -48,7 +48,7 @@ export type TWrapSvg = ({
     right?: TEmbed,
     bottom?: TEmbed,
   },
-}) => ?Element;
+};
 
 const titleHeight = 20;
 
@@ -67,7 +67,7 @@ function buildForeignObject({
 }): { html: string, height: number } {
   const foreignObjects = elements.filter(Boolean);
   // $FlowIgnore
-  const elementsHeight = sum(foreignObjects.map(e => e.offsetHeight));
+  const elementsHeight = sum(foreignObjects.map(e => e.offsetHeight || 15));
 
   return {
     height: elementsHeight,
@@ -83,8 +83,8 @@ function buildForeignObject({
         <div xmlns="http://www.w3.org/1999/xhtml">
           <div style="${styles}">
             ${foreignObjects
-              .map(e => e.innerHTML)
-              .join(`</div><div style="${styles}">`)}
+        .map(e => e.innerHTML)
+        .join(`</div><div style="${styles}">`)}
           </div>
         </div>
       </foreignObject>
@@ -92,14 +92,19 @@ function buildForeignObject({
   };
 }
 
-export const wrapSvg: TWrapSvg = ({
+const wrapSvg = ({
   selector,
   title,
   legends,
-  margins = { top: 20, right: 20, bottom: 20, left: 20 },
+  margins = {
+    top: 20,
+    right: 20,
+    bottom: 20,
+    left: 20,
+  },
   className = '',
   embed = {},
-}) => {
+}: TWrapSvg): Element => {
   const svg = document.querySelector(selector);
   if (!svg) return svg;
   const viewBox = (svg.getAttribute('viewBox') || '').split(/\s+|,/);
@@ -151,8 +156,7 @@ export const wrapSvg: TWrapSvg = ({
   const svgClass = svg.getAttribute('class');
 
   const wrapper = document.createElement('div');
-  const simpleForeign = (element, x, y, width, height) =>
-    `<foreignobject
+  const simpleForeign = (element, x, y, width, height) => `<foreignobject
       class="node"
       x=${x}
       y=${y}
@@ -164,39 +168,48 @@ export const wrapSvg: TWrapSvg = ({
   wrapper.innerHTML = `
     <svg
       width="${width}"
-      height="${sum([height, afterObject.height, 22])}"
-      viewBox="0 0 ${width} ${sum([height, afterObject.height, 22])}"
+      height="${sum([
+
+    height,
+    afterObject.height,
+    22,
+  ])}"
+      viewBox="0 0 ${width} ${sum([
+  height,
+  afterObject.height,
+  22,
+])}"
       style="font-size: 10px"
       class="${EXPORT_CLASS} ${svgClass || ''} ${className}"
     >
       <g transform="translate(0, ${margins.top || 0})">
         <text x="${width /
-          2}" y="0" text-anchor="middle" dominant-baseline="hanging">
+    2}" y="0" text-anchor="middle" dominant-baseline="hanging">
           <tspan style="font-size: 1.4rem;">${title}</tspan>
         </text>
       </g>
       ${beforeObject.html}
       ${rightObject.html}
       <g transform="translate(${margins.left || 0},${sum([
-    titleHeight,
-    margins.top,
-    beforeObject.height,
-  ])})">
+  titleHeight,
+  margins.top,
+  beforeObject.height,
+])})">
         ${svg.innerHTML.replace(
-          /url\(['"]?https?:\/\/[^#]+(#.+)['"]?\)/g,
-          'url($1)',
-        )}
+    /url\(['"]?https?:\/\/[^#]+(#.+)['"]?\)/g,
+    'url($1)',
+  )}
       </g>
       ${afterObject.html}
       ${legends
-        ? simpleForeign(
-            legends,
-            0,
-            sum([height, afterObject.height]),
-            '650',
-            '22',
-          )
-        : ''}
+      ? simpleForeign(
+        legends,
+        0,
+        sum([height, afterObject.height]),
+        '650',
+        '22',
+      )
+      : ''}
     </svg>
   `;
   return wrapper.querySelector('svg');

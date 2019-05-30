@@ -11,6 +11,7 @@ import { withTheme } from '@ncigdc/theme';
 import { withTooltip } from '@ncigdc/uikit/Tooltip';
 import withSize from '@ncigdc/utils/withSize';
 import './style.css';
+import { DEFAULT_X_AXIS_LABEL_LENGTH } from '@ncigdc/components/Charts/BarChart';
 
 const BarChart = ({
   data1,
@@ -25,6 +26,7 @@ const BarChart = ({
   theme,
   size: { width },
   minBarHeight = 0,
+  xAxisLabelLength = DEFAULT_X_AXIS_LABEL_LENGTH,
 }) => {
   const el = ReactFauxDOM.createElement('div');
   el.style.width = '100%';
@@ -32,7 +34,12 @@ const BarChart = ({
   const innerPadding = 0.3;
   const outerPadding = 0.3;
 
-  const margin = m || { top: 20, right: 50, bottom: 85, left: 55 };
+  const margin = m || {
+    top: 20,
+    right: 50,
+    bottom: 85,
+    left: 55,
+  };
   const chartWidth = width - margin.left - margin.right;
   const height = (h || 200) - margin.top - margin.bottom;
   const yAxisStyle = yAxis.style || {
@@ -115,13 +122,14 @@ const BarChart = ({
 
   xG
     .selectAll('text')
-    .style('text-anchor', 'end')
+    .style('text-anchor', 'start')
     .style('fontSize', xAxisStyle.fontSize)
     .style('fontWeight', xAxisStyle.fontWeight)
     .attr('fill', xAxisStyle.textFill)
-    .attr('dx', '-1em')
-    .attr('dy', '.15em')
-    .attr('transform', 'rotate(-45)');
+    .attr('dx', '.8em')
+    .attr('dy', '.5em')
+    .text(d => (d.length > xAxisLabelLength ? `${d.substring(0, xAxisLabelLength - 3)}...` : d))
+    .attr('transform', 'rotate(45)');
 
   xG.selectAll('path').style('stroke', xAxisStyle.stroke);
 
@@ -164,7 +172,7 @@ const BarChart = ({
     .enter()
     .append('g')
     .attr('class', 'bar-g')
-    .each(function() {
+    .each(function () {
       drawBar(d3.select(this), styles.bars1);
     });
 
@@ -174,7 +182,7 @@ const BarChart = ({
     .enter()
     .append('g')
     .attr('class', 'bar-g')
-    .each(function() {
+    .each(function () {
       drawBar(d3.select(this), styles.bars2, x1.bandwidth() / 2 + 4);
     });
 

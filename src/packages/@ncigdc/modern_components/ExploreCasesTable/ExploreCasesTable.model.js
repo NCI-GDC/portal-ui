@@ -28,7 +28,7 @@ import MutationsCount from '@ncigdc/components/MutationsCount';
 
 const youngestDiagnosis = (
   p: { age_at_diagnosis: number },
-  c: { age_at_diagnosis: number }
+  c: { age_at_diagnosis: number },
 ): { age_at_diagnosis: number } =>
   c.age_at_diagnosis < p.age_at_diagnosis ? c : p;
 
@@ -53,7 +53,7 @@ const FilesLink = ({ node, fields = [], children }) =>
       query={{
         filters: makeFilter(
           [{ field: 'cases.case_id', value: [node.case_id] }, ...fields],
-          false
+          false,
         ),
       }}
     >
@@ -69,7 +69,7 @@ const getProjectIdFilter = projects =>
         value: projects.edges.map(({ node: p }) => p.project_id),
       },
     ],
-    false
+    false,
   );
 
 const casesTableModel = [
@@ -212,7 +212,7 @@ const casesTableModel = [
           ssmCount={ssmCount}
           filters={replaceFilters(
             makeFilter([{ field: 'cases.case_id', value: [node.case_id] }]),
-            filters
+            filters,
           )}
         />
       </Td>
@@ -240,9 +240,9 @@ const casesTableModel = [
             filters={replaceFilters(
               makeFilter(
                 [{ field: 'cases.case_id', value: [node.case_id] }],
-                false
+                false,
               ),
-              filters
+              filters,
             )}
           >
             {(node.score || 0).toLocaleString()}
@@ -330,7 +330,7 @@ const casesTableModel = [
         .map(x => x.node)
         .reduce(
           (p, c) => (c.age_at_diagnosis < p ? c.age_at_diagnosis : p),
-          Infinity
+          Infinity,
         );
       return (
         <Td>{age !== Infinity && node.diagnoses ? ageDisplay(age) : '--'}</Td>
@@ -339,18 +339,15 @@ const casesTableModel = [
   },
   {
     name: 'Days to death',
-    id: 'diagnoses.days_to_death',
+    id: 'demographic.days_to_death',
     sortable: false,
     downloadable: true,
     hidden: true,
     th: () => <Th rowSpan="2">Days to death</Th>,
     td: ({ node }) => {
-      const primaryDiagnosis = node.diagnoses.hits.edges
-        .map(x => x.node)
-        .reduce(youngestDiagnosis, { age_at_diagnosis: Infinity });
       return (
         <Td>
-          {(node.diagnoses && ageDisplay(primaryDiagnosis.days_to_death)) ||
+          {(node.demographic && ageDisplay(node.demographic.days_to_death)) ||
             '--'}
         </Td>
       );
@@ -358,16 +355,13 @@ const casesTableModel = [
   },
   {
     name: 'Vital Status',
-    id: 'diagnoses.vital_status',
+    id: 'demographic.vital_status',
     sortable: false,
     downloadable: true,
     hidden: true,
     th: () => <Th rowSpan="2">Vital Status</Th>,
     td: ({ node }) => {
-      const primaryDiagnosis = node.diagnoses.hits.edges
-        .map(x => x.node)
-        .reduce(youngestDiagnosis, { age_at_diagnosis: Infinity });
-      return <Td>{primaryDiagnosis.vital_status}</Td>;
+      return <Td>{node.demographic && node.demographic.vital_status}</Td>;
     },
   },
   {

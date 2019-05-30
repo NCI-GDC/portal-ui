@@ -1,7 +1,11 @@
 // @flow
 import React from 'react';
 
-export const internalHighlight = (query: string, foundText: string) => {
+export const internalHighlight = (
+  query: string,
+  foundText: string,
+  highlightStyle: React.CSSProperties = { fontWeight: 'bold' }
+) => {
   const index = (foundText || '')
     .toLocaleLowerCase()
     .indexOf(query.toLocaleLowerCase());
@@ -12,7 +16,7 @@ export const internalHighlight = (query: string, foundText: string) => {
     return (
       <span>
         {seg1}
-        <b>{foundQuery}</b>
+        <span style={highlightStyle}>{foundQuery}</span>
         {seg2}
       </span>
     );

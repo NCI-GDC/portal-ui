@@ -45,7 +45,7 @@ export const API_OVERRIDE_KEYS = [
 ];
 
 export const LOCAL_STORAGE_API_OVERRIDE = API_OVERRIDE_KEYS.some(
-  k => localStorage[k],
+  k => localStorage[k]
 );
 
 export const DATA_CATEGORIES = {
@@ -259,7 +259,7 @@ export const MAX_SET_NAME_LENGTH = 100;
 export const COHORT_COMPARISON_FACETS = {
   'demographic.ethnicity': 'Ethnicity',
   'demographic.gender': 'Gender',
-  'diagnoses.vital_status': 'Vital Status',
+  'demographic.vital_status': 'Vital Status',
   'demographic.race': 'Race',
   'diagnoses.age_at_diagnosis': 'Age at Diagnosis',
 };
@@ -285,7 +285,8 @@ export const IMPACT_SHORT_FORMS = {
   },
 };
 
-export const FAKE_USER = process.env.REACT_APP_ALLOW_FAKE_USER
+export const FAKE_USER =
+  localStorage.REACT_APP_ALLOW_FAKE_USER || process.env.REACT_APP_ALLOW_FAKE_USER
   ? {
       username: 'DEV_USER',
       projects: {
@@ -306,4 +307,21 @@ export const IS_DEV = process.env.NODE_ENV === 'development';
 export const DISPLAY_CDAVE =
   localStorage.REACT_APP_DISPLAY_CDAVE ||
   process.env.REACT_APP_DISPLAY_CDAVE ||
+  false;
+
+export const CLINICAL_BLACKLIST = [
+  'state',
+  'score',
+  'submitter_id',
+  'demographic_id',
+  'updated_datetime',
+  'diagnosis_id',
+  'created_datetime',
+  'exposure_id',
+  'treatment_id',
+];
+
+export const IS_CDAVE_DEV =
+  localStorage.REACT_APP_IS_CDAVE_DEV ||
+  process.env.NODE_ENV === 'development' ||
   false;

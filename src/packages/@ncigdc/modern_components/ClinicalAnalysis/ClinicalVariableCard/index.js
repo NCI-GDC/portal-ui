@@ -26,7 +26,7 @@ import { scaleOrdinal, schemeCategory10 } from 'd3';
 
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import Button from '@ncigdc/uikit/Button';
-import { Tooltip } from '@ncigdc/uikit/Tooltip';
+import { Tooltip, TooltipInjector } from '@ncigdc/uikit/Tooltip';
 import { visualizingButton, zDepth1 } from '@ncigdc/theme/mixins';
 
 import EntityPageHorizontalTable from '@ncigdc/components/EntityPageHorizontalTable';
@@ -863,10 +863,11 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                     margin: '5px 2px 10px',
                   }}
                   >
+                  <TooltipInjector>
                     <BoxPlotWrapper
-                      axisTitle={axisTitle ? `${axisTitle} (${dataDimension})` : dataDimension}
                       data={dataValues}
                       />
+                  </TooltipInjector>
                 </div>
               ) : (
                 <Row

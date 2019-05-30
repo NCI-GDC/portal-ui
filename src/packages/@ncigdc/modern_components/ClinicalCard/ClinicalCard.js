@@ -398,6 +398,10 @@ Exposures (
                           th: 'Years Smoked',
                           td: x.node.years_smoked,
                         },
+                        {
+                          th: 'Pack Years Smoked',
+                          td: x.node.pack_years_smoked,
+                        },
                       ]}
                       />
                   ))}

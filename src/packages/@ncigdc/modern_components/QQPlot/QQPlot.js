@@ -9,9 +9,8 @@ import {
 } from 'recompose';
 import { last, groupBy, sortBy } from 'lodash';
 
-import { withTheme } from '@ncigdc/theme';
-import { withTooltip } from '@ncigdc/uikit/Tooltip';
-import withSize from '@ncigdc/utils/withSize';
+import { withTheme } from '@ncigdc/theme'; // remove and apply our themes in wrapper
+import withSize from '@ncigdc/utils/withSize'; // remove and apply in wrapper
 import { qnorm } from './qqUtils';
 import '@ncigdc/components/Charts/style.css';
 
@@ -219,7 +218,6 @@ const QQPlot = ({
 
 export default compose(
   withTheme,
-  withTooltip,
   withState('chart', 'setState', <span />),
   withSize({ refreshRate: 16 }),
   withProps(({ data }) => ({ data })),

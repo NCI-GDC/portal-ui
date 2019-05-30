@@ -6,7 +6,7 @@ import { visualizingButton } from '@ncigdc/theme/mixins';
 import { Th } from '@ncigdc/uikit/Table';
 import RangeTableRow from './RangeTableRow';
 import BinningMethodInput from './BinningMethodInput';
-import CustomIntervalFields from './CustomIntervalFields';
+import CustomIntervalSettingsFields from './CustomIntervalSettingsFields';
 
 const styles = {
   button: {
@@ -57,7 +57,7 @@ export default compose(
       defaultQuartile,
     });
   }),
-  withState('customInterval', 'setCustomInterval', (props) => {
+  withState('customIntervalSettings', 'setCustomIntervalSettings', props => {
     const { defaultMax, defaultMin, defaultQuartile } = props;
     return ({
       amount: {
@@ -76,7 +76,7 @@ export default compose(
   })
 )(
   ({
-    customInterval,
+    customIntervalSettings,
     defaultMax,
     defaultMin,
     defaultQuartile,
@@ -84,26 +84,27 @@ export default compose(
     onClose,
     rangeRows,
     selectedBinningMethod,
-    setCustomInterval,
+    setCustomIntervalSettings,
     setRangeRows,
     setSelectedBinningMethod,
     warning,
   }) => {
-    const updateCustomInterval = (target) => {
+    const updateCustomIntervalSettings = target => {
       const inputKey = target.id.split('-')[2];
-      const inputValue = Number(target.value);
+      const inputValue = target.value;
 
-      const nextCustomInterval = {
-        ...customInterval,
+      const nextCustomIntervalSettings = {
+        ...customIntervalSettings,
         [inputKey]: {
-          ...customInterval[inputKey],
-          value: inputValue,
+          ...customIntervalSettings[inputKey],
+          value: Number(inputValue),
         },
       };
-      setCustomInterval(nextCustomInterval);
+
+      setCustomIntervalSettings(nextCustomIntervalSettings);
     };
 
-    const updateRangeRows = (target) => {
+    const updateRangeRows = target => {
       const targetInfo = target.id.split('-');
       const inputRowIndex = Number(targetInfo[2]);
       const inputKey = targetInfo[3];
@@ -154,113 +155,110 @@ export default compose(
             to update the analysis plots.
           </p>
         </div>
-        <form>
-          <Row>
-            <Column style={styles.formBg}>
-              <h3>Define bins by:</h3>
-              <CustomIntervalFields
-                customInterval={customInterval}
-                disabled={selectedBinningMethod !== 'interval'}
-                handleChange={e => {
-                  updateCustomInterval(e.target);
-                }}
-                handleUpdateBinningMethod={() => {
-                  setSelectedBinningMethod('interval');
-                }}
-                />
+        <Row>
+          <Column style={styles.formBg}>
+            <h3>Define bins by:</h3>
+            <CustomIntervalSettingsFields
+              customIntervalSettings={customIntervalSettings}
+              disabled={selectedBinningMethod !== 'interval'}
+              handleChange={e => {
+                updateCustomIntervalSettings(e.target);
+              }}
+              handleUpdateBinningMethod={() => {
+                setSelectedBinningMethod('interval');
+              }}
+              />
 
-              <div className="binning-range">
-                <div style={{ marginBottom: '15px' }}>
-                  <BinningMethodInput
-                    binningMethod="range"
-                    defaultChecked={selectedBinningMethod === 'range'}
-                    label="Manually"
-                    onClick={() => {
-                      setSelectedBinningMethod('range');
-                    }}
-                    />
-                </div>
-                <table style={{
-                  marginBottom: '20px',
-                  width: '100%',
-                }}
-                       >
-                  <thead>
-                    <tr>
-                      <Th id="range-table-label-name" scope="col">Bin Name</Th>
-                      <Th id="range-table-label-min" scope="col">From</Th>
-                      <Th id="range-table-label-max" scope="col">To</Th>
-                      <Th scope="col">Remove</Th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {rangeRows.map((row, rowIndex) => (
-                      <RangeTableRow
-                        disabled={selectedBinningMethod !== 'range'}
-                        handleChange={e => {
-                          updateRangeRows(e.target);
-                        }}
-                        handleRemove={() => {
-                          const nextRangeRows = rangeRows.filter((filterRow, filterRowIndex) => filterRowIndex !== rowIndex);
-                          setRangeRows(nextRangeRows);
-                        }}
-                        key={`range-row-${rowIndex}`}
-                        row={row}
-                        rowIndex={rowIndex}
-                        />
-                    ))}
-                  </tbody>
-                </table>
-                <Button
-                  disabled={selectedBinningMethod !== 'range'}
+            <div className="binning-range">
+              <div style={{ marginBottom: '15px' }}>
+                <BinningMethodInput
+                  binningMethod="range"
+                  defaultChecked={selectedBinningMethod === 'range'}
+                  label="Manually"
                   onClick={() => {
-                    const nextRangeRows = [...rangeRows, defaultRangeRow];
-                    setRangeRows(nextRangeRows);
+                    setSelectedBinningMethod('range');
                   }}
-                  style={{
-                    ...styles.button,
-                    display: 'flex',
-                    marginLeft: 'auto',
-                    maxWidth: '100px',
-                    ...(selectedBinningMethod !== 'range' ? styles.inputDisabled : {}),
-                  }}
-                  >
-                  <i aria-hidden="true" className="fa fa-plus-circle" />
-                  {' '}
-                  &nbsp; Add
-                </Button>
+                  />
               </div>
-            </Column>
-          </Row>
-          <Row
-            spacing="1rem"
-            style={{
-              justifyContent: 'flex-end',
-              margin: '20px',
-            }}
+              <table style={{
+                marginBottom: '20px',
+                width: '100%',
+              }}
+                     >
+                <thead>
+                  <tr>
+                    <Th id="range-table-label-name" scope="col">Bin Name</Th>
+                    <Th id="range-table-label-min" scope="col">From</Th>
+                    <Th id="range-table-label-max" scope="col">To</Th>
+                    <Th scope="col">Remove</Th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {rangeRows.map((row, rowIndex) => (
+                    <RangeTableRow
+                      disabled={selectedBinningMethod !== 'range'}
+                      handleChange={e => {
+                        updateRangeRows(e.target);
+                      }}
+                      handleRemove={() => {
+                        const nextRangeRows = rangeRows.filter((filterRow, filterRowIndex) => filterRowIndex !== rowIndex);
+                        setRangeRows(nextRangeRows);
+                      }}
+                      key={`range-row-${rowIndex}`}
+                      row={row}
+                      rowIndex={rowIndex}
+                      />
+                  ))}
+                </tbody>
+              </table>
+              <Button
+                disabled={selectedBinningMethod !== 'range'}
+                onClick={() => {
+                  const nextRangeRows = [...rangeRows, defaultRangeRow];
+                  setRangeRows(nextRangeRows);
+                }}
+                style={{
+                  ...styles.button,
+                  display: 'flex',
+                  marginLeft: 'auto',
+                  maxWidth: '100px',
+                  ...(selectedBinningMethod !== 'range' ? styles.inputDisabled : {}),
+                }}
+                >
+                <i aria-hidden="true" className="fa fa-plus-circle" />
+                &nbsp; Add
+              </Button>
+            </div>
+          </Column>
+        </Row>
+        <Row
+          spacing="1rem"
+          style={{
+            justifyContent: 'flex-end',
+            margin: '20px',
+          }}
+          >
+          <span style={{
+            color: 'red',
+            justifyContent: 'flex-start',
+            visibility: warning.length > 0 ? 'visible' : 'hidden',
+          }}
+                >
+            {`Warning: ${warning}`}
+          </span>
+          <Button
+            onClick={onClose}
+            style={styles.button}
             >
-            <span style={{
-              color: 'red',
-              justifyContent: 'flex-start',
-              visibility: warning.length > 0 ? 'visible' : 'hidden',
-            }}
-                  >
-              {`Warning: ${warning}`}
-            </span>
-            <Button
-              onClick={onClose}
-              style={styles.button}
-              >
-              Cancel
-            </Button>
-            <Button
-              onClick={() => console.log('update')}
-              style={styles.button}
-              >
-              Save Bins
-            </Button>
-          </Row>
-        </form>
+            Cancel
+          </Button>
+          <Button
+            onClick={() => console.log('update')}
+            style={styles.button}
+            >
+            Save Bins
+          </Button>
+        </Row>
       </Column>
     );
   }

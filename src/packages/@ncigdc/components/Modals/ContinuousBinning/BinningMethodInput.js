@@ -14,7 +14,7 @@ const BinningMethodInput = ({
         type="radio"
         value={binningMethod}
         />
-      <label htmlFor={`binning-method-${binningMethod}`} style={{ lineHeight: '26px' }}>
+      <label htmlFor={`binning-method-${binningMethod}`} style={{ lineHeight: '32px' }}>
         {label}
         :&nbsp;
       </label>

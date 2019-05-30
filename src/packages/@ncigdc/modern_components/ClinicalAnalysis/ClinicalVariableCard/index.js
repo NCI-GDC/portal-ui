@@ -213,7 +213,9 @@ const styles = {
   }),
 };
 
-const parseBucketValue = value => (value % 1 ? Number.parseFloat(value).toFixed(2) : Math.round(value * 100) / 100);
+const parseBucketValue = value => (value % 1
+  ? Number.parseFloat(value).toFixed(2)
+  : Math.round(value * 100) / 100);
 
 const getRangeValue = (key, nextInterval) => `${parseBucketValue(key)}${nextInterval === 0 ? ' and up' : ` to ${parseBucketValue(nextInterval - 1)}`}`;
 
@@ -478,6 +480,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
     variable.active_chart === 'histogram'
       ? tableData.map(d => {
         return {
+          fullLabel: d.key,
           label: truncate(d.key, { length: 18 }),
           tooltip: `${d.key}: ${d.chart_doc_count.toLocaleString()}`,
           value:
@@ -533,41 +536,44 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
   };
 
   const getCategoricalSetFilters = () => {
-    let bucketFilters = filters;
-    if (
-      selectedBuckets.filter(bucket => bucket.key !== '_missing').length > 0
-    ) {
-      bucketFilters = addInFilters(bucketFilters, {
-        content: [
-          {
-            content: {
-              field: fieldName,
-              value: selectedBuckets
-                .filter(bucket => bucket.key !== '_missing')
-                .map(selectedBucket => selectedBucket.key),
-            },
-            op: 'in',
+    const bucketFilters = []
+      .concat(selectedBuckets.filter(bucket => bucket.key !== '_missing').length > 0 && [
+        {
+          content: {
+            field: fieldName,
+            value: selectedBuckets
+              .filter(bucket => bucket.key !== '_missing')
+              .map(selectedBucket => selectedBucket.key),
           },
-        ],
-        op: 'and',
-      });
-    }
+          op: 'in',
+        },
+      ])
+      .concat(selectedBuckets.some(bucket => bucket.key === '_missing') && [
+        {
+          content: {
+            field: fieldName,
+            value: 'MISSING',
+          },
+          op: 'is',
+        },
+      ])
+      .filter(item => item);
 
-    if (find(selectedBuckets, bucket => bucket.key === '_missing')) {
-      bucketFilters = addInFilters(bucketFilters, {
-        content: [
-          {
-            content: {
-              field: fieldName,
-              value: 'MISSING',
-            },
-            op: 'is',
-          },
-        ],
-        op: 'and',
-      });
-    }
-    return bucketFilters;
+    return Object.assign(
+      {},
+      filters,
+      bucketFilters.length && {
+        content: filters.content
+          .concat(
+            bucketFilters.length > 1
+              ? {
+                content: bucketFilters,
+                op: 'or',
+              }
+              : bucketFilters[0]
+          ),
+      }
+    );
   };
 
   const cardFilters = selectedBuckets && selectedBuckets.length
@@ -707,8 +713,8 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                     }))}
                     key="download"
                     noText
-                    onClick={() => {
-                      console.log('chartData', chartData);
+                    onClick={(e) => {
+                      e.preventDefault();
                     }}
                     slug={`${fieldName}-bar-chart`}
                     style={{
@@ -716,7 +722,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                       marginRight: 2,
                     }}
                     svg={() => wrapSvg({
-                      selector: `#${wrapperId} svg`,
+                      selector: `#${wrapperId}-container .test-bar-chart svg`,
                       title: humanify({ term: fieldName }),
                     })
                     }

@@ -1,10 +1,11 @@
 import React from 'react';
 import {
   compose,
-  withState,
-  withPropsOnChange,
-  withProps,
+  setDisplayName,
   withHandlers,
+  withProps,
+  withPropsOnChange,
+  withState,
 } from 'recompose';
 import { connect } from 'react-redux';
 import SearchIcon from 'react-icons/lib/fa/search';
@@ -23,16 +24,13 @@ import {
 } from '@ncigdc/theme/icons';
 import CopyIcon from '@ncigdc/theme/icons/Copy';
 import Hidden from '@ncigdc/components/Hidden';
-import { visualizingButton } from '@ncigdc/theme/mixins';
-import { zDepth1 } from '@ncigdc/theme/mixins';
+import { visualizingButton, zDepth1 } from '@ncigdc/theme/mixins';
+
 import EntityPageHorizontalTable from '@ncigdc/components/EntityPageHorizontalTable';
-import ClinicalVariableCard from './ClinicalVariableCard';
-import ContinuousAggregation from './ContinuousAggregationQuery';
 import Input from '@ncigdc/uikit/Form/Input';
 import { withTheme } from '@ncigdc/theme';
 import countComponents from '@ncigdc/modern_components/Counts';
 import ExploreLink from '@ncigdc/components/Links/ExploreLink';
-import ControlPanelNode from './ControlPanelNode';
 import {
   updateClinicalAnalysisProperty,
   addAnalysis,
@@ -51,6 +49,9 @@ import './survivalPlot.css';
 // survival plot
 import { getDefaultCurve } from '@ncigdc/utils/survivalplot';
 import SurvivalPlotWrapper from '@ncigdc/components/SurvivalPlotWrapper';
+import ControlPanelNode from './ControlPanelNode';
+import ContinuousAggregation from './ContinuousAggregationQuery';
+import ClinicalVariableCard from './ClinicalVariableCard';
 
 interface IAnalysisResultProps {
   sets: any;
@@ -96,63 +97,69 @@ const styles = {
 
 const plotTypes = {
   categorical: ['histogram', 'survival'],
-  continuous: ['histogram', 'survival', 'box'],
+  continuous: [
+    'histogram',
+    'survival',
+    'box',
+  ],
 };
 
 const CopyAnalysisModal = compose(
+  setDisplayName('EnhancedCopyAnalysisModal'),
   withState(
     'modalInputValue',
     'setModalInputValue',
     ({ analysis }) => `${analysis.name} copy`
   )
-)(({ analysis, modalInputValue, setModalInputValue, dispatch, push }) => {
-  return (
-    <BaseModal
-      title={'Copy Analysis'}
-      onClose={() => {
-        const created = new Date().toISOString();
-        const id = created;
-        dispatch(
-          addAnalysis({
-            ...analysis,
-            id,
-            created,
-            name: modalInputValue,
-          })
-        ).then(() => {
-          push({
-            query: {
-              analysisTableTab: 'result',
-              analysisId: id,
-            },
-          });
+)(({
+  analysis, dispatch, modalInputValue, push, setModalInputValue,
+}) => (
+  <BaseModal
+    extraButtons={
+      <Button onClick={() => dispatch(setModal(null))}>Cancel</Button>
+    }
+    onClose={() => {
+      const created = new Date().toISOString();
+      const id = created;
+      dispatch(
+        addAnalysis({
+          ...analysis,
+          id,
+          created,
+          name: modalInputValue,
+        })
+      ).then(() => {
+        push({
+          query: {
+            analysisTableTab: 'result',
+            analysisId: id,
+          },
         });
-      }}
-      extraButtons={
-        <Button onClick={() => dispatch(setModal(null))}>Cancel</Button>
-      }
+      });
+    }}
+    title="Copy Analysis"
     >
-      <Row style={{ marginBottom: 10 }}>
-        Please enter a name for the new analysis.
-      </Row>
-      <Row>
-        <label htmlFor={'copy-analysis-input'}>
-          <Hidden>{modalInputValue}</Hidden>
-        </label>
-        <Input
-          id={'copy-analysis-input'}
-          value={modalInputValue}
-          onChange={e => setModalInputValue(e.target.value)}
-          style={{ borderRadius: '4px' }}
-          autoFocus
-          onFocus={e => e.target.select()}
+    <Row style={{ marginBottom: 10 }}>
+      Please enter a name for the new analysis.
+    </Row>
+    <Row>
+      <label htmlFor="copy-analysis-input">
+        <Hidden>{modalInputValue}</Hidden>
+      </label>
+      <Input
+        autoFocus
+        id="copy-analysis-input"
+        onChange={e => setModalInputValue(e.target.value)}
+        onFocus={e => e.target.select()}
+        style={{ borderRadius: '4px' }}
+        value={modalInputValue}
         />
-      </Row>
-    </BaseModal>
-  );
-});
+    </Row>
+  </BaseModal>
+));
 
 const enhance = compose(
+  setDisplayName('EnhancedClinicalAnalysisResult'),
   connect((state: any, props: any) => ({
     allSets: state.sets,
     currentAnalysis: state.analysis.saved.find(a => a.id === props.id),
@@ -170,14 +177,14 @@ const enhance = compose(
         },
       },
     }) => ({
-      parsedFacets: facets ? tryParseJSON(facets) : {},
       hits,
+      parsedFacets: facets ? tryParseJSON(facets) : {},
     })
   ),
   withProps(
     ({
-      setOverallSurvivalData,
       currentAnalysis,
+      setOverallSurvivalData,
       setState,
       setSurvivalPlotLoading,
     }) => ({
@@ -190,7 +197,7 @@ const enhance = compose(
             {
               op: '=',
               content: {
-                field: `cases.case_id`,
+                field: 'cases.case_id',
                 value: [`set_id:${setId}`],
               },
             },
@@ -214,36 +221,35 @@ const enhance = compose(
     }
   ),
   withHandlers({
-    handleQueryInputChange: ({ setSearchValue }) => (event: any) =>
-      setSearchValue(event.target.value),
+    handleQueryInputChange: ({ setSearchValue }) => (event: any) => setSearchValue(event.target.value),
   }),
   withTheme,
   withRouter
 );
 
 const ClinicalAnalysisResult = ({
-  sets,
-  Icon,
-  label,
   allSets,
-  theme,
-  controlPanelExpanded,
-  setControlPanelExpanded,
-  variables,
-  id,
-  dispatch,
-  currentAnalysis,
-  push,
-  overallSurvivalData,
-  populateSurvivalData,
-  survivalPlotLoading,
-  parsedFacets,
-  displayVariables,
   clinicalAnalysisFields,
-  hits,
-  searchValue,
-  setSearchValue,
+  controlPanelExpanded,
+  currentAnalysis,
+  dispatch,
+  displayVariables,
   handleQueryInputChange,
+  hits,
+  Icon,
+  id,
+  label,
+  overallSurvivalData,
+  parsedFacets,
+  populateSurvivalData,
+  push,
+  searchValue,
+  setControlPanelExpanded,
+  sets,
+  setSearchValue,
+  survivalPlotLoading,
+  theme,
+  variables,
   ...props
 }: IAnalysisResultProps) => {
   const setId = Object.keys(currentAnalysis.sets.case)[0];
@@ -252,11 +258,11 @@ const ClinicalAnalysisResult = ({
   if (hits.total === 0) {
     return (
       <DeprecatedSetResult
+        allSets={allSets}
         currentAnalysis={currentAnalysis}
         dispatch={dispatch}
-        allSets={allSets}
         Icon={Icon}
-      />
+        />
     );
   }
   return (
@@ -267,36 +273,49 @@ const ClinicalAnalysisResult = ({
           justifyContent: 'space-between',
           padding: 10,
         }}
-      >
-        <Row spacing={'10px'} style={{ alignItems: 'center', width: '80%' }}>
-          <Icon style={{ height: 50, width: 50 }} />
+        >
+        <Row
+          spacing="10px"
+          style={{
+            alignItems: 'center',
+            width: '80%',
+          }}
+          >
+          <Icon
+            style={{
+              height: 50,
+              width: 50,
+            }}
+            />
           <Column style={{ width: '100%' }}>
-            <Row style={{ alignItems: 'center' }} spacing={'5px'}>
+            <Row spacing="5px" style={{ alignItems: 'center' }}>
               <div style={{ width: '70%' }}>
                 <EditableLabel
+                  containerStyle={{ justifyContent: 'flex-start' }}
                   disabled={currentAnalysis.id === 'demo-clinical_data'}
-                  disabledMessage={
-                    'Editing analysis name is not available in demo mode'
-                  }
-                  text={currentAnalysis.name}
-                  handleSave={value =>
-                    dispatch(
-                      updateClinicalAnalysisProperty({
-                        value: _.trim(value),
-                        property: 'name',
-                        id,
-                      })
-                    )
+                  disabledMessage="Editing analysis name is not available in demo mode"
+                  handleSave={value => dispatch(
+                    updateClinicalAnalysisProperty({
+                      value: _.trim(value),
+                      property: 'name',
+                      id,
+                    })
+                  )
                   }
                   iconStyle={{
                     marginLeft: 10,
                     fontSize: '1.8rem',
                     cursor: 'pointer',
                   }}
-                  containerStyle={{ justifyContent: 'flex-start' }}
-                >
-                  <h1 style={{ fontSize: '2.5rem', margin: 5 }}>
-                    {currentAnalysis.name}{' '}
+                  text={currentAnalysis.name}
+                  >
+                  <h1
+                    style={{
+                      fontSize: '2.5rem',
+                      margin: 5,
+                    }}
+                    >
+                    {`${currentAnalysis.name} `}
                   </h1>
                 </EditableLabel>
               </div>
@@ -304,8 +323,9 @@ const ClinicalAnalysisResult = ({
             <span style={{ margin: '0 0 5px 5px' }}>{label}</span>
           </Column>
         </Row>
-        <Row spacing={'5px'}>
+        <Row spacing="5px">
           <Button
+            leftIcon={<CopyIcon />}
             onClick={() => {
               dispatch(
                 setModal(
@@ -313,22 +333,24 @@ const ClinicalAnalysisResult = ({
                     analysis={currentAnalysis}
                     dispatch={dispatch}
                     push={push}
-                  />
+                    />
                 )
               );
             }}
-            leftIcon={<CopyIcon />}
-          >
+            >
             Copy Analysis
           </Button>
           <Tooltip Component={<span>Print</span>}>
             <Button
-              style={{ ...visualizingButton, height: '100%' }}
               disabled={false}
               onClick={() => {
                 window.print();
               }}
-            >
+              style={{
+                ...visualizingButton,
+                height: '100%',
+              }}
+              >
               <PrintIcon />
               <Hidden>Print</Hidden>
             </Button>
@@ -338,16 +360,17 @@ const ClinicalAnalysisResult = ({
       <Row>
         {!controlPanelExpanded && (
           <Column>
-            <Tooltip Component={'Show Control Panel'}>
+            <Tooltip Component="Show Control Panel">
               <DoubleArrowRightIcon
-                style={styles.collapseIcon}
                 onClick={() => setControlPanelExpanded(!controlPanelExpanded)}
-              />
+                style={styles.collapseIcon}
+                />
             </Tooltip>
           </Column>
         )}
         {controlPanelExpanded && (
           <Column
+            className="no-print"
             style={{
               ...zDepth1,
               flex: 1,
@@ -359,14 +382,13 @@ const ClinicalAnalysisResult = ({
               maxHeight: 'calc(100vh - 50px',
               overflowY: 'hidden',
             }}
-            className="no-print"
-          >
+            >
             <Row style={{ justifyContent: 'flex-end' }}>
-              <Tooltip Component={'Hide Control Panel'}>
+              <Tooltip Component="Hide Control Panel">
                 <DoubleArrowLeftIcon
-                  style={styles.collapseIcon}
                   onClick={() => setControlPanelExpanded(!controlPanelExpanded)}
-                />
+                  style={styles.collapseIcon}
+                  />
               </Tooltip>
             </Row>
             <Row
@@ -374,9 +396,9 @@ const ClinicalAnalysisResult = ({
                 justifyContent: 'space-between',
                 padding: '0 10px',
               }}
-            >
+              >
               <span style={{ fontWeight: 'bold' }}>Cohort</span>
-              <span style={{ fontWeight: 'bold' }}>{`# Cases`}</span>
+              <span style={{ fontWeight: 'bold' }}># Cases</span>
             </Row>
             <Row
               style={{
@@ -385,16 +407,14 @@ const ClinicalAnalysisResult = ({
                 padding: '10px 10px 15px',
                 borderBottom: `1px solid ${theme.greyScale4}`,
               }}
-            >
+              >
               <CohortDropdown
-                sets={allSets}
                 currentAnalysis={currentAnalysis}
-                dispatch={dispatch}
                 disabled={currentAnalysis.id === 'demo-clinical_data'}
-                disabledMessage={
-                  'Switching cohorts is not available in demo mode'
-                }
-              />
+                disabledMessage="Switching cohorts is not available in demo mode"
+                dispatch={dispatch}
+                sets={allSets}
+                />
               <ExploreLink
                 query={{
                   filters: {
@@ -403,23 +423,23 @@ const ClinicalAnalysisResult = ({
                       {
                         op: '=',
                         content: {
-                          field: `cases.case_id`,
+                          field: 'cases.case_id',
                           value: `set_id:${setId}`,
                         },
                       },
                     ],
                   },
                 }}
-              >
+                >
                 <CountComponent
                   filters={{
                     op: '=',
                     content: {
-                      field: `cases.case_id`,
+                      field: 'cases.case_id',
                       value: `set_id:${setId}`,
                     },
                   }}
-                />
+                  />
               </ExploreLink>
             </Row>
             <Row
@@ -427,7 +447,7 @@ const ClinicalAnalysisResult = ({
                 height: 30,
                 margin: 15,
               }}
-            >
+              >
               <label htmlFor="search-facets">
                 <SearchIcon style={styles.searchIcon(theme)} />
                 <Hidden>Search</Hidden>
@@ -435,24 +455,29 @@ const ClinicalAnalysisResult = ({
               <Input
                 id="search-facets"
                 name="search-facets"
-                placeholder="Search"
-                value={searchValue}
                 onChange={handleQueryInputChange}
+                placeholder="Search"
                 style={{ borderRadius: '0 4px 4px 0' }}
-              />
+                value={searchValue}
+                />
             </Row>
             <Column>
               <ControlPanelNode
-                clinicalAnalysisFields={clinicalAnalysisFields}
-                usefulFacets={getUsefulFacets(parsedFacets)}
-                currentAnalysis={currentAnalysis}
                 analysis_id={id}
+                clinicalAnalysisFields={clinicalAnalysisFields}
+                currentAnalysis={currentAnalysis}
                 searchValue={searchValue}
-              />
+                usefulFacets={getUsefulFacets(parsedFacets)}
+                />
             </Column>
           </Column>
         )}
-        <Column style={{ flex: 4, minWidth: 0 }}>
+        <Column
+          style={{
+            flex: 4,
+            minWidth: 0,
+          }}
+          >
           {/* <Column
             style={{
               ...zDepth1,
@@ -493,6 +518,7 @@ const ClinicalAnalysisResult = ({
             </Row>
           </Column> */}
           <Column
+            className="print-grid"
             style={{
               display: 'grid',
               gridTemplateColumns: controlPanelExpanded
@@ -501,8 +527,7 @@ const ClinicalAnalysisResult = ({
               gridTemplateRows: 'repeat(auto)',
               ...(controlPanelExpanded ? {} : { marginLeft: '1%' }),
             }}
-            className="print-grid"
-          >
+            >
             <Column
               style={{
                 ...zDepth1,
@@ -510,19 +535,19 @@ const ClinicalAnalysisResult = ({
                 margin: '0 1rem 1rem',
                 padding: '0.5rem 1rem 1rem',
               }}
-            >
+              >
               <div
                 style={{
                   margin: '5px 0 10px',
                 }}
-              >
+                >
                 <h2
                   style={{
                     fontSize: '1.8rem',
-                    marginTop: 10,
                     marginBottom: 0,
+                    marginTop: 10,
                   }}
-                >
+                  >
                   Overall Survival
                 </h2>
               </div>
@@ -531,64 +556,67 @@ const ClinicalAnalysisResult = ({
                   height: '250px',
                   margin: '5px 2px 10px',
                 }}
-              >
+                >
                 <SurvivalPlotWrapper
                   {...overallSurvivalData}
                   height={430}
                   plotType="clinicalOverall"
-                  uniqueClass="clinical-survival-plot"
                   survivalPlotLoading={survivalPlotLoading}
-                />
+                  uniqueClass="clinical-survival-plot"
+                  />
               </div>
             </Column>
 
             {_.map(displayVariables, (varProperties, varFieldName) => {
               const filters = {
-                op: 'and',
                 content: [
                   {
-                    op: '=',
                     content: {
-                      field: `cases.case_id`,
+                      field: 'cases.case_id',
                       value: [`set_id:${setId}`],
                     },
+                    op: '=',
                   },
                 ],
+                op: 'and',
               };
 
               if (varProperties.plotTypes === 'continuous') {
                 return (
                   <ContinuousAggregation
-                    key={varFieldName}
-                    fieldName={varFieldName}
-                    stats={parsedFacets[varFieldName].stats}
-                    hits={hits}
-                    filters={filters}
-                    variable={varProperties}
-                    plots={plotTypes[varProperties.plotTypes || 'categorical']}
-                    style={{ minWidth: controlPanelExpanded ? 310 : 290 }}
-                    id={id}
-                    setId={setId}
-                    overallSurvivalData={overallSurvivalData}
                     currentAnalysis={currentAnalysis}
-                  />
+                    fieldName={varFieldName}
+                    filters={filters}
+                    hits={hits}
+                    id={id}
+                    key={varFieldName}
+                    overallSurvivalData={overallSurvivalData}
+                    plots={plotTypes[varProperties.plotTypes || 'categorical']}
+                    setId={setId}
+                    stats={parsedFacets[varFieldName].stats}
+                    style={{ minWidth: controlPanelExpanded ? 310 : 290 }}
+                    variable={varProperties}
+                    />
                 );
               }
               return (
                 <ClinicalVariableCard
-                  key={varFieldName}
-                  fieldName={varFieldName}
-                  variable={varProperties}
-                  plots={plotTypes[varProperties.plotTypes || 'categorical']}
-                  style={{ minWidth: controlPanelExpanded ? 310 : 290 }}
-                  id={id}
-                  facetField={varFieldName.replace('cases.', '')}
-                  filters={filters}
-                  setId={setId}
-                  overallSurvivalData={overallSurvivalData}
-                  data={{ ...parsedFacets[varFieldName], hits }}
                   currentAnalysis={currentAnalysis}
-                />
+                  data={{
+                    ...parsedFacets[varFieldName],
+                    hits,
+                  }}
+                  facetField={varFieldName.replace('cases.', '')}
+                  fieldName={varFieldName}
+                  filters={filters}
+                  id={id}
+                  key={varFieldName}
+                  overallSurvivalData={overallSurvivalData}
+                  plots={plotTypes[varProperties.plotTypes || 'categorical']}
+                  setId={setId}
+                  style={{ minWidth: controlPanelExpanded ? 310 : 290 }}
+                  variable={varProperties}
+                  />
               );
             })}
           </Column>

@@ -8,7 +8,7 @@ const styles = {
     background: '#efefef',
   },
   inputHorizontal: {
-    margin: '0 10px',
+    margin: '0',
     padding: '5px',
     width: '100px',
   },
@@ -29,6 +29,7 @@ const BinningInput = ({
   inputId,
   inputKey,
   valid,
+  validateOnBlur,
   value,
 }) => {
   return (
@@ -36,6 +37,7 @@ const BinningInput = ({
       <input
         disabled={disabled}
         id={inputId}
+        onBlur={validateOnBlur}
         onChange={handleChange}
         style={{
           ...(binningMethod === 'interval' ? styles.inputHorizontal : styles.inputTable),

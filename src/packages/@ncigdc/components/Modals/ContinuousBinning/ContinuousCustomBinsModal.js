@@ -100,10 +100,43 @@ export default compose(
           value: Number(inputValue),
         },
       };
-
-      console.log(nextCustomInterval);
-
       setCustomInterval(nextCustomInterval);
+    };
+
+    const validateCustomInterval = target => {
+      const inputKey = target.id.split('-')[2];
+      const inputValue = Number(target.value);
+
+      const currentMin = customInterval.min.value;
+      const currentMax = customInterval.max.value;
+
+      const checkMinInRange = currentMin >= defaultMin && currentMin < defaultMax;
+      const validMin = checkMinInRange ? currentMin : defaultMin;
+
+      const checkMaxInRange = currentMax > defaultMin && currentMax <= defaultMax;
+      const validMax = checkMaxInRange ? currentMax : defaultMax;
+
+      const validAmount = checkMinInRange && checkMaxInRange ? currentMax - currentMin : defaultMax - defaultMin;
+
+      let inputErrors;
+
+      if (inputKey === 'amount') {
+        const amountTooLargeError = [`Amount must be less than or equal to ${validAmount}.`];
+        const amountTooSmallError = ['Amount must be greater than or equal to 1.'];
+        inputErrors = inputValue < 1 ? amountTooSmallError : inputValue > validAmount ? amountTooLargeError : [];
+      } else if (inputKey === 'max') {
+        const maxTooSmallError = [`Max must be greater than ${validMin}.`];
+        const maxTooLargeError = [`Max must be less than or equal to ${defaultMax}.`];
+        inputErrors = inputValue <= validMin ? maxTooSmallError : inputValue > defaultMax ? maxTooLargeError : [];
+      } else if (inputKey === 'min') {
+        const minTooLargeError = [`Min must be less than ${validMax}.`];
+        const maxTooSmallError = [`Min must be greater than or equal to ${defaultMin}.`];
+        inputErrors = inputValue >= validMax ? minTooLargeError : inputValue < defaultMin ? maxTooSmallError : [];
+      } else {
+        inputErrors = [];
+      }
+
+      updateCustomInterval(target, inputErrors);
     };
 
     const updateRangeRows = target => {
@@ -168,6 +201,9 @@ export default compose(
               }}
               handleUpdateBinningMethod={() => {
                 setSelectedBinningMethod('interval');
+              }}
+              validateCustomInterval={e => {
+                validateCustomInterval(e.target);
               }}
               />
 

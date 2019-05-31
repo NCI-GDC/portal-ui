@@ -162,6 +162,20 @@ export default compose(
       setRangeRows(nextRangeRows);
     };
 
+    const disableSubmitButton = () => {
+      let submissionErrors = [];
+      if (selectedBinningMethod === 'interval') {
+        submissionErrors = Object.keys(customInterval).filter(key => customInterval[key].errors.length > 0);
+      }
+      // else {
+      //   submissionErrors = rangeRows.reduce((acc, curr) => {
+      //     const errorsArr = Object.keys(curr).filter(c => c.errors.length > 0);
+      //     return acc.concat(errorsArr);
+      //   }, []);
+      // }
+      return submissionErrors.length > 0;
+    };
+
     return (
       <Column style={{ padding: '20px' }}>
         <h1 style={{ marginTop: 0 }}>
@@ -291,6 +305,7 @@ export default compose(
             Cancel
           </Button>
           <Button
+            disabled={disableSubmitButton()}
             onClick={() => console.log('update')}
             style={styles.button}
             >

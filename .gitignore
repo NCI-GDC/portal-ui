@@ -3,20 +3,25 @@ logs
 *.log
 npm-debug.log*
 lerna-debug.log*
+yarn-debug.log*
 yarn-error.log*
 *.swp
 
 # Runtime data
 pids
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
 *.pid
 *.seed
 
-# Coverage directory used by tools like istanbul
+# Testing
 coverage
 
-# Dependency directories
-/node_modules
-/jspm_packages
+# Dependencies
+node_modules
+jspm_packages
 
 # Optional npm cache directory
 .npm
@@ -32,10 +37,13 @@ coverage
 *.iml
 .vscode/chrome
 
-# build folders
+# production folders
 dist
 build
 
 # OS
 .DS_Store
 __generated__
+
+#OncoJS development
+/src/packages/@oncojs

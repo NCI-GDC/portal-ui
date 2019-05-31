@@ -6,7 +6,7 @@ import { visualizingButton } from '@ncigdc/theme/mixins';
 import { Th } from '@ncigdc/uikit/Table';
 import RangeTableRow from './RangeTableRow';
 import BinningMethodInput from './BinningMethodInput';
-import CustomIntervalSettingsFields from './CustomIntervalSettingsFields';
+import CustomIntervalFields from './CustomIntervalFields';
 
 const styles = {
   button: {
@@ -57,7 +57,7 @@ export default compose(
       defaultQuartile,
     });
   }),
-  withState('customIntervalSettings', 'setCustomIntervalSettings', props => {
+  withState('customInterval', 'setCustomInterval', props => {
     const { defaultMax, defaultMin, defaultQuartile } = props;
     return ({
       amount: {
@@ -76,7 +76,7 @@ export default compose(
   })
 )(
   ({
-    customIntervalSettings,
+    customInterval,
     defaultMax,
     defaultMin,
     defaultQuartile,
@@ -84,24 +84,26 @@ export default compose(
     onClose,
     rangeRows,
     selectedBinningMethod,
-    setCustomIntervalSettings,
+    setCustomInterval,
     setRangeRows,
     setSelectedBinningMethod,
     warning,
   }) => {
-    const updateCustomIntervalSettings = target => {
+    const updateCustomInterval = (target, inputErrors = null) => {
       const inputKey = target.id.split('-')[2];
       const inputValue = target.value;
 
-      const nextCustomIntervalSettings = {
-        ...customIntervalSettings,
+      const nextCustomInterval = {
+        ...customInterval,
         [inputKey]: {
-          ...customIntervalSettings[inputKey],
+          errors: inputErrors === null ? customInterval[inputKey].errors : inputErrors,
           value: Number(inputValue),
         },
       };
 
-      setCustomIntervalSettings(nextCustomIntervalSettings);
+      console.log(nextCustomInterval);
+
+      setCustomInterval(nextCustomInterval);
     };
 
     const updateRangeRows = target => {
@@ -158,11 +160,11 @@ export default compose(
         <Row>
           <Column style={styles.formBg}>
             <h3>Define bins by:</h3>
-            <CustomIntervalSettingsFields
-              customIntervalSettings={customIntervalSettings}
+            <CustomIntervalFields
+              customInterval={customInterval}
               disabled={selectedBinningMethod !== 'interval'}
               handleChange={e => {
-                updateCustomIntervalSettings(e.target);
+                updateCustomInterval(e.target);
               }}
               handleUpdateBinningMethod={() => {
                 setSelectedBinningMethod('interval');

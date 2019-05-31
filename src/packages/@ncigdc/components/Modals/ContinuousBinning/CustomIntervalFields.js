@@ -8,33 +8,15 @@ const CustomIntervalFields = ({
   handleChange,
   handleUpdateBinningMethod,
 }) => {
-  const CustomIntervalInput = props => {
-    const { field } = props;
-    return (
-      <div>
-        <BinningInput
-          binningMethod="interval"
-          disabled={disabled}
-          handleChange={handleChange}
-          inputErrors={customInterval[field].errors}
-          inputId={`custom-interval-${field}`}
-          inputKey={field}
-          valid={customInterval[field].errors.length === 0}
-          value={customInterval[field].value}
-          />
-      </div>
-    );
-  };
-
   const CustomIntervalText = props => {
-    const { text } = props;
+    const { children } = props;
     return (
       <div style={{
-        lineHeight: '26px',
+        lineHeight: '34px',
         padding: '0 10px',
       }}
            >
-        {text}
+        {children}
       </div>
     );
   };
@@ -55,11 +37,44 @@ const CustomIntervalFields = ({
           onClick={handleUpdateBinningMethod}
           />
       </div>
-      <CustomIntervalInput field="amount" />
+      <div>
+        <BinningInput
+          binningMethod="interval"
+          disabled={disabled}
+          handleChange={handleChange}
+          inputErrors={customInterval.amount.errors}
+          inputId="custom-interval-amount"
+          inputKey="amount"
+          valid={customInterval.amount.errors.length === 0}
+          value={customInterval.amount.value}
+          />
+      </div>
       <CustomIntervalText>limit values from</CustomIntervalText>
-      <CustomIntervalInput field="min" />
+      <div>
+        <BinningInput
+          binningMethod="interval"
+          disabled={disabled}
+          handleChange={handleChange}
+          inputErrors={customInterval.min.errors}
+          inputId="custom-interval-min"
+          inputKey="min"
+          valid={customInterval.min.errors.length === 0}
+          value={customInterval.min.value}
+          />
+      </div>
       <CustomIntervalText>to</CustomIntervalText>
-      <CustomIntervalInput field="max" />
+      <div>
+        <BinningInput
+          binningMethod="interval"
+          disabled={disabled}
+          handleChange={handleChange}
+          inputErrors={customInterval.max.errors}
+          inputId="custom-interval-max"
+          inputKey="max"
+          valid={customInterval.max.errors.length === 0}
+          value={customInterval.max.value}
+          />
+      </div>
     </div>
   );
 };

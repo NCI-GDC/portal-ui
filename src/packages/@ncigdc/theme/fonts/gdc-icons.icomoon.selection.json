@@ -322,7 +322,7 @@
 				"width": 1045,
 				"grid": 0,
 				"tags": [
-					"GDC-App-data-transer-tool"
+					"GDC-App-data-transfer-tool"
 				],
 				"colorPermutations": {
 					"11631621621163163163118918518512552552551": [
@@ -378,7 +378,7 @@
 					59670,
 					59671
 				],
-				"name": "gdc-data-transer-tool"
+				"name": "gdc-data-transfer-tool"
 			},
 			"setIdx": 1,
 			"setId": 2,

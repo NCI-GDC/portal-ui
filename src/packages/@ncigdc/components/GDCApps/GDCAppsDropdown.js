@@ -3,74 +3,148 @@
 import React from 'react';
 import Dropdown from '@ncigdc/uikit/Dropdown';
 import styled from '@ncigdc/theme/styled';
-import PortalLink from '@ncigdc/components/GDCApps/PortalLink';
-import APILink from '@ncigdc/components/GDCApps/APILink';
-import WebsiteLink from '@ncigdc/components/GDCApps/WebsiteLink';
-import DTTLink from '@ncigdc/components/GDCApps/DTTLink';
-import SubmissionUILink from '@ncigdc/components/GDCApps/SubmissionUILink';
-import DocsLink from '@ncigdc/components/GDCApps/DocsLink';
-import LegacyLink from '@ncigdc/components/GDCApps/LegacyLink';
+import AppLink from '@ncigdc/components/GDCApps/AppLink';
+
+import dataPortalImg from '@ncigdc/theme/images/GDC-App-data-portal-blue.svg';
+import publicationsImg from '@ncigdc/theme/images/GDC-App-publications.svg';
+import websiteImg from '@ncigdc/theme/images/GDC-App-website-blue.svg';
 
 import Row from '@ncigdc/uikit/Flex/Row';
-import Column from '@ncigdc/uikit/Flex/Column';
 
 import './GDCAppsDropdown.css';
 
 const DropDownButton = styled.span({
-  padding: '15px 13px',
-  display: 'block',
   ':hover': {
-    cursor: 'pointer',
-    color: '#333',
     backgroundColor: '#dedddd',
+    color: '#333',
+    cursor: 'pointer',
   },
+  display: 'block',
+  padding: '15px 13px',
 });
 
 const DropdownContent = styled(Row, {
-  position: 'absolute',
-  zIndex: 1,
-  textAlign: 'center',
   justifyContent: 'space-between',
+  position: 'absolute',
+  textAlign: 'center',
   width: 'initial',
+  zIndex: 1,
+});
+
+const Container = styled(Row, {
+  flexWrap: 'wrap',
+  justifyContent: 'space-between',
+  padding: '1.5rem 0 0',
+  width: '31rem',
 });
 
 const BUTTON_WIDTH = 26;
 
 const GDCAppsDropdown = () => (
   <Dropdown
-    dropdownClassName="gdc-apps-menu-container"
-    style={{
-      margin: 0,
-      border: 'none',
-      color: '#767676',
-      display: 'block',
-    }}
-    dropdownStyle={{
-      marginTop: '15px',
-      borderBottomLeftRadius: '5px',
-      borderBottomRightRadius: '5px',
-    }}
-    button={
+    button={(
       <DropDownButton>
         <i className="icon-gdc-apps-menu" style={{ paddingRight: '4px' }} />
         <span className="header-hidden-sm header-hidden-md" data-translate>
           GDC Apps
         </span>
       </DropDownButton>
-    }
-  >
+    )}
+    dropdownClassName="gdc-apps-menu-container"
+    dropdownStyle={{
+      borderBottomLeftRadius: '5px',
+      borderBottomRightRadius: '5px',
+      marginTop: '15px',
+    }}
+    style={{
+      border: 'none',
+      color: '#767676',
+      display: 'block',
+      margin: 0,
+    }}
+    >
     <DropdownContent>
-      <Column>
-        <PortalLink width={BUTTON_WIDTH} />
-        <APILink width={BUTTON_WIDTH} />
-        <DocsLink width={BUTTON_WIDTH} />
-        <LegacyLink width={BUTTON_WIDTH} />
-      </Column>
-      <Column>
-        <WebsiteLink width={BUTTON_WIDTH} />
-        <DTTLink width={BUTTON_WIDTH} />
-        <SubmissionUILink width={BUTTON_WIDTH} />
-      </Column>
+      <Container>
+        <AppLink
+          appName="portal home"
+          description="Data Portal"
+          href="https://portal.gdc.cancer.gov"
+          imgSrc={dataPortalImg}
+          imgWidth={BUTTON_WIDTH}
+          title="GDC Data Portal"
+          width="40%"
+          />
+
+        <AppLink
+          appName="portal home"
+          description="Website"
+          href="https://gdc.cancer.gov"
+          imgSrc={websiteImg}
+          imgWidth={BUTTON_WIDTH}
+          title="GDC Website"
+          width="55%"
+          />
+
+        <AppLink
+          appName="portal-api"
+          description="API"
+          drawnRange={11}
+          href="https://gdc.cancer.gov/developers/gdc-application-programming-interface-api"
+          imgWidth={BUTTON_WIDTH}
+          title="API"
+          width="40%"
+          />
+
+        <AppLink
+          appName="data-transfer-tool"
+          description="Data Transfer Tool"
+          drawnRange={9}
+          href="https://docs.gdc.cancer.gov"
+          imgWidth={BUTTON_WIDTH}
+          title="GDC Data Transfer Tool"
+          width="55%"
+          />
+
+        <AppLink
+          appName="docs"
+          description="Documentation"
+          drawnRange={15}
+          href="https://docs.gdc.cancer.gov"
+          imgWidth={BUTTON_WIDTH}
+          title="GDC Docs"
+          width="40%"
+          />
+
+        <AppLink
+          appName="submission-portal"
+          description="Data Submission Portal"
+          drawnRange={11}
+          href="https://portal.gdc.cancer.gov/submission"
+          imgWidth={BUTTON_WIDTH}
+          title="GDC Data Submission Portal"
+          width="55%"
+          />
+
+        <AppLink
+          appName="legacy-archive"
+          description="Legacy Archive"
+          drawnRange={11}
+          href="https://portal.gdc.cancer.gov/legacy-archive"
+          imgWidth={BUTTON_WIDTH}
+          title="GDC Legacy Archive"
+          width="40%"
+          />
+
+        <AppLink
+          appName="publications"
+          description="Publications"
+          href="https://gdc.cancer.gov/about-data/publications"
+          imgSrc={publicationsImg}
+          imgWidth={BUTTON_WIDTH}
+          title="GDC Publications"
+          width="55%"
+          />
+      </Container>
     </DropdownContent>
   </Dropdown>
 );

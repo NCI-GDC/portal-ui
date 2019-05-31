@@ -121,8 +121,8 @@ export default compose(
       let inputErrors;
 
       if (inputKey === 'amount') {
-        const amountTooLargeError = [`Amount must be less than or equal to ${validAmount}.`];
-        const amountTooSmallError = ['Amount must be greater than or equal to 1.'];
+        const amountTooLargeError = [`Interval must be less than or equal to ${validAmount}.`];
+        const amountTooSmallError = ['Interval must be at least 1.'];
         inputErrors = inputValue < 1 ? amountTooSmallError : inputValue > validAmount ? amountTooLargeError : [];
       } else if (inputKey === 'max') {
         const maxTooSmallError = [`Max must be greater than ${validMin}.`];
@@ -162,7 +162,7 @@ export default compose(
       setRangeRows(nextRangeRows);
     };
 
-    const disableSubmitButton = () => {
+    const toggleSubmitButton = () => {
       let submissionErrors = [];
       if (selectedBinningMethod === 'interval') {
         submissionErrors = Object.keys(customInterval).filter(key => customInterval[key].errors.length > 0);
@@ -175,6 +175,8 @@ export default compose(
       // }
       return submissionErrors.length > 0;
     };
+
+    const submitDisabled = toggleSubmitButton();
 
     return (
       <Column style={{ padding: '20px' }}>
@@ -305,7 +307,7 @@ export default compose(
             Cancel
           </Button>
           <Button
-            disabled={disableSubmitButton()}
+            disabled={submitDisabled}
             onClick={() => console.log('update')}
             style={styles.button}
             >

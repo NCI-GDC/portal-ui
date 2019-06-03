@@ -3,6 +3,7 @@ import Button from '@ncigdc/uikit/Button';
 import { Tr } from '@ncigdc/uikit/Table';
 import BinningInput from './BinningInput';
 
+
 const RangeTableRow = ({
   disabled,
   handleChange,
@@ -10,10 +11,21 @@ const RangeTableRow = ({
   row,
   rowIndex,
 }) => {
+  // make sure the fields are in order no matter
+  // what happens to the object in state
+  const rangeTableRowFields = [
+    'name',
+    'min',
+    'max',
+  ];
   return (
     <Tr index={rowIndex} key={`range-row-${rowIndex}`}>
-      {Object.keys(row).map(rowItem => (
-        <td key={`range-row-${rowIndex}-${rowItem}`} style={{ padding: '5px' }}>
+      {rangeTableRowFields.map(rowItem => (
+        <td
+          className="td-valign-top"
+          key={`range-row-${rowIndex}-${rowItem}`}
+          style={{ padding: '5px' }}
+          >
           <BinningInput
             binningMethod="range"
             disabled={disabled}

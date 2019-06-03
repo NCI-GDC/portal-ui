@@ -139,40 +139,111 @@ export default compose(
       updateCustomInterval(target, inputErrors);
     };
 
-    const updateRangeRows = target => {
+    const updateRangeRows = (target, inputErrors = null) => {
       const targetInfo = target.id.split('-');
       const inputRowIndex = Number(targetInfo[2]);
       const inputKey = targetInfo[3];
       const inputValue = target.value;
 
       const nextRangeRows = rangeRows.map((rangeRow, rangeRowIndex) => (rangeRowIndex === inputRowIndex
-        ? Object.assign(
-          {},
-          rangeRow,
+        ? ({
+          ...rangeRow,
+          [inputKey]:
           {
-            [inputKey]: Object.assign(
-              {},
-              rangeRow[inputKey],
-              {
-                value: inputKey === 'name' ? inputValue : Number(inputValue),
-              }
-            ),
-          }
-        ) : rangeRow));
+            errors: inputErrors === null ? rangeRow[inputKey].errors : inputErrors,
+            value: inputKey === 'name' ? inputValue : Number(inputValue),
+          },
+        })
+        : rangeRow));
+
       setRangeRows(nextRangeRows);
     };
+
+    const validateRangeRowsOnSubmit = () => {
+      let manualEntryHasEmptyFields = false;
+
+      const emptyNameError = ['Please enter a bin name.'];
+      const emptyMinError = ['Please enter a minimum value.'];
+      const emptyMaxError = ['Please enter a maximum value.'];
+
+      const rowsWithEmptyFieldErrors = rangeRows.map(row => {
+        const isMinEmpty = row.min.value === 0 || row.min.value === '';
+        const isMaxEmpty = row.max.value === 0 || row.max.value === '';
+        const areMinMaxEmpty = isMinEmpty && isMaxEmpty;
+        const isNameEmpty = row.name.value === '';
+
+        if (areMinMaxEmpty || isNameEmpty) manualEntryHasEmptyFields = true;
+
+        return ({
+          max: {
+            errors: areMinMaxEmpty ? emptyMaxError : row.max.errors,
+            value: row.max.value,
+          },
+          min: {
+            errors: areMinMaxEmpty ? emptyMinError : row.min.errors,
+            value: row.min.value,
+          },
+          name: {
+            errors: isNameEmpty ? emptyNameError : row.name.errors,
+            value: row.name.value,
+          },
+        });
+      });
+
+      if (manualEntryHasEmptyFields) {
+        setRangeRows(rowsWithEmptyFieldErrors);
+        return false;
+      }
+    };
+
+    // const rowsWithErrors = rangeRows.map(row => {
+    //   const rowName = row.name.value;
+    //   const rowMin = row.min.value;
+    //   const rowMax = row.max.value;
+
+    //   return ({
+
+    //   })
+    // });
+
+
+    // const validateRangeRowsOnBlur = target => {
+    //   // validate the min & max of the row on blur
+
+    //   const targetInfo = target.id.split('-');
+    //   const inputKey = targetInfo[3];
+
+    //   if (inputKey === 'name') return;
+
+    //   const inputRowIndex = Number(targetInfo[2]);
+    //   const rowMin = rangeRows[inputRowIndex].min.value;
+    //   const rowMax = rangeRows[inputRowIndex].max.value;
+
+    //   console.log('rowMin', rowMin);
+    //   console.log('rowMax', rowMax);
+
+    //   const maxError = [`Max must be greater than ${rowMin}`];
+    //   const minError = [`Min must be less than ${rowMax}`];
+
+    //   console.log('rowMax > rowMin', rowMax > rowMin);
+
+    //   const inputErrors = rowMin < rowMax ? [] : inputKey === 'max' ? maxError : minError;
+
+    //   updateRangeRows(target, inputErrors);
+    // };
 
     const toggleSubmitButton = () => {
       let submissionErrors = [];
       if (selectedBinningMethod === 'interval') {
         submissionErrors = Object.keys(customInterval).filter(key => customInterval[key].errors.length > 0);
+      } else {
+        submissionErrors = rangeRows.reduce((acc, curr) => {
+          const errorsArr = Object.keys(curr).filter(c => curr[c].errors.length > 0);
+          // console.log(Object.keys(curr).map(c => c.errors));
+          // return acc;
+          return acc.concat(errorsArr);
+        }, []);
       }
-      // else {
-      //   submissionErrors = rangeRows.reduce((acc, curr) => {
-      //     const errorsArr = Object.keys(curr).filter(c => c.errors.length > 0);
-      //     return acc.concat(errorsArr);
-      //   }, []);
-      // }
       return submissionErrors.length > 0;
     };
 
@@ -308,7 +379,7 @@ export default compose(
           </Button>
           <Button
             disabled={submitDisabled}
-            onClick={() => console.log('update')}
+            onClick={() => validateRangeRowsOnSubmit()}
             style={styles.button}
             >
             Save Bins

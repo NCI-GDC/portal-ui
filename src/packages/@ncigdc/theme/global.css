@@ -8590,3 +8590,8 @@ fieldset[disabled] .btn-primary.active {
 abbr span {
   display: inline !important;
 } 
+
+.td-valign-top {
+   /* overriding bootstrap */
+  vertical-align: top !important;
+}

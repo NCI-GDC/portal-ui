@@ -176,7 +176,7 @@ export default compose(
 
     const updateRangeRows = (target, inputErrors = null) => {
       const targetInfo = target.id.split('-');
-      const inputRowIndex = Number(targetInfo[2]);
+      const inputRowIndex = targetInfo[2];
       const inputKey = targetInfo[3];
       const inputValue = target.value;
 
@@ -188,7 +188,7 @@ export default compose(
             [inputKey]:
             {
               errors: inputErrors === null ? rangeRow.fields[inputKey].errors : inputErrors,
-              value: inputKey === 'name' ? inputValue : Number(inputValue),
+              value: inputValue,
             },
           },
         })

@@ -19,24 +19,49 @@ const styles = {
     padding: '0 20px 20px',
     width: '100%',
   },
+  rangeTable: {
+    column: {
+      flex: '1 0 0 ',
+      padding: '5px',
+    },
+    heading: {
+      background: '#dedddd',
+      display: 'flex',
+      fontWeight: 'bold',
+      lineHeight: '20px',
+      marginBottom: '5px',
+      padding: '3px',
+    },
+    removeColumn: {
+      flex: '0 0 70px',
+      padding: '5px',
+    },
+    wrapper: {
+      marginBottom: '20px',
+      width: '100%',
+    },
+  },
 };
 
 const defaultRangeRow = {
-  name: {
-    errors: [],
-    value: '',
-  },
-  min: {
-    errors: [],
-    value: 0,
-  },
-  max: {
-    errors: [],
-    value: 0,
+  active: false,
+  fields: {
+    max: {
+      errors: [],
+      value: '',
+    },
+    min: {
+      errors: [],
+      value: '',
+    },
+    name: {
+      errors: [],
+      value: '',
+    },
   },
 };
 
-const defaultRangeRowDisplay = Array(5).fill(defaultRangeRow);
+const defaultRangeRowDisplay = Array(1).fill(defaultRangeRow);
 
 export default compose(
   withState('rangeRows', 'setRangeRows', defaultRangeRowDisplay),
@@ -148,10 +173,13 @@ export default compose(
       const nextRangeRows = rangeRows.map((rangeRow, rangeRowIndex) => (rangeRowIndex === inputRowIndex
         ? ({
           ...rangeRow,
-          [inputKey]:
-          {
-            errors: inputErrors === null ? rangeRow[inputKey].errors : inputErrors,
-            value: inputKey === 'name' ? inputValue : Number(inputValue),
+          fields: {
+            ...rangeRow.fields,
+            [inputKey]:
+            {
+              errors: inputErrors === null ? rangeRow.fields[inputKey].errors : inputErrors,
+              value: inputKey === 'name' ? inputValue : Number(inputValue),
+            },
           },
         })
         : rangeRow));
@@ -167,25 +195,25 @@ export default compose(
       const emptyMaxError = ['Please enter a maximum value.'];
 
       const rowsWithEmptyFieldErrors = rangeRows.map(row => {
-        const isMinEmpty = row.min.value === 0 || row.min.value === '';
-        const isMaxEmpty = row.max.value === 0 || row.max.value === '';
+        const isMinEmpty = row.fields.min.value === 0 || row.fields.min.value === '';
+        const isMaxEmpty = row.fields.max.value === 0 || row.fields.max.value === '';
         const areMinMaxEmpty = isMinEmpty && isMaxEmpty;
-        const isNameEmpty = row.name.value === '';
+        const isNameEmpty = row.fields.name.value === '';
 
         if (areMinMaxEmpty || isNameEmpty) manualEntryHasEmptyFields = true;
 
         return ({
           max: {
-            errors: areMinMaxEmpty ? emptyMaxError : row.max.errors,
-            value: row.max.value,
+            errors: areMinMaxEmpty ? emptyMaxError : row.fields.max.errors,
+            value: row.fields.max.value,
           },
           min: {
-            errors: areMinMaxEmpty ? emptyMinError : row.min.errors,
-            value: row.min.value,
+            errors: areMinMaxEmpty ? emptyMinError : row.fields.min.errors,
+            value: row.fields.min.value,
           },
           name: {
-            errors: isNameEmpty ? emptyNameError : row.name.errors,
-            value: row.name.value,
+            errors: isNameEmpty ? emptyNameError : row.fields.name.errors,
+            value: row.fields.name.value,
           },
         });
       });
@@ -196,51 +224,13 @@ export default compose(
       }
     };
 
-    // const rowsWithErrors = rangeRows.map(row => {
-    //   const rowName = row.name.value;
-    //   const rowMin = row.min.value;
-    //   const rowMax = row.max.value;
-
-    //   return ({
-
-    //   })
-    // });
-
-
-    // const validateRangeRowsOnBlur = target => {
-    //   // validate the min & max of the row on blur
-
-    //   const targetInfo = target.id.split('-');
-    //   const inputKey = targetInfo[3];
-
-    //   if (inputKey === 'name') return;
-
-    //   const inputRowIndex = Number(targetInfo[2]);
-    //   const rowMin = rangeRows[inputRowIndex].min.value;
-    //   const rowMax = rangeRows[inputRowIndex].max.value;
-
-    //   console.log('rowMin', rowMin);
-    //   console.log('rowMax', rowMax);
-
-    //   const maxError = [`Max must be greater than ${rowMin}`];
-    //   const minError = [`Min must be less than ${rowMax}`];
-
-    //   console.log('rowMax > rowMin', rowMax > rowMin);
-
-    //   const inputErrors = rowMin < rowMax ? [] : inputKey === 'max' ? maxError : minError;
-
-    //   updateRangeRows(target, inputErrors);
-    // };
-
     const toggleSubmitButton = () => {
       let submissionErrors = [];
       if (selectedBinningMethod === 'interval') {
         submissionErrors = Object.keys(customInterval).filter(key => customInterval[key].errors.length > 0);
       } else {
         submissionErrors = rangeRows.reduce((acc, curr) => {
-          const errorsArr = Object.keys(curr).filter(c => curr[c].errors.length > 0);
-          // console.log(Object.keys(curr).map(c => c.errors));
-          // return acc;
+          const errorsArr = Object.keys(curr.fields).filter(c => curr.fields[c].errors.length > 0);
           return acc.concat(errorsArr);
         }, []);
       }
@@ -257,23 +247,17 @@ export default compose(
         <div>
           <p>
             Available values from
-            {' '}
-            <strong>{defaultMin}</strong>
-            {' '}
+            <strong>{` ${defaultMin}`}</strong>
             to
-            {' '}
-            <strong>{defaultMax}</strong>
+            <strong>{` ${defaultMax} `}</strong>
           </p>
           <p>
             Quartile bin interval:
-            {' '}
-            <strong>{defaultQuartile}</strong>
+            <strong>{` ${defaultQuartile}`}</strong>
           </p>
           <p>
             Configure your bins then click
-            {' '}
-            <strong>Save Bins</strong>
-            {' '}
+            <strong> Save Bins </strong>
             to update the analysis plots.
           </p>
         </div>
@@ -305,20 +289,34 @@ export default compose(
                   }}
                   />
               </div>
-              <table style={{
-                marginBottom: '20px',
-                width: '100%',
-              }}
-                     >
-                <thead>
-                  <tr>
-                    <Th id="range-table-label-name" scope="col">Bin Name</Th>
-                    <Th id="range-table-label-min" scope="col">From</Th>
-                    <Th id="range-table-label-max" scope="col">To</Th>
-                    <Th scope="col">Remove</Th>
-                  </tr>
-                </thead>
-                <tbody>
+              <div style={styles.rangeTable.wrapper}>
+                <div style={styles.rangeTable.heading}>
+                  <div
+                    id="range-table-label-name"
+                    style={styles.rangeTable.column}
+                    >
+                    Bin Name
+                  </div>
+                  <div
+                    id="range-table-label-min"
+                    style={styles.rangeTable.column}
+                    >
+                    From
+                  </div>
+                  <div
+                    id="range-table-label-max"
+                    style={styles.rangeTable.column}
+                    >
+                    To
+                  </div>
+                  <div
+                    id="range-table-label-remove"
+                    style={styles.rangeTable.removeColumn}
+                    >
+                    Remove
+                  </div>
+                </div>
+                <div>
                   {rangeRows.map((row, rowIndex) => (
                     <RangeTableRow
                       disabled={selectedBinningMethod !== 'range'}
@@ -332,10 +330,11 @@ export default compose(
                       key={`range-row-${rowIndex}`}
                       row={row}
                       rowIndex={rowIndex}
+                      styles={styles.rangeTable}
                       />
                   ))}
-                </tbody>
-              </table>
+                </div>
+              </div>
               <Button
                 disabled={selectedBinningMethod !== 'range'}
                 onClick={() => {
@@ -355,7 +354,7 @@ export default compose(
               </Button>
             </div>
           </Column>
-        </Row>
+        </Row >
         <Row
           spacing="1rem"
           style={{
@@ -385,7 +384,7 @@ export default compose(
             Save Bins
           </Button>
         </Row>
-      </Column>
+      </Column >
     );
   }
 );

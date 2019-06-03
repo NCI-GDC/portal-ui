@@ -3,13 +3,13 @@ import Button from '@ncigdc/uikit/Button';
 import { Tr } from '@ncigdc/uikit/Table';
 import BinningInput from './BinningInput';
 
-
 const RangeTableRow = ({
   disabled,
   handleChange,
   handleRemove,
   row,
   rowIndex,
+  styles,
 }) => {
   // make sure the fields are in order no matter
   // what happens to the object in state
@@ -19,38 +19,37 @@ const RangeTableRow = ({
     'max',
   ];
   return (
-    <Tr index={rowIndex} key={`range-row-${rowIndex}`}>
+    <div index={rowIndex} key={`range-row-${rowIndex}`} style={{ display: 'flex' }}>
       {rangeTableRowFields.map(rowItem => (
-        <td
-          className="td-valign-top"
+        <div
           key={`range-row-${rowIndex}-${rowItem}`}
-          style={{ padding: '5px' }}
+          style={styles.column}
           >
           <BinningInput
             binningMethod="range"
             disabled={disabled}
             handleChange={handleChange}
-            inputErrors={row[rowItem].errors}
+            inputErrors={row.fields[rowItem].errors}
             inputId={`range-row-${rowIndex}-${rowItem}`}
             inputKey={rowItem}
             key={`range-row-${rowIndex}-${rowItem}`}
             rowIndex={rowIndex}
-            valid={row[rowItem].errors.length === 0}
-            value={row[rowItem].value}
+            valid={row.fields[rowItem].errors.length === 0}
+            value={row.fields[rowItem].value}
             />
-        </td>
+        </div>
       ))}
-      <td>
+      <div style={styles.removeColumn}>
         <Button
           aria-label="Remove"
           disabled={disabled}
           onClick={handleRemove}
-          style={{ margin: '0 auto' }}
+          style={{ margin: '2px auto' }}
           >
           <i aria-hidden="true" className="fa fa-trash" />
         </Button>
-      </td>
-    </Tr>
+      </div>
+    </div>
   );
 };
 

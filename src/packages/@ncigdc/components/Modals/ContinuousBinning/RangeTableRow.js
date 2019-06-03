@@ -4,21 +4,29 @@ import BinningInput from './BinningInput';
 
 const rowStyles = {
   active: {
-    fieldsWrapper: {
-      background: '#fff',
-      border: '1px solid #ccc',
+    input: {
+
     },
   },
   fieldsWrapper: {
     display: 'flex',
     flex: '1 0 0',
   },
+  optionsButton: {
+    display: 'inline-block',
+    margin: '2px 0 0 5px',
+    textAlign: 'center',
+    width: '40px',
+  },
 };
 
 const RangeTableRow = ({
   disabled,
+  handleCancel,
   handleChange,
+  handleEdit,
   handleRemove,
+  handleSave,
   row,
   rowIndex,
   styles,
@@ -32,11 +40,7 @@ const RangeTableRow = ({
   ];
   return (
     <div index={rowIndex} key={`range-row-${rowIndex}`} style={{ display: 'flex' }}>
-      <div style={{
-        ...rowStyles.fieldsWrapper,
-        ...(row.active && rowStyles.active.fieldsWrapper),
-      }}
-           >
+      <div style={rowStyles.fieldsWrapper}>
         {
           rangeTableRowFields.map(rowItem => (
             <div
@@ -59,17 +63,55 @@ const RangeTableRow = ({
           ))
         }
       </div>
-      <div style={styles.removeColumn}>
+      <div style={styles.optionsColumn}>
+        {row.active ? (
+          <React.Fragment>
+            <Button
+              aria-label="Save"
+              buttonContentStyle={{ justifyContent: 'center' }}
+              disabled={disabled}
+              onClick={handleSave}
+              style={{
+                ...rowStyles.optionsButton,
+                ...(disabled || { background: 'green' }),
+              }}
+              >
+              <i aria-hidden="true" className="fa fa-check" />
+            </Button>
+            <Button
+              aria-label="Cancel"
+              buttonContentStyle={{ justifyContent: 'center' }}
+              disabled={disabled}
+              onClick={handleCancel}
+              style={{
+                ...rowStyles.optionsButton,
+                ...(disabled || { background: 'red' }),
+              }}
+              >
+              <i aria-hidden="true" className="fa fa-close" />
+            </Button>
+          </React.Fragment>
+        ) : (
+          <Button
+              aria-label="Edit"
+              disabled={disabled}
+              onClick={handleEdit}
+              style={{ ...rowStyles.optionsButton }}
+              >
+              <i aria-hidden="true" className="fa fa-pencil" />
+            </Button>
+          )}
         <Button
           aria-label="Remove"
+          buttonContentStyle={{ justifyContent: 'center' }}
           disabled={disabled}
           onClick={handleRemove}
-          style={{ margin: '2px auto' }}
+          style={{ ...rowStyles.optionsButton }}
           >
           <i aria-hidden="true" className="fa fa-trash" />
         </Button>
       </div>
-    </div >
+    </div>
   );
 };
 

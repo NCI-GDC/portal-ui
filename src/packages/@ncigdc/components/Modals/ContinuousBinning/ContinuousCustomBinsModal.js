@@ -32,9 +32,10 @@ const styles = {
       marginBottom: '5px',
       padding: '2px 5px',
     },
-    removeColumn: {
-      flex: '0 0 70px',
+    optionsColumn: {
+      flex: '0 0 150px',
       padding: '5px',
+      textAlign: 'right',
     },
     wrapper: {
       marginBottom: '20px',
@@ -44,7 +45,7 @@ const styles = {
 };
 
 const defaultRangeRow = {
-  active: false,
+  active: true,
   fields: {
     max: {
       errors: [],
@@ -61,10 +62,8 @@ const defaultRangeRow = {
   },
 };
 
-const defaultRangeRowDisplay = Array(1).fill(defaultRangeRow);
-
 export default compose(
-  withState('rangeRows', 'setRangeRows', defaultRangeRowDisplay),
+  withState('rangeRows', 'setRangeRows', [defaultRangeRow]),
   withState('warning', 'setWarning', ''),
   withState('selectedBinningMethod', 'setSelectedBinningMethod', 'interval'),
   withProps(({
@@ -172,7 +171,7 @@ export default compose(
 
     const updateRangeRows = (target, inputErrors = null) => {
       const targetInfo = target.id.split('-');
-      const inputRowIndex = targetInfo[2];
+      const inputRowIndex = Number(targetInfo[2]);
       const inputKey = targetInfo[3];
       const inputValue = target.value;
 
@@ -305,16 +304,16 @@ export default compose(
                     To
                   </div>
                   <div
-                    id="range-table-label-remove"
-                    style={styles.rangeTable.removeColumn}
+                    id="range-table-label-options"
+                    style={styles.rangeTable.optionsColumn}
                     >
-                    Remove
+                    Options
                   </div>
                 </div>
                 <div>
                   {rangeRows.map((row, rowIndex) => (
                     <RangeTableRow
-                      disabled={selectedBinningMethod !== 'range'}
+                      disabled={!row.active || selectedBinningMethod !== 'range'}
                       handleChange={e => {
                         updateRangeRows(e.target);
                       }}

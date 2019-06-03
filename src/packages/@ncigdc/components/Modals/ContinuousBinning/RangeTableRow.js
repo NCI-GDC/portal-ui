@@ -19,25 +19,27 @@ const RangeTableRow = ({
   ];
   return (
     <div index={rowIndex} key={`range-row-${rowIndex}`} style={{ display: 'flex' }}>
-      {rangeTableRowFields.map(rowItem => (
-        <div
-          key={`range-row-${rowIndex}-${rowItem}`}
-          style={styles.column}
-          >
-          <BinningInput
-            binningMethod="range"
-            disabled={disabled}
-            handleChange={handleChange}
-            inputErrors={row.fields[rowItem].errors}
-            inputId={`range-row-${rowIndex}-${rowItem}`}
-            inputKey={rowItem}
+      <div style={styles.fieldsWrapper}>
+        {rangeTableRowFields.map(rowItem => (
+          <div
             key={`range-row-${rowIndex}-${rowItem}`}
-            rowIndex={rowIndex}
-            valid={row.fields[rowItem].errors.length === 0}
-            value={row.fields[rowItem].value}
-            />
-        </div>
-      ))}
+            style={styles.column}
+            >
+            <BinningInput
+              binningMethod="range"
+              disabled={disabled}
+              handleChange={handleChange}
+              inputErrors={row.fields[rowItem].errors}
+              inputId={`range-row-${rowIndex}-${rowItem}`}
+              inputKey={rowItem}
+              key={`range-row-${rowIndex}-${rowItem}`}
+              rowIndex={rowIndex}
+              valid={row.fields[rowItem].errors.length === 0}
+              value={row.fields[rowItem].value}
+              />
+          </div>
+        ))}
+      </div>
       <div style={styles.removeColumn}>
         <Button
           aria-label="Remove"
@@ -48,7 +50,7 @@ const RangeTableRow = ({
           <i aria-hidden="true" className="fa fa-trash" />
         </Button>
       </div>
-    </div>
+    </div >
   );
 };
 

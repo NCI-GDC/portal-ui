@@ -23,6 +23,10 @@ const styles = {
       flex: '1 0 0 ',
       padding: '5px',
     },
+    fieldsWrapper: {
+      display: 'flex',
+      flex: '1 0 0',
+    },
     heading: {
       background: '#dedddd',
       display: 'flex',
@@ -223,18 +227,7 @@ export default compose(
       }
     };
 
-    const toggleSubmitButton = () => {
-      let submissionErrors = [];
-      if (selectedBinningMethod === 'interval') {
-        submissionErrors = Object.keys(customInterval).filter(key => customInterval[key].errors.length > 0);
-      } else {
-        submissionErrors = rangeRows.reduce((acc, curr) => {
-          const errorsArr = Object.keys(curr.fields).filter(c => curr.fields[c].errors.length > 0);
-          return acc.concat(errorsArr);
-        }, []);
-      }
-      return submissionErrors.length > 0;
-    };
+    const toggleSubmitButton = () => (selectedBinningMethod === 'interval' ? Object.keys(customInterval).some(field => customInterval[field].errors.length > 0) : rangeRows.some(row => row.active));
 
     const submitDisabled = toggleSubmitButton();
 

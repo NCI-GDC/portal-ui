@@ -218,6 +218,7 @@ export default compose(
                   }, {}),
                 });
                 setSelectedHidingBins({});
+                setWarning('');
               }}
               style={{ margin: '10px' }}
               >
@@ -247,6 +248,7 @@ export default compose(
                   }, {}),
                 });
                 setSelectedGroupBins({});
+                setWarning('');
               }}
               style={{ margin: '10px' }}
               >
@@ -278,6 +280,7 @@ export default compose(
                       }, {}),
                     });
                     setSelectedGroupBins({});
+                    setWarning('');
                   }}
                   style={buttonStyle}
                   >
@@ -305,6 +308,7 @@ export default compose(
                       }, {}),
                     });
                     setSelectedGroupBins({});
+                    setWarning('');
                   }}
                   style={buttonStyle}
                   >
@@ -312,7 +316,10 @@ export default compose(
                 </Button>
                 <Button
                   disabled={Object.values(selectedGroupBins).filter(Boolean).length < 2}
-                  onClick={binGrouping}
+                  onClick={() => {
+                    binGrouping();
+                    setWarning('');
+                  }}
                   style={buttonStyle}
                   >
                   {'Group'}
@@ -349,12 +356,13 @@ export default compose(
                       {group.length > 1 || group[0] !== groupName
                         ? (
                           <EditableLabel
+                            buttonDisplayed={false}
                             containerStyle={{
                               justifyContent: 'flex-start',
                             }}
                             handleSave={(value: string) => {
-                              if (some(currentBins, (bin: IBinProps) => bin.groupName === value)) {
-                                setWarning(`"${value}" has been existed.`);
+                              if (some(currentBins, (bin: IBinProps) => bin.groupName.trim() === value.trim())) {
+                                setWarning(`"${value.trim()}" has already existed.`);
                                 return;
                               }
                               setCurrentBins({
@@ -367,6 +375,7 @@ export default compose(
                                   },
                                 }), {}),
                               });
+                              setWarning('');
                             }
                             }
                             iconStyle={{
@@ -393,10 +402,14 @@ export default compose(
                         ? group.map((bin: string) => (
                           <Row
                             key={bin}
-                            onClick={() => setSelectedGroupBins({
-                              ...selectedGroupBins,
-                              [bin]: !selectedGroupBins[bin],
-                            })}
+                            onClick={() => {
+                              setSelectedGroupBins({
+                                ...selectedGroupBins,
+                                [bin]: !selectedGroupBins[bin],
+                              });
+                            }
+
+                            }
                             style={{
                               backgroundColor: selectedGroupBins[bin] ? '#d5f4e6' : '',
                               display: 'list-item', /* This has to be "list-item"                                               */

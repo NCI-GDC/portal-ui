@@ -193,7 +193,7 @@ export default compose(
                       paddingLeft: '10px',
                     }}
                     >
-                    {binKey}
+                    {`${binKey} (${currentBins[binKey].doc_count})`}
                   </Row>
                 ))}
             </Column>
@@ -362,7 +362,7 @@ export default compose(
                             }}
                             handleSave={(value: string) => {
                               if (some(currentBins, (bin: IBinProps) => bin.groupName.trim() === value.trim())) {
-                                setWarning(`"${value.trim()}" has already existed.`);
+                                setWarning(`"${value.trim()}" already exists.`);
                                 return;
                               }
                               setCurrentBins({
@@ -412,8 +412,8 @@ export default compose(
                             }
                             style={{
                               backgroundColor: selectedGroupBins[bin] ? '#d5f4e6' : '',
-                              display: 'list-item', /* This has to be "list-item"                                               */
-                              listStyleType: 'disc', /* See https://developer.mozilla.org/en-US/docs/Web/CSS/list-style-type     */
+                              display: 'list-item',
+                              listStyleType: 'disc',
                               listStylePosition: 'inside',
                               paddingLeft: '5px',
                             }}

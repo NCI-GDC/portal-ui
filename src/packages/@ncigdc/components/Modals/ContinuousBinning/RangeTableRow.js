@@ -1,5 +1,6 @@
 import React from 'react';
 import { compose, withState } from 'recompose';
+import OutsideClickHandler from 'react-outside-click-handler';
 import Button from '@ncigdc/uikit/Button';
 import BinningInput from './BinningInput';
 
@@ -56,8 +57,23 @@ export default compose(
       'min',
       'max',
     ];
+
+    const validateField = target => {
+      console.log(target);
+    };
+
+    const updateRow = target => {
+      console.log(target);
+    };
+
     return (
-      <div index={rowIndex} key={`range-row-${rowIndex}`} style={{ display: 'flex' }}>
+      <OutsideClickHandler
+        disabled={disabled || !row.active}
+        display="flex"
+        onOutsideClick={e => {
+          updateRow(e.target);
+        }}
+        >
         <div style={rowStyles.fieldsWrapper}>
           {
             rangeTableRowFields.map(rowItem => (
@@ -90,7 +106,10 @@ export default compose(
                 aria-label="Save"
                 buttonContentStyle={{ justifyContent: 'center' }}
                 disabled={disabled}
-                onClick={handleSave}
+                id={`range-row-${rowIndex}-save`}
+                onClick={e => {
+                  updateRow(e.target);
+                }}
                 style={{
                   ...rowStyles.optionsButton,
                   ...(disabled || { background: 'green' }),
@@ -102,7 +121,10 @@ export default compose(
                 aria-label="Cancel"
                 buttonContentStyle={{ justifyContent: 'center' }}
                 disabled={disabled}
-                onClick={handleCancel}
+                id={`range-row-${rowIndex}-cancel`}
+                onClick={e => {
+                  updateRow(e.target);
+                }}
                 style={{
                   ...rowStyles.optionsButton,
                   ...(disabled || { background: 'red' }),
@@ -115,7 +137,10 @@ export default compose(
             <Button
                 aria-label="Edit"
                 disabled={disabled}
-                onClick={handleEdit}
+                id={`range-row-${rowIndex}-edit`}
+                onClick={e => {
+                  updateRow(e.target);
+                }}
                 style={{ ...rowStyles.optionsButton }}
                 >
                 <i aria-hidden="true" className="fa fa-pencil" />
@@ -125,13 +150,16 @@ export default compose(
             aria-label="Remove"
             buttonContentStyle={{ justifyContent: 'center' }}
             disabled={disabled}
-            onClick={handleRemove}
+            id={`range-row-${rowIndex}-remove`}
+            onClick={e => {
+              updateRow(e.target);
+            }}
             style={{ ...rowStyles.optionsButton }}
             >
             <i aria-hidden="true" className="fa fa-trash" />
           </Button>
         </div>
-      </div>
+      </OutsideClickHandler>
     );
   }
 );

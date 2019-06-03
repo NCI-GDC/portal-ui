@@ -1,6 +1,5 @@
 import React from 'react';
 import Button from '@ncigdc/uikit/Button';
-import { Tr } from '@ncigdc/uikit/Table';
 import BinningInput from './BinningInput';
 
 const RangeTableRow = ({

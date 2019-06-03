@@ -3,7 +3,6 @@ import { compose, withState, withProps } from 'recompose';
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import Button from '@ncigdc/uikit/Button';
 import { visualizingButton } from '@ncigdc/theme/mixins';
-import { Th } from '@ncigdc/uikit/Table';
 import RangeTableRow from './RangeTableRow';
 import BinningMethodInput from './BinningMethodInput';
 import CustomIntervalFields from './CustomIntervalFields';
@@ -30,7 +29,7 @@ const styles = {
       fontWeight: 'bold',
       lineHeight: '20px',
       marginBottom: '5px',
-      padding: '3px',
+      padding: '2px 5px',
     },
     removeColumn: {
       flex: '0 0 70px',

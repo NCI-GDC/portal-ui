@@ -1,7 +1,13 @@
 // @flow
 
 import React from 'react';
-import { compose, withState, branch, renderComponent } from 'recompose';
+import {
+  branch,
+  compose,
+  renderComponent,
+  setDisplayName,
+  withState,
+} from 'recompose';
 import { connect } from 'react-redux';
 import Card from '@ncigdc/uikit/Card';
 import Tabs from '@ncigdc/uikit/Tabs';
@@ -23,21 +29,22 @@ import { makeFilter } from '@ncigdc/utils/filters';
 
 const styles = {
   common: theme => ({
-    backgroundColor: 'transparent',
-    color: theme.greyScale2,
-    justifyContent: 'flex-start',
     ':hover': {
       backgroundColor: theme.greyScale6,
     },
+    backgroundColor: 'transparent',
+    color: theme.greyScale2,
+    justifyContent: 'flex-start',
   }),
   downloadButton: theme => ({
     ...styles.common(theme),
-    padding: '3px 5px',
     border: `1px solid ${theme.greyScale4}`,
+    padding: '3px 5px',
   }),
 };
 
 export default compose(
+  setDisplayName('EnhancedClinicalCard'),
   branch(
     ({ viewer }) => !viewer.repository.cases.hits.edges[0],
     renderComponent(() => <div>No case found.</div>),
@@ -45,21 +52,21 @@ export default compose(
   connect(state => state.cart),
   withState('activeTab', 'setTab', 0),
   withState('state', 'setState', {
-    tsvDownloading: false,
     jsonDownloading: false,
+    tsvDownloading: false,
   }),
   withTheme,
 )(
   ({
+    active,
     activeTab,
+    dropdownStyle,
+    requests,
+    setState,
     setTab,
+    state,
     theme,
     viewer: { repository: { cases: { hits: { edges } } } },
-    dropdownStyle,
-    active,
-    state,
-    setState,
-    requests,
   }) => {
     const {
       case_id: caseId,
@@ -73,55 +80,87 @@ export default compose(
     } = edges[0].node;
     const familyHistory = familyHistories.map(x => x.node);
     const caseFilter = makeFilter([
-      { field: 'cases.case_id', value: [caseId] },
+      {
+        field: 'cases.case_id',
+        value: [caseId],
+      },
     ]);
     return (
       <Card
         className="test-clinical-card"
         style={{ flex: 1 }}
-        title={
+        title={(
           <Row style={{ justifyContent: 'space-between' }}>
             <span>Clinical</span>
             <DownloadClinicalDropdown
               buttonStyles={visualizingButton}
-              inactiveText={'Download'}
               filters={caseFilter}
-              tsvFilename={`clinical.case-${submitterId}-${projectId}.${timestamp()}.tar.gz`}
+              inactiveText="Download"
               jsonFilename={`clinical.case-${submitterId}-${projectId}.${timestamp()}.json`}
-            />
+              tsvFilename={`clinical.case-${submitterId}-${projectId}.${timestamp()}.tar.gz`}
+              />
           </Row>
-        }
-      >
+        )}
+        >
         <Tabs
+          activeIndex={activeTab}
           contentStyle={{ border: 'none' }}
           onTabClick={i => setTab(() => i)}
           tabs={[
             <p key="Demographic">Demographic</p>,
             <p key="Diagnoses / Treatment">
-              Diagnoses / Treatments ({diagnoses.length})
+              Diagnoses / Treatments (
+              {diagnoses.length}
+)
             </p>,
             <p key="Family Histories">
-              Family Histories ({familyHistory.length})
+              Family Histories (
+              {familyHistory.length}
+)
             </p>,
-            <p key="Exposures">Exposures ({totalExposures})</p>,
+            <p key="Exposures">
+Exposures (
+              {totalExposures}
+)
+            </p>,
           ]}
-          activeIndex={activeTab}
-        >
+          >
           {activeTab === 0 && (
             <div>
               {!!demographic.demographic_id && (
                 <EntityPageVerticalTable
-                  thToTd={[
-                    { th: 'UUID', td: demographic.demographic_id },
-                    { th: 'Ethnicity', td: demographic.ethnicity },
-                    { th: 'Gender', td: demographic.gender },
-                    { th: 'Race', td: demographic.race },
-                    { th: 'Days to Birth', td: demographic.days_to_birth },
-                    { th: 'Days to Death', td: demographic.days_to_death },
-                    { th: 'Vital Status', td: demographic.vital_status },
-                  ]}
                   style={{ flex: '1 1 auto' }}
-                />
+                  thToTd={[
+                    {
+                      th: 'UUID',
+                      td: demographic.demographic_id,
+                    },
+                    {
+                      th: 'Ethnicity',
+                      td: demographic.ethnicity,
+                    },
+                    {
+                      th: 'Gender',
+                      td: demographic.gender,
+                    },
+                    {
+                      th: 'Race',
+                      td: demographic.race,
+                    },
+                    {
+                      th: 'Days to Birth',
+                      td: demographic.days_to_birth,
+                    },
+                    {
+                      th: 'Days to Death',
+                      td: demographic.days_to_death,
+                    },
+                    {
+                      th: 'Vital Status',
+                      td: demographic.vital_status,
+                    },
+                  ]}
+                  />
               )}
               {!demographic.demographic_id && (
                 <h3 style={{ paddingLeft: '2rem' }}>No Demographic Found.</h3>
@@ -132,22 +171,17 @@ export default compose(
             <div>
               {!!diagnoses.length && (
                 <SideTabs
-                  contentStyle={{ border: 'none' }}
                   containerStyle={{ display: 'block' }}
-                  tabs={
-                    diagnoses.length > 1
-                      ? diagnoses.map(x => (
-                          <p key={x.node.diagnosis_id}>
-                            {truncate(x.node.diagnosis_id, { length: 11 })}
-                          </p>
-                        ))
-                      : []
-                  }
+                  contentStyle={{ border: 'none' }}
                   tabContent={diagnoses.map(({ node: x }) => (
                     <span key={x.diagnosis_id}>
                       <EntityPageVerticalTable
+                        style={{ flex: 1 }}
                         thToTd={[
-                          { th: 'UUID', td: x.diagnosis_id },
+                          {
+                            th: 'UUID',
+                            td: x.diagnosis_id,
+                          },
                           {
                             th: 'Classification of Tumor',
                             td: x.classification_of_tumor,
@@ -177,12 +211,22 @@ export default compose(
                             th: 'Last Known Disease Status',
                             td: x.last_known_disease_status,
                           },
-                          { th: 'Morphology', td: x.morphology },
+                          {
+                            th: 'Morphology',
+                            td: x.morphology,
+                          },
                           {
                             th: 'Primary Diagnosis',
                             td: x.primary_diagnosis,
                           },
-                          { th: 'Prior Malignancy', td: x.prior_malignancy },
+                          {
+                            th: 'Prior Malignancy',
+                            td: x.prior_malignancy,
+                          },
+                          {
+                            th: 'Synchronous Malignancy',
+                            td: x.synchronous_malignancy,
+                          },
                           {
                             th: 'Progression or Recurrence',
                             td: x.progression_or_recurrence,
@@ -195,11 +239,16 @@ export default compose(
                             th: 'Tissue or Organ of Origin',
                             td: x.tissue_or_organ_of_origin,
                           },
-                          { th: 'Tumor Grade', td: x.tumor_grade },
-                          { th: 'Tumor Stage', td: x.tumor_stage },
+                          {
+                            th: 'Tumor Grade',
+                            td: x.tumor_grade,
+                          },
+                          {
+                            th: 'Tumor Stage',
+                            td: x.tumor_stage,
+                          },
                         ]}
-                        style={{ flex: 1 }}
-                      />
+                        />
                       <div
                         style={{
                           padding: '1rem',
@@ -207,7 +256,7 @@ export default compose(
                           fontSize: '2rem',
                           lineHeight: '1.4em',
                         }}
-                      >
+                        >
                         Treatments (
                         {x.treatments ? x.treatments.hits.edges.length : 0}
                         )
@@ -215,14 +264,7 @@ export default compose(
                       {x.treatments &&
                         !!x.treatments.hits.edges.length && (
                           <Table
-                            headings={[
-                              <Th key="id">UUID</Th>,
-                              <Th key="agents">Therapeutic Agents</Th>,
-                              <Th key="intent_type">Treatment Intent Type</Th>,
-                              <Th key="therapy">Treatment or Therapy</Th>,
-                              <Th key="days">Days to Treatment Start</Th>,
-                            ]}
-                            body={
+                            body={(
                               <tbody>
                                 {x.treatments.hits.edges.map(({ node }) => (
                                   <Tr key={node.treatment_id}>
@@ -238,17 +280,33 @@ export default compose(
                                   </Tr>
                                 ))}
                               </tbody>
-                            }
-                          />
-                        )}
+                            )}
+                            headings={[
+                              <Th key="id">UUID</Th>,
+                              <Th key="agents">Therapeutic Agents</Th>,
+                              <Th key="intent_type">Treatment Intent Type</Th>,
+                              <Th key="therapy">Treatment or Therapy</Th>,
+                              <Th key="days">Days to Treatment Start</Th>,
+                            ]}
+                            />
+                      )}
                       {(!x.treatments || !x.treatments.hits.edges.length) && (
-                          <div style={{ paddingLeft: '2rem' }}>
+                      <div style={{ paddingLeft: '2rem' }}>
                             No Treatments Found.
-                          </div>
-                        )}
+                      </div>
+                      )}
                     </span>
                   ))}
-                />
+                  tabs={
+                    diagnoses.length > 1
+                      ? diagnoses.map(x => (
+                        <p key={x.node.diagnosis_id}>
+                          {truncate(x.node.diagnosis_id, { length: 11 })}
+                        </p>
+                      ))
+                      : []
+                  }
+                  />
               )}
               {!diagnoses.length && (
                 <h3 style={{ paddingLeft: '2rem' }}>No Diagnoses Found.</h3>
@@ -259,22 +317,16 @@ export default compose(
             <div>
               {!!familyHistory.length && (
                 <SideTabs
-                  contentStyle={{ border: 'none' }}
                   containerStyle={{ display: 'block' }}
-                  tabs={
-                    familyHistory.length > 1
-                      ? familyHistory.map(x => (
-                          <p key={x.family_history_id}>
-                            {truncate(x.family_history_id, { length: 11 })}
-                          </p>
-                        ))
-                      : []
-                  }
+                  contentStyle={{ border: 'none' }}
                   tabContent={familyHistory.map(x => (
                     <EntityPageVerticalTable
                       key={x.family_history_id}
                       thToTd={[
-                        { th: 'UUID', td: x.family_history_id },
+                        {
+                          th: 'UUID',
+                          td: x.family_history_id,
+                        },
                         {
                           th: 'Relationship Age at Diagnosis',
                           td: x.relationship_age_at_diagnosis,
@@ -287,15 +339,27 @@ export default compose(
                           th: 'Relationship Primary Diagnosis',
                           td: x.relationship_primary_diagnosis,
                         },
-                        { th: 'Relationship Type', td: x.relationship_type },
+                        {
+                          th: 'Relationship Type',
+                          td: x.relationship_type,
+                        },
                         {
                           th: 'Relative with Cancer History',
                           td: x.relative_with_cancer_history,
                         },
                       ]}
-                    />
+                      />
                   ))}
-                />
+                  tabs={
+                    familyHistory.length > 1
+                      ? familyHistory.map(x => (
+                        <p key={x.family_history_id}>
+                          {truncate(x.family_history_id, { length: 11 })}
+                        </p>
+                      ))
+                      : []
+                  }
+                  />
               )}
               {!familyHistory.length && (
                 <h3 style={{ paddingLeft: '2rem' }}>
@@ -308,30 +372,49 @@ export default compose(
             <div>
               {!!totalExposures && (
                 <SideTabs
-                  contentStyle={{ border: 'none' }}
                   containerStyle={{ display: 'block' }}
-                  tabs={
-                    exposures.length > 1
-                      ? exposures.map(x => (
-                          <p key={x.node.exposure_id}>
-                            {truncate(x.node.exposure_id, { length: 11 })}
-                          </p>
-                        ))
-                      : []
-                  }
+                  contentStyle={{ border: 'none' }}
                   tabContent={exposures.map(x => (
                     <EntityPageVerticalTable
                       key={x.node.exposure_id}
                       thToTd={[
-                        { th: 'UUID', td: x.node.exposure_id },
-                        { th: 'Alcohol History', td: x.node.alcohol_history },
-                        { th: 'Height', td: x.node.height },
-                        { th: 'Weight', td: x.node.weight },
-                        { th: 'Years Smoked', td: x.node.years_smoked },
+                        {
+                          th: 'UUID',
+                          td: x.node.exposure_id,
+                        },
+                        {
+                          th: 'Alcohol History',
+                          td: x.node.alcohol_history,
+                        },
+                        {
+                          th: 'Height',
+                          td: x.node.height,
+                        },
+                        {
+                          th: 'Weight',
+                          td: x.node.weight,
+                        },
+                        {
+                          th: 'Years Smoked',
+                          td: x.node.years_smoked,
+                        },
+                        {
+                          th: 'Pack Years Smoked',
+                          td: x.node.pack_years_smoked,
+                        },
                       ]}
-                    />
+                      />
                   ))}
-                />
+                  tabs={
+                    exposures.length > 1
+                      ? exposures.map(x => (
+                        <p key={x.node.exposure_id}>
+                          {truncate(x.node.exposure_id, { length: 11 })}
+                        </p>
+                      ))
+                      : []
+                  }
+                  />
               )}
               {!totalExposures && (
                 <h3 style={{ paddingLeft: '2rem' }}>No Exposures Found.</h3>
@@ -346,10 +429,8 @@ export default compose(
               borderTop: `1px solid ${theme.greyScale5}`,
               marginTop: '10px',
             }}
-          >
+            >
             <EntityPageHorizontalTable
-              title={'Clinical Supplement File'}
-              titleStyle={{ fontSize: '1em' }}
               className="clinical-supplement-file-table"
               data={clinicalFiles.map((f, i) => {
                 const fileData = {
@@ -364,7 +445,8 @@ export default compose(
                       )}
                       {f.node.access === 'controlled' && (
                         <i className="fa fa-lock" />
-                      )}{' '}
+                      )}
+                      {' '}
                       {f.node.file_name}
                     </span>
                   ),
@@ -376,36 +458,47 @@ export default compose(
                         display: 'flex',
                         flexDirection: 'row',
                       }}
-                    >
+                      >
                       <span key="add_to_cart" style={{ paddingRight: '10px' }}>
                         <AddToCartButtonSingle file={fileData} />
                       </span>
                       <span style={{ paddingRight: '10px' }}>
                         <DownloadFile
+                          activeText=""
+                          file={f.node}
+                          inactiveText=""
                           style={{
                             ...styles.downloadButton(theme),
                             backgroundColor: 'white',
                           }}
-                          file={f.node}
-                          activeText={''}
-                          inactiveText={''}
-                        />
+                          />
                       </span>
                     </div>
                   ),
                 };
               })}
               headings={[
-                { key: 'file_name', title: 'Filename' },
-                { key: 'data_format', title: 'Data format' },
+                {
+                  key: 'file_name',
+                  title: 'Filename',
+                },
+                {
+                  key: 'data_format',
+                  title: 'Data format',
+                },
                 {
                   key: 'file_size',
                   title: 'Size',
                   style: { textAlign: 'right' },
                 },
-                { key: 'action', title: 'Action' },
+                {
+                  key: 'action',
+                  title: 'Action',
+                },
               ]}
-            />
+              title="Clinical Supplement File"
+              titleStyle={{ fontSize: '1em' }}
+              />
           </div>
         )}
       </Card>

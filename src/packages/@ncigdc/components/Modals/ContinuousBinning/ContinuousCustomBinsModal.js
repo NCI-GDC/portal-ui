@@ -24,10 +24,6 @@ const styles = {
       flex: '1 0 0 ',
       padding: '5px',
     },
-    fieldsWrapper: {
-      display: 'flex',
-      flex: '1 0 0',
-    },
     heading: {
       background: '#dedddd',
       display: 'flex',

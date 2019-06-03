@@ -22,17 +22,22 @@ export default compose(
 )(
   ({
     disabled,
-    handleCancel,
     handleChange,
-    handleEdit,
     handleRemove,
-    handleSave,
     row,
     rowFields,
     rowIndex,
     setRowFields,
     styles,
   }) => {
+    // make sure the fields are in order no matter
+    // what happens to the object in state
+    const rangeTableRowFields = [
+      'name',
+      'min',
+      'max',
+    ];
+
     const updateRowFields = (target, inputErrors = null) => {
       const targetInfo = target.id.split('-');
       const inputKey = targetInfo[3];
@@ -50,28 +55,30 @@ export default compose(
 
       setRowFields(nextRowFields);
     };
-    // make sure the fields are in order no matter
-    // what happens to the object in state
-    const rangeTableRowFields = [
-      'name',
-      'min',
-      'max',
-    ];
 
-    const validateField = target => {
-      console.log(target);
+    const validateFields = () => {
+      console.log('validate');
     };
 
-    const updateRow = target => {
-      console.log(target);
+    const updateRowStatus = rowAction => {
+      if (rowAction === 'cancel') {
+        setRowFields(row.fields);
+        handleChange('cancel');
+      } else if (rowAction === 'edit') {
+        handleChange('edit');
+      } else if (rowAction === 'save' || rowAction === 'outside-click') {
+        validateFields();
+        // valid? send handleChange update
+        // invalid? throw errors
+      }
     };
 
     return (
       <OutsideClickHandler
         disabled={disabled || !row.active}
         display="flex"
-        onOutsideClick={e => {
-          updateRow(e.target);
+        onOutsideClick={() => {
+          updateRowStatus('outside-click');
         }}
         >
         <div style={rowStyles.fieldsWrapper}>
@@ -107,8 +114,8 @@ export default compose(
                 buttonContentStyle={{ justifyContent: 'center' }}
                 disabled={disabled}
                 id={`range-row-${rowIndex}-save`}
-                onClick={e => {
-                  updateRow(e.target);
+                onClick={() => {
+                  updateRowStatus('save');
                 }}
                 style={{
                   ...rowStyles.optionsButton,
@@ -122,8 +129,8 @@ export default compose(
                 buttonContentStyle={{ justifyContent: 'center' }}
                 disabled={disabled}
                 id={`range-row-${rowIndex}-cancel`}
-                onClick={e => {
-                  updateRow(e.target);
+                onClick={() => {
+                  updateRowStatus('cancel');
                 }}
                 style={{
                   ...rowStyles.optionsButton,
@@ -138,8 +145,8 @@ export default compose(
                 aria-label="Edit"
                 disabled={disabled}
                 id={`range-row-${rowIndex}-edit`}
-                onClick={e => {
-                  updateRow(e.target);
+                onClick={() => {
+                  updateRowStatus('edit');
                 }}
                 style={{ ...rowStyles.optionsButton }}
                 >
@@ -151,9 +158,7 @@ export default compose(
             buttonContentStyle={{ justifyContent: 'center' }}
             disabled={disabled}
             id={`range-row-${rowIndex}-remove`}
-            onClick={e => {
-              updateRow(e.target);
-            }}
+            onClick={handleRemove}
             style={{ ...rowStyles.optionsButton }}
             >
             <i aria-hidden="true" className="fa fa-trash" />

@@ -385,6 +385,7 @@ export default compose(
                             }}
                             isEditing={editingGroupName === groupName}
                             noEditingStyle={{ fontWeight: 'bold' }}
+                            outsideClickHandlerDisabled={false}
                             pencilEditingOnly
                             text={groupName}
                             >

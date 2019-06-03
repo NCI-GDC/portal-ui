@@ -44,7 +44,7 @@ const BinningInput = ({
           ...(disabled ? styles.inputDisabled : {}),
           ...(valid ? {} : styles.inputInvalid),
         }}
-        type={inputKey === 'name' ? 'text' : 'number'}
+        type="text"
         value={value}
         />
       {inputErrors.map(err => <div key={`${inputId}-error-${err.substr(0, 2)}`} style={styles.error}>{err}</div>)}

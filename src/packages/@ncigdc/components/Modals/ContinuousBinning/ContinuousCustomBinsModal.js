@@ -1,5 +1,6 @@
 import React from 'react';
 import { compose, withState, withProps } from 'recompose';
+import { isFinite } from 'lodash';
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import Button from '@ncigdc/uikit/Button';
 import { visualizingButton } from '@ncigdc/theme/mixins';
@@ -125,7 +126,7 @@ export default compose(
         ...customInterval,
         [inputKey]: {
           errors: inputErrors === null ? customInterval[inputKey].errors : inputErrors,
-          value: Number(inputValue),
+          value: inputValue,
         },
       };
       setCustomInterval(nextCustomInterval);
@@ -134,6 +135,12 @@ export default compose(
     const validateCustomInterval = target => {
       const inputKey = target.id.split('-')[2];
       const inputValue = Number(target.value);
+
+      if (!isFinite(inputValue)) {
+        const nanError = [`'${target.value}' is not a valid number.`];
+        updateCustomInterval(target, nanError);
+        return;
+      }
 
       const currentMin = customInterval.min.value;
       const currentMax = customInterval.max.value;

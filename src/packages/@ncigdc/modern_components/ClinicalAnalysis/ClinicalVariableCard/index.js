@@ -273,7 +273,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
       : []
   );
 
-  const getCategoricalTableData = (binData, type, dataBuckets) => {
+  const getCategoricalTableData = (binData, type) => {
     if (isEmpty(binData)) {
       return [];
     }
@@ -288,6 +288,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
         .reverse()
       : binData
         .filter(bucket => (IS_CDAVE_DEV ? bucket.key : bucket.key !== '_missing'))
+        .sort((a, b) => b.doc_count - a.doc_count)
         .map(b => ({
           ...b,
           chart_doc_count: b.doc_count,
@@ -411,7 +412,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
 
   const tableData = variable.active_chart === 'box'
     ? getBoxTableData(dataValues)
-    : getCategoricalTableData(customBins, variable.plotTypes, dataBuckets);
+    : getCategoricalTableData(customBins, variable.plotTypes);
 
   const getHeadings = chartType => {
     return chartType === 'box'

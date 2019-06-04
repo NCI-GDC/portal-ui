@@ -65,8 +65,10 @@ const DownloadVisualizationButton = ({
   theme,
   tooltipHTML,
   disabled,
+  buttonStyle,
   ...props
-}: TProps) => (
+}: TProps) => {
+return (
   <DropDown
     className={props.className || 'test-download-viz-button'}
     isDisabled={disabled}
@@ -75,7 +77,7 @@ const DownloadVisualizationButton = ({
         <Button
           disabled={disabled}
           leftIcon={!noText && <Download />}
-          style={visualizingButton}
+          style={{...visualizingButton, ...buttonStyle}}
           type="button"
         >
           {noText ? (
@@ -178,6 +180,6 @@ const DownloadVisualizationButton = ({
       </DropdownItem>
     )}
   </DropDown>
-);
+)};
 
 export default enhance(DownloadVisualizationButton);

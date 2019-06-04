@@ -9,38 +9,39 @@ import {
 } from 'recompose';
 import { last, groupBy, sortBy } from 'lodash';
 
-import { withTheme } from '@ncigdc/theme'; // remove and apply our themes in wrapper
-import withSize from '@ncigdc/utils/withSize'; // remove and apply in wrapper
 import { qnorm } from './qqUtils';
-import '@ncigdc/components/Charts/style.css';
 
 const QQPlot = ({
+  axisStyles = {},
   data = [],
-  yAxisTitle = 'Sample Quantiles',
-  xAxisTitle = 'Theoretical Quantiles',
-  styles = {},
+  exportCoordinates = false,
   height = 320,
-  size: { width },
-  theme,
   plotTitle = '',
+  qqLineStyles = {},
+  qqPointStyles = {},
+  size: { width },
+  styles = {},
+  xAxisTitle = 'Theoretical Quantiles',
+  yAxisTitle = 'Sample Quantiles',
 }) => {
-  const n = data.length;
-
-  // subtract 1 to account for 0 index array
-  const getQuantile = (count, quantile) => Math.ceil(count * (quantile / 4)) - 1;
-
-  // sample quantile(y) and theoretical quantile (x)
-  const zScores = sortBy(data).map((age, i) => ({
-    x: qnorm((i + 1 - 0.5) / n),
-    y: age,
-  }));
-
-  const quantile1Coords = zScores[getQuantile(n, 1)];
-  const quantile3Coords = zScores[getQuantile(n, 3)];
-
-  const el = ReactFauxDOM.createElement('div');
-  el.style.width = '100%';
-  el.setAttribute('class', 'qq-plot');
+  // default styles
+  const qqLine = {
+    color: '#e377c2',
+    strokeWidth: 2,
+    ...qqLineStyles,
+  };
+  const qqPoint = {
+    color: 'blue',
+    strokeWidth: 1,
+    radius: 1.5,
+    ...qqPointStyles,
+  };
+  const axisStyle = {
+    textFill: 'lightgray',
+    fontSize: '1rem',
+    fontWeight: '400',
+    ...axisStyles,
+  };
 
   const margin = styles.margin || {
     top: 20,
@@ -52,6 +53,30 @@ const QQPlot = ({
   const chartWidth = (width || 300) - margin.left - margin.right;
   const chartHeight = height - margin.top - margin.bottom;
   const padding = styles.padding || 40;
+
+  // qq plot calculations
+  const n = data.length;
+
+  // subtract 1 to account for 0 index array
+  const getQuantile = (count, quantile) => Math.ceil(count * (quantile / 4)) - 1;
+
+  let zScores = data;
+
+  // sample quantile(y) and theoretical quantile (x)
+  if (!exportCoordinates) {
+    zScores = sortBy(data).map((age, i) => ({
+      x: qnorm((i + 1 - 0.5) / n),
+      y: age,
+    }));
+  }
+
+  const quantile1Coords = zScores[getQuantile(n, 1)];
+  const quantile3Coords = zScores[getQuantile(n, 3)];
+
+  // create svg
+  const el = ReactFauxDOM.createElement('div');
+  el.style.width = '100%';
+  el.setAttribute('class', 'test-qqplot');
 
   const xScale = d3
     .scaleLinear()
@@ -87,13 +112,6 @@ const QQPlot = ({
     .scale(yScale)
     .ticks(5);
 
-  const axisStyle = {
-    textFill: theme.greyScale3,
-    fontSize: '1rem',
-    fontWeight: '400',
-    stroke: theme.greyScale4,
-  };
-
   // get slope from first and third quantile to match qqline from R
   const slope = (quantile3Coords.y - quantile1Coords.y) / (quantile3Coords.x - quantile1Coords.x);
   const yMin = zScores[0].y;
@@ -117,10 +135,11 @@ const QQPlot = ({
     .append('circle')
     .attr('cx', (d) => xScale(d.x))
     .attr('cy', (d) => yScale(d.y))
-    .attr('r', 1.5)
-    .attr('stroke', theme.secondary)
+    .attr('r', qqPoint.radius)
+    .attr('stroke', qqPoint.color)
+    .attr('stroke-width', qqPoint.strokeWidth)
     .attr('fill', 'transparent')
-    .attr('transform', `translate(${padding},0)`);
+    .attr('transform', `translate(${padding},${-(padding / 2)})`);
 
   const line = d3
     .line()
@@ -144,9 +163,9 @@ const QQPlot = ({
       },
     ])
     .attr('d', line)
-    .attr('stroke', '#e377c2')
-    .attr('stroke-width', 2)
-    .attr('transform', `translate(${padding},0)`);
+    .attr('stroke', qqLine.color)
+    .attr('stroke-width', qqLine.strokeWidth)
+    .attr('transform', `translate(${padding},${-(padding / 2)})`);
 
 // clip path to prevent qq line extending beyond y-axis
   svg
@@ -185,13 +204,13 @@ const QQPlot = ({
   svg
     .append('g')
     .attr('class', 'x axis')
-    .attr('transform', `translate(${padding},${chartHeight})`)
+    .attr('transform', `translate(${padding},${height - (padding / 2)})`)
     .call(xAxis);
 
   svg
     .append('text')
     .attr('text-anchor', 'middle')
-    .attr('transform', `translate(${width / 2},${height + padding})`)
+    .attr('transform', `translate(${(chartWidth + padding) / 2},${height + (padding / 2)})`)
     .text(xAxisTitle)
     .style('fontSize', axisStyle.fontSize)
     .style('fontWeight', axisStyle.fontWeight)
@@ -201,7 +220,7 @@ const QQPlot = ({
   svg
     .append('g')
     .attr('class', 'y axis')
-    .attr('transform', `translate(${padding * 2}, 0)`)
+    .attr('transform', `translate(${padding * 2}, ${-(padding / 2)})`)
     .call(yAxis);
 
   svg
@@ -217,9 +236,7 @@ const QQPlot = ({
 };
 
 export default compose(
-  withTheme,
   withState('chart', 'setState', <span />),
-  withSize({ refreshRate: 16 }),
   withProps(({ data }) => ({ data })),
   pure
 )(QQPlot);

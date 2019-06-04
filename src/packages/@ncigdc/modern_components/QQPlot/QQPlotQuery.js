@@ -2,18 +2,21 @@ import React from 'react';
 import {
   compose, withPropsOnChange, withProps, withState,
 } from 'recompose';
-import { sortBy, isArray, isPlainObject } from 'lodash';
+import {
+  sortBy, isArray, isPlainObject, isNumber,
+} from 'lodash';
 
 import { addInFilters } from '@ncigdc/utils/filters';
 import { fetchApi } from '@ncigdc/utils/ajax';
 import Spinner from '@ncigdc/uikit/Loaders/Material';
+import { withTheme } from '@ncigdc/theme';
+import withSize from '@ncigdc/utils/withSize';
+import { qnorm } from './qqUtils';
 import QQPlot from './QQPlot';
-import { Column } from '@ncigdc/uikit/Flex';
-import DownloadVisualizationButton from '@ncigdc/components/DownloadVisualizationButton';
 
-import { qnorm } from './qqUtils'
 
 export default compose(
+  withTheme,
   withState('data', 'setData', null),
   withState('isLoading', 'setIsLoading', true),
   withPropsOnChange(['filters', 'fieldName'], ({ fieldName, filters, first }) => {
@@ -36,12 +39,15 @@ export default compose(
   }),
   withProps({
     updateData: async ({
-      newFilters,
-      first,
-      setData,
-      setIsLoading,
+      dataHandler,
       fieldName,
+      first,
+      newFilters,
+      setData,
+      setDataHandler,
+      setIsLoading,
     }) => {
+      setDataHandler(false);
       const res = await fetchApi('case_ssms', {
         headers: { 'Content-Type': 'application/json' },
         body: {
@@ -60,8 +66,7 @@ export default compose(
           clinicalNestedField: parsed[2],
         };
       };
-      const { clinicalType, clinicalField, clinicalNestedField } = parsedFieldName(fieldName);
-
+      const { clinicalField, clinicalNestedField, clinicalType } = parsedFieldName(fieldName);
 
       const continuousValues = [];
 
@@ -81,40 +86,64 @@ export default compose(
         }
         return continuousValues.push(hit[clinicalType]);
       });
-      setData(continuousValues.filter(b => _.isNumber(b)), () => setIsLoading(false));
+      const sortedData = sortBy(continuousValues.filter(b => isNumber(b)));
+      const parsedData = sortBy(sortedData).map((age, i) => ({
+        x: qnorm((i + 1 - 0.5) / sortedData.length),
+        y: age,
+      }));
+      setData(parsedData, () => setIsLoading(false));
+      dataHandler(parsedData.map(d => ({
+        'Sample Quantile': d.y,
+        'Theoretical Quantile': d.x,
+      })), () => setDataHandler(true));
     },
   }),
   withPropsOnChange(['filters'], ({ updateData, ...props }) => updateData(props)),
 )(({
-  isLoading, data, clinicalType, queryField, fieldName, chartHeight, ...props
+  chartHeight,
+  clinicalType,
+  data,
+  fieldName,
+  isLoading,
+  queryField,
+  theme,
+  ...props
 }) => {
   if (isLoading) {
     return (
       <div
         style={{
-          display: 'flex',
-          justifyContent: 'center',
           alignItems: 'center',
+          display: 'flex',
           height: 250,
+          justifyContent: 'center',
         }}
-      >
+        >
         <Spinner />
       </div>
     );
   }
-  const downloadData = sortBy(data).map((val, i) => ({
-    theoretical_quantile: qnorm((i + 1 - 0.5) / data.length),
-    sample_quantile: val,
-  }))
+
+  const QQPlotWithSize = compose(withSize({ refreshRate: 16 }))(QQPlot);
   return (
-      <QQPlot
+    <QQPlotWithSize
         clinicalType={clinicalType}
         data={data}
-        queryField={queryField}
+        exportCoordinates
         height={chartHeight}
+        queryField={queryField}
         {...props}
+        axisStyles={{ textFill: theme.greyScale3 }}
         fieldName={fieldName}
-        styles={{ margin: { top: 0, right: 10, bottom: 0, left: 10}}}
-      />
+        qqPointStyles={{ color: theme.secondary }}
+        styles={{
+          margin: {
+            bottom: 0,
+            left: 0,
+            right: 0,
+            top: 0,
+          },
+        }}
+        />
   );
 });

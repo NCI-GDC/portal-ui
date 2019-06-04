@@ -37,7 +37,7 @@ const QQPlot = ({
     ...qqPointStyles,
   };
   const axisStyle = {
-    textFill: 'lightgray',
+    textColor: '#888',
     fontSize: '1rem',
     fontWeight: '400',
     ...axisStyles,
@@ -76,7 +76,7 @@ const QQPlot = ({
   // create svg
   const el = ReactFauxDOM.createElement('div');
   el.style.width = '100%';
-  el.setAttribute('class', 'test-qqplot');
+  el.setAttribute('class', 'qq-plot');
 
   const xScale = d3
     .scaleLinear()
@@ -214,7 +214,7 @@ const QQPlot = ({
     .text(xAxisTitle)
     .style('fontSize', axisStyle.fontSize)
     .style('fontWeight', axisStyle.fontWeight)
-    .attr('fill', axisStyle.textFill);
+    .attr('fill', axisStyle.textColor);
 
   // y axis
   svg
@@ -230,7 +230,7 @@ const QQPlot = ({
     .text(yAxisTitle)
     .style('fontSize', axisStyle.fontSize)
     .style('fontWeight', axisStyle.fontWeight)
-    .attr('fill', axisStyle.textFill);
+    .attr('fill', axisStyle.textColor);
 
   return el.toReact();
 };

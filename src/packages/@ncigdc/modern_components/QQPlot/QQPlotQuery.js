@@ -14,6 +14,7 @@ import withSize from '@ncigdc/utils/withSize';
 import { qnorm } from './qqUtils';
 import QQPlot from './QQPlot';
 
+import './qq.css';
 
 export default compose(
   withTheme,
@@ -133,7 +134,6 @@ export default compose(
         height={chartHeight}
         queryField={queryField}
         {...props}
-        axisStyles={{ textFill: theme.greyScale3 }}
         fieldName={fieldName}
         qqPointStyles={{ color: theme.secondary }}
         styles={{

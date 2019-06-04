@@ -930,7 +930,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                       noText
                       slug={`qq-plot-${fieldName}`}
                       svg={() => wrapSvg({
-                        selector: `#${wrapperId}-qqplot-container .test-qqplot svg`,
+                        selector: `#${wrapperId}-qqplot-container .qq-plot svg`,
                         title: humanify({ term: fieldName }),
                       })}
                       tooltipHTML="Download plot data"

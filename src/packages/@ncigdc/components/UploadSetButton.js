@@ -1,5 +1,9 @@
 import React from 'react';
-import { compose, withProps } from 'recompose';
+import {
+  compose,
+  setDisplayName,
+  withProps,
+} from 'recompose';
 import { connect } from 'react-redux';
 import { get, truncate } from 'lodash';
 import { Row } from '@ncigdc/uikit/Flex';
@@ -20,9 +24,10 @@ import Hidden from '@ncigdc/components/Hidden';
 
 const MAX_LABEL_LENGTH = 30;
 const enhance = compose(
+  setDisplayName('EnhancedUploadSetButton'),
   connect(({ sets }) => ({ sets })),
   withRouter,
-  withProps(({ sets, type, query }) => {
+  withProps(({ query, sets, type }) => {
     const currentFilters = parseFilterParam(query.filters, null);
     return {
       sets: sets[type] || {},
@@ -30,7 +35,10 @@ const enhance = compose(
         currentFilters &&
         (Array.isArray(currentFilters.content)
           ? currentFilters
-          : { op: 'and', content: [currentFilters] }),
+          : {
+            op: 'and',
+            content: [currentFilters],
+          }),
     };
   }),
 );
@@ -68,18 +76,18 @@ export default enhance(
     return (
       <Row style={style}>
         <Button
+          onClick={() => dispatch(setModal(<UploadModal />))}
           style={{
             padding: '4px 12px',
             width: '100%',
             borderRadius: '4px 0 0 4px',
           }}
-          onClick={() => dispatch(setModal(<UploadModal />))}
-        >
+          >
           {children}
         </Button>
 
         <Dropdown
-          button={
+          button={(
             <Button
               disabled={!Object.keys(sets).length}
               style={{
@@ -88,19 +96,22 @@ export default enhance(
                 borderRadius: '0 4px 4px 0',
                 borderLeft: '1px solid currentColor',
               }}
-            >
+              >
               <CaretIcon direction="down" />
               <Hidden>See existing sets</Hidden>
             </Button>
-          }
-        >
+          )}
+          >
           {Object.entries(sets).map(([setId, label]: [string, string]) => {
             const value = `set_id:${setId}`;
             return (
               <DropdownItem key={label} style={{ padding: 5 }}>
                 <Link
-                  style={{ width: '100%', textDecoration: 'none' }}
                   merge="toggle"
+                  style={{
+                    width: '100%',
+                    textDecoration: 'none',
+                  }}
                   {...defaultQuery}
                   query={{
                     ...defaultQuery.query,
@@ -109,30 +120,36 @@ export default enhance(
                       content: [
                         {
                           op: 'in',
-                          content: { field: idField, value: [value] },
+                          content: {
+                            field: idField,
+                            value: [value],
+                          },
                         },
                       ],
                     },
                   }}
-                >
+                  >
                   <Tooltip
                     Component={
                       label.length > MAX_LABEL_LENGTH && (
                         <div style={{ maxWidth: 400 }}>{label}</div>
                       )
                     }
-                  >
-                    <Row
-                      style={{ alignItems: 'center', whiteSpace: 'nowrap' }}
-                      spacing="0.5rem"
                     >
+                    <Row
+                      spacing="0.5rem"
+                      style={{
+                        alignItems: 'center',
+                        whiteSpace: 'nowrap',
+                      }}
+                      >
                       <input
+                        checked={currentValues.includes(value)}
+                        name={label}
                         readOnly
                         style={{ pointerEvents: 'none' }}
                         type="checkbox"
-                        checked={currentValues.includes(value)}
-                        name={label}
-                      />
+                        />
                       <label htmlFor={label}>
                         {truncate(label, { length: MAX_LABEL_LENGTH })}
 
@@ -145,7 +162,7 @@ export default enhance(
                                 value: `set_id:${setId}`,
                               },
                             }}
-                          >
+                            >
                             {count => (
                               <span>
                                 {pluralize(

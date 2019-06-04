@@ -5,12 +5,13 @@ import _ from 'lodash';
 import { css } from 'glamor';
 import {
   compose,
-  withState,
-  lifecycle,
-  withProps,
-  renameProps,
   defaultProps,
+  lifecycle,
+  renameProps,
+  setDisplayName,
   withHandlers,
+  withProps,
+  withState,
 } from 'recompose';
 import { fetchApi } from '@ncigdc/utils/ajax';
 import entityShortnameMapping from '@ncigdc/utils/entityShortnameMapping';
@@ -18,10 +19,10 @@ import Highlight from '@ncigdc/uikit/Highlight';
 import withSelectableList from '@ncigdc/utils/withSelectableList';
 import withPropsOnChange from '@ncigdc/utils/withPropsOnChange';
 
-const facetMatchesQuery = (facet, query) =>
-  _.some([facet.field, facet.description].map(_.toLower), searchTarget =>
-    _.includes(searchTarget, query),
-  );
+const facetMatchesQuery = (facet, query) => _.some(
+  [facet.field, facet.description].map(_.toLower),
+  searchTarget => _.includes(searchTarget, query),
+);
 
 const styles = {
   header: {
@@ -107,14 +108,14 @@ const styles = {
 };
 
 // Highlighting is frustratingly slow with > 100 items
-const ConditionalHighlight = ({ condition, search, children }) =>
-  condition ? (
-    <Highlight search={search}>{children}</Highlight>
+const ConditionalHighlight = ({ children, condition, search }) => (condition ? (
+  <Highlight search={search}>{children}</Highlight>
   ) : (
     <span>{children}</span>
-  );
+  ));
 
 export default compose(
+  setDisplayName('EnhancedFacetSelection'),
   withState('facetMapping', 'setFacetMapping', {}),
   withState('query', 'setQuery', ''),
   withState('focusedFacet', 'setFocusedFacet', null),
@@ -126,19 +127,19 @@ export default compose(
   ),
   withPropsOnChange(
     ['isLoadingFacetMapping', 'isLoadingAdditionalFacetData'],
-    ({ isLoadingFacetMapping, isLoadingAdditionalFacetData }) => ({
+    ({ isLoadingAdditionalFacetData, isLoadingFacetMapping }) => ({
       isLoading: _.some([isLoadingFacetMapping, isLoadingAdditionalFacetData]),
     }),
   ),
   withState('shouldHideUselessFacets', 'setShouldHideUselessFacets', false),
   withProps(
     ({
+      docType,
+      facetMapping,
       relay,
+      relayVarName,
       setIsLoadingAdditionalFacetData,
       setShouldHideUselessFacets,
-      facetMapping,
-      relayVarName,
-      docType,
     }) => ({
       setUselessFacetVisibility: shouldHideUselessFacets => {
         setShouldHideUselessFacets(shouldHideUselessFacets);
@@ -157,7 +158,11 @@ export default compose(
             },
             readyState => {
               if (
-                _.some([readyState.ready, readyState.aborted, readyState.error])
+                _.some([
+                  readyState.ready,
+                  readyState.aborted,
+                  readyState.error,
+                ])
               ) {
                 setIsLoadingAdditionalFacetData(false);
               }
@@ -169,8 +174,7 @@ export default compose(
   ),
   withPropsOnChange(
     ['isLoadingFacetMapping'],
-    ({ isLoadingFacetMapping, setUselessFacetVisibility }) =>
-      !isLoadingFacetMapping &&
+    ({ isLoadingFacetMapping, setUselessFacetVisibility }) => !isLoadingFacetMapping &&
       JSON.parse(localStorage.getItem('shouldHideUselessFacets') || 'null') &&
       setUselessFacetVisibility(true),
   ),
@@ -183,8 +187,7 @@ export default compose(
       setFacetMapping(mapping);
       setIsLoadingFacetMapping(false);
     },
-    handleQueryInputChange: ({ setQuery }) => event =>
-      setQuery(event.target.value),
+    handleQueryInputChange: ({ setQuery }) => event => setQuery(event.target.value),
   }),
   defaultProps({
     excludeFacetsBy: _.noop,
@@ -194,8 +197,7 @@ export default compose(
   withPropsOnChange(['additionalFacetData'], ({ additionalFacetData }) => ({
     usefulFacets: _.omitBy(
       additionalFacetData,
-      aggregation =>
-        !aggregation ||
+      aggregation => !aggregation ||
         _.some([
           aggregation.buckets &&
             aggregation.buckets.filter(bucket => bucket.key !== '_missing')
@@ -208,20 +210,18 @@ export default compose(
   })),
   withProps(
     ({
-      facetMapping,
       excludeFacetsBy,
+      facetMapping,
       query,
       shouldHideUselessFacets,
       usefulFacets,
     }) => ({
-      filteredFacets: _.filter(_.values(facetMapping), facet =>
-        _.every([
-          facetMatchesQuery(facet, query),
-          !excludeFacetsBy(facet),
-          !shouldHideUselessFacets ||
+      filteredFacets: _.filter(_.values(facetMapping), facet => _.every([
+        facetMatchesQuery(facet, query),
+        !excludeFacetsBy(facet),
+        !shouldHideUselessFacets ||
             Object.keys(usefulFacets).includes(facet.field),
-        ]),
-      ),
+      ]),),
     }),
   ),
   renameProps({
@@ -229,10 +229,10 @@ export default compose(
   }),
   withHandlers({
     handleClose: ({
-      setQuery,
-      setFocusedFacet,
       onRequestClose,
       relay,
+      setFocusedFacet,
+      setQuery,
     }) => () => {
       setQuery('');
       setFocusedFacet(null);
@@ -265,29 +265,29 @@ export default compose(
           margin: 0,
           lineHeight: 1.42857143,
         }}
-      >
+        >
         <span>{props.title}</span>
         <a
-          onClick={props.handleClose}
           className="pull-right"
+          onClick={props.handleClose}
           style={{ fontSize: '1.5rem' }}
-        >
+          >
           Cancel
         </a>
       </h2>
       <div style={{ marginBottom: 15 }}>
         <label htmlFor="quick-search-input">Search for a field:</label>
         <input
-          id="quick-search-input"
-          type="text"
           autoComplete="off"
           autoFocus
           className="form-control"
-          placeholder="search"
           defaultValue={props.query}
+          id="quick-search-input"
           onChange={props.handleQueryInputChange}
           onKeyDown={props.handleKeyDown}
-        />
+          placeholder="search"
+          type="text"
+          />
       </div>
       <h3 {...css(styles.resultsCount)}>
         {props.isLoading
@@ -295,15 +295,14 @@ export default compose(
           : `${props.filteredFacets.length} ${props.docType} fields`}
       </h3>
 
-      <label tabIndex={0} role="button" className="pull-right">
+      <label className="pull-right" role="button" tabIndex={0}>
         <input
-          className="test-filter-useful-facet"
-          type="checkbox"
-          onChange={event =>
-            props.setUselessFacetVisibility(event.target.checked)}
           checked={props.shouldHideUselessFacets}
+          className="test-filter-useful-facet"
+          onChange={event => props.setUselessFacetVisibility(event.target.checked)}
           style={styles.uselessFacetVisibilityCheckbox}
-        />
+          type="checkbox"
+          />
         Only show fields with values
       </label>
     </div>
@@ -319,12 +318,15 @@ export default compose(
               onClick={() => props.handleSelectFacet(facet)}
               onMouseEnter={() => props.setFocusedFacet(facet)}
               {...css(styles.facetItem)}
-            >
+              >
               <div {...css(styles.itemIconWrapper)}>
                 <span {...css(styles.itemIcon)}>
                   {
                     entityShortnameMapping[
-                      { cases: 'case', files: 'file' }[facet.doc_type]
+                      {
+                        cases: 'case',
+                        files: 'file',
+                      }[facet.doc_type]
                     ]
                   }
                 </span>
@@ -334,17 +336,17 @@ export default compose(
                   styles.facetTexts,
                   isFocused && styles.focusedItem.container,
                 )}
-              >
+                >
                 <span
                   {...css(
                     styles.facetTitle,
                     isFocused && styles.focusedItem.text,
                   )}
-                >
+                  >
                   <ConditionalHighlight
                     condition={props.query.length >= 2}
                     search={props.query}
-                  >
+                    >
                     {facet.field}
                   </ConditionalHighlight>
                   <span {...css(styles.facetType)}>{facet.type}</span>
@@ -355,11 +357,11 @@ export default compose(
                       styles.facetDescription,
                       isFocused && styles.focusedItem.text,
                     )}
-                  >
+                    >
                     <ConditionalHighlight
                       condition={props.query.length >= 2}
                       search={props.query}
-                    >
+                      >
                       {facet.description}
                     </ConditionalHighlight>
                   </p>

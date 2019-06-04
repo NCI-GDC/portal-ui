@@ -27,7 +27,6 @@ const BinningInput = ({
   handleChange,
   inputErrors,
   inputId,
-  inputKey,
   valid,
   validateOnBlur,
   value,

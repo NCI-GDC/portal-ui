@@ -170,9 +170,7 @@ export default compose(
     };
 
     const handleUpdateRow = (inputRowIndex, inputRow) => {
-      console.log('inputRow', inputRow);
       const nextRangeRows = rangeRows.map((rangeRow, rowIndex) => (rowIndex === inputRowIndex ? inputRow : rangeRow));
-      console.log('nextRangeRows', nextRangeRows);
       setRangeRows(nextRangeRows);
     };
 
@@ -248,7 +246,7 @@ export default compose(
         <div>
           <p>
             Available values from
-            <strong>{` ${defaultMin}`}</strong>
+            <strong>{` ${defaultMin} `}</strong>
             to
             <strong>{` ${defaultMax} `}</strong>
           </p>

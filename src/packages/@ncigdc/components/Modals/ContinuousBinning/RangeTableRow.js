@@ -1,5 +1,6 @@
 import React from 'react';
 import { compose, withState } from 'recompose';
+import { isFinite } from 'lodash';
 import OutsideClickHandler from 'react-outside-click-handler';
 import Button from '@ncigdc/uikit/Button';
 import BinningInput from './BinningInput';
@@ -39,7 +40,43 @@ export default compose(
       'max',
     ];
 
-    const updateRowFields = (target, inputErrors = null) => {
+    const validateRow = () => {
+      // check empty & NaN errors first
+      // then make sure that min < max
+      const validFields = Object.keys(rowFields).reduce((acc, curr) => {
+        const fieldValue = rowFields[curr].value;
+        const fieldValueNumber = Number(fieldValue);
+
+        const nextErrors = fieldValue === '' ? ['Required field.'] : curr === 'name' ? [] : isFinite(fieldValueNumber) ? [] : [`'${fieldValue}' is not a number.`];
+
+        return ({
+          ...acc,
+          [curr]: {
+            ...rowFields.curr,
+            errors: nextErrors,
+          },
+        });
+      }, {});
+
+      const checkMinMaxValues = validFields.max.errors.length === 0 && validFields.min.errors.length === 0 && validFields.max.value < validFields.min.value;
+
+      if (checkMinMaxValues) {
+        return ({
+          ...validFields,
+          max: {
+            ...validFields.max,
+            errors: [`${validFields.max.value} must be greater than ${validFields.min.value}.`],
+          },
+          min: {
+            ...validFields.min,
+            errors: [`${validFields.min.value} must be less than ${validFields.max.value}.`],
+          },
+        });
+      }
+      return validFields;
+    };
+
+    const updateRowField = (target, inputErrors = null) => {
       const targetInfo = target.id.split('-');
       const inputKey = targetInfo[3];
       const inputValue = target.value;
@@ -57,18 +94,28 @@ export default compose(
       setRowFields(nextRowFields);
     };
 
-    const updateRow = (updateType, target) => {
-      const inputRowIndex = Number(target.id.split('-')[2]);
-      if (updateType === 'cancel' || updateType === 'edit') {
+    const updateRow = updateType => {
+      if (updateType === 'toggle-edit') {
         const nextRow = {
           ...row,
           active: !rowActive,
         };
         setRowActive(!rowActive);
-        console.log('nextRow', nextRow);
-        handleUpdateRow(inputRowIndex, nextRow);
-      } else {
-        console.log('updateType', updateType);
+        handleUpdateRow(rowIndex, nextRow);
+      } else if (updateType === 'save') {
+        const rowFieldsValidated = validateRow();
+        setRowFields(rowFieldsValidated);
+
+        const rowIsValid = Object.keys(rowFieldsValidated).filter(field => rowFieldsValidated[field].errors.length > 0).length === 0;
+
+        if (rowIsValid) {
+          const nextRow = {
+            active: !rowActive,
+            fields: rowFieldsValidated,
+          };
+          setRowActive(!rowActive);
+          handleUpdateRow(nextRow);
+        }
       }
     };
 
@@ -79,19 +126,19 @@ export default compose(
         onOutsideClick={e => {
           updateRow('save', e.target);
         }}
-      >
+        >
         <div style={rowStyles.fieldsWrapper}>
           {
             rowFieldsOrder.map(rowItem => (
               <div
                 key={`range-row-${rowIndex}-${rowItem}`}
                 style={styles.column}
-              >
+                >
                 <BinningInput
                   binningMethod="range"
                   disabled={!rowActive || disabled}
                   handleChange={e => {
-                    updateRowFields(e.target);
+                    updateRowField(e.target);
                   }}
                   inputErrors={rowFields[rowItem].errors}
                   inputId={`range-row-${rowIndex}-${rowItem}`}
@@ -100,7 +147,7 @@ export default compose(
                   rowIndex={rowIndex}
                   valid={rowFields[rowItem].errors.length === 0}
                   value={rowFields[rowItem].value}
-                />
+                  />
               </div>
             ))
           }
@@ -120,7 +167,7 @@ export default compose(
                   ...rowStyles.optionsButton,
                   ...(disabled || { background: 'green' }),
                 }}
-              >
+                >
                 <i aria-hidden="true" className="fa fa-check" />
               </Button>
               <Button
@@ -129,26 +176,26 @@ export default compose(
                 disabled={disabled}
                 id={`range-row-${rowIndex}-cancel`}
                 onClick={e => {
-                  updateRow('cancel', e.target);
+                  updateRow('toggle-edit', e.target);
                 }}
                 style={{
                   ...rowStyles.optionsButton,
                   ...(disabled || { background: 'red' }),
                 }}
-              >
+                >
                 <i aria-hidden="true" className="fa fa-close" />
               </Button>
             </React.Fragment>
           ) : (
-              <Button
+            <Button
                 aria-label="Edit"
                 disabled={disabled}
                 id={`range-row-${rowIndex}-edit`}
                 onClick={e => {
-                  updateRow('edit', e.target);
+                  updateRow('toggle-edit', e.target);
                 }}
                 style={{ ...rowStyles.optionsButton }}
-              >
+                >
                 <i aria-hidden="true" className="fa fa-pencil" />
               </Button>
             )}
@@ -159,7 +206,7 @@ export default compose(
             id={`range-row-${rowIndex}-remove`}
             onClick={handleRemoveRow}
             style={{ ...rowStyles.optionsButton }}
-          >
+            >
             <i aria-hidden="true" className="fa fa-trash" />
           </Button>
         </div>

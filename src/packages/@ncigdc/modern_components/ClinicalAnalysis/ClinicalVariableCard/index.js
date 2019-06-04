@@ -21,6 +21,7 @@ import {
   truncate,
   groupBy,
   get,
+  reduce,
 } from 'lodash';
 import { scaleOrdinal, schemeCategory10 } from 'd3';
 
@@ -37,7 +38,6 @@ import BarChart from '@ncigdc/components/Charts/BarChart';
 import ExploreLink from '@ncigdc/components/Links/ExploreLink';
 import { makeFilter, addInFilters } from '@ncigdc/utils/filters';
 import { CreateExploreCaseSetButton, AppendExploreCaseSetButton, RemoveFromExploreCaseSetButton } from '@ncigdc/modern_components/withSetAction';
-
 
 import { setModal } from '@ncigdc/dux/modal';
 import SaveSetModal from '@ncigdc/components/Modals/SaveSetModal';
@@ -146,7 +146,7 @@ const vizButtons: IVizButtons = {
           height: '1em',
           width: '1em',
         }}
-        />),
+      />),
     title: 'Box/QQ Plot',
   },
   delete: {
@@ -157,7 +157,7 @@ const vizButtons: IVizButtons = {
           height: '1em',
           width: '1em',
         }}
-        />),
+      />),
     title: 'Remove Card',
   },
   histogram: {
@@ -168,7 +168,7 @@ const vizButtons: IVizButtons = {
           height: '1em',
           width: '1em',
         }}
-        />),
+      />),
     title: 'Histogram',
   },
   survival: {
@@ -223,12 +223,322 @@ const getCountLink = ({ doc_count, filters, totalDocs }) => (
         filters,
         searchTableTab: 'cases',
       }}
-      >
+    >
       {(doc_count || 0).toLocaleString()}
     </ExploreLink>
     <span>{` (${(((doc_count || 0) / totalDocs) * 100).toFixed(2)}%)`}</span>
   </span>
 );
+
+const getCategoricalSetFilters = (selectedBuckets, fieldName, filters) => {
+  const bucketFilters = []
+    .concat(selectedBuckets.filter(bucket => bucket.key !== '_missing').length > 0 && [
+      {
+        content: {
+          field: fieldName,
+          value: selectedBuckets
+            .filter(bucket => bucket.key !== '_missing')
+            .reduce((acc, selectedBucket) => [...acc, ...selectedBucket.keyArray], []),
+        },
+        op: 'in',
+      },
+    ])
+    .concat(selectedBuckets.some(bucket => bucket.key === '_missing') && [
+      {
+        content: {
+          field: fieldName,
+          value: 'MISSING',
+        },
+        op: 'is',
+      },
+    ])
+    .filter(item => item);
+
+  return Object.assign(
+    {},
+    filters,
+    bucketFilters.length && {
+      content: filters.content
+        .concat(
+          bucketFilters.length > 1
+            ? {
+              content: bucketFilters,
+              op: 'or',
+            }
+            : bucketFilters[0]
+        ),
+    }
+  );
+};
+
+const getContinuousSetFilters = (selectedBuckets, fieldName, filters) => {
+  const bucketRanges = selectedBuckets.map(b => b.rangeValues);
+  if (bucketRanges.length === 1 && bucketRanges[0].max === -1) {
+    return addInFilters(filters, {
+      content: [
+        {
+          content: {
+            field: fieldName,
+            value: [bucketRanges[0].min],
+          },
+          op: '>=',
+        },
+      ],
+      op: 'and',
+    });
+  }
+  return addInFilters(filters, {
+    content: [
+      {
+        content: {
+          field: fieldName,
+          value: [min(bucketRanges.map(range => range.min))],
+        },
+        op: '>=',
+      },
+      {
+        content: {
+          field: fieldName,
+          value: [max(bucketRanges.map(range => range.max))],
+        },
+        op: '<=',
+      },
+    ],
+    op: 'and',
+  });
+};
+
+const getCardFilters = (variablePlotTypes, selectedBuckets, fieldName, filters) => {
+  return (get(selectedBuckets, 'length', 0)
+    ? variablePlotTypes === 'continuous'
+      ? getContinuousSetFilters(selectedBuckets, fieldName, filters)
+      : getCategoricalSetFilters(selectedBuckets, fieldName, filters)
+    : filters);
+};
+
+const getCategoricalTableData = (
+  binData,
+  type,
+  getBucketRangesAndFilters,
+  fieldName,
+  totalDocs,
+  selectedSurvivalValues,
+  setId,
+  selectedBuckets,
+  setSelectedBuckets,
+  variable,
+  updateSelectedSurvivalValues,
+  selectedSurvivalLoadingIds,
+) => {
+  if (isEmpty(binData)) {
+    return [];
+  }
+  const displayData = type === 'continuous'
+    ? binData
+      .sort((a, b) => b.key - a.key)
+      .reduce(getBucketRangesAndFilters, {
+        data: [],
+        nextInterval: 0,
+      })
+      .data.slice(0)
+      .reverse()
+    : binData
+      .filter(bucket => (IS_CDAVE_DEV ? bucket.key : bucket.key !== '_missing'))
+      .sort((a, b) => b.doc_count - a.doc_count)
+      .map(b => ({
+        ...b,
+        chart_doc_count: b.doc_count,
+        doc_count: getCountLink({
+          doc_count: b.doc_count,
+          filters:
+            b.key === '_missing'
+              ? {
+                content: [
+                  {
+                    content: {
+                      field: fieldName,
+                      value: [...b.keyArray],
+                    },
+                    op: 'IS',
+                  },
+                  {
+                    content: {
+                      field: 'cases.case_id',
+                      value: `set_id:${setId}`,
+                    },
+                    op: 'in',
+                  },
+                ],
+                op: 'AND',
+              }
+              : makeFilter([
+                {
+                  field: 'cases.case_id',
+                  value: `set_id:${setId}`,
+                },
+                {
+                  field: fieldName,
+                  value: [...b.keyArray],
+                },
+              ]),
+          totalDocs,
+        }),
+        key: b.key,
+      }));
+
+  return displayData.map(b => ({
+    ...b,
+    select: (
+      <input
+        aria-label={`${fieldName}-${b.key}`}
+        checked={!!find(selectedBuckets, { key: b.key })}
+        disabled={b.doc_count === 0}
+        id={b.key}
+        onChange={() => {
+          if (find(selectedBuckets, { key: b.key })) {
+            setSelectedBuckets(
+              reject(selectedBuckets, r => r.key === b.key)
+            );
+          } else {
+            setSelectedBuckets([...selectedBuckets, b]);
+          }
+        }}
+        style={{
+          marginLeft: 3,
+          pointerEvents: 'initial',
+        }}
+        type="checkbox"
+        value={b.key}
+      />
+    ),
+    ...(variable.active_chart === 'survival'
+      ? {
+        survival: (
+          <Tooltip
+            Component={
+              b.key === '_missing' || b.chart_doc_count < MINIMUM_CASES
+                ? 'Not enough data'
+                : selectedSurvivalValues.indexOf(b.key) > -1
+                  ? `Click icon to remove ${b.key}`
+                  : selectedSurvivalValues.length < MAXIMUM_CURVES
+                    ? `Click icon to plot ${b.key}`
+                    : `Maximum plots (${MAXIMUM_CURVES}) reached`
+            }
+          >
+            <Button
+              disabled={
+                b.key === '_missing' ||
+                b.chart_doc_count < MINIMUM_CASES ||
+                (selectedSurvivalValues.length >= MAXIMUM_CURVES &&
+                  selectedSurvivalValues.indexOf(b.key) === -1)
+              }
+              onClick={() => {
+                updateSelectedSurvivalValues(displayData, b);
+              }}
+              style={{
+                backgroundColor:
+                  selectedSurvivalValues.indexOf(b.key) === -1
+                    ? '#666'
+                    : colors(selectedSurvivalValues.indexOf(b.key)),
+                color: 'white',
+                margin: '0 auto',
+                opacity:
+                  b.key === '_missing' ||
+                    b.chart_doc_count < MINIMUM_CASES ||
+                    (selectedSurvivalValues.length >= MAXIMUM_CURVES &&
+                      selectedSurvivalValues.indexOf(b.key) === -1)
+                    ? '0.33'
+                    : '1',
+                padding: '2px 3px',
+                position: 'static',
+              }}
+            >
+              {selectedSurvivalLoadingIds.indexOf(b.key) !== -1 ? (
+                <SpinnerIcon />
+              ) : (
+                  <SurvivalIcon />
+                )}
+            </Button>
+          </Tooltip>
+        ),
+      }
+      : {}),
+  }));
+};
+
+const getBoxTableData = (data = {}) => (
+  Object.keys(data).length
+    ? sortBy(Object.keys(data), datum => boxTableAllowedStats.indexOf(datum.toLowerCase()))
+      .reduce(
+        (tableData, stat) => (
+          boxTableAllowedStats.includes(stat.toLowerCase())
+            ? tableData.concat({
+              count: data[stat],
+              stat: boxTableRenamedStats[stat] || stat, // Shows the descriptive label
+            })
+            : tableData
+        ), []
+      )
+    : []
+);
+
+const getHeadings = (chartType, dataDimension, fieldName) => {
+  return chartType === 'box'
+    ? [
+      {
+        key: 'stat',
+        title: 'Statistics',
+      },
+      {
+        key: 'count',
+        style: { textAlign: 'right' },
+        title: `${dataDimension ? `${dataDimension}s` : 'Quantities'}`,
+      },
+    ]
+    : [
+      {
+        key: 'select',
+        thStyle: {
+          position: 'sticky',
+          top: 0,
+        },
+        title: 'Select',
+      },
+      {
+        key: 'key',
+        thStyle: {
+          position: 'sticky',
+          top: 0,
+        },
+        title: humanify({ term: fieldName }),
+      },
+      {
+        key: 'doc_count',
+        style: { textAlign: 'right' },
+        thStyle: {
+          position: 'sticky',
+          textAlign: 'right',
+          top: 0,
+        },
+        title: '# Cases',
+      },
+      ...(chartType === 'survival' ? [
+        {
+          key: 'survival',
+          style: {
+            display: 'flex',
+            justifyContent: 'flex-end',
+          },
+          thStyle: {
+            position: 'sticky',
+            textAlign: 'right',
+            top: 0,
+          },
+          title: 'Survival',
+        },
+      ] : []),
+    ];
+};
 
 const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
   currentAnalysis,
@@ -257,220 +567,22 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
   variable,
   wrapperId,
 }) => {
-  const getBoxTableData = (data = {}) => (
-    Object.keys(data).length
-      ? sortBy(Object.keys(data), datum => boxTableAllowedStats.indexOf(datum.toLowerCase()))
-        .reduce(
-          (tableData, stat) => (
-            boxTableAllowedStats.includes(stat.toLowerCase())
-              ? tableData.concat({
-                count: data[stat],
-                stat: boxTableRenamedStats[stat] || stat, // Shows the descriptive label
-              })
-              : tableData
-          ), []
-        )
-      : []
-  );
-
-  const getCategoricalTableData = (binData, type) => {
-    if (isEmpty(binData)) {
-      return [];
-    }
-    const displayData = type === 'continuous'
-      ? binData
-        .sort((a, b) => b.key - a.key)
-        .reduce(getBucketRangesAndFilters, {
-          data: [],
-          nextInterval: 0,
-        })
-        .data.slice(0)
-        .reverse()
-      : binData
-        .filter(bucket => (IS_CDAVE_DEV ? bucket.key : bucket.key !== '_missing'))
-        .sort((a, b) => b.doc_count - a.doc_count)
-        .map(b => ({
-          ...b,
-          chart_doc_count: b.doc_count,
-          doc_count: getCountLink({
-            doc_count: b.doc_count,
-            filters:
-              b.key === '_missing'
-                ? {
-                  content: [
-                    {
-                      content: {
-                        field: fieldName,
-                        value: [b.key],
-                      },
-                      op: 'IS',
-                    },
-                    {
-                      content: {
-                        field: 'cases.case_id',
-                        value: `set_id:${setId}`,
-                      },
-                      op: 'in',
-                    },
-                  ],
-                  op: 'AND',
-                }
-                : makeFilter([
-                  {
-                    field: 'cases.case_id',
-                    value: `set_id:${setId}`,
-                  },
-                  {
-                    field: fieldName,
-                    value: [b.key],
-                  },
-                ]),
-            totalDocs,
-          }),
-          key: b.key,
-        }));
-
-    return displayData.map(b => ({
-      ...b,
-      select: (
-        <input
-          aria-label={`${fieldName}-${b.key}`}
-          checked={!!find(selectedBuckets, { key: b.key })}
-          disabled={b.doc_count === 0}
-          id={b.key}
-          onChange={() => {
-            if (find(selectedBuckets, { key: b.key })) {
-              setSelectedBuckets(
-                reject(selectedBuckets, r => r.key === b.key)
-              );
-            } else {
-              setSelectedBuckets([...selectedBuckets, b]);
-            }
-          }}
-          style={{
-            marginLeft: 3,
-            pointerEvents: 'initial',
-          }}
-          type="checkbox"
-          value={b.key}
-          />
-      ),
-      ...(variable.active_chart === 'survival'
-        ? {
-          survival: (
-            <Tooltip
-              Component={
-                b.key === '_missing' || b.chart_doc_count < MINIMUM_CASES
-                  ? 'Not enough data'
-                  : selectedSurvivalValues.indexOf(b.key) > -1
-                    ? `Click icon to remove ${b.key}`
-                    : selectedSurvivalValues.length < MAXIMUM_CURVES
-                      ? `Click icon to plot ${b.key}`
-                      : `Maximum plots (${MAXIMUM_CURVES}) reached`
-              }
-              >
-              <Button
-                disabled={
-                  b.key === '_missing' ||
-                  b.chart_doc_count < MINIMUM_CASES ||
-                  (selectedSurvivalValues.length >= MAXIMUM_CURVES &&
-                    selectedSurvivalValues.indexOf(b.key) === -1)
-                }
-                onClick={() => {
-                  updateSelectedSurvivalValues(displayData, b);
-                }}
-                style={{
-                  backgroundColor:
-                    selectedSurvivalValues.indexOf(b.key) === -1
-                      ? '#666'
-                      : colors(selectedSurvivalValues.indexOf(b.key)),
-                  color: 'white',
-                  margin: '0 auto',
-                  opacity:
-                    b.key === '_missing' ||
-                      b.chart_doc_count < MINIMUM_CASES ||
-                      (selectedSurvivalValues.length >= MAXIMUM_CURVES &&
-                        selectedSurvivalValues.indexOf(b.key) === -1)
-                      ? '0.33'
-                      : '1',
-                  padding: '2px 3px',
-                  position: 'static',
-                }}
-                >
-                {selectedSurvivalLoadingIds.indexOf(b.key) !== -1 ? (
-                  <SpinnerIcon />
-                ) : (
-                  <SurvivalIcon />
-                  )}
-              </Button>
-            </Tooltip>
-          ),
-        }
-        : {}),
-    }));
-  };
-
   const tableData = variable.active_chart === 'box'
     ? getBoxTableData(dataValues)
-    : getCategoricalTableData(customBins, variable.plotTypes);
-
-  const getHeadings = chartType => {
-    return chartType === 'box'
-      ? [
-        {
-          key: 'stat',
-          title: 'Statistics',
-        },
-        {
-          key: 'count',
-          style: { textAlign: 'right' },
-          title: `${dataDimension ? `${dataDimension}s` : 'Quantities'}`,
-        },
-      ]
-      : [
-        {
-          key: 'select',
-          thStyle: {
-            position: 'sticky',
-            top: 0,
-          },
-          title: 'Select',
-        },
-        {
-          key: 'key',
-          thStyle: {
-            position: 'sticky',
-            top: 0,
-          },
-          title: humanify({ term: fieldName }),
-        },
-        {
-          key: 'doc_count',
-          style: { textAlign: 'right' },
-          thStyle: {
-            position: 'sticky',
-            textAlign: 'right',
-            top: 0,
-          },
-          title: '# Cases',
-        },
-        ...(chartType === 'survival' ? [
-          {
-            key: 'survival',
-            style: {
-              display: 'flex',
-              justifyContent: 'flex-end',
-            },
-            thStyle: {
-              position: 'sticky',
-              textAlign: 'right',
-              top: 0,
-            },
-            title: 'Survival',
-          },
-        ] : []),
-      ];
-  };
+    : getCategoricalTableData(
+      customBins,
+      variable.plotTypes,
+      getBucketRangesAndFilters,
+      fieldName,
+      totalDocs,
+      selectedSurvivalValues,
+      setId,
+      selectedBuckets,
+      setSelectedBuckets,
+      variable,
+      updateSelectedSurvivalValues,
+      selectedSurvivalLoadingIds,
+    );
 
   const chartData =
     variable.active_chart === 'histogram'
@@ -492,96 +604,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
     ? selectedBuckets.reduce((acc, b) => acc + b.chart_doc_count, 0)
     : totalDocs;
 
-  const getContinuousSetFilters = () => {
-    const bucketRanges = selectedBuckets.map(b => b.rangeValues);
-
-    if (bucketRanges.length === 1 && bucketRanges[0].max === -1) {
-      return addInFilters(filters, {
-        content: [
-          {
-            content: {
-              field: fieldName,
-              value: [bucketRanges[0].min],
-            },
-            op: '>=',
-          },
-        ],
-        op: 'and',
-      });
-    }
-
-    return addInFilters(filters, {
-      content: [
-        {
-          content: {
-            field: fieldName,
-            value: [min(bucketRanges.map(range => range.min))],
-          },
-          op: '>=',
-        },
-        {
-          content: {
-            field: fieldName,
-            value: [max(bucketRanges.map(range => range.max))],
-          },
-          op: '<=',
-        },
-      ],
-      op: 'and',
-    });
-  };
-
-  const getCategoricalSetFilters = () => {
-    console.log('dataBu', variable.bins, selectedBuckets);
-    // (selectedBuckets|| []).map(bucket => bucket)
-    const bucketFilters = []
-      .concat(selectedBuckets.filter(bucket => bucket.key !== '_missing').length > 0 && [
-        {
-          content: {
-            field: fieldName,
-            value: selectedBuckets
-              .filter(bucket => bucket.key !== '_missing')
-              .map(selectedBucket => selectedBucket.key),
-          },
-          op: 'in',
-        },
-      ])
-      .concat(selectedBuckets.some(bucket => bucket.key === '_missing') && [
-        {
-          content: {
-            field: fieldName,
-            value: 'MISSING',
-          },
-          op: 'is',
-        },
-      ])
-      .filter(item => item);
-
-    return Object.assign(
-      {},
-      filters,
-      bucketFilters.length && {
-        content: filters.content
-          .concat(
-            bucketFilters.length > 1
-              ? {
-                content: bucketFilters,
-                op: 'or',
-              }
-              : bucketFilters[0]
-          ),
-      }
-    );
-  };
-
-  const cardFilters = get(selectedBuckets, 'length', 0)
-    ? variable.plotTypes === 'continuous'
-      ? getContinuousSetFilters()
-      : getCategoricalSetFilters()
-    : filters;
-
   const tsvSubstring = fieldName.replace(/\./g, '-');
-
   return (
     <Column
       className="clinical-analysis-categorical-card"
@@ -592,20 +615,20 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
         padding: '0.5rem 1rem 1rem',
         ...style,
       }}
-      >
+    >
       <Row
         style={{
           alignItems: 'center',
           justifyContent: 'space-between',
           margin: '5px 0 10px',
         }}
-        >
+      >
         <h2 style={{
           fontSize: '1.8rem',
           marginBottom: 0,
           marginTop: 10,
         }}
-            >
+        >
           {humanify({ term: fieldName })}
         </h2>
         <Row>
@@ -629,7 +652,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                       : styles.common(theme)),
                     margin: 2,
                   }}
-                  >
+                >
                   <Hidden>{vizButtons[plotType].title}</Hidden>
                   {vizButtons[plotType].icon}
                 </Button>
@@ -646,7 +669,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
               flex: 1,
               justifyContent: 'center',
             }}
-            >
+          >
             There is no data for this facet
           </Row>
         )
@@ -661,7 +684,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                       fontSize: '1.2rem',
                       marginRight: 10,
                     }}
-                    >
+                  >
                     <input
                       aria-label="Percentage of cases"
                       checked={variable.active_calculation === 'percentage'}
@@ -678,13 +701,13 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                       style={{ marginRight: 5 }}
                       type="radio"
                       value="percentage"
-                      />
+                    />
                     % of Cases
                   </label>
                   <label
                     htmlFor={`variable-number-radio-${fieldName}`}
                     style={{ fontSize: '1.2rem' }}
-                    >
+                  >
                     <input
                       aria-label="Number of cases"
                       checked={variable.active_calculation === 'number'}
@@ -701,7 +724,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                       style={{ marginRight: 5 }}
                       type="radio"
                       value="number"
-                      />
+                    />
                     # of Cases
                   </label>
                   <DownloadVisualizationButton
@@ -725,7 +748,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                     })
                     }
                     tooltipHTML="Download image or data"
-                    />
+                  />
                 </form>
                 {/* {variable.active_chart === 'survival' && (
                 <div>
@@ -814,7 +837,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                     variable.active_calculation === 'number' ? '#' : '%'
                     } of Cases`,
                 }}
-                />
+              />
             )}
             {variable.active_chart === 'survival' && (
               <div
@@ -826,7 +849,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                   justifyContent: 'center',
                   margin: '5px 2px 10px',
                 }}
-                >
+              >
                 {selectedSurvivalValues.length === 0 ? (
                   <SurvivalPlotWrapper
                     {...overallSurvivalData}
@@ -834,15 +857,15 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                     plotType="clinicalOverall"
                     survivalPlotLoading={survivalPlotLoading}
                     uniqueClass="clinical-survival-plot"
-                    />
+                  />
                 ) : (
-                  <SurvivalPlotWrapper
+                    <SurvivalPlotWrapper
                       {...selectedSurvivalData}
                       height={202}
                       plotType="categorical"
                       survivalPlotLoading={survivalPlotLoading}
                       uniqueClass="clinical-survival-plot"
-                      />
+                    />
                   )}
               </div>
             )}
@@ -866,7 +889,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                   justifyContent: 'space-between',
                   margin: '5px 0',
                 }}
-                >
+              >
                 <Dropdown
                   button={(
                     <Button
@@ -875,7 +898,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                         ...visualizingButton,
                         padding: '0 12px',
                       }}
-                      >
+                    >
                       Select action
                     </Button>
                   )}
@@ -883,7 +906,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                     left: 0,
                     minWidth: 205,
                   }}
-                  >
+                >
                   <DropdownItem
                     onClick={() => downloadToTSV({
                       filename: `analysis-${
@@ -893,7 +916,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                     })
                     }
                     style={styles.actionMenuItem}
-                    >
+                  >
                     Export to TSV
                   </DropdownItem>
                   <DropdownItem
@@ -903,19 +926,19 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                           <SaveSetModal
                             CreateSetButton={CreateExploreCaseSetButton}
                             displayType="case"
-                            filters={cardFilters}
+                            filters={getCardFilters(variable.plotTypes, selectedBuckets, fieldName, filters)}
                             score="gene.gene_id"
                             setName="Custom Case Selection"
                             sort={null}
                             title={`Save ${totalFromSelectedBuckets} Cases as New Set`}
                             total={totalFromSelectedBuckets}
                             type="case"
-                            />
+                          />
                         )
                       );
                     }}
                     style={styles.actionMenuItem}
-                    >
+                  >
                     Save as new case set
                   </DropdownItem>
                   <DropdownItem
@@ -926,19 +949,19 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                             AppendSetButton={AppendExploreCaseSetButton}
                             displayType="case"
                             field="cases.case_id"
-                            filters={cardFilters}
+                            filters={getCardFilters(variable.plotTypes, selectedBuckets, fieldName, filters)}
                             scope="explore"
                             score="gene.gene_id"
                             sort={null}
                             title={`Add ${totalFromSelectedBuckets} Cases to Existing Set`}
                             total={totalFromSelectedBuckets}
                             type="case"
-                            />
+                          />
                         )
                       );
                     }}
                     style={styles.actionMenuItem}
-                    >
+                  >
                     Add to existing case set
                   </DropdownItem>
                   <DropdownItem
@@ -947,17 +970,17 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                         setModal(
                           <RemoveSetModal
                             field="cases.case_id"
-                            filters={cardFilters}
+                            filters={getCardFilters(variable.plotTypes, selectedBuckets, fieldName, filters)}
                             RemoveFromSetButton={RemoveFromExploreCaseSetButton}
                             selected={Object.keys(get(currentAnalysis, 'sets.case', {}))[0] || ''}
                             title={`Remove ${totalFromSelectedBuckets} Cases from Existing Set`}
                             type="case"
-                            />
+                          />
                         )
                       );
                     }}
                     style={styles.actionMenuItem}
-                    >
+                  >
                     Remove from existing case set
                   </DropdownItem>
                 </Dropdown>
@@ -969,7 +992,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                         ...visualizingButton,
                         padding: '0 12px',
                       }}
-                      >
+                    >
                       Customize Bins
                     </Button>
                   )}
@@ -977,7 +1000,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                     left: 0,
                     minWidth: 205,
                   }}
-                  >
+                >
                   <DropdownItem
                     onClick={() => dispatch(
                       setModal(
@@ -997,12 +1020,12 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                             dispatch(setModal(null));
                           }
                           }
-                          />,
+                        />,
                       ),
                     )
                     }
                     style={styles.actionMenuItem}
-                    >
+                  >
                     Edit Bins
                   </DropdownItem>
                   <DropdownItem
@@ -1023,7 +1046,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                       );
                     }}
                     style={styles.actionMenuItem}
-                    >
+                  >
                     Reset to Default
                   </DropdownItem>
                 </Dropdown>
@@ -1032,12 +1055,12 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
 
             <EntityPageHorizontalTable
               data={tableData}
-              headings={getHeadings(variable.active_chart)}
+              headings={getHeadings(variable.active_chart, dataDimension, fieldName)}
               tableContainerStyle={{
                 height: 175,
               }}
               tableId={`analysis-${tsvSubstring}-table`}
-              />
+            />
           </div>
         )}
     </Column>
@@ -1089,18 +1112,41 @@ export default compose(
       dataDimension && { dataDimension },
     );
   }),
-  withProps(({ dataBuckets, variable }) => ({
-    customBins: Object.keys(variable.bins).length > 0
-      ? map(groupBy(variable.bins, bin => bin.groupName), (values, key) => ({
-        key,
-        doc_count: values.reduce((acc, value) => acc + value.doc_count, 0),
-      })).filter(bin => bin.key)
-      : dataBuckets.map(b => ({
-        key: b.key,
-        doc_count: b.doc_count, // TODO:  Remove this
-        groupName: b.key,
-      })),
-  })),
+  withPropsOnChange(['setId', 'totalDocs'], ({
+    dataBuckets,
+    dispatch,
+    fieldName,
+    id,
+    variable,
+  }) => {
+    dispatch(
+      updateClinicalAnalysisVariable({
+        fieldName,
+        id,
+        value: {
+          ...reduce(variable.bins, (acc, bin, key) => ({
+            ...acc,
+            [key]: {
+              doc_count: 0,
+              groupName: bin.groupName,
+              key,
+            },
+          }), {}),
+          ...dataBuckets.reduce((acc, r) => ({
+            ...acc,
+            [r.key]: {
+              ...r,
+              groupName:
+                typeof get(variable, `bins.${r.key}.groupName`, undefined) === 'string' // hidden value have groupName '', so check if it is string
+                  ? get(variable, `bins.${r.key}.groupName`, undefined)
+                  : r.key,
+            },
+          }), {}),
+        },
+        variableKey: 'bins',
+      }),
+    );
+  }),
   withProps(
     ({
       fieldName,
@@ -1108,6 +1154,11 @@ export default compose(
       totalDocs,
       variable,
     }) => ({
+      customBins: map(groupBy(variable.bins, bin => bin.groupName), (values, key) => ({
+        doc_count: values.reduce((acc, value) => acc + value.doc_count, 0),
+        key,
+        keyArray: values.reduce((acc, value) => [...acc, value.key], []),
+      })).filter(bin => bin.key),
       getBucketRangesAndFilters: (acc, { doc_count, key }) => {
         const filters =
           variable.plotTypes === 'categorical'
@@ -1180,7 +1231,6 @@ export default compose(
     }) => ({
       populateSurvivalData: () => {
         setSurvivalPlotLoading(true);
-
         const dataForSurvival =
           variable.plotTypes === 'continuous'
             ? dataBuckets
@@ -1286,29 +1336,12 @@ export default compose(
   lifecycle({
     componentDidMount(): void {
       const {
-        dataBuckets,
         dispatch,
         fieldName,
         id,
         variable,
         wrapperId,
       } = this.props;
-      if (Object.keys(variable.bins).length === 0) {
-        dispatch(
-          updateClinicalAnalysisVariable({
-            fieldName,
-            id,
-            value: dataBuckets.reduce((acc, r) => ({
-              ...acc,
-              [r.key]: {
-                ...r,
-                groupName: r.key,
-              },
-            }), {}),
-            variableKey: 'bins',
-          }),
-        );
-      }
       if (variable.scrollToCard === false) return;
       const offset = document.getElementById('header').getBoundingClientRect().bottom + 10;
       const $anchor = document.getElementById(`${wrapperId}-container`);

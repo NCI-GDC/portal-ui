@@ -18,21 +18,22 @@ const rowStyles = {
 };
 
 export default compose(
+  withState('rowActive', 'setRowActive', props => props.row.active),
   withState('rowFields', 'setRowFields', props => props.row.fields)
 )(
   ({
     disabled,
-    handleChange,
-    handleRemove,
+    handleRemoveRow,
+    handleUpdateRow,
     row,
+    rowActive,
     rowFields,
     rowIndex,
+    setRowActive,
     setRowFields,
     styles,
   }) => {
-    // make sure the fields are in order no matter
-    // what happens to the object in state
-    const rangeTableRowFields = [
+    const rowFieldsOrder = [
       'name',
       'min',
       'max',
@@ -56,41 +57,39 @@ export default compose(
       setRowFields(nextRowFields);
     };
 
-    const validateFields = () => {
-      console.log('validate');
-    };
-
-    const updateRowStatus = rowAction => {
-      if (rowAction === 'cancel') {
-        setRowFields(row.fields);
-        handleChange('cancel');
-      } else if (rowAction === 'edit') {
-        handleChange('edit');
-      } else if (rowAction === 'save' || rowAction === 'outside-click') {
-        validateFields();
-        // valid? send handleChange update
-        // invalid? throw errors
+    const updateRow = (updateType, target) => {
+      const inputRowIndex = Number(target.id.split('-')[2]);
+      if (updateType === 'cancel' || updateType === 'edit') {
+        const nextRow = {
+          ...row,
+          active: !rowActive,
+        };
+        setRowActive(!rowActive);
+        console.log('nextRow', nextRow);
+        handleUpdateRow(inputRowIndex, nextRow);
+      } else {
+        console.log('updateType', updateType);
       }
     };
 
     return (
       <OutsideClickHandler
-        disabled={disabled || !row.active}
+        disabled={!rowActive || disabled}
         display="flex"
-        onOutsideClick={() => {
-          updateRowStatus('outside-click');
+        onOutsideClick={e => {
+          updateRow('save', e.target);
         }}
-        >
+      >
         <div style={rowStyles.fieldsWrapper}>
           {
-            rangeTableRowFields.map(rowItem => (
+            rowFieldsOrder.map(rowItem => (
               <div
                 key={`range-row-${rowIndex}-${rowItem}`}
                 style={styles.column}
-                >
+              >
                 <BinningInput
                   binningMethod="range"
-                  disabled={disabled}
+                  disabled={!rowActive || disabled}
                   handleChange={e => {
                     updateRowFields(e.target);
                   }}
@@ -101,27 +100,27 @@ export default compose(
                   rowIndex={rowIndex}
                   valid={rowFields[rowItem].errors.length === 0}
                   value={rowFields[rowItem].value}
-                  />
+                />
               </div>
             ))
           }
         </div>
         <div style={styles.optionsColumn}>
-          {row.active ? (
+          {rowActive ? (
             <React.Fragment>
               <Button
                 aria-label="Save"
                 buttonContentStyle={{ justifyContent: 'center' }}
                 disabled={disabled}
                 id={`range-row-${rowIndex}-save`}
-                onClick={() => {
-                  updateRowStatus('save');
+                onClick={e => {
+                  updateRow('save', e.target);
                 }}
                 style={{
                   ...rowStyles.optionsButton,
                   ...(disabled || { background: 'green' }),
                 }}
-                >
+              >
                 <i aria-hidden="true" className="fa fa-check" />
               </Button>
               <Button
@@ -129,27 +128,27 @@ export default compose(
                 buttonContentStyle={{ justifyContent: 'center' }}
                 disabled={disabled}
                 id={`range-row-${rowIndex}-cancel`}
-                onClick={() => {
-                  updateRowStatus('cancel');
+                onClick={e => {
+                  updateRow('cancel', e.target);
                 }}
                 style={{
                   ...rowStyles.optionsButton,
                   ...(disabled || { background: 'red' }),
                 }}
-                >
+              >
                 <i aria-hidden="true" className="fa fa-close" />
               </Button>
             </React.Fragment>
           ) : (
-            <Button
+              <Button
                 aria-label="Edit"
                 disabled={disabled}
                 id={`range-row-${rowIndex}-edit`}
-                onClick={() => {
-                  updateRowStatus('edit');
+                onClick={e => {
+                  updateRow('edit', e.target);
                 }}
                 style={{ ...rowStyles.optionsButton }}
-                >
+              >
                 <i aria-hidden="true" className="fa fa-pencil" />
               </Button>
             )}
@@ -158,9 +157,9 @@ export default compose(
             buttonContentStyle={{ justifyContent: 'center' }}
             disabled={disabled}
             id={`range-row-${rowIndex}-remove`}
-            onClick={handleRemove}
+            onClick={handleRemoveRow}
             style={{ ...rowStyles.optionsButton }}
-            >
+          >
             <i aria-hidden="true" className="fa fa-trash" />
           </Button>
         </div>

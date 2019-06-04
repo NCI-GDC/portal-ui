@@ -169,65 +169,72 @@ export default compose(
       updateCustomInterval(target, inputErrors);
     };
 
-    const updateRangeRows = (target, inputErrors = null) => {
-      const targetInfo = target.id.split('-');
-      const inputRowIndex = Number(targetInfo[2]);
-      const inputKey = targetInfo[3];
-      const inputValue = target.value;
-
-      const nextRangeRows = rangeRows.map((rangeRow, rangeRowIndex) => (rangeRowIndex === inputRowIndex
-        ? ({
-          ...rangeRow,
-          fields: {
-            ...rangeRow.fields,
-            [inputKey]:
-            {
-              errors: inputErrors === null ? rangeRow.fields[inputKey].errors : inputErrors,
-              value: inputValue,
-            },
-          },
-        })
-        : rangeRow));
-
+    const handleUpdateRow = (inputRowIndex, inputRow) => {
+      console.log('inputRow', inputRow);
+      const nextRangeRows = rangeRows.map((rangeRow, rowIndex) => (rowIndex === inputRowIndex ? inputRow : rangeRow));
+      console.log('nextRangeRows', nextRangeRows);
       setRangeRows(nextRangeRows);
     };
 
-    const validateRangeRowsOnSubmit = () => {
-      let manualEntryHasEmptyFields = false;
+    // const updateRangeRows = (target, inputErrors = null) => {
+    //   const targetInfo = target.id.split('-');
+    //   const inputRowIndex = Number(targetInfo[2]);
+    //   const inputKey = targetInfo[3];
+    //   const inputValue = target.value;
 
-      const emptyNameError = ['Please enter a bin name.'];
-      const emptyMinError = ['Please enter a minimum value.'];
-      const emptyMaxError = ['Please enter a maximum value.'];
+    //   const nextRangeRows = rangeRows.map((rangeRow, rangeRowIndex) => (rangeRowIndex === inputRowIndex
+    //     ? ({
+    //       ...rangeRow,
+    //       fields: {
+    //         ...rangeRow.fields,
+    //         [inputKey]:
+    //         {
+    //           errors: inputErrors === null ? rangeRow.fields[inputKey].errors : inputErrors,
+    //           value: inputValue,
+    //         },
+    //       },
+    //     })
+    //     : rangeRow));
 
-      const rowsWithEmptyFieldErrors = rangeRows.map(row => {
-        const isMinEmpty = row.fields.min.value === 0 || row.fields.min.value === '';
-        const isMaxEmpty = row.fields.max.value === 0 || row.fields.max.value === '';
-        const areMinMaxEmpty = isMinEmpty && isMaxEmpty;
-        const isNameEmpty = row.fields.name.value === '';
+    //   setRangeRows(nextRangeRows);
+    // };
 
-        if (areMinMaxEmpty || isNameEmpty) manualEntryHasEmptyFields = true;
+    // const validateRangeRowsOnSubmit = () => {
+    //   let manualEntryHasEmptyFields = false;
 
-        return ({
-          max: {
-            errors: areMinMaxEmpty ? emptyMaxError : row.fields.max.errors,
-            value: row.fields.max.value,
-          },
-          min: {
-            errors: areMinMaxEmpty ? emptyMinError : row.fields.min.errors,
-            value: row.fields.min.value,
-          },
-          name: {
-            errors: isNameEmpty ? emptyNameError : row.fields.name.errors,
-            value: row.fields.name.value,
-          },
-        });
-      });
+    //   const emptyNameError = ['Please enter a bin name.'];
+    //   const emptyMinError = ['Please enter a minimum value.'];
+    //   const emptyMaxError = ['Please enter a maximum value.'];
 
-      if (manualEntryHasEmptyFields) {
-        setRangeRows(rowsWithEmptyFieldErrors);
-        return false;
-      }
-    };
+    //   const rowsWithEmptyFieldErrors = rangeRows.map(row => {
+    //     const isMinEmpty = row.fields.min.value === 0 || row.fields.min.value === '';
+    //     const isMaxEmpty = row.fields.max.value === 0 || row.fields.max.value === '';
+    //     const areMinMaxEmpty = isMinEmpty && isMaxEmpty;
+    //     const isNameEmpty = row.fields.name.value === '';
+
+    //     if (areMinMaxEmpty || isNameEmpty) manualEntryHasEmptyFields = true;
+
+    //     return ({
+    //       max: {
+    //         errors: areMinMaxEmpty ? emptyMaxError : row.fields.max.errors,
+    //         value: row.fields.max.value,
+    //       },
+    //       min: {
+    //         errors: areMinMaxEmpty ? emptyMinError : row.fields.min.errors,
+    //         value: row.fields.min.value,
+    //       },
+    //       name: {
+    //         errors: isNameEmpty ? emptyNameError : row.fields.name.errors,
+    //         value: row.fields.name.value,
+    //       },
+    //     });
+    //   });
+
+    //   if (manualEntryHasEmptyFields) {
+    //     setRangeRows(rowsWithEmptyFieldErrors);
+    //     return false;
+    //   }
+    // };
 
     const toggleSubmitButton = () => (selectedBinningMethod === 'interval' ? Object.keys(customInterval).some(field => customInterval[field].errors.length > 0) : rangeRows.some(row => row.active));
 
@@ -313,14 +320,12 @@ export default compose(
                 <div>
                   {rangeRows.map((row, rowIndex) => (
                     <RangeTableRow
-                      disabled={!row.active || selectedBinningMethod !== 'range'}
-                      handleChange={e => {
-                        updateRangeRows(e.target);
-                      }}
-                      handleRemove={() => {
+                      disabled={selectedBinningMethod !== 'range'}
+                      handleRemoveRow={() => {
                         const nextRangeRows = rangeRows.filter((filterRow, filterRowIndex) => filterRowIndex !== rowIndex);
                         setRangeRows(nextRangeRows);
                       }}
+                      handleUpdateRow={handleUpdateRow}
                       key={`range-row-${rowIndex}`}
                       row={row}
                       rowIndex={rowIndex}

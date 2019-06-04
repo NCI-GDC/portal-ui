@@ -52,13 +52,13 @@ export default compose(
         return ({
           ...acc,
           [curr]: {
-            ...rowFields.curr,
+            ...rowFields[curr],
             errors: nextErrors,
           },
         });
       }, {});
 
-      const checkMinMaxValues = validFields.max.errors.length === 0 && validFields.min.errors.length === 0 && validFields.max.value < validFields.min.value;
+      const checkMinMaxValues = validFields.max.errors.length === 0 && validFields.min.errors.length === 0 && Number(validFields.max.value) < Number(validFields.min.value);
 
       if (checkMinMaxValues) {
         return ({
@@ -73,6 +73,7 @@ export default compose(
           },
         });
       }
+
       return validFields;
     };
 

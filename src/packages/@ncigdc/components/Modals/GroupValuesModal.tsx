@@ -67,9 +67,10 @@ interface IGroupValuesModalProps {
   editingGroupName: string,
   setEditingGroupName: (editingGroupName: string) => void,
   children?: ReactNode,
-  warning: string,
-  setWarning: (warning: string) => void,
-  bins: any,
+  globalWarning: string,
+  setGlobalWarning: (globalWarning: string) => void,
+  setListWarning: any,
+  listWarning: any,
 }
 
 const blockStyle = {
@@ -96,7 +97,8 @@ export default compose(
   withState('currentBins', 'setCurrentBins', ({ bins }: { bins: IBinsProps }) => bins),
   withState('selectedHidingBins', 'setSelectedHidingBins', {}),
   withState('selectedGroupBins', 'setSelectedGroupBins', {}),
-  withState('warning', 'setWarning', ''),
+  withState('globalWarning', 'setGlobalWarning', ''),
+  withState('listWarning', 'setListWarning', {}),
   withProps(({
     currentBins,
     selectedGroupBins,
@@ -130,7 +132,6 @@ export default compose(
 )(
   ({
     binGrouping,
-    bins,
     currentBins,
     editingGroupName,
     fieldName,
@@ -139,11 +140,12 @@ export default compose(
     selectedGroupBins,
     selectedHidingBins,
     setCurrentBins,
-    setEditingGroupName,
     setSelectedGroupBins,
     setSelectedHidingBins,
-    setWarning,
-    warning,
+    setGlobalWarning,
+    globalWarning,
+    setListWarning,
+    listWarning,
   }: IGroupValuesModalProps) => {
     const groupNameMapping = groupBy(
       Object.keys(currentBins)
@@ -169,7 +171,7 @@ export default compose(
                 alignItems: 'flex-end',
                 display: 'flex',
               }}
-                   >
+              >
                 Hidden Values
               </div>
             </Row>
@@ -192,7 +194,7 @@ export default compose(
                       backgroundColor: selectedHidingBins[binKey] ? '#d5f4e6' : '',
                       paddingLeft: '10px',
                     }}
-                    >
+                  >
                     {`${binKey} (${currentBins[binKey].doc_count})`}
                   </Row>
                 ))}
@@ -218,10 +220,11 @@ export default compose(
                   }, {}),
                 });
                 setSelectedHidingBins({});
-                setWarning('');
+                setGlobalWarning('');
+                setListWarning({});
               }}
               style={{ margin: '10px' }}
-              >
+            >
               {'>>'}
             </Button>
             <Button
@@ -229,7 +232,7 @@ export default compose(
               onClick={() => {
                 if (filter(selectedGroupBins, Boolean).length ===
                   Object.keys(filter(currentBins, (bin: IBinProps) => !!bin.groupName)).length) {
-                  setWarning('Leave at least one bin.');
+                  setGlobalWarning('Leave at least one bin.');
                   return;
                 }
                 setCurrentBins({
@@ -248,10 +251,11 @@ export default compose(
                   }, {}),
                 });
                 setSelectedGroupBins({});
-                setWarning('');
+                setGlobalWarning('');
+                setListWarning({});
               }}
               style={{ margin: '10px' }}
-              >
+            >
               {'<<'}
             </Button>
           </Column>
@@ -261,7 +265,7 @@ export default compose(
                 alignItems: 'flex-end',
                 display: 'flex',
               }}
-                    >
+              >
                 Displayed Values
 
               </span>
@@ -280,10 +284,11 @@ export default compose(
                       }, {}),
                     });
                     setSelectedGroupBins({});
-                    setWarning('');
+                    setGlobalWarning('');
+                    setListWarning({});
                   }}
                   style={buttonStyle}
-                  >
+                >
                   {'Reset'}
                 </Button>
                 <Button
@@ -308,20 +313,23 @@ export default compose(
                       }, {}),
                     });
                     setSelectedGroupBins({});
-                    setWarning('');
+                    setGlobalWarning('');
+                    setListWarning({});
                   }}
                   style={buttonStyle}
-                  >
+                >
                   {'Ungroup'}
                 </Button>
                 <Button
                   disabled={Object.values(selectedGroupBins).filter(Boolean).length < 2}
                   onClick={() => {
                     binGrouping();
-                    setWarning('');
+                    setSelectedGroupBins({});
+                    setGlobalWarning('');
+                    setListWarning({});
                   }}
                   style={buttonStyle}
-                  >
+                >
                   {'Group'}
                 </Button>
               </Row>
@@ -352,45 +360,63 @@ export default compose(
 
 
                       }}
-                      >
+                    >
                       {group.length > 1 || group[0] !== groupName
                         ? (
-                          <EditableLabel
-                            buttonDisplayed={false}
-                            containerStyle={{
-                              justifyContent: 'flex-start',
-                            }}
-                            handleSave={(value: string) => {
-                              if (some(currentBins, (bin: IBinProps) => bin.groupName.trim() === value.trim())) {
-                                setWarning(`"${value.trim()}" already exists.`);
-                                return;
+                          <Column>
+                            <EditableLabel
+                              buttonDisplayed={false}
+                              containerStyle={{
+                                justifyContent: 'flex-start',
+                              }}
+                              handleSave={(value: string) => {
+                                setListWarning({});
+                                if (
+                                  some(currentBins, (bin: IBinProps) => bin.groupName.trim() === value.trim()) &&
+                                  groupName.trim() !== value.trim()
+                                ) {
+                                  setListWarning({
+                                    ...listWarning,
+                                    [groupName]: `"${value.trim()}" already exists.`,
+                                  });
+                                  return 'unsave';
+                                }
+                                setCurrentBins({
+                                  ...currentBins,
+                                  ...group.reduce((acc: ISelectedBinsProps, bin: string) => ({
+                                    ...acc,
+                                    [bin]: {
+                                      ...currentBins[bin],
+                                      groupName: value,
+                                    },
+                                  }), {}),
+                                });
+                                setGlobalWarning('');
+                                setListWarning({});
+                                setSelectedGroupBins({});
+                                return null;
                               }
-                              setCurrentBins({
-                                ...currentBins,
-                                ...group.reduce((acc: ISelectedBinsProps, bin: string) => ({
-                                  ...acc,
-                                  [bin]: {
-                                    ...currentBins[bin],
-                                    groupName: value,
-                                  },
-                                }), {}),
-                              });
-                              setWarning('');
-                            }
-                            }
-                            iconStyle={{
-                              cursor: 'pointer',
-                              fontSize: '1.8rem',
-                              marginLeft: 10,
-                            }}
-                            isEditing={editingGroupName === groupName}
-                            noEditingStyle={{ fontWeight: 'bold' }}
-                            outsideClickHandlerDisabled={false}
-                            pencilEditingOnly
-                            text={groupName}
+                              }
+                              iconStyle={{
+                                cursor: 'pointer',
+                                fontSize: '1.8rem',
+                                marginLeft: 10,
+                              }}
+                              isEditing={editingGroupName === groupName}
+                              noEditingStyle={{ fontWeight: 'bold' }}
+                              outsideClickHandlerDisabled={false}
+                              pencilEditingOnly
+                              text={groupName}
                             >
-                            {groupName}
-                          </EditableLabel>
+                              {groupName}
+                            </EditableLabel>
+                            {listWarning[groupName]
+                              ? (
+                                <Row style={{ color: 'red' }}>
+                                  {listWarning[groupName]}
+                                </Row>
+                              ) : null}
+                          </Column>
                         ) : (
                           <div style={{ fontWeight: 'bold' }}>
                             {`${currentBins[group[0]].key} (${currentBins[group[0]].doc_count})`}
@@ -418,7 +444,7 @@ export default compose(
                               listStylePosition: 'inside',
                               paddingLeft: '5px',
                             }}
-                            >
+                          >
                             {`${bin} (${currentBins[bin].doc_count})`}
                           </Row>
                         ))
@@ -436,26 +462,26 @@ export default compose(
             justifyContent: 'flex-end',
             margin: '20px',
           }}
-          >
+        >
           <span style={{
             color: 'red',
             justifyContent: 'flex-start',
-            visibility: warning.length > 0 ? 'visible' : 'hidden',
+            visibility: globalWarning.length > 0 ? 'visible' : 'hidden',
           }}
-                >
+          >
             {'Warning: '}
-            {warning}
+            {globalWarning}
           </span>
           <Button
             onClick={onClose}
             style={styles.button}
-            >
+          >
             Cancel
           </Button>
           <Button
             onClick={() => onUpdate(currentBins)}
             style={styles.button}
-            >
+          >
             Save Bins
           </Button>
         </Row>

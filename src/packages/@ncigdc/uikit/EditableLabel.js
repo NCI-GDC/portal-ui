@@ -35,16 +35,18 @@ export default compose(
       handleSave,
       isEditing,
       setIsEditing,
-      text,
       value,
     }) => () => {
       if (disabled) {
         return;
       }
       if (value.length !== 0) {
-        setIsEditing(!isEditing);
-        if (isEditing && value !== text) {
-          handleSave(value);
+        if (isEditing) {
+          if (handleSave(value) !== 'unsave') {
+            setIsEditing(false);
+          }
+        } else {
+          setIsEditing(true);
         }
       }
     },
@@ -81,7 +83,7 @@ export default compose(
           <OutsideClickHandler
             disabled={outsideClickHandlerDisabled}
             onOutsideClick={() => toggleEditingAndSave()}
-            >
+          >
             <Row
               spacing="5px"
               style={{
@@ -89,7 +91,7 @@ export default compose(
                 justifyContent: 'space-between',
                 ...containerStyle,
               }}
-              >
+            >
               <Input
                 autoFocus
                 onChange={e => setValue(e.target.value)}
@@ -108,7 +110,7 @@ export default compose(
                 }}
                 type="text"
                 value={value}
-                />
+              />
               {buttonDisplayed
                 ? (
                   <React.Fragment>
@@ -120,7 +122,7 @@ export default compose(
                             ? `Maximum name length ${MAX_SET_NAME_LENGTH}`
                             : null
                       }
-                      >
+                    >
                       <Button
                         disabled={
                           value.split(' ').join('').length === 0 ||
@@ -130,7 +132,7 @@ export default compose(
                         style={{
                           ...visualizingButton,
                         }}
-                        >
+                      >
                         Save
                       </Button>
                     </Tooltip>
@@ -150,7 +152,7 @@ export default compose(
                   cursor: disabled ? 'not-allowed' : (pencilEditingOnly ? 'default' : 'text'),
                   ...noEditingStyle,
                 }}
-                >
+              >
                 {children}
                 <Pencil
                   onClick={pencilEditingOnly ? toggleEditingAndSave : null}
@@ -162,7 +164,7 @@ export default compose(
                     ...iconStyle,
                     cursor: disabled ? 'not-allowed' : 'pointer',
                   }}
-                  />
+                />
               </Row>
             </Tooltip>
           )}

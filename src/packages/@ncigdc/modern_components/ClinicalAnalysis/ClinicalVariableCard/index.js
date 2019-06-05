@@ -68,9 +68,6 @@ import {
   BarChartIcon,
   BoxPlot,
 } from '@ncigdc/theme/icons';
-
-import BoxPlotWrapper from '@oncojs/boxplot';
-
 import { withTheme } from '@ncigdc/theme';
 
 import {
@@ -1147,8 +1144,8 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                     style={styles.actionMenuItem}
                     >
                     Edit Bins
-                   </DropdownItem>
-                   <DropdownItem
+                </DropdownItem>
+                <DropdownItem
                     onClick={() => {
                       dispatch(
                         updateClinicalAnalysisVariable({

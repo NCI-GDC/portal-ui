@@ -76,13 +76,19 @@ export default compose(
     noEditingStyle,
     buttonDisplayed = true,
     outsideClickHandlerDisabled = true,
+    disableOnKeyDown = false,
   }) => {
     return (
       <React.Fragment>
         {isEditing ? (
           <OutsideClickHandler
             disabled={outsideClickHandlerDisabled}
-            onOutsideClick={() => toggleEditingAndSave()}
+            onOutsideClick={() => {
+              if (disableOnKeyDown) {
+                return;
+              }
+              toggleEditingAndSave();
+            }}
           >
             <Row
               spacing="5px"
@@ -97,6 +103,9 @@ export default compose(
                 onChange={e => setValue(e.target.value)}
                 onFocus={e => e.target.select()}
                 onKeyDown={e => {
+                  if (disableOnKeyDown) {
+                    return;
+                  }
                   if (e.key === 'Enter') {
                     toggleEditingAndSave();
                   } else if (e.key === 'Escape') {

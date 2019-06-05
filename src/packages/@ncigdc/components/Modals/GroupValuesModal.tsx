@@ -9,7 +9,7 @@ import {
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import Button from '@ncigdc/uikit/Button';
 import { visualizingButton } from '@ncigdc/theme/mixins';
-import EditableLabel from '@ncigdc/uikit/EditableLabel';
+import ControlEditableRow from '@ncigdc/uikit/ControlEditableRow';
 
 const styles = {
   button: {
@@ -143,6 +143,7 @@ export default compose(
     setSelectedGroupBins,
     setSelectedHidingBins,
     setGlobalWarning,
+    setEditingGroupName,
     globalWarning,
     setListWarning,
     listWarning,
@@ -341,6 +342,7 @@ export default compose(
                   <Column key={groupName}>
                     <Row
                       key={groupName}
+
                       onClick={() => {
                         if (Object.keys(selectedHidingBins).length > 0) {
                           setSelectedHidingBins({});
@@ -363,60 +365,66 @@ export default compose(
                     >
                       {group.length > 1 || group[0] !== groupName
                         ? (
-                          <Column>
-                            <EditableLabel
-                              buttonDisplayed={false}
-                              containerStyle={{
-                                justifyContent: 'flex-start',
-                              }}
-                              handleSave={(value: string) => {
-                                setListWarning({});
-                                if (
-                                  some(currentBins, (bin: IBinProps) => bin.groupName.trim() === value.trim()) &&
-                                  groupName.trim() !== value.trim()
-                                ) {
-                                  setListWarning({
-                                    ...listWarning,
-                                    [groupName]: `"${value.trim()}" already exists.`,
-                                  });
-                                  return 'unsave';
-                                }
-                                setCurrentBins({
-                                  ...currentBins,
-                                  ...group.reduce((acc: ISelectedBinsProps, bin: string) => ({
-                                    ...acc,
-                                    [bin]: {
-                                      ...currentBins[bin],
-                                      groupName: value,
-                                    },
-                                  }), {}),
+                          <ControlEditableRow
+                            containerStyle={{
+                              justifyContent: 'flex-start',
+                            }}
+                            disableOnKeyDown={listWarning[groupName]}
+                            handleSave={(value: string) => {
+                              if (listWarning[groupName]) {
+                                return 'unsave';
+                              }
+                              setCurrentBins({
+                                ...currentBins,
+                                ...group.reduce((acc: ISelectedBinsProps, bin: string) => ({
+                                  ...acc,
+                                  [bin]: {
+                                    ...currentBins[bin],
+                                    groupName: value,
+                                  },
+                                }), {}),
+                              });
+                              setGlobalWarning('');
+                              setListWarning({});
+                              setSelectedGroupBins({});
+                              return null;
+                            }
+                            }
+                            iconStyle={{
+                              cursor: 'pointer',
+                              fontSize: '1.8rem',
+                              marginLeft: 10,
+                            }}
+                            isEditing={editingGroupName === groupName}
+                            noEditingStyle={{ fontWeight: 'bold' }}
+                            onEdit={(value: string) => {
+                              if (value.trim() === '') {
+                                setListWarning({
+                                  ...listWarning,
+                                  [groupName]: 'Can not be empty.',
                                 });
-                                setGlobalWarning('');
+                              } else if (
+                                some(currentBins, (bin: IBinProps) => bin.groupName.trim() === value.trim()) &&
+                                groupName.trim() !== value.trim()
+                              ) {
+                                setListWarning({
+                                  ...listWarning,
+                                  [groupName]: `"${value.trim()}" already exists.`,
+                                });
+                              } else if (group.includes(value)) {
+                                setListWarning({
+                                  ...listWarning,
+                                  [groupName]: 'Group name can\'t be the same as one of values.',
+                                });
+                              } else {
                                 setListWarning({});
-                                setSelectedGroupBins({});
-                                return null;
                               }
-                              }
-                              iconStyle={{
-                                cursor: 'pointer',
-                                fontSize: '1.8rem',
-                                marginLeft: 10,
-                              }}
-                              isEditing={editingGroupName === groupName}
-                              noEditingStyle={{ fontWeight: 'bold' }}
-                              outsideClickHandlerDisabled={false}
-                              pencilEditingOnly
-                              text={groupName}
-                            >
-                              {groupName}
-                            </EditableLabel>
-                            {listWarning[groupName]
-                              ? (
-                                <Row style={{ color: 'red' }}>
-                                  {listWarning[groupName]}
-                                </Row>
-                              ) : null}
-                          </Column>
+                            }}
+                            text={groupName}
+                            warning={listWarning[groupName]}
+                          >
+                            {groupName}
+                          </ControlEditableRow>
                         ) : (
                           <div style={{ fontWeight: 'bold' }}>
                             {`${currentBins[group[0]].key} (${currentBins[group[0]].doc_count})`}

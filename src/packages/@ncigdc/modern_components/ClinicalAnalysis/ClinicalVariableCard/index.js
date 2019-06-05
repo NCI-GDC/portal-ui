@@ -1128,7 +1128,7 @@ export default compose(
             ...acc,
             [key]: {
               doc_count: 0,
-              groupName: bin.groupName,
+              groupName: bin.groupName !== key ? bin.groupName : '',
               key,
             },
           }), {}),

@@ -135,18 +135,17 @@ export default compose(
     currentBins,
     editingGroupName,
     fieldName,
+    globalWarning,
+    listWarning,
     onClose,
     onUpdate,
     selectedGroupBins,
     selectedHidingBins,
     setCurrentBins,
+    setGlobalWarning,
+    setListWarning,
     setSelectedGroupBins,
     setSelectedHidingBins,
-    setGlobalWarning,
-    setEditingGroupName,
-    globalWarning,
-    setListWarning,
-    listWarning,
   }: IGroupValuesModalProps) => {
     const groupNameMapping = groupBy(
       Object.keys(currentBins)
@@ -366,6 +365,7 @@ export default compose(
                       {group.length > 1 || group[0] !== groupName
                         ? (
                           <ControlEditableRow
+                            cleanWarning={() => setListWarning({})}
                             containerStyle={{
                               justifyContent: 'flex-start',
                             }}
@@ -422,6 +422,7 @@ export default compose(
                             }}
                             text={groupName}
                             warning={listWarning[groupName]}
+
                           >
                             {groupName}
                           </ControlEditableRow>
@@ -448,8 +449,8 @@ export default compose(
                             style={{
                               backgroundColor: selectedGroupBins[bin] ? '#d5f4e6' : '',
                               display: 'list-item',
-                              listStyleType: 'disc',
                               listStylePosition: 'inside',
+                              listStyleType: 'disc',
                               paddingLeft: '5px',
                             }}
                           >

@@ -15,9 +15,15 @@ export default compose(
   withState('isEditing', 'setIsEditing', ({ isEditing }: any) => isEditing || false),
   withState('value', 'setValue', ({ text }: any) => text),
   withHandlers({
-    handleCancel: ({ setIsEditing, setValue, text }: any) => () => {
+    handleCancel: ({
+      cleanWarning,
+      setIsEditing,
+      setValue,
+      text,
+    }: any) => () => {
       setIsEditing(false);
       setValue(text);
+      cleanWarning();
     },
     toggleEditingAndSave: ({
       disabled = false,
@@ -84,10 +90,7 @@ export default compose(
                   }}
                   onFocus={e => e.target.select()}
                   onKeyDown={e => {
-                    if (disableOnKeyDown) {
-                      return;
-                    }
-                    if (e.key === 'Enter') {
+                    if (!disableOnKeyDown && (e.key === 'Enter')) {
                       toggleEditingAndSave();
                     } else if (e.key === 'Escape') {
                       handleCancel();

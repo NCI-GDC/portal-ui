@@ -1124,14 +1124,19 @@ export default compose(
         fieldName,
         id,
         value: {
-          ...reduce(variable.bins, (acc, bin, key) => ({
-            ...acc,
-            [key]: {
-              doc_count: 0,
-              groupName: bin.groupName !== key ? bin.groupName : '',
-              key,
-            },
-          }), {}),
+          ...reduce(variable.bins, (acc, bin, key) => {
+            if (bin.groupName && bin.groupName !== key) {
+              return {
+                ...acc,
+                [key]: {
+                  doc_count: 0,
+                  groupName: bin.groupName,
+                  key,
+                },
+              }
+            }
+            return acc;
+          }, {}),
           ...dataBuckets.reduce((acc, r) => ({
             ...acc,
             [r.key]: {

@@ -426,7 +426,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
 
   const tableData = variable.active_chart === 'box'
     ? getBoxTableData(dataValues)
-    : getCategoricalTableData(dataBuckets, variable.plotTypes);
+    : getCategoricalTableData(customBins, variable.plotTypes);
 
   const getHeadings = chartType => {
     return chartType === 'box'

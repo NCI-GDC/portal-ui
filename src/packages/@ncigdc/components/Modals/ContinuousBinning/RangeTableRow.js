@@ -1,5 +1,5 @@
 import React from 'react';
-import { compose, withState } from 'recompose';
+import { compose, withState, withPropsOnChange } from 'recompose';
 import { isFinite } from 'lodash';
 import OutsideClickHandler from 'react-outside-click-handler';
 import Button from '@ncigdc/uikit/Button';
@@ -19,8 +19,11 @@ const rowStyles = {
 };
 
 export default compose(
+  withPropsOnChange(['fields'], ({ fields }) => ({
+    propsFields: fields,
+  })),
   withState('rowActive', 'setRowActive', props => props.row.active),
-  withState('rowFields', 'setRowFields', props => props.row.fields),
+  withState('rowFields', 'setRowFields', props => props.propsFields),
 )(
   ({
     disabled,
@@ -34,6 +37,8 @@ export default compose(
     setRowFields,
     styles,
   }) => {
+    console.log('row in the component', row);
+
     const rowFieldsOrder = [
       'name',
       'min',

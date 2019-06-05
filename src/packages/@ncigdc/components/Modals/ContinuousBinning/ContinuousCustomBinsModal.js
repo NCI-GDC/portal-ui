@@ -181,7 +181,7 @@ export default compose(
     const handleRemoveRow = rowIndex => {
       const nextRangeRows = rangeRows.filter((filterRow, filterRowIndex) => filterRowIndex !== rowIndex);
       console.log('rowIndex', rowIndex);
-      console.log('rangeRows', rangeRows);
+      console.log('rangeRows in removeRow', rangeRows);
       console.log('nextRangeRows', nextRangeRows);
       setRangeRows(nextRangeRows);
     };
@@ -189,6 +189,8 @@ export default compose(
     const toggleSubmitButton = () => (selectedBinningMethod === 'interval' ? Object.keys(customInterval).some(field => customInterval[field].errors.length > 0) : rangeRows.some(row => row.active));
 
     const submitDisabled = toggleSubmitButton();
+
+    console.log('rangeRows in render', rangeRows);
 
     return (
       <Column style={{ padding: '20px' }}>
@@ -271,6 +273,7 @@ export default compose(
                   {rangeRows.map((row, rowIndex) => (
                     <RangeTableRow
                       disabled={selectedBinningMethod !== 'range'}
+                      fields={row.fields}
                       handleRemoveRow={handleRemoveRow}
                       handleUpdateRow={handleUpdateRow}
                       key={`range-row-${rowIndex}`}

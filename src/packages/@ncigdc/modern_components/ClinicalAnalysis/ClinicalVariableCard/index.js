@@ -26,7 +26,7 @@ import { scaleOrdinal, schemeCategory10 } from 'd3';
 
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import Button from '@ncigdc/uikit/Button';
-import { Tooltip } from '@ncigdc/uikit/Tooltip';
+import { Tooltip, TooltipInjector } from '@ncigdc/uikit/Tooltip';
 import { visualizingButton, zDepth1 } from '@ncigdc/theme/mixins';
 
 import EntityPageHorizontalTable from '@ncigdc/components/EntityPageHorizontalTable';
@@ -49,18 +49,18 @@ import wrapSvg from '@ncigdc/utils/wrapSvg';
 import {
   DAYS_IN_YEAR,
 } from '@ncigdc/utils/ageDisplay';
-import '../survivalPlot.css';
 import { downloadToTSV } from '@ncigdc/components/DownloadTableToTsvButton';
 import QQPlotQuery from '@ncigdc/modern_components/QQPlot/QQPlotQuery';
 import BoxPlotWrapper from '@oncojs/boxplot';
 
 // survival plot
+import SurvivalPlotWrapper from '@ncigdc/components/SurvivalPlotWrapper';
 import {
   getSurvivalCurvesArray,
   MAXIMUM_CURVES,
   MINIMUM_CASES,
 } from '@ncigdc/utils/survivalplot';
-import SurvivalPlotWrapper from '@ncigdc/components/SurvivalPlotWrapper';
+import '../survivalPlot.css';
 import {
   SpinnerIcon,
   CloseIcon,
@@ -68,6 +68,8 @@ import {
   BarChartIcon,
   BoxPlot,
 } from '@ncigdc/theme/icons';
+
+import BoxPlotWrapper from '@oncojs/boxplot';
 
 import { withTheme } from '@ncigdc/theme';
 
@@ -222,7 +224,11 @@ const parseBucketValue = value => (value % 1
   ? Number.parseFloat(value).toFixed(2)
   : Math.round(value * 100) / 100);
 
-const getRangeValue = (key, nextInterval) => `${parseBucketValue(key)}${nextInterval === 0 ? ' and up' : ` to ${parseBucketValue(nextInterval - 1)}`}`;
+const getRangeValue = (key, nextInterval) => `${parseBucketValue(key)}${
+  nextInterval === 0
+    ? ' and up'
+    : ` to ${parseBucketValue(nextInterval - 1)}`
+}`;
 
 const getCountLink = ({ doc_count, filters, totalDocs }) => (
   <span>
@@ -239,6 +245,7 @@ const getCountLink = ({ doc_count, filters, totalDocs }) => (
 );
 
 const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
+  axisTitle,
   currentAnalysis,
   dataBuckets,
   customBins,
@@ -412,7 +419,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                   <SpinnerIcon />
                 ) : (
                   <SurvivalIcon />
-                  )}
+                )}
               </Button>
             </Tooltip>
           ),
@@ -435,7 +442,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
         {
           key: 'count',
           style: { textAlign: 'right' },
-          title: `${dataDimension ? `${dataDimension}s` : 'Quantities'}`,
+          title: `${dataDimension || 'Quantities'}`,
         },
       ]
       : [
@@ -611,12 +618,13 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
           margin: '5px 0 10px',
         }}
         >
-        <h2 style={{
-          fontSize: '1.8rem',
-          marginBottom: 0,
-          marginTop: 10,
-        }}
-            >
+        <h2
+          style={{
+            fontSize: '1.8rem',
+            marginBottom: 0,
+            marginTop: 10,
+          }}
+          >
           {humanify({ term: fieldName })}
         </h2>
         <Row>
@@ -955,7 +963,9 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                       width: '150px',
                     }}
                     >
-                    <BoxPlotWrapper data={dataValues} />
+                    <TooltipInjector>
+                      <BoxPlotWrapper data={dataValues} />
+                    </TooltipInjector>
                   </Column>
                   <Column
                     id={`${wrapperId}-qqplot-container`}
@@ -1137,8 +1147,8 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                     style={styles.actionMenuItem}
                     >
                     Edit Bins
-                </DropdownItem>
-                <DropdownItem
+                   </DropdownItem>
+                   <DropdownItem
                     onClick={() => {
                       dispatch(
                         updateClinicalAnalysisVariable({
@@ -1193,7 +1203,6 @@ export default compose(
     const rawQueryData = (data.explore && data.explore.cases.aggregations
       ? data.explore.cases.aggregations[fieldName.replace('.', '__')]
       : data);
-    const dataDimension = dataDimensions[sanitisedId] && dataDimensions[sanitisedId].unit;
 
     return Object.assign(
       {
@@ -1204,34 +1213,38 @@ export default compose(
               : []
             : rawQueryData.buckets
           : [],
-        dataValues: variable.plotTypes === 'continuous' && map(
-          {
-            ...rawQueryData.stats,
-            ...rawQueryData.percentiles,
-          },
-          (value, stat) => {
-            switch (dataDimension) {
-              case 'Year': {
-                const age = Number.parseFloat(value / DAYS_IN_YEAR).toFixed(2);
-                return ({
-                  [stat]: age % 1 ? age : Number.parseFloat(age).toFixed(0),
-                });
-              }
-              default:
-                return ({
-                  [stat]: value % 1 ? Number.parseFloat(value).toFixed(2) : value,
-                });
-            }
-          }
-        ).reduce((acc, item) => ({
-          ...acc,
-          ...item,
-        }), {}),
         rawQueryData,
         totalDocs: (data.hits || { total: 0 }).total,
         wrapperId: `${sanitisedId}-chart`,
       },
-      dataDimension && { dataDimension },
+      dataDimensions[sanitisedId] && {
+        axisTitle: dataDimensions[sanitisedId].axisTitle,
+        dataDimension: dataDimensions[sanitisedId].unit,
+        dataValues:
+          map(
+            {
+              ...rawQueryData.stats,
+              ...rawQueryData.percentiles,
+            },
+            (value, stat) => {
+              switch (dataDimensions[sanitisedId].unit) {
+                case 'Years': {
+                  const age = Number.parseFloat(value / DAYS_IN_YEAR).toFixed(2);
+                  return ({
+                    [stat]: age % 1 ? age : Number.parseFloat(age).toFixed(0),
+                  });
+                }
+                default:
+                  return ({
+                    [stat]: value % 1 ? Number.parseFloat(value).toFixed(2) : value,
+                  });
+              }
+            }
+          ).reduce((acc, item) => ({
+            ...acc,
+            ...item,
+          }), {}),
+      },
     );
   }),
   withProps(({ dataBuckets, variable }) => ({

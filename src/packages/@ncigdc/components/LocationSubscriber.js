@@ -3,8 +3,14 @@
 import { parse } from 'query-string';
 import withRouter from '@ncigdc/utils/withRouter';
 
-const LocationSubscriber = withRouter(({ location, children, push }) =>
-  children({ ...location, query: parse(location.search), push }),
-);
+const LocationSubscriber = ({
+  children,
+  location,
+  push,
+}) => children({
+  ...location,
+  push,
+  query: parse(location.search),
+});
 
-export default LocationSubscriber;
+export default withRouter(LocationSubscriber);

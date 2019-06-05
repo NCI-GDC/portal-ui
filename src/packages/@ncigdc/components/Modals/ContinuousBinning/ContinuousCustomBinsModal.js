@@ -1,5 +1,10 @@
 import React from 'react';
-import { compose, withState, withProps } from 'recompose';
+import {
+  compose,
+  setDisplayName,
+  withProps,
+  withState,
+} from 'recompose';
 import { isFinite } from 'lodash';
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import Button from '@ncigdc/uikit/Button';
@@ -63,6 +68,7 @@ const defaultRangeRow = {
 };
 
 export default compose(
+  setDisplayName('ContinuousCustomBinsModal'),
   withState('rangeRows', 'setRangeRows', [defaultRangeRow]),
   withState('warning', 'setWarning', ''),
   withState('selectedBinningMethod', 'setSelectedBinningMethod', 'interval'),
@@ -174,15 +180,15 @@ export default compose(
         ...rangeRow,
         ...inputRow,
       }) : rangeRow));
-      console.log('nextRangeRows', nextRangeRows);
+      console.log('ccbm update nextRangeRows', nextRangeRows);
       setRangeRows(nextRangeRows);
     };
 
     const handleRemoveRow = rowIndex => {
       const nextRangeRows = rangeRows.filter((filterRow, filterRowIndex) => filterRowIndex !== rowIndex);
-      console.log('rowIndex', rowIndex);
-      console.log('rangeRows in removeRow', rangeRows);
-      console.log('nextRangeRows', nextRangeRows);
+      console.log('ccbm remove rowIndex', rowIndex);
+      console.log('ccbm remove rangeRows in removeRow', rangeRows);
+      console.log('ccbm remove nextRangeRows', nextRangeRows);
       setRangeRows(nextRangeRows);
     };
 

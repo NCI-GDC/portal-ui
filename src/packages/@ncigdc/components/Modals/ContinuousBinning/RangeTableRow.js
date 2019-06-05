@@ -1,5 +1,4 @@
 import React from 'react';
-import { compose, withState, withPropsOnChange } from 'recompose';
 import { isFinite } from 'lodash';
 import OutsideClickHandler from 'react-outside-click-handler';
 import Button from '@ncigdc/uikit/Button';
@@ -18,127 +17,147 @@ const rowStyles = {
   },
 };
 
-export default compose(
-  withPropsOnChange(['fields'], ({ fields }) => ({
-    propsFields: fields,
-  })),
-  withState('rowActive', 'setRowActive', props => props.row.active),
-  withState('rowFields', 'setRowFields', props => props.propsFields),
-)(
-  ({
-    disabled,
-    handleRemoveRow,
-    handleUpdateRow,
-    row,
-    rowActive,
-    rowFields,
-    rowIndex,
-    setRowActive,
-    setRowFields,
-    styles,
-  }) => {
-    console.log('row in the component', row);
+class RangeTableRow extends React.Component {
+  state = {
+    rowActive: false,
+  }
 
-    const rowFieldsOrder = [
-      'name',
-      'min',
-      'max',
-    ];
+  rowFieldsOrder = [
+    'name',
+    'min',
+    'max',
+  ];
 
-    const validateRow = () => {
-      // check empty & NaN errors first
-      // then make sure that min < max
-      const validFields = Object.keys(rowFields).reduce((acc, curr) => {
-        const fieldValue = rowFields[curr].value;
-        const fieldValueNumber = Number(fieldValue);
+  updateRow = updateType => {
+    const {
+      handleUpdateRow,
+      rowIndex,
+    } = this.props;
+    const {
+      rowActive,
+    } = this.state;
 
-        const nextErrors = fieldValue === '' ? ['Required field.'] : curr === 'name' ? [] : isFinite(fieldValueNumber) ? [] : [`'${fieldValue}' is not a number.`];
+    if (updateType === 'cancel') {
+      // setRowFields(row.fields);
+    }
 
-        return ({
-          ...acc,
-          [curr]: {
-            ...rowFields[curr],
-            errors: nextErrors,
-          },
-        });
-      }, {});
+    if (updateType === 'edit' || updateType === 'cancel') {
+      const nextRow = {
+        active: !rowActive,
+      };
+      console.log('roxIndex', rowIndex);
+      handleUpdateRow(rowIndex, nextRow);
+      this.setState({ rowActive: !rowActive });
+    } else if (updateType === 'save') {
+      const rowFieldsValidated = this.validateRow();
+      // setRowFields(rowFieldsValidated);
 
-      const checkMinMaxValues = validFields.max.errors.length === 0 && validFields.min.errors.length === 0 && Number(validFields.max.value) < Number(validFields.min.value);
+      const rowIsValid = Object.keys(rowFieldsValidated).filter(field => rowFieldsValidated[field].errors.length > 0).length === 0;
 
-      if (checkMinMaxValues) {
-        return ({
-          ...validFields,
-          max: {
-            ...validFields.max,
-            errors: [`'To' must be greater than ${validFields.min.value}.`],
-          },
-          min: {
-            ...validFields.min,
-            errors: [`'From' must be less than ${validFields.max.value}.`],
-          },
-        });
-      }
-
-      return validFields;
-    };
-
-    const updateRowField = (target, inputErrors = null) => {
-      const targetInfo = target.id.split('-');
-      const inputKey = targetInfo[3];
-      const inputValue = target.value;
-
-      const nextRowFields = Object.keys(rowFields).reduce((acc, curr) => ({
-        ...acc,
-        [curr]: {
-          ...(curr === inputKey ? ({
-            errors: inputErrors === null ? rowFields[inputKey].errors : inputErrors,
-            value: inputValue,
-          }) : rowFields[curr]),
-        },
-      }), {});
-
-      setRowFields(nextRowFields);
-    };
-
-    const updateRow = updateType => {
-      if (updateType === 'cancel') {
-        setRowFields(row.fields);
-      }
-
-      if (updateType === 'edit' || updateType === 'cancel') {
+      if (rowIsValid) {
         const nextRow = {
           active: !rowActive,
+          fields: rowFieldsValidated,
         };
+        this.setState({ rowActive: !rowActive });
+        console.log('rangetablerow rowIndex', rowIndex);
         handleUpdateRow(rowIndex, nextRow);
-        setRowActive(!rowActive);
-      } else if (updateType === 'save') {
-        const rowFieldsValidated = validateRow();
-        setRowFields(rowFieldsValidated);
-
-        const rowIsValid = Object.keys(rowFieldsValidated).filter(field => rowFieldsValidated[field].errors.length > 0).length === 0;
-
-        if (rowIsValid) {
-          const nextRow = {
-            active: !rowActive,
-            fields: rowFieldsValidated,
-          };
-          setRowActive(!rowActive);
-          handleUpdateRow(rowIndex, nextRow);
-        }
       }
-    };
+    }
+  };
+
+  updateRowField = (target, inputErrors = null) => {
+    const {
+      fields,
+      handleUpdateRow,
+      rowIndex,
+    } = this.props;
+
+    const targetInfo = target.id.split('-');
+    const inputKey = targetInfo[3];
+    const inputValue = target.value;
+
+    const nextRowFields = Object.keys(fields).reduce((acc, curr) => ({
+      ...acc,
+      [curr]: {
+        ...(curr === inputKey ? ({
+          errors: inputErrors === null ? fields[inputKey].errors : inputErrors,
+          value: inputValue,
+        }) : fields[curr]),
+      },
+    }), {});
+
+    // setRowFields(nextRowFields);
+    handleUpdateRow(rowIndex, {
+      active: true,
+      fields: nextRowFields,
+    });
+  };
+
+  validateRow = () => {
+    const {
+      fields,
+    } = this.props;
+    // check empty & NaN errors first
+    // then make sure that min < max
+    const validFields = Object.keys(fields).reduce((acc, curr) => {
+      const fieldValue = fields[curr].value;
+      const fieldValueNumber = Number(fieldValue);
+
+      const nextErrors = fieldValue === '' ? ['Required field.'] : curr === 'name' ? [] : isFinite(fieldValueNumber) ? [] : [`'${fieldValue}' is not a number.`];
+
+      return ({
+        ...acc,
+        [curr]: {
+          ...fields[curr],
+          errors: nextErrors,
+        },
+      });
+    }, {});
+
+    const checkMinMaxValues = validFields.max.errors.length === 0 && validFields.min.errors.length === 0 && Number(validFields.max.value) < Number(validFields.min.value);
+
+    if (checkMinMaxValues) {
+      return ({
+        ...validFields,
+        max: {
+          ...validFields.max,
+          errors: [`'To' must be greater than ${validFields.min.value}.`],
+        },
+        min: {
+          ...validFields.min,
+          errors: [`'From' must be less than ${validFields.max.value}.`],
+        },
+      });
+    }
+
+    return validFields;
+  };
+
+  render = () => {
+    const {
+      disabled,
+      fields,
+      handleRemoveRow,
+      rowIndex,
+      styles,
+    } = this.props;
+    const {
+      rowActive,
+    } = this.state;
 
     return (
       <OutsideClickHandler
         disabled={!rowActive || disabled}
         display="flex"
         onOutsideClick={e => {
-          updateRow('save', e.target);
+          console.log('click!');
+          // updateRow('save', e.target);
         }}
         >
         <div style={rowStyles.fieldsWrapper}>
           {
-            rowFieldsOrder.map(rowItem => (
+            this.rowFieldsOrder.map(rowItem => (
               <div
                 key={`range-row-${rowIndex}-${rowItem}`}
                 style={styles.column}
@@ -147,16 +166,16 @@ export default compose(
                   binningMethod="range"
                   disabled={!rowActive || disabled}
                   handleChange={e => {
-                    updateRowField(e.target);
+                    this.updateRowField(e.target);
                   }}
                   handleClick={() => { }}
-                  inputErrors={rowFields[rowItem].errors}
+                  inputErrors={fields[rowItem].errors}
                   inputId={`range-row-${rowIndex}-${rowItem}`}
                   inputKey={rowItem}
                   key={`range-row-${rowIndex}-${rowItem}`}
                   rowIndex={rowIndex}
-                  valid={rowFields[rowItem].errors.length === 0}
-                  value={rowFields[rowItem].value}
+                  valid={fields[rowItem].errors.length === 0}
+                  value={fields[rowItem].value}
                   />
               </div>
             ))
@@ -171,7 +190,7 @@ export default compose(
                 disabled={disabled}
                 id={`range-row-${rowIndex}-save`}
                 onClick={e => {
-                  updateRow('save', e.target);
+                  this.updateRow('save', e.target);
                 }}
                 style={{
                   ...rowStyles.optionsButton,
@@ -186,7 +205,7 @@ export default compose(
                 disabled={disabled}
                 id={`range-row-${rowIndex}-cancel`}
                 onClick={e => {
-                  updateRow('cancel', e.target);
+                  this.updateRow('cancel', e.target);
                 }}
                 style={{
                   ...rowStyles.optionsButton,
@@ -202,7 +221,7 @@ export default compose(
                 disabled={disabled}
                 id={`range-row-${rowIndex}-edit`}
                 onClick={e => {
-                  updateRow('edit', e.target);
+                  this.updateRow('edit', e.target);
                 }}
                 style={{ ...rowStyles.optionsButton }}
                 >
@@ -223,4 +242,6 @@ export default compose(
       </OutsideClickHandler>
     );
   }
-);
+}
+
+export default RangeTableRow;

@@ -9,3 +9,7 @@
   fill: #888;
   font-size: 1rem;
 }
+
+.qq-plot g text {
+  fill: #888;
+}

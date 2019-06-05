@@ -8,6 +8,7 @@ import {
   withProps,
 } from 'recompose';
 import { last, groupBy, sortBy } from 'lodash';
+import reactSize from 'react-sizeme';
 
 import { qnorm } from './qqUtils';
 
@@ -185,9 +186,9 @@ const QQPlot = ({
     .attr('y', padding / 2)
     .attr('clip-path', 'url(#regression-clip-right)')
     .style('fill', 'white')
-    .attr('height', chartHeight - padding)
+    .attr('height', chartHeight)
     .attr('width', padding * 2)
-    .attr('transform', `translate(${chartWidth},${padding / 2.1})`);
+    .attr('transform', `translate(${chartWidth},${-padding})`);
 
   svg
     .append('text')
@@ -235,8 +236,8 @@ const QQPlot = ({
   return el.toReact();
 };
 
-export default compose(
+export default reactSize(compose(
   withState('chart', 'setState', <span />),
   withProps(({ data }) => ({ data })),
   pure
-)(QQPlot);
+))(QQPlot);

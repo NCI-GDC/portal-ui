@@ -1,0 +1,28 @@
+.boxplot .axis path,
+.boxplot .axis line,
+.boxplot .decadeBar path {
+  stroke: #ccc;
+  shape-rendering: crispEdges;
+}
+
+.boxplot g text {
+  fill: #888;
+}
+
+.boxplot .axis .tick text,
+.boxplot .axis text {
+  fill: #ccc;
+  font-size: 1rem;
+}
+
+.boxplot .box line {
+  stroke: #1784AC;
+}
+
+.boxplot .whisker path {
+  stroke: #333;
+}
+
+.boxplot .point {
+  color: #333;
+}

@@ -88,6 +88,9 @@ import {
   dataDimensions,
 } from './helpers';
 
+import '../boxplot.css';
+import '../qq.css';
+
 const colors = scaleOrdinal(schemeCategory10);
 
 interface ITableHeading {
@@ -895,23 +898,24 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                       noText
                       slug={`boxplot-${fieldName}`}
                       svg={() => wrapSvg({
+                        className: 'boxplot',
                         selector: `#${wrapperId}-boxplot-container figure svg`,
-                        title: humanify({ term: fieldName }),
+                        title: `${humanify({ term: fieldName })} Box Plot`,
                       })
                       }
                       tooltipHTML="Download SVG or PNG"
                       />
                   </Row>
                   <Row style={{
-                    width: QQ_PLOT_RATIO,
-                    marginLeft: 10,
-                    justifyContent: 'center',
                     alignItems: 'center',
+                    justifyContent: 'center',
+                    marginLeft: 10,
+                    width: QQ_PLOT_RATIO,
                   }}
                        >
                     <span style={{
-                      fontSize: '1.2rem',
                       color: theme.greyScale3,
+                      fontSize: '1.2rem',
                     }}
                           >
                           QQ Plot
@@ -920,18 +924,19 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                   <Row>
                     <DownloadVisualizationButton
                       buttonStyle={{
-                        padding: 0,
-                        minWidth: 22,
-                        minHeight: 20,
-                        lineHeight: 0,
                         fontSize: '1.2rem',
+                        lineHeight: 0,
+                        minHeight: 20,
+                        minWidth: 22,
+                        padding: 0,
                       }}
                       data={qqData}
                       noText
                       slug={`qq-plot-${fieldName}`}
                       svg={() => wrapSvg({
                         selector: `#${wrapperId}-qqplot-container .qq-plot svg`,
-                        title: humanify({ term: fieldName }),
+                        title: `${humanify({ term: fieldName })} QQ Plot`,
+                        className: 'qq-plot',
                       })}
                       tooltipHTML="Download plot data"
                       tsvData={qqData}
@@ -947,28 +952,24 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                   <Column
                     id={`${wrapperId}-boxplot-container`}
                     style={{
-                      // width: BOX_PLOT_RATIO,
-                      width: '150px',
                       height: CHART_HEIGHT + 10,
+                      maxHeight: CHART_HEIGHT + 10,
+                      minWidth: '150px',
+                      width: '150px',
                     }}
                     >
-                    {/* <div
-                      // className="boxplot-container"
-                      id={`${wrapperId}-boxplot-container`}
-                      style={{
-                        // width: '100%',
-                        height: CHART_HEIGHT,
-                      }}
-                      > */}
                     <BoxPlotWrapper data={dataValues} />
-                    {/* </div> */}
                   </Column>
                   <Column
                     id={`${wrapperId}-qqplot-container`}
-                    style={{ width: QQ_PLOT_RATIO }}
+                    style={{
+                      width: QQ_PLOT_RATIO,
+                      height: CHART_HEIGHT + 10,
+                      maxHeight: CHART_HEIGHT + 10,
+                    }}
                     >
                     <QQPlotQuery
-                      chartHeight={CHART_HEIGHT - 10}
+                      chartHeight={CHART_HEIGHT + 10}
                       dataHandler={data => setQQData(data)}
                       fieldName={fieldName}
                       filters={cardFilters}

@@ -10,11 +10,8 @@ import { addInFilters } from '@ncigdc/utils/filters';
 import { fetchApi } from '@ncigdc/utils/ajax';
 import Spinner from '@ncigdc/uikit/Loaders/Material';
 import { withTheme } from '@ncigdc/theme';
-import withSize from '@ncigdc/utils/withSize';
 import { qnorm } from './qqUtils';
 import QQPlot from './QQPlot';
-
-import './qq.css';
 
 export default compose(
   withTheme,
@@ -125,9 +122,8 @@ export default compose(
     );
   }
 
-  const QQPlotWithSize = compose(withSize({ refreshRate: 16 }))(QQPlot);
   return (
-    <QQPlotWithSize
+    <QQPlot
         clinicalType={clinicalType}
         data={data}
         exportCoordinates

@@ -209,7 +209,7 @@ export default compose(
             buttonContentStyle={{ justifyContent: 'center' }}
             disabled={disabled}
             id={`range-row-${rowIndex}-remove`}
-            onClick={handleRemoveRow}
+            onClick={() => { handleRemoveRow(rowIndex); }}
             style={{ ...rowStyles.optionsButton }}
             >
             <i aria-hidden="true" className="fa fa-trash" />

@@ -170,7 +170,10 @@ export default compose(
     };
 
     const handleUpdateRow = (inputRowIndex, inputRow) => {
-      const nextRangeRows = rangeRows.map((rangeRow, rowIndex) => (rowIndex === inputRowIndex ? inputRow : rangeRow));
+      const nextRangeRows = rangeRows.map((rangeRow, rowIndex) => (rowIndex === inputRowIndex ? ({
+        ...inputRow,
+        fields: inputRow.fields === null ? rangeRow.fields : inputRow.fields,
+      }) : rangeRow));
       setRangeRows(nextRangeRows);
     };
 
@@ -275,7 +278,7 @@ export default compose(
               validateCustomInterval={e => {
                 validateCustomInterval(e.target);
               }}
-              />
+            />
 
             <div className="binning-range">
               <div style={{ marginBottom: '15px' }}>
@@ -286,32 +289,32 @@ export default compose(
                   onClick={() => {
                     setSelectedBinningMethod('range');
                   }}
-                  />
+                />
               </div>
               <div style={styles.rangeTable.wrapper}>
                 <div style={styles.rangeTable.heading}>
                   <div
                     id="range-table-label-name"
                     style={styles.rangeTable.column}
-                    >
+                  >
                     Bin Name
                   </div>
                   <div
                     id="range-table-label-min"
                     style={styles.rangeTable.column}
-                    >
+                  >
                     From
                   </div>
                   <div
                     id="range-table-label-max"
                     style={styles.rangeTable.column}
-                    >
+                  >
                     To
                   </div>
                   <div
                     id="range-table-label-options"
                     style={styles.rangeTable.optionsColumn}
-                    >
+                  >
                     Options
                   </div>
                 </div>
@@ -328,7 +331,7 @@ export default compose(
                       row={row}
                       rowIndex={rowIndex}
                       styles={styles.rangeTable}
-                      />
+                    />
                   ))}
                 </div>
               </div>
@@ -345,7 +348,7 @@ export default compose(
                   maxWidth: '100px',
                   ...(selectedBinningMethod !== 'range' ? styles.inputDisabled : {}),
                 }}
-                >
+              >
                 <i aria-hidden="true" className="fa fa-plus-circle" />
                 &nbsp; Add
               </Button>
@@ -358,26 +361,26 @@ export default compose(
             justifyContent: 'flex-end',
             margin: '20px',
           }}
-          >
+        >
           <span style={{
             color: 'red',
             justifyContent: 'flex-start',
             visibility: warning.length > 0 ? 'visible' : 'hidden',
           }}
-                >
+          >
             {`Warning: ${warning}`}
           </span>
           <Button
             onClick={onClose}
             style={styles.button}
-            >
+          >
             Cancel
           </Button>
           <Button
             disabled={submitDisabled}
             onClick={() => validateRangeRowsOnSubmit()}
             style={styles.button}
-            >
+          >
             Save Bins
           </Button>
         </Row>

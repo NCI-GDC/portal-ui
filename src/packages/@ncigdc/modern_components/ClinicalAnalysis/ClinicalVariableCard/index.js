@@ -16,13 +16,10 @@ import {
   min,
   map,
   max,
-  // omit,
-  // pick,
   reject,
   sortBy,
   truncate,
   groupBy,
-  // reduce,
   get,
 } from 'lodash';
 import { scaleOrdinal, schemeCategory10 } from 'd3';

@@ -19,8 +19,12 @@ const rowStyles = {
 
 class RangeTableRow extends React.Component {
   state = {
-    rowActive: false,
-  }
+    fieldValues: {
+      max: '',
+      min: '',
+      name: '',
+    },
+  };
 
   rowFieldsOrder = [
     'name',
@@ -38,7 +42,7 @@ class RangeTableRow extends React.Component {
     } = this.state;
 
     if (updateType === 'cancel') {
-      // setRowFields(row.fields);
+      this.resetToModalState();
     }
 
     if (updateType === 'edit' || updateType === 'cancel') {
@@ -66,12 +70,28 @@ class RangeTableRow extends React.Component {
     }
   };
 
+  updateInput = target => {
+    const inputKey = target.id.split('-')[3];
+    const inputValue = target.value;
+
+    const { fieldValues } = this.state;
+
+    this.setState({
+      fieldValues: {
+        ...fieldValues,
+        [inputKey]: inputValue,
+      },
+    });
+  };
+
   updateRowField = (target, inputErrors = null) => {
     const {
       fields,
       handleUpdateRow,
       rowIndex,
     } = this.props;
+
+    const { values } = this.props;
 
     const targetInfo = target.id.split('-');
     const inputKey = targetInfo[3];
@@ -134,49 +154,73 @@ class RangeTableRow extends React.Component {
     return validFields;
   };
 
+  resetToModalState = () => {
+    const {
+      max,
+      min,
+      name,
+    } = this.props;
+    this.setState({
+      fieldValues: {
+        max,
+        min,
+        name,
+      },
+    });
+  }
+
+  componentDidMount = () => {
+    this.resetToModalState();
+  };
+
   render = () => {
     const {
-      disabled,
-      fields,
       handleRemoveRow,
+      rangeMethodActive,
+      rowActive,
       rowIndex,
       styles,
     } = this.props;
-    const {
-      rowActive,
-    } = this.state;
+
+    const { fieldValues } = this.state;
+
+    const fieldErrors = {
+      max: '',
+      min: '',
+      name: '',
+    };
 
     return (
       <OutsideClickHandler
-        disabled={!rowActive || disabled}
+        disabled={!rowActive || !rangeMethodActive}
         display="flex"
         onOutsideClick={e => {
           console.log('click!');
           // updateRow('save', e.target);
         }}
-        >
+      >
         <div style={rowStyles.fieldsWrapper}>
           {
             this.rowFieldsOrder.map(rowItem => (
               <div
                 key={`range-row-${rowIndex}-${rowItem}`}
                 style={styles.column}
-                >
+              >
                 <BinningInput
                   binningMethod="range"
-                  disabled={!rowActive || disabled}
+                  disabled={!rowActive || !rangeMethodActive}
                   handleChange={e => {
-                    this.updateRowField(e.target);
+                    this.updateInput(e.target);
                   }}
-                  handleClick={() => { }}
-                  inputErrors={fields[rowItem].errors}
+                  handleClick={() => { console.log('todo: select binning method or make the field editable'); }}
+                  inputError={fieldErrors[rowItem]}
                   inputId={`range-row-${rowIndex}-${rowItem}`}
                   inputKey={rowItem}
                   key={`range-row-${rowIndex}-${rowItem}`}
                   rowIndex={rowIndex}
-                  valid={fields[rowItem].errors.length === 0}
-                  value={fields[rowItem].value}
-                  />
+                  valid={fieldErrors[rowItem].length === 0}
+                  value={fieldValues[rowItem]}
+                />
               </div>
             ))
           }
@@ -187,55 +231,55 @@ class RangeTableRow extends React.Component {
               <Button
                 aria-label="Save"
                 buttonContentStyle={{ justifyContent: 'center' }}
-                disabled={disabled}
+                disabled={!rangeMethodActive}
                 id={`range-row-${rowIndex}-save`}
                 onClick={e => {
                   this.updateRow('save', e.target);
                 }}
                 style={{
                   ...rowStyles.optionsButton,
-                  ...(disabled || { background: 'green' }),
+                  ...(!rangeMethodActive || { background: 'green' }),
                 }}
-                >
+              >
                 <i aria-hidden="true" className="fa fa-check" />
               </Button>
               <Button
                 aria-label="Cancel"
                 buttonContentStyle={{ justifyContent: 'center' }}
-                disabled={disabled}
+                disabled={!rangeMethodActive}
                 id={`range-row-${rowIndex}-cancel`}
                 onClick={e => {
                   this.updateRow('cancel', e.target);
                 }}
                 style={{
                   ...rowStyles.optionsButton,
-                  ...(disabled || { background: 'red' }),
+                  ...(!rangeMethodActive || { background: 'red' }),
                 }}
-                >
+              >
                 <i aria-hidden="true" className="fa fa-close" />
               </Button>
             </React.Fragment>
           ) : (
-            <Button
+              <Button
                 aria-label="Edit"
-                disabled={disabled}
+                disabled={!rangeMethodActive}
                 id={`range-row-${rowIndex}-edit`}
                 onClick={e => {
                   this.updateRow('edit', e.target);
                 }}
                 style={{ ...rowStyles.optionsButton }}
-                >
+              >
                 <i aria-hidden="true" className="fa fa-pencil" />
               </Button>
             )}
           <Button
             aria-label="Remove"
             buttonContentStyle={{ justifyContent: 'center' }}
-            disabled={disabled}
+            disabled={!rangeMethodActive}
             id={`range-row-${rowIndex}-remove`}
             onClick={() => { handleRemoveRow(rowIndex); }}
             style={{ ...rowStyles.optionsButton }}
-            >
+          >
             <i aria-hidden="true" className="fa fa-trash" />
           </Button>
         </div>

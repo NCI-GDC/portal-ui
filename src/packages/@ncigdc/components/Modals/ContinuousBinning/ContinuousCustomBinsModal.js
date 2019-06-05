@@ -52,18 +52,9 @@ const styles = {
 const defaultRangeRow = {
   active: true,
   fields: {
-    max: {
-      errors: [],
-      value: '',
-    },
-    min: {
-      errors: [],
-      value: '',
-    },
-    name: {
-      errors: [],
-      value: '',
-    },
+    max: '',
+    min: '',
+    name: '',
   },
 };
 
@@ -91,15 +82,15 @@ export default compose(
     const { defaultMax, defaultMin, defaultQuartile } = props;
     return ({
       amount: {
-        errors: [],
+        error: '',
         value: defaultQuartile,
       },
       max: {
-        errors: [],
+        error: '',
         value: defaultMax,
       },
       min: {
-        errors: [],
+        error: '',
         value: defaultMin,
       },
     });
@@ -119,14 +110,14 @@ export default compose(
     setSelectedBinningMethod,
     warning,
   }) => {
-    const updateCustomInterval = (target, inputErrors = null) => {
+    const updateCustomInterval = (target, inputError = null) => {
       const inputKey = target.id.split('-')[2];
       const inputValue = target.value;
 
       const nextCustomInterval = {
         ...customInterval,
         [inputKey]: {
-          errors: inputErrors === null ? customInterval[inputKey].errors : inputErrors,
+          error: inputError === null ? customInterval[inputKey].error : inputError,
           value: inputValue,
         },
       };
@@ -154,25 +145,25 @@ export default compose(
 
       const validAmount = checkMinInRange && checkMaxInRange ? currentMax - currentMin : defaultMax - defaultMin;
 
-      let inputErrors;
+      let inputError;
 
       if (inputKey === 'amount') {
-        const amountTooLargeError = [`Interval must be less than or equal to ${validAmount}.`];
-        const amountTooSmallError = ['Interval must be at least 1.'];
-        inputErrors = inputValue < 1 ? amountTooSmallError : inputValue > validAmount ? amountTooLargeError : [];
+        const amountTooLargeError = `Interval must be less than or equal to ${validAmount}.`;
+        const amountTooSmallError = 'Interval must be at least 1.';
+        inputError = inputValue < 1 ? amountTooSmallError : inputValue > validAmount ? amountTooLargeError : '';
       } else if (inputKey === 'max') {
-        const maxTooSmallError = [`Max must be greater than ${validMin}.`];
-        const maxTooLargeError = [`Max must be less than or equal to ${defaultMax}.`];
-        inputErrors = inputValue <= validMin ? maxTooSmallError : inputValue > defaultMax ? maxTooLargeError : [];
+        const maxTooSmallError = `Max must be greater than ${validMin}.`;
+        const maxTooLargeError = `Max must be less than or equal to ${defaultMax}.`;
+        inputError = inputValue <= validMin ? maxTooSmallError : inputValue > defaultMax ? maxTooLargeError : '';
       } else if (inputKey === 'min') {
-        const minTooLargeError = [`Min must be less than ${validMax}.`];
-        const maxTooSmallError = [`Min must be greater than or equal to ${defaultMin}.`];
-        inputErrors = inputValue >= validMax ? minTooLargeError : inputValue < defaultMin ? maxTooSmallError : [];
+        const minTooLargeError = `Min must be less than ${validMax}.`;
+        const maxTooSmallError = `Min must be greater than or equal to ${defaultMin}.`;
+        inputError = inputValue >= validMax ? minTooLargeError : inputValue < defaultMin ? maxTooSmallError : '';
       } else {
-        inputErrors = [];
+        inputError = '';
       }
 
-      updateCustomInterval(target, inputErrors);
+      updateCustomInterval(target, inputError);
     };
 
     const handleUpdateRow = (inputRowIndex, inputRow) => {
@@ -192,7 +183,7 @@ export default compose(
       setRangeRows(nextRangeRows);
     };
 
-    const toggleSubmitButton = () => (selectedBinningMethod === 'interval' ? Object.keys(customInterval).some(field => customInterval[field].errors.length > 0) : rangeRows.some(row => row.active));
+    const toggleSubmitButton = () => (selectedBinningMethod === 'interval' ? Object.keys(customInterval).some(field => customInterval[field].error.length > 0) : rangeRows.some(row => row.active));
 
     const submitDisabled = toggleSubmitButton();
 
@@ -278,12 +269,13 @@ export default compose(
                 <div>
                   {rangeRows.map((row, rowIndex) => (
                     <RangeTableRow
-                      disabled={selectedBinningMethod !== 'range'}
                       fields={row.fields}
                       handleRemoveRow={handleRemoveRow}
                       handleUpdateRow={handleUpdateRow}
                       key={`range-row-${rowIndex}`}
+                      rangeMethodActive={selectedBinningMethod === 'range'}
                       row={row}
+                      rowActive={row.active}
                       rowIndex={rowIndex}
                       styles={styles.rangeTable}
                       />

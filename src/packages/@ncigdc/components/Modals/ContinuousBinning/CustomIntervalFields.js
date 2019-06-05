@@ -33,7 +33,7 @@ const CustomIntervalFields = ({
         display: 'flex',
         marginBottom: '15px',
       }}
-    >
+      >
       <div>
         <BinningMethodInput
           binningMethod="interval"
@@ -41,20 +41,20 @@ const CustomIntervalFields = ({
           label="Bin Interval"
           onClick={handleUpdateBinningMethod}
           validateOnBlur={validateCustomInterval}
-        />
+          />
       </div>
       <div style={styles.inputWrapper}>
         <BinningInput
           binningMethod="interval"
           disabled={disabled}
           handleChange={handleChange}
-          inputErrors={customInterval.amount.errors}
+          inputError={customInterval.amount.error}
           inputId="custom-interval-amount"
           inputKey="amount"
-          valid={customInterval.amount.errors.length === 0}
+          valid={customInterval.amount.error.length === 0}
           validateOnBlur={validateCustomInterval}
           value={customInterval.amount.value}
-        />
+          />
       </div>
       <CustomIntervalText>limit values from</CustomIntervalText>
       <div style={styles.inputWrapper}>
@@ -62,13 +62,13 @@ const CustomIntervalFields = ({
           binningMethod="interval"
           disabled={disabled}
           handleChange={handleChange}
-          inputErrors={customInterval.min.errors}
+          inputError={customInterval.min.error}
           inputId="custom-interval-min"
           inputKey="min"
-          valid={customInterval.min.errors.length === 0}
+          valid={customInterval.min.error.length === 0}
           validateOnBlur={validateCustomInterval}
           value={customInterval.min.value}
-        />
+          />
       </div>
       <CustomIntervalText>to</CustomIntervalText>
       <div style={styles.inputWrapper}>
@@ -76,13 +76,13 @@ const CustomIntervalFields = ({
           binningMethod="interval"
           disabled={disabled}
           handleChange={handleChange}
-          inputErrors={customInterval.max.errors}
+          inputError={customInterval.max.error}
           inputId="custom-interval-max"
           inputKey="max"
-          valid={customInterval.max.errors.length === 0}
+          valid={customInterval.max.error.length === 0}
           validateOnBlur={validateCustomInterval}
           value={customInterval.max.value}
-        />
+          />
       </div>
     </div>
   );

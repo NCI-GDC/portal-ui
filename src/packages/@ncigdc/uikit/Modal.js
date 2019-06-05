@@ -10,40 +10,40 @@ ReactModal.setAppElement('#root');
 
 const modalStyles = {
   overlay: {
-    position: 'fixed',
-    top: '0px',
-    left: '0px',
-    right: '0px',
-    bottom: '0px',
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    bottom: '0px',
     display: 'block',
-    zIndex: '111',
+    left: '0px',
+    position: 'fixed',
+    right: '0px',
+    top: '0px',
+    zIndex: '200',
   },
   content: {
-    position: 'initial',
-    border: '1px solid rgb(204, 204, 204)',
     background: 'rgb(255, 255, 255)',
+    border: '1px solid rgb(204, 204, 204)',
     borderRadius: '4px',
-    margin: '30px auto',
-    padding: '0px',
-    width: '90%',
-    maxWidth: '800px',
     boxShadow: 'rgba(0, 0, 0, 0.5) 0px 5px 15px',
+    margin: '30px auto',
+    maxWidth: '800px',
+    padding: '0px',
+    position: 'initial',
+    width: '90%',
   },
 };
 
 const Modal = ({
- children, isOpen, onRequestClose, style 
+  children, isOpen, onRequestClose, style,
 }) => (
   <ReactModal
-    className="test-modal"
-    contentLabel="Modal"
-    isOpen={isOpen}
-    onRequestClose={onRequestClose || (() => { })}
-    style={{ ..._.merge({}, modalStyles, style) }}
-    >
-    {Children.map(children, child => cloneElement(child, { ...child.props }))}
-  </ReactModal>
+      className="test-modal"
+      contentLabel="Modal"
+      isOpen={isOpen}
+      onRequestClose={onRequestClose || (() => { })}
+      style={{ ..._.merge({}, modalStyles, style) }}
+      >
+      {Children.map(children, child => cloneElement(child, { ...child.props }))}
+    </ReactModal>
 );
 
 export default Modal;

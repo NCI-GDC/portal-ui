@@ -136,7 +136,7 @@ class GitHutWrapper extends React.Component {
   componentDidMount() {
     this.fetchData(this.props);
   }
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if (this.props.query.filters !== nextProps.query.filters) {
       this.fetchData(nextProps);
     }

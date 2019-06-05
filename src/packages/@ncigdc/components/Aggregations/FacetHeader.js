@@ -1,7 +1,11 @@
 /* @flow */
 
 import React from 'react';
-import { compose, defaultProps } from 'recompose';
+import {
+  compose,
+  defaultProps,
+  setDisplayName,
+} from 'recompose';
 import { css } from 'glamor';
 
 import { parseFilterParam } from '@ncigdc/utils/uri';
@@ -53,6 +57,7 @@ const MagnifyingGlass = styled(SearchIcon, {
 });
 
 const FacetHeader = compose(
+  setDisplayName('EnhancedFacetHeader'),
   defaultProps({
     handleRequestRemove: () => {},
     isRemovable: false,
@@ -61,16 +66,16 @@ const FacetHeader = compose(
   }),
 )(
   ({
-    field,
-    title,
-    description,
-    isRemovable,
-    handleRequestRemove,
     collapsed,
-    setCollapsed,
-    showingValueSearch,
-    setShowingValueSearch,
+    description,
+    field,
+    handleRequestRemove,
     hasValueSearch,
+    isRemovable,
+    setCollapsed,
+    setShowingValueSearch,
+    showingValueSearch,
+    title,
   }) => (
     <LocationSubscriber>
       {(ctx: { pathname: string, query: IRawQuery }) => {
@@ -79,15 +84,15 @@ const FacetHeader = compose(
         return (
           <Header className="test-facet-header">
             <span
-              style={{ cursor: 'pointer' }}
               onClick={() => setCollapsed(!collapsed)}
-            >
+              style={{ cursor: 'pointer' }}
+              >
               <AngleIcon
                 style={{
                   paddingRight: '0.25rem',
                   transform: `rotate(${collapsed ? 270 : 0}deg)`,
                 }}
-              />
+                />
               {title}
             </span>
             <IconsRow>
@@ -95,25 +100,24 @@ const FacetHeader = compose(
                 <Tooltip
                   Component={description}
                   {...css({ ':not(:last-child)': { marginRight: 8 } })}
-                >
+                  >
                   <QuestionIcon />
                 </Tooltip>
               )}
               {hasValueSearch && (
                 <MagnifyingGlass
                   onClick={() => setShowingValueSearch(!showingValueSearch)}
-                />
+                  />
               )}
-              <FacetResetButton field={field} currentFilters={currentFilters} />
+              <FacetResetButton currentFilters={currentFilters} field={field} />
               {isRemovable && (
                 <RemoveIcon
+                  aria-label="Close"
                   onClick={handleRequestRemove}
-                  onKeyPress={event =>
-                    event.key === 'Enter' && handleRequestRemove()}
+                  onKeyPress={event => event.key === 'Enter' && handleRequestRemove()}
                   role="button"
                   tabIndex="0"
-                  aria-label="Close"
-                />
+                  />
               )}
             </IconsRow>
           </Header>

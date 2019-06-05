@@ -25,6 +25,7 @@ const BinningInput = ({
   binningMethod,
   disabled,
   handleChange,
+  handleClick,
   inputErrors,
   inputId,
   valid,
@@ -38,6 +39,7 @@ const BinningInput = ({
         id={inputId}
         onBlur={validateOnBlur}
         onChange={handleChange}
+        onClick={handleClick}
         style={{
           ...(binningMethod === 'interval' ? styles.inputHorizontal : styles.inputTable),
           ...(disabled ? styles.inputDisabled : {}),
@@ -45,7 +47,7 @@ const BinningInput = ({
         }}
         type="text"
         value={value}
-        />
+      />
       {inputErrors.map(err => <div key={`${inputId}-error-${err.substr(0, 2)}`} style={styles.error}>{err}</div>)}
     </React.Fragment>
   );

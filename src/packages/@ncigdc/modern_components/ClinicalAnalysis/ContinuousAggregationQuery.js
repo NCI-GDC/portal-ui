@@ -24,20 +24,36 @@ const simpleAggCache = {};
 const pendingAggCache = {};
 const DEFAULT_CONTINUOUS_BUCKETS = 4;
 
-const getContinuousAggs = ({ fieldName, stats, filters }) => {
+const getContinuousAggs = ({ fieldName, stats, filters, bins }) => {
   // prevent query failing if interval will equal 0
   if (_.isNull(stats.min) || _.isNull(stats.max)) {
     return null;
   }
+  if (!bins) {
+    // TODO: error handling
+  }
+  const ranges = Object.keys(bins).map(key => ({ from: bins[key].from, to: bins[key].to }));
+  console.log('ranges', ranges);
   const interval = (stats.max - stats.min) / DEFAULT_CONTINUOUS_BUCKETS;
   const queryFieldName = fieldName.replace('.', '__');
+  const filters2 = {
+    op: "range",
+    content: [
+      {
+        ranges: [
+          { from: 1, to: 10000 }
+        ]
+      }
+    ]
+  }
 
   const variables = {
     filters,
+    filters2,
   };
   const componentName = 'ContinuousAggregationQuery';
   const body = JSON.stringify({
-    query: `query ${componentName}($filters: FiltersArgument) {
+    query: `query ${componentName}($filters: FiltersArgument, $filters2: FiltersArgument) {
       viewer {
         explore {
           cases {
@@ -54,6 +70,12 @@ const getContinuousAggs = ({ fieldName, stats, filters }) => {
                   IQR: iqr
                   q1: quartile_1
                   q3: quartile_3
+                }
+                range(ranges: $filters2) {
+                  buckets {
+                    doc_count
+                    key
+                  }
                 }
                 histogram(interval: ${interval}) {
                   buckets {
@@ -138,7 +160,7 @@ const getContinuousAggs = ({ fieldName, stats, filters }) => {
         }
       } else {
         consoleDebug(
-            `Something went wrong in environment, but no error status: ${err}`
+          `Something went wrong in environment, but no error status: ${err}`
         );
       }
     }));
@@ -154,11 +176,13 @@ export default compose(
       filters,
       setAggData,
       setIsLoading,
+      variable,
     }) => {
       const res = await getContinuousAggs({
         fieldName,
         stats,
         filters,
+        bins: variable.bins,
       });
       setAggData(res && res.data.viewer, () => setIsLoading(false));
     },
@@ -170,6 +194,7 @@ export default compose(
   if (isLoading) {
     return <Loader />;
   }
+
   return (
     <ClinicalVariableCard
       data={{
@@ -179,6 +204,6 @@ export default compose(
       setId={setId}
       stats={stats}
       {...props}
-      />
+    />
   );
 });

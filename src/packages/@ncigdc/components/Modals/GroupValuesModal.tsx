@@ -422,7 +422,6 @@ export default compose(
                             }}
                             text={groupName}
                             warning={listWarning[groupName]}
-
                           >
                             {groupName}
                           </ControlEditableRow>

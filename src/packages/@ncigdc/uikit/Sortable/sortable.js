@@ -7,7 +7,7 @@ export function sortable(Component) {
     updateEdge = true;
     state = { draggingIndex: null };
 
-    componentWillReceiveProps(nextProps) {
+    UNSAFE_componentWillReceiveProps(nextProps) {
       this.setState({
         draggingIndex: nextProps.draggingIndex,
       });

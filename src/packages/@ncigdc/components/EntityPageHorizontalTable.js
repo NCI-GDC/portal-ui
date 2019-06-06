@@ -30,7 +30,7 @@ const EntityPageHorizontalTable = ({
   rightComponent,
   headings,
   data,
-  emptyMessage,
+  emptyMessage = 'No valid data to be shown',
   emptyMessageStyle,
   theme,
   tableId,
@@ -38,117 +38,126 @@ const EntityPageHorizontalTable = ({
   dividerStyle,
   tableContainerStyle = {},
   ...props
-}) => (
-  <Column
-    className={props.className || 'test-entity-table-wrapper'}
-    style={{
-      flexWrap: 'wrap',
-      overflow: 'auto',
-      ...style,
-      ...tableContainerStyle,
-    }}
-  >
-    {(title || rightComponent) && (
-      <h1
-        style={{
-          color: theme.greyScale7,
-          width: '100%',
-          fontSize: '2rem',
-          lineHeight: '1.4em',
-          fontWeight: 'normal',
-          marginTop: 0,
-          marginBottom: 0,
-          padding: '1rem',
-          backgroundColor: '#fff',
-          display: 'flex',
-          justifyContent: 'space-between',
-          ...titleStyle,
-        }}
+}) => {
+  return (
+    <Column
+      className={props.className || 'test-entity-table-wrapper'}
+      style={{
+        flexWrap: 'wrap',
+        overflow: 'auto',
+        ...style,
+        ...tableContainerStyle,
+      }}
       >
-        {title || <span />} {rightComponent}
-      </h1>
-    )}
-    {!!data.length && (
-      <Table
-        id={tableId}
-        style={styles.table}
-        headings={headings.map((h, i) => (
-          <Th
-            rowSpan={h.subheadings ? 1 : 2}
-            colSpan={h.subheadings ? h.subheadings.length : 1}
-            key={h.key}
-            style={{
-              ...(h.thStyle || h.style || {}),
-              ...(i > 0 ? dividerStyle : {}),
-            }}
+      {(title || rightComponent) && (
+        <h1
+          style={{
+            color: theme.greyScale7,
+            width: '100%',
+            fontSize: '2rem',
+            lineHeight: '1.4em',
+            fontWeight: 'normal',
+            marginTop: 0,
+            marginBottom: 0,
+            padding: '1rem',
+            backgroundColor: '#fff',
+            display: 'flex',
+            justifyContent: 'space-between',
+            ...titleStyle,
+          }}
           >
-            {h.title}
-          </Th>
-        ))}
-        subheadings={headings.map(
-          (h, i) =>
-            h.subheadings &&
-            h.subheadings.map((s, j) => (
-              <Th
-                key={`subheading-${j}`}
-                style={{
-                  ...(i > 0 && j === 0 ? dividerStyle : {}),
-                }}
-              >
-                {s}
-              </Th>
-            ))
-        )}
-        body={
-          <tbody>
-            {data.map((d, k) => (
-              <Tr
-                style={{
-                  ...styles.tr,
-                  backgroundColor: k % 2 === 0 ? theme.tableStripe : '#fff',
-                }}
-                key={d[idKey] || k}
-              >
-                {headings.map((h, i) =>
-                  [].concat(get(d, h.key, '--')).map((v, j) => (
-                    <Td
-                      {...h.tdProps}
-                      key={`${h.key}-${j}`}
-                      style={{
-                        ...(h.tdStyle || h.style || {}),
-                        ...(i > 0 && j === 0 ? dividerStyle : {}),
-                      }}
-                      className={h.className || ''}
+          {`${title || <span />} ${rightComponent}`}
+        </h1>
+      )}
+      {data.length > 0
+        ? (
+          <Table
+            body={(
+              <tbody>
+                {data.map((d, k) => (
+                  <Tr
+                    key={d[idKey] || k}
+                    style={{
+                      ...styles.tr,
+                      backgroundColor: get(d, 'select.props.selected', false)
+                        ? theme.tableHighlight
+                        : (k % 2 === 0 ? theme.tableStripe : '#fff'),
+                    }}
                     >
-                      {h.color && (
-                        <div
-                          className="h-color"
-                          style={{ backgroundColor: colors(i) }}
-                        />
-                      )}
-                      {v}
-                    </Td>
-                  ))
-                )}
-              </Tr>
+                    {headings.map((h, i) => [].concat(get(d, h.key, '--')).map((v, j) => (
+                      <Td
+                        {...h.tdProps}
+                        className={h.className || ''}
+                        key={`${h.key}-${j}`}
+                        style={{
+                          ...(h.tdStyle || h.style || {}),
+                          ...(i > 0 && j === 0 ? dividerStyle : {}),
+                        }}
+                        >
+                        {h.color && (
+                          <div
+                            className="h-color"
+                            style={{ backgroundColor: colors(i) }}
+                            />
+                        )}
+
+                        {v}
+                      </Td>
+                    )))}
+                  </Tr>
+                ))}
+              </tbody>
+            )}
+            headings={headings.map((h, i) => (
+              <Th
+                colSpan={h.subheadings ? h.subheadings.length : 1}
+                key={h.key}
+                rowSpan={h.subheadings ? 1 : 2}
+                style={{
+                  ...(h.thStyle || h.style || {}),
+                  ...(i > 0 ? dividerStyle : {}),
+                }}
+                >
+                {h.title}
+              </Th>
             ))}
-          </tbody>
-        }
-      />
-    )}
-    {!data.length && (
-      <Row
-        style={{
-          borderBottom: `1px solid ${theme.greyScale5}`,
-          ...emptyMessageStyle,
-        }}
-      >
-        {emptyMessage && (
-          <h2 style={{ padding: '1rem', fontSize: '18px' }}>{emptyMessage}</h2>
+            id={tableId}
+            style={styles.table}
+            subheadings={headings.map(
+              (h, i) => h.subheadings &&
+                h.subheadings.map((s, j) => (
+                  <Th
+                    key={`subheading-${j}`}
+                    style={{
+                      ...(i > 0 && j === 0 ? dividerStyle : {}),
+                    }}
+                    >
+                    {s}
+                  </Th>
+                ))
+            )}
+            />
+        )
+        : (
+          <Row
+            style={{
+              borderBottom: `1px solid ${theme.greyScale5}`,
+              ...emptyMessageStyle,
+            }}
+            >
+            {emptyMessage && (
+              <h2 style={{
+                padding: '1rem',
+                fontSize: '18px',
+              }}
+                  >
+                {emptyMessage}
+              </h2>
+            )}
+          </Row>
         )}
-      </Row>
-    )}
-  </Column>
-);
+    </Column>
+  );
+};
 
 export default withTheme(EntityPageHorizontalTable);

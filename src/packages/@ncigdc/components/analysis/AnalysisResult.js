@@ -1,7 +1,13 @@
 import React from 'react';
-import { compose } from 'recompose';
+import {
+  compose,
+  setDisplayName,
+} from 'recompose';
 import { connect } from 'react-redux';
-import { omit } from 'lodash';
+import {
+  omit,
+  truncate,
+} from 'lodash';
 
 import withRouter from '@ncigdc/utils/withRouter';
 import UnstyledButton from '@ncigdc/uikit/UnstyledButton';
@@ -13,12 +19,14 @@ import {
 import { notify, closeNotification } from '@ncigdc/dux/notification';
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import Button from '@ncigdc/uikit/Button';
+import { Tooltip } from '@ncigdc/uikit/Tooltip';
 import { TrashIcon } from '@ncigdc/theme/icons';
 import TabbedLinks from '@ncigdc/components/TabbedLinks';
 
 import availableAnalysis from './availableAnalysis';
 
 const enhance = compose(
+  setDisplayName('EnhancedAnalysisResult'),
   connect(state => ({ analysis: state.analysis.saved })),
   withRouter
 );
@@ -33,14 +41,17 @@ function undoNotification(dispatch, analysis) {
           {analysis.length === 1 ? (
             <span>
               {' '}
-              Analysis{' '}
+              Analysis
+              {' '}
               <strong>
                 {availableAnalysis.find(a => analysis[0].type === a.type).label}
               </strong>
             </span>
           ) : (
             <span>
-              <strong>{analysis.length}</strong> Analyses
+              <strong>{analysis.length}</strong>
+              {' '}
+Analyses
             </span>
           )}
           <strong>
@@ -49,14 +60,14 @@ function undoNotification(dispatch, analysis) {
               style={{
                 marginRight: '0.3rem',
               }}
-            />
+              />
             <UnstyledButton
-              style={{ textDecoration: 'underline' }}
               onClick={() => {
                 analysis.map(set => dispatch(addAnalysis(set)));
                 dispatch(closeNotification());
               }}
-            >
+              style={{ textDecoration: 'underline' }}
+              >
               Undo
             </UnstyledButton>
           </strong>
@@ -67,7 +78,9 @@ function undoNotification(dispatch, analysis) {
 }
 
 // analysis here is all analyses in localStorage
-const AnalysisResult = ({ analysis, query, dispatch, push }) => {
+const AnalysisResult = ({
+  analysis, dispatch, push, query,
+}) => {
   const analysisId = query.analysisId || '';
   const currentIndex = Math.max(
     analysis.findIndex(a => a.id === analysisId),
@@ -78,28 +91,7 @@ const AnalysisResult = ({ analysis, query, dispatch, push }) => {
     analysisType === 'clinical_data' ? { minWidth: 1200 } : {};
   return (
     <TabbedLinks
-      side
-      style={{ padding: '1rem 0.7rem', ...tabMinWidth }}
-      queryParam="analysisId"
       defaultIndex={currentIndex}
-      tabToolbar={
-        <Button
-          style={{ margin: '5px 5px 0 0' }}
-          onClick={() => {
-            dispatch(removeAllAnalysis());
-            push({
-              query: omit(query, 'analysisId'),
-            });
-            undoNotification(dispatch, analysis);
-          }}
-        >
-          <TrashIcon /> Delete All
-        </Button>
-      }
-      linkStyle={{
-        width: '100%',
-        padding: '1rem 0.8rem',
-      }}
       links={analysis
         .map(savedAnalysis => {
           const analysis = availableAnalysis.find(
@@ -116,24 +108,37 @@ const AnalysisResult = ({ analysis, query, dispatch, push }) => {
             text: (
               <Row>
                 <div style={{ marginRight: 15 }}>
-                  <Row spacing={'8px'} style={{ alignItems: 'center' }}>
-                    <analysis.Icon style={{ width: 25, height: 25 }} />
+                  <Row spacing="8px" style={{ alignItems: 'center' }}>
+                    <analysis.Icon style={{
+                      height: 25,
+                      width: 25,
+                    }}
+                                   />
                     <Column>
-                      <div style={{ fontSize: '1.4rem' }}>
-                        {_.truncate(tabTitle, { length: 16 })}
-                      </div>
+                      <Tooltip
+                        Component={(
+                          <span>{tabTitle}</span>
+                        )}
+                        >
+                        <span style={{ fontSize: '1.4rem' }}>
+                          {truncate(tabTitle, { length: 16 })}
+                        </span>
+                      </Tooltip>
                       <div style={{ fontSize: '1.2rem' }}>{analysis.label}</div>
                     </Column>
                   </Row>
                 </div>
                 <UnstyledButton
-                  style={{ marginLeft: 'auto', backgroundColor: 'transparent' }}
                   onClick={e => {
                     e.preventDefault();
                     dispatch(removeAnalysis(savedAnalysis));
                     undoNotification(dispatch, [savedAnalysis]);
                   }}
-                >
+                  style={{
+                    backgroundColor: 'transparent',
+                    marginLeft: 'auto',
+                  }}
+                  >
                   x
                 </UnstyledButton>
               </Row>
@@ -144,7 +149,33 @@ const AnalysisResult = ({ analysis, query, dispatch, push }) => {
           };
         })
         .filter(Boolean)}
-    />
+      linkStyle={{
+        width: '100%',
+        padding: '1rem 0.8rem',
+      }}
+      queryParam="analysisId"
+      side
+      style={{
+        padding: '1rem 0.7rem',
+        ...tabMinWidth,
+      }}
+      tabToolbar={(
+        <Button
+          onClick={() => {
+            dispatch(removeAllAnalysis());
+            push({
+              query: omit(query, 'analysisId'),
+            });
+            undoNotification(dispatch, analysis);
+          }}
+          style={{ margin: '5px 5px 0 0' }}
+          >
+          <TrashIcon />
+          {' '}
+Delete All
+        </Button>
+      )}
+      />
   );
 };
 

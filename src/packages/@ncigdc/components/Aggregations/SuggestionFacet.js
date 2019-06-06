@@ -3,7 +3,14 @@
 // Vendor
 import React from 'react';
 import _ from 'lodash';
-import { compose, pure, withState, withHandlers, renameProp } from 'recompose';
+import {
+  compose,
+  pure,
+  renameProp,
+  setDisplayName,
+  withHandlers,
+  withState,
+} from 'recompose';
 import SearchIcon from 'react-icons/lib/fa/search';
 import LocationSubscriber from '@ncigdc/components/LocationSubscriber';
 
@@ -24,7 +31,7 @@ import Input from '@ncigdc/uikit/Form/Input';
 import SetId from '@ncigdc/components/SetId';
 import Hidden from '@ncigdc/components/Hidden';
 
-import { Container, CheckedRow, CheckedLink } from './';
+import { Container, CheckedRow, CheckedLink } from '.';
 
 const MagnifyingGlass = styled(SearchIcon, {
   backgroundColor: ({ theme }) => theme.greyScale5,
@@ -49,29 +56,26 @@ const StyledDropdownLink = styled(Link, {
   color: ({ theme }) => theme.greyScale2,
   ':link': {
     textDecoration: 'none',
-    color: ({ theme, linkIsActive }) =>
-      linkIsActive ? 'white' : theme.primary,
+    color: ({ linkIsActive, theme }) => (linkIsActive ? 'white' : theme.primary),
   },
   ':visited': {
     textDecoration: 'none',
-    color: ({ theme, linkIsActive }) =>
-      linkIsActive ? 'white' : theme.primary,
+    color: ({ linkIsActive, theme }) => (linkIsActive ? 'white' : theme.primary),
   },
-  backgroundColor: ({ linkIsActive }) =>
-    linkIsActive ? 'rgb(31, 72, 108)' : 'inherit',
+  backgroundColor: ({ linkIsActive }) => (linkIsActive ? 'rgb(31, 72, 108)' : 'inherit'),
   width: '100%',
   textDecoration: 'none',
 });
 
 const SuggestionFacet = compose(
+  setDisplayName('EnhancedSuggestionFacet'),
   withDropdown,
   withState('inputValue', 'setInputValue', ''),
   withState('isLoading', 'setIsLoading', false),
   renameProp('hits', 'results'),
   withHandlers({
     // TODO: use router push
-    handleSelectItem: () => item =>
-      document.querySelector(`[data-link-id="${item.id}"]`).click(),
+    handleSelectItem: () => item => document.querySelector(`[data-link-id="${item.id}"]`).click(),
   }),
   namespace(
     'selectableList',
@@ -88,24 +92,24 @@ const SuggestionFacet = compose(
   pure,
 )(
   ({
-    isLoading,
-    setIsLoading,
-    selectableList,
-    dropdownItem,
-    title,
-    doctype,
-    fieldNoDoctype,
-    placeholder,
-    results,
-    setAutocomplete,
-    setActive,
     active,
+    collapsed,
+    doctype,
+    dropdownItem,
+    fieldNoDoctype,
+    inputValue,
+    isLoading,
     mouseDownHandler,
     mouseUpHandler,
-    collapsed,
-    style,
-    inputValue,
+    placeholder,
+    results,
+    selectableList,
+    setActive,
+    setAutocomplete,
     setInputValue,
+    setIsLoading,
+    style,
+    title,
   }) => {
     const query = v => ({
       offset: 0,
@@ -144,7 +148,7 @@ const SuggestionFacet = compose(
             dotField: `${doctype}.${fieldNoDoctype}`,
           }) || { content: { value: [] } };
           return (
-            <Container style={style} className="test-suggestion-facet">
+            <Container className="test-suggestion-facet" style={style}>
               {!collapsed && (
                 <Column>
                   {[].concat(currentValues.content.value || []).map(v => (
@@ -166,7 +170,7 @@ const SuggestionFacet = compose(
                             ],
                           },
                         }}
-                      >
+                        >
                         <CheckCircleOIcon style={{ paddingRight: '0.5rem' }} />
                         {getCheckedValue(v)}
                       </CheckedLink>
@@ -178,44 +182,44 @@ const SuggestionFacet = compose(
                       <Hidden>{title}</Hidden>
                     </label>
                     <Input
-                      style={{ borderRadius: '0 4px 4px 0' }}
+                      aria-activedescendant={
+                        active
+                          ? _.get(
+                            selectableList,
+                              `focusedItem.${fieldNoDoctype}`,
+                          )
+                          : null // false gets stringify, so value needs to be `null` or `undefined`
+                      }
                       id={fieldNoDoctype}
                       name={fieldNoDoctype}
                       onChange={e => {
-                        const value = e.target.value;
+                        const { value } = e.target;
                         setInputValue(value);
                         setActive(!!value);
-                        if (!!value) {
+                        if (value) {
                           setIsLoading(true);
                           setAutocomplete(
                             value,
-                            readyState =>
-                              _.some([
-                                readyState.ready,
-                                readyState.aborted,
-                                readyState.error,
-                              ]) && setIsLoading(false),
+                            readyState => _.some([
+                              readyState.ready,
+                              readyState.aborted,
+                              readyState.error,
+                            ]) && setIsLoading(false),
                           );
                         }
                       }}
                       onKeyDown={selectableList.handleKeyEvent}
                       placeholder={placeholder}
+                      style={{ borderRadius: '0 4px 4px 0' }}
                       value={inputValue}
-                      aria-activedescendant={
-                        active
-                          ? _.get(
-                              selectableList,
-                              `focusedItem.${fieldNoDoctype}`,
-                            )
-                          : null // false gets stringify, so value needs to be `null` or `undefined`
-                      }
                       {...active && {
                         'aria-owns': `${fieldNoDoctype}-options`,
                       }}
-                    />
+                      />
                     {active && (
                       <Column
                         id={`${fieldNoDoctype}-options`}
+                        onClick={e => e.stopPropagation()}
                         style={{
                           ...dropdown,
                           marginTop: 0,
@@ -223,25 +227,24 @@ const SuggestionFacet = compose(
                           width: '300px',
                           wordBreak: 'break-word',
                         }}
-                        onClick={e => e.stopPropagation()}
-                      >
+                        >
                         {(results || []).map(x => (
                           <Row
                             key={x.id}
-                            style={{ alignItems: 'center' }}
                             onClick={() => {
                               setInputValue('');
                               setActive(false);
                             }}
                             onMouseOver={() => selectableList.setFocusedItem(x)}
-                          >
+                            style={{ alignItems: 'center' }}
+                            >
                             <StyledDropdownLink
+                              data-link-id={x.id}
+                              id={x[fieldNoDoctype]}
+                              linkIsActive={selectableList.focusedItem === x}
                               merge="add"
                               query={query(x[fieldNoDoctype])}
-                              id={x[fieldNoDoctype]}
-                              data-link-id={x.id}
-                              linkIsActive={selectableList.focusedItem === x}
-                            >
+                              >
                               {dropdownItem(x, inputValue)}
                             </StyledDropdownLink>
                           </Row>

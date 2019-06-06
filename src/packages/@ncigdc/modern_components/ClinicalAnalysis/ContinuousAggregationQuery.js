@@ -32,17 +32,16 @@ const getContinuousAggs = ({ fieldName, stats, filters, bins }) => {
   if (!bins) {
     // TODO: error handling
   }
-  const ranges = Object.keys(bins).map(key => ({ from: bins[key].from, to: bins[key].to }));
-  console.log('ranges', ranges);
+  const rangeArr = Object.keys(bins).map(key => ({ from: bins[key].from, to: bins[key].to }));
   const interval = (stats.max - stats.min) / DEFAULT_CONTINUOUS_BUCKETS;
   const queryFieldName = fieldName.replace('.', '__');
+  console.log('rangeArr', rangeArr);
+
   const filters2 = {
     op: "range",
     content: [
       {
-        ranges: [
-          { from: 1, to: 10000 }
-        ]
+        ranges: rangeArr || [],
       }
     ]
   }

@@ -2,11 +2,8 @@ import React from 'react';
 import {
   compose,
   withPropsOnChange,
-  branch,
-  renderComponent,
   withProps,
   withState,
-  lifecycle,
 } from 'recompose';
 import md5 from 'blueimp-md5';
 import urlJoin from 'url-join';
@@ -14,8 +11,7 @@ import _ from 'lodash';
 
 import consoleDebug from '@ncigdc/utils/consoleDebug';
 import { redirectToLogin } from '@ncigdc/utils/auth';
-import Loader, { withLoader } from '@ncigdc/uikit/Loaders/Loader';
-
+import Loader from '@ncigdc/uikit/Loaders/Loader';
 
 import { API, IS_AUTH_PORTAL } from '@ncigdc/utils/constants';
 import ClinicalVariableCard from './ClinicalVariableCard';
@@ -24,13 +20,15 @@ const simpleAggCache = {};
 const pendingAggCache = {};
 const DEFAULT_CONTINUOUS_BUCKETS = 4;
 
-const getContinuousAggs = ({ fieldName, stats, filters }) => {
+const getContinuousAggs = ({
+  fieldName, stats, filters,
+}) => {
   // prevent query failing if interval will equal 0
   if (_.isNull(stats.min) || _.isNull(stats.max)) {
     return null;
   }
   const interval = (stats.max - stats.min) / DEFAULT_CONTINUOUS_BUCKETS;
-  const queryFieldName = fieldName.replace('.', '__');
+  const aggregationFieldName = fieldName.replace(/\./g, '__');
 
   const variables = {
     filters,
@@ -42,7 +40,7 @@ const getContinuousAggs = ({ fieldName, stats, filters }) => {
         explore {
           cases {
             aggregations(filters: $filters) {
-              ${queryFieldName} {
+              ${aggregationFieldName} {
                 stats {
                   Min : min
                   Max: max
@@ -154,11 +152,13 @@ export default compose(
       filters,
       setAggData,
       setIsLoading,
+      hits,
     }) => {
       const res = await getContinuousAggs({
         fieldName,
         stats,
         filters,
+        hits,
       });
       setAggData(res && res.data.viewer, () => setIsLoading(false));
     },

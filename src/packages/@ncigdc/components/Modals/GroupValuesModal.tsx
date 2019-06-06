@@ -69,8 +69,8 @@ interface IGroupValuesModalProps {
   children?: ReactNode,
   globalWarning: string,
   setGlobalWarning: (globalWarning: string) => void,
-  setListWarning: any,
-  listWarning: any,
+  setListWarning: (listWarning: { [x: string]: string }) => void,
+  listWarning: { [x: string]: string },
 }
 
 const blockStyle = {
@@ -105,7 +105,7 @@ export default compose(
     setCurrentBins,
     setEditingGroupName,
     setSelectedHidingBins,
-  }: any) => ({
+  }) => ({
     binGrouping: () => {
       const newGroupName = initialName(
         Object.values(currentBins).map((bin: IBinProps) => bin.groupName), 'selected Value '
@@ -152,6 +152,7 @@ export default compose(
         .filter((bin: string) => currentBins[bin].groupName !== ''),
       key => currentBins[key].groupName
     );
+
     return (
       <Column>
         <h1 style={{ margin: '20px' }}>
@@ -171,7 +172,7 @@ export default compose(
                 alignItems: 'flex-end',
                 display: 'flex',
               }}
-              >
+                   >
                 Hidden Values
               </div>
             </Row>
@@ -194,7 +195,7 @@ export default compose(
                       backgroundColor: selectedHidingBins[binKey] ? '#d5f4e6' : '',
                       paddingLeft: '10px',
                     }}
-                  >
+                    >
                     {`${binKey} (${currentBins[binKey].doc_count})`}
                   </Row>
                 ))}
@@ -224,7 +225,7 @@ export default compose(
                 setListWarning({});
               }}
               style={{ margin: '10px' }}
-            >
+              >
               {'>>'}
             </Button>
             <Button
@@ -255,7 +256,7 @@ export default compose(
                 setListWarning({});
               }}
               style={{ margin: '10px' }}
-            >
+              >
               {'<<'}
             </Button>
           </Column>
@@ -265,7 +266,7 @@ export default compose(
                 alignItems: 'flex-end',
                 display: 'flex',
               }}
-              >
+                    >
                 Displayed Values
 
               </span>
@@ -288,7 +289,7 @@ export default compose(
                     setListWarning({});
                   }}
                   style={buttonStyle}
-                >
+                  >
                   {'Reset'}
                 </Button>
                 <Button
@@ -317,7 +318,7 @@ export default compose(
                     setListWarning({});
                   }}
                   style={buttonStyle}
-                >
+                  >
                   {'Ungroup'}
                 </Button>
                 <Button
@@ -329,7 +330,7 @@ export default compose(
                     setListWarning({});
                   }}
                   style={buttonStyle}
-                >
+                  >
                   {'Group'}
                 </Button>
               </Row>
@@ -361,7 +362,7 @@ export default compose(
 
 
                       }}
-                    >
+                      >
                       {group.length > 1 || group[0] !== groupName
                         ? (
                           <ControlEditableRow
@@ -422,7 +423,7 @@ export default compose(
                             }}
                             text={groupName}
                             warning={listWarning[groupName]}
-                          >
+                            >
                             {groupName}
                           </ControlEditableRow>
                         ) : (
@@ -452,7 +453,7 @@ export default compose(
                               listStyleType: 'disc',
                               paddingLeft: '5px',
                             }}
-                          >
+                            >
                             {`${bin} (${currentBins[bin].doc_count})`}
                           </Row>
                         ))
@@ -470,26 +471,26 @@ export default compose(
             justifyContent: 'flex-end',
             margin: '20px',
           }}
-        >
+          >
           <span style={{
             color: 'red',
             justifyContent: 'flex-start',
             visibility: globalWarning.length > 0 ? 'visible' : 'hidden',
           }}
-          >
+                >
             {'Warning: '}
             {globalWarning}
           </span>
           <Button
             onClick={onClose}
             style={styles.button}
-          >
+            >
             Cancel
           </Button>
           <Button
             onClick={() => onUpdate(currentBins)}
             style={styles.button}
-          >
+            >
             Save Bins
           </Button>
         </Row>

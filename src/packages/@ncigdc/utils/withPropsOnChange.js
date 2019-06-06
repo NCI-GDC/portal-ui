@@ -28,7 +28,7 @@ const withPropsOnChange = (shouldMapOrKeys, propsMapper) => BaseComponent => {
       this.computedProps = propsMapper(this.props);
     }
 
-    componentWillReceiveProps(nextProps) {
+    UNSAFE_componentWillReceiveProps(nextProps) {
       if (shouldMap(this.props, nextProps)) {
         this.computedProps = propsMapper(nextProps);
       }

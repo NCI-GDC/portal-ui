@@ -91,6 +91,9 @@ module.exports = {
       commentPattern: 'break[\\s\\w]*omitted',
     }],
     'no-nested-ternary': 'off',
+    'no-unused-expressions': ['warn', {
+      allowShortCircuit: true,
+    }],
     'no-var': 'error', // Must use const or let.
     'object-property-newline': ['warn', {
       // allowAllPropertiesOnSameLine: false,

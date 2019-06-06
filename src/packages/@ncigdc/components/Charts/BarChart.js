@@ -16,7 +16,7 @@ import { withTooltip } from '@ncigdc/uikit/Tooltip';
 import withSize from '@ncigdc/utils/withSize';
 import './style.css';
 
-export const DEFAULT_X_AXIS_LABEL_LENGTH = 8;
+export const DEFAULT_X_AXIS_LABEL_LENGTH = 10;
 
 const BarChart = ({
   data,

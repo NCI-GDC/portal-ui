@@ -27,7 +27,7 @@ import { scaleOrdinal, schemeCategory10 } from 'd3';
 
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import Button from '@ncigdc/uikit/Button';
-import { Tooltip } from '@ncigdc/uikit/Tooltip';
+import { Tooltip, TooltipInjector } from '@ncigdc/uikit/Tooltip';
 import { visualizingButton, zDepth1 } from '@ncigdc/theme/mixins';
 
 import EntityPageHorizontalTable from '@ncigdc/components/EntityPageHorizontalTable';
@@ -49,16 +49,16 @@ import wrapSvg from '@ncigdc/utils/wrapSvg';
 import {
   DAYS_IN_YEAR,
 } from '@ncigdc/utils/ageDisplay';
-import '../survivalPlot.css';
 import { downloadToTSV } from '@ncigdc/components/DownloadTableToTsvButton';
 
 // survival plot
+import SurvivalPlotWrapper from '@ncigdc/components/SurvivalPlotWrapper';
 import {
   getSurvivalCurvesArray,
   MAXIMUM_CURVES,
   MINIMUM_CASES,
 } from '@ncigdc/utils/survivalplot';
-import SurvivalPlotWrapper from '@ncigdc/components/SurvivalPlotWrapper';
+import '../survivalPlot.css';
 import {
   SpinnerIcon,
   CloseIcon,
@@ -66,6 +66,8 @@ import {
   BarChartIcon,
   BoxPlot,
 } from '@ncigdc/theme/icons';
+
+import BoxPlotWrapper from '@oncojs/boxplot';
 
 import { withTheme } from '@ncigdc/theme';
 
@@ -214,7 +216,11 @@ const parseBucketValue = value => (value % 1
   ? Number.parseFloat(value).toFixed(2)
   : Math.round(value * 100) / 100);
 
-const getRangeValue = (key, nextInterval) => `${parseBucketValue(key)}${nextInterval === 0 ? ' and up' : ` to ${parseBucketValue(nextInterval - 1)}`}`;
+const getRangeValue = (key, nextInterval) => `${parseBucketValue(key)}${
+  nextInterval === 0
+    ? ' and up'
+    : ` to ${parseBucketValue(nextInterval - 1)}`
+  }`;
 
 const getCountLink = ({ doc_count, filters, totalDocs }) => (
   <span>
@@ -541,6 +547,7 @@ const getHeadings = (chartType, dataDimension, fieldName) => {
 };
 
 const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
+  axisTitle,
   currentAnalysis,
   dataBuckets,
   customBins,
@@ -624,12 +631,13 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
           margin: '5px 0 10px',
         }}
         >
-        <h2 style={{
-          fontSize: '1.8rem',
-          marginBottom: 0,
-          marginTop: 10,
-        }}
-            >
+        <h2
+          style={{
+            fontSize: '1.8rem',
+            marginBottom: 0,
+            marginTop: 10,
+          }}
+          >
           {humanify({ term: fieldName })}
         </h2>
         <Row>
@@ -870,189 +878,192 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                   )}
               </div>
             )}
-            {/* variable.active_chart === 'box' && (
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  height: CHART_HEIGHT - 10,
-                  backgroundColor: theme.greyScale5,
-                  margin: '5px 2px 10px',
-                }}
-                >
-              </div>
-            ) */}
-
-            {variable.active_chart === 'box' || (
-              <Row
-                style={{
-                  justifyContent: 'space-between',
-                  margin: '5px 0',
-                }}
-                >
-                <Dropdown
-                  button={(
-                    <Button
-                      rightIcon={<DownCaretIcon />}
-                      style={{
-                        ...visualizingButton,
-                        padding: '0 12px',
-                      }}
-                      >
-                      Select action
-                    </Button>
-                  )}
-                  dropdownStyle={{
-                    left: 0,
-                    minWidth: 205,
+            {variable.active_chart === 'box'
+              ? (
+                <div
+                  style={{
+                    alignItems: 'center',
+                    display: 'flex',
+                    height: CHART_HEIGHT + 55,
+                    justifyContent: 'center',
+                    margin: '5px 2px 10px',
                   }}
                   >
-                  <DropdownItem
-                    onClick={() => downloadToTSV({
-                      filename: `analysis-${
-                        currentAnalysis.name
-                        }-${tsvSubstring}.${timestamp()}.tsv`,
-                      selector: `#analysis-${tsvSubstring}-table`,
-                    })
-                    }
-                    style={styles.actionMenuItem}
-                    >
-                    Export to TSV
-                  </DropdownItem>
-                  <DropdownItem
-                    onClick={() => {
-                      dispatch(
-                        setModal(
-                          <SaveSetModal
-                            CreateSetButton={CreateExploreCaseSetButton}
-                            displayType="case"
-                            filters={cardFilters}
-                            score="gene.gene_id"
-                            setName="Custom Case Selection"
-                            sort={null}
-                            title={`Save ${totalFromSelectedBuckets} Cases as New Set`}
-                            total={totalFromSelectedBuckets}
-                            type="case"
-                            />
-                        )
-                      );
-                    }}
-                    style={styles.actionMenuItem}
-                    >
-                    Save as new case set
-                  </DropdownItem>
-                  <DropdownItem
-                    onClick={() => {
-                      dispatch(
-                        setModal(
-                          <AppendSetModal
-                            AppendSetButton={AppendExploreCaseSetButton}
-                            displayType="case"
-                            field="cases.case_id"
-                            filters={cardFilters}
-                            scope="explore"
-                            score="gene.gene_id"
-                            sort={null}
-                            title={`Add ${totalFromSelectedBuckets} Cases to Existing Set`}
-                            total={totalFromSelectedBuckets}
-                            type="case"
-                            />
-                        )
-                      );
-                    }}
-                    style={styles.actionMenuItem}
-                    >
-                    Add to existing case set
-                  </DropdownItem>
-                  <DropdownItem
-                    onClick={() => {
-                      dispatch(
-                        setModal(
-                          <RemoveSetModal
-                            field="cases.case_id"
-                            filters={cardFilters}
-                            RemoveFromSetButton={RemoveFromExploreCaseSetButton}
-                            selected={Object.keys(get(currentAnalysis, 'sets.case', {}))[0] || ''}
-                            title={`Remove ${totalFromSelectedBuckets} Cases from Existing Set`}
-                            type="case"
-                            />
-                        )
-                      );
-                    }}
-                    style={styles.actionMenuItem}
-                    >
-                    Remove from existing case set
-                  </DropdownItem>
-                </Dropdown>
-                <Dropdown
-                  button={(
-                    <Button
-                      rightIcon={<DownCaretIcon />}
-                      style={{
-                        ...visualizingButton,
-                        padding: '0 12px',
-                      }}
-                      >
-                      Customize Bins
-                    </Button>
-                  )}
-                  dropdownStyle={{
-                    left: 0,
-                    minWidth: 205,
+                  <TooltipInjector>
+                    <BoxPlotWrapper
+                      data={dataValues}
+                      />
+                  </TooltipInjector>
+                </div>
+              ) : (
+                <Row
+                  style={{
+                    justifyContent: 'space-between',
+                    margin: '5px 0',
                   }}
                   >
-                  <DropdownItem
-                    onClick={() => dispatch(
-                      setModal(
-                        <GroupValuesModal
-                          bins={variable.bins}
-                          fieldName={humanify({ term: fieldName })}
-                          onClose={() => dispatch(setModal(null))}
-                          onUpdate={(newBins) => {
-                            dispatch(
-                              updateClinicalAnalysisVariable({
-                                fieldName,
-                                id,
-                                value: newBins,
-                                variableKey: 'bins',
-                              }),
-                            );
-                            dispatch(setModal(null));
-                          }
-                          }
-                          />,
-                      ),
-                    )
-                    }
-                    style={styles.actionMenuItem}
-                    >
-                    Edit Bins
-                  </DropdownItem>
-                  <DropdownItem
-                    onClick={() => {
-                      dispatch(
-                        updateClinicalAnalysisVariable({
-                          fieldName,
-                          id,
-                          value: dataBuckets.reduce((acc, r) => ({
-                            ...acc,
-                            [r.key]: {
-                              ...r,
-                              groupName: r.key,
-                            },
-                          }), {}),
-                          variableKey: 'bins',
-                        }),
-                      );
+                  <Dropdown
+                    button={(
+                      <Button
+                        rightIcon={<DownCaretIcon />}
+                        style={{
+                          ...visualizingButton,
+                          padding: '0 12px',
+                        }}
+                        >
+                        Select action
+                      </Button>
+                    )}
+                    dropdownStyle={{
+                      left: 0,
+                      minWidth: 205,
                     }}
-                    style={styles.actionMenuItem}
                     >
-                    Reset to Default
-                  </DropdownItem>
-                </Dropdown>
-              </Row>
-            )}
+                    <DropdownItem
+                      onClick={() => downloadToTSV({
+                        filename: `analysis-${
+                          currentAnalysis.name
+                          }-${tsvSubstring}.${timestamp()}.tsv`,
+                        selector: `#analysis-${tsvSubstring}-table`,
+                      })
+                      }
+                      style={styles.actionMenuItem}
+                      >
+                      Export to TSV
+                    </DropdownItem>
+                    <DropdownItem
+                      onClick={() => {
+                        dispatch(
+                          setModal(
+                            <SaveSetModal
+                              CreateSetButton={CreateExploreCaseSetButton}
+                              displayType="case"
+                              filters={cardFilters}
+                              score="gene.gene_id"
+                              setName="Custom Case Selection"
+                              sort={null}
+                              title={`Save ${totalFromSelectedBuckets} Cases as New Set`}
+                              total={totalFromSelectedBuckets}
+                              type="case"
+                              />
+                          )
+                        );
+                      }}
+                      style={styles.actionMenuItem}
+                      >
+                      Save as new case set
+                    </DropdownItem>
+                    <DropdownItem
+                      onClick={() => {
+                        dispatch(
+                          setModal(
+                            <AppendSetModal
+                              AppendSetButton={AppendExploreCaseSetButton}
+                              displayType="case"
+                              field="cases.case_id"
+                              filters={cardFilters}
+                              scope="explore"
+                              score="gene.gene_id"
+                              sort={null}
+                              title={`Add ${totalFromSelectedBuckets} Cases to Existing Set`}
+                              total={totalFromSelectedBuckets}
+                              type="case"
+                              />
+                          )
+                        );
+                      }}
+                      style={styles.actionMenuItem}
+                      >
+                      Add to existing case set
+                    </DropdownItem>
+                    <DropdownItem
+                      onClick={() => {
+                        dispatch(
+                          setModal(
+                            <RemoveSetModal
+                              field="cases.case_id"
+                              filters={cardFilters}
+                              RemoveFromSetButton={RemoveFromExploreCaseSetButton}
+                              selected={Object.keys(get(currentAnalysis, 'sets.case', {}))[0] || ''}
+                              title={`Remove ${totalFromSelectedBuckets} Cases from Existing Set`}
+                              type="case"
+                              />
+                          )
+                        );
+                      }}
+                      style={styles.actionMenuItem}
+                      >
+                      Remove from existing case set
+                    </DropdownItem>
+                  </Dropdown>
+                  <Dropdown
+                    button={(
+                      <Button
+                        rightIcon={<DownCaretIcon />}
+                        style={{
+                          ...visualizingButton,
+                          padding: '0 12px',
+                        }}
+                        >
+                        Customize Bins
+                      </Button>
+                    )}
+                    dropdownStyle={{
+                      left: 0,
+                      minWidth: 205,
+                    }}
+                    >
+                    <DropdownItem
+                      onClick={() => dispatch(
+                        setModal(
+                          <GroupValuesModal
+                            bins={variable.bins}
+                            fieldName={humanify({ term: fieldName })}
+                            onClose={() => dispatch(setModal(null))}
+                            onUpdate={(newBins) => {
+                              dispatch(
+                                updateClinicalAnalysisVariable({
+                                  fieldName,
+                                  id,
+                                  value: newBins,
+                                  variableKey: 'bins',
+                                }),
+                              );
+                              dispatch(setModal(null));
+                            }
+                            }
+                            />,
+                        ),
+                      )
+                      }
+                      style={styles.actionMenuItem}
+                      >
+                      Edit Bins
+                    </DropdownItem>
+                    <DropdownItem
+                      onClick={() => {
+                        dispatch(
+                          updateClinicalAnalysisVariable({
+                            fieldName,
+                            id,
+                            value: dataBuckets.reduce((acc, r) => ({
+                              ...acc,
+                              [r.key]: {
+                                ...r,
+                                groupName: r.key,
+                              },
+                            }), {}),
+                            variableKey: 'bins',
+                          }),
+                        );
+                      }}
+                      style={styles.actionMenuItem}
+                      >
+                      Reset to Default
+                    </DropdownItem>
+                  </Dropdown>
+                </Row>
+              )}
 
             <EntityPageHorizontalTable
               data={tableData}
@@ -1110,7 +1121,34 @@ export default compose(
         totalDocs: get(data, 'hits.total', 0),
         wrapperId: `${sanitisedId}-chart`,
       },
-      dataDimension && { dataDimension },
+      dataDimensions[sanitisedId] && {
+        axisTitle: dataDimensions[sanitisedId].axisTitle,
+        dataDimension: dataDimensions[sanitisedId].unit,
+        dataValues:
+          map(
+            {
+              ...rawQueryData.stats,
+              ...rawQueryData.percentiles,
+            },
+            (value, stat) => {
+              switch (dataDimensions[sanitisedId].unit) {
+                case 'Years': {
+                  const age = Number.parseFloat(value / DAYS_IN_YEAR).toFixed(2);
+                  return ({
+                    [stat]: age % 1 ? age : Number.parseFloat(age).toFixed(0),
+                  });
+                }
+                default:
+                  return ({
+                    [stat]: value % 1 ? Number.parseFloat(value).toFixed(2) : value,
+                  });
+              }
+            }
+          ).reduce((acc, item) => ({
+            ...acc,
+            ...item,
+          }), {}),
+      },
     );
   }),
   withPropsOnChange(['setId', 'totalDocs'], ({

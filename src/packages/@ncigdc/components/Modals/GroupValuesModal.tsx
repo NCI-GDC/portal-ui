@@ -472,15 +472,16 @@ export default compose(
             margin: '20px',
           }}
           >
-          <span style={{
-            color: 'red',
-            justifyContent: 'flex-start',
-            visibility: globalWarning.length > 0 ? 'visible' : 'hidden',
-          }}
-                >
-            {'Warning: '}
-            {globalWarning}
-          </span>
+          {globalWarning.length > 0 ? (
+            <span style={{
+              color: 'red',
+              justifyContent: 'flex-start',
+            }}
+                  >
+              {'Warning: '}
+              {globalWarning}
+            </span>
+          ) : null}
           <Button
             onClick={onClose}
             style={styles.button}

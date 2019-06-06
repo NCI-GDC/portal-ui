@@ -1,4 +1,3 @@
-// @flow
 import React from 'react';
 import {
   compose,
@@ -72,7 +71,7 @@ export default compose(
               }
               toggleEditingAndSave();
             }}
-          >
+            >
             <Column>
               <Row
                 spacing="5px"
@@ -81,7 +80,7 @@ export default compose(
                   justifyContent: 'space-between',
                   ...containerStyle,
                 }}
-              >
+                >
                 <Input
                   autoFocus
                   onChange={e => {
@@ -103,7 +102,7 @@ export default compose(
                   }}
                   type="text"
                   value={value}
-                />
+                  />
               </Row>
               {warning
                 ? (
@@ -120,7 +119,7 @@ export default compose(
                 cursor: disabled ? 'not-allowed' : 'default',
                 ...noEditingStyle,
               }}
-            >
+              >
               {children}
               <Pencil
                 onClick={toggleEditingAndSave}
@@ -132,7 +131,7 @@ export default compose(
                   ...iconStyle,
                   cursor: disabled ? 'not-allowed' : 'pointer',
                 }}
-              />
+                />
             </Row>
           )
         }

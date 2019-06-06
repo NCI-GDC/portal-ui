@@ -329,7 +329,6 @@ const getCardFilters = (variablePlotTypes, selectedBuckets, fieldName, filters) 
 
 const getCategoricalTableData = (
   binData,
-  type,
   getBucketRangesAndFilters,
   fieldName,
   totalDocs,
@@ -344,7 +343,7 @@ const getCategoricalTableData = (
   if (isEmpty(binData)) {
     return [];
   }
-  const displayData = type === 'continuous'
+  const displayData = variable.plotTypes === 'continuous'
     ? binData
       .sort((a, b) => b.key - a.key)
       .reduce(getBucketRangesAndFilters, {
@@ -586,7 +585,6 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
     ? getBoxTableData(dataValues)
     : getCategoricalTableData(
       customBins,
-      variable.plotTypes,
       getBucketRangesAndFilters,
       fieldName,
       totalDocs,

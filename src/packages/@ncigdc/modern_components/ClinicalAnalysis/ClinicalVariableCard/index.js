@@ -50,6 +50,8 @@ import {
   DAYS_IN_YEAR,
 } from '@ncigdc/utils/ageDisplay';
 import { downloadToTSV } from '@ncigdc/components/DownloadTableToTsvButton';
+import QQPlotQuery from '@ncigdc/modern_components/QQPlot/QQPlotQuery';
+import BoxPlotWrapper from '@oncojs/boxplot';
 
 // survival plot
 import SurvivalPlotWrapper from '@ncigdc/components/SurvivalPlotWrapper';
@@ -66,9 +68,6 @@ import {
   BarChartIcon,
   BoxPlot,
 } from '@ncigdc/theme/icons';
-
-import BoxPlotWrapper from '@oncojs/boxplot';
-
 import { withTheme } from '@ncigdc/theme';
 
 import {
@@ -84,6 +83,9 @@ import {
   boxTableRenamedStats,
   dataDimensions,
 } from './helpers';
+
+import '../boxplot.css';
+import '../qq.css';
 
 const colors = scaleOrdinal(schemeCategory10);
 
@@ -139,6 +141,9 @@ interface IVizButtons {
 }
 
 const CHART_HEIGHT = 250;
+const QQ_PLOT_RATIO = '70%';
+const BOX_PLOT_RATIO = '30%';
+
 const vizButtons: IVizButtons = {
   box: {
     action: updateClinicalAnalysisVariable,
@@ -263,6 +268,9 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
   updateSelectedSurvivalValues,
   variable,
   wrapperId,
+  qqData,
+  setQQData,
+  setQQDataIsSet,
 }) => {
   const getBoxTableData = (data = {}) => (
     Object.keys(data).length
@@ -595,10 +603,12 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
         height: 560,
         margin: '0 1rem 1rem',
         padding: '0.5rem 1rem 1rem',
+        justifyContent: 'space-between',
         ...style,
       }}
       >
       <Row
+        id={wrapperId}
         style={{
           alignItems: 'center',
           justifyContent: 'space-between',
@@ -643,10 +653,10 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
             ))}
         </Row>
       </Row>
-
       {isEmpty(tableData)
         ? (
           <Row
+            id={`${wrapperId}-container`}
             style={{
               alignItems: 'center',
               flex: 1,
@@ -657,8 +667,8 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
           </Row>
         )
         : (
-          <div id={`${wrapperId}-container`}>
-            {['survival', 'box'].includes(variable.active_chart) || (
+          <Column id={`${wrapperId}-container`}>
+            {['histogram'].includes(variable.active_chart) && (
               <Row style={{ paddingLeft: 10 }}>
                 <form style={{ width: '100%' }}>
                   <label
@@ -843,151 +853,272 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                     />
                 ) : (
                   <SurvivalPlotWrapper
-                    {...selectedSurvivalData}
-                    height={202}
-                    plotType="categorical"
-                    survivalPlotLoading={survivalPlotLoading}
-                    uniqueClass="clinical-survival-plot"
-                    />
+                      {...selectedSurvivalData}
+                      height={202}
+                      plotType="categorical"
+                      survivalPlotLoading={survivalPlotLoading}
+                      uniqueClass="clinical-survival-plot"
+                      />
                   )}
               </div>
             )}
-            {variable.active_chart === 'box'
-              ? (
-                <div
-                  style={{
+            {variable.active_chart === 'box' && (
+              <Column
+                style={{
+                  justifyContent: 'center',
+                  alignItems: 'space-between',
+                  height: CHART_HEIGHT,
+                  minWidth: 300,
+                  marginBottom: 10,
+                }}
+                >
+                <Row style={{ width: '100%' }}>
+                  <Row style={{
+                    width: BOX_PLOT_RATIO,
+                    marginLeft: 10,
+                    justifyContent: 'space-between',
                     alignItems: 'center',
-                    display: 'flex',
-                    height: CHART_HEIGHT + 55,
-                    justifyContent: 'center',
-                    margin: '5px 2px 10px',
                   }}
-                  >
-                  <TooltipInjector>
-                    <BoxPlotWrapper
-                      data={dataValues}
+                       >
+                    <span style={{
+                      fontSize: '1.2rem',
+                      color: theme.greyScale3,
+                    }}
+                          >
+                      Box Plot
+                    </span>
+                  </Row>
+                  <Row>
+                    <DownloadVisualizationButton
+                      buttonStyle={{
+                        padding: 0,
+                        minWidth: 22,
+                        minHeight: 20,
+                        lineHeight: 0,
+                        fontSize: '1.2rem',
+                      }}
+                      noText
+                      slug={`boxplot-${fieldName}`}
+                      svg={() => wrapSvg({
+                        className: 'boxplot',
+                        selector: `#${wrapperId}-boxplot-container figure svg`,
+                        title: `${humanify({ term: fieldName })} Box Plot`,
+                      })
+                      }
+                      tooltipHTML="Download SVG or PNG"
                       />
-                  </TooltipInjector>
-                </div>
-              ) : (
+                  </Row>
+                  <Row style={{
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    marginLeft: 10,
+                    width: QQ_PLOT_RATIO,
+                  }}
+                       >
+                    <span style={{
+                      color: theme.greyScale3,
+                      fontSize: '1.2rem',
+                    }}
+                          >
+                          QQ Plot
+                    </span>
+                  </Row>
+                  <Row>
+                    <DownloadVisualizationButton
+                      buttonStyle={{
+                        fontSize: '1.2rem',
+                        lineHeight: 0,
+                        minHeight: 20,
+                        minWidth: 22,
+                        padding: 0,
+                      }}
+                      data={qqData}
+                      noText
+                      slug={`qq-plot-${fieldName}`}
+                      svg={() => wrapSvg({
+                        selector: `#${wrapperId}-qqplot-container .qq-plot svg`,
+                        title: `${humanify({ term: fieldName })} QQ Plot`,
+                        className: 'qq-plot',
+                      })}
+                      tooltipHTML="Download plot data"
+                      tsvData={qqData}
+                      />
+                  </Row>
+                </Row>
                 <Row
                   style={{
+                    height: CHART_HEIGHT,
                     justifyContent: 'space-between',
-                    margin: '5px 0',
                   }}
                   >
-                  <Dropdown
-                  button={(
-                    <Button
-                      rightIcon={<DownCaretIcon />}
-                      style={{
-                        ...visualizingButton,
-                        padding: '0 12px',
-                      }}
-                      >
-                      Select action
-                    </Button>
-                  )}
-                  dropdownStyle={{
-                    left: 0,
-                    minWidth: 205,
+                  <Column
+                    id={`${wrapperId}-boxplot-container`}
+                    style={{
+                      height: CHART_HEIGHT + 10,
+                      maxHeight: CHART_HEIGHT + 10,
+                      minWidth: '150px',
+                      width: '150px',
+                    }}
+                    >
+                    <TooltipInjector>
+                      <BoxPlotWrapper data={dataValues} />
+                    </TooltipInjector>
+                  </Column>
+                  <Column
+                    id={`${wrapperId}-qqplot-container`}
+                    style={{
+                      width: QQ_PLOT_RATIO,
+                      height: CHART_HEIGHT + 10,
+                      maxHeight: CHART_HEIGHT + 10,
+                    }}
+                    >
+                    <QQPlotQuery
+                      chartHeight={CHART_HEIGHT + 10}
+                      dataHandler={data => setQQData(data)}
+                      fieldName={fieldName}
+                      filters={cardFilters}
+                      first={totalDocs}
+                      setDataHandler={() => setQQDataIsSet()}
+                      wrapperId={wrapperId}
+                      />
+                  </Column>
+                </Row>
+              </Column>
+            )}
+
+
+          </Column>
+        )}
+      {!isEmpty(tableData) && (
+      <Column>
+        <Row
+          style={{
+            justifyContent: 'space-between',
+            margin: '5px 0',
+          }}
+          >
+          <Dropdown
+            button={(
+              <Button
+                rightIcon={<DownCaretIcon />}
+                style={{
+                  ...visualizingButton,
+                  padding: '0 12px',
+                }}
+                >
+                Select action
+              </Button>
+            )}
+            dropdownStyle={{
+              left: 0,
+              minWidth: 205,
+            }}
+            >
+            {[
+              <DropdownItem
+                key="tsv"
+                onClick={() => downloadToTSV({
+                  filename: `analysis-${
+                    currentAnalysis.name
+                    }-${tsvSubstring}.${timestamp()}.tsv`,
+                  selector: `#analysis-${tsvSubstring}-table`,
+                })
+                }
+                style={styles.actionMenuItem}
+                >
+                Export to TSV
+              </DropdownItem>,
+              ...(variable.active_chart !== 'box' ? [
+                <DropdownItem
+                  key="save-set"
+                  onClick={() => {
+                    dispatch(
+                      setModal(
+                        <SaveSetModal
+                        CreateSetButton={CreateExploreCaseSetButton}
+                        displayType="case"
+                        filters={cardFilters}
+                        score="gene.gene_id"
+                        setName="Custom Case Selection"
+                        sort={null}
+                        title={`Save ${totalFromSelectedBuckets} Cases as New Set`}
+                        total={totalFromSelectedBuckets}
+                        type="case"
+                        />
+                      )
+                    );
                   }}
+                  style={styles.actionMenuItem}
                   >
-                    <DropdownItem
-                    onClick={() => downloadToTSV({
-                      filename: `analysis-${
-                        currentAnalysis.name
-                        }-${tsvSubstring}.${timestamp()}.tsv`,
-                      selector: `#analysis-${tsvSubstring}-table`,
-                    })
-                    }
-                    style={styles.actionMenuItem}
-                    >
-                    Export to TSV
-                    </DropdownItem>
-                    <DropdownItem
-                    onClick={() => {
-                      dispatch(
-                        setModal(
-                          <SaveSetModal
-                            CreateSetButton={CreateExploreCaseSetButton}
-                            displayType="case"
-                            filters={cardFilters}
-                            score="gene.gene_id"
-                            setName="Custom Case Selection"
-                            sort={null}
-                            title={`Save ${totalFromSelectedBuckets} Cases as New Set`}
-                            total={totalFromSelectedBuckets}
-                            type="case"
-                            />
-                        )
-                      );
-                    }}
-                    style={styles.actionMenuItem}
-                    >
-                    Save as new case set
-                    </DropdownItem>
-                    <DropdownItem
-                    onClick={() => {
-                      dispatch(
-                        setModal(
-                          <AppendSetModal
-                            AppendSetButton={AppendExploreCaseSetButton}
-                            displayType="case"
-                            field="cases.case_id"
-                            filters={cardFilters}
-                            scope="explore"
-                            score="gene.gene_id"
-                            sort={null}
-                            title={`Add ${totalFromSelectedBuckets} Cases to Existing Set`}
-                            total={totalFromSelectedBuckets}
-                            type="case"
-                            />
-                        )
-                      );
-                    }}
-                    style={styles.actionMenuItem}
-                    >
-                    Add to existing case set
-                    </DropdownItem>
-                    <DropdownItem
-                    onClick={() => {
-                      dispatch(
-                        setModal(
-                          <RemoveSetModal
-                            field="cases.case_id"
-                            filters={cardFilters}
-                            RemoveFromSetButton={RemoveFromExploreCaseSetButton}
-                            selected={Object.keys(get(currentAnalysis, 'sets.case', {}))[0] || ''}
-                            title={`Remove ${totalFromSelectedBuckets} Cases from Existing Set`}
-                            type="case"
-                            />
-                        )
-                      );
-                    }}
-                    style={styles.actionMenuItem}
-                    >
-                    Remove from existing case set
-                    </DropdownItem>
-                  </Dropdown>
-                  <Dropdown
-                  button={(
-                    <Button
-                      rightIcon={<DownCaretIcon />}
-                      style={{
-                        ...visualizingButton,
-                        padding: '0 12px',
-                      }}
-                      >
-                      Customize Bins
-                    </Button>
-                  )}
-                  dropdownStyle={{
-                    left: 0,
-                    minWidth: 205,
+                Save as new case set
+                </DropdownItem>,
+                <DropdownItem
+                  key="append-set"
+                  onClick={() => {
+                    dispatch(
+                      setModal(
+                        <AppendSetModal
+                          AppendSetButton={AppendExploreCaseSetButton}
+                          displayType="case"
+                          field="cases.case_id"
+                          filters={cardFilters}
+                          scope="explore"
+                          score="gene.gene_id"
+                          sort={null}
+                          title={`Add ${totalFromSelectedBuckets} Cases to Existing Set`}
+                          total={totalFromSelectedBuckets}
+                          type="case"
+                          />
+                      )
+                    );
                   }}
+                  style={styles.actionMenuItem}
                   >
-                    <DropdownItem
+                  Add to existing case set
+                </DropdownItem>,
+                <DropdownItem
+                  key="remove-set"
+                  onClick={() => {
+                    dispatch(
+                      setModal(
+                        <RemoveSetModal
+                          field="cases.case_id"
+                          filters={cardFilters}
+                          RemoveFromSetButton={RemoveFromExploreCaseSetButton}
+                          selected={Object.keys(get(currentAnalysis, 'sets.case', {}))[0] || ''}
+                          title={`Remove ${totalFromSelectedBuckets} Cases from Existing Set`}
+                          type="case"
+                          />
+                      )
+                    );
+                  }}
+                  style={styles.actionMenuItem}
+                  >
+                  Remove from existing case set
+                </DropdownItem>,
+              ] : []),
+            ]}
+          </Dropdown>
+          {
+            variable.active_chart !== 'box' && (
+              <Dropdown
+                button={(
+                  <Button
+                    rightIcon={<DownCaretIcon />}
+                    style={{
+                      ...visualizingButton,
+                      padding: '0 12px',
+                    }}
+                    >
+                    Customize Bins
+                  </Button>
+                )}
+                dropdownStyle={{
+                  left: 0,
+                  minWidth: 205,
+                }}
+                >
+                <DropdownItem
                     onClick={() => dispatch(
                       setModal(
                         <GroupValuesModal
@@ -1013,8 +1144,8 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                     style={styles.actionMenuItem}
                     >
                     Edit Bins
-                    </DropdownItem>
-                    <DropdownItem
+                </DropdownItem>
+                <DropdownItem
                     onClick={() => {
                       dispatch(
                         updateClinicalAnalysisVariable({
@@ -1034,21 +1165,21 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                     style={styles.actionMenuItem}
                     >
                     Reset to Default
-                    </DropdownItem>
-                  </Dropdown>
-                </Row>
-            )}
-
-            <EntityPageHorizontalTable
-              data={tableData}
-              headings={getHeadings(variable.active_chart)}
-              tableContainerStyle={{
-                height: 175,
-              }}
-              tableId={`analysis-${tsvSubstring}-table`}
-              />
-          </div>
-        )}
+                </DropdownItem>
+              </Dropdown>
+            )
+            }
+        </Row>
+        <EntityPageHorizontalTable
+          data={tableData}
+          headings={getHeadings(variable.active_chart)}
+          tableContainerStyle={{
+            height: 175,
+          }}
+          tableId={`analysis-${tsvSubstring}-table`}
+          />
+      </Column>
+      )}
     </Column>
   );
 };
@@ -1062,6 +1193,8 @@ export default compose(
   withState('selectedSurvivalLoadingIds', 'setSelectedSurvivalLoadingIds', []),
   withState('survivalPlotLoading', 'setSurvivalPlotLoading', true),
   withState('selectedBuckets', 'setSelectedBuckets', []),
+  withState('qqData', 'setQQData', []),
+  withState('qqDataIsSet', 'setQQDataIsSet', false),
   withProps(({ data, fieldName, variable }) => {
     const sanitisedId = fieldName.split('.').pop();
     const rawQueryData = (data.explore && data.explore.cases.aggregations

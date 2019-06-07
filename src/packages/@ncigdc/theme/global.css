@@ -8599,10 +8599,7 @@ svg {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
-i.fa.fa-question-circle {
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-} 
-.masonry { 
+.masonry {
   display: flex;
   flex-flow: row wrap;
   width: 100%;

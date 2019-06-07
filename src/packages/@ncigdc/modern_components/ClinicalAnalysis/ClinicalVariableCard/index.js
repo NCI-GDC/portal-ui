@@ -190,6 +190,15 @@ const styles = {
     cursor: 'pointer',
     lineHeight: '1.5',
   },
+  actionMenuItemDisabled: (theme: IThemeProps) => ({
+    color: theme.greyScale5,
+    cursor: 'not-allowed',
+    ':hover': {
+      color: theme.greyScale5,
+      cursor: 'not-allowed',
+      backgroundColor: 'transparent',
+    },
+  }),
   activeButton: (theme: IThemeProps) => ({
     ...styles.common(theme),
     backgroundColor: theme.primary,
@@ -594,7 +603,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
     : filters;
 
   const tsvSubstring = fieldName.replace(/\./g, '-');
-
+  const setActionsDisabled = get(selectedBuckets, 'length', 0) === 0;
   return (
     <Column
       className="clinical-analysis-categorical-card"
@@ -1012,9 +1021,107 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
             dropdownStyle={{
               left: 0,
               minWidth: 205,
+              borderRadius: 5,
             }}
             >
             {[
+              ...(variable.active_chart !== 'box' ? [
+                <DropdownItem
+                  key="save-set"
+                  style={{
+                    ...styles.actionMenuItem,
+                    ...setActionsDisabled ? styles.actionMenuItemDisabled(theme) : {},
+                  }
+                  }
+                  >
+                  <Row
+                    onClick={() => {
+                      if (setActionsDisabled) {
+                        return;
+                      }
+                      dispatch(
+                        setModal(
+                          <SaveSetModal
+                          CreateSetButton={CreateExploreCaseSetButton}
+                          displayType="case"
+                          filters={cardFilters}
+                          score="gene.gene_id"
+                          setName="Custom Case Selection"
+                          sort={null}
+                          title={`Save ${totalFromSelectedBuckets} Cases as New Set`}
+                          total={totalFromSelectedBuckets}
+                          type="case"
+                          />
+                        )
+                      );
+                    }}
+                    >
+                    Save as new case set
+                  </Row>
+                </DropdownItem>,
+                <DropdownItem
+                  key="append-set"
+                  style={{
+                    ...styles.actionMenuItem,
+                    ...setActionsDisabled ? styles.actionMenuItemDisabled(theme) : {},
+                  }
+                  }
+                  >
+                  <Row
+                      onClick={() => {
+                        if (setActionsDisabled) {
+                          return;
+                        }
+                        dispatch(
+                          setModal(
+                            <AppendSetModal
+                              AppendSetButton={AppendExploreCaseSetButton}
+                              displayType="case"
+                              field="cases.case_id"
+                              filters={cardFilters}
+                              scope="explore"
+                              score="gene.gene_id"
+                              sort={null}
+                              title={`Add ${totalFromSelectedBuckets} Cases to Existing Set`}
+                              total={totalFromSelectedBuckets}
+                              type="case"
+                              />
+                          )
+                        );
+                      }}
+                      >
+                      Add to existing case set
+                  </Row>
+                </DropdownItem>,
+                <DropdownItem
+                  key="remove-set"
+                  style={{
+                    ...styles.actionMenuItem,
+                    ...setActionsDisabled ? styles.actionMenuItemDisabled(theme) : {},
+                  }
+                  }
+                  >
+                  <Row
+                    onClick={() => {
+                      if (setActionsDisabled) { return; }
+                      dispatch(
+                        setModal(
+                          <RemoveSetModal
+                            field="cases.case_id"
+                            filters={cardFilters}
+                            RemoveFromSetButton={RemoveFromExploreCaseSetButton}
+                            selected={Object.keys(get(currentAnalysis, 'sets.case', {}))[0] || ''}
+                            title={`Remove ${totalFromSelectedBuckets} Cases from Existing Set`}
+                            type="case"
+                            />
+                        )
+                      );
+                    }}
+                    >
+                      Remove from existing case set
+                  </Row>
+                </DropdownItem>,
+              ] : []),
               <DropdownItem
                 key="tsv"
                 onClick={() => downloadToTSV({
@@ -1024,79 +1131,13 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                   selector: `#analysis-${tsvSubstring}-table`,
                 })
                 }
-                style={styles.actionMenuItem}
+                style={{
+                  ...styles.actionMenuItem,
+                  borderTop: variable.active_chart !== 'box' ? `1px solid ${theme.greyScale5}` : '',
+                }}
                 >
-                Export to TSV
+                Export TSV
               </DropdownItem>,
-              ...(variable.active_chart !== 'box' ? [
-                <DropdownItem
-                  key="save-set"
-                  onClick={() => {
-                    dispatch(
-                      setModal(
-                        <SaveSetModal
-                        CreateSetButton={CreateExploreCaseSetButton}
-                        displayType="case"
-                        filters={cardFilters}
-                        score="gene.gene_id"
-                        setName="Custom Case Selection"
-                        sort={null}
-                        title={`Save ${totalFromSelectedBuckets} Cases as New Set`}
-                        total={totalFromSelectedBuckets}
-                        type="case"
-                        />
-                      )
-                    );
-                  }}
-                  style={styles.actionMenuItem}
-                  >
-                Save as new case set
-                </DropdownItem>,
-                <DropdownItem
-                  key="append-set"
-                  onClick={() => {
-                    dispatch(
-                      setModal(
-                        <AppendSetModal
-                          AppendSetButton={AppendExploreCaseSetButton}
-                          displayType="case"
-                          field="cases.case_id"
-                          filters={cardFilters}
-                          scope="explore"
-                          score="gene.gene_id"
-                          sort={null}
-                          title={`Add ${totalFromSelectedBuckets} Cases to Existing Set`}
-                          total={totalFromSelectedBuckets}
-                          type="case"
-                          />
-                      )
-                    );
-                  }}
-                  style={styles.actionMenuItem}
-                  >
-                  Add to existing case set
-                </DropdownItem>,
-                <DropdownItem
-                  key="remove-set"
-                  onClick={() => {
-                    dispatch(
-                      setModal(
-                        <RemoveSetModal
-                          field="cases.case_id"
-                          filters={cardFilters}
-                          RemoveFromSetButton={RemoveFromExploreCaseSetButton}
-                          selected={Object.keys(get(currentAnalysis, 'sets.case', {}))[0] || ''}
-                          title={`Remove ${totalFromSelectedBuckets} Cases from Existing Set`}
-                          type="case"
-                          />
-                      )
-                    );
-                  }}
-                  style={styles.actionMenuItem}
-                  >
-                  Remove from existing case set
-                </DropdownItem>,
-              ] : []),
             ]}
           </Dropdown>
           {

@@ -19,7 +19,7 @@ export default function withDropdown(ComposedComponent) {
       window.removeEventListener('click', this.closeDropdown);
     }
 
-    UNSAFE_componentWillReceiveProps(nextProps) {
+    componentWillReceiveProps(nextProps) {
       if (nextProps.active !== this.props.active) {
         if (nextProps.active) {
           setTimeout(

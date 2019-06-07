@@ -1021,7 +1021,6 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
             dropdownStyle={{
               left: 0,
               minWidth: 205,
-              borderRadius: 5,
             }}
             >
             {[
@@ -1154,10 +1153,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                     Customize Bins
                   </Button>
                 )}
-                dropdownStyle={{
-                  left: 0,
-                  minWidth: 205,
-                }}
+                dropdownStyle={{ right: 0 }}
                 >
                 <DropdownItem
                     onClick={() => dispatch(

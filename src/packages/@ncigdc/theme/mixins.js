@@ -2,8 +2,8 @@
 
 import { css } from 'glamor';
 
-import { getTheme } from './index';
 import Color from 'color';
+import { getTheme } from './index';
 
 export const center = {
   display: 'flex',
@@ -31,6 +31,7 @@ export const dropdown = {
   backgroundColor: 'white',
   textAlign: 'left',
   right: 0,
+  borderRadius: '5px',
 };
 
 export const dropdownButton = {
@@ -57,9 +58,9 @@ export const visualizingButton = {
 export const margin = (left, right) => {
   if (left && right) {
     return { margin: '0 0.5rem' };
-  } else if (left) {
+  } if (left) {
     return { marginLeft: '0.5rem' };
-  } else if (right) {
+  } if (right) {
     return { marginRight: '0.5rem' };
   }
   return {};
@@ -125,10 +126,9 @@ export const linkButton = {
     color: 'white',
   },
   ':hover': {
-    backgroundColor: ({ theme }: Object) =>
-      Color(theme.primary)
-        .lighten(0.7)
-        .rgbString(),
+    backgroundColor: ({ theme }: Object) => Color(theme.primary)
+      .lighten(0.7)
+      .rgbString(),
     color: 'white',
   },
 };

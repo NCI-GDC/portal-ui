@@ -7,7 +7,7 @@ import LoginButton from '@ncigdc/components/LoginButton';
 import { setModal } from '@ncigdc/dux/modal';
 
 class LoginModal extends React.Component {
-  UNSAFE_componentWillReceiveProps(nextProps) {
+  componentWillReceiveProps(nextProps) {
     if (nextProps.user && !this.props.user) {
       nextProps.dispatch(setModal(null));
     }

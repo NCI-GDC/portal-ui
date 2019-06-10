@@ -6,7 +6,7 @@ import Spinner from '@ncigdc/uikit/Loaders/Material';
 export default class SetActionButton extends React.Component {
   clicked = false;
 
-  UNSAFE_componentWillReceiveProps(next) {
+  componentWillReceiveProps(next) {
     if (next.forceClick && !this.clicked) {
       const { createSet } = this.props;
       this.clicked = true;

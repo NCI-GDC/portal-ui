@@ -32,20 +32,19 @@ const enhance = compose(
 );
 
 const RemoveSetModal = ({
-  RemoveFromSetButton,
   analyses,
   dispatch,
   field,
   filters,
   history,
   query,
+  RemoveFromSetButton,
   selected,
-  setSelected,
   sets,
+  setSelected,
   title,
   type,
-}) => {
-  return (
+}) => (
     <BaseModal
       closeText="Cancel"
       extraButtons={(
@@ -102,6 +101,5 @@ const RemoveSetModal = ({
         />
     </BaseModal>
   );
-};
 
 export default enhance(RemoveSetModal);

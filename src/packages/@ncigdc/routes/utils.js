@@ -24,7 +24,7 @@ export function makeEntityPage({
 
   class RouteContainer extends React.Component {
     isRendered = false;
-    UNSAFE_componentWillReceiveProps(nextProps) {
+    componentWillReceiveProps(nextProps) {
       if (nextProps.match.params.id !== this.props.match.params.id) {
         this.isRendered = false;
       }

@@ -1185,6 +1185,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                       setModal(
                         <GroupValuesModal
                           bins={variable.bins}
+                          dataBuckets={dataBuckets}
                           fieldName={humanify({ term: fieldName })}
                           onClose={() => dispatch(setModal(null))}
                           onUpdate={(newBins) => {

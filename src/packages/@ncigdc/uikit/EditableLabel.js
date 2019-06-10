@@ -17,26 +17,26 @@ import { MAX_SET_NAME_LENGTH } from '@ncigdc/utils/constants';
 import { Tooltip } from './Tooltip/index';
 
 export default compose(
-  withState('isEditing', 'setIsEditing', ({ isEditing }) => isEditing || false),
+  withState('isEditing', 'setIsEditing', false),
   withState('value', 'setValue', ({ text }) => text),
   defaultProps({
     handleSave: value => console.log(value),
   }),
   withHandlers({
-    handleCancel: ({ setIsEditing, setValue, text }) => () => {
+    handleCancel: ({ text, setIsEditing, setValue }) => () => {
       setIsEditing(false);
       setValue(text);
     },
   }),
   withHandlers({
     toggleEditingAndSave: ({
-      disabled = false,
-      handleCancel,
-      handleSave,
       isEditing,
       setIsEditing,
-      text,
       value,
+      text,
+      handleSave,
+      handleCancel,
+      disabled = false,
     }) => () => {
       if (disabled) {
         return null;
@@ -50,9 +50,7 @@ export default compose(
     },
   }),
   lifecycle({
-    componentDidUpdate({
-      isEditing, setValue, text, value,
-    }): void {
+    componentDidUpdate({ text, value, setValue, isEditing }): void {
       if (!isEditing && value !== text) {
         setValue(text);
       }
@@ -72,22 +70,25 @@ export default compose(
     containerStyle = {},
     disabled = false,
     disabledMessage = null,
-    pencilEditingOnly = false,
   }) => (
-    <div>
+      <div>
         {isEditing ? (
           <Row
-            spacing="5px"
             style={{
               justifyContent: 'space-between',
               alignItems: 'center',
               ...containerStyle,
             }}
-            >
+            spacing={'5px'}
+          >
             <Input
-              autoFocus
+              style={{
+                width: '300px',
+                borderRadius: '4px',
+                transition: 'all 0.2s ease',
+              }}
+              value={value}
               onChange={e => setValue(e.target.value)}
-              onFocus={e => e.target.select()}
               onKeyDown={e => {
                 if (e.key === 'Enter') {
                   toggleEditingAndSave();
@@ -95,14 +96,10 @@ export default compose(
                   handleCancel();
                 }
               }}
-              style={{
-                width: '300px',
-                borderRadius: '4px',
-                transition: 'all 0.2s ease',
-              }}
               type="text"
-              value={value}
-              />
+              autoFocus
+              onFocus={e => e.target.select()}
+            />
             <Tooltip
               Component={
                 value.split(' ').join('').length === 0
@@ -111,33 +108,32 @@ export default compose(
                     ? `Maximum name length ${MAX_SET_NAME_LENGTH}`
                     : null
               }
-              >
+            >
               <Button
+                onClick={toggleEditingAndSave}
                 disabled={
                   value.split(' ').join('').length === 0 ||
                   value.length > MAX_SET_NAME_LENGTH
                 }
-                onClick={toggleEditingAndSave}
                 style={{
                   ...visualizingButton,
                 }}
-                >
+              >
                 Save
-              </Button>
+            </Button>
             </Tooltip>
             <Button onClick={handleCancel} style={visualizingButton}>
               Cancel
-            </Button>
+          </Button>
           </Row>
         ) : (
-          <Tooltip Component={disabled ? disabledMessage : null}>
+            <Tooltip Component={disabled ? disabledMessage : null}>
               <Row
-                onClick={pencilEditingOnly ? null : toggleEditingAndSave}
-                style={{ cursor: disabled ? 'not-allowed' : (pencilEditingOnly ? 'default' : 'text') }}
-                >
+                onClick={toggleEditingAndSave}
+                style={{ cursor: disabled ? 'not-allowed' : 'text' }}
+              >
                 {children}
                 <Pencil
-                  onClick={pencilEditingOnly ? toggleEditingAndSave : null}
                   style={{
                     fontSize: '0.9em',
                     paddingLeft: '5px',
@@ -146,10 +142,10 @@ export default compose(
                     ...iconStyle,
                     cursor: disabled ? 'not-allowed' : 'pointer',
                   }}
-                  />
+                />
               </Row>
             </Tooltip>
           )}
       </div>
-  )
+    )
 );

@@ -44,7 +44,7 @@ module.exports = {
     'arrow-body-style': 'off',
     'arrow-parens': 'off',
     'camelcase': ['warn', {
-      allow: ["^UNSAFE_"],
+      allow: ["^UNSAFE_", "doc_count"],
     }],
     'comma-dangle': ['warn', 'always-multiline'],
     'func-names': ['warn', 'as-needed'],
@@ -179,7 +179,7 @@ module.exports = {
     'react/sort-comp': 'warn',
     'react/sort-prop-types': 'error',
     'react/prop-types': 'off', // Disable prop-types as TS is used for type checking.
-    'sort-destructure-keys/sort-destructure-keys': ['warn' , {
+    'sort-destructure-keys/sort-destructure-keys': ['warn', {
       caseSensitive: false,
     }],
     '@typescript-eslint/explicit-function-return-type': 'off', // Allows functional components, should be fixed soon: https://github.com/typescript-eslint/typescript-eslint/issues/149

@@ -511,7 +511,7 @@ const getHeadings = (chartType, dataDimension, fieldName) => {
       {
         key: 'count',
         style: { textAlign: 'right' },
-        title: `${dataDimension ? `${dataDimension}` : 'Quantities'}`,
+        title: `${dataDimension || 'Quantities'}`,
       },
     ]
     : [

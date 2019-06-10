@@ -1,7 +1,10 @@
-// @flow
-
 import React from 'react';
-import { compose, branch, renderComponent } from 'recompose';
+import {
+  compose,
+  branch,
+  renderComponent,
+  setDisplayName,
+} from 'recompose';
 import EntityPageVerticalTable from '@ncigdc/components/EntityPageVerticalTable';
 import TableIcon from '@ncigdc/theme/icons/Table';
 import MinusIcon from '@ncigdc/theme/icons/Minus';
@@ -9,29 +12,31 @@ import PlusIcon from '@ncigdc/theme/icons/Plus';
 import ExploreLink from '@ncigdc/components/Links/ExploreLink';
 import { makeFilter } from '@ncigdc/utils/filters';
 
-const strandIconMap = {
-  '-1': <MinusIcon />,
-  1: <PlusIcon />,
-};
-
-export default compose(
-  branch(
-    ({ viewer }) => !viewer.explore.genes.hits.edges[0],
-    renderComponent(() => <div>No gene found.</div>),
-  ),
-)(({ viewer: { explore: { genes: { hits: { edges } } } } } = {}) => {
+const GeneSummary = ({ viewer: { explore: { genes: { hits: { edges } } } } } = {}) => {
   const gene = edges[0].node;
   return (
     <EntityPageVerticalTable
       id="summary"
-      title={
-        <span>
-          <TableIcon style={{ marginRight: '1rem' }} />Summary
-        </span>
-      }
+      style={{
+        summary: {
+          marginBottom: '2rem',
+        },
+        column: {
+          width: '100%',
+          minWidth: 450,
+        },
+        alignSelf: 'flex-start',
+        width: '100%',
+      }}
       thToTd={[
-        { th: 'Symbol', td: gene.symbol },
-        { th: 'Name', td: gene.name },
+        {
+          th: 'Symbol',
+          td: gene.symbol,
+        },
+        {
+          th: 'Name',
+          td: gene.name,
+        },
         {
           th: 'Synonyms',
           td:
@@ -42,7 +47,10 @@ export default compose(
             wordBreak: 'breakWord',
           },
         },
-        { th: 'Type', td: gene.biotype },
+        {
+          th: 'Type',
+          td: gene.biotype,
+        },
         {
           th: 'Location',
           td: `chr${gene.gene_chromosome}:${gene.gene_start}-${gene.gene_end} (GRCh38)`,
@@ -74,7 +82,7 @@ export default compose(
                   },
                 ]),
               }}
-            >
+              >
               Cancer Gene Census
             </ExploreLink>
           ) : (
@@ -82,17 +90,25 @@ export default compose(
           ),
         },
       ]}
-      style={{
-        summary: {
-          marginBottom: '2rem',
-        },
-        column: {
-          width: '100%',
-          minWidth: 450,
-        },
-        alignSelf: 'flex-start',
-        width: '100%',
-      }}
-    />
+      title={(
+        <span>
+          <TableIcon style={{ marginRight: '1rem' }} />
+Summary
+        </span>
+      )}
+      />
   );
-});
+};
+
+const strandIconMap = {
+  '-1': <MinusIcon />,
+  1: <PlusIcon />,
+};
+
+export default compose(
+  setDisplayName('EnhancedGeneSummary'),
+  branch(
+    ({ viewer }) => !viewer.explore.genes.hits.edges[0],
+    renderComponent(() => <div>No gene found.</div>),
+  ),
+)(GeneSummary);

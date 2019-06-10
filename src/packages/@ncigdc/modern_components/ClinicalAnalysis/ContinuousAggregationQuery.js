@@ -25,11 +25,29 @@ const getContinuousAggs = ({ fieldName, stats, filters, bins }) => {
   if (_.isNull(stats.min) || _.isNull(stats.max)) {
     return null;
   }
-  if (!bins) {
-    // TODO: error handling
+
+  let rangeArr = _.reduce(bins, (acc, bin, key) => {
+    if (
+      bin.from &&
+      bin.to &&
+      stats.min <= bin.from &&
+      bin.from < bin.to &&
+      bin.to <= stats.max
+    ) {
+      return [...acc, { from: bin.from, to: bin.to }];
+    }
+    return acc;
+  }, []);
+  const interval = Math.round((stats.max - stats.min) / DEFAULT_CONTINUOUS_BUCKETS);
+  if (rangeArr.length === 0) {
+    rangeArr = Array(DEFAULT_CONTINUOUS_BUCKETS).fill(1).map(
+      (val, key) => ({
+        from: key * interval + stats.min,
+        to: (key + 1) === DEFAULT_CONTINUOUS_BUCKETS ? stats.max : (stats.min + (key + 1) * interval - 1),
+      })
+    )
   }
-  const rangeArr = Object.keys(bins).map(key => ({ from: bins[key].from, to: bins[key].to }));
-  const interval = (stats.max - stats.min) / DEFAULT_CONTINUOUS_BUCKETS;
+
   const queryFieldName = fieldName.replace('.', '__');
   const filters2 = {
     op: "range",
@@ -39,6 +57,7 @@ const getContinuousAggs = ({ fieldName, stats, filters, bins }) => {
       }
     ]
   }
+  const aggregationFieldName = fieldName.replace(/\./g, '__');
 
   const variables = {
     filters,
@@ -68,12 +87,6 @@ const getContinuousAggs = ({ fieldName, stats, filters, bins }) => {
                   buckets {
                     doc_count
                     key
-                  }
-                }
-                histogram(interval: ${interval}) {
-                  buckets {
-                    key
-                    doc_count
                   }
                 }
               }

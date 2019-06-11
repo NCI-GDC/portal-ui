@@ -62,7 +62,7 @@ export default compose(
   setDisplayName('ContinuousCustomBinsModal'),
   withState('rangeRows', 'setRangeRows', [defaultRangeRow]),
   withState('warning', 'setWarning', ''),
-  withState('selectedBinningMethod', 'setSelectedBinningMethod', 'interval'),
+  withState('selectedBinningMethod', 'setSelectedBinningMethod', 'range'),
   withProps(({
     bins,
   }: any) => {
@@ -167,19 +167,15 @@ export default compose(
     };
 
     const handleUpdateRow = (inputRowIndex, inputRow) => {
-      const nextRangeRows = rangeRows.map((rangeRow, rowIndex) => (rowIndex === inputRowIndex ? ({
-        ...rangeRow,
-        ...inputRow,
-      }) : rangeRow));
-      console.log('ccbm update nextRangeRows', nextRangeRows);
+      const nextRangeRows = rangeRows.map((rangeRow, rowIndex) => (rowIndex === inputRowIndex ? inputRow : rangeRow));
       setRangeRows(nextRangeRows);
     };
 
     const handleRemoveRow = rowIndex => {
       const nextRangeRows = rangeRows.filter((filterRow, filterRowIndex) => filterRowIndex !== rowIndex);
-      console.log('ccbm remove rowIndex', rowIndex);
-      console.log('ccbm remove rangeRows in removeRow', rangeRows);
-      console.log('ccbm remove nextRangeRows', nextRangeRows);
+      // console.log('ccbm remove rowIndex', rowIndex);
+      // console.log('ccbm remove rangeRows in removeRow', rangeRows);
+      // console.log('ccbm remove nextRangeRows', nextRangeRows);
       setRangeRows(nextRangeRows);
     };
 
@@ -187,7 +183,7 @@ export default compose(
 
     const submitDisabled = toggleSubmitButton();
 
-    console.log('rangeRows in render', rangeRows);
+    // console.log('rangeRows in render', rangeRows);
 
     return (
       <Column style={{ padding: '20px' }}>

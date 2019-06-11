@@ -24,6 +24,12 @@ class RangeTableRow extends React.Component {
       min: '',
       name: '',
     },
+    fieldErrors: {
+      max: '',
+      min: '',
+      name: '',
+    },
+    isActive: true,
   };
 
   rowFieldsOrder = [
@@ -31,6 +37,24 @@ class RangeTableRow extends React.Component {
     'min',
     'max',
   ];
+
+  handleSave = function() {
+    const validateFieldsResult = this.validateFields();
+    this.setState({ fieldErrors: validateFieldsResult });
+    const rowIsValid = Object.keys(validateFieldsResult)
+      .filter(field => validateFieldsResult[field].length > 0).length === 0;
+
+    if (rowIsValid) {
+      const { handleUpdateRow, rowIndex } = this.props;
+      const { fieldValues, isActive } = this.state;
+      const nextRow = {
+        active: false,
+        fields: fieldValues,
+      };
+      this.setState({ isActive: false });
+      handleUpdateRow(rowIndex, nextRow);
+    }
+  };
 
   updateRow = updateType => {
     const {
@@ -52,21 +76,6 @@ class RangeTableRow extends React.Component {
       console.log('roxIndex', rowIndex);
       handleUpdateRow(rowIndex, nextRow);
       this.setState({ rowActive: !rowActive });
-    } else if (updateType === 'save') {
-      const rowFieldsValidated = this.validateRow();
-      // setRowFields(rowFieldsValidated);
-
-      const rowIsValid = Object.keys(rowFieldsValidated).filter(field => rowFieldsValidated[field].errors.length > 0).length === 0;
-
-      if (rowIsValid) {
-        const nextRow = {
-          active: !rowActive,
-          fields: rowFieldsValidated,
-        };
-        this.setState({ rowActive: !rowActive });
-        console.log('rangetablerow rowIndex', rowIndex);
-        handleUpdateRow(rowIndex, nextRow);
-      }
     }
   };
 
@@ -114,64 +123,57 @@ class RangeTableRow extends React.Component {
     });
   };
 
-  validateRow = () => {
+  validateFields = () => {
     const {
-      fields,
-    } = this.props;
+      fieldValues,
+    } = this.state;
     // check empty & NaN errors first
     // then make sure that min < max
-    const validFields = Object.keys(fields).reduce((acc, curr) => {
-      const fieldValue = fields[curr].value;
+    const errorsEmptyOrNaN = Object.keys(fieldValues).reduce((acc, curr) => {
+      const fieldValue = fieldValues[curr];
       const fieldValueNumber = Number(fieldValue);
 
-      const nextErrors = fieldValue === '' ? ['Required field.'] : curr === 'name' ? [] : isFinite(fieldValueNumber) ? [] : [`'${fieldValue}' is not a number.`];
+      const nextErrors = fieldValue === '' 
+        ? 'Required field.' : curr === 'name' 
+          ? '' : isFinite(fieldValueNumber) 
+            ? '' : `'${fieldValue}' is not a number.`;
 
       return ({
         ...acc,
-        [curr]: {
-          ...fields[curr],
-          errors: nextErrors,
-        },
+        [curr]: nextErrors,
       });
     }, {});
 
-    const checkMinMaxValues = validFields.max.errors.length === 0 && validFields.min.errors.length === 0 && Number(validFields.max.value) < Number(validFields.min.value);
+    const checkMinMaxValues = errorsEmptyOrNaN.max.length === 0 
+      && errorsEmptyOrNaN.min.length === 0 
+      && Number(fieldValues.max.value) < Number(fieldValues.min.value);
 
-    if (checkMinMaxValues) {
-      return ({
-        ...validFields,
-        max: {
-          ...validFields.max,
-          errors: [`'To' must be greater than ${validFields.min.value}.`],
-        },
-        min: {
-          ...validFields.min,
-          errors: [`'From' must be less than ${validFields.max.value}.`],
-        },
-      });
-    }
-
-    return validFields;
+    return checkMinMaxValues ? ({
+      max: `'To' must be greater than ${fieldValues.min}.`,
+      min: `'From' must be less than ${fieldValues.max}.`,
+      name: '',
+    }) : errorsEmptyOrNaN;
   };
 
-  resetToModalState = () => {
-    const {
-      max,
-      min,
-      name,
-    } = this.props;
-    this.setState({
-      fieldValues: {
-        max,
-        min,
-        name,
-      },
-    });
-  }
+  // resetToModalState = () => {
+  //   const {
+  //     max,
+  //     min,
+  //     name,
+  //   } = this.state;
+  //   this.setState({
+  //     fieldValues: {
+  //       max,
+  //       min,
+  //       name,
+  //     },
+  //   });
+  // }
 
-  componentDidMount = () => {
-    this.resetToModalState();
-  };
+  // componentDidMount = () => {
+  //   console.log("mounted")
+  //   this.resetToModalState();
+  // };
 
   render = () => {
     const {
@@ -182,21 +184,15 @@ class RangeTableRow extends React.Component {
       styles,
     } = this.props;
 
-    const { fieldValues } = this.state;
-
-    const fieldErrors = {
-      max: '',
-      min: '',
-      name: '',
-    };
+    const { fieldErrors, fieldValues } = this.state;
 
     return (
       <OutsideClickHandler
         disabled={!rowActive || !rangeMethodActive}
         display="flex"
-        onOutsideClick={e => {
+        onOutsideClick={() => {
           console.log('click!');
-          // updateRow('save', e.target);
+          // this.handleSave()
         }}
       >
         <div style={rowStyles.fieldsWrapper}>
@@ -233,8 +229,8 @@ class RangeTableRow extends React.Component {
                 buttonContentStyle={{ justifyContent: 'center' }}
                 disabled={!rangeMethodActive}
                 id={`range-row-${rowIndex}-save`}
-                onClick={e => {
-                  this.updateRow('save', e.target);
+                onClick={() => {
+                  this.handleSave();
                 }}
                 style={{
                   ...rowStyles.optionsButton,

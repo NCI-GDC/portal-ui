@@ -52,9 +52,9 @@ const styles = {
 const defaultRangeRow = {
   active: true,
   fields: {
-    max: '',
-    min: '',
+    from: '',
     name: '',
+    to: '',
   },
 };
 
@@ -166,24 +166,29 @@ export default compose(
       updateCustomInterval(target, inputError);
     };
 
+    const handleToggleActiveRow = (inputRowIndex, inputIsActive) => {
+      const nextRangeRows = rangeRows.map((rangeRow, rowIndex) => ({
+        active: rowIndex === inputRowIndex ? inputIsActive : rangeRow.active,
+        fields: rangeRows.fields,
+      }));
+      setRangeRows(nextRangeRows);
+    }
+
     const handleUpdateRow = (inputRowIndex, inputRow) => {
-      const nextRangeRows = rangeRows.map((rangeRow, rowIndex) => (rowIndex === inputRowIndex ? inputRow : rangeRow));
+      const nextRangeRows = rangeRows.map((rangeRow, rowIndex) => 
+        (rowIndex === inputRowIndex ? inputRow : rangeRow));
       setRangeRows(nextRangeRows);
     };
 
     const handleRemoveRow = rowIndex => {
-      const nextRangeRows = rangeRows.filter((filterRow, filterRowIndex) => filterRowIndex !== rowIndex);
-      // console.log('ccbm remove rowIndex', rowIndex);
-      // console.log('ccbm remove rangeRows in removeRow', rangeRows);
-      // console.log('ccbm remove nextRangeRows', nextRangeRows);
+      const nextRangeRows = rangeRows.filter((filterRow, filterRowIndex) => 
+        filterRowIndex !== rowIndex);
       setRangeRows(nextRangeRows);
     };
 
     const toggleSubmitButton = () => (selectedBinningMethod === 'interval' ? Object.keys(customInterval).some(field => customInterval[field].error.length > 0) : rangeRows.some(row => row.active));
 
     const submitDisabled = toggleSubmitButton();
-
-    // console.log('rangeRows in render', rangeRows);
 
     return (
       <Column style={{ padding: '20px' }}>
@@ -267,6 +272,7 @@ export default compose(
                     <RangeTableRow
                       fields={row.fields}
                       handleRemoveRow={handleRemoveRow}
+                      handleToggleActiveRow={handleToggleActiveRow}
                       handleUpdateRow={handleUpdateRow}
                       key={`range-row-${rowIndex}`}
                       rangeMethodActive={selectedBinningMethod === 'range'}

@@ -56,6 +56,7 @@ interface IBinsProps { [x: string]: IBinProps }
 interface IGroupValuesModalProps {
   binGrouping: () => void,
   currentBins: IBinsProps,
+  dataBuckets: IBinProps[],
   setCurrentBins: (currentBins: IBinsProps) => void,
   onUpdate: (bins: IBinsProps) => void,
   onClose: () => void,
@@ -133,6 +134,7 @@ export default compose(
   ({
     binGrouping,
     currentBins,
+    dataBuckets,
     editingGroupName,
     fieldName,
     globalWarning,
@@ -168,11 +170,11 @@ export default compose(
           <Column style={blockStyle}>
             <Row style={{ justifyContent: 'space-between' }}>
               <div style={{
-                height: '54px',
                 alignItems: 'flex-end',
                 display: 'flex',
+                height: '54px',
               }}
-                   >
+              >
                 Hidden Values
               </div>
             </Row>
@@ -195,7 +197,7 @@ export default compose(
                       backgroundColor: selectedHidingBins[binKey] ? '#d5f4e6' : '',
                       paddingLeft: '10px',
                     }}
-                    >
+                  >
                     {`${binKey} (${currentBins[binKey].doc_count})`}
                   </Row>
                 ))}
@@ -225,7 +227,7 @@ export default compose(
                 setListWarning({});
               }}
               style={{ margin: '10px' }}
-              >
+            >
               {'>>'}
             </Button>
             <Button
@@ -256,7 +258,7 @@ export default compose(
                 setListWarning({});
               }}
               style={{ margin: '10px' }}
-              >
+            >
               {'<<'}
             </Button>
           </Column>
@@ -266,7 +268,7 @@ export default compose(
                 alignItems: 'flex-end',
                 display: 'flex',
               }}
-                    >
+              >
                 Displayed Values
 
               </span>
@@ -274,22 +276,20 @@ export default compose(
                 <Button
                   onClick={() => {
                     setCurrentBins({
-                      ...reduce(currentBins, (acc, val, key) => {
-                        return {
-                          ...acc,
-                          [key]: {
-                            ...currentBins[key],
-                            groupName: key,
-                          },
-                        };
-                      }, {}),
+                      ...dataBuckets.reduce((acc, r) => ({
+                        ...acc,
+                        [r.key]: {
+                          ...r,
+                          groupName: r.key,
+                        },
+                      }), {}),
                     });
                     setSelectedGroupBins({});
                     setGlobalWarning('');
                     setListWarning({});
                   }}
                   style={buttonStyle}
-                  >
+                >
                   {'Reset'}
                 </Button>
                 <Button
@@ -318,7 +318,7 @@ export default compose(
                     setListWarning({});
                   }}
                   style={buttonStyle}
-                  >
+                >
                   {'Ungroup'}
                 </Button>
                 <Button
@@ -330,7 +330,7 @@ export default compose(
                     setListWarning({});
                   }}
                   style={buttonStyle}
-                  >
+                >
                   {'Group'}
                 </Button>
               </Row>
@@ -362,7 +362,7 @@ export default compose(
 
 
                       }}
-                      >
+                    >
                       {group.length > 1 || group[0] !== groupName
                         ? (
                           <ControlEditableRow
@@ -405,7 +405,8 @@ export default compose(
                                   [groupName]: 'Can not be empty.',
                                 });
                               } else if (
-                                some(currentBins, (bin: IBinProps) => bin.groupName.trim() === value.trim()) &&
+                                some(currentBins,
+                                  (bin: IBinProps) => bin.groupName.trim() === value.trim()) &&
                                 groupName.trim() !== value.trim()
                               ) {
                                 setListWarning({
@@ -423,7 +424,7 @@ export default compose(
                             }}
                             text={groupName}
                             warning={listWarning[groupName]}
-                            >
+                          >
                             {groupName}
                           </ControlEditableRow>
                         ) : (
@@ -453,7 +454,7 @@ export default compose(
                               listStyleType: 'disc',
                               paddingLeft: '5px',
                             }}
-                            >
+                          >
                             {`${bin} (${currentBins[bin].doc_count})`}
                           </Row>
                         ))
@@ -471,13 +472,13 @@ export default compose(
             justifyContent: 'flex-end',
             margin: '20px',
           }}
-          >
+        >
           {globalWarning.length > 0 ? (
             <span style={{
               color: 'red',
               justifyContent: 'flex-start',
             }}
-                  >
+            >
               {'Warning: '}
               {globalWarning}
             </span>
@@ -485,13 +486,13 @@ export default compose(
           <Button
             onClick={onClose}
             style={styles.button}
-            >
+          >
             Cancel
           </Button>
           <Button
             onClick={() => onUpdate(currentBins)}
             style={styles.button}
-            >
+          >
             Save Bins
           </Button>
         </Row>

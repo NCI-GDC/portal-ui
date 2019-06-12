@@ -40,6 +40,8 @@ class RangeTableRow extends React.Component {
   componentDidUpdate(prevProps) {
     const { fields } = this.props;
     if (!isEqual(fields, prevProps.fields)) {
+      console.log('fields', fields);
+      console.log('prevProps.fields', prevProps.fields);
       /* eslint-disable */
       this.setState({ fieldValues: fields });
       /* eslint-enable */
@@ -70,6 +72,8 @@ class RangeTableRow extends React.Component {
 
   handleCancel = () => {
     const { handleToggleActiveRow, rowIndex } = this.props;
+    const { fields } = this.props;
+    this.setState({ fieldValues: fields });
     handleToggleActiveRow(rowIndex, false);
   }
 

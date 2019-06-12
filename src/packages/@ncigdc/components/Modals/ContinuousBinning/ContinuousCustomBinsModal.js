@@ -81,9 +81,10 @@ class ContinuousCustomBinsModal extends Component {
   handleToggleActiveRow = (inputRowIndex, inputIsActive) => {
     const { rangeRows } = this.state;
     const nextRangeRows = rangeRows.map((rangeRow, rowIndex) => ({
+      ...rangeRow,
       active: rowIndex === inputRowIndex ? inputIsActive : rangeRow.active,
-      fields: rangeRows.fields,
     }));
+    console.log('nextRangeRows', nextRangeRows);
     this.setState({ rangeRows: nextRangeRows });
   };
 
@@ -202,7 +203,7 @@ class ContinuousCustomBinsModal extends Component {
               validateIntervalFields={e => {
                 validateIntervalFields(e.target);
               }}
-              />
+            />
           </Column>
         </Row>
         <div className="binning-range">
@@ -214,32 +215,32 @@ class ContinuousCustomBinsModal extends Component {
               onClick={() => {
                 this.setState({ binningMethod: 'range' });
               }}
-              />
+            />
           </div>
           <div style={styles.rangeTable.wrapper}>
             <div style={styles.rangeTable.heading}>
               <div
                 id="range-table-label-name"
                 style={styles.rangeTable.column}
-                >
+              >
                 Bin Name
               </div>
               <div
                 id="range-table-label-min"
                 style={styles.rangeTable.column}
-                >
+              >
                 From
               </div>
               <div
                 id="range-table-label-max"
                 style={styles.rangeTable.column}
-                >
+              >
                 To
               </div>
               <div
                 id="range-table-label-options"
                 style={styles.rangeTable.optionsColumn}
-                >
+              >
                 Options
               </div>
             </div>
@@ -255,7 +256,7 @@ class ContinuousCustomBinsModal extends Component {
                   rowActive={row.active}
                   rowIndex={rowIndex}
                   styles={styles.rangeTable}
-                  />
+                />
               ))}
             </div>
           </div>
@@ -272,7 +273,7 @@ class ContinuousCustomBinsModal extends Component {
               maxWidth: '100px',
               ...(binningMethod !== 'range' ? styles.inputDisabled : {}),
             }}
-            >
+          >
             <i aria-hidden="true" className="fa fa-plus-circle" />
             &nbsp; Add
           </Button>

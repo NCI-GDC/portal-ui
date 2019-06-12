@@ -118,36 +118,17 @@ class RangeTableRow extends React.Component {
     }, {});
     console.log('errorsEmptyOrNaN', errorsEmptyOrNaN);
 
-    const checkMinMaxValues = errorsEmptyOrNaN.to === '' &&
+    const checkFromToValues = errorsEmptyOrNaN.to === '' &&
       errorsEmptyOrNaN.from === '' &&
-      Number(fieldValues.to.value) < Number(fieldValues.from.value);
+      Number(fieldValues.to) < Number(fieldValues.from);
 
-    return checkMinMaxValues ? ({
+    console.log('checkFromToValues', checkFromToValues);
+    return checkFromToValues ? ({
       from: `'From' must be less than ${fieldValues.to}.`,
       name: '',
       to: `'To' must be greater than ${fieldValues.from}.`,
     }) : errorsEmptyOrNaN;
   };
-
-  // resetToModalState = () => {
-  //   const {
-  //     from,
-  //     name,
-  //     to,
-  //   } = this.state;
-  //   this.setState({
-  //     fieldValues: {
-  //       from,
-  //       name,
-  //       to,
-  //     },
-  //   });
-  // }
-
-  // componentDidMount = () => {
-  //   console.log("mounted")
-  //   this.resetToModalState();
-  // };
 
   render = () => {
     const {
@@ -167,14 +148,14 @@ class RangeTableRow extends React.Component {
         onOutsideClick={() => {
           this.handleSave();
         }}
-      >
+        >
         <div style={rowStyles.fieldsWrapper}>
           {
             this.fieldsOrder.map(rowItem => (
               <div
                 key={`range-row-${rowIndex}-${rowItem}`}
                 style={styles.column}
-              >
+                >
                 <BinningInput
                   binningMethod="range"
                   disabled={!rowActive || !rangeMethodActive}
@@ -189,7 +170,7 @@ class RangeTableRow extends React.Component {
                   rowIndex={rowIndex}
                   valid={fieldErrors[rowItem].length === 0}
                   value={fieldValues[rowItem]}
-                />
+                  />
               </div>
             ))
           }
@@ -209,7 +190,7 @@ class RangeTableRow extends React.Component {
                   ...rowStyles.optionsButton,
                   ...(!rangeMethodActive || { background: 'green' }),
                 }}
-              >
+                >
                 <i aria-hidden="true" className="fa fa-check" />
               </Button>
               <Button
@@ -224,12 +205,12 @@ class RangeTableRow extends React.Component {
                   ...rowStyles.optionsButton,
                   ...(!rangeMethodActive || { background: 'red' }),
                 }}
-              >
+                >
                 <i aria-hidden="true" className="fa fa-close" />
               </Button>
             </React.Fragment>
           ) : (
-              <Button
+            <Button
                 aria-label="Edit"
                 disabled={!rangeMethodActive}
                 id={`range-row-${rowIndex}-edit`}
@@ -237,7 +218,7 @@ class RangeTableRow extends React.Component {
                   this.handleEdit();
                 }}
                 style={{ ...rowStyles.optionsButton }}
-              >
+                >
                 <i aria-hidden="true" className="fa fa-pencil" />
               </Button>
             )}
@@ -250,7 +231,7 @@ class RangeTableRow extends React.Component {
               handleRemoveRow(rowIndex);
             }}
             style={{ ...rowStyles.optionsButton }}
-          >
+            >
             <i aria-hidden="true" className="fa fa-trash" />
           </Button>
         </div>

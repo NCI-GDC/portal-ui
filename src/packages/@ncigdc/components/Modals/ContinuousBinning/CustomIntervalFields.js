@@ -52,7 +52,7 @@ const CustomIntervalFields = ({
           inputError={intervalErrors.amount}
           inputId="custom-interval-amount"
           inputKey="amount"
-          valid={intervalErrors.amount.length === 0}
+          valid={intervalErrors.amount === ''}
           validateOnBlur={validateCustomInterval}
           value={intervalFields.amount}
           />
@@ -66,7 +66,7 @@ const CustomIntervalFields = ({
           inputError={intervalErrors.min}
           inputId="custom-interval-min"
           inputKey="min"
-          valid={intervalErrors.min.length === 0}
+          valid={intervalErrors.min === ''}
           validateOnBlur={validateCustomInterval}
           value={intervalFields.min}
           />
@@ -80,7 +80,7 @@ const CustomIntervalFields = ({
           inputError={intervalErrors.max}
           inputId="custom-interval-max"
           inputKey="max"
-          valid={intervalErrors.max.length === 0}
+          valid={intervalErrors.max === ''}
           validateOnBlur={validateCustomInterval}
           value={intervalFields.max}
           />

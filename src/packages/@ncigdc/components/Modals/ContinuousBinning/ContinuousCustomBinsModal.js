@@ -77,6 +77,7 @@ class ContinuousCustomBinsModal extends Component {
     } = this.state;
 
     console.log('intervalFields', intervalFields);
+    console.log('intervalErrors', intervalErrors);
 
     const updateIntervalFields = (target, inputError = null) => {
       const inputKey = target.id.split('-')[2];
@@ -89,7 +90,7 @@ class ContinuousCustomBinsModal extends Component {
 
       const nextIntervalErrors = {
         ...intervalErrors,
-        [inputKey]: inputError === null ? intervalFields[inputKey].error : inputError,
+        [inputKey]: inputError === null ? intervalErrors[inputKey] : inputError,
       };
 
       this.setState({

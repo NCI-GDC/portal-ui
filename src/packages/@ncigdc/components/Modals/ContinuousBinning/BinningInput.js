@@ -32,7 +32,6 @@ const BinningInput = ({
   validateOnBlur,
   value,
 }) => {
-  // console.log('input', inputId, value);
   return (
     <React.Fragment>
       <input

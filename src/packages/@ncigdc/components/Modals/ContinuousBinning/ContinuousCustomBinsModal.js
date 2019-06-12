@@ -70,14 +70,41 @@ class ContinuousCustomBinsModal extends Component {
     rangeRows: [defaultRangeRow],
   };
 
+  // binning method: range
+
+  handleRemoveRow = rowIndex => {
+    const { rangeRows } = this.state;
+    const nextRangeRows = rangeRows.filter((filterRow, filterRowIndex) => filterRowIndex !== rowIndex);
+    console.log('REMOVE nextRangeRows', nextRangeRows);
+    this.setState({ rangeRows: nextRangeRows });
+  };
+
+  handleToggleActiveRow = (inputRowIndex, inputIsActive) => {
+    const { rangeRows } = this.state;
+    const nextRangeRows = rangeRows.map((rangeRow, rowIndex) => ({
+      active: rowIndex === inputRowIndex ? inputIsActive : rangeRow.active,
+      fields: rangeRows.fields,
+    }));
+    console.log('TOGGLE nextRangeRows', nextRangeRows);
+    this.setState({ rangeRows: nextRangeRows });
+  };
+
+  handleUpdateRow = (inputRowIndex, inputRow) => {
+    const { rangeRows } = this.state;
+    const nextRangeRows = rangeRows.map((rangeRow, rowIndex) => (rowIndex === inputRowIndex ? inputRow : rangeRow));
+    console.log('UPDATE nextRangeRows', nextRangeRows);
+    this.setState({ rangeRows: nextRangeRows });
+  };
+
   render() {
     const { defaultData, fieldName } = this.props;
     const {
-      binningMethod, intervalErrors, intervalFields,
+      binningMethod, intervalErrors, intervalFields, rangeRows,
     } = this.state;
 
-    console.log('intervalFields', intervalFields);
-    console.log('intervalErrors', intervalErrors);
+    console.log('RENDER rangeRows', rangeRows);
+
+    // binning method: interval
 
     const updateIntervalFields = (target, inputError = null) => {
       const inputKey = target.id.split('-')[2];
@@ -141,6 +168,10 @@ class ContinuousCustomBinsModal extends Component {
       updateIntervalFields(target, inputError);
     };
 
+    rangeRows.map((row, rowIndex) => Object.keys(row.fields).map(field => {
+      console.log('row: ', rowIndex, 'field: ', field, row.fields[field]);
+    }));
+
     return (
       <Column style={{ padding: '20px' }}>
         <div>
@@ -164,7 +195,7 @@ class ContinuousCustomBinsModal extends Component {
           </p>
         </div>
         <Row>
-          <Column style={styles.formBg}>
+          <Column className="binning-interval" style={styles.formBg}>
             <h3>Define bins by:</h3>
             <CustomIntervalFields
               defaultData={defaultData}
@@ -183,6 +214,88 @@ class ContinuousCustomBinsModal extends Component {
               />
           </Column>
         </Row>
+        <div className="binning-range">
+          <div style={{ marginBottom: '15px' }}>
+            <BinningMethodInput
+              binningMethod="range"
+              defaultChecked={binningMethod === 'range'}
+              label="Manually"
+              onClick={() => {
+                this.setState({ binningMethod: 'range' });
+              }}
+              />
+          </div>
+          <div style={styles.rangeTable.wrapper}>
+            <div style={styles.rangeTable.heading}>
+              <div
+                id="range-table-label-name"
+                style={styles.rangeTable.column}
+                >
+                Bin Name
+              </div>
+              <div
+                id="range-table-label-min"
+                style={styles.rangeTable.column}
+                >
+                From
+              </div>
+              <div
+                id="range-table-label-max"
+                style={styles.rangeTable.column}
+                >
+                To
+              </div>
+              <div
+                id="range-table-label-options"
+                style={styles.rangeTable.optionsColumn}
+                >
+                Options
+              </div>
+            </div>
+            <div>
+              {/* debug
+              {rangeRows.map((row, rowIndex) => Object.keys(row.fields).map(field => (
+                <p key={`${rowIndex}-${field}`}>
+                  {rowIndex}
+                  :
+                  {' '}
+                  {row.fields[field]}
+                </p>
+              )))} */}
+              {rangeRows.map((row, rowIndex) => (
+                <RangeTableRow
+                  fields={row.fields}
+                  handleRemoveRow={this.handleRemoveRow}
+                  handleToggleActiveRow={this.handleToggleActiveRow}
+                  handleUpdateRow={this.handleUpdateRow}
+                  key={`range-row-${rowIndex}`}
+                  rangeMethodActive={binningMethod === 'range'}
+                  row={row}
+                  rowActive={row.active}
+                  rowIndex={rowIndex}
+                  styles={styles.rangeTable}
+                  />
+              ))}
+            </div>
+          </div>
+          <Button
+            disabled={binningMethod !== 'range'}
+            onClick={() => {
+              const nextRangeRows = [...rangeRows, defaultRangeRow];
+              this.setState({ rangeRows: nextRangeRows });
+            }}
+            style={{
+              ...styles.button,
+              display: 'flex',
+              marginLeft: 'auto',
+              maxWidth: '100px',
+              ...(binningMethod !== 'range' ? styles.inputDisabled : {}),
+            }}
+            >
+            <i aria-hidden="true" className="fa fa-plus-circle" />
+            &nbsp; Add
+          </Button>
+        </div>
       </Column>
     );
   }

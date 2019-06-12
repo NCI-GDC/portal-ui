@@ -1,5 +1,5 @@
 import React from 'react';
-import { isFinite } from 'lodash';
+import { isEqual, isFinite } from 'lodash';
 import OutsideClickHandler from 'react-outside-click-handler';
 import Button from '@ncigdc/uikit/Button';
 import BinningInput from './BinningInput';
@@ -38,7 +38,7 @@ class RangeTableRow extends React.Component {
     'to',
   ];
 
-  handleSave = function() {
+  handleSave = () => {
     const validateFieldsResult = this.validateFields();
     this.setState({ fieldErrors: validateFieldsResult });
     const rowIsValid = Object.keys(validateFieldsResult)
@@ -56,13 +56,13 @@ class RangeTableRow extends React.Component {
     }
   };
 
-  handleEdit = function() {
+  handleEdit = () => {
     const { handleToggleActiveRow, rowIndex } = this.props;
     this.setState({ isActive: true });
     handleToggleActiveRow(rowIndex, true);
   }
 
-  handleCancel = function() {
+  handleCancel = () => {
     const { handleToggleActiveRow, rowIndex } = this.props;
     this.setState({ isActive: false });
     handleToggleActiveRow(rowIndex, false);
@@ -92,9 +92,9 @@ class RangeTableRow extends React.Component {
       const currentValue = fieldValues[curr];
       const currentValueNumber = Number(currentValue);
 
-      const nextErrors = currentValue === '' 
-        ? 'Required field.' : curr === 'name' 
-          ? '' : isFinite(currentValueNumber) 
+      const nextErrors = currentValue === ''
+        ? 'Required field.' : curr === 'name'
+          ? '' : isFinite(currentValueNumber)
             ? '' : `'${currentValue}' is not a number.`;
 
       return ({
@@ -104,9 +104,9 @@ class RangeTableRow extends React.Component {
     }, {});
     console.log('errorsEmptyOrNaN', errorsEmptyOrNaN);
 
-    const checkMinMaxValues = errorsEmptyOrNaN.to === ''
-      && errorsEmptyOrNaN.from === ''
-      && Number(fieldValues.to.value) < Number(fieldValues.from.value);
+    const checkMinMaxValues = errorsEmptyOrNaN.to === '' &&
+      errorsEmptyOrNaN.from === '' &&
+      Number(fieldValues.to.value) < Number(fieldValues.from.value);
 
     return checkMinMaxValues ? ({
       from: `'From' must be less than ${fieldValues.to}.`,
@@ -135,6 +135,13 @@ class RangeTableRow extends React.Component {
   //   this.resetToModalState();
   // };
 
+  componentDidUpdate(prevProps) {
+    const { fields } = this.props;
+    if (!isEqual(fields, prevProps.fields)) {
+      this.setState({ fieldValues: fields });
+    }
+  }
+
   render = () => {
     const {
       handleRemoveRow,
@@ -146,6 +153,7 @@ class RangeTableRow extends React.Component {
 
     const { fieldErrors, fieldValues } = this.state;
 
+
     return (
       <OutsideClickHandler
         disabled={!rowActive || !rangeMethodActive}
@@ -154,14 +162,15 @@ class RangeTableRow extends React.Component {
           console.log('click!');
           // this.handleSave()
         }}
-      >
+        >
         <div style={rowStyles.fieldsWrapper}>
           {
             this.fieldsOrder.map(rowItem => (
               <div
                 key={`range-row-${rowIndex}-${rowItem}`}
                 style={styles.column}
-              >
+                >
+                {fieldValues[rowItem]}
                 <BinningInput
                   binningMethod="range"
                   disabled={!rowActive || !rangeMethodActive}
@@ -176,7 +185,7 @@ class RangeTableRow extends React.Component {
                   rowIndex={rowIndex}
                   valid={fieldErrors[rowItem].length === 0}
                   value={fieldValues[rowItem]}
-                />
+                  />
               </div>
             ))
           }
@@ -196,7 +205,7 @@ class RangeTableRow extends React.Component {
                   ...rowStyles.optionsButton,
                   ...(!rangeMethodActive || { background: 'green' }),
                 }}
-              >
+                >
                 <i aria-hidden="true" className="fa fa-check" />
               </Button>
               <Button
@@ -211,12 +220,12 @@ class RangeTableRow extends React.Component {
                   ...rowStyles.optionsButton,
                   ...(!rangeMethodActive || { background: 'red' }),
                 }}
-              >
+                >
                 <i aria-hidden="true" className="fa fa-close" />
               </Button>
             </React.Fragment>
           ) : (
-              <Button
+            <Button
                 aria-label="Edit"
                 disabled={!rangeMethodActive}
                 id={`range-row-${rowIndex}-edit`}
@@ -224,7 +233,7 @@ class RangeTableRow extends React.Component {
                   this.handleEdit();
                 }}
                 style={{ ...rowStyles.optionsButton }}
-              >
+                >
                 <i aria-hidden="true" className="fa fa-pencil" />
               </Button>
             )}
@@ -233,11 +242,11 @@ class RangeTableRow extends React.Component {
             buttonContentStyle={{ justifyContent: 'center' }}
             disabled={!rangeMethodActive}
             id={`range-row-${rowIndex}-remove`}
-            onClick={() => { 
-              handleRemoveRow(rowIndex); 
+            onClick={() => {
+              handleRemoveRow(rowIndex);
             }}
             style={{ ...rowStyles.optionsButton }}
-          >
+            >
             <i aria-hidden="true" className="fa fa-trash" />
           </Button>
         </div>

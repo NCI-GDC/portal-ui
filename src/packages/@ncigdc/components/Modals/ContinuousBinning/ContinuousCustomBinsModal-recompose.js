@@ -172,17 +172,15 @@ export default compose(
         fields: rangeRows.fields,
       }));
       setRangeRows(nextRangeRows);
-    }
+    };
 
     const handleUpdateRow = (inputRowIndex, inputRow) => {
-      const nextRangeRows = rangeRows.map((rangeRow, rowIndex) => 
-        (rowIndex === inputRowIndex ? inputRow : rangeRow));
+      const nextRangeRows = rangeRows.map((rangeRow, rowIndex) => (rowIndex === inputRowIndex ? inputRow : rangeRow));
       setRangeRows(nextRangeRows);
     };
 
     const handleRemoveRow = rowIndex => {
-      const nextRangeRows = rangeRows.filter((filterRow, filterRowIndex) => 
-        filterRowIndex !== rowIndex);
+      const nextRangeRows = rangeRows.filter((filterRow, filterRowIndex) => filterRowIndex !== rowIndex);
       setRangeRows(nextRangeRows);
     };
 
@@ -303,7 +301,7 @@ export default compose(
               </Button>
             </div>
           </Column>
-        </Row >
+        </Row>
         <Row
           spacing="1rem"
           style={{

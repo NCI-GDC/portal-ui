@@ -128,7 +128,6 @@ class RangeTableRow extends React.Component {
   render = () => {
     const {
       handleRemoveRow,
-      handleUpdateBinningMethod,
       rangeMethodActive,
       rowActive,
       rowIndex,
@@ -149,6 +148,7 @@ class RangeTableRow extends React.Component {
           onClick={() => {
             if (!rowActive) this.handleEdit();
           }}
+          role="presentation"
           style={rowStyles.fieldsWrapper}
           >
           {

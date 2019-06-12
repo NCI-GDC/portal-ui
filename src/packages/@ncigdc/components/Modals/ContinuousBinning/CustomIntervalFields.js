@@ -11,10 +11,11 @@ const styles = {
 };
 
 const CustomIntervalFields = ({
-  customInterval,
   disabled,
   handleChange,
   handleUpdateBinningMethod,
+  intervalErrors,
+  intervalFields,
   validateCustomInterval,
 }) => {
   const CustomIntervalText = props => {
@@ -48,12 +49,12 @@ const CustomIntervalFields = ({
           binningMethod="interval"
           disabled={disabled}
           handleChange={handleChange}
-          inputError={customInterval.amount.error}
+          inputError={intervalErrors.amount}
           inputId="custom-interval-amount"
           inputKey="amount"
-          valid={customInterval.amount.error.length === 0}
+          valid={intervalErrors.amount.length === 0}
           validateOnBlur={validateCustomInterval}
-          value={customInterval.amount.value}
+          value={intervalFields.amount}
           />
       </div>
       <CustomIntervalText>limit values from</CustomIntervalText>
@@ -62,12 +63,12 @@ const CustomIntervalFields = ({
           binningMethod="interval"
           disabled={disabled}
           handleChange={handleChange}
-          inputError={customInterval.min.error}
+          inputError={intervalErrors.min}
           inputId="custom-interval-min"
           inputKey="min"
-          valid={customInterval.min.error.length === 0}
+          valid={intervalErrors.min.length === 0}
           validateOnBlur={validateCustomInterval}
-          value={customInterval.min.value}
+          value={intervalFields.min}
           />
       </div>
       <CustomIntervalText>to</CustomIntervalText>
@@ -76,12 +77,12 @@ const CustomIntervalFields = ({
           binningMethod="interval"
           disabled={disabled}
           handleChange={handleChange}
-          inputError={customInterval.max.error}
+          inputError={intervalErrors.max}
           inputId="custom-interval-max"
           inputKey="max"
-          valid={customInterval.max.error.length === 0}
+          valid={intervalErrors.max.length === 0}
           validateOnBlur={validateCustomInterval}
-          value={customInterval.max.value}
+          value={intervalFields.max}
           />
       </div>
     </div>

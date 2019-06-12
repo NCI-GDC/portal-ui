@@ -42,15 +42,15 @@ const enhance = compose(
   lifecycle({
     componentDidMount(): void {
 
-      this.props.dispatch(
-        setModal(
-          <ContinuousCustomBins
-            bins={{}}
-            fieldName={"testing"}
-            onClose={() => dispatch(setModal(null))}
-            />
-        )
-      )
+      // this.props.dispatch(
+      //   setModal(
+      //     <ContinuousCustomBins
+      //       bins={{}}
+      //       fieldName={"testing"}
+      //       onClose={() => dispatch(setModal(null))}
+      //       />
+      //   )
+      // )
       if (!Cookies.get(FIRST_TIME_KEY)) {
         this.props.dispatch(
           setModal(
@@ -82,34 +82,34 @@ const PortalContainer = ({
 }: {
   notifications: Array<{ dismissed: string }>,
 }) => (
-  <div
-    style={{
-      position: 'relative',
-      minHeight: '100vh',
-      minWidth: 1024,
-    }}
-  >
-    <SkipLink href="#skip">Skip to Main Content</SkipLink>
-    <ProgressContainer />
-    {AWG ? <AWGHeader /> : <Header />}
     <div
-      id="skip"
-      role="main"
       style={{
-        paddingTop: `calc(51px + ${notifications.filter(n => !n.dismissed)
-          .length * 40}px)`,
-        paddingBottom: '120px',
-        transition: 'padding 0.25s ease',
+        position: 'relative',
+        minHeight: '100vh',
+        minWidth: 1024,
       }}
     >
-      {AWG ? <AWGRoutes /> : <Routes />}
+      <SkipLink href="#skip">Skip to Main Content</SkipLink>
+      <ProgressContainer />
+      {AWG ? <AWGHeader /> : <Header />}
+      <div
+        id="skip"
+        role="main"
+        style={{
+          paddingTop: `calc(51px + ${notifications.filter(n => !n.dismissed)
+            .length * 40}px)`,
+          paddingBottom: '120px',
+          transition: 'padding 0.25s ease',
+        }}
+      >
+        {AWG ? <AWGRoutes /> : <Routes />}
+      </div>
+      <Footer />
+      <RelayLoadingContainer />
+      <NotificationContainer />
+      <ModalContainer />
+      <GlobalTooltip />
     </div>
-    <Footer />
-    <RelayLoadingContainer />
-    <NotificationContainer />
-    <ModalContainer />
-    <GlobalTooltip />
-  </div>
-);
+  );
 
 export default enhance(PortalContainer);

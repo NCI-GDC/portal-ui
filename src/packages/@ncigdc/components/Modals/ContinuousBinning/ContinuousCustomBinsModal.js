@@ -1,10 +1,4 @@
-import React from 'react';
-import {
-  compose,
-  setDisplayName,
-  withProps,
-  withState,
-} from 'recompose';
+import React, { Component } from 'react';
 import { isFinite } from 'lodash';
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import Button from '@ncigdc/uikit/Button';
@@ -58,92 +52,72 @@ const defaultRangeRow = {
   },
 };
 
-export default compose(
-  setDisplayName('ContinuousCustomBinsModal'),
-  withState('rangeRows', 'setRangeRows', [defaultRangeRow]),
-  withState('warning', 'setWarning', ''),
-  withState('selectedBinningMethod', 'setSelectedBinningMethod', 'range'),
-  withProps(({
-    bins,
-  }: any) => {
-    const values = Object.keys(bins).map(n => Number(n)).sort((a, b) => a - b);
-    const defaultMin = values.length ? values[0] : 0;
-    const defaultMax = values.length ? values[values.length - 1] : 0;
-    const quartileWithDecimals = (defaultMax - defaultMin) / 4;
-    const defaultQuartile = Number(quartileWithDecimals.toFixed(2));
+class ContinuousCustomBinsModal extends Component {
+  state = {
+    binningMethod: 'range', // or interval
+    intervalErrors: {
+      amount: '',
+      max: '',
+      min: '',
+    },
+    intervalFields: {
+      // seed input values, from props
+      amount: this.props.defaultData.quartile,
+      max: this.props.defaultData.max,
+      min: this.props.defaultData.min,
+    },
+    modalWarning: '',
+    rangeRows: [defaultRangeRow],
+  };
 
-    return ({
-      defaultMax,
-      defaultMin,
-      defaultQuartile,
-    });
-  }),
-  withState('customInterval', 'setCustomInterval', props => {
-    const { defaultMax, defaultMin, defaultQuartile } = props;
-    return ({
-      amount: {
-        error: '',
-        value: defaultQuartile,
-      },
-      max: {
-        error: '',
-        value: defaultMax,
-      },
-      min: {
-        error: '',
-        value: defaultMin,
-      },
-    });
-  })
-)(
-  ({
-    customInterval,
-    defaultMax,
-    defaultMin,
-    defaultQuartile,
-    fieldName,
-    onClose,
-    rangeRows,
-    selectedBinningMethod,
-    setCustomInterval,
-    setRangeRows,
-    setSelectedBinningMethod,
-    warning,
-  }) => {
-    const updateCustomInterval = (target, inputError = null) => {
+  render() {
+    const { defaultData, fieldName } = this.props;
+    const {
+      binningMethod, intervalErrors, intervalFields,
+    } = this.state;
+
+    console.log('intervalFields', intervalFields);
+
+    const updateIntervalFields = (target, inputError = null) => {
       const inputKey = target.id.split('-')[2];
       const inputValue = target.value;
 
-      const nextCustomInterval = {
-        ...customInterval,
-        [inputKey]: {
-          error: inputError === null ? customInterval[inputKey].error : inputError,
-          value: inputValue,
-        },
+      const nextIntervalFields = {
+        ...intervalFields,
+        [inputKey]: inputValue,
       };
-      setCustomInterval(nextCustomInterval);
+
+      const nextIntervalErrors = {
+        ...intervalErrors,
+        [inputKey]: inputError === null ? intervalFields[inputKey].error : inputError,
+      };
+
+      this.setState({
+        intervalErrors: nextIntervalErrors,
+        intervalFields: nextIntervalFields,
+      });
     };
 
-    const validateCustomInterval = target => {
+    const validateIntervalFields = target => {
       const inputKey = target.id.split('-')[2];
       const inputValue = Number(target.value);
 
       if (!isFinite(inputValue)) {
         const nanError = [`'${target.value}' is not a valid number.`];
-        updateCustomInterval(target, nanError);
+        updateIntervalFields(target, nanError);
         return;
       }
 
-      const currentMin = customInterval.min.value;
-      const currentMax = customInterval.max.value;
+      const currentMin = intervalFields.min.value;
+      const currentMax = intervalFields.max.value;
 
-      const checkMinInRange = currentMin >= defaultMin && currentMin < defaultMax;
-      const validMin = checkMinInRange ? currentMin : defaultMin;
+      const checkMinInRange = currentMin >= defaultData.min && currentMin < defaultData.max;
+      const validMin = checkMinInRange ? currentMin : defaultData.min;
 
-      const checkMaxInRange = currentMax > defaultMin && currentMax <= defaultMax;
-      const validMax = checkMaxInRange ? currentMax : defaultMax;
+      const checkMaxInRange = currentMax > defaultData.min && currentMax <= defaultData.max;
+      const validMax = checkMaxInRange ? currentMax : defaultData.max;
 
-      const validAmount = checkMinInRange && checkMaxInRange ? currentMax - currentMin : defaultMax - defaultMin;
+      const validAmount = checkMinInRange && checkMaxInRange ? currentMax - currentMin : defaultData.max - defaultData.min;
 
       let inputError;
 
@@ -153,58 +127,34 @@ export default compose(
         inputError = inputValue < 1 ? amountTooSmallError : inputValue > validAmount ? amountTooLargeError : '';
       } else if (inputKey === 'max') {
         const maxTooSmallError = `Max must be greater than ${validMin}.`;
-        const maxTooLargeError = `Max must be less than or equal to ${defaultMax}.`;
-        inputError = inputValue <= validMin ? maxTooSmallError : inputValue > defaultMax ? maxTooLargeError : '';
+        const maxTooLargeError = `Max must be less than or equal to ${defaultData.max}.`;
+        inputError = inputValue <= validMin ? maxTooSmallError : inputValue > defaultData.max ? maxTooLargeError : '';
       } else if (inputKey === 'min') {
         const minTooLargeError = `Min must be less than ${validMax}.`;
-        const maxTooSmallError = `Min must be greater than or equal to ${defaultMin}.`;
-        inputError = inputValue >= validMax ? minTooLargeError : inputValue < defaultMin ? maxTooSmallError : '';
+        const maxTooSmallError = `Min must be greater than or equal to ${defaultData.min}.`;
+        inputError = inputValue >= validMax ? minTooLargeError : inputValue < defaultData.min ? maxTooSmallError : '';
       } else {
         inputError = '';
       }
 
-      updateCustomInterval(target, inputError);
+      updateIntervalFields(target, inputError);
     };
-
-    const handleToggleActiveRow = (inputRowIndex, inputIsActive) => {
-      const nextRangeRows = rangeRows.map((rangeRow, rowIndex) => ({
-        active: rowIndex === inputRowIndex ? inputIsActive : rangeRow.active,
-        fields: rangeRows.fields,
-      }));
-      setRangeRows(nextRangeRows);
-    }
-
-    const handleUpdateRow = (inputRowIndex, inputRow) => {
-      const nextRangeRows = rangeRows.map((rangeRow, rowIndex) => 
-        (rowIndex === inputRowIndex ? inputRow : rangeRow));
-      setRangeRows(nextRangeRows);
-    };
-
-    const handleRemoveRow = rowIndex => {
-      const nextRangeRows = rangeRows.filter((filterRow, filterRowIndex) => 
-        filterRowIndex !== rowIndex);
-      setRangeRows(nextRangeRows);
-    };
-
-    const toggleSubmitButton = () => (selectedBinningMethod === 'interval' ? Object.keys(customInterval).some(field => customInterval[field].error.length > 0) : rangeRows.some(row => row.active));
-
-    const submitDisabled = toggleSubmitButton();
 
     return (
       <Column style={{ padding: '20px' }}>
-        <h1 style={{ marginTop: 0 }}>
-          {`Create Custom Bins: ${fieldName}`}
-        </h1>
         <div>
+          <h1 style={{ marginTop: 0 }}>
+            {`Create Custom Bins: ${fieldName}`}
+          </h1>
           <p>
             Available values from
-            <strong>{` ${defaultMin} `}</strong>
+            <strong>{` ${defaultData.min} `}</strong>
             to
-            <strong>{` ${defaultMax} `}</strong>
+            <strong>{` ${defaultData.max} `}</strong>
           </p>
           <p>
             Quartile bin interval:
-            <strong>{` ${defaultQuartile}`}</strong>
+            <strong>{` ${defaultData.quartile}`}</strong>
           </p>
           <p>
             Configure your bins then click
@@ -216,124 +166,25 @@ export default compose(
           <Column style={styles.formBg}>
             <h3>Define bins by:</h3>
             <CustomIntervalFields
-              customInterval={customInterval}
-              disabled={selectedBinningMethod !== 'interval'}
+              defaultData={defaultData}
+              disabled={binningMethod !== 'interval'}
               handleChange={e => {
-                updateCustomInterval(e.target);
+                updateIntervalFields(e.target);
               }}
               handleUpdateBinningMethod={() => {
-                setSelectedBinningMethod('interval');
+                this.setState({ binningMethod: 'interval' });
               }}
-              validateCustomInterval={e => {
-                validateCustomInterval(e.target);
+              intervalErrors={intervalErrors}
+              intervalFields={intervalFields}
+              validateIntervalFields={e => {
+                validateIntervalFields(e.target);
               }}
               />
-
-            <div className="binning-range">
-              <div style={{ marginBottom: '15px' }}>
-                <BinningMethodInput
-                  binningMethod="range"
-                  defaultChecked={selectedBinningMethod === 'range'}
-                  label="Manually"
-                  onClick={() => {
-                    setSelectedBinningMethod('range');
-                  }}
-                  />
-              </div>
-              <div style={styles.rangeTable.wrapper}>
-                <div style={styles.rangeTable.heading}>
-                  <div
-                    id="range-table-label-name"
-                    style={styles.rangeTable.column}
-                    >
-                    Bin Name
-                  </div>
-                  <div
-                    id="range-table-label-min"
-                    style={styles.rangeTable.column}
-                    >
-                    From
-                  </div>
-                  <div
-                    id="range-table-label-max"
-                    style={styles.rangeTable.column}
-                    >
-                    To
-                  </div>
-                  <div
-                    id="range-table-label-options"
-                    style={styles.rangeTable.optionsColumn}
-                    >
-                    Options
-                  </div>
-                </div>
-                <div>
-                  {rangeRows.map((row, rowIndex) => (
-                    <RangeTableRow
-                      fields={row.fields}
-                      handleRemoveRow={handleRemoveRow}
-                      handleToggleActiveRow={handleToggleActiveRow}
-                      handleUpdateRow={handleUpdateRow}
-                      key={`range-row-${rowIndex}`}
-                      rangeMethodActive={selectedBinningMethod === 'range'}
-                      row={row}
-                      rowActive={row.active}
-                      rowIndex={rowIndex}
-                      styles={styles.rangeTable}
-                      />
-                  ))}
-                </div>
-              </div>
-              <Button
-                disabled={selectedBinningMethod !== 'range'}
-                onClick={() => {
-                  const nextRangeRows = [...rangeRows, defaultRangeRow];
-                  setRangeRows(nextRangeRows);
-                }}
-                style={{
-                  ...styles.button,
-                  display: 'flex',
-                  marginLeft: 'auto',
-                  maxWidth: '100px',
-                  ...(selectedBinningMethod !== 'range' ? styles.inputDisabled : {}),
-                }}
-                >
-                <i aria-hidden="true" className="fa fa-plus-circle" />
-                &nbsp; Add
-              </Button>
-            </div>
           </Column>
-        </Row >
-        <Row
-          spacing="1rem"
-          style={{
-            justifyContent: 'flex-end',
-            margin: '20px',
-          }}
-          >
-          <span style={{
-            color: 'red',
-            justifyContent: 'flex-start',
-            visibility: warning.length > 0 ? 'visible' : 'hidden',
-          }}
-                >
-            {`Warning: ${warning}`}
-          </span>
-          <Button
-            onClick={onClose}
-            style={styles.button}
-            >
-            Cancel
-          </Button>
-          <Button
-            disabled={submitDisabled}
-            onClick={() => validateRangeRowsOnSubmit()}
-            style={styles.button}
-            >
-            Save Bins
-          </Button>
         </Row>
-      </Column >
+      </Column>
     );
   }
-);
+}
+
+export default ContinuousCustomBinsModal;

@@ -3,6 +3,7 @@ import { isFinite } from 'lodash';
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import Button from '@ncigdc/uikit/Button';
 import { visualizingButton } from '@ncigdc/theme/mixins';
+import { interval } from 'd3';
 import RangeTableRow from './RangeTableRow';
 import BinningMethodInput from './BinningMethodInput';
 import CustomIntervalFields from './CustomIntervalFields';
@@ -84,7 +85,6 @@ class ContinuousCustomBinsModal extends Component {
       ...rangeRow,
       active: rowIndex === inputRowIndex ? inputIsActive : rangeRow.active,
     }));
-    console.log('nextRangeRows', nextRangeRows);
     this.setState({ rangeRows: nextRangeRows });
   };
 
@@ -95,9 +95,9 @@ class ContinuousCustomBinsModal extends Component {
   };
 
   render() {
-    const { defaultData, fieldName } = this.props;
+    const { defaultData, fieldName, onClose } = this.props;
     const {
-      binningMethod, intervalErrors, intervalFields, rangeRows,
+      binningMethod, intervalErrors, intervalFields, modalWarning, rangeRows,
     } = this.state;
 
     // binning method: interval
@@ -164,6 +164,14 @@ class ContinuousCustomBinsModal extends Component {
       updateIntervalFields(target, inputError);
     };
 
+    const submitDisabled = () => {
+      const checkInterval = Object.keys(intervalErrors)
+        .filter(int => intervalErrors[int] !== '').length > 0;
+      const checkRange = rangeRows
+        .filter(row => row.active).length > 0;
+      return binningMethod === 'interval' ? checkInterval : checkRange;
+    };
+
     return (
       <Column style={{ padding: '20px' }}>
         <div>
@@ -204,7 +212,7 @@ class ContinuousCustomBinsModal extends Component {
                 validateIntervalFields={e => {
                   validateIntervalFields(e.target);
                 }}
-                />
+              />
             </Column>
           </Row>
           <div
@@ -215,7 +223,7 @@ class ContinuousCustomBinsModal extends Component {
               }
             }}
             role="presentation"
-            >
+          >
             <div style={{ marginBottom: '15px' }}>
               <BinningMethodInput
                 binningMethod="range"
@@ -225,32 +233,32 @@ class ContinuousCustomBinsModal extends Component {
                   this.setState({ binningMethod: 'range' });
                 }}
                 label="Manually"
-                />
+              />
             </div>
             <div style={styles.rangeTable.wrapper}>
               <div style={styles.rangeTable.heading}>
                 <div
                   id="range-table-label-name"
                   style={styles.rangeTable.column}
-                  >
+                >
                   Bin Name
                 </div>
                 <div
                   id="range-table-label-min"
                   style={styles.rangeTable.column}
-                  >
+                >
                   From
                 </div>
                 <div
                   id="range-table-label-max"
                   style={styles.rangeTable.column}
-                  >
+                >
                   To
                 </div>
                 <div
                   id="range-table-label-options"
                   style={styles.rangeTable.optionsColumn}
-                  >
+                >
                   Options
                 </div>
               </div>
@@ -269,7 +277,7 @@ class ContinuousCustomBinsModal extends Component {
                     rowActive={row.active}
                     rowIndex={rowIndex}
                     styles={styles.rangeTable}
-                    />
+                  />
                 ))}
               </div>
             </div>
@@ -286,13 +294,43 @@ class ContinuousCustomBinsModal extends Component {
                 maxWidth: '100px',
                 ...(binningMethod !== 'range' ? styles.inputDisabled : {}),
               }}
-              >
+            >
               <i aria-hidden="true" className="fa fa-plus-circle" />
               &nbsp; Add
             </Button>
           </div>
         </div>
-
+        <Row
+          spacing="1rem"
+          style={{
+            justifyContent: 'flex-end',
+            margin: '20px',
+          }}
+        >
+          <span style={{
+            color: 'red',
+            justifyContent: 'flex-start',
+            visibility: modalWarning.length > 0 ? 'visible' : 'hidden',
+          }}
+          >
+            {`Warning: ${modalWarning}`}
+          </span>
+          <Button
+            onClick={onClose}
+            style={styles.button}
+          >
+            Cancel
+          </Button>
+          <Button
+            disabled={submitDisabled()}
+            onClick={() => validateRangeRowsOnSubmit()}
+            style={
+              styles.button
+            }
+          >
+            Save Bins
+          </Button>
+        </Row>
       </Column>
     );
   }

@@ -42,8 +42,6 @@ class RangeTableRow extends React.Component {
   componentDidUpdate(prevProps) {
     const { fields } = this.props;
     if (!isEqual(fields, prevProps.fields)) {
-      console.log('fields', fields);
-      console.log('prevProps.fields', prevProps.fields);
       /* eslint-disable */
       this.setState({ fieldValues: fields });
       /* eslint-enable */
@@ -116,13 +114,10 @@ class RangeTableRow extends React.Component {
         [curr]: nextErrors,
       });
     }, {});
-    console.log('errorsEmptyOrNaN', errorsEmptyOrNaN);
 
     const checkFromToValues = errorsEmptyOrNaN.to === '' &&
       errorsEmptyOrNaN.from === '' &&
       Number(fieldValues.to) < Number(fieldValues.from);
-
-    console.log('checkFromToValues', checkFromToValues);
     return checkFromToValues ? ({
       from: `'From' must be less than ${fieldValues.to}.`,
       name: '',

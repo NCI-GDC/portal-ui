@@ -1320,7 +1320,7 @@ export default compose(
     );
   }),
   withPropsOnChange(
-    (props, nextProps) => !isEqual(props.dataBuckets, nextProps.dataBuckets) || props.setId === nextProps.setId,
+    (props, nextProps) => !isEqual(props.dataBuckets, nextProps.dataBuckets) || props.setId !== nextProps.setId,
     ({
       dataBuckets,
       dispatch,

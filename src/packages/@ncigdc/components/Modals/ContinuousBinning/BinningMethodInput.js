@@ -1,15 +1,15 @@
 import React from 'react';
 
 const BinningMethodInput = ({
-  binningMethod, defaultChecked, label, onClick,
+  binningMethod, checked, handleChange, label,
 }) => {
   return (
     <React.Fragment>
       <input
-        defaultChecked={defaultChecked}
+        checked={checked}
         id={`binning-method-${binningMethod}`}
         name="binning-method"
-        onClick={onClick}
+        onChange={handleChange}
         style={{ marginRight: '15px' }}
         type="radio"
         value={binningMethod}

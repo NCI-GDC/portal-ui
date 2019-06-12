@@ -133,6 +133,7 @@ class RangeTableRow extends React.Component {
   render = () => {
     const {
       handleRemoveRow,
+      handleUpdateBinningMethod,
       rangeMethodActive,
       rowActive,
       rowIndex,
@@ -149,7 +150,12 @@ class RangeTableRow extends React.Component {
           this.handleSave();
         }}
         >
-        <div style={rowStyles.fieldsWrapper}>
+        <div
+          onClick={() => {
+            if (!rowActive) this.handleEdit();
+          }}
+          style={rowStyles.fieldsWrapper}
+          >
           {
             this.fieldsOrder.map(rowItem => (
               <div
@@ -162,7 +168,6 @@ class RangeTableRow extends React.Component {
                   handleChange={e => {
                     this.updateInput(e.target);
                   }}
-                  handleClick={() => { console.log('todo: select binning method or make the field editable'); }}
                   inputError={fieldErrors[rowItem]}
                   inputId={`range-row-${rowIndex}-${rowItem}`}
                   inputKey={rowItem}

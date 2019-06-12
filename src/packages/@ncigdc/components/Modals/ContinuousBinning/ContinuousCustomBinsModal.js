@@ -186,98 +186,113 @@ class ContinuousCustomBinsModal extends Component {
             to update the analysis plots.
           </p>
         </div>
-        <Row>
-          <Column className="binning-interval" style={styles.formBg}>
-            <h3>Define bins by:</h3>
-            <CustomIntervalFields
-              defaultData={defaultData}
-              disabled={binningMethod !== 'interval'}
-              handleChange={e => {
-                updateIntervalFields(e.target);
-              }}
-              handleUpdateBinningMethod={() => {
-                this.setState({ binningMethod: 'interval' });
-              }}
-              intervalErrors={intervalErrors}
-              intervalFields={intervalFields}
-              validateIntervalFields={e => {
-                validateIntervalFields(e.target);
-              }}
-            />
-          </Column>
-        </Row>
-        <div className="binning-range">
-          <div style={{ marginBottom: '15px' }}>
-            <BinningMethodInput
-              binningMethod="range"
-              defaultChecked={binningMethod === 'range'}
-              label="Manually"
-              onClick={() => {
-                this.setState({ binningMethod: 'range' });
-              }}
-            />
-          </div>
-          <div style={styles.rangeTable.wrapper}>
-            <div style={styles.rangeTable.heading}>
-              <div
-                id="range-table-label-name"
-                style={styles.rangeTable.column}
-              >
-                Bin Name
-              </div>
-              <div
-                id="range-table-label-min"
-                style={styles.rangeTable.column}
-              >
-                From
-              </div>
-              <div
-                id="range-table-label-max"
-                style={styles.rangeTable.column}
-              >
-                To
-              </div>
-              <div
-                id="range-table-label-options"
-                style={styles.rangeTable.optionsColumn}
-              >
-                Options
-              </div>
-            </div>
-            <div>
-              {rangeRows.map((row, rowIndex) => (
-                <RangeTableRow
-                  fields={row.fields}
-                  handleRemoveRow={this.handleRemoveRow}
-                  handleToggleActiveRow={this.handleToggleActiveRow}
-                  handleUpdateRow={this.handleUpdateRow}
-                  key={`range-row-${rowIndex}`}
-                  rangeMethodActive={binningMethod === 'range'}
-                  rowActive={row.active}
-                  rowIndex={rowIndex}
-                  styles={styles.rangeTable}
+        <div style={styles.formBg}>
+          <Row>
+            <Column className="binning-interval">
+              <h3>Define bins by:</h3>
+              <CustomIntervalFields
+                defaultData={defaultData}
+                disabled={binningMethod !== 'interval'}
+                handleChange={e => {
+                  updateIntervalFields(e.target);
+                }}
+                handleUpdateBinningMethod={() => {
+                  this.setState({ binningMethod: 'interval' });
+                }}
+                intervalErrors={intervalErrors}
+                intervalFields={intervalFields}
+                validateIntervalFields={e => {
+                  validateIntervalFields(e.target);
+                }}
                 />
-              ))}
-            </div>
-          </div>
-          <Button
-            disabled={binningMethod !== 'range'}
+            </Column>
+          </Row>
+          <div
+            className="binning-range"
             onClick={() => {
-              const nextRangeRows = [...rangeRows, defaultRangeRow];
-              this.setState({ rangeRows: nextRangeRows });
+              if (binningMethod !== 'range') {
+                this.setState({ binningMethod: 'range' });
+              }
             }}
-            style={{
-              ...styles.button,
-              display: 'flex',
-              marginLeft: 'auto',
-              maxWidth: '100px',
-              ...(binningMethod !== 'range' ? styles.inputDisabled : {}),
-            }}
-          >
-            <i aria-hidden="true" className="fa fa-plus-circle" />
-            &nbsp; Add
-          </Button>
+            role="presentation"
+            >
+            <div style={{ marginBottom: '15px' }}>
+              <BinningMethodInput
+                binningMethod="range"
+                checked={binningMethod === 'range'}
+                // defaultChecked={binningMethod === 'range'}
+                handleChange={() => {
+                  this.setState({ binningMethod: 'range' });
+                }}
+                label="Manually"
+                />
+            </div>
+            <div style={styles.rangeTable.wrapper}>
+              <div style={styles.rangeTable.heading}>
+                <div
+                  id="range-table-label-name"
+                  style={styles.rangeTable.column}
+                  >
+                  Bin Name
+                </div>
+                <div
+                  id="range-table-label-min"
+                  style={styles.rangeTable.column}
+                  >
+                  From
+                </div>
+                <div
+                  id="range-table-label-max"
+                  style={styles.rangeTable.column}
+                  >
+                  To
+                </div>
+                <div
+                  id="range-table-label-options"
+                  style={styles.rangeTable.optionsColumn}
+                  >
+                  Options
+                </div>
+              </div>
+              <div>
+                {rangeRows.map((row, rowIndex) => (
+                  <RangeTableRow
+                    fields={row.fields}
+                    handleRemoveRow={this.handleRemoveRow}
+                    handleToggleActiveRow={this.handleToggleActiveRow}
+                    handleUpdateBinningMethod={() => {
+                      this.setState({ binningMethod: 'range' });
+                    }}
+                    handleUpdateRow={this.handleUpdateRow}
+                    key={`range-row-${rowIndex}`}
+                    rangeMethodActive={binningMethod === 'range'}
+                    rowActive={row.active}
+                    rowIndex={rowIndex}
+                    styles={styles.rangeTable}
+                    />
+                ))}
+              </div>
+            </div>
+            <Button
+              disabled={binningMethod !== 'range'}
+              onClick={() => {
+                const nextRangeRows = [...rangeRows, defaultRangeRow];
+                this.setState({ rangeRows: nextRangeRows });
+              }}
+              style={{
+                ...styles.button,
+                display: 'flex',
+                marginLeft: 'auto',
+                maxWidth: '100px',
+                ...(binningMethod !== 'range' ? styles.inputDisabled : {}),
+              }}
+              >
+              <i aria-hidden="true" className="fa fa-plus-circle" />
+              &nbsp; Add
+            </Button>
+          </div>
         </div>
+
       </Column>
     );
   }

@@ -30,6 +30,12 @@ const CustomIntervalFields = ({
   return (
     <div
       className="binning-interval"
+      onClick={() => {
+        if (disabled) {
+          handleUpdateBinningMethod();
+        }
+      }}
+      role="presentation"
       style={{
         display: 'flex',
         marginBottom: '15px',
@@ -38,9 +44,9 @@ const CustomIntervalFields = ({
       <div>
         <BinningMethodInput
           binningMethod="interval"
-          defaultChecked={!disabled}
+          checked={!disabled}
+          handleChange={handleUpdateBinningMethod}
           label="Bin Interval"
-          onClick={handleUpdateBinningMethod}
           validateOnBlur={validateCustomInterval}
           />
       </div>

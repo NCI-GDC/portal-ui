@@ -168,9 +168,9 @@ export default compose(
           <Column style={blockStyle}>
             <Row style={{ justifyContent: 'space-between' }}>
               <div style={{
-                height: '54px',
                 alignItems: 'flex-end',
                 display: 'flex',
+                height: '54px',
               }}
                    >
                 Hidden Values

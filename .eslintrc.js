@@ -44,7 +44,7 @@ module.exports = {
     'arrow-body-style': 'off',
     'arrow-parens': 'off',
     'camelcase': ['warn', {
-      allow: ["^UNSAFE_", "doc_count"],
+      allow: ["^UNSAFE_", "doc_count", "^active_"],
     }],
     'comma-dangle': ['warn', 'always-multiline'],
     'func-names': ['warn', 'as-needed'],

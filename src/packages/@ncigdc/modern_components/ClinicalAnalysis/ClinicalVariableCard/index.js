@@ -108,9 +108,9 @@ type TVariableType =
 
 interface IVariable {
   bins: any[]; // tbd - bins still need spec
-  plotTypes: TPlotType;
-  active_chart: TActiveChart;
   active_calculation: TActiveCalculation;
+  active_chart: TActiveChart;
+  plotTypes: TPlotType;
   type: TVariableType;
 }
 
@@ -191,13 +191,13 @@ const styles = {
     lineHeight: '1.5',
   },
   actionMenuItemDisabled: (theme: IThemeProps) => ({
-    color: theme.greyScale5,
-    cursor: 'not-allowed',
     ':hover': {
+      backgroundColor: 'transparent',
       color: theme.greyScale5,
       cursor: 'not-allowed',
-      backgroundColor: 'transparent',
     },
+    color: theme.greyScale5,
+    cursor: 'not-allowed',
   }),
   activeButton: (theme: IThemeProps) => ({
     ...styles.common(theme),
@@ -560,7 +560,6 @@ const getHeadings = (chartType, dataDimension, fieldName) => {
 };
 
 const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
-  axisTitle,
   currentAnalysis,
   dataBuckets,
   customBins,
@@ -635,9 +634,9 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
       style={{
         ...zDepth1,
         height: 560,
+        justifyContent: 'space-between',
         margin: '0 1rem 1rem',
         padding: '0.5rem 1rem 1rem',
-        justifyContent: 'space-between',
         ...style,
       }}
       >
@@ -899,24 +898,24 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
             {variable.active_chart === 'box' && (
               <Column
                 style={{
-                  justifyContent: 'center',
                   alignItems: 'space-between',
                   height: CHART_HEIGHT,
-                  minWidth: 300,
+                  justifyContent: 'center',
                   marginBottom: 10,
+                  minWidth: 300,
                 }}
                 >
                 <Row style={{ width: '100%' }}>
                   <Row style={{
-                    width: BOX_PLOT_RATIO,
-                    marginLeft: 10,
-                    justifyContent: 'space-between',
                     alignItems: 'center',
+                    justifyContent: 'space-between',
+                    marginLeft: 10,
+                    width: BOX_PLOT_RATIO,
                   }}
                        >
                     <span style={{
-                      fontSize: '1.2rem',
                       color: theme.greyScale3,
+                      fontSize: '1.2rem',
                     }}
                           >
                       Box Plot
@@ -925,11 +924,11 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                   <Row>
                     <DownloadVisualizationButton
                       buttonStyle={{
-                        padding: 0,
-                        minWidth: 22,
-                        minHeight: 20,
-                        lineHeight: 0,
                         fontSize: '1.2rem',
+                        lineHeight: 0,
+                        minHeight: 20,
+                        minWidth: 22,
+                        padding: 0,
                       }}
                       noText
                       slug={`boxplot-${fieldName}`}
@@ -970,9 +969,9 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                       noText
                       slug={`qq-plot-${fieldName}`}
                       svg={() => wrapSvg({
+                        className: 'qq-plot',
                         selector: `#${wrapperId}-qqplot-container .qq-plot svg`,
                         title: `${humanify({ term: fieldName })} QQ Plot`,
-                        className: 'qq-plot',
                       })}
                       tooltipHTML="Download plot data"
                       tsvData={qqData}
@@ -1001,9 +1000,9 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                   <Column
                     id={`${wrapperId}-qqplot-container`}
                     style={{
-                      width: QQ_PLOT_RATIO,
                       height: CHART_HEIGHT + 10,
                       maxHeight: CHART_HEIGHT + 10,
+                      width: QQ_PLOT_RATIO,
                     }}
                     >
                     <QQPlotQuery
@@ -1320,46 +1319,49 @@ export default compose(
       },
     );
   }),
-  withPropsOnChange(['setId', 'totalDocs'], ({
-    dataBuckets,
-    dispatch,
-    fieldName,
-    id,
-    variable,
-  }) => {
-    dispatch(
-      updateClinicalAnalysisVariable({
-        fieldName,
-        id,
-        value: {
-          ...reduce(variable.bins, (acc, bin, key) => {
-            if (bin.groupName && bin.groupName !== key) {
-              return {
-                ...acc,
-                [key]: {
-                  doc_count: 0,
-                  groupName: bin.groupName,
-                  key,
-                },
-              };
-            }
-            return acc;
-          }, {}),
-          ...dataBuckets.reduce((acc, r) => ({
-            ...acc,
-            [r.key]: {
-              ...r,
-              groupName:
-                typeof get(variable, `bins.${r.key}.groupName`, undefined) === 'string' // hidden value have groupName '', so check if it is string
-                  ? get(variable, `bins.${r.key}.groupName`, undefined)
-                  : r.key,
-            },
-          }), {}),
-        },
-        variableKey: 'bins',
-      }),
-    );
-  }),
+  withPropsOnChange(
+    (props, nextProps) => !isEqual(props.dataBuckets, nextProps.dataBuckets) || props.setId === nextProps.setId,
+    ({
+      dataBuckets,
+      dispatch,
+      fieldName,
+      id,
+      variable,
+    }) => {
+      dispatch(
+        updateClinicalAnalysisVariable({
+          fieldName,
+          id,
+          value: {
+            ...reduce(variable.bins, (acc, bin, key) => {
+              if (bin.groupName && bin.groupName !== key) {
+                return {
+                  ...acc,
+                  [key]: {
+                    doc_count: 0,
+                    groupName: bin.groupName,
+                    key,
+                  },
+                };
+              }
+              return acc;
+            }, {}),
+            ...dataBuckets.reduce((acc, r) => ({
+              ...acc,
+              [r.key]: {
+                ...r,
+                groupName:
+                  typeof get(variable, `bins.${r.key}.groupName`, undefined) === 'string' // hidden value have groupName '', so check if it is string
+                    ? get(variable, `bins.${r.key}.groupName`, undefined)
+                    : r.key,
+              },
+            }), {}),
+          },
+          variableKey: 'bins',
+        }),
+      );
+    }
+  ),
   withProps(
     ({
       fieldName,

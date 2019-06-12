@@ -19,17 +19,16 @@ const rowStyles = {
 
 class RangeTableRow extends React.Component {
   state = {
-    fieldValues: {
-      from: '',
-      name: '',
-      to: '',
-    },
     fieldErrors: {
       from: '',
       name: '',
       to: '',
     },
-    isActive: true,
+    fieldValues: {
+      from: '',
+      name: '',
+      to: '',
+    },
   };
 
   fieldsOrder = [
@@ -37,6 +36,15 @@ class RangeTableRow extends React.Component {
     'from',
     'to',
   ];
+
+  componentDidUpdate(prevProps) {
+    const { fields } = this.props;
+    if (!isEqual(fields, prevProps.fields)) {
+      /* eslint-disable */
+      this.setState({ fieldValues: fields });
+      /* eslint-enable */
+    }
+  }
 
   handleSave = () => {
     const validateFieldsResult = this.validateFields();
@@ -46,25 +54,22 @@ class RangeTableRow extends React.Component {
 
     if (rowIsValid) {
       const { handleUpdateRow, rowIndex } = this.props;
-      const { fieldValues, isActive } = this.state;
+      const { fieldValues } = this.state;
       const nextRow = {
         active: false,
         fields: fieldValues,
       };
-      this.setState({ isActive: false });
       handleUpdateRow(rowIndex, nextRow);
     }
   };
 
   handleEdit = () => {
     const { handleToggleActiveRow, rowIndex } = this.props;
-    this.setState({ isActive: true });
     handleToggleActiveRow(rowIndex, true);
   }
 
   handleCancel = () => {
     const { handleToggleActiveRow, rowIndex } = this.props;
-    this.setState({ isActive: false });
     handleToggleActiveRow(rowIndex, false);
   }
 
@@ -135,13 +140,6 @@ class RangeTableRow extends React.Component {
   //   this.resetToModalState();
   // };
 
-  componentDidUpdate(prevProps) {
-    const { fields } = this.props;
-    if (!isEqual(fields, prevProps.fields)) {
-      this.setState({ fieldValues: fields });
-    }
-  }
-
   render = () => {
     const {
       handleRemoveRow,
@@ -153,14 +151,12 @@ class RangeTableRow extends React.Component {
 
     const { fieldErrors, fieldValues } = this.state;
 
-
     return (
       <OutsideClickHandler
         disabled={!rowActive || !rangeMethodActive}
         display="flex"
         onOutsideClick={() => {
-          console.log('click!');
-          // this.handleSave()
+          this.handleSave();
         }}
         >
         <div style={rowStyles.fieldsWrapper}>
@@ -170,7 +166,6 @@ class RangeTableRow extends React.Component {
                 key={`range-row-${rowIndex}-${rowItem}`}
                 style={styles.column}
                 >
-                {fieldValues[rowItem]}
                 <BinningInput
                   binningMethod="range"
                   disabled={!rowActive || !rangeMethodActive}

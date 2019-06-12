@@ -75,7 +75,6 @@ class ContinuousCustomBinsModal extends Component {
   handleRemoveRow = rowIndex => {
     const { rangeRows } = this.state;
     const nextRangeRows = rangeRows.filter((filterRow, filterRowIndex) => filterRowIndex !== rowIndex);
-    console.log('REMOVE nextRangeRows', nextRangeRows);
     this.setState({ rangeRows: nextRangeRows });
   };
 
@@ -85,14 +84,12 @@ class ContinuousCustomBinsModal extends Component {
       active: rowIndex === inputRowIndex ? inputIsActive : rangeRow.active,
       fields: rangeRows.fields,
     }));
-    console.log('TOGGLE nextRangeRows', nextRangeRows);
     this.setState({ rangeRows: nextRangeRows });
   };
 
   handleUpdateRow = (inputRowIndex, inputRow) => {
     const { rangeRows } = this.state;
     const nextRangeRows = rangeRows.map((rangeRow, rowIndex) => (rowIndex === inputRowIndex ? inputRow : rangeRow));
-    console.log('UPDATE nextRangeRows', nextRangeRows);
     this.setState({ rangeRows: nextRangeRows });
   };
 
@@ -101,8 +98,6 @@ class ContinuousCustomBinsModal extends Component {
     const {
       binningMethod, intervalErrors, intervalFields, rangeRows,
     } = this.state;
-
-    console.log('RENDER rangeRows', rangeRows);
 
     // binning method: interval
 
@@ -167,10 +162,6 @@ class ContinuousCustomBinsModal extends Component {
 
       updateIntervalFields(target, inputError);
     };
-
-    rangeRows.map((row, rowIndex) => Object.keys(row.fields).map(field => {
-      console.log('row: ', rowIndex, 'field: ', field, row.fields[field]);
-    }));
 
     return (
       <Column style={{ padding: '20px' }}>
@@ -253,15 +244,6 @@ class ContinuousCustomBinsModal extends Component {
               </div>
             </div>
             <div>
-              {/* debug
-              {rangeRows.map((row, rowIndex) => Object.keys(row.fields).map(field => (
-                <p key={`${rowIndex}-${field}`}>
-                  {rowIndex}
-                  :
-                  {' '}
-                  {row.fields[field]}
-                </p>
-              )))} */}
               {rangeRows.map((row, rowIndex) => (
                 <RangeTableRow
                   fields={row.fields}
@@ -270,7 +252,6 @@ class ContinuousCustomBinsModal extends Component {
                   handleUpdateRow={this.handleUpdateRow}
                   key={`range-row-${rowIndex}`}
                   rangeMethodActive={binningMethod === 'range'}
-                  row={row}
                   rowActive={row.active}
                   rowIndex={rowIndex}
                   styles={styles.rangeTable}

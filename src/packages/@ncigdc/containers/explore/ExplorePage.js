@@ -68,7 +68,6 @@ function setVariables({ filters, relay }) {
   relay.setVariables({
     cosmicFilters: replaceFilters(
       {
-        op: 'and',
         content: [
           {
             op: 'not',
@@ -78,21 +77,22 @@ function setVariables({ filters, relay }) {
             },
           },
         ],
+        op: 'and',
       },
       filters,
     ),
     dbsnpRsFilters: replaceFilters(
       {
-        op: 'and',
         content: [
           {
-            op: 'not',
             content: {
               field: 'consequence.transcript.annotation.dbsnp_rs',
               value: ['MISSING'],
             },
+            op: 'not',
           },
         ],
+        op: 'and',
       },
       filters,
     ),

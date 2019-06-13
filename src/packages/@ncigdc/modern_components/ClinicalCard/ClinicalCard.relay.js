@@ -3,42 +3,55 @@
 import React from 'react';
 import { graphql } from 'react-relay';
 import { makeFilter } from '@ncigdc/utils/filters';
-import { compose, withPropsOnChange, branch, renderComponent } from 'recompose';
+import {
+  branch,
+  compose,
+  renderComponent,
+  setDisplayName,
+  withPropsOnChange,
+} from 'recompose';
 import Query from '@ncigdc/modern_components/Query';
 
-export default (Component: ReactClass<*>) =>
-  compose(
-    branch(
-      ({ caseId }) => !caseId,
-      renderComponent(() => (
-        <div>
-          <pre>caseId</pre> must be provided
-        </div>
-      )),
-    ),
-    withPropsOnChange(['caseId'], ({ caseId }) => {
-      return {
-        variables: {
-          filters: makeFilter([
-            {
-              field: 'cases.case_id',
-              value: [caseId],
-            },
-          ]),
-          fileFilters: makeFilter([
-            { field: 'cases.case_id', value: [caseId] },
-            { field: 'files.data_type', value: ['Clinical Supplement'] },
-          ]),
-        },
-      };
-    }),
-  )((props: Object) => {
-    return (
-      <Query
-        parentProps={props}
-        minHeight={249}
-        variables={props.variables}
+export default (Component: ReactClass<*>) => compose(
+  setDisplayName('EnhancedClinicalCard_Relay'),
+  branch(
+    ({ caseId }) => !caseId,
+    renderComponent(() => (
+      <div>
+        <pre>caseId</pre>
+        {' '}
+must be provided
+      </div>
+    )),
+  ),
+  withPropsOnChange(['caseId'], ({ caseId }) => {
+    return {
+      variables: {
+        fileFilters: makeFilter([
+          {
+            field: 'cases.case_id',
+            value: [caseId],
+          },
+          {
+            field: 'files.data_type',
+            value: ['Clinical Supplement'],
+          },
+        ]),
+        filters: makeFilter([
+          {
+            field: 'cases.case_id',
+            value: [caseId],
+          },
+        ]),
+      },
+    };
+  }),
+)((props: Object) => {
+  return (
+    <Query
         Component={Component}
+        minHeight={249}
+        parentProps={props}
         query={graphql`
           query ClinicalCard_relayQuery(
             $filters: FiltersArgument
@@ -108,6 +121,7 @@ export default (Component: ReactClass<*>) =>
                                 morphology
                                 primary_diagnosis
                                 prior_malignancy
+                                synchronous_malignancy
                                 progression_or_recurrence
                                 site_of_resection_or_biopsy
                                 tissue_or_organ_of_origin
@@ -161,6 +175,7 @@ export default (Component: ReactClass<*>) =>
             }
           }
         `}
-      />
-    );
-  });
+        variables={props.variables}
+        />
+  );
+});

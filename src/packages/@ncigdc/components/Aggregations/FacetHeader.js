@@ -1,7 +1,11 @@
 /* @flow */
 
 import React from 'react';
-import { compose, defaultProps } from 'recompose';
+import {
+  compose,
+  defaultProps,
+  setDisplayName,
+} from 'recompose';
 import { css } from 'glamor';
 
 import { parseFilterParam } from '@ncigdc/utils/uri';
@@ -56,103 +60,104 @@ const MagnifyingGlass = styled(SearchIcon, {
 });
 
 const FacetHeader = compose(
+  setDisplayName('EnhancedFacetHeader'),
   defaultProps({
-    handleRequestRemove: () => {},
+    handleRequestRemove: () => { },
     isRemovable: false,
     hasValueSearch: false,
-    setShowingValueSearch: () => {},
+    setShowingValueSearch: () => { },
   }),
 )(
   ({
-    field,
-    title,
-    DescriptionComponent,
-    description,
-    isRemovable,
-    handleRequestRemove,
-    collapsed,
-    setCollapsed,
-    showingValueSearch,
-    setShowingValueSearch,
-    hasValueSearch,
-    searchValue,
-    style,
     angleIconRight = false,
+    collapsed,
+    description,
+    DescriptionComponent,
+    field,
+    handleRequestRemove,
+    hasValueSearch,
+    isRemovable,
+    searchValue,
+    setCollapsed,
+    setShowingValueSearch,
+    showingValueSearch,
+    style,
+    title,
   }) => (
     <LocationSubscriber>
-      {(ctx: { pathname: string, query: IRawQuery }) => {
-        const currentFilters =
-          ctx.query && parseFilterParam((ctx.query || {}).filters, {});
-        let spanStyle = { cursor: 'pointer' };
-        if (angleIconRight) {
-          spanStyle['width'] = '100%';
-        }
-        return (
-          <Header
-            className="test-facet-header"
-            onClick={() => setCollapsed(!collapsed)}
-            style={style} >
-            <Tooltip
-              Component={
-                DescriptionComponent ? (
-                  <div style={{ maxWidth: '24em' }}>{DescriptionComponent}</div>
-                ) : null
-              }
-            >
-              {!angleIconRight && (
-                <AngleIcon
-                  style={{
-                    paddingRight: '0.25rem',
-                    transform: `rotate(${collapsed ? 270 : 0}deg)`,
-                  }}
-                />
-              )}
-              {searchValue
-                ? internalHighlight(searchValue, title, {
+        {(ctx: { pathname: string, query: IRawQuery }) => {
+          const currentFilters =
+            ctx.query && parseFilterParam((ctx.query || {}).filters, {});
+          const spanStyle = { cursor: 'pointer' };
+          if (angleIconRight) {
+            spanStyle.width = '100%';
+          }
+          return (
+            <Header
+              className="test-facet-header"
+              onClick={() => setCollapsed(!collapsed)}
+              style={style}
+              >
+              <Tooltip
+                Component={
+                  DescriptionComponent ? (
+                    <div style={{ maxWidth: '24em' }}>{DescriptionComponent}</div>
+                  ) : null
+                }
+                >
+                {!angleIconRight && (
+                  <AngleIcon
+                    style={{
+                      paddingRight: '0.25rem',
+                      transform: `rotate(${collapsed ? 270 : 0}deg)`,
+                    }}
+                    />
+                )}
+                {searchValue
+                  ? internalHighlight(searchValue, title, {
                     backgroundColor: '#FFFF00',
                   })
-                : title}
-              {angleIconRight && (
-                <AngleIcon
-                  style={{
-                    overflow: 'auto',
-                    display: 'flex',
-                    float: 'right',
-                    transform: `rotate(${collapsed ? 270 : 0}deg)`,
-                  }}
-                />
-              )}
-            </Tooltip>
-            <IconsRow>
-              {description && (
-                <Tooltip
-                  Component={description}
-                  {...css({ ':not(:last-child)': { marginRight: 8 } })}
-                >
-                  <QuestionIcon />
-                </Tooltip>
-              )}
-              {hasValueSearch && (
-                <MagnifyingGlass
-                  onClick={() => setShowingValueSearch(!showingValueSearch)}
-                />
-              )}
-              <FacetResetButton field={field} currentFilters={currentFilters} />
-              {isRemovable && (
-                <RemoveIcon
-                  onClick={handleRequestRemove}
-                  onKeyPress={event =>
-                    event.key === 'Enter' && handleRequestRemove()}
-                  role="button"
-                  tabIndex="0"
-                  aria-label="Close"
-                />
-              )}
-            </IconsRow>
-          </Header>
-        );
-      }}
-    </LocationSubscriber>
+                  : title}
+                {angleIconRight && (
+                  <AngleIcon
+                    style={{
+                      overflow: 'auto',
+                      display: 'flex',
+                      float: 'right',
+                      transform: `rotate(${collapsed ? 270 : 0}deg)`,
+                    }}
+                    />
+                )}
+              </Tooltip>
+              <IconsRow>
+                {description && (
+                  <Tooltip
+                    Component={description}
+                    {...css({ ':not(:last-child)': { marginRight: 8 } })}
+                    >
+                    <QuestionIcon />
+                  </Tooltip>
+                )}
+                {hasValueSearch && (
+                  <MagnifyingGlass
+                    onClick={() => setShowingValueSearch(!showingValueSearch)}
+                    />
+                )}
+                <FacetResetButton currentFilters={currentFilters} field={field} />
+                {isRemovable && (
+                  <RemoveIcon
+                    aria-label="Close"
+                    onClick={handleRequestRemove}
+                    onKeyPress={event => event.key === 'Enter' && handleRequestRemove()}
+                    role="button"
+                    tabIndex="0"
+                    />
+                )}
+              </IconsRow>
+            </Header>
+          );
+        }}
+      </LocationSubscriber>
   ),
 );
 export default FacetHeader;

@@ -11,7 +11,8 @@
       "coverage/lcov-report/*.js",
       "__mocks__/*.js",
       "data/*.js",
-      "public/*.js"
+      "public/*.js",
+      "src/packages/@oncojs/**/*"
     ]
   },
   "rules": {

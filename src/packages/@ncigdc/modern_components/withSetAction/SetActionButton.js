@@ -3,7 +3,7 @@ import Button from '@ncigdc/uikit/Button';
 import Overlay from '@ncigdc/uikit/Overlay';
 import Spinner from '@ncigdc/uikit/Loaders/Material';
 
-export default class extends React.Component {
+export default class SetActionButton extends React.Component {
   clicked = false;
 
   componentWillReceiveProps(next) {
@@ -39,7 +39,8 @@ export default class extends React.Component {
             onClick();
             createSet(props);
           }}
-          style={style}>
+          style={style}
+          >
           {children}
         </Component>
       </span>

@@ -7,6 +7,7 @@ import {
   compose,
   defaultProps,
   renameProps,
+  setDisplayName,
   withState,
 } from 'recompose';
 
@@ -61,7 +62,7 @@ const getFacetType = facet => {
       '_uuid',
       'md5sum',
       'file_name',
-    ], idSuffix => _.includes(facet.field, idSuffix),)
+    ], idSuffix => _.includes(facet.field, idSuffix))
   ) {
     return 'exact';
   } if (facet.type === 'long' || facet.type === 'float') {
@@ -171,6 +172,7 @@ export const WrapperComponent = ({
   );
 };
 const FacetWrapper = compose(
+  setDisplayName('EnhancedFacetWrapper'),
   defaultProps({
     onRequestRemove: _.noop,
     isRemovable: false,

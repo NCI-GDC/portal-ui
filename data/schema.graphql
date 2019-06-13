@@ -3207,6 +3207,20 @@ type CaseFiles {
   hits(offset: Int, sort: [Sort], filters: FiltersArgument, before: String, after: String, first: Int, last: Int): CaseFileConnection
 }
 
+type CivicAnnotation {
+  # keyword
+  gene_id: String
+
+  # keyword
+  variant_id: String
+  id: String
+}
+
+type ClinicalAnnotations {
+  civic: CivicAnnotation
+  id: String
+}
+
 type CNV implements Node {
   id: ID!
 
@@ -4800,6 +4814,8 @@ type ECaseAggregations {
   gene__symbol: Aggregations
   gene__gene_id: Aggregations
   gene__ssm__ncbi_build: Aggregations
+  gene__ssm__clinical_annotations__civic__gene_id: Aggregations
+  gene__ssm__clinical_annotations__civic__variant_id: Aggregations
   gene__ssm__observation__src_vcf_id: Aggregations
   gene__ssm__observation__mutation_status: Aggregations
   gene__ssm__observation__tumor_genotype__tumor_seq_allele1: Aggregations
@@ -7578,6 +7594,8 @@ type GeneAggregations {
   case__demographic__year_of_death: NumericAggregations
   case__submitter_id: Aggregations
   case__ssm__ncbi_build: Aggregations
+  case__ssm__clinical_annotations__civic__gene_id: Aggregations
+  case__ssm__clinical_annotations__civic__variant_id: Aggregations
   case__ssm__observation__src_vcf_id: Aggregations
   case__ssm__observation__mutation_status: Aggregations
   case__ssm__observation__tumor_genotype__tumor_seq_allele1: Aggregations
@@ -9279,9 +9297,6 @@ type Ssm implements Node {
   ncbi_build: String
 
   # keyword
-  mutation_type: String
-
-  # keyword
   mutation_subtype: String
 
   # long
@@ -9303,21 +9318,26 @@ type Ssm implements Node {
   tumor_allele: String
 
   # keyword
+  mutation_type: String
+
+  # keyword
   chromosome: String
 
   # keyword
   genomic_dna_change: String
-  external_db_ids: SsmGeneExternalDbIds
+  clinical_annotations: ClinicalAnnotations
   consequence: SSMConsequences
-  occurrence: SSMOccurrences
   cosmic_id: [String]
+  external_db_ids: SsmGeneExternalDbIds
   gene_aa_change: [String]
+  occurrence: SSMOccurrences
   score: Int
 }
 
 type SsmAggregations {
   ncbi_build: Aggregations
-  mutation_type: Aggregations
+  clinical_annotations__civic__gene_id: Aggregations
+  clinical_annotations__civic__variant_id: Aggregations
   occurrence__case__exposures__cigarettes_per_day: NumericAggregations
   occurrence__case__exposures__weight: NumericAggregations
   occurrence__case__exposures__updated_datetime: Aggregations
@@ -9486,6 +9506,7 @@ type SsmAggregations {
   occurrence__case__available_variation_data: Aggregations
   occurrence__case__disease_type: Aggregations
   occurrence__occurrence_id: Aggregations
+  gene_aa_change: Aggregations
   mutation_subtype: Aggregations
   end_position: NumericAggregations
   reference_allele: Aggregations
@@ -9545,7 +9566,7 @@ type SsmAggregations {
   consequence__transcript__annotation__hgvsp_short: Aggregations
   consequence__transcript__ref_seq_accession: Aggregations
   tumor_allele: Aggregations
-  gene_aa_change: Aggregations
+  mutation_type: Aggregations
   chromosome: Aggregations
   genomic_dna_change: Aggregations
 }

@@ -1,7 +1,11 @@
 // @flow
 
 import React from 'react';
-import { compose, withState } from 'recompose';
+import {
+  compose,
+  setDisplayName,
+  withState,
+} from 'recompose';
 
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import styled from '@ncigdc/theme/styled';
@@ -46,7 +50,10 @@ type TProps = {
   showRepositoryQuery: boolean,
 };
 
-const enhance = compose(withState('showFacets', 'setShowFacets', true));
+const enhance = compose(
+  setDisplayName('EnhancedSearchPage'),
+  withState('showFacets', 'setShowFacets', true)
+);
 
 const SearchPage = (
   {
@@ -58,26 +65,26 @@ const SearchPage = (
     ...props
   }: TProps = {},
 ) => (
-    <Container className={props.className + ' test-search-page'}>
+  <Container className={`${props.className} test-search-page`}>
       {showFacets && (
         <FacetsPanel>
           <TabbedLinks
-            queryParam="facetTab"
             defaultIndex={0}
-            tabToolbar={
+            hideTabs={facetTabs.length <= 1}
+            links={facetTabs}
+            queryParam="facetTab"
+            tabToolbar={(
               <UnstyledButton
-                style={{ minHeight: 46 }}
+                aria-label="Toggle Facet Panel Visibility"
                 onClick={() => {
                   setShowFacets(!showFacets);
                 }}
-                aria-label="Toggle Facet Panel Visibility"
-              >
+                style={{ minHeight: 46 }}
+                >
                 <DoubleArrowLeftIcon />
               </UnstyledButton>
-            }
-            hideTabs={facetTabs.length <= 1}
-            links={facetTabs}
-          />
+            )}
+            />
         </FacetsPanel>
       )}
       <Content>
@@ -92,6 +99,6 @@ const SearchPage = (
         {results}
       </Content>
     </Container>
-  );
+);
 
 export default enhance(SearchPage);

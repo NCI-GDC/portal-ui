@@ -20,7 +20,6 @@ const styles = {
     minWidth: '100%',
     width: '100%',
     left: '1px',
-    borderRadius: '5px',
   },
   dropdownButton: {
     marginLeft: '0.2rem',
@@ -72,7 +71,10 @@ export default compose(
     const biospecimenCount = viewer ? viewer[scope].cases.hits.total : null;
     const buttonProps = {
       className: 'data-download-biospecimen',
-      style: { ...styles.dropdownButton, ...buttonStyles },
+      style: {
+        ...styles.dropdownButton,
+        ...buttonStyles,
+      },
       leftIcon:
         state.setCreating || state.jsonDownloading || state.tsvDownloading ? (
           <Spinner />
@@ -82,20 +84,26 @@ export default compose(
     };
     return (
       <Dropdown
-        className="data-download-biospecimen"
-        disabled={state.setCreating}
         button={
           shouldCreateSet ? (
             <CreateExploreCaseSetButton
               {...buttonProps}
+              displaySpinnerOverlay={false}
               filters={filters}
               isCreating={false}
-              onClick={() => setState({ ...state, setCreating: true })}
+              onClick={() => setState({
+                ...state,
+                setCreating: true,
+              })}
               onComplete={(setId, size) => {
-                setState({ ...state, setId, size, setCreating: false });
+                setState({
+                  ...state,
+                  setId,
+                  size,
+                  setCreating: false,
+                });
               }}
-              displaySpinnerOverlay={false}
-            >
+              >
               {state.setCreating ||
               state.jsonDownloading ||
               state.tsvDownloading
@@ -108,78 +116,56 @@ export default compose(
                 ? 'Processing'
                 : inactiveText}
             </Button>
-          )
+        )
         }
-        dropdownStyle={{ ...styles.dropdownContainer, ...dropdownStyles }}
-      >
+        className="data-download-biospecimen"
+        disabled={state.setCreating}
+        dropdownStyle={{
+          ...styles.dropdownContainer,
+          ...dropdownStyles,
+        }}
+        >
         {state.setCreating ? (
           <div />
         ) : (
           <div>
             <DownloadButton
-              className="data-download-biospecimen-tsv"
-              style={styles.button(theme)}
-              endpoint="/biospecimen_tar"
-              format="tsv"
-              activeText="Processing"
-              inactiveText="TSV"
-              altMessage={false}
-              setParentState={currentState =>
-                setState(s => ({
-                  ...s,
-                  tsvDownloading: currentState,
-                }))}
               active={state.tsvDownloading}
-              size={biospecimenCount ? biospecimenCount : state.size}
-              filters={
-                shouldCreateSet
-                  ? {
-                      op: 'and',
-                      content: [
-                        {
-                          op: 'in',
-                          content: {
-                            field: 'cases.case_id',
-                            value: [`set_id:${state.setId}`],
-                          },
-                        },
-                      ],
-                    }
-                  : filters
-              }
-              filename={tsvFilename}
-            />
-            <DownloadButton
-              className="data-download-biospecimen"
-              style={styles.button(theme)}
-              endpoint="/cases"
               activeText="Processing"
-              inactiveText="JSON"
               altMessage={false}
-              setParentState={currentState =>
-                setState(s => ({
-                  ...s,
-                  jsonDownloading: currentState,
-                }))}
-              active={state.jsonDownloading}
+              className="data-download-biospecimen-tsv"
+              endpoint="/biospecimen_tar"
+              filename={tsvFilename}
               filters={
                 shouldCreateSet
                   ? {
-                      op: 'and',
-                      content: [
-                        {
-                          op: 'in',
-                          content: {
-                            field: 'cases.case_id',
-                            value: [`set_id:${state.setId}`],
-                          },
+                    op: 'and',
+                    content: [
+                      {
+                        op: 'in',
+                        content: {
+                          field: 'cases.case_id',
+                          value: [`set_id:${state.setId}`],
                         },
-                      ],
-                    }
+                      },
+                    ],
+                  }
                   : filters
               }
-              size={biospecimenCount ? biospecimenCount : state.size}
-              fields={['case_id']}
+              format="tsv"
+              inactiveText="TSV"
+              setParentState={currentState => setState(s => ({
+                ...s,
+                tsvDownloading: currentState,
+              }))}
+              size={biospecimenCount || state.size}
+              style={styles.button(theme)}
+              />
+            <DownloadButton
+              active={state.jsonDownloading}
+              activeText="Processing"
+              altMessage={false}
+              className="data-download-biospecimen"
               dataExportExpands={[
                 'samples',
                 'samples.portions',
@@ -192,8 +178,33 @@ export default compose(
                 'samples.portions.annotations',
                 'samples.portions.center',
               ]}
+              endpoint="/cases"
+              fields={['case_id']}
               filename={jsonFilename}
-            />
+              filters={
+                shouldCreateSet
+                  ? {
+                    op: 'and',
+                    content: [
+                      {
+                        op: 'in',
+                        content: {
+                          field: 'cases.case_id',
+                          value: [`set_id:${state.setId}`],
+                        },
+                      },
+                    ],
+                  }
+                  : filters
+              }
+              inactiveText="JSON"
+              setParentState={currentState => setState(s => ({
+                ...s,
+                jsonDownloading: currentState,
+              }))}
+              size={biospecimenCount || state.size}
+              style={styles.button(theme)}
+              />
           </div>
         )}
       </Dropdown>

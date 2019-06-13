@@ -1,10 +1,11 @@
 import React from 'react';
 import {
   compose,
-  withState,
-  withPropsOnChange,
-  withProps,
+  setDisplayName,
   withHandlers,
+  withProps,
+  withPropsOnChange,
+  withState,
 } from 'recompose';
 import { connect } from 'react-redux';
 import SearchIcon from 'react-icons/lib/fa/search';
@@ -104,16 +105,16 @@ const plotTypes = {
 };
 
 const CopyAnalysisModal = compose(
+  setDisplayName('EnhancedCopyAnalysisModal'),
   withState(
     'modalInputValue',
     'setModalInputValue',
     ({ analysis }) => `${analysis.name} copy`
   )
 )(({
-  analysis, modalInputValue, setModalInputValue, dispatch, push,
-}) => {
-  return (
-    <BaseModal
+  analysis, dispatch, modalInputValue, push, setModalInputValue,
+}) => (
+  <BaseModal
       extraButtons={
         <Button onClick={() => dispatch(setModal(null))}>Cancel</Button>
       }
@@ -155,10 +156,10 @@ const CopyAnalysisModal = compose(
           />
       </Row>
     </BaseModal>
-  );
-});
+));
 
 const enhance = compose(
+  setDisplayName('EnhancedClinicalAnalysisResult'),
   connect((state: any, props: any) => ({
     allSets: state.sets,
     currentAnalysis: state.analysis.saved.find(a => a.id === props.id),
@@ -176,14 +177,14 @@ const enhance = compose(
         },
       },
     }) => ({
-      parsedFacets: facets ? tryParseJSON(facets) : {},
       hits,
+      parsedFacets: facets ? tryParseJSON(facets) : {},
     })
   ),
   withProps(
     ({
-      setOverallSurvivalData,
       currentAnalysis,
+      setOverallSurvivalData,
       setState,
       setSurvivalPlotLoading,
     }) => ({
@@ -227,28 +228,28 @@ const enhance = compose(
 );
 
 const ClinicalAnalysisResult = ({
-  sets,
-  Icon,
-  label,
   allSets,
-  theme,
-  controlPanelExpanded,
-  setControlPanelExpanded,
-  variables,
-  id,
-  dispatch,
-  currentAnalysis,
-  push,
-  overallSurvivalData,
-  populateSurvivalData,
-  survivalPlotLoading,
-  parsedFacets,
-  displayVariables,
   clinicalAnalysisFields,
-  hits,
-  searchValue,
-  setSearchValue,
+  controlPanelExpanded,
+  currentAnalysis,
+  dispatch,
+  displayVariables,
   handleQueryInputChange,
+  hits,
+  Icon,
+  id,
+  label,
+  overallSurvivalData,
+  parsedFacets,
+  populateSurvivalData,
+  push,
+  searchValue,
+  setControlPanelExpanded,
+  sets,
+  setSearchValue,
+  survivalPlotLoading,
+  theme,
+  variables,
   ...props
 }: IAnalysisResultProps) => {
   const setId = Object.keys(currentAnalysis.sets.case)[0];
@@ -274,17 +275,18 @@ const ClinicalAnalysisResult = ({
         }}
         >
         <Row
-spacing="10px"
-style={{
-  alignItems: 'center',
-  width: '80%',
-}}
->
-          <Icon style={{
-            height: 50,
-            width: 50,
+          spacing="10px"
+          style={{
+            alignItems: 'center',
+            width: '80%',
           }}
-                />
+          >
+          <Icon
+            style={{
+              height: 50,
+              width: 50,
+            }}
+            />
           <Column style={{ width: '100%' }}>
             <Row spacing="5px" style={{ alignItems: 'center' }}>
               <div style={{ width: '70%' }}>
@@ -307,13 +309,13 @@ style={{
                   }}
                   text={currentAnalysis.name}
                   >
-                  <h1 style={{
-                    fontSize: '2.5rem',
-                    margin: 5,
-                  }}
-                      >
-                    {currentAnalysis.name}
-                    {' '}
+                  <h1
+                    style={{
+                      fontSize: '2.5rem',
+                      margin: 5,
+                    }}
+                    >
+                    {`${currentAnalysis.name} `}
                   </h1>
                 </EditableLabel>
               </div>
@@ -356,10 +358,49 @@ style={{
         </Row>
       </Row>
       <Row>
-        {controlPanelExpanded
-          ? (
-            <Column
-              className="no-print"
+        {!controlPanelExpanded && (
+          <Column>
+            <Tooltip Component="Show Control Panel">
+              <DoubleArrowRightIcon
+                onClick={() => setControlPanelExpanded(!controlPanelExpanded)}
+                style={styles.collapseIcon}
+                />
+            </Tooltip>
+          </Column>
+        )}
+        {controlPanelExpanded && (
+          <Column
+            className="no-print"
+            style={{
+              ...zDepth1,
+              flex: 1,
+              minWidth: 260,
+              marginBottom: '1rem',
+              position: 'sticky',
+              top: 50,
+              alignSelf: 'flex-start',
+              maxHeight: 'calc(100vh - 50px',
+              overflowY: 'hidden',
+            }}
+            >
+            <Row style={{ justifyContent: 'flex-end' }}>
+              <Tooltip Component="Hide Control Panel">
+                <DoubleArrowLeftIcon
+                  onClick={() => setControlPanelExpanded(!controlPanelExpanded)}
+                  style={styles.collapseIcon}
+                  />
+              </Tooltip>
+            </Row>
+            <Row
+              style={{
+                justifyContent: 'space-between',
+                padding: '0 10px',
+              }}
+              >
+              <span style={{ fontWeight: 'bold' }}>Cohort</span>
+              <span style={{ fontWeight: 'bold' }}># Cases</span>
+            </Row>
+            <Row
               style={{
                 ...zDepth1,
                 flex: 1,
@@ -372,111 +413,76 @@ style={{
                 overflowY: 'hidden',
               }}
               >
-              <Row style={{ justifyContent: 'flex-end' }}>
-                <Tooltip Component="Hide Control Panel">
-                  <DoubleArrowLeftIcon
-                    onClick={() => setControlPanelExpanded(!controlPanelExpanded)}
-                    style={styles.collapseIcon}
-                    />
-                </Tooltip>
-              </Row>
-              <Row
-                style={{
-                  justifyContent: 'space-between',
-                  padding: '0 10px',
-                }}
-                >
-                <span style={{ fontWeight: 'bold' }}>Cohort</span>
-                <span style={{ fontWeight: 'bold' }}># Cases</span>
-              </Row>
-              <Row
-                style={{
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  padding: '10px 10px 15px',
-                  borderBottom: `1px solid ${theme.greyScale4}`,
-                }}
-                >
-                <CohortDropdown
-                  currentAnalysis={currentAnalysis}
-                  disabled={currentAnalysis.id === 'demo-clinical_data'}
-                  disabledMessage="Switching cohorts is not available in demo mode"
-                  dispatch={dispatch}
-                  sets={allSets}
-                  />
-                <ExploreLink
-                  query={{
-                    filters: {
-                      op: 'and',
-                      content: [
-                        {
-                          op: '=',
-                          content: {
-                            field: 'cases.case_id',
-                            value: `set_id:${setId}`,
-                          },
+              <CohortDropdown
+                currentAnalysis={currentAnalysis}
+                disabled={currentAnalysis.id === 'demo-clinical_data'}
+                disabledMessage="Switching cohorts is not available in demo mode"
+                dispatch={dispatch}
+                sets={allSets}
+                />
+              <ExploreLink
+                query={{
+                  filters: {
+                    op: 'and',
+                    content: [
+                      {
+                        op: '=',
+                        content: {
+                          field: 'cases.case_id',
+                          value: `set_id:${setId}`,
                         },
-                      ],
+                      },
+                    ],
+                  },
+                }}
+                >
+                <CountComponent
+                  filters={{
+                    op: '=',
+                    content: {
+                      field: 'cases.case_id',
+                      value: `set_id:${setId}`,
                     },
                   }}
-                  >
-                  <CountComponent
-                    filters={{
-                      op: '=',
-                      content: {
-                        field: 'cases.case_id',
-                        value: `set_id:${setId}`,
-                      },
-                    }}
-                    />
-                </ExploreLink>
-              </Row>
-              <Row
-                style={{
-                  height: 30,
-                  margin: 15,
-                }}
-                >
-                <label htmlFor="search-facets">
-                  <SearchIcon style={styles.searchIcon(theme)} />
-                  <Hidden>Search</Hidden>
-                </label>
-                <Input
-                  id="search-facets"
-                  name="search-facets"
-                  onChange={handleQueryInputChange}
-                  placeholder="Search"
-                  style={{ borderRadius: '0 4px 4px 0' }}
-                  value={searchValue}
                   />
-              </Row>
-              <Column>
-                <ControlPanelNode
-                  analysis_id={id}
-                  clinicalAnalysisFields={clinicalAnalysisFields}
-                  currentAnalysis={currentAnalysis}
-                  searchValue={searchValue}
-                  usefulFacets={getUsefulFacets(parsedFacets)}
-                  />
-              </Column>
-            </Column>
-          )
-          : (
+              </ExploreLink>
+            </Row>
+            <Row
+              style={{
+                height: 30,
+                margin: 15,
+              }}
+              >
+              <label htmlFor="search-facets">
+                <SearchIcon style={styles.searchIcon(theme)} />
+                <Hidden>Search</Hidden>
+              </label>
+              <Input
+                id="search-facets"
+                name="search-facets"
+                onChange={handleQueryInputChange}
+                placeholder="Search"
+                style={{ borderRadius: '0 4px 4px 0' }}
+                value={searchValue}
+                />
+            </Row>
             <Column>
-              <Tooltip Component="Show Control Panel">
-                <DoubleArrowRightIcon
-                  onClick={() => setControlPanelExpanded(!controlPanelExpanded)}
-                  style={styles.collapseIcon}
-                  />
-              </Tooltip>
+              <ControlPanelNode
+                analysis_id={id}
+                clinicalAnalysisFields={clinicalAnalysisFields}
+                currentAnalysis={currentAnalysis}
+                searchValue={searchValue}
+                usefulFacets={getUsefulFacets(parsedFacets)}
+                />
             </Column>
-          )}
-
-        <Column style={{
-          flex: 4,
-          minWidth: 0,
-        }}
-                >
+          </Column>
+        )}
+        <Column
+          style={{
+            flex: 4,
+            minWidth: 0,
+          }}
+          >
           {/* <Column
             style={{
               ...zDepth1,
@@ -543,8 +549,8 @@ style={{
                 <h2
                   style={{
                     fontSize: '1.8rem',
-                    marginTop: 10,
                     marginBottom: 0,
+                    marginTop: 10,
                   }}
                   >
                   Overall Survival
@@ -568,16 +574,16 @@ style={{
 
             {_.map(displayVariables, (varProperties, varFieldName) => {
               const filters = {
-                op: 'and',
                 content: [
                   {
-                    op: '=',
                     content: {
                       field: 'cases.case_id',
                       value: [`set_id:${setId}`],
                     },
+                    op: '=',
                   },
                 ],
+                op: 'and',
               };
 
               if (varProperties.plotTypes === 'continuous') {

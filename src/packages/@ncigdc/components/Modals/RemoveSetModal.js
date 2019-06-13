@@ -1,6 +1,11 @@
 // @flow
 import React from 'react';
-import { compose, withState, withProps } from 'recompose';
+import {
+  compose,
+  setDisplayName,
+  withProps,
+  withState,
+} from 'recompose';
 import { connect } from 'react-redux';
 import { stringify } from 'query-string';
 
@@ -13,6 +18,7 @@ import { updateClinicalAnalysisSet } from '@ncigdc/dux/analysis';
 import onSaveComplete from './onSaveComplete';
 
 const enhance = compose(
+  setDisplayName('EnhancedRemoveSetModal'),
   withState('selected', 'setSelected', ({ selected }) => selected || ''),
   connect(({ analysis, sets }) => ({
     analysis,
@@ -26,20 +32,19 @@ const enhance = compose(
 );
 
 const RemoveSetModal = ({
-  RemoveFromSetButton,
   analyses,
   dispatch,
   field,
   filters,
   history,
   query,
+  RemoveFromSetButton,
   selected,
-  setSelected,
   sets,
+  setSelected,
   title,
   type,
-}) => {
-  return (
+}) => (
     <BaseModal
       closeText="Cancel"
       extraButtons={(
@@ -67,7 +72,7 @@ const RemoveSetModal = ({
               type,
             }));
             if (type === 'case') {
-              analyses
+              await analyses
                 .filter(analysis => analysis.sets.case[selected])
                 .forEach(affected => {
                   dispatch(
@@ -96,6 +101,5 @@ const RemoveSetModal = ({
         />
     </BaseModal>
   );
-};
 
 export default enhance(RemoveSetModal);

@@ -26,21 +26,23 @@ const modalStyles = {
     borderRadius: '4px',
     margin: '30px auto',
     padding: '0px',
-    width: '65%',
+    width: '55%',
     boxShadow: 'rgba(0, 0, 0, 0.5) 0px 5px 15px',
   },
 };
 
-const Modal = ({ isOpen, onRequestClose = () => {}, style, children }) => (
+const Modal = ({
+  children, isOpen, onRequestClose, style,
+}) => (
   <ReactModal
-    style={{ ..._.merge({}, modalStyles, style) }}
-    isOpen={isOpen}
-    onRequestClose={onRequestClose}
-    contentLabel="Modal"
-    className="test-modal"
-  >
-    {Children.map(children, child => cloneElement(child, { ...child.props }))}
-  </ReactModal>
+      className="test-modal"
+      contentLabel="Modal"
+      isOpen={isOpen}
+      onRequestClose={onRequestClose || (() => { })}
+      style={{ ..._.merge({}, modalStyles, style) }}
+      >
+      {Children.map(children, child => cloneElement(child, { ...child.props }))}
+    </ReactModal>
 );
 
 export default Modal;

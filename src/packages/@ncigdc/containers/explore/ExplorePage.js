@@ -2,10 +2,6 @@
 import React from 'react';
 import Relay from 'react-relay/classic';
 import { get, isEqual } from 'lodash';
-<<<<<<< HEAD
-=======
-
->>>>>>> develop
 import withRouter from '@ncigdc/utils/withRouter';
 import SearchPage from '@ncigdc/components/SearchPage';
 import TabbedLinks from '@ncigdc/components/TabbedLinks';
@@ -147,7 +143,7 @@ export class ExplorePageComponent extends React.Component {
                   onReadyStateChange,
                 )}
                 suggestions={get(viewer, 'autocomplete_cases.hits', [])}
-              />
+                />
             ),
           },
           {
@@ -162,7 +158,7 @@ export class ExplorePageComponent extends React.Component {
                 globalFilters={filters}
                 maxFacetsPanelHeight={maxFacetsPanelHeight}
                 relayVarName="exploreCaseCustomFacetFields"
-              />
+                />
             ),
           },
           {
@@ -180,7 +176,7 @@ export class ExplorePageComponent extends React.Component {
                   onReadyStateChange,
                 )}
                 suggestions={get(viewer, 'autocomplete_genes.hits', [])}
-              />
+                />
             ),
           },
           {
@@ -200,7 +196,7 @@ export class ExplorePageComponent extends React.Component {
                 )}
                 ssms={viewer.explore.ssms}
                 suggestions={get(viewer, 'autocomplete_ssms.hits', [])}
-              />
+                />
             ),
           },
         ]}
@@ -209,7 +205,7 @@ export class ExplorePageComponent extends React.Component {
             <ResizeDetector
               handleHeight
               onResize={(width, height) => this.setState({ maxFacetsPanelHeight: height })}
-            />
+              />
             <Row>
               {filters ? (
                 <CreateExploreCaseSetButton
@@ -235,17 +231,17 @@ export class ExplorePageComponent extends React.Component {
                     });
                   }}
                   style={{ marginBottom: '2rem' }}
-                >
+                  >
                   View Files in Repository
                 </CreateExploreCaseSetButton>
               ) : (
-                  <Button
+                <Button
                     disabled={!viewer.explore.cases.hits.total}
                     onClick={() => push({
                       pathname: '/repository',
                     })}
                     style={{ marginBottom: '2rem' }}
-                  >
+                    >
                     View Files in Repository
                   </Button>
                 )}
@@ -259,7 +255,7 @@ export class ExplorePageComponent extends React.Component {
                   component: viewer.explore.cases.hits.total ? (
                     <CasesTab />
                   ) : (
-                      <NoResultsMessage style={noResultsMessageStyle}>No Cases Found.</NoResultsMessage>
+                    <NoResultsMessage style={noResultsMessageStyle}>No Cases Found.</NoResultsMessage>
                     ),
                 },
                 {
@@ -268,7 +264,7 @@ export class ExplorePageComponent extends React.Component {
                   component: viewer.explore.genes.hits.total ? (
                     <GenesTab viewer={viewer} />
                   ) : (
-                      <NoResultsMessage style={noResultsMessageStyle}>No Genes Found.</NoResultsMessage>
+                    <NoResultsMessage style={noResultsMessageStyle}>No Genes Found.</NoResultsMessage>
                     ),
                 },
                 {
@@ -278,9 +274,9 @@ export class ExplorePageComponent extends React.Component {
                     <MutationsTab
                       totalNumCases={viewer.explore.cases.hits.total}
                       viewer={viewer}
-                    />
+                      />
                   ) : (
-                      <NoResultsMessage style={noResultsMessageStyle}>No Mutations Found.</NoResultsMessage>
+                    <NoResultsMessage style={noResultsMessageStyle}>No Mutations Found.</NoResultsMessage>
                     ),
                 },
                 {
@@ -290,10 +286,10 @@ export class ExplorePageComponent extends React.Component {
                 },
               ]}
               queryParam="searchTableTab"
-            />
+              />
           </span>
         )}
-      />
+        />
     );
   }
 }

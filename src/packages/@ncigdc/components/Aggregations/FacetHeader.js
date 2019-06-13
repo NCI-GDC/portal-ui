@@ -69,20 +69,14 @@ const FacetHeader = compose(
   }),
 )(
   ({
-<<<<<<< HEAD
     angleIconRight = false,
     collapsed,
     description,
     DescriptionComponent,
-=======
-    collapsed,
-    description,
->>>>>>> develop
     field,
     handleRequestRemove,
     hasValueSearch,
     isRemovable,
-<<<<<<< HEAD
     searchValue,
     setCollapsed,
     setShowingValueSearch,
@@ -164,60 +158,6 @@ const FacetHeader = compose(
           );
         }}
       </LocationSubscriber>
-=======
-    setCollapsed,
-    setShowingValueSearch,
-    showingValueSearch,
-    title,
-  }) => (
-    <LocationSubscriber>
-      {(ctx: { pathname: string, query: IRawQuery }) => {
-        const currentFilters =
-          ctx.query && parseFilterParam((ctx.query || {}).filters, {});
-        return (
-          <Header className="test-facet-header">
-            <span
-              onClick={() => setCollapsed(!collapsed)}
-              style={{ cursor: 'pointer' }}
-              >
-              <AngleIcon
-                style={{
-                  paddingRight: '0.25rem',
-                  transform: `rotate(${collapsed ? 270 : 0}deg)`,
-                }}
-                />
-              {title}
-            </span>
-            <IconsRow>
-              {description && (
-                <Tooltip
-                  Component={description}
-                  {...css({ ':not(:last-child)': { marginRight: 8 } })}
-                  >
-                  <QuestionIcon />
-                </Tooltip>
-              )}
-              {hasValueSearch && (
-                <MagnifyingGlass
-                  onClick={() => setShowingValueSearch(!showingValueSearch)}
-                  />
-              )}
-              <FacetResetButton currentFilters={currentFilters} field={field} />
-              {isRemovable && (
-                <RemoveIcon
-                  aria-label="Close"
-                  onClick={handleRequestRemove}
-                  onKeyPress={event => event.key === 'Enter' && handleRequestRemove()}
-                  role="button"
-                  tabIndex="0"
-                  />
-              )}
-            </IconsRow>
-          </Header>
-        );
-      }}
-    </LocationSubscriber>
->>>>>>> develop
   ),
 );
 export default FacetHeader;

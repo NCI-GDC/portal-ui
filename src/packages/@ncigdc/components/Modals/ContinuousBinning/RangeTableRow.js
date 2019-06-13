@@ -25,12 +25,8 @@ const defaultFieldState = {
 
 class RangeTableRow extends React.Component {
   state = {
-    fieldErrors: {
-      ...defaultFieldState,
-    },
-    fieldValues: {
-      ...defaultFieldState,
-    },
+    fieldErrors: defaultFieldState,
+    fieldValues: defaultFieldState,
   };
 
   fieldsOrder = [
@@ -38,15 +34,6 @@ class RangeTableRow extends React.Component {
     'from',
     'to',
   ];
-
-  componentDidUpdate(prevProps) {
-    const { fields } = this.props;
-    if (!isEqual(fields, prevProps.fields)) {
-      /* eslint-disable */
-      this.setState({ fieldValues: fields });
-      /* eslint-enable */
-    }
-  }
 
   handleSave = () => {
     const validateFieldsResult = this.validateFields();
@@ -71,13 +58,19 @@ class RangeTableRow extends React.Component {
   }
 
   handleCancel = () => {
-    const { handleToggleActiveRow, rowIndex } = this.props;
-    const { fields } = this.props;
+    const { fields, handleToggleActiveRow, rowIndex } = this.props;
     this.setState({
       fieldErrors: { ...defaultFieldState },
       fieldValues: fields,
     });
     handleToggleActiveRow(rowIndex, false);
+  }
+
+  handleRemove = () => {
+    const { handleRemoveRow, rowIndex, rowsLength } = this.props;
+    // if removing the only row, just erase the values
+    if (rowsLength === 1) this.setState({ fieldValues: defaultFieldState });
+    handleRemoveRow(rowIndex);
   }
 
   updateInput = target => {
@@ -127,7 +120,6 @@ class RangeTableRow extends React.Component {
 
   render = () => {
     const {
-      handleRemoveRow,
       rangeMethodActive,
       rowActive,
       rowIndex,
@@ -228,7 +220,7 @@ class RangeTableRow extends React.Component {
             disabled={!rangeMethodActive}
             id={`range-row-${rowIndex}-remove`}
             onClick={() => {
-              handleRemoveRow(rowIndex);
+              this.handleRemove();
             }}
             style={{ ...rowStyles.optionsButton }}
             >

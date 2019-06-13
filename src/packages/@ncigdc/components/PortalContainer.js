@@ -41,20 +41,20 @@ const enhance = compose(
   connect(store => ({ notifications: store.bannerNotification })),
   lifecycle({
     componentDidMount(): void {
-      this.props.dispatch(
-        setModal(
-          <ContinuousCustomBins
-            bins={{}}
-            defaultData={{
-              max: 0,
-              min: 0,
-              quartile: 0,
-            }}
-            fieldName="testing"
-            onClose={() => dispatch(setModal(null))}
-            />
-        )
-      );
+      // this.props.dispatch(
+      //   setModal(
+      //     <ContinuousCustomBins
+      //       bins={{}}
+      //       defaultData={{
+      //         max: 0,
+      //         min: 0,
+      //         quartile: 0,
+      //       }}
+      //       fieldName="testing"
+      //       onClose={() => dispatch(setModal(null))}
+      //       />
+      //   )
+      // );
       if (!Cookies.get(FIRST_TIME_KEY)) {
         this.props.dispatch(
           setModal(

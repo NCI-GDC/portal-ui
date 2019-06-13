@@ -10,6 +10,7 @@ const rowStyles = {
     flex: '1 0 0',
   },
   optionsButton: {
+    backgroundColor: '#fff',
     display: 'inline-block',
     margin: '2px 0 0 5px',
     textAlign: 'center',
@@ -34,6 +35,18 @@ class RangeTableRow extends React.Component {
     'from',
     'to',
   ];
+
+  componentDidUpdate(prevProps) {
+    const { fields } = this.props;
+    if (!isEqual(fields, prevProps.fields)) {
+      /* eslint-disable */
+      this.setState({ fieldValues: fields }, () => {
+        const validateFieldsResult = this.validateFields();
+        this.setState({ fieldErrors: validateFieldsResult });
+      });
+      /* eslint-enable */
+    }
+  }
 
   handleSave = () => {
     const validateFieldsResult = this.validateFields();
@@ -60,7 +73,7 @@ class RangeTableRow extends React.Component {
   handleCancel = () => {
     const { fields, handleToggleActiveRow, rowIndex } = this.props;
     this.setState({
-      fieldErrors: { ...defaultFieldState },
+      fieldErrors: defaultFieldState,
       fieldValues: fields,
     });
     handleToggleActiveRow(rowIndex, false);
@@ -69,7 +82,12 @@ class RangeTableRow extends React.Component {
   handleRemove = () => {
     const { handleRemoveRow, rowIndex, rowsLength } = this.props;
     // if removing the only row, just erase the values
-    if (rowsLength === 1) this.setState({ fieldValues: defaultFieldState });
+    if (rowsLength === 1) {
+      this.setState({
+        fieldErrors: defaultFieldState,
+        fieldValues: defaultFieldState,
+      });
+    }
     handleRemoveRow(rowIndex);
   }
 
@@ -209,7 +227,10 @@ class RangeTableRow extends React.Component {
                 onClick={() => {
                   this.handleEdit();
                 }}
-                style={{ ...rowStyles.optionsButton }}
+                style={{
+                  ...rowStyles.optionsButton,
+                  ...styles.visualizingButton,
+                }}
                 >
                 <i aria-hidden="true" className="fa fa-pencil" />
               </Button>
@@ -222,7 +243,10 @@ class RangeTableRow extends React.Component {
             onClick={() => {
               this.handleRemove();
             }}
-            style={{ ...rowStyles.optionsButton }}
+            style={{
+              ...rowStyles.optionsButton,
+              ...styles.visualizingButton,
+            }}
             >
             <i aria-hidden="true" className="fa fa-trash" />
           </Button>

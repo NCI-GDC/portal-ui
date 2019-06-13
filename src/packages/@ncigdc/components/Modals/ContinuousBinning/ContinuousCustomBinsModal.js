@@ -15,28 +15,31 @@ const styles = {
     padding: '0 20px 20px',
     width: '100%',
   },
-  rangeTable: {
-    column: {
-      flex: '1 0 0 ',
-      padding: '5px',
-    },
-    heading: {
-      background: '#dedddd',
-      display: 'flex',
-      fontWeight: 'bold',
-      lineHeight: '20px',
-      marginBottom: '5px',
-      padding: '2px 5px',
-    },
-    optionsColumn: {
-      flex: '0 0 150px',
-      padding: '5px',
-      textAlign: 'right',
-    },
-    wrapper: {
-      marginBottom: '20px',
-      width: '100%',
-    },
+  column: {
+    flex: '1 0 0 ',
+    padding: '5px',
+  },
+  heading: {
+    background: '#dedddd',
+    display: 'flex',
+    fontWeight: 'bold',
+    lineHeight: '20px',
+    marginBottom: '5px',
+    padding: '2px 5px',
+  },
+  optionsColumn: {
+    flex: '0 0 150px',
+    padding: '5px',
+    textAlign: 'right',
+  },
+  visualizingButton: {
+    backgroundColor: '#fff',
+    borderColor: '#ccc',
+    color: '#333',
+  },
+  wrapper: {
+    marginBottom: '20px',
+    width: '100%',
   },
 };
 
@@ -161,13 +164,15 @@ class ContinuousCustomBinsModal extends Component {
       updateIntervalFields(target, inputError);
     };
 
-    const submitDisabled = () => {
+    const checkSubmitDisabled = () => {
       const checkInterval = Object.keys(intervalErrors)
         .filter(int => intervalErrors[int] !== '').length > 0;
       const checkRange = rangeRows
         .filter(row => row.active).length > 0;
       return binningMethod === 'interval' ? checkInterval : checkRange;
     };
+
+    const submitDisabled = checkSubmitDisabled();
 
     return (
       <Column style={{ padding: '20px' }}>
@@ -232,29 +237,29 @@ class ContinuousCustomBinsModal extends Component {
                 label="Manually"
                 />
             </div>
-            <div style={styles.rangeTable.wrapper}>
-              <div style={styles.rangeTable.heading}>
+            <div style={styles.wrapper}>
+              <div style={styles.heading}>
                 <div
                   id="range-table-label-name"
-                  style={styles.rangeTable.column}
+                  style={styles.column}
                   >
                   Bin Name
                 </div>
                 <div
                   id="range-table-label-min"
-                  style={styles.rangeTable.column}
+                  style={styles.column}
                   >
                   From
                 </div>
                 <div
                   id="range-table-label-max"
-                  style={styles.rangeTable.column}
+                  style={styles.column}
                   >
                   To
                 </div>
                 <div
                   id="range-table-label-options"
-                  style={styles.rangeTable.optionsColumn}
+                  style={styles.optionsColumn}
                   >
                   Options
                 </div>
@@ -274,7 +279,7 @@ class ContinuousCustomBinsModal extends Component {
                     rowActive={row.active}
                     rowIndex={rowIndex}
                     rowsLength={rangeRows.length}
-                    styles={styles.rangeTable}
+                    styles={styles}
                     />
                 ))}
               </div>
@@ -290,6 +295,7 @@ class ContinuousCustomBinsModal extends Component {
                 marginLeft: 'auto',
                 maxWidth: '100px',
                 ...(binningMethod !== 'range' ? styles.inputDisabled : {}),
+                ...styles.visualizingButton,
               }}
               >
               <i aria-hidden="true" className="fa fa-plus-circle" />
@@ -314,12 +320,14 @@ class ContinuousCustomBinsModal extends Component {
           </span>
           <Button
             onClick={onClose}
+            style={styles.visualizingButton}
             >
             Cancel
           </Button>
           <Button
-            disabled={submitDisabled()}
+            disabled={submitDisabled}
             onClick={() => validateRangeRowsOnSubmit()}
+            style={submitDisabled ? styles.inputDisabled : styles.visualizingButton}
             >
             Save Bins
           </Button>

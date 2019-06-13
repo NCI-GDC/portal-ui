@@ -28,6 +28,7 @@ export default ({
   validFacetDocTypes,
   validFacetPrefixes,
 }: TProps) => compose(
+  setDisplayName('WithFacetSelection'),
   connect((state, props) => ({
     userSelectedFacets: state.customFacets[entityType],
   })),

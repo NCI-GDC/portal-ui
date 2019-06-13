@@ -14,11 +14,10 @@ const withPropsOnChange = (shouldMapOrKeys, propsMapper) => BaseComponent => {
   const shouldMap =
     typeof shouldMapOrKeys === 'function'
       ? shouldMapOrKeys
-      : (props, nextProps) =>
-          !shallowEqual(
-            pick(props, shouldMapOrKeys),
-            pick(nextProps, shouldMapOrKeys),
-          );
+      : (props, nextProps) => !shallowEqual(
+        pick(props, shouldMapOrKeys),
+        pick(nextProps, shouldMapOrKeys),
+      );
 
   class WithPropsOnChange extends Component {
     computedProps = {};
@@ -28,7 +27,7 @@ const withPropsOnChange = (shouldMapOrKeys, propsMapper) => BaseComponent => {
       this.computedProps = propsMapper(this.props);
     }
 
-    UNSAFE_componentWillReceiveProps(nextProps) {
+    componentWillReceiveProps(nextProps) {
       if (shouldMap(this.props, nextProps)) {
         this.computedProps = propsMapper(nextProps);
       }

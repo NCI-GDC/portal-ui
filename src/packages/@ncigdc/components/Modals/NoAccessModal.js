@@ -7,27 +7,30 @@ import LoginButton from '@ncigdc/components/LoginButton';
 import { setModal } from '@ncigdc/dux/modal';
 
 class LoginModal extends React.Component {
-  UNSAFE_componentWillReceiveProps(nextProps) {
+  componentWillReceiveProps(nextProps) {
     if (nextProps.user && !this.props.user) {
       nextProps.dispatch(setModal(null));
     }
   }
+
   render() {
     const {
-      message = "You don't have access",
-      primaryButton,
       closeText = 'Close',
+      message = 'You don\'t have access',
+      primaryButton,
     } = this.props;
 
     return (
       <BaseModal
-        title="Access Alert"
-        extraButtons={primaryButton}
         closeText={closeText}
-      >
+        extraButtons={primaryButton}
+        title="Access Alert"
+        >
         {message}
         <p>
-          Please <LoginButton />
+          Please
+          {' '}
+          <LoginButton />
         </p>
       </BaseModal>
     );

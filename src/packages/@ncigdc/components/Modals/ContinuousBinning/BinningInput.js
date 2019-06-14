@@ -24,12 +24,12 @@ const styles = {
 const BinningInput = ({
   binningMethod,
   disabled,
+  handleBlur,
   handleChange,
   handleClick,
   inputError,
   inputId,
   valid,
-  validateOnBlur,
   value,
 }) => {
   return (
@@ -37,7 +37,7 @@ const BinningInput = ({
       <input
         disabled={disabled}
         id={inputId}
-        onBlur={validateOnBlur}
+        onBlur={handleBlur}
         onChange={handleChange}
         onClick={handleClick}
         style={{

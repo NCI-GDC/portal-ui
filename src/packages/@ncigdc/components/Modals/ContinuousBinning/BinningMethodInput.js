@@ -1,7 +1,7 @@
 import React from 'react';
 
 const BinningMethodInput = ({
-  binningMethod, checked, handleChange, label,
+  binningMethod, checked, handleChange, label, validateOnBlur,
 }) => {
   return (
     <React.Fragment>
@@ -9,6 +9,10 @@ const BinningMethodInput = ({
         checked={checked}
         id={`binning-method-${binningMethod}`}
         name="binning-method"
+        onBlur={() => {
+          console.log('blur!!!');
+          validateOnBlur();
+        }}
         onChange={handleChange}
         style={{ marginRight: '15px' }}
         type="radio"

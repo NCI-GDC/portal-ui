@@ -16,7 +16,7 @@ const CustomIntervalFields = ({
   handleUpdateBinningMethod,
   intervalErrors,
   intervalFields,
-  validateCustomInterval,
+  validateIntervalFields,
 }) => {
   const CustomIntervalText = props => {
     const { children } = props;
@@ -47,19 +47,18 @@ const CustomIntervalFields = ({
           checked={!disabled}
           handleChange={handleUpdateBinningMethod}
           label="Bin Interval"
-          validateOnBlur={validateCustomInterval}
           />
       </div>
       <div style={styles.inputWrapper}>
         <BinningInput
           binningMethod="interval"
           disabled={disabled}
+          handleBlur={validateIntervalFields}
           handleChange={handleChange}
           inputError={intervalErrors.amount}
           inputId="custom-interval-amount"
           inputKey="amount"
           valid={intervalErrors.amount === ''}
-          validateOnBlur={validateCustomInterval}
           value={intervalFields.amount}
           />
       </div>
@@ -68,12 +67,12 @@ const CustomIntervalFields = ({
         <BinningInput
           binningMethod="interval"
           disabled={disabled}
+          handleBlur={validateIntervalFields}
           handleChange={handleChange}
           inputError={intervalErrors.min}
           inputId="custom-interval-min"
           inputKey="min"
           valid={intervalErrors.min === ''}
-          validateOnBlur={validateCustomInterval}
           value={intervalFields.min}
           />
       </div>
@@ -82,12 +81,12 @@ const CustomIntervalFields = ({
         <BinningInput
           binningMethod="interval"
           disabled={disabled}
+          handleBlur={validateIntervalFields}
           handleChange={handleChange}
           inputError={intervalErrors.max}
           inputId="custom-interval-max"
           inputKey="max"
           valid={intervalErrors.max === ''}
-          validateOnBlur={validateCustomInterval}
           value={intervalFields.max}
           />
       </div>

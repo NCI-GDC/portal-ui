@@ -79,7 +79,7 @@ const defaultRangeRow = {
 
 class ContinuousCustomBinsModal extends Component {
   state = {
-    binningMethod: 'range', // or interval
+    binningMethod: 'interval', // or range
     intervalErrors: {
       amount: '',
       max: '',
@@ -132,8 +132,8 @@ class ContinuousCustomBinsModal extends Component {
       return;
     }
 
-    const currentMin = intervalFields.min.value;
-    const currentMax = intervalFields.max.value;
+    const currentMin = intervalFields.min;
+    const currentMax = intervalFields.max;
 
     const checkMinInRange = currentMin >= defaultData.min && currentMin < defaultData.max;
     const validMin = checkMinInRange ? currentMin : defaultData.min;
@@ -141,21 +141,21 @@ class ContinuousCustomBinsModal extends Component {
     const checkMaxInRange = currentMax > defaultData.min && currentMax <= defaultData.max;
     const validMax = checkMaxInRange ? currentMax : defaultData.max;
 
-    const validAmount = checkMinInRange && checkMaxInRange ? currentMax - currentMin : defaultData.max - defaultData.min;
+    const validAmount = checkMinInRange && checkMaxInRange ? currentMax - currentMin + 1 : defaultData.max - defaultData.min + 1;
 
     let inputError;
 
     if (inputKey === 'amount') {
-      const amountTooLargeError = `Interval must be less than or equal to ${validAmount}.`;
-      const amountTooSmallError = 'Interval must be at least 1.';
-      inputError = inputValue < 1 ? amountTooSmallError : inputValue > validAmount ? amountTooLargeError : '';
+      const amountTooLargeError = `Must be less than or equal to ${validAmount}.`;
+      const amountTooSmallError = 'Must be greater than 0.';
+      inputError = inputValue <= 0 ? amountTooSmallError : inputValue > validAmount ? amountTooLargeError : '';
     } else if (inputKey === 'max') {
-      const maxTooSmallError = `Max must be greater than ${validMin}.`;
-      const maxTooLargeError = `Max must be less than or equal to ${defaultData.max}.`;
+      const maxTooSmallError = `Must be greater than ${validMin}.`;
+      const maxTooLargeError = `Must be less than or equal to ${defaultData.max}.`;
       inputError = inputValue <= validMin ? maxTooSmallError : inputValue > defaultData.max ? maxTooLargeError : '';
     } else if (inputKey === 'min') {
-      const minTooLargeError = `Min must be less than ${validMax}.`;
-      const maxTooSmallError = `Min must be greater than or equal to ${defaultData.min}.`;
+      const minTooLargeError = `Must be less than ${validMax}.`;
+      const maxTooSmallError = `Must be greater than or equal to ${defaultData.min}.`;
       inputError = inputValue >= validMax ? minTooLargeError : inputValue < defaultData.min ? maxTooSmallError : '';
     } else {
       inputError = '';
@@ -288,7 +288,7 @@ class ContinuousCustomBinsModal extends Component {
                 validateIntervalFields={e => {
                   this.validateIntervalFields(e.target);
                 }}
-              />
+                />
             </Column>
           </Row>
           <div
@@ -299,7 +299,7 @@ class ContinuousCustomBinsModal extends Component {
               }
             }}
             role="presentation"
-          >
+            >
             <div style={{ marginBottom: '15px' }}>
               <BinningMethodInput
                 binningMethod="range"
@@ -309,32 +309,32 @@ class ContinuousCustomBinsModal extends Component {
                   this.setState({ binningMethod: 'range' });
                 }}
                 label="Manually"
-              />
+                />
             </div>
             <div style={styles.wrapper}>
               <div style={styles.heading}>
                 <div
                   id="range-table-label-name"
                   style={styles.column}
-                >
+                  >
                   Bin Name
                 </div>
                 <div
                   id="range-table-label-min"
                   style={styles.column}
-                >
+                  >
                   From
                 </div>
                 <div
                   id="range-table-label-max"
                   style={styles.column}
-                >
+                  >
                   To
                 </div>
                 <div
                   id="range-table-label-options"
                   style={styles.optionsColumn}
-                >
+                  >
                   Options
                 </div>
               </div>
@@ -355,7 +355,7 @@ class ContinuousCustomBinsModal extends Component {
                     rowOverlapErrors={rangeOverlapErrors[rowIndex]}
                     rowsLength={rangeRows.length}
                     styles={styles}
-                  />
+                    />
                 ))}
               </div>
             </div>
@@ -372,7 +372,7 @@ class ContinuousCustomBinsModal extends Component {
                 ...(binningMethod !== 'range' ? styles.inputDisabled : {}),
                 ...styles.visualizingButton,
               }}
-            >
+              >
               <i aria-hidden="true" className="fa fa-plus-circle" />
               &nbsp; Add
             </Button>
@@ -384,26 +384,26 @@ class ContinuousCustomBinsModal extends Component {
             justifyContent: 'flex-end',
             margin: '20px',
           }}
-        >
+          >
           <span style={{
             color: 'red',
             justifyContent: 'flex-start',
             visibility: modalWarning.length > 0 ? 'visible' : 'hidden',
           }}
-          >
+                >
             {`Warning: ${modalWarning}`}
           </span>
           <Button
             onClick={onClose}
             style={styles.visualizingButton}
-          >
+            >
             Cancel
           </Button>
           <Button
             disabled={submitDisabled}
             onClick={() => this.handleSubmit()}
             style={submitDisabled ? styles.inputDisabled : styles.visualizingButton}
-          >
+            >
             Save Bins
           </Button>
         </Row>

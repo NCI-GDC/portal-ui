@@ -1013,6 +1013,8 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                       first={totalDocs}
                       setDataHandler={() => setQQDataIsSet()}
                       wrapperId={wrapperId}
+                      setId={setId}
+                      dataBuckets={dataBuckets}
                       />
                   </Column>
                 </Row>

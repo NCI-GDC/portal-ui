@@ -36,6 +36,14 @@ class RangeTableRow extends React.Component {
     'to',
   ];
 
+  componentDidMount() {
+    const { fields } = this.props;
+    /* eslint-disable */
+    this.setState({ fieldValues: fields });
+    /* eslint-enable */
+  }
+
+
   componentDidUpdate(prevProps) {
     const { fields } = this.props;
     if (!isEqual(fields, prevProps.fields)) {
@@ -141,6 +149,7 @@ class RangeTableRow extends React.Component {
       rangeMethodActive,
       rowActive,
       rowIndex,
+      rowOverlapErrors,
       styles,
     } = this.props;
 
@@ -149,108 +158,118 @@ class RangeTableRow extends React.Component {
     return (
       <OutsideClickHandler
         disabled={!rowActive || !rangeMethodActive}
-        display="flex"
         onOutsideClick={() => {
           this.handleSave();
         }}
-        >
-        <div
-          onClick={() => {
-            if (!rowActive) this.handleEdit();
-          }}
-          role="presentation"
-          style={rowStyles.fieldsWrapper}
-          >
-          {
-            this.fieldsOrder.map(rowItem => (
-              <div
-                key={`range-row-${rowIndex}-${rowItem}`}
-                style={styles.column}
-                >
-                <BinningInput
-                  binningMethod="range"
-                  disabled={!rowActive || !rangeMethodActive}
-                  handleChange={e => {
-                    this.updateInput(e.target);
-                  }}
-                  inputError={fieldErrors[rowItem]}
-                  inputId={`range-row-${rowIndex}-${rowItem}`}
-                  inputKey={rowItem}
-                  key={`range-row-${rowIndex}-${rowItem}`}
-                  rowIndex={rowIndex}
-                  valid={fieldErrors[rowItem].length === 0}
-                  value={fieldValues[rowItem]}
-                  />
-              </div>
-            ))
-          }
-        </div>
-        <div style={styles.optionsColumn}>
-          {rowActive ? (
-            <React.Fragment>
-              <Button
-                aria-label="Save"
-                buttonContentStyle={{ justifyContent: 'center' }}
-                disabled={!rangeMethodActive}
-                id={`range-row-${rowIndex}-save`}
-                onClick={() => {
-                  this.handleSave();
-                }}
-                style={{
-                  ...rowStyles.optionsButton,
-                  ...(!rangeMethodActive || { background: 'green' }),
-                }}
-                >
-                <i aria-hidden="true" className="fa fa-check" />
-              </Button>
-              <Button
-                aria-label="Cancel"
-                buttonContentStyle={{ justifyContent: 'center' }}
-                disabled={!rangeMethodActive}
-                id={`range-row-${rowIndex}-cancel`}
-                onClick={() => {
-                  this.handleCancel();
-                }}
-                style={{
-                  ...rowStyles.optionsButton,
-                  ...(!rangeMethodActive || { background: 'red' }),
-                }}
-                >
-                <i aria-hidden="true" className="fa fa-close" />
-              </Button>
-            </React.Fragment>
-          ) : (
-            <Button
-                aria-label="Edit"
-                disabled={!rangeMethodActive}
-                id={`range-row-${rowIndex}-edit`}
-                onClick={() => {
-                  this.handleEdit();
-                }}
-                style={{
-                  ...rowStyles.optionsButton,
-                  ...styles.visualizingButton,
-                }}
-                >
-                <i aria-hidden="true" className="fa fa-pencil" />
-              </Button>
-            )}
-          <Button
-            aria-label="Remove"
-            buttonContentStyle={{ justifyContent: 'center' }}
-            disabled={!rangeMethodActive}
-            id={`range-row-${rowIndex}-remove`}
+      >
+        <div style={{ display: 'flex' }}>
+          <div
             onClick={() => {
-              this.handleRemove();
+              if (!rowActive) this.handleEdit();
             }}
-            style={{
-              ...rowStyles.optionsButton,
-              ...styles.visualizingButton,
-            }}
+            role="presentation"
+            style={rowStyles.fieldsWrapper}
+          >
+            {
+              this.fieldsOrder.map(rowItem => (
+                <div
+                  key={`range-row-${rowIndex}-${rowItem}`}
+                  style={styles.column}
+                >
+                  <BinningInput
+                    binningMethod="range"
+                    disabled={!rowActive || !rangeMethodActive}
+                    handleChange={e => {
+                      this.updateInput(e.target);
+                    }}
+                    inputError={fieldErrors[rowItem]}
+                    inputId={`range-row-${rowIndex}-${rowItem}`}
+                    inputKey={rowItem}
+                    key={`range-row-${rowIndex}-${rowItem}`}
+                    rowIndex={rowIndex}
+                    valid={fieldErrors[rowItem].length === 0}
+                    value={fieldValues[rowItem]}
+                  />
+                </div>
+              ))
+            }
+          </div>
+          <div style={styles.optionsColumn}>
+            {rowActive ? (
+              <React.Fragment>
+                <Button
+                  aria-label="Save"
+                  buttonContentStyle={{ justifyContent: 'center' }}
+                  disabled={!rangeMethodActive}
+                  id={`range-row-${rowIndex}-save`}
+                  onClick={() => {
+                    this.handleSave();
+                  }}
+                  style={{
+                    ...rowStyles.optionsButton,
+                    ...(!rangeMethodActive || { background: 'green' }),
+                  }}
+                >
+                  <i aria-hidden="true" className="fa fa-check" />
+                </Button>
+                <Button
+                  aria-label="Cancel"
+                  buttonContentStyle={{ justifyContent: 'center' }}
+                  disabled={!rangeMethodActive}
+                  id={`range-row-${rowIndex}-cancel`}
+                  onClick={() => {
+                    this.handleCancel();
+                  }}
+                  style={{
+                    ...rowStyles.optionsButton,
+                    ...(!rangeMethodActive || { background: 'red' }),
+                  }}
+                >
+                  <i aria-hidden="true" className="fa fa-close" />
+                </Button>
+              </React.Fragment>
+            ) : (
+                <Button
+                  aria-label="Edit"
+                  disabled={!rangeMethodActive}
+                  id={`range-row-${rowIndex}-edit`}
+                  onClick={() => {
+                    this.handleEdit();
+                  }}
+                  style={{
+                    ...rowStyles.optionsButton,
+                    ...styles.visualizingButton,
+                  }}
+                >
+                  <i aria-hidden="true" className="fa fa-pencil" />
+                </Button>
+              )}
+            <Button
+              aria-label="Remove"
+              buttonContentStyle={{ justifyContent: 'center' }}
+              disabled={!rangeMethodActive}
+              id={`range-row-${rowIndex}-remove`}
+              onClick={() => {
+                this.handleRemove();
+              }}
+              style={{
+                ...rowStyles.optionsButton,
+                ...styles.visualizingButton,
+              }}
             >
-            <i aria-hidden="true" className="fa fa-trash" />
-          </Button>
+              <i aria-hidden="true" className="fa fa-trash" />
+            </Button>
+          </div>
         </div>
+        {rowOverlapErrors && (
+          <div style={{
+            color: 'red',
+            padding: '0 5px 10px',
+          }}
+          >
+            {`${fieldValues.name} overlaps with ${rowOverlapErrors.join(', ')}`}
+          </div>
+        )}
       </OutsideClickHandler>
     );
   }

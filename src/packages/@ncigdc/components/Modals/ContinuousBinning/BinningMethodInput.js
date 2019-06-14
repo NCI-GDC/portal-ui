@@ -9,10 +9,6 @@ const BinningMethodInput = ({
         checked={checked}
         id={`binning-method-${binningMethod}`}
         name="binning-method"
-        onBlur={() => {
-          console.log('blur!!!');
-          validateOnBlur();
-        }}
         onChange={handleChange}
         style={{ marginRight: '15px' }}
         type="radio"

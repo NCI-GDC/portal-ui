@@ -10,7 +10,6 @@ const rowStyles = {
     flex: '1 0 0',
   },
   optionsButton: {
-    backgroundColor: '#fff',
     display: 'inline-block',
     margin: '2px 0 0 5px',
     textAlign: 'center',
@@ -136,7 +135,7 @@ class RangeTableRow extends React.Component {
 
     const checkFromToValues = errorsEmptyOrNaN.to === '' &&
       errorsEmptyOrNaN.from === '' &&
-      Number(fieldValues.to) < Number(fieldValues.from);
+      Number(fieldValues.to) <= Number(fieldValues.from);
     return checkFromToValues ? ({
       from: `'From' must be less than ${fieldValues.to}.`,
       name: '',
@@ -161,7 +160,7 @@ class RangeTableRow extends React.Component {
         onOutsideClick={() => {
           this.handleSave();
         }}
-      >
+        >
         <div style={{ display: 'flex' }}>
           <div
             onClick={() => {
@@ -169,13 +168,13 @@ class RangeTableRow extends React.Component {
             }}
             role="presentation"
             style={rowStyles.fieldsWrapper}
-          >
+            >
             {
               this.fieldsOrder.map(rowItem => (
                 <div
                   key={`range-row-${rowIndex}-${rowItem}`}
                   style={styles.column}
-                >
+                  >
                   <BinningInput
                     binningMethod="range"
                     disabled={!rowActive || !rangeMethodActive}
@@ -189,7 +188,7 @@ class RangeTableRow extends React.Component {
                     rowIndex={rowIndex}
                     valid={fieldErrors[rowItem].length === 0}
                     value={fieldValues[rowItem]}
-                  />
+                    />
                 </div>
               ))
             }
@@ -206,10 +205,10 @@ class RangeTableRow extends React.Component {
                     this.handleSave();
                   }}
                   style={{
+                    ...(rangeMethodActive ? { background: 'green' } : styles.inputDisabled),
                     ...rowStyles.optionsButton,
-                    ...(!rangeMethodActive || { background: 'green' }),
                   }}
-                >
+                  >
                   <i aria-hidden="true" className="fa fa-check" />
                 </Button>
                 <Button
@@ -221,15 +220,15 @@ class RangeTableRow extends React.Component {
                     this.handleCancel();
                   }}
                   style={{
+                    ...(rangeMethodActive ? { background: 'red' } : styles.inputDisabled),
                     ...rowStyles.optionsButton,
-                    ...(!rangeMethodActive || { background: 'red' }),
                   }}
-                >
+                  >
                   <i aria-hidden="true" className="fa fa-close" />
                 </Button>
               </React.Fragment>
             ) : (
-                <Button
+              <Button
                   aria-label="Edit"
                   disabled={!rangeMethodActive}
                   id={`range-row-${rowIndex}-edit`}
@@ -237,10 +236,10 @@ class RangeTableRow extends React.Component {
                     this.handleEdit();
                   }}
                   style={{
+                    ...(rangeMethodActive ? styles.visualizingButton : styles.inputDisabled),
                     ...rowStyles.optionsButton,
-                    ...styles.visualizingButton,
                   }}
-                >
+                  >
                   <i aria-hidden="true" className="fa fa-pencil" />
                 </Button>
               )}
@@ -253,10 +252,10 @@ class RangeTableRow extends React.Component {
                 this.handleRemove();
               }}
               style={{
+                ...(rangeMethodActive ? styles.visualizingButton : styles.inputDisabled),
                 ...rowStyles.optionsButton,
-                ...styles.visualizingButton,
               }}
-            >
+              >
               <i aria-hidden="true" className="fa fa-trash" />
             </Button>
           </div>
@@ -266,7 +265,7 @@ class RangeTableRow extends React.Component {
             color: 'red',
             padding: '0 5px 10px',
           }}
-          >
+               >
             {`${fieldValues.name} overlaps with ${rowOverlapErrors.join(', ')}`}
           </div>
         )}

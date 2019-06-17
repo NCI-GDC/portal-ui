@@ -30,6 +30,10 @@ const styles = {
     padding: '5px',
     textAlign: 'right',
   },
+  scrollingTable: {
+    maxHeight: '200px',
+    overflowY: 'auto',
+  },
   visualizingButton: {
     backgroundColor: '#fff',
     borderColor: '#ccc',
@@ -336,7 +340,7 @@ class ContinuousCustomBinsModal extends Component {
                   Options
                 </div>
               </div>
-              <div>
+              <div style={styles.scrollingTable}>
                 {rangeRows.map((row, rowIndex) => (
                   <RangeTableRow
                     fields={row.fields}

@@ -3,7 +3,7 @@ import {
   compose, withPropsOnChange, withProps, withState,
 } from 'recompose';
 import {
-  sortBy, isArray, isPlainObject, isNumber,
+  sortBy, isArray, isPlainObject, isNumber, isEqual
 } from 'lodash';
 
 import { addInFilters } from '@ncigdc/utils/filters';
@@ -17,39 +17,34 @@ export default compose(
   withTheme,
   withState('data', 'setData', null),
   withState('isLoading', 'setIsLoading', true),
-  withPropsOnChange(['filters', 'fieldName'], ({ fieldName, filters, first }) => {
-    const missingFilter = {
-      op: 'and',
-      content: [
-        {
-          op: 'NOT',
-          content: {
-            field: `cases.${fieldName}`,
-            value: ['MISSING'],
-          },
-        },
-      ],
-    };
-    return {
-      newFilters: addInFilters(filters, missingFilter),
-      first,
-    };
-  }),
   withProps({
     updateData: async ({
       dataHandler,
       fieldName,
       first,
-      newFilters,
+      filters,
       setData,
       setDataHandler,
       setIsLoading,
     }) => {
+      setIsLoading(true);
       setDataHandler(false);
+      const missingFilter = {
+        op: 'and',
+        content: [
+          {
+            op: 'NOT',
+            content: {
+              field: `cases.${fieldName}`,
+              value: ['MISSING'],
+            },
+          },
+        ],
+      };
+      const newFilters = addInFilters(filters, missingFilter)
       const res = await fetchApi('case_ssms', {
         headers: { 'Content-Type': 'application/json' },
         body: {
-
           filters: JSON.stringify(newFilters),
           size: first,
           fields: fieldName,
@@ -96,7 +91,7 @@ export default compose(
       })), () => setDataHandler(true));
     },
   }),
-  withPropsOnChange(['filters'], ({ updateData, ...props }) => updateData(props)),
+  withPropsOnChange((props, nextProps) => !isEqual(props.dataBuckets, nextProps.dataBuckets), ({ updateData, ...props }) => updateData(props)),
 )(({
   chartHeight,
   clinicalType,

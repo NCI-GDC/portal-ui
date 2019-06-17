@@ -24,6 +24,7 @@ const styles = {
 const BinningInput = ({
   binningMethod,
   disabled,
+  errorVisible,
   handleBlur,
   handleChange,
   handleClick,
@@ -43,12 +44,12 @@ const BinningInput = ({
         style={{
           ...(binningMethod === 'interval' ? styles.inputHorizontal : styles.inputTable),
           ...(disabled ? styles.inputDisabled : {}),
-          ...(valid ? {} : styles.inputInvalid),
+          ...(!valid && errorVisible ? styles.inputInvalid : {}),
         }}
         type="text"
         value={value}
         />
-      {inputError && <div style={styles.error}>{inputError}</div>}
+      {inputError && errorVisible && <div style={styles.error}>{inputError}</div>}
     </React.Fragment>
   );
 };

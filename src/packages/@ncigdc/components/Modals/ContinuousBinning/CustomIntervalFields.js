@@ -53,6 +53,7 @@ const CustomIntervalFields = ({
         <BinningInput
           binningMethod="interval"
           disabled={disabled}
+          errorVisible={!disabled}
           handleBlur={validateIntervalFields}
           handleChange={handleChange}
           inputError={intervalErrors.amount}
@@ -67,6 +68,7 @@ const CustomIntervalFields = ({
         <BinningInput
           binningMethod="interval"
           disabled={disabled}
+          errorVisible={!disabled}
           handleBlur={validateIntervalFields}
           handleChange={handleChange}
           inputError={intervalErrors.min}
@@ -81,6 +83,7 @@ const CustomIntervalFields = ({
         <BinningInput
           binningMethod="interval"
           disabled={disabled}
+          errorVisible={!disabled}
           handleBlur={validateIntervalFields}
           handleChange={handleChange}
           inputError={intervalErrors.max}

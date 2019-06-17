@@ -178,6 +178,7 @@ class RangeTableRow extends React.Component {
                   <BinningInput
                     binningMethod="range"
                     disabled={!rowActive || !rangeMethodActive}
+                    errorVisible={rangeMethodActive}
                     handleChange={e => {
                       this.updateInput(e.target);
                     }}

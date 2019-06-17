@@ -392,6 +392,7 @@ class ContinuousCustomBinsModal extends Component {
           </span>
           <Button
             onClick={onClose}
+            onMouseDown={onClose}
             style={styles.visualizingButton}
             >
             Cancel

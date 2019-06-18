@@ -212,15 +212,10 @@ class ContinuousCustomBinsModal extends Component {
     // assume all rows are complete and from < to
 
     const { rangeRows } = this.state;
-    console.log(rangeRows);
 
     const overlapErrors = rangeRows.map((rowItem, rowIndex) => {
       const rowFrom = Number(rowItem.fields.from);
       const rowTo = Number(rowItem.fields.to);
-      // console.log('rowName', rowItem.fields.name);
-      console.log(`CHECKING name: ${rowItem.fields.name} from: ${rowFrom} to: ${rowTo}`);
-
-      console.log(typeof rowTo);
 
       const overlapNames = rangeRows.reduce((acc, curr, overlapIndex) => {
         if (rowIndex === overlapIndex) return acc;
@@ -229,21 +224,10 @@ class ContinuousCustomBinsModal extends Component {
         const overlapTo = Number(curr.fields.to);
         const overlapName = curr.fields.name;
 
-        console.log(`AGAINST name: ${overlapName} from: ${overlapFrom} to: ${overlapTo}`);
-
         const fromHasOverlap = rowFrom >= overlapFrom && rowFrom <= overlapTo;
         const toHasOverlap = rowTo >= overlapFrom && rowTo <= overlapTo;
 
-        // 3000
-
-        console.log('fromHasOverlap', fromHasOverlap);
-        console.log('toHasOverlap', toHasOverlap);
-
         const hasOverlap = fromHasOverlap || toHasOverlap;
-
-        console.log('hasOverlap', hasOverlap);
-
-        console.log('--------------------------------');
 
         return hasOverlap ? [...acc, overlapName] : acc;
       }, []);
@@ -265,7 +249,7 @@ class ContinuousCustomBinsModal extends Component {
 
     return (
       <Column style={{ padding: '20px' }}>
-        {/* <div>
+        <div>
           <h1 style={{ marginTop: 0 }}>
             {`Create Custom Bins: ${fieldName}`}
           </h1>
@@ -284,9 +268,9 @@ class ContinuousCustomBinsModal extends Component {
             <strong> Save Bins </strong>
             to update the analysis plots.
           </p>
-        </div> */}
+        </div>
         <div style={styles.formBg}>
-          {/* <Row>
+          <Row>
             <Column className="binning-interval">
               <h3>Define bins by:</h3>
               <CustomIntervalFields
@@ -305,7 +289,7 @@ class ContinuousCustomBinsModal extends Component {
                 }}
                 />
             </Column>
-          </Row> */}
+          </Row>
           <div
             className="binning-range"
             onClick={() => {
@@ -319,7 +303,6 @@ class ContinuousCustomBinsModal extends Component {
               <BinningMethodInput
                 binningMethod="range"
                 checked={binningMethod === 'range'}
-                // defaultChecked={binningMethod === 'range'}
                 handleChange={() => {
                   this.setState({ binningMethod: 'range' });
                 }}

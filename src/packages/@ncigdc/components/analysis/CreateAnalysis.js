@@ -49,7 +49,7 @@ const CreateAnalysis = ({
       onRun={sets => {
         const created = new Date().toISOString();
         const id = created;
-        const colorList = sampleSize(d3.schemeCategory20, 4);
+        const colorList = sampleSize(d3.schemeCategory20.filter(col => !['#d62728', '#2ca02c'].includes(col)), 4);
         const keys = Object.keys(defaultVariables);
         dispatch(
           addAnalysis({

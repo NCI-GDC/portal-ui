@@ -261,13 +261,9 @@ class ContinuousCustomBinsModal extends Component {
 
         console.log(`AGAINST name: ${overlapName} from: ${overlapFrom} to: ${overlapTo}`);
 
-        const fromHasOverlap = rowFrom >= overlapFrom && rowFrom <= overlapTo;
-        const toHasOverlap = rowTo >= overlapFrom && rowTo <= overlapTo;
-        const outsideOverlap = rowTo > overlapTo && rowFrom < overlapFrom;
+        const hasNoOverlap = rowTo < overlapFrom || rowFrom > overlapTo;
 
-        const hasOverlap = fromHasOverlap || toHasOverlap || outsideOverlap;
-
-        return hasOverlap ? [...acc, overlapName] : acc;
+        return hasNoOverlap ? acc : [...acc, overlapName];
       }, []);
       console.log('-----------------');
 

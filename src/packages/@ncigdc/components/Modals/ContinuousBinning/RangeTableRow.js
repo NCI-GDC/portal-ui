@@ -163,7 +163,7 @@ class RangeTableRow extends React.Component {
         >
         <div style={{ display: 'flex' }}>
           <div
-            onClick={() => {
+            onMouseDown={() => {
               if (!rowActive) this.handleEdit();
             }}
             role="presentation"

@@ -197,15 +197,13 @@ class ContinuousCustomBinsModal extends Component {
   handleUpdateRow = (inputRowIndex, inputRow) => {
     const { rangeOverlapErrors, rangeRows } = this.state;
     const nextRangeRows = rangeRows.map((rangeRow, rowIndex) => (rowIndex === inputRowIndex ? inputRow : rangeRow));
-    this.setState({ rangeRows: nextRangeRows }, () => {
-      if (rangeOverlapErrors.filter(err => err.length > 0).length > 0) {
-        // console.log('has errors');
-        // this.validateOverlap();
-        const formHasErrors = this.validateOverlap();
-        console.log('formHasErrors', formHasErrors);
-      }
-    });
-  };
+    const checkIsLastRow = inputRowIndex + 1 === rangeRows.length;
+    // this.setState({ rangeRows: checkIsLastRow ? nextRangeRows.concat(defaultRangeRow) : nextRangeRows }, () => {
+    //   const formHasErrors = this.validateOverlap();
+    //   console.log('formHasErrors', formHasErrors);
+    // });
+    this.setState({ rangeRows: checkIsLastRow ? nextRangeRows.concat(defaultRangeRow) : nextRangeRows });
+  }
 
   // submit
 
@@ -263,7 +261,7 @@ class ContinuousCustomBinsModal extends Component {
     return overlapErrors.filter(overlapItem => overlapItem.length > 0).length > 0;
   }
 
-  render() {
+  render = () => {
     const { defaultData, fieldName, onClose } = this.props;
     const {
       binningMethod, intervalErrors, intervalFields, modalWarning, rangeNameErrors, rangeOverlapErrors, rangeRows,
@@ -311,7 +309,7 @@ class ContinuousCustomBinsModal extends Component {
                 validateIntervalFields={e => {
                   this.validateIntervalFields(e.target);
                 }}
-                />
+              />
             </Column>
           </Row>
           <div
@@ -322,7 +320,7 @@ class ContinuousCustomBinsModal extends Component {
               }
             }}
             role="presentation"
-            >
+          >
             <div style={{ marginBottom: '15px' }}>
               <BinningMethodInput
                 binningMethod="range"
@@ -331,32 +329,32 @@ class ContinuousCustomBinsModal extends Component {
                   this.setState({ binningMethod: 'range' });
                 }}
                 label="Manually"
-                />
+              />
             </div>
             <div style={styles.wrapper}>
               <div style={styles.heading}>
                 <div
                   id="range-table-label-name"
                   style={styles.column}
-                  >
+                >
                   Bin Name
                 </div>
                 <div
                   id="range-table-label-min"
                   style={styles.column}
-                  >
+                >
                   From
                 </div>
                 <div
                   id="range-table-label-max"
                   style={styles.column}
-                  >
+                >
                   To
                 </div>
                 <div
                   id="range-table-label-options"
                   style={styles.optionsColumn}
-                  >
+                >
                   Options
                 </div>
               </div>
@@ -378,26 +376,26 @@ class ContinuousCustomBinsModal extends Component {
                     rowOverlapErrors={rangeOverlapErrors[rowIndex]}
                     rowsLength={rangeRows.length}
                     styles={styles}
-                    />
+                  />
                 ))}
               </div>
             </div>
-            <Button
-              disabled={binningMethod !== 'range'}
-              onClick={() => {
-                const nextRangeRows = [...rangeRows, ...defaultRangeRow];
-                this.setState({ rangeRows: nextRangeRows });
-              }}
-              style={{
-                display: 'flex',
-                marginLeft: 'auto',
-                maxWidth: '100px',
-                ...(binningMethod === 'range' ? styles.visualizingButton : styles.inputDisabled),
-              }}
-              >
-              <i aria-hidden="true" className="fa fa-plus-circle" />
-              &nbsp; Add
-            </Button>
+            {/* <Button
+            disabled={binningMethod !== 'range'}
+            onClick={() => {
+              const nextRangeRows = [...rangeRows, ...defaultRangeRow];
+              this.setState({ rangeRows: nextRangeRows });
+            }}
+            style={{
+              display: 'flex',
+              marginLeft: 'auto',
+              maxWidth: '100px',
+              ...(binningMethod === 'range' ? styles.visualizingButton : styles.inputDisabled),
+            }}
+          >
+            <i aria-hidden="true" className="fa fa-plus-circle" />
+            &nbsp; Add
+            </Button> */}
           </div>
         </div>
         <Row
@@ -406,27 +404,27 @@ class ContinuousCustomBinsModal extends Component {
             justifyContent: 'flex-end',
             margin: '20px',
           }}
-          >
+        >
           <span style={{
             color: 'red',
             justifyContent: 'flex-start',
             visibility: modalWarning.length > 0 ? 'visible' : 'hidden',
           }}
-                >
+          >
             {`Warning: ${modalWarning}`}
           </span>
           <Button
             onClick={onClose}
             onMouseDown={onClose}
             style={styles.visualizingButton}
-            >
+          >
             Cancel
           </Button>
           <Button
             disabled={submitDisabled}
             onClick={() => this.handleSubmit()}
             style={submitDisabled ? styles.inputDisabled : styles.visualizingButton}
-            >
+          >
             Save Bins
           </Button>
         </Row>

@@ -6,7 +6,7 @@ const styles = {
   formBg: {
     backgroundColor: '#f5f5f5',
     borderRadius: '5px',
-    padding: '0 20px 20px',
+    padding: '0 20px',
     width: '100%',
   },
   heading: {
@@ -72,7 +72,7 @@ const styles = {
     },
   },
   scrollingTable: {
-    maxHeight: '200px',
+    maxHeight: '250px',
     overflowY: 'auto',
   },
   visualizingButton: {

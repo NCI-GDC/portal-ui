@@ -220,6 +220,9 @@ class RangeTableRow extends React.Component {
                   onClick={() => {
                     this.handleCancel();
                   }}
+                  onMouseDown={() => {
+                    this.handleCancel();
+                  }}
                   style={{
                     ...(rangeMethodActive ? { background: 'red' } : styles.inputDisabled),
                     ...rowStyles.optionsButton,
@@ -236,13 +239,16 @@ class RangeTableRow extends React.Component {
                   onClick={() => {
                     this.handleEdit();
                   }}
+                  onMouseDown={() => {
+                    this.handleEdit();
+                  }}
                   style={{
                     ...(rangeMethodActive ? styles.visualizingButton : styles.inputDisabled),
                     ...rowStyles.optionsButton,
                   }}
                   >
-                  <i aria-hidden="true" className="fa fa-pencil" />
-                </Button>
+                <i aria-hidden="true" className="fa fa-pencil" />
+              </Button>
               )}
             <Button
               aria-label="Remove"
@@ -250,6 +256,9 @@ class RangeTableRow extends React.Component {
               disabled={!rangeMethodActive}
               id={`range-row-${rowIndex}-remove`}
               onClick={() => {
+                this.handleRemove();
+              }}
+              onMouseDown={() => {
                 this.handleRemove();
               }}
               style={{

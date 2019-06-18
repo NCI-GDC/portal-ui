@@ -17,34 +17,34 @@ const styles = {
     marginBottom: '5px',
     padding: '2px 5px',
   },
-  inputStyles: {
-    error: {
-      color: 'red',
-    },
+  input: {
     inputDisabled: {
       background: '#efefef',
+    },
+    inputError: {
+      color: 'red',
     },
     inputHorizontal: {
       margin: '0',
       padding: '5px',
       width: '100px',
     },
-    inputInvalid: {
-      border: '2px solid red',
-    },
-    inputTable: {
+    inputInTable: {
       padding: '5px',
       width: '100%',
     },
-    inputWrapper: { maxWidth: '100px' },
-    text: {
+    inputInvalid: {
+      border: '2px solid red',
+    },
+    inputText: {
       lineHeight: '34px',
       padding: '0 10px',
     },
-    wrapper: {
+    inputWrapper: {
       display: 'flex',
       marginBottom: '15px',
     },
+    inputWrapper100px: { maxWidth: '100px' },
   },
   intervalWrapper: {
     display: 'flex',

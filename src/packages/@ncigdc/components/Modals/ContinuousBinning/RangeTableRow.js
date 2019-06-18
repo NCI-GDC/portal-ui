@@ -2,7 +2,7 @@ import React from 'react';
 import { isEqual, isFinite } from 'lodash';
 import OutsideClickHandler from 'react-outside-click-handler';
 import Button from '@ncigdc/uikit/Button';
-import BinningInput from './BinningInput';
+import RangeInput from './RangeInput';
 
 const rowStyles = {
   fieldsWrapper: {
@@ -170,29 +170,22 @@ class RangeTableRow extends React.Component {
             style={rowStyles.fieldsWrapper}
             >
             {
-              this.fieldsOrder.map(rowItem => (
-                <div
-                  key={`range-row-${rowIndex}-${rowItem}`}
-                  style={styles.column}
-                  >
-                  <BinningInput
-                    binningMethod="range"
+              this.fieldsOrder.map(rowItem => {
+                const rowId = `range-row-${rowIndex}-${rowItem}`;
+                return (
+                  <RangeInput
                     disabled={!rowActive || !rangeMethodActive}
+                    error={fieldErrors[rowItem]}
                     errorVisible={rangeMethodActive}
                     handleChange={e => {
                       this.updateInput(e.target);
                     }}
-                    inputError={fieldErrors[rowItem]}
-                    inputId={`range-row-${rowIndex}-${rowItem}`}
-                    inputKey={rowItem}
-                    key={`range-row-${rowIndex}-${rowItem}`}
-                    rowIndex={rowIndex}
-                    valid={fieldErrors[rowItem].length === 0}
+                    id={rowId}
+                    key={rowId}
                     value={fieldValues[rowItem]}
                     />
-                </div>
-              ))
-            }
+                );
+              })}
           </div>
           <div style={styles.optionsColumn}>
             {rowActive ? (
@@ -247,8 +240,8 @@ class RangeTableRow extends React.Component {
                     ...rowStyles.optionsButton,
                   }}
                   >
-                <i aria-hidden="true" className="fa fa-pencil" />
-              </Button>
+                  <i aria-hidden="true" className="fa fa-pencil" />
+                </Button>
               )}
             <Button
               aria-label="Remove"
@@ -270,7 +263,7 @@ class RangeTableRow extends React.Component {
             </Button>
           </div>
         </div>
-        {rowOverlapErrors && (
+        {rowOverlapErrors && rangeMethodActive && (
           <div style={{
             color: 'red',
             padding: '0 5px 10px',

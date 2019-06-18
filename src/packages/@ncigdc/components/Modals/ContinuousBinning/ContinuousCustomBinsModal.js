@@ -7,41 +7,43 @@ import BinningMethodInput from './BinningMethodInput';
 import CustomIntervalFields from './CustomIntervalFields';
 import styles from './styles';
 
-const defaultRangeRow = {
-  active: true,
-  fields: {
-    from: '',
-    name: '',
-    to: '',
-  },
-};
-
-const defaultRangesTESTWithOverlap = [
+const defaultRangeRow = [
   {
-    active: false,
+    active: true,
     fields: {
-      from: '1',
-      name: 'a',
-      to: '5000',
+      from: '',
+      name: '',
+      to: '',
     },
   },
-  {
-    active: false,
-    fields: {
-      from: '5001',
-      name: 'b',
-      to: '30000',
-    },
-  },
-  // {
-  //   active: false,
-  //   fields: {
-  //     from: '30002',
-  //     name: 'c',
-  //     to: '80000',
-  //   },
-  // },
 ];
+
+// const defaultRangesTESTWithOverlap = [
+//   {
+//     active: false,
+//     fields: {
+//       from: '1',
+//       name: 'a',
+//       to: '5000',
+//     },
+//   },
+//   {
+//     active: false,
+//     fields: {
+//       from: '5001',
+//       name: 'b',
+//       to: '30000',
+//     },
+//   },
+// {
+//   active: false,
+//   fields: {
+//     from: '30002',
+//     name: 'c',
+//     to: '80000',
+//   },
+// },
+// ];
 
 // const defaultRangesTESTNoOverlap = [
 //   {
@@ -86,7 +88,7 @@ class ContinuousCustomBinsModal extends Component {
     },
     modalWarning: '',
     rangeOverlapErrors: [],
-    rangeRows: [defaultRangeRow],
+    rangeRows: defaultRangeRow,
     // rangeRows: defaultRangesTESTWithOverlap,
     // rangeRows: defaultRangesTESTNoOverlap,
   };
@@ -161,12 +163,16 @@ class ContinuousCustomBinsModal extends Component {
   };
 
   checkSubmitDisabled = () => {
-    const { binningMethod, intervalErrors, rangeRows } = this.state;
+    const {
+      binningMethod, intervalErrors, rangeOverlapErrors, rangeRows,
+    } = this.state;
     const checkInterval = Object.keys(intervalErrors)
       .filter(int => intervalErrors[int] !== '').length > 0;
     const checkRange = rangeRows
       .filter(row => row.active).length > 0;
-    return binningMethod === 'interval' ? checkInterval : checkRange;
+    const checkOverlap = rangeOverlapErrors.filter(err => err.length > 0).length > 0;
+    console.log('rangeOverlapErrors', rangeOverlapErrors);
+    return binningMethod === 'interval' ? checkInterval : checkRange && checkOverlap;
   };
 
   // binning method: range
@@ -174,7 +180,7 @@ class ContinuousCustomBinsModal extends Component {
   handleRemoveRow = rowIndex => {
     const { rangeRows } = this.state;
     const filteredRangeRows = rangeRows.filter((filterRow, filterRowIndex) => filterRowIndex !== rowIndex);
-    const nextRangeRows = filteredRangeRows.length === 0 ? [defaultRangeRow] : filteredRangeRows;
+    const nextRangeRows = filteredRangeRows.length === 0 ? defaultRangeRow : filteredRangeRows;
     this.setState({ rangeRows: nextRangeRows });
   };
 
@@ -191,7 +197,7 @@ class ContinuousCustomBinsModal extends Component {
     const { rangeOverlapErrors, rangeRows } = this.state;
     const nextRangeRows = rangeRows.map((rangeRow, rowIndex) => (rowIndex === inputRowIndex ? inputRow : rangeRow));
     this.setState({ rangeRows: nextRangeRows }, () => {
-      if (rangeOverlapErrors.filter(err => err !== '').length > 0) {
+      if (rangeOverlapErrors.filter(err => err.length > 0).length > 0) {
         // console.log('has errors');
         // this.validateOverlap();
         const formHasErrors = this.validateOverlap();
@@ -232,11 +238,11 @@ class ContinuousCustomBinsModal extends Component {
         return hasOverlap ? [...acc, overlapName] : acc;
       }, []);
 
-      return overlapNames.length > 0 ? overlapNames : '';
+      return overlapNames.length > 0 ? overlapNames : [];
     });
     this.setState({ rangeOverlapErrors: overlapErrors });
 
-    return overlapErrors.filter(overlapItem => overlapItem !== '').length > 0;
+    return overlapErrors.filter(overlapItem => overlapItem.length > 0).length > 0;
   }
 
   render() {
@@ -360,7 +366,7 @@ class ContinuousCustomBinsModal extends Component {
             <Button
               disabled={binningMethod !== 'range'}
               onClick={() => {
-                const nextRangeRows = [...rangeRows, defaultRangeRow];
+                const nextRangeRows = [...rangeRows, ...defaultRangeRow];
                 this.setState({ rangeRows: nextRangeRows });
               }}
               style={{

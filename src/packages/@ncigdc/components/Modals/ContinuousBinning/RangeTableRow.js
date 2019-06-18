@@ -254,15 +254,15 @@ class RangeTableRow extends React.Component {
             </Button>
           </div>
         </div>
-        {rangeMethodActive && rowNameError && (
+        {rangeMethodActive && rowNameError.length > 0 && (
           <div style={rowError}>
             {rowNameError}
           </div>
         )
         }
-        {rangeMethodActive && rowOverlapErrors && (
+        {rangeMethodActive && rowOverlapErrors.length > 0 && (
           <div style={rowError}>
-            {`${fieldValues.name} overlaps with ${rowOverlapErrors.join(', ')}`}
+            {`Bin '${fieldValues.name}' overlaps with ${rowOverlapErrors.join(', ')}`}
           </div>
         )
         }

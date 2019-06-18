@@ -17,10 +17,6 @@ const styles = {
     marginBottom: '5px',
     padding: '2px 5px',
   },
-  intervalWrapper: {
-    display: 'flex',
-    marginBottom: '15px',
-  },
   inputStyles: {
     error: {
       color: 'red',
@@ -49,6 +45,10 @@ const styles = {
       display: 'flex',
       marginBottom: '15px',
     },
+  },
+  intervalWrapper: {
+    display: 'flex',
+    marginBottom: '15px',
   },
   optionsColumn: {
     flex: '0 0 150px',

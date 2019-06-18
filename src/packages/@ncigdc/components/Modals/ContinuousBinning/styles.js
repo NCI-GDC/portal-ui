@@ -50,10 +50,26 @@ const styles = {
     display: 'flex',
     marginBottom: '15px',
   },
+  optionsButton: {
+    display: 'inline-block',
+    margin: '2px 0 0 5px',
+    textAlign: 'center',
+    width: '40px',
+  },
   optionsColumn: {
     flex: '0 0 150px',
     padding: '5px',
     textAlign: 'right',
+  },
+  row: {
+    rowError: {
+      color: 'red',
+      padding: '0 5px 10px',
+    },
+    rowFieldsWrapper: {
+      display: 'flex',
+      flex: '1 0 0',
+    },
   },
   scrollingTable: {
     maxHeight: '200px',

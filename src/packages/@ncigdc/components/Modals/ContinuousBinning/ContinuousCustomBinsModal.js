@@ -87,6 +87,7 @@ class ContinuousCustomBinsModal extends Component {
       min: this.props.defaultData.min,
     },
     modalWarning: '',
+    rangeNameErrors: [],
     rangeOverlapErrors: [],
     rangeRows: defaultRangeRow,
     // rangeRows: defaultRangesTESTWithOverlap,
@@ -214,6 +215,23 @@ class ContinuousCustomBinsModal extends Component {
     console.log('formHasErrors', formHasErrors);
   }
 
+  validateRangeNames = () => {
+    const { rangeRows } = this.state;
+
+    const nameErrors = rangeRows.map(rowItem => {
+      const rowName = rowItem.name.toLowerCase().trim();
+
+      const duplicateNames = rangeRows.filter(duplicateItem => {
+        const duplicateName = duplicateItem.name.toLowerCase().trim();
+        return duplicateName === rowName;
+      });
+
+      return duplicateNames.length > 0 ? 'Bin names must be unique.' : '';
+    });
+
+    this.setState({ rangeNameErrors: nameErrors });
+  }
+
   validateOverlap = () => {
     // assume all rows are complete and from < to
 
@@ -248,7 +266,7 @@ class ContinuousCustomBinsModal extends Component {
   render() {
     const { defaultData, fieldName, onClose } = this.props;
     const {
-      binningMethod, intervalErrors, intervalFields, modalWarning, rangeOverlapErrors, rangeRows,
+      binningMethod, intervalErrors, intervalFields, modalWarning, rangeNameErrors, rangeOverlapErrors, rangeRows,
     } = this.state;
 
     const submitDisabled = this.checkSubmitDisabled();
@@ -356,6 +374,7 @@ class ContinuousCustomBinsModal extends Component {
                     rangeMethodActive={binningMethod === 'range'}
                     rowActive={row.active}
                     rowIndex={rowIndex}
+                    rowNameError={rangeNameErrors[rowIndex]}
                     rowOverlapErrors={rangeOverlapErrors[rowIndex]}
                     rowsLength={rangeRows.length}
                     styles={styles}

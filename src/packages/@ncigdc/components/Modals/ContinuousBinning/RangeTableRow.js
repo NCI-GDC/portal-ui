@@ -3,19 +3,11 @@ import { isEqual, isFinite } from 'lodash';
 import OutsideClickHandler from 'react-outside-click-handler';
 import Button from '@ncigdc/uikit/Button';
 import RangeInput from './RangeInput';
+import styles from './styles';
 
-const rowStyles = {
-  fieldsWrapper: {
-    display: 'flex',
-    flex: '1 0 0',
-  },
-  optionsButton: {
-    display: 'inline-block',
-    margin: '2px 0 0 5px',
-    textAlign: 'center',
-    width: '40px',
-  },
-};
+const {
+  input: { inputDisabled }, optionsButton, optionsColumn, row: { rowError, rowFieldsWrapper }, visualizingButton,
+} = styles;
 
 const defaultFieldState = {
   from: '',
@@ -41,7 +33,6 @@ class RangeTableRow extends React.Component {
     this.setState({ fieldValues: fields });
     /* eslint-enable */
   }
-
 
   componentDidUpdate(prevProps) {
     const { fields } = this.props;
@@ -148,8 +139,8 @@ class RangeTableRow extends React.Component {
       rangeMethodActive,
       rowActive,
       rowIndex,
+      rowNameError,
       rowOverlapErrors,
-      styles,
     } = this.props;
 
     const { fieldErrors, fieldValues } = this.state;
@@ -167,7 +158,7 @@ class RangeTableRow extends React.Component {
               if (!rowActive) this.handleEdit();
             }}
             role="presentation"
-            style={rowStyles.fieldsWrapper}
+            style={rowFieldsWrapper}
             >
             {
               this.fieldsOrder.map(rowItem => {
@@ -187,7 +178,7 @@ class RangeTableRow extends React.Component {
                 );
               })}
           </div>
-          <div style={styles.optionsColumn}>
+          <div style={optionsColumn}>
             {rowActive ? (
               <React.Fragment>
                 <Button
@@ -199,8 +190,8 @@ class RangeTableRow extends React.Component {
                     this.handleSave();
                   }}
                   style={{
-                    ...(rangeMethodActive ? { background: 'green' } : styles.inputDisabled),
-                    ...rowStyles.optionsButton,
+                    ...(rangeMethodActive ? { background: 'green' } : inputDisabled),
+                    ...optionsButton,
                   }}
                   >
                   <i aria-hidden="true" className="fa fa-check" />
@@ -217,8 +208,8 @@ class RangeTableRow extends React.Component {
                     this.handleCancel();
                   }}
                   style={{
-                    ...(rangeMethodActive ? { background: 'red' } : styles.inputDisabled),
-                    ...rowStyles.optionsButton,
+                    ...(rangeMethodActive ? { background: 'red' } : inputDisabled),
+                    ...optionsButton,
                   }}
                   >
                   <i aria-hidden="true" className="fa fa-close" />
@@ -236,8 +227,8 @@ class RangeTableRow extends React.Component {
                     this.handleEdit();
                   }}
                   style={{
-                    ...(rangeMethodActive ? styles.visualizingButton : styles.inputDisabled),
-                    ...rowStyles.optionsButton,
+                    ...(rangeMethodActive ? visualizingButton : inputDisabled),
+                    ...optionsButton,
                   }}
                   >
                   <i aria-hidden="true" className="fa fa-pencil" />
@@ -255,23 +246,27 @@ class RangeTableRow extends React.Component {
                 this.handleRemove();
               }}
               style={{
-                ...(rangeMethodActive ? styles.visualizingButton : styles.inputDisabled),
-                ...rowStyles.optionsButton,
+                ...(rangeMethodActive ? visualizingButton : inputDisabled),
+                ...optionsButton,
               }}
               >
               <i aria-hidden="true" className="fa fa-trash" />
             </Button>
           </div>
         </div>
-        {rowOverlapErrors && rangeMethodActive && (
-          <div style={{
-            color: 'red',
-            padding: '0 5px 10px',
-          }}
-               >
+        {rangeMethodActive && rowNameError && (
+          <div style={rowError}>
+            {rowNameError}
+          </div>
+        )
+        }
+        {rangeMethodActive && rowOverlapErrors && (
+          <div style={rowError}>
             {`${fieldValues.name} overlaps with ${rowOverlapErrors.join(', ')}`}
           </div>
-        )}
+        )
+        }
+
       </OutsideClickHandler>
     );
   }

@@ -41,20 +41,20 @@ const enhance = compose(
   connect(store => ({ notifications: store.bannerNotification })),
   lifecycle({
     componentDidMount(): void {
-      this.props.dispatch(
-        setModal(
-          <ContinuousCustomBins
-            bins={{}}
-            defaultData={{
-              max: 0,
-              min: 0,
-              quartile: 0,
-            }}
-            fieldName="testing"
-            onClose={() => dispatch(setModal(null))}
-            />
-        )
-      );
+      // this.props.dispatch(
+      //   setModal(
+      //     <ContinuousCustomBins
+      //       bins={{}}
+      //       defaultData={{
+      //         max: 0,
+      //         min: 0,
+      //         quartile: 0,
+      //       }}
+      //       fieldName="testing"
+      //       onClose={() => dispatch(setModal(null))}
+      //       />
+      //   )
+      // );
       if (!Cookies.get(FIRST_TIME_KEY)) {
         this.props.dispatch(
           setModal(
@@ -93,10 +93,10 @@ const PortalContainer = ({
         minWidth: 1024,
       }}
       >
-      <SkipLink href="#skip">Skip to Main Content</SkipLink>
-      <ProgressContainer />
-      {AWG ? <AWGHeader /> : <Header />}
-      <div
+    <SkipLink href="#skip">Skip to Main Content</SkipLink>
+    <ProgressContainer />
+    {AWG ? <AWGHeader /> : <Header />}
+    <div
         id="skip"
         role="main"
         style={{
@@ -108,12 +108,12 @@ const PortalContainer = ({
         >
         {AWG ? <AWGRoutes /> : <Routes />}
       </div>
-      <Footer />
-      <RelayLoadingContainer />
-      <NotificationContainer />
-      <ModalContainer />
-      <GlobalTooltip />
-    </div>
+    <Footer />
+    <RelayLoadingContainer />
+    <NotificationContainer />
+    <ModalContainer />
+    <GlobalTooltip />
+  </div>
 );
 
 export default enhance(PortalContainer);

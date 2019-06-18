@@ -86,8 +86,8 @@ class ContinuousCustomBinsModal extends Component {
     },
     modalWarning: '',
     rangeOverlapErrors: [],
-    // rangeRows: [defaultRangeRow],
-    rangeRows: defaultRangesTESTWithOverlap,
+    rangeRows: [defaultRangeRow],
+    // rangeRows: defaultRangesTESTWithOverlap,
     // rangeRows: defaultRangesTESTNoOverlap,
   };
 

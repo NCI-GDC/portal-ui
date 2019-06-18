@@ -5,45 +5,7 @@ import Button from '@ncigdc/uikit/Button';
 import RangeTableRow from './RangeTableRow';
 import BinningMethodInput from './BinningMethodInput';
 import CustomIntervalFields from './CustomIntervalFields';
-
-const styles = {
-  column: {
-    flex: '1 0 0 ',
-    padding: '5px',
-  },
-  formBg: {
-    backgroundColor: '#f5f5f5',
-    borderRadius: '5px',
-    padding: '0 20px 20px',
-    width: '100%',
-  },
-  heading: {
-    background: '#dedddd',
-    display: 'flex',
-    fontWeight: 'bold',
-    lineHeight: '20px',
-    marginBottom: '5px',
-    padding: '2px 5px',
-  },
-  optionsColumn: {
-    flex: '0 0 150px',
-    padding: '5px',
-    textAlign: 'right',
-  },
-  scrollingTable: {
-    maxHeight: '200px',
-    overflowY: 'auto',
-  },
-  visualizingButton: {
-    backgroundColor: '#fff',
-    borderColor: '#ccc',
-    color: '#333',
-  },
-  wrapper: {
-    marginBottom: '20px',
-    width: '100%',
-  },
-};
+import styles from './styles';
 
 const defaultRangeRow = {
   active: true,

@@ -834,13 +834,12 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
               )} */}
               </Row>
             )}
-
             {variable.active_chart === 'histogram' && (
               <BarChart
                 data={chartData}
                 height={CHART_HEIGHT}
                 styles={{
-                  bars: { fill: theme.secondary },
+                  bars: { fill: variable.color || theme.secondary },
                   tooltips: {
                     fill: '#fff',
                     stroke: theme.greyScale4,
@@ -1007,14 +1006,14 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                     >
                     <QQPlotQuery
                       chartHeight={CHART_HEIGHT + 10}
+                      dataBuckets={dataBuckets}
                       dataHandler={data => setQQData(data)}
                       fieldName={fieldName}
                       filters={cardFilters}
                       first={totalDocs}
                       setDataHandler={() => setQQDataIsSet()}
-                      wrapperId={wrapperId}
                       setId={setId}
-                      dataBuckets={dataBuckets}
+                      wrapperId={wrapperId}
                       />
                   </Column>
                 </Row>

@@ -1,10 +1,7 @@
 import React from 'react';
 import {
   compose,
-  branch,
-  renderComponent,
   withState,
-  withProps,
   withPropsOnChange,
 } from 'recompose';
 import _ from 'lodash';
@@ -15,21 +12,17 @@ import './reactToggle.css';
 
 import { humanify } from '@ncigdc/utils/string';
 import { Row, Column } from '@ncigdc/uikit/Flex';
-import CollapsibleList from '@ncigdc/uikit/CollapsibleList';
 import { theme, withTheme } from '@ncigdc/theme/index';
 
 import styled from '@ncigdc/theme/styled';
 import AngleIcon from '@ncigdc/theme/icons/AngleIcon';
 import { Tooltip } from '@ncigdc/uikit/Tooltip';
-import Hidden from '@ncigdc/components/Hidden';
 import { internalHighlight } from '@ncigdc/uikit/Highlight';
 import {
   addClinicalAnalysisVariable,
   removeClinicalAnalysisVariable,
 } from '@ncigdc/dux/analysis';
 import { ToggleMoreLink } from '@ncigdc/components/Aggregations/TermAggregation';
-import filesTableModel from '@ncigdc/tableModels/filesTableModel';
-import { search } from '../BiospecimenCard/utils';
 
 const MAX_VISIBLE_FACETS = 5;
 const MAX_FIELDS_LENGTH = 20;
@@ -63,8 +56,8 @@ const parseFieldName = field => field.replace(/__/g, '.');
 const defaultDescription = 'No description available';
 
 const styles = {
-  category: theme => ({
-    color: theme.primary,
+  category: cTheme => ({
+    color: cTheme.primary,
   }),
 };
 
@@ -140,20 +133,13 @@ const ClinicalGrouping = compose(
             )}
             {_.orderBy(fields, 'name', 'asc')
               .slice(0, showingMore ? Infinity : MAX_VISIBLE_FACETS)
-              .map(field => ({
-                fieldDescription: field.description || defaultDescription,
-                fieldName: parseFieldName(field.name),
-                fieldTitle: field.title,
-                type: field.type,
-                plotTypes: getPlotType(field),
-              }))
               .map(
-                (
-                  {
-                    fieldDescription, fieldName, fieldTitle, plotTypes, type,
-                  },
-                  i
-                ) => {
+                (field, i) => {
+                  const fieldDescription = field.description || defaultDescription;
+                  const fieldName = parseFieldName(field.name);
+                  const fieldTitle = field.title;
+                  const { type } = field;
+                  const plotTypes = getPlotType(field);
                   const checked = Object.keys(
                     currentAnalysis.displayVariables
                   ).includes(fieldName);
@@ -204,7 +190,7 @@ const ClinicalGrouping = compose(
                       name={fieldName}
                       onChange={() => {
                         if (!type.name) {
-                          return null;
+                          return;
                         }
                         dispatch(
                           toggleAction({
@@ -213,6 +199,7 @@ const ClinicalGrouping = compose(
                             fieldType: name,
                             plotTypes,
                             scrollToCard: !checked,
+                            color: field.color || currentAnalysis.colorSets[i % currentAnalysis.colorSets.length],
                           })
                         );
                       }}
@@ -249,13 +236,14 @@ const ClinicalGrouping = compose(
                               </div>
                               <DescEl />
                             </React.Fragment>
-                          ) : (
-                            <React.Fragment>
-                              <Tooltip Component={<DescEl />}>
-                                <TitleEl />
-                              </Tooltip>
-                              <ToggleEl />
-                            </React.Fragment>
+                          )
+                            : (
+                              <React.Fragment>
+                                <Tooltip Component={<DescEl />}>
+                                  <TitleEl />
+                                </Tooltip>
+                                <ToggleEl />
+                              </React.Fragment>
                             )}
                         </label>
                       </div>
@@ -334,11 +322,11 @@ export default compose(
           <span>
             {(_.keys(usefulFacets) || []).length}
             {' '}
-of
+            of
             {' '}
             {(clinicalAnalysisFields || []).length}
             {' '}
-fields with values
+            fields with values
           </span>
         </Row>
         <div

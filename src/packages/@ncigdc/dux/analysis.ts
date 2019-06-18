@@ -47,6 +47,7 @@ export interface IAnalysisPayload {
   property?: TClinicalAnalysisProperty;
   setId?: string;
   setName?: string;
+  color?: string;
 }
 
 interface IAnalysisAction {
@@ -175,6 +176,7 @@ const reducer = (
                 type: action.payload.fieldType,
                 plotTypes: action.payload.plotTypes,
                 scrollToCard: action.payload.scrollToCard,
+                color: action.payload.color,
               },
             },
           },

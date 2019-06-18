@@ -18,32 +18,32 @@ const defaultRangeRow = [
   },
 ];
 
-// const defaultRangesTESTWithOverlap = [
-//   {
-//     active: false,
-//     fields: {
-//       from: '1',
-//       name: 'a',
-//       to: '5000',
-//     },
-//   },
-//   {
-//     active: false,
-//     fields: {
-//       from: '5001',
-//       name: 'b',
-//       to: '30000',
-//     },
-//   },
-// {
-//   active: false,
-//   fields: {
-//     from: '30002',
-//     name: 'c',
-//     to: '80000',
-//   },
-// },
-// ];
+const defaultRangesTESTWithOverlap = [
+  {
+    active: false,
+    fields: {
+      from: '1',
+      name: 'a',
+      to: '2',
+    },
+  },
+  {
+    active: false,
+    fields: {
+      from: '3',
+      name: 'b',
+      to: '4',
+    },
+  },
+  {
+    active: false,
+    fields: {
+      from: '0',
+      name: 'c',
+      to: '5',
+    },
+  },
+];
 
 // const defaultRangesTESTNoOverlap = [
 //   {
@@ -74,7 +74,7 @@ const defaultRangeRow = [
 
 class ContinuousCustomBinsModal extends Component {
   state = {
-    binningMethod: 'interval', // or range
+    binningMethod: 'range', // or range
     intervalErrors: {
       amount: '',
       max: '',
@@ -89,10 +89,15 @@ class ContinuousCustomBinsModal extends Component {
     modalWarning: '',
     rangeNameErrors: [],
     rangeOverlapErrors: [],
-    rangeRows: defaultRangeRow,
-    // rangeRows: defaultRangesTESTWithOverlap,
+    // rangeRows: defaultRangeRow,
+    rangeRows: defaultRangesTESTWithOverlap,
     // rangeRows: defaultRangesTESTNoOverlap,
   };
+
+  componentDidMount = () => {
+    const { rangeRows } = this.props;
+    this.validateRangeRow(rangeRows);
+  }
 
   // binning method: interval
 
@@ -196,24 +201,6 @@ class ContinuousCustomBinsModal extends Component {
     this.validateRangeRow(nextRangeRows);
   };
 
-  validateRangeRow = (rows = null) => {
-    const { rangeRows } = this.state;
-
-    const rowsToCheck = rows === null ? rangeRows : rows;
-
-    const overlapErrors = this.validateRangeOverlap(rowsToCheck);
-    const nameErrors = this.validateRangeNames(rowsToCheck);
-    const overlapHasError = overlapErrors.filter(overlapErrorItem => overlapErrorItem.length > 0).length > 0;
-    const nameHasError = nameErrors.filter(nameErrorItem => nameErrorItem !== '').length > 0;
-
-    this.setState({
-      rangeNameErrors: nameErrors,
-      rangeOverlapErrors: overlapErrors,
-    });
-
-    return nameHasError || overlapHasError;
-  }
-
   handleUpdateRow = (inputRowIndex, inputRow) => {
     const { rangeRows } = this.state;
     const nextRangeRows = rangeRows.map((rangeRow, rowIndex) => (rowIndex === inputRowIndex ? inputRow : rangeRow));
@@ -221,7 +208,6 @@ class ContinuousCustomBinsModal extends Component {
     const rowHasErrors = this.validateRangeRow(nextRangeRows);
     if (rowHasErrors) return;
 
-    // add a new row if this is the last row
     const checkIsLastRow = inputRowIndex + 1 === rangeRows.length;
     const addNewRow = nextRangeRows.concat(defaultRangeRow);
 
@@ -231,7 +217,7 @@ class ContinuousCustomBinsModal extends Component {
   // submit
 
   handleSubmit = () => {
-    const formHasErrors = this.validateRangeOverlap();
+    const formHasErrors = this.validateRangeRow();
 
     console.log('formHasErrors', formHasErrors);
   }
@@ -258,9 +244,13 @@ class ContinuousCustomBinsModal extends Component {
 
     const rowsToCheck = rows === null ? rangeRows : rows;
 
+    console.log('rowsToCheck', rowsToCheck);
+
     const overlapErrors = rowsToCheck.map((rowItem, rowIndex) => {
       const rowFrom = Number(rowItem.fields.from);
       const rowTo = Number(rowItem.fields.to);
+
+      console.log(`CHECKING name: ${rowItem.fields.name} from: ${rowFrom} to: ${rowTo}`);
 
       const overlapNames = rowsToCheck.reduce((acc, curr, overlapIndex) => {
         if (rowIndex === overlapIndex) return acc;
@@ -269,17 +259,40 @@ class ContinuousCustomBinsModal extends Component {
         const overlapTo = Number(curr.fields.to);
         const overlapName = curr.fields.name;
 
+        console.log(`AGAINST name: ${overlapName} from: ${overlapFrom} to: ${overlapTo}`);
+
         const fromHasOverlap = rowFrom >= overlapFrom && rowFrom <= overlapTo;
         const toHasOverlap = rowTo >= overlapFrom && rowTo <= overlapTo;
+        const outsideOverlap = rowTo > overlapTo && rowFrom < overlapFrom;
 
-        const hasOverlap = fromHasOverlap || toHasOverlap;
+        const hasOverlap = fromHasOverlap || toHasOverlap || outsideOverlap;
 
         return hasOverlap ? [...acc, overlapName] : acc;
       }, []);
+      console.log('-----------------');
 
       return overlapNames.length > 0 ? overlapNames : [];
     });
+
     return overlapErrors;
+  }
+
+  validateRangeRow = (rows = null) => {
+    const { rangeRows } = this.state;
+
+    const rowsToCheck = rows === null ? rangeRows : rows;
+
+    const overlapErrors = this.validateRangeOverlap(rowsToCheck);
+    const nameErrors = this.validateRangeNames(rowsToCheck);
+    const overlapHasError = overlapErrors.filter(overlapErrorItem => overlapErrorItem.length > 0).length > 0;
+    const nameHasError = nameErrors.filter(nameErrorItem => nameErrorItem !== '').length > 0;
+
+    this.setState({
+      rangeNameErrors: nameErrors,
+      rangeOverlapErrors: overlapErrors,
+    });
+
+    return nameHasError || overlapHasError;
   }
 
   render = () => {
@@ -330,7 +343,7 @@ class ContinuousCustomBinsModal extends Component {
                 validateIntervalFields={e => {
                   this.validateIntervalFields(e.target);
                 }}
-              />
+                />
             </Column>
           </Row>
           <div
@@ -341,7 +354,7 @@ class ContinuousCustomBinsModal extends Component {
               }
             }}
             role="presentation"
-          >
+            >
             <div style={{ marginBottom: '15px' }}>
               <BinningMethodInput
                 binningMethod="range"
@@ -350,32 +363,32 @@ class ContinuousCustomBinsModal extends Component {
                   this.setState({ binningMethod: 'range' });
                 }}
                 label="Manually"
-              />
+                />
             </div>
             <div style={styles.wrapper}>
               <div style={styles.heading}>
                 <div
                   id="range-table-label-name"
                   style={styles.column}
-                >
+                  >
                   Bin Name
                 </div>
                 <div
                   id="range-table-label-min"
                   style={styles.column}
-                >
+                  >
                   From
                 </div>
                 <div
                   id="range-table-label-max"
                   style={styles.column}
-                >
+                  >
                   To
                 </div>
                 <div
                   id="range-table-label-options"
                   style={styles.optionsColumn}
-                >
+                  >
                   Options
                 </div>
               </div>
@@ -397,7 +410,7 @@ class ContinuousCustomBinsModal extends Component {
                     rowOverlapErrors={rangeOverlapErrors[rowIndex] || []}
                     rowsLength={rangeRows.length}
                     styles={styles}
-                  />
+                    />
                 ))}
               </div>
             </div>
@@ -425,27 +438,27 @@ class ContinuousCustomBinsModal extends Component {
             justifyContent: 'flex-end',
             margin: '20px',
           }}
-        >
+          >
           <span style={{
             color: 'red',
             justifyContent: 'flex-start',
             visibility: modalWarning.length > 0 ? 'visible' : 'hidden',
           }}
-          >
+                >
             {`Warning: ${modalWarning}`}
           </span>
           <Button
             onClick={onClose}
             onMouseDown={onClose}
             style={styles.visualizingButton}
-          >
+            >
             Cancel
           </Button>
           <Button
             disabled={submitDisabled}
             onClick={() => this.handleSubmit()}
             style={submitDisabled ? styles.inputDisabled : styles.visualizingButton}
-          >
+            >
             Save Bins
           </Button>
         </Row>

@@ -262,7 +262,7 @@ class RangeTableRow extends React.Component {
         }
         {rangeMethodActive && rowOverlapErrors.length > 0 && (
           <div style={rowError}>
-            {`Bin '${fieldValues.name}' overlaps with ${rowOverlapErrors.join(', ')}`}
+            {`Bin '${fieldValues.name}' overlaps with bin${rowOverlapErrors.length > 1 ? 's' : ''} ${rowOverlapErrors.map(err => `'${err}'`).join(', ')}`}
           </div>
         )
         }

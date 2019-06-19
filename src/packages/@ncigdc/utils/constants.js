@@ -72,6 +72,26 @@ const DATA_CATEGORIES_COMMON = {
 };
 
 export const DATA_CATEGORIES = {
+  SEQ: {
+    full: 'Sequencing Reads',
+    abbr: 'Seq',
+  },
+  EXP: {
+    full: 'Transcriptome Profiling',
+    abbr: 'Exp',
+  },
+  SNV: {
+    full: 'Simple Nucleotide Variation',
+    abbr: 'SNV',
+  },
+  CNV: {
+    full: 'Copy Number Variation',
+    abbr: 'CNV',
+  },
+  METH: {
+    full: 'DNA Methylation',
+    abbr: 'Meth',
+  },
   ...DATA_CATEGORIES_COMMON,
   CLINICAL: {
     full: 'Clinical',
@@ -404,3 +424,43 @@ export const IS_CDAVE_DEV =
   localStorage.REACT_APP_IS_CDAVE_DEV ||
   process.env.NODE_ENV === 'development' ||
   false;
+
+// specific string values, in case of mixed casing e.g. 'MaRS'
+export const capitalisedTerms = {
+  '.bmi': '.BMI',
+  _bmi: '_BMI',
+  'aa.': 'AA.',
+  aa_: 'AA_',
+  'ajc.': 'AJC.',
+  ajcc: 'AJCC',
+  'cog.': 'COG.',
+  cog_: 'COG_',
+  'dlco.': 'DLCO.',
+  dlco_: 'DLCO_',
+  'ecog.': 'ECOG.',
+  ecog_: 'ECOG_',
+  'fev1.': 'FEV1.',
+  fev1_: 'FEV1_',
+  'figo.': 'FIGO.',
+  figo_: 'FIGO_',
+  'fvc.': 'FVC.',
+  fvc_: 'FVC_',
+  'hiv.': 'HIV.',
+  hiv_: 'HIV_',
+  'hpv.': 'HPV.',
+  hpv_: 'HPV_',
+  'inpc.': 'INPC.',
+  inpc_: 'INPC_',
+  'inrg.': 'INRG.',
+  inrg_: 'INRG_',
+  'inss.': 'INSS.',
+  inss_: 'INSS_',
+  'irs.': 'IRS.',
+  irs_: 'IRS_',
+  'iss.': 'ISS.',
+  iss_: 'ISS_',
+  'ldh.': 'LDH.',
+  ldh_: 'LDH_',
+  'msts.': 'MSTS.',
+  msts_: 'MSTS_',
+};

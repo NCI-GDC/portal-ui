@@ -115,47 +115,47 @@ const CopyAnalysisModal = compose(
   analysis, dispatch, modalInputValue, push, setModalInputValue,
 }) => (
   <BaseModal
-    extraButtons={
-      <Button onClick={() => dispatch(setModal(null))}>Cancel</Button>
-    }
-    onClose={() => {
-      const created = new Date().toISOString();
-      const id = created;
-      dispatch(
-        addAnalysis({
-          ...analysis,
-          id,
-          created,
-          name: modalInputValue,
-        })
-      ).then(() => {
-        push({
-          query: {
-            analysisTableTab: 'result',
-            analysisId: id,
-          },
+      extraButtons={
+        <Button onClick={() => dispatch(setModal(null))}>Cancel</Button>
+      }
+      onClose={() => {
+        const created = new Date().toISOString();
+        const id = created;
+        dispatch(
+          addAnalysis({
+            ...analysis,
+            id,
+            created,
+            name: modalInputValue,
+          })
+        ).then(() => {
+          push({
+            query: {
+              analysisTableTab: 'result',
+              analysisId: id,
+            },
+          });
         });
-      });
-    }}
-    title="Copy Analysis"
-    >
-    <Row style={{ marginBottom: 10 }}>
-      Please enter a name for the new analysis.
-    </Row>
-    <Row>
-      <label htmlFor="copy-analysis-input">
-        <Hidden>{modalInputValue}</Hidden>
-      </label>
-      <Input
-        autoFocus
-        id="copy-analysis-input"
-        onChange={e => setModalInputValue(e.target.value)}
-        onFocus={e => e.target.select()}
-        style={{ borderRadius: '4px' }}
-        value={modalInputValue}
-        />
-    </Row>
-  </BaseModal>
+      }}
+      title="Copy Analysis"
+      >
+      <Row style={{ marginBottom: 10 }}>
+        Please enter a name for the new analysis.
+      </Row>
+      <Row>
+        <label htmlFor="copy-analysis-input">
+          <Hidden>{modalInputValue}</Hidden>
+        </label>
+        <Input
+          autoFocus
+          id="copy-analysis-input"
+          onChange={e => setModalInputValue(e.target.value)}
+          onFocus={e => e.target.select()}
+          style={{ borderRadius: '4px' }}
+          value={modalInputValue}
+          />
+      </Row>
+    </BaseModal>
 ));
 
 const enhance = compose(
@@ -402,10 +402,15 @@ const ClinicalAnalysisResult = ({
             </Row>
             <Row
               style={{
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                padding: '10px 10px 15px',
-                borderBottom: `1px solid ${theme.greyScale4}`,
+                ...zDepth1,
+                flex: 1,
+                minWidth: 260,
+                marginBottom: '1rem',
+                position: 'sticky',
+                top: 50,
+                alignSelf: 'flex-start',
+                maxHeight: 'calc(100vh - 50px',
+                overflowY: 'hidden',
               }}
               >
               <CohortDropdown

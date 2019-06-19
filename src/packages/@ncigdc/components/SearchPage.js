@@ -66,39 +66,39 @@ const SearchPage = (
   }: TProps = {},
 ) => (
   <Container className={`${props.className} test-search-page`}>
-    {showFacets && (
-      <FacetsPanel>
-        <TabbedLinks
-          defaultIndex={0}
-          hideTabs={facetTabs.length <= 1}
-          links={facetTabs}
-          queryParam="facetTab"
-          tabToolbar={(
-            <UnstyledButton
-              aria-label="Toggle Facet Panel Visibility"
-              onClick={() => {
-                setShowFacets(!showFacets);
-              }}
-              style={{ minHeight: 46 }}
-              >
-              <DoubleArrowLeftIcon />
-            </UnstyledButton>
+      {showFacets && (
+        <FacetsPanel>
+          <TabbedLinks
+            defaultIndex={0}
+            hideTabs={facetTabs.length <= 1}
+            links={facetTabs}
+            queryParam="facetTab"
+            tabToolbar={(
+              <UnstyledButton
+                aria-label="Toggle Facet Panel Visibility"
+                onClick={() => {
+                  setShowFacets(!showFacets);
+                }}
+                style={{ minHeight: 46 }}
+                >
+                <DoubleArrowLeftIcon />
+              </UnstyledButton>
+            )}
+            />
+        </FacetsPanel>
+      )}
+      <Content>
+        <Row style={{ marginBottom: '2rem' }}>
+          {!showFacets && (
+            <ShowFacetsButton onClick={() => setShowFacets(!showFacets)}>
+              <DoubleArrowRightIcon />
+            </ShowFacetsButton>
           )}
-          />
-      </FacetsPanel>
-    )}
-    <Content>
-      <Row style={{ marginBottom: '2rem' }}>
-        {!showFacets && (
-          <ShowFacetsButton onClick={() => setShowFacets(!showFacets)}>
-            <DoubleArrowRightIcon />
-          </ShowFacetsButton>
-        )}
-        <CurrentFilters style={{ flex: 1 }} {...filtersLinkProps} />
-      </Row>
-      {results}
-    </Content>
-  </Container>
+          <CurrentFilters style={{ flex: 1 }} {...filtersLinkProps} />
+        </Row>
+        {results}
+      </Content>
+    </Container>
 );
 
 export default enhance(SearchPage);

@@ -19,13 +19,14 @@ const setupStore: TSetupStore = ({ persistConfig = {} } = {}) => {
     key: 'reducers',
     storage: storage,
     whitelist: [
-      'cart',
-      'tableColumns',
-      'customFacets',
-      'sets',
       'analysis',
-      'bannerNotification',
       'auth',
+      'bannerNotification',
+      'cart',
+      'customFacets',
+      'facetsExpandedStatus',
+      'sets',
+      'tableColumns',
     ],
     debug: process.env.NODE_ENV === 'development',
     ...persistConfig,
@@ -33,7 +34,7 @@ const setupStore: TSetupStore = ({ persistConfig = {} } = {}) => {
 
   const store = createStore(
     persistCombineReducers(config, reducers),
-    composeEnhancers(applyMiddleware(thunk, apiMiddleware)),
+    composeEnhancers(applyMiddleware(thunk, apiMiddleware))
   );
 
   const persistor = persistStore(store);

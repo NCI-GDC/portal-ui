@@ -11,17 +11,17 @@ import DownCaretIcon from 'react-icons/lib/fa/caret-down';
 import { connect } from 'react-redux';
 import {
   find,
-  get,
-  groupBy,
   isEmpty,
   isEqual,
+  min,
   map,
   max,
-  min,
-  reduce,
   reject,
   sortBy,
   truncate,
+  groupBy,
+  get,
+  reduce,
 } from 'lodash';
 import { scaleOrdinal, schemeCategory10 } from 'd3';
 
@@ -48,8 +48,6 @@ import DownloadVisualizationButton from '@ncigdc/components/DownloadVisualizatio
 import wrapSvg from '@ncigdc/utils/wrapSvg';
 import {
   DAYS_IN_YEAR,
-  getLowerAgeYears,
-  getUpperAgeYears,
 } from '@ncigdc/utils/ageDisplay';
 import { downloadToTSV } from '@ncigdc/components/DownloadTableToTsvButton';
 import QQPlotQuery from '@ncigdc/modern_components/QQPlot/QQPlotQuery';
@@ -80,7 +78,6 @@ import { humanify } from '@ncigdc/utils/string';
 import timestamp from '@ncigdc/utils/timestamp';
 
 import { IS_CDAVE_DEV } from '@ncigdc/utils/constants';
-import ContinuousCustomBins from '@ncigdc/components/Modals/ContinuousBinning/ContinuousCustomBinsModal';
 import {
   boxTableAllowedStats,
   boxTableRenamedStats,
@@ -229,21 +226,15 @@ const styles = {
   }),
 };
 
-const valueIsDays = str => /(days_to|age_at)/.test(str);
-const valueIsYear = str => /year_of/.test(str);
+const parseBucketValue = value => (value % 1
+  ? Number.parseFloat(value).toFixed(2)
+  : Math.round(value * 100) / 100);
 
-const getRangeValue = (key, field, nextInterval) => {
-  if (valueIsDays(field)) {
-    return `${getLowerAgeYears(key)}${
-      nextInterval === 0 ? '+' : ` - ${getUpperAgeYears(nextInterval - 1)}`
-      } years`;
-  } if (valueIsYear(field)) {
-    return `${Math.floor(key)}${
-      nextInterval === 0 ? ' - present' : ` - ${nextInterval - 1}`
-      }`;
-  }
-  return key;
-};
+const getRangeValue = (key, nextInterval) => `${parseBucketValue(key)}${
+  nextInterval === 0
+    ? ' and up'
+    : ` to ${parseBucketValue(nextInterval - 1)}`
+  }`;
 
 const getCountLink = ({ doc_count, filters, totalDocs }) => (
   <span>
@@ -570,17 +561,15 @@ const getHeadings = (chartType, dataDimension, fieldName) => {
 
 const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
   currentAnalysis,
-  customBins,
   dataBuckets,
+  customBins,
   dataDimension,
   dataValues,
-  defaultData,
   dispatch,
   fieldName,
   filters,
   getBucketRangesAndFilters,
   id,
-  modifiedBuckets,
   overallSurvivalData,
   plots,
   selectedBuckets,
@@ -1195,35 +1184,24 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                   <DropdownItem
                     onClick={() => dispatch(
                       setModal(
-                        variable.plotTypes === 'continuous'
-                          ? (
-                            <ContinuousCustomBins
-                              bins={modifiedBuckets}
-                              defaultData={defaultData}
-                              fieldName={humanify({ term: fieldName })}
-                              onClose={() => dispatch(setModal(null))}
-                              />
-                          )
-                          : (
-                            <GroupValuesModal
-                              bins={variable.bins}
-                              dataBuckets={dataBuckets}
-                              fieldName={humanify({ term: fieldName })}
-                              onClose={() => dispatch(setModal(null))}
-                              onUpdate={(newBins) => {
-                                dispatch(
-                                  updateClinicalAnalysisVariable({
-                                    fieldName,
-                                    id,
-                                    value: newBins,
-                                    variableKey: 'bins',
-                                  }),
-                                );
-                                dispatch(setModal(null));
-                              }
-                              }
-                              />
-                          ),
+                        <GroupValuesModal
+                          bins={variable.bins}
+                          dataBuckets={dataBuckets}
+                          fieldName={humanify({ term: fieldName })}
+                          onClose={() => dispatch(setModal(null))}
+                          onUpdate={(newBins) => {
+                            dispatch(
+                              updateClinicalAnalysisVariable({
+                                fieldName,
+                                id,
+                                value: newBins,
+                                variableKey: 'bins',
+                              }),
+                            );
+                            dispatch(setModal(null));
+                          }
+                          }
+                          />,
                       ),
                     )
                     }
@@ -1264,9 +1242,9 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
             }}
             tableId={`analysis-${tsvSubstring}-table`}
             />
-        </Column>
+        </Column >
       )}
-    </Column>
+    </Column >
   );
 };
 
@@ -1344,43 +1322,6 @@ export default compose(
       },
     );
   }),
-  withProps(({ dataBuckets, variable }) => ({
-    customBins: Object.keys(variable.bins).length > 0
-      ? map(groupBy(variable.bins, bin => bin.groupName), (values, key) => ({
-        key,
-        doc_count: values.reduce((acc, value) => acc + value.doc_count, 0),
-      })).filter(bin => bin.key)
-      : dataBuckets.map(b => ({
-        key: b.key,
-        doc_count: b.doc_count,
-        groupName: b.key,
-      })),
-    modifiedBuckets: dataBuckets.reduce((acc, r) => ({
-      ...acc,
-      [r.key]: {
-        ...r,
-        groupName: r.key,
-      },
-    }), {}),
-  })),
-  withProps(({ modifiedBuckets, variable }) => {
-    if (variable.plotTypes === 'categorical') {
-      return ({ defaultData: {} });
-    }
-    const bucketsSorted = Object.keys(modifiedBuckets).map(n => Number(n)).sort((a, b) => a - b);
-    const defaultMin = bucketsSorted.length ? bucketsSorted[0] : 0;
-    const defaultMax = bucketsSorted.length ? bucketsSorted[bucketsSorted.length - 1] : 0;
-    const quartileWithDecimals = (defaultMax - defaultMin) / 4;
-    const defaultQuartile = Number(quartileWithDecimals.toFixed(2));
-
-    return ({
-      defaultData: {
-        max: defaultMax,
-        min: defaultMin,
-        quartile: defaultQuartile,
-      },
-    });
-  }),
   withPropsOnChange(
     (props, nextProps) => !isEqual(props.dataBuckets, nextProps.dataBuckets) || props.setId !== nextProps.setId,
     ({
@@ -1452,7 +1393,7 @@ export default compose(
                 {
                   content: {
                     field: fieldName,
-                    value: [`${valueIsYear(fieldName) ? Math.floor(key) : key}`],
+                    value: [`${parseBucketValue(key)}`],
                   },
                   op: '>=',
                 },
@@ -1460,7 +1401,7 @@ export default compose(
                   {
                     content: {
                       field: fieldName,
-                      value: [`${acc.nextInterval - 1}`],
+                      value: [`${parseBucketValue(acc.nextInterval - 1)}`],
                     },
                     op: '<=',
                   },
@@ -1480,7 +1421,7 @@ export default compose(
                 totalDocs,
               }),
               filters,
-              key: getRangeValue(key, fieldName, acc.nextInterval),
+              key: getRangeValue(key, acc.nextInterval),
               rangeValues: {
                 max: Math.floor(acc.nextInterval - 1),
                 min: key,
@@ -1616,20 +1557,9 @@ export default compose(
         dispatch,
         fieldName,
         id,
-        modifiedBuckets,
         variable,
         wrapperId,
       } = this.props;
-      if (Object.keys(variable.bins).length === 0) {
-        dispatch(
-          updateClinicalAnalysisVariable({
-            fieldName,
-            id,
-            value: modifiedBuckets,
-            variableKey: 'bins',
-          }),
-        );
-      }
       if (variable.scrollToCard === false) return;
       const offset = document.getElementById('header').getBoundingClientRect().bottom + 10;
       const $anchor = document.getElementById(`${wrapperId}-container`);

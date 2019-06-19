@@ -74,7 +74,7 @@ const defaultRangesTESTWithOverlap = [
 
 class ContinuousCustomBinsModal extends Component {
   state = {
-    binningMethod: 'range', // or range
+    binningMethod: 'interval', // interval or range
     intervalErrors: {
       amount: '',
       max: '',
@@ -89,8 +89,8 @@ class ContinuousCustomBinsModal extends Component {
     modalWarning: '',
     rangeNameErrors: [],
     rangeOverlapErrors: [],
-    // rangeRows: defaultRangeRow,
-    rangeRows: defaultRangesTESTWithOverlap,
+    rangeRows: defaultRangeRow,
+    // rangeRows: defaultRangesTESTWithOverlap,
     // rangeRows: defaultRangesTESTNoOverlap,
   };
 
@@ -177,8 +177,10 @@ class ContinuousCustomBinsModal extends Component {
     const checkRange = rangeRows
       .filter(row => row.active).length > 0;
     const checkOverlap = rangeOverlapErrors.filter(err => err.length > 0).length > 0;
-    console.log('rangeOverlapErrors', rangeOverlapErrors);
-    return binningMethod === 'interval' ? checkInterval : checkRange && checkOverlap;
+    const result = binningMethod === 'interval' ? checkInterval : checkRange || checkOverlap;
+    return result;
+
+    // i want this to return true if the input should be disabled
   };
 
   // binning method: range
@@ -253,10 +255,15 @@ class ContinuousCustomBinsModal extends Component {
       console.log(`CHECKING name: ${rowItem.fields.name} from: ${rowFrom} to: ${rowTo}`);
 
       const overlapNames = rowsToCheck.reduce((acc, curr, overlapIndex) => {
-        if (rowIndex === overlapIndex) return acc;
+        const overlapFromStr = curr.fields.from;
+        const overlapToStr = curr.fields.to;
 
-        const overlapFrom = Number(curr.fields.from);
-        const overlapTo = Number(curr.fields.to);
+        if (rowIndex === overlapIndex || curr.fields.from === '' || curr.fields.to === '') {
+          return acc;
+        }
+
+        const overlapFrom = Number(overlapFromStr);
+        const overlapTo = Number(overlapToStr);
         const overlapName = curr.fields.name;
 
         console.log(`AGAINST name: ${overlapName} from: ${overlapFrom} to: ${overlapTo}`);
@@ -298,6 +305,8 @@ class ContinuousCustomBinsModal extends Component {
     } = this.state;
 
     const submitDisabled = this.checkSubmitDisabled();
+
+    console.log('submitDisabled', submitDisabled);
 
     return (
       <Column style={{ padding: '20px' }}>

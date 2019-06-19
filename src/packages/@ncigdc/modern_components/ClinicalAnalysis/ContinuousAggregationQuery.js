@@ -28,6 +28,7 @@ const getContinuousAggs = ({ fieldName, stats, filters, bins }) => {
 
   let rangeArr = _.reduce(bins, (acc, bin, key) => {
     if (
+      !!bin &&
       (typeof bin.from === 'number') &&
       (typeof bin.to === 'number') &&
       stats.min <= bin.from &&
@@ -53,7 +54,7 @@ const getContinuousAggs = ({ fieldName, stats, filters, bins }) => {
     op: "range",
     content: [
       {
-        ranges: rangeArr || [],
+        ranges: rangeArr,
       }
     ]
   }

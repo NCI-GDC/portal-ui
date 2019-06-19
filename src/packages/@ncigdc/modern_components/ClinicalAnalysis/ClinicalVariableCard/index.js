@@ -1287,7 +1287,7 @@ export default compose(
     const dataDimension = dataDimensions[sanitisedId] && dataDimensions[sanitisedId].unit;
     return Object.assign(
       {
-        dataBuckets: get(rawQueryData, variable.plotTypes === 'continuous' ? 'histogram.buckets' : 'buckets', []),
+        dataBuckets: get(rawQueryData, variable.plotTypes === 'continuous' ? 'range.buckets' : 'buckets', []),
         dataValues: variable.plotTypes === 'continuous' && map(
           {
             ...rawQueryData.stats,

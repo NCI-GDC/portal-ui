@@ -20,22 +20,53 @@ const simpleAggCache = {};
 const pendingAggCache = {};
 const DEFAULT_CONTINUOUS_BUCKETS = 4;
 
-const getContinuousAggs = ({
-  fieldName, stats, filters,
-}) => {
+const getContinuousAggs = ({ fieldName, stats, filters, bins }) => {
   // prevent query failing if interval will equal 0
   if (_.isNull(stats.min) || _.isNull(stats.max)) {
     return null;
   }
-  const interval = (stats.max - stats.min) / DEFAULT_CONTINUOUS_BUCKETS;
+
+  let rangeArr = _.reduce(bins, (acc, bin, key) => {
+    if (
+      !!bin &&
+      (typeof bin.from === 'number') &&
+      (typeof bin.to === 'number') &&
+      stats.min <= bin.from &&
+      bin.from < bin.to &&
+      bin.to <= stats.max
+    ) {
+      return [...acc, { from: bin.from, to: bin.to }];
+    }
+    return acc;
+  }, []);
+  const interval = Math.round((stats.max - stats.min) / DEFAULT_CONTINUOUS_BUCKETS);
+  if (rangeArr.length === 0) {
+    rangeArr = Array(DEFAULT_CONTINUOUS_BUCKETS).fill(1).map(
+      (val, key) => ({
+        from: key * interval + stats.min,
+        to: (key + 1) === DEFAULT_CONTINUOUS_BUCKETS ? stats.max : (stats.min + (key + 1) * interval - 1),
+      })
+    )
+  }
+
+  const queryFieldName = fieldName.replace('.', '__');
+  const filters2 = {
+    op: "range",
+    content: [
+      {
+        ranges: rangeArr,
+      }
+    ]
+  }
   const aggregationFieldName = fieldName.replace(/\./g, '__');
 
   const variables = {
     filters,
+    filters2,
   };
   const componentName = 'ContinuousAggregationQuery';
   const body = JSON.stringify({
-    query: `query ${componentName}($filters: FiltersArgument) {
+    query: `query ${componentName}($filters: FiltersArgument, $filters2: FiltersArgument) {
       viewer {
         explore {
           cases {
@@ -53,10 +84,10 @@ const getContinuousAggs = ({
                   q1: quartile_1
                   q3: quartile_3
                 }
-                histogram(interval: ${interval}) {
+                range(ranges: $filters2) {
                   buckets {
-                    key
                     doc_count
+                    key
                   }
                 }
               }
@@ -136,7 +167,7 @@ const getContinuousAggs = ({
         }
       } else {
         consoleDebug(
-            `Something went wrong in environment, but no error status: ${err}`
+          `Something went wrong in environment, but no error status: ${err}`
         );
       }
     }));
@@ -152,12 +183,14 @@ export default compose(
       filters,
       setAggData,
       setIsLoading,
+      variable,
       hits,
     }) => {
       const res = await getContinuousAggs({
         fieldName,
         stats,
         filters,
+        bins: variable.bins,
         hits,
       });
       setAggData(res && res.data.viewer, () => setIsLoading(false));
@@ -170,6 +203,7 @@ export default compose(
   if (isLoading) {
     return <Loader />;
   }
+
   return (
     <ClinicalVariableCard
       data={{
@@ -179,6 +213,6 @@ export default compose(
       setId={setId}
       stats={stats}
       {...props}
-      />
+    />
   );
 });

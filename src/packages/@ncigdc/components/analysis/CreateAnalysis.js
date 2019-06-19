@@ -25,11 +25,13 @@ const enhance = compose(
     ))
   ),
   withState('analysis', 'setAnalysis', null),
-  connect(),
+  connect(state => ({
+    numAnalysis: state.analysis.saved.filter(analysis => analysis.type === 'clinical_data').length
+  })),
   withRouter
 );
 
-const CreateAnalysis = ({ analysis, setAnalysis, dispatch, push }) => {
+const CreateAnalysis = ({ analysis, dispatch, numAnalysis, push, setAnalysis }) => {
   const SelectSetComponent =
     analysis && analysis.type === 'clinical_data'
       ? ClinicalAnalysisLaunch
@@ -51,7 +53,7 @@ const CreateAnalysis = ({ analysis, setAnalysis, dispatch, push }) => {
             sets,
             ...(analysis.type === 'clinical_data'
               ? {
-                  name: Object.values(sets.case)[0],
+                  name: `Custom Analysis ${numAnalysis + 1}`,
                   displayVariables: defaultVariables,
                 }
               : {}),

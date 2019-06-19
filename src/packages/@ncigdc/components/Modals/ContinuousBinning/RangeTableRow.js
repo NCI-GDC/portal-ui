@@ -15,17 +15,17 @@ const defaultFieldState = {
   to: '',
 };
 
+const fieldsOrder = [
+  'name',
+  'from',
+  'to',
+];
+
 class RangeTableRow extends React.Component {
   state = {
     fieldErrors: defaultFieldState,
     fieldValues: defaultFieldState,
   };
-
-  fieldsOrder = [
-    'name',
-    'from',
-    'to',
-  ];
 
   componentDidMount() {
     const { fields } = this.props;
@@ -161,7 +161,7 @@ class RangeTableRow extends React.Component {
             style={rowFieldsWrapper}
             >
             {
-              this.fieldsOrder.map(rowItem => {
+              fieldsOrder.map(rowItem => {
                 const rowId = `range-row-${rowIndex}-${rowItem}`;
                 return (
                   <RangeInput

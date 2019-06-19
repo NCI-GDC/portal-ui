@@ -146,7 +146,7 @@ const ClinicalAnalysisLaunch: ComponentType<IProps> = ({
         <Column style={{ paddingTop: 5 }}>
           <Row spacing={'5px'}>
             <Button onClick={onCancel}>Back</Button>
-            <DemoButton demoData={demoData} type={type} disabled />
+            <DemoButton demoData={demoData} type={type} />
           </Row>
         </Column>
       </Row>

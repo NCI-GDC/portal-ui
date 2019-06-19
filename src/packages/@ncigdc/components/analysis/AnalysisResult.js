@@ -51,7 +51,7 @@ function undoNotification(dispatch, analysis) {
             <span>
               <strong>{analysis.length}</strong>
               {' '}
-Analyses
+              Analyses
             </span>
           )}
           <strong>
@@ -113,13 +113,9 @@ const AnalysisResult = ({
                       height: 25,
                       width: 25,
                     }}
-                                   />
+                     />
                     <Column>
-                      <Tooltip
-                        Component={(
-                          <span>{tabTitle}</span>
-                        )}
-                        >
+                      <Tooltip Component={tabTitle.length > 16 ? tabTitle : null}>
                         <span style={{ fontSize: '1.4rem' }}>
                           {truncate(tabTitle, { length: 16 })}
                         </span>
@@ -172,7 +168,7 @@ const AnalysisResult = ({
           >
           <TrashIcon />
           {' '}
-Delete All
+          Delete All
         </Button>
       )}
       />

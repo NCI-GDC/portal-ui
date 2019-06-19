@@ -1,0 +1,15 @@
+.qq-plot .axis path,
+.qq-plot .axis line {
+  stroke: #e6dede;
+  shape-rendering: crispEdges;
+}
+
+.qq-plot .axis .tick text,
+.qq-plot .axis text {
+  fill: #888;
+  font-size: 1rem;
+}
+
+.qq-plot g text {
+  fill: #888;
+}

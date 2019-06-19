@@ -9,16 +9,6 @@ import './Modal.css';
 ReactModal.setAppElement('#root');
 
 const modalStyles = {
-  overlay: {
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    bottom: '0px',
-    display: 'block',
-    left: '0px',
-    position: 'fixed',
-    right: '0px',
-    top: '0px',
-    zIndex: '200',
-  },
   content: {
     background: 'rgb(255, 255, 255)',
     border: '1px solid rgb(204, 204, 204)',
@@ -29,6 +19,16 @@ const modalStyles = {
     padding: '0px',
     position: 'initial',
     width: '90%',
+  },
+  overlay: {
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    bottom: '0px',
+    display: 'block',
+    left: '0px',
+    position: 'fixed',
+    right: '0px',
+    top: '0px',
+    zIndex: '200',
   },
 };
 

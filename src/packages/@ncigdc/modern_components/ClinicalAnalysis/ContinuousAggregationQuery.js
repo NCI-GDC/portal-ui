@@ -28,8 +28,8 @@ const getContinuousAggs = ({ fieldName, stats, filters, bins }) => {
 
   let rangeArr = _.reduce(bins, (acc, bin, key) => {
     if (
-      bin.from &&
-      bin.to &&
+      (typeof bin.from === 'number') &&
+      (typeof bin.to === 'number') &&
       stats.min <= bin.from &&
       bin.from < bin.to &&
       bin.to <= stats.max

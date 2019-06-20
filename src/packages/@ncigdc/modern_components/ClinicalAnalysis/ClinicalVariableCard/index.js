@@ -362,6 +362,7 @@ const getCategoricalTableData = (
   if (isEmpty(binData)) {
     return [];
   }
+  console.log('key displayData', binData.map(bin => bin.key));
   const displayData = variable.plotTypes === 'continuous'
     ? binData
       .sort((a, b) => b.key - a.key)
@@ -580,7 +581,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
   filters,
   getBucketRangesAndFilters,
   id,
-  continuousBuckets,
+  bucketsOrganizedByKey,
   overallSurvivalData,
   plots,
   selectedBuckets,
@@ -1198,7 +1199,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                         variable.plotTypes === 'continuous'
                           ? (
                             <ContinuousCustomBins
-                              bins={continuousBuckets}
+                              bins={bucketsOrganizedByKey}
                               defaultData={defaultData}
                               fieldName={humanify({ term: fieldName })}
                               onClose={() => dispatch(setModal(null))}
@@ -1395,6 +1396,13 @@ export default compose(
       totalDocs,
       variable,
     }) => ({
+      bucketsOrganizedByKey: dataBuckets.reduce((acc, r) => ({
+        ...acc,
+        [r.key]: {
+          ...r,
+          groupName: r.key,
+        },
+      }), {}),
       customBins: map(groupBy(variable.bins, bin => bin.groupName), (values, key) => ({
         doc_count: values.reduce((acc, value) => acc + value.doc_count, 0),
         key,
@@ -1444,7 +1452,8 @@ export default compose(
                 totalDocs,
               }),
               filters,
-              key: getRangeValue(key, fieldName, acc.nextInterval),
+              // key: getRangeValue(key, fieldName, acc.nextInterval),
+              key,
               rangeValues: {
                 max: Math.floor(acc.nextInterval - 1),
                 min: key,
@@ -1454,20 +1463,13 @@ export default compose(
           nextInterval: key,
         };
       },
-      continuousBuckets: dataBuckets.reduce((acc, r) => ({
-        ...acc,
-        [r.key]: {
-          ...r,
-          groupName: r.key,
-        },
-      }), {}),
     })
   ),
-  withProps(({ continuousBuckets, variable }) => {
+  withProps(({ bucketsOrganizedByKey, variable }) => {
     if (variable.plotTypes === 'categorical') {
       return ({ defaultData: {} });
     }
-    const bucketsSorted = Object.keys(continuousBuckets).map(n => Number(n)).sort((a, b) => a - b);
+    const bucketsSorted = Object.keys(bucketsOrganizedByKey).map(n => Number(n)).sort((a, b) => a - b);
     const defaultMin = bucketsSorted.length ? bucketsSorted[0] : 0;
     const defaultMax = bucketsSorted.length ? bucketsSorted[bucketsSorted.length - 1] : 0;
     const quartileWithDecimals = (defaultMax - defaultMin) / 4;
@@ -1602,10 +1604,10 @@ export default compose(
   lifecycle({
     componentDidMount(): void {
       const {
+        bucketsOrganizedByKey,
         dispatch,
         fieldName,
         id,
-        continuousBuckets,
         variable,
         wrapperId,
       } = this.props;
@@ -1614,7 +1616,7 @@ export default compose(
           updateClinicalAnalysisVariable({
             fieldName,
             id,
-            value: continuousBuckets,
+            value: bucketsOrganizedByKey,
             variableKey: 'bins',
           }),
         );

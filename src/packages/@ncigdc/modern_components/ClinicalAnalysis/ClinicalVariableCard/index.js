@@ -1462,9 +1462,10 @@ export default compose(
     if (variable.plotTypes === 'categorical') {
       return ({ defaultData: {} });
     }
-    const bucketsSorted = Object.keys(bucketsOrganizedByKey).map(n => Number(n)).sort((a, b) => a - b);
-    const defaultMin = bucketsSorted.length ? bucketsSorted[0] : 0;
-    const defaultMax = bucketsSorted.length ? bucketsSorted[bucketsSorted.length - 1] : 0;
+    const bucketKeys = Object.keys(bucketsOrganizedByKey).sort((a, b) => a - b).map(key => key.split('-').map(keyVal => parseBucketValue(keyVal)));
+
+    const defaultMin = bucketKeys.length ? bucketKeys[0][0] : 0;
+    const defaultMax = bucketKeys.length ? bucketKeys[bucketKeys.length - 1][1] : 0;
     const quartileWithDecimals = (defaultMax - defaultMin) / 4;
     const defaultQuartile = Number(quartileWithDecimals.toFixed(2));
 

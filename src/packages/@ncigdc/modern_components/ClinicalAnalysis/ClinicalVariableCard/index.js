@@ -363,6 +363,7 @@ const getCategoricalTableData = (
     return [];
   }
   console.log('key displayData', binData.map(bin => bin.key));
+  console.log('bins displayData', binData);
   const displayData = variable.plotTypes === 'continuous'
     ? binData
       .sort((a, b) => b.key - a.key)
@@ -573,6 +574,7 @@ const getHeadings = (chartType, dataDimension, fieldName) => {
 const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
   currentAnalysis,
   customBins,
+  dataBuckets,
   dataDimension,
   dataValues,
   defaultData,
@@ -1452,8 +1454,8 @@ export default compose(
                 totalDocs,
               }),
               filters,
-              // key: getRangeValue(key, fieldName, acc.nextInterval),
-              key,
+              key: getRangeValue(key, fieldName, acc.nextInterval),
+              // key,
               rangeValues: {
                 max: Math.floor(acc.nextInterval - 1),
                 min: key,

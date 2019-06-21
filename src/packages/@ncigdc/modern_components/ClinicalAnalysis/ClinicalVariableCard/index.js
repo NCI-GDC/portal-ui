@@ -78,7 +78,7 @@ import { humanify } from '@ncigdc/utils/string';
 import timestamp from '@ncigdc/utils/timestamp';
 
 import { IS_CDAVE_DEV } from '@ncigdc/utils/constants';
-import ContinuousCustomBins from '@ncigdc/components/Modals/ContinuousBinning/ContinuousCustomBinsModal';
+import ContinuousCustomBinsModal from '@ncigdc/components/Modals/ContinuousBinning/ContinuousCustomBinsModal';
 import {
   boxTableAllowedStats,
   boxTableRenamedStats,
@@ -353,7 +353,8 @@ const getCategoricalTableData = (
   if (isEmpty(binData)) {
     return [];
   }
-  console.log('key displayData', binData.map(bin => bin.key));
+  // console.log('key displayData', binData.map(bin => bin.key));
+  console.log('variable displayData', variable)
   console.log('bins displayData', binData);
   const displayData = variable.plotTypes === 'continuous'
     ? binData
@@ -1191,11 +1192,23 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                       setModal(
                         variable.plotTypes === 'continuous'
                           ? (
-                            <ContinuousCustomBins
+                            <ContinuousCustomBinsModal
                               bins={bucketsOrganizedByKey}
                               defaultData={defaultData}
                               fieldName={humanify({ term: fieldName })}
                               onClose={() => dispatch(setModal(null))}
+                              onUpdate={(newBins) => {
+                                dispatch(
+                                  updateClinicalAnalysisVariable({
+                                    fieldName,
+                                    id,
+                                    value: newBins,
+                                    variableKey: 'bins',
+                                  }),
+                                );
+                                dispatch(setModal(null));
+                              }
+                              }
                             />
                           )
                           : (
@@ -1347,6 +1360,7 @@ export default compose(
       id,
       variable,
     }) => {
+      console.log('withPropsOnChange dataBuckets', dataBuckets)
       dispatch(
         updateClinicalAnalysisVariable({
           fieldName,
@@ -1389,13 +1403,16 @@ export default compose(
       totalDocs,
       variable,
     }) => ({
-      bucketsOrganizedByKey: dataBuckets.reduce((acc, r) => ({
-        ...acc,
-        [r.key]: {
-          ...r,
-          groupName: r.key,
-        },
-      }), {}),
+      bucketsOrganizedByKey: dataBuckets.reduce((acc, r) => {
+        console.log('dataBuckets', dataBuckets);
+        return ({
+          ...acc,
+          [r.key]: {
+            ...r,
+            groupName: r.key,
+          },
+        });
+      }, {}),
       customBins: map(groupBy(variable.bins, bin => bin.groupName), (values, key) => ({
         doc_count: values.reduce((acc, value) => acc + value.doc_count, 0),
         key,
@@ -1462,6 +1479,7 @@ export default compose(
     if (variable.plotTypes === 'categorical') {
       return ({ defaultData: {} });
     }
+    console.log('bucketsOrganizedByKey', bucketsOrganizedByKey);
     const bucketKeys = Object.keys(bucketsOrganizedByKey).sort((a, b) => a - b).map(key => key.split('-').map(keyVal => parseBucketValue(keyVal)));
 
     const defaultMin = bucketKeys.length ? bucketKeys[0][0] : 0;

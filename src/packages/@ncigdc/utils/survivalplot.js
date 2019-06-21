@@ -68,16 +68,16 @@ async function fetchCurves(
     : { results: [] };
 
   performanceTracker.end('survival:fetch', {
-    filters: params.filters,
     data_sets: data.results.length,
     donors: _.sum(data.results.map(x => x.donors.length)),
+    filters: params.filters,
   });
 
   return data;
 }
 
 export const getDefaultCurve = memoize(
-  async ({ slug, currentFilters, size }: TPropsDefault): Promise<Object> => {
+  async ({ currentFilters, size, slug }: TPropsDefault): Promise<Object> => {
     const rawData = await fetchCurves(
       Array.isArray(currentFilters)
         ? currentFilters
@@ -108,8 +108,8 @@ export const getDefaultCurve = memoize(
   },
   {
     max: 10,
-    promise: true,
     normalizer: args => JSON.stringify(args[0]),
+    promise: true,
   }
 );
 
@@ -244,8 +244,8 @@ export const getSurvivalCurves = memoize(
   },
   {
     max: 10,
-    promise: true,
     normalizer: args => JSON.stringify(args[0]),
+    promise: true,
   }
 );
 
@@ -285,6 +285,54 @@ export const getSurvivalCurvesArray = memoize(
     return {
       rawData: {
         ...rawData,
+        id: field,
+        legend: hasEnoughDataOnSomeCurves
+          ? rawData.results.map((r, i) => {
+            const valueName =
+              plotType === 'categorical' ? values[i] : values[i].key;
+
+            return r.length === 0
+              ? {
+                key: `${valueName}-cannot-compare`,
+                value: (
+                  <div>
+                    <span>Not enough data to compare</span>
+                  </div>
+                ),
+                style: {
+                  width: '100%',
+                  marginTop: 5,
+                },
+              }
+              : r.donors.length < MINIMUM_CASES
+                ? {
+                  key: `${valueName}-not-enough-data`,
+                  value: (
+                    <span>
+                      {`Not enough survival data for ${valueName}`}
+                    </span>
+                  ),
+                }
+                : {
+                  key: valueName,
+                  value: (
+                    <span>
+                      S
+                    <sub>{i + 1}</sub>
+                      {` (N = ${getCaseCount(i)})`}
+                      <span className="print-only inline">
+                        {` - ${valueName}`}
+                      </span>
+                    </span>
+                  ),
+                };
+          })
+          : [
+            {
+              key: `${field}-not-enough-data`,
+              value: <span>Not enough survival data for this facet</span>,
+            },
+          ],
         results:
           rawData.results.length > 0
             ? rawData.results
@@ -298,59 +346,11 @@ export const getSurvivalCurvesArray = memoize(
               }))
             : [],
       },
-      id: field,
-      legend: hasEnoughDataOnSomeCurves
-        ? rawData.results.map((r, i) => {
-          const valueName =
-            plotType === 'categorical' ? values[i] : values[i].key;
-
-          return r.length === 0
-            ? {
-              key: `${valueName}-cannot-compare`,
-              value: (
-                <div>
-                  <span>Not enough data to compare</span>
-                </div>
-              ),
-              style: {
-                width: '100%',
-                marginTop: 5,
-              },
-            }
-            : r.donors.length < MINIMUM_CASES
-              ? {
-                key: `${valueName}-not-enough-data`,
-                value: (
-                  <span>
-                    {`Not enough survival data for ${valueName}`}
-                  </span>
-                ),
-              }
-              : {
-                key: valueName,
-                value: (
-                  <span>
-                    S
-                    <sub>{i + 1}</sub>
-                    {` (N = ${getCaseCount(i)})`}
-                    <span className="print-only inline">
-                      {` - ${valueName}`}
-                    </span>
-                  </span>
-                ),
-              };
-        })
-        : [
-          {
-            key: `${field}-not-enough-data`,
-            value: <span>Not enough survival data for this facet</span>,
-          },
-        ],
     };
   },
   {
     max: 10,
-    promise: true,
     normalizer: args => JSON.stringify(args[0]),
+    promise: true,
   }
 );

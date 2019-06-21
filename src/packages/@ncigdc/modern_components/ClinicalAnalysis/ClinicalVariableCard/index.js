@@ -1605,7 +1605,8 @@ export default compose(
   ),
   withPropsOnChange(
     (props, nextProps) => props.variable.active_chart !== nextProps.variable.active_chart ||
-      !isEqual(props.data, nextProps.data),
+      !isEqual(props.data, nextProps.data) ||
+      !isEqual(props.variable.bins, nextProps.variable.bins),
     ({ populateSurvivalData, variable }) => {
       if (variable.active_chart === 'survival') {
         populateSurvivalData();

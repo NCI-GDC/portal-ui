@@ -271,7 +271,7 @@ class ContinuousCustomBinsModal extends Component {
       const rowFrom = Number(rowItem.fields.from);
       const rowTo = Number(rowItem.fields.to);
 
-      console.log(`CHECKING name: ${rowItem.fields.name} from: ${rowFrom} to: ${rowTo}`);
+      // console.log(`CHECKING name: ${rowItem.fields.name} from: ${rowFrom} to: ${rowTo}`);
 
       const overlapNames = rowsToCheck.reduce((acc, curr, overlapIndex) => {
         const overlapFromStr = curr.fields.from;
@@ -285,13 +285,13 @@ class ContinuousCustomBinsModal extends Component {
         const overlapTo = Number(overlapToStr);
         const overlapName = curr.fields.name;
 
-        console.log(`AGAINST name: ${overlapName} from: ${overlapFrom} to: ${overlapTo}`);
+        // console.log(`AGAINST name: ${overlapName} from: ${overlapFrom} to: ${overlapTo}`);
 
         const hasNoOverlap = rowTo < overlapFrom || rowFrom > overlapTo;
 
         return hasNoOverlap ? acc : [...acc, overlapName];
       }, []);
-      console.log('-----------------');
+      // console.log('-----------------');
 
       return overlapNames.length > 0 ? overlapNames : [];
     });

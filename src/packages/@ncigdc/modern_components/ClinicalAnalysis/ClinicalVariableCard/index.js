@@ -227,15 +227,13 @@ const styles = {
   }),
 };
 
-// TODO move bin naming to redux
-const parseBucketValue = value => (value % 1
+const parseContinuousBucketValue = value => (value % 1
   ? Number.parseFloat(value).toFixed(2)
   : Math.round(value * 100) / 100);
 
-const getRangeValue = key => {
-  console.log('getRangeValue key', key);
-  const keyValues = key.split('-').map(val => parseBucketValue(val));
-  return `${keyValues[0]} to ${keyValues[1]}`;
+const getContinuousRangeValue = keyValues => {
+  const keyValuesParsed = keyValues.map(val => parseContinuousBucketValue(val));
+  return `${keyValuesParsed[0]} to ${keyValuesParsed[1]}`;
 };
 
 const getCountLink = ({ doc_count, filters, totalDocs }) => (
@@ -1419,11 +1417,11 @@ export default compose(
         key,
         keyArray: values.reduce((acc, value) => [...acc, value.key], []),
       })).filter(bin => bin.key),
-      getContinuousBuckets: (acc, { doc_count, key }) => {
+      getContinuousBuckets: (acc, { doc_count, key, keyArray }) => {
+        const keyValues = keyArray ? keyArray[0].split('-') : key.split('-');
         const filters =
-          variable.plotTypes === 'categorical'
-            ? {}
-            : {
+          variable.plotTypes === 'continuous'
+            ? {
               content: [
                 {
                   content: {
@@ -1435,7 +1433,7 @@ export default compose(
                 {
                   content: {
                     field: fieldName,
-                    value: [Number(key.split('-')[0])],
+                    value: [Number(keyValues[0])],
                   },
                   op: '>=',
                 },
@@ -1443,14 +1441,14 @@ export default compose(
                   {
                     content: {
                       field: fieldName,
-                      value: [Number(key.split('-')[1])],
+                      value: [Number(keyValues[1])],
                     },
                     op: '<=',
                   },
                 ],
               ],
               op: 'and',
-            };
+            } : {};
 
         return {
           data: [
@@ -1463,15 +1461,14 @@ export default compose(
                 totalDocs,
               }),
               filters,
-              key: getRangeValue(key),
-              // key,
+              key: getContinuousRangeValue(keyValues),
               rangeValues: {
-                max: Math.floor(acc.nextInterval - 1),
-                min: key,
+                max: keyValues[1],
+                min: keyValues[0],
               },
             },
           ],
-          nextInterval: key,
+          nextInterval: 0,
         };
       },
     })
@@ -1480,8 +1477,9 @@ export default compose(
     if (variable.plotTypes === 'categorical') {
       return ({ defaultData: {} });
     }
-    console.log('bucketsOrganizedByKey', bucketsOrganizedByKey);
-    const bucketKeys = Object.keys(bucketsOrganizedByKey).sort((a, b) => a - b).map(key => key.split('-').map(keyVal => parseBucketValue(keyVal)));
+    // console.log('bucketsOrganizedByKey', bucketsOrganizedByKey);
+    const bucketKeys = Object.keys(bucketsOrganizedByKey).sort((a, b) => a - b).map(key => key.split('-').map(keyVal => parseContinuousBucketValue(keyVal))
+    );
 
     const defaultMin = bucketKeys.length ? bucketKeys[0][0] : 0;
     const defaultMax = bucketKeys.length ? bucketKeys[bucketKeys.length - 1][1] : 0;
@@ -1511,6 +1509,7 @@ export default compose(
       variable,
     }) => ({
       populateSurvivalData: () => {
+        console.log('survival dataBuckets', dataBuckets)
         setSurvivalPlotLoading(true);
         const dataForSurvival =
           variable.plotTypes === 'continuous'

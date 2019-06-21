@@ -622,6 +622,8 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
       })
       : [];
 
+  // console.log('chartData', chartData);
+
   // set action will default to cohort total when no buckets are selected
   const totalFromSelectedBuckets = selectedBuckets && selectedBuckets.length
     ? selectedBuckets.reduce((acc, b) => acc + b.chart_doc_count, 0)
@@ -1284,51 +1286,26 @@ export default compose(
   withState('selectedBuckets', 'setSelectedBuckets', []),
   withState('qqData', 'setQQData', []),
   withState('qqDataIsSet', 'setQQDataIsSet', false),
-  withProps(({ data, fieldName, variable }) => {
-    const sanitisedId = fieldName.split('.').pop();
-    const rawQueryData = get(data, `explore.cases.aggregations.${fieldName.replace('.', '__')}`, data);
-    const dataDimension = dataDimensions[sanitisedId] && dataDimensions[sanitisedId].unit;
-    return Object.assign(
-      {
-        dataBuckets: get(rawQueryData, variable.plotTypes === 'continuous' ? 'range.buckets' : 'buckets', []),
-        dataValues: variable.plotTypes === 'continuous' && map(
-          {
-            ...rawQueryData.stats,
-            ...rawQueryData.percentiles,
-          },
-          (value, stat) => {
-            switch (dataDimension) {
-              case 'Year': {
-                const age = Number.parseFloat(value / DAYS_IN_YEAR).toFixed(2);
-                return ({
-                  [stat]: age % 1 ? age : Number.parseFloat(age).toFixed(0),
-                });
-              }
-              default:
-                return ({
-                  [stat]: value % 1 ? Number.parseFloat(value).toFixed(2) : value,
-                });
-            }
-          }
-        ).reduce((acc, item) => ({
-          ...acc,
-          ...item,
-        }), {}),
-        totalDocs: get(data, 'hits.total', 0),
-        wrapperId: `${sanitisedId}-chart`,
-      },
-      dataDimensions[sanitisedId] && {
-        axisTitle: dataDimensions[sanitisedId].axisTitle,
-        dataDimension: dataDimensions[sanitisedId].unit,
-        dataValues:
-          map(
+  withPropsOnChange(
+    (props, nextProps) => !isEqual(props.data, nextProps.data),
+    ({ data, fieldName, variable }) => {
+      // console.log('CARD data', data);
+      // withProps(({ data, fieldName, variable }) => {
+      const sanitisedId = fieldName.split('.').pop();
+      const rawQueryData = get(data, `explore.cases.aggregations.${fieldName.replace('.', '__')}`, data);
+      // console.log('CARD rawQueryData', rawQueryData);
+      const dataDimension = dataDimensions[sanitisedId] && dataDimensions[sanitisedId].unit;
+      return Object.assign(
+        {
+          dataBuckets: get(rawQueryData, variable.plotTypes === 'continuous' ? 'range.buckets' : 'buckets', []),
+          dataValues: variable.plotTypes === 'continuous' && map(
             {
               ...rawQueryData.stats,
               ...rawQueryData.percentiles,
             },
             (value, stat) => {
-              switch (dataDimensions[sanitisedId].unit) {
-                case 'Years': {
+              switch (dataDimension) {
+                case 'Year': {
                   const age = Number.parseFloat(value / DAYS_IN_YEAR).toFixed(2);
                   return ({
                     [stat]: age % 1 ? age : Number.parseFloat(age).toFixed(0),
@@ -1344,9 +1321,40 @@ export default compose(
             ...acc,
             ...item,
           }), {}),
-      },
-    );
-  }),
+          totalDocs: get(data, 'hits.total', 0),
+          wrapperId: `${sanitisedId}-chart`,
+        },
+        dataDimensions[sanitisedId] && {
+          axisTitle: dataDimensions[sanitisedId].axisTitle,
+          dataDimension: dataDimensions[sanitisedId].unit,
+          dataValues:
+            map(
+              {
+                ...rawQueryData.stats,
+                ...rawQueryData.percentiles,
+              },
+              (value, stat) => {
+                switch (dataDimensions[sanitisedId].unit) {
+                  case 'Years': {
+                    const age = Number.parseFloat(value / DAYS_IN_YEAR).toFixed(2);
+                    return ({
+                      [stat]: age % 1 ? age : Number.parseFloat(age).toFixed(0),
+                    });
+                  }
+                  default:
+                    return ({
+                      [stat]: value % 1 ? Number.parseFloat(value).toFixed(2) : value,
+                    });
+                }
+              }
+            ).reduce((acc, item) => ({
+              ...acc,
+              ...item,
+            }), {}),
+        },
+      );
+    }
+  ),
   withPropsOnChange(
     (props, nextProps) => !isEqual(props.dataBuckets, nextProps.dataBuckets) || props.setId !== nextProps.setId,
     ({
@@ -1356,12 +1364,21 @@ export default compose(
       id,
       variable,
     }) => {
+      console.log('variable.bins withPropsOnChange', variable.bins);
       // console.log('withPropsOnChange dataBuckets', dataBuckets)
+      console.log('dataBuckets withPropsOnChange', dataBuckets);
       dispatch(
         updateClinicalAnalysisVariable({
           fieldName,
           id,
-          value: {
+          value: variable.plotTypes === 'continuous' ? (Object.keys(variable.bins).reduce((acc, curr, index) => ({
+            ...acc,
+            [curr]: {
+              ...variable.bins[curr],
+              doc_count: dataBuckets[index].doc_count,
+            },
+          }), {})
+          ) : ({
             ...reduce(variable.bins, (acc, bin, key) => {
               if (bin.groupName && bin.groupName !== key) {
                 return {
@@ -1385,7 +1402,7 @@ export default compose(
                     : r.key,
               },
             }), {}),
-          },
+          }),
           variableKey: 'bins',
         }),
       );
@@ -1405,7 +1422,7 @@ export default compose(
           ...acc,
           [r.key]: {
             ...r,
-            groupName: r.key,
+            groupName: r.groupName !== undefined && r.groupName !== '' ? r.groupName : r.key,
           },
         });
       }, {}),
@@ -1467,7 +1484,7 @@ export default compose(
             },
           },
         ];
-      }
+      },
     })
   ),
   withProps(({ bucketsOrganizedByKey, variable }) => {
@@ -1475,8 +1492,7 @@ export default compose(
       return ({ defaultData: {} });
     }
     // console.log('bucketsOrganizedByKey', bucketsOrganizedByKey);
-    const bucketKeys = Object.keys(bucketsOrganizedByKey).sort((a, b) => a - b).map(key => key.split('-').map(keyVal => parseContinuousBucketValue(keyVal))
-    );
+    const bucketKeys = Object.keys(bucketsOrganizedByKey).sort((a, b) => a - b).map(key => key.split('-').map(keyVal => parseContinuousBucketValue(keyVal)));
 
     const defaultMin = bucketKeys.length ? bucketKeys[0][0] : 0;
     const defaultMax = bucketKeys.length ? bucketKeys[bucketKeys.length - 1][1] : 0;
@@ -1512,10 +1528,7 @@ export default compose(
           variable.plotTypes === 'continuous'
             ? dataBuckets
               .sort((a, b) => b.key - a.key)
-              .reduce(getContinuousBuckets, {
-                data: [],
-              })
-              .data.slice(0)
+              .reduce(getContinuousBuckets, [])
               .reverse()
             : customBins
               .filter(bucket => (IS_CDAVE_DEV ? bucket.key : bucket.key !== '_missing'))

@@ -29,10 +29,10 @@ const getContinuousAggs = ({ fieldName, stats, filters, bins }) => {
     return null;
   }
 
-  console.log('bins', bins);
+  // console.log('bins', bins);
 
   let rangeArr = _.reduce(bins, (acc, bin, key) => {
-    console.log('bin', bin);
+    // console.log('bin', bin);
     const binValues = bin.key.split('-').map(keyValue => Number(keyValue));
     const binFrom = binValues[0];
     const binTo = binValues[1];
@@ -46,13 +46,13 @@ const getContinuousAggs = ({ fieldName, stats, filters, bins }) => {
       // binTo <= stats.max
     ) {
       const result = [...acc, { from: binFrom, to: binTo }];
-      console.log('rangeArr result', result);
+      // console.log('rangeArr result', result);
       return result;
     }
     return acc;
   }, []);
 
-  console.log('-----------')
+  // console.log('-----------')
 
   // console.log('QUERY rangeArr', rangeArr);
   const interval = Math.round((stats.max - stats.min) / DEFAULT_CONTINUOUS_BUCKETS);

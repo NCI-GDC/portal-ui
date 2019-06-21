@@ -1364,9 +1364,8 @@ export default compose(
       id,
       variable,
     }) => {
-      console.log('variable.bins withPropsOnChange', variable.bins);
-      // console.log('withPropsOnChange dataBuckets', dataBuckets)
-      console.log('dataBuckets withPropsOnChange', dataBuckets);
+      // console.log('variable.bins withPropsOnChange', variable.bins);
+      // console.log('withPropsOnChange dataBuckets', dataBuckets);
       dispatch(
         updateClinicalAnalysisVariable({
           fieldName,

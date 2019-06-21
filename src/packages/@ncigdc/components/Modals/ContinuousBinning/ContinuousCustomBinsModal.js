@@ -265,7 +265,7 @@ class ContinuousCustomBinsModal extends Component {
 
     const rowsToCheck = rows === null ? rangeRows : rows;
 
-    console.log('rowsToCheck', rowsToCheck);
+    // console.log('rowsToCheck', rowsToCheck);
 
     const overlapErrors = rowsToCheck.map((rowItem, rowIndex) => {
       const rowFrom = Number(rowItem.fields.from);
@@ -325,7 +325,7 @@ class ContinuousCustomBinsModal extends Component {
 
     const submitDisabled = this.checkSubmitDisabled();
 
-    console.log('submitDisabled', submitDisabled);
+    // console.log('submitDisabled', submitDisabled);
 
     return (
       <Column style={{ padding: '20px' }}>

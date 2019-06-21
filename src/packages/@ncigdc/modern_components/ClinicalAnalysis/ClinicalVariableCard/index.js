@@ -292,6 +292,7 @@ const getCategoricalSetFilters = (selectedBuckets, fieldName, filters) => {
 };
 
 const getContinuousSetFilters = (selectedBuckets, fieldName, filters) => {
+  console.log('selectedBuckets getContinuousSetFilters', selectedBuckets);
   const bucketRanges = selectedBuckets.map(b => b.rangeValues);
   if (bucketRanges.length === 1 && bucketRanges[0].max === -1) {
     return addInFilters(filters, {
@@ -336,7 +337,7 @@ const getCardFilters = (variablePlotTypes, selectedBuckets, fieldName, filters) 
     : filters);
 };
 
-const getCategoricalTableData = (
+const getTableData = (
   binData,
   getContinuousBuckets,
   fieldName,
@@ -354,15 +355,11 @@ const getCategoricalTableData = (
   }
   // console.log('key displayData', binData.map(bin => bin.key));
   // console.log('variable displayData', variable)
-  console.log('bins displayData', binData);
+  // console.log('bins displayData', binData);
   const displayData = variable.plotTypes === 'continuous'
     ? binData
       .sort((a, b) => b.keyArray[0] - a.keyArray[0])
-      .reduce(getContinuousBuckets, {
-        data: [],
-        nextInterval: 0,
-      })
-      .data.slice(0)
+      .reduce(getContinuousBuckets, [])
       .reverse()
     : binData
       .filter(bucket => (IS_CDAVE_DEV ? bucket.key : bucket.key !== '_missing'))
@@ -596,7 +593,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
 }) => {
   const tableData = variable.active_chart === 'box'
     ? getBoxTableData(dataValues)
-    : getCategoricalTableData(
+    : getTableData(
       customBins,
       getContinuousBuckets,
       fieldName,
@@ -1359,7 +1356,7 @@ export default compose(
       id,
       variable,
     }) => {
-      console.log('withPropsOnChange dataBuckets', dataBuckets)
+      // console.log('withPropsOnChange dataBuckets', dataBuckets)
       dispatch(
         updateClinicalAnalysisVariable({
           fieldName,
@@ -1418,7 +1415,10 @@ export default compose(
         keyArray: values.reduce((acc, value) => [...acc, value.key], []),
       })).filter(bin => bin.key),
       getContinuousBuckets: (acc, { doc_count, key, keyArray }) => {
+        // survival doesn't have keyArray
         const keyValues = keyArray ? keyArray[0].split('-') : key.split('-');
+        const keyMin = Number(keyValues[0]);
+        const keyMax = Number(keyValues[1]);
         const filters =
           variable.plotTypes === 'continuous'
             ? {
@@ -1433,7 +1433,7 @@ export default compose(
                 {
                   content: {
                     field: fieldName,
-                    value: [Number(keyValues[0])],
+                    value: [keyMin],
                   },
                   op: '>=',
                 },
@@ -1441,7 +1441,7 @@ export default compose(
                   {
                     content: {
                       field: fieldName,
-                      value: [Number(keyValues[1])],
+                      value: [keyMax],
                     },
                     op: '<=',
                   },
@@ -1450,27 +1450,24 @@ export default compose(
               op: 'and',
             } : {};
 
-        return {
-          data: [
-            ...acc.data,
-            {
-              chart_doc_count: doc_count,
-              doc_count: getCountLink({
-                doc_count,
-                filters,
-                totalDocs,
-              }),
+        return [
+          ...acc,
+          {
+            chart_doc_count: doc_count,
+            doc_count: getCountLink({
+              doc_count,
               filters,
-              key: getContinuousRangeValue(keyValues),
-              rangeValues: {
-                max: keyValues[1],
-                min: keyValues[0],
-              },
+              totalDocs,
+            }),
+            filters,
+            key: getContinuousRangeValue(keyValues),
+            rangeValues: {
+              max: keyMax,
+              min: keyMin,
             },
-          ],
-          nextInterval: 0,
-        };
-      },
+          },
+        ];
+      }
     })
   ),
   withProps(({ bucketsOrganizedByKey, variable }) => {
@@ -1509,7 +1506,7 @@ export default compose(
       variable,
     }) => ({
       populateSurvivalData: () => {
-        console.log('survival dataBuckets', dataBuckets)
+        console.log('survival dataBuckets', dataBuckets);
         setSurvivalPlotLoading(true);
         const dataForSurvival =
           variable.plotTypes === 'continuous'
@@ -1517,7 +1514,6 @@ export default compose(
               .sort((a, b) => b.key - a.key)
               .reduce(getContinuousBuckets, {
                 data: [],
-                nextInterval: 0,
               })
               .data.slice(0)
               .reverse()

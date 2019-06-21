@@ -354,10 +354,10 @@ const getCategoricalTableData = (
   }
   // console.log('key displayData', binData.map(bin => bin.key));
   // console.log('variable displayData', variable)
-  // console.log('bins displayData', binData);
+  console.log('bins displayData', binData);
   const displayData = variable.plotTypes === 'continuous'
     ? binData
-      .sort((a, b) => b.key - a.key)
+      .sort((a, b) => b.keyArray[0] - a.keyArray[0])
       .reduce(getContinuousBuckets, {
         data: [],
         nextInterval: 0,

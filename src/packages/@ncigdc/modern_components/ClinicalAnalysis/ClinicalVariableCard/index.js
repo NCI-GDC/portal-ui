@@ -294,6 +294,7 @@ const getCategoricalSetFilters = (selectedBuckets, fieldName, filters) => {
 const getContinuousSetFilters = (selectedBuckets, fieldName, filters) => {
   console.log('selectedBuckets getContinuousSetFilters', selectedBuckets);
   const bucketRanges = selectedBuckets.map(b => b.rangeValues);
+  console.log('bucketRanges', bucketRanges);
   if (bucketRanges.length === 1 && bucketRanges[0].max === -1) {
     return addInFilters(filters, {
       content: [
@@ -1560,6 +1561,8 @@ export default compose(
         setSelectedSurvivalValues(valuesForTable);
         setSelectedSurvivalLoadingIds(valuesForTable);
 
+        console.log('update survival curves filters', filters);
+
         getSurvivalCurvesArray({
           currentFilters: filters,
           field: fieldName,
@@ -1597,6 +1600,8 @@ export default compose(
                 ...filteredData,
                 doc_count: undefined,
               }));
+
+        console.log('update survival curves filters', filters);
 
         getSurvivalCurvesArray({
           currentFilters: filters,

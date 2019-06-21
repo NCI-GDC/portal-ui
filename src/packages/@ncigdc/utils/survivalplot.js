@@ -41,6 +41,7 @@ async function fetchCurves(
   size: number,
   hasMultipleCurves: Boolean
 ): Promise<Object> {
+  console.log('fetchCurves filters', filters);
   const params = _.omitBy(
     {
       filters: filters && JSON.stringify(filters),
@@ -276,6 +277,9 @@ export const getSurvivalCurvesArray = memoize(
           currentFilters
         ))
     );
+
+    console.log('survival curves array filters', filters);
+    console.log('survival curves array currentFilters', currentFilters);
 
     const rawData = await fetchCurves(filters, size, true);
     const hasEnoughDataOnSomeCurves = enoughDataOnSomeCurves(rawData);

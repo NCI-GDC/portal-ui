@@ -233,6 +233,7 @@ const parseBucketValue = value => (value % 1
   : Math.round(value * 100) / 100);
 
 const getRangeValue = key => {
+  console.log('getRangeValue key', key);
   const keyValues = key.split('-').map(val => parseBucketValue(val));
   return `${keyValues[0]} to ${keyValues[1]}`;
 };
@@ -339,7 +340,7 @@ const getCardFilters = (variablePlotTypes, selectedBuckets, fieldName, filters) 
 
 const getCategoricalTableData = (
   binData,
-  getBucketRangesAndFilters,
+  getContinuousBuckets,
   fieldName,
   totalDocs,
   selectedSurvivalValues,
@@ -354,12 +355,12 @@ const getCategoricalTableData = (
     return [];
   }
   // console.log('key displayData', binData.map(bin => bin.key));
-  console.log('variable displayData', variable)
-  console.log('bins displayData', binData);
+  // console.log('variable displayData', variable)
+  // console.log('bins displayData', binData);
   const displayData = variable.plotTypes === 'continuous'
     ? binData
       .sort((a, b) => b.key - a.key)
-      .reduce(getBucketRangesAndFilters, {
+      .reduce(getContinuousBuckets, {
         data: [],
         nextInterval: 0,
       })
@@ -573,7 +574,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
   dispatch,
   fieldName,
   filters,
-  getBucketRangesAndFilters,
+  getContinuousBuckets,
   id,
   bucketsOrganizedByKey,
   overallSurvivalData,
@@ -599,7 +600,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
     ? getBoxTableData(dataValues)
     : getCategoricalTableData(
       customBins,
-      getBucketRangesAndFilters,
+      getContinuousBuckets,
       fieldName,
       totalDocs,
       selectedSurvivalValues,
@@ -1404,7 +1405,7 @@ export default compose(
       variable,
     }) => ({
       bucketsOrganizedByKey: dataBuckets.reduce((acc, r) => {
-        console.log('dataBuckets', dataBuckets);
+        // console.log('dataBuckets', dataBuckets);
         return ({
           ...acc,
           [r.key]: {
@@ -1418,7 +1419,7 @@ export default compose(
         key,
         keyArray: values.reduce((acc, value) => [...acc, value.key], []),
       })).filter(bin => bin.key),
-      getBucketRangesAndFilters: (acc, { doc_count, key }) => {
+      getContinuousBuckets: (acc, { doc_count, key }) => {
         const filters =
           variable.plotTypes === 'categorical'
             ? {}
@@ -1501,7 +1502,7 @@ export default compose(
       dataBuckets,
       fieldName,
       filters,
-      getBucketRangesAndFilters,
+      getContinuousBuckets,
       selectedSurvivalValues,
       setSelectedSurvivalData,
       setSelectedSurvivalLoadingIds,
@@ -1515,7 +1516,7 @@ export default compose(
           variable.plotTypes === 'continuous'
             ? dataBuckets
               .sort((a, b) => b.key - a.key)
-              .reduce(getBucketRangesAndFilters, {
+              .reduce(getContinuousBuckets, {
                 data: [],
                 nextInterval: 0,
               })

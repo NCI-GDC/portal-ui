@@ -235,12 +235,12 @@ class ContinuousCustomBinsModal extends Component {
           },
         });
       }, {});
-      console.log('newBins', newBins);
+      // console.log('newBins', newBins);
 
       onUpdate(newBins);
     }
 
-    console.log('formHasErrors', formHasErrors);
+    // console.log('formHasErrors', formHasErrors);
   }
 
   validateRangeNames = (rows = null) => {

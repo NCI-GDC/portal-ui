@@ -225,18 +225,19 @@ class ContinuousCustomBinsModal extends Component {
       const { onUpdate } = this.props;
       const { rangeRows } = this.state;
 
-      const nextData = rangeRows.map(row => row.fields).map(row => {
-        const rowKey = `${row.from}-${row.to}`;
+      const newBins = rangeRows.map(row => row.fields).reduce((acc, curr) => {
+        const rowKey = `${curr.from}-${curr.to}`;
         return ({
+          ...acc,
           [rowKey]: {
-            groupName: row.name,
+            groupName: curr.name,
             key: rowKey,
           },
         });
-      });
-      console.log('nextData', nextData);
+      }, {});
+      console.log('newBins', newBins);
 
-      // onUpdate(nextData);
+      onUpdate(newBins);
     }
 
     console.log('formHasErrors', formHasErrors);

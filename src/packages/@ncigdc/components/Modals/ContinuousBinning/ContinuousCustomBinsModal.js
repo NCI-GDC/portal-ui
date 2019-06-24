@@ -18,59 +18,59 @@ const defaultRangeRow = [
   },
 ];
 
-const defaultRangesTESTWithOverlap = [
-  {
-    active: false,
-    fields: {
-      from: '1',
-      name: 'a',
-      to: '2',
-    },
-  },
-  {
-    active: false,
-    fields: {
-      from: '3',
-      name: 'b',
-      to: '4',
-    },
-  },
-  {
-    active: false,
-    fields: {
-      from: '0',
-      name: 'c',
-      to: '5',
-    },
-  },
-];
+// const defaultRangesTESTWithOverlap = [
+//   {
+//     active: false,
+//     fields: {
+//       from: '1',
+//       name: 'a',
+//       to: '2',
+//     },
+//   },
+//   {
+//     active: false,
+//     fields: {
+//       from: '3',
+//       name: 'b',
+//       to: '4',
+//     },
+//   },
+//   {
+//     active: false,
+//     fields: {
+//       from: '0',
+//       name: 'c',
+//       to: '5',
+//     },
+//   },
+// ];
 
-const defaultRangesTESTNoOverlap = [
-  {
-    active: false,
-    fields: {
-      from: '0',
-      name: 'a',
-      to: '10000',
-    },
-  },
-  {
-    active: false,
-    fields: {
-      from: '10001',
-      name: 'b',
-      to: '15000',
-    },
-  },
-  {
-    active: false,
-    fields: {
-      from: '15001',
-      name: 'c',
-      to: '20000',
-    },
-  },
-];
+// const defaultRangesTESTNoOverlap = [
+//   {
+//     active: false,
+//     fields: {
+//       from: '0',
+//       name: 'a',
+//       to: '10000',
+//     },
+//   },
+//   {
+//     active: false,
+//     fields: {
+//       from: '10001',
+//       name: 'b',
+//       to: '15000',
+//     },
+//   },
+//   {
+//     active: false,
+//     fields: {
+//       from: '15001',
+//       name: 'c',
+//       to: '20000',
+//     },
+//   },
+// ];
 
 const countDecimals = num => {
   return Math.floor(num) === num ? 0 : (num.toString().split('.')[1].length || 0);
@@ -93,9 +93,9 @@ class ContinuousCustomBinsModal extends Component {
     modalWarning: '',
     rangeNameErrors: [],
     rangeOverlapErrors: [],
-    // rangeRows: defaultRangeRow,
+    rangeRows: defaultRangeRow,
     // rangeRows: defaultRangesTESTWithOverlap,
-    rangeRows: defaultRangesTESTNoOverlap,
+    // rangeRows: defaultRangesTESTNoOverlap,
   };
 
   componentDidMount = () => {

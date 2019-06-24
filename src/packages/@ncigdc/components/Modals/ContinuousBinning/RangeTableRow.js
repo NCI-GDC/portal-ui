@@ -108,7 +108,7 @@ class RangeTableRow extends React.Component {
       fieldValues,
     } = this.state;
     const { countDecimals } = this.props;
-    
+
     // check empty & NaN errors first
     // then make sure that from < to
     const errorsEmptyOrNaN = Object.keys(fieldValues).reduce((acc, curr) => {
@@ -119,7 +119,7 @@ class RangeTableRow extends React.Component {
         ? 'Required field.' : curr === 'name'
           ? '' : !isFinite(currentValueNumber)
             ? `'${currentValue}' is not a number.`
-              : countDecimals(currentValueNumber) > 2 ? 'Use up to 2 decimal places.' : '';
+            : countDecimals(currentValueNumber) > 2 ? 'Use up to 2 decimal places.' : '';
 
       return ({
         ...acc,
@@ -154,7 +154,7 @@ class RangeTableRow extends React.Component {
         onOutsideClick={() => {
           this.handleSave();
         }}
-        >
+      >
         <div style={{ display: 'flex' }}>
           <div
             onMouseDown={() => {
@@ -162,7 +162,7 @@ class RangeTableRow extends React.Component {
             }}
             role="presentation"
             style={rowFieldsWrapper}
-            >
+          >
             {
               fieldsOrder.map(rowItem => {
                 const rowId = `range-row-${rowIndex}-${rowItem}`;
@@ -177,7 +177,7 @@ class RangeTableRow extends React.Component {
                     id={rowId}
                     key={rowId}
                     value={fieldValues[rowItem]}
-                    />
+                  />
                 );
               })}
           </div>
@@ -196,7 +196,7 @@ class RangeTableRow extends React.Component {
                     ...(rangeMethodActive ? { background: 'green' } : inputDisabled),
                     ...optionsButton,
                   }}
-                  >
+                >
                   <i aria-hidden="true" className="fa fa-check" />
                 </Button>
                 <Button
@@ -214,12 +214,12 @@ class RangeTableRow extends React.Component {
                     ...(rangeMethodActive ? { background: 'red' } : inputDisabled),
                     ...optionsButton,
                   }}
-                  >
+                >
                   <i aria-hidden="true" className="fa fa-close" />
                 </Button>
               </React.Fragment>
             ) : (
-              <Button
+                <Button
                   aria-label="Edit"
                   disabled={!rangeMethodActive}
                   id={`range-row-${rowIndex}-edit`}
@@ -233,7 +233,7 @@ class RangeTableRow extends React.Component {
                     ...(rangeMethodActive ? visualizingButton : inputDisabled),
                     ...optionsButton,
                   }}
-                  >
+                >
                   <i aria-hidden="true" className="fa fa-pencil" />
                 </Button>
               )}
@@ -252,7 +252,7 @@ class RangeTableRow extends React.Component {
                 ...(rangeMethodActive ? visualizingButton : inputDisabled),
                 ...optionsButton,
               }}
-              >
+            >
               <i aria-hidden="true" className="fa fa-trash" />
             </Button>
           </div>
@@ -265,7 +265,7 @@ class RangeTableRow extends React.Component {
         }
         {rangeMethodActive && rowOverlapErrors.length > 0 && (
           <div style={rowError}>
-            {`Bin '${fieldValues.name}' overlaps with bin${rowOverlapErrors.length > 1 ? 's' : ''} ${rowOverlapErrors.map(err => `'${err}'`).join(', ')}`}
+            {`'${fieldValues.name}' overlaps with ${rowOverlapErrors.map(err => `'${err}'`).join(', ')}`}
           </div>
         )
         }

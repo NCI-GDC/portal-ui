@@ -21,6 +21,7 @@ const pendingAggCache = {};
 const DEFAULT_CONTINUOUS_BUCKETS = 4;
 
 const getContinuousAggs = ({ fieldName, stats, filters, bins }) => {
+  // prevent query failing if interval will equal 0
   if (_.isNull(stats.min) || _.isNull(stats.max)) {
     return null;
   }
@@ -42,7 +43,7 @@ const getContinuousAggs = ({ fieldName, stats, filters, bins }) => {
   }, []);
 
   const interval = Math.round((stats.max - stats.min) / DEFAULT_CONTINUOUS_BUCKETS);
-  if (rangeArr.length === 0 || bins.length === 0) {
+  if (rangeArr.length === 0) {
     rangeArr = Array(DEFAULT_CONTINUOUS_BUCKETS).fill(1).map(
       (val, key) => ({
         from: key * interval + stats.min,
@@ -214,7 +215,6 @@ export default compose(
       }}
       setId={setId}
       stats={stats}
-      // makeDefaultBuckets={makeDefaultBuckets}
       {...props}
     />
   );

@@ -72,6 +72,10 @@ const defaultRangesTESTNoOverlap = [
   },
 ];
 
+const countDecimals = num => {
+  return Math.floor(num) === num ? 0 : (num.toString().split('.')[1].length || 0);
+};
+
 class ContinuousCustomBinsModal extends Component {
   state = {
     binningMethod: 'range', // interval or range
@@ -147,20 +151,34 @@ class ContinuousCustomBinsModal extends Component {
 
     let inputError;
 
+    const decimalError = 'Use up to 2 decimal places.';
+
     if (inputValue === '') {
       inputError = 'Required field.';
-    } else if (inputKey === 'amount') {
+    } else {
+      inputError = countDecimals(inputValue) > 2 ? decimalError : inputError;
+    }
+    
+    if (inputError !== '') {
+      this.updateIntervalFields(target, inputError);
+      return;
+    }
+
+    if (inputKey === 'amount') {
       const amountTooLargeError = `Must be less than or equal to ${validAmount}.`;
       const amountTooSmallError = 'Must be greater than 0.';
       inputError = inputValue <= 0 ? amountTooSmallError : inputValue > validAmount ? amountTooLargeError : '';
+      inputError = countDecimals(inputValue) > 2 ? decimalError : inputError;
     } else if (inputKey === 'max') {
       const maxTooSmallError = `Must be greater than ${validMin}.`;
       const maxTooLargeError = `Must be less than or equal to ${defaultData.max}.`;
       inputError = inputValue <= validMin ? maxTooSmallError : inputValue > defaultData.max ? maxTooLargeError : '';
+      inputError = countDecimals(inputValue) > 2 ? decimalError : inputError;
     } else if (inputKey === 'min') {
       const minTooLargeError = `Must be less than ${validMax}.`;
       const maxTooSmallError = `Must be greater than or equal to ${defaultData.min}.`;
       inputError = inputValue >= validMax ? minTooLargeError : inputValue < defaultData.min ? maxTooSmallError : '';
+      inputError = countDecimals(inputValue) > 2 ? decimalError : inputError;
     } else {
       inputError = '';
     }
@@ -354,6 +372,7 @@ class ContinuousCustomBinsModal extends Component {
             <Column className="binning-interval">
               <h3>Define bins by:</h3>
               <CustomIntervalFields
+                countDecimals={countDecimals}
                 defaultData={defaultData}
                 disabled={binningMethod !== 'interval'}
                 handleChange={e => {
@@ -419,6 +438,7 @@ class ContinuousCustomBinsModal extends Component {
               <div style={styles.scrollingTable}>
                 {rangeRows.map((row, rowIndex) => (
                   <RangeTableRow
+                    countDecimals={countDecimals}
                     fields={row.fields}
                     handleRemoveRow={this.handleRemoveRow}
                     handleToggleActiveRow={this.handleToggleActiveRow}

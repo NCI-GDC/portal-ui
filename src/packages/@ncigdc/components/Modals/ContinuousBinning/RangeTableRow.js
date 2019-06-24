@@ -107,6 +107,8 @@ class RangeTableRow extends React.Component {
     const {
       fieldValues,
     } = this.state;
+    const { countDecimals } = this.props;
+    
     // check empty & NaN errors first
     // then make sure that from < to
     const errorsEmptyOrNaN = Object.keys(fieldValues).reduce((acc, curr) => {
@@ -115,8 +117,9 @@ class RangeTableRow extends React.Component {
 
       const nextErrors = currentValue === ''
         ? 'Required field.' : curr === 'name'
-          ? '' : isFinite(currentValueNumber)
-            ? '' : `'${currentValue}' is not a number.`;
+          ? '' : !isFinite(currentValueNumber)
+            ? `'${currentValue}' is not a number.`
+              : countDecimals(currentValueNumber) > 2 ? 'Use up to 2 decimal places.' : '';
 
       return ({
         ...acc,

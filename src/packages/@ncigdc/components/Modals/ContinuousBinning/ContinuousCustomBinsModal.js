@@ -245,19 +245,18 @@ class ContinuousCustomBinsModal extends Component {
         const rowKey = `${curr.from}-${curr.to}`;
         return ({
           ...acc,
-          [rowKey]: {
-            groupName: curr.name,
-            key: rowKey,
-          },
+          ...(curr.name === '' ? {} : {
+            [rowKey]: {
+              groupName: curr.name,
+              key: rowKey,
+            },
+          }),
         });
       }, {});
 
-      console.log('newBins', newBins);
-
       onUpdate(newBins);
     }
-
-  }
+  };
 
   validateRangeNames = (rows = null) => {
     const { rangeRows } = this.state;

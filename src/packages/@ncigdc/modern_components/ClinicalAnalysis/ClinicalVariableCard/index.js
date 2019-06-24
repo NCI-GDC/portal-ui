@@ -1427,32 +1427,30 @@ export default compose(
         const filters =
           variable.plotTypes === 'continuous'
             ? {
+              op: 'and',
               content: [
                 {
+                  op: 'in',
                   content: {
                     field: 'cases.case_id',
                     value: `set_id:${setId}`,
                   },
-                  op: 'in',
                 },
                 {
+                  op: '>=',
                   content: {
                     field: fieldName,
                     value: [keyMin],
                   },
-                  op: '>=',
                 },
-                [
-                  {
-                    content: {
-                      field: fieldName,
-                      value: [keyMax],
-                    },
-                    op: '<=',
+                {
+                  op: '<=',
+                  content: {
+                    field: fieldName,
+                    value: [keyMax],
                   },
-                ],
+                },
               ],
-              op: 'and',
             } : {};
 
         return [

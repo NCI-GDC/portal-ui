@@ -68,16 +68,16 @@ async function fetchCurves(
     : { results: [] };
 
   performanceTracker.end('survival:fetch', {
-    filters: params.filters,
     data_sets: data.results.length,
     donors: _.sum(data.results.map(x => x.donors.length)),
+    filters: params.filters,
   });
 
   return data;
 }
 
 export const getDefaultCurve = memoize(
-  async ({ slug, currentFilters, size }: TPropsDefault): Promise<Object> => {
+  async ({ currentFilters, size, slug }: TPropsDefault): Promise<Object> => {
     const rawData = await fetchCurves(
       Array.isArray(currentFilters)
         ? currentFilters
@@ -108,19 +108,19 @@ export const getDefaultCurve = memoize(
   },
   {
     max: 10,
-    promise: true,
     normalizer: args => JSON.stringify(args[0]),
+    promise: true,
   }
 );
 
 export const getSurvivalCurves = memoize(
   async ({
-    value,
-    field,
-    slug,
     currentFilters,
-    size,
+    field,
     plotType,
+    size,
+    slug,
+    value,
   }: TPropsMulti): Promise<Object> => {
     const filters = [
       replaceFilters(
@@ -350,7 +350,7 @@ export const getSurvivalCurvesArray = memoize(
   },
   {
     max: 10,
-    promise: true,
     normalizer: args => JSON.stringify(args[0]),
+    promise: true,
   }
 );

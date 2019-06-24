@@ -402,15 +402,10 @@ const ClinicalAnalysisResult = ({
             </Row>
             <Row
               style={{
-                ...zDepth1,
-                flex: 1,
-                minWidth: 260,
-                marginBottom: '1rem',
-                position: 'sticky',
-                top: 50,
-                alignSelf: 'flex-start',
-                maxHeight: 'calc(100vh - 50px',
-                overflowY: 'hidden',
+                justifyContent: 'space-between',
+                padding: '10px 10px 15px',
+                borderBottom: `1px solid ${theme.greyScale4}`,
+                alignItems: 'center',
               }}
               >
               <CohortDropdown

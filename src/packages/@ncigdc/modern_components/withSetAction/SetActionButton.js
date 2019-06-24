@@ -22,7 +22,7 @@ export default class SetActionButton extends React.Component {
       createSet,
       leftIcon,
       id,
-      onClick = () => { },
+      onClick = () => {},
       Component = Button,
       displaySpinnerOverlay = true,
       ...props

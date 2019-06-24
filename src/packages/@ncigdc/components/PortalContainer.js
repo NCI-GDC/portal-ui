@@ -19,7 +19,6 @@ import styled from '@ncigdc/theme/styled';
 import { setModal } from '@ncigdc/dux/modal';
 import FirstTimeModal from '@ncigdc/components/Modals/FirstTimeModal';
 import { AWG } from '@ncigdc/utils/constants';
-import ContinuousCustomBins from '@ncigdc/components/Modals/ContinuousBinning/ContinuousCustomBinsModal';
 
 const SkipLink = styled.a({
   position: 'absolute',
@@ -41,20 +40,6 @@ const enhance = compose(
   connect(store => ({ notifications: store.bannerNotification })),
   lifecycle({
     componentDidMount(): void {
-      // this.props.dispatch(
-      //   setModal(
-      //     <ContinuousCustomBins
-      //       bins={{}}
-      //       defaultData={{
-      //         max: 0,
-      //         min: 0,
-      //         quartile: 0,
-      //       }}
-      //       fieldName="testing"
-      //       onClose={() => dispatch(setModal(null))}
-      //       />
-      //   )
-      // );
       if (!Cookies.get(FIRST_TIME_KEY)) {
         this.props.dispatch(
           setModal(
@@ -62,7 +47,7 @@ const enhance = compose(
               onClose={() => {
                 Cookies.set(FIRST_TIME_KEY, true);
               }}
-              />,
+            />,
             false,
           ),
         );
@@ -87,33 +72,33 @@ const PortalContainer = ({
   notifications: Array<{ dismissed: string }>,
 }) => (
   <div
+    style={{
+      position: 'relative',
+      minHeight: '100vh',
+      minWidth: 1024,
+    }}
+  >
+    <SkipLink href="#skip">Skip to Main Content</SkipLink>
+    <ProgressContainer />
+    {AWG ? <AWGHeader /> : <Header />}
+    <div
+      id="skip"
+      role="main"
       style={{
-        position: 'relative',
-        minHeight: '100vh',
-        minWidth: 1024,
+        paddingTop: `calc(51px + ${notifications.filter(n => !n.dismissed)
+          .length * 40}px)`,
+        paddingBottom: '120px',
+        transition: 'padding 0.25s ease',
       }}
-      >
-      <SkipLink href="#skip">Skip to Main Content</SkipLink>
-      <ProgressContainer />
-      {AWG ? <AWGHeader /> : <Header />}
-      <div
-        id="skip"
-        role="main"
-        style={{
-          paddingTop: `calc(51px + ${notifications.filter(n => !n.dismissed)
-            .length * 40}px)`,
-          paddingBottom: '120px',
-          transition: 'padding 0.25s ease',
-        }}
-        >
-        {AWG ? <AWGRoutes /> : <Routes />}
-      </div>
-      <Footer />
-      <RelayLoadingContainer />
-      <NotificationContainer />
-      <ModalContainer />
-      <GlobalTooltip />
+    >
+      {AWG ? <AWGRoutes /> : <Routes />}
     </div>
+    <Footer />
+    <RelayLoadingContainer />
+    <NotificationContainer />
+    <ModalContainer />
+    <GlobalTooltip />
+  </div>
 );
 
 export default enhance(PortalContainer);

@@ -41,7 +41,6 @@ async function fetchCurves(
   size: number,
   hasMultipleCurves: Boolean
 ): Promise<Object> {
-  console.log('fetchCurves filters', filters);
   const params = _.omitBy(
     {
       filters: filters && JSON.stringify(filters),
@@ -69,16 +68,16 @@ async function fetchCurves(
     : { results: [] };
 
   performanceTracker.end('survival:fetch', {
+    filters: params.filters,
     data_sets: data.results.length,
     donors: _.sum(data.results.map(x => x.donors.length)),
-    filters: params.filters,
   });
 
   return data;
 }
 
 export const getDefaultCurve = memoize(
-  async ({ currentFilters, size, slug }: TPropsDefault): Promise<Object> => {
+  async ({ slug, currentFilters, size }: TPropsDefault): Promise<Object> => {
     const rawData = await fetchCurves(
       Array.isArray(currentFilters)
         ? currentFilters
@@ -109,8 +108,8 @@ export const getDefaultCurve = memoize(
   },
   {
     max: 10,
-    normalizer: args => JSON.stringify(args[0]),
     promise: true,
+    normalizer: args => JSON.stringify(args[0]),
   }
 );
 
@@ -245,8 +244,8 @@ export const getSurvivalCurves = memoize(
   },
   {
     max: 10,
-    normalizer: args => JSON.stringify(args[0]),
     promise: true,
+    normalizer: args => JSON.stringify(args[0]),
   }
 );
 
@@ -278,9 +277,6 @@ export const getSurvivalCurvesArray = memoize(
         ))
     );
 
-    console.log('survival curves array filters', filters);
-    console.log('survival curves array currentFilters', currentFilters);
-
     const rawData = await fetchCurves(filters, size, true);
     const hasEnoughDataOnSomeCurves = enoughDataOnSomeCurves(rawData);
 
@@ -289,54 +285,6 @@ export const getSurvivalCurvesArray = memoize(
     return {
       rawData: {
         ...rawData,
-        id: field,
-        legend: hasEnoughDataOnSomeCurves
-          ? rawData.results.map((r, i) => {
-            const valueName =
-              plotType === 'categorical' ? values[i] : values[i].key;
-
-            return r.length === 0
-              ? {
-                key: `${valueName}-cannot-compare`,
-                value: (
-                  <div>
-                    <span>Not enough data to compare</span>
-                  </div>
-                ),
-                style: {
-                  width: '100%',
-                  marginTop: 5,
-                },
-              }
-              : r.donors.length < MINIMUM_CASES
-                ? {
-                  key: `${valueName}-not-enough-data`,
-                  value: (
-                    <span>
-                      {`Not enough survival data for ${valueName}`}
-                    </span>
-                  ),
-                }
-                : {
-                  key: valueName,
-                  value: (
-                    <span>
-                      S
-                    <sub>{i + 1}</sub>
-                      {` (N = ${getCaseCount(i)})`}
-                      <span className="print-only inline">
-                        {` - ${valueName}`}
-                      </span>
-                    </span>
-                  ),
-                };
-          })
-          : [
-            {
-              key: `${field}-not-enough-data`,
-              value: <span>Not enough survival data for this facet</span>,
-            },
-          ],
         results:
           rawData.results.length > 0
             ? rawData.results
@@ -350,11 +298,59 @@ export const getSurvivalCurvesArray = memoize(
               }))
             : [],
       },
+      id: field,
+      legend: hasEnoughDataOnSomeCurves
+        ? rawData.results.map((r, i) => {
+          const valueName =
+            plotType === 'categorical' ? values[i] : values[i].key;
+
+          return r.length === 0
+            ? {
+              key: `${valueName}-cannot-compare`,
+              value: (
+                <div>
+                  <span>Not enough data to compare</span>
+                </div>
+              ),
+              style: {
+                width: '100%',
+                marginTop: 5,
+              },
+            }
+            : r.donors.length < MINIMUM_CASES
+              ? {
+                key: `${valueName}-not-enough-data`,
+                value: (
+                  <span>
+                    {`Not enough survival data for ${valueName}`}
+                  </span>
+                ),
+              }
+              : {
+                key: valueName,
+                value: (
+                  <span>
+                    S
+                    <sub>{i + 1}</sub>
+                    {` (N = ${getCaseCount(i)})`}
+                    <span className="print-only inline">
+                      {` - ${valueName}`}
+                    </span>
+                  </span>
+                ),
+              };
+        })
+        : [
+          {
+            key: `${field}-not-enough-data`,
+            value: <span>Not enough survival data for this facet</span>,
+          },
+        ],
     };
   },
   {
     max: 10,
-    normalizer: args => JSON.stringify(args[0]),
     promise: true,
+    normalizer: args => JSON.stringify(args[0]),
   }
 );

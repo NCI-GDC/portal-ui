@@ -12,25 +12,22 @@ class LoginModal extends React.Component {
       nextProps.dispatch(setModal(null));
     }
   }
-
   render() {
     const {
-      closeText = 'Close',
-      message = 'You don\'t have access',
+      message = "You don't have access",
       primaryButton,
+      closeText = 'Close',
     } = this.props;
 
     return (
       <BaseModal
-        closeText={closeText}
-        extraButtons={primaryButton}
         title="Access Alert"
-        >
+        extraButtons={primaryButton}
+        closeText={closeText}
+      >
         {message}
         <p>
-          Please
-          {' '}
-          <LoginButton />
+          Please <LoginButton />
         </p>
       </BaseModal>
     );

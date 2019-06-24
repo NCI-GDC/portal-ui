@@ -1,7 +1,7 @@
 import React from 'react';
 
 const BinningMethodInput = ({
-  binningMethod, checked, handleChange, label, validateOnBlur,
+  binningMethod, checked, handleChange, label,
 }) => {
   return (
     <React.Fragment>
@@ -13,7 +13,7 @@ const BinningMethodInput = ({
         style={{ marginRight: '15px' }}
         type="radio"
         value={binningMethod}
-        />
+      />
       <label htmlFor={`binning-method-${binningMethod}`} style={{ lineHeight: '32px' }}>
         {label}
         :&nbsp;

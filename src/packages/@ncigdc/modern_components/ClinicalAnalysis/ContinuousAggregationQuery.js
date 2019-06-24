@@ -21,42 +21,28 @@ const pendingAggCache = {};
 const DEFAULT_CONTINUOUS_BUCKETS = 4;
 
 const getContinuousAggs = ({ fieldName, stats, filters, bins }) => {
-
-  // console.log('QUERY bins', bins);
-  // console.log('QUERY stats', stats);
-  // prevent query failing if interval will equal 0
   if (_.isNull(stats.min) || _.isNull(stats.max)) {
     return null;
   }
 
-  // console.log('bins', bins);
-
   let rangeArr = _.reduce(bins, (acc, bin, key) => {
-    // console.log('bin', bin);
     const binValues = bin.key.split('-').map(keyValue => Number(keyValue));
     const binFrom = binValues[0];
     const binTo = binValues[1];
     if (
       !!bin &&
       (typeof binFrom === 'number') &&
-      (typeof binTo === 'number')
-      // &&
-      // stats.min <= binFrom &&
-      // binFrom < binTo &&
-      // binTo <= stats.max
+      (typeof binTo === 'number') &&
+      (binFrom < binTo)
     ) {
       const result = [...acc, { from: binFrom, to: binTo }];
-      // console.log('rangeArr result', result);
       return result;
     }
     return acc;
   }, []);
 
-  // console.log('-----------')
-
-  // console.log('QUERY rangeArr', rangeArr);
   const interval = Math.round((stats.max - stats.min) / DEFAULT_CONTINUOUS_BUCKETS);
-  if (rangeArr.length === 0) {
+  if (rangeArr.length === 0 || bins.length === 0) {
     rangeArr = Array(DEFAULT_CONTINUOUS_BUCKETS).fill(1).map(
       (val, key) => ({
         from: key * interval + stats.min,
@@ -202,7 +188,6 @@ export default compose(
       variable,
       hits,
     }) => {
-      // console.log('QUERY variable', variable);
       const res = await getContinuousAggs({
         fieldName,
         stats,
@@ -229,6 +214,7 @@ export default compose(
       }}
       setId={setId}
       stats={stats}
+      // makeDefaultBuckets={makeDefaultBuckets}
       {...props}
     />
   );

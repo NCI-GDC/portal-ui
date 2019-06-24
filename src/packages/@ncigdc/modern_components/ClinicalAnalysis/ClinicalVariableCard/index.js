@@ -293,7 +293,6 @@ const getCategoricalSetFilters = (selectedBuckets, fieldName, filters) => {
 
 const getContinuousSetFilters = (selectedBuckets, fieldName, filters) => {
   const bucketRanges = selectedBuckets.map(b => b.rangeValues);
-  console.log('bucketRanges', bucketRanges);
   if (bucketRanges.length === 1 && bucketRanges[0].max === -1) {
     return addInFilters(filters, {
       content: [
@@ -353,9 +352,6 @@ const getTableData = (
   if (isEmpty(binData)) {
     return [];
   }
-  // console.log('key displayData', binData.map(bin => bin.key));
-  // console.log('variable displayData', variable)
-  // console.log('bins displayData', binData);
   const displayData = variable.plotTypes === 'continuous'
     ? binData
       .sort((a, b) => b.keyArray[0] - a.keyArray[0])
@@ -561,7 +557,7 @@ const getHeadings = (chartType, dataDimension, fieldName) => {
 
 const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
   currentAnalysis,
-  customBins,
+  binData,
   dataBuckets,
   dataDimension,
   dataValues,
@@ -594,7 +590,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
   const tableData = variable.active_chart === 'box'
     ? getBoxTableData(dataValues)
     : getTableData(
-      customBins,
+      binData,
       getContinuousBuckets,
       fieldName,
       totalDocs,
@@ -622,8 +618,6 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
       })
       : [];
 
-  // console.log('chartData', chartData);
-
   // set action will default to cohort total when no buckets are selected
   const totalFromSelectedBuckets = selectedBuckets && selectedBuckets.length
     ? selectedBuckets.reduce((acc, b) => acc + b.chart_doc_count, 0)
@@ -632,6 +626,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
   const tsvSubstring = fieldName.replace(/\./g, '-');
   const cardFilters = getCardFilters(variable.plotTypes, selectedBuckets, fieldName, filters);
   const setActionsDisabled = get(selectedBuckets, 'length', 0) === 0;
+
   return (
     <Column
       className="clinical-analysis-categorical-card"
@@ -1242,13 +1237,15 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                         updateClinicalAnalysisVariable({
                           fieldName,
                           id,
-                          value: dataBuckets.reduce((acc, r) => ({
-                            ...acc,
-                            [r.key]: {
-                              ...r,
-                              groupName: r.key,
-                            },
-                          }), {}),
+                          value: variable.plotTypes === 'continuous' ? defaultData.buckets : ([
+                            dataBuckets.reduce((acc, r) => ({
+                              ...acc,
+                              [r.key]: {
+                                ...r,
+                                groupName: r.key,
+                              },
+                            }), {}),
+                          ]),
                           variableKey: 'bins',
                         }),
                       );
@@ -1289,11 +1286,8 @@ export default compose(
   withPropsOnChange(
     (props, nextProps) => !isEqual(props.data, nextProps.data),
     ({ data, fieldName, variable }) => {
-      // console.log('CARD data', data);
-      // withProps(({ data, fieldName, variable }) => {
       const sanitisedId = fieldName.split('.').pop();
       const rawQueryData = get(data, `explore.cases.aggregations.${fieldName.replace('.', '__')}`, data);
-      // console.log('CARD rawQueryData', rawQueryData);
       const dataDimension = dataDimensions[sanitisedId] && dataDimensions[sanitisedId].unit;
       return Object.assign(
         {
@@ -1306,14 +1300,13 @@ export default compose(
             (value, stat) => {
               switch (dataDimension) {
                 case 'Year': {
-                  const age = Number.parseFloat(value / DAYS_IN_YEAR).toFixed(2);
                   return ({
-                    [stat]: age % 1 ? age : Number.parseFloat(age).toFixed(0),
+                    [stat]: Number.parseFloat(value / DAYS_IN_YEAR).toFixed(0),
                   });
                 }
                 default:
                   return ({
-                    [stat]: value % 1 ? Number.parseFloat(value).toFixed(2) : value,
+                    [stat]: value,
                   });
               }
             }
@@ -1336,14 +1329,13 @@ export default compose(
               (value, stat) => {
                 switch (dataDimensions[sanitisedId].unit) {
                   case 'Years': {
-                    const age = Number.parseFloat(value / DAYS_IN_YEAR).toFixed(2);
                     return ({
-                      [stat]: age % 1 ? age : Number.parseFloat(age).toFixed(0),
+                      [stat]: Number.parseFloat(value / DAYS_IN_YEAR).toFixed(0),
                     });
                   }
                   default:
                     return ({
-                      [stat]: value % 1 ? Number.parseFloat(value).toFixed(2) : value,
+                      [stat]: value,
                     });
                 }
               }
@@ -1364,8 +1356,6 @@ export default compose(
       id,
       variable,
     }) => {
-      // console.log('variable.bins withPropsOnChange', variable.bins);
-      // console.log('withPropsOnChange dataBuckets', dataBuckets);
       dispatch(
         updateClinicalAnalysisVariable({
           fieldName,
@@ -1415,8 +1405,12 @@ export default compose(
       totalDocs,
       variable,
     }) => ({
+      binData: map(groupBy(variable.bins, bin => bin.groupName), (values, key) => ({
+        doc_count: values.reduce((acc, value) => acc + value.doc_count, 0),
+        key,
+        keyArray: values.reduce((acc, value) => [...acc, value.key], []),
+      })).filter(bin => bin.key),
       bucketsOrganizedByKey: dataBuckets.reduce((acc, r) => {
-        // console.log('dataBuckets', dataBuckets);
         return ({
           ...acc,
           [r.key]: {
@@ -1425,11 +1419,6 @@ export default compose(
           },
         });
       }, {}),
-      customBins: map(groupBy(variable.bins, bin => bin.groupName), (values, key) => ({
-        doc_count: values.reduce((acc, value) => acc + value.doc_count, 0),
-        key,
-        keyArray: values.reduce((acc, value) => [...acc, value.key], []),
-      })).filter(bin => bin.key),
       getContinuousBuckets: (acc, { doc_count, key, keyArray }) => {
         // survival doesn't have keyArray
         const keyValues = keyArray ? keyArray[0].split('-') : key.split('-');
@@ -1486,20 +1475,35 @@ export default compose(
       },
     })
   ),
-  withProps(({ bucketsOrganizedByKey, variable }) => {
+  withProps(({ data, fieldName, variable }) => {
     if (variable.plotTypes === 'categorical') {
       return ({ defaultData: {} });
     }
-    // console.log('bucketsOrganizedByKey', bucketsOrganizedByKey);
-    const bucketKeys = Object.keys(bucketsOrganizedByKey).sort((a, b) => a - b).map(key => key.split('-').map(keyVal => parseContinuousBucketValue(keyVal)));
+    const dataStats = data.explore.cases.aggregations[`${fieldName.replace('.', '__')}`].stats;
 
-    const defaultMin = bucketKeys.length ? bucketKeys[0][0] : 0;
-    const defaultMax = bucketKeys.length ? bucketKeys[bucketKeys.length - 1][1] : 0;
-    const quartileWithDecimals = (defaultMax - defaultMin) / 4;
-    const defaultQuartile = Number(quartileWithDecimals.toFixed(2));
+    const defaultMin = dataStats.Min;
+    const defaultMax = dataStats.Max;
+
+    const defaultQuartile = Number(((defaultMax - defaultMin) / 4).toFixed(2));
+    const defaultBuckets = Array(4).fill(1).map((val, key) => {
+      const from = Math.round(key * defaultQuartile + defaultMin);
+      const to = Math.round((key + 1) === 4 ? defaultMax : (defaultMin + (key + 1) * defaultQuartile - 1));
+      const objKey = `${from}-${to}`;
+
+      return ({
+        [objKey]: {
+          groupName: objKey,
+          key: objKey,
+        },
+      });
+    }).reduce((acc, curr) => ({
+      ...acc,
+      ...curr,
+    }), {});
 
     return ({
       defaultData: {
+        buckets: defaultBuckets,
         max: defaultMax,
         min: defaultMin,
         quartile: defaultQuartile,
@@ -1508,7 +1512,7 @@ export default compose(
   }),
   withProps(
     ({
-      customBins,
+      binData,
       dataBuckets,
       fieldName,
       filters,
@@ -1521,7 +1525,6 @@ export default compose(
       variable,
     }) => ({
       populateSurvivalData: () => {
-        console.log('survival dataBuckets', dataBuckets);
         setSurvivalPlotLoading(true);
         const dataForSurvival =
           variable.plotTypes === 'continuous'
@@ -1529,7 +1532,7 @@ export default compose(
               .sort((a, b) => b.key - a.key)
               .reduce(getContinuousBuckets, [])
               .reverse()
-            : customBins
+            : binData
               .filter(bucket => (IS_CDAVE_DEV ? bucket.key : bucket.key !== '_missing'))
               .map(b => ({
                 ...b,
@@ -1559,8 +1562,6 @@ export default compose(
 
         setSelectedSurvivalValues(valuesForTable);
         setSelectedSurvivalLoadingIds(valuesForTable);
-
-        console.log('update survival curves filters', filters);
 
         getSurvivalCurvesArray({
           currentFilters: filters,
@@ -1599,8 +1600,6 @@ export default compose(
                 ...filteredData,
                 doc_count: undefined,
               }));
-
-        console.log('update survival curves filters', filters);
 
         getSurvivalCurvesArray({
           currentFilters: filters,

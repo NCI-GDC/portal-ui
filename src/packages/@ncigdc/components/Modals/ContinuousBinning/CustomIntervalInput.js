@@ -36,8 +36,8 @@ const CustomIntervalInput = ({
           }}
           type="text"
           value={value}
-          />
-        {error && !disabled && <div style={inputError}>{error}</div>}
+        />
+        {error !== '' && !disabled && <div style={inputError}>{error}</div>}
       </div>
     </React.Fragment>
   );

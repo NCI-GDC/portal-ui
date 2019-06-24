@@ -158,7 +158,7 @@ class ContinuousCustomBinsModal extends Component {
     } else {
       inputError = countDecimals(inputValue) > 2 ? decimalError : inputError;
     }
-    
+
     if (inputError !== '') {
       this.updateIntervalFields(target, inputError);
       return;
@@ -229,8 +229,6 @@ class ContinuousCustomBinsModal extends Component {
     const checkIsLastRow = inputRowIndex + 1 === rangeRows.length;
     const addNewRow = nextRangeRows.concat(defaultRangeRow);
 
-    console.log('handleUpdate nextRangeRows', nextRangeRows);
-
     this.setState({ rangeRows: checkIsLastRow ? addNewRow : nextRangeRows });
   }
 
@@ -253,12 +251,12 @@ class ContinuousCustomBinsModal extends Component {
           },
         });
       }, {});
-      // console.log('newBins', newBins);
+
+      console.log('newBins', newBins);
 
       onUpdate(newBins);
     }
 
-    // console.log('formHasErrors', formHasErrors);
   }
 
   validateRangeNames = (rows = null) => {
@@ -283,13 +281,9 @@ class ContinuousCustomBinsModal extends Component {
 
     const rowsToCheck = rows === null ? rangeRows : rows;
 
-    // console.log('rowsToCheck', rowsToCheck);
-
     const overlapErrors = rowsToCheck.map((rowItem, rowIndex) => {
       const rowFrom = Number(rowItem.fields.from);
       const rowTo = Number(rowItem.fields.to);
-
-      // console.log(`CHECKING name: ${rowItem.fields.name} from: ${rowFrom} to: ${rowTo}`);
 
       const overlapNames = rowsToCheck.reduce((acc, curr, overlapIndex) => {
         const overlapFromStr = curr.fields.from;
@@ -303,14 +297,10 @@ class ContinuousCustomBinsModal extends Component {
         const overlapTo = Number(overlapToStr);
         const overlapName = curr.fields.name;
 
-        // console.log(`AGAINST name: ${overlapName} from: ${overlapFrom} to: ${overlapTo}`);
-
         const hasNoOverlap = rowTo < overlapFrom || rowFrom > overlapTo;
 
         return hasNoOverlap ? acc : [...acc, overlapName];
       }, []);
-      // console.log('-----------------');
-
       return overlapNames.length > 0 ? overlapNames : [];
     });
 
@@ -342,8 +332,6 @@ class ContinuousCustomBinsModal extends Component {
     } = this.state;
 
     const submitDisabled = this.checkSubmitDisabled();
-
-    // console.log('submitDisabled', submitDisabled);
 
     return (
       <Column style={{ padding: '20px' }}>

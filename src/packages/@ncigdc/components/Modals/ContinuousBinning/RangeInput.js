@@ -18,7 +18,7 @@ const RangeInput = ({
   return (
     <div
       style={column}
-      >
+    >
       <input
         disabled={disabled}
         id={id}
@@ -26,12 +26,12 @@ const RangeInput = ({
         style={{
           ...inputInTable,
           ...(disabled ? inputDisabled : {}),
-          ...(error && errorVisible ? inputInvalid : {}),
+          ...(error !== '' && errorVisible ? inputInvalid : {}),
         }}
         type="text"
         value={value}
-        />
-      {error && errorVisible && <div style={inputError}>{error}</div>}
+      />
+      {error !== '' && errorVisible && <div style={inputError}>{error}</div>}
     </div>
   );
 };

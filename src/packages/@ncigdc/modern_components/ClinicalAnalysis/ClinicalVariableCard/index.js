@@ -228,7 +228,7 @@ const styles = {
 };
 
 const parseContinuousBucketValue = value => (value % 1
-  ? Number.parseFloat(value).toFixed(2)
+  ? value
   : Math.round(value * 100) / 100);
 
 const getContinuousRangeValue = keyValues => {
@@ -292,7 +292,6 @@ const getCategoricalSetFilters = (selectedBuckets, fieldName, filters) => {
 };
 
 const getContinuousSetFilters = (selectedBuckets, fieldName, filters) => {
-  console.log('selectedBuckets getContinuousSetFilters', selectedBuckets);
   const bucketRanges = selectedBuckets.map(b => b.rangeValues);
   console.log('bucketRanges', bucketRanges);
   if (bucketRanges.length === 1 && bucketRanges[0].max === -1) {

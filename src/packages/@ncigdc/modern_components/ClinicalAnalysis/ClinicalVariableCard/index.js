@@ -352,6 +352,8 @@ const getTableData = (
   if (isEmpty(binData)) {
     return [];
   }
+  console.log('getTableData binData', binData);
+
   const displayData = variable.plotTypes === 'continuous'
     ? binData
       .sort((a, b) => b.keyArray[0] - a.keyArray[0])
@@ -400,6 +402,8 @@ const getTableData = (
         }),
         key: b.key,
       }));
+
+  console.log('getTableData displayData', displayData);
 
   return displayData.map(b => ({
     ...b,
@@ -603,12 +607,14 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
       selectedSurvivalLoadingIds,
     );
 
+  console.log('tableData', tableData);
+
   const chartData =
     variable.active_chart === 'histogram'
       ? tableData.map(d => {
         return {
-          fullLabel: d.key,
-          label: truncate(d.key, { length: 18 }),
+          fullLabel: d.groupName || d.key,
+          label: truncate(d.groupName || d.key, { length: 18 }),
           tooltip: `${d.key}: ${d.chart_doc_count.toLocaleString()}`,
           value:
             variable.active_calculation === 'number'
@@ -1420,10 +1426,16 @@ export default compose(
         });
       }, {}),
       getContinuousBuckets: (acc, { doc_count, key, keyArray }) => {
-        // survival doesn't have keyArray
-        const keyValues = keyArray ? keyArray[0].split('-') : key.split('-');
-        const keyMin = Number(keyValues[0]);
-        const keyMax = Number(keyValues[1]);
+        const keyValues = key.split('-').map(k => Number(k));
+        const keyArrayValues = keyArray ? keyArray[0].split('-').map(k => Number(k)) : keyValues;
+
+        const groupName = keyValues.length === 2 &&
+          typeof keyValues[0] === 'number' &&
+          typeof keyValues[1] === 'number'
+          ? getContinuousRangeValue(keyValues)
+          : key;
+        const keyMin = keyArrayValues[0];
+        const keyMax = keyArrayValues[1];
         const filters =
           variable.plotTypes === 'continuous'
             ? {
@@ -1463,7 +1475,7 @@ export default compose(
               totalDocs,
             }),
             filters,
-            key: getContinuousRangeValue(keyValues),
+            key: groupName,
             rangeValues: {
               max: keyMax,
               min: keyMin,

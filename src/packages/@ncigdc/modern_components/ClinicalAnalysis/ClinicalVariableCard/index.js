@@ -1557,7 +1557,7 @@ export default compose(
 
         const valuesForPlot =
           variable.plotTypes === 'categorical'
-            ? [...valuesForTable]
+            ? [...filteredData.map(d => d.keyArray).slice(0, 2)]
             : continuousTop2Values;
 
         setSelectedSurvivalValues(valuesForTable);

@@ -6,7 +6,16 @@ import RangeInput from './RangeInput';
 import styles from './styles';
 
 const {
-  input: { inputDisabled }, optionsButton, optionsColumn, row: { rowError, rowFieldsWrapper }, visualizingButton,
+  input: {
+    inputDisabled,
+  },
+  optionsButton,
+  optionsColumn,
+  row: {
+    rowError,
+    rowFieldsWrapper,
+  },
+  visualizingButton,
 } = styles;
 
 const defaultFieldState = {
@@ -154,15 +163,15 @@ class RangeTableRow extends React.Component {
         onOutsideClick={() => {
           this.handleSave();
         }}
-      >
+        >
         <div style={{ display: 'flex' }}>
           <div
             onMouseDown={() => {
-              if (!rowActive) this.handleEdit();
+              rowActive || this.handleEdit();
             }}
             role="presentation"
             style={rowFieldsWrapper}
-          >
+            >
             {
               fieldsOrder.map(rowItem => {
                 const rowId = `range-row-${rowIndex}-${rowItem}`;
@@ -177,7 +186,7 @@ class RangeTableRow extends React.Component {
                     id={rowId}
                     key={rowId}
                     value={fieldValues[rowItem]}
-                  />
+                    />
                 );
               })}
           </div>
@@ -196,7 +205,7 @@ class RangeTableRow extends React.Component {
                     ...(rangeMethodActive ? { background: 'green' } : inputDisabled),
                     ...optionsButton,
                   }}
-                >
+                  >
                   <i aria-hidden="true" className="fa fa-check" />
                 </Button>
                 <Button
@@ -214,12 +223,12 @@ class RangeTableRow extends React.Component {
                     ...(rangeMethodActive ? { background: 'red' } : inputDisabled),
                     ...optionsButton,
                   }}
-                >
+                  >
                   <i aria-hidden="true" className="fa fa-close" />
                 </Button>
               </React.Fragment>
             ) : (
-                <Button
+              <Button
                   aria-label="Edit"
                   disabled={!rangeMethodActive}
                   id={`range-row-${rowIndex}-edit`}
@@ -233,7 +242,7 @@ class RangeTableRow extends React.Component {
                     ...(rangeMethodActive ? visualizingButton : inputDisabled),
                     ...optionsButton,
                   }}
-                >
+                  >
                   <i aria-hidden="true" className="fa fa-pencil" />
                 </Button>
               )}
@@ -252,7 +261,7 @@ class RangeTableRow extends React.Component {
                 ...(rangeMethodActive ? visualizingButton : inputDisabled),
                 ...optionsButton,
               }}
-            >
+              >
               <i aria-hidden="true" className="fa fa-trash" />
             </Button>
           </div>
@@ -269,7 +278,6 @@ class RangeTableRow extends React.Component {
           </div>
         )
         }
-
       </OutsideClickHandler>
     );
   }

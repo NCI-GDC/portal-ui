@@ -31,9 +31,7 @@ const CustomIntervalFields = ({
     <div
       className="binning-interval"
       onMouseDown={() => {
-        if (disabled) {
-          handleUpdateBinningMethod();
-        }
+        disabled && handleUpdateBinningMethod();
       }}
       role="presentation"
       style={styles.intervalWrapper}

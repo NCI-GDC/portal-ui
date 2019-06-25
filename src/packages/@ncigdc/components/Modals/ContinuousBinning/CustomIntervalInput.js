@@ -3,7 +3,12 @@ import styles from './styles';
 
 const {
   input: {
-    inputDisabled, inputError, inputHorizontal, inputInvalid, inputText, inputWrapper100px,
+    inputDisabled,
+    inputError,
+    inputHorizontal,
+    inputInvalid,
+    inputText,
+    inputWrapper100px,
   },
 } = styles;
 
@@ -18,7 +23,7 @@ const CustomIntervalInput = ({
 }) => {
   return (
     <React.Fragment>
-      {label !== '' && (
+      {label.length > 0 && (
         <div style={inputText}>
           {label}
         </div>
@@ -32,12 +37,12 @@ const CustomIntervalInput = ({
           style={{
             ...inputHorizontal,
             ...(disabled ? inputDisabled : {}),
-            ...(error !== '' && !disabled ? inputInvalid : {}),
+            ...(error.length > 0 && !disabled ? inputInvalid : {}),
           }}
           type="text"
           value={value}
-        />
-        {error !== '' && !disabled && <div style={inputError}>{error}</div>}
+          />
+        {error.length > 0 && !disabled && <div style={inputError}>{error}</div>}
       </div>
     </React.Fragment>
   );

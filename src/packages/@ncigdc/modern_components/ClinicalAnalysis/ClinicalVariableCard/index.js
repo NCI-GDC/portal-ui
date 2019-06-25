@@ -629,7 +629,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
   const setActionsDisabled = get(selectedBuckets, 'length', 0) === 0;
 
 
-  const continuousBinsAreDefault = () => {
+  const checkIfContinuousBinsAreDefault = () => {
     const defaultGroupNames = Object.keys(defaultData.buckets)
       .map(bucket => defaultData.buckets[bucket].groupName);
     const defaultRanges = Object.keys(defaultData.buckets)
@@ -644,7 +644,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
     ? Object.keys(variable.bins)
       .filter(bin => variable.bins[bin].key !== variable.bins[bin].groupName)
       .length === 0
-    : continuousBinsAreDefault();
+    : checkIfContinuousBinsAreDefault();
 
   return (
     <Column

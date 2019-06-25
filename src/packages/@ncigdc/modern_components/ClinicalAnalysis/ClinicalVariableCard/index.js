@@ -628,11 +628,23 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
   const cardFilters = getCardFilters(variable.plotTypes, selectedBuckets, fieldName, filters);
   const setActionsDisabled = get(selectedBuckets, 'length', 0) === 0;
 
+
+  const continuousBinsAreDefault = () => {
+    const defaultGroupNames = Object.keys(defaultData.buckets)
+      .map(bucket => defaultData.buckets[bucket].groupName);
+    const defaultRanges = Object.keys(defaultData.buckets)
+      .map(bucket => defaultData.buckets[bucket].key);
+    const currentGroupNames = binData.map(bin => bin.key);
+    const currentRanges = binData.map(bin => bin.keyArray[0]);
+
+    return isEqual(defaultGroupNames, currentGroupNames) && isEqual(defaultRanges, currentRanges);
+  }
+
   const resetBinsDisabled = variable.plotTypes === 'categorical'
     ? Object.keys(variable.bins)
       .filter(bin => variable.bins[bin].key !== variable.bins[bin].groupName)
       .length === 0
-    : false;
+    : continuousBinsAreDefault();
 
   return (
     <Column

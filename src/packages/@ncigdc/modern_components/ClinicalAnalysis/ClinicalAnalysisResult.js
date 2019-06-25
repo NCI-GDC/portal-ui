@@ -139,14 +139,14 @@ const CopyAnalysisModal = compose(
       }}
       title="Copy Analysis"
       >
-      <Row style={{ marginBottom: 10 }}>
+    <Row style={{ marginBottom: 10 }}>
         Please enter a name for the new analysis.
-      </Row>
-      <Row>
-        <label htmlFor="copy-analysis-input">
-          <Hidden>{modalInputValue}</Hidden>
-        </label>
-        <Input
+    </Row>
+    <Row>
+      <label htmlFor="copy-analysis-input">
+        <Hidden>{modalInputValue}</Hidden>
+      </label>
+      <Input
           autoFocus
           id="copy-analysis-input"
           onChange={e => setModalInputValue(e.target.value)}
@@ -154,8 +154,8 @@ const CopyAnalysisModal = compose(
           style={{ borderRadius: '4px' }}
           value={modalInputValue}
           />
-      </Row>
-    </BaseModal>
+    </Row>
+  </BaseModal>
 ));
 
 const enhance = compose(
@@ -397,7 +397,7 @@ const ClinicalAnalysisResult = ({
                 padding: '0 10px',
               }}
               >
-              <span style={{ fontWeight: 'bold' }}>Cohort</span>
+              <span style={{ fontWeight: 'bold' }}>Case Set</span>
               <span style={{ fontWeight: 'bold' }}># Cases</span>
             </Row>
             <Row

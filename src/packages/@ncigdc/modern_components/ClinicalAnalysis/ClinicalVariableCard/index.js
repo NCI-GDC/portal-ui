@@ -1261,7 +1261,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
             data={tableData.map(tableRow => ({
               ...tableRow,
               // the key in the table needs to be the display name
-              key: tableRow.groupName,
+              key: tableRow.groupName !== undefined ? tableRow.groupName : tableRow.key,
             }))}
             headings={getHeadings(variable.active_chart, dataDimension, fieldName)}
             tableContainerStyle={{

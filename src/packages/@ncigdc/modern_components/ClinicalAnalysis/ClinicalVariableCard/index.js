@@ -232,7 +232,8 @@ const parseContinuousBucketValue = value => (value % 1
   : Math.round(value * 100) / 100);
 
 const getContinuousRangeValue = keyValues => {
-  const keyValuesParsed = keyValues.map(val => parseContinuousBucketValue(val));
+  const keyValuesParsed = keyValues
+    .map(val => parseContinuousBucketValue(val));
   return `${keyValuesParsed[0]} to ${keyValuesParsed[1]}`;
 };
 

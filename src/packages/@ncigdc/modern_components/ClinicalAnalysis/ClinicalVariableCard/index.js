@@ -356,9 +356,8 @@ const getTableData = (
 
   const displayData = variable.plotTypes === 'continuous'
     ? binData
-      .sort((a, b) => b.keyArray[0] - a.keyArray[0])
+      .sort((a, b) => a.keyArray[0] - b.keyArray[0])
       .reduce(getContinuousBuckets, [])
-      .reverse()
     : binData
       .filter(bucket => (IS_CDAVE_DEV ? bucket.key : bucket.key !== '_missing'))
       .sort((a, b) => b.doc_count - a.doc_count)
@@ -1566,9 +1565,8 @@ export default compose(
         const dataForSurvival =
           variable.plotTypes === 'continuous'
             ? dataBuckets
-              .sort((a, b) => b.key - a.key)
+              .sort((a, b) => b.key.split('-')[0] - a.key.split('-')[0])
               .reduce(getContinuousBuckets, [])
-              .reverse()
             : binData
               .filter(bucket => (IS_CDAVE_DEV ? bucket.key : bucket.key !== '_missing'))
               .map(b => ({

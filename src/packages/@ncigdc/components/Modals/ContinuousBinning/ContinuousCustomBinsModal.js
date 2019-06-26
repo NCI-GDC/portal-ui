@@ -86,9 +86,9 @@ class ContinuousCustomBinsModal extends Component {
     },
     intervalFields: {
       // seed input values, from props
-      amount: this.props.defaultData.quartile,
-      max: this.props.defaultData.max,
-      min: this.props.defaultData.min,
+      amount: this.props.defaultContinuousData.quartile,
+      max: this.props.defaultContinuousData.max,
+      min: this.props.defaultContinuousData.min,
     },
     modalWarning: '',
     rangeNameErrors: [],
@@ -127,7 +127,7 @@ class ContinuousCustomBinsModal extends Component {
   };
 
   validateIntervalFields = target => {
-    const { defaultData } = this.props;
+    const { defaultContinuousData } = this.props;
     const { intervalFields } = this.state;
     const inputKey = target.id.split('-')[2];
     const inputValue = Number(target.value);
@@ -141,13 +141,13 @@ class ContinuousCustomBinsModal extends Component {
     const currentMin = intervalFields.min;
     const currentMax = intervalFields.max;
 
-    const checkMinInRange = currentMin >= defaultData.min && currentMin < defaultData.max;
-    const validMin = checkMinInRange ? currentMin : defaultData.min;
+    const checkMinInRange = currentMin >= defaultContinuousData.min && currentMin < defaultContinuousData.max;
+    const validMin = checkMinInRange ? currentMin : defaultContinuousData.min;
 
-    const checkMaxInRange = currentMax > defaultData.min && currentMax <= defaultData.max;
-    const validMax = checkMaxInRange ? currentMax : defaultData.max;
+    const checkMaxInRange = currentMax > defaultContinuousData.min && currentMax <= defaultContinuousData.max;
+    const validMax = checkMaxInRange ? currentMax : defaultContinuousData.max;
 
-    const validAmount = checkMinInRange && checkMaxInRange ? currentMax - currentMin : defaultData.max - defaultData.min;
+    const validAmount = checkMinInRange && checkMaxInRange ? currentMax - currentMin : defaultContinuousData.max - defaultContinuousData.min;
 
     let inputError;
 
@@ -171,13 +171,13 @@ class ContinuousCustomBinsModal extends Component {
       inputError = countDecimals(inputValue) > 2 ? decimalError : inputError;
     } else if (inputKey === 'max') {
       const maxTooSmallError = `Must be greater than ${validMin}.`;
-      const maxTooLargeError = `Must be less than or equal to ${defaultData.max}.`;
-      inputError = inputValue <= validMin ? maxTooSmallError : inputValue > defaultData.max ? maxTooLargeError : '';
+      const maxTooLargeError = `Must be less than or equal to ${defaultContinuousData.max}.`;
+      inputError = inputValue <= validMin ? maxTooSmallError : inputValue > defaultContinuousData.max ? maxTooLargeError : '';
       inputError = countDecimals(inputValue) > 2 ? decimalError : inputError;
     } else if (inputKey === 'min') {
       const minTooLargeError = `Must be less than ${validMax}.`;
-      const maxTooSmallError = `Must be greater than or equal to ${defaultData.min}.`;
-      inputError = inputValue >= validMax ? minTooLargeError : inputValue < defaultData.min ? maxTooSmallError : '';
+      const maxTooSmallError = `Must be greater than or equal to ${defaultContinuousData.min}.`;
+      inputError = inputValue >= validMax ? minTooLargeError : inputValue < defaultContinuousData.min ? maxTooSmallError : '';
       inputError = countDecimals(inputValue) > 2 ? decimalError : inputError;
     } else {
       inputError = '';
@@ -238,21 +238,23 @@ class ContinuousCustomBinsModal extends Component {
     const formHasErrors = this.validateRangeRow();
 
     if (!formHasErrors) {
-      const { onUpdate } = this.props;
+      const { binningMethod, onUpdate } = this.props;
       const { rangeRows } = this.state;
 
-      const newBins = rangeRows.map(row => row.fields).reduce((acc, curr) => {
-        const rowKey = `${curr.from}-${curr.to}`;
-        return ({
-          ...acc,
-          ...(curr.name === '' ? {} : {
-            [rowKey]: {
-              groupName: curr.name,
-              key: rowKey,
-            },
-          }),
-        });
-      }, {});
+      const newBins = binningMethod === 'range'
+        ? rangeRows.map(row => row.fields).reduce((acc, curr) => {
+          const rowKey = `${curr.from}-${curr.to}`;
+          return ({
+            ...acc,
+            ...(curr.name === '' ? {} : {
+              [rowKey]: {
+                groupName: curr.name,
+                key: rowKey,
+              },
+            }),
+          });
+        }, {})
+        : {};
 
       onUpdate(newBins);
     }
@@ -325,7 +327,7 @@ class ContinuousCustomBinsModal extends Component {
   }
 
   render = () => {
-    const { defaultData, fieldName, onClose } = this.props;
+    const { defaultContinuousData, fieldName, onClose } = this.props;
     const {
       binningMethod, intervalErrors, intervalFields, modalWarning, rangeNameErrors, rangeOverlapErrors, rangeRows,
     } = this.state;
@@ -340,13 +342,13 @@ class ContinuousCustomBinsModal extends Component {
           </h1>
           <p>
             Available values from
-            <strong>{` ${defaultData.min} `}</strong>
+            <strong>{` ${defaultContinuousData.min} `}</strong>
             to
-            <strong>{` ${defaultData.max} `}</strong>
+            <strong>{` ${defaultContinuousData.max} `}</strong>
           </p>
           <p>
             Quartile bin interval:
-            <strong>{` ${defaultData.quartile}`}</strong>
+            <strong>{` ${defaultContinuousData.quartile}`}</strong>
           </p>
           <p>
             Configure your bins then click
@@ -360,7 +362,6 @@ class ContinuousCustomBinsModal extends Component {
               <h3>Define bins by:</h3>
               <CustomIntervalFields
                 countDecimals={countDecimals}
-                defaultData={defaultData}
                 disabled={binningMethod !== 'interval'}
                 handleChange={e => {
                   this.updateIntervalFields(e.target);

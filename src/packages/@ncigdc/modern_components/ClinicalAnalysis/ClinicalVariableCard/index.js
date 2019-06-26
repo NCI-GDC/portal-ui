@@ -562,7 +562,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
   dataBuckets,
   dataDimension,
   dataValues,
-  defaultData,
+  defaultContinuousData,
   dispatch,
   fieldName,
   filters,
@@ -629,12 +629,12 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
   const setActionsDisabled = get(selectedBuckets, 'length', 0) === 0;
 
   const checkIfContinuousBinsAreDefault = () => {
-    const defaultGroupNames = Object.keys(defaultData.buckets)
-      .map(bucket => defaultData.buckets[bucket].groupName);
+    const defaultGroupNames = Object.keys(defaultContinuousData.buckets)
+      .map(bucket => defaultContinuousData.buckets[bucket].groupName);
     const currentGroupNames = binData.map(bin => bin.key);
 
-    const defaultRanges = Object.keys(defaultData.buckets)
-      .map(bucket => defaultData.buckets[bucket].key
+    const defaultRanges = Object.keys(defaultContinuousData.buckets)
+      .map(bucket => defaultContinuousData.buckets[bucket].key
         .split('-')
         .map(keyValue => parseContinuousBucketValue(keyValue)));
     const currentRanges = binData.map(bin => bin.keyArray[0]
@@ -1208,7 +1208,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                           ? (
                             <ContinuousCustomBinsModal
                               bins={bucketsOrganizedByKey}
-                              defaultData={defaultData}
+                              defaultContinuousData={defaultContinuousData}
                               fieldName={humanify({ term: fieldName })}
                               onClose={() => dispatch(setModal(null))}
                               onUpdate={(newBins) => {
@@ -1259,7 +1259,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                           fieldName,
                           id,
                           value: variable.plotTypes === 'continuous'
-                            ? defaultData.buckets
+                            ? defaultContinuousData.buckets
                             : dataBuckets.reduce((acc, r) => ({
                               ...acc,
                               [r.key]: {
@@ -1511,7 +1511,7 @@ export default compose(
   ),
   withProps(({ data, fieldName, variable }) => {
     if (variable.plotTypes === 'categorical') {
-      return ({ defaultData: {} });
+      return ({ defaultContinuousData: {} });
     }
     const dataStats = data.explore.cases.aggregations[`${fieldName.replace('.', '__')}`].stats;
 
@@ -1538,7 +1538,7 @@ export default compose(
     }), {});
 
     return ({
-      defaultData: {
+      defaultContinuousData: {
         buckets: defaultBuckets,
         max: defaultMax,
         min: defaultMin,

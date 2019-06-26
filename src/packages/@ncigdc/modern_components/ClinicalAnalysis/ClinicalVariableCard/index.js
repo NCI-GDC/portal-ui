@@ -232,7 +232,8 @@ const parseContinuousBucketValue = value => (value % 1
   : Math.round(value * 100) / 100);
 
 const getContinuousRangeValue = keyValues => {
-  const keyValuesParsed = keyValues.map(val => parseContinuousBucketValue(val));
+  const keyValuesParsed = keyValues
+    .map(val => parseContinuousBucketValue(val));
   return `${keyValuesParsed[0]} to ${keyValuesParsed[1]}`;
 };
 
@@ -626,6 +627,28 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
   const tsvSubstring = fieldName.replace(/\./g, '-');
   const cardFilters = getCardFilters(variable.plotTypes, selectedBuckets, fieldName, filters);
   const setActionsDisabled = get(selectedBuckets, 'length', 0) === 0;
+
+  const checkIfContinuousBinsAreDefault = () => {
+    const defaultGroupNames = Object.keys(defaultData.buckets)
+      .map(bucket => defaultData.buckets[bucket].groupName);
+    const currentGroupNames = binData.map(bin => bin.key);
+
+    const defaultRanges = Object.keys(defaultData.buckets)
+      .map(bucket => defaultData.buckets[bucket].key
+        .split('-')
+        .map(keyValue => parseContinuousBucketValue(keyValue)));
+    const currentRanges = binData.map(bin => bin.keyArray[0]
+      .split('-')
+      .map(keyValue => parseContinuousBucketValue(keyValue)));
+
+    return isEqual(defaultGroupNames, currentGroupNames) && isEqual(defaultRanges, currentRanges);
+  };
+
+  const resetBinsDisabled = variable.plotTypes === 'categorical'
+    ? Object.keys(variable.bins)
+      .filter(bin => variable.bins[bin].key !== variable.bins[bin].groupName)
+      .length === 0
+    : checkIfContinuousBinsAreDefault();
 
   return (
     <Column
@@ -1235,20 +1258,23 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                         updateClinicalAnalysisVariable({
                           fieldName,
                           id,
-                          value: variable.plotTypes === 'continuous' ? defaultData.buckets : ([
-                            dataBuckets.reduce((acc, r) => ({
+                          value: variable.plotTypes === 'continuous'
+                            ? defaultData.buckets
+                            : dataBuckets.reduce((acc, r) => ({
                               ...acc,
                               [r.key]: {
                                 ...r,
                                 groupName: r.key,
                               },
                             }), {}),
-                          ]),
                           variableKey: 'bins',
                         }),
                       );
                     }}
-                    style={styles.actionMenuItem}
+                    style={{
+                      ...styles.actionMenuItem,
+                      ...(resetBinsDisabled ? styles.actionMenuItemDisabled(theme) : {}),
+                    }}
                   >
                     Reset to Default
                   </DropdownItem>
@@ -1494,13 +1520,15 @@ export default compose(
 
     const defaultQuartile = Number(((defaultMax - defaultMin) / 4).toFixed(2));
     const defaultBuckets = Array(4).fill(1).map((val, key) => {
-      const from = Math.round(key * defaultQuartile + defaultMin);
-      const to = Math.round((key + 1) === 4 ? defaultMax : (defaultMin + (key + 1) * defaultQuartile - 1));
+      const from = Math.floor(key * defaultQuartile + defaultMin);
+      const to = Math.floor((key + 1) === 4
+        ? defaultMax
+        : (defaultMin + (key + 1) * defaultQuartile - 1));
       const objKey = `${from}-${to}`;
 
       return ({
         [objKey]: {
-          groupName: getContinuousRangeValue(objKey.split('-')),
+          groupName: `${from.toFixed(1)}-${to.toFixed(1)}`,
           key: objKey,
         },
       });

@@ -218,7 +218,7 @@ const styles = {
   }),
   histogram: (theme: IThemeProps) => ({
     axis: {
-      fontSize: '0.9rem',
+      fontSize: '1.1rem',
       fontWeight: '500',
       stroke: theme.greyScale4,
       textFill: theme.greyScale3,
@@ -610,7 +610,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
       ? tableData.map(d => {
         return {
           fullLabel: d.key,
-          label: truncate(d.key, { length: 18 }),
+          label: d.key,
           tooltip: `${d.key}: ${d.chart_doc_count.toLocaleString()}`,
           value:
             variable.active_calculation === 'number'
@@ -771,8 +771,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                     svg={() => wrapSvg({
                       selector: `#${wrapperId}-container .test-bar-chart svg`,
                       title: humanify({ term: fieldName }),
-                    })
-                    }
+                    })}
                     tooltipHTML="Download image or data"
                     />
                 </form>
@@ -839,6 +838,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
               <BarChart
                 data={chartData}
                 height={CHART_HEIGHT}
+                margin={{ top: 20, right: 50, bottom: 50, left: 55 }}
                 styles={{
                   bars: { fill: theme.secondary },
                   tooltips: {

@@ -1521,8 +1521,10 @@ export default compose(
 
     const defaultQuartile = Number(((defaultMax - defaultMin) / 4).toFixed(2));
     const defaultBuckets = Array(4).fill(1).map((val, key) => {
-      const from = Math.round(key * defaultQuartile + defaultMin);
-      const to = Math.round((key + 1) === 4 ? defaultMax : (defaultMin + (key + 1) * defaultQuartile - 1));
+      const from = Math.floor(key * defaultQuartile + defaultMin);
+      const to = Math.floor((key + 1) === 4
+        ? defaultMax
+        : (defaultMin + (key + 1) * defaultQuartile - 1));
       const objKey = `${from}-${to}`;
 
       return ({

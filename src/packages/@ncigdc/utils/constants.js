@@ -404,3 +404,10 @@ export const IS_CDAVE_DEV =
   localStorage.REACT_APP_IS_CDAVE_DEV ||
   process.env.NODE_ENV === 'development' ||
   false;
+
+export const analysisColors = {
+  Demographic: '#1f77b4',
+  Diagnosis: '#ff7f0e',
+  Treatment: '#98df8a',
+  Exposure: '#9467bd',
+};

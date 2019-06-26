@@ -428,7 +428,7 @@ export const IS_CDAVE_DEV =
 export const analysisColors = {
   Demographic: '#1f77b4',
   Diagnosis: '#ff7f0e',
-  Treatment: '#98df8a',
+  Treatment: '#2ca02c',
   Exposure: '#9467bd',
 };
 

@@ -239,7 +239,38 @@ class ContinuousCustomBinsModal extends Component {
 
     if (!formHasErrors) {
       const { binningMethod, onUpdate } = this.props;
-      const { rangeRows } = this.state;
+      const { intervalFields, rangeRows } = this.state;
+
+      const makeCustomIntervalBins = () => {
+        const intervalAmount = Number(intervalFields.amount);
+        const intervalMax = Number(intervalFields.max);
+        const intervalMin = Number(intervalFields.min);
+
+        const bucketRange = intervalMax - intervalMin;
+        const bucketCount = Math.round(bucketRange / intervalAmount);
+
+        const buckets = Array(bucketCount).fill(1)
+          .map((val, key) => {
+            const from = Number((key * intervalAmount + intervalMin).toFixed(2));
+            const to = Number(((key + 1) === bucketCount
+              ? intervalMax
+              : intervalMin + (key + 1) * intervalAmount - 1).toFixed(2));
+
+            const objKey = `${from}-${to}`;
+
+            return ({
+              [objKey]: {
+                groupName: `${from} ${(key + 1) === bucketCount ? 'and up' : `to ${to}`}`,
+                key: objKey,
+              },
+            });
+          }).reduce((acc, curr) => ({
+            ...acc,
+            ...curr,
+          }), {});
+
+        return buckets;
+      };
 
       const newBins = binningMethod === 'range'
         ? rangeRows.map(row => row.fields).reduce((acc, curr) => {
@@ -254,7 +285,7 @@ class ContinuousCustomBinsModal extends Component {
             }),
           });
         }, {})
-        : {};
+        : makeCustomIntervalBins();
 
       onUpdate(newBins);
     }

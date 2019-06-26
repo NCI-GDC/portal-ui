@@ -168,7 +168,6 @@ export const CaseAggregationsComponent = ({
               facet={facet}
               key={facet.full}
               relay={relay}
-              style={{ borderBottom: `1px solid ${theme.greyScale5}` }}
               title={facet.title}
               />
           ))}

@@ -272,7 +272,6 @@ export const CaseAggregationsComponent = (props: TProps) => (
         onRequestRemove={() => props.handleRequestRemoveFacet(facet)}
         relay={props.relay}
         relayVarName="exploreCaseCustomFacetFields"
-        style={{ borderBottom: `1px solid ${props.theme.greyScale5}` }}
         />
     ))}
     <FacetHeader

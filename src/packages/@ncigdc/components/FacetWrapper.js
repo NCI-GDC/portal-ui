@@ -11,6 +11,8 @@ import {
   withState,
 } from 'recompose';
 
+import { withTheme } from '@ncigdc/theme';
+
 import TermAggregation from '@ncigdc/components/Aggregations/TermAggregation';
 import DateFacet from '@ncigdc/components/Aggregations/DateFacet';
 import RangeFacet from '@ncigdc/components/Aggregations/RangeFacet';
@@ -74,7 +76,7 @@ const getFacetType = facet => {
 const FacetWrapperDiv = styled.div({
   position: 'relative',
 });
-export const WrapperComponent = ({
+export const WrapperComponent = compose(withTheme)(({
   setShowingValueSearch,
   showingValueSearch,
   collapsed,
@@ -94,6 +96,7 @@ export const WrapperComponent = ({
   dispatch,
   expandedAll,
   DescriptionComponent = null,
+  theme
 }: any) => {
   const facetType = getFacetType(facet);
   const displayTitle = title || fieldNameToTitle(facet.field);
@@ -147,7 +150,7 @@ export const WrapperComponent = ({
       .length >= 20;
 
   return (
-    <FacetWrapperDiv className="test-facet" style={style}>
+    <FacetWrapperDiv className="test-facet" style={{...style, borderTop: `1px solid ${theme.greyScale5}` }}>
       <FacetHeader
         collapsed={collapsed}
         DescriptionComponent={
@@ -167,10 +170,10 @@ export const WrapperComponent = ({
         title={displayTitle}
         />
       {searchValue && DescriptionComponent}
-      <div style={{ paddingLeft: '10px' }}>{facetComponent}</div>
+      <div>{facetComponent}</div>
     </FacetWrapperDiv>
   );
-};
+});
 const FacetWrapper = compose(
   setDisplayName('EnhancedFacetWrapper'),
   defaultProps({
@@ -182,6 +185,7 @@ const FacetWrapper = compose(
   }),
   withState('showingValueSearch', 'setShowingValueSearch', false),
   withState('collapsed', 'setCollapsed', props => props.collapsed),
+  // withTheme
 )(WrapperComponent);
 
-export default FacetWrapper;
+export default FacetWrapper

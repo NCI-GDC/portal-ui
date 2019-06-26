@@ -630,17 +630,16 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
 
   const checkIfContinuousBinsAreDefault = () => {
     const defaultGroupNames = Object.keys(defaultData.buckets)
-      .map(bucket => defaultData.buckets[bucket].groupName.split(' to ')
-        .map(nameValue => Number(nameValue).toFixed(2)));
+      .map(bucket => defaultData.buckets[bucket].groupName);
+    const currentGroupNames = binData.map(bin => bin.key);
+
     const defaultRanges = Object.keys(defaultData.buckets)
       .map(bucket => defaultData.buckets[bucket].key
         .split('-')
         .map(keyValue => parseContinuousBucketValue(keyValue)));
-
-    const currentGroupNames = binData.map(bin => bin.key);
     const currentRanges = binData.map(bin => bin.keyArray[0]
       .split('-')
-      .map(keyValue => Number(keyValue).toFixed(2)));
+      .map(keyValue => parseContinuousBucketValue(keyValue)));
 
     return isEqual(defaultGroupNames, currentGroupNames) && isEqual(defaultRanges, currentRanges);
   };
@@ -1527,7 +1526,7 @@ export default compose(
 
       return ({
         [objKey]: {
-          groupName: getContinuousRangeValue(objKey.split('-')),
+          groupName: `${from.toFixed(1)}-${to.toFixed(1)}`,
           key: objKey,
         },
       });

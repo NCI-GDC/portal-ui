@@ -1012,9 +1012,8 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                       filters={cardFilters}
                       first={totalDocs}
                       setDataHandler={() => setQQDataIsSet()}
-                      wrapperId={wrapperId}
                       setId={setId}
-                      dataBuckets={dataBuckets}
+                      wrapperId={wrapperId}
                       />
                   </Column>
                 </Row>
@@ -1187,7 +1186,12 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                         <GroupValuesModal
                           bins={variable.bins}
                           dataBuckets={dataBuckets}
+                          enableDragging
                           fieldName={humanify({ term: fieldName })}
+                          modalStyle={{
+                            maxWidth: '700px',
+                            width: '90%',
+                          }}
                           onClose={() => dispatch(setModal(null))}
                           onUpdate={(newBins) => {
                             dispatch(

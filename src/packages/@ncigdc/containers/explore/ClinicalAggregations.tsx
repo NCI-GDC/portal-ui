@@ -418,6 +418,7 @@ const enhance = compose(
                         alignItems: 'center',
                         justifyContent: 'space-between',
                         padding: '1rem 1.2rem 0.5rem 1.2rem',
+                        margin: '0.5rem 1rem 0rem 0rem',
                       }}
                       >
                       <div

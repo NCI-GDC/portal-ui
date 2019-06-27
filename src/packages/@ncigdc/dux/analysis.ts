@@ -36,6 +36,7 @@ type TClinicalAnalysisProperty = 'name'; // only type mutable properties
 
 export interface IAnalysisPayload {
   scrollToCard?: boolean;
+  continuousBinType?: 'default' | 'interval' | 'range';
   analysis?: IAnalysis;
   id: string;
   fieldName?: string;
@@ -175,6 +176,7 @@ const reducer = (
                 type: action.payload.fieldType,
                 plotTypes: action.payload.plotTypes,
                 scrollToCard: action.payload.scrollToCard,
+                continuousBinType: action.payload.continuousBinType,
               },
             },
           },

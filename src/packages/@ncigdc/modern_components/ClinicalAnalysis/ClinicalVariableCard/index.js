@@ -569,7 +569,6 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
   filters,
   getContinuousBuckets,
   id,
-  bucketsOrganizedByKey,
   overallSurvivalData,
   plots,
   selectedBuckets,
@@ -629,27 +628,11 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
   const cardFilters = getCardFilters(variable.plotTypes, selectedBuckets, fieldName, filters);
   const setActionsDisabled = get(selectedBuckets, 'length', 0) === 0;
 
-  const checkIfContinuousBinsAreDefault = () => {
-    const defaultGroupNames = Object.keys(defaultData.buckets)
-      .map(bucket => defaultData.buckets[bucket].groupName);
-    const currentGroupNames = binData.map(bin => bin.key);
-
-    const defaultRanges = Object.keys(defaultData.buckets)
-      .map(bucket => defaultData.buckets[bucket].key
-        .split('-')
-        .map(keyValue => parseContinuousBucketValue(keyValue)));
-    const currentRanges = binData.map(bin => bin.keyArray[0]
-      .split('-')
-      .map(keyValue => parseContinuousBucketValue(keyValue)));
-
-    return isEqual(defaultGroupNames, currentGroupNames) && isEqual(defaultRanges, currentRanges);
-  };
-
   const resetBinsDisabled = variable.plotTypes === 'categorical'
     ? Object.keys(variable.bins)
       .filter(bin => variable.bins[bin].key !== variable.bins[bin].groupName)
       .length === 0
-    : checkIfContinuousBinsAreDefault();
+    : variable.continuousBinType === 'default';
 
   return (
     <Column
@@ -1208,11 +1191,12 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                         variable.plotTypes === 'continuous'
                           ? (
                             <ContinuousCustomBinsModal
-                              bins={bucketsOrganizedByKey}
+                              binData={binData}
+                              continuousBinType={variable.continuousBinType}
                               defaultData={defaultData}
                               fieldName={humanify({ term: fieldName })}
                               onClose={() => dispatch(setModal(null))}
-                              onUpdate={(newBins, binType) => {
+                              onUpdate={(newBins, continuousBinType) => {
                                 dispatch(
                                   updateClinicalAnalysisVariable({
                                     fieldName,
@@ -1225,7 +1209,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                                   updateClinicalAnalysisVariable({
                                     fieldName,
                                     id,
-                                    value: binType,
+                                    value: continuousBinType,
                                     variableKey: 'continuousBinType',
                                   })
                                 );
@@ -1278,6 +1262,14 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                             }), {}),
                           variableKey: 'bins',
                         }),
+                      );
+                      variable.plotTypes === 'continuous' && dispatch(
+                        updateClinicalAnalysisVariable({
+                          fieldName,
+                          id,
+                          value: 'default',
+                          variableKey: 'continuousBinType',
+                        })
                       );
                     }}
                     style={{

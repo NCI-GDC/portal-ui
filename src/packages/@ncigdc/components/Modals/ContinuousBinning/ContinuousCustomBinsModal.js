@@ -99,9 +99,42 @@ class ContinuousCustomBinsModal extends Component {
   };
 
   componentDidMount = () => {
-    const { rangeRows } = this.props;
+    const {
+      binData, continuousBinType, rangeRows,
+    } = this.props;
     this.validateRangeRow(rangeRows);
-  }
+
+    if (continuousBinType === 'range') {
+      const nextRangeRows = binData.map(bin => ({
+        active: false,
+        fields: {
+          from: bin.keyArray[0].split('-')[0],
+          name: bin.key,
+          to: bin.keyArray[0].split('-')[1],
+        },
+      }));
+
+      this.setState({
+        binningMethod: 'range',
+        rangeRows: nextRangeRows,
+      });
+    } else if (continuousBinType === 'interval') {
+      const min = binData[0].keyArray.split('-')[0];
+      const max = binData[binData.length - 1].keyArray.split('-')[1];
+      const amount = binData[0].keyArray.split('-')[1] - min;
+
+      const nextIntervalFields = {
+        amount,
+        max,
+        min,
+      };
+
+      this.setState({
+        binningMethod: 'interval',
+        intervalFields: nextIntervalFields,
+      });
+    }
+  };
 
   // binning method: interval
 

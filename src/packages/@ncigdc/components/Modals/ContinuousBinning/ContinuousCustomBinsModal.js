@@ -105,7 +105,12 @@ class ContinuousCustomBinsModal extends Component {
 
   // binning method: interval
 
-  updateIntervalFields = (inputKey, inputValue, inputError = null) => {
+  updateIntervalFields = (
+    inputKey,
+    inputValue,
+    targetIsSubmit = false,
+    inputError = null,
+  ) => {
     const { intervalErrors, intervalFields } = this.state;
 
     const nextIntervalFields = {
@@ -121,18 +126,28 @@ class ContinuousCustomBinsModal extends Component {
     this.setState({
       intervalErrors: nextIntervalErrors,
       intervalFields: nextIntervalFields,
+    }, () => {
+      if (targetIsSubmit &&
+        nextIntervalErrors !== null &&
+        Object.keys(nextIntervalErrors)
+          .filter(err => nextIntervalErrors[err].length > 0).length > 0) {
+        this.handleSubmit();
+      }
     });
   };
 
-  validateIntervalFields = (blurKey, blurValue) => {
+  validateIntervalFields = (blurKey, blurValue, target) => {
     const { defaultContinuousData } = this.props;
     const { intervalFields } = this.state;
+
+    const targetIsSubmit = target.id !== undefined &&
+      target.id === 'continuous-modal-submit';
 
     const inputValue = Number(blurValue);
 
     if (!isFinite(inputValue)) {
       const nanError = [`'${inputValue}' is not a valid number.`];
-      this.updateIntervalFields(blurKey, inputValue, nanError);
+      this.updateIntervalFields(blurKey, inputValue, targetIsSubmit, nanError);
       return;
     }
 
@@ -158,7 +173,7 @@ class ContinuousCustomBinsModal extends Component {
     }
 
     if (inputError !== '') {
-      this.updateIntervalFields(blurKey, inputValue, inputError);
+      this.updateIntervalFields(blurKey, inputValue, targetIsSubmit, inputError);
       return;
     }
 
@@ -181,7 +196,7 @@ class ContinuousCustomBinsModal extends Component {
       inputError = '';
     }
 
-    this.updateIntervalFields(blurKey, inputValue, inputError);
+    this.updateIntervalFields(blurKey, inputValue, targetIsSubmit, inputError);
   };
 
   checkSubmitDisabled = () => {
@@ -234,11 +249,12 @@ class ContinuousCustomBinsModal extends Component {
 
   handleSubmit = () => {
     const { onUpdate } = this.props;
-    const { binningMethod, intervalFields, rangeRows } = this.state;
+    const {
+      binningMethod, intervalFields, rangeRows,
+    } = this.state;
 
-    const formHasErrors = binningMethod === 'range'
-      ? this.validateRangeRow()
-      : this.validateIntervalFields('amount', intervalFields.amount);
+    const formHasErrors = binningMethod === 'range' &&
+      this.validateRangeRow();
 
     if (!formHasErrors) {
       const makeCustomIntervalBins = () => {
@@ -402,8 +418,8 @@ class ContinuousCustomBinsModal extends Component {
                 }}
                 intervalErrors={intervalErrors}
                 intervalFields={intervalFields}
-                validateIntervalFields={(blurKey, blurValue) => {
-                  this.validateIntervalFields(blurKey, blurValue);
+                validateIntervalFields={(blurKey, blurValue, target) => {
+                  this.validateIntervalFields(blurKey, blurValue, target);
                 }}
                 />
             </Column>
@@ -519,8 +535,8 @@ class ContinuousCustomBinsModal extends Component {
           </Button>
           <Button
             disabled={submitDisabled}
+            id="continuous-modal-submit"
             onClick={() => this.handleSubmit()}
-            onMouseDown={() => this.handleSubmit(true)}
             style={submitDisabled
               ? styles.inputDisabled
               : styles.visualizingButton}

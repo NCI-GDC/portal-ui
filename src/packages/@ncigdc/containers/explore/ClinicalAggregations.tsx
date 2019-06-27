@@ -130,6 +130,9 @@ interface IFieldProps {
   name: string,
   type: { name: string, __dataID: string },
 }
+
+const headersHeight = 44;
+
 const facetMatchesQuery = (
   facet: IFacetProps,
   elements: IBucketProps[],
@@ -393,7 +396,7 @@ const enhance = compose(
             key="1"
             style={{
               overflowY: 'scroll',
-              maxHeight: `${maxFacetsPanelHeight - 44}px`, // 44 is the height of all elements above this div.
+              maxHeight: `${maxFacetsPanelHeight - headersHeight}px`,
               paddingBottom: '20px',
             }}
             >
@@ -415,7 +418,7 @@ const enhance = compose(
                         alignItems: 'center',
                         justifyContent: 'space-between',
                         padding: '1rem 1.2rem 0.5rem 1.2rem',
-                        margin: '0.5rem 1rem 0rem 1rem',
+                        margin: '0.5rem 1rem 0rem 0rem',
                       }}
                       >
                       <div
@@ -514,7 +517,7 @@ const enhance = compose(
                                     )}
                                     facet={componentFacet}
                                     headerStyle={{
-                                      padding: '0.5rem 1.2rem 0.5rem 1.2rem',
+                                      padding: '1.2rem',
                                       fontSize: '16px',
                                     }}
                                     isMatchingSearchValue={(componentFacet.full +

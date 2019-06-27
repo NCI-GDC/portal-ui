@@ -145,7 +145,6 @@ export const CaseAggregationsComponent = ({
         idField="cases.case_id"
         style={{
           width: '100%',
-          borderBottom: `1px solid ${theme.greyScale5}`,
           padding: '0 1.2rem 1rem',
         }}
         type="case"
@@ -168,7 +167,6 @@ export const CaseAggregationsComponent = ({
               facet={facet}
               key={facet.full}
               relay={relay}
-              style={{ borderBottom: `1px solid ${theme.greyScale5}` }}
               title={facet.title}
               />
           ))}

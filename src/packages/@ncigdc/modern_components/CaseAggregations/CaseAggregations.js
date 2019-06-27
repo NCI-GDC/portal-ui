@@ -284,7 +284,6 @@ const CaseAggregationsComponent = (props: TProps) => (
         }
         relay={props.relay}
         additionalProps={facet.additionalProps}
-        style={{ borderBottom: `1px solid ${props.theme.greyScale5}` }}
       />
     ))}
   </div>

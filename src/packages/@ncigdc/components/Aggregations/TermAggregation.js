@@ -72,7 +72,7 @@ const TermAggregation = (props: TProps) => {
             parseFilterParam((ctx.query || {}).filters, {}).content) ||
           [];
         return (
-          <Container className="test-term-aggregation" style={props.style}>
+          <Container className="test-term-aggregation" style={{...props.style, paddingBottom: props.collapsed ? 0 : 10}}>
             {!props.collapsed && props.showingValueSearch && (
               <Row>
                 <Input

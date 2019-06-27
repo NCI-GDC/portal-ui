@@ -233,8 +233,8 @@ class ContinuousCustomBinsModal extends Component {
   // submit
 
   handleSubmit = () => {
-    const { binningMethod, onUpdate } = this.props;
-    const { intervalFields, rangeRows } = this.state;
+    const { onUpdate } = this.props;
+    const { binningMethod, intervalFields, rangeRows } = this.state;
 
     const formHasErrors = binningMethod === 'range'
       ? this.validateRangeRow()

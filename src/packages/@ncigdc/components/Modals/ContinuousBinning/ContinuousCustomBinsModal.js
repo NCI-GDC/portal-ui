@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { isFinite } from 'lodash';
+import { debounce, isFinite } from 'lodash';
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import Button from '@ncigdc/uikit/Button';
 import RangeTableRow from './RangeTableRow';
@@ -105,13 +105,11 @@ class ContinuousCustomBinsModal extends Component {
 
   // binning method: interval
 
-  updateIntervalFields = (
-    inputKey,
-    inputValue,
-    targetIsSubmit = false,
-    inputError = null,
-  ) => {
+  updateIntervalFields = (target, inputError = null) => {
     const { intervalErrors, intervalFields } = this.state;
+
+    const inputKey = target.id.split('-')[2];
+    const inputValue = target.value;
 
     const nextIntervalFields = {
       ...intervalFields,
@@ -120,34 +118,27 @@ class ContinuousCustomBinsModal extends Component {
 
     const nextIntervalErrors = {
       ...intervalErrors,
-      [inputKey]: inputError === null ? intervalErrors[inputKey] : inputError,
+      [inputKey]: inputError === null
+        ? intervalErrors[inputKey]
+        : inputError,
     };
 
     this.setState({
       intervalErrors: nextIntervalErrors,
       intervalFields: nextIntervalFields,
-    }, () => {
-      if (targetIsSubmit &&
-        nextIntervalErrors !== null &&
-        Object.keys(nextIntervalErrors)
-          .filter(err => nextIntervalErrors[err].length > 0).length > 0) {
-        this.handleSubmit();
-      }
     });
   };
 
-  validateIntervalFields = (blurKey, blurValue, target) => {
+  validateIntervalFields = target => {
     const { defaultContinuousData } = this.props;
     const { intervalFields } = this.state;
 
-    const targetIsSubmit = target.id !== undefined &&
-      target.id === 'continuous-modal-submit';
-
-    const inputValue = Number(blurValue);
+    const inputKey = target.id.split('-')[2];
+    const inputValue = Number(target.value);
 
     if (!isFinite(inputValue)) {
-      const nanError = [`'${inputValue}' is not a valid number.`];
-      this.updateIntervalFields(blurKey, inputValue, targetIsSubmit, nanError);
+      const nanError = [`'${target.value}' is not a valid number.`];
+      this.updateIntervalFields(target, nanError);
       return;
     }
 
@@ -173,21 +164,21 @@ class ContinuousCustomBinsModal extends Component {
     }
 
     if (inputError !== '') {
-      this.updateIntervalFields(blurKey, inputValue, targetIsSubmit, inputError);
+      this.updateIntervalFields(target, inputError);
       return;
     }
 
-    if (blurKey === 'amount') {
+    if (inputKey === 'amount') {
       const amountTooLargeError = `Must be less than or equal to ${validAmount}.`;
       const amountTooSmallError = 'Must be greater than 0.';
       inputError = inputValue <= 0 ? amountTooSmallError : inputValue > validAmount ? amountTooLargeError : '';
       inputError = countDecimals(inputValue) > 2 ? decimalError : inputError;
-    } else if (blurKey === 'max') {
+    } else if (inputKey === 'max') {
       const maxTooSmallError = `Must be greater than ${validMin}.`;
       const maxTooLargeError = `Must be less than or equal to ${defaultContinuousData.max}.`;
       inputError = inputValue <= validMin ? maxTooSmallError : inputValue > defaultContinuousData.max ? maxTooLargeError : '';
       inputError = countDecimals(inputValue) > 2 ? decimalError : inputError;
-    } else if (blurKey === 'min') {
+    } else if (inputKey === 'min') {
       const minTooLargeError = `Must be less than ${validMax}.`;
       const maxTooSmallError = `Must be greater than or equal to ${defaultContinuousData.min}.`;
       inputError = inputValue >= validMax ? minTooLargeError : inputValue < defaultContinuousData.min ? maxTooSmallError : '';
@@ -196,7 +187,7 @@ class ContinuousCustomBinsModal extends Component {
       inputError = '';
     }
 
-    this.updateIntervalFields(blurKey, inputValue, targetIsSubmit, inputError);
+    this.updateIntervalFields(target, inputError);
   };
 
   checkSubmitDisabled = () => {
@@ -207,8 +198,11 @@ class ContinuousCustomBinsModal extends Component {
       .filter(int => intervalErrors[int] !== '').length > 0;
     const checkRange = rangeRows
       .filter(row => row.active).length > 0;
-    const checkOverlap = rangeOverlapErrors.filter(err => err.length > 0).length > 0;
-    const result = binningMethod === 'interval' ? checkInterval : checkRange || checkOverlap;
+    const checkOverlap = rangeOverlapErrors
+      .filter(err => err.length > 0).length > 0;
+    const result = binningMethod === 'interval'
+      ? checkInterval
+      : checkRange || checkOverlap;
     return result;
   };
 
@@ -411,15 +405,16 @@ class ContinuousCustomBinsModal extends Component {
                 countDecimals={countDecimals}
                 disabled={binningMethod !== 'interval'}
                 handleChange={e => {
-                  this.updateIntervalFields(e.target.id.split('-')[2], e.target.value);
+                  this.updateIntervalFields(e.target);
+                  debounce(this.validateIntervalFields(e.target), 300);
                 }}
                 handleUpdateBinningMethod={() => {
                   this.setState({ binningMethod: 'interval' });
                 }}
                 intervalErrors={intervalErrors}
                 intervalFields={intervalFields}
-                validateIntervalFields={(blurKey, blurValue, target) => {
-                  this.validateIntervalFields(blurKey, blurValue, target);
+                validateIntervalFields={e => {
+                  this.validateIntervalFields(e.target);
                 }}
                 />
             </Column>

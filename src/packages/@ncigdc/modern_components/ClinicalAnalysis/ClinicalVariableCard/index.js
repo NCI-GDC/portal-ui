@@ -77,8 +77,9 @@ import {
 import { humanify } from '@ncigdc/utils/string';
 import timestamp from '@ncigdc/utils/timestamp';
 
-import { IS_CDAVE_DEV } from '@ncigdc/utils/constants';
+import { IS_CDAVE_DEV, analysisColors } from '@ncigdc/utils/constants';
 import ContinuousCustomBinsModal from '@ncigdc/components/Modals/ContinuousBinning/ContinuousCustomBinsModal';
+
 import {
   boxTableAllowedStats,
   boxTableRenamedStats,
@@ -862,7 +863,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                 data={chartData}
                 height={CHART_HEIGHT}
                 styles={{
-                  bars: { fill: theme.secondary },
+                  bars: { fill: analysisColors[variable.type] || theme.secondary },
                   tooltips: {
                     fill: '#fff',
                     stroke: theme.greyScale4,

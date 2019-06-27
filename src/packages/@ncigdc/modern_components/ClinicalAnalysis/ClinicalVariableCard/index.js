@@ -22,6 +22,7 @@ import {
   groupBy,
   get,
   reduce,
+  maxBy
 } from 'lodash';
 import { scaleOrdinal, schemeCategory10 } from 'd3';
 
@@ -620,6 +621,8 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
       })
       : [];
 
+  const maxKeyNameLength = (maxBy(chartData.map(d => d.fullLabel), (item) => item.length) || '').length
+
   // set action will default to cohort total when no buckets are selected
   const totalFromSelectedBuckets = selectedBuckets && selectedBuckets.length
     ? selectedBuckets.reduce((acc, b) => acc + b.chart_doc_count, 0)
@@ -771,8 +774,8 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                     svg={() => wrapSvg({
                       selector: `#${wrapperId}-container .test-bar-chart svg`,
                       title: humanify({ term: fieldName }),
-                      bottomBuffer: 200,
-                      rightBuffer: 100
+                      bottomBuffer: maxKeyNameLength * 3,
+                      rightBuffer: maxKeyNameLength * 2
                     })}
                     tooltipHTML="Download image or data"
                     />

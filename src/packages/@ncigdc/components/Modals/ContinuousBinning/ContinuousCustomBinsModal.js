@@ -76,6 +76,11 @@ const countDecimals = num => {
   return Math.floor(num) === num ? 0 : (num.toString().split('.')[1].length || 0);
 };
 
+// const debounceValidateIntervalFields = target => debounce(
+//   this.validateIntervalFields(target),
+//   300,
+// );
+
 class ContinuousCustomBinsModal extends Component {
   state = {
     binningMethod: 'range', // interval or range
@@ -105,11 +110,11 @@ class ContinuousCustomBinsModal extends Component {
 
   // binning method: interval
 
-  updateIntervalFields = (target, inputError = null) => {
+  updateIntervalFields = (updateEvent, inputError = null) => {
     const { intervalErrors, intervalFields } = this.state;
 
-    const inputKey = target.id.split('-')[2];
-    const inputValue = target.value;
+    const inputKey = updateEvent.target.id.split('-')[2];
+    const inputValue = updateEvent.target.value;
 
     const nextIntervalFields = {
       ...intervalFields,
@@ -123,22 +128,31 @@ class ContinuousCustomBinsModal extends Component {
         : inputError,
     };
 
+    if (inputError === null) updateEvent.persist();
+
     this.setState({
       intervalErrors: nextIntervalErrors,
       intervalFields: nextIntervalFields,
+    }, () => {
+      if (inputError === null) {
+        console.log('event', updateEvent);
+        console.log('updateEvent', updateEvent);
+
+        this.validateIntervalFields(updateEvent);
+      }
     });
   };
 
-  validateIntervalFields = target => {
+  validateIntervalFields = event => {
     const { defaultContinuousData } = this.props;
     const { intervalFields } = this.state;
 
-    const inputKey = target.id.split('-')[2];
-    const inputValue = Number(target.value);
+    const inputKey = event.target.id.split('-')[2];
+    const inputValue = Number(event.target.value);
 
     if (!isFinite(inputValue)) {
-      const nanError = [`'${target.value}' is not a valid number.`];
-      this.updateIntervalFields(target, nanError);
+      const nanError = [`'${event.target.value}' is not a valid number.`];
+      this.updateIntervalFields(event, nanError);
       return;
     }
 
@@ -164,7 +178,7 @@ class ContinuousCustomBinsModal extends Component {
     }
 
     if (inputError !== '') {
-      this.updateIntervalFields(target, inputError);
+      this.updateIntervalFields(event, inputError);
       return;
     }
 
@@ -187,7 +201,7 @@ class ContinuousCustomBinsModal extends Component {
       inputError = '';
     }
 
-    this.updateIntervalFields(target, inputError);
+    this.updateIntervalFields(event, inputError);
   };
 
   checkSubmitDisabled = () => {
@@ -405,8 +419,7 @@ class ContinuousCustomBinsModal extends Component {
                 countDecimals={countDecimals}
                 disabled={binningMethod !== 'interval'}
                 handleChange={e => {
-                  this.updateIntervalFields(e.target);
-                  debounce(this.validateIntervalFields(e.target), 300);
+                  this.updateIntervalFields(e);
                 }}
                 handleUpdateBinningMethod={() => {
                   this.setState({ binningMethod: 'interval' });
@@ -414,7 +427,7 @@ class ContinuousCustomBinsModal extends Component {
                 intervalErrors={intervalErrors}
                 intervalFields={intervalFields}
                 validateIntervalFields={e => {
-                  this.validateIntervalFields(e.target);
+                  this.validateIntervalFields(e);
                 }}
                 />
             </Column>
@@ -530,8 +543,8 @@ class ContinuousCustomBinsModal extends Component {
           </Button>
           <Button
             disabled={submitDisabled}
-            id="continuous-modal-submit"
             onClick={() => this.handleSubmit()}
+            onMouseDown={() => this.handleSubmit()}
             style={submitDisabled
               ? styles.inputDisabled
               : styles.visualizingButton}

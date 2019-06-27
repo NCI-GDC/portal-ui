@@ -187,4 +187,4 @@ const FacetWrapper = compose(
   withState('collapsed', 'setCollapsed', props => props.collapsed),
 )(WrapperComponent);
 
-export default FacetWrapper
+export default FacetWrapper;

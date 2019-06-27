@@ -76,11 +76,6 @@ const countDecimals = num => {
   return Math.floor(num) === num ? 0 : (num.toString().split('.')[1].length || 0);
 };
 
-// const debounceValidateIntervalFields = target => debounce(
-//   this.validateIntervalFields(target),
-//   300,
-// );
-
 class ContinuousCustomBinsModal extends Component {
   state = {
     binningMethod: 'range', // interval or range
@@ -106,6 +101,11 @@ class ContinuousCustomBinsModal extends Component {
   componentDidMount = () => {
     const { rangeRows } = this.props;
     this.validateRangeRow(rangeRows);
+
+    this.debounceValidateIntervalFields = debounce(
+      this.validateIntervalFields,
+      300
+    );
   }
 
   // binning method: interval
@@ -135,10 +135,7 @@ class ContinuousCustomBinsModal extends Component {
       intervalFields: nextIntervalFields,
     }, () => {
       if (inputError === null) {
-        console.log('event', updateEvent);
-        console.log('updateEvent', updateEvent);
-
-        this.validateIntervalFields(updateEvent);
+        this.debounceValidateIntervalFields(updateEvent);
       }
     });
   };

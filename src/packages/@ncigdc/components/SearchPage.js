@@ -72,6 +72,7 @@ const SearchPage = (
             defaultIndex={0}
             hideTabs={facetTabs.length <= 1}
             links={facetTabs}
+            linkStyle={{ paddingLeft: '1.2rem', paddingRight: '1.2rem' }}
             queryParam="facetTab"
             tabToolbar={(
               <UnstyledButton

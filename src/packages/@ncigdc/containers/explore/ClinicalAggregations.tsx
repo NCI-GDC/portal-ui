@@ -517,7 +517,7 @@ const enhance = compose(
                                     )}
                                     facet={componentFacet}
                                     headerStyle={{
-                                      padding: '0.5rem 1.2rem 0.5rem 1.2rem',
+                                      padding: '1.2rem',
                                       fontSize: '16px',
                                     }}
                                     isMatchingSearchValue={(componentFacet.full +

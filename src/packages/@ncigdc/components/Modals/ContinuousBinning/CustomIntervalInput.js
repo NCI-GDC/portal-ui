@@ -32,7 +32,9 @@ const CustomIntervalInput = ({
         <input
           disabled={disabled}
           id={`custom-interval-${name}`}
-          onBlur={handleBlur}
+          onBlur={() => {
+            handleBlur(name, value);
+          }}
           onChange={handleChange}
           style={{
             ...inputHorizontal,

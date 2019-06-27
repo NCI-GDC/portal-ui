@@ -185,7 +185,6 @@ const FacetWrapper = compose(
   }),
   withState('showingValueSearch', 'setShowingValueSearch', false),
   withState('collapsed', 'setCollapsed', props => props.collapsed),
-  // withTheme
 )(WrapperComponent);
 
 export default FacetWrapper

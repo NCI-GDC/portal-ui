@@ -95,41 +95,42 @@ const FacetHeader = compose(
           return (
             <Header
               className="test-facet-header"
-              onClick={() => setCollapsed(!collapsed)}
               style={style}
-              >
-              <Tooltip
-                Component={
-                  DescriptionComponent ? (
-                    <div style={{ maxWidth: '24em' }}>{DescriptionComponent}</div>
-                  ) : null
-                }
-                >
-                {!angleIconRight && (
-                  <AngleIcon
-                    style={{
-                      paddingRight: '0.25rem',
-                      transform: `rotate(${collapsed ? 270 : 0}deg)`,
-                    }}
-                    />
-                )}
-                {searchValue
-                  ? internalHighlight(searchValue, title, {
-                    backgroundColor: '#FFFF00',
-                  })
-                  : title}
-                {angleIconRight && (
-                  <AngleIcon
-                    style={{
-                      overflow: 'auto',
-                      display: 'flex',
-                      float: 'right',
-                      transform: `rotate(${collapsed ? 270 : 0}deg)`,
-                    }}
-                    />
-                )}
-              </Tooltip>
-              <IconsRow>
+            >
+              <Row style={{ flex: 8 }} onClick={() => setCollapsed(!collapsed)}>
+                <Tooltip
+                  Component={
+                    DescriptionComponent ? (
+                      <div style={{ maxWidth: '24em' }}>{DescriptionComponent}</div>
+                    ) : null
+                  }
+                  >
+                  {!angleIconRight && (
+                    <AngleIcon
+                      style={{
+                        paddingRight: '0.25rem',
+                        transform: `rotate(${collapsed ? 270 : 0}deg)`,
+                      }}
+                      />
+                  )}
+                  {searchValue
+                    ? internalHighlight(searchValue, title, {
+                      backgroundColor: '#FFFF00',
+                    })
+                    : title}
+                  {angleIconRight && (
+                    <AngleIcon
+                      style={{
+                        overflow: 'auto',
+                        display: 'flex',
+                        float: 'right',
+                        transform: `rotate(${collapsed ? 270 : 0}deg)`,
+                      }}
+                      />
+                  )}
+                </Tooltip>
+              </Row>
+              <IconsRow style={{ flex: 1, justifyContent: 'flex-end' }}>
                 {description && (
                   <Tooltip
                     Component={description}

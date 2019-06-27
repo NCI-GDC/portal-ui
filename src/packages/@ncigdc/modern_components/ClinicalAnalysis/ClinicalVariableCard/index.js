@@ -771,6 +771,8 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                     svg={() => wrapSvg({
                       selector: `#${wrapperId}-container .test-bar-chart svg`,
                       title: humanify({ term: fieldName }),
+                      bottomBuffer: 200,
+                      rightBuffer: 100
                     })}
                     tooltipHTML="Download image or data"
                     />

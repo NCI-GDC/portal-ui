@@ -123,15 +123,13 @@ class ContinuousCustomBinsModal extends Component {
       const max = binData[binData.length - 1].keyArray.split('-')[1];
       const amount = binData[0].keyArray.split('-')[1] - min;
 
-      const nextIntervalFields = {
-        amount,
-        max,
-        min,
-      };
-
       this.setState({
         binningMethod: 'interval',
-        intervalFields: nextIntervalFields,
+        intervalFields: {
+          amount,
+          max,
+          min,
+        },
       });
     }
   };

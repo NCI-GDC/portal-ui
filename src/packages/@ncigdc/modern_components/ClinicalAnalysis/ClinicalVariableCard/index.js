@@ -850,11 +850,11 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                 data={chartData}
                 height={CHART_HEIGHT}
                 margin={{
- top: 20,
-right: 50,
-bottom: 50,
-left: 55 
-}}
+                  top: 20,
+                  right: 50,
+                  bottom: 50,
+                  left: 55,
+                }}
                 styles={{
                   bars: { fill: analysisColors[variable.type] || theme.secondary },
                   tooltips: {
@@ -902,12 +902,12 @@ left: 55
                     />
                 ) : (
                   <SurvivalPlotWrapper
-                      {...selectedSurvivalData}
-                      height={202}
-                      plotType="categorical"
-                      survivalPlotLoading={survivalPlotLoading}
-                      uniqueClass="clinical-survival-plot"
-                      />
+                    {...selectedSurvivalData}
+                    height={202}
+                    plotType="categorical"
+                    survivalPlotLoading={survivalPlotLoading}
+                    uniqueClass="clinical-survival-plot"
+                    />
                   )}
               </div>
             )}
@@ -922,18 +922,20 @@ left: 55
                 }}
                 >
                 <Row style={{ width: '100%' }}>
-                  <Row style={{
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    marginLeft: 10,
-                    width: BOX_PLOT_RATIO,
-                  }}
-                       >
-                    <span style={{
-                      color: theme.greyScale3,
-                      fontSize: '1.2rem',
+                  <Row
+                    style={{
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      marginLeft: 10,
+                      width: BOX_PLOT_RATIO,
                     }}
-                          >
+                    >
+                    <span
+                      style={{
+                        color: theme.greyScale3,
+                        fontSize: '1.2rem',
+                      }}
+                      >
                       Box Plot
                     </span>
                   </Row>
@@ -957,18 +959,20 @@ left: 55
                       tooltipHTML="Download SVG or PNG"
                       />
                   </Row>
-                  <Row style={{
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    marginLeft: 10,
-                    width: QQ_PLOT_RATIO,
-                  }}
-                       >
-                    <span style={{
-                      color: theme.greyScale3,
-                      fontSize: '1.2rem',
+                  <Row
+                    style={{
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      marginLeft: 10,
+                      width: QQ_PLOT_RATIO,
                     }}
-                          >
+                    >
+                    <span
+                      style={{
+                        color: theme.greyScale3,
+                        fontSize: '1.2rem',
+                      }}
+                      >
                       QQ Plot
                     </span>
                   </Row>
@@ -1146,6 +1150,7 @@ left: 55
                         dispatch(
                           setModal(
                             <RemoveSetModal
+                              enableDragging
                               field="cases.case_id"
                               filters={cardFilters}
                               RemoveFromSetButton={RemoveFromExploreCaseSetButton}
@@ -1233,6 +1238,10 @@ left: 55
                               bins={variable.bins}
                               dataBuckets={dataBuckets}
                               fieldName={humanify({ term: fieldName })}
+                              modalStyle={{
+                                maxWidth: '720px',
+                                width: '90%',
+                              }}
                               onClose={() => dispatch(setModal(null))}
                               onUpdate={(newBins) => {
                                 dispatch(
@@ -1244,8 +1253,7 @@ left: 55
                                   }),
                                 );
                                 dispatch(setModal(null));
-                              }
-                              }
+                              }}
                               />
                           ),
                       ),
@@ -1305,9 +1313,9 @@ left: 55
             }}
             tableId={`analysis-${tsvSubstring}-table`}
             />
-        </Column >
+        </Column>
       )}
-    </Column >
+    </Column>
   );
 };
 

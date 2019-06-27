@@ -133,11 +133,19 @@ module.exports = {
       'packageDir': './'
     }],
     'react/jsx-closing-bracket-location': ['warn', 'props-aligned'],
+    'react/jsx-filename-extension': ['warn', {
+      extensions: [
+        '.js',
+        '.jsx',
+        '.tsx',
+      ],
+    }],
+    'react/jsx-first-prop-new-line': ['warn', 'multiline'],
     'react/jsx-indent': ['warn', 2, {
       checkAttributes: true,
-      // indentLogicalExpressions: true,
+      indentLogicalExpressions: true,
     }],
-    'react/jsx-indent-props': ['warn', 'first'],
+    'react/jsx-indent-props': ['warn', 2],
     'react/jsx-max-props-per-line': ['warn', {
       maximum: 1,
       when: 'multiline',
@@ -153,7 +161,7 @@ module.exports = {
       closingSlash: 'never',
       beforeSelfClosing: 'always',
       afterOpening: 'never',
-      beforeClosing: 'allow',
+      beforeClosing: 'never',
     }],
     'react/jsx-wrap-multilines': ['error', {
       declaration: 'parens-new-line',
@@ -167,13 +175,6 @@ module.exports = {
     'react/no-did-mount-set-state': 'warn',
     'react/no-did-update-set-state': 'warn',
     'react/no-direct-mutation-state': 'warn',
-    'react/jsx-filename-extension': ['warn', {
-      extensions: [
-        '.js',
-        '.jsx',
-        '.tsx',
-      ],
-    }],
     'react/no-multi-comp': 'warn',
     'react/no-unknown-property': 'warn',
     'react/sort-comp': 'warn',

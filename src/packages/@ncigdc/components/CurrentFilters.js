@@ -1,7 +1,7 @@
 // @flow
 import React from 'react';
 import { take, xor, omit } from 'lodash';
-import UndoIcon from 'react-icons/lib/md/undo';
+import Undo from 'react-icons/lib/md/undo';
 import LeftArrow from 'react-icons/lib/fa/long-arrow-left';
 import Cogs from 'react-icons/lib/fa/cogs';
 import Color from 'color';
@@ -208,7 +208,7 @@ const CurrentFilters = (
               style={styles.groupPadding}
               query={omit(query, 'filters')}
             >
-              <Button leftIcon={<UndoIcon />}>Clear</Button>
+              <Button leftIcon={<Undo />}>Clear</Button>
             </NotUnderlinedLink>
           )}
 

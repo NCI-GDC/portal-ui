@@ -107,7 +107,7 @@ const defaultVariableConfig = {
 
 const defaultContinuousVariableConfig = {
   continuousBinType: 'default',
-}
+};
 
 interface ICurrentAnalysis {
   currentAnalysisIndex: number;

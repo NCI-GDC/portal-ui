@@ -25,7 +25,8 @@ const BucketRow = styled(Row, {
 });
 
 const NotMissingFacet = (props: TProps) => {
-  const dotField = props.field.replace(/__/g, '.');
+  const { collapsed, field, notMissingDocCount, style, title } = props
+  const dotField = field.replace(/__/g, '.');
   return (
     <LocationSubscriber>
       {(ctx: { pathname: string, query: IRawQuery }) => {
@@ -34,8 +35,8 @@ const NotMissingFacet = (props: TProps) => {
             parseFilterParam((ctx.query || {}).filters, {}).content) ||
           [];
         return (
-          <Container style={props.style} className="test-not-missing-facet">
-            {!props.collapsed && (
+          <Container style={style} className="test-not-missing-facet">
+            {!collapsed && (
               <Column>
                 <BucketRow>
                   <BucketLink
@@ -67,18 +68,18 @@ const NotMissingFacet = (props: TProps) => {
                           field === dotField &&
                           value.includes('missing'),
                       )}
-                      id={`input-${props.title}-not-missing`}
-                      name={`input-${props.title}-not-missing`}
+                      id={`input-${title}-not-missing`}
+                      name={`input-${title}-not-missing`}
                     />
                     <label
-                      htmlFor={`input-${props.title}-not-missing`}
+                      htmlFor={`input-${title}-not-missing`}
                       style={{ verticalAlign: 'middle' }}
                     >
                       Not Missing
                     </label>
                   </BucketLink>
                   <CountBubble>
-                    {props.notMissingDocCount.toLocaleString()}
+                    {notMissingDocCount.toLocaleString()}
                   </CountBubble>
                 </BucketRow>
               </Column>

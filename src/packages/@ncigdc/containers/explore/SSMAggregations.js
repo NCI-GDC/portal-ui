@@ -163,7 +163,6 @@ export const SSMAggregationsComponent = compose(
       idField="ssms.ssm_id"
       style={{
         width: '100%',
-        borderBottom: `1px solid ${props.theme.greyScale5}`,
         padding: '0 1.2rem 1rem',
       }}
       type="ssm"
@@ -192,7 +191,6 @@ export const SSMAggregationsComponent = compose(
             facet={facet}
             key={facet.full}
             relay={props.relay}
-            style={{ borderBottom: `1px solid ${props.theme.greyScale5}` }}
             title={facet.title}
             />
         ))}
@@ -201,12 +199,12 @@ export const SSMAggregationsComponent = compose(
         field="ssms.cosmic_id"
         setCollapsed={props.setCosmicIdCollapsed}
         title="COSMIC ID"
+        style={{ borderTop: `1px solid ${props.theme.greyScale5}` }}
         />
       <NotMissingFacet
         collapsed={props.cosmicIdCollapsed}
         field="ssms.cosmic_id"
         notMissingDocCount={props.ssms.cosmic_id_not_missing.total}
-        style={{ borderBottom: `1px solid ${props.theme.greyScale5}` }}
         title="COSMIC ID"
         />
       <FacetHeader
@@ -214,12 +212,12 @@ export const SSMAggregationsComponent = compose(
         field="ssms.consequence.transcript.annotation.dbsnp_rs"
         setCollapsed={props.setCosmicIdCollapsed}
         title="dbSNP rs ID"
+        style={{borderTop: `1px solid ${props.theme.greyScale5}`}}
         />
       <NotMissingFacet
         collapsed={props.dbSNPCollapsed}
         field="ssms.consequence.transcript.annotation.dbsnp_rs"
         notMissingDocCount={props.ssms.dbsnp_rs_not_missing.total}
-        style={{ borderBottom: `1px solid ${props.theme.greyScale5}` }}
         title="dbSNP rs ID"
         />
     </div>

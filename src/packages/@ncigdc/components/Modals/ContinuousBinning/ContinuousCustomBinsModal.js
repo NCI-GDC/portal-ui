@@ -6,21 +6,20 @@ import RangeTableRow from './RangeTableRow';
 import BinningMethodInput from './BinningMethodInput';
 import CustomIntervalFields from './CustomIntervalFields';
 import styles from './styles';
-
-const defaultRangeRow = [
-  {
-    active: true,
-    fields: {
-      from: '',
-      name: '',
-      to: '',
-    },
-  },
-];
+import RangeInputRow from './RangeInputRow';
 
 const countDecimals = num => {
   return Math.floor(num) === num ? 0 : (num.toString().split('.')[1].length || 0);
 };
+
+const defaultRangeRow = [{
+  active: true,
+  fields: {
+    from: '',
+    name: '',
+    to: '',
+  },
+}];
 
 class ContinuousCustomBinsModal extends Component {
   state = {
@@ -40,7 +39,8 @@ class ContinuousCustomBinsModal extends Component {
     rangeInputErrors: {},
     rangeNameErrors: [],
     rangeOverlapErrors: [],
-    rangeRows: [],
+    // rangeRows: [],
+    rangeRows: defaultRangeRow,
   };
 
   componentDidMount = () => {
@@ -200,8 +200,7 @@ class ContinuousCustomBinsModal extends Component {
 
   handleRemoveRow = rowIndex => {
     const { rangeRows } = this.state;
-    const filteredRangeRows = rangeRows.filter((filterRow, filterRowIndex) => filterRowIndex !== rowIndex);
-    const nextRangeRows = filteredRangeRows.length === 0 ? defaultRangeRow : filteredRangeRows;
+    const nextRangeRows = rangeRows.filter((filterRow, filterRowIndex) => filterRowIndex !== rowIndex);
     this.setState({ rangeRows: nextRangeRows });
     this.validateRangeRow(nextRangeRows);
   };
@@ -216,17 +215,28 @@ class ContinuousCustomBinsModal extends Component {
     this.validateRangeRow(nextRangeRows);
   };
 
+  validateNewRow = () => false;
+
+  handleAddRow = inputRow => {
+    const { rangeRows } = this.state;
+
+    const rowHasErrors = this.validateNewRow(inputRow);
+    if (rowHasErrors) return;
+
+    this.setState({ rangeRows: rangeRows.concat(inputRow) });
+  }
+
   handleUpdateRow = (inputRowIndex, inputRow) => {
     const { rangeRows } = this.state;
-    const nextRangeRows = rangeRows.map((rangeRow, rowIndex) => (rowIndex === inputRowIndex ? inputRow : rangeRow));
+    const nextRangeRows = rangeRows
+      .map((rangeRow, rowIndex) => (rowIndex === inputRowIndex
+        ? inputRow
+        : rangeRow));
 
     const rowHasErrors = this.validateRangeRow(nextRangeRows);
     if (rowHasErrors) return;
 
-    const checkIsLastRow = inputRowIndex + 1 === rangeRows.length;
-    const addNewRow = nextRangeRows.concat(defaultRangeRow);
-
-    this.setState({ rangeRows: checkIsLastRow ? addNewRow : nextRangeRows });
+    this.setState({ rangeRows: nextRangeRows });
   }
 
   // submit
@@ -412,7 +422,7 @@ class ContinuousCustomBinsModal extends Component {
                 validateIntervalFields={e => {
                   this.validateIntervalFields(e);
                 }}
-                />
+              />
             </Column>
           </Row>
           <div
@@ -423,7 +433,7 @@ class ContinuousCustomBinsModal extends Component {
               }
             }}
             role="presentation"
-            >
+          >
             <div style={{ marginBottom: '15px' }}>
               <BinningMethodInput
                 binningMethod="range"
@@ -432,32 +442,32 @@ class ContinuousCustomBinsModal extends Component {
                   this.setState({ binningMethod: 'range' });
                 }}
                 label="Manually"
-                />
+              />
             </div>
             <div style={styles.wrapper}>
               <div style={styles.heading}>
                 <div
                   id="range-table-label-name"
                   style={styles.column}
-                  >
+                >
                   Bin Name
                 </div>
                 <div
                   id="range-table-label-min"
                   style={styles.column}
-                  >
+                >
                   From
                 </div>
                 <div
                   id="range-table-label-max"
                   style={styles.column}
-                  >
+                >
                   To
                 </div>
                 <div
                   id="range-table-label-options"
                   style={styles.optionsColumn}
-                  >
+                >
                   Options
                 </div>
               </div>
@@ -478,12 +488,14 @@ class ContinuousCustomBinsModal extends Component {
                     rowIndex={rowIndex}
                     rowNameError={rangeNameErrors[rowIndex] || ''}
                     rowOverlapErrors={rangeOverlapErrors[rowIndex] || []}
-                    rowsLength={rangeRows.length}
                     styles={styles}
-                    />
+                  />
                 ))}
                 {/* <RangeInputRow
-                  /> */}
+                  rangeRows={rangeRows}
+                  rangeInputErrors={rangeInputErrors}
+                  handleAddRow={this.handleAddRow}
+                /> */}
 
               </div>
             </div>
@@ -511,20 +523,20 @@ class ContinuousCustomBinsModal extends Component {
             justifyContent: 'flex-end',
             margin: '20px',
           }}
-          >
+        >
           <span style={{
             color: 'red',
             justifyContent: 'flex-start',
             visibility: modalWarning.length > 0 ? 'visible' : 'hidden',
           }}
-                >
+          >
             {`Warning: ${modalWarning}`}
           </span>
           <Button
             onClick={onClose}
             onMouseDown={onClose}
             style={styles.visualizingButton}
-            >
+          >
             Cancel
           </Button>
           <Button
@@ -534,7 +546,7 @@ class ContinuousCustomBinsModal extends Component {
             style={submitDisabled
               ? styles.inputDisabled
               : styles.visualizingButton}
-            >
+          >
             Save Bins
           </Button>
         </Row>

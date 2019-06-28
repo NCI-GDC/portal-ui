@@ -69,32 +69,6 @@ class RangeTableRow extends React.Component {
     }
   };
 
-  handleEdit = () => {
-    const { handleToggleActiveRow, rowIndex } = this.props;
-    handleToggleActiveRow(rowIndex, true);
-  }
-
-  handleCancel = () => {
-    const { fields, handleToggleActiveRow, rowIndex } = this.props;
-    this.setState({
-      fieldErrors: defaultFieldState,
-      fieldValues: fields,
-    });
-    handleToggleActiveRow(rowIndex, false);
-  }
-
-  handleRemove = () => {
-    const { handleRemoveRow, rowIndex, rowsLength } = this.props;
-    // if removing the only row, just erase the values
-    if (rowsLength === 1) {
-      this.setState({
-        fieldErrors: defaultFieldState,
-        fieldValues: defaultFieldState,
-      });
-    }
-    handleRemoveRow(rowIndex);
-  }
-
   updateInput = target => {
     const inputKey = target.id.split('-')[3];
     const inputValue = target.value;
@@ -205,24 +179,7 @@ class RangeTableRow extends React.Component {
                   >
                   <i aria-hidden="true" className="fa fa-check" />
                 </Button>
-                <Button
-                  aria-label="Cancel"
-                  buttonContentStyle={{ justifyContent: 'center' }}
-                  disabled={!rangeMethodActive}
-                  id={`range-row-${rowIndex}-cancel`}
-                  onClick={() => {
-                    this.handleCancel();
-                  }}
-                  onMouseDown={() => {
-                    this.handleCancel();
-                  }}
-                  style={{
-                    ...(rangeMethodActive ? { background: 'red' } : inputDisabled),
-                    ...optionsButton,
-                  }}
-                  >
-                  <i aria-hidden="true" className="fa fa-close" />
-                </Button>
+
               </React.Fragment>
             ) : (
               <Button
@@ -243,24 +200,7 @@ class RangeTableRow extends React.Component {
                   <i aria-hidden="true" className="fa fa-pencil" />
                 </Button>
               )}
-            <Button
-              aria-label="Remove"
-              buttonContentStyle={{ justifyContent: 'center' }}
-              disabled={!rangeMethodActive}
-              id={`range-row-${rowIndex}-remove`}
-              onClick={() => {
-                this.handleRemove();
-              }}
-              onMouseDown={() => {
-                this.handleRemove();
-              }}
-              style={{
-                ...(rangeMethodActive ? visualizingButton : inputDisabled),
-                ...optionsButton,
-              }}
-              >
-              <i aria-hidden="true" className="fa fa-trash" />
-            </Button>
+
           </div>
         </div>
         {rangeMethodActive && rowNameError.length > 0 && (

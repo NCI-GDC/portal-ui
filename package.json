@@ -28,7 +28,6 @@
     "@oncojs/boxplot": "0.2.1",
     "@oncojs/react-lolliplot": "0.11.1",
     "@oncojs/sapien": "0.5.2",
-    "@oncojs/survivalplot": "0.8.2",
     "@types/d3": "5.0.1",
     "@types/filesize": "3.6.0",
     "@types/lodash": "4.14.117",

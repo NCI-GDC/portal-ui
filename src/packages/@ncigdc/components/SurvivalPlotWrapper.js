@@ -9,7 +9,8 @@ import {
 } from 'recompose';
 import _ from 'lodash';
 import { scaleOrdinal, schemeCategory10 } from 'd3';
-import { renderPlot } from '@oncojs/survivalplot';
+// import { renderPlot } from '@oncojs/survivalplot';
+import { renderPlot } from '@oncojs/survivalplot/src/packages/@oncojs/survivalplot';
 import Loader from '@ncigdc/uikit/Loaders/Loader';
 import toMap from '@ncigdc/utils/toMap';
 import { Row, Column } from '@ncigdc/uikit/Flex';
@@ -23,6 +24,7 @@ import DownloadVisualizationButton from '@ncigdc/components/DownloadVisualizatio
 import { visualizingButton } from '@ncigdc/theme/mixins';
 import VisualizationHeader from '@ncigdc/components/VisualizationHeader';
 import { performanceTracker } from '@ncigdc/utils/analytics';
+import { MINIMUM_CASES } from '@ncigdc/utils/survivalplot';
 
 import './survivalPlot.css';
 
@@ -309,6 +311,7 @@ function renderSurvivalPlot(props: TProps): void {
       onDomainChange: setXDomain,
       margins: SVG_MARGINS,
       shouldShowConfidenceIntervals: false,
+      minimumDonors: MINIMUM_CASES,
     });
     const performanceContext = {
       data_sets: results.length,

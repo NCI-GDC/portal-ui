@@ -18,13 +18,13 @@ const {
   visualizingButton,
 } = styles;
 
-const defaultFieldState = {
+export const defaultFieldState = {
   from: '',
   name: '',
   to: '',
 };
 
-const fieldsOrder = [
+export const fieldsOrder = [
   'name',
   'from',
   'to',

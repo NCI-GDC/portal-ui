@@ -4,6 +4,7 @@ import OutsideClickHandler from 'react-outside-click-handler';
 import Button from '@ncigdc/uikit/Button';
 import RangeInput from './RangeInput';
 import styles from './styles';
+import { defaultFieldState, fieldsOrder } from './RangeTableRow';
 
 const {
   input: {
@@ -18,29 +19,17 @@ const {
   visualizingButton,
 } = styles;
 
-const defaultFieldState = {
-  from: '',
-  name: '',
-  to: '',
-};
-
-const fieldsOrder = [
-  'name',
-  'from',
-  'to',
-];
-
-class RangeTableRow extends React.Component {
+class RangeInputRow extends React.Component {
   state = {
     fieldErrors: defaultFieldState,
     fieldValues: defaultFieldState,
   };
 
-  componentDidMount() {
-    const { fields } = this.props;
+  // componentDidMount() {
+  //   const { fields } = this.props;
 
-    this.setState({ fieldValues: fields });
-  }
+  //   this.setState({ fieldValues: fields });
+  // }
 
   componentDidUpdate(prevProps) {
     const { fields } = this.props;
@@ -52,21 +41,22 @@ class RangeTableRow extends React.Component {
     }
   }
 
-  handleSave = () => {
-    const validateFieldsResult = this.validateFields();
-    this.setState({ fieldErrors: validateFieldsResult });
-    const rowIsValid = Object.keys(validateFieldsResult)
-      .filter(field => validateFieldsResult[field].length > 0).length === 0;
+  handleAdd = () => {
+    // const validateFieldsResult = this.validateFields();
+    // this.setState({ fieldErrors: validateFieldsResult });
+    // const rowIsValid = Object.keys(validateFieldsResult)
+    //   .filter(field => validateFieldsResult[field].length > 0).length === 0;
 
-    if (rowIsValid) {
-      const { handleUpdateRow, rowIndex } = this.props;
-      const { fieldValues } = this.state;
-      const nextRow = {
-        active: false,
-        fields: fieldValues,
-      };
-      handleUpdateRow(rowIndex, nextRow);
-    }
+    // if (rowIsValid) {
+    const { handleAddRow } = this.props;
+    const { fieldValues } = this.state;
+    const nextRow = {
+      active: false,
+      fields: fieldValues,
+    };
+    handleAddRow(nextRow);
+    this.setState({ fieldValues: defaultFieldState });
+    // }
   };
 
   updateInput = target => {
@@ -119,36 +109,30 @@ class RangeTableRow extends React.Component {
 
   render = () => {
     const {
+      handleAddRow,
       rangeMethodActive,
-      rowActive,
       rowIndex,
-      rowNameError,
-      rowOverlapErrors,
     } = this.props;
 
     const { fieldErrors, fieldValues } = this.state;
 
     return (
       <OutsideClickHandler
-        disabled={!rowActive || !rangeMethodActive}
+        disabled={!rangeMethodActive}
         onOutsideClick={() => {
-          this.handleSave();
+          // this.handleValidate();
         }}
-        >
+      >
         <div style={{ display: 'flex' }}>
           <div
-            onMouseDown={() => {
-              rowActive || this.handleEdit();
-            }}
-            role="presentation"
             style={rowFieldsWrapper}
-            >
+          >
             {
               fieldsOrder.map(rowItem => {
                 const rowId = `range-row-${rowIndex}-${rowItem}`;
                 return (
                   <RangeInput
-                    disabled={!rowActive || !rangeMethodActive}
+                    disabled={!rangeMethodActive}
                     error={fieldErrors[rowItem]}
                     errorVisible={rangeMethodActive}
                     handleChange={e => {
@@ -157,53 +141,33 @@ class RangeTableRow extends React.Component {
                     id={rowId}
                     key={rowId}
                     value={fieldValues[rowItem]}
-                    />
+                  />
                 );
               })}
           </div>
           <div style={optionsColumn}>
-            {rowActive ? (
-              <React.Fragment>
-                <Button
-                  aria-label="Save"
-                  buttonContentStyle={{ justifyContent: 'center' }}
-                  disabled={!rangeMethodActive}
-                  id={`range-row-${rowIndex}-save`}
-                  onClick={() => {
-                    this.handleSave();
-                  }}
-                  style={{
-                    ...(rangeMethodActive ? { background: 'green' } : inputDisabled),
-                    ...optionsButton,
-                  }}
-                  >
-                  <i aria-hidden="true" className="fa fa-check" />
-                </Button>
-
-              </React.Fragment>
-            ) : (
-              <Button
-                  aria-label="Edit"
-                  disabled={!rangeMethodActive}
-                  id={`range-row-${rowIndex}-edit`}
-                  onClick={() => {
-                    this.handleEdit();
-                  }}
-                  onMouseDown={() => {
-                    this.handleEdit();
-                  }}
-                  style={{
-                    ...(rangeMethodActive ? visualizingButton : inputDisabled),
-                    ...optionsButton,
-                  }}
-                  >
-                  <i aria-hidden="true" className="fa fa-pencil" />
-                </Button>
-              )}
-
+            <Button
+              aria-label="Add row"
+              buttonContentStyle={{ justifyContent: 'center' }}
+              disabled={!rangeMethodActive}
+              id={`range-row-${rowIndex}-add`}
+              onClick={() => {
+                this.handleAdd();
+              }}
+              style={{
+                ...(rangeMethodActive
+                  ? visualizingButton
+                  : inputDisabled),
+                ...optionsButton,
+                width: '100%',
+              }}
+            >
+              <i aria-hidden="true" className="fa fa-plus-circle" />
+              &nbsp; Add
+            </Button>
           </div>
         </div>
-        {rangeMethodActive && rowNameError.length > 0 && (
+        {/* {rangeMethodActive && rowNameError.length > 0 && (
           <div style={rowError}>
             {rowNameError}
           </div>
@@ -214,10 +178,10 @@ class RangeTableRow extends React.Component {
             {`'${fieldValues.name}' overlaps with ${rowOverlapErrors.map(err => `'${err}'`).join(', ')}`}
           </div>
         )
-        }
+        } */}
       </OutsideClickHandler>
     );
   }
 }
 
-export default RangeTableRow;
+export default RangeInputRow;

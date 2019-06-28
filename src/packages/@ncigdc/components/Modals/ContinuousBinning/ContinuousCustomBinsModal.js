@@ -12,14 +12,16 @@ const countDecimals = num => {
   return Math.floor(num) === num ? 0 : (num.toString().split('.')[1].length || 0);
 };
 
-const defaultRangeRow = [{
-  active: true,
-  fields: {
-    from: '',
-    name: '',
-    to: '',
+const defaultRangeRow = [
+  {
+    active: true,
+    fields: {
+      from: '',
+      name: '',
+      to: '',
+    },
   },
-}];
+];
 
 class ContinuousCustomBinsModal extends Component {
   state = {
@@ -39,8 +41,8 @@ class ContinuousCustomBinsModal extends Component {
     rangeInputErrors: {},
     rangeNameErrors: [],
     rangeOverlapErrors: [],
-    // rangeRows: [],
-    rangeRows: defaultRangeRow,
+    rangeRows: [],
+    // rangeRows: defaultRangeRow,
   };
 
   componentDidMount = () => {
@@ -491,13 +493,14 @@ class ContinuousCustomBinsModal extends Component {
                     styles={styles}
                   />
                 ))}
-                {/* <RangeInputRow
-                  rangeRows={rangeRows}
-                  rangeInputErrors={rangeInputErrors}
-                  handleAddRow={this.handleAddRow}
-                /> */}
-
               </div>
+              <RangeInputRow
+                handleAddRow={this.handleAddRow}
+                rangeInputErrors={rangeInputErrors}
+                rangeMethodActive={binningMethod === 'range'}
+                rangeRows={rangeRows}
+                styles={styles}
+              />
             </div>
             {/* <Button
             disabled={binningMethod !== 'range'}

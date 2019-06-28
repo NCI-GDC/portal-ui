@@ -59,106 +59,110 @@ const MagnifyingGlass = styled(SearchIcon, {
   },
 });
 
-const FacetHeader = compose(
+const FacetHeader = ({
+  angleIconRight = false,
+  collapsed,
+  description,
+  DescriptionComponent,
+  field,
+  handleRequestRemove,
+  hasValueSearch,
+  isRemovable,
+  searchValue,
+  setCollapsed,
+  setShowingValueSearch,
+  showingValueSearch,
+  style,
+  title,
+}) => (
+  <LocationSubscriber>
+    {(ctx: { pathname: string, query: IRawQuery }) => {
+      const currentFilters =
+          ctx.query && parseFilterParam((ctx.query || {}).filters, {});
+      const spanStyle = { cursor: 'pointer' };
+      if (angleIconRight) {
+        spanStyle.width = '100%';
+      }
+      return (
+        <Header
+          className="test-facet-header"
+          style={style}
+          >
+          <Row onClick={() => setCollapsed(!collapsed)} style={{ flex: 8 }}>
+            <Tooltip
+              Component={
+                  DescriptionComponent ? (
+                    <div style={{ maxWidth: '24em' }}>{DescriptionComponent}</div>
+                  ) : null
+                }
+              >
+              {!angleIconRight && (
+                <AngleIcon
+                  style={{
+                    paddingRight: '0.25rem',
+                    transform: `rotate(${collapsed ? 270 : 0}deg)`,
+                  }}
+                  />
+              )}
+              {searchValue
+                  ? internalHighlight(searchValue, title, {
+                    backgroundColor: '#FFFF00',
+                  })
+                  : title}
+              {angleIconRight && (
+                <AngleIcon
+                  style={{
+                    display: 'flex',
+                    float: 'right',
+                    overflow: 'auto',
+                    transform: `rotate(${collapsed ? 270 : 0}deg)`,
+                  }}
+                  />
+              )}
+            </Tooltip>
+          </Row>
+          <IconsRow
+            style={{
+              flex: 1,
+              justifyContent: 'flex-end',
+            }}
+            >
+            {description && (
+              <Tooltip
+                Component={description}
+                {...css({ ':not(:last-child)': { marginRight: 8 } })}
+                >
+                <QuestionIcon />
+              </Tooltip>
+            )}
+            {hasValueSearch && (
+              <MagnifyingGlass
+                onClick={() => setShowingValueSearch(!showingValueSearch)}
+                />
+            )}
+            <FacetResetButton currentFilters={currentFilters} field={field} />
+            {isRemovable && (
+              <RemoveIcon
+                aria-label="Close"
+                onClick={handleRequestRemove}
+                onKeyPress={event => event.key === 'Enter' && handleRequestRemove()}
+                role="button"
+                tabIndex="0"
+                />
+            )}
+          </IconsRow>
+        </Header>
+      );
+    }}
+  </LocationSubscriber>
+);
+
+export default compose(
   setDisplayName('EnhancedFacetHeader'),
   defaultProps({
     handleRequestRemove: () => { },
-    isRemovable: false,
     hasValueSearch: false,
+    isRemovable: false,
     setShowingValueSearch: () => { },
   }),
-)(
-  ({
-    angleIconRight = false,
-    collapsed,
-    description,
-    DescriptionComponent,
-    field,
-    handleRequestRemove,
-    hasValueSearch,
-    isRemovable,
-    searchValue,
-    setCollapsed,
-    setShowingValueSearch,
-    showingValueSearch,
-    style,
-    title,
-  }) => (
-    <LocationSubscriber>
-        {(ctx: { pathname: string, query: IRawQuery }) => {
-          const currentFilters =
-            ctx.query && parseFilterParam((ctx.query || {}).filters, {});
-          const spanStyle = { cursor: 'pointer' };
-          if (angleIconRight) {
-            spanStyle.width = '100%';
-          }
-          return (
-            <Header
-              className="test-facet-header"
-              style={style}
-            >
-              <Row style={{ flex: 8 }} onClick={() => setCollapsed(!collapsed)}>
-                <Tooltip
-                  Component={
-                    DescriptionComponent ? (
-                      <div style={{ maxWidth: '24em' }}>{DescriptionComponent}</div>
-                    ) : null
-                  }
-                  >
-                  {!angleIconRight && (
-                    <AngleIcon
-                      style={{
-                        paddingRight: '0.25rem',
-                        transform: `rotate(${collapsed ? 270 : 0}deg)`,
-                      }}
-                      />
-                  )}
-                  {searchValue
-                    ? internalHighlight(searchValue, title, {
-                      backgroundColor: '#FFFF00',
-                    })
-                    : title}
-                  {angleIconRight && (
-                    <AngleIcon
-                      style={{
-                        overflow: 'auto',
-                        display: 'flex',
-                        float: 'right',
-                        transform: `rotate(${collapsed ? 270 : 0}deg)`,
-                      }}
-                      />
-                  )}
-                </Tooltip>
-              </Row>
-              <IconsRow style={{ flex: 1, justifyContent: 'flex-end' }}>
-                {description && (
-                  <Tooltip
-                    Component={description}
-                    {...css({ ':not(:last-child)': { marginRight: 8 } })}
-                    >
-                    <QuestionIcon />
-                  </Tooltip>
-                )}
-                {hasValueSearch && (
-                  <MagnifyingGlass
-                    onClick={() => setShowingValueSearch(!showingValueSearch)}
-                    />
-                )}
-                <FacetResetButton currentFilters={currentFilters} field={field} />
-                {isRemovable && (
-                  <RemoveIcon
-                    aria-label="Close"
-                    onClick={handleRequestRemove}
-                    onKeyPress={event => event.key === 'Enter' && handleRequestRemove()}
-                    role="button"
-                    tabIndex="0"
-                    />
-                )}
-              </IconsRow>
-            </Header>
-          );
-        }}
-      </LocationSubscriber>
-  ),
-);
-export default FacetHeader;
+)(FacetHeader);

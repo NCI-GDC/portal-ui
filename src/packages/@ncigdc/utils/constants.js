@@ -440,6 +440,7 @@ export const capitalisedTerms = {
   aa_: 'AA_',
   'ajc.': 'AJC.',
   ajcc: 'AJCC',
+  bmi: 'BMI',
   'cog.': 'COG.',
   cog_: 'COG_',
   'dlco.': 'DLCO.',

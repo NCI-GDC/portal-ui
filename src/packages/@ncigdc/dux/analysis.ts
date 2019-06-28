@@ -183,7 +183,8 @@ const reducer = (
                 type: action.payload.fieldType,
                 plotTypes: action.payload.plotTypes,
                 scrollToCard: action.payload.scrollToCard,
-                ...(currentAnalysis.displayVariables.plotTypes === 'continuous'   ? { continuousBinType: action.payload.continuousBinType }
+                ...(currentAnalysis.displayVariables.plotTypes === 'continuous'
+                  ? { continuousBinType: action.payload.continuousBinType }
                   : {}),
               },
             },

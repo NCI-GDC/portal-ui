@@ -281,11 +281,11 @@ class ContinuousCustomBinsModal extends Component {
         }, {})
         : makeCustomIntervalBins();
 
-      const customInterval = binningMethod === 'interval'
+      const continuousCustomInterval = binningMethod === 'interval'
         ? intervalFields.amount
-        : '0';
+        : 0;
 
-      onUpdate(newBins, binningMethod, customInterval);
+      onUpdate(newBins, binningMethod, continuousCustomInterval);
     }
   };
 

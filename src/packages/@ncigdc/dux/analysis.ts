@@ -37,7 +37,7 @@ type TClinicalAnalysisProperty = 'name'; // only type mutable properties
 export interface IAnalysisPayload {
   scrollToCard?: boolean;
   continuousBinType?: 'default' | 'interval' | 'range';
-  continuousCustomInterval?: any;
+  continuousCustomInterval?: number | string;
   analysis?: IAnalysis;
   id: string;
   fieldName?: string;

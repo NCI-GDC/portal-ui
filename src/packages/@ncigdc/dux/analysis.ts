@@ -36,6 +36,7 @@ type TClinicalAnalysisProperty = 'name'; // only type mutable properties
 
 export interface IAnalysisPayload {
   scrollToCard?: boolean;
+  continuousBinType?: 'default' | 'interval' | 'range';
   analysis?: IAnalysis;
   id: string;
   fieldName?: string;
@@ -98,10 +99,14 @@ const initialState: IAnalysisState = {
 };
 
 const defaultVariableConfig = {
-  active_chart: 'histogram',
   active_calculation: 'number',
+  active_chart: 'histogram',
   active_survival: 'overall',
   bins: {},
+};
+
+const defaultContinuousVariableConfig = {
+  continuousBinType: 'default',
 };
 
 interface ICurrentAnalysis {
@@ -172,9 +177,15 @@ const reducer = (
               ...currentAnalysis.displayVariables,
               [action.payload.fieldName as string]: {
                 ...defaultVariableConfig,
+                ...(currentAnalysis.displayVariables.plotTypes === 'continuous' 
+                  ? defaultContinuousVariableConfig 
+                  : {}),
                 type: action.payload.fieldType,
                 plotTypes: action.payload.plotTypes,
                 scrollToCard: action.payload.scrollToCard,
+                ...(currentAnalysis.displayVariables.plotTypes === 'continuous'
+                  ? { continuousBinType: action.payload.continuousBinType }
+                  : {}),
               },
             },
           },

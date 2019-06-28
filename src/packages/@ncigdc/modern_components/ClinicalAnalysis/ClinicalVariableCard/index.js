@@ -11,18 +11,18 @@ import DownCaretIcon from 'react-icons/lib/fa/caret-down';
 import { connect } from 'react-redux';
 import {
   find,
+  get,
+  groupBy,
   isEmpty,
   isEqual,
-  min,
   map,
   max,
+  maxBy,
+  min,
+  reduce,
   reject,
   sortBy,
   truncate,
-  groupBy,
-  get,
-  reduce,
-  maxBy
 } from 'lodash';
 import { scaleOrdinal, schemeCategory10 } from 'd3';
 
@@ -79,6 +79,8 @@ import { humanify } from '@ncigdc/utils/string';
 import timestamp from '@ncigdc/utils/timestamp';
 
 import { IS_CDAVE_DEV, analysisColors } from '@ncigdc/utils/constants';
+import ContinuousCustomBinsModal from '@ncigdc/components/Modals/ContinuousBinning/ContinuousCustomBinsModal';
+
 import {
   boxTableAllowedStats,
   boxTableRenamedStats,
@@ -227,15 +229,15 @@ const styles = {
   }),
 };
 
-const parseBucketValue = value => (value % 1
-  ? Number.parseFloat(value).toFixed(2)
+const parseContinuousBucketValue = value => (value % 1
+  ? value
   : Math.round(value * 100) / 100);
 
-const getRangeValue = (key, nextInterval) => `${parseBucketValue(key)}${
-  nextInterval === 0
-    ? ' and up'
-    : ` to ${parseBucketValue(nextInterval - 1)}`
-  }`;
+const getContinuousRangeValue = keyValues => {
+  const keyValuesParsed = keyValues
+    .map(val => parseContinuousBucketValue(val));
+  return `${keyValuesParsed[0]} to ${keyValuesParsed[1]}`;
+};
 
 const getCountLink = ({ doc_count, filters, totalDocs }) => (
   <span>
@@ -337,9 +339,9 @@ const getCardFilters = (variablePlotTypes, selectedBuckets, fieldName, filters) 
     : filters);
 };
 
-const getCategoricalTableData = (
+const getTableData = (
   binData,
-  getBucketRangesAndFilters,
+  getContinuousBuckets,
   fieldName,
   totalDocs,
   selectedSurvivalValues,
@@ -353,15 +355,11 @@ const getCategoricalTableData = (
   if (isEmpty(binData)) {
     return [];
   }
+
   const displayData = variable.plotTypes === 'continuous'
     ? binData
-      .sort((a, b) => b.key - a.key)
-      .reduce(getBucketRangesAndFilters, {
-        data: [],
-        nextInterval: 0,
-      })
-      .data.slice(0)
-      .reverse()
+      .sort((a, b) => a.keyArray[0] - b.keyArray[0])
+      .reduce(getContinuousBuckets, [])
     : binData
       .filter(bucket => (IS_CDAVE_DEV ? bucket.key : bucket.key !== '_missing'))
       .sort((a, b) => b.doc_count - a.doc_count)
@@ -562,14 +560,15 @@ const getHeadings = (chartType, dataDimension, fieldName) => {
 
 const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
   currentAnalysis,
+  binData,
   dataBuckets,
-  customBins,
   dataDimension,
   dataValues,
+  defaultContinuousData,
   dispatch,
   fieldName,
   filters,
-  getBucketRangesAndFilters,
+  getContinuousBuckets,
   id,
   overallSurvivalData,
   plots,
@@ -592,9 +591,9 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
 }) => {
   const tableData = variable.active_chart === 'box'
     ? getBoxTableData(dataValues)
-    : getCategoricalTableData(
-      customBins,
-      getBucketRangesAndFilters,
+    : getTableData(
+      binData,
+      getContinuousBuckets,
       fieldName,
       totalDocs,
       selectedSurvivalValues,
@@ -610,8 +609,8 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
     variable.active_chart === 'histogram'
       ? tableData.map(d => {
         return {
-          fullLabel: d.key,
-          label: d.key,
+          fullLabel: d.groupName || d.key,
+          label: d.groupName || d.key,
           tooltip: `${d.key}: ${d.chart_doc_count.toLocaleString()}`,
           value:
             variable.active_calculation === 'number'
@@ -631,6 +630,13 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
   const tsvSubstring = fieldName.replace(/\./g, '-');
   const cardFilters = getCardFilters(variable.plotTypes, selectedBuckets, fieldName, filters);
   const setActionsDisabled = get(selectedBuckets, 'length', 0) === 0;
+
+  const resetBinsDisabled = variable.plotTypes === 'categorical'
+    ? Object.keys(variable.bins)
+      .filter(bin => variable.bins[bin].key !== variable.bins[bin].groupName)
+      .length === 0
+    : variable.continuousBinType === 'default';
+
   return (
     <Column
       className="clinical-analysis-categorical-card"
@@ -1025,8 +1031,6 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                 </Row>
               </Column>
             )}
-
-
           </Column>
         )}
       {!isEmpty(tableData) && (
@@ -1189,24 +1193,56 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                   <DropdownItem
                     onClick={() => dispatch(
                       setModal(
-                        <GroupValuesModal
-                          bins={variable.bins}
-                          dataBuckets={dataBuckets}
-                          fieldName={humanify({ term: fieldName })}
-                          onClose={() => dispatch(setModal(null))}
-                          onUpdate={(newBins) => {
-                            dispatch(
-                              updateClinicalAnalysisVariable({
-                                fieldName,
-                                id,
-                                value: newBins,
-                                variableKey: 'bins',
-                              }),
-                            );
-                            dispatch(setModal(null));
-                          }
-                          }
-                          />,
+                        variable.plotTypes === 'continuous'
+                          ? (
+                            <ContinuousCustomBinsModal
+                              binData={binData}
+                              continuousBinType={variable.continuousBinType}
+                              defaultContinuousData={defaultContinuousData}
+                              fieldName={humanify({ term: fieldName })}
+                              onClose={() => dispatch(setModal(null))}
+                              onUpdate={(newBins, continuousBinType) => {
+                                dispatch(
+                                  updateClinicalAnalysisVariable({
+                                    fieldName,
+                                    id,
+                                    value: newBins,
+                                    variableKey: 'bins',
+                                  })
+                                );
+                                dispatch(
+                                  updateClinicalAnalysisVariable({
+                                    fieldName,
+                                    id,
+                                    value: continuousBinType,
+                                    variableKey: 'continuousBinType',
+                                  })
+                                );
+                                dispatch(setModal(null));
+                              }
+                              }
+                              />
+                          )
+                          : (
+                            <GroupValuesModal
+                              bins={variable.bins}
+                              dataBuckets={dataBuckets}
+                              fieldName={humanify({ term: fieldName })}
+                              onClose={() => dispatch(setModal(null))}
+                              onUpdate={(newBins) => {
+                                dispatch(
+                                  updateClinicalAnalysisVariable({
+                                    fieldName,
+                                    id,
+                                    value: newBins,
+                                    variableKey: 'bins',
+                                  }),
+                                );
+                                dispatch(setModal(null));
+                              }
+                              }
+                              />
+                          ),
                       ),
                     )
                     }
@@ -1220,18 +1256,31 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                         updateClinicalAnalysisVariable({
                           fieldName,
                           id,
-                          value: dataBuckets.reduce((acc, r) => ({
-                            ...acc,
-                            [r.key]: {
-                              ...r,
-                              groupName: r.key,
-                            },
-                          }), {}),
+                          value: variable.plotTypes === 'continuous'
+                            ? defaultContinuousData.buckets
+                            : dataBuckets.reduce((acc, r) => ({
+                              ...acc,
+                              [r.key]: {
+                                ...r,
+                                groupName: r.key,
+                              },
+                            }), {}),
                           variableKey: 'bins',
                         }),
                       );
+                      variable.plotTypes === 'continuous' && dispatch(
+                        updateClinicalAnalysisVariable({
+                          fieldName,
+                          id,
+                          value: 'default',
+                          variableKey: 'continuousBinType',
+                        })
+                      );
                     }}
-                    style={styles.actionMenuItem}
+                    style={{
+                      ...styles.actionMenuItem,
+                      ...(resetBinsDisabled ? styles.actionMenuItemDisabled(theme) : {}),
+                    }}
                     >
                     Reset to Default
                   </DropdownItem>
@@ -1240,7 +1289,11 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
             }
           </Row>
           <EntityPageHorizontalTable
-            data={tableData}
+            data={tableData.map(tableRow => ({
+              ...tableRow,
+              // the key in the table needs to be the display name
+              key: tableRow.groupName !== undefined ? tableRow.groupName : tableRow.key,
+            }))}
             headings={getHeadings(variable.active_chart, dataDimension, fieldName)}
             tableContainerStyle={{
               height: 175,
@@ -1264,59 +1317,30 @@ export default compose(
   withState('selectedBuckets', 'setSelectedBuckets', []),
   withState('qqData', 'setQQData', []),
   withState('qqDataIsSet', 'setQQDataIsSet', false),
-  withProps(({ data, fieldName, variable }) => {
-    const sanitisedId = fieldName.split('.').pop();
-    const rawQueryData = get(data, `explore.cases.aggregations.${fieldName.replace('.', '__')}`, data);
-    const dataDimension = dataDimensions[sanitisedId] && dataDimensions[sanitisedId].unit;
-    return Object.assign(
-      {
-        dataBuckets: get(rawQueryData, variable.plotTypes === 'continuous' ? 'histogram.buckets' : 'buckets', []),
-        dataValues: variable.plotTypes === 'continuous' && map(
-          {
-            ...rawQueryData.stats,
-            ...rawQueryData.percentiles,
-          },
-          (value, stat) => {
-            switch (dataDimension) {
-              case 'Year': {
-                const age = Number.parseFloat(value / DAYS_IN_YEAR).toFixed(2);
-                return ({
-                  [stat]: age % 1 ? age : Number.parseFloat(age).toFixed(0),
-                });
-              }
-              default:
-                return ({
-                  [stat]: value % 1 ? Number.parseFloat(value).toFixed(2) : value,
-                });
-            }
-          }
-        ).reduce((acc, item) => ({
-          ...acc,
-          ...item,
-        }), {}),
-        totalDocs: get(data, 'hits.total', 0),
-        wrapperId: `${sanitisedId}-chart`,
-      },
-      dataDimensions[sanitisedId] && {
-        axisTitle: dataDimensions[sanitisedId].axisTitle,
-        dataDimension: dataDimensions[sanitisedId].unit,
-        dataValues:
-          map(
+  withPropsOnChange(
+    (props, nextProps) => !isEqual(props.data, nextProps.data),
+    ({ data, fieldName, variable }) => {
+      const sanitisedId = fieldName.split('.').pop();
+      const rawQueryData = get(data, `explore.cases.aggregations.${fieldName.replace('.', '__')}`, data);
+      const dataDimension = dataDimensions[sanitisedId] && dataDimensions[sanitisedId].unit;
+      return Object.assign(
+        {
+          dataBuckets: get(rawQueryData, variable.plotTypes === 'continuous' ? 'range.buckets' : 'buckets', []),
+          dataValues: variable.plotTypes === 'continuous' && map(
             {
               ...rawQueryData.stats,
               ...rawQueryData.percentiles,
             },
             (value, stat) => {
-              switch (dataDimensions[sanitisedId].unit) {
-                case 'Years': {
-                  const age = Number.parseFloat(value / DAYS_IN_YEAR).toFixed(2);
+              switch (dataDimension) {
+                case 'Year': {
                   return ({
-                    [stat]: age % 1 ? age : Number.parseFloat(age).toFixed(0),
+                    [stat]: Number.parseFloat(value / DAYS_IN_YEAR).toFixed(0),
                   });
                 }
                 default:
                   return ({
-                    [stat]: value % 1 ? Number.parseFloat(value).toFixed(2) : value,
+                    [stat]: value,
                   });
               }
             }
@@ -1324,9 +1348,39 @@ export default compose(
             ...acc,
             ...item,
           }), {}),
-      },
-    );
-  }),
+          totalDocs: get(data, 'hits.total', 0),
+          wrapperId: `${sanitisedId}-chart`,
+        },
+        dataDimensions[sanitisedId] && {
+          axisTitle: dataDimensions[sanitisedId].axisTitle,
+          dataDimension: dataDimensions[sanitisedId].unit,
+          dataValues:
+            map(
+              {
+                ...rawQueryData.stats,
+                ...rawQueryData.percentiles,
+              },
+              (value, stat) => {
+                switch (dataDimensions[sanitisedId].unit) {
+                  case 'Years': {
+                    return ({
+                      [stat]: Number.parseFloat(value / DAYS_IN_YEAR).toFixed(0),
+                    });
+                  }
+                  default:
+                    return ({
+                      [stat]: value,
+                    });
+                }
+              }
+            ).reduce((acc, item) => ({
+              ...acc,
+              ...item,
+            }), {}),
+        },
+      );
+    }
+  ),
   withPropsOnChange(
     (props, nextProps) => !isEqual(props.dataBuckets, nextProps.dataBuckets) || props.setId !== nextProps.setId,
     ({
@@ -1340,7 +1394,14 @@ export default compose(
         updateClinicalAnalysisVariable({
           fieldName,
           id,
-          value: {
+          value: variable.plotTypes === 'continuous' ? (Object.keys(variable.bins).reduce((acc, curr, index) => ({
+            ...acc,
+            [curr]: {
+              ...variable.bins[curr],
+              doc_count: dataBuckets[index].doc_count,
+            },
+          }), {})
+          ) : ({
             ...reduce(variable.bins, (acc, bin, key) => {
               if (bin.groupName && bin.groupName !== key) {
                 return {
@@ -1364,7 +1425,7 @@ export default compose(
                     : r.key,
               },
             }), {}),
-          },
+          }),
           variableKey: 'bins',
         }),
       );
@@ -1372,79 +1433,133 @@ export default compose(
   ),
   withProps(
     ({
+      dataBuckets,
       fieldName,
       setId,
       totalDocs,
       variable,
     }) => ({
-      customBins: map(groupBy(variable.bins, bin => bin.groupName), (values, key) => ({
+      binData: map(groupBy(variable.bins, bin => bin.groupName), (values, key) => ({
         doc_count: values.reduce((acc, value) => acc + value.doc_count, 0),
         key,
         keyArray: values.reduce((acc, value) => [...acc, value.key], []),
       })).filter(bin => bin.key),
-      getBucketRangesAndFilters: (acc, { doc_count, key }) => {
+      bucketsOrganizedByKey: dataBuckets.reduce((acc, r) => {
+        return ({
+          ...acc,
+          [r.key]: {
+            ...r,
+            groupName: r.groupName !== undefined && r.groupName !== '' ? r.groupName : r.key,
+          },
+        });
+      }, {}),
+      getContinuousBuckets: (acc, { doc_count, key, keyArray }) => {
+        const keyValues = key.split('-').map(keyItem => Number(keyItem));
+        // survival doesn't have keyArray
+        const keyArrayValues = keyArray ? keyArray[0].split('-').map(keyItem => Number(keyItem)) : keyValues;
+
+        const groupName = keyValues.length === 2 &&
+          typeof keyValues[0] === 'number' &&
+          typeof keyValues[1] === 'number'
+          ? getContinuousRangeValue(keyValues)
+          : key;
+        const keyMin = keyArrayValues[0];
+        const keyMax = keyArrayValues[1];
         const filters =
-          variable.plotTypes === 'categorical'
-            ? {}
-            : {
+          variable.plotTypes === 'continuous'
+            ? {
+              op: 'and',
               content: [
                 {
+                  op: 'in',
                   content: {
                     field: 'cases.case_id',
                     value: `set_id:${setId}`,
                   },
-                  op: 'in',
                 },
                 {
+                  op: '>=',
                   content: {
                     field: fieldName,
-                    value: [`${parseBucketValue(key)}`],
+                    value: [keyMin],
                   },
-                  op: '>=',
                 },
-                ...(acc.nextInterval !== 0 ? [
-                  {
-                    content: {
-                      field: fieldName,
-                      value: [`${parseBucketValue(acc.nextInterval - 1)}`],
-                    },
-                    op: '<=',
+                {
+                  op: '<=',
+                  content: {
+                    field: fieldName,
+                    value: [keyMax],
                   },
-                ] : []),
+                },
               ],
-              op: 'and',
-            };
+            } : {};
 
-        return {
-          data: [
-            ...acc.data,
-            {
-              chart_doc_count: doc_count,
-              doc_count: getCountLink({
-                doc_count,
-                filters,
-                totalDocs,
-              }),
+        return [
+          ...acc,
+          {
+            chart_doc_count: doc_count,
+            doc_count: getCountLink({
+              doc_count,
               filters,
-              key: getRangeValue(key, acc.nextInterval),
-              rangeValues: {
-                max: Math.floor(acc.nextInterval - 1),
-                min: key,
-              },
+              totalDocs,
+            }),
+            filters,
+            groupName,
+            key: `${keyMin}-${keyMax}`,
+            rangeValues: {
+              max: keyMax,
+              min: keyMin,
             },
-          ],
-          nextInterval: key,
-        };
+          },
+        ];
       },
     })
   ),
+  withProps(({ data: { explore }, fieldName, variable }) => {
+    if (variable.plotTypes === 'categorical') {
+      return ({ defaultContinuousData: {} });
+    }
+
+    const dataStats = explore.cases.aggregations[`${fieldName.replace('.', '__')}`].stats;
+
+    const defaultMin = dataStats.Min;
+    const defaultMax = dataStats.Max;
+
+    const defaultQuartile = Number(((defaultMax - defaultMin) / 4).toFixed(2));
+    const defaultBuckets = Array(4).fill(1).map((val, key) => {
+      const from = Math.floor(key * defaultQuartile + defaultMin);
+      const to = Math.floor((key + 1) === 4
+        ? defaultMax
+        : (defaultMin + (key + 1) * defaultQuartile - 1));
+      const objKey = `${from}-${to}`;
+
+      return ({
+        [objKey]: {
+          groupName: `${from.toFixed(1)}-${to.toFixed(1)}`,
+          key: objKey,
+        },
+      });
+    }).reduce((acc, curr) => ({
+      ...acc,
+      ...curr,
+    }), {});
+
+    return ({
+      defaultContinuousData: {
+        buckets: defaultBuckets,
+        max: defaultMax,
+        min: defaultMin,
+        quartile: defaultQuartile,
+      },
+    });
+  }),
   withProps(
     ({
-      customBins,
+      binData,
       dataBuckets,
       fieldName,
       filters,
-      getBucketRangesAndFilters,
+      getContinuousBuckets,
       selectedSurvivalValues,
       setSelectedSurvivalData,
       setSelectedSurvivalLoadingIds,
@@ -1457,14 +1572,9 @@ export default compose(
         const dataForSurvival =
           variable.plotTypes === 'continuous'
             ? dataBuckets
-              .sort((a, b) => b.key - a.key)
-              .reduce(getBucketRangesAndFilters, {
-                data: [],
-                nextInterval: 0,
-              })
-              .data.slice(0)
-              .reverse()
-            : customBins
+              .sort((a, b) => b.key.split('-')[0] - a.key.split('-')[0])
+              .reduce(getContinuousBuckets, [])
+            : binData
               .filter(bucket => (IS_CDAVE_DEV ? bucket.key : bucket.key !== '_missing'))
               .map(b => ({
                 ...b,
@@ -1489,7 +1599,7 @@ export default compose(
 
         const valuesForPlot =
           variable.plotTypes === 'categorical'
-            ? [...valuesForTable]
+            ? [...filteredData.map(d => d.keyArray).slice(0, 2)]
             : continuousTop2Values;
 
         setSelectedSurvivalValues(valuesForTable);
@@ -1548,7 +1658,8 @@ export default compose(
   ),
   withPropsOnChange(
     (props, nextProps) => props.variable.active_chart !== nextProps.variable.active_chart ||
-      !isEqual(props.data, nextProps.data),
+      !isEqual(props.data, nextProps.data) ||
+      !isEqual(props.variable.bins, nextProps.variable.bins),
     ({ populateSurvivalData, variable }) => {
       if (variable.active_chart === 'survival') {
         populateSurvivalData();
@@ -1559,12 +1670,23 @@ export default compose(
   lifecycle({
     componentDidMount(): void {
       const {
+        bucketsOrganizedByKey,
         dispatch,
         fieldName,
         id,
         variable,
         wrapperId,
       } = this.props;
+      if (Object.keys(variable.bins).length === 0) {
+        dispatch(
+          updateClinicalAnalysisVariable({
+            fieldName,
+            id,
+            value: bucketsOrganizedByKey,
+            variableKey: 'bins',
+          }),
+        );
+      }
       if (variable.scrollToCard === false) return;
       const offset = document.getElementById('header').getBoundingClientRect().bottom + 10;
       const $anchor = document.getElementById(`${wrapperId}-container`);

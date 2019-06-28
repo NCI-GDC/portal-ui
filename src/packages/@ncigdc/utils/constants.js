@@ -422,6 +422,7 @@ export const CLINICAL_BLACKLIST = [
 
 export const IS_CDAVE_DEV =
   localStorage.REACT_APP_IS_CDAVE_DEV ||
+  process.env.REACT_APP_IS_CDAVE_DEV ||
   process.env.NODE_ENV === 'development' ||
   false;
 

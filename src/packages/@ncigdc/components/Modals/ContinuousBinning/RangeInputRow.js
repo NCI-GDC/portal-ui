@@ -23,36 +23,33 @@ class RangeInputRow extends React.Component {
   state = {
     fieldErrors: defaultFieldState,
     fieldValues: defaultFieldState,
+    overlapErrors: [],
   };
-
-  // componentDidMount() {
-  //   const { fields } = this.props;
-
-  //   this.setState({ fieldValues: fields });
-  // }
 
   componentDidUpdate(prevProps) {
     const { fields } = this.props;
     if (!isEqual(fields, prevProps.fields)) {
       this.setState({ fieldValues: fields }, () => {
-        const validateFieldsResult = this.validateFields();
+        const validateFieldsResult = this.validateOnBlur();
         this.setState({ fieldErrors: validateFieldsResult });
       });
     }
   }
 
   handleValidate = () => {
-    const validateFieldsResult = this.validateFields();
+    const validateFieldsResult = this.validateOnBlur();
     this.setState({ fieldErrors: validateFieldsResult });
   }
 
   handleAdd = () => {
-    const validateFieldsResult = this.validateFields();
-    this.setState({ fieldErrors: validateFieldsResult });
-    const rowIsValid = Object.keys(validateFieldsResult)
-      .filter(field => validateFieldsResult[field].length > 0).length === 0;
+    const validateFieldsResult = this.validateOnBlur();
+    const rowHasErrors = Object.keys(validateFieldsResult)
+      .filter(field => validateFieldsResult[field].length > 0).length > 0;
+    this.setState({ fieldErrors: validateFieldsResult }, () => {
+      if (rowHasErrors) return;
+      const hasOverlap = this.validateOnSave();
+      if (hasOverlap) return;
 
-    if (rowIsValid) {
       const { handleAddRow } = this.props;
       const { fieldValues } = this.state;
       const nextRow = {
@@ -61,7 +58,7 @@ class RangeInputRow extends React.Component {
       };
       handleAddRow(nextRow);
       this.setState({ fieldValues: defaultFieldState });
-    }
+    });
   };
 
   updateInput = target => {
@@ -78,7 +75,7 @@ class RangeInputRow extends React.Component {
     });
   };
 
-  validateFields = () => {
+  validateOnBlur = () => {
     const {
       fieldValues,
     } = this.state;
@@ -91,10 +88,14 @@ class RangeInputRow extends React.Component {
       const currentValueNumber = Number(currentValue);
 
       const nextErrors = currentValue === ''
-        ? 'Required field.' : curr === 'name'
-          ? '' : !isFinite(currentValueNumber)
+        ? 'Required field.'
+        : curr === 'name'
+          ? ''
+          : !isFinite(currentValueNumber)
             ? `'${currentValue}' is not a number.`
-            : countDecimals(currentValueNumber) > 2 ? 'Use up to 2 decimal places.' : '';
+            : countDecimals(currentValueNumber) > 2
+              ? 'Use up to 2 decimal places.'
+              : '';
 
       return ({
         ...acc,
@@ -105,12 +106,77 @@ class RangeInputRow extends React.Component {
     const checkFromToValues = errorsEmptyOrNaN.to === '' &&
       errorsEmptyOrNaN.from === '' &&
       Number(fieldValues.to) <= Number(fieldValues.from);
-    return checkFromToValues ? ({
-      from: `'From' must be less than ${fieldValues.to}.`,
-      name: '',
-      to: `'To' must be greater than ${fieldValues.from}.`,
-    }) : errorsEmptyOrNaN;
+    return checkFromToValues
+      ? ({
+        from: `'From' must be less than ${fieldValues.to}.`,
+        name: '',
+        to: `'To' must be greater than ${fieldValues.from}.`,
+      })
+      : errorsEmptyOrNaN;
   };
+
+  validateName = () => {
+    const { rangeRows } = this.props;
+    const { fieldValues } = this.state;
+
+    const fieldName = fieldValues.name.toLowerCase().trim();
+    const duplicateNames = rangeRows.filter(row => {
+      const rowName = row.fields.name.toLowerCase().trim();
+      return rowName === fieldName;
+    });
+    const nameError = duplicateNames.length > 0
+      ? 'Bin names must be unique.'
+      : '';
+
+    return nameError;
+  }
+
+  validateOverlap = () => {
+    // assume all fields are complete and from < to
+    const { rangeRows } = this.props;
+    const { fieldValues } = this.state;
+
+    const fieldFrom = Number(fieldValues.from);
+    const fieldTo = Number(fieldValues.to);
+
+    const overlapErrors = rangeRows.reduce((acc, curr) => {
+      const overlapFromStr = curr.fields.from;
+      const overlapToStr = curr.fields.to;
+
+      const overlapFrom = Number(overlapFromStr);
+      const overlapTo = Number(overlapToStr);
+      const overlapName = curr.fields.name;
+
+      const hasNoOverlap = fieldTo < overlapFrom ||
+        fieldFrom > overlapTo;
+
+      return hasNoOverlap
+        ? acc
+        : [...acc, overlapName];
+    }, []);
+    return overlapErrors.length > 0
+      ? overlapErrors
+      : [];
+  }
+
+  validateOnSave = () => {
+    const { fieldErrors } = this.state;
+
+    const overlapErrors = this.validateOverlap();
+    const nameError = this.validateName();
+    const overlapHasError = overlapErrors.length > 0;
+    const nameHasError = nameError.length > 0;
+
+    this.setState({
+      fieldErrors: {
+        ...fieldErrors,
+        name: nameError,
+      },
+      overlapErrors,
+    });
+
+    return nameHasError || overlapHasError;
+  }
 
   render = () => {
     const {
@@ -118,7 +184,11 @@ class RangeInputRow extends React.Component {
       rowIndex,
     } = this.props;
 
-    const { fieldErrors, fieldValues } = this.state;
+    const {
+      fieldErrors,
+      fieldValues,
+      overlapErrors,
+    } = this.state;
 
     return (
       <OutsideClickHandler
@@ -171,18 +241,13 @@ class RangeInputRow extends React.Component {
             </Button>
           </div>
         </div>
-        {/* {rangeMethodActive && rowNameError.length > 0 && (
+        {rangeMethodActive && overlapErrors.length > 0 && (
           <div style={rowError}>
-            {rowNameError}
+            {`'${fieldValues.name}' overlaps with ${overlapErrors
+              .map(err => `'${err}'`).join(', ')}`}
           </div>
         )
         }
-        {rangeMethodActive && rowOverlapErrors.length > 0 && (
-          <div style={rowError}>
-            {`'${fieldValues.name}' overlaps with ${rowOverlapErrors.map(err => `'${err}'`).join(', ')}`}
-          </div>
-        )
-        } */}
       </OutsideClickHandler>
     );
   }

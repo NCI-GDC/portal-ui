@@ -47,6 +47,7 @@ class RangeInputRow extends React.Component {
       .filter(field => validateFieldsResult[field].length > 0).length > 0;
     this.setState({ fieldErrors: validateFieldsResult }, () => {
       if (rowHasErrors) return;
+
       const hasOverlap = this.validateOnSave();
       if (hasOverlap) return;
 
@@ -56,6 +57,7 @@ class RangeInputRow extends React.Component {
         active: false,
         fields: fieldValues,
       };
+
       handleAddRow(nextRow);
       this.setState({ fieldValues: defaultFieldState });
     });
@@ -106,6 +108,7 @@ class RangeInputRow extends React.Component {
     const checkFromToValues = errorsEmptyOrNaN.to === '' &&
       errorsEmptyOrNaN.from === '' &&
       Number(fieldValues.to) <= Number(fieldValues.from);
+
     return checkFromToValues
       ? ({
         from: `'From' must be less than ${fieldValues.to}.`,
@@ -124,11 +127,10 @@ class RangeInputRow extends React.Component {
       const rowName = row.fields.name.toLowerCase().trim();
       return rowName === fieldName;
     });
-    const nameError = duplicateNames.length > 0
+
+    return duplicateNames.length > 0
       ? 'Bin names must be unique.'
       : '';
-
-    return nameError;
   }
 
   validateOverlap = () => {
@@ -154,9 +156,8 @@ class RangeInputRow extends React.Component {
         ? acc
         : [...acc, overlapName];
     }, []);
-    return overlapErrors.length > 0
-      ? overlapErrors
-      : [];
+
+    return overlapErrors;
   }
 
   validateOnSave = () => {

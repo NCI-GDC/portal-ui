@@ -41,22 +41,27 @@ class RangeInputRow extends React.Component {
     }
   }
 
-  handleAdd = () => {
-    // const validateFieldsResult = this.validateFields();
-    // this.setState({ fieldErrors: validateFieldsResult });
-    // const rowIsValid = Object.keys(validateFieldsResult)
-    //   .filter(field => validateFieldsResult[field].length > 0).length === 0;
+  handleValidate = () => {
+    const validateFieldsResult = this.validateFields();
+    this.setState({ fieldErrors: validateFieldsResult });
+  }
 
-    // if (rowIsValid) {
-    const { handleAddRow } = this.props;
-    const { fieldValues } = this.state;
-    const nextRow = {
-      active: false,
-      fields: fieldValues,
-    };
-    handleAddRow(nextRow);
-    this.setState({ fieldValues: defaultFieldState });
-    // }
+  handleAdd = () => {
+    const validateFieldsResult = this.validateFields();
+    this.setState({ fieldErrors: validateFieldsResult });
+    const rowIsValid = Object.keys(validateFieldsResult)
+      .filter(field => validateFieldsResult[field].length > 0).length === 0;
+
+    if (rowIsValid) {
+      const { handleAddRow } = this.props;
+      const { fieldValues } = this.state;
+      const nextRow = {
+        active: false,
+        fields: fieldValues,
+      };
+      handleAddRow(nextRow);
+      this.setState({ fieldValues: defaultFieldState });
+    }
   };
 
   updateInput = target => {
@@ -109,7 +114,6 @@ class RangeInputRow extends React.Component {
 
   render = () => {
     const {
-      handleAddRow,
       rangeMethodActive,
       rowIndex,
     } = this.props;
@@ -120,13 +124,13 @@ class RangeInputRow extends React.Component {
       <OutsideClickHandler
         disabled={!rangeMethodActive}
         onOutsideClick={() => {
-          // this.handleValidate();
+          this.handleValidate();
         }}
-      >
+        >
         <div style={{ display: 'flex' }}>
           <div
             style={rowFieldsWrapper}
-          >
+            >
             {
               fieldsOrder.map(rowItem => {
                 const rowId = `range-row-${rowIndex}-${rowItem}`;
@@ -141,7 +145,7 @@ class RangeInputRow extends React.Component {
                     id={rowId}
                     key={rowId}
                     value={fieldValues[rowItem]}
-                  />
+                    />
                 );
               })}
           </div>
@@ -161,7 +165,7 @@ class RangeInputRow extends React.Component {
                 ...optionsButton,
                 width: '100%',
               }}
-            >
+              >
               <i aria-hidden="true" className="fa fa-plus-circle" />
               &nbsp; Add
             </Button>

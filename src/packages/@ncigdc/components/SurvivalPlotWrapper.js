@@ -9,7 +9,8 @@ import {
 } from 'recompose';
 import _ from 'lodash';
 import { scaleOrdinal, schemeCategory10 } from 'd3';
-import { renderPlot } from '@oncojs/survivalplot';
+// import { renderPlot } from '@oncojs/survivalplot';
+import { renderPlot } from 'survival-create/src/packages/@oncojs/survivalplot';
 import Loader from '@ncigdc/uikit/Loaders/Loader';
 import toMap from '@ncigdc/utils/toMap';
 import { Row, Column } from '@ncigdc/uikit/Flex';
@@ -82,14 +83,14 @@ const Container = ({
   survivalPlotLoading,
 }) => (
   <div
-      className={`${CLASS_NAME} test-survival-plot-container`}
-      ref={setSurvivalContainer}
-      style={{
-        overflow: 'hidden',
-        height: survivalPlotLoading ? '0px' : height,
-        position: 'relative',
-      }}
-      />
+    className={`${CLASS_NAME} test-survival-plot-container`}
+    ref={setSurvivalContainer}
+    style={{
+      overflow: 'hidden',
+      height: survivalPlotLoading ? '0px' : height,
+      position: 'relative',
+    }}
+    />
 );
 
 const SurvivalPlotWrapper = ({

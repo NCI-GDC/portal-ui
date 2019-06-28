@@ -563,7 +563,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
   dataBuckets,
   dataDimension,
   dataValues,
-  defaultData,
+  defaultContinuousData,
   dispatch,
   fieldName,
   filters,
@@ -1193,7 +1193,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                             <ContinuousCustomBinsModal
                               binData={binData}
                               continuousBinType={variable.continuousBinType}
-                              defaultData={defaultData}
+                              defaultContinuousData={defaultContinuousData}
                               fieldName={humanify({ term: fieldName })}
                               onClose={() => dispatch(setModal(null))}
                               onUpdate={(newBins, continuousBinType) => {
@@ -1252,7 +1252,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                           fieldName,
                           id,
                           value: variable.plotTypes === 'continuous'
-                            ? defaultData.buckets
+                            ? defaultContinuousData.buckets
                             : dataBuckets.reduce((acc, r) => ({
                               ...acc,
                               [r.key]: {
@@ -1510,11 +1510,12 @@ export default compose(
       },
     })
   ),
-  withProps(({ data, fieldName, variable }) => {
+  withProps(({ data: { explore }, fieldName, variable }) => {
     if (variable.plotTypes === 'categorical') {
-      return ({ defaultData: {} });
+      return ({ defaultContinuousData: {} });
     }
-    const dataStats = data.explore.cases.aggregations[`${fieldName.replace('.', '__')}`].stats;
+
+    const dataStats = explore.cases.aggregations[`${fieldName.replace('.', '__')}`].stats;
 
     const defaultMin = dataStats.Min;
     const defaultMax = dataStats.Max;
@@ -1539,7 +1540,7 @@ export default compose(
     }), {});
 
     return ({
-      defaultData: {
+      defaultContinuousData: {
         buckets: defaultBuckets,
         max: defaultMax,
         min: defaultMin,

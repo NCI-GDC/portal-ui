@@ -38,20 +38,17 @@ class RangeTableRow extends React.Component {
 
   componentDidMount() {
     const { fields } = this.props;
-    /* eslint-disable */
+
     this.setState({ fieldValues: fields });
-    /* eslint-enable */
   }
 
   componentDidUpdate(prevProps) {
     const { fields } = this.props;
     if (!isEqual(fields, prevProps.fields)) {
-      /* eslint-disable */
       this.setState({ fieldValues: fields }, () => {
         const validateFieldsResult = this.validateFields();
         this.setState({ fieldErrors: validateFieldsResult });
       });
-      /* eslint-enable */
     }
   }
 

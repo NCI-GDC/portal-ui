@@ -24,6 +24,7 @@ import DownloadVisualizationButton from '@ncigdc/components/DownloadVisualizatio
 import { visualizingButton } from '@ncigdc/theme/mixins';
 import VisualizationHeader from '@ncigdc/components/VisualizationHeader';
 import { performanceTracker } from '@ncigdc/utils/analytics';
+import { MINIMUM_CASES } from '@ncigdc/utils/survivalplot';
 
 import './survivalPlot.css';
 
@@ -310,6 +311,7 @@ function renderSurvivalPlot(props: TProps): void {
       onDomainChange: setXDomain,
       margins: SVG_MARGINS,
       shouldShowConfidenceIntervals: false,
+      minimumDonors: MINIMUM_CASES,
     });
     const performanceContext = {
       data_sets: results.length,

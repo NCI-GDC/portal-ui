@@ -24,7 +24,7 @@ const countDecimals = num => {
 
 class ContinuousCustomBinsModal extends Component {
   state = {
-    binningMethod: 'interval', // interval or range
+    binningMethod: 'range', // interval or range
     intervalErrors: {
       amount: '',
       max: '',
@@ -37,14 +37,18 @@ class ContinuousCustomBinsModal extends Component {
       min: this.props.defaultContinuousData.min,
     },
     modalWarning: '',
+    rangeInputErrors: {},
     rangeNameErrors: [],
     rangeOverlapErrors: [],
-    rangeRows: defaultRangeRow,
+    rangeRows: [],
   };
 
   componentDidMount = () => {
     const {
-      binData, continuousBinType, rangeRows,
+      // TODO uncomment this
+      // binData,
+      continuousBinType,
+      rangeRows,
     } = this.props;
     this.validateRangeRow(rangeRows);
 
@@ -356,7 +360,14 @@ class ContinuousCustomBinsModal extends Component {
   render = () => {
     const { defaultContinuousData, fieldName, onClose } = this.props;
     const {
-      binningMethod, intervalErrors, intervalFields, modalWarning, rangeNameErrors, rangeOverlapErrors, rangeRows,
+      binningMethod,
+      intervalErrors,
+      intervalFields,
+      modalWarning,
+      rangeInputErrors,
+      rangeNameErrors,
+      rangeOverlapErrors,
+      rangeRows,
     } = this.state;
 
     const submitDisabled = this.checkSubmitDisabled();
@@ -471,6 +482,9 @@ class ContinuousCustomBinsModal extends Component {
                     styles={styles}
                     />
                 ))}
+                {/* <RangeInputRow
+                  /> */}
+
               </div>
             </div>
             {/* <Button

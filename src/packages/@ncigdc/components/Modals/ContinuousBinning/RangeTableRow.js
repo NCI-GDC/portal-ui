@@ -18,13 +18,13 @@ const {
   visualizingButton,
 } = styles;
 
-const defaultFieldState = {
+export const defaultFieldState = {
   from: '',
   name: '',
   to: '',
 };
 
-const fieldsOrder = [
+export const fieldsOrder = [
   'name',
   'from',
   'to',
@@ -84,14 +84,7 @@ class RangeTableRow extends React.Component {
   }
 
   handleRemove = () => {
-    const { handleRemoveRow, rowIndex, rowsLength } = this.props;
-    // if removing the only row, just erase the values
-    if (rowsLength === 1) {
-      this.setState({
-        fieldErrors: defaultFieldState,
-        fieldValues: defaultFieldState,
-      });
-    }
+    const { handleRemoveRow, rowIndex } = this.props;
     handleRemoveRow(rowIndex);
   }
 

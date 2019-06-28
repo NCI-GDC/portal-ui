@@ -52,7 +52,7 @@ class ContinuousCustomBinsModal extends Component {
       this.validateIntervalFields,
       300
     );
-  
+
     if (continuousBinType === 'range') {
       const nextRangeRows = binData.map(bin => ({
         active: false,
@@ -68,9 +68,9 @@ class ContinuousCustomBinsModal extends Component {
         rangeRows: nextRangeRows,
       });
     } else if (continuousBinType === 'interval') {
-      const min = binData[0].keyArray.split('-')[0];
-      const max = binData[binData.length - 1].keyArray.split('-')[1];
-      const amount = binData[0].keyArray.split('-')[1] - min;
+      const min = binData[0].keyArray[0].split('-')[0];
+      const max = binData[binData.length - 1].keyArray[0].split('-')[1];
+      const amount = binData[0].keyArray[0].split('-')[1] - min;
 
       this.setState({
         binningMethod: 'interval',

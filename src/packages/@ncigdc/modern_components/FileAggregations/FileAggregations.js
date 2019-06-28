@@ -156,7 +156,6 @@ const FileAggregations = (props: TProps) => (
         facet={facet}
         aggregation={props.parsedFacets[facet.field]}
         onRequestRemove={() => props.handleRequestRemoveFacet(facet)}
-        style={{ borderBottom: `1px solid ${props.theme.greyScale5}` }}
       />
     ))}
     <FacetHeader
@@ -173,7 +172,6 @@ const FileAggregations = (props: TProps) => (
       fieldNoDoctype="file_id"
       queryType="file"
       placeholder="e.g. 142682.bam, 4f6e2e7a-b..."
-      style={{ borderBottom: `1px solid ${props.theme.greyScale5}` }}
       dropdownItem={x => (
         <Row>
           <FileIcon style={{ paddingRight: '1rem', paddingTop: '1rem' }} />
@@ -196,7 +194,6 @@ const FileAggregations = (props: TProps) => (
           ]
         }
         relay={props.relay}
-        style={{ borderBottom: `1px solid ${props.theme.greyScale5}` }}
         additionalProps={facet.additionalProps}
       />
     ))}

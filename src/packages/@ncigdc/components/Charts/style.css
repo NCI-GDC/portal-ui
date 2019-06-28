@@ -5,3 +5,15 @@
 .pointer {
   cursor: pointer;
 }
+
+.svgDownload {
+  display: none !important;
+}
+
+.exported-svg-class .svgDownload {
+  display: block !important;
+}
+
+.exported-svg-class .displayOnly {
+  display: none !important;
+}

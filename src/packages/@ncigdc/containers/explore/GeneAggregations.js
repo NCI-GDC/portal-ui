@@ -120,7 +120,6 @@ export const GeneAggregationsComponent = compose(
         aggregation={props.aggregations[escapeForRelay(facet.field)]}
         relay={props.relay}
         additionalProps={facet.additionalProps}
-        style={{ borderBottom: `1px solid ${props.theme.greyScale5}` }}
       />
     ))}
     {/* <FacetWrapper

@@ -14,6 +14,7 @@ import Toggle from 'react-toggle';
 import './reactToggle.css';
 
 import { humanify } from '@ncigdc/utils/string';
+import termCapitaliser from '@ncigdc/utils/customisation';
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import CollapsibleList from '@ncigdc/uikit/CollapsibleList';
 import { theme, withTheme } from '@ncigdc/theme/index';
@@ -123,7 +124,7 @@ const ClinicalGrouping = compose(
           </Row>
         )}
 
-        {!collapsed && (
+        {collapsed || (
           <Column
             style={{
               padding: '0 10px',
@@ -138,6 +139,7 @@ const ClinicalGrouping = compose(
                 </StyledToggleMoreLink>
               </Row>
             )}
+
             {_.orderBy(fields, 'name', 'asc')
               .slice(0, showingMore ? Infinity : MAX_VISIBLE_FACETS)
               .map(field => ({
@@ -147,100 +149,102 @@ const ClinicalGrouping = compose(
                 type: field.type,
                 plotTypes: getPlotType(field),
               }))
-              .map(
-                (
-                  {
-                    fieldDescription, fieldName, fieldTitle, plotTypes, type,
-                  },
-                  i
-                ) => {
-                  const checked = Object.keys(
-                    currentAnalysis.displayVariables
-                  ).includes(fieldName);
-                  const toggleAction = checked
-                    ? removeClinicalAnalysisVariable
-                    : addClinicalAnalysisVariable;
-                  const queryLower = _.toLower(searchValue);
-                  const descLower = _.toLower(fieldDescription);
-                  const descMatch =
-                    queryLower !== '' && fieldDescription !== defaultDescription
-                      ? descLower.match(queryLower) !== null
-                      : false;
-                  const DescEl = () => (
+              .map(({
+                fieldDescription,
+                fieldName,
+                fieldTitle,
+                plotTypes,
+                type,
+              }, i) => {
+                const checked = Object.keys(
+                  currentAnalysis.displayVariables
+                ).includes(fieldName);
+                const toggleAction = checked
+                  ? removeClinicalAnalysisVariable
+                  : addClinicalAnalysisVariable;
+                const queryLower = _.toLower(searchValue);
+                const descLower = _.toLower(fieldDescription);
+                const descMatch =
+                  queryLower !== '' && fieldDescription !== defaultDescription
+                    ? descLower.match(queryLower) !== null
+                    : false;
+                const DescEl = () => (
+                  <div
+                    style={{
+                      maxWidth: '24em',
+                      fontSize: '1.3rem',
+                      marginBottom: descMatch ? '10px' : '0',
+                      fontStyle: descMatch ? 'italic' : 'normal',
+                    }}
+                    >
+                    {descMatch
+                      ? internalHighlight(searchValue, fieldDescription, {
+                        backgroundColor: '#FFFF00',
+                      })
+                      : fieldDescription}
+                  </div>
+                );
+                const TitleEl = () => (
+                  <h4
+                    style={{
+                      fontSize: '1.4rem',
+                      display: 'inline-block',
+                      marginRight: '50px',
+                    }}
+                    >
+                    {internalHighlight(searchValue, fieldTitle, {
+                      backgroundColor: '#FFFF00',
+                    })}
+                  </h4>
+                );
+                const ToggleEl = () => (
+                  <Toggle
+                    checked={checked}
+                    disabled={!type.name}
+                    icons={false}
+                    id={fieldName}
+                    name={fieldName}
+                    onChange={() => {
+                      if (!type.name) {
+                        return null;
+                      }
+                      dispatch(
+                        toggleAction({
+                          fieldName,
+                          id: analysis_id,
+                          fieldType: name,
+                          plotTypes,
+                          scrollToCard: !checked,
+                        })
+                      );
+                    }}
+                    />
+                );
+                return (
+                  <Row
+                    key={i}
+                    style={{
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      borderBottom: `1px solid ${theme.greyScale5}`,
+                    }}
+                    >
                     <div
                       style={{
-                        maxWidth: '24em',
-                        fontSize: '1.3rem',
-                        marginBottom: descMatch ? '10px' : '0',
-                        fontStyle: descMatch ? 'italic' : 'normal',
-                      }}
-                      >
-                      {descMatch
-                        ? internalHighlight(searchValue, fieldDescription, {
-                          backgroundColor: '#FFFF00',
-                        })
-                        : fieldDescription}
-                    </div>
-                  );
-                  const TitleEl = () => (
-                    <h4
-                      style={{
-                        fontSize: '1.4rem',
-                        display: 'inline-block',
-                        marginRight: '50px',
-                      }}
-                      >
-                      {internalHighlight(searchValue, fieldTitle, {
-                        backgroundColor: '#FFFF00',
-                      })}
-                    </h4>
-                  );
-                  const ToggleEl = () => (
-                    <Toggle
-                      checked={checked}
-                      disabled={!type.name}
-                      icons={false}
-                      id={fieldName}
-                      name={fieldName}
-                      onChange={() => {
-                        if (!type.name) {
-                          return null;
-                        }
-                        dispatch(
-                          toggleAction({
-                            fieldName,
-                            id: analysis_id,
-                            fieldType: name,
-                            plotTypes,
-                            scrollToCard: !checked,
-                          })
-                        );
-                      }}
-                      />
-                  );
-                  return (
-                    <Row
-                      key={i}
-                      style={{
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                        borderBottom: `1px solid ${theme.greyScale5}`,
-                      }}
-                      >
-                      <div style={{
                         display: 'flex',
                         width: '100%',
                       }}
-                           >
-                        <label
-                          htmlFor={fieldName}
-                          style={{
-                            width: '100%',
-                            display: 'block',
-                            cursor: descMatch ? 'default' : 'pointer',
-                          }}
-                          >
-                          {descMatch ? (
+                      >
+                      <label
+                        htmlFor={fieldName}
+                        style={{
+                          width: '100%',
+                          display: 'block',
+                          cursor: descMatch ? 'default' : 'pointer',
+                        }}
+                        >
+                        {descMatch
+                          ? (
                             <React.Fragment>
                               <div>
                                 <TitleEl />
@@ -256,13 +260,13 @@ const ClinicalGrouping = compose(
                               </Tooltip>
                               <ToggleEl />
                             </React.Fragment>
-                            )}
-                        </label>
-                      </div>
-                    </Row>
-                  );
-                }
-              )}
+                          )}
+                      </label>
+                    </div>
+                  </Row>
+                );
+              })}
+
             {fields.length > MAX_VISIBLE_FACETS && (
               <Row>
                 <StyledToggleMoreLink
@@ -275,6 +279,7 @@ const ClinicalGrouping = compose(
                 </StyledToggleMoreLink>
               </Row>
             )}
+
             {searchValue === '' &&
               fields.length === 0 && <Row>No fields found</Row>}
           </Column>
@@ -292,7 +297,7 @@ export default compose(
       const filteredFields = clinicalAnalysisFields
         .map(field => ({
           ...field,
-          title: humanify({ term: _.last(field.name.split('__')) }),
+          title: humanify({ term: termCapitaliser(field.name).split('__').pop() }),
         }))
         .filter(field => {
           if (searchValue === '') return true;
@@ -300,17 +305,17 @@ export default compose(
           const queryLower = _.toLower(searchValue);
           const descLower = _.toLower(field.description);
           const descMatch =
-            field.description !== defaultDescription
-              ? descLower.match(queryLower) !== null
-              : false;
+            field.description !== defaultDescription && descLower.match(queryLower) !== null;
+
           return descMatch || titleLower.match(queryLower) !== null;
         });
-      const groupedByClinicalType = _.groupBy(filteredFields, field => {
-        const sections = field.name.split('__');
-        return sections.includes('treatments') ? sections[1] : sections[0];
-      });
 
-      return { groupedByClinicalType };
+      return {
+        groupedByClinicalType: _.groupBy(filteredFields, field => {
+          const sections = field.name.split('__');
+          return sections.includes('treatments') ? sections[1] : sections[0];
+        }),
+      };
     }
   )
 )(
@@ -334,11 +339,11 @@ export default compose(
           <span>
             {(_.keys(usefulFacets) || []).length}
             {' '}
-of
+            of
             {' '}
             {(clinicalAnalysisFields || []).length}
             {' '}
-fields with values
+            fields with values
           </span>
         </Row>
         <div

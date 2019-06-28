@@ -17,6 +17,7 @@ import {
   isEqual,
   map,
   max,
+  maxBy,
   min,
   reduce,
   reject,
@@ -220,7 +221,7 @@ const styles = {
   }),
   histogram: (theme: IThemeProps) => ({
     axis: {
-      fontSize: '0.9rem',
+      fontSize: '1.1rem',
       fontWeight: '500',
       stroke: theme.greyScale4,
       textFill: theme.greyScale3,
@@ -609,7 +610,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
       ? tableData.map(d => {
         return {
           fullLabel: d.groupName || d.key,
-          label: truncate(d.groupName || d.key, { length: 18 }),
+          label: d.groupName || d.key,
           tooltip: `${d.key}: ${d.chart_doc_count.toLocaleString()}`,
           value:
             variable.active_calculation === 'number'
@@ -618,6 +619,8 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
         };
       })
       : [];
+
+  const maxKeyNameLength = (maxBy(chartData.map(d => d.fullLabel), (item) => item.length) || '').length
 
   // set action will default to cohort total when no buckets are selected
   const totalFromSelectedBuckets = selectedBuckets && selectedBuckets.length
@@ -777,8 +780,9 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                     svg={() => wrapSvg({
                       selector: `#${wrapperId}-container .test-bar-chart svg`,
                       title: humanify({ term: fieldName }),
-                    })
-                    }
+                      bottomBuffer: maxKeyNameLength * 3,
+                      rightBuffer: maxKeyNameLength * 2
+                    })}
                     tooltipHTML="Download image or data"
                     />
                 </form>
@@ -845,6 +849,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
               <BarChart
                 data={chartData}
                 height={CHART_HEIGHT}
+                margin={{ top: 20, right: 50, bottom: 50, left: 55 }}
                 styles={{
                   bars: { fill: analysisColors[variable.type] || theme.secondary },
                   tooltips: {

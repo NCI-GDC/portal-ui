@@ -5,10 +5,10 @@ import _ from 'lodash';
 import { connect } from 'react-redux';
 import {
   compose,
-  withState,
-  setDisplayName,
   lifecycle,
+  setDisplayName,
   withPropsOnChange,
+  withState,
 } from 'recompose';
 
 import Modal from '@ncigdc/uikit/Modal';
@@ -75,89 +75,89 @@ export type TProps = {
 
 const presetFacets = [
   {
-    title: 'Case',
+    doc_type: 'cases',
     field: 'case_id',
     full: 'cases.case_id',
-    doc_type: 'cases',
+    title: 'Case',
     type: 'id',
   },
   {
-    title: 'Case ID',
+    doc_type: 'cases',
     field: 'submitter_id',
     full: 'cases.submitter_id',
-    doc_type: 'cases',
-    type: 'id',
     placeholder: 'eg. TCGA-DD*, *DD*, TCGA-DD-AAVP',
+    title: 'Case ID',
+    type: 'id',
   },
   {
-    title: 'Primary Site',
+    doc_type: 'cases',
     field: 'primary_site',
     full: 'cases.primary_site',
-    doc_type: 'cases',
+    title: 'Primary Site',
     type: 'keyword',
   },
   {
-    title: 'Program',
+    doc_type: 'cases',
     field: 'project.program.name',
     full: 'cases.project.program.name',
-    doc_type: 'cases',
+    title: 'Program',
     type: 'keyword',
   },
   {
-    title: 'Project',
+    doc_type: 'cases',
     field: 'project.project_id',
     full: 'cases.project.project_id',
-    doc_type: 'cases',
+    title: 'Project',
     type: 'terms',
   },
   {
-    title: 'Disease Type',
+    doc_type: 'cases',
     field: 'disease_type',
     full: 'cases.disease_type',
-    doc_type: 'cases',
+    title: 'Disease Type',
     type: 'keyword',
   },
   {
-    title: 'Gender',
+    doc_type: 'cases',
     field: 'demographic.gender',
     full: 'cases.demographic.gender',
-    doc_type: 'cases',
+    title: 'Gender',
     type: 'keyword',
   },
   {
-    title: 'Age at Diagnosis',
+    additionalProps: { convertDays: true },
+    doc_type: 'cases',
     field: 'diagnoses.age_at_diagnosis',
     full: 'cases.diagnoses.age_at_diagnosis',
-    doc_type: 'cases',
+    title: 'Age at Diagnosis',
     type: 'long',
-    additionalProps: { convertDays: true },
   },
   {
-    title: 'Vital Status',
+    doc_type: 'cases',
     field: 'demographic.vital_status',
     full: 'cases.demographic.vital_status',
-    doc_type: 'cases',
+    title: 'Vital Status',
     type: 'keyword',
   },
   {
-    title: 'Days to Death',
+    doc_type: 'cases',
     field: 'demographic.days_to_death',
     full: 'cases.demographic.days_to_death',
-    doc_type: 'cases',
+    title: 'Days to Death',
     type: 'long',
   },
   {
-    title: 'Race',
+    doc_type: 'cases',
     field: 'demographic.race',
     full: 'cases.demographic.race',
-    doc_type: 'cases',
+    title: 'Race',
     type: 'keyword',
   },
   {
-    title: 'Ethnicity',
+    doc_type: 'cases',
     field: 'demographic.ethnicity',
     full: 'cases.demographic.ethnicity',
-    doc_type: 'cases',
+    title: 'Ethnicity',
     type: 'keyword',
   },
 ];
@@ -186,22 +186,21 @@ const enhance = compose(
   })),
   withPropsOnChange(
     ['filters', 'userSelectedFacets'],
-    ({ filters, relay, userSelectedFacets }) =>
-      relay.setVariables({
-        filters,
-        exploreCaseCustomFacetFields: userSelectedFacets
-          .map(({ field }) => field)
-          .join(','),
-      }),
+    ({ filters, relay, userSelectedFacets }) => relay.setVariables({
+      exploreCaseCustomFacetFields: userSelectedFacets
+        .map(({ field }) => field)
+        .join(','),
+      filters,
+    }),
   ),
   withPropsOnChange(['facets'], ({ facets }) => ({
     parsedFacets: facets.facets ? tryParseJSON(facets.facets, {}) : {},
   })),
   lifecycle({
     componentDidMount(): void {
-      const { relay, filters, userSelectedFacets } = this.props;
+      const { filters, relay, userSelectedFacets } = this.props;
       relay.setVariables({
-        filters: filters,
+        filters,
         exploreCaseCustomFacetFields: userSelectedFacets
           .map(({ field }) => field)
           .join(','),
@@ -212,8 +211,8 @@ const enhance = compose(
 
 const styles = {
   link: {
-    textDecoration: 'underline',
     color: '#2a72a5',
+    textDecoration: 'underline',
   },
 };
 
@@ -225,70 +224,73 @@ export const CaseAggregationsComponent = (props: TProps) => (
         padding: '10px 15px',
         borderBottom: `1px solid ${props.theme.greyScale5}`,
       }}
-    >
+      >
       {!!props.userSelectedFacets.length && (
         <span>
           <a onClick={props.handleResetFacets} style={styles.link}>
             Reset
-          </a>{' '}
+          </a>
+          {' '}
           &nbsp;|&nbsp;
         </span>
       )}
+
       <a
         onClick={() => props.setShouldShowFacetSelection(true)}
         style={styles.link}
-      >
+        >
         Add a Case Filter
       </a>
     </div>
     <Modal
       isOpen={props.shouldShowFacetSelection}
-      style={{ content: { border: 0, padding: '15px' } }}
-    >
+      style={{
+        content: {
+          border: 0,
+          padding: '15px',
+        },
+      }}
+      >
       <FacetSelection
-        title="Add a Case Filter"
-        relayVarName="exploreCaseCustomFacetFields"
-        docType="cases"
-        onSelect={props.handleSelectFacet}
-        onRequestClose={() => props.setShouldShowFacetSelection(false)}
-        excludeFacetsBy={props.facetExclusionTest}
         additionalFacetData={props.parsedFacets}
+        docType="cases"
+        excludeFacetsBy={props.facetExclusionTest}
+        onRequestClose={() => props.setShouldShowFacetSelection(false)}
+        onSelect={props.handleSelectFacet}
         relay={props.relay}
-      />
+        relayVarName="exploreCaseCustomFacetFields"
+        title="Add a Case Filter"
+        />
     </Modal>
 
     {props.userSelectedFacets.map(facet => (
       <FacetWrapper
-        isRemovable
-        relayVarName="exploreCaseCustomFacetFields"
-        key={facet.full}
-        facet={facet}
         aggregation={props.parsedFacets[facet.field]}
-        relay={props.relay}
+        facet={facet}
+        isRemovable
+        key={facet.full}
         onRequestRemove={() => props.handleRequestRemoveFacet(facet)}
-        style={{ borderBottom: `1px solid ${props.theme.greyScale5}` }}
-      />
+        relay={props.relay}
+        relayVarName="exploreCaseCustomFacetFields"
+        />
     ))}
     <FacetHeader
-      title="Case"
-      field="cases.case_id"
       collapsed={props.caseIdCollapsed}
+      description="Enter UUID or ID of Case, Sample, Portion, Slide, Analyte or Aliquot"
+      field="cases.case_id"
       setCollapsed={props.setCaseIdCollapsed}
-      description={
-        'Enter UUID or ID of Case, Sample, Portion, Slide, Analyte or Aliquot'
-      }
-    />
-    <SuggestionFacet
       title="Case"
+      />
+    <SuggestionFacet
       collapsed={props.caseIdCollapsed}
       doctype="cases"
-      fieldNoDoctype="case_id"
-      placeholder="e.g. TCGA-A5-A0G2, 432fe4a9-2..."
-      hits={props.suggestions}
-      setAutocomplete={props.setAutocomplete}
       dropdownItem={x => (
         <Row>
-          <CaseIcon style={{ paddingRight: '1rem', paddingTop: '1rem' }} />
+          <CaseIcon style={{
+            paddingRight: '1rem',
+            paddingTop: '1rem',
+          }}
+                    />
           <div>
             <div style={{ fontWeight: 'bold' }}>{x.case_id}</div>
             <div style={{ fontSize: '80%' }}>{x.submitter_id}</div>
@@ -296,21 +298,25 @@ export const CaseAggregationsComponent = (props: TProps) => (
           </div>
         </Row>
       )}
-    />
+      fieldNoDoctype="case_id"
+      hits={props.suggestions}
+      placeholder="e.g. TCGA-A5-A0G2, 432fe4a9-2..."
+      setAutocomplete={props.setAutocomplete}
+      title="Case"
+      />
     <UploadSetButton
-      type="case"
-      style={{
-        width: '100%',
-        borderBottom: `1px solid ${props.theme.greyScale5}`,
-        padding: '0 1.2rem 1rem',
-      }}
-      UploadModal={UploadCaseSet}
       defaultQuery={{
         pathname: '/exploration',
         query: { searchTableTab: 'cases' },
       }}
       idField="cases.case_id"
-    >
+      style={{
+        width: '100%',
+        padding: '0 1.2rem 1rem',
+      }}
+      type="case"
+      UploadModal={UploadCaseSet}
+      >
       Upload Case Set
     </UploadSetButton>
 
@@ -318,14 +324,14 @@ export const CaseAggregationsComponent = (props: TProps) => (
       .filter(facet => props.aggregations[escapeForRelay(facet.field)])
       .map(facet => (
         <FacetWrapper
-          key={facet.full}
-          facet={facet}
-          title={facet.title}
-          aggregation={props.aggregations[escapeForRelay(facet.field)]}
-          relay={props.relay}
           additionalProps={facet.additionalProps}
+          aggregation={props.aggregations[escapeForRelay(facet.field)]}
+          facet={facet}
+          key={facet.full}
+          relay={props.relay}
           style={{ borderBottom: `1px solid ${props.theme.greyScale5}` }}
-        />
+          title={facet.title}
+          />
       ))}
   </div>
 );

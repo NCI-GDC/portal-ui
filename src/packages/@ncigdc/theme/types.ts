@@ -1,8 +1,10 @@
 export interface ITheme {
   impacts?: {},
+  primary?:string,
   tableHighlight?: string,
   greyScale4?: string,
   greyScale5?: string,
+  greyScale2?:string,
   secondary?: boolean,
 };
 

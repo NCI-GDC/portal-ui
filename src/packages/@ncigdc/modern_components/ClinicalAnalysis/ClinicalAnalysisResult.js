@@ -390,8 +390,8 @@ const ClinicalAnalysisResult = ({
                 justifyContent: 'space-between',
                 padding: '0 10px',
               }}
-            >
-              <span style={{ fontWeight: 'bold' }}>Cohort</span>
+              >
+              <span style={{ fontWeight: 'bold' }}>Case Set</span>
               <span style={{ fontWeight: 'bold' }}># Cases</span>
             </Row>
             <Row

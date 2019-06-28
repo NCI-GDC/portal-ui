@@ -34,6 +34,7 @@ export default {
     active_survival: 'overall',
     bins: {},
     continuousBinType: 'default',
+    continuousCustomInterval: 0,
     plotTypes: 'continuous',
     scrollToCard: false,
     type: 'Diagnosis',

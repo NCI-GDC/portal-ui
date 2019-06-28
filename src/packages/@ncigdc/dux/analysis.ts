@@ -37,6 +37,7 @@ type TClinicalAnalysisProperty = 'name'; // only type mutable properties
 export interface IAnalysisPayload {
   scrollToCard?: boolean;
   continuousBinType?: 'default' | 'interval' | 'range';
+  continuousCustomInterval?: any;
   analysis?: IAnalysis;
   id: string;
   fieldName?: string;
@@ -107,6 +108,7 @@ const defaultVariableConfig = {
 
 const defaultContinuousVariableConfig = {
   continuousBinType: 'default',
+  continuousCustomInterval: 0,
 };
 
 interface ICurrentAnalysis {
@@ -184,7 +186,10 @@ const reducer = (
                 plotTypes: action.payload.plotTypes,
                 scrollToCard: action.payload.scrollToCard,
                 ...(currentAnalysis.displayVariables.plotTypes === 'continuous'
-                  ? { continuousBinType: action.payload.continuousBinType }
+                  ? { 
+                      continuousBinType: action.payload.continuousBinType,
+                      continuousCustomInterval: action.payload.continuousCustomInterval, 
+                    }
                   : {}),
               },
             },

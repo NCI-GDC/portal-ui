@@ -18,67 +18,13 @@ const defaultRangeRow = [
   },
 ];
 
-// const defaultRangesTESTWithOverlap = [
-//   {
-//     active: false,
-//     fields: {
-//       from: '1',
-//       name: 'a',
-//       to: '2',
-//     },
-//   },
-//   {
-//     active: false,
-//     fields: {
-//       from: '3',
-//       name: 'b',
-//       to: '4',
-//     },
-//   },
-//   {
-//     active: false,
-//     fields: {
-//       from: '0',
-//       name: 'c',
-//       to: '5',
-//     },
-//   },
-// ];
-
-// const defaultRangesTESTNoOverlap = [
-//   {
-//     active: false,
-//     fields: {
-//       from: '0',
-//       name: 'a',
-//       to: '10000',
-//     },
-//   },
-//   {
-//     active: false,
-//     fields: {
-//       from: '10001',
-//       name: 'b',
-//       to: '15000',
-//     },
-//   },
-//   {
-//     active: false,
-//     fields: {
-//       from: '15001',
-//       name: 'c',
-//       to: '20000',
-//     },
-//   },
-// ];
-
 const countDecimals = num => {
   return Math.floor(num) === num ? 0 : (num.toString().split('.')[1].length || 0);
 };
 
 class ContinuousCustomBinsModal extends Component {
   state = {
-    binningMethod: 'range', // interval or range
+    binningMethod: 'interval', // interval or range
     intervalErrors: {
       amount: '',
       max: '',
@@ -94,19 +40,48 @@ class ContinuousCustomBinsModal extends Component {
     rangeNameErrors: [],
     rangeOverlapErrors: [],
     rangeRows: defaultRangeRow,
-    // rangeRows: defaultRangesTESTWithOverlap,
-    // rangeRows: defaultRangesTESTNoOverlap,
   };
 
   componentDidMount = () => {
-    const { rangeRows } = this.props;
+    const {
+      binData, continuousBinType, rangeRows,
+    } = this.props;
     this.validateRangeRow(rangeRows);
 
     this.debounceValidateIntervalFields = debounce(
       this.validateIntervalFields,
       300
     );
-  }
+  
+    if (continuousBinType === 'range') {
+      const nextRangeRows = binData.map(bin => ({
+        active: false,
+        fields: {
+          from: bin.keyArray[0].split('-')[0],
+          name: bin.key,
+          to: bin.keyArray[0].split('-')[1],
+        },
+      }));
+
+      this.setState({
+        binningMethod: 'range',
+        rangeRows: nextRangeRows,
+      });
+    } else if (continuousBinType === 'interval') {
+      const min = binData[0].keyArray.split('-')[0];
+      const max = binData[binData.length - 1].keyArray.split('-')[1];
+      const amount = binData[0].keyArray.split('-')[1] - min;
+
+      this.setState({
+        binningMethod: 'interval',
+        intervalFields: {
+          amount,
+          max,
+          min,
+        },
+      });
+    }
+  };
 
   // binning method: interval
 
@@ -308,7 +283,7 @@ class ContinuousCustomBinsModal extends Component {
         }, {})
         : makeCustomIntervalBins();
 
-      onUpdate(newBins);
+      onUpdate(newBins, binningMethod);
     }
   };
 

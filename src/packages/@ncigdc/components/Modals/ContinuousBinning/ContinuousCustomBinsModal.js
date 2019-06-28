@@ -62,16 +62,14 @@ class ContinuousCustomBinsModal extends Component {
         rangeRows: nextRangeRows,
       });
     } else if (continuousBinType === 'interval') {
-      const min = binData[0].keyArray[0].split('-')[0];
-      const max = binData[binData.length - 1].keyArray[0].split('-')[1];
-      const amount = binData[0].keyArray[0].split('-')[1] - min;
+      const { continuousCustomInterval } = this.props;
 
       this.setState({
         binningMethod: 'interval',
         intervalFields: {
-          amount,
-          max,
-          min,
+          amount: continuousCustomInterval,
+          max: binData[binData.length - 1].keyArray[0].split('-')[1],
+          min: binData[0].keyArray[0].split('-')[0],
         },
       });
     }
@@ -291,7 +289,11 @@ class ContinuousCustomBinsModal extends Component {
         }, {})
         : makeCustomIntervalBins();
 
-      onUpdate(newBins, binningMethod);
+      const continuousCustomInterval = binningMethod === 'interval'
+        ? intervalFields.amount
+        : 0;
+
+      onUpdate(newBins, binningMethod, continuousCustomInterval);
     }
   };
 

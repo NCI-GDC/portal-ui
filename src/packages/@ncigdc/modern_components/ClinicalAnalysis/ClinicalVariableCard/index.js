@@ -1208,10 +1208,15 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                             <ContinuousCustomBinsModal
                               binData={binData}
                               continuousBinType={variable.continuousBinType}
+                              continuousCustomInterval={variable.continuousCustomInterval}
                               defaultContinuousData={defaultContinuousData}
                               fieldName={humanify({ term: fieldName })}
                               onClose={() => dispatch(setModal(null))}
-                              onUpdate={(newBins, continuousBinType) => {
+                              onUpdate={(
+                                newBins,
+                                continuousBinType,
+                                continuousCustomInterval,
+                              ) => {
                                 dispatch(
                                   updateClinicalAnalysisVariable({
                                     fieldName,
@@ -1228,6 +1233,15 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                                     variableKey: 'continuousBinType',
                                   })
                                 );
+                                variable.plotTypes === 'continuous' && (
+                                  dispatch(
+                                    updateClinicalAnalysisVariable({
+                                      fieldName,
+                                      id,
+                                      value: continuousCustomInterval,
+                                      variableKey: 'continuousCustomInterval',
+                                    })
+                                  ));
                                 dispatch(setModal(null));
                               }
                               }
@@ -1281,14 +1295,24 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                           variableKey: 'bins',
                         }),
                       );
-                      variable.plotTypes === 'continuous' && dispatch(
-                        updateClinicalAnalysisVariable({
-                          fieldName,
-                          id,
-                          value: 'default',
-                          variableKey: 'continuousBinType',
-                        })
-                      );
+                      variable.plotTypes === 'continuous' && (
+                        dispatch(
+                          updateClinicalAnalysisVariable({
+                            fieldName,
+                            id,
+                            value: 'default',
+                            variableKey: 'continuousBinType',
+                          })
+                        ));
+                      variable.plotTypes === 'continuous' && (
+                        dispatch(
+                          updateClinicalAnalysisVariable({
+                            fieldName,
+                            id,
+                            value: 0,
+                            variableKey: 'continuousCustomInterval',
+                          })
+                        ));
                     }}
                     style={{
                       ...styles.actionMenuItem,

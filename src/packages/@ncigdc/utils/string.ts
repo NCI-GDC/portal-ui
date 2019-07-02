@@ -10,6 +10,7 @@ type TTruncateAfterMarker = (
   omission?: string
 ) => string;
 type TIsUuid = (query: string) => boolean;
+type TCreateFacetFieldString = (fieldName: string) => string;
 
 interface IHumanifyParams {
   term: string;
@@ -89,3 +90,5 @@ export const isUUID: TIsUuid = query =>
   /^[a-zA-Z0-9]{8}\-[a-zA-Z0-9]{4}\-[a-zA-Z0-9]{4}\-[a-zA-Z0-9]{4}\-[a-zA-Z0-9]{12}$/.test(
     _.trim(query)
   );
+
+export const createFacetFieldString: TCreateFacetFieldString = fieldName => fieldName.replace(/\./g, '__');

@@ -75,7 +75,7 @@ import {
   removeClinicalAnalysisVariable,
   updateClinicalAnalysisVariable,
 } from '@ncigdc/dux/analysis';
-import { humanify } from '@ncigdc/utils/string';
+import { humanify, createFacetFieldString } from '@ncigdc/utils/string';
 import timestamp from '@ncigdc/utils/timestamp';
 
 import { IS_CDAVE_DEV, analysisColors } from '@ncigdc/utils/constants';
@@ -1358,7 +1358,7 @@ export default compose(
     (props, nextProps) => !isEqual(props.data, nextProps.data),
     ({ data, fieldName, variable }) => {
       const sanitisedId = fieldName.split('.').pop();
-      const rawQueryData = get(data, `explore.cases.aggregations.${fieldName.replace(/\./g, '__')}`, data);
+      const rawQueryData = get(data, `explore.cases.aggregations.${createFacetFieldString(fieldName)}`, data);
       const dataDimension = dataDimensions[sanitisedId] && dataDimensions[sanitisedId].unit;
 
       return Object.assign(
@@ -1558,7 +1558,7 @@ export default compose(
       return ({ defaultContinuousData: {} });
     }
 
-    const dataStats = ((explore && explore.cases.aggregations[`${fieldName.replace('.', '__')}`]) || {
+    const dataStats = ((explore && explore.cases.aggregations[`${createFacetFieldString(fieldName)}`]) || {
       stats: {
         Min: null,
         Max: null,

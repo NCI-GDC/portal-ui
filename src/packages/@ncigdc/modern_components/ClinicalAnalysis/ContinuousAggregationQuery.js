@@ -11,6 +11,7 @@ import _ from 'lodash';
 
 import consoleDebug from '@ncigdc/utils/consoleDebug';
 import { redirectToLogin } from '@ncigdc/utils/auth';
+import { createFacetFieldString } from '@ncigdc/utils/string'
 import Loader from '@ncigdc/uikit/Loaders/Loader';
 
 import { API, IS_AUTH_PORTAL } from '@ncigdc/utils/constants';
@@ -52,7 +53,6 @@ const getContinuousAggs = ({ fieldName, stats, filters, bins }) => {
     )
   }
 
-  const queryFieldName = fieldName.replace('.', '__');
   const filters2 = {
     op: "range",
     content: [
@@ -61,7 +61,7 @@ const getContinuousAggs = ({ fieldName, stats, filters, bins }) => {
       }
     ]
   }
-  const aggregationFieldName = fieldName.replace(/\./g, '__');
+  const aggregationFieldName = createFacetFieldString(fieldName);
 
   const variables = {
     filters,

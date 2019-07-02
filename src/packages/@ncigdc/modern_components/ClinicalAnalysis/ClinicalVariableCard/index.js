@@ -352,8 +352,6 @@ const getTableData = (
   updateSelectedSurvivalValues,
   selectedSurvivalLoadingIds,
 ) => {
-  console.log(variable.bins, ': ');
-  console.log('bin data: ', binData);
   if (isEmpty(binData)) {
     return [];
   }
@@ -591,7 +589,6 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
   setQQData,
   setQQDataIsSet,
 }) => {
-  console.log('dataBuckets: ', dataBuckets);
   const tableData = variable.active_chart === 'box'
     ? getBoxTableData(dataValues)
     : getTableData(
@@ -1361,9 +1358,9 @@ export default compose(
     (props, nextProps) => !isEqual(props.data, nextProps.data),
     ({ data, fieldName, variable }) => {
       const sanitisedId = fieldName.split('.').pop();
-      const rawQueryData = get(data, `explore.cases.aggregations.${fieldName.replace('.', '__')}`, data);
+      const rawQueryData = get(data, `explore.cases.aggregations.${fieldName.replace(/\./g, '__')}`, data);
       const dataDimension = dataDimensions[sanitisedId] && dataDimensions[sanitisedId].unit;
-      console.log('raw: ', rawQueryData);
+
       return Object.assign(
         {
           dataBuckets: get(rawQueryData, variable.plotTypes === 'continuous' ? 'range.buckets' : 'buckets', []),

@@ -75,7 +75,7 @@ import {
   removeClinicalAnalysisVariable,
   updateClinicalAnalysisVariable,
 } from '@ncigdc/dux/analysis';
-import { humanify } from '@ncigdc/utils/string';
+import { humanify, createFacetFieldString } from '@ncigdc/utils/string';
 import timestamp from '@ncigdc/utils/timestamp';
 
 import { IS_CDAVE_DEV, analysisColors } from '@ncigdc/utils/constants';
@@ -1358,8 +1358,9 @@ export default compose(
     (props, nextProps) => !isEqual(props.data, nextProps.data),
     ({ data, fieldName, variable }) => {
       const sanitisedId = fieldName.split('.').pop();
-      const rawQueryData = get(data, `explore.cases.aggregations.${fieldName.replace('.', '__')}`, data);
+      const rawQueryData = get(data, `explore.cases.aggregations.${createFacetFieldString(fieldName)}`, data);
       const dataDimension = dataDimensions[sanitisedId] && dataDimensions[sanitisedId].unit;
+
       return Object.assign(
         {
           dataBuckets: get(rawQueryData, variable.plotTypes === 'continuous' ? 'range.buckets' : 'buckets', []),
@@ -1557,7 +1558,11 @@ export default compose(
       return ({ defaultContinuousData: {} });
     }
 
-    const dataStats = explore.cases.aggregations[`${fieldName.replace('.', '__')}`].stats;
+    const dataStats = explore ? explore.cases.aggregations[`${createFacetFieldString(fieldName)}`].stats
+    : {
+      Min: null,
+      Max: null,
+    };
 
     const defaultMin = dataStats.Min;
     const defaultMax = dataStats.Max;

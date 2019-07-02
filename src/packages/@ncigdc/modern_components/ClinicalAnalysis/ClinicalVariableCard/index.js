@@ -1558,12 +1558,11 @@ export default compose(
       return ({ defaultContinuousData: {} });
     }
 
-    const dataStats = ((explore && explore.cases.aggregations[`${createFacetFieldString(fieldName)}`]) || {
-      stats: {
-        Min: null,
-        Max: null,
-      },
-    }).stats;
+    const dataStats = explore ? explore.cases.aggregations[`${createFacetFieldString(fieldName)}`].stats
+    : {
+      Min: null,
+      Max: null,
+    };
 
     const defaultMin = dataStats.Min;
     const defaultMax = dataStats.Max;

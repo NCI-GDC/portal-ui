@@ -611,7 +611,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
         return {
           fullLabel: d.key,
           label: truncate(d.key, { length: 18 }),
-          tooltip: `${d.key}: ${d.chart_doc_count.toLocaleString()}`,
+          tooltip: `${d.key}: ${d.chart_doc_count.toLocaleString()} (${(((d.chart_doc_count || 0) / totalDocs) * 100).toFixed(2)}%)`,
           value:
             variable.active_calculation === 'number'
               ? d.chart_doc_count

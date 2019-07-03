@@ -97,6 +97,7 @@
     "redux-persist": "5.9.1",
     "redux-thunk": "2.2.0",
     "simple-statistics": "7.0.2",
+    "survival-create": "git+https://github.com/oncojs/survivalplot.git",
     "url-join": "1.1.0"
   },
   "devDependencies": {

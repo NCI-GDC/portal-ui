@@ -22,7 +22,7 @@ import {
   groupBy,
   get,
   reduce,
-  maxBy
+  maxBy,
 } from 'lodash';
 import { scaleOrdinal, schemeCategory10 } from 'd3';
 
@@ -621,7 +621,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
       })
       : [];
 
-  const maxKeyNameLength = (maxBy(chartData.map(d => d.fullLabel), (item) => item.length) || '').length
+  const maxKeyNameLength = (maxBy(chartData.map(d => d.fullLabel), (item) => item.length) || '').length;
 
   // set action will default to cohort total when no buckets are selected
   const totalFromSelectedBuckets = selectedBuckets && selectedBuckets.length
@@ -775,7 +775,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                       selector: `#${wrapperId}-container .test-bar-chart svg`,
                       title: humanify({ term: fieldName }),
                       bottomBuffer: maxKeyNameLength * 3,
-                      rightBuffer: maxKeyNameLength * 2
+                      rightBuffer: maxKeyNameLength * 2,
                     })}
                     tooltipHTML="Download image or data"
                     />
@@ -843,7 +843,12 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
               <BarChart
                 data={chartData}
                 height={CHART_HEIGHT}
-                margin={{ top: 20, right: 50, bottom: 50, left: 55 }}
+                margin={{
+                  top: 20,
+                  right: 50,
+                  bottom: 50,
+                  left: 55,
+                }}
                 styles={{
                   bars: { fill: analysisColors[variable.type] || theme.secondary },
                   tooltips: {
@@ -1370,6 +1375,13 @@ export default compose(
       );
     }
   ),
+  withProps(({ variable }) => ({
+    customBins: map(groupBy(variable.bins, bin => bin.groupName), (values, key) => ({
+      doc_count: values.reduce((acc, value) => acc + value.doc_count, 0),
+      key,
+      keyArray: values.reduce((acc, value) => [...acc, value.key], []),
+    })).filter(bin => bin.key),
+  })),
   withProps(
     ({
       fieldName,
@@ -1377,11 +1389,6 @@ export default compose(
       totalDocs,
       variable,
     }) => ({
-      customBins: map(groupBy(variable.bins, bin => bin.groupName), (values, key) => ({
-        doc_count: values.reduce((acc, value) => acc + value.doc_count, 0),
-        key,
-        keyArray: values.reduce((acc, value) => [...acc, value.key], []),
-      })).filter(bin => bin.key),
       getBucketRangesAndFilters: (acc, { doc_count, key }) => {
         const filters =
           variable.plotTypes === 'categorical'
@@ -1453,6 +1460,9 @@ export default compose(
       variable,
     }) => ({
       populateSurvivalData: () => {
+        console.log('dataBuckets: ', dataBuckets);
+        console.log('variable: ', variable);
+        // console.log('customBins: ', customBins);
         setSurvivalPlotLoading(true);
         const dataForSurvival =
           variable.plotTypes === 'continuous'
@@ -1470,7 +1480,7 @@ export default compose(
                 ...b,
                 chart_doc_count: b.doc_count,
               }));
-
+        console.log('dataForSurvival:', dataForSurvival);
         const filteredData = dataForSurvival
           .filter(x => x.chart_doc_count >= MINIMUM_CASES)
           .filter(x => x.key !== '_missing');
@@ -1548,9 +1558,14 @@ export default compose(
   ),
   withPropsOnChange(
     (props, nextProps) => props.variable.active_chart !== nextProps.variable.active_chart ||
-      !isEqual(props.data, nextProps.data),
+      !isEqual(props.data, nextProps.data) || !isEqual(props.variable.bins, nextProps.variable.bins),
+    // ({ populateSurvivalData, setSelectedSurvivalValues, variable }) => {
     ({ populateSurvivalData, variable }) => {
       if (variable.active_chart === 'survival') {
+        // if (props.setId !== setId) {
+        //   console.log('first')
+        //   return setSelectedSurvivalValues([], populateSurvivalData());
+        // }
         populateSurvivalData();
       }
     }

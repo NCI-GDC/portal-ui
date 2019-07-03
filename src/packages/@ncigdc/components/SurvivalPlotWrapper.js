@@ -10,7 +10,7 @@ import {
 import _ from 'lodash';
 import { scaleOrdinal, schemeCategory10 } from 'd3';
 // import { renderPlot } from '@oncojs/survivalplot';
-import { renderPlot } from '@oncojs/survivalplot/src/packages/@oncojs/survivalplot';
+import { renderPlot } from 'survival-create/src/packages/@oncojs/survivalplot';
 import Loader from '@ncigdc/uikit/Loaders/Loader';
 import toMap from '@ncigdc/utils/toMap';
 import { Row, Column } from '@ncigdc/uikit/Flex';

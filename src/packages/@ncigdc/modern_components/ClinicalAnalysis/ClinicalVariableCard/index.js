@@ -1471,87 +1471,121 @@ export default compose(
   ),
   withProps(
     ({
+      data: { explore },
       dataBuckets,
       fieldName,
       setId,
       totalDocs,
       variable,
-    }) => ({
-      binData: map(groupBy(variable.bins, bin => bin.groupName), (values, key) => ({
-        doc_count: values.reduce((acc, value) => acc + value.doc_count, 0),
-        key,
-        keyArray: values.reduce((acc, value) => [...acc, value.key], []),
-      })).filter(bin => bin.key),
-      bucketsOrganizedByKey: dataBuckets.reduce((acc, r) => {
-        return ({
-          ...acc,
-          [r.key]: {
-            ...r,
-            groupName: r.groupName !== undefined && r.groupName !== '' ? r.groupName : r.key,
-          },
-        });
-      }, {}),
-      getContinuousBuckets: (acc, { doc_count, key, keyArray }) => {
-        const keyValues = key.split('-').map(keyItem => Number(keyItem));
-        // survival doesn't have keyArray
-        const keyArrayValues = keyArray ? keyArray[0].split('-').map(keyItem => Number(keyItem)) : keyValues;
+    }) => {
+      const fieldNameUnderscores = fieldName.replace(/\./g, '__');
 
-        const groupName = keyValues.length === 2 &&
-          typeof keyValues[0] === 'number' &&
-          typeof keyValues[1] === 'number'
-          ? getContinuousRangeValue(keyValues)
-          : key;
-        const keyMin = keyArrayValues[0];
-        const keyMax = keyArrayValues[1];
-        const filters =
-          variable.plotTypes === 'continuous'
-            ? {
-              op: 'and',
-              content: [
-                {
-                  op: 'in',
-                  content: {
-                    field: 'cases.case_id',
-                    value: `set_id:${setId}`,
-                  },
-                },
-                {
-                  op: '>=',
-                  content: {
-                    field: fieldName,
-                    value: [keyMin],
-                  },
-                },
-                {
-                  op: '<=',
-                  content: {
-                    field: fieldName,
-                    value: [keyMax],
-                  },
-                },
-              ],
-            } : {};
+      if (variable.plotTypes === 'continuous' &&
+        !(explore &&
+          explore.cases &&
+          explore.cases.aggregations &&
+          explore.cases.aggregations[fieldNameUnderscores])) {
+        return;
+      }
 
-        return [
-          ...acc,
-          {
-            chart_doc_count: doc_count,
-            doc_count: getCountLink({
-              doc_count,
-              filters,
-              totalDocs,
-            }),
-            filters,
-            groupName,
-            key: `${keyMin}-${keyMax}`,
-            rangeValues: {
-              max: keyMax,
-              min: keyMin,
+      const continuousBuckets = variable.plotTypes === 'continuous'
+        ? explore.cases.aggregations[fieldNameUnderscores].range.buckets
+        : [];
+
+      const binsForBinData = variable.plotTypes === 'continuous'
+        ? continuousBuckets.reduce((acc, curr) => {
+          const numberKey = curr.key.split('-').map(keyItem => Number(keyItem)).join('-');
+          const currentBin = variable.bins[numberKey] ||
+            variable.bins[curr.key] ||
+            { groupName: '--' };
+          return ({
+            ...acc,
+            [numberKey]: {
+              doc_count: curr.doc_count,
+              groupName: currentBin.groupName,
+              key: numberKey,
             },
-          },
-        ];
-      },
-    })
+          });
+        }, {})
+        : variable.bins;
+
+      return ({
+        binData: map(groupBy(binsForBinData, bin => bin.groupName), (values, key) => ({
+          doc_count: values.reduce((acc, value) => acc + value.doc_count, 0),
+          key,
+          keyArray: values.reduce((acc, value) => [...acc, value.key], []),
+        })).filter(bin => bin.key),
+        bucketsOrganizedByKey: dataBuckets.reduce((acc, r) => {
+          return ({
+            ...acc,
+            [r.key]: {
+              ...r,
+              groupName: r.groupName !== undefined && r.groupName !== '' ? r.groupName : r.key,
+            },
+          });
+        }, {}),
+        getContinuousBuckets: (acc, { doc_count, key, keyArray }) => {
+          const keyValues = key.split('-').map(keyItem => Number(keyItem));
+          // survival doesn't have keyArray
+          const keyArrayValues = keyArray ? keyArray[0].split('-').map(keyItem => Number(keyItem)) : keyValues;
+
+          const groupName = keyValues.length === 2 &&
+            typeof keyValues[0] === 'number' &&
+            typeof keyValues[1] === 'number'
+            ? getContinuousRangeValue(keyValues)
+            : key;
+          const keyMin = keyArrayValues[0];
+          const keyMax = keyArrayValues[1];
+          const filters =
+            variable.plotTypes === 'continuous'
+              ? {
+                op: 'and',
+                content: [
+                  {
+                    op: 'in',
+                    content: {
+                      field: 'cases.case_id',
+                      value: `set_id:${setId}`,
+                    },
+                  },
+                  {
+                    op: '>=',
+                    content: {
+                      field: fieldName,
+                      value: [keyMin],
+                    },
+                  },
+                  {
+                    op: '<=',
+                    content: {
+                      field: fieldName,
+                      value: [keyMax],
+                    },
+                  },
+                ],
+              } : {};
+
+          return [
+            ...acc,
+            {
+              chart_doc_count: doc_count,
+              doc_count: getCountLink({
+                doc_count,
+                filters,
+                totalDocs,
+              }),
+              filters,
+              groupName,
+              key: `${keyMin}-${keyMax}`,
+              rangeValues: {
+                max: keyMax,
+                min: keyMin,
+              },
+            },
+          ];
+        },
+      })
+    }
   ),
   withProps(({ data: { explore }, fieldName, variable }) => {
     if (variable.plotTypes === 'categorical') {

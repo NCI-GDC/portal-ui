@@ -28,6 +28,7 @@
     "@oncojs/boxplot": "0.2.1",
     "@oncojs/react-lolliplot": "0.11.1",
     "@oncojs/sapien": "0.5.2",
+    "@oncojs/survivalplot": "0.8.3",
     "@types/d3": "5.0.1",
     "@types/filesize": "3.6.0",
     "@types/lodash": "4.14.117",
@@ -97,7 +98,6 @@
     "redux-persist": "5.9.1",
     "redux-thunk": "2.2.0",
     "simple-statistics": "7.0.2",
-    "survival-create": "git+https://github.com/oncojs/survivalplot.git",
     "url-join": "1.1.0"
   },
   "devDependencies": {

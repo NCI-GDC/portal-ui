@@ -1488,13 +1488,10 @@ export default compose(
         return;
       }
 
-      const continuousBuckets = variable.plotTypes === 'continuous'
-        ? explore.cases.aggregations[fieldNameUnderscores].range.buckets
-        : [];
-
       const binsForBinData = variable.plotTypes === 'continuous'
-        ? continuousBuckets.reduce((acc, curr) => {
-          const numberKey = curr.key.split('-').map(keyItem => Number(keyItem)).join('-');
+        ? explore.cases.aggregations[fieldNameUnderscores].range.buckets.reduce((acc, curr) => {
+          const numberKey = curr.key.split('-')
+            .map(keyItem => Number(keyItem)).join('-');
           const currentBin = variable.bins[numberKey] ||
             variable.bins[curr.key] ||
             { groupName: '--' };

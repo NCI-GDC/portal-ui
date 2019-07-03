@@ -1460,9 +1460,6 @@ export default compose(
       variable,
     }) => ({
       populateSurvivalData: () => {
-        console.log('dataBuckets: ', dataBuckets);
-        console.log('variable: ', variable);
-        // console.log('customBins: ', customBins);
         setSurvivalPlotLoading(true);
         const dataForSurvival =
           variable.plotTypes === 'continuous'
@@ -1480,7 +1477,7 @@ export default compose(
                 ...b,
                 chart_doc_count: b.doc_count,
               }));
-        console.log('dataForSurvival:', dataForSurvival);
+
         const filteredData = dataForSurvival
           .filter(x => x.chart_doc_count >= MINIMUM_CASES)
           .filter(x => x.key !== '_missing');
@@ -1559,13 +1556,8 @@ export default compose(
   withPropsOnChange(
     (props, nextProps) => props.variable.active_chart !== nextProps.variable.active_chart ||
       !isEqual(props.data, nextProps.data) || !isEqual(props.variable.bins, nextProps.variable.bins),
-    // ({ populateSurvivalData, setSelectedSurvivalValues, variable }) => {
     ({ populateSurvivalData, variable }) => {
       if (variable.active_chart === 'survival') {
-        // if (props.setId !== setId) {
-        //   console.log('first')
-        //   return setSelectedSurvivalValues([], populateSurvivalData());
-        // }
         populateSurvivalData();
       }
     }

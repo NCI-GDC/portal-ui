@@ -611,7 +611,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
         return {
           fullLabel: d.groupName || d.key,
           label: d.groupName || d.key,
-          tooltip: `${d.key}: ${d.chart_doc_count.toLocaleString()}`,
+          tooltip: `${d.key}: ${d.chart_doc_count.toLocaleString()} (${(((d.chart_doc_count || 0) / totalDocs) * 100).toFixed(2)}%)`,
           value:
             variable.active_calculation === 'number'
               ? d.chart_doc_count
@@ -901,13 +901,13 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                     uniqueClass="clinical-survival-plot"
                   />
                 ) : (
-                    <SurvivalPlotWrapper
+                  <SurvivalPlotWrapper
                       {...selectedSurvivalData}
                       height={202}
                       plotType="categorical"
                       survivalPlotLoading={survivalPlotLoading}
                       uniqueClass="clinical-survival-plot"
-                    />
+                      />
                   )}
               </div>
             )}

@@ -262,7 +262,7 @@ class ContinuousCustomBinsModal extends Component {
 
             return ({
               [objKey]: {
-                groupName: `${from} ${(key + 1) === bucketCount ? 'and up' : `to ${to}`}`,
+                groupName: `${from} to ${to}`,
                 key: objKey,
               },
             });

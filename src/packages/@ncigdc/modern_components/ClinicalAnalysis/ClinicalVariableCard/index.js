@@ -1436,7 +1436,9 @@ export default compose(
             ...acc,
             [curr]: {
               ...variable.bins[curr],
-              doc_count: dataBuckets[index].doc_count,
+              doc_count: dataBuckets[index] 
+                ? dataBuckets[index].doc_count
+                : 0,
             },
           }), {})
           ) : ({
@@ -1713,7 +1715,7 @@ export default compose(
               .map(v => data.filter(d => d.key === v)[0])
               .map(filteredData => ({
                 ...filteredData,
-                doc_count: undefined,
+                doc_count: 0,
               }));
 
         getSurvivalCurvesArray({
@@ -1750,7 +1752,7 @@ export default compose(
         variable,
         wrapperId,
       } = this.props;
-      if (Object.keys(variable.bins).length === 0) {
+      if (variable.bins === undefined || isEmpty(variable.bins)) {
         dispatch(
           updateClinicalAnalysisVariable({
             fieldName,

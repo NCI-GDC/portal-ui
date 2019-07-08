@@ -1604,21 +1604,26 @@ export default compose(
       return ({ defaultContinuousData: {} });
     }
 
-    const dataStats = explore ? explore.cases.aggregations[`${createFacetFieldString(fieldName)}`].stats
+    const dataStats = explore
+      ? explore.cases.aggregations[`${createFacetFieldString(fieldName)}`].stats
       : {
-        Min: null,
         Max: null,
+        Min: null,
       };
 
     const defaultMin = dataStats.Min;
     const defaultMax = dataStats.Max;
 
     const defaultQuartile = parseContinuousValue((defaultMax - defaultMin) / 4);
-    const defaultBuckets = Array(4).fill(1).map((val, key) => {
-      const from = parseContinuousValue(key * defaultQuartile + defaultMin);
-      const to = parseContinuousValue((key + 1) === 4
+
+    const defaultNumberOfBuckets = 5;
+    const defaultBucketSize = parseContinuousValue((defaultMax - defaultMin) / defaultNumberOfBuckets);
+
+    const defaultBuckets = Array(defaultNumberOfBuckets).fill(1).map((val, key) => {
+      const from = parseContinuousValue(key * defaultBucketSize + defaultMin);
+      const to = parseContinuousValue((key + 1) === defaultNumberOfBuckets
         ? defaultMax
-        : (defaultMin + (key + 1) * defaultQuartile - 1));
+        : (defaultMin + (key + 1) * defaultBucketSize - 1));
       const objKey = `${from}-${to}`;
 
       return ({
@@ -1660,7 +1665,7 @@ export default compose(
         const dataForSurvival =
           variable.plotTypes === 'continuous'
             ? dataBuckets
-              .sort((a, b) => b.key.split('-')[0] - a.key.split('-')[0])
+              .sort((a, b) => a.key.split('-')[0] - b.key.split('-')[0])
               .reduce(getContinuousBuckets, [])
             : binData
               .filter(bucket => (IS_CDAVE_DEV ? bucket.key : bucket.key !== '_missing'))

@@ -1435,7 +1435,7 @@ export default compose(
                 ...acc,
                 [dataBuckets[index].key]: {
                   ...dataBuckets[index],
-                  groupName: [dataBuckets[index].key],
+                  groupName: dataBuckets[index].key,
                 }
               }), {})
               : (Object.keys(variable.bins).reduce((acc, curr, index) => ({
@@ -1467,7 +1467,8 @@ export default compose(
                 [r.key]: {
                   ...r,
                   groupName:
-                    typeof get(variable, `bins.${r.key}.groupName`, undefined) === 'string' // hidden value have groupName '', so check if it is string
+                    typeof get(variable, `bins.${r.key}.groupName`, undefined) === 'string'
+                      // hidden value have groupName '', so check if it is string
                       ? get(variable, `bins.${r.key}.groupName`, undefined)
                       : r.key,
                 },
@@ -1626,7 +1627,7 @@ export default compose(
 
       return ({
         [objKey]: {
-          groupName: objKey,
+          groupName: `${parseContinuousValue(from)} to ${parseContinuousValue(to)}`,
           key: objKey,
         },
       });

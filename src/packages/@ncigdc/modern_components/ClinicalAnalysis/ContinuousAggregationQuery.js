@@ -27,37 +27,38 @@ const getContinuousAggs = ({ continuousBinType, fieldName, stats, filters, bins 
     return null;
   }
 
-  const interval = parseContinuousValue((stats.max - stats.min) / DEFAULT_CONTINUOUS_BUCKETS);
+  const interval = (stats.max - stats.min) / DEFAULT_CONTINUOUS_BUCKETS;
 
-  const makeNewBuckets = () => Array(DEFAULT_CONTINUOUS_BUCKETS).fill(1).map(
-    (val, key) => ({
-      from: key * interval + stats.min,
-      to: (key + 1) === DEFAULT_CONTINUOUS_BUCKETS
-        ? stats.max + 1
-        : stats.min + (key + 1) * interval,
-    })
-  );
+  const makeDefaultBuckets = () => Array(DEFAULT_CONTINUOUS_BUCKETS)
+    .fill(1).map(
+      (val, key) => ({
+        from: key * interval + stats.min,
+        to: (key + 1) === DEFAULT_CONTINUOUS_BUCKETS
+          ? stats.max + 1
+          : stats.min + (key + 1) * interval,
+      })
+    );
 
   let rangeArr = continuousBinType === 'default'
-    ? rangeArr = makeNewBuckets()
+    ? rangeArr = makeDefaultBuckets()
     : _.reduce(bins, (acc, bin, key) => {
       const binValues = bin.key.split('-').map(keyValue => Number(keyValue));
-      const binFrom = binValues[0];
-      const binTo = binValues[1];
+      const from = binValues[0];
+      const to = binValues[1];
       if (
         !!bin &&
-        (typeof binFrom === 'number') &&
-        (typeof binTo === 'number') &&
-        (binFrom < binTo)
+        (typeof from === 'number') &&
+        (typeof to === 'number') &&
+        (from < to)
       ) {
-        const result = [...acc, { from: binFrom, to: binTo }];
+        const result = [...acc, { from, to }];
         return result;
       }
       return acc;
     }, []);
 
   if (rangeArr.length === 0) {
-    rangeArr = makeNewBuckets();
+    rangeArr = makeDefaultBuckets();
   }
 
   const filters2 = {

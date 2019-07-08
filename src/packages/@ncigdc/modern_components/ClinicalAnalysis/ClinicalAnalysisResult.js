@@ -50,7 +50,7 @@ import './survivalPlot.css';
 
 // survival plot
 import ControlPanelNode from './ControlPanelNode';
-import ContinuousAggregation from './ContinuousAggregationQuery';
+import ContinuousAggregationQuery from './ContinuousAggregationQuery';
 import ClinicalVariableCard from './ClinicalVariableCard';
 
 interface IAnalysisResultProps {
@@ -390,7 +390,7 @@ const ClinicalAnalysisResult = ({
                 justifyContent: 'space-between',
                 padding: '0 10px',
               }}
-              >
+            >
               <span style={{ fontWeight: 'bold' }}>Case Set</span>
               <span style={{ fontWeight: 'bold' }}># Cases</span>
             </Row>
@@ -576,7 +576,7 @@ const ClinicalAnalysisResult = ({
               };
 
               return varProperties.plotTypes === 'continuous' ? (
-                <ContinuousAggregation
+                <ContinuousAggregationQuery
                   currentAnalysis={currentAnalysis}
                   fieldName={varFieldName}
                   filters={filters}

@@ -43,12 +43,12 @@ const getContinuousAggs = ({ fieldName, stats, filters, bins }) => {
     return acc;
   }, []);
 
-  const interval = Math.round((stats.max - stats.min) / DEFAULT_CONTINUOUS_BUCKETS);
+  const interval = Number(((stats.max - stats.min) / DEFAULT_CONTINUOUS_BUCKETS).toFixed(2));
   if (rangeArr.length === 0) {
     rangeArr = Array(DEFAULT_CONTINUOUS_BUCKETS).fill(1).map(
       (val, key) => ({
-        from: key * interval + stats.min,
-        to: (key + 1) === DEFAULT_CONTINUOUS_BUCKETS ? stats.max : (stats.min + (key + 1) * interval - 1),
+        from: Number((key * interval + stats.min).toFixed(2)),
+        to: Number(((key + 1) === DEFAULT_CONTINUOUS_BUCKETS ? stats.max : (stats.min + (key + 1) * interval - 1)).toFixed(2)),
       })
     )
   }

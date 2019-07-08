@@ -19,7 +19,7 @@ import ClinicalVariableCard from './ClinicalVariableCard';
 
 const simpleAggCache = {};
 const pendingAggCache = {};
-const DEFAULT_CONTINUOUS_BUCKETS = 4;
+const DEFAULT_CONTINUOUS_BUCKETS = 5;
 
 const getContinuousAggs = ({ fieldName, stats, filters, bins }) => {
   // prevent query failing if interval will equal 0

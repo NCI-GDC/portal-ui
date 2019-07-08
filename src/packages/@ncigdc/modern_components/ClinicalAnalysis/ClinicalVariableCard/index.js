@@ -1688,7 +1688,7 @@ export default compose(
         const valuesForTable =
           variable.plotTypes === 'categorical'
             ? filteredData.map(d => d.key).slice(0, 2)
-            : continuousTop2Values.map(d => d.key);
+            : continuousTop2Values.slice().reverse().map(d => d.key);
 
         const valuesForPlot =
           variable.plotTypes === 'categorical'

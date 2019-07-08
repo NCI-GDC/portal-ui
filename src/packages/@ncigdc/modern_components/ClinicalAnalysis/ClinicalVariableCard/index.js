@@ -1645,7 +1645,7 @@ export default compose(
         const dataForSurvival =
           variable.plotTypes === 'continuous'
             ? dataBuckets
-              .sort((a, b) => b.key.split('-')[0] - a.key.split('-')[0])
+              .sort((a, b) => a.key.split('-')[0] - b.key.split('-')[0])
               .reduce(getContinuousBuckets, [])
             : binData
               .filter(bucket => (IS_CDAVE_DEV ? bucket.key : bucket.key !== '_missing'))

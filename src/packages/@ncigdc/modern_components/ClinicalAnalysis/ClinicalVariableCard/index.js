@@ -75,7 +75,7 @@ import {
   removeClinicalAnalysisVariable,
   updateClinicalAnalysisVariable,
 } from '@ncigdc/dux/analysis';
-import { humanify, createFacetFieldString } from '@ncigdc/utils/string';
+import { humanify, createFacetFieldString, parseContinuousValue } from '@ncigdc/utils/string';
 import timestamp from '@ncigdc/utils/timestamp';
 
 import { IS_CDAVE_DEV, analysisColors } from '@ncigdc/utils/constants';
@@ -229,13 +229,9 @@ const styles = {
   }),
 };
 
-const parseContinuousBucketValue = value => (value % 1
-  ? value
-  : Math.round(value * 100) / 100);
-
 const getContinuousRangeValue = keyValues => {
   const keyValuesParsed = keyValues
-    .map(val => parseContinuousBucketValue(val));
+    .map(val => parseContinuousValue(val));
   return `${keyValuesParsed[0]} to ${keyValuesParsed[1]}`;
 };
 
@@ -901,13 +897,13 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                     uniqueClass="clinical-survival-plot"
                   />
                 ) : (
-                  <SurvivalPlotWrapper
+                    <SurvivalPlotWrapper
                       {...selectedSurvivalData}
                       height={202}
                       plotType="categorical"
                       survivalPlotLoading={survivalPlotLoading}
                       uniqueClass="clinical-survival-plot"
-                      />
+                    />
                   )}
               </div>
             )}
@@ -1358,12 +1354,17 @@ export default compose(
     (props, nextProps) => !isEqual(props.data, nextProps.data),
     ({ data, fieldName, variable }) => {
       const sanitisedId = fieldName.split('.').pop();
-      const rawQueryData = get(data, `explore.cases.aggregations.${createFacetFieldString(fieldName)}`, data);
-      const dataDimension = dataDimensions[sanitisedId] && dataDimensions[sanitisedId].unit;
+      const rawQueryData = get(data,
+        `explore.cases.aggregations.${createFacetFieldString(fieldName)}`, data);
+      const dataDimension = dataDimensions[sanitisedId] &&
+        dataDimensions[sanitisedId].unit;
 
       return Object.assign(
         {
-          dataBuckets: get(rawQueryData, variable.plotTypes === 'continuous' ? 'range.buckets' : 'buckets', []),
+          dataBuckets: get(rawQueryData, variable.plotTypes === 'continuous'
+            ? 'range.buckets'
+            : 'buckets',
+            []),
           dataValues: variable.plotTypes === 'continuous' && map(
             {
               ...rawQueryData.stats,
@@ -1373,7 +1374,7 @@ export default compose(
               switch (dataDimension) {
                 case 'Year': {
                   return ({
-                    [stat]: Number.parseFloat(value / DAYS_IN_YEAR).toFixed(0),
+                    [stat]: parseContinuousValue(value / DAYS_IN_YEAR),
                   });
                 }
                 default:
@@ -1402,7 +1403,7 @@ export default compose(
                 switch (dataDimensions[sanitisedId].unit) {
                   case 'Years': {
                     return ({
-                      [stat]: Number.parseFloat(value / DAYS_IN_YEAR).toFixed(0),
+                      [stat]: parseContinuousValue(value / DAYS_IN_YEAR),
                     });
                   }
                   default:
@@ -1420,7 +1421,8 @@ export default compose(
     }
   ),
   withPropsOnChange(
-    (props, nextProps) => !isEqual(props.dataBuckets, nextProps.dataBuckets) || props.setId !== nextProps.setId,
+    (props, nextProps) => !isEqual(props.dataBuckets, nextProps.dataBuckets) ||
+      props.setId !== nextProps.setId,
     ({
       dataBuckets,
       dispatch,
@@ -1432,40 +1434,50 @@ export default compose(
         updateClinicalAnalysisVariable({
           fieldName,
           id,
-          value: variable.plotTypes === 'continuous' ? (Object.keys(variable.bins).reduce((acc, curr, index) => ({
-            ...acc,
-            [curr]: {
-              ...variable.bins[curr],
-              doc_count: dataBuckets[index] 
-                ? dataBuckets[index].doc_count
-                : 0,
-            },
-          }), {})
-          ) : ({
-            ...reduce(variable.bins, (acc, bin, key) => {
-              if (bin.groupName && bin.groupName !== key) {
-                return {
-                  ...acc,
-                  [key]: {
-                    doc_count: 0,
-                    groupName: bin.groupName,
-                    key,
-                  },
-                };
-              }
-              return acc;
-            }, {}),
-            ...dataBuckets.reduce((acc, r) => ({
-              ...acc,
-              [r.key]: {
-                ...r,
-                groupName:
-                  typeof get(variable, `bins.${r.key}.groupName`, undefined) === 'string' // hidden value have groupName '', so check if it is string
-                    ? get(variable, `bins.${r.key}.groupName`, undefined)
-                    : r.key,
-              },
-            }), {}),
-          }),
+          value: variable.plotTypes === 'continuous'
+            ? variable.continuousBinType === 'default'
+              ? dataBuckets.reduce((acc, curr, index) => ({
+                ...acc,
+                [dataBuckets[index].key]: {
+                  ...dataBuckets[index],
+                  groupName: [dataBuckets[index].key],
+                }
+              }), {})
+              : (Object.keys(variable.bins).reduce((acc, curr, index) => ({
+                ...acc,
+                [curr]: {
+                  ...variable.bins[curr],
+                  doc_count: dataBuckets[index]
+                    ? dataBuckets[index].doc_count
+                    : 0,
+                },
+              }), {})
+              )
+            : ({
+              ...reduce(variable.bins, (acc, bin, key) => {
+                if (bin.groupName && bin.groupName !== key) {
+                  return {
+                    ...acc,
+                    [key]: {
+                      doc_count: 0,
+                      groupName: bin.groupName,
+                      key,
+                    },
+                  };
+                }
+                return acc;
+              }, {}),
+              ...dataBuckets.reduce((acc, r) => ({
+                ...acc,
+                [r.key]: {
+                  ...r,
+                  groupName:
+                    typeof get(variable, `bins.${r.key}.groupName`, undefined) === 'string' // hidden value have groupName '', so check if it is string
+                      ? get(variable, `bins.${r.key}.groupName`, undefined)
+                      : r.key,
+                },
+              }), {}),
+            }),
           variableKey: 'bins',
         }),
       );
@@ -1491,21 +1503,22 @@ export default compose(
       }
 
       const binsForBinData = variable.plotTypes === 'continuous'
-        ? explore.cases.aggregations[fieldNameUnderscores].range.buckets.reduce((acc, curr) => {
-          const numberKey = curr.key.split('-')
-            .map(keyItem => Number(keyItem)).join('-');
-          const currentBin = variable.bins[numberKey] ||
-            variable.bins[curr.key] ||
-            { groupName: '--' };
-          return ({
-            ...acc,
-            [numberKey]: {
-              doc_count: curr.doc_count,
-              groupName: currentBin.groupName,
-              key: numberKey,
-            },
-          });
-        }, {})
+        ? explore.cases.aggregations[fieldNameUnderscores].range.buckets
+          .reduce((acc, curr) => {
+            const numberKey = curr.key.split('-')
+              .map(keyItem => Number(keyItem)).join('-');
+            const currentBin = variable.bins[numberKey] ||
+              variable.bins[curr.key] ||
+              { groupName: '--' };
+            return ({
+              ...acc,
+              [numberKey]: {
+                doc_count: curr.doc_count,
+                groupName: currentBin.groupName,
+                key: numberKey,
+              },
+            });
+          }, {})
         : variable.bins;
 
       return ({
@@ -1600,17 +1613,17 @@ export default compose(
     const defaultMin = dataStats.Min;
     const defaultMax = dataStats.Max;
 
-    const defaultQuartile = Number(((defaultMax - defaultMin) / 4).toFixed(2));
+    const defaultQuartile = parseContinuousValue((defaultMax - defaultMin) / 4);
     const defaultBuckets = Array(4).fill(1).map((val, key) => {
-      const from = Math.floor(key * defaultQuartile + defaultMin);
-      const to = Math.floor((key + 1) === 4
+      const from = parseContinuousValue(key * defaultQuartile + defaultMin);
+      const to = parseContinuousValue((key + 1) === 4
         ? defaultMax
         : (defaultMin + (key + 1) * defaultQuartile - 1));
       const objKey = `${from}-${to}`;
 
       return ({
         [objKey]: {
-          groupName: `${from.toFixed(1)}-${to.toFixed(1)}`,
+          groupName: `${from}-${to}`,
           key: objKey,
         },
       });

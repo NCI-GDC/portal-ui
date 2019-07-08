@@ -122,17 +122,9 @@ class ContinuousCustomBinsModal extends Component {
 
     const currentMin = intervalFields.min;
     const currentMax = intervalFields.max;
-
-    const checkMinInRange = currentMin >= defaultContinuousData.min && currentMin < defaultContinuousData.max;
-    const validMin = checkMinInRange ? currentMin : defaultContinuousData.min;
-
-    const checkMaxInRange = currentMax > defaultContinuousData.min && currentMax <= defaultContinuousData.max;
-    const validMax = checkMaxInRange ? currentMax : defaultContinuousData.max;
-
-    const validAmount = checkMinInRange && checkMaxInRange ? currentMax - currentMin : defaultContinuousData.max - defaultContinuousData.min;
+    const validAmount = currentMax - currentMin;
 
     let inputError = '';
-
     const decimalError = 'Use up to 2 decimal places.';
 
     if (inputValue === '') {
@@ -147,20 +139,28 @@ class ContinuousCustomBinsModal extends Component {
     }
 
     if (inputKey === 'amount') {
-      const amountTooLargeError = `Must be less than or equal to ${validAmount}.`;
-      const amountTooSmallError = 'Must be greater than 0.';
-      inputError = inputValue <= 0 ? amountTooSmallError : inputValue > validAmount ? amountTooLargeError : '';
-      inputError = countDecimals(inputValue) > 2 ? decimalError : inputError;
+      inputError = inputValue <= 0
+        ? 'Must be greater than 0.'
+        : inputValue > validAmount
+          ? `Must be less than or equal to ${validAmount}.`
+          : '';
+      inputError = countDecimals(inputValue) > 2
+        ? decimalError
+        : inputError;
     } else if (inputKey === 'max') {
-      const maxTooSmallError = `Must be greater than ${validMin}.`;
-      const maxTooLargeError = `Must be less than or equal to ${defaultContinuousData.max}.`;
-      inputError = inputValue <= validMin ? maxTooSmallError : inputValue > defaultContinuousData.max ? maxTooLargeError : '';
-      inputError = countDecimals(inputValue) > 2 ? decimalError : inputError;
+      inputError = inputValue <= currentMin
+        ? `Must be greater than ${currentMin}.`
+        : '';
+      inputError = countDecimals(inputValue) > 2
+        ? decimalError
+        : inputError;
     } else if (inputKey === 'min') {
-      const minTooLargeError = `Must be less than ${validMax}.`;
-      const maxTooSmallError = `Must be greater than or equal to ${defaultContinuousData.min}.`;
-      inputError = inputValue >= validMax ? minTooLargeError : inputValue < defaultContinuousData.min ? maxTooSmallError : '';
-      inputError = countDecimals(inputValue) > 2 ? decimalError : inputError;
+      inputError = inputValue >= currentMax
+        ? `Must be less than ${currentMax}.`
+        : '';
+      inputError = countDecimals(inputValue) > 2
+        ? decimalError
+        : inputError;
     } else {
       inputError = '';
     }
@@ -417,7 +417,7 @@ class ContinuousCustomBinsModal extends Component {
                 validateIntervalFields={e => {
                   this.validateIntervalFields(e);
                 }}
-                />
+              />
             </Column>
           </Row>
           <div
@@ -428,7 +428,7 @@ class ContinuousCustomBinsModal extends Component {
               }
             }}
             role="presentation"
-            >
+          >
             <div style={{ marginBottom: '15px' }}>
               <BinningMethodInput
                 binningMethod="range"
@@ -437,32 +437,32 @@ class ContinuousCustomBinsModal extends Component {
                   this.setState({ binningMethod: 'range' });
                 }}
                 label="Manually"
-                />
+              />
             </div>
             <div style={styles.wrapper}>
               <div style={styles.heading}>
                 <div
                   id="range-table-label-name"
                   style={styles.column}
-                  >
+                >
                   Bin Name
                 </div>
                 <div
                   id="range-table-label-min"
                   style={styles.column}
-                  >
+                >
                   From
                 </div>
                 <div
                   id="range-table-label-max"
                   style={styles.column}
-                  >
+                >
                   To
                 </div>
                 <div
                   id="range-table-label-options"
                   style={styles.optionsColumn}
-                  >
+                >
                   Options
                 </div>
               </div>
@@ -484,7 +484,7 @@ class ContinuousCustomBinsModal extends Component {
                     rowNameError={rangeNameErrors[rowIndex] || ''}
                     rowOverlapErrors={rangeOverlapErrors[rowIndex] || []}
                     styles={styles}
-                    />
+                  />
                 ))}
               </div>
               <RangeInputRow
@@ -493,7 +493,7 @@ class ContinuousCustomBinsModal extends Component {
                 rangeMethodActive={binningMethod === 'range'}
                 rangeRows={rangeRows}
                 styles={styles}
-                />
+              />
             </div>
           </div>
         </div>
@@ -503,20 +503,20 @@ class ContinuousCustomBinsModal extends Component {
             justifyContent: 'flex-end',
             margin: '20px',
           }}
-          >
+        >
           <span style={{
             color: 'red',
             justifyContent: 'flex-start',
             visibility: modalWarning.length > 0 ? 'visible' : 'hidden',
           }}
-                >
+          >
             {`Warning: ${modalWarning}`}
           </span>
           <Button
             onClick={onClose}
             onMouseDown={onClose}
             style={styles.visualizingButton}
-            >
+          >
             Cancel
           </Button>
           <Button
@@ -526,7 +526,7 @@ class ContinuousCustomBinsModal extends Component {
             style={submitDisabled
               ? styles.inputDisabled
               : styles.visualizingButton}
-            >
+          >
             Save Bins
           </Button>
         </Row>

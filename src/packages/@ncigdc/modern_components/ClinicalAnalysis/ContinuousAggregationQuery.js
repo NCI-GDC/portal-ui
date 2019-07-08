@@ -31,10 +31,10 @@ const getContinuousAggs = ({ continuousBinType, fieldName, stats, filters, bins 
 
   const makeNewBuckets = () => Array(DEFAULT_CONTINUOUS_BUCKETS).fill(1).map(
     (val, key) => ({
-      from: parseContinuousValue(key * interval + stats.min),
-      to: parseContinuousValue((key + 1) === DEFAULT_CONTINUOUS_BUCKETS
-        ? stats.max
-        : (stats.min + (key + 1) * interval - 1)),
+      from: key * interval + stats.min,
+      to: (key + 1) === DEFAULT_CONTINUOUS_BUCKETS
+        ? stats.max + 1
+        : stats.min + (key + 1) * interval,
     })
   );
 

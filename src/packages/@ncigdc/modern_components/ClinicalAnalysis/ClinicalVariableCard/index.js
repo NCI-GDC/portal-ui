@@ -229,12 +229,6 @@ const styles = {
   }),
 };
 
-const getContinuousRangeValue = keyValues => {
-  const keyValuesParsed = keyValues
-    .map(val => parseContinuousValue(val));
-  return `${keyValuesParsed[0]} to ${keyValuesParsed[1]}`;
-};
-
 const getCountLink = ({ doc_count, filters, totalDocs }) => (
   <span>
     <ExploreLink
@@ -320,7 +314,7 @@ const getContinuousSetFilters = (selectedBuckets, fieldName, filters) => {
           field: fieldName,
           value: [max(bucketRanges.map(range => range.max))],
         },
-        op: '<=',
+        op: '<',
       },
     ],
     op: 'and',
@@ -433,9 +427,9 @@ const getTableData = (
               b.key === '_missing' || b.chart_doc_count < MINIMUM_CASES
                 ? 'Not enough data'
                 : selectedSurvivalValues.indexOf(b.key) > -1
-                  ? `Click icon to remove ${b.key}`
+                  ? `Click icon to remove ${b.groupName}`
                   : selectedSurvivalValues.length < MAXIMUM_CURVES
-                    ? `Click icon to plot ${b.key}`
+                    ? `Click icon to plot ${b.groupName}`
                     : `Maximum plots (${MAXIMUM_CURVES}) reached`
             }
           >
@@ -607,7 +601,8 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
         return {
           fullLabel: d.groupName || d.key,
           label: d.groupName || d.key,
-          tooltip: `${d.key}: ${d.chart_doc_count.toLocaleString()} (${(((d.chart_doc_count || 0) / totalDocs) * 100).toFixed(2)}%)`,
+          tooltip: `${d.key}: ${d.chart_doc_count.toLocaleString()} (${(((d.chart_doc_count ||
+            0) / totalDocs) * 100).toFixed(2)}%)`,
           value:
             variable.active_calculation === 'number'
               ? d.chart_doc_count
@@ -1532,19 +1527,22 @@ export default compose(
             ...acc,
             [r.key]: {
               ...r,
-              groupName: r.groupName !== undefined && r.groupName !== '' ? r.groupName : r.key,
+              groupName: r.groupName !== undefined &&
+                r.groupName !== '' ? r.groupName : r.key,
             },
           });
         }, {}),
         getContinuousBuckets: (acc, { doc_count, key, keyArray }) => {
           const keyValues = key.split('-').map(keyItem => Number(keyItem));
           // survival doesn't have keyArray
-          const keyArrayValues = keyArray ? keyArray[0].split('-').map(keyItem => Number(keyItem)) : keyValues;
+          const keyArrayValues = keyArray
+            ? keyArray[0].split('-').map(keyItem => Number(keyItem))
+            : keyValues;
 
           const groupName = keyValues.length === 2 &&
             typeof keyValues[0] === 'number' &&
             typeof keyValues[1] === 'number'
-            ? getContinuousRangeValue(keyValues)
+            ? `${parseContinuousValue(keyValues[0])} to ${parseContinuousValue(keyValues[1])}`
             : key;
           const keyMin = keyArrayValues[0];
           const keyMax = keyArrayValues[1];
@@ -1568,7 +1566,7 @@ export default compose(
                     },
                   },
                   {
-                    op: '<=',
+                    op: '<',
                     content: {
                       field: fieldName,
                       value: [keyMax],
@@ -1614,21 +1612,21 @@ export default compose(
     const defaultMin = dataStats.Min;
     const defaultMax = dataStats.Max;
 
-    const defaultQuartile = parseContinuousValue((defaultMax - defaultMin) / 4);
+    const defaultQuartile = (defaultMax - defaultMin) / 4;
 
     const defaultNumberOfBuckets = 5;
-    const defaultBucketSize = parseContinuousValue((defaultMax - defaultMin) / defaultNumberOfBuckets);
+    const defaultBucketSize = (defaultMax - defaultMin) / defaultNumberOfBuckets;
 
     const defaultBuckets = Array(defaultNumberOfBuckets).fill(1).map((val, key) => {
-      const from = parseContinuousValue(key * defaultBucketSize + defaultMin);
-      const to = parseContinuousValue((key + 1) === defaultNumberOfBuckets
-        ? defaultMax
-        : (defaultMin + (key + 1) * defaultBucketSize - 1));
+      const from = key * defaultBucketSize + defaultMin;
+      const to = (key + 1) === defaultNumberOfBuckets
+        ? defaultMax + 1
+        : (defaultMin + (key + 1) * defaultBucketSize);
       const objKey = `${from}-${to}`;
 
       return ({
         [objKey]: {
-          groupName: `${from}-${to}`,
+          groupName: objKey,
           key: objKey,
         },
       });
@@ -1688,7 +1686,7 @@ export default compose(
         const valuesForTable =
           variable.plotTypes === 'categorical'
             ? filteredData.map(d => d.key).slice(0, 2)
-            : continuousTop2Values.slice().reverse().map(d => d.key);
+            : continuousTop2Values.map(d => d.key);
 
         const valuesForPlot =
           variable.plotTypes === 'categorical'

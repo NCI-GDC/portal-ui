@@ -23,6 +23,7 @@ import {
   reject,
   sortBy,
   truncate,
+  isNumber,
 } from 'lodash';
 import { scaleOrdinal, schemeCategory10 } from 'd3';
 
@@ -338,6 +339,16 @@ const getCardFilters = (variablePlotTypes, selectedBuckets, fieldName, filters) 
       : getCategoricalSetFilters(selectedBuckets, fieldName, filters)
     : filters);
 };
+const sortByIndex = (a, b) => {
+  if (isNumber(a.index) && isNumber(b.index)) {
+    return a.index - b.index;
+  } if (isNumber(a.index) && !isNumber(b.index)) {
+    return -1;
+  } if (!isNumber(a.index) && isNumber(b.index)) {
+    return 1;
+  }
+  return b.doc_count - a.doc_count;
+};
 
 const getTableData = (
   binData,
@@ -355,14 +366,13 @@ const getTableData = (
   if (isEmpty(binData)) {
     return [];
   }
-
   const displayData = variable.plotTypes === 'continuous'
     ? binData
       .sort((a, b) => a.keyArray[0] - b.keyArray[0])
       .reduce(getContinuousBuckets, [])
     : binData
       .filter(bucket => (IS_CDAVE_DEV ? bucket.key : bucket.key !== '_missing'))
-      .sort((a, b) => b.doc_count - a.doc_count)
+      .sort(sortByIndex)
       .map(b => ({
         ...b,
         chart_doc_count: b.doc_count,
@@ -901,13 +911,13 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                     uniqueClass="clinical-survival-plot"
                   />
                 ) : (
-                  <SurvivalPlotWrapper
+                    <SurvivalPlotWrapper
                       {...selectedSurvivalData}
                       height={202}
                       plotType="categorical"
                       survivalPlotLoading={survivalPlotLoading}
                       uniqueClass="clinical-survival-plot"
-                      />
+                    />
                   )}
               </div>
             )}
@@ -1268,6 +1278,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                                 );
                                 dispatch(setModal(null));
                               }}
+                              sortByIndex={sortByIndex}
                             />
                           ),
                       ),
@@ -1360,7 +1371,6 @@ export default compose(
       const sanitisedId = fieldName.split('.').pop();
       const rawQueryData = get(data, `explore.cases.aggregations.${createFacetFieldString(fieldName)}`, data);
       const dataDimension = dataDimensions[sanitisedId] && dataDimensions[sanitisedId].unit;
-
       return Object.assign(
         {
           dataBuckets: get(rawQueryData, variable.plotTypes === 'continuous' ? 'range.buckets' : 'buckets', []),
@@ -1432,7 +1442,7 @@ export default compose(
         updateClinicalAnalysisVariable({
           fieldName,
           id,
-          value: variable.plotTypes === 'continuous' ? (Object.keys(variable.bins).reduce((acc, curr, index) => ({
+          value: variable.plotTypes === 'continuous' ? (Object.keys(variable.bins || {}).reduce((acc, curr, index) => ({
             ...acc,
             [curr]: {
               ...variable.bins[curr],
@@ -1445,6 +1455,7 @@ export default compose(
                 return {
                   ...acc,
                   [key]: {
+                    index: bin.index,
                     doc_count: 0,
                     groupName: bin.groupName,
                     key,
@@ -1457,6 +1468,7 @@ export default compose(
               ...acc,
               [r.key]: {
                 ...r,
+                index: get(variable, `bins.${r.key}.index`, undefined),
                 groupName:
                   typeof get(variable, `bins.${r.key}.groupName`, undefined) === 'string' // hidden value have groupName '', so check if it is string
                     ? get(variable, `bins.${r.key}.groupName`, undefined)
@@ -1485,7 +1497,7 @@ export default compose(
           explore.cases &&
           explore.cases.aggregations &&
           explore.cases.aggregations[fieldNameUnderscores])) {
-        return;
+        return null;
       }
 
       const binsForBinData = variable.plotTypes === 'continuous'
@@ -1505,22 +1517,13 @@ export default compose(
           });
         }, {})
         : variable.bins;
-
       return ({
         binData: map(groupBy(binsForBinData, bin => bin.groupName), (values, key) => ({
           doc_count: values.reduce((acc, value) => acc + value.doc_count, 0),
+          index: values[0].index,
           key,
           keyArray: values.reduce((acc, value) => [...acc, value.key], []),
         })).filter(bin => bin.key),
-        bucketsOrganizedByKey: dataBuckets.reduce((acc, r) => {
-          return ({
-            ...acc,
-            [r.key]: {
-              ...r,
-              groupName: r.groupName !== undefined && r.groupName !== '' ? r.groupName : r.key,
-            },
-          });
-        }, {}),
         getContinuousBuckets: (acc, { doc_count, key, keyArray }) => {
           const keyValues = key.split('-').map(keyItem => Number(keyItem));
           // survival doesn't have keyArray
@@ -1581,7 +1584,7 @@ export default compose(
             },
           ];
         },
-      })
+      });
     }
   ),
   withProps(({ data: { explore }, fieldName, variable }) => {
@@ -1743,23 +1746,12 @@ export default compose(
   lifecycle({
     componentDidMount(): void {
       const {
-        bucketsOrganizedByKey,
         dispatch,
         fieldName,
         id,
         variable,
         wrapperId,
       } = this.props;
-      if (Object.keys(variable.bins).length === 0) {
-        dispatch(
-          updateClinicalAnalysisVariable({
-            fieldName,
-            id,
-            value: bucketsOrganizedByKey,
-            variableKey: 'bins',
-          }),
-        );
-      }
       if (variable.scrollToCard === false) return;
       const offset = document.getElementById('header').getBoundingClientRect().bottom + 10;
       const $anchor = document.getElementById(`${wrapperId}-container`);

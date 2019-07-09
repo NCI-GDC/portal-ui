@@ -9,11 +9,12 @@ import {
   withState,
 } from 'recompose';
 import {
-  map,
   groupBy,
   reduce,
   filter,
   some,
+  isNumber,
+  min,
 } from 'lodash';
 import Group from '@ncigdc/theme/icons/Group';
 import Hide from '@ncigdc/theme/icons/Hide';
@@ -24,6 +25,7 @@ import { visualizingButton } from '@ncigdc/theme/mixins';
 import Button from '@ncigdc/uikit/Button';
 import ControlEditableRow from '@ncigdc/uikit/ControlEditableRow';
 import { Row, Column } from '@ncigdc/uikit/Flex';
+import SortableItem from '@ncigdc/uikit/SortableItem';
 
 const initialName = (arr: string[], prefix: string) => {
   /* @arr is the list of names
@@ -50,6 +52,12 @@ interface IBinProps {
   doc_count: number,
   /* eslint-enable */
   groupName: string,
+  index: number,
+}
+
+interface IState {
+  draggingIndex: number | null;
+  items: string[];
 }
 
 interface ISelectedBinsProps {
@@ -75,6 +83,11 @@ interface IGroupValuesModalProps {
   setGlobalWarning: (globalWarning: string) => void,
   setListWarning: (listWarning: { [x: string]: string }) => void,
   listWarning: { [x: string]: string },
+  setDraggingIndex: (draggingIndex: number | null) => void,
+  draggingIndex: number,
+  groupNameMapping: { [x: string]: string[] },
+  setShift: (x: boolean) => void,
+  shift: boolean,
 }
 
 const boxHeaderStyle = {
@@ -96,33 +109,49 @@ const GroupValuesModal = ({
   binGrouping,
   currentBins,
   dataBuckets,
+  draggingIndex,
   editingGroupName,
   fieldName,
   globalWarning,
+  groupNameMapping,
   listWarning,
   onClose,
   onUpdate,
   selectedGroupBins,
   selectedHidingBins,
   setCurrentBins,
+  setDraggingIndex,
   setGlobalWarning,
   setListWarning,
   setSelectedGroupBins,
   setSelectedHidingBins,
+  setShift,
+  shift,
 }: IGroupValuesModalProps) => {
-  const groupNameMapping = groupBy(
-    Object.keys(currentBins)
-      .filter((bin: string) => currentBins[bin].groupName !== ''),
-    key => currentBins[key].groupName
-  );
+  const groupNamesByOrder = Object.keys(groupNameMapping).sort(
+    (a: string, b: string) => {
 
+      const {
+        [groupNameMapping[a][0]]: { index: aIndex, doc_count: aCount },
+        [groupNameMapping[b][0]]: { index: bIndex, doc_count: bCount },
+      } = currentBins;
+      if (isNumber(aIndex) && isNumber(bIndex)) {
+        return aIndex - bIndex;
+      } if (isNumber(aIndex) && !isNumber(bIndex)) {
+        return -1;
+      } if (!isNumber(aIndex) && isNumber(bIndex)) {
+        return 1;
+      }
+      return bCount - aCount;
+    }
+  );
   return (
     <Column
       style={{
         maxHeight: '90vh',
         padding: '2rem',
       }}
-      >
+    >
       <h1 style={{ margin: '0 0 1.5rem' }}>
         {`Create Custom Bins: ${fieldName}`}
       </h1>
@@ -139,11 +168,10 @@ const GroupValuesModal = ({
             height: '35rem',
             width: '100%',
           }}
-          >
-          <Row style={boxHeaderStyle} >
-            <span style={{ fontWeight: 'bold' }} >Values</span>
-
-            <Row spacing="1rem" >
+        >
+          <Row style={boxHeaderStyle}>
+            <span style={{ fontWeight: 'bold' }}>Values</span>
+            <Row spacing="1rem">
               <Button
                 leftIcon={<Undo />}
                 onClick={() => {
@@ -161,11 +189,11 @@ const GroupValuesModal = ({
                   setListWarning({});
                 }}
                 style={visualizingButton}
-                />
+              />
 
               <Button
-                leftIcon={<Group style={{ width: '10px' }} />}
                 disabled={Object.values(selectedGroupBins).filter(Boolean).length < 2}
+                leftIcon={<Group style={{ width: '10px' }} />}
                 onClick={() => {
                   binGrouping();
                   setSelectedGroupBins({});
@@ -173,16 +201,16 @@ const GroupValuesModal = ({
                   setListWarning({});
                 }}
                 style={visualizingButton}
-                >
+              >
                 Group
               </Button>
 
               <Button
-                leftIcon={<Ungroup style={{ width: '10px' }} />}
                 disabled={Object
                   .keys(selectedGroupBins)
                   .filter(key => selectedGroupBins[key])
                   .every(key => currentBins[key].groupName === key)}
+                leftIcon={<Ungroup style={{ width: '10px' }} />}
                 onClick={() => {
                   setCurrentBins({
                     ...currentBins,
@@ -204,13 +232,13 @@ const GroupValuesModal = ({
                   setListWarning({});
                 }}
                 style={visualizingButton}
-                >
+              >
                 Ungroup
               </Button>
 
               <Button
-                leftIcon={<Hide />}
                 disabled={Object.values(selectedGroupBins).every(value => !value)}
+                leftIcon={<Hide />}
                 onClick={() => {
                   if (filter(selectedGroupBins, Boolean).length ===
                     Object.keys(filter(currentBins, (bin: IBinProps) => !!bin.groupName)).length) {
@@ -237,19 +265,41 @@ const GroupValuesModal = ({
                   setListWarning({});
                 }}
                 style={visualizingButton}
-                >
+              >
                 Hide
               </Button>
             </Row>
           </Row>
           <Column style={listStyle}>
-            {map(
-              groupNameMapping,
-              (group: string[], groupName: string) => (
-                <Column key={groupName} >
+            {}
+            {groupNamesByOrder.map((groupName: string, i: number) => {
+              const group = groupNameMapping[groupName];
+              return (
+                <SortableItem
+                  draggingIndex={draggingIndex}
+                  items={groupNamesByOrder}
+                  key={groupName}
+                  outline="list"
+                  sortId={i}
+                  updateState={(nextState: IState) => {
+                    setDraggingIndex(nextState.draggingIndex);
+                    if (nextState.items) {
+                      setCurrentBins({
+                        ...reduce(currentBins, (acc, bin: IBinProps) => ({
+                          ...acc,
+                          [bin.key]: {
+                            ...bin,
+                            index: nextState.items.indexOf(bin.groupName),
+                          },
+                        }), {}),
+                      });
+                    }
+                  }}
+                >
                   <Row
                     key={groupName}
                     onClick={() => {
+                      // find the first selected item in the list.
                       if (Object.keys(selectedHidingBins).length > 0) {
                         setSelectedHidingBins({});
                       }
@@ -263,10 +313,13 @@ const GroupValuesModal = ({
                         }), {}),
                       });
                     }}
+                    onKeyDown={(e: any) => setShift(e.shiftKey)}
+                    onKeyUp={(e: any) => setShift(e.shiftKey)}
                     style={{
-                      backgroundColor: group.every((binKey: string) => selectedGroupBins[binKey]) ? '#d5f4e6' : '',
+                      backgroundColor: (group || []).every((binKey: string) => selectedGroupBins[binKey]) ? '#d5f4e6' : '',
                     }}
-                    >
+                    tabIndex={i}
+                  >
                     {group.length > 1 || group[0] !== groupName
                       ? (
                         <ControlEditableRow
@@ -328,7 +381,7 @@ const GroupValuesModal = ({
                           }}
                           text={groupName}
                           warning={listWarning[groupName]}
-                          >
+                        >
                           {groupName}
                         </ControlEditableRow>
                       )
@@ -356,13 +409,13 @@ const GroupValuesModal = ({
                           listStyleType: 'disc',
                           paddingLeft: '5px',
                         }}
-                        >
+                      >
                         {`${bin} (${currentBins[bin].doc_count})`}
                       </Row>
                     )))}
-                </Column>
-              )
-            )}
+                </SortableItem>
+              );
+            })}
           </Column>
         </Column>
 
@@ -371,13 +424,12 @@ const GroupValuesModal = ({
             height: '16rem',
             width: '100%',
           }}
-          >
-          <Row style={boxHeaderStyle} >
-            <span style={{ fontWeight: 'bold' }} >Hidden Values</span>
-
+        >
+          <Row style={boxHeaderStyle}>
+            <span style={{ fontWeight: 'bold' }}>Hidden Values</span>
             <Button
-              leftIcon={<Show />}
               disabled={Object.values(selectedHidingBins).every(value => !value)}
+              leftIcon={<Show />}
               onClick={() => {
                 setCurrentBins({
                   ...currentBins,
@@ -399,7 +451,7 @@ const GroupValuesModal = ({
                 setListWarning({});
               }}
               style={visualizingButton}
-              >
+            >
               Unhide
             </Button>
           </Row>
@@ -435,14 +487,14 @@ const GroupValuesModal = ({
           justifyContent: 'flex-end',
           marginTop: '1.5rem',
         }}
-        >
+      >
         {globalWarning.length > 0 && (
           <span
             style={{
               color: 'red',
               justifyContent: 'flex-start',
             }}
-            >
+          >
             {`Warning: ${globalWarning}`}
           </span>
         )}
@@ -453,7 +505,7 @@ const GroupValuesModal = ({
             ...visualizingButton,
             minWidth: 100,
           }}
-          >
+        >
           Cancel
         </Button>
 
@@ -463,13 +515,13 @@ const GroupValuesModal = ({
             ...visualizingButton,
             minWidth: 100,
           }}
-          >
+        >
           Save Bins
         </Button>
       </Row>
-    </Column >
+    </Column>
   );
-}
+};
 
 export default compose(
   setDisplayName('EnhancedGroupValuesModal'),
@@ -479,18 +531,48 @@ export default compose(
   withState('selectedGroupBins', 'setSelectedGroupBins', {}),
   withState('globalWarning', 'setGlobalWarning', ''),
   withState('listWarning', 'setListWarning', {}),
+  withState('draggingIndex', 'setDraggingIndex', null),
+  withState('shift', 'setShift', false),
   withProps(({
     currentBins,
+  }) => ({
+    groupNameMapping: groupBy(
+      Object.keys(currentBins)
+        .filter((bin: string) => currentBins[bin].groupName !== ''),
+      key => currentBins[key].groupName
+    ),
+
+  })),
+  withProps(({
+    currentBins,
+    groupNameMapping,
     selectedGroupBins,
     setCurrentBins,
     setEditingGroupName,
     setSelectedHidingBins,
   }) => ({
     binGrouping: () => {
-      const newGroupName = initialName(
+      let newGroupName = initialName(
         Object.values(currentBins).map((bin: IBinProps) => bin.groupName), 'selected Value '
       );
-      setEditingGroupName(newGroupName);
+      const selectedGroups =
+        Object
+          .keys(selectedGroupBins)
+          .reduce((acc: string[], bin: string) => {
+            if (selectedGroupBins[bin] && currentBins[bin].groupName !== bin) {
+              const { [bin]: { groupName } } = currentBins;
+              if (!acc.includes(groupName) && groupNameMapping[groupName].every((key: string) => selectedGroupBins[key])) {
+                return [...acc, groupName];
+              }
+            }
+            return acc;
+          }, []);
+      if (selectedGroups.length === 1) {
+        [newGroupName] = selectedGroups;
+      } else {
+        setEditingGroupName(newGroupName);
+      }
+      const minIndex = min(Object.keys(selectedGroupBins).map(bin => currentBins[bin].index)) || 0;
       setCurrentBins({
         ...currentBins,
         ...reduce(selectedGroupBins, (acc, val, key) => {
@@ -499,6 +581,7 @@ export default compose(
               ...acc,
               [key]: {
                 ...currentBins[key],
+                index: minIndex,
                 groupName: newGroupName,
               },
             };
@@ -508,5 +591,5 @@ export default compose(
       });
       setSelectedHidingBins({});
     },
-  }))
+  })),
 )(GroupValuesModal);

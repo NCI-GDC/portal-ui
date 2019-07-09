@@ -23,6 +23,9 @@ export interface IFlexDivProps {
   className?: string;
   id?: string,
   onClick?: () => void;
+  onKeyDown?: (e: any) => void;
+  tabIndex?: number;
+  onKeyUp?: (e: any) => void;
 }
 
 const Row: ComponentType<IFlexDivProps> = ({
@@ -34,31 +37,31 @@ const Row: ComponentType<IFlexDivProps> = ({
   className,
   ...props
 }) => (
-  <div
-    style={{
-      ...baseStyle,
-      flex,
-      ...wrap ? { flexWrap: 'wrap' } : {},
-      ...style,
-    }}
-    className={className}
-    {...props}
-  >
-    {!spacing && children}
-    {spacing &&
-      Children.map(
-        children,
-        (child: ReactElement<any>, i) =>
-          child &&
-          cloneElement(child, {
-            ...child.props,
-            style: {
-              ...i ? { marginLeft: spacing } : {},
-              ...child.props.style ? child.props.style : {},
-            },
-          })
-      )}
-  </div>
-);
+    <div
+      style={{
+        ...baseStyle,
+        flex,
+        ...wrap ? { flexWrap: 'wrap' } : {},
+        ...style,
+      }}
+      className={className}
+      {...props}
+    >
+      {!spacing && children}
+      {spacing &&
+        Children.map(
+          children,
+          (child: ReactElement<any>, i) =>
+            child &&
+            cloneElement(child, {
+              ...child.props,
+              style: {
+                ...i ? { marginLeft: spacing } : {},
+                ...child.props.style ? child.props.style : {},
+              },
+            })
+        )}
+    </div>
+  );
 
 export default Row;

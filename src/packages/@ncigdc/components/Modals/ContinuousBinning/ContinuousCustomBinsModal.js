@@ -262,7 +262,7 @@ class ContinuousCustomBinsModal extends Component {
 
             return ({
               [objKey]: {
-                groupName: `${from} to ${to}`,
+                groupName: `${from} to less than ${to}`,
                 key: objKey,
               },
             });
@@ -386,7 +386,7 @@ class ContinuousCustomBinsModal extends Component {
           <p>
             Available values from
             <strong>{` ${defaultContinuousData.min} `}</strong>
-            to
+            to less than
             <strong>{` ${defaultContinuousData.max} `}</strong>
           </p>
           <p>
@@ -457,7 +457,7 @@ class ContinuousCustomBinsModal extends Component {
                   id="range-table-label-max"
                   style={styles.column}
                   >
-                  To
+                  To Less Than
                 </div>
                 <div
                   id="range-table-label-options"

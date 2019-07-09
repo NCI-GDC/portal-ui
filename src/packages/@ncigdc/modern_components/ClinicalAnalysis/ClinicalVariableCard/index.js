@@ -234,7 +234,7 @@ const parseContinuousBucketValue = value => Number(value.toFixed(2));
 const getContinuousRangeValue = keyValues => {
   const keyValuesParsed = keyValues
     .map(val => parseContinuousBucketValue(val));
-  return `${keyValuesParsed[0]} to ${keyValuesParsed[1]}`;
+  return `${keyValuesParsed[0]} to less than ${keyValuesParsed[1]}`;
 };
 
 const getCountLink = ({ doc_count, filters, totalDocs }) => (

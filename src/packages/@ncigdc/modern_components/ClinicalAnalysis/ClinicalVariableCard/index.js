@@ -1663,9 +1663,11 @@ export default compose(
         setSurvivalPlotLoading(true);
         const dataForSurvival =
           variable.plotTypes === 'continuous'
-            ? dataBuckets
-              .sort((a, b) => a.key.split('-')[0] - b.key.split('-')[0])
-              .reduce(getContinuousBuckets, [])
+            ? dataBuckets.length > 0
+              ? dataBuckets
+                .sort((a, b) => a.key.split('-')[0] - b.key.split('-')[0])
+                .reduce(getContinuousBuckets, [])
+              : []
             : binData
               .filter(bucket => (IS_CDAVE_DEV ? bucket.key : bucket.key !== '_missing'))
               .map(b => ({

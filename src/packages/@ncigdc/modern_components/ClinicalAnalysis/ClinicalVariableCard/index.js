@@ -76,6 +76,8 @@ import {
   updateClinicalAnalysisVariable,
 } from '@ncigdc/dux/analysis';
 import { humanify, createFacetFieldString } from '@ncigdc/utils/string';
+import termCapitaliser from '@ncigdc/utils/customisation';
+
 import timestamp from '@ncigdc/utils/timestamp';
 
 import { IS_CDAVE_DEV, analysisColors } from '@ncigdc/utils/constants';
@@ -664,7 +666,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
             marginTop: 10,
           }}
         >
-          {humanify({ term: fieldName })}
+          {humanify({ term: termCapitaliser(fieldName).split('__').pop() })}
         </h2>
         <Row>
           {plots.concat('delete')
@@ -901,13 +903,13 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                     uniqueClass="clinical-survival-plot"
                   />
                 ) : (
-                  <SurvivalPlotWrapper
+                    <SurvivalPlotWrapper
                       {...selectedSurvivalData}
                       height={202}
                       plotType="categorical"
                       survivalPlotLoading={survivalPlotLoading}
                       uniqueClass="clinical-survival-plot"
-                      />
+                    />
                   )}
               </div>
             )}

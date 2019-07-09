@@ -11,6 +11,9 @@ import _ from 'lodash';
 import { connect } from 'react-redux';
 import { singular } from 'pluralize';
 import Toggle from 'react-toggle';
+import {
+  customSorting,
+} from '@ncigdc/containers/explore/presetFacets';
 import './reactToggle.css';
 
 import { humanify } from '@ncigdc/utils/string';
@@ -31,6 +34,7 @@ import {
 import { ToggleMoreLink } from '@ncigdc/components/Aggregations/TermAggregation';
 import filesTableModel from '@ncigdc/tableModels/filesTableModel';
 import { search } from '../BiospecimenCard/utils';
+
 
 const MAX_VISIBLE_FACETS = 5;
 const MAX_FIELDS_LENGTH = 20;
@@ -104,7 +108,7 @@ const ClinicalGrouping = compose(
               top: 0,
               zIndex: 99,
             }}
-            >
+          >
             <h3
               onClick={() => setCollapsed(!collapsed)}
               style={{
@@ -112,13 +116,13 @@ const ClinicalGrouping = compose(
                 margin: '10px 0',
                 cursor: 'pointer',
               }}
-              >
+            >
               <AngleIcon
                 style={{
                   paddingRight: '0.5rem',
                   transform: `rotate(${collapsed ? 270 : 0}deg)`,
                 }}
-                />
+              />
               {name}
             </h3>
           </Row>
@@ -129,18 +133,18 @@ const ClinicalGrouping = compose(
             style={{
               padding: '0 10px',
             }}
-            >
+          >
             {fields.length > MAX_FIELDS_LENGTH && showingMore && (
               <Row>
                 <StyledToggleMoreLink
                   onClick={() => setShowingMore(!showingMore)}
-                  >
+                >
                   {'Less...'}
                 </StyledToggleMoreLink>
               </Row>
             )}
 
-            {_.orderBy(fields, 'name', 'asc')
+            {_.orderBy(fields, [(field) => customSorting(field.name.replace(/__/g, '.')), 'name'])
               .slice(0, showingMore ? Infinity : MAX_VISIBLE_FACETS)
               .map(field => ({
                 fieldDescription: field.description || defaultDescription,
@@ -176,7 +180,7 @@ const ClinicalGrouping = compose(
                       marginBottom: descMatch ? '10px' : '0',
                       fontStyle: descMatch ? 'italic' : 'normal',
                     }}
-                    >
+                  >
                     {descMatch
                       ? internalHighlight(searchValue, fieldDescription, {
                         backgroundColor: '#FFFF00',
@@ -191,7 +195,7 @@ const ClinicalGrouping = compose(
                       display: 'inline-block',
                       marginRight: '50px',
                     }}
-                    >
+                  >
                     {internalHighlight(searchValue, fieldTitle, {
                       backgroundColor: '#FFFF00',
                     })}
@@ -218,7 +222,7 @@ const ClinicalGrouping = compose(
                         })
                       );
                     }}
-                    />
+                  />
                 );
                 return (
                   <Row
@@ -228,13 +232,13 @@ const ClinicalGrouping = compose(
                       alignItems: 'center',
                       borderBottom: `1px solid ${theme.greyScale5}`,
                     }}
-                    >
+                  >
                     <div
                       style={{
                         display: 'flex',
                         width: '100%',
                       }}
-                      >
+                    >
                       <label
                         htmlFor={fieldName}
                         style={{
@@ -242,7 +246,7 @@ const ClinicalGrouping = compose(
                           display: 'block',
                           cursor: descMatch ? 'default' : 'pointer',
                         }}
-                        >
+                      >
                         {descMatch
                           ? (
                             <React.Fragment>
@@ -271,7 +275,7 @@ const ClinicalGrouping = compose(
               <Row>
                 <StyledToggleMoreLink
                   onClick={() => setShowingMore(!showingMore)}
-                  >
+                >
                   {showingMore
                     ? 'Less...'
                     : fields.length - MAX_VISIBLE_FACETS &&
@@ -335,7 +339,7 @@ export default compose(
           style={{
             padding: '5px 15px 15px',
           }}
-          >
+        >
           <span>
             {(_.keys(usefulFacets) || []).length}
             {' '}
@@ -354,9 +358,10 @@ export default compose(
             top: 0,
             overflowY: 'auto',
           }}
-          >
+        >
           {clinicalTypeOrder.map(clinicalType => {
             const fields = groupedByClinicalType[clinicalType] || [];
+
             return (
               <ClinicalGrouping
                 analysis_id={analysis_id}
@@ -366,7 +371,7 @@ export default compose(
                 name={_.capitalize(singular(clinicalType))}
                 searchValue={searchValue}
                 style={styles.category(theme)}
-                />
+              />
             );
           })}
         </div>

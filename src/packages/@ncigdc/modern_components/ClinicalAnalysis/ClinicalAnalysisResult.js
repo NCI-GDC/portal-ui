@@ -370,6 +370,7 @@ const ClinicalAnalysisResult = ({
               alignSelf: 'flex-start',
               flex: 1,
               marginBottom: '1rem',
+              minHeight: '560px',
               maxHeight: 'calc(100vh - 50px',
               minWidth: 260,
               overflowY: 'hidden',

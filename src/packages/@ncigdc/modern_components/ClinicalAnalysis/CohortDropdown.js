@@ -71,7 +71,7 @@ export default ({
       dropdownStyle={{
         left: 0,
         cursor: 'pointer',
-        height: '8em',
+        maxHeight: '400px',
         overflow: 'auto',
       }}
       isDisabled={disabled}

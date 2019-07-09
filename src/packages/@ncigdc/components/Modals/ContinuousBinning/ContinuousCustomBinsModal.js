@@ -323,22 +323,27 @@ class ContinuousCustomBinsModal extends Component {
       const rowFrom = Number(rowItem.fields.from);
       const rowTo = Number(rowItem.fields.to);
 
-      const overlapNames = rowsToCheck.reduce((acc, curr, overlapIndex) => {
-        const overlapFromStr = curr.fields.from;
-        const overlapToStr = curr.fields.to;
+      const overlapNames = rowsToCheck
+        .reduce((acc, curr, overlapIndex) => {
+          const overlapFromStr = curr.fields.from;
+          const overlapToStr = curr.fields.to;
 
-        if (rowIndex === overlapIndex || curr.fields.from === '' || curr.fields.to === '') {
-          return acc;
-        }
+          if (rowIndex === overlapIndex ||
+            curr.fields.from === '' ||
+            curr.fields.to === '') {
+            return acc;
+          }
 
-        const overlapFrom = Number(overlapFromStr);
-        const overlapTo = Number(overlapToStr);
-        const overlapName = curr.fields.name;
+          const overlapFrom = Number(overlapFromStr);
+          const overlapTo = Number(overlapToStr);
+          const overlapName = curr.fields.name;
 
-        const hasNoOverlap = rowTo < overlapFrom || rowFrom > overlapTo;
+          const hasOverlap = (rowTo > overlapFrom && rowTo < overlapTo) ||
+            (rowFrom > overlapFrom && rowFrom < overlapTo) ||
+            (rowFrom === overlapFrom && rowTo === overlapTo);
 
-        return hasNoOverlap ? acc : [...acc, overlapName];
-      }, []);
+          return hasOverlap ? [...acc, overlapName] : acc;
+        }, []);
       return overlapNames.length > 0 ? overlapNames : [];
     });
 

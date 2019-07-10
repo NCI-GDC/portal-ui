@@ -35,7 +35,6 @@ import { ToggleMoreLink } from '@ncigdc/components/Aggregations/TermAggregation'
 import filesTableModel from '@ncigdc/tableModels/filesTableModel';
 import { search } from '../BiospecimenCard/utils';
 
-
 const MAX_VISIBLE_FACETS = 5;
 const MAX_FIELDS_LENGTH = 20;
 

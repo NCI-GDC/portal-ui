@@ -75,7 +75,13 @@ import {
   removeClinicalAnalysisVariable,
   updateClinicalAnalysisVariable,
 } from '@ncigdc/dux/analysis';
-import { humanify, createFacetFieldString, parseContinuousValue } from '@ncigdc/utils/string';
+import {
+  createContinuousGroupName,
+  createFacetFieldString,
+  humanify,
+  parseContinuousKey,
+  parseContinuousValue,
+} from '@ncigdc/utils/string';
 import timestamp from '@ncigdc/utils/timestamp';
 
 import { IS_CDAVE_DEV, analysisColors } from '@ncigdc/utils/constants';
@@ -601,8 +607,9 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
         return {
           fullLabel: d.groupName || d.key,
           label: d.groupName || d.key,
-          tooltip: `${d.key}: ${d.chart_doc_count.toLocaleString()} (${(((d.chart_doc_count ||
-            0) / totalDocs) * 100).toFixed(2)}%)`,
+          tooltip: `${d.key}: ${d.chart_doc_count
+            .toLocaleString()} (${(((d.chart_doc_count ||
+              0) / totalDocs) * 100).toFixed(2)}%)`,
           value:
             variable.active_calculation === 'number'
               ? d.chart_doc_count
@@ -611,7 +618,8 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
       })
       : [];
 
-  const maxKeyNameLength = (maxBy(chartData.map(d => d.fullLabel), (item) => item.length) || '').length;
+  const maxKeyNameLength = (maxBy(chartData
+    .map(d => d.fullLabel), (item) => item.length) || '').length;
 
   // set action will default to cohort total when no buckets are selected
   const totalFromSelectedBuckets = selectedBuckets && selectedBuckets.length
@@ -1320,7 +1328,9 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
             data={tableData.map(tableRow => ({
               ...tableRow,
               // the key in the table needs to be the display name
-              key: tableRow.groupName !== undefined ? tableRow.groupName : tableRow.key,
+              key: tableRow.groupName === undefined
+                ? tableRow.key
+                : tableRow.groupName,
             }))}
             headings={getHeadings(variable.active_chart, dataDimension, fieldName)}
             tableContainerStyle={{
@@ -1501,8 +1511,7 @@ export default compose(
       const binsForBinData = variable.plotTypes === 'continuous'
         ? explore.cases.aggregations[fieldNameUnderscores].range.buckets
           .reduce((acc, curr) => {
-            const numberKey = curr.key.split('-')
-              .map(keyItem => Number(keyItem)).join('-');
+            const numberKey = parseContinuousKey(curr.key).join('-');
             const currentBin = variable.bins[numberKey] ||
               variable.bins[curr.key] ||
               { groupName: '--' };
@@ -1518,32 +1527,33 @@ export default compose(
         : variable.bins;
 
       return ({
-        binData: map(groupBy(binsForBinData, bin => bin.groupName), (values, key) => ({
-          doc_count: values.reduce((acc, value) => acc + value.doc_count, 0),
-          key,
-          keyArray: values.reduce((acc, value) => [...acc, value.key], []),
-        })).filter(bin => bin.key),
+        binData: map(groupBy(binsForBinData, bin => bin.groupName), (values, key) => {
+          return ({
+            doc_count: values.reduce((acc, value) => acc + value.doc_count, 0),
+            key,
+            keyArray: values.reduce((acc, value) => [...acc, value.key], []),
+          })
+        }).filter(bin => bin.key),
         bucketsOrganizedByKey: dataBuckets.reduce((acc, r) => {
           return ({
             ...acc,
             [r.key]: {
               ...r,
               groupName: r.groupName !== undefined &&
-                r.groupName !== '' ? r.groupName : r.key,
+                r.groupName.length > 0 ? r.groupName : r.key,
             },
           });
         }, {}),
         getContinuousBuckets: (acc, { doc_count, key, keyArray }) => {
           const keyValues = key.split('-').map(keyItem => Number(keyItem));
-          // survival doesn't have keyArray
           const keyArrayValues = keyArray
-            ? keyArray[0].split('-').map(keyItem => Number(keyItem))
+            ? parseContinuousKey(keyArray[0])
             : keyValues;
 
           const groupName = keyValues.length === 2 &&
             typeof keyValues[0] === 'number' &&
             typeof keyValues[1] === 'number'
-            ? `${parseContinuousValue(keyValues[0])} to \u003c${parseContinuousValue(keyValues[1])}`
+            ? createContinuousGroupName(key)
             : key;
           const keyMin = keyArrayValues[0];
           const keyMax = keyArrayValues[1];
@@ -1629,7 +1639,7 @@ export default compose(
 
         return ({
           [objKey]: {
-            groupName: `${parseContinuousValue(from)} to \u003c ${parseContinuousValue(to)}`,
+            groupName: createContinuousGroupName(objKey),
             key: objKey,
           },
         });

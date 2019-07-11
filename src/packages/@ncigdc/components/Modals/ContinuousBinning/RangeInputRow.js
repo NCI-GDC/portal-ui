@@ -97,8 +97,6 @@ class RangeInputRow extends React.Component {
         const currentValue = fieldValues[curr];
         const currentValueNumber = Number(currentValue);
 
-        console.log('allFieldsEmpty', allFieldsEmpty);
-
         const nextErrors = allFieldsEmpty
           ? ''
           : currentValue === ''
@@ -111,21 +109,19 @@ class RangeInputRow extends React.Component {
                   ? 'Use up to 2 decimal places.'
                   : '';
 
-        console.log('nextErrors', nextErrors);
-
         return ({
           ...acc,
           [curr]: nextErrors,
         });
       }, {});
 
-    const checkFromToValues = allFieldsEmpty
+    const fromGreaterThanto = allFieldsEmpty
       ? ''
       : (errorsEmptyOrNaN.to === '' &&
         errorsEmptyOrNaN.from === '' &&
         Number(fieldValues.to) <= Number(fieldValues.from));
 
-    return !allFieldsEmpty && errorsEmptyOrNaN === ''
+    return !allFieldsEmpty && fromGreaterThanto
       ? ({
         from: `'From' must be less than ${fieldValues.to}.`,
         name: '',
@@ -165,9 +161,9 @@ class RangeInputRow extends React.Component {
       const overlapTo = Number(overlapToStr);
       const overlapName = curr.fields.name;
 
-      const hasOverlap = (fieldTo > overlapFrom && fieldTo < overlapTo) ||
-        (fieldFrom > overlapFrom && fieldFrom < overlapTo) ||
-        (fieldFrom === overlapFrom && fieldTo === overlapTo);
+      const hasOverlap = (fieldTo > overlapFrom && fieldTo <= overlapTo) ||
+        (fieldFrom >= overlapFrom && fieldFrom < overlapTo) ||
+        (fieldFrom <= overlapFrom && fieldTo >= overlapTo);
 
       return hasOverlap
         ? [...acc, overlapName]

@@ -82,8 +82,6 @@ class ContinuousCustomBinsModal extends Component {
     const { intervalFields } = this.state;
     const { target: { id, value } } = updateEvent;
 
-    // updateEvent.persist();
-
     this.setState({
       intervalFields: {
         ...intervalFields,
@@ -107,24 +105,36 @@ class ContinuousCustomBinsModal extends Component {
         ? `'${value}' is not a valid number.`
         : '';
 
-    if (inputError !== '') {
-      this.setState({
-        intervalErrors: {
-          ...intervalErrors,
-          amount: '',
-          [inputKey]: inputError,
-          ...inputKey === 'max'
-            ? { min: '' }
-            : { max: '' }
-        }
-      });
-      return;
-    }
-
     const currentMin = intervalFields.min;
     const currentMax = intervalFields.max;
     const currentAmount = Number(intervalFields.amount);
     const validAmount = currentMax - currentMin;
+
+    if (inputError !== '') {
+      // if the current value is empty or NaN,
+      // remove all errors except empty or NaN
+      this.setState({
+        intervalErrors: {
+          ...intervalErrors,
+          amount: isFinite(currentAmount)
+            ? ''
+            : intervalErrors.amount,
+          [inputKey]: inputError,
+          ...inputKey === 'max'
+            ? {
+              min: isFinite(Number(currentMin))
+                ? ''
+                : intervalErrors.min,
+            }
+            : {
+              max: isFinite(Number(currentMax))
+                ? ''
+                : intervalErrors.min,
+            }
+        }
+      });
+      return;
+    }
 
     const decimalError = 'Use up to 2 decimal places.';
 

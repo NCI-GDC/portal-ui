@@ -1545,8 +1545,8 @@ export default compose(
           });
         }, {}),
         getContinuousBuckets: (acc, { doc_count, key, keyArray }) => {
-          const keyValues = key.split('-').map(keyItem => Number(keyItem));
-          const keyArrayValues = keyArray
+          const keyValues = parseContinuousKey(key);
+          const keyArrayValues = keyArray && keyArray.length > 0
             ? parseContinuousKey(keyArray[0])
             : keyValues;
 

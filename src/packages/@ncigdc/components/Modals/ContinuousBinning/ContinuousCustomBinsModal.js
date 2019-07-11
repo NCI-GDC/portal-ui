@@ -100,13 +100,18 @@ class ContinuousCustomBinsModal extends Component {
     const inputKey = id.split('-')[2];
     const inputValue = Number(value);
 
-    if (!isFinite(inputValue)) {
-      const nanError = `'${value}' is not a valid number.`;
+    let inputError = inputValue === ''
+      ? 'Required field.'
+      : !isFinite(inputValue)
+        ? `'${value}' is not a valid number.`
+        : '';
+
+    if (inputError !== '') {
       this.setState({
         intervalErrors: {
           ...intervalErrors,
           amount: '',
-          [inputKey]: nanError,
+          [inputKey]: inputError,
           ...inputKey === 'max'
             ? { min: '' }
             : { max: '' }
@@ -120,16 +125,11 @@ class ContinuousCustomBinsModal extends Component {
     const currentAmount = Number(intervalFields.amount);
     const validAmount = currentMax - currentMin;
 
-    let inputError = '';
     const decimalError = 'Use up to 2 decimal places.';
 
-    if (inputValue === '') {
-      inputError = 'Required field.';
-    } else {
-      inputError = countDecimals(inputValue) > 2
-        ? decimalError
-        : inputError;
-    }
+    inputError = countDecimals(inputValue) > 2
+      ? decimalError
+      : inputError;
 
     if (inputError !== '') {
       this.setState({

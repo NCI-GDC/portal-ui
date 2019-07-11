@@ -19,7 +19,6 @@ import styled from '@ncigdc/theme/styled';
 import { setModal } from '@ncigdc/dux/modal';
 import FirstTimeModal from '@ncigdc/components/Modals/FirstTimeModal';
 import { AWG } from '@ncigdc/utils/constants';
-import ContinuousCustomBinsModal from '@ncigdc/components/Modals/ContinuousBinning/ContinuousCustomBinsModal';
 
 const SkipLink = styled.a({
   position: 'absolute',
@@ -41,35 +40,18 @@ const enhance = compose(
   connect(store => ({ notifications: store.bannerNotification })),
   lifecycle({
     componentDidMount(): void {
-      this.props.dispatch(
-        setModal(
-          <ContinuousCustomBinsModal
-            binData={''}
-            continuousBinType={'default'}
-            continuousCustomInterval={0}
-            defaultContinuousData={{
-              min: 0,
-              max: 0,
-              quartile: 0,
-            }}
-            fieldName={'test'}
-            onClose={() => { }}
-            onUpdate={() => { }}
-          />,
-          false)
-      );
-      // if (!Cookies.get(FIRST_TIME_KEY)) {
-      //   this.props.dispatch(
-      //     setModal(
-      //       <FirstTimeModal
-      //         onClose={() => {
-      //           Cookies.set(FIRST_TIME_KEY, true);
-      //         }}
-      //         />,
-      //       false,
-      //     ),
-      //   );
-      // }
+      if (!Cookies.get(FIRST_TIME_KEY)) {
+        this.props.dispatch(
+          setModal(
+            <FirstTimeModal
+              onClose={() => {
+                Cookies.set(FIRST_TIME_KEY, true);
+              }}
+            />,
+            false,
+          ),
+        );
+      }
 
       let lastPathname = this.props.location.pathname;
       this.removeListen = this.props.history.listen(location => {

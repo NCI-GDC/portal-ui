@@ -107,6 +107,9 @@ class ContinuousCustomBinsModal extends Component {
           ...intervalErrors,
           amount: '',
           [inputKey]: nanError,
+          ...inputKey === 'max'
+            ? { min: '' }
+            : { max: '' }
         }
       });
       return;
@@ -172,6 +175,18 @@ class ContinuousCustomBinsModal extends Component {
       intervalErrors: {
         ...intervalErrors,
         [inputKey]: inputError,
+        ...inputKey === 'max' &&
+          isFinite(Number(currentMin)) &&
+          isFinite(inputValue) &&
+          inputValue <= currentMin
+          ? { min: '' }
+          : {},
+        ...inputKey === 'min' &&
+          isFinite(inputValue) &&
+          isFinite(Number(currentMax)) &&
+          currentMax <= inputValue
+          ? { max: '' }
+          : {},
       }
     }, () => {
       if ((inputKey === 'max' || inputKey === 'min') &&

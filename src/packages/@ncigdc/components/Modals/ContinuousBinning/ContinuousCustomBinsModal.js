@@ -77,51 +77,44 @@ class ContinuousCustomBinsModal extends Component {
 
   // binning method: interval
 
-  updateIntervalFields = (updateEvent, inputError = null) => {
-    const { intervalErrors, intervalFields } = this.state;
+  updateIntervalFields = updateEvent => {
+    const { intervalFields } = this.state;
+    const { target: { id, value } } = updateEvent;
 
-    const inputKey = updateEvent.target.id.split('-')[2];
-    const inputValue = updateEvent.target.value;
-
-    const nextIntervalFields = {
-      ...intervalFields,
-      [inputKey]: inputValue,
-    };
-
-    const nextIntervalErrors = {
-      ...intervalErrors,
-      [inputKey]: inputError === null
-        ? intervalErrors[inputKey]
-        : inputError,
-    };
-
-    if (inputError === null) updateEvent.persist();
+    updateEvent.persist();
 
     this.setState({
-      intervalErrors: nextIntervalErrors,
-      intervalFields: nextIntervalFields,
+      intervalFields: {
+        ...intervalFields,
+        [id.split('-')[2]]: value,
+      },
     }, () => {
-      if (inputError === null) {
-        this.debounceValidateIntervalFields(updateEvent);
-      }
+      this.debounceValidateIntervalFields(updateEvent);
     });
   };
 
   validateIntervalFields = event => {
     const { defaultContinuousData } = this.props;
-    const { intervalFields } = this.state;
+    const { intervalErrors, intervalFields } = this.state;
 
     const inputKey = event.target.id.split('-')[2];
     const inputValue = Number(event.target.value);
 
     if (!isFinite(inputValue)) {
-      const nanError = [`'${event.target.value}' is not a valid number.`];
-      this.updateIntervalFields(event, nanError);
+      const nanError = `'${event.target.value}' is not a valid number.`;
+      this.setState({
+        intervalErrors: {
+          ...intervalErrors,
+          amount: '',
+          [inputKey]: nanError,
+        }
+      });
       return;
     }
 
     const currentMin = intervalFields.min;
     const currentMax = intervalFields.max;
+    const currentAmount = Number(intervalFields.amount);
     const validAmount = currentMax - currentMin;
 
     let inputError = '';
@@ -130,19 +123,29 @@ class ContinuousCustomBinsModal extends Component {
     if (inputValue === '') {
       inputError = 'Required field.';
     } else {
-      inputError = countDecimals(inputValue) > 2 ? decimalError : inputError;
+      inputError = countDecimals(inputValue) > 2
+        ? decimalError
+        : inputError;
     }
 
     if (inputError !== '') {
-      this.updateIntervalFields(event, inputError);
+      this.setState({
+        intervalErrors: {
+          ...intervalErrors,
+          [inputKey]: inputError
+        }
+      });
       return;
     }
+
+    const amountError = `Must be less than or equal to ${validAmount}.`;
 
     if (inputKey === 'amount') {
       inputError = inputValue <= 0
         ? 'Must be greater than 0.'
-        : inputValue > validAmount
-          ? `Must be less than or equal to ${validAmount}.`
+        : inputValue > validAmount &&
+          validAmount > 0
+          ? amountError
           : '';
       inputError = countDecimals(inputValue) > 2
         ? decimalError
@@ -165,7 +168,28 @@ class ContinuousCustomBinsModal extends Component {
       inputError = '';
     }
 
-    this.updateIntervalFields(event, inputError);
+    this.setState({
+      intervalErrors: {
+        ...intervalErrors,
+        [inputKey]: inputError,
+      }
+    }, () => {
+      if ((inputKey === 'max' || inputKey === 'min') &&
+        isFinite(currentAmount)) {
+        const { intervalErrors } = this.state;
+        const amountMessage = inputError === '' &&
+          currentAmount > validAmount
+          ? amountError
+          : '';
+
+        this.setState({
+          intervalErrors: {
+            ...intervalErrors,
+            amount: amountMessage
+          }
+        });
+      }
+    });
   };
 
   checkSubmitDisabled = () => {

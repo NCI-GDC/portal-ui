@@ -25,7 +25,7 @@ const CustomIntervalInput = ({
     <React.Fragment>
       {label.length > 0 && (
         <div style={inputText}>
-          {`${label}${label === 'to' ? ' less than' : ''}`}
+          {`${label}${label === 'to' ? ' \u003c' : ''}`}
         </div>
       )}
       <div style={inputWrapper100px}>

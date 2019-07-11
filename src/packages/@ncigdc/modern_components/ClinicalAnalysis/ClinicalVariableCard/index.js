@@ -1543,7 +1543,7 @@ export default compose(
           const groupName = keyValues.length === 2 &&
             typeof keyValues[0] === 'number' &&
             typeof keyValues[1] === 'number'
-            ? `${parseContinuousValue(keyValues[0])} to less than ${parseContinuousValue(keyValues[1])}`
+            ? `${parseContinuousValue(keyValues[0])} to \u003c${parseContinuousValue(keyValues[1])}`
             : key;
           const keyMin = keyArrayValues[0];
           const keyMax = keyArrayValues[1];
@@ -1629,7 +1629,7 @@ export default compose(
 
         return ({
           [objKey]: {
-            groupName: `${parseContinuousValue(from)} to less than ${parseContinuousValue(to)}`,
+            groupName: `${parseContinuousValue(from)} to \u003c ${parseContinuousValue(to)}`,
             key: objKey,
           },
         });

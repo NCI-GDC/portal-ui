@@ -263,7 +263,7 @@ class ContinuousCustomBinsModal extends Component {
 
             return ({
               [objKey]: {
-                groupName: `${parseContinuousValue(from)} to less than ${parseContinuousValue(to)}`,
+                groupName: `${parseContinuousValue(from)} to \u003c${parseContinuousValue(to)}`,
                 key: objKey,
               },
             });
@@ -392,8 +392,8 @@ class ContinuousCustomBinsModal extends Component {
           <p>
             Available values from
             <strong>{` ${defaultContinuousData.min} `}</strong>
-            to less than
-            <strong>{` ${defaultContinuousData.max} `}</strong>
+            to
+            <strong>{` \u003c ${defaultContinuousData.max} `}</strong>
           </p>
           <p>
             Quartile bin interval:
@@ -463,7 +463,7 @@ class ContinuousCustomBinsModal extends Component {
                   id="range-table-label-max"
                   style={styles.column}
                 >
-                  To Less Than
+                  To &lt;
                 </div>
                 <div
                   id="range-table-label-options"

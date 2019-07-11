@@ -1050,7 +1050,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                     padding: '0 12px',
                   }}
                 >
-                  Select action
+                  Select Action
                 </Button>
               )}
               dropdownStyle={{
@@ -1543,7 +1543,7 @@ export default compose(
           const groupName = keyValues.length === 2 &&
             typeof keyValues[0] === 'number' &&
             typeof keyValues[1] === 'number'
-            ? `${parseContinuousValue(keyValues[0])} to ${parseContinuousValue(keyValues[1])}`
+            ? `${parseContinuousValue(keyValues[0])} to less than ${parseContinuousValue(keyValues[1])}`
             : key;
           const keyMin = keyArrayValues[0];
           const keyMax = keyArrayValues[1];
@@ -1611,30 +1611,32 @@ export default compose(
       };
 
     const defaultMin = dataStats.Min;
-    const defaultMax = dataStats.Max;
+    const defaultMax = dataStats.Max + 1;
+    // api excludes the max number
 
     const defaultQuartile = (defaultMax - defaultMin) / 4;
 
     const defaultNumberOfBuckets = 5;
     const defaultBucketSize = (defaultMax - defaultMin) / defaultNumberOfBuckets;
 
-    const defaultBuckets = Array(defaultNumberOfBuckets).fill(1).map((val, key) => {
-      const from = key * defaultBucketSize + defaultMin;
-      const to = (key + 1) === defaultNumberOfBuckets
-        ? defaultMax + 1
-        : (defaultMin + (key + 1) * defaultBucketSize);
-      const objKey = `${from}-${to}`;
+    const defaultBuckets = Array(defaultNumberOfBuckets).fill(1)
+      .map((val, key) => {
+        const from = key * defaultBucketSize + defaultMin;
+        const to = (key + 1) === defaultNumberOfBuckets
+          ? defaultMax
+          : (defaultMin + (key + 1) * defaultBucketSize);
+        const objKey = `${from}-${to}`;
 
-      return ({
-        [objKey]: {
-          groupName: `${parseContinuousValue(from)} to ${parseContinuousValue(to)}`,
-          key: objKey,
-        },
-      });
-    }).reduce((acc, curr) => ({
-      ...acc,
-      ...curr,
-    }), {});
+        return ({
+          [objKey]: {
+            groupName: `${parseContinuousValue(from)} to less than ${parseContinuousValue(to)}`,
+            key: objKey,
+          },
+        });
+      }).reduce((acc, curr) => ({
+        ...acc,
+        ...curr,
+      }), {});
 
     return ({
       defaultContinuousData: {

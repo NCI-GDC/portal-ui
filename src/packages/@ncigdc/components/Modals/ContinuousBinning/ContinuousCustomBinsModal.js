@@ -16,7 +16,7 @@ const countDecimals = num => {
 
 class ContinuousCustomBinsModal extends Component {
   state = {
-    binningMethod: 'interval', // interval or range
+    binningMethod: 'range', // interval or range
     intervalErrors: {
       amount: '',
       max: '',

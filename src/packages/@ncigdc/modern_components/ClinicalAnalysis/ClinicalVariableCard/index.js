@@ -600,6 +600,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
       updateSelectedSurvivalValues,
       selectedSurvivalLoadingIds,
     );
+  // console.log('binData', binData);
 
   const chartData =
     variable.active_chart === 'histogram'
@@ -1364,6 +1365,10 @@ export default compose(
       const dataDimension = dataDimensions[sanitisedId] &&
         dataDimensions[sanitisedId].unit;
 
+      // DATA IS CORRECT
+      // console.log('data', data);
+      // console.log('rawQueryData', rawQueryData);
+
       return Object.assign(
         {
           dataBuckets: get(rawQueryData, variable.plotTypes === 'continuous'
@@ -1435,6 +1440,9 @@ export default compose(
       id,
       variable,
     }) => {
+      // DATA IS CORRECT
+      // console.log('dataBuckets', dataBuckets);
+      // console.log('variable.bins', variable.bins);
       dispatch(
         updateClinicalAnalysisVariable({
           fieldName,
@@ -1508,6 +1516,10 @@ export default compose(
         return;
       }
 
+      // DATA IS CORRECT
+      // console.log('explore.cases.aggregations[fieldNameUnderscores].range.buckets', explore.cases.aggregations[fieldNameUnderscores].range.buckets)
+      // console.log('variable.bins', variable.bins)
+
       const binsForBinData = variable.plotTypes === 'continuous'
         ? explore.cases.aggregations[fieldNameUnderscores].range.buckets
           .reduce((acc, curr) => {
@@ -1525,9 +1537,9 @@ export default compose(
             });
           }, {})
         : variable.bins;
-
       return ({
-        binData: map(groupBy(binsForBinData, bin => bin.groupName), (values, key) => {
+        binData: map(groupBy(binsForBinData, bin => bin.key), (values, key) => {
+          // console.log('binsForBinData', binsForBinData)
           return ({
             doc_count: values.reduce((acc, value) => acc + value.doc_count, 0),
             key,
@@ -1677,6 +1689,7 @@ export default compose(
           variable.plotTypes === 'continuous'
             ? dataBuckets.length > 0
               ? dataBuckets
+                // TODO FRIDAY
                 .sort((a, b) => a.key.split('-')[0] - b.key.split('-')[0])
                 .reduce(getContinuousBuckets, [])
               : []

@@ -81,7 +81,7 @@ class ContinuousCustomBinsModal extends Component {
     const { intervalFields } = this.state;
     const { target: { id, value } } = updateEvent;
 
-    updateEvent.persist();
+    // updateEvent.persist();
 
     this.setState({
       intervalFields: {
@@ -89,19 +89,19 @@ class ContinuousCustomBinsModal extends Component {
         [id.split('-')[2]]: value,
       },
     }, () => {
-      this.debounceValidateIntervalFields(updateEvent);
+      this.debounceValidateIntervalFields(id, value);
     });
   };
 
-  validateIntervalFields = event => {
+  validateIntervalFields = (id, value) => {
     const { defaultContinuousData } = this.props;
     const { intervalErrors, intervalFields } = this.state;
 
-    const inputKey = event.target.id.split('-')[2];
-    const inputValue = Number(event.target.value);
+    const inputKey = id.split('-')[2];
+    const inputValue = Number(value);
 
     if (!isFinite(inputValue)) {
-      const nanError = `'${event.target.value}' is not a valid number.`;
+      const nanError = `'${value}' is not a valid number.`;
       this.setState({
         intervalErrors: {
           ...intervalErrors,
@@ -439,7 +439,8 @@ class ContinuousCustomBinsModal extends Component {
                 intervalErrors={intervalErrors}
                 intervalFields={intervalFields}
                 validateIntervalFields={e => {
-                  this.validateIntervalFields(e);
+                  const { target: { id, value } } = e;
+                  this.validateIntervalFields(id, value);
                 }}
               />
             </Column>

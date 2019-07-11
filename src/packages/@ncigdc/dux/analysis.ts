@@ -179,25 +179,19 @@ const reducer = (
               ...currentAnalysis.displayVariables,
               [action.payload.fieldName as string]: {
                 ...defaultVariableConfig,
-                ...(currentAnalysis.displayVariables.plotTypes === 'continuous' 
-                  ? defaultContinuousVariableConfig 
-                  : {}),
+                ...action.payload.plotTypes === 'continuous'
+                  ? defaultContinuousVariableConfig
+                  : {},
                 type: action.payload.fieldType,
                 plotTypes: action.payload.plotTypes,
                 scrollToCard: action.payload.scrollToCard,
-                ...(currentAnalysis.displayVariables.plotTypes === 'continuous'
-                  ? { 
-                      continuousBinType: action.payload.continuousBinType,
-                      continuousCustomInterval: action.payload.continuousCustomInterval, 
-                    }
-                  : {}),
               },
             },
           },
           ...state.saved.slice(currentAnalysisIndex + 1, Infinity),
         ],
       };
-    }
+    };
 
     // removes card from analysis
     case sets.REMOVE_CLINICAL_ANALYSIS_VARIABLE: {

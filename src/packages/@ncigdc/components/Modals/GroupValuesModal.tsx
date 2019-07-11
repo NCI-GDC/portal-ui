@@ -120,6 +120,7 @@ const GroupValuesModal = ({
     <Column
       style={{
         maxHeight: '90vh',
+        overflow: 'auto',
         padding: '2rem',
       }}
       >

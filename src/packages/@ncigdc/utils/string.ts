@@ -2,7 +2,7 @@
 import _ from 'lodash';
 
 type TCapitalize = (original: string) => string;
-type THumanify = ({  }: IHumanifyParams) => string;
+type THumanify = ({ }: IHumanifyParams) => string;
 type TTruncateAfterMarker = (
   term: string,
   markers: [string],
@@ -11,6 +11,7 @@ type TTruncateAfterMarker = (
 ) => string;
 type TIsUuid = (query: string) => boolean;
 type TCreateFacetFieldString = (fieldName: string) => string;
+type TParseContinuousValue = (continuousValue: number | string) => number;
 
 interface IHumanifyParams {
   term: string;
@@ -92,3 +93,6 @@ export const isUUID: TIsUuid = query =>
   );
 
 export const createFacetFieldString: TCreateFacetFieldString = fieldName => fieldName.replace(/\./g, '__');
+
+export const parseContinuousValue: TParseContinuousValue = continuousValue =>
+  Number(Number(continuousValue).toFixed(2));

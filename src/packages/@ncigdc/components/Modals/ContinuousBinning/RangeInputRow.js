@@ -149,12 +149,13 @@ class RangeInputRow extends React.Component {
       const overlapTo = Number(overlapToStr);
       const overlapName = curr.fields.name;
 
-      const hasNoOverlap = fieldTo < overlapFrom ||
-        fieldFrom > overlapTo;
+      const hasOverlap = (fieldTo > overlapFrom && fieldTo < overlapTo) ||
+        (fieldFrom > overlapFrom && fieldFrom < overlapTo) ||
+        (fieldFrom === overlapFrom && fieldTo === overlapTo);
 
-      return hasNoOverlap
-        ? acc
-        : [...acc, overlapName];
+      return hasOverlap
+        ? [...acc, overlapName]
+        : acc;
     }, []);
 
     return overlapErrors;

@@ -11,7 +11,7 @@ import _ from 'lodash';
 
 import consoleDebug from '@ncigdc/utils/consoleDebug';
 import { redirectToLogin } from '@ncigdc/utils/auth';
-import { createFacetFieldString, parseContinuousValue } from '@ncigdc/utils/string'
+import { createFacetFieldString, parseContinuousKey } from '@ncigdc/utils/string'
 import Loader from '@ncigdc/uikit/Loaders/Loader';
 
 import { API, IS_AUTH_PORTAL } from '@ncigdc/utils/constants';
@@ -42,7 +42,7 @@ const getContinuousAggs = ({ continuousBinType, fieldName, stats, filters, bins 
   let rangeArr = continuousBinType === 'default'
     ? rangeArr = makeDefaultBuckets()
     : _.reduce(bins, (acc, bin, key) => {
-      const binValues = bin.key.split('-').map(keyValue => Number(keyValue));
+      const binValues = parseContinuousKey(bin.key);
       const from = binValues[0];
       const to = binValues[1];
       if (

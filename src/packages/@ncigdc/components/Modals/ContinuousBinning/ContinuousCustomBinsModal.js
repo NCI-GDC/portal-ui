@@ -7,7 +7,7 @@ import BinningMethodInput from './BinningMethodInput';
 import CustomIntervalFields from './CustomIntervalFields';
 import styles from './styles';
 import RangeInputRow from './RangeInputRow';
-import { parseContinuousValue, makeContinuousGroupName } from '@ncigdc/utils/string';
+import { createContinuousGroupName } from '@ncigdc/utils/string';
 
 const countDecimals = num => {
   return Math.floor(num) === num
@@ -263,7 +263,7 @@ class ContinuousCustomBinsModal extends Component {
 
             return ({
               [objKey]: {
-                groupName: `${parseContinuousValue(from)} to \u003c${parseContinuousValue(to)}`,
+                groupName: createContinuousGroupName(objKey),
                 key: objKey,
               },
             });

@@ -75,7 +75,13 @@ import {
   removeClinicalAnalysisVariable,
   updateClinicalAnalysisVariable,
 } from '@ncigdc/dux/analysis';
-import { humanify, createFacetFieldString, parseContinuousValue } from '@ncigdc/utils/string';
+import {
+  humanify,
+  createFacetFieldString,
+  parseContinuousValue,
+  parseContinuousKey,
+  createContinuousGroupName,
+} from '@ncigdc/utils/string';
 import timestamp from '@ncigdc/utils/timestamp';
 
 import { IS_CDAVE_DEV, analysisColors } from '@ncigdc/utils/constants';
@@ -1501,17 +1507,16 @@ export default compose(
       const binsForBinData = variable.plotTypes === 'continuous'
         ? explore.cases.aggregations[fieldNameUnderscores].range.buckets
           .reduce((acc, curr) => {
-            const numberKey = curr.key.split('-')
-              .map(keyItem => Number(keyItem)).join('-');
-            const currentBin = variable.bins[numberKey] ||
+            const keyTrimIntegers = parseContinuousKey(curr.key).join('-');
+            const currentBin = variable.bins[keyTrimIntegers] ||
               variable.bins[curr.key] ||
               { groupName: '--' };
             return ({
               ...acc,
-              [numberKey]: {
+              [keyTrimIntegers]: {
                 doc_count: curr.doc_count,
                 groupName: currentBin.groupName,
-                key: numberKey,
+                key: keyTrimIntegers,
               },
             });
           }, {})
@@ -1534,19 +1539,19 @@ export default compose(
           });
         }, {}),
         getContinuousBuckets: (acc, { doc_count, key, keyArray }) => {
-          const keyValues = key.split('-').map(keyItem => Number(keyItem));
+          const keyValues = parseContinuousKey(key);
           // survival doesn't have keyArray
           const keyArrayValues = keyArray
-            ? keyArray[0].split('-').map(keyItem => Number(keyItem))
+            ? parseContinuousKey(keyArray[0])
             : keyValues;
 
           const groupName = keyValues.length === 2 &&
-            typeof keyValues[0] === 'number' &&
-            typeof keyValues[1] === 'number'
-            ? `${parseContinuousValue(keyValues[0])} to less than ${parseContinuousValue(keyValues[1])}`
+            isFinite(keyValues[0]) &&
+            isFinite(keyValues[1])
+            ? createContinuousGroupName(key)
             : key;
-          const keyMin = keyArrayValues[0];
-          const keyMax = keyArrayValues[1];
+
+          const [keyMin, keyMax] = keyArrayValues;
           const filters =
             variable.plotTypes === 'continuous'
               ? {

@@ -39,41 +39,28 @@ class ContinuousCustomBinsModal extends Component {
     const {
       binData,
       continuousBinType,
-      rangeRows,
+      continuousCustomInterval,
+      continuousCustomRanges,
     } = this.props;
-    this.validateRangeRow(rangeRows);
 
     this.debounceValidateIntervalFields = debounce(
       this.validateIntervalFields,
       300
     );
 
-    if (continuousBinType === 'range') {
-      const nextRangeRows = binData.map(bin => ({
-        active: false,
-        fields: {
-          from: bin.keyArray[0].split('-')[0],
-          name: bin.key,
-          to: bin.keyArray[0].split('-')[1],
-        },
-      }));
-
-      this.setState({
-        binningMethod: 'range',
-        rangeRows: nextRangeRows,
-      });
-    } else if (continuousBinType === 'interval') {
-      const { continuousCustomInterval } = this.props;
-
-      this.setState({
-        binningMethod: 'interval',
+    this.setState({
+      ...continuousBinType === 'default'
+        ? {}
+        : { binningMethod: continuousBinType },
+      rangeRows: continuousCustomRanges,
+      ...continuousBinType === 'interval' ? {
         intervalFields: {
           amount: continuousCustomInterval,
           max: binData[binData.length - 1].keyArray[0].split('-')[1],
           min: binData[0].keyArray[0].split('-')[0],
-        },
-      });
-    }
+        }
+      } : {}
+    });
   };
 
   // binning method: interval
@@ -294,7 +281,7 @@ class ContinuousCustomBinsModal extends Component {
         ? intervalFields.amount
         : 0;
 
-      onUpdate(newBins, binningMethod, continuousCustomInterval);
+      onUpdate(newBins, binningMethod, continuousCustomInterval, rangeRows);
     }
   };
 

@@ -38,6 +38,7 @@ export interface IAnalysisPayload {
   scrollToCard?: boolean;
   continuousBinType?: 'default' | 'interval' | 'range';
   continuousCustomInterval?: number | string;
+  continuousCustomRanges?: any;
   analysis?: IAnalysis;
   id: string;
   fieldName?: string;
@@ -109,6 +110,7 @@ const defaultVariableConfig = {
 const defaultContinuousVariableConfig = {
   continuousBinType: 'default',
   continuousCustomInterval: 0,
+  continuousCustomRanges: [],
 };
 
 interface ICurrentAnalysis {

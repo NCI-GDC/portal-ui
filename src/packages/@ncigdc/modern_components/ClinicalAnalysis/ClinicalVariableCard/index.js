@@ -1200,6 +1200,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                               binData={binData}
                               continuousBinType={variable.continuousBinType}
                               continuousCustomInterval={variable.continuousCustomInterval}
+                              continuousCustomRanges={variable.continuousCustomRanges}
                               defaultContinuousData={defaultContinuousData}
                               fieldName={humanify({ term: fieldName })}
                               onClose={() => dispatch(setModal(null))}
@@ -1207,6 +1208,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                                 newBins,
                                 continuousBinType,
                                 continuousCustomInterval,
+                                continuousCustomRanges,
                               ) => {
                                 dispatch(
                                   updateClinicalAnalysisVariable({
@@ -1233,6 +1235,17 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                                       variableKey: 'continuousCustomInterval',
                                     })
                                   ));
+                                variable.plotTypes === 'continuous' &&
+                                  continuousBinType === 'range'
+                                  && (
+                                    dispatch(
+                                      updateClinicalAnalysisVariable({
+                                        fieldName,
+                                        id,
+                                        value: continuousCustomRanges,
+                                        variableKey: 'continuousCustomRanges',
+                                      })
+                                    ));
                                 dispatch(setModal(null));
                               }
                               }

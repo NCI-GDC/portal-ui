@@ -1614,7 +1614,7 @@ export default compose(
     const defaultMax = dataStats.Max + 1;
     // api excludes the max number
 
-    const defaultQuartile = (defaultMax - defaultMin) / 4;
+    const defaultQuarter = (defaultMax - defaultMin) / 4;
 
     const defaultNumberOfBuckets = 5;
     const defaultBucketSize = (defaultMax - defaultMin) / defaultNumberOfBuckets;
@@ -1643,7 +1643,7 @@ export default compose(
         buckets: defaultBuckets,
         max: defaultMax,
         min: defaultMin,
-        quartile: defaultQuartile,
+        quarter: defaultQuarter,
       },
     });
   }),

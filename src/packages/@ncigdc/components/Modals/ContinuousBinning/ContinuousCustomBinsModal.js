@@ -25,7 +25,7 @@ class ContinuousCustomBinsModal extends Component {
     },
     intervalFields: {
       // seed input values, from props
-      amount: this.props.defaultContinuousData.quartile,
+      amount: this.props.defaultContinuousData.quarter,
       max: this.props.defaultContinuousData.max,
       min: this.props.defaultContinuousData.min,
     },
@@ -396,8 +396,8 @@ class ContinuousCustomBinsModal extends Component {
             <strong>{` \u003c ${defaultContinuousData.max} `}</strong>
           </p>
           <p>
-            Quartile bin interval:
-            <strong>{` ${defaultContinuousData.quartile}`}</strong>
+            Bin size in quarters:
+            <strong>{` ${defaultContinuousData.quarter}`}</strong>
           </p>
           <p>
             Configure your bins then click

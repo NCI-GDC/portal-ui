@@ -1313,7 +1313,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                           updateClinicalAnalysisVariable({
                             fieldName,
                             id,
-                            value: 0,
+                            value: {},
                             variableKey: 'continuousCustomInterval',
                           })
                         ));

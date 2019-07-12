@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { debounce, isFinite } from 'lodash';
+import { debounce, isEmpty, isFinite } from 'lodash';
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import Button from '@ncigdc/uikit/Button';
 import RangeTableRow from './RangeTableRow';
@@ -53,13 +53,11 @@ class ContinuousCustomBinsModal extends Component {
         ? {}
         : { binningMethod: continuousBinType },
       rangeRows: continuousCustomRanges,
-      ...continuousBinType === 'interval' ? {
-        intervalFields: {
-          amount: continuousCustomInterval,
-          max: binData[binData.length - 1].keyArray[0].split('-')[1],
-          min: binData[0].keyArray[0].split('-')[0],
-        }
-      } : {}
+      ...isEmpty(continuousCustomInterval)
+        ? {}
+        : {
+          intervalFields: continuousCustomInterval
+        },
     });
   };
 
@@ -277,11 +275,7 @@ class ContinuousCustomBinsModal extends Component {
         }, {})
         : makeCustomIntervalBins();
 
-      const continuousCustomInterval = binningMethod === 'interval'
-        ? intervalFields.amount
-        : 0;
-
-      onUpdate(newBins, binningMethod, continuousCustomInterval, rangeRows);
+      onUpdate(newBins, binningMethod, intervalFields, rangeRows);
     }
   };
 

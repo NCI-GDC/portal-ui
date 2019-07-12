@@ -1304,6 +1304,15 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                             variableKey: 'continuousCustomInterval',
                           })
                         ));
+                      variable.plotTypes === 'continuous' && (
+                        dispatch(
+                          updateClinicalAnalysisVariable({
+                            fieldName,
+                            id,
+                            value: [],
+                            variableKey: 'continuousCustomRanges',
+                          })
+                        ));
                     }}
                     style={{
                       ...styles.actionMenuItem,

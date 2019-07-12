@@ -257,7 +257,7 @@ class ContinuousCustomBinsModal extends Component {
           .map((val, key) => {
             const from = key * intervalAmount + intervalMin;
             const to = (key + 1) === bucketCount
-              ? intervalMax + 1
+              ? intervalMax
               : intervalMin + (key + 1) * intervalAmount;
 
             const objKey = `${from}-${to}`;

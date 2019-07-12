@@ -7,7 +7,7 @@ import BinningMethodInput from './BinningMethodInput';
 import CustomIntervalFields from './CustomIntervalFields';
 import styles from './styles';
 import RangeInputRow from './RangeInputRow';
-import { createContinuousGroupName } from '@ncigdc/utils/string';
+import { createContinuousGroupName, parseContinuousKey, } from '@ncigdc/utils/string';
 
 const countDecimals = num => {
   return Math.floor(num) === num
@@ -40,7 +40,9 @@ class ContinuousCustomBinsModal extends Component {
       binData,
       continuousBinType,
       rangeRows,
+      continuousCustomInterval,
     } = this.props;
+
     this.validateRangeRow(rangeRows);
 
     this.debounceValidateIntervalFields = debounce(
@@ -49,28 +51,27 @@ class ContinuousCustomBinsModal extends Component {
     );
 
     if (continuousBinType === 'range') {
-      const nextRangeRows = binData.map(bin => ({
-        active: false,
-        fields: {
-          from: bin.keyArray[0].split('-')[0],
-          name: bin.key,
-          to: bin.keyArray[0].split('-')[1],
-        },
-      }));
-
       this.setState({
         binningMethod: 'range',
-        rangeRows: nextRangeRows,
+        rangeRows: binData.map(bin => {
+          const [from, to] = parseContinuousKey(bin.keyArray[0]);
+          return ({
+            active: false,
+            fields: {
+              from,
+              name: bin.key,
+              to,
+            },
+          });
+        }),
       });
     } else if (continuousBinType === 'interval') {
-      const { continuousCustomInterval } = this.props;
-
       this.setState({
         binningMethod: 'interval',
         intervalFields: {
           amount: continuousCustomInterval,
-          max: binData[binData.length - 1].keyArray[0].split('-')[1],
-          min: binData[0].keyArray[0].split('-')[0],
+          max: parseContinuousKey(binData[binData.length - 1].keyArray[0])[1],
+          min: parseContinuousKey(binData[0].keyArray[0])[0],
         },
       });
     }

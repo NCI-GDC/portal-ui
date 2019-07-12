@@ -1634,7 +1634,6 @@ export default compose(
 
         return ({
           [objKey]: {
-            groupName: `${parseContinuousValue(from)} to less than ${parseContinuousValue(to)}`,
             key: objKey,
           },
         });

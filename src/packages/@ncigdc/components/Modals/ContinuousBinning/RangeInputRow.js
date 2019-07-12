@@ -19,6 +19,10 @@ const {
   visualizingButton,
 } = styles;
 
+const checkEmptyFields = fieldValues => Object.keys(fieldValues)
+  .map(field => fieldValues[field])
+  .every(el => el === '');
+
 class RangeInputRow extends React.Component {
   state = {
     fieldErrors: defaultFieldState,
@@ -85,31 +89,39 @@ class RangeInputRow extends React.Component {
 
     // check empty & NaN errors first
     // then make sure that from < to
-    const errorsEmptyOrNaN = Object.keys(fieldValues).reduce((acc, curr) => {
-      const currentValue = fieldValues[curr];
-      const currentValueNumber = Number(currentValue);
 
-      const nextErrors = currentValue === ''
-        ? 'Required field.'
-        : curr === 'name'
+    const allFieldsEmpty = checkEmptyFields(fieldValues);
+
+    const errorsEmptyOrNaN = Object.keys(fieldValues)
+      .reduce((acc, curr) => {
+        const currentValue = fieldValues[curr];
+        const currentValueNumber = Number(currentValue);
+
+        const nextErrors = allFieldsEmpty
           ? ''
-          : !isFinite(currentValueNumber)
-            ? `'${currentValue}' is not a number.`
-            : countDecimals(currentValueNumber) > 2
-              ? 'Use up to 2 decimal places.'
-              : '';
+          : currentValue === ''
+            ? 'Required field.'
+            : curr === 'name'
+              ? ''
+              : !isFinite(currentValueNumber)
+                ? `'${currentValue}' is not a number.`
+                : countDecimals(currentValueNumber) > 2
+                  ? 'Use up to 2 decimal places.'
+                  : '';
 
-      return ({
-        ...acc,
-        [curr]: nextErrors,
-      });
-    }, {});
+        return ({
+          ...acc,
+          [curr]: nextErrors,
+        });
+      }, {});
 
-    const checkFromToValues = errorsEmptyOrNaN.to === '' &&
-      errorsEmptyOrNaN.from === '' &&
-      Number(fieldValues.to) <= Number(fieldValues.from);
+    const fromGreaterThanto = allFieldsEmpty
+      ? ''
+      : (errorsEmptyOrNaN.to === '' &&
+        errorsEmptyOrNaN.from === '' &&
+        Number(fieldValues.to) <= Number(fieldValues.from));
 
-    return checkFromToValues
+    return !allFieldsEmpty && fromGreaterThanto
       ? ({
         from: `'From' must be less than ${fieldValues.to}.`,
         name: '',
@@ -149,9 +161,9 @@ class RangeInputRow extends React.Component {
       const overlapTo = Number(overlapToStr);
       const overlapName = curr.fields.name;
 
-      const hasOverlap = (fieldTo > overlapFrom && fieldTo < overlapTo) ||
-        (fieldFrom > overlapFrom && fieldFrom < overlapTo) ||
-        (fieldFrom === overlapFrom && fieldTo === overlapTo);
+      const hasOverlap = (fieldTo > overlapFrom && fieldTo <= overlapTo) ||
+        (fieldFrom >= overlapFrom && fieldFrom < overlapTo) ||
+        (fieldFrom <= overlapFrom && fieldTo >= overlapTo);
 
       return hasOverlap
         ? [...acc, overlapName]
@@ -192,17 +204,19 @@ class RangeInputRow extends React.Component {
       overlapErrors,
     } = this.state;
 
+    const allFieldsEmpty = checkEmptyFields(fieldValues);
+
     return (
       <OutsideClickHandler
         disabled={!rangeMethodActive}
         onOutsideClick={() => {
           this.handleValidate();
         }}
-        >
+      >
         <div style={{ display: 'flex' }}>
           <div
             style={rowFieldsWrapper}
-            >
+          >
             {
               fieldsOrder.map(rowItem => {
                 const rowId = `range-row-${rowIndex}-${rowItem}`;
@@ -217,7 +231,7 @@ class RangeInputRow extends React.Component {
                     id={rowId}
                     key={rowId}
                     value={fieldValues[rowItem]}
-                    />
+                  />
                 );
               })}
           </div>
@@ -225,19 +239,19 @@ class RangeInputRow extends React.Component {
             <Button
               aria-label="Add row"
               buttonContentStyle={{ justifyContent: 'center' }}
-              disabled={!rangeMethodActive}
+              disabled={allFieldsEmpty || !rangeMethodActive}
               id={`range-row-${rowIndex}-add`}
               onClick={() => {
                 this.handleAdd();
               }}
               style={{
-                ...(rangeMethodActive
-                  ? visualizingButton
-                  : inputDisabled),
+                ...(allFieldsEmpty || !rangeMethodActive
+                  ? inputDisabled
+                  : visualizingButton),
                 ...optionsButton,
                 width: '100%',
               }}
-              >
+            >
               <i aria-hidden="true" className="fa fa-plus-circle" />
               &nbsp; Add
             </Button>

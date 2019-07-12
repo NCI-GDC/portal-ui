@@ -1667,7 +1667,8 @@ export default compose(
           variable.plotTypes === 'continuous'
             ? dataBuckets.length > 0
               ? dataBuckets
-                .sort((a, b) => a.key.split('-')[0] - b.key.split('-')[0])
+                .sort((a, b) =>
+                  parseContinuousKey(a.key)[0] - parseContinuousKey(b.key)[0])
                 .reduce(getContinuousBuckets, [])
               : []
             : binData

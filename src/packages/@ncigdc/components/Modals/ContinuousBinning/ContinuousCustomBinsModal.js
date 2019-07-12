@@ -7,7 +7,7 @@ import BinningMethodInput from './BinningMethodInput';
 import CustomIntervalFields from './CustomIntervalFields';
 import styles from './styles';
 import RangeInputRow from './RangeInputRow';
-import { parseContinuousValue } from '@ncigdc/utils/string';
+import { createContinuousGroupName, parseContinuousKey, } from '@ncigdc/utils/string';
 
 const countDecimals = num => {
   return Math.floor(num) === num
@@ -17,7 +17,7 @@ const countDecimals = num => {
 
 class ContinuousCustomBinsModal extends Component {
   state = {
-    binningMethod: 'interval', // interval or range
+    binningMethod: 'range', // interval or range
     intervalErrors: {
       amount: '',
       max: '',
@@ -25,7 +25,7 @@ class ContinuousCustomBinsModal extends Component {
     },
     intervalFields: {
       // seed input values, from props
-      amount: this.props.defaultContinuousData.quartile,
+      amount: this.props.defaultContinuousData.quarter,
       max: this.props.defaultContinuousData.max,
       min: this.props.defaultContinuousData.min,
     },
@@ -40,7 +40,9 @@ class ContinuousCustomBinsModal extends Component {
       binData,
       continuousBinType,
       rangeRows,
+      continuousCustomInterval,
     } = this.props;
+
     this.validateRangeRow(rangeRows);
 
     this.debounceValidateIntervalFields = debounce(
@@ -49,28 +51,27 @@ class ContinuousCustomBinsModal extends Component {
     );
 
     if (continuousBinType === 'range') {
-      const nextRangeRows = binData.map(bin => ({
-        active: false,
-        fields: {
-          from: bin.keyArray[0].split('-')[0],
-          name: bin.key,
-          to: bin.keyArray[0].split('-')[1],
-        },
-      }));
-
       this.setState({
         binningMethod: 'range',
-        rangeRows: nextRangeRows,
+        rangeRows: binData.map(bin => {
+          const [from, to] = parseContinuousKey(bin.keyArray[0]);
+          return ({
+            active: false,
+            fields: {
+              from,
+              name: bin.key,
+              to,
+            },
+          });
+        }),
       });
     } else if (continuousBinType === 'interval') {
-      const { continuousCustomInterval } = this.props;
-
       this.setState({
         binningMethod: 'interval',
         intervalFields: {
           amount: continuousCustomInterval,
-          max: binData[binData.length - 1].keyArray[0].split('-')[1],
-          min: binData[0].keyArray[0].split('-')[0],
+          max: parseContinuousKey(binData[binData.length - 1].keyArray[0])[1],
+          min: parseContinuousKey(binData[0].keyArray[0])[0],
         },
       });
     }
@@ -78,95 +79,144 @@ class ContinuousCustomBinsModal extends Component {
 
   // binning method: interval
 
-  updateIntervalFields = (updateEvent, inputError = null) => {
-    const { intervalErrors, intervalFields } = this.state;
-
-    const inputKey = updateEvent.target.id.split('-')[2];
-    const inputValue = updateEvent.target.value;
-
-    const nextIntervalFields = {
-      ...intervalFields,
-      [inputKey]: inputValue,
-    };
-
-    const nextIntervalErrors = {
-      ...intervalErrors,
-      [inputKey]: inputError === null
-        ? intervalErrors[inputKey]
-        : inputError,
-    };
-
-    if (inputError === null) updateEvent.persist();
+  updateIntervalFields = updateEvent => {
+    const { intervalFields } = this.state;
+    const { target: { id, value } } = updateEvent;
 
     this.setState({
-      intervalErrors: nextIntervalErrors,
-      intervalFields: nextIntervalFields,
+      intervalFields: {
+        ...intervalFields,
+        [id.split('-')[2]]: value,
+      },
     }, () => {
-      if (inputError === null) {
-        this.debounceValidateIntervalFields(updateEvent);
-      }
+      this.debounceValidateIntervalFields(id, value);
     });
   };
 
-  validateIntervalFields = event => {
+  validateIntervalFields = (id, value) => {
     const { defaultContinuousData } = this.props;
-    const { intervalFields } = this.state;
+    const { intervalErrors, intervalFields } = this.state;
 
-    const inputKey = event.target.id.split('-')[2];
-    const inputValue = Number(event.target.value);
+    const inputKey = id.split('-')[2];
+    const inputValue = Number(value);
 
-    if (!isFinite(inputValue)) {
-      const nanError = [`'${event.target.value}' is not a valid number.`];
-      this.updateIntervalFields(event, nanError);
-      return;
-    }
+    let inputError = inputValue === ''
+      ? 'Required field.'
+      : !isFinite(inputValue)
+        ? `'${value}' is not a valid number.`
+        : '';
 
     const currentMin = intervalFields.min;
     const currentMax = intervalFields.max;
-
-    const checkMinInRange = currentMin >= defaultContinuousData.min && currentMin < defaultContinuousData.max;
-    const validMin = checkMinInRange ? currentMin : defaultContinuousData.min;
-
-    const checkMaxInRange = currentMax > defaultContinuousData.min && currentMax <= defaultContinuousData.max;
-    const validMax = checkMaxInRange ? currentMax : defaultContinuousData.max;
-
-    const validAmount = checkMinInRange && checkMaxInRange ? currentMax - currentMin : defaultContinuousData.max - defaultContinuousData.min;
-
-    let inputError = '';
-
-    const decimalError = 'Use up to 2 decimal places.';
-
-    if (inputValue === '') {
-      inputError = 'Required field.';
-    } else {
-      inputError = countDecimals(inputValue) > 2 ? decimalError : inputError;
-    }
+    const currentAmount = Number(intervalFields.amount);
+    const validAmount = currentMax - currentMin;
 
     if (inputError !== '') {
-      this.updateIntervalFields(event, inputError);
+      // if the current value is empty or NaN,
+      // remove all errors except empty or NaN
+      this.setState({
+        intervalErrors: {
+          ...intervalErrors,
+          amount: isFinite(currentAmount)
+            ? ''
+            : intervalErrors.amount,
+          [inputKey]: inputError,
+          ...inputKey === 'max'
+            ? {
+              min: isFinite(Number(currentMin))
+                ? ''
+                : intervalErrors.min,
+            }
+            : {
+              max: isFinite(Number(currentMax))
+                ? ''
+                : intervalErrors.min,
+            }
+        }
+      });
       return;
     }
 
+    const decimalError = 'Use up to 2 decimal places.';
+
+    inputError = countDecimals(inputValue) > 2
+      ? decimalError
+      : inputError;
+
+    if (inputError !== '') {
+      this.setState({
+        intervalErrors: {
+          ...intervalErrors,
+          [inputKey]: inputError
+        }
+      });
+      return;
+    }
+
+    const amountError = `Must be less than or equal to ${validAmount}.`;
+
     if (inputKey === 'amount') {
-      const amountTooLargeError = `Must be less than or equal to ${validAmount}.`;
-      const amountTooSmallError = 'Must be greater than 0.';
-      inputError = inputValue <= 0 ? amountTooSmallError : inputValue > validAmount ? amountTooLargeError : '';
-      inputError = countDecimals(inputValue) > 2 ? decimalError : inputError;
+      inputError = inputValue <= 0
+        ? 'Must be greater than 0.'
+        : inputValue > validAmount &&
+          validAmount > 0
+          ? amountError
+          : '';
+      inputError = countDecimals(inputValue) > 2
+        ? decimalError
+        : inputError;
     } else if (inputKey === 'max') {
-      const maxTooSmallError = `Must be greater than ${validMin}.`;
-      const maxTooLargeError = `Must be less than or equal to ${defaultContinuousData.max}.`;
-      inputError = inputValue <= validMin ? maxTooSmallError : inputValue > defaultContinuousData.max ? maxTooLargeError : '';
-      inputError = countDecimals(inputValue) > 2 ? decimalError : inputError;
+      inputError = inputValue <= currentMin
+        ? `Must be greater than ${currentMin}.`
+        : '';
+      inputError = countDecimals(inputValue) > 2
+        ? decimalError
+        : inputError;
     } else if (inputKey === 'min') {
-      const minTooLargeError = `Must be less than ${validMax}.`;
-      const maxTooSmallError = `Must be greater than or equal to ${defaultContinuousData.min}.`;
-      inputError = inputValue >= validMax ? minTooLargeError : inputValue < defaultContinuousData.min ? maxTooSmallError : '';
-      inputError = countDecimals(inputValue) > 2 ? decimalError : inputError;
+      inputError = inputValue >= currentMax
+        ? `Must be less than ${currentMax}.`
+        : '';
+      inputError = countDecimals(inputValue) > 2
+        ? decimalError
+        : inputError;
     } else {
       inputError = '';
     }
 
-    this.updateIntervalFields(event, inputError);
+    this.setState({
+      intervalErrors: {
+        ...intervalErrors,
+        [inputKey]: inputError,
+        ...inputKey === 'max' &&
+          isFinite(Number(currentMin)) &&
+          isFinite(inputValue) &&
+          inputValue <= currentMin
+          ? { min: '' }
+          : {},
+        ...inputKey === 'min' &&
+          isFinite(inputValue) &&
+          isFinite(Number(currentMax)) &&
+          currentMax <= inputValue
+          ? { max: '' }
+          : {},
+      }
+    }, () => {
+      if ((inputKey === 'max' || inputKey === 'min') &&
+        isFinite(currentAmount)) {
+        const { intervalErrors } = this.state;
+        const amountMessage = inputError === '' &&
+          currentAmount > validAmount
+          ? amountError
+          : '';
+
+        this.setState({
+          intervalErrors: {
+            ...intervalErrors,
+            amount: amountMessage
+          }
+        });
+      }
+    });
   };
 
   checkSubmitDisabled = () => {
@@ -256,14 +306,14 @@ class ContinuousCustomBinsModal extends Component {
           .map((val, key) => {
             const from = key * intervalAmount + intervalMin;
             const to = (key + 1) === bucketCount
-              ? intervalMax + 1
+              ? intervalMax
               : intervalMin + (key + 1) * intervalAmount;
 
             const objKey = `${from}-${to}`;
 
             return ({
               [objKey]: {
-                groupName: `${parseContinuousValue(from)} to less than ${parseContinuousValue(to)}`,
+                groupName: createContinuousGroupName(objKey),
                 key: objKey,
               },
             });
@@ -392,12 +442,12 @@ class ContinuousCustomBinsModal extends Component {
           <p>
             Available values from
             <strong>{` ${defaultContinuousData.min} `}</strong>
-            to less than
-            <strong>{` ${defaultContinuousData.max} `}</strong>
+            to
+            <strong>{` \u003c ${defaultContinuousData.max} `}</strong>
           </p>
           <p>
-            Quartile bin interval:
-            <strong>{` ${defaultContinuousData.quartile}`}</strong>
+            Bin size in quarters:
+            <strong>{` ${defaultContinuousData.quarter}`}</strong>
           </p>
           <p>
             Configure your bins then click
@@ -421,7 +471,8 @@ class ContinuousCustomBinsModal extends Component {
                 intervalErrors={intervalErrors}
                 intervalFields={intervalFields}
                 validateIntervalFields={e => {
-                  this.validateIntervalFields(e);
+                  const { target: { id, value } } = e;
+                  this.validateIntervalFields(id, value);
                 }}
               />
             </Column>
@@ -463,7 +514,7 @@ class ContinuousCustomBinsModal extends Component {
                   id="range-table-label-max"
                   style={styles.column}
                 >
-                  To Less Than
+                  To &lt;
                 </div>
                 <div
                   id="range-table-label-options"

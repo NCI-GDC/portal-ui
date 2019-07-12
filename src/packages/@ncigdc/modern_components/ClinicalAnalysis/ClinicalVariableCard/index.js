@@ -75,6 +75,7 @@ import {
   removeClinicalAnalysisVariable,
   updateClinicalAnalysisVariable,
 } from '@ncigdc/dux/analysis';
+import termCapitaliser from '@ncigdc/utils/customisation';
 import { humanify, createFacetFieldString, parseContinuousValue } from '@ncigdc/utils/string';
 import timestamp from '@ncigdc/utils/timestamp';
 
@@ -655,7 +656,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
             marginTop: 10,
           }}
         >
-          {humanify({ term: fieldName })}
+          {humanify({ term: termCapitaliser(fieldName).split('__').pop() })}
         </h2>
         <Row>
           {plots.concat('delete')

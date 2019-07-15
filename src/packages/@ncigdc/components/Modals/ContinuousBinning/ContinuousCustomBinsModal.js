@@ -242,13 +242,8 @@ class ContinuousCustomBinsModal extends Component {
     this.validateRangeRow(nextRangeRows);
   };
 
-  validateNewRow = () => false;
-
   handleAddRow = inputRow => {
     const { rangeRows } = this.state;
-
-    const rowHasErrors = this.validateNewRow(inputRow);
-    if (rowHasErrors) return;
 
     this.setState({ rangeRows: rangeRows.concat(inputRow) });
   }

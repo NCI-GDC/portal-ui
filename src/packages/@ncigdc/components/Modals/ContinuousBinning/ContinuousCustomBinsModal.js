@@ -433,7 +433,11 @@ class ContinuousCustomBinsModal extends Component {
           </p>
         </div>
         <div style={styles.formBg}>
-          <Row>
+          <Row
+            style={{
+              justifyContent: 'space-between',
+            }}
+            >
             <Column className="binning-interval">
               <h3>Define bins by:</h3>
               <CustomIntervalFields
@@ -451,7 +455,17 @@ class ContinuousCustomBinsModal extends Component {
                   const { target: { id, value } } = e;
                   this.validateIntervalFields(id, value);
                 }}
-              />
+                />
+            </Column>
+            <Column>
+              <Button
+                onClick={() => {
+                  this.resetModal();
+                }}
+                style={{ ...styles.resetButton }}
+                >
+                Reset
+              </Button>
             </Column>
           </Row>
           <div

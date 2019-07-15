@@ -84,6 +84,9 @@ const styles = {
     marginBottom: '20px',
     width: '100%',
   },
+  resetButton: {
+    marginTop: 20,
+  },
 };
 
 export default styles;

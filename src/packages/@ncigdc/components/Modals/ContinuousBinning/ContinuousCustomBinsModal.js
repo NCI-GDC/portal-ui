@@ -2,16 +2,16 @@ import React, { Component } from 'react';
 import { debounce, isEmpty, isFinite } from 'lodash';
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import Button from '@ncigdc/uikit/Button';
+import { createContinuousGroupName, parseContinuousKey } from '@ncigdc/utils/string';
 import RangeTableRow from './RangeTableRow';
 import BinningMethodInput from './BinningMethodInput';
 import CustomIntervalFields from './CustomIntervalFields';
 import styles from './styles';
 import RangeInputRow from './RangeInputRow';
-import { createContinuousGroupName, parseContinuousKey } from '@ncigdc/utils/string';
 
-const countDecimals = num => Math.floor(num) === num
+const countDecimals = num => (Math.floor(num) === num
   ? 0
-  : (num.toString().split('.')[1].length || 0);
+  : (num.toString().split('.')[1].length || 0));
 
 const defaultInterval = {
   amount: '',
@@ -19,16 +19,18 @@ const defaultInterval = {
   min: '',
 };
 
-class ContinuousCustomBinsModal extends Component {
-  state = {
-    binningMethod: 'interval', // interval or range
-    intervalErrors: defaultInterval,
+const defaultState = {
+  binningMethod: 'interval', // interval or range
+  intervalErrors: defaultInterval,
     intervalFields: defaultInterval,
     modalWarning: '',
     rangeNameErrors: [],
     rangeOverlapErrors: [],
-    rangeRows: [],
-  };
+  rangeRows: [],
+};
+
+class ContinuousCustomBinsModal extends Component {
+  state = defaultState;
 
   componentDidMount = () => {
     const {
@@ -54,11 +56,22 @@ class ContinuousCustomBinsModal extends Component {
           max: defaultContinuousData.max,
           min: defaultContinuousData.min,
         }
-        : continuousCustomInterval
-      ,
+        : continuousCustomInterval,
       rangeRows: continuousCustomRanges,
     });
   };
+
+  resetModal = () => {
+    const { defaultContinuousData } = this.props;
+    this.setState({
+      ...defaultState,
+      intervalFields: {
+        amount: defaultContinuousData.quarter,
+        max: defaultContinuousData.max,
+        min: defaultContinuousData.min,
+      },
+    });
+  }
 
   // binning method: interval
 
@@ -114,8 +127,8 @@ class ContinuousCustomBinsModal extends Component {
               max: isFinite(Number(currentMax))
                 ? ''
                 : intervalErrors.min,
-            }
-        }
+            },
+        },
       });
       return;
     }
@@ -130,8 +143,8 @@ class ContinuousCustomBinsModal extends Component {
       this.setState({
         intervalErrors: {
           ...intervalErrors,
-          [inputKey]: inputError
-        }
+          [inputKey]: inputError,
+        },
       });
       return;
     }
@@ -173,7 +186,7 @@ class ContinuousCustomBinsModal extends Component {
           currentMax <= inputValue
           ? { max: '' }
           : {},
-      }
+      },
     }, () => {
       if ((inputKey === 'max' || inputKey === 'min') &&
         isFinite(currentAmount)) {
@@ -185,8 +198,8 @@ class ContinuousCustomBinsModal extends Component {
             amount: inputError === '' &&
               currentAmount > validAmount
               ? amountError
-              : ''
-          }
+              : '',
+          },
         });
       }
     });
@@ -524,10 +537,11 @@ class ContinuousCustomBinsModal extends Component {
             justifyContent: 'flex-end',
             margin: '20px',
           }}
-        >
-          <span style={{
-            color: 'red',
-            justifyContent: 'flex-start',
+          >
+          <span
+            style={{
+              color: 'red',
+              justifyContent: 'flex-start',
             visibility: modalWarning.length > 0 ? 'visible' : 'hidden',
           }}
           >

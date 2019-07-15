@@ -4,7 +4,6 @@ import OutsideClickHandler from 'react-outside-click-handler';
 import Button from '@ncigdc/uikit/Button';
 import RangeInput from './RangeInput';
 import styles from './styles';
-import { defaultFieldState, fieldsOrder } from './RangeTableRow';
 
 const {
   input: {
@@ -25,10 +24,18 @@ const checkEmptyFields = fieldValues => Object.keys(fieldValues)
 
 class RangeInputRow extends React.Component {
   state = {
-    fieldErrors: defaultFieldState,
-    fieldValues: defaultFieldState,
+    fieldErrors: {},
+    fieldValues: {},
     overlapErrors: [],
   };
+
+  componentDidMount() {
+    const { defaultFieldState } = this.props;
+    this.setState({
+      fieldErrors: defaultFieldState,
+      fieldValues: defaultFieldState,
+    });
+  }
 
   componentDidUpdate(prevProps) {
     const { fields } = this.props;
@@ -46,6 +53,7 @@ class RangeInputRow extends React.Component {
   }
 
   handleAdd = () => {
+    const { defaultFieldState } = this.props;
     const validateFieldsResult = this.validateOnBlur();
     const rowHasErrors = Object.keys(validateFieldsResult)
       .filter(field => validateFieldsResult[field].length > 0).length > 0;
@@ -194,6 +202,7 @@ class RangeInputRow extends React.Component {
 
   render = () => {
     const {
+      fieldsOrder,
       rangeMethodActive,
       rowIndex,
     } = this.props;
@@ -212,11 +221,11 @@ class RangeInputRow extends React.Component {
         onOutsideClick={() => {
           this.handleValidate();
         }}
-      >
+        >
         <div style={{ display: 'flex' }}>
           <div
             style={rowFieldsWrapper}
-          >
+            >
             {
               fieldsOrder.map(rowItem => {
                 const rowId = `range-row-${rowIndex}-${rowItem}`;
@@ -231,7 +240,7 @@ class RangeInputRow extends React.Component {
                     id={rowId}
                     key={rowId}
                     value={fieldValues[rowItem]}
-                  />
+                    />
                 );
               })}
           </div>
@@ -251,7 +260,7 @@ class RangeInputRow extends React.Component {
                 ...optionsButton,
                 width: '100%',
               }}
-            >
+              >
               <i aria-hidden="true" className="fa fa-plus-circle" />
               &nbsp; Add
             </Button>

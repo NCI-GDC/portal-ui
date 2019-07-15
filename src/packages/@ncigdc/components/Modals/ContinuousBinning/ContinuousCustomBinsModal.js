@@ -14,6 +14,18 @@ const countDecimals = num => (Math.floor(num) === num
   ? 0
   : (num.toString().split('.')[1].length || 0));
 
+const defaultFieldState = {
+  from: '',
+  name: '',
+  to: '',
+};
+
+const fieldsOrder = [
+  'name',
+  'from',
+  'to',
+];
+
 const defaultInterval = {
   amount: '',
   max: '',
@@ -29,6 +41,7 @@ const defaultState = {
   rangeNameErrors: [],
   rangeOverlapErrors: [],
   rangeRows: [],
+  // rangeInputErrors: {},
 };
 
 class ContinuousCustomBinsModal extends Component {
@@ -531,7 +544,9 @@ class ContinuousCustomBinsModal extends Component {
                 {rangeRows.map((row, rowIndex) => (
                   <RangeTableRow
                     countDecimals={countDecimals}
+                    defaultFieldState={defaultFieldState}
                     fields={row.fields}
+                    fieldsOrder={fieldsOrder}
                     handleRemoveRow={this.handleRemoveRow}
                     handleToggleActiveRow={this.handleToggleActiveRow}
                     handleUpdateBinningMethod={() => {
@@ -550,6 +565,8 @@ class ContinuousCustomBinsModal extends Component {
               </div>
               <RangeInputRow
                 countDecimals={countDecimals}
+                defaultFieldState={defaultFieldState}
+                fieldsOrder={fieldsOrder}
                 handleAddRow={this.handleAddRow}
                 rangeMethodActive={binningMethod === 'range'}
                 rangeRows={rangeRows}

@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import { debounce, isEmpty, isFinite } from 'lodash';
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import Button from '@ncigdc/uikit/Button';
-import { createContinuousGroupName, parseContinuousKey } from '@ncigdc/utils/string';
+import { createContinuousGroupName } from '@ncigdc/utils/string';
+import Undo from '@ncigdc/theme/icons/Undo';
 import RangeTableRow from './RangeTableRow';
 import BinningMethodInput from './BinningMethodInput';
 import CustomIntervalFields from './CustomIntervalFields';
@@ -21,11 +22,12 @@ const defaultInterval = {
 
 const defaultState = {
   binningMethod: 'interval', // interval or range
+  continuousReset: false,
   intervalErrors: defaultInterval,
-    intervalFields: defaultInterval,
-    modalWarning: '',
-    rangeNameErrors: [],
-    rangeOverlapErrors: [],
+  intervalFields: defaultInterval,
+  modalWarning: '',
+  rangeNameErrors: [],
+  rangeOverlapErrors: [],
   rangeRows: [],
 };
 
@@ -64,6 +66,7 @@ class ContinuousCustomBinsModal extends Component {
     const { defaultContinuousData } = this.props;
     this.setState({
       ...defaultState,
+      continuousReset: true,
       intervalFields: {
         amount: defaultContinuousData.quarter,
         max: defaultContinuousData.max,
@@ -79,6 +82,7 @@ class ContinuousCustomBinsModal extends Component {
     const { target: { id, value } } = updateEvent;
 
     this.setState({
+      continuousReset: false,
       intervalFields: {
         ...intervalFields,
         [id.split('-')[2]]: value,
@@ -244,7 +248,10 @@ class ContinuousCustomBinsModal extends Component {
   handleAddRow = inputRow => {
     const { rangeRows } = this.state;
 
-    this.setState({ rangeRows: rangeRows.concat(inputRow) });
+    this.setState({
+      continuousReset: false,
+      rangeRows: rangeRows.concat(inputRow),
+    });
   }
 
   handleUpdateRow = (inputRowIndex, inputRow) => {
@@ -257,7 +264,10 @@ class ContinuousCustomBinsModal extends Component {
     const rowHasErrors = this.validateRangeRow(nextRangeRows);
     if (rowHasErrors) return;
 
-    this.setState({ rangeRows: nextRangeRows });
+    this.setState({
+      continuousReset: false,
+      rangeRows: nextRangeRows,
+    });
   }
 
   // submit
@@ -265,7 +275,7 @@ class ContinuousCustomBinsModal extends Component {
   handleSubmit = () => {
     const { onUpdate } = this.props;
     const {
-      binningMethod, intervalFields, rangeRows,
+      binningMethod, continuousReset, intervalFields, rangeRows,
     } = this.state;
 
     const formHasErrors = binningMethod === 'range' &&
@@ -318,7 +328,7 @@ class ContinuousCustomBinsModal extends Component {
         }, {})
         : makeCustomIntervalBins();
 
-      onUpdate(newBins, binningMethod, intervalFields, rangeRows);
+      onUpdate(newBins, binningMethod, intervalFields, rangeRows, continuousReset);
     }
   };
 
@@ -458,12 +468,16 @@ class ContinuousCustomBinsModal extends Component {
             </Column>
             <Column>
               <Button
+                ariaLabel="Reset modal"
                 onClick={() => {
                   this.resetModal();
                 }}
-                style={{ ...styles.resetButton }}
+                style={{
+                  ...styles.visualizingButton,
+                  ...styles.resetButton,
+                }}
                 >
-                Reset
+                <Undo />
               </Button>
             </Column>
           </Row>
@@ -475,7 +489,7 @@ class ContinuousCustomBinsModal extends Component {
               }
             }}
             role="presentation"
-          >
+            >
             <div style={{ marginBottom: '15px' }}>
               <BinningMethodInput
                 binningMethod="range"
@@ -484,32 +498,32 @@ class ContinuousCustomBinsModal extends Component {
                   this.setState({ binningMethod: 'range' });
                 }}
                 label="Manually"
-              />
+                />
             </div>
             <div style={styles.wrapper}>
               <div style={styles.heading}>
                 <div
                   id="range-table-label-name"
                   style={styles.column}
-                >
+                  >
                   Bin Name
                 </div>
                 <div
                   id="range-table-label-min"
                   style={styles.column}
-                >
+                  >
                   From
                 </div>
                 <div
                   id="range-table-label-max"
                   style={styles.column}
-                >
+                  >
                   To &lt;
                 </div>
                 <div
                   id="range-table-label-options"
                   style={styles.optionsColumn}
-                >
+                  >
                   Options
                 </div>
               </div>
@@ -531,7 +545,7 @@ class ContinuousCustomBinsModal extends Component {
                     rowNameError={rangeNameErrors[rowIndex] || ''}
                     rowOverlapErrors={rangeOverlapErrors[rowIndex] || []}
                     styles={styles}
-                  />
+                    />
                 ))}
               </div>
               <RangeInputRow
@@ -540,7 +554,7 @@ class ContinuousCustomBinsModal extends Component {
                 rangeMethodActive={binningMethod === 'range'}
                 rangeRows={rangeRows}
                 styles={styles}
-              />
+                />
             </div>
           </div>
         </div>
@@ -555,16 +569,16 @@ class ContinuousCustomBinsModal extends Component {
             style={{
               color: 'red',
               justifyContent: 'flex-start',
-            visibility: modalWarning.length > 0 ? 'visible' : 'hidden',
-          }}
-          >
+              visibility: modalWarning.length > 0 ? 'visible' : 'hidden',
+            }}
+            >
             {`Warning: ${modalWarning}`}
           </span>
           <Button
             onClick={onClose}
             onMouseDown={onClose}
             style={styles.visualizingButton}
-          >
+            >
             Cancel
           </Button>
           <Button
@@ -574,7 +588,7 @@ class ContinuousCustomBinsModal extends Component {
             style={submitDisabled
               ? styles.inputDisabled
               : styles.visualizingButton}
-          >
+            >
             Save Bins
           </Button>
         </Row>

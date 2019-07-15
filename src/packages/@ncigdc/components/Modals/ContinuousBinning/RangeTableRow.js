@@ -25,10 +25,10 @@ class RangeTableRow extends React.Component {
   };
 
   componentDidMount() {
-    const { defaultFieldState, fields } = this.props;
+    const { defaultRangeFieldsState, fields } = this.props;
 
     this.setState({
-      fieldErrors: defaultFieldState,
+      fieldErrors: defaultRangeFieldsState,
       fieldValues: fields,
     });
   }
@@ -67,10 +67,10 @@ class RangeTableRow extends React.Component {
 
   handleCancel = () => {
     const {
-      defaultFieldState, fields, handleToggleActiveRow, rowIndex,
+      defaultRangeFieldsState, fields, handleToggleActiveRow, rowIndex,
     } = this.props;
     this.setState({
-      fieldErrors: defaultFieldState,
+      fieldErrors: defaultRangeFieldsState,
       fieldValues: fields,
     });
     handleToggleActiveRow(rowIndex, false);
@@ -131,7 +131,7 @@ class RangeTableRow extends React.Component {
 
   render = () => {
     const {
-      fieldsOrder,
+      rangeFieldsOrder,
       rangeMethodActive,
       rowActive,
       rowIndex,
@@ -157,7 +157,7 @@ class RangeTableRow extends React.Component {
             style={rowFieldsWrapper}
             >
             {
-              fieldsOrder.map(rowItem => {
+              rangeFieldsOrder.map(rowItem => {
                 const rowId = `range-row-${rowIndex}-${rowItem}`;
                 return (
                   <RangeInput

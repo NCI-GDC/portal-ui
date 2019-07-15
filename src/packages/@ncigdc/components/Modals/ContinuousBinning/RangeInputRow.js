@@ -30,10 +30,10 @@ class RangeInputRow extends React.Component {
   };
 
   componentDidMount() {
-    const { defaultFieldState } = this.props;
+    const { defaultRangeFieldsState } = this.props;
     this.setState({
-      fieldErrors: defaultFieldState,
-      fieldValues: defaultFieldState,
+      fieldErrors: defaultRangeFieldsState,
+      fieldValues: defaultRangeFieldsState,
     });
   }
 
@@ -53,7 +53,7 @@ class RangeInputRow extends React.Component {
   }
 
   handleAdd = () => {
-    const { defaultFieldState } = this.props;
+    const { defaultRangeFieldsState } = this.props;
     const validateFieldsResult = this.validateOnBlur();
     const rowHasErrors = Object.keys(validateFieldsResult)
       .filter(field => validateFieldsResult[field].length > 0).length > 0;
@@ -71,7 +71,7 @@ class RangeInputRow extends React.Component {
       };
 
       handleAddRow(nextRow);
-      this.setState({ fieldValues: defaultFieldState });
+      this.setState({ fieldValues: defaultRangeFieldsState });
     });
   };
 
@@ -202,7 +202,7 @@ class RangeInputRow extends React.Component {
 
   render = () => {
     const {
-      fieldsOrder,
+      rangeFieldsOrder,
       rangeMethodActive,
       rowIndex,
     } = this.props;
@@ -227,7 +227,7 @@ class RangeInputRow extends React.Component {
             style={rowFieldsWrapper}
             >
             {
-              fieldsOrder.map(rowItem => {
+              rangeFieldsOrder.map(rowItem => {
                 const rowId = `range-row-${rowIndex}-${rowItem}`;
                 return (
                   <RangeInput

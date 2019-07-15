@@ -14,13 +14,13 @@ const countDecimals = num => (Math.floor(num) === num
   ? 0
   : (num.toString().split('.')[1].length || 0));
 
-const defaultFieldState = {
+const defaultRangeFieldsState = {
   from: '',
   name: '',
   to: '',
 };
 
-const fieldsOrder = [
+const rangeFieldsOrder = [
   'name',
   'from',
   'to',
@@ -41,7 +41,7 @@ const defaultState = {
   rangeNameErrors: [],
   rangeOverlapErrors: [],
   rangeRows: [],
-  // rangeInputErrors: {},
+  rangeInputErrors: defaultRangeFieldsState,
 };
 
 class ContinuousCustomBinsModal extends Component {
@@ -544,9 +544,8 @@ class ContinuousCustomBinsModal extends Component {
                 {rangeRows.map((row, rowIndex) => (
                   <RangeTableRow
                     countDecimals={countDecimals}
-                    defaultFieldState={defaultFieldState}
+                    defaultRangeFieldsState={defaultRangeFieldsState}
                     fields={row.fields}
-                    fieldsOrder={fieldsOrder}
                     handleRemoveRow={this.handleRemoveRow}
                     handleToggleActiveRow={this.handleToggleActiveRow}
                     handleUpdateBinningMethod={() => {
@@ -554,6 +553,7 @@ class ContinuousCustomBinsModal extends Component {
                     }}
                     handleUpdateRow={this.handleUpdateRow}
                     key={`range-row-${rowIndex}`}
+                    rangeFieldsOrder={rangeFieldsOrder}
                     rangeMethodActive={binningMethod === 'range'}
                     rowActive={row.active}
                     rowIndex={rowIndex}
@@ -565,9 +565,9 @@ class ContinuousCustomBinsModal extends Component {
               </div>
               <RangeInputRow
                 countDecimals={countDecimals}
-                defaultFieldState={defaultFieldState}
-                fieldsOrder={fieldsOrder}
+                defaultRangeFieldsState={defaultRangeFieldsState}
                 handleAddRow={this.handleAddRow}
+                rangeFieldsOrder={rangeFieldsOrder}
                 rangeMethodActive={binningMethod === 'range'}
                 rangeRows={rangeRows}
                 styles={styles}

@@ -22,7 +22,6 @@ import {
   reduce,
   reject,
   sortBy,
-  truncate,
 } from 'lodash';
 import { scaleOrdinal, schemeCategory10 } from 'd3';
 
@@ -163,7 +162,7 @@ const vizButtons: IVizButtons = {
           height: '1em',
           width: '1em',
         }}
-      />),
+        />),
     title: 'Box/QQ Plot',
   },
   delete: {
@@ -174,7 +173,7 @@ const vizButtons: IVizButtons = {
           height: '1em',
           width: '1em',
         }}
-      />),
+        />),
     title: 'Remove Card',
   },
   histogram: {
@@ -185,7 +184,7 @@ const vizButtons: IVizButtons = {
           height: '1em',
           width: '1em',
         }}
-      />),
+        />),
     title: 'Histogram',
   },
   survival: {
@@ -243,7 +242,7 @@ const getCountLink = ({ doc_count, filters, totalDocs }) => (
         filters,
         searchTableTab: 'cases',
       }}
-    >
+      >
       {(doc_count || 0).toLocaleString()}
     </ExploreLink>
     <span>{` (${(((doc_count || 0) / totalDocs) * 100).toFixed(2)}%)`}</span>
@@ -424,7 +423,7 @@ const getTableData = (
         }}
         type="checkbox"
         value={b.key}
-      />
+        />
     ),
     ...(variable.active_chart === 'survival'
       ? {
@@ -439,7 +438,7 @@ const getTableData = (
                     ? `Click icon to plot ${b.groupName}`
                     : `Maximum plots (${MAXIMUM_CURVES}) reached`
             }
-          >
+            >
             <Button
               disabled={
                 b.key === '_missing' ||
@@ -467,11 +466,11 @@ const getTableData = (
                 padding: '2px 3px',
                 position: 'static',
               }}
-            >
+              >
               {selectedSurvivalLoadingIds.indexOf(b.key) !== -1 ? (
                 <SpinnerIcon />
               ) : (
-                  <SurvivalIcon />
+                <SurvivalIcon />
                 )}
             </Button>
           </Tooltip>
@@ -646,7 +645,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
         padding: '0.5rem 1rem 1rem',
         ...style,
       }}
-    >
+      >
       <Row
         id={wrapperId}
         style={{
@@ -654,14 +653,14 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
           justifyContent: 'space-between',
           margin: '5px 0 10px',
         }}
-      >
+        >
         <h2
           style={{
             fontSize: '1.8rem',
             marginBottom: 0,
             marginTop: 10,
           }}
-        >
+          >
           {humanify({ term: termCapitaliser(fieldName).split('__').pop() })}
         </h2>
         <Row>
@@ -685,7 +684,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                       : styles.common(theme)),
                     margin: 2,
                   }}
-                >
+                  >
                   <Hidden>{vizButtons[plotType].title}</Hidden>
                   {vizButtons[plotType].icon}
                 </Button>
@@ -702,7 +701,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
               flex: 1,
               justifyContent: 'center',
             }}
-          >
+            >
             There is no data for this facet
           </Row>
         )
@@ -717,7 +716,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                       fontSize: '1.2rem',
                       marginRight: 10,
                     }}
-                  >
+                    >
                     <input
                       aria-label="Percentage of cases"
                       checked={variable.active_calculation === 'percentage'}
@@ -734,13 +733,13 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                       style={{ marginRight: 5 }}
                       type="radio"
                       value="percentage"
-                    />
+                      />
                     % of Cases
                   </label>
                   <label
                     htmlFor={`variable-number-radio-${fieldName}`}
                     style={{ fontSize: '1.2rem' }}
-                  >
+                    >
                     <input
                       aria-label="Number of cases"
                       checked={variable.active_calculation === 'number'}
@@ -757,7 +756,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                       style={{ marginRight: 5 }}
                       type="radio"
                       value="number"
-                    />
+                      />
                     # of Cases
                   </label>
                   <DownloadVisualizationButton
@@ -782,7 +781,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                       rightBuffer: maxKeyNameLength * 2,
                     })}
                     tooltipHTML="Download image or data"
-                  />
+                    />
                 </form>
                 {/* {variable.active_chart === 'survival' && (
                 <div>
@@ -877,7 +876,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                     variable.active_calculation === 'number' ? '#' : '%'
                     } of Cases`,
                 }}
-              />
+                />
             )}
             {variable.active_chart === 'survival' && (
               <div
@@ -889,7 +888,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                   justifyContent: 'center',
                   margin: '5px 2px 10px',
                 }}
-              >
+                >
                 {selectedSurvivalValues.length === 0 ? (
                   <SurvivalPlotWrapper
                     {...overallSurvivalData}
@@ -897,14 +896,14 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                     plotType="clinicalOverall"
                     survivalPlotLoading={survivalPlotLoading}
                     uniqueClass="clinical-survival-plot"
-                  />
+                    />
                 ) : (
-                    <SurvivalPlotWrapper
-                      {...selectedSurvivalData}
-                      height={202}
-                      plotType="categorical"
-                      survivalPlotLoading={survivalPlotLoading}
-                      uniqueClass="clinical-survival-plot"
+                  <SurvivalPlotWrapper
+                    {...selectedSurvivalData}
+                    height={202}
+                    plotType="categorical"
+                    survivalPlotLoading={survivalPlotLoading}
+                    uniqueClass="clinical-survival-plot"
                     />
                   )}
               </div>
@@ -918,7 +917,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                   marginBottom: 10,
                   minWidth: 300,
                 }}
-              >
+                >
                 <Row style={{ width: '100%' }}>
                   <Row
                     style={{
@@ -927,13 +926,13 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                       marginLeft: 10,
                       width: BOX_PLOT_RATIO,
                     }}
-                  >
+                    >
                     <span
                       style={{
                         color: theme.greyScale3,
                         fontSize: '1.2rem',
                       }}
-                    >
+                      >
                       Box Plot
                     </span>
                   </Row>
@@ -955,7 +954,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                       })
                       }
                       tooltipHTML="Download SVG or PNG"
-                    />
+                      />
                   </Row>
                   <Row
                     style={{
@@ -964,13 +963,13 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                       marginLeft: 10,
                       width: QQ_PLOT_RATIO,
                     }}
-                  >
+                    >
                     <span
                       style={{
                         color: theme.greyScale3,
                         fontSize: '1.2rem',
                       }}
-                    >
+                      >
                       QQ Plot
                     </span>
                   </Row>
@@ -993,7 +992,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                       })}
                       tooltipHTML="Download plot data"
                       tsvData={qqData}
-                    />
+                      />
                   </Row>
                 </Row>
                 <Row
@@ -1001,7 +1000,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                     height: CHART_HEIGHT,
                     justifyContent: 'space-between',
                   }}
-                >
+                  >
                   <Column
                     id={`${wrapperId}-boxplot-container`}
                     style={{
@@ -1010,7 +1009,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                       minWidth: '150px',
                       width: '150px',
                     }}
-                  >
+                    >
                     <TooltipInjector>
                       <BoxPlotWrapper data={dataValues} />
                     </TooltipInjector>
@@ -1022,7 +1021,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                       maxHeight: CHART_HEIGHT + 10,
                       width: QQ_PLOT_RATIO,
                     }}
-                  >
+                    >
                     <QQPlotQuery
                       chartHeight={CHART_HEIGHT + 10}
                       dataBuckets={dataBuckets}
@@ -1033,7 +1032,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                       setDataHandler={() => setQQDataIsSet()}
                       setId={setId}
                       wrapperId={wrapperId}
-                    />
+                      />
                   </Column>
                 </Row>
               </Column>
@@ -1047,7 +1046,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
               justifyContent: 'space-between',
               margin: '5px 0',
             }}
-          >
+            >
             <Dropdown
               button={(
                 <Button
@@ -1056,7 +1055,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                     ...visualizingButton,
                     padding: '0 12px',
                   }}
-                >
+                  >
                   Select Action
                 </Button>
               )}
@@ -1064,7 +1063,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                 left: 0,
                 minWidth: 205,
               }}
-            >
+              >
               {[
                 ...(variable.active_chart !== 'box' ? [
                   <DropdownItem
@@ -1074,7 +1073,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                       ...setActionsDisabled ? styles.actionMenuItemDisabled(theme) : {},
                     }
                     }
-                  >
+                    >
                     <Row
                       onClick={() => {
                         if (setActionsDisabled) {
@@ -1092,11 +1091,11 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                               title={`Save ${totalFromSelectedBuckets} Cases as New Set`}
                               total={totalFromSelectedBuckets}
                               type="case"
-                            />
+                              />
                           )
                         );
                       }}
-                    >
+                      >
                       Save as new case set
                     </Row>
                   </DropdownItem>,
@@ -1107,7 +1106,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                       ...setActionsDisabled ? styles.actionMenuItemDisabled(theme) : {},
                     }
                     }
-                  >
+                    >
                     <Row
                       onClick={() => {
                         if (setActionsDisabled) {
@@ -1126,11 +1125,11 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                               title={`Add ${totalFromSelectedBuckets} Cases to Existing Set`}
                               total={totalFromSelectedBuckets}
                               type="case"
-                            />
+                              />
                           )
                         );
                       }}
-                    >
+                      >
                       Add to existing case set
                     </Row>
                   </DropdownItem>,
@@ -1141,7 +1140,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                       ...setActionsDisabled ? styles.actionMenuItemDisabled(theme) : {},
                     }
                     }
-                  >
+                    >
                     <Row
                       onClick={() => {
                         if (setActionsDisabled) { return; }
@@ -1155,11 +1154,11 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                               selected={Object.keys(get(currentAnalysis, 'sets.case', {}))[0] || ''}
                               title={`Remove ${totalFromSelectedBuckets} Cases from Existing Set`}
                               type="case"
-                            />
+                              />
                           )
                         );
                       }}
-                    >
+                      >
                       Remove from existing case set
                     </Row>
                   </DropdownItem>,
@@ -1177,7 +1176,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                     ...styles.actionMenuItem,
                     borderTop: variable.active_chart !== 'box' ? `1px solid ${theme.greyScale5}` : '',
                   }}
-                >
+                  >
                   Export TSV
                 </DropdownItem>,
               ]}
@@ -1192,12 +1191,12 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                         ...visualizingButton,
                         padding: '0 12px',
                       }}
-                    >
+                      >
                       Customize Bins
                     </Button>
                   )}
                   dropdownStyle={{ right: 0 }}
-                >
+                  >
                   <DropdownItem
                     onClick={() => dispatch(
                       setModal(
@@ -1243,7 +1242,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                                 dispatch(setModal(null));
                               }
                               }
-                            />
+                              />
                           )
                           : (
                             <GroupValuesModal
@@ -1266,13 +1265,13 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                                 );
                                 dispatch(setModal(null));
                               }}
-                            />
+                              />
                           ),
                       ),
                     )
                     }
                     style={styles.actionMenuItem}
-                  >
+                    >
                     Edit Bins
                   </DropdownItem>
                   <DropdownItem
@@ -1316,7 +1315,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                       ...styles.actionMenuItem,
                       ...(resetBinsDisabled ? styles.actionMenuItemDisabled(theme) : {}),
                     }}
-                  >
+                    >
                     Reset to Default
                   </DropdownItem>
                 </Dropdown>
@@ -1334,7 +1333,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
               height: 175,
             }}
             tableId={`analysis-${tsvSubstring}-table`}
-          />
+            />
         </Column>
       )}
     </Column>
@@ -1366,7 +1365,7 @@ export default compose(
           dataBuckets: get(rawQueryData, variable.plotTypes === 'continuous'
             ? 'range.buckets'
             : 'buckets',
-            []),
+                           []),
           dataValues: variable.plotTypes === 'continuous' && map(
             {
               ...rawQueryData.stats,
@@ -1443,7 +1442,7 @@ export default compose(
                 [dataBuckets[index].key]: {
                   ...dataBuckets[index],
                   groupName: dataBuckets[index].key,
-                }
+                },
               }), {})
               : (Object.keys(variable.bins).reduce((acc, curr, index) => ({
                 ...acc,
@@ -1601,7 +1600,7 @@ export default compose(
             },
           ];
         },
-      })
+      });
     }
   ),
   withProps(({ data: { explore }, fieldName, variable }) => {

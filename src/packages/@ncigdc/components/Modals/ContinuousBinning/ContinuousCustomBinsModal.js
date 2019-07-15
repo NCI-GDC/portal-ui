@@ -7,28 +7,23 @@ import BinningMethodInput from './BinningMethodInput';
 import CustomIntervalFields from './CustomIntervalFields';
 import styles from './styles';
 import RangeInputRow from './RangeInputRow';
-import { createContinuousGroupName, parseContinuousKey, } from '@ncigdc/utils/string';
+import { createContinuousGroupName, parseContinuousKey } from '@ncigdc/utils/string';
 
-const countDecimals = num => {
-  return Math.floor(num) === num
-    ? 0
-    : (num.toString().split('.')[1].length || 0);
+const countDecimals = num => Math.floor(num) === num
+  ? 0
+  : (num.toString().split('.')[1].length || 0);
+
+const defaultInterval = {
+  amount: '',
+  max: '',
+  min: '',
 };
 
 class ContinuousCustomBinsModal extends Component {
   state = {
-    binningMethod: 'range', // interval or range
-    intervalErrors: {
-      amount: '',
-      max: '',
-      min: '',
-    },
-    intervalFields: {
-      // seed input values, from props
-      amount: this.props.defaultContinuousData.quarter,
-      max: this.props.defaultContinuousData.max,
-      min: this.props.defaultContinuousData.min,
-    },
+    binningMethod: 'interval', // interval or range
+    intervalErrors: defaultInterval,
+    intervalFields: defaultInterval,
     modalWarning: '',
     rangeNameErrors: [],
     rangeOverlapErrors: [],
@@ -86,9 +81,9 @@ class ContinuousCustomBinsModal extends Component {
 
     let inputError = inputValue === ''
       ? 'Required field.'
-      : !isFinite(inputValue)
-        ? `'${value}' is not a valid number.`
-        : '';
+      : isFinite(inputValue)
+        ? ''
+        : `'${value}' is not a valid number.`;
 
     const currentMin = intervalFields.min;
     const currentMax = intervalFields.max;
@@ -121,10 +116,10 @@ class ContinuousCustomBinsModal extends Component {
       return;
     }
 
-    const decimalError = 'Use up to 2 decimal places.';
+    const ALLOWED_DECIMAL_PLACES = 2;
 
-    inputError = countDecimals(inputValue) > 2
-      ? decimalError
+    inputError = countDecimals(inputValue) > ALLOWED_DECIMAL_PLACES
+      ? `Use up to ${ALLOWED_DECIMAL_PLACES} decimal places.`
       : inputError;
 
     if (inputError !== '') {
@@ -179,15 +174,14 @@ class ContinuousCustomBinsModal extends Component {
       if ((inputKey === 'max' || inputKey === 'min') &&
         isFinite(currentAmount)) {
         const { intervalErrors } = this.state;
-        const amountMessage = inputError === '' &&
-          currentAmount > validAmount
-          ? amountError
-          : '';
 
         this.setState({
           intervalErrors: {
             ...intervalErrors,
-            amount: amountMessage
+            amount: inputError === '' &&
+              currentAmount > validAmount
+              ? amountError
+              : ''
           }
         });
       }

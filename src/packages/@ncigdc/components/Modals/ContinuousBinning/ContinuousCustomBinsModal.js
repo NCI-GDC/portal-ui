@@ -146,23 +146,14 @@ class ContinuousCustomBinsModal extends Component {
           validAmount > 0
           ? amountError
           : '';
-      inputError = countDecimals(inputValue) > 2
-        ? decimalError
-        : inputError;
     } else if (inputKey === 'max') {
       inputError = inputValue <= currentMin
         ? `Must be greater than ${currentMin}.`
         : '';
-      inputError = countDecimals(inputValue) > 2
-        ? decimalError
-        : inputError;
     } else if (inputKey === 'min') {
       inputError = inputValue >= currentMax
         ? `Must be less than ${currentMax}.`
         : '';
-      inputError = countDecimals(inputValue) > 2
-        ? decimalError
-        : inputError;
     } else {
       inputError = '';
     }

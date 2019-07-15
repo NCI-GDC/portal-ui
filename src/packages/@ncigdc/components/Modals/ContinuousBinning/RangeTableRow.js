@@ -20,15 +20,14 @@ const {
 
 class RangeTableRow extends React.Component {
   state = {
-    fieldErrors: {},
-    fieldValues: {},
+    fieldErrors: this.props.defaultRangeFieldsState,
+    fieldValues: this.props.defaultRangeFieldsState,
   };
 
   componentDidMount() {
-    const { defaultRangeFieldsState, fields } = this.props;
+    const { fields } = this.props;
 
     this.setState({
-      fieldErrors: defaultRangeFieldsState,
       fieldValues: fields,
     });
   }

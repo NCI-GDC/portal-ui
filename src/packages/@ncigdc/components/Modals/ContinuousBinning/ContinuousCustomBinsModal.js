@@ -34,7 +34,6 @@ class ContinuousCustomBinsModal extends Component {
 
   componentDidMount = () => {
     const {
-      binData,
       continuousBinType,
       continuousCustomInterval,
       continuousCustomRanges,
@@ -90,7 +89,6 @@ class ContinuousCustomBinsModal extends Component {
   };
 
   validateIntervalFields = (id, value) => {
-    const { defaultContinuousData } = this.props;
     const { intervalErrors, intervalFields } = this.state;
 
     const inputKey = id.split('-')[2];
@@ -190,8 +188,6 @@ class ContinuousCustomBinsModal extends Component {
     }, () => {
       if ((inputKey === 'max' || inputKey === 'min') &&
         isFinite(currentAmount)) {
-        const { intervalErrors } = this.state;
-
         this.setState({
           intervalErrors: {
             ...intervalErrors,
@@ -229,7 +225,8 @@ class ContinuousCustomBinsModal extends Component {
 
   handleRemoveRow = rowIndex => {
     const { rangeRows } = this.state;
-    const nextRangeRows = rangeRows.filter((filterRow, filterRowIndex) => filterRowIndex !== rowIndex);
+    const nextRangeRows = rangeRows
+      .filter((filterRow, filterRowIndex) => filterRowIndex !== rowIndex);
     this.setState({ rangeRows: nextRangeRows });
     this.validateRangeRow(nextRangeRows);
   };
@@ -330,11 +327,11 @@ class ContinuousCustomBinsModal extends Component {
     const rowsToCheck = rows === null ? rangeRows : rows;
     const nameErrors = rowsToCheck.map((rowItem, rowIndex) => {
       const rowName = rowItem.fields.name.toLowerCase().trim();
-      const duplicateNames = rowsToCheck.filter((duplicateItem, duplicateIndex) => {
-        if (rowIndex === duplicateIndex) return;
-        const duplicateName = duplicateItem.fields.name.toLowerCase().trim();
-        return duplicateName === rowName;
-      });
+      const duplicateNames = rowsToCheck
+        .filter((duplicateItem, duplicateIndex) => {
+          return rowIndex !== duplicateIndex &&
+            duplicateItem.fields.name.toLowerCase().trim() === rowName;
+        });
       return duplicateNames.length > 0 ? 'Bin names must be unique.' : '';
     });
     return nameErrors;
@@ -385,8 +382,10 @@ class ContinuousCustomBinsModal extends Component {
 
     const overlapErrors = this.validateRangeOverlap(rowsToCheck);
     const nameErrors = this.validateRangeNames(rowsToCheck);
-    const overlapHasError = overlapErrors.filter(overlapErrorItem => overlapErrorItem.length > 0).length > 0;
-    const nameHasError = nameErrors.filter(nameErrorItem => nameErrorItem !== '').length > 0;
+    const overlapHasError = overlapErrors
+      .filter(overlapErrorItem => overlapErrorItem.length > 0).length > 0;
+    const nameHasError = nameErrors
+      .filter(nameErrorItem => nameErrorItem !== '').length > 0;
 
     this.setState({
       rangeNameErrors: nameErrors,

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { debounce, isFinite } from 'lodash';
+import { debounce, isEmpty, isFinite } from 'lodash';
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import Button from '@ncigdc/uikit/Button';
 import RangeTableRow from './RangeTableRow';
@@ -7,28 +7,23 @@ import BinningMethodInput from './BinningMethodInput';
 import CustomIntervalFields from './CustomIntervalFields';
 import styles from './styles';
 import RangeInputRow from './RangeInputRow';
-import { createContinuousGroupName, parseContinuousKey, } from '@ncigdc/utils/string';
+import { createContinuousGroupName, parseContinuousKey } from '@ncigdc/utils/string';
 
-const countDecimals = num => {
-  return Math.floor(num) === num
-    ? 0
-    : (num.toString().split('.')[1].length || 0);
+const countDecimals = num => Math.floor(num) === num
+  ? 0
+  : (num.toString().split('.')[1].length || 0);
+
+const defaultInterval = {
+  amount: '',
+  max: '',
+  min: '',
 };
 
 class ContinuousCustomBinsModal extends Component {
   state = {
-    binningMethod: 'range', // interval or range
-    intervalErrors: {
-      amount: '',
-      max: '',
-      min: '',
-    },
-    intervalFields: {
-      // seed input values, from props
-      amount: this.props.defaultContinuousData.quarter,
-      max: this.props.defaultContinuousData.max,
-      min: this.props.defaultContinuousData.min,
-    },
+    binningMethod: 'interval', // interval or range
+    intervalErrors: defaultInterval,
+    intervalFields: defaultInterval,
     modalWarning: '',
     rangeNameErrors: [],
     rangeOverlapErrors: [],
@@ -39,42 +34,30 @@ class ContinuousCustomBinsModal extends Component {
     const {
       binData,
       continuousBinType,
-      rangeRows,
       continuousCustomInterval,
+      continuousCustomRanges,
+      defaultContinuousData,
     } = this.props;
-
-    this.validateRangeRow(rangeRows);
 
     this.debounceValidateIntervalFields = debounce(
       this.validateIntervalFields,
       300
     );
 
-    if (continuousBinType === 'range') {
-      this.setState({
-        binningMethod: 'range',
-        rangeRows: binData.map(bin => {
-          const [from, to] = parseContinuousKey(bin.keyArray[0]);
-          return ({
-            active: false,
-            fields: {
-              from,
-              name: bin.key,
-              to,
-            },
-          });
-        }),
-      });
-    } else if (continuousBinType === 'interval') {
-      this.setState({
-        binningMethod: 'interval',
-        intervalFields: {
-          amount: continuousCustomInterval,
-          max: parseContinuousKey(binData[binData.length - 1].keyArray[0])[1],
-          min: parseContinuousKey(binData[0].keyArray[0])[0],
-        },
-      });
-    }
+    this.setState({
+      ...continuousBinType === 'default'
+        ? {}
+        : { binningMethod: continuousBinType },
+      intervalFields: isEmpty(continuousCustomInterval)
+        ? {
+          amount: defaultContinuousData.quarter,
+          max: defaultContinuousData.max,
+          min: defaultContinuousData.min,
+        }
+        : continuousCustomInterval
+      ,
+      rangeRows: continuousCustomRanges,
+    });
   };
 
   // binning method: interval
@@ -102,9 +85,9 @@ class ContinuousCustomBinsModal extends Component {
 
     let inputError = inputValue === ''
       ? 'Required field.'
-      : !isFinite(inputValue)
-        ? `'${value}' is not a valid number.`
-        : '';
+      : isFinite(inputValue)
+        ? ''
+        : `'${value}' is not a valid number.`;
 
     const currentMin = intervalFields.min;
     const currentMax = intervalFields.max;
@@ -137,10 +120,10 @@ class ContinuousCustomBinsModal extends Component {
       return;
     }
 
-    const decimalError = 'Use up to 2 decimal places.';
+    const ALLOWED_DECIMAL_PLACES = 2;
 
-    inputError = countDecimals(inputValue) > 2
-      ? decimalError
+    inputError = countDecimals(inputValue) > ALLOWED_DECIMAL_PLACES
+      ? `Use up to ${ALLOWED_DECIMAL_PLACES} decimal places.`
       : inputError;
 
     if (inputError !== '') {
@@ -162,23 +145,14 @@ class ContinuousCustomBinsModal extends Component {
           validAmount > 0
           ? amountError
           : '';
-      inputError = countDecimals(inputValue) > 2
-        ? decimalError
-        : inputError;
     } else if (inputKey === 'max') {
       inputError = inputValue <= currentMin
         ? `Must be greater than ${currentMin}.`
         : '';
-      inputError = countDecimals(inputValue) > 2
-        ? decimalError
-        : inputError;
     } else if (inputKey === 'min') {
       inputError = inputValue >= currentMax
         ? `Must be less than ${currentMax}.`
         : '';
-      inputError = countDecimals(inputValue) > 2
-        ? decimalError
-        : inputError;
     } else {
       inputError = '';
     }
@@ -204,15 +178,14 @@ class ContinuousCustomBinsModal extends Component {
       if ((inputKey === 'max' || inputKey === 'min') &&
         isFinite(currentAmount)) {
         const { intervalErrors } = this.state;
-        const amountMessage = inputError === '' &&
-          currentAmount > validAmount
-          ? amountError
-          : '';
 
         this.setState({
           intervalErrors: {
             ...intervalErrors,
-            amount: amountMessage
+            amount: inputError === '' &&
+              currentAmount > validAmount
+              ? amountError
+              : ''
           }
         });
       }
@@ -258,13 +231,8 @@ class ContinuousCustomBinsModal extends Component {
     this.validateRangeRow(nextRangeRows);
   };
 
-  validateNewRow = () => false;
-
   handleAddRow = inputRow => {
     const { rangeRows } = this.state;
-
-    const rowHasErrors = this.validateNewRow(inputRow);
-    if (rowHasErrors) return;
 
     this.setState({ rangeRows: rangeRows.concat(inputRow) });
   }
@@ -340,11 +308,7 @@ class ContinuousCustomBinsModal extends Component {
         }, {})
         : makeCustomIntervalBins();
 
-      const continuousCustomInterval = binningMethod === 'interval'
-        ? intervalFields.amount
-        : 0;
-
-      onUpdate(newBins, binningMethod, continuousCustomInterval);
+      onUpdate(newBins, binningMethod, intervalFields, rangeRows);
     }
   };
 

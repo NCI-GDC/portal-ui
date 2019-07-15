@@ -36,6 +36,7 @@ class ContinuousCustomBinsModal extends Component {
       continuousBinType,
       continuousCustomInterval,
       continuousCustomRanges,
+      defaultContinuousData,
     } = this.props;
 
     this.debounceValidateIntervalFields = debounce(
@@ -47,12 +48,15 @@ class ContinuousCustomBinsModal extends Component {
       ...continuousBinType === 'default'
         ? {}
         : { binningMethod: continuousBinType },
+      intervalFields: isEmpty(continuousCustomInterval)
+        ? {
+          amount: defaultContinuousData.quarter,
+          max: defaultContinuousData.max,
+          min: defaultContinuousData.min,
+        }
+        : continuousCustomInterval
+      ,
       rangeRows: continuousCustomRanges,
-      ...isEmpty(continuousCustomInterval)
-        ? {}
-        : {
-          intervalFields: continuousCustomInterval
-        },
     });
   };
 

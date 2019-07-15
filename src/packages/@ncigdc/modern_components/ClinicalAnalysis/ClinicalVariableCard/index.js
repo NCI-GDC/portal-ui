@@ -1289,6 +1289,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                   </DropdownItem>
                   <DropdownItem
                     onClick={() => {
+                      if (resetBinsDisabled) return;
                       dispatch(
                         updateClinicalAnalysisVariable({
                           fieldName,

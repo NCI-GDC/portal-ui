@@ -1165,12 +1165,13 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                     <DropdownItem
                       key="tsv"
                       onClick={() => downloadToTSV({
+                        excludedColumns: ['Select'],
                         filename: `analysis-${
                       currentAnalysis.name
                       }-${tsvSubstring}.${timestamp()}.tsv`,
                         selector: `#analysis-${tsvSubstring}-table`,
                       })
-                  }
+                      }
                       style={{
                         ...styles.actionMenuItem,
                         borderTop: variable.active_chart !== 'box' ? `1px solid ${theme.greyScale5}` : '',

@@ -931,7 +931,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                       >
                       <span
                         style={{
-                          color: theme.greyScale3,
+                          color: theme.greyScale2,
                           fontSize: '1.2rem',
                         }}
                         >
@@ -968,7 +968,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                       >
                       <span
                         style={{
-                          color: theme.greyScale3,
+                          color: theme.greyScale2,
                           fontSize: '1.2rem',
                         }}
                         >

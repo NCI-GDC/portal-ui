@@ -56,7 +56,9 @@ export const downloadToTSV = ({ excludedColumns = [], filename, selector }) => {
     );
   });
   const excludedIndices = excludedColumns.reduce((acc, curr) => {
-    const index = thText.indexOf(curr);
+    const normalizedCurr = curr.toLowerCase().trim();
+    const normalizedThText = thText.map(th => th.toLowerCase().trim());
+    const index = normalizedThText.indexOf(normalizedCurr);
     return [...acc, ...(index >= 0 ? [index] : [])];
   }, []);
   const thFiltered = thText

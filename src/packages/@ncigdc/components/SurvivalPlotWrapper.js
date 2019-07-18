@@ -67,6 +67,20 @@ const SVG_MARGINS = {
 };
 
 const colors = scaleOrdinal(schemeCategory10);
+const textColors = [
+  // based on schemeCategory10
+  // 4.5:1 colour contrast for normal text
+  '#1f77b4',
+  '#BD5800',
+  '#258825',
+  '#D62728',
+  '#8E5FB9',
+  '#8C564B',
+  '#D42BA1',
+  '#757575',
+  '#7A7A15',
+  '#10828E',
+];
 
 const styles = {
   pValue: {
@@ -83,14 +97,14 @@ const Container = ({
   survivalPlotLoading,
 }) => (
   <div
-      className={`${CLASS_NAME} test-survival-plot-container`}
-      ref={setSurvivalContainer}
-      style={{
-        overflow: 'hidden',
-        height: survivalPlotLoading ? '0px' : height,
-        position: 'relative',
-      }}
-      />
+    className={`${CLASS_NAME} test-survival-plot-container`}
+    ref={setSurvivalContainer}
+    style={{
+      overflow: 'hidden',
+      height: survivalPlotLoading ? '0px' : height,
+      position: 'relative',
+    }}
+    />
 );
 
 const SurvivalPlotWrapper = ({
@@ -102,11 +116,11 @@ const SurvivalPlotWrapper = ({
   survivalPlotLoading = false,
   uniqueClass,
   palette = [
-    colors(0),
-    colors(1),
-    colors(2),
-    colors(3),
-    colors(4),
+    textColors[0],
+    textColors[1],
+    textColors[2],
+    textColors[3],
+    textColors[4],
   ],
   plotType,
 }: TProps) => {
@@ -222,7 +236,7 @@ const SurvivalPlotWrapper = ({
                     <br />
                     the precision inherent in the code
                   </div>
-              )
+                )
               }
               >
               <div className="p-value">

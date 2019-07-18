@@ -22,7 +22,7 @@ const getSingleHeader = (headThs: Array<NodeList>) => reduce(
   []
 );
 
-export const downloadToTSV = ({ excludedColumns = [], filename, selector }) => {
+export const downloadToTSV = ({ excludedColumns = ['Select column'], filename, selector }) => {
   const tableEl = document.querySelector(selector);
   const headTrs = tableEl.querySelector('thead').querySelectorAll('tr');
   const headThs = map(headTrs, h => h.querySelectorAll('th'));

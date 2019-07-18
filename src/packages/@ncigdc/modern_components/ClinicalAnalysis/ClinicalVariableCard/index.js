@@ -1012,7 +1012,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                       }}
                       >
                       <TooltipInjector>
-                        <BoxPlotWrapper data={dataValues} />
+                        <BoxPlotWrapper color={analysisColors[variable.type]} data={dataValues} />
                       </TooltipInjector>
                     </Column>
                     <Column

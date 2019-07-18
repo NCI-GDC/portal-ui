@@ -32,7 +32,7 @@ const QQPlot = ({
     ...qqLineStyles,
   };
   const qqPoint = {
-    color: 'blue',
+    color: '#1784ac',
     strokeWidth: 1,
     radius: 1.5,
     ...qqPointStyles,

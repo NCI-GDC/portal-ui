@@ -3,26 +3,24 @@ import {
   compose, withPropsOnChange, withProps, withState,
 } from 'recompose';
 import {
-  sortBy, isArray, isPlainObject, isNumber, isEqual
+  sortBy, isArray, isPlainObject, isNumber, isEqual,
 } from 'lodash';
 
 import { addInFilters } from '@ncigdc/utils/filters';
 import { fetchApi } from '@ncigdc/utils/ajax';
 import Spinner from '@ncigdc/uikit/Loaders/Material';
-import { withTheme } from '@ncigdc/theme';
 import { qnorm } from './qqUtils';
 import QQPlot from './QQPlot';
 
 export default compose(
-  withTheme,
   withState('data', 'setData', null),
   withState('isLoading', 'setIsLoading', true),
   withProps({
     updateData: async ({
       dataHandler,
       fieldName,
-      first,
       filters,
+      first,
       setData,
       setDataHandler,
       setIsLoading,
@@ -41,7 +39,7 @@ export default compose(
           },
         ],
       };
-      const newFilters = addInFilters(filters, missingFilter)
+      const newFilters = addInFilters(filters, missingFilter);
       const res = await fetchApi('case_ssms', {
         headers: { 'Content-Type': 'application/json' },
         body: {
@@ -99,7 +97,6 @@ export default compose(
   fieldName,
   isLoading,
   queryField,
-  theme,
   ...props
 }) => {
   if (isLoading) {
@@ -119,22 +116,21 @@ export default compose(
 
   return (
     <QQPlot
-        clinicalType={clinicalType}
-        data={data}
-        exportCoordinates
-        height={chartHeight}
-        queryField={queryField}
-        {...props}
-        fieldName={fieldName}
-        qqPointStyles={{ color: theme.secondary }}
-        styles={{
-          margin: {
-            bottom: 0,
-            left: 0,
-            right: 0,
-            top: 0,
-          },
-        }}
-        />
+      clinicalType={clinicalType}
+      data={data}
+      exportCoordinates
+      height={chartHeight}
+      queryField={queryField}
+      {...props}
+      fieldName={fieldName}
+      styles={{
+        margin: {
+          bottom: 0,
+          left: 0,
+          right: 0,
+          top: 0,
+        },
+      }}
+      />
   );
 });

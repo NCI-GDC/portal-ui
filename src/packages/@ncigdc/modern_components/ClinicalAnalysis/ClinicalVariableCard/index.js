@@ -404,10 +404,10 @@ const getTableData = (
     ...b,
     select: (
       <input
-        aria-label={`${fieldName}-${b.key}`}
+        aria-label={`${fieldName} ${b.key}`}
         checked={!!find(selectedBuckets, { key: b.key })}
         disabled={b.doc_count === 0}
-        id={b.key}
+        id={`${fieldName}-${b.key}`}
         onChange={() => {
           if (find(selectedBuckets, { key: b.key })) {
             setSelectedBuckets(
@@ -472,6 +472,7 @@ const getTableData = (
               ) : (
                 <SurvivalIcon />
                 )}
+              <Hidden>add to survival plot</Hidden>
             </Button>
           </Tooltip>
         ),
@@ -930,7 +931,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                       >
                       <span
                         style={{
-                          color: theme.greyScale3,
+                          color: theme.greyScale2,
                           fontSize: '1.2rem',
                         }}
                         >
@@ -967,7 +968,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                       >
                       <span
                         style={{
-                          color: theme.greyScale3,
+                          color: theme.greyScale2,
                           fontSize: '1.2rem',
                         }}
                         >

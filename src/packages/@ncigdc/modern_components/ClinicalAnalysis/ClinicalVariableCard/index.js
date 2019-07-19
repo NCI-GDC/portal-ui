@@ -1166,8 +1166,6 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                       key="tsv"
                       onClick={() => downloadToTSV({
                         excludedColumns: [
-                          'Add to Cart',
-                          'Remove from Cart',
                           'Select',
                         ],
                         filename: `analysis-${

@@ -19,7 +19,10 @@ import withSelectableList from '@ncigdc/utils/withSelectableList';
 import withPropsOnChange from '@ncigdc/utils/withPropsOnChange';
 import tryParseJSON from '@ncigdc/utils/tryParseJSON';
 
-const facetMatchesQuery = ({ facet, query }) => some([facet.field, facet.description].map(toLower), searchTarget => includes(searchTarget, query));
+const facetMatchesQuery = ({ facet, query }) => some(
+  [facet.field, facet.description].map(toLower),
+  searchTarget => includes(searchTarget, query)
+);
 
 const styles = {
   header: {
@@ -165,7 +168,6 @@ export default compose(
   withHandlers({
     handleClose: ({
       onRequestClose,
-      relay,
       setFocusedFacet,
       setQuery,
     }) => () => {
@@ -180,10 +182,10 @@ export default compose(
       listSourcePropPath: 'filteredFacets',
     },
     {
-      onSelectItem: (item, { handleSelectFacet }) => handleSelectFacet(item),
       // TODO: if focused item is off view, scroll into view
-      onFocusItem: (item, { setFocusedFacet }) => setFocusedFacet(item),
       onCancel: ({ handleClose }) => handleClose(),
+      onFocusItem: (item, { setFocusedFacet }) => setFocusedFacet(item),
+      onSelectItem: (item, { handleSelectFacet }) => handleSelectFacet(item),
     },
   ),
   withHandlers({
@@ -225,27 +227,33 @@ export default compose(
           Cancel
           </a>
         </h2>
-        <div style={{ marginBottom: 15 }}>
-          <label htmlFor="quick-search-input">Search for a field:</label>
-          <input
-          autoComplete="off"
-          autoFocus
-          className="form-control"
-          defaultValue={query}
-          id="quick-search-input"
-          onChange={handleQueryInputChange}
-          onKeyDown={handleKeyDown}
-          placeholder="search"
-          type="text"
-          />
+        <div style={{
+          marginBottom: 15,
+        }}
+             >
+          <label htmlFor="quick-search-input" style={{ width: '100%' }}>
+            Search for a field:
+            <input
+              autoComplete="off"
+              autoFocus
+              className="form-control"
+              defaultValue={query}
+              id="quick-search-input"
+              onChange={handleQueryInputChange}
+              onKeyDown={handleKeyDown}
+              placeholder="search"
+              type="text"
+              />
+          </label>
         </div>
         <h3 {...css(styles.resultsCount)}>
           {`${filteredFacets.length} ${docType} fields`}
         </h3>
-        <label className="pull-right" role="button" tabIndex={0}>
+        <label className="pull-right" htmlFor="useful-facet-input" role="button" tabIndex={0}>
           <input
           checked={shouldHideUselessFacets}
           className="test-filter-useful-facet"
+          id="useful-facet-input"
           onChange={event => setUselessFacetVisibility(event.target.checked)}
           style={styles.uselessFacetVisibilityCheckbox}
           type="checkbox"

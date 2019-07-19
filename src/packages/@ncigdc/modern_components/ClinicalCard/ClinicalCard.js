@@ -75,10 +75,13 @@ export default compose(
       family_histories: { hits: { edges: familyHistories = [] } },
       demographic = {},
       exposures: { hits: { edges: exposures = [], total: totalExposures } },
+      follow_ups: { hits: { edges: followUps = [] } },
       files: { hits: { edges: clinicalFiles = [] } },
       project: { project_id: projectId = {} },
     } = edges[0].node;
     const familyHistory = familyHistories.map(x => x.node);
+    const { molecular_tests: { hits: { edges: molecularTests = [] } } } = followUps[0].node;
+
     const caseFilter = makeFilter([
       {
         field: 'cases.case_id',
@@ -121,6 +124,16 @@ export default compose(
             <p key="Exposures">
 Exposures (
               {totalExposures}
+)
+            </p>,
+            <p key="FollowUps">
+Follow-Ups (
+              {followUps.length}
+)
+            </p>,
+            <p key="MolecularTests">
+Molecular Tests (
+              {molecularTests.length}
 )
             </p>,
           ]}
@@ -420,6 +433,176 @@ Exposures (
                 <h3 style={{ paddingLeft: '2rem' }}>No Exposures Found.</h3>
               )}
             </div>
+          )}
+          {activeTab === 4 && (
+          <div>
+            {followUps.length && (
+            <SideTabs
+                containerStyle={{ display: 'block' }}
+                contentStyle={{ border: 'none' }}
+                tabContent={followUps.map(followUp => (
+                  <EntityPageVerticalTable
+                    key={followUp.node.follow_up_id}
+                    thToTd={[
+                      {
+                        th: 'UUID',
+                        td: followUp.node.follow_up_id,
+                      },
+                      {
+                        th: 'Days to Follow Up',
+                        td: followUp.node.days_to_follow_up,
+                      },
+                      {
+                        th: 'Comorbidity',
+                        td: followUp.node.comorbidity,
+                      },
+                      {
+                        th: 'Risk Factor',
+                        td: followUp.node.risk_factor,
+                      },
+                      {
+                        th: 'Progression or Recurrence Type',
+                        td: followUp.node.progression_or_recurrence_type,
+                      },
+                      {
+                        th: 'Progression or Recurrence',
+                        td: followUp.node.progression_or_recurrence,
+                      },
+                      {
+                        th: 'Disease Response',
+                        td: followUp.node.disease_response,
+                      },
+                      {
+                        th: 'BMI',
+                        td: followUp.node.bmi,
+                      },
+                      {
+                        th: 'Height',
+                        td: followUp.node.height,
+                      },
+                      {
+                        th: 'Weight',
+                        td: followUp.node.weight,
+                      },
+                      {
+                        th: 'Ecog Performance Status',
+                        td: followUp.node.ecog_performance_status,
+                      },
+                      {
+                        th: 'Karnofsky Performance Status',
+                        td: followUp.node.karnofsky_performance_status,
+                      },
+                      {
+                        th: 'Progression Or Recurrence Anatomic Site',
+                        td: followUp.node.progression_or_recurrence_anatomic_site,
+                      },
+                      {
+                        th: 'Reflux Treatment Type',
+                        td: followUp.node.reflux_treatment_type,
+                      },
+                    ]}
+                    />
+                ))}
+                tabs={
+                  followUps.length > 1
+                    ? followUps.map(followUp => (
+                      <p key={followUp.node.follow_up_id}>
+                        {truncate(followUp.node.follow_up_id, { length: 11 })}
+                      </p>
+                    ))
+                    : []
+                }
+                />
+            )}
+            {!followUps && (
+            <h3 style={{ paddingLeft: '2rem' }}>No Follow Ups Found.</h3>
+            )}
+          </div>
+          )}
+          {activeTab === 5 && (
+          <div>
+            {molecularTests.length && (
+            <SideTabs
+              containerStyle={{ display: 'block' }}
+              contentStyle={{ border: 'none' }}
+              tabContent={molecularTests.map(mTest => (
+                <EntityPageVerticalTable
+                  key={mTest.node.molecular_test_id}
+                  thToTd={[
+                    {
+                      th: 'UUID',
+                      td: mTest.node.molecular_test_id,
+                    },
+                    {
+                      th: 'Gene Symbol',
+                      td: mTest.node.gene_symbol,
+                    },
+                    {
+                      th: 'Molecular Analysis Method',
+                      td: mTest.node.molecular_analysis_method,
+                    },
+                    {
+                      th: 'Test Result',
+                      td: mTest.node.test_result,
+                    },
+                    {
+                      th: 'AA Change',
+                      td: mTest.node.aa_change,
+                    },
+                    {
+                      th: 'Antigen',
+                      td: mTest.node.antigen,
+                    },
+                    {
+                      th: 'Mismatch Repair Mutation',
+                      td: mTest.node.mismatch_repair_mutation,
+                    },
+                    {
+                      th: 'Second Gene Symbol',
+                      td: mTest.node.second_gene_symbol,
+                    },
+                    {
+                      th: 'Test Value',
+                      td: mTest.node.test_value,
+                    },
+                    {
+                      th: 'Variant Type',
+                      td: mTest.node.variant_type,
+                    },
+                    {
+                      th: 'Chromosome',
+                      td: mTest.node.chromosome,
+                    },
+                    {
+                      th: 'Laboratory Test',
+                      td: mTest.node.laboratory_test,
+                    },
+                    {
+                      th: 'Biospecimen Type',
+                      td: mTest.node.biospecimen_type,
+                    },
+                    {
+                      th: 'Test Units',
+                      td: mTest.node.test_units,
+                    },
+                  ]}
+                  />
+              ))}
+              tabs={
+                molecularTests.length > 1
+                  ? molecularTests.map(mTest => (
+                    <p key={mTest.node.molecular_test_id}>
+                      {truncate(mTest.node.molecular_test_id, { length: 11 })}
+                    </p>
+                  ))
+                  : []
+              }
+              />
+            )}
+            {!molecularTests && (
+            <h3 style={{ paddingLeft: '2rem' }}>No Molecular Tests Found.</h3>
+            )}
+          </div>
           )}
         </Tabs>
         {clinicalFiles.length > 0 && (

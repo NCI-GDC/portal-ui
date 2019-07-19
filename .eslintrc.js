@@ -79,6 +79,7 @@ module.exports = {
       SwitchCase: 1,
       VariableDeclarator: 'first',
     }],
+    'multiline-ternary': ['warn', 'always-multiline'],
     'no-console': ['warn', {
       allow: [
         'info',
@@ -91,6 +92,7 @@ module.exports = {
       commentPattern: 'break[\\s\\w]*omitted',
     }],
     'no-nested-ternary': 'off',
+    'no-unneeded-ternary': 'warn',
     'no-unused-expressions': ['warn', {
       allowShortCircuit: true,
     }],

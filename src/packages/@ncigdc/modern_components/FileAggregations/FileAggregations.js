@@ -178,6 +178,7 @@ const FileAggregations = ({
         content: {
           border: 0,
           padding: '15px',
+          width: '65%',
         },
       }}
       >

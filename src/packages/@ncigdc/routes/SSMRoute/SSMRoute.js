@@ -28,24 +28,11 @@ const DnaChange = createSsmSummary(
 );
 
 const CancerDistributionTitle = ({ cases = 0, projects = [], filters }) => (
-  <div
-    style={{
-      padding: '0 2rem',
-      textTransform: 'uppercase',
-    }}
-    >
+  <div style={{ textTransform: 'uppercase', padding: '0 2rem' }}>
     THIS MUTATION AFFECTS&nbsp;
-    <ExploreLink
-      query={{
-        searchTableTab: 'cases',
-        filters,
-      }}
-      >
+    <ExploreLink query={{ searchTableTab: 'cases', filters }}>
       {cases.toLocaleString()}
-    </ExploreLink>
-
-    &nbsp; CASES ACROSS&nbsp;
-
+    </ExploreLink>&nbsp; CASES ACROSS&nbsp;
     <ProjectsLink
       query={{
         filters: {
@@ -61,36 +48,28 @@ const CancerDistributionTitle = ({ cases = 0, projects = [], filters }) => (
           ],
         },
       }}
-      >
+    >
       {projects.length.toLocaleString()}
-    </ProjectsLink>
-&nbsp; PROJECTS
+    </ProjectsLink>&nbsp; PROJECTS
   </div>
 );
 
-const SSMRoute = ({ match, ssmId = match.params.id, filters }) => {
+export default ({ match, ssmId = match.params.id, filters }) => {
   const cdFilters = makeFilter([
-    {
-      field: 'ssms.ssm_id',
-      value: ssmId,
-    },
-    {
-      field: 'cases.available_variation_data',
-      value: 'ssm',
-    },
+    { field: 'ssms.ssm_id', value: ssmId },
+    { field: 'cases.available_variation_data', value: 'ssm' },
   ]);
 
   return (
-    <Exists id={ssmId} type="Ssm">
+    <Exists type="Ssm" id={ssmId}>
       <FullWidthLayout
+        title={<DnaChange ssmId={ssmId} minHeight={31} />}
         entityType="MU"
-        title={<DnaChange minHeight={31} ssmId={ssmId} />}
-        >
-        <Row id="summary" spacing="2rem">
+      >
+        <Row spacing="2rem" id="summary">
           <Row flex="1">
             <SsmSummary ssmId={ssmId} />
           </Row>
-
           <Row flex="1">
             <SsmExternalReferences ssmId={ssmId} />
           </Row>
@@ -105,60 +84,38 @@ const SSMRoute = ({ match, ssmId = match.params.id, filters }) => {
           </Row>
         </Column>
         <Column
+          style={{ backgroundColor: 'white', marginTop: '2rem' }}
           id="cancer-distribution"
-          style={{
-            backgroundColor: 'white',
-            marginTop: '2rem',
-          }}
-          >
-          <Row
-            style={{
-              alignItems: 'center',
-              padding: '1rem 1rem 2rem',
-            }}
-            >
+        >
+          <Row style={{ padding: '1rem 1rem 2rem', alignItems: 'center' }}>
             <Heading>
               <ChartIcon style={{ marginRight: '1rem' }} />
               Cancer Distribution
             </Heading>
-
             <ExploreLink
-              query={{
-                searchTableTab: 'cases',
-                filters: cdFilters,
-              }}
-              >
-              <GdcDataIcon />
-              {' '}
-              Open in Exploration
+              query={{ searchTableTab: 'cases', filters: cdFilters }}
+            >
+              <GdcDataIcon /> Open in Exploration
             </ExploreLink>
           </Row>
           <Column>
             <CancerDistributionBarChart
+              filters={cdFilters}
               ChartTitle={CancerDistributionTitle}
               chartType="ssm"
-              filters={cdFilters}
               style={{ width: '50%' }}
-              />
-
+            />
             <CancerDistributionTable
-              entityName={ssmId}
               filters={cdFilters}
+              entityName={ssmId}
               tableType="ssm"
-              />
+            />
           </Column>
         </Column>
-        <Column
-          style={{
-            backgroundColor: 'white',
-            marginTop: '2rem',
-          }}
-          >
+        <Column style={{ backgroundColor: 'white', marginTop: '2rem' }}>
           <SsmLolliplot mutationId={ssmId} ssmId={ssmId} />
         </Column>
       </FullWidthLayout>
     </Exists>
   );
 };
-
-export default SSMRoute;

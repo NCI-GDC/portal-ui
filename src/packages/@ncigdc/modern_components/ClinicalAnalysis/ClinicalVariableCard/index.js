@@ -1030,6 +1030,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                         fieldName={fieldName}
                         filters={cardFilters}
                         first={totalDocs}
+                        qqLineStyles={{ color: theme.greyScale2 }}
                         qqPointStyles={{ color: analysisColors[variable.type] }}
                         setDataHandler={() => setQQDataIsSet()}
                         setId={setId}

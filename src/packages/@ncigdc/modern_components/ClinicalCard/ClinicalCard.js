@@ -58,13 +58,8 @@ export default compose(
   withTheme,
 )(
   ({
-    active,
     activeTab,
-    dropdownStyle,
-    requests,
-    setState,
     setTab,
-    state,
     theme,
     viewer: { repository: { cases: { hits: { edges } } } },
   }) => {
@@ -80,11 +75,17 @@ export default compose(
       project: { project_id: projectId = {} },
     } = edges[0].node;
     const familyHistory = familyHistories.map(history => history.node);
-    const molecularTests = followUps.map(followUp => ({
-      followUpId: followUp.node.follow_up_id,
-      mTest: followUp.node.molecular_tests.hits.edges,
-    }));
-    console.log(molecularTests);
+    console.log('followUps: ', followUps);
+    const molecularTests = followUps.reduce((acc, f) => {
+      const mTests = (f.node.molecular_tests.hits.edges || []).map(mTest => {
+        return ({
+          followUpId: f.node.follow_up_id,
+          ...mTest.node,
+        });
+      });
+      return [...acc, ...mTests];
+    }, []);
+
     const caseFilter = makeFilter([
       {
         field: 'cases.case_id',
@@ -520,63 +521,63 @@ export default compose(
               contentStyle={{ border: 'none' }}
               tabContent={molecularTests.map(mTest => (
                 <EntityPageVerticalTable
-                  key={mTest.node.molecular_test_id}
+                  key={mTest.molecular_test_id}
                   thToTd={[
                     {
                       th: 'UUID',
-                      td: mTest.node.molecular_test_id,
+                      td: mTest.molecular_test_id,
                     },
                     {
                       th: 'Gene Symbol',
-                      td: mTest.node.gene_symbol,
+                      td: mTest.gene_symbol,
                     },
                     {
                       th: 'Molecular Analysis Method',
-                      td: mTest.node.molecular_analysis_method,
+                      td: mTest.molecular_analysis_method,
                     },
                     {
                       th: 'Test Result',
-                      td: mTest.node.test_result,
+                      td: mTest.test_result,
                     },
                     {
                       th: 'AA Change',
-                      td: mTest.node.aa_change,
+                      td: mTest.aa_change,
                     },
                     {
                       th: 'Antigen',
-                      td: mTest.node.antigen,
+                      td: mTest.antigen,
                     },
                     {
                       th: 'Mismatch Repair Mutation',
-                      td: mTest.node.mismatch_repair_mutation,
+                      td: mTest.mismatch_repair_mutation,
                     },
                     {
                       th: 'Second Gene Symbol',
-                      td: mTest.node.second_gene_symbol,
+                      td: mTest.second_gene_symbol,
                     },
                     {
                       th: 'Test Value',
-                      td: mTest.node.test_value,
+                      td: mTest.test_value,
                     },
                     {
                       th: 'Variant Type',
-                      td: mTest.node.variant_type,
+                      td: mTest.variant_type,
                     },
                     {
                       th: 'Chromosome',
-                      td: mTest.node.chromosome,
+                      td: mTest.chromosome,
                     },
                     {
                       th: 'Laboratory Test',
-                      td: mTest.node.laboratory_test,
+                      td: mTest.laboratory_test,
                     },
                     {
                       th: 'Biospecimen Type',
-                      td: mTest.node.biospecimen_type,
+                      td: mTest.biospecimen_type,
                     },
                     {
                       th: 'Test Units',
-                      td: mTest.node.test_units,
+                      td: mTest.test_units,
                     },
                   ]}
                   />
@@ -584,8 +585,8 @@ export default compose(
               tabs={
                 molecularTests.length > 1
                   ? molecularTests.map(mTest => (
-                    <p key={mTest.node.molecular_test_id}>
-                      {truncate(mTest.node.molecular_test_id, { length: 11 })}
+                    <p key={mTest.molecular_test_id}>
+                      {truncate(mTest.molecular_test_id, { length: 11 })}
                     </p>
                   ))
                   : []

@@ -79,9 +79,12 @@ export default compose(
       files: { hits: { edges: clinicalFiles = [] } },
       project: { project_id: projectId = {} },
     } = edges[0].node;
-    const familyHistory = familyHistories.map(x => x.node);
-    const { molecular_tests: { hits: { edges: molecularTests = [] } } } = followUps[0].node;
-
+    const familyHistory = familyHistories.map(history => history.node);
+    const molecularTests = followUps.map(followUp => ({
+      followUpId: followUp.node.follow_up_id,
+      mTest: followUp.node.molecular_tests.hits.edges,
+    }));
+    console.log(molecularTests);
     const caseFilter = makeFilter([
       {
         field: 'cases.case_id',
@@ -112,29 +115,19 @@ export default compose(
           tabs={[
             <p key="Demographic">Demographic</p>,
             <p key="Diagnoses / Treatment">
-              Diagnoses / Treatments (
-              {diagnoses.length}
-)
+              {`Diagnoses / Treatments (${diagnoses.length})`}
             </p>,
             <p key="Family Histories">
-              Family Histories (
-              {familyHistory.length}
-)
+              {`Family Histories (${familyHistory.length})`}
             </p>,
             <p key="Exposures">
-Exposures (
-              {totalExposures}
-)
+              {`Exposures (${totalExposures})`}
             </p>,
             <p key="FollowUps">
-Follow-Ups (
-              {followUps.length}
-)
+              {`Follow-Ups (${followUps.length})`}
             </p>,
             <p key="MolecularTests">
-Molecular Tests (
-              {molecularTests.length}
-)
+              {`Molecular Tests (${molecularTests.length})`}
             </p>,
           ]}
           >

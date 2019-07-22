@@ -1,7 +1,5 @@
 // @flow
-/* eslint-disable */
 import React, { ReactNode } from 'react';
-/* eslint-enable */
 import {
   compose,
   setDisplayName,
@@ -9,12 +7,13 @@ import {
   withState,
 } from 'recompose';
 import {
-  groupBy,
   reduce,
   filter,
   some,
   isNumber,
   min,
+  map,
+  find,
 } from 'lodash';
 import Group from '@ncigdc/theme/icons/Group';
 import Hide from '@ncigdc/theme/icons/Hide';
@@ -25,7 +24,7 @@ import { visualizingButton } from '@ncigdc/theme/mixins';
 import Button from '@ncigdc/uikit/Button';
 import ControlEditableRow from '@ncigdc/uikit/ControlEditableRow';
 import { Row, Column } from '@ncigdc/uikit/Flex';
-import SortableItem from '@ncigdc/uikit/SortableItem';
+import DragAndDropGroupList from '@ncigdc/uikit/DragAndDropGroupList';
 
 const initialName = (arr: string[], prefix: string) => {
   /* @arr is the list of names
@@ -42,9 +41,6 @@ const initialName = (arr: string[], prefix: string) => {
   }
   return prefix + arr.length + 1;
 };
-// type TOption = {
-//   name: string,
-// };
 
 interface IBinProps {
   key: string,
@@ -58,6 +54,9 @@ interface IBinProps {
 interface IState {
   draggingIndex: number | null;
   items: string[];
+  merged:boolean;
+  prevDraggingIndex: number;
+  group:any;
 }
 
 interface ISelectedBinsProps {
@@ -65,7 +64,7 @@ interface ISelectedBinsProps {
 }
 interface IBinsProps { [x: string]: IBinProps }
 interface IGroupValuesModalProps {
-  binGrouping: () => void,
+  binGrouping: (selectedGroupBins: { [x: string]: boolean }) => void,
   currentBins: IBinsProps,
   dataBuckets: IBinProps[],
   setCurrentBins: (currentBins: IBinsProps) => void,
@@ -85,7 +84,7 @@ interface IGroupValuesModalProps {
   listWarning: { [x: string]: string },
   setDraggingIndex: (draggingIndex: number | null) => void,
   draggingIndex: number,
-  groupNameMapping: { [x: string]: string[] },
+  groupNameMapping: any,
   setShift: (x: boolean) => void,
   shift: boolean,
 }
@@ -105,6 +104,127 @@ const listStyle = {
   padding: '1rem',
 };
 
+const BucketsGroupComponent = ({
+  children,
+  currentBins,
+  editingGroupName,
+  group,
+  groupName,
+  listWarning,
+  merging,
+  selectedGroupBins,
+  selectedHidingBins,
+  setCurrentBins,
+  setEditingGroupName,
+  setGlobalWarning,
+  setListWarning,
+  setSelectedGroupBins,
+  setSelectedHidingBins,
+  ...props
+}: any) => (
+  <Column
+    group={group}
+    key={groupName}
+    {...props}
+    >
+    <Row
+      onClick={() => {
+        // find the first selected item in the list.
+
+        if (Object.keys(selectedHidingBins).length > 0) {
+          setSelectedHidingBins({});
+        }
+        setSelectedGroupBins({
+          ...selectedGroupBins,
+          ...group.reduce((acc: ISelectedBinsProps, binKey: string) => ({
+            ...acc,
+            [binKey]: !group.every(
+              (binsWithSameGroupNameKey: string) => selectedGroupBins[binsWithSameGroupNameKey]
+            ),
+          }), {}),
+        });
+      }}
+      style={{
+        backgroundColor: (group || []).every((binKey: string) => selectedGroupBins[binKey]) ? '#d5f4e6' : '',
+      }}
+      >
+      {group.length > 1 || group[0] !== groupName
+        ? (
+          <ControlEditableRow
+            cleanWarning={() => setListWarning({})}
+            containerStyle={{
+              justifyContent: 'flex-start',
+            }}
+            disableOnKeyDown={listWarning[groupName]}
+            handleSave={(value: string) => {
+              if (listWarning[groupName]) {
+                return 'unsave';
+              }
+
+              setCurrentBins({
+                ...currentBins,
+                ...group.reduce((acc: ISelectedBinsProps, bin: string) => ({
+                  ...acc,
+                  [bin]: {
+                    ...currentBins[bin],
+                    groupName: value,
+                  },
+                }), {}),
+              });
+              setGlobalWarning('');
+              setListWarning({});
+              setSelectedGroupBins({});
+              setEditingGroupName('');
+              return null;
+            }
+            }
+            iconStyle={{
+              cursor: 'pointer',
+              fontSize: '1.8rem',
+              marginLeft: 10,
+            }}
+            isEditing={editingGroupName === groupName}
+            noEditingStyle={{ fontWeight: 'bold' }}
+            onEdit={(value: string) => {
+              if (value.trim() === '') {
+                setListWarning({
+                  ...listWarning,
+                  [groupName]: 'Can not be empty.',
+                });
+              } else if (
+                some(currentBins,
+                     (bin: IBinProps) => bin.groupName.trim() === value.trim()) &&
+                groupName.trim() !== value.trim()
+              ) {
+                setListWarning({
+                  ...listWarning,
+                  [groupName]: `"${value.trim()}" already exists.`,
+                });
+              } else if (group.includes(value)) {
+                setListWarning({
+                  ...listWarning,
+                  [groupName]: 'Group name can\'t be the same as one of values.',
+                });
+              } else {
+                setListWarning({});
+              }
+            }}
+            text={groupName}
+            warning={listWarning[groupName]}
+            >
+            {groupName}
+          </ControlEditableRow>
+        )
+        : (
+          <div style={{ fontWeight: 'bold' }}>
+            {`${groupName} (${currentBins[groupName].doc_count})`}
+          </div>
+        )}
+    </Row>
+    {children}
+  </Column>
+);
+
 const GroupValuesModal = ({
   binGrouping,
   currentBins,
@@ -121,37 +241,19 @@ const GroupValuesModal = ({
   selectedHidingBins,
   setCurrentBins,
   setDraggingIndex,
+  setEditingGroupName,
   setGlobalWarning,
   setListWarning,
   setSelectedGroupBins,
   setSelectedHidingBins,
-  setShift,
-  shift,
 }: IGroupValuesModalProps) => {
-  const groupNamesByOrder = Object.keys(groupNameMapping).sort(
-    (a: string, b: string) => {
-
-      const {
-        [groupNameMapping[a][0]]: { index: aIndex, doc_count: aCount },
-        [groupNameMapping[b][0]]: { index: bIndex, doc_count: bCount },
-      } = currentBins;
-      if (isNumber(aIndex) && isNumber(bIndex)) {
-        return aIndex - bIndex;
-      } if (isNumber(aIndex) && !isNumber(bIndex)) {
-        return -1;
-      } if (!isNumber(aIndex) && isNumber(bIndex)) {
-        return 1;
-      }
-      return bCount - aCount;
-    }
-  );
   return (
     <Column
       style={{
         maxHeight: '90vh',
         padding: '2rem',
       }}
-    >
+      >
       <h1 style={{ margin: '0 0 1.5rem' }}>
         {`Create Custom Bins: ${fieldName}`}
       </h1>
@@ -164,11 +266,11 @@ const GroupValuesModal = ({
       <Column>
         <Column
           style={{
-            marginBottom: '1.5rem',
             height: '35rem',
+            marginBottom: '1.5rem',
             width: '100%',
           }}
-        >
+          >
           <Row style={boxHeaderStyle}>
             <span style={{ fontWeight: 'bold' }}>Values</span>
             <Row spacing="1rem">
@@ -189,19 +291,18 @@ const GroupValuesModal = ({
                   setListWarning({});
                 }}
                 style={visualizingButton}
-              />
-
+                />
               <Button
                 disabled={Object.values(selectedGroupBins).filter(Boolean).length < 2}
                 leftIcon={<Group style={{ width: '10px' }} />}
                 onClick={() => {
-                  binGrouping();
+                  binGrouping(selectedGroupBins);
                   setSelectedGroupBins({});
                   setGlobalWarning('');
                   setListWarning({});
                 }}
                 style={visualizingButton}
-              >
+                >
                 Group
               </Button>
 
@@ -232,7 +333,7 @@ const GroupValuesModal = ({
                   setListWarning({});
                 }}
                 style={visualizingButton}
-              >
+                >
                 Ungroup
               </Button>
 
@@ -265,157 +366,96 @@ const GroupValuesModal = ({
                   setListWarning({});
                 }}
                 style={visualizingButton}
-              >
+                >
                 Hide
               </Button>
             </Row>
           </Row>
           <Column style={listStyle}>
-            {}
-            {groupNamesByOrder.map((groupName: string, i: number) => {
-              const group = groupNameMapping[groupName];
-              return (
-                <SortableItem
-                  draggingIndex={draggingIndex}
-                  items={groupNamesByOrder}
-                  key={groupName}
-                  outline="list"
-                  sortId={i}
-                  updateState={(nextState: IState) => {
-                    setDraggingIndex(nextState.draggingIndex);
-                    if (nextState.items) {
-                      setCurrentBins({
-                        ...reduce(currentBins, (acc, bin: IBinProps) => ({
-                          ...acc,
-                          [bin.key]: {
-                            ...bin,
-                            index: nextState.items.indexOf(bin.groupName),
-                          },
-                        }), {}),
-                      });
-                    }
+            <DragAndDropGroupList
+              Component={BucketsGroupComponent}
+              currentBins={currentBins}
+              draggingIndex={draggingIndex}
+              editingGroupName={editingGroupName}
+              items={groupNameMapping}
+              listWarning={listWarning}
+              merging={(nextState:any) => {
+                setDraggingIndex(nextState.draggingIndex);
+                if (isNumber(nextState.draggingIndex)) {
+                  const merged = [...nextState.targetSubItems, ...nextState.currSubItems]
+                    .reduce((acc, bin) => ({
+                      ...acc,
+                      [bin]: true,
+                    }), {});
+                  binGrouping(merged);
+                  setSelectedGroupBins({});
+                  setGlobalWarning('');
+                  setListWarning({});
+                }
+              }
+              }
+              selectedGroupBins={selectedGroupBins}
+              selectedHidingBins={selectedHidingBins}
+              setCurrentBins={setCurrentBins}
+              setEditingGroupName={setEditingGroupName}
+              setGlobalWarning={setGlobalWarning}
+              setListWarning={setListWarning}
+              setSelectedGroupBins={setSelectedGroupBins}
+              setSelectedHidingBins={setSelectedHidingBins}
+              SubComponent={({ subItem, ...props }:any) => (
+                <Row
+                  onClick={() => {
+                    setSelectedGroupBins({
+                      ...selectedGroupBins,
+                      [subItem]: !selectedGroupBins[subItem],
+                    });
                   }}
-                >
-                  <Row
-                    key={groupName}
-                    onClick={() => {
-                      // find the first selected item in the list.
-                      if (Object.keys(selectedHidingBins).length > 0) {
-                        setSelectedHidingBins({});
-                      }
-                      setSelectedGroupBins({
-                        ...selectedGroupBins,
-                        ...group.reduce((acc: ISelectedBinsProps, binKey: string) => ({
-                          ...acc,
-                          [binKey]: !group.every(
-                            (binsWithSameGroupNameKey: string) => selectedGroupBins[binsWithSameGroupNameKey]
-                          ),
-                        }), {}),
-                      });
-                    }}
-                    onKeyDown={(e: any) => setShift(e.shiftKey)}
-                    onKeyUp={(e: any) => setShift(e.shiftKey)}
-                    style={{
-                      backgroundColor: (group || []).every((binKey: string) => selectedGroupBins[binKey]) ? '#d5f4e6' : '',
-                    }}
-                    tabIndex={i}
+                  style={{
+                    backgroundColor: selectedGroupBins[subItem] ? '#d5f4e6' : '',
+                    display: 'list-item',
+                    listStylePosition: 'inside',
+                    listStyleType: 'disc',
+                    paddingLeft: '5px',
+                  }}
+                  {...props}
                   >
-                    {group.length > 1 || group[0] !== groupName
-                      ? (
-                        <ControlEditableRow
-                          cleanWarning={() => setListWarning({})}
-                          containerStyle={{
-                            justifyContent: 'flex-start',
-                          }}
-                          disableOnKeyDown={listWarning[groupName]}
-                          handleSave={(value: string) => {
-                            if (listWarning[groupName]) {
-                              return 'unsave';
-                            }
-                            setCurrentBins({
-                              ...currentBins,
-                              ...group.reduce((acc: ISelectedBinsProps, bin: string) => ({
-                                ...acc,
-                                [bin]: {
-                                  ...currentBins[bin],
-                                  groupName: value,
-                                },
-                              }), {}),
-                            });
-                            setGlobalWarning('');
-                            setListWarning({});
-                            setSelectedGroupBins({});
-                            return null;
-                          }
-                          }
-                          iconStyle={{
-                            cursor: 'pointer',
-                            fontSize: '1.8rem',
-                            marginLeft: 10,
-                          }}
-                          isEditing={editingGroupName === groupName}
-                          noEditingStyle={{ fontWeight: 'bold' }}
-                          onEdit={(value: string) => {
-                            if (value.trim() === '') {
-                              setListWarning({
-                                ...listWarning,
-                                [groupName]: 'Can not be empty.',
-                              });
-                            } else if (
-                              some(currentBins,
-                                (bin: IBinProps) => bin.groupName.trim() === value.trim()) &&
-                              groupName.trim() !== value.trim()
-                            ) {
-                              setListWarning({
-                                ...listWarning,
-                                [groupName]: `"${value.trim()}" already exists.`,
-                              });
-                            } else if (group.includes(value)) {
-                              setListWarning({
-                                ...listWarning,
-                                [groupName]: 'Group name can\'t be the same as one of values.',
-                              });
-                            } else {
-                              setListWarning({});
-                            }
-                          }}
-                          text={groupName}
-                          warning={listWarning[groupName]}
-                        >
-                          {groupName}
-                        </ControlEditableRow>
-                      )
-                      : (
-                        <div style={{ fontWeight: 'bold' }}>
-                          {`${currentBins[group[0]].key} (${currentBins[group[0]].doc_count})`}
-                        </div>
-                      )}
-                  </Row>
+                  {`${subItem} (${currentBins[subItem].doc_count})`}
+                </Row>
+              )
+                }
+              unGroup={({ key }:any) => {
+                setCurrentBins({
+                  ...currentBins,
+                  [key]: {
+                    ...currentBins[key],
+                    groupName: key,
+                  },
+                });
+                setSelectedGroupBins({});
+                setGlobalWarning('');
+                setListWarning({});
+              }
 
-                  {(group.length > 1 || group[0] !== groupName) && (
-                    group.map((bin: string) => (
-                      <Row
-                        key={bin}
-                        onClick={() => {
-                          setSelectedGroupBins({
-                            ...selectedGroupBins,
-                            [bin]: !selectedGroupBins[bin],
-                          });
-                        }}
-                        style={{
-                          backgroundColor: selectedGroupBins[bin] ? '#d5f4e6' : '',
-                          display: 'list-item',
-                          listStylePosition: 'inside',
-                          listStyleType: 'disc',
-                          paddingLeft: '5px',
-                        }}
-                      >
-                        {`${bin} (${currentBins[bin].doc_count})`}
-                      </Row>
-                    )))}
-                </SortableItem>
-              );
-            })}
+              }
+              updateState={(nextState: IState) => {
+                setDraggingIndex(nextState.draggingIndex);
+                if (nextState.items) {
+                  const itemarr = nextState.items.reduce((acc, item, i) => ({
+                    ...acc,
+                    [Object.keys(item)[0]]: i,
+                  }), {});
+                  setCurrentBins({
+                    ...reduce(currentBins, (acc, bin: IBinProps) => ({
+                      ...acc,
+                      [bin.key]: {
+                        ...bin,
+                        index: itemarr[bin.groupName],
+                      },
+                    }), {}),
+                  });
+                }
+              }}
+              />
           </Column>
         </Column>
 
@@ -424,7 +464,7 @@ const GroupValuesModal = ({
             height: '16rem',
             width: '100%',
           }}
-        >
+          >
           <Row style={boxHeaderStyle}>
             <span style={{ fontWeight: 'bold' }}>Hidden Values</span>
             <Button
@@ -451,7 +491,7 @@ const GroupValuesModal = ({
                 setListWarning({});
               }}
               style={visualizingButton}
-            >
+              >
               Unhide
             </Button>
           </Row>
@@ -473,7 +513,7 @@ const GroupValuesModal = ({
                   style={{
                     backgroundColor: selectedHidingBins[binKey] ? '#d5f4e6' : '',
                   }}
-                >
+                  >
                   {`${binKey} (${currentBins[binKey].doc_count})`}
                 </Row>
               ))}
@@ -487,14 +527,14 @@ const GroupValuesModal = ({
           justifyContent: 'flex-end',
           marginTop: '1.5rem',
         }}
-      >
+        >
         {globalWarning.length > 0 && (
           <span
             style={{
               color: 'red',
               justifyContent: 'flex-start',
             }}
-          >
+            >
             {`Warning: ${globalWarning}`}
           </span>
         )}
@@ -505,7 +545,7 @@ const GroupValuesModal = ({
             ...visualizingButton,
             minWidth: 100,
           }}
-        >
+          >
           Cancel
         </Button>
 
@@ -515,7 +555,7 @@ const GroupValuesModal = ({
             ...visualizingButton,
             minWidth: 100,
           }}
-        >
+          >
           Save Bins
         </Button>
       </Row>
@@ -536,22 +576,55 @@ export default compose(
   withProps(({
     currentBins,
   }) => ({
-    groupNameMapping: groupBy(
-      Object.keys(currentBins)
-        .filter((bin: string) => currentBins[bin].groupName !== ''),
-      key => currentBins[key].groupName
-    ),
+    groupNameMapping: map(
+      reduce(currentBins, (acc, bin) => {
+        if (bin.groupName === '') {
+          return acc;
+        }
+        return {
+          ...acc,
+          [bin.groupName]: {
+            ...acc[bin.groupName],
+            [bin.key]: bin.doc_count,
+            index: bin.index,
+          },
+        };
+      }, {}),
+      (groupObj: any, groupName) => {
+        const buckets = Object.keys(groupObj).filter(key => key !== 'index');
+        return {
+          [groupName]: {
+            count: buckets.reduce((acc, key) => acc + groupObj[key], 0),
+            index: groupObj.index,
+            subList: buckets.sort((a, b) => groupObj[b] - groupObj[a]),
 
+          },
+        };
+      }
+    )
+      .sort((a, b) => {
+        const aIndex = Object.values(a)[0].index;
+        const aCount = Object.values(a)[0].count;
+        const bIndex = Object.values(b)[0].index;
+        const bCount = Object.values(b)[0].count;
+        if (isNumber(aIndex) && isNumber(bIndex)) {
+          return aIndex - bIndex;
+        } if (isNumber(aIndex) && !isNumber(bIndex)) {
+          return -1;
+        } if (!isNumber(aIndex) && isNumber(bIndex)) {
+          return 1;
+        }
+        return bCount - aCount;
+      }),
   })),
   withProps(({
     currentBins,
     groupNameMapping,
-    selectedGroupBins,
     setCurrentBins,
     setEditingGroupName,
     setSelectedHidingBins,
   }) => ({
-    binGrouping: () => {
+    binGrouping: (selectedGroupBins: { [x: string]: boolean }) => {
       let newGroupName = initialName(
         Object.values(currentBins).map((bin: IBinProps) => bin.groupName), 'selected Value '
       );
@@ -561,7 +634,12 @@ export default compose(
           .reduce((acc: string[], bin: string) => {
             if (selectedGroupBins[bin] && currentBins[bin].groupName !== bin) {
               const { [bin]: { groupName } } = currentBins;
-              if (!acc.includes(groupName) && groupNameMapping[groupName].every((key: string) => selectedGroupBins[key])) {
+              const areAllBucketsInThisGroup = find(
+                groupNameMapping,
+                group => Object.keys(group)[0] === groupName
+              )[groupName]
+                .subList.every((key: string) => selectedGroupBins[key]);
+              if (!acc.includes(groupName) && areAllBucketsInThisGroup) {
                 return [...acc, groupName];
               }
             }
@@ -581,8 +659,8 @@ export default compose(
               ...acc,
               [key]: {
                 ...currentBins[key],
-                index: minIndex,
                 groupName: newGroupName,
+                index: minIndex,
               },
             };
           }

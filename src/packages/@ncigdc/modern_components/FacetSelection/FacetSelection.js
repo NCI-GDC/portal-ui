@@ -1,7 +1,9 @@
 /* @flow */
 
 import React from 'react';
-import _ from 'lodash';
+import {
+  every, filter, includes, map, noop, omitBy, some, toLower, values,
+} from 'lodash';
 import { css } from 'glamor';
 import {
   compose,
@@ -17,10 +19,10 @@ import withSelectableList from '@ncigdc/utils/withSelectableList';
 import withPropsOnChange from '@ncigdc/utils/withPropsOnChange';
 import tryParseJSON from '@ncigdc/utils/tryParseJSON';
 
-const facetMatchesQuery = (facet, query) =>
-  _.some([facet.field, facet.description].map(_.toLower), searchTarget =>
-    _.includes(searchTarget, query),
-  );
+const facetMatchesQuery = ({ facet, query }) => some(
+  [facet.field, facet.description].map(toLower),
+  searchTarget => includes(searchTarget, query)
+);
 
 const styles = {
   header: {
@@ -106,33 +108,31 @@ const styles = {
 };
 
 // Highlighting is frustratingly slow with > 100 items
-const ConditionalHighlight = ({ condition, search, children }) =>
-  condition ? (
-    <Highlight search={search}>{children}</Highlight>
+const ConditionalHighlight = ({ children, condition, search }) => (condition ? (
+  <Highlight search={search}>{children}</Highlight>
   ) : (
     <span>{children}</span>
-  );
+  ));
 
 export default compose(
   withState('query', 'setQuery', ''),
   withState('focusedFacet', 'setFocusedFacet', null),
   defaultProps({
-    excludeFacetsBy: _.noop,
-    onSelect: _.noop,
-    onRequestClose: _.noop,
+    excludeFacetsBy: noop,
+    onSelect: noop,
+    onRequestClose: noop,
   }),
-  withPropsOnChange(['viewer'], ({ viewer, docType }) => ({
+  withPropsOnChange(['viewer'], ({ docType, viewer }) => ({
     parsedFacets:
       viewer && viewer.repository[docType].facets
         ? tryParseJSON(viewer.repository[docType].facets, {})
         : {},
   })),
   withPropsOnChange(['parsedFacets'], ({ parsedFacets }) => ({
-    usefulFacets: _.omitBy(
+    usefulFacets: omitBy(
       parsedFacets,
-      aggregation =>
-        !aggregation ||
-        _.some([
+      aggregation => !aggregation ||
+        some([
           aggregation.buckets &&
             aggregation.buckets.filter(bucket => bucket.key !== '_missing')
               .length === 0,
@@ -144,20 +144,22 @@ export default compose(
   })),
   withProps(
     ({
-      facetMapping,
       excludeFacetsBy,
+      facetMapping,
+      isCaseInsensitive,
       query,
       shouldHideUselessFacets,
       usefulFacets,
     }) => ({
-      filteredFacets: _.filter(_.values(facetMapping), facet =>
-        _.every([
-          facetMatchesQuery(facet, query),
-          !excludeFacetsBy(facet),
-          !shouldHideUselessFacets ||
+      filteredFacets: filter(values(facetMapping), facet => every([
+        facetMatchesQuery({
+          facet,
+          query: isCaseInsensitive ? query.toLowerCase() : query,
+        }),
+        !excludeFacetsBy(facet),
+        !shouldHideUselessFacets ||
             Object.keys(usefulFacets).includes(facet.field),
-        ]),
-      ),
+      ]),),
     }),
   ),
   renameProps({
@@ -165,10 +167,9 @@ export default compose(
   }),
   withHandlers({
     handleClose: ({
-      setQuery,
-      setFocusedFacet,
       onRequestClose,
-      relay,
+      setFocusedFacet,
+      setQuery,
     }) => () => {
       setQuery('');
       setFocusedFacet(null);
@@ -181,82 +182,106 @@ export default compose(
       listSourcePropPath: 'filteredFacets',
     },
     {
-      onSelectItem: (item, { handleSelectFacet }) => handleSelectFacet(item),
       // TODO: if focused item is off view, scroll into view
-      onFocusItem: (item, { setFocusedFacet }) => setFocusedFacet(item),
       onCancel: ({ handleClose }) => handleClose(),
+      onFocusItem: (item, { setFocusedFacet }) => setFocusedFacet(item),
+      onSelectItem: (item, { handleSelectFacet }) => handleSelectFacet(item),
     },
   ),
   withHandlers({
-    handleQueryInputChange: ({ setQuery }) => event =>
-      setQuery(event.target.value),
+    handleQueryInputChange: ({ setQuery }) => event => setQuery(event.target.value),
   }),
-)(props => (
-  <div className="test-facet-selection">
-    <div {...css(styles.header)}>
-      <h2
+)(({
+  docType,
+  filteredFacets,
+  focusedFacet,
+  handleClose,
+  handleKeyDown,
+  handleQueryInputChange,
+  handleSelectFacet,
+  isCaseInsensitive,
+  isLoading,
+  query,
+  setFocusedFacet,
+  setUselessFacetVisibility,
+  shouldHideUselessFacets,
+  title,
+}) => {
+  const parsedQuery = isCaseInsensitive ? query.toLowerCase() : query;
+  return (
+    <div className="test-facet-selection">
+      <div {...css(styles.header)}>
+        <h2
         data-translate
         style={{
           margin: 0,
           lineHeight: 1.42857143,
         }}
-      >
-        <span>{props.title}</span>
-        <a
-          onClick={props.handleClose}
-          className="pull-right"
-          style={{ fontSize: '1.5rem' }}
         >
+          <span>{title}</span>
+          <a
+          className="pull-right"
+          onClick={handleClose}
+          style={{ fontSize: '1.5rem' }}
+          >
           Cancel
-        </a>
-      </h2>
-      <div style={{ marginBottom: 15 }}>
-        <label htmlFor="quick-search-input">Search for a field:</label>
-        <input
-          id="quick-search-input"
-          type="text"
-          autoComplete="off"
-          autoFocus
-          className="form-control"
-          placeholder="search"
-          defaultValue={props.query}
-          onChange={props.handleQueryInputChange}
-          onKeyDown={props.handleKeyDown}
-        />
-      </div>
-      <h3 {...css(styles.resultsCount)}>
-        {`${props.filteredFacets.length} ${props.docType} fields`}
-      </h3>
-      <label tabIndex={0} role="button" className="pull-right">
-        <input
+          </a>
+        </h2>
+        <div style={{
+          marginBottom: 15,
+        }}
+             >
+          <label htmlFor="quick-search-input" style={{ width: '100%' }}>
+            Search for a field:
+            <input
+              autoComplete="off"
+              autoFocus
+              className="form-control"
+              defaultValue={query}
+              id="quick-search-input"
+              onChange={handleQueryInputChange}
+              onKeyDown={handleKeyDown}
+              placeholder="search"
+              type="text"
+              />
+          </label>
+        </div>
+        <h3 {...css(styles.resultsCount)}>
+          {`${filteredFacets.length} ${docType} fields`}
+        </h3>
+        <label className="pull-right" htmlFor="useful-facet-input" role="button" tabIndex={0}>
+          <input
+          checked={shouldHideUselessFacets}
           className="test-filter-useful-facet"
-          type="checkbox"
-          onChange={event =>
-            props.setUselessFacetVisibility(event.target.checked)}
-          checked={props.shouldHideUselessFacets}
+          id="useful-facet-input"
+          onChange={event => setUselessFacetVisibility(event.target.checked)}
           style={styles.uselessFacetVisibilityCheckbox}
-        />
+          type="checkbox"
+          />
         Only show fields with values
-      </label>
-    </div>
-    <ul {...css(styles.facetList)} className="test-search-result-list">
-      {!props.isLoading &&
-        _.map(props.filteredFacets, facet => {
+        </label>
+      </div>
+      <ul {...css(styles.facetList)} className="test-search-result-list">
+        {!isLoading &&
+        map(filteredFacets, facet => {
           const isFocused =
-            props.focusedFacet && facet.full === props.focusedFacet.full;
+            focusedFacet && facet.full === focusedFacet.full;
           return (
             <li
               className="test-search-result-item"
               key={facet.full}
-              onClick={() => props.handleSelectFacet(facet)}
-              onMouseEnter={() => props.setFocusedFacet(facet)}
+              onClick={() => handleSelectFacet(facet)}
+              onMouseEnter={() => setFocusedFacet(facet)}
               {...css(styles.facetItem)}
-            >
+              >
               <div {...css(styles.itemIconWrapper)}>
                 <span {...css(styles.itemIcon)}>
                   {
                     entityShortnameMapping[
-                      { cases: 'case', files: 'file' }[facet.doc_type]
+                      {
+                        cases: 'case',
+                        files: 'file',
+                      }[facet.doc_type]
                     ]
                   }
                 </span>
@@ -266,17 +291,17 @@ export default compose(
                   styles.facetTexts,
                   isFocused && styles.focusedItem.container,
                 )}
-              >
+                >
                 <span
                   {...css(
                     styles.facetTitle,
                     isFocused && styles.focusedItem.text,
                   )}
-                >
-                  <ConditionalHighlight
-                    condition={props.query.length >= 2}
-                    search={props.query}
                   >
+                  <ConditionalHighlight
+                    condition={query.length >= 2}
+                    search={parsedQuery}
+                    >
                     {facet.field}
                   </ConditionalHighlight>
                   <span {...css(styles.facetType)}>{facet.type}</span>
@@ -287,11 +312,11 @@ export default compose(
                       styles.facetDescription,
                       isFocused && styles.focusedItem.text,
                     )}
-                  >
-                    <ConditionalHighlight
-                      condition={props.query.length >= 2}
-                      search={props.query}
                     >
+                    <ConditionalHighlight
+                      condition={query.length >= 2}
+                      search={parsedQuery}
+                      >
                       {facet.description}
                     </ConditionalHighlight>
                   </p>
@@ -300,6 +325,7 @@ export default compose(
             </li>
           );
         })}
-    </ul>
-  </div>
-));
+      </ul>
+    </div>
+  );
+});

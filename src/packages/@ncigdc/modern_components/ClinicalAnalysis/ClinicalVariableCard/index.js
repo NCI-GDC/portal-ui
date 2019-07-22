@@ -1003,7 +1003,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                       }}
                       >
                       <TooltipInjector>
-                        <BoxPlotWrapper data={dataValues} />
+                        <BoxPlotWrapper color={analysisColors[variable.type]} data={dataValues} />
                       </TooltipInjector>
                     </Column>
                     <Column
@@ -1021,6 +1021,8 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                         fieldName={fieldName}
                         filters={cardFilters}
                         first={totalDocs}
+                        qqLineStyles={{ color: theme.greyScale2 }}
+                        qqPointStyles={{ color: analysisColors[variable.type] }}
                         setDataHandler={() => setQQDataIsSet()}
                         setId={setId}
                         wrapperId={wrapperId}

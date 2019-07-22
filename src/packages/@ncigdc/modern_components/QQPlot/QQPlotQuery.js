@@ -17,7 +17,6 @@ import {
 import { addInFilters } from '@ncigdc/utils/filters';
 import { fetchApi } from '@ncigdc/utils/ajax';
 import Spinner from '@ncigdc/uikit/Loaders/Material';
-import { withTheme } from '@ncigdc/theme';
 import { qnorm } from './qqUtils';
 import QQPlot from './QQPlot';
 
@@ -28,7 +27,6 @@ const QQPlotQueryWrapper = ({
   fieldName,
   isLoading,
   queryField,
-  theme,
   ...props
 }) => (isLoading
   ? (
@@ -52,7 +50,6 @@ const QQPlotQueryWrapper = ({
       queryField={queryField}
       {...props}
       fieldName={fieldName}
-      qqPointStyles={{ color: theme.secondary }}
       styles={{
         margin: {
           bottom: 0,
@@ -66,7 +63,6 @@ const QQPlotQueryWrapper = ({
 
 export default compose(
   setDisplayName('EnhancedQQPlotQueryWrapper'),
-  withTheme,
   withState('data', 'setData', null),
   withState('isLoading', 'setIsLoading', true),
   withProps({

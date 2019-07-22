@@ -32,23 +32,23 @@ const QQPlot = ({
     ...qqLineStyles,
   };
   const qqPoint = {
-    color: 'blue',
-    strokeWidth: 1,
+    color: '#1784ac',
     radius: 1.5,
+    strokeWidth: 1,
     ...qqPointStyles,
   };
   const axisStyle = {
-    textColor: '#888',
     fontSize: '1rem',
     fontWeight: '400',
+    textColor: '#888',
     ...axisStyles,
   };
 
   const margin = styles.margin || {
-    top: 20,
-    right: 20,
     bottom: 20,
     left: 20,
+    right: 20,
+    top: 20,
   };
 
   const chartWidth = (width || 300) - margin.left - margin.right;

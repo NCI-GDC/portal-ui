@@ -637,7 +637,7 @@ class ContinuousCustomBinsModal extends Component {
             </Column>
             <Column>
               <Button
-                ariaLabel="Reset modal"
+                aria-label="Reset modal"
                 onClick={() => {
                   this.resetModal();
                 }}

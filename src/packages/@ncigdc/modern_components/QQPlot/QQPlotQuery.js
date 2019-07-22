@@ -1,9 +1,17 @@
 import React from 'react';
 import {
-  compose, withPropsOnChange, withProps, withState,
+  compose,
+  setDisplayName,
+  withPropsOnChange,
+  withProps,
+  withState,
 } from 'recompose';
 import {
-  sortBy, isArray, isPlainObject, isNumber, isEqual,
+  sortBy,
+  isArray,
+  isPlainObject,
+  isNumber,
+  isEqual,
 } from 'lodash';
 
 import { addInFilters } from '@ncigdc/utils/filters';
@@ -12,85 +20,7 @@ import Spinner from '@ncigdc/uikit/Loaders/Material';
 import { qnorm } from './qqUtils';
 import QQPlot from './QQPlot';
 
-export default compose(
-  withState('data', 'setData', null),
-  withState('isLoading', 'setIsLoading', true),
-  withProps({
-    updateData: async ({
-      dataHandler,
-      fieldName,
-      filters,
-      first,
-      setData,
-      setDataHandler,
-      setIsLoading,
-    }) => {
-      setIsLoading(true);
-      setDataHandler(false);
-      const missingFilter = {
-        op: 'and',
-        content: [
-          {
-            op: 'NOT',
-            content: {
-              field: `cases.${fieldName}`,
-              value: ['MISSING'],
-            },
-          },
-        ],
-      };
-      const newFilters = addInFilters(filters, missingFilter);
-      const res = await fetchApi('case_ssms', {
-        headers: { 'Content-Type': 'application/json' },
-        body: {
-          filters: JSON.stringify(newFilters),
-          size: first,
-          fields: fieldName,
-        },
-      });
-      const data = res && res.data ? res.data.hits : [];
-      const parsedFieldName = field => {
-        const parsed = field.split('.');
-        return {
-          clinicalType: parsed[0],
-          clinicalField: parsed[1],
-          clinicalNestedField: parsed[2],
-        };
-      };
-      const { clinicalField, clinicalNestedField, clinicalType } = parsedFieldName(fieldName);
-
-      const continuousValues = [];
-
-      data.forEach(hit => {
-        if (isArray(hit[clinicalType])) {
-          return hit[clinicalType].map(subType => {
-            if (clinicalNestedField) {
-              return subType[clinicalField].map(sub => {
-                return continuousValues.push(sub[clinicalNestedField]);
-              });
-            }
-            return continuousValues.push(subType[clinicalField]);
-          });
-        }
-        if (isPlainObject(hit[clinicalType])) {
-          return continuousValues.push(hit[clinicalType][clinicalField]);
-        }
-        return continuousValues.push(hit[clinicalType]);
-      });
-      const sortedData = sortBy(continuousValues.filter(b => isNumber(b)));
-      const parsedData = sortBy(sortedData).map((age, i) => ({
-        x: qnorm((i + 1 - 0.5) / sortedData.length),
-        y: age,
-      }));
-      setData(parsedData, () => setIsLoading(false));
-      dataHandler(parsedData.map(d => ({
-        'Sample Quantile': d.y,
-        'Theoretical Quantile': d.x,
-      })), () => setDataHandler(true));
-    },
-  }),
-  withPropsOnChange((props, nextProps) => !isEqual(props.dataBuckets, nextProps.dataBuckets), ({ updateData, ...props }) => updateData(props)),
-)(({
+const QQPlotQueryWrapper = ({
   chartHeight,
   clinicalType,
   data,
@@ -98,23 +28,20 @@ export default compose(
   isLoading,
   queryField,
   ...props
-}) => {
-  if (isLoading) {
-    return (
-      <div
-        style={{
-          alignItems: 'center',
-          display: 'flex',
-          height: 250,
-          justifyContent: 'center',
-        }}
-        >
-        <Spinner />
-      </div>
-    );
-  }
-
-  return (
+}) => (isLoading
+  ? (
+    <div
+      style={{
+        alignItems: 'center',
+        display: 'flex',
+        height: 250,
+        justifyContent: 'center',
+      }}
+      >
+      <Spinner />
+    </div>
+    )
+  : (
     <QQPlot
       clinicalType={clinicalType}
       data={data}
@@ -132,5 +59,94 @@ export default compose(
         },
       }}
       />
-  );
-});
+  ));
+
+export default compose(
+  setDisplayName('EnhancedQQPlotQueryWrapper'),
+  withState('data', 'setData', null),
+  withState('isLoading', 'setIsLoading', true),
+  withProps({
+    updateData: async ({
+      dataHandler,
+      fieldName,
+      filters,
+      first,
+      setData,
+      setDataHandler,
+      setIsLoading,
+    }) => {
+      setIsLoading(true);
+      setDataHandler(false);
+
+      const missingFilter = {
+        content: [
+          {
+            content: {
+              field: `cases.${fieldName}`,
+              value: ['MISSING'],
+            },
+            op: 'NOT',
+          },
+        ],
+        op: 'and',
+      };
+      const newFilters = addInFilters(filters, missingFilter);
+      const res = await fetchApi('case_ssms', {
+        body: {
+          fields: fieldName,
+          filters: JSON.stringify(newFilters),
+          size: first,
+        },
+        headers: { 'Content-Type': 'application/json' },
+      });
+
+      const [ // The order of these is on purpose.
+        clinicalType,
+        clinicalField,
+        clinicalNestedField,
+      ] = fieldName.split('.');
+      const data = res && res.data ? res.data.hits : [];
+      const continuousValues = data.reduce((values, hit) => values.concat(
+        isArray(hit[clinicalType])
+          ? hit[clinicalType].reduce((acc, subType) => acc.concat(clinicalNestedField
+              ? subType[clinicalField].map(sub => ({
+                id: hit.id,
+                value: sub[clinicalNestedField],
+              }))
+              : ({
+                id: hit.id,
+                value: subType[clinicalField],
+              })), [])
+          : ({
+            id: hit.id,
+            value: isPlainObject(hit[clinicalType])
+              ? hit[clinicalType][clinicalField]
+              : hit[clinicalType],
+          })
+      ), []);
+
+      const parsedData = sortBy(
+        continuousValues.filter(b => isNumber(b.value)),
+        'value',
+      ).map((item, i, arr) => ({
+        id: item.id,
+        x: qnorm((i + 1 - 0.5) / arr.length),
+        y: item.value,
+      }));
+
+      setData(parsedData, () => setIsLoading(false));
+      dataHandler(parsedData.map(d => ({
+        id: d.id,
+        'Sample Quantile': d.y,
+        'Theoretical Quantile': d.x,
+      })), () => setDataHandler(true));
+    },
+  }),
+  withPropsOnChange(
+    (props, nextProps) => !isEqual(
+      props.dataBuckets,
+      nextProps.dataBuckets
+    ),
+    ({ updateData, ...props }) => updateData(props)
+  ),
+)(QQPlotQueryWrapper);

@@ -153,48 +153,11 @@ const CHART_HEIGHT = 250;
 const QQ_PLOT_RATIO = '70%';
 const BOX_PLOT_RATIO = '30%';
 
-const vizButtons: IVizButtons = {
-  box: {
-    action: updateClinicalAnalysisVariable,
-    icon: (
-      <BoxPlot
-        style={{
-          height: '1em',
-          width: '1em',
-        }}
-        />),
-    title: 'Box/QQ Plot',
-  },
-  delete: {
-    action: removeClinicalAnalysisVariable,
-    icon: (
-      <CloseIcon
-        style={{
-          height: '1em',
-          width: '1em',
-        }}
-        />),
-    title: 'Remove Card',
-  },
-  histogram: {
-    action: updateClinicalAnalysisVariable,
-    icon: (
-      <BarChartIcon
-        style={{
-          height: '1em',
-          width: '1em',
-        }}
-        />),
-    title: 'Histogram',
-  },
-  survival: {
-    action: updateClinicalAnalysisVariable,
-    icon: <SurvivalIcon style={{ height: '1em' }} />,
-    title: 'Survival Plot',
-  },
-};
-
 const styles = {
+  chartIcon: {
+    height: '14px',
+    width: '14px',
+  },
   actionMenuItem: {
     cursor: 'pointer',
     lineHeight: '1.5',
@@ -233,6 +196,30 @@ const styles = {
       textFill: theme.greyScale3,
     },
   }),
+};
+
+
+const vizButtons: IVizButtons = {
+  box: {
+    action: updateClinicalAnalysisVariable,
+    icon: <BoxPlot style={styles.chartIcon} />,
+    title: 'Box/QQ Plot',
+  },
+  delete: {
+    action: removeClinicalAnalysisVariable,
+    icon: <CloseIcon style={styles.chartIcon} />,
+    title: 'Remove Card',
+  },
+  histogram: {
+    action: updateClinicalAnalysisVariable,
+    icon: <BarChartIcon style={styles.chartIcon} />,
+    title: 'Histogram',
+  },
+  survival: {
+    action: updateClinicalAnalysisVariable,
+    icon: <SurvivalIcon style={styles.chartIcon} />,
+    title: 'Survival Plot',
+  },
 };
 
 const getCountLink = ({ doc_count, filters, totalDocs }) => (
@@ -628,6 +615,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
   const tsvSubstring = fieldName.replace(/\./g, '-');
   const cardFilters = getCardFilters(variable.plotTypes, selectedBuckets, fieldName, filters);
   const setActionsDisabled = get(selectedBuckets, 'length', 0) === 0;
+  const disabledCharts = plotType => isEmpty(tableData) && plotType !== 'delete';
 
   const resetBinsDisabled = variable.plotTypes === 'categorical'
     ? Object.keys(variable.bins)
@@ -669,6 +657,8 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
             .map(plotType => (
               <Tooltip Component={vizButtons[plotType].title} key={plotType}>
                 <Button
+                  className={`chart-button-${plotType}`}
+                  disabled={disabledCharts(plotType)}
                   onClick={() => {
                     dispatch(
                       vizButtons[plotType].action({
@@ -680,7 +670,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                     );
                   }}
                   style={{
-                    ...(plotType === variable.active_chart
+                    ...(disabledCharts(plotType) ? {} : plotType === variable.active_chart
                       ? styles.activeButton(theme)
                       : styles.common(theme)),
                     margin: 2,

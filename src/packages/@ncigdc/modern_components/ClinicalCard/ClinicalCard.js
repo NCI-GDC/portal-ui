@@ -41,6 +41,7 @@ const styles = {
     border: `1px solid ${theme.greyScale4}`,
     padding: '3px 5px',
   }),
+  tabTitle: { margin: 0 },
 };
 
 export default compose(
@@ -114,23 +115,29 @@ export default compose(
           contentStyle={{ border: 'none' }}
           onTabClick={i => setTab(() => i)}
           tabs={[
-            <p key="Demographic">Demographic</p>,
-            <p key="Diagnoses / Treatment">
+            <p key="Demographic" style={styles.tabTitle}>Demographic</p>,
+            <p key="Diagnoses / Treatment" style={styles.tabTitle}>
               {`Diagnoses / Treatments (${diagnoses.length})`}
             </p>,
-            <p key="Family Histories">
+            <p key="Family Histories" style={styles.tabTitle}>
               {`Family Histories (${familyHistory.length})`}
             </p>,
-            <p key="Exposures">
+            <p key="Exposures" style={styles.tabTitle}>
               {`Exposures (${totalExposures})`}
             </p>,
-            <p key="FollowUps">
+            <p key="FollowUps" style={styles.tabTitle}>
               {`Follow-Ups (${followUps.length})`}
             </p>,
-            <p key="MolecularTests">
+            <p key="MolecularTests" style={styles.tabTitle}>
               {`Molecular Tests (${molecularTests.length})`}
             </p>,
           ]}
+          tabStyle={{
+            padding: '1rem 1.2rem',
+            // width: 150,
+            whiteSpace: 'nowrap',
+            // textOverflow: 'ellipsis',
+          }}
           >
           {activeTab === 0 && (
             <div>

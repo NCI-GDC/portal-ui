@@ -25,6 +25,8 @@ import Button from '@ncigdc/uikit/Button';
 import ControlEditableRow from '@ncigdc/uikit/ControlEditableRow';
 import { Row, Column } from '@ncigdc/uikit/Flex';
 
+import { theme } from '@ncigdc/theme/index';
+
 const initialName = (arr: string[], prefix: string) => {
   /* @arr is the list of names
      @ prefix is the prefix for the name
@@ -77,20 +79,31 @@ interface IGroupValuesModalProps {
   listWarning: { [x: string]: string },
 }
 
-const boxHeaderStyle = {
-  alignItems: 'center',
-  background: '#eee',
-  justifyContent: 'space-between',
-  padding: '0.5rem 1rem',
-};
-
-const listStyle = {
-  border: '0.2rem solid #eee',
-  borderRadius: '0 0 0.2rem 0.2rem',
-  flexGrow: 1,
-  overflow: 'scroll',
-  padding: '1rem',
-};
+const styles = {
+  boxHeader: {
+    alignItems: 'center',
+    background: '#eee',
+    justifyContent: 'space-between',
+    padding: '0.5rem 1rem',
+  },
+  disabled: {
+    backgroundColor: theme.greyScale5,
+    borderColor: theme.greyScale5,
+    color: '#fff',
+    ':hover': {
+      backgroundColor: theme.greyScale5,
+      borderColor: theme.greyScale5,
+      color: '#fff',
+    },
+  },
+  list: {
+    border: '0.2rem solid #eee',
+    borderRadius: '0 0 0.2rem 0.2rem',
+    flexGrow: 1,
+    overflow: 'scroll',
+    padding: '1rem',
+  },
+}
 
 const GroupValuesModal = ({
   binGrouping,
@@ -115,6 +128,16 @@ const GroupValuesModal = ({
       .filter((bin: string) => currentBins[bin].groupName !== ''),
     key => currentBins[key].groupName
   );
+
+  const groupDisabled = Object.values(selectedGroupBins).filter(Boolean).length < 2
+  const ungroupDisabled = Object.keys(selectedGroupBins)
+    .filter(key => selectedGroupBins[key])
+    .every(key => currentBins[key].groupName === key)
+  const resetDisabled = Object.keys(currentBins)
+    .filter(bin => currentBins[bin].key !== currentBins[bin].groupName)
+    .length === 0
+  const hideDisabled = Object.values(selectedGroupBins).every(value => !value)
+  const showDisabled = Object.values(selectedHidingBins).every(value => !value)
 
   return (
     <Column
@@ -141,12 +164,12 @@ const GroupValuesModal = ({
             width: '100%',
           }}
           >
-          <Row style={boxHeaderStyle} >
+          <Row style={styles.boxHeader} >
             <span style={{ fontWeight: 'bold' }} >Values</span>
 
             <Row spacing="1rem" >
               <Button
-                leftIcon={<Undo />}
+                disabled={resetDisabled}
                 onClick={() => {
                   setCurrentBins({
                     ...dataBuckets.reduce((acc, r) => ({
@@ -161,29 +184,30 @@ const GroupValuesModal = ({
                   setGlobalWarning('');
                   setListWarning({});
                 }}
-                style={visualizingButton}
-                />
+                style={{...visualizingButton, ...(resetDisabled ?
+                  styles.disabled : {})}}
+                >
+                  <Undo />
+                </Button>
 
               <Button
-                leftIcon={<Group style={{ width: '10px' }} />}
-                disabled={Object.values(selectedGroupBins).filter(Boolean).length < 2}
+                leftIcon={<Group color={groupDisabled ? '#fff' : 'currentColor'} style={{ width: '10px' }} />}
+                disabled={groupDisabled}
                 onClick={() => {
                   binGrouping();
                   setSelectedGroupBins({});
                   setGlobalWarning('');
                   setListWarning({});
                 }}
-                style={visualizingButton}
+                style={{...visualizingButton, ...(groupDisabled ?
+                  styles.disabled : {})}}
                 >
                 Group
               </Button>
 
               <Button
-                leftIcon={<Ungroup style={{ width: '10px' }} />}
-                disabled={Object
-                  .keys(selectedGroupBins)
-                  .filter(key => selectedGroupBins[key])
-                  .every(key => currentBins[key].groupName === key)}
+                leftIcon={<Ungroup color={ungroupDisabled ? '#fff' : 'currentColor'} style={{ width: '10px' }} />}
+                disabled={ungroupDisabled}
                 onClick={() => {
                   setCurrentBins({
                     ...currentBins,
@@ -204,14 +228,14 @@ const GroupValuesModal = ({
                   setGlobalWarning('');
                   setListWarning({});
                 }}
-                style={visualizingButton}
+                style={{...visualizingButton, ...(ungroupDisabled ? styles.disabled : {})}}
                 >
                 Ungroup
               </Button>
 
               <Button
-                leftIcon={<Hide />}
-                disabled={Object.values(selectedGroupBins).every(value => !value)}
+                leftIcon={<Hide style={hideDisabled ? styles.disabled : {}}/>}
+                disabled={hideDisabled}
                 onClick={() => {
                   if (filter(selectedGroupBins, Boolean).length ===
                     Object.keys(filter(currentBins, (bin: IBinProps) => !!bin.groupName)).length) {
@@ -237,13 +261,13 @@ const GroupValuesModal = ({
                   setGlobalWarning('');
                   setListWarning({});
                 }}
-                style={visualizingButton}
+                style={{...visualizingButton, ...(hideDisabled ? styles.disabled : {})}}
                 >
                 Hide
               </Button>
             </Row>
           </Row>
-          <Column style={listStyle}>
+          <Column style={styles.list}>
             {map(
               groupNameMapping,
               (group: string[], groupName: string) => (
@@ -373,12 +397,12 @@ const GroupValuesModal = ({
             width: '100%',
           }}
           >
-          <Row style={boxHeaderStyle} >
+          <Row style={styles.boxHeader} >
             <span style={{ fontWeight: 'bold' }} >Hidden Values</span>
 
             <Button
-              leftIcon={<Show />}
-              disabled={Object.values(selectedHidingBins).every(value => !value)}
+              leftIcon={<Show style={showDisabled ? styles.disabled : {}} />}
+              disabled={showDisabled}
               onClick={() => {
                 setCurrentBins({
                   ...currentBins,
@@ -399,12 +423,12 @@ const GroupValuesModal = ({
                 setGlobalWarning('');
                 setListWarning({});
               }}
-              style={visualizingButton}
+              style={{...visualizingButton, ...(showDisabled ? styles.disabled : {})}}
               >
-              Unhide
+              Show
             </Button>
           </Row>
-          <Column style={listStyle}>
+          <Column style={styles.list}>
             {Object.keys(currentBins)
               .filter((binKey: string) => currentBins[binKey].groupName === '')
               .map((binKey: string) => (

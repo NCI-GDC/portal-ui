@@ -185,6 +185,7 @@ module.exports = {
     }],
     '@typescript-eslint/explicit-function-return-type': 'off', // Allows functional components, should be fixed soon: https://github.com/typescript-eslint/typescript-eslint/issues/149
     '@typescript-eslint/explicit-member-accessibility': 'off', // Allows not having to set public/private on class properties.
+    '@typescript-eslint/no-unused-vars': 'error',
   },
   settings: {
     'import/resolver': {

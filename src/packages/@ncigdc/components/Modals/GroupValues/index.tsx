@@ -1,5 +1,4 @@
-// @flow
-import React, { ReactNode } from 'react';
+import React from 'react';
 import {
   compose,
   setDisplayName,
@@ -9,7 +8,6 @@ import {
 import {
   reduce,
   filter,
-  some,
   isNumber,
   min,
   map,
@@ -22,9 +20,16 @@ import Undo from '@ncigdc/theme/icons/Undo';
 import Ungroup from '@ncigdc/theme/icons/Ungroup';
 import { visualizingButton } from '@ncigdc/theme/mixins';
 import Button from '@ncigdc/uikit/Button';
-import ControlEditableRow from '@ncigdc/uikit/ControlEditableRow';
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import DragAndDropGroupList from '@ncigdc/uikit/DragAndDropGroupList';
+import BucketsGroupComponent from './BucketsGroupComponent';
+import {
+  IBinProps,
+  IState,
+  IBinsProps,
+  IGroupValuesModalProps,
+} from './types';
+
 
 const initialName = (arr: string[], prefix: string) => {
   /* @arr is the list of names
@@ -42,52 +47,6 @@ const initialName = (arr: string[], prefix: string) => {
   return prefix + arr.length + 1;
 };
 
-interface IBinProps {
-  key: string,
-  /* eslint-disable */
-  doc_count: number,
-  /* eslint-enable */
-  groupName: string,
-  index: number,
-}
-
-interface IState {
-  draggingIndex: number | null;
-  items: string[];
-  merged:boolean;
-  prevDraggingIndex: number;
-  group:any;
-}
-
-interface ISelectedBinsProps {
-  [x: string]: boolean
-}
-interface IBinsProps { [x: string]: IBinProps }
-interface IGroupValuesModalProps {
-  binGrouping: (selectedGroupBins: { [x: string]: boolean }) => void,
-  currentBins: IBinsProps,
-  dataBuckets: IBinProps[],
-  setCurrentBins: (currentBins: IBinsProps) => void,
-  onUpdate: (bins: IBinsProps) => void,
-  onClose: () => void,
-  fieldName: string,
-  selectedHidingBins: ISelectedBinsProps,
-  setSelectedHidingBins: (selectedHidingBins: ISelectedBinsProps) => void,
-  selectedGroupBins: ISelectedBinsProps,
-  setSelectedGroupBins: (selectedGroupBins: ISelectedBinsProps) => void,
-  editingGroupName: string,
-  setEditingGroupName: (editingGroupName: string) => void,
-  children?: ReactNode,
-  globalWarning: string,
-  setGlobalWarning: (globalWarning: string) => void,
-  setListWarning: (listWarning: { [x: string]: string }) => void,
-  listWarning: { [x: string]: string },
-  setDraggingIndex: (draggingIndex: number | null) => void,
-  draggingIndex: number,
-  groupNameMapping: any,
-  setShift: (x: boolean) => void,
-  shift: boolean,
-}
 
 const boxHeaderStyle = {
   alignItems: 'center',
@@ -104,126 +63,6 @@ const listStyle = {
   padding: '1rem',
 };
 
-const BucketsGroupComponent = ({
-  children,
-  currentBins,
-  editingGroupName,
-  group,
-  groupName,
-  listWarning,
-  merging,
-  selectedGroupBins,
-  selectedHidingBins,
-  setCurrentBins,
-  setEditingGroupName,
-  setGlobalWarning,
-  setListWarning,
-  setSelectedGroupBins,
-  setSelectedHidingBins,
-  ...props
-}: any) => (
-  <Column
-    group={group}
-    key={groupName}
-    {...props}
-    >
-    <Row
-      onClick={() => {
-        // find the first selected item in the list.
-
-        if (Object.keys(selectedHidingBins).length > 0) {
-          setSelectedHidingBins({});
-        }
-        setSelectedGroupBins({
-          ...selectedGroupBins,
-          ...group.reduce((acc: ISelectedBinsProps, binKey: string) => ({
-            ...acc,
-            [binKey]: !group.every(
-              (binsWithSameGroupNameKey: string) => selectedGroupBins[binsWithSameGroupNameKey]
-            ),
-          }), {}),
-        });
-      }}
-      style={{
-        backgroundColor: (group || []).every((binKey: string) => selectedGroupBins[binKey]) ? '#d5f4e6' : '',
-      }}
-      >
-      {group.length > 1 || group[0] !== groupName
-        ? (
-          <ControlEditableRow
-            cleanWarning={() => setListWarning({})}
-            containerStyle={{
-              justifyContent: 'flex-start',
-            }}
-            disableOnKeyDown={listWarning[groupName]}
-            handleSave={(value: string) => {
-              if (listWarning[groupName]) {
-                return 'unsave';
-              }
-
-              setCurrentBins({
-                ...currentBins,
-                ...group.reduce((acc: ISelectedBinsProps, bin: string) => ({
-                  ...acc,
-                  [bin]: {
-                    ...currentBins[bin],
-                    groupName: value,
-                  },
-                }), {}),
-              });
-              setGlobalWarning('');
-              setListWarning({});
-              setSelectedGroupBins({});
-              setEditingGroupName('');
-              return null;
-            }
-            }
-            iconStyle={{
-              cursor: 'pointer',
-              fontSize: '1.8rem',
-              marginLeft: 10,
-            }}
-            isEditing={editingGroupName === groupName}
-            noEditingStyle={{ fontWeight: 'bold' }}
-            onEdit={(value: string) => {
-              if (value.trim() === '') {
-                setListWarning({
-                  ...listWarning,
-                  [groupName]: 'Can not be empty.',
-                });
-              } else if (
-                some(currentBins,
-                     (bin: IBinProps) => bin.groupName.trim() === value.trim()) &&
-                groupName.trim() !== value.trim()
-              ) {
-                setListWarning({
-                  ...listWarning,
-                  [groupName]: `"${value.trim()}" already exists.`,
-                });
-              } else if (group.includes(value)) {
-                setListWarning({
-                  ...listWarning,
-                  [groupName]: 'Group name can\'t be the same as one of values.',
-                });
-              } else {
-                setListWarning({});
-              }
-            }}
-            text={groupName}
-            warning={listWarning[groupName]}
-            >
-            {groupName}
-          </ControlEditableRow>
-        )
-        : (
-          <div style={{ fontWeight: 'bold' }}>
-            {`${groupName} (${currentBins[groupName].doc_count})`}
-          </div>
-        )}
-    </Row>
-    {children}
-  </Column>
-);
 
 const GroupValuesModal = ({
   binGrouping,

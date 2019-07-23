@@ -44,7 +44,7 @@ import { setModal } from '@ncigdc/dux/modal';
 import SaveSetModal from '@ncigdc/components/Modals/SaveSetModal';
 import AppendSetModal from '@ncigdc/components/Modals/AppendSetModal';
 import RemoveSetModal from '@ncigdc/components/Modals/RemoveSetModal';
-import GroupValuesModal from '@ncigdc/components/Modals/GroupValuesModal';
+import GroupValuesModal from '@ncigdc/components/Modals/GroupValues';
 import DownloadVisualizationButton from '@ncigdc/components/DownloadVisualizationButton';
 import wrapSvg from '@ncigdc/utils/wrapSvg';
 import {

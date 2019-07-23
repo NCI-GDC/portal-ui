@@ -747,8 +747,10 @@ class ContinuousCustomBinsModal extends Component {
         <Row
           spacing="1rem"
           style={{
+            borderTop: '1px solid #e5e5e5',
             justifyContent: 'flex-end',
-            margin: '20px',
+            marginTop: '20px',
+            padding: '15px',
           }}
           >
           <span
@@ -763,7 +765,6 @@ class ContinuousCustomBinsModal extends Component {
           <Button
             onClick={onClose}
             onMouseDown={onClose}
-            style={styles.visualizingButton}
             >
             Cancel
           </Button>
@@ -772,8 +773,7 @@ class ContinuousCustomBinsModal extends Component {
             onClick={() => this.handleSubmit()}
             onMouseDown={() => this.handleSubmit()}
             style={submitDisabled
-              ? styles.inputDisabled
-              : styles.visualizingButton}
+              ? styles.inputDisabled : {}}
             >
             Save Bins
           </Button>

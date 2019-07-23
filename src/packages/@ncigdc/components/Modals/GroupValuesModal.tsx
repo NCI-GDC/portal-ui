@@ -403,7 +403,7 @@ const GroupValuesModal = ({
               }}
               style={visualizingButton}
               >
-              Unhide
+              Show
             </Button>
           </Row>
           <Column style={listStyle}>
@@ -435,8 +435,10 @@ const GroupValuesModal = ({
       <Row
         spacing="1rem"
         style={{
+          borderTop: '1px solid #e5e5e5',
           justifyContent: 'flex-end',
           marginTop: '1.5rem',
+          padding: '15px',
         }}
         >
         {globalWarning.length > 0 && (
@@ -450,23 +452,11 @@ const GroupValuesModal = ({
           </span>
         )}
 
-        <Button
-          onClick={onClose}
-          style={{
-            ...visualizingButton,
-            minWidth: 100,
-          }}
-          >
+        <Button onClick={onClose}>
           Cancel
         </Button>
 
-        <Button
-          onClick={() => onUpdate(currentBins)}
-          style={{
-            ...visualizingButton,
-            minWidth: 100,
-          }}
-          >
+        <Button onClick={() => onUpdate(currentBins)}>
           Save Bins
         </Button>
       </Row>

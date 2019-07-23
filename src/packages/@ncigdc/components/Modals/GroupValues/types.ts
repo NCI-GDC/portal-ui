@@ -2,9 +2,7 @@ import { ReactNode } from 'react';
 
 export interface IBinProps {
   key: string,
-  /* eslint-disable */
   doc_count: number,
-  /* eslint-enable */
   groupName: string,
   index: number,
 }

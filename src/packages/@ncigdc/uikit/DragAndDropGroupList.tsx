@@ -17,17 +17,6 @@ interface IProps {
   }>,
 }
 
-// interface IState {
-//   draggingIndex: null | number,
-//   endState: {
-//     currSubItems: string[],
-//     draggingIndex: number,
-//     prevDraggingIndex: number,
-//     targetSubItems: string[],
-//   },
-//   parentDraggable: boolean,
-// }
-
 export default class DragAndDropGroupList extends React.Component<IProps, any> {
   state = {
     draggingIndex: null,

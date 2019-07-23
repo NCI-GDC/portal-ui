@@ -7,7 +7,6 @@ import { Row, Column } from '@ncigdc/uikit/Flex';
 import ControlEditableRow from '@ncigdc/uikit/ControlEditableRow';
 import { IBinProps, ISelectedBinsProps } from './types';
 
-
 const BucketsGroupComponent = ({
   children,
   currentBins,
@@ -15,6 +14,7 @@ const BucketsGroupComponent = ({
   group,
   groupName,
   listWarning,
+  merging,
   selectedGroupBins,
   selectedHidingBins,
   setCurrentBins,

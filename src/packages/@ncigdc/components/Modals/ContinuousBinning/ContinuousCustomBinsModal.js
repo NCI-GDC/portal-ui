@@ -1,14 +1,16 @@
 import React, { Component } from 'react';
 import { debounce, isEmpty, isFinite } from 'lodash';
+
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import Button from '@ncigdc/uikit/Button';
-import { createContinuousGroupName, parseContinuousKey } from '@ncigdc/utils/string';
+import { createContinuousGroupName } from '@ncigdc/utils/string';
 import Undo from '@ncigdc/theme/icons/Undo';
 import RangeTableRow from './RangeTableRow';
 import BinningMethodInput from './BinningMethodInput';
 import CustomIntervalFields from './CustomIntervalFields';
 import styles from './styles';
 import RangeInputRow from './RangeInputRow';
+
 
 const countDecimals = num => (Math.floor(num) === num
   ? 0
@@ -34,7 +36,7 @@ const defaultInterval = {
   amount: '',
   max: '',
   min: '',
-  };
+};
 
 const defaultState = {
   binningMethod: 'interval', // interval or range
@@ -55,9 +57,9 @@ class ContinuousCustomBinsModal extends Component {
 
   componentDidMount = () => {
     const {
-      continuousBinType,
-      continuousCustomInterval,
-      continuousCustomRanges,
+      continuousBinType = 'default',
+      continuousCustomInterval = 0,
+      continuousCustomRanges = [],
       defaultContinuousData,
     } = this.props;
 
@@ -234,8 +236,7 @@ class ContinuousCustomBinsModal extends Component {
 
     const checkInterval = Object.keys(intervalErrors)
       .filter(int => intervalErrors[int] !== '').length > 0;
-    const checkRange = rangeRows
-      .filter(row => row.active).length > 0;
+    const checkRange = rangeRows.filter(row => row.active).length > 0;
     const checkOverlap = rangeOverlapErrors
       .filter(err => err.length > 0).length > 0;
     const result = binningMethod === 'interval'
@@ -595,20 +596,23 @@ class ContinuousCustomBinsModal extends Component {
             {`Create Custom Bins: ${fieldName}`}
           </h1>
           <p>
-            Available values from
-            <strong>{` ${defaultContinuousData.min} `}</strong>
-            to
-            <strong>{` \u003c ${defaultContinuousData.max} `}</strong>
-          </p>
-          <p>
-            Bin size in quarters:
-            <strong>{` ${defaultContinuousData.quarter}`}</strong>
-          </p>
-          <p>
             Configure your bins then click
             <strong> Save Bins </strong>
             to update the analysis plots.
           </p>
+          <Row style={styles.defaultInfo}>
+            <p style={styles.defaultInfo.paragraph}>
+              Available values from
+              <strong>{` ${defaultContinuousData.min} `}</strong>
+              to
+              <strong>{` \u003c ${defaultContinuousData.max} `}</strong>
+            </p>
+            <p style={styles.defaultInfo.paragraph}>|</p>
+            <p style={styles.defaultInfo.paragraph}>
+              Bin size in quarters:
+              <strong>{` ${defaultContinuousData.quarter}`}</strong>
+            </p>
+          </Row>
         </div>
         <div style={styles.formBg}>
           <Row
@@ -669,7 +673,7 @@ class ContinuousCustomBinsModal extends Component {
                 handleChange={() => {
                   this.setState({ binningMethod: 'range' });
                 }}
-                label="Manually"
+                label="Custom ranges"
                 />
             </div>
             <div style={styles.wrapper}>
@@ -690,7 +694,7 @@ class ContinuousCustomBinsModal extends Component {
                   id="range-table-label-max"
                   style={styles.column}
                   >
-                  To &lt;
+                  To less than
                 </div>
                 <div
                   id="range-table-label-options"

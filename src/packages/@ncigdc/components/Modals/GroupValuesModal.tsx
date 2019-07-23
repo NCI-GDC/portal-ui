@@ -25,6 +25,8 @@ import Button from '@ncigdc/uikit/Button';
 import ControlEditableRow from '@ncigdc/uikit/ControlEditableRow';
 import { Row, Column } from '@ncigdc/uikit/Flex';
 
+import { theme } from '@ncigdc/theme/index';
+
 const initialName = (arr: string[], prefix: string) => {
   /* @arr is the list of names
      @ prefix is the prefix for the name
@@ -265,7 +267,7 @@ const GroupValuesModal = ({
                       });
                     }}
                     style={{
-                      backgroundColor: group.every((binKey: string) => selectedGroupBins[binKey]) ? '#d5f4e6' : '',
+                      backgroundColor: group.every((binKey: string) => selectedGroupBins[binKey]) ? theme.tableHighlight : '',
                     }}
                     >
                     {group.length > 1 || group[0] !== groupName

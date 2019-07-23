@@ -5,9 +5,7 @@ import PropTypes from 'prop-types';
 
 import { Column } from '@ncigdc/uikit/Flex';
 import { withTheme } from '@ncigdc/theme';
-import Table, {
-  Tr, Td, Th, CollapsibleTd,
-} from '@ncigdc/uikit/Table';
+import Table, { Tr, Td, Th, CollapsibleTd } from '@ncigdc/uikit/Table';
 
 // th are vertical
 const EntityPageVerticalTable = ({
@@ -23,29 +21,29 @@ const EntityPageVerticalTable = ({
 }) => {
   const styles = {
     table: {
-      backgroundColor: '#fff',
       borderCollapse: 'collapse',
       borderSpacing: 0,
       overflow: 'auto',
+      backgroundColor: '#fff',
     },
-    td: {
+    tr: {
       border: 'none !important',
       color: theme.greyScale2,
     },
-    tr: {
+    td: {
       border: 'none !important',
       color: theme.greyScale2,
     },
   };
   return (
     <Column
-      className={`${className} test-entity-table-wrapper`}
       id={id}
+      className={className + ' test-entity-table-wrapper'}
       style={{
         flexWrap: 'wrap',
         ...style,
       }}
-      >
+    >
       {title && (
         <h1
           style={{
@@ -60,47 +58,48 @@ const EntityPageVerticalTable = ({
             backgroundColor: '#fff',
             ...titleStyle,
           }}
-          >
+        >
           {title}
         </h1>
       )}
       {description}
       <Table
-        body={(
+        style={styles.table}
+        body={
           <tbody>
             {thToTd.map((d, i) => (
-              <Tr key={typeof d.th === 'string' ? d.th : `unkeyed-${i}`}>
+              <Tr key={d.th}>
                 <Th
                   style={{
                     ...styles.tr,
+                    width: '30%',
                     backgroundColor: i % 2 === 0 ? theme.tableStripe : '#fff',
                     textTransform: 'capitalize',
                     verticalAlign: 'top',
-                    width: '30%',
                   }}
-                  >
+                >
                   {d.th}
                 </Th>
                 {!!d.collapsibleTd && (
-                <CollapsibleTd
+                  <CollapsibleTd
                     style={{
                       ...styles.td,
                       backgroundColor: i % 2 === 0 ? theme.tableStripe : '#fff',
                       ...d.style,
                     }}
                     text={d.collapsibleTd}
-                    />
+                  />
                 )}
                 {!!d.td && (
-                <Td
+                  <Td
                     style={{
                       ...styles.td,
                       backgroundColor: i % 2 === 0 ? theme.tableStripe : '#fff',
                       ...d.style,
                     }}
-                    >
-                  {d.td}
-                </Td>
+                  >
+                    {d.td}
+                  </Td>
                 )}
                 {!d.td &&
                   !d.collapsibleTd && (
@@ -111,25 +110,24 @@ const EntityPageVerticalTable = ({
                           i % 2 === 0 ? theme.tableStripe : '#fff',
                         ...d.style,
                       }}
-                      >
+                    >
                       --
                     </Td>
-                )}
+                  )}
               </Tr>
             ))}
           </tbody>
-        )}
-        style={styles.table}
-        />
+        }
+      />
     </Column>
   );
 };
 
 EntityPageVerticalTable.propTypes = {
-  props: PropTypes.any,
-  style: PropTypes.object,
-  thToTd: PropTypes.array,
   title: PropTypes.node,
+  style: PropTypes.object,
+  props: PropTypes.any,
+  thToTd: PropTypes.array,
 };
 
 export default withTheme(EntityPageVerticalTable);

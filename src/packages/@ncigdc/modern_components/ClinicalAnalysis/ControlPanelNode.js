@@ -1,16 +1,20 @@
 import React from 'react';
 import {
-  compose,
   branch,
+  compose,
   renderComponent,
-  withState,
+  setDisplayName,
   withProps,
   withPropsOnChange,
+  withState,
 } from 'recompose';
 import _ from 'lodash';
 import { connect } from 'react-redux';
 import { singular } from 'pluralize';
 import Toggle from 'react-toggle';
+import {
+  customSorting,
+} from '@ncigdc/containers/explore/presetFacets';
 import './reactToggle.css';
 
 import { humanify } from '@ncigdc/utils/string';
@@ -74,6 +78,7 @@ const StyledToggleMoreLink = styled(ToggleMoreLink, {
 });
 
 const ClinicalGrouping = compose(
+  setDisplayName('EnhancedClinicalGrouping'),
   connect(),
   withState('collapsed', 'setCollapsed', false),
   withState('showingMore', 'setShowingMore', false)
@@ -140,7 +145,7 @@ const ClinicalGrouping = compose(
               </Row>
             )}
 
-            {_.orderBy(fields, 'name', 'asc')
+            {_.orderBy(fields, [(field) => customSorting(field.name.replace(/__/g, '.')), 'name'])
               .slice(0, showingMore ? Infinity : MAX_VISIBLE_FACETS)
               .map(field => ({
                 fieldDescription: field.description || defaultDescription,
@@ -236,6 +241,7 @@ const ClinicalGrouping = compose(
                       }}
                       >
                       <label
+                        className={`toggle-wrapper--${name}`}
                         htmlFor={fieldName}
                         style={{
                           width: '100%',
@@ -289,7 +295,64 @@ const ClinicalGrouping = compose(
   }
 );
 
+const ControlPanelNode = ({
+  analysis_id,
+  clinicalAnalysisFields,
+  currentAnalysis,
+  dispatch,
+  groupedByClinicalType,
+  searchValue,
+  theme,
+  usefulFacets,
+}) => {
+  return (
+    <div>
+      <Row
+        style={{
+          padding: '5px 15px 15px',
+        }}
+        >
+        <span>
+          {(_.keys(usefulFacets) || []).length}
+          {' '}
+          of
+          {' '}
+          {(clinicalAnalysisFields || []).length}
+          {' '}
+          fields with values
+        </span>
+      </Row>
+      <div
+        style={{
+          height: '100%',
+          maxHeight: 'calc(100vh - 265px)',
+          position: 'sticky',
+          top: 0,
+          overflowY: 'auto',
+        }}
+        >
+        {clinicalTypeOrder.map(clinicalType => {
+          const fields = groupedByClinicalType[clinicalType] || [];
+
+          return (
+            <ClinicalGrouping
+              analysis_id={analysis_id}
+              currentAnalysis={currentAnalysis}
+              fields={fields}
+              key={clinicalType}
+              name={_.capitalize(singular(clinicalType))}
+              searchValue={searchValue}
+              style={styles.category(theme)}
+              />
+          );
+        })}
+      </div>
+    </div>
+  );
+};
+
 export default compose(
+  setDisplayName('EnhancedControlPanelNode'),
   withTheme,
   withPropsOnChange(
     (props, nextProps) => props.searchValue !== nextProps.searchValue,
@@ -318,59 +381,4 @@ export default compose(
       };
     }
   )
-)(
-  ({
-    analysis_id,
-    clinicalAnalysisFields,
-    currentAnalysis,
-    dispatch,
-    groupedByClinicalType,
-    searchValue,
-    theme,
-    usefulFacets,
-  }) => {
-    return (
-      <div>
-        <Row
-          style={{
-            padding: '5px 15px 15px',
-          }}
-          >
-          <span>
-            {(_.keys(usefulFacets) || []).length}
-            {' '}
-            of
-            {' '}
-            {(clinicalAnalysisFields || []).length}
-            {' '}
-            fields with values
-          </span>
-        </Row>
-        <div
-          style={{
-            height: '100%',
-            maxHeight: 'calc(100vh - 265px)',
-            position: 'sticky',
-            top: 0,
-            overflowY: 'auto',
-          }}
-          >
-          {clinicalTypeOrder.map(clinicalType => {
-            const fields = groupedByClinicalType[clinicalType] || [];
-            return (
-              <ClinicalGrouping
-                analysis_id={analysis_id}
-                currentAnalysis={currentAnalysis}
-                fields={fields}
-                key={clinicalType}
-                name={_.capitalize(singular(clinicalType))}
-                searchValue={searchValue}
-                style={styles.category(theme)}
-                />
-            );
-          })}
-        </div>
-      </div>
-    );
-  }
-);
+)(ControlPanelNode);

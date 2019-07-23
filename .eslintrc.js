@@ -79,6 +79,7 @@ module.exports = {
       SwitchCase: 1,
       VariableDeclarator: 'first',
     }],
+    'multiline-ternary': ['warn', 'always-multiline'],
     'no-console': ['warn', {
       allow: [
         'info',
@@ -91,8 +92,11 @@ module.exports = {
       commentPattern: 'break[\\s\\w]*omitted',
     }],
     'no-nested-ternary': 'off',
+    'no-unneeded-ternary': 'warn',
     'no-unused-expressions': ['warn', {
       allowShortCircuit: true,
+      allowTaggedTemplates: true,
+      allowTernary: true,
     }],
     'no-var': 'error', // Must use const or let.
     'object-property-newline': ['warn', {

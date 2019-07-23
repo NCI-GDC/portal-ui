@@ -1,171 +1,227 @@
 import React, { Component } from 'react';
-import { debounce, isFinite } from 'lodash';
+import { debounce, isEmpty, isFinite } from 'lodash';
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import Button from '@ncigdc/uikit/Button';
+import { createContinuousGroupName, parseContinuousKey } from '@ncigdc/utils/string';
+import Undo from '@ncigdc/theme/icons/Undo';
 import RangeTableRow from './RangeTableRow';
 import BinningMethodInput from './BinningMethodInput';
 import CustomIntervalFields from './CustomIntervalFields';
 import styles from './styles';
 import RangeInputRow from './RangeInputRow';
 
-const countDecimals = num => {
-  return Math.floor(num) === num
-    ? 0
-    : (num.toString().split('.')[1].length || 0);
+const countDecimals = num => (Math.floor(num) === num
+  ? 0
+  : (num.toString().split('.')[1].length || 0));
+
+const checkEmptyFields = fieldValues => Object.keys(fieldValues)
+  .map(field => fieldValues[field])
+  .every(el => el === '');
+
+const defaultRangeFieldsState = {
+  from: '',
+  name: '',
+  to: '',
+};
+
+const rangeFieldsOrder = [
+  'name',
+  'from',
+  'to',
+];
+
+const defaultInterval = {
+  amount: '',
+  max: '',
+  min: '',
+  };
+
+const defaultState = {
+  binningMethod: 'interval', // interval or range
+  continuousReset: false,
+  intervalErrors: defaultInterval,
+  intervalFields: defaultInterval,
+  modalWarning: '',
+  rangeInputErrors: defaultRangeFieldsState,
+  rangeInputOverlapErrors: [],
+  rangeInputValues: defaultRangeFieldsState,
+  rangeNameErrors: [],
+  rangeOverlapErrors: [],
+  rangeRows: [],
 };
 
 class ContinuousCustomBinsModal extends Component {
-  state = {
-    binningMethod: 'interval', // interval or range
-    intervalErrors: {
-      amount: '',
-      max: '',
-      min: '',
-    },
-    intervalFields: {
-      // seed input values, from props
-      amount: this.props.defaultContinuousData.quartile,
-      max: this.props.defaultContinuousData.max,
-      min: this.props.defaultContinuousData.min,
-    },
-    modalWarning: '',
-    rangeNameErrors: [],
-    rangeOverlapErrors: [],
-    rangeRows: [],
-  };
+  state = defaultState;
 
   componentDidMount = () => {
     const {
-      binData,
       continuousBinType,
-      rangeRows,
+      continuousCustomInterval,
+      continuousCustomRanges,
+      defaultContinuousData,
     } = this.props;
-    this.validateRangeRow(rangeRows);
 
     this.debounceValidateIntervalFields = debounce(
       this.validateIntervalFields,
       300
     );
 
-    if (continuousBinType === 'range') {
-      const nextRangeRows = binData.map(bin => ({
-        active: false,
-        fields: {
-          from: bin.keyArray[0].split('-')[0],
-          name: bin.key,
-          to: bin.keyArray[0].split('-')[1],
-        },
-      }));
-
-      this.setState({
-        binningMethod: 'range',
-        rangeRows: nextRangeRows,
-      });
-    } else if (continuousBinType === 'interval') {
-      const { continuousCustomInterval } = this.props;
-
-      this.setState({
-        binningMethod: 'interval',
-        intervalFields: {
-          amount: continuousCustomInterval,
-          max: binData[binData.length - 1].keyArray[0].split('-')[1],
-          min: binData[0].keyArray[0].split('-')[0],
-        },
-      });
-    }
-  };
-
-  // binning method: interval
-
-  updateIntervalFields = (updateEvent, inputError = null) => {
-    const { intervalErrors, intervalFields } = this.state;
-
-    const inputKey = updateEvent.target.id.split('-')[2];
-    const inputValue = updateEvent.target.value;
-
-    const nextIntervalFields = {
-      ...intervalFields,
-      [inputKey]: inputValue,
-    };
-
-    const nextIntervalErrors = {
-      ...intervalErrors,
-      [inputKey]: inputError === null
-        ? intervalErrors[inputKey]
-        : inputError,
-    };
-
-    if (inputError === null) updateEvent.persist();
-
     this.setState({
-      intervalErrors: nextIntervalErrors,
-      intervalFields: nextIntervalFields,
-    }, () => {
-      if (inputError === null) {
-        this.debounceValidateIntervalFields(updateEvent);
-      }
+      ...continuousBinType === 'default'
+        ? {}
+        : { binningMethod: continuousBinType },
+      intervalFields: isEmpty(continuousCustomInterval)
+        ? {
+          amount: defaultContinuousData.quarter,
+          max: defaultContinuousData.max,
+          min: defaultContinuousData.min,
+        }
+        : continuousCustomInterval,
+      rangeRows: continuousCustomRanges,
     });
   };
 
-  validateIntervalFields = event => {
+  resetModal = () => {
     const { defaultContinuousData } = this.props;
+    this.setState({
+      ...defaultState,
+      continuousReset: true,
+      intervalFields: {
+        amount: defaultContinuousData.quarter,
+        max: defaultContinuousData.max,
+        min: defaultContinuousData.min,
+      },
+    });
+  }
+
+  // binning method: interval
+
+  updateIntervalFields = updateEvent => {
     const { intervalFields } = this.state;
+    const { target: { id, value } } = updateEvent;
 
-    const inputKey = event.target.id.split('-')[2];
-    const inputValue = Number(event.target.value);
+    this.setState({
+      continuousReset: false,
+      intervalFields: {
+        ...intervalFields,
+        [id.split('-')[2]]: value,
+      },
+    }, () => {
+      this.debounceValidateIntervalFields(id, value);
+    });
+  };
 
-    if (!isFinite(inputValue)) {
-      const nanError = [`'${event.target.value}' is not a valid number.`];
-      this.updateIntervalFields(event, nanError);
-      return;
-    }
+  validateIntervalFields = (id, value) => {
+    const { intervalErrors, intervalFields } = this.state;
+
+    const inputKey = id.split('-')[2];
+    const inputValue = Number(value);
+
+    let inputError = inputValue === ''
+      ? 'Required field.'
+      : isFinite(inputValue)
+        ? ''
+        : `'${value}' is not a valid number.`;
 
     const currentMin = intervalFields.min;
     const currentMax = intervalFields.max;
-
-    const checkMinInRange = currentMin >= defaultContinuousData.min && currentMin < defaultContinuousData.max;
-    const validMin = checkMinInRange ? currentMin : defaultContinuousData.min;
-
-    const checkMaxInRange = currentMax > defaultContinuousData.min && currentMax <= defaultContinuousData.max;
-    const validMax = checkMaxInRange ? currentMax : defaultContinuousData.max;
-
-    const validAmount = checkMinInRange && checkMaxInRange ? currentMax - currentMin : defaultContinuousData.max - defaultContinuousData.min;
-
-    let inputError = '';
-
-    const decimalError = 'Use up to 2 decimal places.';
-
-    if (inputValue === '') {
-      inputError = 'Required field.';
-    } else {
-      inputError = countDecimals(inputValue) > 2 ? decimalError : inputError;
-    }
+    const currentAmount = Number(intervalFields.amount);
+    const validAmount = currentMax - currentMin;
 
     if (inputError !== '') {
-      this.updateIntervalFields(event, inputError);
+      // if the current value is empty or NaN,
+      // remove all errors except empty or NaN
+      this.setState({
+        intervalErrors: {
+          ...intervalErrors,
+          amount: isFinite(currentAmount)
+            ? ''
+            : intervalErrors.amount,
+          [inputKey]: inputError,
+          ...inputKey === 'max'
+            ? {
+              min: isFinite(Number(currentMin))
+                ? ''
+                : intervalErrors.min,
+            }
+            : {
+              max: isFinite(Number(currentMax))
+                ? ''
+                : intervalErrors.min,
+            },
+        },
+      });
       return;
     }
 
+    const ALLOWED_DECIMAL_PLACES = 2;
+
+    inputError = countDecimals(inputValue) > ALLOWED_DECIMAL_PLACES
+      ? `Use up to ${ALLOWED_DECIMAL_PLACES} decimal places.`
+      : inputError;
+
+    if (inputError !== '') {
+      this.setState({
+        intervalErrors: {
+          ...intervalErrors,
+          [inputKey]: inputError,
+        },
+      });
+      return;
+    }
+
+    const amountError = `Must be less than or equal to ${validAmount}.`;
+
     if (inputKey === 'amount') {
-      const amountTooLargeError = `Must be less than or equal to ${validAmount}.`;
-      const amountTooSmallError = 'Must be greater than 0.';
-      inputError = inputValue <= 0 ? amountTooSmallError : inputValue > validAmount ? amountTooLargeError : '';
-      inputError = countDecimals(inputValue) > 2 ? decimalError : inputError;
+      inputError = inputValue <= 0
+        ? 'Must be greater than 0.'
+        : inputValue > validAmount &&
+          validAmount > 0
+          ? amountError
+          : '';
     } else if (inputKey === 'max') {
-      const maxTooSmallError = `Must be greater than ${validMin}.`;
-      const maxTooLargeError = `Must be less than or equal to ${defaultContinuousData.max}.`;
-      inputError = inputValue <= validMin ? maxTooSmallError : inputValue > defaultContinuousData.max ? maxTooLargeError : '';
-      inputError = countDecimals(inputValue) > 2 ? decimalError : inputError;
+      inputError = inputValue <= currentMin
+        ? `Must be greater than ${currentMin}.`
+        : '';
     } else if (inputKey === 'min') {
-      const minTooLargeError = `Must be less than ${validMax}.`;
-      const maxTooSmallError = `Must be greater than or equal to ${defaultContinuousData.min}.`;
-      inputError = inputValue >= validMax ? minTooLargeError : inputValue < defaultContinuousData.min ? maxTooSmallError : '';
-      inputError = countDecimals(inputValue) > 2 ? decimalError : inputError;
+      inputError = inputValue >= currentMax
+        ? `Must be less than ${currentMax}.`
+        : '';
     } else {
       inputError = '';
     }
 
-    this.updateIntervalFields(event, inputError);
+    this.setState({
+      intervalErrors: {
+        ...intervalErrors,
+        [inputKey]: inputError,
+        ...inputKey === 'max' &&
+          isFinite(Number(currentMin)) &&
+          isFinite(inputValue) &&
+          inputValue <= currentMin
+          ? { min: '' }
+          : {},
+        ...inputKey === 'min' &&
+          isFinite(inputValue) &&
+          isFinite(Number(currentMax)) &&
+          currentMax <= inputValue
+          ? { max: '' }
+          : {},
+      },
+    }, () => {
+      if ((inputKey === 'max' || inputKey === 'min') &&
+        isFinite(currentAmount)) {
+        this.setState({
+          intervalErrors: {
+            ...intervalErrors,
+            amount: inputError === '' &&
+              currentAmount > validAmount
+              ? amountError
+              : '',
+          },
+        });
+      }
+    });
   };
 
   checkSubmitDisabled = () => {
@@ -192,7 +248,8 @@ class ContinuousCustomBinsModal extends Component {
 
   handleRemoveRow = rowIndex => {
     const { rangeRows } = this.state;
-    const nextRangeRows = rangeRows.filter((filterRow, filterRowIndex) => filterRowIndex !== rowIndex);
+    const nextRangeRows = rangeRows
+      .filter((filterRow, filterRowIndex) => filterRowIndex !== rowIndex);
     this.setState({ rangeRows: nextRangeRows });
     this.validateRangeRow(nextRangeRows);
   };
@@ -207,13 +264,8 @@ class ContinuousCustomBinsModal extends Component {
     this.validateRangeRow(nextRangeRows);
   };
 
-  validateNewRow = () => false;
-
   handleAddRow = inputRow => {
     const { rangeRows } = this.state;
-
-    const rowHasErrors = this.validateNewRow(inputRow);
-    if (rowHasErrors) return;
 
     this.setState({ rangeRows: rangeRows.concat(inputRow) });
   }
@@ -228,7 +280,10 @@ class ContinuousCustomBinsModal extends Component {
     const rowHasErrors = this.validateRangeRow(nextRangeRows);
     if (rowHasErrors) return;
 
-    this.setState({ rangeRows: nextRangeRows });
+    this.setState({
+      continuousReset: false,
+      rangeRows: nextRangeRows,
+    });
   }
 
   // submit
@@ -236,7 +291,7 @@ class ContinuousCustomBinsModal extends Component {
   handleSubmit = () => {
     const { onUpdate } = this.props;
     const {
-      binningMethod, intervalFields, rangeRows,
+      binningMethod, continuousReset, intervalFields, rangeRows,
     } = this.state;
 
     const formHasErrors = binningMethod === 'range' &&
@@ -253,16 +308,16 @@ class ContinuousCustomBinsModal extends Component {
 
         const buckets = Array(bucketCount).fill(1)
           .map((val, key) => {
-            const from = Number((key * intervalAmount + intervalMin).toFixed(2));
-            const to = Number(((key + 1) === bucketCount
+            const from = key * intervalAmount + intervalMin;
+            const to = (key + 1) === bucketCount
               ? intervalMax
-              : intervalMin + (key + 1) * intervalAmount - 1).toFixed(2));
+              : intervalMin + (key + 1) * intervalAmount;
 
             const objKey = `${from}-${to}`;
 
             return ({
               [objKey]: {
-                groupName: `${from} ${(key + 1) === bucketCount ? 'and up' : `to ${to}`}`,
+                groupName: createContinuousGroupName(objKey),
                 key: objKey,
               },
             });
@@ -289,11 +344,7 @@ class ContinuousCustomBinsModal extends Component {
         }, {})
         : makeCustomIntervalBins();
 
-      const continuousCustomInterval = binningMethod === 'interval'
-        ? intervalFields.amount
-        : 0;
-
-      onUpdate(newBins, binningMethod, continuousCustomInterval);
+      onUpdate(newBins, binningMethod, intervalFields, rangeRows, continuousReset);
     }
   };
 
@@ -302,11 +353,11 @@ class ContinuousCustomBinsModal extends Component {
     const rowsToCheck = rows === null ? rangeRows : rows;
     const nameErrors = rowsToCheck.map((rowItem, rowIndex) => {
       const rowName = rowItem.fields.name.toLowerCase().trim();
-      const duplicateNames = rowsToCheck.filter((duplicateItem, duplicateIndex) => {
-        if (rowIndex === duplicateIndex) return;
-        const duplicateName = duplicateItem.fields.name.toLowerCase().trim();
-        return duplicateName === rowName;
-      });
+      const duplicateNames = rowsToCheck
+        .filter((duplicateItem, duplicateIndex) => {
+          return rowIndex !== duplicateIndex &&
+            duplicateItem.fields.name.toLowerCase().trim() === rowName;
+        });
       return duplicateNames.length > 0 ? 'Bin names must be unique.' : '';
     });
     return nameErrors;
@@ -323,22 +374,27 @@ class ContinuousCustomBinsModal extends Component {
       const rowFrom = Number(rowItem.fields.from);
       const rowTo = Number(rowItem.fields.to);
 
-      const overlapNames = rowsToCheck.reduce((acc, curr, overlapIndex) => {
-        const overlapFromStr = curr.fields.from;
-        const overlapToStr = curr.fields.to;
+      const overlapNames = rowsToCheck
+        .reduce((acc, curr, overlapIndex) => {
+          const overlapFromStr = curr.fields.from;
+          const overlapToStr = curr.fields.to;
 
-        if (rowIndex === overlapIndex || curr.fields.from === '' || curr.fields.to === '') {
-          return acc;
-        }
+          if (rowIndex === overlapIndex ||
+            curr.fields.from === '' ||
+            curr.fields.to === '') {
+            return acc;
+          }
 
-        const overlapFrom = Number(overlapFromStr);
-        const overlapTo = Number(overlapToStr);
-        const overlapName = curr.fields.name;
+          const overlapFrom = Number(overlapFromStr);
+          const overlapTo = Number(overlapToStr);
+          const overlapName = curr.fields.name;
 
-        const hasNoOverlap = rowTo < overlapFrom || rowFrom > overlapTo;
+          const hasOverlap = (rowTo > overlapFrom && rowTo < overlapTo) ||
+            (rowFrom > overlapFrom && rowFrom < overlapTo) ||
+            (rowFrom === overlapFrom && rowTo === overlapTo);
 
-        return hasNoOverlap ? acc : [...acc, overlapName];
-      }, []);
+          return hasOverlap ? [...acc, overlapName] : acc;
+        }, []);
       return overlapNames.length > 0 ? overlapNames : [];
     });
 
@@ -352,8 +408,10 @@ class ContinuousCustomBinsModal extends Component {
 
     const overlapErrors = this.validateRangeOverlap(rowsToCheck);
     const nameErrors = this.validateRangeNames(rowsToCheck);
-    const overlapHasError = overlapErrors.filter(overlapErrorItem => overlapErrorItem.length > 0).length > 0;
-    const nameHasError = nameErrors.filter(nameErrorItem => nameErrorItem !== '').length > 0;
+    const overlapHasError = overlapErrors
+      .filter(overlapErrorItem => overlapErrorItem.length > 0).length > 0;
+    const nameHasError = nameErrors
+      .filter(nameErrorItem => nameErrorItem !== '').length > 0;
 
     this.setState({
       rangeNameErrors: nameErrors,
@@ -363,6 +421,156 @@ class ContinuousCustomBinsModal extends Component {
     return nameHasError || overlapHasError;
   }
 
+  // range input
+
+  handleRangeInputValidate = () => {
+    this.setState({ rangeInputErrors: this.validateRangeInputBeforeSave() });
+  }
+
+  handleAddRow = () => {
+    const { rangeInputValues, rangeRows } = this.state;
+    const validationResult = this.validateRangeInputBeforeSave();
+
+    const rowHasErrors = Object.keys(validationResult)
+      .filter(field => validationResult[field].length > 0).length > 0;
+    this.setState({ rangeInputErrors: validationResult }, () => {
+      if (rowHasErrors) return;
+
+      const hasOverlap = this.validateRangeInputOnSave();
+      if (hasOverlap) return;
+
+      const nextRow = {
+        active: false,
+        fields: rangeInputValues,
+      };
+
+      this.setState({
+        continuousReset: false,
+        rangeInputErrors: defaultRangeFieldsState,
+        rangeInputValues: defaultRangeFieldsState,
+        rangeRows: rangeRows.concat(nextRow),
+      });
+    });
+  };
+
+  updateRangeInput = (id, value) => {
+    const { rangeInputValues } = this.state;
+
+    this.setState({
+      rangeInputValues: {
+        ...rangeInputValues,
+        [id.split('-')[3]]: value,
+      },
+    });
+  };
+
+  validateRangeInputBeforeSave = () => {
+    const { rangeInputValues } = this.state;
+
+    // check empty & NaN errors first
+    // then make sure that from < to
+
+    const allFieldsEmpty = checkEmptyFields(rangeInputValues);
+
+    const errorsEmptyOrNaN = Object.keys(rangeInputValues)
+      .reduce((acc, curr) => {
+        const currentValue = rangeInputValues[curr];
+        const currentValueNumber = Number(currentValue);
+
+        const nextErrors = allFieldsEmpty
+          ? ''
+          : currentValue === ''
+            ? 'Required field.'
+            : curr === 'name'
+              ? ''
+              : !isFinite(currentValueNumber)
+                ? `'${currentValue}' is not a number.`
+                : countDecimals(currentValueNumber) > 2
+                  ? 'Use up to 2 decimal places.'
+                  : '';
+
+        return ({
+          ...acc,
+          [curr]: nextErrors,
+        });
+      }, {});
+
+    const fromGreaterThanto = allFieldsEmpty
+      ? ''
+      : (errorsEmptyOrNaN.to === '' &&
+        errorsEmptyOrNaN.from === '' &&
+        Number(rangeInputValues.to) <= Number(rangeInputValues.from));
+
+    return !allFieldsEmpty && fromGreaterThanto
+      ? ({
+        from: `'From' must be less than ${rangeInputValues.to}.`,
+        name: '',
+        to: `'To' must be greater than ${rangeInputValues.from}.`,
+      })
+      : errorsEmptyOrNaN;
+  };
+
+  validateRangeInputName = () => {
+    const { rangeInputValues, rangeRows } = this.state;
+
+    const fieldName = rangeInputValues.name.toLowerCase().trim();
+    const duplicateNames = rangeRows.filter(row => {
+      const rowName = row.fields.name.toLowerCase().trim();
+      return rowName === fieldName;
+    });
+
+    return duplicateNames.length > 0
+      ? 'Bin names must be unique.'
+      : '';
+  }
+
+  validateRangeInputOverlap = () => {
+    // assume all fields are complete and from < to
+    const { rangeInputValues, rangeRows } = this.state;
+
+    const fieldFrom = Number(rangeInputValues.from);
+    const fieldTo = Number(rangeInputValues.to);
+
+    const overlapErrors = rangeRows.reduce((acc, curr) => {
+      const overlapFromStr = curr.fields.from;
+      const overlapToStr = curr.fields.to;
+
+      const overlapFrom = Number(overlapFromStr);
+      const overlapTo = Number(overlapToStr);
+      const overlapName = curr.fields.name;
+
+      const hasOverlap = (fieldTo > overlapFrom && fieldTo <= overlapTo) ||
+        (fieldFrom >= overlapFrom && fieldFrom < overlapTo) ||
+        (fieldFrom <= overlapFrom && fieldTo >= overlapTo);
+
+      return hasOverlap
+        ? [...acc, overlapName]
+        : acc;
+    }, []);
+
+    return overlapErrors;
+  }
+
+  validateRangeInputOnSave = () => {
+    const { rangeInputErrors } = this.state;
+
+    const rangeInputOverlapErrors = this.validateRangeInputOverlap();
+    const nameError = this.validateRangeInputName();
+    const overlapHasError = rangeInputOverlapErrors.length > 0;
+    const nameHasError = nameError.length > 0;
+
+    this.setState({
+      rangeInputErrors: {
+        ...rangeInputErrors,
+        name: nameError,
+      },
+      rangeInputOverlapErrors,
+    });
+
+    return nameHasError || overlapHasError;
+  }
+
+
   render = () => {
     const { defaultContinuousData, fieldName, onClose } = this.props;
     const {
@@ -370,6 +578,9 @@ class ContinuousCustomBinsModal extends Component {
       intervalErrors,
       intervalFields,
       modalWarning,
+      rangeInputErrors,
+      rangeInputOverlapErrors,
+      rangeInputValues,
       rangeNameErrors,
       rangeOverlapErrors,
       rangeRows,
@@ -387,11 +598,11 @@ class ContinuousCustomBinsModal extends Component {
             Available values from
             <strong>{` ${defaultContinuousData.min} `}</strong>
             to
-            <strong>{` ${defaultContinuousData.max} `}</strong>
+            <strong>{` \u003c ${defaultContinuousData.max} `}</strong>
           </p>
           <p>
-            Quartile bin interval:
-            <strong>{` ${defaultContinuousData.quartile}`}</strong>
+            Bin size in quarters:
+            <strong>{` ${defaultContinuousData.quarter}`}</strong>
           </p>
           <p>
             Configure your bins then click
@@ -400,7 +611,11 @@ class ContinuousCustomBinsModal extends Component {
           </p>
         </div>
         <div style={styles.formBg}>
-          <Row>
+          <Row
+            style={{
+              justifyContent: 'space-between',
+            }}
+            >
             <Column className="binning-interval">
               <h3>Define bins by:</h3>
               <CustomIntervalFields
@@ -415,9 +630,27 @@ class ContinuousCustomBinsModal extends Component {
                 intervalErrors={intervalErrors}
                 intervalFields={intervalFields}
                 validateIntervalFields={e => {
-                  this.validateIntervalFields(e);
+                  const { target: { id, value } } = e;
+                  this.validateIntervalFields(id, value);
                 }}
                 />
+            </Column>
+            <Column>
+              <Button
+                aria-label="Reset modal"
+                onClick={() => {
+                  this.resetModal();
+                }}
+                onMouseDown={() => {
+                  this.resetModal();
+                }}
+                style={{
+                  ...styles.visualizingButton,
+                  ...styles.resetButton,
+                }}
+                >
+                <Undo />
+              </Button>
             </Column>
           </Row>
           <div
@@ -457,7 +690,7 @@ class ContinuousCustomBinsModal extends Component {
                   id="range-table-label-max"
                   style={styles.column}
                   >
-                  To
+                  To &lt;
                 </div>
                 <div
                   id="range-table-label-options"
@@ -470,6 +703,7 @@ class ContinuousCustomBinsModal extends Component {
                 {rangeRows.map((row, rowIndex) => (
                   <RangeTableRow
                     countDecimals={countDecimals}
+                    defaultRangeFieldsState={defaultRangeFieldsState}
                     fields={row.fields}
                     handleRemoveRow={this.handleRemoveRow}
                     handleToggleActiveRow={this.handleToggleActiveRow}
@@ -478,6 +712,7 @@ class ContinuousCustomBinsModal extends Component {
                     }}
                     handleUpdateRow={this.handleUpdateRow}
                     key={`range-row-${rowIndex}`}
+                    rangeFieldsOrder={rangeFieldsOrder}
                     rangeMethodActive={binningMethod === 'range'}
                     rowActive={row.active}
                     rowIndex={rowIndex}
@@ -488,11 +723,19 @@ class ContinuousCustomBinsModal extends Component {
                 ))}
               </div>
               <RangeInputRow
-                countDecimals={countDecimals}
+                allFieldsEmpty={checkEmptyFields(rangeInputValues)}
                 handleAddRow={this.handleAddRow}
+                handleRangeInputValidate={this.handleRangeInputValidate}
+                rangeFieldsOrder={rangeFieldsOrder}
+                rangeInputErrors={rangeInputErrors}
+                rangeInputOverlapErrors={rangeInputOverlapErrors}
+                rangeInputValues={rangeInputValues}
                 rangeMethodActive={binningMethod === 'range'}
-                rangeRows={rangeRows}
                 styles={styles}
+                updateRangeInput={e => {
+                  const { target: { id, value } } = e;
+                  this.updateRangeInput(id, value);
+                }}
                 />
             </div>
           </div>
@@ -504,12 +747,13 @@ class ContinuousCustomBinsModal extends Component {
             margin: '20px',
           }}
           >
-          <span style={{
-            color: 'red',
-            justifyContent: 'flex-start',
-            visibility: modalWarning.length > 0 ? 'visible' : 'hidden',
-          }}
-                >
+          <span
+            style={{
+              color: 'red',
+              justifyContent: 'flex-start',
+              visibility: modalWarning.length > 0 ? 'visible' : 'hidden',
+            }}
+            >
             {`Warning: ${modalWarning}`}
           </span>
           <Button

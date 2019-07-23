@@ -11,7 +11,7 @@ import _ from 'lodash';
 
 import consoleDebug from '@ncigdc/utils/consoleDebug';
 import { redirectToLogin } from '@ncigdc/utils/auth';
-import { createFacetFieldString } from '@ncigdc/utils/string'
+import { createFacetFieldString, parseContinuousKey } from '@ncigdc/utils/string'
 import Loader from '@ncigdc/uikit/Loaders/Loader';
 
 import { API, IS_AUTH_PORTAL } from '@ncigdc/utils/constants';
@@ -19,38 +19,45 @@ import ClinicalVariableCard from './ClinicalVariableCard';
 
 const simpleAggCache = {};
 const pendingAggCache = {};
-const DEFAULT_CONTINUOUS_BUCKETS = 4;
+const DEFAULT_CONTINUOUS_BUCKETS = 5;
 
-const getContinuousAggs = ({ fieldName, stats, filters, bins }) => {
+const getContinuousAggs = ({ continuousBinType, fieldName, stats, filters, bins }) => {
   // prevent query failing if interval will equal 0
   if (_.isNull(stats.min) || _.isNull(stats.max)) {
     return null;
   }
 
-  let rangeArr = _.reduce(bins, (acc, bin, key) => {
-    const binValues = bin.key.split('-').map(keyValue => Number(keyValue));
-    const binFrom = binValues[0];
-    const binTo = binValues[1];
-    if (
-      !!bin &&
-      (typeof binFrom === 'number') &&
-      (typeof binTo === 'number') &&
-      (binFrom < binTo)
-    ) {
-      const result = [...acc, { from: binFrom, to: binTo }];
-      return result;
-    }
-    return acc;
-  }, []);
+  const interval = (stats.max - stats.min) / DEFAULT_CONTINUOUS_BUCKETS;
 
-  const interval = Math.round((stats.max - stats.min) / DEFAULT_CONTINUOUS_BUCKETS);
-  if (rangeArr.length === 0) {
-    rangeArr = Array(DEFAULT_CONTINUOUS_BUCKETS).fill(1).map(
+  const makeDefaultBuckets = () => Array(DEFAULT_CONTINUOUS_BUCKETS)
+    .fill(1).map(
       (val, key) => ({
         from: key * interval + stats.min,
-        to: (key + 1) === DEFAULT_CONTINUOUS_BUCKETS ? stats.max : (stats.min + (key + 1) * interval - 1),
+        to: (key + 1) === DEFAULT_CONTINUOUS_BUCKETS
+          ? stats.max + 1
+          : stats.min + (key + 1) * interval,
       })
-    )
+    );
+
+  let rangeArr = continuousBinType === 'default'
+    ? rangeArr = makeDefaultBuckets()
+    : _.reduce(bins, (acc, bin, key) => {
+      const binValues = parseContinuousKey(bin.key);
+      const [from, to] = binValues;
+      if (
+        !!bin &&
+        (typeof from === 'number') &&
+        (typeof to === 'number') &&
+        (from < to)
+      ) {
+        const result = [...acc, { from, to }];
+        return result;
+      }
+      return acc;
+    }, []);
+
+  if (rangeArr.length === 0) {
+    rangeArr = makeDefaultBuckets();
   }
 
   const filters2 = {
@@ -190,6 +197,7 @@ export default compose(
       hits,
     }) => {
       const res = await getContinuousAggs({
+        continuousBinType: variable.continuousBinType,
         fieldName,
         stats,
         filters,

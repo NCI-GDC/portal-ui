@@ -18,28 +18,18 @@ const {
   visualizingButton,
 } = styles;
 
-export const defaultFieldState = {
-  from: '',
-  name: '',
-  to: '',
-};
-
-export const fieldsOrder = [
-  'name',
-  'from',
-  'to',
-];
-
 class RangeTableRow extends React.Component {
   state = {
-    fieldErrors: defaultFieldState,
-    fieldValues: defaultFieldState,
+    fieldErrors: this.props.defaultRangeFieldsState,
+    fieldValues: this.props.defaultRangeFieldsState,
   };
 
   componentDidMount() {
     const { fields } = this.props;
 
-    this.setState({ fieldValues: fields });
+    this.setState({
+      fieldValues: fields,
+    });
   }
 
   componentDidUpdate(prevProps) {
@@ -75,9 +65,11 @@ class RangeTableRow extends React.Component {
   }
 
   handleCancel = () => {
-    const { fields, handleToggleActiveRow, rowIndex } = this.props;
+    const {
+      defaultRangeFieldsState, fields, handleToggleActiveRow, rowIndex,
+    } = this.props;
     this.setState({
-      fieldErrors: defaultFieldState,
+      fieldErrors: defaultRangeFieldsState,
       fieldValues: fields,
     });
     handleToggleActiveRow(rowIndex, false);
@@ -138,6 +130,7 @@ class RangeTableRow extends React.Component {
 
   render = () => {
     const {
+      rangeFieldsOrder,
       rangeMethodActive,
       rowActive,
       rowIndex,
@@ -163,7 +156,7 @@ class RangeTableRow extends React.Component {
             style={rowFieldsWrapper}
             >
             {
-              fieldsOrder.map(rowItem => {
+              rangeFieldsOrder.map(rowItem => {
                 const rowId = `range-row-${rowIndex}-${rowItem}`;
                 return (
                   <RangeInput
@@ -219,22 +212,22 @@ class RangeTableRow extends React.Component {
               </React.Fragment>
             ) : (
               <Button
-                  aria-label="Edit"
-                  disabled={!rangeMethodActive}
-                  id={`range-row-${rowIndex}-edit`}
-                  onClick={() => {
-                    this.handleEdit();
-                  }}
-                  onMouseDown={() => {
-                    this.handleEdit();
-                  }}
-                  style={{
-                    ...(rangeMethodActive ? visualizingButton : inputDisabled),
-                    ...optionsButton,
-                  }}
-                  >
-                  <i aria-hidden="true" className="fa fa-pencil" />
-                </Button>
+                aria-label="Edit"
+                disabled={!rangeMethodActive}
+                id={`range-row-${rowIndex}-edit`}
+                onClick={() => {
+                  this.handleEdit();
+                }}
+                onMouseDown={() => {
+                  this.handleEdit();
+                }}
+                style={{
+                  ...(rangeMethodActive ? visualizingButton : inputDisabled),
+                  ...optionsButton,
+                }}
+                >
+                <i aria-hidden="true" className="fa fa-pencil" />
+              </Button>
               )}
             <Button
               aria-label="Remove"

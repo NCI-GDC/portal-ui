@@ -16,18 +16,14 @@ import {
   isEmpty,
   isEqual,
   map,
-  max,
   maxBy,
-  min,
   reduce,
   reject,
-  sortBy,
 } from 'lodash';
-import { scaleOrdinal, schemeCategory10 } from 'd3';
 
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import Button from '@ncigdc/uikit/Button';
-import { Tooltip, TooltipInjector } from '@ncigdc/uikit/Tooltip';
+import { Tooltip } from '@ncigdc/uikit/Tooltip';
 import { visualizingButton, zDepth1 } from '@ncigdc/theme/mixins';
 
 import EntityPageHorizontalTable from '@ncigdc/components/EntityPageHorizontalTable';
@@ -35,8 +31,7 @@ import Dropdown from '@ncigdc/uikit/Dropdown';
 import DropdownItem from '@ncigdc/uikit/DropdownItem';
 import Hidden from '@ncigdc/components/Hidden';
 import BarChart from '@ncigdc/components/Charts/BarChart';
-import ExploreLink from '@ncigdc/components/Links/ExploreLink';
-import { makeFilter, addInFilters } from '@ncigdc/utils/filters';
+import { makeFilter } from '@ncigdc/utils/filters';
 import { CreateExploreCaseSetButton, AppendExploreCaseSetButton, RemoveFromExploreCaseSetButton } from '@ncigdc/modern_components/withSetAction';
 
 import { setModal } from '@ncigdc/dux/modal';
@@ -50,8 +45,6 @@ import {
   DAYS_IN_YEAR,
 } from '@ncigdc/utils/ageDisplay';
 import { downloadToTSV } from '@ncigdc/components/DownloadTableToTsvButton';
-import QQPlotQuery from '@ncigdc/modern_components/QQPlot/QQPlotQuery';
-import BoxPlotWrapper from '@oncojs/boxplot';
 
 // survival plot
 import SurvivalPlotWrapper from '@ncigdc/components/SurvivalPlotWrapper';
@@ -66,7 +59,6 @@ import {
   CloseIcon,
   SurvivalIcon,
   BarChartIcon,
-  BoxPlot,
 } from '@ncigdc/theme/icons';
 import { withTheme } from '@ncigdc/theme';
 
@@ -77,26 +69,20 @@ import {
 import {
   humanify,
   createFacetFieldString,
-  parseContinuousValue,
-  parseContinuousKey,
-  createContinuousGroupName,
 } from '@ncigdc/utils/string';
 import termCapitaliser from '@ncigdc/utils/customisation';
 import timestamp from '@ncigdc/utils/timestamp';
 
 import { IS_CDAVE_DEV, analysisColors } from '@ncigdc/utils/constants';
-import ContinuousCustomBinsModal from '@ncigdc/components/Modals/ContinuousBinning/ContinuousCustomBinsModal';
 
 import {
-  boxTableAllowedStats,
-  boxTableRenamedStats,
+  CHART_HEIGHT,
+  colors,
   dataDimensions,
+  getCardFilters,
+  getCountLink,
+  getHeadings,
 } from './helpers';
-
-import '../boxplot.css';
-import '../qq.css';
-
-const colors = scaleOrdinal(schemeCategory10);
 
 interface ITableHeading {
   key: string;
@@ -104,8 +90,8 @@ interface ITableHeading {
   style?: React.CSSProperties;
 }
 
-type TPlotType = 'categorical' | 'continuous';
-type TActiveChart = 'box' | 'survival' | 'histogram';
+type TPlotType = 'categorical';
+type TActiveChart = 'survival' | 'histogram';
 type TActiveCalculation = 'number' | 'percentage';
 type TVariableType =
   | 'Demographic'
@@ -145,13 +131,8 @@ interface IVizButton {
 interface IVizButtons {
   survival: IVizButton;
   histogram: IVizButton;
-  box: IVizButton;
   delete: IVizButton;
 }
-
-const CHART_HEIGHT = 250;
-const QQ_PLOT_RATIO = '70%';
-const BOX_PLOT_RATIO = '30%';
 
 const styles = {
   actionMenuItem: {
@@ -200,11 +181,6 @@ const styles = {
 
 
 const vizButtons: IVizButtons = {
-  box: {
-    action: updateClinicalAnalysisVariable,
-    icon: <BoxPlot style={styles.chartIcon} />,
-    title: 'Box/QQ Plot',
-  },
   delete: {
     action: removeClinicalAnalysisVariable,
     icon: <CloseIcon style={styles.chartIcon} />,
@@ -222,166 +198,65 @@ const vizButtons: IVizButtons = {
   },
 };
 
-const getCountLink = ({ doc_count, filters, totalDocs }) => (
-  <span>
-    <ExploreLink
-      query={{
-        filters,
-        searchTableTab: 'cases',
-      }}
-      >
-      {(doc_count || 0).toLocaleString()}
-    </ExploreLink>
-    <span>{` (${(((doc_count || 0) / totalDocs) * 100).toFixed(2)}%)`}</span>
-  </span>
-);
-
-const getCategoricalSetFilters = (selectedBuckets, fieldName, filters) => {
-  const bucketFilters = []
-    .concat(selectedBuckets.filter(bucket => bucket.key !== '_missing').length > 0 && [
-      {
-        content: {
-          field: fieldName,
-          value: selectedBuckets
-            .filter(bucket => bucket.key !== '_missing')
-            .reduce((acc, selectedBucket) => [...acc, ...selectedBucket.keyArray], []),
-        },
-        op: 'in',
-      },
-    ])
-    .concat(selectedBuckets.some(bucket => bucket.key === '_missing') && [
-      {
-        content: {
-          field: fieldName,
-          value: 'MISSING',
-        },
-        op: 'is',
-      },
-    ])
-    .filter(item => item);
-
-  return Object.assign(
-    {},
-    filters,
-    bucketFilters.length && {
-      content: filters.content
-        .concat(
-          bucketFilters.length > 1
-            ? {
-              content: bucketFilters,
-              op: 'or',
-            }
-            : bucketFilters[0]
-        ),
-    }
-  );
-};
-
-const getContinuousSetFilters = (selectedBuckets, fieldName, filters) => {
-  const bucketRanges = selectedBuckets.map(bucket => bucket.rangeValues);
-
-  return addInFilters(filters, {
-    content: bucketRanges.length === 1 && bucketRanges[0].max === -1
-      ? [
-        {
-          content: {
-            field: fieldName,
-            value: [bucketRanges[0].min],
-          },
-          op: '>=',
-        },
-      ]
-      : [
-        {
-          content: {
-            field: fieldName,
-            value: [min(bucketRanges.map(range => range.min))],
-          },
-          op: '>=',
-        },
-        {
-          content: {
-            field: fieldName,
-            value: [max(bucketRanges.map(range => range.max))],
-          },
-          op: '<',
-        },
-      ],
-    op: 'and',
-  });
-};
-
-const getCardFilters = (variablePlotTypes, selectedBuckets, fieldName, filters) => (
-  get(selectedBuckets, 'length', 0)
-    ? variablePlotTypes === 'continuous'
-      ? getContinuousSetFilters(selectedBuckets, fieldName, filters)
-      : getCategoricalSetFilters(selectedBuckets, fieldName, filters)
-    : filters);
-
 const getTableData = (
   binData,
-  getContinuousBuckets,
   fieldName,
-  totalDocs,
+  selectedBuckets,
+  selectedSurvivalLoadingIds,
   selectedSurvivalValues,
   setId,
-  selectedBuckets,
   setSelectedBuckets,
-  variable,
+  totalDocs,
   updateSelectedSurvivalValues,
-  selectedSurvivalLoadingIds,
+  variable,
 ) => {
   if (isEmpty(binData)) {
     return [];
   }
 
-  const displayData = variable.plotTypes === 'continuous'
-    ? binData
-      .sort((a, b) => a.keyArray[0] - b.keyArray[0])
-      .reduce(getContinuousBuckets, [])
-    : binData
-      .filter(bucket => (IS_CDAVE_DEV ? bucket.key : bucket.key !== '_missing'))
-      .sort((a, b) => b.doc_count - a.doc_count)
-      .map(bin => ({
-        ...bin,
-        chart_doc_count: bin.doc_count,
-        doc_count: getCountLink({
-          doc_count: bin.doc_count,
-          filters:
-            bin.key === '_missing'
-              ? {
-                content: [
-                  {
-                    content: {
-                      field: fieldName,
-                      value: [...bin.keyArray],
-                    },
-                    op: 'IS',
-                  },
-                  {
-                    content: {
-                      field: 'cases.case_id',
-                      value: `set_id:${setId}`,
-                    },
-                    op: 'in',
-                  },
-                ],
-                op: 'AND',
-              }
-              : makeFilter([
+  const displayData = binData
+    .filter(bucket => (IS_CDAVE_DEV ? bucket.key : bucket.key !== '_missing'))
+    .sort((a, b) => b.doc_count - a.doc_count)
+    .map(bin => ({
+      ...bin,
+      chart_doc_count: bin.doc_count,
+      doc_count: getCountLink({
+        doc_count: bin.doc_count,
+        filters:
+          bin.key === '_missing'
+            ? {
+              content: [
                 {
-                  field: 'cases.case_id',
-                  value: `set_id:${setId}`,
+                  content: {
+                    field: fieldName,
+                    value: [...bin.keyArray],
+                  },
+                  op: 'IS',
                 },
                 {
-                  field: fieldName,
-                  value: [...bin.keyArray],
+                  content: {
+                    field: 'cases.case_id',
+                    value: `set_id:${setId}`,
+                  },
+                  op: 'in',
                 },
-              ]),
-          totalDocs,
-        }),
-        key: bin.key,
-      }));
+              ],
+              op: 'AND',
+            }
+            : makeFilter([
+              {
+                field: 'cases.case_id',
+                value: `set_id:${setId}`,
+              },
+              {
+                field: fieldName,
+                value: [...bin.keyArray],
+              },
+            ]),
+        totalDocs,
+      }),
+      key: bin.key,
+    }));
 
   return displayData.map(bin => Object.assign(
     {},
@@ -464,88 +339,14 @@ const getTableData = (
   ));
 };
 
-const getBoxTableData = (data = {}) => (
-  Object.keys(data).length
-    ? sortBy(Object.keys(data), datum => boxTableAllowedStats.indexOf(datum.toLowerCase()))
-      .reduce(
-        (tableData, stat) => (
-          boxTableAllowedStats.includes(stat.toLowerCase())
-            ? tableData.concat({
-              count: parseContinuousValue(data[stat]),
-              stat: boxTableRenamedStats[stat] || stat, // Shows the descriptive label
-            })
-            : tableData
-        ), []
-      )
-    : []
-);
-
-const getHeadings = (chartType, dataDimension, fieldName) => (chartType === 'box'
-  ? [
-    {
-      key: 'stat',
-      title: 'Statistics',
-    },
-    {
-      key: 'count',
-      style: { textAlign: 'right' },
-      title: `${dataDimension || 'Quantities'}`,
-    },
-  ]
-  : [
-    {
-      key: 'select',
-      thStyle: {
-        position: 'sticky',
-        top: 0,
-      },
-      title: 'Select',
-    },
-    {
-      key: 'key',
-      thStyle: {
-        position: 'sticky',
-        top: 0,
-      },
-      title: humanify({ term: fieldName }),
-    },
-    {
-      key: 'doc_count',
-      style: { textAlign: 'right' },
-      thStyle: {
-        position: 'sticky',
-        textAlign: 'right',
-        top: 0,
-      },
-      title: '# Cases',
-    },
-  ].concat(chartType === 'survival'
-    ? {
-      key: 'survival',
-      style: {
-        display: 'flex',
-        justifyContent: 'flex-end',
-      },
-      thStyle: {
-        position: 'sticky',
-        textAlign: 'right',
-        top: 0,
-      },
-      title: 'Survival',
-    }
-    : []));
-
 const CategoricalVariableCard: React.ComponentType<IVariableCardProps> = ({
-  currentAnalysis,
   binData,
+  currentAnalysis,
   dataBuckets,
   dataDimension,
-  dataValues,
-  defaultContinuousData,
   dispatch,
   fieldName,
   filters,
-  getContinuousBuckets,
   id,
   overallSurvivalData,
   plots,
@@ -562,25 +363,19 @@ const CategoricalVariableCard: React.ComponentType<IVariableCardProps> = ({
   updateSelectedSurvivalValues,
   variable,
   wrapperId,
-  qqData,
-  setQQData,
-  setQQDataIsSet,
 }) => {
-  const tableData = variable.active_chart === 'box'
-    ? getBoxTableData(dataValues)
-    : getTableData(
-      binData,
-      getContinuousBuckets,
-      fieldName,
-      totalDocs,
-      selectedSurvivalValues,
-      setId,
-      selectedBuckets,
-      setSelectedBuckets,
-      variable,
-      updateSelectedSurvivalValues,
-      selectedSurvivalLoadingIds,
-    );
+  const tableData = getTableData(
+    binData,
+    fieldName,
+    selectedBuckets,
+    selectedSurvivalLoadingIds,
+    selectedSurvivalValues,
+    setId,
+    setSelectedBuckets,
+    totalDocs,
+    updateSelectedSurvivalValues,
+    variable,
+  );
 
   const chartData =
     variable.active_chart === 'histogram'
@@ -610,11 +405,9 @@ const CategoricalVariableCard: React.ComponentType<IVariableCardProps> = ({
   const setActionsDisabled = get(selectedBuckets, 'length', 0) === 0;
   const disabledCharts = plotType => isEmpty(tableData) && plotType !== 'delete';
 
-  const resetBinsDisabled = variable.plotTypes === 'categorical'
-    ? Object.keys(variable.bins)
-      .filter(bin => variable.bins[bin].key !== variable.bins[bin].groupName)
-      .length === 0
-    : variable.continuousBinType === 'default';
+  const resetBinsDisabled = Object.keys(variable.bins)
+    .filter(bin => variable.bins[bin].key !== variable.bins[bin].groupName)
+    .length === 0;
 
   return (
     <Column
@@ -768,62 +561,6 @@ const CategoricalVariableCard: React.ComponentType<IVariableCardProps> = ({
                       tooltipHTML="Download image or data"
                       />
                   </form>
-                  {/* {variable.active_chart === 'survival' && (
-                    <div>
-                      <form>
-                        {' '}
-                        <label
-                          htmlFor={`overall-survival-${fieldName}`}
-                          style={{ marginRight: 5, fontSize: '1.2rem' }}
-                        >
-                          <input
-                            id={`overall-survival-${fieldName}`}
-                            type={'radio'}
-                            value={'overall'}
-                            aria-label={`Overall survival for ${fieldName}`}
-                            onChange={() =>
-                              dispatch(
-                                updateClinicalAnalysisVariable({
-                                  fieldName,
-                                  variableKey: 'active_survival',
-                                  value: 'overall',
-                                  id,
-                                })
-                              )}
-                            checked={variable.active_survival === 'overall'}
-                            style={{ marginRight: 5 }}
-                          />
-                          Overall Survival
-                        </label>
-                        <label
-                          htmlFor={`progression-survival-${fieldName}`}
-                          style={{ fontSize: '1.2rem', marginLeft: 10 }}
-                        >
-                          <input
-                            id={`progression-survival-${fieldName}`}
-                            type={'radio'}
-                            value={'progression'}
-                            aria-label={`Progression free survival for ${fieldName}`}
-                            onChange={() =>
-                              dispatch(
-                                updateClinicalAnalysisVariable({
-                                  fieldName,
-                                  variableKey: 'active_survival',
-                                  value: 'progression',
-                                  id,
-                                })
-                              )}
-                            checked={variable.active_survival === 'progression'}
-                            style={{ marginRight: 5 }}
-                          />
-                          Progression Free Survival
-                        </label>
-                      </form>
-                      <span style={{ fontSize: '1rem', marginLeft: 10 }}>
-                        Log Rank Test P=Value ={' '}
-                      </span>
-                    </div>
-                  )} */}
                 </Row>
               )}
 
@@ -875,160 +612,18 @@ const CategoricalVariableCard: React.ComponentType<IVariableCardProps> = ({
                     margin: '5px 2px 10px',
                   }}
                   >
-                  {selectedSurvivalValues.length === 0
-                    ? (
-                      <SurvivalPlotWrapper
-                        {...overallSurvivalData}
-                        height={202}
-                        plotType="clinicalOverall"
-                        survivalPlotLoading={survivalPlotLoading}
-                        uniqueClass="clinical-survival-plot"
-                        />
-                    )
-                    : (
-                      <SurvivalPlotWrapper
-                        {...selectedSurvivalData}
-                        height={202}
-                        plotType="categorical"
-                        survivalPlotLoading={survivalPlotLoading}
-                        uniqueClass="clinical-survival-plot"
-                        />
-                    )}
+                  <SurvivalPlotWrapper
+                    {...selectedSurvivalValues.length === 0
+                      ? overallSurvivalData
+                      : selectedSurvivalData}
+                    height={202}
+                    plotType={selectedSurvivalValues.length === 0
+                      ? 'clinicalOverall'
+                      : 'categorical'}
+                    survivalPlotLoading={survivalPlotLoading}
+                    uniqueClass="clinical-survival-plot"
+                    />
                 </div>
-              )}
-
-              {variable.active_chart === 'box' && (
-                <Column
-                  style={{
-                    alignItems: 'space-between',
-                    height: CHART_HEIGHT,
-                    justifyContent: 'center',
-                    marginBottom: 10,
-                    minWidth: 300,
-                  }}
-                  >
-                  <Row style={{ width: '100%' }}>
-                    <Row
-                      style={{
-                        alignItems: 'center',
-                        justifyContent: 'space-between',
-                        marginLeft: 10,
-                        width: BOX_PLOT_RATIO,
-                      }}
-                      >
-                      <span
-                        style={{
-                          color: theme.greyScale2,
-                          fontSize: '1.2rem',
-                        }}
-                        >
-                        Box Plot
-                      </span>
-                    </Row>
-                    <Row>
-                      <DownloadVisualizationButton
-                        buttonStyle={{
-                          fontSize: '1.2rem',
-                          lineHeight: 0,
-                          minHeight: 20,
-                          minWidth: 22,
-                          padding: 0,
-                        }}
-                        noText
-                        slug={`boxplot-${fieldName}`}
-                        svg={() => wrapSvg({
-                          className: 'boxplot',
-                          selector: `#${wrapperId}-boxplot-container figure svg`,
-                          title: `${humanify({ term: fieldName })} Box Plot`,
-                        })}
-                        tooltipHTML="Download SVG or PNG"
-                        />
-                    </Row>
-                    <Row
-                      style={{
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        marginLeft: 10,
-                        width: QQ_PLOT_RATIO,
-                      }}
-                      >
-                      <span
-                        style={{
-                          color: theme.greyScale2,
-                          fontSize: '1.2rem',
-                        }}
-                        >
-                        QQ Plot
-                      </span>
-                    </Row>
-                    <Row>
-                      <DownloadVisualizationButton
-                        buttonStyle={{
-                          fontSize: '1.2rem',
-                          lineHeight: 0,
-                          minHeight: 20,
-                          minWidth: 22,
-                          padding: 0,
-                        }}
-                        data={qqData}
-                        noText
-                        slug={`qq-plot-${fieldName}`}
-                        svg={() => wrapSvg({
-                          className: 'qq-plot',
-                          selector: `#${wrapperId}-qqplot-container .qq-plot svg`,
-                          title: `${humanify({ term: fieldName })} QQ Plot`,
-                        })}
-                        tooltipHTML="Download plot data"
-                        tsvData={qqData}
-                        />
-                    </Row>
-                  </Row>
-                  <Row
-                    style={{
-                      height: CHART_HEIGHT,
-                      justifyContent: 'space-between',
-                    }}
-                    >
-                    <Column
-                      id={`${wrapperId}-boxplot-container`}
-                      style={{
-                        height: CHART_HEIGHT + 10,
-                        maxHeight: CHART_HEIGHT + 10,
-                        minWidth: '150px',
-                        width: '150px',
-                      }}
-                      >
-                      <TooltipInjector>
-                        <BoxPlotWrapper
-                          color={analysisColors[variable.type]}
-                          data={dataValues}
-                          />
-                      </TooltipInjector>
-                    </Column>
-                    <Column
-                      id={`${wrapperId}-qqplot-container`}
-                      style={{
-                        height: CHART_HEIGHT + 10,
-                        maxHeight: CHART_HEIGHT + 10,
-                        width: QQ_PLOT_RATIO,
-                      }}
-                      >
-                      <QQPlotQuery
-                        chartHeight={CHART_HEIGHT + 10}
-                        dataBuckets={dataBuckets}
-                        dataHandler={data => setQQData(data)}
-                        fieldName={fieldName}
-                        filters={cardFilters}
-                        first={totalDocs}
-                        qqLineStyles={{ color: theme.greyScale2 }}
-                        qqPointStyles={{ color: analysisColors[variable.type] }}
-                        setDataHandler={() => setQQDataIsSet()}
-                        setId={setId}
-                        wrapperId={wrapperId}
-                        />
-                    </Column>
-                  </Row>
-                </Column>
               )}
             </Column>
 
@@ -1056,82 +651,81 @@ const CategoricalVariableCard: React.ComponentType<IVariableCardProps> = ({
                     minWidth: 205,
                   }}
                   >
-                  {variable.active_chart === 'box' || [
-                    <DropdownItem
-                      key="save-set"
-                      style={{
-                        ...styles.actionMenuItem,
-                        ...setActionsDisabled ? styles.actionMenuItemDisabled(theme) : {},
-                      }}
+                  <DropdownItem
+                    key="save-set"
+                    style={{
+                      ...styles.actionMenuItem,
+                      ...setActionsDisabled ? styles.actionMenuItemDisabled(theme) : {},
+                    }}
+                    >
+                    <Row
+                      onClick={() => setActionsDisabled || dispatch(setModal(
+                        <SaveSetModal
+                          CreateSetButton={CreateExploreCaseSetButton}
+                          displayType="case"
+                          filters={cardFilters}
+                          score="gene.gene_id"
+                          setName="Custom Case Selection"
+                          sort={null}
+                          title={`Save ${totalFromSelectedBuckets} Cases as New Set`}
+                          total={totalFromSelectedBuckets}
+                          type="case"
+                          />
+                      ))}
                       >
-                      <Row
-                        onClick={() => setActionsDisabled || dispatch(setModal(
-                          <SaveSetModal
-                            CreateSetButton={CreateExploreCaseSetButton}
-                            displayType="case"
-                            filters={cardFilters}
-                            score="gene.gene_id"
-                            setName="Custom Case Selection"
-                            sort={null}
-                            title={`Save ${totalFromSelectedBuckets} Cases as New Set`}
-                            total={totalFromSelectedBuckets}
-                            type="case"
-                            />
-                        ))}
-                        >
-                        Save as new case set
-                      </Row>
-                    </DropdownItem>,
-                    <DropdownItem
-                      key="append-set"
-                      style={{
-                        ...styles.actionMenuItem,
-                        ...setActionsDisabled ? styles.actionMenuItemDisabled(theme) : {},
-                      }}
+                      Save as new case set
+                    </Row>
+                  </DropdownItem>
+                  <DropdownItem
+                    key="append-set"
+                    style={{
+                      ...styles.actionMenuItem,
+                      ...setActionsDisabled ? styles.actionMenuItemDisabled(theme) : {},
+                    }}
+                    >
+                    <Row
+                      onClick={() => setActionsDisabled || dispatch(setModal(
+                        <AppendSetModal
+                          AppendSetButton={AppendExploreCaseSetButton}
+                          displayType="case"
+                          field="cases.case_id"
+                          filters={cardFilters}
+                          scope="explore"
+                          score="gene.gene_id"
+                          sort={null}
+                          title={`Add ${totalFromSelectedBuckets} Cases to Existing Set`}
+                          total={totalFromSelectedBuckets}
+                          type="case"
+                          />
+                      ))}
                       >
-                      <Row
-                        onClick={() => setActionsDisabled || dispatch(setModal(
-                          <AppendSetModal
-                            AppendSetButton={AppendExploreCaseSetButton}
-                            displayType="case"
-                            field="cases.case_id"
-                            filters={cardFilters}
-                            scope="explore"
-                            score="gene.gene_id"
-                            sort={null}
-                            title={`Add ${totalFromSelectedBuckets} Cases to Existing Set`}
-                            total={totalFromSelectedBuckets}
-                            type="case"
-                            />
-                        ))}
-                        >
-                        Add to existing case set
-                      </Row>
-                    </DropdownItem>,
-                    <DropdownItem
-                      key="remove-set"
-                      style={{
-                        ...styles.actionMenuItem,
-                        ...setActionsDisabled ? styles.actionMenuItemDisabled(theme) : {},
-                      }}
+                      Add to existing case set
+                    </Row>
+                  </DropdownItem>
+                  <DropdownItem
+                    key="remove-set"
+                    style={Object.assign(
+                      {},
+                      styles.actionMenuItem,
+                      setActionsDisabled ? styles.actionMenuItemDisabled(theme) : {},
+                    )}
+                    >
+                    <Row
+                      onClick={() => setActionsDisabled || dispatch(setModal(
+                        <RemoveSetModal
+                          enableDragging
+                          field="cases.case_id"
+                          filters={cardFilters}
+                          RemoveFromSetButton={RemoveFromExploreCaseSetButton}
+                          selected={Object.keys(get(currentAnalysis, 'sets.case', {}))[0] || ''}
+                          title={`Remove ${totalFromSelectedBuckets} Cases from Existing Set`}
+                          type="case"
+                          />
+                      ))}
                       >
-                      <Row
-                        onClick={() => setActionsDisabled || dispatch(setModal(
-                          <RemoveSetModal
-                            enableDragging
-                            field="cases.case_id"
-                            filters={cardFilters}
-                            RemoveFromSetButton={RemoveFromExploreCaseSetButton}
-                            selected={Object.keys(get(currentAnalysis, 'sets.case', {}))[0] || ''}
-                            title={`Remove ${totalFromSelectedBuckets} Cases from Existing Set`}
-                            type="case"
-                            />
-                        ))}
-                        >
-                        Remove from existing case set
-                      </Row>
-                    </DropdownItem>,
-                  ]}
+                      Remove from existing case set
+                    </Row>
+                  </DropdownItem>
                   <DropdownItem
                     key="tsv"
                     onClick={() => downloadToTSV({
@@ -1145,205 +739,92 @@ const CategoricalVariableCard: React.ComponentType<IVariableCardProps> = ({
                     })}
                     style={{
                       ...styles.actionMenuItem,
-                      borderTop: variable.active_chart !== 'box' ? `1px solid ${theme.greyScale5}` : '',
+                      borderTop: `1px solid ${theme.greyScale5}`,
                     }}
                     >
                     Export TSV
                   </DropdownItem>
                 </Dropdown>
 
-                {variable.active_chart !== 'box' && (
-                  <Dropdown
-                    button={(
-                      <Button
-                        rightIcon={<DownCaretIcon />}
-                        style={{
-                          ...visualizingButton,
-                          padding: '0 12px',
-                        }}
-                        >
-                        Customize Bins
-                      </Button>
-                    )}
-                    dropdownStyle={{ right: 0 }}
-                    >
-                    <DropdownItem
-                      onClick={() => dispatch(setModal(variable.plotTypes === 'continuous'
-                        ? (
-                          <ContinuousCustomBinsModal
-                            binData={binData}
-                            continuousBinType={variable.continuousBinType}
-                            continuousCustomInterval={variable.continuousCustomInterval}
-                            continuousCustomRanges={variable.continuousCustomRanges}
-                            defaultContinuousData={defaultContinuousData}
-                            fieldName={humanify({ term: fieldName })}
-                            onClose={() => dispatch(setModal(null))}
-                            onUpdate={(
-                              newBins,
-                              continuousBinType,
-                              continuousCustomInterval,
-                              continuousCustomRanges,
-                              continuousReset,
-                            ) => {
-                              dispatch(
-                                updateClinicalAnalysisVariable({
-                                  fieldName,
-                                  id,
-                                  value: continuousReset
-                                    ? defaultContinuousData.buckets
-                                    : newBins,
-                                  variableKey: 'bins',
-                                })
-                              );
-                              dispatch(
-                                updateClinicalAnalysisVariable({
-                                  fieldName,
-                                  id,
-                                  value: continuousReset
-                                    ? 'default'
-                                    : continuousBinType,
-                                  variableKey: 'continuousBinType',
-                                })
-                              );
-                              !continuousReset &&
-                                continuousBinType === 'interval' &&
-                                (
-                                  dispatch(
-                                    updateClinicalAnalysisVariable({
-                                      fieldName,
-                                      id,
-                                      value: continuousCustomInterval,
-                                      variableKey: 'continuousCustomInterval',
-                                    })
-                                  ));
-                              !continuousReset &&
-                                continuousBinType === 'range' &&
-                                (
-                                  dispatch(
-                                    updateClinicalAnalysisVariable({
-                                      fieldName,
-                                      id,
-                                      value: continuousCustomRanges,
-                                      variableKey: 'continuousCustomRanges',
-                                    })
-                                  ));
-                              continuousReset &&
-                                (
-                                  dispatch(
-                                    updateClinicalAnalysisVariable({
-                                      fieldName,
-                                      id,
-                                      value: [],
-                                      variableKey: 'continuousCustomRanges',
-                                    })
-                                  ));
-                              continuousReset &&
-                                (
-                                  dispatch(
-                                    updateClinicalAnalysisVariable({
-                                      fieldName,
-                                      id,
-                                      value: {},
-                                      variableKey: 'continuousCustomInterval',
-                                    })
-                                  ));
-                              dispatch(setModal(null));
-                            }
-                            }
-                            />
-                        )
-                        : (
-                          <GroupValuesModal
-                            bins={variable.bins}
-                            dataBuckets={dataBuckets}
-                            fieldName={humanify({ term: fieldName })}
-                            modalStyle={{
-                              maxWidth: '720px',
-                              width: '90%',
-                            }}
-                            onClose={() => dispatch(setModal(null))}
-                            onUpdate={(newBins) => {
-                              dispatch(
-                                updateClinicalAnalysisVariable({
-                                  fieldName,
-                                  id,
-                                  value: newBins,
-                                  variableKey: 'bins',
-                                }),
-                              );
-                              dispatch(setModal(null));
-                            }}
-                            />
-                        ),))}
-                      style={styles.actionMenuItem}
-                      >
-                      Edit Bins
-                    </DropdownItem>
-
-                    <DropdownItem
-                      onClick={() => {
-                        if (resetBinsDisabled) return;
-                        dispatch(
-                          updateClinicalAnalysisVariable({
-                            fieldName,
-                            id,
-                            value: variable.plotTypes === 'continuous'
-                              ? defaultContinuousData.buckets
-                              : dataBuckets.reduce((acc, r) => ({
-                                ...acc,
-                                [r.key]: {
-                                  ...r,
-                                  groupName: r.key,
-                                },
-                              }), {}),
-                            variableKey: 'bins',
-                          }),
-                        );
-                        variable.plotTypes === 'continuous' && (
-                          dispatch(
-                            updateClinicalAnalysisVariable({
-                              fieldName,
-                              id,
-                              value: 'default',
-                              variableKey: 'continuousBinType',
-                            })
-                          ));
-                        variable.plotTypes === 'continuous' && (
-                          dispatch(
-                            updateClinicalAnalysisVariable({
-                              fieldName,
-                              id,
-                              value: {},
-                              variableKey: 'continuousCustomInterval',
-                            })
-                          ));
-                        variable.plotTypes === 'continuous' && (
-                          dispatch(
-                            updateClinicalAnalysisVariable({
-                              fieldName,
-                              id,
-                              value: [],
-                              variableKey: 'continuousCustomRanges',
-                            })
-                          ));
-                      }}
+                <Dropdown
+                  button={(
+                    <Button
+                      rightIcon={<DownCaretIcon />}
                       style={{
-                        ...styles.actionMenuItem,
-                        ...(resetBinsDisabled ? styles.actionMenuItemDisabled(theme) : {}),
+                        ...visualizingButton,
+                        padding: '0 12px',
                       }}
                       >
-                      Reset to Default
-                    </DropdownItem>
-                  </Dropdown>
-                )}
+                      Customize Bins
+                    </Button>
+                  )}
+                  dropdownStyle={{ right: 0 }}
+                  >
+                  <DropdownItem
+                    onClick={() => dispatch(setModal(
+                      <GroupValuesModal
+                        bins={variable.bins}
+                        dataBuckets={dataBuckets}
+                        fieldName={humanify({ term: fieldName })}
+                        modalStyle={{
+                          maxWidth: '720px',
+                          width: '90%',
+                        }}
+                        onClose={() => dispatch(setModal(null))}
+                        onUpdate={(newBins) => {
+                          dispatch(
+                            updateClinicalAnalysisVariable({
+                              fieldName,
+                              id,
+                              value: newBins,
+                              variableKey: 'bins',
+                            }),
+                          );
+                          dispatch(setModal(null));
+                        }}
+                        />
+                    ))}
+                    style={styles.actionMenuItem}
+                    >
+                    Edit Bins
+                  </DropdownItem>
+
+                  <DropdownItem
+                    onClick={() => {
+                      if (resetBinsDisabled) return;
+                      dispatch(
+                        updateClinicalAnalysisVariable({
+                          fieldName,
+                          id,
+                          value: dataBuckets.reduce((acc, r) => ({
+                            ...acc,
+                            [r.key]: {
+                              ...r,
+                              groupName: r.key,
+                            },
+                          }), {}),
+                          variableKey: 'bins',
+                        }),
+                      );
+                    }}
+                    style={{
+                      ...styles.actionMenuItem,
+                      ...(resetBinsDisabled
+                        ? styles.actionMenuItemDisabled(theme)
+                        : {}),
+                    }}
+                    >
+                    Reset to Default
+                  </DropdownItem>
+                </Dropdown>
               </Row>
 
               <EntityPageHorizontalTable
-                data={tableData.map(tableRow => ({
-                  ...tableRow,
-              // the key in the table needs to be the display name
-                  key: tableRow.groupName !== undefined ? tableRow.groupName : tableRow.key,
-                }))}
+                data={tableData.map(tableRow => Object.assign(
+                  {},
+                  tableRow,
+                  { key: tableRow.groupName || tableRow.key }
+                ))}
                 headings={getHeadings(variable.active_chart, dataDimension, fieldName)}
                 tableContainerStyle={{
                   height: 175,
@@ -1366,74 +847,22 @@ export default compose(
   withState('selectedSurvivalLoadingIds', 'setSelectedSurvivalLoadingIds', []),
   withState('survivalPlotLoading', 'setSurvivalPlotLoading', true),
   withState('selectedBuckets', 'setSelectedBuckets', []),
-  withState('qqData', 'setQQData', []),
-  withState('qqDataIsSet', 'setQQDataIsSet', false),
   withPropsOnChange(
     (props, nextProps) => !isEqual(props.data, nextProps.data),
-    ({ data, fieldName, variable }) => {
+    ({ data, fieldName }) => {
       const sanitisedId = fieldName.split('.').pop();
       const rawQueryData = get(data,
         `explore.cases.aggregations.${createFacetFieldString(fieldName)}`, data);
-      const dataDimension = dataDimensions[sanitisedId] &&
-        dataDimensions[sanitisedId].unit;
 
       return Object.assign(
         {
-          dataBuckets: get(rawQueryData, variable.plotTypes === 'continuous'
-            ? 'range.buckets'
-            : 'buckets',
-                           []),
-          dataValues: variable.plotTypes === 'continuous' && map(
-            {
-              ...rawQueryData.stats,
-              ...rawQueryData.percentiles,
-            },
-            (value, stat) => {
-              switch (dataDimension) {
-                case 'Year': {
-                  return ({
-                    [stat]: parseContinuousValue(value / DAYS_IN_YEAR),
-                  });
-                }
-                default:
-                  return ({
-                    [stat]: value,
-                  });
-              }
-            }
-          ).reduce((acc, item) => ({
-            ...acc,
-            ...item,
-          }), {}),
+          dataBuckets: get(rawQueryData, 'buckets', []),
           totalDocs: get(data, 'hits.total', 0),
           wrapperId: `${sanitisedId}-chart`,
         },
         dataDimensions[sanitisedId] && {
           axisTitle: dataDimensions[sanitisedId].axisTitle,
           dataDimension: dataDimensions[sanitisedId].unit,
-          dataValues:
-            map(
-              {
-                ...rawQueryData.stats,
-                ...rawQueryData.percentiles,
-              },
-              (value, stat) => {
-                switch (dataDimensions[sanitisedId].unit) {
-                  case 'Years': {
-                    return ({
-                      [stat]: parseContinuousValue(value / DAYS_IN_YEAR),
-                    });
-                  }
-                  default:
-                    return ({
-                      [stat]: value,
-                    });
-                }
-              }
-            ).reduce((acc, item) => ({
-              ...acc,
-              ...item,
-            }), {}),
         },
       );
     }
@@ -1452,51 +881,32 @@ export default compose(
         updateClinicalAnalysisVariable({
           fieldName,
           id,
-          value: variable.plotTypes === 'continuous'
-            ? variable.continuousBinType === 'default'
-              ? dataBuckets.reduce((acc, curr, index) => ({
-                ...acc,
-                [dataBuckets[index].key]: {
-                  ...dataBuckets[index],
-                  groupName: dataBuckets[index].key,
-                },
-              }), {})
-              : (Object.keys(variable.bins).reduce((acc, curr, index) => ({
-                ...acc,
-                [curr]: {
-                  ...variable.bins[curr],
-                  doc_count: dataBuckets[index]
-                    ? dataBuckets[index].doc_count
-                    : 0,
-                },
-              }), {})
-              )
-            : ({
-              ...reduce(variable.bins, (acc, bin, key) => {
-                if (bin.groupName && bin.groupName !== key) {
-                  return {
-                    ...acc,
-                    [key]: {
-                      doc_count: 0,
-                      groupName: bin.groupName,
-                      key,
-                    },
-                  };
-                }
-                return acc;
-              }, {}),
-              ...dataBuckets.reduce((acc, r) => ({
-                ...acc,
-                [r.key]: {
-                  ...r,
-                  groupName:
-                    typeof get(variable, `bins.${r.key}.groupName`, undefined) === 'string'
-                      // hidden value have groupName '', so check if it is string
-                      ? get(variable, `bins.${r.key}.groupName`, undefined)
-                      : r.key,
-                },
-              }), {}),
-            }),
+          value: {
+            ...reduce(variable.bins, (acc, bin, key) => {
+              if (bin.groupName && bin.groupName !== key) {
+                return {
+                  ...acc,
+                  [key]: {
+                    doc_count: 0,
+                    groupName: bin.groupName,
+                    key,
+                  },
+                };
+              }
+              return acc;
+            }, {}),
+            ...dataBuckets.reduce((acc, r) => ({
+              ...acc,
+              [r.key]: {
+                ...r,
+                groupName:
+                  typeof get(variable, `bins.${r.key}.groupName`, undefined) === 'string'
+                    // hidden value have groupName '', so check if it is string
+                    ? get(variable, `bins.${r.key}.groupName`, undefined)
+                    : r.key,
+              },
+            }), {}),
+          },
           variableKey: 'bins',
         }),
       );
@@ -1504,177 +914,31 @@ export default compose(
   ),
   withProps(
     ({
-      data: { explore },
       dataBuckets,
-      fieldName,
-      setId,
-      totalDocs,
       variable,
-    }) => {
-      const fieldNameUnderscores = createFacetFieldString(fieldName);
-
-      if (variable.plotTypes === 'continuous' &&
-        !(explore &&
-          explore.cases &&
-          explore.cases.aggregations &&
-          explore.cases.aggregations[fieldNameUnderscores])) {
-        return;
-      }
-
-      const binsForBinData = variable.plotTypes === 'continuous'
-        ? explore.cases.aggregations[fieldNameUnderscores].range.buckets
-          .reduce((acc, curr) => {
-            const keyTrimIntegers = parseContinuousKey(curr.key).join('-');
-            const currentBin = variable.bins[keyTrimIntegers] ||
-              variable.bins[curr.key] ||
-              { groupName: '--' };
-            return ({
-              ...acc,
-              [keyTrimIntegers]: {
-                doc_count: curr.doc_count,
-                groupName: currentBin.groupName,
-                key: keyTrimIntegers,
-              },
-            });
-          }, {})
-        : variable.bins;
-
-      return ({
-        binData: map(groupBy(binsForBinData, bin => bin.groupName), (values, key) => ({
-          doc_count: values.reduce((acc, value) => acc + value.doc_count, 0),
-          key,
-          keyArray: values.reduce((acc, value) => [...acc, value.key], []),
-        })).filter(bin => bin.key),
-        bucketsOrganizedByKey: dataBuckets.reduce((acc, r) => {
-          return ({
-            ...acc,
-            [r.key]: {
-              ...r,
-              groupName: r.groupName !== undefined &&
-                r.groupName !== '' ? r.groupName : r.key,
-            },
-          });
-        }, {}),
-        getContinuousBuckets: (acc, { doc_count, key, keyArray }) => {
-          const keyValues = parseContinuousKey(key);
-          // survival doesn't have keyArray
-          const keyArrayValues = keyArray
-            ? parseContinuousKey(keyArray[0])
-            : keyValues;
-
-          const groupName = keyValues.length === 2 &&
-            isFinite(keyValues[0]) &&
-            isFinite(keyValues[1])
-            ? createContinuousGroupName(key)
-            : key;
-
-          const [keyMin, keyMax] = keyArrayValues;
-          const filters =
-            variable.plotTypes === 'continuous'
-              ? {
-                op: 'and',
-                content: [
-                  {
-                    op: 'in',
-                    content: {
-                      field: 'cases.case_id',
-                      value: `set_id:${setId}`,
-                    },
-                  },
-                  {
-                    op: '>=',
-                    content: {
-                      field: fieldName,
-                      value: [keyMin],
-                    },
-                  },
-                  {
-                    op: '<',
-                    content: {
-                      field: fieldName,
-                      value: [keyMax],
-                    },
-                  },
-                ],
-              } : {};
-
-          return [
-            ...acc,
-            {
-              chart_doc_count: doc_count,
-              doc_count: getCountLink({
-                doc_count,
-                filters,
-                totalDocs,
-              }),
-              filters,
-              groupName,
-              key: `${keyMin}-${keyMax}`,
-              rangeValues: {
-                max: keyMax,
-                min: keyMin,
-              },
-            },
-          ];
-        },
-      });
-    }
-  ),
-  withProps(({ data: { explore }, fieldName, variable }) => {
-    if (variable.plotTypes === 'categorical') {
-      return ({ defaultContinuousData: {} });
-    }
-
-    const dataStats = explore
-      ? explore.cases.aggregations[`${createFacetFieldString(fieldName)}`].stats
-      : {
-        Max: null,
-        Min: null,
-      };
-
-    const defaultMin = dataStats.Min;
-    const defaultMax = dataStats.Max + 1;
-    // api excludes the max number
-
-    const defaultQuarter = (defaultMax - defaultMin) / 4;
-
-    const defaultNumberOfBuckets = 5;
-    const defaultBucketSize = (defaultMax - defaultMin) / defaultNumberOfBuckets;
-
-    const defaultBuckets = Array(defaultNumberOfBuckets).fill(1)
-      .map((val, key) => {
-        const from = key * defaultBucketSize + defaultMin;
-        const to = (key + 1) === defaultNumberOfBuckets
-          ? defaultMax
-          : (defaultMin + (key + 1) * defaultBucketSize);
-        const objKey = `${from}-${to}`;
-
-        return ({
-          [objKey]: {
-            key: objKey,
-          },
-        });
-      }).reduce((acc, curr) => ({
+    }) => ({
+      binData: map(groupBy(variable.bins, bin => bin.groupName), (values, key) => ({
+        doc_count: values.reduce((acc, value) => acc + value.doc_count, 0),
+        key,
+        keyArray: values.reduce((acc, value) => [...acc, value.key], []),
+      })).filter(bin => bin.key),
+      bucketsOrganizedByKey: dataBuckets.reduce((acc, r) => ({
         ...acc,
-        ...curr,
-      }), {});
-
-    return ({
-      defaultContinuousData: {
-        buckets: defaultBuckets,
-        max: defaultMax,
-        min: defaultMin,
-        quarter: defaultQuarter,
-      },
-    });
-  }),
+        [r.key]: {
+          ...r,
+          groupName: r.groupName !== undefined &&
+            r.groupName !== ''
+            ? r.groupName
+            : r.key,
+        },
+      }), {}),
+    })
+  ),
   withProps(
     ({
       binData,
-      dataBuckets,
       fieldName,
       filters,
-      getContinuousBuckets,
       selectedSurvivalValues,
       setSelectedSurvivalData,
       setSelectedSurvivalLoadingIds,
@@ -1684,42 +948,21 @@ export default compose(
     }) => ({
       populateSurvivalData: () => {
         setSurvivalPlotLoading(true);
-        const dataForSurvival =
-          variable.plotTypes === 'continuous'
-            ? dataBuckets.length > 0
-              ? dataBuckets
-                .sort((a, b) => parseContinuousKey(a.key)[0] - parseContinuousKey(b.key)[0])
-                .reduce(getContinuousBuckets, [])
-              : []
-            : binData
-              .filter(bucket => (IS_CDAVE_DEV ? bucket.key : bucket.key !== '_missing'))
-              .map(b => ({
-                ...b,
-                chart_doc_count: b.doc_count,
-              }));
+        const dataForSurvival = binData
+          .filter(bucket => (IS_CDAVE_DEV ? bucket.key : bucket.key !== '_missing'))
+          .map(b => ({
+            ...b,
+            chart_doc_count: b.doc_count,
+          }));
 
         const filteredData = dataForSurvival
           .filter(x => x.chart_doc_count >= MINIMUM_CASES)
           .filter(x => x.key !== '_missing');
 
-        const continuousTop2Values =
-          variable.plotTypes === 'continuous'
-            ? filteredData
-              .sort((a, b) => b.chart_doc_count - a.chart_doc_count)
-              .slice(0, 2)
-            : [];
+        const valuesForTable = filteredData.map(d => d.key).slice(0, 2);
 
-        const valuesForTable =
-          variable.plotTypes === 'categorical'
-            ? filteredData.map(d => d.key).slice(0, 2)
-            : continuousTop2Values
-              .sort((a, b) => b.chart_doc_count - a.chart_doc_count)
-              .map(d => d.key);
-
-        const valuesForPlot =
-          variable.plotTypes === 'categorical'
-            ? [...filteredData.map(d => d.keyArray).slice(0, 2)]
-            : continuousTop2Values;
+        const valuesForPlot = filteredData
+          .map(d => d.keyArray).slice(0, 2);
 
         setSelectedSurvivalValues(valuesForTable);
         setSelectedSurvivalLoadingIds(valuesForTable);
@@ -1752,21 +995,11 @@ export default compose(
         setSelectedSurvivalValues(nextValues);
         setSelectedSurvivalLoadingIds(nextValues);
 
-        const valuesForPlot =
-          variable.plotTypes === 'categorical'
-            ? [...nextValues]
-            : nextValues
-              .map(v => data.filter(d => d.key === v)[0])
-              .map(filteredData => ({
-                ...filteredData,
-                doc_count: 0,
-              }));
-
         getSurvivalCurvesArray({
           currentFilters: filters,
           field: fieldName,
           plotType: variable.plotTypes,
-          values: valuesForPlot,
+          values: nextValues,
         }).then(receivedData => {
           setSelectedSurvivalData(receivedData);
           setSurvivalPlotLoading(false);

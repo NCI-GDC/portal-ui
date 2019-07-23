@@ -95,6 +95,8 @@ module.exports = {
     'no-unneeded-ternary': 'warn',
     'no-unused-expressions': ['warn', {
       allowShortCircuit: true,
+      allowTaggedTemplates: true,
+      allowTernary: true,
     }],
     'no-var': 'error', // Must use const or let.
     'object-property-newline': ['warn', {

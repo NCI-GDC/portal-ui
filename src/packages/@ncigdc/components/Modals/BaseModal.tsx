@@ -45,8 +45,6 @@ const BaseModal = ({
   ...props
 }: IBaseModalProps) => (
   <Column style={{...baseStyles.container, ...style}} {...props}>
-     {/* paddingLeft: 15 */}
-     {/* style={{ borderBottom: `1px solid ${theme.greyScale5}`, paddingBottom: '1rem' }} */}
     <h2>{title}</h2>
     <Column
       style={{

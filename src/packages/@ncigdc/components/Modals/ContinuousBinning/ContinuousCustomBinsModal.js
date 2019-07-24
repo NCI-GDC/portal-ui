@@ -592,7 +592,7 @@ class ContinuousCustomBinsModal extends Component {
     return (
       <Column style={{ padding: '20px' }}>
         <div>
-          <h1
+          <h2
             style={{
               borderBottom: `1px solid ${theme.greyScale5}`,
               marginTop: 0,
@@ -600,7 +600,7 @@ class ContinuousCustomBinsModal extends Component {
             }}
             >
             {`Create Custom Bins: ${fieldName}`}
-          </h1>
+          </h2>
           <p>
             Configure your bins then click
             <strong> Save Bins </strong>

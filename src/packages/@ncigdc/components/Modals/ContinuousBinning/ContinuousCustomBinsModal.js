@@ -5,12 +5,12 @@ import { Row, Column } from '@ncigdc/uikit/Flex';
 import Button from '@ncigdc/uikit/Button';
 import { createContinuousGroupName } from '@ncigdc/utils/string';
 import Undo from '@ncigdc/theme/icons/Undo';
+import { theme } from '@ncigdc/theme/index';
 import RangeTableRow from './RangeTableRow';
 import BinningMethodInput from './BinningMethodInput';
 import CustomIntervalFields from './CustomIntervalFields';
 import styles from './styles';
 import RangeInputRow from './RangeInputRow';
-
 
 const countDecimals = num => (Math.floor(num) === num
   ? 0
@@ -592,7 +592,13 @@ class ContinuousCustomBinsModal extends Component {
     return (
       <Column style={{ padding: '20px' }}>
         <div>
-          <h1 style={{ marginTop: 0 }}>
+          <h1
+            style={{
+              borderBottom: `1px solid ${theme.greyScale5}`,
+              marginTop: 0,
+              paddingBottom: '1rem',
+            }}
+            >
             {`Create Custom Bins: ${fieldName}`}
           </h1>
           <p>

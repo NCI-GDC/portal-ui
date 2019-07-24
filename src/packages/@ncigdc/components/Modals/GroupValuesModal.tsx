@@ -126,7 +126,7 @@ const GroupValuesModal = ({
         padding: '2rem',
       }}
       >
-      <h1 style={{ margin: '0 0 1.5rem' }}>
+      <h1 style={{ borderBottom: `1px solid ${theme.greyScale5}`, margin: '0 0 1.5rem', paddingBottom: '1rem' }}>
         {`Create Custom Bins: ${fieldName}`}
       </h1>
 

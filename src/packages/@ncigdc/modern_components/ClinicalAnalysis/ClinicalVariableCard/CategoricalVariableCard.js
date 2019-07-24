@@ -41,9 +41,6 @@ import RemoveSetModal from '@ncigdc/components/Modals/RemoveSetModal';
 import GroupValuesModal from '@ncigdc/components/Modals/GroupValuesModal';
 import DownloadVisualizationButton from '@ncigdc/components/DownloadVisualizationButton';
 import wrapSvg from '@ncigdc/utils/wrapSvg';
-import {
-  DAYS_IN_YEAR,
-} from '@ncigdc/utils/ageDisplay';
 import { downloadToTSV } from '@ncigdc/components/DownloadTableToTsvButton';
 
 // survival plot

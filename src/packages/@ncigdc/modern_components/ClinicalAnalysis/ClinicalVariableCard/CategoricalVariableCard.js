@@ -355,6 +355,7 @@ const CategoricalVariableCard: React.ComponentType<IVariableCardProps> = ({
   id,
   overallSurvivalData,
   plots,
+  resetCustomBinsDisabled,
   selectedBuckets,
   selectedSurvivalData,
   selectedSurvivalLoadingIds,
@@ -410,10 +411,6 @@ const CategoricalVariableCard: React.ComponentType<IVariableCardProps> = ({
   const setActionsDisabled = get(selectedBuckets, 'length', 0) === 0;
   const disabledCharts = plotType => isEmpty(tableData) &&
     plotType !== 'delete';
-
-  const resetBinsDisabled = Object.keys(variable.bins)
-    .filter(bin => variable.bins[bin].key !== variable.bins[bin].groupName)
-    .length === 0;
 
   return (
     <Column
@@ -770,7 +767,7 @@ const CategoricalVariableCard: React.ComponentType<IVariableCardProps> = ({
 
                   <DropdownItem
                     onClick={() => {
-                      if (resetBinsDisabled) return;
+                      if (resetCustomBinsDisabled) return;
                       dispatch(
                         updateClinicalAnalysisVariable({
                           fieldName,
@@ -793,7 +790,7 @@ const CategoricalVariableCard: React.ComponentType<IVariableCardProps> = ({
                     }}
                     style={{
                       ...styles.actionMenuItem,
-                      ...(resetBinsDisabled
+                      ...(resetCustomBinsDisabled
                         ? styles.actionMenuItemDisabled(theme)
                         : {}),
                     }}
@@ -1021,7 +1018,18 @@ export default compose(
       }
     }
   ),
-  withPropsOnChange(['id'], ({ setSelectedBuckets }) => setSelectedBuckets([])),
+  withPropsOnChange(
+    (props, nextProps) => props.id !== nextProps.id,
+    ({ setSelectedBuckets }) => setSelectedBuckets([])
+  ),
+  withPropsOnChange(
+    (props, nextProps) => !isEqual(props.variable.bins, nextProps.variable.bins),
+    ({ variable: { bins } }) => ({
+      resetCustomBinsDisabled: Object.keys(bins)
+        .filter(bin => bins[bin].key !== bins[bin].groupName)
+        .length === 0,
+    })
+  ),
   lifecycle({
     componentDidMount(): void {
       const {

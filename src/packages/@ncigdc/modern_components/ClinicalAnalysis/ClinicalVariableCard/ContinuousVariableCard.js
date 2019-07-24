@@ -335,8 +335,8 @@ const getBoxTableData = (data = {}) => (
 );
 
 const ContinuousVariableCard: React.ComponentType<IVariableCardProps> = ({
-  currentAnalysis,
   binData,
+  currentAnalysis,
   dataBuckets,
   dataDimension,
   dataValues,
@@ -348,11 +348,15 @@ const ContinuousVariableCard: React.ComponentType<IVariableCardProps> = ({
   id,
   overallSurvivalData,
   plots,
+  qqData,
+  resetCustomBinsDisabled,
   selectedBuckets,
   selectedSurvivalData,
   selectedSurvivalLoadingIds,
   selectedSurvivalValues,
   setId,
+  setQQData,
+  setQQDataIsSet,
   setSelectedBuckets,
   style = {},
   survivalPlotLoading,
@@ -361,9 +365,6 @@ const ContinuousVariableCard: React.ComponentType<IVariableCardProps> = ({
   updateSelectedSurvivalValues,
   variable,
   wrapperId,
-  qqData,
-  setQQData,
-  setQQDataIsSet,
 }) => {
   const tableData = variable.active_chart === 'box'
     ? getBoxTableData(dataValues)
@@ -409,8 +410,6 @@ const ContinuousVariableCard: React.ComponentType<IVariableCardProps> = ({
   const setActionsDisabled = get(selectedBuckets, 'length', 0) === 0;
   const disabledCharts = plotType => isEmpty(tableData) &&
     plotType !== 'delete';
-
-  const resetBinsDisabled = variable.continuousBinType === 'default';
 
   return (
     <Column
@@ -964,7 +963,7 @@ const ContinuousVariableCard: React.ComponentType<IVariableCardProps> = ({
 
                     <DropdownItem
                       onClick={() => {
-                        if (resetBinsDisabled) return;
+                        if (resetCustomBinsDisabled) return;
                         dispatch(
                           updateClinicalAnalysisVariable({
                             fieldName,
@@ -1000,7 +999,9 @@ const ContinuousVariableCard: React.ComponentType<IVariableCardProps> = ({
                       }}
                       style={{
                         ...styles.actionMenuItem,
-                        ...(resetBinsDisabled ? styles.actionMenuItemDisabled(theme) : {}),
+                        ...(resetCustomBinsDisabled 
+                          ? styles.actionMenuItemDisabled(theme)
+                          : {}),
                       }}
                       >
                       Reset to Default
@@ -1413,7 +1414,16 @@ export default compose(
       }
     }
   ),
-  withPropsOnChange(['id'], ({ setSelectedBuckets }) => setSelectedBuckets([])),
+  withPropsOnChange(
+    (props, nextProps) => props.id !== nextProps.id,
+    ({ setSelectedBuckets }) => setSelectedBuckets([])
+  ),
+  withPropsOnChange(
+    (props, nextProps) => props.variable.continuousBinType !== nextProps.variable.continuousBinType,
+    ({ variable: { continuousBinType } }) => ({
+      resetCustomBinsDisabled: continuousBinType === 'default',
+    })
+  ),
   lifecycle({
     componentDidMount(): void {
       const {

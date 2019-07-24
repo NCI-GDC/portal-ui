@@ -24,6 +24,7 @@ import { visualizingButton } from '@ncigdc/theme/mixins';
 import Button from '@ncigdc/uikit/Button';
 import ControlEditableRow from '@ncigdc/uikit/ControlEditableRow';
 import { Row, Column } from '@ncigdc/uikit/Flex';
+import Hidden from '@ncigdc/components/Hidden';
 
 import { theme } from '@ncigdc/theme/index';
 
@@ -191,6 +192,7 @@ const GroupValuesModal = ({
                 }}
                 >
                   <Undo />
+                  <Hidden>Reset bins</Hidden>
                 </Button>
 
               <Button

@@ -126,9 +126,9 @@ const GroupValuesModal = ({
         padding: '2rem',
       }}
       >
-      <h1 style={{ borderBottom: `1px solid ${theme.greyScale5}`, margin: '0 0 1.5rem', paddingBottom: '1rem' }}>
+      <h2 style={{ borderBottom: `1px solid ${theme.greyScale5}`, margin: '0 0 1.5rem', paddingBottom: '1rem' }}>
         {`Create Custom Bins: ${fieldName}`}
-      </h1>
+      </h2>
 
       <h3 style={{ margin: '0 0 2rem' }}>
         Organize values into groups of your choosing. Click Save Bins to update
@@ -164,7 +164,7 @@ const GroupValuesModal = ({
                   setListWarning({});
                 }}
                 style={visualizingButton}
-                />
+              />
 
               <Button
                 leftIcon={<Group style={{ width: '10px' }} />}
@@ -435,7 +435,7 @@ const GroupValuesModal = ({
       <Row
         spacing="1rem"
         style={{
-          borderTop: '1px solid #e5e5e5',
+          borderTop: `1px solid ${theme.greyScale5}`,
           justifyContent: 'flex-end',
           marginTop: '1.5rem',
           padding: '15px',

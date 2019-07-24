@@ -828,7 +828,11 @@ const CategoricalVariableCard: React.ComponentType<IVariableCardProps> = ({
                 data={tableData.map(tableRow => Object.assign(
                   {},
                   tableRow,
-                  { key: tableRow.groupName || tableRow.key }
+                  {
+                    key: tableRow.groupName === undefined
+                    ? tableRow.key
+                    : tableRow.groupName,
+                  }
                 ))}
                 headings={getHeadings(variable.active_chart, dataDimension, fieldName)}
                 tableContainerStyle={{

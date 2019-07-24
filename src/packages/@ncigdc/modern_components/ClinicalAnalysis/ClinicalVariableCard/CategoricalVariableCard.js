@@ -214,46 +214,49 @@ const getTableData = (
   const displayData = binData
     .filter(bucket => (IS_CDAVE_DEV ? bucket.key : bucket.key !== '_missing'))
     .sort((a, b) => b.doc_count - a.doc_count)
-    .map(bin => ({
-      ...bin,
-      chart_doc_count: bin.doc_count,
-      doc_count: getCountLink({
-        doc_count: bin.doc_count,
-        filters:
-          bin.key === '_missing'
-            ? {
-              content: [
-                {
-                  content: {
-                    field: fieldName,
-                    value: [...bin.keyArray],
+    .map(bin => Object.assign(
+      {},
+      bin,
+      {
+        chart_doc_count: bin.doc_count,
+        doc_count: getCountLink({
+          doc_count: bin.doc_count,
+          filters:
+            bin.key === '_missing'
+              ? {
+                content: [
+                  {
+                    content: {
+                      field: fieldName,
+                      value: bin.keyArray,
+                    },
+                    op: 'IS',
                   },
-                  op: 'IS',
+                  {
+                    content: {
+                      field: 'cases.case_id',
+                      value: `set_id:${setId}`,
+                    },
+                    op: 'in',
+                  },
+                ],
+                op: 'AND',
+              }
+              : makeFilter([
+                {
+                  field: 'cases.case_id',
+                  value: `set_id:${setId}`,
                 },
                 {
-                  content: {
-                    field: 'cases.case_id',
-                    value: `set_id:${setId}`,
-                  },
-                  op: 'in',
+                  field: fieldName,
+                  value: bin.keyArray,
                 },
-              ],
-              op: 'AND',
-            }
-            : makeFilter([
-              {
-                field: 'cases.case_id',
-                value: `set_id:${setId}`,
-              },
-              {
-                field: fieldName,
-                value: [...bin.keyArray],
-              },
-            ]),
-        totalDocs,
-      }),
-      key: bin.key,
-    }));
+              ]),
+          totalDocs,
+        }),
+        key: bin.key,
+      }
+    ));
 
   return displayData.map(bin => Object.assign(
     {},
@@ -271,7 +274,7 @@ const getTableData = (
                 reject(selectedBuckets, r => r.key === bin.key)
               );
             } else {
-              setSelectedBuckets([...selectedBuckets, bin]);
+              setSelectedBuckets(selectedBuckets.concat(bin));
             }
           }}
           style={{
@@ -793,13 +796,18 @@ const CategoricalVariableCard: React.ComponentType<IVariableCardProps> = ({
                         updateClinicalAnalysisVariable({
                           fieldName,
                           id,
-                          value: dataBuckets.reduce((acc, r) => ({
-                            ...acc,
-                            [r.key]: {
-                              ...r,
-                              groupName: r.key,
-                            },
-                          }), {}),
+                          value: dataBuckets
+                            .reduce((acc, r) => Object.assign(
+                              {},
+                              acc,
+                              {
+                                [r.key]: Object.assign(
+                                  {},
+                                  r,
+                                  { groupName: r.key }
+                                ),
+                              }
+                            ), {}),
                           variableKey: 'bins',
                         }),
                       );
@@ -878,32 +886,39 @@ export default compose(
         updateClinicalAnalysisVariable({
           fieldName,
           id,
-          value: {
-            ...reduce(variable.bins, (acc, bin, key) => {
-              if (bin.groupName && bin.groupName !== key) {
-                return {
-                  ...acc,
+          value: Object.assign(
+            {},
+            reduce(variable.bins, (acc, bin, key) => Object.assign(
+              {},
+              acc,
+              bin.groupName && bin.groupName !== key
+                ? {
                   [key]: {
                     doc_count: 0,
                     groupName: bin.groupName,
                     key,
                   },
-                };
+                }
+                : {}
+            ), {}),
+            dataBuckets.reduce((acc, bucket) => Object.assign(
+              {},
+              acc,
+              {
+                [bucket.key]: Object.assign(
+                  {},
+                  bucket,
+                  {
+                    groupName:
+                    typeof get(variable, `bins.${bucket.key}.groupName`, undefined) === 'string'
+                      // hidden value have groupName '', so check if it is string
+                      ? get(variable, `bins.${bucket.key}.groupName`, undefined)
+                      : bucket.key,
+                  },
+                ),
               }
-              return acc;
-            }, {}),
-            ...dataBuckets.reduce((acc, r) => ({
-              ...acc,
-              [r.key]: {
-                ...r,
-                groupName:
-                  typeof get(variable, `bins.${r.key}.groupName`, undefined) === 'string'
-                    // hidden value have groupName '', so check if it is string
-                    ? get(variable, `bins.${r.key}.groupName`, undefined)
-                    : r.key,
-              },
-            }), {}),
-          },
+            ), {}),
+          ),
           variableKey: 'bins',
         }),
       );
@@ -917,18 +932,25 @@ export default compose(
       binData: map(groupBy(variable.bins, bin => bin.groupName), (values, key) => ({
         doc_count: values.reduce((acc, value) => acc + value.doc_count, 0),
         key,
-        keyArray: values.reduce((acc, value) => [...acc, value.key], []),
+        keyArray: values.reduce((acc, value) => acc.concat(value.key), []),
       })).filter(bin => bin.key),
-      bucketsOrganizedByKey: dataBuckets.reduce((acc, r) => ({
-        ...acc,
-        [r.key]: {
-          ...r,
-          groupName: r.groupName !== undefined &&
-            r.groupName !== ''
-            ? r.groupName
-            : r.key,
-        },
-      }), {}),
+      bucketsOrganizedByKey: dataBuckets
+        .reduce((acc, bucket) => Object.assign(
+          {},
+          acc,
+          {
+            [bucket.key]: Object.assign(
+              {},
+              bucket,
+              {
+                groupName: bucket.groupName !== undefined &&
+                bucket.groupName !== ''
+                ? bucket.groupName
+                : bucket.key,
+              }
+            ),
+          }
+        ), {}),
     })
   ),
   withProps(
@@ -947,10 +969,11 @@ export default compose(
         setSurvivalPlotLoading(true);
         const dataForSurvival = binData
           .filter(bucket => (IS_CDAVE_DEV ? bucket.key : bucket.key !== '_missing'))
-          .map(b => ({
-            ...b,
-            chart_doc_count: b.doc_count,
-          }));
+          .map(bucket => Object.assign(
+            {},
+            bucket,
+            { chart_doc_count: bucket.doc_count }
+          ));
 
         const filteredData = dataForSurvival
           .filter(x => x.chart_doc_count >= MINIMUM_CASES)

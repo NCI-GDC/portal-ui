@@ -25,7 +25,6 @@ import DragAndDropGroupList from '@ncigdc/uikit/DragAndDropGroupList';
 import BucketsGroupComponent from './BucketsGroupComponent';
 import {
   IBinProps,
-  IState,
   IBinsProps,
   IGroupValuesModalProps,
 } from './types';
@@ -214,12 +213,22 @@ const GroupValuesModal = ({
           <Column style={listStyle}>
             <DragAndDropGroupList
               Component={BucketsGroupComponent}
-              currentBins={currentBins}
+              customProps={{
+                currentBins,
+                editingGroupName,
+                listWarning,
+                selectedGroupBins,
+                selectedHidingBins,
+                setCurrentBins,
+                setEditingGroupName,
+                setGlobalWarning,
+                setListWarning,
+                setSelectedGroupBins,
+                setSelectedHidingBins,
+              }}
               draggingIndex={draggingIndex}
-              editingGroupName={editingGroupName}
               items={groupNameMapping}
-              listWarning={listWarning}
-              merging={(nextState:any) => {
+              merging={nextState => {
                 setDraggingIndex(nextState.draggingIndex);
                 if (isNumber(nextState.draggingIndex)) {
                   const merged = [...nextState.targetSubItems, ...nextState.currSubItems]
@@ -234,15 +243,8 @@ const GroupValuesModal = ({
                 }
               }
               }
-              selectedGroupBins={selectedGroupBins}
-              selectedHidingBins={selectedHidingBins}
-              setCurrentBins={setCurrentBins}
-              setEditingGroupName={setEditingGroupName}
-              setGlobalWarning={setGlobalWarning}
-              setListWarning={setListWarning}
-              setSelectedGroupBins={setSelectedGroupBins}
-              setSelectedHidingBins={setSelectedHidingBins}
-              SubComponent={({ subItem, ...props }:any) => (
+
+              SubComponent={({ draggingProps, subItem }) => (
                 <Row
                   onClick={() => {
                     setSelectedGroupBins({
@@ -257,13 +259,13 @@ const GroupValuesModal = ({
                     listStyleType: 'disc',
                     paddingLeft: '5px',
                   }}
-                  {...props}
+                  {...draggingProps}
                   >
                   {`${subItem} (${currentBins[subItem].doc_count})`}
                 </Row>
               )
                 }
-              unGroup={({ key }:any) => {
+              unGroup={({ key }) => {
                 setCurrentBins({
                   ...currentBins,
                   [key]: {
@@ -277,7 +279,7 @@ const GroupValuesModal = ({
               }
 
               }
-              updateState={(nextState: IState) => {
+              updateState={(nextState) => {
                 setDraggingIndex(nextState.draggingIndex);
                 if (nextState.items) {
                   const itemarr = nextState.items.reduce((acc, item, i) => ({
@@ -430,7 +432,7 @@ export default compose(
           },
         };
       }, {}),
-      (groupObj: any, groupName) => {
+      (groupObj: IBinProps, groupName) => {
         const buckets = Object.keys(groupObj).filter(key => key !== 'index');
         return {
           [groupName]: {

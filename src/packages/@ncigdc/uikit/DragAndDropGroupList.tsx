@@ -2,35 +2,90 @@ import React from 'react';
 import { get } from 'lodash';
 import { swapArrayElements, isMouseBeyond } from './Sortable/helpers';
 
-interface IProps {
-  updateState: (props: any) => void,
-  merging: (props: any) => void,
-  unGroup: (props: {key: string}) => void,
-  Component: any,
-  [x:string]:any,
-  items: Array<{
-    [groupName:string]: {
-      count: number,
-      index: number,
-      subList: string[],
-    }
-  }>,
+export interface IGroupListItemProps {
+  [groupName: string]: {
+    count: number,
+    index: number,
+    subList: string[],
+  }
 }
 
-export default class DragAndDropGroupList extends React.Component<IProps, any> {
+export interface IUpdateStateProps {
+  draggingIndex: number | null,
+  items?: IGroupListItemProps[],
+  prevDraggingIndex?: number,
+}
+
+export interface IMergingProps {
+  draggingIndex: number | null,
+  targetSubItems: string[],
+  currSubItems: string[],
+}
+
+export interface IDraggingProps {
+  'data-id': string,
+  draggable: boolean,
+  key: string,
+  onDragEnd: (e: DragEvent) => void,
+  onDragOver: (e: DragEvent) => void,
+  onDragStart: (e: DragEvent) => void,
+  onDrop: (e: DragEvent) => void,
+  onTouchEnd: (e: DragEvent) => void,
+  onTouchMove: (e: DragEvent) => void,
+  onTouchStart: (e: DragEvent) => void,
+  tabIndex: number,
+}
+interface IProps {
+  updateState: (props: IUpdateStateProps) => void,
+  merging: (props: IMergingProps) => void,
+  unGroup: (props: {key: string}) => void,
+  Component: (props:any) => JSX.Element,
+  draggingIndex: number | null,
+  SubComponent: ({
+    draggingProps,
+    key,
+    subItem,
+  }: {
+    draggingProps:{
+      'data-id': string,
+      draggable: boolean,
+      onDragEnd: (e: DragEvent) => void,
+      onDragStart: (e: DragEvent) => void,
+      onDrop: (e: DragEvent) => void,
+      onTouchEnd: (e: DragEvent) => void,
+      onTouchStart: (e: DragEvent) => void,
+    },
+    key: string,
+    subItem: string,
+  }) => JSX.Element,
+  customProps?: any,
+  items: IGroupListItemProps[],
+}
+
+interface IState {
+  draggingIndex: null | number,
+    endState: null | {
+      currSubItems: string[],
+      draggingIndex: null | number,
+      prevDraggingIndex?: number,
+      targetSubItems: string[],
+    },
+    parentDraggable: boolean,
+}
+export default class DragAndDropGroupList extends React.Component<IProps, IState> {
   state = {
     draggingIndex: null,
     endState: null,
     parentDraggable: true,
   };
 
-  componentWillReceiveProps(nextProps: any) {
+  componentWillReceiveProps(nextProps: IProps) {
     this.setState({
       draggingIndex: nextProps.draggingIndex,
     });
   }
 
-    sortEnd = (e: any) => {
+    sortEnd = (e: DragEvent) => {
       e.preventDefault();
       const { endState, parentDraggable } = this.state;
       if (!parentDraggable) {
@@ -45,7 +100,7 @@ export default class DragAndDropGroupList extends React.Component<IProps, any> {
       });
     };
 
-    sortStart = (e: any) => {
+    sortStart = (e: DragEvent) => {
       const { parentDraggable } = this.state;
 
       if (!parentDraggable) {
@@ -59,17 +114,21 @@ export default class DragAndDropGroupList extends React.Component<IProps, any> {
       });
 
       const dt = e.dataTransfer;
-      if (dt !== undefined) {
-        dt.setData('text', e.target.innerHTML);
+      if (dt) {
+        dt.setData('text', get(e, 'target.innerHTML', ''));
 
         // fix http://stackoverflow.com/questions/27656183/preserve-appearance-of-dragged-a-element-when-using-html5-draggable-attribute
-        if (dt.setDragImage && e.currentTarget.tagName.toLowerCase() === 'a') {
-          dt.setDragImage(e.target, 0, 0);
+        if (dt.setDragImage && e.currentTarget) {
+          const currentTarget = e.currentTarget as HTMLElement;
+          if (currentTarget.tagName.toLowerCase() === 'a' && e.target) {
+            const target = e.target as HTMLElement;
+            dt.setDragImage(target, 0, 0);
+          }
         }
       }
     };
 
-    dragOver = (e: any) => {
+    dragOver = (e: DragEvent) => {
       const { draggingIndex, parentDraggable } = this.state;
       if (!parentDraggable) {
         return;
@@ -80,7 +139,10 @@ export default class DragAndDropGroupList extends React.Component<IProps, any> {
       e.preventDefault();
       let { items } = this.props;
       const { updateState } = this.props;
-      const overEl = e.currentTarget; // underlying element
+      const overEl = e.currentTarget as HTMLElement; // underlying element
+      if (!overEl) {
+        return;
+      }
       const indexDragged = Number(overEl.dataset.id); // index of underlying element
       const indexFrom = Number(draggingIndex);
       const { height, left, width } = overEl.getBoundingClientRect();
@@ -122,14 +184,22 @@ export default class DragAndDropGroupList extends React.Component<IProps, any> {
       });
     }
 
-
-    subItemDragEnd = (e: any) => {
+    subItemDragEnd = (e: DragEvent) => {
       e.stopPropagation();
       const { unGroup, updateState } = this.props;
       this.setState({ parentDraggable: true });
       const itemKey = get(e, 'currentTarget.dataset.id', undefined);
-      const target = e.currentTarget;
+      if (!itemKey) {
+        return;
+      }
+      const target = e.currentTarget as HTMLElement;
+      if (!target) {
+        return;
+      }
       const parentTarget = target.parentElement;
+      if (!parentTarget) {
+        return;
+      }
       const positionY = e.clientY;
       const targetHeight = target.getBoundingClientRect().height;
       const parentTop = parentTarget.getBoundingClientRect().top;
@@ -147,12 +217,9 @@ export default class DragAndDropGroupList extends React.Component<IProps, any> {
     render() {
       const {
         Component,
-        draggingIndex,
+        customProps,
         items,
         SubComponent,
-        unGroup,
-        updateState,
-        ...resProps
       } = this.props;
       return (
         <React.Fragment>
@@ -161,31 +228,36 @@ export default class DragAndDropGroupList extends React.Component<IProps, any> {
             const group = Object.values(groupObj)[0].subList;
             return (
               <Component
-                data-id={i}
-                draggable
+                draggingProps={{
+                  'data-id': i,
+                  draggable: true,
+                  key: groupName,
+                  onDragEnd: this.sortEnd,
+                  onDragOver: this.dragOver,
+                  onDragStart: this.sortStart,
+                  onDrop: this.sortEnd,
+                  onTouchEnd: this.sortEnd,
+                  onTouchMove: this.dragOver,
+                  onTouchStart: this.sortStart,
+                  tabIndex: i,
+                }}
                 group={group}
                 groupName={groupName}
                 key={groupName}
-                onDragEnd={this.sortEnd}
-                onDragOver={this.dragOver}
-                onDragStart={this.sortStart}
-                onDrop={this.sortEnd}
-                onTouchEnd={this.sortEnd}
-                onTouchMove={this.dragOver}
-                onTouchStart={this.sortStart}
-                tabIndex={i}
-                {...resProps}
+                {...customProps}
                 >
                 {(group.length > 1 || group[0] !== groupName) && group.map(subItem => (
                   <SubComponent
-                    data-id={subItem}
-                    draggable
+                    draggingProps={{
+                      'data-id': subItem,
+                      draggable: true,
+                      onDragEnd: this.subItemDragEnd,
+                      onDragStart: this.subItemDragStart,
+                      onDrop: this.subItemDragEnd,
+                      onTouchEnd: this.subItemDragEnd,
+                      onTouchStart: this.subItemDragStart,
+                    }}
                     key={subItem}
-                    onDragEnd={this.subItemDragEnd}
-                    onDragStart={this.subItemDragStart}
-                    onDrop={this.subItemDragEnd}
-                    onTouchEnd={this.subItemDragEnd}
-                    onTouchStart={this.subItemDragStart}
                     subItem={subItem}
                     />
                 ))}

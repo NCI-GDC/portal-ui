@@ -5,7 +5,7 @@ import {
 import { Row, Column } from '@ncigdc/uikit/Flex';
 
 import ControlEditableRow from '@ncigdc/uikit/ControlEditableRow';
-import { IBinProps, ISelectedBinsProps } from './types';
+import { IBinProps, ISelectedBinsProps, IBucketsGroupComponentProps } from './types';
 
 const BucketsGroupComponent = ({
   children,
@@ -23,12 +23,10 @@ const BucketsGroupComponent = ({
   setListWarning,
   setSelectedGroupBins,
   setSelectedHidingBins,
-  ...props
-}: any) => (
+  draggingProps,
+}: IBucketsGroupComponentProps) => (
   <Column
-    group={group}
-    key={groupName}
-    {...props}
+    {...draggingProps}
     >
     <Row
       onClick={() => {

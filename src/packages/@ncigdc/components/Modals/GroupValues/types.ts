@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-
+import {IGroupListItemProps, IDraggingProps} from '@ncigdc/uikit/DragAndDropGroupList';
 export interface IBinProps {
   key: string,
   doc_count: number,
@@ -9,10 +9,8 @@ export interface IBinProps {
 
 export interface IState {
   draggingIndex: number | null;
-  items: string[];
-  merged:boolean;
+  items: IGroupListItemProps;
   prevDraggingIndex: number;
-  group:any;
 }
 
 export interface ISelectedBinsProps {
@@ -47,4 +45,23 @@ export interface IGroupValuesModalProps {
   groupNameMapping: any,
   setShift: (x: boolean) => void,
   shift: boolean,
+}
+
+export interface IBucketsGroupComponentProps {
+  children: JSX.Element,
+  currentBins: any,
+  editingGroupName: string,
+  group: string[],
+  groupName: string,
+  listWarning: { [x: string]: string },
+  merging: (e: DragEvent) => void, 
+  selectedGroupBins: {[x:string]: boolean},
+  selectedHidingBins: {[x:string]: boolean},
+  setCurrentBins: (currentBins: IBinsProps) => void,
+  setEditingGroupName: (editingGroupName: string) => void,
+  setGlobalWarning: (globalWarning: string)=> void,
+  setListWarning: (listWarning: { [x:string]: string })=> void,
+  setSelectedGroupBins: (groupBins: {[x:string]: boolean}) => void,
+  setSelectedHidingBins: (hidingBins: {[x:string]: boolean}) => void,
+  draggingProps: IDraggingProps,
 }

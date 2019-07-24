@@ -252,7 +252,7 @@ const getTableData = (
                 reject(selectedBuckets, r => r.key === bin.key)
               );
             } else {
-              setSelectedBuckets([...selectedBuckets, bin]);
+              setSelectedBuckets(selectedBuckets.concat(bin));
             }
           }}
           style={{
@@ -1036,13 +1036,16 @@ const ContinuousVariableCard: React.ComponentType<IVariableCardProps> = ({
               </Row>
 
               <EntityPageHorizontalTable
-                data={tableData.map(tableRow => ({
-                  ...tableRow,
+                data={tableData.map(tableRow => Object.assign(
+                  {},
+                  tableRow,
                   // the key in the table needs to be the display name
-                  key: tableRow.groupName === undefined
+                  {
+                    key: tableRow.groupName === undefined
                     ? tableRow.key
                     : tableRow.groupName,
-                }))}
+                  }
+                ))}
                 headings={getHeadings(variable.active_chart, dataDimension, fieldName)}
                 tableContainerStyle={{
                   height: 175,
@@ -1080,10 +1083,11 @@ export default compose(
         {
           dataBuckets: get(rawQueryData, 'range.buckets', []),
           dataValues: map(
-            {
-              ...rawQueryData.stats,
-              ...rawQueryData.percentiles,
-            },
+            Object.assign(
+              {},
+              rawQueryData.stats,
+              rawQueryData.percentiles,
+            ),
             (value, stat) => {
               switch (dataDimension) {
                 case 'Year': {
@@ -1097,10 +1101,7 @@ export default compose(
                   });
               }
             }
-          ).reduce((acc, item) => ({
-            ...acc,
-            ...item,
-          }), {}),
+          ).reduce((acc, item) => Object.assign({}, acc, item), {}),
           totalDocs: get(data, 'hits.total', 0),
           wrapperId: `${sanitisedId}-chart`,
         },
@@ -1109,10 +1110,11 @@ export default compose(
           dataDimension: dataDimensions[sanitisedId].unit,
           dataValues:
             map(
-              {
-                ...rawQueryData.stats,
-                ...rawQueryData.percentiles,
-              },
+              Object.assign(
+                {},
+                rawQueryData.stats,
+                rawQueryData.percentiles,
+              ),
               (value, stat) => {
                 switch (dataDimensions[sanitisedId].unit) {
                   case 'Years': {
@@ -1126,10 +1128,7 @@ export default compose(
                     });
                 }
               }
-            ).reduce((acc, item) => ({
-              ...acc,
-              ...item,
-            }), {}),
+            ).reduce((acc, item) => Object.assign({}, acc, item), {}),
         },
       );
     }
@@ -1149,22 +1148,33 @@ export default compose(
           fieldName,
           id,
           value: variable.continuousBinType === 'default'
-            ? dataBuckets.reduce((acc, curr, index) => ({
-              ...acc,
-              [dataBuckets[index].key]: {
-                ...dataBuckets[index],
-                groupName: dataBuckets[index].key,
+            ? dataBuckets.reduce((acc, curr, index) => Object.assign(
+              {},
+              acc,
+              {
+                [dataBuckets[index].key]: Object.assign(
+                  {},
+                  dataBuckets[index],
+                  { groupName: dataBuckets[index].key },
+                ),
               },
-            }), {})
-            : (Object.keys(variable.bins).reduce((acc, curr, index) => ({
-              ...acc,
-              [curr]: {
-                ...variable.bins[curr],
-                doc_count: dataBuckets[index]
-                  ? dataBuckets[index].doc_count
-                  : 0,
-              },
-            }), {})),
+            ), {})
+            : Object.keys(variable.bins)
+              .reduce((acc, curr, index) => Object.assign(
+                {},
+                acc,
+                {
+                  [curr]: Object.assign(
+                    {},
+                    variable.bins[curr],
+                    {
+                      doc_count: dataBuckets[index]
+                      ? dataBuckets[index].doc_count
+                      : 0,
+                    }
+                  ),
+                }
+              ), {}),
           variableKey: 'bins',
         }),
       );
@@ -1194,32 +1204,41 @@ export default compose(
           const currentBin = variable.bins[keyTrimIntegers] ||
               variable.bins[curr.key] ||
               { groupName: '--' };
-          return ({
-            ...acc,
-            [keyTrimIntegers]: {
-              doc_count: curr.doc_count,
-              groupName: currentBin.groupName,
-              key: keyTrimIntegers,
-            },
-          });
+          return Object.assign(
+            {},
+            acc,
+            {
+              [keyTrimIntegers]: {
+                doc_count: curr.doc_count,
+                groupName: currentBin.groupName,
+                key: keyTrimIntegers,
+              },
+            }
+          );
         }, {});
 
       return ({
         binData: map(groupBy(binsForBinData, bin => bin.groupName), (values, key) => ({
           doc_count: values.reduce((acc, value) => acc + value.doc_count, 0),
           key,
-          keyArray: values.reduce((acc, value) => [...acc, value.key], []),
+          keyArray: values.reduce((acc, value) => acc.concat(value.key), []),
         })).filter(bin => bin.key),
-        bucketsOrganizedByKey: dataBuckets.reduce((acc, r) => {
-          return ({
-            ...acc,
-            [r.key]: {
-              ...r,
-              groupName: r.groupName !== undefined &&
-                r.groupName !== '' ? r.groupName : r.key,
-            },
-          });
-        }, {}),
+        bucketsOrganizedByKey: dataBuckets.reduce((acc, r) => Object.assign(
+          {},
+          acc,
+          {
+            [r.key]: Object.assign(
+              {},
+              r,
+              { 
+                groupName: r.groupName !== undefined &&
+                  r.groupName !== '' 
+                  ? r.groupName 
+                  : r.key,
+              }
+            )
+          }
+        ), {}),
         getContinuousBuckets: (acc, { doc_count, key, keyArray }) => {
           const keyValues = parseContinuousKey(key);
           // survival doesn't have keyArray
@@ -1261,8 +1280,7 @@ export default compose(
             ],
           };
 
-          return [
-            ...acc,
+          return acc.concat(
             {
               chart_doc_count: doc_count,
               doc_count: getCountLink({
@@ -1277,8 +1295,8 @@ export default compose(
                 max: keyMax,
                 min: keyMin,
               },
-            },
-          ];
+            }
+          );
         },
       });
     }
@@ -1313,10 +1331,7 @@ export default compose(
             key: objKey,
           },
         });
-      }).reduce((acc, curr) => ({
-        ...acc,
-        ...curr,
-      }), {});
+      }).reduce((acc, curr) => Object.assign({}, acc, curr), {});
 
     return ({
       defaultContinuousData: {
@@ -1395,10 +1410,11 @@ export default compose(
 
         const valuesForPlot = nextValues
           .map(v => data.filter(d => d.key === v)[0])
-          .map(filteredData => ({
-            ...filteredData,
-            doc_count: 0,
-          }));
+          .map(filteredData => Object.assign(
+            {},
+            filteredData,
+            { doc_count: 0 },
+          ));
 
         getSurvivalCurvesArray({
           currentFilters: filters,

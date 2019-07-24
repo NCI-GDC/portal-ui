@@ -71,6 +71,7 @@ import termCapitaliser from '@ncigdc/utils/customisation';
 import timestamp from '@ncigdc/utils/timestamp';
 
 import { IS_CDAVE_DEV, analysisColors } from '@ncigdc/utils/constants';
+import ClinicalHistogram from './ClinicalHistogram';
 
 import {
   CHART_HEIGHT,
@@ -212,7 +213,11 @@ const getTableData = (
   }
 
   const displayData = binData
-    .filter(bucket => (IS_CDAVE_DEV ? bucket.key : bucket.key !== '_missing'))
+    .filter(bucket => (
+      IS_CDAVE_DEV
+        ? bucket.key
+        : bucket.key !== '_missing'
+    ))
     .sort((a, b) => b.doc_count - a.doc_count)
     .map(bin => Object.assign(
       {},
@@ -377,7 +382,7 @@ const CategoricalVariableCard: React.ComponentType<IVariableCardProps> = ({
     variable,
   );
 
-  const chartData =
+  const histogramData =
     variable.active_chart === 'histogram'
       ? tableData.map(d => ({
         fullLabel: d.groupName || d.key,
@@ -392,7 +397,7 @@ const CategoricalVariableCard: React.ComponentType<IVariableCardProps> = ({
       : [];
 
   const maxKeyNameLength = (
-    maxBy(chartData.map(d => d.fullLabel), (item) => item.length) || ''
+    maxBy(histogramData.map(d => d.fullLabel), (item) => item.length) || ''
   ).length;
 
   // set action will default to cohort total when no buckets are selected
@@ -403,7 +408,8 @@ const CategoricalVariableCard: React.ComponentType<IVariableCardProps> = ({
   const tsvSubstring = fieldName.replace(/\./g, '-');
   const cardFilters = getCardFilters(variable.plotTypes, selectedBuckets, fieldName, filters);
   const setActionsDisabled = get(selectedBuckets, 'length', 0) === 0;
-  const disabledCharts = plotType => isEmpty(tableData) && plotType !== 'delete';
+  const disabledCharts = plotType => isEmpty(tableData) &&
+    plotType !== 'delete';
 
   const resetBinsDisabled = Object.keys(variable.bins)
     .filter(bin => variable.bins[bin].key !== variable.bins[bin].groupName)
@@ -538,7 +544,7 @@ const CategoricalVariableCard: React.ComponentType<IVariableCardProps> = ({
                       # of Cases
                     </label>
                     <DownloadVisualizationButton
-                      data={chartData.map(d => ({
+                      data={histogramData.map(d => ({
                         label: d.fullLabel,
                         value: d.value,
                       }))}
@@ -565,39 +571,12 @@ const CategoricalVariableCard: React.ComponentType<IVariableCardProps> = ({
               )}
 
               {variable.active_chart === 'histogram' && (
-                <BarChart
-                  data={chartData}
-                  height={CHART_HEIGHT}
-                  margin={{
-                    bottom: 50,
-                    left: 55,
-                    right: 50,
-                    top: 20,
-                  }}
-                  styles={{
-                    bars: { fill: analysisColors[variable.type] || theme.secondary },
-                    tooltips: {
-                      fill: '#fff',
-                      stroke: theme.greyScale4,
-                      textFill: theme.greyScale3,
-                    },
-                    xAxis: {
-                      textFill: theme.greyScaleD3,
-                    },
-                    yAxis: {
-                      stroke: theme.greyScale4,
-                      textFill: theme.greyScale3,
-                    },
-                  }}
-                  xAxis={{
-                    style: styles.histogram(theme).axis,
-                  }}
-                  yAxis={{
-                    style: styles.histogram(theme).axis,
-                    title: `${
-                      variable.active_calculation === 'number' ? '#' : '%'
-                    } of Cases`,
-                  }}
+                <ClinicalHistogram
+                  active_calculation={variable.active_calculation}
+                  histogramData={histogramData}
+                  histogramStyles={styles.histogram}
+                  theme={theme}
+                  type={variable.type}
                   />
               )}
 

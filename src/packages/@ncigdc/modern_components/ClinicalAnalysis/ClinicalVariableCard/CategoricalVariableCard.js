@@ -332,7 +332,6 @@ const getTableData = (
             {selectedSurvivalLoadingIds.indexOf(bin.key) !== -1
               ? <SpinnerIcon />
               : <SurvivalIcon />}
-
             <Hidden>add to survival plot</Hidden>
           </Button>
         </Tooltip>
@@ -918,6 +917,7 @@ export default compose(
     })
   ),
   withProps(
+    // SLIGHTLY DIFFERENT
     ({
       binData,
       fieldName,
@@ -994,6 +994,7 @@ export default compose(
     })
   ),
   withPropsOnChange(
+    // SAME
     (props, nextProps) => props.variable.active_chart !== nextProps.variable.active_chart ||
       !isEqual(props.data, nextProps.data) ||
       !isEqual(props.variable.bins, nextProps.variable.bins),
@@ -1004,10 +1005,12 @@ export default compose(
     }
   ),
   withPropsOnChange(
+    // SAME
     (props, nextProps) => props.id !== nextProps.id,
     ({ setSelectedBuckets }) => setSelectedBuckets([])
   ),
   withPropsOnChange(
+    // DIFFERENT
     (props, nextProps) => !isEqual(props.variable.bins, nextProps.variable.bins),
     ({ variable: { bins } }) => ({
       resetCustomBinsDisabled: Object.keys(bins)
@@ -1016,6 +1019,7 @@ export default compose(
     })
   ),
   lifecycle({
+    // SAME
     componentDidMount(): void {
       const {
         bucketsOrganizedByKey,

@@ -95,63 +95,12 @@ import {
 import '../boxplot.css';
 import '../qq.css';
 
-interface ITableHeading {
-  key: string;
-  title: string;
-  style?: React.CSSProperties;
-}
-
-type TPlotType = 'continuous';
-type TActiveChart = 'box' | 'survival' | 'histogram';
-type TActiveCalculation = 'number' | 'percentage';
-type TVariableType =
-  | 'Demographic'
-  | 'Diagnosis'
-  | 'Exposure'
-  | 'Treatment'
-  | 'Follow_up' // confirm type name
-  | 'Molecular_test'; // confirm type name
-
-interface IVariable {
-  bins: any[]; // tbd - bins still need spec
-  active_calculation: TActiveCalculation;
-  active_chart: TActiveChart;
-  plotTypes: TPlotType;
-  type: TVariableType;
-}
-
-interface IVariableCardProps {
-  variable: IVariable;
-  fieldName: string;
-  plots: any[];
-  style: React.CSSProperties;
-  theme: IThemeProps;
-  dispatch: (arg: any) => void;
-  id: string;
-  survivalData: any[];
-}
-
-interface IVizButton {
-  title: string;
-  icon: JSX.Element;
-  action: (
-    payload: IAnalysisPayload
-  ) => { type: string, payload: IAnalysisPayload };
-}
-
-interface IVizButtons {
-  survival: IVizButton;
-  histogram: IVizButton;
-  box: IVizButton;
-  delete: IVizButton;
-}
-
 const styles = {
   actionMenuItem: {
     cursor: 'pointer',
     lineHeight: '1.5',
   },
-  actionMenuItemDisabled: (theme: IThemeProps) => ({
+  actionMenuItemDisabled: theme => ({
     ':hover': {
       backgroundColor: 'transparent',
       color: theme.greyScale5,
@@ -160,7 +109,7 @@ const styles = {
     color: theme.greyScale5,
     cursor: 'not-allowed',
   }),
-  activeButton: (theme: IThemeProps) => ({
+  activeButton: theme => ({
     ...styles.common(theme),
     backgroundColor: theme.primary,
     border: `1px solid ${theme.primary}`,
@@ -170,7 +119,7 @@ const styles = {
     height: '14px',
     width: '14px',
   },
-  common: (theme: IThemeProps) => ({
+  common: theme => ({
     ':hover': {
       backgroundColor: 'rgb(0,138,224)',
       border: '1px solid rgb(0,138,224)',
@@ -181,7 +130,7 @@ const styles = {
     color: theme.greyScale2,
     justifyContent: 'flex-start',
   }),
-  histogram: (theme: IThemeProps) => ({
+  histogram: theme => ({
     axis: {
       fontSize: '1.1rem',
       fontWeight: '500',
@@ -191,7 +140,7 @@ const styles = {
   }),
 };
 
-const vizButtons: IVizButtons = {
+const vizButtons = {
   box: {
     action: updateClinicalAnalysisVariable,
     icon: <BoxPlot style={styles.chartIcon} />,
@@ -231,6 +180,9 @@ const getTableData = (
     return [];
   }
 
+  // DIFFERENT - DISPLAY DATA IS DIFFERENT,
+  // THE OTHER STUFF IS THE SAME
+
   const displayData = binData
     .sort((a, b) => a.keyArray[0] - b.keyArray[0])
     .reduce(getContinuousBuckets, []);
@@ -239,6 +191,7 @@ const getTableData = (
     {},
     bin,
     {
+      // SAME
       select: (
         <input
           aria-label={`${fieldName} ${bin.key}`}
@@ -264,6 +217,7 @@ const getTableData = (
       ),
     },
     variable.active_chart === 'survival' && {
+      // SAME
       survival: (
         <Tooltip
           Component={
@@ -307,7 +261,6 @@ const getTableData = (
             {selectedSurvivalLoadingIds.indexOf(bin.key) !== -1
               ? <SpinnerIcon />
               : <SurvivalIcon />}
-
             <Hidden>add to survival plot</Hidden>
           </Button>
         </Tooltip>
@@ -317,6 +270,7 @@ const getTableData = (
 };
 
 const getBoxTableData = (data = {}) => (
+  // DIFFERENT - CONTINUOUS ONLY
   Object.keys(data).length
     ? sortBy(Object.keys(data), datum => boxTableAllowedStats.indexOf(datum.toLowerCase()))
       .reduce(
@@ -332,7 +286,7 @@ const getBoxTableData = (data = {}) => (
     : []
 );
 
-const ContinuousVariableCard: React.ComponentType<IVariableCardProps> = ({
+const ContinuousVariableCard = ({
   binData,
   currentAnalysis,
   dataBuckets,
@@ -340,10 +294,12 @@ const ContinuousVariableCard: React.ComponentType<IVariableCardProps> = ({
   dataValues,
   defaultContinuousData,
   dispatch,
+  dispatchUpdateVariable,
   fieldName,
   filters,
   getContinuousBuckets,
   id,
+  openCustomBinModal,
   overallSurvivalData,
   plots,
   qqData,
@@ -364,6 +320,8 @@ const ContinuousVariableCard: React.ComponentType<IVariableCardProps> = ({
   variable,
   wrapperId,
 }) => {
+  // DIFFERENT - BOX IS CONTINUOUS ONLY
+  // SAME - EVERYTHING ELSE UNTIL RENDER/RETURN
   const tableData = variable.active_chart === 'box'
     ? getBoxTableData(dataValues)
     : getTableData(
@@ -440,6 +398,7 @@ const ContinuousVariableCard: React.ComponentType<IVariableCardProps> = ({
         </h2>
         <Row>
           {plots.concat('delete')
+          // SAME
             .map(plotType => (
               <Tooltip Component={vizButtons[plotType].title} key={plotType}>
                 <Button
@@ -472,6 +431,7 @@ const ContinuousVariableCard: React.ComponentType<IVariableCardProps> = ({
         </Row>
       </Row>
       {isEmpty(tableData)
+      // SAME
         ? (
           <Row
             id={`${wrapperId}-container`}
@@ -501,14 +461,10 @@ const ContinuousVariableCard: React.ComponentType<IVariableCardProps> = ({
                         aria-label="Percentage of cases"
                         checked={variable.active_calculation === 'percentage'}
                         id={`variable-percentage-radio-${fieldName}`}
-                        onChange={() => dispatch(
-                          updateClinicalAnalysisVariable({
-                            fieldName,
-                            id,
-                            value: 'percentage',
-                            variableKey: 'active_calculation',
-                          })
-                        )}
+                        onChange={() => dispatchUpdateVariable({
+                          value: 'percentage',
+                          variableKey: 'active_calculation',
+                        })}
                         style={{ marginRight: 5 }}
                         type="radio"
                         value="percentage"
@@ -523,14 +479,10 @@ const ContinuousVariableCard: React.ComponentType<IVariableCardProps> = ({
                         aria-label="Number of cases"
                         checked={variable.active_calculation === 'number'}
                         id={`variable-number-radio-${fieldName}`}
-                        onChange={() => dispatch(
-                          updateClinicalAnalysisVariable({
-                            fieldName,
-                            id,
-                            value: 'number',
-                            variableKey: 'active_calculation',
-                          })
-                        )}
+                        onChange={() => dispatchUpdateVariable({
+                          value: 'number',
+                          variableKey: 'active_calculation',
+                        })}
                         style={{ marginRight: 5 }}
                         type="radio"
                         value="number"
@@ -564,6 +516,7 @@ const ContinuousVariableCard: React.ComponentType<IVariableCardProps> = ({
                 </Row>
               )}
 
+              {/* SAME */}
               {variable.active_chart === 'histogram' && (
                 <ClinicalHistogram
                   active_calculation={variable.active_calculation}
@@ -574,6 +527,7 @@ const ContinuousVariableCard: React.ComponentType<IVariableCardProps> = ({
                   />
               )}
 
+              {/* SAME */}
               {variable.active_chart === 'survival' && (
                 <ClinicalSurvivalPlot
                   plotType={selectedSurvivalValues.length === 0
@@ -586,6 +540,7 @@ const ContinuousVariableCard: React.ComponentType<IVariableCardProps> = ({
                   />
               )}
 
+              {/* DIFFERENT - CONTINUOUS ONLY */}
               {variable.active_chart === 'box' && (
                 <Column
                   style={{
@@ -745,6 +700,7 @@ const ContinuousVariableCard: React.ComponentType<IVariableCardProps> = ({
                     minWidth: 205,
                   }}
                   >
+                  {/* SAME - EXCEPT BOX IS CONTINUOUS ONLY */}
                   {variable.active_chart === 'box' || [
                     <DropdownItem
                       key="save-set"
@@ -823,6 +779,7 @@ const ContinuousVariableCard: React.ComponentType<IVariableCardProps> = ({
                     </DropdownItem>,
                   ]}
 
+                  {/* SAME */}
                   <DropdownItem
                     key="tsv"
                     onClick={() => downloadToTSV({
@@ -858,133 +815,41 @@ const ContinuousVariableCard: React.ComponentType<IVariableCardProps> = ({
                     )}
                     dropdownStyle={{ right: 0 }}
                     >
+                    {/* SAME - ELEMENT
+                      DIFFERENT - ONCLICK */}
                     <DropdownItem
-                      onClick={() => dispatch(setModal(
-                        <ContinuousCustomBinsModal
-                          binData={binData}
-                          continuousBinType={variable.continuousBinType}
-                          continuousCustomInterval={variable.continuousCustomInterval}
-                          continuousCustomRanges={variable.continuousCustomRanges}
-                          defaultContinuousData={defaultContinuousData}
-                          fieldName={humanify({ term: fieldName })}
-                          onClose={() => dispatch(setModal(null))}
-                          onUpdate={(
-                            newBins,
-                            continuousBinType,
-                            continuousCustomInterval,
-                            continuousCustomRanges,
-                            continuousReset,
-                          ) => {
-                            dispatch(
-                              updateClinicalAnalysisVariable({
-                                fieldName,
-                                id,
-                                value: continuousReset
-                                  ? defaultContinuousData.buckets
-                                  : newBins,
-                                variableKey: 'bins',
-                              })
-                            );
-                            dispatch(
-                              updateClinicalAnalysisVariable({
-                                fieldName,
-                                id,
-                                value: continuousReset
-                                  ? 'default'
-                                  : continuousBinType,
-                                variableKey: 'continuousBinType',
-                              })
-                            );
-                            !continuousReset &&
-                              continuousBinType === 'interval' &&
-                              (
-                                dispatch(
-                                  updateClinicalAnalysisVariable({
-                                    fieldName,
-                                    id,
-                                    value: continuousCustomInterval,
-                                    variableKey: 'continuousCustomInterval',
-                                  })
-                                ));
-                            !continuousReset &&
-                              continuousBinType === 'range' &&
-                              (
-                                dispatch(
-                                  updateClinicalAnalysisVariable({
-                                    fieldName,
-                                    id,
-                                    value: continuousCustomRanges,
-                                    variableKey: 'continuousCustomRanges',
-                                  })
-                                ));
-                            continuousReset &&
-                              (
-                                dispatch(
-                                  updateClinicalAnalysisVariable({
-                                    fieldName,
-                                    id,
-                                    value: [],
-                                    variableKey: 'continuousCustomRanges',
-                                  })
-                                ));
-                            continuousReset &&
-                              (
-                                dispatch(
-                                  updateClinicalAnalysisVariable({
-                                    fieldName,
-                                    id,
-                                    value: {},
-                                    variableKey: 'continuousCustomInterval',
-                                  })
-                                ));
-                            dispatch(setModal(null));
-                          }}
-                          />
-                      ))}
+                      onClick={openCustomBinModal}
                       style={styles.actionMenuItem}
                       >
                       Edit Bins
                     </DropdownItem>
 
+                    {/* SAME - ELEMENT
+                      DIFFERENT - ONCLICK */}
+
                     <DropdownItem
                       onClick={() => {
                         if (resetCustomBinsDisabled) return;
-                        dispatch(
-                          updateClinicalAnalysisVariable({
-                            fieldName,
-                            id,
-                            value: defaultContinuousData.buckets,
-                            variableKey: 'bins',
-                          })
-                        );
-                        dispatch(
-                          updateClinicalAnalysisVariable({
-                            fieldName,
-                            id,
-                            value: 'default',
-                            variableKey: 'continuousBinType',
-                          })
-                        );
-                        dispatch(
-                          updateClinicalAnalysisVariable({
-                            fieldName,
-                            id,
-                            value: {},
-                            variableKey: 'continuousCustomInterval',
-                          })
-                        );
-                        dispatch(
-                          updateClinicalAnalysisVariable({
-                            fieldName,
-                            id,
-                            value: [],
-                            variableKey: 'continuousCustomRanges',
-                          })
-                        );
+                        dispatchUpdateVariable({
+                          value: defaultContinuousData.buckets,
+                          variableKey: 'bins',
+                        });
+                        dispatchUpdateVariable({
+                          value: 'default',
+                          variableKey: 'continuousBinType',
+                        });
+                        dispatchUpdateVariable({
+                          value: {},
+                          variableKey: 'continuousCustomInterval',
+                        });
+                        dispatchUpdateVariable({
+                          value: [],
+                          variableKey: 'continuousCustomRanges',
+                        });
                       }}
                       style={{
                         ...styles.actionMenuItem,
-                        ...(resetCustomBinsDisabled 
+                        ...(resetCustomBinsDisabled
                           ? styles.actionMenuItemDisabled(theme)
                           : {}),
                       }}
@@ -995,6 +860,7 @@ const ContinuousVariableCard: React.ComponentType<IVariableCardProps> = ({
                 )}
               </Row>
 
+              {/* SAME */}
               <EntityPageHorizontalTable
                 data={tableData.map(tableRow => Object.assign(
                   {},
@@ -1020,6 +886,7 @@ const ContinuousVariableCard: React.ComponentType<IVariableCardProps> = ({
 };
 
 export default compose(
+  // SAME
   setDisplayName('EnhancedContinuousVariableCard'),
   connect((state: any) => ({ analysis: state.analysis })),
   withTheme,
@@ -1028,9 +895,31 @@ export default compose(
   withState('selectedSurvivalLoadingIds', 'setSelectedSurvivalLoadingIds', []),
   withState('survivalPlotLoading', 'setSurvivalPlotLoading', true),
   withState('selectedBuckets', 'setSelectedBuckets', []),
+  // DIFFERENT - ONLY CONTINUOUS HAS QQ
   withState('qqData', 'setQQData', []),
   withState('qqDataIsSet', 'setQQDataIsSet', false),
   withPropsOnChange(
+    // SAME
+    (props, nextProps) => props.id !== nextProps.id,
+    ({
+      dispatch,
+      fieldName,
+      id,
+    }) => ({
+      dispatchUpdateVariable: ({ value, variableKey }) => {
+        dispatch(
+          updateClinicalAnalysisVariable({
+            fieldName,
+            id,
+            value,
+            variableKey,
+          })
+        );
+      },
+    }),
+  ),
+  withPropsOnChange(
+    // DIFFERENT
     (props, nextProps) => !isEqual(props.data, nextProps.data),
     ({ data, fieldName }) => {
       const sanitisedId = fieldName.split('.').pop();
@@ -1094,53 +983,49 @@ export default compose(
     }
   ),
   withPropsOnChange(
+     // DIFFERENT
     (props, nextProps) => !isEqual(props.dataBuckets, nextProps.dataBuckets) ||
       props.setId !== nextProps.setId,
     ({
       dataBuckets,
-      dispatch,
-      fieldName,
-      id,
+      dispatchUpdateVariable,
       variable,
     }) => {
-      dispatch(
-        updateClinicalAnalysisVariable({
-          fieldName,
-          id,
-          value: variable.continuousBinType === 'default'
-            ? dataBuckets.reduce((acc, curr, index) => Object.assign(
+      dispatchUpdateVariable({
+        value: variable.continuousBinType === 'default'
+          ? dataBuckets.reduce((acc, curr, index) => Object.assign(
+            {},
+            acc,
+            {
+              [dataBuckets[index].key]: Object.assign(
+                {},
+                dataBuckets[index],
+                { groupName: dataBuckets[index].key },
+              ),
+            },
+          ), {})
+          : Object.keys(variable.bins)
+            .reduce((acc, curr, index) => Object.assign(
               {},
               acc,
               {
-                [dataBuckets[index].key]: Object.assign(
+                [curr]: Object.assign(
                   {},
-                  dataBuckets[index],
-                  { groupName: dataBuckets[index].key },
+                  variable.bins[curr],
+                  {
+                    doc_count: dataBuckets[index]
+                    ? dataBuckets[index].doc_count
+                    : 0,
+                  }
                 ),
-              },
-            ), {})
-            : Object.keys(variable.bins)
-              .reduce((acc, curr, index) => Object.assign(
-                {},
-                acc,
-                {
-                  [curr]: Object.assign(
-                    {},
-                    variable.bins[curr],
-                    {
-                      doc_count: dataBuckets[index]
-                      ? dataBuckets[index].doc_count
-                      : 0,
-                    }
-                  ),
-                }
-              ), {}),
-          variableKey: 'bins',
-        }),
-      );
+              }
+            ), {}),
+        variableKey: 'bins',
+      });
     }
   ),
   withProps(
+    // DIFFERENT
     ({
       data: { explore },
       dataBuckets,
@@ -1190,13 +1075,13 @@ export default compose(
             [r.key]: Object.assign(
               {},
               r,
-              { 
+              {
                 groupName: r.groupName !== undefined &&
-                  r.groupName !== '' 
-                  ? r.groupName 
+                  r.groupName !== ''
+                  ? r.groupName
                   : r.key,
               }
-            )
+            ),
           }
         ), {}),
         getContinuousBuckets: (acc, { doc_count, key, keyArray }) => {
@@ -1261,7 +1146,8 @@ export default compose(
       });
     }
   ),
-  withProps(({ data: { explore }, fieldName, variable }) => {
+  withProps(({ data: { explore }, fieldName }) => {
+    // DIFFERENT - CONTINUOUS ONLY
     const dataStats = explore
       ? explore.cases.aggregations[`${createFacetFieldString(fieldName)}`].stats
       : {
@@ -1303,6 +1189,7 @@ export default compose(
     });
   }),
   withProps(
+    // SLIGHTLY DIFFERENT
     ({
       dataBuckets,
       fieldName,
@@ -1390,6 +1277,7 @@ export default compose(
     })
   ),
   withPropsOnChange(
+    // SAME
     (props, nextProps) => props.variable.active_chart !== nextProps.variable.active_chart ||
       !isEqual(props.data, nextProps.data) ||
       !isEqual(props.variable.bins, nextProps.variable.bins),
@@ -1400,34 +1288,116 @@ export default compose(
     }
   ),
   withPropsOnChange(
+    // SAME
     (props, nextProps) => props.id !== nextProps.id,
     ({ setSelectedBuckets }) => setSelectedBuckets([])
   ),
   withPropsOnChange(
+    // DIFFERENT
     (props, nextProps) => props.variable.continuousBinType !== nextProps.variable.continuousBinType,
     ({ variable: { continuousBinType } }) => ({
       resetCustomBinsDisabled: continuousBinType === 'default',
     })
   ),
+  // withProps(({}) => ({
+    // WIP
+  //   () => dispatchUpdateVariable({
+  //     value: 'percentage',
+  //     variableKey: 'active_calculation',
+  //   })
+  // })),
+  withPropsOnChange(
+    (props, nextProps) => !isEqual(props.binData, nextProps.binData) ||
+    props.variable.continuousBinType !== nextProps.variable.continuousBinType ||
+    !isEqual(props.variable.continuousCustomInterval, nextProps.variable.continuousCustomInterval) ||
+    !isEqual(props.variable.continuousCustomRanges, nextProps.variable.continuousCustomRanges) ||
+    !isEqual(props.defaultContinuousData, nextProps.defaultContinuousData),
+    ({
+      binData,
+      defaultContinuousData,
+      dispatch,
+      dispatchUpdateVariable,
+      fieldName,
+      variable,
+    }) => ({
+      openCustomBinModal: () => dispatch(setModal(
+        <ContinuousCustomBinsModal
+          binData={binData}
+          continuousBinType={variable.continuousBinType}
+          continuousCustomInterval={variable.continuousCustomInterval}
+          continuousCustomRanges={variable.continuousCustomRanges}
+          defaultContinuousData={defaultContinuousData}
+          fieldName={humanify({ term: fieldName })}
+          onClose={() => dispatch(setModal(null))}
+          onUpdate={(
+            newBins,
+            continuousBinType,
+            continuousCustomInterval,
+            continuousCustomRanges,
+            continuousReset,
+          ) => {
+            dispatchUpdateVariable({
+              value: continuousReset
+                ? defaultContinuousData.buckets
+                : newBins,
+              variableKey: 'bins',
+            });
+            dispatchUpdateVariable({
+              value: continuousReset
+                ? 'default'
+                : continuousBinType,
+              variableKey: 'continuousBinType',
+            });
+            !continuousReset &&
+              continuousBinType === 'interval' &&
+              (
+                dispatchUpdateVariable({
+                  value: continuousCustomInterval,
+                  variableKey: 'continuousCustomInterval',
+                })
+              );
+            !continuousReset &&
+              continuousBinType === 'range' &&
+              (
+                dispatchUpdateVariable({
+                  value: continuousCustomRanges,
+                  variableKey: 'continuousCustomRanges',
+                })
+              );
+            continuousReset &&
+              (
+                dispatchUpdateVariable({
+                  value: [],
+                  variableKey: 'continuousCustomRanges',
+                })
+              );
+            continuousReset &&
+              (
+                dispatchUpdateVariable({
+                  value: {},
+                  variableKey: 'continuousCustomInterval',
+                })
+              );
+            dispatch(setModal(null));
+          }}
+          />
+      )),
+    })
+  ),
   lifecycle({
+    // SAME
     componentDidMount(): void {
       const {
         bucketsOrganizedByKey,
-        dispatch,
-        fieldName,
-        id,
+        dispatchUpdateVariable,
         variable,
         wrapperId,
       } = this.props;
       if (variable.bins === undefined || isEmpty(variable.bins)) {
-        dispatch(
-          updateClinicalAnalysisVariable({
-            fieldName,
-            id,
-            value: bucketsOrganizedByKey,
-            variableKey: 'bins',
-          }),
-        );
+        dispatchUpdateVariable({
+          value: bucketsOrganizedByKey,
+          variableKey: 'bins',
+        });
       }
       if (variable.scrollToCard === false) return;
       const offset = document.getElementById('header').getBoundingClientRect().bottom + 10;
@@ -1440,14 +1410,10 @@ export default compose(
         });
       }
 
-      dispatch(
-        updateClinicalAnalysisVariable({
-          fieldName,
-          id,
-          value: false,
-          variableKey: 'scrollToCard',
-        })
-      );
+      dispatchUpdateVariable({
+        value: false,
+        variableKey: 'scrollToCard',
+      });
     },
   })
 )(ContinuousVariableCard);

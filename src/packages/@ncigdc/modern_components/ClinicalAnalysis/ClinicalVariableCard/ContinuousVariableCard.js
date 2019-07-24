@@ -79,6 +79,7 @@ import timestamp from '@ncigdc/utils/timestamp';
 
 import { analysisColors } from '@ncigdc/utils/constants';
 import ContinuousCustomBinsModal from '@ncigdc/components/Modals/ContinuousBinning/ContinuousCustomBinsModal';
+import ClinicalHistogram from './ClinicalHistogram';
 
 import {
   BOX_PLOT_RATIO,
@@ -380,7 +381,7 @@ const ContinuousVariableCard: React.ComponentType<IVariableCardProps> = ({
       selectedSurvivalLoadingIds,
     );
 
-  const chartData =
+  const histogramData =
     variable.active_chart === 'histogram'
       ? tableData.map(d => ({
         fullLabel: d.groupName || d.key,
@@ -395,7 +396,7 @@ const ContinuousVariableCard: React.ComponentType<IVariableCardProps> = ({
       : [];
 
   const maxKeyNameLength = (
-    maxBy(chartData.map(d => d.fullLabel), (item) => item.length) || ''
+    maxBy(histogramData.map(d => d.fullLabel), (item) => item.length) || ''
   ).length;
 
   // set action will default to cohort total when no buckets are selected
@@ -540,7 +541,7 @@ const ContinuousVariableCard: React.ComponentType<IVariableCardProps> = ({
                       # of Cases
                     </label>
                     <DownloadVisualizationButton
-                      data={chartData.map(d => ({
+                      data={histogramData.map(d => ({
                         label: d.fullLabel,
                         value: d.value,
                       }))}
@@ -567,39 +568,12 @@ const ContinuousVariableCard: React.ComponentType<IVariableCardProps> = ({
               )}
 
               {variable.active_chart === 'histogram' && (
-                <BarChart
-                  data={chartData}
-                  height={CHART_HEIGHT}
-                  margin={{
-                    bottom: 50,
-                    left: 55,
-                    right: 50,
-                    top: 20,
-                  }}
-                  styles={{
-                    bars: { fill: analysisColors[variable.type] || theme.secondary },
-                    tooltips: {
-                      fill: '#fff',
-                      stroke: theme.greyScale4,
-                      textFill: theme.greyScale3,
-                    },
-                    xAxis: {
-                      textFill: theme.greyScaleD3,
-                    },
-                    yAxis: {
-                      stroke: theme.greyScale4,
-                      textFill: theme.greyScale3,
-                    },
-                  }}
-                  xAxis={{
-                    style: styles.histogram(theme).axis,
-                  }}
-                  yAxis={{
-                    style: styles.histogram(theme).axis,
-                    title: `${
-                      variable.active_calculation === 'number' ? '#' : '%'
-                    } of Cases`,
-                  }}
+                <ClinicalHistogram
+                  active_calculation={variable.active_calculation}
+                  histogramData={histogramData}
+                  histogramStyles={styles.histogram}
+                  theme={theme}
+                  type={variable.type}
                   />
               )}
 

@@ -87,12 +87,12 @@ const styles = {
     padding: '0.5rem 1rem',
   },
   disabled: {
-    backgroundColor: theme.greyScale5,
-    borderColor: theme.greyScale5,
+    backgroundColor: theme.greyScale4,
+    borderColor: theme.greyScale4,
     color: '#fff',
     ':hover': {
-      backgroundColor: theme.greyScale5,
-      borderColor: theme.greyScale5,
+      backgroundColor: theme.greyScale4,
+      borderColor: theme.greyScale4,
       color: '#fff',
     },
   },
@@ -184,8 +184,11 @@ const GroupValuesModal = ({
                   setGlobalWarning('');
                   setListWarning({});
                 }}
-                style={{...visualizingButton, ...(resetDisabled ?
-                  styles.disabled : {})}}
+                style={{
+                  ...visualizingButton,
+                  ...(resetDisabled ?
+                  styles.disabled : {}),
+                }}
                 >
                   <Undo />
                 </Button>
@@ -199,8 +202,11 @@ const GroupValuesModal = ({
                   setGlobalWarning('');
                   setListWarning({});
                 }}
-                style={{...visualizingButton, ...(groupDisabled ?
-                  styles.disabled : {})}}
+                style={{
+                  ...visualizingButton,
+                  ...(groupDisabled ?
+                  styles.disabled : {}),
+                }}
                 >
                 Group
               </Button>
@@ -228,7 +234,10 @@ const GroupValuesModal = ({
                   setGlobalWarning('');
                   setListWarning({});
                 }}
-                style={{...visualizingButton, ...(ungroupDisabled ? styles.disabled : {})}}
+                style={{
+                  ...visualizingButton,
+                  ...(ungroupDisabled ? styles.disabled : {}),
+                }}
                 >
                 Ungroup
               </Button>
@@ -261,7 +270,10 @@ const GroupValuesModal = ({
                   setGlobalWarning('');
                   setListWarning({});
                 }}
-                style={{...visualizingButton, ...(hideDisabled ? styles.disabled : {})}}
+                style={{
+                  ...visualizingButton,
+                  ...(hideDisabled ? styles.disabled : {}),
+                }}
                 >
                 Hide
               </Button>
@@ -423,7 +435,10 @@ const GroupValuesModal = ({
                 setGlobalWarning('');
                 setListWarning({});
               }}
-              style={{...visualizingButton, ...(showDisabled ? styles.disabled : {})}}
+              style={{
+                ...visualizingButton,
+                ...(showDisabled ? styles.disabled : {}),
+              }}
               >
               Show
             </Button>

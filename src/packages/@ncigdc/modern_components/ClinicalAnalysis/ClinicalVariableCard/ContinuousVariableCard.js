@@ -30,7 +30,6 @@ import EntityPageHorizontalTable from '@ncigdc/components/EntityPageHorizontalTa
 import Dropdown from '@ncigdc/uikit/Dropdown';
 import DropdownItem from '@ncigdc/uikit/DropdownItem';
 import Hidden from '@ncigdc/components/Hidden';
-import BarChart from '@ncigdc/components/Charts/BarChart';
 import { CreateExploreCaseSetButton, AppendExploreCaseSetButton, RemoveFromExploreCaseSetButton } from '@ncigdc/modern_components/withSetAction';
 
 import { setModal } from '@ncigdc/dux/modal';
@@ -46,8 +45,6 @@ import { downloadToTSV } from '@ncigdc/components/DownloadTableToTsvButton';
 import QQPlotQuery from '@ncigdc/modern_components/QQPlot/QQPlotQuery';
 import BoxPlotWrapper from '@oncojs/boxplot';
 
-// survival plot
-import SurvivalPlotWrapper from '@ncigdc/components/SurvivalPlotWrapper';
 import {
   getSurvivalCurvesArray,
   MAXIMUM_CURVES,
@@ -80,6 +77,7 @@ import timestamp from '@ncigdc/utils/timestamp';
 import { analysisColors } from '@ncigdc/utils/constants';
 import ContinuousCustomBinsModal from '@ncigdc/components/Modals/ContinuousBinning/ContinuousCustomBinsModal';
 import ClinicalHistogram from './ClinicalHistogram';
+import ClinicalSurvivalPlot from './ClinicalSurvivalPlot';
 
 import {
   BOX_PLOT_RATIO,
@@ -577,28 +575,15 @@ const ContinuousVariableCard: React.ComponentType<IVariableCardProps> = ({
               )}
 
               {variable.active_chart === 'survival' && (
-                <div
-                  style={{
-                    display: 'flex',
-                    flex: '0 0 auto',
-                    flexDirection: 'column',
-                    height: '265px',
-                    justifyContent: 'center',
-                    margin: '5px 2px 10px',
-                  }}
-                  >
-                  <SurvivalPlotWrapper
-                    {...selectedSurvivalValues.length === 0
-                      ? overallSurvivalData
-                      : selectedSurvivalData}
-                    height={202}
-                    plotType={selectedSurvivalValues.length === 0
-                      ? 'clinicalOverall'
-                      : 'categorical'}
-                    survivalPlotLoading={survivalPlotLoading}
-                    uniqueClass="clinical-survival-plot"
-                    />
-                </div>
+                <ClinicalSurvivalPlot
+                  plotType={selectedSurvivalValues.length === 0
+                    ? 'clinicalOverall'
+                    : 'categorical'}
+                  survivalData={selectedSurvivalValues.length === 0
+                    ? overallSurvivalData
+                    : selectedSurvivalData}
+                  survivalPlotLoading={survivalPlotLoading}
+                  />
               )}
 
               {variable.active_chart === 'box' && (

@@ -1053,19 +1053,19 @@ export default compose(
         }
         setSurvivalPlotLoading(true);
 
-        const nextValues =
+        const nextBins =
           selectedSurvivalBins.indexOf(bin.key) === -1
             ? selectedSurvivalBins.concat(bin.key)
             : selectedSurvivalBins.filter(s => s !== bin.key);
 
-        setSelectedSurvivalBins(nextValues);
-        setSelectedSurvivalLoadingIds(nextValues);
+        setSelectedSurvivalBins(nextBins);
+        setSelectedSurvivalLoadingIds(nextBins);
 
-        const binsForPlot = nextValues
-          .map(v => data.filter(d => d.key === v)[0])
-          .map(filteredData => Object.assign(
+        const binsForPlot = nextBins
+          .map(nextBin => data.filter(datum => datum.key === nextBin)[0])
+          .map(nextBin => Object.assign(
             {},
-            filteredData,
+            nextBin,
             { doc_count: 0 },
           ));
 

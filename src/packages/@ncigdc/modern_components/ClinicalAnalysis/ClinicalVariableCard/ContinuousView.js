@@ -18,14 +18,9 @@ import EntityPageHorizontalTable from '@ncigdc/components/EntityPageHorizontalTa
 import Dropdown from '@ncigdc/uikit/Dropdown';
 import DropdownItem from '@ncigdc/uikit/DropdownItem';
 import Hidden from '@ncigdc/components/Hidden';
-import { CreateExploreCaseSetButton, AppendExploreCaseSetButton } from '@ncigdc/modern_components/withSetAction';
 
-import { setModal } from '@ncigdc/dux/modal';
-import SaveSetModal from '@ncigdc/components/Modals/SaveSetModal';
-import AppendSetModal from '@ncigdc/components/Modals/AppendSetModal';
 import DownloadVisualizationButton from '@ncigdc/components/DownloadVisualizationButton';
 import wrapSvg from '@ncigdc/utils/wrapSvg';
-import { downloadToTSV } from '@ncigdc/components/DownloadTableToTsvButton';
 
 import {
   MAXIMUM_CURVES,
@@ -34,13 +29,13 @@ import {
 import { SpinnerIcon, SurvivalIcon } from '@ncigdc/theme/icons';
 
 import termCapitaliser from '@ncigdc/utils/customisation';
-import timestamp from '@ncigdc/utils/timestamp';
 
 import {
   humanify,
   parseContinuousValue,
 } from '@ncigdc/utils/string';
 
+import ActionsDropdown from './ActionsDropdown';
 import ClinicalHistogram from './ClinicalHistogram';
 import ClinicalSurvivalPlot from './ClinicalSurvivalPlot';
 
@@ -97,7 +92,7 @@ const getTableData = (
                 reject(selectedBins, r => r.key === bin.key)
               );
             } else {
-              setSelectedBins(selectedBins.int(bin));
+              setSelectedBins(selectedBins.concat(bin));
             }
           }}
           style={{
@@ -213,7 +208,6 @@ const ContinuousView = ({
   updateSelectedSurvivalBins,
   variable,
   wrapperId,
-  openRemoveSetModal,
 }) => {
   // MOVE TO RECOMPOSE ???
   // DIFFERENT - BOX IS CONTINUOUS ONLY
@@ -253,16 +247,10 @@ const ContinuousView = ({
       .map(d => d.fullLabel), (item) => item.length) || ''
   ).length;
 
-  // set action will default to cohort total when no bins are selected
-  const totalFromSelectedBins = selectedBins && selectedBins.length
-    ? selectedBins.reduce((acc, bin) => acc + bin.chart_doc_count, 0)
-    : totalDocs;
-
   const tsvSubstring = fieldName.replace(/\./g, '-');
   const cardFilters = getCardFilters(
     variable.plotTypes, selectedBins, fieldName, filters
   );
-  const setActionsDisabled = get(selectedBins, 'length', 0) === 0;
   const disabledCharts = plotType => isEmpty(tableData) &&
     plotType !== 'delete';
 
@@ -465,111 +453,17 @@ const ContinuousView = ({
                   margin: '5px 0',
                 }}
                 >
-                <Dropdown
-                  button={(
-                    <Button
-                      rightIcon={<DownCaretIcon />}
-                      style={{
-                        ...visualizingButton,
-                        padding: '0 12px',
-                      }}
-                      >
-                  Select Action
-                    </Button>
-                  )}
-                  dropdownStyle={{
-                    left: 0,
-                    minWidth: 205,
-                  }}
-                  >
-                  {/* SAME - EXCEPT BOX IS CONTINUOUS ONLY */}
-                  {variable.active_chart === 'box' || [
-                    <DropdownItem
-                      key="save-set"
-                      style={{
-                        ...styles.actionMenuItem,
-                        ...setActionsDisabled ? styles.actionMenuItemDisabled(theme) : {},
-                      }}
-                      >
-                      <Row
-                        onClick={() => setActionsDisabled || dispatch(setModal(
-                          <SaveSetModal
-                            CreateSetButton={CreateExploreCaseSetButton}
-                            displayType="case"
-                            filters={cardFilters}
-                            score="gene.gene_id"
-                            setName="Custom Case Selection"
-                            sort={null}
-                            title={`Save ${totalFromSelectedBins} Cases as New Set`}
-                            total={totalFromSelectedBins}
-                            type="case"
-                            />
-                        ))}
-                        >
-                        Save as new case set
-                      </Row>
-                    </DropdownItem>,
-                    <DropdownItem
-                      key="append-set"
-                      style={{
-                        ...styles.actionMenuItem,
-                        ...setActionsDisabled ? styles.actionMenuItemDisabled(theme) : {},
-                      }}
-                      >
-                      <Row
-                        onClick={() => setActionsDisabled || dispatch(setModal(
-                          <AppendSetModal
-                            AppendSetButton={AppendExploreCaseSetButton}
-                            displayType="case"
-                            field="cases.case_id"
-                            filters={cardFilters}
-                            scope="explore"
-                            score="gene.gene_id"
-                            sort={null}
-                            title={`Add ${totalFromSelectedBins} Cases to Existing Set`}
-                            total={totalFromSelectedBins}
-                            type="case"
-                            />
-                        ))}
-                        >
-                        Add to existing case set
-                      </Row>
-                    </DropdownItem>,
-                    <DropdownItem
-                      key="remove-set"
-                      style={Object.assign(
-                        {},
-                        styles.actionMenuItem,
-                        setActionsDisabled ? styles.actionMenuItemDisabled(theme) : {},
-                      )}
-                      >
-                      <Row
-                        onClick={openRemoveSetModal}
-                        >
-                        Remove from existing case set
-                      </Row>
-                    </DropdownItem>,
-                  ]}
-
-                  {/* SAME */}
-                  <DropdownItem
-                    key="tsv"
-                    onClick={() => downloadToTSV({
-                      excludedColumns: ['Select'],
-                      filename: `analysis-${
-                        currentAnalysis.name}-${tsvSubstring}.${timestamp()}.tsv`,
-                      selector: `#analysis-${tsvSubstring}-table`,
-                    })}
-                    style={{
-                      ...styles.actionMenuItem,
-                      borderTop: variable.active_chart !== 'box'
-                        ? `1px solid ${theme.greyScale5}`
-                        : '',
-                    }}
-                    >
-                    Export TSV
-                  </DropdownItem>
-                </Dropdown>
+                <ActionsDropdown
+                  active_chart={variable.active_chart}
+                  cardFilters={cardFilters}
+                  currentAnalysis={currentAnalysis}
+                  dispatch={dispatch}
+                  selectedBins={selectedBins}
+                  styles={styles}
+                  theme={theme}
+                  totalDocs={totalDocs}
+                  tsvSubstring={tsvSubstring}
+                  />
 
                 {variable.active_chart === 'box' || (
                   <Dropdown

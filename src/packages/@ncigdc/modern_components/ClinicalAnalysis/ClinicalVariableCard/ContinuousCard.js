@@ -16,10 +16,6 @@ import {
   map,
 } from 'lodash';
 
-import { RemoveFromExploreCaseSetButton } from '@ncigdc/modern_components/withSetAction';
-
-import { setModal } from '@ncigdc/dux/modal';
-import RemoveSetModal from '@ncigdc/components/Modals/RemoveSetModal';
 import {
   DAYS_IN_YEAR,
 } from '@ncigdc/utils/ageDisplay';
@@ -39,6 +35,8 @@ import {
   parseContinuousKey,
   createContinuousGroupName,
 } from '@ncigdc/utils/string';
+
+import { setModal } from '@ncigdc/dux/modal';
 
 import ContinuousCustomBinsModal from '@ncigdc/components/Modals/ContinuousBinning/ContinuousCustomBinsModal';
 
@@ -541,26 +539,6 @@ export default compose(
       )),
     })
   ),
-  withProps(({
-    currentAnalysis,
-    dispatch,
-  }) => ({
-    openRemoveSetModal: (
-      cardFilters,
-      setActionsDisabled,
-      totalFromSelectedBins
-    ) => setActionsDisabled || dispatch(setModal(
-      <RemoveSetModal
-        enableDragging
-        field="cases.case_id"
-        filters={cardFilters}
-        RemoveFromSetButton={RemoveFromExploreCaseSetButton}
-        selected={Object.keys(get(currentAnalysis, 'sets.case', {}))[0] || ''}
-        title={`Remove ${totalFromSelectedBins} Cases from Existing Set`}
-        type="case"
-        />
-    )),
-  })),
   withPropsOnChange(
     // SAME
     (props, nextProps) => props.resetBinsDisabled !== nextProps.resetBinsDisabled ||

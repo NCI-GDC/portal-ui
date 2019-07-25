@@ -11,6 +11,9 @@ import BoxPlotWrapper from '@oncojs/boxplot';
 import QQPlotQuery from '@ncigdc/modern_components/QQPlot/QQPlotQuery';
 import { CHART_HEIGHT } from './helpers';
 
+import '../boxplot.css';
+import '../qq.css';
+
 const QQ_PLOT_RATIO = '70%';
 const BOX_PLOT_RATIO = '30%';
 

@@ -1,4 +1,4 @@
 import CategoricalVariableCard from './CategoricalVariableCard';
-import ContinuousVariableCard from './ContinuousVariableCard';
+import ContinuousVariableCard from './ContinuousCard';
 
 export { CategoricalVariableCard, ContinuousVariableCard };

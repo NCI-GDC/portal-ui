@@ -1,6 +1,8 @@
 import React from 'react';
 import SurvivalPlotWrapper from '@ncigdc/components/SurvivalPlotWrapper';
 
+import '../survivalPlot.css';
+
 const ClinicalSurvivalPlot = ({
   plotType,
   survivalData: { id, legend, rawData },

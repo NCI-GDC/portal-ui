@@ -1084,12 +1084,10 @@ export default compose(
   ),
   withPropsOnChange(
     // SAME
-    (props, nextProps) => (props.variable.active_chart !== nextProps.variable.active_chart ||
+    (props, nextProps) => nextProps.variable.active_chart === 'survival' &&
+      (props.variable.active_chart !== nextProps.variable.active_chart ||
       props.id !== nextProps.id ||
-      // changed cohort
-      !isEqual(props.variable.bins, nextProps.variable.bins)) &&
-      // reset or customized bins
-      nextProps.variable.active_chart === 'survival',
+      !isEqual(props.variable.bins, nextProps.variable.bins)),
     ({ populateSurvivalData }) => { populateSurvivalData(); }
   ),
   withPropsOnChange(

@@ -214,11 +214,10 @@ const getBoxTableData = (data = {}) => (
 
 const ContinuousVariableCard = ({
   binData,
+  boxPlotValues,
   currentAnalysis,
   dataBuckets,
   dataDimension,
-  boxPlotValues,
-  defaultData,
   dispatch,
   dispatchUpdateClinicalVariable,
   fieldName,
@@ -229,6 +228,7 @@ const ContinuousVariableCard = ({
   overallSurvivalData,
   plots,
   qqData,
+  resetBins,
   resetBinsDisabled,
   selectedBins,
   selectedSurvivalBins,
@@ -637,25 +637,7 @@ const ContinuousVariableCard = ({
                       DIFFERENT - ONCLICK */}
 
                     <DropdownItem
-                      onClick={() => {
-                        if (resetBinsDisabled) return;
-                        dispatchUpdateClinicalVariable({
-                          value: defaultData.bins,
-                          variableKey: 'bins',
-                        });
-                        dispatchUpdateClinicalVariable({
-                          value: 'default',
-                          variableKey: 'continuousBinType',
-                        });
-                        dispatchUpdateClinicalVariable({
-                          value: {},
-                          variableKey: 'customInterval',
-                        });
-                        dispatchUpdateClinicalVariable({
-                          value: [],
-                          variableKey: 'customRanges',
-                        });
-                      }}
+                      onClick={resetBins}
                       style={{
                         ...styles.actionMenuItem,
                         ...(resetBinsDisabled
@@ -740,7 +722,7 @@ export default compose(
       return Object.assign(
         {
           boxPlotValues: map(
-            // DIFFERENT - CONTINUOUS ONLY
+            // DIFFERENT - BOX PLOT IS CONTINUOUS ONLY
             Object.assign(
               {},
               rawQueryData.stats,
@@ -1181,6 +1163,36 @@ export default compose(
           }}
           />
       )),
+    })
+  ),
+  withPropsOnChange(
+    // SAME
+    (props, nextProps) => props.resetBinsDisabled !== nextProps.resetBinsDisabled ||
+      props.variable.id !== nextProps.variable.id,
+    ({
+      defaultData: { bins },
+      dispatchUpdateClinicalVariable,
+      resetBinsDisabled,
+    }) => ({
+      resetBins: () => {
+        if (resetBinsDisabled) return;
+        dispatchUpdateClinicalVariable({
+          value: bins,
+          variableKey: 'bins',
+        });
+        dispatchUpdateClinicalVariable({
+          value: 'default',
+          variableKey: 'continuousBinType',
+        });
+        dispatchUpdateClinicalVariable({
+          value: {},
+          variableKey: 'customInterval',
+        });
+        dispatchUpdateClinicalVariable({
+          value: [],
+          variableKey: 'customRanges',
+        });
+      },
     })
   ),
   lifecycle({

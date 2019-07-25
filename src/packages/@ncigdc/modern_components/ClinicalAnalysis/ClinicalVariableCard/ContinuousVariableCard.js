@@ -218,7 +218,7 @@ const ContinuousVariableCard = ({
   dataBuckets,
   dataDimension,
   boxPlotValues,
-  defaultContinuousData,
+  defaultData,
   dispatch,
   dispatchUpdateClinicalVariable,
   fieldName,
@@ -229,7 +229,7 @@ const ContinuousVariableCard = ({
   overallSurvivalData,
   plots,
   qqData,
-  resetCustomBinsDisabled,
+  resetBinsDisabled,
   selectedBins,
   selectedSurvivalBins,
   selectedSurvivalData,
@@ -638,9 +638,9 @@ const ContinuousVariableCard = ({
 
                     <DropdownItem
                       onClick={() => {
-                        if (resetCustomBinsDisabled) return;
+                        if (resetBinsDisabled) return;
                         dispatchUpdateClinicalVariable({
-                          value: defaultContinuousData.bins,
+                          value: defaultData.bins,
                           variableKey: 'bins',
                         });
                         dispatchUpdateClinicalVariable({
@@ -649,16 +649,16 @@ const ContinuousVariableCard = ({
                         });
                         dispatchUpdateClinicalVariable({
                           value: {},
-                          variableKey: 'continuousCustomInterval',
+                          variableKey: 'customInterval',
                         });
                         dispatchUpdateClinicalVariable({
                           value: [],
-                          variableKey: 'continuousCustomRanges',
+                          variableKey: 'customRanges',
                         });
                       }}
                       style={{
                         ...styles.actionMenuItem,
-                        ...(resetCustomBinsDisabled
+                        ...(resetBinsDisabled
                           ? styles.actionMenuItemDisabled(theme)
                           : {}),
                       }}
@@ -989,7 +989,7 @@ export default compose(
       }).reduce((acc, curr) => Object.assign({}, acc, curr), {});
 
     return ({
-      defaultContinuousData: {
+      defaultData: {
         bins: defaultBins,
         max: defaultMax,
         min: defaultMin,
@@ -1099,16 +1099,22 @@ export default compose(
     // DIFFERENT
     (props, nextProps) => props.variable.continuousBinType !== nextProps.variable.continuousBinType,
     ({ variable: { continuousBinType } }) => ({
-      resetCustomBinsDisabled: continuousBinType === 'default',
+      resetBinsDisabled: continuousBinType === 'default',
     })
   ),
   withPropsOnChange(
-    (props, nextProps) => props.variable.continuousBinType !== nextProps.variable.continuousBinType ||
-    !isEqual(props.variable.continuousCustomInterval, nextProps.variable.continuousCustomInterval) ||
-    !isEqual(props.variable.continuousCustomRanges, nextProps.variable.continuousCustomRanges) ||
-    !isEqual(props.defaultContinuousData, nextProps.defaultContinuousData),
+    (props, nextProps) => props.id !== nextProps.id ||
+      props.variable.continuousBinType !== nextProps.variable.continuousBinType ||
+      !isEqual(
+        props.variable.customInterval,
+        nextProps.variable.customInterval
+      ) ||
+      !isEqual(
+        props.variable.customRanges,
+        nextProps.variable.customRanges
+      ),
     ({
-      defaultContinuousData,
+      defaultData,
       dispatch,
       dispatchUpdateClinicalVariable,
       fieldName,
@@ -1117,21 +1123,21 @@ export default compose(
       openCustomBinModal: () => dispatch(setModal(
         <ContinuousCustomBinsModal
           continuousBinType={variable.continuousBinType}
-          continuousCustomInterval={variable.continuousCustomInterval}
-          continuousCustomRanges={variable.continuousCustomRanges}
-          defaultContinuousData={defaultContinuousData}
+          customInterval={variable.customInterval}
+          customRanges={variable.customRanges}
+          defaultData={defaultData}
           fieldName={humanify({ term: fieldName })}
           onClose={() => dispatch(setModal(null))}
           onUpdate={(
             newBins,
             continuousBinType,
-            continuousCustomInterval,
-            continuousCustomRanges,
+            customInterval,
+            customRanges,
             continuousReset,
           ) => {
             dispatchUpdateClinicalVariable({
               value: continuousReset
-                ? defaultContinuousData.bins
+                ? defaultData.bins
                 : newBins,
               variableKey: 'bins',
             });
@@ -1145,30 +1151,30 @@ export default compose(
               continuousBinType === 'interval' &&
               (
                 dispatchUpdateClinicalVariable({
-                  value: continuousCustomInterval,
-                  variableKey: 'continuousCustomInterval',
+                  value: customInterval,
+                  variableKey: 'customInterval',
                 })
               );
             !continuousReset &&
               continuousBinType === 'range' &&
               (
                 dispatchUpdateClinicalVariable({
-                  value: continuousCustomRanges,
-                  variableKey: 'continuousCustomRanges',
+                  value: customRanges,
+                  variableKey: 'customRanges',
                 })
               );
             continuousReset &&
               (
                 dispatchUpdateClinicalVariable({
                   value: [],
-                  variableKey: 'continuousCustomRanges',
+                  variableKey: 'customRanges',
                 })
               );
             continuousReset &&
               (
                 dispatchUpdateClinicalVariable({
                   value: {},
-                  variableKey: 'continuousCustomInterval',
+                  variableKey: 'customInterval',
                 })
               );
             dispatch(setModal(null));

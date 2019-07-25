@@ -37,8 +37,8 @@ type TClinicalAnalysisProperty = 'name'; // only type mutable properties
 export interface IAnalysisPayload {
   scrollToCard?: boolean;
   continuousBinType?: 'default' | 'interval' | 'range';
-  continuousCustomInterval?: any;
-  continuousCustomRanges?: any;
+  customInterval?: any;
+  customRanges?: any;
   analysis?: IAnalysis;
   id: string;
   fieldName?: string;
@@ -109,8 +109,8 @@ const defaultVariableConfig = {
 
 const defaultContinuousVariableConfig = {
   continuousBinType: 'default',
-  continuousCustomInterval: {},
-  continuousCustomRanges: [],
+  customInterval: {},
+  customRanges: [],
 };
 
 interface ICurrentAnalysis {

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { debounce, isEmpty, isFinite } from 'lodash';
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import Button from '@ncigdc/uikit/Button';
-import { createContinuousGroupName, parseContinuousKey } from '@ncigdc/utils/string';
+import { createContinuousGroupName } from '@ncigdc/utils/string';
 import Undo from '@ncigdc/theme/icons/Undo';
 import RangeTableRow from './RangeTableRow';
 import BinningMethodInput from './BinningMethodInput';
@@ -56,9 +56,9 @@ class ContinuousCustomBinsModal extends Component {
   componentDidMount = () => {
     const {
       continuousBinType,
-      continuousCustomInterval,
-      continuousCustomRanges,
-      defaultContinuousData,
+      customInterval,
+      customRanges,
+      defaultData,
     } = this.props;
 
     this.debounceValidateIntervalFields = debounce(
@@ -70,26 +70,26 @@ class ContinuousCustomBinsModal extends Component {
       ...continuousBinType === 'default'
         ? {}
         : { binningMethod: continuousBinType },
-      intervalFields: isEmpty(continuousCustomInterval)
+      intervalFields: isEmpty(customInterval)
         ? {
-          amount: defaultContinuousData.quarter,
-          max: defaultContinuousData.max,
-          min: defaultContinuousData.min,
+          amount: defaultData.quarter,
+          max: defaultData.max,
+          min: defaultData.min,
         }
-        : continuousCustomInterval,
-      rangeRows: continuousCustomRanges,
+        : customInterval,
+      rangeRows: customRanges,
     });
   };
 
   resetModal = () => {
-    const { defaultContinuousData } = this.props;
+    const { defaultData } = this.props;
     this.setState({
       ...defaultState,
       continuousReset: true,
       intervalFields: {
-        amount: defaultContinuousData.quarter,
-        max: defaultContinuousData.max,
-        min: defaultContinuousData.min,
+        amount: defaultData.quarter,
+        max: defaultData.max,
+        min: defaultData.min,
       },
     });
   }
@@ -334,12 +334,15 @@ class ContinuousCustomBinsModal extends Component {
           const rowKey = `${curr.from}-${curr.to}`;
           return ({
             ...acc,
-            ...(curr.name === '' ? {} : {
+            ...(curr.name === ''
+              ? {}
+              : {
               [rowKey]: {
                 groupName: curr.name,
                 key: rowKey,
               },
-            }),
+              }
+            ),
           });
         }, {})
         : makeCustomIntervalBins();
@@ -572,7 +575,7 @@ class ContinuousCustomBinsModal extends Component {
 
 
   render = () => {
-    const { defaultContinuousData, fieldName, onClose } = this.props;
+    const { defaultData, fieldName, onClose } = this.props;
     const {
       binningMethod,
       intervalErrors,
@@ -596,13 +599,13 @@ class ContinuousCustomBinsModal extends Component {
           </h1>
           <p>
             Available values from
-            <strong>{` ${defaultContinuousData.min} `}</strong>
+            <strong>{` ${defaultData.min} `}</strong>
             to
-            <strong>{` \u003c ${defaultContinuousData.max} `}</strong>
+            <strong>{` \u003c ${defaultData.max} `}</strong>
           </p>
           <p>
             Bin size in quarters:
-            <strong>{` ${defaultContinuousData.quarter}`}</strong>
+            <strong>{` ${defaultData.quarter}`}</strong>
           </p>
           <p>
             Configure your bins then click

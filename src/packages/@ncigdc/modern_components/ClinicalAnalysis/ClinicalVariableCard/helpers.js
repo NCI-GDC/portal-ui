@@ -11,6 +11,17 @@ import {
   humanify,
 } from '@ncigdc/utils/string';
 
+import {
+  removeClinicalAnalysisVariable,
+  updateClinicalAnalysisVariable,
+} from '@ncigdc/dux/analysis';
+import {
+  CloseIcon,
+  SurvivalIcon,
+  BarChartIcon,
+  BoxPlot,
+} from '@ncigdc/theme/icons';
+
 export const colors = scaleOrdinal(schemeCategory10);
 export const CHART_HEIGHT = 250;
 export const QQ_PLOT_RATIO = '70%';
@@ -220,4 +231,72 @@ export const getCountLink = ({ doc_count, filters, totalDocs }) => {
       <span>{` (${(((doc_count || 0) / totalDocs) * 100).toFixed(2)}%)`}</span>
     </span>
   );
+};
+
+export const styles = {
+  actionMenuItem: {
+    cursor: 'pointer',
+    lineHeight: '1.5',
+  },
+  actionMenuItemDisabled: theme => ({
+    ':hover': {
+      backgroundColor: 'transparent',
+      color: theme.greyScale5,
+      cursor: 'not-allowed',
+    },
+    color: theme.greyScale5,
+    cursor: 'not-allowed',
+  }),
+  activeButton: theme => ({
+    ...styles.common(theme),
+    backgroundColor: theme.primary,
+    border: `1px solid ${theme.primary}`,
+    color: '#fff',
+  }),
+  chartIcon: {
+    height: '14px',
+    width: '14px',
+  },
+  common: theme => ({
+    ':hover': {
+      backgroundColor: 'rgb(0,138,224)',
+      border: '1px solid rgb(0,138,224)',
+      color: '#fff',
+    },
+    backgroundColor: 'transparent',
+    border: `1px solid ${theme.greyScale4}`,
+    color: theme.greyScale2,
+    justifyContent: 'flex-start',
+  }),
+  histogram: theme => ({
+    axis: {
+      fontSize: '1.1rem',
+      fontWeight: '500',
+      stroke: theme.greyScale4,
+      textFill: theme.greyScale3,
+    },
+  }),
+};
+
+export const vizButtons = {
+  box: {
+    action: updateClinicalAnalysisVariable,
+    icon: <BoxPlot style={styles.chartIcon} />,
+    title: 'Box/QQ Plot',
+  },
+  delete: {
+    action: removeClinicalAnalysisVariable,
+    icon: <CloseIcon style={styles.chartIcon} />,
+    title: 'Remove Card',
+  },
+  histogram: {
+    action: updateClinicalAnalysisVariable,
+    icon: <BarChartIcon style={styles.chartIcon} />,
+    title: 'Histogram',
+  },
+  survival: {
+    action: updateClinicalAnalysisVariable,
+    icon: <SurvivalIcon style={styles.chartIcon} />,
+    title: 'Survival Plot',
+  },
 };

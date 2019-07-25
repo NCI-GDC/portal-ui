@@ -51,19 +51,10 @@ import {
   MINIMUM_CASES,
 } from '@ncigdc/utils/survivalplot';
 import '../survivalPlot.css';
-import {
-  SpinnerIcon,
-  CloseIcon,
-  SurvivalIcon,
-  BarChartIcon,
-  BoxPlot,
-} from '@ncigdc/theme/icons';
+import { SpinnerIcon, SurvivalIcon } from '@ncigdc/theme/icons';
 import { withTheme } from '@ncigdc/theme';
 
-import {
-  removeClinicalAnalysisVariable,
-  updateClinicalAnalysisVariable,
-} from '@ncigdc/dux/analysis';
+import { updateClinicalAnalysisVariable } from '@ncigdc/dux/analysis';
 import {
   humanify,
   createFacetFieldString,
@@ -87,93 +78,27 @@ import {
   colors,
   dataDimensions,
   getCardFilters,
+  getCountLink,
   getHeadings,
   QQ_PLOT_RATIO,
-  getCountLink,
+  styles,
+  vizButtons,
 } from './helpers';
 
 import '../boxplot.css';
 import '../qq.css';
 
-const styles = {
-  actionMenuItem: {
-    cursor: 'pointer',
-    lineHeight: '1.5',
-  },
-  actionMenuItemDisabled: theme => ({
-    ':hover': {
-      backgroundColor: 'transparent',
-      color: theme.greyScale5,
-      cursor: 'not-allowed',
-    },
-    color: theme.greyScale5,
-    cursor: 'not-allowed',
-  }),
-  activeButton: theme => ({
-    ...styles.common(theme),
-    backgroundColor: theme.primary,
-    border: `1px solid ${theme.primary}`,
-    color: '#fff',
-  }),
-  chartIcon: {
-    height: '14px',
-    width: '14px',
-  },
-  common: theme => ({
-    ':hover': {
-      backgroundColor: 'rgb(0,138,224)',
-      border: '1px solid rgb(0,138,224)',
-      color: '#fff',
-    },
-    backgroundColor: 'transparent',
-    border: `1px solid ${theme.greyScale4}`,
-    color: theme.greyScale2,
-    justifyContent: 'flex-start',
-  }),
-  histogram: theme => ({
-    axis: {
-      fontSize: '1.1rem',
-      fontWeight: '500',
-      stroke: theme.greyScale4,
-      textFill: theme.greyScale3,
-    },
-  }),
-};
-
-const vizButtons = {
-  box: {
-    action: updateClinicalAnalysisVariable,
-    icon: <BoxPlot style={styles.chartIcon} />,
-    title: 'Box/QQ Plot',
-  },
-  delete: {
-    action: removeClinicalAnalysisVariable,
-    icon: <CloseIcon style={styles.chartIcon} />,
-    title: 'Remove Card',
-  },
-  histogram: {
-    action: updateClinicalAnalysisVariable,
-    icon: <BarChartIcon style={styles.chartIcon} />,
-    title: 'Histogram',
-  },
-  survival: {
-    action: updateClinicalAnalysisVariable,
-    icon: <SurvivalIcon style={styles.chartIcon} />,
-    title: 'Survival Plot',
-  },
-};
-
 const getTableData = (
   binData,
-  getContinuousBuckets,
+  getContinuousBins,
   fieldName,
   totalDocs,
-  selectedSurvivalValues,
+  selectedSurvivalBins,
   setId,
-  selectedBuckets,
-  setSelectedBuckets,
+  selectedBins,
+  setSelectedBins,
   variable,
-  updateSelectedSurvivalValues,
+  updateSelectedSurvivalBins,
   selectedSurvivalLoadingIds,
 ) => {
   if (isEmpty(binData)) {
@@ -185,7 +110,7 @@ const getTableData = (
 
   const displayData = binData
     .sort((a, b) => a.keyArray[0] - b.keyArray[0])
-    .reduce(getContinuousBuckets, []);
+    .reduce(getContinuousBins, []);
 
   return displayData.map(bin => Object.assign(
     {},
@@ -195,16 +120,16 @@ const getTableData = (
       select: (
         <input
           aria-label={`${fieldName} ${bin.key}`}
-          checked={!!find(selectedBuckets, { key: bin.key })}
+          checked={!!find(selectedBins, { key: bin.key })}
           disabled={bin.doc_count === 0}
           id={`${fieldName}-${bin.key}`}
           onChange={() => {
-            if (find(selectedBuckets, { key: bin.key })) {
-              setSelectedBuckets(
-                reject(selectedBuckets, r => r.key === bin.key)
+            if (find(selectedBins, { key: bin.key })) {
+              setSelectedBins(
+                reject(selectedBins, r => r.key === bin.key)
               );
             } else {
-              setSelectedBuckets(selectedBuckets.concat(bin));
+              setSelectedBins(selectedBins.int(bin));
             }
           }}
           style={{
@@ -223,9 +148,9 @@ const getTableData = (
           Component={
             bin.key === '_missing' || bin.chart_doc_count < MINIMUM_CASES
               ? 'Not enough data'
-              : selectedSurvivalValues.indexOf(bin.key) > -1
+              : selectedSurvivalBins.indexOf(bin.key) > -1
                 ? `Click icon to remove "${bin.groupName || bin.key}"`
-                : selectedSurvivalValues.length < MAXIMUM_CURVES
+                : selectedSurvivalBins.length < MAXIMUM_CURVES
                   ? `Click icon to plot "${bin.groupName || bin.key}"`
                   : `Maximum plots (${MAXIMUM_CURVES}) reached`
           }
@@ -234,24 +159,24 @@ const getTableData = (
             disabled={
               bin.key === '_missing' ||
               bin.chart_doc_count < MINIMUM_CASES ||
-              (selectedSurvivalValues.length >= MAXIMUM_CURVES &&
-                selectedSurvivalValues.indexOf(bin.key) === -1)
+              (selectedSurvivalBins.length >= MAXIMUM_CURVES &&
+                selectedSurvivalBins.indexOf(bin.key) === -1)
             }
             onClick={() => {
-              updateSelectedSurvivalValues(displayData, bin);
+              updateSelectedSurvivalBins(displayData, bin);
             }}
             style={{
               backgroundColor:
-                selectedSurvivalValues.indexOf(bin.key) === -1
+                selectedSurvivalBins.indexOf(bin.key) === -1
                   ? '#666'
-                  : colors(selectedSurvivalValues.indexOf(bin.key)),
+                  : colors(selectedSurvivalBins.indexOf(bin.key)),
               color: 'white',
               margin: '0 auto',
               opacity:
                 bin.key === '_missing' ||
                   bin.chart_doc_count < MINIMUM_CASES ||
-                  (selectedSurvivalValues.length >= MAXIMUM_CURVES &&
-                    selectedSurvivalValues.indexOf(bin.key) === -1)
+                  (selectedSurvivalBins.length >= MAXIMUM_CURVES &&
+                    selectedSurvivalBins.indexOf(bin.key) === -1)
                   ? '0.33'
                   : '1',
               padding: '2px 3px',
@@ -297,26 +222,26 @@ const ContinuousVariableCard = ({
   dispatchUpdateVariable,
   fieldName,
   filters,
-  getContinuousBuckets,
+  getContinuousBins,
   id,
   openCustomBinModal,
   overallSurvivalData,
   plots,
   qqData,
   resetCustomBinsDisabled,
-  selectedBuckets,
+  selectedBins,
+  selectedSurvivalBins,
   selectedSurvivalData,
   selectedSurvivalLoadingIds,
-  selectedSurvivalValues,
   setId,
   setQQData,
   setQQDataIsSet,
-  setSelectedBuckets,
+  setSelectedBins,
   style = {},
   survivalPlotLoading,
   theme,
   totalDocs,
-  updateSelectedSurvivalValues,
+  updateSelectedSurvivalBins,
   variable,
   wrapperId,
 }) => {
@@ -326,15 +251,15 @@ const ContinuousVariableCard = ({
     ? getBoxTableData(dataValues)
     : getTableData(
       binData,
-      getContinuousBuckets,
+      getContinuousBins,
       fieldName,
       totalDocs,
-      selectedSurvivalValues,
+      selectedSurvivalBins,
       setId,
-      selectedBuckets,
-      setSelectedBuckets,
+      selectedBins,
+      setSelectedBins,
       variable,
-      updateSelectedSurvivalValues,
+      updateSelectedSurvivalBins,
       selectedSurvivalLoadingIds,
     );
 
@@ -356,14 +281,14 @@ const ContinuousVariableCard = ({
     maxBy(histogramData.map(d => d.fullLabel), (item) => item.length) || ''
   ).length;
 
-  // set action will default to cohort total when no buckets are selected
-  const totalFromSelectedBuckets = selectedBuckets && selectedBuckets.length
-    ? selectedBuckets.reduce((acc, bin) => acc + bin.chart_doc_count, 0)
+  // set action will default to cohort total when no bins are selected
+  const totalFromSelectedBins = selectedBins && selectedBins.length
+    ? selectedBins.reduce((acc, bin) => acc + bin.chart_doc_count, 0)
     : totalDocs;
 
   const tsvSubstring = fieldName.replace(/\./g, '-');
-  const cardFilters = getCardFilters(variable.plotTypes, selectedBuckets, fieldName, filters);
-  const setActionsDisabled = get(selectedBuckets, 'length', 0) === 0;
+  const cardFilters = getCardFilters(variable.plotTypes, selectedBins, fieldName, filters);
+  const setActionsDisabled = get(selectedBins, 'length', 0) === 0;
   const disabledCharts = plotType => isEmpty(tableData) &&
     plotType !== 'delete';
 
@@ -530,10 +455,10 @@ const ContinuousVariableCard = ({
               {/* SAME */}
               {variable.active_chart === 'survival' && (
                 <ClinicalSurvivalPlot
-                  plotType={selectedSurvivalValues.length === 0
+                  plotType={selectedSurvivalBins.length === 0
                     ? 'clinicalOverall'
                     : 'categorical'}
-                  survivalData={selectedSurvivalValues.length === 0
+                  survivalData={selectedSurvivalBins.length === 0
                     ? overallSurvivalData
                     : selectedSurvivalData}
                   survivalPlotLoading={survivalPlotLoading}
@@ -718,8 +643,8 @@ const ContinuousVariableCard = ({
                             score="gene.gene_id"
                             setName="Custom Case Selection"
                             sort={null}
-                            title={`Save ${totalFromSelectedBuckets} Cases as New Set`}
-                            total={totalFromSelectedBuckets}
+                            title={`Save ${totalFromSelectedBins} Cases as New Set`}
+                            total={totalFromSelectedBins}
                             type="case"
                             />
                         ))}
@@ -744,8 +669,8 @@ const ContinuousVariableCard = ({
                             scope="explore"
                             score="gene.gene_id"
                             sort={null}
-                            title={`Add ${totalFromSelectedBuckets} Cases to Existing Set`}
-                            total={totalFromSelectedBuckets}
+                            title={`Add ${totalFromSelectedBins} Cases to Existing Set`}
+                            total={totalFromSelectedBins}
                             type="case"
                             />
                         ))}
@@ -769,7 +694,7 @@ const ContinuousVariableCard = ({
                             filters={cardFilters}
                             RemoveFromSetButton={RemoveFromExploreCaseSetButton}
                             selected={Object.keys(get(currentAnalysis, 'sets.case', {}))[0] || ''}
-                            title={`Remove ${totalFromSelectedBuckets} Cases from Existing Set`}
+                            title={`Remove ${totalFromSelectedBins} Cases from Existing Set`}
                             type="case"
                             />
                         ))}
@@ -831,7 +756,7 @@ const ContinuousVariableCard = ({
                       onClick={() => {
                         if (resetCustomBinsDisabled) return;
                         dispatchUpdateVariable({
-                          value: defaultContinuousData.buckets,
+                          value: defaultContinuousData.bins,
                           variableKey: 'bins',
                         });
                         dispatchUpdateVariable({
@@ -891,10 +816,10 @@ export default compose(
   connect((state: any) => ({ analysis: state.analysis })),
   withTheme,
   withState('selectedSurvivalData', 'setSelectedSurvivalData', {}),
-  withState('selectedSurvivalValues', 'setSelectedSurvivalValues', []),
+  withState('selectedSurvivalBins', 'setSelectedSurvivalBins', []),
   withState('selectedSurvivalLoadingIds', 'setSelectedSurvivalLoadingIds', []),
   withState('survivalPlotLoading', 'setSurvivalPlotLoading', true),
-  withState('selectedBuckets', 'setSelectedBuckets', []),
+  withState('selectedBins', 'setSelectedBins', []),
   // DIFFERENT - ONLY CONTINUOUS HAS QQ
   withState('qqData', 'setQQData', []),
   withState('qqDataIsSet', 'setQQDataIsSet', false),
@@ -1068,7 +993,7 @@ export default compose(
           key,
           keyArray: values.reduce((acc, value) => acc.concat(value.key), []),
         })).filter(bin => bin.key),
-        bucketsOrganizedByKey: dataBuckets.reduce((acc, r) => Object.assign(
+        binsOrganizedByKey: dataBuckets.reduce((acc, r) => Object.assign(
           {},
           acc,
           {
@@ -1084,7 +1009,7 @@ export default compose(
             ),
           }
         ), {}),
-        getContinuousBuckets: (acc, { doc_count, key, keyArray }) => {
+        getContinuousBins: (acc, { doc_count, key, keyArray }) => {
           const keyValues = parseContinuousKey(key);
           // survival doesn't have keyArray
           const keyArrayValues = keyArray
@@ -1161,13 +1086,13 @@ export default compose(
 
     const defaultQuarter = (defaultMax - defaultMin) / 4;
 
-    const defaultNumberOfBuckets = 5;
-    const defaultBucketSize = (defaultMax - defaultMin) / defaultNumberOfBuckets;
+    const defaultNumberOfBins = 5;
+    const defaultBucketSize = (defaultMax - defaultMin) / defaultNumberOfBins;
 
-    const defaultBuckets = Array(defaultNumberOfBuckets).fill(1)
+    const defaultBins = Array(defaultNumberOfBins).fill(1)
       .map((val, key) => {
         const from = key * defaultBucketSize + defaultMin;
-        const to = (key + 1) === defaultNumberOfBuckets
+        const to = (key + 1) === defaultNumberOfBins
           ? defaultMax
           : (defaultMin + (key + 1) * defaultBucketSize);
         const objKey = `${from}-${to}`;
@@ -1181,7 +1106,7 @@ export default compose(
 
     return ({
       defaultContinuousData: {
-        buckets: defaultBuckets,
+        bins: defaultBins,
         max: defaultMax,
         min: defaultMin,
         quarter: defaultQuarter,
@@ -1194,68 +1119,67 @@ export default compose(
       dataBuckets,
       fieldName,
       filters,
-      getContinuousBuckets,
-      selectedSurvivalValues,
+      getContinuousBins,
+      selectedSurvivalBins,
+      setSelectedSurvivalBins,
       setSelectedSurvivalData,
       setSelectedSurvivalLoadingIds,
-      setSelectedSurvivalValues,
       setSurvivalPlotLoading,
       variable,
     }) => ({
       populateSurvivalData: () => {
+        console.log('populateSurvivalData');
         setSurvivalPlotLoading(true);
-        const dataForSurvival = dataBuckets.length > 0
+        const survivalBins = dataBuckets.length > 0
           ? dataBuckets
             .sort((a, b) => parseContinuousKey(a.key)[0] - parseContinuousKey(b.key)[0])
-            .reduce(getContinuousBuckets, [])
+            .reduce(getContinuousBins, [])
           : [];
 
-        const filteredData = dataForSurvival
-          .filter(x => x.chart_doc_count >= MINIMUM_CASES)
-          .filter(x => x.key !== '_missing');
+        const filteredData = survivalBins
+          .filter(bucket => bucket.chart_doc_count >= MINIMUM_CASES)
+          .filter(bucket => bucket.key !== '_missing');
 
-        const continuousTop2Values = filteredData
+        const default2Bins = filteredData
           .sort((a, b) => b.chart_doc_count - a.chart_doc_count)
           .slice(0, 2);
 
-        const valuesForTable = continuousTop2Values
-          .sort((a, b) => b.chart_doc_count - a.chart_doc_count)
-          .map(d => d.key);
+        const selectedTableBins = default2Bins
+          .map(bucket => bucket.key);
 
-        const valuesForPlot = continuousTop2Values;
-
-        setSelectedSurvivalValues(valuesForTable);
-        setSelectedSurvivalLoadingIds(valuesForTable);
+        setSelectedSurvivalBins(selectedTableBins);
+        setSelectedSurvivalLoadingIds(selectedTableBins);
 
         getSurvivalCurvesArray({
           currentFilters: filters,
           field: fieldName,
           plotType: variable.plotTypes,
-          values: valuesForPlot,
+          values: default2Bins,
         }).then(data => {
           setSelectedSurvivalData(data);
           setSurvivalPlotLoading(false);
           setSelectedSurvivalLoadingIds([]);
         });
       },
-      updateSelectedSurvivalValues: (data, value) => {
+      updateSelectedSurvivalBins: (data, bin) => {
+        console.log('updateSelectedSurvivalBins');
         if (
-          selectedSurvivalValues.indexOf(value.key) === -1 &&
-          selectedSurvivalValues.length >= MAXIMUM_CURVES
+          selectedSurvivalBins.indexOf(bin.key) === -1 &&
+          selectedSurvivalBins.length >= MAXIMUM_CURVES
         ) {
           return;
         }
         setSurvivalPlotLoading(true);
 
         const nextValues =
-          selectedSurvivalValues.indexOf(value.key) === -1
-            ? selectedSurvivalValues.concat(value.key)
-            : selectedSurvivalValues.filter(s => s !== value.key);
+          selectedSurvivalBins.indexOf(bin.key) === -1
+            ? selectedSurvivalBins.concat(bin.key)
+            : selectedSurvivalBins.filter(s => s !== bin.key);
 
-        setSelectedSurvivalValues(nextValues);
+        setSelectedSurvivalBins(nextValues);
         setSelectedSurvivalLoadingIds(nextValues);
 
-        const valuesForPlot = nextValues
+        const binsForPlot = nextValues
           .map(v => data.filter(d => d.key === v)[0])
           .map(filteredData => Object.assign(
             {},
@@ -1267,7 +1191,7 @@ export default compose(
           currentFilters: filters,
           field: fieldName,
           plotType: variable.plotTypes,
-          values: valuesForPlot,
+          values: binsForPlot,
         }).then(receivedData => {
           setSelectedSurvivalData(receivedData);
           setSurvivalPlotLoading(false);
@@ -1278,19 +1202,18 @@ export default compose(
   ),
   withPropsOnChange(
     // SAME
-    (props, nextProps) => props.variable.active_chart !== nextProps.variable.active_chart ||
-      !isEqual(props.data, nextProps.data) ||
-      !isEqual(props.variable.bins, nextProps.variable.bins),
-    ({ populateSurvivalData, variable }) => {
-      if (variable.active_chart === 'survival') {
-        populateSurvivalData();
-      }
-    }
+    (props, nextProps) => (props.variable.active_chart !== nextProps.variable.active_chart ||
+      !isEqual(props.variable.bins, nextProps.variable.bins) ||
+      // reset or customized bins
+      !isEqual(props.data, nextProps.data)) &&
+      // changed cohort
+      nextProps.variable.active_chart === 'survival',
+    ({ populateSurvivalData }) => { console.log('im updating!'); populateSurvivalData(); }
   ),
   withPropsOnChange(
     // SAME
     (props, nextProps) => props.id !== nextProps.id,
-    ({ setSelectedBuckets }) => setSelectedBuckets([])
+    ({ setSelectedBins }) => setSelectedBins([])
   ),
   withPropsOnChange(
     // DIFFERENT
@@ -1299,21 +1222,12 @@ export default compose(
       resetCustomBinsDisabled: continuousBinType === 'default',
     })
   ),
-  // withProps(({}) => ({
-    // WIP
-  //   () => dispatchUpdateVariable({
-  //     value: 'percentage',
-  //     variableKey: 'active_calculation',
-  //   })
-  // })),
   withPropsOnChange(
-    (props, nextProps) => !isEqual(props.binData, nextProps.binData) ||
-    props.variable.continuousBinType !== nextProps.variable.continuousBinType ||
+    (props, nextProps) => props.variable.continuousBinType !== nextProps.variable.continuousBinType ||
     !isEqual(props.variable.continuousCustomInterval, nextProps.variable.continuousCustomInterval) ||
     !isEqual(props.variable.continuousCustomRanges, nextProps.variable.continuousCustomRanges) ||
     !isEqual(props.defaultContinuousData, nextProps.defaultContinuousData),
     ({
-      binData,
       defaultContinuousData,
       dispatch,
       dispatchUpdateVariable,
@@ -1322,7 +1236,6 @@ export default compose(
     }) => ({
       openCustomBinModal: () => dispatch(setModal(
         <ContinuousCustomBinsModal
-          binData={binData}
           continuousBinType={variable.continuousBinType}
           continuousCustomInterval={variable.continuousCustomInterval}
           continuousCustomRanges={variable.continuousCustomRanges}
@@ -1338,7 +1251,7 @@ export default compose(
           ) => {
             dispatchUpdateVariable({
               value: continuousReset
-                ? defaultContinuousData.buckets
+                ? defaultContinuousData.bins
                 : newBins,
               variableKey: 'bins',
             });
@@ -1388,14 +1301,14 @@ export default compose(
     // SAME
     componentDidMount(): void {
       const {
-        bucketsOrganizedByKey,
+        binsOrganizedByKey,
         dispatchUpdateVariable,
         variable,
         wrapperId,
       } = this.props;
       if (variable.bins === undefined || isEmpty(variable.bins)) {
         dispatchUpdateVariable({
-          value: bucketsOrganizedByKey,
+          value: binsOrganizedByKey,
           variableKey: 'bins',
         });
       }

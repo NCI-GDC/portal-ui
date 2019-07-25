@@ -67,6 +67,8 @@ const QQPlot = ({
 
   let zScores = data;
   // sample quantile(y) and theoretical quantile (x)
+  // we are doing sort/calc in the wrapper function because of the tsv download, but this
+  // should happen inside the component by default
   if (!exportCoordinates) {
     zScores = sortBy(data).map((age, i) => ({
       x: qnorm((i + 1 - 0.5) / n),

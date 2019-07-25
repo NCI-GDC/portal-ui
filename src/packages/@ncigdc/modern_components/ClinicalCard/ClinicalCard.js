@@ -146,32 +146,32 @@ export default compose(
                   style={{ flex: '1 1 auto' }}
                   thToTd={[
                     {
-                      th: 'UUID',
                       td: demographic.demographic_id,
+                      th: 'UUID',
                     },
                     {
-                      th: 'Ethnicity',
                       td: demographic.ethnicity,
+                      th: 'Ethnicity',
                     },
                     {
-                      th: 'Gender',
                       td: demographic.gender,
+                      th: 'Gender',
                     },
                     {
-                      th: 'Race',
                       td: demographic.race,
+                      th: 'Race',
                     },
                     {
-                      th: 'Days to Birth',
                       td: demographic.days_to_birth,
+                      th: 'Days to Birth',
                     },
                     {
-                      th: 'Days to Death',
                       td: demographic.days_to_death,
+                      th: 'Days to Death',
                     },
                     {
-                      th: 'Vital Status',
                       td: demographic.vital_status,
+                      th: 'Vital Status',
                     },
                   ]}
                   />
@@ -193,82 +193,81 @@ export default compose(
                         style={{ flex: 1 }}
                         thToTd={[
                           {
-                            th: 'UUID',
                             td: x.diagnosis_id,
+                            th: 'UUID',
                           },
                           {
-                            th: 'Classification of Tumor',
                             td: x.classification_of_tumor,
+                            th: 'Classification of Tumor',
                           },
                           {
-                            th: 'Alcohol Intensity',
                             td: x.alcohol_intensity,
+                            th: 'Alcohol Intensity',
                           },
                           {
-                            th: 'Age at Diagnosis',
                             td: ageDisplay(x.age_at_diagnosis),
+                            th: 'Age at Diagnosis',
                           },
-
                           {
-                            th: 'Days to Last Follow Up',
                             td: x.days_to_last_follow_up,
+                            th: 'Days to Last Follow Up',
                           },
                           {
-                            th: 'Days to Last Known Disease Status',
                             td: x.days_to_last_known_disease_status,
+                            th: 'Days to Last Known Disease Status',
                           },
                           {
-                            th: 'Days to Recurrence',
                             td: x.days_to_recurrence,
+                            th: 'Days to Recurrence',
                           },
                           {
-                            th: 'Last Known Disease Status',
                             td: x.last_known_disease_status,
+                            th: 'Last Known Disease Status',
                           },
                           {
-                            th: 'Morphology',
                             td: x.morphology,
+                            th: 'Morphology',
                           },
                           {
-                            th: 'Primary Diagnosis',
                             td: x.primary_diagnosis,
+                            th: 'Primary Diagnosis',
                           },
                           {
-                            th: 'Prior Malignancy',
                             td: x.prior_malignancy,
+                            th: 'Prior Malignancy',
                           },
                           {
-                            th: 'Synchronous Malignancy',
                             td: x.synchronous_malignancy,
+                            th: 'Synchronous Malignancy',
                           },
                           {
-                            th: 'Progression or Recurrence',
                             td: x.progression_or_recurrence,
+                            th: 'Progression or Recurrence',
                           },
                           {
-                            th: 'Site of Resection of Biopsy',
                             td: x.site_of_resection_or_biopsy,
+                            th: 'Site of Resection of Biopsy',
                           },
                           {
-                            th: 'Tissue or Organ of Origin',
                             td: x.tissue_or_organ_of_origin,
+                            th: 'Tissue or Organ of Origin',
                           },
                           {
-                            th: 'Tumor Grade',
                             td: x.tumor_grade,
+                            th: 'Tumor Grade',
                           },
                           {
-                            th: 'Tumor Stage',
                             td: x.tumor_stage,
+                            th: 'Tumor Stage',
                           },
                         ]}
                         />
                       <div
                         style={{
-                          padding: '1rem',
                           color: theme.greyScale7,
                           fontSize: '2rem',
                           lineHeight: '1.4em',
+                          padding: '1rem',
                         }}
                         >
                         Treatments (
@@ -345,28 +344,28 @@ export default compose(
                       key={x.family_history_id}
                       thToTd={[
                         {
-                          th: 'UUID',
                           td: x.family_history_id,
+                          th: 'UUID',
                         },
                         {
-                          th: 'Relationship Age at Diagnosis',
                           td: x.relationship_age_at_diagnosis,
+                          th: 'Relationship Age at Diagnosis',
                         },
                         {
-                          th: 'Relationship Gender',
                           td: x.relationship_gender,
+                          th: 'Relationship Gender',
                         },
                         {
-                          th: 'Relationship Primary Diagnosis',
                           td: x.relationship_primary_diagnosis,
+                          th: 'Relationship Primary Diagnosis',
                         },
                         {
-                          th: 'Relationship Type',
                           td: x.relationship_type,
+                          th: 'Relationship Type',
                         },
                         {
-                          th: 'Relative with Cancer History',
                           td: x.relative_with_cancer_history,
+                          th: 'Relative with Cancer History',
                         },
                       ]}
                       />
@@ -400,28 +399,28 @@ export default compose(
                       key={x.node.exposure_id}
                       thToTd={[
                         {
-                          th: 'UUID',
                           td: x.node.exposure_id,
+                          th: 'UUID',
                         },
                         {
-                          th: 'Alcohol History',
                           td: x.node.alcohol_history,
+                          th: 'Alcohol History',
                         },
                         {
-                          th: 'Height',
                           td: x.node.height,
+                          th: 'Height',
                         },
                         {
-                          th: 'Weight',
                           td: x.node.weight,
+                          th: 'Weight',
                         },
                         {
-                          th: 'Years Smoked',
                           td: x.node.years_smoked,
+                          th: 'Years Smoked',
                         },
                         {
-                          th: 'Pack Years Smoked',
                           td: x.node.pack_years_smoked,
+                          th: 'Pack Years Smoked',
                         },
                       ]}
                       />
@@ -453,60 +452,60 @@ export default compose(
                     key={followUp.node.follow_up_id}
                     thToTd={[
                       {
-                        th: 'UUID',
                         td: followUp.node.follow_up_id,
+                        th: 'UUID',
                       },
                       {
-                        th: 'Days to Follow Up',
                         td: followUp.node.days_to_follow_up,
+                        th: 'Days to Follow Up',
                       },
                       {
-                        th: 'Comorbidity',
                         td: followUp.node.comorbidity,
+                        th: 'Comorbidity',
                       },
                       {
-                        th: 'Risk Factor',
                         td: followUp.node.risk_factor,
+                        th: 'Risk Factor',
                       },
                       {
-                        th: 'Progression or Recurrence Type',
                         td: followUp.node.progression_or_recurrence_type,
+                        th: 'Progression or Recurrence Type',
                       },
                       {
-                        th: 'Progression or Recurrence',
                         td: followUp.node.progression_or_recurrence,
+                        th: 'Progression or Recurrence',
                       },
                       {
-                        th: 'Disease Response',
                         td: followUp.node.disease_response,
+                        th: 'Disease Response',
                       },
                       {
-                        th: 'BMI',
                         td: followUp.node.bmi,
+                        th: 'BMI',
                       },
                       {
-                        th: 'Height',
                         td: followUp.node.height,
+                        th: 'Height',
                       },
                       {
-                        th: 'Weight',
                         td: followUp.node.weight,
+                        th: 'Weight',
                       },
                       {
-                        th: 'Ecog Performance Status',
                         td: followUp.node.ecog_performance_status,
+                        th: 'Ecog Performance Status',
                       },
                       {
-                        th: 'Karnofsky Performance Status',
                         td: followUp.node.karnofsky_performance_status,
+                        th: 'Karnofsky Performance Status',
                       },
                       {
-                        th: 'Progression Or Recurrence Anatomic Site',
                         td: followUp.node.progression_or_recurrence_anatomic_site,
+                        th: 'Progression Or Recurrence Anatomic Site',
                       },
                       {
-                        th: 'Reflux Treatment Type',
                         td: followUp.node.reflux_treatment_type,
+                        th: 'Reflux Treatment Type',
                       },
                     ]}
                     />

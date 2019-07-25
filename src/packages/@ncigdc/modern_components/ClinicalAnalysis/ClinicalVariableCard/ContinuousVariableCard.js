@@ -87,6 +87,7 @@ import {
 
 import '../boxplot.css';
 import '../qq.css';
+import ClinicalBoxPlot from './ClinicalBoxPlot';
 
 const getTableData = (
   binData,
@@ -216,10 +217,10 @@ const ContinuousVariableCard = ({
   currentAnalysis,
   dataBuckets,
   dataDimension,
-  dataValues,
+  boxPlotValues,
   defaultContinuousData,
   dispatch,
-  dispatchUpdateVariable,
+  dispatchUpdateClinicalVariable,
   fieldName,
   filters,
   getContinuousBins,
@@ -248,7 +249,7 @@ const ContinuousVariableCard = ({
   // DIFFERENT - BOX IS CONTINUOUS ONLY
   // SAME - EVERYTHING ELSE UNTIL RENDER/RETURN
   const tableData = variable.active_chart === 'box'
-    ? getBoxTableData(dataValues)
+    ? getBoxTableData(boxPlotValues)
     : getTableData(
       binData,
       getContinuousBins,
@@ -386,7 +387,7 @@ const ContinuousVariableCard = ({
                         aria-label="Percentage of cases"
                         checked={variable.active_calculation === 'percentage'}
                         id={`variable-percentage-radio-${fieldName}`}
-                        onChange={() => dispatchUpdateVariable({
+                        onChange={() => dispatchUpdateClinicalVariable({
                           value: 'percentage',
                           variableKey: 'active_calculation',
                         })}
@@ -404,7 +405,7 @@ const ContinuousVariableCard = ({
                         aria-label="Number of cases"
                         checked={variable.active_calculation === 'number'}
                         id={`variable-number-radio-${fieldName}`}
-                        onChange={() => dispatchUpdateVariable({
+                        onChange={() => dispatchUpdateClinicalVariable({
                           value: 'number',
                           variableKey: 'active_calculation',
                         })}
@@ -467,137 +468,20 @@ const ContinuousVariableCard = ({
 
               {/* DIFFERENT - CONTINUOUS ONLY */}
               {variable.active_chart === 'box' && (
-                <Column
-                  style={{
-                    alignItems: 'space-between',
-                    height: CHART_HEIGHT,
-                    justifyContent: 'center',
-                    marginBottom: 10,
-                    minWidth: 300,
-                  }}
-                  >
-                  <Row style={{ width: '100%' }}>
-                    <Row
-                      style={{
-                        alignItems: 'center',
-                        justifyContent: 'space-between',
-                        marginLeft: 10,
-                        width: BOX_PLOT_RATIO,
-                      }}
-                      >
-                      <span
-                        style={{
-                          color: theme.greyScale2,
-                          fontSize: '1.2rem',
-                        }}
-                        >
-                        Box Plot
-                      </span>
-                    </Row>
-                    <Row>
-                      <DownloadVisualizationButton
-                        buttonStyle={{
-                          fontSize: '1.2rem',
-                          lineHeight: 0,
-                          minHeight: 20,
-                          minWidth: 22,
-                          padding: 0,
-                        }}
-                        noText
-                        slug={`boxplot-${fieldName}`}
-                        svg={() => wrapSvg({
-                          className: 'boxplot',
-                          selector: `#${wrapperId}-boxplot-container figure svg`,
-                          title: `${humanify({ term: fieldName })} Box Plot`,
-                        })}
-                        tooltipHTML="Download SVG or PNG"
-                        />
-                    </Row>
-                    <Row
-                      style={{
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        marginLeft: 10,
-                        width: QQ_PLOT_RATIO,
-                      }}
-                      >
-                      <span
-                        style={{
-                          color: theme.greyScale2,
-                          fontSize: '1.2rem',
-                        }}
-                        >
-                        QQ Plot
-                      </span>
-                    </Row>
-                    <Row>
-                      <DownloadVisualizationButton
-                        buttonStyle={{
-                          fontSize: '1.2rem',
-                          lineHeight: 0,
-                          minHeight: 20,
-                          minWidth: 22,
-                          padding: 0,
-                        }}
-                        data={qqData}
-                        noText
-                        slug={`qq-plot-${fieldName}`}
-                        svg={() => wrapSvg({
-                          className: 'qq-plot',
-                          selector: `#${wrapperId}-qqplot-container .qq-plot svg`,
-                          title: `${humanify({ term: fieldName })} QQ Plot`,
-                        })}
-                        tooltipHTML="Download plot data"
-                        tsvData={qqData}
-                        />
-                    </Row>
-                  </Row>
-                  <Row
-                    style={{
-                      height: CHART_HEIGHT,
-                      justifyContent: 'space-between',
-                    }}
-                    >
-                    <Column
-                      id={`${wrapperId}-boxplot-container`}
-                      style={{
-                        height: CHART_HEIGHT + 10,
-                        maxHeight: CHART_HEIGHT + 10,
-                        minWidth: '150px',
-                        width: '150px',
-                      }}
-                      >
-                      <TooltipInjector>
-                        <BoxPlotWrapper
-                          color={analysisColors[variable.type]}
-                          data={dataValues}
-                          />
-                      </TooltipInjector>
-                    </Column>
-                    <Column
-                      id={`${wrapperId}-qqplot-container`}
-                      style={{
-                        height: CHART_HEIGHT + 10,
-                        maxHeight: CHART_HEIGHT + 10,
-                        width: QQ_PLOT_RATIO,
-                      }}
-                      >
-                      <QQPlotQuery
-                        chartHeight={CHART_HEIGHT + 10}
-                        dataBuckets={dataBuckets}
-                        dataHandler={data => setQQData(data)}
-                        fieldName={fieldName}
-                        filters={cardFilters}
-                        first={totalDocs}
-                        qqLineStyles={{ color: theme.greyScale2 }}
-                        qqPointStyles={{ color: analysisColors[variable.type] }}
-                        setDataHandler={() => setQQDataIsSet()}
-                        setId={setId}
-                        wrapperId={wrapperId}
-                        />
-                    </Column>
-                  </Row>
-                </Column>
+                <ClinicalBoxPlot
+                  boxPlotValues={boxPlotValues}
+                  cardFilters={cardFilters}
+                  dataBuckets={dataBuckets}
+                  fieldName={fieldName}
+                  qqData={qqData}
+                  setId={setId}
+                  setQQData={setQQData}
+                  setQQDataIsSet={setQQDataIsSet}
+                  theme={theme}
+                  totalDocs={totalDocs}
+                  type={type}
+                  wrapperId={wrapperId}
+                />
               )}
             </Column>
 
@@ -755,19 +639,19 @@ const ContinuousVariableCard = ({
                     <DropdownItem
                       onClick={() => {
                         if (resetCustomBinsDisabled) return;
-                        dispatchUpdateVariable({
+                        dispatchUpdateClinicalVariable({
                           value: defaultContinuousData.bins,
                           variableKey: 'bins',
                         });
-                        dispatchUpdateVariable({
+                        dispatchUpdateClinicalVariable({
                           value: 'default',
                           variableKey: 'continuousBinType',
                         });
-                        dispatchUpdateVariable({
+                        dispatchUpdateClinicalVariable({
                           value: {},
                           variableKey: 'continuousCustomInterval',
                         });
-                        dispatchUpdateVariable({
+                        dispatchUpdateClinicalVariable({
                           value: [],
                           variableKey: 'continuousCustomRanges',
                         });
@@ -831,7 +715,7 @@ export default compose(
       fieldName,
       id,
     }) => ({
-      dispatchUpdateVariable: ({ value, variableKey }) => {
+      dispatchUpdateClinicalVariable: ({ value, variableKey }) => {
         dispatch(
           updateClinicalAnalysisVariable({
             fieldName,
@@ -855,8 +739,8 @@ export default compose(
 
       return Object.assign(
         {
-          dataBuckets: get(rawQueryData, 'range.buckets', []),
-          dataValues: map(
+          boxPlotValues: map(
+            // DIFFERENT - CONTINUOUS ONLY
             Object.assign(
               {},
               rawQueryData.stats,
@@ -876,33 +760,33 @@ export default compose(
               }
             }
           ).reduce((acc, item) => Object.assign({}, acc, item), {}),
+          dataBuckets: get(rawQueryData, 'range.buckets', []),
           totalDocs: get(data, 'hits.total', 0),
           wrapperId: `${sanitisedId}-chart`,
         },
         dataDimensions[sanitisedId] && {
           axisTitle: dataDimensions[sanitisedId].axisTitle,
-          dataDimension: dataDimensions[sanitisedId].unit,
-          dataValues:
-            map(
-              Object.assign(
-                {},
-                rawQueryData.stats,
-                rawQueryData.percentiles,
-              ),
-              (value, stat) => {
-                switch (dataDimensions[sanitisedId].unit) {
-                  case 'Years': {
-                    return ({
-                      [stat]: parseContinuousValue(value / DAYS_IN_YEAR),
-                    });
-                  }
-                  default:
-                    return ({
-                      [stat]: value,
-                    });
+          boxPlotValues: map(
+            Object.assign(
+              {},
+              rawQueryData.stats,
+              rawQueryData.percentiles,
+            ),
+            (value, stat) => {
+              switch (dataDimensions[sanitisedId].unit) {
+                case 'Years': {
+                  return ({
+                    [stat]: parseContinuousValue(value / DAYS_IN_YEAR),
+                  });
                 }
+                default:
+                  return ({
+                    [stat]: value,
+                  });
               }
-            ).reduce((acc, item) => Object.assign({}, acc, item), {}),
+            }
+          ).reduce((acc, item) => Object.assign({}, acc, item), {}),
+          dataDimension: dataDimensions[sanitisedId].unit,
         },
       );
     }
@@ -913,10 +797,10 @@ export default compose(
       props.setId !== nextProps.setId,
     ({
       dataBuckets,
-      dispatchUpdateVariable,
+      dispatchUpdateClinicalVariable,
       variable,
     }) => {
-      dispatchUpdateVariable({
+      dispatchUpdateClinicalVariable({
         value: variable.continuousBinType === 'default'
           ? dataBuckets.reduce((acc, curr, index) => Object.assign(
             {},
@@ -1128,7 +1012,6 @@ export default compose(
       variable,
     }) => ({
       populateSurvivalData: () => {
-        console.log('populateSurvivalData');
         setSurvivalPlotLoading(true);
         const survivalBins = dataBuckets.length > 0
           ? dataBuckets
@@ -1162,7 +1045,6 @@ export default compose(
         });
       },
       updateSelectedSurvivalBins: (data, bin) => {
-        console.log('updateSelectedSurvivalBins');
         if (
           selectedSurvivalBins.indexOf(bin.key) === -1 &&
           selectedSurvivalBins.length >= MAXIMUM_CURVES
@@ -1230,7 +1112,7 @@ export default compose(
     ({
       defaultContinuousData,
       dispatch,
-      dispatchUpdateVariable,
+      dispatchUpdateClinicalVariable,
       fieldName,
       variable,
     }) => ({
@@ -1249,13 +1131,13 @@ export default compose(
             continuousCustomRanges,
             continuousReset,
           ) => {
-            dispatchUpdateVariable({
+            dispatchUpdateClinicalVariable({
               value: continuousReset
                 ? defaultContinuousData.bins
                 : newBins,
               variableKey: 'bins',
             });
-            dispatchUpdateVariable({
+            dispatchUpdateClinicalVariable({
               value: continuousReset
                 ? 'default'
                 : continuousBinType,
@@ -1264,7 +1146,7 @@ export default compose(
             !continuousReset &&
               continuousBinType === 'interval' &&
               (
-                dispatchUpdateVariable({
+                dispatchUpdateClinicalVariable({
                   value: continuousCustomInterval,
                   variableKey: 'continuousCustomInterval',
                 })
@@ -1272,21 +1154,21 @@ export default compose(
             !continuousReset &&
               continuousBinType === 'range' &&
               (
-                dispatchUpdateVariable({
+                dispatchUpdateClinicalVariable({
                   value: continuousCustomRanges,
                   variableKey: 'continuousCustomRanges',
                 })
               );
             continuousReset &&
               (
-                dispatchUpdateVariable({
+                dispatchUpdateClinicalVariable({
                   value: [],
                   variableKey: 'continuousCustomRanges',
                 })
               );
             continuousReset &&
               (
-                dispatchUpdateVariable({
+                dispatchUpdateClinicalVariable({
                   value: {},
                   variableKey: 'continuousCustomInterval',
                 })
@@ -1302,12 +1184,12 @@ export default compose(
     componentDidMount(): void {
       const {
         binsOrganizedByKey,
-        dispatchUpdateVariable,
+        dispatchUpdateClinicalVariable,
         variable,
         wrapperId,
       } = this.props;
       if (variable.bins === undefined || isEmpty(variable.bins)) {
-        dispatchUpdateVariable({
+        dispatchUpdateClinicalVariable({
           value: binsOrganizedByKey,
           variableKey: 'bins',
         });
@@ -1323,7 +1205,7 @@ export default compose(
         });
       }
 
-      dispatchUpdateVariable({
+      dispatchUpdateClinicalVariable({
         value: false,
         variableKey: 'scrollToCard',
       });

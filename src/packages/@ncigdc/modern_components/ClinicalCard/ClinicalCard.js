@@ -277,30 +277,37 @@ export default compose(
                       </div>
                       {x.treatments &&
                         !!x.treatments.hits.edges.length && (
-                          <Table
-                            body={(
-                              <tbody>
-                                {x.treatments.hits.edges.map(({ node }) => (
-                                  <Tr key={node.treatment_id}>
-                                    <Td>{node.treatment_id || '--'}</Td>
-                                    <Td>{node.therapeutic_agents || '--'}</Td>
-                                    <Td>
-                                      {node.treatment_intent_type || '--'}
-                                    </Td>
-                                    <Td>{node.treatment_or_therapy || '--'}</Td>
-                                    <Td>
-                                      {node.days_to_treatment_start || '--'}
-                                    </Td>
-                                  </Tr>
-                                ))}
-                              </tbody>
-                            )}
+                          <EntityPageHorizontalTable
+                            data={x.treatments.hits.edges.map(({ node }) => ({
+                              treatment_id: node.treatment_id || '--',
+                              therapeutic_agents: node.therapeutic_agents || '--',
+                              treatment_intent_type: node.treatment_intent_type || '--',
+                              treatment_or_therapy: node.treatment_or_therapy || '--',
+                              days_to_treatment_start: node.days_to_treatment_start || '--',
+                            }))
+                            }
                             headings={[
-                              <Th key="id">UUID</Th>,
-                              <Th key="agents">Therapeutic Agents</Th>,
-                              <Th key="intent_type">Treatment Intent Type</Th>,
-                              <Th key="therapy">Treatment or Therapy</Th>,
-                              <Th key="days">Days to Treatment Start</Th>,
+                              {
+                                key: 'treatment_id',
+                                title: 'UUID',
+                              },
+                              {
+                                key: 'therapeutic_agents',
+                                title: 'Therapeutic Agents',
+                              },
+                              {
+                                key: 'treatment_intent_type',
+                                title: 'Treatment Intent Type',
+                              },
+                              {
+                                key: 'treatment_or_therapy',
+                                title: 'Treatment or Therapy',
+                              },
+                              {
+                                key: 'days_to_treatment_start',
+                                style: { textAlign: 'right' },
+                                title: 'Days to Treatment Start',
+                              },
                             ]}
                             />
                       )}
@@ -609,9 +616,9 @@ export default compose(
         {clinicalFiles.length > 0 && (
           <div
             style={{
-              padding: '2px 10px 10px 10px',
               borderTop: `1px solid ${theme.greyScale5}`,
               marginTop: '10px',
+              padding: '2px 10px 10px 10px',
             }}
             >
             <EntityPageHorizontalTable
@@ -672,8 +679,8 @@ export default compose(
                 },
                 {
                   key: 'file_size',
-                  title: 'Size',
                   style: { textAlign: 'right' },
+                  title: 'Size',
                 },
                 {
                   key: 'action',

@@ -68,130 +68,17 @@ import termCapitaliser from '@ncigdc/utils/customisation';
 import timestamp from '@ncigdc/utils/timestamp';
 
 import { IS_CDAVE_DEV } from '@ncigdc/utils/constants';
-import ClinicalHistogram from './components/ClinicalHistogram';
-import ClinicalSurvivalPlot from './components/ClinicalSurvivalPlot';
-
 import {
   colors,
   dataDimensions,
   getCardFilters,
   getCountLink,
   getHeadings,
+  styles,
+  vizButtons,
 } from './helpers';
-
-interface ITableHeading {
-  key: string;
-  title: string;
-  style?: React.CSSProperties;
-}
-
-type TPlotType = 'categorical';
-type TActiveChart = 'survival' | 'histogram';
-type TActiveCalculation = 'number' | 'percentage';
-type TVariableType =
-  | 'Demographic'
-  | 'Diagnosis'
-  | 'Exposure'
-  | 'Treatment'
-  | 'Follow_up' // confirm type name
-  | 'Molecular_test'; // confirm type name
-
-interface IVariable {
-  bins: any[]; // tbd - bins still need spec
-  active_calculation: TActiveCalculation;
-  active_chart: TActiveChart;
-  plotTypes: TPlotType;
-  type: TVariableType;
-}
-
-interface IVariableCardProps {
-  variable: IVariable;
-  fieldName: string;
-  plots: any[];
-  style: React.CSSProperties;
-  theme: IThemeProps;
-  dispatch: (arg: any) => void;
-  id: string;
-  survivalData: any[];
-}
-
-interface IVizButton {
-  title: string;
-  icon: JSX.Element;
-  action: (
-    payload: IAnalysisPayload
-  ) => { type: string, payload: IAnalysisPayload };
-}
-
-interface IVizButtons {
-  survival: IVizButton;
-  histogram: IVizButton;
-  delete: IVizButton;
-}
-
-const styles = {
-  actionMenuItem: {
-    cursor: 'pointer',
-    lineHeight: '1.5',
-  },
-  actionMenuItemDisabled: (theme: IThemeProps) => ({
-    ':hover': {
-      backgroundColor: 'transparent',
-      color: theme.greyScale5,
-      cursor: 'not-allowed',
-    },
-    color: theme.greyScale5,
-    cursor: 'not-allowed',
-  }),
-  activeButton: (theme: IThemeProps) => ({
-    ...styles.common(theme),
-    backgroundColor: theme.primary,
-    border: `1px solid ${theme.primary}`,
-    color: '#fff',
-  }),
-  chartIcon: {
-    height: '14px',
-    width: '14px',
-  },
-  common: (theme: IThemeProps) => ({
-    ':hover': {
-      backgroundColor: 'rgb(0,138,224)',
-      border: '1px solid rgb(0,138,224)',
-      color: '#fff',
-    },
-    backgroundColor: 'transparent',
-    border: `1px solid ${theme.greyScale4}`,
-    color: theme.greyScale2,
-    justifyContent: 'flex-start',
-  }),
-  histogram: (theme: IThemeProps) => ({
-    axis: {
-      fontSize: '1.1rem',
-      fontWeight: '500',
-      stroke: theme.greyScale4,
-      textFill: theme.greyScale3,
-    },
-  }),
-};
-
-
-const vizButtons: IVizButtons = {
-  delete: {
-    action: removeClinicalAnalysisVariable,
-    icon: <CloseIcon style={styles.chartIcon} />,
-    title: 'Remove Card',
-  },
-  histogram: {
-    action: updateClinicalAnalysisVariable,
-    icon: <BarChartIcon style={styles.chartIcon} />,
-    title: 'Histogram',
-  },
-  survival: {
-    action: updateClinicalAnalysisVariable,
-    icon: <SurvivalIcon style={styles.chartIcon} />,
-    title: 'Survival Plot',
-  },
-};
+import ClinicalHistogram from './components/ClinicalHistogram';
+import ClinicalSurvivalPlot from './components/ClinicalSurvivalPlot';
 
 const getTableData = (
   binData,

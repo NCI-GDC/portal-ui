@@ -1,3 +1,4 @@
+import React from 'react';
 import {
   compose,
   setDisplayName,
@@ -9,6 +10,7 @@ import { connect } from 'react-redux';
 import {
   get,
   groupBy,
+  isEmpty,
   isEqual,
   isFinite,
   map,
@@ -403,12 +405,14 @@ export default compose(
     dataBuckets,
     getContinuousBins,
   }) => {
-    const survivalBins = filterSurvivalData(dataBuckets.length > 0
+    const survivalBins = filterSurvivalData(
+      dataBuckets.length > 0
       ? dataBuckets
         .sort((a, b) =>
           parseContinuousKey(a.key)[0] - parseContinuousKey(b.key)[0])
         .reduce(getContinuousBins, [])
-      : []);
+      : []
+    );
 
     const survivalPlotValues = survivalBins
       .sort((a, b) => b.chart_doc_count - a.chart_doc_count)
@@ -423,4 +427,15 @@ export default compose(
       survivalTableValues,
     };
   }),
+  withPropsOnChange(
+    (props, nextProps) =>
+      !isEqual(props.binData, nextProps.binData),
+    ({ binData, getContinuousBins }) => ({
+      displayData: isEmpty(binData)
+        ? []
+        : binData
+          .sort((a, b) => a.keyArray[0] - b.keyArray[0])
+          .reduce(getContinuousBins, []),
+    })
+  ),
 )(EnhancedShared);

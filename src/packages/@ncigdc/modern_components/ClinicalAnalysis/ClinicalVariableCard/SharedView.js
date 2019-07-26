@@ -45,36 +45,23 @@ import {
 } from './helpers';
 
 const getTableData = (
-  binData,
-  getContinuousBins,
+  displayData,
   fieldName,
-  totalDocs,
-  selectedSurvivalBins,
-  setId,
+  getContinuousBins,
   selectedBins,
-  setSelectedBins,
-  variable,
-  updateSelectedSurvivalBins,
+  selectedSurvivalBins,
   selectedSurvivalLoadingIds,
-) => {
-  if (isEmpty(binData)) {
-    return [];
-  }
-
-  // DIFFERENT - DISPLAY DATA IS DIFFERENT,
-  // THE OTHER STUFF IS THE SAME
-  // put this in continuous recompose
-  // after binsForBinData
-
-  const displayData = binData
-    .sort((a, b) => a.keyArray[0] - b.keyArray[0])
-    .reduce(getContinuousBins, []);
-
-  return displayData.map(bin => Object.assign(
+  setId,
+  setSelectedBins,
+  totalDocs,
+  updateSelectedSurvivalBins,
+  variable,
+) => (displayData.length === 0
+  ? []
+  : displayData.map(bin => Object.assign(
     {},
     bin,
     {
-      // SAME
       select: (
         <input
           aria-label={`${fieldName} ${bin.key}`}
@@ -100,7 +87,6 @@ const getTableData = (
       ),
     },
     variable.active_chart === 'survival' && {
-      // SAME
       survival: (
         <Tooltip
           Component={
@@ -149,8 +135,8 @@ const getTableData = (
         </Tooltip>
       ),
     },
-  ));
-};
+  ))
+);
 
 const getBoxTableData = (data = {}) => (
   // DIFFERENT - CONTINUOUS ONLY
@@ -171,13 +157,13 @@ const getBoxTableData = (data = {}) => (
 );
 
 const ContinuousView = ({
-  binData,
   boxPlotValues,
   currentAnalysis,
   dataBuckets,
   dataDimension,
   dispatch,
   dispatchUpdateClinicalVariable,
+  displayData,
   fieldName,
   filters,
   getContinuousBins,
@@ -207,17 +193,17 @@ const ContinuousView = ({
   const tableData = variable.active_chart === 'box'
     ? getBoxTableData(boxPlotValues)
     : getTableData(
-      binData,
-      getContinuousBins,
+      displayData,
       fieldName,
-      totalDocs,
-      selectedSurvivalBins,
-      setId,
+      getContinuousBins,
       selectedBins,
-      setSelectedBins,
-      variable,
-      updateSelectedSurvivalBins,
+      selectedSurvivalBins,
       selectedSurvivalLoadingIds,
+      setId,
+      setSelectedBins,
+      totalDocs,
+      updateSelectedSurvivalBins,
+      variable,
     );
 
   const histogramData =
@@ -277,7 +263,6 @@ const ContinuousView = ({
         </h2>
         <Row>
           {plots.concat('delete')
-          // SAME
             .map(plotType => (
               <Tooltip Component={vizButtons[plotType].title} key={plotType}>
                 <Button
@@ -310,7 +295,6 @@ const ContinuousView = ({
         </Row>
       </Row>
       {isEmpty(tableData)
-      // SAME
         ? (
           <Row
             id={`${wrapperId}-container`}

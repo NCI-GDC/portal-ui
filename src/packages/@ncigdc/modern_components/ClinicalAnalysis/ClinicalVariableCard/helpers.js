@@ -16,6 +16,7 @@ import ExploreLink from '@ncigdc/components/Links/ExploreLink';
 import {
   humanify,
 } from '@ncigdc/utils/string';
+import { MINIMUM_CASES } from '@ncigdc/utils/survivalplot';
 
 import {
   CloseIcon,
@@ -314,6 +315,10 @@ export const parseContinuousKey = keyValue =>
 
 export const createContinuousGroupName = keyValue =>
   parseContinuousKey(keyValue).join(' to \u003c');
+
+export const filterSurvivalData = data => data
+  .filter(x => x.chart_doc_count >= MINIMUM_CASES)
+  .filter(x => x.key !== '_missing');
 
 export default compose(
   withPropsOnChange(

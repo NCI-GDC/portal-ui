@@ -204,9 +204,6 @@ const ContinuousView = ({
   variable,
   wrapperId,
 }) => {
-  // MOVE TO RECOMPOSE ???
-  // DIFFERENT - BOX IS CONTINUOUS ONLY
-  // SAME - EVERYTHING ELSE UNTIL RENDER/RETURN
   const tableData = variable.active_chart === 'box'
     ? getBoxTableData(boxPlotValues)
     : getTableData(

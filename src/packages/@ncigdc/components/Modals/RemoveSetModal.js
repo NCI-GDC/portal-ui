@@ -1,6 +1,11 @@
 // @flow
 import React from 'react';
-import { compose, withState, withProps } from 'recompose';
+import {
+  compose,
+  setDisplayName,
+  withProps,
+  withState,
+} from 'recompose';
 import { connect } from 'react-redux';
 import { stringify } from 'query-string';
 
@@ -13,87 +18,88 @@ import { updateClinicalAnalysisSet } from '@ncigdc/dux/analysis';
 import onSaveComplete from './onSaveComplete';
 
 const enhance = compose(
-  withState('selected', 'setSelected', ''),
-  connect(({ sets, analysis }) => ({
-    sets,
+  setDisplayName('EnhancedRemoveSetModal'),
+  withState('selected', 'setSelected', ({ selected }) => selected || ''),
+  connect(({ analysis, sets }) => ({
     analysis,
+    sets,
   })),
-  withProps(({ sets, type, analysis }) => ({
-    sets: sets[type] || {},
+  withProps(({ analysis, sets, type }) => ({
     analyses: analysis.saved || [],
+    sets: sets[type] || {},
   })),
   withRouter
 );
 
 const RemoveSetModal = ({
-  title,
-  RemoveFromSetButton,
-  selected,
-  setSelected,
-  filters,
+  analyses,
   dispatch,
-  type,
   field,
-  sets,
+  filters,
   history,
   query,
-  analyses,
+  RemoveFromSetButton,
+  selected,
+  sets,
+  setSelected,
+  title,
+  type,
 }) => (
-  <BaseModal
-    closeText="Cancel"
-    extraButtons={(
-      <RemoveFromSetButton
-        action="remove"
-        disabled={!selected}
-        filters={filters}
-        onComplete={async setId => {
-          if ((query.filters || '').includes(selected)) {
-            history.replace({
-              search: `?${stringify({
-                ...query,
-                filters: query.filters.replace(selected, setId),
-              })}`,
-            });
-          }
-
-          onSaveComplete({
-            dispatch,
-            label: sets[selected],
-          });
-          await dispatch(replaceSet({
-            type,
-            oldId: selected,
-            newId: setId,
-          }));
-          if (type === 'case') {
-            analyses
-              .filter(analysis => analysis.sets.case[selected])
-              .forEach(affected => {
-                dispatch(
-                  updateClinicalAnalysisSet({
-                    id: affected.id,
-                    setId,
-                    setName: affected.sets.case[selected],
-                  })
-                );
+    <BaseModal
+      closeText="Cancel"
+      extraButtons={(
+        <RemoveFromSetButton
+          action="remove"
+          disabled={!selected}
+          filters={filters}
+          onComplete={async setId => {
+            if ((query.filters || '').includes(selected)) {
+              history.replace({
+                search: `?${stringify({
+                  ...query,
+                  filters: query.filters.replace(selected, setId),
+                })}`,
               });
-          }
-        }}
-        set_id={`set_id:${selected}`}
-        >
-        Save
-      </RemoveFromSetButton>
-    )}
-    title={title}
-    >
-    <SetTable
-      field={field}
-      selected={selected}
-      sets={sets}
-      setSelected={setSelected}
-      type={type}
-      />
-  </BaseModal>
-);
+            }
+
+            onSaveComplete({
+              dispatch,
+              label: sets[selected],
+            });
+            await dispatch(replaceSet({
+              newId: setId,
+              oldId: selected,
+              type,
+            }));
+            if (type === 'case') {
+              await analyses
+                .filter(analysis => analysis.sets.case[selected])
+                .forEach(affected => {
+                  dispatch(
+                    updateClinicalAnalysisSet({
+                      id: affected.id,
+                      setId,
+                      setName: affected.sets.case[selected],
+                    })
+                  );
+                });
+            }
+          }}
+          set_id={`set_id:${selected}`}
+          >
+          Save
+        </RemoveFromSetButton>
+      )}
+      title={title}
+      >
+      <SetTable
+        field={field}
+        selected={selected}
+        sets={sets}
+        setSelected={setSelected}
+        type={type}
+        />
+    </BaseModal>
+  );
 
 export default enhance(RemoveSetModal);

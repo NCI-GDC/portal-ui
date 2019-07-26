@@ -29,6 +29,7 @@ module.exports = {
     '@typescript-eslint',
     'react',
     'react-hooks',
+    'sort-destructure-keys'
     // 'jest'
   ],
   rules: {
@@ -42,7 +43,9 @@ module.exports = {
     }],
     'arrow-body-style': 'off',
     'arrow-parens': 'off',
-    'camelcase': 'warn',
+    'camelcase': ['warn', {
+      allow: ["^UNSAFE_", "doc_count", "^active_"],
+    }],
     'comma-dangle': ['warn', 'always-multiline'],
     'func-names': ['warn', 'as-needed'],
     'function-paren-newline': ['warn', 'consistent'],
@@ -88,6 +91,9 @@ module.exports = {
       commentPattern: 'break[\\s\\w]*omitted',
     }],
     'no-nested-ternary': 'off',
+    'no-unused-expressions': ['warn', {
+      allowShortCircuit: true,
+    }],
     'no-var': 'error', // Must use const or let.
     'object-property-newline': ['warn', {
       // allowAllPropertiesOnSameLine: false,
@@ -173,6 +179,9 @@ module.exports = {
     'react/sort-comp': 'warn',
     'react/sort-prop-types': 'error',
     'react/prop-types': 'off', // Disable prop-types as TS is used for type checking.
+    'sort-destructure-keys/sort-destructure-keys': ['warn', {
+      caseSensitive: false,
+    }],
     '@typescript-eslint/explicit-function-return-type': 'off', // Allows functional components, should be fixed soon: https://github.com/typescript-eslint/typescript-eslint/issues/149
     '@typescript-eslint/explicit-member-accessibility': 'off', // Allows not having to set public/private on class properties.
   },

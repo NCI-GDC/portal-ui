@@ -2,16 +2,18 @@
 import React from 'react';
 import {
   compose,
-  withState,
   lifecycle,
-  withHandlers,
   mapProps,
+  setDisplayName,
+  withHandlers,
+  withState,
 } from 'recompose';
 import { connect } from 'react-redux';
-import { setTooltip } from '@ncigdc/uikit/Tooltip';
 import { omit } from 'lodash';
+import { setTooltip } from './dux';
 
 const enhance = compose(
+  setDisplayName('TooltipEnhancer'),
   connect(),
   withState('tooltipState', 'setTooltipState', false),
   withHandlers({
@@ -27,11 +29,20 @@ const enhance = compose(
       }
     },
   }),
-  mapProps(props =>
-    omit(props, ['tooltipState', 'setTooltipState', 'dispatch']),
-  ),
+  mapProps(props => omit(props, [
+    'tooltipState',
+    'setTooltipState',
+    'dispatch',
+  ]),),
 );
 
 const withTooltip = Wrapped => enhance(props => <Wrapped {...props} />);
+
+export const TooltipInjector = enhance(({
+  children,
+  ...props
+}) => React.cloneElement(
+  children, props
+));
 
 export default withTooltip;

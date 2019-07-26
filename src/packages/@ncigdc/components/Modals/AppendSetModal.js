@@ -20,19 +20,19 @@ import onSaveComplete from './onSaveComplete';
 
 const enhance = compose(
   withState('selected', 'setSelected', ''),
-  connect(({ sets, analysis }) => ({
+  connect(({ analysis, sets }) => ({
     sets,
     analysis,
   })),
   withProps(({
-    sets, type, total, analysis,
+    analysis, sets, total, type,
   }) => ({
     sets: sets[type] || {},
     analyses: analysis.saved || [],
   })),
   withRouter,
   withCount(({
-    field, type, scope, selected, filters,
+    field, filters, scope, selected, type,
   }) => ({
     key: 'countInBoth',
     type,
@@ -52,7 +52,7 @@ const enhance = compose(
     },
   })),
   withCount(({
-    field, type, scope, selected, filters,
+    field, filters, scope, selected, type,
   }) => ({
     key: 'countExisting',
     type,
@@ -73,26 +73,26 @@ const enhance = compose(
 );
 
 const AppendSetModal = ({
-  total,
-  title,
   AppendSetButton,
-  selected,
-  setSelected,
-  filters,
-  sort,
-  score,
+  analyses,
+  countExisting,
+  countInBoth,
   dispatch,
-  type,
   displayType,
-  sets,
   field,
-  query,
+  filters,
   history,
   location,
+  query,
+  score,
+  selected,
   setInputTotal,
-  countInBoth,
-  countExisting,
-  analyses,
+  setSelected,
+  sets,
+  sort,
+  title,
+  total,
+  type,
 }) => {
   const validating = selected && (countInBoth === -1 || countExisting === -1);
   const nothingToAdd = !validating && total === countInBoth;
@@ -146,7 +146,7 @@ const AppendSetModal = ({
                 })
               );
               if (type === 'case') {
-                analyses
+                await analyses
                   .filter(analysis => analysis.sets.case[selected])
                   .forEach(affected => {
                     dispatch(

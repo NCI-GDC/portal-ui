@@ -3,12 +3,17 @@ import _ from 'lodash';
 import Tooltip from '@ncigdc/uikit/Tooltip/Tooltip';
 import Hidden from '@ncigdc/components/Hidden';
 import { tableToolTipHint } from '@ncigdc/theme/mixins';
-import { DATA_CATEGORIES } from '@ncigdc/utils/constants';
+import { DATA_CATEGORIES, DATA_CATEGORIES_FOR_PROJECTS_TABLE } from '@ncigdc/utils/constants';
 import { Th, Td, ThNum, TdNum } from '@ncigdc/uikit/Table';
 import { makeFilter } from '@ncigdc/utils/filters';
 import { findDataCategory } from '@ncigdc/utils/data';
 import { IListLinkProps } from '@ncigdc/components/Links/types';
-import { TCategoryAbbr, IDataCategory } from '@ncigdc/utils/data/types';
+import ProjectLink from '@ncigdc/components/Links/ProjectLink';
+import { 
+  IDataCategory,
+  TCategoryAbbr,
+} from '@ncigdc/utils/data/types';
+
 interface ICreateDataCategoryColumnsProps{
   title: string; 
   countKey: string; 
@@ -79,6 +84,8 @@ export const createDataCategoryColumns = ({
   getCellLinkFilters,
   getTotalLinkFilters,
 }: ICreateDataCategoryColumnsProps)=> {
+  const isProjectsTable = countKey === 'case_count';
+  const CATEGORY_COLUMNS = isProjectsTable ? DATA_CATEGORIES_FOR_PROJECTS_TABLE : DATA_CATEGORIES; 
   return [
     {
       name: 'Data Categories',
@@ -87,16 +94,21 @@ export const createDataCategoryColumns = ({
       th: () => (
         <Th
           key="data_category"
-          colSpan={Object.keys(DATA_CATEGORIES).length}
+          colSpan={Object.keys(CATEGORY_COLUMNS).length}
           style={{ textAlign: 'center' }}
         >
           {title}
         </Th>
       ),
       downloadable: true,
-      subHeadingIds: _.map(DATA_CATEGORIES, category => category.abbr),
+      subHeadingIds: _.map(CATEGORY_COLUMNS, category => category.abbr),
     },
-    ..._.map(DATA_CATEGORIES, (category: { full: string; abbr: TCategoryAbbr }) => ({
+    ..._.map(CATEGORY_COLUMNS, (category: { 
+      dataCategory: TCategoryAbbr,
+      full: string,
+      tooltip: string,
+      abbr: TCategoryAbbr,  
+    }) => ({
       name: category.abbr,
       id: category.abbr,
       subHeading: true,
@@ -104,21 +116,28 @@ export const createDataCategoryColumns = ({
       th: () => (
         <ThNum>
           <abbr>
-            <Tooltip Component={category.full} style={tableToolTipHint()}>
+            <Tooltip Component={category.tooltip || category.full} style={tableToolTipHint()}>
               {category.abbr}
             </Tooltip>
           </abbr>
         </ThNum>
       ),
       td: ({ node }: { node: INode }) => {
-        const count = findDataCategory(
-          category.abbr,
-          node.summary.data_categories
-        )[countKey];
+        const isMetadataColumn = ['Clinical Metadata', 'Biospecimen Metadata'].includes(category.tooltip);
+        const count = isMetadataColumn 
+          ? node.summary.file_count 
+          : findDataCategory(
+            category.dataCategory || category.abbr,
+            node.summary.data_categories
+          )[countKey];
         return (
           <TdNum>
             {count === 0 ? (
               '0'
+            ) : isMetadataColumn ? (
+              <ProjectLink uuid={node.project_id}>
+                {node.summary.case_count.toLocaleString()}
+              </ProjectLink>
             ) : (
               <Link
                 query={{
@@ -147,10 +166,10 @@ export const createDataCategoryColumns = ({
             {_.sumBy(
               hits.edges,
               x =>
-                findDataCategory(category.abbr, x.node.summary.data_categories)[
-                  countKey
-                ]
-            ).toLocaleString()}
+                findDataCategory(
+                  category.dataCategory || category.abbr,
+                  x.node.summary.data_categories)[countKey]
+                ).toLocaleString()}
           </Link>
         </TdNum>
       ),

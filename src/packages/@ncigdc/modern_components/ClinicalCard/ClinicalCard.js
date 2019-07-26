@@ -41,6 +41,9 @@ const styles = {
     border: `1px solid ${theme.greyScale4}`,
     padding: '3px 5px',
   }),
+  molecularTestTh: {
+    whiteSpace: 'normal',
+  },
   tabTitle: { margin: 0 },
 };
 
@@ -439,7 +442,7 @@ export default compose(
                 contentStyle={{ border: 'none' }}
                 tabContainerStyle={{
                   maxHeight: 900,
-                  minWidth: 100,
+                  minWidth: 90,
                 }}
                 tabContent={followUps.map(followUp => (
                   <React.Fragment key={followUp.node.follow_up_id}>
@@ -522,78 +525,72 @@ export default compose(
                       followUp.node.molecular_tests.hits.edges.length > 0 && (
                         <EntityPageHorizontalTable
                           data={followUp.node.molecular_tests.hits.edges.map(({ node }) => ({
-                            molecular_test_id: truncate(node.molecular_test_id, { length: 11 }) || '--',
-                            gene_symbol: node.gene_symbol || '--',
-                            molecular_analysis_method: node.molecular_analysis_method || '--',
-                            test_result: node.test_result || '--',
-                            aa_change: node.aa_change || '--',
-                            antigen: node.antigen,
-                            mismatch_repair_mutation: node.mismatch_repair_mutation,
-                            second_gene_symbol: node.second_gene_symbol,
-                            test_value: node.test_value,
-                            variant_type: node.variant_type,
-                            chromosome: node.chromosome,
-                            laboratory_test: node.laboratory_test,
-                            biospecimen_type: node.biospecimen_type,
-                            test_units: node.test_units,
+                            biospecimenType: node.biospecimen_type,
+                            geneSymbol: node.gene_symbol,
+                            laboratoryTest: node.laboratory_test,
+                            molecularAnalysisMethod: node.molecular_analysis_method,
+                            molecularTestId: node.molecular_test_id,
+                            testValue: `${node.test_value} ${node.test_units}`,
+                            // aa_change: node.aa_change || '--',
+                            // antigen: node.antigen,
+                            // mismatch_repair_mutation: node.mismatch_repair_mutation,
+                            // second_gene_symbol: node.second_gene_symbol,
+                            // variant_type: node.variant_type,
+                            // chromosome: node.chromosome,
                           }))}
                           headings={[
                             {
+                              key: 'molecularTestId',
                               title: 'UUID',
-                              key: 'molecular_test_id',
                             },
                             {
-                              title: 'Gene Symbol',
-                              key: 'gene_symbol',
-                            },
-                            {
+                              key: 'molecularAnalysisMethod',
+                              style: styles.molecularTestTh,
                               title: 'Molecular Analysis Method',
-                              key: 'molecular_analysis_method',
                             },
                             {
-                              title: 'Test Result',
-                              key: 'test_result',
+                              key: 'geneSymbol',
+                              style: styles.molecularTestTh,
+                              title: 'Gene Symbol',
                             },
                             {
-                              title: 'AA Change',
-                              key: 'aa_change',
-                            },
-                            {
-                              title: 'Antigen',
-                              key: 'antigen',
-                            },
-                            {
-                              title: 'Mismatch Repair Mutation',
-                              key: 'mismatch_repair_mutation',
-                            },
-                            {
-                              title: 'Second Gene Symbol',
-                              key: 'second_gene_symbol',
-                            },
-                            {
-                              title: 'Test Value',
-                              key: 'test_value',
-                            },
-                            {
-                              title: 'Variant Type',
-                              key: 'variant_type',
-                            },
-                            {
-                              title: 'Chromosome',
-                              key: 'chromosome',
-                            },
-                            {
+                              key: 'laboratoryTest',
+                              style: styles.molecularTestTh,
                               title: 'Laboratory Test',
-                              key: 'laboratory_test',
                             },
                             {
+                              key: 'biospecimenType',
+                              style: styles.molecularTestTh,
                               title: 'Biospecimen Type',
-                              key: 'biospecimen_type',
                             },
                             {
-                              title: 'Test Units',
-                              key: 'test_units',
+                              key: 'testValue',
+                              title: 'Test Value',
                             },
+                            // {
+                            //   title: 'AA Change',
+                            //   key: 'aa_change',
+                            // },
+                            // {
+                            //   title: 'Antigen',
+                            //   key: 'antigen',
+                            // },
+                            // {
+                            //   title: 'Mismatch Repair Mutation',
+                            //   key: 'mismatch_repair_mutation',
+                            // },
+                            // {
+                            //   title: 'Second Gene Symbol',
+                            //   key: 'second_gene_symbol',
+                            // },
+                            // {
+                            //   title: 'Variant Type',
+                            //   key: 'variant_type',
+                            // },
+                            // {
+                            //   title: 'Chromosome',
+                            //   key: 'chromosome',
+                            // },
                           ]}
                           />
                     )}

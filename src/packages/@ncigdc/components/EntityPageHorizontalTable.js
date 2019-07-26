@@ -101,7 +101,7 @@ const EntityPageHorizontalTable = ({
                             />
                         )}
 
-                        {v}
+                        {v || '--'}
                       </Td>
                     )))}
                   </Tr>

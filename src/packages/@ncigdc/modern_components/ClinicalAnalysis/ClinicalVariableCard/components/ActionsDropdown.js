@@ -34,7 +34,7 @@ const ActionsDropdown = ({
   const totalFromSelectedBins = selectedBins && selectedBins.length
     ? selectedBins.reduce((acc, bin) => acc + bin.chart_doc_count, 0)
     : totalDocs;
-  const setActionsDisabled = get(selectedBins, 'length', 0) === 0; 
+  const setActionsDisabled = get(selectedBins, 'length', 0) === 0;
   return (
     <Dropdown
       button={(
@@ -53,7 +53,6 @@ const ActionsDropdown = ({
         minWidth: 205,
       }}
       >
-      {/* SAME - EXCEPT BOX IS CONTINUOUS ONLY */}
       {active_chart === 'box' || [
         <DropdownItem
           key="save-set"
@@ -136,7 +135,6 @@ const ActionsDropdown = ({
         </DropdownItem>,
       ]}
 
-      {/* SAME */}
       <DropdownItem
         key="tsv"
         onClick={() => downloadToTSV({
@@ -155,7 +153,7 @@ const ActionsDropdown = ({
         Export TSV
       </DropdownItem>
     </Dropdown>
-  )
+  );
 };
 
 export default ActionsDropdown;

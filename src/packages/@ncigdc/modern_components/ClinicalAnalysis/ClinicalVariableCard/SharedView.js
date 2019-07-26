@@ -3,7 +3,6 @@ import DownCaretIcon from 'react-icons/lib/fa/caret-down';
 
 import {
   find,
-  get,
   isEmpty,
   maxBy,
   reject,
@@ -13,33 +12,26 @@ import { Row, Column } from '@ncigdc/uikit/Flex';
 import Button from '@ncigdc/uikit/Button';
 import { Tooltip } from '@ncigdc/uikit/Tooltip';
 import { visualizingButton, zDepth1 } from '@ncigdc/theme/mixins';
-
 import EntityPageHorizontalTable from '@ncigdc/components/EntityPageHorizontalTable';
 import Dropdown from '@ncigdc/uikit/Dropdown';
 import DropdownItem from '@ncigdc/uikit/DropdownItem';
 import Hidden from '@ncigdc/components/Hidden';
-
 import DownloadVisualizationButton from '@ncigdc/components/DownloadVisualizationButton';
 import wrapSvg from '@ncigdc/utils/wrapSvg';
-
 import {
   MAXIMUM_CURVES,
   MINIMUM_CASES,
 } from '@ncigdc/utils/survivalplot';
 import { SpinnerIcon, SurvivalIcon } from '@ncigdc/theme/icons';
-
 import termCapitaliser from '@ncigdc/utils/customisation';
-
 import {
   humanify,
-  parseContinuousValue,
 } from '@ncigdc/utils/string';
 
-import ActionsDropdown from './ActionsDropdown';
-import ClinicalHistogram from './ClinicalHistogram';
-import ClinicalSurvivalPlot from './ClinicalSurvivalPlot';
-
-import ClinicalBoxPlot from './ClinicalBoxPlot';
+import ActionsDropdown from './components/ActionsDropdown';
+import ClinicalBoxPlot from './components/ClinicalBoxPlot';
+import ClinicalHistogram from './components/ClinicalHistogram';
+import ClinicalSurvivalPlot from './components/ClinicalSurvivalPlot';
 
 import {
   boxTableAllowedStats,
@@ -47,6 +39,7 @@ import {
   colors,
   getCardFilters,
   getHeadings,
+  parseContinuousValue,
   styles,
   vizButtons,
 } from './helpers';
@@ -70,6 +63,8 @@ const getTableData = (
 
   // DIFFERENT - DISPLAY DATA IS DIFFERENT,
   // THE OTHER STUFF IS THE SAME
+  // put this in continuous recompose
+  // after binsForBinData
 
   const displayData = binData
     .sort((a, b) => a.keyArray[0] - b.keyArray[0])

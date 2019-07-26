@@ -1,4 +1,10 @@
 import React from 'react';
+import { compose, withPropsOnChange } from 'recompose';
+
+import {
+  removeClinicalAnalysisVariable,
+  updateClinicalAnalysisVariable,
+} from '@ncigdc/dux/analysis';
 import {
   get,
   max,
@@ -11,10 +17,6 @@ import {
   humanify,
 } from '@ncigdc/utils/string';
 
-import {
-  removeClinicalAnalysisVariable,
-  updateClinicalAnalysisVariable,
-} from '@ncigdc/dux/analysis';
 import {
   CloseIcon,
   SurvivalIcon,
@@ -300,3 +302,37 @@ export const vizButtons = {
     title: 'Survival Plot',
   },
 };
+
+export const parseContinuousValue = continuousValue =>
+  Number(Number(continuousValue).toFixed(2));
+
+export const parseContinuousKey = keyValue =>
+  keyValue.split('-')
+    .map((val, idx, src) => (src[idx - 1] === '' ? `-${val}` : val))
+    .filter(val => val !== '')
+    .map(val => parseContinuousValue(val));
+
+export const createContinuousGroupName = keyValue =>
+  parseContinuousKey(keyValue).join(' to \u003c');
+
+export default compose(
+  withPropsOnChange(
+    (props, nextProps) => props.id !== nextProps.id,
+    ({
+      dispatch,
+      fieldName,
+      id,
+    }) => ({
+      dispatchUpdateClinicalVariable: ({ value, variableKey }) => {
+        dispatch(
+          updateClinicalAnalysisVariable({
+            fieldName,
+            id,
+            value,
+            variableKey,
+          })
+        );
+      },
+    }),
+  ),
+);

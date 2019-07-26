@@ -11,11 +11,12 @@ import _ from 'lodash';
 
 import consoleDebug from '@ncigdc/utils/consoleDebug';
 import { redirectToLogin } from '@ncigdc/utils/auth';
-import { createFacetFieldString, parseContinuousKey } from '@ncigdc/utils/string'
+import { createFacetFieldString } from '@ncigdc/utils/string'
 import Loader from '@ncigdc/uikit/Loaders/Loader';
 
 import { API, IS_AUTH_PORTAL } from '@ncigdc/utils/constants';
 import { ContinuousVariableCard } from './ClinicalVariableCard';
+import { parseContinuousKey } from './ClinicalVariableCard/helpers';
 
 const simpleAggCache = {};
 const pendingAggCache = {};
@@ -35,6 +36,7 @@ const getContinuousAggs = ({ continuousBinType, fieldName, stats, filters, bins 
         from: key * interval + stats.min,
         to: (key + 1) === DEFAULT_CONTINUOUS_BUCKETS
           ? stats.max + 1
+          // api excludes max value
           : stats.min + (key + 1) * interval,
       })
     );

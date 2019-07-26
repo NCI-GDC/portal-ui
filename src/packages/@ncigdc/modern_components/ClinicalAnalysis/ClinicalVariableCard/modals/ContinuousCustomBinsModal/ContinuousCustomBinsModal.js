@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import { debounce, isEmpty, isFinite } from 'lodash';
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import Button from '@ncigdc/uikit/Button';
-import { createContinuousGroupName } from '@ncigdc/utils/string';
 import Undo from '@ncigdc/theme/icons/Undo';
+import { createContinuousGroupName } from '../../helpers';
 import RangeTableRow from './RangeTableRow';
 import BinningMethodInput from './BinningMethodInput';
 import CustomIntervalFields from './CustomIntervalFields';
@@ -34,7 +34,7 @@ const defaultInterval = {
   amount: '',
   max: '',
   min: '',
-  };
+};
 
 const defaultState = {
   binningMethod: 'interval', // interval or range
@@ -337,10 +337,10 @@ class ContinuousCustomBinsModal extends Component {
             ...(curr.name === ''
               ? {}
               : {
-              [rowKey]: {
-                groupName: curr.name,
-                key: rowKey,
-              },
+                [rowKey]: {
+                  groupName: curr.name,
+                  key: rowKey,
+                },
               }
             ),
           });

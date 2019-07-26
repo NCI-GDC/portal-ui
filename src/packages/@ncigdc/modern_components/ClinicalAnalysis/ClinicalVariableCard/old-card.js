@@ -77,20 +77,20 @@ import {
 import {
   humanify,
   createFacetFieldString,
-  parseContinuousValue,
-  parseContinuousKey,
-  createContinuousGroupName,
 } from '@ncigdc/utils/string';
 import termCapitaliser from '@ncigdc/utils/customisation';
 import timestamp from '@ncigdc/utils/timestamp';
 
 import { IS_CDAVE_DEV, analysisColors } from '@ncigdc/utils/constants';
-import ContinuousCustomBinsModal from '@ncigdc/components/Modals/ContinuousBinning/ContinuousCustomBinsModal';
+import ContinuousCustomBinsModal from '@ncigdc/modern_components/ClinicalAnalysis/ClinicalVariableCard/ContinuousCustomBinsModal/ContinuousCustomBinsModal';
 
 import {
   boxTableAllowedStats,
   boxTableRenamedStats,
   dataDimensions,
+  parseContinuousValue,
+  parseContinuousKey,
+  createContinuousGroupName,
 } from './helpers';
 
 import '../boxplot.css';

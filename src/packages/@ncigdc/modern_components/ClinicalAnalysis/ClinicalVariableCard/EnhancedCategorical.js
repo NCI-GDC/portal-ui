@@ -68,8 +68,8 @@ import termCapitaliser from '@ncigdc/utils/customisation';
 import timestamp from '@ncigdc/utils/timestamp';
 
 import { IS_CDAVE_DEV } from '@ncigdc/utils/constants';
-import ClinicalHistogram from './ClinicalHistogram';
-import ClinicalSurvivalPlot from './ClinicalSurvivalPlot';
+import ClinicalHistogram from './components/ClinicalHistogram';
+import ClinicalSurvivalPlot from './components/ClinicalSurvivalPlot';
 
 import {
   colors,

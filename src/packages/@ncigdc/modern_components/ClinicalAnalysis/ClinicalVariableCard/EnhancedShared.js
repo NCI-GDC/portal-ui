@@ -27,29 +27,21 @@ import {
 } from '@ncigdc/utils/survivalplot';
 import { withTheme } from '@ncigdc/theme';
 
-import { updateClinicalAnalysisVariable } from '@ncigdc/dux/analysis';
-import {
-  humanify,
-  createFacetFieldString,
-  parseContinuousValue,
-  parseContinuousKey,
-  createContinuousGroupName,
-} from '@ncigdc/utils/string';
+import { createFacetFieldString } from '@ncigdc/utils/string';
 
-import { setModal } from '@ncigdc/dux/modal';
-
-import ContinuousCustomBinsModal from '@ncigdc/components/Modals/ContinuousBinning/ContinuousCustomBinsModal';
-
-import ContinuousView from './ContinuousView';
+import SharedView from './SharedView';
 
 import {
   dataDimensions,
   getCountLink,
+  parseContinuousValue,
+  parseContinuousKey,
+  createContinuousGroupName,
 } from './helpers';
 
 export default compose(
   // SAME
-  setDisplayName('EnhancedContinuousVariableCard'),
+  setDisplayName('EnhancedSharedVariableCard'),
   connect((state: any) => ({ analysis: state.analysis })),
   withTheme,
   withState('selectedSurvivalData', 'setSelectedSurvivalData', {}),
@@ -57,29 +49,6 @@ export default compose(
   withState('selectedSurvivalLoadingIds', 'setSelectedSurvivalLoadingIds', []),
   withState('survivalPlotLoading', 'setSurvivalPlotLoading', true),
   withState('selectedBins', 'setSelectedBins', []),
-  // DIFFERENT - ONLY CONTINUOUS HAS QQ
-  withState('qqData', 'setQQData', []),
-  withState('qqDataIsSet', 'setQQDataIsSet', false),
-  withPropsOnChange(
-    // SAME
-    (props, nextProps) => props.id !== nextProps.id,
-    ({
-      dispatch,
-      fieldName,
-      id,
-    }) => ({
-      dispatchUpdateClinicalVariable: ({ value, variableKey }) => {
-        dispatch(
-          updateClinicalAnalysisVariable({
-            fieldName,
-            id,
-            value,
-            variableKey,
-          })
-        );
-      },
-    }),
-  ),
   withPropsOnChange(
     // DIFFERENT
     (props, nextProps) => !isEqual(props.data, nextProps.data),
@@ -146,7 +115,8 @@ export default compose(
   ),
   withPropsOnChange(
      // DIFFERENT
-    (props, nextProps) => !isEqual(props.dataBuckets, nextProps.dataBuckets) ||
+    (props, nextProps) =>
+      !isEqual(props.dataBuckets, nextProps.dataBuckets) ||
       props.setId !== nextProps.setId,
     ({
       dataBuckets,
@@ -308,48 +278,6 @@ export default compose(
       });
     }
   ),
-  withProps(({ data: { explore }, fieldName }) => {
-    // DIFFERENT - CONTINUOUS ONLY
-    const dataStats = explore
-      ? explore.cases.aggregations[`${createFacetFieldString(fieldName)}`].stats
-      : {
-        Max: null,
-        Min: null,
-      };
-
-    const defaultMin = dataStats.Min;
-    const defaultMax = dataStats.Max + 1;
-    // api excludes the max number
-
-    const defaultQuarter = (defaultMax - defaultMin) / 4;
-
-    const defaultNumberOfBins = 5;
-    const defaultBucketSize = (defaultMax - defaultMin) / defaultNumberOfBins;
-
-    const defaultBins = Array(defaultNumberOfBins).fill(1)
-      .map((val, key) => {
-        const from = key * defaultBucketSize + defaultMin;
-        const to = (key + 1) === defaultNumberOfBins
-          ? defaultMax
-          : (defaultMin + (key + 1) * defaultBucketSize);
-        const objKey = `${from}-${to}`;
-
-        return ({
-          [objKey]: {
-            key: objKey,
-          },
-        });
-      }).reduce((acc, curr) => Object.assign({}, acc, curr), {});
-
-    return ({
-      defaultData: {
-        bins: defaultBins,
-        max: defaultMax,
-        min: defaultMin,
-        quarter: defaultQuarter,
-      },
-    });
-  }),
   withProps(
     // SLIGHTLY DIFFERENT
     ({
@@ -449,97 +377,6 @@ export default compose(
     ({ setSelectedBins }) => setSelectedBins([])
   ),
   withPropsOnChange(
-    // DIFFERENT
-    (props, nextProps) => props.variable.continuousBinType !== nextProps.variable.continuousBinType,
-    ({ variable: { continuousBinType } }) => ({
-      resetBinsDisabled: continuousBinType === 'default',
-    })
-  ),
-  withPropsOnChange(
-    // DIFFERENT - EACH HAS A DIFFERENT MODAL
-    (props, nextProps) => !isEqual(
-      props.defaultData,
-      nextProps.defaultData
-    ) ||
-      !isEqual(
-        props.variable.customInterval,
-        nextProps.variable.customInterval
-      ) ||
-      !isEqual(
-        props.variable.customRanges,
-        nextProps.variable.customRanges
-      ),
-    ({
-      defaultData,
-      dispatch,
-      dispatchUpdateClinicalVariable,
-      fieldName,
-      variable,
-    }) => ({
-      openCustomBinModal: () => dispatch(setModal(
-        <ContinuousCustomBinsModal
-          continuousBinType={variable.continuousBinType}
-          customInterval={variable.customInterval}
-          customRanges={variable.customRanges}
-          defaultData={defaultData}
-          fieldName={humanify({ term: fieldName })}
-          onClose={() => dispatch(setModal(null))}
-          onUpdate={(
-            newBins,
-            continuousBinType,
-            customInterval,
-            customRanges,
-            continuousReset,
-          ) => {
-            dispatchUpdateClinicalVariable({
-              value: continuousReset
-                ? defaultData.bins
-                : newBins,
-              variableKey: 'bins',
-            });
-            dispatchUpdateClinicalVariable({
-              value: continuousReset
-                ? 'default'
-                : continuousBinType,
-              variableKey: 'continuousBinType',
-            });
-            !continuousReset &&
-              continuousBinType === 'interval' &&
-              (
-                dispatchUpdateClinicalVariable({
-                  value: customInterval,
-                  variableKey: 'customInterval',
-                })
-              );
-            !continuousReset &&
-              continuousBinType === 'range' &&
-              (
-                dispatchUpdateClinicalVariable({
-                  value: customRanges,
-                  variableKey: 'customRanges',
-                })
-              );
-            continuousReset &&
-              (
-                dispatchUpdateClinicalVariable({
-                  value: [],
-                  variableKey: 'customRanges',
-                })
-              );
-            continuousReset &&
-              (
-                dispatchUpdateClinicalVariable({
-                  value: {},
-                  variableKey: 'customInterval',
-                })
-              );
-            dispatch(setModal(null));
-          }}
-          />
-      )),
-    })
-  ),
-  withPropsOnChange(
     // SAME
     (props, nextProps) => props.resetBinsDisabled !== nextProps.resetBinsDisabled ||
       props.variable.id !== nextProps.variable.id,
@@ -585,7 +422,8 @@ export default compose(
         });
       }
       if (variable.scrollToCard === false) return;
-      const offset = document.getElementById('header').getBoundingClientRect().bottom + 10;
+      const offset = document.getElementById('header')
+        .getBoundingClientRect().bottom + 10;
       const $anchor = document.getElementById(`${wrapperId}-container`);
       if ($anchor) {
         const offsetTop = $anchor.getBoundingClientRect().top + window.pageYOffset;
@@ -601,4 +439,4 @@ export default compose(
       });
     },
   })
-)(ContinuousView);
+)(SharedView);

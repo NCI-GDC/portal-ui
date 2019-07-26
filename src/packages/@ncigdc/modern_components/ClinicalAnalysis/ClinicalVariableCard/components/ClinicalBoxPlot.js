@@ -1,4 +1,5 @@
 import React from 'react';
+
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import wrapSvg from '@ncigdc/utils/wrapSvg';
 import DownloadVisualizationButton from '@ncigdc/components/DownloadVisualizationButton';
@@ -9,10 +10,11 @@ import { TooltipInjector } from '@ncigdc/uikit/Tooltip';
 import { analysisColors } from '@ncigdc/utils/constants';
 import BoxPlotWrapper from '@oncojs/boxplot';
 import QQPlotQuery from '@ncigdc/modern_components/QQPlot/QQPlotQuery';
-import { CHART_HEIGHT } from './helpers';
 
-import '../boxplot.css';
-import '../qq.css';
+import { CHART_HEIGHT } from '../helpers';
+
+import '../../boxplot.css';
+import '../../qq.css';
 
 const QQ_PLOT_RATIO = '70%';
 const BOX_PLOT_RATIO = '30%';

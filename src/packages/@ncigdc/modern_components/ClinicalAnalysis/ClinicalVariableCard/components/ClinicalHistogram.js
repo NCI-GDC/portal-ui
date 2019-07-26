@@ -1,7 +1,7 @@
 import React from 'react';
 import BarChart from '@ncigdc/components/Charts/BarChart';
 import { analysisColors } from '@ncigdc/utils/constants';
-import { CHART_HEIGHT } from './helpers';
+import { CHART_HEIGHT } from '../helpers';
 
 const ClinicalHistogram = ({
   active_calculation,

@@ -66,7 +66,9 @@ const EntityPageHorizontalTable = ({
             ...titleStyle,
           }}
           >
-          {`${title || <span />} ${rightComponent}`}
+          {title || <span />}
+          {' '}
+          {rightComponent}
         </h1>
       )}
       {data.length > 0

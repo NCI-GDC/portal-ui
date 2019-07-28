@@ -1554,16 +1554,6 @@ export default compose(
           key,
           keyArray: values.reduce((acc, value) => [...acc, value.key], []),
         })).filter(bin => bin.key),
-        bucketsOrganizedByKey: dataBuckets.reduce((acc, r) => {
-          return ({
-            ...acc,
-            [r.key]: {
-              ...r,
-              groupName: r.groupName !== undefined &&
-                r.groupName !== '' ? r.groupName : r.key,
-            },
-          });
-        }, {}),
         getContinuousBuckets: (acc, { doc_count, key, keyArray }) => {
           const keyValues = parseContinuousKey(key);
           // survival doesn't have keyArray
@@ -1804,16 +1794,6 @@ export default compose(
         variable,
         wrapperId,
       } = this.props;
-      if (variable.bins === undefined || isEmpty(variable.bins)) {
-        dispatch(
-          updateClinicalAnalysisVariable({
-            fieldName,
-            id,
-            value: bucketsOrganizedByKey,
-            variableKey: 'bins',
-          }),
-        );
-      }
       if (variable.scrollToCard === false) return;
       const offset = document.getElementById('header').getBoundingClientRect().bottom + 10;
       const $anchor = document.getElementById(`${wrapperId}-container`);

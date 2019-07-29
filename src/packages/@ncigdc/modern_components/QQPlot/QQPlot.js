@@ -25,7 +25,7 @@ const QQPlot = ({
   qqPointStyles = {},
   size: { width },
   styles = {},
-  xAxisTitle = 'Theoretical Quantiles',
+  xAxisTitle = 'Theoretical Normal Quantiles',
   yAxisTitle = 'Sample Quantiles',
 }) => {
   // default styles
@@ -206,7 +206,7 @@ const QQPlot = ({
       .attr('text-anchor', 'middle')
       .attr('transform', `translate(${(chartWidth / 2) + (padding / 2)}, ${(chartHeight / 2)})`)
       .text('Not enough data')
-      .style('fontSize', axisStyle.fontSize)
+      .style('fontSize', '1.6rem')
       .style('fontWeight', axisStyle.fontWeight)
       .attr('fill', axisStyle.textColor);
   }

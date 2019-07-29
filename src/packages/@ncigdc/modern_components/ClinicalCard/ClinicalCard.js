@@ -12,7 +12,6 @@ import { connect } from 'react-redux';
 import Card from '@ncigdc/uikit/Card';
 import Tabs from '@ncigdc/uikit/Tabs';
 import SideTabs from '@ncigdc/uikit/SideTabs';
-import Table, { Tr, Td, Th } from '@ncigdc/uikit/Table';
 import { withTheme } from '@ncigdc/theme';
 import { Row } from '@ncigdc/uikit/Flex/';
 import EntityPageVerticalTable from '@ncigdc/components/EntityPageVerticalTable';
@@ -434,7 +433,7 @@ export default compose(
           )}
           {activeTab === 4 && (
           <div>
-            {followUps.length && (
+            {followUps.length > 0 && (
             <SideTabs
                 containerStyle={{
                   display: 'block',
@@ -594,10 +593,11 @@ export default compose(
                           ]}
                           />
                     )}
-                    {!(followUp.node.molecular_tests && followUp.node.molecular_tests.hits.edges.length) && (
-                    <div style={{ paddingLeft: '2rem' }}>
+                    {!(followUp.node.molecular_tests &&
+                      followUp.node.molecular_tests.hits.edges.length) && (
+                      <div style={{ paddingLeft: '2rem' }}>
                       No Molecular Tests Found.
-                    </div>
+                      </div>
                     )}
                   </React.Fragment>
                 ))}
@@ -612,7 +612,7 @@ export default compose(
                 }
                 />
             )}
-            {!followUps && (
+            {followUps.length === 0 && (
             <h3 style={{ paddingLeft: '2rem' }}>No Follow Ups Found.</h3>
             )}
           </div>

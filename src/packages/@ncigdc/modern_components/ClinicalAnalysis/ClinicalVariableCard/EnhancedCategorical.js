@@ -79,6 +79,7 @@ import {
 } from './helpers';
 import ClinicalHistogram from './components/ClinicalHistogram';
 import ClinicalSurvivalPlot from './components/ClinicalSurvivalPlot';
+import EnhancedShared from './EnhancedShared';
 
 const getTableData = (
   binData,
@@ -900,51 +901,98 @@ export default compose(
     // DIFFERENT
     (props, nextProps) => !isEqual(props.variable.bins, nextProps.variable.bins),
     ({ variable: { bins } }) => ({
-      resetCustomBinsDisabled: Object.keys(bins)
+      resetBinsDisabled: Object.keys(bins)
         .filter(bin => bins[bin].key !== bins[bin].groupName)
         .length === 0,
     })
   ),
-  lifecycle({
-    // SAME
-    componentDidMount(): void {
-      const {
-        bucketsOrganizedByKey,
-        dispatch,
-        fieldName,
-        id,
-        variable,
-        wrapperId,
-      } = this.props;
-      if (variable.bins === undefined || isEmpty(variable.bins)) {
-        dispatch(
-          updateClinicalAnalysisVariable({
-            fieldName,
-            id,
-            value: bucketsOrganizedByKey,
-            variableKey: 'bins',
-          }),
-        );
-      }
-      if (variable.scrollToCard === false) return;
-      const offset = document.getElementById('header').getBoundingClientRect().bottom + 10;
-      const $anchor = document.getElementById(`${wrapperId}-container`);
-      if ($anchor) {
-        const offsetTop = $anchor.getBoundingClientRect().top + window.pageYOffset;
-        window.scroll({
-          behavior: 'smooth',
-          top: offsetTop - offset,
+  withPropsOnChange(
+    (props, nextProps) =>
+      props.resetBinsDisabled !== nextProps.resetBinsDisabled ||
+      !isEqual(props.dataBuckets, nextProps.dataBuckets),
+    ({
+      dataBuckets,
+      dispatchUpdateClinicalVariable,
+      resetBinsDisabled,
+    }) => ({
+      resetBins: () => {
+        if (resetBinsDisabled) return;
+        dispatchUpdateClinicalVariable({
+          value: dataBuckets
+            .reduce((acc, bucket) => Object.assign(
+              {},
+              acc,
+              {
+                [bucket.key]: Object.assign(
+                  {},
+                  bucket,
+                  { groupName: bucket.key }
+                ),
+              }
+            ), {}),
+          variableKey: 'bins',
         });
-      }
-
-      dispatch(
-        updateClinicalAnalysisVariable({
-          fieldName,
-          id,
-          value: false,
-          variableKey: 'scrollToCard',
-        })
-      );
-    },
-  })
-)(CategoricalVariableCard);
+      },
+    })
+  ),
+  withPropsOnChange(
+    (props, nextProps) =>
+      !isEqual(props.binData, nextProps.binData),
+    ({
+      binData, fieldName, setId, totalDocs,
+    }) => ({
+      displayData: isEmpty(binData)
+        ? []
+        : binData
+          .filter(bucket => (
+          IS_CDAVE_DEV
+            ? bucket.key
+            : bucket.key !== '_missing'
+          ))
+          .sort((a, b) => b.doc_count - a.doc_count)
+          .map(bin => Object.assign(
+            {},
+            bin,
+            {
+              chart_doc_count: bin.doc_count,
+              doc_count: getCountLink({
+                doc_count: bin.doc_count,
+                filters:
+                bin.key === '_missing'
+                  ? {
+                    content: [
+                      {
+                        content: {
+                          field: fieldName,
+                          value: bin.keyArray,
+                        },
+                        op: 'IS',
+                      },
+                      {
+                        content: {
+                          field: 'cases.case_id',
+                          value: `set_id:${setId}`,
+                        },
+                        op: 'in',
+                      },
+                    ],
+                    op: 'AND',
+                  }
+                  : makeFilter([
+                    {
+                      field: 'cases.case_id',
+                      value: `set_id:${setId}`,
+                    },
+                    {
+                      field: fieldName,
+                      value: bin.keyArray,
+                    },
+                  ]),
+                totalDocs,
+              }),
+              key: bin.key,
+            }
+          )),
+    })
+  ),
+)(EnhancedShared);

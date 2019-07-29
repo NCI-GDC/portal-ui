@@ -101,35 +101,6 @@ export default compose(
     (props, nextProps) => props.id !== nextProps.id,
     ({ setSelectedBins }) => setSelectedBins([])
   ),
-  withPropsOnChange(
-    (props, nextProps) => props.resetBinsDisabled !== nextProps.resetBinsDisabled ||
-      props.variable.id !== nextProps.variable.id,
-    ({
-      defaultData: { bins },
-      dispatchUpdateClinicalVariable,
-      resetBinsDisabled,
-    }) => ({
-      resetBins: () => {
-        if (resetBinsDisabled) return;
-        dispatchUpdateClinicalVariable({
-          value: bins,
-          variableKey: 'bins',
-        });
-        dispatchUpdateClinicalVariable({
-          value: 'default',
-          variableKey: 'continuousBinType',
-        });
-        dispatchUpdateClinicalVariable({
-          value: {},
-          variableKey: 'customInterval',
-        });
-        dispatchUpdateClinicalVariable({
-          value: [],
-          variableKey: 'customRanges',
-        });
-      },
-    })
-  ),
   lifecycle({
     componentDidMount(): void {
       const {

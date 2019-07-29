@@ -944,16 +944,13 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                     </Row>
                     <Row>
                       <DownloadVisualizationButton
-                        buttonStyle={{
-                          fontSize: '1.2rem',
-                          lineHeight: 0,
-                          minHeight: 20,
-                          minWidth: 22,
-                          padding: 0,
-                        }}
                         data={qqData}
                         noText
-                        slug={[`boxplot-${fieldName}`,`qq-plot-${fieldName}`]}
+                        slug={[`boxplot-${fieldName}`, `qq-plot-${fieldName}`]}
+                        style={{
+                          float: 'right',
+                          marginRight: 2,
+                        }}
                         svg={
                           [
                             () => wrapSvg({
@@ -966,7 +963,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                               selector: `#${wrapperId}-boxplot-container figure svg`,
                               title: `${humanify({ term: fieldName })} Box Plot`,
                             }),
-                          ]}
+                        ]}
                         tooltipHTML="Download plot data"
                         tsvData={qqData}
                         />

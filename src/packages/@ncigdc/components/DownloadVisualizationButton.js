@@ -68,6 +68,7 @@ const DownloadVisualizationButton = ({
   tsvData,
   ...props
 }: TProps) => {
+  const isSlugArray = slug instanceof Array;
   return (
     <DropDown
       button={(
@@ -129,10 +130,10 @@ const DownloadVisualizationButton = ({
           onClick={() => {
             if (!supportsSvgToPng()) return;
             if (svg instanceof Array) {
-              svg.map(s => downloadSvg({
+              svg.map((s, i) => downloadSvg({
                 svg: getDOMNode(s),
                 stylePrefix,
-                fileName: `${slug}.png`,
+                fileName: `${slug[i]}.png`,
               }));
               track('download-viz', { type: 'png' });
               return;
@@ -172,12 +173,12 @@ const DownloadVisualizationButton = ({
         <DropdownItem
           key="JSON"
           onClick={() => {
-            saveFile(JSON.stringify(data, null, 2), 'JSON', `${slug}.json`);
+            saveFile(JSON.stringify(data, null, 2), 'JSON', `${isSlugArray ? slug[1] : slug}.json`);
             track('download-viz', { type: 'json' });
           }}
           style={styles.row(theme)}
           >
-          { (slug instanceof Array) ? 'QQ JSON' : 'JSON'}
+          { isSlugArray ? 'QQ JSON' : 'JSON'}
         </DropdownItem>
       )}
       {tsvData && (
@@ -190,14 +191,14 @@ const DownloadVisualizationButton = ({
                 ? mapArrayToTsvString(tsvData)
                 : toTsvString(tsvData),
               'TSV',
-              `${slug}.tsv`,
+              `${isSlugArray ? slug[1] : slug}.tsv`,
               );
               track('download-viz', { type: 'tsv' });
             }
           }}
           style={styles.row(theme)}
           >
-          {(slug instanceof Array) ? 'QQ TSV' : 'TSV'}
+          {isSlugArray ? 'QQ TSV' : 'TSV'}
         </DropdownItem>
       )}
     </DropDown>

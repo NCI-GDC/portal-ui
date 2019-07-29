@@ -1489,6 +1489,7 @@ export default compose(
                     [key]: {
                       doc_count: 0,
                       groupName: bin.groupName,
+                      index: bin.index,
                       key,
                     },
                   };
@@ -1499,6 +1500,7 @@ export default compose(
                 ...acc,
                 [r.key]: {
                   ...r,
+                  index: variable.bins[r.key].index,
                   groupName:
                     typeof get(variable, `bins.${r.key}.groupName`, undefined) === 'string'
                       // hidden value have groupName '', so check if it is string

@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import {
   compose,
   setDisplayName,
@@ -16,23 +16,20 @@ import {
 } from 'lodash';
 
 import { makeFilter } from '@ncigdc/utils/filters';
-
 import { setModal } from '@ncigdc/dux/modal';
 import GroupValuesModal from '@ncigdc/components/Modals/GroupValuesModal';
-
+import {
+  humanify,
+  createFacetFieldString,
+} from '@ncigdc/utils/string';
+import { IS_CDAVE_DEV } from '@ncigdc/utils/constants';
+import { withTheme } from '@ncigdc/theme';
 import {
   getSurvivalCurvesArray,
   MAXIMUM_CURVES,
   MINIMUM_CASES,
 } from '@ncigdc/utils/survivalplot';
-import '../survivalPlot.css';
-import { withTheme } from '@ncigdc/theme';
 
-import {
-  createFacetFieldString,
-} from '@ncigdc/utils/string';
-
-import { IS_CDAVE_DEV } from '@ncigdc/utils/constants';
 import RecomposeUtils, {
   dataDimensions,
   getCountLink,
@@ -217,18 +214,7 @@ export default compose(
     })
   ),
   withPropsOnChange(
-    // SAME
-    (props, nextProps) => props.variable.active_chart !== nextProps.variable.active_chart ||
-      !isEqual(props.data, nextProps.data) ||
-      !isEqual(props.variable.bins, nextProps.variable.bins),
-    ({ populateSurvivalData, variable }) => {
-      if (variable.active_chart === 'survival') {
-        populateSurvivalData();
-      }
-    }
-  ),
-  withPropsOnChange(
-    (props, nextProps) => 
+    (props, nextProps) =>
       !isEqual(props.variable.bins, nextProps.variable.bins),
     ({ variable: { bins } }) => ({
       resetBinsDisabled: Object.keys(bins)
@@ -325,4 +311,36 @@ export default compose(
           )),
     })
   ),
+  withPropsOnChange(
+    (props, nextProps) =>
+      !isEqual(props.variable.bins, nextProps.variable.bins) ||
+      !isEqual(props.dataBuckets, nextProps.dataBuckets),
+    ({
+      dataBuckets,
+      dispatch,
+      dispatchUpdateClinicalAnalysisVariable,
+      fieldName,
+      variable: { bins },
+    }) => ({
+      openCustomBinsModal: () => dispatch(setModal(
+        <GroupValuesModal
+          bins={bins}
+          dataBuckets={dataBuckets}
+          fieldName={humanify({ term: fieldName })}
+          modalStyle={{
+            maxWidth: '720px',
+            width: '90%',
+          }}
+          onClose={() => dispatch(setModal(null))}
+          onUpdate={(newBins) => {
+            dispatchUpdateClinicalAnalysisVariable({
+              value: newBins,
+              variableKey: 'bins',
+            });
+            dispatch(setModal(null));
+          }}
+          />
+      )),
+    })
+  )
 )(EnhancedShared);

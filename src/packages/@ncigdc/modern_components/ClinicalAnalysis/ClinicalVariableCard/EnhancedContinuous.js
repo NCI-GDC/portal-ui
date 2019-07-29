@@ -29,6 +29,7 @@ import RecomposeUtils, {
   createContinuousGroupName,
   dataDimensions,
   filterSurvivalData,
+  getBinData,
   getCountLink,
   parseContinuousKey,
   parseContinuousValue,
@@ -245,10 +246,10 @@ export default compose(
     ({
       dataBuckets,
       dispatchUpdateClinicalVariable,
-      variable,
+      variable: { bins, continuousBinType },
     }) => {
       dispatchUpdateClinicalVariable({
-        value: variable.continuousBinType === 'default'
+        value: continuousBinType === 'default'
           ? dataBuckets.reduce((acc, curr, index) => Object.assign(
             {},
             acc,
@@ -260,14 +261,14 @@ export default compose(
               ),
             },
           ), {})
-          : Object.keys(variable.bins)
+          : Object.keys(bins)
             .reduce((acc, curr, index) => Object.assign(
               {},
               acc,
               {
                 [curr]: Object.assign(
                   {},
-                  variable.bins[curr],
+                  bins[curr],
                   {
                     doc_count: dataBuckets[index]
                     ? dataBuckets[index].doc_count
@@ -316,105 +317,88 @@ export default compose(
             }
           );
         }, {});
+    
+      const binData = getBinData(binsForBinData, dataBuckets);
 
-      return {
-        binData: map(groupBy(binsForBinData, bin => bin.groupName), (values, key) => ({
-          doc_count: values.reduce((acc, value) => acc + value.doc_count, 0),
-          key,
-          keyArray: values.reduce((acc, value) => acc.concat(value.key), []),
-        })).filter(bin => bin.key),
-        binsOrganizedByKey: dataBuckets.reduce((acc, r) => Object.assign(
-          {},
-          acc,
-          {
-            [r.key]: Object.assign(
-              {},
-              r,
-              {
-                groupName: r.groupName !== undefined &&
-                  r.groupName !== ''
-                  ? r.groupName
-                  : r.key,
-              }
-            ),
-          }
-        ), {}),
-        getContinuousBins: (acc, { doc_count, key, keyArray }) => {
-          const keyValues = parseContinuousKey(key);
-          // survival doesn't have keyArray
-          const keyArrayValues = keyArray
-            ? parseContinuousKey(keyArray[0])
-            : keyValues;
+      return Object.assign(
+        {},
+        binData,
+        {
+          getContinuousBins: (acc, { doc_count, key, keyArray }) => {
+            const keyValues = parseContinuousKey(key);
+            // survival doesn't have keyArray
+            const keyArrayValues = keyArray
+              ? parseContinuousKey(keyArray[0])
+              : keyValues;
 
-          const groupName = keyValues.length === 2 &&
-            isFinite(keyValues[0]) &&
-            isFinite(keyValues[1])
-            ? createContinuousGroupName(key)
-            : key;
+            const groupName = keyValues.length === 2 &&
+              isFinite(keyValues[0]) &&
+              isFinite(keyValues[1])
+              ? createContinuousGroupName(key)
+              : key;
 
-          const [keyMin, keyMax] = keyArrayValues;
-          const filters = {
-            op: 'and',
-            content: [
-              {
-                op: 'in',
-                content: {
-                  field: 'cases.case_id',
-                  value: `set_id:${setId}`,
+            const [keyMin, keyMax] = keyArrayValues;
+            const filters = {
+              op: 'and',
+              content: [
+                {
+                  op: 'in',
+                  content: {
+                    field: 'cases.case_id',
+                    value: `set_id:${setId}`,
+                  },
                 },
-              },
-              {
-                op: '>=',
-                content: {
-                  field: fieldName,
-                  value: [keyMin],
+                {
+                  op: '>=',
+                  content: {
+                    field: fieldName,
+                    value: [keyMin],
+                  },
                 },
-              },
-              {
-                op: '<',
-                content: {
-                  field: fieldName,
-                  value: [keyMax],
+                {
+                  op: '<',
+                  content: {
+                    field: fieldName,
+                    value: [keyMax],
+                  },
                 },
-              },
-            ],
-          };
+              ],
+            };
 
-          return acc.concat(
-            {
-              chart_doc_count: doc_count,
-              doc_count: getCountLink({
-                doc_count,
+            return acc.concat(
+              {
+                chart_doc_count: doc_count,
+                doc_count: getCountLink({
+                  doc_count,
+                  filters,
+                  totalDocs,
+                }),
                 filters,
-                totalDocs,
-              }),
-              filters,
-              groupName,
-              key: `${keyMin}-${keyMax}`,
-              rangeValues: {
-                max: keyMax,
-                min: keyMin,
-              },
-            }
-          );
-        },
-      };
+                groupName,
+                key: `${keyMin}-${keyMax}`,
+                rangeValues: {
+                  max: keyMax,
+                  min: keyMin,
+                },
+              }
+            );
+          },
+        }
+      );
     }
   ),
   withProps(({
     dataBuckets,
     getContinuousBins,
   }) => {
-    const survivalBins = filterSurvivalData(
+    const survivalPlotValues = filterSurvivalData(
       dataBuckets.length > 0
       ? dataBuckets
         .sort((a, b) =>
           parseContinuousKey(a.key)[0] - parseContinuousKey(b.key)[0])
         .reduce(getContinuousBins, [])
       : []
-    );
-
-    const survivalPlotValues = survivalBins
+    )
       .sort((a, b) => b.chart_doc_count - a.chart_doc_count)
       .slice(0, 2)
       .map(bin => Object.assign({}, bin, { doc_count: 0 }));

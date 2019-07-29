@@ -8,10 +8,8 @@ import {
 import { connect } from 'react-redux';
 import {
   get,
-  groupBy,
   isEmpty,
   isEqual,
-  map,
   reduce,
 } from 'lodash';
 
@@ -32,6 +30,7 @@ import {
 
 import RecomposeUtils, {
   dataDimensions,
+  getBinData,
   getCountLink,
 } from './helpers';
 import EnhancedShared from './EnhancedShared';
@@ -110,31 +109,8 @@ export default compose(
   withProps(
     ({
       dataBuckets,
-      variable,
-    }) => ({
-      binData: map(groupBy(variable.bins, bin => bin.groupName), (values, key) => ({
-        doc_count: values.reduce((acc, value) => acc + value.doc_count, 0),
-        key,
-        keyArray: values.reduce((acc, value) => acc.concat(value.key), []),
-      })).filter(bin => bin.key),
-      bucketsOrganizedByKey: dataBuckets
-        .reduce((acc, bucket) => Object.assign(
-          {},
-          acc,
-          {
-            [bucket.key]: Object.assign(
-              {},
-              bucket,
-              {
-                groupName: bucket.groupName !== undefined &&
-                bucket.groupName !== ''
-                ? bucket.groupName
-                : bucket.key,
-              }
-            ),
-          }
-        ), {}),
-    })
+      variable: { bins },
+    }) => getBinData(bins, dataBuckets)
   ),
   withProps(
     // SLIGHTLY DIFFERENT
@@ -322,7 +298,7 @@ export default compose(
       fieldName,
       variable: { bins },
     }) => ({
-      openCustomBinsModal: () => dispatch(setModal(
+      openCustomBinModal: () => dispatch(setModal(
         <GroupValuesModal
           bins={bins}
           dataBuckets={dataBuckets}

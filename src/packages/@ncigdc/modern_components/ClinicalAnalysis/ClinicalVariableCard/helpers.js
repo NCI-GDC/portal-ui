@@ -7,6 +7,8 @@ import {
 } from '@ncigdc/dux/analysis';
 import {
   get,
+  groupBy,
+  map,
   max,
   min,
 } from 'lodash';
@@ -319,6 +321,30 @@ export const createContinuousGroupName = keyValue =>
 export const filterSurvivalData = data => data
   .filter(x => x.chart_doc_count >= MINIMUM_CASES)
   .filter(x => x.key !== '_missing');
+
+export const getBinData = (bins, dataBuckets) => ({
+  binData: map(groupBy(bins, bin => bin.groupName), (values, key) => ({
+    doc_count: values.reduce((acc, value) => acc + value.doc_count, 0),
+    key,
+    keyArray: values.reduce((acc, value) => acc.concat(value.key), []),
+  })).filter(bin => bin.key),
+  binsOrganizedByKey: dataBuckets.reduce((acc, bucket) => Object.assign(
+    {},
+    acc,
+    {
+      [bucket.key]: Object.assign(
+        {},
+        bucket,
+        {
+          groupName: bucket.groupName !== undefined &&
+            bucket.groupName !== ''
+            ? bucket.groupName
+            : bucket.key,
+        }
+      ),
+    }
+  ), {}),
+});
 
 export default compose(
   withPropsOnChange(

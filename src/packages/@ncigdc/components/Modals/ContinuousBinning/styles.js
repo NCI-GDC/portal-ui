@@ -9,11 +9,11 @@ const styles = {
     border: `2px solid ${theme.greyScale6}`,
     borderRadius: '5px',
     fontSize: '1.8rem',
-    justifyContent: 'space-between',
     marginBottom: '10px',
     padding: '1rem 5rem 1rem 1rem',
     paragraph: {
       margin: 0,
+      paddingRight: '2rem',
     },
   },
   formBg: {

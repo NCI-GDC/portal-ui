@@ -590,7 +590,7 @@ class ContinuousCustomBinsModal extends Component {
     const submitDisabled = this.checkSubmitDisabled();
 
     return (
-      <Column style={{ padding: '20px' }}>
+      <Column style={{ padding: '2rem 2rem 0.5rem' }}>
         <div>
           <h2
             style={{

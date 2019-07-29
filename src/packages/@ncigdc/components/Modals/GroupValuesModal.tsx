@@ -123,7 +123,7 @@ const GroupValuesModal = ({
       style={{
         maxHeight: '90vh',
         overflow: 'auto',
-        padding: '2rem',
+        padding: '2rem 2rem 0.5rem',
       }}
       >
       <h2 style={{ borderBottom: `1px solid ${theme.greyScale5}`, margin: '0 0 1.5rem', paddingBottom: '1rem' }}>

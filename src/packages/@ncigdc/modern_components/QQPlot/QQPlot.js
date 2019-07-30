@@ -7,7 +7,7 @@ import {
   pure,
   withProps,
 } from 'recompose';
-import { last, groupBy, sortBy } from 'lodash';
+import { groupBy, sortBy } from 'lodash';
 import reactSize from 'react-sizeme';
 
 import { qnorm } from './qqUtils';

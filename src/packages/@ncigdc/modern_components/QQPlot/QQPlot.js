@@ -89,7 +89,7 @@ const QQPlot = ({
 
   const yMin = d3.min(zScores, d => Math.floor(d.y));
   const yMax = d3.max(zScores, d => Math.ceil(d.y));
- 
+
   const xScale = d3
     .scaleLinear()
     .domain(enoughData
@@ -114,73 +114,11 @@ const QQPlot = ({
     .scale(yScale)
     .ticks(yTicks);
 
-  // get slope from first and third quantile to match qqline from R
-  const slope = (quantile3Coords.y - quantile1Coords.y) / (quantile3Coords.x - quantile1Coords.x);
-  // const yMin = zScores[0].y;
-  // const yMax = last(zScores).y;
-
-  // calculate coords for start and end of line with y = mx + b
-  // start and end points will equal the y/x min and max OR
-  // intercepts, whichever is within plot limits
-  const b = quantile1Coords.y - (slope * quantile1Coords.x);
-
-  // const xAtYMin = quantile1Coords.x - ((quantile1Coords.y - yMin) / slope);
-  // const xAtYMax = quantile3Coords.x + ((yMax - quantile3Coords.y) / slope);
-
-  const xAtYMin = (yMin - b) / slope;
-  const xAtYMax = (yMax - b) / slope;
-  const yAtXMax = (slope * xMax) + b;
-  const yAtXMin = (slope * xMin) + b;
-
   const svg = d3
     .select(el)
     .append('svg')
     .attr('width', chartWidth)
     .attr('height', chartHeight + padding);
-
-  // draw sample points
-  svg
-    .selectAll('circle')
-    .data(zScores)
-    .enter()
-    .append('circle')
-    .attr('cx', (d) => xScale(d.x))
-    .attr('cy', (d) => yScale(d.y))
-    .attr('r', qqPoint.radius)
-    .attr('stroke', qqPoint.color)
-    .attr('stroke-width', qqPoint.strokeWidth)
-    .attr('fill', 'transparent')
-    .attr('transform', `translate(${padding},${-(padding / 2)})`);
-
-  const line = d3
-    .line()
-    .x(d => xScale(d.x))
-    .y(d => yScale(d.y));
-
-  // draw qq line
-  svg
-    .append('path')
-    .attr('class', 'coords')
-    .datum([
-      {
-        // x: xAtYMin,
-        // y: yMin,
-        x: Math.max(xAtYMin, xMin),
-        y: Math.max(yAtXMin, yMin),
-      },
-      ...quantile1Coords,
-      ...quantile3Coords,
-      {
-        x: Math.min(xAtYMax, xMax),
-        y: Math.min(yMax, yAtXMax),
-        // x: xAtYMax,
-        // y: yMax,
-      },
-    ])
-    .attr('d', line)
-    .attr('stroke', qqLine.color)
-    .attr('stroke-width', qqLine.strokeWidth)
-    .attr('transform', `translate(${padding},${-(padding / 2)})`);
 
   svg
     .append('text')
@@ -199,12 +137,16 @@ const QQPlot = ({
 
     // get slope from first and third quantile to match qqline from R
     const slope = (quantile3Coords.y - quantile1Coords.y) / (quantile3Coords.x - quantile1Coords.x);
-    const yMin = zScores[0].y;
-    const yMax = last(zScores).y;
 
-    // calculate x values for start and end of line
-    const xAtYMin = quantile1Coords.x - ((quantile1Coords.y - yMin) / slope);
-    const xAtYMax = quantile3Coords.x + ((yMax - quantile3Coords.y) / slope);
+    // calculate coords for start and end of line with y = mx + b
+    // start and end points will equal the y/x min and max OR
+    // intercepts, whichever is within plot limits
+    const b = quantile1Coords.y - (slope * quantile1Coords.x);
+
+    const xAtYMin = (yMin - b) / slope;
+    const xAtYMax = (yMax - b) / slope;
+    const yAtXMax = (slope * xMax) + b;
+    const yAtXMin = (slope * xMin) + b;
 
     // draw sample points
     svg
@@ -231,14 +173,14 @@ const QQPlot = ({
       .attr('class', 'coords')
       .datum([
         {
-          x: xAtYMin,
-          y: yMin,
+          x: Math.max(xAtYMin, xMin),
+          y: Math.max(yAtXMin, yMin),
         },
         ...quantile1Coords,
         ...quantile3Coords,
         {
-          x: xAtYMax,
-          y: yMax,
+          x: Math.min(xAtYMax, xMax),
+          y: Math.min(yMax, yAtXMax),
         },
       ])
       .attr('d', line)
@@ -278,7 +220,6 @@ const QQPlot = ({
       .attr('fill', axisStyle.textColor);
   }
 
-  // plot axes last so they render on top of regression clip shapes
   // x axis
   svg
     .append('g')
@@ -303,6 +244,7 @@ const QQPlot = ({
     .call(yAxis);
 
   const yAxisTextX = enoughData ? padding - 10 : padding * 1.5;
+
   svg
     .append('text')
     .attr('text-anchor', 'middle')

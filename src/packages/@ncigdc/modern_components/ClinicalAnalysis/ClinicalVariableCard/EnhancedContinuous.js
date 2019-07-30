@@ -9,7 +9,6 @@ import {
 import { connect } from 'react-redux';
 import {
   get,
-  groupBy,
   isEmpty,
   isEqual,
   isFinite,
@@ -31,6 +30,7 @@ import RecomposeUtils, {
   filterSurvivalData,
   getBinData,
   getCountLink,
+  getRawQueryData,
   parseContinuousKey,
   parseContinuousValue,
 } from './helpers';
@@ -180,9 +180,7 @@ export default compose(
     (props, nextProps) => !isEqual(props.data, nextProps.data),
     ({ data, fieldName }) => {
       const sanitisedId = fieldName.split('.').pop();
-      const rawQueryData = get(data,
-        `explore.cases.aggregations.${
-          createFacetFieldString(fieldName)}`, data);
+      const rawQueryData = getRawQueryData(data, fieldName);
       const dataDimension = dataDimensions[sanitisedId] &&
         dataDimensions[sanitisedId].unit;
 
@@ -317,7 +315,7 @@ export default compose(
             }
           );
         }, {});
-    
+
       const binData = getBinData(binsForBinData, dataBuckets);
 
       return Object.assign(

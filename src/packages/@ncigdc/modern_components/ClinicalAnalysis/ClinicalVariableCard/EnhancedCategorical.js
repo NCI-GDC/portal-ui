@@ -17,8 +17,8 @@ import { makeFilter } from '@ncigdc/utils/filters';
 import { setModal } from '@ncigdc/dux/modal';
 import GroupValuesModal from '@ncigdc/components/Modals/GroupValuesModal';
 import {
-  humanify,
   createFacetFieldString,
+  humanify,
 } from '@ncigdc/utils/string';
 import { IS_CDAVE_DEV } from '@ncigdc/utils/constants';
 import { withTheme } from '@ncigdc/theme';
@@ -28,6 +28,7 @@ import RecomposeUtils, {
   filterSurvivalData,
   getBinData,
   getCountLink,
+  getRawQueryData,
 } from './helpers';
 import EnhancedShared from './EnhancedShared';
 
@@ -40,8 +41,7 @@ export default compose(
     (props, nextProps) => !isEqual(props.data, nextProps.data),
     ({ data, fieldName }) => {
       const sanitisedId = fieldName.split('.').pop();
-      const rawQueryData = get(data,
-        `explore.cases.aggregations.${createFacetFieldString(fieldName)}`, data);
+      const rawQueryData = getRawQueryData(data, fieldName);
 
       return Object.assign(
         {

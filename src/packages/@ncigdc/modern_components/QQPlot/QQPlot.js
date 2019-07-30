@@ -12,17 +12,20 @@ import reactSize from 'react-sizeme';
 
 import { qnorm } from './qqUtils';
 
+const MINIMUM_QQ_CASES = 10;
+
 const QQPlot = ({
   axisStyles = {},
   data = [],
   exportCoordinates = false,
   height = 320,
+  minimumCases = MINIMUM_QQ_CASES,
   plotTitle = '',
   qqLineStyles = {},
   qqPointStyles = {},
   size: { width },
   styles = {},
-  xAxisTitle = 'Theoretical Quantiles',
+  xAxisTitle = 'Theoretical Normal Quantiles',
   yAxisTitle = 'Sample Quantiles',
 }) => {
   // default styles
@@ -57,13 +60,15 @@ const QQPlot = ({
 
   // qq plot calculations
   const n = data.length;
+  const enoughData = n >= minimumCases;
 
   // subtract 1 to account for 0 index array
   const getQuantile = (count, quantile) => Math.ceil(count * (quantile / 4)) - 1;
 
   let zScores = data;
-
   // sample quantile(y) and theoretical quantile (x)
+  // we are doing sort/calc in the wrapper function because of the tsv download, but this
+  // should happen inside the component by default
   if (!exportCoordinates) {
     zScores = sortBy(data).map((age, i) => ({
       x: qnorm((i + 1 - 0.5) / n),
@@ -71,40 +76,43 @@ const QQPlot = ({
     }));
   }
 
-  const quantile1Coords = zScores[getQuantile(n, 1)];
-  const quantile3Coords = zScores[getQuantile(n, 3)];
-
   // create svg
   const el = ReactFauxDOM.createElement('div');
   el.style.width = '100%';
   el.setAttribute('class', 'qq-plot');
 
+  const yTicks = enoughData ? 5 : 0;
+  const xTicks = enoughData ? Object.keys(groupBy(zScores.map(z => z.x), Math.floor)).length : 0;
 
   const xMin = d3.min(zScores, d => Math.floor(d.x));
   const xMax = d3.max(zScores, d => Math.ceil(d.x));
 
   const yMin = d3.min(zScores, d => Math.floor(d.y));
   const yMax = d3.max(zScores, d => Math.ceil(d.y));
-
+ 
   const xScale = d3
     .scaleLinear()
-    .domain([xMin, xMax])
+    .domain(enoughData
+      ? [xMin, xMax]
+      : 0)
     .range([padding, chartWidth - padding * 2]);
 
   const yScale = d3
     .scaleLinear()
-    .domain([yMin, yMax])
+    .domain(enoughData
+      ? [yMin, yMax]
+      : 0)
     .range([chartHeight, padding]);
 
   const xAxis = d3
     .axisBottom()
     .scale(xScale)
-    .ticks(Object.keys(groupBy(zScores.map(z => z.x), Math.floor)).length);
+    .ticks(xTicks);
 
   const yAxis = d3
     .axisLeft()
     .scale(yScale)
-    .ticks(5);
+    .ticks(yTicks);
 
   // get slope from first and third quantile to match qqline from R
   const slope = (quantile3Coords.y - quantile1Coords.y) / (quantile3Coords.x - quantile1Coords.x);
@@ -174,28 +182,6 @@ const QQPlot = ({
     .attr('stroke-width', qqLine.strokeWidth)
     .attr('transform', `translate(${padding},${-(padding / 2)})`);
 
-// clip path to prevent qq line extending beyond y-axis
-  // svg
-  //   .append('rect')
-  //   .attr('x', -(padding))
-  //   .attr('y', padding / 2)
-  //   .attr('clip-path', 'url(#regression-clip-left)')
-  //   .style('fill', 'white')
-  //   .attr('height', chartHeight - padding)
-  //   .attr('width', padding * 2)
-  //   .attr('transform', `translate(${padding},${padding / 2})`);
-
-  // position slightly higher to account for qqline end
-  // svg
-  //   .append('rect')
-  //   .attr('x', -(padding))
-  //   .attr('y', padding / 2)
-  //   .attr('clip-path', 'url(#regression-clip-right)')
-  //   .style('fill', 'white')
-  //   .attr('height', chartHeight)
-  //   .attr('width', padding * 2)
-  //   .attr('transform', `translate(${chartWidth},${-padding})`);
-
   svg
     .append('text')
     .attr('y', 0)
@@ -207,6 +193,92 @@ const QQPlot = ({
     .style('marginBottom', 10)
     .text(plotTitle);
 
+  if (enoughData) {
+    const quantile1Coords = zScores[getQuantile(n, 1)];
+    const quantile3Coords = zScores[getQuantile(n, 3)];
+
+    // get slope from first and third quantile to match qqline from R
+    const slope = (quantile3Coords.y - quantile1Coords.y) / (quantile3Coords.x - quantile1Coords.x);
+    const yMin = zScores[0].y;
+    const yMax = last(zScores).y;
+
+    // calculate x values for start and end of line
+    const xAtYMin = quantile1Coords.x - ((quantile1Coords.y - yMin) / slope);
+    const xAtYMax = quantile3Coords.x + ((yMax - quantile3Coords.y) / slope);
+
+    // draw sample points
+    svg
+      .selectAll('circle')
+      .data(zScores)
+      .enter()
+      .append('circle')
+      .attr('cx', (d) => xScale(d.x))
+      .attr('cy', (d) => yScale(d.y))
+      .attr('r', qqPoint.radius)
+      .attr('stroke', qqPoint.color)
+      .attr('stroke-width', qqPoint.strokeWidth)
+      .attr('fill', 'transparent')
+      .attr('transform', `translate(${padding},${-(padding / 2)})`);
+
+    const line = d3
+      .line()
+      .x(d => xScale(d.x))
+      .y(d => yScale(d.y));
+
+    // draw qq line
+    svg
+      .append('path')
+      .attr('class', 'coords')
+      .datum([
+        {
+          x: xAtYMin,
+          y: yMin,
+        },
+        ...quantile1Coords,
+        ...quantile3Coords,
+        {
+          x: xAtYMax,
+          y: yMax,
+        },
+      ])
+      .attr('d', line)
+      .attr('stroke', qqLine.color)
+      .attr('stroke-width', qqLine.strokeWidth)
+      .attr('transform', `translate(${padding},${-(padding / 2)})`);
+
+    // clip path to prevent qq line extending beyond y-axis
+    svg
+      .append('rect')
+      .attr('x', -(padding))
+      .attr('y', padding / 2)
+      .attr('clip-path', 'url(#regression-clip-left)')
+      .style('fill', 'white')
+      .attr('height', chartHeight - padding)
+      .attr('width', padding * 2)
+      .attr('transform', `translate(${padding},${padding / 2})`);
+
+    // position slightly higher to account for qqline end
+    svg
+      .append('rect')
+      .attr('x', -(padding))
+      .attr('y', padding / 2)
+      .attr('clip-path', 'url(#regression-clip-right)')
+      .style('fill', 'white')
+      .attr('height', chartHeight)
+      .attr('width', padding * 2)
+      .attr('transform', `translate(${chartWidth},${-padding})`);
+  } else {
+    // display no data message
+    svg.append('text')
+      .attr('text-anchor', 'middle')
+      .attr('transform', `translate(${(chartWidth / 2) + (padding / 2)}, ${(chartHeight / 2)})`)
+      .text('Not enough data')
+      .style('fontSize', '1.6rem')
+      .style('fontWeight', axisStyle.fontWeight)
+      .attr('fill', axisStyle.textColor);
+  }
+
+  // plot axes last so they render on top of regression clip shapes
   // x axis
   svg
     .append('g')
@@ -230,10 +302,11 @@ const QQPlot = ({
     .attr('transform', `translate(${padding * 2}, ${-(padding / 2)})`)
     .call(yAxis);
 
+  const yAxisTextX = enoughData ? padding - 10 : padding * 1.5;
   svg
     .append('text')
     .attr('text-anchor', 'middle')
-    .attr('transform', `translate(${padding - 10},${height / 2})rotate(-90)`)
+    .attr('transform', `translate(${yAxisTextX},${height / 2})rotate(-90)`)
     .text(yAxisTitle)
     .style('fontSize', axisStyle.fontSize)
     .style('fontWeight', axisStyle.fontWeight)

@@ -192,14 +192,7 @@ must be provided
                                         molecular_test_id
                                         gene_symbol
                                         molecular_analysis_method
-                                        test_result
-                                        aa_change
-                                        antigen
-                                        mismatch_repair_mutation
-                                        second_gene_symbol
                                         test_value
-                                        variant_type
-                                        chromosome
                                         laboratory_test
                                         biospecimen_type
                                         test_units

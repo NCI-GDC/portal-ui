@@ -78,7 +78,6 @@ export default compose(
       project: { project_id: projectId = {} },
     } = edges[0].node;
     const familyHistory = familyHistories.map(history => history.node);
-    console.log('followUps: ', followUps);
 
     const caseFilter = makeFilter([
       {
@@ -86,6 +85,7 @@ export default compose(
         value: [caseId],
       },
     ]);
+
     return (
       <Card
         className="test-clinical-card"
@@ -124,9 +124,7 @@ export default compose(
           ]}
           tabStyle={{
             padding: '1rem 1.2rem',
-            // width: 150,
             whiteSpace: 'nowrap',
-            // textOverflow: 'ellipsis',
           }}
           >
           {activeTab === 0 && (
@@ -268,32 +266,32 @@ export default compose(
                         !!x.treatments.hits.edges.length && (
                           <EntityPageHorizontalTable
                             data={x.treatments.hits.edges.map(({ node }) => ({
-                              treatment_id: node.treatment_id || '--',
-                              therapeutic_agents: node.therapeutic_agents || '--',
-                              treatment_intent_type: node.treatment_intent_type || '--',
-                              treatment_or_therapy: node.treatment_or_therapy || '--',
-                              days_to_treatment_start: node.days_to_treatment_start || '--',
+                              daysToTreatmentStart: node.days_to_treatment_start,
+                              therapeuticAgents: node.therapeutic_agents,
+                              treatmentId: node.treatment_id,
+                              treatmentIntentType: node.treatment_intent_type,
+                              treatmentOrTherapy: node.treatment_or_therapy,
                             }))
                             }
                             headings={[
                               {
-                                key: 'treatment_id',
+                                key: 'treatmentId',
                                 title: 'UUID',
                               },
                               {
-                                key: 'therapeutic_agents',
+                                key: 'therapeuticAgents',
                                 title: 'Therapeutic Agents',
                               },
                               {
-                                key: 'treatment_intent_type',
+                                key: 'treatmentIntentType',
                                 title: 'Treatment Intent Type',
                               },
                               {
-                                key: 'treatment_or_therapy',
+                                key: 'treatmentOrTherapy',
                                 title: 'Treatment or Therapy',
                               },
                               {
-                                key: 'days_to_treatment_start',
+                                key: 'daysToTreatmentStart',
                                 style: { textAlign: 'right' },
                                 title: 'Days to Treatment Start',
                               },
@@ -529,13 +527,7 @@ export default compose(
                             laboratoryTest: node.laboratory_test,
                             molecularAnalysisMethod: node.molecular_analysis_method,
                             molecularTestId: node.molecular_test_id,
-                            testValue: `${node.test_value} ${node.test_units}`,
-                            // aa_change: node.aa_change || '--',
-                            // antigen: node.antigen,
-                            // mismatch_repair_mutation: node.mismatch_repair_mutation,
-                            // second_gene_symbol: node.second_gene_symbol,
-                            // variant_type: node.variant_type,
-                            // chromosome: node.chromosome,
+                            testValue: node.test_value && node.test_units ? `${node.test_value} ${node.test_units}` : node.test_value,
                           }))}
                           headings={[
                             {
@@ -566,30 +558,6 @@ export default compose(
                               key: 'testValue',
                               title: 'Test Value',
                             },
-                            // {
-                            //   title: 'AA Change',
-                            //   key: 'aa_change',
-                            // },
-                            // {
-                            //   title: 'Antigen',
-                            //   key: 'antigen',
-                            // },
-                            // {
-                            //   title: 'Mismatch Repair Mutation',
-                            //   key: 'mismatch_repair_mutation',
-                            // },
-                            // {
-                            //   title: 'Second Gene Symbol',
-                            //   key: 'second_gene_symbol',
-                            // },
-                            // {
-                            //   title: 'Variant Type',
-                            //   key: 'variant_type',
-                            // },
-                            // {
-                            //   title: 'Chromosome',
-                            //   key: 'chromosome',
-                            // },
                           ]}
                           />
                     )}
@@ -617,68 +585,6 @@ export default compose(
             )}
           </div>
           )}
-          {/* <EntityPageHorizontalTable
-                  data={}
-                  key={mTest.molecular_test_id}
-                  thToTd={[
-                    {
-                      th: 'UUID',
-                      td: mTest.molecular_test_id,
-                    },
-                    {
-                      th: 'Gene Symbol',
-                      td: mTest.gene_symbol,
-                    },
-                    {
-                      th: 'Molecular Analysis Method',
-                      td: mTest.molecular_analysis_method,
-                    },
-                    {
-                      th: 'Test Result',
-                      td: mTest.test_result,
-                    },
-                    {
-                      th: 'AA Change',
-                      td: mTest.aa_change,
-                    },
-                    {
-                      th: 'Antigen',
-                      td: mTest.antigen,
-                    },
-                    {
-                      th: 'Mismatch Repair Mutation',
-                      td: mTest.mismatch_repair_mutation,
-                    },
-                    {
-                      th: 'Second Gene Symbol',
-                      td: mTest.second_gene_symbol,
-                    },
-                    {
-                      th: 'Test Value',
-                      td: mTest.test_value,
-                    },
-                    {
-                      th: 'Variant Type',
-                      td: mTest.variant_type,
-                    },
-                    {
-                      th: 'Chromosome',
-                      td: mTest.chromosome,
-                    },
-                    {
-                      th: 'Laboratory Test',
-                      td: mTest.laboratory_test,
-                    },
-                    {
-                      th: 'Biospecimen Type',
-                      td: mTest.biospecimen_type,
-                    },
-                    {
-                      th: 'Test Units',
-                      td: mTest.test_units,
-                    },
-                  ]}
-              /> */}
 
         </Tabs>
         {clinicalFiles.length > 0 && (

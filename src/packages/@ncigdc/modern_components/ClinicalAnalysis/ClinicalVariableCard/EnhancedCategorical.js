@@ -22,14 +22,10 @@ import {
 } from '@ncigdc/utils/string';
 import { IS_CDAVE_DEV } from '@ncigdc/utils/constants';
 import { withTheme } from '@ncigdc/theme';
-import {
-  getSurvivalCurvesArray,
-  MAXIMUM_CURVES,
-  MINIMUM_CASES,
-} from '@ncigdc/utils/survivalplot';
 
 import RecomposeUtils, {
   dataDimensions,
+  filterSurvivalData,
   getBinData,
   getCountLink,
 } from './helpers';
@@ -112,83 +108,21 @@ export default compose(
       variable: { bins },
     }) => getBinData(bins, dataBuckets)
   ),
-  withProps(
-    // SLIGHTLY DIFFERENT
-    ({
-      binData,
-      fieldName,
-      filters,
-      selectedSurvivalValues,
-      setSelectedSurvivalData,
-      setSelectedSurvivalLoadingIds,
-      setSelectedSurvivalValues,
-      setSurvivalPlotLoading,
-      variable,
-    }) => ({
-      populateSurvivalData: () => {
-        setSurvivalPlotLoading(true);
-        const dataForSurvival = binData
-          .filter(bucket => (IS_CDAVE_DEV ? bucket.key : bucket.key !== '_missing'))
-          .map(bucket => Object.assign(
-            {},
-            bucket,
-            { chart_doc_count: bucket.doc_count }
-          ));
+  withProps(({ binData }) => {
+    const survivalBins = filterSurvivalData(
+      binData
+        .map(bin => ({
+          ...bin,
+          chart_doc_count: bin.doc_count,
+        }))
+    )
+      .slice(0, 2);
 
-        const filteredData = dataForSurvival
-          .filter(x => x.chart_doc_count >= MINIMUM_CASES)
-          .filter(x => x.key !== '_missing')
-          .sort((a, b) => b.chart_doc_count - a.chart_doc_count);
-
-        const valuesForTable = filteredData.map(d => d.key).slice(0, 2);
-
-        const valuesForPlot = filteredData
-          .map(d => d.keyArray).slice(0, 2);
-
-        setSelectedSurvivalValues(valuesForTable);
-        setSelectedSurvivalLoadingIds(valuesForTable);
-
-        getSurvivalCurvesArray({
-          currentFilters: filters,
-          field: fieldName,
-          plotType: variable.plotTypes,
-          values: valuesForPlot,
-        }).then(data => {
-          setSelectedSurvivalData(data);
-          setSurvivalPlotLoading(false);
-          setSelectedSurvivalLoadingIds([]);
-        });
-      },
-      updateSelectedSurvivalValues: (data, value) => {
-        if (
-          selectedSurvivalValues.indexOf(value.key) === -1 &&
-          selectedSurvivalValues.length >= MAXIMUM_CURVES
-        ) {
-          return;
-        }
-        setSurvivalPlotLoading(true);
-
-        const nextValues =
-          selectedSurvivalValues.indexOf(value.key) === -1
-            ? selectedSurvivalValues.concat(value.key)
-            : selectedSurvivalValues.filter(s => s !== value.key);
-
-        setSelectedSurvivalValues(nextValues);
-        setSelectedSurvivalLoadingIds(nextValues);
-
-        getSurvivalCurvesArray({
-          currentFilters: filters,
-          field: fieldName,
-          plotType: variable.plotTypes,
-          values: nextValues,
-        }).then(receivedData => {
-          setSelectedSurvivalData(receivedData);
-          setSurvivalPlotLoading(false);
-          setSelectedSurvivalLoadingIds([]);
-        });
-      },
-    })
-  ),
+    return {
+      survivalPlotValues: survivalBins.map(bin => bin.keyArray),
+      survivalTableValues: survivalBins.map(bin => bin.key),
+    };
+  }),
   withPropsOnChange(
     (props, nextProps) =>
       !isEqual(props.variable.bins, nextProps.variable.bins),

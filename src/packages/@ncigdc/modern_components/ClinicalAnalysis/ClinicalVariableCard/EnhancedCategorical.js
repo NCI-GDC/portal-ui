@@ -228,7 +228,7 @@ export default compose(
     ({
       dataBuckets,
       dispatch,
-      dispatchUpdateClinicalAnalysisVariable,
+      dispatchUpdateClinicalVariable,
       fieldName,
       variable: { bins },
     }) => ({
@@ -243,7 +243,7 @@ export default compose(
           }}
           onClose={() => dispatch(setModal(null))}
           onUpdate={(newBins) => {
-            dispatchUpdateClinicalAnalysisVariable({
+            dispatchUpdateClinicalVariable({
               value: newBins,
               variableKey: 'bins',
             });

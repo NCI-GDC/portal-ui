@@ -306,17 +306,27 @@
             },
             {
               "kind": "OBJECT",
-              "name": "CaseFile",
-              "ofType": null
-            },
-            {
-              "kind": "OBJECT",
               "name": "Exposure",
               "ofType": null
             },
             {
               "kind": "OBJECT",
               "name": "FamilyHistory",
+              "ofType": null
+            },
+            {
+              "kind": "OBJECT",
+              "name": "CaseFile",
+              "ofType": null
+            },
+            {
+              "kind": "OBJECT",
+              "name": "FollowUp",
+              "ofType": null
+            },
+            {
+              "kind": "OBJECT",
+              "name": "MolecularTest",
               "ofType": null
             },
             {
@@ -347,16 +357,6 @@
             {
               "kind": "OBJECT",
               "name": "Slide",
-              "ofType": null
-            },
-            {
-              "kind": "OBJECT",
-              "name": "FollowUp",
-              "ofType": null
-            },
-            {
-              "kind": "OBJECT",
-              "name": "MolecularTest",
               "ofType": null
             },
             {
@@ -10662,7 +10662,7 @@
                 }
               ],
               "deprecationReason": null,
-              "description": "\n        Example for correct usage:\n        query ...\n        aggregations(filters: $filter1) {\n          diagnoses__age_at_diagnosis {\n            range(ranges: $filter2) {\n              buckets {\n                doc_count\n                key\n              }\n            }\n          }\n        }\n        ...\n\n        query variables\n        {...\"filter2\":{\n            \"op\":\"range\",\n            \"content\":[\n                {\n                    \"ranges\":[\n                            {\"to\": 10585},\n                            {\"from\": 10950, \"to\": 21535},\n                            {\"from\": 21900, \"to\": 32485},\n                            {\"from\":33000}\n                    ]\n                }\n            ]\n        }...}\n\n        ",
+              "description": null,
               "isDeprecated": false,
               "name": "range",
               "type": {
@@ -11551,18 +11551,6 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "files",
-              "type": {
-                "kind": "OBJECT",
-                "name": "CaseFiles",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
               "name": "exposures",
               "type": {
                 "kind": "OBJECT",
@@ -11579,6 +11567,30 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "FamilyHistories",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "files",
+              "type": {
+                "kind": "OBJECT",
+                "name": "CaseFiles",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "follow_ups",
+              "type": {
+                "kind": "OBJECT",
+                "name": "FollowUps",
                 "ofType": null
               }
             },
@@ -11627,18 +11639,6 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "TissueSourceSite",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "follow_ups",
-              "type": {
-                "kind": "OBJECT",
-                "name": "FollowUps",
                 "ofType": null
               }
             },
@@ -14252,771 +14252,6 @@
               "name": "hits",
               "type": {
                 "kind": "OBJECT",
-                "name": "CaseFileConnection",
-                "ofType": null
-              }
-            }
-          ],
-          "inputFields": null,
-          "interfaces": [],
-          "kind": "OBJECT",
-          "name": "CaseFiles",
-          "possibleTypes": null
-        },
-        {
-          "description": null,
-          "enumValues": null,
-          "fields": [
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "The Information to aid in pagination",
-              "isDeprecated": false,
-              "name": "pageInfo",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "PageInfo",
-                  "ofType": null
-                }
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "The Information to aid in pagination",
-              "isDeprecated": false,
-              "name": "total",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "Int",
-                  "ofType": null
-                }
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "Information to aid in pagination.",
-              "isDeprecated": false,
-              "name": "edges",
-              "type": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "CaseFileEdge",
-                  "ofType": null
-                }
-              }
-            }
-          ],
-          "inputFields": null,
-          "interfaces": [],
-          "kind": "OBJECT",
-          "name": "CaseFileConnection",
-          "possibleTypes": null
-        },
-        {
-          "description": null,
-          "enumValues": null,
-          "fields": [
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "A cursor for use in pagination",
-              "isDeprecated": false,
-              "name": "cursor",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "The item at the end of the edge",
-              "isDeprecated": false,
-              "name": "node",
-              "type": {
-                "kind": "OBJECT",
-                "name": "CaseFile",
-                "ofType": null
-              }
-            }
-          ],
-          "inputFields": null,
-          "interfaces": [],
-          "kind": "OBJECT",
-          "name": "CaseFileEdge",
-          "possibleTypes": null
-        },
-        {
-          "description": null,
-          "enumValues": null,
-          "fields": [
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "id",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "ID",
-                  "ofType": null
-                }
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "acl",
-              "type": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "tags",
-              "type": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "keyword",
-              "isDeprecated": false,
-              "name": "origin",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "keyword",
-              "isDeprecated": false,
-              "name": "chip_id",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "The name (or part of a name) of a file (of any type).\n",
-              "isDeprecated": false,
-              "name": "file_name",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "A project-specific identifier for a node. This property is the calling card/nickname/alias for a unit of submission. It can be used in place of the UUID for identifying or recalling a node.\n",
-              "isDeprecated": false,
-              "name": "submitter_id",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "keyword",
-              "isDeprecated": false,
-              "name": "read_pair_number",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "The size of the data file (object) in bytes.\n",
-              "isDeprecated": false,
-              "name": "file_size",
-              "type": {
-                "kind": "SCALAR",
-                "name": "Float",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "long",
-              "isDeprecated": false,
-              "name": "proportion_coverage_30X",
-              "type": {
-                "kind": "SCALAR",
-                "name": "Float",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "long",
-              "isDeprecated": false,
-              "name": "pairs_on_diff_chr",
-              "type": {
-                "kind": "SCALAR",
-                "name": "Float",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "long",
-              "isDeprecated": false,
-              "name": "average_base_quality",
-              "type": {
-                "kind": "SCALAR",
-                "name": "Float",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "A combination of date and time of day in the form [-]CCYY-MM-DDThh:mm:ss[Z|(+|-)hh:mm]\n",
-              "isDeprecated": false,
-              "name": "created_datetime",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "keyword",
-              "isDeprecated": false,
-              "name": "imaging_date",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "Type of error for the data file object.\n",
-              "isDeprecated": false,
-              "name": "error_type",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "The current state of the object.\n",
-              "isDeprecated": false,
-              "name": "state",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "keyword",
-              "isDeprecated": false,
-              "name": "access",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "keyword",
-              "isDeprecated": false,
-              "name": "platform",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "long",
-              "isDeprecated": false,
-              "name": "magnification",
-              "type": {
-                "kind": "SCALAR",
-                "name": "Float",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "long",
-              "isDeprecated": false,
-              "name": "average_read_length",
-              "type": {
-                "kind": "SCALAR",
-                "name": "Float",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "long",
-              "isDeprecated": false,
-              "name": "contamination_error",
-              "type": {
-                "kind": "SCALAR",
-                "name": "Float",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "keyword",
-              "isDeprecated": false,
-              "name": "type",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "keyword",
-              "isDeprecated": false,
-              "name": "channel",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "long",
-              "isDeprecated": false,
-              "name": "revision",
-              "type": {
-                "kind": "SCALAR",
-                "name": "Float",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "A combination of date and time of day in the form [-]CCYY-MM-DDThh:mm:ss[Z|(+|-)hh:mm]\n",
-              "isDeprecated": false,
-              "name": "updated_datetime",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "keyword",
-              "isDeprecated": false,
-              "name": "data_type",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "keyword",
-              "isDeprecated": false,
-              "name": "chip_position",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "long",
-              "isDeprecated": false,
-              "name": "proportion_coverage_10X",
-              "type": {
-                "kind": "SCALAR",
-                "name": "Float",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "keyword",
-              "isDeprecated": false,
-              "name": "file_id",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "long",
-              "isDeprecated": false,
-              "name": "contamination",
-              "type": {
-                "kind": "SCALAR",
-                "name": "Float",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "long",
-              "isDeprecated": false,
-              "name": "proportion_base_mismatch",
-              "type": {
-                "kind": "SCALAR",
-                "name": "Float",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "long",
-              "isDeprecated": false,
-              "name": "proportion_reads_duplicated",
-              "type": {
-                "kind": "SCALAR",
-                "name": "Float",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "long",
-              "isDeprecated": false,
-              "name": "total_reads",
-              "type": {
-                "kind": "SCALAR",
-                "name": "Float",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "Optional comment about why the file is in the current state, mainly for invalid state.\n",
-              "isDeprecated": false,
-              "name": "state_comment",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "keyword",
-              "isDeprecated": false,
-              "name": "plate_well",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "keyword",
-              "isDeprecated": false,
-              "name": "data_format",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "The 128-bit hash value expressed as a 32 digit hexadecimal number (in lower case) used as a file's digital fingerprint.\n",
-              "isDeprecated": false,
-              "name": "md5sum",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "keyword",
-              "isDeprecated": false,
-              "name": "plate_name",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "long",
-              "isDeprecated": false,
-              "name": "mean_coverage",
-              "type": {
-                "kind": "SCALAR",
-                "name": "Float",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "long",
-              "isDeprecated": false,
-              "name": "proportion_reads_mapped",
-              "type": {
-                "kind": "SCALAR",
-                "name": "Float",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "long",
-              "isDeprecated": false,
-              "name": "proportion_targets_no_coverage",
-              "type": {
-                "kind": "SCALAR",
-                "name": "Float",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "keyword",
-              "isDeprecated": false,
-              "name": "data_category",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "keyword",
-              "isDeprecated": false,
-              "name": "experimental_strategy",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "long",
-              "isDeprecated": false,
-              "name": "average_insert_size",
-              "type": {
-                "kind": "SCALAR",
-                "name": "Float",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "score",
-              "type": {
-                "kind": "SCALAR",
-                "name": "Int",
-                "ofType": null
-              }
-            }
-          ],
-          "inputFields": null,
-          "interfaces": [
-            {
-              "kind": "INTERFACE",
-              "name": "Node",
-              "ofType": null
-            }
-          ],
-          "kind": "OBJECT",
-          "name": "CaseFile",
-          "possibleTypes": null
-        },
-        {
-          "description": null,
-          "enumValues": null,
-          "fields": [
-            {
-              "args": [
-                {
-                  "defaultValue": null,
-                  "description": null,
-                  "name": "offset",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "Int",
-                    "ofType": null
-                  }
-                },
-                {
-                  "defaultValue": null,
-                  "description": null,
-                  "name": "sort",
-                  "type": {
-                    "kind": "LIST",
-                    "name": null,
-                    "ofType": {
-                      "kind": "INPUT_OBJECT",
-                      "name": "Sort",
-                      "ofType": null
-                    }
-                  }
-                },
-                {
-                  "defaultValue": null,
-                  "description": null,
-                  "name": "filters",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "FiltersArgument",
-                    "ofType": null
-                  }
-                },
-                {
-                  "defaultValue": null,
-                  "description": null,
-                  "name": "before",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "String",
-                    "ofType": null
-                  }
-                },
-                {
-                  "defaultValue": null,
-                  "description": null,
-                  "name": "after",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "String",
-                    "ofType": null
-                  }
-                },
-                {
-                  "defaultValue": null,
-                  "description": null,
-                  "name": "first",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "Int",
-                    "ofType": null
-                  }
-                },
-                {
-                  "defaultValue": null,
-                  "description": null,
-                  "name": "last",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "Int",
-                    "ofType": null
-                  }
-                }
-              ],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "hits",
-              "type": {
-                "kind": "OBJECT",
                 "name": "ExposureConnection",
                 "ofType": null
               }
@@ -15854,6 +15089,2213 @@
           ],
           "kind": "OBJECT",
           "name": "FamilyHistory",
+          "possibleTypes": null
+        },
+        {
+          "description": null,
+          "enumValues": null,
+          "fields": [
+            {
+              "args": [
+                {
+                  "defaultValue": null,
+                  "description": null,
+                  "name": "offset",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  }
+                },
+                {
+                  "defaultValue": null,
+                  "description": null,
+                  "name": "sort",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "Sort",
+                      "ofType": null
+                    }
+                  }
+                },
+                {
+                  "defaultValue": null,
+                  "description": null,
+                  "name": "filters",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "FiltersArgument",
+                    "ofType": null
+                  }
+                },
+                {
+                  "defaultValue": null,
+                  "description": null,
+                  "name": "before",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  }
+                },
+                {
+                  "defaultValue": null,
+                  "description": null,
+                  "name": "after",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  }
+                },
+                {
+                  "defaultValue": null,
+                  "description": null,
+                  "name": "first",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  }
+                },
+                {
+                  "defaultValue": null,
+                  "description": null,
+                  "name": "last",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  }
+                }
+              ],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "hits",
+              "type": {
+                "kind": "OBJECT",
+                "name": "CaseFileConnection",
+                "ofType": null
+              }
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "kind": "OBJECT",
+          "name": "CaseFiles",
+          "possibleTypes": null
+        },
+        {
+          "description": null,
+          "enumValues": null,
+          "fields": [
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "The Information to aid in pagination",
+              "isDeprecated": false,
+              "name": "pageInfo",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "PageInfo",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "The Information to aid in pagination",
+              "isDeprecated": false,
+              "name": "total",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "Information to aid in pagination.",
+              "isDeprecated": false,
+              "name": "edges",
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "CaseFileEdge",
+                  "ofType": null
+                }
+              }
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "kind": "OBJECT",
+          "name": "CaseFileConnection",
+          "possibleTypes": null
+        },
+        {
+          "description": null,
+          "enumValues": null,
+          "fields": [
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "A cursor for use in pagination",
+              "isDeprecated": false,
+              "name": "cursor",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "The item at the end of the edge",
+              "isDeprecated": false,
+              "name": "node",
+              "type": {
+                "kind": "OBJECT",
+                "name": "CaseFile",
+                "ofType": null
+              }
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "kind": "OBJECT",
+          "name": "CaseFileEdge",
+          "possibleTypes": null
+        },
+        {
+          "description": null,
+          "enumValues": null,
+          "fields": [
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "id",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "acl",
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "tags",
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "keyword",
+              "isDeprecated": false,
+              "name": "origin",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "keyword",
+              "isDeprecated": false,
+              "name": "chip_id",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "The name (or part of a name) of a file (of any type).\n",
+              "isDeprecated": false,
+              "name": "file_name",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "A project-specific identifier for a node. This property is the calling card/nickname/alias for a unit of submission. It can be used in place of the UUID for identifying or recalling a node.\n",
+              "isDeprecated": false,
+              "name": "submitter_id",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "keyword",
+              "isDeprecated": false,
+              "name": "read_pair_number",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "The size of the data file (object) in bytes.\n",
+              "isDeprecated": false,
+              "name": "file_size",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Float",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "long",
+              "isDeprecated": false,
+              "name": "proportion_coverage_30X",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Float",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "long",
+              "isDeprecated": false,
+              "name": "pairs_on_diff_chr",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Float",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "long",
+              "isDeprecated": false,
+              "name": "average_base_quality",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Float",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "A combination of date and time of day in the form [-]CCYY-MM-DDThh:mm:ss[Z|(+|-)hh:mm]\n",
+              "isDeprecated": false,
+              "name": "created_datetime",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "keyword",
+              "isDeprecated": false,
+              "name": "imaging_date",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "Type of error for the data file object.\n",
+              "isDeprecated": false,
+              "name": "error_type",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "The current state of the object.\n",
+              "isDeprecated": false,
+              "name": "state",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "keyword",
+              "isDeprecated": false,
+              "name": "access",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "keyword",
+              "isDeprecated": false,
+              "name": "platform",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "long",
+              "isDeprecated": false,
+              "name": "magnification",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Float",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "long",
+              "isDeprecated": false,
+              "name": "average_read_length",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Float",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "long",
+              "isDeprecated": false,
+              "name": "contamination_error",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Float",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "keyword",
+              "isDeprecated": false,
+              "name": "type",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "keyword",
+              "isDeprecated": false,
+              "name": "channel",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "long",
+              "isDeprecated": false,
+              "name": "revision",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Float",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "A combination of date and time of day in the form [-]CCYY-MM-DDThh:mm:ss[Z|(+|-)hh:mm]\n",
+              "isDeprecated": false,
+              "name": "updated_datetime",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "keyword",
+              "isDeprecated": false,
+              "name": "data_type",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "keyword",
+              "isDeprecated": false,
+              "name": "chip_position",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "long",
+              "isDeprecated": false,
+              "name": "proportion_coverage_10X",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Float",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "keyword",
+              "isDeprecated": false,
+              "name": "file_id",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "long",
+              "isDeprecated": false,
+              "name": "contamination",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Float",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "long",
+              "isDeprecated": false,
+              "name": "proportion_base_mismatch",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Float",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "long",
+              "isDeprecated": false,
+              "name": "proportion_reads_duplicated",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Float",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "long",
+              "isDeprecated": false,
+              "name": "total_reads",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Float",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "Optional comment about why the file is in the current state, mainly for invalid state.\n",
+              "isDeprecated": false,
+              "name": "state_comment",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "keyword",
+              "isDeprecated": false,
+              "name": "plate_well",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "keyword",
+              "isDeprecated": false,
+              "name": "data_format",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "The 128-bit hash value expressed as a 32 digit hexadecimal number (in lower case) used as a file's digital fingerprint.\n",
+              "isDeprecated": false,
+              "name": "md5sum",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "keyword",
+              "isDeprecated": false,
+              "name": "plate_name",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "long",
+              "isDeprecated": false,
+              "name": "mean_coverage",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Float",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "long",
+              "isDeprecated": false,
+              "name": "proportion_reads_mapped",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Float",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "long",
+              "isDeprecated": false,
+              "name": "proportion_targets_no_coverage",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Float",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "keyword",
+              "isDeprecated": false,
+              "name": "data_category",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "keyword",
+              "isDeprecated": false,
+              "name": "experimental_strategy",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "long",
+              "isDeprecated": false,
+              "name": "average_insert_size",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Float",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "score",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              }
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [
+            {
+              "kind": "INTERFACE",
+              "name": "Node",
+              "ofType": null
+            }
+          ],
+          "kind": "OBJECT",
+          "name": "CaseFile",
+          "possibleTypes": null
+        },
+        {
+          "description": null,
+          "enumValues": null,
+          "fields": [
+            {
+              "args": [
+                {
+                  "defaultValue": null,
+                  "description": null,
+                  "name": "offset",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  }
+                },
+                {
+                  "defaultValue": null,
+                  "description": null,
+                  "name": "sort",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "Sort",
+                      "ofType": null
+                    }
+                  }
+                },
+                {
+                  "defaultValue": null,
+                  "description": null,
+                  "name": "filters",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "FiltersArgument",
+                    "ofType": null
+                  }
+                },
+                {
+                  "defaultValue": null,
+                  "description": null,
+                  "name": "before",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  }
+                },
+                {
+                  "defaultValue": null,
+                  "description": null,
+                  "name": "after",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  }
+                },
+                {
+                  "defaultValue": null,
+                  "description": null,
+                  "name": "first",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  }
+                },
+                {
+                  "defaultValue": null,
+                  "description": null,
+                  "name": "last",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  }
+                }
+              ],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "hits",
+              "type": {
+                "kind": "OBJECT",
+                "name": "FollowUpConnection",
+                "ofType": null
+              }
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "kind": "OBJECT",
+          "name": "FollowUps",
+          "possibleTypes": null
+        },
+        {
+          "description": null,
+          "enumValues": null,
+          "fields": [
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "The Information to aid in pagination",
+              "isDeprecated": false,
+              "name": "pageInfo",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "PageInfo",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "The Information to aid in pagination",
+              "isDeprecated": false,
+              "name": "total",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "Information to aid in pagination.",
+              "isDeprecated": false,
+              "name": "edges",
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "FollowUpEdge",
+                  "ofType": null
+                }
+              }
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "kind": "OBJECT",
+          "name": "FollowUpConnection",
+          "possibleTypes": null
+        },
+        {
+          "description": null,
+          "enumValues": null,
+          "fields": [
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "A cursor for use in pagination",
+              "isDeprecated": false,
+              "name": "cursor",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "The item at the end of the edge",
+              "isDeprecated": false,
+              "name": "node",
+              "type": {
+                "kind": "OBJECT",
+                "name": "FollowUp",
+                "ofType": null
+              }
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "kind": "OBJECT",
+          "name": "FollowUpEdge",
+          "possibleTypes": null
+        },
+        {
+          "description": null,
+          "enumValues": null,
+          "fields": [
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "id",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "annotations",
+              "type": {
+                "kind": "OBJECT",
+                "name": "CaseAnnotations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "molecular_tests",
+              "type": {
+                "kind": "OBJECT",
+                "name": "MolecularTests",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "The percentage comparison to a normal value reference range of the volume of air that a patient can forcibly exhale from the lungs in one second post-bronchodilator.\n",
+              "isDeprecated": false,
+              "name": "fev1_ref_post_bronch_percent",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Float",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "The weight of the patient measured in kilograms.\n",
+              "isDeprecated": false,
+              "name": "weight",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Float",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "Text term used to describe the types of treatment used to manage gastroesophageal reflux disease (GERD).\n",
+              "isDeprecated": false,
+              "name": "reflux_treatment_type",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "The text term used to describe the type of progressive or recurrent disease or relapsed disease.\n",
+              "isDeprecated": false,
+              "name": "progression_or_recurrence_type",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "The height of the patient in centimeters.\n",
+              "isDeprecated": false,
+              "name": "height",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Float",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "Number of days between the date used for index and the date of the patient's adverse event.\n",
+              "isDeprecated": false,
+              "name": "days_to_adverse_event",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Float",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "The text term used to describe the suspected cause or reason for the patient disease response.\n",
+              "isDeprecated": false,
+              "name": "cause_of_response",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "Percentage value to represent result of Forced Expiratory Volume in 1 second (FEV1) divided by the Forced Vital Capacity (FVC) pre-bronchodilator.\n",
+              "isDeprecated": false,
+              "name": "fev1_fvc_pre_bronch_percent",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Float",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "The ECOG functional performance status of the patient/participant.\n",
+              "isDeprecated": false,
+              "name": "ecog_performance_status",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "Text classification to represent the strain or type of human papillomavirus identified in an individual.\n",
+              "isDeprecated": false,
+              "name": "hpv_positive_type",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "Number of days between the date used for index and the date the patient's disease was formally confirmed as progression-free.\n",
+              "isDeprecated": false,
+              "name": "days_to_progression_free",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Float",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "Number of days between the date used for index and the date of the patient's last follow-up appointment or contact.\n",
+              "isDeprecated": false,
+              "name": "days_to_follow_up",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Float",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "Percentage value to represent result of Forced Expiratory Volume in 1 second (FEV1) divided by the Forced Vital Capacity (FVC) post-bronchodilator.\n",
+              "isDeprecated": false,
+              "name": "fev1_fvc_post_bronch_percent",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Float",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "The text term used to describe the method used to diagnose the patient's comorbidity disease.\n",
+              "isDeprecated": false,
+              "name": "comorbidity_method_of_diagnosis",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "The value, as a percentage of predicted lung volume, measuring the amount of carbon monoxide detected in a patient's lungs.\n",
+              "isDeprecated": false,
+              "name": "dlco_ref_predictive_percent",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Float",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "The text term used to describe a comorbidity disease, which coexists with the patient's malignant disease.\n",
+              "isDeprecated": false,
+              "name": "comorbidity",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "A combination of date and time of day in the form [-]CCYY-MM-DDThh:mm:ss[Z|(+|-)hh:mm]\n",
+              "isDeprecated": false,
+              "name": "updated_datetime",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "The text term used to describe a risk factor the patient had at the time of or prior to their diagnosis.\n",
+              "isDeprecated": false,
+              "name": "risk_factor",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "The current state of the object.\n",
+              "isDeprecated": false,
+              "name": "state",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "Number of days between the date used for index and the date the patient's disease progressed.\n",
+              "isDeprecated": false,
+              "name": "days_to_progression",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Float",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "Text that represents the Common Terminology Criteria for Adverse Events low level term name for an adverse event.\n",
+              "isDeprecated": false,
+              "name": "adverse_event",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "Number of days between the date used for index and the date the patient's disease recurred.\n",
+              "isDeprecated": false,
+              "name": "days_to_recurrence",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Float",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "A calculated numerical quantity that represents an individual's weight to height ratio.\n",
+              "isDeprecated": false,
+              "name": "bmi",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Float",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "Text term used to describe the patient's menopause status.\n",
+              "isDeprecated": false,
+              "name": "menopause_status",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "Yes/No/Unknown indicator to identify whether a patient has had a new tumor event after initial treatment.\n",
+              "isDeprecated": false,
+              "name": "progression_or_recurrence",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "Text term used to describe the types of treatment used to manage diabetes.\n",
+              "isDeprecated": false,
+              "name": "diabetes_treatment_type",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "The yes/no/unknown indicator used to describe whether the patient received treatment for a risk factor the patient had at the time of or prior to their diagnosis.\n",
+              "isDeprecated": false,
+              "name": "risk_factor_treatment",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "The text term used to describe the anatomic site of the progressive or recurrent disease.\n",
+              "isDeprecated": false,
+              "name": "progression_or_recurrence_anatomic_site",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "A project-specific identifier for a node. This property is the calling card/nickname/alias for a unit of submission. It can be used in place of the UUID for identifying or recalling a node.\n",
+              "isDeprecated": false,
+              "name": "submitter_id",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "The yes/no/unknown indicator used to describe whether goblet cells were determined to be present in a patient diagnosed with Barrett's esophagus.\n",
+              "isDeprecated": false,
+              "name": "barretts_esophagus_goblet_cells_present",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "Code assigned to describe the patient's response or outcome to the disease.\n",
+              "isDeprecated": false,
+              "name": "disease_response",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "keyword",
+              "isDeprecated": false,
+              "name": "follow_up_id",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "Numeric value to represent the year that the patient was diagnosed with clinical chronic pancreatitis.\n",
+              "isDeprecated": false,
+              "name": "pancreatitis_onset_year",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Float",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "Text term that describes the kind of serological laboratory test used to determine the patient's hepatitus status.\n",
+              "isDeprecated": false,
+              "name": "viral_hepatitis_serologies",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "The percentage comparison to a normal value reference range of the volume of air that a patient can forcibly exhale from the lungs in one second pre-bronchodilator.\n",
+              "isDeprecated": false,
+              "name": "fev1_ref_pre_bronch_percent",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Float",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "A combination of date and time of day in the form [-]CCYY-MM-DDThh:mm:ss[Z|(+|-)hh:mm]\n",
+              "isDeprecated": false,
+              "name": "created_datetime",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "Text term used to describe the classification used of the functional capabilities of a person.\n",
+              "isDeprecated": false,
+              "name": "karnofsky_performance_status",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "The yes/no/unknown indicator used to describe whether the patient received treatment for a risk factor the patient had at the time of or prior to their diagnosis.\n",
+              "isDeprecated": false,
+              "name": "hepatitis_sustained_virological_response",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "Number of days between the date used for index and the date the patient was diagnosed with a comorbidity.\n",
+              "isDeprecated": false,
+              "name": "days_to_comorbidity",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Float",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "score",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              }
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [
+            {
+              "kind": "INTERFACE",
+              "name": "Node",
+              "ofType": null
+            }
+          ],
+          "kind": "OBJECT",
+          "name": "FollowUp",
+          "possibleTypes": null
+        },
+        {
+          "description": null,
+          "enumValues": null,
+          "fields": [
+            {
+              "args": [
+                {
+                  "defaultValue": null,
+                  "description": null,
+                  "name": "offset",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  }
+                },
+                {
+                  "defaultValue": null,
+                  "description": null,
+                  "name": "sort",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "Sort",
+                      "ofType": null
+                    }
+                  }
+                },
+                {
+                  "defaultValue": null,
+                  "description": null,
+                  "name": "filters",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "FiltersArgument",
+                    "ofType": null
+                  }
+                },
+                {
+                  "defaultValue": null,
+                  "description": null,
+                  "name": "before",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  }
+                },
+                {
+                  "defaultValue": null,
+                  "description": null,
+                  "name": "after",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  }
+                },
+                {
+                  "defaultValue": null,
+                  "description": null,
+                  "name": "first",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  }
+                },
+                {
+                  "defaultValue": null,
+                  "description": null,
+                  "name": "last",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  }
+                }
+              ],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "hits",
+              "type": {
+                "kind": "OBJECT",
+                "name": "MolecularTestConnection",
+                "ofType": null
+              }
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "kind": "OBJECT",
+          "name": "MolecularTests",
+          "possibleTypes": null
+        },
+        {
+          "description": null,
+          "enumValues": null,
+          "fields": [
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "The Information to aid in pagination",
+              "isDeprecated": false,
+              "name": "pageInfo",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "PageInfo",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "The Information to aid in pagination",
+              "isDeprecated": false,
+              "name": "total",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "Information to aid in pagination.",
+              "isDeprecated": false,
+              "name": "edges",
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "MolecularTestEdge",
+                  "ofType": null
+                }
+              }
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "kind": "OBJECT",
+          "name": "MolecularTestConnection",
+          "possibleTypes": null
+        },
+        {
+          "description": null,
+          "enumValues": null,
+          "fields": [
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "A cursor for use in pagination",
+              "isDeprecated": false,
+              "name": "cursor",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "The item at the end of the edge",
+              "isDeprecated": false,
+              "name": "node",
+              "type": {
+                "kind": "OBJECT",
+                "name": "MolecularTest",
+                "ofType": null
+              }
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "kind": "OBJECT",
+          "name": "MolecularTestEdge",
+          "possibleTypes": null
+        },
+        {
+          "description": null,
+          "enumValues": null,
+          "fields": [
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "id",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "annotations",
+              "type": {
+                "kind": "OBJECT",
+                "name": "CaseAnnotations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "The yes/no/unknown indicator used to describe whether the mutation included in molecular testing was known to have an affect on the mismatch repair process.\n",
+              "isDeprecated": false,
+              "name": "mismatch_repair_mutation",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "A combination of date and time of day in the form [-]CCYY-MM-DDThh:mm:ss[Z|(+|-)hh:mm]\n",
+              "isDeprecated": false,
+              "name": "updated_datetime",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "The text term used to describe an antigen included in molecular testing.\n",
+              "isDeprecated": false,
+              "name": "antigen",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "The text term used to describe the biological origin of a specific genetic variant.\n",
+              "isDeprecated": false,
+              "name": "variant_origin",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "Numeric value used to describe the lower limit of the normal range used to describe a healthy individual at the institution where the test was completed.\n",
+              "isDeprecated": false,
+              "name": "blood_test_normal_range_lower",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Float",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "Alphanumeric value used to describe the locus of a specific genetic variant. Example: NM_001126114.\n",
+              "isDeprecated": false,
+              "name": "locus",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "The text term or numeric value used to describe a sepcific result of a molecular test.\n",
+              "isDeprecated": false,
+              "name": "test_value",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Float",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "The text term used to describe a secondary gene targeted or included in molecular analysis. For rearrangements, this is should represent the location of the variant.\n",
+              "isDeprecated": false,
+              "name": "second_gene_symbol",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "Text term used to describe the number of sets of homologous chromosomes.\n",
+              "isDeprecated": false,
+              "name": "ploidy",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "The text term used to describe a chromosome targeted or included in molecular testing. If a specific genetic variant is being reported, this property can be used to capture the chromosome where that variant is located.\n",
+              "isDeprecated": false,
+              "name": "chromosome",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "Text term used to describe a specific test that is not covered in the list of molecular analysis methods.\n",
+              "isDeprecated": false,
+              "name": "specialized_molecular_test",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "A combination of date and time of day in the form [-]CCYY-MM-DDThh:mm:ss[Z|(+|-)hh:mm]\n",
+              "isDeprecated": false,
+              "name": "created_datetime",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "Intron number targeted or included in molecular analysis. If a specific genetic variant is being reported, this property can be used to capture the intron where that variant is located.\n",
+              "isDeprecated": false,
+              "name": "intron",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "The text term used to describe a gene targeted or included in molecular analysis. For rearrangements, this is shold be used to represent the reference gene.\n",
+              "isDeprecated": false,
+              "name": "gene_symbol",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "The current state of the object.\n",
+              "isDeprecated": false,
+              "name": "state",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "The text term used to describe a specific histone variants, which are proteins that substitute for the core canonical histones.\n",
+              "isDeprecated": false,
+              "name": "histone_variant",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "Numeric value used to describe the number of cells used for molecular testing.\n",
+              "isDeprecated": false,
+              "name": "cell_count",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Float",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "The text term used to describe the family, or classification of a group of basic proteins found in chromatin, called histones.\n",
+              "isDeprecated": false,
+              "name": "histone_family",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "Numeric value used to describe the number of times a section of the genome is repeated or copied within an insertion, duplication or deletion variant.\n",
+              "isDeprecated": false,
+              "name": "copy_number",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Float",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "The text term used to describe the type of analyte used for molecular testing.\n",
+              "isDeprecated": false,
+              "name": "test_analyte_type",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "Exon number targeted or included in a molecular analysis. If a specific genetic variant is being reported, this property can be used to capture the exon where that variant is located.\n",
+              "isDeprecated": false,
+              "name": "exon",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "The text term used to describe the medical testing used to diagnose, treat or further understand a patient's disease.\n",
+              "isDeprecated": false,
+              "name": "laboratory_test",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "The text term used to describe the result of the molecular test. If the test result was a numeric value see test_value.\n",
+              "isDeprecated": false,
+              "name": "test_result",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "Alphanumeric value used to describe the transcript of a specific genetic variant.\n",
+              "isDeprecated": false,
+              "name": "transcript",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "Numeric value used to describe the upper limit of the normal range used to describe a healthy individual at the institution where the test was completed.\n",
+              "isDeprecated": false,
+              "name": "blood_test_normal_range_upper",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Float",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "The text term used to describe the units of the test value for a molecular test. This property is used in conjunction with test_value.\n",
+              "isDeprecated": false,
+              "name": "test_units",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "The text term used to describe the zygosity of a specific genetic variant.\n",
+              "isDeprecated": false,
+              "name": "zygosity",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "Alphanumeric value used to describe the cytoband or chromosomal location targeted or included in molecular analysis. If a specific genetic variant is being reported, this property can be used to capture the cytoband where the variant is located. Format: [chromosome][chromosome arm].[band+sub-bands]. Example: 17p13.1.\n",
+              "isDeprecated": false,
+              "name": "cytoband",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "The text term used to describe the biological material used for testing, diagnostic, treatment or research purposes.",
+              "isDeprecated": false,
+              "name": "biospecimen_type",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "A project-specific identifier for a node. This property is the calling card/nickname/alias for a unit of submission. It can be used in place of the UUID for identifying or recalling a node.\n",
+              "isDeprecated": false,
+              "name": "submitter_id",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "The second exon number involved in molecular variation. If a specific genetic variant is being reported, this property can be used to capture the second exon where that variant is located. This property is typically used for a translocation where two different locations are involved in the variation.\n",
+              "isDeprecated": false,
+              "name": "second_exon",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "keyword",
+              "isDeprecated": false,
+              "name": "molecular_test_id",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "The text term used to describe the method used for molecular analysis.\n",
+              "isDeprecated": false,
+              "name": "molecular_analysis_method",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "The text term used to describe the molecular consequence of genetic variation.\n",
+              "isDeprecated": false,
+              "name": "molecular_consequence",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "The text term used to describe the type of genetic variation.\n",
+              "isDeprecated": false,
+              "name": "variant_type",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "Numeric value used to describe the number of loci determined to be abnormal.\n",
+              "isDeprecated": false,
+              "name": "loci_abnormal_count",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Float",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "Alphanumeric value used to describe the amino acid change for a specific genetic variant. Example: R116Q.\n",
+              "isDeprecated": false,
+              "name": "aa_change",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "Numeric value used to describe the number of loci tested.\n",
+              "isDeprecated": false,
+              "name": "loci_count",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Float",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "score",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              }
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [
+            {
+              "kind": "INTERFACE",
+              "name": "Node",
+              "ofType": null
+            }
+          ],
+          "kind": "OBJECT",
+          "name": "MolecularTest",
           "possibleTypes": null
         },
         {
@@ -19010,1448 +20452,6 @@
           "interfaces": [],
           "kind": "OBJECT",
           "name": "TissueSourceSite",
-          "possibleTypes": null
-        },
-        {
-          "description": null,
-          "enumValues": null,
-          "fields": [
-            {
-              "args": [
-                {
-                  "defaultValue": null,
-                  "description": null,
-                  "name": "offset",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "Int",
-                    "ofType": null
-                  }
-                },
-                {
-                  "defaultValue": null,
-                  "description": null,
-                  "name": "sort",
-                  "type": {
-                    "kind": "LIST",
-                    "name": null,
-                    "ofType": {
-                      "kind": "INPUT_OBJECT",
-                      "name": "Sort",
-                      "ofType": null
-                    }
-                  }
-                },
-                {
-                  "defaultValue": null,
-                  "description": null,
-                  "name": "filters",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "FiltersArgument",
-                    "ofType": null
-                  }
-                },
-                {
-                  "defaultValue": null,
-                  "description": null,
-                  "name": "before",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "String",
-                    "ofType": null
-                  }
-                },
-                {
-                  "defaultValue": null,
-                  "description": null,
-                  "name": "after",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "String",
-                    "ofType": null
-                  }
-                },
-                {
-                  "defaultValue": null,
-                  "description": null,
-                  "name": "first",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "Int",
-                    "ofType": null
-                  }
-                },
-                {
-                  "defaultValue": null,
-                  "description": null,
-                  "name": "last",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "Int",
-                    "ofType": null
-                  }
-                }
-              ],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "hits",
-              "type": {
-                "kind": "OBJECT",
-                "name": "FollowUpConnection",
-                "ofType": null
-              }
-            }
-          ],
-          "inputFields": null,
-          "interfaces": [],
-          "kind": "OBJECT",
-          "name": "FollowUps",
-          "possibleTypes": null
-        },
-        {
-          "description": null,
-          "enumValues": null,
-          "fields": [
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "The Information to aid in pagination",
-              "isDeprecated": false,
-              "name": "pageInfo",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "PageInfo",
-                  "ofType": null
-                }
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "The Information to aid in pagination",
-              "isDeprecated": false,
-              "name": "total",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "Int",
-                  "ofType": null
-                }
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "Information to aid in pagination.",
-              "isDeprecated": false,
-              "name": "edges",
-              "type": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "FollowUpEdge",
-                  "ofType": null
-                }
-              }
-            }
-          ],
-          "inputFields": null,
-          "interfaces": [],
-          "kind": "OBJECT",
-          "name": "FollowUpConnection",
-          "possibleTypes": null
-        },
-        {
-          "description": null,
-          "enumValues": null,
-          "fields": [
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "A cursor for use in pagination",
-              "isDeprecated": false,
-              "name": "cursor",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "The item at the end of the edge",
-              "isDeprecated": false,
-              "name": "node",
-              "type": {
-                "kind": "OBJECT",
-                "name": "FollowUp",
-                "ofType": null
-              }
-            }
-          ],
-          "inputFields": null,
-          "interfaces": [],
-          "kind": "OBJECT",
-          "name": "FollowUpEdge",
-          "possibleTypes": null
-        },
-        {
-          "description": null,
-          "enumValues": null,
-          "fields": [
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "id",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "ID",
-                  "ofType": null
-                }
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "molecular_tests",
-              "type": {
-                "kind": "OBJECT",
-                "name": "MolecularTests",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "annotations",
-              "type": {
-                "kind": "OBJECT",
-                "name": "CaseAnnotations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "The percentage comparison to a normal value reference range of the volume of air that a patient can forcibly exhale from the lungs in one second post-bronchodilator.\n",
-              "isDeprecated": false,
-              "name": "fev1_ref_post_bronch_percent",
-              "type": {
-                "kind": "SCALAR",
-                "name": "Float",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "The weight of the patient measured in kilograms.\n",
-              "isDeprecated": false,
-              "name": "weight",
-              "type": {
-                "kind": "SCALAR",
-                "name": "Float",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "Text term used to describe the types of treatment used to manage gastroesophageal reflux disease (GERD).\n",
-              "isDeprecated": false,
-              "name": "reflux_treatment_type",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "The text term used to describe the type of progressive or recurrent disease or relapsed disease.\n",
-              "isDeprecated": false,
-              "name": "progression_or_recurrence_type",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "The height of the patient in centimeters.\n",
-              "isDeprecated": false,
-              "name": "height",
-              "type": {
-                "kind": "SCALAR",
-                "name": "Float",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "Number of days between the date used for index and the date of the patient's adverse event.\n",
-              "isDeprecated": false,
-              "name": "days_to_adverse_event",
-              "type": {
-                "kind": "SCALAR",
-                "name": "Float",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "The text term used to describe the suspected cause or reason for the patient disease response.\n",
-              "isDeprecated": false,
-              "name": "cause_of_response",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "Percentage value to represent result of Forced Expiratory Volume in 1 second (FEV1) divided by the Forced Vital Capacity (FVC) pre-bronchodilator.\n",
-              "isDeprecated": false,
-              "name": "fev1_fvc_pre_bronch_percent",
-              "type": {
-                "kind": "SCALAR",
-                "name": "Float",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "The ECOG functional performance status of the patient/participant.\n",
-              "isDeprecated": false,
-              "name": "ecog_performance_status",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "Text classification to represent the strain or type of human papillomavirus identified in an individual.\n",
-              "isDeprecated": false,
-              "name": "hpv_positive_type",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "Number of days between the date used for index and the date the patient's disease was formally confirmed as progression-free.\n",
-              "isDeprecated": false,
-              "name": "days_to_progression_free",
-              "type": {
-                "kind": "SCALAR",
-                "name": "Float",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "Number of days between the date used for index and the date of the patient's last follow-up appointment or contact.\n",
-              "isDeprecated": false,
-              "name": "days_to_follow_up",
-              "type": {
-                "kind": "SCALAR",
-                "name": "Float",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "Percentage value to represent result of Forced Expiratory Volume in 1 second (FEV1) divided by the Forced Vital Capacity (FVC) post-bronchodilator.\n",
-              "isDeprecated": false,
-              "name": "fev1_fvc_post_bronch_percent",
-              "type": {
-                "kind": "SCALAR",
-                "name": "Float",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "The text term used to describe the method used to diagnose the patient's comorbidity disease.\n",
-              "isDeprecated": false,
-              "name": "comorbidity_method_of_diagnosis",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "The value, as a percentage of predicted lung volume, measuring the amount of carbon monoxide detected in a patient's lungs.\n",
-              "isDeprecated": false,
-              "name": "dlco_ref_predictive_percent",
-              "type": {
-                "kind": "SCALAR",
-                "name": "Float",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "The text term used to describe a comorbidity disease, which coexists with the patient's malignant disease.\n",
-              "isDeprecated": false,
-              "name": "comorbidity",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "A combination of date and time of day in the form [-]CCYY-MM-DDThh:mm:ss[Z|(+|-)hh:mm]\n",
-              "isDeprecated": false,
-              "name": "updated_datetime",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "The text term used to describe a risk factor the patient had at the time of or prior to their diagnosis.\n",
-              "isDeprecated": false,
-              "name": "risk_factor",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "The current state of the object.\n",
-              "isDeprecated": false,
-              "name": "state",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "Number of days between the date used for index and the date the patient's disease progressed.\n",
-              "isDeprecated": false,
-              "name": "days_to_progression",
-              "type": {
-                "kind": "SCALAR",
-                "name": "Float",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "Text that represents the Common Terminology Criteria for Adverse Events low level term name for an adverse event.\n",
-              "isDeprecated": false,
-              "name": "adverse_event",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "Number of days between the date used for index and the date the patient's disease recurred.\n",
-              "isDeprecated": false,
-              "name": "days_to_recurrence",
-              "type": {
-                "kind": "SCALAR",
-                "name": "Float",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "A calculated numerical quantity that represents an individual's weight to height ratio.\n",
-              "isDeprecated": false,
-              "name": "bmi",
-              "type": {
-                "kind": "SCALAR",
-                "name": "Float",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "Text term used to describe the patient's menopause status.\n",
-              "isDeprecated": false,
-              "name": "menopause_status",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "Yes/No/Unknown indicator to identify whether a patient has had a new tumor event after initial treatment.\n",
-              "isDeprecated": false,
-              "name": "progression_or_recurrence",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "Text term used to describe the types of treatment used to manage diabetes.\n",
-              "isDeprecated": false,
-              "name": "diabetes_treatment_type",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "The yes/no/unknown indicator used to describe whether the patient received treatment for a risk factor the patient had at the time of or prior to their diagnosis.\n",
-              "isDeprecated": false,
-              "name": "risk_factor_treatment",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "The text term used to describe the anatomic site of the progressive or recurrent disease.\n",
-              "isDeprecated": false,
-              "name": "progression_or_recurrence_anatomic_site",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "A project-specific identifier for a node. This property is the calling card/nickname/alias for a unit of submission. It can be used in place of the UUID for identifying or recalling a node.\n",
-              "isDeprecated": false,
-              "name": "submitter_id",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "The yes/no/unknown indicator used to describe whether goblet cells were determined to be present in a patient diagnosed with Barrett's esophagus.\n",
-              "isDeprecated": false,
-              "name": "barretts_esophagus_goblet_cells_present",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "Code assigned to describe the patient's response or outcome to the disease.\n",
-              "isDeprecated": false,
-              "name": "disease_response",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "keyword",
-              "isDeprecated": false,
-              "name": "follow_up_id",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "Numeric value to represent the year that the patient was diagnosed with clinical chronic pancreatitis.\n",
-              "isDeprecated": false,
-              "name": "pancreatitis_onset_year",
-              "type": {
-                "kind": "SCALAR",
-                "name": "Float",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "Text term that describes the kind of serological laboratory test used to determine the patient's hepatitus status.\n",
-              "isDeprecated": false,
-              "name": "viral_hepatitis_serologies",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "The percentage comparison to a normal value reference range of the volume of air that a patient can forcibly exhale from the lungs in one second pre-bronchodilator.\n",
-              "isDeprecated": false,
-              "name": "fev1_ref_pre_bronch_percent",
-              "type": {
-                "kind": "SCALAR",
-                "name": "Float",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "A combination of date and time of day in the form [-]CCYY-MM-DDThh:mm:ss[Z|(+|-)hh:mm]\n",
-              "isDeprecated": false,
-              "name": "created_datetime",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "Text term used to describe the classification used of the functional capabilities of a person.\n",
-              "isDeprecated": false,
-              "name": "karnofsky_performance_status",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "The yes/no/unknown indicator used to describe whether the patient received treatment for a risk factor the patient had at the time of or prior to their diagnosis.\n",
-              "isDeprecated": false,
-              "name": "hepatitis_sustained_virological_response",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "Number of days between the date used for index and the date the patient was diagnosed with a comorbidity.\n",
-              "isDeprecated": false,
-              "name": "days_to_comorbidity",
-              "type": {
-                "kind": "SCALAR",
-                "name": "Float",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "score",
-              "type": {
-                "kind": "SCALAR",
-                "name": "Int",
-                "ofType": null
-              }
-            }
-          ],
-          "inputFields": null,
-          "interfaces": [
-            {
-              "kind": "INTERFACE",
-              "name": "Node",
-              "ofType": null
-            }
-          ],
-          "kind": "OBJECT",
-          "name": "FollowUp",
-          "possibleTypes": null
-        },
-        {
-          "description": null,
-          "enumValues": null,
-          "fields": [
-            {
-              "args": [
-                {
-                  "defaultValue": null,
-                  "description": null,
-                  "name": "offset",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "Int",
-                    "ofType": null
-                  }
-                },
-                {
-                  "defaultValue": null,
-                  "description": null,
-                  "name": "sort",
-                  "type": {
-                    "kind": "LIST",
-                    "name": null,
-                    "ofType": {
-                      "kind": "INPUT_OBJECT",
-                      "name": "Sort",
-                      "ofType": null
-                    }
-                  }
-                },
-                {
-                  "defaultValue": null,
-                  "description": null,
-                  "name": "filters",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "FiltersArgument",
-                    "ofType": null
-                  }
-                },
-                {
-                  "defaultValue": null,
-                  "description": null,
-                  "name": "before",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "String",
-                    "ofType": null
-                  }
-                },
-                {
-                  "defaultValue": null,
-                  "description": null,
-                  "name": "after",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "String",
-                    "ofType": null
-                  }
-                },
-                {
-                  "defaultValue": null,
-                  "description": null,
-                  "name": "first",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "Int",
-                    "ofType": null
-                  }
-                },
-                {
-                  "defaultValue": null,
-                  "description": null,
-                  "name": "last",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "Int",
-                    "ofType": null
-                  }
-                }
-              ],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "hits",
-              "type": {
-                "kind": "OBJECT",
-                "name": "MolecularTestConnection",
-                "ofType": null
-              }
-            }
-          ],
-          "inputFields": null,
-          "interfaces": [],
-          "kind": "OBJECT",
-          "name": "MolecularTests",
-          "possibleTypes": null
-        },
-        {
-          "description": null,
-          "enumValues": null,
-          "fields": [
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "The Information to aid in pagination",
-              "isDeprecated": false,
-              "name": "pageInfo",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "PageInfo",
-                  "ofType": null
-                }
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "The Information to aid in pagination",
-              "isDeprecated": false,
-              "name": "total",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "Int",
-                  "ofType": null
-                }
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "Information to aid in pagination.",
-              "isDeprecated": false,
-              "name": "edges",
-              "type": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "MolecularTestEdge",
-                  "ofType": null
-                }
-              }
-            }
-          ],
-          "inputFields": null,
-          "interfaces": [],
-          "kind": "OBJECT",
-          "name": "MolecularTestConnection",
-          "possibleTypes": null
-        },
-        {
-          "description": null,
-          "enumValues": null,
-          "fields": [
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "A cursor for use in pagination",
-              "isDeprecated": false,
-              "name": "cursor",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "The item at the end of the edge",
-              "isDeprecated": false,
-              "name": "node",
-              "type": {
-                "kind": "OBJECT",
-                "name": "MolecularTest",
-                "ofType": null
-              }
-            }
-          ],
-          "inputFields": null,
-          "interfaces": [],
-          "kind": "OBJECT",
-          "name": "MolecularTestEdge",
-          "possibleTypes": null
-        },
-        {
-          "description": null,
-          "enumValues": null,
-          "fields": [
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "id",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "ID",
-                  "ofType": null
-                }
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "annotations",
-              "type": {
-                "kind": "OBJECT",
-                "name": "CaseAnnotations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "The yes/no/unknown indicator used to describe whether the mutation included in molecular testing was known to have an affect on the mismatch repair process.\n",
-              "isDeprecated": false,
-              "name": "mismatch_repair_mutation",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "A combination of date and time of day in the form [-]CCYY-MM-DDThh:mm:ss[Z|(+|-)hh:mm]\n",
-              "isDeprecated": false,
-              "name": "updated_datetime",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "The text term used to describe an antigen included in molecular testing.\n",
-              "isDeprecated": false,
-              "name": "antigen",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "The text term used to describe the biological origin of a specific genetic variant.\n",
-              "isDeprecated": false,
-              "name": "variant_origin",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "Numeric value used to describe the lower limit of the normal range used to describe a healthy individual at the institution where the test was completed.\n",
-              "isDeprecated": false,
-              "name": "blood_test_normal_range_lower",
-              "type": {
-                "kind": "SCALAR",
-                "name": "Float",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "Alphanumeric value used to describe the locus of a specific genetic variant. Example: NM_001126114.\n",
-              "isDeprecated": false,
-              "name": "locus",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "The text term or numeric value used to describe a sepcific result of a molecular test.\n",
-              "isDeprecated": false,
-              "name": "test_value",
-              "type": {
-                "kind": "SCALAR",
-                "name": "Float",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "The text term used to describe a secondary gene targeted or included in molecular analysis. For rearrangements, this is should represent the location of the variant.\n",
-              "isDeprecated": false,
-              "name": "second_gene_symbol",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "Text term used to describe the number of sets of homologous chromosomes.\n",
-              "isDeprecated": false,
-              "name": "ploidy",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "The text term used to describe a chromosome targeted or included in molecular testing. If a specific genetic variant is being reported, this property can be used to capture the chromosome where that variant is located.\n",
-              "isDeprecated": false,
-              "name": "chromosome",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "Text term used to describe a specific test that is not covered in the list of molecular analysis methods.\n",
-              "isDeprecated": false,
-              "name": "specialized_molecular_test",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "A combination of date and time of day in the form [-]CCYY-MM-DDThh:mm:ss[Z|(+|-)hh:mm]\n",
-              "isDeprecated": false,
-              "name": "created_datetime",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "Intron number targeted or included in molecular analysis. If a specific genetic variant is being reported, this property can be used to capture the intron where that variant is located.\n",
-              "isDeprecated": false,
-              "name": "intron",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "The text term used to describe a gene targeted or included in molecular analysis. For rearrangements, this is shold be used to represent the reference gene.\n",
-              "isDeprecated": false,
-              "name": "gene_symbol",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "The current state of the object.\n",
-              "isDeprecated": false,
-              "name": "state",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "The text term used to describe a specific histone variants, which are proteins that substitute for the core canonical histones.\n",
-              "isDeprecated": false,
-              "name": "histone_variant",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "Numeric value used to describe the number of cells used for molecular testing.\n",
-              "isDeprecated": false,
-              "name": "cell_count",
-              "type": {
-                "kind": "SCALAR",
-                "name": "Float",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "The text term used to describe the family, or classification of a group of basic proteins found in chromatin, called histones.\n",
-              "isDeprecated": false,
-              "name": "histone_family",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "Numeric value used to describe the number of times a section of the genome is repeated or copied within an insertion, duplication or deletion variant.\n",
-              "isDeprecated": false,
-              "name": "copy_number",
-              "type": {
-                "kind": "SCALAR",
-                "name": "Float",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "The text term used to describe the type of analyte used for molecular testing.\n",
-              "isDeprecated": false,
-              "name": "test_analyte_type",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "Exon number targeted or included in a molecular analysis. If a specific genetic variant is being reported, this property can be used to capture the exon where that variant is located.\n",
-              "isDeprecated": false,
-              "name": "exon",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "The text term used to describe the medical testing used to diagnose, treat or further understand a patient's disease.\n",
-              "isDeprecated": false,
-              "name": "laboratory_test",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "The text term used to describe the result of the molecular test. If the test result was a numeric value see test_value.\n",
-              "isDeprecated": false,
-              "name": "test_result",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "Alphanumeric value used to describe the transcript of a specific genetic variant.\n",
-              "isDeprecated": false,
-              "name": "transcript",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "Numeric value used to describe the upper limit of the normal range used to describe a healthy individual at the institution where the test was completed.\n",
-              "isDeprecated": false,
-              "name": "blood_test_normal_range_upper",
-              "type": {
-                "kind": "SCALAR",
-                "name": "Float",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "The text term used to describe the units of the test value for a molecular test. This property is used in conjunction with test_value.\n",
-              "isDeprecated": false,
-              "name": "test_units",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "The text term used to describe the zygosity of a specific genetic variant.\n",
-              "isDeprecated": false,
-              "name": "zygosity",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "Alphanumeric value used to describe the cytoband or chromosomal location targeted or included in molecular analysis. If a specific genetic variant is being reported, this property can be used to capture the cytoband where the variant is located. Format: [chromosome][chromosome arm].[band+sub-bands]. Example: 17p13.1.\n",
-              "isDeprecated": false,
-              "name": "cytoband",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "The text term used to describe the biological material used for testing, diagnostic, treatment or research purposes.",
-              "isDeprecated": false,
-              "name": "biospecimen_type",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "A project-specific identifier for a node. This property is the calling card/nickname/alias for a unit of submission. It can be used in place of the UUID for identifying or recalling a node.\n",
-              "isDeprecated": false,
-              "name": "submitter_id",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "The second exon number involved in molecular variation. If a specific genetic variant is being reported, this property can be used to capture the second exon where that variant is located. This property is typically used for a translocation where two different locations are involved in the variation.\n",
-              "isDeprecated": false,
-              "name": "second_exon",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "keyword",
-              "isDeprecated": false,
-              "name": "molecular_test_id",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "The text term used to describe the method used for molecular analysis.\n",
-              "isDeprecated": false,
-              "name": "molecular_analysis_method",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "The text term used to describe the molecular consequence of genetic variation.\n",
-              "isDeprecated": false,
-              "name": "molecular_consequence",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "The text term used to describe the type of genetic variation.\n",
-              "isDeprecated": false,
-              "name": "variant_type",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "Numeric value used to describe the number of loci determined to be abnormal.\n",
-              "isDeprecated": false,
-              "name": "loci_abnormal_count",
-              "type": {
-                "kind": "SCALAR",
-                "name": "Float",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "Alphanumeric value used to describe the amino acid change for a specific genetic variant. Example: R116Q.\n",
-              "isDeprecated": false,
-              "name": "aa_change",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "Numeric value used to describe the number of loci tested.\n",
-              "isDeprecated": false,
-              "name": "loci_count",
-              "type": {
-                "kind": "SCALAR",
-                "name": "Float",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "score",
-              "type": {
-                "kind": "SCALAR",
-                "name": "Int",
-                "ofType": null
-              }
-            }
-          ],
-          "inputFields": null,
-          "interfaces": [
-            {
-              "kind": "INTERFACE",
-              "name": "Node",
-              "ofType": null
-            }
-          ],
-          "kind": "OBJECT",
-          "name": "MolecularTest",
           "possibleTypes": null
         },
         {
@@ -38847,6 +38847,30 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
+              "name": "gene__ssm__clinical_annotations__civic__gene_id",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "gene__ssm__clinical_annotations__civic__variant_id",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
               "name": "gene__ssm__observation__src_vcf_id",
               "type": {
                 "kind": "OBJECT",
@@ -44767,6 +44791,30 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
+              "name": "case__ssm__clinical_annotations__civic__gene_id",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "case__ssm__clinical_annotations__civic__variant_id",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
               "name": "case__ssm__observation__src_vcf_id",
               "type": {
                 "kind": "OBJECT",
@@ -48552,7 +48600,19 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "mutation_type",
+              "name": "clinical_annotations__civic__gene_id",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "clinical_annotations__civic__variant_id",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -50580,6 +50640,18 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
+              "name": "gene_aa_change",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
               "name": "mutation_subtype",
               "type": {
                 "kind": "OBJECT",
@@ -51288,7 +51360,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "gene_aa_change",
+              "name": "mutation_type",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -51461,18 +51533,6 @@
               "deprecationReason": null,
               "description": "keyword",
               "isDeprecated": false,
-              "name": "mutation_type",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "keyword",
-              "isDeprecated": false,
               "name": "mutation_subtype",
               "type": {
                 "kind": "SCALAR",
@@ -51557,6 +51617,18 @@
               "deprecationReason": null,
               "description": "keyword",
               "isDeprecated": false,
+              "name": "mutation_type",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "keyword",
+              "isDeprecated": false,
               "name": "chromosome",
               "type": {
                 "kind": "SCALAR",
@@ -51581,10 +51653,10 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "external_db_ids",
+              "name": "clinical_annotations",
               "type": {
                 "kind": "OBJECT",
-                "name": "SsmGeneExternalDbIds",
+                "name": "ClinicalAnnotations",
                 "ofType": null
               }
             },
@@ -51597,18 +51669,6 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "SSMConsequences",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "occurrence",
-              "type": {
-                "kind": "OBJECT",
-                "name": "SSMOccurrences",
                 "ofType": null
               }
             },
@@ -51633,6 +51693,18 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
+              "name": "external_db_ids",
+              "type": {
+                "kind": "OBJECT",
+                "name": "SsmGeneExternalDbIds",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
               "name": "gene_aa_change",
               "type": {
                 "kind": "LIST",
@@ -51642,6 +51714,18 @@
                   "name": "String",
                   "ofType": null
                 }
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "occurrence",
+              "type": {
+                "kind": "OBJECT",
+                "name": "SSMOccurrences",
+                "ofType": null
               }
             },
             {
@@ -51678,15 +51762,11 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "entrez_ssm",
+              "name": "civic",
               "type": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
+                "kind": "OBJECT",
+                "name": "CivicAnnotation",
+                "ofType": null
               }
             },
             {
@@ -51694,55 +51774,30 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "hgnc",
+              "name": "id",
               "type": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
               }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "omim_ssm",
-              "type": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "uniprotkb_swissprot",
-              "type": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              }
-            },
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "kind": "OBJECT",
+          "name": "ClinicalAnnotations",
+          "possibleTypes": null
+        },
+        {
+          "description": null,
+          "enumValues": null,
+          "fields": [
             {
               "args": [],
               "deprecationReason": null,
               "description": "keyword",
               "isDeprecated": false,
-              "name": "entrez_gene",
+              "name": "gene_id",
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
@@ -51754,7 +51809,7 @@
               "deprecationReason": null,
               "description": "keyword",
               "isDeprecated": false,
-              "name": "omim_gene",
+              "name": "variant_id",
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
@@ -51777,7 +51832,7 @@
           "inputFields": null,
           "interfaces": [],
           "kind": "OBJECT",
-          "name": "SsmGeneExternalDbIds",
+          "name": "CivicAnnotation",
           "possibleTypes": null
         },
         {
@@ -52700,6 +52755,117 @@
           "interfaces": [],
           "kind": "OBJECT",
           "name": "SsmGene",
+          "possibleTypes": null
+        },
+        {
+          "description": null,
+          "enumValues": null,
+          "fields": [
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "entrez_ssm",
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "hgnc",
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "omim_ssm",
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "uniprotkb_swissprot",
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "keyword",
+              "isDeprecated": false,
+              "name": "entrez_gene",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "keyword",
+              "isDeprecated": false,
+              "name": "omim_gene",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "id",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "kind": "OBJECT",
+          "name": "SsmGeneExternalDbIds",
           "possibleTypes": null
         },
         {

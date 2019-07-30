@@ -644,14 +644,14 @@ type Case implements Node {
   annotations: CaseAnnotations
   demographic: Demographic
   diagnoses: Diagnoses
-  files: CaseFiles
   exposures: Exposures
   family_histories: FamilyHistories
+  files: CaseFiles
+  follow_ups: FollowUps
   project: Project
   samples: Samples
   summary: Summary
   tissue_source_site: TissueSourceSite
-  follow_ups: FollowUps
   score: Int
 }
 
@@ -3208,6 +3208,20 @@ type CaseFiles {
   hits(offset: Int, sort: [Sort], filters: FiltersArgument, before: String, after: String, first: Int, last: Int): CaseFileConnection
 }
 
+type CivicAnnotation {
+  # keyword
+  gene_id: String
+
+  # keyword
+  variant_id: String
+  id: String
+}
+
+type ClinicalAnnotations {
+  civic: CivicAnnotation
+  id: String
+}
+
 type CNV implements Node {
   id: ID!
 
@@ -4801,6 +4815,8 @@ type ECaseAggregations {
   gene__symbol: Aggregations
   gene__gene_id: Aggregations
   gene__ssm__ncbi_build: Aggregations
+  gene__ssm__clinical_annotations__civic__gene_id: Aggregations
+  gene__ssm__clinical_annotations__civic__variant_id: Aggregations
   gene__ssm__observation__src_vcf_id: Aggregations
   gene__ssm__observation__mutation_status: Aggregations
   gene__ssm__observation__tumor_genotype__tumor_seq_allele1: Aggregations
@@ -7406,8 +7422,8 @@ scalar FiltersArgument
 
 type FollowUp implements Node {
   id: ID!
-  molecular_tests: MolecularTests
   annotations: CaseAnnotations
+  molecular_tests: MolecularTests
 
   # The percentage comparison to a normal value reference range of the volume of
   # air that a patient can forcibly exhale from the lungs in one second
@@ -7777,6 +7793,8 @@ type GeneAggregations {
   case__demographic__year_of_death: NumericAggregations
   case__submitter_id: Aggregations
   case__ssm__ncbi_build: Aggregations
+  case__ssm__clinical_annotations__civic__gene_id: Aggregations
+  case__ssm__clinical_annotations__civic__variant_id: Aggregations
   case__ssm__observation__src_vcf_id: Aggregations
   case__ssm__observation__mutation_status: Aggregations
   case__ssm__observation__tumor_genotype__tumor_seq_allele1: Aggregations
@@ -8656,38 +8674,6 @@ type NumericAggregations {
   stats: Stats
   histogram(interval: Float): Aggregations
   percentiles: Percentiles
-
-  #
-  #         Example for correct usage:
-  #         query ...
-  #         aggregations(filters: $filter1) {
-  #           diagnoses__age_at_diagnosis {
-  #             range(ranges: $filter2) {
-  #               buckets {
-  #                 doc_count
-  #                 key
-  #               }
-  #             }
-  #           }
-  #         }
-  #         ...
-  #
-  #         query variables
-  #         {..."filter2":{
-  #             "op":"range",
-  #             "content":[
-  #                 {
-  #                     "ranges":[
-  #                             {"to": 10585},
-  #                             {"from": 10950, "to": 21535},
-  #                             {"from": 21900, "to": 32485},
-  #                             {"from":33000}
-  #                     ]
-  #                 }
-  #             ]
-  #         }...}
-  #
-  #         
   range(ranges: FiltersArgument): Aggregations
 }
 
@@ -9714,9 +9700,6 @@ type Ssm implements Node {
   ncbi_build: String
 
   # keyword
-  mutation_type: String
-
-  # keyword
   mutation_subtype: String
 
   # long
@@ -9738,21 +9721,26 @@ type Ssm implements Node {
   tumor_allele: String
 
   # keyword
+  mutation_type: String
+
+  # keyword
   chromosome: String
 
   # keyword
   genomic_dna_change: String
-  external_db_ids: SsmGeneExternalDbIds
+  clinical_annotations: ClinicalAnnotations
   consequence: SSMConsequences
-  occurrence: SSMOccurrences
   cosmic_id: [String]
+  external_db_ids: SsmGeneExternalDbIds
   gene_aa_change: [String]
+  occurrence: SSMOccurrences
   score: Int
 }
 
 type SsmAggregations {
   ncbi_build: Aggregations
-  mutation_type: Aggregations
+  clinical_annotations__civic__gene_id: Aggregations
+  clinical_annotations__civic__variant_id: Aggregations
   occurrence__case__exposures__cigarettes_per_day: NumericAggregations
   occurrence__case__exposures__weight: NumericAggregations
   occurrence__case__exposures__updated_datetime: Aggregations
@@ -9921,6 +9909,7 @@ type SsmAggregations {
   occurrence__case__available_variation_data: Aggregations
   occurrence__case__disease_type: Aggregations
   occurrence__occurrence_id: Aggregations
+  gene_aa_change: Aggregations
   mutation_subtype: Aggregations
   end_position: NumericAggregations
   reference_allele: Aggregations
@@ -9980,7 +9969,7 @@ type SsmAggregations {
   consequence__transcript__annotation__hgvsp_short: Aggregations
   consequence__transcript__ref_seq_accession: Aggregations
   tumor_allele: Aggregations
-  gene_aa_change: Aggregations
+  mutation_type: Aggregations
   chromosome: Aggregations
   genomic_dna_change: Aggregations
 }

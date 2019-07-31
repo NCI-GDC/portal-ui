@@ -1,6 +1,11 @@
 import { theme } from '@ncigdc/theme/index';
 
 const styles = {
+  actionsColumn: {
+    flex: '0 0 150px',
+    padding: '5px',
+    textAlign: 'right',
+  },
   column: {
     flex: '1 0 0 ',
     padding: '5px',
@@ -68,11 +73,6 @@ const styles = {
     margin: '2px 0 0 5px',
     textAlign: 'center',
     width: '40px',
-  },
-  optionsColumn: {
-    flex: '0 0 150px',
-    padding: '5px',
-    textAlign: 'right',
   },
   resetButton: {
     marginTop: 20,

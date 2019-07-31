@@ -353,7 +353,7 @@ const GroupValuesModal = ({
                           });
                         }}
                         style={{
-                          backgroundColor: selectedGroupBins[bin] ? '#d5f4e6' : '',
+                          backgroundColor: selectedGroupBins[bin] ? theme.tableHighlight : '',
                           display: 'list-item',
                           listStylePosition: 'inside',
                           listStyleType: 'disc',
@@ -422,7 +422,7 @@ const GroupValuesModal = ({
                     });
                   }}
                   style={{
-                    backgroundColor: selectedHidingBins[binKey] ? '#d5f4e6' : '',
+                    backgroundColor: selectedHidingBins[binKey] ? theme.tableHighlight : '',
                   }}
                 >
                   {`${binKey} (${currentBins[binKey].doc_count})`}

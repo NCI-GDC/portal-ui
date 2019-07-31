@@ -610,12 +610,11 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
   const setActionsDisabled = get(selectedBuckets, 'length', 0) === 0;
   const disabledCharts = plotType => isEmpty(tableData) && plotType !== 'delete';
 
-  const resetBinsDisabled = variable.plotTypes === 'categorical'
+  const isCustomized = variable.plotTypes === 'categorical'
     ? Object.keys(variable.bins)
-      .filter(bin => variable.bins[bin].key !== variable.bins[bin].groupName)
-      .length === 0
+      .filter(bin => variable.bins[bin].key !== variable.bins[bin].groupName || variable.bins[bin].index)
+      .length !== 0
     : variable.continuousBinType === 'default';
-
   return (
     <Column
       className="clinical-analysis-categorical-card"
@@ -1282,7 +1281,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
 
                     <DropdownItem
                       onClick={() => {
-                        if (resetBinsDisabled) return;
+                        if (!isCustomized) return;
                         dispatch(
                           updateClinicalAnalysisVariable({
                             fieldName,
@@ -1329,7 +1328,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                       }}
                       style={{
                         ...styles.actionMenuItem,
-                        ...(resetBinsDisabled ? styles.actionMenuItemDisabled(theme) : {}),
+                        ...(isCustomized ? {} : styles.actionMenuItemDisabled(theme)),
                       }}
                       >
                       Reset to Default
@@ -1339,12 +1338,15 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
               </Row>
 
               <EntityPageHorizontalTable
-                data={tableData.map(tableRow => ({
-                  ...tableRow,
-              // the key in the table needs to be the display name
-                  key: tableRow.key + ((tableRow.keyArray && tableRow.keyArray.length > 1) ? '(User defined bins applied)' : ''),
-                }))}
-                headings={getHeadings(variable.active_chart, dataDimension, fieldName)}
+                data={tableData.map(tableRow => {
+                  return {
+                    ...tableRow,
+                    // the key in the table needs to be the display name
+                    key: tableRow.key,
+                  };
+                })
+              }
+                headings={getHeadings(variable.active_chart, dataDimension, fieldName + (isCustomized ? '(User defined bins applied)' : ''))}
                 tableContainerStyle={{
                   height: 175,
                 }}

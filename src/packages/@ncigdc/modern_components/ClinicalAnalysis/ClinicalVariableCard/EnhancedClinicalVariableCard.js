@@ -18,7 +18,7 @@ import {
 } from '@ncigdc/utils/survivalplot';
 import { withTheme } from '@ncigdc/theme';
 
-import SharedView from './SharedView';
+import ClinicalVariableCard from './ClinicalVariableCard';
 
 export default compose(
   // SAME
@@ -134,4 +134,4 @@ export default compose(
       });
     },
   })
-)(SharedView);
+)(ClinicalVariableCard);

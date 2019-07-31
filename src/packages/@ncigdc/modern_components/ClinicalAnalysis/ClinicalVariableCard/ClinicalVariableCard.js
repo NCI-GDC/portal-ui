@@ -139,7 +139,6 @@ const getTableData = (
 );
 
 const getBoxTableData = (data = {}) => (
-  // DIFFERENT - CONTINUOUS ONLY
   Object.keys(data).length
     ? sortBy(Object.keys(data), datum => boxTableAllowedStats
       .indexOf(datum.toLowerCase()))
@@ -156,7 +155,7 @@ const getBoxTableData = (data = {}) => (
     : []
 );
 
-const ContinuousView = ({
+const SharedView = ({
   boxPlotValues,
   currentAnalysis,
   dataBuckets,
@@ -379,7 +378,6 @@ const ContinuousView = ({
                 </Row>
               )}
 
-              {/* SAME */}
               {variable.active_chart === 'histogram' && (
                 <ClinicalHistogram
                   active_calculation={variable.active_calculation}
@@ -390,7 +388,6 @@ const ContinuousView = ({
                   />
               )}
 
-              {/* SAME */}
               {variable.active_chart === 'survival' && (
                 <ClinicalSurvivalPlot
                   plotType={selectedSurvivalBins.length === 0
@@ -456,18 +453,12 @@ const ContinuousView = ({
                     )}
                     dropdownStyle={{ right: 0 }}
                     >
-                    {/* SAME - ELEMENT
-                      DIFFERENT - ONCLICK */}
                     <DropdownItem
                       onClick={openCustomBinModal}
                       style={styles.actionMenuItem}
                       >
                       Edit Bins
                     </DropdownItem>
-
-                    {/* SAME - ELEMENT
-                      DIFFERENT - ONCLICK */}
-
                     <DropdownItem
                       onClick={resetBins}
                       style={{
@@ -484,14 +475,12 @@ const ContinuousView = ({
                 )}
               </Row>
 
-              {/* SAME */}
               <EntityPageHorizontalTable
                 data={tableData.map(tableRow => Object.assign(
                   {},
                   tableRow,
-                  // the key in the table needs to be the display name
                   {
-                    key: tableRow.groupName === undefined
+                    key: variable.plotTypes === 'categorical'
                     ? tableRow.key
                     : tableRow.groupName,
                   }
@@ -511,4 +500,4 @@ const ContinuousView = ({
   );
 };
 
-export default ContinuousView;
+export default SharedView;

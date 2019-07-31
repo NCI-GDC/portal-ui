@@ -37,7 +37,7 @@ import RecomposeUtils, {
   DEFAULT_INTERVAL,
   DEFAULT_RANGES,
 } from './helpers';
-import EnhancedShared from './EnhancedShared';
+import EnhancedShared from './EnhancedClinicalVariableCard';
 
 export default compose(
   setDisplayName('EnhancedContinuousVariableCard'),

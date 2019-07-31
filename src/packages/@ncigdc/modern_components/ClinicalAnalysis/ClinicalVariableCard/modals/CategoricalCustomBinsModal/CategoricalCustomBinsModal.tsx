@@ -106,7 +106,7 @@ const styles = {
   },
 }
 
-const GroupValuesModal = ({
+const CategoricalCustomBinsModal = ({
   binGrouping,
   currentBins,
   dataBuckets,
@@ -123,7 +123,7 @@ const GroupValuesModal = ({
   setListWarning,
   setSelectedGroupBins,
   setSelectedHidingBins,
-}: IGroupValuesModalProps) => {
+}: ICategoricalCustomBinsModalProps) => {
   const groupNameMapping = groupBy(
     Object.keys(currentBins)
       .filter((bin: string) => currentBins[bin].groupName !== ''),
@@ -504,7 +504,7 @@ const GroupValuesModal = ({
 }
 
 export default compose(
-  setDisplayName('EnhancedGroupValuesModal'),
+  setDisplayName('EnhancedCategoricalCustomBinsModal'),
   withState('editingGroupName', 'setEditingGroupName', ''),
   withState('currentBins', 'setCurrentBins', ({ bins }: { bins: IBinsProps }) => bins),
   withState('selectedHidingBins', 'setSelectedHidingBins', {}),
@@ -541,4 +541,4 @@ export default compose(
       setSelectedHidingBins({});
     },
   }))
-)(GroupValuesModal);
+)(CategoricalCustomBinsModal);

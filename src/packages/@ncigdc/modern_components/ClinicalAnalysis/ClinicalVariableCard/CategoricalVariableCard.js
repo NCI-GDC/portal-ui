@@ -15,13 +15,10 @@ import {
 
 import { makeFilter } from '@ncigdc/utils/filters';
 import { setModal } from '@ncigdc/dux/modal';
-import GroupValuesModal from '@ncigdc/components/Modals/GroupValuesModal';
-import {
-  createFacetFieldString,
-  humanify,
-} from '@ncigdc/utils/string';
+import { humanify } from '@ncigdc/utils/string';
 import { IS_CDAVE_DEV } from '@ncigdc/utils/constants';
 import { withTheme } from '@ncigdc/theme';
+import CategoricalCustomBinsModal from './modals/CategoricalCustomBinsModal';
 
 import RecomposeUtils, {
   dataDimensions,
@@ -30,7 +27,7 @@ import RecomposeUtils, {
   getCountLink,
   getRawQueryData,
 } from './helpers';
-import EnhancedShared from './EnhancedShared';
+import EnhancedShared from './EnhancedClinicalVariableCard';
 
 export default compose(
   setDisplayName('EnhancedCategoricalVariableCard'),
@@ -233,7 +230,7 @@ export default compose(
       variable: { bins },
     }) => ({
       openCustomBinModal: () => dispatch(setModal(
-        <GroupValuesModal
+        <CategoricalCustomBinsModal
           bins={bins}
           dataBuckets={dataBuckets}
           fieldName={humanify({ term: fieldName })}

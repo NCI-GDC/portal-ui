@@ -173,7 +173,7 @@ const ContinuousView = ({
   plots,
   qqData,
   resetBins,
-  resetBinsDisabled,
+  binsAreCustom,
   selectedBins,
   selectedSurvivalBins,
   selectedSurvivalData,
@@ -472,9 +472,10 @@ const ContinuousView = ({
                       onClick={resetBins}
                       style={{
                         ...styles.actionMenuItem,
-                        ...(resetBinsDisabled
-                          ? styles.actionMenuItemDisabled(theme)
-                          : {}),
+                        ...(binsAreCustom
+                          ? {}
+                          : styles.actionMenuItemDisabled(theme)
+                        ),
                       }}
                       >
                       Reset to Default

@@ -127,22 +127,22 @@ export default compose(
     (props, nextProps) =>
       !isEqual(props.variable.bins, nextProps.variable.bins),
     ({ variable: { bins } }) => ({
-      resetBinsDisabled: Object.keys(bins)
-        .filter(bin => bins[bin].key !== bins[bin].groupName)
+      binsAreCustom: Object.keys(bins)
+        .filter(bin => bins[bin].key === bins[bin].groupName)
         .length === 0,
     })
   ),
   withPropsOnChange(
     (props, nextProps) =>
-      props.resetBinsDisabled !== nextProps.resetBinsDisabled ||
+      props.binsAreCustom !== nextProps.binsAreCustom ||
       !isEqual(props.dataBuckets, nextProps.dataBuckets),
     ({
+      binsAreCustom,
       dataBuckets,
       dispatchUpdateClinicalVariable,
-      resetBinsDisabled,
     }) => ({
       resetBins: () => {
-        if (resetBinsDisabled) return;
+        if (!binsAreCustom) return;
         dispatchUpdateClinicalVariable({
           value: dataBuckets
             .reduce((acc, bucket) => Object.assign(

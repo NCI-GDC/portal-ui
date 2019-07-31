@@ -612,9 +612,10 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
 
   const isCustomized = variable.plotTypes === 'categorical'
     ? Object.keys(variable.bins)
-      .filter(bin => variable.bins[bin].key !== variable.bins[bin].groupName || variable.bins[bin].index)
-      .length !== 0
-    : variable.continuousBinType === 'default';
+      .filter(bin => variable.bins[bin].key !== variable.bins[bin].groupName ||
+        typeof variable.bins[bin].index === 'number')
+      .length > 0
+    : variable.continuousBinType !== 'default';
   return (
     <Column
       className="clinical-analysis-categorical-card"
@@ -1339,15 +1340,14 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
               </Row>
 
               <EntityPageHorizontalTable
-                data={tableData.map(tableRow => {
-                  return {
-                    ...tableRow,
-                    // the key in the table needs to be the display name
-                    key: tableRow.key,
-                  };
-                })
+                data={tableData.map(tableRow => ({
+                  ...tableRow,
+                  key: variable.plotTypes === 'continuous'
+                    ? tableRow.groupName
+                    : tableRow.key,
+                }))
               }
-                headings={getHeadings(variable.active_chart, dataDimension, fieldName + (isCustomized ? '(User defined bins applied)' : ''))}
+                headings={getHeadings(variable.active_chart, dataDimension, fieldName + (isCustomized ? ' (User defined bins applied)' : ''))}
                 tableContainerStyle={{
                   height: 175,
                 }}
@@ -1553,7 +1553,7 @@ export default compose(
             ...acc,
             [r.key]: {
               ...r,
-              groupName: r.groupName !== undefined &&
+              groupName: typeof r.groupName === 'string' &&
                 r.groupName !== '' ? r.groupName : r.key,
             },
           });

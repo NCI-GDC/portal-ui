@@ -612,9 +612,10 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
 
   const isCustomized = variable.plotTypes === 'categorical'
     ? Object.keys(variable.bins)
-      .filter(bin => variable.bins[bin].key !== variable.bins[bin].groupName || variable.bins[bin].index)
-      .length !== 0
-    : variable.continuousBinType === 'default';
+      .filter(bin => variable.bins[bin].key !== variable.bins[bin].groupName ||
+        variable.bins[bin].index !== undefined)
+      .length > 0
+    : variable.continuousBinType !== 'default';
   return (
     <Column
       className="clinical-analysis-categorical-card"

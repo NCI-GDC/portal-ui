@@ -28,8 +28,6 @@ import Hidden from '@ncigdc/components/Hidden';
 
 import { theme } from '@ncigdc/theme/index';
 
-import { theme } from '@ncigdc/theme/index';
-
 const initialName = (arr: string[], prefix: string) => {
   /* @arr is the list of names
      @ prefix is the prefix for the name

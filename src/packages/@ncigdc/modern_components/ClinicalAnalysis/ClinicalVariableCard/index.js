@@ -1341,10 +1341,9 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
               <EntityPageHorizontalTable
                 data={tableData.map(tableRow => ({
                   ...tableRow,
-                    // the key in the table needs to be the display name
-                  key: tableRow.groupName === undefined
-                    ? tableRow.key
-                    : tableRow.groupName,
+                  key: variable.plotTypes === 'continuous'
+                    ? tableRow.groupName
+                    : tableRow.key,
                 }))
               }
                 headings={getHeadings(variable.active_chart, dataDimension, fieldName + (isCustomized ? ' (User defined bins applied)' : ''))}

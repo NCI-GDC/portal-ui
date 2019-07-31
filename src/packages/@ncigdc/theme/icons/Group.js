@@ -1,7 +1,7 @@
 // @flow
 import React from 'react';
 
-const GroupIcon = ({ ...props }) => (
+const GroupIcon = ({ color = '#333', ...props }) => (
   <svg
     data-name="Layer 1"
     id="Layer_1"
@@ -12,25 +12,25 @@ const GroupIcon = ({ ...props }) => (
     <path
       d="M.47,20h90V0H.47M86.82,16.5H4.25V3.81H86.82Z"
       style={{
-        fill: '#333',
+        fill: color,
         fillOpacity: 0.99,
       }}
       />
     <path
       d="M0,50.08H90v-20H0"
       style={{
-        fill: '#333',
+        fill: color,
         fillOpacity: 0.99,
       }}
       />
     <path
       d="M0,79.63H90v-20H0"
       style={{
-        fill: '#333',
+        fill: color,
         fillOpacity: 0.99,
       }}
       />
-  </svg >
+  </svg>
 );
 
 export default GroupIcon;

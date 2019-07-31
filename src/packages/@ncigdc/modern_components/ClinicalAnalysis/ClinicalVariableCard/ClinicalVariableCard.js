@@ -155,7 +155,7 @@ const getBoxTableData = (data = {}) => (
     : []
 );
 
-const SharedView = ({
+const ClinicalVariableCard = ({
   boxPlotValues,
   currentAnalysis,
   dataBuckets,
@@ -400,7 +400,6 @@ const SharedView = ({
                   />
               )}
 
-              {/* DIFFERENT - CONTINUOUS ONLY */}
               {variable.active_chart === 'box' && (
                 <ClinicalBoxPlot
                   boxPlotValues={boxPlotValues}
@@ -500,4 +499,4 @@ const SharedView = ({
   );
 };
 
-export default SharedView;
+export default ClinicalVariableCard;

@@ -59,7 +59,7 @@ interface ISelectedBinsProps {
   [x: string]: boolean
 }
 interface IBinsProps { [x: string]: IBinProps }
-interface IGroupValuesModalProps {
+interface ICategoricalCustomBinsModalProps {
   binGrouping: () => void,
   currentBins: IBinsProps,
   dataBuckets: IBinProps[],

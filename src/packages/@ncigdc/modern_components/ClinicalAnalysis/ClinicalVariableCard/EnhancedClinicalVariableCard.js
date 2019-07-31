@@ -21,7 +21,6 @@ import { withTheme } from '@ncigdc/theme';
 import ClinicalVariableCard from './ClinicalVariableCard';
 
 export default compose(
-  // SAME
   setDisplayName('EnhancedSharedVariableCard'),
   connect((state: any) => ({ analysis: state.analysis })),
   withTheme,

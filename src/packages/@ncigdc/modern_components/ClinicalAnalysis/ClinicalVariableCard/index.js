@@ -1500,12 +1500,8 @@ export default compose(
                 ...acc,
                 [r.key]: {
                   ...r,
-                  index: variable.bins[r.key].index,
-                  groupName:
-                    typeof get(variable, `bins.${r.key}.groupName`, undefined) === 'string'
-                      // hidden value have groupName '', so check if it is string
-                      ? get(variable, `bins.${r.key}.groupName`, undefined)
-                      : r.key,
+                  groupName: get(variable, `bins.${r.key}.groupName`, r.key),
+                  index: get(variable, `bins.${r.key}.index`, undefined),
                 },
               }), {}),
             }),

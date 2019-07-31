@@ -300,7 +300,6 @@ const GroupValuesModal = ({
               />
           </Column>
         </Column>
-
         <Column
           style={{
             height: '16rem',

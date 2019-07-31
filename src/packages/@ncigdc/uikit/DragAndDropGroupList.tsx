@@ -1,6 +1,7 @@
 import React from 'react';
 import { get } from 'lodash';
 import { swapArrayElements, isMouseBeyond } from './Sortable/helpers';
+import './DragAndDropGroupList.css';
 
 export interface IGroupListItemProps {
   [groupName: string]: {
@@ -59,10 +60,12 @@ interface IProps {
     subItem: string,
   }) => JSX.Element,
   customProps?: any,
+  style?: React.CSSProperties,
   items: IGroupListItemProps[],
 }
 
 interface IState {
+  isDragging: boolean,
   draggingIndex: null | number,
     endState: null | {
       currSubItems: string[],
@@ -77,6 +80,7 @@ export default class DragAndDropGroupList extends React.Component<IProps, IState
     draggingIndex: null,
     endState: null,
     parentDraggable: true,
+    isDragging: false,
   };
 
   componentWillReceiveProps(nextProps: IProps) {
@@ -86,6 +90,7 @@ export default class DragAndDropGroupList extends React.Component<IProps, IState
   }
 
     sortEnd = (e: DragEvent) => {
+      this.setState({ isDragging: false });
       e.preventDefault();
       const { endState, parentDraggable } = this.state;
       if (!parentDraggable) {
@@ -122,10 +127,14 @@ export default class DragAndDropGroupList extends React.Component<IProps, IState
           const currentTarget = e.currentTarget as HTMLElement;
           if (currentTarget.tagName.toLowerCase() === 'a' && e.target) {
             const target = e.target as HTMLElement;
+            console.log('target', target);
             dt.setDragImage(target, 0, 0);
           }
         }
       }
+      this.setState({
+        isDragging: true,
+      });
     };
 
     dragOver = (e: DragEvent) => {
@@ -221,50 +230,56 @@ export default class DragAndDropGroupList extends React.Component<IProps, IState
         items,
         SubComponent,
       } = this.props;
+      const { isDragging } = this.state;
       return (
         <React.Fragment>
-          {items.map((groupObj, i) => {
-            const groupName = Object.keys(groupObj)[0];
-            const group = Object.values(groupObj)[0].subList;
-            return (
-              <Component
-                draggingProps={{
-                  'data-id': i,
-                  draggable: true,
-                  key: groupName,
-                  onDragEnd: this.sortEnd,
-                  onDragOver: this.dragOver,
-                  onDragStart: this.sortStart,
-                  onDrop: this.sortEnd,
-                  onTouchEnd: this.sortEnd,
-                  onTouchMove: this.dragOver,
-                  onTouchStart: this.sortStart,
-                  tabIndex: i,
-                }}
-                group={group}
-                groupName={groupName}
-                key={groupName}
-                {...customProps}
-                >
-                {(group.length > 1 || group[0] !== groupName) && group.map(subItem => (
-                  <SubComponent
-                    draggingProps={{
-                      'data-id': subItem,
-                      draggable: true,
-                      onDragEnd: this.subItemDragEnd,
-                      onDragStart: this.subItemDragStart,
-                      onDrop: this.subItemDragEnd,
-                      onTouchEnd: this.subItemDragEnd,
-                      onTouchStart: this.subItemDragStart,
-                    }}
-                    key={subItem}
-                    subItem={subItem}
-                    />
-                ))}
-              </Component>
-            );
-          })}
+          <div className={isDragging ? 'sort' : undefined}>
+            {/* {isDragging && <span className="sortarea">Move here to sort the list</span>}
+          {isDragging && <span className="grouparea">Move here to drop into the group</span>} */}
+            {items.map((groupObj, i) => {
+              const groupName = Object.keys(groupObj)[0];
+              const group = Object.values(groupObj)[0].subList;
+              return (
+                <Component
+                  draggingProps={{
+                    'data-id': i,
+                    draggable: true,
+                    key: groupName,
+                    onDragEnd: this.sortEnd,
+                    onDragOver: this.dragOver,
+                    onDragStart: this.sortStart,
+                    onDrop: this.sortEnd,
+                    onTouchEnd: this.sortEnd,
+                    onTouchMove: this.dragOver,
+                    onTouchStart: this.sortStart,
+                    tabIndex: i,
+                  }}
+                  group={group}
+                  groupName={groupName}
+                  key={groupName}
+                  {...customProps}
+                  >
+                  {(group.length > 1 || group[0] !== groupName) && group.map(subItem => (
+                    <SubComponent
+                      draggingProps={{
+                        'data-id': subItem,
+                        draggable: true,
+                        onDragEnd: this.subItemDragEnd,
+                        onDragStart: this.subItemDragStart,
+                        onDrop: this.subItemDragEnd,
+                        onTouchEnd: this.subItemDragEnd,
+                        onTouchStart: this.subItemDragStart,
+                      }}
+                      key={subItem}
+                      subItem={subItem}
+                      />
+                  ))}
+                </Component>
+              );
+            })}
+          </div>
         </React.Fragment>
+
       );
     }
 }

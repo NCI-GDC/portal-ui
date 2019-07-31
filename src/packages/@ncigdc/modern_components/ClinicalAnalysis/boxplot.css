@@ -16,7 +16,7 @@
 }
 
 .boxplot .box line {
-  stroke: #1784AC;
+  stroke: #ff7f0e;
 }
 
 .boxplot .whisker path {

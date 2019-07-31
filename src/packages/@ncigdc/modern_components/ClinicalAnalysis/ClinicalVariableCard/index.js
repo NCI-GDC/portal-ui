@@ -615,6 +615,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
       .filter(bin => variable.bins[bin].key !== variable.bins[bin].groupName)
       .length === 0
     : variable.continuousBinType === 'default';
+  console.log('variable.type.toLowerCase()', variable.type.toLowerCase());
 
   return (
     <Column
@@ -959,11 +960,11 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                               title: `${humanify({ term: fieldName })} QQ Plot`,
                             }),
                             () => wrapSvg({
-                              className: 'boxplot',
+                              className: `${variable.type.toLowerCase()}-boxplot`,
                               selector: `#${wrapperId}-boxplot-container figure svg`,
                               title: `${humanify({ term: fieldName })} Box Plot`,
                             }),
-                        ]}
+                          ]}
                         tooltipHTML="Download plot data"
                         tsvData={qqData}
                         />

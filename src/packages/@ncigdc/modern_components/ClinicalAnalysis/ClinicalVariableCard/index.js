@@ -1281,12 +1281,12 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
 
                     <DropdownItem
                       onClick={() => {
-                        if (!isCustomized) return;
-                        dispatch(
-                          updateClinicalAnalysisVariable({
-                            fieldName,
-                            id,
-                            value: variable.plotTypes === 'continuous'
+                        if (isCustomized) {
+                          dispatch(
+                            updateClinicalAnalysisVariable({
+                              fieldName,
+                              id,
+                              value: variable.plotTypes === 'continuous'
                               ? defaultContinuousData.buckets
                               : dataBuckets.reduce((acc, r) => ({
                                 ...acc,
@@ -1295,36 +1295,37 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                                   groupName: r.key,
                                 },
                               }), {}),
-                            variableKey: 'bins',
-                          }),
-                        );
-                        variable.plotTypes === 'continuous' && (
-                          dispatch(
-                            updateClinicalAnalysisVariable({
-                              fieldName,
-                              id,
-                              value: 'default',
-                              variableKey: 'continuousBinType',
-                            })
-                          ));
-                        variable.plotTypes === 'continuous' && (
-                          dispatch(
-                            updateClinicalAnalysisVariable({
-                              fieldName,
-                              id,
-                              value: {},
-                              variableKey: 'continuousCustomInterval',
-                            })
-                          ));
-                        variable.plotTypes === 'continuous' && (
-                          dispatch(
-                            updateClinicalAnalysisVariable({
-                              fieldName,
-                              id,
-                              value: [],
-                              variableKey: 'continuousCustomRanges',
-                            })
-                          ));
+                              variableKey: 'bins',
+                            }),
+                          );
+                          variable.plotTypes === 'continuous' && (
+                            dispatch(
+                              updateClinicalAnalysisVariable({
+                                fieldName,
+                                id,
+                                value: 'default',
+                                variableKey: 'continuousBinType',
+                              })
+                            ));
+                          variable.plotTypes === 'continuous' && (
+                            dispatch(
+                              updateClinicalAnalysisVariable({
+                                fieldName,
+                                id,
+                                value: {},
+                                variableKey: 'continuousCustomInterval',
+                              })
+                            ));
+                          variable.plotTypes === 'continuous' && (
+                            dispatch(
+                              updateClinicalAnalysisVariable({
+                                fieldName,
+                                id,
+                                value: [],
+                                variableKey: 'continuousCustomRanges',
+                              })
+                            ));
+                        }
                       }}
                       style={{
                         ...styles.actionMenuItem,

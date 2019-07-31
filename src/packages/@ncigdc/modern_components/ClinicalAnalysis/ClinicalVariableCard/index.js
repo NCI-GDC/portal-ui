@@ -1338,15 +1338,15 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
               </Row>
 
               <EntityPageHorizontalTable
-                data={tableData.map(tableRow => {
-                  return {
-                    ...tableRow,
+                data={tableData.map(tableRow => ({
+                  ...tableRow,
                     // the key in the table needs to be the display name
-                    key: tableRow.key,
-                  };
-                })
+                  key: tableRow.groupName === undefined
+                    ? tableRow.key
+                    : tableRow.groupName,
+                }))
               }
-                headings={getHeadings(variable.active_chart, dataDimension, fieldName + (isCustomized ? '(User defined bins applied)' : ''))}
+                headings={getHeadings(variable.active_chart, dataDimension, fieldName + (isCustomized ? ' (User defined bins applied)' : ''))}
                 tableContainerStyle={{
                   height: 175,
                 }}

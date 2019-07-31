@@ -33,6 +33,9 @@ import RecomposeUtils, {
   getRawQueryData,
   parseContinuousKey,
   parseContinuousValue,
+  DEFAULT_BIN_TYPE,
+  DEFAULT_INTERVAL,
+  DEFAULT_RANGES,
 } from './helpers';
 import EnhancedShared from './EnhancedShared';
 
@@ -90,7 +93,7 @@ export default compose(
     (props, nextProps) =>
       props.variable.continuousBinType !== nextProps.variable.continuousBinType,
     ({ variable: { continuousBinType } }) => ({
-      resetBinsDisabled: continuousBinType === 'default',
+      binsAreCustom: continuousBinType !== DEFAULT_BIN_TYPE,
     })
   ),
   withPropsOnChange(
@@ -421,29 +424,29 @@ export default compose(
     })
   ),
   withPropsOnChange(
-    (props, nextProps) => props.resetBinsDisabled !== nextProps.resetBinsDisabled ||
+    (props, nextProps) => props.binsAreCustom !== nextProps.binsAreCustom ||
       props.variable.id !== nextProps.variable.id,
     ({
+      binsAreCustom,
       defaultData: { bins },
       dispatchUpdateClinicalVariable,
-      resetBinsDisabled,
     }) => ({
       resetBins: () => {
-        if (resetBinsDisabled) return;
+        if (!binsAreCustom) return;
         dispatchUpdateClinicalVariable({
           value: bins,
           variableKey: 'bins',
         });
         dispatchUpdateClinicalVariable({
-          value: 'default',
+          value: DEFAULT_BIN_TYPE,
           variableKey: 'continuousBinType',
         });
         dispatchUpdateClinicalVariable({
-          value: {},
+          value: DEFAULT_INTERVAL,
           variableKey: 'customInterval',
         });
         dispatchUpdateClinicalVariable({
-          value: [],
+          value: DEFAULT_RANGES,
           variableKey: 'customRanges',
         });
       },

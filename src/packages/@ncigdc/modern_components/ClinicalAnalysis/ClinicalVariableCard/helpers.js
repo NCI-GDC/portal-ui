@@ -353,6 +353,20 @@ export const getBinData = (bins, dataBuckets) => ({
 export const getRawQueryData = (data, fieldName) => get(data,
   `explore.cases.aggregations.${createFacetFieldString(fieldName)}`, data);
 
+export const DEFAULT_BIN_TYPE = 'default';
+export const DEFAULT_DATA = {
+  bins: [],
+  max: '',
+  min: '',
+  quarter: '',
+};
+export const DEFAULT_INTERVAL = {
+  amount: '',
+  max: '',
+  min: '',
+};
+export const DEFAULT_RANGES = [];
+
 export default compose(
   withPropsOnChange(
     (props, nextProps) => props.id !== nextProps.id,

@@ -1,9 +1,15 @@
 import React, { Component } from 'react';
-import { debounce, isEmpty, isFinite } from 'lodash';
+import { debounce, isEqual, isFinite } from 'lodash';
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import Button from '@ncigdc/uikit/Button';
 import Undo from '@ncigdc/theme/icons/Undo';
-import { createContinuousGroupName } from '../../helpers';
+import {
+  createContinuousGroupName,
+  DEFAULT_BIN_TYPE,
+  DEFAULT_DATA,
+  DEFAULT_INTERVAL,
+  DEFAULT_RANGES,
+} from '../../helpers';
 import RangeTableRow from './RangeTableRow';
 import BinningMethodInput from './BinningMethodInput';
 import CustomIntervalFields from './CustomIntervalFields';
@@ -30,24 +36,19 @@ const rangeFieldsOrder = [
   'to',
 ];
 
-const defaultInterval = {
-  amount: '',
-  max: '',
-  min: '',
-};
 
 const defaultState = {
   binningMethod: 'interval', // interval or range
   continuousReset: false,
-  intervalErrors: defaultInterval,
-  intervalFields: defaultInterval,
+  intervalErrors: DEFAULT_INTERVAL,
+  intervalFields: DEFAULT_INTERVAL,
   modalWarning: '',
   rangeInputErrors: defaultRangeFieldsState,
   rangeInputOverlapErrors: [],
   rangeInputValues: defaultRangeFieldsState,
   rangeNameErrors: [],
   rangeOverlapErrors: [],
-  rangeRows: [],
+  rangeRows: DEFAULT_RANGES,
 };
 
 class ContinuousCustomBinsModal extends Component {
@@ -55,10 +56,10 @@ class ContinuousCustomBinsModal extends Component {
 
   componentDidMount = () => {
     const {
-      continuousBinType,
-      customInterval,
-      customRanges,
-      defaultData,
+      continuousBinType = DEFAULT_BIN_TYPE,
+      customInterval = DEFAULT_INTERVAL,
+      customRanges = DEFAULT_RANGES,
+      defaultData = DEFAULT_DATA,
     } = this.props;
 
     this.debounceValidateIntervalFields = debounce(
@@ -70,7 +71,7 @@ class ContinuousCustomBinsModal extends Component {
       ...continuousBinType === 'default'
         ? {}
         : { binningMethod: continuousBinType },
-      intervalFields: isEmpty(customInterval)
+      intervalFields: isEqual(customInterval, DEFAULT_INTERVAL)
         ? {
           amount: defaultData.quarter,
           max: defaultData.max,

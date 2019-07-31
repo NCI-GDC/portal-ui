@@ -778,8 +778,6 @@ class ContinuousCustomBinsModal extends Component {
             disabled={submitDisabled}
             onClick={() => this.handleSubmit()}
             onMouseDown={() => this.handleSubmit()}
-            style={submitDisabled
-              ? styles.inputDisabled : {}}
             >
             Save Bins
           </Button>

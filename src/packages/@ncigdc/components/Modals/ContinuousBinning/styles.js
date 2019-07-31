@@ -2,7 +2,7 @@ import { theme } from '@ncigdc/theme/index';
 
 const styles = {
   actionsColumn: {
-    flex: '0 0 150px',
+    flex: '0 0 90px',
     padding: '5px',
     textAlign: 'right',
   },
@@ -21,6 +21,16 @@ const styles = {
       paddingRight: '2rem',
     },
   },
+  disabledButton: {
+    backgroundColor: theme.greyScale4,
+    borderColor: theme.greyScale4,
+    color: '#fff',
+    ':hover': {
+      backgroundColor: theme.greyScale4,
+      borderColor: theme.greyScale4,
+      color: '#fff',
+    },
+  },
   formBg: {
     backgroundColor: theme.greyScale6,
     borderRadius: '5px',
@@ -36,9 +46,6 @@ const styles = {
     padding: '2px 5px',
   },
   input: {
-    inputDisabled: {
-      background: '#efefef',
-    },
     inputError: {
       color: 'red',
     },
@@ -70,9 +77,9 @@ const styles = {
   },
   optionsButton: {
     display: 'inline-block',
-    margin: '2px 0 0 5px',
+    height: 34,
     textAlign: 'center',
-    width: '40px',
+    width: 40,
   },
   resetButton: {
     marginTop: 20,

@@ -6,11 +6,11 @@ import RangeInput from './RangeInput';
 import styles from './styles';
 
 const {
+  actionsColumn,
   input: {
     inputDisabled,
   },
   optionsButton,
-  optionsColumn,
   row: {
     rowError,
     rowFieldsWrapper,
@@ -173,8 +173,10 @@ class RangeTableRow extends React.Component {
                 );
               })}
           </div>
-          <div style={optionsColumn}>
-            {rowActive ? (
+          <div
+            style={actionsColumn}
+            >
+            {/* {rowActive ? (
               <React.Fragment>
                 <Button
                   aria-label="Save"
@@ -228,7 +230,7 @@ class RangeTableRow extends React.Component {
                 >
                 <i aria-hidden="true" className="fa fa-pencil" />
               </Button>
-              )}
+              )} */}
             <Button
               aria-label="Remove"
               buttonContentStyle={{ justifyContent: 'center' }}

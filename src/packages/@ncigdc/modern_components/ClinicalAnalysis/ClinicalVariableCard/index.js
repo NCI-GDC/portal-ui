@@ -613,7 +613,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
   const isCustomized = variable.plotTypes === 'categorical'
     ? Object.keys(variable.bins)
       .filter(bin => variable.bins[bin].key !== variable.bins[bin].groupName ||
-        variable.bins[bin].index !== undefined)
+        typeof variable.bins[bin].index === 'number')
       .length > 0
     : variable.continuousBinType !== 'default';
   return (
@@ -1552,7 +1552,7 @@ export default compose(
             ...acc,
             [r.key]: {
               ...r,
-              groupName: r.groupName !== undefined &&
+              groupName: typeof r.groupName === 'string' &&
                 r.groupName !== '' ? r.groupName : r.key,
             },
           });

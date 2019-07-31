@@ -145,12 +145,12 @@ const GroupValuesModal = ({
       style={{
         maxHeight: '90vh',
         overflow: 'auto',
-        padding: '2rem',
+        padding: '2rem 2rem 0.5rem',
       }}
       >
-      <h1 style={{ margin: '0 0 1.5rem' }}>
+      <h2 style={{ borderBottom: `1px solid ${theme.greyScale5}`, margin: '0 0 1.5rem', paddingBottom: '1rem' }}>
         {`Create Custom Bins: ${fieldName}`}
-      </h1>
+      </h2>
 
       <h3 style={{ margin: '0 0 2rem' }}>
         Organize values into groups of your choosing. Click Save Bins to update
@@ -303,7 +303,7 @@ const GroupValuesModal = ({
                       });
                     }}
                     style={{
-                      backgroundColor: group.every((binKey: string) => selectedGroupBins[binKey]) ? '#d5f4e6' : '',
+                      backgroundColor: group.every((binKey: string) => selectedGroupBins[binKey]) ? theme.tableHighlight : '',
                     }}
                     >
                     {group.length > 1 || group[0] !== groupName
@@ -389,7 +389,7 @@ const GroupValuesModal = ({
                           });
                         }}
                         style={{
-                          backgroundColor: selectedGroupBins[bin] ? '#d5f4e6' : '',
+                          backgroundColor: selectedGroupBins[bin] ? theme.tableHighlight : '',
                           display: 'list-item',
                           listStylePosition: 'inside',
                           listStyleType: 'disc',
@@ -461,7 +461,7 @@ const GroupValuesModal = ({
                     });
                   }}
                   style={{
-                    backgroundColor: selectedHidingBins[binKey] ? '#d5f4e6' : '',
+                    backgroundColor: selectedHidingBins[binKey] ? theme.tableHighlight : '',
                   }}
                 >
                   {`${binKey} (${currentBins[binKey].doc_count})`}
@@ -474,8 +474,10 @@ const GroupValuesModal = ({
       <Row
         spacing="1rem"
         style={{
+          borderTop: `1px solid ${theme.greyScale5}`,
           justifyContent: 'flex-end',
           marginTop: '1.5rem',
+          padding: '15px',
         }}
         >
         {globalWarning.length > 0 && (
@@ -489,23 +491,11 @@ const GroupValuesModal = ({
           </span>
         )}
 
-        <Button
-          onClick={onClose}
-          style={{
-            ...visualizingButton,
-            minWidth: 100,
-          }}
-          >
+        <Button onClick={onClose}>
           Cancel
         </Button>
 
-        <Button
-          onClick={() => onUpdate(currentBins)}
-          style={{
-            ...visualizingButton,
-            minWidth: 100,
-          }}
-          >
+        <Button onClick={() => onUpdate(currentBins)}>
           Save Bins
         </Button>
       </Row>

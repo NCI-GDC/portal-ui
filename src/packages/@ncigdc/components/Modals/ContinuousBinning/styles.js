@@ -1,16 +1,29 @@
+import { theme } from '@ncigdc/theme/index';
+
 const styles = {
   column: {
     flex: '1 0 0 ',
     padding: '5px',
   },
+  defaultInfo: {
+    border: `2px solid ${theme.greyScale6}`,
+    borderRadius: '5px',
+    fontSize: '1.8rem',
+    marginBottom: '10px',
+    padding: '1rem 5rem 1rem 1rem',
+    paragraph: {
+      margin: 0,
+      paddingRight: '2rem',
+    },
+  },
   formBg: {
-    backgroundColor: '#f5f5f5',
+    backgroundColor: theme.greyScale6,
     borderRadius: '5px',
     padding: '0 20px',
     width: '100%',
   },
   heading: {
-    background: '#dedddd',
+    backgroundColor: theme.greyScale5,
     display: 'flex',
     fontWeight: 'bold',
     lineHeight: '20px',
@@ -61,6 +74,9 @@ const styles = {
     padding: '5px',
     textAlign: 'right',
   },
+  resetButton: {
+    marginTop: 20,
+  },
   row: {
     rowError: {
       color: 'red',
@@ -83,9 +99,6 @@ const styles = {
   wrapper: {
     marginBottom: '20px',
     width: '100%',
-  },
-  resetButton: {
-    marginTop: 20,
   },
 };
 

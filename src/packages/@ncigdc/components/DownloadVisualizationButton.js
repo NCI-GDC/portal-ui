@@ -173,7 +173,7 @@ const DownloadVisualizationButton = ({
         <DropdownItem
           key="JSON"
           onClick={() => {
-            saveFile(JSON.stringify(data, null, 2), 'JSON', `${isSlugArray ? slug[1] : slug}.json`);
+            saveFile(JSON.stringify(data, null, 2), 'JSON', `${isSlugArray ? slug[0] : slug}.json`);
             track('download-viz', { type: 'json' });
           }}
           style={styles.row(theme)}

@@ -160,7 +160,7 @@ const DownloadVisualizationButton = ({
         ) : (
           <Tooltip
             Component={`
-                  Download as PNG is currently unavaialable in your browser.
+                  Download as PNG is currently unavailable in your browser.
                   Please use the latest version of Chrome or Firefox
                 `}
             >

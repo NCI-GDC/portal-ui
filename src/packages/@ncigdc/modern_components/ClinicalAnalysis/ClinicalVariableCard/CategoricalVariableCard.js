@@ -125,8 +125,8 @@ export default compose(
       !isEqual(props.variable.bins, nextProps.variable.bins),
     ({ variable: { bins } }) => ({
       binsAreCustom: Object.keys(bins)
-        .filter(bin => bins[bin].key === bins[bin].groupName)
-        .length === 0,
+        .some(bin => bins[bin].key !== bins[bin].groupName ||
+          typeof bins[bin].index === 'number'),
     })
   ),
   withPropsOnChange(

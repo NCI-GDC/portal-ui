@@ -340,7 +340,7 @@ export const getBinData = (bins, dataBuckets) => ({
         {},
         bucket,
         {
-          groupName: bucket.groupName !== undefined &&
+          groupName: typeof bucket.groupName === 'string' &&
             bucket.groupName !== ''
             ? bucket.groupName
             : bucket.key,

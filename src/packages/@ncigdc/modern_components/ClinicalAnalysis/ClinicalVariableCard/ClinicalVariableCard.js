@@ -462,10 +462,9 @@ const ClinicalVariableCard = ({
                       onClick={resetBins}
                       style={{
                         ...styles.actionMenuItem,
-                        ...(binsAreCustom
+                        ...binsAreCustom
                           ? {}
-                          : styles.actionMenuItemDisabled(theme)
-                        ),
+                          : styles.actionMenuItemDisabled(theme),
                       }}
                       >
                       Reset to Default
@@ -487,7 +486,9 @@ const ClinicalVariableCard = ({
                 headings={getHeadings(
                   variable.active_chart,
                   dataDimension,
-                  fieldName,
+                  fieldName + (binsAreCustom
+                    ? ' (User defined bins applied)'
+                    : ''),
                 )}
                 tableContainerStyle={{ height: 175 }}
                 tableId={`analysis-${tsvSubstring}-table`}

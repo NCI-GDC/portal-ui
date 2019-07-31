@@ -1,6 +1,12 @@
 import { namespaceActions } from './utils';
 import _ from 'lodash';
 
+import {
+  DEFAULT_BIN_TYPE,
+  DEFAULT_INTERVAL,
+  DEFAULT_RANGES,
+} from '@ncigdc/modern_components/ClinicalAnalysis/ClinicalVariableCard/helpers';
+
 const sets: any = namespaceActions('sets', [
   'ADD_ANALYSIS',
   'REMOVE_ANALYSIS',
@@ -108,9 +114,9 @@ const defaultVariableConfig = {
 };
 
 const defaultContinuousVariableConfig = {
-  continuousBinType: 'default',
-  customInterval: {},
-  customRanges: [],
+  continuousBinType: DEFAULT_BIN_TYPE,
+  customInterval: DEFAULT_INTERVAL,
+  customRanges: DEFAULT_RANGES,
 };
 
 interface ICurrentAnalysis {

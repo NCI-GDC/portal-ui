@@ -1,3 +1,9 @@
+import {
+  DEFAULT_BIN_TYPE,
+  DEFAULT_INTERVAL,
+  DEFAULT_RANGES,
+} from '@ncigdc/modern_components/ClinicalAnalysis/ClinicalVariableCard/helpers';
+
 export default {
   'demographic.ethnicity': {
     active_calculation: 'number',
@@ -33,9 +39,9 @@ export default {
     active_chart: 'histogram',
     active_survival: 'overall',
     bins: {},
-    continuousBinType: 'default',
-    customInterval: {},
-    customRanges: [],
+    continuousBinType: DEFAULT_BIN_TYPE,
+    customInterval: DEFAULT_INTERVAL,
+    customRanges: DEFAULT_RANGES,
     plotTypes: 'continuous',
     scrollToCard: false,
     type: 'Diagnosis',

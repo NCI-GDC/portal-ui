@@ -58,7 +58,7 @@ class ContinuousCustomBinsModal extends Component {
   componentDidMount = () => {
     const {
       continuousBinType = 'default',
-      continuousCustomInterval = 0,
+      continuousCustomInterval = defaultInterval,
       continuousCustomRanges = [],
       defaultContinuousData,
     } = this.props;

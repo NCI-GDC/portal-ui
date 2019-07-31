@@ -946,7 +946,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                       <DownloadVisualizationButton
                         data={qqData}
                         noText
-                        slug={[`boxplot-${fieldName}`, `qq-plot-${fieldName}`]}
+                        slug={[`qq-plot-${fieldName}`, `boxplot-${fieldName}`]}
                         style={{
                           float: 'right',
                           marginRight: 2,

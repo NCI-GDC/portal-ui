@@ -46,6 +46,9 @@ const styles = {
     padding: '2px 5px',
   },
   input: {
+    inputDisabled: {
+      backgroundColor: theme.greyScale6,
+    },
     inputError: {
       color: 'red',
     },

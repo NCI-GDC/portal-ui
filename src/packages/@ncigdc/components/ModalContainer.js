@@ -19,7 +19,7 @@ const ModalContainer = connect(
     style={component && { content: component.props.modalStyle }}
     >
     {component}
-  </Modal >
+  </Modal>
 ));
 
 export default ModalContainer;

@@ -9,11 +9,11 @@ const fields = [
     name: 'amount',
   },
   {
-    label: 'limit values from',
+    label: 'with values from',
     name: 'min',
   },
   {
-    label: 'to',
+    label: 'to less than',
     name: 'max',
   },
 ];
@@ -41,7 +41,7 @@ const CustomIntervalFields = ({
           binningMethod="interval"
           checked={!disabled}
           handleChange={handleUpdateBinningMethod}
-          label="Bin Interval"
+          label="A set interval of"
           />
       </div>
       {fields.map(field => (

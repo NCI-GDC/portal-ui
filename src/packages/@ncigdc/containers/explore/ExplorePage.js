@@ -12,7 +12,8 @@ import OncogridTab from '@ncigdc/components/Explore/OncogridTab';
 import CasesTab from '@ncigdc/components/Explore/CasesTab';
 import NoResultsMessage from '@ncigdc/components/NoResultsMessage';
 import CaseAggregations from '@ncigdc/containers/explore/CaseAggregations';
-import GeneAggregations from '@ncigdc/containers/explore/GeneAggregations';
+// import GeneAggregations from '@ncigdc/containers/explore/GeneAggregations';
+import GeneAggregations from '@ncigdc/modern_components/GeneAggregations';
 import SSMAggregations from '@ncigdc/containers/explore/SSMAggregations';
 import { CreateExploreCaseSetButton } from '@ncigdc/modern_components/withSetAction';
 import { replaceFilters } from '@ncigdc/utils/filters';
@@ -104,7 +105,8 @@ class ExplorePageComponent extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (!isEqual(this.props.filters, nextProps.filters)) {
+    const { filters } = this.props;
+    if (!isEqual(filters, nextProps.filters)) {
       setVariables(nextProps);
     }
   }
@@ -116,7 +118,6 @@ class ExplorePageComponent extends React.Component {
       relay,
       viewer,
     } = this.props;
-
     return (
       <SearchPage
         className="test-explore-page"
@@ -141,19 +142,27 @@ class ExplorePageComponent extends React.Component {
           },
           {
             component: (
-              <GeneAggregations
-                aggregations={viewer.explore.genes.aggregations}
-                cnvAggregations={viewer.explore.cnvs.aggregations}
-                setAutocomplete={(value, onReadyStateChange) => relay.setVariables(
-                  {
-                    idAutocompleteGenes: value,
-                    runAutocompleteGenes: !!value,
-                  },
-                  onReadyStateChange
-                )}
-                suggestions={get(viewer, 'autocomplete_genes.hits', [])}
-                />
+              <GeneAggregations relay={relay} />
+                // aggregations={viewer.explore.genes.aggregations}
+                // cnvAggregations={viewer.explore.cnvs.aggregations}
+                // setAutocomplete={(value, onReadyStateChange) => relay.setVariables(
+                //   {
+                //     idAutocompleteGenes: value,
+                //     runAutocompleteGenes: !!value,
+                //   },
+                //   onReadyStateChange
+                // )}
+                // suggestions={get(viewer, 'autocomplete_genes.hits', [])}
+                // />
             ),
+            // query: filters ? {} : {
+            //   filters: makeFilter([
+            //     {
+            //       field: 'genes.is_cancer_gene_census',
+            //       value: ['true'],
+            //     },
+            //   ]),
+            // },
             id: 'genes',
             text: 'Genes',
           },
@@ -280,6 +289,7 @@ export const ExplorePageQuery = {
     ssms_size: null,
     ssms_sort: null,
     filters: null,
+    geneFilters: null,
     idAutocompleteCases: null,
     runAutocompleteCases: false,
     idAutocompleteGenes: null,
@@ -301,16 +311,6 @@ export const ExplorePageQuery = {
                 project_id
               }
               submitter_id
-            }
-          }
-        }
-        autocomplete_genes: query (query: $idAutocompleteGenes types: ["gene_centric"]) @include(if: $runAutocompleteGenes) {
-          hits {
-            id
-            ...on Gene {
-              symbol
-              name
-              gene_id
             }
           }
         }
@@ -338,17 +338,11 @@ export const ExplorePageQuery = {
             }
           }
           genes {
-            aggregations(filters: $filters aggregations_filter_themselves: false) {
-              ${GeneAggregations.getFragment('aggregations')}
-            }
             hits(first: $genes_size offset: $genes_offset, filters: $filters) {
               total
             }
           }
           cnvs {
-            aggregations(filters: $filters aggregations_filter_themselves: false) {
-              ${GeneAggregations.getFragment('cnvAggregations')}
-            }
             hits(first: $genes_size offset: $genes_offset, filters: $filters) {
               total
             }

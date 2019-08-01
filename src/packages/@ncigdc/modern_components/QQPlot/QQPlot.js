@@ -193,7 +193,7 @@ const QQPlot = ({
       .attr('text-anchor', 'middle')
       .attr('transform', `translate(${(chartWidth / 2) + (padding / 2)}, ${(chartHeight / 2)})`)
       .text('Not enough data')
-      .style('fontSize', '1.6rem')
+      .style('fontSize', '1.4rem')
       .style('fontWeight', axisStyle.fontWeight)
       .attr('fill', axisStyle.textColor);
   }

@@ -7,7 +7,7 @@ import {
   pure,
   withProps,
 } from 'recompose';
-import { last, groupBy, sortBy } from 'lodash';
+import { groupBy, sortBy } from 'lodash';
 import reactSize from 'react-sizeme';
 
 import { qnorm } from './qqUtils';
@@ -84,17 +84,23 @@ const QQPlot = ({
   const yTicks = enoughData ? 5 : 0;
   const xTicks = enoughData ? Object.keys(groupBy(zScores.map(z => z.x), Math.floor)).length : 0;
 
+  const xMin = d3.min(zScores, d => Math.floor(d.x));
+  const xMax = d3.max(zScores, d => Math.ceil(d.x));
+
+  const yMin = d3.min(zScores, d => Math.floor(d.y));
+  const yMax = d3.max(zScores, d => Math.ceil(d.y));
+
   const xScale = d3
     .scaleLinear()
     .domain(enoughData
-      ? [d3.min(zScores, (d) => Math.floor(d.x)), d3.max(zScores, (d) => Math.ceil(d.x))]
+      ? [xMin, xMax]
       : 0)
     .range([padding, chartWidth - padding * 2]);
 
   const yScale = d3
     .scaleLinear()
     .domain(enoughData
-      ? [d3.min(zScores, (d) => Math.floor(d.y)), d3.max(zScores, (d) => Math.ceil(d.y))]
+      ? [yMin, yMax]
       : 0)
     .range([chartHeight, padding]);
 
@@ -107,7 +113,6 @@ const QQPlot = ({
     .axisLeft()
     .scale(yScale)
     .ticks(yTicks);
-
 
   const svg = d3
     .select(el)
@@ -132,12 +137,16 @@ const QQPlot = ({
 
     // get slope from first and third quantile to match qqline from R
     const slope = (quantile3Coords.y - quantile1Coords.y) / (quantile3Coords.x - quantile1Coords.x);
-    const yMin = zScores[0].y;
-    const yMax = last(zScores).y;
 
-    // calculate x values for start and end of line
-    const xAtYMin = quantile1Coords.x - ((quantile1Coords.y - yMin) / slope);
-    const xAtYMax = quantile3Coords.x + ((yMax - quantile3Coords.y) / slope);
+    // calculate coords for start and end of line with y = mx + b
+    // start and end points will equal the y/x min and max OR
+    // intercepts, whichever is within plot limits
+    const b = quantile1Coords.y - (slope * quantile1Coords.x);
+
+    const xAtYMin = (yMin - b) / slope;
+    const xAtYMax = (yMax - b) / slope;
+    const yAtXMax = (slope * xMax) + b;
+    const yAtXMin = (slope * xMin) + b;
 
     // draw sample points
     svg
@@ -164,14 +173,14 @@ const QQPlot = ({
       .attr('class', 'coords')
       .datum([
         {
-          x: xAtYMin,
-          y: yMin,
+          x: Math.max(xAtYMin, xMin),
+          y: Math.max(yAtXMin, yMin),
         },
         ...quantile1Coords,
         ...quantile3Coords,
         {
-          x: xAtYMax,
-          y: yMax,
+          x: Math.min(xAtYMax, xMax),
+          y: Math.min(yMax, yAtXMax),
         },
       ])
       .attr('d', line)
@@ -211,7 +220,6 @@ const QQPlot = ({
       .attr('fill', axisStyle.textColor);
   }
 
-  // plot axes last so they render on top of regression clip shapes
   // x axis
   svg
     .append('g')
@@ -236,6 +244,7 @@ const QQPlot = ({
     .call(yAxis);
 
   const yAxisTextX = enoughData ? padding - 10 : padding * 1.5;
+
   svg
     .append('text')
     .attr('text-anchor', 'middle')

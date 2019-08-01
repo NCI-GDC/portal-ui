@@ -610,11 +610,12 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
   const setActionsDisabled = get(selectedBuckets, 'length', 0) === 0;
   const disabledCharts = plotType => isEmpty(tableData) && plotType !== 'delete';
 
-  const resetBinsDisabled = variable.plotTypes === 'categorical'
+  const isCustomized = variable.plotTypes === 'categorical'
     ? Object.keys(variable.bins)
-      .filter(bin => variable.bins[bin].key !== variable.bins[bin].groupName)
-      .length === 0
-    : variable.continuousBinType === 'default';
+      .filter(bin => variable.bins[bin].key !== variable.bins[bin].groupName ||
+        typeof variable.bins[bin].index === 'number')
+      .length > 0
+    : variable.continuousBinType !== 'default';
   return (
     <Column
       className="clinical-analysis-categorical-card"
@@ -1267,12 +1268,12 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
 
                     <DropdownItem
                       onClick={() => {
-                        if (resetBinsDisabled) return;
-                        dispatch(
-                          updateClinicalAnalysisVariable({
-                            fieldName,
-                            id,
-                            value: variable.plotTypes === 'continuous'
+                        if (isCustomized) {
+                          dispatch(
+                            updateClinicalAnalysisVariable({
+                              fieldName,
+                              id,
+                              value: variable.plotTypes === 'continuous'
                               ? defaultContinuousData.buckets
                               : dataBuckets.reduce((acc, r) => ({
                                 ...acc,
@@ -1281,40 +1282,41 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                                   groupName: r.key,
                                 },
                               }), {}),
-                            variableKey: 'bins',
-                          }),
-                        );
-                        variable.plotTypes === 'continuous' && (
-                          dispatch(
-                            updateClinicalAnalysisVariable({
-                              fieldName,
-                              id,
-                              value: 'default',
-                              variableKey: 'continuousBinType',
-                            })
-                          ));
-                        variable.plotTypes === 'continuous' && (
-                          dispatch(
-                            updateClinicalAnalysisVariable({
-                              fieldName,
-                              id,
-                              value: {},
-                              variableKey: 'continuousCustomInterval',
-                            })
-                          ));
-                        variable.plotTypes === 'continuous' && (
-                          dispatch(
-                            updateClinicalAnalysisVariable({
-                              fieldName,
-                              id,
-                              value: [],
-                              variableKey: 'continuousCustomRanges',
-                            })
-                          ));
+                              variableKey: 'bins',
+                            }),
+                          );
+                          variable.plotTypes === 'continuous' && (
+                            dispatch(
+                              updateClinicalAnalysisVariable({
+                                fieldName,
+                                id,
+                                value: 'default',
+                                variableKey: 'continuousBinType',
+                              })
+                            ));
+                          variable.plotTypes === 'continuous' && (
+                            dispatch(
+                              updateClinicalAnalysisVariable({
+                                fieldName,
+                                id,
+                                value: {},
+                                variableKey: 'continuousCustomInterval',
+                              })
+                            ));
+                          variable.plotTypes === 'continuous' && (
+                            dispatch(
+                              updateClinicalAnalysisVariable({
+                                fieldName,
+                                id,
+                                value: [],
+                                variableKey: 'continuousCustomRanges',
+                              })
+                            ));
+                        }
                       }}
                       style={{
                         ...styles.actionMenuItem,
-                        ...(resetBinsDisabled ? styles.actionMenuItemDisabled(theme) : {}),
+                        ...(isCustomized ? {} : styles.actionMenuItemDisabled(theme)),
                       }}
                       >
                       Reset to Default
@@ -1326,10 +1328,12 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
               <EntityPageHorizontalTable
                 data={tableData.map(tableRow => ({
                   ...tableRow,
-              // the key in the table needs to be the display name
-                  key: tableRow.groupName !== undefined ? tableRow.groupName : tableRow.key,
-                }))}
-                headings={getHeadings(variable.active_chart, dataDimension, fieldName)}
+                  key: variable.plotTypes === 'continuous'
+                    ? tableRow.groupName
+                    : tableRow.key,
+                }))
+              }
+                headings={getHeadings(variable.active_chart, dataDimension, fieldName + (isCustomized ? ' (User defined bins applied)' : ''))}
                 tableContainerStyle={{
                   height: 175,
                 }}
@@ -1535,7 +1539,7 @@ export default compose(
             ...acc,
             [r.key]: {
               ...r,
-              groupName: r.groupName !== undefined &&
+              groupName: typeof r.groupName === 'string' &&
                 r.groupName !== '' ? r.groupName : r.key,
             },
           });

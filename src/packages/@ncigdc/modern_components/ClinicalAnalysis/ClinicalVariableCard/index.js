@@ -615,8 +615,6 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
       .filter(bin => variable.bins[bin].key !== variable.bins[bin].groupName)
       .length === 0
     : variable.continuousBinType === 'default';
-  console.log('variable.type.toLowerCase()', variable.type.toLowerCase());
-
   return (
     <Column
       className="clinical-analysis-categorical-card"
@@ -964,7 +962,7 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                               selector: `#${wrapperId}-boxplot-container figure svg`,
                               title: `${humanify({ term: fieldName })} Box Plot`,
                             }),
-                          ]}
+                        ]}
                         tooltipHTML="Download plot data"
                         tsvData={qqData}
                         />

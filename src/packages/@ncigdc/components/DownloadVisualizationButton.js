@@ -128,23 +128,24 @@ const DownloadVisualizationButton = ({
           className="test-download-png"
           key="png"
           onClick={() => {
-            if (!supportsSvgToPng()) return;
-            if (svg instanceof Array) {
-              svg.map((s, i) => downloadSvg({
-                svg: getDOMNode(s),
+            if (supportsSvgToPng()) {
+              if (svg instanceof Array) {
+                svg.map((s, i) => downloadSvg({
+                  svg: getDOMNode(s),
+                  stylePrefix,
+                  fileName: `${slug[i]}.png`,
+                }));
+                track('download-viz', { type: 'png' });
+                return;
+              }
+              downloadSvg({
+                svg: getDOMNode(svg),
                 stylePrefix,
-                fileName: `${slug[i]}.png`,
-              }));
+                fileName: `${slug}.png`,
+                scale: 2,
+              });
               track('download-viz', { type: 'png' });
-              return;
             }
-            downloadSvg({
-              svg: getDOMNode(svg),
-              stylePrefix,
-              fileName: `${slug}.png`,
-              scale: 2,
-            });
-            track('download-viz', { type: 'png' });
           }}
           style={{
             ...styles.row(theme),

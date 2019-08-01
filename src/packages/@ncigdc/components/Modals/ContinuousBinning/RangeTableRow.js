@@ -6,11 +6,11 @@ import RangeInput from './RangeInput';
 import styles from './styles';
 
 const {
+  actionsColumn,
   input: {
     inputDisabled,
   },
   optionsButton,
-  optionsColumn,
   row: {
     rowError,
     rowFieldsWrapper,
@@ -64,17 +64,6 @@ class RangeTableRow extends React.Component {
     handleToggleActiveRow(rowIndex, true);
   }
 
-  handleCancel = () => {
-    const {
-      defaultRangeFieldsState, fields, handleToggleActiveRow, rowIndex,
-    } = this.props;
-    this.setState({
-      fieldErrors: defaultRangeFieldsState,
-      fieldValues: fields,
-    });
-    handleToggleActiveRow(rowIndex, false);
-  }
-
   handleRemove = () => {
     const { handleRemoveRow, rowIndex } = this.props;
     handleRemoveRow(rowIndex);
@@ -107,10 +96,14 @@ class RangeTableRow extends React.Component {
       const currentValueNumber = Number(currentValue);
 
       const nextErrors = currentValue === ''
-        ? 'Required field.' : curr === 'name'
-          ? '' : !isFinite(currentValueNumber)
+        ? 'Required field.'
+        : curr === 'name'
+          ? ''
+          : !isFinite(currentValueNumber)
             ? `'${currentValue}' is not a number.`
-            : countDecimals(currentValueNumber) > 2 ? 'Use up to 2 decimal places.' : '';
+            : countDecimals(currentValueNumber) > 2
+              ? 'Use up to 2 decimal places.'
+                : '';
 
       return ({
         ...acc,
@@ -121,11 +114,13 @@ class RangeTableRow extends React.Component {
     const checkFromToValues = errorsEmptyOrNaN.to === '' &&
       errorsEmptyOrNaN.from === '' &&
       Number(fieldValues.to) <= Number(fieldValues.from);
-    return checkFromToValues ? ({
+    return checkFromToValues
+    ? ({
       from: `'From' must be less than ${fieldValues.to}.`,
       name: '',
       to: `'To' must be greater than ${fieldValues.from}.`,
-    }) : errorsEmptyOrNaN;
+    })
+    : errorsEmptyOrNaN;
   };
 
   render = () => {
@@ -173,62 +168,9 @@ class RangeTableRow extends React.Component {
                 );
               })}
           </div>
-          <div style={optionsColumn}>
-            {rowActive ? (
-              <React.Fragment>
-                <Button
-                  aria-label="Save"
-                  buttonContentStyle={{ justifyContent: 'center' }}
-                  disabled={!rangeMethodActive}
-                  id={`range-row-${rowIndex}-save`}
-                  onClick={() => {
-                    this.handleSave();
-                  }}
-                  style={{
-                    ...(rangeMethodActive ? { background: 'green' } : inputDisabled),
-                    ...optionsButton,
-                  }}
-                  >
-                  <i aria-hidden="true" className="fa fa-check" />
-                </Button>
-                <Button
-                  aria-label="Cancel"
-                  buttonContentStyle={{ justifyContent: 'center' }}
-                  disabled={!rangeMethodActive}
-                  id={`range-row-${rowIndex}-cancel`}
-                  onClick={() => {
-                    this.handleCancel();
-                  }}
-                  onMouseDown={() => {
-                    this.handleCancel();
-                  }}
-                  style={{
-                    ...(rangeMethodActive ? { background: 'red' } : inputDisabled),
-                    ...optionsButton,
-                  }}
-                  >
-                  <i aria-hidden="true" className="fa fa-close" />
-                </Button>
-              </React.Fragment>
-            ) : (
-              <Button
-                aria-label="Edit"
-                disabled={!rangeMethodActive}
-                id={`range-row-${rowIndex}-edit`}
-                onClick={() => {
-                  this.handleEdit();
-                }}
-                onMouseDown={() => {
-                  this.handleEdit();
-                }}
-                style={{
-                  ...(rangeMethodActive ? visualizingButton : inputDisabled),
-                  ...optionsButton,
-                }}
-                >
-                <i aria-hidden="true" className="fa fa-pencil" />
-              </Button>
-              )}
+          <div
+            style={actionsColumn}
+            >
             <Button
               aria-label="Remove"
               buttonContentStyle={{ justifyContent: 'center' }}

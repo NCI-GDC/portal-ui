@@ -1,16 +1,44 @@
+import { theme } from '@ncigdc/theme/index';
+
 const styles = {
+  actionsColumn: {
+    flex: '0 0 90px',
+    padding: '5px',
+    textAlign: 'right',
+  },
   column: {
     flex: '1 0 0 ',
     padding: '5px',
   },
+  defaultInfo: {
+    border: `2px solid ${theme.greyScale6}`,
+    borderRadius: '5px',
+    fontSize: '1.8rem',
+    marginBottom: '10px',
+    padding: '1rem 5rem 1rem 1rem',
+    paragraph: {
+      margin: 0,
+      paddingRight: '2rem',
+    },
+  },
+  disabledButton: {
+    backgroundColor: theme.greyScale4,
+    borderColor: theme.greyScale4,
+    color: '#fff',
+    ':hover': {
+      backgroundColor: theme.greyScale4,
+      borderColor: theme.greyScale4,
+      color: '#fff',
+    },
+  },
   formBg: {
-    backgroundColor: '#f5f5f5',
+    backgroundColor: theme.greyScale6,
     borderRadius: '5px',
     padding: '0 20px',
     width: '100%',
   },
   heading: {
-    background: '#dedddd',
+    backgroundColor: theme.greyScale5,
     display: 'flex',
     fontWeight: 'bold',
     lineHeight: '20px',
@@ -19,7 +47,7 @@ const styles = {
   },
   input: {
     inputDisabled: {
-      background: '#efefef',
+      backgroundColor: theme.greyScale6,
     },
     inputError: {
       color: 'red',
@@ -52,14 +80,12 @@ const styles = {
   },
   optionsButton: {
     display: 'inline-block',
-    margin: '2px 0 0 5px',
+    height: 34,
     textAlign: 'center',
-    width: '40px',
+    width: 40,
   },
-  optionsColumn: {
-    flex: '0 0 150px',
-    padding: '5px',
-    textAlign: 'right',
+  resetButton: {
+    marginTop: 20,
   },
   row: {
     rowError: {
@@ -83,9 +109,6 @@ const styles = {
   wrapper: {
     marginBottom: '20px',
     width: '100%',
-  },
-  resetButton: {
-    marginTop: 20,
   },
 };
 

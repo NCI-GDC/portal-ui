@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import { debounce, isEmpty, isFinite } from 'lodash';
+
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import Button from '@ncigdc/uikit/Button';
-import { createContinuousGroupName, parseContinuousKey } from '@ncigdc/utils/string';
+import { createContinuousGroupName } from '@ncigdc/utils/string';
 import Undo from '@ncigdc/theme/icons/Undo';
+import { theme } from '@ncigdc/theme/index';
 import RangeTableRow from './RangeTableRow';
 import BinningMethodInput from './BinningMethodInput';
 import CustomIntervalFields from './CustomIntervalFields';
@@ -34,7 +36,7 @@ const defaultInterval = {
   amount: '',
   max: '',
   min: '',
-  };
+};
 
 const defaultState = {
   binningMethod: 'interval', // interval or range
@@ -55,9 +57,9 @@ class ContinuousCustomBinsModal extends Component {
 
   componentDidMount = () => {
     const {
-      continuousBinType,
-      continuousCustomInterval,
-      continuousCustomRanges,
+      continuousBinType = 'default',
+      continuousCustomInterval = defaultInterval,
+      continuousCustomRanges = [],
       defaultContinuousData,
     } = this.props;
 
@@ -234,8 +236,7 @@ class ContinuousCustomBinsModal extends Component {
 
     const checkInterval = Object.keys(intervalErrors)
       .filter(int => intervalErrors[int] !== '').length > 0;
-    const checkRange = rangeRows
-      .filter(row => row.active).length > 0;
+    const checkRange = rangeRows.filter(row => row.active).length > 0;
     const checkOverlap = rangeOverlapErrors
       .filter(err => err.length > 0).length > 0;
     const result = binningMethod === 'interval'
@@ -589,26 +590,35 @@ class ContinuousCustomBinsModal extends Component {
     const submitDisabled = this.checkSubmitDisabled();
 
     return (
-      <Column style={{ padding: '20px' }}>
+      <Column style={{ padding: '2rem 2rem 0.5rem' }}>
         <div>
-          <h1 style={{ marginTop: 0 }}>
+          <h2
+            style={{
+              borderBottom: `1px solid ${theme.greyScale5}`,
+              marginTop: 0,
+              paddingBottom: '1rem',
+            }}
+            >
             {`Create Custom Bins: ${fieldName}`}
-          </h1>
-          <p>
-            Available values from
-            <strong>{` ${defaultContinuousData.min} `}</strong>
-            to
-            <strong>{` \u003c ${defaultContinuousData.max} `}</strong>
-          </p>
-          <p>
-            Bin size in quarters:
-            <strong>{` ${defaultContinuousData.quarter}`}</strong>
-          </p>
+          </h2>
           <p>
             Configure your bins then click
             <strong> Save Bins </strong>
             to update the analysis plots.
           </p>
+          <Row style={styles.defaultInfo}>
+            <p style={styles.defaultInfo.paragraph}>
+              Available values from
+              <strong>{` ${defaultContinuousData.min} `}</strong>
+              to
+              <strong>{` \u003c ${defaultContinuousData.max} `}</strong>
+            </p>
+            <p style={styles.defaultInfo.paragraph}>|</p>
+            <p style={styles.defaultInfo.paragraph}>
+              Bin size in quarters:
+              <strong>{` ${defaultContinuousData.quarter}`}</strong>
+            </p>
+          </Row>
         </div>
         <div style={styles.formBg}>
           <Row
@@ -669,7 +679,7 @@ class ContinuousCustomBinsModal extends Component {
                 handleChange={() => {
                   this.setState({ binningMethod: 'range' });
                 }}
-                label="Manually"
+                label="Custom ranges"
                 />
             </div>
             <div style={styles.wrapper}>
@@ -690,13 +700,13 @@ class ContinuousCustomBinsModal extends Component {
                   id="range-table-label-max"
                   style={styles.column}
                   >
-                  To &lt;
+                  To less than
                 </div>
                 <div
-                  id="range-table-label-options"
-                  style={styles.optionsColumn}
+                  id="range-table-label-actions"
+                  style={styles.actionsColumn}
                   >
-                  Options
+                  Actions
                 </div>
               </div>
               <div style={styles.scrollingTable}>
@@ -743,8 +753,10 @@ class ContinuousCustomBinsModal extends Component {
         <Row
           spacing="1rem"
           style={{
+            borderTop: '1px solid #e5e5e5',
             justifyContent: 'flex-end',
-            margin: '20px',
+            marginTop: '20px',
+            padding: '15px',
           }}
           >
           <span
@@ -759,7 +771,6 @@ class ContinuousCustomBinsModal extends Component {
           <Button
             onClick={onClose}
             onMouseDown={onClose}
-            style={styles.visualizingButton}
             >
             Cancel
           </Button>
@@ -767,9 +778,6 @@ class ContinuousCustomBinsModal extends Component {
             disabled={submitDisabled}
             onClick={() => this.handleSubmit()}
             onMouseDown={() => this.handleSubmit()}
-            style={submitDisabled
-              ? styles.inputDisabled
-              : styles.visualizingButton}
             >
             Save Bins
           </Button>

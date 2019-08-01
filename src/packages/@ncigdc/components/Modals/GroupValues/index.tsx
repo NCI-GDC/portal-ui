@@ -13,6 +13,7 @@ import {
   map,
   find,
   max,
+  // groupBy,
 } from 'lodash';
 import Group from '@ncigdc/theme/icons/Group';
 import Hide from '@ncigdc/theme/icons/Hide';
@@ -23,6 +24,8 @@ import { visualizingButton } from '@ncigdc/theme/mixins';
 import Button from '@ncigdc/uikit/Button';
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import DragAndDropGroupList from '@ncigdc/uikit/DragAndDropGroupList';
+import Hidden from '@ncigdc/components/Hidden';
+import { theme } from '@ncigdc/theme/index';
 import BucketsGroupComponent from './BucketsGroupComponent';
 import {
   IBinProps,
@@ -48,19 +51,30 @@ const initialName = (arr: string[], prefix: string) => {
 };
 
 
-const boxHeaderStyle = {
-  alignItems: 'center',
-  background: '#eee',
-  justifyContent: 'space-between',
-  padding: '0.5rem 1rem',
-};
-
-const listStyle = {
-  border: '0.2rem solid #eee',
-  borderRadius: '0 0 0.2rem 0.2rem',
-  flexGrow: 1,
-  overflow: 'scroll',
-  padding: '1rem',
+const styles = {
+  boxHeader: {
+    alignItems: 'center',
+    background: '#eee',
+    justifyContent: 'space-between',
+    padding: '0.5rem 1rem',
+  },
+  disabled: {
+    ':hover': {
+      backgroundColor: theme.greyScale4,
+      borderColor: theme.greyScale4,
+      color: '#fff',
+    },
+    backgroundColor: theme.greyScale4,
+    borderColor: theme.greyScale4,
+    color: '#fff',
+  },
+  list: {
+    border: '0.2rem solid #eee',
+    borderRadius: '0 0 0.2rem 0.2rem',
+    flexGrow: 1,
+    overflow: 'scroll',
+    padding: '1rem',
+  },
 };
 
 
@@ -86,17 +100,39 @@ const GroupValuesModal = ({
   setSelectedGroupBins,
   setSelectedHidingBins,
 }: IGroupValuesModalProps) => {
+  // const groupNameMapping = groupBy(
+  //   Object.keys(currentBins)
+  //     .filter((bin: string) => currentBins[bin].groupName !== ''),
+  //   key => currentBins[key].groupName
+  // );
+
+  const groupDisabled = Object.values(selectedGroupBins).filter(Boolean).length < 2;
+  const ungroupDisabled = Object.keys(selectedGroupBins)
+    .filter(key => selectedGroupBins[key])
+    .every(key => currentBins[key].groupName === key);
+  const resetDisabled = Object.keys(currentBins)
+    .filter(bin => currentBins[bin].key !== currentBins[bin].groupName)
+    .length === 0;
+  const hideDisabled = Object.values(selectedGroupBins).every(value => !value);
+  const showDisabled = Object.values(selectedHidingBins).every(value => !value);
+
   return (
     <Column
       style={{
         maxHeight: '90vh',
         overflow: 'auto',
-        padding: '2rem',
+        padding: '2rem 2rem 0.5rem',
       }}
       >
-      <h1 style={{ margin: '0 0 1.5rem' }}>
+      <h2
+        style={{
+          borderBottom: `1px solid ${theme.greyScale5}`,
+          margin: '0 0 1.5rem',
+          paddingBottom: '1rem',
+        }}
+        >
         {`Create Custom Bins: ${fieldName}`}
-      </h1>
+      </h2>
 
       <h3 style={{ margin: '0 0 2rem' }}>
         Organize values into groups of your choosing. Click Save Bins to update
@@ -111,11 +147,12 @@ const GroupValuesModal = ({
             width: '100%',
           }}
           >
-          <Row style={boxHeaderStyle}>
+          <Row style={styles.boxHeader}>
             <span style={{ fontWeight: 'bold' }}>Values</span>
+
             <Row spacing="1rem">
               <Button
-                leftIcon={<Undo />}
+                disabled={resetDisabled}
                 onClick={() => {
                   setCurrentBins({
                     ...dataBuckets.reduce((acc, r) => ({
@@ -130,28 +167,37 @@ const GroupValuesModal = ({
                   setGlobalWarning('');
                   setListWarning({});
                 }}
-                style={visualizingButton}
-                />
+                style={{
+                  ...visualizingButton,
+                  ...(resetDisabled
+                  ? styles.disabled : {}),
+                }}
+                >
+                <Undo />
+                <Hidden>Reset bins</Hidden>
+              </Button>
+
               <Button
-                disabled={Object.values(selectedGroupBins).filter(Boolean).length < 2}
-                leftIcon={<Group style={{ width: '10px' }} />}
+                disabled={groupDisabled}
+                leftIcon={<Group color={groupDisabled ? '#fff' : 'currentColor'} style={{ width: '10px' }} />}
                 onClick={() => {
                   binGrouping(selectedGroupBins);
                   setSelectedGroupBins({});
                   setGlobalWarning('');
                   setListWarning({});
                 }}
-                style={visualizingButton}
+                style={{
+                  ...visualizingButton,
+                  ...(groupDisabled
+                  ? styles.disabled : {}),
+                }}
                 >
                 Group
               </Button>
 
               <Button
-                disabled={Object
-                  .keys(selectedGroupBins)
-                  .filter(key => selectedGroupBins[key])
-                  .every(key => currentBins[key].groupName === key)}
-                leftIcon={<Ungroup style={{ width: '10px' }} />}
+                disabled={ungroupDisabled}
+                leftIcon={<Ungroup color={ungroupDisabled ? '#fff' : 'currentColor'} style={{ width: '10px' }} />}
                 onClick={() => {
                   setCurrentBins({
                     ...currentBins,
@@ -172,14 +218,17 @@ const GroupValuesModal = ({
                   setGlobalWarning('');
                   setListWarning({});
                 }}
-                style={visualizingButton}
+                style={{
+                  ...visualizingButton,
+                  ...(ungroupDisabled ? styles.disabled : {}),
+                }}
                 >
                 Ungroup
               </Button>
 
               <Button
-                disabled={Object.values(selectedGroupBins).every(value => !value)}
-                leftIcon={<Hide />}
+                disabled={hideDisabled}
+                leftIcon={<Hide style={hideDisabled ? styles.disabled : {}} />}
                 onClick={() => {
                   if (filter(selectedGroupBins, Boolean).length ===
                     Object.keys(filter(currentBins, (bin: IBinProps) => !!bin.groupName)).length) {
@@ -205,13 +254,16 @@ const GroupValuesModal = ({
                   setGlobalWarning('');
                   setListWarning({});
                 }}
-                style={visualizingButton}
+                style={{
+                  ...visualizingButton,
+                  ...(hideDisabled ? styles.disabled : {}),
+                }}
                 >
                 Hide
               </Button>
             </Row>
           </Row>
-          <Column style={listStyle}>
+          <Column style={styles.list}>
             <DragAndDropGroupList
               Component={BucketsGroupComponent}
               customProps={{
@@ -309,11 +361,12 @@ const GroupValuesModal = ({
             width: '100%',
           }}
           >
-          <Row style={boxHeaderStyle}>
+          <Row style={styles.boxHeader}>
             <span style={{ fontWeight: 'bold' }}>Hidden Values</span>
+
             <Button
-              disabled={Object.values(selectedHidingBins).every(value => !value)}
-              leftIcon={<Show />}
+              disabled={showDisabled}
+              leftIcon={<Show style={showDisabled ? styles.disabled : {}} />}
               onClick={() => {
                 setCurrentBins({
                   ...currentBins,
@@ -334,12 +387,15 @@ const GroupValuesModal = ({
                 setGlobalWarning('');
                 setListWarning({});
               }}
-              style={visualizingButton}
+              style={{
+                ...visualizingButton,
+                ...(showDisabled ? styles.disabled : {}),
+              }}
               >
-              Unhide
+              Show
             </Button>
           </Row>
-          <Column style={listStyle}>
+          <Column style={styles.list}>
             {Object.keys(currentBins)
               .filter((binKey: string) => currentBins[binKey].groupName === '')
               .map((binKey: string) => (
@@ -355,7 +411,7 @@ const GroupValuesModal = ({
                     });
                   }}
                   style={{
-                    backgroundColor: selectedHidingBins[binKey] ? '#d5f4e6' : '',
+                    backgroundColor: selectedHidingBins[binKey] ? theme.tableHighlight : '',
                   }}
                   >
                   {`${binKey} (${currentBins[binKey].doc_count})`}
@@ -368,8 +424,10 @@ const GroupValuesModal = ({
       <Row
         spacing="1rem"
         style={{
+          borderTop: `1px solid ${theme.greyScale5}`,
           justifyContent: 'flex-end',
           marginTop: '1.5rem',
+          padding: '15px',
         }}
         >
         {globalWarning.length > 0 && (
@@ -383,23 +441,11 @@ const GroupValuesModal = ({
           </span>
         )}
 
-        <Button
-          onClick={onClose}
-          style={{
-            ...visualizingButton,
-            minWidth: 100,
-          }}
-          >
+        <Button onClick={onClose}>
           Cancel
         </Button>
 
-        <Button
-          onClick={() => onUpdate(currentBins)}
-          style={{
-            ...visualizingButton,
-            minWidth: 100,
-          }}
-          >
+        <Button onClick={() => onUpdate(currentBins)}>
           Save Bins
         </Button>
       </Row>

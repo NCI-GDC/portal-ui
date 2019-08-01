@@ -16,7 +16,7 @@ import CaseAggregations from '@ncigdc/containers/explore/CaseAggregations';
 import GeneAggregations from '@ncigdc/modern_components/GeneAggregations';
 import SSMAggregations from '@ncigdc/containers/explore/SSMAggregations';
 import { CreateExploreCaseSetButton } from '@ncigdc/modern_components/withSetAction';
-import { replaceFilters } from '@ncigdc/utils/filters';
+import { makeFilter, replaceFilters } from '@ncigdc/utils/filters';
 import { stringifyJSONParam } from '@ncigdc/utils/uri';
 import { Row } from '@ncigdc/uikit/Flex';
 import Button from '@ncigdc/uikit/Button';
@@ -26,7 +26,7 @@ export type TProps = {
   relay: Object,
   viewer: {
     autocomplete_cases: { hits: Array<Object> },
-    autocomplete_genes: { hits: Array<Object> },
+    // autocomplete_genes: { hits: Array<Object> },
     autocomplete_ssms: { hits: Array<Object> },
     explore: {
       customCaseFacets: {
@@ -155,14 +155,6 @@ class ExplorePageComponent extends React.Component {
                 // suggestions={get(viewer, 'autocomplete_genes.hits', [])}
                 // />
             ),
-            // query: filters ? {} : {
-            //   filters: makeFilter([
-            //     {
-            //       field: 'genes.is_cancer_gene_census',
-            //       value: ['true'],
-            //     },
-            //   ]),
-            // },
             id: 'genes',
             text: 'Genes',
           },
@@ -246,6 +238,12 @@ class ExplorePageComponent extends React.Component {
                   ) : (
                     <NoResultsMessage>No Genes Found.</NoResultsMessage>
                   ),
+                  filters: filters || makeFilter([
+                    {
+                      field: 'genes.is_cancer_gene_census',
+                      value: ['true'],
+                    },
+                  ]),
                   id: 'genes',
                   text: `Genes (${viewer.explore.genes.hits.total.toLocaleString()})`,
                 },
@@ -289,11 +287,10 @@ export const ExplorePageQuery = {
     ssms_size: null,
     ssms_sort: null,
     filters: null,
-    geneFilters: null,
     idAutocompleteCases: null,
     runAutocompleteCases: false,
-    idAutocompleteGenes: null,
-    runAutocompleteGenes: false,
+    // idAutocompleteGenes: null,
+    // runAutocompleteGenes: false,
     idAutocompleteSsms: null,
     runAutocompleteSsms: false,
     dbsnpRsFilters: null,

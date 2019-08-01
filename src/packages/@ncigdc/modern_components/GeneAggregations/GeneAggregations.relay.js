@@ -28,7 +28,6 @@ export default (Component: ReactClass<*>) => compose(
     }) => {
       const q = parse(search);
       const filters = parseFilterParam(q.filters, defaultFilters);
-      console.log('filters: ', filters);
       return {
         variables: {
           filters,

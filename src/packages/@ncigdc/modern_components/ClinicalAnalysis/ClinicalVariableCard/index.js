@@ -925,25 +925,6 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                         Box Plot
                       </span>
                     </Row>
-                    <Row>
-                      <DownloadVisualizationButton
-                        buttonStyle={{
-                          fontSize: '1.2rem',
-                          lineHeight: 0,
-                          minHeight: 20,
-                          minWidth: 22,
-                          padding: 0,
-                        }}
-                        noText
-                        slug={`boxplot-${fieldName}`}
-                        svg={() => wrapSvg({
-                          className: 'boxplot',
-                          selector: `#${wrapperId}-boxplot-container figure svg`,
-                          title: `${humanify({ term: fieldName })} Box Plot`,
-                        })}
-                        tooltipHTML="Download SVG or PNG"
-                        />
-                    </Row>
                     <Row
                       style={{
                         alignItems: 'center',
@@ -963,21 +944,26 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                     </Row>
                     <Row>
                       <DownloadVisualizationButton
-                        buttonStyle={{
-                          fontSize: '1.2rem',
-                          lineHeight: 0,
-                          minHeight: 20,
-                          minWidth: 22,
-                          padding: 0,
-                        }}
                         data={qqData}
                         noText
-                        slug={`qq-plot-${fieldName}`}
-                        svg={() => wrapSvg({
-                          className: 'qq-plot',
-                          selector: `#${wrapperId}-qqplot-container .qq-plot svg`,
-                          title: `${humanify({ term: fieldName })} QQ Plot`,
-                        })}
+                        slug={[`qq-plot-${fieldName}`, `boxplot-${fieldName}`]}
+                        style={{
+                          float: 'right',
+                          marginRight: 2,
+                        }}
+                        svg={
+                          [
+                            () => wrapSvg({
+                              className: 'qq-plot',
+                              selector: `#${wrapperId}-qqplot-container .qq-plot svg`,
+                              title: `${humanify({ term: fieldName })} QQ Plot`,
+                            }),
+                            () => wrapSvg({
+                              className: `${variable.type.toLowerCase()}-boxplot`,
+                              selector: `#${wrapperId}-boxplot-container figure svg`,
+                              title: `${humanify({ term: fieldName })} Box Plot`,
+                            }),
+                        ]}
                         tooltipHTML="Download plot data"
                         tsvData={qqData}
                         />

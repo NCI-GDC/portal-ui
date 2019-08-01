@@ -12,6 +12,7 @@ import {
   min,
   map,
   find,
+  max,
 } from 'lodash';
 import Group from '@ncigdc/theme/icons/Group';
 import Hide from '@ncigdc/theme/icons/Hide';
@@ -271,6 +272,7 @@ const GroupValuesModal = ({
                   [key]: {
                     ...currentBins[key],
                     groupName: key,
+                    index: max(map(currentBins, bin => bin.index)) || 0 + 1,
                   },
                 });
                 setSelectedGroupBins({});
@@ -280,6 +282,7 @@ const GroupValuesModal = ({
 
               }
               updateState={(nextState) => {
+                setSelectedGroupBins({});
                 setDraggingIndex(nextState.draggingIndex);
                 if (nextState.items) {
                   const itemarr = nextState.items.reduce((acc, item, i) => ({

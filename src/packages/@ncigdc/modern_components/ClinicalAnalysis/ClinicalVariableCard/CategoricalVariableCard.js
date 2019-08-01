@@ -139,22 +139,23 @@ export default compose(
       dispatchUpdateClinicalVariable,
     }) => ({
       resetBins: () => {
-        if (!binsAreCustom) return;
-        dispatchUpdateClinicalVariable({
-          value: dataBuckets
-            .reduce((acc, bucket) => Object.assign(
-              {},
-              acc,
-              {
-                [bucket.key]: Object.assign(
-                  {},
-                  bucket,
-                  { groupName: bucket.key }
-                ),
-              }
-            ), {}),
-          variableKey: 'bins',
-        });
+        if (binsAreCustom) {
+          dispatchUpdateClinicalVariable({
+            value: dataBuckets
+              .reduce((acc, bucket) => Object.assign(
+                {},
+                acc,
+                {
+                  [bucket.key]: Object.assign(
+                    {},
+                    bucket,
+                    { groupName: bucket.key }
+                  ),
+                }
+              ), {}),
+            variableKey: 'bins',
+          });
+        }
       },
     })
   ),

@@ -432,23 +432,24 @@ export default compose(
       dispatchUpdateClinicalVariable,
     }) => ({
       resetBins: () => {
-        if (!binsAreCustom) return;
-        dispatchUpdateClinicalVariable({
-          value: bins,
-          variableKey: 'bins',
-        });
-        dispatchUpdateClinicalVariable({
-          value: DEFAULT_BIN_TYPE,
-          variableKey: 'continuousBinType',
-        });
-        dispatchUpdateClinicalVariable({
-          value: DEFAULT_INTERVAL,
-          variableKey: 'customInterval',
-        });
-        dispatchUpdateClinicalVariable({
-          value: DEFAULT_RANGES,
-          variableKey: 'customRanges',
-        });
+        if (binsAreCustom) {
+          dispatchUpdateClinicalVariable({
+            value: bins,
+            variableKey: 'bins',
+          });
+          dispatchUpdateClinicalVariable({
+            value: DEFAULT_BIN_TYPE,
+            variableKey: 'continuousBinType',
+          });
+          dispatchUpdateClinicalVariable({
+            value: DEFAULT_INTERVAL,
+            variableKey: 'customInterval',
+          });
+          dispatchUpdateClinicalVariable({
+            value: DEFAULT_RANGES,
+            variableKey: 'customRanges',
+          });
+        }
       },
     })
   ),

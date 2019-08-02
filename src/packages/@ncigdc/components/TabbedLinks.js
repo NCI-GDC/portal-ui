@@ -1,7 +1,6 @@
-// @flow
-
 import React from 'react';
 import { get } from 'lodash';
+
 import LocationSubscriber from '@ncigdc/components/LocationSubscriber';
 import Tabs from '@ncigdc/uikit/Tabs';
 import Link from '@ncigdc/components/Links/Link';
@@ -17,7 +16,9 @@ type TTabbedLinksProps = {
   linkStyle?: Object,
   defaultContent?: React.Element<{}>,
 };
+
 type TTabbedLinks = (props: TTabbedLinksProps) => React.Element<{}>;
+
 const TabbedLinks: TTabbedLinks = (
   {
     links,

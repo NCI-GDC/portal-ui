@@ -1,20 +1,14 @@
-/* @flow */
 import React from 'react';
-// import Relay from 'react-relay/classic';
 import _ from 'lodash';
 import { compose, withState } from 'recompose';
 
-// import SuggestionFacet from '@ncigdc/components/Aggregations/SuggestionFacet';
 import SuggestionFacet from '@ncigdc/modern_components/SuggestionFacet';
-
 import FacetWrapper from '@ncigdc/components/FacetWrapper';
 import FacetHeader from '@ncigdc/components/Aggregations/FacetHeader';
-// import { IBucket } from '@ncigdc/components/Aggregations/types';
 import { UploadGeneSet } from '@ncigdc/components/Modals/UploadSet';
 import UploadSetButton from '@ncigdc/components/UploadSetButton';
 import { withTheme } from '@ncigdc/theme';
 import escapeForRelay from '@ncigdc/utils/escapeForRelay';
-// import { makeFilter } from '@ncigdc/utils/filters';
 
 export type TProps = {
   aggregations: {
@@ -147,50 +141,5 @@ export const GeneAggregations = compose(
     </div>
   );
 });
-
-// export const GeneAggregationsQuery = {
-//   fragments: {
-//     aggregations: () => Relay.QL`
-//       fragment on GeneAggregations {
-//         biotype {
-//           buckets {
-//             doc_count
-//             key
-//           }
-//         }
-//         case__cnv__cnv_change {
-//           buckets {
-//             doc_count
-//             key
-//             key_as_string
-//           }
-//         }
-//         is_cancer_gene_census {
-//           buckets {
-//             doc_count
-//             key
-//             key_as_string
-//           }
-//         }
-//       }
-//     `,
-//     cnvAggregations: () => Relay.QL`
-//       fragment on CNVAggregations {
-//         cnv_change {
-//           buckets {
-//             doc_count
-//             key
-//             key_as_string
-//           }
-//         }
-//       }
-//     `,
-//   },
-// };
-
-// const GeneAggregations = Relay.createContainer(
-//   GeneAggregationsComponent,
-//   GeneAggregationsQuery,
-// );
 
 export default GeneAggregations;

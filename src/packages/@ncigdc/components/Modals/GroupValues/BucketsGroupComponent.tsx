@@ -5,16 +5,17 @@ import {
 import { Row, Column } from '@ncigdc/uikit/Flex';
 
 import ControlEditableRow from '@ncigdc/uikit/ControlEditableRow';
+import { theme } from '@ncigdc/theme/index';
 import { IBinProps, ISelectedBinsProps, IBucketsGroupComponentProps } from './types';
 
 const BucketsGroupComponent = ({
   children,
   currentBins,
+  draggingProps,
   editingGroupName,
   group,
   groupName,
   listWarning,
-  merging,
   selectedGroupBins,
   selectedHidingBins,
   setCurrentBins,
@@ -23,7 +24,6 @@ const BucketsGroupComponent = ({
   setListWarning,
   setSelectedGroupBins,
   setSelectedHidingBins,
-  draggingProps,
 }: IBucketsGroupComponentProps) => (
   <Column
     {...draggingProps}
@@ -45,7 +45,7 @@ const BucketsGroupComponent = ({
         });
       }}
       style={{
-        backgroundColor: (group || []).every((binKey: string) => selectedGroupBins[binKey]) ? '#d5f4e6' : '',
+        backgroundColor: (group || []).every((binKey: string) => selectedGroupBins[binKey]) ? theme.tableHighlight : '',
       }}
       >
       {group.length > 1 || group[0] !== groupName

@@ -1,6 +1,5 @@
 import React from 'react';
 import { get } from 'lodash';
-import { swapArrayElements, isMouseBeyond } from './Sortable/helpers';
 import './DragAndDropGroupList.css';
 
 export interface IGroupListItemProps {
@@ -21,6 +20,7 @@ export interface IMergingProps {
   draggingIndex: number | null,
   targetSubItems: string[],
   currSubItems: string[],
+  targetGroupName: string,
 }
 
 export interface IDraggingProps {
@@ -68,20 +68,15 @@ interface IProps {
 interface IState {
   isDragging: boolean,
   draggingIndex: null | number,
-    endState: null | {
-      currSubItems: string[],
-      draggingIndex: null | number,
-      prevDraggingIndex?: number,
-      targetSubItems: string[],
-    },
-    parentDraggable: boolean,
-    subIsDragging: boolean,
-    selectedSub: string,
+  parentDraggable: boolean,
+  subIsDragging: boolean,
+  selectedSub: string,
+  indexDragged: null | number,
 }
 export default class DragAndDropGroupList extends React.Component<IProps, IState> {
   state = {
     draggingIndex: null,
-    endState: null,
+    indexDragged: null,
     isDragging: false,
     parentDraggable: true,
     selectedSub: '',
@@ -95,188 +90,172 @@ export default class DragAndDropGroupList extends React.Component<IProps, IState
   }
 
 
-    sortStart = (e: DragEvent) => {
-      const { parentDraggable } = this.state;
-      if (parentDraggable) {
-        const draggingIndex = get(e, 'currentTarget.dataset.id', null);
-        const { updateState } = this.props;
-        updateState({
-          draggingIndex,
-        });
-        const dt = e.dataTransfer;
-        if (dt) {
-          dt.setData('text', get(e, 'target.innerHTML', ''));
+  sortStart = (e: DragEvent) => {
+    const { parentDraggable } = this.state;
+    if (parentDraggable) {
+      const draggingIndex = get(e, 'currentTarget.dataset.id', null);
+      const { updateState } = this.props;
+      updateState({
+        draggingIndex,
+      });
+      const dt = e.dataTransfer;
+      if (dt) {
+        dt.setData('text', get(e, 'target.innerHTML', ''));
 
-        // fix http://stackoverflow.com/questions/27656183/preserve-appearance-of-dragged-a-element-when-using-html5-draggable-attribute
-          if (dt.setDragImage && e.currentTarget) {
-            const currentTarget = e.currentTarget as HTMLElement;
-            if (currentTarget.tagName.toLowerCase() === 'a' && e.target) {
-              const target = e.target as HTMLElement;
-              dt.setDragImage(target, 0, 0);
-            }
+      // fix http://stackoverflow.com/questions/27656183/preserve-appearance-of-dragged-a-element-when-using-html5-draggable-attribute
+        if (dt.setDragImage && e.currentTarget) {
+          const currentTarget = e.currentTarget as HTMLElement;
+          if (currentTarget.tagName.toLowerCase() === 'a' && e.target) {
+            const target = e.target as HTMLElement;
+            dt.setDragImage(target, 0, 0);
           }
         }
       }
-    };
+    }
+  };
 
-    dragOver = (e: DragEvent) => {
-      const { draggingIndex, parentDraggable } = this.state;
-      if (!parentDraggable) {
-        return;
-      }
-      this.setState({
-        endState: null,
-        isDragging: true,
-      });
-      e.preventDefault();
-      let { items } = this.props;
-      const { updateState } = this.props;
-      const overEl = e.currentTarget as HTMLElement; // underlying element
-      if (!overEl) {
-        return;
-      }
-      const indexDragged = Number(overEl.dataset.id); // index of underlying element
-      const indexFrom = Number(draggingIndex);
-      const { height, left, width } = overEl.getBoundingClientRect();
-      const positionX = e.clientX;
-      const positionY = e.clientY;
-      const topOffset = overEl.getBoundingClientRect().top;
-      const targetGroupName = Object.keys(items[indexDragged])[0];
-      const targetSubItems = Object.values(items[indexDragged])[0].subList;
-      const currSubItems = Object.values(items[indexFrom])[0].subList;
+  dragOver = (e:DragEvent) => {
+    const { parentDraggable } = this.state;
+    const overEl = e.currentTarget as HTMLElement; // underlying element
+    if (!overEl || !parentDraggable) {
+      return;
+    }
+    this.setState({
+      indexDragged: Number(overEl.dataset.id),
+      isDragging: true,
+    });
+  };
 
-      const mouseBeyond = isMouseBeyond(positionY, topOffset, height, false);
-      if (indexDragged !== indexFrom && mouseBeyond) {
-        const isMouseCross =
-          positionX - left > width / 5;
-        const isTargetAGroup = targetSubItems.length > 1 || targetGroupName !== targetSubItems[0];
-        if (isTargetAGroup && isMouseCross) {
-          this.setState({
-            endState: {
-              currSubItems,
-              draggingIndex: indexDragged,
-              prevDraggingIndex: indexFrom,
-              targetSubItems,
-            },
-          });
-          return;
-        }
-        items = swapArrayElements(items, indexFrom, indexDragged);
-        updateState({
+
+  sortEnd = (e: DragEvent) => {
+    e.preventDefault();
+    this.setState({
+      isDragging: false,
+    });
+    const { draggingIndex, indexDragged, parentDraggable } = this.state;
+    const { items, merging, updateState } = this.props;
+    if (!parentDraggable) {
+      return;
+    }
+    const overEl = e.currentTarget as HTMLElement; // underlying element
+
+    if (!overEl || typeof indexDragged !== 'number') {
+      return;
+    }
+    const indexFrom = Number(draggingIndex);
+    const { left, width } = overEl.getBoundingClientRect();
+    const positionX = e.clientX;
+    const targetGroupName = Object.keys(items[indexDragged])[0];
+    const targetSubItems = Object.values(items[indexDragged])[0].subList;
+    const currSubItems = Object.values(items[indexFrom])[0].subList;
+
+    if (indexDragged !== indexFrom) {
+      const isMouseCross = positionX - left > width / 5;
+      const isTargetAGroup = targetSubItems.length > 1 || targetGroupName !== targetSubItems[0];
+      if (isTargetAGroup && isMouseCross) {
+        merging({
+          currSubItems,
           draggingIndex: indexDragged,
-          items,
-          prevDraggingIndex: indexFrom,
+          targetGroupName,
+          targetSubItems,
         });
-      }
-    };
-
-
-    sortEnd = (e: DragEvent) => {
-      e.preventDefault();
-      const { endState, parentDraggable } = this.state;
-      if (!parentDraggable) {
         return;
       }
-      const { merging, updateState } = this.props;
-      if (endState) {
-        merging(endState);
-      }
-      this.setState({
-        endState: null,
-        isDragging: false,
-      });
-
+      items.splice(indexDragged, 0, items.splice(indexFrom, 1)[0]);
       updateState({
         draggingIndex: null,
-      });
-    };
-
-
-    subItemDragStart = (e: DragEvent) => {
-      const itemKey = get(e, 'currentTarget.dataset.id', undefined);
-      this.setState({
-        parentDraggable: false,
-        selectedSub: itemKey,
-      });
-    }
-
-    subItemDragOver = () => {
-      const { subIsDragging } = this.state;
-      if (!subIsDragging) {
-        this.setState({
-          subIsDragging: true,
-        });
-      }
-    }
-
-    subItemDragEnd = (e: DragEvent) => {
-      e.stopPropagation();
-      const { unGroup, updateState } = this.props;
-      this.setState({
-        parentDraggable: true,
-        selectedSub: '',
-        subIsDragging: false,
-      });
-      const itemKey = get(e, 'currentTarget.dataset.id', undefined);
-      if (!itemKey) {
-        return;
-      }
-      const target = e.currentTarget as HTMLElement;
-      if (!target) {
-        return;
-      }
-      const parentTarget = target.parentElement;
-      if (!parentTarget) {
-        return;
-      }
-      const positionY = e.clientY;
-      const targetHeight = target.getBoundingClientRect().height;
-      const parentTop = parentTarget.getBoundingClientRect().top;
-      const parentHeight = parentTarget.getBoundingClientRect().height;
-      const mouseBeyond = positionY > parentTop + parentHeight + targetHeight;
-      if (mouseBeyond) {
-        unGroup({ key: itemKey });
-      }
-      updateState({
-        draggingIndex: null,
-      });
-    }
-
-    render() {
-      const {
-        Component,
-        customProps,
         items,
-        SubComponent,
-      } = this.props;
-      const { isDragging, selectedSub, subIsDragging } = this.state;
-      return (
-        <React.Fragment>
-          <div className={isDragging ? 'sort' : undefined}>
-            {items.map((groupObj, i) => {
-              const groupName = Object.keys(groupObj)[0];
-              const group = Object.values(groupObj)[0].subList;
-              return (
-                <Component
-                  draggingProps={{
-                    'data-id': i,
-                    draggable: true,
-                    key: groupName,
-                    onDragEnd: this.sortEnd,
-                    onDragOver: this.dragOver,
-                    onDragStart: this.sortStart,
-                    onDrop: this.sortEnd,
-                    onTouchEnd: this.sortEnd,
-                    onTouchMove: this.dragOver,
-                    onTouchStart: this.sortStart,
-                    tabIndex: i,
-                  }}
-                  group={group}
-                  groupName={groupName}
-                  key={groupName}
-                  {...customProps}
-                  >
-                  {(group.length > 1 || group[0] !== groupName) &&
+        prevDraggingIndex: indexFrom,
+      });
+    }
+  };
+
+  subItemDragStart = (e: DragEvent) => {
+    const itemKey = get(e, 'currentTarget.dataset.id', undefined);
+    this.setState({
+      parentDraggable: false,
+      selectedSub: itemKey,
+    });
+  }
+
+  subItemDragOver = () => {
+    const { subIsDragging } = this.state;
+    if (!subIsDragging) {
+      this.setState({
+        subIsDragging: true,
+      });
+    }
+  }
+
+  subItemDragEnd = (e: DragEvent) => {
+    e.stopPropagation();
+    const { unGroup, updateState } = this.props;
+    this.setState({
+      isDragging: false,
+      parentDraggable: true,
+      selectedSub: '',
+      subIsDragging: false,
+    });
+    const itemKey = get(e, 'currentTarget.dataset.id', undefined);
+    if (!itemKey) {
+      return;
+    }
+    const target = e.currentTarget as HTMLElement;
+    if (!target) {
+      return;
+    }
+    const parentTarget = target.parentElement;
+    if (!parentTarget) {
+      return;
+    }
+    const positionY = e.clientY;
+    const targetHeight = target.getBoundingClientRect().height;
+    const parentTop = parentTarget.getBoundingClientRect().top;
+    const parentHeight = parentTarget.getBoundingClientRect().height;
+    const mouseBeyond = positionY > parentTop + parentHeight + targetHeight;
+    if (mouseBeyond) {
+      unGroup({ key: itemKey });
+    }
+    updateState({
+      draggingIndex: null,
+    });
+  }
+
+  render() {
+    const {
+      Component,
+      customProps,
+      items,
+      SubComponent,
+    } = this.props;
+    const { isDragging, selectedSub, subIsDragging } = this.state;
+    return (
+      <React.Fragment>
+        <div className={isDragging ? 'sort' : undefined}>
+          {items.map((groupObj, i) => {
+            const groupName = Object.keys(groupObj)[0];
+            const group = Object.values(groupObj)[0].subList;
+            return (
+              <Component
+                draggingProps={{
+                  'data-id': i,
+                  draggable: true,
+                  key: groupName,
+                  onDragEnd: this.sortEnd,
+                  onDragOver: this.dragOver,
+                  onDragStart: this.sortStart,
+                  onDrop: this.sortEnd,
+                  onTouchEnd: this.sortEnd,
+                  onTouchMove: this.dragOver,
+                  onTouchStart: this.sortStart,
+                  tabIndex: i,
+                }}
+                group={group}
+                groupName={groupName}
+                key={groupName}
+                {...customProps}
+                >
+                {(group.length > 1 || group[0] !== groupName) &&
                   (
                     <div className={group.includes(selectedSub) && subIsDragging ? 'group' : undefined}>
                       {group.map(subItem => (
@@ -297,12 +276,12 @@ export default class DragAndDropGroupList extends React.Component<IProps, IState
                       ))}
                     </div>
                   )}
-                </Component>
-              );
-            })}
-          </div>
-        </React.Fragment>
+              </Component>
+            );
+          })}
+        </div>
+      </React.Fragment>
 
-      );
-    }
+    );
+  }
 }

@@ -22,7 +22,7 @@ export interface IBinsProps {
 }
 
 export interface IGroupValuesModalProps {
-  binGrouping: (selectedGroupBins: { [x: string]: boolean }) => void,
+  binGrouping: (selectedGroupBins: { [x: string]: boolean }, name?: string) => void,
   currentBins: IBinsProps,
   dataBuckets: IBinProps[],
   setCurrentBins: (currentBins: IBinsProps) => void,

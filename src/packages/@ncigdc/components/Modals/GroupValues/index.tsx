@@ -13,7 +13,6 @@ import {
   map,
   find,
   max,
-  // groupBy,
 } from 'lodash';
 import Group from '@ncigdc/theme/icons/Group';
 import Hide from '@ncigdc/theme/icons/Hide';
@@ -289,7 +288,7 @@ const GroupValuesModal = ({
                       ...acc,
                       [bin]: true,
                     }), {});
-                  binGrouping(merged);
+                  binGrouping(merged, nextState.targetGroupName);
                   setSelectedGroupBins({});
                   setGlobalWarning('');
                   setListWarning({});
@@ -306,7 +305,7 @@ const GroupValuesModal = ({
                     });
                   }}
                   style={{
-                    backgroundColor: selectedGroupBins[subItem] ? '#d5f4e6' : '',
+                    backgroundColor: selectedGroupBins[subItem] ? theme.tableHighlight : '',
                     display: 'list-item',
                     listStylePosition: 'inside',
                     listStyleType: 'disc',
@@ -514,7 +513,7 @@ export default compose(
     setEditingGroupName,
     setSelectedHidingBins,
   }) => ({
-    binGrouping: (selectedGroupBins: { [x: string]: boolean }) => {
+    binGrouping: (selectedGroupBins: { [x: string]: boolean }, name?: string) => {
       let newGroupName = initialName(
         Object.values(currentBins).map((bin: IBinProps) => bin.groupName), 'selected Value '
       );
@@ -535,7 +534,9 @@ export default compose(
             }
             return acc;
           }, []);
-      if (selectedGroups.length === 1) {
+      if (typeof name === 'string' && name.length > 0) {
+        newGroupName = name;
+      } else if (selectedGroups.length === 1) {
         [newGroupName] = selectedGroups;
       } else {
         setEditingGroupName(newGroupName);

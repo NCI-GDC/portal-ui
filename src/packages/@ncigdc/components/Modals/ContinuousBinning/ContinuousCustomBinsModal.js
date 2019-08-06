@@ -278,14 +278,12 @@ class ContinuousCustomBinsModal extends Component {
         ? inputRow
         : rangeRow));
 
-    const rowIsValid = this.validateRangeRow(nextRangeRows);
-    if (!rowIsValid) {
+    this.validateRangeRow(nextRangeRows);
       this.setState({
         continuousReset: false,
         rangeRows: nextRangeRows,
       });
     }
-  }
 
   // submit
 
@@ -389,12 +387,13 @@ class ContinuousCustomBinsModal extends Component {
           const bName = curr.fields.name;
 
           const hasOverlap = (aTo > bFrom && aTo < bTo) ||
-            // "to" falls in the overlap range
+            // "to" is within range B
             (aFrom > bFrom && aFrom < bTo) ||
-            // "from" falls in the overlap range
+            // "from" is within range B
             (aFrom < bFrom && aTo > bTo) || 
-            // "from" or "to" are the same in both ranges
+            // range B is within range A
             (aFrom === bFrom || aTo === bTo);
+            // "from" or "to" are the same in both ranges
 
           return hasOverlap ? [...acc, bName] : acc;
         }, []);

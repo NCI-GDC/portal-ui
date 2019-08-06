@@ -253,6 +253,7 @@ class ContinuousCustomBinsModal extends Component {
       .filter((filterRow, filterRowIndex) => filterRowIndex !== rowIndex);
     this.setState({ rangeRows: nextRangeRows });
     this.validateRangeRow(nextRangeRows);
+    this.validateRangeInput();
   };
 
   handleToggleActiveRow = (inputRowIndex, inputIsActive) => {
@@ -426,33 +427,57 @@ class ContinuousCustomBinsModal extends Component {
   // range input
 
   handleRangeInputValidate = () => {
-    this.setState({ rangeInputErrors: this.validateRangeInputBeforeSave() });
+    this.setState({ rangeInputErrors: this.validateRangeInputFormatting() });
+  }
+
+  validateRangeInput = () => {
+    const validationResult = this.validateRangeInputFormatting();
+    const inputFormatIsValid = Object.keys(validationResult)
+    .filter(field => validationResult[field].length > 0).length === 0;
+    this.setState({ 
+      rangeInputErrors: validationResult, 
+      ...inputFormatIsValid 
+        ? {}
+        : { rangeInputOverlapErrors: [] }
+    }, () => {
+      if (inputFormatIsValid) {
+        const { rangeInputErrors } = this.state;
+        const rangeInputOverlapErrors = this.validateRangeInputOverlap();
+        const rangeInputNameError = this.validateRangeInputName();
+        const overlapIsValid = rangeInputOverlapErrors.length === 0;
+        const nameIsValid = rangeInputNameError.length === 0;
+
+        this.setState({
+          rangeInputErrors: {
+            ...rangeInputErrors,
+            name: rangeInputNameError,
+          },
+          rangeInputOverlapErrors,
+        });
+
+        return nameIsValid && overlapIsValid;
+      } else {
+        return false;
+      }
+    });
   }
 
   handleAddRow = () => {
     const { rangeInputValues, rangeRows } = this.state;
-    const validationResult = this.validateRangeInputBeforeSave();
+    const inputRowIsValid = this.validateRangeInput();
 
-    const rowHasErrors = Object.keys(validationResult)
-      .filter(field => validationResult[field].length > 0).length > 0;
-    this.setState({ rangeInputErrors: validationResult }, () => {
-      if (rowHasErrors) return;
-
-      const hasOverlap = this.validateRangeInputOnSave();
-      if (hasOverlap) return;
-
+    if (inputRowIsValid) {
       const nextRow = {
         active: false,
         fields: rangeInputValues,
       };
-
       this.setState({
         continuousReset: false,
         rangeInputErrors: defaultRangeFieldsState,
         rangeInputValues: defaultRangeFieldsState,
         rangeRows: rangeRows.concat(nextRow),
       });
-    });
+    }
   };
 
   updateRangeInput = (id, value) => {
@@ -464,9 +489,10 @@ class ContinuousCustomBinsModal extends Component {
         [id.split('-')[3]]: value,
       },
     });
+    // this.validateRangeInput();
   };
 
-  validateRangeInputBeforeSave = () => {
+  validateRangeInputFormatting = () => {
     const { rangeInputValues } = this.state;
 
     // check empty & NaN errors first
@@ -558,8 +584,8 @@ class ContinuousCustomBinsModal extends Component {
 
     const rangeInputOverlapErrors = this.validateRangeInputOverlap();
     const nameError = this.validateRangeInputName();
-    const overlapHasError = rangeInputOverlapErrors.length > 0;
-    const nameHasError = nameError.length > 0;
+    const overlapIsValid = rangeInputOverlapErrors.length === 0;
+    const nameIsValid = nameError.length === 0;
 
     this.setState({
       rangeInputErrors: {
@@ -569,7 +595,7 @@ class ContinuousCustomBinsModal extends Component {
       rangeInputOverlapErrors,
     });
 
-    return nameHasError || overlapHasError;
+    return nameIsValid && overlapIsValid;
   }
 
 

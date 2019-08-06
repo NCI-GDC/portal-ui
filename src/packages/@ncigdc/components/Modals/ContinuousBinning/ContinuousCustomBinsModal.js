@@ -365,36 +365,38 @@ class ContinuousCustomBinsModal extends Component {
   }
 
   validateRangeOverlap = (rows = null) => {
-    // assume all rows are complete and from < to
-
     const { rangeRows } = this.state;
 
     const rowsToCheck = rows === null ? rangeRows : rows;
 
-    const overlapErrors = rowsToCheck.map((rowItem, rowIndex) => {
-      const rowFrom = Number(rowItem.fields.from);
-      const rowTo = Number(rowItem.fields.to);
+    const overlapErrors = rowsToCheck.map((rowItem, aIndex) => {
+      const aFrom = Number(rowItem.fields.from);
+      const aTo = Number(rowItem.fields.to);
 
       const overlapNames = rowsToCheck
-        .reduce((acc, curr, overlapIndex) => {
-          const overlapFromStr = curr.fields.from;
-          const overlapToStr = curr.fields.to;
+        .reduce((acc, curr, bIndex) => {
+          const bFromStr = curr.fields.from;
+          const bToStr = curr.fields.to;
 
-          if (rowIndex === overlapIndex ||
-            curr.fields.from === '' ||
-            curr.fields.to === '') {
+          if (aIndex === bIndex ||
+            bFromStr === '' ||
+            bToStr === '') {
             return acc;
           }
 
-          const overlapFrom = Number(overlapFromStr);
-          const overlapTo = Number(overlapToStr);
-          const overlapName = curr.fields.name;
+          const bFrom = Number(bFromStr);
+          const bTo = Number(bToStr);
+          const bName = curr.fields.name;
 
-          const hasOverlap = (rowTo > overlapFrom && rowTo < overlapTo) ||
-            (rowFrom > overlapFrom && rowFrom < overlapTo) ||
-            (rowFrom === overlapFrom && rowTo === overlapTo);
+          const hasOverlap = (aTo > bFrom && aTo < bTo) ||
+            // "to" falls in the overlap range
+            (aFrom > bFrom && aFrom < bTo) ||
+            // "from" falls in the overlap range
+            (aFrom < bFrom && aTo > bTo) || 
+            // "from" or "to" are the same in both ranges
+            (aFrom === bFrom || aTo === bTo);
 
-          return hasOverlap ? [...acc, overlapName] : acc;
+          return hasOverlap ? [...acc, bName] : acc;
         }, []);
       return overlapNames.length > 0 ? overlapNames : [];
     });

@@ -278,13 +278,13 @@ class ContinuousCustomBinsModal extends Component {
         ? inputRow
         : rangeRow));
 
-    const rowHasErrors = this.validateRangeRow(nextRangeRows);
-    if (rowHasErrors) return;
-
-    this.setState({
-      continuousReset: false,
-      rangeRows: nextRangeRows,
-    });
+    const rowIsValid = this.validateRangeRow(nextRangeRows);
+    if (!rowIsValid) {
+      this.setState({
+        continuousReset: false,
+        rangeRows: nextRangeRows,
+      });
+    }
   }
 
   // submit
@@ -295,10 +295,10 @@ class ContinuousCustomBinsModal extends Component {
       binningMethod, continuousReset, intervalFields, rangeRows,
     } = this.state;
 
-    const formHasErrors = binningMethod === 'range' &&
+    const formIsValid = binningMethod === 'interval' ||
       this.validateRangeRow();
 
-    if (!formHasErrors) {
+    if (formIsValid) {
       const makeCustomIntervalBins = () => {
         const intervalAmount = Number(intervalFields.amount);
         const intervalMax = Number(intervalFields.max);
@@ -409,17 +409,17 @@ class ContinuousCustomBinsModal extends Component {
 
     const overlapErrors = this.validateRangeOverlap(rowsToCheck);
     const nameErrors = this.validateRangeNames(rowsToCheck);
-    const overlapHasError = overlapErrors
-      .filter(overlapErrorItem => overlapErrorItem.length > 0).length > 0;
-    const nameHasError = nameErrors
-      .filter(nameErrorItem => nameErrorItem !== '').length > 0;
+    const overlapIsValid = overlapErrors
+      .filter(overlapErrorItem => overlapErrorItem.length > 0).length === 0;
+    const nameIsValid = nameErrors
+      .filter(nameErrorItem => nameErrorItem !== '').length === 0;
 
     this.setState({
       rangeNameErrors: nameErrors,
       rangeOverlapErrors: overlapErrors,
     });
 
-    return nameHasError || overlapHasError;
+    return nameIsValid && overlapIsValid;
   }
 
   // range input

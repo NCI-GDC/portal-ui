@@ -27,7 +27,7 @@ import RecomposeUtils, {
   getCountLink,
   getRawQueryData,
 } from './helpers';
-import EnhancedShared from './EnhancedClinicalVariableCard';
+import EnhancedClinicalVariableCard from './EnhancedClinicalVariableCard';
 
 export default compose(
   setDisplayName('EnhancedCategoricalVariableCard'),
@@ -251,4 +251,4 @@ export default compose(
       )),
     })
   )
-)(EnhancedShared);
+)(EnhancedClinicalVariableCard);

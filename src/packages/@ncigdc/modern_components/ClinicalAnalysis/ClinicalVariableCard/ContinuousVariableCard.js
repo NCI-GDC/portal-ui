@@ -31,13 +31,14 @@ import RecomposeUtils, {
   getBinData,
   getCountLink,
   getRawQueryData,
+  makeDocCountInteger,
   parseContinuousKey,
   parseContinuousValue,
   DEFAULT_BIN_TYPE,
   DEFAULT_INTERVAL,
   DEFAULT_RANGES,
 } from './helpers';
-import EnhancedShared from './EnhancedClinicalVariableCard';
+import EnhancedClinicalVariableCard from './EnhancedClinicalVariableCard';
 
 export default compose(
   setDisplayName('EnhancedContinuousVariableCard'),
@@ -402,7 +403,7 @@ export default compose(
     )
       .sort((a, b) => b.chart_doc_count - a.chart_doc_count)
       .slice(0, 2)
-      .map(bin => Object.assign({}, bin, { doc_count: 0 }));
+      .map(bin => makeDocCountInteger(bin));
 
     const survivalTableValues = survivalPlotValues
       .map(bin => bin.key);
@@ -453,4 +454,4 @@ export default compose(
       },
     })
   ),
-)(EnhancedShared);
+)(EnhancedClinicalVariableCard);

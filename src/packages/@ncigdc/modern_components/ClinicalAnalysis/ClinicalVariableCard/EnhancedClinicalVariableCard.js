@@ -18,17 +18,18 @@ import {
 } from '@ncigdc/utils/survivalplot';
 import { withTheme } from '@ncigdc/theme';
 
+import { makeDocCountInteger } from './helpers';
 import ClinicalVariableCard from './ClinicalVariableCard';
 
 export default compose(
   setDisplayName('EnhancedSharedVariableCard'),
   connect((state: any) => ({ analysis: state.analysis })),
   withTheme,
-  withState('selectedSurvivalData', 'setSelectedSurvivalData', {}),
+  withState('selectedBins', 'setSelectedBins', []),
   withState('selectedSurvivalBins', 'setSelectedSurvivalBins', []),
+  withState('selectedSurvivalData', 'setSelectedSurvivalData', {}),
   withState('selectedSurvivalLoadingIds', 'setSelectedSurvivalLoadingIds', []),
   withState('survivalPlotLoading', 'setSurvivalPlotLoading', true),
-  withState('selectedBins', 'setSelectedBins', []),
   withProps(({
     fieldName,
     filters,
@@ -83,7 +84,7 @@ export default compose(
 
         const binsForPlot = nextBins
           .map(nextBin => data.filter(datum => datum.key === nextBin)[0])
-          .map(nextBin => Object.assign({}, nextBin, { doc_count: 0 },));
+          .map(nextBin => makeDocCountInteger(nextBin));
 
         updateSurvivalPlot(binsForPlot);
       },
@@ -114,23 +115,23 @@ export default compose(
           variableKey: 'bins',
         });
       }
-      if (variable.scrollToCard === false) return;
 
-      const offset = document.getElementById('header')
-        .getBoundingClientRect().bottom + 10;
-      const $anchor = document.getElementById(`${wrapperId}-container`);
-      if ($anchor) {
-        const offsetTop = $anchor.getBoundingClientRect().top + window.pageYOffset;
-        window.scroll({
-          behavior: 'smooth',
-          top: offsetTop - offset,
+      if (variable.scrollToCard) {
+        const offset = document.getElementById('header')
+          .getBoundingClientRect().bottom + 10;
+        const $anchor = document.getElementById(`${wrapperId}-container`);
+        if ($anchor) {
+          const offsetTop = $anchor.getBoundingClientRect().top + window.pageYOffset;
+          window.scroll({
+            behavior: 'smooth',
+            top: offsetTop - offset,
+          });
+        }
+        dispatchUpdateClinicalVariable({
+          value: false,
+          variableKey: 'scrollToCard',
         });
       }
-
-      dispatchUpdateClinicalVariable({
-        value: false,
-        variableKey: 'scrollToCard',
-      });
     },
   })
 )(ClinicalVariableCard);

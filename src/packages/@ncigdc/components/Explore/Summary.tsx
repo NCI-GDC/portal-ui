@@ -1,32 +1,36 @@
 import React from 'react';
 import Masonry from 'react-masonry-component';
 
-const masonryOptions = {
-  transitionDuration: 0,
-};
-
-// const imagesLoadedOptions = { background: '.my-bg-image-el' };
+// const masonryOptions = {
+//   transitionDuration: 0,
+// };
 
 const Summary = ({ elements }: any) => (
   <Masonry
-    className="my-gallery-class" // default ''
-    disableImagesLoaded={false} // default false
-    elementType="ul" // default 'div'
-    // imagesLoadedOptions={imagesLoadedOptions} // default {}
-    options={masonryOptions} // default {}
-    updateOnEachImageLoad={false} // default false and works only if disableImagesLoaded is false
-  >
+    className="my-gallery-class"
+    disableImagesLoaded={false}
+    elementType="ul"
+    style={{
+      listStyleType: 'none',
+      paddingLeft: 0,
+    }}
+    updateOnEachImageLoad={false}
+    >
     {elements.map((element: any) => {
       return (
         <li
-          className="image-element-class"
           key={element}
-          style={{ width: '20%', height: '300px' }}
-        >
-          <div>
-            yes
-          </div>
-        </li>
+          style={{
+            backgroundColor: element % 2 === 1 ? 'rgb(200,200,200)' : 'rgb(225,225,225)',
+            border: '3px solid white',
+            borderRadius: '5px',
+            borderStyle: 'outset',
+            height: '450px',
+            margin: 'auto',
+            minWidth: `${element * 300}px`,
+            width: `${element * 33.3}%`,
+          }}
+          />
       );
     })}
   </Masonry>

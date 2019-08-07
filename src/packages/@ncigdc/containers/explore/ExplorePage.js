@@ -137,7 +137,7 @@ class ExplorePageComponent extends React.Component {
                   onReadyStateChange
                 )}
                 suggestions={get(viewer, 'autocomplete_cases.hits', [])}
-              />
+                />
             ),
             id: 'cases',
             text: 'Cases',
@@ -155,7 +155,7 @@ class ExplorePageComponent extends React.Component {
                   onReadyStateChange
                 )}
                 suggestions={get(viewer, 'autocomplete_genes.hits', [])}
-              />
+                />
             ),
             id: 'genes',
             text: 'Genes',
@@ -174,7 +174,7 @@ class ExplorePageComponent extends React.Component {
                 )}
                 ssms={viewer.explore.ssms}
                 suggestions={get(viewer, 'autocomplete_ssms.hits', [])}
-              />
+                />
             ),
             id: 'mutations',
             text: 'Mutations',
@@ -207,19 +207,19 @@ class ExplorePageComponent extends React.Component {
                     });
                   }}
                   style={{ marginBottom: '2rem' }}
-                >
+                  >
                   View Files in Repository
                 </CreateExploreCaseSetButton>
               ) : (
-                  <Button
+                <Button
                     disabled={!viewer.explore.cases.hits.total}
                     onClick={() => push({
                       pathname: '/repository',
                     })}
                     style={{ marginBottom: '2rem' }}
-                  >
+                    >
                     View Files in Repository
-                </Button>
+                  </Button>
                 )}
             </Row>
             <TabbedLinks
@@ -228,10 +228,21 @@ class ExplorePageComponent extends React.Component {
                 {
                   component: viewer.explore.cases.hits.total ? (
                     <Summary
-                      elements={[1, 2, 3, 4, 5, 6]}
-                    />
+                      elements={[
+                        1,
+                        2,
+                        3,
+                        2,
+                        1,
+                        1,
+                        1,
+                        1,
+                        1,
+                        2,
+                      ]}
+                      />
                   ) : (
-                      <NoResultsMessage>No Cases Found.</NoResultsMessage>
+                    <NoResultsMessage>No Cases Found.</NoResultsMessage>
                     ),
                   id: 'summary',
                   text: 'Summary',
@@ -240,7 +251,7 @@ class ExplorePageComponent extends React.Component {
                   component: viewer.explore.cases.hits.total ? (
                     <CasesTab />
                   ) : (
-                      <NoResultsMessage>No Cases Found.</NoResultsMessage>
+                    <NoResultsMessage>No Cases Found.</NoResultsMessage>
                     ),
                   id: 'cases',
                   text: `Cases (${viewer.explore.cases.hits.total.toLocaleString()})`,
@@ -249,7 +260,7 @@ class ExplorePageComponent extends React.Component {
                   component: viewer.explore.genes.hits.total ? (
                     <GenesTab viewer={viewer} />
                   ) : (
-                      <NoResultsMessage>No Genes Found.</NoResultsMessage>
+                    <NoResultsMessage>No Genes Found.</NoResultsMessage>
                     ),
                   id: 'genes',
                   text: `Genes (${viewer.explore.genes.hits.total.toLocaleString()})`,
@@ -259,9 +270,9 @@ class ExplorePageComponent extends React.Component {
                     <MutationsTab
                       totalNumCases={viewer.explore.cases.hits.total}
                       viewer={viewer}
-                    />
+                      />
                   ) : (
-                      <NoResultsMessage>No Mutations Found.</NoResultsMessage>
+                    <NoResultsMessage>No Mutations Found.</NoResultsMessage>
                     ),
                   id: 'mutations',
                   text: `Mutations (${viewer.explore.ssms.hits.total.toLocaleString()})`,
@@ -273,10 +284,10 @@ class ExplorePageComponent extends React.Component {
                 },
               ]}
               queryParam="searchTableTab"
-            />
+              />
           </span>
         )}
-      />
+        />
     );
   }
 }

@@ -280,11 +280,11 @@ const EnhancedClinicalGrouping = compose(
 
 const ControlPanelNode = ({
   analysis_id,
-  clinicalAnalysisFields,
   currentAnalysis,
   groupedByClinicalType,
   searchValue,
-  usefulFacets,
+  totalClinicalAnalysisFields,
+  totalUsefulFacets,
 }) => (
   <React.Fragment>
     <Row
@@ -293,10 +293,8 @@ const ControlPanelNode = ({
       }}
       >
       <span>
-        {`${(Object.keys(usefulFacets) || []).length
-          } of ${
-          (clinicalAnalysisFields || []).length
-          } fields with values`}
+        {`${totalUsefulFacets} of ${
+          totalClinicalAnalysisFields} fields with values`}
       </span>
     </Row>
     <div
@@ -334,7 +332,32 @@ export default compose(
   pure,
   withTheme,
   withPropsOnChange(
-    (props, nextProps) => props.searchValue !== nextProps.searchValue,
+    (
+      {
+        clinicalAnalysisFields,
+        usefulFacets,
+      },
+      {
+        clinicalAnalysisFields: nextClinicalAnalysisFields,
+        usefulFacets: nextUsefulFacets,
+      }
+    ) => !(
+      nextClinicalAnalysisFields.length === clinicalAnalysisFields.length &&
+      nextUsefulFacets.length === usefulFacets.length
+    ),
+    ({
+      clinicalAnalysisFields,
+      usefulFacets,
+    }) => ({
+      totalClinicalAnalysisFields: clinicalAnalysisFields.length,
+      totalUsefulFacets: usefulFacets.length,
+    })
+  ),
+  withPropsOnChange(
+    (
+      { searchValue },
+      { searchValue: nextSearchValue }
+    ) => searchValue !== nextSearchValue,
     ({ clinicalAnalysisFields, searchValue }) => {
       const filteredFields = clinicalAnalysisFields
         .map(field => ({
@@ -372,14 +395,21 @@ export default compose(
     shouldComponentUpdate({
       currentAnalysis: { displayVariables: nextDisplayVariables },
       searchValue: nextSearchValue,
+      totalClinicalAnalysisFields: nextTotalClinicalAnalysisFields,
+      totalUsefulFacets: nextTotalUsefulFacets,
     }) {
       const {
         currentAnalysis: { displayVariables },
         searchValue: prevSearchValue,
+        totalClinicalAnalysisFields,
+        totalUsefulFacets,
       } = this.props;
+
       return !(
+        nextTotalClinicalAnalysisFields === totalClinicalAnalysisFields &&
         isEqual(nextDisplayVariables, displayVariables) &&
-        nextSearchValue === prevSearchValue
+        nextSearchValue === prevSearchValue &&
+        nextTotalUsefulFacets === totalUsefulFacets
       );
     },
   }),

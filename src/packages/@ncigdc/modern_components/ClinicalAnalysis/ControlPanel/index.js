@@ -166,10 +166,10 @@ const ControlPanel = ({
       <Column>
         <ControlPanelNode
           analysis_id={id}
-          clinicalAnalysisFields={clinicalAnalysisFields}
+          clinicalAnalysisFields={clinicalAnalysisFields || []}
           currentAnalysis={currentAnalysis}
           searchValue={searchValue}
-          usefulFacets={getUsefulFacets(parsedFacets)}
+          usefulFacets={Object.keys(getUsefulFacets(parsedFacets)) || []}
           />
       </Column>
     </Column>

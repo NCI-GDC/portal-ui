@@ -22,11 +22,18 @@ import {
   MAXIMUM_CURVES,
   MINIMUM_CASES,
 } from '@ncigdc/utils/survivalplot';
-import { SpinnerIcon, SurvivalIcon } from '@ncigdc/theme/icons';
+import { SpinnerIcon, CloseIcon,
+  SurvivalIcon,
+  BarChartIcon,
+  BoxPlot, } from '@ncigdc/theme/icons';
 import termCapitaliser from '@ncigdc/utils/customisation';
 import {
   humanify,
 } from '@ncigdc/utils/string';
+import {
+  removeClinicalAnalysisVariable,
+  updateClinicalAnalysisVariable,
+} from '@ncigdc/dux/analysis';
 
 import ActionsDropdown from './components/ActionsDropdown';
 import ClinicalBoxPlot from './components/ClinicalBoxPlot';
@@ -41,8 +48,31 @@ import {
   getHeadings,
   parseContinuousValue,
   styles,
-  vizButtons,
+  // vizButtons,
 } from './helpers';
+
+const vizButtons = {
+  box: {
+    action: updateClinicalAnalysisVariable,
+    icon: <BoxPlot style={styles.chartIcon} />,
+    title: 'Box/QQ Plot',
+  },
+  delete: {
+    action: removeClinicalAnalysisVariable,
+    icon: <CloseIcon style={styles.chartIcon} />,
+    title: 'Remove Card',
+  },
+  histogram: {
+    action: updateClinicalAnalysisVariable,
+    icon: <BarChartIcon style={styles.chartIcon} />,
+    title: 'Histogram',
+  },
+  survival: {
+    action: updateClinicalAnalysisVariable,
+    icon: <SurvivalIcon style={styles.chartIcon} />,
+    title: 'Survival Plot',
+  },
+};
 
 const getTableData = (
   displayData,

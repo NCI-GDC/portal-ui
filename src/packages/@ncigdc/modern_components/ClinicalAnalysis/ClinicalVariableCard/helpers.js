@@ -1,10 +1,7 @@
 import React from 'react';
 import { compose, withPropsOnChange } from 'recompose';
 
-import {
-  removeClinicalAnalysisVariable,
-  updateClinicalAnalysisVariable,
-} from '@ncigdc/dux/analysis';
+import { updateClinicalAnalysisVariable, } from '@ncigdc/dux/analysis';
 import {
   get,
   groupBy,
@@ -20,13 +17,6 @@ import {
   humanify,
 } from '@ncigdc/utils/string';
 import { MINIMUM_CASES } from '@ncigdc/utils/survivalplot';
-
-import {
-  CloseIcon,
-  SurvivalIcon,
-  BarChartIcon,
-  BoxPlot,
-} from '@ncigdc/theme/icons';
 
 export const colors = scaleOrdinal(schemeCategory10);
 export const CHART_HEIGHT = 250;
@@ -285,29 +275,6 @@ export const styles = {
       textFill: theme.greyScale3,
     },
   }),
-};
-
-export const vizButtons = {
-  box: {
-    action: updateClinicalAnalysisVariable,
-    icon: <BoxPlot style={styles.chartIcon} />,
-    title: 'Box/QQ Plot',
-  },
-  delete: {
-    action: removeClinicalAnalysisVariable,
-    icon: <CloseIcon style={styles.chartIcon} />,
-    title: 'Remove Card',
-  },
-  histogram: {
-    action: updateClinicalAnalysisVariable,
-    icon: <BarChartIcon style={styles.chartIcon} />,
-    title: 'Histogram',
-  },
-  survival: {
-    action: updateClinicalAnalysisVariable,
-    icon: <SurvivalIcon style={styles.chartIcon} />,
-    title: 'Survival Plot',
-  },
 };
 
 export const parseContinuousValue = continuousValue =>

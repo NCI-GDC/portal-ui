@@ -84,7 +84,7 @@ import {
 import termCapitaliser from '@ncigdc/utils/customisation';
 import timestamp from '@ncigdc/utils/timestamp';
 
-import { IS_CDAVE_DEV, analysisColors } from '@ncigdc/utils/constants';
+import { analysisColors } from '@ncigdc/utils/constants';
 import ContinuousCustomBinsModal from '@ncigdc/components/Modals/ContinuousBinning/ContinuousCustomBinsModal';
 
 import {
@@ -340,7 +340,7 @@ const getTableData = (
       .sort((a, b) => a.keyArray[0] - b.keyArray[0])
       .reduce(getContinuousBuckets, [])
     : binData
-      .filter(bucket => (IS_CDAVE_DEV ? bucket.key : bucket.key !== '_missing'))
+      .filter(bucket => bucket.key)
       .sort((a, b) => b.doc_count - a.doc_count)
       .map(bin => ({
         ...bin,
@@ -1681,7 +1681,7 @@ export default compose(
                 .reduce(getContinuousBuckets, [])
               : []
             : binData
-              .filter(bucket => (IS_CDAVE_DEV ? bucket.key : bucket.key !== '_missing'))
+              .filter(bucket => bucket.key)
               .map(b => ({
                 ...b,
                 chart_doc_count: b.doc_count,

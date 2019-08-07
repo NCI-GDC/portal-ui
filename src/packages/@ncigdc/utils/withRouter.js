@@ -1,47 +1,58 @@
 // @flow
 import React from 'react';
-import { stringify, parse } from 'query-string';
-import { compose, withPropsOnChange } from 'recompose';
+import {
+  parse,
+  stringify,
+} from 'query-string';
+import {
+  compose,
+  setDisplayName,
+  withPropsOnChange,
+} from 'recompose';
 import PropTypes from 'prop-types';
 
-const withRouter = component => {
-  return class extends React.Component {
-    static displayName = `withRouter(${component.displayName ||
-      component.name})`;
-
-    static contextTypes = {
-      router: PropTypes.shape({
-        history: PropTypes.shape({
-          listen: PropTypes.func.isRequired,
-        }).isRequired,
+const withRouter = component => class ComponentWithRouter extends React.Component {
+  static contextTypes = {
+    router: PropTypes.shape({
+      history: PropTypes.shape({
+        listen: PropTypes.func.isRequired,
       }).isRequired,
-    };
-
-    unlisten = () => {};
-    componentWillMount() {
-      this.unlisten = this.context.router.history.listen(() =>
-        this.forceUpdate()
-      );
-    }
-
-    componentWillUnmount() {
-      this.unlisten();
-    }
-
-    render() {
-      const history = this.context.router.history;
-      const location = this.context.router.history.location;
-      return React.createElement(component, {
-        ...this.props,
-        history,
-        location,
-        query: parse(location.search),
-      });
-    }
+    }).isRequired,
   };
+
+  unlisten = () => {};
+
+  componentWillMount() {
+    const {
+      router: {
+        history,
+      },
+    } = this.context;
+    this.unlisten = history.listen(() => this.forceUpdate());
+  }
+
+  componentWillUnmount() {
+    this.unlisten();
+  }
+
+  render() {
+    const {
+      router: {
+        history,
+        history: { location },
+      },
+    } = this.context;
+    return React.createElement(component, {
+      ...this.props,
+      history,
+      location,
+      query: parse(location.search),
+    });
+  }
 };
 
-const enhance = compose(
+export default compose(
+  setDisplayName('withRouter'),
   withRouter,
   withPropsOnChange(['location'], ({ history: { push } }) => ({
     push: opts => {
@@ -57,7 +68,3 @@ const enhance = compose(
     },
   }))
 );
-
-const withBetterRouter = Wrapped => enhance(props => <Wrapped {...props} />);
-
-export default withBetterRouter;

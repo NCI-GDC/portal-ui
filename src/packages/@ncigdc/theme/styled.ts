@@ -53,6 +53,7 @@ type TStyled = (
   el: string | ComponentType,
   style: CSSProperties
 ) => ComponentType<any> | keyof ReactHTML;
+
 const styled: TStyled = (el, style) => createStyledComponent(el)(style);
 domElements.forEach(el => {
   styled[el] = createStyledComponent(el);

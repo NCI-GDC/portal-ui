@@ -5,11 +5,9 @@ import RangeInput from './RangeInput';
 import styles from './styles';
 
 const {
-  input: {
-    inputDisabled,
-  },
+  actionsColumn,
+  disabledButton,
   optionsButton,
-  optionsColumn,
   row: {
     rowError,
     rowFieldsWrapper,
@@ -56,7 +54,7 @@ const RangeInputRow = props => {
                 );
               })}
         </div>
-        <div style={optionsColumn}>
+        <div style={actionsColumn}>
           <Button
             aria-label="Add row"
             buttonContentStyle={{ justifyContent: 'center' }}
@@ -64,9 +62,10 @@ const RangeInputRow = props => {
             id={`range-row-${rowIndex}-add`}
             onClick={handleAddRow}
             style={{
+              ...visualizingButton,
               ...(allFieldsEmpty || !rangeMethodActive
-                  ? inputDisabled
-                  : visualizingButton),
+                  ? disabledButton
+                  : {}),
               ...optionsButton,
               width: '100%',
             }}

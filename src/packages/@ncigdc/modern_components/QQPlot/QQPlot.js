@@ -187,35 +187,13 @@ const QQPlot = ({
       .attr('stroke', qqLine.color)
       .attr('stroke-width', qqLine.strokeWidth)
       .attr('transform', `translate(${padding},${-(padding / 2)})`);
-
-    // clip path to prevent qq line extending beyond y-axis
-    svg
-      .append('rect')
-      .attr('x', -(padding))
-      .attr('y', padding / 2)
-      .attr('clip-path', 'url(#regression-clip-left)')
-      .style('fill', 'white')
-      .attr('height', chartHeight - padding)
-      .attr('width', padding * 2)
-      .attr('transform', `translate(${padding},${padding / 2})`);
-
-    // position slightly higher to account for qqline end
-    svg
-      .append('rect')
-      .attr('x', -(padding))
-      .attr('y', padding / 2)
-      .attr('clip-path', 'url(#regression-clip-right)')
-      .style('fill', 'white')
-      .attr('height', chartHeight)
-      .attr('width', padding * 2)
-      .attr('transform', `translate(${chartWidth},${-padding})`);
   } else {
     // display no data message
     svg.append('text')
       .attr('text-anchor', 'middle')
       .attr('transform', `translate(${(chartWidth / 2) + (padding / 2)}, ${(chartHeight / 2)})`)
       .text('Not enough data')
-      .style('fontSize', '1.6rem')
+      .style('fontSize', '1.4rem')
       .style('fontWeight', axisStyle.fontWeight)
       .attr('fill', axisStyle.textColor);
   }

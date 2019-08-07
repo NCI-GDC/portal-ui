@@ -710,10 +710,10 @@ class ContinuousCustomBinsModal extends Component {
                   To less than
                 </div>
                 <div
-                  id="range-table-label-options"
-                  style={styles.optionsColumn}
+                  id="range-table-label-actions"
+                  style={styles.actionsColumn}
                   >
-                  Options
+                  Actions
                 </div>
               </div>
               <div style={styles.scrollingTable}>
@@ -785,10 +785,6 @@ class ContinuousCustomBinsModal extends Component {
             disabled={submitDisabled}
             onClick={() => this.handleSubmit()}
             onMouseDown={() => this.handleSubmit()}
-            style={submitDisabled
-              ? styles.inputDisabled
-              : {}
-            }
             >
             Save Bins
           </Button>

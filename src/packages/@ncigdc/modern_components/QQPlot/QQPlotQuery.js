@@ -138,7 +138,7 @@ export default compose(
       dataHandler(parsedData.map(d => ({
         id: d.id,
         'Sample Quantile': d.y,
-        'Theoretical Quantile': d.x,
+        'Theoretical Normal Quantile': d.x,
       })), () => setDataHandler(true));
     },
   }),

@@ -479,8 +479,8 @@ const ClinicalVariableCard = ({
                   tableRow,
                   {
                     key: variable.plotTypes === 'categorical'
-                    ? tableRow.key
-                    : tableRow.groupName,
+                      ? tableRow.key
+                      : tableRow.groupName,
                   }
                 ))}
                 headings={getHeadings(

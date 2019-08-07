@@ -14,6 +14,7 @@ import CaseAggregations from '@ncigdc/containers/explore/CaseAggregations';
 import GeneAggregations from '@ncigdc/containers/explore/GeneAggregations';
 import SSMAggregations from '@ncigdc/containers/explore/SSMAggregations';
 import ClinicalAggregations from '@ncigdc/containers/explore/ClinicalAggregations';
+import Summary from '@ncigdc/components/Explore/Summary';
 import { CreateExploreCaseSetButton } from '@ncigdc/modern_components/withSetAction';
 import { replaceFilters } from '@ncigdc/utils/filters';
 import { stringifyJSONParam } from '@ncigdc/utils/uri';
@@ -236,19 +237,41 @@ export class ExplorePageComponent extends React.Component {
                 </CreateExploreCaseSetButton>
               ) : (
                 <Button
-                    disabled={!viewer.explore.cases.hits.total}
-                    onClick={() => push({
-                      pathname: '/repository',
-                    })}
-                    style={{ marginBottom: '2rem' }}
-                    >
+                  disabled={!viewer.explore.cases.hits.total}
+                  onClick={() => push({
+                    pathname: '/repository',
+                  })}
+                  style={{ marginBottom: '2rem' }}
+                  >
                     View Files in Repository
-                  </Button>
+                </Button>
                 )}
             </Row>
             <TabbedLinks
               defaultIndex={0}
               links={[
+                {
+                  component: viewer.explore.cases.hits.total ? (
+                    <Summary
+                      elements={[
+                        1,
+                        2,
+                        3,
+                        2,
+                        1,
+                        1,
+                        1,
+                        1,
+                        1,
+                        2,
+                      ]}
+                      />
+                  ) : (
+                    <NoResultsMessage>No Cases Found.</NoResultsMessage>
+                    ),
+                  id: 'summary',
+                  text: 'Summary',
+                },
                 {
                   id: 'cases',
                   text: `Cases (${viewer.explore.cases.hits.total.toLocaleString()})`,

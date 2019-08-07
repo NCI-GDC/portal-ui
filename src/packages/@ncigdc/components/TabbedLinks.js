@@ -51,7 +51,10 @@ const TabbedLinks: TTabbedLinks = (
             hideTabs
               ? []
               : links.map(({
-                filters = null, id, merge, text,
+                filters = null,
+                id, 
+                merge,
+                text,
               }) => {
                 return (
                   <Link

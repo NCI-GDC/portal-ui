@@ -280,11 +280,12 @@ class ContinuousCustomBinsModal extends Component {
         : rangeRow));
 
     this.validateRangeRow(nextRangeRows);
-      this.setState({
-        continuousReset: false,
-        rangeRows: nextRangeRows,
-      });
-    }
+    this.setState({
+      continuousReset: false,
+      rangeRows: nextRangeRows,
+    });
+    this.validateRangeInput();
+  }
 
   // submit
 

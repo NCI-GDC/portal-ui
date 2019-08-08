@@ -58,6 +58,7 @@ export default compose(
       survivalPlotValues,
       survivalTableValues,
       updateSurvivalPlot,
+      variable: { plotTypes }
     }) => ({
       populateSurvivalData: () => {
         setSurvivalPlotLoading(true);
@@ -82,11 +83,13 @@ export default compose(
         setSelectedSurvivalBins(nextBins);
         setSelectedSurvivalLoadingIds(nextBins);
 
-        const binsForPlot = nextBins
-          .map(nextBin => data.filter(datum => datum.key === nextBin)[0])
-          .map(nextBin => makeDocCountInteger(nextBin));
+        const nextBinsForPlot = plotTypes === 'categorical' 
+          ? nextBins
+          : nextBins
+              .map(nextBin => data.filter(datum => datum.key === nextBin)[0])
+              .map(nextBin => makeDocCountInteger(nextBin));
 
-        updateSurvivalPlot(binsForPlot);
+        updateSurvivalPlot(nextBinsForPlot);
       },
     })
   ),

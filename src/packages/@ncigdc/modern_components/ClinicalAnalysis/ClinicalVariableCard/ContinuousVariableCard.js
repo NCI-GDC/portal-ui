@@ -389,30 +389,51 @@ export default compose(
       );
     }
   ),
-  withProps(({
-    dataBuckets,
-    getContinuousBins,
-  }) => {
-    const survivalPlotValues = filterSurvivalData(
-      dataBuckets.length > 0
-      ? dataBuckets
-        .sort((a, b) =>
-          parseContinuousKey(a.key)[0] - parseContinuousKey(b.key)[0])
-        .reduce(getContinuousBins, [])
-      : []
-    )
-      .sort((a, b) => b.chart_doc_count - a.chart_doc_count)
-      .slice(0, 2)
-      .map(bin => makeDocCountInteger(bin));
+  withPropsOnChange((props, nextProps) =>
+    nextProps.variable.active_chart === 'survival' &&
+    (!isEqual(props.variable.bins, nextProps.variable.bins) ||
+    props.variable.active_chart !== nextProps.variable.active_chart),
+    ({
+      dataBuckets,
+      getContinuousBins,
+      variable: { bins: variableBins, savedSurvivalBins },
+    }) => {
+      const savedSurvivalBinsArray = Object.keys(savedSurvivalBins)
+        .map(savedBin => savedSurvivalBins[savedBin]);
 
-    const survivalTableValues = survivalPlotValues
-      .map(bin => bin.key);
+      const checkSavedBins = savedSurvivalBinsArray
+        .every(savedBin => 
+          typeof variableBins[savedBin.binValues[0]] !== 'undefined' && 
+          variableBins[savedBin.binValues[0]].groupName === savedBin.binName);
 
-    return {
-      survivalPlotValues,
-      survivalTableValues,
-    };
-  }),
+      const survivalPlotValues = dataBuckets.length === 0
+        ? []
+        : checkSavedBins
+          ? filterSurvivalData(dataBuckets
+              .filter(dataBucket => savedSurvivalBinsArray
+                .some(savedBin => savedBin.binValues[0] === dataBucket.key)
+              )
+              .reduce(getContinuousBins, [])
+            )
+            .map(bin => makeDocCountInteger(bin))
+          : filterSurvivalData(dataBuckets
+              .sort((a, b) =>
+                parseContinuousKey(a.key)[0] - parseContinuousKey(b.key)[0])
+              .reduce(getContinuousBins, [])
+            ) 
+            .sort((a, b) => b.chart_doc_count - a.chart_doc_count)
+            .slice(0, 2)
+            .map(bin => makeDocCountInteger(bin));
+
+      const survivalTableValues = survivalPlotValues
+        .map(bin => bin.key);
+
+      return {
+        survivalPlotValues,
+        survivalTableValues,
+      };
+    }
+  ),
   withPropsOnChange(
     (props, nextProps) =>
       !isEqual(props.binData, nextProps.binData),

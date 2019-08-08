@@ -41,16 +41,16 @@ import { setModal } from '@ncigdc/dux/modal';
 import EditableLabel from '@ncigdc/uikit/EditableLabel';
 import tryParseJSON from '@ncigdc/utils/tryParseJSON';
 import getUsefulFacets from '@ncigdc/utils/getUsefulFacets';
+import { getDefaultCurve } from '@ncigdc/utils/survivalplot';
+import SurvivalPlotWrapper from '@ncigdc/components/SurvivalPlotWrapper';
 import DeprecatedSetResult from './DeprecatedSetResult';
 import CohortDropdown from './CohortDropdown';
 import './print.css';
 import './survivalPlot.css';
 
 // survival plot
-import { getDefaultCurve } from '@ncigdc/utils/survivalplot';
-import SurvivalPlotWrapper from '@ncigdc/components/SurvivalPlotWrapper';
 import ControlPanelNode from './ControlPanelNode';
-import ContinuousAggregation from './ContinuousAggregationQuery';
+import ContinuousAggregationQuery from './ContinuousAggregationQuery';
 import ClinicalVariableCard from './ClinicalVariableCard';
 
 interface IAnalysisResultProps {
@@ -74,21 +74,21 @@ interface IAnalysisResultProps {
 // }
 
 const styles = {
-  searchIcon: theme => ({
-    backgroundColor: theme.greyScale5,
-    color: theme.greyScale2,
-    padding: '0.8rem',
-    width: '3.4rem',
-    height: '3.4rem',
-    borderRadius: '4px 0 0 4px',
-    border: `1px solid ${theme.greyScale4}`,
-    borderRight: 'none',
-  }),
   collapseIcon: {
+    cursor: 'pointer',
     fontSize: '2rem',
     padding: 10,
-    cursor: 'pointer',
   },
+  searchIcon: theme => ({
+    backgroundColor: theme.greyScale5,
+    border: `1px solid ${theme.greyScale4}`,
+    borderRadius: '4px 0 0 4px',
+    borderRight: 'none',
+    color: theme.greyScale2,
+    height: '3.4rem',
+    padding: '0.8rem',
+    width: '3.4rem',
+  }),
   sectionHeader: {
     fontSize: '2rem',
     paddingLeft: 5,
@@ -117,7 +117,7 @@ const CopyAnalysisModal = compose(
   <BaseModal
     extraButtons={
       <Button onClick={() => dispatch(setModal(null))}>Cancel</Button>
-    }
+      }
     onClose={() => {
       const created = new Date().toISOString();
       const id = created;
@@ -140,7 +140,7 @@ const CopyAnalysisModal = compose(
     title="Copy Analysis"
     >
     <Row style={{ marginBottom: 10 }}>
-      Please enter a name for the new analysis.
+        Please enter a name for the new analysis.
     </Row>
     <Row>
       <label htmlFor="copy-analysis-input">
@@ -185,7 +185,6 @@ const enhance = compose(
     ({
       currentAnalysis,
       setOverallSurvivalData,
-      setState,
       setSurvivalPlotLoading,
     }) => ({
       populateSurvivalData: async () => {
@@ -216,7 +215,7 @@ const enhance = compose(
   ),
   withPropsOnChange(
     ['currentAnalysis'],
-    ({ currentAnalysis, populateSurvivalData }) => {
+    ({ populateSurvivalData }) => {
       populateSurvivalData();
     }
   ),
@@ -241,16 +240,11 @@ const ClinicalAnalysisResult = ({
   label,
   overallSurvivalData,
   parsedFacets,
-  populateSurvivalData,
   push,
   searchValue,
   setControlPanelExpanded,
-  sets,
-  setSearchValue,
   survivalPlotLoading,
   theme,
-  variables,
-  ...props
 }: IAnalysisResultProps) => {
   const setId = Object.keys(currentAnalysis.sets.case)[0];
   const CountComponent = countComponents.case;
@@ -373,14 +367,15 @@ const ClinicalAnalysisResult = ({
             className="no-print"
             style={{
               ...zDepth1,
+              alignSelf: 'flex-start',
               flex: 1,
-              minWidth: 260,
               marginBottom: '1rem',
+              minHeight: '560px',
+              maxHeight: 'calc(100vh - 50px',
+              minWidth: 260,
+              overflowY: 'hidden',
               position: 'sticky',
               top: 50,
-              alignSelf: 'flex-start',
-              maxHeight: 'calc(100vh - 50px',
-              overflowY: 'hidden',
             }}
             >
             <Row style={{ justifyContent: 'flex-end' }}>
@@ -397,15 +392,15 @@ const ClinicalAnalysisResult = ({
                 padding: '0 10px',
               }}
               >
-              <span style={{ fontWeight: 'bold' }}>Cohort</span>
+              <span style={{ fontWeight: 'bold' }}>Case Set</span>
               <span style={{ fontWeight: 'bold' }}># Cases</span>
             </Row>
             <Row
               style={{
-                justifyContent: 'space-between',
                 alignItems: 'center',
-                padding: '10px 10px 15px',
                 borderBottom: `1px solid ${theme.greyScale4}`,
+                justifyContent: 'space-between',
+                padding: '10px 10px 15px',
               }}
               >
               <CohortDropdown
@@ -581,25 +576,22 @@ const ClinicalAnalysisResult = ({
                 op: 'and',
               };
 
-              if (varProperties.plotTypes === 'continuous') {
-                return (
-                  <ContinuousAggregation
-                    currentAnalysis={currentAnalysis}
-                    fieldName={varFieldName}
-                    filters={filters}
-                    hits={hits}
-                    id={id}
-                    key={varFieldName}
-                    overallSurvivalData={overallSurvivalData}
-                    plots={plotTypes[varProperties.plotTypes || 'categorical']}
-                    setId={setId}
-                    stats={parsedFacets[varFieldName].stats}
-                    style={{ minWidth: controlPanelExpanded ? 310 : 290 }}
-                    variable={varProperties}
-                    />
-                );
-              }
-              return (
+              return varProperties.plotTypes === 'continuous' ? (
+                <ContinuousAggregationQuery
+                  currentAnalysis={currentAnalysis}
+                  fieldName={varFieldName}
+                  filters={filters}
+                  hits={hits}
+                  id={id}
+                  key={varFieldName}
+                  overallSurvivalData={overallSurvivalData}
+                  plots={plotTypes[varProperties.plotTypes || 'categorical']}
+                  setId={setId}
+                  stats={parsedFacets[varFieldName].stats}
+                  style={{ minWidth: controlPanelExpanded ? 310 : 290 }}
+                  variable={varProperties}
+                  />
+              ) : (
                 <ClinicalVariableCard
                   currentAnalysis={currentAnalysis}
                   data={{
@@ -617,7 +609,7 @@ const ClinicalAnalysisResult = ({
                   style={{ minWidth: controlPanelExpanded ? 310 : 290 }}
                   variable={varProperties}
                   />
-              );
+                );
             })}
           </Column>
         </Column>

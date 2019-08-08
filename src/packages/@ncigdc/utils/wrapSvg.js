@@ -104,6 +104,8 @@ const wrapSvg = ({
   },
   className = '',
   embed = {},
+  bottomBuffer = 0,
+  rightBuffer = 0
 }: TWrapSvg): Element => {
   const svg = document.querySelector(selector);
   if (!svg) return svg;
@@ -120,6 +122,7 @@ const wrapSvg = ({
     embedRight.width,
     (embedRight.margins || {}).left,
     (embedRight.margins || {}).right,
+    rightBuffer
   ]);
 
   const rightObject = buildForeignObject({
@@ -144,6 +147,7 @@ const wrapSvg = ({
     margins.bottom,
     titleHeight,
     beforeObject.height,
+    bottomBuffer
   ]);
 
   const afterObject = buildForeignObject({

@@ -275,7 +275,7 @@ const availableAnalysis: [TAnalysis] = [
           <ClinicalDataAnalysis style={{ width: 80, height: 80, ...style }} />
         </div>
       )),
-      description: `Display basic statistical analyses for your clinical cohort using data variables and configurations that you select as input`,
+      description: `Display basic statistical analyses for your case set using data variables and configurations that you select as input.`,
       demoData: {
         message: 'Demo showing cases with pancreatic cancer',
         sets: {

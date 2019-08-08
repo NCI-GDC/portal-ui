@@ -44,6 +44,7 @@ const BarChart = ({
     bottom: 65,
     left: 55,
   };
+
   const chartWidth = width - margin.left - margin.right;
   const height = (h || 200) - margin.top - margin.bottom;
   const yAxisStyle = yAxis.style || {
@@ -65,6 +66,7 @@ const BarChart = ({
     .rangeRound([0, chartWidth])
     .paddingInner(innerPadding)
     .paddingOuter(outerPadding);
+
   const maxY = d3.max(data, d => d.value);
   const y = d3
     .scaleLinear()
@@ -117,8 +119,27 @@ const BarChart = ({
     .attr('fill', yAxisStyle.textFill)
     .text(yAxis.title || '');
 
+  // hidden x axis for full length labels in svg download
+  const hiddenXG = svg
+    .append('g')
+    .attr('class', 'svgDownload')
+    .attr('transform', `translate(0, ${height})`)
+    .call(d3.axisBottom(x));
+
+  hiddenXG.selectAll('text')
+    .style('text-anchor', 'start')
+    .style('fontSize', xAxisStyle.fontSize)
+    .style('fontWeight', xAxisStyle.fontWeight)
+    .attr('fill', xAxisStyle.textFill)
+    .attr('dx', '.8em')
+    .attr('dy', '.5em')
+    .text(d => d)
+    .attr('transform', 'rotate(45)');
+
+  // display x axis
   const xG = svg
     .append('g')
+    .attr('class', 'displayOnly')
     .attr('transform', `translate(0, ${height})`)
     .call(d3.axisBottom(x));
 

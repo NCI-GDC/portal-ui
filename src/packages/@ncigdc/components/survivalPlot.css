@@ -6,7 +6,7 @@
 }
 .survival-plot .axis .tick text {
   fill: #888;
-  font-size: 1.5ex;
+  font-size: 1.1rem;
 }
 .survival-plot .axis .axis-label {
   color: rgb(107, 98, 98);

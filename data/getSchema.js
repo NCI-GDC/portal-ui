@@ -6,11 +6,9 @@ const {
   printSchema,
 } = require('graphql/utilities');
 const path = require('path');
-
 const schemaPath = path.join(__dirname, 'schema');
 
-// Takes 'node /data/getSchema.js https://api.gdc.cancer.gov/v0/'
-const SERVER = `${process.argv[2] || 'http://localhost:5000/'}graphql`;
+const SERVER = 'http://localhost:5000/graphql';
 
 // Save JSON of full schema introspection for Babel Relay Plugin to use
 fetch(SERVER, {

@@ -11,6 +11,7 @@ import _ from 'lodash';
 
 import consoleDebug from '@ncigdc/utils/consoleDebug';
 import { redirectToLogin } from '@ncigdc/utils/auth';
+import { createFacetFieldString, parseContinuousKey } from '@ncigdc/utils/string'
 import Loader from '@ncigdc/uikit/Loaders/Loader';
 
 import { API, IS_AUTH_PORTAL } from '@ncigdc/utils/constants';
@@ -18,38 +19,47 @@ import ClinicalVariableCard from './ClinicalVariableCard';
 
 const simpleAggCache = {};
 const pendingAggCache = {};
-const DEFAULT_CONTINUOUS_BUCKETS = 4;
+const DEFAULT_CONTINUOUS_BUCKETS = 5;
 
-const getContinuousAggs = ({ fieldName, stats, filters, bins }) => {
+const getContinuousAggs = ({ bins, continuousBinType, fieldName, filters, stats }) => {
   // prevent query failing if interval will equal 0
   if (_.isNull(stats.min) || _.isNull(stats.max)) {
     return null;
   }
 
-  let rangeArr = _.reduce(bins, (acc, bin, key) => {
-    if (
-      !!bin &&
-      (typeof bin.from === 'number') &&
-      (typeof bin.to === 'number') &&
-      stats.min <= bin.from &&
-      bin.from < bin.to &&
-      bin.to <= stats.max
-    ) {
-      return [...acc, { from: bin.from, to: bin.to }];
-    }
-    return acc;
-  }, []);
-  const interval = Math.round((stats.max - stats.min) / DEFAULT_CONTINUOUS_BUCKETS);
-  if (rangeArr.length === 0) {
-    rangeArr = Array(DEFAULT_CONTINUOUS_BUCKETS).fill(1).map(
+  const interval = (stats.max - stats.min) / DEFAULT_CONTINUOUS_BUCKETS;
+
+  const makeDefaultBuckets = () => Array(DEFAULT_CONTINUOUS_BUCKETS)
+    .fill(1).map(
       (val, key) => ({
         from: key * interval + stats.min,
-        to: (key + 1) === DEFAULT_CONTINUOUS_BUCKETS ? stats.max : (stats.min + (key + 1) * interval - 1),
+        to: (key + 1) === DEFAULT_CONTINUOUS_BUCKETS
+          ? stats.max + 1
+          : stats.min + (key + 1) * interval,
       })
-    )
+    );
+
+  let rangeArr = continuousBinType === 'default'
+    ? rangeArr = makeDefaultBuckets()
+    : _.reduce(bins, (acc, bin, key) => {
+      const binValues = parseContinuousKey(bin.key);
+      const [from, to] = binValues;
+      if (
+        !!bin &&
+        (typeof from === 'number') &&
+        (typeof to === 'number') &&
+        (from < to)
+      ) {
+        const result = [...acc, { from, to }];
+        return result;
+      }
+      return acc;
+    }, []);
+
+  if (rangeArr.length === 0) {
+    rangeArr = makeDefaultBuckets();
   }
 
-  const queryFieldName = fieldName.replace('.', '__');
   const filters2 = {
     op: "range",
     content: [
@@ -58,7 +68,7 @@ const getContinuousAggs = ({ fieldName, stats, filters, bins }) => {
       }
     ]
   }
-  const aggregationFieldName = fieldName.replace(/\./g, '__');
+  const aggregationFieldName = createFacetFieldString(fieldName);
 
   const variables = {
     filters,
@@ -187,6 +197,7 @@ export default compose(
       hits,
     }) => {
       const res = await getContinuousAggs({
+        continuousBinType: variable.continuousBinType,
         fieldName,
         stats,
         filters,

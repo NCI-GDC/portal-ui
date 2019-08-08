@@ -115,7 +115,10 @@ export const GeneAggregations = compose(
         facet={facet}
         key={facet.full}
         relay={relay}
-        style={{ borderBottom: `1px solid ${theme.greyScale5}` }}
+        style={{
+          width: '100%',
+          padding: '0 1.2rem 1rem',
+        }}
         title={facet.title}
         />
       ))}

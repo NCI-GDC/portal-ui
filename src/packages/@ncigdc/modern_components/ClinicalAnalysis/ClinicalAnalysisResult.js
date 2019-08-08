@@ -362,7 +362,7 @@ const ClinicalAnalysisResult = ({
             </Tooltip>
           </Column>
         )}
-        {controlPanelExpanded && (
+        {controlPanelExpanded || (
           <Column
             className="no-print"
             style={{
@@ -523,7 +523,7 @@ const ClinicalAnalysisResult = ({
               ...(controlPanelExpanded ? {} : { marginLeft: '1%' }),
             }}
             >
-            <Column
+            {/* <Column
               style={{
                 ...zDepth1,
                 height: 560,
@@ -560,7 +560,7 @@ const ClinicalAnalysisResult = ({
                   uniqueClass="clinical-survival-plot"
                   />
               </div>
-            </Column>
+            </Column> */}
 
             {_.map(displayVariables, (varProperties, varFieldName) => {
               const filters = {

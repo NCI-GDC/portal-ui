@@ -231,7 +231,6 @@ const CaseAggregationsComponent = (props: TProps) => (
         key={facet.full}
         onRequestRemove={() => props.handleRequestRemoveFacet(facet)}
         relayVarName="repoCaseCustomFacetFields"
-        style={{ borderBottom: `1px solid ${props.theme.greyScale5}` }}
         />
     ))}
 
@@ -271,11 +270,6 @@ const CaseAggregationsComponent = (props: TProps) => (
         query: { searchTableTab: 'cases' },
       }}
       idField="cases.case_id"
-      style={{
-        width: '100%',
-        borderBottom: `1px solid ${props.theme.greyScale5}`,
-        padding: '0 1.2rem 1rem',
-      }}
       type="case"
       UploadModal={UploadCaseSet}
       >
@@ -293,7 +287,6 @@ const CaseAggregationsComponent = (props: TProps) => (
         facet={facet}
         key={facet.full}
         relay={props.relay}
-        style={{ borderBottom: `1px solid ${props.theme.greyScale5}` }}
         title={facet.title}
         />
     ))}

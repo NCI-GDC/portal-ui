@@ -102,11 +102,6 @@ export const GeneAggregations = compose(
           },
         }}
         idField="genes.gene_id"
-        style={{
-          width: '100%',
-          borderBottom: `1px solid ${theme.greyScale5}`,
-          padding: '0 1.2rem 1rem',
-        }}
         type="gene"
         UploadModal={UploadGeneSet}
         >
@@ -120,7 +115,6 @@ export const GeneAggregations = compose(
         facet={facet}
         key={facet.full}
         relay={relay}
-        style={{ borderBottom: `1px solid ${theme.greyScale5}` }}
         title={facet.title}
         />
       ))}
@@ -136,7 +130,6 @@ export const GeneAggregations = compose(
       title={'CNV'}
       aggregation={cnvAggregations[escapeForRelay('cnv_change')]}
       relay={relay}
-      style={{ borderBottom: `1px solid ${theme.greyScale5}` }}
     /> */}
     </div>
   );

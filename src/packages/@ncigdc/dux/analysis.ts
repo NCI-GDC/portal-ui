@@ -111,6 +111,7 @@ const defaultVariableConfig = {
   active_chart: 'histogram',
   active_survival: 'overall',
   bins: {},
+  savedSurvivalBins: {},
 };
 
 const defaultContinuousVariableConfig = {

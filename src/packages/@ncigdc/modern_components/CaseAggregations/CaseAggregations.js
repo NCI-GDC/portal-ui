@@ -292,7 +292,6 @@ const CaseAggregationsComponent = (props: TProps) => (
         facet={facet}
         key={facet.full}
         relay={props.relay}
-        style={{ borderBottom: `1px solid ${props.theme.greyScale5}` }}
         title={facet.title}
         />
     ))}

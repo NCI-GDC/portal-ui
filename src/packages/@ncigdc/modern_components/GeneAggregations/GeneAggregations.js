@@ -102,6 +102,10 @@ export const GeneAggregations = compose(
           },
         }}
         idField="genes.gene_id"
+        style={{
+          width: '100%',
+          padding: '0 1.2rem 1rem',
+        }}
         type="gene"
         UploadModal={UploadGeneSet}
         >

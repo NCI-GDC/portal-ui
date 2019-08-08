@@ -201,7 +201,7 @@ export class ExplorePageComponent extends React.Component {
             ),
           },
         ]}
-        results={(
+        results={({ showFacets }) => (
           <span>
             <ResizeDetector
               handleHeight
@@ -255,16 +255,16 @@ export class ExplorePageComponent extends React.Component {
                     <Summary
                       elements={[
                         1,
+                        1,
+                        1,
+                        1,
                         2,
+                        1,
+                        1,
+                        1,
                         3,
-                        2,
-                        1,
-                        1,
-                        1,
-                        1,
-                        1,
-                        2,
-                      ]}
+                      ]} // For demonstration only
+                      showFacets={showFacets}
                       />
                   ) : (
                     <NoResultsMessage>No Cases Found.</NoResultsMessage>

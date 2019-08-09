@@ -44,11 +44,11 @@ import {
   boxTableAllowedStats,
   boxTableRenamedStats,
   colors,
+  colorsArray,
   getCardFilters,
   getHeadings,
   parseContinuousValue,
   styles,
-  // vizButtons,
 } from './helpers';
 
 const vizButtons = {
@@ -88,84 +88,92 @@ const getTableData = (
   variable,
 ) => (displayData.length === 0
   ? []
-  : displayData.map(bin => Object.assign(
-    {},
-    bin,
-    {
-      select: (
-        <input
-          aria-label={`${fieldName} ${bin.key}`}
-          checked={!!find(selectedBins, { key: bin.key })}
-          disabled={bin.doc_count === 0}
-          id={`${fieldName}-${bin.key}`}
-          onChange={() => {
-            if (find(selectedBins, { key: bin.key })) {
-              setSelectedBins(
-                reject(selectedBins, r => r.key === bin.key)
-              );
-            } else {
-              setSelectedBins(selectedBins.concat(bin));
-            }
-          }}
-          style={{
-            marginLeft: 3,
-            pointerEvents: 'initial',
-          }}
-          type="checkbox"
-          value={bin.key}
-          />
-      ),
-    },
-    variable.active_chart === 'survival' && {
-      survival: (
-        <Tooltip
-          Component={
-            bin.key === '_missing' || bin.chart_doc_count < MINIMUM_CASES
-              ? 'Not enough data'
-              : selectedSurvivalBins.indexOf(bin.key) > -1
-                ? `Click icon to remove "${bin.groupName || bin.key}"`
-                : selectedSurvivalBins.length < MAXIMUM_CURVES
-                  ? `Click icon to plot "${bin.groupName || bin.key}"`
-                  : `Maximum plots (${MAXIMUM_CURVES}) reached`
-          }
-          >
-          <Button
-            disabled={
-              bin.key === '_missing' ||
-              bin.chart_doc_count < MINIMUM_CASES ||
-              (selectedSurvivalBins.length >= MAXIMUM_CURVES &&
-                selectedSurvivalBins.indexOf(bin.key) === -1)
-            }
-            onClick={() => {
-              updateSelectedSurvivalBins(displayData, bin);
+  : displayData.map(bin => {
+    const maxSurvivalCurvesReached = selectedSurvivalBins.length === MAXIMUM_CURVES;
+    const selectedForSurvivalPlot = selectedSurvivalBins
+      .map(selectedBin => selectedBin.name).indexOf(bin.key) >= 0;
+    const survivalPlotIndex = selectedForSurvivalPlot
+      ? selectedSurvivalBins.filter(selectedBin => 
+          selectedBin.name === bin.key)[0].index
+      : null;
+
+    return Object.assign(
+      {},
+      bin,
+      {
+        select: (
+          <input
+            aria-label={`${fieldName} ${bin.key}`}
+            checked={!!find(selectedBins, { key: bin.key })}
+            disabled={bin.doc_count === 0}
+            id={`${fieldName}-${bin.key}`}
+            onChange={() => {
+              if (find(selectedBins, { key: bin.key })) {
+                setSelectedBins(
+                  reject(selectedBins, r => r.key === bin.key)
+                );
+              } else {
+                setSelectedBins(selectedBins.concat(bin));
+              }
             }}
             style={{
-              backgroundColor:
-                selectedSurvivalBins.indexOf(bin.key) === -1
-                  ? '#666'
-                  : colors(selectedSurvivalBins.indexOf(bin.key)),
-              color: 'white',
-              margin: '0 auto',
-              opacity:
-                bin.key === '_missing' ||
-                  bin.chart_doc_count < MINIMUM_CASES ||
-                  (selectedSurvivalBins.length >= MAXIMUM_CURVES &&
-                    selectedSurvivalBins.indexOf(bin.key) === -1)
-                  ? '0.33'
-                  : '1',
-              padding: '2px 3px',
-              position: 'static',
+              marginLeft: 3,
+              pointerEvents: 'initial',
             }}
+            type="checkbox"
+            value={bin.key}
+            />
+        ),
+      },
+      variable.active_chart === 'survival' && {
+        survival: (
+          <Tooltip
+            Component={
+              bin.key === '_missing' || bin.chart_doc_count < MINIMUM_CASES
+                ? 'Not enough data'
+                : selectedForSurvivalPlot
+                  ? `Click icon to remove "${bin.groupName || bin.key}"`
+                  : maxSurvivalCurvesReached
+                    ? `Maximum plots (${MAXIMUM_CURVES}) reached`
+                    : `Click icon to plot "${bin.groupName || bin.key}"`
+            }
             >
-            {selectedSurvivalLoadingIds.indexOf(bin.key) !== -1
-              ? <SpinnerIcon />
-              : <SurvivalIcon />}
-            <Hidden>add to survival plot</Hidden>
-          </Button>
-        </Tooltip>
-      ),
-    },
-  ))
+            <Button
+              disabled={
+                bin.key === '_missing' ||
+                bin.chart_doc_count < MINIMUM_CASES ||
+                (maxSurvivalCurvesReached && !selectedForSurvivalPlot)
+              }
+              onClick={() => {
+                updateSelectedSurvivalBins(displayData, bin);
+              }}
+              style={{
+                backgroundColor:
+                  selectedForSurvivalPlot
+                    ? colorsArray[survivalPlotIndex]
+                    : '#666',
+                color: 'white',
+                margin: '0 auto',
+                opacity:
+                  bin.key === '_missing' ||
+                    bin.chart_doc_count < MINIMUM_CASES ||
+                    (maxSurvivalCurvesReached && !selectedForSurvivalPlot)
+                      ? '0.33'
+                      : '1',
+                padding: '2px 3px',
+                position: 'static',
+              }}
+              >
+              {selectedSurvivalLoadingIds.indexOf(bin.key) >= 0
+                ? <SpinnerIcon />
+                : <SurvivalIcon />}
+              <Hidden>add to survival plot</Hidden>
+            </Button>
+          </Tooltip>
+        ),
+      },
+    );
+  })
 );
 
 const getBoxTableData = (data = {}) => (

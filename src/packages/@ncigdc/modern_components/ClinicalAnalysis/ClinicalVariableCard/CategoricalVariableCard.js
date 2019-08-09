@@ -105,21 +105,51 @@ export default compose(
       variable: { bins },
     }) => getBinData(bins, dataBuckets)
   ),
-  withProps(({ binData }) => {
-    const survivalBins = filterSurvivalData(
-      binData
-        .map(bin => ({
-          ...bin,
-          chart_doc_count: bin.doc_count,
-        }))
-    )
-      .slice(0, 2);
+  withPropsOnChange((props, nextProps) =>
+    nextProps.variable.active_chart === 'survival' &&
+    (!isEqual(props.binData, nextProps.binData) ||
+    props.variable.active_chart !== nextProps.variable.active_chart),
+    ({
+      binData,
+      variable: { savedSurvivalBins },
+    }) => {
+      const newSurvivalBins = binData.filter(bin => {
+        const sortKeyArray = bin.keyArray.sort();
+        return savedSurvivalBins.some(savedBin => 
+          savedBin.name === bin.key &&
+            isEqual(savedBin.values.sort(), sortKeyArray)
+        );
+      }).map(bin => ({
+        ...bin, 
+        index: savedSurvivalBins.filter(savedBin => 
+          savedBin.name === bin.key)[0].index,
+      }));
 
-    return {
-      survivalPlotValues: survivalBins.map(bin => bin.keyArray),
-      survivalTableValues: survivalBins.map(bin => bin.key),
-    };
-  }),
+      const canUseSavedBins = newSurvivalBins.length === savedSurvivalBins.length;
+
+      const nextSurvivalBins = canUseSavedBins ? newSurvivalBins : binData;
+
+      const survivalBins = filterSurvivalData(
+        nextSurvivalBins
+          .map(bin => ({
+            ...bin,
+            chart_doc_count: bin.doc_count,
+          }))
+      )
+        .slice();
+
+        const survivalPlotValues = survivalBins.map(bin => bin.keyArray);
+        const survivalTableValues = survivalBins.map((bin, index) => ({ 
+          name: bin.key, 
+          index: typeof bin.index === 'undefined' ? index : bin.index,
+        }));
+
+      return {
+        survivalPlotValues,
+        survivalTableValues,
+      };
+    }
+  ),
   withPropsOnChange(
     (props, nextProps) =>
       !isEqual(props.variable.bins, nextProps.variable.bins),

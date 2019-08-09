@@ -8,6 +8,7 @@ import {
 } from 'recompose';
 import { connect } from 'react-redux';
 import {
+  find,
   get,
   isEmpty,
   isEqual,
@@ -398,23 +399,24 @@ export default compose(
       getContinuousBins,
       variable: { bins: variableBins, savedSurvivalBins },
     }) => {
-      const savedSurvivalBinsArray = Object.keys(savedSurvivalBins)
-        .map(savedBin => savedSurvivalBins[savedBin]);
-
-      const checkSavedBins = savedSurvivalBinsArray
+      const canUseSavedBins = savedSurvivalBins
         .every(savedBin => 
-          typeof variableBins[savedBin.binValues[0]] !== 'undefined' && 
-          variableBins[savedBin.binValues[0]].groupName === savedBin.binName);
+          typeof variableBins[savedBin.values[0]] !== 'undefined' && 
+          variableBins[savedBin.values[0]].groupName === savedBin.name);
 
       const survivalPlotValues = dataBuckets.length === 0
         ? []
-        : checkSavedBins
+        : canUseSavedBins
           ? filterSurvivalData(dataBuckets
-              .filter(dataBucket => savedSurvivalBinsArray
-                .some(savedBin => savedBin.binValues[0] === dataBucket.key)
+              .filter(dataBucket => savedSurvivalBins
+                .some(savedBin => savedBin.values[0] === dataBucket.key)
               )
               .reduce(getContinuousBins, [])
-            )
+            ) 
+            .map(dataBucket => ({
+              ...dataBucket, 
+              index: find(savedSurvivalBins, { values: [dataBucket.key] }).index,
+            }))
             .map(bin => makeDocCountInteger(bin))
           : filterSurvivalData(dataBuckets
               .sort((a, b) =>

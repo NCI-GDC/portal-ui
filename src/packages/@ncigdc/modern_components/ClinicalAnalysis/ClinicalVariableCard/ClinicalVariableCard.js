@@ -96,6 +96,10 @@ const getTableData = (
       ? selectedSurvivalBins.filter(selectedBin => 
           selectedBin.name === bin.key)[0].index
       : null;
+    const binName = typeof bin.groupName === 'undefined' || 
+      bin.groupName === '' 
+        ? bin.key 
+        : bin.groupName;
 
     return Object.assign(
       {},
@@ -132,10 +136,10 @@ const getTableData = (
               bin.key === '_missing' || bin.chart_doc_count < MINIMUM_CASES
                 ? 'Not enough data'
                 : selectedForSurvivalPlot
-                  ? `Click icon to remove "${bin.groupName || bin.key}"`
+                  ? `Click icon to remove "${binName}"`
                   : maxSurvivalCurvesReached
                     ? `Maximum plots (${MAXIMUM_CURVES}) reached`
-                    : `Click icon to plot "${bin.groupName || bin.key}"`
+                    : `Click icon to plot "${binName}"`
             }
             >
             <Button

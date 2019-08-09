@@ -7,6 +7,7 @@ import {
 } from 'recompose';
 import { connect } from 'react-redux';
 import {
+  find,
   get,
   isEmpty,
   isEqual,
@@ -121,8 +122,7 @@ export default compose(
         );
       }).map(bin => ({
         ...bin, 
-        index: savedSurvivalBins.filter(savedBin => 
-          savedBin.name === bin.key)[0].index,
+        index: find(savedSurvivalBins, { name: bin.key }).index,
       }));
 
       const canUseSavedBins = newSurvivalBins.length === savedSurvivalBins.length;

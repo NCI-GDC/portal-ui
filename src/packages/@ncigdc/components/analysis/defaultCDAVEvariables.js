@@ -6,17 +6,17 @@ import {
 
 const ageBronchusSurvivalBins = [
    {
-    index: 3,
+    index: 2,
     name: '7037.0-12204.0',
     values: ['7037.0-12204.0'],
   },
   {
-    index: 4,
+    index: 3,
     name: '12204.0-17371.0',
     values: ['12204.0-17371.0'],
   },
   {
-    index: 5,
+    index: 4,
     name: '17371.0-22538.0',
     values: ['17371.0-22538.0'],
   },

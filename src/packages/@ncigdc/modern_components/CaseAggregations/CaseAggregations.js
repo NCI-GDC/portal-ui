@@ -231,6 +231,7 @@ const CaseAggregationsComponent = (props: TProps) => (
         key={facet.full}
         onRequestRemove={() => props.handleRequestRemoveFacet(facet)}
         relayVarName="repoCaseCustomFacetFields"
+        style={{ borderBottom: `1px solid ${props.theme.greyScale5}` }}
         />
     ))}
 
@@ -272,6 +273,7 @@ const CaseAggregationsComponent = (props: TProps) => (
       idField="cases.case_id"
       style={{
         width: '100%',
+        borderBottom: `1px solid ${props.theme.greyScale5}`,
         padding: '0 1.2rem 1rem',
       }}
       type="case"

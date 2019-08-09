@@ -69,11 +69,11 @@ function setVariables({ filters, relay }) {
       {
         content: [
           {
-            op: 'not',
             content: {
               field: 'cosmic_id',
               value: ['MISSING'],
             },
+            op: 'not',
           },
         ],
         op: 'and',
@@ -98,6 +98,7 @@ function setVariables({ filters, relay }) {
   });
 }
 const noResultsMessageStyle = { minHeight: 387 };
+
 export class ExplorePageComponent extends React.Component {
   state = {
     maxFacetsPanelHeight: 0,
@@ -132,8 +133,6 @@ export class ExplorePageComponent extends React.Component {
         className="test-explore-page"
         facetTabs={[
           {
-            id: 'cases',
-            text: 'Cases',
             component: (
               <CaseAggregations
                 aggregations={viewer.explore.cases.aggregations}
@@ -149,10 +148,10 @@ export class ExplorePageComponent extends React.Component {
                 suggestions={get(viewer, 'autocomplete_cases.hits', [])}
                 />
             ),
+            id: 'cases',
+            text: 'Cases',
           },
           {
-            id: 'clinical',
-            text: 'Clinical',
             component: (
               <ClinicalAggregations
                 aggregations={viewer.explore.cases.aggregations}
@@ -164,17 +163,17 @@ export class ExplorePageComponent extends React.Component {
                 relayVarName="exploreCaseCustomFacetFields"
                 />
             ),
+            id: 'clinical',
+            text: 'Clinical',
           },
           {
-            id: 'genes',
-            text: 'Genes',
             component: (
               <GeneAggregations relay={relay} />
             ),
+            id: 'genes',
+            text: 'Genes',
           },
           {
-            id: 'mutations',
-            text: 'Mutations',
             component: (
               <SSMAggregations
                 aggregations={viewer.explore.ssms.aggregations}
@@ -191,6 +190,8 @@ export class ExplorePageComponent extends React.Component {
                 suggestions={get(viewer, 'autocomplete_ssms.hits', [])}
                 />
             ),
+            id: 'mutations',
+            text: 'Mutations',
           },
         ]}
         results={(
@@ -209,16 +210,16 @@ export class ExplorePageComponent extends React.Component {
                       pathname: '/repository',
                       query: {
                         filters: stringifyJSONParam({
-                          op: 'AND',
                           content: [
                             {
-                              op: 'IN',
                               content: {
                                 field: 'cases.case_id',
                                 value: [`set_id:${setId}`],
                               },
+                              op: 'IN',
                             },
                           ],
+                          op: 'AND',
                         }),
                       },
                     });
@@ -279,9 +280,9 @@ export class ExplorePageComponent extends React.Component {
                   text: `Mutations (${hasSsmsHits.toLocaleString()})`,
                 },
                 {
+                  component: <OncogridTab />,
                   id: 'oncogrid',
                   text: 'OncoGrid',
-                  component: <OncogridTab />,
                 },
               ]}
               queryParam="searchTableTab"

@@ -203,6 +203,7 @@ const FileAggregations = ({
         key={facet.full}
         onRequestRemove={() => handleRequestRemoveFacet(facet)}
         relayVarName="repoFileCustomFacetFields"
+        style={{ borderBottom: `1px solid ${theme.greyScale5}` }}
         />
     ))}
     <FacetHeader
@@ -232,6 +233,7 @@ const FileAggregations = ({
       fieldNoDoctype="file_id"
       placeholder="e.g. 142682.bam, 4f6e2e7a-b..."
       queryType="file"
+      style={{ borderBottom: `1px solid ${theme.greyScale5}` }}
       title="File"
       />
     {_.reject(presetFacets, { full: 'files.file_id' }).map(facet => (
@@ -243,6 +245,7 @@ const FileAggregations = ({
         facet={facet}
         key={facet.full}
         relay={relay}
+        style={{ borderBottom: `1px solid ${theme.greyScale5}` }}
         title={facet.title}
         />
     ))}

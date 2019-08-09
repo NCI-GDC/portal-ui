@@ -21,7 +21,13 @@ const simpleAggCache = {};
 const pendingAggCache = {};
 const DEFAULT_CONTINUOUS_BUCKETS = 5;
 
-const getContinuousAggs = ({ bins, continuousBinType, fieldName, filters, stats }) => {
+const getContinuousAggs = ({ 
+  bins,
+  continuousBinType,
+  fieldName,
+  filters,
+  stats
+}) => {
   // prevent query failing if interval will equal 0
   if (_.isNull(stats.min) || _.isNull(stats.max)) {
     return null;
@@ -61,12 +67,12 @@ const getContinuousAggs = ({ bins, continuousBinType, fieldName, filters, stats 
   }
 
   const filters2 = {
-    op: "range",
     content: [
       {
         ranges: rangeArr,
       }
-    ]
+    ],
+    op: "range",
   }
   const aggregationFieldName = createFacetFieldString(fieldName);
 
@@ -177,7 +183,7 @@ const getContinuousAggs = ({ bins, continuousBinType, fieldName, filters, stats 
         }
       } else {
         consoleDebug(
-          `Something went wrong in environment, but no error status: ${err}`
+          `Something went wrong in the environment, but no error status: ${err}`
         );
       }
     }));

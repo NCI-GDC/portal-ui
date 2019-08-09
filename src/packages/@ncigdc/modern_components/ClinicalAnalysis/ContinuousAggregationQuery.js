@@ -21,7 +21,7 @@ const simpleAggCache = {};
 const pendingAggCache = {};
 const DEFAULT_CONTINUOUS_BUCKETS = 5;
 
-const getContinuousAggs = ({ continuousBinType, fieldName, stats, filters, bins }) => {
+const getContinuousAggs = ({ bins, continuousBinType, fieldName, filters, stats }) => {
   // prevent query failing if interval will equal 0
   if (_.isNull(stats.min) || _.isNull(stats.max)) {
     return null;

@@ -3,43 +3,42 @@ import React from 'react';
 import { graphql } from 'react-relay';
 import { compose, withPropsOnChange, withState } from 'recompose';
 import Query from '@ncigdc/modern_components/Query';
-import _ from 'lodash';
+import { trim } from 'lodash';
 
-export default (Component: ReactClass<*>) =>
-  compose(
-    withState('facetSearch', 'setFacetSearch', ''),
-    withPropsOnChange(
-      ['queryType', 'facetSearch'],
-      ({ queryType, facetSearch }) => {
-        const showCases = queryType === 'case';
-        const showFiles = queryType === 'file';
-        const showProjects = queryType === 'project';
-
-        return {
-          variables: {
-            showCases,
-            showFiles,
-            showProjects,
-            queryType: [queryType],
-            query: _.trim(facetSearch),
-          },
-        };
-      },
-    ),
-  )((props: Object) => {
-    return (
-      <Query
-        parentProps={props}
-        variables={props.variables}
+export default (Component: ReactClass<*>) => compose(
+  withState('facetSearch', 'setFacetSearch', ''),
+  withPropsOnChange(
+    ['queryType', 'facetSearch'],
+    ({ facetSearch, queryType }) => {
+      const showCases = queryType === 'case';
+      const showFiles = queryType === 'file';
+      const showProjects = queryType === 'project';
+      const showGenes = queryType === 'gene_centric';
+      return {
+        variables: {
+          query: trim(facetSearch),
+          queryType: [queryType],
+          showCases,
+          showFiles,
+          showGenes,
+          showProjects,
+        },
+      };
+    },
+  ),
+)((props: Object) => {
+  return (
+    <Query
         Component={Component}
-        setFacetSearch={props.setFacetSearch}
+        parentProps={props}
         query={graphql`
           query SuggestionFacet_relayQuery(
             $query: String
-            $showFiles: Boolean!
-            $showCases: Boolean!
-            $showProjects: Boolean!
             $queryType: [String]
+            $showCases: Boolean!
+            $showFiles: Boolean!
+            $showGenes: Boolean!
+            $showProjects: Boolean!
           ) {
             facetSearchHits: query(query: $query, types: $queryType) {
               files: hits @include(if: $showFiles) {
@@ -68,9 +67,19 @@ export default (Component: ReactClass<*>) =>
                   primary_site
                 }
               }
+              genes: hits @include(if: $showGenes) {
+                id
+                ...on Gene {
+                  symbol
+                  name
+                  gene_id
+                }
+              }
             }
           }
         `}
-      />
-    );
-  });
+        setFacetSearch={props.setFacetSearch}
+        variables={props.variables}
+        />
+  );
+});

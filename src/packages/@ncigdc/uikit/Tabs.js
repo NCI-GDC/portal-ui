@@ -86,11 +86,12 @@ const Tab = ({
 const Tabs = ({
   activeIndex,
   children,
-  contentStyle,
+  contentStyle = {},
   onTabClick,
   side,
-  style,
-  tabStyle,
+  style = {},
+  tabContainerStyle = {},
+  tabStyle = {},
   tabToolbar,
   tabs,
   theme,
@@ -109,6 +110,7 @@ const Tabs = ({
             backgroundColor: 'white',
             position: 'relative',
             left: '1px',
+            ...tabContainerStyle,
           }}
           >
           {Children.map(tabs, (child, i) => (

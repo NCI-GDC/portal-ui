@@ -185,68 +185,73 @@ const CaseAggregationsComponent = (props: TProps) => (
         padding: '10px 15px',
         borderBottom: `1px solid ${props.theme.greyScale5}`,
       }}
-    >
+      >
       {!!props.userSelectedFacets.length && (
         <span>
           <a onClick={props.handleResetFacets} style={styles.link}>
             Reset
-          </a>{' '}
+          </a>
+          {' '}
           &nbsp;|&nbsp;
         </span>
       )}
       <a
         onClick={() => props.setShouldShowFacetSelection(true)}
         style={styles.link}
-      >
+        >
         Add a Case/Biospecimen Filter
       </a>
     </div>
     <Modal
       isOpen={props.shouldShowFacetSelection}
-      style={{ content: { border: 0, padding: '15px' } }}
-    >
+      style={{
+        content: {
+          border: 0,
+          padding: '15px',
+          width: '65%',
+        },
+      }}
+      >
       <FacetSelection
-        title="Add a Case/Biospecimen Filter"
-        docType="cases"
-        onSelect={props.handleSelectFacet}
-        onRequestClose={() => props.setShouldShowFacetSelection(false)}
-        excludeFacetsBy={props.facetExclusionTest}
         additionalFacetData={props.parsedFacets}
-      />
+        docType="cases"
+        excludeFacetsBy={props.facetExclusionTest}
+        isCaseInsensitive
+        onRequestClose={() => props.setShouldShowFacetSelection(false)}
+        onSelect={props.handleSelectFacet}
+        title="Add a Case/Biospecimen Filter"
+        />
     </Modal>
 
     {props.userSelectedFacets.map(facet => (
       <FacetWrapper
-        isRemovable
-        relayVarName="repoCaseCustomFacetFields"
-        key={facet.full}
-        facet={facet}
         aggregation={props.parsedFacets[facet.field]}
+        facet={facet}
+        isRemovable
+        key={facet.full}
         onRequestRemove={() => props.handleRequestRemoveFacet(facet)}
-        style={{ borderBottom: `1px solid ${props.theme.greyScale5}` }}
-      />
+        relayVarName="repoCaseCustomFacetFields"
+        />
     ))}
 
     <FacetHeader
-      title="Case"
-      field="cases.case_id"
       collapsed={props.caseIdCollapsed}
+      description="Enter UUID or ID of Case, Sample, Portion, Slide, Analyte or Aliquot"
+      field="cases.case_id"
       setCollapsed={props.setCaseIdCollapsed}
-      description={
-        'Enter UUID or ID of Case, Sample, Portion, Slide, Analyte or Aliquot'
-      }
-    />
+      title="Case"
+      />
 
     <SuggestionFacet
-      title="Case"
       collapsed={props.caseIdCollapsed}
       doctype="cases"
-      fieldNoDoctype="case_id"
-      queryType="case"
-      placeholder="e.g. TCGA-A5-A0G2, 432fe4a9-2..."
       dropdownItem={x => (
         <Row>
-          <CaseIcon style={{ paddingRight: '1rem', paddingTop: '1rem' }} />
+          <CaseIcon style={{
+            paddingRight: '1rem',
+            paddingTop: '1rem',
+          }}
+                    />
           <div>
             <div style={{ fontWeight: 'bold' }}>{x.case_id}</div>
             <div style={{ fontSize: '80%' }}>{x.submitter_id}</div>
@@ -254,37 +259,40 @@ const CaseAggregationsComponent = (props: TProps) => (
           </div>
         </Row>
       )}
-    />
+      fieldNoDoctype="case_id"
+      placeholder="e.g. TCGA-A5-A0G2, 432fe4a9-2..."
+      queryType="case"
+      title="Case"
+      />
     <UploadSetButton
-      type="case"
-      style={{
-        width: '100%',
-        borderBottom: `1px solid ${props.theme.greyScale5}`,
-        padding: '0 1.2rem 1rem',
-      }}
-      UploadModal={UploadCaseSet}
       defaultQuery={{
         pathname: '/repository',
         query: { searchTableTab: 'cases' },
       }}
       idField="cases.case_id"
-    >
+      style={{
+        width: '100%',
+        padding: '0 1.2rem 1rem',
+      }}
+      type="case"
+      UploadModal={UploadCaseSet}
+      >
       Upload Case Set
     </UploadSetButton>
 
     {_.reject(presetFacets, { full: 'cases.case_id' }).map(facet => (
       <FacetWrapper
-        key={facet.full}
-        facet={facet}
-        title={facet.title}
+        additionalProps={facet.additionalProps}
         aggregation={
           props.viewer.repository.cases.aggregations[
             escapeForRelay(facet.field)
-          ]
+        ]
         }
+        facet={facet}
+        key={facet.full}
         relay={props.relay}
-        additionalProps={facet.additionalProps}
-      />
+        title={facet.title}
+        />
     ))}
   </div>
 );

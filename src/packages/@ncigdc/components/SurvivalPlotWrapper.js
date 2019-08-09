@@ -109,7 +109,7 @@ const Container = ({
 
 const SurvivalPlotWrapper = ({
   height = 0,
-  legend,
+  legend = [],
   rawData,
   setXDomain,
   setSurvivalContainer,
@@ -126,7 +126,6 @@ const SurvivalPlotWrapper = ({
 }: TProps) => {
   const { results = [], overallStats = {} } = rawData || {};
   const { pValue } = overallStats;
-
   return (
     <Loader
       className={uniqueClass}

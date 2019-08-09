@@ -106,8 +106,9 @@ export const DATA_CATEGORIES = {
 export const DATA_CATEGORIES_FOR_PROJECTS_TABLE = {
   ...DATA_CATEGORIES_COMMON,
   CLINICAL_METADATA: {
-    full: '',
     abbr: 'Clinical',
+    full: '',
+    hasTotalLink: false,
     tooltip: 'Clinical Metadata',
   },
   CLINICAL_SUPPLEMENT: {
@@ -117,8 +118,9 @@ export const DATA_CATEGORIES_FOR_PROJECTS_TABLE = {
     tooltip: 'Clinical Supplement',
   },
   BIOSPECIMEN_METADATA: {
-    full: '',
     abbr: 'Bio',
+    full: '',
+    hasTotalLink: false,
     tooltip: 'Biospecimen Metadata',
   },
   BIOSPECIMEN_SUPPLEMENT: {

@@ -4,20 +4,41 @@ import {
   DEFAULT_RANGES,
 } from '@ncigdc/modern_components/ClinicalAnalysis/ClinicalVariableCard/helpers';
 
-const ageBronchusSurvivalBins = {
-  0: {
-    binName: '7037.0-12204.0',
-    binValues: ['7037.0-12204.0'],
+const ageBronchusSurvivalBins = [
+   {
+    index: 3,
+    name: '7037.0-12204.0',
+    values: ['7037.0-12204.0'],
   },
-  1: {
-    binName: '12204.0-17371.0',
-    binValues: ['12204.0-17371.0'],
+  {
+    index: 4,
+    name: '12204.0-17371.0',
+    values: ['12204.0-17371.0'],
   },
-  2: {
-    binName: '17371.0-22538.0',
-    binValues: ['17371.0-22538.0'],
+  {
+    index: 5,
+    name: '17371.0-22538.0',
+    values: ['17371.0-22538.0'],
   },
-};
+];
+
+const genderBronchusSurvivalBins = [
+   {
+    index: 3,
+    name: 'male',
+    values: ['male'],
+  },
+  {
+    index: 4,
+    name: 'female',
+    values: ['female'],
+  },
+  // {
+  //   index: 2,
+  //   name: 'not reported',
+  //   values: ['not reported'],
+  // },
+];
 
 export default {
   // 'demographic.ethnicity': {
@@ -26,51 +47,50 @@ export default {
   //   active_survival: 'overall',
   //   bins: {},
   //   plotTypes: 'categorical',
-  //   savedSurvivalBins: {},
+  //   savedSurvivalBins: [],
   //   scrollToCard: false,
   //   type: 'Demographic',
   // },
-
-  // 'demographic.gender': {
+  'demographic.gender': {
+    active_calculation: 'number',
+    active_chart: 'histogram',
+    active_survival: 'overall',
+    bins: {},
+    plotTypes: 'categorical',
+    savedSurvivalBins: genderBronchusSurvivalBins,
+    scrollToCard: false,
+    type: 'Demographic',
+  },
+  // 'demographic.race': {
   //   active_calculation: 'number',
   //   active_chart: 'histogram',
   //   active_survival: 'overall',
   //   bins: {},
   //   plotTypes: 'categorical',
-  //   savedSurvivalBins: {},
+  //   savedSurvivalBins: [],
   //   scrollToCard: false,
   //   type: 'Demographic',
   // },
-  // 'demographic.race': {
+  // 'diagnoses.age_at_diagnosis': {
   //   active_calculation: 'number',
   //   active_chart: 'histogram',
   //   active_survival: 'overall',
-  //   bins: [],
-  //   plotTypes: 'categorical',
-  //   savedSurvivalBins: {},
+  //   bins: {},
+  //   continuousBinType: DEFAULT_BIN_TYPE,
+  //   customInterval: DEFAULT_INTERVAL,
+  //   customRanges: DEFAULT_RANGES,
+  //   plotTypes: 'continuous',
+  //   savedSurvivalBins: ageBronchusSurvivalBins,
   //   scrollToCard: false,
-  //   type: 'Demographic',
+  //   type: 'Diagnosis',
   // },
-  'diagnoses.age_at_diagnosis': {
-    active_calculation: 'number',
-    active_chart: 'histogram',
-    active_survival: 'overall',
-    bins: {},
-    continuousBinType: DEFAULT_BIN_TYPE,
-    customInterval: DEFAULT_INTERVAL,
-    customRanges: DEFAULT_RANGES,
-    plotTypes: 'continuous',
-    savedSurvivalBins: ageBronchusSurvivalBins,
-    scrollToCard: false,
-    type: 'Diagnosis',
-  },
   // 'diagnoses.primary_diagnosis': {
   //   active_calculation: 'number',
   //   active_chart: 'histogram',
   //   active_survival: 'overall',
   //   bins: {},
   //   plotTypes: 'categorical',
-  //   savedSurvivalBins: {},
+  //   savedSurvivalBins: [],
   //   scrollToCard: false,
   //   type: 'Diagnosis',
   // },

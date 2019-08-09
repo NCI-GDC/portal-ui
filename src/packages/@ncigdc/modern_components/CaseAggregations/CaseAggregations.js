@@ -281,6 +281,7 @@ const CaseAggregationsComponent = (props: TProps) => (
       >
       Upload Case Set
     </UploadSetButton>
+
     {_.reject(presetFacets, { full: 'cases.case_id' }).map(facet => (
       <FacetWrapper
         additionalProps={facet.additionalProps}
@@ -292,7 +293,6 @@ const CaseAggregationsComponent = (props: TProps) => (
         facet={facet}
         key={facet.full}
         relay={props.relay}
-        style={{ borderBottom: `1px solid ${props.theme.greyScale5}` }}
         title={facet.title}
         />
     ))}

@@ -4,7 +4,7 @@ import React from 'react';
 export const internalHighlight = (
   query: string,
   foundText: string,
-  highlightStyle: React.CSSProperties = { fontWeight: 'bold' }
+  highlightStyle: React.CSSProperties = { fontWeight: 'bold' },
 ) => {
   const index = (foundText || '')
     .toLocaleLowerCase()

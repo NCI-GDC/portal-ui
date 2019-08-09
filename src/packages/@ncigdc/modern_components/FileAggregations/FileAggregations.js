@@ -222,7 +222,7 @@ const FileAggregations = ({
             paddingRight: '1rem',
             paddingTop: '1rem',
           }}
-                    />
+          />
           <div>
             <div style={{ fontWeight: 'bold' }}>{x.file_id}</div>
             <div style={{ fontSize: '80%' }}>{x.submitter_id}</div>

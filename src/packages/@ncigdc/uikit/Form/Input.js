@@ -21,7 +21,7 @@ const styles = {
   },
 };
 
-const Input = ({ style, getNode, ...props }) => (
+const Input = ({ style, getNode = null, ...props }) => (
   <input
     ref={getNode}
     aria-label="text"
@@ -34,6 +34,7 @@ const Input = ({ style, getNode, ...props }) => (
 Input.propTypes = {
   style: PropTypes.object,
   onChange: PropTypes.func,
+  getNode: PropTypes.func,
 };
 
 /*----------------------------------------------------------------------------*/

@@ -1,16 +1,16 @@
-#human-body-highlights {
+#human-body-root {
+  position: relative;
+  left: -40px;
+}
+#human-body-root #human-body-highlights {
   position: relative;
   top: -20px;
 }
-#human-body-highlights > svg {
+#human-body-root #human-body-highlights > svg {
   position: absolute;
   cursor: pointer;
   opacity: 0;
   transition: opacity 0.3s ease;
-}
-#human-body-root {
-  position: relative;
-  left: -40px;
 }
 #human-body-root .chart {
   position: absolute;
@@ -21,10 +21,10 @@
 #human-body-root .chart g {
   color: #000;
 }
-#human-body-svg-container {
+#human-body-root #human-body-svg-container {
   position: absolute;
 }
-#title {
+#human-body-root #title {
   color: #000;
   font-size: 1.1em;
   position: absolute;
@@ -32,195 +32,195 @@
   left: 419px;
   top: -5px;
 }
-#male {
+#human-body-root #male {
   position: absolute;
 }
-#female {
+#human-body-root #female {
   left: 107px;
   position: absolute;
 }
-#female-organs {
+#human-body-root #female-organs {
   position: absolute;
   top: -15px;
   left: 151px;
   width: 123px;
 }
-#male-organs {
+#human-body-root #male-organs {
   position: absolute;
   height: 34px;
   width: 25px;
   top: 255px;
   left: 111px;
 }
-#Head-and-Neck {
+#human-body-root #Head-and-Neck {
   height: 138px;
   width: 102px;
   top: -1px;
   left: 156px;
 }
-#Brain {
+#human-body-root #Brain {
   height: 35px;
   width: 50px;
   top: 20px;
   left: 183px;
 }
-#Lung {
+#human-body-root #Lung {
   height: 55px;
   width: 37px;
   top: 133px;
   left: 173px;
 }
-#Pleura {
+#human-body-root #Pleura {
   height: 26px;
   width: 37px;
   top: 161px;
   left: 173px;
 }
-#Lymph-Nodes {
+#human-body-root #Lymph-Nodes {
   height: 70px;
   width: 45px;
   top: 83px;
   left: 159px;
 }
-#Soft-Tissue {
+#human-body-root #Soft-Tissue {
   height: 369px;
   width: 128px;
   top: 89px;
   left: 138px;
 }
-#Eye {
+#human-body-root #Eye {
   height: 20px;
   width: 20px;
   top: 39px;
   left: 205px;
 }
-#Breast {
+#human-body-root #Breast {
   height: 40px;
   width: 40px;
   top: 137px;
   left: 207px;
 }
-#Kidney {
+#human-body-root #Kidney {
   height: 21px;
   width: 15px;
   top: 198px;
   left: 218px;
 }
-#Adrenal-Gland {
+#human-body-root #Adrenal-Gland {
   height: 12px;
   width: 14px;
   top: 197px;
   left: 219px;
 }
-#Bile-Duct {
+#human-body-root #Bile-Duct {
   height: 28px;
   width: 11px;
   top: 190px;
   left: 195px;
 }
-#Pancreas {
+#human-body-root #Pancreas {
   height: 21px;
   width: 45px;
   top: 191px;
   left: 183px;
 }
-#Bladder {
+#human-body-root #Bladder {
   height: 16px;
   width: 25px;
   top: 258px;
   left: 194px;
 }
-#Prostate {
+#human-body-root #Prostate {
   height: 25px;
   width: 30px;
   top: 269px;
   left: 103px;
 }
-#Testis {
+#human-body-root #Testis {
   height: 23px;
   width: 15px;
   top: 288px;
   left: 124px;
 }
-#Uterus {
+#human-body-root #Uterus {
   height: 23px;
   width: 21px;
   top: 250px;
   left: 196px;
 }
-#Cervix {
+#human-body-root #Cervix {
   height: 14px;
   width: 15px;
   top: 258px;
   left: 199px;
 }
-#Ovary {
+#human-body-root #Ovary {
   height: 13px;
   width: 13px;
   top: 249px;
   left: 214px;
 }
-#Colorectal {
+#human-body-root #Colorectal {
   height: 95px;
   width: 87px;
   top: 210px;
   left: 165px;
 }
-#Liver {
+#human-body-root #Liver {
   height: 42px;
   width: 47px;
   top: 173px;
   left: 188px;
 }
-#Stomach {
+#human-body-root #Stomach {
   height: 43px;
   width: 45px;
   top: 166px;
   left: 189px;
 }
-#Blood {
+#human-body-root #Blood {
   height: 153px;
   width: 35px;
   top: 243px;
   left: 211px;
 }
-#Bone {
+#human-body-root #Bone {
   height: 89px;
   width: 14px;
   top: 383px;
   left: 212px;
 }
-#Bone-Marrow {
+#human-body-root #Bone-Marrow {
   height: 114px;
   width: 30px;
   top: 371px;
   left: 204px;
 }
-#Skin {
+#human-body-root #Skin {
   height: 227px;
   width: 57px;
   top: 95px;
   left: 221px;
 }
-#Nervous-System {
+#human-body-root #Nervous-System {
   height: 279px;
   width: 56px;
   top: 222px;
   left: 159px;
 }
-#Thyroid {
+#human-body-root #Thyroid {
   height: 16px;
   width: 18px;
   top: 90px;
   left: 198px;
 }
-#Thymus {
+#human-body-root #Thymus {
   height: 23px;
   width: 17px;
   top: 147px;
   left: 200px;
 }
-#Esophagus {
+#human-body-root #Esophagus {
   height: 57px;
   width: 20px;
   top: 86px;

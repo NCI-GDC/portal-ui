@@ -43,7 +43,7 @@ const styles = {
 type TProps = {
   svg?: any,
   data: Object,
-  slug: string,
+  slug: string | string[],
   stylePrefix?: string,
   style?: Object,
   noText?: boolean,
@@ -56,130 +56,154 @@ type TProps = {
 const enhance = compose(withTheme);
 
 const DownloadVisualizationButton = ({
-  svg,
+  buttonStyle,
   data,
+  disabled,
+  noText,
   slug = 'export',
   stylePrefix,
-  noText,
-  tsvData,
+  svg,
   theme,
   tooltipHTML,
-  disabled,
-  buttonStyle,
+  tsvData,
   ...props
 }: TProps) => {
-return (
-  <DropDown
-    className={props.className || 'test-download-viz-button'}
-    isDisabled={disabled}
-    button={
-      <Tooltip Component={tooltipHTML}>
-        <Button
-          disabled={disabled}
-          leftIcon={!noText && <Download />}
-          style={{...visualizingButton, ...buttonStyle}}
-          type="button"
-        >
-          {noText ? (
-            <span>
-              <Download />
-              <Hidden>Download</Hidden>
-            </span>
+  const isSlugArray = slug instanceof Array;
+  return (
+    <DropDown
+      button={(
+        <Tooltip Component={tooltipHTML}>
+          <Button
+            disabled={disabled}
+            leftIcon={!noText && <Download />}
+            style={{
+              ...visualizingButton,
+              ...buttonStyle,
+            }}
+            type="button"
+            >
+            {noText ? (
+              <span>
+                <Download />
+                <Hidden>Download</Hidden>
+              </span>
           ) : (
             'Download'
           )}
-        </Button>
-      </Tooltip>
-    }
-    {...props}
-  >
-    {svg && (
-      <DropdownItem
-        key="svg"
-        className="test-download-svg"
-        style={styles.row(theme)}
-        onClick={() => {
-          downloadSvg({
-            svg: getDOMNode(svg),
-            stylePrefix,
-            fileName: `${slug}.svg`,
-          });
-          track('download-viz', { type: 'svg' });
-        }}
+          </Button>
+        </Tooltip>
+      )}
+      className={props.className || 'test-download-viz-button'}
+      isDisabled={disabled}
+      {...props}
       >
+      {svg && (
+        <DropdownItem
+          className="test-download-svg"
+          key="svg"
+          onClick={() => {
+            if (svg instanceof Array) {
+              svg.map((s, i) => downloadSvg({
+                svg: getDOMNode(s),
+                stylePrefix,
+                fileName: `${slug[i]}.svg`,
+              }));
+              track('download-viz', { type: 'svg' });
+              return;
+            }
+            downloadSvg({
+              svg: getDOMNode(svg),
+              stylePrefix,
+              fileName: `${slug}.svg`,
+            });
+            track('download-viz', { type: 'svg' });
+          }}
+          style={styles.row(theme)}
+          >
         SVG
-      </DropdownItem>
-    )}
-    {svg && (
-      <DropdownItem
-        key="png"
-        className="test-download-png"
-        style={{
-          ...styles.row(theme),
-          ...(supportsSvgToPng()
+        </DropdownItem>
+      )}
+      {svg && (
+        <DropdownItem
+          className="test-download-png"
+          key="png"
+          onClick={() => {
+            if (supportsSvgToPng()) {
+              if (svg instanceof Array) {
+                svg.map((s, i) => downloadSvg({
+                  svg: getDOMNode(s),
+                  stylePrefix,
+                  fileName: `${slug[i]}.png`,
+                }));
+                track('download-viz', { type: 'png' });
+                return;
+              }
+              downloadSvg({
+                svg: getDOMNode(svg),
+                stylePrefix,
+                fileName: `${slug}.png`,
+                scale: 2,
+              });
+              track('download-viz', { type: 'png' });
+            }
+          }}
+          style={{
+            ...styles.row(theme),
+            ...(supportsSvgToPng()
             ? {}
             : {
-                opacity: 0.5,
-              }),
-        }}
-        onClick={() => {
-          if (!supportsSvgToPng()) return;
-          downloadSvg({
-            svg: getDOMNode(svg),
-            stylePrefix,
-            fileName: `${slug}.png`,
-            scale: 2,
-          });
-          track('download-viz', { type: 'png' });
-        }}
-      >
-        {supportsSvgToPng() ? (
+              opacity: 0.5,
+            }),
+          }}
+          >
+          {supportsSvgToPng() ? (
           'PNG'
         ) : (
           <Tooltip
             Component={`
-                  Download as PNG is currently unavaialable in your browser.
+                  Download as PNG is currently unavailable in your browser.
                   Please use the latest version of Chrome or Firefox
                 `}
-          >
+            >
             PNG
           </Tooltip>
         )}
-      </DropdownItem>
-    )}
-    {data && (
-      <DropdownItem
-        key="JSON"
-        style={styles.row(theme)}
-        onClick={() => {
-          saveFile(JSON.stringify(data, null, 2), 'JSON', `${slug}.json`);
-          track('download-viz', { type: 'json' });
-        }}
-      >
-        JSON
-      </DropdownItem>
-    )}
-    {tsvData && (
-      <DropdownItem
-        key="TSV"
-        style={styles.row(theme)}
-        onClick={() => {
-          if (tsvData) {
-            saveFile(
+        </DropdownItem>
+      )}
+      {data && (
+        <DropdownItem
+          key="JSON"
+          onClick={() => {
+            saveFile(JSON.stringify(data, null, 2), 'JSON', `${isSlugArray ? slug[0] : slug}.json`);
+            track('download-viz', { type: 'json' });
+          }}
+          style={styles.row(theme)}
+          >
+          { isSlugArray ? 'QQ JSON' : 'JSON'}
+        </DropdownItem>
+      )}
+      {tsvData && (
+        <DropdownItem
+          key="TSV"
+          onClick={() => {
+            if (tsvData) {
+              saveFile(
               tsvData[0] && tsvData[0].forEach
                 ? mapArrayToTsvString(tsvData)
                 : toTsvString(tsvData),
               'TSV',
-              `${slug}.tsv`,
-            );
-            track('download-viz', { type: 'tsv' });
-          }
-        }}
-      >
-        TSV
-      </DropdownItem>
-    )}
-  </DropDown>
-)};
+              `${isSlugArray ? slug[0] : slug}.tsv`,
+              );
+              track('download-viz', { type: 'tsv' });
+            }
+          }}
+          style={styles.row(theme)}
+          >
+          {isSlugArray ? 'QQ TSV' : 'TSV'}
+        </DropdownItem>
+      )}
+    </DropDown>
+  );
+};
 
 export default enhance(DownloadVisualizationButton);

@@ -77,7 +77,7 @@ async function fetchCurves(
 }
 
 export const getDefaultCurve = memoize(
-  async ({ slug, currentFilters, size }: TPropsDefault): Promise<Object> => {
+  async ({ currentFilters, size, slug }: TPropsDefault): Promise<Object> => {
     const rawData = await fetchCurves(
       Array.isArray(currentFilters)
         ? currentFilters
@@ -115,12 +115,12 @@ export const getDefaultCurve = memoize(
 
 export const getSurvivalCurves = memoize(
   async ({
-    value,
-    field,
-    slug,
     currentFilters,
-    size,
+    field,
     plotType,
+    size,
+    slug,
+    value,
   }: TPropsMulti): Promise<Object> => {
     const filters = [
       replaceFilters(
@@ -288,7 +288,6 @@ export const getSurvivalCurvesArray = memoize(
         results:
           rawData.results.length > 0
             ? rawData.results
-              .filter(r => r.donors.length >= MINIMUM_CASES)
               .map((r, idx) => ({
                 ...r,
                 meta: {

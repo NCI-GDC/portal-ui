@@ -19,6 +19,7 @@ import { setModal } from '@ncigdc/dux/modal';
 import { humanify } from '@ncigdc/utils/string';
 import { IS_CDAVE_DEV } from '@ncigdc/utils/constants';
 import { withTheme } from '@ncigdc/theme';
+import { MAXIMUM_CURVES } from '@ncigdc/utils/survivalplot';
 import CategoricalCustomBinsModal from './modals/CategoricalCustomBinsModal';
 
 import RecomposeUtils, {
@@ -108,48 +109,44 @@ export default compose(
   ),
   withPropsOnChange((props, nextProps) =>
     nextProps.variable.active_chart === 'survival' &&
-    (!isEqual(props.binData, nextProps.binData) ||
-    props.variable.active_chart !== nextProps.variable.active_chart),
-    ({
-      binData,
-      variable: { savedSurvivalBins },
-    }) => {
-      const newSurvivalBins = binData.filter(bin => {
-        const sortKeyArray = bin.keyArray.sort();
-        return savedSurvivalBins.some(savedBin => 
-          savedBin.name === bin.key &&
-            isEqual(savedBin.values.sort(), sortKeyArray)
-        );
-      }).map(bin => ({
-        ...bin, 
-        index: find(savedSurvivalBins, { name: bin.key }).index,
-      }));
+      (!isEqual(props.binData, nextProps.binData) ||
+      props.variable.active_chart !== nextProps.variable.active_chart),
+      ({
+        binData,
+        variable: { savedSurvivalBins },
+      }) => {
+        const matchedSavedBins = binData.filter(bin =>
+          find(savedSurvivalBins, {
+            name: bin.key,
+            values: bin.keyArray,
+          }));
 
-      const canUseSavedBins = newSurvivalBins.length === savedSurvivalBins.length;
+        const canUseSavedBins = matchedSavedBins.length > 0;
 
-      const nextSurvivalBins = canUseSavedBins ? newSurvivalBins : binData;
+        const nextSurvivalBins = canUseSavedBins
+          ? matchedSavedBins
+          : binData;
 
-      const survivalBins = filterSurvivalData(
-        nextSurvivalBins
-          .map(bin => ({
-            ...bin,
-            chart_doc_count: bin.doc_count,
-          }))
-      )
-        .slice();
+        const survivalBins = filterSurvivalData(
+          nextSurvivalBins
+            .map(bin => ({
+              ...bin,
+              chart_doc_count: bin.doc_count,
+            }))
+        )
+          .slice(0, canUseSavedBins ? MAXIMUM_CURVES - 1 : 2);
 
         const survivalPlotValues = survivalBins.map(bin => bin.keyArray);
-        const survivalTableValues = survivalBins.map((bin, index) => ({ 
-          name: bin.key, 
-          index: typeof bin.index === 'undefined' ? index : bin.index,
-        }));
+        const survivalTableValues = survivalBins.map(bin => bin.key);
 
-      return {
-        survivalPlotValues,
-        survivalTableValues,
-      };
-    }
-  ),
+        // console.log('survivalTableValues', survivalTableValues);
+        // console.log('survivalPlotValues', survivalPlotValues);
+
+        return {
+          survivalPlotValues,
+          survivalTableValues,
+        };
+      }),
   withPropsOnChange(
     (props, nextProps) =>
       !isEqual(props.variable.bins, nextProps.variable.bins),

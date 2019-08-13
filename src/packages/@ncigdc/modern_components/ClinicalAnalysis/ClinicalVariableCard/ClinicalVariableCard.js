@@ -22,10 +22,13 @@ import {
   MAXIMUM_CURVES,
   MINIMUM_CASES,
 } from '@ncigdc/utils/survivalplot';
-import { SpinnerIcon, CloseIcon,
+import {
+  SpinnerIcon,
+  CloseIcon,
   SurvivalIcon,
   BarChartIcon,
-  BoxPlot, } from '@ncigdc/theme/icons';
+  BoxPlot,
+} from '@ncigdc/theme/icons';
 import termCapitaliser from '@ncigdc/utils/customisation';
 import {
   humanify,
@@ -43,7 +46,6 @@ import ClinicalSurvivalPlot from './components/ClinicalSurvivalPlot';
 import {
   boxTableAllowedStats,
   boxTableRenamedStats,
-  colors,
   colorsArray,
   getCardFilters,
   getHeadings,
@@ -90,16 +92,19 @@ const getTableData = (
   ? []
   : displayData.map(bin => {
     const maxSurvivalCurvesReached = selectedSurvivalBins.length === MAXIMUM_CURVES;
-    const selectedForSurvivalPlot = selectedSurvivalBins
-      .map(selectedBin => selectedBin.name).indexOf(bin.key) >= 0;
-    const survivalPlotIndex = selectedForSurvivalPlot
-      ? selectedSurvivalBins.filter(selectedBin => 
-          selectedBin.name === bin.key)[0].index
-      : null;
-    const binName = typeof bin.groupName === 'undefined' || 
-      bin.groupName === '' 
-        ? bin.key 
+    const survivalPlotIndex = selectedSurvivalBins.indexOf(bin.key);
+    const selectedForSurvivalPlot = survivalPlotIndex >= 0;
+    const binName = typeof bin.groupName === 'undefined' ||
+      bin.groupName === ''
+        ? bin.key
         : bin.groupName;
+    const binIsSelected = find(selectedBins, { key: bin.key });
+    // console.log('selectedSurvivalBins', selectedSurvivalBins);
+    // console.log('bin', bin);
+    // console.log('selectedForSurvivalPlot', selectedForSurvivalPlot);
+    // console.log('survivalPlotIndex', survivalPlotIndex);
+    // console.log('binName', binName);
+    // console.log('---------');
 
     return Object.assign(
       {},
@@ -107,12 +112,12 @@ const getTableData = (
       {
         select: (
           <input
-            aria-label={`${fieldName} ${bin.key}`}
-            checked={!!find(selectedBins, { key: bin.key })}
+            aria-label={`${fieldName} ${binName}`}
+            checked={binIsSelected}
             disabled={bin.doc_count === 0}
             id={`${fieldName}-${bin.key}`}
             onChange={() => {
-              if (find(selectedBins, { key: bin.key })) {
+              if (binIsSelected) {
                 setSelectedBins(
                   reject(selectedBins, r => r.key === bin.key)
                 );

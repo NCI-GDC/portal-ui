@@ -344,6 +344,7 @@ export const DEFAULT_INTERVAL = {
   min: '',
 };
 export const DEFAULT_RANGES = [];
+export const DEFAULT_SAVED_SURVIVAL_BINS = [];
 
 export default compose(
   withPropsOnChange(

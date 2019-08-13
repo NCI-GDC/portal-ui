@@ -99,12 +99,12 @@ const getTableData = (
         ? bin.key
         : bin.groupName;
     const binIsSelected = find(selectedBins, { key: bin.key });
-    // console.log('selectedSurvivalBins', selectedSurvivalBins);
-    // console.log('bin', bin);
-    // console.log('selectedForSurvivalPlot', selectedForSurvivalPlot);
-    // console.log('survivalPlotIndex', survivalPlotIndex);
-    // console.log('binName', binName);
-    // console.log('---------');
+    console.log('selectedSurvivalBins', selectedSurvivalBins);
+    console.log('bin', bin);
+    console.log('selectedForSurvivalPlot', selectedForSurvivalPlot);
+    console.log('survivalPlotIndex', survivalPlotIndex);
+    console.log('binName', binName);
+    console.log('---------');
 
     return Object.assign(
       {},
@@ -203,6 +203,7 @@ const getBoxTableData = (data = {}) => (
 );
 
 const ClinicalVariableCard = ({
+  binsAreCustom,
   boxPlotValues,
   currentAnalysis,
   dataBuckets,
@@ -219,7 +220,7 @@ const ClinicalVariableCard = ({
   plots,
   qqData,
   resetBins,
-  binsAreCustom,
+  savedSurvivalBins,
   selectedBins,
   selectedSurvivalBins,
   selectedSurvivalData,
@@ -509,7 +510,7 @@ const ClinicalVariableCard = ({
                       onClick={resetBins}
                       style={{
                         ...styles.actionMenuItem,
-                        ...binsAreCustom
+                        ...binsAreCustom || savedSurvivalBins.length > 0
                           ? {}
                           : styles.actionMenuItemDisabled(theme),
                       }}

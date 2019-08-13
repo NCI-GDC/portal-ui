@@ -38,6 +38,7 @@ import RecomposeUtils, {
   DEFAULT_BIN_TYPE,
   DEFAULT_INTERVAL,
   DEFAULT_RANGES,
+  DEFAULT_SAVED_SURVIVAL_BINS,
 } from './helpers';
 import EnhancedClinicalVariableCard from './EnhancedClinicalVariableCard';
 
@@ -472,6 +473,10 @@ export default compose(
           dispatchUpdateClinicalVariable({
             value: DEFAULT_RANGES,
             variableKey: 'customRanges',
+          });
+          dispatchUpdateClinicalVariable({
+            value: DEFAULT_SAVED_SURVIVAL_BINS,
+            variableKey: 'savedSurvivalBins',
           });
         }
       },

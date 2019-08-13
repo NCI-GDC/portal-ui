@@ -24,6 +24,7 @@ import CategoricalCustomBinsModal from './modals/CategoricalCustomBinsModal';
 
 import RecomposeUtils, {
   dataDimensions,
+  DEFAULT_SAVED_SURVIVAL_BINS,
   filterSurvivalData,
   getBinData,
   getCountLink,
@@ -115,6 +116,7 @@ export default compose(
         binData,
         variable: { savedSurvivalBins },
       }) => {
+        // console.log('savedSurvivalBins', savedSurvivalBins);
         const matchedSavedBins = binData.filter(bin =>
           find(savedSurvivalBins, {
             name: bin.key,
@@ -181,6 +183,10 @@ export default compose(
                 }
               ), {}),
             variableKey: 'bins',
+          });
+          dispatchUpdateClinicalVariable({
+            value: DEFAULT_SAVED_SURVIVAL_BINS,
+            variableKey: 'savedSurvivalBins',
           });
         }
       },

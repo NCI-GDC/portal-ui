@@ -12,13 +12,12 @@ import MutationsTab from '@ncigdc/components/Explore/MutationsTab';
 import OncogridTab from '@ncigdc/components/Explore/OncogridTab';
 import CasesTab from '@ncigdc/components/Explore/CasesTab';
 import NoResultsMessage from '@ncigdc/components/NoResultsMessage';
-// import CaseAggregations from '@ncigdc/containers/explore/CaseAggregations';
 import ExploreCasesAggregations from '@ncigdc/modern_components/ExploreCasesAggregations';
 import GeneAggregations from '@ncigdc/modern_components/GeneAggregations';
 import SSMAggregations from '@ncigdc/containers/explore/SSMAggregations';
 import ClinicalAggregations from '@ncigdc/containers/explore/ClinicalAggregations';
 import { CreateExploreCaseSetButton } from '@ncigdc/modern_components/withSetAction';
-import { makeFilter, replaceFilters } from '@ncigdc/utils/filters';
+import { replaceFilters } from '@ncigdc/utils/filters';
 import { stringifyJSONParam } from '@ncigdc/utils/uri';
 import { Row } from '@ncigdc/uikit/Flex';
 import Button from '@ncigdc/uikit/Button';
@@ -135,19 +134,10 @@ const ExplorePageComponent = ({
       facetTabs={[
         {
           component: (
-            <ExploreCasesAggregations relay={relay} />
-              // aggregations={viewer.explore.cases.aggregations}
-              // facets={viewer.explore.customCaseFacets}
-              // maxFacetsPanelHeight={maxFacetsPanelHeight}
-              // setAutocomplete={(value, onReadyStateChange) => relay.setVariables(
-              //   {
-              //     idAutocompleteCases: value,
-              //     runAutocompleteCases: !!value,
-              //   },
-              //   onReadyStateChange,
-              // )}
-              // suggestions={get(viewer, 'autocomplete_cases.hits', [])}
-              // />
+            <ExploreCasesAggregations
+              maxFacetsPanelHeight={maxFacetsPanelHeight}
+              relay={relay}
+              />
           ),
           id: 'cases',
           text: 'Cases',
@@ -169,7 +159,10 @@ const ExplorePageComponent = ({
         },
         {
           component: (
-            <GeneAggregations relay={relay} />
+            <GeneAggregations
+              maxFacetsPanelHeight={maxFacetsPanelHeight}
+              relay={relay}
+              />
           ),
           id: 'genes',
           text: 'Genes',
@@ -259,12 +252,6 @@ const ExplorePageComponent = ({
                   ) : (
                     <NoResultsMessage>No Genes Found.</NoResultsMessage>
                   ),
-                filters: filters || makeFilter([
-                  {
-                    field: 'genes.is_cancer_gene_census',
-                    value: ['true'],
-                  },
-                ]),
                 id: 'genes',
                 text: `Genes (${hasGeneHits.toLocaleString()})`,
               },

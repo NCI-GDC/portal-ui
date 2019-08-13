@@ -57,49 +57,52 @@ const enhance = compose(
 
 const SearchPage = (
   {
+    className,
     facetTabs = [],
     results = <span />,
     showFacets,
     setShowFacets,
     filtersLinkProps,
-    ...props
   }: TProps = {},
 ) => (
-  <Container className={`${props.className} test-search-page`}>
-      {showFacets && (
-        <FacetsPanel>
-          <TabbedLinks
-            defaultIndex={0}
-            hideTabs={facetTabs.length <= 1}
-            links={facetTabs}
-            linkStyle={{ paddingLeft: '1.2rem', paddingRight: '1.2rem' }}
-            queryParam="facetTab"
-            tabToolbar={(
-              <UnstyledButton
-                aria-label="Toggle Facet Panel Visibility"
-                onClick={() => {
-                  setShowFacets(!showFacets);
-                }}
-                style={{ minHeight: 46 }}
-                >
-                <DoubleArrowLeftIcon />
-              </UnstyledButton>
-            )}
-            />
-        </FacetsPanel>
-      )}
-      <Content>
-        <Row style={{ marginBottom: '2rem' }}>
-          {!showFacets && (
-            <ShowFacetsButton onClick={() => setShowFacets(!showFacets)}>
-              <DoubleArrowRightIcon />
-            </ShowFacetsButton>
+  <Container className={`${className} test-search-page`}>
+    {showFacets && (
+      <FacetsPanel>
+        <TabbedLinks
+          defaultIndex={0}
+          hideTabs={facetTabs.length <= 1}
+          links={facetTabs}
+          linkStyle={{
+            paddingLeft: '1.2rem',
+            paddingRight: '1.2rem',
+          }}
+          queryParam="facetTab"
+          tabToolbar={(
+            <UnstyledButton
+              aria-label="Toggle Facet Panel Visibility"
+              onClick={() => {
+                setShowFacets(!showFacets);
+              }}
+              style={{ minHeight: 46 }}
+              >
+              <DoubleArrowLeftIcon />
+            </UnstyledButton>
           )}
-          <CurrentFilters style={{ flex: 1 }} {...filtersLinkProps} />
-        </Row>
-        {results}
-      </Content>
-    </Container>
+          />
+      </FacetsPanel>
+    )}
+    <Content>
+      <Row style={{ marginBottom: '2rem' }}>
+        {!showFacets && (
+          <ShowFacetsButton onClick={() => setShowFacets(!showFacets)}>
+            <DoubleArrowRightIcon />
+          </ShowFacetsButton>
+        )}
+        <CurrentFilters style={{ flex: 1 }} {...filtersLinkProps} />
+      </Row>
+      {results}
+    </Content>
+  </Container>
 );
 
 export default enhance(SearchPage);

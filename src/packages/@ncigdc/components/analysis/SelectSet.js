@@ -1,6 +1,8 @@
 // @flow
 import React from 'react';
-import _ from 'lodash';
+import {
+  capitalize, get, omit, set, truncate,
+} from 'lodash';
 import { connect } from 'react-redux';
 import { compose, withState } from 'recompose';
 import { Row, Column } from '@ncigdc/uikit/Flex';
@@ -8,9 +10,9 @@ import EntityPageHorizontalTable from '@ncigdc/components/EntityPageHorizontalTa
 import countComponents from '@ncigdc/modern_components/Counts';
 import { Tooltip } from '@ncigdc/uikit/Tooltip';
 import Button from '@ncigdc/uikit/Button';
-import ExploreLink from '@ncigdc/components/Links/ExploreLink';
+import ExploreLink, { defaultExploreQuery } from '@ncigdc/components/Links/ExploreLink';
 import { theme } from '@ncigdc/theme/index';
-import removeEmptyKeys from '@ncigdc/utils/removeEmptyKeys';
+import { removeEmptyKeys } from '@ncigdc/utils/removeEmptyKeys';
 import { TSetTypes } from '@ncigdc/dux/sets';
 import DemoButton from './DemoButton';
 
@@ -37,26 +39,39 @@ const enhance = compose(
 );
 
 const SetTable = ({
-  sets,
-  selectedSets,
-  setSelectedSets,
-  setDisabledMessage,
+  demoData,
+  description,
+  Icon,
   label,
-  setInstructions,
   onCancel,
   onRun,
-  validateSets,
-  Icon,
-  description,
+  selectedSets,
+  setDisabledMessage,
+  setInstructions,
+  sets,
+  setSelectedSets,
   setTypes,
   type,
-  demoData,
+  validateSets,
 }: TProps) => {
   const headings = [
-    { key: 'select', title: ' ' },
-    { key: 'type', title: 'Type' },
-    { key: 'name', title: 'Name' },
-    { key: 'count', title: 'Items', style: { textAlign: 'right' } },
+    {
+      key: 'select',
+      title: ' ',
+    },
+    {
+      key: 'type',
+      title: 'Type',
+    },
+    {
+      key: 'name',
+      title: 'Name',
+    },
+    {
+      key: 'count',
+      title: 'Items',
+      style: { textAlign: 'right' },
+    },
   ];
   const setData = Object.entries(sets)
     .filter(([type]) => setTypes.includes(type))
@@ -68,7 +83,10 @@ const SetTable = ({
         const checked = Boolean((selectedSets[type] || {})[setId]);
 
         const msg =
-          !checked && setDisabledMessage({ sets: selectedSets, type });
+          !checked && setDisabledMessage({
+            sets: selectedSets,
+            type,
+          });
 
         return {
           select: (
@@ -77,31 +95,31 @@ const SetTable = ({
               style={{
                 cursor: msg ? 'not-allowed' : 'initial',
               }}
-            >
+              >
               <input
-                style={{
-                  marginLeft: 3,
-                  pointerEvents: msg ? 'none' : 'initial',
-                }}
-                id={id}
-                type="checkbox"
-                value={setId}
+                checked={checked}
                 disabled={msg}
+                id={id}
                 onChange={e => {
                   const setId = e.target.value;
                   const setIdPath = [type, setId];
                   setSelectedSets(
-                    _.get(selectedSets, setIdPath)
-                      ? removeEmptyKeys(_.omit(selectedSets, setIdPath))
-                      : _.set({ ...selectedSets }, setIdPath, sets[setId]),
+                    get(selectedSets, setIdPath)
+                      ? removeEmptyKeys(omit(selectedSets, setIdPath))
+                      : set({ ...selectedSets }, setIdPath, sets[setId]),
                   );
                 }}
-                checked={checked}
-              />
+                style={{
+                  marginLeft: 3,
+                  pointerEvents: msg ? 'none' : 'initial',
+                }}
+                type="checkbox"
+                value={setId}
+                />
             </Tooltip>
           ),
-          type: _.capitalize(type === 'ssm' ? 'mutations' : type + 's'),
-          name: <label htmlFor={id}>{_.truncate(label, { length: 70 })}</label>,
+          type: capitalize(type === 'ssm' ? 'mutations' : `${type}s`),
+          name: <label htmlFor={id}>{truncate(label, { length: 70 })}</label>,
           count: (
             <CountComponent
               filters={{
@@ -111,7 +129,7 @@ const SetTable = ({
                   value: `set_id:${setId}`,
                 },
               }}
-            />
+              />
           ),
         };
       });
@@ -121,9 +139,19 @@ const SetTable = ({
   return (
     <div>
       <Row>
-        <Column style={{ padding: '2rem 2.5rem 0', flex: 1 }}>
+        <Column
+          style={{
+            padding: '2rem 2.5rem 0',
+            flex: 1,
+          }}
+          >
           <Row>
-            <div style={{ width: 80, margin: 20 }}>
+            <div
+              style={{
+                width: 80,
+                margin: 20,
+              }}
+              >
               <Icon />
             </div>
             <div>
@@ -139,13 +167,13 @@ const SetTable = ({
               padding: '1rem 2.5rem 1rem',
               borderTop: `1px solid ${theme.greyScale5}`,
             }}
-          >
+            >
             <Button onClick={onCancel}>Cancel</Button>
             <DemoButton demoData={demoData} type={type} />
             <Button
               disabled={!validateSets(selectedSets)}
               onClick={() => onRun(selectedSets)}
-            >
+              >
               Run
             </Button>
           </Row>
@@ -162,7 +190,9 @@ const SetTable = ({
             </div>
             <div style={{ fontStyle: 'italic' }}>
               You can create and save case, gene and mutation sets of interest
-              from the <ExploreLink>Exploration Page</ExploreLink>
+              from the
+              {' '}
+              <ExploreLink query={defaultExploreQuery}>Exploration Page</ExploreLink>
             </div>
           </div>
           {setData.length > 0 && (

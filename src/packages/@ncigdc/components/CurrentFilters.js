@@ -37,20 +37,18 @@ import { AWG } from '@ncigdc/utils/constants';
 const Field = styled(Button, {
   backgroundColor: ({ theme }) => theme.greyScale2,
   ':hover': {
-    backgroundColor: ({ theme }) =>
-      Color(theme.greyScale2)
-        .lighten(0.7)
-        .rgbString(),
+    backgroundColor: ({ theme }) => Color(theme.greyScale2)
+      .lighten(0.7)
+      .rgbString(),
   },
 });
 
 const Value = styled(Button, {
   backgroundColor: ({ theme }) => theme.success,
   ':hover': {
-    backgroundColor: ({ theme }) =>
-      Color(theme.success)
-        .lighten(0.7)
-        .rgbString(),
+    backgroundColor: ({ theme }) => Color(theme.success)
+      .lighten(0.7)
+      .rgbString(),
   },
 });
 
@@ -177,7 +175,7 @@ const CurrentFilters = (
     hideClearButton = false,
   }: TProps = {},
 ) => (
-  <Info style={style} className="test-current-filters">
+  <Info className="test-current-filters" style={style}>
     {!currentFilters.length &&
       !hideHelpText && (
         <span
@@ -187,27 +185,27 @@ const CurrentFilters = (
             lineHeight: '44px',
             width: '100%',
           }}
-        >
+          >
           <LeftArrow />
           <span style={{ marginLeft: '0.6rem' }}>
             Start searching by selecting a facet
           </span>
         </span>
-      )}
+    )}
     {!!currentFilters.length && (
       <Row
         style={{
           width: '100%',
           justifyContent: 'space-between',
         }}
-      >
-        <Row wrap spacing="0.3rem">
+        >
+        <Row spacing="0.3rem" wrap>
           {!hideClearButton && (
             <NotUnderlinedLink
               className="test-clear"
-              style={styles.groupPadding}
               query={omit(query, 'filters')}
-            >
+              style={styles.groupPadding}
+              >
               <Button leftIcon={<Undo />}>Clear</Button>
             </NotUnderlinedLink>
           )}
@@ -220,7 +218,7 @@ const CurrentFilters = (
                 key={`${filter.content.field}.${filter.op}.${value.join()}`}
                 spacing="0.3rem"
                 style={styles.groupPadding}
-              >
+                >
                 <NotUnderlinedLink
                   className="test-field-name"
                   merge="toggle"
@@ -231,11 +229,11 @@ const CurrentFilters = (
                       content: [filter],
                     },
                   }}
-                >
+                  >
                   <Field>
                     {humanify({
-                      term: facetFieldDisplayMapper(filter.content.field),
-                    })}
+                        term: facetFieldDisplayMapper(filter.content.field),
+                      })}
                   </Field>
                 </NotUnderlinedLink>
                 <Op>{getDisplayOp(filter.op, value)}</Op>
@@ -245,45 +243,48 @@ const CurrentFilters = (
                   : take(value, 2)
                 ).map(value => (
                   <NotUnderlinedLink
-                    className="test-field-value"
-                    key={value}
-                    merge="toggle"
-                    query={{
-                      offset: 0,
-                      filters: {
-                        op: 'and',
-                        content: [
-                          {
-                            op: filter.op,
-                            content: {
-                              field: filter.content.field,
-                              value: [value],
+                      className="test-field-value"
+                      key={value}
+                      merge="toggle"
+                      query={{
+                        offset: 0,
+                        filters: {
+                          op: 'and',
+                          content: [
+                            {
+                              op: filter.op,
+                              content: {
+                                field: filter.content.field,
+                                value: [value],
+                              },
                             },
-                          },
-                        ],
-                      },
-                    }}
-                  >
-                    <Value>
-                      {getDisplayValue(filter.content.field, value)}
-                    </Value>
-                  </NotUnderlinedLink>
+                          ],
+                        },
+                      }}
+                      >
+                      <Value>
+                        {getDisplayValue(filter.content.field, value)}
+                      </Value>
+                    </NotUnderlinedLink>
                 ))}
                 {value.length > 2 && (
                   <UnstyledButton
                     className="test-toggle"
-                    style={styles.rightParen}
                     onClick={() => onLessClicked(filter)}
-                  >
+                    style={styles.rightParen}
+                      >
                     …
                   </UnstyledButton>
                 )}
                 {isFilterExpanded(filter) && (
                   <UnstyledButton
                     className="test-toggle"
-                    style={{ display: 'flex', alignItems: 'center' }}
                     onClick={() => onLessClicked(filter)}
-                  >
+                    style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                      }}
+                      >
                     Less
                   </UnstyledButton>
                 )}
@@ -307,17 +308,20 @@ const CurrentFilters = (
                 content: currentFilters.map(
                   ({ content: { field, value }, op }) => ({
                     op: op.toLowerCase(),
-                    content: { field: linkFieldMap(field), value },
+                    content: {
+                      field: linkFieldMap(field),
+                      value,
+                    },
                   }),
                 ),
               },
             }
           }
-        >
+          >
           <Cogs style={{ marginRight: 5 }} />
           {linkText}
         </LinkButton>
-      )}
+    )}
   </Info>
 );
 /*----------------------------------------------------------------------------*/

@@ -113,7 +113,8 @@ export default compose(
       (!isEqual(props.binData, nextProps.binData) ||
       props.variable.active_chart !== nextProps.variable.active_chart ||
       !isEqual(props.selectedSurvivalBins, nextProps.selectedSurvivalBins) ||
-      props.variable.setId !== nextProps.variable.setId),
+      props.variable.setId !== nextProps.variable.setId ||
+      !isEqual(props.variable.savedSurvivalBins, props.variable.savedSurvivalBins)),
       ({
         binData,
         variable: { savedSurvivalBins },

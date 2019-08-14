@@ -266,12 +266,6 @@ class ContinuousCustomBinsModal extends Component {
     this.validateRangeRow(nextRangeRows);
   };
 
-  handleAddRow = inputRow => {
-    const { rangeRows } = this.state;
-
-    this.setState({ rangeRows: rangeRows.concat(inputRow) });
-  }
-
   handleUpdateRow = (inputRowIndex, inputRow) => {
     const { rangeRows } = this.state;
     const nextRangeRows = rangeRows
@@ -435,32 +429,30 @@ class ContinuousCustomBinsModal extends Component {
     const validationResult = this.validateRangeInputFormatting();
     const inputFormatIsValid = Object.keys(validationResult)
     .filter(field => validationResult[field].length > 0).length === 0;
-    this.setState({ 
-      rangeInputErrors: validationResult, 
-      ...inputFormatIsValid 
-        ? {}
-        : { rangeInputOverlapErrors: [] }
-    }, () => {
-      if (inputFormatIsValid) {
-        const { rangeInputErrors } = this.state;
-        const rangeInputOverlapErrors = this.validateRangeInputOverlap();
-        const rangeInputNameError = this.validateRangeInputName();
-        const overlapIsValid = rangeInputOverlapErrors.length === 0;
-        const nameIsValid = rangeInputNameError.length === 0;
 
-        this.setState({
-          rangeInputErrors: {
-            ...rangeInputErrors,
-            name: rangeInputNameError,
-          },
-          rangeInputOverlapErrors,
-        });
+    if (inputFormatIsValid) {
+      const rangeInputOverlapErrors = this.validateRangeInputOverlap();
+      const rangeInputNameError = this.validateRangeInputName();
 
-        return nameIsValid && overlapIsValid;
-      } else {
-        return false;
-      }
-    });
+      this.setState({
+        rangeInputErrors: {
+          ...validationResult,
+          name: rangeInputNameError,
+        },
+        rangeInputOverlapErrors,
+      });
+
+      const overlapIsValid = rangeInputOverlapErrors.length === 0;
+      const nameIsValid = rangeInputNameError.length === 0;
+
+      return nameIsValid && overlapIsValid;
+    } else {
+      this.setState({ 
+        rangeInputErrors: validationResult, 
+        rangeInputOverlapErrors: [],
+      });
+      return false;
+    }
   }
 
   handleAddRow = () => {

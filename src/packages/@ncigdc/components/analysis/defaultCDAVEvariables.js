@@ -48,23 +48,23 @@ const genderBronchusSurvivalBins = [
 ];
 
 export default {
-  // 'demographic.ethnicity': {
-  //   active_calculation: 'number',
-  //   active_chart: 'histogram',
-  //   active_survival: 'overall',
-  //   bins: {},
-  //   plotTypes: 'categorical',
-  //   savedSurvivalBins: DEFAULT_SAVED_SURVIVAL_BINS,
-  //   scrollToCard: false,
-  //   type: 'Demographic',
-  // },
+  'demographic.ethnicity': {
+    active_calculation: 'number',
+    active_chart: 'histogram',
+    active_survival: 'overall',
+    bins: {},
+    plotTypes: 'categorical',
+    savedSurvivalBins: DEFAULT_SAVED_SURVIVAL_BINS,
+    scrollToCard: false,
+    type: 'Demographic',
+  },
   'demographic.gender': {
     active_calculation: 'number',
     active_chart: 'histogram',
     active_survival: 'overall',
     bins: {},
     plotTypes: 'categorical',
-    savedSurvivalBins: genderBronchusSurvivalBins,
+    savedSurvivalBins: DEFAULT_SAVED_SURVIVAL_BINS,
     scrollToCard: false,
     type: 'Demographic',
   },

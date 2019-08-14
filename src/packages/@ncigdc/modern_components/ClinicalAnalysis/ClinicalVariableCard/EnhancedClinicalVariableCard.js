@@ -8,8 +8,10 @@ import {
 } from 'recompose';
 import { connect } from 'react-redux';
 import {
+  find,
   isEmpty,
   isEqual,
+  uniqWith,
 } from 'lodash';
 
 import {
@@ -49,8 +51,12 @@ export default compose(
       setSelectedSurvivalLoadingIds([]);
     }),
   })),
-  withProps(
+  withPropsOnChange((props, nextProps) => 
+    !isEqual(props.variable.savedSurvivalBins, nextProps.variable.savedSurvivalBins) ||
+    !isEqual(props.selectedSurvivalBins, nextProps.selectedSurvivalBins) ||
+    props.variable.setId === nextProps.variable.setId, 
     ({
+      dispatchUpdateClinicalVariable,
       selectedSurvivalBins,
       setSelectedSurvivalBins,
       setSelectedSurvivalLoadingIds,
@@ -58,10 +64,10 @@ export default compose(
       survivalPlotValues,
       survivalTableValues,
       updateSurvivalPlot,
-      variable: { plotTypes },
+      variable: { plotTypes, savedSurvivalBins },
     }) => ({
       populateSurvivalData: () => {
-        // console.log('survivalTableValues populate', survivalTableValues);
+        console.log('survivalTableValues populate', survivalTableValues);
         setSurvivalPlotLoading(true);
         setSelectedSurvivalBins(survivalTableValues);
         setSelectedSurvivalLoadingIds(survivalTableValues);
@@ -76,10 +82,16 @@ export default compose(
         }
         setSurvivalPlotLoading(true);
 
-        const nextBins =
-          selectedSurvivalBins.indexOf(bin.key) === -1
-            ? selectedSurvivalBins.concat(bin.key)
-            : selectedSurvivalBins.filter(s => s !== bin.key);
+        // console.log('bin', bin);
+        // console.log('data', data);
+        // console.log('selectedSurvivalBins', selectedSurvivalBins);
+
+        const deselectingBin = selectedSurvivalBins.indexOf(bin.key) >= 0;
+
+        const nextBins = deselectingBin 
+          ? selectedSurvivalBins.filter(s => s !== bin.key)
+          : selectedSurvivalBins.concat(bin.key);
+        // console.log('nextBins', nextBins);
 
         setSelectedSurvivalBins(nextBins);
         setSelectedSurvivalLoadingIds(nextBins);
@@ -91,6 +103,24 @@ export default compose(
             .map(nextBin => makeDocCountInteger(nextBin));
 
         updateSurvivalPlot(nextBinsForPlot);
+
+        const nextBinsWithValues = nextBins.map(bin => ({
+          name: bin,
+          values: find(data, { key: bin }).keyArray,
+        }));
+
+        const filteredSurvivalBins = savedSurvivalBins
+          .filter(savedBin => !(deselectingBin && savedBin.name === bin.key));
+
+        const nextSavedBins = uniqWith(filteredSurvivalBins
+          .concat(nextBinsWithValues), isEqual);
+
+        // console.log('nextSavedBins', nextSavedBins);
+
+        dispatchUpdateClinicalVariable({
+          value: nextSavedBins,
+          variableKey: 'savedSurvivalBins',
+        });
       },
     })
   ),
@@ -98,7 +128,9 @@ export default compose(
     (props, nextProps) => nextProps.variable.active_chart === 'survival' &&
       (props.variable.active_chart !== nextProps.variable.active_chart ||
       props.id !== nextProps.id ||
-      !isEqual(props.variable.bins, nextProps.variable.bins)),
+      !isEqual(props.variable.bins, nextProps.variable.bins) ||
+      (!isEqual(props.variable.savedSurvivalBins, nextProps.variable.savedSurvivalBins) &&
+        nextProps.variable.savedSurvivalBins.length === 0)),
     ({ populateSurvivalData }) => { populateSurvivalData(); }
   ),
   withPropsOnChange(

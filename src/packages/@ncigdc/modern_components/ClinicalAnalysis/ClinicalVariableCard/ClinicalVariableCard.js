@@ -99,12 +99,12 @@ const getTableData = (
         ? bin.key
         : bin.groupName;
     const binIsSelected = find(selectedBins, { key: bin.key });
-    console.log('selectedSurvivalBins', selectedSurvivalBins);
-    console.log('bin', bin);
-    console.log('selectedForSurvivalPlot', selectedForSurvivalPlot);
-    console.log('survivalPlotIndex', survivalPlotIndex);
-    console.log('binName', binName);
-    console.log('---------');
+    // console.log('selectedSurvivalBins', selectedSurvivalBins);
+    // console.log('bin', bin);
+    // console.log('selectedForSurvivalPlot', selectedForSurvivalPlot);
+    // console.log('survivalPlotIndex', survivalPlotIndex);
+    // console.log('binName', binName);
+    // console.log('---------');
 
     return Object.assign(
       {},

@@ -362,7 +362,7 @@ const ClinicalAnalysisResult = ({
             </Tooltip>
           </Column>
         )}
-        {controlPanelExpanded || (
+        {controlPanelExpanded && (
           <Column
             className="no-print"
             style={{

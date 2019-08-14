@@ -41,6 +41,7 @@ import RecomposeUtils, {
   DEFAULT_SAVED_SURVIVAL_BINS,
 } from './helpers';
 import EnhancedClinicalVariableCard from './EnhancedClinicalVariableCard';
+import { MAXIMUM_CURVES } from '@ncigdc/utils/survivalplot';
 
 export default compose(
   setDisplayName('EnhancedContinuousVariableCard'),
@@ -400,32 +401,30 @@ export default compose(
       getContinuousBins,
       variable: { bins: variableBins, savedSurvivalBins },
     }) => {
+      // for continuous cards, check savedSurvivalBins against variable.bins because variable.bins has user-defined groupNames (if applicable)
+      // then use the data from dataBuckets
       const canUseSavedBins = savedSurvivalBins
-        .every(savedBin => 
+        .some(savedBin => 
           typeof variableBins[savedBin.values[0]] !== 'undefined' && 
           variableBins[savedBin.values[0]].groupName === savedBin.name);
 
       const survivalPlotValues = dataBuckets.length === 0
         ? []
-        : canUseSavedBins
+        : (canUseSavedBins
           ? filterSurvivalData(dataBuckets
               .filter(dataBucket => savedSurvivalBins
                 .some(savedBin => savedBin.values[0] === dataBucket.key)
               )
               .reduce(getContinuousBins, [])
             ) 
-            .map(dataBucket => ({
-              ...dataBucket, 
-              index: find(savedSurvivalBins, { values: [dataBucket.key] }).index,
-            }))
-            .map(bin => makeDocCountInteger(bin))
           : filterSurvivalData(dataBuckets
               .sort((a, b) =>
                 parseContinuousKey(a.key)[0] - parseContinuousKey(b.key)[0])
               .reduce(getContinuousBins, [])
             ) 
             .sort((a, b) => b.chart_doc_count - a.chart_doc_count)
-            .slice(0, 2)
+          )
+            .slice(0, canUseSavedBins ? MAXIMUM_CURVES : 2)
             .map(bin => makeDocCountInteger(bin));
 
       const survivalTableValues = survivalPlotValues
@@ -450,11 +449,13 @@ export default compose(
   ),
   withPropsOnChange(
     (props, nextProps) => props.binsAreCustom !== nextProps.binsAreCustom ||
-      props.variable.id !== nextProps.variable.id,
+      props.variable.id !== nextProps.variable.id ||
+      !isEqual(props.variable.savedSurvivalBins, nextProps.variable.savedSurvivalBins),
     ({
       binsAreCustom,
       defaultData: { bins },
       dispatchUpdateClinicalVariable,
+      variable: { savedSurvivalBins },
     }) => ({
       resetBins: () => {
         if (binsAreCustom) {
@@ -474,6 +475,8 @@ export default compose(
             value: DEFAULT_RANGES,
             variableKey: 'customRanges',
           });
+        }
+        if (savedSurvivalBins.length > 0) {
           dispatchUpdateClinicalVariable({
             value: DEFAULT_SAVED_SURVIVAL_BINS,
             variableKey: 'savedSurvivalBins',

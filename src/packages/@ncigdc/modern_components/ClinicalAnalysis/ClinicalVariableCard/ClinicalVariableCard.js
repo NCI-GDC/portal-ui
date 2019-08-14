@@ -220,7 +220,6 @@ const ClinicalVariableCard = ({
   plots,
   qqData,
   resetBins,
-  savedSurvivalBins,
   selectedBins,
   selectedSurvivalBins,
   selectedSurvivalData,
@@ -510,7 +509,7 @@ const ClinicalVariableCard = ({
                       onClick={resetBins}
                       style={{
                         ...styles.actionMenuItem,
-                        ...binsAreCustom || savedSurvivalBins.length > 0
+                        ...binsAreCustom || variable.savedSurvivalBins.length > 0
                           ? {}
                           : styles.actionMenuItemDisabled(theme),
                       }}

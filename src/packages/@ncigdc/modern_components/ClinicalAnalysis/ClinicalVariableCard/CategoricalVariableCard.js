@@ -161,11 +161,13 @@ export default compose(
   withPropsOnChange(
     (props, nextProps) =>
       props.binsAreCustom !== nextProps.binsAreCustom ||
-      !isEqual(props.dataBuckets, nextProps.dataBuckets),
+      !isEqual(props.dataBuckets, nextProps.dataBuckets) ||
+      !isEqual(props.variable.savedSurvivalBins, nextProps.variable.savedSurvivalBins),
     ({
       binsAreCustom,
       dataBuckets,
       dispatchUpdateClinicalVariable,
+      variable: { savedSurvivalBins },
     }) => ({
       resetBins: () => {
         if (binsAreCustom) {
@@ -184,6 +186,8 @@ export default compose(
               ), {}),
             variableKey: 'bins',
           });
+        }
+        if (savedSurvivalBins.length > 0) {
           dispatchUpdateClinicalVariable({
             value: DEFAULT_SAVED_SURVIVAL_BINS,
             variableKey: 'savedSurvivalBins',

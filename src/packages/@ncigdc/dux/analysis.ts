@@ -5,6 +5,7 @@ import {
   DEFAULT_BIN_TYPE,
   DEFAULT_INTERVAL,
   DEFAULT_RANGES,
+  DEFAULT_SAVED_SURVIVAL_BINS,
 } from '@ncigdc/modern_components/ClinicalAnalysis/ClinicalVariableCard/helpers';
 
 const sets: any = namespaceActions('sets', [
@@ -111,7 +112,7 @@ const defaultVariableConfig = {
   active_chart: 'histogram',
   active_survival: 'overall',
   bins: {},
-  savedSurvivalBins: {},
+  savedSurvivalBins: DEFAULT_SAVED_SURVIVAL_BINS,
 };
 
 const defaultContinuousVariableConfig = {

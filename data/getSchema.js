@@ -14,14 +14,13 @@ const SERVER = `${process.argv[2] || 'http://localhost:5000/'}graphql`;
 
 // Save JSON of full schema introspection for Babel Relay Plugin to use
 fetch(SERVER, {
-  method: 'POST',
+  body: JSON.stringify({ query: introspectionQuery }),
   headers: {
     Accept: 'application/json',
     'Content-Type': 'application/json',
   },
-  body: JSON.stringify({ query: introspectionQuery }),
-})
-  .then(res => res.json())
+  method: 'POST',
+}).then(res => res.json())
   .then(schemaJSON => {
     fs.writeFileSync(`${schemaPath}.json`, JSON.stringify(schemaJSON, null, 2));
 

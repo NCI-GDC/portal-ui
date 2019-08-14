@@ -7,5 +7,8 @@
     "flow.showStatus": true,
     "flow.runOnEdit": true,
     "javascript.validate.enable": false,
-    "cSpell.enabled": false
+    "cSpell.enabled": false,
+    "editor.formatOnSave": false,
+    "editor.formatOnType": false,
+    "editor.formatOnPaste": false
 }

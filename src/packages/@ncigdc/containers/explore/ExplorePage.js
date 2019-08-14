@@ -2,7 +2,6 @@
 import React from 'react';
 import Relay from 'react-relay/classic';
 import { get, isEqual } from 'lodash';
-
 import withRouter from '@ncigdc/utils/withRouter';
 import SearchPage from '@ncigdc/components/SearchPage';
 import TabbedLinks from '@ncigdc/components/TabbedLinks';
@@ -14,11 +13,13 @@ import NoResultsMessage from '@ncigdc/components/NoResultsMessage';
 import CaseAggregations from '@ncigdc/containers/explore/CaseAggregations';
 import GeneAggregations from '@ncigdc/modern_components/GeneAggregations';
 import SSMAggregations from '@ncigdc/containers/explore/SSMAggregations';
+import ClinicalAggregations from '@ncigdc/containers/explore/ClinicalAggregations';
 import { CreateExploreCaseSetButton } from '@ncigdc/modern_components/withSetAction';
 import { makeFilter, replaceFilters } from '@ncigdc/utils/filters';
 import { stringifyJSONParam } from '@ncigdc/utils/uri';
 import { Row } from '@ncigdc/uikit/Flex';
 import Button from '@ncigdc/uikit/Button';
+import ResizeDetector from 'react-resize-detector';
 
 export type TProps = {
   filters: {},
@@ -77,7 +78,7 @@ function setVariables({ filters, relay }) {
         ],
         op: 'and',
       },
-      filters
+      filters,
     ),
     dbsnpRsFilters: replaceFilters(
       {
@@ -92,12 +93,17 @@ function setVariables({ filters, relay }) {
         ],
         op: 'and',
       },
-      filters
+      filters,
     ),
   });
 }
+const noResultsMessageStyle = { minHeight: 387 };
 
-class ExplorePageComponent extends React.Component {
+export class ExplorePageComponent extends React.Component {
+  state = {
+    maxFacetsPanelHeight: 0,
+  }
+
   componentDidMount() {
     setVariables(this.props);
   }
@@ -116,6 +122,7 @@ class ExplorePageComponent extends React.Component {
       relay,
       viewer,
     } = this.props;
+    const { maxFacetsPanelHeight } = this.state;
 
     const hasCaseHits = get(viewer, 'explore.cases.hits.total', 0);
     const hasGeneHits = get(viewer, 'explore.genes.hits.total', 0);
@@ -130,18 +137,34 @@ class ExplorePageComponent extends React.Component {
               <CaseAggregations
                 aggregations={viewer.explore.cases.aggregations}
                 facets={viewer.explore.customCaseFacets}
+                maxFacetsPanelHeight={maxFacetsPanelHeight}
                 setAutocomplete={(value, onReadyStateChange) => relay.setVariables(
                   {
                     idAutocompleteCases: value,
                     runAutocompleteCases: !!value,
                   },
-                  onReadyStateChange
+                  onReadyStateChange,
                 )}
                 suggestions={get(viewer, 'autocomplete_cases.hits', [])}
                 />
             ),
             id: 'cases',
             text: 'Cases',
+          },
+          {
+            component: (
+              <ClinicalAggregations
+                aggregations={viewer.explore.cases.aggregations}
+                caseFacets={viewer.caseFacets}
+                docType="cases"
+                facets={viewer.explore.customCaseFacets}
+                globalFilters={filters}
+                maxFacetsPanelHeight={maxFacetsPanelHeight}
+                relayVarName="exploreCaseCustomFacetFields"
+                />
+            ),
+            id: 'clinical',
+            text: 'Clinical',
           },
           {
             component: (
@@ -155,12 +178,13 @@ class ExplorePageComponent extends React.Component {
               <SSMAggregations
                 aggregations={viewer.explore.ssms.aggregations}
                 defaultFilters={filters}
+                maxFacetsPanelHeight={maxFacetsPanelHeight}
                 setAutocomplete={(value, onReadyStateChange) => relay.setVariables(
                   {
                     idAutocompleteSsms: value,
                     runAutocompleteSsms: !!value,
                   },
-                  onReadyStateChange
+                  onReadyStateChange,
                 )}
                 ssms={viewer.explore.ssms}
                 suggestions={get(viewer, 'autocomplete_ssms.hits', [])}
@@ -172,6 +196,10 @@ class ExplorePageComponent extends React.Component {
         ]}
         results={(
           <span>
+            <ResizeDetector
+              handleHeight
+              onResize={(width, height) => this.setState({ maxFacetsPanelHeight: height })}
+              />
             <Row>
               {filters ? (
                 <CreateExploreCaseSetButton
@@ -312,6 +340,23 @@ export const ExplorePageQuery = {
             }
           }
         }
+        caseFacets: __type(name: "ExploreCases"){
+          name
+          fields {
+            description
+            name
+            type {
+              name
+              fields
+              {
+                name
+                description
+                type {
+                  name }
+              }
+            }
+          }
+        }
         explore {
           customCaseFacets: cases {
             ${CaseAggregations.getFragment('facets')}
@@ -356,7 +401,7 @@ export const ExplorePageQuery = {
 
 const ExplorePage = Relay.createContainer(
   withRouter(ExplorePageComponent),
-  ExplorePageQuery
+  ExplorePageQuery,
 );
 
 export default ExplorePage;

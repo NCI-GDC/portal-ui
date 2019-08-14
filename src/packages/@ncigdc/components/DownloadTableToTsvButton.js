@@ -20,7 +20,11 @@ const getSingleHeader = (headThs: Array<NodeList>) => reduce(
   []
 );
 
-export const downloadToTSV = ({ filename, selector }) => {
+export const downloadToTSV = ({ excludedColumns = [
+  'Add all files to cart',
+  'Remove all files from cart',
+  'Select column',
+], filename, selector }) => {
   const tableEl = document.querySelector(selector);
   const headTrs = tableEl.querySelector('thead').querySelectorAll('tr');
   const headThs = map(headTrs, h => h.querySelectorAll('th'));
@@ -36,7 +40,9 @@ export const downloadToTSV = ({ filename, selector }) => {
       tds,
       (acc, td) => {
         const markedForTsv = td.querySelector('.for-tsv-export');
-        const exportText = markedForTsv ? markedForTsv.innerText : td.innerText;
+        const exportText = markedForTsv
+          ? markedForTsv.innerText
+          : td.innerText;
         const joinedText = exportText
           .trim()
           .split(/\s*\n\s*/)
@@ -51,7 +57,20 @@ export const downloadToTSV = ({ filename, selector }) => {
       []
     );
   });
-  saveFile(mapStringArrayToTsvString(thText, tdText), 'TSV', filename);
+
+  const excludedIndices = excludedColumns.reduce((acc, curr) => {
+    const normalizedCurr = curr.toLowerCase().trim();
+    const normalizedThText = thText.map(th => th.toLowerCase().trim());
+    const index = normalizedThText.indexOf(normalizedCurr);
+    return [...acc, ...(index >= 0 ? [index] : [])];
+  }, []);
+  const thFiltered = thText
+    .filter((th, idx) => excludedIndices.indexOf(idx) === -1);
+  const tdFiltered = tdText.map(tr => tr
+    .filter((td, idx) => excludedIndices.indexOf(idx) === -1));
+
+  saveFile(mapStringArrayToTsvString(thFiltered, tdFiltered), 'TSV', filename);
+
   track('download-table', {
     filename,
     selector,
@@ -61,6 +80,7 @@ export const downloadToTSV = ({ filename, selector }) => {
 
 const DownloadTableToTsvButton =
   ({
+    excludedColumns,
     filename,
     selector,
     leftIcon,
@@ -82,6 +102,7 @@ const DownloadTableToTsvButton =
       </Button>
     </Tooltip>
   );
+
 export default DownloadTableToTsvButton;
 
 export const ForTsvExport = ({ children }: { children: string }) => (

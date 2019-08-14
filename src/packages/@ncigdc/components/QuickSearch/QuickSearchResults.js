@@ -116,17 +116,21 @@ export const findMatchingToken = (item, lq, value = '') => {
 
 export const ResultHighlights = ({
   item,
-  query,
+  query = '',
   style,
+  highlightStyle,
 }: {
   item: Object,
   query: string,
   style: Object,
+  highlightStyle?: React.CSSProperties,
 }) => {
   const lq = query.toLocaleLowerCase();
   const value = findMatchingToken(item, lq);
 
-  return <div style={style}>{internalHighlight(lq, value)}</div>;
+  return (
+    <div style={style}>{internalHighlight(lq, value, highlightStyle)}</div>
+  );
 };
 
 type TProps = {

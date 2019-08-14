@@ -64,6 +64,34 @@
   background-color: #1f8256;
 }
 
+.toggle-wrapper--Demographic .react-toggle--checked .react-toggle-track {
+  background-color: #1f77b4;
+}
+.toggle-wrapper--Demographic .react-toggle--checked:hover:not(.react-toggle--disabled) .react-toggle-track {
+  background-color: #1b6699;
+}
+
+.toggle-wrapper--Diagnosis .react-toggle--checked .react-toggle-track {
+  background-color: #ff7f0e;
+}
+.toggle-wrapper--Diagnosis .react-toggle--checked:hover:not(.react-toggle--disabled) .react-toggle-track {
+  background-color: #e5720d;
+}
+
+.toggle-wrapper--Exposure .react-toggle--checked .react-toggle-track {
+  background-color: #9467bd;
+}
+.toggle-wrapper--Exposure .react-toggle--checked:hover:not(.react-toggle--disabled) .react-toggle-track {
+  background-color: #7f59a3;
+}
+
+.toggle-wrapper--Treatment .react-toggle--checked .react-toggle-track {
+  background-color: #2ca02c;
+}
+.toggle-wrapper--Treatment .react-toggle--checked:hover:not(.react-toggle--disabled) .react-toggle-track {
+  background-color: #258425;
+}
+
 .react-toggle-track-check {
   position: absolute;
   width: 14px;
@@ -130,6 +158,22 @@
 .react-toggle--checked .react-toggle-thumb {
   left: 23px;
   border-color: #52b589;
+}
+
+.toggle-wrapper--Demographic .react-toggle--checked .react-toggle-thumb {
+  border-color: #1f77b4;
+}
+
+.toggle-wrapper--Diagnosis .react-toggle--checked .react-toggle-thumb {
+  border-color: #ff7f0e;
+}
+
+.toggle-wrapper--Exposure .react-toggle--checked .react-toggle-thumb {
+  border-color: #9467bd;
+}
+
+.toggle-wrapper--Treatment .react-toggle--checked .react-toggle-thumb {
+  border-color: #2ca02c;
 }
 
 .react-toggle--focus .react-toggle-thumb {

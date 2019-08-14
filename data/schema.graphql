@@ -625,9 +625,6 @@ type Case implements Node {
   disease_type: String
 
   # keyword
-  diagnosis_ids: String
-
-  # keyword
   submitter_aliquot_ids: String
 
   # keyword
@@ -635,9 +632,6 @@ type Case implements Node {
 
   # keyword
   primary_site: String
-
-  # keyword
-  submitter_diagnosis_ids: String
 
   # keyword
   submitter_slide_ids: String
@@ -762,7 +756,7 @@ type CaseAggregations {
 
   # Numeric representation of the elapsed time between the excision and freezing of the sample, measured in minutes.
   #
-  samples__time_between_excision_and_freezing: NumericAggregations
+  samples__time_between_excision_and_freezing: Aggregations
 
   # Indicator of whether or not the sample was embedded in Optimal Cutting Temperature (OCT) compound.
   #
@@ -777,13 +771,13 @@ type CaseAggregations {
   # UUID for identifying or recalling a node.
   #
   samples__submitter_id: Aggregations
-  samples__intermediate_dimension: NumericAggregations
+  samples__intermediate_dimension: Aggregations
   samples__sample_id: Aggregations
 
   # Numeric representation of the elapsed time between the surgical clamping of
   # blood supply and freezing of the sample, measured in minutes.
   #
-  samples__time_between_clamping_and_freezing: NumericAggregations
+  samples__time_between_clamping_and_freezing: Aggregations
 
   # UUID of the related pathology report.
   samples__pathology_report_uuid: Aggregations
@@ -879,7 +873,7 @@ type CaseAggregations {
 
   # Numeric value that represents the shortest dimension of the sample, measured in millimeters.
   #
-  samples__shortest_dimension: NumericAggregations
+  samples__shortest_dimension: Aggregations
 
   # The method used to procure the sample used to extract analyte(s).
   #
@@ -1418,7 +1412,7 @@ type CaseAggregations {
   # Numeric value that represents the initial weight of the sample, measured in milligrams.
   #
   samples__initial_weight: NumericAggregations
-  samples__longest_dimension: NumericAggregations
+  samples__longest_dimension: Aggregations
   submitter_sample_ids: Aggregations
 
   # Status of the annotation.
@@ -1472,6 +1466,10 @@ type CaseAggregations {
   #
   exposures__cigarettes_per_day: NumericAggregations
 
+  # The year in which the participant quit smoking.
+  #
+  exposures__tobacco_smoking_quit_year: NumericAggregations
+
   # The weight of the patient measured in kilograms.
   #
   exposures__weight: NumericAggregations
@@ -1479,6 +1477,19 @@ type CaseAggregations {
   # A combination of date and time of day in the form [-]CCYY-MM-DDThh:mm:ss[Z|(+|-)hh:mm]
   #
   exposures__updated_datetime: Aggregations
+
+  # A response to a question that asks whether the participant has consumed at
+  # least 12 drinks of any kind of alcoholic beverage in their lifetime.
+  #
+  exposures__alcohol_history: Aggregations
+
+  # Category to describe the patient's current level of alcohol use as self-reported by the patient.
+  #
+  exposures__alcohol_intensity: Aggregations
+
+  # A calculated numerical quantity that represents an individual's weight to height ratio.
+  #
+  exposures__bmi: NumericAggregations
 
   # Numeric value (or unknown) to represent the number of years a person has been smoking.
   #
@@ -1488,106 +1499,45 @@ type CaseAggregations {
   #
   exposures__height: NumericAggregations
 
-  # The yes/no/unknown indicator used to describe whether a patient was exposed to
-  # smoke that is emitted from burning tobacco, including cigarettes, pipes, and
-  # cigars. This includes tobacco smoke exhaled by smokers.
-  #
-  exposures__environmental_tobacco_smoke_exposure: Aggregations
-
-  # Category describing current smoking status and smoking history as self-reported by a patient.
-  #
-  exposures__tobacco_smoking_status: Aggregations
-
-  # Numeric value used to describe the average number of days each week that a person consumes an alcoholic beverage.
-  #
-  exposures__alcohol_days_per_week: NumericAggregations
-
-  # Numeric computed value to represent lifetime tobacco exposure defined as
-  # number of cigarettes smoked per day x number of years smoked divided by 20.
-  #
-  exposures__pack_years_smoked: NumericAggregations
-
-  # The yes/no/unknown indicator used to describe whether a patient was exposured
-  # to respirable crystalline silica, a widespread, naturally occurring,
-  # crystalline metal oxide that consists of different forms including quartz,
-  # cristobalite, tridymite, tripoli, ganister, chert and novaculite.
-  #
-  exposures__respirable_crystalline_silica_exposure: Aggregations
-
-  # The yes/no/unknown indicator used to describe whether a patient was exposed to
-  # fine powder derived by the crushing of coal.
-  #
-  exposures__coal_dust_exposure: Aggregations
-
   # A combination of date and time of day in the form [-]CCYY-MM-DDThh:mm:ss[Z|(+|-)hh:mm]
   #
   exposures__created_datetime: Aggregations
-
-  # The yes/no/unknown indicator used to describe whether the patient was exposed to asbestos.
-  #
-  exposures__asbestos_exposure: Aggregations
 
   # The current state of the object.
   #
   exposures__state: Aggregations
 
-  # The text term used to describe the specific type of tobacco used by the patient.
+  # Category describing current smoking status and smoking history as self-reported by a patient.
   #
-  exposures__type_of_tobacco_used: Aggregations
+  exposures__tobacco_smoking_status: Aggregations
 
   # The year in which the participant began smoking.
   #
   exposures__tobacco_smoking_onset_year: NumericAggregations
 
-  # A response to a question that asks whether the participant has consumed at
-  # least 12 drinks of any kind of alcoholic beverage in their lifetime.
-  #
-  exposures__alcohol_history: Aggregations
-
-  # A calculated numerical quantity that represents an individual's weight to height ratio.
-  #
-  exposures__bmi: NumericAggregations
-
-  # The text term used to generally decribe how often the patient smokes.
-  #
-  exposures__smoking_frequency: Aggregations
-
   # Numeric value used to describe the average number of alcoholic beverages  a person consumes per day.
   #
   exposures__alcohol_drinks_per_day: NumericAggregations
 
-  # The text term used to describe the patient's specific type of smoke exposure.
+  # Numeric value used to describe the average number of days each week that a person consumes an alcoholic beverage.
   #
-  exposures__type_of_smoke_exposure: Aggregations
-  exposures__exposure_id: Aggregations
+  exposures__alcohol_days_per_week: NumericAggregations
 
   # A project-specific identifier for a node. This property is the calling
   # card/nickname/alias for a unit of submission. It can be used in place of the
   # UUID for identifying or recalling a node.
   #
   exposures__submitter_id: Aggregations
+  exposures__exposure_id: Aggregations
 
-  # Category to describe the patient's current level of alcohol use as self-reported by the patient.
+  # Numeric computed value to represent lifetime tobacco exposure defined as
+  # number of cigarettes smoked per day x number of years smoked divided by 20.
   #
-  exposures__alcohol_intensity: Aggregations
-
-  # The text term used to describe the approximate amount of time elapsed between
-  # the time the patient wakes up in the morning to the time they smoke their
-  # first cigarette.
-  #
-  exposures__time_between_waking_and_first_smoke: Aggregations
-
-  # The yes/no/unknown indicator used to describe whether the patient was exposed to radon.
-  #
-  exposures__radon_exposure: Aggregations
-
-  # The year in which the participant quit smoking.
-  #
-  exposures__tobacco_smoking_quit_year: NumericAggregations
+  exposures__pack_years_smoked: NumericAggregations
   files__origin: Aggregations
-  files__chip_id: Aggregations
-  files__index_files__chip_id: Aggregations
+  files__proportion_base_mismatch: NumericAggregations
   files__index_files__proportion_base_mismatch: NumericAggregations
+  files__index_files__updated_datetime: Aggregations
   files__index_files__file_name: Aggregations
   files__index_files__submitter_id: Aggregations
   files__index_files__read_pair_number: Aggregations
@@ -1604,21 +1554,14 @@ type CaseAggregations {
   files__index_files__magnification: NumericAggregations
   files__index_files__mean_coverage: NumericAggregations
   files__index_files__average_read_length: NumericAggregations
-  files__index_files__contamination_error: NumericAggregations
-  files__index_files__channel: Aggregations
   files__index_files__experimental_strategy: Aggregations
-  files__index_files__updated_datetime: Aggregations
   files__index_files__data_type: Aggregations
-  files__index_files__chip_position: Aggregations
   files__index_files__proportion_coverage_10X: NumericAggregations
   files__index_files__file_id: Aggregations
-  files__index_files__contamination: NumericAggregations
   files__index_files__proportion_reads_duplicated: NumericAggregations
   files__index_files__total_reads: NumericAggregations
   files__index_files__state_comment: Aggregations
-  files__index_files__plate_well: Aggregations
   files__index_files__md5sum: Aggregations
-  files__index_files__plate_name: Aggregations
   files__index_files__data_format: Aggregations
   files__index_files__proportion_reads_mapped: NumericAggregations
   files__index_files__proportion_targets_no_coverage: NumericAggregations
@@ -1640,8 +1583,8 @@ type CaseAggregations {
   files__downstream_analyses__workflow_type: Aggregations
   files__downstream_analyses__workflow_start_datetime: Aggregations
   files__downstream_analyses__workflow_version: Aggregations
-  files__downstream_analyses__output_files__chip_id: Aggregations
   files__downstream_analyses__output_files__proportion_base_mismatch: NumericAggregations
+  files__downstream_analyses__output_files__updated_datetime: Aggregations
   files__downstream_analyses__output_files__file_name: Aggregations
   files__downstream_analyses__output_files__submitter_id: Aggregations
   files__downstream_analyses__output_files__read_pair_number: Aggregations
@@ -1658,21 +1601,14 @@ type CaseAggregations {
   files__downstream_analyses__output_files__magnification: NumericAggregations
   files__downstream_analyses__output_files__mean_coverage: NumericAggregations
   files__downstream_analyses__output_files__average_read_length: NumericAggregations
-  files__downstream_analyses__output_files__contamination_error: NumericAggregations
-  files__downstream_analyses__output_files__channel: Aggregations
   files__downstream_analyses__output_files__experimental_strategy: Aggregations
-  files__downstream_analyses__output_files__updated_datetime: Aggregations
   files__downstream_analyses__output_files__data_type: Aggregations
-  files__downstream_analyses__output_files__chip_position: Aggregations
   files__downstream_analyses__output_files__proportion_coverage_10X: NumericAggregations
   files__downstream_analyses__output_files__file_id: Aggregations
-  files__downstream_analyses__output_files__contamination: NumericAggregations
   files__downstream_analyses__output_files__proportion_reads_duplicated: NumericAggregations
   files__downstream_analyses__output_files__total_reads: NumericAggregations
   files__downstream_analyses__output_files__state_comment: Aggregations
-  files__downstream_analyses__output_files__plate_well: Aggregations
   files__downstream_analyses__output_files__md5sum: Aggregations
-  files__downstream_analyses__output_files__plate_name: Aggregations
   files__downstream_analyses__output_files__data_format: Aggregations
   files__downstream_analyses__output_files__proportion_reads_mapped: NumericAggregations
   files__downstream_analyses__output_files__proportion_targets_no_coverage: NumericAggregations
@@ -1720,9 +1656,11 @@ type CaseAggregations {
   # The current state of the object.
   #
   files__state: Aggregations
+  files__release_number: Aggregations
   files__access: Aggregations
   files__platform: Aggregations
   files__magnification: NumericAggregations
+  files__version: Aggregations
   files__metadata_files__md5sum: Aggregations
   files__metadata_files__type: Aggregations
   files__metadata_files__data_type: Aggregations
@@ -1739,28 +1677,18 @@ type CaseAggregations {
   files__metadata_files__file_size: NumericAggregations
   files__metadata_files__state_comment: Aggregations
   files__average_read_length: NumericAggregations
-  files__contamination_error: NumericAggregations
   files__type: Aggregations
-  files__channel: Aggregations
   files__revision: NumericAggregations
-
-  # A combination of date and time of day in the form [-]CCYY-MM-DDThh:mm:ss[Z|(+|-)hh:mm]
-  #
-  files__updated_datetime: Aggregations
   files__data_type: Aggregations
   files__tags: Aggregations
-  files__chip_position: Aggregations
   files__proportion_coverage_10X: NumericAggregations
   files__file_id: Aggregations
-  files__contamination: NumericAggregations
-  files__proportion_base_mismatch: NumericAggregations
   files__proportion_reads_duplicated: NumericAggregations
   files__total_reads: NumericAggregations
 
   # Optional comment about why the file is in the current state, mainly for invalid state.
   #
   files__state_comment: Aggregations
-  files__plate_well: Aggregations
   files__data_format: Aggregations
   files__center__code: Aggregations
   files__center__name: Aggregations
@@ -1768,17 +1696,21 @@ type CaseAggregations {
   files__center__namespace: Aggregations
   files__center__center_id: Aggregations
   files__center__center_type: Aggregations
+  files__baseid: Aggregations
 
   # The 128-bit hash value expressed as a 32 digit hexadecimal number (in lower case) used as a file's digital fingerprint.
   #
   files__md5sum: Aggregations
-  files__plate_name: Aggregations
+
+  # A combination of date and time of day in the form [-]CCYY-MM-DDThh:mm:ss[Z|(+|-)hh:mm]
+  #
+  files__updated_datetime: Aggregations
   files__mean_coverage: NumericAggregations
   files__analysis__analysis_id: Aggregations
   files__analysis__updated_datetime: Aggregations
   files__analysis__created_datetime: Aggregations
-  files__analysis__input_files__chip_id: Aggregations
   files__analysis__input_files__proportion_base_mismatch: NumericAggregations
+  files__analysis__input_files__updated_datetime: Aggregations
   files__analysis__input_files__file_name: Aggregations
   files__analysis__input_files__submitter_id: Aggregations
   files__analysis__input_files__read_pair_number: Aggregations
@@ -1795,21 +1727,14 @@ type CaseAggregations {
   files__analysis__input_files__magnification: NumericAggregations
   files__analysis__input_files__mean_coverage: NumericAggregations
   files__analysis__input_files__average_read_length: NumericAggregations
-  files__analysis__input_files__contamination_error: NumericAggregations
-  files__analysis__input_files__channel: Aggregations
   files__analysis__input_files__experimental_strategy: Aggregations
-  files__analysis__input_files__updated_datetime: Aggregations
   files__analysis__input_files__data_type: Aggregations
-  files__analysis__input_files__chip_position: Aggregations
   files__analysis__input_files__proportion_coverage_10X: NumericAggregations
   files__analysis__input_files__file_id: Aggregations
-  files__analysis__input_files__contamination: NumericAggregations
   files__analysis__input_files__proportion_reads_duplicated: NumericAggregations
   files__analysis__input_files__total_reads: NumericAggregations
   files__analysis__input_files__state_comment: Aggregations
-  files__analysis__input_files__plate_well: Aggregations
   files__analysis__input_files__md5sum: Aggregations
-  files__analysis__input_files__plate_name: Aggregations
   files__analysis__input_files__data_format: Aggregations
   files__analysis__input_files__proportion_reads_mapped: NumericAggregations
   files__analysis__input_files__proportion_targets_no_coverage: NumericAggregations
@@ -1901,345 +1826,6 @@ type CaseAggregations {
   files__data_category: Aggregations
   files__experimental_strategy: Aggregations
   files__average_insert_size: NumericAggregations
-
-  # The percentage comparison to a normal value reference range of the volume of
-  # air that a patient can forcibly exhale from the lungs in one second
-  # post-bronchodilator.
-  #
-  follow_ups__fev1_ref_post_bronch_percent: NumericAggregations
-
-  # The weight of the patient measured in kilograms.
-  #
-  follow_ups__weight: NumericAggregations
-
-  # Text term used to describe the types of treatment used to manage gastroesophageal reflux disease (GERD).
-  #
-  follow_ups__reflux_treatment_type: Aggregations
-
-  # The text term used to describe the type of progressive or recurrent disease or relapsed disease.
-  #
-  follow_ups__progression_or_recurrence_type: Aggregations
-
-  # The height of the patient in centimeters.
-  #
-  follow_ups__height: NumericAggregations
-
-  # Number of days between the date used for index and the date of the patient's adverse event.
-  #
-  follow_ups__days_to_adverse_event: NumericAggregations
-
-  # The text term used to describe the suspected cause or reason for the patient disease response.
-  #
-  follow_ups__cause_of_response: Aggregations
-
-  # Percentage value to represent result of Forced Expiratory Volume in 1 second
-  # (FEV1) divided by the Forced Vital Capacity (FVC) pre-bronchodilator.
-  #
-  follow_ups__fev1_fvc_pre_bronch_percent: NumericAggregations
-
-  # The ECOG functional performance status of the patient/participant.
-  #
-  follow_ups__ecog_performance_status: Aggregations
-
-  # Text classification to represent the strain or type of human papillomavirus identified in an individual.
-  #
-  follow_ups__hpv_positive_type: Aggregations
-
-  # Number of days between the date used for index and the date the patient's
-  # disease was formally confirmed as progression-free.
-  #
-  follow_ups__days_to_progression_free: NumericAggregations
-
-  # Number of days between the date used for index and the date of the patient's last follow-up appointment or contact.
-  #
-  follow_ups__days_to_follow_up: NumericAggregations
-
-  # Percentage value to represent result of Forced Expiratory Volume in 1 second
-  # (FEV1) divided by the Forced Vital Capacity (FVC) post-bronchodilator.
-  #
-  follow_ups__fev1_fvc_post_bronch_percent: NumericAggregations
-
-  # The text term used to describe the method used to diagnose the patient's comorbidity disease.
-  #
-  follow_ups__comorbidity_method_of_diagnosis: Aggregations
-
-  # The value, as a percentage of predicted lung volume, measuring the amount of
-  # carbon monoxide detected in a patient's lungs.
-  #
-  follow_ups__dlco_ref_predictive_percent: NumericAggregations
-
-  # The text term used to describe a comorbidity disease, which coexists with the patient's malignant disease.
-  #
-  follow_ups__comorbidity: Aggregations
-
-  # A combination of date and time of day in the form [-]CCYY-MM-DDThh:mm:ss[Z|(+|-)hh:mm]
-  #
-  follow_ups__updated_datetime: Aggregations
-
-  # The text term used to describe a risk factor the patient had at the time of or prior to their diagnosis.
-  #
-  follow_ups__risk_factor: Aggregations
-
-  # The current state of the object.
-  #
-  follow_ups__state: Aggregations
-
-  # Number of days between the date used for index and the date the patient's disease progressed.
-  #
-  follow_ups__days_to_progression: NumericAggregations
-
-  # Text that represents the Common Terminology Criteria for Adverse Events low level term name for an adverse event.
-  #
-  follow_ups__adverse_event: Aggregations
-
-  # Number of days between the date used for index and the date the patient's disease recurred.
-  #
-  follow_ups__days_to_recurrence: NumericAggregations
-
-  # The yes/no/unknown indicator used to describe whether the mutation included in
-  # molecular testing was known to have an affect on the mismatch repair process.
-  #
-  follow_ups__molecular_tests__mismatch_repair_mutation: Aggregations
-
-  # A combination of date and time of day in the form [-]CCYY-MM-DDThh:mm:ss[Z|(+|-)hh:mm]
-  #
-  follow_ups__molecular_tests__updated_datetime: Aggregations
-
-  # The text term used to describe an antigen included in molecular testing.
-  #
-  follow_ups__molecular_tests__antigen: Aggregations
-
-  # The text term used to describe the biological origin of a specific genetic variant.
-  #
-  follow_ups__molecular_tests__variant_origin: Aggregations
-
-  # Numeric value used to describe the lower limit of the normal range used to
-  # describe a healthy individual at the institution where the test was completed.
-  #
-  follow_ups__molecular_tests__blood_test_normal_range_lower: NumericAggregations
-
-  # Alphanumeric value used to describe the locus of a specific genetic variant. Example: NM_001126114.
-  #
-  follow_ups__molecular_tests__locus: Aggregations
-
-  # The text term or numeric value used to describe a sepcific result of a molecular test.
-  #
-  follow_ups__molecular_tests__test_value: NumericAggregations
-
-  # The text term used to describe a secondary gene targeted or included in
-  # molecular analysis. For rearrangements, this is should represent the location
-  # of the variant.
-  #
-  follow_ups__molecular_tests__second_gene_symbol: Aggregations
-
-  # Text term used to describe the number of sets of homologous chromosomes.
-  #
-  follow_ups__molecular_tests__ploidy: Aggregations
-
-  # The text term used to describe a chromosome targeted or included in molecular
-  # testing. If a specific genetic variant is being reported, this property can be
-  # used to capture the chromosome where that variant is located.
-  #
-  follow_ups__molecular_tests__chromosome: Aggregations
-
-  # Text term used to describe a specific test that is not covered in the list of molecular analysis methods.
-  #
-  follow_ups__molecular_tests__specialized_molecular_test: Aggregations
-
-  # A combination of date and time of day in the form [-]CCYY-MM-DDThh:mm:ss[Z|(+|-)hh:mm]
-  #
-  follow_ups__molecular_tests__created_datetime: Aggregations
-
-  # Intron number targeted or included in molecular analysis. If a specific
-  # genetic variant is being reported, this property can be used to capture the
-  # intron where that variant is located.
-  #
-  follow_ups__molecular_tests__intron: Aggregations
-
-  # The text term used to describe a gene targeted or included in molecular
-  # analysis. For rearrangements, this is shold be used to represent the reference gene.
-  #
-  follow_ups__molecular_tests__gene_symbol: Aggregations
-
-  # The current state of the object.
-  #
-  follow_ups__molecular_tests__state: Aggregations
-
-  # The text term used to describe a specific histone variants, which are proteins
-  # that substitute for the core canonical histones.
-  #
-  follow_ups__molecular_tests__histone_variant: Aggregations
-
-  # Numeric value used to describe the number of cells used for molecular testing.
-  #
-  follow_ups__molecular_tests__cell_count: NumericAggregations
-
-  # The text term used to describe the family, or classification of a group of
-  # basic proteins found in chromatin, called histones.
-  #
-  follow_ups__molecular_tests__histone_family: Aggregations
-
-  # Numeric value used to describe the number of times a section of the genome is
-  # repeated or copied within an insertion, duplication or deletion variant.
-  #
-  follow_ups__molecular_tests__copy_number: NumericAggregations
-
-  # The text term used to describe the type of analyte used for molecular testing.
-  #
-  follow_ups__molecular_tests__test_analyte_type: Aggregations
-
-  # Exon number targeted or included in a molecular analysis. If a specific
-  # genetic variant is being reported, this property can be used to capture the
-  # exon where that variant is located.
-  #
-  follow_ups__molecular_tests__exon: Aggregations
-
-  # The text term used to describe the medical testing used to diagnose, treat or further understand a patient's disease.
-  #
-  follow_ups__molecular_tests__laboratory_test: Aggregations
-
-  # The text term used to describe the result of the molecular test. If the test result was a numeric value see test_value.
-  #
-  follow_ups__molecular_tests__test_result: Aggregations
-
-  # Alphanumeric value used to describe the transcript of a specific genetic variant.
-  #
-  follow_ups__molecular_tests__transcript: Aggregations
-
-  # Numeric value used to describe the upper limit of the normal range used to
-  # describe a healthy individual at the institution where the test was completed.
-  #
-  follow_ups__molecular_tests__blood_test_normal_range_upper: NumericAggregations
-
-  # The text term used to describe the units of the test value for a molecular
-  # test. This property is used in conjunction with test_value.
-  #
-  follow_ups__molecular_tests__test_units: Aggregations
-
-  # The text term used to describe the zygosity of a specific genetic variant.
-  #
-  follow_ups__molecular_tests__zygosity: Aggregations
-
-  # Alphanumeric value used to describe the cytoband or chromosomal location
-  # targeted or included in molecular analysis. If a specific genetic variant is
-  # being reported, this property can be used to capture the cytoband where the
-  # variant is located. Format: [chromosome][chromosome arm].[band+sub-bands].
-  # Example: 17p13.1.
-  #
-  follow_ups__molecular_tests__cytoband: Aggregations
-
-  # The text term used to describe the biological material used for testing, diagnostic, treatment or research purposes.
-  follow_ups__molecular_tests__biospecimen_type: Aggregations
-
-  # A project-specific identifier for a node. This property is the calling
-  # card/nickname/alias for a unit of submission. It can be used in place of the
-  # UUID for identifying or recalling a node.
-  #
-  follow_ups__molecular_tests__submitter_id: Aggregations
-
-  # The second exon number involved in molecular variation. If a specific genetic
-  # variant is being reported, this property can be used to capture the second
-  # exon where that variant is located. This property is typically used for a
-  # translocation where two different locations are involved in the variation.
-  #
-  follow_ups__molecular_tests__second_exon: Aggregations
-  follow_ups__molecular_tests__molecular_test_id: Aggregations
-
-  # The text term used to describe the method used for molecular analysis.
-  #
-  follow_ups__molecular_tests__molecular_analysis_method: Aggregations
-
-  # The text term used to describe the molecular consequence of genetic variation.
-  #
-  follow_ups__molecular_tests__molecular_consequence: Aggregations
-
-  # The text term used to describe the type of genetic variation.
-  #
-  follow_ups__molecular_tests__variant_type: Aggregations
-
-  # Numeric value used to describe the number of loci determined to be abnormal.
-  #
-  follow_ups__molecular_tests__loci_abnormal_count: NumericAggregations
-
-  # Alphanumeric value used to describe the amino acid change for a specific genetic variant. Example: R116Q.
-  #
-  follow_ups__molecular_tests__aa_change: Aggregations
-
-  # Numeric value used to describe the number of loci tested.
-  #
-  follow_ups__molecular_tests__loci_count: NumericAggregations
-
-  # A calculated numerical quantity that represents an individual's weight to height ratio.
-  #
-  follow_ups__bmi: NumericAggregations
-
-  # Text term used to describe the patient's menopause status.
-  #
-  follow_ups__menopause_status: Aggregations
-
-  # Yes/No/Unknown indicator to identify whether a patient has had a new tumor event after initial treatment.
-  #
-  follow_ups__progression_or_recurrence: Aggregations
-
-  # Text term used to describe the types of treatment used to manage diabetes.
-  #
-  follow_ups__diabetes_treatment_type: Aggregations
-
-  # The yes/no/unknown indicator used to describe whether the patient received
-  # treatment for a risk factor the patient had at the time of or prior to their diagnosis.
-  #
-  follow_ups__risk_factor_treatment: Aggregations
-
-  # The text term used to describe the anatomic site of the progressive or recurrent disease.
-  #
-  follow_ups__progression_or_recurrence_anatomic_site: Aggregations
-
-  # A project-specific identifier for a node. This property is the calling
-  # card/nickname/alias for a unit of submission. It can be used in place of the
-  # UUID for identifying or recalling a node.
-  #
-  follow_ups__submitter_id: Aggregations
-
-  # The yes/no/unknown indicator used to describe whether goblet cells were
-  # determined to be present in a patient diagnosed with Barrett's esophagus.
-  #
-  follow_ups__barretts_esophagus_goblet_cells_present: Aggregations
-
-  # Code assigned to describe the patient's response or outcome to the disease.
-  #
-  follow_ups__disease_response: Aggregations
-  follow_ups__follow_up_id: Aggregations
-
-  # Numeric value to represent the year that the patient was diagnosed with clinical chronic pancreatitis.
-  #
-  follow_ups__pancreatitis_onset_year: NumericAggregations
-
-  # Text term that describes the kind of serological laboratory test used to determine the patient's hepatitus status.
-  #
-  follow_ups__viral_hepatitis_serologies: Aggregations
-
-  # The percentage comparison to a normal value reference range of the volume of
-  # air that a patient can forcibly exhale from the lungs in one second
-  # pre-bronchodilator.
-  #
-  follow_ups__fev1_ref_pre_bronch_percent: NumericAggregations
-
-  # A combination of date and time of day in the form [-]CCYY-MM-DDThh:mm:ss[Z|(+|-)hh:mm]
-  #
-  follow_ups__created_datetime: Aggregations
-
-  # Text term used to describe the classification used of the functional capabilities of a person.
-  #
-  follow_ups__karnofsky_performance_status: Aggregations
-
-  # The yes/no/unknown indicator used to describe whether the patient received
-  # treatment for a risk factor the patient had at the time of or prior to their diagnosis.
-  #
-  follow_ups__hepatitis_sustained_virological_response: Aggregations
-
-  # Number of days between the date used for index and the date the patient was diagnosed with a comorbidity.
-  #
-  follow_ups__days_to_comorbidity: NumericAggregations
   index_date: Aggregations
   case_autocomplete: Aggregations
 
@@ -2283,7 +1869,6 @@ type CaseAggregations {
   #
   family_histories__relationship_age_at_diagnosis: NumericAggregations
   submitter_id: Aggregations
-  disease_type: Aggregations
 
   # Text term that represents the type of vascular tumor invasion.
   #
@@ -2313,9 +1898,9 @@ type CaseAggregations {
   #
   diagnoses__submitter_id: Aggregations
 
-  # The text term used to describe the extent of metastatic disease present at diagnosis.
+  # The survival state of the person registered on the protocol.
   #
-  diagnoses__metastasis_at_diagnosis: Aggregations
+  diagnoses__vital_status: Aggregations
 
   # The third edition of the International Classification of Diseases for
   # Oncology, published in 2000 used principally in tumor and cancer registries
@@ -2327,6 +1912,7 @@ type CaseAggregations {
   # immunocytochemical stains. A system of numbered categories for representation of data.
   #
   diagnoses__morphology: Aggregations
+  diagnoses__days_to_death: NumericAggregations
 
   # Time interval from the date of last follow up to the date of initial
   # pathologic diagnosis, represented as a calculated number of days.
@@ -2336,6 +1922,7 @@ type CaseAggregations {
   # Text term used to describe the classification of rhabdomyosarcoma, as defined by the Children's Oncology Group (COG).
   #
   diagnoses__cog_rhabdomyosarcoma_risk_group: Aggregations
+  diagnoses__days_to_hiv_diagnosis: NumericAggregations
 
   # Code of pathological T (primary tumor) to define the size or contiguous
   # extension of the primary tumor (T), using staging criteria from the American
@@ -2366,16 +1953,6 @@ type CaseAggregations {
   #
   diagnoses__ajcc_pathologic_n: Aggregations
 
-  # The text term used to describe the overall Weiss assessment score, a commonly
-  # used assessment describing the malignancy of adrenocortical tumors. The Weiss
-  # score is determined based on nine histological criteria including the
-  # following: high nuclear grade, mitotic rate greater than five per 50 high
-  # power fields (HPF), atypical mitotic figures, eosinophilic tumor cell
-  # cytoplasm (greater than 75% tumor cells), diffuse architecture (greater than
-  # 33% of tumor), necrosis, venous invasion, sinusoidal invasion, and capsular invasion.
-  #
-  diagnoses__weiss_assessment_score: Aggregations
-
   # Text term and code that represents the metastatic stage of the musculoskeletal
   # sarcoma, using the Enneking staging system approved by the Musculoskeletal
   # Tumor Society (MSTS).
@@ -2385,11 +1962,6 @@ type CaseAggregations {
   # Text term to describe the amount of dysplasia found within the benign esophageal columnar mucosa.
   #
   diagnoses__esophageal_columnar_dysplasia_degree: Aggregations
-
-  # The number of lymph nodes tested to determine whether lymph nodes were 
-  # involved with disease as determined by a pathologic examination.
-  #
-  diagnoses__lymph_nodes_tested: NumericAggregations
 
   # The text term used to describe the classification of the histopathologic degree of liver damage.
   #
@@ -2402,12 +1974,6 @@ type CaseAggregations {
   # Text term to specify the location of the supratentorial tumor.
   #
   diagnoses__supratentorial_localization: Aggregations
-
-  # The text term used to describe the International Germ Cell Cancer
-  # Collaborative Group (IGCCCG), a grouping used to further classify metastatic
-  # testicular tumors.
-  #
-  diagnoses__igcccg_stage: Aggregations
 
   # The yes/no/unknown/not reported indicator used to describe whether the tumor
   # is located across the gastroesophageal junction.
@@ -2422,17 +1988,13 @@ type CaseAggregations {
   # The multiple myeloma disease stage at diagnosis.
   #
   diagnoses__iss_stage: Aggregations
+  diagnoses__cause_of_death: Aggregations
 
   # Text term and code that represents the tumor site of the musculoskeletal
   # sarcoma, using the Enneking staging system approved by the Musculoskeletal
   # Tumor Society (MSTS).
   #
   diagnoses__enneking_msts_tumor_site: Aggregations
-
-  # A numeric value used to measure therapeutic response of the primary tumor and
-  # predict patient outcomes based on a three-point tumor regression grading system.
-  #
-  diagnoses__tumor_regression_grade: Aggregations
 
   # Numeric value used to describe the gross pathologic tumor weight, measured in grams.
   #
@@ -2442,6 +2004,7 @@ type CaseAggregations {
   # node (N) and metastases (M) and by grouping cases with similar prognosis for cancer.
   #
   diagnoses__ajcc_clinical_stage: Aggregations
+  diagnoses__hiv_positive: Aggregations
 
   # Text term to signify whether lymphoma B-symptoms are present as noted in the patient's medical record.
   #
@@ -2456,6 +2019,10 @@ type CaseAggregations {
   # A combination of date and time of day in the form [-]CCYY-MM-DDThh:mm:ss[Z|(+|-)hh:mm]
   #
   diagnoses__updated_datetime: Aggregations
+
+  # The text term used to describe the extent of metastatic disease present at diagnosis.
+  #
+  diagnoses__metastasis_at_diagnosis: Aggregations
 
   # Number of days between the date used for index and the date of the patient was
   # thought to have the best overall response to their disease.
@@ -2473,6 +2040,7 @@ type CaseAggregations {
   # Age at the time of diagnosis expressed in number of days since birth.
   #
   diagnoses__age_at_diagnosis: NumericAggregations
+  diagnoses__hpv_positive_type: Aggregations
 
   # A combination of date and time of day in the form [-]CCYY-MM-DDThh:mm:ss[Z|(+|-)hh:mm]
   #
@@ -2528,6 +2096,7 @@ type CaseAggregations {
   # The yes/no/unknown indicator used to describe the patient's history of prior cancer diagnosis.
   #
   diagnoses__prior_malignancy: Aggregations
+  diagnoses__days_to_new_event: NumericAggregations
 
   # Numeric value used to describe the non-peritonealised bare area of rectum,
   # comprising anterior and posterior segments, when submitted as a surgical
@@ -2560,15 +2129,7 @@ type CaseAggregations {
   # Numeric value to represent the year of an individual's initial pathologic diagnosis of cancer.
   #
   diagnoses__year_of_diagnosis: NumericAggregations
-
-  # The text term used to describe the secondary Gleason score, which describes
-  # the pattern of cells making up the second largest area of the tumor. The
-  # primary and secondary Gleason pattern grades are combined to determine the
-  # patient's Gleason grade group, which is used to determine the aggresiveness of
-  # prostate cancer. Note that this grade describes the entire prostatectomy
-  # specimen and is not specific to the sample used for sequencing.
-  #
-  diagnoses__secondary_gleason_grade: Aggregations
+  diagnoses__progression_free_survival: NumericAggregations
 
   # Text terms to describe the status of a tissue margin following surgical resection.
   #
@@ -2593,10 +2154,6 @@ type CaseAggregations {
   #
   diagnoses__perineural_invasion_present: Aggregations
 
-  # The text term used to describe whether the patient's disease originated in a single location or multiple locations.
-  #
-  diagnoses__tumor_focality: Aggregations
-
   # The text term used to describe the classification of Wilms tumors
   # distinguishing between favorable and unfavorable histologic groups.
   #
@@ -2605,6 +2162,7 @@ type CaseAggregations {
   # Extent of the primary cancer based on evidence obtained from clinical assessment parameters determined prior to treatment.
   #
   diagnoses__ajcc_clinical_t: Aggregations
+  diagnoses__colon_polyps_history: Aggregations
 
   # Extent of the regional lymph node involvement for the cancer based on evidence
   # obtained from clinical assessment parameters determined prior to treatment.
@@ -2631,53 +2189,7 @@ type CaseAggregations {
   # specifically describes the extent of the primary tumor prior to treatment.
   #
   diagnoses__cog_liver_stage: Aggregations
-
-  # Status of the annotation.
-  diagnoses__annotations__status: Aggregations
-
-  # A combination of date and time of day in the form [-]CCYY-MM-DDThh:mm:ss[Z|(+|-)hh:mm]
-  #
-  diagnoses__annotations__legacy_updated_datetime: Aggregations
-  diagnoses__annotations__entity_id: Aggregations
-
-  # Top level classification of the annotation.
-  diagnoses__annotations__classification: Aggregations
-
-  # Name of the person or entity responsible for the creation of the annotation.
-  diagnoses__annotations__creator: Aggregations
-
-  # A combination of date and time of day in the form [-]CCYY-MM-DDThh:mm:ss[Z|(+|-)hh:mm]
-  #
-  diagnoses__annotations__created_datetime: Aggregations
-  diagnoses__annotations__entity_submitter_id: Aggregations
-
-  # Open entry for any further description or characterization of the data.
-  diagnoses__annotations__notes: Aggregations
-  diagnoses__annotations__entity_type: Aggregations
-
-  # A combination of date and time of day in the form [-]CCYY-MM-DDThh:mm:ss[Z|(+|-)hh:mm]
-  #
-  diagnoses__annotations__updated_datetime: Aggregations
-
-  # A combination of date and time of day in the form [-]CCYY-MM-DDThh:mm:ss[Z|(+|-)hh:mm]
-  #
-  diagnoses__annotations__legacy_created_datetime: Aggregations
-
-  # The current state of the object.
-  #
-  diagnoses__annotations__state: Aggregations
-  diagnoses__annotations__case_id: Aggregations
-
-  # A project-specific identifier for a node. This property is the calling
-  # card/nickname/alias for a unit of submission. It can be used in place of the
-  # UUID for identifying or recalling a node.
-  #
-  diagnoses__annotations__submitter_id: Aggregations
-  diagnoses__annotations__annotation_id: Aggregations
-  diagnoses__annotations__case_submitter_id: Aggregations
-
-  # Top level characterization of the annotation.
-  diagnoses__annotations__category: Aggregations
+  diagnoses__progression_free_survival_event: Aggregations
 
   # Text term used to describe the stage of the musculoskeletal sarcoma, using the
   # Enneking staging system approved by the Musculoskeletal Tumor Society (MSTS).
@@ -2715,11 +2227,7 @@ type CaseAggregations {
   # The total number of peripancreatic lymph nodes tested for the presence of pancreatic cancer cells.
   #
   diagnoses__peripancreatic_lymph_nodes_tested: NumericAggregations
-
-  # The text term used to describe the Masaoka staging system, a classification
-  # that defines prognostic indicators for thymic malignancies and predicts tumor recurrence.
-  #
-  diagnoses__masaoka_stage: Aggregations
+  diagnoses__overall_survival: NumericAggregations
 
   # Text term that represents the component of the International Neuroblastoma
   # Pathology Classification (INPC) for mitosis-karyorrhexis index (MKI).
@@ -2743,6 +2251,7 @@ type CaseAggregations {
   # The yes/no/unknown indicator used to describe whether esophageal columnar metaplasia was determined to be present.
   #
   diagnoses__esophageal_columnar_metaplasia_present: Aggregations
+  diagnoses__new_event_anatomic_site: Aggregations
 
   # The best improvement achieved throughout the entire course of protocol treatment.
   #
@@ -2759,15 +2268,6 @@ type CaseAggregations {
   # Numeric value to express the degree of abnormality of cancer cells, a measure of differentiation and aggressiveness.
   #
   diagnoses__tumor_grade: Aggregations
-
-  # The text term used to describe the primary Gleason score, which describes the
-  # pattern of cells making up the largest area of the tumor. The primary and
-  # secondary Gleason pattern grades are combined to determine the patient's
-  # Gleason grade group, which is used to determine the aggresiveness of prostate
-  # cancer. Note that this grade describes the entire prostatectomy specimen and
-  # is not specific to the sample used for sequencing.
-  #
-  diagnoses__primary_gleason_grade: Aggregations
 
   # Number of days between the date used for index and the date the treatment started.
   #
@@ -2795,10 +2295,6 @@ type CaseAggregations {
   #
   diagnoses__treatments__submitter_id: Aggregations
   diagnoses__treatments__treatment_id: Aggregations
-
-  # The text term used to describe the pathologic effect a treatment(s) had on the tumor.
-  #
-  diagnoses__treatments__treatment_effect: Aggregations
 
   # The current state of the object.
   #
@@ -2835,6 +2331,8 @@ type CaseAggregations {
   # Number of days between the date used for index and the date the patient was diagnosed with the malignant disease.
   #
   diagnoses__days_to_diagnosis: NumericAggregations
+  diagnoses__days_to_birth: NumericAggregations
+  diagnoses__hpv_status: Aggregations
 
   # The text term used to describe the version or edition of the American Joint
   # Committee on Cancer Staging Handbooks, a publication by the group formed for
@@ -2843,10 +2341,12 @@ type CaseAggregations {
   # classifications.
   #
   diagnoses__ajcc_staging_system_edition: Aggregations
+  diagnoses__new_event_type: Aggregations
 
   # The text term used to describe the classification of medulloblastoma tumors based on molecular features.
   #
   diagnoses__medulloblastoma_molecular_classification: Aggregations
+  diagnoses__ldh_normal_range_upper: NumericAggregations
 
   # The text term used to describe the staging classification of renal tumors, as
   # defined by the Children's Oncology Group (COG).
@@ -2869,14 +2369,7 @@ type CaseAggregations {
   # International Classification of Diseases for Oncology (ICD-O).
   #
   diagnoses__site_of_resection_or_biopsy: Aggregations
-
-  # The text term used to describe the overall grouping of grades defined by the
-  # Gleason grading classification, which is used to determine the aggressiveness
-  # of prostate cancer. Note that this grade describes the entire prostatectomy
-  # specimen and is not specific to the sample used for sequencing.
-  #
-  diagnoses__gleason_grade_group: Aggregations
-  diagnosis_ids: Aggregations
+  disease_type: Aggregations
   submitter_aliquot_ids: Aggregations
   summary__data_categories__file_count: NumericAggregations
   summary__data_categories__data_category: Aggregations
@@ -2921,7 +2414,6 @@ type CaseAggregations {
   project__name: Aggregations
   aliquot_ids: Aggregations
   primary_site: Aggregations
-  submitter_diagnosis_ids: Aggregations
 
   # Study name of the project.
   tissue_source_site__project: Aggregations
@@ -3052,8 +2544,8 @@ type CaseFile implements Node {
   # keyword
   origin: String
 
-  # keyword
-  chip_id: String
+  # long
+  proportion_base_mismatch: Float
 
   # The name (or part of a name) of a file (of any type).
   #
@@ -3097,6 +2589,9 @@ type CaseFile implements Node {
   state: String
 
   # keyword
+  release_number: String
+
+  # keyword
   access: String
 
   # keyword
@@ -3105,42 +2600,26 @@ type CaseFile implements Node {
   # long
   magnification: Float
 
-  # long
-  average_read_length: Float
+  # keyword
+  version: String
 
   # long
-  contamination_error: Float
+  average_read_length: Float
 
   # keyword
   type: String
 
-  # keyword
-  channel: String
-
   # long
   revision: Float
 
-  # A combination of date and time of day in the form [-]CCYY-MM-DDThh:mm:ss[Z|(+|-)hh:mm]
-  #
-  updated_datetime: String
-
   # keyword
   data_type: String
-
-  # keyword
-  chip_position: String
 
   # long
   proportion_coverage_10X: Float
 
   # keyword
   file_id: String
-
-  # long
-  contamination: Float
-
-  # long
-  proportion_base_mismatch: Float
 
   # long
   proportion_reads_duplicated: Float
@@ -3153,17 +2632,18 @@ type CaseFile implements Node {
   state_comment: String
 
   # keyword
-  plate_well: String
+  data_format: String
 
   # keyword
-  data_format: String
+  baseid: String
 
   # The 128-bit hash value expressed as a 32 digit hexadecimal number (in lower case) used as a file's digital fingerprint.
   #
   md5sum: String
 
-  # keyword
-  plate_name: String
+  # A combination of date and time of day in the form [-]CCYY-MM-DDThh:mm:ss[Z|(+|-)hh:mm]
+  #
+  updated_datetime: String
 
   # long
   mean_coverage: Float
@@ -3206,20 +2686,6 @@ type CaseFileEdge {
 
 type CaseFiles {
   hits(offset: Int, sort: [Sort], filters: FiltersArgument, before: String, after: String, first: Int, last: Int): CaseFileConnection
-}
-
-type CivicAnnotation {
-  # keyword
-  gene_id: String
-
-  # keyword
-  variant_id: String
-  id: String
-}
-
-type ClinicalAnnotations {
-  civic: CivicAnnotation
-  id: String
 }
 
 type CNV implements Node {
@@ -3296,8 +2762,9 @@ type CNVAggregations {
   occurrence__case__diagnoses__tumor_stage: Aggregations
   occurrence__case__diagnoses__age_at_diagnosis: NumericAggregations
   occurrence__case__diagnoses__hpv_positive_type: Aggregations
+  occurrence__case__diagnoses__vital_status: Aggregations
   occurrence__case__diagnoses__morphology: Aggregations
-  occurrence__case__diagnoses__ann_arbor_clinical_stage: Aggregations
+  occurrence__case__diagnoses__days_to_death: NumericAggregations
   occurrence__case__diagnoses__new_event_anatomic_site: Aggregations
   occurrence__case__diagnoses__days_to_last_known_disease_status: NumericAggregations
   occurrence__case__diagnoses__perineural_invasion_present: Aggregations
@@ -3312,7 +2779,7 @@ type CNVAggregations {
   occurrence__case__diagnoses__ajcc_pathologic_n: Aggregations
   occurrence__case__diagnoses__vascular_invasion_present: Aggregations
   occurrence__case__diagnoses__ldh_level_at_diagnosis: NumericAggregations
-  occurrence__case__diagnoses__created_datetime: Aggregations
+  occurrence__case__diagnoses__days_to_last_follow_up: NumericAggregations
   occurrence__case__diagnoses__residual_disease: Aggregations
   occurrence__case__diagnoses__days_to_recurrence: NumericAggregations
   occurrence__case__diagnoses__tumor_largest_dimension_diameter: NumericAggregations
@@ -3335,6 +2802,7 @@ type CNVAggregations {
   occurrence__case__diagnoses__treatments__treatment_or_therapy: Aggregations
   occurrence__case__diagnoses__lymphatic_invasion_present: Aggregations
   occurrence__case__diagnoses__tissue_or_organ_of_origin: Aggregations
+  occurrence__case__diagnoses__days_to_birth: NumericAggregations
   occurrence__case__diagnoses__progression_or_recurrence: Aggregations
   occurrence__case__diagnoses__hpv_status: Aggregations
   occurrence__case__diagnoses__prior_malignancy: Aggregations
@@ -3347,8 +2815,9 @@ type CNVAggregations {
   occurrence__case__diagnoses__ldh_normal_range_upper: NumericAggregations
   occurrence__case__diagnoses__ann_arbor_extranodal_involvement: Aggregations
   occurrence__case__diagnoses__lymph_nodes_positive: NumericAggregations
+  occurrence__case__diagnoses__ann_arbor_clinical_stage: Aggregations
   occurrence__case__diagnoses__site_of_resection_or_biopsy: Aggregations
-  occurrence__case__diagnoses__days_to_last_follow_up: NumericAggregations
+  occurrence__case__diagnoses__created_datetime: Aggregations
   occurrence__case__diagnoses__ajcc_clinical_stage: Aggregations
   occurrence__case__diagnoses__days_to_new_event: NumericAggregations
   occurrence__case__diagnoses__hiv_positive: Aggregations
@@ -3364,9 +2833,6 @@ type CNVAggregations {
   occurrence__case__demographic__demographic_id: Aggregations
   occurrence__case__demographic__state: Aggregations
   occurrence__case__demographic__race: Aggregations
-  occurrence__case__demographic__days_to_birth: NumericAggregations
-  occurrence__case__demographic__vital_status: Aggregations
-  occurrence__case__demographic__days_to_death: NumericAggregations
   occurrence__case__demographic__submitter_id: Aggregations
   occurrence__case__demographic__ethnicity: Aggregations
   occurrence__case__demographic__year_of_death: NumericAggregations
@@ -3843,9 +3309,9 @@ type Diagnosis implements Node {
   #
   submitter_id: String
 
-  # The text term used to describe the extent of metastatic disease present at diagnosis.
+  # The survival state of the person registered on the protocol.
   #
-  metastasis_at_diagnosis: String
+  vital_status: String
 
   # The third edition of the International Classification of Diseases for
   # Oncology, published in 2000 used principally in tumor and cancer registries
@@ -3858,6 +3324,9 @@ type Diagnosis implements Node {
   #
   morphology: String
 
+  # long
+  days_to_death: Float
+
   # Time interval from the date of last follow up to the date of initial
   # pathologic diagnosis, represented as a calculated number of days.
   #
@@ -3866,6 +3335,9 @@ type Diagnosis implements Node {
   # Text term used to describe the classification of rhabdomyosarcoma, as defined by the Children's Oncology Group (COG).
   #
   cog_rhabdomyosarcoma_risk_group: String
+
+  # long
+  days_to_hiv_diagnosis: Float
 
   # Code of pathological T (primary tumor) to define the size or contiguous
   # extension of the primary tumor (T), using staging criteria from the American
@@ -3896,16 +3368,6 @@ type Diagnosis implements Node {
   #
   ajcc_pathologic_n: String
 
-  # The text term used to describe the overall Weiss assessment score, a commonly
-  # used assessment describing the malignancy of adrenocortical tumors. The Weiss
-  # score is determined based on nine histological criteria including the
-  # following: high nuclear grade, mitotic rate greater than five per 50 high
-  # power fields (HPF), atypical mitotic figures, eosinophilic tumor cell
-  # cytoplasm (greater than 75% tumor cells), diffuse architecture (greater than
-  # 33% of tumor), necrosis, venous invasion, sinusoidal invasion, and capsular invasion.
-  #
-  weiss_assessment_score: String
-
   # Text term and code that represents the metastatic stage of the musculoskeletal
   # sarcoma, using the Enneking staging system approved by the Musculoskeletal
   # Tumor Society (MSTS).
@@ -3915,11 +3377,6 @@ type Diagnosis implements Node {
   # Text term to describe the amount of dysplasia found within the benign esophageal columnar mucosa.
   #
   esophageal_columnar_dysplasia_degree: String
-
-  # The number of lymph nodes tested to determine whether lymph nodes were 
-  # involved with disease as determined by a pathologic examination.
-  #
-  lymph_nodes_tested: Float
 
   # The text term used to describe the classification of the histopathologic degree of liver damage.
   #
@@ -3932,12 +3389,6 @@ type Diagnosis implements Node {
   # Text term to specify the location of the supratentorial tumor.
   #
   supratentorial_localization: String
-
-  # The text term used to describe the International Germ Cell Cancer
-  # Collaborative Group (IGCCCG), a grouping used to further classify metastatic
-  # testicular tumors.
-  #
-  igcccg_stage: String
 
   # The yes/no/unknown/not reported indicator used to describe whether the tumor
   # is located across the gastroesophageal junction.
@@ -3953,16 +3404,14 @@ type Diagnosis implements Node {
   #
   iss_stage: String
 
+  # keyword
+  cause_of_death: String
+
   # Text term and code that represents the tumor site of the musculoskeletal
   # sarcoma, using the Enneking staging system approved by the Musculoskeletal
   # Tumor Society (MSTS).
   #
   enneking_msts_tumor_site: String
-
-  # A numeric value used to measure therapeutic response of the primary tumor and
-  # predict patient outcomes based on a three-point tumor regression grading system.
-  #
-  tumor_regression_grade: String
 
   # Numeric value used to describe the gross pathologic tumor weight, measured in grams.
   #
@@ -3972,6 +3421,9 @@ type Diagnosis implements Node {
   # node (N) and metastases (M) and by grouping cases with similar prognosis for cancer.
   #
   ajcc_clinical_stage: String
+
+  # keyword
+  hiv_positive: String
 
   # Text term to signify whether lymphoma B-symptoms are present as noted in the patient's medical record.
   #
@@ -3986,6 +3438,10 @@ type Diagnosis implements Node {
   # A combination of date and time of day in the form [-]CCYY-MM-DDThh:mm:ss[Z|(+|-)hh:mm]
   #
   updated_datetime: String
+
+  # The text term used to describe the extent of metastatic disease present at diagnosis.
+  #
+  metastasis_at_diagnosis: String
 
   # Number of days between the date used for index and the date of the patient was
   # thought to have the best overall response to their disease.
@@ -4003,6 +3459,9 @@ type Diagnosis implements Node {
   # Age at the time of diagnosis expressed in number of days since birth.
   #
   age_at_diagnosis: Float
+
+  # keyword
+  hpv_positive_type: String
 
   # A combination of date and time of day in the form [-]CCYY-MM-DDThh:mm:ss[Z|(+|-)hh:mm]
   #
@@ -4061,6 +3520,9 @@ type Diagnosis implements Node {
   #
   prior_malignancy: String
 
+  # long
+  days_to_new_event: Float
+
   # Numeric value used to describe the non-peritonealised bare area of rectum,
   # comprising anterior and posterior segments, when submitted as a surgical
   # specimen resulting from excision of cancer of the rectum.
@@ -4093,14 +3555,8 @@ type Diagnosis implements Node {
   #
   year_of_diagnosis: Float
 
-  # The text term used to describe the secondary Gleason score, which describes
-  # the pattern of cells making up the second largest area of the tumor. The
-  # primary and secondary Gleason pattern grades are combined to determine the
-  # patient's Gleason grade group, which is used to determine the aggresiveness of
-  # prostate cancer. Note that this grade describes the entire prostatectomy
-  # specimen and is not specific to the sample used for sequencing.
-  #
-  secondary_gleason_grade: String
+  # long
+  progression_free_survival: Float
 
   # Text terms to describe the status of a tissue margin following surgical resection.
   #
@@ -4125,10 +3581,6 @@ type Diagnosis implements Node {
   #
   perineural_invasion_present: String
 
-  # The text term used to describe whether the patient's disease originated in a single location or multiple locations.
-  #
-  tumor_focality: String
-
   # The text term used to describe the classification of Wilms tumors
   # distinguishing between favorable and unfavorable histologic groups.
   #
@@ -4137,6 +3589,9 @@ type Diagnosis implements Node {
   # Extent of the primary cancer based on evidence obtained from clinical assessment parameters determined prior to treatment.
   #
   ajcc_clinical_t: String
+
+  # keyword
+  colon_polyps_history: String
 
   # Extent of the regional lymph node involvement for the cancer based on evidence
   # obtained from clinical assessment parameters determined prior to treatment.
@@ -4163,6 +3618,9 @@ type Diagnosis implements Node {
   # specifically describes the extent of the primary tumor prior to treatment.
   #
   cog_liver_stage: String
+
+  # keyword
+  progression_free_survival_event: String
 
   # Text term used to describe the stage of the musculoskeletal sarcoma, using the
   # Enneking staging system approved by the Musculoskeletal Tumor Society (MSTS).
@@ -4201,10 +3659,8 @@ type Diagnosis implements Node {
   #
   peripancreatic_lymph_nodes_tested: Float
 
-  # The text term used to describe the Masaoka staging system, a classification
-  # that defines prognostic indicators for thymic malignancies and predicts tumor recurrence.
-  #
-  masaoka_stage: String
+  # long
+  overall_survival: Float
 
   # Text term that represents the component of the International Neuroblastoma
   # Pathology Classification (INPC) for mitosis-karyorrhexis index (MKI).
@@ -4229,6 +3685,9 @@ type Diagnosis implements Node {
   #
   esophageal_columnar_metaplasia_present: String
 
+  # keyword
+  new_event_anatomic_site: String
+
   # The best improvement achieved throughout the entire course of protocol treatment.
   #
   best_overall_response: String
@@ -4245,18 +3704,15 @@ type Diagnosis implements Node {
   #
   tumor_grade: String
 
-  # The text term used to describe the primary Gleason score, which describes the
-  # pattern of cells making up the largest area of the tumor. The primary and
-  # secondary Gleason pattern grades are combined to determine the patient's
-  # Gleason grade group, which is used to determine the aggresiveness of prostate
-  # cancer. Note that this grade describes the entire prostatectomy specimen and
-  # is not specific to the sample used for sequencing.
-  #
-  primary_gleason_grade: String
-
   # Number of days between the date used for index and the date the patient was diagnosed with the malignant disease.
   #
   days_to_diagnosis: Float
+
+  # long
+  days_to_birth: Float
+
+  # keyword
+  hpv_status: String
 
   # The text term used to describe the version or edition of the American Joint
   # Committee on Cancer Staging Handbooks, a publication by the group formed for
@@ -4266,9 +3722,15 @@ type Diagnosis implements Node {
   #
   ajcc_staging_system_edition: String
 
+  # keyword
+  new_event_type: String
+
   # The text term used to describe the classification of medulloblastoma tumors based on molecular features.
   #
   medulloblastoma_molecular_classification: String
+
+  # long
+  ldh_normal_range_upper: Float
 
   # The text term used to describe the staging classification of renal tumors, as
   # defined by the Children's Oncology Group (COG).
@@ -4291,13 +3753,6 @@ type Diagnosis implements Node {
   # International Classification of Diseases for Oncology (ICD-O).
   #
   site_of_resection_or_biopsy: String
-
-  # The text term used to describe the overall grouping of grades defined by the
-  # Gleason grading classification, which is used to determine the aggressiveness
-  # of prostate cancer. Note that this grade describes the entire prostatectomy
-  # specimen and is not specific to the sample used for sequencing.
-  #
-  gleason_grade_group: String
   score: Int
 }
 
@@ -4570,6 +4025,10 @@ type ECaseAggregations {
   diagnoses__age_at_diagnosis: NumericAggregations
   diagnoses__hpv_positive_type: Aggregations
 
+  # The survival state of the person registered on the protocol.
+  #
+  diagnoses__vital_status: Aggregations
+
   # The third edition of the International Classification of Diseases for
   # Oncology, published in 2000 used principally in tumor and cancer registries
   # for coding the site (topography) and the histology (morphology) of neoplasms.
@@ -4580,11 +4039,7 @@ type ECaseAggregations {
   # immunocytochemical stains. A system of numbered categories for representation of data.
   #
   diagnoses__morphology: Aggregations
-
-  # The text term used to describe the clinical classification of lymphoma, as
-  # defined by the Ann Arbor Lymphoma Staging System.
-  #
-  diagnoses__ann_arbor_clinical_stage: Aggregations
+  diagnoses__days_to_death: NumericAggregations
   diagnoses__new_event_anatomic_site: Aggregations
 
   # Time interval from the date of last follow up to the date of initial
@@ -4641,9 +4096,10 @@ type ECaseAggregations {
   diagnoses__vascular_invasion_present: Aggregations
   diagnoses__ldh_level_at_diagnosis: NumericAggregations
 
-  # A combination of date and time of day in the form [-]CCYY-MM-DDThh:mm:ss[Z|(+|-)hh:mm]
+  # Time interval from the date of last follow up to the date of initial
+  # pathologic diagnosis, represented as a calculated number of days.
   #
-  diagnoses__created_datetime: Aggregations
+  diagnoses__days_to_last_follow_up: NumericAggregations
 
   # Text terms to describe the status of a tissue margin following surgical resection.
   #
@@ -4733,6 +4189,7 @@ type ECaseAggregations {
   # International Classification of Diseases for Oncology (ICD-O).
   #
   diagnoses__tissue_or_organ_of_origin: Aggregations
+  diagnoses__days_to_birth: NumericAggregations
 
   # Yes/No/Unknown indicator to identify whether a patient has had a new tumor event after initial treatment.
   #
@@ -4777,16 +4234,20 @@ type ECaseAggregations {
   #
   diagnoses__lymph_nodes_positive: NumericAggregations
 
+  # The text term used to describe the clinical classification of lymphoma, as
+  # defined by the Ann Arbor Lymphoma Staging System.
+  #
+  diagnoses__ann_arbor_clinical_stage: Aggregations
+
   # The text term used to describe the anatomic site of origin, of the patient's
   # malignant disease, as described by the World Health Organization's (WHO)
   # International Classification of Diseases for Oncology (ICD-O).
   #
   diagnoses__site_of_resection_or_biopsy: Aggregations
 
-  # Time interval from the date of last follow up to the date of initial
-  # pathologic diagnosis, represented as a calculated number of days.
+  # A combination of date and time of day in the form [-]CCYY-MM-DDThh:mm:ss[Z|(+|-)hh:mm]
   #
-  diagnoses__days_to_last_follow_up: NumericAggregations
+  diagnoses__created_datetime: Aggregations
 
   # Stage group determined from clinical information on the tumor (T), regional
   # node (N) and metastases (M) and by grouping cases with similar prognosis for cancer.
@@ -4815,8 +4276,6 @@ type ECaseAggregations {
   gene__symbol: Aggregations
   gene__gene_id: Aggregations
   gene__ssm__ncbi_build: Aggregations
-  gene__ssm__clinical_annotations__civic__gene_id: Aggregations
-  gene__ssm__clinical_annotations__civic__variant_id: Aggregations
   gene__ssm__observation__src_vcf_id: Aggregations
   gene__ssm__observation__mutation_status: Aggregations
   gene__ssm__observation__tumor_genotype__tumor_seq_allele1: Aggregations
@@ -5225,6 +4684,10 @@ type EDiagnosis implements Node {
   # keyword
   hpv_positive_type: String
 
+  # The survival state of the person registered on the protocol.
+  #
+  vital_status: String
+
   # The third edition of the International Classification of Diseases for
   # Oncology, published in 2000 used principally in tumor and cancer registries
   # for coding the site (topography) and the histology (morphology) of neoplasms.
@@ -5236,10 +4699,8 @@ type EDiagnosis implements Node {
   #
   morphology: String
 
-  # The text term used to describe the clinical classification of lymphoma, as
-  # defined by the Ann Arbor Lymphoma Staging System.
-  #
-  ann_arbor_clinical_stage: String
+  # long
+  days_to_death: Float
 
   # keyword
   new_event_anatomic_site: String
@@ -5304,9 +4765,10 @@ type EDiagnosis implements Node {
   # long
   ldh_level_at_diagnosis: Float
 
-  # A combination of date and time of day in the form [-]CCYY-MM-DDThh:mm:ss[Z|(+|-)hh:mm]
+  # Time interval from the date of last follow up to the date of initial
+  # pathologic diagnosis, represented as a calculated number of days.
   #
-  created_datetime: String
+  days_to_last_follow_up: Float
 
   # Text terms to describe the status of a tissue margin following surgical resection.
   #
@@ -5347,6 +4809,9 @@ type EDiagnosis implements Node {
   # International Classification of Diseases for Oncology (ICD-O).
   #
   tissue_or_organ_of_origin: String
+
+  # long
+  days_to_birth: Float
 
   # Yes/No/Unknown indicator to identify whether a patient has had a new tumor event after initial treatment.
   #
@@ -5399,16 +4864,20 @@ type EDiagnosis implements Node {
   #
   lymph_nodes_positive: Float
 
+  # The text term used to describe the clinical classification of lymphoma, as
+  # defined by the Ann Arbor Lymphoma Staging System.
+  #
+  ann_arbor_clinical_stage: String
+
   # The text term used to describe the anatomic site of origin, of the patient's
   # malignant disease, as described by the World Health Organization's (WHO)
   # International Classification of Diseases for Oncology (ICD-O).
   #
   site_of_resection_or_biopsy: String
 
-  # Time interval from the date of last follow up to the date of initial
-  # pathologic diagnosis, represented as a calculated number of days.
+  # A combination of date and time of day in the form [-]CCYY-MM-DDThh:mm:ss[Z|(+|-)hh:mm]
   #
-  days_to_last_follow_up: Float
+  created_datetime: String
 
   # Stage group determined from clinical information on the tumor (T), regional
   # node (N) and metastases (M) and by grouping cases with similar prognosis for cancer.
@@ -5779,6 +5248,10 @@ type Exposure implements Node {
   #
   cigarettes_per_day: Float
 
+  # The year in which the participant quit smoking.
+  #
+  tobacco_smoking_quit_year: Float
+
   # The weight of the patient measured in kilograms.
   #
   weight: Float
@@ -5786,6 +5259,19 @@ type Exposure implements Node {
   # A combination of date and time of day in the form [-]CCYY-MM-DDThh:mm:ss[Z|(+|-)hh:mm]
   #
   updated_datetime: String
+
+  # A response to a question that asks whether the participant has consumed at
+  # least 12 drinks of any kind of alcoholic beverage in their lifetime.
+  #
+  alcohol_history: String
+
+  # Category to describe the patient's current level of alcohol use as self-reported by the patient.
+  #
+  alcohol_intensity: String
+
+  # A calculated numerical quantity that represents an individual's weight to height ratio.
+  #
+  bmi: Float
 
   # Numeric value (or unknown) to represent the number of years a person has been smoking.
   #
@@ -5795,80 +5281,29 @@ type Exposure implements Node {
   #
   height: Float
 
-  # The yes/no/unknown indicator used to describe whether a patient was exposed to
-  # smoke that is emitted from burning tobacco, including cigarettes, pipes, and
-  # cigars. This includes tobacco smoke exhaled by smokers.
-  #
-  environmental_tobacco_smoke_exposure: String
-
-  # Category describing current smoking status and smoking history as self-reported by a patient.
-  #
-  tobacco_smoking_status: String
-
-  # Numeric value used to describe the average number of days each week that a person consumes an alcoholic beverage.
-  #
-  alcohol_days_per_week: Float
-
-  # Numeric computed value to represent lifetime tobacco exposure defined as
-  # number of cigarettes smoked per day x number of years smoked divided by 20.
-  #
-  pack_years_smoked: Float
-
-  # The yes/no/unknown indicator used to describe whether a patient was exposured
-  # to respirable crystalline silica, a widespread, naturally occurring,
-  # crystalline metal oxide that consists of different forms including quartz,
-  # cristobalite, tridymite, tripoli, ganister, chert and novaculite.
-  #
-  respirable_crystalline_silica_exposure: String
-
-  # The yes/no/unknown indicator used to describe whether a patient was exposed to
-  # fine powder derived by the crushing of coal.
-  #
-  coal_dust_exposure: String
-
   # A combination of date and time of day in the form [-]CCYY-MM-DDThh:mm:ss[Z|(+|-)hh:mm]
   #
   created_datetime: String
-
-  # The yes/no/unknown indicator used to describe whether the patient was exposed to asbestos.
-  #
-  asbestos_exposure: String
 
   # The current state of the object.
   #
   state: String
 
-  # The text term used to describe the specific type of tobacco used by the patient.
+  # Category describing current smoking status and smoking history as self-reported by a patient.
   #
-  type_of_tobacco_used: String
+  tobacco_smoking_status: String
 
   # The year in which the participant began smoking.
   #
   tobacco_smoking_onset_year: Float
 
-  # A response to a question that asks whether the participant has consumed at
-  # least 12 drinks of any kind of alcoholic beverage in their lifetime.
-  #
-  alcohol_history: String
-
-  # A calculated numerical quantity that represents an individual's weight to height ratio.
-  #
-  bmi: Float
-
-  # The text term used to generally decribe how often the patient smokes.
-  #
-  smoking_frequency: String
-
   # Numeric value used to describe the average number of alcoholic beverages  a person consumes per day.
   #
   alcohol_drinks_per_day: Float
 
-  # The text term used to describe the patient's specific type of smoke exposure.
+  # Numeric value used to describe the average number of days each week that a person consumes an alcoholic beverage.
   #
-  type_of_smoke_exposure: String
-
-  # keyword
-  exposure_id: String
+  alcohol_days_per_week: Float
 
   # A project-specific identifier for a node. This property is the calling
   # card/nickname/alias for a unit of submission. It can be used in place of the
@@ -5876,23 +5311,13 @@ type Exposure implements Node {
   #
   submitter_id: String
 
-  # Category to describe the patient's current level of alcohol use as self-reported by the patient.
-  #
-  alcohol_intensity: String
+  # keyword
+  exposure_id: String
 
-  # The text term used to describe the approximate amount of time elapsed between
-  # the time the patient wakes up in the morning to the time they smoke their
-  # first cigarette.
+  # Numeric computed value to represent lifetime tobacco exposure defined as
+  # number of cigarettes smoked per day x number of years smoked divided by 20.
   #
-  time_between_waking_and_first_smoke: String
-
-  # The yes/no/unknown indicator used to describe whether the patient was exposed to radon.
-  #
-  radon_exposure: String
-
-  # The year in which the participant quit smoking.
-  #
-  tobacco_smoking_quit_year: Float
+  pack_years_smoked: Float
   score: Int
 }
 
@@ -6003,8 +5428,8 @@ type File implements Node {
   # keyword
   origin: String
 
-  # keyword
-  chip_id: String
+  # long
+  proportion_base_mismatch: Float
 
   # keyword
   file_name: String
@@ -6040,6 +5465,9 @@ type File implements Node {
   state: String
 
   # keyword
+  release_number: String
+
+  # keyword
   access: String
 
   # keyword
@@ -6048,41 +5476,26 @@ type File implements Node {
   # long
   magnification: Float
 
+  # keyword
+  version: String
+
   # long
   average_read_length: Float
 
-  # long
-  contamination_error: Float
-
   # keyword
   type: String
-
-  # keyword
-  channel: String
 
   # long
   revision: Float
 
   # keyword
-  updated_datetime: String
-
-  # keyword
   data_type: String
-
-  # keyword
-  chip_position: String
 
   # long
   proportion_coverage_10X: Float
 
   # keyword
   file_id: String
-
-  # long
-  contamination: Float
-
-  # long
-  proportion_base_mismatch: Float
 
   # long
   proportion_reads_duplicated: Float
@@ -6094,16 +5507,16 @@ type File implements Node {
   state_comment: String
 
   # keyword
-  plate_well: String
+  data_format: String
 
   # keyword
-  data_format: String
+  baseid: String
 
   # keyword
   md5sum: String
 
   # keyword
-  plate_name: String
+  updated_datetime: String
 
   # long
   mean_coverage: Float
@@ -6141,9 +5554,9 @@ type File implements Node {
 
 type FileAggregations {
   origin: Aggregations
-  chip_id: Aggregations
-  index_files__chip_id: Aggregations
+  proportion_base_mismatch: NumericAggregations
   index_files__proportion_base_mismatch: NumericAggregations
+  index_files__updated_datetime: Aggregations
   index_files__file_name: Aggregations
   index_files__submitter_id: Aggregations
   index_files__read_pair_number: Aggregations
@@ -6160,21 +5573,14 @@ type FileAggregations {
   index_files__magnification: NumericAggregations
   index_files__mean_coverage: NumericAggregations
   index_files__average_read_length: NumericAggregations
-  index_files__contamination_error: NumericAggregations
-  index_files__channel: Aggregations
   index_files__experimental_strategy: Aggregations
-  index_files__updated_datetime: Aggregations
   index_files__data_type: Aggregations
-  index_files__chip_position: Aggregations
   index_files__proportion_coverage_10X: NumericAggregations
   index_files__file_id: Aggregations
-  index_files__contamination: NumericAggregations
   index_files__proportion_reads_duplicated: NumericAggregations
   index_files__total_reads: NumericAggregations
   index_files__state_comment: Aggregations
-  index_files__plate_well: Aggregations
   index_files__md5sum: Aggregations
-  index_files__plate_name: Aggregations
   index_files__data_format: Aggregations
   index_files__proportion_reads_mapped: NumericAggregations
   index_files__proportion_targets_no_coverage: NumericAggregations
@@ -6193,8 +5599,8 @@ type FileAggregations {
   downstream_analyses__workflow_type: Aggregations
   downstream_analyses__workflow_start_datetime: Aggregations
   downstream_analyses__workflow_version: Aggregations
-  downstream_analyses__output_files__chip_id: Aggregations
   downstream_analyses__output_files__proportion_base_mismatch: NumericAggregations
+  downstream_analyses__output_files__updated_datetime: Aggregations
   downstream_analyses__output_files__file_name: Aggregations
   downstream_analyses__output_files__submitter_id: Aggregations
   downstream_analyses__output_files__read_pair_number: Aggregations
@@ -6211,21 +5617,14 @@ type FileAggregations {
   downstream_analyses__output_files__magnification: NumericAggregations
   downstream_analyses__output_files__mean_coverage: NumericAggregations
   downstream_analyses__output_files__average_read_length: NumericAggregations
-  downstream_analyses__output_files__contamination_error: NumericAggregations
-  downstream_analyses__output_files__channel: Aggregations
   downstream_analyses__output_files__experimental_strategy: Aggregations
-  downstream_analyses__output_files__updated_datetime: Aggregations
   downstream_analyses__output_files__data_type: Aggregations
-  downstream_analyses__output_files__chip_position: Aggregations
   downstream_analyses__output_files__proportion_coverage_10X: NumericAggregations
   downstream_analyses__output_files__file_id: Aggregations
-  downstream_analyses__output_files__contamination: NumericAggregations
   downstream_analyses__output_files__proportion_reads_duplicated: NumericAggregations
   downstream_analyses__output_files__total_reads: NumericAggregations
   downstream_analyses__output_files__state_comment: Aggregations
-  downstream_analyses__output_files__plate_well: Aggregations
   downstream_analyses__output_files__md5sum: Aggregations
-  downstream_analyses__output_files__plate_name: Aggregations
   downstream_analyses__output_files__data_format: Aggregations
   downstream_analyses__output_files__proportion_reads_mapped: NumericAggregations
   downstream_analyses__output_files__proportion_targets_no_coverage: NumericAggregations
@@ -6296,9 +5695,11 @@ type FileAggregations {
   imaging_date: Aggregations
   error_type: Aggregations
   state: Aggregations
+  release_number: Aggregations
   access: Aggregations
   platform: Aggregations
   magnification: NumericAggregations
+  version: Aggregations
 
   # The 128-bit hash value expressed as a 32 digit hexadecimal number (in lower case) used as a file's digital fingerprint.
   #
@@ -6344,7 +5745,6 @@ type FileAggregations {
   #
   metadata_files__state_comment: Aggregations
   average_read_length: NumericAggregations
-  contamination_error: NumericAggregations
   type: Aggregations
 
   # Status of the annotation.
@@ -6393,16 +5793,11 @@ type FileAggregations {
 
   # Top level characterization of the annotation.
   annotations__category: Aggregations
-  channel: Aggregations
   revision: NumericAggregations
-  updated_datetime: Aggregations
   data_type: Aggregations
   tags: Aggregations
-  chip_position: Aggregations
   proportion_coverage_10X: NumericAggregations
   file_id: Aggregations
-  contamination: NumericAggregations
-  proportion_base_mismatch: NumericAggregations
   proportion_reads_duplicated: NumericAggregations
 
   # A combination of date and time of day in the form [-]CCYY-MM-DDThh:mm:ss[Z|(+|-)hh:mm]
@@ -6452,13 +5847,13 @@ type FileAggregations {
   cases__case_id: Aggregations
   cases__samples__sample_type_id: Aggregations
   cases__samples__updated_datetime: Aggregations
-  cases__samples__time_between_excision_and_freezing: NumericAggregations
+  cases__samples__time_between_excision_and_freezing: Aggregations
   cases__samples__oct_embedded: Aggregations
   cases__samples__tumor_code_id: Aggregations
   cases__samples__submitter_id: Aggregations
-  cases__samples__intermediate_dimension: NumericAggregations
+  cases__samples__intermediate_dimension: Aggregations
   cases__samples__sample_id: Aggregations
-  cases__samples__time_between_clamping_and_freezing: NumericAggregations
+  cases__samples__time_between_clamping_and_freezing: Aggregations
   cases__samples__pathology_report_uuid: Aggregations
   cases__samples__created_datetime: Aggregations
   cases__samples__tumor_descriptor: Aggregations
@@ -6488,7 +5883,7 @@ type FileAggregations {
   cases__samples__annotations__category: Aggregations
   cases__samples__is_ffpe: Aggregations
   cases__samples__distributor_reference: Aggregations
-  cases__samples__shortest_dimension: NumericAggregations
+  cases__samples__shortest_dimension: Aggregations
   cases__samples__method_of_sample_procurement: Aggregations
   cases__samples__tumor_code: Aggregations
   cases__samples__passage_count: NumericAggregations
@@ -6644,7 +6039,7 @@ type FileAggregations {
   cases__samples__days_to_collection: NumericAggregations
   cases__samples__catalog_reference: Aggregations
   cases__samples__initial_weight: NumericAggregations
-  cases__samples__longest_dimension: NumericAggregations
+  cases__samples__longest_dimension: Aggregations
   cases__submitter_sample_ids: Aggregations
   cases__annotations__status: Aggregations
   cases__annotations__legacy_updated_datetime: Aggregations
@@ -6664,109 +6059,23 @@ type FileAggregations {
   cases__annotations__case_submitter_id: Aggregations
   cases__annotations__category: Aggregations
   cases__exposures__cigarettes_per_day: NumericAggregations
+  cases__exposures__tobacco_smoking_quit_year: NumericAggregations
   cases__exposures__weight: NumericAggregations
   cases__exposures__updated_datetime: Aggregations
+  cases__exposures__alcohol_history: Aggregations
+  cases__exposures__alcohol_intensity: Aggregations
+  cases__exposures__bmi: NumericAggregations
   cases__exposures__years_smoked: NumericAggregations
   cases__exposures__height: NumericAggregations
-  cases__exposures__environmental_tobacco_smoke_exposure: Aggregations
-  cases__exposures__tobacco_smoking_status: Aggregations
-  cases__exposures__alcohol_days_per_week: NumericAggregations
-  cases__exposures__pack_years_smoked: NumericAggregations
-  cases__exposures__respirable_crystalline_silica_exposure: Aggregations
-  cases__exposures__coal_dust_exposure: Aggregations
   cases__exposures__created_datetime: Aggregations
-  cases__exposures__asbestos_exposure: Aggregations
   cases__exposures__state: Aggregations
-  cases__exposures__type_of_tobacco_used: Aggregations
+  cases__exposures__tobacco_smoking_status: Aggregations
   cases__exposures__tobacco_smoking_onset_year: NumericAggregations
-  cases__exposures__alcohol_history: Aggregations
-  cases__exposures__bmi: NumericAggregations
-  cases__exposures__smoking_frequency: Aggregations
   cases__exposures__alcohol_drinks_per_day: NumericAggregations
-  cases__exposures__type_of_smoke_exposure: Aggregations
-  cases__exposures__exposure_id: Aggregations
+  cases__exposures__alcohol_days_per_week: NumericAggregations
   cases__exposures__submitter_id: Aggregations
-  cases__exposures__alcohol_intensity: Aggregations
-  cases__exposures__time_between_waking_and_first_smoke: Aggregations
-  cases__exposures__radon_exposure: Aggregations
-  cases__exposures__tobacco_smoking_quit_year: NumericAggregations
-  cases__follow_ups__fev1_ref_post_bronch_percent: NumericAggregations
-  cases__follow_ups__weight: NumericAggregations
-  cases__follow_ups__reflux_treatment_type: Aggregations
-  cases__follow_ups__progression_or_recurrence_type: Aggregations
-  cases__follow_ups__height: NumericAggregations
-  cases__follow_ups__days_to_adverse_event: NumericAggregations
-  cases__follow_ups__cause_of_response: Aggregations
-  cases__follow_ups__fev1_fvc_pre_bronch_percent: NumericAggregations
-  cases__follow_ups__ecog_performance_status: Aggregations
-  cases__follow_ups__hpv_positive_type: Aggregations
-  cases__follow_ups__days_to_progression_free: NumericAggregations
-  cases__follow_ups__days_to_follow_up: NumericAggregations
-  cases__follow_ups__fev1_fvc_post_bronch_percent: NumericAggregations
-  cases__follow_ups__comorbidity_method_of_diagnosis: Aggregations
-  cases__follow_ups__dlco_ref_predictive_percent: NumericAggregations
-  cases__follow_ups__comorbidity: Aggregations
-  cases__follow_ups__updated_datetime: Aggregations
-  cases__follow_ups__risk_factor: Aggregations
-  cases__follow_ups__state: Aggregations
-  cases__follow_ups__days_to_progression: NumericAggregations
-  cases__follow_ups__adverse_event: Aggregations
-  cases__follow_ups__days_to_recurrence: NumericAggregations
-  cases__follow_ups__molecular_tests__mismatch_repair_mutation: Aggregations
-  cases__follow_ups__molecular_tests__updated_datetime: Aggregations
-  cases__follow_ups__molecular_tests__antigen: Aggregations
-  cases__follow_ups__molecular_tests__variant_origin: Aggregations
-  cases__follow_ups__molecular_tests__blood_test_normal_range_lower: NumericAggregations
-  cases__follow_ups__molecular_tests__locus: Aggregations
-  cases__follow_ups__molecular_tests__test_value: NumericAggregations
-  cases__follow_ups__molecular_tests__second_gene_symbol: Aggregations
-  cases__follow_ups__molecular_tests__ploidy: Aggregations
-  cases__follow_ups__molecular_tests__chromosome: Aggregations
-  cases__follow_ups__molecular_tests__specialized_molecular_test: Aggregations
-  cases__follow_ups__molecular_tests__created_datetime: Aggregations
-  cases__follow_ups__molecular_tests__intron: Aggregations
-  cases__follow_ups__molecular_tests__gene_symbol: Aggregations
-  cases__follow_ups__molecular_tests__state: Aggregations
-  cases__follow_ups__molecular_tests__histone_variant: Aggregations
-  cases__follow_ups__molecular_tests__cell_count: NumericAggregations
-  cases__follow_ups__molecular_tests__histone_family: Aggregations
-  cases__follow_ups__molecular_tests__copy_number: NumericAggregations
-  cases__follow_ups__molecular_tests__test_analyte_type: Aggregations
-  cases__follow_ups__molecular_tests__exon: Aggregations
-  cases__follow_ups__molecular_tests__laboratory_test: Aggregations
-  cases__follow_ups__molecular_tests__test_result: Aggregations
-  cases__follow_ups__molecular_tests__transcript: Aggregations
-  cases__follow_ups__molecular_tests__blood_test_normal_range_upper: NumericAggregations
-  cases__follow_ups__molecular_tests__test_units: Aggregations
-  cases__follow_ups__molecular_tests__zygosity: Aggregations
-  cases__follow_ups__molecular_tests__cytoband: Aggregations
-  cases__follow_ups__molecular_tests__biospecimen_type: Aggregations
-  cases__follow_ups__molecular_tests__submitter_id: Aggregations
-  cases__follow_ups__molecular_tests__second_exon: Aggregations
-  cases__follow_ups__molecular_tests__molecular_test_id: Aggregations
-  cases__follow_ups__molecular_tests__molecular_analysis_method: Aggregations
-  cases__follow_ups__molecular_tests__molecular_consequence: Aggregations
-  cases__follow_ups__molecular_tests__variant_type: Aggregations
-  cases__follow_ups__molecular_tests__loci_abnormal_count: NumericAggregations
-  cases__follow_ups__molecular_tests__aa_change: Aggregations
-  cases__follow_ups__molecular_tests__loci_count: NumericAggregations
-  cases__follow_ups__bmi: NumericAggregations
-  cases__follow_ups__menopause_status: Aggregations
-  cases__follow_ups__progression_or_recurrence: Aggregations
-  cases__follow_ups__diabetes_treatment_type: Aggregations
-  cases__follow_ups__risk_factor_treatment: Aggregations
-  cases__follow_ups__progression_or_recurrence_anatomic_site: Aggregations
-  cases__follow_ups__submitter_id: Aggregations
-  cases__follow_ups__barretts_esophagus_goblet_cells_present: Aggregations
-  cases__follow_ups__disease_response: Aggregations
-  cases__follow_ups__follow_up_id: Aggregations
-  cases__follow_ups__pancreatitis_onset_year: NumericAggregations
-  cases__follow_ups__viral_hepatitis_serologies: Aggregations
-  cases__follow_ups__fev1_ref_pre_bronch_percent: NumericAggregations
-  cases__follow_ups__created_datetime: Aggregations
-  cases__follow_ups__karnofsky_performance_status: Aggregations
-  cases__follow_ups__hepatitis_sustained_virological_response: Aggregations
-  cases__follow_ups__days_to_comorbidity: NumericAggregations
+  cases__exposures__exposure_id: Aggregations
+  cases__exposures__pack_years_smoked: NumericAggregations
 
   # The text term used to describe the reference or anchor date used when for date
   # obfuscation, where a single date is obscurred by creating one or more date
@@ -6789,48 +6098,44 @@ type FileAggregations {
   # UUID for identifying or recalling a node.
   #
   cases__submitter_id: Aggregations
-
-  # The text term used to describe the type of malignant disease, as categorized
-  # by the World Health Organization's (WHO) International Classification of
-  # Diseases for Oncology (ICD-O).
-  #
-  cases__disease_type: Aggregations
   cases__diagnoses__vascular_invasion_type: Aggregations
   cases__diagnoses__method_of_diagnosis: Aggregations
   cases__diagnoses__laterality: Aggregations
   cases__diagnoses__ann_arbor_pathologic_stage: Aggregations
   cases__diagnoses__inrg_stage: Aggregations
   cases__diagnoses__submitter_id: Aggregations
-  cases__diagnoses__metastasis_at_diagnosis: Aggregations
+  cases__diagnoses__vital_status: Aggregations
   cases__diagnoses__morphology: Aggregations
+  cases__diagnoses__days_to_death: NumericAggregations
   cases__diagnoses__days_to_last_known_disease_status: NumericAggregations
   cases__diagnoses__cog_rhabdomyosarcoma_risk_group: Aggregations
+  cases__diagnoses__days_to_hiv_diagnosis: NumericAggregations
   cases__diagnoses__ajcc_pathologic_t: Aggregations
   cases__diagnoses__prior_treatment: Aggregations
   cases__diagnoses__irs_group: Aggregations
   cases__diagnoses__ajcc_pathologic_m: Aggregations
   cases__diagnoses__ajcc_pathologic_n: Aggregations
-  cases__diagnoses__weiss_assessment_score: Aggregations
   cases__diagnoses__enneking_msts_metastasis: Aggregations
   cases__diagnoses__esophageal_columnar_dysplasia_degree: Aggregations
-  cases__diagnoses__lymph_nodes_tested: NumericAggregations
   cases__diagnoses__ishak_fibrosis_score: Aggregations
   cases__diagnoses__lymphatic_invasion_present: Aggregations
   cases__diagnoses__supratentorial_localization: Aggregations
-  cases__diagnoses__igcccg_stage: Aggregations
   cases__diagnoses__gastric_esophageal_junction_involvement: Aggregations
   cases__diagnoses__goblet_cells_columnar_mucosa_present: Aggregations
   cases__diagnoses__iss_stage: Aggregations
+  cases__diagnoses__cause_of_death: Aggregations
   cases__diagnoses__enneking_msts_tumor_site: Aggregations
-  cases__diagnoses__tumor_regression_grade: Aggregations
   cases__diagnoses__gross_tumor_weight: NumericAggregations
   cases__diagnoses__ajcc_clinical_stage: Aggregations
+  cases__diagnoses__hiv_positive: Aggregations
   cases__diagnoses__ann_arbor_b_symptoms: Aggregations
   cases__diagnoses__cog_neuroblastoma_risk_group: Aggregations
   cases__diagnoses__updated_datetime: Aggregations
+  cases__diagnoses__metastasis_at_diagnosis: Aggregations
   cases__diagnoses__days_to_best_overall_response: NumericAggregations
   cases__diagnoses__tumor_stage: Aggregations
   cases__diagnoses__age_at_diagnosis: NumericAggregations
+  cases__diagnoses__hpv_positive_type: Aggregations
   cases__diagnoses__created_datetime: Aggregations
   cases__diagnoses__enneking_msts_grade: Aggregations
   cases__diagnoses__state: Aggregations
@@ -6843,43 +6148,28 @@ type FileAggregations {
   cases__diagnoses__tissue_or_organ_of_origin: Aggregations
   cases__diagnoses__peripancreatic_lymph_nodes_positive: Aggregations
   cases__diagnoses__prior_malignancy: Aggregations
+  cases__diagnoses__days_to_new_event: NumericAggregations
   cases__diagnoses__circumferential_resection_margin: NumericAggregations
   cases__diagnoses__lymph_nodes_positive: NumericAggregations
   cases__diagnoses__days_to_last_follow_up: NumericAggregations
   cases__diagnoses__inss_stage: Aggregations
   cases__diagnoses__inpc_histologic_group: Aggregations
   cases__diagnoses__year_of_diagnosis: NumericAggregations
-  cases__diagnoses__secondary_gleason_grade: Aggregations
+  cases__diagnoses__progression_free_survival: NumericAggregations
   cases__diagnoses__residual_disease: Aggregations
   cases__diagnoses__anaplasia_present: Aggregations
   cases__diagnoses__ann_arbor_clinical_stage: Aggregations
   cases__diagnoses__tumor_confined_to_organ_of_origin: Aggregations
   cases__diagnoses__perineural_invasion_present: Aggregations
-  cases__diagnoses__tumor_focality: Aggregations
   cases__diagnoses__wilms_tumor_histologic_subtype: Aggregations
   cases__diagnoses__ajcc_clinical_t: Aggregations
+  cases__diagnoses__colon_polyps_history: Aggregations
   cases__diagnoses__ajcc_clinical_n: Aggregations
   cases__diagnoses__ajcc_clinical_m: Aggregations
   cases__diagnoses__irs_stage: Aggregations
   cases__diagnoses__first_symptom_prior_to_diagnosis: Aggregations
   cases__diagnoses__cog_liver_stage: Aggregations
-  cases__diagnoses__annotations__status: Aggregations
-  cases__diagnoses__annotations__legacy_updated_datetime: Aggregations
-  cases__diagnoses__annotations__entity_id: Aggregations
-  cases__diagnoses__annotations__classification: Aggregations
-  cases__diagnoses__annotations__creator: Aggregations
-  cases__diagnoses__annotations__created_datetime: Aggregations
-  cases__diagnoses__annotations__entity_submitter_id: Aggregations
-  cases__diagnoses__annotations__notes: Aggregations
-  cases__diagnoses__annotations__entity_type: Aggregations
-  cases__diagnoses__annotations__updated_datetime: Aggregations
-  cases__diagnoses__annotations__legacy_created_datetime: Aggregations
-  cases__diagnoses__annotations__state: Aggregations
-  cases__diagnoses__annotations__case_id: Aggregations
-  cases__diagnoses__annotations__submitter_id: Aggregations
-  cases__diagnoses__annotations__annotation_id: Aggregations
-  cases__diagnoses__annotations__case_submitter_id: Aggregations
-  cases__diagnoses__annotations__category: Aggregations
+  cases__diagnoses__progression_free_survival_event: Aggregations
   cases__diagnoses__enneking_msts_stage: Aggregations
   cases__diagnoses__icd_10_code: Aggregations
   cases__diagnoses__inpc_grade: Aggregations
@@ -6888,17 +6178,17 @@ type FileAggregations {
   cases__diagnoses__burkitt_lymphoma_clinical_variant: Aggregations
   cases__diagnoses__ann_arbor_extranodal_involvement: Aggregations
   cases__diagnoses__peripancreatic_lymph_nodes_tested: NumericAggregations
-  cases__diagnoses__masaoka_stage: Aggregations
+  cases__diagnoses__overall_survival: NumericAggregations
   cases__diagnoses__mitosis_karyorrhexis_index: Aggregations
   cases__diagnoses__classification_of_tumor: Aggregations
   cases__diagnoses__last_known_disease_status: Aggregations
   cases__diagnoses__primary_diagnosis: Aggregations
   cases__diagnoses__esophageal_columnar_metaplasia_present: Aggregations
+  cases__diagnoses__new_event_anatomic_site: Aggregations
   cases__diagnoses__best_overall_response: Aggregations
   cases__diagnoses__vascular_invasion_present: Aggregations
   cases__diagnoses__micropapillary_features: Aggregations
   cases__diagnoses__tumor_grade: Aggregations
-  cases__diagnoses__primary_gleason_grade: Aggregations
   cases__diagnoses__treatments__days_to_treatment_start: NumericAggregations
   cases__diagnoses__treatments__updated_datetime: Aggregations
   cases__diagnoses__treatments__created_datetime: Aggregations
@@ -6906,7 +6196,6 @@ type FileAggregations {
   cases__diagnoses__treatments__treatment_type: Aggregations
   cases__diagnoses__treatments__submitter_id: Aggregations
   cases__diagnoses__treatments__treatment_id: Aggregations
-  cases__diagnoses__treatments__treatment_effect: Aggregations
   cases__diagnoses__treatments__state: Aggregations
   cases__diagnoses__treatments__therapeutic_agents: Aggregations
   cases__diagnoses__treatments__regimen_or_line_of_therapy: Aggregations
@@ -6916,14 +6205,22 @@ type FileAggregations {
   cases__diagnoses__treatments__days_to_treatment_end: NumericAggregations
   cases__diagnoses__treatments__treatment_or_therapy: Aggregations
   cases__diagnoses__days_to_diagnosis: NumericAggregations
+  cases__diagnoses__days_to_birth: NumericAggregations
+  cases__diagnoses__hpv_status: Aggregations
   cases__diagnoses__ajcc_staging_system_edition: Aggregations
+  cases__diagnoses__new_event_type: Aggregations
   cases__diagnoses__medulloblastoma_molecular_classification: Aggregations
+  cases__diagnoses__ldh_normal_range_upper: NumericAggregations
   cases__diagnoses__cog_renal_stage: Aggregations
   cases__diagnoses__synchronous_malignancy: Aggregations
   cases__diagnoses__metastasis_at_diagnosis_site: Aggregations
   cases__diagnoses__site_of_resection_or_biopsy: Aggregations
-  cases__diagnoses__gleason_grade_group: Aggregations
-  cases__diagnosis_ids: Aggregations
+
+  # The text term used to describe the type of malignant disease, as categorized
+  # by the World Health Organization's (WHO) International Classification of
+  # Diseases for Oncology (ICD-O).
+  #
+  cases__disease_type: Aggregations
   cases__submitter_aliquot_ids: Aggregations
   cases__summary__data_categories__file_count: NumericAggregations
   cases__summary__data_categories__data_category: Aggregations
@@ -6952,7 +6249,6 @@ type FileAggregations {
   # specific primary sites of disease.
   #
   cases__primary_site: Aggregations
-  cases__submitter_diagnosis_ids: Aggregations
   cases__tissue_source_site__project: Aggregations
   cases__tissue_source_site__bcr_id: Aggregations
   cases__tissue_source_site__code: Aggregations
@@ -6961,7 +6257,6 @@ type FileAggregations {
   cases__submitter_slide_ids: Aggregations
   total_reads: NumericAggregations
   state_comment: Aggregations
-  plate_well: Aggregations
   data_format: Aggregations
 
   # Numeric code for the center.
@@ -6979,14 +6274,15 @@ type FileAggregations {
 
   # Type classification of the center (e.g. CGCC).
   center__center_type: Aggregations
+  baseid: Aggregations
   md5sum: Aggregations
-  plate_name: Aggregations
+  updated_datetime: Aggregations
   mean_coverage: NumericAggregations
   analysis__analysis_id: Aggregations
   analysis__updated_datetime: Aggregations
   analysis__created_datetime: Aggregations
-  analysis__input_files__chip_id: Aggregations
   analysis__input_files__proportion_base_mismatch: NumericAggregations
+  analysis__input_files__updated_datetime: Aggregations
   analysis__input_files__file_name: Aggregations
   analysis__input_files__submitter_id: Aggregations
   analysis__input_files__read_pair_number: Aggregations
@@ -7003,21 +6299,14 @@ type FileAggregations {
   analysis__input_files__magnification: NumericAggregations
   analysis__input_files__mean_coverage: NumericAggregations
   analysis__input_files__average_read_length: NumericAggregations
-  analysis__input_files__contamination_error: NumericAggregations
-  analysis__input_files__channel: Aggregations
   analysis__input_files__experimental_strategy: Aggregations
-  analysis__input_files__updated_datetime: Aggregations
   analysis__input_files__data_type: Aggregations
-  analysis__input_files__chip_position: Aggregations
   analysis__input_files__proportion_coverage_10X: NumericAggregations
   analysis__input_files__file_id: Aggregations
-  analysis__input_files__contamination: NumericAggregations
   analysis__input_files__proportion_reads_duplicated: NumericAggregations
   analysis__input_files__total_reads: NumericAggregations
   analysis__input_files__state_comment: Aggregations
-  analysis__input_files__plate_well: Aggregations
   analysis__input_files__md5sum: Aggregations
-  analysis__input_files__plate_name: Aggregations
   analysis__input_files__data_format: Aggregations
   analysis__input_files__proportion_reads_mapped: NumericAggregations
   analysis__input_files__proportion_targets_no_coverage: NumericAggregations
@@ -7313,9 +6602,6 @@ type FileCase implements Node {
   disease_type: String
 
   # keyword
-  diagnosis_ids: String
-
-  # keyword
   submitter_aliquot_ids: String
 
   # keyword
@@ -7328,9 +6614,6 @@ type FileCase implements Node {
   # specific primary sites of disease.
   #
   primary_site: String
-
-  # keyword
-  submitter_diagnosis_ids: String
 
   # keyword
   submitter_slide_ids: String
@@ -7717,8 +7000,9 @@ type GeneAggregations {
   case__diagnoses__tumor_stage: Aggregations
   case__diagnoses__age_at_diagnosis: NumericAggregations
   case__diagnoses__hpv_positive_type: Aggregations
+  case__diagnoses__vital_status: Aggregations
   case__diagnoses__morphology: Aggregations
-  case__diagnoses__ann_arbor_clinical_stage: Aggregations
+  case__diagnoses__days_to_death: NumericAggregations
   case__diagnoses__new_event_anatomic_site: Aggregations
   case__diagnoses__days_to_last_known_disease_status: NumericAggregations
   case__diagnoses__perineural_invasion_present: Aggregations
@@ -7733,7 +7017,7 @@ type GeneAggregations {
   case__diagnoses__ajcc_pathologic_n: Aggregations
   case__diagnoses__vascular_invasion_present: Aggregations
   case__diagnoses__ldh_level_at_diagnosis: NumericAggregations
-  case__diagnoses__created_datetime: Aggregations
+  case__diagnoses__days_to_last_follow_up: NumericAggregations
   case__diagnoses__residual_disease: Aggregations
   case__diagnoses__days_to_recurrence: NumericAggregations
   case__diagnoses__tumor_largest_dimension_diameter: NumericAggregations
@@ -7756,6 +7040,7 @@ type GeneAggregations {
   case__diagnoses__treatments__treatment_or_therapy: Aggregations
   case__diagnoses__lymphatic_invasion_present: Aggregations
   case__diagnoses__tissue_or_organ_of_origin: Aggregations
+  case__diagnoses__days_to_birth: NumericAggregations
   case__diagnoses__progression_or_recurrence: Aggregations
   case__diagnoses__hpv_status: Aggregations
   case__diagnoses__prior_malignancy: Aggregations
@@ -7768,8 +7053,9 @@ type GeneAggregations {
   case__diagnoses__ldh_normal_range_upper: NumericAggregations
   case__diagnoses__ann_arbor_extranodal_involvement: Aggregations
   case__diagnoses__lymph_nodes_positive: NumericAggregations
+  case__diagnoses__ann_arbor_clinical_stage: Aggregations
   case__diagnoses__site_of_resection_or_biopsy: Aggregations
-  case__diagnoses__days_to_last_follow_up: NumericAggregations
+  case__diagnoses__created_datetime: Aggregations
   case__diagnoses__ajcc_clinical_stage: Aggregations
   case__diagnoses__days_to_new_event: NumericAggregations
   case__diagnoses__hiv_positive: Aggregations
@@ -7785,16 +7071,11 @@ type GeneAggregations {
   case__demographic__demographic_id: Aggregations
   case__demographic__state: Aggregations
   case__demographic__race: Aggregations
-  case__demographic__days_to_birth: NumericAggregations
-  case__demographic__vital_status: Aggregations
-  case__demographic__days_to_death: NumericAggregations
   case__demographic__submitter_id: Aggregations
   case__demographic__ethnicity: Aggregations
   case__demographic__year_of_death: NumericAggregations
   case__submitter_id: Aggregations
   case__ssm__ncbi_build: Aggregations
-  case__ssm__clinical_annotations__civic__gene_id: Aggregations
-  case__ssm__clinical_annotations__civic__variant_id: Aggregations
   case__ssm__observation__src_vcf_id: Aggregations
   case__ssm__observation__mutation_status: Aggregations
   case__ssm__observation__tumor_genotype__tumor_seq_allele1: Aggregations
@@ -8057,11 +7338,11 @@ type Genes {
 type IndexFile implements Node {
   id: ID!
 
-  # keyword
-  chip_id: String
-
   # long
   proportion_base_mismatch: Float
+
+  # keyword
+  updated_datetime: String
 
   # keyword
   file_name: String
@@ -8111,32 +7392,17 @@ type IndexFile implements Node {
   # long
   average_read_length: Float
 
-  # long
-  contamination_error: Float
-
-  # keyword
-  channel: String
-
   # keyword
   experimental_strategy: String
 
   # keyword
-  updated_datetime: String
-
-  # keyword
   data_type: String
-
-  # keyword
-  chip_position: String
 
   # long
   proportion_coverage_10X: Float
 
   # keyword
   file_id: String
-
-  # long
-  contamination: Float
 
   # long
   proportion_reads_duplicated: Float
@@ -8148,13 +7414,7 @@ type IndexFile implements Node {
   state_comment: String
 
   # keyword
-  plate_well: String
-
-  # keyword
   md5sum: String
-
-  # keyword
-  plate_name: String
 
   # keyword
   data_format: String
@@ -8211,11 +7471,11 @@ type InputBamFile {
 type InputFile implements Node {
   id: ID!
 
-  # keyword
-  chip_id: String
-
   # long
   proportion_base_mismatch: Float
+
+  # keyword
+  updated_datetime: String
 
   # keyword
   file_name: String
@@ -8265,32 +7525,17 @@ type InputFile implements Node {
   # long
   average_read_length: Float
 
-  # long
-  contamination_error: Float
-
-  # keyword
-  channel: String
-
   # keyword
   experimental_strategy: String
 
   # keyword
-  updated_datetime: String
-
-  # keyword
   data_type: String
-
-  # keyword
-  chip_position: String
 
   # long
   proportion_coverage_10X: Float
 
   # keyword
   file_id: String
-
-  # long
-  contamination: Float
 
   # long
   proportion_reads_duplicated: Float
@@ -8302,13 +7547,7 @@ type InputFile implements Node {
   state_comment: String
 
   # keyword
-  plate_well: String
-
-  # keyword
   md5sum: String
-
-  # keyword
-  plate_name: String
 
   # keyword
   data_format: String
@@ -8673,8 +7912,6 @@ interface Node {
 type NumericAggregations {
   stats: Stats
   histogram(interval: Float): Aggregations
-  percentiles: Percentiles
-  range(ranges: FiltersArgument): Aggregations
 }
 
 enum Order {
@@ -8685,11 +7922,11 @@ enum Order {
 type OutputFile implements Node {
   id: ID!
 
-  # keyword
-  chip_id: String
-
   # long
   proportion_base_mismatch: Float
+
+  # keyword
+  updated_datetime: String
 
   # keyword
   file_name: String
@@ -8739,32 +7976,17 @@ type OutputFile implements Node {
   # long
   average_read_length: Float
 
-  # long
-  contamination_error: Float
-
-  # keyword
-  channel: String
-
   # keyword
   experimental_strategy: String
 
   # keyword
-  updated_datetime: String
-
-  # keyword
   data_type: String
-
-  # keyword
-  chip_position: String
 
   # long
   proportion_coverage_10X: Float
 
   # keyword
   file_id: String
-
-  # long
-  contamination: Float
 
   # long
   proportion_reads_duplicated: Float
@@ -8776,13 +7998,7 @@ type OutputFile implements Node {
   state_comment: String
 
   # keyword
-  plate_well: String
-
-  # keyword
   md5sum: String
-
-  # keyword
-  plate_name: String
 
   # keyword
   data_format: String
@@ -8839,13 +8055,6 @@ type PageInfo {
 
   # When paginating forwards, the cursor to continue.
   endCursor: String
-}
-
-type Percentiles {
-  quartile_1: Float
-  quartile_3: Float
-  median: Float
-  iqr: Float
 }
 
 type Portion implements Node {
@@ -9423,7 +8632,7 @@ type Sample implements Node {
 
   # Numeric representation of the elapsed time between the excision and freezing of the sample, measured in minutes.
   #
-  time_between_excision_and_freezing: Float
+  time_between_excision_and_freezing: String
 
   # Indicator of whether or not the sample was embedded in Optimal Cutting Temperature (OCT) compound.
   #
@@ -9438,7 +8647,7 @@ type Sample implements Node {
   # UUID for identifying or recalling a node.
   #
   submitter_id: String
-  intermediate_dimension: Float
+  intermediate_dimension: String
 
   # keyword
   sample_id: String
@@ -9446,7 +8655,7 @@ type Sample implements Node {
   # Numeric representation of the elapsed time between the surgical clamping of
   # blood supply and freezing of the sample, measured in minutes.
   #
-  time_between_clamping_and_freezing: Float
+  time_between_clamping_and_freezing: String
 
   # UUID of the related pathology report.
   pathology_report_uuid: String
@@ -9495,7 +8704,7 @@ type Sample implements Node {
 
   # Numeric value that represents the shortest dimension of the sample, measured in millimeters.
   #
-  shortest_dimension: Float
+  shortest_dimension: String
 
   # The method used to procure the sample used to extract analyte(s).
   #
@@ -9546,7 +8755,7 @@ type Sample implements Node {
   # Numeric value that represents the initial weight of the sample, measured in milligrams.
   #
   initial_weight: Float
-  longest_dimension: Float
+  longest_dimension: String
   score: Int
 }
 
@@ -9700,6 +8909,9 @@ type Ssm implements Node {
   ncbi_build: String
 
   # keyword
+  mutation_type: String
+
+  # keyword
   mutation_subtype: String
 
   # long
@@ -9721,26 +8933,21 @@ type Ssm implements Node {
   tumor_allele: String
 
   # keyword
-  mutation_type: String
-
-  # keyword
   chromosome: String
 
   # keyword
   genomic_dna_change: String
-  clinical_annotations: ClinicalAnnotations
-  consequence: SSMConsequences
-  cosmic_id: [String]
   external_db_ids: SsmGeneExternalDbIds
-  gene_aa_change: [String]
+  consequence: SSMConsequences
   occurrence: SSMOccurrences
+  cosmic_id: [String]
+  gene_aa_change: [String]
   score: Int
 }
 
 type SsmAggregations {
   ncbi_build: Aggregations
-  clinical_annotations__civic__gene_id: Aggregations
-  clinical_annotations__civic__variant_id: Aggregations
+  mutation_type: Aggregations
   occurrence__case__exposures__cigarettes_per_day: NumericAggregations
   occurrence__case__exposures__weight: NumericAggregations
   occurrence__case__exposures__updated_datetime: Aggregations
@@ -9770,8 +8977,9 @@ type SsmAggregations {
   occurrence__case__diagnoses__tumor_stage: Aggregations
   occurrence__case__diagnoses__age_at_diagnosis: NumericAggregations
   occurrence__case__diagnoses__hpv_positive_type: Aggregations
+  occurrence__case__diagnoses__vital_status: Aggregations
   occurrence__case__diagnoses__morphology: Aggregations
-  occurrence__case__diagnoses__ann_arbor_clinical_stage: Aggregations
+  occurrence__case__diagnoses__days_to_death: NumericAggregations
   occurrence__case__diagnoses__new_event_anatomic_site: Aggregations
   occurrence__case__diagnoses__days_to_last_known_disease_status: NumericAggregations
   occurrence__case__diagnoses__perineural_invasion_present: Aggregations
@@ -9786,7 +8994,7 @@ type SsmAggregations {
   occurrence__case__diagnoses__ajcc_pathologic_n: Aggregations
   occurrence__case__diagnoses__vascular_invasion_present: Aggregations
   occurrence__case__diagnoses__ldh_level_at_diagnosis: NumericAggregations
-  occurrence__case__diagnoses__created_datetime: Aggregations
+  occurrence__case__diagnoses__days_to_last_follow_up: NumericAggregations
   occurrence__case__diagnoses__residual_disease: Aggregations
   occurrence__case__diagnoses__days_to_recurrence: NumericAggregations
   occurrence__case__diagnoses__tumor_largest_dimension_diameter: NumericAggregations
@@ -9809,6 +9017,7 @@ type SsmAggregations {
   occurrence__case__diagnoses__treatments__treatment_or_therapy: Aggregations
   occurrence__case__diagnoses__lymphatic_invasion_present: Aggregations
   occurrence__case__diagnoses__tissue_or_organ_of_origin: Aggregations
+  occurrence__case__diagnoses__days_to_birth: NumericAggregations
   occurrence__case__diagnoses__progression_or_recurrence: Aggregations
   occurrence__case__diagnoses__hpv_status: Aggregations
   occurrence__case__diagnoses__prior_malignancy: Aggregations
@@ -9821,8 +9030,9 @@ type SsmAggregations {
   occurrence__case__diagnoses__ldh_normal_range_upper: NumericAggregations
   occurrence__case__diagnoses__ann_arbor_extranodal_involvement: Aggregations
   occurrence__case__diagnoses__lymph_nodes_positive: NumericAggregations
+  occurrence__case__diagnoses__ann_arbor_clinical_stage: Aggregations
   occurrence__case__diagnoses__site_of_resection_or_biopsy: Aggregations
-  occurrence__case__diagnoses__days_to_last_follow_up: NumericAggregations
+  occurrence__case__diagnoses__created_datetime: Aggregations
   occurrence__case__diagnoses__ajcc_clinical_stage: Aggregations
   occurrence__case__diagnoses__days_to_new_event: NumericAggregations
   occurrence__case__diagnoses__hiv_positive: Aggregations
@@ -9838,9 +9048,6 @@ type SsmAggregations {
   occurrence__case__demographic__demographic_id: Aggregations
   occurrence__case__demographic__state: Aggregations
   occurrence__case__demographic__race: Aggregations
-  occurrence__case__demographic__days_to_birth: NumericAggregations
-  occurrence__case__demographic__vital_status: Aggregations
-  occurrence__case__demographic__days_to_death: NumericAggregations
   occurrence__case__demographic__submitter_id: Aggregations
   occurrence__case__demographic__ethnicity: Aggregations
   occurrence__case__demographic__year_of_death: NumericAggregations
@@ -9909,7 +9116,6 @@ type SsmAggregations {
   occurrence__case__available_variation_data: Aggregations
   occurrence__case__disease_type: Aggregations
   occurrence__occurrence_id: Aggregations
-  gene_aa_change: Aggregations
   mutation_subtype: Aggregations
   end_position: NumericAggregations
   reference_allele: Aggregations
@@ -9969,7 +9175,7 @@ type SsmAggregations {
   consequence__transcript__annotation__hgvsp_short: Aggregations
   consequence__transcript__ref_seq_accession: Aggregations
   tumor_allele: Aggregations
-  mutation_type: Aggregations
+  gene_aa_change: Aggregations
   chromosome: Aggregations
   genomic_dna_change: Aggregations
 }
@@ -10244,15 +9450,6 @@ type Stats {
   count: Int
   avg: Float
   sum: Float
-  std_deviation: Float
-  sum_of_squares: Float
-  variance: Float
-  std_deviation_bounds: StdDeviationBounds
-}
-
-type StdDeviationBounds {
-  upper: Float
-  lower: Float
 }
 
 type Summary {
@@ -10501,10 +9698,6 @@ type Treatment implements Node {
 
   # keyword
   treatment_id: String
-
-  # The text term used to describe the pathologic effect a treatment(s) had on the tumor.
-  #
-  treatment_effect: String
 
   # The current state of the object.
   #

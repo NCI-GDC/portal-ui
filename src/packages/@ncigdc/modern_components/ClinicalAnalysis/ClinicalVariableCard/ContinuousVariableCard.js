@@ -135,6 +135,18 @@ export default compose(
             customRanges,
             continuousReset,
           ) => {
+            (continuousReset ||
+              (continuousBinType === 'range' &&
+                !isEqual(variable.customRanges, customRanges)) ||
+              (continuousBinType === 'interval' &&
+                !isEqual(variable.customInterval, customInterval))) &&
+                (
+                  dispatchUpdateClinicalVariable({
+                    value: DEFAULT_SAVED_SURVIVAL_BINS,
+                    variableKey: 'savedSurvivalBins'
+                  })
+                );
+
             dispatchUpdateClinicalVariable({
               value: continuousReset
                 ? defaultData.bins
@@ -147,6 +159,7 @@ export default compose(
                 : continuousBinType,
               variableKey: 'continuousBinType',
             });
+            
             !continuousReset &&
               continuousBinType === 'interval' &&
               (

@@ -276,11 +276,16 @@ export default compose(
             width: '90%',
           }}
           onClose={() => dispatch(setModal(null))}
-          onUpdate={(newBins) => {
+          onUpdate={newBins => {
             dispatchUpdateClinicalVariable({
               value: newBins,
               variableKey: 'bins',
             });
+            !isEqual(newBins, bins) &&
+              dispatchUpdateClinicalVariable({
+                value: DEFAULT_SAVED_SURVIVAL_BINS,
+                variableKey: 'savedSurvivalBins'
+              });
             dispatch(setModal(null));
           }}
           />

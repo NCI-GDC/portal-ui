@@ -67,7 +67,6 @@ export default compose(
       variable: { plotTypes, savedSurvivalBins },
     }) => ({
       populateSurvivalData: () => {
-        console.log('survivalTableValues populate', survivalTableValues);
         setSurvivalPlotLoading(true);
         setSelectedSurvivalBins(survivalTableValues);
         setSelectedSurvivalLoadingIds(survivalTableValues);
@@ -82,16 +81,11 @@ export default compose(
         }
         setSurvivalPlotLoading(true);
 
-        console.log('bin', bin);
-        console.log('data', data);
-        console.log('selectedSurvivalBins', selectedSurvivalBins);
-
         const deselectingBin = selectedSurvivalBins.indexOf(bin.key) >= 0;
 
         const nextBins = deselectingBin 
           ? selectedSurvivalBins.filter(s => s !== bin.key)
           : selectedSurvivalBins.concat(bin.key);
-        console.log('nextBins', nextBins);
 
         setSelectedSurvivalBins(nextBins);
         setSelectedSurvivalLoadingIds(nextBins);
@@ -120,8 +114,6 @@ export default compose(
 
         const nextSavedBins = uniqWith(filteredSurvivalBins
           .concat(nextBinsWithValues), isEqual);
-
-        console.log('nextSavedBins', nextSavedBins);
 
         dispatchUpdateClinicalVariable({
           value: nextSavedBins,

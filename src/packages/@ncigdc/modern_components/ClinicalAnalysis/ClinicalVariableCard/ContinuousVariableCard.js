@@ -418,7 +418,6 @@ export default compose(
       variable: { bins, continuousBinType, savedSurvivalBins },
       variable,
     }) => {
-      console.log('variable', variable)
       const parsedBins = Object.keys(bins)
         .map(bin => parseContinuousKey(bin).join('-'))
         .reduce((acc, curr, idx) => Object.assign(
@@ -426,8 +425,7 @@ export default compose(
           acc, 
           { [curr]: bins[Object.keys(bins)[idx]] } 
         ),{});
-      console.log('parsedBins', parsedBins);
-      console.log('savedSurvivalBins', savedSurvivalBins);
+
       const canUseSavedBins = savedSurvivalBins
         .some(savedBin => {
           const currentBin = parsedBins[savedBin.values[0]];
@@ -437,7 +435,6 @@ export default compose(
           return currentBinParsedKey === savedBin.values[0] &&
           (continuousBinType === 'default' || currentBin.groupName === savedBin.name);
         });
-      console.log('canUseSavedBins', canUseSavedBins);
 
       const survivalPlotValues = dataBuckets.length === 0
         ? []
@@ -460,9 +457,6 @@ export default compose(
 
       const survivalTableValues = survivalPlotValues
         .map(bin => bin.key);
-
-      console.log('survivalPlotValues', survivalPlotValues);
-      console.log('survivalTableValues', survivalTableValues);
 
       return {
         survivalPlotValues,

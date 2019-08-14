@@ -126,7 +126,6 @@ const SurvivalPlotWrapper = ({
 }: TProps) => {
   const { results = [], overallStats = {} } = rawData || {};
   const { pValue } = overallStats;
-
   return (
     <Loader
       className={uniqueClass}
@@ -214,8 +213,9 @@ const SurvivalPlotWrapper = ({
                     <div
                       style={{
                         color: palette[i],
-                        padding: '0 1rem',
+                        fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif',
                         fontSize: '1.35rem',
+                        padding: '0 1rem',
                         textAlign: 'center',
                       }}
                       >

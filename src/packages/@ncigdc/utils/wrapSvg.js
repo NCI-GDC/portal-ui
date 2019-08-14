@@ -105,7 +105,7 @@ const wrapSvg = ({
   className = '',
   embed = {},
   bottomBuffer = 0,
-  rightBuffer = 0
+  rightBuffer = 0,
 }: TWrapSvg): Element => {
   const svg = document.querySelector(selector);
   if (!svg) return svg;
@@ -122,7 +122,7 @@ const wrapSvg = ({
     embedRight.width,
     (embedRight.margins || {}).left,
     (embedRight.margins || {}).right,
-    rightBuffer
+    rightBuffer,
   ]);
 
   const rightObject = buildForeignObject({
@@ -147,7 +147,7 @@ const wrapSvg = ({
     margins.bottom,
     titleHeight,
     beforeObject.height,
-    bottomBuffer
+    bottomBuffer,
   ]);
 
   const afterObject = buildForeignObject({
@@ -156,7 +156,6 @@ const wrapSvg = ({
     width: width - sum([margins.left, margins.right]),
     topOffset: height,
   });
-
   const svgClass = svg.getAttribute('class');
 
   const wrapper = document.createElement('div');
@@ -189,7 +188,7 @@ const wrapSvg = ({
       <g transform="translate(0, ${margins.top || 0})">
         <text x="${width /
     2}" y="0" text-anchor="middle" dominant-baseline="hanging">
-          <tspan style="font-size: 1.4rem;">${title}</tspan>
+          <tspan style="font-size: 1.4rem; font-family: Helvetica Neue, Helvetica, Arial, sans-serif;;font-weight: 300; color: rgb(61,61,61);">${title}</tspan>
         </text>
       </g>
       ${beforeObject.html}

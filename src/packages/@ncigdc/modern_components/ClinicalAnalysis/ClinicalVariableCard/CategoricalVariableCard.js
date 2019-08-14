@@ -118,22 +118,17 @@ export default compose(
         binData,
         variable: { savedSurvivalBins },
       }) => {
-        console.log('savedSurvivalBins', savedSurvivalBins);
         const matchedSavedBins = binData.filter(bin =>
           find(savedSurvivalBins, {
             name: bin.key,
             values: bin.keyArray,
           }));
-        console.log('matchedSavedBins', matchedSavedBins);
 
         const canUseSavedBins = matchedSavedBins.length > 0;
-        console.log('canUseSavedBins', canUseSavedBins);
 
         const nextSurvivalBins = canUseSavedBins
           ? matchedSavedBins
           : binData;
-
-        console.log('nextSurvivalBins', nextSurvivalBins);
 
         const survivalBins = filterSurvivalData(
           nextSurvivalBins
@@ -146,9 +141,6 @@ export default compose(
 
         const survivalPlotValues = survivalBins.map(bin => bin.keyArray);
         const survivalTableValues = survivalBins.map(bin => bin.key);
-
-        console.log('survivalTableValues', survivalTableValues);
-        console.log('survivalPlotValues', survivalPlotValues);
 
         return {
           survivalPlotValues,

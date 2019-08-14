@@ -393,27 +393,44 @@ export default compose(
     }
   ),
   withPropsOnChange((props, nextProps) =>
-    nextProps.variable.active_chart === 'survival' &&
-    (!isEqual(props.variable.bins, nextProps.variable.bins) ||
-    props.variable.active_chart !== nextProps.variable.active_chart),
+  nextProps.variable.active_chart === 'survival' &&
+    (!isEqual(props.binData, nextProps.binData) ||
+    props.variable.active_chart !== nextProps.variable.active_chart ||
+    !isEqual(props.selectedSurvivalBins, nextProps.selectedSurvivalBins) ||
+    props.variable.setId !== nextProps.variable.setId),
     ({
       dataBuckets,
       getContinuousBins,
-      variable: { bins: variableBins, savedSurvivalBins },
+      variable: { bins, continuousBinType, savedSurvivalBins },
+      variable,
     }) => {
-      // for continuous cards, check savedSurvivalBins against variable.bins because variable.bins has user-defined groupNames (if applicable)
-      // then use the data from dataBuckets
+      console.log('variable', variable)
+      const parsedBins = Object.keys(bins)
+        .map(bin => parseContinuousKey(bin).join('-'))
+        .reduce((acc, curr, idx) => Object.assign(
+          {}, 
+          acc, 
+          { [curr]: bins[Object.keys(bins)[idx]] } 
+        ),{});
+      console.log('parsedBins', parsedBins);
+      console.log('savedSurvivalBins', savedSurvivalBins);
       const canUseSavedBins = savedSurvivalBins
-        .some(savedBin => 
-          typeof variableBins[savedBin.values[0]] !== 'undefined' && 
-          variableBins[savedBin.values[0]].groupName === savedBin.name);
+        .some(savedBin => {
+          const currentBin = parsedBins[savedBin.values[0]];
+          if (typeof currentBin === 'undefined') return false;
+          const currentBinParsedKey = parseContinuousKey(currentBin.key).join('-');
+          
+          return currentBinParsedKey === savedBin.values[0] &&
+          (continuousBinType === 'default' || currentBin.groupName === savedBin.name);
+        });
+      console.log('canUseSavedBins', canUseSavedBins);
 
       const survivalPlotValues = dataBuckets.length === 0
         ? []
         : (canUseSavedBins
           ? filterSurvivalData(dataBuckets
               .filter(dataBucket => savedSurvivalBins
-                .some(savedBin => savedBin.values[0] === dataBucket.key)
+                .some(savedBin => savedBin.values[0] === parseContinuousKey(dataBucket.key).join('-'))
               )
               .reduce(getContinuousBins, [])
             ) 
@@ -424,11 +441,14 @@ export default compose(
             ) 
             .sort((a, b) => b.chart_doc_count - a.chart_doc_count)
           )
-            .slice(0, canUseSavedBins ? MAXIMUM_CURVES : 2)
+            .slice(0, canUseSavedBins ? MAXIMUM_CURVES - 1 : 2)
             .map(bin => makeDocCountInteger(bin));
 
       const survivalTableValues = survivalPlotValues
         .map(bin => bin.key);
+
+      console.log('survivalPlotValues', survivalPlotValues);
+      console.log('survivalTableValues', survivalTableValues);
 
       return {
         survivalPlotValues,

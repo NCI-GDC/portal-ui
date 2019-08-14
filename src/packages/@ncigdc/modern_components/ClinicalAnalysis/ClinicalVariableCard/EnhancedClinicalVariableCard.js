@@ -82,16 +82,16 @@ export default compose(
         }
         setSurvivalPlotLoading(true);
 
-        // console.log('bin', bin);
-        // console.log('data', data);
-        // console.log('selectedSurvivalBins', selectedSurvivalBins);
+        console.log('bin', bin);
+        console.log('data', data);
+        console.log('selectedSurvivalBins', selectedSurvivalBins);
 
         const deselectingBin = selectedSurvivalBins.indexOf(bin.key) >= 0;
 
         const nextBins = deselectingBin 
           ? selectedSurvivalBins.filter(s => s !== bin.key)
           : selectedSurvivalBins.concat(bin.key);
-        // console.log('nextBins', nextBins);
+        console.log('nextBins', nextBins);
 
         setSelectedSurvivalBins(nextBins);
         setSelectedSurvivalLoadingIds(nextBins);
@@ -105,8 +105,14 @@ export default compose(
         updateSurvivalPlot(nextBinsForPlot);
 
         const nextBinsWithValues = nextBins.map(bin => ({
-          name: bin,
-          values: find(data, { key: bin }).keyArray,
+          name: plotTypes === 'categorical' 
+            ? bin 
+            : find(data, { key: bin }).groupName,
+          values: [].concat((find(data, { key: bin })[
+            plotTypes === 'categorical' 
+              ? 'keyArray' 
+              : 'key'
+          ])),
         }));
 
         const filteredSurvivalBins = savedSurvivalBins
@@ -115,7 +121,7 @@ export default compose(
         const nextSavedBins = uniqWith(filteredSurvivalBins
           .concat(nextBinsWithValues), isEqual);
 
-        // console.log('nextSavedBins', nextSavedBins);
+        console.log('nextSavedBins', nextSavedBins);
 
         dispatchUpdateClinicalVariable({
           value: nextSavedBins,

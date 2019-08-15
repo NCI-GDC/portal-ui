@@ -16,7 +16,6 @@ import {
 import { makeFilter } from '@ncigdc/utils/filters';
 import { setModal } from '@ncigdc/dux/modal';
 import { humanify } from '@ncigdc/utils/string';
-import { IS_CDAVE_DEV } from '@ncigdc/utils/constants';
 import { withTheme } from '@ncigdc/theme';
 import CategoricalCustomBinsModal from './modals/CategoricalCustomBinsModal';
 
@@ -167,11 +166,6 @@ export default compose(
       binData, fieldName, setId, totalDocs,
     }) => ({
       displayData: binData
-        .filter(bucket => (
-          IS_CDAVE_DEV
-            ? bucket.key
-            : bucket.key !== '_missing'
-        ))
         .sort((a, b) => b.doc_count - a.doc_count)
         .map(bin => Object.assign(
           {},

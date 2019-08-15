@@ -223,7 +223,6 @@ const ClinicalAnalysisResult = ({
             </Button>
             <Tooltip Component={<span>Print</span>}>
               <Button
-                disabled={false}
                 onClick={() => {
                   window.print();
                 }}

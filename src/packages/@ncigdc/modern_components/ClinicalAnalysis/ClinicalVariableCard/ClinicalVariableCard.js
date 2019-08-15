@@ -75,7 +75,7 @@ const vizButtons = {
 };
 
 const getTableData = (
-  displayData,
+  displayData = [],
   fieldName,
   getContinuousBins,
   selectedBins,
@@ -86,9 +86,7 @@ const getTableData = (
   totalDocs,
   updateSelectedSurvivalBins,
   variable,
-) => (displayData.length === 0
-  ? []
-  : displayData.map(bin => Object.assign(
+) => displayData.map(bin => Object.assign(
     {},
     bin,
     {
@@ -165,8 +163,7 @@ const getTableData = (
         </Tooltip>
       ),
     },
-  ))
-);
+  ));
 
 const getBoxTableData = (data = {}) => (
   Object.keys(data).length
@@ -204,7 +201,7 @@ const ClinicalVariableCard = ({
   resetBins,
   binsAreCustom,
   selectedBins,
-  selectedSurvivalBins,
+  selectedSurvivalBins = [],
   selectedSurvivalData,
   selectedSurvivalLoadingIds,
   setId,

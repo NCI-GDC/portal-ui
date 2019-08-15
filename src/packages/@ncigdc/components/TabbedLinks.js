@@ -19,19 +19,17 @@ type TTabbedLinksProps = {
 
 type TTabbedLinks = (props: TTabbedLinksProps) => React.Element<{}>;
 
-const TabbedLinks: TTabbedLinks = (
-  {
-    links,
-    queryParam,
-    defaultIndex = 0,
-    tabToolbar,
-    hideTabs,
-    style,
-    side,
-    linkStyle = {},
-    defaultContent,
-  } = {},
-) => (
+const TabbedLinks: TTabbedLinks = ({
+  links,
+  queryParam,
+  defaultIndex = 0,
+  tabToolbar,
+  hideTabs,
+  style,
+  side,
+  linkStyle = {},
+  defaultContent,
+} = {}) => (
   <LocationSubscriber>
     {(ctx: { pathname: string, query: IRawQuery }) => {
       const foundIndex = links.findIndex(
@@ -52,30 +50,28 @@ const TabbedLinks: TTabbedLinks = (
               ? []
               : links.map(({
                 filters = null,
-                id, 
+                id,
                 merge,
                 text,
-              }) => {
-                return (
-                  <Link
-                    className={`test-${id}`}
-                    key={id}
-                    merge={merge || true}
-                    query={{
-                      filters,
-                      [queryParam]: id,
-                    }}
-                    style={{
-                      display: 'inline-block',
-                      padding: '1.2rem 1.8rem',
-                      textDecoration: 'none',
-                      ...linkStyle,
-                    }}
-                    >
-                    {text}
-                  </Link>
-                );
-              })
+              }) => (
+                <Link
+                  className={`test-${id}`}
+                  key={id}
+                  merge={merge || true}
+                  query={{
+                    filters,
+                    [queryParam]: id,
+                  }}
+                  style={{
+                    display: 'inline-block',
+                    padding: '1.2rem 1.8rem',
+                    textDecoration: 'none',
+                    ...linkStyle,
+                  }}
+                  >
+                  {text}
+                </Link>
+              ))
           }
           tabStyle={{ padding: 0 }}
           tabToolbar={tabToolbar}

@@ -357,6 +357,7 @@ const ClinicalAnalysisResult = ({
                       />
                   );
               })}
+            </Column>
           </Column>
         </Row>
       </div>

@@ -17,6 +17,7 @@ import {
 import { stringifyJSONParam } from '@ncigdc/utils/uri';
 import withPropsOnChange from '@ncigdc/utils/withPropsOnChange';
 import removeEmptyKeys from '@ncigdc/utils/removeEmptyKeys';
+import { withTheme } from '@ncigdc/theme';
 
 const styles = {
   heading: {
@@ -36,6 +37,7 @@ const initialState = {
 
 export default compose(
   withFilters(),
+  withTheme,
   withState('defaultSurvivalData', 'setDefaultSurvivalData', {}),
   withState('selectedSurvivalData', 'setSelectedSurvivalData', {}),
   withState('showingMore', 'setShowingMore', false),

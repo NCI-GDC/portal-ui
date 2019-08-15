@@ -269,6 +269,7 @@ const SsmsTableModel = [
       setSelectedSurvivalData,
       survivalLoadingId,
       defaultFilters,
+      theme,
     }) => (
       <Td>
         <Tooltip
@@ -283,7 +284,7 @@ const SsmsTableModel = [
               padding: '2px 3px',
               backgroundColor: hasEnoughSurvivalDataOnPrimaryCurve
                 ? colors(selectedSurvivalData.id === node.ssm_id ? 1 : 0)
-                : '#666',
+                : theme.greyScale3,
               color: 'white',
               margin: '0 auto',
             }}

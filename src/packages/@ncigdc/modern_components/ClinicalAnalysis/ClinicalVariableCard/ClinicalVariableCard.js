@@ -83,6 +83,7 @@ const getTableData = (
   selectedSurvivalLoadingIds,
   setId,
   setSelectedBins,
+  theme,
   totalDocs,
   updateSelectedSurvivalBins,
   variable,
@@ -140,7 +141,7 @@ const getTableData = (
             style={{
               backgroundColor:
                 selectedSurvivalBins.indexOf(bin.key) === -1
-                  ? '#666'
+                  ? theme.greyScale3
                   : colors(selectedSurvivalBins.indexOf(bin.key)),
               color: 'white',
               margin: '0 auto',
@@ -227,6 +228,7 @@ const ClinicalVariableCard = ({
       selectedSurvivalLoadingIds,
       setId,
       setSelectedBins,
+      theme,
       totalDocs,
       updateSelectedSurvivalBins,
       variable,

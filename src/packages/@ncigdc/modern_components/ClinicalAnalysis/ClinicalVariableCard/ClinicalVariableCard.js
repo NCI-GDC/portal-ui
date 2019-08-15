@@ -18,10 +18,6 @@ import DropdownItem from '@ncigdc/uikit/DropdownItem';
 import Hidden from '@ncigdc/components/Hidden';
 import DownloadVisualizationButton from '@ncigdc/components/DownloadVisualizationButton';
 import wrapSvg from '@ncigdc/utils/wrapSvg';
-import {
-  MAXIMUM_CURVES,
-  MINIMUM_CASES,
-} from '@ncigdc/utils/survivalplot';
 import { SpinnerIcon, CloseIcon,
   SurvivalIcon,
   BarChartIcon,
@@ -41,14 +37,13 @@ import ClinicalHistogram from './components/ClinicalHistogram';
 import ClinicalSurvivalPlot from './components/ClinicalSurvivalPlot';
 
 import {
-  boxTableAllowedStats,
-  boxTableRenamedStats,
   colors,
+  getBoxTableData,
   getCardFilters,
   getHeadings,
+  getTableData,
   parseContinuousValue,
   styles,
-  // vizButtons,
 } from './helpers';
 
 const vizButtons = {
@@ -73,115 +68,6 @@ const vizButtons = {
     title: 'Survival Plot',
   },
 };
-
-const getTableData = (
-  displayData = [],
-  fieldName,
-  getContinuousBins,
-  selectedBins,
-  selectedSurvivalBins,
-  selectedSurvivalLoadingIds,
-  setId,
-  setSelectedBins,
-  theme,
-  totalDocs,
-  updateSelectedSurvivalBins,
-  variable,
-) => displayData.map(bin => Object.assign(
-    {},
-    bin,
-    {
-      select: (
-        <input
-          aria-label={`${fieldName} ${bin.key}`}
-          checked={!!find(selectedBins, { key: bin.key })}
-          disabled={bin.doc_count === 0}
-          id={`${fieldName}-${bin.key}`}
-          onChange={() => {
-            if (find(selectedBins, { key: bin.key })) {
-              setSelectedBins(
-                reject(selectedBins, r => r.key === bin.key)
-              );
-            } else {
-              setSelectedBins(selectedBins.concat(bin));
-            }
-          }}
-          style={{
-            marginLeft: 3,
-            pointerEvents: 'initial',
-          }}
-          type="checkbox"
-          value={bin.key}
-          />
-      ),
-    },
-    variable.active_chart === 'survival' && {
-      survival: (
-        <Tooltip
-          Component={
-            bin.key === '_missing' || bin.chart_doc_count < MINIMUM_CASES
-              ? 'Not enough data'
-              : selectedSurvivalBins.indexOf(bin.key) > -1
-                ? `Click icon to remove "${bin.groupName || bin.key}"`
-                : selectedSurvivalBins.length < MAXIMUM_CURVES
-                  ? `Click icon to plot "${bin.groupName || bin.key}"`
-                  : `Maximum plots (${MAXIMUM_CURVES}) reached`
-          }
-          >
-          <Button
-            disabled={
-              bin.key === '_missing' ||
-              bin.chart_doc_count < MINIMUM_CASES ||
-              (selectedSurvivalBins.length >= MAXIMUM_CURVES &&
-                selectedSurvivalBins.indexOf(bin.key) === -1)
-            }
-            onClick={() => {
-              updateSelectedSurvivalBins(displayData, bin);
-            }}
-            style={{
-              backgroundColor:
-                selectedSurvivalBins.indexOf(bin.key) === -1
-                  ? theme.greyScale3
-                  : colors(selectedSurvivalBins.indexOf(bin.key)),
-              color: 'white',
-              margin: '0 auto',
-              opacity:
-                bin.key === '_missing' ||
-                  bin.chart_doc_count < MINIMUM_CASES ||
-                  (selectedSurvivalBins.length >= MAXIMUM_CURVES &&
-                    selectedSurvivalBins.indexOf(bin.key) === -1)
-                  ? '0.33'
-                  : '1',
-              padding: '2px 3px',
-              position: 'static',
-            }}
-            >
-            {selectedSurvivalLoadingIds.indexOf(bin.key) !== -1
-              ? <SpinnerIcon />
-              : <SurvivalIcon />}
-            <Hidden>add to survival plot</Hidden>
-          </Button>
-        </Tooltip>
-      ),
-    },
-  ));
-
-const getBoxTableData = (data = {}) => (
-  Object.keys(data).length
-    ? sortBy(Object.keys(data), datum => boxTableAllowedStats
-      .indexOf(datum.toLowerCase()))
-      .reduce(
-        (tableData, stat) => (
-          boxTableAllowedStats.includes(stat.toLowerCase())
-            ? tableData.concat({
-              count: parseContinuousValue(data[stat]),
-              stat: boxTableRenamedStats[stat] || stat, // Shows the descriptive label
-            })
-            : tableData
-        ), []
-      )
-    : []
-);
 
 const ClinicalVariableCard = ({
   boxPlotValues,
@@ -219,33 +105,33 @@ const ClinicalVariableCard = ({
 }) => {
   const tableData = variable.active_chart === 'box'
     ? getBoxTableData(boxPlotValues)
-    : getTableData(
-      displayData,
-      fieldName,
-      getContinuousBins,
-      selectedBins,
-      selectedSurvivalBins,
-      selectedSurvivalLoadingIds,
-      setId,
-      setSelectedBins,
-      theme,
-      totalDocs,
-      updateSelectedSurvivalBins,
-      variable,
-    );
+    : getTableData({
+        active_chart: variable.active_chart,
+        displayData,
+        fieldName,
+        getContinuousBins,
+        selectedBins,
+        selectedSurvivalBins,
+        selectedSurvivalLoadingIds,
+        setId,
+        setSelectedBins,
+        theme,
+        totalDocs,
+        updateSelectedSurvivalBins,
+      });
 
   const histogramData =
     variable.active_chart === 'histogram'
-      ? tableData.map(d => ({
-        fullLabel: d.groupName || d.key,
-        label: d.groupName || d.key,
-        tooltip: `${d.key}: ${
-          d.chart_doc_count.toLocaleString()} (${
-          (((d.chart_doc_count || 0) / totalDocs) * 100).toFixed(2)}%)`,
-        value: variable.active_calculation === 'number'
-          ? d.chart_doc_count
-          : (d.chart_doc_count / totalDocs) * 100,
-      }))
+      ? tableData.map(tableRow => ({
+          fullLabel: tableRow.displayName,
+          label: tableRow.displayName,
+          tooltip: `${tableRow.displayName}: ${
+            tableRow.chart_doc_count.toLocaleString()} (${
+            (((tableRow.chart_doc_count || 0) / totalDocs) * 100).toFixed(2)}%)`,
+          value: variable.active_calculation === 'number'
+            ? tableRow.chart_doc_count
+            : (tableRow.chart_doc_count / totalDocs) * 100,
+        }))
       : [];
 
   const maxKeyNameLength = (
@@ -506,11 +392,7 @@ const ClinicalVariableCard = ({
                 data={tableData.map(tableRow => Object.assign(
                   {},
                   tableRow,
-                  {
-                    key: variable.plotTypes === 'categorical'
-                      ? tableRow.key
-                      : tableRow.groupName,
-                  }
+                  { key: tableRow.displayName }
                 ))}
                 headings={getHeadings(
                   variable.active_chart,

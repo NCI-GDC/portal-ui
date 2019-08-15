@@ -371,6 +371,7 @@ export default compose(
             return acc.concat(
               {
                 chart_doc_count: doc_count,
+                displayName: groupName,
                 doc_count: getCountLink({
                   doc_count,
                   filters,

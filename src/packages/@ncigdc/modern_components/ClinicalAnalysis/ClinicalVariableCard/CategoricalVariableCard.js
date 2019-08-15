@@ -166,58 +166,57 @@ export default compose(
     ({
       binData, fieldName, setId, totalDocs,
     }) => ({
-      displayData: isEmpty(binData)
-        ? []
-        : binData
-          .filter(bucket => (
+      displayData: binData
+        .filter(bucket => (
           IS_CDAVE_DEV
             ? bucket.key
             : bucket.key !== '_missing'
-          ))
-          .sort((a, b) => b.doc_count - a.doc_count)
-          .map(bin => Object.assign(
-            {},
-            bin,
-            {
-              chart_doc_count: bin.doc_count,
-              doc_count: getCountLink({
-                doc_count: bin.doc_count,
-                filters:
-                bin.key === '_missing'
-                  ? {
-                    content: [
-                      {
-                        content: {
-                          field: fieldName,
-                          value: bin.keyArray,
-                        },
-                        op: 'IS',
-                      },
-                      {
-                        content: {
-                          field: 'cases.case_id',
-                          value: `set_id:${setId}`,
-                        },
-                        op: 'in',
-                      },
-                    ],
-                    op: 'AND',
-                  }
-                  : makeFilter([
+        ))
+        .sort((a, b) => b.doc_count - a.doc_count)
+        .map(bin => Object.assign(
+          {},
+          bin,
+          {
+            chart_doc_count: bin.doc_count,
+            displayName: bin.key,
+            doc_count: getCountLink({
+              doc_count: bin.doc_count,
+              filters:
+              bin.key === '_missing'
+                ? {
+                  content: [
                     {
-                      field: 'cases.case_id',
-                      value: `set_id:${setId}`,
+                      content: {
+                        field: fieldName,
+                        value: bin.keyArray,
+                      },
+                      op: 'IS',
                     },
                     {
-                      field: fieldName,
-                      value: bin.keyArray,
+                      content: {
+                        field: 'cases.case_id',
+                        value: `set_id:${setId}`,
+                      },
+                      op: 'in',
                     },
-                  ]),
-                totalDocs,
-              }),
-              key: bin.key,
-            }
-          )),
+                  ],
+                  op: 'AND',
+                }
+                : makeFilter([
+                  {
+                    field: 'cases.case_id',
+                    value: `set_id:${setId}`,
+                  },
+                  {
+                    field: fieldName,
+                    value: bin.keyArray,
+                  },
+                ]),
+              totalDocs,
+            }),
+            key: bin.key,
+          }
+        )),
     })
   ),
   withPropsOnChange(
@@ -251,5 +250,5 @@ export default compose(
           />
       )),
     })
-  )
+  ),
 )(EnhancedClinicalVariableCard);

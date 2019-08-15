@@ -77,7 +77,7 @@ const vizButtons = {
 };
 
 const getTableData = (
-  displayData,
+  displayData = [],
   fieldName,
   getContinuousBins,
   selectedBins,
@@ -88,9 +88,8 @@ const getTableData = (
   totalDocs,
   updateSelectedSurvivalBins,
   variable,
-) => (displayData.length === 0
-  ? []
-  : displayData.map(bin => {
+) => (displayData.length > 0
+  ? displayData.map(bin => {
     const maxSurvivalCurvesReached = selectedSurvivalBins.length === MAXIMUM_CURVES;
     const survivalPlotIndex = selectedSurvivalBins.indexOf(bin.key);
     const selectedForSurvivalPlot = survivalPlotIndex >= 0;
@@ -183,6 +182,7 @@ const getTableData = (
       },
     );
   })
+  : displayData
 );
 
 const getBoxTableData = (data = {}) => (
@@ -221,7 +221,7 @@ const ClinicalVariableCard = ({
   qqData,
   resetBins,
   selectedBins,
-  selectedSurvivalBins,
+  selectedSurvivalBins = [],
   selectedSurvivalData,
   selectedSurvivalLoadingIds,
   setId,

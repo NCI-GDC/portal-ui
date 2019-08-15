@@ -413,7 +413,7 @@ export default compose(
     props.variable.setId !== nextProps.variable.setId ||
     !isEqual(props.variable.savedSurvivalBins, props.variable.savedSurvivalBins)),
     ({
-      dataBuckets,
+      dataBuckets = [],
       getContinuousBins,
       variable: { bins, continuousBinType, savedSurvivalBins },
       variable,
@@ -437,7 +437,7 @@ export default compose(
         });
 
       const survivalPlotValues = dataBuckets.length === 0
-        ? []
+        ? dataBuckets
         : (canUseSavedBins
           ? filterSurvivalData(dataBuckets
               .filter(dataBucket => savedSurvivalBins

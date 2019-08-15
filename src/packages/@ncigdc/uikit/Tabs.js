@@ -8,58 +8,58 @@ import { Row, Column } from './Flex';
 const borderStyle = theme => `1px solid ${theme.greyScale4}`;
 
 const tabBorder = (theme, side) => ({
+  borderBottom: side && borderStyle(theme),
   borderLeft: borderStyle(theme),
   borderRight: !side && borderStyle(theme),
   borderTop: borderStyle(theme),
-  borderBottom: side && borderStyle(theme),
 });
 
 const baseTabStyle = (theme, side) => css({
-  padding: '1.2rem 1.8rem',
-  fontSize: '1.5rem',
-  color: '#000',
-  textDecoration: 'none',
-  borderTop: '1px solid transparent',
-  borderLeft: '1px solid transparent',
-  borderBottom: '1px solid transparent',
-  borderRight: '1px solid transparent',
   backgroundColor: theme.greyScale6,
+  borderBottom: '1px solid transparent',
+  borderLeft: '1px solid transparent',
+  borderRadius: side ? '4px 0 0 4px' : '4px 4px 0 0',
+  borderRight: '1px solid transparent',
+  borderTop: '1px solid transparent',
+  color: '#000',
+  cursor: 'pointer',
+  fontSize: '1.5rem',
   marginBottom: !side && '-1px',
   marginRight: side && '-1px',
-  transition: 'background-color 0.2s ease',
-  borderRadius: side ? '4px 0 0 4px' : '4px 4px 0 0',
-  cursor: 'pointer',
   overflow: 'hidden',
+  padding: '1.2rem 1.8rem',
+  textDecoration: 'none',
+  transition: 'background-color 0.2s ease',
 });
 
 const styles = {
   active: (theme, side) => css({
     backgroundColor: '#fff',
     ...tabBorder(theme, side),
-    position: 'relative',
-    left: '0px',
-    zIndex: 2,
     ':hover': {
       backgroundColor: 'white',
     },
+    left: '0px',
+    position: 'relative',
+    zIndex: 2,
+  }),
+  content: theme => ({
+    backgroundColor: '#fff',
+    border: borderStyle(theme),
   }),
   inactive: (theme, side) => css({
     ':hover': {
-      textDecoration: 'none',
-      color: '#000',
       backgroundColor: Color(theme.greyScale6)
         .darken(0.05)
         .rgbString(),
+      color: '#000',
       ...tabBorder(theme, side),
+      textDecoration: 'none',
     },
   }),
   margin: side => css({
     marginLeft: !side && '0.4rem',
     marginTop: side && '0.4rem',
-  }),
-  content: theme => ({
-    border: borderStyle(theme),
-    backgroundColor: '#fff',
   }),
 };
 
@@ -86,11 +86,12 @@ const Tab = ({
 const Tabs = ({
   activeIndex,
   children,
-  contentStyle,
+  contentStyle = {},
   onTabClick,
   side,
-  style,
-  tabStyle,
+  style = {},
+  tabContainerStyle = {},
+  tabStyle = {},
   tabToolbar,
   tabs,
   theme,
@@ -101,14 +102,15 @@ const Tabs = ({
       <Column style={tabs.length ? {} : { display: 'none' }}>
         <div
           style={{
+            backgroundColor: 'white',
+            left: '1px',
             maxHeight: '550px',
             minWidth: '190px',
-            overflowY: 'auto',
-            overflowX: 'hidden',
             msOverflowStyle: 'none',
-            backgroundColor: 'white',
+            overflowX: 'hidden',
+            overflowY: 'auto',
             position: 'relative',
-            left: '1px',
+            ...tabContainerStyle,
           }}
           >
           {Children.map(tabs, (child, i) => (
@@ -143,24 +145,25 @@ const Tabs = ({
       <Row style={{ alignItems: 'center' }}>
         {Children.map(tabs, (child, i) => (
           <Tab
-              active={i === activeIndex}
-              className="test-tab"
-              onClick={() => (onTabClick ? onTabClick(i) : () => {})}
-              sibling={i}
-              side={false}
-              tabStyle={tabStyle}
-              theme={theme}
-              >
+            active={i === activeIndex}
+            className="test-tab"
+            onClick={() => (onTabClick ? onTabClick(i) : () => {})}
+            sibling={i}
+            side={false}
+            tabStyle={tabStyle}
+            theme={theme}
+            >
             {child}
           </Tab>
         ))}
         {tabToolbar && <span style={{ marginLeft: 'auto' }}>{tabToolbar}</span>}
       </Row>
-      <Column style={{
-        ...styles.content(theme),
-        ...(contentStyle || {}),
-      }}
-              >
+      <Column
+        style={{
+          ...styles.content(theme),
+          ...(contentStyle || {}),
+        }}
+        >
         {children}
       </Column>
     </Column>

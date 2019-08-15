@@ -39,19 +39,21 @@ const AnnotationsRoute = LoadableWithLoading({
   loader: () => import('@ncigdc/routes/AnnotationsRoute'),
 });
 
-export default () => (
+const Routes = () => (
   <span>
-    <Route children={p => <Head title={p.location.pathname.split('/')[1]} />} />
+    <Route>
+      {({ location: { pathname } }) => <Head title={pathname.split('/')[1]} />}
+    </Route>
     <Switch>
-      <Route exact path="/" component={HomeRoute} />
-      <Route exact path="/cart" component={CartRoute} />
-      <Route exact path="/repository" component={RepositoryRoute} />
-      <Route exact path="/exploration" component={ExploreRoute} />
-      <Route exact path="/projects" component={ProjectsRoute} />
-      <Route exact path="/annotations" component={AnnotationsRoute} />
-      <Route exact path="/query" component={SmartSearchRoute} />
+      <Route component={HomeRoute} exact path="/" />
+      <Route component={CartRoute} exact path="/cart" />
+      <Route component={RepositoryRoute} exact path="/repository" />
+      <Route component={ExploreRoute} exact path="/exploration" />
+      <Route component={ProjectsRoute} exact path="/projects" />
+      <Route component={AnnotationsRoute} exact path="/annotations" />
+      <Route component={SmartSearchRoute} exact path="/query" />
       {ProjectRoute}
-      <Route path="/files/:id" component={FileRoute} />
+      <Route component={FileRoute} path="/files/:id" />
       {CaseRoute}
       {AnnotationRoute}
       {GeneRoute}
@@ -59,8 +61,10 @@ export default () => (
       {AnalysisRoute}
       {SSMRoute}
       {ImageViewerRoute}
-      <Route path="/components/:component" component={ComponentsRoute} />
+      <Route component={ComponentsRoute} path="/components/:component" />
       <Route component={NotFound} />
     </Switch>
   </span>
 );
+
+export default Routes;

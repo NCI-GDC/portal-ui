@@ -20,8 +20,9 @@ import { IS_CDAVE_DEV } from '@ncigdc/utils/constants';
 import { withTheme } from '@ncigdc/theme';
 import CategoricalCustomBinsModal from './modals/CategoricalCustomBinsModal';
 
-import RecomposeUtils, {
+import {
   dataDimensions,
+  dispatchUpdateClinicalVariable,
   filterSurvivalData,
   getBinData,
   getCountLink,
@@ -33,7 +34,7 @@ export default compose(
   setDisplayName('EnhancedCategoricalVariableCard'),
   connect((state: any) => ({ analysis: state.analysis })),
   withTheme,
-  RecomposeUtils,
+  dispatchUpdateClinicalVariable,
   withPropsOnChange(
     (props, nextProps) => !isEqual(props.data, nextProps.data),
     ({ data, fieldName }) => {

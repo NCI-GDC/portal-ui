@@ -24,9 +24,10 @@ import { setModal } from '@ncigdc/dux/modal';
 import { DAYS_IN_YEAR } from '@ncigdc/utils/ageDisplay';
 
 import ContinuousCustomBinsModal from './modals/ContinuousCustomBinsModal';
-import RecomposeUtils, {
+import {
   createContinuousGroupName,
   dataDimensions,
+  dispatchUpdateClinicalVariable,
   filterSurvivalData,
   getBinData,
   getCountLink,
@@ -44,7 +45,7 @@ export default compose(
   setDisplayName('EnhancedContinuousVariableCard'),
   connect((state: any) => ({ analysis: state.analysis })),
   withTheme,
-  RecomposeUtils,
+  dispatchUpdateClinicalVariable,
   withState('qqData', 'setQQData', []),
   withState('qqDataIsSet', 'setQQDataIsSet', false),
   withProps(({ data: { explore }, fieldName }) => {

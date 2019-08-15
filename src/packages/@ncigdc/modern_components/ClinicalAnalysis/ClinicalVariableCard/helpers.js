@@ -338,7 +338,7 @@ export const DEFAULT_INTERVAL = {
 };
 export const DEFAULT_RANGES = [];
 
-export default compose(
+export const dispatchUpdateClinicalVariable = compose(
   withPropsOnChange(
     (props, nextProps) => props.id !== nextProps.id,
     ({

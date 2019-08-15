@@ -1,5 +1,6 @@
 import React, { Fragment } from 'react';
 import DownCaretIcon from 'react-icons/lib/fa/caret-down';
+import PropTypes from "prop-types";
 
 import {
   find,
@@ -103,6 +104,41 @@ const ClinicalVariableCard = ({
   variable,
   wrapperId,
 }) => {
+
+  console.log('boxPlotValues',boxPlotValues);
+  console.log('currentAnalysis',currentAnalysis);
+  console.log('dataBuckets',dataBuckets);
+  console.log('dataDimension',dataDimension);
+  console.log('dispatch',dispatch);
+  console.log('dispatchUpdateClinicalVariable',dispatchUpdateClinicalVariable);
+  console.log('displayData',displayData);
+  console.log('fieldName',fieldName);
+  console.log('filters',filters);
+  console.log('getContinuousBins',getContinuousBins);
+  console.log('id',id);
+  console.log('openCustomBinModal',openCustomBinModal);
+  console.log('overallSurvivalData',overallSurvivalData);
+  console.log('plots',plots);
+  console.log('qqData',qqData);
+  console.log('resetBins',resetBins);
+  console.log('binsAreCustom',binsAreCustom);
+  console.log('selectedBins',selectedBins);
+  console.log('selectedSurvivalBins',selectedSurvivalBins);
+  console.log('selectedSurvivalData',selectedSurvivalData);
+  console.log('selectedSurvivalLoadingIds',selectedSurvivalLoadingIds);
+  console.log('setId',setId);
+  console.log('setQQData',setQQData);
+  console.log('setQQDataIsSet',setQQDataIsSet);
+  console.log('setSelectedBins',setSelectedBins);
+  console.log('style',style);
+  console.log('survivalPlotLoading',survivalPlotLoading);
+  console.log('theme',theme);
+  console.log('totalDocs',totalDocs);
+  console.log('updateSelectedSurvivalBins',updateSelectedSurvivalBins);
+  console.log('variable',variable);
+  console.log('wrapperId',wrapperId);
+
+
   const tableData = variable.active_chart === 'box'
     ? getBoxTableData(boxPlotValues)
     : getTableData({
@@ -409,6 +445,50 @@ const ClinicalVariableCard = ({
       )}
     </Column>
   );
+};
+
+ClinicalVariableCard.propTypes = {
+  boxPlotValues: PropTypes.exact({
+    IQR: PropTypes.number.isRequired,
+    Max: PropTypes.number.isRequired,
+    Mean: PropTypes.number.isRequired,
+    Median: PropTypes.number.isRequired,
+    Min: PropTypes.number.isRequired,
+    SD: PropTypes.number.isRequired,
+    q1: PropTypes.number.isRequired,
+    q3: PropTypes.number.isRequired,
+  }),
+  // currentAnalysis,
+  // dataBuckets,
+  dataDimension: PropTypes.string.isRequired,
+  dispatch: PropTypes.func.isRequired,
+  dispatchUpdateClinicalVariable: PropTypes.func.isRequired,
+  // displayData,
+  fieldName: PropTypes.string.isRequired,
+  // filters,
+  getContinuousBins: PropTypes.func.isRequired,
+  id: PropTypes.string.isRequired,
+  openCustomBinModal: PropTypes.func.isRequired,
+  // overallSurvivalData,
+  // plots,
+  // qqData,
+  resetBins: PropTypes.func.isRequired,
+  binsAreCustom: PropTypes.bool.isRequired,
+  // selectedBins,
+  selectedSurvivalBins: PropTypes.
+  // selectedSurvivalData,
+  // selectedSurvivalLoadingIds,
+  setId: PropTypes.string.isRequired,
+  setQQData: PropTypes.func.isRequired,
+  setQQDataIsSet: PropTypes.func.isRequired,
+  setSelectedBins: PropTypes.func.isRequired,
+  // style = {},
+  survivalPlotLoading: PropTypes.bool.isRequired,
+  // theme,
+  totalDocs: PropTypes.number.isRequired,
+  updateSelectedSurvivalBins: PropTypes.func.isRequired,
+  // variable,
+  wrapperId: PropTypes.string.isRequired,
 };
 
 export default ClinicalVariableCard;

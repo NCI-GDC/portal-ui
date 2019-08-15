@@ -260,7 +260,7 @@ const ClinicalVariableCard = ({
 
   return (
     <Column
-      className="clinical-analysis-categorical-card"
+      className="clinical-analysis-card"
       style={{
         ...zDepth1,
         height: 560,

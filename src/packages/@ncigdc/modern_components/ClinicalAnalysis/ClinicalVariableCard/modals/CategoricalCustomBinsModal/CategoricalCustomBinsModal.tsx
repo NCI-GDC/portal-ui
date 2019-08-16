@@ -373,7 +373,9 @@ const CategoricalCustomBinsModal = ({
                       )
                       : (
                         <div style={{ fontWeight: 'bold' }}>
-                          {`${currentBins[group[0]].key} (${currentBins[group[0]].doc_count})`}
+                          {`${currentBins[group[0]].key === '_missing' 
+                          ? 'Missing' 
+                          : currentBins[group[0]].key} (${currentBins[group[0]].doc_count})`}
                         </div>
                       )}
                   </Row>

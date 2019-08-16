@@ -398,7 +398,7 @@ const CategoricalCustomBinsModal = ({
                           paddingLeft: '5px',
                         }}
                         >
-                        {`${bin} (${currentBins[bin].doc_count})`}
+                        {`${bin === '_missing' ? 'Missing' : bin} (${currentBins[bin].doc_count})`}
                       </Row>
                     )))}
                 </Column>

@@ -416,9 +416,9 @@ export const getTableData = ({
             bin.key === '_missing' || bin.chart_doc_count < MINIMUM_CASES
               ? 'Not enough data'
               : selectedSurvivalBins.indexOf(bin.key) > -1
-                ? `Click icon to remove "${bin.groupName || bin.key}"`
+                ? `Click icon to remove "${bin.displayName}"`
                 : selectedSurvivalBins.length < MAXIMUM_CURVES
-                  ? `Click icon to plot "${bin.groupName || bin.key}"`
+                  ? `Click icon to plot "${bin.displayName}"`
                   : `Maximum plots (${MAXIMUM_CURVES}) reached`
           }
           >

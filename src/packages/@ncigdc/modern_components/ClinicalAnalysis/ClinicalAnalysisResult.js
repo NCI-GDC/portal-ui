@@ -338,7 +338,7 @@ const ClinicalAnalysisResult = ({
                       />
                   )
                   : (
-                    <ClinicalVariableCard
+                    <CategoricalVariableCard
                       currentAnalysis={currentAnalysis}
                       data={{
                         ...parsedFacets[varFieldName],

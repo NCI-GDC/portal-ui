@@ -398,9 +398,7 @@ const ClinicalVariableCard = ({
                 headings={getHeadings(
                   variable.active_chart,
                   dataDimension,
-                  fieldName + (binsAreCustom
-                    ? ' (User defined bins applied)'
-                    : ''),
+                  fieldName,
                 )}
                 tableContainerStyle={{ height: 175 }}
                 tableId={`analysis-${tsvSubstring}-table`}

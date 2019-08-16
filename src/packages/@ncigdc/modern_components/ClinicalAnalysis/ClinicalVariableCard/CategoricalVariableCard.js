@@ -165,14 +165,16 @@ export default compose(
     ({
       binData, fieldName, setId, totalDocs,
     }) => ({
-      displayData: binData
+      displayData: binData.length === 1 && binData[0].key === '_missing' 
+        ? [] 
+        : binData
         .sort((a, b) => b.doc_count - a.doc_count)
         .map(bin => Object.assign(
           {},
           bin,
           {
             chart_doc_count: bin.doc_count,
-            displayName: bin.key,
+            displayName: bin.key === '_missing' ? 'Missing' : bin.key,
             doc_count: getCountLink({
               doc_count: bin.doc_count,
               filters:

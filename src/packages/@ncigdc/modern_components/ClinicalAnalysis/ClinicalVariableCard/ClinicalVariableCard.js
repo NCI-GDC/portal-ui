@@ -47,6 +47,13 @@ import {
   styles,
 } from './helpers';
 
+const stylesEditResetButtons = {
+  lineHeight: '26px',
+  fontSize: '14px',
+  padding: '0 12px',
+  width: 'auto',
+};
+
 const vizButtons = {
   box: {
     action: updateClinicalAnalysisVariable,
@@ -354,38 +361,32 @@ const ClinicalVariableCard = ({
                   />
 
                 {variable.active_chart === 'box' || (
-                  <Dropdown
-                    button={(
+                  <Column>
+                    <Row>
                       <Button
-                        rightIcon={<DownCaretIcon />}
+                        onClick={openCustomBinModal}
                         style={{
-                          ...visualizingButton,
-                          padding: '0 12px',
+                          ...styles.common(theme),
+                          ...stylesEditResetButtons,
+                          marginRight: 5,
                         }}
                         >
-                        Customize Bins
+                        Edit Bins
                       </Button>
-                    )}
-                    dropdownStyle={{ right: 0 }}
-                    >
-                    <DropdownItem
-                      onClick={openCustomBinModal}
-                      style={styles.actionMenuItem}
-                      >
-                      Edit Bins
-                    </DropdownItem>
-                    <DropdownItem
-                      onClick={resetBins}
-                      style={{
-                        ...styles.actionMenuItem,
-                        ...binsAreCustom
-                          ? {}
-                          : styles.actionMenuItemDisabled(theme),
-                      }}
-                      >
-                      Reset to Default
-                    </DropdownItem>
-                  </Dropdown>
+                      <Button
+                        onClick={resetBins}
+                        disabled={!binsAreCustom}
+                        style={{
+                          ...(binsAreCustom
+                            ? styles.common(theme)
+                            : {}),
+                          ...stylesEditResetButtons,
+                        }}
+                        >
+                        Reset
+                      </Button>
+                    </Row>
+                  </Column>
                 )}
               </Row>
 

@@ -1,5 +1,7 @@
 import { namespaceActions } from './utils';
-import _ from 'lodash';
+import {
+  pickBy,
+} from 'lodash';
 
 const sets: any = namespaceActions('sets', [
   'ADD_ANALYSIS',
@@ -13,16 +15,16 @@ const sets: any = namespaceActions('sets', [
 ]);
 
 interface IAnalysis {
+  created: string;
+  displayVariables?: any;
   id: string;
+  message?: string;
   sets: any;
   type: string;
-  created: string;
-  message?: string;
-  displayVariables?: any;
 }
 
 interface IAnalysisState {
-  saved: [IAnalysis] | [];
+  saved: IAnalysis[];
 }
 
 type TClinicalAnalyisVariableKey =
@@ -34,22 +36,20 @@ type TClinicalAnalyisVariableKey =
 
 type TClinicalAnalysisProperty = 'name'; // only type mutable properties
 
-export interface IAnalysisPayload {
-  scrollToCard?: boolean;
+export interface IAnalysisPayload extends IAnalysis {
+  analysis?: IAnalysis;
   continuousBinType?: 'default' | 'interval' | 'range';
   continuousCustomInterval?: any;
   continuousCustomRanges?: any;
-  analysis?: IAnalysis;
-  id: string;
   fieldName?: string;
-  type?: string;
-  value?: string;
-  variableKey?: string;
   fieldType?: string;
   plotTypes?: 'categorical' | 'continuous';
   property?: TClinicalAnalysisProperty;
+  scrollToCard?: boolean;
   setId?: string;
   setName?: string;
+  value?: string;
+  variableKey?: string;
 }
 
 interface IAnalysisAction {
@@ -57,12 +57,12 @@ interface IAnalysisAction {
   payload: IAnalysisPayload;
 }
 
-const addAnalysis = (payload: IAnalysisPayload) => ({
+const addAnalysis = (payload: IAnalysis) => ({
   type: sets.ADD_ANALYSIS,
   payload,
 });
 
-const removeAnalysis = (payload: IAnalysisPayload) => ({
+const removeAnalysis = (payload: IAnalysis) => ({
   type: sets.REMOVE_ANALYSIS,
   payload,
 });
@@ -139,25 +139,29 @@ const reducer = (
 ) => {
   switch (action.type) {
     case sets.ADD_ANALYSIS: {
-      return {
-        ...state,
-        saved: [...state.saved, action.payload],
-      };
+      return Object.assign(
+        {},
+        state,
+        { saved: state.saved.concat(action.payload) },
+      );
     }
 
     case sets.REMOVE_ANALYSIS: {
-      return {
-        ...state,
-        saved: (state.saved as [IAnalysis]).filter(
-          s => s.id !== action.payload.id
-        ),
-      };
+      return Object.assign(
+        {},
+        state,
+        { saved: state.saved.filter(
+          analysis => analysis.id !== action.payload.id
+        ) },
+      );
     }
+
     case sets.REMOVE_ALL_ANALYSIS: {
-      return {
-        ...state,
-        saved: [],
-      };
+      return Object.assign(
+        {},
+        state,
+        { saved: [] },
+      );
     }
 
     // adds new card to analysis
@@ -167,32 +171,38 @@ const reducer = (
         action.payload.id
       );
 
-      if (currentAnalysisIndex < 0) {
-        return state;
-      }
-
-      return {
-        ...state,
-        saved: [
-          ...state.saved.slice(0, currentAnalysisIndex),
+      return currentAnalysisIndex < 0
+        ? state
+        : Object.assign(
+          {},
+          state,
           {
-            ...currentAnalysis,
-            displayVariables: {
-              ...currentAnalysis.displayVariables,
-              [action.payload.fieldName as string]: {
-                ...defaultVariableConfig,
-                ...action.payload.plotTypes === 'continuous'
-                  ? defaultContinuousVariableConfig
-                  : {},
-                type: action.payload.fieldType,
-                plotTypes: action.payload.plotTypes,
-                scrollToCard: action.payload.scrollToCard,
-              },
-            },
-          },
-          ...state.saved.slice(currentAnalysisIndex + 1, Infinity),
-        ],
-      };
+            saved: state.saved.slice(0, currentAnalysisIndex)
+              .concat(Object.assign(
+                {},
+                currentAnalysis,
+                {
+                  displayVariables: Object.assign(
+                    {},
+                    currentAnalysis.displayVariables,
+                    {
+                      [action.payload.fieldName as string]: Object.assign(
+                        {},
+                        defaultVariableConfig,
+                        action.payload.plotTypes === 'continuous' && defaultContinuousVariableConfig,
+                        {
+                          type: action.payload.fieldType,
+                          plotTypes: action.payload.plotTypes,
+                          scrollToCard: action.payload.scrollToCard,
+                        }
+                      ),
+                    },
+                  ),
+                },
+              ))
+              .concat(state.saved.slice(currentAnalysisIndex + 1, Infinity)),
+          }
+        );
     };
 
     // removes card from analysis
@@ -202,24 +212,26 @@ const reducer = (
         action.payload.id
       );
 
-      if (currentAnalysisIndex < 0) {
-        return state;
-      }
-
-      return {
-        ...state,
-        saved: [
-          ...state.saved.slice(0, currentAnalysisIndex),
+      return currentAnalysisIndex < 0
+        ? state
+        : Object.assign(
+          {},
+          state,
           {
-            ...currentAnalysis,
-            displayVariables: _.pickBy(
-              currentAnalysis.displayVariables,
-              (value, key) => key !== action.payload.fieldName
-            ),
+            saved: state.saved.slice(0, currentAnalysisIndex)
+              .concat(Object.assign(
+                {},
+                currentAnalysis,
+                {
+                  displayVariables: pickBy(
+                    currentAnalysis.displayVariables,
+                    (value, key) => key !== action.payload.fieldName
+                  ),
+                },
+              ))
+              .concat(state.saved.slice(currentAnalysisIndex + 1, Infinity)),
           },
-          ...state.saved.slice(currentAnalysisIndex + 1, Infinity),
-        ],
-      };
+        );
     }
 
     // updates value for single variable
@@ -229,31 +241,36 @@ const reducer = (
         action.payload.id
       );
 
-      if (currentAnalysisIndex < 0) {
-        return state;
-      }
-
-      return {
-        ...state,
-        saved: [
-          ...state.saved.slice(0, currentAnalysisIndex),
+      return currentAnalysisIndex < 0
+        ? state
+        : Object.assign(
+          {},
+          state,
           {
-            ...currentAnalysis,
-            displayVariables: {
-              ...currentAnalysis.displayVariables,
-              [action.payload.fieldName as string]: {
-                ...currentAnalysis.displayVariables[
-                action.payload.fieldName as string
-                ],
-                [action.payload
-                  .variableKey as TClinicalAnalyisVariableKey]: action.payload
-                    .value,
-              },
-            },
+            saved: state.saved.slice(0, currentAnalysisIndex)
+              .concat(Object.assign(
+                {},
+                currentAnalysis,
+                {
+                  displayVariables: Object.assign(
+                    {},
+                    currentAnalysis.displayVariables,
+                    {
+                      [action.payload.fieldName as string]: Object.assign(
+                        {},
+                        currentAnalysis.displayVariables[action.payload.fieldName as string],
+                        {
+                          [action.payload.variableKey as TClinicalAnalyisVariableKey]: action.payload
+                            .value,
+                        }
+                      ),
+                    },
+                  ),
+                },
+              ))
+              .concat(state.saved.slice(currentAnalysisIndex + 1, Infinity)),
           },
-          ...state.saved.slice(currentAnalysisIndex + 1, Infinity),
-        ],
-      };
+        );
     }
 
     // updates non-variable key in analysis
@@ -263,22 +280,23 @@ const reducer = (
         action.payload.id
       );
 
-      if (currentAnalysisIndex < 0) {
-        return state;
-      }
-
-      return {
-        ...state,
-        saved: [
-          ...state.saved.slice(0, currentAnalysisIndex),
+       return currentAnalysisIndex < 0
+        ? state
+        : Object.assign(
+          {},
+          state,
           {
-            ...currentAnalysis,
-            [action.payload.property as TClinicalAnalysisProperty]: action
-              .payload.value,
-          },
-          ...state.saved.slice(currentAnalysisIndex + 1, Infinity),
-        ],
-      };
+            saved: state.saved.slice(0, currentAnalysisIndex)
+              .concat(Object.assign(
+                {},
+                currentAnalysis,
+                {
+                  [action.payload.property as TClinicalAnalysisProperty]: action.payload.value,
+                },
+              ))
+              .concat(state.saved.slice(currentAnalysisIndex + 1, Infinity)),
+          }
+        );
     }
 
     case sets.UPDATE_CLINICAL_ANALYSIS_SET: {
@@ -287,26 +305,27 @@ const reducer = (
         action.payload.id
       );
 
-      if (currentAnalysisIndex < 0) {
-        return state;
-      }
-
-      return {
-        ...state,
-        saved: [
-          ...state.saved.slice(0, currentAnalysisIndex),
+      return currentAnalysisIndex < 0
+        ? state
+        : Object.assign(
+          {},
+          state,
           {
-            ...currentAnalysis,
-            sets: {
-              case: {
-                [action.payload.setId as TClinicalAnalysisProperty]: action
-                  .payload.setName,
-              },
-            },
+            saved: state.saved.slice(0, currentAnalysisIndex)
+              .concat(Object.assign(
+                {},
+                currentAnalysis,
+                {
+                  sets: {
+                    case: {
+                      [action.payload.setId as TClinicalAnalysisProperty]: action.payload.setName,
+                    },
+                  },
+                },
+              ))
+              .concat(state.saved.slice(currentAnalysisIndex + 1, Infinity)),
           },
-          ...state.saved.slice(currentAnalysisIndex + 1, Infinity),
-        ],
-      };
+        );
     }
 
     default:

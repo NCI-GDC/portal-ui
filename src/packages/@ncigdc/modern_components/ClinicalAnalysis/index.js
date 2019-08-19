@@ -1,3 +1,4 @@
-import Component from './ClinicalAnalysisResult';
+import ClinicalAnalysisResult from './ClinicalAnalysisResult';
 import createRenderer from './ClinicalAnalysisResult.relay';
-export default createRenderer(Component);
+
+export default createRenderer(ClinicalAnalysisResult);

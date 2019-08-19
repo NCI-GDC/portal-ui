@@ -1,4 +1,3 @@
-/* @flow */
 import { makeFilter } from '@ncigdc/utils/filters';
 import { makeListLink } from './utils';
 
@@ -12,12 +11,12 @@ export const defaultExploreQuery = {
 };
 
 export const ExploreMutationsLink = makeListLink({
-  pathname: '/exploration',
   children: 'exploration',
+  pathname: '/exploration',
   query: { searchTableTab: 'mutations' },
 });
 
 export default makeListLink({
-  pathname: '/exploration',
   children: 'exploration',
+  pathname: '/exploration',
 });

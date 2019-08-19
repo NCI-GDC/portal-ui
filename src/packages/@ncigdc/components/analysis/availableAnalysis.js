@@ -326,7 +326,7 @@ const availableAnalysis: [TAnalysis] = [
       },
       type: 'clinical_data',
     },
-    description: 'Display basic statistical analyses for your case set using data variables and configurations that you select as input.',
+    description: 'Display basic statistical analyses for the selected case set.',
     Icon: withTheme(({ theme, style = {} }) => (
       <div>
         <ClinicalDataAnalysis

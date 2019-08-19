@@ -8594,3 +8594,7 @@ fieldset[disabled] .btn-primary.active {
 abbr span {
   display: inline !important;
 }
+
+text {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}

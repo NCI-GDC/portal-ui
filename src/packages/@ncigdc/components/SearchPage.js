@@ -93,7 +93,7 @@ const SearchPage = (
     )}
     <Content>
       <Row style={{ marginBottom: '2rem' }}>
-        {!showFacets && (
+        {showFacets || (
           <ShowFacetsButton onClick={() => setShowFacets(!showFacets)}>
             <DoubleArrowRightIcon />
           </ShowFacetsButton>

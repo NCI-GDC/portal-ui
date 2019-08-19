@@ -1,0 +1,23 @@
+import { Component } from 'react'
+
+let withZoomState = Wrapped => (
+  class Lolliplot extends Component {
+    state = {
+      dragging: false,
+      offsetX: 0,
+      zoomStart: null,
+    }
+
+    update = state => this.setState(state)
+
+    render() {
+      return Wrapped({
+        _update: this.update,
+        ...this.state,
+        ...this.props,
+      })
+    }
+  }
+)
+
+export default withZoomState

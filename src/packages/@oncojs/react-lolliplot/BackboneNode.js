@@ -1,0 +1,179 @@
+// @flow
+
+import React from "react"
+import invariant from "invariant"
+import ReactFauxDOM from "react-faux-dom"
+import attrs from "./utils/attrs"
+import { dim, halfPixel } from "./utils/spatial"
+import uuid from "./utils/uuid"
+
+/*----------------------------------------------------------------------------*/
+
+let BackboneNode = (
+  {
+    d3,
+    data,
+    height = 75,
+    width,
+    domainWidth = 500,
+    yAxisOffset = 45,
+    proteinDb = `pfam`,
+    onProteinClick = () => {},
+    onProteinMouseover = () => {},
+    onProteinMouseout = () => {},
+    min,
+    max,
+    proteinMouseover,
+  } = {}
+) => {
+  invariant(d3, `You must pass in the d3 library, either v3 || v4`)
+
+  d3.selection.prototype.attrs = attrs
+  d3.scaleOrdinal = d3.scaleOrdinal || d3.scale.ordinal
+  d3.scaleLinear = d3.scaleLinear || d3.scale.linear
+
+  // Similar to a React target element
+  let root = ReactFauxDOM.createElement(`div`)
+
+  invariant(root, `Must provide an element or selector!`)
+
+  width = width || root.clientWidth
+
+  let uniqueSelector = uuid()
+  let xAxisLength = width - yAxisOffset
+  let scale = xAxisLength / domainWidth
+
+  // Main Chart
+
+  let d3Root = d3.select(root).style(`position`, `relative`)
+
+  let svg = d3Root.append(`svg`).attrs({
+    class: `${uniqueSelector}-chart`,
+    ...dim(width, height),
+  })
+
+  let chart = d3Root.select(`.${uniqueSelector}-chart`)
+
+  // Backbone
+
+  svg.append(`g`).append(`rect`).attrs({
+    class: `xAxisBottom`,
+    x: yAxisOffset,
+    y: Math.round(height / 2),
+    width,
+    height: 10,
+    fill: `#d0d0d0`,
+  })
+
+  chart.append(`text`).text(proteinDb).attrs({
+    x: 5,
+    y: 47,
+    "font-size": `11px`,
+  })
+
+  let scaleLinear = d3.scaleLinear().domain([min, max]).range([yAxisOffset, width])
+
+  let widthZoomRatio = domainWidth / Math.max(max - min, 0.00001)
+
+  chart
+    .append(`g`)
+    .selectAll(`rect`)
+    .data(data)
+    .enter()
+    .append(`rect`)
+    .attrs({
+      class: d => `range-${d.id}-${d.start}-${d.end}`,
+      x: d => Math.max(yAxisOffset, scaleLinear(d.start)) + halfPixel,
+      y: Math.round(height / 2) - 7,
+      width: d => {
+        let barWidth = (d.end - Math.max(d.start, min)) * widthZoomRatio * scale
+        return Math.max(0, barWidth - 1)
+      },
+      height: height - 50 - halfPixel,
+      rx: 10,
+      ry: 10,
+      fill: (d, i) =>
+        d.getProteinColor
+          ? d.getProteinColor()
+          : `hsl(
+        ${i * 100},
+        ${proteinMouseover === d.id ? 85 : 80}%,
+        ${proteinMouseover === d.id ? 55 : 40}%)
+      `,
+      stroke: (d, i) =>
+        d.getProteinColor
+          ? d.getProteinColor()
+          : `hsl(
+        ${i * 100},
+        ${proteinMouseover === d.id ? 65 : 60}%,
+        ${proteinMouseover === d.id ? 65 : 60}%)
+      `,
+      strokeWidth: 1,
+    })
+    .style(`cursor`, `pointer`)
+    .on(`click`, d => {
+      if (onProteinClick) {
+        onProteinClick(d)
+      }
+    })
+    .on(`mouseover`, d => {
+      if (onProteinMouseover) {
+        onProteinMouseover(d, d3.event)
+      }
+    })
+    .on(`mouseout`, d => {
+      if (onProteinMouseout) {
+        onProteinMouseout(d, d3.event)
+      }
+    })
+
+  chart
+    .append(`g`)
+    .attr(`class`, `protein-text-clip-path`)
+    .selectAll(`clipPath`)
+    .data(data)
+    .enter()
+    .append(`clipPath`)
+    .attr(`id`, d => `${uniqueSelector}-clip-range-${d.id}-${d.start}-${d.end}`)
+    .append(`rect`)
+    .attrs({
+      class: d => `clip-range-${d.id}-${d.start}-${d.end}-rect`,
+      x: d => Math.max(yAxisOffset, scaleLinear(d.start)) + halfPixel,
+      y: Math.round(height / 2) - 7,
+      width: d => {
+        let barWidth = (d.end - Math.max(d.start, min)) * widthZoomRatio * scale
+        return Math.max(0, barWidth - 1)
+      },
+      height: height - 50 - halfPixel,
+    })
+
+  chart
+    .append(`g`)
+    .attrs({
+      "clip-path": `url(#${uniqueSelector}-chart-clip)`,
+    })
+    .selectAll(`text`)
+    .data(data)
+    .enter()
+    .append(`text`)
+    .text(d => d.id.toUpperCase())
+    .attrs({
+      class: d => `protein-name-${d.id}-${d.start}-${d.end}`,
+      "clip-path": d => `url(#${uniqueSelector}-clip-range-${d.id}-${d.start}-${d.end})`,
+      x: d => {
+        let barWidth = (d.end - Math.max(d.start, min)) * widthZoomRatio * scale
+        let x = scaleLinear(d.start)
+        return (barWidth + yAxisOffset < yAxisOffset ? x : Math.max(yAxisOffset, x)) + 6
+      },
+      y: height - 25,
+      fill: `white`,
+      "font-size": `11px`,
+      "pointer-events": `none`,
+    })
+
+  return root.toReact()
+}
+
+/*----------------------------------------------------------------------------*/
+
+export default BackboneNode

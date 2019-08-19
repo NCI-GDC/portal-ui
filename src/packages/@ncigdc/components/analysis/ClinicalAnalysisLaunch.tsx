@@ -177,7 +177,7 @@ const ClinicalAnalysisLaunch: ComponentType<IProps> = ({
               fontSize: '1.8rem',
             }}
             >
-            Case Set
+            Select a case set
           </h2>
           <div style={{ marginBottom: 15 }}>
             You can create and save case sets from the

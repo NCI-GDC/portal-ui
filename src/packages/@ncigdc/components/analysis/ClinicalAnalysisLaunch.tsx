@@ -1,7 +1,12 @@
 import React, { ComponentType } from 'react';
 import _ from 'lodash';
 import { connect } from 'react-redux';
-import { compose, withState } from 'recompose';
+import {
+  compose,
+  pure,
+  setDisplayName,
+  withState,
+} from 'recompose';
 import { theme } from '@ncigdc/theme/index';
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import Button from '@ncigdc/uikit/Button';
@@ -59,11 +64,6 @@ const styles = {
     maxWidth: 1100,
   },
 };
-
-const enhance = compose(
-  connect(({ sets }: any) => ({ sets })),
-  withState('selectedSet', 'setSelectedSet', {})
-);
 
 const ClinicalAnalysisLaunch: ComponentType<IProps> = ({
   demoData,
@@ -179,6 +179,7 @@ const ClinicalAnalysisLaunch: ComponentType<IProps> = ({
             >
             Select a case set
           </h2>
+
           <div style={{ marginBottom: 15 }}>
             You can create and save case sets from the
             {' '}
@@ -192,6 +193,7 @@ const ClinicalAnalysisLaunch: ComponentType<IProps> = ({
               headings={cohortHeadings}
               />
           )}
+
           {setData && setData.length === 0 && (
             <Row>
               <strong>You have not saved any sets yet.</strong>
@@ -217,4 +219,9 @@ const ClinicalAnalysisLaunch: ComponentType<IProps> = ({
   );
 };
 
-export default enhance(ClinicalAnalysisLaunch);
+export default compose(
+  setDisplayName('EnhancedClinicalAnalysisLaunch'),
+  connect(({ sets }: any) => ({ sets })),
+  withState('selectedSet', 'setSelectedSet', {}),
+  pure,
+)(ClinicalAnalysisLaunch);

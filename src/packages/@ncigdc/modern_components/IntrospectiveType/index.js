@@ -1,3 +1,4 @@
-import Component from './ClinicalAnalysisContainer';
+import ClinicalAnalysisContainer from './ClinicalAnalysisContainer';
 import createRenderer from './Introspective.relay';
-export default createRenderer(Component);
+
+export default createRenderer(ClinicalAnalysisContainer);

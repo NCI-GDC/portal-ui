@@ -167,6 +167,43 @@ must be provided
                             }
                           }
                         }
+                        follow_ups {
+                          hits(first: 99) {
+                            edges {
+                              node {
+                                follow_up_id
+                                days_to_follow_up
+                                comorbidity
+                                risk_factor
+                                progression_or_recurrence_type
+                                progression_or_recurrence
+                                disease_response
+                                bmi
+                                height
+                                weight
+                                ecog_performance_status
+                                karnofsky_performance_status
+                                progression_or_recurrence_anatomic_site
+                                reflux_treatment_type
+                                molecular_tests {
+                                  hits(first: 99) {
+                                    edges {
+                                      node {
+                                        molecular_test_id
+                                        gene_symbol
+                                        molecular_analysis_method
+                                        test_value
+                                        laboratory_test
+                                        biospecimen_type
+                                        test_units
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
                       }
                     }
                   }

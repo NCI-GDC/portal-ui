@@ -638,9 +638,10 @@ type Case implements Node {
   annotations: CaseAnnotations
   demographic: Demographic
   diagnoses: Diagnoses
-  files: CaseFiles
   exposures: Exposures
   family_histories: FamilyHistories
+  files: CaseFiles
+  follow_ups: FollowUps
   project: Project
   samples: Samples
   summary: Summary
@@ -6702,6 +6703,204 @@ type FileSize {
 
 scalar FiltersArgument
 
+type FollowUp implements Node {
+  id: ID!
+  annotations: CaseAnnotations
+  molecular_tests: MolecularTests
+
+  # The percentage comparison to a normal value reference range of the volume of
+  # air that a patient can forcibly exhale from the lungs in one second
+  # post-bronchodilator.
+  #
+  fev1_ref_post_bronch_percent: Float
+
+  # The weight of the patient measured in kilograms.
+  #
+  weight: Float
+
+  # Text term used to describe the types of treatment used to manage gastroesophageal reflux disease (GERD).
+  #
+  reflux_treatment_type: String
+
+  # The text term used to describe the type of progressive or recurrent disease or relapsed disease.
+  #
+  progression_or_recurrence_type: String
+
+  # The height of the patient in centimeters.
+  #
+  height: Float
+
+  # Number of days between the date used for index and the date of the patient's adverse event.
+  #
+  days_to_adverse_event: Float
+
+  # The text term used to describe the suspected cause or reason for the patient disease response.
+  #
+  cause_of_response: String
+
+  # Percentage value to represent result of Forced Expiratory Volume in 1 second
+  # (FEV1) divided by the Forced Vital Capacity (FVC) pre-bronchodilator.
+  #
+  fev1_fvc_pre_bronch_percent: Float
+
+  # The ECOG functional performance status of the patient/participant.
+  #
+  ecog_performance_status: String
+
+  # Text classification to represent the strain or type of human papillomavirus identified in an individual.
+  #
+  hpv_positive_type: String
+
+  # Number of days between the date used for index and the date the patient's
+  # disease was formally confirmed as progression-free.
+  #
+  days_to_progression_free: Float
+
+  # Number of days between the date used for index and the date of the patient's last follow-up appointment or contact.
+  #
+  days_to_follow_up: Float
+
+  # Percentage value to represent result of Forced Expiratory Volume in 1 second
+  # (FEV1) divided by the Forced Vital Capacity (FVC) post-bronchodilator.
+  #
+  fev1_fvc_post_bronch_percent: Float
+
+  # The text term used to describe the method used to diagnose the patient's comorbidity disease.
+  #
+  comorbidity_method_of_diagnosis: String
+
+  # The value, as a percentage of predicted lung volume, measuring the amount of
+  # carbon monoxide detected in a patient's lungs.
+  #
+  dlco_ref_predictive_percent: Float
+
+  # The text term used to describe a comorbidity disease, which coexists with the patient's malignant disease.
+  #
+  comorbidity: String
+
+  # A combination of date and time of day in the form [-]CCYY-MM-DDThh:mm:ss[Z|(+|-)hh:mm]
+  #
+  updated_datetime: String
+
+  # The text term used to describe a risk factor the patient had at the time of or prior to their diagnosis.
+  #
+  risk_factor: String
+
+  # The current state of the object.
+  #
+  state: String
+
+  # Number of days between the date used for index and the date the patient's disease progressed.
+  #
+  days_to_progression: Float
+
+  # Text that represents the Common Terminology Criteria for Adverse Events low level term name for an adverse event.
+  #
+  adverse_event: String
+
+  # Number of days between the date used for index and the date the patient's disease recurred.
+  #
+  days_to_recurrence: Float
+
+  # A calculated numerical quantity that represents an individual's weight to height ratio.
+  #
+  bmi: Float
+
+  # Text term used to describe the patient's menopause status.
+  #
+  menopause_status: String
+
+  # Yes/No/Unknown indicator to identify whether a patient has had a new tumor event after initial treatment.
+  #
+  progression_or_recurrence: String
+
+  # Text term used to describe the types of treatment used to manage diabetes.
+  #
+  diabetes_treatment_type: String
+
+  # The yes/no/unknown indicator used to describe whether the patient received
+  # treatment for a risk factor the patient had at the time of or prior to their diagnosis.
+  #
+  risk_factor_treatment: String
+
+  # The text term used to describe the anatomic site of the progressive or recurrent disease.
+  #
+  progression_or_recurrence_anatomic_site: String
+
+  # A project-specific identifier for a node. This property is the calling
+  # card/nickname/alias for a unit of submission. It can be used in place of the
+  # UUID for identifying or recalling a node.
+  #
+  submitter_id: String
+
+  # The yes/no/unknown indicator used to describe whether goblet cells were
+  # determined to be present in a patient diagnosed with Barrett's esophagus.
+  #
+  barretts_esophagus_goblet_cells_present: String
+
+  # Code assigned to describe the patient's response or outcome to the disease.
+  #
+  disease_response: String
+
+  # keyword
+  follow_up_id: String
+
+  # Numeric value to represent the year that the patient was diagnosed with clinical chronic pancreatitis.
+  #
+  pancreatitis_onset_year: Float
+
+  # Text term that describes the kind of serological laboratory test used to determine the patient's hepatitus status.
+  #
+  viral_hepatitis_serologies: String
+
+  # The percentage comparison to a normal value reference range of the volume of
+  # air that a patient can forcibly exhale from the lungs in one second
+  # pre-bronchodilator.
+  #
+  fev1_ref_pre_bronch_percent: Float
+
+  # A combination of date and time of day in the form [-]CCYY-MM-DDThh:mm:ss[Z|(+|-)hh:mm]
+  #
+  created_datetime: String
+
+  # Text term used to describe the classification used of the functional capabilities of a person.
+  #
+  karnofsky_performance_status: String
+
+  # The yes/no/unknown indicator used to describe whether the patient received
+  # treatment for a risk factor the patient had at the time of or prior to their diagnosis.
+  #
+  hepatitis_sustained_virological_response: String
+
+  # Number of days between the date used for index and the date the patient was diagnosed with a comorbidity.
+  #
+  days_to_comorbidity: Float
+  score: Int
+}
+
+type FollowUpConnection {
+  # The Information to aid in pagination
+  pageInfo: PageInfo!
+
+  # The Information to aid in pagination
+  total: Int!
+
+  # Information to aid in pagination.
+  edges: [FollowUpEdge]
+}
+
+type FollowUpEdge {
+  # A cursor for use in pagination
+  cursor: String!
+
+  # The item at the end of the edge
+  node: FollowUp
+}
+
+type FollowUps {
+  hits(offset: Int, sort: [Sort], filters: FiltersArgument, before: String, after: String, first: Int, last: Int): FollowUpConnection
+}
+
 type Gene implements Node {
   id: ID!
 
@@ -7495,6 +7694,210 @@ enum Mode {
   max
   min
   sum
+}
+
+type MolecularTest implements Node {
+  id: ID!
+  annotations: CaseAnnotations
+
+  # The yes/no/unknown indicator used to describe whether the mutation included in
+  # molecular testing was known to have an affect on the mismatch repair process.
+  #
+  mismatch_repair_mutation: String
+
+  # A combination of date and time of day in the form [-]CCYY-MM-DDThh:mm:ss[Z|(+|-)hh:mm]
+  #
+  updated_datetime: String
+
+  # The text term used to describe an antigen included in molecular testing.
+  #
+  antigen: String
+
+  # The text term used to describe the biological origin of a specific genetic variant.
+  #
+  variant_origin: String
+
+  # Numeric value used to describe the lower limit of the normal range used to
+  # describe a healthy individual at the institution where the test was completed.
+  #
+  blood_test_normal_range_lower: Float
+
+  # Alphanumeric value used to describe the locus of a specific genetic variant. Example: NM_001126114.
+  #
+  locus: String
+
+  # The text term or numeric value used to describe a sepcific result of a molecular test.
+  #
+  test_value: Float
+
+  # The text term used to describe a secondary gene targeted or included in
+  # molecular analysis. For rearrangements, this is should represent the location
+  # of the variant.
+  #
+  second_gene_symbol: String
+
+  # Text term used to describe the number of sets of homologous chromosomes.
+  #
+  ploidy: String
+
+  # The text term used to describe a chromosome targeted or included in molecular
+  # testing. If a specific genetic variant is being reported, this property can be
+  # used to capture the chromosome where that variant is located.
+  #
+  chromosome: String
+
+  # Text term used to describe a specific test that is not covered in the list of molecular analysis methods.
+  #
+  specialized_molecular_test: String
+
+  # A combination of date and time of day in the form [-]CCYY-MM-DDThh:mm:ss[Z|(+|-)hh:mm]
+  #
+  created_datetime: String
+
+  # Intron number targeted or included in molecular analysis. If a specific
+  # genetic variant is being reported, this property can be used to capture the
+  # intron where that variant is located.
+  #
+  intron: String
+
+  # The text term used to describe a gene targeted or included in molecular
+  # analysis. For rearrangements, this is shold be used to represent the reference gene.
+  #
+  gene_symbol: String
+
+  # The current state of the object.
+  #
+  state: String
+
+  # The text term used to describe a specific histone variants, which are proteins
+  # that substitute for the core canonical histones.
+  #
+  histone_variant: String
+
+  # Numeric value used to describe the number of cells used for molecular testing.
+  #
+  cell_count: Float
+
+  # The text term used to describe the family, or classification of a group of
+  # basic proteins found in chromatin, called histones.
+  #
+  histone_family: String
+
+  # Numeric value used to describe the number of times a section of the genome is
+  # repeated or copied within an insertion, duplication or deletion variant.
+  #
+  copy_number: Float
+
+  # The text term used to describe the type of analyte used for molecular testing.
+  #
+  test_analyte_type: String
+
+  # Exon number targeted or included in a molecular analysis. If a specific
+  # genetic variant is being reported, this property can be used to capture the
+  # exon where that variant is located.
+  #
+  exon: String
+
+  # The text term used to describe the medical testing used to diagnose, treat or further understand a patient's disease.
+  #
+  laboratory_test: String
+
+  # The text term used to describe the result of the molecular test. If the test result was a numeric value see test_value.
+  #
+  test_result: String
+
+  # Alphanumeric value used to describe the transcript of a specific genetic variant.
+  #
+  transcript: String
+
+  # Numeric value used to describe the upper limit of the normal range used to
+  # describe a healthy individual at the institution where the test was completed.
+  #
+  blood_test_normal_range_upper: Float
+
+  # The text term used to describe the units of the test value for a molecular
+  # test. This property is used in conjunction with test_value.
+  #
+  test_units: String
+
+  # The text term used to describe the zygosity of a specific genetic variant.
+  #
+  zygosity: String
+
+  # Alphanumeric value used to describe the cytoband or chromosomal location
+  # targeted or included in molecular analysis. If a specific genetic variant is
+  # being reported, this property can be used to capture the cytoband where the
+  # variant is located. Format: [chromosome][chromosome arm].[band+sub-bands].
+  # Example: 17p13.1.
+  #
+  cytoband: String
+
+  # The text term used to describe the biological material used for testing, diagnostic, treatment or research purposes.
+  biospecimen_type: String
+
+  # A project-specific identifier for a node. This property is the calling
+  # card/nickname/alias for a unit of submission. It can be used in place of the
+  # UUID for identifying or recalling a node.
+  #
+  submitter_id: String
+
+  # The second exon number involved in molecular variation. If a specific genetic
+  # variant is being reported, this property can be used to capture the second
+  # exon where that variant is located. This property is typically used for a
+  # translocation where two different locations are involved in the variation.
+  #
+  second_exon: String
+
+  # keyword
+  molecular_test_id: String
+
+  # The text term used to describe the method used for molecular analysis.
+  #
+  molecular_analysis_method: String
+
+  # The text term used to describe the molecular consequence of genetic variation.
+  #
+  molecular_consequence: String
+
+  # The text term used to describe the type of genetic variation.
+  #
+  variant_type: String
+
+  # Numeric value used to describe the number of loci determined to be abnormal.
+  #
+  loci_abnormal_count: Float
+
+  # Alphanumeric value used to describe the amino acid change for a specific genetic variant. Example: R116Q.
+  #
+  aa_change: String
+
+  # Numeric value used to describe the number of loci tested.
+  #
+  loci_count: Float
+  score: Int
+}
+
+type MolecularTestConnection {
+  # The Information to aid in pagination
+  pageInfo: PageInfo!
+
+  # The Information to aid in pagination
+  total: Int!
+
+  # Information to aid in pagination.
+  edges: [MolecularTestEdge]
+}
+
+type MolecularTestEdge {
+  # A cursor for use in pagination
+  cursor: String!
+
+  # The item at the end of the edge
+  node: MolecularTest
+}
+
+type MolecularTests {
+  hits(offset: Int, sort: [Sort], filters: FiltersArgument, before: String, after: String, first: Int, last: Int): MolecularTestConnection
 }
 
 type Mutation {

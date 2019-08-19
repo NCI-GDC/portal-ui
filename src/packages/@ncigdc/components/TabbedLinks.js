@@ -1,11 +1,9 @@
-// @flow
-
 import React from 'react';
 import { get } from 'lodash';
+
 import LocationSubscriber from '@ncigdc/components/LocationSubscriber';
 import Tabs from '@ncigdc/uikit/Tabs';
 import Link from '@ncigdc/components/Links/Link';
-import { IRawQuery } from '@ncigdc/utils/uri/types';
 
 type TTabbedLinksProps = {
   defaultIndex?: number,
@@ -18,20 +16,20 @@ type TTabbedLinksProps = {
   linkStyle?: Object,
   defaultContent?: React.Element<{}>,
 };
+
 type TTabbedLinks = (props: TTabbedLinksProps) => React.Element<{}>;
-const TabbedLinks: TTabbedLinks = (
-  {
-    links,
-    queryParam,
-    defaultIndex = 0,
-    tabToolbar,
-    hideTabs,
-    style,
-    side,
-    linkStyle = {},
-    defaultContent,
-  } = {},
-) => (
+
+const TabbedLinks: TTabbedLinks = ({
+  links,
+  queryParam,
+  defaultIndex = 0,
+  tabToolbar,
+  hideTabs,
+  style,
+  side,
+  linkStyle = {},
+  defaultContent,
+} = {}) => (
   <LocationSubscriber>
     {(ctx: { pathname: string, query: IRawQuery }) => {
       const foundIndex = links.findIndex(
@@ -43,33 +41,41 @@ const TabbedLinks: TTabbedLinks = (
 
       return (
         <Tabs
-          side={side}
+          activeIndex={activeIndex}
           className="test-tabbed-links"
+          side={side}
           style={style}
-          tabToolbar={tabToolbar}
-          tabStyle={{ padding: 0 }}
           tabs={
             hideTabs
               ? []
-              : links.map(x => (
-                  <Link
-                    style={{
-                      padding: '1.2rem 1.8rem',
-                      textDecoration: 'none',
-                      display: 'inline-block',
-                      ...linkStyle,
-                    }}
-                    key={x.id}
-                    query={{ [queryParam]: x.id }}
-                    merge={x.merge || true}
-                    className={'test-' + x.id}
+              : links.map(({
+                filters = null,
+                id,
+                merge,
+                text,
+              }) => (
+                <Link
+                  className={`test-${id}`}
+                  key={id}
+                  merge={merge || true}
+                  query={{
+                    filters,
+                    [queryParam]: id,
+                  }}
+                  style={{
+                    display: 'inline-block',
+                    padding: '1.2rem 1.8rem',
+                    textDecoration: 'none',
+                    ...linkStyle,
+                  }}
                   >
-                    {x.text}
-                  </Link>
-                ))
+                  {text}
+                </Link>
+              ))
           }
-          activeIndex={activeIndex}
-        >
+          tabStyle={{ padding: 0 }}
+          tabToolbar={tabToolbar}
+          >
           {get(links, [activeIndex, 'component'], defaultContent)}
         </Tabs>
       );

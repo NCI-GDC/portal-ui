@@ -109,7 +109,7 @@ const Container = ({
 
 const SurvivalPlotWrapper = ({
   height = 0,
-  legend,
+  legend = [],
   rawData,
   setXDomain,
   setSurvivalContainer,

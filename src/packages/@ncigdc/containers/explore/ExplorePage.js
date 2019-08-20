@@ -14,12 +14,14 @@ import CaseAggregations from '@ncigdc/containers/explore/CaseAggregations';
 import GeneAggregations from '@ncigdc/modern_components/GeneAggregations';
 import SSMAggregations from '@ncigdc/containers/explore/SSMAggregations';
 import ClinicalAggregations from '@ncigdc/containers/explore/ClinicalAggregations';
+import MasonryLayout from '@ncigdc/components/Layouts/MasonryLayout';
 import { CreateExploreCaseSetButton } from '@ncigdc/modern_components/withSetAction';
 import { makeFilter, replaceFilters } from '@ncigdc/utils/filters';
 import { stringifyJSONParam } from '@ncigdc/utils/uri';
 import { Row } from '@ncigdc/uikit/Flex';
 import Button from '@ncigdc/uikit/Button';
 import ResizeDetector from 'react-resize-detector';
+import summaryElements from '@ncigdc/components/Explore/SummaryElements';
 
 export type TProps = {
   filters: {},
@@ -193,7 +195,7 @@ export class ExplorePageComponent extends React.Component {
             text: 'Mutations',
           },
         ]}
-        results={(
+        results={({ showFacets }) => (
           <span>
             <ResizeDetector
               handleHeight
@@ -243,12 +245,26 @@ export class ExplorePageComponent extends React.Component {
               defaultIndex={0}
               links={[
                 {
+                  component: hasCaseHits ? (
+                    <MasonryLayout
+                      elements={summaryElements}
+                      numPerRow={showFacets ? 3 : 4}
+                      />
+                  ) : (
+                    <NoResultsMessage>No Cases Found.</NoResultsMessage>
+                    ),
+                  id: 'summary',
+                  text: 'Summary',
+                },
+                {
                   id: 'cases',
+                  text: `Cases (${viewer.explore.cases.hits.total.toLocaleString()})`,
                   component: hasCaseHits ? (
                     <CasesTab />
                   ) : (
                     <NoResultsMessage>No Cases Found.</NoResultsMessage>
                   ),
+                  id: 'cases',
                   text: `Cases (${hasCaseHits.toLocaleString()})`,
                 },
                 {

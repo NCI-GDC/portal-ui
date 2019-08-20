@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { debounce, isEmpty, isFinite } from 'lodash';
+import { debounce, isEqual, isFinite } from 'lodash';
 
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import Button from '@ncigdc/uikit/Button';
@@ -72,7 +72,7 @@ class ContinuousCustomBinsModal extends Component {
       ...continuousBinType === 'default'
         ? {}
         : { binningMethod: continuousBinType },
-      intervalFields: isEmpty(continuousCustomInterval)
+      intervalFields: isEqual(continuousCustomInterval, defaultInterval)
         ? {
           amount: defaultContinuousData.quarter,
           max: defaultContinuousData.max,
@@ -428,7 +428,7 @@ class ContinuousCustomBinsModal extends Component {
   validateRangeInput = () => {
     const validationResult = this.validateRangeInputFormatting();
     const inputFormatIsValid = Object.keys(validationResult)
-    .filter(field => validationResult[field].length > 0).length === 0;
+      .filter(field => validationResult[field].length > 0).length === 0;
 
     if (inputFormatIsValid) {
       const rangeInputOverlapErrors = this.validateRangeInputOverlap();
@@ -482,7 +482,6 @@ class ContinuousCustomBinsModal extends Component {
         [id.split('-')[3]]: value,
       },
     });
-    // this.validateRangeInput();
   };
 
   validateRangeInputFormatting = () => {
@@ -546,49 +545,32 @@ class ContinuousCustomBinsModal extends Component {
   }
 
   validateRangeInputOverlap = () => {
-    // assume all fields are complete and from < to
     const { rangeInputValues, rangeRows } = this.state;
 
     const fieldFrom = Number(rangeInputValues.from);
     const fieldTo = Number(rangeInputValues.to);
 
-    const overlapErrors = rangeRows.reduce((acc, curr) => {
-      const overlapFromStr = curr.fields.from;
-      const overlapToStr = curr.fields.to;
+    return (rangeInputValues.from === '' ||
+      rangeInputValues.to === '' ||
+      fieldFrom >= fieldTo)
+        ? [] 
+        : rangeRows.reduce((acc, curr) => {
+          const overlapFromStr = curr.fields.from;
+          const overlapToStr = curr.fields.to;
 
-      const overlapFrom = Number(overlapFromStr);
-      const overlapTo = Number(overlapToStr);
-      const overlapName = curr.fields.name;
+          const overlapFrom = Number(overlapFromStr);
+          const overlapTo = Number(overlapToStr);
+          const overlapName = curr.fields.name;
 
-      const hasOverlap = (fieldTo > overlapFrom && fieldTo <= overlapTo) ||
-        (fieldFrom >= overlapFrom && fieldFrom < overlapTo) ||
-        (fieldFrom <= overlapFrom && fieldTo >= overlapTo);
+          const hasOverlap = (fieldTo > overlapFrom && fieldTo < overlapTo) ||
+            (fieldFrom > overlapFrom && fieldFrom < overlapTo) ||
+            (fieldFrom < overlapFrom && fieldTo > overlapTo) || 
+            (fieldFrom === overlapFrom || fieldTo === overlapTo);
 
-      return hasOverlap
-        ? [...acc, overlapName]
-        : acc;
-    }, []);
-
-    return overlapErrors;
-  }
-
-  validateRangeInputOnSave = () => {
-    const { rangeInputErrors } = this.state;
-
-    const rangeInputOverlapErrors = this.validateRangeInputOverlap();
-    const nameError = this.validateRangeInputName();
-    const overlapIsValid = rangeInputOverlapErrors.length === 0;
-    const nameIsValid = nameError.length === 0;
-
-    this.setState({
-      rangeInputErrors: {
-        ...rangeInputErrors,
-        name: nameError,
-      },
-      rangeInputOverlapErrors,
-    });
-
-    return nameIsValid && overlapIsValid;
+          return hasOverlap
+            ? [...acc, overlapName]
+            : acc;
+        }, []);
   }
 
 

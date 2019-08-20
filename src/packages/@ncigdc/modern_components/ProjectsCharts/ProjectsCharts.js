@@ -85,7 +85,7 @@ export default compose(
       props.analysisViewer.analysis.top_cases_count_by_genes.data,
     );
 
-    const caseAggs = aggregations.projects.buckets.filter(b => props.projectIds.includes(b.key),);
+    const caseAggs = aggregations.projects.buckets.filter(b => props.projectIds.includes(b.key));
 
     const numUniqueCases = props.viewer.explore.cases.hits.total;
 

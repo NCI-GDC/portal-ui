@@ -106,6 +106,7 @@ function setVariables({ filters, relay }) {
 }
 
 const enhance = compose(
+  setDisplayName('EnhancedExplorePageComponent'),
   withRouter,
   withState('maxFacetsPanelHeight', 'setMaxFacetsPanelHeight', 0),
   lifecycle({

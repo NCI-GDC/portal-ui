@@ -283,7 +283,7 @@ const CurrentFilters = (
                     style={{
                       display: 'flex',
                       alignItems: 'center',
-                      }}
+                    }}
                     >
                     Less
                   </UnstyledButton>

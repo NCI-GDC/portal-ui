@@ -99,6 +99,7 @@ export const getDefaultCurve = memoize(
           value: <span>Not enough survival data</span>,
         },
       ];
+      
     return {
       rawData,
       id: slug,

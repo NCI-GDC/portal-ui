@@ -8,6 +8,7 @@ import {
   map,
   max,
   min,
+  sortBy,
 } from 'lodash';
 import { scaleOrdinal, schemeCategory10 } from 'd3';
 import { addInFilters } from '@ncigdc/utils/filters';

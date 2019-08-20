@@ -272,7 +272,7 @@ const CurrentFilters = (
                     className="test-toggle"
                     onClick={() => onLessClicked(filter)}
                     style={styles.rightParen}
-                      >
+                    >
                     …
                   </UnstyledButton>
                 )}

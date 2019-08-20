@@ -163,7 +163,7 @@ export default compose(
     (props, nextProps) =>
       !isEqual(props.binData, nextProps.binData),
     ({
-      binData, fieldName, setId, totalDocs,
+      binData, binsAreCustom, fieldName, setId, totalDocs,
     }) => ({
       displayData: binData.length === 1 && 
         binData[0].key === '_missing' && 

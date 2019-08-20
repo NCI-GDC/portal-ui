@@ -282,7 +282,7 @@ const CurrentFilters = (
                     onClick={() => onLessClicked(filter)}
                     style={{
                       display: 'flex',
-                        alignItems: 'center',
+                      alignItems: 'center',
                       }}
                     >
                     Less

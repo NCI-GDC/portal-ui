@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { debounce, isEqual, isFinite } from 'lodash';
+import { debounce, isEmpty, isEqual, isFinite } from 'lodash';
 
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import Button from '@ncigdc/uikit/Button';
@@ -72,13 +72,14 @@ class ContinuousCustomBinsModal extends Component {
       ...continuousBinType === 'default'
         ? {}
         : { binningMethod: continuousBinType },
-      intervalFields: isEqual(continuousCustomInterval, defaultInterval)
-        ? {
-          amount: defaultContinuousData.quarter,
-          max: defaultContinuousData.max,
-          min: defaultContinuousData.min,
-        }
-        : continuousCustomInterval,
+      intervalFields: isEqual(continuousCustomInterval, defaultInterval) ||
+        isEmpty(continuousCustomInterval)
+          ? {
+            amount: defaultContinuousData.quarter,
+            max: defaultContinuousData.max,
+            min: defaultContinuousData.min,
+          }
+          : continuousCustomInterval,
       rangeRows: continuousCustomRanges,
     });
   };

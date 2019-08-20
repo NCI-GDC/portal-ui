@@ -1,7 +1,11 @@
 // @flow
 import React from 'react';
 import {
-  capitalize, get, omit, set, truncate,
+  capitalize,
+  get, 
+  omit, 
+  set, 
+  truncate,
 } from 'lodash';
 import { connect } from 'react-redux';
 import { compose, withState } from 'recompose';

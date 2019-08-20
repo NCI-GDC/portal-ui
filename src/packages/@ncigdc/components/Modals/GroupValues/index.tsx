@@ -4,6 +4,7 @@ import {
   setDisplayName,
   withProps,
   withState,
+  withPropsOnChange,
 } from 'recompose';
 import {
   reduce,
@@ -13,6 +14,7 @@ import {
   map,
   find,
   max,
+  isEqual,
 } from 'lodash';
 import Group from '@ncigdc/theme/icons/Group';
 import Hide from '@ncigdc/theme/icons/Hide';
@@ -99,12 +101,6 @@ const GroupValuesModal = ({
   setSelectedGroupBins,
   setSelectedHidingBins,
 }: IGroupValuesModalProps) => {
-  // const groupNameMapping = groupBy(
-  //   Object.keys(currentBins)
-  //     .filter((bin: string) => currentBins[bin].groupName !== ''),
-  //   key => currentBins[key].groupName
-  // );
-
   const groupDisabled = Object.values(selectedGroupBins).filter(Boolean).length < 2;
   const ungroupDisabled = Object.keys(selectedGroupBins)
     .filter(key => selectedGroupBins[key])
@@ -455,57 +451,63 @@ const GroupValuesModal = ({
 export default compose(
   setDisplayName('EnhancedGroupValuesModal'),
   withState('editingGroupName', 'setEditingGroupName', ''),
-  withState('currentBins', 'setCurrentBins', ({ bins }: { bins: IBinsProps }) => bins),
+  withState('currentBins', 'setCurrentBins', ({ bins }: { bins: IBinsProps }) => {
+    console.log(bins);
+    return bins;
+  }),
   withState('selectedHidingBins', 'setSelectedHidingBins', {}),
   withState('selectedGroupBins', 'setSelectedGroupBins', {}),
   withState('globalWarning', 'setGlobalWarning', ''),
   withState('listWarning', 'setListWarning', {}),
   withState('draggingIndex', 'setDraggingIndex', null),
   withState('shift', 'setShift', false),
-  withProps(({
-    currentBins,
-  }) => ({
-    groupNameMapping: map(
-      reduce(currentBins, (acc, bin) => {
-        if (bin.groupName === '') {
-          return acc;
-        }
-        return {
-          ...acc,
-          [bin.groupName]: {
-            ...acc[bin.groupName],
-            [bin.key]: bin.doc_count,
-            index: bin.index,
-          },
-        };
-      }, {}),
-      (groupObj: IBinProps, groupName) => {
-        const buckets = Object.keys(groupObj).filter(key => key !== 'index');
-        return {
-          [groupName]: {
-            count: buckets.reduce((acc, key) => acc + groupObj[key], 0),
-            index: groupObj.index,
-            subList: buckets.sort((a, b) => groupObj[b] - groupObj[a]),
+  withPropsOnChange(
+    (props: any, nextProps: any) => !isEqual(props.currentBins, nextProps.currentBins),
+    ({
+      currentBins,
+    }) => ({
+      groupNameMapping: map(
+        reduce(currentBins, (acc, bin) => {
+          if (bin.groupName === '') {
+            return acc;
+          }
+          return {
+            ...acc,
+            [bin.groupName]: {
+              ...acc[bin.groupName],
+              [bin.key]: bin.doc_count,
+              index: bin.index,
+            },
+          };
+        }, {}),
+        (groupObj: IBinProps, groupName) => {
+          const buckets = Object.keys(groupObj).filter(key => key !== 'index');
+          return {
+            [groupName]: {
+              count: buckets.reduce((acc, key) => acc + groupObj[key], 0),
+              index: groupObj.index,
+              subList: buckets.sort((a, b) => groupObj[b] - groupObj[a]),
 
-          },
-        };
-      }
-    )
-      .sort((a, b) => {
-        const aIndex = Object.values(a)[0].index;
-        const aCount = Object.values(a)[0].count;
-        const bIndex = Object.values(b)[0].index;
-        const bCount = Object.values(b)[0].count;
-        if (isNumber(aIndex) && isNumber(bIndex)) {
-          return aIndex - bIndex;
-        } if (isNumber(aIndex) && !isNumber(bIndex)) {
-          return -1;
-        } if (!isNumber(aIndex) && isNumber(bIndex)) {
-          return 1;
+            },
+          };
         }
-        return bCount - aCount;
-      }),
-  })),
+      )
+        .sort((a, b) => {
+          const aIndex = Object.values(a)[0].index;
+          const aCount = Object.values(a)[0].count;
+          const bIndex = Object.values(b)[0].index;
+          const bCount = Object.values(b)[0].count;
+          if (isNumber(aIndex) && isNumber(bIndex)) {
+            return aIndex - bIndex;
+          } if (isNumber(aIndex) && !isNumber(bIndex)) {
+            return -1;
+          } if (!isNumber(aIndex) && isNumber(bIndex)) {
+            return 1;
+          }
+          return bCount - aCount;
+        }),
+    })
+  ),
   withProps(({
     currentBins,
     groupNameMapping,

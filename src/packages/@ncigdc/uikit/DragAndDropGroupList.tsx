@@ -93,7 +93,7 @@ export default class DragAndDropGroupList extends React.Component<IProps, IState
   sortStart = (e: DragEvent) => {
     const { parentDraggable } = this.state;
     if (parentDraggable) {
-      const draggingIndex = get(e, 'currentTarget.dataset.id', null);
+      const draggingIndex = Number(get(e, 'currentTarget.dataset.id', null));
       const { updateState } = this.props;
       updateState({
         draggingIndex,
@@ -130,6 +130,7 @@ export default class DragAndDropGroupList extends React.Component<IProps, IState
   sortEnd = (e: DragEvent) => {
     e.preventDefault();
     this.setState({
+      indexDragged: null,
       isDragging: false,
     });
     const { draggingIndex, indexDragged, parentDraggable } = this.state;
@@ -228,12 +229,13 @@ export default class DragAndDropGroupList extends React.Component<IProps, IState
       items,
       SubComponent,
     } = this.props;
-    const { isDragging, selectedSub, subIsDragging } = this.state;
+    const { isDragging, selectedSub, subIsDragging, indexDragged, draggingIndex } = this.state;
     return (
       <React.Fragment>
         <div className={isDragging ? 'sort' : undefined}>
           {items.map((groupObj, i) => {
-            const groupName = Object.keys(groupObj)[0];
+            const keys = Object.keys(groupObj);
+            const groupName = keys[0];
             const group = Object.values(groupObj)[0].subList;
             return (
               <Component
@@ -249,6 +251,7 @@ export default class DragAndDropGroupList extends React.Component<IProps, IState
                   onTouchMove: this.dragOver,
                   onTouchStart: this.sortStart,
                   tabIndex: i,
+                  className: ((draggingIndex === i) ? 'select' : undefined),
                 }}
                 group={group}
                 groupName={groupName}
@@ -276,6 +279,12 @@ export default class DragAndDropGroupList extends React.Component<IProps, IState
                       ))}
                     </div>
                   )}
+                  <div
+                    className={ 
+                      ((indexDragged === i && draggingIndex !== indexDragged) ? 
+                      'pending' : undefined)
+                    }
+                  />
               </Component>
             );
           })}

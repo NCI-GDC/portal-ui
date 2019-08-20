@@ -17,8 +17,14 @@
   overflow: auto;
   
 }
-
-.sort::before {
+.select {
+  visibility: hidden;
+}
+.pending {
+  height: 20px;
+  border: 1px dashed rgba(150, 150, 150, 0.7);
+}
+/* .sort::before {
   height: 100%;
   top: 0;
   content: 'Order';
@@ -32,7 +38,7 @@
   content: 'Group with';
   right: 0;
   width: 79.75%;
-}
+} */
 
 .group::after {
   /* align-items: center;

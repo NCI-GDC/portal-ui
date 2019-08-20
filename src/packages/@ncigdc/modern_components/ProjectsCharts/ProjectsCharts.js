@@ -174,7 +174,7 @@ export default compose(
             [projectId]: (
               <span>
                 <b>
-                  {projectId}
+                  {${projectId}: `}
 :
                   {' '}
                   {

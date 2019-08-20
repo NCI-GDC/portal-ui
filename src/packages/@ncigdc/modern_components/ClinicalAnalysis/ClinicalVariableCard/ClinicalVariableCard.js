@@ -42,7 +42,6 @@ import {
   getBoxTableData,
   getCardFilters,
   getHeadings,
-  getTableData,
   parseContinuousValue,
   styles,
 } from './helpers';
@@ -69,6 +68,96 @@ const vizButtons = {
     title: 'Survival Plot',
   },
 };
+
+const getTableData = ({
+  active_chart,
+  displayData = [],
+  fieldName,
+  selectedBins,
+  selectedSurvivalBins,
+  selectedSurvivalLoadingIds,
+  setSelectedBins,
+  theme,
+  totalDocs,
+  updateSelectedSurvivalBins,
+}) => displayData.map(bin => Object.assign(
+    {},
+    bin,
+    {
+      select: (
+        <input
+          aria-label={`${fieldName} ${bin.key}`}
+          checked={!!find(selectedBins, { key: bin.key })}
+          disabled={bin.doc_count === 0}
+          id={`${fieldName}-${bin.key}`}
+          onChange={() => {
+            if (find(selectedBins, { key: bin.key })) {
+              setSelectedBins(
+                reject(selectedBins, r => r.key === bin.key)
+              );
+            } else {
+              setSelectedBins(selectedBins.concat(bin));
+            }
+          }}
+          style={{
+            marginLeft: 3,
+            pointerEvents: 'initial',
+          }}
+          type="checkbox"
+          value={bin.key}
+          />
+      ),
+    },
+    active_chart === 'survival' && {
+      survival: (
+        <Tooltip
+          Component={
+            bin.key === '_missing' || bin.chart_doc_count < MINIMUM_CASES
+              ? 'Not enough data'
+              : selectedSurvivalBins.indexOf(bin.key) > -1
+                ? `Click icon to remove "${bin.groupName || bin.key}"`
+                : selectedSurvivalBins.length < MAXIMUM_CURVES
+                  ? `Click icon to plot "${bin.groupName || bin.key}"`
+                  : `Maximum plots (${MAXIMUM_CURVES}) reached`
+          }
+          >
+          <Button
+            disabled={
+              bin.key === '_missing' ||
+              bin.chart_doc_count < MINIMUM_CASES ||
+              (selectedSurvivalBins.length >= MAXIMUM_CURVES &&
+                selectedSurvivalBins.indexOf(bin.key) === -1)
+            }
+            onClick={() => {
+              updateSelectedSurvivalBins(displayData, bin);
+            }}
+            style={{
+              backgroundColor:
+                selectedSurvivalBins.indexOf(bin.key) === -1
+                  ? theme.greyScale3
+                  : colors(selectedSurvivalBins.indexOf(bin.key)),
+              color: 'white',
+              margin: '0 auto',
+              opacity:
+                bin.key === '_missing' ||
+                  bin.chart_doc_count < MINIMUM_CASES ||
+                  (selectedSurvivalBins.length >= MAXIMUM_CURVES &&
+                    selectedSurvivalBins.indexOf(bin.key) === -1)
+                  ? '0.33'
+                  : '1',
+              padding: '2px 3px',
+              position: 'static',
+            }}
+            >
+            {selectedSurvivalLoadingIds.indexOf(bin.key) !== -1
+              ? <SpinnerIcon />
+              : <SurvivalIcon />}
+            <Hidden>add to survival plot</Hidden>
+          </Button>
+        </Tooltip>
+      ),
+    },
+  ));
 
 const ClinicalVariableCard = ({
   boxPlotValues,

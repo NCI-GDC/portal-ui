@@ -165,54 +165,56 @@ export default compose(
     ({
       binData, fieldName, setId, totalDocs,
     }) => ({
-      displayData: binData.length === 1 && binData[0].key === '_missing' 
-        ? [] 
-        : binData
-        .sort((a, b) => b.doc_count - a.doc_count)
-        .map(bin => Object.assign(
-          {},
-          bin,
-          {
-            chart_doc_count: bin.doc_count,
-            displayName: bin.key === '_missing' ? 'Missing' : bin.key,
-            doc_count: getCountLink({
-              doc_count: bin.doc_count,
-              filters:
-              bin.key === '_missing'
-                ? {
-                  content: [
-                    {
-                      content: {
-                        field: fieldName,
-                        value: bin.keyArray,
+      displayData: binData.length === 1 && 
+        binData[0].key === '_missing' && 
+        !binsAreCustom 
+          ? [] 
+          : binData
+          .sort((a, b) => b.doc_count - a.doc_count)
+          .map(bin => Object.assign(
+            {},
+            bin,
+            {
+              chart_doc_count: bin.doc_count,
+              displayName: bin.key === '_missing' ? 'Missing' : bin.key,
+              doc_count: getCountLink({
+                doc_count: bin.doc_count,
+                filters:
+                bin.key === '_missing'
+                  ? {
+                    content: [
+                      {
+                        content: {
+                          field: fieldName,
+                          value: bin.keyArray,
+                        },
+                        op: 'IS',
                       },
-                      op: 'IS',
+                      {
+                        content: {
+                          field: 'cases.case_id',
+                          value: `set_id:${setId}`,
+                        },
+                        op: 'in',
+                      },
+                    ],
+                    op: 'AND',
+                  }
+                  : makeFilter([
+                    {
+                      field: 'cases.case_id',
+                      value: `set_id:${setId}`,
                     },
                     {
-                      content: {
-                        field: 'cases.case_id',
-                        value: `set_id:${setId}`,
-                      },
-                      op: 'in',
+                      field: fieldName,
+                      value: bin.keyArray,
                     },
-                  ],
-                  op: 'AND',
-                }
-                : makeFilter([
-                  {
-                    field: 'cases.case_id',
-                    value: `set_id:${setId}`,
-                  },
-                  {
-                    field: fieldName,
-                    value: bin.keyArray,
-                  },
-                ]),
-              totalDocs,
-            }),
-            key: bin.key,
-          }
-        )),
+                  ]),
+                totalDocs,
+              }),
+              key: bin.key,
+            }
+          )),
     })
   ),
   withPropsOnChange(

@@ -14,7 +14,6 @@ import CaseAggregations from '@ncigdc/containers/explore/CaseAggregations';
 import GeneAggregations from '@ncigdc/modern_components/GeneAggregations';
 import SSMAggregations from '@ncigdc/containers/explore/SSMAggregations';
 import ClinicalAggregations from '@ncigdc/containers/explore/ClinicalAggregations';
-import Summary from '@ncigdc/components/Explore/Summary';
 import { CreateExploreCaseSetButton } from '@ncigdc/modern_components/withSetAction';
 import { makeFilter, replaceFilters } from '@ncigdc/utils/filters';
 import { stringifyJSONParam } from '@ncigdc/utils/uri';
@@ -98,7 +97,6 @@ function setVariables({ filters, relay }) {
     ),
   });
 }
-const noResultsMessageStyle = { minHeight: 387 };
 
 export class ExplorePageComponent extends React.Component {
   state = {
@@ -195,7 +193,7 @@ export class ExplorePageComponent extends React.Component {
             text: 'Mutations',
           },
         ]}
-        results={({ showFacets }) => (
+        results={(
           <span>
             <ResizeDetector
               handleHeight
@@ -245,36 +243,12 @@ export class ExplorePageComponent extends React.Component {
               defaultIndex={0}
               links={[
                 {
-                  component: viewer.explore.cases.hits.total ? (
-                    <Summary
-                      elements={[
-                        1,
-                        1,
-                        1,
-                        1,
-                        2,
-                        1,
-                        1,
-                        1,
-                        3,
-                      ]} // For demonstration only
-                      showFacets={showFacets}
-                      />
-                  ) : (
-                    <NoResultsMessage>No Cases Found.</NoResultsMessage>
-                    ),
-                  id: 'summary',
-                  text: 'Summary',
-                },
-                {
                   id: 'cases',
-                  text: `Cases (${viewer.explore.cases.hits.total.toLocaleString()})`,
                   component: hasCaseHits ? (
                     <CasesTab />
                   ) : (
                     <NoResultsMessage>No Cases Found.</NoResultsMessage>
                   ),
-                  id: 'cases',
                   text: `Cases (${hasCaseHits.toLocaleString()})`,
                 },
                 {

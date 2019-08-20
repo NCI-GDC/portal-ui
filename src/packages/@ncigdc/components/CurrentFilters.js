@@ -281,7 +281,7 @@ const CurrentFilters = (
                     className="test-toggle"
                     onClick={() => onLessClicked(filter)}
                     style={{
-                        display: 'flex',
+                      display: 'flex',
                         alignItems: 'center',
                       }}
                     >

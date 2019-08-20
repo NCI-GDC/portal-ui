@@ -3,7 +3,7 @@
 import React from 'react';
 
 import Link from '@ncigdc/components/Links/Link';
-import UndoIcon from '@ncigdc/theme/icons/UndoIcon';
+import Undo from '@ncigdc/theme/icons/Undo';
 import styled from '@ncigdc/theme/styled';
 import withRouter from '@ncigdc/utils/withRouter';
 
@@ -12,7 +12,7 @@ import {
   fieldInCurrentFilters,
 } from '@ncigdc/utils/filters/index';
 
-const ShadowedUndoIcon = styled(UndoIcon, {
+const ShadowedUndoIcon = styled(Undo, {
   ':hover::before': {
     textShadow: ({ theme }) => theme.textShadow,
   },

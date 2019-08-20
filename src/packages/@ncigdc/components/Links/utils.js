@@ -26,8 +26,8 @@ export const makeIDLink: TMakeIdLink = config => props => {
 
   return makeLinkBase({
     ...props,
-    pathname,
     children,
+    pathname,
   });
 };
 
@@ -37,5 +37,11 @@ export type TMakeListLink = (
 export const makeListLink: TMakeListLink = ({
   query: configQuery,
   ...config
-}) => ({ query, ...props }) =>
-  makeLinkBase({ query: { ...configQuery, ...query }, ...config, ...props });
+}) => ({ query, ...props }) => makeLinkBase({
+  query: {
+    ...configQuery,
+    ...query,
+  },
+  ...config,
+  ...props,
+});

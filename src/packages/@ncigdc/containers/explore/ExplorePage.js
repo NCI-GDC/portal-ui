@@ -2,7 +2,6 @@
 import React from 'react';
 import Relay from 'react-relay/classic';
 import { get, isEqual } from 'lodash';
-
 import withRouter from '@ncigdc/utils/withRouter';
 import SearchPage from '@ncigdc/components/SearchPage';
 import TabbedLinks from '@ncigdc/components/TabbedLinks';
@@ -12,22 +11,23 @@ import OncogridTab from '@ncigdc/components/Explore/OncogridTab';
 import CasesTab from '@ncigdc/components/Explore/CasesTab';
 import NoResultsMessage from '@ncigdc/components/NoResultsMessage';
 import CaseAggregations from '@ncigdc/containers/explore/CaseAggregations';
-import GeneAggregations from '@ncigdc/containers/explore/GeneAggregations';
+import GeneAggregations from '@ncigdc/modern_components/GeneAggregations';
 import SSMAggregations from '@ncigdc/containers/explore/SSMAggregations';
 import Summary from '@ncigdc/components/Explore/Summary';
 
+import ClinicalAggregations from '@ncigdc/containers/explore/ClinicalAggregations';
 import { CreateExploreCaseSetButton } from '@ncigdc/modern_components/withSetAction';
-import { replaceFilters } from '@ncigdc/utils/filters';
+import { makeFilter, replaceFilters } from '@ncigdc/utils/filters';
 import { stringifyJSONParam } from '@ncigdc/utils/uri';
 import { Row } from '@ncigdc/uikit/Flex';
 import Button from '@ncigdc/uikit/Button';
+import ResizeDetector from 'react-resize-detector';
 
 export type TProps = {
   filters: {},
   relay: Object,
   viewer: {
     autocomplete_cases: { hits: Array<Object> },
-    autocomplete_genes: { hits: Array<Object> },
     autocomplete_ssms: { hits: Array<Object> },
     explore: {
       customCaseFacets: {
@@ -80,7 +80,7 @@ function setVariables({ filters, relay }) {
         ],
         op: 'and',
       },
-      filters
+      filters,
     ),
     dbsnpRsFilters: replaceFilters(
       {
@@ -95,18 +95,24 @@ function setVariables({ filters, relay }) {
         ],
         op: 'and',
       },
-      filters
+      filters,
     ),
   });
 }
+const noResultsMessageStyle = { minHeight: 387 };
 
-class ExplorePageComponent extends React.Component {
+export class ExplorePageComponent extends React.Component {
+  state = {
+    maxFacetsPanelHeight: 0,
+  }
+
   componentDidMount() {
     setVariables(this.props);
   }
 
   componentWillReceiveProps(nextProps) {
-    if (!isEqual(this.props.filters, nextProps.filters)) {
+    const { filters } = this.props;
+    if (!isEqual(filters, nextProps.filters)) {
       setVariables(nextProps);
     }
   }
@@ -118,7 +124,11 @@ class ExplorePageComponent extends React.Component {
       relay,
       viewer,
     } = this.props;
-    console.log('viewer', viewer);
+    const { maxFacetsPanelHeight } = this.state;
+
+    const hasCaseHits = get(viewer, 'explore.cases.hits.total', 0);
+    const hasGeneHits = get(viewer, 'explore.genes.hits.total', 0);
+    const hasSsmsHits = get(viewer, 'explore.ssms.hits.total', 0);
 
     return (
       <SearchPage
@@ -129,12 +139,13 @@ class ExplorePageComponent extends React.Component {
               <CaseAggregations
                 aggregations={viewer.explore.cases.aggregations}
                 facets={viewer.explore.customCaseFacets}
+                maxFacetsPanelHeight={maxFacetsPanelHeight}
                 setAutocomplete={(value, onReadyStateChange) => relay.setVariables(
                   {
                     idAutocompleteCases: value,
                     runAutocompleteCases: !!value,
                   },
-                  onReadyStateChange
+                  onReadyStateChange,
                 )}
                 suggestions={get(viewer, 'autocomplete_cases.hits', [])}
                 />
@@ -144,18 +155,22 @@ class ExplorePageComponent extends React.Component {
           },
           {
             component: (
-              <GeneAggregations
-                aggregations={viewer.explore.genes.aggregations}
-                cnvAggregations={viewer.explore.cnvs.aggregations}
-                setAutocomplete={(value, onReadyStateChange) => relay.setVariables(
-                  {
-                    idAutocompleteGenes: value,
-                    runAutocompleteGenes: !!value,
-                  },
-                  onReadyStateChange
-                )}
-                suggestions={get(viewer, 'autocomplete_genes.hits', [])}
+              <ClinicalAggregations
+                aggregations={viewer.explore.cases.aggregations}
+                caseFacets={viewer.caseFacets}
+                docType="cases"
+                facets={viewer.explore.customCaseFacets}
+                globalFilters={filters}
+                maxFacetsPanelHeight={maxFacetsPanelHeight}
+                relayVarName="exploreCaseCustomFacetFields"
                 />
+            ),
+            id: 'clinical',
+            text: 'Clinical',
+          },
+          {
+            component: (
+              <GeneAggregations relay={relay} />
             ),
             id: 'genes',
             text: 'Genes',
@@ -165,12 +180,13 @@ class ExplorePageComponent extends React.Component {
               <SSMAggregations
                 aggregations={viewer.explore.ssms.aggregations}
                 defaultFilters={filters}
+                maxFacetsPanelHeight={maxFacetsPanelHeight}
                 setAutocomplete={(value, onReadyStateChange) => relay.setVariables(
                   {
                     idAutocompleteSsms: value,
                     runAutocompleteSsms: !!value,
                   },
-                  onReadyStateChange
+                  onReadyStateChange,
                 )}
                 ssms={viewer.explore.ssms}
                 suggestions={get(viewer, 'autocomplete_ssms.hits', [])}
@@ -182,10 +198,14 @@ class ExplorePageComponent extends React.Component {
         ]}
         results={(
           <span>
+            <ResizeDetector
+              handleHeight
+              onResize={(width, height) => this.setState({ maxFacetsPanelHeight: height })}
+              />
             <Row>
               {filters ? (
                 <CreateExploreCaseSetButton
-                  disabled={!viewer.explore.cases.hits.total}
+                  disabled={!hasCaseHits}
                   filters={filters}
                   onComplete={setId => {
                     push({
@@ -212,15 +232,15 @@ class ExplorePageComponent extends React.Component {
                 </CreateExploreCaseSetButton>
               ) : (
                 <Button
-                    disabled={!viewer.explore.cases.hits.total}
-                    onClick={() => push({
-                      pathname: '/repository',
-                    })}
-                    style={{ marginBottom: '2rem' }}
-                    >
-                    View Files in Repository
-                  </Button>
-                )}
+                  disabled={!hasCaseHits}
+                  onClick={() => push({
+                    pathname: '/repository',
+                  })}
+                  style={{ marginBottom: '2rem' }}
+                  >
+                  View Files in Repository
+                </Button>
+              )}
             </Row>
             <TabbedLinks
               defaultIndex={0}
@@ -248,34 +268,40 @@ class ExplorePageComponent extends React.Component {
                   text: 'Summary',
                 },
                 {
-                  component: viewer.explore.cases.hits.total ? (
+                  component: hasCaseHits ? (
                     <CasesTab />
                   ) : (
                     <NoResultsMessage>No Cases Found.</NoResultsMessage>
                     ),
                   id: 'cases',
-                  text: `Cases (${viewer.explore.cases.hits.total.toLocaleString()})`,
+                  text: `Cases (${hasCaseHits.toLocaleString()})`,
                 },
                 {
-                  component: viewer.explore.genes.hits.total ? (
+                  component: hasGeneHits ? (
                     <GenesTab viewer={viewer} />
                   ) : (
                     <NoResultsMessage>No Genes Found.</NoResultsMessage>
-                    ),
+                  ),
+                  filters: filters || makeFilter([
+                    {
+                      field: 'genes.is_cancer_gene_census',
+                      value: ['true'],
+                    },
+                  ]),
                   id: 'genes',
-                  text: `Genes (${viewer.explore.genes.hits.total.toLocaleString()})`,
+                  text: `Genes (${hasGeneHits.toLocaleString()})`,
                 },
                 {
-                  component: viewer.explore.ssms.hits.total ? (
+                  component: hasSsmsHits ? (
                     <MutationsTab
-                      totalNumCases={viewer.explore.cases.hits.total}
+                      totalNumCases={hasCaseHits}
                       viewer={viewer}
                       />
                   ) : (
                     <NoResultsMessage>No Mutations Found.</NoResultsMessage>
                     ),
                   id: 'mutations',
-                  text: `Mutations (${viewer.explore.ssms.hits.total.toLocaleString()})`,
+                  text: `Mutations (${hasSsmsHits.toLocaleString()})`,
                 },
                 {
                   component: <OncogridTab />,
@@ -307,8 +333,6 @@ export const ExplorePageQuery = {
     filters: null,
     idAutocompleteCases: null,
     runAutocompleteCases: false,
-    idAutocompleteGenes: null,
-    runAutocompleteGenes: false,
     idAutocompleteSsms: null,
     runAutocompleteSsms: false,
     dbsnpRsFilters: null,
@@ -329,16 +353,6 @@ export const ExplorePageQuery = {
             }
           }
         }
-        autocomplete_genes: query (query: $idAutocompleteGenes types: ["gene_centric"]) @include(if: $runAutocompleteGenes) {
-          hits {
-            id
-            ...on Gene {
-              symbol
-              name
-              gene_id
-            }
-          }
-        }
         autocomplete_ssms: query (query: $idAutocompleteSsms types: ["ssm_centric"]) @include(if: $runAutocompleteSsms) {
           hits {
             id
@@ -347,6 +361,23 @@ export const ExplorePageQuery = {
               cosmic_id
               gene_aa_change
               genomic_dna_change
+            }
+          }
+        }
+        caseFacets: __type(name: "ExploreCases"){
+          name
+          fields {
+            description
+            name
+            type {
+              name
+              fields
+              {
+                name
+                description
+                type {
+                  name }
+              }
             }
           }
         }
@@ -363,17 +394,11 @@ export const ExplorePageQuery = {
             }
           }
           genes {
-            aggregations(filters: $filters aggregations_filter_themselves: false) {
-              ${GeneAggregations.getFragment('aggregations')}
-            }
             hits(first: $genes_size offset: $genes_offset, filters: $filters) {
               total
             }
           }
           cnvs {
-            aggregations(filters: $filters aggregations_filter_themselves: false) {
-              ${GeneAggregations.getFragment('cnvAggregations')}
-            }
             hits(first: $genes_size offset: $genes_offset, filters: $filters) {
               total
             }
@@ -400,7 +425,7 @@ export const ExplorePageQuery = {
 
 const ExplorePage = Relay.createContainer(
   withRouter(ExplorePageComponent),
-  ExplorePageQuery
+  ExplorePageQuery,
 );
 
 export default ExplorePage;

@@ -1,14 +1,13 @@
 import React from 'react';
 import { VennSvg } from '@ncigdc/components/Charts/Venn';
-import SetOperations from './SetOperations';
 import CohortComparison from '@ncigdc/modern_components/CohortComparison';
 import CCIcon from '@ncigdc/theme/icons/CohortComparisonIcon';
 import { withTheme } from '@ncigdc/theme';
-import { TSetTypes } from '@ncigdc/dux/sets';
-import Demo from './Demo';
 import ClinicalDataAnalysis from '@ncigdc/theme/icons/ClinicalDataAnalysis';
-import { DISPLAY_CDAVE } from '@ncigdc/utils/constants';
+import { TSetTypes } from '@ncigdc/dux/sets';
 import ClinicalAnalysisContainer from '@ncigdc/modern_components/IntrospectiveType';
+import Demo from './Demo';
+import SetOperations from './SetOperations';
 import defaultVariables from './defaultCDAVEvariables';
 
 export type TSelectedSets = {
@@ -28,18 +27,121 @@ type TAnalysis = {
   setInstructions: string,
   setDisabledMessage: (opts: { sets: TSelectedSets, type: string }) => ?string,
   setTypes: Array<string>,
-  validateSets: TSelectedSets => boolean,
   ResultComponent: ReactComponent<*>,
+  validateSets: (TSelectedSets) => boolean,
 };
 
 const availableAnalysis: [TAnalysis] = [
   {
-    type: 'set_operations',
-    label: 'Set Operations',
-    Icon: ({ style = {}, ...p }) => (
+    demoData: {
+      filters: {
+        'demo-bladder-high-muse': {
+          content: [
+            {
+              content: {
+                field: 'cases.primary_site',
+                value: ['Bladder'],
+              },
+              op: 'in',
+            },
+            {
+              content: {
+                field: 'ssms.consequence.transcript.annotation.vep_impact',
+                value: ['HIGH'],
+              },
+              op: 'in',
+            },
+            {
+              content: {
+                field:
+                  'ssms.occurrence.case.observation.variant_calling.variant_caller',
+                value: ['muse'],
+              },
+              op: 'in',
+            },
+          ],
+          op: 'and',
+        },
+        'demo-bladder-high-mutect2': {
+          content: [
+            {
+              content: {
+                field: 'cases.primary_site',
+                value: ['Bladder'],
+              },
+              op: 'in',
+            },
+            {
+              content: {
+                field: 'ssms.consequence.transcript.annotation.vep_impact',
+                value: ['HIGH'],
+              },
+              op: 'in',
+            },
+            {
+              content: {
+                field:
+                  'ssms.occurrence.case.observation.variant_calling.variant_caller',
+                value: ['mutect2'],
+              },
+              op: 'in',
+            },
+          ],
+          op: 'and',
+        },
+        'demo-bladder-high-varscan': {
+          content: [
+            {
+              content: {
+                field: 'cases.primary_site',
+                value: ['Bladder'],
+              },
+              op: 'in',
+            },
+            {
+              content: {
+                field: 'ssms.consequence.transcript.annotation.vep_impact',
+                value: ['HIGH'],
+              },
+              op: 'in',
+            },
+            {
+              content: {
+                field:
+                  'ssms.occurrence.case.observation.variant_calling.variant_caller',
+                value: ['varscan'],
+              },
+              op: 'in',
+            },
+          ],
+          op: 'and',
+        },
+      },
+      message:
+        'Demo showing high impact mutations overlap in Bladder between Mutect, Varscan and Muse pipelines',
+      sets: {
+        ssm: {
+          'demo-bladder-high-muse': 'Bladder, High impact, Muse',
+          'demo-bladder-high-mutect2': 'Bladder, High impact, Mutect2',
+          'demo-bladder-high-varscan': 'Bladder, High impact, Varscan',
+        },
+      },
+      type: 'set_operations',
+    },
+    description:
+      'Display Venn diagram and find intersection or union, etc. of your sets of the same type.',
+    Icon: ({ style = {}, ...props }) => (
       <VennSvg
-        {...p}
-        style={{ width: 80, ...style }}
+        {...props}
+        getFillColor={(d, i) => (
+          d.op === 5
+          ? 'rgba(38, 166, 166, 0.65)'
+          : d.op === 6
+          ? 'rgba(235, 233, 46, 0.79)'
+          : d.op === 7
+          ? 'rgba(175, 58, 215, 0.8)'
+          : 'rgba(0,0,0,0)'
+        )}
         numCircles={3}
         ops={[
           { op: 1 },
@@ -51,118 +153,57 @@ const availableAnalysis: [TAnalysis] = [
           { op: 7 },
         ]}
         outlineColour="rgba(46, 90, 164, 0.62)"
-        getFillColor={(d, i) => {
-          if (d.op === 5) {
-            return 'rgba(38, 166, 166, 0.65)';
-          }
-          if (d.op === 6) {
-            return 'rgba(235, 233, 46, 0.79)';
-          }
-          if (d.op === 7) {
-            return 'rgba(175, 58, 215, 0.8)';
-          }
-          return 'rgba(0,0,0,0)';
+        style={{
+          width: 80,
+          ...style,
         }}
-      />
+        />
     ),
-    description:
-      'Display Venn diagram and find intersection or union, etc. of your sets of the same type.',
-    demoData: {
-      message:
-        'Demo showing high impact mutations overlap in Bladder between Mutect, Varscan and Muse pipelines',
-      sets: {
-        ssm: {
-          'demo-bladder-high-mutect2': 'Bladder, High impact, Mutect2',
-          'demo-bladder-high-varscan': 'Bladder, High impact, Varscan',
-          'demo-bladder-high-muse': 'Bladder, High impact, Muse',
-        },
-      },
-      filters: {
-        'demo-bladder-high-mutect2': {
-          op: 'and',
-          content: [
-            {
-              op: 'in',
-              content: { field: 'cases.primary_site', value: ['Bladder'] },
-            },
-            {
-              op: 'in',
-              content: {
-                field: 'ssms.consequence.transcript.annotation.vep_impact',
-                value: ['HIGH'],
-              },
-            },
-            {
-              op: 'in',
-              content: {
-                field:
-                  'ssms.occurrence.case.observation.variant_calling.variant_caller',
-                value: ['mutect2'],
-              },
-            },
-          ],
-        },
-        'demo-bladder-high-varscan': {
-          op: 'and',
-          content: [
-            {
-              op: 'in',
-              content: { field: 'cases.primary_site', value: ['Bladder'] },
-            },
-            {
-              op: 'in',
-              content: {
-                field: 'ssms.consequence.transcript.annotation.vep_impact',
-                value: ['HIGH'],
-              },
-            },
-            {
-              op: 'in',
-              content: {
-                field:
-                  'ssms.occurrence.case.observation.variant_calling.variant_caller',
-                value: ['varscan'],
-              },
-            },
-          ],
-        },
-        'demo-bladder-high-muse': {
-          op: 'and',
-          content: [
-            {
-              op: 'in',
-              content: { field: 'cases.primary_site', value: ['Bladder'] },
-            },
-            {
-              op: 'in',
-              content: {
-                field: 'ssms.consequence.transcript.annotation.vep_impact',
-                value: ['HIGH'],
-              },
-            },
-            {
-              op: 'in',
-              content: {
-                field:
-                  'ssms.occurrence.case.observation.variant_calling.variant_caller',
-                value: ['muse'],
-              },
-            },
-          ],
-        },
-      },
-      type: 'set_operations',
+    label: 'Set Operations',
+    ResultComponent: props => {
+      const type = [
+        'case',
+        'gene',
+        'ssm',
+      ].find(t => props.sets[t]);
+
+      return props.id.includes('demo-')
+        ? (
+          <Demo {...props}>
+            <SetOperations
+              message={props.message}
+              sets={props.sets[type]}
+              type={type}
+              />
+          </Demo>
+        )
+        : (
+          <SetOperations
+            message={props.message}
+            sets={props.sets[type]}
+            type={type}
+            />
+        );
     },
-    setInstructions: 'Select 2 or 3 of the same set type',
-    setDisabledMessage: ({ sets, type }) =>
-      ['case', 'gene', 'ssm'].filter(t => t !== type).some(t => sets[t])
+    setDisabledMessage: ({ sets, type }) => (
+      [
+        'case',
+        'gene',
+        'ssm',
+      ].filter(t => t !== type).some(t => sets[t])
         ? 'Please choose only one type'
         : Object.keys(sets[type] || {}).length >= 3
         ? `Please select two or three ${
             type === 'ssm' ? 'mutation' : type
           } sets`
-        : null,
-    setTypes: ['case', 'gene', 'ssm'],
+        : null),
+    setInstructions: 'Select 2 or 3 of the same set type',
+    setTypes: [
+      'case',
+      'gene',
+      'ssm',
+    ],
+    type: 'set_operations',
     validateSets: sets => {
       const entries = Object.entries(sets);
       return (
@@ -172,43 +213,49 @@ const availableAnalysis: [TAnalysis] = [
           Object.keys(entries[0][1]).length === 3)
       );
     },
-    ResultComponent: props => {
-      const type = ['case', 'gene', 'ssm'].find(t => props.sets[t]);
-
-      return props.id.includes('demo-') ? (
-        <Demo {...props}>
-          <SetOperations
-            type={type}
-            sets={props.sets[type]}
-            message={props.message}
-          />
-        </Demo>
-      ) : (
-        <SetOperations
-          type={type}
-          sets={props.sets[type]}
-          message={props.message}
-        />
-      );
-    },
   },
   {
-    type: 'comparison',
-    label: 'Cohort Comparison',
-    Icon: withTheme(({ theme, style = {} }) => (
-      <div>
-        <CCIcon
-          width="80px"
-          height="80px"
-          color1="rgb(105, 16, 48)"
-          color2={theme.primary}
-          style={style}
-        />
-      </div>
-    )),
-    description: `Display the survival analysis of your case sets and compare
-    characteristics such as gender, vital status and age at diagnosis.`,
     demoData: {
+      filters: {
+        'demo-pancreas-kras': {
+          content: [
+            {
+              content: {
+                field: 'genes.symbol',
+                value: ['KRAS'],
+              },
+              op: 'in',
+            },
+            {
+              content: {
+                field: 'cases.primary_site',
+                value: ['Pancreas'],
+              },
+              op: 'in',
+            },
+          ],
+          op: 'and',
+        },
+        'demo-pancreas-no-kras': {
+          content: [
+            {
+              content: {
+                field: 'genes.symbol',
+                value: 'KRAS',
+              },
+              op: 'excludeifany',
+            },
+            {
+              content: {
+                field: 'cases.primary_site',
+                value: ['Pancreas'],
+              },
+              op: 'in',
+            },
+          ],
+          op: 'and',
+        },
+      },
       message:
         'Demo showing cases with pancreatic cancer with and without mutations in the gene KRAS.',
       sets: {
@@ -217,103 +264,100 @@ const availableAnalysis: [TAnalysis] = [
           'demo-pancreas-no-kras': 'Pancreas - KRAS not mutated',
         },
       },
-      filters: {
-        'demo-pancreas-kras': {
-          op: 'and',
-          content: [
-            {
-              op: 'in',
-              content: { field: 'genes.symbol', value: ['KRAS'] },
-            },
-            {
-              op: 'in',
-              content: { field: 'cases.primary_site', value: ['Pancreas'] },
-            },
-          ],
-        },
-        'demo-pancreas-no-kras': {
-          op: 'and',
-          content: [
-            {
-              op: 'excludeifany',
-              content: { field: 'genes.symbol', value: 'KRAS' },
-            },
-            {
-              op: 'in',
-              content: { field: 'cases.primary_site', value: ['Pancreas'] },
-            },
-          ],
-        },
-      },
       type: 'comparison',
     },
-    setInstructions: 'Select 2 case sets',
-    setDisabledMessage: ({ sets, type }) =>
-      !['case'].includes(type)
-        ? "This analysis can't be run with this type"
+    description: `Display the survival analysis of your case sets and compare
+    characteristics such as gender, vital status and age at diagnosis.`,
+    Icon: withTheme(({ theme, style = {} }) => (
+      <div>
+        <CCIcon
+          color1="rgb(105, 16, 48)"
+          color2={theme.primary}
+          height="80px"
+          style={style}
+          width="80px"
+          />
+      </div>
+    )),
+    label: 'Cohort Comparison',
+    ResultComponent: props => (props.id.includes('demo-')
+      ? (
+        <Demo {...props}>
+          <CohortComparison message={props.message} sets={props.sets} />
+        </Demo>
+      )
+      : (
+        <CohortComparison message={props.message} sets={props.sets} />
+      )
+    ),
+    setDisabledMessage: ({ sets, type }) => (!['case'].includes(type)
+        ? 'This analysis can\'t be run with this type'
         : Object.keys(sets[type] || {}).length >= 2
         ? `You can only select two ${type === 'ssm' ? 'mutation' : type} set`
-        : null,
+        : null),
+    setInstructions: 'Select 2 case sets',
     setTypes: ['case'],
-    validateSets: sets =>
-      ['case'].every((t: any) => Object.keys(sets[t] || {}).length === 2),
-    ResultComponent: props =>
-      props.id.includes('demo-') ? (
-        <Demo {...props}>
-          <CohortComparison sets={props.sets} message={props.message} />
-        </Demo>
-      ) : (
-        <CohortComparison sets={props.sets} message={props.message} />
-      ),
+    type: 'comparison',
+    validateSets: sets => ['case'].every((t: any) => Object.keys(sets[t] || {}).length === 2),
   },
-  ...(DISPLAY_CDAVE && [
-    {
-      type: 'clinical_data',
-      label: 'Clinical Data Analysis',
-      Icon: withTheme(({ theme, style = {} }) => (
-        <div>
-          <ClinicalDataAnalysis style={{ width: 80, height: 80, ...style }} />
-        </div>
-      )),
-      description: `Display basic statistical analyses for your clinical cohort using data variables and configurations that you select as input`,
-      demoData: {
-        message: 'Demo showing cases with pancreatic cancer',
-        sets: {
-          case: {
-            'demo-pancreas': 'Pancreas',
-          },
-        },
-        filters: {
-          'demo-pancreas': {
-            op: 'and',
-            content: [
-              {
-                op: 'in',
-                content: { field: 'cases.primary_site', value: ['Pancreas'] },
+  {
+    demoData: {
+      displayVariables: { ...defaultVariables },
+      filters: {
+        'demo-pancreas': {
+          content: [
+            {
+              content: {
+                field: 'cases.primary_site',
+                value: ['Pancreas'],
               },
-            ],
-          },
+              op: 'in',
+            },
+          ],
+          op: 'and',
         },
-        type: 'clinical_data',
-        displayVariables: { ...defaultVariables },
-        name: 'Demo Clinical Analysis',
       },
-      setInstructions: 'Set instructions',
-      setTypes: ['case'],
-      validateSets: sets =>
-        sets &&
-        ['case'].every((t: any) => Object.keys(sets[t] || {}).length === 1),
-      ResultComponent: props => {
-        return props.id.includes('demo-') ? (
-          <Demo {...props}>
-            <ClinicalAnalysisContainer typeName={'ExploreCases'} {...props} />
-          </Demo>
-        ) : (
-          <ClinicalAnalysisContainer typeName={'ExploreCases'} {...props} />
-        );
+      message: 'Demo showing cases with pancreatic cancer',
+      name: 'Demo Clinical Analysis',
+      sets: {
+        case: {
+          'demo-pancreas': 'Pancreas',
+        },
       },
+      type: 'clinical_data',
     },
-  ]),
+    description: 'Display basic statistical analyses for your case set using data variables and configurations that you select as input.',
+    Icon: withTheme(({ theme, style = {} }) => (
+      <div>
+        <ClinicalDataAnalysis
+          style={{
+            width: 80,
+            height: 80,
+            ...style,
+          }}
+          />
+      </div>
+    )),
+    label: 'Clinical Data Analysis',
+    ResultComponent: props => (props.id.includes('demo-')
+      ? (
+        <Demo {...props}>
+          <ClinicalAnalysisContainer typeName="ExploreCases" {...props} />
+        </Demo>
+      )
+      : (
+        <ClinicalAnalysisContainer
+          typeName="ExploreCases"
+          {...props}
+          />
+      )
+    ),
+    setInstructions: 'Set instructions',
+    setTypes: ['case'],
+    type: 'clinical_data',
+    validateSets: sets => sets &&
+      ['case'].every((t: any) => Object.keys(sets[t] || {}).length === 1),
+  },
 ];
 
 export default availableAnalysis;

@@ -20,19 +20,28 @@ import { PersistGate } from 'redux-persist/lib/integration/react';
 import setupStore from '@ncigdc/dux';
 import { fetchApiVersionInfo } from '@ncigdc/dux/versionInfo';
 import { viewerQuery } from '@ncigdc/routes/queries';
-import Portal from './Portal';
 import { API, IS_AUTH_PORTAL, AWG } from '@ncigdc/utils/constants';
-import { fetchUser, forceLogout } from '@ncigdc/dux/auth';
+import { fetchUser } from '@ncigdc/dux/auth';
 import Login from '@ncigdc/routes/Login';
 import { redirectToLogin } from '@ncigdc/utils/auth';
 import consoleDebug from '@ncigdc/utils/consoleDebug';
 import { fetchNotifications } from '@ncigdc/dux/bannerNotification';
 import Loader from '@ncigdc/uikit/Loaders/Loader';
+import Portal from './Portal';
 
-const retryStatusCodes = [500, 503, 504];
+// if (process.env.NODE_ENV !== 'production') {
+//   const { whyDidYouUpdate } = require('why-did-you-update');
+//   whyDidYouUpdate(React);
+// }
+
+const retryStatusCodes = [
+  500,
+  503,
+  504,
+];
 
 const AccessError = message => {
-  let instance = new Error(message);
+  const instance = new Error(message);
   instance.name = 'AccessError';
   return instance;
 };
@@ -44,13 +53,13 @@ Relay.injectNetworkLayer(
     }),
     retryMiddleware({
       fetchTimeout: 15000,
-      retryDelays: attempt => Math.pow(2, attempt + 4) * 100, // or simple array [3200, 6400, 12800, 25600, 51200, 102400, 204800, 409600],
       forceRetry: (cb, delay) => {
         window.forceRelayRetry = cb;
         console.log(
           `call \`forceRelayRetry()\` for immediately retry! Or wait ${delay} ms.`
         );
       },
+      retryDelays: attempt => ((attempt + 4) ** 2) * 100,
       statusCodes: retryStatusCodes,
     }),
     // Add hash id to request
@@ -59,10 +68,7 @@ Relay.injectNetworkLayer(
       const hash =
         parse(search).hash ||
         md5(
-          [
-            req.relayReqObj._printedQuery.text,
-            JSON.stringify(req.relayReqObj._printedQuery.variables),
-          ].join(':')
+          [req.relayReqObj._printedQuery.text, JSON.stringify(req.relayReqObj._printedQuery.variables)].join(':')
         );
 
       req.url = `${url}?hash=${hash}`;
@@ -73,9 +79,7 @@ Relay.injectNetworkLayer(
 
       req.credentials = 'include';
 
-      let { user } = window.store.getState().auth;
-
-      let parsedBody = JSON.parse(req.body);
+      const parsedBody = JSON.parse(req.body);
       req.body = JSON.stringify(parsedBody);
       return next(req)
         .then(res => {
@@ -84,8 +88,8 @@ Relay.injectNetworkLayer(
             throw res;
           }
 
-          let { json } = res;
-          let { user } = window.store.getState().auth;
+          const { json } = res;
+          const { user } = window.store.getState().auth;
 
           if (user) {
             if (!json.fence_projects[0]) {
@@ -104,31 +108,30 @@ Relay.injectNetworkLayer(
           return res;
         })
         .catch(err => {
-          let { user } = window.store.getState().auth;
+          const { user } = window.store.getState().auth;
           if (err.name === 'AccessError') {
             consoleDebug(`Access error message: ${err.message}`);
             return redirectToLogin(err.message);
-          } else {
-            consoleDebug(`Something went wrong in Root network layer: ${err}`);
+          }
+          consoleDebug(`Something went wrong in Root network layer: ${err}`);
             // not able to pass the response status from throw so need to exclude by error message
-            let errorMessage = err.message
+          const errorMessage = err.message
               ? JSON.parse(err.message).message
               : null;
-            if (
-              IS_AUTH_PORTAL &&
+          if (
+            IS_AUTH_PORTAL &&
               user &&
               errorMessage ===
                 'Your token is invalid or expired. Please get a new token from GDC Data Portal.'
-            ) {
-              return redirectToLogin('timeout');
-            }
+          ) {
+            return redirectToLogin('timeout');
           }
         });
     },
   ])
 );
 
-export const { store, persistor } = setupStore({
+export const { persistor, store } = setupStore({
   persistConfig: {
     keyPrefix: 'ncigdcActive',
   },
@@ -144,37 +147,33 @@ if (process.env.NODE_ENV !== 'development') {
     store.dispatch(fetchNotifications());
   }
 }
+
 class RelayRoute extends Relay.Route {
   static routeName = 'RootRoute';
+
   static queries = viewerQuery;
 }
 
-let HasUser = connect(state => state.auth)(props => {
+const HasUser = connect(state => state.auth)(props => {
   return props.children({
-    user: props.user,
-    failed: props.failed,
     error: props.error,
+    failed: props.failed,
+    user: props.user,
   });
 });
 
-const Root = (props: mixed) => (
+const Root = (rootProps: mixed) => (
   <Provider store={store}>
     <PersistGate loading={<Loader />} persistor={persistor}>
       <Router>
         <React.Fragment>
-          {!IS_AUTH_PORTAL ? (
-            <Relay.Renderer
-              Container={Portal}
-              queryConfig={new RelayRoute(props)}
-              environment={Relay.Store}
-            />
-          ) : (
+          {IS_AUTH_PORTAL ? (
             <Switch>
-              <Route exact path="/login" component={Login} />
+              <Route component={Login} exact path="/login" />
               <Route
-                render={props => (
+                render={routeProps => (
                   <HasUser>
-                    {({ user, failed, error }) => {
+                    {({ error, failed, user }) => {
                       // if user request fails
                       consoleDebug('Root component user: ', user);
                       if (
@@ -193,9 +192,9 @@ const Root = (props: mixed) => (
                         return (
                           <Relay.Renderer
                             Container={Portal}
-                            queryConfig={new RelayRoute(props)}
                             environment={Relay.Store}
-                          />
+                            queryConfig={new RelayRoute(routeProps)}
+                            />
                         );
                       }
                       consoleDebug(
@@ -205,8 +204,14 @@ const Root = (props: mixed) => (
                     }}
                   </HasUser>
                 )}
-              />
+                />
             </Switch>
+          ) : (
+            <Relay.Renderer
+              Container={Portal}
+              environment={Relay.Store}
+              queryConfig={new RelayRoute(rootProps)}
+              />
           )}
         </React.Fragment>
       </Router>

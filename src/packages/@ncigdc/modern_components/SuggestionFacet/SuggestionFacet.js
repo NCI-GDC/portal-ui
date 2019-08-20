@@ -2,7 +2,7 @@
 
 // Vendor
 import React from 'react';
-import _ from 'lodash';
+import { get, trim } from 'lodash';
 import {
   compose,
   pure,
@@ -25,7 +25,7 @@ import styled from '@ncigdc/theme/styled';
 import { dropdown } from '@ncigdc/theme/mixins';
 import Link from '@ncigdc/components/Links/Link';
 import CheckCircleOIcon from '@ncigdc/theme/icons/CheckCircleOIcon';
-import type { TRawQuery } from '@ncigdc/utils/uri/types';
+import { IRawQuery } from '@ncigdc/utils/uri/types';
 import withSelectableList from '@ncigdc/utils/withSelectableList';
 import namespace from '@ncigdc/utils/namespace';
 import GeneSymbol from '@ncigdc/modern_components/GeneSymbol';
@@ -90,7 +90,7 @@ const SuggestionFacet = compose(
         !facetSearchHits.files.length &&
         isUUID(facetSearch)
       ) {
-        const history = await fetchFileHistory(_.trim(facetSearch));
+        const history = await fetchFileHistory(trim(facetSearch));
         await setHistoryResults(history);
       } else {
         return facetSearchHits;
@@ -167,7 +167,7 @@ const SuggestionFacet = compose(
 
     return (
       <LocationSubscriber>
-        {(ctx: {| pathname: string, query: TRawQuery |}) => {
+        {(ctx: {| pathname: string, query: IRawQuery |}) => {
           const { filters } = ctx.query || {};
           const currentFilters = parseFilterParam(filters, { content: [] })
             .content;
@@ -226,7 +226,7 @@ const SuggestionFacet = compose(
                       value={inputValue}
                       aria-activedescendant={
                         active
-                          ? _.get(
+                          ? get(
                               selectableList,
                               `focusedItem.${fieldNoDoctype}`,
                             )
@@ -310,7 +310,7 @@ const SuggestionFacet = compose(
                                 </StyledDropdownLink>
                               </Row>
                             ))}
-                        {(results && results[doctype]).length === 0 &&
+                        {(!!results && get(results, doctype, [])).length === 0 &&
                           historyResults.length === 0 && (
                             <StyledDropdownRow>
                               {loading ? 'Loading' : 'No matching items found'}

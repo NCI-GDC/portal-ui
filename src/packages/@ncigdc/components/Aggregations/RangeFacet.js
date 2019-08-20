@@ -1,8 +1,10 @@
-/* @flow */
-
 import React from 'react';
 import {
-  compose, withState, mapProps, pure, lifecycle,
+  compose,
+  lifecycle,
+  mapProps,
+  pure,
+  withState,
 } from 'recompose';
 import { isEqual } from 'lodash';
 
@@ -18,12 +20,17 @@ import {
   getUpperAgeYears,
 } from '@ncigdc/utils/ageDisplay';
 
-import { Container, InputLabel, GoLink } from '.';
+import {
+  Container,
+  GoLink,
+  InputLabel,
+} from '.';
 
 const getCurrentFromAndTo = ({ field, query }) => {
   const dotField = field.replace(/__/g, '.');
   const currentFilters =
     (query && parseFilterParam((query || {}).filters, {}).content) || [];
+
   return currentFilters.reduce(
     (acc, c) => (c.content.field === dotField
       ? {
@@ -32,70 +39,81 @@ const getCurrentFromAndTo = ({ field, query }) => {
       }
       : acc),
     {
-      '>=': undefined,
       '<=': undefined,
+      '>=': undefined,
     },
   );
 };
 
 const warningDays = Math.floor(90 * DAYS_IN_YEAR);
 const convertMaxMin = ({
-  max, min, convertDays, selectedUnit, setState,
+  convertDays,
+  max,
+  min,
+  selectedUnit,
+  setState,
 }) => {
-  if (convertDays && selectedUnit === 'years') {
-    setState(s => ({
-      ...s,
-      minDisplayed: Math.floor(min / DAYS_IN_YEAR),
-      maxDisplayed: Math.ceil((max + 1 - DAYS_IN_YEAR) / DAYS_IN_YEAR),
-    }));
-  } else {
-    setState(s => ({
-      ...s,
-      maxDisplayed: max || 0,
-      minDisplayed: min || 0,
-    }));
-  }
+  setState(state => Object.assign(
+    {},
+    state,
+    convertDays && selectedUnit === 'years'
+      ? {
+        maxDisplayed: Math.ceil((max + 1 - DAYS_IN_YEAR) / DAYS_IN_YEAR),
+        minDisplayed: Math.floor(min / DAYS_IN_YEAR),
+      }
+      : {
+        maxDisplayed: max || 0,
+        minDisplayed: min || 0,
+      },
+  ));
 };
 
 const inputChanged = ({
-  from, to, convertDays, selectedUnit, setState,
+  convertDays,
+  from,
+  selectedUnit,
+  setState,
+  to,
 }) => {
-  if (!convertDays || selectedUnit === 'days') {
-    setState(s => ({
-      ...s,
-      from: from || undefined,
-      to: to || undefined,
+  setState(state => Object.assign(
+    {},
+    state,
+    {
       fromDisplayed: from || '',
       toDisplayed: to || '',
-    }));
-  } else if (selectedUnit === 'years') {
-    setState(s => ({
-      ...s,
-      from: from ? Math.floor(from * DAYS_IN_YEAR) : undefined,
-      to: to ? Math.floor(to * DAYS_IN_YEAR + DAYS_IN_YEAR - 1) : undefined,
-      fromDisplayed: from || '',
-      toDisplayed: to || '',
-    }));
-  }
+    },
+    !convertDays || selectedUnit === 'days'
+      ? {
+        from: from || undefined,
+        to: to || undefined,
+      }
+      : {
+        from: from ? Math.floor(from * DAYS_IN_YEAR) : undefined,
+        to: to ? Math.floor(to * DAYS_IN_YEAR + DAYS_IN_YEAR - 1) : undefined,
+      },
+  ));
 };
 
 const convertInputs = ({
-  from, to, selectedUnit, setState,
+  from,
+  to,
+  selectedUnit,
+  setState,
 }) => {
   if (selectedUnit === 'days') {
     setState(s => ({
       ...s,
       from,
-      to,
       fromDisplayed: from,
+      to,
       toDisplayed: to,
     }));
   } else if (selectedUnit === 'years') {
     setState(s => ({
       ...s,
       from,
-      to,
       fromDisplayed: getLowerAgeYears(parseInt(from, 10)),
+      to,
       toDisplayed: getUpperAgeYears(parseInt(to, 10)),
     }));
   }
@@ -103,22 +121,22 @@ const convertInputs = ({
 
 const WarningRow = styled(Row, {
   backgroundColor: '#fcf8e3',
+  border: '1px solid transparent',
   borderColor: '#faebcc',
+  borderRadius: '4px',
   color: '#8a6d3b',
   padding: '15px',
-  border: '1px solid transparent',
-  borderRadius: '4px',
 });
 
 const enhance = compose(
   withState('state', 'setState', {
     from: undefined,
-    to: undefined,
     fromDisplayed: '',
-    toDisplayed: '',
     maxDisplayed: 0,
     minDisplayed: 0,
     selectedUnit: 'years',
+    to: undefined,
+    toDisplayed: '',
   }),
   withRouter,
   lifecycle({
@@ -137,8 +155,8 @@ const enhance = compose(
         query,
       });
       const opToWord = {
-        '>=': 'from',
         '<=': 'to',
+        '>=': 'from',
       };
       const newState = Object.keys(thisFieldCurrent)
         .filter(k => thisFieldCurrent[k])
@@ -152,9 +170,9 @@ const enhance = compose(
       if (convertDays) {
         convertInputs({
           from: newState.from,
-          to: newState.to,
           selectedUnit,
           setState,
+          to: newState.to,
         });
       } else {
         setState(s => ({
@@ -165,9 +183,9 @@ const enhance = compose(
         }));
       }
       convertMaxMin({
+        convertDays,
         max,
         min,
-        convertDays,
         selectedUnit,
         setState,
       });
@@ -192,8 +210,8 @@ const enhance = compose(
           query,
         });
         const opToWord = {
-          '>=': 'from',
           '<=': 'to',
+          '>=': 'from',
         };
         const newState = Object.keys(thisFieldCurrent)
           .filter(k => thisFieldCurrent[k])
@@ -207,9 +225,9 @@ const enhance = compose(
         if (convertDays) {
           convertInputs({
             from: newState.from,
-            to: newState.to,
             selectedUnit,
             setState,
+            to: newState.to,
           });
         } else {
           setState(s => ({
@@ -221,9 +239,9 @@ const enhance = compose(
         }
 
         convertMaxMin({
+          convertDays,
           max,
           min,
-          convertDays,
           selectedUnit,
           setState,
         });
@@ -233,26 +251,27 @@ const enhance = compose(
   mapProps(({
     setState, max, min, convertDays, ...rest
   }) => ({
+    convertDays,
     handleFromChanged: e => {
       const v = e.target.value;
       const { state: { toDisplayed, selectedUnit } } = rest;
       inputChanged({
-        from: v,
-        to: toDisplayed,
         convertDays,
+        from: v,
         selectedUnit,
         setState,
+        to: toDisplayed,
       });
     },
     handleToChanged: e => {
       const v = e.target.value;
       const { state: { fromDisplayed, selectedUnit } } = rest;
       inputChanged({
-        from: fromDisplayed,
-        to: v,
         convertDays,
+        from: fromDisplayed,
         selectedUnit,
         setState,
+        to: v,
       });
     },
     handleUnitChanged: e => {
@@ -263,23 +282,22 @@ const enhance = compose(
         selectedUnit: v,
       }));
       convertMaxMin({
+        convertDays,
         max,
         min,
-        convertDays,
         selectedUnit: v,
         setState,
       });
       convertInputs({
         from,
-        to,
         selectedUnit: v,
         setState,
+        to,
       });
     },
-    setState,
     max,
     min,
-    convertDays,
+    setState,
     ...rest,
   })),
   pure,
@@ -308,152 +326,181 @@ type TProps = {
   collapsed: boolean,
 };
 
-const RangeFacet = (props: TProps) => {
-  const dotField = props.field.replace(/__/g, '.');
+const RangeFacet = ({
+  collapsed,
+  convertDays,
+  field,
+  handleFromChanged,
+  handleToChanged,
+  handleUnitChanged,
+  state: {
+    from,
+    fromDisplayed,
+    maxDisplayed,
+    minDisplayed,
+    selectedUnit,
+    to,
+    toDisplayed,
+  },
+  style,
+  title,
+}: TProps) => {
+  const dotField = field.replace(/__/g, '.');
   const innerContent = [
     {
       op: '>=',
-      value: props.state.from,
+      value: from,
     },
     {
       op: '<=',
-      value: props.state.to,
+      value: to,
     },
   ]
     .filter(v => v.value)
     .map(v => ({
-      op: v.op,
       content: {
         field: dotField,
         value: [v.value],
       },
+      op: v.op,
     }));
   const query = {
-    offset: 0,
     filters: {
-      op: 'and',
       content: innerContent,
+      op: 'and',
     },
+    offset: 0,
   };
-  const { maxDisplayed, minDisplayed } = props.state;
+
   return (
-    <Container className="test-range-facet" style={{ ...props.style, paddingBottom: props.collapsed ? 0 : 10 }}>
-      {!props.collapsed &&
-        props.convertDays && (
-          <Row style={{ marginBottom: '0.5rem' }}>
-            <form name={`${dotField}-radio`}>
-              <label
-                htmlFor={`${dotField}-years-radio`}
-                style={{ paddingRight: '10px' }}
-              >
-                <input
-                  checked={props.state.selectedUnit === 'years'}
-                  id={`${dotField}-years-radio`}
-                  onChange={props.handleUnitChanged}
-                  style={{ marginRight: '5px' }}
-                  type="radio"
-                  value="years"
-                />
-                Years
-              </label>
-              <label
-                htmlFor={`${dotField}-days-radio`}
-                style={{ paddingRight: '10px' }}
-              >
-                <input
-                  checked={props.state.selectedUnit === 'days'}
-                  id={`${dotField}-days-radio`}
-                  onChange={props.handleUnitChanged}
-                  style={{ marginRight: '5px' }}
-                  type="radio"
-                  value="days"
-                />
-                Days
-              </label>
-            </form>
-          </Row>
-        )}
-      {!props.collapsed && (
-        <Column>
-          <Row>
-            <InputLabel
-              htmlFor={`from-${dotField}`}
-              style={{
-                borderRight: 0,
-                borderRadius: '4px 0 0 4px',
-              }}
-            >
-              From:
-            </InputLabel>
-            <Input
-              id={`from-${dotField}`}
-              key={`from-${dotField}`}
-              max={maxDisplayed}
-              min={minDisplayed}
-              onChange={props.handleFromChanged}
-              placeholder={`eg. ${minDisplayed}`}
-              style={{
-                paddingRight: '5px',
-                paddingLeft: '5px',
-              }}
-              title={`Min value: ${minDisplayed}`}
-              type="number"
-              value={props.state.fromDisplayed || ''}
-            />
-            <InputLabel
-              htmlFor={`to-${dotField}`}
-              style={{
-                borderLeft: 0,
-                borderRight: 0,
-              }}
-            >
-              To:
-            </InputLabel>
-            <Input
-              id={`to-${dotField}`}
-              key={`to-${dotField}`}
-              max={maxDisplayed}
-              min={minDisplayed}
-              onChange={props.handleToChanged}
-              placeholder={`eg. ${maxDisplayed}`}
-              style={{
-                paddingRight: '5px',
-                paddingLeft: '5px',
-              }}
-              title={`Max value: ${maxDisplayed}`}
-              type="number"
-              value={props.state.toDisplayed || ''}
-            />
-            <GoLink
-              dark={!!innerContent.length}
-              merge="replace"
-              query={innerContent.length ? query : null}
-              style={innerContent.length ? null : { color: '#6F6F6F' }}
-            >
-              Go!
-            </GoLink>
-          </Row>
-          {props.title === 'Age At Diagnosis' &&
-            (props.state.from >= warningDays ||
-              props.state.to >= warningDays) && (
-              <WarningRow>
-                <span>
-                  <ExclamationTriangle style={{ paddingRight: '5px' }} />
-                  For health information privacy concerns, individuals over 89
-                  will all appear as 90 years old. For more information, click
-                  {' '}
-                  <a
-                    href="https://gdc.cancer.gov/about-gdc/gdc-faqs#collapsible-item-618-question"
-                    rel="noopener noreferrer"
-                    target="_blank"
+    <Container
+      className="test-range-facet"
+      style={{
+        ...style,
+        paddingBottom: collapsed ? 0 : 10
+      }}
+      >
+      {collapsed || (
+        <React.Fragment>
+          {convertDays && (
+            <Row style={{ marginBottom: '0.5rem' }}>
+              <form name={`${dotField}-radio`}>
+                <label
+                  htmlFor={`${dotField}-years-radio`}
+                  style={{ paddingRight: '10px' }}
                   >
-                    here
-                  </a>
-                  .
-                </span>
-              </WarningRow>
-            )}
-        </Column>
+                  <input
+                    checked={selectedUnit === 'years'}
+                    id={`${dotField}-years-radio`}
+                    onChange={handleUnitChanged}
+                    style={{ marginRight: '5px' }}
+                    type="radio"
+                    value="years"
+                    />
+                  Years
+                </label>
+                <label
+                  htmlFor={`${dotField}-days-radio`}
+                  style={{ paddingRight: '10px' }}
+                  >
+                  <input
+                    checked={selectedUnit === 'days'}
+                    id={`${dotField}-days-radio`}
+                    onChange={handleUnitChanged}
+                    style={{ marginRight: '5px' }}
+                    type="radio"
+                    value="days"
+                    />
+                  Days
+                </label>
+              </form>
+            </Row>
+          )}
+
+          <Column>
+            <Row>
+              <InputLabel
+                htmlFor={`from-${dotField}`}
+                style={{
+                  borderRadius: '4px 0 0 4px',
+                  borderRight: 0,
+                }}
+                >
+                From:
+              </InputLabel>
+              <Input
+                id={`from-${dotField}`}
+                key={`from-${dotField}`}
+                max={maxDisplayed}
+                min={minDisplayed}
+                onChange={handleFromChanged}
+                placeholder={`eg. ${minDisplayed}`}
+                style={{
+                  paddingLeft: '5px',
+                  paddingRight: '5px',
+                }}
+                title={`Min value: ${minDisplayed}`}
+                type="number"
+                value={fromDisplayed || ''}
+                />
+
+              <InputLabel
+                htmlFor={`to-${dotField}`}
+                style={{
+                  borderLeft: 0,
+                  borderRight: 0,
+                }}
+                >
+                To:
+              </InputLabel>
+              <Input
+                id={`to-${dotField}`}
+                key={`to-${dotField}`}
+                max={maxDisplayed}
+                min={minDisplayed}
+                onChange={handleToChanged}
+                placeholder={`eg. ${maxDisplayed}`}
+                style={{
+                  paddingLeft: '5px',
+                  paddingRight: '5px',
+                }}
+                title={`Max value: ${maxDisplayed}`}
+                type="number"
+                value={toDisplayed || ''}
+              />
+
+              <GoLink
+                dark={!!innerContent.length}
+                merge="replace"
+                query={innerContent.length ? query : null}
+                style={innerContent.length ? null : { color: '#6F6F6F' }}
+                >
+                Go!
+              </GoLink>
+            </Row>
+
+            {title === 'Age At Diagnosis' && (
+              from >= warningDays ||
+              to >= warningDays
+              ) && (
+                <WarningRow>
+                  <span>
+                    <ExclamationTriangle style={{ paddingRight: '5px' }} />
+                    {`For health information privacy concerns, individuals over 89
+                    will all appear as 90 years old. For more information, click `}
+                    <a
+                      href="https://gdc.cancer.gov/about-gdc/gdc-faqs#collapsible-item-618-question"
+                      rel="noopener noreferrer"
+                      target="_blank"
+                      >
+                      here
+                    </a>
+                    .
+                  </span>
+                </WarningRow>
+              )}
+          </Column>
+        </React.Fragment>
       )}
     </Container>
   );

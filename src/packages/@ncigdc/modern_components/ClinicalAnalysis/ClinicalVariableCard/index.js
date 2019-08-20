@@ -84,7 +84,7 @@ import {
 import termCapitaliser from '@ncigdc/utils/customisation';
 import timestamp from '@ncigdc/utils/timestamp';
 
-import { IS_CDAVE_DEV, analysisColors } from '@ncigdc/utils/constants';
+import { analysisColors } from '@ncigdc/utils/constants';
 import ContinuousCustomBinsModal from '@ncigdc/components/Modals/ContinuousBinning/ContinuousCustomBinsModal';
 
 import {
@@ -340,7 +340,7 @@ const getTableData = (
       .sort((a, b) => a.keyArray[0] - b.keyArray[0])
       .reduce(getContinuousBuckets, [])
     : binData
-      .filter(bucket => (IS_CDAVE_DEV ? bucket.key : bucket.key !== '_missing'))
+      .filter(bucket => bucket.key)
       .sort((a, b) => b.doc_count - a.doc_count)
       .map(bin => ({
         ...bin,
@@ -896,8 +896,8 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                     )}
                 </div>
               )}
-
               {variable.active_chart === 'box' && (
+
                 <Column
                   style={{
                     alignItems: 'space-between',
@@ -925,25 +925,6 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                         Box Plot
                       </span>
                     </Row>
-                    <Row>
-                      <DownloadVisualizationButton
-                        buttonStyle={{
-                          fontSize: '1.2rem',
-                          lineHeight: 0,
-                          minHeight: 20,
-                          minWidth: 22,
-                          padding: 0,
-                        }}
-                        noText
-                        slug={`boxplot-${fieldName}`}
-                        svg={() => wrapSvg({
-                          className: 'boxplot',
-                          selector: `#${wrapperId}-boxplot-container figure svg`,
-                          title: `${humanify({ term: fieldName })} Box Plot`,
-                        })}
-                        tooltipHTML="Download SVG or PNG"
-                        />
-                    </Row>
                     <Row
                       style={{
                         alignItems: 'center',
@@ -963,21 +944,26 @@ const ClinicalVariableCard: React.ComponentType<IVariableCardProps> = ({
                     </Row>
                     <Row>
                       <DownloadVisualizationButton
-                        buttonStyle={{
-                          fontSize: '1.2rem',
-                          lineHeight: 0,
-                          minHeight: 20,
-                          minWidth: 22,
-                          padding: 0,
-                        }}
                         data={qqData}
                         noText
-                        slug={`qq-plot-${fieldName}`}
-                        svg={() => wrapSvg({
-                          className: 'qq-plot',
-                          selector: `#${wrapperId}-qqplot-container .qq-plot svg`,
-                          title: `${humanify({ term: fieldName })} QQ Plot`,
-                        })}
+                        slug={[`qq-plot-${fieldName}`, `boxplot-${fieldName}`]}
+                        style={{
+                          float: 'right',
+                          marginRight: 2,
+                        }}
+                        svg={
+                          [
+                            () => wrapSvg({
+                              className: 'qq-plot',
+                              selector: `#${wrapperId}-qqplot-container .qq-plot svg`,
+                              title: `${humanify({ term: fieldName })} QQ Plot`,
+                            }),
+                            () => wrapSvg({
+                              className: `${variable.type.toLowerCase()}-boxplot`,
+                              selector: `#${wrapperId}-boxplot-container figure svg`,
+                              title: `${humanify({ term: fieldName })} Box Plot`,
+                            }),
+                        ]}
                         tooltipHTML="Download plot data"
                         tsvData={qqData}
                         />
@@ -1695,7 +1681,7 @@ export default compose(
                 .reduce(getContinuousBuckets, [])
               : []
             : binData
-              .filter(bucket => (IS_CDAVE_DEV ? bucket.key : bucket.key !== '_missing'))
+              .filter(bucket => bucket.key)
               .map(b => ({
                 ...b,
                 chart_doc_count: b.doc_count,

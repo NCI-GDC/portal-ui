@@ -39,9 +39,11 @@ const AnnotationsRoute = LoadableWithLoading({
   loader: () => import('@ncigdc/routes/AnnotationsRoute'),
 });
 
-const RouteComponent = () => (
+const Routes = () => (
   <span>
-    <Route children={p => <Head title={p.location.pathname.split('/')[1]} />} />
+    <Route>
+      {({ location: { pathname } }) => <Head title={pathname.split('/')[1]} />}
+    </Route>
     <Switch>
       <Route component={HomeRoute} exact path="/" />
       <Route component={CartRoute} exact path="/cart" />
@@ -65,4 +67,4 @@ const RouteComponent = () => (
   </span>
 );
 
-export default RouteComponent;
+export default Routes;

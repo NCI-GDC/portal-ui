@@ -17,6 +17,7 @@ import styled from '@ncigdc/theme/styled';
 import { withTheme } from '@ncigdc/theme';
 import { TGroupContent, IGroupFilter } from '@ncigdc/utils/filters/types';
 import PieChart from '@ncigdc/components/Charts/PieChart';
+import pluralize from '@ncigdc/utils/pluralize';
 
 const color = d3.scaleOrdinal([
   ...d3.schemeCategory20,
@@ -174,9 +175,7 @@ export default compose(
             [projectId]: (
               <span>
                 <b>
-                  {${projectId}: `}
-:
-                  {' '}
+                  {`${projectId}: `}
                   {
                     (projects.find(p => p.project_id === projectId) || {
                       name: '',
@@ -184,22 +183,9 @@ export default compose(
                   }
                 </b>
                 <br />
-                {' '}
-                {count.toLocaleString()}
-                {' '}
-Case
-                {count > 1 ? 's' : ''}
-                {' '}
-                Affected
+                {`${count.toLocaleString()} ${pluralize('Case', count)} Affected`}
                 <br />
-                {count.toLocaleString()}
-                {' '}
-/
-                {numUniqueCases.toLocaleString()}
-                {' '}
-(
-                {percent.toFixed(2)}
-%)
+                {`${count.toLocaleString()} / ${numUniqueCases.toLocaleString()} (${percent.toFixed(2)}%)`}
               </span>
             ),
           }),

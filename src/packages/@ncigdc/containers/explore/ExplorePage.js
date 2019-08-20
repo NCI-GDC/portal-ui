@@ -2,7 +2,12 @@
 import React from 'react';
 import Relay from 'react-relay/classic';
 import { get, isEqual } from 'lodash';
-import { compose, lifecycle, withState } from 'recompose';
+import { 
+  compose,
+  lifecycle,
+  setDisplayName,
+  withState,
+} from 'recompose';
 
 import withRouter from '@ncigdc/utils/withRouter';
 import SearchPage from '@ncigdc/components/SearchPage';

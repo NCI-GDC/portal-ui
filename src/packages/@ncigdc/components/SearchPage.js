@@ -57,12 +57,12 @@ const enhance = compose(
 
 const SearchPage = (
   {
+    className,
     facetTabs = [],
     results = <span />,
     showFacets,
     setShowFacets,
     filtersLinkProps,
-    className,
   }: TProps = {},
 ) => (
   <Container className={`${className} test-search-page`}>
@@ -93,14 +93,15 @@ const SearchPage = (
     )}
     <Content>
       <Row style={{ marginBottom: '2rem' }}>
-        {!showFacets && (
+        {showFacets || (
           <ShowFacetsButton onClick={() => setShowFacets(!showFacets)}>
             <DoubleArrowRightIcon />
           </ShowFacetsButton>
         )}
         <CurrentFilters style={{ flex: 1 }} {...filtersLinkProps} />
       </Row>
-      {typeof results === 'function' ? results({ showFacets }) : results}
+      {/* {typeof results === 'function' ? results({ showFacets }) : results} */}
+      {results}
     </Content>
   </Container>
 );

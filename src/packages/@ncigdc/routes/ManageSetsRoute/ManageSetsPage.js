@@ -15,7 +15,7 @@ import { closeNotification } from '@ncigdc/dux/notification';
 import withPropsOnChange from '@ncigdc/utils/withPropsOnChange';
 import styled from '@ncigdc/theme/styled';
 import { addSet, removeSet, updateSet } from '@ncigdc/dux/sets';
-import ExploreLink from '@ncigdc/components/Links/ExploreLink';
+import ExploreLink, { defaultExploreQuery } from '@ncigdc/components/Links/ExploreLink';
 import RepositoryLink from '@ncigdc/components/Links/RepositoryLink';
 import countComponents from '@ncigdc/modern_components/Counts';
 import { Column, Row } from '@ncigdc/uikit/Flex';
@@ -57,7 +57,7 @@ const Info = () => (
     <Heading>Manage Your Saved Sets</Heading>
     <p>
       You can create and save case, gene and mutation sets of interest from the{' '}
-      <ExploreLink>Exploration Page</ExploreLink>.
+      <ExploreLink query={defaultExploreQuery}>Exploration Page</ExploreLink>.
     </p>
   </span>
 );

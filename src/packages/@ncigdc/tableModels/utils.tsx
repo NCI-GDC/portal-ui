@@ -1,5 +1,5 @@
 import React from 'react';
-import _ from 'lodash';
+import { map, sumBy, uniq, xor } from 'lodash';
 import Tooltip from '@ncigdc/uikit/Tooltip/Tooltip';
 import Hidden from '@ncigdc/components/Hidden';
 import { tableToolTipHint } from '@ncigdc/theme/mixins';
@@ -9,16 +9,16 @@ import { makeFilter } from '@ncigdc/utils/filters';
 import { findDataCategory } from '@ncigdc/utils/data';
 import { IListLinkProps } from '@ncigdc/components/Links/types';
 import ProjectLink from '@ncigdc/components/Links/ProjectLink';
-import { 
+import {
   IDataCategory,
   TCategoryAbbr,
 } from '@ncigdc/utils/data/types';
 
 interface ICreateDataCategoryColumnsProps{
-  title: string; 
-  countKey: string; 
-  Link: (props: IListLinkProps) => React.Component<IListLinkProps>; 
-  getCellLinkFilters: (node: INode) => IFilter[]; 
+  title: string;
+  countKey: string;
+  Link: (props: IListLinkProps) => React.Component<IListLinkProps>;
+  getCellLinkFilters: (node: INode) => IFilter[];
   getTotalLinkFilters: (hits: IHits) => IFilter[];
 }
 
@@ -77,6 +77,15 @@ export interface IColumnProps<NoTH> {
   th: (props: IThProps) => JSX.Element;
   td: NoTH extends true? undefined : (props: ITdProps) => JSX.Element;
 }
+
+interface ICategoryColumnProps {
+  dataCategory: TCategoryAbbr,
+  full: string,
+  tooltip: string,
+  abbr: TCategoryAbbr,
+  hasTotalLink?: boolean
+}
+
 export const createDataCategoryColumns = ({
   title,
   countKey,
@@ -85,7 +94,7 @@ export const createDataCategoryColumns = ({
   getTotalLinkFilters,
 }: ICreateDataCategoryColumnsProps)=> {
   const isProjectsTable = countKey === 'case_count';
-  const CATEGORY_COLUMNS = isProjectsTable ? DATA_CATEGORIES_FOR_PROJECTS_TABLE : DATA_CATEGORIES; 
+  const CATEGORY_COLUMNS = isProjectsTable ? DATA_CATEGORIES_FOR_PROJECTS_TABLE : DATA_CATEGORIES;
   return [
     {
       name: 'Data Categories',
@@ -101,33 +110,28 @@ export const createDataCategoryColumns = ({
         </Th>
       ),
       downloadable: true,
-      subHeadingIds: _.map(CATEGORY_COLUMNS, category => category.abbr),
+      subHeadingIds: map(CATEGORY_COLUMNS, category => category.abbr),
     },
-    ..._.map(CATEGORY_COLUMNS, (category: { 
-      dataCategory: TCategoryAbbr,
-      full: string,
-      tooltip: string,
-      abbr: TCategoryAbbr,  
-    }) => ({
-      name: category.abbr,
-      id: category.abbr,
+    ...map(CATEGORY_COLUMNS, (({ abbr, dataCategory, full, hasTotalLink = true, tooltip }: ICategoryColumnProps) => ({
+      name: abbr,
+      id: abbr,
       subHeading: true,
       parent: 'data_category',
       th: () => (
         <ThNum>
           <abbr>
-            <Tooltip Component={category.tooltip || category.full} style={tableToolTipHint()}>
-              {category.abbr}
+            <Tooltip Component={tooltip || full} style={tableToolTipHint()}>
+              {abbr}
             </Tooltip>
           </abbr>
         </ThNum>
       ),
       td: ({ node }: { node: INode }) => {
-        const isMetadataColumn = ['Clinical Metadata', 'Biospecimen Metadata'].includes(category.tooltip);
-        const count = isMetadataColumn 
-          ? node.summary.file_count 
+        const isMetadataColumn = ['Clinical Metadata', 'Biospecimen Metadata'].includes(tooltip);
+        const count = isMetadataColumn
+          ? node.summary.file_count
           : findDataCategory(
-            category.dataCategory || category.abbr,
+            dataCategory || abbr,
             node.summary.data_categories
           )[countKey];
         return (
@@ -143,7 +147,7 @@ export const createDataCategoryColumns = ({
                 query={{
                   filters: makeFilter([
                     ...getCellLinkFilters(node),
-                    { field: 'files.data_category', value: category.full },
+                    { field: 'files.data_category', value: full },
                   ]),
                 }}
               >
@@ -155,25 +159,39 @@ export const createDataCategoryColumns = ({
       },
       total: ({ hits }: {hits: IHits }) => (
         <TdNum>
-          <Link
-            query={{
-              filters: makeFilter([
-                ...getTotalLinkFilters(hits),
-                { field: 'files.data_category', value: category.full },
-              ]),
-            }}
-          >
-            {_.sumBy(
-              hits.edges,
-              x =>
-                findDataCategory(
-                  category.dataCategory || category.abbr,
-                  x.node.summary.data_categories)[countKey]
-                ).toLocaleString()}
-          </Link>
+          {
+            hasTotalLink ?
+            <Link
+              query={{
+                filters: makeFilter([
+                  ...getTotalLinkFilters(hits),
+                  { field: 'files.data_category', value: full },
+                ]),
+              }}
+            >
+              {sumBy(
+                hits.edges,
+                x =>
+                  findDataCategory(
+                    dataCategory || abbr,
+                    x.node.summary.data_categories)[countKey]
+                  ).toLocaleString()}
+            </Link>
+            :
+            <span>
+              {sumBy(
+                hits.edges,
+                x =>
+                  findDataCategory(
+                    dataCategory || abbr,
+                    x.node.summary.data_categories)[countKey]
+                  ).toLocaleString()}
+            </span>
+          }
+
         </TdNum>
       ),
-    })),
+    }))),
   ];
 };
 
@@ -209,8 +227,8 @@ export const createSelectColumn = ({
             onChange={e => {
               setSelectedIds(
                 allSelected
-                  ? _.xor(selectedIds, ids)
-                  : _.uniq(ids.concat(selectedIds))
+                  ? xor(selectedIds, ids)
+                  : uniq(ids.concat(selectedIds))
               );
             }}
           />
@@ -229,7 +247,7 @@ export const createSelectColumn = ({
           value={node[idField]}
           checked={selectedIds.includes(node[idField])}
           onChange={e => {
-            setSelectedIds(_.xor(selectedIds, [node[idField]]));
+            setSelectedIds(xor(selectedIds, [node[idField]]));
           }}
         />
       </Td>

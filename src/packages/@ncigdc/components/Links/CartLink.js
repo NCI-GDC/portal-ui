@@ -11,14 +11,36 @@ type TProps = {
   style?: Object,
 };
 
-const CartLink = (props: TProps) => (
-  <Link
-    pathname="/cart"
-    className={props.className || ''}
-    style={props.style || {}}
-  >
-    {props.children ? props.children(props.count) : 'cart'}
-  </Link>
-);
+class CartLink extends React.Component {
+  shouldComponentUpdate({
+    count: nextCount,
+  }) {
+    const {
+      count,
+    } = this.props;
 
-export default connect(state => ({ count: state.cart.files.length }))(CartLink);
+    return nextCount !== count;
+  }
+
+  render() {
+    const {
+      children,
+      className = '',
+      count = 0,
+      style = {},
+    } = this.props;
+    return (
+      <Link
+        className={className}
+        pathname="/cart"
+        style={style || {}}
+        >
+        {children ? children(count) : 'cart'}
+      </Link>
+    );
+  }
+}
+
+export default connect(
+  state => ({ count: state.cart.files.length })
+)(CartLink);

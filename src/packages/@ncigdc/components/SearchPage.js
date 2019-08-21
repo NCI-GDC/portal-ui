@@ -21,9 +21,9 @@ const Container = styled(Row, {
 });
 
 const FacetsPanel = styled(Column, {
-  width: ({ theme }) => theme.facetsPanelWidth,
   flex: 'none',
   marginRight: '18px',
+  width: ({ theme }) => theme.facetsPanelWidth,
 });
 
 const Content = styled(Column, {
@@ -32,14 +32,14 @@ const Content = styled(Column, {
 });
 
 const ShowFacetsButton = styled.button({
-  flex: 'none',
-  padding: 10,
   backgroundColor: ({ theme }) => theme.white,
   border: ({ theme }) => `1px solid ${theme.greyScale4}`,
   borderLeft: 'none',
+  borderRadius: '0 0.4rem 0.4rem 0',
+  flex: 'none',
   margin: `2.1rem 4rem auto -${sidePadding}`,
   outline: 'none',
-  borderRadius: '0 0.4rem 0.4rem 0',
+  padding: 10,
 });
 
 type TProps = {
@@ -57,49 +57,52 @@ const enhance = compose(
 
 const SearchPage = (
   {
+    className,
     facetTabs = [],
     results = <span />,
     showFacets,
     setShowFacets,
     filtersLinkProps,
-    ...props
   }: TProps = {},
 ) => (
-  <Container className={`${props.className} test-search-page`}>
-      {showFacets && (
-        <FacetsPanel>
-          <TabbedLinks
-            defaultIndex={0}
-            hideTabs={facetTabs.length <= 1}
-            links={facetTabs}
-            linkStyle={{ paddingLeft: '1.2rem', paddingRight: '1.2rem' }}
-            queryParam="facetTab"
-            tabToolbar={(
-              <UnstyledButton
-                aria-label="Toggle Facet Panel Visibility"
-                onClick={() => {
-                  setShowFacets(!showFacets);
-                }}
-                style={{ minHeight: 46 }}
-                >
-                <DoubleArrowLeftIcon />
-              </UnstyledButton>
-            )}
-            />
-        </FacetsPanel>
-      )}
-      <Content>
-        <Row style={{ marginBottom: '2rem' }}>
-          {!showFacets && (
-            <ShowFacetsButton onClick={() => setShowFacets(!showFacets)}>
-              <DoubleArrowRightIcon />
-            </ShowFacetsButton>
+  <Container className={`${className} test-search-page`}>
+    {showFacets && (
+      <FacetsPanel>
+        <TabbedLinks
+          defaultIndex={0}
+          hideTabs={facetTabs.length <= 1}
+          links={facetTabs}
+          linkStyle={{
+            paddingLeft: '1.2rem',
+            paddingRight: '1.2rem',
+          }}
+          queryParam="facetTab"
+          tabToolbar={(
+            <UnstyledButton
+              aria-label="Toggle Facet Panel Visibility"
+              onClick={() => {
+                setShowFacets(!showFacets);
+              }}
+              style={{ minHeight: 46 }}
+              >
+              <DoubleArrowLeftIcon />
+            </UnstyledButton>
           )}
-          <CurrentFilters style={{ flex: 1 }} {...filtersLinkProps} />
-        </Row>
-        {results}
-      </Content>
-    </Container>
+          />
+      </FacetsPanel>
+    )}
+    <Content>
+      <Row style={{ marginBottom: '2rem' }}>
+        {showFacets || (
+          <ShowFacetsButton onClick={() => setShowFacets(!showFacets)}>
+            <DoubleArrowRightIcon />
+          </ShowFacetsButton>
+        )}
+        <CurrentFilters style={{ flex: 1 }} {...filtersLinkProps} />
+      </Row>
+      {results}
+    </Content>
+  </Container>
 );
 
 export default enhance(SearchPage);

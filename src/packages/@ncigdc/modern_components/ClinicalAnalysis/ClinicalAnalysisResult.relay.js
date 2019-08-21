@@ -4,6 +4,7 @@ import { graphql } from 'react-relay';
 import {
   branch,
   compose,
+  pure,
   renderComponent,
   setDisplayName,
   withProps,
@@ -42,6 +43,7 @@ export default (Component: ReactClass<*>) => compose(
         .map(field => field.name.replace(/__/g, '.'))
         .join(',');
       const setId = Object.keys(currentAnalysis.sets.case)[0];
+
       return {
         variables: {
           facets,
@@ -60,24 +62,26 @@ export default (Component: ReactClass<*>) => compose(
         },
       };
     }
-  )
+  ),
+  pure,
 )((props: Object) => (
   <Query
-      Component={Component}
-      minHeight={800}
-      parentProps={props}
-      query={graphql`query ClinicalAnalysisResult_relayQuery($filters: FiltersArgument, $facets: [String]!) {
-          viewer {
-            explore {
-              cases {
-                facets(facets: $facets filters: $filters)
-                hits(first: 0 filters: $filters) {
-                  total
-                }
+    Component={Component}
+    minHeight={800}
+    parentProps={props}
+    query={graphql`
+      query ClinicalAnalysisResult_relayQuery($filters: FiltersArgument, $facets: [String]!) {
+        viewer {
+          explore {
+            cases {
+              facets(facets: $facets filters: $filters)
+              hits(first: 0 filters: $filters) {
+                total
               }
             }
           }
-        }`}
-      variables={props.variables}
-      />
+        }
+      }`}
+    variables={props.variables}
+    />
 ));

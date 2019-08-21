@@ -1,4 +1,5 @@
 // @flow
+/* eslint-disable react/display-name */
 
 import React from 'react';
 import { scaleOrdinal, schemeCategory10 } from 'd3';
@@ -51,14 +52,16 @@ const SsmsTableModel = [
     th: () => (
       <Th>
         <Tooltip
-          Component={
+          Component={(
             <span>
-              Genomic DNA change, shown as <br />
+              Genomic DNA change, shown as
+              {' '}
+              <br />
               {'{chromosome}:g{start}{ref}>{tumor}'}
             </span>
-          }
+          )}
           style={tableToolTipHint()}
-        >
+          >
           DNA Change
         </Tooltip>
       </Th>
@@ -66,12 +69,16 @@ const SsmsTableModel = [
     td: ({ node }) => (
       <Td>
         <Tooltip
-          Component={
-            <div style={{ maxWidth: 300, wordBreak: 'break-all' }}>
+          Component={(
+            <div style={{
+              maxWidth: 300,
+              wordBreak: 'break-all',
+            }}
+                 >
               {node.genomic_dna_change}
             </div>
-          }
-        >
+          )}
+          >
           <MutationLink uuid={node.ssm_id}>
             {truncateAfterMarker(
               node.genomic_dna_change,
@@ -99,9 +106,9 @@ const SsmsTableModel = [
     th: () => (
       <Th>
         <Tooltip
-          style={tableToolTipHint()}
           Component="Consequences for canonical transcript"
-        >
+          style={tableToolTipHint()}
+          >
           Consequences
         </Tooltip>
       </Th>
@@ -109,27 +116,32 @@ const SsmsTableModel = [
     td: ({ node, theme }) => (
       <Td>
         <span>
-          <b>{startCase(node.consequenceType.replace('variant', ''))}</b>&nbsp;
+          <b>{startCase(node.consequenceType.replace('variant', ''))}</b>
+&nbsp;
           <GeneLink
-            uuid={node.geneId}
             activeStyle={{
               textDecoration: 'none',
               color: theme.greyScale2,
               cursor: 'default',
             }}
-          >
+            uuid={node.geneId}
+            >
             {node.geneSymbol}
           </GeneLink>
           <Tooltip
-            Component={
-              <div style={{ maxWidth: 300, wordBreak: 'break-all' }}>
+            Component={(
+              <div style={{
+                maxWidth: 300,
+                wordBreak: 'break-all',
+              }}
+                   >
                 {node.aaChange}
               </div>
-            }
+            )}
             style={{
               color: theme.impacts[node.impact] || 'inherit',
             }}
-          >
+            >
             &nbsp;
             {truncate(node.aaChange, { length: 12 })}
           </Tooltip>
@@ -145,37 +157,51 @@ const SsmsTableModel = [
     th: ({ context }) => (
       <Th>
         <Tooltip
-          Component={
+          Component={(
             <span>
-              # of Cases where Mutation is observed in {context}
-              <br /> / # of Cases tested for Simple Somatic Mutations in{' '}
+              # of Cases where Mutation is observed in
+              {' '}
+              {context}
+              <br />
+              {' '}
+/ # of Cases tested for Simple Somatic Mutations in
+              {' '}
               {context}
             </span>
-          }
+          )}
           style={tableToolTipHint()}
-        >
-          # Affected Cases<br />in {context}
+          >
+          # Affected Cases
+          <br />
+in
+          {' '}
+          {context}
         </Tooltip>
       </Th>
     ),
     td: ({
-      node,
-      query,
       contextFilters,
       defaultFilters,
       filteredCases,
       location,
+      node,
+      query,
     }) => (
       <Td>
         <span>
           <ExploreSSMLink
-            merge
-            searchTableTab={'cases'}
             filters={addInFilters(
               query.genesTable_filters || contextFilters || defaultFilters,
-              makeFilter([{ field: 'ssms.ssm_id', value: node.ssm_id }])
+              makeFilter([
+                {
+                  field: 'ssms.ssm_id',
+                  value: node.ssm_id,
+                },
+              ])
             )}
-          >
+            merge
+            searchTableTab="cases"
+            >
             {node.filteredOccurences.hits.total.toLocaleString()}
           </ExploreSSMLink>
           <span> / </span>
@@ -192,7 +218,7 @@ const SsmsTableModel = [
                 ])
               ),
             }}
-          >
+            >
             {(filteredCases.hits.total || 0).toLocaleString()}
           </ExploreLink>
           <SparkMeter value={node.score / filteredCases.hits.total} />
@@ -202,8 +228,9 @@ const SsmsTableModel = [
               width: 40,
               display: 'inline-block',
             }}
-          >
-            {(node.score / filteredCases.hits.total * 100).toFixed(2)}%
+            >
+            {(node.score / filteredCases.hits.total * 100).toFixed(2)}
+%
           </span>
         </span>
       </Td>
@@ -217,27 +244,36 @@ const SsmsTableModel = [
     th: () => (
       <Th>
         <Tooltip
-          Component={
+          Component={(
             <span>
-              # of Cases where Mutation is observed<br />
+              # of Cases where Mutation is observed
+              <br />
               / # Cases tested for Simple Somatic Mutations portal wide
               <br />
               Expand to see breakdown by project
             </span>
-          }
+          )}
           style={tableToolTipHint()}
-        >
-          # Affected Cases<br /> Across the GDC
+          >
+          # Affected Cases
+          <br />
+          {' '}
+Across the GDC
         </Tooltip>
       </Th>
     ),
-    td: ({ node, cases }) => (
+    td: ({ cases, node }) => (
       <Td>
         <ProjectBreakdown
-          filters={makeFilter([{ field: 'ssms.ssm_id', value: node.ssm_id }])}
           caseTotal={node.occurrence.hits.total}
+          filters={makeFilter([
+            {
+              field: 'ssms.ssm_id',
+              value: node.ssm_id,
+            },
+          ])}
           gdcCaseTotal={cases.hits.total}
-        />
+          />
       </Td>
     ),
   },
@@ -252,7 +288,11 @@ const SsmsTableModel = [
       </Th>
     ),
     td: ({ node, theme }) => (
-      <Td style={{ width: '90px', paddingRight: '5px' }}>
+      <Td style={{
+        width: '90px',
+        paddingRight: '5px',
+      }}
+          >
         <ImpactTdContents node={node} />
       </Td>
     ),
@@ -262,13 +302,14 @@ const SsmsTableModel = [
     id: 'survival_plot',
     th: () => <Th>Survival</Th>,
     td: ({
-      node,
-      hasEnoughSurvivalDataOnPrimaryCurve,
-      selectedSurvivalData,
-      setSurvivalLoadingId,
-      setSelectedSurvivalData,
-      survivalLoadingId,
       defaultFilters,
+      hasEnoughSurvivalDataOnPrimaryCurve,
+      node,
+      selectedSurvivalData,
+      setSelectedSurvivalData,
+      setSurvivalLoadingId,
+      survivalLoadingId,
+      theme,
     }) => (
       <Td>
         <Tooltip
@@ -277,13 +318,13 @@ const SsmsTableModel = [
               ? `Click icon to plot ${node.genomic_dna_change}`
               : 'Not enough survival data'
           }
-        >
+          >
           <Button
             style={{
               padding: '2px 3px',
               backgroundColor: hasEnoughSurvivalDataOnPrimaryCurve
                 ? colors(selectedSurvivalData.id === node.ssm_id ? 1 : 0)
-                : '#666',
+                : theme.greyScale3,
               color: 'white',
               margin: '0 auto',
             }}
@@ -300,8 +341,8 @@ const SsmsTableModel = [
                     'consequence.hits.edges[0].node.transcript.gene.symbol'
                   )} ${get(
                     node,
-                    'consequence.hits.edges[0].node.transcript.aa_change'
-                  )}`,
+                    'consequence.hits.edges[0].node.transcript.aa_change',
+                  ) || get(node, 'consequence.hits.edges[0].node.transcript.consequence_type')}`,
                   currentFilters: defaultFilters,
                 }).then(data => {
                   setSelectedSurvivalData(data);
@@ -311,7 +352,15 @@ const SsmsTableModel = [
                 setSelectedSurvivalData({});
               }
             }}
-          >
+            style={{
+              padding: '2px 3px',
+              backgroundColor: hasEnoughSurvivalDataOnPrimaryCurve
+                ? colors(selectedSurvivalData.id === node.ssm_id ? 1 : 0)
+                : '#666',
+              color: 'white',
+              margin: '0 auto',
+            }}
+            >
             {survivalLoadingId === node.ssm_id ? (
               <SpinnerIcon />
             ) : (
@@ -324,5 +373,6 @@ const SsmsTableModel = [
     ),
   },
 ];
+
 
 export default SsmsTableModel;

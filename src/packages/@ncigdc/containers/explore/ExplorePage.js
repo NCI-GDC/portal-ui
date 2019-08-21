@@ -243,12 +243,12 @@ export class ExplorePageComponent extends React.Component {
               defaultIndex={0}
               links={[
                 {
-                  id: 'cases',
                   component: hasCaseHits ? (
                     <CasesTab />
                   ) : (
                     <NoResultsMessage>No Cases Found.</NoResultsMessage>
                   ),
+                  id: 'cases',
                   text: `Cases (${hasCaseHits.toLocaleString()})`,
                 },
                 {

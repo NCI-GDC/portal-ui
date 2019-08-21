@@ -190,6 +190,7 @@ const downloadCart = ({
                   () => {},
                   () => setState(s => ({ ...s, cartDownloading: false }))
                 );
+                dispatch(setModal(null));
               }}
               style={{ margin: '0 10px' }}
             >

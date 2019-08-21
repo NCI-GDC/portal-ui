@@ -6,6 +6,7 @@ import { parse } from 'query-string';
 import Query from '@ncigdc/modern_components/Query';
 import { parseFilterParam } from '@ncigdc/utils/uri';
 import withRouter from '@ncigdc/utils/withRouter';
+import { replaceFilters } from '@ncigdc/utils/filters';
 
 export default (Component: ReactClass<*>) => compose(
   withRouter,
@@ -14,12 +15,24 @@ export default (Component: ReactClass<*>) => compose(
     ({
       defaultFilters = null,
       location: { search },
+      primarySite = null,
     }) => {
       const q = parse(search);
       const filters = parseFilterParam(q.filters, defaultFilters);
       return {
         variables: {
-          filters,
+          filters: replaceFilters({
+            op: 'and',
+            content: [
+              {
+                op: 'in',
+                content: {
+                  field: 'cases.primary_site',
+                  value: [primarySite],
+                },
+              },
+            ],
+          }, filters),
         },
       };
     },

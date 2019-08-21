@@ -1,4 +1,4 @@
-import PrimarySiteAndDiseaseType from './PrimarySiteAndDiseaseType';
-import createRenderer from './PrimarySiteAndDiseaseType.relay';
+import ExploreSummaryPrimarySite from './ExploreSummaryPrimarySite';
+import createRenderer from './ExploreSummaryPrimarySite.relay';
 
-export default createRenderer(PrimarySiteAndDiseaseType);
+export default createRenderer(ExploreSummaryPrimarySite);

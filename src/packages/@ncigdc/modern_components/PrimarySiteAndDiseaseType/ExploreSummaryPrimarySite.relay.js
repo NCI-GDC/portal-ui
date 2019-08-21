@@ -31,7 +31,7 @@ export default (Component: ReactClass<*>) => compose(
       minHeight={578}
       parentProps={props}
       query={graphql`
-        query PrimarySiteAndDiseaseType_relayQuery(
+        query ExploreSummaryPrimarySite_relayQuery(
           $filters: FiltersArgument
         ) {
           viewer {

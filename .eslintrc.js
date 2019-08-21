@@ -49,6 +49,7 @@ module.exports = {
     'comma-dangle': ['warn', 'always-multiline'],
     'func-names': ['warn', 'as-needed'],
     'function-paren-newline': ['warn', 'consistent'],
+    'implicit-arrow-linebreak': 'off',
     'indent': ['warn', 2, {
       ArrayExpression: 'first',
       CallExpression: { arguments: 'first' },

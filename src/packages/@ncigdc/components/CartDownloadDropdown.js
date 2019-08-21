@@ -186,11 +186,9 @@ const downloadCart = ({
                   },
                   method: 'POST',
                   altMessage: true,
-                })(
-                  () => {},
-                  () => setState(s => ({ ...s, cartDownloading: false }))
-                );
+                })(() => {},() => {});
                 dispatch(setModal(null));
+                setState(s => ({ ...s, cartDownloading: false }));
               }}
               style={{ margin: '0 10px' }}
             >

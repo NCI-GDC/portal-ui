@@ -2,7 +2,7 @@
 import React from 'react';
 import Relay from 'react-relay/classic';
 import { get, isEqual } from 'lodash';
-import { 
+import {
   compose,
   lifecycle,
   setDisplayName,
@@ -27,6 +27,8 @@ import { stringifyJSONParam } from '@ncigdc/utils/uri';
 import { Row } from '@ncigdc/uikit/Flex';
 import Button from '@ncigdc/uikit/Button';
 import ResizeDetector from 'react-resize-detector';
+
+import CaseAggregations from '@ncigdc/containers/explore/CaseAggregations';
 
 export type TProps = {
   filters: {},
@@ -351,9 +353,15 @@ export const ExplorePageQuery = {
           }
         }
         explore {
+          customCaseFacets: cases {
+            ${CaseAggregations.getFragment('facets')}
+          }
           cases {
             hits(first: $cases_size offset: $cases_offset filters: $filters score: $cases_score sort: $cases_sort) {
               total
+            }
+            aggregations(filters: $filters aggregations_filter_themselves: false) {
+              ${CaseAggregations.getFragment('aggregations')}
             }
           }
           genes {

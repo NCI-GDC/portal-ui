@@ -35,21 +35,21 @@ import { AWG } from '@ncigdc/utils/constants';
 /*----------------------------------------------------------------------------*/
 
 const Field = styled(Button, {
-  backgroundColor: ({ theme }) => theme.greyScale2,
   ':hover': {
     backgroundColor: ({ theme }) => Color(theme.greyScale2)
       .lighten(0.7)
       .rgbString(),
   },
+  backgroundColor: ({ theme }) => theme.greyScale2,
 });
 
 const Value = styled(Button, {
-  backgroundColor: ({ theme }) => theme.success,
   ':hover': {
     backgroundColor: ({ theme }) => Color(theme.success)
       .lighten(0.7)
       .rgbString(),
   },
+  backgroundColor: ({ theme }) => theme.success,
 });
 
 const Op = styled.span({
@@ -66,11 +66,11 @@ const NotUnderlinedLink = styled(Link, {
 
 const LinkButton = styled(Link, {
   ...buttonBaseStyles,
-  flex: 'none',
   ':link': {
-    textDecoration: 'none',
     color: buttonBaseStyles.color,
+    textDecoration: 'none',
   },
+  flex: 'none',
 });
 
 type TProps = {
@@ -142,21 +142,22 @@ const enhance = compose(
 );
 
 const styles = {
-  leftParen: {
-    fontSize: '2rem',
-    marginRight: '0.3rem',
-    display: 'flex',
-    alignItems: 'center',
-  },
-  rightParen: {
-    fontSize: '2rem',
-    marginRight: '0.3rem',
-    display: 'flex',
-    alignItems: 'center',
-  },
   groupPadding: {
     padding: '0.5rem 0',
   },
+  leftParen: {
+    alignItems: 'center',
+    display: 'flex',
+    fontSize: '2rem',
+    marginRight: '0.3rem',
+  },
+  rightParen: {
+    alignItems: 'center',
+    display: 'flex',
+    fontSize: '2rem',
+    marginRight: '0.3rem',
+  },
+
 };
 
 const CurrentFilters = (
@@ -195,8 +196,8 @@ const CurrentFilters = (
     {!!currentFilters.length && (
       <Row
         style={{
-          width: '100%',
           justifyContent: 'space-between',
+          width: '100%',
         }}
         >
         <Row spacing="0.3rem" wrap>
@@ -223,17 +224,15 @@ const CurrentFilters = (
                   className="test-field-name"
                   merge="toggle"
                   query={{
-                    offset: 0,
                     filters: {
-                      op: 'and',
                       content: [filter],
+                      op: 'and',
                     },
+                    offset: 0,
                   }}
                   >
                   <Field>
-                    {humanify({
-                        term: facetFieldDisplayMapper(filter.content.field),
-                      })}
+                    {humanify({ term: facetFieldDisplayMapper(filter.content.field) })}
                   </Field>
                 </NotUnderlinedLink>
                 <Op>{getDisplayOp(filter.op, value)}</Op>
@@ -243,29 +242,29 @@ const CurrentFilters = (
                   : take(value, 2)
                 ).map(value => (
                   <NotUnderlinedLink
-                      className="test-field-value"
-                      key={value}
-                      merge="toggle"
-                      query={{
-                        offset: 0,
-                        filters: {
-                          op: 'and',
-                          content: [
-                            {
-                              op: filter.op,
-                              content: {
-                                field: filter.content.field,
-                                value: [value],
-                              },
+                    className="test-field-value"
+                    key={value}
+                    merge="toggle"
+                    query={{
+                      filters: {
+                        content: [
+                          {
+                            content: {
+                              field: filter.content.field,
+                              value: [value],
                             },
-                          ],
-                        },
-                      }}
-                      >
-                      <Value>
-                        {getDisplayValue(filter.content.field, value)}
-                      </Value>
-                    </NotUnderlinedLink>
+                            op: filter.op,
+                          },
+                        ],
+                        op: 'and',
+                      },
+                      offset: 0,
+                    }}
+                    >
+                    <Value>
+                      {getDisplayValue(filter.content.field, value)}
+                    </Value>
+                  </NotUnderlinedLink>
                 ))}
                 {value.length > 2 && (
                   <UnstyledButton
@@ -281,8 +280,8 @@ const CurrentFilters = (
                     className="test-toggle"
                     onClick={() => onLessClicked(filter)}
                     style={{
-                      display: 'flex',
                       alignItems: 'center',
+                      display: 'flex',
                     }}
                     >
                     Less
@@ -304,16 +303,16 @@ const CurrentFilters = (
           query={
             currentFilters.length && {
               filters: {
-                op: 'and',
                 content: currentFilters.map(
                   ({ content: { field, value }, op }) => ({
-                    op: op.toLowerCase(),
                     content: {
                       field: linkFieldMap(field),
                       value,
                     },
+                    op: op.toLowerCase(),
                   }),
                 ),
+                op: 'and',
               },
             }
           }

@@ -357,11 +357,11 @@ export const ExplorePageQuery = {
             ${CaseAggregations.getFragment('facets')}
           }
           cases {
-            hits(first: $cases_size offset: $cases_offset filters: $filters score: $cases_score sort: $cases_sort) {
-              total
-            }
             aggregations(filters: $filters aggregations_filter_themselves: false) {
               ${CaseAggregations.getFragment('aggregations')}
+            }
+            hits(first: $cases_size offset: $cases_offset filters: $filters score: $cases_score sort: $cases_sort) {
+              total
             }
           }
           genes {

@@ -97,7 +97,6 @@ function setVariables({ filters, relay }) {
     ),
   });
 }
-const noResultsMessageStyle = { minHeight: 387 };
 
 export class ExplorePageComponent extends React.Component {
   state = {

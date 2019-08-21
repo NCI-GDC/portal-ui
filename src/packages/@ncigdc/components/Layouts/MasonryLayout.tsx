@@ -12,6 +12,7 @@ interface IMasonryLayoutProps {
   minWidth?: number;
   gutter?: number;
   customizeStyle?: React.CSSProperties;
+  totalWidth?: number;
 }
 
 
@@ -21,11 +22,12 @@ const MasonryLayout = ({
     borderWidth: '1px',
   },
   elements,
-  gutter = 0.7,
-  minWidth = 354,
+  gutter = 0.7, // percentage
+  minWidth = 354, // px
   numPerRow = 3,
+  totalWidth = 100, // percentage
 }: IMasonryLayoutProps) => {
-  const width = (100 - numPerRow * gutter) / numPerRow;
+  const width = (totalWidth - numPerRow * gutter) / numPerRow;
   return (
     <ul
       className="masonry"

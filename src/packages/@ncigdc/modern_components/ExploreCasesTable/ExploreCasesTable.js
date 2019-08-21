@@ -9,7 +9,11 @@ import tableModels from '@ncigdc/tableModels';
 import Pagination from '@ncigdc/components/Pagination';
 import TableActions from '@ncigdc/components/TableActions';
 import Table, { Tr } from '@ncigdc/uikit/Table';
-import { CreateExploreCaseSetButton, AppendExploreCaseSetButton, RemoveFromExploreCaseSetButton } from '@ncigdc/modern_components/withSetAction';
+import {
+  AppendExploreCaseSetButton,
+  CreateExploreCaseSetButton,
+  RemoveFromExploreCaseSetButton,
+} from '@ncigdc/modern_components/withSetAction';
 
 import { theme } from '@ncigdc/theme';
 import withSelectIds from '@ncigdc/utils/withSelectIds';

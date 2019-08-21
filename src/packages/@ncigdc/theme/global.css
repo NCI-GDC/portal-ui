@@ -8594,3 +8594,24 @@ fieldset[disabled] .btn-primary.active {
 abbr span {
   display: inline !important;
 }
+
+.masonry { 
+  display: flex;
+  flex-flow: row wrap;
+  width: 100%;
+  flex-wrap: wrap;
+}
+ul.masonry {
+  margin: 0;
+  padding: 0.7% 0 0 0.7%;
+  list-style-type: none;
+}
+
+.masonry-brick {
+  flex: auto;
+  height: 250px;
+  max-width: 99.3%; /* remove the padding left which is 0.7%*/
+  margin: 0 0.7% 0.7% 0; /* gutter which is 0.7%*/
+  height: 384px;
+
+}

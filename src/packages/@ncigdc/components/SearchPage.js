@@ -21,9 +21,9 @@ const Container = styled(Row, {
 });
 
 const FacetsPanel = styled(Column, {
-  width: ({ theme }) => theme.facetsPanelWidth,
   flex: 'none',
   marginRight: '18px',
+  width: ({ theme }) => theme.facetsPanelWidth,
 });
 
 const Content = styled(Column, {
@@ -32,14 +32,14 @@ const Content = styled(Column, {
 });
 
 const ShowFacetsButton = styled.button({
-  flex: 'none',
-  padding: 10,
   backgroundColor: ({ theme }) => theme.white,
   border: ({ theme }) => `1px solid ${theme.greyScale4}`,
   borderLeft: 'none',
+  borderRadius: '0 0.4rem 0.4rem 0',
+  flex: 'none',
   margin: `2.1rem 4rem auto -${sidePadding}`,
   outline: 'none',
-  borderRadius: '0 0.4rem 0.4rem 0',
+  padding: 10,
 });
 
 type TProps = {

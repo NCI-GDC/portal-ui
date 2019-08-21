@@ -30,7 +30,7 @@ const CustomIntervalInput = ({
       )}
       <div style={inputWrapper100px}>
         <input
-          readonly={disabled}
+          readOnly={disabled}
           id={`custom-interval-${name}`}
           onBlur={handleBlur}
           onChange={handleChange}

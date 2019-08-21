@@ -36,7 +36,7 @@ const MasonryLayout = ({
         return (
           <li
             className="masonry-brick"
-            key={`${i}element`}
+            key={`element${i}`}
             style={{
 
               flex: `${element.size} ${0} ${element.size * minWidth}px`,

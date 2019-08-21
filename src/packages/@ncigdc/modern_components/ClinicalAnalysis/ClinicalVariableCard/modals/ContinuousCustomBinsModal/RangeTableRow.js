@@ -7,6 +7,7 @@ import styles from './styles';
 
 const {
   actionsColumn,
+  disabledButton,
   input: {
     inputDisabled,
   },
@@ -183,7 +184,10 @@ class RangeTableRow extends React.Component {
                 this.handleRemove();
               }}
               style={{
-                ...(rangeMethodActive ? visualizingButton : inputDisabled),
+                ...visualizingButton,
+                ...(rangeMethodActive
+                  ? {}
+                  : disabledButton),
                 ...optionsButton,
               }}
               >

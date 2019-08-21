@@ -115,14 +115,16 @@ const downloadCart = ({
           CustomButton={agreed => (
             <Button
               disabled={!authorized.doc_count || (!!user && !agreed)}
-              onClick={() =>
+              onClick={() => {
                 downloadCart({
                   user,
                   files: authorized.files,
                   disableAgreement: true,
                   dispatch,
                   setState,
-                })}
+                })
+                dispatch(setModal(null));
+              }}
               style={{ margin: '0 10px' }}
             >
               Download {authorized.doc_count} Authorized Files

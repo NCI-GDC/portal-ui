@@ -26,15 +26,16 @@ const PieChart = compose(
 )(
   ({
     data,
-    path = 'file_count',
+    enableInnerRadius = false,
     height = 160,
-    width = 160,
-    setTooltip,
     marginTop = 0,
+    path = 'file_count',
+    setTooltip,
+    width = 160,
   }) => {
     const color = d3.scaleOrdinal(d3.schemeCategory20);
     const outerRadius = height / 2 + 10;
-
+    const innerRadius = enableInnerRadius ? outerRadius / 2 : 0;
     const node = ReactFauxDOM.createElement('div');
     node.style.setProperty('margin-top', `${marginTop}px`);
     node.style.setProperty('display', 'flex');
@@ -46,7 +47,7 @@ const PieChart = compose(
     const arc = d3
       .arc()
       .padRadius(outerRadius)
-      .innerRadius(0);
+      .innerRadius(innerRadius);
 
     const svg = d3
       .select(node)

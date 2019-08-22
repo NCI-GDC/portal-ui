@@ -257,8 +257,6 @@ export class ExplorePageComponent extends React.Component {
                   text: 'Summary',
                 },
                 {
-                  id: 'cases',
-                  text: `Cases (${viewer.explore.cases.hits.total.toLocaleString()})`,
                   component: hasCaseHits ? (
                     <CasesTab />
                   ) : (

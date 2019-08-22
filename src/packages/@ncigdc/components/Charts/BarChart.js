@@ -93,6 +93,18 @@ const BarChart = ({
     .attr('fill', yAxisStyle.textFill)
     .text(title);
 
+  if (xAxis.title) {
+    svg
+      .append('text')
+      .attr('dy', height + margin.bottom - 5) // put 5 there as a padding.
+      .attr('x', width / 2 - margin.right)
+      .style('fontSize', '1.2rem')
+      .style('fontWeight', '500')
+      .attr('fill', xAxisStyle.textFill)
+      .style('text-anchor', 'end')
+      .text(xAxis.title);
+  }
+
   const yG = svg.append('g').call(
     d3
       .axisLeft(y)

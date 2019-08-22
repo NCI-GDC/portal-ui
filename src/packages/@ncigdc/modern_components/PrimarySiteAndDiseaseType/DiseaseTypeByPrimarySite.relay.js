@@ -13,12 +13,13 @@ export default (Component: ReactClass<*>) => compose(
   withPropsOnChange(
     ['location'],
     ({
-      defaultFilters = null,
-      location: { search },
-      primarySite = null,
+      // defaultFilters = null,
+      filters,
+      // location: { search },
+      primarySites = [],
     }) => {
-      const q = parse(search);
-      const filters = parseFilterParam(q.filters, defaultFilters);
+      // const q = parse(search);
+      // const filters = parseFilterParam(q.filters, defaultFilters);
       return {
         variables: {
           filters: replaceFilters({
@@ -28,7 +29,7 @@ export default (Component: ReactClass<*>) => compose(
                 op: 'in',
                 content: {
                   field: 'cases.primary_site',
-                  value: [primarySite],
+                  value: primarySites,
                 },
               },
             ],

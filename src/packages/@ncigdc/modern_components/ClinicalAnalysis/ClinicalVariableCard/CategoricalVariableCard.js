@@ -29,6 +29,7 @@ import {
   getRawQueryData,
 } from './helpers';
 import EnhancedClinicalVariableCard from './EnhancedClinicalVariableCard';
+import { MINIMUM_CASES } from '@ncigdc/utils/survivalplot';
 
 export default compose(
   setDisplayName('EnhancedCategoricalVariableCard'),
@@ -108,9 +109,8 @@ export default compose(
   ),
   withPropsOnChange((props, nextProps) =>
   nextProps.variable.active_chart === 'survival' &&
-  // TODO: MAKE BINDATA WORK. IT'S CAUSING AN INFINITE LOOP
-    // (!isEqual(props.binData, nextProps.binData) ||
-    (props.variable.active_chart !== nextProps.variable.active_chart ||
+    (!isEqual(props.variable.bins, nextProps.variable.bins) ||
+    props.variable.active_chart !== nextProps.variable.active_chart ||
     !isEqual(props.selectedSurvivalBins, nextProps.selectedSurvivalBins) ||
     props.variable.setId !== nextProps.variable.setId ||
     !isEqual(props.variable.customSurvivalPlots, nextProps.variable.customSurvivalPlots) ||
@@ -120,12 +120,14 @@ export default compose(
       dispatchUpdateClinicalVariable,
       variable: { customSurvivalPlots, isSurvivalCustom },
     }) => {
+      console.log('isSurvivalCustom', isSurvivalCustom);
       const binDataSelected = isSurvivalCustom
         ? binData.filter(bin => 
             find(customSurvivalPlots, {
               name: bin.key,
               values: bin.keyArray,
             }))
+            .filter(bin => bin.doc_count >= MINIMUM_CASES)
         : binData;
       
       const survivalBins = filterSurvivalData(

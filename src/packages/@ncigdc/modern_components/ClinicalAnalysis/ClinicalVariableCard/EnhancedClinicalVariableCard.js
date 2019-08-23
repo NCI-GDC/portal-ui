@@ -124,7 +124,7 @@ export default compose(
           variableKey: 'customSurvivalPlots',
         });
         dispatchUpdateClinicalVariable({
-          value: true,
+          value: survivalDuplicatesRemoved.length > 0,
           variableKey: 'isSurvivalCustom',
         });
       },

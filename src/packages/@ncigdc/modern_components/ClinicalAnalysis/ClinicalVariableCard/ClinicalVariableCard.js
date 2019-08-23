@@ -468,7 +468,7 @@ const ClinicalVariableCard = ({
                       onClick={resetBins}
                       style={{
                         ...styles.actionMenuItem,
-                        ...binsAreCustom
+                        ...binsAreCustom || variable.isSurvivalCustom
                           ? {}
                           : styles.actionMenuItemDisabled(theme),
                       }}

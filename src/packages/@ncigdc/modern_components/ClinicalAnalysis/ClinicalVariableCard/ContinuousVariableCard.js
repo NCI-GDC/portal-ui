@@ -134,6 +134,21 @@ export default compose(
             customRanges,
             continuousReset,
           ) => {
+            (continuousReset ||
+              (continuousBinType === 'range' &&
+                !isEqual(variable.customRanges, customRanges)) ||
+              (continuousBinType === 'interval' &&
+                !isEqual(variable.customInterval, customInterval))) &&
+                [
+                  dispatchUpdateClinicalVariable({
+                    value: [],
+                    variableKey: 'customSurvivalPlots'
+                  }),
+                  dispatchUpdateClinicalVariable({
+                    value: false,
+                    variableKey: 'isSurvivalCustom',
+                  }),
+                ];
             dispatchUpdateClinicalVariable({
               value: continuousReset
                 ? defaultData.bins
@@ -429,11 +444,13 @@ export default compose(
   ),
   withPropsOnChange(
     (props, nextProps) => props.binsAreCustom !== nextProps.binsAreCustom ||
-      props.variable.id !== nextProps.variable.id,
+      props.variable.id !== nextProps.variable.id ||
+      props.variable.isSurvivalCustom !== nextProps.variable.isSurvivalCustom,
     ({
       binsAreCustom,
       defaultData: { bins },
       dispatchUpdateClinicalVariable,
+      variable: { isSurvivalCustom },
     }) => ({
       resetBins: () => {
         if (binsAreCustom) {
@@ -452,6 +469,16 @@ export default compose(
           dispatchUpdateClinicalVariable({
             value: DEFAULT_RANGES,
             variableKey: 'customRanges',
+          });
+        }
+        if (isSurvivalCustom) {
+          dispatchUpdateClinicalVariable({
+            value: false,
+            variableKey: 'isSurvivalCustom',
+          });
+          dispatchUpdateClinicalVariable({
+            value: [],
+            variableKey: 'customSurvivalPlots',
           });
         }
       },

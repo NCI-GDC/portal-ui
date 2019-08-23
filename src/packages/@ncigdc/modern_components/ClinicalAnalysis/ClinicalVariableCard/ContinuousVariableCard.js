@@ -9,6 +9,7 @@ import {
 } from 'recompose';
 import { connect } from 'react-redux';
 import {
+  find,
   get,
   isEmpty,
   isEqual,
@@ -406,6 +407,54 @@ export default compose(
         }
       );
     }
+  ),
+  withPropsOnChange((props, nextProps) =>
+    nextProps.variable.active_chart === 'survival' &&
+      (!isEqual(props.binData, nextProps.binData) ||
+      props.variable.active_chart !== nextProps.variable.active_chart ||
+      !isEqual(props.selectedSurvivalBins, nextProps.selectedSurvivalBins) ||
+      props.variable.setId !== nextProps.variable.setId ||
+      !isEqual(props.variable.customSurvivalPlots, props.variable.customSurvivalPlots) ||
+      props.variable.isSurvivalCustom, props.variable.isSurvivalCustom),
+      ({
+        dataBuckets = [],
+        getContinuousBins,
+        variable: {
+          bins,
+          continuousBinType,
+          customSurvivalPlots,
+          isSurvivalCustom,
+        },
+        variable,
+      }) => {
+        const survivalPlotValues = dataBuckets.length === 0
+          ? dataBuckets
+          : (isSurvivalCustom
+            ? filterSurvivalData(dataBuckets
+                .filter(dataBucket => customSurvivalPlots
+                  .some(plot => plot.values[0] === parseContinuousKey(dataBucket.key).join('-'))
+                )
+                .reduce(getContinuousBins, [])
+              ) 
+            : filterSurvivalData(dataBuckets
+                .sort((a, b) =>
+                  parseContinuousKey(a.key)[0] - parseContinuousKey(b.key)[0])
+                .reduce(getContinuousBins, [])
+              ) 
+              .sort((a, b) => b.chart_doc_count - a.chart_doc_count)
+            )
+              .slice(0, isSurvivalCustom ? Infinity: 2)
+              .map(bin => makeDocCountInteger(bin));
+
+        const survivalTableValues = survivalPlotValues
+          .map(bin => bin.key);
+
+        return {
+          survivalPlotValues,
+          survivalTableValues,
+        };
+
+      }
   ),
   withProps(({
     dataBuckets,

@@ -73,17 +73,6 @@ const vizButtons = {
   },
 };
 
-const EmptyCardMessage = ({props: { children, id = '' }}) => <Row
-  id={id}
-  style={{
-    alignItems: 'center',
-    flex: 1,
-    justifyContent: 'center',
-  }}
-  >
-  {children}
-</Row>
-
 const getTableData = ({
   active_chart,
   displayData = [],
@@ -324,13 +313,16 @@ const ClinicalVariableCard = ({
         </Row>
       </Row>
       {isEmpty(tableData)
-        ? (
-          <EmptyCardMessage
+        ? (<Row
             id={`${wrapperId}-container`}
+            style={{
+              alignItems: 'center',
+              flex: 1,
+              justifyContent: 'center',
+            }}
             >
             There is no data for this facet
-          </EmptyCardMessage>
-        )
+          </Row>)
         : (
           <Fragment>
             <Column id={`${wrapperId}-container`}>
@@ -416,7 +408,16 @@ const ClinicalVariableCard = ({
               {variable.active_chart === 'survival' && (
                 variable.isSurvivalCustom &&
                   selectedSurvivalBins.length === 0
-                    ? <EmptyCardMessage>No matches found</EmptyCardMessage>
+                    ? (<Row
+                        id={`${wrapperId}-container`}
+                        style={{
+                          alignItems: 'center',
+                          flex: 1,
+                          justifyContent: 'center',
+                        }}
+                        >
+                        No matches found
+                      </Row>)
                     : <ClinicalSurvivalPlot
                         plotType={selectedSurvivalBins.length === 0
                           ? 'clinicalOverall'

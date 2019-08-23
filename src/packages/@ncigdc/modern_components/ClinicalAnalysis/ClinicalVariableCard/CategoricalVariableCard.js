@@ -112,7 +112,8 @@ export default compose(
     props.variable.active_chart !== nextProps.variable.active_chart ||
     !isEqual(props.selectedSurvivalBins, nextProps.selectedSurvivalBins) ||
     props.variable.setId !== nextProps.variable.setId ||
-    !isEqual(props.variable.customSurvivalPlots, props.variable.customSurvivalPlots)),
+    !isEqual(props.variable.customSurvivalPlots, props.variable.customSurvivalPlots) ||
+    props.variable.isSurvivalCustom !== nextProps.variable.isSurvivalCustom),
     ({
       binData,
       dispatchUpdateClinicalVariable,
@@ -150,6 +151,9 @@ export default compose(
       const survivalPlotValues = survivalBins.map(bin => bin.keyArray);
       const survivalTableValues = survivalBins.map(bin => bin.key);
 
+      console.log('survivalPlotValues', survivalPlotValues);
+      console.log('survivalTableValues', survivalTableValues);
+
       return { survivalPlotValues, survivalTableValues };
     }
   ),
@@ -170,8 +174,10 @@ export default compose(
       binsAreCustom,
       dataBuckets,
       dispatchUpdateClinicalVariable,
+      variable: { isSurvivalCustom }
     }) => ({
       resetBins: () => {
+        console.log('reset bins');
         if (binsAreCustom) {
           dispatchUpdateClinicalVariable({
             value: dataBuckets
@@ -187,6 +193,16 @@ export default compose(
                 }
               ), {}),
             variableKey: 'bins',
+          });
+        }
+        if (isSurvivalCustom) {
+          dispatchUpdateClinicalVariable({
+            value: false,
+            variableKey: 'isSurvivalCustom',
+          });
+          dispatchUpdateClinicalVariable({
+            value: [],
+            variableKey: 'customSurvivalPlots',
           });
         }
       },

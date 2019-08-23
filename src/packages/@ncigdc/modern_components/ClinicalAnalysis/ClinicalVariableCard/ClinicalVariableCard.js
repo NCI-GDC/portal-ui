@@ -421,7 +421,8 @@ const ClinicalVariableCard = ({
                         No matches found
                       </Row>
                     )
-                    : <ClinicalSurvivalPlot
+                    : (
+                      <ClinicalSurvivalPlot
                         plotType={selectedSurvivalBins.length === 0
                           ? 'clinicalOverall'
                           : 'categorical'}

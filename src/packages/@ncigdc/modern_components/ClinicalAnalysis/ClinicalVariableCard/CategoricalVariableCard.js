@@ -152,9 +152,6 @@ export default compose(
       const survivalPlotValues = survivalBins.map(bin => bin.keyArray);
       const survivalTableValues = survivalBins.map(bin => bin.key);
 
-      console.log('survivalPlotValues', survivalPlotValues);
-      console.log('survivalTableValues', survivalTableValues);
-
       return { survivalPlotValues, survivalTableValues };
     }
   ),

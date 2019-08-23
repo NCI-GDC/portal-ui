@@ -449,6 +449,18 @@ export default compose(
         const survivalTableValues = survivalPlotValues
           .map(bin => bin.key);
 
+        if (isSurvivalCustom) {
+          const nextCustomSurvivalPlots = survivalPlotValues
+            .map(bin => ({
+              name: bin.displayName,
+              values: bin.key,
+            }));
+          dispatchUpdateClinicalVariable({
+            value: nextCustomSurvivalPlots,
+            variableKey: 'customSurvivalPlots',
+          });
+        }
+
         return {
           survivalPlotValues,
           survivalTableValues,
@@ -456,30 +468,6 @@ export default compose(
 
       }
   ),
-  withProps(({
-    dataBuckets,
-    getContinuousBins,
-  }) => {
-    const survivalPlotValues = filterSurvivalData(
-      dataBuckets.length > 0
-      ? dataBuckets
-        .sort((a, b) =>
-          parseContinuousKey(a.key)[0] - parseContinuousKey(b.key)[0])
-        .reduce(getContinuousBins, [])
-      : []
-    )
-      .sort((a, b) => b.chart_doc_count - a.chart_doc_count)
-      .slice(0, 2)
-      .map(bin => makeDocCountInteger(bin));
-
-    const survivalTableValues = survivalPlotValues
-      .map(bin => bin.key);
-
-    return {
-      survivalPlotValues,
-      survivalTableValues,
-    };
-  }),
   withPropsOnChange(
     (props, nextProps) =>
       !isEqual(props.binData, nextProps.binData),

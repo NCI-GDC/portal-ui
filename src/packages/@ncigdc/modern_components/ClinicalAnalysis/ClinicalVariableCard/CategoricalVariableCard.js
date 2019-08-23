@@ -7,6 +7,7 @@ import {
 } from 'recompose';
 import { connect } from 'react-redux';
 import {
+  find,
   get,
   isEmpty,
   isEqual,
@@ -105,21 +106,53 @@ export default compose(
       variable: { bins },
     }) => getBinData(bins, dataBuckets)
   ),
-  withProps(({ binData }) => {
-    const survivalBins = filterSurvivalData(
-      binData
-        .map(bin => ({
-          ...bin,
-          chart_doc_count: bin.doc_count,
-        }))
-    )
-      .slice(0, 2);
+  withPropsOnChange((props, nextProps) =>
+  nextProps.variable.active_chart === 'survival' &&
+    (!isEqual(props.binData, nextProps.binData) ||
+    props.variable.active_chart !== nextProps.variable.active_chart ||
+    !isEqual(props.selectedSurvivalBins, nextProps.selectedSurvivalBins) ||
+    props.variable.setId !== nextProps.variable.setId ||
+    !isEqual(props.variable.customSurvivalPlots, props.variable.customSurvivalPlots)),
+    ({
+      binData,
+      dispatchUpdateClinicalVariable,
+      variable: { customSurvivalPlots, isSurvivalCustom },
+    }) => {
+      const binDataSelected = isSurvivalCustom
+        ? binData.filter(bin => 
+            find(customSurvivalPlots, {
+              name: bin.key,
+              values: bin.keyArray,
+            }))
+        : binData;
+      
+      const survivalBins = filterSurvivalData(
+        binDataSelected
+          .map(bin => ({
+            ...bin,
+            chart_doc_count: bin.doc_count,
+          }))
+        )
+        .slice(0, isSurvivalCustom ? Infinity : 2);
+      
+      if (isSurvivalCustom) {
+        const nextCustomSurvivalPlots = binDataSelected
+          .map(bin => ({
+            name: bin.key,
+            values: bin.keyArray,
+          }));
+        dispatchUpdateClinicalVariable({
+          value: nextCustomSurvivalPlots,
+          variableKey: 'customSurvivalPlots',
+        });
+      }
 
-    return {
-      survivalPlotValues: survivalBins.map(bin => bin.keyArray),
-      survivalTableValues: survivalBins.map(bin => bin.key),
-    };
-  }),
+      const survivalPlotValues = survivalBins.map(bin => bin.keyArray);
+      const survivalTableValues = survivalBins.map(bin => bin.key);
+
+      return { survivalPlotValues, survivalTableValues };
+    }
+  ),
   withPropsOnChange(
     (props, nextProps) =>
       !isEqual(props.variable.bins, nextProps.variable.bins),

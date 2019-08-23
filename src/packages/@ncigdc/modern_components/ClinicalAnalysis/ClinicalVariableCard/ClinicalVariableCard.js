@@ -323,7 +323,8 @@ const ClinicalVariableCard = ({
             }}
             >
             There is no data for this facet
-          </Row>)
+          </Row>
+        )
         : (
           <Fragment>
             <Column id={`${wrapperId}-container`}>

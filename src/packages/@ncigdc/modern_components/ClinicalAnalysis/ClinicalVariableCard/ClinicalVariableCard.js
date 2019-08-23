@@ -313,7 +313,8 @@ const ClinicalVariableCard = ({
         </Row>
       </Row>
       {isEmpty(tableData)
-        ? (<Row
+        ? (
+          <Row
             id={`${wrapperId}-container`}
             style={{
               alignItems: 'center',

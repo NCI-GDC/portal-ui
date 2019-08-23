@@ -410,7 +410,8 @@ const ClinicalVariableCard = ({
               {variable.active_chart === 'survival' && (
                 variable.isSurvivalCustom &&
                   selectedSurvivalBins.length === 0
-                    ? (<Row
+                    ? (
+                      <Row
                         id={`${wrapperId}-container`}
                         style={{
                           alignItems: 'center',

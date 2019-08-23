@@ -19,10 +19,13 @@ import DropdownItem from '@ncigdc/uikit/DropdownItem';
 import Hidden from '@ncigdc/components/Hidden';
 import DownloadVisualizationButton from '@ncigdc/components/DownloadVisualizationButton';
 import wrapSvg from '@ncigdc/utils/wrapSvg';
-import { SpinnerIcon, CloseIcon,
+import { 
+  SpinnerIcon,
+  CloseIcon,
   SurvivalIcon,
   BarChartIcon,
-  BoxPlot, } from '@ncigdc/theme/icons';
+  BoxPlot, 
+} from '@ncigdc/theme/icons';
 import termCapitaliser from '@ncigdc/utils/customisation';
 import {
   humanify,
@@ -39,7 +42,7 @@ import ClinicalHistogram from './components/ClinicalHistogram';
 import ClinicalSurvivalPlot from './components/ClinicalSurvivalPlot';
 
 import {
-  colors,
+  colorsArray,
   getBoxTableData,
   getCardFilters,
   getHeadings,
@@ -70,6 +73,17 @@ const vizButtons = {
   },
 };
 
+const EmptyCardMessage = ({props: { children, id = '' }}) => <Row
+  id={id}
+  style={{
+    alignItems: 'center',
+    flex: 1,
+    justifyContent: 'center',
+  }}
+  >
+  {children}
+</Row>
+
 const getTableData = ({
   active_chart,
   displayData = [],
@@ -81,84 +95,94 @@ const getTableData = ({
   theme,
   totalDocs,
   updateSelectedSurvivalBins,
-}) => displayData.map(bin => Object.assign(
-    {},
-    bin,
-    {
-      select: (
-        <input
-          aria-label={`${fieldName} ${bin.key}`}
-          checked={!!find(selectedBins, { key: bin.key })}
-          disabled={bin.doc_count === 0}
-          id={`${fieldName}-${bin.key}`}
-          onChange={() => {
-            if (find(selectedBins, { key: bin.key })) {
-              setSelectedBins(
-                reject(selectedBins, r => r.key === bin.key)
-              );
-            } else {
-              setSelectedBins(selectedBins.concat(bin));
-            }
-          }}
-          style={{
-            marginLeft: 3,
-            pointerEvents: 'initial',
-          }}
-          type="checkbox"
-          value={bin.key}
-          />
-      ),
-    },
-    active_chart === 'survival' && {
-      survival: (
-        <Tooltip
-          Component={
-            bin.key === '_missing' || bin.chart_doc_count < MINIMUM_CASES
-              ? 'Not enough data'
-              : selectedSurvivalBins.indexOf(bin.key) > -1
-                ? `Click icon to remove "${bin.groupName || bin.key}"`
-                : selectedSurvivalBins.length < MAXIMUM_CURVES
-                  ? `Click icon to plot "${bin.groupName || bin.key}"`
-                  : `Maximum plots (${MAXIMUM_CURVES}) reached`
-          }
-          >
-          <Button
-            disabled={
-              bin.key === '_missing' ||
-              bin.chart_doc_count < MINIMUM_CASES ||
-              (selectedSurvivalBins.length >= MAXIMUM_CURVES &&
-                selectedSurvivalBins.indexOf(bin.key) === -1)
-            }
-            onClick={() => {
-              updateSelectedSurvivalBins(displayData, bin);
+}) => displayData.length === 0 
+  ? displayData 
+  : displayData.map(bin => {
+    const binName = typeof bin.groupName === 'undefined' ||
+      bin.groupName === ''
+        ? bin.key
+        : bin.groupName;
+    const isSelected = find(selectedBins, { key: bin.key });
+    
+    const indexSurvival = selectedSurvivalBins.indexOf(bin.key);
+    const isSurvivalLoading = selectedSurvivalLoadingIds.indexOf(bin.key) >= 0;
+    const isSelectedForSurvival = indexSurvival >= 0;
+    const isSurvivalFull = selectedSurvivalBins.length === MAXIMUM_CURVES;
+    
+    return Object.assign(
+      {},
+      bin,
+      {
+        select: (
+          <input
+            aria-label={`${fieldName} ${binName}`}
+            checked={isSelected}
+            disabled={bin.doc_count === 0}
+            id={`${fieldName}-${bin.key}`}
+            onChange={() => {
+              if (isSelected) {
+                setSelectedBins(
+                  reject(selectedBins, r => r.key === bin.key)
+                );
+              } else {
+                setSelectedBins(selectedBins.concat(bin));
+              }
             }}
             style={{
-              backgroundColor:
-                selectedSurvivalBins.indexOf(bin.key) === -1
-                  ? theme.greyScale3
-                  : colors(selectedSurvivalBins.indexOf(bin.key)),
-              color: 'white',
-              margin: '0 auto',
-              opacity:
-                bin.key === '_missing' ||
-                  bin.chart_doc_count < MINIMUM_CASES ||
-                  (selectedSurvivalBins.length >= MAXIMUM_CURVES &&
-                    selectedSurvivalBins.indexOf(bin.key) === -1)
-                  ? '0.33'
-                  : '1',
-              padding: '2px 3px',
-              position: 'static',
+              marginLeft: 3,
+              pointerEvents: 'initial',
             }}
+            type="checkbox"
+            value={bin.key}
+            />
+        ),
+      },
+      active_chart === 'survival' && {
+        survival: (
+          <Tooltip
+            Component={
+              bin.key === '_missing' || bin.chart_doc_count < MINIMUM_CASES
+                ? 'Not enough data'
+                : isSelectedForSurvival
+                  ? `Click icon to remove "${binName}"`
+                  : isSurvivalFull
+                    ? `Maximum plots (${MAXIMUM_CURVES}) reached`
+                    : `Click icon to plot "${binName}"`
+            }
             >
-            {selectedSurvivalLoadingIds.indexOf(bin.key) !== -1
-              ? <SpinnerIcon />
-              : <SurvivalIcon />}
-            <Hidden>add to survival plot</Hidden>
-          </Button>
-        </Tooltip>
-      ),
-    },
-  ));
+            <Button
+              disabled={
+                bin.key === '_missing' ||
+                bin.chart_doc_count < MINIMUM_CASES ||
+                (isSurvivalFull && !isSelectedForSurvival)
+              }
+              onClick={() => {
+                updateSelectedSurvivalBins(displayData, bin);
+              }}
+              style={{
+                backgroundColor: isSelectedForSurvival
+                  ? colorsArray[indexSurvival]
+                  : theme.greyScale3,
+                color: 'white',
+                margin: '0 auto',
+                opacity:
+                  bin.key === '_missing' ||
+                    bin.chart_doc_count < MINIMUM_CASES ||
+                    (isSurvivalFull && !isSelectedForSurvival)
+                      ? '0.33'
+                      : '1',
+                padding: '2px 3px',
+                position: 'static',
+              }}
+              >
+              {isSurvivalLoading ? <SpinnerIcon /> : <SurvivalIcon />}
+              <Hidden>add to survival plot</Hidden>
+            </Button>
+          </Tooltip>
+        ),
+      },
+    );
+});
 
 const ClinicalVariableCard = ({
   boxPlotValues,
@@ -301,16 +325,11 @@ const ClinicalVariableCard = ({
       </Row>
       {isEmpty(tableData)
         ? (
-          <Row
+          <EmptyCardMessage
             id={`${wrapperId}-container`}
-            style={{
-              alignItems: 'center',
-              flex: 1,
-              justifyContent: 'center',
-            }}
             >
             There is no data for this facet
-          </Row>
+          </EmptyCardMessage>
         )
         : (
           <Fragment>
@@ -395,15 +414,18 @@ const ClinicalVariableCard = ({
               )}
 
               {variable.active_chart === 'survival' && (
-                <ClinicalSurvivalPlot
-                  plotType={selectedSurvivalBins.length === 0
-                    ? 'clinicalOverall'
-                    : 'categorical'}
-                  survivalData={selectedSurvivalBins.length === 0
-                    ? overallSurvivalData
-                    : selectedSurvivalData}
-                  survivalPlotLoading={survivalPlotLoading}
-                  />
+                variable.isSurvivalCustom &&
+                  selectedSurvivalBins.length === 0
+                    ? <EmptyCardMessage>No matches found</EmptyCardMessage>
+                    : <ClinicalSurvivalPlot
+                        plotType={selectedSurvivalBins.length === 0
+                          ? 'clinicalOverall'
+                          : 'categorical'}
+                        survivalData={selectedSurvivalBins.length === 0
+                          ? overallSurvivalData
+                          : selectedSurvivalData}
+                        survivalPlotLoading={survivalPlotLoading}
+                        />
               )}
 
               {variable.active_chart === 'box' && (

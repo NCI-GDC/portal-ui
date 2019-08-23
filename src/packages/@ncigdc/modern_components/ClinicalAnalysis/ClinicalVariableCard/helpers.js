@@ -30,6 +30,13 @@ import {
 import Hidden from '@ncigdc/components/Hidden';
 
 export const colors = scaleOrdinal(schemeCategory10);
+export const colorsArray = [
+  'rgb(31, 119, 180)',
+  'rgb(255, 127, 14)', 
+  'rgb(44, 160, 44)',
+  'rgb(214, 39, 40)',
+  'rgb(148, 103, 189)'
+];
 export const CHART_HEIGHT = 250;
 export const QQ_PLOT_RATIO = '70%';
 export const BOX_PLOT_RATIO = '30%';

@@ -97,8 +97,9 @@ export default compose(
     (props, nextProps) => nextProps.variable.active_chart === 'survival' &&
       (props.variable.active_chart !== nextProps.variable.active_chart ||
       props.id !== nextProps.id ||
-      !isEqual(props.variable.bins, nextProps.variable.bins)),
-    ({ populateSurvivalData }) => { populateSurvivalData(); }
+      !isEqual(props.variable.bins, nextProps.variable.bins)) ||
+      props.variable.isSurvivalCustom !== nextProps.variable.isSurvivalCustom,
+    ({ populateSurvivalData }) => populateSurvivalData()
   ),
   withPropsOnChange(
     (props, nextProps) => props.id !== nextProps.id,

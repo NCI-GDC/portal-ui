@@ -108,11 +108,12 @@ export default compose(
   ),
   withPropsOnChange((props, nextProps) =>
   nextProps.variable.active_chart === 'survival' &&
-    (!isEqual(props.binData, nextProps.binData) ||
-    props.variable.active_chart !== nextProps.variable.active_chart ||
+  // TODO: MAKE BINDATA WORK. IT'S CAUSING AN INFINITE LOOP
+    // (!isEqual(props.binData, nextProps.binData) ||
+    (props.variable.active_chart !== nextProps.variable.active_chart ||
     !isEqual(props.selectedSurvivalBins, nextProps.selectedSurvivalBins) ||
     props.variable.setId !== nextProps.variable.setId ||
-    !isEqual(props.variable.customSurvivalPlots, props.variable.customSurvivalPlots) ||
+    !isEqual(props.variable.customSurvivalPlots, nextProps.variable.customSurvivalPlots) ||
     props.variable.isSurvivalCustom !== nextProps.variable.isSurvivalCustom),
     ({
       binData,

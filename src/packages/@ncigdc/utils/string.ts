@@ -11,9 +11,6 @@ type TTruncateAfterMarker = (
 ) => string;
 type TIsUuid = (query: string) => boolean;
 type TCreateFacetFieldString = (fieldName: string) => string;
-type TParseContinuousValue = (continuousValue: number | string) => number;
-type TParseContinuousKey = (keyValue: string) => number[];
-type TCreateContinuousGroupName = (keyValue: string) => string;
 
 interface IHumanifyParams {
   term: string;
@@ -96,15 +93,3 @@ export const isUUID: TIsUuid = query =>
 
 export const createFacetFieldString: TCreateFacetFieldString = fieldName =>
   fieldName.replace(/\./g, '__');
-
-export const parseContinuousValue: TParseContinuousValue = continuousValue =>
-  Number(Number(continuousValue).toFixed(2));
-
-export const parseContinuousKey: TParseContinuousKey = keyValue =>
-  keyValue.split('-')
-    .map((val, idx, src) => src[idx - 1] === '' ? `-${val}` : val)
-    .filter(val => val !== '')
-    .map(val => parseContinuousValue(val));
-
-export const createContinuousGroupName: TCreateContinuousGroupName = keyValue =>
-  parseContinuousKey(keyValue).join(' to \u003c'); 

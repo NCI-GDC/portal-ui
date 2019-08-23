@@ -313,7 +313,8 @@ const ClinicalVariableCard = ({
         </Row>
       </Row>
       {isEmpty(tableData)
-        ? (<Row
+        ? (
+          <Row
             id={`${wrapperId}-container`}
             style={{
               alignItems: 'center',
@@ -322,7 +323,8 @@ const ClinicalVariableCard = ({
             }}
             >
             There is no data for this facet
-          </Row>)
+          </Row>
+        )
         : (
           <Fragment>
             <Column id={`${wrapperId}-container`}>
@@ -408,7 +410,8 @@ const ClinicalVariableCard = ({
               {variable.active_chart === 'survival' && (
                 variable.isSurvivalCustom &&
                   selectedSurvivalBins.length === 0
-                    ? <Row
+                    ? (
+                      <Row
                         id={`${wrapperId}-container`}
                         style={{
                           alignItems: 'center',
@@ -416,9 +419,11 @@ const ClinicalVariableCard = ({
                           justifyContent: 'center',
                         }}
                         >
-                        No matching categories
+                        No matches found
                       </Row>
-                    : <ClinicalSurvivalPlot
+                    )
+                    : (
+                      <ClinicalSurvivalPlot
                         plotType={selectedSurvivalBins.length === 0
                           ? 'clinicalOverall'
                           : 'categorical'}
@@ -427,6 +432,7 @@ const ClinicalVariableCard = ({
                           : selectedSurvivalData}
                         survivalPlotLoading={survivalPlotLoading}
                         />
+                      )
               )}
 
               {variable.active_chart === 'box' && (

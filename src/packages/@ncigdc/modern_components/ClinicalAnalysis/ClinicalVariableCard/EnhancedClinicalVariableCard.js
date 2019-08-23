@@ -77,8 +77,6 @@ export default compose(
         updateSurvivalPlot(survivalPlotValues);
       },
       updateSelectedSurvivalBins: (data, bin) => {
-        console.log('updateSelectedSurvivalBins');
-        console.log('isSurvivalCustom', isSurvivalCustom);
         if (
           selectedSurvivalBins.indexOf(bin.key) === -1 &&
           selectedSurvivalBins.length >= MAXIMUM_CURVES
@@ -87,15 +85,11 @@ export default compose(
         }
         setSurvivalPlotLoading(true);
 
-        console.log('bin.key', bin.key)
-
         const isSelected = selectedSurvivalBins.indexOf(bin.key) >= 0;
 
         const nextSelectedBins = isSelected
           ? selectedSurvivalBins.filter(s => s !== bin.key)
           : selectedSurvivalBins.concat(bin.key);
-        
-        console.log('nextSelectedBins', nextSelectedBins);
 
         setSelectedSurvivalBins(nextSelectedBins);
         setSelectedSurvivalLoadingIds(nextSelectedBins);
@@ -119,17 +113,11 @@ export default compose(
           ]))
         }));
 
-        console.log('nextCustomSurvivalPlots', nextCustomSurvivalPlots);
-
         const filteredSurvival = customSurvivalPlots
           .filter(plot => !(isSelected && plot.name === bin.key));
 
-        console.log('filteredSurvival', filteredSurvival);
-
         const survivalDuplicatesRemoved = uniqWith(filteredSurvival
           .concat(nextCustomSurvivalPlots), isEqual);
-        
-        console.log('survivalDuplicatesRemoved', survivalDuplicatesRemoved);
 
         dispatchUpdateClinicalVariable({
           value: survivalDuplicatesRemoved,

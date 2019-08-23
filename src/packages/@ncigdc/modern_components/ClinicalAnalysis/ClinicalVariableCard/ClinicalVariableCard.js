@@ -430,6 +430,7 @@ const ClinicalVariableCard = ({
                           : selectedSurvivalData}
                         survivalPlotLoading={survivalPlotLoading}
                         />
+                      )
               )}
 
               {variable.active_chart === 'box' && (

@@ -87,11 +87,17 @@ export default compose(
         }
         setSurvivalPlotLoading(true);
 
+        console.log('selectedSurvivalBins', selectedSurvivalBins);
+
         const isSelected = selectedSurvivalBins.indexOf(bin.key) >= 0;
+        // console.log('isSelected', isSelected);
+        // console.log('bin', bin);
 
         const nextSelectedBins = isSelected
           ? selectedSurvivalBins.filter(s => s !== bin.key)
           : selectedSurvivalBins.concat(bin.key);
+        
+        // console.log('nextSelectedBins', nextSelectedBins)
 
         setSelectedSurvivalBins(nextSelectedBins);
         setSelectedSurvivalLoadingIds(nextSelectedBins);
@@ -101,6 +107,8 @@ export default compose(
           : nextSelectedBins
             .map(nextBin => data.filter(datum => datum.key === nextBin)[0])
             .map(nextBin => makeDocCountInteger(nextBin));
+        
+        // console.log('data', data);
 
         updateSurvivalPlot(nextBinsForPlot);
 
@@ -125,6 +133,8 @@ export default compose(
           value: survivalDuplicatesRemoved,
           variableKey: 'customSurvivalPlots',
         });
+
+        // console.log('survivalDuplicatesRemoved', survivalDuplicatesRemoved)
 
         if (survivalDuplicatesRemoved.length === 0) {
           setShowOverallSurvival(true);

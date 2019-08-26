@@ -85,6 +85,7 @@ const getTableData = ({
   totalDocs,
   updateSelectedSurvivalBins,
 }) => displayData.map(bin => {
+  console.log('bin', bin);
   const binName = typeof bin.groupName === 'undefined' ||
     bin.groupName === ''
       ? bin.key
@@ -144,6 +145,8 @@ const getTableData = ({
               (isSurvivalFull && !isSelectedForSurvival)
             }
             onClick={() => {
+              // console.log('displayData', displayData);
+              // console.log('bin', bin)
               updateSelectedSurvivalBins(displayData, bin);
             }}
             style={{

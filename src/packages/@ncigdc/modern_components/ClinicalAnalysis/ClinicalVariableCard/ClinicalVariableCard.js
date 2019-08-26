@@ -139,6 +139,7 @@ const getTableData = ({
               (isSurvivalFull && !isSelectedForSurvival)
             }
             onClick={() => {
+              console.log('clicked on bin', bin.displayName);
               updateSelectedSurvivalBins(displayData, bin);
             }}
             style={{
@@ -201,6 +202,7 @@ const ClinicalVariableCard = ({
   variable,
   wrapperId,
 }) => {
+  console.log('selectedSurvivalBins', selectedSurvivalBins)
   const tableData = variable.active_chart === 'box'
     ? getBoxTableData(boxPlotValues)
     : getTableData({

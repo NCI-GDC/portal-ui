@@ -56,7 +56,8 @@ export default compose(
     !isEqual(props.variable.customSurvivalPlots, nextProps.variable.customSurvivalPlots) ||
     !isEqual(props.selectedSurvivalBins, nextProps.selectedSurvivalBins) ||
     props.variable.setId === nextProps.variable.setId ||
-    !isEqual(props.survivalPlotValues, nextProps.survivalPlotValues),
+    !isEqual(props.survivalPlotValues, nextProps.survivalPlotValues ||
+    !isEqual(props.variable.customSurvivalPlots, nextProps.variable.customSurvivalPlots)),
     ({
       dispatchUpdateClinicalVariable,
       selectedSurvivalBins,
@@ -107,6 +108,14 @@ export default compose(
 
         const survivalDeselectedAndDuplicatesRemoved = uniq(nextSelectedBins
           .filter(filterBin => !(isSelected && filterBin.name === bin.displayName)));
+
+        console.log('------------')
+        console.log('data', data)
+        console.log('bin', bin)
+        console.log('isSelected', isSelected)
+        console.log('nextSelectedBins', nextSelectedBins)
+        console.log('nextBinsForPlot', nextBinsForPlot);
+        console.log('survivalDeselectedAndDuplicatesRemoved', survivalDeselectedAndDuplicatesRemoved);
 
         dispatchUpdateClinicalVariable({
           value: survivalDeselectedAndDuplicatesRemoved,

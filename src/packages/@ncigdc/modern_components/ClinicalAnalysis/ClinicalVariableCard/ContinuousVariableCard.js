@@ -473,16 +473,16 @@ export default compose(
         const survivalTableValues = survivalBins
           .map(bin => bin.displayName);
 
-        console.log('-----------');
-        console.log('customSurvivalPlots', customSurvivalPlots);
-        console.log('binsWithNames', binsWithNames);
-        console.log('customBinMatches', customBinMatches);
-        console.log('survivalBins', survivalBins);
-        console.log('survivalPlotValues', survivalPlotValues);
-        console.log('survivalTableValues', survivalTableValues);
-        console.log('isSurvivalCustom', isSurvivalCustom);
-        console.log('customBinMatches', customBinMatches);
-        console.log('customBinMatches.length > 0', customBinMatches.length > 0)
+        // console.log('-----------');
+        // console.log('customSurvivalPlots', customSurvivalPlots);
+        // console.log('binsWithNames', binsWithNames);
+        // console.log('customBinMatches', customBinMatches);
+        // console.log('survivalBins', survivalBins);
+        // console.log('survivalPlotValues', survivalPlotValues);
+        // console.log('survivalTableValues', survivalTableValues);
+        // console.log('isSurvivalCustom', isSurvivalCustom);
+        // console.log('customBinMatches', customBinMatches);
+        // console.log('customBinMatches.length > 0', customBinMatches.length > 0)
 
         dispatchUpdateClinicalVariable({
           value: customBinMatches.map(match => match.displayName),

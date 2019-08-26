@@ -85,15 +85,9 @@ const getTableData = ({
   totalDocs,
   updateSelectedSurvivalBins,
 }) => displayData.map(bin => {
-  console.log('bin', bin);
-  const binName = typeof bin.groupName === 'undefined' ||
-    bin.groupName === ''
-      ? bin.key
-      : bin.groupName;
-  const isSelected = find(selectedBins, { key: bin.key });
-  
-  const indexSurvival = selectedSurvivalBins.indexOf(bin.key);
-  const isSurvivalLoading = selectedSurvivalLoadingIds.indexOf(bin.key) >= 0;
+  const isSelected = find(selectedBins, { key: bin.displayName });
+  const indexSurvival = selectedSurvivalBins.indexOf(bin.displayName);
+  const isSurvivalLoading = selectedSurvivalLoadingIds.indexOf(bin.displayName) >= 0;
   const isSelectedForSurvival = indexSurvival >= 0;
   const isSurvivalFull = selectedSurvivalBins.length === MAXIMUM_CURVES;
   
@@ -103,7 +97,7 @@ const getTableData = ({
     {
       select: (
         <input
-          aria-label={`${fieldName} ${binName}`}
+          aria-label={`${fieldName} ${bin.displayName}`}
           checked={isSelected}
           disabled={bin.doc_count === 0}
           id={`${fieldName}-${bin.key}`}
@@ -132,10 +126,10 @@ const getTableData = ({
             bin.key === '_missing' || bin.chart_doc_count < MINIMUM_CASES
               ? 'Not enough data'
               : isSelectedForSurvival
-                ? `Click icon to remove "${binName}"`
+                ? `Click icon to remove "${bin.displayName}"`
                 : isSurvivalFull
                   ? `Maximum plots (${MAXIMUM_CURVES}) reached`
-                  : `Click icon to plot "${binName}"`
+                  : `Click icon to plot "${bin.displayName}"`
           }
           >
           <Button
@@ -145,8 +139,6 @@ const getTableData = ({
               (isSurvivalFull && !isSelectedForSurvival)
             }
             onClick={() => {
-              // console.log('displayData', displayData);
-              // console.log('bin', bin)
               updateSelectedSurvivalBins(displayData, bin);
             }}
             style={{

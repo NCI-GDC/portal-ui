@@ -11,7 +11,7 @@ import {
   find,
   isEmpty,
   isEqual,
-  uniqWith,
+  uniq,
 } from 'lodash';
 
 import {
@@ -80,24 +80,18 @@ export default compose(
       },
       updateSelectedSurvivalBins: (data, bin) => {
         if (
-          selectedSurvivalBins.indexOf(bin.key) === -1 &&
+          selectedSurvivalBins.indexOf(bin.displayName) === -1 &&
           selectedSurvivalBins.length >= MAXIMUM_CURVES
         ) {
           return;
         }
         setSurvivalPlotLoading(true);
 
-        console.log('selectedSurvivalBins', selectedSurvivalBins);
-
-        const isSelected = selectedSurvivalBins.indexOf(bin.key) >= 0;
-        // console.log('isSelected', isSelected);
-        // console.log('bin', bin);
+        const isSelected = selectedSurvivalBins.indexOf(bin.displayName) >= 0;
 
         const nextSelectedBins = isSelected
-          ? selectedSurvivalBins.filter(s => s !== bin.key)
-          : selectedSurvivalBins.concat(bin.key);
-        
-        // console.log('nextSelectedBins', nextSelectedBins)
+          ? selectedSurvivalBins.filter(s => s !== bin.displayName)
+          : selectedSurvivalBins.concat(bin.displayName);
 
         setSelectedSurvivalBins(nextSelectedBins);
         setSelectedSurvivalLoadingIds(nextSelectedBins);
@@ -105,43 +99,23 @@ export default compose(
         const nextBinsForPlot = plotTypes === 'categorical'
           ? nextSelectedBins
           : nextSelectedBins
-            .map(nextBin => data.filter(datum => datum.key === nextBin)[0])
+            .map(nextBin => data.filter(datum => datum.displayName === nextBin)[0])
             .map(nextBin => makeDocCountInteger(nextBin));
-        
-        // console.log('data', data);
 
         updateSurvivalPlot(nextBinsForPlot);
 
-        const nextCustomSurvivalPlots = nextSelectedBins.map(bin => ({
-          name: plotTypes === 'categorical'
-            ? bin
-            : find(data, { key: bin }).groupName,
-          values: [].concat((find(data, { key: bin })[
-            plotTypes === 'categorical'
-              ? 'keyArray'
-              : 'key'
-          ]))
-        }));
-
-        const filteredSurvival = customSurvivalPlots
-          .filter(plot => !(isSelected && plot.name === bin.key));
-
-        const survivalDuplicatesRemoved = uniqWith(filteredSurvival
-          .concat(nextCustomSurvivalPlots), isEqual);
+        const survivalDeselectedAndDuplicatesRemoved = uniq(nextSelectedBins
+          .filter(filterBin => !(isSelected && filterBin.name === bin.displayName)));
 
         dispatchUpdateClinicalVariable({
-          value: survivalDuplicatesRemoved,
+          value: survivalDeselectedAndDuplicatesRemoved,
           variableKey: 'customSurvivalPlots',
         });
 
-        // console.log('survivalDuplicatesRemoved', survivalDuplicatesRemoved)
-
-        if (survivalDuplicatesRemoved.length === 0) {
+        if (survivalDeselectedAndDuplicatesRemoved.length === 0) {
           setShowOverallSurvival(true);
-          console.log('overall survival TRUE');
         } else {
           setShowOverallSurvival(false);
-          console.log('overall survival FALSE');
         }
       },
     })

@@ -417,7 +417,6 @@ export default compose(
       !isEqual(props.variable.customSurvivalPlots, props.variable.customSurvivalPlots) ||
       props.variable.isSurvivalCustom, props.variable.isSurvivalCustom),
       ({
-        dataBuckets = [],
         getContinuousBins,
         variable: {
           bins,
@@ -427,36 +426,39 @@ export default compose(
         },
         variable,
       }) => {
-        const survivalPlotValues = dataBuckets.length === 0
-          ? dataBuckets
-          : (isSurvivalCustom
-            ? filterSurvivalData(dataBuckets
-                .filter(dataBucket => customSurvivalPlots
-                  .some(plot => plot.values[0] === parseContinuousKey(dataBucket.key).join('-'))
-                )
-                .reduce(getContinuousBins, [])
-              ) 
-            : filterSurvivalData(dataBuckets
-                .sort((a, b) =>
-                  parseContinuousKey(a.key)[0] - parseContinuousKey(b.key)[0])
-                .reduce(getContinuousBins, [])
-              ) 
-              .sort((a, b) => b.chart_doc_count - a.chart_doc_count)
-            )
-              .slice(0, isSurvivalCustom ? Infinity: 2)
-              .map(bin => makeDocCountInteger(bin));
+        const binsWithNames = Object.keys(bins).map(bin => ({
+          ...bins[bin],
+          ...continuousBinType === 'default' 
+            ? { displayName: createContinuousGroupName(bins[bin].key) }
+            : {},
+        }));
 
-        const survivalTableValues = survivalPlotValues
-          .map(bin => bin.key);
+        const survivalBins = (isSurvivalCustom
+          ? filterSurvivalData(binsWithNames
+              .filter(bin => customSurvivalPlots
+                .some(plot => plot === bin.displayName)
+              )
+              .reduce(getContinuousBins, [])
+            ) 
+          : filterSurvivalData(binsWithNames
+              .sort((a, b) => a.key - b.key)
+              .reduce(getContinuousBins, [])
+            ) 
+            .sort((a, b) => b.chart_doc_count - a.chart_doc_count)
+          )
+            .slice(0, isSurvivalCustom ? Infinity: 2);
+        
+        const survivalPlotValues = survivalBins.map(bin => ({
+          filters: bin.filters,
+          key: bin.key,
+        }));
 
+        const survivalTableValues = survivalBins
+          .map(bin => bin.displayName);
+        
         if (isSurvivalCustom) {
-          const nextCustomSurvivalPlots = survivalPlotValues
-            .map(bin => ({
-              name: bin.displayName,
-              values: bin.key,
-            }));
           dispatchUpdateClinicalVariable({
-            value: nextCustomSurvivalPlots,
+            value: survivalTableValues,
             variableKey: 'customSurvivalPlots',
           });
         }

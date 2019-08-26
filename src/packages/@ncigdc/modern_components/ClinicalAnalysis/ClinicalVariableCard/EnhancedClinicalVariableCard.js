@@ -55,7 +55,8 @@ export default compose(
   withPropsOnChange((props, nextProps) => 
     !isEqual(props.variable.customSurvivalPlots, nextProps.variable.customSurvivalPlots) ||
     !isEqual(props.selectedSurvivalBins, nextProps.selectedSurvivalBins) ||
-    props.variable.setId === nextProps.variable.setId,
+    props.variable.setId === nextProps.variable.setId ||
+    !isEqual(props.survivalPlotValues, nextProps.survivalPlotValues),
     ({
       dispatchUpdateClinicalVariable,
       selectedSurvivalBins,

@@ -443,9 +443,9 @@ export default compose(
       }) => {
         const binsWithNames = Object.keys(bins).map(bin => ({
           ...bins[bin],
-          ...continuousBinType === 'default' 
-            ? { displayName: createContinuousGroupName(bins[bin].key) }
-            : {},
+          displayName: continuousBinType === 'default'
+            ? createContinuousGroupName(bins[bin].key)
+            : bins[bin].groupName
         }));
 
         const customBinMatches = isSurvivalCustom
@@ -464,21 +464,25 @@ export default compose(
             .sort((a, b) => b.chart_doc_count - a.chart_doc_count)
           )
             .slice(0, customBinMatches.length > 0 ? Infinity : 2);
-          
-          // console.log('survivalBins', survivalBins);
-        
+               
         const survivalPlotValues = survivalBins.map(bin => ({
           filters: bin.filters,
           key: bin.key,
         }));
-        // console.log('survivalPlotValues', survivalPlotValues);
 
         const survivalTableValues = survivalBins
           .map(bin => bin.displayName);
-        // console.log('survivalTableValues', survivalTableValues);
-        // console.log('isSurvivalCustom', isSurvivalCustom);
-        // console.log('customBinMatches', customBinMatches);
-        // console.log('customBinMatches.length > 0', customBinMatches.length > 0)
+
+        console.log('-----------');
+        console.log('customSurvivalPlots', customSurvivalPlots);
+        console.log('binsWithNames', binsWithNames);
+        console.log('customBinMatches', customBinMatches);
+        console.log('survivalBins', survivalBins);
+        console.log('survivalPlotValues', survivalPlotValues);
+        console.log('survivalTableValues', survivalTableValues);
+        console.log('isSurvivalCustom', isSurvivalCustom);
+        console.log('customBinMatches', customBinMatches);
+        console.log('customBinMatches.length > 0', customBinMatches.length > 0)
 
         dispatchUpdateClinicalVariable({
           value: customBinMatches.map(match => match.displayName),

@@ -408,15 +408,31 @@ export default compose(
       );
     }
   ),
+  // withPropsOnChange((props, nextProps) =>
+  //   !(isEqual(props.variable.bins, nextProps.variable.bins)), 
+  //     ({ isSurvivalCustom }) => {
+  //       if (isSurvivalCustom) {
+  //         dispatchUpdateClinicalVariable({
+  //           value: false,
+  //           variableKey: 'isSurvivalCustom',
+  //         });
+  //         dispatchUpdateClinicalVariable({
+  //           value: [],
+  //           variableKey: 'customSurvivalPlots',
+  //         });
+  //       }
+  //   }
+  // ),
   withPropsOnChange((props, nextProps) =>
     nextProps.variable.active_chart === 'survival' &&
-      (!isEqual(props.binData, nextProps.binData) ||
-      props.variable.active_chart !== nextProps.variable.active_chart ||
-      !isEqual(props.selectedSurvivalBins, nextProps.selectedSurvivalBins) ||
-      props.variable.setId !== nextProps.variable.setId ||
+      (props.variable.active_chart !== nextProps.variable.active_chart ||
+      !(isEqual(props.variable.bins, nextProps.variable.bins)) ||
+      props.setId !== nextProps.setId ||
       !isEqual(props.variable.customSurvivalPlots, props.variable.customSurvivalPlots) ||
-      props.variable.isSurvivalCustom, props.variable.isSurvivalCustom),
+      props.variable.isSurvivalCustom !== props.variable.isSurvivalCustom ||
+      !isEqual(props.selectedSurvivalBins, nextProps.selectedSurvivalBins)),
       ({
+        dispatchUpdateClinicalVariable,
         getContinuousBins,
         variable: {
           bins,
@@ -424,7 +440,6 @@ export default compose(
           customSurvivalPlots,
           isSurvivalCustom,
         },
-        variable,
       }) => {
         const binsWithNames = Object.keys(bins).map(bin => ({
           ...bins[bin],
@@ -433,11 +448,13 @@ export default compose(
             : {},
         }));
 
-        const survivalBins = (isSurvivalCustom
-          ? filterSurvivalData(binsWithNames
-              .filter(bin => customSurvivalPlots
-                .some(plot => plot === bin.displayName)
-              )
+        const customBinMatches = isSurvivalCustom
+          ? binsWithNames.filter(bin => customSurvivalPlots
+              .indexOf(bin.displayName) >= 0)
+          : [];
+
+        const survivalBins = (customBinMatches.length > 0
+          ? filterSurvivalData(customBinMatches
               .reduce(getContinuousBins, [])
             ) 
           : filterSurvivalData(binsWithNames
@@ -446,28 +463,36 @@ export default compose(
             ) 
             .sort((a, b) => b.chart_doc_count - a.chart_doc_count)
           )
-            .slice(0, isSurvivalCustom ? Infinity: 2);
+            .slice(0, customBinMatches.length > 0 ? Infinity : 2);
+          
+          // console.log('survivalBins', survivalBins);
         
         const survivalPlotValues = survivalBins.map(bin => ({
           filters: bin.filters,
           key: bin.key,
         }));
+        // console.log('survivalPlotValues', survivalPlotValues);
 
         const survivalTableValues = survivalBins
           .map(bin => bin.displayName);
-        
-        if (isSurvivalCustom) {
-          dispatchUpdateClinicalVariable({
-            value: survivalTableValues,
-            variableKey: 'customSurvivalPlots',
-          });
-        }
+        // console.log('survivalTableValues', survivalTableValues);
+        // console.log('isSurvivalCustom', isSurvivalCustom);
+        // console.log('customBinMatches', customBinMatches);
+        // console.log('customBinMatches.length > 0', customBinMatches.length > 0)
+
+        dispatchUpdateClinicalVariable({
+          value: customBinMatches.map(match => match.displayName),
+          variableKey: 'customSurvivalPlots',
+        });
+        dispatchUpdateClinicalVariable({
+          value: customBinMatches.length > 0,
+          variableKey: 'isSurvivalCustom',
+        });
 
         return {
           survivalPlotValues,
           survivalTableValues,
         };
-
       }
   ),
   withPropsOnChange(

@@ -402,9 +402,24 @@ const ClinicalVariableCard = ({
               )}
 
               {variable.active_chart === 'survival' && (
-                (showOverallSurvival || (!variable.isSurvivalCustom &&
-                  selectedSurvivalBins.length > 0))
+                (
+                  // showOverallSurvival || 
+                  (variable.isSurvivalCustom &&
+                  selectedSurvivalBins.length === 0)
+                  )
                   ? (
+                    <Row
+                      id={`${wrapperId}-container`}
+                      style={{
+                        alignItems: 'center',
+                        flex: 1,
+                        justifyContent: 'center',
+                      }}
+                      >
+                      No matching categories
+                    </Row>
+                  )
+                  : (
                     <ClinicalSurvivalPlot
                       plotType={selectedSurvivalBins.length === 0 ||
                         showOverallSurvival
@@ -416,18 +431,6 @@ const ClinicalVariableCard = ({
                         : selectedSurvivalData}
                       survivalPlotLoading={survivalPlotLoading}
                       />
-                    )
-                    : (
-                      <Row
-                        id={`${wrapperId}-container`}
-                        style={{
-                          alignItems: 'center',
-                          flex: 1,
-                          justifyContent: 'center',
-                        }}
-                        >
-                        No matching categories
-                      </Row>
                     )
               )}
 

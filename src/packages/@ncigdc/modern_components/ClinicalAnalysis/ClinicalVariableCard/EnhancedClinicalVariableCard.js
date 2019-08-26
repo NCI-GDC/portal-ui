@@ -111,6 +111,10 @@ export default compose(
           value: survivalDeselectedAndDuplicatesRemoved,
           variableKey: 'customSurvivalPlots',
         });
+        dispatchUpdateClinicalVariable({
+          value: survivalDeselectedAndDuplicatesRemoved.length > 0,
+          variableKey: 'isSurvivalCustom',
+        });
 
         if (survivalDeselectedAndDuplicatesRemoved.length === 0) {
           setShowOverallSurvival(true);

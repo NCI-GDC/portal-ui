@@ -31,6 +31,7 @@ export default compose(
   withState('selectedSurvivalBins', 'setSelectedSurvivalBins', []),
   withState('selectedSurvivalData', 'setSelectedSurvivalData', {}),
   withState('selectedSurvivalLoadingIds', 'setSelectedSurvivalLoadingIds', []),
+  withState('showOverallSurvival', 'setShowOverallSurvival', false),
   withState('survivalPlotLoading', 'setSurvivalPlotLoading', true),
   withProps(({
     fieldName,
@@ -60,6 +61,7 @@ export default compose(
       selectedSurvivalBins,
       setSelectedSurvivalBins,
       setSelectedSurvivalLoadingIds,
+      setShowOverallSurvival,
       setSurvivalPlotLoading,
       survivalPlotValues,
       survivalTableValues,
@@ -123,10 +125,14 @@ export default compose(
           value: survivalDuplicatesRemoved,
           variableKey: 'customSurvivalPlots',
         });
-        dispatchUpdateClinicalVariable({
-          value: survivalDuplicatesRemoved.length > 0,
-          variableKey: 'isSurvivalCustom',
-        });
+
+        if (survivalDuplicatesRemoved.length === 0) {
+          setShowOverallSurvival(true);
+          console.log('overall survival TRUE');
+        } else {
+          setShowOverallSurvival(false);
+          console.log('overall survival FALSE');
+        }
       },
     })
   ),

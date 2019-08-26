@@ -120,7 +120,7 @@ export default compose(
       dispatchUpdateClinicalVariable,
       variable: { customSurvivalPlots, isSurvivalCustom },
     }) => {
-      console.log('isSurvivalCustom', isSurvivalCustom);
+      // console.log('isSurvivalCustom', isSurvivalCustom);
       const binDataSelected = isSurvivalCustom
         ? binData.filter(bin => 
             find(customSurvivalPlots, {
@@ -177,7 +177,6 @@ export default compose(
       variable: { isSurvivalCustom }
     }) => ({
       resetBins: () => {
-        console.log('reset bins');
         if (binsAreCustom) {
           dispatchUpdateClinicalVariable({
             value: dataBuckets

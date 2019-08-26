@@ -431,7 +431,7 @@ const ClinicalVariableCard = ({
                           justifyContent: 'center',
                         }}
                         >
-                        No matches found
+                        No matching categories
                       </Row>
                     )
               )}

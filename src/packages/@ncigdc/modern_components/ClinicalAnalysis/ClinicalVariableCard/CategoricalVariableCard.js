@@ -291,6 +291,14 @@ export default compose(
               value: newBins,
               variableKey: 'bins',
             });
+            dispatchUpdateClinicalVariable({
+              value: [],
+              variableKey: 'customSurvivalPlots'
+            });
+            dispatchUpdateClinicalVariable({
+              value: false,
+              variableKey: 'isSurvivalCustom',
+            });
             dispatch(setModal(null));
           }}
           />

@@ -79,6 +79,7 @@ export default compose(
         setSelectedSurvivalBins(survivalTableValues);
         setSelectedSurvivalLoadingIds(survivalTableValues);
         updateSurvivalPlot(survivalPlotValues);
+        setShowOverallSurvival(false);
       },
       updateSelectedSurvivalBins: (data, bin) => {
         console.log('updateSelectedSurvivalBins');
@@ -124,7 +125,7 @@ export default compose(
           variableKey: 'customSurvivalPlots',
         });
         dispatchUpdateClinicalVariable({
-          value: survivalDeselectedAndDuplicatesRemoved.length > 0,
+          value: true,
           variableKey: 'isSurvivalCustom',
         });
 
@@ -144,7 +145,6 @@ export default compose(
       (props.variable.isSurvivalCustom !== nextProps.variable.isSurvivalCustom &&
         !nextProps.variable.isSurvivalCustom)),
     ({ populateSurvivalData }) => {
-      console.log('update me!');
       populateSurvivalData();
     }
   ),

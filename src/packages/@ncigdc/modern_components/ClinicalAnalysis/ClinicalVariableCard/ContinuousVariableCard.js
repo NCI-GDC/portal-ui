@@ -432,6 +432,7 @@ export default compose(
       props.variable.isSurvivalCustom !== props.variable.isSurvivalCustom ||
       !isEqual(props.selectedSurvivalBins, nextProps.selectedSurvivalBins)),
       ({
+        binsAreCustom,
         dispatchUpdateClinicalVariable,
         getContinuousBins,
         variable: {

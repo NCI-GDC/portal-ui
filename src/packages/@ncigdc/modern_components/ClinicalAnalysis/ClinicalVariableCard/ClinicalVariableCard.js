@@ -404,11 +404,9 @@ const ClinicalVariableCard = ({
               )}
 
               {variable.active_chart === 'survival' && (
-                (
-                  // showOverallSurvival || 
-                  (variable.isSurvivalCustom &&
-                  selectedSurvivalBins.length === 0)
-                  )
+                (variable.isSurvivalCustom &&
+                  selectedSurvivalBins.length === 0 &&
+                  !showOverallSurvival)
                   ? (
                     <Row
                       id={`${wrapperId}-container`}

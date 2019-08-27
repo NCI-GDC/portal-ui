@@ -114,6 +114,7 @@ const defaultVariableConfig = {
   bins: {},
   customSurvivalPlots: [],
   isSurvivalCustom: false,
+  showOverallSurvival: false,
 };
 
 const defaultContinuousVariableConfig = {

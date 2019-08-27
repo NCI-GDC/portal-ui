@@ -120,7 +120,6 @@ export default compose(
       dispatchUpdateClinicalVariable,
       variable: { customSurvivalPlots, isSurvivalCustom },
     }) => {
-      // console.log('isSurvivalCustom', isSurvivalCustom);
       const binDataSelected = isSurvivalCustom
         ? binData
           .filter(bin => customSurvivalPlots.indexOf(bin.key) >= 0)
@@ -198,6 +197,10 @@ export default compose(
             value: [],
             variableKey: 'customSurvivalPlots',
           });
+          dispatchUpdateClinicalVariable({
+            value: false,
+            variableKey: 'showOverallSurvival',
+          })
         }
       },
     })
@@ -293,6 +296,10 @@ export default compose(
             dispatchUpdateClinicalVariable({
               value: false,
               variableKey: 'isSurvivalCustom',
+            });
+            dispatchUpdateClinicalVariable({
+              value: false,
+              variableKey: 'showOverallSurvival',
             });
             dispatch(setModal(null));
           }}

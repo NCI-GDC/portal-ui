@@ -31,7 +31,6 @@ export default compose(
   withState('selectedSurvivalBins', 'setSelectedSurvivalBins', []),
   withState('selectedSurvivalData', 'setSelectedSurvivalData', {}),
   withState('selectedSurvivalLoadingIds', 'setSelectedSurvivalLoadingIds', []),
-  withState('showOverallSurvival', 'setShowOverallSurvival', false),
   withState('survivalPlotLoading', 'setSurvivalPlotLoading', true),
   withProps(({
     fieldName,
@@ -63,7 +62,6 @@ export default compose(
       selectedSurvivalBins,
       setSelectedSurvivalBins,
       setSelectedSurvivalLoadingIds,
-      setShowOverallSurvival,
       setSurvivalPlotLoading,
       survivalPlotValues,
       survivalTableValues,
@@ -79,11 +77,8 @@ export default compose(
         setSelectedSurvivalBins(survivalTableValues);
         setSelectedSurvivalLoadingIds(survivalTableValues);
         updateSurvivalPlot(survivalPlotValues);
-        setShowOverallSurvival(false);
       },
       updateSelectedSurvivalBins: (data, bin) => {
-        console.log('updateSelectedSurvivalBins');
-        console.log('TESTING TESTING TESTING');
         if (
           selectedSurvivalBins.indexOf(bin.displayName) === -1 &&
           selectedSurvivalBins.length >= MAXIMUM_CURVES
@@ -112,14 +107,6 @@ export default compose(
         const survivalDeselectedAndDuplicatesRemoved = uniq(nextSelectedBins
           .filter(filterBin => !(isSelected && filterBin.name === bin.displayName)));
 
-        console.log('------------')
-        console.log('data', data)
-        console.log('bin', bin)
-        console.log('isSelected', isSelected)
-        console.log('nextSelectedBins', nextSelectedBins)
-        console.log('nextBinsForPlot', nextBinsForPlot);
-        console.log('survivalDeselectedAndDuplicatesRemoved', survivalDeselectedAndDuplicatesRemoved);
-
         dispatchUpdateClinicalVariable({
           value: survivalDeselectedAndDuplicatesRemoved,
           variableKey: 'customSurvivalPlots',
@@ -128,12 +115,10 @@ export default compose(
           value: true,
           variableKey: 'isSurvivalCustom',
         });
-
-        if (survivalDeselectedAndDuplicatesRemoved.length === 0) {
-          setShowOverallSurvival(true);
-        } else {
-          setShowOverallSurvival(false);
-        }
+        dispatchUpdateClinicalVariable({
+          value: survivalDeselectedAndDuplicatesRemoved.length === 0,
+          variableKey: 'showOverallSurvival',
+        });
       },
     })
   ),

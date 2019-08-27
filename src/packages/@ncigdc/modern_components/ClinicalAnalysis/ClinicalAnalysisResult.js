@@ -267,7 +267,7 @@ const ClinicalAnalysisResult = ({
                 ...(controlPanelExpanded ? {} : { marginLeft: '1%' }),
               }}
               >
-              {/* REVERT LATER <Column
+              <Column
                 style={{
                   ...zDepth1,
                   height: 560,
@@ -305,7 +305,6 @@ const ClinicalAnalysisResult = ({
                     />
                 </div>
               </Column>
-*/}
               {setId && map(displayVariables, (varProperties, varFieldName) => {
                 const filters = {
                   content: [

@@ -434,7 +434,7 @@ export default compose(
             : bins[bin].groupName
         }));
 
-        const customBinMatches = isSurvivalCustom && binsAreCustom
+        const customBinMatches = isSurvivalCustom
           ? binsWithNames.filter(bin => customSurvivalPlots
               .indexOf(bin.displayName) >= 0)
           : [];
@@ -461,28 +461,18 @@ export default compose(
         const survivalTableValues = survivalBins
           .map(bin => bin.displayName);
 
-        // console.log('-----------');
-        // console.log('customSurvivalPlots', customSurvivalPlots);
-        // console.log('binsWithNames', binsWithNames);
-        // console.log('customBinMatches', customBinMatches);
-        // console.log('survivalBins', survivalBins);
-        // console.log('survivalPlotValues', survivalPlotValues);
-        // console.log('survivalTableValues', survivalTableValues);
-        // console.log('isSurvivalCustom', isSurvivalCustom);
-        // console.log('customBinMatches', customBinMatches);
-        // console.log('customBinMatches.length > 0', customBinMatches.length > 0)
-
         dispatchUpdateClinicalVariable({
-          value: customBinMatches.map(match => match.displayName),
+          value: customBinMatches.map(bin => bin.displayName),
           variableKey: 'customSurvivalPlots',
         });
         dispatchUpdateClinicalVariable({
-          value: customBinMatches.length > 0,
+          value: isUsingCustomSurvival,
           variableKey: 'isSurvivalCustom',
         });
-
-        console.log('survivalPlotValues', survivalPlotValues);
-        console.log('survivalTableValues', survivalTableValues);
+        dispatchUpdateClinicalVariable({
+          value: false,
+          variableKey: 'showOverallSurvival',
+        });
 
         return {
           survivalPlotValues,
@@ -538,6 +528,10 @@ export default compose(
           dispatchUpdateClinicalVariable({
             value: [],
             variableKey: 'customSurvivalPlots',
+          });
+          dispatchUpdateClinicalVariable({
+            value: false,
+            variableKey: 'showOverallSurvival',
           });
         }
       },

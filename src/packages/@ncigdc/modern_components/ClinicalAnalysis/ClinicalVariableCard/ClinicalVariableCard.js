@@ -139,7 +139,6 @@ const getTableData = ({
               (isSurvivalFull && !isSelectedForSurvival)
             }
             onClick={() => {
-              console.log('clicked on bin', bin.displayName);
               updateSelectedSurvivalBins(displayData, bin);
             }}
             style={{
@@ -202,7 +201,6 @@ const ClinicalVariableCard = ({
   variable,
   wrapperId,
 }) => {
-  // console.log('selectedSurvivalBins', selectedSurvivalBins)
   const tableData = variable.active_chart === 'box'
     ? getBoxTableData(boxPlotValues)
     : getTableData({
@@ -406,7 +404,7 @@ const ClinicalVariableCard = ({
               {variable.active_chart === 'survival' && (
                 (variable.isSurvivalCustom &&
                   selectedSurvivalBins.length === 0 &&
-                  !showOverallSurvival)
+                  !variable.showOverallSurvival)
                   ? (
                     <Row
                       id={`${wrapperId}-container`}
@@ -422,11 +420,11 @@ const ClinicalVariableCard = ({
                   : (
                     <ClinicalSurvivalPlot
                       plotType={selectedSurvivalBins.length === 0 ||
-                        showOverallSurvival
+                        variable.showOverallSurvival
                         ? 'clinicalOverall'
                         : 'categorical'}
                       survivalData={selectedSurvivalBins.length === 0 ||
-                        showOverallSurvival
+                        variable.showOverallSurvival
                         ? overallSurvivalData
                         : selectedSurvivalData}
                       survivalPlotLoading={survivalPlotLoading}

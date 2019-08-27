@@ -202,7 +202,7 @@ const ClinicalVariableCard = ({
   variable,
   wrapperId,
 }) => {
-  console.log('selectedSurvivalBins', selectedSurvivalBins)
+  // console.log('selectedSurvivalBins', selectedSurvivalBins)
   const tableData = variable.active_chart === 'box'
     ? getBoxTableData(boxPlotValues)
     : getTableData({

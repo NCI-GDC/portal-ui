@@ -63,7 +63,7 @@ const ControlPanel = ({
   setControlPanelExpanded,
   setId,
   theme,
-}) => (!controlPanelExpanded // REVERT LATER
+}) => (controlPanelExpanded // REVERT LATER
   ? (
     <Column
       className="no-print"

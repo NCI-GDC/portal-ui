@@ -448,7 +448,7 @@ export default compose(
             : bins[bin].groupName
         }));
 
-        const customBinMatches = isSurvivalCustom
+        const customBinMatches = isSurvivalCustom && binsAreCustom
           ? binsWithNames.filter(bin => customSurvivalPlots
               .indexOf(bin.displayName) >= 0)
           : [];
@@ -492,6 +492,9 @@ export default compose(
           value: customBinMatches.length > 0,
           variableKey: 'isSurvivalCustom',
         });
+
+        console.log('survivalPlotValues', survivalPlotValues);
+        console.log('survivalTableValues', survivalTableValues);
 
         return {
           survivalPlotValues,

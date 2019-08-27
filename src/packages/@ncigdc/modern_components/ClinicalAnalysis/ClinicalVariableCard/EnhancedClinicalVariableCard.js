@@ -81,6 +81,8 @@ export default compose(
         updateSurvivalPlot(survivalPlotValues);
       },
       updateSelectedSurvivalBins: (data, bin) => {
+        console.log('updateSelectedSurvivalBins');
+        console.log('TESTING TESTING TESTING');
         if (
           selectedSurvivalBins.indexOf(bin.displayName) === -1 &&
           selectedSurvivalBins.length >= MAXIMUM_CURVES
@@ -138,9 +140,13 @@ export default compose(
     (props, nextProps) => nextProps.variable.active_chart === 'survival' &&
       (props.variable.active_chart !== nextProps.variable.active_chart ||
       props.id !== nextProps.id ||
-      !isEqual(props.variable.bins, nextProps.variable.bins)) ||
-      props.variable.isSurvivalCustom !== nextProps.variable.isSurvivalCustom,
-    ({ populateSurvivalData }) => populateSurvivalData()
+      !isEqual(props.variable.bins, nextProps.variable.bins) ||
+      (props.variable.isSurvivalCustom !== nextProps.variable.isSurvivalCustom &&
+        !nextProps.variable.isSurvivalCustom)),
+    ({ populateSurvivalData }) => {
+      console.log('update me!');
+      populateSurvivalData();
+    }
   ),
   withPropsOnChange(
     (props, nextProps) => props.id !== nextProps.id,

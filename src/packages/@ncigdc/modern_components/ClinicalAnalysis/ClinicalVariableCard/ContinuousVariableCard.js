@@ -408,28 +408,13 @@ export default compose(
       );
     }
   ),
-  // withPropsOnChange((props, nextProps) =>
-  //   !(isEqual(props.variable.bins, nextProps.variable.bins)), 
-  //     ({ isSurvivalCustom }) => {
-  //       if (isSurvivalCustom) {
-  //         dispatchUpdateClinicalVariable({
-  //           value: false,
-  //           variableKey: 'isSurvivalCustom',
-  //         });
-  //         dispatchUpdateClinicalVariable({
-  //           value: [],
-  //           variableKey: 'customSurvivalPlots',
-  //         });
-  //       }
-  //   }
-  // ),
   withPropsOnChange((props, nextProps) =>
     nextProps.variable.active_chart === 'survival' &&
       (props.variable.active_chart !== nextProps.variable.active_chart ||
       !(isEqual(props.variable.bins, nextProps.variable.bins)) ||
       props.setId !== nextProps.setId ||
       !isEqual(props.variable.customSurvivalPlots, props.variable.customSurvivalPlots) ||
-      props.variable.isSurvivalCustom !== props.variable.isSurvivalCustom ||
+      props.variable.isSurvivalCustom !== nextProps.variable.isSurvivalCustom ||
       !isEqual(props.selectedSurvivalBins, nextProps.selectedSurvivalBins)),
       ({
         binsAreCustom,
@@ -453,8 +438,10 @@ export default compose(
           ? binsWithNames.filter(bin => customSurvivalPlots
               .indexOf(bin.displayName) >= 0)
           : [];
+        
+        const isUsingCustomSurvival = customBinMatches.length > 0;
 
-        const survivalBins = (customBinMatches.length > 0
+        const survivalBins = (isUsingCustomSurvival
           ? filterSurvivalData(customBinMatches
               .reduce(getContinuousBins, [])
             ) 
@@ -464,7 +451,7 @@ export default compose(
             ) 
             .sort((a, b) => b.chart_doc_count - a.chart_doc_count)
           )
-            .slice(0, customBinMatches.length > 0 ? Infinity : 2);
+            .slice(0, isUsingCustomSurvival ? Infinity : 2);
                
         const survivalPlotValues = survivalBins.map(bin => ({
           filters: bin.filters,

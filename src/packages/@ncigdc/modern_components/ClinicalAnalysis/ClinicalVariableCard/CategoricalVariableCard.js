@@ -122,12 +122,9 @@ export default compose(
     }) => {
       // console.log('isSurvivalCustom', isSurvivalCustom);
       const binDataSelected = isSurvivalCustom
-        ? binData.filter(bin => 
-            find(customSurvivalPlots, {
-              name: bin.key,
-              values: bin.keyArray,
-            }))
-            .filter(bin => bin.doc_count >= MINIMUM_CASES)
+        ? binData
+          .filter(bin => customSurvivalPlots.indexOf(bin.key) >= 0)
+          .filter(bin => bin.doc_count >= MINIMUM_CASES)
         : binData;
       
       const survivalBins = filterSurvivalData(
@@ -141,10 +138,7 @@ export default compose(
       
       if (isSurvivalCustom) {
         const nextCustomSurvivalPlots = binDataSelected
-          .map(bin => ({
-            name: bin.key,
-            values: bin.keyArray,
-          }));
+          .map(bin =>  bin.key);
         dispatchUpdateClinicalVariable({
           value: nextCustomSurvivalPlots,
           variableKey: 'customSurvivalPlots',
@@ -169,7 +163,8 @@ export default compose(
   withPropsOnChange(
     (props, nextProps) =>
       props.binsAreCustom !== nextProps.binsAreCustom ||
-      !isEqual(props.dataBuckets, nextProps.dataBuckets),
+      !isEqual(props.dataBuckets, nextProps.dataBuckets ||
+      props.variable.isSurvivalCustom !== nextProps.variable.isSurvivalCustom),
     ({
       binsAreCustom,
       dataBuckets,

@@ -4,18 +4,18 @@ import React from 'react';
 import BarChart from '@ncigdc/components/Charts/BarChart';
 
 const chartStyles = {
+  bars: { fill: 'rgb(23, 132, 172)' },
+  tooltips: {
+    fill: '#fff',
+    stroke: 'rgb(144, 144, 144)',
+    textFill: 'rgb(144,144,144)',
+  },
   xAxis: {
     stroke: 'rgb(200, 200, 200)',
     textFill: 'rgb(107, 98, 98)',
   },
   yAxis: {
     stroke: 'rgb(200, 200, 200)',
-    textFill: 'rgb(144,144,144)',
-  },
-  bars: { fill: 'rgb(23, 132, 172)' },
-  tooltips: {
-    fill: '#fff',
-    stroke: 'rgb(144, 144, 144)',
     textFill: 'rgb(144,144,144)',
   },
 };

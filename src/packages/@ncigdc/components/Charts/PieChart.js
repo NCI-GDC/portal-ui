@@ -33,6 +33,8 @@ const PieChart = compose(
     setTooltip,
     width = 160,
   }) => {
+    console.log('data', data);
+
     const color = d3.scaleOrdinal(d3.schemeCategory20);
     const outerRadius = height / 2 + 10;
     const innerRadius = enableInnerRadius ? outerRadius / 2 : 0;

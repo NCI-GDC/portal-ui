@@ -515,7 +515,7 @@ const ClinicalVariableCard = ({
                   variable.active_chart,
                   dataDimension,
                   fieldName + (binsAreCustom
-                    ? ' (TEST)'
+                    ? ' (User defined bins applied)'
                     : ''),
                 )}
                 tableContainerStyle={{ height: 175 }}

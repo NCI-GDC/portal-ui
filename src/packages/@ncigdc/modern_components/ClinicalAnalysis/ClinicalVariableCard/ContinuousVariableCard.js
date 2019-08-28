@@ -149,6 +149,10 @@ export default compose(
                     value: false,
                     variableKey: 'isSurvivalCustom',
                   }),
+                  dispatchUpdateClinicalVariable({
+                    value: false,
+                    variableKey: 'showOverallSurvival',
+                  }),
                 ];
             dispatchUpdateClinicalVariable({
               value: continuousReset

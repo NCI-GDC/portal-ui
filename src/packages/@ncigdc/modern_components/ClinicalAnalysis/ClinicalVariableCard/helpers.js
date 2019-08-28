@@ -357,6 +357,11 @@ export const DEFAULT_INTERVAL = {
 export const DEFAULT_RANGES = [];
 
 export const resetVariableDefaults = {
+  continuous: {
+    continuousBinType: DEFAULT_BIN_TYPE,
+    customInterval: DEFAULT_INTERVAL,
+    customRanges: DEFAULT_RANGES,
+  },
   survival: {
     customSurvivalPlots: [],
     isSurvivalCustom: false,

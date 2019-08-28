@@ -295,38 +295,39 @@ export default compose(
       id,
       variable: { bins, continuousBinType },
     }) => {
-      dispatch(updateClinicalAnalysisVariable({
+      dispatch(updateClinicalAnalysisVariableMulti({
         fieldName,
         id,
-        value: continuousBinType === 'default'
-          ? dataBuckets.reduce((acc, curr, index) => Object.assign(
-            {},
-            acc,
-            {
-              [dataBuckets[index].key]: Object.assign(
-                {},
-                dataBuckets[index],
-                { groupName: dataBuckets[index].key },
-              ),
-            },
-          ), {})
-          : Object.keys(bins)
-            .reduce((acc, curr, index) => Object.assign(
+        variable: {
+          bins: continuousBinType === 'default'
+            ? dataBuckets.reduce((acc, curr, index) => Object.assign(
               {},
               acc,
               {
-                [curr]: Object.assign(
+                [dataBuckets[index].key]: Object.assign(
                   {},
-                  bins[curr],
-                  {
-                    doc_count: dataBuckets[index]
-                    ? dataBuckets[index].doc_count
-                    : 0,
-                  }
+                  dataBuckets[index],
+                  { groupName: dataBuckets[index].key },
                 ),
-              }
-            ), {}),
-        variableKey: 'bins',
+              },
+            ), {})
+            : Object.keys(bins)
+              .reduce((acc, curr, index) => Object.assign(
+                {},
+                acc,
+                {
+                  [curr]: Object.assign(
+                    {},
+                    bins[curr],
+                    {
+                      doc_count: dataBuckets[index]
+                      ? dataBuckets[index].doc_count
+                      : 0,
+                    }
+                  ),
+                }
+              ), {}),
+        }
       }));
     }
   ),
@@ -492,23 +493,14 @@ export default compose(
         const survivalTableValues = survivalBins
           .map(bin => bin.displayName);
 
-        dispatch(updateClinicalAnalysisVariable({
+        dispatch(updateClinicalAnalysisVariableMulti({
           fieldName,
           id,
-          value: customBinMatches.map(bin => bin.displayName),
-          variableKey: 'customSurvivalPlots',
-        }));
-        dispatch(updateClinicalAnalysisVariable({
-          fieldName,
-          id,
-          value: isUsingCustomSurvival,
-          variableKey: 'isSurvivalCustom',
-        }));
-        dispatch(updateClinicalAnalysisVariable({
-          fieldName,
-          id,
-          value: false,
-          variableKey: 'showOverallSurvival',
+          variable: {
+            customSurvivalPlots: customBinMatches.map(bin => bin.displayName),
+            isSurvivalCustom: isUsingCustomSurvival,
+            showOverallSurvival: false,
+          }
         }));
 
         return {
@@ -542,50 +534,21 @@ export default compose(
     }) => ({
       resetBins: () => {
         if (binsAreCustom) {
-          dispatch(updateClinicalAnalysisVariable({
+          dispatch(updateClinicalAnalysisVariableMulti({
             fieldName,
             id,
-            value: bins,
-            variableKey: 'bins',
-          }));
-          dispatch(updateClinicalAnalysisVariable({
-            fieldName,
-            id,
-            value: DEFAULT_BIN_TYPE,
-            variableKey: 'continuousBinType',
-          }));
-          dispatch(updateClinicalAnalysisVariable({
-            fieldName,
-            id,
-            value: DEFAULT_INTERVAL,
-            variableKey: 'customInterval',
-          }));
-          dispatch(updateClinicalAnalysisVariable({
-            fieldName,
-            id,
-            value: DEFAULT_RANGES,
-            variableKey: 'customRanges',
-          }));
-        }
-        if (isSurvivalCustom) {
-          dispatch(updateClinicalAnalysisVariable({
-            fieldName,
-            id,
-            value: false,
-            variableKey: 'isSurvivalCustom',
-          }));
-          dispatch(updateClinicalAnalysisVariable({
-            fieldName,
-            id,
-            value: [],
-            variableKey: 'customSurvivalPlots',
-          }));
-          dispatch(updateClinicalAnalysisVariable({
-            fieldName,
-            id,
-            value: false,
-            variableKey: 'showOverallSurvival',
-          }));
+            variable: {
+              ...binsAreCustom
+                ? {
+                  bins,
+                  ...resetVariableDefaults.continuous,
+                }
+                : {},
+              ...isSurvivalCustom
+                ? resetVariableDefaults.survival
+                : {},
+            }
+          })); 
         }
       },
     })

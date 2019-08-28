@@ -24,10 +24,7 @@ import {
 } from '@ncigdc/utils/string';
 import { setModal } from '@ncigdc/dux/modal';
 import { DAYS_IN_YEAR } from '@ncigdc/utils/ageDisplay';
-import { 
-  updateClinicalAnalysisVariable,
-  updateClinicalAnalysisVariableMulti,
-} from '@ncigdc/dux/analysis';
+import { updateClinicalAnalysisVariableMulti } from '@ncigdc/dux/analysis';
 
 import ContinuousCustomBinsModal from './modals/ContinuousCustomBinsModal';
 import {
@@ -138,85 +135,36 @@ export default compose(
             customRanges,
             continuousReset,
           ) => {
-            (continuousReset ||
-              (continuousBinType === 'range' &&
-                !isEqual(variable.customRanges, customRanges)) ||
-              (continuousBinType === 'interval' &&
-                !isEqual(variable.customInterval, customInterval))) &&
-                [
-                  dispatch(updateClinicalAnalysisVariable({
-                    fieldName,
-                    id,
-                    value: [],
-                    variableKey: 'customSurvivalPlots'
-                  })),
-                  dispatch(updateClinicalAnalysisVariable({
-                    fieldName,
-                    id,
-                    value: false,
-                    variableKey: 'isSurvivalCustom',
-                  })),
-                  dispatch(updateClinicalAnalysisVariable({
-                    fieldName,
-                    id,
-                    value: false,
-                    variableKey: 'showOverallSurvival',
-                  })),
-                ];
-            dispatch(updateClinicalAnalysisVariable({
+            dispatch(updateClinicalAnalysisVariableMulti({
               fieldName,
               id,
-              value: continuousReset
-                ? defaultData.bins
-                : newBins,
-              variableKey: 'bins',
+              variable: {
+                ...continuousReset
+                  ? {
+                    bins: defaultData.bins,
+                    ...resetVariableDefaults.continuous,
+                    ...resetVariableDefaults.survival,
+                  }
+                  : {
+                    bins: newBins,
+                    continuousBinType,
+                    ...continuousBinType === 'interval' && 
+                      !isEqual(variable.customInterval, customInterval)
+                      ? {
+                        customInterval,
+                        ...resetVariableDefaults.survival,
+                      }
+                      : {},
+                    ...continuousBinType === 'range' && 
+                      !isEqual(variable.customRanges, customRanges)
+                      ? {
+                        customRanges,
+                        ...resetVariableDefaults.survival,
+                      }
+                      : {},
+                  }
+              }
             }));
-            dispatch(updateClinicalAnalysisVariable({
-              fieldName,
-              id,
-              value: continuousReset
-                ? 'default'
-                : continuousBinType,
-              variableKey: 'continuousBinType',
-            }));
-            !continuousReset &&
-              continuousBinType === 'interval' &&
-              (
-                dispatch(updateClinicalAnalysisVariable({
-                  fieldName,
-                  id,
-                  value: customInterval,
-                  variableKey: 'customInterval',
-                }))
-              );
-            !continuousReset &&
-              continuousBinType === 'range' &&
-              (
-                dispatch(updateClinicalAnalysisVariable({
-                  fieldName,
-                  id,
-                  value: customRanges,
-                  variableKey: 'customRanges',
-                }))
-              );
-            continuousReset &&
-              (
-                dispatch(updateClinicalAnalysisVariable({
-                  fieldName,
-                  id,
-                  value: [],
-                  variableKey: 'customRanges',
-                }))
-              );
-            continuousReset &&
-              (
-                dispatch(updateClinicalAnalysisVariable({
-                  fieldName,
-                  id,
-                  value: {},
-                  variableKey: 'customInterval',
-                }))
-              );
             dispatch(setModal(null));
           }}
           />

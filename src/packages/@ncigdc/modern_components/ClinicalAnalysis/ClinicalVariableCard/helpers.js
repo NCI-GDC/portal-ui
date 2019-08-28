@@ -356,38 +356,25 @@ export const DEFAULT_INTERVAL = {
 };
 export const DEFAULT_RANGES = [];
 
-export const dispatchUpdateClinicalVariable = compose(
-  withPropsOnChange(
-    (props, nextProps) => props.id !== nextProps.id,
-    ({
-      dispatch,
-      fieldName,
-      id,
-    }) => ({
-      dispatchUpdateClinicalVariable: ({ value, variableKey }) => {
-        dispatch(
-          updateClinicalAnalysisVariable({
-            fieldName,
-            id,
-            value,
-            variableKey,
-          })
-        );
-      },
-    }),
-  ),
-);
+export const resetVariableDefaults = {
+  survival: {
+    customSurvivalPlots: [],
+    isSurvivalCustom: false,
+    showOverallSurvival: false,
+  },
+}
 
 export const getBoxTableData = (data = {}) => 
-  sortBy(Object.keys(data), datum => boxTableAllowedStats
-    .indexOf(datum.toLowerCase()))
-    .reduce(
-      (acc, curr) => (
-        boxTableAllowedStats.includes(curr.toLowerCase())
-          ? acc.concat({
-            count: parseContinuousValue(data[curr]),
-            stat: boxTableRenamedStats[curr] || curr, // Shows the descriptive label
-          })
-          : acc
-      ), []
-    );
+  sortBy(Object.keys(data), datum => 
+    boxTableAllowedStats.indexOf(datum.toLowerCase())
+  )
+  .reduce(
+    (acc, curr) => (
+      boxTableAllowedStats.includes(curr.toLowerCase())
+        ? acc.concat({
+          count: parseContinuousValue(data[curr]),
+          stat: boxTableRenamedStats[curr] || curr, // Shows the descriptive label
+        })
+        : acc
+    ), []
+  );

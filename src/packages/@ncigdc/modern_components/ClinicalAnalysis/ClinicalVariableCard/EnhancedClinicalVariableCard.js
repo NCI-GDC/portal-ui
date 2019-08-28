@@ -19,6 +19,7 @@ import {
   MAXIMUM_CURVES,
 } from '@ncigdc/utils/survivalplot';
 import { withTheme } from '@ncigdc/theme';
+import { updateClinicalAnalysisVariable, } from '@ncigdc/dux/analysis';
 
 import { makeDocCountInteger } from './helpers';
 import ClinicalVariableCard from './ClinicalVariableCard';
@@ -58,7 +59,9 @@ export default compose(
     !isEqual(props.survivalPlotValues, nextProps.survivalPlotValues ||
     !isEqual(props.variable.customSurvivalPlots, nextProps.variable.customSurvivalPlots)),
     ({
-      dispatchUpdateClinicalVariable,
+      dispatch,
+      fieldName,
+      id,
       selectedSurvivalBins,
       setSelectedSurvivalBins,
       setSelectedSurvivalLoadingIds,
@@ -107,18 +110,24 @@ export default compose(
         const survivalDeselectedAndDuplicatesRemoved = uniq(nextSelectedBins
           .filter(filterBin => !(isSelected && filterBin.name === bin.displayName)));
 
-        dispatchUpdateClinicalVariable({
+        dispatch(updateClinicalAnalysisVariable({
+          fieldName,
+          id,
           value: survivalDeselectedAndDuplicatesRemoved,
           variableKey: 'customSurvivalPlots',
-        });
-        dispatchUpdateClinicalVariable({
+        }));
+        dispatch(updateClinicalAnalysisVariable({
+          fieldName,
+          id,
           value: true,
           variableKey: 'isSurvivalCustom',
-        });
-        dispatchUpdateClinicalVariable({
+        }));
+        dispatch(updateClinicalAnalysisVariable({
+          fieldName,
+          id,
           value: survivalDeselectedAndDuplicatesRemoved.length === 0,
           variableKey: 'showOverallSurvival',
-        });
+        }));
       },
     })
   ),
@@ -141,15 +150,19 @@ export default compose(
     componentDidMount(): void {
       const {
         binsOrganizedByKey,
-        dispatchUpdateClinicalVariable,
+        dispatch,
+        fieldName,
+        id,
         variable,
         wrapperId,
       } = this.props;
       if (variable.bins === undefined || isEmpty(variable.bins)) {
-        dispatchUpdateClinicalVariable({
+        dispatch(updateClinicalAnalysisVariable({
+          fieldName,
+          id,
           value: binsOrganizedByKey,
           variableKey: 'bins',
-        });
+        }));
       }
 
       if (variable.scrollToCard) {
@@ -163,10 +176,12 @@ export default compose(
             top: offsetTop - offset,
           });
         }
-        dispatchUpdateClinicalVariable({
+        dispatch(updateClinicalAnalysisVariable({
+          fieldName,
+          id,
           value: false,
           variableKey: 'scrollToCard',
-        });
+        }));
       }
     },
   })

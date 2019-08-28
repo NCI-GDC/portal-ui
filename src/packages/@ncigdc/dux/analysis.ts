@@ -16,6 +16,7 @@ const sets: any = namespaceActions('sets', [
   'ADD_CLINICAL_ANALYSIS_VARIABLE',
   'REMOVE_CLINICAL_ANALYSIS_VARIABLE',
   'UPDATE_CLINICAL_ANALYSIS_VARIABLE',
+  'UPDATE_CLINICAL_ANALYSIS_VARIABLE_MULTI',
   'UPDATE_CLINICAL_ANALYSIS_PROPERTY',
   'UPDATE_CLINICAL_ANALYSIS_SET',
 ]);
@@ -47,16 +48,23 @@ export interface IAnalysisPayload extends IAnalysis {
   continuousBinType?: 'default' | 'interval' | 'range';
   customInterval?: any;
   customRanges?: any;
-  id: string;
   fieldName?: string;
   fieldType?: string;
+  id: string;
   plotTypes?: 'categorical' | 'continuous';
   property?: TClinicalAnalysisProperty;
   scrollToCard?: boolean;
   setId?: string;
   setName?: string;
   value?: string;
+  variable?: any;
   variableKey?: string;
+}
+
+interface IAnalysisMultiPayload extends IAnalysis {
+  id: string;
+  fieldName: string;
+  newState: object;
 }
 
 interface IAnalysisAction {
@@ -90,6 +98,11 @@ const removeClinicalAnalysisVariable = (payload: IAnalysisPayload) => ({
 
 const updateClinicalAnalysisVariable = (payload: IAnalysisPayload) => ({
   type: sets.UPDATE_CLINICAL_ANALYSIS_VARIABLE,
+  payload,
+});
+
+const updateClinicalAnalysisVariableMulti = (payload: IAnalysisMultiPayload) => ({
+  type: sets.UPDATE_CLINICAL_ANALYSIS_VARIABLE_MULTI,
   payload,
 });
 
@@ -283,6 +296,36 @@ const reducer = (
         );
     }
 
+    // updates multiple values in displayVariables
+    case sets.UPDATE_CLINICAL_ANALYSIS_VARIABLE_MULTI: {
+      const { currentAnalysisIndex, currentAnalysis } = getCurrentAnalysis(
+        state,
+        action.payload.id
+      );
+
+      return currentAnalysisIndex < 0
+        ? state
+        : Object.assign(
+          {},
+          state,
+          {
+            saved: state.saved.slice(0, currentAnalysisIndex)
+              .concat(Object.assign(
+                {},
+                currentAnalysis,
+                {
+                  displayVariables: Object.assign(
+                    {},
+                    currentAnalysis.displayVariables,
+                    action.payload.variable,
+                  ),
+                },
+              ))
+              .concat(state.saved.slice(currentAnalysisIndex + 1, Infinity)),
+          },
+        );
+    }
+
     // updates non-variable key in analysis
     case sets.UPDATE_CLINICAL_ANALYSIS_PROPERTY: {
       const { currentAnalysisIndex, currentAnalysis } = getCurrentAnalysis(
@@ -347,13 +390,14 @@ const reducer = (
 
 export {
   addAnalysis,
-  removeAnalysis,
-  removeAllAnalysis,
   addClinicalAnalysisVariable,
+  removeAllAnalysis,
+  removeAnalysis,
   removeClinicalAnalysisVariable,
-  updateClinicalAnalysisVariable,
+  updateClinicalAnalysisVariableMulti,
   updateClinicalAnalysisProperty,
   updateClinicalAnalysisSet,
+  updateClinicalAnalysisVariable,
 };
 
 export default reducer;

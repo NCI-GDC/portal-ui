@@ -16,7 +16,6 @@ const sets: any = namespaceActions('sets', [
   'ADD_CLINICAL_ANALYSIS_VARIABLE',
   'REMOVE_CLINICAL_ANALYSIS_VARIABLE',
   'UPDATE_CLINICAL_ANALYSIS_VARIABLE',
-  'UPDATE_CLINICAL_ANALYSIS_VARIABLE_MULTI',
   'UPDATE_CLINICAL_ANALYSIS_PROPERTY',
   'UPDATE_CLINICAL_ANALYSIS_SET',
 ]);
@@ -33,13 +32,6 @@ interface IAnalysis {
 interface IAnalysisState {
   saved: IAnalysis[];
 }
-
-type TClinicalAnalyisVariableKey =
-  | 'active_chart'
-  | 'active_calculation'
-  | 'bins'
-  | 'type'
-  | 'plotTypes';
 
 type TClinicalAnalysisProperty = 'name'; // only type mutable properties
 
@@ -96,13 +88,8 @@ const removeClinicalAnalysisVariable = (payload: IAnalysisPayload) => ({
   payload,
 });
 
-const updateClinicalAnalysisVariable = (payload: IAnalysisPayload) => ({
+const updateClinicalAnalysisVariable = (payload: IAnalysisMultiPayload) => ({
   type: sets.UPDATE_CLINICAL_ANALYSIS_VARIABLE,
-  payload,
-});
-
-const updateClinicalAnalysisVariableMulti = (payload: IAnalysisMultiPayload) => ({
-  type: sets.UPDATE_CLINICAL_ANALYSIS_VARIABLE_MULTI,
   payload,
 });
 
@@ -257,47 +244,8 @@ const reducer = (
         );
     }
 
-    // updates value for single variable
-    case sets.UPDATE_CLINICAL_ANALYSIS_VARIABLE: {
-      const { currentAnalysisIndex, currentAnalysis } = getCurrentAnalysis(
-        state,
-        action.payload.id
-      );
-
-      return currentAnalysisIndex < 0
-        ? state
-        : Object.assign(
-          {},
-          state,
-          {
-            saved: state.saved.slice(0, currentAnalysisIndex)
-              .concat(Object.assign(
-                {},
-                currentAnalysis,
-                {
-                  displayVariables: Object.assign(
-                    {},
-                    currentAnalysis.displayVariables,
-                    {
-                      [action.payload.fieldName as string]: Object.assign(
-                        {},
-                        currentAnalysis.displayVariables[action.payload.fieldName as string],
-                        {
-                          [action.payload.variableKey as TClinicalAnalyisVariableKey]: action.payload
-                            .value,
-                        }
-                      ),
-                    },
-                  ),
-                },
-              ))
-              .concat(state.saved.slice(currentAnalysisIndex + 1, Infinity)),
-          },
-        );
-    }
-
     // updates multiple values in displayVariables
-    case sets.UPDATE_CLINICAL_ANALYSIS_VARIABLE_MULTI: {
+    case sets.UPDATE_CLINICAL_ANALYSIS_VARIABLE: {
       const { currentAnalysisIndex, currentAnalysis } = getCurrentAnalysis(
         state,
         action.payload.id,
@@ -400,7 +348,6 @@ export {
   removeAllAnalysis,
   removeAnalysis,
   removeClinicalAnalysisVariable,
-  updateClinicalAnalysisVariableMulti,
   updateClinicalAnalysisProperty,
   updateClinicalAnalysisSet,
   updateClinicalAnalysisVariable,

@@ -19,7 +19,7 @@ import {
   MAXIMUM_CURVES,
 } from '@ncigdc/utils/survivalplot';
 import { withTheme } from '@ncigdc/theme';
-import { updateClinicalAnalysisVariable, } from '@ncigdc/dux/analysis';
+import { updateClinicalAnalysisVariable } from '@ncigdc/dux/analysis';
 
 import { makeDocCountInteger } from './helpers';
 import ClinicalVariableCard from './ClinicalVariableCard';
@@ -109,24 +109,15 @@ export default compose(
 
         const survivalDeselectedAndDuplicatesRemoved = uniq(nextSelectedBins
           .filter(filterBin => !(isSelected && filterBin.name === bin.displayName)));
-
+        
         dispatch(updateClinicalAnalysisVariable({
           fieldName,
           id,
-          value: survivalDeselectedAndDuplicatesRemoved,
-          variableKey: 'customSurvivalPlots',
-        }));
-        dispatch(updateClinicalAnalysisVariable({
-          fieldName,
-          id,
-          value: true,
-          variableKey: 'isSurvivalCustom',
-        }));
-        dispatch(updateClinicalAnalysisVariable({
-          fieldName,
-          id,
-          value: survivalDeselectedAndDuplicatesRemoved.length === 0,
-          variableKey: 'showOverallSurvival',
+          variable: {
+            customSurvivalPlots: survivalDeselectedAndDuplicatesRemoved,
+            isSurvivalCustom: true,
+            showOverallSurvival: survivalDeselectedAndDuplicatesRemoved.length === 0,
+          }
         }));
       },
     })
@@ -160,8 +151,9 @@ export default compose(
         dispatch(updateClinicalAnalysisVariable({
           fieldName,
           id,
-          value: binsOrganizedByKey,
-          variableKey: 'bins',
+          variable: {
+            bins: binsOrganizedByKey
+          },
         }));
       }
 
@@ -179,8 +171,9 @@ export default compose(
         dispatch(updateClinicalAnalysisVariable({
           fieldName,
           id,
-          value: false,
-          variableKey: 'scrollToCard',
+          variable: {
+            scrollToCard: false,
+          },
         }));
       }
     },

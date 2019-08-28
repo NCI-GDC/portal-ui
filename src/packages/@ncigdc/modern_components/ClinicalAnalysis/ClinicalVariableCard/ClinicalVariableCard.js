@@ -32,8 +32,7 @@ import {
 } from '@ncigdc/utils/string';
 import {
   removeClinicalAnalysisVariable,
-  updateClinicalAnalysisVariable,
-} from '@ncigdc/dux/analysis';
+  updateClinicalAnalysisVariable } from '@ncigdc/dux/analysis';
 import { MAXIMUM_CURVES, MINIMUM_CASES } from '@ncigdc/utils/survivalplot';
 
 import ActionsDropdown from './components/ActionsDropdown';
@@ -285,8 +284,9 @@ const ClinicalVariableCard = ({
                       vizButtons[plotType].action({
                         fieldName,
                         id,
-                        value: plotType,
-                        variableKey: 'active_chart',
+                        variable: {
+                          active_chart: plotType
+                        },
                       })
                     );
                   }}

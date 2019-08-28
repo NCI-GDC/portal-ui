@@ -24,7 +24,7 @@ import {
 } from '@ncigdc/utils/string';
 import { setModal } from '@ncigdc/dux/modal';
 import { DAYS_IN_YEAR } from '@ncigdc/utils/ageDisplay';
-import { updateClinicalAnalysisVariableMulti } from '@ncigdc/dux/analysis';
+import { updateClinicalAnalysisVariable } from '@ncigdc/dux/analysis';
 
 import ContinuousCustomBinsModal from './modals/ContinuousCustomBinsModal';
 import {
@@ -135,7 +135,7 @@ export default compose(
             customRanges,
             continuousReset,
           ) => {
-            dispatch(updateClinicalAnalysisVariableMulti({
+            dispatch(updateClinicalAnalysisVariable({
               fieldName,
               id,
               variable: {
@@ -243,7 +243,7 @@ export default compose(
       id,
       variable: { bins, continuousBinType },
     }) => {
-      dispatch(updateClinicalAnalysisVariableMulti({
+      dispatch(updateClinicalAnalysisVariable({
         fieldName,
         id,
         variable: {
@@ -441,7 +441,7 @@ export default compose(
         const survivalTableValues = survivalBins
           .map(bin => bin.displayName);
 
-        dispatch(updateClinicalAnalysisVariableMulti({
+        dispatch(updateClinicalAnalysisVariable({
           fieldName,
           id,
           variable: {
@@ -482,7 +482,7 @@ export default compose(
     }) => ({
       resetBins: () => {
         if (binsAreCustom) {
-          dispatch(updateClinicalAnalysisVariableMulti({
+          dispatch(updateClinicalAnalysisVariable({
             fieldName,
             id,
             variable: {

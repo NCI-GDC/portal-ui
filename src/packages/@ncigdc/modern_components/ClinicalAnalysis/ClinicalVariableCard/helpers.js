@@ -1,7 +1,6 @@
 import React from 'react';
 import { compose, withPropsOnChange } from 'recompose';
 
-import { updateClinicalAnalysisVariable, } from '@ncigdc/dux/analysis';
 import {
   get,
   groupBy,

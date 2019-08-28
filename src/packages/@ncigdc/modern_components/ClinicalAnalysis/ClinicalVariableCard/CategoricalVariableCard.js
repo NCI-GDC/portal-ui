@@ -19,7 +19,7 @@ import { setModal } from '@ncigdc/dux/modal';
 import { humanify } from '@ncigdc/utils/string';
 import { withTheme } from '@ncigdc/theme';
 import CategoricalCustomBinsModal from './modals/CategoricalCustomBinsModal';
-import { updateClinicalAnalysisVariableMulti } from '@ncigdc/dux/analysis';
+import { updateClinicalAnalysisVariable } from '@ncigdc/dux/analysis';
 
 import {
   dataDimensions,
@@ -65,7 +65,7 @@ export default compose(
       id,
       variable,
     }) => {
-      dispatch(updateClinicalAnalysisVariableMulti({ 
+      dispatch(updateClinicalAnalysisVariable({ 
         fieldName, 
         id,
         variable: {
@@ -144,7 +144,7 @@ export default compose(
       const survivalTableValues = survivalBins.map(bin => bin.key);
       
       if (isSurvivalCustom) {
-        dispatch(updateClinicalAnalysisVariableMulti({ 
+        dispatch(updateClinicalAnalysisVariable({ 
           fieldName, 
           id,
           variable: {
@@ -179,7 +179,7 @@ export default compose(
       variable: { isSurvivalCustom }
     }) => ({
       resetBins: () => {
-        dispatch(updateClinicalAnalysisVariableMulti({
+        dispatch(updateClinicalAnalysisVariable({
           fieldName,
           id,
           variable: {
@@ -284,7 +284,7 @@ export default compose(
           }}
           onClose={() => dispatch(setModal(null))}
           onUpdate={(newBins) => {
-            dispatch(updateClinicalAnalysisVariableMulti({ 
+            dispatch(updateClinicalAnalysisVariable({ 
               fieldName,
               id,
               variable: {

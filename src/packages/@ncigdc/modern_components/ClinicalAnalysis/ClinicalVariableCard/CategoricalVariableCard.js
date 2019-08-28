@@ -19,10 +19,7 @@ import { setModal } from '@ncigdc/dux/modal';
 import { humanify } from '@ncigdc/utils/string';
 import { withTheme } from '@ncigdc/theme';
 import CategoricalCustomBinsModal from './modals/CategoricalCustomBinsModal';
-import { 
-  updateClinicalAnalysisVariable,
-  updateClinicalAnalysisVariableMulti,
-} from '@ncigdc/dux/analysis';
+import { updateClinicalAnalysisVariableMulti } from '@ncigdc/dux/analysis';
 
 import {
   dataDimensions,
@@ -63,44 +60,49 @@ export default compose(
       props.setId !== nextProps.setId,
     ({
       dataBuckets,
-      dispatch, fieldName, id,
+      dispatch, 
+      fieldName, 
+      id,
       variable,
     }) => {
-      dispatch(updateClinicalAnalysisVariable({ fieldName, id,
-        value: Object.assign(
-          {},
-          reduce(variable.bins, (acc, bin, key) => Object.assign(
+      dispatch(updateClinicalAnalysisVariableMulti({ 
+        fieldName, 
+        id,
+        variable: {
+          bins: Object.assign(
             {},
-            acc,
-            bin.groupName && bin.groupName !== key
-              ? {
-                [key]: {
-                  doc_count: 0,
-                  groupName: bin.groupName,
-                  key,
-                },
+            reduce(variable.bins, (acc, bin, key) => Object.assign(
+              {},
+              acc,
+              bin.groupName && bin.groupName !== key
+                ? {
+                  [key]: {
+                    doc_count: 0,
+                    groupName: bin.groupName,
+                    key,
+                  },
+                }
+                : {}
+            ), {}),
+            dataBuckets.reduce((acc, bucket) => Object.assign(
+              {},
+              acc,
+              {
+                [bucket.key]: Object.assign(
+                  {},
+                  bucket,
+                  {
+                    groupName:
+                    typeof get(variable, `bins.${bucket.key}.groupName`, undefined) === 'string'
+                      // hidden value have groupName '', so check if it is string
+                      ? get(variable, `bins.${bucket.key}.groupName`, undefined)
+                      : bucket.key,
+                  },
+                ),
               }
-              : {}
-          ), {}),
-          dataBuckets.reduce((acc, bucket) => Object.assign(
-            {},
-            acc,
-            {
-              [bucket.key]: Object.assign(
-                {},
-                bucket,
-                {
-                  groupName:
-                  typeof get(variable, `bins.${bucket.key}.groupName`, undefined) === 'string'
-                    // hidden value have groupName '', so check if it is string
-                    ? get(variable, `bins.${bucket.key}.groupName`, undefined)
-                    : bucket.key,
-                },
-              ),
-            }
-          ), {}),
-        ),
-        variableKey: 'bins',
+            ), {}),
+          ),
+        },
       }));
     }
   ),
@@ -120,7 +122,9 @@ export default compose(
     props.variable.isSurvivalCustom !== nextProps.variable.isSurvivalCustom),
     ({
       binData,
-      dispatch, fieldName, id,
+      dispatch,
+      fieldName,
+      id,
       variable: { customSurvivalPlots, isSurvivalCustom },
     }) => {
       const binDataSelected = isSurvivalCustom
@@ -140,9 +144,12 @@ export default compose(
       const survivalTableValues = survivalBins.map(bin => bin.key);
       
       if (isSurvivalCustom) {
-        dispatch(updateClinicalAnalysisVariable({ fieldName, id,
-          value: survivalTableValues,
-          variableKey: 'customSurvivalPlots',
+        dispatch(updateClinicalAnalysisVariableMulti({ 
+          fieldName, 
+          id,
+          variable: {
+            customSurvivalPlots: survivalTableValues
+          },
         }));
       }
 
@@ -193,11 +200,7 @@ export default compose(
               }
               : {},
             ...isSurvivalCustom
-              ? {
-                customSurvivalPlots: [],
-                isSurvivalCustom: false,
-                showOverallSurvival: false,
-              }
+              ? resetVariableDefaults.survival
               : {},
         }}));
       },
@@ -281,21 +284,13 @@ export default compose(
           }}
           onClose={() => dispatch(setModal(null))}
           onUpdate={(newBins) => {
-            dispatch(updateClinicalAnalysisVariable({ fieldName, id,
-              value: newBins,
-              variableKey: 'bins',
-            }));
-            dispatch(updateClinicalAnalysisVariable({ fieldName, id,
-              value: [],
-              variableKey: 'customSurvivalPlots'
-            }));
-            dispatch(updateClinicalAnalysisVariable({ fieldName, id,
-              value: false,
-              variableKey: 'isSurvivalCustom',
-            }));
-            dispatch(updateClinicalAnalysisVariable({ fieldName, id,
-              value: false,
-              variableKey: 'showOverallSurvival',
+            dispatch(updateClinicalAnalysisVariableMulti({ 
+              fieldName,
+              id,
+              variable: {
+                bins: newBins,
+                ...resetVariableDefaults.survival,
+              },
             }));
             dispatch(setModal(null));
           }}

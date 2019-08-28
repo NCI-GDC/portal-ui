@@ -300,7 +300,7 @@ const reducer = (
     case sets.UPDATE_CLINICAL_ANALYSIS_VARIABLE_MULTI: {
       const { currentAnalysisIndex, currentAnalysis } = getCurrentAnalysis(
         state,
-        action.payload.id
+        action.payload.id,
       );
 
       return currentAnalysisIndex < 0
@@ -317,7 +317,13 @@ const reducer = (
                   displayVariables: Object.assign(
                     {},
                     currentAnalysis.displayVariables,
-                    action.payload.variable,
+                    {
+                      [action.payload.fieldName as string]: Object.assign(
+                        {},
+                        currentAnalysis.displayVariables[action.payload.fieldName as string],
+                        action.payload.variable,
+                      ),
+                    },
                   ),
                 },
               ))

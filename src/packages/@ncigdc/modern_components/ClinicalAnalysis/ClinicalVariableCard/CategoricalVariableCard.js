@@ -30,6 +30,7 @@ import {
   getBinData,
   getCountLink,
   getRawQueryData,
+  resetVariableDefaults,
 } from './helpers';
 import EnhancedClinicalVariableCard from './EnhancedClinicalVariableCard';
 import { MINIMUM_CASES } from '@ncigdc/utils/survivalplot';
@@ -165,41 +166,40 @@ export default compose(
     ({
       binsAreCustom,
       dataBuckets,
-      dispatch, fieldName, id,
+      dispatch, 
+      fieldName, 
+      id,
       variable: { isSurvivalCustom }
     }) => ({
       resetBins: () => {
-        if (binsAreCustom) {
-          dispatch(updateClinicalAnalysisVariable({ fieldName, id,
-            value: dataBuckets
-              .reduce((acc, bucket) => Object.assign(
-                {},
-                acc,
-                {
-                  [bucket.key]: Object.assign(
-                    {},
-                    bucket,
-                    { groupName: bucket.key }
-                  ),
-                }
-              ), {}),
-            variableKey: 'bins',
-          }));
-        }
-        if (isSurvivalCustom) {
-          dispatch(updateClinicalAnalysisVariable({ fieldName, id,
-            value: false,
-            variableKey: 'isSurvivalCustom',
-          }));
-          dispatch(updateClinicalAnalysisVariable({ fieldName, id,
-            value: [],
-            variableKey: 'customSurvivalPlots',
-          }));
-          dispatch(updateClinicalAnalysisVariable({ fieldName, id,
-            value: false,
-            variableKey: 'showOverallSurvival',
-          }));
-        }
+        dispatch(updateClinicalAnalysisVariableMulti({
+          fieldName,
+          id,
+          variable: {
+            ...binsAreCustom
+              ? { 
+                bins: dataBuckets
+                .reduce((acc, bucket) => Object.assign(
+                  {},
+                  acc,
+                  {
+                    [bucket.key]: Object.assign(
+                      {},
+                      bucket,
+                      { groupName: bucket.key }
+                    ),
+                  }
+                ), {})
+              }
+              : {},
+            ...isSurvivalCustom
+              ? {
+                customSurvivalPlots: [],
+                isSurvivalCustom: false,
+                showOverallSurvival: false,
+              }
+              : {},
+        }}));
       },
     })
   ),

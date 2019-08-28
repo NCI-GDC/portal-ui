@@ -322,18 +322,21 @@ export default compose(
         {},
         binData,
         {
-          getContinuousBins: (acc, { doc_count, key, keyArray }) => {
+          getContinuousBins: (acc, { doc_count, groupName = '', key, keyArray = [] }) => {
             const keyValues = parseContinuousKey(key);
             // survival doesn't have keyArray
-            const keyArrayValues = keyArray
+            const keyArrayValues = keyArray.length > 0
               ? parseContinuousKey(keyArray[0])
               : keyValues;
 
-            const groupName = keyValues.length === 2 &&
-              isFinite(keyValues[0]) &&
-              isFinite(keyValues[1])
-              ? createContinuousGroupName(key)
-              : key;
+            const groupNameFormatted = groupName !== '' &&
+              variable.continuousBinType === 'range'
+              ? groupName
+              : keyValues.length === 2 &&
+                  isFinite(keyValues[0]) &&
+                  isFinite(keyValues[1])
+                    ? createContinuousGroupName(key)
+                    : key;
 
             const [keyMin, keyMax] = keyArrayValues;
             const filters = {
@@ -366,14 +369,14 @@ export default compose(
             return acc.concat(
               {
                 chart_doc_count: doc_count,
-                displayName: groupName,
+                displayName: groupNameFormatted,
                 doc_count: getCountLink({
                   doc_count,
                   filters,
                   totalDocs,
                 }),
                 filters,
-                groupName,
+                groupName: groupNameFormatted,
                 key: `${keyMin}-${keyMax}`,
                 rangeValues: {
                   max: keyMax,
@@ -437,15 +440,16 @@ export default compose(
           filters: bin.filters,
           key: bin.key,
         }));
-
         const survivalTableValues = survivalBins
+          .map(bin => bin.displayName);
+        const nextCustomSurvivalPlots = customBinMatches
           .map(bin => bin.displayName);
 
         dispatch(updateClinicalAnalysisVariable({
           fieldName,
           id,
           variable: {
-            customSurvivalPlots: customBinMatches.map(bin => bin.displayName),
+            customSurvivalPlots: nextCustomSurvivalPlots,
             isSurvivalCustom: isUsingCustomSurvival,
             showOverallSurvival: false,
           }

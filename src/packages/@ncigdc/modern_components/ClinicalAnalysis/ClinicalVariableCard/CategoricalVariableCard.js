@@ -183,6 +183,7 @@ export default compose(
           fieldName,
           id,
           variable: {
+            ...resetVariableDefaults.survival,
             ...binsAreCustom
               ? { 
                 bins: dataBuckets
@@ -198,9 +199,6 @@ export default compose(
                   }
                 ), {})
               }
-              : {},
-            ...isSurvivalCustom
-              ? resetVariableDefaults.survival
               : {},
         }}));
       },

@@ -481,23 +481,19 @@ export default compose(
       variable: { isSurvivalCustom },
     }) => ({
       resetBins: () => {
-        if (binsAreCustom) {
-          dispatch(updateClinicalAnalysisVariable({
-            fieldName,
-            id,
-            variable: {
-              ...binsAreCustom
-                ? {
-                  bins,
-                  ...resetVariableDefaults.continuous,
-                }
-                : {},
-              ...isSurvivalCustom
-                ? resetVariableDefaults.survival
-                : {},
-            }
-          })); 
-        }
+        dispatch(updateClinicalAnalysisVariable({
+          fieldName,
+          id,
+          variable: {
+            ...resetVariableDefaults.survival,
+            ...binsAreCustom
+              ? {
+                bins,
+                ...resetVariableDefaults.continuous,
+              }
+              : {},
+          }
+        }));
       },
     })
   ),

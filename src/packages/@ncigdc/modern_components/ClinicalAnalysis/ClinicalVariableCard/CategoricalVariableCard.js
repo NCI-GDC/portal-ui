@@ -121,9 +121,7 @@ export default compose(
       variable: { customSurvivalPlots, isSurvivalCustom },
     }) => {
       const binDataSelected = isSurvivalCustom
-        ? binData
-          .filter(bin => customSurvivalPlots.indexOf(bin.key) >= 0)
-          .filter(bin => bin.doc_count >= MINIMUM_CASES)
+        ? binData.filter(bin => customSurvivalPlots.indexOf(bin.key) >= 0)
         : binData;
       
       const survivalBins = filterSurvivalData(
@@ -135,17 +133,15 @@ export default compose(
         )
         .slice(0, isSurvivalCustom ? Infinity : 2);
       
+      const survivalPlotValues = survivalBins.map(bin => bin.keyArray);
+      const survivalTableValues = survivalBins.map(bin => bin.key);
+      
       if (isSurvivalCustom) {
-        const nextCustomSurvivalPlots = binDataSelected
-          .map(bin =>  bin.key);
         dispatchUpdateClinicalVariable({
-          value: nextCustomSurvivalPlots,
+          value: survivalTableValues,
           variableKey: 'customSurvivalPlots',
         });
       }
-
-      const survivalPlotValues = survivalBins.map(bin => bin.keyArray);
-      const survivalTableValues = survivalBins.map(bin => bin.key);
 
       return { survivalPlotValues, survivalTableValues };
     }
@@ -200,7 +196,7 @@ export default compose(
           dispatchUpdateClinicalVariable({
             value: false,
             variableKey: 'showOverallSurvival',
-          })
+          });
         }
       },
     })

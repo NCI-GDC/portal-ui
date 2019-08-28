@@ -184,22 +184,18 @@ export default compose(
           id,
           variable: {
             ...resetVariableDefaults.survival,
-            ...binsAreCustom
-              ? { 
-                bins: dataBuckets
-                .reduce((acc, bucket) => Object.assign(
-                  {},
-                  acc,
-                  {
-                    [bucket.key]: Object.assign(
-                      {},
-                      bucket,
-                      { groupName: bucket.key }
-                    ),
-                  }
-                ), {})
-              }
-              : {},
+            bins: dataBuckets
+              .reduce((acc, bucket) => Object.assign(
+                {},
+                acc,
+                {
+                  [bucket.key]: Object.assign(
+                    {},
+                    bucket,
+                    { groupName: bucket.key }
+                  ),
+                }
+              ), {})
         }}));
       },
     })

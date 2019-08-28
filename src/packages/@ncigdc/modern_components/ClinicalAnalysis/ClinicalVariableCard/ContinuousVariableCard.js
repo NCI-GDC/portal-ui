@@ -485,13 +485,9 @@ export default compose(
           fieldName,
           id,
           variable: {
+            bins,
             ...resetVariableDefaults.survival,
-            ...binsAreCustom
-              ? {
-                bins,
-                ...resetVariableDefaults.continuous,
-              }
-              : {},
+            ...resetVariableDefaults.continuous,
           }
         }));
       },

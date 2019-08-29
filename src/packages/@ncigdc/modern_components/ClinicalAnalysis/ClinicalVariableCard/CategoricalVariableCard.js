@@ -7,6 +7,7 @@ import {
 } from 'recompose';
 import { connect } from 'react-redux';
 import {
+  find,
   get,
   isEmpty,
   isEqual,
@@ -18,22 +19,23 @@ import { setModal } from '@ncigdc/dux/modal';
 import { humanify } from '@ncigdc/utils/string';
 import { withTheme } from '@ncigdc/theme';
 import CategoricalCustomBinsModal from './modals/CategoricalCustomBinsModal';
+import { updateClinicalAnalysisVariable } from '@ncigdc/dux/analysis';
 
 import {
   dataDimensions,
-  dispatchUpdateClinicalVariable,
   filterSurvivalData,
   getBinData,
   getCountLink,
   getRawQueryData,
+  resetVariableDefaults,
 } from './helpers';
 import EnhancedClinicalVariableCard from './EnhancedClinicalVariableCard';
+import { MINIMUM_CASES } from '@ncigdc/utils/survivalplot';
 
 export default compose(
   setDisplayName('EnhancedCategoricalVariableCard'),
   connect((state: any) => ({ analysis: state.analysis })),
   withTheme,
-  dispatchUpdateClinicalVariable,
   withPropsOnChange(
     (props, nextProps) => !isEqual(props.data, nextProps.data),
     ({ data, fieldName }) => {
@@ -58,45 +60,50 @@ export default compose(
       props.setId !== nextProps.setId,
     ({
       dataBuckets,
-      dispatchUpdateClinicalVariable,
+      dispatch, 
+      fieldName, 
+      id,
       variable,
     }) => {
-      dispatchUpdateClinicalVariable({
-        value: Object.assign(
-          {},
-          reduce(variable.bins, (acc, bin, key) => Object.assign(
+      dispatch(updateClinicalAnalysisVariable({ 
+        fieldName, 
+        id,
+        variable: {
+          bins: Object.assign(
             {},
-            acc,
-            bin.groupName && bin.groupName !== key
-              ? {
-                [key]: {
-                  doc_count: 0,
-                  groupName: bin.groupName,
-                  key,
-                },
+            reduce(variable.bins, (acc, bin, key) => Object.assign(
+              {},
+              acc,
+              bin.groupName && bin.groupName !== key
+                ? {
+                  [key]: {
+                    doc_count: 0,
+                    groupName: bin.groupName,
+                    key,
+                  },
+                }
+                : {}
+            ), {}),
+            dataBuckets.reduce((acc, bucket) => Object.assign(
+              {},
+              acc,
+              {
+                [bucket.key]: Object.assign(
+                  {},
+                  bucket,
+                  {
+                    groupName:
+                    typeof get(variable, `bins.${bucket.key}.groupName`, undefined) === 'string'
+                      // hidden value have groupName '', so check if it is string
+                      ? get(variable, `bins.${bucket.key}.groupName`, undefined)
+                      : bucket.key,
+                  },
+                ),
               }
-              : {}
-          ), {}),
-          dataBuckets.reduce((acc, bucket) => Object.assign(
-            {},
-            acc,
-            {
-              [bucket.key]: Object.assign(
-                {},
-                bucket,
-                {
-                  groupName:
-                  typeof get(variable, `bins.${bucket.key}.groupName`, undefined) === 'string'
-                    // hidden value have groupName '', so check if it is string
-                    ? get(variable, `bins.${bucket.key}.groupName`, undefined)
-                    : bucket.key,
-                },
-              ),
-            }
-          ), {}),
-        ),
-        variableKey: 'bins',
-      });
+            ), {}),
+          ),
+        },
+      }));
     }
   ),
   withProps(
@@ -105,21 +112,50 @@ export default compose(
       variable: { bins },
     }) => getBinData(bins, dataBuckets)
   ),
-  withProps(({ binData }) => {
-    const survivalBins = filterSurvivalData(
-      binData
-        .map(bin => ({
-          ...bin,
-          chart_doc_count: bin.doc_count,
-        }))
-    )
-      .slice(0, 2);
+  withPropsOnChange((props, nextProps) =>
+  nextProps.variable.active_chart === 'survival' &&
+    (!isEqual(props.variable.bins, nextProps.variable.bins) ||
+    props.variable.active_chart !== nextProps.variable.active_chart ||
+    !isEqual(props.selectedSurvivalBins, nextProps.selectedSurvivalBins) ||
+    props.variable.setId !== nextProps.variable.setId ||
+    !isEqual(props.variable.customSurvivalPlots, nextProps.variable.customSurvivalPlots) ||
+    props.variable.isSurvivalCustom !== nextProps.variable.isSurvivalCustom),
+    ({
+      binData,
+      dispatch,
+      fieldName,
+      id,
+      variable: { customSurvivalPlots, isSurvivalCustom },
+    }) => {
+      const binDataSelected = isSurvivalCustom
+        ? binData.filter(bin => customSurvivalPlots.indexOf(bin.key) >= 0)
+        : binData;
+      
+      const survivalBins = filterSurvivalData(
+        binDataSelected
+          .map(bin => ({
+            ...bin,
+            chart_doc_count: bin.doc_count,
+          }))
+        )
+        .slice(0, isSurvivalCustom ? Infinity : 2);
+      
+      const survivalPlotValues = survivalBins.map(bin => bin.keyArray);
+      const survivalTableValues = survivalBins.map(bin => bin.key);
+      
+      if (isSurvivalCustom) {
+        dispatch(updateClinicalAnalysisVariable({ 
+          fieldName, 
+          id,
+          variable: {
+            customSurvivalPlots: survivalTableValues
+          },
+        }));
+      }
 
-    return {
-      survivalPlotValues: survivalBins.map(bin => bin.keyArray),
-      survivalTableValues: survivalBins.map(bin => bin.key),
-    };
-  }),
+      return { survivalPlotValues, survivalTableValues };
+    }
+  ),
   withPropsOnChange(
     (props, nextProps) =>
       !isEqual(props.variable.bins, nextProps.variable.bins),
@@ -132,16 +168,23 @@ export default compose(
   withPropsOnChange(
     (props, nextProps) =>
       props.binsAreCustom !== nextProps.binsAreCustom ||
-      !isEqual(props.dataBuckets, nextProps.dataBuckets),
+      !isEqual(props.dataBuckets, nextProps.dataBuckets ||
+      props.variable.isSurvivalCustom !== nextProps.variable.isSurvivalCustom),
     ({
       binsAreCustom,
       dataBuckets,
-      dispatchUpdateClinicalVariable,
+      dispatch, 
+      fieldName, 
+      id,
+      variable: { isSurvivalCustom }
     }) => ({
       resetBins: () => {
-        if (binsAreCustom) {
-          dispatchUpdateClinicalVariable({
-            value: dataBuckets
+        dispatch(updateClinicalAnalysisVariable({
+          fieldName,
+          id,
+          variable: {
+            ...resetVariableDefaults.survival,
+            bins: dataBuckets
               .reduce((acc, bucket) => Object.assign(
                 {},
                 acc,
@@ -152,10 +195,8 @@ export default compose(
                     { groupName: bucket.key }
                   ),
                 }
-              ), {}),
-            variableKey: 'bins',
-          });
-        }
+              ), {})
+        }}));
       },
     })
   ),
@@ -223,9 +264,7 @@ export default compose(
       !isEqual(props.dataBuckets, nextProps.dataBuckets),
     ({
       dataBuckets,
-      dispatch,
-      dispatchUpdateClinicalVariable,
-      fieldName,
+      dispatch, fieldName, id,
       variable: { bins },
     }) => ({
       openCustomBinModal: () => dispatch(setModal(
@@ -239,10 +278,14 @@ export default compose(
           }}
           onClose={() => dispatch(setModal(null))}
           onUpdate={(newBins) => {
-            dispatchUpdateClinicalVariable({
-              value: newBins,
-              variableKey: 'bins',
-            });
+            dispatch(updateClinicalAnalysisVariable({ 
+              fieldName,
+              id,
+              variable: {
+                bins: newBins,
+                ...resetVariableDefaults.survival,
+              },
+            }));
             dispatch(setModal(null));
           }}
           />

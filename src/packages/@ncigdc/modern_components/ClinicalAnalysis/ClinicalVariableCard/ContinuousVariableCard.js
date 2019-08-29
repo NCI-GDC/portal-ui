@@ -9,6 +9,7 @@ import {
 } from 'recompose';
 import { connect } from 'react-redux';
 import {
+  find,
   get,
   isEmpty,
   isEqual,
@@ -23,12 +24,12 @@ import {
 } from '@ncigdc/utils/string';
 import { setModal } from '@ncigdc/dux/modal';
 import { DAYS_IN_YEAR } from '@ncigdc/utils/ageDisplay';
+import { updateClinicalAnalysisVariable } from '@ncigdc/dux/analysis';
 
 import ContinuousCustomBinsModal from './modals/ContinuousCustomBinsModal';
 import {
   createContinuousGroupName,
   dataDimensions,
-  dispatchUpdateClinicalVariable,
   filterSurvivalData,
   getBinData,
   getCountLink,
@@ -39,6 +40,7 @@ import {
   DEFAULT_BIN_TYPE,
   DEFAULT_INTERVAL,
   DEFAULT_RANGES,
+  resetVariableDefaults,
 } from './helpers';
 import EnhancedClinicalVariableCard from './EnhancedClinicalVariableCard';
 
@@ -46,7 +48,6 @@ export default compose(
   setDisplayName('EnhancedContinuousVariableCard'),
   connect((state: any) => ({ analysis: state.analysis })),
   withTheme,
-  dispatchUpdateClinicalVariable,
   withState('qqData', 'setQQData', []),
   withState('qqDataIsSet', 'setQQDataIsSet', false),
   withProps(({ data: { explore }, fieldName }) => {
@@ -115,8 +116,8 @@ export default compose(
     ({
       defaultData,
       dispatch,
-      dispatchUpdateClinicalVariable,
       fieldName,
+      id,
       variable,
     }) => ({
       openCustomBinModal: () => dispatch(setModal(
@@ -134,48 +135,36 @@ export default compose(
             customRanges,
             continuousReset,
           ) => {
-            dispatchUpdateClinicalVariable({
-              value: continuousReset
-                ? defaultData.bins
-                : newBins,
-              variableKey: 'bins',
-            });
-            dispatchUpdateClinicalVariable({
-              value: continuousReset
-                ? 'default'
-                : continuousBinType,
-              variableKey: 'continuousBinType',
-            });
-            !continuousReset &&
-              continuousBinType === 'interval' &&
-              (
-                dispatchUpdateClinicalVariable({
-                  value: customInterval,
-                  variableKey: 'customInterval',
-                })
-              );
-            !continuousReset &&
-              continuousBinType === 'range' &&
-              (
-                dispatchUpdateClinicalVariable({
-                  value: customRanges,
-                  variableKey: 'customRanges',
-                })
-              );
-            continuousReset &&
-              (
-                dispatchUpdateClinicalVariable({
-                  value: [],
-                  variableKey: 'customRanges',
-                })
-              );
-            continuousReset &&
-              (
-                dispatchUpdateClinicalVariable({
-                  value: {},
-                  variableKey: 'customInterval',
-                })
-              );
+            dispatch(updateClinicalAnalysisVariable({
+              fieldName,
+              id,
+              variable: {
+                ...continuousReset
+                  ? {
+                    bins: defaultData.bins,
+                    ...resetVariableDefaults.continuous,
+                    ...resetVariableDefaults.survival,
+                  }
+                  : {
+                    bins: newBins,
+                    continuousBinType,
+                    ...continuousBinType === 'interval' && 
+                      !isEqual(variable.customInterval, customInterval)
+                      ? {
+                        customInterval,
+                        ...resetVariableDefaults.survival,
+                      }
+                      : {},
+                    ...continuousBinType === 'range' && 
+                      !isEqual(variable.customRanges, customRanges)
+                      ? {
+                        customRanges,
+                        ...resetVariableDefaults.survival,
+                      }
+                      : {},
+                  }
+              }
+            }));
             dispatch(setModal(null));
           }}
           />
@@ -249,40 +238,45 @@ export default compose(
       props.setId !== nextProps.setId,
     ({
       dataBuckets,
-      dispatchUpdateClinicalVariable,
+      dispatch,
+      fieldName,
+      id,
       variable: { bins, continuousBinType },
     }) => {
-      dispatchUpdateClinicalVariable({
-        value: continuousBinType === 'default'
-          ? dataBuckets.reduce((acc, curr, index) => Object.assign(
-            {},
-            acc,
-            {
-              [dataBuckets[index].key]: Object.assign(
-                {},
-                dataBuckets[index],
-                { groupName: dataBuckets[index].key },
-              ),
-            },
-          ), {})
-          : Object.keys(bins)
-            .reduce((acc, curr, index) => Object.assign(
+      dispatch(updateClinicalAnalysisVariable({
+        fieldName,
+        id,
+        variable: {
+          bins: continuousBinType === 'default'
+            ? dataBuckets.reduce((acc, curr, index) => Object.assign(
               {},
               acc,
               {
-                [curr]: Object.assign(
+                [dataBuckets[index].key]: Object.assign(
                   {},
-                  bins[curr],
-                  {
-                    doc_count: dataBuckets[index]
-                    ? dataBuckets[index].doc_count
-                    : 0,
-                  }
+                  dataBuckets[index],
+                  { groupName: dataBuckets[index].key },
                 ),
-              }
-            ), {}),
-        variableKey: 'bins',
-      });
+              },
+            ), {})
+            : Object.keys(bins)
+              .reduce((acc, curr, index) => Object.assign(
+                {},
+                acc,
+                {
+                  [curr]: Object.assign(
+                    {},
+                    bins[curr],
+                    {
+                      doc_count: dataBuckets[index]
+                      ? dataBuckets[index].doc_count
+                      : 0,
+                    }
+                  ),
+                }
+              ), {}),
+        }
+      }));
     }
   ),
   withProps(
@@ -328,18 +322,21 @@ export default compose(
         {},
         binData,
         {
-          getContinuousBins: (acc, { doc_count, key, keyArray }) => {
+          getContinuousBins: (acc, { doc_count, groupName = '', key, keyArray = [] }) => {
             const keyValues = parseContinuousKey(key);
             // survival doesn't have keyArray
-            const keyArrayValues = keyArray
+            const keyArrayValues = keyArray.length > 0
               ? parseContinuousKey(keyArray[0])
               : keyValues;
 
-            const groupName = keyValues.length === 2 &&
-              isFinite(keyValues[0]) &&
-              isFinite(keyValues[1])
-              ? createContinuousGroupName(key)
-              : key;
+            const groupNameFormatted = groupName !== '' &&
+              variable.continuousBinType === 'range'
+              ? groupName
+              : keyValues.length === 2 &&
+                  isFinite(keyValues[0]) &&
+                  isFinite(keyValues[1])
+                    ? createContinuousGroupName(key)
+                    : key;
 
             const [keyMin, keyMax] = keyArrayValues;
             const filters = {
@@ -372,14 +369,14 @@ export default compose(
             return acc.concat(
               {
                 chart_doc_count: doc_count,
-                displayName: groupName,
+                displayName: groupNameFormatted,
                 doc_count: getCountLink({
                   doc_count,
                   filters,
                   totalDocs,
                 }),
                 filters,
-                groupName,
+                groupName: groupNameFormatted,
                 key: `${keyMin}-${keyMax}`,
                 rangeValues: {
                   max: keyMax,
@@ -392,30 +389,78 @@ export default compose(
       );
     }
   ),
-  withProps(({
-    dataBuckets,
-    getContinuousBins,
-  }) => {
-    const survivalPlotValues = filterSurvivalData(
-      dataBuckets.length > 0
-      ? dataBuckets
-        .sort((a, b) =>
-          parseContinuousKey(a.key)[0] - parseContinuousKey(b.key)[0])
-        .reduce(getContinuousBins, [])
-      : []
-    )
-      .sort((a, b) => b.chart_doc_count - a.chart_doc_count)
-      .slice(0, 2)
-      .map(bin => makeDocCountInteger(bin));
+  withPropsOnChange((props, nextProps) =>
+    nextProps.variable.active_chart === 'survival' &&
+      (props.variable.active_chart !== nextProps.variable.active_chart ||
+      !(isEqual(props.variable.bins, nextProps.variable.bins)) ||
+      props.setId !== nextProps.setId ||
+      !isEqual(props.variable.customSurvivalPlots, props.variable.customSurvivalPlots) ||
+      props.variable.isSurvivalCustom !== nextProps.variable.isSurvivalCustom ||
+      !isEqual(props.selectedSurvivalBins, nextProps.selectedSurvivalBins)),
+      ({
+        binsAreCustom,
+        dispatch,
+        fieldName,
+        getContinuousBins,
+        id,
+        variable: {
+          bins,
+          continuousBinType,
+          customSurvivalPlots,
+          isSurvivalCustom,
+        },
+      }) => {
+        const binsWithNames = Object.keys(bins).map(bin => ({
+          ...bins[bin],
+          displayName: continuousBinType === 'default'
+            ? createContinuousGroupName(bins[bin].key)
+            : bins[bin].groupName
+        }));
 
-    const survivalTableValues = survivalPlotValues
-      .map(bin => bin.key);
+        const customBinMatches = isSurvivalCustom
+          ? binsWithNames.filter(bin => customSurvivalPlots
+              .indexOf(bin.displayName) >= 0)
+          : [];
+        
+        const isUsingCustomSurvival = customBinMatches.length > 0;
 
-    return {
-      survivalPlotValues,
-      survivalTableValues,
-    };
-  }),
+        const survivalBins = (isUsingCustomSurvival
+          ? filterSurvivalData(customBinMatches
+              .reduce(getContinuousBins, [])
+            ) 
+          : filterSurvivalData(binsWithNames
+              .sort((a, b) => a.key - b.key)
+              .reduce(getContinuousBins, [])
+            ) 
+            .sort((a, b) => b.chart_doc_count - a.chart_doc_count)
+          )
+            .slice(0, isUsingCustomSurvival ? Infinity : 2);
+               
+        const survivalPlotValues = survivalBins.map(bin => ({
+          filters: bin.filters,
+          key: bin.key,
+        }));
+        const survivalTableValues = survivalBins
+          .map(bin => bin.displayName);
+        const nextCustomSurvivalPlots = customBinMatches
+          .map(bin => bin.displayName);
+
+        dispatch(updateClinicalAnalysisVariable({
+          fieldName,
+          id,
+          variable: {
+            customSurvivalPlots: nextCustomSurvivalPlots,
+            isSurvivalCustom: isUsingCustomSurvival,
+            showOverallSurvival: false,
+          }
+        }));
+
+        return {
+          survivalPlotValues,
+          survivalTableValues,
+        };
+      }
+  ),
   withPropsOnChange(
     (props, nextProps) =>
       !isEqual(props.binData, nextProps.binData),
@@ -429,31 +474,26 @@ export default compose(
   ),
   withPropsOnChange(
     (props, nextProps) => props.binsAreCustom !== nextProps.binsAreCustom ||
-      props.variable.id !== nextProps.variable.id,
+      props.variable.id !== nextProps.variable.id ||
+      props.variable.isSurvivalCustom !== nextProps.variable.isSurvivalCustom,
     ({
       binsAreCustom,
       defaultData: { bins },
-      dispatchUpdateClinicalVariable,
+      dispatch,
+      fieldName,
+      id,
+      variable: { isSurvivalCustom },
     }) => ({
       resetBins: () => {
-        if (binsAreCustom) {
-          dispatchUpdateClinicalVariable({
-            value: bins,
-            variableKey: 'bins',
-          });
-          dispatchUpdateClinicalVariable({
-            value: DEFAULT_BIN_TYPE,
-            variableKey: 'continuousBinType',
-          });
-          dispatchUpdateClinicalVariable({
-            value: DEFAULT_INTERVAL,
-            variableKey: 'customInterval',
-          });
-          dispatchUpdateClinicalVariable({
-            value: DEFAULT_RANGES,
-            variableKey: 'customRanges',
-          });
-        }
+        dispatch(updateClinicalAnalysisVariable({
+          fieldName,
+          id,
+          variable: {
+            bins,
+            ...resetVariableDefaults.survival,
+            ...resetVariableDefaults.continuous,
+          }
+        }));
       },
     })
   ),

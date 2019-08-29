@@ -8,8 +8,10 @@ import {
 } from 'recompose';
 import { connect } from 'react-redux';
 import {
+  find,
   isEmpty,
   isEqual,
+  uniq,
 } from 'lodash';
 
 import {
@@ -17,6 +19,7 @@ import {
   MAXIMUM_CURVES,
 } from '@ncigdc/utils/survivalplot';
 import { withTheme } from '@ncigdc/theme';
+import { updateClinicalAnalysisVariable } from '@ncigdc/dux/analysis';
 
 import { makeDocCountInteger } from './helpers';
 import ClinicalVariableCard from './ClinicalVariableCard';
@@ -49,8 +52,16 @@ export default compose(
       setSelectedSurvivalLoadingIds([]);
     }),
   })),
-  withProps(
+  withPropsOnChange((props, nextProps) => 
+    !isEqual(props.variable.customSurvivalPlots, nextProps.variable.customSurvivalPlots) ||
+    !isEqual(props.selectedSurvivalBins, nextProps.selectedSurvivalBins) ||
+    props.variable.setId === nextProps.variable.setId ||
+    !isEqual(props.survivalPlotValues, nextProps.survivalPlotValues ||
+    !isEqual(props.variable.customSurvivalPlots, nextProps.variable.customSurvivalPlots)),
     ({
+      dispatch,
+      fieldName,
+      id,
       selectedSurvivalBins,
       setSelectedSurvivalBins,
       setSelectedSurvivalLoadingIds,
@@ -58,7 +69,11 @@ export default compose(
       survivalPlotValues,
       survivalTableValues,
       updateSurvivalPlot,
-      variable: { plotTypes }
+      variable: { 
+        customSurvivalPlots, 
+        plotTypes, 
+        isSurvivalCustom,
+      },
     }) => ({
       populateSurvivalData: () => {
         setSurvivalPlotLoading(true);
@@ -68,28 +83,42 @@ export default compose(
       },
       updateSelectedSurvivalBins: (data, bin) => {
         if (
-          selectedSurvivalBins.indexOf(bin.key) === -1 &&
+          selectedSurvivalBins.indexOf(bin.displayName) === -1 &&
           selectedSurvivalBins.length >= MAXIMUM_CURVES
         ) {
           return;
         }
         setSurvivalPlotLoading(true);
 
-        const nextBins =
-          selectedSurvivalBins.indexOf(bin.key) === -1
-            ? selectedSurvivalBins.concat(bin.key)
-            : selectedSurvivalBins.filter(s => s !== bin.key);
+        const isSelected = selectedSurvivalBins.indexOf(bin.displayName) >= 0;
 
-        setSelectedSurvivalBins(nextBins);
-        setSelectedSurvivalLoadingIds(nextBins);
+        const nextSelectedBins = isSelected
+          ? selectedSurvivalBins.filter(s => s !== bin.displayName)
+          : selectedSurvivalBins.concat(bin.displayName);
 
-        const nextBinsForPlot = plotTypes === 'categorical' 
-          ? nextBins
-          : nextBins
-              .map(nextBin => data.filter(datum => datum.key === nextBin)[0])
-              .map(nextBin => makeDocCountInteger(nextBin));
+        setSelectedSurvivalBins(nextSelectedBins);
+        setSelectedSurvivalLoadingIds(nextSelectedBins);
+
+        const nextBinsForPlot = plotTypes === 'categorical'
+          ? nextSelectedBins
+          : nextSelectedBins
+            .map(nextBin => data.filter(datum => datum.displayName === nextBin)[0])
+            .map(nextBin => makeDocCountInteger(nextBin));
 
         updateSurvivalPlot(nextBinsForPlot);
+
+        const survivalDeselectedAndDuplicatesRemoved = uniq(nextSelectedBins
+          .filter(filterBin => !(isSelected && filterBin.name === bin.displayName)));
+        
+        dispatch(updateClinicalAnalysisVariable({
+          fieldName,
+          id,
+          variable: {
+            customSurvivalPlots: survivalDeselectedAndDuplicatesRemoved,
+            isSurvivalCustom: true,
+            showOverallSurvival: survivalDeselectedAndDuplicatesRemoved.length === 0,
+          }
+        }));
       },
     })
   ),
@@ -97,8 +126,12 @@ export default compose(
     (props, nextProps) => nextProps.variable.active_chart === 'survival' &&
       (props.variable.active_chart !== nextProps.variable.active_chart ||
       props.id !== nextProps.id ||
-      !isEqual(props.variable.bins, nextProps.variable.bins)),
-    ({ populateSurvivalData }) => { populateSurvivalData(); }
+      !isEqual(props.variable.bins, nextProps.variable.bins) ||
+      (props.variable.isSurvivalCustom !== nextProps.variable.isSurvivalCustom &&
+        !nextProps.variable.isSurvivalCustom)),
+    ({ populateSurvivalData }) => {
+      populateSurvivalData();
+    }
   ),
   withPropsOnChange(
     (props, nextProps) => props.id !== nextProps.id,
@@ -108,15 +141,20 @@ export default compose(
     componentDidMount(): void {
       const {
         binsOrganizedByKey,
-        dispatchUpdateClinicalVariable,
+        dispatch,
+        fieldName,
+        id,
         variable,
         wrapperId,
       } = this.props;
       if (variable.bins === undefined || isEmpty(variable.bins)) {
-        dispatchUpdateClinicalVariable({
-          value: binsOrganizedByKey,
-          variableKey: 'bins',
-        });
+        dispatch(updateClinicalAnalysisVariable({
+          fieldName,
+          id,
+          variable: {
+            bins: binsOrganizedByKey
+          },
+        }));
       }
 
       if (variable.scrollToCard) {
@@ -130,10 +168,13 @@ export default compose(
             top: offsetTop - offset,
           });
         }
-        dispatchUpdateClinicalVariable({
-          value: false,
-          variableKey: 'scrollToCard',
-        });
+        dispatch(updateClinicalAnalysisVariable({
+          fieldName,
+          id,
+          variable: {
+            scrollToCard: false,
+          },
+        }));
       }
     },
   })

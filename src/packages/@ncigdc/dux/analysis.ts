@@ -33,13 +33,6 @@ interface IAnalysisState {
   saved: IAnalysis[];
 }
 
-type TClinicalAnalyisVariableKey =
-  | 'active_chart'
-  | 'active_calculation'
-  | 'bins'
-  | 'type'
-  | 'plotTypes';
-
 type TClinicalAnalysisProperty = 'name'; // only type mutable properties
 
 export interface IAnalysisPayload extends IAnalysis {
@@ -47,16 +40,23 @@ export interface IAnalysisPayload extends IAnalysis {
   continuousBinType?: 'default' | 'interval' | 'range';
   customInterval?: any;
   customRanges?: any;
-  id: string;
   fieldName?: string;
   fieldType?: string;
+  id: string;
   plotTypes?: 'categorical' | 'continuous';
   property?: TClinicalAnalysisProperty;
   scrollToCard?: boolean;
   setId?: string;
   setName?: string;
   value?: string;
+  variable?: any;
   variableKey?: string;
+}
+
+interface IAnalysisMultiPayload extends IAnalysis {
+  id: string;
+  fieldName: string;
+  newState: object;
 }
 
 interface IAnalysisAction {
@@ -88,7 +88,7 @@ const removeClinicalAnalysisVariable = (payload: IAnalysisPayload) => ({
   payload,
 });
 
-const updateClinicalAnalysisVariable = (payload: IAnalysisPayload) => ({
+const updateClinicalAnalysisVariable = (payload: IAnalysisMultiPayload) => ({
   type: sets.UPDATE_CLINICAL_ANALYSIS_VARIABLE,
   payload,
 });
@@ -112,6 +112,9 @@ const defaultVariableConfig = {
   active_chart: 'histogram',
   active_survival: 'overall',
   bins: {},
+  customSurvivalPlots: [],
+  isSurvivalCustom: false,
+  showOverallSurvival: false,
 };
 
 const defaultContinuousVariableConfig = {
@@ -241,11 +244,11 @@ const reducer = (
         );
     }
 
-    // updates value for single variable
+    // updates multiple values in displayVariables
     case sets.UPDATE_CLINICAL_ANALYSIS_VARIABLE: {
       const { currentAnalysisIndex, currentAnalysis } = getCurrentAnalysis(
         state,
-        action.payload.id
+        action.payload.id,
       );
 
       return currentAnalysisIndex < 0
@@ -266,10 +269,7 @@ const reducer = (
                       [action.payload.fieldName as string]: Object.assign(
                         {},
                         currentAnalysis.displayVariables[action.payload.fieldName as string],
-                        {
-                          [action.payload.variableKey as TClinicalAnalyisVariableKey]: action.payload
-                            .value,
-                        }
+                        action.payload.variable,
                       ),
                     },
                   ),
@@ -344,13 +344,13 @@ const reducer = (
 
 export {
   addAnalysis,
-  removeAnalysis,
-  removeAllAnalysis,
   addClinicalAnalysisVariable,
+  removeAllAnalysis,
+  removeAnalysis,
   removeClinicalAnalysisVariable,
-  updateClinicalAnalysisVariable,
   updateClinicalAnalysisProperty,
   updateClinicalAnalysisSet,
+  updateClinicalAnalysisVariable,
 };
 
 export default reducer;

@@ -305,6 +305,7 @@ const ClinicalAnalysisResult = ({
                     />
                 </div>
               </Column>
+
               {setId && map(displayVariables, (varProperties, varFieldName) => {
                 const filters = {
                   content: [

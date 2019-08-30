@@ -294,11 +294,10 @@ const ExploreSummaryPrimarySite = ({
       isEmpty(arcData)
         ? <div>No Data</div>
         : (
-          <Column>
+          <Column id="summary-primary-site-donut">
             <DoubleDonut
               arcData={arcData}
               colors={Object.values(primarySiteColors)}
-              id="summary-primary-site-donut"
               loading={isLoading}
               />
             {/* <DoubleRingChart

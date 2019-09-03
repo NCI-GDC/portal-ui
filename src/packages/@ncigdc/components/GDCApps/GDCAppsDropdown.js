@@ -99,7 +99,7 @@ const GDCAppsDropdown = () => (
           appName="data-transfer-tool"
           description="Data Transfer Tool"
           drawnRange={9}
-          href="https://docs.gdc.cancer.gov"
+          href="https://docs.gdc.cancer.gov/Data_Transfer_Tool/Users_Guide/Getting_Started/"
           imgWidth={BUTTON_WIDTH}
           title="GDC Data Transfer Tool"
           width="55%"

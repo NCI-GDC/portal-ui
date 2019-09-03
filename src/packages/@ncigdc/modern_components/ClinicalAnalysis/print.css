@@ -80,4 +80,10 @@
   .print-only.inline {
     display: inline;
   }
+  .print-mb {
+    margin-bottom: 15px !important;
+  }
+  .print-mt {
+    margin-top: 15px !important;
+  }
 }

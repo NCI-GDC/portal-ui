@@ -52,6 +52,7 @@ const ClinicalBoxPlot = ({
         }}
         >
         <span
+          className="print-mb print-mt"
           style={{
             color: theme.greyScale2,
             fontSize: '1.2rem',
@@ -134,7 +135,7 @@ const ClinicalBoxPlot = ({
         }}
         >
         <QQPlotQuery
-          chartHeight={CHART_HEIGHT + 10}
+          chartHeight={CHART_HEIGHT}
           dataBuckets={dataBuckets}
           dataHandler={data => setQQData(data)}
           fieldName={fieldName}

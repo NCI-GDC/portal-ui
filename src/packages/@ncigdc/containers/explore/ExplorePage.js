@@ -200,7 +200,9 @@ const ExplorePageComponent = ({
         <span>
           <ResizeDetector
             handleHeight
-            onResize={(width, height) => setMaxFacetsPanelHeight(height)}
+            onResize={(width, height) => 
+              setMaxFacetsPanelHeight(height < 600 ? 600 : height)
+            }
             />
           <Row>
             {filters ? (

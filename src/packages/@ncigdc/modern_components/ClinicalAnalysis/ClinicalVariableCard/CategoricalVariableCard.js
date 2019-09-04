@@ -209,7 +209,9 @@ export default compose(
     props.id === nextProps.id,
     ({ resetBins, setId, variable: { customBinsSetId } }) => {
       // call reset function on case switch, not analysis switch
-      if (setId !== customBinsSetId) resetBins();
+      if (setId !== customBinsSetId && customBinsSetId !== '') {
+        resetBins();
+      }
     }
   ),
   withPropsOnChange(

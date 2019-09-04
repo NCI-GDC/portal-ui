@@ -142,10 +142,10 @@ export default compose(
       
       const survivalPlotValues = survivalBins.map(bin => bin.keyArray);
       const survivalTableValues = survivalBins.map(bin => bin.key);
-      
+
       if (isSurvivalCustom) {
-        dispatch(updateClinicalAnalysisVariable({ 
-          fieldName, 
+        dispatch(updateClinicalAnalysisVariable({
+          fieldName,
           id,
           variable: {
             customSurvivalPlots: survivalTableValues
@@ -168,8 +168,8 @@ export default compose(
   withPropsOnChange(
     (props, nextProps) =>
       props.binsAreCustom !== nextProps.binsAreCustom ||
-      !isEqual(props.dataBuckets, nextProps.dataBuckets ||
-      props.variable.isSurvivalCustom !== nextProps.variable.isSurvivalCustom),
+      !isEqual(props.dataBuckets, nextProps.dataBuckets) ||
+      props.variable.isSurvivalCustom !== nextProps.variable.isSurvivalCustom,
     ({
       binsAreCustom,
       dataBuckets,
@@ -201,12 +201,21 @@ export default compose(
       },
     })
   ),
+  withPropsOnChange((props, nextProps) =>  
+    (props.setId !== nextProps.setId ||
+      props.variable.customBinsSetId !== nextProps.variable.customBinsSetId) &&
+    nextProps.setId !== nextProps.variable.customBinsSetId &&
+    nextProps.variable.customBinsSetId !== '' &&
+    props.id === nextProps.id,
+    ({ resetBins, setId, variable: { customBinsSetId } }) => {
+      // call reset function on case switch, not analysis switch
+      if (setId !== customBinsSetId) resetBins();
+    }
+  ),
   withPropsOnChange(
     (props, nextProps) =>
       !isEqual(props.binData, nextProps.binData),
-    ({
-      binData, binsAreCustom, fieldName, setId, totalDocs,
-    }) => ({
+    ({ binData, binsAreCustom, fieldName, setId, totalDocs }) => ({
       displayData: binData.length === 1 &&
         binData[0].key === '_missing' &&
         !binsAreCustom

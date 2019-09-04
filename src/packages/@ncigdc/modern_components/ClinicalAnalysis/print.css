@@ -86,4 +86,7 @@
   .print-mt {
     margin-top: 15px !important;
   }
+  [id$="-qqplot-container"][style] {
+    max-height: 100% !important;
+  }
 }

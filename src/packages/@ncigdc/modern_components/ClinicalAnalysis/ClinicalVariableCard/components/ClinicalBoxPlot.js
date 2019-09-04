@@ -135,7 +135,7 @@ const ClinicalBoxPlot = ({
         }}
         >
         <QQPlotQuery
-          chartHeight={CHART_HEIGHT}
+          chartHeight={CHART_HEIGHT + 10}
           dataBuckets={dataBuckets}
           dataHandler={data => setQQData(data)}
           fieldName={fieldName}

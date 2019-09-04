@@ -112,6 +112,7 @@ const defaultVariableConfig = {
   active_chart: 'histogram',
   active_survival: 'overall',
   bins: {},
+  customBinsSetId: '',
   customSurvivalPlots: [],
   isSurvivalCustom: false,
   showOverallSurvival: false,

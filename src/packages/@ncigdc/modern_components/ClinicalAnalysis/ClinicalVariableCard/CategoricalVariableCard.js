@@ -269,7 +269,10 @@ export default compose(
       !isEqual(props.dataBuckets, nextProps.dataBuckets),
     ({
       dataBuckets,
-      dispatch, fieldName, id,
+      dispatch,
+      fieldName,
+      id,
+      setId,
       variable: { bins },
     }) => ({
       openCustomBinModal: () => dispatch(setModal(
@@ -288,6 +291,7 @@ export default compose(
               id,
               variable: {
                 bins: newBins,
+                customBinsSetId: setId,
                 ...resetVariableDefaults.survival,
               },
             }));

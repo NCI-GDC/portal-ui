@@ -118,6 +118,7 @@ export default compose(
       dispatch,
       fieldName,
       id,
+      setId,
       variable,
     }) => ({
       openCustomBinModal: () => dispatch(setModal(
@@ -142,12 +143,14 @@ export default compose(
                 ...continuousReset
                   ? {
                     bins: defaultData.bins,
+                    customBinsSetId: '',
                     ...resetVariableDefaults.continuous,
                     ...resetVariableDefaults.survival,
                   }
                   : {
                     bins: newBins,
                     continuousBinType,
+                    customBinsSetId: setId,
                     ...continuousBinType === 'interval' && 
                       !isEqual(variable.customInterval, customInterval)
                       ? {

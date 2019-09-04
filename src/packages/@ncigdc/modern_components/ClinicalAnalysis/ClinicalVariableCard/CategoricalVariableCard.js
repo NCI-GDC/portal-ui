@@ -195,7 +195,8 @@ export default compose(
                     { groupName: bucket.key }
                   ),
                 }
-              ), {})
+              ), {}),
+            customBinsSetId: '',
         }}));
       },
     })

@@ -1,13 +1,10 @@
 import React, { Fragment } from 'react';
 import DownCaretIcon from 'react-icons/lib/fa/caret-down';
-import PropTypes from "prop-types";
-
 import {
   find,
   isEmpty,
   maxBy,
   reject,
-  sortBy,
 } from 'lodash';
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import Button from '@ncigdc/uikit/Button';
@@ -19,12 +16,12 @@ import DropdownItem from '@ncigdc/uikit/DropdownItem';
 import Hidden from '@ncigdc/components/Hidden';
 import DownloadVisualizationButton from '@ncigdc/components/DownloadVisualizationButton';
 import wrapSvg from '@ncigdc/utils/wrapSvg';
-import { 
-  SpinnerIcon,
-  CloseIcon,
-  SurvivalIcon,
+import {
   BarChartIcon,
-  BoxPlot, 
+  BoxPlot,
+  CloseIcon,
+  SpinnerIcon,
+  SurvivalIcon,
 } from '@ncigdc/theme/icons';
 import termCapitaliser from '@ncigdc/utils/customisation';
 import {
@@ -32,7 +29,9 @@ import {
 } from '@ncigdc/utils/string';
 import {
   removeClinicalAnalysisVariable,
-  updateClinicalAnalysisVariable } from '@ncigdc/dux/analysis';
+  updateClinicalAnalysisVariable,
+} from '@ncigdc/dux/analysis';
+import Loader from '@ncigdc/uikit/Loaders/Loader';
 import { MAXIMUM_CURVES, MINIMUM_CASES } from '@ncigdc/utils/survivalplot';
 
 import ActionsDropdown from './components/ActionsDropdown';
@@ -45,7 +44,6 @@ import {
   getBoxTableData,
   getCardFilters,
   getHeadings,
-  parseContinuousValue,
   styles,
 } from './helpers';
 
@@ -81,7 +79,6 @@ const getTableData = ({
   selectedSurvivalLoadingIds,
   setSelectedBins,
   theme,
-  totalDocs,
   updateSelectedSurvivalBins,
 }) => displayData.map(bin => {
   const isSelected = find(selectedBins, { key: bin.displayName });
@@ -89,36 +86,34 @@ const getTableData = ({
   const isSurvivalLoading = selectedSurvivalLoadingIds.indexOf(bin.displayName) >= 0;
   const isSelectedForSurvival = indexSurvival >= 0;
   const isSurvivalFull = selectedSurvivalBins.length === MAXIMUM_CURVES;
-  
-  return Object.assign(
-    {},
-    bin,
-    {
-      select: (
-        <input
-          aria-label={`${fieldName} ${bin.displayName}`}
-          checked={isSelected}
-          disabled={bin.doc_count === 0}
-          id={`${fieldName}-${bin.key}`}
-          onChange={() => {
-            if (isSelected) {
-              setSelectedBins(
-                reject(selectedBins, r => r.key === bin.key)
-              );
-            } else {
-              setSelectedBins(selectedBins.concat(bin));
-            }
-          }}
-          style={{
-            marginLeft: 3,
-            pointerEvents: 'initial',
-          }}
-          type="checkbox"
-          value={bin.key}
-          />
-      ),
-    },
-    active_chart === 'survival' && {
+
+  return {
+
+    ...bin,
+    select: (
+      <input
+        aria-label={`${fieldName} ${bin.displayName}`}
+        checked={isSelected}
+        disabled={bin.doc_count === 0}
+        id={`${fieldName}-${bin.key}`}
+        onChange={() => {
+          if (isSelected) {
+            setSelectedBins(
+              reject(selectedBins, r => r.key === bin.key)
+            );
+          } else {
+            setSelectedBins(selectedBins.concat(bin));
+          }
+        }}
+        style={{
+          marginLeft: 3,
+          pointerEvents: 'initial',
+        }}
+        type="checkbox"
+        value={bin.key}
+        />
+    ),
+    ...active_chart === 'survival' && {
       survival: (
         <Tooltip
           Component={
@@ -162,7 +157,7 @@ const getTableData = ({
         </Tooltip>
       ),
     },
-  );
+  };
 });
 
 const ClinicalVariableCard = ({
@@ -177,6 +172,7 @@ const ClinicalVariableCard = ({
   filters,
   getContinuousBins,
   id,
+  isLoading,
   openCustomBinModal,
   overallSurvivalData,
   plots,
@@ -191,9 +187,8 @@ const ClinicalVariableCard = ({
   setQQData,
   setQQDataIsSet,
   setSelectedBins,
-  showOverallSurvival,
   style = {},
-  survivalPlotLoading,
+  survivalDataLoading,
   theme,
   totalDocs,
   updateSelectedSurvivalBins,
@@ -203,32 +198,32 @@ const ClinicalVariableCard = ({
   const tableData = variable.active_chart === 'box'
     ? getBoxTableData(boxPlotValues)
     : getTableData({
-        active_chart: variable.active_chart,
-        displayData,
-        fieldName,
-        getContinuousBins,
-        selectedBins,
-        selectedSurvivalBins,
-        selectedSurvivalLoadingIds,
-        setId,
-        setSelectedBins,
-        theme,
-        totalDocs,
-        updateSelectedSurvivalBins,
-      });
+      active_chart: variable.active_chart,
+      displayData,
+      fieldName,
+      getContinuousBins,
+      selectedBins,
+      selectedSurvivalBins,
+      selectedSurvivalLoadingIds,
+      setId,
+      setSelectedBins,
+      theme,
+      totalDocs,
+      updateSelectedSurvivalBins,
+    });
 
   const histogramData =
     variable.active_chart === 'histogram'
       ? tableData.map(tableRow => ({
-          fullLabel: tableRow.displayName,
-          label: tableRow.displayName,
-          tooltip: `${tableRow.displayName}: ${
+        fullLabel: tableRow.displayName,
+        label: tableRow.displayName,
+        tooltip: `${tableRow.displayName}: ${
             tableRow.chart_doc_count.toLocaleString()} (${
             (((tableRow.chart_doc_count || 0) / totalDocs) * 100).toFixed(2)}%)`,
-          value: variable.active_calculation === 'number'
+        value: variable.active_calculation === 'number'
             ? tableRow.chart_doc_count
             : (tableRow.chart_doc_count / totalDocs) * 100,
-        }))
+      }))
       : [];
 
   const maxKeyNameLength = (
@@ -272,6 +267,7 @@ const ClinicalVariableCard = ({
           >
           {humanify({ term: termCapitaliser(fieldName).split('__').pop() })}
         </h2>
+
         <Row>
           {plots.concat('delete')
             .map(plotType => (
@@ -285,7 +281,7 @@ const ClinicalVariableCard = ({
                         fieldName,
                         id,
                         variable: {
-                          active_chart: plotType
+                          active_chart: plotType,
                         },
                       })
                     );
@@ -306,102 +302,104 @@ const ClinicalVariableCard = ({
             ))}
         </Row>
       </Row>
-      {isEmpty(tableData)
-        ? (
-          <Row
-            id={`${wrapperId}-container`}
-            style={{
-              alignItems: 'center',
-              flex: 1,
-              justifyContent: 'center',
-            }}
-            >
-            <div className="print-mb print-mt">There is no data for this facet</div>
-          </Row>
-        )
-        : (
-          <Fragment>
-            <Column id={`${wrapperId}-container`}>
-              {['histogram'].includes(variable.active_chart) && (
-                <Row style={{ paddingLeft: 10 }}>
-                  <form style={{ width: '100%' }}>
-                    <label
-                      htmlFor={`variable-percentage-radio-${fieldName}`}
-                      style={{
-                        fontSize: '1.2rem',
-                        marginRight: 10,
-                      }}
-                      >
-                      <input
-                        aria-label="Percentage of cases"
-                        checked={variable.active_calculation === 'percentage'}
-                        id={`variable-percentage-radio-${fieldName}`}
-                        onChange={() => dispatchUpdateClinicalVariable({
-                          value: 'percentage',
-                          variableKey: 'active_calculation',
-                        })}
-                        style={{ marginRight: 5 }}
-                        type="radio"
-                        value="percentage"
-                        />
+      {isLoading
+        ? <Loader />
+        : isEmpty(tableData)
+          ? (
+            <Row
+              id={`${wrapperId}-container`}
+              style={{
+                alignItems: 'center',
+                flex: 1,
+                justifyContent: 'center',
+              }}
+              >
+              <div className="print-mb print-mt">There is no data for this facet</div>
+            </Row>
+          )
+          : (
+            <Fragment>
+              <Column id={`${wrapperId}-container`}>
+                {['histogram'].includes(variable.active_chart) && (
+                  <Row style={{ paddingLeft: 10 }}>
+                    <form style={{ width: '100%' }}>
+                      <label
+                        htmlFor={`variable-percentage-radio-${fieldName}`}
+                        style={{
+                          fontSize: '1.2rem',
+                          marginRight: 10,
+                        }}
+                        >
+                        <input
+                          aria-label="Percentage of cases"
+                          checked={variable.active_calculation === 'percentage'}
+                          id={`variable-percentage-radio-${fieldName}`}
+                          onChange={() => dispatchUpdateClinicalVariable({
+                            value: 'percentage',
+                            variableKey: 'active_calculation',
+                          })}
+                          style={{ marginRight: 5 }}
+                          type="radio"
+                          value="percentage"
+                          />
                       % of Cases
-                    </label>
-                    <label
-                      htmlFor={`variable-number-radio-${fieldName}`}
-                      style={{ fontSize: '1.2rem' }}
-                      >
-                      <input
-                        aria-label="Number of cases"
-                        checked={variable.active_calculation === 'number'}
-                        id={`variable-number-radio-${fieldName}`}
-                        onChange={() => dispatchUpdateClinicalVariable({
-                          value: 'number',
-                          variableKey: 'active_calculation',
-                        })}
-                        style={{ marginRight: 5 }}
-                        type="radio"
-                        value="number"
-                        />
+                      </label>
+                      <label
+                        htmlFor={`variable-number-radio-${fieldName}`}
+                        style={{ fontSize: '1.2rem' }}
+                        >
+                        <input
+                          aria-label="Number of cases"
+                          checked={variable.active_calculation === 'number'}
+                          id={`variable-number-radio-${fieldName}`}
+                          onChange={() => dispatchUpdateClinicalVariable({
+                            value: 'number',
+                            variableKey: 'active_calculation',
+                          })}
+                          style={{ marginRight: 5 }}
+                          type="radio"
+                          value="number"
+                          />
                       # of Cases
-                    </label>
-                    <DownloadVisualizationButton
-                      data={histogramData.map(d => ({
-                        label: d.fullLabel,
-                        value: d.value,
-                      }))}
-                      key="download"
-                      noText
-                      onClick={(e) => {
-                        e.preventDefault();
-                      }}
-                      slug={`${fieldName}-bar-chart`}
-                      style={{
-                        float: 'right',
-                        marginRight: 2,
-                      }}
-                      svg={() => wrapSvg({
-                        bottomBuffer: maxKeyNameLength * 3,
-                        rightBuffer: maxKeyNameLength * 2,
-                        selector: `#${wrapperId}-container .test-bar-chart svg`,
-                        title: humanify({ term: fieldName }),
-                      })}
-                      tooltipHTML="Download image or data"
-                      />
-                  </form>
-                </Row>
-              )}
+                      </label>
+                      <DownloadVisualizationButton
+                        data={histogramData.map(d => ({
+                          label: d.fullLabel,
+                          value: d.value,
+                        }))}
+                        key="download"
+                        noText
+                        onClick={(e) => {
+                          e.preventDefault();
+                        }}
+                        slug={`${fieldName}-bar-chart`}
+                        style={{
+                          float: 'right',
+                          marginRight: 2,
+                        }}
+                        svg={() => wrapSvg({
+                          bottomBuffer: maxKeyNameLength * 3,
+                          rightBuffer: maxKeyNameLength * 2,
+                          selector: `#${wrapperId}-container .test-bar-chart svg`,
+                          title: humanify({ term: fieldName }),
+                        })}
+                        tooltipHTML="Download image or data"
+                        />
+                    </form>
+                  </Row>
+                )}
 
-              {variable.active_chart === 'histogram' && (
-                <ClinicalHistogram
-                  active_calculation={variable.active_calculation}
-                  histogramData={histogramData}
-                  histogramStyles={styles.histogram}
-                  theme={theme}
-                  type={variable.type}
-                  />
-              )}
+                {variable.active_chart === 'histogram' && (
+                  <ClinicalHistogram
+                    active_calculation={variable.active_calculation}
+                    histogramData={histogramData}
+                    histogramStyles={styles.histogram}
+                    theme={theme}
+                    type={variable.type}
+                    />
+                )}
 
-              {variable.active_chart === 'survival' && (
+                {variable.active_chart === 'survival' && (
                 (variable.isSurvivalCustom &&
                   selectedSurvivalBins.length === 0 &&
                   !variable.showOverallSurvival)
@@ -427,103 +425,103 @@ const ClinicalVariableCard = ({
                         variable.showOverallSurvival
                         ? overallSurvivalData
                         : selectedSurvivalData}
-                      survivalPlotLoading={survivalPlotLoading}
+                      survivalDataLoading={survivalDataLoading}
                       />
                     )
-              )}
+                )}
 
-              {variable.active_chart === 'box' && (
-                <ClinicalBoxPlot
-                  boxPlotValues={boxPlotValues}
-                  cardFilters={cardFilters}
-                  dataBuckets={dataBuckets}
-                  fieldName={fieldName}
-                  qqData={qqData}
-                  setId={setId}
-                  setQQData={setQQData}
-                  setQQDataIsSet={setQQDataIsSet}
-                  theme={theme}
-                  totalDocs={totalDocs}
-                  type={variable.type}
-                  wrapperId={wrapperId}
-                  />
-              )}
-            </Column>
+                {variable.active_chart === 'box' && (
+                  <ClinicalBoxPlot
+                    boxPlotValues={boxPlotValues}
+                    cardFilters={cardFilters}
+                    dataBuckets={dataBuckets}
+                    fieldName={fieldName}
+                    qqData={qqData}
+                    setId={setId}
+                    setQQData={setQQData}
+                    setQQDataIsSet={setQQDataIsSet}
+                    theme={theme}
+                    totalDocs={totalDocs}
+                    type={variable.type}
+                    wrapperId={wrapperId}
+                    />
+                )}
+              </Column>
 
-            <Column>
-              <Row
-                style={{
-                  justifyContent: 'space-between',
-                  margin: '5px 0',
-                }}
-                >
-                <ActionsDropdown
-                  active_chart={variable.active_chart}
-                  cardFilters={cardFilters}
-                  currentAnalysis={currentAnalysis}
-                  dispatch={dispatch}
-                  selectedBins={selectedBins}
-                  styles={styles}
-                  theme={theme}
-                  totalDocs={totalDocs}
-                  tsvSubstring={tsvSubstring}
-                  />
+              <Column>
+                <Row
+                  style={{
+                    justifyContent: 'space-between',
+                    margin: '5px 0',
+                  }}
+                  >
+                  <ActionsDropdown
+                    active_chart={variable.active_chart}
+                    cardFilters={cardFilters}
+                    currentAnalysis={currentAnalysis}
+                    dispatch={dispatch}
+                    selectedBins={selectedBins}
+                    styles={styles}
+                    theme={theme}
+                    totalDocs={totalDocs}
+                    tsvSubstring={tsvSubstring}
+                    />
 
-                {variable.active_chart === 'box' || (
-                  <Dropdown
-                    button={(
-                      <Button
-                        rightIcon={<DownCaretIcon />}
-                        style={{
-                          ...visualizingButton,
-                          padding: '0 12px',
-                        }}
-                        >
+                  {variable.active_chart === 'box' || (
+                    <Dropdown
+                      button={(
+                        <Button
+                          rightIcon={<DownCaretIcon />}
+                          style={{
+                            ...visualizingButton,
+                            padding: '0 12px',
+                          }}
+                          >
                         Customize Bins
-                      </Button>
-                    )}
-                    dropdownStyle={{ right: 0 }}
-                    >
-                    <DropdownItem
-                      onClick={openCustomBinModal}
-                      style={styles.actionMenuItem}
+                        </Button>
+                      )}
+                      dropdownStyle={{ right: 0 }}
                       >
+                      <DropdownItem
+                        onClick={openCustomBinModal}
+                        style={styles.actionMenuItem}
+                        >
                       Edit Bins
-                    </DropdownItem>
-                    <DropdownItem
-                      onClick={resetBins}
-                      style={{
-                        ...styles.actionMenuItem,
-                        ...binsAreCustom || variable.isSurvivalCustom
+                      </DropdownItem>
+                      <DropdownItem
+                        onClick={resetBins}
+                        style={{
+                          ...styles.actionMenuItem,
+                          ...binsAreCustom || variable.isSurvivalCustom
                           ? {}
                           : styles.actionMenuItemDisabled(theme),
-                      }}
-                      >
+                        }}
+                        >
                       Reset to Default
-                    </DropdownItem>
-                  </Dropdown>
-                )}
-              </Row>
+                      </DropdownItem>
+                    </Dropdown>
+                  )}
+                </Row>
 
-              <EntityPageHorizontalTable
-                data={tableData.map(tableRow => Object.assign(
-                  {},
-                  tableRow,
-                  { key: tableRow.displayName }
-                ))}
-                headings={getHeadings(
-                  variable.active_chart,
-                  dataDimension,
-                  fieldName + (binsAreCustom
+                <EntityPageHorizontalTable
+                  data={tableData.map(tableRow => ({
+
+                    ...tableRow,
+                    key: tableRow.displayName,
+                  }))}
+                  headings={getHeadings(
+                    variable.active_chart,
+                    dataDimension,
+                    fieldName + (binsAreCustom
                     ? ' (User defined bins applied)'
                     : ''),
-                )}
-                tableContainerStyle={{ height: 175 }}
-                tableId={`analysis-${tsvSubstring}-table`}
-                />
-            </Column>
-          </Fragment>
-      )}
+                  )}
+                  tableContainerStyle={{ height: 175 }}
+                  tableId={`analysis-${tsvSubstring}-table`}
+                  />
+              </Column>
+            </Fragment>
+          )}
     </Column>
   );
 };

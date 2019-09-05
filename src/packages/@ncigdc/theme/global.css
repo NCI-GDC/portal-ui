@@ -8600,7 +8600,8 @@ svg {
 }
 
 i.fa.fa-question-circle {
-  /* this causes a bug. added for svg exports.... must resolve some other way
+  /* this causes a bug across the app. PRTL-2743
+   it was added for svg exports.... must resolve some other way
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; */
 }
 

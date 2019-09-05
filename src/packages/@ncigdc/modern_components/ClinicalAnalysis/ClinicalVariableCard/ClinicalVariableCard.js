@@ -302,7 +302,6 @@ const ClinicalVariableCard = ({
             ))}
         </Row>
       </Row>
-
       {isLoading
         ? <Loader />
         : isEmpty(tableData)
@@ -315,7 +314,7 @@ const ClinicalVariableCard = ({
                 justifyContent: 'center',
               }}
               >
-              There is no data for this facet
+              <div className="print-mb print-mt">There is no data for this facet</div>
             </Row>
           )
           : (

@@ -52,6 +52,7 @@ const ClinicalBoxPlot = ({
         }}
         >
         <span
+          className="print-mb print-mt"
           style={{
             color: theme.greyScale2,
             fontSize: '1.2rem',

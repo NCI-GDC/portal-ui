@@ -240,7 +240,7 @@ export default compose(
       fieldName,
       id,
       variable: {
-        bins,
+        bins = {},
         continuousBinType,
       },
     }) => {
@@ -274,16 +274,93 @@ export default compose(
       }));
     }
   ),
+  withProps(({
+    fieldName,
+    setId,
+    totalDocs,
+    variable: {
+      continuousBinType,
+    },
+  }) => ({
+    getContinuousBins: (
+      acc,
+      {
+        doc_count,
+        groupName = '',
+        key,
+        keyArray = [],
+      }
+    ) => {
+      const keyValues = parseContinuousKey(key);
+        // survival doesn't have keyArray
+      const keyArrayValues = keyArray.length > 0
+          ? parseContinuousKey(keyArray[0])
+          : keyValues;
+
+      const groupNameFormatted = groupName !== '' &&
+          continuousBinType === 'range'
+          ? groupName
+          : keyValues.length === 2 &&
+              isFinite(keyValues[0]) &&
+              isFinite(keyValues[1])
+                ? createContinuousGroupName(key)
+                : key;
+
+      const [keyMin, keyMax] = keyArrayValues;
+      const filters = {
+        content: [
+          {
+            content: {
+              field: 'cases.case_id',
+              value: `set_id:${setId}`,
+            },
+            op: 'in',
+          },
+          {
+            content: {
+              field: fieldName,
+              value: [keyMin],
+            },
+            op: '>=',
+          },
+          {
+            content: {
+              field: fieldName,
+              value: [keyMax],
+            },
+            op: '<',
+          },
+        ],
+        op: 'and',
+      };
+
+      return acc.concat(
+        {
+          chart_doc_count: doc_count,
+          displayName: groupNameFormatted,
+          doc_count: getCountLink({
+            doc_count,
+            filters,
+            totalDocs,
+          }),
+          filters,
+          groupName: groupNameFormatted,
+          key: `${keyMin}-${keyMax}`,
+          rangeValues: {
+            max: keyMax,
+            min: keyMin,
+          },
+        }
+      );
+    },
+  })),
   withProps(
     ({
       data: { explore },
       dataBuckets,
       fieldName,
-      setId,
-      totalDocs,
       variable: {
         bins = {},
-        continuousBinType,
       },
     }) => {
       const fieldNameUnderscores = createFacetFieldString(fieldName);
@@ -314,82 +391,7 @@ export default compose(
           };
         }, {});
 
-      const binData = getBinData(binsForBinData, dataBuckets);
-
-      return {
-        ...binData,
-        getContinuousBins: (
-          acc,
-          {
-            doc_count,
-            groupName = '',
-            key,
-            keyArray = [],
-          }
-        ) => {
-          const keyValues = parseContinuousKey(key);
-            // survival doesn't have keyArray
-          const keyArrayValues = keyArray.length > 0
-              ? parseContinuousKey(keyArray[0])
-              : keyValues;
-
-          const groupNameFormatted = groupName !== '' &&
-              continuousBinType === 'range'
-              ? groupName
-              : keyValues.length === 2 &&
-                  isFinite(keyValues[0]) &&
-                  isFinite(keyValues[1])
-                    ? createContinuousGroupName(key)
-                    : key;
-
-          const [keyMin, keyMax] = keyArrayValues;
-          const filters = {
-            content: [
-              {
-                content: {
-                  field: 'cases.case_id',
-                  value: `set_id:${setId}`,
-                },
-                op: 'in',
-              },
-              {
-                content: {
-                  field: fieldName,
-                  value: [keyMin],
-                },
-                op: '>=',
-              },
-              {
-                content: {
-                  field: fieldName,
-                  value: [keyMax],
-                },
-                op: '<',
-              },
-            ],
-            op: 'and',
-          };
-
-          return acc.concat(
-            {
-              chart_doc_count: doc_count,
-              displayName: groupNameFormatted,
-              doc_count: getCountLink({
-                doc_count,
-                filters,
-                totalDocs,
-              }),
-              filters,
-              groupName: groupNameFormatted,
-              key: `${keyMin}-${keyMax}`,
-              rangeValues: {
-                max: keyMax,
-                min: keyMin,
-              },
-            }
-          );
-        },
-      };
+      return getBinData(binsForBinData, dataBuckets);
     }
   ),
   withPropsOnChange(
@@ -407,7 +409,7 @@ export default compose(
       getContinuousBins,
       id,
       variable: {
-        bins,
+        bins = {},
         continuousBinType,
         customSurvivalPlots,
         isSurvivalCustom,

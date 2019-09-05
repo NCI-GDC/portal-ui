@@ -1,6 +1,6 @@
 import React from 'react';
 import { graphql } from 'react-relay';
-import { compose, withProps, withPropsOnChange } from 'recompose';
+import { compose, withPropsOnChange } from 'recompose';
 import { parse } from 'query-string';
 import { head } from 'lodash';
 
@@ -16,21 +16,10 @@ const blacklistRegex = new RegExp(
 
 const ClinicalAggregationsQuery = (Component: ReactClass<*>) => compose(
   withRouter,
-  // withProps(({ __type: { fields } }) => {
-  //   const filteredFields = head(
-  //     fields.filter(field => field.name === 'aggregations')
-  //   ).type.fields;
-  //   return {
-  //     clinicalAnalysisFields: filteredFields
-  //       .filter(field => validClinicalTypesRegex.test(field.name))
-  //       .filter(field => !blacklistRegex.test(field.name)),
-  //   };
-  // }),
   withPropsOnChange(
     ['location'],
     ({
-      // clinicalAnalysisFields,
-      __type: { fields },
+      data: { fields },
       defaultFilters = null,
       location: { search },
     }) => {

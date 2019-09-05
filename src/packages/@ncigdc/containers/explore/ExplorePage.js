@@ -106,9 +106,14 @@ function setVariables({ filters, relay }) {
   });
 }
 
-const ClinicalAggsWithFacetData = withFacetData(props => {
-  return <ClinicalAggregations {...props} />;
-});
+const ClinicalAggregationsWithFacetData = withFacetData(props => (
+  <ClinicalAggregations
+    data={props.introspectiveType}
+    globalFilters={props.globalFilters}
+    loading={props.loading}
+    maxFacetsPanelHeight={props.maxFacetsPanelHeight}
+    />
+));
 
 const enhance = compose(
   setDisplayName('EnhancedExplorePageComponent'),
@@ -155,12 +160,11 @@ const ExplorePageComponent = ({
         },
         {
           component: (
-            <ClinicalAggsWithFacetData
+            <ClinicalAggregationsWithFacetData
               globalFilters={filters}
               maxFacetsPanelHeight={maxFacetsPanelHeight}
               relay={relay}
               typeName="ExploreCases"
-              // relayVarName="exploreCaseCustomFacetFields"
               />
           ),
           id: 'clinical',
@@ -303,8 +307,6 @@ export const ExplorePageQuery = {
     ssms_size: null,
     ssms_sort: null,
     filters: null,
-    idAutocompleteCases: null,
-    runAutocompleteCases: false,
     idAutocompleteSsms: null,
     runAutocompleteSsms: false,
     dbsnpRsFilters: null,

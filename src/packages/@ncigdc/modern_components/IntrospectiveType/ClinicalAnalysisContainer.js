@@ -38,7 +38,7 @@ export default compose(
     ({ currentAnalysis }) => !currentAnalysis,
     ({ push }) => push({ pathname: '/analysis' })
   ),
-  withProps(({ __type: { fields } }) => {
+  withProps(({ introspectiveType: { fields } }) => {
     const filteredFields = head(
       fields.filter(field => field.name === 'aggregations')
     ).type.fields;

@@ -1,6 +1,12 @@
 // @flow
 import React from 'react';
-import { compose, withState, withProps, withHandlers } from 'recompose';
+import {
+  compose,
+  setDisplayName,
+  withState,
+  withProps,
+  withHandlers,
+} from 'recompose';
 
 import { Column, Row } from '@ncigdc/uikit/Flex';
 import { getDefaultCurve, enoughData } from '@ncigdc/utils/survivalplot';
@@ -13,14 +19,14 @@ import removeEmptyKeys from '@ncigdc/utils/removeEmptyKeys';
 import withPropsOnChange from '@ncigdc/utils/withPropsOnChange';
 
 const styles = {
+  card: {
+    backgroundColor: 'white',
+  },
   heading: {
     flexGrow: 1,
     fontSize: '2rem',
     marginBottom: 7,
     marginTop: 7,
-  },
-  card: {
-    backgroundColor: 'white',
   },
 };
 
@@ -29,17 +35,18 @@ const initialState = {
 };
 
 export default compose(
+  setDisplayName('EnhancedMutationsTab'),
   withFilters(),
   withState('defaultSurvivalData', 'setDefaultSurvivalData', {}),
   withState('selectedSurvivalData', 'setSelectedSurvivalData', {}),
   withState('state', 'setState', initialState),
   withProps(
     ({
-      selectedSurvivalData,
       defaultSurvivalData,
+      filters,
+      selectedSurvivalData,
       setDefaultSurvivalData,
       setSelectedSurvivalData,
-      filters,
       setState,
     }) => ({
       survivalData: {
@@ -66,10 +73,15 @@ export default compose(
     updateData();
   }),
   withHandlers({
-    handleClickMutation: ({ push, query, filters }) => ssm => {
+    handleClickMutation: ({ filters, push, query }) => ssm => {
       const newFilters = toggleFilters(
         filters,
-        makeFilter([{ field: 'ssms.ssm_id', value: [ssm.ssm_id] }])
+        makeFilter([
+          {
+            field: 'ssms.ssm_id',
+            value: [ssm.ssm_id],
+          },
+        ])
       );
       push({
         pathname: '/exploration',
@@ -82,43 +94,54 @@ export default compose(
   })
 )(
   ({
-    viewer,
-    filters,
-    survivalData,
     defaultSurvivalData,
+    filters,
     selectedSurvivalData,
     setSelectedSurvivalData,
-    handleClickMutation,
+    state: { loading },
+    survivalData,
   }) => (
     <Column style={styles.card}>
-      <h1 style={{ ...styles.heading, padding: '1rem' }} id="mutated-genes">
+      <h1
+        id="mutated-genes"
+        style={{
+          ...styles.heading,
+          padding: '1rem',
+        }}
+        >
         <i className="fa fa-bar-chart-o" style={{ paddingRight: '10px' }} />
         Somatic Mutations
       </h1>
 
       <Row>
-        <Column flex="1" style={{ width: '50%', padding: '0 20px' }}>
+        <Column
+          flex="1"
+          style={{
+            padding: '0 20px',
+            width: '50%',
+          }}
+          >
           <SurvivalPlotWrapper
             {...survivalData}
+            height={240}
             onReset={() => setSelectedSurvivalData({})}
             plotType="mutation"
-            height={240}
-            survivalPlotLoading={false}
-          />
+            survivalDataLoading={loading}
+            />
         </Column>
         <Column flex="1" style={{ width: '50%' }} />
       </Row>
 
       <SsmsTable
+        context="Cohort"
         defaultFilters={filters}
-        selectedSurvivalData={selectedSurvivalData}
         hasEnoughSurvivalDataOnPrimaryCurve={enoughData(
           defaultSurvivalData.rawData
         )}
+        selectedSurvivalData={selectedSurvivalData}
         setSelectedSurvivalData={setSelectedSurvivalData}
         showSurvivalPlot
-        context="Cohort"
-      />
+        />
     </Column>
   )
 );

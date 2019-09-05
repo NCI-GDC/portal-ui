@@ -8599,6 +8599,12 @@ svg {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
+i.fa.fa-question-circle {
+  /* this causes a bug across the app. PRTL-2743
+   it was added for svg exports.... must resolve some other way
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; */
+}
+
 .masonry {
   display: flex;
   flex-flow: row wrap;

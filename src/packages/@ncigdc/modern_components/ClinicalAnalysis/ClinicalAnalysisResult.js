@@ -136,7 +136,7 @@ const ClinicalAnalysisResult = ({
   push,
   setControlPanelExpanded,
   setId,
-  survivalPlotLoading,
+  survivalDataLoading,
 }: IAnalysisResultProps) => {
   return hits.total === 0
     ? (
@@ -300,7 +300,7 @@ const ClinicalAnalysisResult = ({
                     {...overallSurvivalData}
                     height={430}
                     plotType="clinicalOverall"
-                    survivalPlotLoading={survivalPlotLoading}
+                    survivalDataLoading={survivalDataLoading}
                     uniqueClass="clinical-survival-plot"
                     />
                 </div>
@@ -373,7 +373,7 @@ export default compose(
   })),
   withState('controlPanelExpanded', 'setControlPanelExpanded', true),
   withState('overallSurvivalData', 'setOverallSurvivalData', {}),
-  withState('survivalPlotLoading', 'setSurvivalPlotLoading', true),
+  withState('survivalDataLoading', 'setSurvivalDataLoading', true),
   withState('setId', 'setSetId', ''),
   withPropsOnChange(
     ['viewer'],
@@ -392,20 +392,20 @@ export default compose(
     ({ currentAnalysis }, {
       currentAnalysis: nextCurrentAnalysis,
       overallSurvivalData,
-      survivalPlotLoading,
+      survivalDataLoading,
     }) => (
       !isEqual(currentAnalysis, nextCurrentAnalysis) ||
-      (Object.keys(overallSurvivalData).length < 1 && !survivalPlotLoading)
+      (Object.keys(overallSurvivalData).length < 1 && !survivalDataLoading)
     ),
     async ({
       currentAnalysis: nextCurrentAnalysis,
       setOverallSurvivalData,
       setSetId,
-      setSurvivalPlotLoading,
+      setSurvivalDataLoading,
     }) => {
       const setId = Object.keys(nextCurrentAnalysis.sets.case)[0];
       setSetId(setId);
-      setSurvivalPlotLoading(true);
+      setSurvivalDataLoading(true);
       const nextSurvivalData = await getDefaultCurve({
         currentFilters: {
           content: [
@@ -423,7 +423,7 @@ export default compose(
       });
 
       setOverallSurvivalData(nextSurvivalData);
-      setSurvivalPlotLoading(false);
+      setSurvivalDataLoading(false);
     }
   ),
   withHandlers({
@@ -436,20 +436,20 @@ export default compose(
       controlPanelExpanded: nextControlPanelExpanded,
       loading: nextLoading,
       populateSurvivalData: nextPopulateSurvivalData,
-      survivalPlotLoading: nextSurvivalPlotLoading,
+      survivalDataLoading: nextSurvivalDataLoading,
     }) {
       const {
         controlPanelExpanded,
         loading,
         populateSurvivalData,
-        survivalPlotLoading,
+        survivalDataLoading,
       } = this.props;
 
       return !(
         nextControlPanelExpanded === controlPanelExpanded &&
         nextLoading === loading &&
         isEqual(populateSurvivalData, nextPopulateSurvivalData) &&
-        nextSurvivalPlotLoading === survivalPlotLoading
+        nextSurvivalDataLoading === survivalDataLoading
       );
     },
   }),

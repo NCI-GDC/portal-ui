@@ -146,6 +146,7 @@ module.exports = {
       ],
     }],
     'react/jsx-first-prop-new-line': ['warn', 'multiline'],
+    'react/jsx-fragments': ['error', 'element'],
     'react/jsx-indent': ['warn', 2, {
       checkAttributes: true,
       indentLogicalExpressions: true,

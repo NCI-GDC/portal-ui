@@ -143,13 +143,13 @@ export default compose(
                 ...continuousReset
                   ? {
                     bins: defaultData.bins,
-                    customBinsSetId: '',
                     ...resetVariableDefaults.continuous,
                     ...resetVariableDefaults.survival,
                   }
                   : {
                     bins: newBins,
                     continuousBinType,
+                    customBinsId: id,
                     customBinsSetId: setId,
                     ...continuousBinType === 'interval' && 
                       !isEqual(variable.customInterval, customInterval)
@@ -392,6 +392,52 @@ export default compose(
       );
     }
   ),
+  withPropsOnChange(
+    (props, nextProps) => props.binsAreCustom !== nextProps.binsAreCustom ||
+      props.variable.id !== nextProps.variable.id ||
+      props.variable.isSurvivalCustom !== nextProps.variable.isSurvivalCustom,
+    ({
+      binsAreCustom,
+      defaultData: { bins },
+      dispatch,
+      fieldName,
+      id,
+      variable: { isSurvivalCustom },
+    }) => ({
+      resetBins: () => {
+        dispatch(updateClinicalAnalysisVariable({
+          fieldName,
+          id,
+          variable: {
+            bins,
+            ...resetVariableDefaults.survival,
+            ...resetVariableDefaults.continuous,
+          }
+        }));
+      },
+    })
+  ),
+  withPropsOnChange((props, nextProps) => 
+    props.setId !== nextProps.setId,
+    ({
+      id,
+      resetBins,
+      setId,
+      variable: {
+        customBinsId,
+        customBinsSetId
+      },
+    }) => {
+      // call the reset function if you're in the same analysis tab
+      // and you change the case set AND bins are custom
+      if (customBinsId !== '' &&
+        customBinsSetId !== '' &&
+        customBinsId === id &&
+        customBinsSetId !== setId) {
+          resetBins();
+        }
+    }
+  ),
   withPropsOnChange((props, nextProps) =>
     nextProps.variable.active_chart === 'survival' &&
       (props.variable.active_chart !== nextProps.variable.active_chart ||
@@ -473,31 +519,6 @@ export default compose(
         : binData
           .sort((a, b) => a.keyArray[0] - b.keyArray[0])
           .reduce(getContinuousBins, []),
-    })
-  ),
-  withPropsOnChange(
-    (props, nextProps) => props.binsAreCustom !== nextProps.binsAreCustom ||
-      props.variable.id !== nextProps.variable.id ||
-      props.variable.isSurvivalCustom !== nextProps.variable.isSurvivalCustom,
-    ({
-      binsAreCustom,
-      defaultData: { bins },
-      dispatch,
-      fieldName,
-      id,
-      variable: { isSurvivalCustom },
-    }) => ({
-      resetBins: () => {
-        dispatch(updateClinicalAnalysisVariable({
-          fieldName,
-          id,
-          variable: {
-            bins,
-            ...resetVariableDefaults.survival,
-            ...resetVariableDefaults.continuous,
-          }
-        }));
-      },
     })
   ),
 )(EnhancedClinicalVariableCard);

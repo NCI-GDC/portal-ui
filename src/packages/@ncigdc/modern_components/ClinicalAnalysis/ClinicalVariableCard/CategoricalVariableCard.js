@@ -196,23 +196,31 @@ export default compose(
                   ),
                 }
               ), {}),
+            customBinsId: '',
             customBinsSetId: '',
         }}));
       },
     })
   ),
-  withPropsOnChange((props, nextProps) =>  
-    (props.setId !== nextProps.setId ||
-      props.variable.customBinsSetId !== nextProps.variable.customBinsSetId) &&
-    nextProps.setId !== nextProps.variable.customBinsSetId &&
-    nextProps.variable.customBinsSetId !== '' &&
-    props.id === nextProps.id,
-    ({ resetBins, setId, variable: { customBinsSetId } }) => {
-      // call reset function on case switch, not analysis switch
-      // if bins are custom
-      if (setId !== customBinsSetId && customBinsSetId !== '') {
-        resetBins();
-      }
+  withPropsOnChange((props, nextProps) => 
+    props.setId !== nextProps.setId,
+    ({
+      id,
+      resetBins,
+      setId,
+      variable: {
+        customBinsId,
+        customBinsSetId
+      },
+    }) => {
+      // call the reset function if you're in the same analysis tab
+      // and you change the case set AND bins are custom
+      if (customBinsId !== '' &&
+        customBinsSetId !== '' &&
+        customBinsId === id &&
+        customBinsSetId !== setId) {
+          resetBins();
+        }
     }
   ),
   withPropsOnChange(
@@ -304,6 +312,7 @@ export default compose(
               id,
               variable: {
                 bins: newBins,
+                customBinsId: id,
                 customBinsSetId: setId,
                 ...resetVariableDefaults.survival,
               },

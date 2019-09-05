@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react';
-import _ from 'lodash';
+import { map } from 'lodash';
 import {
   compose,
   pure,
@@ -11,62 +11,47 @@ import styled from '@ncigdc/theme/styled';
 import { withSearch } from '@ncigdc/utils/withSearch';
 import namespace from '@ncigdc/utils/namespace';
 import withSelectableList from '@ncigdc/utils/withSelectableList';
-import { Row, Column } from '@ncigdc/uikit/Flex';
 import QuickSearchResults from './QuickSearchResults';
 import FileHistoryResults from './FileHistoryResults';
 
 const styles = {
-  searchIconWrapper: {
-    marginRight: '4px',
-    position: 'relative',
-  },
-  searchIcon: {
-    // add a bit of transition delay to avoid jank with really fast queries
-    transition: 'opacity 0.2s ease 0.1s',
-  },
-  loadingIcon: {
-    position: 'absolute',
-    left: 0,
-    top: 0,
-    transition: 'opacity 0.2s ease 0.1s',
-  },
-  invisible: {
-    opacity: 0,
-  },
-  visible: {
-    opacity: 1,
-  },
   container: {
     position: 'relative',
   },
+  inputIcon: {
+    transition: 'opacity 0.2s ease 0.1s',
+  },
+  inputIconWrapper: {
+    marginRight: '5px',
+    position: 'relative',
+  },
   noResults: {
-    position: 'absolute',
-    top: '100%',
-    right: 0,
     backgroundColor: '#fff',
+    boxShadow: 'rgba(0, 0, 0, 0.156863) 0px 2px 5px 0px, rgba(0, 0, 0, 0.117647) 0px 2px 10px 0px',
     padding: '4px 10px',
-    boxShadow:
-      'rgba(0, 0, 0, 0.156863) 0px 2px 5px 0px, rgba(0, 0, 0, 0.117647) 0px 2px 10px 0px',
-    zIndex: 90,
+    position: 'absolute',
+    right: 0,
+    top: '100%',
     width: '100%',
+    zIndex: 90,
   },
 };
 
 const SearchInput = styled.input({
-  fontSize: '14px',
-  height: '3rem',
-  padding: '0.7rem 1rem',
-  border: ({ theme }) => `1px solid ${theme.greyScale5}`,
-  width: '25.375rem',
-  borderRadius: '4px',
-  outline: 'none',
-  transition: 'all 0.2s ease',
-  marginTop: -10,
-  marginBottom: -10,
   ':focus': {
     borderColor: 'rgb(18, 141, 219) !important',
     boxShadow: '0px 0px 22px 0px rgba(18, 147, 219, 0.75)',
   },
+  border: ({ theme }) => `1px solid ${theme.greyScale5}`,
+  borderRadius: '4px',
+  fontSize: '14px',
+  height: '3rem',
+  marginBottom: -10,
+  marginTop: -10,
+  outline: 'none',
+  padding: '0.7rem 1rem',
+  transition: 'all 0.2s ease',
+  width: '25.375rem',
 });
 
 const QuickSearch = ({
@@ -107,52 +92,48 @@ const QuickSearch = ({
     }}
     tabIndex={tabIndex}
     >
-    <span style={styles.searchIconWrapper}>
+    <span style={styles.inputIconWrapper}>
       <i
-        className="fa fa-search stock-icon"
-        style={Object.assign(
-          {},
-          styles.searchIcon,
-          state.isLoading ? styles.invisible : styles.visible,
-        )}
-        />
-      <i
-        className="fa fa-spin fa-spinner stock-icon"
-        style={Object.assign(
-          {},
-          styles.loadingIcon,
-          state.isLoading ? styles.visible : styles.invisible,
-        )}
+        className={`fa ${state.isLoading
+          ? 'fa-spin fa-spinner'
+          : 'fa-search'
+        } stock-icon`}
+        style={styles.inputIcon}
         />
     </span>
-    {!isInSearchMode && (
-      <span className="header-hidden-sm header-hidden-md" data-translate>
-        Quick Search
-      </span>
-    )}
 
-    {isInSearchMode && (
-      <SearchInput
-        aria-label="Quick Search Input"
-        autoFocus
-        className="quick-search-input"
-        onChange={event => setQuery(event.target.value)}
-        onKeyDown={event => {
-          handleKeyDown(event);
-          if (
-            state.query &&
-            state.results &&
-            focusedItem &&
-            event.key === 'Enter'
-          ) {
-            reset();
-            setIsInSearchMode(false);
-          }
-        }}
-        placeholder="Quick Search"
-        type="text"
-        />
-    )}
+    {isInSearchMode
+      ? (
+        <SearchInput
+          aria-label="Quick Search Input"
+          autoFocus
+          className="quick-search-input"
+          onChange={event => setQuery(event.target.value)}
+          onKeyDown={event => {
+            handleKeyDown(event);
+            if (
+              state.query &&
+              state.results &&
+              focusedItem &&
+              event.key === 'Enter'
+            ) {
+              reset();
+              setIsInSearchMode(false);
+            }
+          }}
+          placeholder="Quick Search"
+          type="text"
+          />
+      )
+      : (
+        <span
+          className="header-hidden-sm header-hidden-md"
+          data-translate
+          >
+          Quick Search
+        </span>
+      )}
+
     <QuickSearchResults
       isLoading={state.isLoading}
       onActivateItem={item => {
@@ -162,15 +143,20 @@ const QuickSearch = ({
       }}
       onSelectItem={setFocusedItem}
       query={state.query}
-      results={_.map(
+      results={map(
         state.results,
-        item => (item === focusedItem ? {
-          ...item,
-          isSelected: true,
-        } : item),
+        item => (item === focusedItem
+          ? Object.assign(
+            {},
+            item,
+            { isSelected: true },
+          )
+          : item
+        ),
       )}
       />
-    {!state.isLoading && (
+
+    {state.isLoading || (
       <FileHistoryResults
         isLoading={state.isLoading}
         onActivateItem={item => {
@@ -182,12 +168,14 @@ const QuickSearch = ({
         query={state.query}
         results={state.fileHistoryResult
           .filter(f => f.file_change === 'released')
-          .map(
-            item => (item === focusedItem ? {
-              ...item,
-              isSelected: true,
-            } : item),
-        )}
+          .map(item => (item === focusedItem
+            ? Object.assign(
+              {},
+              item,
+              { isSelected: true },
+            )
+            : item
+          ))}
         />
     )}
 

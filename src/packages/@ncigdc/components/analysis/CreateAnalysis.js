@@ -6,17 +6,13 @@ import {
   withState,
 } from 'recompose';
 import { connect } from 'react-redux';
-
 import { addAnalysis } from '@ncigdc/dux/analysis';
 import withRouter from '@ncigdc/utils/withRouter';
 import Button from '@ncigdc/uikit/Button';
 import { Row } from '@ncigdc/uikit/Flex';
 import { zDepth1 } from '@ncigdc/theme/mixins';
-
-import ClinicalAnalysisLaunch from './ClinicalAnalysisLaunch';
 import availableAnalysis from './availableAnalysis';
 import SelectSet from './SelectSet';
-
 import DemoButton from './DemoButton';
 import defaultVariables from './defaultCDAVEvariables';
 
@@ -43,13 +39,9 @@ const CreateAnalysis = ({
   push,
   setAnalysis,
 }) => {
-  const SelectSetComponent = analysis && analysis.type === 'clinical_data'
-    ? ClinicalAnalysisLaunch
-    : SelectSet;
-
   return analysis
     ? (
-      <SelectSetComponent
+      <SelectSet
         {...analysis}
         onCancel={() => setAnalysis(null)}
         onRun={sets => {
@@ -89,10 +81,10 @@ const CreateAnalysis = ({
           padding: '2rem 2.5rem',
         }}
         >
-        {availableAnalysis.map(analysis => {
+        {availableAnalysis.map(a => {
           return (
             <Row
-              key={analysis.type}
+              key={a.type}
               style={{
                 ...zDepth1,
                 margin: '2rem',
@@ -101,14 +93,14 @@ const CreateAnalysis = ({
               }}
               >
               <div style={{ margin: 20 }}>
-                <analysis.Icon />
+                <a.Icon />
               </div>
               <div>
-                <h1 style={{ fontSize: '2rem' }}>{analysis.label}</h1>
-                <div style={{ marginBottom: 10 }}>{analysis.description}</div>
+                <h1 style={{ fontSize: '2rem' }}>{a.label}</h1>
+                <div style={{ marginBottom: 10 }}>{a.description}</div>
                 <Row spacing={5}>
-                  <Button onClick={() => setAnalysis(analysis)}>Select</Button>
-                  <DemoButton demoData={analysis.demoData} type={analysis.type} />
+                  <Button onClick={() => setAnalysis(a)}>Select</Button>
+                  <DemoButton demoData={a.demoData} type={a.type} />
                 </Row>
               </div>
             </Row>

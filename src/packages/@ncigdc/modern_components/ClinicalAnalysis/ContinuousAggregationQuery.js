@@ -9,12 +9,12 @@ import md5 from 'blueimp-md5';
 import urlJoin from 'url-join';
 import {
   isNull,
-  reduce
+  reduce,
 } from 'lodash';
 
 import consoleDebug from '@ncigdc/utils/consoleDebug';
 import { redirectToLogin } from '@ncigdc/utils/auth';
-import { createFacetFieldString } from '@ncigdc/utils/string'
+import { createFacetFieldString } from '@ncigdc/utils/string';
 import Loader from '@ncigdc/uikit/Loaders/Loader';
 
 import { API, IS_AUTH_PORTAL } from '@ncigdc/utils/constants';
@@ -30,7 +30,7 @@ const getContinuousAggs = ({
   continuousBinType,
   fieldName,
   filters,
-  stats
+  stats,
 }) => {
   // prevent query failing if interval will equal 0
   if (isNull(stats.min) || isNull(stats.max)) {
@@ -52,7 +52,7 @@ const getContinuousAggs = ({
 
   let rangeArr = continuousBinType === 'default'
     ? makeDefaultBuckets()
-    : reduce(bins, (acc, bin, key) => {
+    : reduce(bins, (acc, bin) => {
       const binValues = parseContinuousKey(bin.key);
       const [from, to] = binValues;
       if (
@@ -61,7 +61,13 @@ const getContinuousAggs = ({
         (typeof to === 'number') &&
         (from < to)
       ) {
-        const result = [...acc, { from, to }];
+        const result = [
+          ...acc,
+          {
+            from,
+            to,
+          },
+        ];
         return result;
       }
       return acc;
@@ -75,10 +81,10 @@ const getContinuousAggs = ({
     content: [
       {
         ranges: rangeArr,
-      }
+      },
     ],
     op: 'range',
-  }
+  };
   const aggregationFieldName = createFacetFieldString(fieldName);
 
   const variables = {
@@ -148,11 +154,11 @@ const getContinuousAggs = ({
   return fetch(
     urlJoin(API, `graphql/ContinuousAggregationQuery?hash=${hash}`),
     {
-      method: 'POST',
+      body,
       headers: {
         'Content-Type': 'application/json',
       },
-      body,
+      method: 'POST',
     }
   ).then(response => response
     .json()
@@ -200,27 +206,27 @@ export default compose(
   withProps({
     updateData: async ({
       fieldName,
-      stats,
       filters,
+      hits,
       setAggData,
       setIsLoading,
+      stats,
       variable,
-      hits,
     }) => {
       const res = await getContinuousAggs({
+        bins: variable.bins,
         continuousBinType: variable.continuousBinType,
         fieldName,
-        stats,
         filters,
-        bins: variable.bins,
         hits,
+        stats,
       });
       setAggData(res && res.data.viewer, () => setIsLoading(false));
     },
   }),
   withPropsOnChange(['filters'], ({ updateData, ...props }) => updateData(props))
 )(({
-  aggData, isLoading, setId, stats, hits, ...props
+  aggData, hits, isLoading, setId, stats, ...props
 }) => {
   if (isLoading) {
     return <Loader />;
@@ -235,6 +241,6 @@ export default compose(
       setId={setId}
       stats={stats}
       {...props}
-    />
+      />
   );
 });

@@ -169,7 +169,6 @@ const ClinicalVariableCard = ({
   displayData,
   fieldName,
   filters,
-  getContinuousBins,
   id,
   isLoading,
   openCustomBinModal,
@@ -200,14 +199,11 @@ const ClinicalVariableCard = ({
       active_chart: variable.active_chart,
       displayData,
       fieldName,
-      getContinuousBins,
       selectedBins,
       selectedSurvivalBins,
       selectedSurvivalLoadingIds,
-      setId,
       setSelectedBins,
       theme,
-      totalDocs,
       updateSelectedSurvivalBins,
     });
 

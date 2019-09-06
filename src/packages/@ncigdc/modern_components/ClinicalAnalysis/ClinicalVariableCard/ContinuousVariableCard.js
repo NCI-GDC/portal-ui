@@ -467,16 +467,16 @@ export default compose(
         continuousBinType,
       },
     }) => {
-      if (isEmpty(binData)) { return []; }
-
       return {
-        displayData: getContinuousBins({
-          binData: binData.sort((a, b) => a.keyArray[0] - b.keyArray[0]),
-          continuousBinType,
-          fieldName,
-          setId,
-          totalDocs,
-        }),
+        displayData: isEmpty(binData)
+          ? []
+          : getContinuousBins({
+            binData: binData.sort((a, b) => a.keyArray[0] - b.keyArray[0]),
+            continuousBinType,
+            fieldName,
+            setId,
+            totalDocs,
+          }),
       };
     }
   ),

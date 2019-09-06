@@ -400,6 +400,8 @@ export default compose(
       dispatch,
       fieldName,
       id,
+      setId,
+      totalDocs,
       variable: {
         bins = {},
         continuousBinType,
@@ -413,7 +415,8 @@ export default compose(
             ? createContinuousGroupName(bins[bin].key)
             : bins[bin].groupName,
       }));
-
+      console.log('binsWithNames: ', binsWithNames);
+      console.log('is custom: ', isSurvivalCustom);
       const customBinMatches = isSurvivalCustom
           ? binsWithNames.filter(bin => customSurvivalPlots
             .indexOf(bin.displayName) >= 0)
@@ -421,15 +424,32 @@ export default compose(
 
       const isUsingCustomSurvival = customBinMatches.length > 0;
 
+      console.log('triggered:', customBinMatches);
       const survivalBins = (isUsingCustomSurvival
-          ? filterSurvivalData(customBinMatches
-            .reduce(getContinuousBins, []))
-          : filterSurvivalData(binsWithNames
-            .sort((a, b) => a.key - b.key)
-            .reduce(getContinuousBins, []))
-            .sort((a, b) => b.chart_doc_count - a.chart_doc_count)
-      )
-        .slice(0, isUsingCustomSurvival ? Infinity : 2);
+        ? filterSurvivalData(getContinuousBins({
+          binData: customBinMatches,
+          continuousBinType,
+          fieldName,
+          setId,
+          totalDocs,
+        }))
+        : filterSurvivalData(getContinuousBins({
+          binData: binsWithNames.sort((a, b) => a.key - b.key),
+          continuousBinType,
+          fieldName,
+          setId,
+          totalDocs,
+        })).sort((a, b) => b.chart_doc_count - a.chart_doc_count)).slice(0, isUsingCustomSurvival ? Infinity : 2);
+
+      // const survivalBins = (isUsingCustomSurvival
+      //     ? filterSurvivalData(customBinMatches
+      //       .reduce(getContinuousBins, []))
+      //     : filterSurvivalData(binsWithNames
+      //       .sort((a, b) => a.key - b.key)
+      //       .reduce(getContinuousBins, []))
+      //       .sort((a, b) => b.chart_doc_count - a.chart_doc_count)
+      // );
+      //   .slice(0, isUsingCustomSurvival ? Infinity : 2);
 
       const survivalPlotValues = survivalBins.map(bin => ({
         filters: bin.filters,
@@ -440,6 +460,9 @@ export default compose(
       const nextCustomSurvivalPlots = customBinMatches
         .map(bin => bin.displayName);
 
+      console.log('survival bins: ', survivalBins);
+      console.log('survival table values: ', survivalTableValues);
+      console.log('next custom plots', nextCustomSurvivalPlots);
       dispatch(updateClinicalAnalysisVariable({
         fieldName,
         id,

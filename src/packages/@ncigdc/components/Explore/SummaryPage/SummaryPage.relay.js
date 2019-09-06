@@ -1,4 +1,3 @@
-// import Relay from 'react-relay/classic';
 import React from 'react';
 import { graphql } from 'react-relay';
 import { BaseQuery } from '@ncigdc/modern_components/Query';

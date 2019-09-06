@@ -51,7 +51,7 @@ const getContinuousAggs = ({
     );
 
   let rangeArr = continuousBinType === 'default'
-    ? rangeArr = makeDefaultBuckets()
+    ? makeDefaultBuckets()
     : reduce(bins, (acc, bin, key) => {
       const binValues = parseContinuousKey(bin.key);
       const [from, to] = binValues;

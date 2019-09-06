@@ -77,7 +77,7 @@ const getContinuousAggs = ({
         ranges: rangeArr,
       }
     ],
-    op: "range",
+    op: 'range',
   }
   const aggregationFieldName = createFacetFieldString(fieldName);
 

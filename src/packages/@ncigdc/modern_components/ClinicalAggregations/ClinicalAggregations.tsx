@@ -30,12 +30,11 @@ import {
   changeExpandedStatus,
   expandOneCategory,
   showingMoreByCategory,
-  // IExpandedStatusStateProps,
+  IExpandedStatusStateProps,
   // IExpandedStatusActionProps,
 } from '@ncigdc/dux/facetsExpandedStatus';
 import { WrapperComponent } from '@ncigdc/components/FacetWrapper';
 import { withTheme } from '@ncigdc/theme';
-// import CaseAggregationsQuery from '@ncigdc/containers/explore/explore.relay';
 import { internalHighlight } from '@ncigdc/uikit/Highlight';
 
 import SearchIcon from 'react-icons/lib/fa/search';
@@ -50,7 +49,7 @@ import {
   presetFacets,
 } from '@ncigdc/containers/explore/presetFacets';
 import Input from '@ncigdc/uikit/Form/Input';
-// import { ITheme } from '@ncigdc/theme/types';
+import { ITheme } from '@ncigdc/theme/types';
 import AngleIcon from '@ncigdc/theme/icons/AngleIcon';
 import {
   ToggleMoreLink,
@@ -66,6 +65,7 @@ export interface IFacetProps {
   type: string,
   additionalProps?: any,
 }
+
 interface IBucketProps {
   key: string,
   doc_count: number,
@@ -76,12 +76,15 @@ interface IAggregationProps {
   count?: number,
   stats?: { count: number, [x: string]: number },
 }
+
 interface IParsedFacetsProps {
   [x: string]: IAggregationProps,
 }
+
 export interface IfilterdFacetsProps {
   [x: string]: IFacetProps[],
 }
+
 interface INotificationProps {
   components: string[],
   level: string,
@@ -90,39 +93,34 @@ interface INotificationProps {
   message: JSX.Element,
   dismissed?: boolean,
 }
-interface IClinicalProps {
-  filteredFacets: IfilterdFacetsProps,
-  theme: ITheme,
-  setUselessFacetVisibility: (uselessFacetVisibility: boolean) => void,
-  shouldHideUselessFacets: boolean,
-  searchValue: string,
-  setSearchValue: (searchValue: string) => void,
-  handleQueryInputChange: () => void,
-  parsedFacets: IParsedFacetsProps | {},
-  isLoadingParsedFacets: boolean,
-  allExpanded: { [x: string]: boolean },
-  facetsExpandedStatus: IExpandedStatusStateProps,
-  dispatch: (action: IExpandedStatusActionProps) => void,
-  notifications: INotificationProps[],
-  maxFacetsPanelHeight: number,
-}
 
-interface ICaseFacetsProps {
-  __dataID__: string,
-  name: string,
-  fields: IGraphFieldProps[],
-}
+// interface IClinicalProps {
+//   filteredFacets: IfilterdFacetsProps,
+//   theme: ITheme,
+//   setUselessFacetVisibility: (uselessFacetVisibility: boolean) => void,
+//   shouldHideUselessFacets: boolean,
+//   searchValue: string,
+//   setSearchValue: (searchValue: string) => void,
+//   handleQueryInputChange: () => void,
+//   parsedFacets: IParsedFacetsProps | {},
+//   isLoadingParsedFacets: boolean,
+//   allExpanded: { [x: string]: boolean },
+//   facetsExpandedStatus: IExpandedStatusStateProps,
+//   dispatch: (action: IExpandedStatusActionProps) => void,
+//   notifications: INotificationProps[],
+//   maxFacetsPanelHeight: number,
+// }
 
-interface IGraphFieldProps {
-  __dataID__: string,
-  name: string,
-  description: string,
-  type: {
-    name: string,
-    __dataID__: string,
-    fields: IFieldProps[],
-  },
-}
+// interface IGraphFieldProps {
+//   __dataID__: string,
+//   name: string,
+//   description: string,
+//   type: {
+//     name: string,
+//     __dataID__: string,
+//     fields: IFieldProps[],
+//   },
+// }
 
 interface IFieldProps {
   __dataID: string,
@@ -153,15 +151,16 @@ const facetMatchesQuery = (
     ),
   );
 };
+
 const MagnifyingGlass = styled(SearchIcon, {
   backgroundColor: ({ theme }: { theme: ITheme }) => theme.greyScale5,
+  border: ({ theme }: { theme: ITheme }) => `1px solid ${theme.greyScale4}`,
+  borderRadius: '4px 0 0 4px',
+  borderRight: 'none',
   color: ({ theme }: { theme: ITheme }) => theme.greyScale2,
+  height: '3.4rem',
   padding: '0.8rem',
   width: '3.4rem',
-  height: '3.4rem',
-  borderRadius: '4px 0 0 4px',
-  border: ({ theme }: { theme: ITheme }) => `1px solid ${theme.greyScale4}`,
-  borderRight: 'none',
 });
 
 const enhance = compose(
@@ -283,7 +282,7 @@ const enhance = compose(
       facetMapping,
       searchValue,
       shouldHideUselessFacets,
-      viewer: { explore: { cases: { customCaseFacets = {} } } },
+      viewer: { explore: { cases: { customCaseFacets } } },
     }) => {
       const parsedFacets: IParsedFacetsProps | {} = isEmpty(customCaseFacets)
         ? {}
@@ -354,7 +353,7 @@ const ClinicalAggregations =
     setUselessFacetVisibility,
     shouldHideUselessFacets,
     theme,
-  }: IClinicalProps): any => (
+  }: any): any => (
     <React.Fragment>
       <Row
         key="row"

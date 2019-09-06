@@ -8,14 +8,6 @@ import Query from '@ncigdc/modern_components/Query';
 import { parseFilterParam } from '@ncigdc/utils/uri';
 import withRouter from '@ncigdc/utils/withRouter';
 import testValidClinicalTypes from '@ncigdc/utils/clinicalBlacklist';
-//
-// import { CLINICAL_BLACKLIST } from '@ncigdc/utils/constants';
-//
-//
-// const validClinicalTypesRegex = /(demographic)|(diagnoses)|(exposures)|(treatments)|(follow_ups)/;
-// const blacklistRegex = new RegExp(
-//   CLINICAL_BLACKLIST.map(item => `(${item})`).join('|')
-// );
 
 const ClinicalAggregationsQuery = (Component: ReactClass<*>) => compose(
   withRouter,
@@ -34,9 +26,6 @@ const ClinicalAggregationsQuery = (Component: ReactClass<*>) => compose(
       ).type.fields;
 
       const clinicalAnalysisFields = testValidClinicalTypes(filteredFields);
-      // const clinicalAnalysisFields = filteredFields
-      //   .filter(field => validClinicalTypesRegex.test(field.name))
-      //   .filter(field => !blacklistRegex.test(field.name));
 
       return {
         clinicalAnalysisFields,

@@ -39,6 +39,80 @@ import {
 } from './helpers';
 import EnhancedClinicalVariableCard from './EnhancedClinicalVariableCard';
 
+const getContinuousBins = ({
+  binData = [],
+  continuousBinType,
+  fieldName,
+  setId,
+  totalDocs,
+}) => (
+  binData.reduce((acc, {
+    doc_count, groupName = '', key, keyArray = [],
+  }) => {
+    const keyValues = parseContinuousKey(key);
+    // survival doesn't have keyArray
+    const keyArrayValues = keyArray.length > 0
+      ? parseContinuousKey(keyArray[0])
+      : keyValues;
+
+    const groupNameFormatted = groupName !== '' &&
+      continuousBinType === 'range'
+      ? groupName
+      : keyValues.length === 2 &&
+          isFinite(keyValues[0]) &&
+          isFinite(keyValues[1])
+            ? createContinuousGroupName(key)
+            : key;
+
+    const [keyMin, keyMax] = keyArrayValues;
+    const filters = {
+      content: [
+        {
+          content: {
+            field: 'cases.case_id',
+            value: `set_id:${setId}`,
+          },
+          op: 'in',
+        },
+        {
+          content: {
+            field: fieldName,
+            value: [keyMin],
+          },
+          op: '>=',
+        },
+        {
+          content: {
+            field: fieldName,
+            value: [keyMax],
+          },
+          op: '<',
+        },
+      ],
+      op: 'and',
+    };
+
+    return acc.concat(
+      {
+        chart_doc_count: doc_count,
+        displayName: groupNameFormatted,
+        doc_count: getCountLink({
+          doc_count,
+          filters,
+          totalDocs,
+        }),
+        filters,
+        groupName: groupNameFormatted,
+        key: `${keyMin}-${keyMax}`,
+        rangeValues: {
+          max: keyMax,
+          min: keyMin,
+        },
+      }
+    );
+  }, [])
+);
+
 export default compose(
   setDisplayName('EnhancedContinuousVariableCard'),
   connect((state: any) => ({ analysis: state.analysis })),
@@ -274,86 +348,6 @@ export default compose(
       }));
     }
   ),
-  withProps(({
-    fieldName,
-    setId,
-    totalDocs,
-    variable: {
-      continuousBinType,
-    },
-  }) => ({
-    getContinuousBins: (
-      acc,
-      {
-        doc_count,
-        groupName = '',
-        key,
-        keyArray = [],
-      }
-    ) => {
-      const keyValues = parseContinuousKey(key);
-        // survival doesn't have keyArray
-      const keyArrayValues = keyArray.length > 0
-          ? parseContinuousKey(keyArray[0])
-          : keyValues;
-
-      const groupNameFormatted = groupName !== '' &&
-          continuousBinType === 'range'
-          ? groupName
-          : keyValues.length === 2 &&
-              isFinite(keyValues[0]) &&
-              isFinite(keyValues[1])
-                ? createContinuousGroupName(key)
-                : key;
-
-      const [keyMin, keyMax] = keyArrayValues;
-      const filters = {
-        content: [
-          {
-            content: {
-              field: 'cases.case_id',
-              value: `set_id:${setId}`,
-            },
-            op: 'in',
-          },
-          {
-            content: {
-              field: fieldName,
-              value: [keyMin],
-            },
-            op: '>=',
-          },
-          {
-            content: {
-              field: fieldName,
-              value: [keyMax],
-            },
-            op: '<',
-          },
-        ],
-        op: 'and',
-      };
-
-      return acc.concat(
-        {
-          chart_doc_count: doc_count,
-          displayName: groupNameFormatted,
-          doc_count: getCountLink({
-            doc_count,
-            filters,
-            totalDocs,
-          }),
-          filters,
-          groupName: groupNameFormatted,
-          key: `${keyMin}-${keyMax}`,
-          rangeValues: {
-            max: keyMax,
-            min: keyMin,
-          },
-        }
-      );
-    },
-  })),
   withProps(
     ({
       data: { explore },
@@ -378,10 +372,9 @@ export default compose(
         .reduce((acc, curr) => {
           const keyTrimIntegers = parseContinuousKey(curr.key).join('-');
           const currentBin = bins[keyTrimIntegers] ||
-              bins[curr.key] ||
-              { groupName: '--' };
+            bins[curr.key] ||
+            { groupName: '--' };
           return {
-
             ...acc,
             [keyTrimIntegers]: {
               doc_count: curr.doc_count,
@@ -406,7 +399,6 @@ export default compose(
     ({
       dispatch,
       fieldName,
-      getContinuousBins,
       id,
       variable: {
         bins = {},
@@ -468,14 +460,25 @@ export default compose(
     (props, nextProps) => !isEqual(props.binData, nextProps.binData),
     ({
       binData,
-      getContinuousBins,
-    }) => ({
-      displayData: isEmpty(binData)
-        ? []
-        : binData
-          .sort((a, b) => a.keyArray[0] - b.keyArray[0])
-          .reduce(getContinuousBins, []),
-    })
+      fieldName,
+      setId,
+      totalDocs,
+      variable: {
+        continuousBinType,
+      },
+    }) => {
+      if (isEmpty(binData)) { return []; }
+
+      return {
+        displayData: getContinuousBins({
+          binData: binData.sort((a, b) => a.keyArray[0] - b.keyArray[0]),
+          continuousBinType,
+          fieldName,
+          setId,
+          totalDocs,
+        }),
+      };
+    }
   ),
   withPropsOnChange(
     (props, nextProps) => !(

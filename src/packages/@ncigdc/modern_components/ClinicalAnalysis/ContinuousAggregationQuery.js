@@ -1,7 +1,6 @@
 import React from 'react';
 import {
   compose,
-  setDisplayName,
   withPropsOnChange,
   withProps,
   withState,
@@ -9,17 +8,16 @@ import {
 import md5 from 'blueimp-md5';
 import urlJoin from 'url-join';
 import {
-  isEqual,
   isNull,
-  reduce,
+  reduce
 } from 'lodash';
 
-import Loader from '@ncigdc/uikit/Loaders/Loader';
-import { redirectToLogin } from '@ncigdc/utils/auth';
 import consoleDebug from '@ncigdc/utils/consoleDebug';
-import { API, IS_AUTH_PORTAL } from '@ncigdc/utils/constants';
-import { createFacetFieldString } from '@ncigdc/utils/string';
+import { redirectToLogin } from '@ncigdc/utils/auth';
+import { createFacetFieldString } from '@ncigdc/utils/string'
+import Loader from '@ncigdc/uikit/Loaders/Loader';
 
+import { API, IS_AUTH_PORTAL } from '@ncigdc/utils/constants';
 import { ContinuousVariableCard } from './ClinicalVariableCard';
 import { parseContinuousKey } from './ClinicalVariableCard/helpers';
 
@@ -32,7 +30,7 @@ const getContinuousAggs = ({
   continuousBinType,
   fieldName,
   filters,
-  stats,
+  stats
 }) => {
   // prevent query failing if interval will equal 0
   if (isNull(stats.min) || isNull(stats.max)) {
@@ -53,8 +51,8 @@ const getContinuousAggs = ({
     );
 
   let rangeArr = continuousBinType === 'default'
-    ? makeDefaultBuckets()
-    : reduce(bins, (acc, bin) => {
+    ? rangeArr = makeDefaultBuckets()
+    : reduce(bins, (acc, bin, key) => {
       const binValues = parseContinuousKey(bin.key);
       const [from, to] = binValues;
       if (
@@ -63,13 +61,7 @@ const getContinuousAggs = ({
         (typeof to === 'number') &&
         (from < to)
       ) {
-        const result = [
-          ...acc,
-          {
-            from,
-            to,
-          },
-        ];
+        const result = [...acc, { from, to }];
         return result;
       }
       return acc;
@@ -83,10 +75,10 @@ const getContinuousAggs = ({
     content: [
       {
         ranges: rangeArr,
-      },
+      }
     ],
-    op: 'range',
-  };
+    op: "range",
+  }
   const aggregationFieldName = createFacetFieldString(fieldName);
 
   const variables = {
@@ -153,13 +145,14 @@ const getContinuousAggs = ({
     return Promise.resolve(simpleAggCache[hash]);
   }
   pendingAggCache[hash] = true;
-
   return fetch(
     urlJoin(API, `graphql/ContinuousAggregationQuery?hash=${hash}`),
     {
-      body,
-      headers: { 'Content-Type': 'application/json' },
       method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body,
     }
   ).then(response => response
     .json()
@@ -201,17 +194,39 @@ const getContinuousAggs = ({
     }));
 };
 
-const ContinuousAggregationQuery = ({
-  aggData,
-  hits,
-  isLoading,
-  setId,
-  stats,
-  ...props
-}) => ( // TODO this loader doesn't belong here. Must fix the continuous variable card dependency
-  isLoading
-  ? <Loader />
-  : (
+export default compose(
+  withState('aggData', 'setAggData', null),
+  withState('isLoading', 'setIsLoading', true),
+  withProps({
+    updateData: async ({
+      fieldName,
+      stats,
+      filters,
+      setAggData,
+      setIsLoading,
+      variable,
+      hits,
+    }) => {
+      const res = await getContinuousAggs({
+        continuousBinType: variable.continuousBinType,
+        fieldName,
+        stats,
+        filters,
+        bins: variable.bins,
+        hits,
+      });
+      setAggData(res && res.data.viewer, () => setIsLoading(false));
+    },
+  }),
+  withPropsOnChange(['filters'], ({ updateData, ...props }) => updateData(props))
+)(({
+  aggData, isLoading, setId, stats, hits, ...props
+}) => {
+  if (isLoading) {
+    return <Loader />;
+  }
+
+  return (
     <ContinuousVariableCard
       data={{
         ...aggData,
@@ -220,43 +235,6 @@ const ContinuousAggregationQuery = ({
       setId={setId}
       stats={stats}
       {...props}
-      />
-    )
-);
-
-export default compose(
-  setDisplayName('EnhancedContinuousAggregationQuery'),
-  withState('aggData', 'setAggData', null),
-  withState('isLoading', 'setIsLoading', true),
-  withProps({
-    updateData: async ({
-      fieldName,
-      filters,
-      hits,
-      setAggData,
-      setIsLoading,
-      stats,
-      variable,
-    }) => {
-      const res = await getContinuousAggs({
-        bins: variable.bins,
-        continuousBinType: variable.continuousBinType,
-        fieldName,
-        filters,
-        hits,
-        stats,
-      });
-      setAggData(res && res.data.viewer, () => setIsLoading(false));
-    },
-  }),
-  withPropsOnChange(
-    ({ filters }, { filters: nextFilters }) => !(
-      isEqual(nextFilters, filters)
-    ), ({
-      updateData,
-      ...props
-    }) => {
-      updateData(props);
-    }
-  ),
-)(ContinuousAggregationQuery);
+    />
+  );
+});

@@ -81,10 +81,10 @@ const CreateAnalysis = ({
           padding: '2rem 2.5rem',
         }}
         >
-        {availableAnalysis.map(a => {
+        {availableAnalysis.map(item => {
           return (
             <Row
-              key={a.type}
+              key={item.type}
               style={{
                 ...zDepth1,
                 margin: '2rem',
@@ -93,14 +93,14 @@ const CreateAnalysis = ({
               }}
               >
               <div style={{ margin: 20 }}>
-                <a.Icon />
+                <item.Icon />
               </div>
               <div>
-                <h1 style={{ fontSize: '2rem' }}>{a.label}</h1>
-                <div style={{ marginBottom: 10 }}>{a.description}</div>
+                <h1 style={{ fontSize: '2rem' }}>{item.label}</h1>
+                <div style={{ marginBottom: 10 }}>{item.description}</div>
                 <Row spacing={5}>
-                  <Button onClick={() => setAnalysis(a)}>Select</Button>
-                  <DemoButton demoData={a.demoData} type={a.type} />
+                  <Button onClick={() => setAnalysis(item)}>Select</Button>
+                  <DemoButton demoData={item.demoData} type={item.type} />
                 </Row>
               </div>
             </Row>

@@ -14,14 +14,13 @@ import CaseAggregations from '@ncigdc/containers/explore/CaseAggregations';
 import GeneAggregations from '@ncigdc/modern_components/GeneAggregations';
 import SSMAggregations from '@ncigdc/containers/explore/SSMAggregations';
 import ClinicalAggregations from '@ncigdc/containers/explore/ClinicalAggregations';
-import MasonryLayout from '@ncigdc/components/Layouts/MasonryLayout';
 import { CreateExploreCaseSetButton } from '@ncigdc/modern_components/withSetAction';
 import { makeFilter, replaceFilters } from '@ncigdc/utils/filters';
 import { stringifyJSONParam } from '@ncigdc/utils/uri';
 import { Row } from '@ncigdc/uikit/Flex';
 import Button from '@ncigdc/uikit/Button';
 import ResizeDetector from 'react-resize-detector';
-import summaryElements from '@ncigdc/components/Explore/SummaryElements';
+import SummaryPage from '@ncigdc/components/Explore/SummaryPage';
 
 export type TProps = {
   filters: {},
@@ -124,7 +123,6 @@ export class ExplorePageComponent extends React.Component {
       viewer,
     } = this.props;
     const { maxFacetsPanelHeight } = this.state;
-
     const hasCaseHits = get(viewer, 'explore.cases.hits.total', 0);
     const hasGeneHits = get(viewer, 'explore.genes.hits.total', 0);
     const hasSsmsHits = get(viewer, 'explore.ssms.hits.total', 0);
@@ -246,8 +244,8 @@ export class ExplorePageComponent extends React.Component {
               links={[
                 {
                   component: hasCaseHits ? (
-                    <MasonryLayout
-                      elements={summaryElements}
+                    <SummaryPage
+                      filters={filters}
                       numPerRow={showFacets ? 3 : 4}
                       />
                   ) : (
@@ -257,8 +255,6 @@ export class ExplorePageComponent extends React.Component {
                   text: 'Summary',
                 },
                 {
-                  id: 'cases',
-                  text: `Cases (${viewer.explore.cases.hits.total.toLocaleString()})`,
                   component: hasCaseHits ? (
                     <CasesTab />
                   ) : (

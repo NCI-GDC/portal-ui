@@ -166,7 +166,6 @@ const ClinicalVariableCard = ({
   dataBuckets,
   dataDimension,
   dispatch,
-  dispatchUpdateClinicalVariable,
   displayData,
   fieldName,
   filters,
@@ -334,10 +333,13 @@ const ClinicalVariableCard = ({
                           aria-label="Percentage of cases"
                           checked={variable.active_calculation === 'percentage'}
                           id={`variable-percentage-radio-${fieldName}`}
-                          onChange={() => dispatchUpdateClinicalVariable({
-                            value: 'percentage',
-                            variableKey: 'active_calculation',
-                          })}
+                          onChange={() => dispatch(updateClinicalAnalysisVariable({
+                            fieldName,
+                            id,
+                            variable: {
+                              active_calculation: 'percentage'
+                            },
+                          }))}
                           style={{ marginRight: 5 }}
                           type="radio"
                           value="percentage"
@@ -352,10 +354,13 @@ const ClinicalVariableCard = ({
                           aria-label="Number of cases"
                           checked={variable.active_calculation === 'number'}
                           id={`variable-number-radio-${fieldName}`}
-                          onChange={() => dispatchUpdateClinicalVariable({
-                            value: 'number',
-                            variableKey: 'active_calculation',
-                          })}
+                          onChange={() => dispatch(updateClinicalAnalysisVariable({
+                            fieldName,
+                            id,
+                            variable: {
+                              active_calculation: 'number',
+                            },
+                          }))}
                           style={{ marginRight: 5 }}
                           type="radio"
                           value="number"

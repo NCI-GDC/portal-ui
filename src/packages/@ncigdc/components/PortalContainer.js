@@ -104,12 +104,17 @@ export default compose(
     componentWillUnmount(): void {
       this.removeListen();
     },
-    shouldComponentUpdate({ notifications: nextNotifications }) {
+    shouldComponentUpdate({
+      location: nextLocation,
+      notifications: nextNotifications,
+    }) {
       const {
+        location,
         notifications,
       } = this.props;
 
       return !(
+        isEqual(nextLocation, location) &&
         isEqual(nextNotifications, notifications)
       );
     },

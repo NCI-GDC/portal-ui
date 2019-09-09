@@ -1,5 +1,4 @@
 import React from 'react';
-// import Relay from 'react-relay/classic';
 import { connect } from 'react-redux';
 import {
   every,
@@ -24,37 +23,39 @@ import {
   withPropsOnChange,
   withState,
 } from 'recompose';
-import { Column, Row } from '@ncigdc/uikit/Flex';
+import SearchIcon from 'react-icons/lib/fa/search';
+
 import {
   addAllFacets,
   changeExpandedStatus,
   expandOneCategory,
   showingMoreByCategory,
   IExpandedStatusStateProps,
-  // IExpandedStatusActionProps,
+  IExpandedStatusActionProps,
 } from '@ncigdc/dux/facetsExpandedStatus';
-import { WrapperComponent } from '@ncigdc/components/FacetWrapper';
+
 import { withTheme } from '@ncigdc/theme';
-import { internalHighlight } from '@ncigdc/uikit/Highlight';
-
-import SearchIcon from 'react-icons/lib/fa/search';
-
+import withFacetSelection from '@ncigdc/utils/withFacetSelection';
 import styled from '@ncigdc/theme/styled';
 import termCapitaliser from '@ncigdc/utils/customisation';
 import tryParseJSON from '@ncigdc/utils/tryParseJSON';
-import withFacetSelection from '@ncigdc/utils/withFacetSelection';
 import {
   clinicalFacets,
   customSorting,
   presetFacets,
 } from '@ncigdc/containers/explore/presetFacets';
+
+import { Column, Row } from '@ncigdc/uikit/Flex';
+import { WrapperComponent } from '@ncigdc/components/FacetWrapper';
+import { internalHighlight } from '@ncigdc/uikit/Highlight';
 import Input from '@ncigdc/uikit/Form/Input';
-import { ITheme } from '@ncigdc/theme/types';
 import AngleIcon from '@ncigdc/theme/icons/AngleIcon';
 import {
   ToggleMoreLink,
   BottomRow,
 } from '@ncigdc/components/Aggregations/TermAggregation';
+
+import { ITheme } from '@ncigdc/theme/types';
 
 export interface IFacetProps {
   customSort: number,
@@ -94,33 +95,22 @@ interface INotificationProps {
   dismissed?: boolean,
 }
 
-// interface IClinicalProps {
-//   filteredFacets: IfilterdFacetsProps,
-//   theme: ITheme,
-//   setUselessFacetVisibility: (uselessFacetVisibility: boolean) => void,
-//   shouldHideUselessFacets: boolean,
-//   searchValue: string,
-//   setSearchValue: (searchValue: string) => void,
-//   handleQueryInputChange: () => void,
-//   parsedFacets: IParsedFacetsProps | {},
-//   isLoadingParsedFacets: boolean,
-//   allExpanded: { [x: string]: boolean },
-//   facetsExpandedStatus: IExpandedStatusStateProps,
-//   dispatch: (action: IExpandedStatusActionProps) => void,
-//   notifications: INotificationProps[],
-//   maxFacetsPanelHeight: number,
-// }
-
-// interface IGraphFieldProps {
-//   __dataID__: string,
-//   name: string,
-//   description: string,
-//   type: {
-//     name: string,
-//     __dataID__: string,
-//     fields: IFieldProps[],
-//   },
-// }
+interface IClinicalProps {
+  filteredFacets: IfilterdFacetsProps,
+  theme: ITheme,
+  setUselessFacetVisibility: (uselessFacetVisibility: boolean) => void,
+  shouldHideUselessFacets: boolean,
+  searchValue: string,
+  setSearchValue: (searchValue: string) => void,
+  handleQueryInputChange: () => void,
+  parsedFacets: IParsedFacetsProps | {},
+  isLoadingParsedFacets: boolean,
+  allExpanded: { [x: string]: boolean },
+  facetsExpandedStatus: IExpandedStatusStateProps,
+  dispatch: (action: IExpandedStatusActionProps) => void,
+  notifications: INotificationProps[],
+  maxFacetsPanelHeight: number,
+}
 
 interface IFieldProps {
   __dataID: string,
@@ -163,7 +153,7 @@ const MagnifyingGlass = styled(SearchIcon, {
   width: '3.4rem',
 });
 
-const enhance = compose(
+const enhance = compose<IClinicalProps, IClinicalProps>(
   setDisplayName('ClinicalAggregations'),
   withTheme,
   connect(
@@ -198,9 +188,6 @@ const enhance = compose(
   withPropsOnChange(
     ['customCaseFacets', 'globalFilters'],
     ({ clinicalAnalysisFields }) => ({
-      // facetMapping: [].fields
-        // .filter((f: IGraphFieldProps): boolean => f.name === 'aggregations')[0]
-        // .type.fields.filter((f: IFieldProps) => !f.name.startsWith('gene'))
       facetMapping: clinicalAnalysisFields.reduce((
         acc: { [x: string]: IFacetProps } | {},
         {
@@ -225,37 +212,6 @@ const enhance = compose(
       }, {}),
     }),
   ),
-  // withPropsOnChange(
-  //   ['globalFilters', 'facetMapping'],
-  //   ({
-  //     facetMapping,
-  //     globalFilters,
-  //     relay,
-  //     relayVarName,
-  //     setIsLoadingParsedFacets,
-  //   }) => {
-  //     setIsLoadingParsedFacets(true);
-  //     relay.setVariables(
-  //       {
-  //         filters: globalFilters,
-  //         [relayVarName]: values(facetMapping)
-  //           .map(({ field }: { field: string }) => field)
-  //           .join(','),
-  //       },
-  //       (readyState: { ready: boolean, aborted: boolean, error: boolean }) => {
-  //         if (
-  //           some([
-  //             readyState.ready,
-  //             readyState.aborted,
-  //             readyState.error,
-  //           ])
-  //         ) {
-  //           setIsLoadingParsedFacets(false);
-  //         }
-  //       },
-  //     );
-  //   },
-  // ),
   withProps(
     ({
       setShouldHideUselessFacets,
@@ -353,7 +309,7 @@ const ClinicalAggregations =
     setUselessFacetVisibility,
     shouldHideUselessFacets,
     theme,
-  }: any): any => (
+  }: IClinicalProps) => (
     <React.Fragment>
       <Row
         key="row"

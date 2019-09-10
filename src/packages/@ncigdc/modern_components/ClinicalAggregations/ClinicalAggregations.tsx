@@ -6,6 +6,7 @@ import {
   get,
   includes,
   isEmpty,
+  isEqual,
   mapValues,
   omitBy,
   orderBy,
@@ -56,6 +57,7 @@ import {
 } from '@ncigdc/components/Aggregations/TermAggregation';
 
 import { ITheme } from '@ncigdc/theme/types';
+import { IGroupFilter } from '@ncigdc/utils/filters/types'
 
 export interface IFacetProps {
   customSort: number,
@@ -110,6 +112,7 @@ interface IClinicalProps {
   dispatch: (action: IExpandedStatusActionProps) => void,
   notifications: INotificationProps[],
   maxFacetsPanelHeight: number,
+  globalFilters: IGroupFilter,
 }
 
 interface IFieldProps {
@@ -118,6 +121,22 @@ interface IFieldProps {
   description: string,
   name: string,
   type: { name: string, __dataID: string },
+}
+
+interface IClinicalViewer {
+  explore: {
+    cases: {
+      customCaseFacets: string
+    }
+  }
+}
+
+interface IClinicalQueryProps extends IClinicalProps {
+  clinicalAnalysisFields: [IFieldProps],
+  variables: {
+    viewer: IClinicalViewer
+  },
+  viewer: IClinicalViewer
 }
 
 const headersHeight = 44;
@@ -186,7 +205,7 @@ const enhance = compose<IClinicalProps, IClinicalProps>(
     ],
   }),
   withPropsOnChange(
-    ['customCaseFacets', 'globalFilters'],
+    (props: IClinicalQueryProps, nextProps: IClinicalQueryProps) => !isEqual(props.globalFilters, nextProps.globalFilters),
     ({ clinicalAnalysisFields }) => ({
       facetMapping: clinicalAnalysisFields.reduce((
         acc: { [x: string]: IFacetProps } | {},
@@ -227,7 +246,7 @@ const enhance = compose<IClinicalProps, IClinicalProps>(
   ),
   withPropsOnChange(
     [
-      'facets',
+      'customCaseFacets',
       'facetMapping',
       'searchValue',
       'shouldHideUselessFacets',

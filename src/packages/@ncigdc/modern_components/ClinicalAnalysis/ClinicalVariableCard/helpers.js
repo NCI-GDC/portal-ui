@@ -358,8 +358,6 @@ export const DEFAULT_RANGES = [];
 export const resetVariableDefaults = {
   continuous: {
     continuousBinType: DEFAULT_BIN_TYPE,
-    customBinsId: '',
-    customBinsSetId: '',
     customInterval: DEFAULT_INTERVAL,
     customRanges: DEFAULT_RANGES,
   },

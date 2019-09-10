@@ -53,8 +53,6 @@ export default {
     active_survival: 'overall',
     bins: {},
     continuousBinType: DEFAULT_BIN_TYPE,
-    customBinsId: '',
-    customBinsSetId: '',
     customInterval: DEFAULT_INTERVAL,
     customRanges: DEFAULT_RANGES,
     customSurvivalPlots: [],

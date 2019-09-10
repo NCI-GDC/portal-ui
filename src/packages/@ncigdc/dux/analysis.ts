@@ -112,11 +112,14 @@ const defaultVariableConfig = {
   active_chart: 'histogram',
   active_survival: 'overall',
   bins: {},
-  customBinsId: '',
-  customBinsSetId: '',
   customSurvivalPlots: [],
   isSurvivalCustom: false,
   showOverallSurvival: false,
+};
+
+const defaultCategoricalVariableConfig = {
+  customBinsId: '',
+  customBinsSetId: '',
 };
 
 const defaultContinuousVariableConfig = {
@@ -201,7 +204,9 @@ const reducer = (
                       [action.payload.fieldName as string]: Object.assign(
                         {},
                         defaultVariableConfig,
-                        action.payload.plotTypes === 'continuous' && defaultContinuousVariableConfig,
+                        action.payload.plotTypes === 'continuous'
+                          ? defaultContinuousVariableConfig
+                          : defaultCategoricalVariableConfig,
                         {
                           type: action.payload.fieldType,
                           plotTypes: action.payload.plotTypes,

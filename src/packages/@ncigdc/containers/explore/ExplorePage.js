@@ -20,15 +20,14 @@ import NoResultsMessage from '@ncigdc/components/NoResultsMessage';
 import ExploreCasesAggregations from '@ncigdc/modern_components/ExploreCasesAggregations';
 import GeneAggregations from '@ncigdc/modern_components/GeneAggregations';
 import SSMAggregations from '@ncigdc/containers/explore/SSMAggregations';
-import ClinicalAggregations from '@ncigdc/containers/explore/ClinicalAggregations';
+import ClinicalAggregations from '@ncigdc/modern_components/ClinicalAggregations';
 import { CreateExploreCaseSetButton } from '@ncigdc/modern_components/withSetAction';
 import { replaceFilters } from '@ncigdc/utils/filters';
 import { stringifyJSONParam } from '@ncigdc/utils/uri';
 import { Row } from '@ncigdc/uikit/Flex';
 import Button from '@ncigdc/uikit/Button';
 import ResizeDetector from 'react-resize-detector';
-
-import CaseAggregations from '@ncigdc/containers/explore/CaseAggregations';
+import withFacetData from '@ncigdc/modern_components/IntrospectiveType/Introspective.relay';
 
 export type TProps = {
   filters: {},
@@ -107,6 +106,15 @@ function setVariables({ filters, relay }) {
   });
 }
 
+const ClinicalAggregationsWithFacetData = withFacetData(props => (
+  <ClinicalAggregations
+    data={props.introspectiveType}
+    globalFilters={props.globalFilters}
+    loading={props.loading}
+    maxFacetsPanelHeight={props.maxFacetsPanelHeight}
+    />
+));
+
 const enhance = compose(
   setDisplayName('EnhancedExplorePageComponent'),
   withRouter,
@@ -152,14 +160,11 @@ const ExplorePageComponent = ({
         },
         {
           component: (
-            <ClinicalAggregations
-              aggregations={viewer.explore.cases.aggregations}
-              caseFacets={viewer.caseFacets}
-              docType="cases"
-              facets={viewer.explore.customCaseFacets}
+            <ClinicalAggregationsWithFacetData
               globalFilters={filters}
               maxFacetsPanelHeight={maxFacetsPanelHeight}
-              relayVarName="exploreCaseCustomFacetFields"
+              relay={relay}
+              typeName="ExploreCases"
               />
           ),
           id: 'clinical',
@@ -304,8 +309,6 @@ export const ExplorePageQuery = {
     ssms_size: null,
     ssms_sort: null,
     filters: null,
-    idAutocompleteCases: null,
-    runAutocompleteCases: false,
     idAutocompleteSsms: null,
     runAutocompleteSsms: false,
     dbsnpRsFilters: null,
@@ -314,18 +317,6 @@ export const ExplorePageQuery = {
   fragments: {
     viewer: () => Relay.QL`
       fragment on Root {
-        autocomplete_cases: query (query: $idAutocompleteCases types: ["case"]) @include(if: $runAutocompleteCases) {
-          hits {
-            id
-            ...on Case {
-              case_id
-              project {
-                project_id
-              }
-              submitter_id
-            }
-          }
-        }
         autocomplete_ssms: query (query: $idAutocompleteSsms types: ["ssm_centric"]) @include(if: $runAutocompleteSsms) {
           hits {
             id
@@ -337,31 +328,8 @@ export const ExplorePageQuery = {
             }
           }
         }
-        caseFacets: __type(name: "ExploreCases"){
-          name
-          fields {
-            description
-            name
-            type {
-              name
-              fields
-              {
-                name
-                description
-                type {
-                  name }
-              }
-            }
-          }
-        }
         explore {
-          customCaseFacets: cases {
-            ${CaseAggregations.getFragment('facets')}
-          }
           cases {
-            aggregations(filters: $filters aggregations_filter_themselves: false) {
-              ${CaseAggregations.getFragment('aggregations')}
-            }
             hits(first: $cases_size offset: $cases_offset filters: $filters score: $cases_score sort: $cases_sort) {
               total
             }

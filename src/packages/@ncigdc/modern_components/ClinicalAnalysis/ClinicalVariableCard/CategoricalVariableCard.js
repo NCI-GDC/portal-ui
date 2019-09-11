@@ -41,7 +41,8 @@ export default compose(
       const dataBuckets = get(rawQueryData, 'buckets', []);
       const totalDocs = get(data, 'hits.total', 0);
       console.log('raw data buckets: ', dataBuckets);
-      const missingNestedDocCount = totalDocs - dataBuckets.reduce((acc, b) => acc + b.doc_count, 0);
+      const missingNestedDocCount = totalDocs -
+        dataBuckets.reduce((acc, b) => acc + b.doc_count, 0);
 
       const addMissingDocs = docData => (
         docData.find(bucket => bucket.key === '_missing')
@@ -125,55 +126,55 @@ export default compose(
       variable: { bins },
     }) => getBinData(bins, dataBuckets)
   ),
-  withPropsOnChange((props, nextProps) =>
-    nextProps.variable.active_chart === 'survival' &&
-    (
-      !isEqual(props.variable.bins, nextProps.variable.bins) ||
-      props.variable.active_chart !== nextProps.variable.active_chart ||
-      !isEqual(props.selectedSurvivalBins, nextProps.selectedSurvivalBins) ||
-      props.variable.setId !== nextProps.variable.setId ||
-      !isEqual(props.variable.customSurvivalPlots, nextProps.variable.customSurvivalPlots) ||
-      props.variable.isSurvivalCustom !== nextProps.variable.isSurvivalCustom
-    ),
-                    ({
-                      binData,
-                      dispatch,
-                      fieldName,
-                      id,
-                      variable: {
-                        customSurvivalPlots, isSurvivalCustom,
-                      },
-                    }) => {
-                      const binDataSelected = isSurvivalCustom
+  withPropsOnChange(
+    (props, nextProps) =>
+      nextProps.variable.active_chart === 'survival' && (
+        !isEqual(props.variable.bins, nextProps.variable.bins) ||
+        props.variable.active_chart !== nextProps.variable.active_chart ||
+        !isEqual(props.selectedSurvivalBins, nextProps.selectedSurvivalBins) ||
+        props.variable.setId !== nextProps.variable.setId ||
+        !isEqual(props.variable.customSurvivalPlots, nextProps.variable.customSurvivalPlots) ||
+        props.variable.isSurvivalCustom !== nextProps.variable.isSurvivalCustom),
+    ({
+      binData,
+      dispatch,
+      fieldName,
+      id,
+      variable: {
+        customSurvivalPlots, isSurvivalCustom,
+      },
+    }) => {
+      const binDataSelected = isSurvivalCustom
         ? binData.filter(bin => customSurvivalPlots.indexOf(bin.key) >= 0)
         : binData;
 
-                      const survivalBins = filterSurvivalData(
-                        binDataSelected
-                          .map(bin => ({
-                            ...bin,
-                            chart_doc_count: bin.doc_count,
-                          }))
-                      ).slice(0, isSurvivalCustom ? Infinity : 2);
+      const survivalBins = filterSurvivalData(
+        binDataSelected
+          .map(bin => ({
+            ...bin,
+            chart_doc_count: bin.doc_count,
+          }))
+      ).slice(0, isSurvivalCustom ? Infinity : 2);
 
-                      const survivalPlotValues = survivalBins.map(bin => bin.keyArray);
-                      const survivalTableValues = survivalBins.map(bin => bin.key);
+      const survivalPlotValues = survivalBins.map(bin => bin.keyArray);
+      const survivalTableValues = survivalBins.map(bin => bin.key);
 
-                      if (isSurvivalCustom) {
-                        dispatch(updateClinicalAnalysisVariable({
-                          fieldName,
-                          id,
-                          variable: {
-                            customSurvivalPlots: survivalTableValues,
-                          },
-                        }));
-                      }
+      if (isSurvivalCustom) {
+        dispatch(updateClinicalAnalysisVariable({
+          fieldName,
+          id,
+          variable: {
+            customSurvivalPlots: survivalTableValues,
+          },
+        }));
+      }
 
-                      return {
-                        survivalPlotValues,
-                        survivalTableValues,
-                      };
-                    }),
+      return {
+        survivalPlotValues,
+        survivalTableValues,
+      };
+    }
+  ),
   withPropsOnChange(
     (props, nextProps) =>
       !isEqual(props.variable.bins, nextProps.variable.bins),
@@ -189,12 +190,10 @@ export default compose(
       !isEqual(props.dataBuckets, nextProps.dataBuckets ||
       props.variable.isSurvivalCustom !== nextProps.variable.isSurvivalCustom),
     ({
-      // binsAreCustom,
       dataBuckets,
       dispatch,
       fieldName,
       id,
-      // variable: { isSurvivalCustom },
     }) => ({
       resetBins: () => {
         dispatch(updateClinicalAnalysisVariable({
@@ -231,16 +230,12 @@ export default compose(
             .sort((a, b) => b.doc_count - a.doc_count)
             .map(bin => {
               const isMissing = bin.key === '_missing';
-              const docCount = isMissing
-                ? totalDocs - binData.reduce((acc, b) => acc + b.doc_count, 0) + bin.doc_count
-                : bin.doc_count;
               return {
-
                 ...bin,
-                chart_doc_count: docCount,
+                chart_doc_count: bin.doc_count,
                 displayName: isMissing ? 'Missing' : bin.key,
                 doc_count: getCountLink({
-                  doc_count: docCount,
+                  doc_count: bin.doc_count,
                   filters: isMissing
                     ? {
                       content: [

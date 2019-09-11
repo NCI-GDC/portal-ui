@@ -8,6 +8,7 @@ import {
 import md5 from 'blueimp-md5';
 import urlJoin from 'url-join';
 import {
+  isEqual,
   isNull,
   reduce,
 } from 'lodash';
@@ -202,7 +203,7 @@ const getContinuousAggs = ({
 
 export default compose(
   withState('aggData', 'setAggData', null),
-  withState('isLoading', 'setIsLoading', true),
+  withState('isLoading', 'setIsLoading', 'first time'),
   withProps({
     updateData: async ({
       fieldName,
@@ -224,7 +225,33 @@ export default compose(
       setAggData(res && res.data.viewer, () => setIsLoading(false));
     },
   }),
-  withPropsOnChange(['filters'], ({ updateData, ...props }) => updateData(props))
+  withPropsOnChange(
+    (
+      {
+        filters,
+        variable,
+      },
+      {
+        filters: nextFilters,
+        variable: nextVariable,
+      }
+    ) => !(
+      isEqual(filters, nextFilters) &&
+      isEqual(variable, nextVariable)
+    ),
+    ({
+      setIsLoading,
+      updateData,
+      ...props
+    }) => {
+      // TODO this update is forcing an avoidable double render
+      setIsLoading(true);
+      updateData({
+        setIsLoading,
+        ...props,
+      });
+    }
+  ),
 )(({
   aggData, hits, isLoading, setId, stats, ...props
 }) => {

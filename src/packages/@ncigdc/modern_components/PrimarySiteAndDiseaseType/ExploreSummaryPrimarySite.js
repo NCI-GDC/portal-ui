@@ -14,6 +14,8 @@ import { Column, Row } from '@ncigdc/uikit/Flex';
 import DownloadVisualizationButton from '@ncigdc/components/DownloadVisualizationButton';
 import wrapSvg from '@ncigdc/utils/wrapSvg';
 import DoubleRingChart from '@ncigdc/components/Charts/DoubleRingChart';
+import Loader from '@ncigdc/uikit/Loaders/Loader';
+import { capitalize } from '@ncigdc/utils/string';
 
 const primarySiteColors = {
   Breast: '#ED2891',
@@ -72,6 +74,27 @@ const moaarColors = [
   '#6f7a41',
   '#9bb672',
   '#6fbab3',
+  '#8168b3',
+  '#a23737',
+  '#6f3331',
+  '#fb5a47',
+  '#e52207',
+  '#c05600',
+  '#8b1303',
+  '#5c1111',
+  '#fc906d',
+  '#ff580a',
+  '#d24302',
+  '#fa9441',
+  '#2491ff',
+  '#28a0cb',
+  '#0d7ea2',
+  '#3a7d95',
+  '#e66f0e',
+  '#8e704f',
+  '#6b5947',
+  '#ffbe2e',
+  '#e5a000',
 ];
 
 const getStringName = (name = '') => `${name.replace(/\s|,|-/g, '_')}`;
@@ -127,12 +150,42 @@ const buildDiseaseTypeRequestBody = (({
   });
 });
 
+const PrimarySiteTooltip = ({ primarySite }) => (
+  <div>
+    <h4
+      style={{
+        color: '#bf213a',
+        margin: '0px 0px 5px',
+      }}
+      >
+      {capitalize(primarySite.key)}
+    </h4>
+    <span style={{ fontSize: '1.2rem' }}>{`${primarySite.doc_count} Cases`}</span>
+  </div>
+);
+
+const DiseaseTypeTooltip = ({ diseaseType, primarySite }) => (
+  <div>
+    <h4
+      style={{
+        color: '#bf213a',
+        margin: '0px 0px 5px',
+      }}
+      >
+      {capitalize(primarySite.key)}
+    </h4>
+    <span style={{ fontSize: '1.2rem' }}>{capitalize(diseaseType.key)}</span>
+    <br />
+    <span style={{ fontSize: '1.2rem' }}>{`${diseaseType.doc_count} Cases`}</span>
+  </div>
+);
+
 const enhance = compose(
   withRouter,
   withTheme,
   withState('isLoading', 'setIsLoading', true),
   withState('arcData', 'setArcData', {}),
-  withState('fooData', 'setFooData', []),
+  withState('libData', 'setLibData', {}),
   withProps({
     updateData: async ({
       primarySites,
@@ -155,9 +208,8 @@ const enhance = compose(
     ['viewer'],
     async ({
       setArcData,
-      setFooData,
       setIsLoading,
-      theme,
+      setLibData,
       updateData,
       variables,
       viewer: {
@@ -177,64 +229,7 @@ const enhance = compose(
 
       const { data: { viewer: { explore: { cases } } } } = data;
 
-      // const foo = [];
-      // const foo = primarySites.map(primarySite => {
-      //   // cases && cases[`${getStringName(primarySite.key)}Aggs`].disease_type.buckets.map(bucket => {
-      //     // foo.push({
-      //     //   key: bucket.key,
-      //     //   value: bucket.doc_count,
-      //     //   tooltip: `${bucket.key}: ${bucket.doc_count}`,
-      //     //   clickHandler: () => null,
-      //     //   outer: [
-      //     //     {
-      //     //       key: primarySite.key,
-      //     //       tooltip: primarySite.key,
-      //     //       value: primarySite.doc_count,
-      //     //       clickHandler: () => null,
-      //     //     },
-      //     //   ],
-      //     // });
-      //     // });
-      //   return {
-      //     key: primarySite.key,
-      //     value: primarySite.doc_count,
-      //     clickHandler: () => null,
-      //     tooltip: primarySite.key,
-      //     outer: cases && cases[`${getStringName(primarySite.key)}Aggs`].disease_type.buckets.map(bucket => {
-      //       return {
-      //         key: bucket.key,
-      //         value: bucket.doc_count,
-      //         tooltip: `${bucket.key}: ${bucket.doc_count}`,
-      //         clickHandler: () => null,
-      //       };
-      //     }),
-      //   };
-      // });
-            // outer: primarySites.map(site => {
-            //   return {
-            //     key: site.key,
-            //     value: site.doc_count,
-            //     clickHandler: () => null,
-            //   };
-            // }),
-      // });
-      // debugger;
-      // data: PropTypes.arrayOf(
-      //   PropTypes.shape({
-      //     key: PropTypes.string,
-      //     value: PropTypes.number,
-      //     tooltip: PropTypes.object,
-      //     clickHandler: PropTypes.func,
-      //     outer: PropTypes.arrayOf(
-      //       PropTypes.shape({
-      //         key: PropTypes.string,
-      //         value: PropTypes.number,
-      //         clickHandler: PropTypes.func,
-      //       }),
-      //     ),
-      //   }),
-      // ),
-      const parsedData = {
+      const parsedLibData = {
         children: primarySites.map((primarySite, i) => {
           return {
             children: cases
@@ -254,60 +249,88 @@ const enhance = compose(
         id: 'Primary Sites',
       };
 
-      // setFooData(foo);
+      const parsedData = primarySites.map((primarySite, i) => {
+        return {
+          clickHandler: () => null,
+          color: primarySiteColors[primarySite.key] || moaarColors[i],
+          id: primarySite.key,
+          key: primarySite.key,
+          outer: cases
+            ? cases[`${getStringName(primarySite.key)}Aggs`].disease_type.buckets.map(bucket => {
+              return {
+                clickHandler: () => null,
+                color: Color(primarySiteColors[primarySite.key] ||
+                moaarColors[i]).lighten(0.3).rgbString(),
+                id: `${primarySite.key}-${bucket.key}`,
+                key: bucket.key,
+                tooltip: <DiseaseTypeTooltip diseaseType={bucket} primarySite={primarySite} />,
+                value: bucket.doc_count,
+              };
+            })
+            : [],
+          tooltip: <PrimarySiteTooltip primarySite={primarySite} />,
+          value: primarySite.doc_count,
+        };
+      });
+
       setArcData(parsedData, () => setIsLoading(false));
+      setLibData(parsedLibData);
     }
   ),
 );
 
 const ExploreSummaryPrimarySite = ({
   arcData,
-  fooData,
   isLoading,
+  libData,
 }) => {
   return (
-    <Column
-      style={{
-        padding: '1rem',
-        width: '50%',
-      }}
-      >
-      <Row
+    <Loader loading={isLoading}>
+      <Column
         style={{
-          alignItems: 'center',
-          justifyContent: 'space-between',
+          padding: '1rem',
+          width: '40%',
         }}
         >
-        <h3>Primary Sites & Disease Types</h3>
-        <DownloadVisualizationButton
-          noText
-          slug="summary-primary-site-donut-chart"
-          style={{ marginRight: '2rem' }}
-          svg={() => wrapSvg({
-            selector: '#summary-primary-site-donut svg',
-            title: 'Primary Sites & Disease Types',
-          })}
-          tooltipHTML="Download image or data"
-          />
-      </Row>
-      {
+        <Row
+          style={{
+            alignItems: 'center',
+            justifyContent: 'space-between',
+          }}
+          >
+          <h3>Primary Sites & Disease Types</h3>
+          <DownloadVisualizationButton
+            noText
+            slug="summary-primary-site-donut-chart"
+            style={{ marginRight: '2rem' }}
+            svg={() => wrapSvg({
+              selector: '#summary-primary-site-donut svg',
+              title: 'Primary Sites & Disease Types',
+            })}
+            tooltipHTML="Download image or data"
+            />
+        </Row>
+        {
       isEmpty(arcData)
         ? <div>No Data</div>
         : (
-          <Column id="summary-primary-site-donut">
+          <Column id="summary-primary-site-donut" style={{ padding: '2rem 0rem 1rem' }}>
             <DoubleDonut
-              arcData={arcData}
+              arcData={libData}
               colors={Object.values(primarySiteColors)}
               loading={isLoading}
               />
-            {/* <DoubleRingChart
-              colors={Object.values(primarySiteColors)}
-              data={fooData}
-              /> */}
+            <DoubleRingChart
+              data={arcData}
+              height={300}
+              outerRingWidth={30}
+              width={300}
+              />
           </Column>
         )
     }
-    </Column>
+      </Column>
+    </Loader>
   );
 };
 

@@ -67,6 +67,7 @@ interface ICategoricalCustomBinsModalProps {
   onUpdate: (bins: IBinsProps) => void,
   onClose: () => void,
   fieldName: string,
+  groupNameMapping: () => void,
   selectedHidingBins: ISelectedBinsProps,
   setSelectedHidingBins: (selectedHidingBins: ISelectedBinsProps) => void,
   selectedGroupBins: ISelectedBinsProps,
@@ -113,6 +114,7 @@ const CategoricalCustomBinsModal = ({
   editingGroupName,
   fieldName,
   globalWarning,
+  groupNameMapping,
   listWarning,
   onClose,
   onUpdate,
@@ -124,12 +126,6 @@ const CategoricalCustomBinsModal = ({
   setSelectedGroupBins,
   setSelectedHidingBins,
 }: ICategoricalCustomBinsModalProps) => {
-  const groupNameMapping = groupBy(
-    Object.keys(currentBins)
-      .filter((bin: string) => currentBins[bin].groupName !== ''),
-    key => currentBins[key].groupName
-  );
-
   const groupDisabled = Object.values(selectedGroupBins).filter(Boolean).length < 2
   const ungroupDisabled = Object.keys(selectedGroupBins)
     .filter(key => selectedGroupBins[key])
@@ -139,14 +135,6 @@ const CategoricalCustomBinsModal = ({
     .length === 0
   const hideDisabled = Object.values(selectedGroupBins).every(value => !value)
   const showDisabled = Object.values(selectedHidingBins).every(value => !value)
-
-  console.log('currentBins', currentBins);
-
-  console.log('selectedGroupBins', selectedGroupBins);
-
-  console.log('groupNameMapping', groupNameMapping);
-
-  console.log('editingGroupName', editingGroupName);
 
   return (
     <Column
@@ -293,8 +281,6 @@ const CategoricalCustomBinsModal = ({
             {map(
               groupNameMapping,
               (group: string[], groupName: string) => {
-                // console.log('groupName', groupName);
-                // console.log('group', group);
                 const isCustomBin = group.length > 1 || group[0] !== groupName;
                 const isEditing = editingGroupName === groupName;
 
@@ -528,18 +514,46 @@ export default compose(
   withState('selectedGroupBins', 'setSelectedGroupBins', {}),
   withState('globalWarning', 'setGlobalWarning', ''),
   withState('listWarning', 'setListWarning', {}),
+  withProps(({ currentBins }) => ({
+    groupNameMapping: groupBy(
+      Object.keys(currentBins)
+        .filter((bin: string) => currentBins[bin].groupName !== ''),
+      key => currentBins[key].groupName
+    ),
+  })),
   withProps(({
     currentBins,
+    groupNameMapping,
     selectedGroupBins,
     setCurrentBins,
     setEditingGroupName,
     setSelectedHidingBins,
   }) => ({
     binGrouping: () => {
+      const selectedCustomBins = Object.keys(selectedGroupBins)
+        .filter(field => selectedGroupBins[field])
+        .filter(field => typeof groupNameMapping[field] === 'undefined')
+        .reduce((acc: string[], curr: string, idx: number, src: string[]) => {
+          const matchingCustomBins = Object.values(groupNameMapping)
+            .map((groups: any, groupIndex: number) => 
+              groups.indexOf(curr) >= 0 &&
+              groups.every((group: string) => src.indexOf(group) >= 0) 
+                ? Object.keys(groupNameMapping)[groupIndex]
+                : ''
+            )
+            .filter((group: string) => group.length > 0);
+          return matchingCustomBins.length > 0 
+            && acc.indexOf(matchingCustomBins[0]) === -1
+              ? acc.concat(matchingCustomBins)
+              : acc;
+        }, [])
+      
+      const isEditingGroupName = selectedCustomBins.length !== 1;
+
       const newGroupName = initialName(
         Object.values(currentBins).map((bin: IBinProps) => bin.groupName), 'selected Value '
       );
-      setEditingGroupName(newGroupName);
+      setEditingGroupName(isEditingGroupName ? newGroupName : '');
       setCurrentBins({
         ...currentBins,
         ...reduce(selectedGroupBins, (acc, val, key) => {
@@ -548,7 +562,9 @@ export default compose(
               ...acc,
               [key]: {
                 ...currentBins[key],
-                groupName: newGroupName,
+                groupName: isEditingGroupName
+                  ? newGroupName
+                  : selectedCustomBins[0],
               },
             };
           }

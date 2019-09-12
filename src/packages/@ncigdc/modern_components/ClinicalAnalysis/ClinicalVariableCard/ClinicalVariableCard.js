@@ -166,11 +166,9 @@ const ClinicalVariableCard = ({
   dataBuckets,
   dataDimension,
   dispatch,
-  dispatchUpdateClinicalVariable,
   displayData,
   fieldName,
   filters,
-  getContinuousBins,
   id,
   isLoading,
   openCustomBinModal,
@@ -201,14 +199,11 @@ const ClinicalVariableCard = ({
       active_chart: variable.active_chart,
       displayData,
       fieldName,
-      getContinuousBins,
       selectedBins,
       selectedSurvivalBins,
       selectedSurvivalLoadingIds,
-      setId,
       setSelectedBins,
       theme,
-      totalDocs,
       updateSelectedSurvivalBins,
     });
 
@@ -302,7 +297,6 @@ const ClinicalVariableCard = ({
             ))}
         </Row>
       </Row>
-
       {isLoading
         ? <Loader />
         : isEmpty(tableData)
@@ -315,7 +309,7 @@ const ClinicalVariableCard = ({
                 justifyContent: 'center',
               }}
               >
-              There is no data for this facet
+              <div className="print-mb print-mt">No data for this field</div>
             </Row>
           )
           : (
@@ -335,10 +329,13 @@ const ClinicalVariableCard = ({
                           aria-label="Percentage of cases"
                           checked={variable.active_calculation === 'percentage'}
                           id={`variable-percentage-radio-${fieldName}`}
-                          onChange={() => dispatchUpdateClinicalVariable({
-                            value: 'percentage',
-                            variableKey: 'active_calculation',
-                          })}
+                          onChange={() => dispatch(updateClinicalAnalysisVariable({
+                            fieldName,
+                            id,
+                            variable: {
+                              active_calculation: 'percentage'
+                            },
+                          }))}
                           style={{ marginRight: 5 }}
                           type="radio"
                           value="percentage"
@@ -353,10 +350,13 @@ const ClinicalVariableCard = ({
                           aria-label="Number of cases"
                           checked={variable.active_calculation === 'number'}
                           id={`variable-number-radio-${fieldName}`}
-                          onChange={() => dispatchUpdateClinicalVariable({
-                            value: 'number',
-                            variableKey: 'active_calculation',
-                          })}
+                          onChange={() => dispatch(updateClinicalAnalysisVariable({
+                            fieldName,
+                            id,
+                            variable: {
+                              active_calculation: 'number',
+                            },
+                          }))}
                           style={{ marginRight: 5 }}
                           type="radio"
                           value="number"

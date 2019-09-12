@@ -1,7 +1,6 @@
 import React from 'react';
 import {
   compose,
-  setDisplayName,
   withPropsOnChange,
   withProps,
   withState,
@@ -9,17 +8,16 @@ import {
 import md5 from 'blueimp-md5';
 import urlJoin from 'url-join';
 import {
-  isEqual,
   isNull,
   reduce,
 } from 'lodash';
 
-import Loader from '@ncigdc/uikit/Loaders/Loader';
-import { redirectToLogin } from '@ncigdc/utils/auth';
 import consoleDebug from '@ncigdc/utils/consoleDebug';
-import { API, IS_AUTH_PORTAL } from '@ncigdc/utils/constants';
+import { redirectToLogin } from '@ncigdc/utils/auth';
 import { createFacetFieldString } from '@ncigdc/utils/string';
+import Loader from '@ncigdc/uikit/Loaders/Loader';
 
+import { API, IS_AUTH_PORTAL } from '@ncigdc/utils/constants';
 import { ContinuousVariableCard } from './ClinicalVariableCard';
 import { parseContinuousKey } from './ClinicalVariableCard/helpers';
 
@@ -153,12 +151,13 @@ const getContinuousAggs = ({
     return Promise.resolve(simpleAggCache[hash]);
   }
   pendingAggCache[hash] = true;
-
   return fetch(
     urlJoin(API, `graphql/ContinuousAggregationQuery?hash=${hash}`),
     {
       body,
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+      },
       method: 'POST',
     }
   ).then(response => response
@@ -201,31 +200,7 @@ const getContinuousAggs = ({
     }));
 };
 
-const ContinuousAggregationQuery = ({
-  aggData,
-  hits,
-  isLoading,
-  setId,
-  stats,
-  ...props
-}) => ( // TODO this loader doesn't belong here. Must fix the continuous variable card dependency
-  isLoading
-  ? <Loader />
-  : (
-    <ContinuousVariableCard
-      data={{
-        ...aggData,
-        hits,
-      }}
-      setId={setId}
-      stats={stats}
-      {...props}
-      />
-    )
-);
-
 export default compose(
-  setDisplayName('EnhancedContinuousAggregationQuery'),
   withState('aggData', 'setAggData', null),
   withState('isLoading', 'setIsLoading', true),
   withProps({
@@ -249,14 +224,23 @@ export default compose(
       setAggData(res && res.data.viewer, () => setIsLoading(false));
     },
   }),
-  withPropsOnChange(
-    ({ filters }, { filters: nextFilters }) => !(
-      isEqual(nextFilters, filters)
-    ), ({
-      updateData,
-      ...props
-    }) => {
-      updateData(props);
-    }
-  ),
-)(ContinuousAggregationQuery);
+  withPropsOnChange(['filters'], ({ updateData, ...props }) => updateData(props))
+)(({
+  aggData, hits, isLoading, setId, stats, ...props
+}) => {
+  if (isLoading) {
+    return <Loader />;
+  }
+
+  return (
+    <ContinuousVariableCard
+      data={{
+        ...aggData,
+        hits,
+      }}
+      setId={setId}
+      stats={stats}
+      {...props}
+      />
+  );
+});

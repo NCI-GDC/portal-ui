@@ -65,7 +65,7 @@ interface ICategoricalCustomBinsModalProps {
   onUpdate: (bins: IBinsProps) => void,
   onClose: () => void,
   fieldName: string,
-  groupNameMapping: () => void,
+  groupNameMapping: {[x: string]: string[]},
   selectedHidingBins: ISelectedBinsProps,
   setSelectedHidingBins: (selectedHidingBins: ISelectedBinsProps) => void,
   selectedGroupBins: ISelectedBinsProps,
@@ -159,10 +159,10 @@ const CategoricalCustomBinsModal = ({
             width: '100%',
           }}
           >
-          <Row style={styles.boxHeader} >
-            <span style={{ fontWeight: 'bold' }} >Values</span>
+          <Row style={styles.boxHeader}>
+            <span style={{ fontWeight: 'bold' }}>Values</span>
 
-            <Row spacing="1rem" >
+            <Row spacing="1rem">
               <Button
                 disabled={resetDisabled}
                 onClick={() => {
@@ -283,125 +283,125 @@ const CategoricalCustomBinsModal = ({
                 const isEditing = editingGroupName === groupName;
 
                 return (
-                <Column key={groupName}>
-                  <Row
-                    key={groupName}
-                    onClick={() => {
-                      if (Object.keys(selectedHidingBins).length > 0) {
-                        setSelectedHidingBins({});
-                      }
-                      setSelectedGroupBins({
-                        ...selectedGroupBins,
-                        ...group.reduce((acc: ISelectedBinsProps, binKey: string) => ({
-                          ...acc,
-                          [binKey]: !group.every(
-                            (binsWithSameGroupNameKey: string) => selectedGroupBins[binsWithSameGroupNameKey]
-                          ),
-                        }), {}),
-                      });
-                    }}
-                    style={{
-                      backgroundColor: group.every((binKey: string) => selectedGroupBins[binKey]) ? theme.tableHighlight : '',
-                    }}
-                    >
-                    {isCustomBin
-                      ? (
-                        <ControlEditableRow
-                          cleanWarning={() => setListWarning({})}
-                          containerStyle={{
-                            justifyContent: 'flex-start',
-                          }}
-                          disableOnKeyDown={listWarning[groupName]}
-                          handleSave={(value: string) => {
-                            if (listWarning[groupName]) {
-                              return 'unsave';
-                            }
-                            setCurrentBins({
-                              ...currentBins,
-                              ...group.reduce((acc: ISelectedBinsProps, bin: string) => ({
-                                ...acc,
-                                [bin]: {
-                                  ...currentBins[bin],
-                                  groupName: value,
-                                },
-                              }), {}),
-                            });
-                            setGlobalWarning('');
-                            setListWarning({});
-                            setSelectedGroupBins({});
-                            return null;
-                          }
-                          }
-                          iconStyle={{
-                            cursor: 'pointer',
-                            fontSize: '1.8rem',
-                            marginLeft: 10,
-                          }}
-                          isEditing={isEditing}
-                          noEditingStyle={{ fontWeight: 'bold' }}
-                          onEdit={(value: string) => {
-                            if (value.trim() === '') {
-                              setListWarning({
-                                ...listWarning,
-                                [groupName]: 'Can not be empty.',
+                  <Column key={groupName}>
+                    <Row
+                      key={groupName}
+                      onClick={() => {
+                        if (Object.keys(selectedHidingBins).length > 0) {
+                          setSelectedHidingBins({});
+                        }
+                        setSelectedGroupBins({
+                          ...selectedGroupBins,
+                          ...group.reduce((acc: ISelectedBinsProps, binKey: string) => ({
+                            ...acc,
+                            [binKey]: !group.every(
+                              (binsWithSameGroupNameKey: string) => selectedGroupBins[binsWithSameGroupNameKey]
+                            ),
+                          }), {}),
+                        });
+                      }}
+                      style={{
+                        backgroundColor: group.every((binKey: string) => selectedGroupBins[binKey]) ? theme.tableHighlight : '',
+                      }}
+                      >
+                      {isCustomBin
+                        ? (
+                          <ControlEditableRow
+                            cleanWarning={() => setListWarning({})}
+                            containerStyle={{
+                              justifyContent: 'flex-start',
+                            }}
+                            disableOnKeyDown={listWarning[groupName]}
+                            handleSave={(value: string) => {
+                              if (listWarning[groupName]) {
+                                return 'unsave';
+                              }
+                              setCurrentBins({
+                                ...currentBins,
+                                ...group.reduce((acc: ISelectedBinsProps, bin: string) => ({
+                                  ...acc,
+                                  [bin]: {
+                                    ...currentBins[bin],
+                                    groupName: value,
+                                  },
+                                }), {}),
                               });
-                            } else if (
-                              some(currentBins,
-                                (bin: IBinProps) => bin.groupName.trim() === value.trim()) &&
-                              groupName.trim() !== value.trim()
-                            ) {
-                              setListWarning({
-                                ...listWarning,
-                                [groupName]: `"${value.trim()}" already exists.`,
-                              });
-                            } else if (group.includes(value)) {
-                              setListWarning({
-                                ...listWarning,
-                                [groupName]: 'Group name can\'t be the same as one of values.',
-                              });
-                            } else {
+                              setGlobalWarning('');
                               setListWarning({});
+                              setSelectedGroupBins({});
+                              return null;
                             }
-                          }}
-                          text={groupName}
-                          warning={listWarning[groupName]}
-                          >
-                          {groupName}
-                        </ControlEditableRow>
-                      )
-                      : (
-                        <div style={{ fontWeight: 'bold' }}>
-                          {`${currentBins[group[0]].key === '_missing'
-                          ? 'Missing'
-                          : currentBins[group[0]].key} (${currentBins[group[0]].doc_count})`}
-                        </div>
-                      )}
-                  </Row>
+                            }
+                            iconStyle={{
+                              cursor: 'pointer',
+                              fontSize: '1.8rem',
+                              marginLeft: 10,
+                            }}
+                            isEditing={isEditing}
+                            noEditingStyle={{ fontWeight: 'bold' }}
+                            onEdit={(value: string) => {
+                              if (value.trim() === '') {
+                                setListWarning({
+                                  ...listWarning,
+                                  [groupName]: 'Can not be empty.',
+                                });
+                              } else if (
+                                some(currentBins,
+                                  (bin: IBinProps) => bin.groupName.trim() === value.trim()) &&
+                                groupName.trim() !== value.trim()
+                              ) {
+                                setListWarning({
+                                  ...listWarning,
+                                  [groupName]: `"${value.trim()}" already exists.`,
+                                });
+                              } else if (group.includes(value)) {
+                                setListWarning({
+                                  ...listWarning,
+                                  [groupName]: 'Group name can\'t be the same as one of values.',
+                                });
+                              } else {
+                                setListWarning({});
+                              }
+                            }}
+                            text={groupName}
+                            warning={listWarning[groupName]}
+                            >
+                            {groupName}
+                          </ControlEditableRow>
+                        )
+                        : (
+                          <div style={{ fontWeight: 'bold' }}>
+                            {`${currentBins[group[0]].key === '_missing'
+                            ? 'Missing'
+                            : currentBins[group[0]].key} (${currentBins[group[0]].doc_count})`}
+                          </div>
+                        )}
+                    </Row>
 
-                  {isCustomBin && (
-                    group.map((bin: string) => (
-                      <Row
-                        key={bin}
-                        onClick={() => {
-                          setSelectedGroupBins({
-                            ...selectedGroupBins,
-                            [bin]: !selectedGroupBins[bin],
-                          });
-                        }}
-                        style={{
-                          backgroundColor: selectedGroupBins[bin] ? theme.tableHighlight : '',
-                          display: 'list-item',
-                          listStylePosition: 'inside',
-                          listStyleType: 'disc',
-                          paddingLeft: '5px',
-                        }}
-                        >
-                        {`${bin === '_missing' ? 'Missing' : bin} (${currentBins[bin].doc_count})`}
-                      </Row>
-                    )))}
-                </Column>
-              )
-                      }
+                    {isCustomBin && (
+                      group.map((bin: string) => (
+                        <Row
+                          key={bin}
+                          onClick={() => {
+                            setSelectedGroupBins({
+                              ...selectedGroupBins,
+                              [bin]: !selectedGroupBins[bin],
+                            });
+                          }}
+                          style={{
+                            backgroundColor: selectedGroupBins[bin] ? theme.tableHighlight : '',
+                            display: 'list-item',
+                            listStylePosition: 'inside',
+                            listStyleType: 'disc',
+                            paddingLeft: '5px',
+                          }}
+                          >
+                          {`${bin === '_missing' ? 'Missing' : bin} (${currentBins[bin].doc_count})`}
+                        </Row>
+                      )))}
+                  </Column>
+                )
+              }
             )}
           </Column>
         </Column>
@@ -412,8 +412,8 @@ const CategoricalCustomBinsModal = ({
             width: '100%',
           }}
           >
-          <Row style={styles.boxHeader} >
-            <span style={{ fontWeight: 'bold' }} >Hidden Values</span>
+          <Row style={styles.boxHeader}>
+            <span style={{ fontWeight: 'bold' }}>Hidden Values</span>
 
             <Button
               leftIcon={<Show style={showDisabled ? styles.disabled : {}} />}
@@ -500,7 +500,7 @@ const CategoricalCustomBinsModal = ({
           Save Bins
         </Button>
       </Row>
-    </Column >
+    </Column>
   );
 }
 

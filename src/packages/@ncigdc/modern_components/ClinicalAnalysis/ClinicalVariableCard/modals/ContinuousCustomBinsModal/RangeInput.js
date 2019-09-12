@@ -20,7 +20,7 @@ const RangeInput = ({
       style={column}
     >
       <input
-        disabled={disabled}
+        readOnly={disabled}
         id={id}
         onChange={handleChange}
         style={{

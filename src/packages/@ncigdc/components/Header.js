@@ -18,7 +18,7 @@ import HomeLink from '@ncigdc/components/Links/HomeLink';
 import AnalysisLink from '@ncigdc/components/Links/AnalysisLink';
 import RepositoryLink from '@ncigdc/components/Links/RepositoryLink';
 import CartLink from '@ncigdc/components/Links/CartLink';
-import ExploreLink from '@ncigdc/components/Links/ExploreLink';
+import ExploreLink, { defaultExploreQuery } from '@ncigdc/components/Links/ExploreLink';
 import ProjectsLink from '@ncigdc/components/Links/ProjectsLink';
 import GDCAppsDropdown from '@ncigdc/components/GDCApps/GDCAppsDropdown';
 import QuickSearch from '@ncigdc/components/QuickSearch/QuickSearch';
@@ -122,7 +122,11 @@ const Header = ({
             </ProjectsLink>
           </li>
           <li>
-            <ExploreLink activeStyle={styles.activeNavLink(theme)} exact>
+            <ExploreLink
+              activeStyle={styles.activeNavLink(theme)}
+              exact
+              query={defaultExploreQuery}
+              >
               <i className="icon-gdc-data" style={styles.iconPadding} />
               <span className="header-hidden-sm">Exploration</span>
               <Hidden>Exploration</Hidden>
@@ -174,7 +178,6 @@ const Header = ({
                   </li>
                 )
               }
-
               <li>
                 <CartLink>
                   {count => (

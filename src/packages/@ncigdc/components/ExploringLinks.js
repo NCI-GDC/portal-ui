@@ -9,7 +9,7 @@ import { Tooltip } from '@ncigdc/uikit/Tooltip';
 
 import ProjectsLink from './Links/ProjectsLink';
 import RepositoryLink from './Links/RepositoryLink';
-import ExploreLink from './Links/ExploreLink';
+import ExploreLink, { defaultExploreQuery } from './Links/ExploreLink';
 import AnalysisLink from './Links/AnalysisLink';
 
 const linkStyle = {
@@ -27,10 +27,9 @@ const linkStyle = {
   transition: '0.25s ease all',
   backgroundColor: props => props.backgroundColor || props.theme.primary,
   ':hover': {
-    backgroundColor: props =>
-      Color(props.backgroundColor || props.theme.primary)
-        .lighten(0.2)
-        .rgbString(),
+    backgroundColor: props => Color(props.backgroundColor || props.theme.primary)
+      .lighten(0.2)
+      .rgbString(),
   },
 };
 
@@ -52,21 +51,25 @@ const Background = styled.span({
 });
 
 const ExploringLinks = () => (
-  <Row spacing="2rem" className="test-explore-links">
+  <Row className="test-explore-links" spacing="2rem">
     <Tooltip Component="View project data">
       <Projects backgroundColor="#1c7960">
         <Background>
           <i className="icon-gdc-projects" />
         </Background>
-        &nbsp; <span style={{ verticalAlign: 'middle' }}>Projects</span>
+        &nbsp;
+        {' '}
+        <span style={{ verticalAlign: 'middle' }}>Projects</span>
       </Projects>
     </Tooltip>
     <Tooltip Component="Discover cases, genes and mutations">
-      <Cohort backgroundColor="#753685">
+      <Cohort backgroundColor="#753685" query={defaultExploreQuery}>
         <Background>
           <i className="icon-gdc-data" />
         </Background>
-        &nbsp; <span style={{ verticalAlign: 'middle' }}>Exploration</span>
+        &nbsp;
+        {' '}
+        <span style={{ verticalAlign: 'middle' }}>Exploration</span>
       </Cohort>
     </Tooltip>
     <Tooltip Component="Launch various analyses using custom sets">
@@ -74,7 +77,9 @@ const ExploringLinks = () => (
         <Background>
           <AnalysisIcon />
         </Background>
-        &nbsp; <span style={{ verticalAlign: 'middle' }}>Analysis</span>
+        &nbsp;
+        {' '}
+        <span style={{ verticalAlign: 'middle' }}>Analysis</span>
       </Analysis>
     </Tooltip>
     <Tooltip Component="Browse and download data">
@@ -82,7 +87,9 @@ const ExploringLinks = () => (
         <Background>
           <i className="fa fa-database" />
         </Background>
-        &nbsp; <span style={{ verticalAlign: 'middle' }}>Repository</span>
+        &nbsp;
+        {' '}
+        <span style={{ verticalAlign: 'middle' }}>Repository</span>
       </Repository>
     </Tooltip>
   </Row>

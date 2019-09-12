@@ -98,7 +98,19 @@ const BarChart = ({
   if (xAxis.title) {
     svg
       .append('text')
+      .attr('class', 'displayOnly')
       .attr('dy', height + margin.bottom - 5) // put 5 there as a padding.
+      .attr('x', width / 2 - margin.right)
+      .style('fontSize', '1.2rem')
+      .style('fontWeight', '500')
+      .attr('fill', xAxisStyle.textFill)
+      .style('text-anchor', 'end')
+      .text(xAxis.title);
+
+    svg
+      .append('text')
+      .attr('class', 'svgDownload')
+      .attr('dy', height + margin.bottom + (xAxis.marginTop || 40))
       .attr('x', width / 2 - margin.right)
       .style('fontSize', '1.2rem')
       .style('fontWeight', '500')

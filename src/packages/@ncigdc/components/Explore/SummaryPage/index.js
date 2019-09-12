@@ -6,6 +6,23 @@ import MasonryLayout from '@ncigdc/components/Layouts/MasonryLayout';
 import CardWrapper from '@ncigdc/components/Explore/SummaryPage/CardWrapper';
 import { get } from 'lodash';
 
+const Tooltip = (title, key, count) => (
+  <span>
+    <b>
+      {title}
+      :
+      {' '}
+      {key}
+      <br />
+      {count.toLocaleString()}
+      {' '}
+      case
+      {count > 1 ? 's' : ''}
+    </b>
+    <br />
+
+  </span>
+);
 const SummaryPage = ({
   numPerRow = 3,
   viewer,
@@ -16,17 +33,23 @@ const SummaryPage = ({
   const ageAtDiagnosisData = get(viewer, 'explore.cases.aggregations.diagnoses__age_at_diagnosis.histogram.buckets', []);
   const sampleTypeData = get(viewer, 'explore.cases.aggregations.samples__sample_type.buckets', []);
   const experimentalStrategyData = get(viewer, 'explore.cases.aggregations.summary__experimental_strategies__experimental_strategy.buckets', []);
+  const dataDecor = (data, name) => data.map(el => ({
+    ...el,
+    tooltip: Tooltip(name, el.key, el.doc_count),
+  }));
+
+
   const elementsData = [
     {
       component: SampleTypeCard,
-      data: sampleTypeData,
+      data: dataDecor(sampleTypeData, 'Sample Types'),
       props: { mappingId: 'key' },
       space: 1,
       title: 'Sample Types',
     },
     {
       component: HistogramCard,
-      data: experimentalStrategyData,
+      data: dataDecor(experimentalStrategyData, 'Data Types'),
       props: {
         mappingLabel: 'key',
         mappingValue: 'doc_count',
@@ -43,7 +66,7 @@ const SummaryPage = ({
     },
     {
       component: HistogramCard,
-      data: ageAtDiagnosisData,
+      data: dataDecor(ageAtDiagnosisData, 'Age at Diagnosis'),
       props: {
         mappingLabel: 'key',
         mappingValue: 'doc_count',
@@ -60,7 +83,7 @@ const SummaryPage = ({
     },
     {
       component: HistogramCard,
-      data: vitalStatusData,
+      data: dataDecor(vitalStatusData, 'Vital Status'),
       props: {
         mappingLabel: 'key',
         mappingValue: 'doc_count',
@@ -71,7 +94,7 @@ const SummaryPage = ({
     },
     {
       component: HistogramCard,
-      data: raceData,
+      data: dataDecor(raceData, 'Race'),
       props: {
         mappingLabel: 'key',
         mappingValue: 'doc_count',
@@ -82,7 +105,7 @@ const SummaryPage = ({
     },
     {
       component: HistogramCard,
-      data: genderData,
+      data: dataDecor(genderData, 'Gender'),
       props: {
         mappingLabel: 'key',
         mappingValue: 'doc_count',
@@ -103,14 +126,11 @@ const SummaryPage = ({
       elements={elementsData.map(element => ({
         component: (
           CardWrapper({
+            Component: element.component,
             data: element.data,
+            subProps: element.props,
             title: element.title,
-          })(() => (
-            <element.component
-              data={element.data}
-              {...element.props}
-              />
-          ))
+          })
         ),
         size: element.space,
       }))

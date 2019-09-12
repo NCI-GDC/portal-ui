@@ -43,7 +43,7 @@ import './survivalPlot.css';
 
 import ControlPanel from './ControlPanel';
 import ContinuousAggregationQuery from './ContinuousAggregationQuery';
-import ClinicalVariableCard from './ClinicalVariableCard';
+import { CategoricalVariableCard } from './ClinicalVariableCard';
 
 interface IAnalysisResultProps {
   sets: any;
@@ -338,7 +338,7 @@ const ClinicalAnalysisResult = ({
                       />
                   )
                   : (
-                    <ClinicalVariableCard
+                    <CategoricalVariableCard
                       currentAnalysis={currentAnalysis}
                       data={{
                         ...parsedFacets[varFieldName],

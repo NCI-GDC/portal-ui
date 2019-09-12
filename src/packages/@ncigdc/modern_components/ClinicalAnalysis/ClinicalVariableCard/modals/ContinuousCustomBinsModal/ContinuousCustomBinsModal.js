@@ -1,11 +1,21 @@
 import React, { Component } from 'react';
-import { debounce, isEmpty, isFinite } from 'lodash';
+import {
+  debounce, isEmpty, isEqual, isFinite,
+} from 'lodash';
+import Button from '@ncigdc/uikit/Button';
+import Undo from '@ncigdc/theme/icons/Undo';
+
 
 import { Row, Column } from '@ncigdc/uikit/Flex';
-import Button from '@ncigdc/uikit/Button';
-import { createContinuousGroupName } from '@ncigdc/utils/string';
-import Undo from '@ncigdc/theme/icons/Undo';
+
 import { theme } from '@ncigdc/theme/index';
+import {
+  createContinuousGroupName,
+  DEFAULT_BIN_TYPE,
+  DEFAULT_DATA,
+  DEFAULT_INTERVAL,
+  DEFAULT_RANGES,
+} from '../../helpers';
 import RangeTableRow from './RangeTableRow';
 import BinningMethodInput from './BinningMethodInput';
 import CustomIntervalFields from './CustomIntervalFields';
@@ -32,24 +42,18 @@ const rangeFieldsOrder = [
   'to',
 ];
 
-const defaultInterval = {
-  amount: '',
-  max: '',
-  min: '',
-};
-
 const defaultState = {
   binningMethod: 'interval', // interval or range
   continuousReset: false,
-  intervalErrors: defaultInterval,
-  intervalFields: defaultInterval,
+  intervalErrors: DEFAULT_INTERVAL,
+  intervalFields: DEFAULT_INTERVAL,
   modalWarning: '',
   rangeInputErrors: defaultRangeFieldsState,
   rangeInputOverlapErrors: [],
   rangeInputValues: defaultRangeFieldsState,
   rangeNameErrors: [],
   rangeOverlapErrors: [],
-  rangeRows: [],
+  rangeRows: DEFAULT_RANGES,
 };
 
 class ContinuousCustomBinsModal extends Component {
@@ -57,10 +61,10 @@ class ContinuousCustomBinsModal extends Component {
 
   componentDidMount = () => {
     const {
-      continuousBinType = 'default',
-      continuousCustomInterval = defaultInterval,
-      continuousCustomRanges = [],
-      defaultContinuousData,
+      continuousBinType = DEFAULT_BIN_TYPE,
+      customInterval = DEFAULT_INTERVAL,
+      customRanges = DEFAULT_RANGES,
+      defaultData = DEFAULT_DATA,
     } = this.props;
 
     this.debounceValidateIntervalFields = debounce(
@@ -72,26 +76,27 @@ class ContinuousCustomBinsModal extends Component {
       ...continuousBinType === 'default'
         ? {}
         : { binningMethod: continuousBinType },
-      intervalFields: isEmpty(continuousCustomInterval)
-        ? {
-          amount: defaultContinuousData.quarter,
-          max: defaultContinuousData.max,
-          min: defaultContinuousData.min,
-        }
-        : continuousCustomInterval,
-      rangeRows: continuousCustomRanges,
+      intervalFields: isEqual(customInterval, DEFAULT_INTERVAL) || 
+        isEmpty(customInterval)
+          ? {
+            amount: defaultData.quarter,
+            max: defaultData.max,
+            min: defaultData.min,
+          }
+          : customInterval,
+      rangeRows: customRanges,
     });
   };
 
   resetModal = () => {
-    const { defaultContinuousData } = this.props;
+    const { defaultData } = this.props;
     this.setState({
       ...defaultState,
       continuousReset: true,
       intervalFields: {
-        amount: defaultContinuousData.quarter,
-        max: defaultContinuousData.max,
-        min: defaultContinuousData.min,
+        amount: defaultData.quarter,
+        max: defaultData.max,
+        min: defaultData.min,
       },
     });
   }
@@ -253,6 +258,7 @@ class ContinuousCustomBinsModal extends Component {
       .filter((filterRow, filterRowIndex) => filterRowIndex !== rowIndex);
     this.setState({ rangeRows: nextRangeRows });
     this.validateRangeRow(nextRangeRows);
+    this.validateRangeInput();
   };
 
   handleToggleActiveRow = (inputRowIndex, inputIsActive) => {
@@ -265,12 +271,6 @@ class ContinuousCustomBinsModal extends Component {
     this.validateRangeRow(nextRangeRows);
   };
 
-  handleAddRow = inputRow => {
-    const { rangeRows } = this.state;
-
-    this.setState({ rangeRows: rangeRows.concat(inputRow) });
-  }
-
   handleUpdateRow = (inputRowIndex, inputRow) => {
     const { rangeRows } = this.state;
     const nextRangeRows = rangeRows
@@ -278,13 +278,12 @@ class ContinuousCustomBinsModal extends Component {
         ? inputRow
         : rangeRow));
 
-    const rowHasErrors = this.validateRangeRow(nextRangeRows);
-    if (rowHasErrors) return;
-
+    this.validateRangeRow(nextRangeRows);
     this.setState({
       continuousReset: false,
       rangeRows: nextRangeRows,
     });
+    this.validateRangeInput();
   }
 
   // submit
@@ -295,10 +294,10 @@ class ContinuousCustomBinsModal extends Component {
       binningMethod, continuousReset, intervalFields, rangeRows,
     } = this.state;
 
-    const formHasErrors = binningMethod === 'range' &&
+    const formIsValid = binningMethod === 'interval' ||
       this.validateRangeRow();
 
-    if (!formHasErrors) {
+    if (formIsValid) {
       const makeCustomIntervalBins = () => {
         const intervalAmount = Number(intervalFields.amount);
         const intervalMax = Number(intervalFields.max);
@@ -335,12 +334,15 @@ class ContinuousCustomBinsModal extends Component {
           const rowKey = `${curr.from}-${curr.to}`;
           return ({
             ...acc,
-            ...(curr.name === '' ? {} : {
-              [rowKey]: {
-                groupName: curr.name,
-                key: rowKey,
-              },
-            }),
+            ...(curr.name === ''
+              ? {}
+              : {
+                [rowKey]: {
+                  groupName: curr.name,
+                  key: rowKey,
+                },
+              }
+            ),
           });
         }, {})
         : makeCustomIntervalBins();
@@ -365,36 +367,39 @@ class ContinuousCustomBinsModal extends Component {
   }
 
   validateRangeOverlap = (rows = null) => {
-    // assume all rows are complete and from < to
-
     const { rangeRows } = this.state;
 
     const rowsToCheck = rows === null ? rangeRows : rows;
 
-    const overlapErrors = rowsToCheck.map((rowItem, rowIndex) => {
-      const rowFrom = Number(rowItem.fields.from);
-      const rowTo = Number(rowItem.fields.to);
+    const overlapErrors = rowsToCheck.map((rowItem, aIndex) => {
+      const aFrom = Number(rowItem.fields.from);
+      const aTo = Number(rowItem.fields.to);
 
       const overlapNames = rowsToCheck
-        .reduce((acc, curr, overlapIndex) => {
-          const overlapFromStr = curr.fields.from;
-          const overlapToStr = curr.fields.to;
+        .reduce((acc, curr, bIndex) => {
+          const bFromStr = curr.fields.from;
+          const bToStr = curr.fields.to;
 
-          if (rowIndex === overlapIndex ||
-            curr.fields.from === '' ||
-            curr.fields.to === '') {
+          if (aIndex === bIndex ||
+            bFromStr === '' ||
+            bToStr === '') {
             return acc;
           }
 
-          const overlapFrom = Number(overlapFromStr);
-          const overlapTo = Number(overlapToStr);
-          const overlapName = curr.fields.name;
+          const bFrom = Number(bFromStr);
+          const bTo = Number(bToStr);
+          const bName = curr.fields.name;
 
-          const hasOverlap = (rowTo > overlapFrom && rowTo < overlapTo) ||
-            (rowFrom > overlapFrom && rowFrom < overlapTo) ||
-            (rowFrom === overlapFrom && rowTo === overlapTo);
+          const hasOverlap = (aTo > bFrom && aTo < bTo) ||
+            // "to" is within range B
+            (aFrom > bFrom && aFrom < bTo) ||
+            // "from" is within range B
+            (aFrom < bFrom && aTo > bTo) || 
+            // range B is within range A
+            (aFrom === bFrom || aTo === bTo);
+            // "from" or "to" are the same in both ranges
 
-          return hasOverlap ? [...acc, overlapName] : acc;
+          return hasOverlap ? [...acc, bName] : acc;
         }, []);
       return overlapNames.length > 0 ? overlapNames : [];
     });
@@ -409,49 +414,71 @@ class ContinuousCustomBinsModal extends Component {
 
     const overlapErrors = this.validateRangeOverlap(rowsToCheck);
     const nameErrors = this.validateRangeNames(rowsToCheck);
-    const overlapHasError = overlapErrors
-      .filter(overlapErrorItem => overlapErrorItem.length > 0).length > 0;
-    const nameHasError = nameErrors
-      .filter(nameErrorItem => nameErrorItem !== '').length > 0;
+    const overlapIsValid = overlapErrors
+      .filter(overlapErrorItem => overlapErrorItem.length > 0).length === 0;
+    const nameIsValid = nameErrors
+      .filter(nameErrorItem => nameErrorItem !== '').length === 0;
 
     this.setState({
       rangeNameErrors: nameErrors,
       rangeOverlapErrors: overlapErrors,
     });
 
-    return nameHasError || overlapHasError;
+    return nameIsValid && overlapIsValid;
   }
 
   // range input
 
   handleRangeInputValidate = () => {
-    this.setState({ rangeInputErrors: this.validateRangeInputBeforeSave() });
+    this.setState({ rangeInputErrors: this.validateRangeInputFormatting() });
+  }
+
+  validateRangeInput = () => {
+    const validationResult = this.validateRangeInputFormatting();
+    const inputFormatIsValid = Object.keys(validationResult)
+      .filter(field => validationResult[field].length > 0).length === 0;
+
+    if (inputFormatIsValid) {
+      const rangeInputOverlapErrors = this.validateRangeInputOverlap();
+      const rangeInputNameError = this.validateRangeInputName();
+
+      this.setState({
+        rangeInputErrors: {
+          ...validationResult,
+          name: rangeInputNameError,
+        },
+        rangeInputOverlapErrors,
+      });
+
+      const overlapIsValid = rangeInputOverlapErrors.length === 0;
+      const nameIsValid = rangeInputNameError.length === 0;
+
+      return nameIsValid && overlapIsValid;
+    } else {
+      this.setState({ 
+        rangeInputErrors: validationResult, 
+        rangeInputOverlapErrors: [],
+      });
+      return false;
+    }
   }
 
   handleAddRow = () => {
     const { rangeInputValues, rangeRows } = this.state;
-    const validationResult = this.validateRangeInputBeforeSave();
+    const inputRowIsValid = this.validateRangeInput();
 
-    const rowHasErrors = Object.keys(validationResult)
-      .filter(field => validationResult[field].length > 0).length > 0;
-    this.setState({ rangeInputErrors: validationResult }, () => {
-      if (rowHasErrors) return;
-
-      const hasOverlap = this.validateRangeInputOnSave();
-      if (hasOverlap) return;
-
+    if (inputRowIsValid) {
       const nextRow = {
         active: false,
         fields: rangeInputValues,
       };
-
       this.setState({
         continuousReset: false,
         rangeInputErrors: defaultRangeFieldsState,
         rangeInputValues: defaultRangeFieldsState,
         rangeRows: rangeRows.concat(nextRow),
       });
-    });
+    }
   };
 
   updateRangeInput = (id, value) => {
@@ -465,7 +492,7 @@ class ContinuousCustomBinsModal extends Component {
     });
   };
 
-  validateRangeInputBeforeSave = () => {
+  validateRangeInputFormatting = () => {
     const { rangeInputValues } = this.state;
 
     // check empty & NaN errors first
@@ -526,54 +553,37 @@ class ContinuousCustomBinsModal extends Component {
   }
 
   validateRangeInputOverlap = () => {
-    // assume all fields are complete and from < to
     const { rangeInputValues, rangeRows } = this.state;
 
     const fieldFrom = Number(rangeInputValues.from);
     const fieldTo = Number(rangeInputValues.to);
 
-    const overlapErrors = rangeRows.reduce((acc, curr) => {
-      const overlapFromStr = curr.fields.from;
-      const overlapToStr = curr.fields.to;
+    return (rangeInputValues.from === '' ||
+      rangeInputValues.to === '' ||
+      fieldFrom >= fieldTo)
+        ? [] 
+        : rangeRows.reduce((acc, curr) => {
+          const overlapFromStr = curr.fields.from;
+          const overlapToStr = curr.fields.to;
 
-      const overlapFrom = Number(overlapFromStr);
-      const overlapTo = Number(overlapToStr);
-      const overlapName = curr.fields.name;
+          const overlapFrom = Number(overlapFromStr);
+          const overlapTo = Number(overlapToStr);
+          const overlapName = curr.fields.name;
 
-      const hasOverlap = (fieldTo > overlapFrom && fieldTo <= overlapTo) ||
-        (fieldFrom >= overlapFrom && fieldFrom < overlapTo) ||
-        (fieldFrom <= overlapFrom && fieldTo >= overlapTo);
+          const hasOverlap = (fieldTo > overlapFrom && fieldTo < overlapTo) ||
+            (fieldFrom > overlapFrom && fieldFrom < overlapTo) ||
+            (fieldFrom < overlapFrom && fieldTo > overlapTo) || 
+            (fieldFrom === overlapFrom || fieldTo === overlapTo);
 
-      return hasOverlap
-        ? [...acc, overlapName]
-        : acc;
-    }, []);
-
-    return overlapErrors;
-  }
-
-  validateRangeInputOnSave = () => {
-    const { rangeInputErrors } = this.state;
-
-    const rangeInputOverlapErrors = this.validateRangeInputOverlap();
-    const nameError = this.validateRangeInputName();
-    const overlapHasError = rangeInputOverlapErrors.length > 0;
-    const nameHasError = nameError.length > 0;
-
-    this.setState({
-      rangeInputErrors: {
-        ...rangeInputErrors,
-        name: nameError,
-      },
-      rangeInputOverlapErrors,
-    });
-
-    return nameHasError || overlapHasError;
+          return hasOverlap
+            ? [...acc, overlapName]
+            : acc;
+        }, []);
   }
 
 
   render = () => {
-    const { defaultContinuousData, fieldName, onClose } = this.props;
+    const { defaultData, fieldName, onClose } = this.props;
     const {
       binningMethod,
       intervalErrors,
@@ -609,14 +619,14 @@ class ContinuousCustomBinsModal extends Component {
           <Row style={styles.defaultInfo}>
             <p style={styles.defaultInfo.paragraph}>
               Available values from
-              <strong>{` ${defaultContinuousData.min} `}</strong>
+              <strong>{` ${defaultData.min} `}</strong>
               to
-              <strong>{` \u003c ${defaultContinuousData.max} `}</strong>
+              <strong>{` \u003c ${defaultData.max} `}</strong>
             </p>
             <p style={styles.defaultInfo.paragraph}>|</p>
             <p style={styles.defaultInfo.paragraph}>
               Bin size in quarters:
-              <strong>{` ${defaultContinuousData.quarter}`}</strong>
+              <strong>{` ${defaultData.quarter}`}</strong>
             </p>
           </Row>
         </div>

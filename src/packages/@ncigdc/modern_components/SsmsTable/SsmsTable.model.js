@@ -309,6 +309,7 @@ Across the GDC
       setSelectedSurvivalData,
       setSurvivalLoadingId,
       survivalLoadingId,
+      theme,
     }) => (
       <Td>
         <Tooltip
@@ -319,6 +320,14 @@ Across the GDC
           }
           >
           <Button
+            style={{
+              padding: '2px 3px',
+              backgroundColor: hasEnoughSurvivalDataOnPrimaryCurve
+                ? colors(selectedSurvivalData.id === node.ssm_id ? 1 : 0)
+                : theme.greyScale3,
+              color: 'white',
+              margin: '0 auto',
+            }}
             disabled={!hasEnoughSurvivalDataOnPrimaryCurve}
             onClick={() => {
               if (node.ssm_id !== selectedSurvivalData.id) {

@@ -35,23 +35,21 @@ import { AWG } from '@ncigdc/utils/constants';
 /*----------------------------------------------------------------------------*/
 
 const Field = styled(Button, {
-  backgroundColor: ({ theme }) => theme.greyScale2,
   ':hover': {
-    backgroundColor: ({ theme }) =>
-      Color(theme.greyScale2)
-        .lighten(0.7)
-        .rgbString(),
+    backgroundColor: ({ theme }) => Color(theme.greyScale2)
+      .lighten(0.7)
+      .rgbString(),
   },
+  backgroundColor: ({ theme }) => theme.greyScale2,
 });
 
 const Value = styled(Button, {
-  backgroundColor: ({ theme }) => theme.success,
   ':hover': {
-    backgroundColor: ({ theme }) =>
-      Color(theme.success)
-        .lighten(0.7)
-        .rgbString(),
+    backgroundColor: ({ theme }) => Color(theme.success)
+      .lighten(0.7)
+      .rgbString(),
   },
+  backgroundColor: ({ theme }) => theme.success,
 });
 
 const Op = styled.span({
@@ -68,11 +66,11 @@ const NotUnderlinedLink = styled(Link, {
 
 const LinkButton = styled(Link, {
   ...buttonBaseStyles,
-  flex: 'none',
   ':link': {
-    textDecoration: 'none',
     color: buttonBaseStyles.color,
+    textDecoration: 'none',
   },
+  flex: 'none',
 });
 
 type TProps = {
@@ -144,21 +142,22 @@ const enhance = compose(
 );
 
 const styles = {
-  leftParen: {
-    fontSize: '2rem',
-    marginRight: '0.3rem',
-    display: 'flex',
-    alignItems: 'center',
-  },
-  rightParen: {
-    fontSize: '2rem',
-    marginRight: '0.3rem',
-    display: 'flex',
-    alignItems: 'center',
-  },
   groupPadding: {
     padding: '0.5rem 0',
   },
+  leftParen: {
+    alignItems: 'center',
+    display: 'flex',
+    fontSize: '2rem',
+    marginRight: '0.3rem',
+  },
+  rightParen: {
+    alignItems: 'center',
+    display: 'flex',
+    fontSize: '2rem',
+    marginRight: '0.3rem',
+  },
+
 };
 
 const CurrentFilters = (
@@ -177,7 +176,7 @@ const CurrentFilters = (
     hideClearButton = false,
   }: TProps = {},
 ) => (
-  <Info style={style} className="test-current-filters">
+  <Info className="test-current-filters" style={style}>
     {!currentFilters.length &&
       !hideHelpText && (
         <span
@@ -187,27 +186,27 @@ const CurrentFilters = (
             lineHeight: '44px',
             width: '100%',
           }}
-        >
+          >
           <LeftArrow />
           <span style={{ marginLeft: '0.6rem' }}>
             Start searching by selecting a facet
           </span>
         </span>
-      )}
+    )}
     {!!currentFilters.length && (
       <Row
         style={{
-          width: '100%',
           justifyContent: 'space-between',
+          width: '100%',
         }}
-      >
-        <Row wrap spacing="0.3rem">
+        >
+        <Row spacing="0.3rem" wrap>
           {!hideClearButton && (
             <NotUnderlinedLink
               className="test-clear"
-              style={styles.groupPadding}
               query={omit(query, 'filters')}
-            >
+              style={styles.groupPadding}
+              >
               <Button leftIcon={<Undo />}>Clear</Button>
             </NotUnderlinedLink>
           )}
@@ -220,22 +219,20 @@ const CurrentFilters = (
                 key={`${filter.content.field}.${filter.op}.${value.join()}`}
                 spacing="0.3rem"
                 style={styles.groupPadding}
-              >
+                >
                 <NotUnderlinedLink
                   className="test-field-name"
                   merge="toggle"
                   query={{
-                    offset: 0,
                     filters: {
-                      op: 'and',
                       content: [filter],
+                      op: 'and',
                     },
+                    offset: 0,
                   }}
-                >
+                  >
                   <Field>
-                    {humanify({
-                      term: facetFieldDisplayMapper(filter.content.field),
-                    })}
+                    {humanify({ term: facetFieldDisplayMapper(filter.content.field) })}
                   </Field>
                 </NotUnderlinedLink>
                 <Op>{getDisplayOp(filter.op, value)}</Op>
@@ -249,21 +246,21 @@ const CurrentFilters = (
                     key={value}
                     merge="toggle"
                     query={{
-                      offset: 0,
                       filters: {
-                        op: 'and',
                         content: [
                           {
-                            op: filter.op,
                             content: {
                               field: filter.content.field,
                               value: [value],
                             },
+                            op: filter.op,
                           },
                         ],
+                        op: 'and',
                       },
+                      offset: 0,
                     }}
-                  >
+                    >
                     <Value>
                       {getDisplayValue(filter.content.field, value)}
                     </Value>
@@ -272,18 +269,21 @@ const CurrentFilters = (
                 {value.length > 2 && (
                   <UnstyledButton
                     className="test-toggle"
-                    style={styles.rightParen}
                     onClick={() => onLessClicked(filter)}
-                  >
+                    style={styles.rightParen}
+                    >
                     …
                   </UnstyledButton>
                 )}
                 {isFilterExpanded(filter) && (
                   <UnstyledButton
                     className="test-toggle"
-                    style={{ display: 'flex', alignItems: 'center' }}
                     onClick={() => onLessClicked(filter)}
-                  >
+                    style={{
+                      alignItems: 'center',
+                      display: 'flex',
+                    }}
+                    >
                     Less
                   </UnstyledButton>
                 )}
@@ -303,21 +303,24 @@ const CurrentFilters = (
           query={
             currentFilters.length && {
               filters: {
-                op: 'and',
                 content: currentFilters.map(
                   ({ content: { field, value }, op }) => ({
+                    content: {
+                      field: linkFieldMap(field),
+                      value,
+                    },
                     op: op.toLowerCase(),
-                    content: { field: linkFieldMap(field), value },
                   }),
                 ),
+                op: 'and',
               },
             }
           }
-        >
+          >
           <Cogs style={{ marginRight: 5 }} />
           {linkText}
         </LinkButton>
-      )}
+    )}
   </Info>
 );
 /*----------------------------------------------------------------------------*/

@@ -10,7 +10,7 @@ import {
 import { theme } from '@ncigdc/theme/index';
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import Button from '@ncigdc/uikit/Button';
-import ExploreLink from '@ncigdc/components/Links/ExploreLink';
+import ExploreLink, { defaultExploreQuery } from '@ncigdc/components/Links/ExploreLink';
 import EntityPageHorizontalTable from '@ncigdc/components/EntityPageHorizontalTable';
 import countComponents from '@ncigdc/modern_components/Counts';
 
@@ -183,8 +183,8 @@ const ClinicalAnalysisLaunch: ComponentType<IProps> = ({
           <div style={{ marginBottom: 15 }}>
             You can create and save case sets from the
             {' '}
-            <ExploreLink>Exploration Page</ExploreLink>
-.
+            <ExploreLink query={defaultExploreQuery}>Exploration Page</ExploreLink>
+            .
           </div>
 
           {setData && setData.length > 0 && (

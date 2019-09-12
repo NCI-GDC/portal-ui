@@ -83,6 +83,12 @@ interface IProps {
   hideColumns?: string[];
 }
 
+const styles = {
+  actionButtonStyles: {
+    marginTop: '0.3rem',
+  },
+};
+
 const TableActions: React.SFC<IProps> = ({
   type,
   displayType = type,
@@ -125,11 +131,11 @@ const TableActions: React.SFC<IProps> = ({
     );
   };
   return (
-    <Row style={style} spacing="0.2rem" className="test-table-actions">
+    <Row style={style} spacing="0.3rem" className="test-table-actions">
       {arrangeColumnKey && (
         <ArrangeColumnsButton
           entityType={arrangeColumnKey}
-          style={visualizingButton}
+          style={{...visualizingButton, ...styles.actionButtonStyles}}
           hideColumns={hideColumns}
         />
       )}
@@ -143,7 +149,7 @@ const TableActions: React.SFC<IProps> = ({
               : { sortSelection: [] }
           }
           isDisabled={!sortOptions.length}
-          style={visualizingButton}
+          style={{...visualizingButton, ...styles.actionButtonStyles}}
         />
       )}
       {downloadBiospecimen && (
@@ -153,7 +159,7 @@ const TableActions: React.SFC<IProps> = ({
           filters={
             currentFilters || parseFilterParam((query || {}).filters, {})
           }
-          buttonStyles={visualizingButton}
+          buttonStyles={{...visualizingButton, ...styles.actionButtonStyles}}
           inactiveText={'Biospecimen'}
           shouldCreateSet={
             (scope === 'explore' &&
@@ -168,7 +174,7 @@ const TableActions: React.SFC<IProps> = ({
       )}
       {downloadClinical && (
         <DownloadClinicalDropdown
-          buttonStyles={visualizingButton}
+          buttonStyles={{...visualizingButton, ...styles.actionButtonStyles}}
           tsvFilename={`clinical.cases_selection.${timestamp()}.tar.gz`}
           jsonFilename={`clinical.cases_selection.${timestamp()}.json`}
           filters={
@@ -189,7 +195,7 @@ const TableActions: React.SFC<IProps> = ({
             filename={`${pluralize(displayType, total)}.${timestamp()}.json`}
             endpoint={endpoint}
             fields={downloadFields}
-            style={visualizingButton}
+            style={{...visualizingButton, ...styles.actionButtonStyles}}
             size={total}
             inactiveText="JSON"
             activeText="JSON"
@@ -202,6 +208,7 @@ const TableActions: React.SFC<IProps> = ({
           <DownloadTableToTsvButton
             selector={tsvSelector}
             filename={tsvFilename}
+            style={styles.actionButtonStyles}
           />
         )}
 
@@ -222,6 +229,7 @@ const TableActions: React.SFC<IProps> = ({
             displayType={displayType}
             selectedIds={selectedIds || []}
             scope={scope}
+            style={styles.actionButtonStyles}
           />
         )}
     </Row>

@@ -1,19 +1,17 @@
-// @flow
 import React from 'react';
 import { map, reduce } from 'lodash';
-import { compose } from 'recompose';
 
 import saveFile from '@ncigdc/utils/filesaver';
 import { mapStringArrayToTsvString } from '@ncigdc/utils/toTsvString';
 import Button from '@ncigdc/uikit/Button';
 import { visualizingButton } from '@ncigdc/theme/mixins';
-import withTooltip from '@ncigdc/uikit/Tooltip/withTooltip';
+import { Tooltip } from '@ncigdc/uikit/Tooltip';
 import { track } from '@ncigdc/utils/analytics';
 
 type TProps = {
   selector: string,
   filename: string,
-  style: Object,
+  style?: Object,
 };
 
 const getSingleHeader = (headThs: Array<NodeList>) => reduce(
@@ -59,6 +57,7 @@ export const downloadToTSV = ({ excludedColumns = [
       []
     );
   });
+
   const excludedIndices = excludedColumns.reduce((acc, curr) => {
     const normalizedCurr = curr.toLowerCase().trim();
     const normalizedThText = thText.map(th => th.toLowerCase().trim());
@@ -71,6 +70,7 @@ export const downloadToTSV = ({ excludedColumns = [
     .filter((td, idx) => excludedIndices.indexOf(idx) === -1));
 
   saveFile(mapStringArrayToTsvString(thFiltered, tdFiltered), 'TSV', filename);
+
   track('download-table', {
     filename,
     selector,
@@ -78,35 +78,31 @@ export const downloadToTSV = ({ excludedColumns = [
   });
 };
 
-const DownloadTableToTsvButton = compose(withTooltip)(
+const DownloadTableToTsvButton =
   ({
     excludedColumns,
     filename,
     selector,
     leftIcon,
     style = {},
-    displayTooltip = true,
-    setTooltip,
   }: TProps) => (
-    <Button
-      leftIcon={leftIcon}
-      onClick={() => downloadToTSV({
-        excludedColumns,
-        filename,
-        selector,
-      })}
-      onMouseEnter={() => displayTooltip && setTooltip(<span>Export current view</span>)
-      }
-      onMouseLeave={() => displayTooltip && setTooltip('')}
-      style={{
-        ...visualizingButton,
-        ...style,
-      }}
-      >
-      TSV
-    </Button>
-  )
-);
+    <Tooltip Component="Export current view">
+      <Button
+        leftIcon={leftIcon}
+        onClick={() => downloadToTSV({
+          filename,
+          selector,
+        })}
+        style={{
+          ...visualizingButton,
+          ...style,
+        }}
+        >
+        TSV
+      </Button>
+    </Tooltip>
+  );
+
 export default DownloadTableToTsvButton;
 
 export const ForTsvExport = ({ children }: { children: string }) => (

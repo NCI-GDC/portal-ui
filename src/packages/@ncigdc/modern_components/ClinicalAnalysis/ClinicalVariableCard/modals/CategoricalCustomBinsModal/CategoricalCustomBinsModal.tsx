@@ -140,6 +140,14 @@ const CategoricalCustomBinsModal = ({
   const hideDisabled = Object.values(selectedGroupBins).every(value => !value)
   const showDisabled = Object.values(selectedHidingBins).every(value => !value)
 
+  console.log('currentBins', currentBins);
+
+  console.log('selectedGroupBins', selectedGroupBins);
+
+  console.log('groupNameMapping', groupNameMapping);
+
+  console.log('editingGroupName', editingGroupName);
+
   return (
     <Column
       style={{
@@ -284,8 +292,14 @@ const CategoricalCustomBinsModal = ({
           <Column style={styles.list}>
             {map(
               groupNameMapping,
-              (group: string[], groupName: string) => (
-                <Column key={groupName} >
+              (group: string[], groupName: string) => {
+                // console.log('groupName', groupName);
+                // console.log('group', group);
+                const isCustomBin = group.length > 1 || group[0] !== groupName;
+                const isEditing = editingGroupName === groupName;
+
+                return (
+                <Column key={groupName}>
                   <Row
                     key={groupName}
                     onClick={() => {
@@ -306,7 +320,7 @@ const CategoricalCustomBinsModal = ({
                       backgroundColor: group.every((binKey: string) => selectedGroupBins[binKey]) ? theme.tableHighlight : '',
                     }}
                     >
-                    {group.length > 1 || group[0] !== groupName
+                    {isCustomBin
                       ? (
                         <ControlEditableRow
                           cleanWarning={() => setListWarning({})}
@@ -339,7 +353,7 @@ const CategoricalCustomBinsModal = ({
                             fontSize: '1.8rem',
                             marginLeft: 10,
                           }}
-                          isEditing={editingGroupName === groupName}
+                          isEditing={isEditing}
                           noEditingStyle={{ fontWeight: 'bold' }}
                           onEdit={(value: string) => {
                             if (value.trim() === '') {
@@ -380,7 +394,7 @@ const CategoricalCustomBinsModal = ({
                       )}
                   </Row>
 
-                  {(group.length > 1 || group[0] !== groupName) && (
+                  {isCustomBin && (
                     group.map((bin: string) => (
                       <Row
                         key={bin}
@@ -403,6 +417,7 @@ const CategoricalCustomBinsModal = ({
                     )))}
                 </Column>
               )
+                      }
             )}
           </Column>
         </Column>

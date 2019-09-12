@@ -496,6 +496,7 @@ export default compose(
       props.variable.isSurvivalCustom === nextProps.variable.isSurvivalCustom
     ),
     ({
+      binsAreCustom,
       defaultData: { bins },
       dispatch,
       fieldName,
@@ -506,9 +507,11 @@ export default compose(
           fieldName,
           id,
           variable: {
-            bins,
             ...resetVariableDefaults.survival,
-            ...resetVariableDefaults.continuous,
+            ...binsAreCustom && {
+              bins,
+              ...resetVariableDefaults.continuous,
+            },
           },
         }));
       },

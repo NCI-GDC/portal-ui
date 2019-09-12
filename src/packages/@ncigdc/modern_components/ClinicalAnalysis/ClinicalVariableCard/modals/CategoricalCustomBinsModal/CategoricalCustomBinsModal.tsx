@@ -1,7 +1,4 @@
-// @flow
-/* eslint-disable */
 import React, { ReactNode } from 'react';
-/* eslint-enable */
 import {
   compose,
   setDisplayName,
@@ -15,6 +12,7 @@ import {
   filter,
   some,
 } from 'lodash';
+
 import Group from '@ncigdc/theme/icons/Group';
 import Hide from '@ncigdc/theme/icons/Hide';
 import Show from '@ncigdc/theme/icons/Show';
@@ -373,8 +371,8 @@ const CategoricalCustomBinsModal = ({
                       )
                       : (
                         <div style={{ fontWeight: 'bold' }}>
-                          {`${currentBins[group[0]].key === '_missing' 
-                          ? 'Missing' 
+                          {`${currentBins[group[0]].key === '_missing'
+                          ? 'Missing'
                           : currentBins[group[0]].key} (${currentBins[group[0]].doc_count})`}
                         </div>
                       )}
@@ -467,7 +465,7 @@ const CategoricalCustomBinsModal = ({
                     backgroundColor: selectedHidingBins[binKey] ? theme.tableHighlight : '',
                   }}
                 >
-                  {`${binKey} (${currentBins[binKey].doc_count})`}
+                  {`${binKey === '_missing' ? 'Missing' : binKey} (${currentBins[binKey].doc_count})`}
                 </Row>
               ))}
           </Column>

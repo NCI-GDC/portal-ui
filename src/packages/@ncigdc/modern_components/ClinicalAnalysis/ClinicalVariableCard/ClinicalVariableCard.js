@@ -169,7 +169,6 @@ const ClinicalVariableCard = ({
   displayData,
   fieldName,
   filters,
-  getContinuousBins,
   id,
   isLoading,
   openCustomBinModal,
@@ -200,14 +199,11 @@ const ClinicalVariableCard = ({
       active_chart: variable.active_chart,
       displayData,
       fieldName,
-      getContinuousBins,
       selectedBins,
       selectedSurvivalBins,
       selectedSurvivalLoadingIds,
-      setId,
       setSelectedBins,
       theme,
-      totalDocs,
       updateSelectedSurvivalBins,
     });
 
@@ -313,7 +309,7 @@ const ClinicalVariableCard = ({
                 justifyContent: 'center',
               }}
               >
-              <div className="print-mb print-mt">There is no data for this facet</div>
+              <div className="print-mb print-mt">No data for this field</div>
             </Row>
           )
           : (

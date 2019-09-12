@@ -537,18 +537,21 @@ export default compose(
           const matchingCustomBins = Object.values(groupNameMapping)
             .map((groups: any, groupIndex: number) => 
               groups.indexOf(curr) >= 0 &&
-              groups.every((group: string) => src.indexOf(group) >= 0) 
-                ? Object.keys(groupNameMapping)[groupIndex]
-                : ''
+                groups.every((group: string) => src.indexOf(group) >= 0) 
+                  ? Object.keys(groupNameMapping)[groupIndex]
+                  : ''
             )
             .filter((group: string) => group.length > 0);
           return matchingCustomBins.length > 0 
             && acc.indexOf(matchingCustomBins[0]) === -1
               ? acc.concat(matchingCustomBins)
               : acc;
-        }, [])
+        }, []);
       
       const isEditingGroupName = selectedCustomBins.length !== 1;
+      const selectedCustomBinName = isEditingGroupName 
+        ? ''
+        : selectedCustomBins[0];
 
       const newGroupName = initialName(
         Object.values(currentBins).map((bin: IBinProps) => bin.groupName), 'selected Value '
@@ -564,7 +567,7 @@ export default compose(
                 ...currentBins[key],
                 groupName: isEditingGroupName
                   ? newGroupName
-                  : selectedCustomBins[0],
+                  : selectedCustomBinName,
               },
             };
           }

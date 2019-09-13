@@ -117,6 +117,11 @@ const defaultVariableConfig = {
   showOverallSurvival: false,
 };
 
+const defaultCategoricalVariableConfig = {
+  customBinsId: '',
+  customBinsSetId: '',
+};
+
 const defaultContinuousVariableConfig = {
   continuousBinType: DEFAULT_BIN_TYPE,
   customInterval: DEFAULT_INTERVAL,
@@ -199,7 +204,9 @@ const reducer = (
                       [action.payload.fieldName as string]: Object.assign(
                         {},
                         defaultVariableConfig,
-                        action.payload.plotTypes === 'continuous' && defaultContinuousVariableConfig,
+                        action.payload.plotTypes === 'continuous'
+                          ? defaultContinuousVariableConfig
+                          : defaultCategoricalVariableConfig,
                         {
                           type: action.payload.fieldType,
                           plotTypes: action.payload.plotTypes,

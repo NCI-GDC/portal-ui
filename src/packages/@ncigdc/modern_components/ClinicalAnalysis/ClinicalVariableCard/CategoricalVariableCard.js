@@ -40,7 +40,7 @@ export default compose(
       const rawQueryData = getRawQueryData(data, fieldName);
       const dataBuckets = get(rawQueryData, 'buckets', []);
       const totalDocs = get(data, 'hits.total', 0);
-      console.log('raw data buckets: ', dataBuckets);
+
       const missingNestedDocCount = totalDocs -
         dataBuckets.reduce((acc, b) => acc + b.doc_count, 0);
 
@@ -63,8 +63,6 @@ export default compose(
       const newDataBuckets = missingNestedDocCount
         ? addMissingDocs(dataBuckets)
         : dataBuckets;
-
-      console.log('data with missing docs added: ', newDataBuckets);
 
       return {
         dataBuckets: newDataBuckets.sort((a, b) => b.doc_count - a.doc_count),

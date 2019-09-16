@@ -3,6 +3,7 @@ import React from 'react';
 import memoize from 'memoizee';
 import queryString from 'query-string';
 import _ from 'lodash';
+import { scaleOrdinal, schemeCategory10 } from 'd3';
 
 import { replaceFilters } from '@ncigdc/utils/filters';
 import styled from '@ncigdc/theme/styled';
@@ -21,6 +22,15 @@ type TPropsMulti = {
 
 export const MINIMUM_CASES = 10;
 export const MAXIMUM_CURVES = 5;
+
+const colors = scaleOrdinal(schemeCategory10);
+export const SURVIVAL_PLOT_COLORS = [
+  colors(0),
+  colors(1),
+  colors(2),
+  colors(3),
+  colors(4),
+];
 
 const Symbol = styled.span({
   fontSize: '1.2em',
@@ -256,8 +266,10 @@ export const getSurvivalCurvesArray = memoize(
     size,
     plotType,
   }: TPropsMulti): Promise<Object> => {
+    // console.log('values: ', values);
     const filters = values.slice(0, MAXIMUM_CURVES).map(
-      value => (plotType === 'continuous'
+      value => {
+        return plotType === 'continuous'
         ? value.filters
         : replaceFilters(
           {
@@ -267,13 +279,14 @@ export const getSurvivalCurvesArray = memoize(
                 op: '=',
                 content: {
                   field,
-                  value,
+                  value: value.keyName,
                 },
               },
             ],
           },
           currentFilters
-        ))
+        );
+      }
     );
 
     const rawData = await fetchCurves(filters, size, true);
@@ -282,38 +295,25 @@ export const getSurvivalCurvesArray = memoize(
     const getCaseCount = i => _.get(rawData, `results[${i}].donors`, []).length.toLocaleString();
 
     return {
-      rawData: {
-        ...rawData,
-        results:
-          rawData.results.length > 0
-            ? rawData.results
-              .map((r, idx) => ({
-                ...r,
-                meta: {
-                  ...r.meta,
-                  label: `S${idx + 1}`,
-                },
-              }))
-            : [],
-      },
       id: field,
       legend: hasEnoughDataOnSomeCurves
         ? rawData.results.map((r, i) => {
-          const valueName =
-            plotType === 'categorical' ? values[i] : values[i].key;
-
+          const valueName = plotType === 'categorical'
+            ? values[i].keyName : values[i].key; // need to fix for continuous
+            // plotType === 'categorical' ? values[i] : values[i].key;
+          // console.log('valueName: ', `${valueName}-not-enough-data`);
           return r.length === 0
             ? {
               key: `${valueName}-cannot-compare`,
+              style: {
+                marginTop: 5,
+                width: '100%',
+              },
               value: (
                 <div>
                   <span>Not enough data to compare</span>
                 </div>
               ),
-              style: {
-                width: '100%',
-                marginTop: 5,
-              },
             }
             : r.donors.length < MINIMUM_CASES
               ? {
@@ -344,6 +344,20 @@ export const getSurvivalCurvesArray = memoize(
             value: <span>Not enough survival data for this facet</span>,
           },
         ],
+      rawData: {
+        ...rawData,
+        results:
+          rawData.results.length > 0
+            ? rawData.results
+              .map((r, idx) => ({
+                ...r,
+                meta: {
+                  ...r.meta,
+                  label: `S${idx + 1}`,
+                },
+              }))
+            : [],
+      },
     };
   },
   {

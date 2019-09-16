@@ -5,6 +5,7 @@ import SurvivalPlotWrapper from '@ncigdc/components/SurvivalPlotWrapper';
 import '../../survivalPlot.css';
 
 const ClinicalSurvivalPlot = ({
+  palette,
   plotType,
   survivalData: { id, legend, rawData },
   survivalDataLoading,
@@ -23,6 +24,7 @@ const ClinicalSurvivalPlot = ({
       height={202}
       id={id}
       legend={legend}
+      palette={palette}
       plotType={plotType}
       rawData={rawData}
       survivalDataLoading={survivalDataLoading}

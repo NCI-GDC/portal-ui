@@ -57,7 +57,7 @@ export default compose(
       isEqual(props.variable.customSurvivalPlots, nextProps.variable.customSurvivalPlots) &&
       isEqual(props.selectedSurvivalBins, nextProps.selectedSurvivalBins) &&
       isEqual(props.survivalPlotValues, nextProps.survivalPlotValues) &&
-      isEqual(props.variable.customSurvivalPlots, nextProps.variable.customSurvivalPlots),
+      isEqual(props.variable.customSurvivalPlots, nextProps.variable.customSurvivalPlots) &&
       isEqual(props.filters, nextProps.filters)
     ),
     ({

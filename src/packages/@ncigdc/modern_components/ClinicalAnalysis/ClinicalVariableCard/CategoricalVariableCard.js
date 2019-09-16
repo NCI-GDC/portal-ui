@@ -215,15 +215,16 @@ export default compose(
       },
     })
   ),
-  withPropsOnChange((props, nextProps) => 
-    props.setId !== nextProps.setId,
+  withPropsOnChange(
+    (props, nextProps) =>
+      props.setId !== nextProps.setId,
     ({
       id,
       resetBins,
       setId,
       variable: {
         customBinsId,
-        customBinsSetId
+        customBinsSetId,
       },
     }) => {
       // call the reset function if you're in the same analysis tab
@@ -232,14 +233,16 @@ export default compose(
         customBinsSetId !== '' &&
         customBinsId === id &&
         customBinsSetId !== setId) {
-          resetBins();
-        }
+        resetBins();
+      }
     }
   ),
   withPropsOnChange(
     (props, nextProps) =>
       !isEqual(props.binData, nextProps.binData),
-    ({ binData, binsAreCustom, fieldName, setId, totalDocs }) => ({
+    ({
+      binData, binsAreCustom, fieldName, setId, totalDocs,
+    }) => ({
       displayData: binData.length === 1 &&
         binData[0].key === '_missing' &&
         !binsAreCustom

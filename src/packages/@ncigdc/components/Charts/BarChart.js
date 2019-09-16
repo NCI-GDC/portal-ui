@@ -20,16 +20,17 @@ export const DEFAULT_X_AXIS_LABEL_LENGTH = 10;
 
 const BarChart = ({
   data,
-  title,
-  yAxis = {},
-  xAxis = {},
-  styles,
   height: h,
+  showXAxisLabels = true,
   margin: m,
   setTooltip,
-  theme,
-  xAxisLabelLength = DEFAULT_X_AXIS_LABEL_LENGTH,
   size: { width },
+  styles,
+  theme,
+  title,
+  xAxis = {},
+  xAxisLabelLength = DEFAULT_X_AXIS_LABEL_LENGTH,
+  yAxis = {},
 }) => {
   const el = ReactFauxDOM.createElement('div');
   el.style.width = '100%';
@@ -119,52 +120,54 @@ const BarChart = ({
     .attr('fill', yAxisStyle.textFill)
     .text(yAxis.title || '');
 
-  // hidden x axis for full length labels in svg download
-  const hiddenXG = svg
-    .append('g')
-    .attr('class', 'svgDownload')
-    .attr('transform', `translate(0, ${height})`)
-    .call(d3.axisBottom(x));
+  if (showXAxisLabels) {
+    // hidden x axis for full length labels in svg download
+    const hiddenXG = svg
+      .append('g')
+      .attr('class', 'svgDownload')
+      .attr('transform', `translate(0, ${height})`)
+      .call(d3.axisBottom(x));
 
-  hiddenXG.selectAll('text')
-    .style('text-anchor', 'start')
-    .style('fontSize', xAxisStyle.fontSize)
-    .style('fontWeight', xAxisStyle.fontWeight)
-    .attr('fill', xAxisStyle.textFill)
-    .attr('dx', '.8em')
-    .attr('dy', '.5em')
-    .text(d => d)
-    .attr('transform', 'rotate(45)');
+    hiddenXG.selectAll('text')
+      .style('text-anchor', 'start')
+      .style('fontSize', xAxisStyle.fontSize)
+      .style('fontWeight', xAxisStyle.fontWeight)
+      .attr('fill', xAxisStyle.textFill)
+      .attr('dx', '.8em')
+      .attr('dy', '.5em')
+      .text(d => d)
+      .attr('transform', 'rotate(45)');
 
-  // display x axis
-  const xG = svg
-    .append('g')
-    .attr('class', 'displayOnly')
-    .attr('transform', `translate(0, ${height})`)
-    .call(d3.axisBottom(x));
+    // display x axis
+    const xG = svg
+      .append('g')
+      .attr('class', 'displayOnly')
+      .attr('transform', `translate(0, ${height})`)
+      .call(d3.axisBottom(x));
 
-  xG.selectAll('text')
-    .style('text-anchor', 'start')
-    .style('fontSize', xAxisStyle.fontSize)
-    .style('fontWeight', xAxisStyle.fontWeight)
-    .attr('fill', xAxisStyle.textFill)
-    .attr('dx', '.8em')
-    .attr('dy', '.5em')
-    .text(d => (d.length > xAxisLabelLength ? `${d.substring(0, xAxisLabelLength - 3)}...` : d))
-    .attr('transform', 'rotate(45)');
+    xG.selectAll('text')
+      .style('text-anchor', 'start')
+      .style('fontSize', xAxisStyle.fontSize)
+      .style('fontWeight', xAxisStyle.fontWeight)
+      .attr('fill', xAxisStyle.textFill)
+      .attr('dx', '.8em')
+      .attr('dy', '.5em')
+      .text(d => (d.length > xAxisLabelLength ? `${d.substring(0, xAxisLabelLength - 3)}...` : d))
+      .attr('transform', 'rotate(45)');
 
-  xG.selectAll('path').style('stroke', xAxisStyle.stroke);
+    xG.selectAll('path').style('stroke', xAxisStyle.stroke);
 
-  xG.selectAll('line').style('stroke', xAxisStyle.stroke);
+    xG.selectAll('line').style('stroke', xAxisStyle.stroke);
 
-  xG.selectAll('.tick')
-    .data(data)
-    .on('mouseenter', d => {
-      setTooltip(d.tooltip);
-    })
-    .on('mouseleave', () => {
-      setTooltip();
-    });
+    xG.selectAll('.tick')
+      .data(data)
+      .on('mouseenter', d => {
+        setTooltip(d.tooltip);
+      })
+      .on('mouseleave', () => {
+        setTooltip();
+      });
+  }
 
   const barGs = svg
     .selectAll('g.chart')

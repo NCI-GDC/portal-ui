@@ -80,4 +80,13 @@
   .print-only.inline {
     display: inline;
   }
+  .print-mb {
+    margin-bottom: 15px !important;
+  }
+  .print-mt {
+    margin-top: 15px !important;
+  }
+  [id$="-qqplot-container"][style] {
+    max-height: 100% !important;
+  }
 }

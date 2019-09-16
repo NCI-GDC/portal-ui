@@ -7,7 +7,7 @@ import '../../survivalPlot.css';
 const ClinicalSurvivalPlot = ({
   plotType,
   survivalData: { id, legend, rawData },
-  survivalPlotLoading,
+  survivalDataLoading,
 }) => (
   <div
     style={{
@@ -25,7 +25,7 @@ const ClinicalSurvivalPlot = ({
       legend={legend}
       plotType={plotType}
       rawData={rawData}
-      survivalPlotLoading={survivalPlotLoading}
+      survivalDataLoading={survivalDataLoading}
       uniqueClass="clinical-survival-plot"
       />
   </div>

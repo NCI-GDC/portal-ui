@@ -8,7 +8,6 @@ import {
 } from 'recompose';
 import { connect } from 'react-redux';
 import {
-  find,
   isEmpty,
   isEqual,
   uniq,
@@ -32,13 +31,13 @@ export default compose(
   withState('selectedSurvivalBins', 'setSelectedSurvivalBins', []),
   withState('selectedSurvivalData', 'setSelectedSurvivalData', {}),
   withState('selectedSurvivalLoadingIds', 'setSelectedSurvivalLoadingIds', []),
-  withState('survivalPlotLoading', 'setSurvivalPlotLoading', true),
+  withState('survivalDataLoading', 'setSurvivalDataLoading', true),
   withProps(({
     fieldName,
     filters,
     setSelectedSurvivalData,
     setSelectedSurvivalLoadingIds,
-    setSurvivalPlotLoading,
+    setSurvivalDataLoading,
     variable: { plotTypes },
   }) => ({
     updateSurvivalPlot: values => getSurvivalCurvesArray({
@@ -48,16 +47,18 @@ export default compose(
       values,
     }).then(data => {
       setSelectedSurvivalData(data);
-      setSurvivalPlotLoading(false);
+      setSurvivalDataLoading(false);
       setSelectedSurvivalLoadingIds([]);
     }),
   })),
-  withPropsOnChange((props, nextProps) => 
-    !isEqual(props.variable.customSurvivalPlots, nextProps.variable.customSurvivalPlots) ||
-    !isEqual(props.selectedSurvivalBins, nextProps.selectedSurvivalBins) ||
-    props.variable.setId === nextProps.variable.setId ||
-    !isEqual(props.survivalPlotValues, nextProps.survivalPlotValues ||
-    !isEqual(props.variable.customSurvivalPlots, nextProps.variable.customSurvivalPlots)),
+  withPropsOnChange(
+    (props, nextProps) => !(
+      props.variable.setId === nextProps.variable.setId &&
+      isEqual(props.variable.customSurvivalPlots, nextProps.variable.customSurvivalPlots) &&
+      isEqual(props.selectedSurvivalBins, nextProps.selectedSurvivalBins) &&
+      isEqual(props.survivalPlotValues, nextProps.survivalPlotValues) &&
+      isEqual(props.variable.customSurvivalPlots, nextProps.variable.customSurvivalPlots)
+    ),
     ({
       dispatch,
       fieldName,
@@ -65,18 +66,14 @@ export default compose(
       selectedSurvivalBins,
       setSelectedSurvivalBins,
       setSelectedSurvivalLoadingIds,
-      setSurvivalPlotLoading,
+      setSurvivalDataLoading,
       survivalPlotValues,
       survivalTableValues,
       updateSurvivalPlot,
-      variable: { 
-        customSurvivalPlots, 
-        plotTypes, 
-        isSurvivalCustom,
-      },
+      variable: { plotTypes },
     }) => ({
       populateSurvivalData: () => {
-        setSurvivalPlotLoading(true);
+        setSurvivalDataLoading(true);
         setSelectedSurvivalBins(survivalTableValues);
         setSelectedSurvivalLoadingIds(survivalTableValues);
         updateSurvivalPlot(survivalPlotValues);
@@ -88,7 +85,7 @@ export default compose(
         ) {
           return;
         }
-        setSurvivalPlotLoading(true);
+        setSurvivalDataLoading(true);
 
         const isSelected = selectedSurvivalBins.indexOf(bin.displayName) >= 0;
 
@@ -100,7 +97,9 @@ export default compose(
         setSelectedSurvivalLoadingIds(nextSelectedBins);
 
         const nextBinsForPlot = plotTypes === 'categorical'
-          ? nextSelectedBins
+          ? nextSelectedBins.map(nextBin => data.reduce((acc, item) => acc.concat(
+            item.displayName === nextBin ? item.keyArray : []
+          ), []))
           : nextSelectedBins
             .map(nextBin => data.filter(datum => datum.displayName === nextBin)[0])
             .map(nextBin => makeDocCountInteger(nextBin));
@@ -109,7 +108,7 @@ export default compose(
 
         const survivalDeselectedAndDuplicatesRemoved = uniq(nextSelectedBins
           .filter(filterBin => !(isSelected && filterBin.name === bin.displayName)));
-        
+
         dispatch(updateClinicalAnalysisVariable({
           fieldName,
           id,
@@ -117,7 +116,7 @@ export default compose(
             customSurvivalPlots: survivalDeselectedAndDuplicatesRemoved,
             isSurvivalCustom: true,
             showOverallSurvival: survivalDeselectedAndDuplicatesRemoved.length === 0,
-          }
+          },
         }));
       },
     })
@@ -152,7 +151,7 @@ export default compose(
           fieldName,
           id,
           variable: {
-            bins: binsOrganizedByKey
+            bins: binsOrganizedByKey,
           },
         }));
       }

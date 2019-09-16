@@ -40,7 +40,10 @@ const ClinicalHistogram = ({
           },
         }}
         xAxis={{
-          style: histogramStyles(theme).axis,
+          style: {
+            ...histogramStyles(theme).axis,
+            fontWeight: '700',
+          },
         }}
         yAxis={{
           style: histogramStyles(theme).axis,

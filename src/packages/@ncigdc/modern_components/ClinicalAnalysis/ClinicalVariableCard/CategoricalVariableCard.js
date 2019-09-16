@@ -142,10 +142,10 @@ export default compose(
       
       const survivalPlotValues = survivalBins.map(bin => bin.keyArray);
       const survivalTableValues = survivalBins.map(bin => bin.key);
-      
+
       if (isSurvivalCustom) {
-        dispatch(updateClinicalAnalysisVariable({ 
-          fieldName, 
+        dispatch(updateClinicalAnalysisVariable({
+          fieldName,
           id,
           variable: {
             customSurvivalPlots: survivalTableValues
@@ -168,8 +168,8 @@ export default compose(
   withPropsOnChange(
     (props, nextProps) =>
       props.binsAreCustom !== nextProps.binsAreCustom ||
-      !isEqual(props.dataBuckets, nextProps.dataBuckets ||
-      props.variable.isSurvivalCustom !== nextProps.variable.isSurvivalCustom),
+      !isEqual(props.dataBuckets, nextProps.dataBuckets) ||
+      props.variable.isSurvivalCustom !== nextProps.variable.isSurvivalCustom,
     ({
       binsAreCustom,
       dataBuckets,
@@ -195,67 +195,93 @@ export default compose(
                     { groupName: bucket.key }
                   ),
                 }
-              ), {})
+              ), {}),
+            customBinsId: '',
+            customBinsSetId: '',
         }}));
       },
     })
   ),
+  withPropsOnChange((props, nextProps) => 
+    props.setId !== nextProps.setId,
+    ({
+      id,
+      resetBins,
+      setId,
+      variable: {
+        customBinsId,
+        customBinsSetId
+      },
+    }) => {
+      // call the reset function if you're in the same analysis tab
+      // and you change the case set AND bins are custom
+      if (customBinsId !== '' &&
+        customBinsSetId !== '' &&
+        customBinsId === id &&
+        customBinsSetId !== setId) {
+          resetBins();
+        }
+    }
+  ),
   withPropsOnChange(
     (props, nextProps) =>
       !isEqual(props.binData, nextProps.binData),
-    ({
-      binData, binsAreCustom, fieldName, setId, totalDocs,
-    }) => ({
-      displayData: binData.length === 1 && 
-        binData[0].key === '_missing' && 
-        !binsAreCustom 
-          ? [] 
+    ({ binData, binsAreCustom, fieldName, setId, totalDocs }) => ({
+      displayData: binData.length === 1 &&
+        binData[0].key === '_missing' &&
+        !binsAreCustom
+          ? []
           : binData
-          .sort((a, b) => b.doc_count - a.doc_count)
-          .map(bin => Object.assign(
-            {},
-            bin,
-            {
-              chart_doc_count: bin.doc_count,
-              displayName: bin.key === '_missing' ? 'Missing' : bin.key,
-              doc_count: getCountLink({
-                doc_count: bin.doc_count,
-                filters:
-                bin.key === '_missing'
-                  ? {
-                    content: [
-                      {
-                        content: {
-                          field: fieldName,
-                          value: bin.keyArray,
+            .sort((a, b) => b.doc_count - a.doc_count)
+            .map(bin => {
+              const isMissing = bin.key === '_missing';
+              const docCount = isMissing
+                ? totalDocs - binData.reduce((acc, b) => acc + b.doc_count, 0) + bin.doc_count
+                : bin.doc_count;
+              return Object.assign(
+                {},
+                bin,
+                {
+                  chart_doc_count: docCount,
+                  displayName: isMissing ? 'Missing' : bin.key,
+                  doc_count: getCountLink({
+                    doc_count: docCount,
+                    filters: isMissing
+                    ? {
+                      content: [
+                        {
+                          content: {
+                            field: fieldName,
+                            value: bin.keyArray,
+                          },
+                          op: 'IS',
                         },
-                        op: 'IS',
+                        {
+                          content: {
+                            field: 'cases.case_id',
+                            value: `set_id:${setId}`,
+                          },
+                          op: 'in',
+                        },
+                      ],
+                      op: 'AND',
+                    }
+                    : makeFilter([
+                      {
+                        field: 'cases.case_id',
+                        value: `set_id:${setId}`,
                       },
                       {
-                        content: {
-                          field: 'cases.case_id',
-                          value: `set_id:${setId}`,
-                        },
-                        op: 'in',
+                        field: fieldName,
+                        value: bin.keyArray,
                       },
-                    ],
-                    op: 'AND',
-                  }
-                  : makeFilter([
-                    {
-                      field: 'cases.case_id',
-                      value: `set_id:${setId}`,
-                    },
-                    {
-                      field: fieldName,
-                      value: bin.keyArray,
-                    },
-                  ]),
-                totalDocs,
-              }),
-              key: bin.key,
-            }
-          )),
+                    ]),
+                    totalDocs,
+                  }),
+                  key: bin.key,
+                }
+              );
+            }),
     })
   ),
   withPropsOnChange(
@@ -264,7 +290,10 @@ export default compose(
       !isEqual(props.dataBuckets, nextProps.dataBuckets),
     ({
       dataBuckets,
-      dispatch, fieldName, id,
+      dispatch,
+      fieldName,
+      id,
+      setId,
       variable: { bins },
     }) => ({
       openCustomBinModal: () => dispatch(setModal(
@@ -283,6 +312,8 @@ export default compose(
               id,
               variable: {
                 bins: newBins,
+                customBinsId: id,
+                customBinsSetId: setId,
                 ...resetVariableDefaults.survival,
               },
             }));

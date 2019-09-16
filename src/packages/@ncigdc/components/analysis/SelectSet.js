@@ -118,7 +118,9 @@ const SetTable = ({
                   const setIdPath = [setType, targetId];
                   setSelectedSets(
                     get(selectedSets, setIdPath)
-                      ? { [setType]: omit(selectedSets[setType], setIdPath) }
+                      ? Object.keys(omit(selectedSets[setType], setIdPath)).length !== 0
+                        ? { [setType]: omit(selectedSets[setType], setIdPath) }
+                        : {}
                       : set(isClinical ? {} : { ...selectedSets }, setIdPath, mappedSets[targetId]),
                   );
                 }}

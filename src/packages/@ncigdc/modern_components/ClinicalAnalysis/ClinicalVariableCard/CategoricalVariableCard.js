@@ -185,8 +185,8 @@ export default compose(
   withPropsOnChange(
     (props, nextProps) =>
       props.binsAreCustom !== nextProps.binsAreCustom ||
-      !isEqual(props.dataBuckets, nextProps.dataBuckets ||
-      props.variable.isSurvivalCustom !== nextProps.variable.isSurvivalCustom),
+      !isEqual(props.dataBuckets, nextProps.dataBuckets) ||
+      props.variable.isSurvivalCustom !== nextProps.variable.isSurvivalCustom,
     ({
       dataBuckets,
       dispatch,
@@ -201,7 +201,6 @@ export default compose(
             ...resetVariableDefaults.survival,
             bins: dataBuckets
               .reduce((acc, bucket) => ({
-
                 ...acc,
                 [bucket.key]: {
 
@@ -209,17 +208,38 @@ export default compose(
                   groupName: bucket.key,
                 },
               }), {}),
+            customBinsId: '',
+            customBinsSetId: '',
           },
         }));
       },
     })
   ),
+  withPropsOnChange((props, nextProps) => 
+    props.setId !== nextProps.setId,
+    ({
+      id,
+      resetBins,
+      setId,
+      variable: {
+        customBinsId,
+        customBinsSetId
+      },
+    }) => {
+      // call the reset function if you're in the same analysis tab
+      // and you change the case set AND bins are custom
+      if (customBinsId !== '' &&
+        customBinsSetId !== '' &&
+        customBinsId === id &&
+        customBinsSetId !== setId) {
+          resetBins();
+        }
+    }
+  ),
   withPropsOnChange(
     (props, nextProps) =>
       !isEqual(props.binData, nextProps.binData),
-    ({
-      binData, binsAreCustom, fieldName, setId, totalDocs,
-    }) => ({
+    ({ binData, binsAreCustom, fieldName, setId, totalDocs }) => ({
       displayData: binData.length === 1 &&
         binData[0].key === '_missing' &&
         !binsAreCustom
@@ -277,7 +297,10 @@ export default compose(
       !isEqual(props.dataBuckets, nextProps.dataBuckets),
     ({
       dataBuckets,
-      dispatch, fieldName, id,
+      dispatch,
+      fieldName,
+      id,
+      setId,
       variable: { bins },
     }) => ({
       openCustomBinModal: () => dispatch(setModal(
@@ -296,6 +319,8 @@ export default compose(
               id,
               variable: {
                 bins: newBins,
+                customBinsId: id,
+                customBinsSetId: setId,
                 ...resetVariableDefaults.survival,
               },
             }));

@@ -249,7 +249,6 @@ export default compose(
       return {
         boxPlotValues: map(
           {
-
             ...rawQueryData.stats,
             ...rawQueryData.percentiles,
           },
@@ -284,8 +283,10 @@ export default compose(
             (value, stat) => {
               switch (dataDimensions[sanitisedId].unit) {
                 case 'Years': {
+                  // TODO ugly hack until API provides units
+                  const converter = sanitisedId === 'year_of_diagnosis' ? 1 : DAYS_IN_YEAR;
                   return ({
-                    [stat]: parseContinuousValue(value / DAYS_IN_YEAR),
+                    [stat]: parseContinuousValue(value / converter),
                   });
                 }
                 default:
@@ -496,6 +497,7 @@ export default compose(
       props.variable.isSurvivalCustom === nextProps.variable.isSurvivalCustom
     ),
     ({
+      binsAreCustom,
       defaultData: { bins },
       dispatch,
       fieldName,
@@ -506,9 +508,11 @@ export default compose(
           fieldName,
           id,
           variable: {
-            bins,
             ...resetVariableDefaults.survival,
-            ...resetVariableDefaults.continuous,
+            ...binsAreCustom && {
+              bins,
+              ...resetVariableDefaults.continuous,
+            },
           },
         }));
       },

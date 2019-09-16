@@ -101,7 +101,6 @@ const SetTable = ({
             sets: selectedSets,
             type: setType,
           });
-
         return {
           select: (
             <Tooltip
@@ -191,7 +190,7 @@ const SetTable = ({
           </h2>
 
           <div style={{ marginBottom: 15 }}>
-            You can create and save case sets from the
+            You can create and save case, gene and mutation sets of interest from the
             {' '}
             <ExploreLink query={defaultExploreQuery}>Exploration Page</ExploreLink>
             .

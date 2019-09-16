@@ -190,7 +190,7 @@ const availableAnalysis: [TAnalysis] = [
         'case',
         'gene',
         'ssm',
-      ].filter(t => t !== type).some(t => sets[t])
+      ].filter(t => t !== type).some(t => sets[t] && Object.keys(sets[t]).length > 0)
         ? 'Please choose only one type'
         : Object.keys(sets[type] || {}).length >= 3
         ? `Please select two or three ${

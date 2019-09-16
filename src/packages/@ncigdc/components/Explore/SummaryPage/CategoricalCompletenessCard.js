@@ -1,0 +1,207 @@
+import React from 'react';
+import FilteredStackedBarChart from '@ncigdc/components/Charts/FilteredStackedBarChart';
+import { Row } from '@ncigdc/uikit/Flex';
+import { compose, withState } from 'recompose';
+import { withTheme } from '@ncigdc/theme';
+import withFacetData from '@ncigdc/modern_components/IntrospectiveType/Introspective.relay';
+
+const chartStyles = {
+  bars: { fill: 'rgb(23, 132, 172)' },
+  tooltips: {
+    fill: '#fff',
+    stroke: 'rgb(144, 144, 144)',
+    textFill: 'rgb(144,144,144)',
+  },
+  xAxis: {
+    stroke: 'rgb(200, 200, 200)',
+    textFill: 'rgb(107, 98, 98)',
+  },
+  yAxis: {
+    stroke: 'rgb(200, 200, 200)',
+    textFill: 'rgb(144,144,144)',
+  },
+};
+const CHART_HEIGHT = 220;
+
+const CategoricalCompletenessCard = ({
+  bottomMarginForxAxisTitle,
+  data,
+  setYAxisUnit,
+  theme,
+  xAxisTitle,
+  yAxisUnit,
+  ...props
+}) => {
+  const CHART_MARGINS = {
+    bottom: 90,
+    left: 70,
+    right: 40,
+    top: 20,
+  };
+  const fakeData = [
+    {
+      symbol: 'Demographics',
+      completed: 135,
+      total: 260,
+    },
+    {
+      symbol: 'Diagnosis',
+      completed: 42,
+      total: 223,
+    },
+    {
+      symbol: 'Exposure',
+      completed: 2,
+      total: 3,
+    },
+    {
+      symbol: 'Family History',
+      completed: 2,
+      total: 3,
+    },
+    {
+      symbol: 'Treatment',
+      completed: 2,
+      total: 3,
+    },
+  ];
+  const colors = [
+    {
+      key: 'completed',
+      name: 'Completed',
+      color: '#2a9e2c',
+    },
+    {
+      key: 'uncompleted',
+      name: 'Uncompleted',
+      color: '#cecece',
+    },
+  ];
+  const Legends = () => (
+    <Row
+      style={{
+        display: 'flex',
+        justifyContent: 'center',
+      }}
+      >
+      {colors.map(f => (
+        <label key={f.key} style={{ paddingRight: '10px' }}>
+          <span
+            style={{
+              backgroundColor: f.color,
+              height: '18px',
+              width: '18px',
+              display: 'inline-block',
+              marginRight: '6px',
+              verticalAlign: 'middle',
+            }}
+            />
+          {f.name}
+        </label>
+      ))}
+    </Row>
+  );
+  return (
+    <div
+      style={{
+        height: '100%',
+        margin: 'auto',
+        width: '95%',
+      }}
+      >
+      <Row
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+        }}
+        >
+        <span style={{ color: theme.primary }}>Cases with Clinical Data Categories Populated</span>
+        <form key="y-axis-unit-toggle" name="y-axis-unit-toggle">
+          <label
+            htmlFor="percentage-cases-radio"
+            style={{
+              paddingRight: '10px',
+              color: theme.greyScale7,
+              fontSize: '1.2rem',
+            }}
+            >
+            <input
+              checked={yAxisUnit === 'percent'}
+              id="percentage-cases-radio"
+              onChange={() => setYAxisUnit('percent')}
+              style={{ marginRight: '5px' }}
+              type="radio"
+              value="days"
+              />
+            % of Cases Affected
+          </label>
+          <label
+            htmlFor="number-cases-radio"
+            style={{
+              paddingRight: '10px',
+              color: theme.greyScale7,
+              fontSize: '1.2rem',
+            }}
+            >
+            <input
+              checked={yAxisUnit === 'number'}
+              id="number-cases-radio"
+              onChange={() => setYAxisUnit('number')}
+              style={{ marginRight: '5px' }}
+              type="radio"
+              value="years"
+              />
+            # of Cases Affected
+          </label>
+        </form>
+        <Legends />
+        <div />
+      </Row>
+      <FilteredStackedBarChart
+        colors={colors.reduce(
+          (acc, f) => ({
+            ...acc,
+            [f.key]: f.color,
+          }),
+          0,
+        )}
+        data={fakeData.map(el => ({
+          ...el,
+          completed: el.completed / el.total * 100,
+          uncompleted: (el.total - el.completed) / el.total * 100,
+        }))}
+        displayFilters={{
+          completed: true,
+          uncompleted: true,
+        }}
+        height={CHART_HEIGHT}
+        margin={CHART_MARGINS}
+        styles={chartStyles}
+        xAxis={{
+          marginTop: bottomMarginForxAxisTitle,
+          rotate: 0,
+          title: xAxisTitle,
+          style: {
+            textFill: theme.greyScale3,
+            fontSize: '1.3rem',
+            fontWeight: '500',
+            stroke: theme.greyScale4,
+          },
+          xAxisTextAnchor: 'middle', // can be start, middle, end
+        }}
+        xAxisLabelLength={Infinity}
+        yAxis={{
+          title: '% of Cases ',
+        }}
+
+        />
+    </div>
+  );
+};
+
+const enhance = compose(
+  withState('yAxisUnit', 'setYAxisUnit', 'percent'),
+  withTheme,
+  withFacetData,
+);
+export default enhance(CategoricalCompletenessCard);

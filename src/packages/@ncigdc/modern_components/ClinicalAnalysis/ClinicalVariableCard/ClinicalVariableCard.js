@@ -265,36 +265,44 @@ const ClinicalVariableCard = ({
 
         <Row>
           {plots.concat('delete')
-            .map(plotType => (
-              <Tooltip Component={vizButtons[plotType].title} key={plotType}>
-                <Button
-                  className={`chart-button-${plotType}`}
-                  disabled={disabledCharts(plotType)}
-                  onClick={() => {
-                    dispatch(
-                      vizButtons[plotType].action({
-                        fieldName,
-                        id,
-                        variable: {
-                          active_chart: plotType,
-                        },
-                      })
-                    );
-                  }}
-                  style={{
-                    ...(disabledCharts(plotType)
-                      ? {}
-                      : plotType === variable.active_chart
-                        ? styles.activeButton(theme)
-                        : styles.common(theme)),
-                    margin: 2,
-                  }}
-                  >
-                  <Hidden>{vizButtons[plotType].title}</Hidden>
-                  {vizButtons[plotType].icon}
-                </Button>
-              </Tooltip>
-            ))}
+            .reduce((buttons, plotType) => ([
+              'demographic.year_of_birth',
+              'demographic.year_of_death',
+              'diagnoses.year_of_diagnosis',
+              'exposures.tobacco_smoking_onset_year',
+              'exposures.tobacco_smoking_quit_year',
+            ].includes(fieldName) && plotType === 'box'
+                ? buttons // avoid boxplot+qq for those fields
+                : buttons.concat(
+                  <Tooltip Component={vizButtons[plotType].title} key={plotType}>
+                    <Button
+                      className={`chart-button-${plotType}`}
+                      disabled={disabledCharts(plotType)}
+                      onClick={() => {
+                        dispatch(
+                          vizButtons[plotType].action({
+                            fieldName,
+                            id,
+                            variable: {
+                              active_chart: plotType,
+                            },
+                          })
+                        );
+                      }}
+                      style={{
+                        ...(disabledCharts(plotType)
+                          ? {}
+                          : plotType === variable.active_chart
+                            ? styles.activeButton(theme)
+                            : styles.common(theme)),
+                        margin: 2,
+                      }}
+                      >
+                      <Hidden>{vizButtons[plotType].title}</Hidden>
+                      {vizButtons[plotType].icon}
+                    </Button>
+                  </Tooltip>
+                )), [])}
         </Row>
       </Row>
       {isLoading
@@ -333,7 +341,7 @@ const ClinicalVariableCard = ({
                             fieldName,
                             id,
                             variable: {
-                              active_calculation: 'percentage'
+                              active_calculation: 'percentage',
                             },
                           }))}
                           style={{ marginRight: 5 }}

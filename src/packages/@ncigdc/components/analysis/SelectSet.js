@@ -101,6 +101,7 @@ const SetTable = ({
             sets: selectedSets,
             type: setType,
           });
+
         return {
           select: (
             <Tooltip

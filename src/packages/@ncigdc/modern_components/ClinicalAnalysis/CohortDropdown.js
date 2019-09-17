@@ -61,7 +61,7 @@ const CohortDropdown = ({
       button={(
         <Tooltip
           Component={
-            disabled ? disabledMessage : setName.length > 24 ? setName : null
+            disabled ? disabledMessage : setName.length > 20 ? setName : null
           }
           >
           <Button

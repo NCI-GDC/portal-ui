@@ -24,22 +24,34 @@ const CohortDropdown = ({
       return null;
     }
     return (
-      <DropdownItem
-        aria-label={`Switch selected set to ${name}`}
-        className="all-sets-item"
-        key={setKey}
-        onClick={() => {
-          dispatch(
-            updateClinicalAnalysisSet({
-              id: currentAnalysis.id,
-              setId: setKey,
-              setName: name,
-            })
-          );
-        }}
+      <Tooltip
+        Component={name.length > 20 ? name : null}
         >
-        {name}
-      </DropdownItem>
+        <DropdownItem
+          aria-label={`Switch selected set to ${name}`}
+          className="all-sets-item"
+          key={setKey}
+          onClick={() => {
+            dispatch(
+              updateClinicalAnalysisSet({
+                id: currentAnalysis.id,
+                setId: setKey,
+                setName: name,
+              })
+            );
+          }}
+          >
+          <span
+            style={{
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
+            }}
+            >
+            {name}
+          </span>
+        </DropdownItem>
+      </Tooltip>
     );
   });
 
@@ -49,7 +61,7 @@ const CohortDropdown = ({
       button={(
         <Tooltip
           Component={
-            disabled ? disabledMessage : setName.length > 24 ? setName : null
+            disabled ? disabledMessage : setName.length > 20 ? setName : null
           }
           >
           <Button

@@ -42,8 +42,9 @@ const ClinicalBoxPlot = ({
       minWidth: 300,
     }}
     >
-    <Row style={{ width: '100%' }}>
+    <Row className="print-w500" style={{ width: '100%' }}>
       <Row
+        className="print-fl"
         style={{
           alignItems: 'center',
           justifyContent: 'space-between',
@@ -62,6 +63,7 @@ const ClinicalBoxPlot = ({
         </span>
       </Row>
       <Row
+        className="print-fl"
         style={{
           alignItems: 'center',
           justifyContent: 'center',
@@ -70,6 +72,7 @@ const ClinicalBoxPlot = ({
         }}
         >
         <span
+          className="print-mb print-mt"
           style={{
             color: theme.greyScale2,
             fontSize: '1.2rem',
@@ -105,12 +108,14 @@ const ClinicalBoxPlot = ({
       </Row>
     </Row>
     <Row
+      className="print-w500"
       style={{
         height: CHART_HEIGHT,
         justifyContent: 'space-between',
       }}
       >
       <Column
+        className="print-fl"
         id={`${wrapperId}-boxplot-container`}
         style={{
           height: CHART_HEIGHT + 10,
@@ -127,6 +132,7 @@ const ClinicalBoxPlot = ({
         </TooltipInjector>
       </Column>
       <Column
+        className="print-fl"
         id={`${wrapperId}-qqplot-container`}
         style={{
           height: CHART_HEIGHT + 10,

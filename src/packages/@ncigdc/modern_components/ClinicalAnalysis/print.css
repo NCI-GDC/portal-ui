@@ -63,18 +63,25 @@
   .survival-legend-wrapper, .p-value, .print-w500 {
     width: 500px !important;
   }
+  .survival-legend-wrapper {
+    padding-top: 15px;
+  }
   .survival-legend-wrapper > div > div[style] {
     padding-left: 0 !important;
     text-align: left !important;
   }
   .p-value > div {
     text-align: left !important;
+    padding-bottom: 15px;
   }
   .print-only {
     display: block !important;
   }
   .print-only.inline {
     display: inline !important;
+  }
+  .print-fl {
+    float: left !important;
   }
   .print-mb {
     margin-bottom: 15px !important;
@@ -83,6 +90,10 @@
     margin-top: 15px !important;
   }
   [id$="-qqplot-container"][style] {
+    display: inline-block !important;
     max-height: 100% !important;
+  }
+  [id$="-boxplot-container"][style] {
+    display: inline-block !important;
   }
 }

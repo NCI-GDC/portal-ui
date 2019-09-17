@@ -25,7 +25,7 @@ const CohortDropdown = ({
     }
     return (
       <Tooltip
-        Component={name.length > 24 ? name : null}
+        Component={name.length > 20 ? name : null}
         >
         <DropdownItem
           aria-label={`Switch selected set to ${name}`}

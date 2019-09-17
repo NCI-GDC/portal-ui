@@ -254,6 +254,7 @@ const ClinicalVariableCard = ({
         }}
         >
         <h2
+          className="print-w500"
           style={{
             fontSize: '1.8rem',
             marginBottom: 0,
@@ -316,7 +317,7 @@ const ClinicalVariableCard = ({
             <Fragment>
               <Column id={`${wrapperId}-container`}>
                 {['histogram'].includes(variable.active_chart) && (
-                  <Row style={{ paddingLeft: 10 }}>
+                  <Row className="no-print" style={{ paddingLeft: 10 }}>
                     <form style={{ width: '100%' }}>
                       <label
                         htmlFor={`variable-percentage-radio-${fieldName}`}

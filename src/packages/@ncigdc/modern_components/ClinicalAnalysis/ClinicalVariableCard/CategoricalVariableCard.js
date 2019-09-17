@@ -7,9 +7,7 @@ import {
 } from 'recompose';
 import { connect } from 'react-redux';
 import {
-  find,
   get,
-  isEmpty,
   isEqual,
   reduce,
 } from 'lodash';
@@ -18,8 +16,8 @@ import { makeFilter } from '@ncigdc/utils/filters';
 import { setModal } from '@ncigdc/dux/modal';
 import { humanify } from '@ncigdc/utils/string';
 import { withTheme } from '@ncigdc/theme';
-import CategoricalCustomBinsModal from './modals/CategoricalCustomBinsModal';
 import { updateClinicalAnalysisVariable } from '@ncigdc/dux/analysis';
+import CategoricalCustomBinsModal from './modals/CategoricalCustomBinsModal';
 
 import {
   dataDimensions,
@@ -30,7 +28,6 @@ import {
   resetVariableDefaults,
 } from './helpers';
 import EnhancedClinicalVariableCard from './EnhancedClinicalVariableCard';
-import { MINIMUM_CASES } from '@ncigdc/utils/survivalplot';
 
 export default compose(
   setDisplayName('EnhancedCategoricalVariableCard'),
@@ -41,18 +38,41 @@ export default compose(
     ({ data, fieldName }) => {
       const sanitisedId = fieldName.split('.').pop();
       const rawQueryData = getRawQueryData(data, fieldName);
+      const dataBuckets = get(rawQueryData, 'buckets', []);
+      const totalDocs = get(data, 'hits.total', 0);
 
-      return Object.assign(
-        {
-          dataBuckets: get(rawQueryData, 'buckets', []),
-          totalDocs: get(data, 'hits.total', 0),
-          wrapperId: `${sanitisedId}-chart`,
-        },
-        dataDimensions[sanitisedId] && {
+      const missingNestedDocCount = totalDocs -
+        dataBuckets.reduce((acc, b) => acc + b.doc_count, 0);
+
+      const addMissingDocs = docData => (
+        docData.find(bucket => bucket.key === '_missing')
+          ? docData.map(dB => {
+            if (dB.key === '_missing') {
+              return {
+                ...dB,
+                doc_count: dB.doc_count + missingNestedDocCount,
+              };
+            }
+            return dB;
+          })
+        : docData.concat({
+          key: '_missing',
+          doc_count: missingNestedDocCount,
+        })
+      );
+      const newDataBuckets = missingNestedDocCount
+        ? addMissingDocs(dataBuckets)
+        : dataBuckets;
+
+      return {
+        dataBuckets: newDataBuckets.sort((a, b) => b.doc_count - a.doc_count),
+        totalDocs,
+        wrapperId: `${sanitisedId}-chart`,
+        ...dataDimensions[sanitisedId] && {
           axisTitle: dataDimensions[sanitisedId].axisTitle,
           dataDimension: dataDimensions[sanitisedId].unit,
         },
-      );
+      };
     }
   ),
   withPropsOnChange(
@@ -60,21 +80,19 @@ export default compose(
       props.setId !== nextProps.setId,
     ({
       dataBuckets,
-      dispatch, 
-      fieldName, 
+      dispatch,
+      fieldName,
       id,
       variable,
     }) => {
-      dispatch(updateClinicalAnalysisVariable({ 
-        fieldName, 
+      dispatch(updateClinicalAnalysisVariable({
+        fieldName,
         id,
         variable: {
-          bins: Object.assign(
-            {},
-            reduce(variable.bins, (acc, bin, key) => Object.assign(
-              {},
-              acc,
-              bin.groupName && bin.groupName !== key
+          bins: {
+            ...reduce(variable.bins, (acc, bin, key) => ({
+              ...acc,
+              ...(bin.groupName && bin.groupName !== key
                 ? {
                   [key]: {
                     doc_count: 0,
@@ -82,26 +100,20 @@ export default compose(
                     key,
                   },
                 }
-                : {}
-            ), {}),
-            dataBuckets.reduce((acc, bucket) => Object.assign(
-              {},
-              acc,
-              {
-                [bucket.key]: Object.assign(
-                  {},
-                  bucket,
-                  {
-                    groupName:
+                : {}),
+            }), {}),
+            ...dataBuckets.reduce((acc, bucket) => ({
+              ...acc,
+              [bucket.key]: {
+                ...bucket,
+                groupName:
                     typeof get(variable, `bins.${bucket.key}.groupName`, undefined) === 'string'
                       // hidden value have groupName '', so check if it is string
                       ? get(variable, `bins.${bucket.key}.groupName`, undefined)
                       : bucket.key,
-                  },
-                ),
-              }
-            ), {}),
-          ),
+              },
+            }), {}),
+          },
         },
       }));
     }
@@ -112,34 +124,36 @@ export default compose(
       variable: { bins },
     }) => getBinData(bins, dataBuckets)
   ),
-  withPropsOnChange((props, nextProps) =>
-  nextProps.variable.active_chart === 'survival' &&
-    (!isEqual(props.variable.bins, nextProps.variable.bins) ||
-    props.variable.active_chart !== nextProps.variable.active_chart ||
-    !isEqual(props.selectedSurvivalBins, nextProps.selectedSurvivalBins) ||
-    props.variable.setId !== nextProps.variable.setId ||
-    !isEqual(props.variable.customSurvivalPlots, nextProps.variable.customSurvivalPlots) ||
-    props.variable.isSurvivalCustom !== nextProps.variable.isSurvivalCustom),
+  withPropsOnChange(
+    (props, nextProps) =>
+      nextProps.variable.active_chart === 'survival' && (
+        !isEqual(props.variable.bins, nextProps.variable.bins) ||
+        props.variable.active_chart !== nextProps.variable.active_chart ||
+        !isEqual(props.selectedSurvivalBins, nextProps.selectedSurvivalBins) ||
+        props.variable.setId !== nextProps.variable.setId ||
+        !isEqual(props.variable.customSurvivalPlots, nextProps.variable.customSurvivalPlots) ||
+        props.variable.isSurvivalCustom !== nextProps.variable.isSurvivalCustom),
     ({
       binData,
       dispatch,
       fieldName,
       id,
-      variable: { customSurvivalPlots, isSurvivalCustom },
+      variable: {
+        customSurvivalPlots, isSurvivalCustom,
+      },
     }) => {
       const binDataSelected = isSurvivalCustom
         ? binData.filter(bin => customSurvivalPlots.indexOf(bin.key) >= 0)
         : binData;
-      
+
       const survivalBins = filterSurvivalData(
         binDataSelected
           .map(bin => ({
             ...bin,
             chart_doc_count: bin.doc_count,
           }))
-        )
-        .slice(0, isSurvivalCustom ? Infinity : 2);
-      
+      ).slice(0, isSurvivalCustom ? Infinity : 2);
+
       const survivalPlotValues = survivalBins.map(bin => bin.keyArray);
       const survivalTableValues = survivalBins.map(bin => bin.key);
 
@@ -148,12 +162,15 @@ export default compose(
           fieldName,
           id,
           variable: {
-            customSurvivalPlots: survivalTableValues
+            customSurvivalPlots: survivalTableValues,
           },
         }));
       }
 
-      return { survivalPlotValues, survivalTableValues };
+      return {
+        survivalPlotValues,
+        survivalTableValues,
+      };
     }
   ),
   withPropsOnChange(
@@ -171,12 +188,10 @@ export default compose(
       !isEqual(props.dataBuckets, nextProps.dataBuckets) ||
       props.variable.isSurvivalCustom !== nextProps.variable.isSurvivalCustom,
     ({
-      binsAreCustom,
       dataBuckets,
-      dispatch, 
-      fieldName, 
+      dispatch,
+      fieldName,
       id,
-      variable: { isSurvivalCustom }
     }) => ({
       resetBins: () => {
         dispatch(updateClinicalAnalysisVariable({
@@ -185,32 +200,31 @@ export default compose(
           variable: {
             ...resetVariableDefaults.survival,
             bins: dataBuckets
-              .reduce((acc, bucket) => Object.assign(
-                {},
-                acc,
-                {
-                  [bucket.key]: Object.assign(
-                    {},
-                    bucket,
-                    { groupName: bucket.key }
-                  ),
-                }
-              ), {}),
+              .reduce((acc, bucket) => ({
+                ...acc,
+                [bucket.key]: {
+
+                  ...bucket,
+                  groupName: bucket.key,
+                },
+              }), {}),
             customBinsId: '',
             customBinsSetId: '',
-        }}));
+          },
+        }));
       },
     })
   ),
-  withPropsOnChange((props, nextProps) => 
-    props.setId !== nextProps.setId,
+  withPropsOnChange(
+    (props, nextProps) =>
+      props.setId !== nextProps.setId,
     ({
       id,
       resetBins,
       setId,
       variable: {
         customBinsId,
-        customBinsSetId
+        customBinsSetId,
       },
     }) => {
       // call the reset function if you're in the same analysis tab
@@ -219,14 +233,16 @@ export default compose(
         customBinsSetId !== '' &&
         customBinsId === id &&
         customBinsSetId !== setId) {
-          resetBins();
-        }
+        resetBins();
+      }
     }
   ),
   withPropsOnChange(
     (props, nextProps) =>
       !isEqual(props.binData, nextProps.binData),
-    ({ binData, binsAreCustom, fieldName, setId, totalDocs }) => ({
+    ({
+      binData, binsAreCustom, fieldName, setId, totalDocs,
+    }) => ({
       displayData: binData.length === 1 &&
         binData[0].key === '_missing' &&
         !binsAreCustom
@@ -235,18 +251,13 @@ export default compose(
             .sort((a, b) => b.doc_count - a.doc_count)
             .map(bin => {
               const isMissing = bin.key === '_missing';
-              const docCount = isMissing
-                ? totalDocs - binData.reduce((acc, b) => acc + b.doc_count, 0) + bin.doc_count
-                : bin.doc_count;
-              return Object.assign(
-                {},
-                bin,
-                {
-                  chart_doc_count: docCount,
-                  displayName: isMissing ? 'Missing' : bin.key,
-                  doc_count: getCountLink({
-                    doc_count: docCount,
-                    filters: isMissing
+              return {
+                ...bin,
+                chart_doc_count: bin.doc_count,
+                displayName: isMissing ? 'Missing' : bin.key,
+                doc_count: getCountLink({
+                  doc_count: bin.doc_count,
+                  filters: isMissing
                     ? {
                       content: [
                         {
@@ -276,11 +287,10 @@ export default compose(
                         value: bin.keyArray,
                       },
                     ]),
-                    totalDocs,
-                  }),
-                  key: bin.key,
-                }
-              );
+                  totalDocs,
+                }),
+                key: bin.key,
+              };
             }),
     })
   ),
@@ -307,7 +317,7 @@ export default compose(
           }}
           onClose={() => dispatch(setModal(null))}
           onUpdate={(newBins) => {
-            dispatch(updateClinicalAnalysisVariable({ 
+            dispatch(updateClinicalAnalysisVariable({
               fieldName,
               id,
               variable: {

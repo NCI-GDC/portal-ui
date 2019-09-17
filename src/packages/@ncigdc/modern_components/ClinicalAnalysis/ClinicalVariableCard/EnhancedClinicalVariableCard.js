@@ -57,7 +57,8 @@ export default compose(
       isEqual(props.variable.customSurvivalPlots, nextProps.variable.customSurvivalPlots) &&
       isEqual(props.selectedSurvivalBins, nextProps.selectedSurvivalBins) &&
       isEqual(props.survivalPlotValues, nextProps.survivalPlotValues) &&
-      isEqual(props.variable.customSurvivalPlots, nextProps.variable.customSurvivalPlots)
+      isEqual(props.variable.customSurvivalPlots, nextProps.variable.customSurvivalPlots) &&
+      isEqual(props.filters, nextProps.filters)
     ),
     ({
       dispatch,
@@ -97,7 +98,9 @@ export default compose(
         setSelectedSurvivalLoadingIds(nextSelectedBins);
 
         const nextBinsForPlot = plotTypes === 'categorical'
-          ? nextSelectedBins
+          ? nextSelectedBins.map(nextBin => data.reduce((acc, item) => acc.concat(
+            item.displayName === nextBin ? item.keyArray : []
+          ), []))
           : nextSelectedBins
             .map(nextBin => data.filter(datum => datum.displayName === nextBin)[0])
             .map(nextBin => makeDocCountInteger(nextBin));

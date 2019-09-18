@@ -195,17 +195,17 @@ class ContinuousCustomBinsModal extends Component {
     }
 
     // only do math checks if all fields have valid numbers
-    const isFormValid = ['amount', 'max', 'min']
-      .filter(field => field !== inputKey
-        ? true
-        : field === 'amount'
-          ? testNum(currentAmount)
-          : testNumDash(intervalFields[field]))
-      .length === 3;
+    // const isFormValid = ['amount', 'max', 'min']
+    //   .filter(field => field !== inputKey
+    //     ? true
+    //     : field === 'amount'
+    //       ? testNum(currentAmount)
+    //       : testNumDash(intervalFields[field]))
+    //   .length === 3;
     
-    if (!isFormValid) {
-      return;
-    }
+    // if (!isFormValid) {
+    //   return;
+    // }
 
     const mathErrors = {
       amount: value <= 0
@@ -228,37 +228,23 @@ class ContinuousCustomBinsModal extends Component {
         // if min/max have valid values,
         // and max <= min, 
         // only show the error on the current field
-        ...inputKey === 'max' && mathErrors.max
-            ? { min: '' }
-            : {},
+        ...inputKey === 'max' &&
+          testNumDash(currentMin) &&
+          mathErrors.max &&
+          { min: '' },
         ...inputKey === 'min' &&
-          testNum(numValue) &&
-          testNum(currentMax) &&
-          currentMax <= numValue
-            ? { max: '' }
-            : {},
+          testNumDash(currentMax) &&
+          mathErrors.min &&
+          { max: '' },
         ...inputKey !== 'amount' &&
           testNum(currentAmount) &&
           {
-            amount: inputError === '' && currentAmount > validAmount
-              ? amountError
+            amount: currentAmount > validAmount
+              ? 'test' // TODO: put amount error back
               : '',
           },
         },
-      }, () => {
-      if ((inputKey === 'max' || inputKey === 'min') &&
-        testNumDash(currentAmount)) {
-        this.set({
-          intervalErrors: {
-            ...intervalErrors,
-            amount: inputError === '' &&
-              currentAmount > validAmount
-                ? amountError
-                : '',
-          },
-        });
-      }
-    });
+      });
   };
 
   checkSubmitDisabled = () => {

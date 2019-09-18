@@ -21,7 +21,7 @@ const chartStyles = {
     textFill: 'rgb(144,144,144)',
   },
 };
-const CHART_HEIGHT = 220;
+const CHART_HEIGHT = 250;
 
 const CategoricalCompletenessCard = ({
   bottomMarginForxAxisTitle,
@@ -47,22 +47,22 @@ const CategoricalCompletenessCard = ({
     {
       symbol: 'Diagnosis',
       completed: 42,
-      total: 223,
+      total: 260,
     },
     {
       symbol: 'Exposure',
-      completed: 2,
-      total: 3,
+      completed: 130,
+      total: 260,
     },
     {
       symbol: 'Family History',
-      completed: 2,
-      total: 3,
+      completed: 100,
+      total: 260,
     },
     {
       symbol: 'Treatment',
-      completed: 2,
-      total: 3,
+      completed: 230,
+      total: 260,
     },
   ];
   const colors = [
@@ -85,15 +85,26 @@ const CategoricalCompletenessCard = ({
       }}
       >
       {colors.map(f => (
-        <label key={f.key} style={{ paddingRight: '10px' }}>
+        <label
+          key={f.key}
+          style={{
+            paddingRight: '10px',
+            display: 'inline-block,',
+          }}
+          >
           <span
             style={{
+              color: f.color,
               backgroundColor: f.color,
+              textAlign: 'center',
+              border: '2px solid',
               height: '18px',
               width: '18px',
+              cursor: 'pointer',
               display: 'inline-block',
               marginRight: '6px',
-              verticalAlign: 'middle',
+              verticalAlign: 'text-top',
+              lineHeight: '16px',
             }}
             />
           {f.name}
@@ -101,6 +112,7 @@ const CategoricalCompletenessCard = ({
       ))}
     </Row>
   );
+  const isPercent = yAxisUnit === 'percent';
   return (
     <div
       style={{
@@ -167,14 +179,16 @@ const CategoricalCompletenessCard = ({
         )}
         data={fakeData.map(el => ({
           ...el,
-          completed: el.completed / el.total * 100,
-          uncompleted: (el.total - el.completed) / el.total * 100,
+          completed: el.completed / (isPercent ? (el.total / 100) : 1),
+          uncompleted: (el.total - el.completed) / (isPercent ? (el.total / 100) : 1),
         }))}
         displayFilters={{
           completed: true,
           uncompleted: true,
         }}
         height={CHART_HEIGHT}
+        labelX={-9}
+        labelY={15}
         margin={CHART_MARGINS}
         styles={chartStyles}
         xAxis={{
@@ -187,11 +201,12 @@ const CategoricalCompletenessCard = ({
             fontWeight: '500',
             stroke: theme.greyScale4,
           },
+
           xAxisTextAnchor: 'middle', // can be start, middle, end
         }}
         xAxisLabelLength={Infinity}
         yAxis={{
-          title: '% of Cases ',
+          title: isPercent ? '% of Cases ' : '# of Cases',
         }}
 
         />

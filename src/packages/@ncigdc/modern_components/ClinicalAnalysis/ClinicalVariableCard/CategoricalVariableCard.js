@@ -115,12 +115,12 @@ export default compose(
   withPropsOnChange(
     (props, nextProps) =>
       nextProps.variable.active_chart === 'survival' &&
-    (!isEqual(props.variable.bins, nextProps.variable.bins) ||
-    props.variable.active_chart !== nextProps.variable.active_chart ||
-    !isEqual(props.selectedSurvivalBins, nextProps.selectedSurvivalBins) ||
-    props.variable.setId !== nextProps.variable.setId ||
-    !isEqual(props.variable.customSurvivalPlots, nextProps.variable.customSurvivalPlots) ||
-    props.variable.isSurvivalCustom !== nextProps.variable.isSurvivalCustom),
+    !(isEqual(props.variable.bins, nextProps.variable.bins) &&
+    props.variable.active_chart === nextProps.variable.active_chart &&
+    isEqual(props.selectedSurvivalBins, nextProps.selectedSurvivalBins) &&
+    props.variable.setId === nextProps.variable.setId &&
+    isEqual(props.variable.customSurvivalPlots, nextProps.variable.customSurvivalPlots) &&
+    props.variable.isSurvivalCustom === nextProps.variable.isSurvivalCustom),
     ({
       binData,
       dispatch,
@@ -137,8 +137,8 @@ export default compose(
           return find(customSurvivalPlots, ['keyName', bin.key]);
         })
         : binData;
-      console.log('is survival custom? ', isSurvivalCustom);
-      console.log('bin data selected: ', binDataSelected);
+      // console.log('is survival custom? ', isSurvivalCustom);
+      // console.log('bin data selected: ', binDataSelected);
       const availableColors = SURVIVAL_PLOT_COLORS
         .filter(color => !find(customSurvivalPlots, ['color', color]));
 
@@ -154,7 +154,7 @@ export default compose(
       const survivalBins = filterSurvivalData(
         binDataSelected
           .map((bin, i) => {
-            const currentMatch = customSurvivalPlots.find(plot => plot.keyName === bin.key);
+            const currentMatch = customSurvivalPlots && customSurvivalPlots.find(plot => plot.keyName === bin.key);
             return {
               ...bin,
               chart_doc_count: bin.doc_count,
@@ -164,7 +164,7 @@ export default compose(
       )
         .slice(0, isSurvivalCustom ? Infinity : 2);
 
-      console.log('survival bins: ', survivalBins);
+      // console.log('survival bins: ', survivalBins);
       // const survivalPlotValues = survivalBins.map(bin => bin.keyArray);
 
       const survivalPlotValues = survivalBins.map(bin => {
@@ -186,7 +186,6 @@ export default compose(
       console.log('survival table values: ', survivalTableValues);
 
       if (isSurvivalCustom) {
-        // debugger;
         dispatch(updateClinicalAnalysisVariable({
           fieldName,
           id,

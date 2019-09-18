@@ -42,6 +42,11 @@ const rangeFieldsOrder = [
   'to',
 ];
 
+const testNumDash = input => (/^(\-?\d+\.?\d*)$/).test(input);
+// positive or negative, optional decimals
+const testNum = input => (/^(\d+\.?\d*)$/).test(input);
+// positive only, optional decimals
+
 const defaultState = {
   binningMethod: 'interval', // interval or range
   continuousReset: false,
@@ -122,109 +127,126 @@ class ContinuousCustomBinsModal extends Component {
     const { intervalErrors, intervalFields } = this.state;
 
     const inputKey = id.split('-')[2];
-    const inputValue = Number(value);
+    const numValue = Number(value);
 
-    let inputError = inputValue === ''
+    const emptyOrNaNError = value === ''
       ? 'Required field.'
-      : isFinite(inputValue)
-        ? ''
-        : `'${value}' is not a valid number.`;
-
+      // min/max value can be '-', but amount value can't have dashes
+      : (inputKey === 'amount' && testNum(value)) ||
+        (inputKey !== 'amount' && testNumDash(value))
+          ? ''
+          : `'${value}' is not a valid number.`;
+    
     const currentMin = intervalFields.min;
     const currentMax = intervalFields.max;
     const currentAmount = Number(intervalFields.amount);
     const validAmount = currentMax - currentMin;
 
-    if (inputError !== '') {
-      // if the current value is empty or NaN,
-      // remove all errors except empty or NaN
-      this.setState({
-        intervalErrors: {
-          ...intervalErrors,
-          amount: isFinite(currentAmount)
-            ? ''
-            : intervalErrors.amount,
-          [inputKey]: inputError,
-          ...inputKey === 'max'
-            ? {
-              min: isFinite(Number(currentMin))
+    this.setState({
+      intervalErrors: {
+        ...intervalErrors,
+        // add empty or NaN error, or remove errors.
+        [inputKey]: emptyOrNaNError,
+        // if this field is empty or NaN,
+        // remove errors that depend on this field's value.
+        // only keep empty or NaN errors.
+        ...emptyOrNaNError !== '' &&
+          {
+          ...inputKey !== 'amount' &&
+            {
+              amount: testNum(currentAmount)
                 ? ''
-                : intervalErrors.min,
-            }
-            : {
-              max: isFinite(Number(currentMax))
+                : intervalErrors.amount,
+            },
+          ...inputKey === 'max' &&
+            {
+              min: testNumDash(currentMin)
                 ? ''
                 : intervalErrors.min,
             },
+          ...inputKey === 'min' &&
+            {
+              max: testNumDash(currentMax)
+                ? ''
+                : intervalErrors.max,
+            },
         },
-      });
+      },
+    });
+
+    if (emptyOrNaNError !== '') {
       return;
     }
 
     const ALLOWED_DECIMAL_PLACES = 2;
-
-    inputError = countDecimals(inputValue) > ALLOWED_DECIMAL_PLACES
+    const decimalError = countDecimals(numValue) > ALLOWED_DECIMAL_PLACES
       ? `Use up to ${ALLOWED_DECIMAL_PLACES} decimal places.`
-      : inputError;
+      : '';
 
-    if (inputError !== '') {
+    if (decimalError !== '') {
       this.setState({
         intervalErrors: {
           ...intervalErrors,
-          [inputKey]: inputError,
+          [inputKey]: decimalError,
         },
       });
       return;
     }
 
-    const amountError = `Must be less than or equal to ${validAmount}.`;
+    // assume current value is not empty or NaN,
+    // and doesn't have extra decimal places.
 
-    if (inputKey === 'amount') {
-      inputError = inputValue <= 0
+    const errorChecks = {
+      amount: numValue <= 0
         ? 'Must be greater than 0.'
-        : inputValue > validAmount &&
-          validAmount > 0
-          ? amountError
-          : '';
-    } else if (inputKey === 'max') {
-      inputError = inputValue <= currentMin
+        : numValue > validAmount && validAmount > 0
+          ? `Must be less than or equal to ${validAmount}.`
+          : '',
+      max: numValue <= currentMin
         ? `Must be greater than ${currentMin}.`
-        : '';
-    } else if (inputKey === 'min') {
-      inputError = inputValue >= currentMax
+        : '',
+      min: currentMax <= numValue
         ? `Must be less than ${currentMax}.`
-        : '';
-    } else {
-      inputError = '';
-    }
+        : ''
+    };
 
     this.setState({
       intervalErrors: {
         ...intervalErrors,
-        [inputKey]: inputError,
+        [inputKey]: errorChecks[inputKey],
+        // if min/max have valid values,
+        // and max <= min, 
+        // only show the error on the current field
         ...inputKey === 'max' &&
-          isFinite(Number(currentMin)) &&
-          isFinite(inputValue) &&
-          inputValue <= currentMin
-          ? { min: '' }
-          : {},
+          testNum(currentMin) &&
+          testNum(numValue) &&
+          numValue <= currentMin
+            ? { min: '' }
+            : {},
         ...inputKey === 'min' &&
-          isFinite(inputValue) &&
-          isFinite(Number(currentMax)) &&
-          currentMax <= inputValue
-          ? { max: '' }
-          : {},
-      },
-    }, () => {
+          testNum(numValue) &&
+          testNum(currentMax) &&
+          currentMax <= numValue
+            ? { max: '' }
+            : {},
+        ...inputKey !== 'amount' &&
+          testNum(currentAmount) &&
+          {
+            amount: inputError === '' && currentAmount > validAmount
+              ? amountError
+              : '',
+          },
+        },
+      }, () => {
       if ((inputKey === 'max' || inputKey === 'min') &&
-        isFinite(currentAmount)) {
-        this.setState({
+        testNumDash(currentAmount)) {
+        this.set({
           intervalErrors: {
             ...intervalErrors,
             amount: inputError === '' &&
               currentAmount > validAmount
-              ? amountError
-              : '',
+                ? amountError
+                : '',
           },
         });
       }

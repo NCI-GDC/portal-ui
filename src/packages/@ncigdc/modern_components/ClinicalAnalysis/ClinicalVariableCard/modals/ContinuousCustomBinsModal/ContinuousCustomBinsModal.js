@@ -131,7 +131,8 @@ class ContinuousCustomBinsModal extends Component {
 
     const emptyOrNaNError = value === ''
       ? 'Required field.'
-      // min/max value can be '-', but amount value can't have dashes
+      // min/max value can be negative or only '-', 
+      // but amount value can't have dashes
       : (inputKey === 'amount' && testNum(value)) ||
         (inputKey !== 'amount' && testNumDash(value))
           ? ''
@@ -139,7 +140,7 @@ class ContinuousCustomBinsModal extends Component {
     
     const currentMin = intervalFields.min;
     const currentMax = intervalFields.max;
-    const currentAmount = Number(intervalFields.amount);
+    const currentAmount = intervalFields.amount;
     const validAmount = currentMax - currentMin;
 
     this.setState({
@@ -193,19 +194,29 @@ class ContinuousCustomBinsModal extends Component {
       return;
     }
 
-    // assume current value is not empty or NaN,
-    // and doesn't have extra decimal places.
+    // only do math checks if all fields have valid numbers
+    const isFormValid = ['amount', 'max', 'min']
+      .filter(field => field !== inputKey
+        ? true
+        : field === 'amount'
+          ? testNum(currentAmount)
+          : testNumDash(intervalFields[field]))
+      .length === 3;
+    
+    if (!isFormValid) {
+      return;
+    }
 
-    const errorChecks = {
-      amount: numValue <= 0
+    const mathErrors = {
+      amount: value <= 0
         ? 'Must be greater than 0.'
-        : numValue > validAmount && validAmount > 0
+        : value > validAmount && validAmount > 0
           ? `Must be less than or equal to ${validAmount}.`
           : '',
-      max: numValue <= currentMin
+      max: value <= currentMin
         ? `Must be greater than ${currentMin}.`
         : '',
-      min: currentMax <= numValue
+      min: currentMax <= value
         ? `Must be less than ${currentMax}.`
         : ''
     };
@@ -213,14 +224,11 @@ class ContinuousCustomBinsModal extends Component {
     this.setState({
       intervalErrors: {
         ...intervalErrors,
-        [inputKey]: errorChecks[inputKey],
+        [inputKey]: mathErrors[inputKey],
         // if min/max have valid values,
         // and max <= min, 
         // only show the error on the current field
-        ...inputKey === 'max' &&
-          testNum(currentMin) &&
-          testNum(numValue) &&
-          numValue <= currentMin
+        ...inputKey === 'max' && mathErrors.max
             ? { min: '' }
             : {},
         ...inputKey === 'min' &&

@@ -56,7 +56,6 @@ export default ({
     handleSelectFacet: ({
       dispatch,
       setShouldShowFacetSelection,
-      userSelectedFacets,
     }) => facet => {
       setShouldShowFacetSelection(false);
       dispatch(add({
@@ -71,7 +70,6 @@ export default ({
       dispatch,
       push,
       query,
-      userSelectedFacets,
     }) => facet => {
       dispatch(remove({
         entityType,

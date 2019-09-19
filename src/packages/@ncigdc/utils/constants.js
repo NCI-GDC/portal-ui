@@ -409,7 +409,7 @@ export const IS_DEV = process.env.NODE_ENV === 'development';
 //   process.env.REACT_APP_DISPLAY_CDAVE ||
 //   false;
 
-export const CLINICAL_BLACKLIST = [
+export const CLINICAL_FIELD_BLACKLIST = [
   'state',
   'score',
   'submitter_id',
@@ -419,6 +419,13 @@ export const CLINICAL_BLACKLIST = [
   'created_datetime',
   'exposure_id',
   'treatment_id',
+];
+
+export const VALID_CLINICAL_TYPES = [
+  'demographic',
+  'diagnoses',
+  'exposures',
+  'treatments',
 ];
 
 export const analysisColors = {

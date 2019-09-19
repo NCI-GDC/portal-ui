@@ -51,7 +51,7 @@ export const withLoader = (Component: ReactClass<*>) => ({
     }}
     >
     {!firstLoad && <Component loading={loading} {...props} />}
-    <Loader loading={loading} />
+    {loading && <Loader loading={loading} />}
   </div>
 );
 
@@ -71,7 +71,7 @@ const Loader = ({
     }}
     {...props}
     >
-    <OverlayLoader loading={loading} />
+    {loading && <OverlayLoader loading={loading} />}
     {children}
   </div>
 );

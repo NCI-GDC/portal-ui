@@ -126,32 +126,32 @@ class ContinuousCustomBinsModal extends Component {
   validateIntervalFields = (id, value) => {
     const { intervalErrors, intervalFields } = this.state;
 
+    // SETUP
     const inputKey = id.split('-')[2];
     const numValue = Number(value);
-
-    const emptyOrNaNError = value === ''
-      ? 'Required field.'
-      // min/max value can be negative or only '-', 
-      // but amount value can't have dashes
-      : (inputKey === 'amount' && testNum(value)) ||
-        (inputKey !== 'amount' && testNumDash(value))
-          ? ''
-          : `'${value}' is not a valid number.`;
-    
     const currentMin = intervalFields.min;
     const currentMax = intervalFields.max;
     const currentAmount = intervalFields.amount;
     const validAmount = currentMax - currentMin;
 
+    // EMPTY OR NAN
+    const emptyOrNaNError = value === ''
+      ? 'Required field.'
+      // min/max values can be negative
+      : (inputKey === 'amount' && testNum(value)) ||
+        (inputKey !== 'amount' && testNumDash(value))
+          ? ''
+          : `'${value}' is not a valid number.`;
+
     this.setState({
       intervalErrors: {
         ...intervalErrors,
-        // add empty or NaN error, or remove errors.
+        // add emptyOrNaN error, or remove all errors.
         [inputKey]: emptyOrNaNError,
-        // if this field is empty or NaN,
-        // remove errors that depend on this field's value.
-        // only keep empty or NaN errors.
-        ...emptyOrNaNError !== '' &&
+        // if this field is emptyOrNaN,
+        // remove comparison errors *that depend on this field's value*.
+        // only keep emptyOrNaN errors.
+        ...emptyOrNaNError &&
           {
           ...inputKey !== 'amount' &&
             {
@@ -175,16 +175,15 @@ class ContinuousCustomBinsModal extends Component {
       },
     });
 
-    if (emptyOrNaNError !== '') {
+    if (emptyOrNaNError) {
       return;
     }
 
-    const ALLOWED_DECIMAL_PLACES = 2;
-    const decimalError = countDecimals(numValue) > ALLOWED_DECIMAL_PLACES
-      ? `Use up to ${ALLOWED_DECIMAL_PLACES} decimal places.`
+    // CHECK <= 2 DECIMAL PLACES
+    const decimalError = countDecimals(numValue) > 2
+      ? `Use up to 2 decimal places.`
       : '';
-
-    if (decimalError !== '') {
+    if (decimalError) {
       this.setState({
         intervalErrors: {
           ...intervalErrors,
@@ -207,11 +206,13 @@ class ContinuousCustomBinsModal extends Component {
     //   return;
     // }
 
-    const mathErrors = {
+    const amountErrorMsg = `Must be less than or equal to ${validAmount}.`;
+
+    const comparisonErrors = {
       amount: value <= 0
         ? 'Must be greater than 0.'
         : value > validAmount && validAmount > 0
-          ? `Must be less than or equal to ${validAmount}.`
+          ? amountErrorMsg
           : '',
       max: value <= currentMin
         ? `Must be greater than ${currentMin}.`
@@ -224,23 +225,23 @@ class ContinuousCustomBinsModal extends Component {
     this.setState({
       intervalErrors: {
         ...intervalErrors,
-        [inputKey]: mathErrors[inputKey],
-        // if min/max have valid values,
+        [inputKey]: comparisonErrors[inputKey],
+        // if min & max have valid values,
         // and max <= min, 
         // only show the error on the current field
         ...inputKey === 'max' &&
           testNumDash(currentMin) &&
-          mathErrors.max &&
+          comparisonErrors.max &&
           { min: '' },
         ...inputKey === 'min' &&
           testNumDash(currentMax) &&
-          mathErrors.min &&
+          comparisonErrors.min &&
           { max: '' },
         ...inputKey !== 'amount' &&
           testNum(currentAmount) &&
           {
             amount: currentAmount > validAmount
-              ? 'test' // TODO: put amount error back
+              ? amountErrorMsg
               : '',
           },
         },

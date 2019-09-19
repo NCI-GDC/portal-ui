@@ -19,6 +19,13 @@ const chartStyles = {
 };
 const CHART_HEIGHT = 320;
 
+const CHART_MARGINS = {
+  bottom: 90,
+  left: 70,
+  right: 40,
+  top: 20,
+};
+
 const HistogramCard = ({
   bottomMarginForxAxisTitle,
   data,
@@ -26,12 +33,6 @@ const HistogramCard = ({
   mappingValue,
   xAxisTitle,
 }) => {
-  const CHART_MARGINS = {
-    bottom: 90,
-    left: 70,
-    right: 40,
-    top: 20,
-  };
   return (
     <div
       style={{

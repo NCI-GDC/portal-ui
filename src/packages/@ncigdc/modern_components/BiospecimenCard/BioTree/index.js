@@ -231,9 +231,6 @@ const EnhancedBranch = compose(
         type: 'TOTAL_NODES',
       });
     },
-    // shouldComponentUpdate({
-    // }) {
-    // }
   }),
 )(Branch);
 

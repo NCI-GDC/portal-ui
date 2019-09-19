@@ -153,23 +153,14 @@ class ContinuousCustomBinsModal extends Component {
       ...emptyOrNaNError &&
           {
           ...inputKey !== 'amount' &&
-            {
-              amount: testNum(currentAmount)
-                ? ''
-                : intervalErrors.amount,
-            },
+            testNum(currentAmount) &&
+            { amount: '' },
           ...inputKey === 'max' &&
-            {
-              min: testNumDash(currentMin)
-                ? ''
-                : intervalErrors.min,
-            },
+            testNumDash(currentMin) &&
+            { min: '' },
           ...inputKey === 'min' &&
-            {
-              max: testNumDash(currentMax)
-                ? ''
-                : intervalErrors.max,
-            },
+            testNumDash(currentMax) &&
+            { max: '' },
         },
     };
 

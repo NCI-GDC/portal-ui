@@ -76,7 +76,7 @@ export default compose(
       variable: { plotTypes },
     }) => ({
       populateSurvivalData: () => {
-        // console.log('update values: ', survivalPlotValues);
+        console.log('update values: ', survivalPlotValues);
         // console.log('table values: ', survivalTableValues);
         setSurvivalDataLoading(true);
         setSelectedSurvivalBins(survivalTableValues);
@@ -102,11 +102,12 @@ export default compose(
           : selectedSurvivalBins.concat({
             // ...bin,
             color: bin.color || availableColors[0],
+            keyArray: bin.keyArray,
+            keyName: bin.displayName,
             // filters: bin.filters,
             // key: bin.key,
-            keyName: bin.displayName,
           });
-        // console.log('next selected bins: ', nextSelectedBins);
+        console.log('next selected bins: ', nextSelectedBins);
         setSelectedSurvivalBins(nextSelectedBins);
         setSelectedSurvivalLoadingIds(nextSelectedBins);
 
@@ -122,13 +123,12 @@ export default compose(
             .map(nextBin => data.find(datum => datum.displayName === nextBin.keyName))
             .map(nextBin => makeDocCountInteger(nextBin));
         // console.log('next bins for plot: ', nextBinsForPlot);
-        // debugger;
         // these values go to survival fetch call
         updateSurvivalPlot(nextBinsForPlot);
 
         const survivalDeselectedAndDuplicatesRemoved = uniq(nextSelectedBins
           .filter(filterBin => !(isSelected && filterBin.name === bin.displayName)));
-        // console.log('show overall survival: ', survivalDeselectedAndDuplicatesRemoved.length === 0);
+
         dispatch(updateClinicalAnalysisVariable({
           fieldName,
           id,

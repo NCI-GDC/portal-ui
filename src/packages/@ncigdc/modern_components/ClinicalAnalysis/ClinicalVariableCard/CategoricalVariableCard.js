@@ -154,7 +154,8 @@ export default compose(
       const survivalBins = filterSurvivalData(
         binDataSelected
           .map((bin, i) => {
-            const currentMatch = customSurvivalPlots && customSurvivalPlots.find(plot => plot.keyName === bin.key);
+            const currentMatch = customSurvivalPlots &&
+              customSurvivalPlots.find(plot => plot.keyName === bin.key);
             return {
               ...bin,
               chart_doc_count: bin.doc_count,
@@ -168,17 +169,21 @@ export default compose(
       // const survivalPlotValues = survivalBins.map(bin => bin.keyArray);
 
       const survivalPlotValues = survivalBins.map(bin => {
+        // debugger;
         return {
           color: bin.color,
-          keyName: bin.keyArray,
+          keyName: bin.key,
+          keyArray: bin.keyArray,
         };
         // return bin.keyArray;
       });
       // const survivalTableValues = survivalBins.map(bin => bin.key);
       const survivalTableValues = survivalBins.map(bin => {
+        // debugger;
         return {
           color: bin.color,
           keyName: bin.key,
+          keyArray: bin.keyArray,
         };
         // return bin.key;
       });

@@ -191,6 +191,7 @@ const ClinicalAnalysisResult = ({
                     text={currentAnalysis.name}
                     >
                     <h1
+                      className="print-w500"
                       style={{
                         fontSize: '2.5rem',
                         margin: 5,
@@ -201,7 +202,12 @@ const ClinicalAnalysisResult = ({
                   </EditableLabel>
                 </div>
               </Row>
-              <span style={{ margin: '0 0 5px 5px' }}>{label}</span>
+              <div
+                className="print-w500"
+                style={{ margin: '0 0 5px 5px' }}
+                >
+                {label}
+              </div>
             </Column>
           </Row>
           <Row spacing="5px">
@@ -268,6 +274,7 @@ const ClinicalAnalysisResult = ({
               }}
               >
               <Column
+                className="print-w500"
                 style={{
                   ...zDepth1,
                   height: 560,

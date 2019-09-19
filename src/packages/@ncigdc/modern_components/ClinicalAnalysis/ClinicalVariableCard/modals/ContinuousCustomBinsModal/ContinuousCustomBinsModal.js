@@ -42,10 +42,8 @@ const rangeFieldsOrder = [
   'to',
 ];
 
-const testNumDash = input => (/^(\-?\d+\.?\d*)$/).test(input);
-// positive or negative, optional decimals
-const testNum = input => (/^(\d+\.?\d*)$/).test(input);
-// positive only, optional decimals
+const testNum = input => (/^(\-?\d+\.?\d*)$/).test(input);
+const testNumPositive = input => (/^(\d+\.?\d*)$/).test(input);
 
 const defaultState = {
   binningMethod: 'interval', // interval or range
@@ -138,8 +136,8 @@ class ContinuousCustomBinsModal extends Component {
     const emptyOrNaNError = value === ''
       ? 'Required field.'
       // min/max values can be negative
-      : (inputKey === 'amount' && testNum(value)) ||
-        (inputKey !== 'amount' && testNumDash(value))
+      : (inputKey === 'amount' && testNumPositive(value)) ||
+        (inputKey !== 'amount' && testNum(value))
           ? ''
           : `'${value}' is not a valid number.`;
 
@@ -153,13 +151,13 @@ class ContinuousCustomBinsModal extends Component {
       ...emptyOrNaNError &&
           {
           ...inputKey !== 'amount' &&
-            testNum(currentAmount) &&
+            testNumPositive(currentAmount) &&
             { amount: '' },
           ...inputKey === 'max' &&
-            testNumDash(currentMin) &&
+            testNum(currentMin) &&
             { min: '' },
           ...inputKey === 'min' &&
-            testNumDash(currentMax) &&
+            testNum(currentMax) &&
             { max: '' },
         },
     };
@@ -195,11 +193,11 @@ class ContinuousCustomBinsModal extends Component {
         : value > validAmount && validAmount > 0
           ? amountErrorMsg
           : '',
-      max: testNumDash(currentMin) &&
+      max: testNum(currentMin) &&
         numValue <= currentMin
           ? `Must be greater than ${currentMin}.`
           : '',
-      min: testNumDash(currentMax) &&
+      min: testNum(currentMax) &&
         currentMax <= numValue
           ? `Must be less than ${currentMax}.`
           : ''
@@ -214,14 +212,14 @@ class ContinuousCustomBinsModal extends Component {
         // only show the error on the current field
         ...inputKey === 'max' &&
           (comparisonErrors.max ||
-            testNumDash(currentMin)) &&
+            testNum(currentMin)) &&
           { min: '' },
         ...inputKey === 'min' &&
           (comparisonErrors.min ||
-            testNumDash(currentMax)) &&
+            testNum(currentMax)) &&
           { max: '' },
         ...inputKey !== 'amount' &&
-          testNum(currentAmount) &&
+          testNumPositive(currentAmount) &&
           {
             amount: currentAmount > validAmount &&
               validAmount > 0

@@ -310,7 +310,7 @@ const ClinicalVariableCard = ({
                 justifyContent: 'center',
               }}
               >
-              <div className="print-mb print-mt">No data for this field</div>
+              <div className="print-mb print-mt print-w500">No data for this field</div>
             </Row>
           )
           : (

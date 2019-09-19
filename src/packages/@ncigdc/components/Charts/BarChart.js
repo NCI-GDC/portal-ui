@@ -20,6 +20,8 @@ export const DEFAULT_X_AXIS_LABEL_LENGTH = 10;
 
 const BarChart = ({
   data,
+  mappingLabel = 'label', // name it with the key you want, e.g. if your data structure is {id: 'bla', count: 1234 } put label = 'id' and value = 'count'
+  mappingValue = 'value',
   title,
   yAxis = {},
   xAxis = {},
@@ -62,12 +64,12 @@ const BarChart = ({
 
   const x = d3
     .scaleBand()
-    .domain(data.map(d => d.label))
+    .domain(data.map(d => d[mappingLabel]))
     .rangeRound([0, chartWidth])
     .paddingInner(innerPadding)
     .paddingOuter(outerPadding);
 
-  const maxY = d3.max(data, d => d.value);
+  const maxY = d3.max(data, d => d[mappingValue]);
   const y = d3
     .scaleLinear()
     .range([height, 0])
@@ -96,7 +98,19 @@ const BarChart = ({
   if (xAxis.title) {
     svg
       .append('text')
+      .attr('class', 'displayOnly')
       .attr('dy', height + margin.bottom - 5) // put 5 there as a padding.
+      .attr('x', width / 2 - margin.right)
+      .style('fontSize', '1.2rem')
+      .style('fontWeight', '500')
+      .attr('fill', xAxisStyle.textFill)
+      .style('text-anchor', 'end')
+      .text(xAxis.title);
+
+    svg
+      .append('text')
+      .attr('class', 'svgDownload')
+      .attr('dy', height + margin.bottom + (xAxis.marginTop || 40))
       .attr('x', width / 2 - margin.right)
       .style('fontSize', '1.2rem')
       .style('fontWeight', '500')
@@ -191,9 +205,9 @@ const BarChart = ({
       .attr('class', 'bar')
       .attr('fill', (styles.bars || { fill: 'steelblue' }).fill)
       .attr('width', x.bandwidth())
-      .attr('y', d => y(d.value))
-      .attr('x', d => x(d.label))
-      .attr('height', d => height - y(d.value))
+      .attr('y', d => y(d[mappingValue]))
+      .attr('x', d => x(d[mappingLabel]))
+      .attr('height', d => height - y(d[mappingValue]))
       .on('click', d => {
         if (d.onClick) {
           d.onClick();

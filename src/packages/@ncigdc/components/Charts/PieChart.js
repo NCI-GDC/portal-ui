@@ -28,13 +28,12 @@ const PieChart = compose(
     data,
     enableInnerRadius = false,
     height = 160,
+    mappingId = 'id',
     marginTop = 0,
     path = 'file_count',
     setTooltip,
     width = 160,
   }) => {
-    console.log('data', data);
-
     const color = d3.scaleOrdinal(d3.schemeCategory20);
     const outerRadius = height / 2 + 10;
     const innerRadius = enableInnerRadius ? outerRadius / 2 : 0;
@@ -90,16 +89,16 @@ const PieChart = compose(
       .style('opacity', 0);
 
     fillHover
-      .attr('class', d => `pointer arc-hover-${_.snakeCase(d.data.id)}`)
+      .attr('class', d => `pointer arc-hover-${_.snakeCase(d.data[mappingId])}`)
       .on('mouseenter', d => {
         document.querySelector(
-          `.arc-hover-${_.snakeCase(d.data.id)}`
+          `.arc-hover-${_.snakeCase(d.data[mappingId])}`
         ).style.opacity = 0.5;
         setTooltip(d.data.tooltip);
       })
       .on('mouseleave', d => {
         document.querySelector(
-          `.arc-hover-${_.snakeCase(d.data.id)}`
+          `.arc-hover-${_.snakeCase(d.data[mappingId])}`
         ).style.opacity = 0;
         setTooltip();
       })

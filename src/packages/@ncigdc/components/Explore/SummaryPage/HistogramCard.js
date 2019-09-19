@@ -17,27 +17,46 @@ const chartStyles = {
     textFill: 'rgb(144,144,144)',
   },
 };
-const CHART_HEIGHT = 345;
+const CHART_HEIGHT = 320;
+
 const CHART_MARGINS = {
-  bottom: 100,
-  left: 60,
-  right: 60,
+  bottom: 90,
+  left: 70,
+  right: 40,
   top: 20,
 };
-const HistogramCard = ({ data, xAxisTitle }) => {
+
+const HistogramCard = ({
+  bottomMarginForxAxisTitle,
+  data,
+  mappingLabel,
+  mappingValue,
+  xAxisTitle,
+}) => {
   return (
-    <BarChart
-      data={data}
-      height={CHART_HEIGHT}
-      margin={CHART_MARGINS}
-      styles={chartStyles}
-      xAxis={{
-        title: xAxisTitle,
+    <div
+      style={{
+        height: '100%',
+        margin: 'auto',
+        width: '95%',
       }}
-      yAxis={{
-        title: '% of Cases Affected',
-      }}
-      />
+      >
+      <BarChart
+        data={data}
+        height={CHART_HEIGHT}
+        mappingLabel={mappingLabel}
+        mappingValue={mappingValue}
+        margin={CHART_MARGINS}
+        styles={chartStyles}
+        xAxis={{
+          marginTop: bottomMarginForxAxisTitle,
+          title: xAxisTitle,
+        }}
+        yAxis={{
+          title: '% of Cases Affected',
+        }}
+        />
+    </div>
   );
 };
 

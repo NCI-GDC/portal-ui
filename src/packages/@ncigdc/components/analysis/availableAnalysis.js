@@ -352,7 +352,7 @@ const availableAnalysis: [TAnalysis] = [
           />
       )
     ),
-    setInstructions: 'Set instructions',
+    setInstructions: 'Select a case set',
     setTypes: ['case'],
     type: 'clinical_data',
     validateSets: sets => sets &&

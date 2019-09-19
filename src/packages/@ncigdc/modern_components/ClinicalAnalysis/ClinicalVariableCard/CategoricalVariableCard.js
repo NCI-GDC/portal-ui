@@ -7,9 +7,7 @@ import {
 } from 'recompose';
 import { connect } from 'react-redux';
 import {
-  find,
   get,
-  isEmpty,
   isEqual,
   reduce,
 } from 'lodash';
@@ -41,18 +39,41 @@ export default compose(
     ({ data, fieldName }) => {
       const sanitisedId = fieldName.split('.').pop();
       const rawQueryData = getRawQueryData(data, fieldName);
+      const dataBuckets = get(rawQueryData, 'buckets', []);
+      const totalDocs = get(data, 'hits.total', 0);
 
-      return Object.assign(
-        {
-          dataBuckets: get(rawQueryData, 'buckets', []),
-          totalDocs: get(data, 'hits.total', 0),
-          wrapperId: `${sanitisedId}-chart`,
-        },
-        dataDimensions[sanitisedId] && {
+      const missingNestedDocCount = totalDocs -
+        dataBuckets.reduce((acc, b) => acc + b.doc_count, 0);
+
+      const addMissingDocs = docData => (
+        docData.find(bucket => bucket.key === '_missing')
+          ? docData.map(dB => {
+            if (dB.key === '_missing') {
+              return {
+                ...dB,
+                doc_count: dB.doc_count + missingNestedDocCount,
+              };
+            }
+            return dB;
+          })
+        : docData.concat({
+          key: '_missing',
+          doc_count: missingNestedDocCount,
+        })
+      );
+      const newDataBuckets = missingNestedDocCount
+        ? addMissingDocs(dataBuckets)
+        : dataBuckets;
+
+      return {
+        dataBuckets: newDataBuckets.sort((a, b) => b.doc_count - a.doc_count),
+        totalDocs,
+        wrapperId: `${sanitisedId}-chart`,
+        ...dataDimensions[sanitisedId] && {
           axisTitle: dataDimensions[sanitisedId].axisTitle,
           dataDimension: dataDimensions[sanitisedId].unit,
         },
-      );
+      };
     }
   ),
   withPropsOnChange(
@@ -69,12 +90,10 @@ export default compose(
         fieldName,
         id,
         variable: {
-          bins: Object.assign(
-            {},
-            reduce(variable.bins, (acc, bin, key) => Object.assign(
-              {},
-              acc,
-              bin.groupName && bin.groupName !== key
+          bins: {
+            ...reduce(variable.bins, (acc, bin, key) => ({
+              ...acc,
+              ...(bin.groupName && bin.groupName !== key
                 ? {
                   [key]: {
                     doc_count: 0,
@@ -82,26 +101,20 @@ export default compose(
                     key,
                   },
                 }
-                : {}
-            ), {}),
-            dataBuckets.reduce((acc, bucket) => Object.assign(
-              {},
-              acc,
-              {
-                [bucket.key]: Object.assign(
-                  {},
-                  bucket,
-                  {
-                    groupName:
+                : {}),
+            }), {}),
+            ...dataBuckets.reduce((acc, bucket) => ({
+              ...acc,
+              [bucket.key]: {
+                ...bucket,
+                groupName:
                     typeof get(variable, `bins.${bucket.key}.groupName`, undefined) === 'string'
                       // hidden value have groupName '', so check if it is string
                       ? get(variable, `bins.${bucket.key}.groupName`, undefined)
                       : bucket.key,
-                  },
-                ),
-              }
-            ), {}),
-          ),
+              },
+            }), {}),
+          },
         },
       }));
     }
@@ -126,7 +139,9 @@ export default compose(
       dispatch,
       fieldName,
       id,
-      variable: { customSurvivalPlots, isSurvivalCustom },
+      variable: {
+        customSurvivalPlots, isSurvivalCustom,
+      },
     }) => {
       // const binDataSelected = isSurvivalCustom
       //   ? binData.filter(bin => customSurvivalPlots.indexOf(bin.key) >= 0)
@@ -195,7 +210,7 @@ export default compose(
           fieldName,
           id,
           variable: {
-            customSurvivalPlots: survivalTableValues, // was an array of strings
+            customSurvivalPlots: survivalTableValues,
           },
         }));
       }
@@ -221,12 +236,10 @@ export default compose(
       !isEqual(props.dataBuckets, nextProps.dataBuckets) ||
       props.variable.isSurvivalCustom !== nextProps.variable.isSurvivalCustom,
     ({
-      binsAreCustom,
       dataBuckets,
       dispatch,
       fieldName,
       id,
-      variable: { isSurvivalCustom },
     }) => ({
       resetBins: () => {
         dispatch(updateClinicalAnalysisVariable({
@@ -235,17 +248,14 @@ export default compose(
           variable: {
             ...resetVariableDefaults.survival,
             bins: dataBuckets
-              .reduce((acc, bucket) => Object.assign(
-                {},
-                acc,
-                {
-                  [bucket.key]: Object.assign(
-                    {},
-                    bucket,
-                    { groupName: bucket.key }
-                  ),
-                }
-              ), {}),
+              .reduce((acc, bucket) => ({
+                ...acc,
+                [bucket.key]: {
+
+                  ...bucket,
+                  groupName: bucket.key,
+                },
+              }), {}),
             customBinsId: '',
             customBinsSetId: '',
           },
@@ -289,18 +299,13 @@ export default compose(
             .sort((a, b) => b.doc_count - a.doc_count)
             .map(bin => {
               const isMissing = bin.key === '_missing';
-              const docCount = isMissing
-                ? totalDocs - binData.reduce((acc, b) => acc + b.doc_count, 0) + bin.doc_count
-                : bin.doc_count;
-              return Object.assign(
-                {},
-                bin,
-                {
-                  chart_doc_count: docCount,
-                  displayName: isMissing ? 'Missing' : bin.key,
-                  doc_count: getCountLink({
-                    doc_count: docCount,
-                    filters: isMissing
+              return {
+                ...bin,
+                chart_doc_count: bin.doc_count,
+                displayName: isMissing ? 'Missing' : bin.key,
+                doc_count: getCountLink({
+                  doc_count: bin.doc_count,
+                  filters: isMissing
                     ? {
                       content: [
                         {
@@ -330,11 +335,10 @@ export default compose(
                         value: bin.keyArray,
                       },
                     ]),
-                    totalDocs,
-                  }),
-                  key: bin.key,
-                }
-              );
+                  totalDocs,
+                }),
+                key: bin.key,
+              };
             }),
     })
   ),

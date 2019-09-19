@@ -257,11 +257,8 @@ export default compose(
   ),
 )(({
   aggData, hits, isLoading, setId, stats, ...props
-}) => 
-isLoading 
-  ? 
-  ( 
-  // <Loader />
+}) => isLoading 
+  ? (
    <Column
       className="clinical-analysis-card"
       style={{

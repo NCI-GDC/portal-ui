@@ -143,15 +143,14 @@ class ContinuousCustomBinsModal extends Component {
           ? ''
           : `'${value}' is not a valid number.`;
 
-    this.setState({
-      intervalErrors: {
-        ...intervalErrors,
-        // add emptyOrNaN error, or remove all errors.
-        [inputKey]: emptyOrNaNError,
-        // if this field is emptyOrNaN,
-        // remove comparison errors *that depend on this field's value*.
-        // only keep emptyOrNaN errors.
-        ...emptyOrNaNError &&
+    const emptyOrNaNState = {
+      ...intervalErrors,
+      // add emptyOrNaN error, or remove all errors.
+      [inputKey]: emptyOrNaNError,
+      // if this field is emptyOrNaN,
+      // remove comparison errors *that depend on this field's value*.
+      // only keep emptyOrNaN errors.
+      ...emptyOrNaNError &&
           {
           ...inputKey !== 'amount' &&
             {
@@ -172,8 +171,9 @@ class ContinuousCustomBinsModal extends Component {
                 : intervalErrors.max,
             },
         },
-      },
-    });
+    };
+
+    this.setState({ intervalErrors: emptyOrNaNState });
 
     if (emptyOrNaNError) {
       return;
@@ -193,18 +193,8 @@ class ContinuousCustomBinsModal extends Component {
       return;
     }
 
-    // only do math checks if all fields have valid numbers
-    // const isFormValid = ['amount', 'max', 'min']
-    //   .filter(field => field !== inputKey
-    //     ? true
-    //     : field === 'amount'
-    //       ? testNum(currentAmount)
-    //       : testNumDash(intervalFields[field]))
-    //   .length === 3;
-    
-    // if (!isFormValid) {
-    //   return;
-    // }
+    // COMPARISON ERRORS
+    // correct values: min < max && amount < (max - min)
 
     const amountErrorMsg = `Must be less than or equal to ${validAmount}.`;
 
@@ -214,12 +204,14 @@ class ContinuousCustomBinsModal extends Component {
         : value > validAmount && validAmount > 0
           ? amountErrorMsg
           : '',
-      max: value <= currentMin
-        ? `Must be greater than ${currentMin}.`
-        : '',
-      min: currentMax <= value
-        ? `Must be less than ${currentMax}.`
-        : ''
+      max: testNumDash(currentMin) &&
+        numValue <= currentMin
+          ? `Must be greater than ${currentMin}.`
+          : '',
+      min: testNumDash(currentMax) &&
+        currentMax <= numValue
+          ? `Must be less than ${currentMax}.`
+          : ''
     };
 
     this.setState({
@@ -230,19 +222,22 @@ class ContinuousCustomBinsModal extends Component {
         // and max <= min, 
         // only show the error on the current field
         ...inputKey === 'max' &&
-          testNumDash(currentMin) &&
-          comparisonErrors.max &&
+          (comparisonErrors.max ||
+            testNumDash(currentMin)) &&
           { min: '' },
         ...inputKey === 'min' &&
-          testNumDash(currentMax) &&
-          comparisonErrors.min &&
+          (comparisonErrors.min ||
+            testNumDash(currentMax)) &&
           { max: '' },
         ...inputKey !== 'amount' &&
           testNum(currentAmount) &&
           {
-            amount: currentAmount > validAmount
-              ? amountErrorMsg
-              : '',
+            amount: currentAmount > validAmount &&
+              validAmount > 0
+              // if min >= max, clear amount error because
+              // amount cannot be accurately validated
+                ? amountErrorMsg
+                : '',
           },
         },
       });

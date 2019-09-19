@@ -266,7 +266,6 @@ export const getSurvivalCurvesArray = memoize(
     size,
     plotType,
   }: TPropsMulti): Promise<Object> => {
-    // console.log('values: ', values);
     const filters = values.slice(0, MAXIMUM_CURVES).map(
       value => {
         return plotType === 'continuous'
@@ -279,7 +278,7 @@ export const getSurvivalCurvesArray = memoize(
                 op: '=',
                 content: {
                   field,
-                  value: value.keyName,
+                  value: value.keyArray,
                 },
               },
             ],

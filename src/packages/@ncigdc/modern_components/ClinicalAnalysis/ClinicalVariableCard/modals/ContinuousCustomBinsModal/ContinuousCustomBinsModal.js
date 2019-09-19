@@ -145,7 +145,7 @@ class ContinuousCustomBinsModal extends Component {
 
     const emptyOrNaNState = {
       ...intervalErrors,
-      // add emptyOrNaN error, or remove all errors.
+      // add emptyOrNaN error, or clear this field's errors.
       [inputKey]: emptyOrNaNError,
       // if this field is emptyOrNaN,
       // remove comparison errors *that depend on this field's value*.

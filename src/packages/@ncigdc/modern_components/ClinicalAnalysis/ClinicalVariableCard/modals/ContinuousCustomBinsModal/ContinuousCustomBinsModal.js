@@ -133,11 +133,9 @@ class ContinuousCustomBinsModal extends Component {
     const validAmount = currentMax - currentMin;
 
     // EMPTY OR NAN
-    const emptyOrNaNError = value === ''
+    const emptyOrNaNError = value.trim() === ''
       ? 'Required field.'
-      // min/max values can be negative
-      : (inputKey === 'amount' && testNumPositive(value)) ||
-        (inputKey !== 'amount' && testNum(value))
+      : testNum(value)
           ? ''
           : `'${value}' is not a valid number.`;
 
@@ -147,7 +145,7 @@ class ContinuousCustomBinsModal extends Component {
       [inputKey]: emptyOrNaNError,
       // if this field is emptyOrNaN,
       // remove comparison errors *that depend on this field's value*.
-      // only keep emptyOrNaN errors.
+      // only keep emptyOrNaN errors & amount <= 0 error.
       ...emptyOrNaNError &&
           {
           ...inputKey !== 'amount' &&
@@ -223,7 +221,7 @@ class ContinuousCustomBinsModal extends Component {
           {
             amount: currentAmount > validAmount &&
               validAmount > 0
-              // if min >= max, clear amount error because
+              // if max <= min, clear amount error because
               // amount cannot be accurately validated
                 ? amountErrorMsg
                 : '',

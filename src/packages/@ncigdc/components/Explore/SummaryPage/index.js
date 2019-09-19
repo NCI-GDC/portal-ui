@@ -53,7 +53,7 @@ const SummaryPage = ({
       props: {
         mappingLabel: 'key',
         mappingValue: 'doc_count',
-        xAxisTitle: 'Experimental Strategy',
+        xAxisTitle: '',
       },
       space: 1,
       title: 'Data Types',

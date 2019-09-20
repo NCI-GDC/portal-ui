@@ -1,8 +1,12 @@
-// @flow
 import React from 'react';
 import memoize from 'memoizee';
 import queryString from 'query-string';
-import _ from 'lodash';
+import {
+  get,
+  isNil,
+  omitBy,
+  sum,
+} from 'lodash';
 import { scaleOrdinal, schemeCategory10 } from 'd3';
 
 import { replaceFilters } from '@ncigdc/utils/filters';
@@ -51,12 +55,12 @@ async function fetchCurves(
   size: number,
   hasMultipleCurves: Boolean
 ): Promise<Object> {
-  const params = _.omitBy(
+  const params = omitBy(
     {
       filters: filters && JSON.stringify(filters),
       size,
     },
-    _.isNil
+    isNil
   );
   const url = `analysis/survival?${queryString.stringify(params)}`;
   performanceTracker.begin('survival:fetch');
@@ -80,7 +84,7 @@ async function fetchCurves(
   performanceTracker.end('survival:fetch', {
     filters: params.filters,
     data_sets: data.results.length,
-    donors: _.sum(data.results.map(x => x.donors.length)),
+    donors: sum(data.results.map(x => x.donors.length)),
   });
 
   return data;
@@ -166,8 +170,8 @@ export const getSurvivalCurves = memoize(
 
     const rawData = await fetchCurves(filters, size);
     const hasEnoughData = enoughData(rawData);
-    const results2 = _.get(rawData, 'results[1].donors', []);
-    const results1 = _.get(rawData, 'results[0].donors', []);
+    const results2 = get(rawData, 'results[1].donors', []);
+    const results1 = get(rawData, 'results[0].donors', []);
 
     const getCaseCount = condition => (condition
       ? results1.length.toLocaleString()
@@ -238,7 +242,8 @@ export const getSurvivalCurves = memoize(
                   marginTop: 5,
                 },
               },
-            ] : []),
+            ]
+            : []),
         ]
         : [
           {
@@ -291,16 +296,15 @@ export const getSurvivalCurvesArray = memoize(
     const rawData = await fetchCurves(filters, size, true);
     const hasEnoughDataOnSomeCurves = enoughDataOnSomeCurves(rawData);
 
-    const getCaseCount = i => _.get(rawData, `results[${i}].donors`, []).length.toLocaleString();
+    const getCaseCount = i => get(rawData, `results[${i}].donors`, []).length.toLocaleString();
 
     return {
       id: field,
       legend: hasEnoughDataOnSomeCurves
         ? rawData.results.map((r, i) => {
           const valueName = plotType === 'categorical'
-            ? values[i].keyName : values[i].key; // need to fix for continuous
-            // plotType === 'categorical' ? values[i] : values[i].key;
-          // console.log('valueName: ', `${valueName}-not-enough-data`);
+            ? values[i].keyName
+            : values[i].key;
           return r.length === 0
             ? {
               key: `${valueName}-cannot-compare`,

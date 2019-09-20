@@ -58,8 +58,8 @@ export default compose(
             return dB;
           })
         : docData.concat({
-          key: '_missing',
           doc_count: missingNestedDocCount,
+          key: '_missing',
         })
       );
       const newDataBuckets = missingNestedDocCount
@@ -144,28 +144,14 @@ export default compose(
         customSurvivalPlots, isSurvivalCustom,
       },
     }) => {
-      // const binDataSelected = isSurvivalCustom
-      //   ? binData.filter(bin => customSurvivalPlots.indexOf(bin.key) >= 0)
-      //   : binData;
-      // const hasPersistedColours = customSurvivalPlots.length > 0;
       const binDataSelected = isSurvivalCustom
         ? binData.filter(bin => {
           return find(customSurvivalPlots, ['keyName', bin.key]);
         })
         : binData;
-      // console.log('is survival custom? ', isSurvivalCustom);
-      // console.log('bin data selected: ', binDataSelected);
+
       const availableColors = SURVIVAL_PLOT_COLORS
         .filter(color => !find(customSurvivalPlots, ['color', color]));
-
-      // const survivalBins = filterSurvivalData(
-      //   binDataSelected
-      //     .map(bin => ({
-      //       ...bin,
-      //       chart_doc_count: bin.doc_count,
-      //     }))
-      // )
-      //   .slice(0, isSurvivalCustom ? Infinity : 2);
 
       const survivalBins = filterSurvivalData(
         binDataSelected
@@ -181,30 +167,17 @@ export default compose(
       )
         .slice(0, isSurvivalCustom ? Infinity : 2);
 
-      // console.log('survival bins: ', survivalBins);
-      // const survivalPlotValues = survivalBins.map(bin => bin.keyArray);
+      const survivalPlotValues = survivalBins.map(bin => ({
+        color: bin.color,
+        keyArray: bin.keyArray,
+        keyName: bin.key,
+      }));
 
-      const survivalPlotValues = survivalBins.map(bin => {
-        // debugger;
-        return {
-          color: bin.color,
-          keyName: bin.key,
-          keyArray: bin.keyArray,
-        };
-        // return bin.keyArray;
-      });
-      // const survivalTableValues = survivalBins.map(bin => bin.key);
-      const survivalTableValues = survivalBins.map(bin => {
-        // debugger;
-        return {
-          color: bin.color,
-          keyName: bin.key,
-          keyArray: bin.keyArray,
-        };
-        // return bin.key;
-      });
-
-      console.log('survival table values: ', survivalTableValues);
+      const survivalTableValues = survivalBins.map(bin => ({
+        color: bin.color,
+        keyArray: bin.keyArray,
+        keyName: bin.key,
+      }));
 
       if (isSurvivalCustom) {
         dispatch(updateClinicalAnalysisVariable({

@@ -391,29 +391,6 @@ export default compose(
       return getBinData(binsForBinData, dataBuckets);
     }
   ),
-  // withPropsOnChange(
-  //   (props, nextProps) => nextProps.variable.active_chart === 'survival' &&
-  //   nextProps.variable.isSurvivalCustom && !(
-  //     props.setId === nextProps.setId,
-  //     isEqual(props.dataBuckets, nextProps.dataBuckets)
-  //   ),
-  //   ({
-  //     dispatch,
-  //     fieldName,
-  //     id,
-  //   }) => {
-  //     console.log('here');
-  //     dispatch(updateClinicalAnalysisVariable({
-  //       fieldName,
-  //       id,
-  //       variable: {
-  //         customSurvivalPlots: [],
-  //         isSurvivalCustom: false,
-  //         // showOverallSurvival: false,
-  //       },
-  //     }));
-  //   }
-  // ),
   withPropsOnChange(
     (props, nextProps) => nextProps.variable.active_chart === 'survival' && !(
       isEqual(props.selectedSurvivalBins, nextProps.selectedSurvivalBins) &&
@@ -433,7 +410,7 @@ export default compose(
         bins = {},
         continuousBinType,
         customSurvivalPlots,
-        isSurvivalCustom, // redux property
+        isSurvivalCustom,
       },
     }) => {
       const binsWithNames = Object.keys(bins).map(bin => ({
@@ -442,23 +419,13 @@ export default compose(
             ? createContinuousGroupName(bins[bin].key)
             : bins[bin].groupName,
       }));
-      console.log('isSurvivalCustom:', isSurvivalCustom);
+
       const availableColors = SURVIVAL_PLOT_COLORS
         .filter(color => !find(customSurvivalPlots, ['color', color]));
 
-      // somewhere after switching set with isSurvivalCustom: true,
-      // customBinMatches goes back to []
-      // and then isUsingCustomSurvival resets to false,
-      // so you get the default survival plots again
-      console.log('bins with names: ', binsWithNames);
-      console.log('customSurvivalPlots: ', customSurvivalPlots);
       const customBinMatches = isSurvivalCustom
-          ? binsWithNames.filter(bin => find(customSurvivalPlots, ['keyName', bin.displayName])
-            // customSurvivalPlots
-            // .indexOf(bin.displayName) >= 0
-          ).map((b, i) => {
+          ? binsWithNames.filter(bin => find(customSurvivalPlots, ['keyName', bin.displayName])).map((b, i) => {
             const match = find(customSurvivalPlots, ['keyName', b.displayName]);
-            // console.log('match: ', match);
             return {
               ...b,
               color: (match && match.color) || availableColors[i],
@@ -466,32 +433,8 @@ export default compose(
           })
           : [];
 
-      console.log('custom bin matches: ', customBinMatches);
       const isUsingCustomSurvival = customBinMatches.length > 0;
-      console.log('isUsingCustomSurvival? ', isUsingCustomSurvival);
-      // .map((bin, i) => {
-      //   const currentMatch = customBinMatches &&
-      //     customBinMatches.find(cBin => cBin.keyName === bin.key);
-      //   debugger;
-      //   return {
-      //     ...bin,
-      //     chart_doc_count: bin.doc_count,
-      //     color: currentMatch ? currentMatch.color : availableColors[i],
-      //   };
-      // })
-      // is custom:
-      // .map(bin => {
-      //   const currentMatch = customSurvivalPlots.find(plot => plot.keyName === bin.displayName);
-      //   // console.log('current match:', currentMatch);
-      //   console.log('current bin: ', bin);
-      //   return {
-      //     ...bin,
-      //     // the color is not saved from the default sorting,
-      //     // i think that's why you see the colour shuffle
-      //     // after you select the first custom plot
-      //     // color: (currentMatch && currentMatch.color) || availableColors[i],
-      //   };
-      // })
+
       const survivalBins = (isUsingCustomSurvival
         ? filterSurvivalData(getContinuousBins({
           binData: customBinMatches,
@@ -508,69 +451,38 @@ export default compose(
         totalDocs,
       })).sort((a, b) => b.chart_doc_count - a.chart_doc_count)
         .map((bin, i) => {
-          // const currentMatch = customSurvivalPlots.find(plot => plot.keyName === bin.displayName);
           return {
             ...bin,
             color: availableColors[i],
-            // color: (currentMatch && currentMatch.color) || availableColors[i],
           };
         })
       ).slice(0, isUsingCustomSurvival ? Infinity : 2);
 
-        // const survivalBins = filterSurvivalData(
-        //   binDataSelected
-        //     .map((bin, i) => {
-        //       const currentMatch = customSurvivalPlots.find(plot => plot.keyName === bin.key);
-        //       return {
-        //         ...bin,
-        //         chart_doc_count: bin.doc_count,
-        //         color: currentMatch ? currentMatch.color : availableColors[i],
-        //       };
-        //     })
-        // )
-        //   .slice(0, isSurvivalCustom ? Infinity : 2);
-
-      // const survivalPlotValues = survivalBins.map(bin => ({
-      //   filters: bin.filters,
-      //   key: bin.key,
-      // }));
-      // const survivalTableValues = survivalBins
-      //   .map(bin => bin.displayName);
-      // const nextCustomSurvivalPlots = customBinMatches
-      //   .map(bin => bin.displayName);
-      // console.log('availableColors: ', availableColors);
-      const survivalPlotValues = survivalBins.map((bin, i) => {
-        // console.log('bin color: ', bin.color);
+      const survivalPlotValues = survivalBins.map(bin => {
         return {
-          // color: bin.color || availableColors[i],
           ...bin,
           filters: bin.filters,
           key: bin.key,
           keyName: bin.key,
         };
       });
-      // console.log('survival plot values: ', survivalPlotValues);
+
       const survivalTableValues = survivalBins
-        .map((bin, i) => {
-          // console.log('color: ', bin.color);
+        .map(bin => {
           return {
             ...bin,
-            // color: bin.color || availableColors[i],
             keyName: bin.displayName,
           };
         });
-      // console.log('survival table values: ', survivalTableValues);
+
       const nextCustomSurvivalPlots = customBinMatches
-        .map((bin, i) => {
-          // console.log('next bin: ', bin);
+        .map(bin => {
           return {
             ...bin,
-            // color: bin.color || availableColors[i],
             keyName: bin.displayName,
           };
         });
-      // console.log('nextCustomSurvivalPlots: ', nextCustomSurvivalPlots);
-      // debugger;
+
       dispatch(updateClinicalAnalysisVariable({
         fieldName,
         id,
@@ -602,7 +514,6 @@ export default compose(
         displayData: isEmpty(binData)
           ? []
           : getContinuousBins({
-            // binData,
             binData: binData.sort((a, b) => a.keyArray[0] - b.keyArray[0]),
             continuousBinType,
             fieldName,

@@ -25,6 +25,7 @@ export const colorsArray = [
   'rgb(214, 39, 40)',
   'rgb(148, 103, 189)',
 ];
+
 export const CHART_HEIGHT = 250;
 export const QQ_PLOT_RATIO = '70%';
 export const BOX_PLOT_RATIO = '30%';

@@ -40,7 +40,6 @@ import ClinicalHistogram from './components/ClinicalHistogram';
 import ClinicalSurvivalPlot from './components/ClinicalSurvivalPlot';
 
 import {
-  // colorsArray,
   getBoxTableData,
   getCardFilters,
   getHeadings,
@@ -81,16 +80,12 @@ const getTableData = ({
   theme,
   updateSelectedSurvivalBins,
 }) => displayData.map(bin => {
-  // debugger;
   const isSelected = find(selectedBins, { key: bin.displayName });
-  // const indexSurvival = selectedSurvivalBins.indexOf(bin.displayName);
   const selectedBin = selectedSurvivalBins.find(s => s.keyName === bin.displayName);
   const isSurvivalLoading = selectedSurvivalLoadingIds.indexOf(bin.displayName) >= 0;
   const isSelectedForSurvival = selectedBin !== undefined;
   const isSurvivalFull = selectedSurvivalBins.length === MAXIMUM_CURVES;
-  // console.log('selectedSurvivalBins: ', selectedSurvivalBins);
-  // console.log('bin: ', bin);
-  // console.log('bin is selected: ', selectedBin);
+
   return {
     ...bin,
     select: (
@@ -140,9 +135,6 @@ const getTableData = ({
             }}
             style={{
               backgroundColor: isSelectedForSurvival ? selectedBin.color : theme.greyScale3,
-              // isSelectedForSurvival
-                // ? colorsArray[indexSurvival]
-                // : theme.greyScale3,
               color: 'white',
               margin: '0 auto',
               opacity:

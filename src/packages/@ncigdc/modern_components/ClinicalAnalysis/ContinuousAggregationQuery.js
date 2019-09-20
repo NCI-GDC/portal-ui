@@ -17,6 +17,9 @@ import consoleDebug from '@ncigdc/utils/consoleDebug';
 import { redirectToLogin } from '@ncigdc/utils/auth';
 import { createFacetFieldString } from '@ncigdc/utils/string';
 import Loader from '@ncigdc/uikit/Loaders/Loader';
+import { Column } from '@ncigdc/uikit/Flex';
+import Spinner from '@ncigdc/uikit/Loaders/Material';
+import { zDepth1 } from '@ncigdc/theme/mixins';
 
 import { API, IS_AUTH_PORTAL } from '@ncigdc/utils/constants';
 import { ContinuousVariableCard } from './ClinicalVariableCard';
@@ -254,12 +257,22 @@ export default compose(
   ),
 )(({
   aggData, hits, isLoading, setId, stats, ...props
-}) => {
-  if (isLoading) {
-    return <Loader />;
-  }
-
-  return (
+}) => isLoading 
+  ? (
+   <Column
+      className="clinical-analysis-card"
+      style={{
+        ...zDepth1,
+        height: 560,
+        justifyContent: 'center',
+        alignItems: 'center',
+        margin: '0 1rem 1rem',
+      }}
+      >
+        <Spinner />
+    </Column>
+  )
+  : (
     <ContinuousVariableCard
       data={{
         ...aggData,
@@ -269,5 +282,5 @@ export default compose(
       stats={stats}
       {...props}
       />
-  );
-});
+  )
+);

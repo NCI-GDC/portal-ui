@@ -466,7 +466,6 @@ export default compose(
     ({
       setTreeStatus,
       treeStatus: {
-        // collapsed,
         expanded,
         total,
       },
@@ -482,7 +481,6 @@ export default compose(
         });
 
         return ({
-          // allCollapsed: total === collapsed,
           allExpanded: total === expanded,
         });
       }
@@ -490,5 +488,4 @@ export default compose(
   ),
   withRouter,
   withTheme,
-  // pure,
 )(BiospecimenCard);

@@ -8,6 +8,7 @@ import {
 } from 'recompose';
 import { connect } from 'react-redux';
 import {
+  find,
   isEmpty,
   isEqual,
   uniq,
@@ -16,6 +17,7 @@ import {
 import {
   getSurvivalCurvesArray,
   MAXIMUM_CURVES,
+  SURVIVAL_PLOT_COLORS,
 } from '@ncigdc/utils/survivalplot';
 import { withTheme } from '@ncigdc/theme';
 import { updateClinicalAnalysisVariable } from '@ncigdc/dux/analysis';
@@ -57,7 +59,6 @@ export default compose(
       isEqual(props.variable.customSurvivalPlots, nextProps.variable.customSurvivalPlots) &&
       isEqual(props.selectedSurvivalBins, nextProps.selectedSurvivalBins) &&
       isEqual(props.survivalPlotValues, nextProps.survivalPlotValues) &&
-      isEqual(props.variable.customSurvivalPlots, nextProps.variable.customSurvivalPlots) &&
       isEqual(props.filters, nextProps.filters)
     ),
     ({
@@ -81,30 +82,36 @@ export default compose(
       },
       updateSelectedSurvivalBins: (data, bin) => {
         if (
-          selectedSurvivalBins.indexOf(bin.displayName) === -1 &&
+          selectedSurvivalBins.map(sBin => sBin.keyName).indexOf(bin.displayName) === -1 &&
           selectedSurvivalBins.length >= MAXIMUM_CURVES
         ) {
           return;
         }
         setSurvivalDataLoading(true);
 
-        const isSelected = selectedSurvivalBins.indexOf(bin.displayName) >= 0;
+        const isSelected = selectedSurvivalBins
+          .map(sBin => sBin.keyName).indexOf(bin.displayName) >= 0;
+
+        const availableColors = SURVIVAL_PLOT_COLORS.filter(color => !find(selectedSurvivalBins, ['color', color]));
 
         const nextSelectedBins = isSelected
-          ? selectedSurvivalBins.filter(s => s !== bin.displayName)
-          : selectedSurvivalBins.concat(bin.displayName);
+          ? selectedSurvivalBins.filter(s => s.keyName !== bin.displayName)
+          : selectedSurvivalBins.concat({
+            color: bin.color || availableColors[0],
+            keyArray: bin.keyArray,
+            keyName: bin.displayName,
+          });
 
         setSelectedSurvivalBins(nextSelectedBins);
         setSelectedSurvivalLoadingIds(nextSelectedBins);
 
         const nextBinsForPlot = plotTypes === 'categorical'
-          ? nextSelectedBins.map(nextBin => data.reduce((acc, item) => acc.concat(
-            item.displayName === nextBin ? item.keyArray : []
-          ), []))
+          ? nextSelectedBins.filter(nextBin => (
+            data.find(datum => datum.displayName === nextBin.keyName)
+          ))
           : nextSelectedBins
-            .map(nextBin => data.filter(datum => datum.displayName === nextBin)[0])
+            .map(nextBin => data.find(datum => datum.displayName === nextBin.keyName))
             .map(nextBin => makeDocCountInteger(nextBin));
-
         updateSurvivalPlot(nextBinsForPlot);
 
         const survivalDeselectedAndDuplicatesRemoved = uniq(nextSelectedBins

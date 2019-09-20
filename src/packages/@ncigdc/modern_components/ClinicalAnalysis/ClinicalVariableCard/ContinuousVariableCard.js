@@ -8,6 +8,7 @@ import {
 } from 'recompose';
 import { connect } from 'react-redux';
 import {
+  find,
   get,
   isEmpty,
   isEqual,
@@ -23,6 +24,7 @@ import {
 import { setModal } from '@ncigdc/dux/modal';
 import { DAYS_IN_YEAR } from '@ncigdc/utils/ageDisplay';
 import { updateClinicalAnalysisVariable } from '@ncigdc/dux/analysis';
+import { SURVIVAL_PLOT_COLORS } from '@ncigdc/utils/survivalplot';
 
 import ContinuousCustomBinsModal from './modals/ContinuousCustomBinsModal';
 import {
@@ -47,7 +49,7 @@ const getContinuousBins = ({
   totalDocs,
 }) => (
   binData.reduce((acc, {
-    doc_count, groupName = '', key, keyArray = [],
+    color, doc_count, groupName = '', key, keyArray = [],
   }) => {
     const keyValues = parseContinuousKey(key);
     // survival doesn't have keyArray
@@ -95,6 +97,7 @@ const getContinuousBins = ({
     return acc.concat(
       {
         chart_doc_count: doc_count,
+        color,
         displayName: groupNameFormatted,
         doc_count: getCountLink({
           doc_count,
@@ -417,9 +420,17 @@ export default compose(
             : bins[bin].groupName,
       }));
 
+      const availableColors = SURVIVAL_PLOT_COLORS
+        .filter(color => !find(customSurvivalPlots, ['color', color]));
+
       const customBinMatches = isSurvivalCustom
-          ? binsWithNames.filter(bin => customSurvivalPlots
-            .indexOf(bin.displayName) >= 0)
+          ? binsWithNames.filter(bin => find(customSurvivalPlots, ['keyName', bin.displayName])).map((b, i) => {
+            const match = find(customSurvivalPlots, ['keyName', b.displayName]);
+            return {
+              ...b,
+              color: (match && match.color) || availableColors[i],
+            };
+          })
           : [];
 
       const isUsingCustomSurvival = customBinMatches.length > 0;
@@ -432,23 +443,45 @@ export default compose(
           setId,
           totalDocs,
         }))
-        : filterSurvivalData(getContinuousBins({
-          binData: binsWithNames.sort((a, b) => a.key - b.key),
-          continuousBinType,
-          fieldName,
-          setId,
-          totalDocs,
-        })).sort((a, b) => b.chart_doc_count - a.chart_doc_count))
-        .slice(0, isUsingCustomSurvival ? Infinity : 2);
+      : filterSurvivalData(getContinuousBins({
+        binData: binsWithNames.sort((a, b) => a.key - b.key),
+        continuousBinType,
+        fieldName,
+        setId,
+        totalDocs,
+      })).sort((a, b) => b.chart_doc_count - a.chart_doc_count)
+        .map((bin, i) => {
+          return {
+            ...bin,
+            color: availableColors[i],
+          };
+        })
+      ).slice(0, isUsingCustomSurvival ? Infinity : 2);
 
-      const survivalPlotValues = survivalBins.map(bin => ({
-        filters: bin.filters,
-        key: bin.key,
-      }));
+      const survivalPlotValues = survivalBins.map(bin => {
+        return {
+          ...bin,
+          filters: bin.filters,
+          key: bin.key,
+          keyName: bin.key,
+        };
+      });
+
       const survivalTableValues = survivalBins
-        .map(bin => bin.displayName);
+        .map(bin => {
+          return {
+            ...bin,
+            keyName: bin.displayName,
+          };
+        });
+
       const nextCustomSurvivalPlots = customBinMatches
-        .map(bin => bin.displayName);
+        .map(bin => {
+          return {
+            ...bin,
+            keyName: bin.displayName,
+          };
+        });
 
       dispatch(updateClinicalAnalysisVariable({
         fieldName,

@@ -7,6 +7,7 @@ import {
 } from 'recompose';
 import { connect } from 'react-redux';
 import {
+  find,
   get,
   isEqual,
   reduce,
@@ -17,6 +18,7 @@ import { setModal } from '@ncigdc/dux/modal';
 import { humanify } from '@ncigdc/utils/string';
 import { withTheme } from '@ncigdc/theme';
 import { updateClinicalAnalysisVariable } from '@ncigdc/dux/analysis';
+import { SURVIVAL_PLOT_COLORS } from '@ncigdc/utils/survivalplot';
 import CategoricalCustomBinsModal from './modals/CategoricalCustomBinsModal';
 
 import {
@@ -56,8 +58,8 @@ export default compose(
             return dB;
           })
         : docData.concat({
-          key: '_missing',
           doc_count: missingNestedDocCount,
+          key: '_missing',
         })
       );
       const newDataBuckets = missingNestedDocCount
@@ -126,13 +128,13 @@ export default compose(
   ),
   withPropsOnChange(
     (props, nextProps) =>
-      nextProps.variable.active_chart === 'survival' && (
-        !isEqual(props.variable.bins, nextProps.variable.bins) ||
-        props.variable.active_chart !== nextProps.variable.active_chart ||
-        !isEqual(props.selectedSurvivalBins, nextProps.selectedSurvivalBins) ||
-        props.variable.setId !== nextProps.variable.setId ||
-        !isEqual(props.variable.customSurvivalPlots, nextProps.variable.customSurvivalPlots) ||
-        props.variable.isSurvivalCustom !== nextProps.variable.isSurvivalCustom),
+      nextProps.variable.active_chart === 'survival' &&
+    !(isEqual(props.variable.bins, nextProps.variable.bins) &&
+    props.variable.active_chart === nextProps.variable.active_chart &&
+    isEqual(props.selectedSurvivalBins, nextProps.selectedSurvivalBins) &&
+    props.variable.setId === nextProps.variable.setId &&
+    isEqual(props.variable.customSurvivalPlots, nextProps.variable.customSurvivalPlots) &&
+    props.variable.isSurvivalCustom === nextProps.variable.isSurvivalCustom),
     ({
       binData,
       dispatch,
@@ -143,33 +145,47 @@ export default compose(
       },
     }) => {
       const binDataSelected = isSurvivalCustom
-        ? binData.filter(bin => customSurvivalPlots.indexOf(bin.key) >= 0)
+        ? binData.filter(bin => {
+          return find(customSurvivalPlots, ['keyName', bin.key]);
+        })
         : binData;
+
+      const availableColors = SURVIVAL_PLOT_COLORS
+        .filter(color => !find(customSurvivalPlots, ['color', color]));
 
       const survivalBins = filterSurvivalData(
         binDataSelected
-          .map(bin => ({
-            ...bin,
-            chart_doc_count: bin.doc_count,
-          }))
-      ).slice(0, isSurvivalCustom ? Infinity : 2);
+          .map((bin, i) => {
+            const currentMatch = customSurvivalPlots &&
+              customSurvivalPlots.find(plot => plot.keyName === bin.key);
+            return {
+              ...bin,
+              chart_doc_count: bin.doc_count,
+              color: currentMatch ? currentMatch.color : availableColors[i],
+            };
+          })
+      )
+        .slice(0, isSurvivalCustom ? Infinity : 2);
 
-      const survivalPlotValues = survivalBins.map(bin => bin.keyArray);
-      const survivalTableValues = survivalBins.map(bin => bin.key);
+      const survivalPlotValues = survivalBins.map(bin => ({
+        color: bin.color,
+        keyArray: bin.keyArray,
+        keyName: bin.key,
+      }));
 
       if (isSurvivalCustom) {
         dispatch(updateClinicalAnalysisVariable({
           fieldName,
           id,
           variable: {
-            customSurvivalPlots: survivalTableValues,
+            customSurvivalPlots: survivalPlotValues,
           },
         }));
       }
 
       return {
         survivalPlotValues,
-        survivalTableValues,
+        survivalTableValues: survivalPlotValues,
       };
     }
   ),

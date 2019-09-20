@@ -32,7 +32,7 @@ import {
   updateClinicalAnalysisVariable,
 } from '@ncigdc/dux/analysis';
 import Loader from '@ncigdc/uikit/Loaders/Loader';
-import { MAXIMUM_CURVES, MINIMUM_CASES } from '@ncigdc/utils/survivalplot';
+import { MAXIMUM_CURVES, MINIMUM_CASES, SURVIVAL_PLOT_COLORS } from '@ncigdc/utils/survivalplot';
 
 import ActionsDropdown from './components/ActionsDropdown';
 import ClinicalBoxPlot from './components/ClinicalBoxPlot';
@@ -40,7 +40,6 @@ import ClinicalHistogram from './components/ClinicalHistogram';
 import ClinicalSurvivalPlot from './components/ClinicalSurvivalPlot';
 
 import {
-  colorsArray,
   getBoxTableData,
   getCardFilters,
   getHeadings,
@@ -82,13 +81,12 @@ const getTableData = ({
   updateSelectedSurvivalBins,
 }) => displayData.map(bin => {
   const isSelected = find(selectedBins, { key: bin.displayName });
-  const indexSurvival = selectedSurvivalBins.indexOf(bin.displayName);
+  const selectedBin = selectedSurvivalBins.find(s => s.keyName === bin.displayName);
   const isSurvivalLoading = selectedSurvivalLoadingIds.indexOf(bin.displayName) >= 0;
-  const isSelectedForSurvival = indexSurvival >= 0;
+  const isSelectedForSurvival = selectedBin !== undefined;
   const isSurvivalFull = selectedSurvivalBins.length === MAXIMUM_CURVES;
 
   return {
-
     ...bin,
     select: (
       <input
@@ -136,9 +134,7 @@ const getTableData = ({
               updateSelectedSurvivalBins(displayData, bin);
             }}
             style={{
-              backgroundColor: isSelectedForSurvival
-                ? colorsArray[indexSurvival]
-                : theme.greyScale3,
+              backgroundColor: isSelectedForSurvival ? selectedBin.color : theme.greyScale3,
               color: 'white',
               margin: '0 auto',
               opacity:
@@ -427,6 +423,9 @@ const ClinicalVariableCard = ({
                   )
                   : (
                     <ClinicalSurvivalPlot
+                      palette={selectedSurvivalBins.length > 0
+                        ? selectedSurvivalBins.map(ssBin => ssBin.color)
+                      : SURVIVAL_PLOT_COLORS}
                       plotType={selectedSurvivalBins.length === 0 ||
                         variable.showOverallSurvival
                         ? 'clinicalOverall'

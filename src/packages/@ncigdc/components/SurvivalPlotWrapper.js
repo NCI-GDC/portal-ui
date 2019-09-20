@@ -13,6 +13,8 @@ import {
   uniqueId,
 } from 'lodash';
 import { scaleOrdinal, schemeCategory10 } from 'd3';
+import Color from 'color';
+
 import { renderPlot } from '@oncojs/survivalplot';
 import Loader from '@ncigdc/uikit/Loaders/Loader';
 import toMap from '@ncigdc/utils/toMap';
@@ -190,7 +192,8 @@ const SurvivalPlotWrapper = ({
                   >
                   <div
                     style={{
-                      color: palette[i],
+                      color: Color(palette[i]).darken(0.3)
+                        .rgbString(),
                       fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif',
                       fontSize: '1.35rem',
                       padding: '0 1rem',

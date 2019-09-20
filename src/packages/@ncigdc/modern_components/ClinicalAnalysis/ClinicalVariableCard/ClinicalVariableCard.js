@@ -32,7 +32,7 @@ import {
   updateClinicalAnalysisVariable,
 } from '@ncigdc/dux/analysis';
 import Loader from '@ncigdc/uikit/Loaders/Loader';
-import { MAXIMUM_CURVES, MINIMUM_CASES } from '@ncigdc/utils/survivalplot';
+import { MAXIMUM_CURVES, MINIMUM_CASES, SURVIVAL_PLOT_COLORS } from '@ncigdc/utils/survivalplot';
 
 import ActionsDropdown from './components/ActionsDropdown';
 import ClinicalBoxPlot from './components/ClinicalBoxPlot';
@@ -422,7 +422,9 @@ const ClinicalVariableCard = ({
                   )
                   : (
                     <ClinicalSurvivalPlot
-                      palette={selectedSurvivalBins.map(ssBin => ssBin.color)}
+                      palette={selectedSurvivalBins.length > 0
+                        ? selectedSurvivalBins.map(ssBin => ssBin.color)
+                      : SURVIVAL_PLOT_COLORS}
                       plotType={selectedSurvivalBins.length === 0 ||
                         variable.showOverallSurvival
                         ? 'clinicalOverall'
@@ -430,7 +432,7 @@ const ClinicalVariableCard = ({
                       survivalData={selectedSurvivalBins.length === 0 ||
                         variable.showOverallSurvival
                         ? overallSurvivalData
-                        : selectedSurvivalData} // legend is included here
+                        : selectedSurvivalData}
                       survivalDataLoading={survivalDataLoading}
                       />
                     )

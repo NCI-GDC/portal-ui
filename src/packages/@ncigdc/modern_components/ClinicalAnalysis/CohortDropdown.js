@@ -26,11 +26,11 @@ const CohortDropdown = ({
     return (
       <Tooltip
         Component={name.length > 20 ? name : null}
+        key={setKey}
         >
         <DropdownItem
           aria-label={`Switch selected set to ${name}`}
           className="all-sets-item"
-          key={setKey}
           onClick={() => {
             dispatch(
               updateClinicalAnalysisSet({

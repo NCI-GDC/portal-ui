@@ -53,7 +53,7 @@ const SummaryPage = ({
       props: {
         mappingLabel: 'key',
         mappingValue: 'doc_count',
-        xAxisTitle: 'Experimental Strategy',
+        xAxisTitle: '',
       },
       space: 1,
       title: 'Experimental Strategies',
@@ -87,7 +87,7 @@ const SummaryPage = ({
       props: {
         mappingLabel: 'key',
         mappingValue: 'doc_count',
-        xAxisTitle: 'Vital Status',
+        xAxisTitle: '',
       },
       space: 1,
       title: 'Vital Status',
@@ -98,7 +98,7 @@ const SummaryPage = ({
       props: {
         mappingLabel: 'key',
         mappingValue: 'doc_count',
-        xAxisTitle: 'Race',
+        xAxisTitle: '',
       },
       space: 1,
       title: 'Race',
@@ -109,7 +109,7 @@ const SummaryPage = ({
       props: {
         mappingLabel: 'key',
         mappingValue: 'doc_count',
-        xAxisTitle: 'Gender',
+        xAxisTitle: '',
       },
       space: 1,
       title: 'Gender',

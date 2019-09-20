@@ -173,25 +173,19 @@ export default compose(
         keyName: bin.key,
       }));
 
-      const survivalTableValues = survivalBins.map(bin => ({
-        color: bin.color,
-        keyArray: bin.keyArray,
-        keyName: bin.key,
-      }));
-
       if (isSurvivalCustom) {
         dispatch(updateClinicalAnalysisVariable({
           fieldName,
           id,
           variable: {
-            customSurvivalPlots: survivalTableValues,
+            customSurvivalPlots: survivalPlotValues,
           },
         }));
       }
 
       return {
         survivalPlotValues,
-        survivalTableValues,
+        survivalTableValues: survivalPlotValues,
       };
     }
   ),

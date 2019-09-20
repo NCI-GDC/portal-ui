@@ -1,8 +1,9 @@
-import React from 'react';
+import { maxBy, pick } from 'lodash';
+
 import DownloadVisualizationButton from '@ncigdc/components/DownloadVisualizationButton';
-import wrapSvg from '@ncigdc/utils/wrapSvg';
+import React from 'react';
 import { Row } from '@ncigdc/uikit/Flex';
-import { maxBy } from 'lodash';
+import wrapSvg from '@ncigdc/utils/wrapSvg';
 
 const CardWrapper = ({
   Component,
@@ -46,7 +47,7 @@ const CardWrapper = ({
             title,
           })}
           tooltipHTML="Download image or data"
-          tsvData={data}
+          tsvData={data.map(datum => pick(datum, ['doc_count', 'key']))}
           />
       </Row>
       <div className={className}>

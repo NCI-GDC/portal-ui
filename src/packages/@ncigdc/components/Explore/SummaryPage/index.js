@@ -1,9 +1,9 @@
-import React from 'react';
+import CardWrapper from '@ncigdc/components/Explore/SummaryPage/CardWrapper';
 import HistogramCard from '@ncigdc/components/Explore/SummaryPage/HistogramCard';
+import MasonryLayout from '@ncigdc/components/Layouts/MasonryLayout';
+import React from 'react';
 import SampleTypeCard from '@ncigdc/components/Explore/SummaryPage/SampleTypeCard';
 import SummaryPageQuery from '@ncigdc/components/Explore/SummaryPage/SummaryPage.relay';
-import MasonryLayout from '@ncigdc/components/Layouts/MasonryLayout';
-import CardWrapper from '@ncigdc/components/Explore/SummaryPage/CardWrapper';
 import { get } from 'lodash';
 
 const Tooltip = (title, key, count) => (
@@ -49,14 +49,14 @@ const SummaryPage = ({
     },
     {
       component: HistogramCard,
-      data: dataDecor(experimentalStrategyData, 'Data Types'),
+      data: dataDecor(experimentalStrategyData, 'Experimental Strategies'),
       props: {
         mappingLabel: 'key',
         mappingValue: 'doc_count',
         xAxisTitle: 'Experimental Strategy',
       },
       space: 1,
-      title: 'Data Types',
+      title: 'Experimental Strategies',
     },
     {
       component: () => '',

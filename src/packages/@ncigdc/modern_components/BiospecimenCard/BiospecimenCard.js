@@ -41,9 +41,9 @@ import timestamp from '@ncigdc/utils/timestamp';
 import EntityPageHorizontalTable from '@ncigdc/components/EntityPageHorizontalTable';
 import AddToCartButtonSingle from '@ncigdc/components/AddToCartButtonSingle';
 import DownloadFile from '@ncigdc/components/DownloadFile';
+import treeStatusReducer from '@ncigdc/dux/biotree';
 import { search, idFields, formatValue } from './utils';
 import BioTree from './BioTree';
-import treeStatusReducer from './reducers';
 
 const styles = {
   common: theme => ({

@@ -41,7 +41,7 @@ export default [
         };
       }
       default:
-        throw new Error('No action matched');
+        return state;
     }
   },
   { // initial state

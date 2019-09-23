@@ -37,20 +37,16 @@ const SummaryPage = ({
   const experimentalStrategyData = get(viewer, 'explore.cases.aggregations.summary__experimental_strategies__experimental_strategy.buckets', []);
 
   const color = scaleOrdinal(schemeCategory20);
-  const dataDecor = (data, name, donuts = 0) => data.map((datum, i) => ({
+  const dataDecor = (data, name, setColor = false) => data.map((datum, i) => ({
     ...datum,
     tooltip: Tooltip(name, datum.key, datum.doc_count),
-    ...donuts === 1
-      ? { color: color(i) } 
-      : donuts === 2 // TODO. 'Primary Sites & Disease Types'
-        ? { color: 'todo' }
-        : {},
+    ...setColor ? { color: color(i) } : {}
   }));
 
   const elementsData = [
     {
       component: SampleTypeCard,
-      data: dataDecor(sampleTypeData, 'Sample Types', 1),
+      data: dataDecor(sampleTypeData, 'Sample Types', true),
       props: { mappingId: 'key' },
       space: 1,
       title: 'Sample Types',
@@ -67,7 +63,7 @@ const SummaryPage = ({
     },
     {
       component: () => '',
-      data: [], // TODO: donuts = 2
+      data: [],
       space: 1,
       title: 'Primary Sites & Disease Types',
     },

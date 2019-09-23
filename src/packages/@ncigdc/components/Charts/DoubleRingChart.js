@@ -1,13 +1,12 @@
 import PropTypes from 'prop-types';
 import * as d3 from 'd3';
 import ReactFauxDOM from 'react-faux-dom';
-// import Color from 'color';
+import Color from 'color';
 import { snakeCase } from 'lodash';
 
 import { withTooltip } from '@ncigdc/uikit/Tooltip';
 
 const DoubleRingChart = ({
-  // colors,
   data = [],
   height = 160,
   outerRingWidth = 30,
@@ -32,16 +31,16 @@ const DoubleRingChart = ({
     .append('g')
     .attr('transform', `translate(${width / 2}, ${height / 2})`);
 
-  const HALF_DEGREE_IN_RAD = 0.00872665;
-  const HALF_OF_HALF_DEGREE_IN_RAD = 0.004363325;
+  // const HALF_DEGREE_IN_RAD = 0.00872665;
+  // const HALF_OF_HALF_DEGREE_IN_RAD = 0.004363325;
 
   const innerPieData = data.map(d => ({
     clickHandler: d.clickHandler,
     color: d.color,
     id: d.id,
+    innerRadius: width / 3.3,
     key: d.key,
     // innerRadius: 0,
-    innerRadius: width / 3.3,
     // outerRadius: centerRadius - 5,
     outerRadius: centerRadius - 1.5,
     tooltip: d.tooltip,
@@ -50,26 +49,26 @@ const DoubleRingChart = ({
 
   const innerPie = d3
     .pie()
-    .padAngle(HALF_OF_HALF_DEGREE_IN_RAD * 1.2)
+    // .padAngle(HALF_OF_HALF_DEGREE_IN_RAD * 1.2)
     // .padAngle(HALF_DEGREE_IN_RAD)
     .value(d => d.v)(innerPieData);
 
-  const outerPieData = data.map((d, i) => ({
+  const outerPieData = data.map(d => ({
+    innerRadius: centerRadius,
     items: d.outer.map(p => ({
+      clickHandler: p.clickHandler,
+      color: p.color,
       id: p.id,
       key: p.key,
       tooltip: p.tooltip,
-      clickHandler: p.clickHandler,
-      color: p.color,
       v: p.value,
     })),
-    innerRadius: centerRadius,
     outerRadius: radius,
   }));
 
   const outerPie = outerPieData.map((p, i) => d3
     .pie()
-    .padAngle(HALF_OF_HALF_DEGREE_IN_RAD / 1.5)
+    // .padAngle(HALF_OF_HALF_DEGREE_IN_RAD / 1.5)
     // .padAngle(HALF_DEGREE_IN_RAD)
     .startAngle(innerPie[i].startAngle)
     .endAngle(innerPie[i].endAngle)(p.items.map(i => i.v)),);
@@ -85,14 +84,14 @@ const DoubleRingChart = ({
         ...acc,
         ...p.items.map((item, j) => ({
           ...p,
-          pie: outerPie[i][j],
-          v: item.v,
+          clickHandler: item.clickHandler,
+          color: item.color,
           id: item.id,
           key: item.key,
+          pie: outerPie[i][j],
           tooltip: item.tooltip,
-          color: item.color,
           // color: colors[innerPieData[i].key].projects[item.key],
-          clickHandler: item.clickHandler,
+          v: item.v,
         })),
       ],
       [],
@@ -112,52 +111,70 @@ const DoubleRingChart = ({
     .append('path')
     .attr('d', d => d3
       .arc()
-      .cornerRadius(1.7)
+      .cornerRadius(1.6)
       .outerRadius(d.outerRadius)
       .innerRadius(d.innerRadius)(d.pie),)
+    .attr('stroke', '#fff')
+    .attr('stroke-width', 0.5)
     .style('fill', d => d.color);
 
 
-  const gHover = svg
-    .selectAll('.arc-hover')
-    .data(dataWithPie)
-    .enter()
-    .append('g')
-    .each(d => {
-      console.log(d);
-      console.log(outerPieData.outerRadius); // it's an array lol
-      d.outerRadius = outerPieData.outerRadius - 15;
-    })
-    .attr('class', 'arc-hover');
-
-  const gHoverPath = gHover.append('path');
+  // const g = svg
+  //   .selectAll('.arc')
+  //   .data(pie(data))
+  //   .enter()
+  //   .append('g')
+  //   .each(d => {
+  //     d.outerRadius = outerRadius - 20;
+  //   })
+  //   .attr('class', 'arc');
+  //
+  // const gHover = svg
+  //   .selectAll('.arc-hover')
+  //   .data(pie(data))
+  //   .enter()
+  //   .append('g')
+  //   .each(d => {
+  //     d.outerRadius = outerRadius - 15;
+  //   })
+  //   .attr('class', 'arc-hover');
 
   fill
-    .attr('class', 'pointer')
-    // .attr('cursor', 'pointer')
-    .on('mouseenter', d => setTooltip(d.tooltip))
-    .on('mouseleave', () => {
-      setTooltip();
-    })
-    .on('mousedown', d => d.clickHandler && d.clickHandler());
-
-
-  const fillHover = gHoverPath
-    .attr('d', fill)
-    .style('fill', d => d.color)
-    .style('opacity', 0);
-
-  fillHover
     .attr('class', d => `pointer arc-hover-${snakeCase(d.id)}`)
     .on('mouseenter', d => {
-      console.log('here: ', d);
-      document.querySelector(`.arc-hover-${snakeCase(d.id)}`)
-        .style.opacity = 0.5;
+      const target = document.querySelector(`.arc-hover-${snakeCase(d.id)}`);
+      target.style.stroke = Color(d.color).lighten(0.7).rgbString();
+      target.style.strokeWidth = 5;
+      setTooltip(d.tooltip);
     })
     .on('mouseleave', d => {
-      document.querySelector(`.arc-hover-${snakeCase(d.id)}`)
-        .style.opacity = 0;
+      const target = document.querySelector(`.arc-hover-${snakeCase(d.id)}`);
+      target.style.stroke = '#fff';
+      target.style.strokeWidth = 0.5;
+      setTooltip();
+    })
+    .on('mousedown', d => {
+      d.clickHandler && d.clickHandler();
     });
+
+  //    .attr('stroke', d => Color(d.color).lighten(0.5).rgbString())
+      // .attr('stroke-width', 5)
+  // const fillHover = gHoverPath
+  //   .attr('d', fill)
+  //   .style('fill', d => d.color)
+  //   .style('opacity', 0);
+  //
+  // fillHover
+  //   .attr('class', d => `pointer arc-hover-${snakeCase(d.id)}`)
+  //   .on('mouseenter', d => {
+  //     console.log('here: ', d);
+      // document.querySelector(`.arc-hover-${snakeCase(d.id)}`)
+      //   .style.opacity = 0.5;
+  //   })
+  //   .on('mouseleave', d => {
+  //     document.querySelector(`.arc-hover-${snakeCase(d.id)}`)
+  //       .style.opacity = 0;
+  //   });
 
   return node.toReact();
 };

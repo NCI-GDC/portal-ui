@@ -10,19 +10,9 @@ import { get } from 'lodash';
 
 const Tooltip = (title, key, count) => (
   <span>
-    <b>
-      {title}
-      :
-      {' '}
-      {key}
-      <br />
-      {count.toLocaleString()}
-      {' '}
-      case
-      {count > 1 ? 's' : ''}
-    </b>
+    <b>{key}</b>
     <br />
-
+    {`${count} Case${count > 1 ? 's' : ''}`}
   </span>
 );
 const SummaryPage = ({

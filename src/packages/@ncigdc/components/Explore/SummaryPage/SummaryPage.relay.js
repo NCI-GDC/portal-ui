@@ -58,6 +58,18 @@ const EnhancedSummaryPageQuery = (Component) => compose(
                 }
               }
             }
+            repository {
+              cases {
+                aggregations(filters: $filters, aggregations_filter_themselves: true) {
+                  samples__sample_type {
+                    buckets {
+                      doc_count
+                      key
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       `}

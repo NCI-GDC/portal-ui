@@ -31,13 +31,12 @@ const SummaryPage = ({
   const raceData = get(viewer, 'explore.cases.aggregations.demographic__race.buckets', []);
   const vitalStatusData = get(viewer, 'explore.cases.aggregations.demographic__vital_status.buckets', []);
   const ageAtDiagnosisData = get(viewer, 'explore.cases.aggregations.diagnoses__age_at_diagnosis.histogram.buckets', []);
-  const sampleTypeData = get(viewer, 'explore.cases.aggregations.samples__sample_type.buckets', []);
+  const sampleTypeData = get(viewer, 'repository.cases.aggregations.samples__sample_type.buckets', []);
   const experimentalStrategyData = get(viewer, 'explore.cases.aggregations.summary__experimental_strategies__experimental_strategy.buckets', []);
   const dataDecor = (data, name) => data.map(el => ({
     ...el,
     tooltip: Tooltip(name, el.key, el.doc_count),
   }));
-
 
   const elementsData = [
     {

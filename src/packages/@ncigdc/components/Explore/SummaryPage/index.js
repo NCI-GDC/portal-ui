@@ -37,9 +37,9 @@ const SummaryPage = ({
   const experimentalStrategyData = get(viewer, 'explore.cases.aggregations.summary__experimental_strategies__experimental_strategy.buckets', []);
 
   const color = scaleOrdinal(schemeCategory20);
-  const dataDecor = (data, name, donuts = 0) => data.map((el, i) => ({
-    ...el,
-    tooltip: Tooltip(name, el.key, el.doc_count),
+  const dataDecor = (data, name, donuts = 0) => data.map((datum, i) => ({
+    ...datum,
+    tooltip: Tooltip(name, datum.key, datum.doc_count),
     ...donuts === 1
       ? { color: color(i) } 
       : donuts === 2 // TODO. 'Primary Sites & Disease Types'

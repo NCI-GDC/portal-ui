@@ -33,8 +33,6 @@ const PieChart = compose(
     setTooltip,
     width = 160,
   }) => {
-    const dataHasColors = data.every(datum => datum.color !== 'undefined' &&
-      datum.color !== '');
     const color = d3.scaleOrdinal(d3.schemeCategory20);
     const outerRadius = height / 2 + 10;
     const innerRadius = enableInnerRadius ? outerRadius / 2 : 0;
@@ -82,15 +80,11 @@ const PieChart = compose(
     const gPath = g.append('path');
     const gHoverPath = gHover.append('path');
 
-    gPath.attr('d', arc).style('fill', (d, i) => dataHasColors
-      ? data[i].color
-      : color(i));
+    gPath.attr('d', arc).style('fill', (d, i) => data[i].color || color(i));
 
     const fillHover = gHoverPath
       .attr('d', arc)
-      .style('fill', (d, i) => dataHasColors
-        ? data[i].color
-        : color(i))
+      .style('fill', (d, i) => data[i].color || color(i))
       .style('opacity', 0);
 
     fillHover

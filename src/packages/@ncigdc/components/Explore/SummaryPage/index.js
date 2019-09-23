@@ -1,11 +1,11 @@
-import { scaleOrdinal, schemeCategory20 } from 'd3';
-
-import CardWrapper from '@ncigdc/components/Explore/SummaryPage/CardWrapper';
-import HistogramCard from '@ncigdc/components/Explore/SummaryPage/HistogramCard';
-import MasonryLayout from '@ncigdc/components/Layouts/MasonryLayout';
 import React from 'react';
+
+import { scaleOrdinal, schemeCategory20 } from 'd3';
+import HistogramCard from '@ncigdc/components/Explore/SummaryPage/HistogramCard';
 import SampleTypeCard from '@ncigdc/components/Explore/SummaryPage/SampleTypeCard';
 import SummaryPageQuery from '@ncigdc/components/Explore/SummaryPage/SummaryPage.relay';
+import CardWrapper from '@ncigdc/components/Explore/SummaryPage/CardWrapper';
+import MasonryLayout from '@ncigdc/components/Layouts/MasonryLayout';
 import { get } from 'lodash';
 
 const Tooltip = (title, key, count) => (
@@ -37,12 +37,12 @@ const SummaryPage = ({
   const experimentalStrategyData = get(viewer, 'explore.cases.aggregations.summary__experimental_strategies__experimental_strategy.buckets', []);
 
   const color = scaleOrdinal(schemeCategory20);
-  const dataDecor = (data, name, donut = false) => data.map((el, i) => ({
+  const dataDecor = (data, name, donuts = 0) => data.map((el, i) => ({
     ...el,
     tooltip: Tooltip(name, el.key, el.doc_count),
-    ...donut === 'single' 
+    ...donuts === 1
       ? { color: color(i) } 
-      : donut === 'double' // TODO. 'Primary Sites & Disease Types'
+      : donuts === 2 // TODO. 'Primary Sites & Disease Types'
         ? { color: 'todo' }
         : {},
   }));
@@ -50,7 +50,7 @@ const SummaryPage = ({
   const elementsData = [
     {
       component: SampleTypeCard,
-      data: dataDecor(sampleTypeData, 'Sample Types', 'single'),
+      data: dataDecor(sampleTypeData, 'Sample Types', 1),
       props: { mappingId: 'key' },
       space: 1,
       title: 'Sample Types',
@@ -61,14 +61,13 @@ const SummaryPage = ({
       props: {
         mappingLabel: 'key',
         mappingValue: 'doc_count',
-        xAxisTitle: '',
       },
       space: 1,
       title: 'Experimental Strategies',
     },
     {
       component: () => '',
-      data: [], // TODO: donut = 'double'
+      data: [], // TODO: donuts = 2
       space: 1,
       title: 'Primary Sites & Disease Types',
     },
@@ -95,7 +94,6 @@ const SummaryPage = ({
       props: {
         mappingLabel: 'key',
         mappingValue: 'doc_count',
-        xAxisTitle: '',
       },
       space: 1,
       title: 'Vital Status',
@@ -106,7 +104,6 @@ const SummaryPage = ({
       props: {
         mappingLabel: 'key',
         mappingValue: 'doc_count',
-        xAxisTitle: '',
       },
       space: 1,
       title: 'Race',
@@ -117,7 +114,6 @@ const SummaryPage = ({
       props: {
         mappingLabel: 'key',
         mappingValue: 'doc_count',
-        xAxisTitle: '',
       },
       space: 1,
       title: 'Gender',

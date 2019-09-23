@@ -1,9 +1,9 @@
-import { maxBy, pick } from 'lodash';
+import React from 'react';
 
 import DownloadVisualizationButton from '@ncigdc/components/DownloadVisualizationButton';
-import React from 'react';
-import { Row } from '@ncigdc/uikit/Flex';
 import wrapSvg from '@ncigdc/utils/wrapSvg';
+import { Row } from '@ncigdc/uikit/Flex';
+import { maxBy, pick } from 'lodash';
 
 const CardWrapper = ({
   Component,

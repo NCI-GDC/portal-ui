@@ -8,7 +8,7 @@ import MasonryLayout from '@ncigdc/components/Layouts/MasonryLayout';
 import CardWrapper from '@ncigdc/components/Explore/SummaryPage/CardWrapper';
 import { get } from 'lodash';
 
-const Tooltip = (title, key, count) => (
+const Tooltip = (key, count) => (
   <span>
     <b>{key}</b>
     <br />
@@ -29,7 +29,7 @@ const SummaryPage = ({
   const color = scaleOrdinal(schemeCategory20);
   const dataDecor = (data, name, setColor = false) => data.map((datum, i) => ({
     ...datum,
-    tooltip: Tooltip(name, datum.key, datum.doc_count),
+    tooltip: Tooltip(datum.key, datum.count),
     ...setColor && { color: color(i) },
   }));
 

@@ -253,9 +253,7 @@ const ExploreSummaryPrimarySite = ({
               /> */}
             <DoubleRingChart
               data={arcData}
-              height={350}
               outerRingWidth={30}
-              width={350}
               />
           </Column>
       ))}

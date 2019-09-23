@@ -9,6 +9,7 @@ export const primarySiteColors = {
   Skin: '#BBD642',
   Unknown: '#ff7f0e',
 };
+
 export const moaarColors = [
   '#4f9e99',
   '#21827f',

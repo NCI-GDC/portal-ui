@@ -3,20 +3,29 @@ import * as d3 from 'd3';
 import ReactFauxDOM from 'react-faux-dom';
 import Color from 'color';
 import { snakeCase } from 'lodash';
+import { compose } from 'recompose';
 
 import { withTooltip } from '@ncigdc/uikit/Tooltip';
+import withSize from '@ncigdc/utils/withSize';
 
 const DoubleRingChart = ({
   data = [],
-  height = 160,
+  margin = {
+    bottom: 50,
+    left: 50,
+    right: 50,
+    top: 50,
+  },
   outerRingWidth = 30,
   setTooltip,
-  width = 160,
+  size: { width = 350 },
 }) => {
-  const centerRingWidth = width - outerRingWidth * 2;
+  const chartWidth = width - margin.left - margin.right;
+  const height = chartWidth;
+  const centerRingWidth = chartWidth - outerRingWidth * 2;
   const centerRingHeight = height - outerRingWidth * 2;
   const centerRadius = Math.min(centerRingWidth, centerRingHeight) / 2;
-  const radius = Math.min(width, height) / 2;
+  const radius = Math.min(chartWidth, height) / 2;
 
   const node = ReactFauxDOM.createElement('div');
   node.style.setProperty('display', 'flex');
@@ -26,10 +35,10 @@ const DoubleRingChart = ({
   const svg = d3
     .select(node)
     .append('svg')
-    .attr('width', width)
+    .attr('width', chartWidth)
     .attr('height', height)
     .append('g')
-    .attr('transform', `translate(${width / 2}, ${height / 2})`);
+    .attr('transform', `translate(${chartWidth / 2}, ${height / 2})`);
 
   // const HALF_DEGREE_IN_RAD = 0.00872665;
   // const HALF_OF_HALF_DEGREE_IN_RAD = 0.004363325;
@@ -38,7 +47,7 @@ const DoubleRingChart = ({
     clickHandler: d.clickHandler,
     color: d.color,
     id: d.id,
-    innerRadius: width / 3.3,
+    innerRadius: chartWidth / 3.3,
     key: d.key,
     // innerRadius: 0,
     // outerRadius: centerRadius - 5,
@@ -118,63 +127,21 @@ const DoubleRingChart = ({
     .attr('stroke-width', 0.5)
     .style('fill', d => d.color);
 
-
-  // const g = svg
-  //   .selectAll('.arc')
-  //   .data(pie(data))
-  //   .enter()
-  //   .append('g')
-  //   .each(d => {
-  //     d.outerRadius = outerRadius - 20;
-  //   })
-  //   .attr('class', 'arc');
-  //
-  // const gHover = svg
-  //   .selectAll('.arc-hover')
-  //   .data(pie(data))
-  //   .enter()
-  //   .append('g')
-  //   .each(d => {
-  //     d.outerRadius = outerRadius - 15;
-  //   })
-  //   .attr('class', 'arc-hover');
-
   fill
     .attr('class', d => `pointer arc-hover-${snakeCase(d.id)}`)
     .on('mouseenter', d => {
       const target = document.querySelector(`.arc-hover-${snakeCase(d.id)}`);
-      target.style.stroke = Color(d.color).lighten(0.7).rgbString();
-      target.style.strokeWidth = 5;
+      target.style.fill = Color(d.color).darken(0.4).rgbString();
       setTooltip(d.tooltip);
     })
     .on('mouseleave', d => {
       const target = document.querySelector(`.arc-hover-${snakeCase(d.id)}`);
-      target.style.stroke = '#fff';
-      target.style.strokeWidth = 0.5;
+      target.style.fill = d.color;
       setTooltip();
     })
     .on('mousedown', d => {
       d.clickHandler && d.clickHandler();
     });
-
-  //    .attr('stroke', d => Color(d.color).lighten(0.5).rgbString())
-      // .attr('stroke-width', 5)
-  // const fillHover = gHoverPath
-  //   .attr('d', fill)
-  //   .style('fill', d => d.color)
-  //   .style('opacity', 0);
-  //
-  // fillHover
-  //   .attr('class', d => `pointer arc-hover-${snakeCase(d.id)}`)
-  //   .on('mouseenter', d => {
-  //     console.log('here: ', d);
-      // document.querySelector(`.arc-hover-${snakeCase(d.id)}`)
-      //   .style.opacity = 0.5;
-  //   })
-  //   .on('mouseleave', d => {
-  //     document.querySelector(`.arc-hover-${snakeCase(d.id)}`)
-  //       .style.opacity = 0;
-  //   });
 
   return node.toReact();
 };
@@ -202,4 +169,7 @@ DoubleRingChart.propTypes = {
 
 /*----------------------------------------------------------------------------*/
 
-export default withTooltip(DoubleRingChart);
+export default compose(
+  withTooltip,
+  withSize({ refreshRate: 16 })
+)(DoubleRingChart);

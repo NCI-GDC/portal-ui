@@ -122,6 +122,7 @@ const BarChart = ({
 
   if (showXAxisLabels) {
     // hidden x axis for full length labels in svg download
+
     const hiddenXG = svg
       .append('g')
       .attr('class', 'svgDownload')
@@ -167,6 +168,32 @@ const BarChart = ({
       .on('mouseleave', () => {
         setTooltip();
       });
+  } else {
+    svg
+      .append('text')
+      .attr('class', 'displayOnly')
+      .attr('transform', 'rotate(0)')
+      .attr('y', height + 20)
+      .attr('x', width / 2 - margin.left)
+      .attr('dx', '1em')
+      .style('text-anchor', 'middle')
+      .style('fontSize', '1.2rem')
+      .style('fontWeight', '500')
+      .attr('fill', yAxisStyle.textFill)
+      .text(xAxis.title || '');
+
+    svg
+      .append('text')
+      .attr('class', 'svgDownload')
+      .attr('transform', 'rotate(0)')
+      .attr('y', height + 20)
+      .attr('x', width / 2 - margin.left)
+      .attr('dx', '1em')
+      .style('text-anchor', 'middle')
+      .style('fontSize', '1.2rem')
+      .style('fontWeight', '500')
+      .attr('fill', xAxisStyle.textFill)
+      .text(xAxis.titleForSVG || '');
   }
 
   const barGs = svg

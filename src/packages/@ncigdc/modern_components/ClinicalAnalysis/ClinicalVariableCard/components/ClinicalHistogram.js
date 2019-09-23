@@ -8,7 +8,6 @@ const ClinicalHistogram = ({
   active_calculation,
   histogramData,
   histogramStyles,
-  theme,
   type,
 }) => {
   const showXAxisLabels = histogramData.length <= 20;
@@ -33,6 +32,7 @@ const ClinicalHistogram = ({
           },
           xAxis: {
             textFill: theme.greyScaleD3,
+
           },
           yAxis: {
             stroke: theme.greyScale4,
@@ -43,7 +43,10 @@ const ClinicalHistogram = ({
           style: {
             ...histogramStyles(theme).axis,
             fontWeight: '700',
+            forntSize: '1.2rem',
           },
+          title: 'Roll over the graph to see X axis labels',
+          titleForSVG: 'For the list of histogram values, download the separate TSV file',
         }}
         yAxis={{
           style: histogramStyles(theme).axis,
@@ -52,22 +55,8 @@ const ClinicalHistogram = ({
           } of Cases`,
         }}
         />
-      {showXAxisLabels ||
-        <div
-          className="no-print"
-          style={{ 
-            color: theme.greyScale3, 
-            fontSize: '1.2rem',
-            marginBottom: 20, 
-            marginTop: -40,
-            textAlign: 'center',
-          }}
-          >
-          Roll over the graph to see X axis labels
-        </div> 
-      }
     </React.Fragment>
-  )
+  );
 };
 
 export default ClinicalHistogram;

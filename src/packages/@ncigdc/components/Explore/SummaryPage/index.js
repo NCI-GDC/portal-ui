@@ -17,7 +17,7 @@ const Tooltip = (title, key, count) => (
       {count.toLocaleString()}
       {' '}
       case
-      {count > 1 ? 's' : ''}
+      {count === 1 ? '' : 's'}
     </b>
     <br />
 

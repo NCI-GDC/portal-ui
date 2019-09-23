@@ -47,7 +47,11 @@ const CardWrapper = ({
             title,
           })}
           tooltipHTML="Download image or data"
-          tsvData={data.map(datum => pick(datum, ['doc_count', 'key']))}
+          tsvData={data.map(datum => pick(datum, [
+            'doc_count',
+            'key',
+            'color',
+          ]))}
           />
       </Row>
       <div className={className}>

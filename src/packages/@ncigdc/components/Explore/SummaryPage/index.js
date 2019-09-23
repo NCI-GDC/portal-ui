@@ -1,3 +1,5 @@
+import { scaleOrdinal, schemeCategory20 } from 'd3';
+
 import CardWrapper from '@ncigdc/components/Explore/SummaryPage/CardWrapper';
 import HistogramCard from '@ncigdc/components/Explore/SummaryPage/HistogramCard';
 import MasonryLayout from '@ncigdc/components/Layouts/MasonryLayout';
@@ -33,16 +35,22 @@ const SummaryPage = ({
   const ageAtDiagnosisData = get(viewer, 'explore.cases.aggregations.diagnoses__age_at_diagnosis.histogram.buckets', []);
   const sampleTypeData = get(viewer, 'explore.cases.aggregations.samples__sample_type.buckets', []);
   const experimentalStrategyData = get(viewer, 'explore.cases.aggregations.summary__experimental_strategies__experimental_strategy.buckets', []);
-  const dataDecor = (data, name) => data.map(el => ({
+
+  const color = scaleOrdinal(schemeCategory20);
+  const dataDecor = (data, name, donut = false) => data.map((el, i) => ({
     ...el,
     tooltip: Tooltip(name, el.key, el.doc_count),
+    ...donut === 'single' 
+      ? { color: color(i) } 
+      : donut === 'double' // TODO. 'Primary Sites & Disease Types'
+        ? { color: 'todo' }
+        : {},
   }));
-
 
   const elementsData = [
     {
       component: SampleTypeCard,
-      data: dataDecor(sampleTypeData, 'Sample Types'),
+      data: dataDecor(sampleTypeData, 'Sample Types', 'single'),
       props: { mappingId: 'key' },
       space: 1,
       title: 'Sample Types',
@@ -60,7 +68,7 @@ const SummaryPage = ({
     },
     {
       component: () => '',
-      data: [],
+      data: [], // TODO: donut = 'double'
       space: 1,
       title: 'Primary Sites & Disease Types',
     },

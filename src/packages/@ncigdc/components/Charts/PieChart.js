@@ -26,15 +26,17 @@ const PieChart = compose(
 )(
   ({
     data,
-    path = 'file_count',
+    enableInnerRadius = false,
     height = 160,
-    width = 160,
-    setTooltip,
+    mappingId = 'id',
     marginTop = 0,
+    path = 'file_count',
+    setTooltip,
+    width = 160,
   }) => {
     const color = d3.scaleOrdinal(d3.schemeCategory20);
     const outerRadius = height / 2 + 10;
-
+    const innerRadius = enableInnerRadius ? outerRadius / 2 : 0;
     const node = ReactFauxDOM.createElement('div');
     node.style.setProperty('margin-top', `${marginTop}px`);
     node.style.setProperty('display', 'flex');
@@ -46,7 +48,7 @@ const PieChart = compose(
     const arc = d3
       .arc()
       .padRadius(outerRadius)
-      .innerRadius(0);
+      .innerRadius(innerRadius);
 
     const svg = d3
       .select(node)
@@ -87,16 +89,16 @@ const PieChart = compose(
       .style('opacity', 0);
 
     fillHover
-      .attr('class', d => `pointer arc-hover-${_.snakeCase(d.data.id)}`)
+      .attr('class', d => `pointer arc-hover-${_.snakeCase(d.data[mappingId])}`)
       .on('mouseenter', d => {
         document.querySelector(
-          `.arc-hover-${_.snakeCase(d.data.id)}`
+          `.arc-hover-${_.snakeCase(d.data[mappingId])}`
         ).style.opacity = 0.5;
         setTooltip(d.data.tooltip);
       })
       .on('mouseleave', d => {
         document.querySelector(
-          `.arc-hover-${_.snakeCase(d.data.id)}`
+          `.arc-hover-${_.snakeCase(d.data[mappingId])}`
         ).style.opacity = 0;
         setTooltip();
       })

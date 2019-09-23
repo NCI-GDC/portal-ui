@@ -4,8 +4,8 @@ import { scaleOrdinal, schemeCategory20 } from 'd3';
 import HistogramCard from '@ncigdc/components/Explore/SummaryPage/HistogramCard';
 import SampleTypeCard from '@ncigdc/components/Explore/SummaryPage/SampleTypeCard';
 import SummaryPageQuery from '@ncigdc/components/Explore/SummaryPage/SummaryPage.relay';
-import CardWrapper from '@ncigdc/components/Explore/SummaryPage/CardWrapper';
 import MasonryLayout from '@ncigdc/components/Layouts/MasonryLayout';
+import CardWrapper from '@ncigdc/components/Explore/SummaryPage/CardWrapper';
 import { get } from 'lodash';
 
 const Tooltip = (title, key, count) => (
@@ -19,7 +19,7 @@ const Tooltip = (title, key, count) => (
       {count.toLocaleString()}
       {' '}
       case
-      {count === 1 ? '' : 's'}
+      {count > 1 ? '' : 's'}
     </b>
     <br />
 

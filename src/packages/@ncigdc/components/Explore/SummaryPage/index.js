@@ -40,7 +40,7 @@ const SummaryPage = ({
   const dataDecor = (data, name, setColor = false) => data.map((datum, i) => ({
     ...datum,
     tooltip: Tooltip(name, datum.key, datum.doc_count),
-    ...setColor ? { color: color(i) } : {}
+    ...setColor && { color: color(i) },
   }));
 
   const elementsData = [

@@ -9,93 +9,15 @@ import withRouter from '@ncigdc/utils/withRouter';
 import { replaceFilters } from '@ncigdc/utils/filters';
 import customGraphQL from '@ncigdc/utils/customGraphQL';
 import { withTheme } from '@ncigdc/theme';
-import DoubleDonut from '@ncigdc/components/Charts/DoubleDonut';
+// import DoubleDonut from '@ncigdc/components/Charts/DoubleDonut';
 import { Column, Row } from '@ncigdc/uikit/Flex';
 import DownloadVisualizationButton from '@ncigdc/components/DownloadVisualizationButton';
 import wrapSvg from '@ncigdc/utils/wrapSvg';
 import DoubleRingChart from '@ncigdc/components/Charts/DoubleRingChart';
 import Loader from '@ncigdc/uikit/Loaders/Loader';
 import { capitalize } from '@ncigdc/utils/string';
-
-const primarySiteColors = {
-  Breast: '#ED2891',
-  Colon: '#9467bd',
-  Kidney: '#2ca02c',
-  'Lymph Nodes': '#3953A4',
-  Pancreas: '#e17ac1',
-  Skin: '#BBD642',
-  Unknown: '#ff7f0e',
-};
-const moaarColors = [
-  '#4f9e99',
-  '#21827f',
-  '#656bd7',
-  '#4d52b0',
-  '#783cb9',
-  '#e9695f',
-  '#d83933',
-  '#c84281',
-  '#e0699f',
-  '#8168b3',
-  '#a23737',
-  '#6f3331',
-  '#fb5a47',
-  '#e52207',
-  '#c05600',
-  '#8b1303',
-  '#5c1111',
-  '#fc906d',
-  '#ff580a',
-  '#d24302',
-  '#fa9441',
-  '#2491ff',
-  '#28a0cb',
-  '#0d7ea2',
-  '#3a7d95',
-  '#e66f0e',
-  '#8e704f',
-  '#6b5947',
-  '#ffbe2e',
-  '#e5a000',
-  '#c7a97b',
-  '#ad8b65',
-  '#b51d09',
-  '#c2850c',
-  '#28a0cb',
-  '#0d7ea2',
-  '#07648d',
-  '#cbd17a',
-  '#a6b557',
-  '#ad79e9',
-  '#7665d1',
-  '#4a77b4',
-  '#59b9de',
-  '#8a984b',
-  '#6f7a41',
-  '#9bb672',
-  '#6fbab3',
-  '#8168b3',
-  '#a23737',
-  '#6f3331',
-  '#fb5a47',
-  '#e52207',
-  '#c05600',
-  '#8b1303',
-  '#5c1111',
-  '#fc906d',
-  '#ff580a',
-  '#d24302',
-  '#fa9441',
-  '#2491ff',
-  '#28a0cb',
-  '#0d7ea2',
-  '#3a7d95',
-  '#e66f0e',
-  '#8e704f',
-  '#6b5947',
-  '#ffbe2e',
-  '#e5a000',
-];
+import Spinner from '@ncigdc/uikit/Loaders/Material';
+import { moaarColors, primarySiteColors } from './colourMap';
 
 const getStringName = (name = '') => `${name.replace(/\s|,|-/g, '_')}`;
 
@@ -184,8 +106,8 @@ const enhance = compose(
   withRouter,
   withTheme,
   withState('isLoading', 'setIsLoading', true),
-  withState('arcData', 'setArcData', {}),
-  withState('libData', 'setLibData', {}),
+  withState('arcData', 'setArcData', []),
+  // withState('libData', 'setLibData', {}),
   withProps({
     updateData: async ({
       primarySites,
@@ -209,7 +131,7 @@ const enhance = compose(
     async ({
       setArcData,
       setIsLoading,
-      setLibData,
+      // setLibData,
       updateData,
       variables,
       viewer: {
@@ -229,25 +151,26 @@ const enhance = compose(
 
       const { data: { viewer: { explore: { cases } } } } = data;
 
-      const parsedLibData = {
-        children: primarySites.map((primarySite, i) => {
-          return {
-            children: cases
-              ? cases[`${getStringName(primarySite.key)}Aggs`].disease_type.buckets.map(bucket => {
-                return {
-                  color: Color(primarySiteColors[primarySite.key] ||
-                  moaarColors[i]).lighten(0.3).rgbString(),
-                  count: bucket.doc_count,
-                  id: bucket.key,
-                };
-              })
-            : [],
-            color: primarySiteColors[primarySite.key] || moaarColors[i],
-            id: primarySite.key,
-          };
-        }),
-        id: 'Primary Sites',
-      };
+      // structure for nivo library
+      // const parsedLibData = {
+      //   children: primarySites.map((primarySite, i) => {
+      //     return {
+      //       children: cases
+      //         ? cases[`${getStringName(primarySite.key)}Aggs`].disease_type.buckets.map(bucket => {
+      //           return {
+      //             color: Color(primarySiteColors[primarySite.key] ||
+      //             moaarColors[i]).lighten(0.3).rgbString(),
+      //             count: bucket.doc_count,
+      //             id: bucket.key,
+      //           };
+      //         })
+      //       : [],
+      //       color: primarySiteColors[primarySite.key] || moaarColors[i],
+      //       id: primarySite.key,
+      //     };
+      //   }),
+      //   id: 'Primary Sites',
+      // };
 
       const parsedData = primarySites.map((primarySite, i) => {
         return {
@@ -274,7 +197,7 @@ const enhance = compose(
       });
 
       setArcData(parsedData, () => setIsLoading(false));
-      setLibData(parsedLibData);
+      // setLibData(parsedLibData);
     }
   ),
 );
@@ -282,7 +205,7 @@ const enhance = compose(
 const ExploreSummaryPrimarySite = ({
   arcData,
   isLoading,
-  libData,
+  // libData,
 }) => {
   return (
     <Loader loading={isLoading}>
@@ -310,25 +233,32 @@ const ExploreSummaryPrimarySite = ({
             tooltipHTML="Download image or data"
             />
         </Row>
-        {
-      isEmpty(arcData)
-        ? <div>No Data</div>
-        : (
+        {!isLoading && (
+          isEmpty(arcData)
+          ? (
+            <Column
+              style={{
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+              >
+              No Data
+            </Column>
+        ) : (
           <Column id="summary-primary-site-donut" style={{ padding: '2rem 0rem 1rem' }}>
-            <DoubleDonut
+            {/* <DoubleDonut
               arcData={libData}
               colors={Object.values(primarySiteColors)}
               loading={isLoading}
-              />
+              /> */}
             <DoubleRingChart
               data={arcData}
-              height={300}
+              height={350}
               outerRingWidth={30}
-              width={300}
+              width={350}
               />
           </Column>
-        )
-    }
+      ))}
       </Column>
     </Loader>
   );

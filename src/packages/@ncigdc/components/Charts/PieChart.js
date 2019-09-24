@@ -4,10 +4,11 @@ import PropTypes from 'prop-types';
 import * as d3 from 'd3';
 import _ from 'lodash';
 import ReactFauxDOM from 'react-faux-dom';
-import { compose } from 'recompose';
+import { compose, pure } from 'recompose';
 
 import { withTooltip } from '@ncigdc/uikit/Tooltip';
 import { withTheme } from '@ncigdc/theme';
+import withSize from '@ncigdc/utils/withSize';
 
 const getNestedValue = (item, path) => {
   if (path.length === 1) {
@@ -28,8 +29,14 @@ const PieChart = ({
   marginTop = 0,
   path = 'file_count',
   setTooltip,
+  size: { width: responsiveWidth },
+  width = 0, // pie chart will not be responsive if width > 0
 }) => {
-  const diameter = height;
+  const diameter = width ||
+    (responsiveWidth < height
+      ? responsiveWidth
+      : height);
+  console.log(`diameter: ${diameter}, width: ${responsiveWidth}, height: ${height}`);
   const color = d3.scaleOrdinal(d3.schemeCategory20);
   const outerRadius = diameter / 2 + 10;
   const innerRadius = enableInnerRadius ? outerRadius / 2 : 0;
@@ -117,4 +124,6 @@ PieChart.propTypes = {
 export default compose(
   withTheme,
   withTooltip,
+  withSize({ refreshRate: 16 }),
+  pure,
 )(PieChart);

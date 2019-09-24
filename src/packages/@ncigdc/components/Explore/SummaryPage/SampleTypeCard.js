@@ -14,14 +14,16 @@ const SampleTypeCard = ({ data, mappingId }) => (
       padding: '0 10px',
     }}
     >
-    <PieChart
-      data={data}
-      enableInnerRadius
-      height={280}
-      mappingId={mappingId}
-      marginTop={30}
-      path="doc_count"
-      />
+    <div style={{width: '50%'}}>
+      <PieChart
+        data={data}
+        enableInnerRadius
+        height={280}
+        mappingId={mappingId}
+        marginTop={30}
+        path="doc_count"
+        />
+    </div>
     <div style={{ flex: '0 0 180px' }}>
       {data.length > LEGEND_COUNT && <h3>Top {LEGEND_COUNT}</h3>}
       <ul

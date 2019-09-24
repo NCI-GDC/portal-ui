@@ -519,11 +519,10 @@ missense_variant, frameshift_variant, start_lost,
             </div>,
             <PieChart
               data={pieChartData}
-              height={150}
+              diameter={150}
               key="pie-chart"
               marginTop={25}
               path="count"
-              width={150}
               />,
           ]}
         </Column>

@@ -23,21 +23,20 @@ const getNestedValue = (item, path) => {
 
 const PieChart = ({
   data,
+  diameter = 160,
   enableInnerRadius = false,
-  height = 160,
+  isResponsive = false,
   mappingId = 'id',
   marginTop = 0,
   path = 'file_count',
   setTooltip,
-  size: { width: responsiveWidth },
-  width = 0, // pie chart will not be responsive if width > 0
+  size: { width: responsiveDiameter },
 }) => {
-  const diameter = width ||
-    (responsiveWidth < height
-      ? responsiveWidth
-      : height);
+  const pieDiameter = isResponsive && responsiveDiameter < diameter
+    ? responsiveDiameter
+    : diameter;
   const color = d3.scaleOrdinal(d3.schemeCategory20);
-  const outerRadius = diameter / 2 + 10;
+  const outerRadius = pieDiameter / 2 + 10;
   const innerRadius = enableInnerRadius ? outerRadius / 2 : 0;
   const node = ReactFauxDOM.createElement('div');
   node.style.setProperty('margin-top', `${marginTop}px`);
@@ -55,10 +54,10 @@ const PieChart = ({
   const svg = d3
     .select(node)
     .append('svg')
-    .attr('width', diameter)
-    .attr('height', diameter)
+    .attr('width', pieDiameter)
+    .attr('height', pieDiameter)
     .append('g')
-    .attr('transform', `translate(${diameter / 2}, ${diameter / 2})`);
+    .attr('transform', `translate(${pieDiameter / 2}, ${pieDiameter / 2})`);
 
   const g = svg
     .selectAll('.arc')

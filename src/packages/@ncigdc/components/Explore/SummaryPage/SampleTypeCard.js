@@ -19,7 +19,8 @@ const SampleTypeCard = ({ data, mappingId }) => (
       <PieChart
         data={data}
         enableInnerRadius
-        height={280}
+        diameter={280}
+        isResponsive
         mappingId={mappingId}
         marginTop={0}
         path="doc_count"

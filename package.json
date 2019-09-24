@@ -25,7 +25,6 @@
     }
   },
   "dependencies": {
-    "@nivo/sunburst": "0.54.0",
     "@oncojs/boxplot": "0.3.1",
     "@oncojs/react-lolliplot": "0.11.6",
     "@oncojs/sapien": "0.5.2",

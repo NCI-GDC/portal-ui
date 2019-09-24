@@ -18,7 +18,7 @@ const DoubleRingChart = ({
   },
   outerRingWidth = 30,
   setTooltip,
-  size: { width = 350 },
+  size: { width },
 }) => {
   const chartWidth = width - margin.left - margin.right;
   const height = chartWidth;

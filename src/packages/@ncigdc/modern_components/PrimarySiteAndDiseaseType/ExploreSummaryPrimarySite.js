@@ -10,7 +10,6 @@ import withRouter from '@ncigdc/utils/withRouter';
 import { replaceFilters } from '@ncigdc/utils/filters';
 import customGraphQL from '@ncigdc/utils/customGraphQL';
 import { withTheme } from '@ncigdc/theme';
-// import DoubleDonut from '@ncigdc/components/Charts/DoubleDonut';
 import { Column, Row } from '@ncigdc/uikit/Flex';
 import DownloadVisualizationButton from '@ncigdc/components/DownloadVisualizationButton';
 import wrapSvg from '@ncigdc/utils/wrapSvg';
@@ -110,7 +109,6 @@ const enhance = compose(
   withTheme,
   withState('isLoading', 'setIsLoading', true),
   withState('arcData', 'setArcData', []),
-  // withState('libData', 'setLibData', {}),
   withProps({
     updateData: async ({
       primarySites,
@@ -134,7 +132,6 @@ const enhance = compose(
     async ({
       setArcData,
       setIsLoading,
-      // setLibData,
       updateData,
       variables,
       viewer: {
@@ -153,27 +150,6 @@ const enhance = compose(
       });
 
       const { data: { viewer: { explore: { cases } } } } = data;
-
-      // structure for nivo library
-      // const parsedLibData = {
-      //   children: primarySites.map((primarySite, i) => {
-      //     return {
-      //       children: cases
-      //         ? cases[`${getStringName(primarySite.key)}Aggs`].disease_type.buckets.map(bucket => {
-      //           return {
-      //             color: Color(primarySiteColors[primarySite.key] ||
-      //             moaarColors[i]).lighten(0.3).rgbString(),
-      //             count: bucket.doc_count,
-      //             id: bucket.key,
-      //           };
-      //         })
-      //       : [],
-      //       color: primarySiteColors[primarySite.key] || moaarColors[i],
-      //       id: primarySite.key,
-      //     };
-      //   }),
-      //   id: 'Primary Sites',
-      // };
 
       // const parsedData = primarySites.map((primarySite, i) => {
       //   return {
@@ -305,7 +281,6 @@ const enhance = compose(
       }, []);
       console.log(parsedData);
       setArcData(parsedData, () => setIsLoading(false));
-      // setLibData(parsedLibData);
     }
   ),
 );
@@ -313,7 +288,6 @@ const enhance = compose(
 const ExploreSummaryPrimarySite = ({
   arcData,
   isLoading,
-  // libData,
 }) => {
   return (
     <Loader loading={isLoading}>
@@ -354,11 +328,6 @@ const ExploreSummaryPrimarySite = ({
             </Column>
         ) : (
           <Column id="summary-primary-site-donut" style={{ padding: '2rem 0rem 1rem' }}>
-            {/* <DoubleDonut
-              arcData={libData}
-              colors={Object.values(primarySiteColors)}
-              loading={isLoading}
-              /> */}
             <DoubleRingChart
               data={arcData}
               outerRingWidth={30}

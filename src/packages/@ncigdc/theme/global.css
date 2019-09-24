@@ -8595,6 +8595,13 @@ abbr span {
   display: inline !important;
 }
 
+svg {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+i.fa.fa-question-circle {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+} 
 .masonry { 
   display: flex;
   flex-flow: row wrap;
@@ -8608,10 +8615,10 @@ ul.masonry {
 }
 
 .masonry-brick {
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
   flex: auto;
   height: 250px;
   max-width: 99.3%; /* remove the padding left which is 0.7%*/
   margin: 0 0.7% 0.7% 0; /* gutter which is 0.7%*/
   height: 384px;
-
 }

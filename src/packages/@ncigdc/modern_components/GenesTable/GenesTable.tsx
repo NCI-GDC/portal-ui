@@ -15,7 +15,7 @@ import timestamp from '@ncigdc/utils/timestamp';
 import { IColumnProps } from '@ncigdc/tableModels/utils';
 import { IGroupFilter } from '@ncigdc/utils/filters/types';
 import { ISelectedSurvivalDataProps } from '@ncigdc/modern_components/GenesTable/GenesTable.model';
-import { theme } from '@ncigdc/theme';
+import { withTheme } from '@ncigdc/theme';
 import withSelectIds from '@ncigdc/utils/withSelectIds';
 export interface ITotalNumber {
   hits: {
@@ -76,6 +76,7 @@ interface IGenesTableProps {
   setSelectedIds: (props: string[]) => void;
   sort?: { field: string; order: string };
   score: string;
+  theme: any;
 }
 export default compose<IGenesTableProps, JSX.Element>(
   connect(
@@ -87,6 +88,7 @@ export default compose<IGenesTableProps, JSX.Element>(
     }
   ),
   withRouter,
+  withTheme,
   withState('survivalLoadingId', 'setSurvivalLoadingId', ''),
   withState('ssmCountsLoading', 'setSsmCountsLoading', true),
   withSelectIds,
@@ -120,22 +122,23 @@ export default compose<IGenesTableProps, JSX.Element>(
         cnvCases: undefined,
       },
     },
-    filters,
-    setSurvivalLoadingId,
-    survivalLoadingId,
-    setSelectedSurvivalData,
-    selectedSurvivalData,
-    hasEnoughSurvivalDataOnPrimaryCurve,
     context,
+    filters,
+    hasEnoughSurvivalDataOnPrimaryCurve,
+    parentVariables,
     query,
+    score,
+    selectedIds,
+    selectedSurvivalData,
+    setSelectedIds,
+    setSelectedSurvivalData,
+    setSurvivalLoadingId,
+    sort,
     ssmCounts = {},
     ssmCountsLoading,
-    parentVariables,
+    survivalLoadingId,
     tableColumns,
-    selectedIds,
-    setSelectedIds,
-    sort,
-    score,
+    theme,
   }: IGenesTableProps) => {
     const { genes, filteredCases, cases, cnvCases } = explore;
 
@@ -228,6 +231,7 @@ export default compose<IGenesTableProps, JSX.Element>(
                           filteredCases={filteredCases}
                           cnvCases={cnvCases}
                           query={query}
+                          theme={theme}
                           setSurvivalLoadingId={setSurvivalLoadingId}
                           survivalLoadingId={survivalLoadingId}
                           setSelectedSurvivalData={setSelectedSurvivalData}

@@ -3,6 +3,12 @@ import {
   pickBy,
 } from 'lodash';
 
+import {
+  DEFAULT_BIN_TYPE,
+  DEFAULT_INTERVAL,
+  DEFAULT_RANGES,
+} from '@ncigdc/modern_components/ClinicalAnalysis/ClinicalVariableCard/helpers';
+
 const sets: any = namespaceActions('sets', [
   'ADD_ANALYSIS',
   'REMOVE_ANALYSIS',
@@ -39,8 +45,9 @@ type TClinicalAnalysisProperty = 'name'; // only type mutable properties
 export interface IAnalysisPayload extends IAnalysis {
   analysis?: IAnalysis;
   continuousBinType?: 'default' | 'interval' | 'range';
-  continuousCustomInterval?: any;
-  continuousCustomRanges?: any;
+  customInterval?: any;
+  customRanges?: any;
+  id: string;
   fieldName?: string;
   fieldType?: string;
   plotTypes?: 'categorical' | 'continuous';
@@ -108,9 +115,9 @@ const defaultVariableConfig = {
 };
 
 const defaultContinuousVariableConfig = {
-  continuousBinType: 'default',
-  continuousCustomInterval: {},
-  continuousCustomRanges: [],
+  continuousBinType: DEFAULT_BIN_TYPE,
+  customInterval: DEFAULT_INTERVAL,
+  customRanges: DEFAULT_RANGES,
 };
 
 interface ICurrentAnalysis {

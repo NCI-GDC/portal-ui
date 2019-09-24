@@ -426,13 +426,14 @@ const GenesTableModel = [
     id: 'survival_plot',
     th: () => <Th>Survival</Th>,
     td: ({
-      node,
-      hasEnoughSurvivalDataOnPrimaryCurve,
-      selectedSurvivalData,
-      setSurvivalLoadingId,
-      setSelectedSurvivalData,
-      survivalLoadingId,
       defaultFilters,
+      hasEnoughSurvivalDataOnPrimaryCurve,
+      node,
+      selectedSurvivalData,
+      setSelectedSurvivalData,
+      setSurvivalLoadingId,
+      survivalLoadingId,
+      theme,
     }: {
       node: INodeProps['node'];
       hasEnoughSurvivalDataOnPrimaryCurve: boolean;
@@ -441,6 +442,7 @@ const GenesTableModel = [
       setSelectedSurvivalData: (data: ISelectedSurvivalDataProps) => void;
       survivalLoadingId: string;
       defaultFilters: IGroupFilter;
+      theme: any;
     }) => (
       <Td>
         <Tooltip
@@ -455,7 +457,7 @@ const GenesTableModel = [
               padding: '2px 3px',
               backgroundColor: hasEnoughSurvivalDataOnPrimaryCurve
                 ? colors(selectedSurvivalData.id === node.symbol ? '1' : '0')
-                : '#666',
+                : theme.greyScale3,
               color: 'white',
               margin: '0 auto',
             }}

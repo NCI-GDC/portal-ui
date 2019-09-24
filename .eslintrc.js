@@ -47,8 +47,12 @@ module.exports = {
       allow: ["^UNSAFE_", "doc_count", "^active_"],
     }],
     'comma-dangle': ['warn', 'always-multiline'],
+    'consistent-return': ['warn', {
+      treatUndefinedAsUnspecified: true
+    }],
     'func-names': ['warn', 'as-needed'],
     'function-paren-newline': ['warn', 'consistent'],
+    'implicit-arrow-linebreak': 'off',
     'indent': ['warn', 2, {
       ArrayExpression: 'first',
       CallExpression: { arguments: 'first' },

@@ -59,7 +59,7 @@ interface ISelectedBinsProps {
   [x: string]: boolean
 }
 interface IBinsProps { [x: string]: IBinProps }
-interface IGroupValuesModalProps {
+interface ICategoricalCustomBinsModalProps {
   binGrouping: () => void,
   currentBins: IBinsProps,
   dataBuckets: IBinProps[],
@@ -106,7 +106,7 @@ const styles = {
   },
 }
 
-const GroupValuesModal = ({
+const CategoricalCustomBinsModal = ({
   binGrouping,
   currentBins,
   dataBuckets,
@@ -123,7 +123,7 @@ const GroupValuesModal = ({
   setListWarning,
   setSelectedGroupBins,
   setSelectedHidingBins,
-}: IGroupValuesModalProps) => {
+}: ICategoricalCustomBinsModalProps) => {
   const groupNameMapping = groupBy(
     Object.keys(currentBins)
       .filter((bin: string) => currentBins[bin].groupName !== ''),
@@ -373,7 +373,9 @@ const GroupValuesModal = ({
                       )
                       : (
                         <div style={{ fontWeight: 'bold' }}>
-                          {`${currentBins[group[0]].key} (${currentBins[group[0]].doc_count})`}
+                          {`${currentBins[group[0]].key === '_missing' 
+                          ? 'Missing' 
+                          : currentBins[group[0]].key} (${currentBins[group[0]].doc_count})`}
                         </div>
                       )}
                   </Row>
@@ -396,7 +398,7 @@ const GroupValuesModal = ({
                           paddingLeft: '5px',
                         }}
                         >
-                        {`${bin} (${currentBins[bin].doc_count})`}
+                        {`${bin === '_missing' ? 'Missing' : bin} (${currentBins[bin].doc_count})`}
                       </Row>
                     )))}
                 </Column>
@@ -504,7 +506,7 @@ const GroupValuesModal = ({
 }
 
 export default compose(
-  setDisplayName('EnhancedGroupValuesModal'),
+  setDisplayName('EnhancedCategoricalCustomBinsModal'),
   withState('editingGroupName', 'setEditingGroupName', ''),
   withState('currentBins', 'setCurrentBins', ({ bins }: { bins: IBinsProps }) => bins),
   withState('selectedHidingBins', 'setSelectedHidingBins', {}),
@@ -541,4 +543,4 @@ export default compose(
       setSelectedHidingBins({});
     },
   }))
-)(GroupValuesModal);
+)(CategoricalCustomBinsModal);

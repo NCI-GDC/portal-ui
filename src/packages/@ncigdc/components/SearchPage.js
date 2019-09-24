@@ -98,7 +98,7 @@ const SearchPage = (
         )}
         <CurrentFilters style={{ flex: 1 }} {...filtersLinkProps} />
       </Row>
-      {results}
+      {typeof results === 'function' ? results({ showFacets }) : results}
     </Content>
   </Container>
 );

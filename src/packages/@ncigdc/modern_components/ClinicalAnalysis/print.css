@@ -38,7 +38,7 @@
     padding: 0 !important;
   }
 
-  .clinical-analysis-categorical-card[style] {
+  .clinical-analysis-card[style] {
     display: inline-block !important;
     width: 100%;
     min-width: auto !important;
@@ -50,7 +50,7 @@
     position: relative !important;
   }
 
-  .clinical-analysis-categorical-card div[style] {
+  .clinical-analysis-card div[style] {
     margin: 0 !important;
   }
 

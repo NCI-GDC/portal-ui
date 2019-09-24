@@ -171,5 +171,5 @@ DoubleRingChart.propTypes = {
 
 export default compose(
   withTooltip,
-  withSize({ refreshRate: 16 })
+  withSize()
 )(DoubleRingChart);

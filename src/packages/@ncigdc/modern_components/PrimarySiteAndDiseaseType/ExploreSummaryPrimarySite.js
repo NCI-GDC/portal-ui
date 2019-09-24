@@ -4,6 +4,7 @@ import {
 } from 'recompose';
 import Color from 'color';
 import { isEmpty } from 'lodash';
+import { scaleOrdinal, schemeCategory20 } from 'd3';
 
 import withRouter from '@ncigdc/utils/withRouter';
 import { replaceFilters } from '@ncigdc/utils/filters';
@@ -17,7 +18,9 @@ import DoubleRingChart from '@ncigdc/components/Charts/DoubleRingChart';
 import Loader from '@ncigdc/uikit/Loaders/Loader';
 import { capitalize } from '@ncigdc/utils/string';
 import { HUMAN_BODY_SITES_MAP } from '@ncigdc/utils/constants';
-import { moaarColors, primarySiteColors } from './colourMap';
+import colors from './colorMap';
+
+const secondaryColors = scaleOrdinal(schemeCategory20);
 
 const getStringName = (name = '') => `${name.replace(/\s|,|-/g, '_')}`;
 
@@ -172,64 +175,34 @@ const enhance = compose(
       //   id: 'Primary Sites',
       // };
 
-      // const foo = primarySites.reduce((acc, item) => {
-      //   const lowcase = (item.key || '').toLowerCase();
-      //   const match = HUMAN_BODY_SITES_MAP[lowcase];
-      //   const exists = acc.findIndex(site => site.key === match);
-      //
-      //   if (exists >= 0) {
-      //     console.log('exists');
-      //     const currentItem = acc[exists];
-      //     // debugger;
-      //     const fooItem = {
-      //       ...currentItem,
-      //       doc_count: currentItem.doc_count + item.doc_count,
-      //     };
-      //     return [
-      //       ...acc.slice(0, exists),
-      //       fooItem,
-      //       ...acc.slice(exists + 1, Infinity),
-      //     ];
-      //   }
-      //   console.log('here: ', exists);
-      //   return [
-      //     ...acc,
-      //     {
-      //       key: match,
-      //       doc_count: item.doc_count,
-      //     },
-      //   ];
-      // }, []);
+      // const parsedData = primarySites.map((primarySite, i) => {
+      //   return {
+      //     clickHandler: () => null,
+      //     color: colors[primarySite.key] || secondaryColors[i],
+      //     id: primarySite.key,
+      //     key: primarySite.key,
+      //     outer: cases
+      //       ? cases[`${getStringName(primarySite.key)}Aggs`].disease_type.buckets.map(bucket => {
+      //         return {
+      //           clickHandler: () => null,
+      //           color: Color(colors[primarySite.key] ||
+      //           secondaryColors[i]).lighten(0.3).rgbString(),
+      //           id: `${primarySite.key}-${bucket.key}`,
+      //           key: bucket.key,
+      //           tooltip: <DiseaseTypeTooltip diseaseType={bucket} primarySite={primarySite} />,
+      //           value: bucket.doc_count,
+      //         };
+      //       })
+      //       : [],
+      //     tooltip: <PrimarySiteTooltip primarySite={primarySite} />,
+      //     value: primarySite.doc_count,
+      //   };
+      // });
 
-      const parsedData = primarySites.map((primarySite, i) => {
-        return {
-          clickHandler: () => null,
-          color: primarySiteColors[primarySite.key] || moaarColors[i],
-          id: primarySite.key,
-          key: primarySite.key,
-          // map through all the diseaseType buckets
-          // add applicable doc_count to existing Types
-          // append new types as needed
-          outer: cases
-            ? cases[`${getStringName(primarySite.key)}Aggs`].disease_type.buckets.map(bucket => {
-              return {
-                clickHandler: () => null,
-                color: Color(primarySiteColors[primarySite.key] ||
-                moaarColors[i]).lighten(0.3).rgbString(),
-                id: `${primarySite.key}-${bucket.key}`,
-                key: bucket.key,
-                tooltip: <DiseaseTypeTooltip diseaseType={bucket} primarySite={primarySite} />,
-                value: bucket.doc_count,
-              };
-            })
-            : [],
-          tooltip: <PrimarySiteTooltip primarySite={primarySite} />,
-          value: primarySite.doc_count,
-        };
-      });
-      console.log('parsed: ', parsedData);
-
-      const fooData = primarySites.reduce((acc, primarySite, i) => {
+      // map through all the diseaseType buckets
+      // add applicable doc_count to existing Types
+      // append new types as needed
+      const parsedData = primarySites.reduce((acc, primarySite, i) => {
         const lowerCaseSite = (primarySite.key || '').toLowerCase();
         const humanBodyMatch = HUMAN_BODY_SITES_MAP[lowerCaseSite];
         const currentIndex = acc.findIndex(site => site.key === humanBodyMatch);
@@ -243,7 +216,7 @@ const enhance = compose(
 
               if (currentDiseaseTypeIndex >= 0) {
                 const currentDiseaseType = dTypeAcc[currentDiseaseTypeIndex];
-                const bar = [
+                return [
                   ...dTypeAcc.slice(0, currentDiseaseTypeIndex),
                   {
                     ...currentDiseaseType,
@@ -252,57 +225,61 @@ const enhance = compose(
                         key: bucket.key,
                         doc_count: currentDiseaseType.doc_count + bucket.doc_count,
                       }}
-                      primarySite={primarySite}
+                      primarySite={{
+                        key: humanBodyMatch,
+                      }}
                       />,
-                    value: currentDiseaseType.doc_count + bucket.doc_count,
+                    value: currentDiseaseType.value + bucket.doc_count,
                   },
                   ...dTypeAcc.slice(currentDiseaseTypeIndex + Infinity),
                 ];
-                return bar;
               }
               return [
                 ...dTypeAcc,
                 {
                   clickHandler: () => null,
-                  color: Color(primarySiteColors[primarySite.key] ||
-                  moaarColors[i]).lighten(0.3).rgbString(),
+                  color: Color(colors[humanBodyMatch] ||
+                  secondaryColors[i]).lighten(0.3).rgbString(),
                   id: `${humanBodyMatch}-${bucket.key}`,
                   key: bucket.key,
-                  tooltip: <DiseaseTypeTooltip diseaseType={bucket} primarySite={primarySite} />,
+                  tooltip: <DiseaseTypeTooltip
+                    diseaseType={bucket}
+                    primarySite={{ key: humanBodyMatch }}
+                    />,
                   value: bucket.doc_count,
                 },
               ];
             }, [])
             : [];
-          const yo = [
+          return [
             ...acc.slice(0, currentIndex),
             {
               ...currentItem,
-              // outer: [...currentItem.outer, diseaseTypes],
               outer: [...currentItem.outer, ...diseaseTypes],
+              tooltip: <PrimarySiteTooltip
+                primarySite={{
+                  doc_count: currentItem.value + primarySite.doc_count,
+                  key: currentItem.key,
+                }}
+                />,
               value: currentItem.value + primarySite.doc_count,
             },
             ...acc.slice(currentIndex + 1, Infinity),
           ];
-          // console.log('yo: ', yo);
-          return yo;
         }
         return [
           ...acc,
           {
             clickHandler: () => null,
-            color: primarySiteColors[primarySite.key] || moaarColors[i],
+            color: colors[humanBodyMatch] || secondaryColors[i],
             id: humanBodyMatch,
             key: humanBodyMatch,
-            // map through all the diseaseType buckets
-            // add applicable doc_count to existing Types
-            // append new types as needed
             outer: cases
               ? cases[`${getStringName(primarySite.key)}Aggs`].disease_type.buckets.map(bucket => {
                 return {
                   clickHandler: () => null,
-                  color: Color(primarySiteColors[primarySite.key] ||
-                  moaarColors[i]).lighten(0.3).rgbString(),
+                  color: Color(colors[humanBodyMatch] ||
+                  secondaryColors[i]).lighten(0.3).rgbString(),
                   id: `${primarySite.key}-${bucket.key}`,
                   key: bucket.key,
                   tooltip: <DiseaseTypeTooltip
@@ -326,82 +303,8 @@ const enhance = compose(
           },
         ];
       }, []);
-      // debugger;
-      // const bar = primarySites.reduce((acc, site, i) => {
-      //   const lowcase = (site.key || '').toLowerCase();
-      //   const match = HUMAN_BODY_SITES_MAP[lowcase];
-      //   const exists = acc.findIndex(a => a.key === match);
-      //
-      //
-      //   if (exists >= 0) {
-      //     // console.log('exists');
-      //     const currentItem = acc[exists];
-      //     // const newItem = {
-      //     //   ...currentItem,
-      //     //   doc_count: currentItem.doc_count + site.doc_count,
-      //     // };
-      //     const newItem = {
-      //       ...currentItem,
-      //       // clickHandler: () => null,
-      //       // color: primarySiteColors[primarySite.key] || moaarColors[i],
-      //       // id: primarySite.key,
-      //       // key: primarySite.key,
-      //       outer: [
-      //         ...currentItem.outer,
-      //         cases
-      //           ? cases[`${getStringName(primarySite.key)}Aggs`].disease_type.buckets.map(bucket => {
-      //             return {
-      //               clickHandler: () => null,
-      //               color: Color(primarySiteColors[primarySite.key] ||
-      //               moaarColors[i]).lighten(0.3).rgbString(),
-      //               id: `${primarySite.key}-${bucket.key}`,
-      //               key: bucket.key,
-      //               tooltip: <DiseaseTypeTooltip diseaseType={bucket} primarySite={primarySite} />,
-      //               value: bucket.doc_count,
-      //             };
-      //           })
-      //           : [],
-      //       ]
-      //
-      //       // tooltip: <PrimarySiteTooltip primarySite={primarySite} />,
-      //       value: currentItem.doc_count + site.doc_count,
-      //     };
-      //     const foo = {
-      //       clickHandler: () => null,
-      //       color: primarySiteColors[primarySite.key] || moaarColors[i],
-      //       id: primarySite.key,
-      //       key: primarySite.key,
-      //       outer: cases
-      //         ? cases[`${getStringName(primarySite.key)}Aggs`].disease_type.buckets.map(bucket => {
-      //           return {
-      //             clickHandler: () => null,
-      //             color: Color(primarySiteColors[primarySite.key] ||
-      //             moaarColors[i]).lighten(0.3).rgbString(),
-      //             id: `${primarySite.key}-${bucket.key}`,
-      //             key: bucket.key,
-      //             tooltip: <DiseaseTypeTooltip diseaseType={bucket} primarySite={primarySite} />,
-      //             value: bucket.doc_count,
-      //           };
-      //         })
-      //         : [],
-      //       tooltip: <PrimarySiteTooltip primarySite={primarySite} />,
-      //       value: primarySite.doc_count,
-      //     };
-      //     return [
-      //       ...acc.slice(0, exists),
-      //       newItem,
-      //       ...acc.slice(exists + 1, Infinity),
-      //     ];
-      //   }
-      //   return [
-      //     ...acc,
-      //     {
-      //       doc_count: site.doc_count,
-      //       key: match,
-      //     },
-      //   ];
-      // }, [])
-      setArcData(fooData, () => setIsLoading(false));
+      console.log(parsedData);
+      setArcData(parsedData, () => setIsLoading(false));
       // setLibData(parsedLibData);
     }
   ),

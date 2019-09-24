@@ -10,8 +10,9 @@ const SampleTypeCard = ({ data, mappingId }) => (
     spacing={15}
     style={{
       alignItems: 'center',
+      flex: 1,
       justifyContent: 'center',
-      padding: '0 10px',
+      padding: '0 15px',
     }}
     >
     <div style={{width: '50%'}}>
@@ -20,12 +21,13 @@ const SampleTypeCard = ({ data, mappingId }) => (
         enableInnerRadius
         height={280}
         mappingId={mappingId}
-        marginTop={30}
+        marginTop={0}
         path="doc_count"
         />
     </div>
-    <div style={{ flex: '0 0 180px' }}>
-      {data.length > LEGEND_COUNT && <h3>Top {LEGEND_COUNT}</h3>}
+    <div style={{ flex: '0 0 160px' }}>
+      {data.length > LEGEND_COUNT &&
+        <h3 style={{marginTop: 0}}>Top {LEGEND_COUNT}</h3>}
       <ul
         style={{
           listStyleType: 'none',

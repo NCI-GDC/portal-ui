@@ -16,7 +16,11 @@ const CardWrapper = ({
       .map(d => d[subProps.mappingLabel] || ''), (item) => item.length) || ''
   ).length;
   return (
-    <React.Fragment>
+    <div style={{
+      display: 'flex',
+      flexDirection: 'column',
+      height: '100%',
+    }}>
       <Row
         style={{
           alignItems: 'center',
@@ -49,14 +53,21 @@ const CardWrapper = ({
           tsvData={data}
           />
       </Row>
-      <div className={className}>
+      <div 
+        className={className}
+        style={{
+          display: 'flex',
+          flex: 1,
+          flexDirection: 'column',
+        }}
+        >
         <Component
           bottomMarginForxAxisTitle={maxKeyNameLength * 2}
           data={data}
           {...subProps}
           />
       </div>
-    </React.Fragment>
+    </div>
   );
 };
 

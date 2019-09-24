@@ -36,7 +36,6 @@ const PieChart = ({
     (responsiveWidth < height
       ? responsiveWidth
       : height);
-  console.log(`diameter: ${diameter}, width: ${responsiveWidth}, height: ${height}`);
   const color = d3.scaleOrdinal(d3.schemeCategory20);
   const outerRadius = diameter / 2 + 10;
   const innerRadius = enableInnerRadius ? outerRadius / 2 : 0;

@@ -11,7 +11,7 @@ const SampleTypeCard = ({ data, mappingId }) => (
     style={{
       alignItems: 'center',
       justifyContent: 'center',
-      padding: '0 15px',
+      padding: '0 10px',
     }}
     >
     <PieChart
@@ -21,9 +21,8 @@ const SampleTypeCard = ({ data, mappingId }) => (
       mappingId={mappingId}
       marginTop={30}
       path="doc_count"
-      width={280}
       />
-    <div>
+    <div style={{ flex: '0 0 180px' }}>
       {data.length > LEGEND_COUNT && <h3>Top {LEGEND_COUNT}</h3>}
       <ul
         style={{
@@ -34,7 +33,10 @@ const SampleTypeCard = ({ data, mappingId }) => (
         }}
         >
           {data.slice(0, LEGEND_COUNT).map(datum => (
-            <li style={{ position: 'relative' }}>
+            <li 
+              key={datum.key}
+              style={{ position: 'relative' }}
+              >
               <div style={{
                 backgroundColor: datum.color,
                 border: `1px solid ${theme.greyScale4}`,
